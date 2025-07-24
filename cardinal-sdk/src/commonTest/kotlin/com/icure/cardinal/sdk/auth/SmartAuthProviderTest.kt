@@ -41,7 +41,7 @@ import io.kotest.matchers.maps.shouldNotBeEmpty
 import io.kotest.matchers.shouldBe
 import io.kotest.matchers.shouldNotBe
 import io.ktor.http.isSuccess
-import kotlinx.datetime.Clock
+import kotlin.time.Clock
 
 @OptIn(InternalIcureApi::class)
 class SmartAuthProviderTest : StringSpec({

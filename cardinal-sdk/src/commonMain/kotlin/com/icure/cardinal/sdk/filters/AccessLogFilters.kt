@@ -13,8 +13,8 @@ import com.icure.cardinal.sdk.model.filter.accesslog.AccessLogByDateFilter
 import com.icure.cardinal.sdk.model.filter.accesslog.AccessLogByUserIdUserTypeDateFilter
 import com.icure.cardinal.sdk.utils.DefaultValue
 import com.icure.utils.InternalIcureApi
-import kotlinx.datetime.Instant
 import kotlinx.serialization.Serializable
+import kotlin.time.Instant
 
 object AccessLogFilters {
 

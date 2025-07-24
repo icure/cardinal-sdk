@@ -16,7 +16,7 @@ import kotlin.OptIn
 import kotlin.String
 import kotlin.collections.List
 import kotlin.collections.Set
-import kotlinx.datetime.Instant
+import kotlin.time.Instant
 import kotlinx.serialization.PolymorphicSerializer
 import kotlinx.serialization.Serializable
 

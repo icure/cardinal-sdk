@@ -14,7 +14,7 @@ import com.icure.cardinal.sdk.model.filter.document.DocumentByDataOwnerPatientDa
 import com.icure.cardinal.sdk.model.filter.document.DocumentByTypeDataOwnerPatientFilter
 import com.icure.cardinal.sdk.utils.DefaultValue
 import com.icure.utils.InternalIcureApi
-import kotlinx.datetime.Instant
+import kotlin.time.Instant
 import kotlinx.serialization.Serializable
 
 object DocumentFilters {
