@@ -146,7 +146,7 @@ private abstract class AbstractDocumentFlavouredApi<E : Document>(
 				mapDocumentFilterOptions(
 					filter,
 					config.crypto.dataOwnerApi.getCurrentDataOwnerId(),
-					null
+					config.crypto.entity
 				)
 			).successBody(),
 			::getDocuments
