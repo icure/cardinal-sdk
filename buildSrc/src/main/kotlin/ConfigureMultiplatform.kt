@@ -2,7 +2,9 @@ import org.gradle.api.Project
 import org.gradle.jvm.toolchain.JavaLanguageVersion
 import org.gradle.kotlin.dsl.get
 import org.gradle.kotlin.dsl.withType
+import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 import org.jetbrains.kotlin.gradle.dsl.KotlinMultiplatformExtension
+import org.jetbrains.kotlin.gradle.internal.config.JVMConfigurationKeys.JVM_TARGET
 import org.jetbrains.kotlin.gradle.plugin.mpp.apple.XCFramework
 import org.jetbrains.kotlin.gradle.targets.js.ir.JsIrBinary
 import java.util.Properties
@@ -12,7 +14,7 @@ fun Project.configureKotlinJs(
     overrideModuleName: String? = null
 ) = with(kotlinMultiplatformExtension) {
     js(IR) {
-        moduleName = overrideModuleName ?: project.name
+        outputModuleName.set(overrideModuleName ?: project.name)
         browser {
             testTask {
                 useKarma {
@@ -28,8 +30,8 @@ fun Project.configureKotlinJs(
 
         binaries.withType<JsIrBinary>().all {
             this.linkTask.configure {
-                kotlinOptions {
-                    sourceMap = false
+                compilerOptions {
+                    sourceMap.set(false)
                 }
             }
         }
@@ -74,6 +76,11 @@ fun Project.configureMultiplatform(
     js: Boolean = true,
     xcFrameworkName: String? = null
 ) = with(kotlinMultiplatformExtension) {
+
+    compilerOptions {
+        freeCompilerArgs.addAll("-opt-in=kotlin.time.ExperimentalTime")
+    }
+
     val localProperties = getLocalProperties()
     val frameworkName = xcFrameworkName ?: project.name.replaceFirstChar { it.uppercase() }
     val xcf = XCFramework(frameworkName)
@@ -83,8 +90,8 @@ fun Project.configureMultiplatform(
             languageVersion.set(JavaLanguageVersion.of(8))
         }
         jvm {
-            compilations.all {
-                kotlinOptions.jvmTarget = "1.8"
+            compilerOptions {
+                jvmTarget.set(JvmTarget.JVM_1_8)
             }
         }
     }
@@ -93,8 +100,8 @@ fun Project.configureMultiplatform(
     }
     if (android) {
         androidTarget {
-            compilations.all {
-                kotlinOptions.jvmTarget = "1.8"
+            compilerOptions {
+                jvmTarget.set(JvmTarget.JVM_1_8)
             }
             // Important: otherwise android will use the jvm library and it will not work...
             publishLibraryVariants("release", "debug")

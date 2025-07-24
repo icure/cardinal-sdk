@@ -9,7 +9,7 @@ plugins {
 	id("maven-publish")
 	signing
 	id("com.vanniktech.maven.publish") apply true
-	id("com.google.devtools.ksp") version "2.1.20-RC-1.0.30"
+	id("com.google.devtools.ksp") version "2.2.0-2.0.2"
 }
 
 val repoUsername: String by project
@@ -18,7 +18,7 @@ val mavenReleasesRepository: String by project
 
 group = "com.icure"
 
-val version = "2.0.0-PREVIEW-11"
+val version = "2.0.0-PREVIEW-12-local-1"
 project.version = version
 
 kotlin {

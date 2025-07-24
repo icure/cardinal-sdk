@@ -20,7 +20,7 @@ import kotlin.Double
 import kotlin.String
 import kotlin.collections.List
 import kotlin.js.JsExport
-import kotlinx.datetime.Instant
+import kotlin.time.Instant
 
 @JsExport
 public object InternalDocumentFiltersObj {

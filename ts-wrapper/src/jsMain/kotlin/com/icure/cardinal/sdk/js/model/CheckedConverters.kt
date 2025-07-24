@@ -12,7 +12,7 @@ import com.icure.cardinal.sdk.utils.ensure
 import com.icure.cardinal.sdk.utils.isJsSafe
 import com.icure.cardinal.sdk.utils.time.ZonedDateTime
 import com.icure.utils.InternalIcureApi
-import kotlinx.datetime.Instant
+import kotlin.time.Instant
 import kotlinx.serialization.ExperimentalSerializationApi
 import kotlinx.serialization.json.Json
 import kotlinx.serialization.json.JsonElement
