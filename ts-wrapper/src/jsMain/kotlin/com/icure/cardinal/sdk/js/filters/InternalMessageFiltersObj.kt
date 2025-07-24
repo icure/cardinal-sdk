@@ -23,7 +23,7 @@ import kotlin.String
 import kotlin.collections.List
 import kotlin.collections.Set
 import kotlin.js.JsExport
-import kotlinx.datetime.Instant
+import kotlin.time.Instant
 
 @JsExport
 public object InternalMessageFiltersObj {

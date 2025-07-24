@@ -10,7 +10,7 @@ import com.icure.cardinal.sdk.model.embed.SecurityMetadata
 import com.icure.cardinal.sdk.model.specializations.Base64String
 import com.icure.cardinal.sdk.serialization.InstantSerializer
 import com.icure.cardinal.sdk.utils.DefaultValue
-import kotlinx.datetime.Instant
+import kotlin.time.Instant
 import kotlinx.serialization.Serializable
 import kotlin.Long
 import kotlin.String

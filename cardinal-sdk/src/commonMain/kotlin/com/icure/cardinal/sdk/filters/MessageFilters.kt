@@ -24,7 +24,7 @@ import com.icure.cardinal.sdk.options.ApiConfiguration
 import com.icure.cardinal.sdk.options.BasicApiConfiguration
 import com.icure.cardinal.sdk.utils.DefaultValue
 import com.icure.utils.InternalIcureApi
-import kotlinx.datetime.Instant
+import kotlin.time.Instant
 import kotlinx.serialization.Serializable
 import kotlin.coroutines.coroutineContext
 

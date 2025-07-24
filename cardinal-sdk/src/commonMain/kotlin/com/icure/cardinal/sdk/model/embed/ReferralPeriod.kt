@@ -1,7 +1,7 @@
 package com.icure.cardinal.sdk.model.embed
 
 import com.icure.cardinal.sdk.serialization.InstantSerializer
-import kotlinx.datetime.Instant
+import kotlin.time.Instant
 import kotlinx.serialization.Serializable
 import kotlin.String
 

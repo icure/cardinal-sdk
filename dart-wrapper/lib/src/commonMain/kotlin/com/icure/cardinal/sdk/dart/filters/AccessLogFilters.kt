@@ -12,7 +12,7 @@ import kotlin.Boolean
 import kotlin.OptIn
 import kotlin.String
 import kotlin.Unit
-import kotlinx.datetime.Instant
+import kotlin.time.Instant
 import kotlinx.serialization.PolymorphicSerializer
 import kotlinx.serialization.builtins.ListSerializer
 import kotlinx.serialization.builtins.nullable
