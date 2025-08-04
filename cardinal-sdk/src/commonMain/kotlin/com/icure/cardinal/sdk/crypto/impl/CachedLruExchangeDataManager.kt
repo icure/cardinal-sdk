@@ -4,13 +4,13 @@ import com.icure.cardinal.sdk.api.DataOwnerApi
 import com.icure.cardinal.sdk.crypto.BaseExchangeDataManager
 import com.icure.cardinal.sdk.crypto.CryptoStrategies
 import com.icure.cardinal.sdk.crypto.UserEncryptionKeysManager
-import com.icure.cardinal.sdk.model.EntityReferenceInGroup
 import com.icure.cardinal.sdk.crypto.entities.EntityWithEncryptionMetadataTypeName
 import com.icure.cardinal.sdk.crypto.entities.ExchangeDataWithPotentiallyDecryptedContent
 import com.icure.cardinal.sdk.crypto.entities.ExchangeDataWithUnencryptedContent
 import com.icure.cardinal.sdk.crypto.entities.SdkBoundGroup
 import com.icure.cardinal.sdk.crypto.entities.UndecryptableExchangeData
 import com.icure.cardinal.sdk.crypto.entities.UnencryptedExchangeDataContent
+import com.icure.cardinal.sdk.model.EntityReferenceInGroup
 import com.icure.cardinal.sdk.model.ExchangeData
 import com.icure.cardinal.sdk.model.specializations.Base64String
 import com.icure.cardinal.sdk.model.specializations.SecureDelegationKeyString
@@ -101,7 +101,7 @@ private class CachedLruExchangeDataManagerInGroup(
 	/*
 	 * Note: currently keeps in cache also failed jobs, in future should maybe evict failed jobs as soon as they fail.
 	 */
-	private val exchangeDataByIdCache: LruCache<String, Deferred<CachedExchangeDataDetails>> =
+	private val exchangeDataByIdCache: LruCache<String, Deferred<CachedExchangeDataDetails?>> =
 		LruCache(maxCacheSize.coerceAtLeast(1)) // If cache is not at least 1 stuff is going to behave weird
 	private val delegateToVerifiedExchangeDataId =
 		mutableMapOf<String, Deferred<String>>()
@@ -118,7 +118,7 @@ private class CachedLruExchangeDataManagerInGroup(
 	@OptIn(ExperimentalCoroutinesApi::class)
 	private fun cacheMainInfoJobMustHaveLock(
 		id: String,
-		job: Deferred<CachedExchangeDataDetails>
+		job: Deferred<CachedExchangeDataDetails?>
 	) {
 		exchangeDataByIdCache.set(id, job)
 		if (exchangeDataByIdCache.size > maxCacheSize) {
@@ -216,7 +216,7 @@ private class CachedLruExchangeDataManagerInGroup(
 		}
 		return if (retrieved.first != null) {
 			val id = retrieved.first!!.await()
-			val cachedDetails = doGetDecryptionDataByIds(setOf(id), true).getValue(id)
+			val cachedDetails = doGetDecryptionDataByIds(setOf(id), true).getValue(id)!!
 			cachedDetails.decryptedDetails?.takeIf { it.verified }?.let {
 				ExchangeDataWithUnencryptedContent(
 					cachedDetails.exchangeData,
@@ -242,7 +242,7 @@ private class CachedLruExchangeDataManagerInGroup(
 		}
 		return allCachedValues.associate { (h, data) ->
 			// If cached by hash data has already completed successfully and decrypted
-			h to data.await().let {
+			h to data.await()!!.let {
 				ExchangeDataWithUnencryptedContent(it.exchangeData, it.decryptedDetails!!.decryptedContent)
 			}
 		}
@@ -252,23 +252,25 @@ private class CachedLruExchangeDataManagerInGroup(
 		ids: Set<String>,
 		waitOrRetrieveUncached: Boolean
 	): Map<String, ExchangeDataWithPotentiallyDecryptedContent> =
-		doGetDecryptionDataByIds(ids, waitOrRetrieveUncached).mapValues {
-			val decrypted = it.value.decryptedDetails?.decryptedContent
-			if (decrypted != null) {
-				ExchangeDataWithUnencryptedContent(
-					it.value.exchangeData,
-					decrypted
-				)
-			} else {
-				UndecryptableExchangeData(it.value.exchangeData)
+		doGetDecryptionDataByIds(ids, waitOrRetrieveUncached).mapNotNull { (k, v) ->
+			v?.let {
+				val decrypted = it.decryptedDetails?.decryptedContent
+				if (decrypted != null) {
+					k to ExchangeDataWithUnencryptedContent(
+						it.exchangeData,
+						decrypted
+					)
+				} else {
+					k to UndecryptableExchangeData(it.exchangeData)
+				}
 			}
-		}
+		}.toMap()
 
 	@OptIn(ExperimentalCoroutinesApi::class)
 	private suspend fun doGetDecryptionDataByIds(
 		ids: Set<String>,
 		waitOrRetrieveUncached: Boolean
-	): Map<String, CachedExchangeDataDetails> = cacheMutex.withLock {
+	): Map<String, CachedExchangeDataDetails?> = cacheMutex.withLock {
 		val cached = ids.mapNotNull { id ->
 			exchangeDataByIdCache.get(id)?.let { result ->
 				if (result.isCompleted && result.getCompletionExceptionOrNull() != null) {
@@ -297,7 +299,7 @@ private class CachedLruExchangeDataManagerInGroup(
 					retrieveAndDecryptedExchangeData
 				}
 				val asIndividualJobs = idsToRetrieve.associateWith {
-					cacheRequestsScope.async { job.await().getValue(it) }
+					cacheRequestsScope.async { job.await()[it] }
 				}
 				asIndividualJobs.forEach {
 					cacheMainInfoJobMustHaveLock(it.key, it.value)
