@@ -1,4 +1,3 @@
-import org.jetbrains.kotlin.gradle.targets.js.ir.JsIrBinary
 import java.io.FileWriter
 
 plugins {
@@ -22,6 +21,7 @@ kotlin {
 			}
 			languageSettings.optIn("kotlin.js.ExperimentalJsExport")
 			languageSettings.optIn("kotlinx.coroutines.DelicateCoroutinesApi")
+			languageSettings.optIn("kotlin.time.ExperimentalTime")
 		}
 	}
 }
