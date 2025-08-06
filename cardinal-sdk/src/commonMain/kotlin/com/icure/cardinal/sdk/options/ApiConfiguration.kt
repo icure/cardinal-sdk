@@ -30,7 +30,6 @@ internal interface BasicApiConfiguration {
 @InternalIcureApi
 internal interface ApiConfiguration : BasicApiConfiguration {
 	val autofillAuthor: Boolean
-	val storage: CardinalStorageFacade
 	override val crypto: InternalCryptoServices
 	val jsonPatcher: JsonPatcher
 	val parentJob: Job?
@@ -43,7 +42,6 @@ internal data class ApiConfigurationImpl(
 	override val autofillAuthor: Boolean,
 	override val crypto: InternalCryptoServices,
 	override val encryption: EntitiesEncryptedFieldsManifests,
-	override val storage: CardinalStorageFacade,
 	override val jsonPatcher: JsonPatcher,
 	override val parentJob: Job?,
 	override val rawApiConfig: RawApiConfig,

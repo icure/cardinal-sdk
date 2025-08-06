@@ -6,9 +6,12 @@ import com.icure.cardinal.sdk.api.ShamirKeysManagerApi
 import com.icure.cardinal.sdk.crypto.InternalCryptoServices
 import com.icure.cardinal.sdk.crypto.entities.ExchangeDataInjectionDetails
 import com.icure.cardinal.sdk.crypto.entities.RawDecryptedExchangeData
+import com.icure.cardinal.sdk.crypto.impl.exportSpkiHex
 import com.icure.cardinal.sdk.model.EntityReferenceInGroup
+import com.icure.cardinal.sdk.model.extensions.publicKeysSpki
 import com.icure.cardinal.sdk.model.specializations.KeypairFingerprintV1String
 import com.icure.cardinal.sdk.model.specializations.Pkcs8Bytes
+import com.icure.kryptom.crypto.RsaAlgorithm
 import com.icure.kryptom.crypto.defaultCryptoService
 import com.icure.utils.InternalIcureApi
 
@@ -85,4 +88,35 @@ internal class CryptoApiImpl(
 		)
 	}
 
+	override suspend fun addAndStoreNewSelfVerifiedKey(
+		algorithm: RsaAlgorithm.RsaEncryptionAlgorithm,
+		pkcs8Bytes: Pkcs8Bytes,
+	) {
+		val keyPair = internal.primitives.rsa.loadKeyPairPkcs8(algorithm, pkcs8Bytes.bytes)
+		val self = internal.dataOwnerApi.getCurrentDataOwnerStub()
+		val anonymous = internal.strategies.dataOwnerRequiresAnonymousDelegation(self, null)
+
+		val pubKey = internal.primitives.rsa.exportSpkiHex(keyPair.public)
+		internal.storage.saveEncryptionKeypair(self.stub.id, keyPair, isDevice = true)
+
+		if (pubKey !in self.stub.publicKeysSpki) {
+			val modifiedSelf = self.copy(
+				stub = when(algorithm) {
+					RsaAlgorithm.RsaEncryptionAlgorithm.OaepWithSha256 -> self.stub.copy(
+						publicKeysForOaepWithSha256 = self.stub.publicKeysForOaepWithSha256 + pubKey
+					)
+					RsaAlgorithm.RsaEncryptionAlgorithm.OaepWithSha1 -> self.stub.copy(
+						aesExchangeKeys = self.stub.aesExchangeKeys + (pubKey.asExchangeKeyEntryKeyString() to emptyMap())
+					)
+				}
+			)
+			internal.dataOwnerApi.modifyDataOwnerStub(
+modifiedSelf
+			)
+		}
+
+		if (anonymous) {
+			forceReload()
+		}
+	}
 }
