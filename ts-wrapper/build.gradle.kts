@@ -171,6 +171,10 @@ val prepareTypescriptSourceCompilation = tasks.register("prepareTypescriptSource
 				Replacement(
 					of = "cryptoService?: Nullable<XCryptoService>",
 					with = "cryptoService?: Nullable<crypto.XCryptoService>"
+				),
+				Replacement(
+					of = "get(): XCryptoService;",
+					with = "get(): crypto.XCryptoService;"
 				)
 			)
 		)
