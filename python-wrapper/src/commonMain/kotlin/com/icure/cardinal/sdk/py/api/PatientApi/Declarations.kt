@@ -241,6 +241,7 @@ private class WithEncryptionMetadataParams(
 	public val base: DecryptedPatient?,
 	public val user: User? = null,
 	public val delegates: Map<String, AccessLevel> = emptyMap(),
+	public val alternateRootDelegateId: String? = null,
 )
 
 @OptIn(InternalIcureApi::class)
@@ -252,6 +253,7 @@ public fun withEncryptionMetadataBlocking(sdk: CardinalApis, params: String): St
 			decodedParams.base,
 			decodedParams.user,
 			decodedParams.delegates,
+			decodedParams.alternateRootDelegateId,
 		)
 	}
 }.toPyString(DecryptedPatient.serializer())
@@ -273,6 +275,7 @@ public fun withEncryptionMetadataAsync(
 				decodedParams.base,
 				decodedParams.user,
 				decodedParams.delegates,
+				decodedParams.alternateRootDelegateId,
 			)
 		}.toPyStringAsyncCallback(DecryptedPatient.serializer(), resultCallback)
 	}

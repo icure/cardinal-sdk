@@ -19,13 +19,14 @@ class MaintenanceTaskApi:
 		self.encrypted = MaintenanceTaskApiEncrypted(self.cardinal_sdk)
 		self.try_and_recover = MaintenanceTaskApiTryAndRecover(self.cardinal_sdk)
 
-	async def with_encryption_metadata_async(self, maintenance_task: Optional[DecryptedMaintenanceTask], user: Optional[User] = None, delegates: dict[str, AccessLevel] = {}) -> DecryptedMaintenanceTask:
+	async def with_encryption_metadata_async(self, maintenance_task: Optional[DecryptedMaintenanceTask], user: Optional[User] = None, delegates: dict[str, AccessLevel] = {}, alternate_root_delegate_id: Optional[str] = None) -> DecryptedMaintenanceTask:
 		def do_decode(raw_result):
 			return DecryptedMaintenanceTask._deserialize(raw_result)
 		payload = {
 			"maintenanceTask": maintenance_task.__serialize__() if maintenance_task is not None else None,
 			"user": user.__serialize__() if user is not None else None,
 			"delegates": {k0: v0.__serialize__() for k0, v0 in delegates.items()},
+			"alternateRootDelegateId": alternate_root_delegate_id,
 		}
 		return await execute_async_method_job(
 			self.cardinal_sdk._executor,
@@ -36,11 +37,12 @@ class MaintenanceTaskApi:
 			json.dumps(payload).encode('utf-8'),
 		)
 
-	def with_encryption_metadata_blocking(self, maintenance_task: Optional[DecryptedMaintenanceTask], user: Optional[User] = None, delegates: dict[str, AccessLevel] = {}) -> DecryptedMaintenanceTask:
+	def with_encryption_metadata_blocking(self, maintenance_task: Optional[DecryptedMaintenanceTask], user: Optional[User] = None, delegates: dict[str, AccessLevel] = {}, alternate_root_delegate_id: Optional[str] = None) -> DecryptedMaintenanceTask:
 		payload = {
 			"maintenanceTask": maintenance_task.__serialize__() if maintenance_task is not None else None,
 			"user": user.__serialize__() if user is not None else None,
 			"delegates": {k0: v0.__serialize__() for k0, v0 in delegates.items()},
+			"alternateRootDelegateId": alternate_root_delegate_id,
 		}
 		call_result = symbols.kotlin.root.com.icure.cardinal.sdk.py.api.MaintenanceTaskApi.withEncryptionMetadataBlocking(
 			self.cardinal_sdk._native,

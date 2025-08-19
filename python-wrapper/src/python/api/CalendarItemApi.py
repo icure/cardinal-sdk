@@ -20,7 +20,7 @@ class CalendarItemApi:
 		self.try_and_recover = CalendarItemApiTryAndRecover(self.cardinal_sdk)
 		self.in_group = CalendarItemApiInGroup(self.cardinal_sdk)
 
-	async def with_encryption_metadata_async(self, base: Optional[DecryptedCalendarItem], patient: Optional[Patient], user: Optional[User] = None, delegates: dict[str, AccessLevel] = {}, secret_id: SecretIdUseOption = SecretIdUseOptionUseAnySharedWithParent()) -> DecryptedCalendarItem:
+	async def with_encryption_metadata_async(self, base: Optional[DecryptedCalendarItem], patient: Optional[Patient], user: Optional[User] = None, delegates: dict[str, AccessLevel] = {}, secret_id: SecretIdUseOption = SecretIdUseOptionUseAnySharedWithParent(), alternate_root_delegate_id: Optional[str] = None) -> DecryptedCalendarItem:
 		def do_decode(raw_result):
 			return DecryptedCalendarItem._deserialize(raw_result)
 		payload = {
@@ -29,6 +29,7 @@ class CalendarItemApi:
 			"user": user.__serialize__() if user is not None else None,
 			"delegates": {k0: v0.__serialize__() for k0, v0 in delegates.items()},
 			"secretId": serialize_secret_id_use_option(secret_id),
+			"alternateRootDelegateId": alternate_root_delegate_id,
 		}
 		return await execute_async_method_job(
 			self.cardinal_sdk._executor,
@@ -39,13 +40,14 @@ class CalendarItemApi:
 			json.dumps(payload).encode('utf-8'),
 		)
 
-	def with_encryption_metadata_blocking(self, base: Optional[DecryptedCalendarItem], patient: Optional[Patient], user: Optional[User] = None, delegates: dict[str, AccessLevel] = {}, secret_id: SecretIdUseOption = SecretIdUseOptionUseAnySharedWithParent()) -> DecryptedCalendarItem:
+	def with_encryption_metadata_blocking(self, base: Optional[DecryptedCalendarItem], patient: Optional[Patient], user: Optional[User] = None, delegates: dict[str, AccessLevel] = {}, secret_id: SecretIdUseOption = SecretIdUseOptionUseAnySharedWithParent(), alternate_root_delegate_id: Optional[str] = None) -> DecryptedCalendarItem:
 		payload = {
 			"base": base.__serialize__() if base is not None else None,
 			"patient": serialize_patient(patient) if patient is not None else None,
 			"user": user.__serialize__() if user is not None else None,
 			"delegates": {k0: v0.__serialize__() for k0, v0 in delegates.items()},
 			"secretId": serialize_secret_id_use_option(secret_id),
+			"alternateRootDelegateId": alternate_root_delegate_id,
 		}
 		call_result = symbols.kotlin.root.com.icure.cardinal.sdk.py.api.CalendarItemApi.withEncryptionMetadataBlocking(
 			self.cardinal_sdk._native,
@@ -1712,7 +1714,7 @@ class CalendarItemApiInGroup:
 		self.encrypted = CalendarItemApiInGroupEncrypted(self.cardinal_sdk)
 		self.try_and_recover = CalendarItemApiInGroupTryAndRecover(self.cardinal_sdk)
 
-	async def with_encryption_metadata_async(self, entity_group_id: str, base: Optional[DecryptedCalendarItem], patient: Optional[GroupScoped[Patient]], user: Optional[User] = None, delegates: dict[EntityReferenceInGroup, AccessLevel] = {}, secret_id: SecretIdUseOption = SecretIdUseOptionUseAnySharedWithParent()) -> GroupScoped[DecryptedCalendarItem]:
+	async def with_encryption_metadata_async(self, entity_group_id: str, base: Optional[DecryptedCalendarItem], patient: Optional[GroupScoped[Patient]], user: Optional[User] = None, delegates: dict[EntityReferenceInGroup, AccessLevel] = {}, secret_id: SecretIdUseOption = SecretIdUseOptionUseAnySharedWithParent(), alternate_root_delegate_reference: Optional[EntityReferenceInGroup] = None) -> GroupScoped[DecryptedCalendarItem]:
 		def do_decode(raw_result):
 			return GroupScoped._deserialize(raw_result, lambda x1: DecryptedCalendarItem._deserialize(x1))
 		payload = {
@@ -1722,6 +1724,7 @@ class CalendarItemApiInGroup:
 			"user": user.__serialize__() if user is not None else None,
 			"delegates": [{ "k": k0.__serialize__(), "v": v0.__serialize__() } for k0, v0 in delegates.items()],
 			"secretId": serialize_secret_id_use_option(secret_id),
+			"alternateRootDelegateReference": alternate_root_delegate_reference.__serialize__() if alternate_root_delegate_reference is not None else None,
 		}
 		return await execute_async_method_job(
 			self.cardinal_sdk._executor,
@@ -1732,7 +1735,7 @@ class CalendarItemApiInGroup:
 			json.dumps(payload).encode('utf-8'),
 		)
 
-	def with_encryption_metadata_blocking(self, entity_group_id: str, base: Optional[DecryptedCalendarItem], patient: Optional[GroupScoped[Patient]], user: Optional[User] = None, delegates: dict[EntityReferenceInGroup, AccessLevel] = {}, secret_id: SecretIdUseOption = SecretIdUseOptionUseAnySharedWithParent()) -> GroupScoped[DecryptedCalendarItem]:
+	def with_encryption_metadata_blocking(self, entity_group_id: str, base: Optional[DecryptedCalendarItem], patient: Optional[GroupScoped[Patient]], user: Optional[User] = None, delegates: dict[EntityReferenceInGroup, AccessLevel] = {}, secret_id: SecretIdUseOption = SecretIdUseOptionUseAnySharedWithParent(), alternate_root_delegate_reference: Optional[EntityReferenceInGroup] = None) -> GroupScoped[DecryptedCalendarItem]:
 		payload = {
 			"entityGroupId": entity_group_id,
 			"base": base.__serialize__() if base is not None else None,
@@ -1740,6 +1743,7 @@ class CalendarItemApiInGroup:
 			"user": user.__serialize__() if user is not None else None,
 			"delegates": [{ "k": k0.__serialize__(), "v": v0.__serialize__() } for k0, v0 in delegates.items()],
 			"secretId": serialize_secret_id_use_option(secret_id),
+			"alternateRootDelegateReference": alternate_root_delegate_reference.__serialize__() if alternate_root_delegate_reference is not None else None,
 		}
 		call_result = symbols.kotlin.root.com.icure.cardinal.sdk.py.api.CalendarItemApi.inGroup.withEncryptionMetadataBlocking(
 			self.cardinal_sdk._native,

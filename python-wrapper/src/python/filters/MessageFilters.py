@@ -4,7 +4,7 @@ from cardinal_sdk.kotlin_types import symbols
 from cardinal_sdk.model.CallResult import create_result_from_json, interpret_kt_error
 from ctypes import cast, c_char_p
 from cardinal_sdk.filters.FilterOptions import BaseFilterOptions, FilterOptions, BaseSortableFilterOptions, SortableFilterOptions
-from cardinal_sdk.model import Message, Patient, serialize_patient
+from cardinal_sdk.model import Message, Patient, serialize_patient, EntityReferenceInGroup
 from typing import Optional
 
 
@@ -216,7 +216,7 @@ class MessageFilters:
 			return return_value
 
 	@classmethod
-	def by_transport_guid_sent_date_for_data_owner(cls, data_owner_id: str, transport_guid: str, from_: int, to: int, descending: bool = False) -> BaseSortableFilterOptions[Message]:
+	def by_transport_guid_sent_date_for_data_owner(cls, data_owner_id: str, transport_guid: str, from_: Optional[int], to: Optional[int], descending: bool = False) -> BaseSortableFilterOptions[Message]:
 		payload = {
 			"dataOwnerId": data_owner_id,
 			"transportGuid": transport_guid,
@@ -236,7 +236,7 @@ class MessageFilters:
 			return return_value
 
 	@classmethod
-	def by_transport_guid_sent_date_for_self(cls, transport_guid: str, from_: int, to: int, descending: bool = False) -> SortableFilterOptions[Message]:
+	def by_transport_guid_sent_date_for_self(cls, transport_guid: str, from_: Optional[int], to: Optional[int], descending: bool = False) -> SortableFilterOptions[Message]:
 		payload = {
 			"transportGuid": transport_guid,
 			"from": from_,
@@ -317,4 +317,60 @@ class MessageFilters:
 			raise interpret_kt_error(result_info.failure)
 		else:
 			return_value = BaseFilterOptions(result_info.success)
+			return return_value
+
+	@classmethod
+	def lifecycle_between_for_data_owner(cls, data_owner_id: str, start_timestamp: Optional[int], end_timestamp: Optional[int], descending: bool) -> BaseFilterOptions[Message]:
+		payload = {
+			"dataOwnerId": data_owner_id,
+			"startTimestamp": start_timestamp,
+			"endTimestamp": end_timestamp,
+			"descending": descending,
+		}
+		call_result = symbols.kotlin.root.com.icure.cardinal.sdk.py.filters.MessageFilters.lifecycleBetweenForDataOwner(
+			json.dumps(payload).encode('utf-8')
+		)
+		result_info = create_result_from_json(cast(call_result, c_char_p).value.decode('utf-8'))
+		symbols.DisposeString(call_result)
+		if result_info.failure is not None:
+			raise interpret_kt_error(result_info.failure)
+		else:
+			return_value = BaseFilterOptions(result_info.success)
+			return return_value
+
+	@classmethod
+	def lifecycle_between_for_data_owner_in_group(cls, data_owner: EntityReferenceInGroup, start_timestamp: Optional[int], end_timestamp: Optional[int], descending: bool) -> BaseFilterOptions[Message]:
+		payload = {
+			"dataOwner": data_owner.__serialize__(),
+			"startTimestamp": start_timestamp,
+			"endTimestamp": end_timestamp,
+			"descending": descending,
+		}
+		call_result = symbols.kotlin.root.com.icure.cardinal.sdk.py.filters.MessageFilters.lifecycleBetweenForDataOwnerInGroup(
+			json.dumps(payload).encode('utf-8')
+		)
+		result_info = create_result_from_json(cast(call_result, c_char_p).value.decode('utf-8'))
+		symbols.DisposeString(call_result)
+		if result_info.failure is not None:
+			raise interpret_kt_error(result_info.failure)
+		else:
+			return_value = BaseFilterOptions(result_info.success)
+			return return_value
+
+	@classmethod
+	def lifecycle_between_for_self(cls, start_timestamp: Optional[int], end_timestamp: Optional[int], descending: bool) -> FilterOptions[Message]:
+		payload = {
+			"startTimestamp": start_timestamp,
+			"endTimestamp": end_timestamp,
+			"descending": descending,
+		}
+		call_result = symbols.kotlin.root.com.icure.cardinal.sdk.py.filters.MessageFilters.lifecycleBetweenForSelf(
+			json.dumps(payload).encode('utf-8')
+		)
+		result_info = create_result_from_json(cast(call_result, c_char_p).value.decode('utf-8'))
+		symbols.DisposeString(call_result)
+		if result_info.failure is not None:
+			raise interpret_kt_error(result_info.failure)
+		else:
+			return_value = FilterOptions(result_info.success)
 			return return_value

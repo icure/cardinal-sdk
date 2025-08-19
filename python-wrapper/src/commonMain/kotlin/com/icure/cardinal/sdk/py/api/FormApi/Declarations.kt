@@ -60,6 +60,7 @@ private class WithEncryptionMetadataParams(
 	public val delegates: Map<String, AccessLevel> = emptyMap(),
 	public val secretId: SecretIdUseOption =
 			com.icure.cardinal.sdk.crypto.entities.SecretIdUseOption.UseAnySharedWithParent,
+	public val alternateRootDelegateId: String? = null,
 )
 
 @OptIn(InternalIcureApi::class)
@@ -68,11 +69,12 @@ public fun withEncryptionMetadataBlocking(sdk: CardinalApis, params: String): St
 	val decodedParams = fullLanguageInteropJson.decodeFromString<WithEncryptionMetadataParams>(params)
 	runBlocking {
 		sdk.form.withEncryptionMetadata(
-            decodedParams.base,
-            decodedParams.patient,
-            decodedParams.user,
-            decodedParams.delegates,
-            decodedParams.secretId,
+			decodedParams.base,
+			decodedParams.patient,
+			decodedParams.user,
+			decodedParams.delegates,
+			decodedParams.secretId,
+			decodedParams.alternateRootDelegateId,
 		)
 	}
 }.toPyString(DecryptedForm.serializer())
@@ -91,11 +93,12 @@ public fun withEncryptionMetadataAsync(
 	GlobalScope.launch {
 		kotlin.runCatching {
 			sdk.form.withEncryptionMetadata(
-                decodedParams.base,
-                decodedParams.patient,
-                decodedParams.user,
-                decodedParams.delegates,
-                decodedParams.secretId,
+				decodedParams.base,
+				decodedParams.patient,
+				decodedParams.user,
+				decodedParams.delegates,
+				decodedParams.secretId,
+				decodedParams.alternateRootDelegateId,
 			)
 		}.toPyStringAsyncCallback(DecryptedForm.serializer(), resultCallback)
 	}
@@ -714,48 +717,6 @@ public fun getFormTemplateAsync(
 				decodedParams.raw,
 			)
 		}.toPyStringAsyncCallback(FormTemplate.serializer(), resultCallback)
-	}
-}.failureToPyStringAsyncCallback(resultCallback)
-
-@Serializable
-private class GetFormTemplatesByGuidParams(
-	public val formTemplateGuid: String,
-	public val specialityCode: String,
-	public val raw: Boolean?,
-)
-
-@OptIn(InternalIcureApi::class)
-public fun getFormTemplatesByGuidBlocking(sdk: CardinalApis, params: String): String =
-		kotlin.runCatching {
-	val decodedParams = fullLanguageInteropJson.decodeFromString<GetFormTemplatesByGuidParams>(params)
-	runBlocking {
-		sdk.form.getFormTemplatesByGuid(
-			decodedParams.formTemplateGuid,
-			decodedParams.specialityCode,
-			decodedParams.raw,
-		)
-	}
-}.toPyString(ListSerializer(FormTemplate.serializer()))
-
-@OptIn(
-	ExperimentalForeignApi::class,
-	InternalIcureApi::class,
-)
-public fun getFormTemplatesByGuidAsync(
-	sdk: CardinalApis,
-	params: String,
-	resultCallback: CPointer<CFunction<(CValues<ByteVarOf<Byte>>?,
-			CValues<ByteVarOf<Byte>>?) -> Unit>>,
-): COpaquePointer? = kotlin.runCatching {
-	val decodedParams = fullLanguageInteropJson.decodeFromString<GetFormTemplatesByGuidParams>(params)
-	GlobalScope.launch {
-		kotlin.runCatching {
-			sdk.form.getFormTemplatesByGuid(
-				decodedParams.formTemplateGuid,
-				decodedParams.specialityCode,
-				decodedParams.raw,
-			)
-		}.toPyStringAsyncCallback(ListSerializer(FormTemplate.serializer()), resultCallback)
 	}
 }.failureToPyStringAsyncCallback(resultCallback)
 

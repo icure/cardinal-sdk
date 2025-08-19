@@ -517,48 +517,6 @@ public fun getFormTemplateAsync(
 }.failureToPyStringAsyncCallback(resultCallback)
 
 @Serializable
-private class GetFormTemplatesByGuidParams(
-	public val formTemplateGuid: String,
-	public val specialityCode: String,
-	public val raw: Boolean?,
-)
-
-@OptIn(InternalIcureApi::class)
-public fun getFormTemplatesByGuidBlocking(sdk: CardinalBaseApis, params: String): String =
-		kotlin.runCatching {
-	val decodedParams = fullLanguageInteropJson.decodeFromString<GetFormTemplatesByGuidParams>(params)
-	runBlocking {
-		sdk.form.getFormTemplatesByGuid(
-			decodedParams.formTemplateGuid,
-			decodedParams.specialityCode,
-			decodedParams.raw,
-		)
-	}
-}.toPyString(ListSerializer(FormTemplate.serializer()))
-
-@OptIn(
-	ExperimentalForeignApi::class,
-	InternalIcureApi::class,
-)
-public fun getFormTemplatesByGuidAsync(
-	sdk: CardinalBaseApis,
-	params: String,
-	resultCallback: CPointer<CFunction<(CValues<ByteVarOf<Byte>>?,
-			CValues<ByteVarOf<Byte>>?) -> Unit>>,
-): COpaquePointer? = kotlin.runCatching {
-	val decodedParams = fullLanguageInteropJson.decodeFromString<GetFormTemplatesByGuidParams>(params)
-	GlobalScope.launch {
-		kotlin.runCatching {
-			sdk.form.getFormTemplatesByGuid(
-				decodedParams.formTemplateGuid,
-				decodedParams.specialityCode,
-				decodedParams.raw,
-			)
-		}.toPyStringAsyncCallback(ListSerializer(FormTemplate.serializer()), resultCallback)
-	}
-}.failureToPyStringAsyncCallback(resultCallback)
-
-@Serializable
 private class ListFormTemplatesBySpecialityParams(
 	public val specialityCode: String,
 	public val raw: Boolean? = null,

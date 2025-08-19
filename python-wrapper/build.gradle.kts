@@ -44,6 +44,9 @@ kotlin {
 				implementation(libs.coroutinesCore)
 			}
 		}
+		all {
+			languageSettings.optIn("kotlin.time.ExperimentalTime")
+		}
 	}
 }
 

@@ -54,6 +54,7 @@ private class WithEncryptionMetadataParams(
 	public val maintenanceTask: DecryptedMaintenanceTask?,
 	public val user: User? = null,
 	public val delegates: Map<String, AccessLevel> = emptyMap(),
+	public val alternateRootDelegateId: String? = null,
 )
 
 @OptIn(InternalIcureApi::class)
@@ -65,6 +66,7 @@ public fun withEncryptionMetadataBlocking(sdk: CardinalApis, params: String): St
 			decodedParams.maintenanceTask,
 			decodedParams.user,
 			decodedParams.delegates,
+			decodedParams.alternateRootDelegateId,
 		)
 	}
 }.toPyString(DecryptedMaintenanceTask.serializer())
@@ -86,6 +88,7 @@ public fun withEncryptionMetadataAsync(
 				decodedParams.maintenanceTask,
 				decodedParams.user,
 				decodedParams.delegates,
+				decodedParams.alternateRootDelegateId,
 			)
 		}.toPyStringAsyncCallback(DecryptedMaintenanceTask.serializer(), resultCallback)
 	}

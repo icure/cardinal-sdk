@@ -229,3 +229,102 @@ class InsuranceApi:
 		else:
 			return_value = Insurance._deserialize(result_info.success)
 			return return_value
+
+	async def create_insurances_in_group_async(self, group_id: str, insurance_batch: list[Insurance]) -> list[Insurance]:
+		def do_decode(raw_result):
+			return [Insurance._deserialize(x1) for x1 in raw_result]
+		payload = {
+			"groupId": group_id,
+			"insuranceBatch": [x0.__serialize__() for x0 in insurance_batch],
+		}
+		return await execute_async_method_job(
+			self.cardinal_sdk._executor,
+			True,
+			do_decode,
+			symbols.kotlin.root.com.icure.cardinal.sdk.py.api.InsuranceApi.createInsurancesInGroupAsync,
+			self.cardinal_sdk._native,
+			json.dumps(payload).encode('utf-8'),
+		)
+
+	def create_insurances_in_group_blocking(self, group_id: str, insurance_batch: list[Insurance]) -> list[Insurance]:
+		payload = {
+			"groupId": group_id,
+			"insuranceBatch": [x0.__serialize__() for x0 in insurance_batch],
+		}
+		call_result = symbols.kotlin.root.com.icure.cardinal.sdk.py.api.InsuranceApi.createInsurancesInGroupBlocking(
+			self.cardinal_sdk._native,
+			json.dumps(payload).encode('utf-8'),
+		)
+		result_info = create_result_from_json(cast(call_result, c_char_p).value.decode('utf-8'))
+		symbols.DisposeString(call_result)
+		if result_info.failure is not None:
+			raise interpret_kt_error(result_info.failure)
+		else:
+			return_value = [Insurance._deserialize(x1) for x1 in result_info.success]
+			return return_value
+
+	async def get_insurances_in_group_async(self, group_id: str, insurance_ids: str) -> list[Insurance]:
+		def do_decode(raw_result):
+			return [Insurance._deserialize(x1) for x1 in raw_result]
+		payload = {
+			"groupId": group_id,
+			"insuranceIds": insurance_ids,
+		}
+		return await execute_async_method_job(
+			self.cardinal_sdk._executor,
+			True,
+			do_decode,
+			symbols.kotlin.root.com.icure.cardinal.sdk.py.api.InsuranceApi.getInsurancesInGroupAsync,
+			self.cardinal_sdk._native,
+			json.dumps(payload).encode('utf-8'),
+		)
+
+	def get_insurances_in_group_blocking(self, group_id: str, insurance_ids: str) -> list[Insurance]:
+		payload = {
+			"groupId": group_id,
+			"insuranceIds": insurance_ids,
+		}
+		call_result = symbols.kotlin.root.com.icure.cardinal.sdk.py.api.InsuranceApi.getInsurancesInGroupBlocking(
+			self.cardinal_sdk._native,
+			json.dumps(payload).encode('utf-8'),
+		)
+		result_info = create_result_from_json(cast(call_result, c_char_p).value.decode('utf-8'))
+		symbols.DisposeString(call_result)
+		if result_info.failure is not None:
+			raise interpret_kt_error(result_info.failure)
+		else:
+			return_value = [Insurance._deserialize(x1) for x1 in result_info.success]
+			return return_value
+
+	async def modify_insurances_in_group_async(self, group_id: str, insurance_batch: list[Insurance]) -> list[Insurance]:
+		def do_decode(raw_result):
+			return [Insurance._deserialize(x1) for x1 in raw_result]
+		payload = {
+			"groupId": group_id,
+			"insuranceBatch": [x0.__serialize__() for x0 in insurance_batch],
+		}
+		return await execute_async_method_job(
+			self.cardinal_sdk._executor,
+			True,
+			do_decode,
+			symbols.kotlin.root.com.icure.cardinal.sdk.py.api.InsuranceApi.modifyInsurancesInGroupAsync,
+			self.cardinal_sdk._native,
+			json.dumps(payload).encode('utf-8'),
+		)
+
+	def modify_insurances_in_group_blocking(self, group_id: str, insurance_batch: list[Insurance]) -> list[Insurance]:
+		payload = {
+			"groupId": group_id,
+			"insuranceBatch": [x0.__serialize__() for x0 in insurance_batch],
+		}
+		call_result = symbols.kotlin.root.com.icure.cardinal.sdk.py.api.InsuranceApi.modifyInsurancesInGroupBlocking(
+			self.cardinal_sdk._native,
+			json.dumps(payload).encode('utf-8'),
+		)
+		result_info = create_result_from_json(cast(call_result, c_char_p).value.decode('utf-8'))
+		symbols.DisposeString(call_result)
+		if result_info.failure is not None:
+			raise interpret_kt_error(result_info.failure)
+		else:
+			return_value = [Insurance._deserialize(x1) for x1 in result_info.success]
+			return return_value

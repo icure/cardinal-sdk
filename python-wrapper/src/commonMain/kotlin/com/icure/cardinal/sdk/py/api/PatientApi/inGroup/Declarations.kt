@@ -240,6 +240,7 @@ private class WithEncryptionMetadataParams(
 	@Serializable(MapAsArraySerializer::class)
 	@OptIn(InternalIcureApi::class)
 	public val delegates: Map<EntityReferenceInGroup, AccessLevel> = emptyMap(),
+	public val alternateRootDelegateReference: EntityReferenceInGroup? = null,
 )
 
 @OptIn(InternalIcureApi::class)
@@ -252,6 +253,7 @@ public fun withEncryptionMetadataBlocking(sdk: CardinalApis, params: String): St
 			decodedParams.base,
 			decodedParams.user,
 			decodedParams.delegates,
+			decodedParams.alternateRootDelegateReference,
 		)
 	}
 }.toPyString(GroupScoped.serializer(DecryptedPatient.serializer()))
@@ -274,6 +276,7 @@ public fun withEncryptionMetadataAsync(
 				decodedParams.base,
 				decodedParams.user,
 				decodedParams.delegates,
+				decodedParams.alternateRootDelegateReference,
 			)
 		}.toPyStringAsyncCallback(GroupScoped.serializer(DecryptedPatient.serializer()), resultCallback)
 	}

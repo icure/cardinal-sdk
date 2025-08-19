@@ -53,6 +53,7 @@ private class WithEncryptionMetadataParams(
 	public val delegates: Map<EntityReferenceInGroup, AccessLevel> = emptyMap(),
 	public val secretId: SecretIdUseOption =
 			com.icure.cardinal.sdk.crypto.entities.SecretIdUseOption.UseAnySharedWithParent,
+	public val alternateRootDelegateReference: EntityReferenceInGroup? = null,
 )
 
 @OptIn(InternalIcureApi::class)
@@ -67,6 +68,7 @@ public fun withEncryptionMetadataBlocking(sdk: CardinalApis, params: String): St
 			decodedParams.user,
 			decodedParams.delegates,
 			decodedParams.secretId,
+			decodedParams.alternateRootDelegateReference,
 		)
 	}
 }.toPyString(GroupScoped.serializer(DecryptedHealthElement.serializer()))
@@ -91,6 +93,7 @@ public fun withEncryptionMetadataAsync(
 				decodedParams.user,
 				decodedParams.delegates,
 				decodedParams.secretId,
+				decodedParams.alternateRootDelegateReference,
 			)
 		}.toPyStringAsyncCallback(GroupScoped.serializer(DecryptedHealthElement.serializer()),
 				resultCallback)

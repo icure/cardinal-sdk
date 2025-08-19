@@ -6,6 +6,7 @@ import kotlinx.serialization.Serializable
 /**
  * Data class representing the details required to inject exchange data.
  */
+@Serializable
 class ExchangeDataInjectionDetails(
 	val exchangeDataId: String,
 	@Serializable(with = ByteArraySerializer::class)
