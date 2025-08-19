@@ -60,6 +60,7 @@ private class WithEncryptionMetadataParams(
 	public val delegates: Map<String, AccessLevel> = emptyMap(),
 	public val secretId: SecretIdUseOption =
 			com.icure.cardinal.sdk.crypto.entities.SecretIdUseOption.UseAnySharedWithParent,
+	public val alternateRootDelegateId: String? = null,
 )
 
 @OptIn(InternalIcureApi::class)
@@ -68,11 +69,12 @@ public fun withEncryptionMetadataBlocking(sdk: CardinalApis, params: String): St
 	val decodedParams = fullLanguageInteropJson.decodeFromString<WithEncryptionMetadataParams>(params)
 	runBlocking {
 		sdk.healthElement.withEncryptionMetadata(
-            decodedParams.base,
-            decodedParams.patient,
-            decodedParams.user,
-            decodedParams.delegates,
-            decodedParams.secretId,
+			decodedParams.base,
+			decodedParams.patient,
+			decodedParams.user,
+			decodedParams.delegates,
+			decodedParams.secretId,
+			decodedParams.alternateRootDelegateId,
 		)
 	}
 }.toPyString(DecryptedHealthElement.serializer())
@@ -91,11 +93,12 @@ public fun withEncryptionMetadataAsync(
 	GlobalScope.launch {
 		kotlin.runCatching {
 			sdk.healthElement.withEncryptionMetadata(
-                decodedParams.base,
-                decodedParams.patient,
-                decodedParams.user,
-                decodedParams.delegates,
-                decodedParams.secretId,
+				decodedParams.base,
+				decodedParams.patient,
+				decodedParams.user,
+				decodedParams.delegates,
+				decodedParams.secretId,
+				decodedParams.alternateRootDelegateId,
 			)
 		}.toPyStringAsyncCallback(DecryptedHealthElement.serializer(), resultCallback)
 	}

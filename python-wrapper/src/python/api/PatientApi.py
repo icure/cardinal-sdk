@@ -175,13 +175,14 @@ class PatientApi:
 			return_value = {x1 for x1 in result_info.success}
 			return return_value
 
-	async def with_encryption_metadata_async(self, base: Optional[DecryptedPatient], user: Optional[User] = None, delegates: dict[str, AccessLevel] = {}) -> DecryptedPatient:
+	async def with_encryption_metadata_async(self, base: Optional[DecryptedPatient], user: Optional[User] = None, delegates: dict[str, AccessLevel] = {}, alternate_root_delegate_id: Optional[str] = None) -> DecryptedPatient:
 		def do_decode(raw_result):
 			return DecryptedPatient._deserialize(raw_result)
 		payload = {
 			"base": base.__serialize__() if base is not None else None,
 			"user": user.__serialize__() if user is not None else None,
 			"delegates": {k0: v0.__serialize__() for k0, v0 in delegates.items()},
+			"alternateRootDelegateId": alternate_root_delegate_id,
 		}
 		return await execute_async_method_job(
 			self.cardinal_sdk._executor,
@@ -192,11 +193,12 @@ class PatientApi:
 			json.dumps(payload).encode('utf-8'),
 		)
 
-	def with_encryption_metadata_blocking(self, base: Optional[DecryptedPatient], user: Optional[User] = None, delegates: dict[str, AccessLevel] = {}) -> DecryptedPatient:
+	def with_encryption_metadata_blocking(self, base: Optional[DecryptedPatient], user: Optional[User] = None, delegates: dict[str, AccessLevel] = {}, alternate_root_delegate_id: Optional[str] = None) -> DecryptedPatient:
 		payload = {
 			"base": base.__serialize__() if base is not None else None,
 			"user": user.__serialize__() if user is not None else None,
 			"delegates": {k0: v0.__serialize__() for k0, v0 in delegates.items()},
+			"alternateRootDelegateId": alternate_root_delegate_id,
 		}
 		call_result = symbols.kotlin.root.com.icure.cardinal.sdk.py.api.PatientApi.withEncryptionMetadataBlocking(
 			self.cardinal_sdk._native,
@@ -2671,7 +2673,7 @@ class PatientApiInGroup:
 			return_value = {x1 for x1 in result_info.success}
 			return return_value
 
-	async def with_encryption_metadata_async(self, entity_group_id: str, base: Optional[DecryptedPatient], user: Optional[User] = None, delegates: dict[EntityReferenceInGroup, AccessLevel] = {}) -> GroupScoped[DecryptedPatient]:
+	async def with_encryption_metadata_async(self, entity_group_id: str, base: Optional[DecryptedPatient], user: Optional[User] = None, delegates: dict[EntityReferenceInGroup, AccessLevel] = {}, alternate_root_delegate_reference: Optional[EntityReferenceInGroup] = None) -> GroupScoped[DecryptedPatient]:
 		def do_decode(raw_result):
 			return GroupScoped._deserialize(raw_result, lambda x1: DecryptedPatient._deserialize(x1))
 		payload = {
@@ -2679,6 +2681,7 @@ class PatientApiInGroup:
 			"base": base.__serialize__() if base is not None else None,
 			"user": user.__serialize__() if user is not None else None,
 			"delegates": [{ "k": k0.__serialize__(), "v": v0.__serialize__() } for k0, v0 in delegates.items()],
+			"alternateRootDelegateReference": alternate_root_delegate_reference.__serialize__() if alternate_root_delegate_reference is not None else None,
 		}
 		return await execute_async_method_job(
 			self.cardinal_sdk._executor,
@@ -2689,12 +2692,13 @@ class PatientApiInGroup:
 			json.dumps(payload).encode('utf-8'),
 		)
 
-	def with_encryption_metadata_blocking(self, entity_group_id: str, base: Optional[DecryptedPatient], user: Optional[User] = None, delegates: dict[EntityReferenceInGroup, AccessLevel] = {}) -> GroupScoped[DecryptedPatient]:
+	def with_encryption_metadata_blocking(self, entity_group_id: str, base: Optional[DecryptedPatient], user: Optional[User] = None, delegates: dict[EntityReferenceInGroup, AccessLevel] = {}, alternate_root_delegate_reference: Optional[EntityReferenceInGroup] = None) -> GroupScoped[DecryptedPatient]:
 		payload = {
 			"entityGroupId": entity_group_id,
 			"base": base.__serialize__() if base is not None else None,
 			"user": user.__serialize__() if user is not None else None,
 			"delegates": [{ "k": k0.__serialize__(), "v": v0.__serialize__() } for k0, v0 in delegates.items()],
+			"alternateRootDelegateReference": alternate_root_delegate_reference.__serialize__() if alternate_root_delegate_reference is not None else None,
 		}
 		call_result = symbols.kotlin.root.com.icure.cardinal.sdk.py.api.PatientApi.inGroup.withEncryptionMetadataBlocking(
 			self.cardinal_sdk._native,

@@ -1123,6 +1123,13 @@ class ContactBasicApi(Structure):
 	]
 
 
+class CryptoApi_inGroup(Structure):
+	_fields_ = [
+		("keylessCreateExchangeDataToAsync", CFUNCTYPE(None, AnyKtRef, c_char_p, DATA_RESULT_CALLBACK_FUNC)),
+		("keylessCreateExchangeDataToBlocking", CFUNCTYPE(c_void_p, AnyKtRef, c_char_p)),
+	]
+
+
 class CryptoApi_shamirKeysManager(Structure):
 	_fields_ = [
 		("getExistingSplitsInfo", CFUNCTYPE(c_void_p, AnyKtRef, c_char_p)),
@@ -1133,11 +1140,16 @@ class CryptoApi_shamirKeysManager(Structure):
 
 class CryptoApi(Structure):
 	_fields_ = [
+		("inGroup", CryptoApi_inGroup),
 		("shamirKeysManager", CryptoApi_shamirKeysManager),
 		("currentDataOwnerKeysAsync", CFUNCTYPE(None, AnyKtRef, c_char_p, DATA_RESULT_CALLBACK_FUNC)),
 		("currentDataOwnerKeysBlocking", CFUNCTYPE(c_void_p, AnyKtRef, c_char_p)),
 		("forceReloadAsync", CFUNCTYPE(None, AnyKtRef, DATA_RESULT_CALLBACK_FUNC)),
 		("forceReloadBlocking", CFUNCTYPE(c_void_p, AnyKtRef)),
+		("injectExchangeDataAsync", CFUNCTYPE(None, AnyKtRef, c_char_p, DATA_RESULT_CALLBACK_FUNC)),
+		("injectExchangeDataBlocking", CFUNCTYPE(c_void_p, AnyKtRef, c_char_p)),
+		("keylessCreateExchangeDataToAsync", CFUNCTYPE(None, AnyKtRef, c_char_p, DATA_RESULT_CALLBACK_FUNC)),
+		("keylessCreateExchangeDataToBlocking", CFUNCTYPE(c_void_p, AnyKtRef, c_char_p)),
 	]
 
 
@@ -1308,8 +1320,8 @@ class DocumentApi(Structure):
 		("createDocumentBlocking", CFUNCTYPE(c_void_p, AnyKtRef, c_char_p)),
 		("decryptAsync", CFUNCTYPE(None, AnyKtRef, c_char_p, DATA_RESULT_CALLBACK_FUNC)),
 		("decryptBlocking", CFUNCTYPE(c_void_p, AnyKtRef, c_char_p)),
-		("decryptPatientIdOfAsync", CFUNCTYPE(None, AnyKtRef, c_char_p, DATA_RESULT_CALLBACK_FUNC)),
-		("decryptPatientIdOfBlocking", CFUNCTYPE(c_void_p, AnyKtRef, c_char_p)),
+		("decryptOwningEntityIdsOfAsync", CFUNCTYPE(None, AnyKtRef, c_char_p, DATA_RESULT_CALLBACK_FUNC)),
+		("decryptOwningEntityIdsOfBlocking", CFUNCTYPE(c_void_p, AnyKtRef, c_char_p)),
 		("deleteDocumentAsync", CFUNCTYPE(None, AnyKtRef, c_char_p, DATA_RESULT_CALLBACK_FUNC)),
 		("deleteDocumentBlocking", CFUNCTYPE(c_void_p, AnyKtRef, c_char_p)),
 		("deleteDocumentByIdAsync", CFUNCTYPE(None, AnyKtRef, c_char_p, DATA_RESULT_CALLBACK_FUNC)),
@@ -1396,8 +1408,12 @@ class DocumentApi(Structure):
 		("undeleteDocumentBlocking", CFUNCTYPE(c_void_p, AnyKtRef, c_char_p)),
 		("undeleteDocumentByIdAsync", CFUNCTYPE(None, AnyKtRef, c_char_p, DATA_RESULT_CALLBACK_FUNC)),
 		("undeleteDocumentByIdBlocking", CFUNCTYPE(c_void_p, AnyKtRef, c_char_p)),
-		("withEncryptionMetadataAsync", CFUNCTYPE(None, AnyKtRef, c_char_p, DATA_RESULT_CALLBACK_FUNC)),
-		("withEncryptionMetadataBlocking", CFUNCTYPE(c_void_p, AnyKtRef, c_char_p)),
+		("withEncryptionMetadataLinkedToMessageAsync", CFUNCTYPE(None, AnyKtRef, c_char_p, DATA_RESULT_CALLBACK_FUNC)),
+		("withEncryptionMetadataLinkedToMessageBlocking", CFUNCTYPE(c_void_p, AnyKtRef, c_char_p)),
+		("withEncryptionMetadataLinkedToPatientAsync", CFUNCTYPE(None, AnyKtRef, c_char_p, DATA_RESULT_CALLBACK_FUNC)),
+		("withEncryptionMetadataLinkedToPatientBlocking", CFUNCTYPE(c_void_p, AnyKtRef, c_char_p)),
+		("withEncryptionMetadataUnlinkedAsync", CFUNCTYPE(None, AnyKtRef, c_char_p, DATA_RESULT_CALLBACK_FUNC)),
+		("withEncryptionMetadataUnlinkedBlocking", CFUNCTYPE(c_void_p, AnyKtRef, c_char_p)),
 	]
 
 
@@ -1660,8 +1676,6 @@ class FormApi(Structure):
 		("getFormTemplateBlocking", CFUNCTYPE(c_void_p, AnyKtRef, c_char_p)),
 		("getFormTemplatesAsync", CFUNCTYPE(None, AnyKtRef, c_char_p, DATA_RESULT_CALLBACK_FUNC)),
 		("getFormTemplatesBlocking", CFUNCTYPE(c_void_p, AnyKtRef, c_char_p)),
-		("getFormTemplatesByGuidAsync", CFUNCTYPE(None, AnyKtRef, c_char_p, DATA_RESULT_CALLBACK_FUNC)),
-		("getFormTemplatesByGuidBlocking", CFUNCTYPE(c_void_p, AnyKtRef, c_char_p)),
 		("getFormsAsync", CFUNCTYPE(None, AnyKtRef, c_char_p, DATA_RESULT_CALLBACK_FUNC)),
 		("getFormsBlocking", CFUNCTYPE(c_void_p, AnyKtRef, c_char_p)),
 		("getFormsByLogicalUuidAsync", CFUNCTYPE(None, AnyKtRef, c_char_p, DATA_RESULT_CALLBACK_FUNC)),
@@ -1741,8 +1755,6 @@ class FormBasicApi(Structure):
 		("getFormTemplateBlocking", CFUNCTYPE(c_void_p, AnyKtRef, c_char_p)),
 		("getFormTemplatesAsync", CFUNCTYPE(None, AnyKtRef, c_char_p, DATA_RESULT_CALLBACK_FUNC)),
 		("getFormTemplatesBlocking", CFUNCTYPE(c_void_p, AnyKtRef, c_char_p)),
-		("getFormTemplatesByGuidAsync", CFUNCTYPE(None, AnyKtRef, c_char_p, DATA_RESULT_CALLBACK_FUNC)),
-		("getFormTemplatesByGuidBlocking", CFUNCTYPE(c_void_p, AnyKtRef, c_char_p)),
 		("getFormsAsync", CFUNCTYPE(None, AnyKtRef, c_char_p, DATA_RESULT_CALLBACK_FUNC)),
 		("getFormsBlocking", CFUNCTYPE(c_void_p, AnyKtRef, c_char_p)),
 		("getFormsByLogicalUuidAsync", CFUNCTYPE(None, AnyKtRef, c_char_p, DATA_RESULT_CALLBACK_FUNC)),
@@ -2191,6 +2203,8 @@ class InsuranceApi(Structure):
 	_fields_ = [
 		("createInsuranceAsync", CFUNCTYPE(None, AnyKtRef, c_char_p, DATA_RESULT_CALLBACK_FUNC)),
 		("createInsuranceBlocking", CFUNCTYPE(c_void_p, AnyKtRef, c_char_p)),
+		("createInsurancesInGroupAsync", CFUNCTYPE(None, AnyKtRef, c_char_p, DATA_RESULT_CALLBACK_FUNC)),
+		("createInsurancesInGroupBlocking", CFUNCTYPE(c_void_p, AnyKtRef, c_char_p)),
 		("deleteInsuranceAsync", CFUNCTYPE(None, AnyKtRef, c_char_p, DATA_RESULT_CALLBACK_FUNC)),
 		("deleteInsuranceBlocking", CFUNCTYPE(c_void_p, AnyKtRef, c_char_p)),
 		("getAllInsurancesAsync", CFUNCTYPE(None, AnyKtRef, c_char_p, DATA_RESULT_CALLBACK_FUNC)),
@@ -2199,12 +2213,16 @@ class InsuranceApi(Structure):
 		("getInsuranceBlocking", CFUNCTYPE(c_void_p, AnyKtRef, c_char_p)),
 		("getInsurancesAsync", CFUNCTYPE(None, AnyKtRef, c_char_p, DATA_RESULT_CALLBACK_FUNC)),
 		("getInsurancesBlocking", CFUNCTYPE(c_void_p, AnyKtRef, c_char_p)),
+		("getInsurancesInGroupAsync", CFUNCTYPE(None, AnyKtRef, c_char_p, DATA_RESULT_CALLBACK_FUNC)),
+		("getInsurancesInGroupBlocking", CFUNCTYPE(c_void_p, AnyKtRef, c_char_p)),
 		("listInsurancesByCodeAsync", CFUNCTYPE(None, AnyKtRef, c_char_p, DATA_RESULT_CALLBACK_FUNC)),
 		("listInsurancesByCodeBlocking", CFUNCTYPE(c_void_p, AnyKtRef, c_char_p)),
 		("listInsurancesByNameAsync", CFUNCTYPE(None, AnyKtRef, c_char_p, DATA_RESULT_CALLBACK_FUNC)),
 		("listInsurancesByNameBlocking", CFUNCTYPE(c_void_p, AnyKtRef, c_char_p)),
 		("modifyInsuranceAsync", CFUNCTYPE(None, AnyKtRef, c_char_p, DATA_RESULT_CALLBACK_FUNC)),
 		("modifyInsuranceBlocking", CFUNCTYPE(c_void_p, AnyKtRef, c_char_p)),
+		("modifyInsurancesInGroupAsync", CFUNCTYPE(None, AnyKtRef, c_char_p, DATA_RESULT_CALLBACK_FUNC)),
+		("modifyInsurancesInGroupBlocking", CFUNCTYPE(c_void_p, AnyKtRef, c_char_p)),
 	]
 
 
@@ -4098,10 +4116,14 @@ class DeviceFilters(Structure):
 
 class DocumentFilters(Structure):
 	_fields_ = [
-		("byPatientSecretIdsAndTypeForDataOwner", CFUNCTYPE(c_void_p, c_char_p)),
-		("byPatientSecretIdsAndTypeForSelf", CFUNCTYPE(c_void_p, c_char_p)),
-		("byPatientSecretIdsCreatedForDataOwner", CFUNCTYPE(c_void_p, c_char_p)),
-		("byPatientSecretIdsCreatedForSelf", CFUNCTYPE(c_void_p, c_char_p)),
+		("byMessagesAndTypeForDataOwner", CFUNCTYPE(c_void_p, c_char_p)),
+		("byMessagesAndTypeForSelf", CFUNCTYPE(c_void_p, c_char_p)),
+		("byMessagesCreatedForDataOwner", CFUNCTYPE(c_void_p, c_char_p)),
+		("byMessagesCreatedForSelf", CFUNCTYPE(c_void_p, c_char_p)),
+		("byOwningEntitySecretIdsAndTypeForDataOwner", CFUNCTYPE(c_void_p, c_char_p)),
+		("byOwningEntitySecretIdsAndTypeForSelf", CFUNCTYPE(c_void_p, c_char_p)),
+		("byOwningEntitySecretIdsCreatedForDataOwner", CFUNCTYPE(c_void_p, c_char_p)),
+		("byOwningEntitySecretIdsCreatedForSelf", CFUNCTYPE(c_void_p, c_char_p)),
 		("byPatientsAndTypeForDataOwner", CFUNCTYPE(c_void_p, c_char_p)),
 		("byPatientsAndTypeForSelf", CFUNCTYPE(c_void_p, c_char_p)),
 		("byPatientsCreatedForDataOwner", CFUNCTYPE(c_void_p, c_char_p)),
@@ -4205,6 +4227,9 @@ class MessageFilters(Structure):
 		("fromAddressForSelf", CFUNCTYPE(c_void_p, c_char_p)),
 		("latestByTransportGuidForDataOwner", CFUNCTYPE(c_void_p, c_char_p)),
 		("latestByTransportGuidForSelf", CFUNCTYPE(c_void_p, c_char_p)),
+		("lifecycleBetweenForDataOwner", CFUNCTYPE(c_void_p, c_char_p)),
+		("lifecycleBetweenForDataOwnerInGroup", CFUNCTYPE(c_void_p, c_char_p)),
+		("lifecycleBetweenForSelf", CFUNCTYPE(c_void_p, c_char_p)),
 		("toAddressForDataOwner", CFUNCTYPE(c_void_p, c_char_p)),
 		("toAddressForSelf", CFUNCTYPE(c_void_p, c_char_p)),
 	]

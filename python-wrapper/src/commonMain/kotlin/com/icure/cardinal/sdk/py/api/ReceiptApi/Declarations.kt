@@ -50,6 +50,7 @@ private class WithEncryptionMetadataParams(
 	public val delegates: Map<String, AccessLevel> = emptyMap(),
 	public val secretId: SecretIdUseOption =
 			com.icure.cardinal.sdk.crypto.entities.SecretIdUseOption.UseAnySharedWithParent,
+	public val alternateRootDelegateId: String? = null,
 )
 
 @OptIn(InternalIcureApi::class)
@@ -63,6 +64,7 @@ public fun withEncryptionMetadataBlocking(sdk: CardinalApis, params: String): St
 			decodedParams.user,
 			decodedParams.delegates,
 			decodedParams.secretId,
+			decodedParams.alternateRootDelegateId,
 		)
 	}
 }.toPyString(DecryptedReceipt.serializer())
@@ -86,6 +88,7 @@ public fun withEncryptionMetadataAsync(
 				decodedParams.user,
 				decodedParams.delegates,
 				decodedParams.secretId,
+				decodedParams.alternateRootDelegateId,
 			)
 		}.toPyStringAsyncCallback(DecryptedReceipt.serializer(), resultCallback)
 	}

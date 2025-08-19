@@ -19,7 +19,7 @@ class TopicApi:
 		self.encrypted = TopicApiEncrypted(self.cardinal_sdk)
 		self.try_and_recover = TopicApiTryAndRecover(self.cardinal_sdk)
 
-	async def with_encryption_metadata_async(self, base: Optional[DecryptedTopic], patient: Optional[Patient], user: Optional[User] = None, delegates: dict[str, AccessLevel] = {}, secret_id: SecretIdUseOption = SecretIdUseOptionUseAnySharedWithParent()) -> DecryptedTopic:
+	async def with_encryption_metadata_async(self, base: Optional[DecryptedTopic], patient: Optional[Patient], user: Optional[User] = None, delegates: dict[str, AccessLevel] = {}, secret_id: SecretIdUseOption = SecretIdUseOptionUseAnySharedWithParent(), alternate_root_delegate_id: Optional[str] = None) -> DecryptedTopic:
 		def do_decode(raw_result):
 			return DecryptedTopic._deserialize(raw_result)
 		payload = {
@@ -28,6 +28,7 @@ class TopicApi:
 			"user": user.__serialize__() if user is not None else None,
 			"delegates": {k0: v0.__serialize__() for k0, v0 in delegates.items()},
 			"secretId": serialize_secret_id_use_option(secret_id),
+			"alternateRootDelegateId": alternate_root_delegate_id,
 		}
 		return await execute_async_method_job(
 			self.cardinal_sdk._executor,
@@ -38,13 +39,14 @@ class TopicApi:
 			json.dumps(payload).encode('utf-8'),
 		)
 
-	def with_encryption_metadata_blocking(self, base: Optional[DecryptedTopic], patient: Optional[Patient], user: Optional[User] = None, delegates: dict[str, AccessLevel] = {}, secret_id: SecretIdUseOption = SecretIdUseOptionUseAnySharedWithParent()) -> DecryptedTopic:
+	def with_encryption_metadata_blocking(self, base: Optional[DecryptedTopic], patient: Optional[Patient], user: Optional[User] = None, delegates: dict[str, AccessLevel] = {}, secret_id: SecretIdUseOption = SecretIdUseOptionUseAnySharedWithParent(), alternate_root_delegate_id: Optional[str] = None) -> DecryptedTopic:
 		payload = {
 			"base": base.__serialize__() if base is not None else None,
 			"patient": serialize_patient(patient) if patient is not None else None,
 			"user": user.__serialize__() if user is not None else None,
 			"delegates": {k0: v0.__serialize__() for k0, v0 in delegates.items()},
 			"secretId": serialize_secret_id_use_option(secret_id),
+			"alternateRootDelegateId": alternate_root_delegate_id,
 		}
 		call_result = symbols.kotlin.root.com.icure.cardinal.sdk.py.api.TopicApi.withEncryptionMetadataBlocking(
 			self.cardinal_sdk._native,

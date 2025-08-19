@@ -6,12 +6,14 @@ import com.icure.cardinal.sdk.filters.BaseSortableFilterOptions
 import com.icure.cardinal.sdk.filters.FilterOptions
 import com.icure.cardinal.sdk.filters.MessageFilters
 import com.icure.cardinal.sdk.filters.SortableFilterOptions
+import com.icure.cardinal.sdk.model.EntityReferenceInGroup
 import com.icure.cardinal.sdk.model.Message
 import com.icure.cardinal.sdk.model.Patient
 import com.icure.cardinal.sdk.py.utils.toPyString
 import com.icure.cardinal.sdk.utils.Serialization.fullLanguageInteropJson
 import com.icure.utils.InternalIcureApi
 import kotlin.Boolean
+import kotlin.Long
 import kotlin.OptIn
 import kotlin.String
 import kotlin.collections.List
@@ -210,8 +212,8 @@ public fun toAddressForSelf(params: String): String = kotlin.runCatching {
 private class ByTransportGuidSentDateForDataOwnerParams(
 	public val dataOwnerId: String,
 	public val transportGuid: String,
-	public val from: Instant,
-	public val to: Instant,
+	public val from: Instant?,
+	public val to: Instant?,
 	public val descending: Boolean = false,
 )
 
@@ -231,8 +233,8 @@ public fun byTransportGuidSentDateForDataOwner(params: String): String = kotlin.
 @Serializable
 private class ByTransportGuidSentDateForSelfParams(
 	public val transportGuid: String,
-	public val from: Instant,
-	public val to: Instant,
+	public val from: Instant?,
+	public val to: Instant?,
 	public val descending: Boolean = false,
 )
 
@@ -303,3 +305,60 @@ public fun byParentIds(params: String): String = kotlin.runCatching {
 		decodedParams.parentIds,
 	)
 }.toPyString(BaseFilterOptions.serializer(PolymorphicSerializer(Message::class)))
+
+@Serializable
+private class LifecycleBetweenForDataOwnerParams(
+	public val dataOwnerId: String,
+	public val startTimestamp: Long?,
+	public val endTimestamp: Long?,
+	public val descending: Boolean,
+)
+
+@OptIn(InternalIcureApi::class)
+public fun lifecycleBetweenForDataOwner(params: String): String = kotlin.runCatching {
+	val decodedParams =
+			fullLanguageInteropJson.decodeFromString<LifecycleBetweenForDataOwnerParams>(params)
+	MessageFilters.lifecycleBetweenForDataOwner(
+		decodedParams.dataOwnerId,
+		decodedParams.startTimestamp,
+		decodedParams.endTimestamp,
+		decodedParams.descending,
+	)
+}.toPyString(BaseFilterOptions.serializer(PolymorphicSerializer(Message::class)))
+
+@Serializable
+private class LifecycleBetweenForDataOwnerInGroupParams(
+	public val dataOwner: EntityReferenceInGroup,
+	public val startTimestamp: Long?,
+	public val endTimestamp: Long?,
+	public val descending: Boolean,
+)
+
+@OptIn(InternalIcureApi::class)
+public fun lifecycleBetweenForDataOwnerInGroup(params: String): String = kotlin.runCatching {
+	val decodedParams =
+			fullLanguageInteropJson.decodeFromString<LifecycleBetweenForDataOwnerInGroupParams>(params)
+	MessageFilters.lifecycleBetweenForDataOwnerInGroup(
+		decodedParams.dataOwner,
+		decodedParams.startTimestamp,
+		decodedParams.endTimestamp,
+		decodedParams.descending,
+	)
+}.toPyString(BaseFilterOptions.serializer(PolymorphicSerializer(Message::class)))
+
+@Serializable
+private class LifecycleBetweenForSelfParams(
+	public val startTimestamp: Long?,
+	public val endTimestamp: Long?,
+	public val descending: Boolean,
+)
+
+@OptIn(InternalIcureApi::class)
+public fun lifecycleBetweenForSelf(params: String): String = kotlin.runCatching {
+	val decodedParams = fullLanguageInteropJson.decodeFromString<LifecycleBetweenForSelfParams>(params)
+	MessageFilters.lifecycleBetweenForSelf(
+		decodedParams.startTimestamp,
+		decodedParams.endTimestamp,
+		decodedParams.descending,
+	)
+}.toPyString(FilterOptions.serializer(PolymorphicSerializer(Message::class)))

@@ -62,6 +62,7 @@ private class WithEncryptionMetadataParams(
 	public val delegates: Map<String, AccessLevel> = emptyMap(),
 	public val secretId: SecretIdUseOption =
 			com.icure.cardinal.sdk.crypto.entities.SecretIdUseOption.UseAnySharedWithParent,
+	public val alternateRootDelegateId: String? = null,
 )
 
 @OptIn(InternalIcureApi::class)
@@ -70,11 +71,12 @@ public fun withEncryptionMetadataBlocking(sdk: CardinalApis, params: String): St
 	val decodedParams = fullLanguageInteropJson.decodeFromString<WithEncryptionMetadataParams>(params)
 	runBlocking {
 		sdk.calendarItem.withEncryptionMetadata(
-            decodedParams.base,
-            decodedParams.patient,
-            decodedParams.user,
-            decodedParams.delegates,
-            decodedParams.secretId,
+			decodedParams.base,
+			decodedParams.patient,
+			decodedParams.user,
+			decodedParams.delegates,
+			decodedParams.secretId,
+			decodedParams.alternateRootDelegateId,
 		)
 	}
 }.toPyString(DecryptedCalendarItem.serializer())
@@ -93,11 +95,12 @@ public fun withEncryptionMetadataAsync(
 	GlobalScope.launch {
 		kotlin.runCatching {
 			sdk.calendarItem.withEncryptionMetadata(
-                decodedParams.base,
-                decodedParams.patient,
-                decodedParams.user,
-                decodedParams.delegates,
-                decodedParams.secretId,
+				decodedParams.base,
+				decodedParams.patient,
+				decodedParams.user,
+				decodedParams.delegates,
+				decodedParams.secretId,
+				decodedParams.alternateRootDelegateId,
 			)
 		}.toPyStringAsyncCallback(DecryptedCalendarItem.serializer(), resultCallback)
 	}

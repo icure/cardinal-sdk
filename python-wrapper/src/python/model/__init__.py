@@ -2078,14 +2078,11 @@ class DecryptedCalendarItem:
 	address_text: Optional[str] = None
 	start_time: Optional[int] = None
 	end_time: Optional[int] = None
-	confirmation_time: Optional[int] = None
-	cancellation_timestamp: Optional[int] = None
-	confirmation_id: Optional[str] = None
-	duration: Optional[int] = None
-	all_day: Optional[bool] = None
 	details: Optional[str] = None
 	was_migrated: Optional[bool] = None
 	agenda_id: Optional[str] = None
+	resource_group: Optional['CodeStub'] = None
+	availabilities_assignment_strategy: Optional['CalendarItemAvailabilitiesAssignmentStrategy'] = None
 	hcp_id: Optional[str] = None
 	recurrence_id: Optional[str] = None
 	meeting_tags: list['DecryptedCalendarItemTag'] = field(default_factory=list)
@@ -2122,14 +2119,11 @@ class DecryptedCalendarItem:
 			"addressText": self.address_text,
 			"startTime": self.start_time,
 			"endTime": self.end_time,
-			"confirmationTime": self.confirmation_time,
-			"cancellationTimestamp": self.cancellation_timestamp,
-			"confirmationId": self.confirmation_id,
-			"duration": self.duration,
-			"allDay": self.all_day,
 			"details": self.details,
 			"wasMigrated": self.was_migrated,
 			"agendaId": self.agenda_id,
+			"resourceGroup": self.resource_group.__serialize__() if self.resource_group is not None else None,
+			"availabilitiesAssignmentStrategy": self.availabilities_assignment_strategy.__serialize__() if self.availabilities_assignment_strategy is not None else None,
 			"hcpId": self.hcp_id,
 			"recurrenceId": self.recurrence_id,
 			"meetingTags": [x0.__serialize__() for x0 in self.meeting_tags],
@@ -2173,14 +2167,11 @@ class DecryptedCalendarItem:
 			address_text=deserialized_dict.get("addressText"),
 			start_time=deserialized_dict.get("startTime"),
 			end_time=deserialized_dict.get("endTime"),
-			confirmation_time=deserialized_dict.get("confirmationTime"),
-			cancellation_timestamp=deserialized_dict.get("cancellationTimestamp"),
-			confirmation_id=deserialized_dict.get("confirmationId"),
-			duration=deserialized_dict.get("duration"),
-			all_day=deserialized_dict.get("allDay"),
 			details=deserialized_dict.get("details"),
 			was_migrated=deserialized_dict.get("wasMigrated"),
 			agenda_id=deserialized_dict.get("agendaId"),
+			resource_group=CodeStub._deserialize(deserialized_dict.get("resourceGroup")) if deserialized_dict.get("resourceGroup") is not None else None,
+			availabilities_assignment_strategy=CalendarItemAvailabilitiesAssignmentStrategy._deserialize(deserialized_dict.get("availabilitiesAssignmentStrategy")) if deserialized_dict.get("availabilitiesAssignmentStrategy") is not None else None,
 			hcp_id=deserialized_dict.get("hcpId"),
 			recurrence_id=deserialized_dict.get("recurrenceId"),
 			meeting_tags=[DecryptedCalendarItemTag._deserialize(x0) for x0 in deserialized_dict["meetingTags"]],
@@ -2218,14 +2209,11 @@ class EncryptedCalendarItem:
 	address_text: Optional[str] = None
 	start_time: Optional[int] = None
 	end_time: Optional[int] = None
-	confirmation_time: Optional[int] = None
-	cancellation_timestamp: Optional[int] = None
-	confirmation_id: Optional[str] = None
-	duration: Optional[int] = None
-	all_day: Optional[bool] = None
 	details: Optional[str] = None
 	was_migrated: Optional[bool] = None
 	agenda_id: Optional[str] = None
+	resource_group: Optional['CodeStub'] = None
+	availabilities_assignment_strategy: Optional['CalendarItemAvailabilitiesAssignmentStrategy'] = None
 	hcp_id: Optional[str] = None
 	recurrence_id: Optional[str] = None
 	meeting_tags: list['EncryptedCalendarItemTag'] = field(default_factory=list)
@@ -2262,14 +2250,11 @@ class EncryptedCalendarItem:
 			"addressText": self.address_text,
 			"startTime": self.start_time,
 			"endTime": self.end_time,
-			"confirmationTime": self.confirmation_time,
-			"cancellationTimestamp": self.cancellation_timestamp,
-			"confirmationId": self.confirmation_id,
-			"duration": self.duration,
-			"allDay": self.all_day,
 			"details": self.details,
 			"wasMigrated": self.was_migrated,
 			"agendaId": self.agenda_id,
+			"resourceGroup": self.resource_group.__serialize__() if self.resource_group is not None else None,
+			"availabilitiesAssignmentStrategy": self.availabilities_assignment_strategy.__serialize__() if self.availabilities_assignment_strategy is not None else None,
 			"hcpId": self.hcp_id,
 			"recurrenceId": self.recurrence_id,
 			"meetingTags": [x0.__serialize__() for x0 in self.meeting_tags],
@@ -2313,14 +2298,11 @@ class EncryptedCalendarItem:
 			address_text=deserialized_dict.get("addressText"),
 			start_time=deserialized_dict.get("startTime"),
 			end_time=deserialized_dict.get("endTime"),
-			confirmation_time=deserialized_dict.get("confirmationTime"),
-			cancellation_timestamp=deserialized_dict.get("cancellationTimestamp"),
-			confirmation_id=deserialized_dict.get("confirmationId"),
-			duration=deserialized_dict.get("duration"),
-			all_day=deserialized_dict.get("allDay"),
 			details=deserialized_dict.get("details"),
 			was_migrated=deserialized_dict.get("wasMigrated"),
 			agenda_id=deserialized_dict.get("agendaId"),
+			resource_group=CodeStub._deserialize(deserialized_dict.get("resourceGroup")) if deserialized_dict.get("resourceGroup") is not None else None,
+			availabilities_assignment_strategy=CalendarItemAvailabilitiesAssignmentStrategy._deserialize(deserialized_dict.get("availabilitiesAssignmentStrategy")) if deserialized_dict.get("availabilitiesAssignmentStrategy") is not None else None,
 			hcp_id=deserialized_dict.get("hcpId"),
 			recurrence_id=deserialized_dict.get("recurrenceId"),
 			meeting_tags=[EncryptedCalendarItemTag._deserialize(x0) for x0 in deserialized_dict["meetingTags"]],
@@ -2332,6 +2314,22 @@ class EncryptedCalendarItem:
 			encrypted_self=deserialized_dict.get("encryptedSelf"),
 			security_metadata=SecurityMetadata._deserialize(deserialized_dict.get("securityMetadata")) if deserialized_dict.get("securityMetadata") is not None else None,
 		)
+
+class CalendarItemAvailabilitiesAssignmentStrategy(Enum):
+	Strict = "S"
+	Loose = "L"
+
+	def __serialize__(self) -> Any:
+		return self.value
+
+	@classmethod
+	def _deserialize(cls, data: Union[str, dict[str, JsonElement]]) -> 'CalendarItemAvailabilitiesAssignmentStrategy':
+		if data == "S":
+			return CalendarItemAvailabilitiesAssignmentStrategy.Strict
+		elif data == "L":
+			return CalendarItemAvailabilitiesAssignmentStrategy.Loose
+		else:
+			raise Exception(f"{data} is not a valid value for AvailabilitiesAssignmentStrategy enum.")
 
 type CalendarItem = Union['DecryptedCalendarItem', 'EncryptedCalendarItem']
 
@@ -4094,6 +4092,7 @@ class HealthcareParty:
 	flat_rate_tarifications: list['DecryptedFlatRateTarification'] = field(default_factory=list)
 	imported_data: dict[str, str] = field(default_factory=dict)
 	properties: list['DecryptedPropertyStub'] = field(default_factory=list)
+	public: bool = False
 	crypto_actor_properties: Optional[list['DecryptedPropertyStub']] = None
 	hc_party_keys: dict[str, list['HexString']] = field(default_factory=dict)
 	aes_exchange_keys: dict['AesExchangeKeyEntryKeyString', dict[str, dict['AesExchangeKeyEncryptionKeypairIdentifier', 'HexString']]] = field(default_factory=dict)
@@ -4151,6 +4150,7 @@ class HealthcareParty:
 			"flatRateTarifications": [x0.__serialize__() for x0 in self.flat_rate_tarifications],
 			"importedData": {k0: v0 for k0, v0 in self.imported_data.items()},
 			"properties": [x0.__serialize__() for x0 in self.properties],
+			"public": self.public,
 			"cryptoActorProperties": [x0.__serialize__() for x0 in self.crypto_actor_properties] if self.crypto_actor_properties is not None else None,
 			"hcPartyKeys": {k0: [x1 for x1 in v0] for k0, v0 in self.hc_party_keys.items()},
 			"aesExchangeKeys": {k0: {k1: {k2: v2 for k2, v2 in v1.items()} for k1, v1 in v0.items()} for k0, v0 in self.aes_exchange_keys.items()},
@@ -4215,6 +4215,7 @@ class HealthcareParty:
 			flat_rate_tarifications=[DecryptedFlatRateTarification._deserialize(x0) for x0 in deserialized_dict["flatRateTarifications"]],
 			imported_data=dict(map(lambda kv0: (kv0[0], kv0[1]), deserialized_dict["importedData"].items())),
 			properties=[DecryptedPropertyStub._deserialize(x0) for x0 in deserialized_dict["properties"]],
+			public=deserialized_dict["public"],
 			crypto_actor_properties=[DecryptedPropertyStub._deserialize(x0) for x0 in deserialized_dict.get("cryptoActorProperties")] if deserialized_dict.get("cryptoActorProperties") is not None else None,
 			hc_party_keys=dict(map(lambda kv0: (kv0[0], [x1 for x1 in kv0[1]]), deserialized_dict["hcPartyKeys"].items())),
 			aes_exchange_keys=dict(map(lambda kv0: (kv0[0], dict(map(lambda kv1: (kv1[0], dict(map(lambda kv2: (kv2[0], kv2[1]), kv1[1].items()))), kv0[1].items()))), deserialized_dict["aesExchangeKeys"].items())),
@@ -5273,6 +5274,67 @@ class ApplicationSettings:
 		)
 
 @dataclass
+class RawDecryptedExchangeData:
+	exchange_data_id: str
+	exchange_key: bytearray
+	access_control_secret: bytearray
+	shared_signature_key: bytearray
+
+	def __serialize__(self) -> Any:
+		return {
+			"exchangeDataId": self.exchange_data_id,
+			"exchangeKey": base64.b64encode(self.exchange_key).decode('utf-8'),
+			"accessControlSecret": base64.b64encode(self.access_control_secret).decode('utf-8'),
+			"sharedSignatureKey": base64.b64encode(self.shared_signature_key).decode('utf-8'),
+		}
+
+	@classmethod
+	def _deserialize(cls, data: Union[str, dict[str, JsonElement]]) -> 'RawDecryptedExchangeData':
+		deserialized_dict: dict[str, JsonElement]
+		if isinstance(data, str):
+			deserialized_dict = json.loads(data)
+		else:
+			deserialized_dict = data
+		return cls(
+			exchange_data_id=deserialized_dict["exchangeDataId"],
+			exchange_key=bytearray(base64.b64decode(deserialized_dict["exchangeKey"])),
+			access_control_secret=bytearray(base64.b64decode(deserialized_dict["accessControlSecret"])),
+			shared_signature_key=bytearray(base64.b64decode(deserialized_dict["sharedSignatureKey"])),
+		)
+
+@dataclass
+class ExchangeDataInjectionDetails:
+	exchange_data_id: str
+	access_control_secret: bytearray
+	exchange_key: bytearray
+	shared_signature_key: bytearray
+	verified: bool
+
+	def __serialize__(self) -> Any:
+		return {
+			"exchangeDataId": self.exchange_data_id,
+			"accessControlSecret": base64.b64encode(self.access_control_secret).decode('utf-8'),
+			"exchangeKey": base64.b64encode(self.exchange_key).decode('utf-8'),
+			"sharedSignatureKey": base64.b64encode(self.shared_signature_key).decode('utf-8'),
+			"verified": self.verified,
+		}
+
+	@classmethod
+	def _deserialize(cls, data: Union[str, dict[str, JsonElement]]) -> 'ExchangeDataInjectionDetails':
+		deserialized_dict: dict[str, JsonElement]
+		if isinstance(data, str):
+			deserialized_dict = json.loads(data)
+		else:
+			deserialized_dict = data
+		return cls(
+			exchange_data_id=deserialized_dict["exchangeDataId"],
+			access_control_secret=bytearray(base64.b64decode(deserialized_dict["accessControlSecret"])),
+			exchange_key=bytearray(base64.b64decode(deserialized_dict["exchangeKey"])),
+			shared_signature_key=bytearray(base64.b64decode(deserialized_dict["sharedSignatureKey"])),
+			verified=deserialized_dict["verified"],
+		)
+
+@dataclass
 class EntityReference:
 	id: str
 	rev: Optional[str] = None
@@ -6209,6 +6271,7 @@ class FormShareOptions:
 class DecryptedInvoice:
 	id: str
 	rev: Optional[str] = None
+	identifier: list['Identifier'] = field(default_factory=list)
 	created: Optional[int] = None
 	modified: Optional[int] = None
 	author: Optional[str] = None
@@ -6284,6 +6347,7 @@ class DecryptedInvoice:
 		return {
 			"id": self.id,
 			"rev": self.rev,
+			"identifier": [x0.__serialize__() for x0 in self.identifier],
 			"created": self.created,
 			"modified": self.modified,
 			"author": self.author,
@@ -6366,6 +6430,7 @@ class DecryptedInvoice:
 		return cls(
 			id=deserialized_dict["id"],
 			rev=deserialized_dict.get("rev"),
+			identifier=[Identifier._deserialize(x0) for x0 in deserialized_dict["identifier"]],
 			created=deserialized_dict.get("created"),
 			modified=deserialized_dict.get("modified"),
 			author=deserialized_dict.get("author"),
@@ -6442,6 +6507,7 @@ class DecryptedInvoice:
 class EncryptedInvoice:
 	id: str
 	rev: Optional[str] = None
+	identifier: list['Identifier'] = field(default_factory=list)
 	created: Optional[int] = None
 	modified: Optional[int] = None
 	author: Optional[str] = None
@@ -6517,6 +6583,7 @@ class EncryptedInvoice:
 		return {
 			"id": self.id,
 			"rev": self.rev,
+			"identifier": [x0.__serialize__() for x0 in self.identifier],
 			"created": self.created,
 			"modified": self.modified,
 			"author": self.author,
@@ -6599,6 +6666,7 @@ class EncryptedInvoice:
 		return cls(
 			id=deserialized_dict["id"],
 			rev=deserialized_dict.get("rev"),
+			identifier=[Identifier._deserialize(x0) for x0 in deserialized_dict["identifier"]],
 			created=deserialized_dict.get("created"),
 			modified=deserialized_dict.get("modified"),
 			author=deserialized_dict.get("author"),
@@ -6746,6 +6814,7 @@ class DecryptedInvoicingCode:
 	total_amount: Optional[float] = None
 	reimbursement: Optional[float] = None
 	patient_intervention: Optional[float] = None
+	ami_intervention: Optional[float] = None
 	doctor_supplement: Optional[float] = None
 	convention_amount: Optional[float] = None
 	vat: Optional[float] = None
@@ -6784,6 +6853,7 @@ class DecryptedInvoicingCode:
 	insurance_justification: Optional[int] = None
 	cancel_patient_intervention_reason: Optional[int] = None
 	status: Optional[int] = None
+	code_label: Optional[str] = None
 	encrypted_self: Optional['Base64String'] = None
 
 	def __serialize__(self) -> Any:
@@ -6802,6 +6872,7 @@ class DecryptedInvoicingCode:
 			"totalAmount": self.total_amount,
 			"reimbursement": self.reimbursement,
 			"patientIntervention": self.patient_intervention,
+			"amiIntervention": self.ami_intervention,
 			"doctorSupplement": self.doctor_supplement,
 			"conventionAmount": self.convention_amount,
 			"vat": self.vat,
@@ -6840,6 +6911,7 @@ class DecryptedInvoicingCode:
 			"insuranceJustification": self.insurance_justification,
 			"cancelPatientInterventionReason": self.cancel_patient_intervention_reason,
 			"status": self.status,
+			"codeLabel": self.code_label,
 			"encryptedSelf": self.encrypted_self,
 		}
 
@@ -6865,6 +6937,7 @@ class DecryptedInvoicingCode:
 			total_amount=deserialized_dict.get("totalAmount"),
 			reimbursement=deserialized_dict.get("reimbursement"),
 			patient_intervention=deserialized_dict.get("patientIntervention"),
+			ami_intervention=deserialized_dict.get("amiIntervention"),
 			doctor_supplement=deserialized_dict.get("doctorSupplement"),
 			convention_amount=deserialized_dict.get("conventionAmount"),
 			vat=deserialized_dict.get("vat"),
@@ -6903,6 +6976,7 @@ class DecryptedInvoicingCode:
 			insurance_justification=deserialized_dict.get("insuranceJustification"),
 			cancel_patient_intervention_reason=deserialized_dict.get("cancelPatientInterventionReason"),
 			status=deserialized_dict.get("status"),
+			code_label=deserialized_dict.get("codeLabel"),
 			encrypted_self=deserialized_dict.get("encryptedSelf"),
 		)
 
@@ -6922,6 +6996,7 @@ class EncryptedInvoicingCode:
 	total_amount: Optional[float] = None
 	reimbursement: Optional[float] = None
 	patient_intervention: Optional[float] = None
+	ami_intervention: Optional[float] = None
 	doctor_supplement: Optional[float] = None
 	convention_amount: Optional[float] = None
 	vat: Optional[float] = None
@@ -6960,6 +7035,7 @@ class EncryptedInvoicingCode:
 	insurance_justification: Optional[int] = None
 	cancel_patient_intervention_reason: Optional[int] = None
 	status: Optional[int] = None
+	code_label: Optional[str] = None
 	encrypted_self: Optional['Base64String'] = None
 
 	def __serialize__(self) -> Any:
@@ -6978,6 +7054,7 @@ class EncryptedInvoicingCode:
 			"totalAmount": self.total_amount,
 			"reimbursement": self.reimbursement,
 			"patientIntervention": self.patient_intervention,
+			"amiIntervention": self.ami_intervention,
 			"doctorSupplement": self.doctor_supplement,
 			"conventionAmount": self.convention_amount,
 			"vat": self.vat,
@@ -7016,6 +7093,7 @@ class EncryptedInvoicingCode:
 			"insuranceJustification": self.insurance_justification,
 			"cancelPatientInterventionReason": self.cancel_patient_intervention_reason,
 			"status": self.status,
+			"codeLabel": self.code_label,
 			"encryptedSelf": self.encrypted_self,
 		}
 
@@ -7041,6 +7119,7 @@ class EncryptedInvoicingCode:
 			total_amount=deserialized_dict.get("totalAmount"),
 			reimbursement=deserialized_dict.get("reimbursement"),
 			patient_intervention=deserialized_dict.get("patientIntervention"),
+			ami_intervention=deserialized_dict.get("amiIntervention"),
 			doctor_supplement=deserialized_dict.get("doctorSupplement"),
 			convention_amount=deserialized_dict.get("conventionAmount"),
 			vat=deserialized_dict.get("vat"),
@@ -7079,6 +7158,7 @@ class EncryptedInvoicingCode:
 			insurance_justification=deserialized_dict.get("insuranceJustification"),
 			cancel_patient_intervention_reason=deserialized_dict.get("cancelPatientInterventionReason"),
 			status=deserialized_dict.get("status"),
+			code_label=deserialized_dict.get("codeLabel"),
 			encrypted_self=deserialized_dict.get("encryptedSelf"),
 		)
 
@@ -7351,11 +7431,16 @@ class Agenda:
 	codes: set['CodeStub'] = field(default_factory=set)
 	end_of_life: Optional[int] = None
 	deletion_date: Optional[int] = None
+	day_split_hour: Optional[int] = None
+	unpublished: bool = False
 	name: Optional[str] = None
 	user_id: Optional[str] = None
+	zone_id: Optional[str] = None
+	lock_calendar_items_before_in_minutes: Optional[int] = None
 	user_rights: dict[str, 'UserAccessLevel'] = field(default_factory=dict)
+	slotting_algorithm: Optional['AgendaSlottingAlgorithm'] = None
 	properties: list['DecryptedPropertyStub'] = field(default_factory=list)
-	time_tables: list['EmbeddedTimeTable'] = field(default_factory=list)
+	schedules: list['ResourceGroupAllocationSchedule'] = field(default_factory=list)
 
 	def __serialize__(self) -> Any:
 		return {
@@ -7370,11 +7455,16 @@ class Agenda:
 			"codes": [x0.__serialize__() for x0 in self.codes],
 			"endOfLife": self.end_of_life,
 			"deletionDate": self.deletion_date,
+			"daySplitHour": self.day_split_hour,
+			"unpublished": self.unpublished,
 			"name": self.name,
 			"userId": self.user_id,
+			"zoneId": self.zone_id,
+			"lockCalendarItemsBeforeInMinutes": self.lock_calendar_items_before_in_minutes,
 			"userRights": {k0: v0.__serialize__() for k0, v0 in self.user_rights.items()},
+			"slottingAlgorithm": serialize_agenda_slotting_algorithm(self.slotting_algorithm) if self.slotting_algorithm is not None else None,
 			"properties": [x0.__serialize__() for x0 in self.properties],
-			"timeTables": [x0.__serialize__() for x0 in self.time_tables],
+			"schedules": [x0.__serialize__() for x0 in self.schedules],
 		}
 
 	@classmethod
@@ -7396,11 +7486,16 @@ class Agenda:
 			codes={CodeStub._deserialize(x0) for x0 in deserialized_dict["codes"]},
 			end_of_life=deserialized_dict.get("endOfLife"),
 			deletion_date=deserialized_dict.get("deletionDate"),
+			day_split_hour=deserialized_dict.get("daySplitHour"),
+			unpublished=deserialized_dict["unpublished"],
 			name=deserialized_dict.get("name"),
 			user_id=deserialized_dict.get("userId"),
+			zone_id=deserialized_dict.get("zoneId"),
+			lock_calendar_items_before_in_minutes=deserialized_dict.get("lockCalendarItemsBeforeInMinutes"),
 			user_rights=dict(map(lambda kv0: (kv0[0], UserAccessLevel._deserialize(kv0[1])), deserialized_dict["userRights"].items())),
+			slotting_algorithm=deserialize_agenda_slotting_algorithm(deserialized_dict.get("slottingAlgorithm")) if deserialized_dict.get("slottingAlgorithm") is not None else None,
 			properties=[DecryptedPropertyStub._deserialize(x0) for x0 in deserialized_dict["properties"]],
-			time_tables=[EmbeddedTimeTable._deserialize(x0) for x0 in deserialized_dict["timeTables"]],
+			schedules=[ResourceGroupAllocationSchedule._deserialize(x0) for x0 in deserialized_dict["schedules"]],
 		)
 
 @dataclass
@@ -7410,6 +7505,7 @@ class Group:
 	rev: Optional[str] = None
 	deletion_date: Optional[int] = None
 	tags: set['CodeStub'] = field(default_factory=set)
+	public_tags: set['CodeStub'] = field(default_factory=set)
 	name: Optional[str] = None
 	password: Optional[str] = None
 	servers: Optional[list[str]] = None
@@ -7429,6 +7525,7 @@ class Group:
 			"rev": self.rev,
 			"deletionDate": self.deletion_date,
 			"tags": [x0.__serialize__() for x0 in self.tags],
+			"publicTags": [x0.__serialize__() for x0 in self.public_tags],
 			"name": self.name,
 			"password": self.password,
 			"servers": [x0 for x0 in self.servers] if self.servers is not None else None,
@@ -7456,6 +7553,7 @@ class Group:
 			rev=deserialized_dict.get("rev"),
 			deletion_date=deserialized_dict.get("deletionDate"),
 			tags={CodeStub._deserialize(x0) for x0 in deserialized_dict["tags"]},
+			public_tags={CodeStub._deserialize(x0) for x0 in deserialized_dict["publicTags"]},
 			name=deserialized_dict.get("name"),
 			password=deserialized_dict.get("password"),
 			servers=[x0 for x0 in deserialized_dict.get("servers")] if deserialized_dict.get("servers") is not None else None,
@@ -7599,21 +7697,25 @@ class PermissionType(Enum):
 
 @dataclass
 class RegistrationInformation:
-	first_name: str
-	last_name: str
 	email_address: str
+	first_name: Optional[str] = None
+	last_name: Optional[str] = None
+	company_name: Optional[str] = None
 	user_options: Optional[str] = None
 	user_roles: set[str] = field(default_factory=set)
 	minimum_kraken_version: Optional[str] = None
+	cluster: Optional[str] = None
 
 	def __serialize__(self) -> Any:
 		return {
 			"firstName": self.first_name,
 			"lastName": self.last_name,
+			"companyName": self.company_name,
 			"emailAddress": self.email_address,
 			"userOptions": self.user_options,
 			"userRoles": [x0 for x0 in self.user_roles],
 			"minimumKrakenVersion": self.minimum_kraken_version,
+			"cluster": self.cluster,
 		}
 
 	@classmethod
@@ -7624,12 +7726,14 @@ class RegistrationInformation:
 		else:
 			deserialized_dict = data
 		return cls(
-			first_name=deserialized_dict["firstName"],
-			last_name=deserialized_dict["lastName"],
+			first_name=deserialized_dict.get("firstName"),
+			last_name=deserialized_dict.get("lastName"),
+			company_name=deserialized_dict.get("companyName"),
 			email_address=deserialized_dict["emailAddress"],
 			user_options=deserialized_dict.get("userOptions"),
 			user_roles={x0 for x0 in deserialized_dict["userRoles"]},
 			minimum_kraken_version=deserialized_dict.get("minimumKrakenVersion"),
+			cluster=deserialized_dict.get("cluster"),
 		)
 
 class Operation(Enum):
@@ -12280,44 +12384,85 @@ class UserAccessLevel(Enum):
 			raise Exception(f"{data} is not a valid value for UserAccessLevel enum.")
 
 @dataclass
-class EmbeddedTimeTable:
-	id: str
-	codes: set['CodeStub'] = field(default_factory=set)
-	medical_location_id: Optional[str] = None
-	end_of_life: Optional[int] = None
-	name: Optional[str] = None
-	start_time: Optional[int] = None
-	end_time: Optional[int] = None
-	items: list['TimeTableItem'] = field(default_factory=list)
+class AgendaSlottingAlgorithmFixedIntervals:
+	interval_minutes: int
 
 	def __serialize__(self) -> Any:
 		return {
-			"id": self.id,
-			"codes": [x0.__serialize__() for x0 in self.codes],
-			"medicalLocationId": self.medical_location_id,
-			"endOfLife": self.end_of_life,
-			"name": self.name,
-			"startTime": self.start_time,
-			"endTime": self.end_time,
-			"items": [x0.__serialize__() for x0 in self.items],
+			"intervalMinutes": self.interval_minutes,
 		}
 
 	@classmethod
-	def _deserialize(cls, data: Union[str, dict[str, JsonElement]]) -> 'EmbeddedTimeTable':
+	def _deserialize(cls, data: Union[str, dict[str, JsonElement]]) -> 'AgendaSlottingAlgorithmFixedIntervals':
 		deserialized_dict: dict[str, JsonElement]
 		if isinstance(data, str):
 			deserialized_dict = json.loads(data)
 		else:
 			deserialized_dict = data
 		return cls(
-			id=deserialized_dict["id"],
+			interval_minutes=deserialized_dict["intervalMinutes"],
+		)
+
+type AgendaSlottingAlgorithm = Union['AgendaSlottingAlgorithmFixedIntervals']
+
+def serialize_agenda_slotting_algorithm(agenda_slotting_algorithm: AgendaSlottingAlgorithm) -> Any:
+	if isinstance(agenda_slotting_algorithm, AgendaSlottingAlgorithmFixedIntervals):
+		serialized_entity = agenda_slotting_algorithm.__serialize__()
+		serialized_entity.update({"kotlinType": "com.icure.cardinal.sdk.model.embed.AgendaSlottingAlgorithm.FixedIntervals"})
+		return serialized_entity
+	else:
+		raise Exception(f"{type(agenda_slotting_algorithm)} is not a known subclass of AgendaSlottingAlgorithm")
+
+def deserialize_agenda_slotting_algorithm(data: Union[str, dict[str, JsonElement]]) -> 'AgendaSlottingAlgorithm':
+	deserialized_dict: dict[str, JsonElement]
+	if isinstance(data, str):
+		deserialized_dict = json.loads(data)
+	else:
+		deserialized_dict = data
+	qualifier = deserialized_dict.get("kotlinType")
+	if qualifier is None:
+		raise Exception("Missing qualifier: kotlinType")
+	if qualifier == "com.icure.cardinal.sdk.model.embed.AgendaSlottingAlgorithm.FixedIntervals":
+		return AgendaSlottingAlgorithmFixedIntervals._deserialize(deserialized_dict)
+	else:
+		raise Exception(f"{qualifier} is not a known subclass of AgendaSlottingAlgorithm")
+
+@dataclass
+class ResourceGroupAllocationSchedule:
+	resource_group: Optional['CodeStub'] = None
+	tags: set['CodeStub'] = field(default_factory=set)
+	codes: set['CodeStub'] = field(default_factory=set)
+	name: Optional[str] = None
+	start_date_time: Optional[int] = None
+	end_date_time: Optional[int] = None
+	items: list['EmbeddedTimeTableItem'] = field(default_factory=list)
+
+	def __serialize__(self) -> Any:
+		return {
+			"resourceGroup": self.resource_group.__serialize__() if self.resource_group is not None else None,
+			"tags": [x0.__serialize__() for x0 in self.tags],
+			"codes": [x0.__serialize__() for x0 in self.codes],
+			"name": self.name,
+			"startDateTime": self.start_date_time,
+			"endDateTime": self.end_date_time,
+			"items": [x0.__serialize__() for x0 in self.items],
+		}
+
+	@classmethod
+	def _deserialize(cls, data: Union[str, dict[str, JsonElement]]) -> 'ResourceGroupAllocationSchedule':
+		deserialized_dict: dict[str, JsonElement]
+		if isinstance(data, str):
+			deserialized_dict = json.loads(data)
+		else:
+			deserialized_dict = data
+		return cls(
+			resource_group=CodeStub._deserialize(deserialized_dict.get("resourceGroup")) if deserialized_dict.get("resourceGroup") is not None else None,
+			tags={CodeStub._deserialize(x0) for x0 in deserialized_dict["tags"]},
 			codes={CodeStub._deserialize(x0) for x0 in deserialized_dict["codes"]},
-			medical_location_id=deserialized_dict.get("medicalLocationId"),
-			end_of_life=deserialized_dict.get("endOfLife"),
 			name=deserialized_dict.get("name"),
-			start_time=deserialized_dict.get("startTime"),
-			end_time=deserialized_dict.get("endTime"),
-			items=[TimeTableItem._deserialize(x0) for x0 in deserialized_dict["items"]],
+			start_date_time=deserialized_dict.get("startDateTime"),
+			end_date_time=deserialized_dict.get("endDateTime"),
+			items=[EmbeddedTimeTableItem._deserialize(x0) for x0 in deserialized_dict["items"]],
 		)
 
 @dataclass
@@ -13129,6 +13274,7 @@ class Measure:
 	comparator: Optional[str] = None
 	sign: Optional[str] = None
 	reference_ranges: list['ReferenceRange'] = field(default_factory=list)
+	value_with_precision: Optional['ValueWithPrecision'] = None
 
 	def __serialize__(self) -> Any:
 		return {
@@ -13143,6 +13289,7 @@ class Measure:
 			"comparator": self.comparator,
 			"sign": self.sign,
 			"referenceRanges": [x0.__serialize__() for x0 in self.reference_ranges],
+			"valueWithPrecision": self.value_with_precision.__serialize__() if self.value_with_precision is not None else None,
 		}
 
 	@classmethod
@@ -13164,6 +13311,7 @@ class Measure:
 			comparator=deserialized_dict.get("comparator"),
 			sign=deserialized_dict.get("sign"),
 			reference_ranges=[ReferenceRange._deserialize(x0) for x0 in deserialized_dict["referenceRanges"]],
+			value_with_precision=ValueWithPrecision._deserialize(deserialized_dict.get("valueWithPrecision")) if deserialized_dict.get("valueWithPrecision") is not None else None,
 		)
 
 @dataclass
@@ -13549,6 +13697,50 @@ class TypedValuesType(Enum):
 			return TypedValuesType.Json
 		else:
 			raise Exception(f"{data} is not a valid value for TypedValuesType enum.")
+
+@dataclass
+class EmbeddedTimeTableItem:
+	rrule: str
+	hours: list['EmbeddedTimeTableHour']
+	calendar_item_types_ids: set[str]
+	rrule_start_date: Optional[int] = None
+	not_before_in_minutes: Optional[int] = None
+	not_after_in_minutes: Optional[int] = None
+	availabilities: int = 1
+	reserving_rights: set[str] = field(default_factory=set)
+	public: bool = False
+
+	def __serialize__(self) -> Any:
+		return {
+			"rrule": self.rrule,
+			"rruleStartDate": self.rrule_start_date,
+			"notBeforeInMinutes": self.not_before_in_minutes,
+			"notAfterInMinutes": self.not_after_in_minutes,
+			"hours": [x0.__serialize__() for x0 in self.hours],
+			"calendarItemTypesIds": [x0 for x0 in self.calendar_item_types_ids],
+			"availabilities": self.availabilities,
+			"reservingRights": [x0 for x0 in self.reserving_rights],
+			"public": self.public,
+		}
+
+	@classmethod
+	def _deserialize(cls, data: Union[str, dict[str, JsonElement]]) -> 'EmbeddedTimeTableItem':
+		deserialized_dict: dict[str, JsonElement]
+		if isinstance(data, str):
+			deserialized_dict = json.loads(data)
+		else:
+			deserialized_dict = data
+		return cls(
+			rrule=deserialized_dict["rrule"],
+			rrule_start_date=deserialized_dict.get("rruleStartDate"),
+			not_before_in_minutes=deserialized_dict.get("notBeforeInMinutes"),
+			not_after_in_minutes=deserialized_dict.get("notAfterInMinutes"),
+			hours=[EmbeddedTimeTableHour._deserialize(x0) for x0 in deserialized_dict["hours"]],
+			calendar_item_types_ids={x0 for x0 in deserialized_dict["calendarItemTypesIds"]},
+			availabilities=deserialized_dict["availabilities"],
+			reserving_rights={x0 for x0 in deserialized_dict["reservingRights"]},
+			public=deserialized_dict["public"],
+		)
 
 @dataclass
 class DatabaseSynchronization:
@@ -14476,6 +14668,29 @@ class ReferenceRange:
 		)
 
 @dataclass
+class ValueWithPrecision:
+	value: int
+	precision: int
+
+	def __serialize__(self) -> Any:
+		return {
+			"value": self.value,
+			"precision": self.precision,
+		}
+
+	@classmethod
+	def _deserialize(cls, data: Union[str, dict[str, JsonElement]]) -> 'ValueWithPrecision':
+		deserialized_dict: dict[str, JsonElement]
+		if isinstance(data, str):
+			deserialized_dict = json.loads(data)
+		else:
+			deserialized_dict = data
+		return cls(
+			value=deserialized_dict["value"],
+			precision=deserialized_dict["precision"],
+		)
+
+@dataclass
 class Substanceproduct:
 	intendedcds: list['CodeStub'] = field(default_factory=list)
 	deliveredcds: list['CodeStub'] = field(default_factory=list)
@@ -14778,6 +14993,29 @@ class Basic:
 		return cls(
 			username=deserialized_dict["username"],
 			password=deserialized_dict["password"],
+		)
+
+@dataclass
+class EmbeddedTimeTableHour:
+	start_hour: int
+	end_hour: int
+
+	def __serialize__(self) -> Any:
+		return {
+			"startHour": self.start_hour,
+			"endHour": self.end_hour,
+		}
+
+	@classmethod
+	def _deserialize(cls, data: Union[str, dict[str, JsonElement]]) -> 'EmbeddedTimeTableHour':
+		deserialized_dict: dict[str, JsonElement]
+		if isinstance(data, str):
+			deserialized_dict = json.loads(data)
+		else:
+			deserialized_dict = data
+		return cls(
+			start_hour=deserialized_dict["startHour"],
+			end_hour=deserialized_dict["endHour"],
 		)
 
 class Trigger(Enum):
