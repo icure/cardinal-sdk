@@ -31,10 +31,9 @@ data class PlanOfActionTemplate(
 	override val name: String? = null,
 	public val descr: String? = null,
 	public val note: String? = null,
-	@DefaultValue("true")
-	public val relevant: Boolean = true,
-	@DefaultValue("0")
-	public val status: Int = 0,
+	@DefaultValue("false")
+	public val relevant: Boolean = false,
+	public val status: Int,
 	@DefaultValue("emptyList()")
 	public val forms: List<FormSkeleton> = emptyList(),
 ) : ICureDocument<String>, Named {

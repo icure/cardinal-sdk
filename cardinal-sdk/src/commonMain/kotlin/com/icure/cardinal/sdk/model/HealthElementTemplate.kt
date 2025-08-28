@@ -33,10 +33,9 @@ data class HealthElementTemplate(
 	override val deletionDate: Long? = null,
 	public val descr: String? = null,
 	public val note: String? = null,
-	@DefaultValue("0")
-	public val status: Int = 0,
-	@DefaultValue("true")
-	public val relevant: Boolean = true,
+	public val status: Int,
+	@DefaultValue("false")
+	public val relevant: Boolean = false,
 	@DefaultValue("emptyList()")
 	public val plansOfAction: List<PlanOfActionTemplate> = emptyList(),
 ) : StoredDocument, ICureDocument<String> {

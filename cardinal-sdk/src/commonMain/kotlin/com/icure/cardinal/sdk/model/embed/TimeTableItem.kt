@@ -34,8 +34,8 @@ data class TimeTableItem(
 	public val placeId: String? = null,
 	@DefaultValue("false")
 	public val publicTimeTableItem: Boolean = false,
-	@DefaultValue("true")
-	public val acceptsNewPatient: Boolean = true,
+	@DefaultValue("false")
+	public val acceptsNewPatient: Boolean = false,
 	@DefaultValue("false")
 	public val unavailable: Boolean = false,
 	@DefaultValue("emptySet()")

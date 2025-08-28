@@ -137,13 +137,12 @@ data class DecryptedHealthElement(
 	override val note: String? = null,
 	@DefaultValue("emptyList()")
 	override val notes: List<Annotation> = emptyList(),
-	@DefaultValue("true")
-	override val relevant: Boolean = true,
+	@DefaultValue("false")
+	override val relevant: Boolean = false,
 	override val idOpeningContact: String? = null,
 	override val idClosingContact: String? = null,
 	override val idService: String? = null,
-	@DefaultValue("0")
-	override val status: Int = 0,
+	override val status: Int,
 	override val laterality: Laterality? = null,
 	@DefaultValue("emptyList()")
 	override val plansOfAction: List<DecryptedPlanOfAction> = emptyList(),
@@ -193,13 +192,12 @@ data class EncryptedHealthElement(
 	override val note: String? = null,
 	@DefaultValue("emptyList()")
 	override val notes: List<Annotation> = emptyList(),
-	@DefaultValue("true")
-	override val relevant: Boolean = true,
+	@DefaultValue("false")
+	override val relevant: Boolean = false,
 	override val idOpeningContact: String? = null,
 	override val idClosingContact: String? = null,
 	override val idService: String? = null,
-	@DefaultValue("0")
-	override val status: Int = 0,
+	override val status: Int,
 	override val laterality: Laterality? = null,
 	@DefaultValue("emptyList()")
 	override val plansOfAction: List<EncryptedPlanOfAction> = emptyList(),

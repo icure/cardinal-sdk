@@ -262,25 +262,21 @@ data class DecryptedPatient(
 	@DefaultValue("emptyList()")
 	override val addresses: List<DecryptedAddress> = emptyList(),
 	override val civility: String? = null,
-	@DefaultValue("com.icure.cardinal.sdk.model.embed.Gender.Unknown")
-	override val gender: Gender? = Gender.Unknown,
-	@DefaultValue("com.icure.cardinal.sdk.model.embed.Gender.Unknown")
-	override val birthSex: Gender? = Gender.Unknown,
+	override val gender: Gender? = null,
+	override val birthSex: Gender? = null,
 	override val mergeToPatientId: String? = null,
 	@DefaultValue("emptySet()")
 	override val mergedIds: Set<String> = emptySet(),
 	override val alias: String? = null,
-	@DefaultValue("true")
-	override val active: Boolean = true,
-	@DefaultValue("com.icure.cardinal.sdk.model.embed.DeactivationReason.None")
-	override val deactivationReason: DeactivationReason = DeactivationReason.None,
+	@DefaultValue("false")
+	override val active: Boolean = false,
+	override val deactivationReason: DeactivationReason,
 	override val deactivationDate: Int? = null,
 	override val ssin: String? = null,
 	override val maidenName: String? = null,
 	override val spouseName: String? = null,
 	override val partnerName: String? = null,
-	@DefaultValue("com.icure.cardinal.sdk.model.embed.PersonalStatus.Unknown")
-	override val personalStatus: PersonalStatus? = PersonalStatus.Unknown,
+	override val personalStatus: PersonalStatus? = null,
 	override val dateOfBirth: Int? = null,
 	override val dateOfDeath: Int? = null,
 	override val timestampOfLatestEidReading: Long? = null,
@@ -391,25 +387,21 @@ data class EncryptedPatient(
 	@DefaultValue("emptyList()")
 	override val addresses: List<EncryptedAddress> = emptyList(),
 	override val civility: String? = null,
-	@DefaultValue("com.icure.cardinal.sdk.model.embed.Gender.Unknown")
-	override val gender: Gender? = Gender.Unknown,
-	@DefaultValue("com.icure.cardinal.sdk.model.embed.Gender.Unknown")
-	override val birthSex: Gender? = Gender.Unknown,
+	override val gender: Gender? = null,
+	override val birthSex: Gender? = null,
 	override val mergeToPatientId: String? = null,
 	@DefaultValue("emptySet()")
 	override val mergedIds: Set<String> = emptySet(),
 	override val alias: String? = null,
-	@DefaultValue("true")
-	override val active: Boolean = true,
-	@DefaultValue("com.icure.cardinal.sdk.model.embed.DeactivationReason.None")
-	override val deactivationReason: DeactivationReason = DeactivationReason.None,
+	@DefaultValue("false")
+	override val active: Boolean = false,
+	override val deactivationReason: DeactivationReason,
 	override val deactivationDate: Int? = null,
 	override val ssin: String? = null,
 	override val maidenName: String? = null,
 	override val spouseName: String? = null,
 	override val partnerName: String? = null,
-	@DefaultValue("com.icure.cardinal.sdk.model.embed.PersonalStatus.Unknown")
-	override val personalStatus: PersonalStatus? = PersonalStatus.Unknown,
+	override val personalStatus: PersonalStatus? = null,
 	override val dateOfBirth: Int? = null,
 	override val dateOfDeath: Int? = null,
 	override val timestampOfLatestEidReading: Long? = null,

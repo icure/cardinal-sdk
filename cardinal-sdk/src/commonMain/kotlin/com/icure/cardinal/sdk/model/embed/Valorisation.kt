@@ -1,7 +1,6 @@
 package com.icure.cardinal.sdk.model.embed
 
 import com.icure.cardinal.sdk.model.specializations.Base64String
-import com.icure.cardinal.sdk.utils.DefaultValue
 import kotlinx.serialization.Serializable
 import kotlin.Double
 import kotlin.Int
@@ -9,6 +8,7 @@ import kotlin.Long
 import kotlin.String
 import kotlin.collections.List
 import kotlin.collections.Map
+import com.icure.cardinal.sdk.utils.DefaultValue
 
 // WARNING: This file is auto-generated. If you change it manually, your changes will be lost.
 // If you want to change the way this class is generated, see [this repo](https://github.com/icure/sdk-codegen).
@@ -50,8 +50,7 @@ data class DecryptedValorisation(
 	override val patientIntervention: Double? = null,
 	override val doctorSupplement: Double? = null,
 	override val vat: Double? = null,
-	@DefaultValue("emptyMap()")
-	override val label: Map<String, String>? = emptyMap(),
+	override val label: Map<String, String>? = null,
 	override val encryptedSelf: Base64String? = null,
 ) : Valorisation {
 	// region Valorisation-DecryptedValorisation
@@ -70,8 +69,7 @@ data class EncryptedValorisation(
 	override val patientIntervention: Double? = null,
 	override val doctorSupplement: Double? = null,
 	override val vat: Double? = null,
-	@DefaultValue("emptyMap()")
-	override val label: Map<String, String>? = emptyMap(),
+	override val label: Map<String, String>? = null,
 	override val encryptedSelf: Base64String? = null,
 ) : Valorisation {
 	// region Valorisation-EncryptedValorisation

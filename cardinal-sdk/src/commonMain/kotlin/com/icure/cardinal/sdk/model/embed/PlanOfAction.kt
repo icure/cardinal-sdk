@@ -93,8 +93,7 @@ data class DecryptedPlanOfAction(
 	override val note: String? = null,
 	override val idOpeningContact: String? = null,
 	override val idClosingContact: String? = null,
-	@DefaultValue("0")
-	override val status: Int = 0,
+	override val status: Int,
 	@DefaultValue("emptySet()")
 	override val documentIds: Set<String> = emptySet(),
 	override val numberOfCares: Int? = null,
@@ -132,8 +131,7 @@ data class EncryptedPlanOfAction(
 	override val note: String? = null,
 	override val idOpeningContact: String? = null,
 	override val idClosingContact: String? = null,
-	@DefaultValue("0")
-	override val status: Int = 0,
+	override val status: Int,
 	@DefaultValue("emptySet()")
 	override val documentIds: Set<String> = emptySet(),
 	override val numberOfCares: Int? = null,

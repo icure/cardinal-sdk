@@ -82,8 +82,7 @@ data class DecryptedClassification(
 	override val endOfLife: Long? = null,
 	override val deletionDate: Long? = null,
 	override val parentId: String? = null,
-	@DefaultValue("\"\"")
-	override val label: String = "",
+	override val label: String,
 	override val templateId: String? = null,
 	@DefaultValue("emptySet()")
 	override val secretForeignKeys: Set<String> = emptySet(),
@@ -118,8 +117,7 @@ data class EncryptedClassification(
 	override val endOfLife: Long? = null,
 	override val deletionDate: Long? = null,
 	override val parentId: String? = null,
-	@DefaultValue("\"\"")
-	override val label: String = "",
+	override val label: String,
 	override val templateId: String? = null,
 	@DefaultValue("emptySet()")
 	override val secretForeignKeys: Set<String> = emptySet(),

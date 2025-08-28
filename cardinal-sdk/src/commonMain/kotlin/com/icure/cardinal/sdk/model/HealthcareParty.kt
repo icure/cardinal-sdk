@@ -90,8 +90,7 @@ data class HealthcareParty(
 	@DefaultValue("emptyList()")
 	public val financialInstitutionInformation: List<DecryptedFinancialInstitutionInformation> =
 		emptyList(),
-	@DefaultValue("emptyMap()")
-	public val descr: Map<String, String>? = emptyMap(),
+	public val descr: Map<String, String>? = null,
 	public val billingType: String? = null,
 	public val type: String? = null,
 	public val contactPerson: String? = null,

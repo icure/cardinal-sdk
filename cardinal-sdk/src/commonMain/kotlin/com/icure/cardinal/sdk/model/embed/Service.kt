@@ -106,8 +106,7 @@ data class DecryptedService(
 	override val plansOfActionIds: Set<String>? = null,
 	override val healthElementsIds: Set<String>? = null,
 	override val formIds: Set<String>? = null,
-	@DefaultValue("emptySet()")
-	override val secretForeignKeys: Set<String>? = emptySet(),
+	override val secretForeignKeys: Set<String>? = null,
 	@DefaultValue("emptyMap()")
 	override val cryptedForeignKeys: Map<String, Set<Delegation>> = emptyMap(),
 	@DefaultValue("emptyMap()")
@@ -162,8 +161,7 @@ data class EncryptedService(
 	override val plansOfActionIds: Set<String>? = null,
 	override val healthElementsIds: Set<String>? = null,
 	override val formIds: Set<String>? = null,
-	@DefaultValue("emptySet()")
-	override val secretForeignKeys: Set<String>? = emptySet(),
+	override val secretForeignKeys: Set<String>? = null,
 	@DefaultValue("emptyMap()")
 	override val cryptedForeignKeys: Map<String, Set<Delegation>> = emptyMap(),
 	@DefaultValue("emptyMap()")

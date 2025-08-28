@@ -24,8 +24,7 @@ data class CalendarItemType(
 	public val defaultCalendarItemType: Boolean = false,
 	public val name: String? = null,
 	public val color: String? = null,
-	@DefaultValue("0")
-	public val duration: Int = 0,
+	public val duration: Int,
 	public val externalRef: String? = null,
 	public val mikronoId: String? = null,
 	@DefaultValue("emptySet()")

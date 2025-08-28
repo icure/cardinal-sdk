@@ -93,8 +93,7 @@ data class DecryptedMaintenanceTask(
 	override val taskType: String? = null,
 	@DefaultValue("emptySet()")
 	override val properties: Set<DecryptedPropertyStub> = emptySet(),
-	@DefaultValue("com.icure.cardinal.sdk.model.embed.TaskStatus.Pending")
-	override val status: TaskStatus = TaskStatus.Pending,
+	override val status: TaskStatus,
 	@DefaultValue("emptySet()")
 	override val secretForeignKeys: Set<String> = emptySet(),
 	@DefaultValue("emptyMap()")
@@ -132,8 +131,7 @@ data class EncryptedMaintenanceTask(
 	override val taskType: String? = null,
 	@DefaultValue("emptySet()")
 	override val properties: Set<EncryptedPropertyStub> = emptySet(),
-	@DefaultValue("com.icure.cardinal.sdk.model.embed.TaskStatus.Pending")
-	override val status: TaskStatus = TaskStatus.Pending,
+	override val status: TaskStatus,
 	@DefaultValue("emptySet()")
 	override val secretForeignKeys: Set<String> = emptySet(),
 	@DefaultValue("emptyMap()")
