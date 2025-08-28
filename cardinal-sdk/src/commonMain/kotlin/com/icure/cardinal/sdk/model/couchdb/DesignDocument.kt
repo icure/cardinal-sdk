@@ -5,11 +5,8 @@ import kotlinx.serialization.Serializable
 import kotlin.String
 import kotlin.collections.Map
 
-// WARNING: This file is auto-generated. If you change it manually, your changes will be lost.
-// If you want to change the way this class is generated, see [this repo](https://github.com/icure/sdk-codegen).
-
 @Serializable
-data class DesignDocument(
+public data class DesignDocument(
 	public val id: String,
 	public val rev: String? = null,
 	@DefaultValue("emptyMap()")
@@ -24,8 +21,4 @@ data class DesignDocument(
 	public val updateHandlers: Map<String, String>? = null,
 	@DefaultValue("emptyMap()")
 	public val filters: Map<String, String> = emptyMap(),
-) {
-	// region DesignDocument-DesignDocument
-
-	// endregion
-}
+)

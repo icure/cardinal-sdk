@@ -6,9 +6,7 @@ import kotlinx.serialization.Serializable
 import kotlin.Long
 import kotlin.String
 
-// WARNING: This file is auto-generated. If you change it manually, your changes will be lost.
-// If you want to change the way this class is generated, see [this repo](https://github.com/icure/sdk-codegen).
-sealed interface SchoolingInfo : Encryptable {
+public sealed interface SchoolingInfo : Encryptable {
 	public val startDate: Long?
 
 	public val endDate: Long?
@@ -18,33 +16,22 @@ sealed interface SchoolingInfo : Encryptable {
 	public val typeOfEducation: CodeStub?
 
 	override val encryptedSelf: Base64String?
-	// region SchoolingInfo-SchoolingInfo
-
-	// endregion
 }
 
 @Serializable
-data class DecryptedSchoolingInfo(
+public data class DecryptedSchoolingInfo(
 	override val startDate: Long? = null,
 	override val endDate: Long? = null,
 	override val school: String? = null,
 	override val typeOfEducation: CodeStub? = null,
 	override val encryptedSelf: Base64String?,
-) : SchoolingInfo {
-	// region SchoolingInfo-DecryptedSchoolingInfo
-
-	// endregion
-}
+) : SchoolingInfo
 
 @Serializable
-data class EncryptedSchoolingInfo(
+public data class EncryptedSchoolingInfo(
 	override val startDate: Long? = null,
 	override val endDate: Long? = null,
 	override val school: String? = null,
 	override val typeOfEducation: CodeStub? = null,
 	override val encryptedSelf: Base64String?,
-) : SchoolingInfo {
-	// region SchoolingInfo-EncryptedSchoolingInfo
-
-	// endregion
-}
+) : SchoolingInfo

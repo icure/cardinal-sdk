@@ -1,22 +1,12 @@
 package com.icure.cardinal.sdk.model.embed.form.template
 
-import com.icure.cardinal.sdk.utils.DefaultValue
 import kotlinx.serialization.Serializable
 import kotlin.String
 import kotlin.collections.List
 
-// WARNING: This file is auto-generated. If you change it manually, your changes will be lost.
-// If you want to change the way this class is generated, see [this repo](https://github.com/icure/sdk-codegen).
-
 @Serializable
-data class Action(
-	@DefaultValue("emptyList()")
-	public val launchers: List<Launcher>? = emptyList(),
+public data class Action(
+	public val launchers: List<Launcher>? = null,
 	public val expression: String? = null,
-	@DefaultValue("emptyList()")
-	public val states: List<State>? = emptyList(),
-) {
-	// region Action-Action
-
-	// endregion
-}
+	public val states: List<State>? = null,
+)

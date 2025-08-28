@@ -55,9 +55,7 @@ import kotlin.collections.List
 import kotlin.collections.Map
 import kotlin.collections.Set
 
-// WARNING: This file is auto-generated. If you change it manually, your changes will be lost.
-// If you want to change the way this class is generated, see [this repo](https://github.com/icure/sdk-codegen).
-sealed interface Patient :
+public sealed interface Patient :
 	StoredDocument,
 	ICureDocument<String>,
 	Person,
@@ -229,15 +227,10 @@ sealed interface Patient :
 	public val employementInfos: List<EmploymentInfo>
 
 	override val parentId: Nothing?
-	// region Patient-Patient
-	companion object {
-		const val KRAKEN_QUALIFIED_NAME = "org.taktik.icure.entities.Patient"
-	}
-	// endregion
 }
 
 @Serializable
-data class DecryptedPatient(
+public data class DecryptedPatient(
 	override val id: String,
 	@DefaultValue("emptyList()")
 	override val identifier: List<Identifier> = emptyList(),
@@ -262,25 +255,21 @@ data class DecryptedPatient(
 	@DefaultValue("emptyList()")
 	override val addresses: List<DecryptedAddress> = emptyList(),
 	override val civility: String? = null,
-	@DefaultValue("com.icure.cardinal.sdk.model.embed.Gender.Unknown")
-	override val gender: Gender? = Gender.Unknown,
-	@DefaultValue("com.icure.cardinal.sdk.model.embed.Gender.Unknown")
-	override val birthSex: Gender? = Gender.Unknown,
+	override val gender: Gender? = null,
+	override val birthSex: Gender? = null,
 	override val mergeToPatientId: String? = null,
 	@DefaultValue("emptySet()")
 	override val mergedIds: Set<String> = emptySet(),
 	override val alias: String? = null,
-	@DefaultValue("true")
-	override val active: Boolean = true,
-	@DefaultValue("com.icure.cardinal.sdk.model.embed.DeactivationReason.None")
-	override val deactivationReason: DeactivationReason = DeactivationReason.None,
+	@DefaultValue("false")
+	override val active: Boolean = false,
+	override val deactivationReason: DeactivationReason,
 	override val deactivationDate: Int? = null,
 	override val ssin: String? = null,
 	override val maidenName: String? = null,
 	override val spouseName: String? = null,
 	override val partnerName: String? = null,
-	@DefaultValue("com.icure.cardinal.sdk.model.embed.PersonalStatus.Unknown")
-	override val personalStatus: PersonalStatus? = PersonalStatus.Unknown,
+	override val personalStatus: PersonalStatus? = null,
 	override val dateOfBirth: Int? = null,
 	override val dateOfDeath: Int? = null,
 	override val timestampOfLatestEidReading: Long? = null,
@@ -358,15 +347,10 @@ data class DecryptedPatient(
 	@DefaultValue("emptyList()")
 	override val employementInfos: List<DecryptedEmploymentInfo> = emptyList(),
 	override val parentId: Nothing? = null,
-) : Patient {
-	// region Patient-DecryptedPatient
-override fun copyWithSecurityMetadata(securityMetadata: SecurityMetadata, secretForeignKeys: Set<String>): DecryptedPatient =
-		copy(securityMetadata = securityMetadata, secretForeignKeys = secretForeignKeys)
-	// endregion
-}
+) : Patient
 
 @Serializable
-data class EncryptedPatient(
+public data class EncryptedPatient(
 	override val id: String,
 	@DefaultValue("emptyList()")
 	override val identifier: List<Identifier> = emptyList(),
@@ -391,25 +375,21 @@ data class EncryptedPatient(
 	@DefaultValue("emptyList()")
 	override val addresses: List<EncryptedAddress> = emptyList(),
 	override val civility: String? = null,
-	@DefaultValue("com.icure.cardinal.sdk.model.embed.Gender.Unknown")
-	override val gender: Gender? = Gender.Unknown,
-	@DefaultValue("com.icure.cardinal.sdk.model.embed.Gender.Unknown")
-	override val birthSex: Gender? = Gender.Unknown,
+	override val gender: Gender? = null,
+	override val birthSex: Gender? = null,
 	override val mergeToPatientId: String? = null,
 	@DefaultValue("emptySet()")
 	override val mergedIds: Set<String> = emptySet(),
 	override val alias: String? = null,
-	@DefaultValue("true")
-	override val active: Boolean = true,
-	@DefaultValue("com.icure.cardinal.sdk.model.embed.DeactivationReason.None")
-	override val deactivationReason: DeactivationReason = DeactivationReason.None,
+	@DefaultValue("false")
+	override val active: Boolean = false,
+	override val deactivationReason: DeactivationReason,
 	override val deactivationDate: Int? = null,
 	override val ssin: String? = null,
 	override val maidenName: String? = null,
 	override val spouseName: String? = null,
 	override val partnerName: String? = null,
-	@DefaultValue("com.icure.cardinal.sdk.model.embed.PersonalStatus.Unknown")
-	override val personalStatus: PersonalStatus? = PersonalStatus.Unknown,
+	override val personalStatus: PersonalStatus? = null,
 	override val dateOfBirth: Int? = null,
 	override val dateOfDeath: Int? = null,
 	override val timestampOfLatestEidReading: Long? = null,
@@ -487,9 +467,4 @@ data class EncryptedPatient(
 	@DefaultValue("emptyList()")
 	override val employementInfos: List<EncryptedEmploymentInfo> = emptyList(),
 	override val parentId: Nothing? = null,
-) : Patient {
-	// region Patient-EncryptedPatient
-override fun copyWithSecurityMetadata(securityMetadata: SecurityMetadata, secretForeignKeys: Set<String>): EncryptedPatient =
-		copy(securityMetadata = securityMetadata, secretForeignKeys = secretForeignKeys)
-	// endregion
-}
+) : Patient
