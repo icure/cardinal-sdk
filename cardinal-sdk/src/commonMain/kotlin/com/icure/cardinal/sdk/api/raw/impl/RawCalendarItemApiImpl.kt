@@ -504,5 +504,27 @@ class RawCalendarItemApiImpl(
 			setBody(request)
 		}.wrap()
 
+	override suspend fun safeBook(calendarItemDto: EncryptedCalendarItem): HttpResponse<EncryptedCalendarItem> =
+		post(authProvider) {
+			url {
+				takeFrom(apiUrl)
+				appendPathSegments("rest", "v2", "calendarItem", "safeBook")
+			}
+			contentType(Application.Json)
+			accept(Application.Json)
+			setBody(calendarItemDto)
+		}.wrap()
+
+	override suspend fun safeBookBulk(calendarItemDtos: List<EncryptedCalendarItem>): HttpResponse<List<EncryptedCalendarItem>> =
+		post(authProvider) {
+			url {
+				takeFrom(apiUrl)
+				appendPathSegments("rest", "v2", "calendarItem", "safeBook", "bulk")
+			}
+			contentType(Application.Json)
+			accept(Application.Json)
+			setBody(calendarItemDtos)
+		}.wrap()
+
 	// endregion
 }

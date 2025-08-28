@@ -578,6 +578,16 @@ class RawUserApiImpl(
 			`header`("fasJwtToken", fasJwtToken)
 		}.wrap()
 
+	override suspend fun revokeFasAuthenticationForUser(fasJwtToken: String): HttpResponse<Boolean> =
+		delete(authProvider) {
+			url {
+				takeFrom(apiUrl)
+				appendPathSegments("rest", "v2", "user", "current", "be.fas")
+			}
+			accept(Application.Json)
+			`header`("fasJwtToken", fasJwtToken)
+		}.wrap()
+
 	override suspend fun setExternalJwtAuthByIdentifiersForCurrentUser(
 		externalJwtConfigId: String,
 		externalAuthenticationToken: String,
@@ -588,6 +598,19 @@ class RawUserApiImpl(
 				appendPathSegments("rest", "v2", "user", "current", "externalJwtAuth", externalJwtConfigId, "identifiers")
 			}
 			contentType(Application.Json)
+			accept(Application.Json)
+			`header`("externalAuthenticationToken", externalAuthenticationToken)
+		}.wrap()
+
+	override suspend fun unsetExternalJwtAuthByIdentifiersForCurrentUser(
+		externalJwtConfigId: String,
+		externalAuthenticationToken: String,
+	): HttpResponse<Boolean> =
+		delete(authProvider) {
+			url {
+				takeFrom(apiUrl)
+				appendPathSegments("rest", "v2", "user", "current", "externalJwtAuth", externalJwtConfigId, "identifiers")
+			}
 			accept(Application.Json)
 			`header`("externalAuthenticationToken", externalAuthenticationToken)
 		}.wrap()
@@ -607,6 +630,19 @@ class RawUserApiImpl(
 			contentType(Application.Json)
 			accept(Application.Json)
 			setBody(identifier)
+		}.wrap()
+
+	override suspend fun unsetLoginIdentifiers(
+		userId: String,
+		groupId: String,
+		identifier: LoginIdentifier,
+	): HttpResponse<Boolean> =
+		delete(authProvider) {
+			url {
+				takeFrom(apiUrl)
+				appendPathSegments("rest", "v2", "user", userId, "inGroup", groupId, "identifiers")
+			}
+			accept(Application.Json)
 		}.wrap()
 
 	override suspend fun createAdminUser(userDto: User): HttpResponse<User> =

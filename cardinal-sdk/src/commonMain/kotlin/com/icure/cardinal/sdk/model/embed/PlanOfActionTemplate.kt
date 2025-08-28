@@ -12,11 +12,8 @@ import kotlin.String
 import kotlin.collections.List
 import kotlin.collections.Set
 
-// WARNING: This file is auto-generated. If you change it manually, your changes will be lost.
-// If you want to change the way this class is generated, see [this repo](https://github.com/icure/sdk-codegen).
-
 @Serializable
-data class PlanOfActionTemplate(
+public data class PlanOfActionTemplate(
 	override val id: String,
 	override val created: Long? = null,
 	override val modified: Long? = null,
@@ -31,14 +28,9 @@ data class PlanOfActionTemplate(
 	override val name: String? = null,
 	public val descr: String? = null,
 	public val note: String? = null,
-	@DefaultValue("true")
-	public val relevant: Boolean = true,
-	@DefaultValue("0")
-	public val status: Int = 0,
+	@DefaultValue("false")
+	public val relevant: Boolean = false,
+	public val status: Int,
 	@DefaultValue("emptyList()")
 	public val forms: List<FormSkeleton> = emptyList(),
-) : ICureDocument<String>, Named {
-	// region PlanOfActionTemplate-PlanOfActionTemplate
-
-	// endregion
-}
+) : ICureDocument<String>, Named

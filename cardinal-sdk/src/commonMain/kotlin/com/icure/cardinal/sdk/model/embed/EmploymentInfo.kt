@@ -4,11 +4,8 @@ import com.icure.cardinal.sdk.model.base.CodeStub
 import com.icure.cardinal.sdk.model.specializations.Base64String
 import kotlinx.serialization.Serializable
 import kotlin.Long
-import kotlin.String
 
-// WARNING: This file is auto-generated. If you change it manually, your changes will be lost.
-// If you want to change the way this class is generated, see [this repo](https://github.com/icure/sdk-codegen).
-sealed interface EmploymentInfo : Encryptable {
+public sealed interface EmploymentInfo : Encryptable {
 	public val startDate: Long?
 
 	public val endDate: Long?
@@ -18,33 +15,22 @@ sealed interface EmploymentInfo : Encryptable {
 	public val employer: Employer?
 
 	override val encryptedSelf: Base64String?
-	// region EmploymentInfo-EmploymentInfo
-
-	// endregion
 }
 
 @Serializable
-data class DecryptedEmploymentInfo(
+public data class DecryptedEmploymentInfo(
 	override val startDate: Long? = null,
 	override val endDate: Long? = null,
 	override val professionType: CodeStub? = null,
 	override val employer: Employer? = null,
 	override val encryptedSelf: Base64String?,
-) : EmploymentInfo {
-	// region EmploymentInfo-DecryptedEmploymentInfo
-
-	// endregion
-}
+) : EmploymentInfo
 
 @Serializable
-data class EncryptedEmploymentInfo(
+public data class EncryptedEmploymentInfo(
 	override val startDate: Long? = null,
 	override val endDate: Long? = null,
 	override val professionType: CodeStub? = null,
 	override val employer: Employer? = null,
 	override val encryptedSelf: Base64String?,
-) : EmploymentInfo {
-	// region EmploymentInfo-EncryptedEmploymentInfo
-
-	// endregion
-}
+) : EmploymentInfo

@@ -97,6 +97,19 @@ class RawCalendarItemTypeApiImpl(
 			setBody(calendarItemTypeIds)
 		}.wrap()
 
+	override suspend fun purgeCalendarItemType(
+		calendarItemTypeId: String,
+		rev: String,
+	): HttpResponse<DocIdentifier> =
+		delete(authProvider) {
+			url {
+				takeFrom(apiUrl)
+				appendPathSegments("rest", "v2", "calendarItemType", "purge", calendarItemTypeId)
+				parameter("rev", rev)
+			}
+			accept(Application.Json)
+		}.wrap()
+
 	override suspend fun getCalendarItemType(calendarItemTypeId: String): HttpResponse<CalendarItemType> =
 		get(authProvider) {
 			url {

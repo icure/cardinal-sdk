@@ -1,21 +1,15 @@
 package com.icure.cardinal.sdk.model.security
 
 import com.icure.cardinal.sdk.model.embed.AuthenticationClass
-import com.icure.cardinal.sdk.utils.DefaultValue
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 import kotlin.String
-import com.icure.cardinal.sdk.model.specializations.Base64String
-
-// WARNING: This file is auto-generated. If you change it manually, your changes will be lost.
-// If you want to change the way this class is generated, see [this repo](https://github.com/icure/sdk-codegen).
 
 @Serializable
-data class ExternalJwtConfig(
+public data class ExternalJwtConfig(
 	public val validationMethod: ValidationMethod,
 	public val fieldSelector: FieldSelector,
-	@DefaultValue("com.icure.cardinal.sdk.model.embed.AuthenticationClass.ExternalAuthentication")
-	public val authenticationClass: AuthenticationClass = AuthenticationClass.ExternalAuthentication,
+	public val authenticationClass: AuthenticationClass,
 ) {
 	@Serializable
 	public sealed interface ValidationMethod {
@@ -65,7 +59,4 @@ data class ExternalJwtConfig(
 			public val fieldName: String,
 		) : FieldSelector
 	}
-	// region ExternalJwtConfig-ExternalJwtConfig
-
-	// endregion
 }
