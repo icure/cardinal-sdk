@@ -23,6 +23,8 @@ import kotlin.Boolean
 import kotlin.Int
 import kotlin.String
 import kotlin.collections.List
+import kotlin.collections.Map
+import kotlin.collections.Set
 
 // WARNING: This class is auto-generated. If you change it manually, your changes will be lost.
 // If you want to change the way this class is generated, see [this repo](https://github.com/icure/sdk-codegen).
@@ -224,6 +226,42 @@ class RawICureApiImpl(
 				takeFrom(apiUrl)
 				appendPathSegments("rest", "v2", "icure", "hzc", mapName)
 			}
+			accept(Application.Json)
+		}.wrap()
+
+	override suspend fun loglevel(
+		loglevel: String,
+		loggerName: String,
+	): HttpResponse<String> =
+		put(authProvider) {
+			url {
+				takeFrom(apiUrl)
+				appendPathSegments("rest", "v2", "icure", "loglevel", loggerName, loglevel)
+			}
+			contentType(Application.Json)
+			accept(Text.Plain)
+		}.wrap()
+
+	override suspend fun updateSharedEntitiesDesignDocuments(
+		cluster: String,
+		databasePartition: String,
+		entityType: String,
+		viewPartition: String,
+		dryRun: Boolean?,
+		warmup: Boolean?,
+	): HttpResponse<Map<String, Map<String, Map<Int, Set<String>>>>> =
+		put(authProvider) {
+			url {
+				takeFrom(apiUrl)
+				appendPathSegments("rest", "v2", "icure", "sharedEntities", "dd")
+				parameter("cluster", cluster)
+				parameter("databasePartition", databasePartition)
+				parameter("entityType", entityType)
+				parameter("viewPartition", viewPartition)
+				parameter("dryRun", dryRun)
+				parameter("warmup", warmup)
+			}
+			contentType(Application.Json)
 			accept(Application.Json)
 		}.wrap()
 

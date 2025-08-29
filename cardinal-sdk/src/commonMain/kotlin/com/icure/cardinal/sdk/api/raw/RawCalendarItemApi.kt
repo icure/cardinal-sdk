@@ -165,5 +165,9 @@ public interface RawCalendarItemApi {
 		request: BulkShareOrUpdateMetadataParams,
 		groupId: String,
 	): HttpResponse<List<EntityBulkShareResult<EncryptedCalendarItem>>>
+
+	suspend fun safeBook(calendarItemDto: EncryptedCalendarItem): HttpResponse<EncryptedCalendarItem>
+
+	suspend fun safeBookBulk(calendarItemDtos: List<EncryptedCalendarItem>): HttpResponse<List<EncryptedCalendarItem>>
 	// endregion
 }

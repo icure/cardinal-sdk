@@ -9,6 +9,8 @@ import kotlin.Boolean
 import kotlin.Int
 import kotlin.String
 import kotlin.collections.List
+import kotlin.collections.Map
+import kotlin.collections.Set
 
 // WARNING: This class is auto-generated. If you change it manually, your changes will be lost.
 // If you want to change the way this class is generated, see [this repo](https://github.com/icure/sdk-codegen).
@@ -61,5 +63,19 @@ public interface RawICureApi {
 	suspend fun getReplicatorInfo(id: String): HttpResponse<ReplicatorDocument>
 
 	suspend fun evictAllFromMap(mapName: String): HttpResponse<String>
+
+	suspend fun loglevel(
+		loglevel: String,
+		loggerName: String,
+	): HttpResponse<String>
+
+	suspend fun updateSharedEntitiesDesignDocuments(
+		cluster: String,
+		databasePartition: String,
+		entityType: String,
+		viewPartition: String,
+		dryRun: Boolean? = null,
+		warmup: Boolean? = null,
+	): HttpResponse<Map<String, Map<String, Map<Int, Set<String>>>>>
 	// endregion
 }
