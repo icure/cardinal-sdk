@@ -10,11 +10,8 @@ import kotlin.String
 import kotlin.collections.Map
 import kotlin.collections.Set
 
-// WARNING: This file is auto-generated. If you change it manually, your changes will be lost.
-// If you want to change the way this class is generated, see [this repo](https://github.com/icure/sdk-codegen).
-
 @Serializable
-data class ApplicationSettings(
+public data class ApplicationSettings(
 	override val id: String,
 	override val rev: String? = null,
 	override val created: Long? = null,
@@ -30,8 +27,4 @@ data class ApplicationSettings(
 	override val deletionDate: Long? = null,
 	@DefaultValue("emptyMap()")
 	public val settings: Map<String, String> = emptyMap(),
-) : StoredDocument, ICureDocument<String> {
-	// region ApplicationSettings-ApplicationSettings
-
-	// endregion
-}
+) : StoredDocument, ICureDocument<String>

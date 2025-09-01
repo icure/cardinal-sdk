@@ -10,11 +10,8 @@ import kotlin.String
 import kotlin.collections.Map
 import kotlin.collections.Set
 
-// WARNING: This file is auto-generated. If you change it manually, your changes will be lost.
-// If you want to change the way this class is generated, see [this repo](https://github.com/icure/sdk-codegen).
-
 @Serializable
-data class CalendarItemType(
+public data class CalendarItemType(
 	override val id: String,
 	override val rev: String? = null,
 	override val deletionDate: Long? = null,
@@ -34,8 +31,4 @@ data class CalendarItemType(
 	public val otherInfos: Map<String, String> = emptyMap(),
 	@DefaultValue("emptyMap()")
 	public val subjectByLanguage: Map<String, String> = emptyMap(),
-) : StoredDocument {
-	// region CalendarItemType-CalendarItemType
-
-	// endregion
-}
+) : StoredDocument
