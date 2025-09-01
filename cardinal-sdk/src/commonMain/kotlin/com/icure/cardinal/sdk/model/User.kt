@@ -10,7 +10,6 @@ import com.icure.cardinal.sdk.model.security.LoginIdentifier
 import com.icure.cardinal.sdk.model.security.Permission
 import com.icure.cardinal.sdk.serialization.InstantSerializer
 import com.icure.cardinal.sdk.utils.DefaultValue
-import kotlinx.datetime.Instant
 import kotlinx.serialization.Serializable
 import kotlin.Boolean
 import kotlin.Long
