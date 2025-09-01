@@ -32,6 +32,11 @@ public interface RawCalendarItemTypeApi {
 
 	suspend fun deleteCalendarItemTypes(calendarItemTypeIds: ListOfIds): HttpResponse<List<DocIdentifier>>
 
+	suspend fun purgeCalendarItemType(
+		calendarItemTypeId: String,
+		rev: String,
+	): HttpResponse<DocIdentifier>
+
 	suspend fun getCalendarItemType(calendarItemTypeId: String): HttpResponse<CalendarItemType>
 
 	suspend fun modifyCalendarItemType(calendarItemTypeDto: CalendarItemType): HttpResponse<CalendarItemType>

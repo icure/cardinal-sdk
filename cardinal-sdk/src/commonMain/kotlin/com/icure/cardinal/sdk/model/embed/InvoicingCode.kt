@@ -1,12 +1,14 @@
 package com.icure.cardinal.sdk.model.embed
 
 import com.icure.cardinal.sdk.model.specializations.Base64String
+import com.icure.cardinal.sdk.utils.DefaultValue
 import kotlinx.serialization.Serializable
 import kotlin.Boolean
 import kotlin.Double
 import kotlin.Int
 import kotlin.Long
 import kotlin.String
+import kotlin.collections.Map
 
 // WARNING: This file is auto-generated. If you change it manually, your changes will be lost.
 // If you want to change the way this class is generated, see [this repo](https://github.com/icure/sdk-codegen).
@@ -119,6 +121,8 @@ sealed interface InvoicingCode : Encryptable {
 
 	public val codeLabel: String?
 
+	public val options: Map<String, String>
+
 	override val encryptedSelf: Base64String?
 	// region InvoicingCode-InvoicingCode
 
@@ -181,6 +185,8 @@ data class DecryptedInvoicingCode(
 	override val cancelPatientInterventionReason: Int? = null,
 	override val status: Long? = null,
 	override val codeLabel: String? = null,
+	@DefaultValue("emptyMap()")
+	override val options: Map<String, String> = emptyMap(),
 	override val encryptedSelf: Base64String? = null,
 ) : InvoicingCode {
 	// region InvoicingCode-DecryptedInvoicingCode
@@ -244,6 +250,8 @@ data class EncryptedInvoicingCode(
 	override val cancelPatientInterventionReason: Int? = null,
 	override val status: Long? = null,
 	override val codeLabel: String? = null,
+	@DefaultValue("emptyMap()")
+	override val options: Map<String, String> = emptyMap(),
 	override val encryptedSelf: Base64String? = null,
 ) : InvoicingCode {
 	// region InvoicingCode-EncryptedInvoicingCode

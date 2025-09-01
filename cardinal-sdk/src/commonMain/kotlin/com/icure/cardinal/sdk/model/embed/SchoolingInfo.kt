@@ -29,7 +29,7 @@ data class DecryptedSchoolingInfo(
 	override val endDate: Long? = null,
 	override val school: String? = null,
 	override val typeOfEducation: CodeStub? = null,
-	override val encryptedSelf: Base64String?,
+	override val encryptedSelf: Base64String? = null,
 ) : SchoolingInfo {
 	// region SchoolingInfo-DecryptedSchoolingInfo
 
@@ -42,7 +42,7 @@ data class EncryptedSchoolingInfo(
 	override val endDate: Long? = null,
 	override val school: String? = null,
 	override val typeOfEducation: CodeStub? = null,
-	override val encryptedSelf: Base64String?,
+	override val encryptedSelf: Base64String? = null,
 ) : SchoolingInfo {
 	// region SchoolingInfo-EncryptedSchoolingInfo
 

@@ -42,13 +42,13 @@ data class Agenda(
 	public val name: String? = null,
 	public val userId: String? = null,
 	public val zoneId: String? = null,
-	public val lockCalendarItemsBeforeInMinutes: Int? = null,
 	@DefaultValue("emptyList()")
 	@Deprecated("Use `userRights` instead")
 	public val rights: List<Right> = emptyList(),
 	@DefaultValue("emptyMap()")
 	public val userRights: Map<String, UserAccessLevel> = emptyMap(),
 	public val slottingAlgorithm: AgendaSlottingAlgorithm? = null,
+	public val publicBookingQuota: Int? = null,
 	@DefaultValue("emptySet()")
 	public val properties: Set<DecryptedPropertyStub> = emptySet(),
 	@DefaultValue("emptyList()")
