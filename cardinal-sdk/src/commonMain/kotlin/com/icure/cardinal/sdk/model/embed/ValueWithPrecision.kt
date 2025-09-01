@@ -12,5 +12,6 @@ data class ValueWithPrecision(
 	public val precision: Int,
 ) {
 	// region ValueWithPrecision-ValueWithPrecision
+
 	// endregion
 }
