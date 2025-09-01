@@ -87,7 +87,7 @@ class KeylessPatientUserTest : StringSpec(
 					patient = patient,
 					user = patientUser,
 					secretId = SecretIdUseOption.UseNone,
-					alternateRootDataOwnerReference = EntityReferenceInGroup(hcp.dataOwnerId)
+					alternateRootDelegateId = hcp.dataOwnerId
 				)
 			)
 

@@ -636,7 +636,8 @@ private suspend fun initializeApiCrypto(
 		cryptoStrategies,
 		secureDelegationsManager,
 		incrementalSecurityMetadataDecryptor,
-		baseSecurityMetadataDecryptor
+		baseSecurityMetadataDecryptor,
+		iCureStorage
 	)
 	if (options.createTransferKeys) {
 		TransferKeysManagerImpl(
@@ -656,7 +657,6 @@ private suspend fun initializeApiCrypto(
 			!selfIsAnonymous,
 			crypto,
 			manifests,
-			iCureStorage,
 			options.jsonPatcher ?: object : JsonPatcher {},
 			options.parentJob,
 			rawApiConfig,
@@ -1050,7 +1050,7 @@ private class CardinalApiImpl(
 			config.rawApiConfig.json,
 			config.crypto.strategies,
 			config.crypto.primitives,
-			config.storage,
+			config.crypto.storage,
 			groupId,
 			options
 		)

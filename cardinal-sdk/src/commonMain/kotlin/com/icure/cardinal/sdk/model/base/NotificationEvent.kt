@@ -1,10 +1,10 @@
 package com.icure.cardinal.sdk.model.base
 
 import com.icure.cardinal.sdk.serialization.InstantSerializer
-import kotlin.time.Instant
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 import kotlin.String
+import kotlin.time.Instant
 
 // WARNING: This file is auto-generated. If you change it manually, your changes will be lost.
 // If you want to change the way this class is generated, see [this repo](https://github.com/icure/sdk-codegen).

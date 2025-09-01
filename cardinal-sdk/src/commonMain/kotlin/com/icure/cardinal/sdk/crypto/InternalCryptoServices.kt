@@ -1,6 +1,7 @@
 package com.icure.cardinal.sdk.crypto
 
 import com.icure.cardinal.sdk.api.DataOwnerApi
+import com.icure.cardinal.sdk.storage.CardinalStorageFacade
 import com.icure.kryptom.crypto.CryptoService
 import com.icure.utils.InternalIcureApi
 
@@ -20,6 +21,7 @@ interface InternalCryptoServices : BasicInternalCryptoApi{
 	val strategies: CryptoStrategies
 	val incrementalSecurityMetadataDecryptor: IncrementalSecurityMetadataDecryptor
 	val securityMetadataDecryptor: BaseSecurityMetadataDecryptor
+	val storage: CardinalStorageFacade
 
 	override val validationService: EntityValidationService
 		get() = entity

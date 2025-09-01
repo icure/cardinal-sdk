@@ -125,6 +125,10 @@ value class SpkiHexString(
 
 	internal fun bytes(): ByteArray =
 		hexToByteArray(s)
+
+	fun asExchangeKeyEntryKeyString(): AesExchangeKeyEntryKeyString {
+		return AesExchangeKeyEntryKeyString(s)
+	}
 }
 
 @JvmInline

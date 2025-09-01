@@ -6,6 +6,7 @@ import com.icure.cardinal.sdk.model.EntityReferenceInGroup
 import com.icure.cardinal.sdk.model.specializations.KeypairFingerprintV1String
 import com.icure.cardinal.sdk.model.specializations.Pkcs8Bytes
 import com.icure.cardinal.sdk.utils.DefaultValue
+import com.icure.kryptom.crypto.RsaAlgorithm
 
 
 /**
@@ -54,6 +55,11 @@ interface CryptoApi {
 		groupId: String?,
 		details: List<ExchangeDataInjectionDetails>,
 		reEncryptWithOwnKeys: Boolean
+	)
+
+	suspend fun addAndStoreNewSelfVerifiedKey(
+		algorithm: RsaAlgorithm.RsaEncryptionAlgorithm,
+		pkcs8Bytes: Pkcs8Bytes,
 	)
 
 }

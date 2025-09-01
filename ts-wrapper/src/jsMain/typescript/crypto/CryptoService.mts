@@ -1,3 +1,6 @@
+// noinspection TypeScriptCheckImport
+// @ts-ignore
+import { internalDefaultCryptoService } from "../cardinal-sdk-ts.mjs";
 
 export enum AesKeySize {
   Aes128 = 128,
@@ -87,3 +90,4 @@ export interface XStrongRandom {
   randomBytes(length: number): Int8Array;
   randomUUID(): string;
 }
+export const defaultCryptoService = internalDefaultCryptoService.get();

@@ -204,7 +204,14 @@ public interface RawUserApi {
 
 	suspend fun enableFasAuthenticationForUser(fasJwtToken: String): HttpResponse<Boolean>
 
+	suspend fun revokeFasAuthenticationForUser(fasJwtToken: String): HttpResponse<Boolean>
+
 	suspend fun setExternalJwtAuthByIdentifiersForCurrentUser(
+		externalJwtConfigId: String,
+		externalAuthenticationToken: String,
+	): HttpResponse<Boolean>
+
+	suspend fun unsetExternalJwtAuthByIdentifiersForCurrentUser(
 		externalJwtConfigId: String,
 		externalAuthenticationToken: String,
 	): HttpResponse<Boolean>
@@ -213,6 +220,12 @@ public interface RawUserApi {
 		userId: String,
 		groupId: String,
 		replaceExisting: Boolean,
+		identifier: LoginIdentifier,
+	): HttpResponse<Boolean>
+
+	suspend fun unsetLoginIdentifiers(
+		userId: String,
+		groupId: String,
 		identifier: LoginIdentifier,
 	): HttpResponse<Boolean>
 
