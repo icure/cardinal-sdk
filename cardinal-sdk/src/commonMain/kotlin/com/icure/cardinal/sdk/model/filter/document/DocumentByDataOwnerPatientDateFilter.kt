@@ -3,7 +3,6 @@ package com.icure.cardinal.sdk.model.filter.document
 import com.icure.cardinal.sdk.model.Document
 import com.icure.cardinal.sdk.model.filter.AbstractFilter
 import com.icure.cardinal.sdk.serialization.InstantSerializer
-import kotlinx.datetime.Instant
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 import kotlin.Boolean
