@@ -9,17 +9,10 @@ import kotlinx.serialization.Serializable
 import kotlin.String
 import kotlin.collections.List
 
-// WARNING: This file is auto-generated. If you change it manually, your changes will be lost.
-// If you want to change the way this class is generated, see [this repo](https://github.com/icure/sdk-codegen).
-
 @SerialName("HealthcarePartyByIdentifiersFilter")
 @Serializable
-data class HealthcarePartyByIdentifiersFilter(
+public data class HealthcarePartyByIdentifiersFilter(
 	@DefaultValue("emptyList()")
 	public val identifiers: List<Identifier> = emptyList(),
 	override val desc: String? = null,
-) : AbstractFilter<HealthcareParty> {
-	// region HealthcarePartyByIdentifiersFilter-HealthcarePartyByIdentifiersFilter
-
-	// endregion
-}
+) : AbstractFilter<HealthcareParty>

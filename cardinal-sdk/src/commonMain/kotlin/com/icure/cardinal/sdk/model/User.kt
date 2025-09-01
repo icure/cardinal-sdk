@@ -10,7 +10,6 @@ import com.icure.cardinal.sdk.model.security.LoginIdentifier
 import com.icure.cardinal.sdk.model.security.Permission
 import com.icure.cardinal.sdk.serialization.InstantSerializer
 import com.icure.cardinal.sdk.utils.DefaultValue
-import kotlinx.datetime.Instant
 import kotlinx.serialization.Serializable
 import kotlin.Boolean
 import kotlin.Long
@@ -20,11 +19,8 @@ import kotlin.collections.Map
 import kotlin.collections.Set
 import kotlin.time.Instant
 
-// WARNING: This file is auto-generated. If you change it manually, your changes will be lost.
-// If you want to change the way this class is generated, see [this repo](https://github.com/icure/sdk-codegen).
-
 @Serializable
-data class User(
+public data class User(
 	override val id: String,
 	override val rev: String? = null,
 	override val deletionDate: Long? = null,
@@ -68,10 +64,4 @@ data class User(
 		@DefaultValue("emptyList()")
 		public val loginIdentifiers: List<LoginIdentifier> = emptyList(),
 	)
-	// region User-User
-
-	companion object {
-		const val KRAKEN_QUALIFIED_NAME = "org.taktik.icure.entities.User"
-	}
-	// endregion
 }

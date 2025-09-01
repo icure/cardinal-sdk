@@ -10,7 +10,6 @@ import com.icure.cardinal.sdk.model.embed.SecurityMetadata
 import com.icure.cardinal.sdk.model.specializations.Base64String
 import com.icure.cardinal.sdk.serialization.InstantSerializer
 import com.icure.cardinal.sdk.utils.DefaultValue
-import kotlinx.datetime.Instant
 import kotlinx.serialization.Serializable
 import kotlin.Long
 import kotlin.String
@@ -18,9 +17,7 @@ import kotlin.collections.Map
 import kotlin.collections.Set
 import kotlin.time.Instant
 
-// WARNING: This file is auto-generated. If you change it manually, your changes will be lost.
-// If you want to change the way this class is generated, see [this repo](https://github.com/icure/sdk-codegen).
-sealed interface AccessLog :
+public sealed interface AccessLog :
 	StoredDocument,
 	ICureDocument<String>,
 	HasEncryptionMetadata,
@@ -70,13 +67,10 @@ sealed interface AccessLog :
 	override val encryptedSelf: Base64String?
 
 	override val securityMetadata: SecurityMetadata?
-	// region AccessLog-AccessLog
-
-	// endregion
 }
 
 @Serializable
-data class DecryptedAccessLog(
+public data class DecryptedAccessLog(
 	override val id: String,
 	override val rev: String? = null,
 	override val created: Long? = null,
@@ -107,15 +101,10 @@ data class DecryptedAccessLog(
 	override val encryptionKeys: Map<String, Set<Delegation>> = emptyMap(),
 	override val encryptedSelf: Base64String? = null,
 	override val securityMetadata: SecurityMetadata? = null,
-) : AccessLog {
-	// region AccessLog-DecryptedAccessLog
-override fun copyWithSecurityMetadata(securityMetadata: SecurityMetadata, secretForeignKeys: Set<String>): DecryptedAccessLog =
-		copy(securityMetadata = securityMetadata, secretForeignKeys = secretForeignKeys)
-	// endregion
-}
+) : AccessLog
 
 @Serializable
-data class EncryptedAccessLog(
+public data class EncryptedAccessLog(
 	override val id: String,
 	override val rev: String? = null,
 	override val created: Long? = null,
@@ -146,9 +135,4 @@ data class EncryptedAccessLog(
 	override val encryptionKeys: Map<String, Set<Delegation>> = emptyMap(),
 	override val encryptedSelf: Base64String? = null,
 	override val securityMetadata: SecurityMetadata? = null,
-) : AccessLog {
-	// region AccessLog-EncryptedAccessLog
-override fun copyWithSecurityMetadata(securityMetadata: SecurityMetadata, secretForeignKeys: Set<String>): EncryptedAccessLog =
-		copy(securityMetadata = securityMetadata, secretForeignKeys = secretForeignKeys)
-	// endregion
-}
+) : AccessLog
