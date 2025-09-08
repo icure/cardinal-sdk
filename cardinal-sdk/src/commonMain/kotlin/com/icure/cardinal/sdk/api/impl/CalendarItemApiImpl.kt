@@ -19,6 +19,7 @@ import com.icure.cardinal.sdk.crypto.entities.DelegateShareOptions
 import com.icure.cardinal.sdk.crypto.entities.EntityWithEncryptionMetadataTypeName
 import com.icure.cardinal.sdk.crypto.entities.OwningEntityDetails
 import com.icure.cardinal.sdk.crypto.entities.SecretIdUseOption
+import com.icure.cardinal.sdk.exceptions.MissingAvailabilityException
 import com.icure.cardinal.sdk.exceptions.NotFoundException
 import com.icure.cardinal.sdk.filters.BaseFilterOptions
 import com.icure.cardinal.sdk.filters.BaseSortableFilterOptions
@@ -121,6 +122,15 @@ private open class AbstractCalendarItemBasicFlavouredApi<E : CalendarItem>(
 			).successBody().let {
 				maybeDecrypt(groupId, it)
 			}
+	}
+
+	override suspend fun bookCalendarItemCheckingAvailability(entity: E): E {
+		require(entity.securityMetadata != null) { "Entity must have security metadata initialized. Make sure to use the `withEncryptionMetadata` method." }
+		val encrypted = validateAndMaybeEncrypt(null, entity)
+		return maybeDecrypt(
+			null,
+			rawApi.safeBook(encrypted).successBody(MissingAvailabilityException)
+		)
 	}
 
 	override suspend fun undeleteCalendarItemById(id: String, rev: String): E =

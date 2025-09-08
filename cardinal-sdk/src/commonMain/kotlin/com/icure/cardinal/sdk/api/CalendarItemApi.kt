@@ -133,6 +133,22 @@ interface CalendarItemBasicFlavouredApi<E : CalendarItem> {
 	suspend fun createCalendarItem(entity: E): E
 
 	/**
+	 * Book a calendar item while checking that there is availability for it in its agenda.
+	 * This method is more restrictive than [createCalendarItem], but it also requires weaker permissions:
+	 * - The calendar item must have booking details initialized ([CalendarItem.agendaId], [CalendarItem.startTime], [CalendarItem.calendarItemTypeId]...)
+	 * - The calendar item can't have some fields that customize the availability calculation initialized ([CalendarItem.resourceGroup], [CalendarItem.availabilitiesAssignmentStrategy])
+	 * - The calendar item booking details must match an availability of the agenda
+	 * This method can also be used by users that would have the permissions to use [createCalendarItem] to ensure there
+	 * is no double-booking.
+	 * This method can't be used with kraken-lite instances.
+	 * @param entity a calendar item with initialized encryption metadata and booking details.
+	 * @return the created calendar item with updated revision.
+	 * @throws IllegalArgumentException if the encryption metadata or booking details of the input was not initialized.
+	 * @throws com.icure.cardinal.sdk.exceptions.MissingAvailabilityException if there is no availability for the calendar item.
+	 */
+	suspend fun bookCalendarItemCheckingAvailability(entity: E): E
+
+	/**
 	 * Restores a calendarItem that was marked as deleted.
 	 * @param id the id of the entity
 	 * @param rev the latest revision of the entity.
