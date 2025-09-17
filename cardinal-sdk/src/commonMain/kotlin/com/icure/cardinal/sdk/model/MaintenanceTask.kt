@@ -18,9 +18,7 @@ import kotlin.collections.List
 import kotlin.collections.Map
 import kotlin.collections.Set
 
-// WARNING: This file is auto-generated. If you change it manually, your changes will be lost.
-// If you want to change the way this class is generated, see [this repo](https://github.com/icure/sdk-codegen).
-sealed interface MaintenanceTask :
+public sealed interface MaintenanceTask :
 	StoredDocument,
 	ICureDocument<String>,
 	HasEncryptionMetadata,
@@ -66,15 +64,10 @@ sealed interface MaintenanceTask :
 	override val encryptedSelf: Base64String?
 
 	override val securityMetadata: SecurityMetadata?
-	// region MaintenanceTask-MaintenanceTask
-	companion object {
-		const val KRAKEN_QUALIFIED_NAME = "org.taktik.icure.entities.MaintenanceTask"
-	}
-	// endregion
 }
 
 @Serializable
-data class DecryptedMaintenanceTask(
+public data class DecryptedMaintenanceTask(
 	override val id: String,
 	override val rev: String? = null,
 	@DefaultValue("emptyList()")
@@ -105,15 +98,10 @@ data class DecryptedMaintenanceTask(
 	override val encryptionKeys: Map<String, Set<Delegation>> = emptyMap(),
 	override val encryptedSelf: Base64String? = null,
 	override val securityMetadata: SecurityMetadata? = null,
-) : MaintenanceTask {
-	// region MaintenanceTask-DecryptedMaintenanceTask
-override fun copyWithSecurityMetadata(securityMetadata: SecurityMetadata, secretForeignKeys: Set<String>): DecryptedMaintenanceTask =
-		copy(securityMetadata = securityMetadata, secretForeignKeys = secretForeignKeys)
-	// endregion
-}
+) : MaintenanceTask
 
 @Serializable
-data class EncryptedMaintenanceTask(
+public data class EncryptedMaintenanceTask(
 	override val id: String,
 	override val rev: String? = null,
 	@DefaultValue("emptyList()")
@@ -144,9 +132,4 @@ data class EncryptedMaintenanceTask(
 	override val encryptionKeys: Map<String, Set<Delegation>> = emptyMap(),
 	override val encryptedSelf: Base64String? = null,
 	override val securityMetadata: SecurityMetadata? = null,
-) : MaintenanceTask {
-	// region MaintenanceTask-EncryptedMaintenanceTask
-override fun copyWithSecurityMetadata(securityMetadata: SecurityMetadata, secretForeignKeys: Set<String>): EncryptedMaintenanceTask =
-		copy(securityMetadata = securityMetadata, secretForeignKeys = secretForeignKeys)
-	// endregion
-}
+) : MaintenanceTask

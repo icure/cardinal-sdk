@@ -11,9 +11,7 @@ import kotlin.String
 import kotlin.collections.List
 import kotlin.collections.Set
 
-// WARNING: This file is auto-generated. If you change it manually, your changes will be lost.
-// If you want to change the way this class is generated, see [this repo](https://github.com/icure/sdk-codegen).
-sealed interface SubContact : Encryptable, ICureDocument<String?> {
+public sealed interface SubContact : Encryptable, ICureDocument<String?> {
 	override val id: String?
 
 	override val created: Long?
@@ -49,13 +47,10 @@ sealed interface SubContact : Encryptable, ICureDocument<String?> {
 	public val services: List<ServiceLink>
 
 	override val encryptedSelf: Base64String?
-	// region SubContact-SubContact
-
-	// endregion
 }
 
 @Serializable
-data class DecryptedSubContact(
+public data class DecryptedSubContact(
 	override val id: String? = null,
 	override val created: Long? = null,
 	override val modified: Long? = null,
@@ -77,14 +72,10 @@ data class DecryptedSubContact(
 	@DefaultValue("emptyList()")
 	override val services: List<ServiceLink> = emptyList(),
 	override val encryptedSelf: Base64String? = null,
-) : SubContact {
-	// region SubContact-DecryptedSubContact
-
-	// endregion
-}
+) : SubContact
 
 @Serializable
-data class EncryptedSubContact(
+public data class EncryptedSubContact(
 	override val id: String? = null,
 	override val created: Long? = null,
 	override val modified: Long? = null,
@@ -106,8 +97,4 @@ data class EncryptedSubContact(
 	@DefaultValue("emptyList()")
 	override val services: List<ServiceLink> = emptyList(),
 	override val encryptedSelf: Base64String? = null,
-) : SubContact {
-	// region SubContact-EncryptedSubContact
-
-	// endregion
-}
+) : SubContact

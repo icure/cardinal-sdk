@@ -30,9 +30,7 @@ import kotlin.collections.List
 import kotlin.collections.Map
 import kotlin.collections.Set
 
-// WARNING: This file is auto-generated. If you change it manually, your changes will be lost.
-// If you want to change the way this class is generated, see [this repo](https://github.com/icure/sdk-codegen).
-sealed interface HealthElement :
+public sealed interface HealthElement :
 	StoredDocument,
 	ICureDocument<String>,
 	HasEncryptionMetadata,
@@ -104,16 +102,10 @@ sealed interface HealthElement :
 	override val encryptedSelf: Base64String?
 
 	override val securityMetadata: SecurityMetadata?
-	// region HealthElement-HealthElement
-
-	companion object {
-		const val KRAKEN_QUALIFIED_NAME = "org.taktik.icure.entities.HealthElement"
-	}
-	// endregion
 }
 
 @Serializable
-data class DecryptedHealthElement(
+public data class DecryptedHealthElement(
 	override val id: String,
 	@DefaultValue("emptyList()")
 	override val identifiers: List<Identifier> = emptyList(),
@@ -161,15 +153,10 @@ data class DecryptedHealthElement(
 	override val encryptionKeys: Map<String, Set<Delegation>> = emptyMap(),
 	override val encryptedSelf: Base64String? = null,
 	override val securityMetadata: SecurityMetadata? = null,
-) : HealthElement {
-	// region HealthElement-DecryptedHealthElement
-override fun copyWithSecurityMetadata(securityMetadata: SecurityMetadata, secretForeignKeys: Set<String>): DecryptedHealthElement =
-		copy(securityMetadata = securityMetadata, secretForeignKeys = secretForeignKeys)
-	// endregion
-}
+) : HealthElement
 
 @Serializable
-data class EncryptedHealthElement(
+public data class EncryptedHealthElement(
 	override val id: String,
 	@DefaultValue("emptyList()")
 	override val identifiers: List<Identifier> = emptyList(),
@@ -217,9 +204,4 @@ data class EncryptedHealthElement(
 	override val encryptionKeys: Map<String, Set<Delegation>> = emptyMap(),
 	override val encryptedSelf: Base64String? = null,
 	override val securityMetadata: SecurityMetadata? = null,
-) : HealthElement {
-	// region HealthElement-EncryptedHealthElement
-override fun copyWithSecurityMetadata(securityMetadata: SecurityMetadata, secretForeignKeys: Set<String>): EncryptedHealthElement =
-		copy(securityMetadata = securityMetadata, secretForeignKeys = secretForeignKeys)
-	// endregion
-}
+) : HealthElement
