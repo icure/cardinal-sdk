@@ -8,11 +8,8 @@ import kotlin.String
 import kotlin.collections.List
 import kotlin.collections.Set
 
-// WARNING: This file is auto-generated. If you change it manually, your changes will be lost.
-// If you want to change the way this class is generated, see [this repo](https://github.com/icure/sdk-codegen).
-
 @Serializable
-data class EmbeddedTimeTableItem(
+public data class EmbeddedTimeTableItem(
 	public val rrule: String,
 	public val rruleStartDate: Int? = null,
 	public val notBeforeInMinutes: Int? = null,
@@ -25,8 +22,4 @@ data class EmbeddedTimeTableItem(
 	public val reservingRights: Set<String> = emptySet(),
 	@DefaultValue("false")
 	public val `public`: Boolean = false,
-) {
-	// region EmbeddedTimeTableItem-EmbeddedTimeTableItem
-
-	// endregion
-}
+)

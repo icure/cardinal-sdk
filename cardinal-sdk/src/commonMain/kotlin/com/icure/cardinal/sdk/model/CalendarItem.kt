@@ -25,9 +25,7 @@ import kotlin.String
 import kotlin.collections.Map
 import kotlin.collections.Set
 
-// WARNING: This file is auto-generated. If you change it manually, your changes will be lost.
-// If you want to change the way this class is generated, see [this repo](https://github.com/icure/sdk-codegen).
-sealed interface CalendarItem :
+public sealed interface CalendarItem :
 	StoredDocument,
 	ICureDocument<String>,
 	HasEncryptionMetadata,
@@ -133,16 +131,10 @@ sealed interface CalendarItem :
 		@SerialName("L")
 		Loose("L"),
 	}
-	// region CalendarItem-CalendarItem
-
-	companion object {
-		const val KRAKEN_QUALIFIED_NAME = "org.taktik.icure.entities.CalendarItem"
-	}
-	// endregion
 }
 
 @Serializable
-data class DecryptedCalendarItem(
+public data class DecryptedCalendarItem(
 	override val id: String,
 	override val rev: String? = null,
 	override val created: Long? = null,
@@ -199,29 +191,10 @@ data class DecryptedCalendarItem(
 	override val encryptionKeys: Map<String, Set<Delegation>> = emptyMap(),
 	override val encryptedSelf: Base64String? = null,
 	override val securityMetadata: SecurityMetadata? = null,
-) : CalendarItem {
-	// region CalendarItem-DecryptedCalendarItem
-override fun copyWithSecurityMetadata(securityMetadata: SecurityMetadata, secretForeignKeys: Set<String>): DecryptedCalendarItem =
-		copy(securityMetadata = securityMetadata, secretForeignKeys = secretForeignKeys)
-
-	/**
-	 * Resets the following delegation objects from the
-	 * [CalendarItem] instance: [CalendarItem.cryptedForeignKeys], [CalendarItem.secretForeignKeys].
-	 *
-	 * The [CalendarItem.delegations] & [CalendarItem.encryptionKeys] objects are not removed because
-	 * in the case the [CalendarItem] is saved in the DB & then encrypted,
-	 * if later we remove the patient from it, it'd reset the delegations
-	 * and encryptionKeys thus making impossible to further access it.
-	 */
-	fun resetCalendarDelegationObjects(): DecryptedCalendarItem = copy(
-		cryptedForeignKeys = emptyMap(),
-		secretForeignKeys = emptySet()
-	)
-	// endregion
-}
+) : CalendarItem
 
 @Serializable
-data class EncryptedCalendarItem(
+public data class EncryptedCalendarItem(
 	override val id: String,
 	override val rev: String? = null,
 	override val created: Long? = null,
@@ -278,23 +251,4 @@ data class EncryptedCalendarItem(
 	override val encryptionKeys: Map<String, Set<Delegation>> = emptyMap(),
 	override val encryptedSelf: Base64String? = null,
 	override val securityMetadata: SecurityMetadata? = null,
-) : CalendarItem {
-	// region CalendarItem-EncryptedCalendarItem
-override fun copyWithSecurityMetadata(securityMetadata: SecurityMetadata, secretForeignKeys: Set<String>): EncryptedCalendarItem =
-		copy(securityMetadata = securityMetadata, secretForeignKeys = secretForeignKeys)
-
-	/**
-	 * Resets the following delegation objects from the
-	 * [CalendarItem] instance: [CalendarItem.cryptedForeignKeys], [CalendarItem.secretForeignKeys].
-	 *
-	 * The [CalendarItem.delegations] & [CalendarItem.encryptionKeys] objects are not removed because
-	 * in the case the [CalendarItem] is saved in the DB & then encrypted,
-	 * if later we remove the patient from it, it'd reset the delegations
-	 * and encryptionKeys thus making impossible to further access it.
-	 */
-	fun resetCalendarDelegationObjects(): EncryptedCalendarItem = copy(
-		cryptedForeignKeys = emptyMap(),
-		secretForeignKeys = emptySet()
-	)
-	// endregion
-}
+) : CalendarItem
