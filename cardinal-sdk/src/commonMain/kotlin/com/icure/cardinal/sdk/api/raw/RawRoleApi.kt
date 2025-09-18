@@ -4,6 +4,7 @@ import com.icure.cardinal.sdk.model.ListOfIds
 import com.icure.cardinal.sdk.model.Role
 import com.icure.cardinal.sdk.model.couchdb.DocIdentifier
 import com.icure.utils.InternalIcureApi
+import kotlin.Int
 import kotlin.String
 import kotlin.collections.List
 import kotlin.collections.Set
@@ -24,19 +25,28 @@ public interface RawRoleApi {
 
 	suspend fun createRole(
 		name: String,
+		inheritsUpTo: Int? = null,
 		permissions: Set<String>,
 	): HttpResponse<Role>
 
 	suspend fun createRoleInGroup(
 		name: String,
 		groupId: String,
+		inheritsUpTo: Int? = null,
 		permissions: Set<String>,
 	): HttpResponse<Role>
 
-	suspend fun modifyRole(
+	suspend fun modifyRolePermissions(
 		roleId: String,
 		permissions: Set<String>,
 	): HttpResponse<Role>
+
+	suspend fun modifyRoleVisibility(
+		roleId: String,
+		inheritsUpTo: Int,
+	): HttpResponse<Role>
+
+	suspend fun resetRoleVisibility(roleId: String): HttpResponse<Role>
 
 	suspend fun purgeRole(
 		roleId: String,

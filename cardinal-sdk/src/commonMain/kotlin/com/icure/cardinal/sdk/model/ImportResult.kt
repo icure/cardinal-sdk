@@ -7,11 +7,8 @@ import kotlin.String
 import kotlin.collections.List
 import kotlin.collections.Map
 
-// WARNING: This file is auto-generated. If you change it manually, your changes will be lost.
-// If you want to change the way this class is generated, see [this repo](https://github.com/icure/sdk-codegen).
-
 @Serializable
-data class ImportResult(
+public data class ImportResult(
 	public val patient: DecryptedPatient? = null,
 	@DefaultValue("emptyList()")
 	public val hes: List<DecryptedHealthElement> = emptyList(),
@@ -29,8 +26,4 @@ data class ImportResult(
 	public val documents: List<DecryptedDocument> = emptyList(),
 	@DefaultValue("emptyMap()")
 	public val attachments: Map<String, MimeAttachment> = emptyMap(),
-) {
-	// region ImportResult-ImportResult
-
-	// endregion
-}
+)

@@ -55,9 +55,7 @@ import kotlin.collections.List
 import kotlin.collections.Map
 import kotlin.collections.Set
 
-// WARNING: This file is auto-generated. If you change it manually, your changes will be lost.
-// If you want to change the way this class is generated, see [this repo](https://github.com/icure/sdk-codegen).
-sealed interface Patient :
+public sealed interface Patient :
 	StoredDocument,
 	ICureDocument<String>,
 	Person,
@@ -229,15 +227,10 @@ sealed interface Patient :
 	public val employementInfos: List<EmploymentInfo>
 
 	override val parentId: Nothing?
-	// region Patient-Patient
-	companion object {
-		const val KRAKEN_QUALIFIED_NAME = "org.taktik.icure.entities.Patient"
-	}
-	// endregion
 }
 
 @Serializable
-data class DecryptedPatient(
+public data class DecryptedPatient(
 	override val id: String,
 	@DefaultValue("emptyList()")
 	override val identifier: List<Identifier> = emptyList(),
@@ -358,15 +351,10 @@ data class DecryptedPatient(
 	@DefaultValue("emptyList()")
 	override val employementInfos: List<DecryptedEmploymentInfo> = emptyList(),
 	override val parentId: Nothing? = null,
-) : Patient {
-	// region Patient-DecryptedPatient
-override fun copyWithSecurityMetadata(securityMetadata: SecurityMetadata, secretForeignKeys: Set<String>): DecryptedPatient =
-		copy(securityMetadata = securityMetadata, secretForeignKeys = secretForeignKeys)
-	// endregion
-}
+) : Patient
 
 @Serializable
-data class EncryptedPatient(
+public data class EncryptedPatient(
 	override val id: String,
 	@DefaultValue("emptyList()")
 	override val identifier: List<Identifier> = emptyList(),
@@ -487,9 +475,4 @@ data class EncryptedPatient(
 	@DefaultValue("emptyList()")
 	override val employementInfos: List<EncryptedEmploymentInfo> = emptyList(),
 	override val parentId: Nothing? = null,
-) : Patient {
-	// region Patient-EncryptedPatient
-override fun copyWithSecurityMetadata(securityMetadata: SecurityMetadata, secretForeignKeys: Set<String>): EncryptedPatient =
-		copy(securityMetadata = securityMetadata, secretForeignKeys = secretForeignKeys)
-	// endregion
-}
+) : Patient

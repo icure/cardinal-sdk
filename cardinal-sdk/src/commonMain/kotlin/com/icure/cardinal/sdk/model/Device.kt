@@ -21,11 +21,8 @@ import kotlin.collections.List
 import kotlin.collections.Map
 import kotlin.collections.Set
 
-// WARNING: This file is auto-generated. If you change it manually, your changes will be lost.
-// If you want to change the way this class is generated, see [this repo](https://github.com/icure/sdk-codegen).
-
 @Serializable
-data class Device(
+public data class Device(
 	override val id: String,
 	override val rev: String? = null,
 	override val deletionDate: Long? = null,
@@ -66,10 +63,4 @@ data class Device(
 	@DefaultValue("emptySet()")
 	override val publicKeysForOaepWithSha256: Set<SpkiHexString> = emptySet(),
 	override val cryptoActorProperties: Set<DecryptedPropertyStub>? = null,
-) : StoredDocument, ICureDocument<String>, Named, CryptoActor, DataOwner {
-	// region Device-Device
-	companion object {
-		const val KRAKEN_QUALIFIED_NAME = "org.taktik.icure.entities.Device"
-	}
-	// endregion
-}
+) : StoredDocument, ICureDocument<String>, Named, CryptoActor, DataOwner

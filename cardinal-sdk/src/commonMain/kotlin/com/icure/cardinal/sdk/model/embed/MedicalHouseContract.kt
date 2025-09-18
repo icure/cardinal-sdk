@@ -9,9 +9,7 @@ import kotlin.Long
 import kotlin.String
 import kotlin.collections.Map
 
-// WARNING: This file is auto-generated. If you change it manually, your changes will be lost.
-// If you want to change the way this class is generated, see [this repo](https://github.com/icure/sdk-codegen).
-sealed interface MedicalHouseContract : Encryptable {
+public sealed interface MedicalHouseContract : Encryptable {
 	public val contractId: String?
 
 	public val validFrom: Long?
@@ -77,13 +75,10 @@ sealed interface MedicalHouseContract : Encryptable {
 	public val receipts: Map<String, String>
 
 	override val encryptedSelf: Base64String?
-	// region MedicalHouseContract-MedicalHouseContract
-
-	// endregion
 }
 
 @Serializable
-data class DecryptedMedicalHouseContract(
+public data class DecryptedMedicalHouseContract(
 	override val contractId: String? = null,
 	override val validFrom: Long? = null,
 	override val validTo: Long? = null,
@@ -127,14 +122,10 @@ data class DecryptedMedicalHouseContract(
 	@DefaultValue("emptyMap()")
 	override val receipts: Map<String, String> = emptyMap(),
 	override val encryptedSelf: Base64String? = null,
-) : MedicalHouseContract {
-	// region MedicalHouseContract-DecryptedMedicalHouseContract
-
-	// endregion
-}
+) : MedicalHouseContract
 
 @Serializable
-data class EncryptedMedicalHouseContract(
+public data class EncryptedMedicalHouseContract(
 	override val contractId: String? = null,
 	override val validFrom: Long? = null,
 	override val validTo: Long? = null,
@@ -178,8 +169,4 @@ data class EncryptedMedicalHouseContract(
 	@DefaultValue("emptyMap()")
 	override val receipts: Map<String, String> = emptyMap(),
 	override val encryptedSelf: Base64String? = null,
-) : MedicalHouseContract {
-	// region MedicalHouseContract-EncryptedMedicalHouseContract
-
-	// endregion
-}
+) : MedicalHouseContract

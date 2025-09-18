@@ -6,7 +6,9 @@ import com.icure.cardinal.sdk.api.raw.RawApiConfig
 import com.icure.cardinal.sdk.api.raw.RawApplicationSettingsApi
 import com.icure.cardinal.sdk.api.raw.wrap
 import com.icure.cardinal.sdk.auth.services.AuthProvider
-import com.icure.cardinal.sdk.model.ApplicationSettings
+import com.icure.cardinal.sdk.model.EncryptedApplicationSettings
+import com.icure.cardinal.sdk.model.requests.BulkShareOrUpdateMetadataParams
+import com.icure.cardinal.sdk.model.requests.EntityBulkShareResult
 import com.icure.utils.InternalIcureApi
 import io.ktor.client.request.accept
 import io.ktor.client.request.parameter
@@ -16,6 +18,7 @@ import io.ktor.http.appendPathSegments
 import io.ktor.http.contentType
 import io.ktor.http.takeFrom
 import io.ktor.util.date.GMTDate
+import kotlin.Nothing
 import kotlin.String
 import kotlin.collections.List
 
@@ -29,7 +32,7 @@ class RawApplicationSettingsApiImpl(
 ) : BaseRawApi(rawApiConfig), RawApplicationSettingsApi {
 	// region common endpoints
 
-	override suspend fun getApplicationSettings(): HttpResponse<List<ApplicationSettings>> =
+	override suspend fun getApplicationSettings(): HttpResponse<List<EncryptedApplicationSettings>> =
 		get(authProvider) {
 			url {
 				takeFrom(apiUrl)
@@ -39,7 +42,9 @@ class RawApplicationSettingsApiImpl(
 			accept(Application.Json)
 		}.wrap()
 
-	override suspend fun createApplicationSettings(applicationSettingsDto: ApplicationSettings): HttpResponse<ApplicationSettings> =
+	override suspend fun createApplicationSettings(
+		applicationSettingsDto: EncryptedApplicationSettings,
+	): HttpResponse<EncryptedApplicationSettings> =
 		post(authProvider) {
 			url {
 				takeFrom(apiUrl)
@@ -50,7 +55,9 @@ class RawApplicationSettingsApiImpl(
 			setBody(applicationSettingsDto)
 		}.wrap()
 
-	override suspend fun updateApplicationSettings(applicationSettingsDto: ApplicationSettings): HttpResponse<ApplicationSettings> =
+	override suspend fun updateApplicationSettings(
+		applicationSettingsDto: EncryptedApplicationSettings,
+	): HttpResponse<EncryptedApplicationSettings> =
 		put(authProvider) {
 			url {
 				takeFrom(apiUrl)
@@ -59,6 +66,30 @@ class RawApplicationSettingsApiImpl(
 			contentType(Application.Json)
 			accept(Application.Json)
 			setBody(applicationSettingsDto)
+		}.wrap()
+
+	override suspend fun bulkShare(
+		request: BulkShareOrUpdateMetadataParams,
+	): HttpResponse<List<EntityBulkShareResult<EncryptedApplicationSettings>>> =
+		put(authProvider) {
+			url {
+				takeFrom(apiUrl)
+				appendPathSegments("rest", "v2", "appsettings", "bulkSharedMetadataUpdate")
+			}
+			contentType(Application.Json)
+			accept(Application.Json)
+			setBody(request)
+		}.wrap()
+
+	override suspend fun bulkShareMinimal(request: BulkShareOrUpdateMetadataParams): HttpResponse<List<EntityBulkShareResult<Nothing>>> =
+		put(authProvider) {
+			url {
+				takeFrom(apiUrl)
+				appendPathSegments("rest", "v2", "appsettings", "bulkSharedMetadataUpdateMinimal")
+			}
+			contentType(Application.Json)
+			accept(Application.Json)
+			setBody(request)
 		}.wrap()
 
 	// endregion
