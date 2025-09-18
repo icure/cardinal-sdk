@@ -16,7 +16,6 @@ import io.ktor.client.request.accept
 import io.ktor.client.request.parameter
 import io.ktor.http.ContentType.Application
 import io.ktor.http.appendPathSegments
-import io.ktor.http.contentType
 import io.ktor.http.takeFrom
 import io.ktor.util.date.GMTDate
 import kotlin.Boolean
@@ -148,12 +147,12 @@ class RawAnonymousApiImpl(
 	// region anonymous icure endpoints
 
 	override suspend fun getPermissions(): HttpResponse<List<String>> =
-		post {
+		get {
 			url {
 				takeFrom(apiUrl)
 				appendPathSegments("rest", "v2", "aa", "icure", "permissions")
+				parameter("ts", GMTDate().timestamp)
 			}
-			contentType(Application.Json)
 			accept(Application.Json)
 		}.wrap()
 
