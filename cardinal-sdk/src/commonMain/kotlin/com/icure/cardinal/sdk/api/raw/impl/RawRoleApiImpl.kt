@@ -18,6 +18,7 @@ import io.ktor.http.appendPathSegments
 import io.ktor.http.contentType
 import io.ktor.http.takeFrom
 import io.ktor.util.date.GMTDate
+import kotlin.Int
 import kotlin.String
 import kotlin.collections.List
 import kotlin.collections.Set
@@ -75,12 +76,14 @@ class RawRoleApiImpl(
 
 	override suspend fun createRole(
 		name: String,
+		inheritsUpTo: Int?,
 		permissions: Set<String>,
 	): HttpResponse<Role> =
 		post(authProvider) {
 			url {
 				takeFrom(apiUrl)
 				appendPathSegments("rest", "v2", "role", name)
+				parameter("inheritsUpTo", inheritsUpTo)
 			}
 			contentType(Application.Json)
 			accept(Application.Json)
@@ -90,19 +93,21 @@ class RawRoleApiImpl(
 	override suspend fun createRoleInGroup(
 		name: String,
 		groupId: String,
+		inheritsUpTo: Int?,
 		permissions: Set<String>,
 	): HttpResponse<Role> =
 		post(authProvider) {
 			url {
 				takeFrom(apiUrl)
 				appendPathSegments("rest", "v2", "role", name, "inGroup", groupId)
+				parameter("inheritsUpTo", inheritsUpTo)
 			}
 			contentType(Application.Json)
 			accept(Application.Json)
 			setBody(permissions)
 		}.wrap()
 
-	override suspend fun modifyRole(
+	override suspend fun modifyRolePermissions(
 		roleId: String,
 		permissions: Set<String>,
 	): HttpResponse<Role> =
@@ -114,6 +119,28 @@ class RawRoleApiImpl(
 			contentType(Application.Json)
 			accept(Application.Json)
 			setBody(permissions)
+		}.wrap()
+
+	override suspend fun modifyRoleVisibility(
+		roleId: String,
+		inheritsUpTo: Int,
+	): HttpResponse<Role> =
+		put(authProvider) {
+			url {
+				takeFrom(apiUrl)
+				appendPathSegments("rest", "v2", "role", roleId, "inheritsUpTo", "$inheritsUpTo")
+			}
+			contentType(Application.Json)
+			accept(Application.Json)
+		}.wrap()
+
+	override suspend fun resetRoleVisibility(roleId: String): HttpResponse<Role> =
+		delete(authProvider) {
+			url {
+				takeFrom(apiUrl)
+				appendPathSegments("rest", "v2", "role", roleId, "inheritsUpTo")
+			}
+			accept(Application.Json)
 		}.wrap()
 
 	override suspend fun purgeRole(
