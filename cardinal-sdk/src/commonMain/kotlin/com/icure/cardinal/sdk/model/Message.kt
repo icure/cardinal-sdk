@@ -19,9 +19,7 @@ import kotlin.collections.List
 import kotlin.collections.Map
 import kotlin.collections.Set
 
-// WARNING: This file is auto-generated. If you change it manually, your changes will be lost.
-// If you want to change the way this class is generated, see [this repo](https://github.com/icure/sdk-codegen).
-sealed interface Message :
+public sealed interface Message :
 	StoredDocument,
 	ICureDocument<String>,
 	HasEncryptionMetadata,
@@ -103,15 +101,10 @@ sealed interface Message :
 	override val encryptedSelf: Base64String?
 
 	override val securityMetadata: SecurityMetadata?
-	// region Message-Message
-	companion object{
-		const val KRAKEN_QUALIFIED_NAME = "org.taktik.icure.entities.Message"
-	}
-	// endregion
 }
 
 @Serializable
-data class DecryptedMessage(
+public data class DecryptedMessage(
 	override val id: String,
 	override val rev: String? = null,
 	override val created: Long? = null,
@@ -166,15 +159,10 @@ data class DecryptedMessage(
 	override val encryptionKeys: Map<String, Set<Delegation>> = emptyMap(),
 	override val encryptedSelf: Base64String? = null,
 	override val securityMetadata: SecurityMetadata? = null,
-) : Message {
-	// region Message-DecryptedMessage
-override fun copyWithSecurityMetadata(securityMetadata: SecurityMetadata, secretForeignKeys: Set<String>): DecryptedMessage =
-		copy(securityMetadata = securityMetadata, secretForeignKeys = secretForeignKeys)
-	// endregion
-}
+) : Message
 
 @Serializable
-data class EncryptedMessage(
+public data class EncryptedMessage(
 	override val id: String,
 	override val rev: String? = null,
 	override val created: Long? = null,
@@ -229,9 +217,4 @@ data class EncryptedMessage(
 	override val encryptionKeys: Map<String, Set<Delegation>> = emptyMap(),
 	override val encryptedSelf: Base64String? = null,
 	override val securityMetadata: SecurityMetadata? = null,
-) : Message {
-	// region Message-EncryptedMessage
-override fun copyWithSecurityMetadata(securityMetadata: SecurityMetadata, secretForeignKeys: Set<String>): EncryptedMessage =
-		copy(securityMetadata = securityMetadata, secretForeignKeys = secretForeignKeys)
-	// endregion
-}
+) : Message
