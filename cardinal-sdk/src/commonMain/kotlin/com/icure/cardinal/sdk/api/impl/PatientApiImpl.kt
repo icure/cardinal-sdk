@@ -598,7 +598,7 @@ private class AbstractPatientBasicFlavourlessApi(val rawApi: RawPatientApi, val 
 		rawApi.deletePatients(ListOfIds(entityIds)).successBody().toStoredDocumentIdentifier()
 
 	override suspend fun deletePatientById(entityId: String, rev: String): StoredDocumentIdentifier =
-		rawApi.deletePatientInGroup(entityId, rev).successBodyOrThrowRevisionConflict().toStoredDocumentIdentifier()
+		rawApi.deletePatient(entityId, rev).successBodyOrThrowRevisionConflict().toStoredDocumentIdentifier()
 
 	override suspend fun deletePatientsByIds(entityIds: List<StoredDocumentIdentifier>): List<StoredDocumentIdentifier> =
 		rawApi.deletePatientsWithRev(ListOfIdsAndRev(entityIds)).successBody().toStoredDocumentIdentifier()
