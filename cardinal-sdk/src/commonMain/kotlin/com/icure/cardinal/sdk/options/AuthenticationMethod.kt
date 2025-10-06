@@ -6,12 +6,14 @@ import com.icure.cardinal.sdk.api.raw.RawMessageGatewayApi
 import com.icure.cardinal.sdk.api.raw.impl.RawAnonymousAuthApiImpl
 import com.icure.cardinal.sdk.api.raw.impl.RawUserApiImpl
 import com.icure.cardinal.sdk.auth.AuthSecretDetails
+import com.icure.cardinal.sdk.auth.AuthSecretDetails.*
 import com.icure.cardinal.sdk.auth.AuthSecretProvider
 import com.icure.cardinal.sdk.auth.AuthenticationProcessApi
 import com.icure.cardinal.sdk.auth.Credentials
+import com.icure.cardinal.sdk.auth.ExternalJwtProviderAuthentication
 import com.icure.cardinal.sdk.auth.JwtCredentials
-import com.icure.cardinal.sdk.auth.ThirdPartyAuthentication
-import com.icure.cardinal.sdk.auth.ThirdPartyProvider
+import com.icure.cardinal.sdk.auth.OAuthAuthentication
+import com.icure.cardinal.sdk.auth.OAuthProvider
 import com.icure.cardinal.sdk.auth.UsernameLongToken
 import com.icure.cardinal.sdk.auth.UsernamePassword
 import com.icure.cardinal.sdk.auth.services.AuthProvider
@@ -119,7 +121,7 @@ sealed interface AuthenticationMethod {
 			@Serializable
 			data class LongLivedToken(val token: String) : InitialSecret
 			@Serializable
-			data class OAuth(val secret: String, val oauthType: ThirdPartyProvider) : InitialSecret
+			data class OAuth(val secret: String, val oauthType: OAuthProvider) : InitialSecret
 		}
 	}
 }
@@ -137,11 +139,20 @@ fun AuthenticationMethod.getAuthProvider(
 	messageGatewayApi: RawMessageGatewayApi
 ): AuthProvider = when(this) {
 	is AuthenticationMethod.UsingCredentials -> when (this.credentials) {
-		is ThirdPartyAuthentication -> smartAuthWithConstantSecret(
+		is ExternalJwtProviderAuthentication -> smartAuthWithConstantSecret(
 			authApi,
 			cryptoService,
 			options.getPasswordClientSideSalt(applicationId),
-			AuthSecretDetails.ExternalAuthenticationDetails(this.credentials.token, this.credentials.provider),
+			ExternalJwtAuthenticationDetails(this.credentials.token, this.credentials.configId),
+			null,
+			messageGatewayApi,
+			applicationId
+		)
+		is OAuthAuthentication -> smartAuthWithConstantSecret(
+			authApi,
+			cryptoService,
+			options.getPasswordClientSideSalt(applicationId),
+			OAuthAuthenticationDetails(this.credentials.token, this.credentials.provider),
 			null,
 			messageGatewayApi,
 			applicationId
@@ -150,7 +161,7 @@ fun AuthenticationMethod.getAuthProvider(
 			authApi,
 			cryptoService,
 			options.getPasswordClientSideSalt(applicationId),
-			AuthSecretDetails.LongLivedTokenDetails(this.credentials.token),
+			LongLivedTokenDetails(this.credentials.token),
 			this.credentials.username,
 			messageGatewayApi,
 			applicationId
@@ -159,7 +170,7 @@ fun AuthenticationMethod.getAuthProvider(
 			authApi,
 			cryptoService,
 			options.getPasswordClientSideSalt(applicationId),
-			AuthSecretDetails.PasswordDetails(this.credentials.password),
+			PasswordDetails(this.credentials.password),
 			this.credentials.username,
 			messageGatewayApi,
 			applicationId
@@ -177,7 +188,7 @@ fun AuthenticationMethod.getAuthProvider(
 			is AuthenticationMethod.UsingSecretProvider.InitialSecret.LongLivedToken ->
 				AuthSecretDetails.LongLivedTokenDetails(initialSecret.token)
 			is AuthenticationMethod.UsingSecretProvider.InitialSecret.OAuth ->
-				AuthSecretDetails.ExternalAuthenticationDetails(initialSecret.secret, initialSecret.oauthType)
+				AuthSecretDetails.OAuthAuthenticationDetails(initialSecret.secret, initialSecret.oauthType)
 			is AuthenticationMethod.UsingSecretProvider.InitialSecret.Password ->
 				AuthSecretDetails.PasswordDetails(initialSecret.password)
 			null -> null

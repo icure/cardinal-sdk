@@ -1,6 +1,6 @@
 package com.icure.cardinal.sdk.py.options
 
-import com.icure.cardinal.sdk.auth.ThirdPartyProvider
+import com.icure.cardinal.sdk.auth.OAuthProvider
 import com.icure.cardinal.sdk.options.AuthenticationMethod
 import kotlinx.serialization.Serializable
 
@@ -17,7 +17,7 @@ internal sealed interface PyAuthMethod {
 		override fun toKt() = AuthenticationMethod.UsingCredentials(com.icure.cardinal.sdk.auth.UsernameLongToken(username, token))
 	}
 	@Serializable
-	data class ThirdPartyAuthentication(val token: String, val provider: ThirdPartyProvider): PyAuthMethod {
-		override fun toKt() = AuthenticationMethod.UsingCredentials(com.icure.cardinal.sdk.auth.ThirdPartyAuthentication(token, provider))
+	data class ThirdPartyAuthentication(val token: String, val provider: OAuthProvider): PyAuthMethod {
+		override fun toKt() = AuthenticationMethod.UsingCredentials(com.icure.cardinal.sdk.auth.OAuthAuthentication(token, provider))
 	}
 }

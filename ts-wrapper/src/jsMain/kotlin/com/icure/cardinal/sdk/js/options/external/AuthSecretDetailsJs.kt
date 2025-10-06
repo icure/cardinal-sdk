@@ -31,13 +31,22 @@ external class LongLivedTokenDetailsJs(
 	val secret: String
 }
 
-@JsName("ExternalAuthenticationDetails")
-external class ExternalAuthenticationDetailsJs(
+@JsName("OAuthAuthenticationDetails")
+external class OAuthAuthenticationDetailsJs(
 	secret: String,
 	oauthType: String
 ) : AuthSecretDetailsJs {
 	val secret: String
 	val oauthType: String
+}
+
+@JsName("ExternalJwtAuthenticationDetails")
+external class ExternalJwtAuthenticationDetailsJs(
+    secret: String,
+    configId: String
+) : AuthSecretDetailsJs {
+    val secret: String
+    val configId: String
 }
 
 @JsName("DigitalIdDetails")

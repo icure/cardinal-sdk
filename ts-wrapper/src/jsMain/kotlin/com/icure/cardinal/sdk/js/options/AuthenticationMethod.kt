@@ -9,8 +9,8 @@ import com.icure.cardinal.sdk.auth.AuthenticationProcessTemplateParameters
 import com.icure.cardinal.sdk.auth.JwtBearer
 import com.icure.cardinal.sdk.auth.JwtCredentials
 import com.icure.cardinal.sdk.auth.JwtRefresh
-import com.icure.cardinal.sdk.auth.ThirdPartyAuthentication
-import com.icure.cardinal.sdk.auth.ThirdPartyProvider
+import com.icure.cardinal.sdk.auth.OAuthAuthentication
+import com.icure.cardinal.sdk.auth.OAuthProvider
 import com.icure.cardinal.sdk.auth.UsernameLongToken
 import com.icure.cardinal.sdk.auth.UsernamePassword
 import com.icure.cardinal.sdk.js.auth.CaptchaOptionsJs
@@ -27,7 +27,8 @@ import com.icure.cardinal.sdk.js.options.external.AuthenticationProcessApiJs
 import com.icure.cardinal.sdk.js.options.external.AuthenticationProcessRequestJs
 import com.icure.cardinal.sdk.js.options.external.AuthenticationProcessTemplateParametersJs
 import com.icure.cardinal.sdk.js.options.external.DigitalIdDetailsJs
-import com.icure.cardinal.sdk.js.options.external.ExternalAuthenticationDetailsJs
+import com.icure.cardinal.sdk.js.options.external.ExternalJwtAuthenticationDetailsJs
+import com.icure.cardinal.sdk.js.options.external.OAuthAuthenticationDetailsJs
 import com.icure.cardinal.sdk.js.options.external.InitialSecretJs
 import com.icure.cardinal.sdk.js.options.external.InitialSecretLongLivedTokenJs
 import com.icure.cardinal.sdk.js.options.external.InitialSecretOAuthJs
@@ -58,9 +59,9 @@ internal fun AuthenticationMethodJs.toKt() = when (this) {
 			token = token
 		))
 	is AuthenticationMethodUsingCredentialsThirdPartyAuthJs ->
-		AuthenticationMethod.UsingCredentials(ThirdPartyAuthentication(
+		AuthenticationMethod.UsingCredentials(OAuthAuthentication(
 			token = token,
-			provider = ThirdPartyProvider.valueOf(provider)
+			provider = OAuthProvider.valueOf(provider)
 		))
 	is AuthenticationMethodUsingCredentialsJwtCredentialsJs ->
 		AuthenticationMethod.UsingCredentials(JwtCredentials(
@@ -85,7 +86,7 @@ private fun InitialSecretJs.toKt(): AuthenticationMethod.UsingSecretProvider.Ini
 	is InitialSecretOAuthJs ->
 		AuthenticationMethod.UsingSecretProvider.InitialSecret.OAuth(
 			secret,
-			ThirdPartyProvider.valueOf(oauthType)
+			OAuthProvider.valueOf(oauthType)
 		)
 	is InitialSecretLongLivedTokenJs ->
 		AuthenticationMethod.UsingSecretProvider.InitialSecret.LongLivedToken(token)
@@ -108,8 +109,8 @@ private class AuthSecretProviderBridge(
 }
 
 private fun AuthSecretDetailsJs.toKt(): AuthSecretDetails = when (this) {
-	is ExternalAuthenticationDetailsJs ->
-		AuthSecretDetails.ExternalAuthenticationDetails(secret = secret, oauthType = ThirdPartyProvider.valueOf(oauthType))
+	is OAuthAuthenticationDetailsJs ->
+		AuthSecretDetails.OAuthAuthenticationDetails(secret = secret, oauthType = OAuthProvider.valueOf(oauthType))
 	is LongLivedTokenDetailsJs ->
 		AuthSecretDetails.LongLivedTokenDetails(secret = secret)
 	is PasswordDetailsJs ->
@@ -123,8 +124,8 @@ private fun AuthSecretDetailsJs.toKt(): AuthSecretDetails = when (this) {
 	else -> throw IllegalArgumentException("Unrecognised auth secret details: ${this::class.simpleName}")
 }
 private fun AuthSecretDetails.toJs(): AuthSecretDetailsJs = when (this) {
-	is AuthSecretDetails.ExternalAuthenticationDetails ->
-		ExternalAuthenticationDetailsJs(secret = secret, oauthType = oauthType.name)
+	is AuthSecretDetails.OAuthAuthenticationDetails ->
+		OAuthAuthenticationDetailsJs(secret = secret, oauthType = oauthType.name)
 	is AuthSecretDetails.LongLivedTokenDetails ->
 		LongLivedTokenDetailsJs(secret = secret)
 	is AuthSecretDetails.PasswordDetails ->
@@ -135,6 +136,8 @@ private fun AuthSecretDetails.toJs(): AuthSecretDetailsJs = when (this) {
 		ShortLivedTokenDetailsJs(secret = secret, authenticationProcessInfo = authenticationProcessInfo.toJs())
 	is AuthSecretDetails.TwoFactorAuthTokenDetails ->
 		TwoFactorAuthTokenDetailsJs(secret = secret)
+    is AuthSecretDetails.ExternalJwtAuthenticationDetails ->
+        ExternalJwtAuthenticationDetailsJs(secret = secret, configId = configId)
 }
 @OptIn(InternalIcureApi::class)
 private fun AuthenticationProcessRequest.toJs(): AuthenticationProcessRequestJs = AuthenticationProcessRequestJs(
