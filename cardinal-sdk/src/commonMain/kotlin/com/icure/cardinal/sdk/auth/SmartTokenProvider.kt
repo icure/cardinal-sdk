@@ -253,9 +253,17 @@ internal class SmartTokenProvider(
 		minimumAuthenticationClass: AuthenticationClass?,
 	): DoGetTokenResult {
 		val authResponse = when {
-			secret is AuthSecretDetails.ExternalAuthenticationDetails -> {
+			secret is AuthSecretDetails.ExternalJwtAuthenticationDetails -> {
+				authApi.loginWithExternalJwt(
+					token = secret.secret,
+					configId = secret.configId,
+					groupId = groupId,
+					applicationId = applicationId
+				)
+			}
+			secret is AuthSecretDetails.OAuthAuthenticationDetails -> {
 				when (secret.oauthType) {
-					ThirdPartyProvider.GOOGLE -> authApi.loginGoogle(
+					OAuthProvider.GOOGLE -> authApi.loginGoogle(
 						secret.secret,
 						groupId = groupId,
 						applicationId = applicationId

@@ -46,7 +46,15 @@ sealed interface AuthSecretDetails {
 	 * @param secret some token or another secret that can be used to authenticate the user to a supported third party service
 	 * @param oauthType the third party service that should recognize the provided secret.
 	 */
-	data class ExternalAuthenticationDetails(override val secret: String, val oauthType: ThirdPartyProvider): AuthSecretDetails.Cacheable {
+	data class OAuthAuthenticationDetails(override val secret: String, val oauthType: OAuthProvider): AuthSecretDetails.Cacheable {
+		override val type = AuthenticationClass.ExternalAuthentication
+	}
+
+	/**
+	 * @param secret some token or another secret that can be used to authenticate the user to a supported third party service
+	 * @param configId the identifier of the external JWT provider configuration that should be used to validate the provided secret.
+	 */
+	data class ExternalJwtAuthenticationDetails(override val secret: String, val configId: String): AuthSecretDetails.Cacheable {
 		override val type = AuthenticationClass.ExternalAuthentication
 	}
 

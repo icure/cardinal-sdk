@@ -36,15 +36,26 @@ data class UsernameLongToken(
 	val token: String,
 ) : Credentials
 
-data class ThirdPartyAuthentication(
+data class OAuthAuthentication(
 	/**
-	 * A token used to perform the third party authentication
+	 * A token used to perform the OAuth authentication
 	 */
 	val token: String,
 	/**
 	 * The authentication provider
 	 */
-	val provider: ThirdPartyProvider
+	val provider: OAuthProvider
+) : Credentials
+
+data class ExternalJwtProviderAuthentication(
+	/**
+	 * A token used to perform the external authentication
+	 */
+	val token: String,
+	/**
+	 * The identifier of the external JWT provider configuration that should be used to validate the provided token.
+	 */
+	val configId: String
 ) : Credentials
 
 @InternalIcureApi
