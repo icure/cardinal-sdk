@@ -1252,7 +1252,16 @@ private class PatientBasicApiImpl(
 		matchPatientsBy(filter)
 
 	private suspend fun doMatchPatientsBy(groupId: String?, filter: BaseFilterOptions<Patient>): List<String> =
-		rawApi.matchPatientsBy(mapPatientFilterOptions(filter, config, groupId)).successBody()
+		if (groupId == null) {
+			rawApi.matchPatientsBy(
+				filter = mapPatientFilterOptions(filter, config, groupId)
+			).successBody()
+		} else {
+			rawApi.matchPatientsInGroupBy(
+				groupId = groupId,
+				filter = mapPatientFilterOptions(filter, config, groupId)
+			).successBody()
+		}
 
 	override suspend fun filterPatientsBy(filter: BaseFilterOptions<Patient>): PaginatedListIterator<EncryptedPatient> =
 		doFilterPatientsBy(null, filter) { it }
