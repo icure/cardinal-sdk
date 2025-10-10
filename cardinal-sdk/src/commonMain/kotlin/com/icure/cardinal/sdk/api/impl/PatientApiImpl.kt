@@ -1154,7 +1154,9 @@ private class PatientApiImpl(
 					owningEntityDetails = null,
 					initializeEncryptionKey = true,
 					autoDelegations = sharingWith.keyAsLocalDataOwnerReferences()
-				).updatedEntity
+				).updatedEntity.let {
+					encrypted.modifyPatient(it)
+				}
 			} else {
 				val secretIdShareOptions = SecretIdShareOptions.UseExactly(
 					secretIds = setOf(config.crypto.primitives.strongRandom.randomUUID()),
