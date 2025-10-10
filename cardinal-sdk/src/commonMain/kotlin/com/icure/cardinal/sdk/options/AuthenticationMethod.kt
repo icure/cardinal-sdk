@@ -134,35 +134,39 @@ fun AuthenticationMethod.getAuthProvider(
 	cryptoService: CryptoService,
 	applicationId: String?,
 	options: CommonSdkOptions,
-	messageGatewayApi: RawMessageGatewayApi
+	messageGatewayApi: RawMessageGatewayApi,
+	krakenUrl: String
 ): AuthProvider = when(this) {
 	is AuthenticationMethod.UsingCredentials -> when (this.credentials) {
 		is ThirdPartyAuthentication -> smartAuthWithConstantSecret(
-			authApi,
-			cryptoService,
-			options.getPasswordClientSideSalt(applicationId),
-			AuthSecretDetails.ExternalAuthenticationDetails(this.credentials.token, this.credentials.provider),
-			null,
-			messageGatewayApi,
-			applicationId
+			authApi = authApi,
+			cryptoService = cryptoService,
+			passwordClientSideSalt = options.getPasswordClientSideSalt(applicationId),
+			authSecretDetails = AuthSecretDetails.ExternalAuthenticationDetails(this.credentials.token, this.credentials.provider),
+			login = null,
+			messageGatewayApi = messageGatewayApi,
+			applicationId = applicationId,
+			krakenUrl = krakenUrl
 		)
 		is UsernameLongToken -> smartAuthWithConstantSecret(
-			authApi,
-			cryptoService,
-			options.getPasswordClientSideSalt(applicationId),
-			AuthSecretDetails.LongLivedTokenDetails(this.credentials.token),
-			this.credentials.username,
-			messageGatewayApi,
-			applicationId
+			authApi = authApi,
+			cryptoService = cryptoService,
+			passwordClientSideSalt = options.getPasswordClientSideSalt(applicationId),
+			authSecretDetails = AuthSecretDetails.LongLivedTokenDetails(this.credentials.token),
+			login = this.credentials.username,
+			messageGatewayApi = messageGatewayApi,
+			applicationId = applicationId,
+			krakenUrl = krakenUrl
 		)
 		is UsernamePassword -> smartAuthWithConstantSecret(
-			authApi,
-			cryptoService,
-			options.getPasswordClientSideSalt(applicationId),
-			AuthSecretDetails.PasswordDetails(this.credentials.password),
-			this.credentials.username,
-			messageGatewayApi,
-			applicationId
+			authApi = authApi,
+			cryptoService = cryptoService,
+			passwordClientSideSalt = options.getPasswordClientSideSalt(applicationId),
+			authSecretDetails = AuthSecretDetails.PasswordDetails(this.credentials.password),
+			login = this.credentials.username,
+			messageGatewayApi = messageGatewayApi,
+			applicationId = applicationId,
+			krakenUrl = krakenUrl
 		)
 		is JwtCredentials -> JwtAuthProvider(authApi, this.credentials.initialBearer, this.credentials.refresh)
 	}
@@ -188,7 +192,8 @@ fun AuthenticationMethod.getAuthProvider(
 		cryptoService = cryptoService,
 		cacheSecrets = this.cacheSecrets,
 		allowSecretRetry = true,
-		messageGatewayApi = messageGatewayApi
+		messageGatewayApi = messageGatewayApi,
+		krakenUrl = krakenUrl
 	)
 }
 
@@ -198,16 +203,17 @@ fun AuthenticationMethod.getAuthProvider(
  */
 @InternalIcureApi
 internal suspend fun AuthenticationMethod.getGroupAndAuthProvider(
+	baseUrl: String,
 	apiUrl: String,
 	cryptoService: CryptoService,
 	applicationId: String?,
 	options: CommonSdkOptions,
 	groupSelector: GroupSelector?,
-	rawApiConfig: RawApiConfig
+	rawApiConfig: RawApiConfig,
 ): Pair<String?, AuthProvider> {
 	val rawAuthApi = RawAnonymousAuthApiImpl(apiUrl, rawApiConfig)
 	val messageGatewayApi = RawMessageGatewayApi(rawApiConfig.httpClient, cryptoService)
-	val authProvider = getAuthProvider(rawAuthApi, cryptoService, applicationId, options, messageGatewayApi)
+	val authProvider = getAuthProvider(rawAuthApi, cryptoService, applicationId, options, messageGatewayApi, krakenUrl = baseUrl)
 	val userApi = RawUserApiImpl(apiUrl, authProvider, rawApiConfig)
 	// On local there is no groups, need to handle that possibility
 	val matches = userApi.getMatchingUsers().takeIf { it.status.value != 404 }?.successBody()
@@ -233,7 +239,8 @@ private fun smartAuthWithConstantSecret(
 	authSecretDetails: AuthSecretDetails.Cacheable,
 	login: String?,
 	messageGatewayApi: RawMessageGatewayApi,
-	applicationId: String?
+	applicationId: String?,
+	krakenUrl: String,
 ) = SmartAuthProvider.initialize(
 	authApi = authApi,
 	loginUsername = login,
@@ -247,7 +254,8 @@ private fun smartAuthWithConstantSecret(
 	cryptoService = cryptoService,
 	cacheSecrets = true,
 	allowSecretRetry = false,
-	messageGatewayApi = messageGatewayApi
+	messageGatewayApi = messageGatewayApi,
+	krakenUrl = krakenUrl,
 )
 
 private class ConstantSecretProvider(

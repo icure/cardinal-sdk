@@ -155,7 +155,8 @@ interface CardinalUnboundBaseSdk : CardinalBaseApis {
 				cryptoService,
 				null,
 				options,
-				RawMessageGatewayApi(client, cryptoService)
+				RawMessageGatewayApi(client, cryptoService),
+				krakenUrl = baseUrl
 			)
 			val manifests = EntitiesEncryptedFieldsManifests.fromEncryptedFields(options.encryptedFields)
 			val jsonEncryptionService = JsonEncryptionServiceImpl(cryptoService)
@@ -228,12 +229,13 @@ interface CardinalBaseSdk : CardinalBaseApis {
 				retryConfiguration = options.requestRetryConfiguration
 			)
 			val (chosenGroup, authProvider) = authenticationMethod.getGroupAndAuthProvider(
-				apiUrl,
-				cryptoService,
-				applicationId,
-				options,
-				options.groupSelector,
-				rawApiConfig,
+				baseUrl = baseUrl,
+				apiUrl = apiUrl,
+				cryptoService = cryptoService,
+				applicationId = applicationId,
+				options = options,
+				groupSelector = options.groupSelector,
+				rawApiConfig = rawApiConfig,
 			)
 			val boundGroup = chosenGroup?.let(::SdkBoundGroup)
 			val manifests = EntitiesEncryptedFieldsManifests.fromEncryptedFields(options.encryptedFields)

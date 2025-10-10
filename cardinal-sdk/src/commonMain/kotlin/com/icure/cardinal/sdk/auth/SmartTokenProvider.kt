@@ -1,13 +1,10 @@
 package com.icure.cardinal.sdk.auth
 
-import com.icure.kryptom.crypto.CryptoService
-import com.icure.kryptom.utils.base64Encode
 import com.icure.cardinal.sdk.api.raw.RawAnonymousAuthApi
 import com.icure.cardinal.sdk.api.raw.RawMessageGatewayApi
 import com.icure.cardinal.sdk.api.raw.successBodyOrNull
 import com.icure.cardinal.sdk.model.LoginCredentials
 import com.icure.cardinal.sdk.model.embed.AuthenticationClass
-import com.icure.utils.InternalIcureApi
 import com.icure.cardinal.sdk.utils.InternalCardinalException
 import com.icure.cardinal.sdk.utils.RequestStatusException
 import com.icure.cardinal.sdk.utils.decodeClaims
@@ -15,6 +12,9 @@ import com.icure.cardinal.sdk.utils.ensure
 import com.icure.cardinal.sdk.utils.ensureNonNull
 import com.icure.cardinal.sdk.utils.isJwtExpiredOrInvalid
 import com.icure.cardinal.sdk.utils.retryWithDelays
+import com.icure.kryptom.crypto.CryptoService
+import com.icure.kryptom.utils.base64Encode
+import com.icure.utils.InternalIcureApi
 import io.ktor.utils.io.core.toByteArray
 import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.sync.withLock
@@ -44,7 +44,8 @@ internal sealed interface DoGetTokenResult {
 
 @OptIn(InternalIcureApi::class)
 private class AuthProcessApiImpl(
-	private val messageGatewayApi: RawMessageGatewayApi
+	private val messageGatewayApi: RawMessageGatewayApi,
+	private val krakenUrl: String,
 ) : AuthenticationProcessApi {
 	override suspend fun executeProcess(
 		messageGatewayUrl: String,
@@ -63,7 +64,8 @@ private class AuthProcessApiImpl(
 			userTelecom = userTelecom,
 			captcha = captcha,
 			firstName = processTemplateParameters.firstName,
-			lastName = processTemplateParameters.lastName
+			lastName = processTemplateParameters.lastName,
+			krakenUrl = krakenUrl
 		)
 		return AuthenticationProcessRequest(
 			messageGwUrl = messageGatewayUrl,
@@ -88,13 +90,14 @@ internal class SmartTokenProvider(
 	private val passwordClientSideSalt: String?,
 	private val cacheSecrets: Boolean,
 	private val allowSecretRetry: Boolean,
-	private val refreshPadding: Duration = 30.seconds
+	private val krakenUrl: String,
+	private val refreshPadding: Duration = 30.seconds,
 ) {
 	enum class RetrievedTokenType { New, Cached, Refreshed }
 	data class RetrievedJwt(val jwt: String, val type: RetrievedTokenType)
 
 	private val tokenCacheMutex = Mutex()
-	private val authProcessApi = AuthProcessApiImpl(messageGatewayApi)
+	private val authProcessApi = AuthProcessApiImpl(messageGatewayApi, krakenUrl)
 
 	suspend fun getCachedOrRefreshedOrNewToken(): RetrievedJwt = tokenCacheMutex.withLock {
 		cachedToken?.takeIf { !isJwtExpiredOrInvalid(it, refreshPadding) }?.let { RetrievedJwt(it, RetrievedTokenType.Cached) }
@@ -147,7 +150,8 @@ internal class SmartTokenProvider(
 			passwordClientSideSalt = passwordClientSideSalt,
 			cacheSecrets = cacheSecrets,
 			refreshPadding = refreshPadding,
-			allowSecretRetry = allowSecretRetry
+			allowSecretRetry = allowSecretRetry,
+			krakenUrl = krakenUrl
 		)
 	}
 
