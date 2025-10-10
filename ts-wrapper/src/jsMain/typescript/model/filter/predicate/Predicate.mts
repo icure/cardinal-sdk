@@ -6,4 +6,4 @@ import {NotPredicate} from './NotPredicate.mjs';
 import {OrPredicate} from './OrPredicate.mjs';
 
 
-export type Predicate = OrPredicate | NotPredicate | AlwaysPredicate | AndPredicate | KeyValuePredicate;
+export type Predicate = NotPredicate | AndPredicate | AlwaysPredicate | OrPredicate | KeyValuePredicate;

@@ -26,6 +26,8 @@ export interface CalendarItemFlavouredApi<E extends CalendarItem> {
 
 	createCalendarItem(entity: E): Promise<E>;
 
+	bookCalendarItemCheckingAvailability(entity: E): Promise<E>;
+
 	undeleteCalendarItemById(id: string, rev: string): Promise<E>;
 
 	undeleteCalendarItem(calendarItem: CalendarItem): Promise<E>;

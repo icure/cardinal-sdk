@@ -248,6 +248,15 @@ internal class CalendarItemApiImplJs(
 			calendarItem_toJs(result)
 		}
 
+		override fun bookCalendarItemCheckingAvailability(entity: EncryptedCalendarItemJs):
+				Promise<EncryptedCalendarItemJs> = GlobalScope.promise {
+			val entityConverted: EncryptedCalendarItem = calendarItem_fromJs(entity)
+			val result = calendarItemApi.encrypted.bookCalendarItemCheckingAvailability(
+				entityConverted,
+			)
+			calendarItem_toJs(result)
+		}
+
 		override fun undeleteCalendarItemById(id: String, rev: String): Promise<EncryptedCalendarItemJs> =
 				GlobalScope.promise {
 			val idConverted: String = id
@@ -527,6 +536,15 @@ internal class CalendarItemApiImplJs(
 				GlobalScope.promise {
 			val entityConverted: CalendarItem = calendarItem_fromJs(entity)
 			val result = calendarItemApi.tryAndRecover.createCalendarItem(
+				entityConverted,
+			)
+			calendarItem_toJs(result)
+		}
+
+		override fun bookCalendarItemCheckingAvailability(entity: CalendarItemJs): Promise<CalendarItemJs>
+				= GlobalScope.promise {
+			val entityConverted: CalendarItem = calendarItem_fromJs(entity)
+			val result = calendarItemApi.tryAndRecover.bookCalendarItemCheckingAvailability(
 				entityConverted,
 			)
 			calendarItem_toJs(result)
@@ -2061,6 +2079,15 @@ internal class CalendarItemApiImplJs(
 			= GlobalScope.promise {
 		val entityConverted: DecryptedCalendarItem = calendarItem_fromJs(entity)
 		val result = calendarItemApi.createCalendarItem(
+			entityConverted,
+		)
+		calendarItem_toJs(result)
+	}
+
+	override fun bookCalendarItemCheckingAvailability(entity: DecryptedCalendarItemJs):
+			Promise<DecryptedCalendarItemJs> = GlobalScope.promise {
+		val entityConverted: DecryptedCalendarItem = calendarItem_fromJs(entity)
+		val result = calendarItemApi.bookCalendarItemCheckingAvailability(
 			entityConverted,
 		)
 		calendarItem_toJs(result)

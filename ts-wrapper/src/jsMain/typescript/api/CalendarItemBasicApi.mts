@@ -39,6 +39,8 @@ export interface CalendarItemBasicApi {
 
 	createCalendarItem(entity: EncryptedCalendarItem): Promise<EncryptedCalendarItem>;
 
+	bookCalendarItemCheckingAvailability(entity: EncryptedCalendarItem): Promise<EncryptedCalendarItem>;
+
 	undeleteCalendarItemById(id: string, rev: string): Promise<EncryptedCalendarItem>;
 
 	undeleteCalendarItem(calendarItem: CalendarItem): Promise<EncryptedCalendarItem>;

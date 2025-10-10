@@ -3,9 +3,11 @@ package com.icure.cardinal.sdk.js.model.embed
 
 import com.icure.cardinal.sdk.js.model.CheckedConverters.intToNumber
 import com.icure.cardinal.sdk.js.model.CheckedConverters.longToNumber
+import com.icure.cardinal.sdk.js.model.CheckedConverters.mapToObject
 import com.icure.cardinal.sdk.js.model.CheckedConverters.nullToUndefined
 import com.icure.cardinal.sdk.js.model.CheckedConverters.numberToInt
 import com.icure.cardinal.sdk.js.model.CheckedConverters.numberToLong
+import com.icure.cardinal.sdk.js.model.CheckedConverters.objectToMap
 import com.icure.cardinal.sdk.js.model.CheckedConverters.undefinedToNull
 import com.icure.cardinal.sdk.js.model.specializations.base64String_fromJs
 import com.icure.cardinal.sdk.js.model.specializations.base64String_toJs
@@ -13,6 +15,7 @@ import com.icure.cardinal.sdk.model.embed.DecryptedInvoicingCode
 import com.icure.cardinal.sdk.model.embed.EncryptedInvoicingCode
 import com.icure.cardinal.sdk.model.embed.InvoicingCode
 import com.icure.cardinal.sdk.model.embed.PaymentType
+import kotlin.String
 import kotlin.Suppress
 
 @Suppress("UNUSED_VARIABLE")
@@ -181,6 +184,15 @@ public fun invoicingCode_toJs(obj: DecryptedInvoicingCode): DecryptedInvoicingCo
 	val codeLabel = nullToUndefined(
 		obj.codeLabel
 	)
+	val options = mapToObject(
+		obj.options,
+		{ x1: String ->
+			x1
+		},
+		{ x1: String ->
+			x1
+		},
+	)
 	val encryptedSelf = nullToUndefined(
 		obj.encryptedSelf?.let { nonNull1 ->
 			base64String_toJs(nonNull1)
@@ -241,6 +253,7 @@ public fun invoicingCode_toJs(obj: DecryptedInvoicingCode): DecryptedInvoicingCo
 		"cancelPatientInterventionReason:cancelPatientInterventionReason," +
 		"status:status," +
 		"codeLabel:codeLabel," +
+		"options:options," +
 		"encryptedSelf:encryptedSelf" +
 	"}"))
 }
@@ -303,6 +316,16 @@ public fun invoicingCode_fromJs(obj: DecryptedInvoicingCodeJs): DecryptedInvoici
 			"obj.cancelPatientInterventionReason")
 	val status = numberToLong(obj.status, "obj.status")
 	val codeLabel = undefinedToNull(obj.codeLabel)
+	val options = objectToMap(
+		obj.options,
+		"obj.options",
+		{ x1: String ->
+			x1
+		},
+		{ x1: String ->
+			x1
+		},
+	)
 	val encryptedSelf = obj.encryptedSelf?.let { nonNull1 ->
 		base64String_fromJs(nonNull1)
 	}
@@ -361,6 +384,7 @@ public fun invoicingCode_fromJs(obj: DecryptedInvoicingCodeJs): DecryptedInvoici
 		cancelPatientInterventionReason = cancelPatientInterventionReason,
 		status = status,
 		codeLabel = codeLabel,
+		options = options,
 		encryptedSelf = encryptedSelf,
 	)
 }
@@ -531,6 +555,15 @@ public fun invoicingCode_toJs(obj: EncryptedInvoicingCode): EncryptedInvoicingCo
 	val codeLabel = nullToUndefined(
 		obj.codeLabel
 	)
+	val options = mapToObject(
+		obj.options,
+		{ x1: String ->
+			x1
+		},
+		{ x1: String ->
+			x1
+		},
+	)
 	val encryptedSelf = nullToUndefined(
 		obj.encryptedSelf?.let { nonNull1 ->
 			base64String_toJs(nonNull1)
@@ -591,6 +624,7 @@ public fun invoicingCode_toJs(obj: EncryptedInvoicingCode): EncryptedInvoicingCo
 		"cancelPatientInterventionReason:cancelPatientInterventionReason," +
 		"status:status," +
 		"codeLabel:codeLabel," +
+		"options:options," +
 		"encryptedSelf:encryptedSelf" +
 	"}"))
 }
@@ -653,6 +687,16 @@ public fun invoicingCode_fromJs(obj: EncryptedInvoicingCodeJs): EncryptedInvoici
 			"obj.cancelPatientInterventionReason")
 	val status = numberToLong(obj.status, "obj.status")
 	val codeLabel = undefinedToNull(obj.codeLabel)
+	val options = objectToMap(
+		obj.options,
+		"obj.options",
+		{ x1: String ->
+			x1
+		},
+		{ x1: String ->
+			x1
+		},
+	)
 	val encryptedSelf = obj.encryptedSelf?.let { nonNull1 ->
 		base64String_fromJs(nonNull1)
 	}
@@ -711,6 +755,7 @@ public fun invoicingCode_fromJs(obj: EncryptedInvoicingCodeJs): EncryptedInvoici
 		cancelPatientInterventionReason = cancelPatientInterventionReason,
 		status = status,
 		codeLabel = codeLabel,
+		options = options,
 		encryptedSelf = encryptedSelf,
 	)
 }

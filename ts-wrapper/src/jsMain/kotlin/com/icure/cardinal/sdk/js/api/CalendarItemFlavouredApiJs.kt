@@ -49,6 +49,8 @@ public external interface CalendarItemFlavouredApiJs<E : CalendarItemJs> {
 
 	public fun createCalendarItem(entity: E): Promise<E>
 
+	public fun bookCalendarItemCheckingAvailability(entity: E): Promise<E>
+
 	public fun undeleteCalendarItemById(id: String, rev: String): Promise<E>
 
 	public fun undeleteCalendarItem(calendarItem: CalendarItemJs): Promise<E>

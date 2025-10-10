@@ -85,9 +85,6 @@ public fun agenda_toJs(obj: Agenda): AgendaJs {
 	val zoneId = nullToUndefined(
 		obj.zoneId
 	)
-	val lockCalendarItemsBeforeInMinutes = nullToUndefined(
-		intToNumber(obj.lockCalendarItemsBeforeInMinutes)
-	)
 	val rights = listToArray(
 		obj.rights,
 		{ x1: Right ->
@@ -107,6 +104,9 @@ public fun agenda_toJs(obj: Agenda): AgendaJs {
 		obj.slottingAlgorithm?.let { nonNull1 ->
 			agendaSlottingAlgorithm_toJs(nonNull1)
 		}
+	)
+	val publicBookingQuota = nullToUndefined(
+		intToNumber(obj.publicBookingQuota)
 	)
 	val properties = setToArray(
 		obj.properties,
@@ -137,10 +137,10 @@ public fun agenda_toJs(obj: Agenda): AgendaJs {
 		"name:name," +
 		"userId:userId," +
 		"zoneId:zoneId," +
-		"lockCalendarItemsBeforeInMinutes:lockCalendarItemsBeforeInMinutes," +
 		"rights:rights," +
 		"userRights:userRights," +
 		"slottingAlgorithm:slottingAlgorithm," +
+		"publicBookingQuota:publicBookingQuota," +
 		"properties:properties," +
 		"schedules:schedules" +
 	"}"))
@@ -175,8 +175,6 @@ public fun agenda_fromJs(obj: AgendaJs): Agenda {
 	val name = undefinedToNull(obj.name)
 	val userId = undefinedToNull(obj.userId)
 	val zoneId = undefinedToNull(obj.zoneId)
-	val lockCalendarItemsBeforeInMinutes = numberToInt(obj.lockCalendarItemsBeforeInMinutes,
-			"obj.lockCalendarItemsBeforeInMinutes")
 	val rights = arrayToList(
 		obj.rights,
 		"obj.rights",
@@ -197,6 +195,7 @@ public fun agenda_fromJs(obj: AgendaJs): Agenda {
 	val slottingAlgorithm = obj.slottingAlgorithm?.let { nonNull1 ->
 		agendaSlottingAlgorithm_fromJs(nonNull1)
 	}
+	val publicBookingQuota = numberToInt(obj.publicBookingQuota, "obj.publicBookingQuota")
 	val properties = arrayToSet(
 		obj.properties,
 		"obj.properties",
@@ -228,10 +227,10 @@ public fun agenda_fromJs(obj: AgendaJs): Agenda {
 		name = name,
 		userId = userId,
 		zoneId = zoneId,
-		lockCalendarItemsBeforeInMinutes = lockCalendarItemsBeforeInMinutes,
 		rights = rights,
 		userRights = userRights,
 		slottingAlgorithm = slottingAlgorithm,
+		publicBookingQuota = publicBookingQuota,
 		properties = properties,
 		schedules = schedules,
 	)
