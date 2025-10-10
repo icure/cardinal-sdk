@@ -29,17 +29,17 @@ export class DecryptedEmploymentInfo {
 
 	employer: Employer | undefined = undefined;
 
-	encryptedSelf: Base64String | undefined;
+	encryptedSelf: Base64String | undefined = undefined;
 
 	readonly isEncrypted: false = false;
 
-	constructor(partial: Partial<DecryptedEmploymentInfo> & Pick<DecryptedEmploymentInfo, "encryptedSelf">) {
+	constructor(partial: Partial<DecryptedEmploymentInfo>) {
 		if (partial.isEncrypted !== undefined && partial.isEncrypted !== false) throw new Error('partial.isEncrypted must be undefined or false');
 		if ('startDate' in partial) this.startDate = partial.startDate;
 		if ('endDate' in partial) this.endDate = partial.endDate;
 		if ('professionType' in partial) this.professionType = partial.professionType;
 		if ('employer' in partial) this.employer = partial.employer;
-		this.encryptedSelf = partial.encryptedSelf;
+		if ('encryptedSelf' in partial) this.encryptedSelf = partial.encryptedSelf;
 	}
 
 }
@@ -54,17 +54,17 @@ export class EncryptedEmploymentInfo {
 
 	employer: Employer | undefined = undefined;
 
-	encryptedSelf: Base64String | undefined;
+	encryptedSelf: Base64String | undefined = undefined;
 
 	readonly isEncrypted: true = true;
 
-	constructor(partial: Partial<EncryptedEmploymentInfo> & Pick<EncryptedEmploymentInfo, "encryptedSelf">) {
+	constructor(partial: Partial<EncryptedEmploymentInfo>) {
 		if (partial.isEncrypted !== undefined && partial.isEncrypted !== true) throw new Error('partial.isEncrypted must be undefined or true');
 		if ('startDate' in partial) this.startDate = partial.startDate;
 		if ('endDate' in partial) this.endDate = partial.endDate;
 		if ('professionType' in partial) this.professionType = partial.professionType;
 		if ('employer' in partial) this.employer = partial.employer;
-		this.encryptedSelf = partial.encryptedSelf;
+		if ('encryptedSelf' in partial) this.encryptedSelf = partial.encryptedSelf;
 	}
 
 }

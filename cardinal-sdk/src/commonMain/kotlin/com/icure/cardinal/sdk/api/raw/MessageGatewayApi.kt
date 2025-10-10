@@ -47,7 +47,8 @@ class RawMessageGatewayApi(
 		firstName: String?,
 		lastName: String?,
 		userTelecom: String,
-		userTelecomType: AuthenticationProcessTelecomType
+		userTelecomType: AuthenticationProcessTelecomType,
+		krakenUrl: String,
 	): String {
 
 		val requestBodyJson = JsonObject(mapOf(
@@ -69,6 +70,7 @@ class RawMessageGatewayApi(
 			},
 			"email" to JsonPrimitive(if (userTelecomType == AuthenticationProcessTelecomType.Email) userTelecom else ""),
 			"mobilePhone" to JsonPrimitive(if (userTelecomType == AuthenticationProcessTelecomType.MobilePhone) userTelecom else ""),
+			"deployment" to JsonPrimitive(krakenUrl),
 		))
 		val requestId = cryptoService.strongRandom.randomUUID()
 		client.post("${messageGatewayUrl}/${externalServicesSpecId}/process/${processId}/${requestId}") {

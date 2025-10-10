@@ -44,13 +44,13 @@ export class Agenda implements StoredDocument, ICureDocument<string> {
 
 	zoneId: string | undefined = undefined;
 
-	lockCalendarItemsBeforeInMinutes: number | undefined = undefined;
-
 	rights: Array<Right> = [];
 
 	userRights: { [ key: string ]: UserAccessLevel } = {};
 
 	slottingAlgorithm: AgendaSlottingAlgorithm | undefined = undefined;
+
+	publicBookingQuota: number | undefined = undefined;
 
 	properties: Array<DecryptedPropertyStub> = [];
 
@@ -73,10 +73,10 @@ export class Agenda implements StoredDocument, ICureDocument<string> {
 		if ('name' in partial) this.name = partial.name;
 		if ('userId' in partial) this.userId = partial.userId;
 		if ('zoneId' in partial) this.zoneId = partial.zoneId;
-		if ('lockCalendarItemsBeforeInMinutes' in partial) this.lockCalendarItemsBeforeInMinutes = partial.lockCalendarItemsBeforeInMinutes;
 		if ('rights' in partial && partial.rights !== undefined) this.rights = partial.rights;
 		if ('userRights' in partial && partial.userRights !== undefined) this.userRights = partial.userRights;
 		if ('slottingAlgorithm' in partial) this.slottingAlgorithm = partial.slottingAlgorithm;
+		if ('publicBookingQuota' in partial) this.publicBookingQuota = partial.publicBookingQuota;
 		if ('properties' in partial && partial.properties !== undefined) this.properties = partial.properties;
 		if ('schedules' in partial && partial.schedules !== undefined) this.schedules = partial.schedules;
 	}

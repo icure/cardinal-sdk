@@ -598,7 +598,7 @@ private class AbstractPatientBasicFlavourlessApi(val rawApi: RawPatientApi, val 
 		rawApi.deletePatients(ListOfIds(entityIds)).successBody().toStoredDocumentIdentifier()
 
 	override suspend fun deletePatientById(entityId: String, rev: String): StoredDocumentIdentifier =
-		rawApi.deletePatientInGroup(entityId, rev).successBodyOrThrowRevisionConflict().toStoredDocumentIdentifier()
+		rawApi.deletePatient(entityId, rev).successBodyOrThrowRevisionConflict().toStoredDocumentIdentifier()
 
 	override suspend fun deletePatientsByIds(entityIds: List<StoredDocumentIdentifier>): List<StoredDocumentIdentifier> =
 		rawApi.deletePatientsWithRev(ListOfIdsAndRev(entityIds)).successBody().toStoredDocumentIdentifier()
@@ -1154,7 +1154,9 @@ private class PatientApiImpl(
 					owningEntityDetails = null,
 					initializeEncryptionKey = true,
 					autoDelegations = sharingWith.keyAsLocalDataOwnerReferences()
-				).updatedEntity
+				).updatedEntity.let {
+					encrypted.modifyPatient(it)
+				}
 			} else {
 				val secretIdShareOptions = SecretIdShareOptions.UseExactly(
 					secretIds = setOf(config.crypto.primitives.strongRandom.randomUUID()),
@@ -1252,7 +1254,16 @@ private class PatientBasicApiImpl(
 		matchPatientsBy(filter)
 
 	private suspend fun doMatchPatientsBy(groupId: String?, filter: BaseFilterOptions<Patient>): List<String> =
-		rawApi.matchPatientsBy(mapPatientFilterOptions(filter, config, groupId)).successBody()
+		if (groupId == null) {
+			rawApi.matchPatientsBy(
+				filter = mapPatientFilterOptions(filter, config, groupId)
+			).successBody()
+		} else {
+			rawApi.matchPatientsInGroupBy(
+				groupId = groupId,
+				filter = mapPatientFilterOptions(filter, config, groupId)
+			).successBody()
+		}
 
 	override suspend fun filterPatientsBy(filter: BaseFilterOptions<Patient>): PaginatedListIterator<EncryptedPatient> =
 		doFilterPatientsBy(null, filter) { it }

@@ -1,14 +1,14 @@
 package com.icure.cardinal.sdk.auth.services
 
-import com.icure.kryptom.crypto.CryptoService
 import com.icure.cardinal.sdk.api.raw.RawAnonymousAuthApi
 import com.icure.cardinal.sdk.api.raw.RawMessageGatewayApi
 import com.icure.cardinal.sdk.auth.AuthSecretDetails
 import com.icure.cardinal.sdk.auth.AuthSecretProvider
 import com.icure.cardinal.sdk.auth.JwtBearerAndRefresh
 import com.icure.cardinal.sdk.auth.SmartTokenProvider
-import com.icure.utils.InternalIcureApi
 import com.icure.cardinal.sdk.utils.isJwtExpiredOrInvalid
+import com.icure.kryptom.crypto.CryptoService
+import com.icure.utils.InternalIcureApi
 
 @InternalIcureApi
 internal class SmartAuthProvider private constructor(
@@ -30,7 +30,8 @@ internal class SmartAuthProvider private constructor(
 			passwordClientSideSalt: String?,
 			cacheSecrets: Boolean,
 			allowSecretRetry: Boolean,
-			messageGatewayApi: RawMessageGatewayApi
+			messageGatewayApi: RawMessageGatewayApi,
+			krakenUrl: String,
 		) = SmartAuthProvider(
 			SmartTokenProvider(
 				loginUsername = loginUsername,
@@ -47,7 +48,8 @@ internal class SmartAuthProvider private constructor(
 				cacheSecrets = cacheSecrets,
 				cryptoService = cryptoService,
 				allowSecretRetry = allowSecretRetry,
-				messageGatewayApi = messageGatewayApi
+				messageGatewayApi = messageGatewayApi,
+				krakenUrl = krakenUrl
 			),
 			groupId
 		)

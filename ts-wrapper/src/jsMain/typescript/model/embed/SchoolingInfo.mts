@@ -28,17 +28,17 @@ export class DecryptedSchoolingInfo {
 
 	typeOfEducation: CodeStub | undefined = undefined;
 
-	encryptedSelf: Base64String | undefined;
+	encryptedSelf: Base64String | undefined = undefined;
 
 	readonly isEncrypted: false = false;
 
-	constructor(partial: Partial<DecryptedSchoolingInfo> & Pick<DecryptedSchoolingInfo, "encryptedSelf">) {
+	constructor(partial: Partial<DecryptedSchoolingInfo>) {
 		if (partial.isEncrypted !== undefined && partial.isEncrypted !== false) throw new Error('partial.isEncrypted must be undefined or false');
 		if ('startDate' in partial) this.startDate = partial.startDate;
 		if ('endDate' in partial) this.endDate = partial.endDate;
 		if ('school' in partial) this.school = partial.school;
 		if ('typeOfEducation' in partial) this.typeOfEducation = partial.typeOfEducation;
-		this.encryptedSelf = partial.encryptedSelf;
+		if ('encryptedSelf' in partial) this.encryptedSelf = partial.encryptedSelf;
 	}
 
 }
@@ -53,17 +53,17 @@ export class EncryptedSchoolingInfo {
 
 	typeOfEducation: CodeStub | undefined = undefined;
 
-	encryptedSelf: Base64String | undefined;
+	encryptedSelf: Base64String | undefined = undefined;
 
 	readonly isEncrypted: true = true;
 
-	constructor(partial: Partial<EncryptedSchoolingInfo> & Pick<EncryptedSchoolingInfo, "encryptedSelf">) {
+	constructor(partial: Partial<EncryptedSchoolingInfo>) {
 		if (partial.isEncrypted !== undefined && partial.isEncrypted !== true) throw new Error('partial.isEncrypted must be undefined or true');
 		if ('startDate' in partial) this.startDate = partial.startDate;
 		if ('endDate' in partial) this.endDate = partial.endDate;
 		if ('school' in partial) this.school = partial.school;
 		if ('typeOfEducation' in partial) this.typeOfEducation = partial.typeOfEducation;
-		this.encryptedSelf = partial.encryptedSelf;
+		if ('encryptedSelf' in partial) this.encryptedSelf = partial.encryptedSelf;
 	}
 
 }

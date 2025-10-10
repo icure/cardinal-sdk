@@ -58,6 +58,9 @@ public external interface CalendarItemBasicApiJs {
 
 	public fun createCalendarItem(entity: EncryptedCalendarItemJs): Promise<EncryptedCalendarItemJs>
 
+	public fun bookCalendarItemCheckingAvailability(entity: EncryptedCalendarItemJs):
+			Promise<EncryptedCalendarItemJs>
+
 	public fun undeleteCalendarItemById(id: String, rev: String): Promise<EncryptedCalendarItemJs>
 
 	public fun undeleteCalendarItem(calendarItem: CalendarItemJs): Promise<EncryptedCalendarItemJs>

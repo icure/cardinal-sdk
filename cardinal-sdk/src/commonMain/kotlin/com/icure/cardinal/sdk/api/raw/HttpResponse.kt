@@ -1,5 +1,6 @@
 package com.icure.cardinal.sdk.api.raw
 
+import com.icure.cardinal.sdk.exceptions.ApiExceptionParser
 import com.icure.cardinal.sdk.exceptions.RevisionConflictException
 import com.icure.cardinal.sdk.utils.RequestStatusException
 import com.icure.utils.InternalIcureApi
@@ -9,21 +10,46 @@ import io.ktor.http.HttpStatusCode
 import io.ktor.http.isSuccess
 import io.ktor.util.reflect.TypeInfo
 import io.ktor.util.reflect.typeInfo
+import kotlinx.serialization.Serializable
+import kotlinx.serialization.json.Json
 
 @InternalIcureApi
 class HttpResponse<T>(val response: io.ktor.client.statement.HttpResponse, val provider: BodyProvider<T>) {
 	val status: HttpStatusCode = response.status
 	val headers: Map<String, List<String>> = response.headers.mapEntries()
 
-	suspend fun successBody(): T = if (status.isSuccess())
-		provider.body(response)
-	else
-		throw RequestStatusException(
+	private fun createRequestStatusException(bodyText: String?) =
+		RequestStatusException(
 			response.call.request.method,
 			response.call.request.url.toString(),
 			status.value,
-			kotlin.runCatching { response.bodyAsText() }.getOrNull()
+			bodyText
 		)
+
+	suspend fun successBody(): T =
+		if (status.isSuccess())
+			provider.body(response)
+		else
+			throw createRequestStatusException(kotlin.runCatching { response.bodyAsText() }.getOrNull())
+
+	internal suspend fun successBody(
+		vararg exceptionParsers: ApiExceptionParser
+	): T =
+		if (status.isSuccess()) {
+			provider.body(response)
+		} else {
+			val responseBodyText = kotlin.runCatching {
+				response.bodyAsText()
+			}.getOrNull()
+			throw responseBodyText?.let {
+				Json.decodeFromString(ApiExceptionBody.serializer(), it)
+			}?.let { apiExceptionBody ->
+				val statusCode = response.status.value
+				exceptionParsers.firstNotNullOfOrNull { parser ->
+					parser.tryParseExceptionBody(apiExceptionBody, statusCode)
+				}
+			} ?: createRequestStatusException(responseBodyText)
+		}
 
 	companion object {
 		private fun Headers.mapEntries(): Map<String, List<String>> {
@@ -70,3 +96,6 @@ fun io.ktor.client.statement.HttpResponse.requireSuccess() {
 @InternalIcureApi
 fun <T : Any, V : Any> HttpResponse<T>.map(block: T.() -> V): HttpResponse<V> =
 	HttpResponse(response, MappedBodyProvider(provider, block))
+
+@Serializable
+internal data class ApiExceptionBody(val message: String, val exceptionDetail: String? = null)

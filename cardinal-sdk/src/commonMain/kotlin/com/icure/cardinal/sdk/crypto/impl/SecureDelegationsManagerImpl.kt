@@ -164,10 +164,10 @@ class SecureDelegationsManagerImpl (
 		parentDelegationKey: SecureDelegationKeyString?
 	): SecureDelegationInfo {
 		val exchangeDataInfo = exchangeDataManager.getOrCreateEncryptionDataTo(
-			entityGroupId,
-			delegateReference,
-			selfNeedsAnonymousDelegations,
-			false
+			groupId = entityGroupId,
+			delegateReference = delegateReference,
+			allowCreationWithoutDelegateKey = false,
+			allowCreationWithoutDelegatorKey = false
 		)
 		val accessControlKey = exchangeDataInfo.unencryptedContent.accessControlSecret.toAccessControlKeyStringFor(
 			entityType,

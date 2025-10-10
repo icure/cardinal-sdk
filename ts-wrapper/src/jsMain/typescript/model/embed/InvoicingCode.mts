@@ -114,6 +114,8 @@ export interface InvoicingCode extends Encryptable {
 
 	codeLabel: string | undefined;
 
+	options: { [ key: string ]: string };
+
 	readonly isEncrypted: boolean;
 
 }
@@ -228,6 +230,8 @@ export class DecryptedInvoicingCode {
 
 	codeLabel: string | undefined = undefined;
 
+	options: { [ key: string ]: string } = {};
+
 	encryptedSelf: Base64String | undefined = undefined;
 
 	readonly isEncrypted: false = false;
@@ -288,6 +292,7 @@ export class DecryptedInvoicingCode {
 		if ('cancelPatientInterventionReason' in partial) this.cancelPatientInterventionReason = partial.cancelPatientInterventionReason;
 		if ('status' in partial) this.status = partial.status;
 		if ('codeLabel' in partial) this.codeLabel = partial.codeLabel;
+		if ('options' in partial && partial.options !== undefined) this.options = partial.options;
 		if ('encryptedSelf' in partial) this.encryptedSelf = partial.encryptedSelf;
 	}
 
@@ -403,6 +408,8 @@ export class EncryptedInvoicingCode {
 
 	codeLabel: string | undefined = undefined;
 
+	options: { [ key: string ]: string } = {};
+
 	encryptedSelf: Base64String | undefined = undefined;
 
 	readonly isEncrypted: true = true;
@@ -463,6 +470,7 @@ export class EncryptedInvoicingCode {
 		if ('cancelPatientInterventionReason' in partial) this.cancelPatientInterventionReason = partial.cancelPatientInterventionReason;
 		if ('status' in partial) this.status = partial.status;
 		if ('codeLabel' in partial) this.codeLabel = partial.codeLabel;
+		if ('options' in partial && partial.options !== undefined) this.options = partial.options;
 		if ('encryptedSelf' in partial) this.encryptedSelf = partial.encryptedSelf;
 	}
 

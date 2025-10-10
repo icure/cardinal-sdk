@@ -53,13 +53,13 @@ public external class AgendaJs(
 
 	public val zoneId: String?
 
-	public val lockCalendarItemsBeforeInMinutes: Double?
-
 	public val rights: Array<RightJs>
 
 	public val userRights: Record<String, String>
 
 	public val slottingAlgorithm: AgendaSlottingAlgorithmJs?
+
+	public val publicBookingQuota: Double?
 
 	public val properties: Array<DecryptedPropertyStubJs>
 

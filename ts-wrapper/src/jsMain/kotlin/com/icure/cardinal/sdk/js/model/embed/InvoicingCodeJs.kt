@@ -3,6 +3,7 @@
 
 package com.icure.cardinal.sdk.js.model.embed
 
+import com.icure.cardinal.sdk.js.utils.Record
 import kotlin.Boolean
 import kotlin.Double
 import kotlin.String
@@ -119,6 +120,8 @@ public sealed external interface InvoicingCodeJs : EncryptableJs {
 
 	public val codeLabel: String?
 
+	public val options: Record<String, out String>
+
 	public val isEncrypted: Boolean
 }
 
@@ -233,6 +236,8 @@ public external class DecryptedInvoicingCodeJs(
 	override val status: Double?
 
 	override val codeLabel: String?
+
+	override val options: Record<String, String>
 
 	override val encryptedSelf: String?
 
@@ -350,6 +355,8 @@ public external class EncryptedInvoicingCodeJs(
 	override val status: Double?
 
 	override val codeLabel: String?
+
+	override val options: Record<String, String>
 
 	override val encryptedSelf: String?
 

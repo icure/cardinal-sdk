@@ -81,6 +81,8 @@ export interface CalendarItemApi {
 
 	createCalendarItem(entity: DecryptedCalendarItem): Promise<DecryptedCalendarItem>;
 
+	bookCalendarItemCheckingAvailability(entity: DecryptedCalendarItem): Promise<DecryptedCalendarItem>;
+
 	undeleteCalendarItemById(id: string, rev: string): Promise<DecryptedCalendarItem>;
 
 	undeleteCalendarItem(calendarItem: CalendarItem): Promise<DecryptedCalendarItem>;

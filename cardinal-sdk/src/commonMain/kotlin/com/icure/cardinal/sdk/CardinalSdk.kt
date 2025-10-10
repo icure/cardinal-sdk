@@ -309,12 +309,13 @@ interface CardinalSdk : CardinalApis {
 			val iCureStorage =
 				CardinalStorageFacade(keysStorage, baseStorage, DefaultStorageEntryKeysFactory, cryptoService, false)
 			val (chosenGroupId, authProvider) = authenticationMethod.getGroupAndAuthProvider(
-				apiUrl,
-				cryptoService,
-				applicationId,
-				options,
-				options.groupSelector,
-				RawApiConfig(
+				baseUrl = baseUrl,
+				apiUrl = apiUrl,
+				cryptoService = cryptoService,
+				applicationId = applicationId,
+				options = options,
+				groupSelector = options.groupSelector,
+				rawApiConfig = RawApiConfig(
 					httpClient = client,
 					additionalHeaders = emptyMap(),
 					requestTimeout = options.requestTimeout,
@@ -386,7 +387,8 @@ interface CardinalSdk : CardinalApis {
 				firstName = authenticationProcessTemplateParameters.firstName,
 				lastName = authenticationProcessTemplateParameters.lastName,
 				userTelecom = userTelecom,
-				userTelecomType = userTelecomType
+				userTelecomType = userTelecomType,
+				krakenUrl = baseUrl
 			)
 			return AuthenticationWithProcessStepImpl(
 				applicationId = applicationId,
