@@ -1,6 +1,7 @@
 package com.icure.cardinal.sdk.api.raw
 
 import com.icure.cardinal.sdk.model.ExchangeData
+import com.icure.cardinal.sdk.model.IdWithRev
 import com.icure.cardinal.sdk.model.ListOfIds
 import com.icure.cardinal.sdk.model.PaginatedList
 import com.icure.utils.InternalIcureApi
@@ -15,6 +16,8 @@ public interface RawExchangeDataApi {
 	// region common endpoints
 
 	suspend fun createExchangeData(exchangeData: ExchangeData): HttpResponse<ExchangeData>
+
+	suspend fun createExchangeDataInBulk(exchangeDatas: List<ExchangeData>): HttpResponse<List<IdWithRev>>
 
 	suspend fun modifyExchangeData(exchangeData: ExchangeData): HttpResponse<ExchangeData>
 

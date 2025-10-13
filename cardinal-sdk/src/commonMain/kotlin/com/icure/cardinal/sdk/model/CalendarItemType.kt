@@ -2,6 +2,7 @@ package com.icure.cardinal.sdk.model
 
 import com.icure.cardinal.sdk.model.base.StoredDocument
 import com.icure.cardinal.sdk.utils.DefaultValue
+import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 import kotlin.Boolean
 import kotlin.Int
@@ -26,6 +27,7 @@ data class CalendarItemType(
 	public val color: String? = null,
 	@DefaultValue("0")
 	public val duration: Int = 0,
+	public val extraDurationsConfig: DurationConfig? = null,
 	public val externalRef: String? = null,
 	public val mikronoId: String? = null,
 	@DefaultValue("emptySet()")
@@ -35,6 +37,23 @@ data class CalendarItemType(
 	@DefaultValue("emptyMap()")
 	public val subjectByLanguage: Map<String, String> = emptyMap(),
 ) : StoredDocument {
+	@Serializable
+	public sealed interface DurationConfig {
+		@Serializable
+		@SerialName("Set")
+		public data class Set(
+			@DefaultValue("emptySet()")
+			public val durations: kotlin.collections.Set<Int> = emptySet(),
+		) : DurationConfig
+
+		@Serializable
+		@SerialName("Formula")
+		public data class Formula(
+			public val min: Int,
+			public val max: Int,
+			public val step: Int,
+		) : DurationConfig
+	}
 	// region CalendarItemType-CalendarItemType
 
 	// endregion

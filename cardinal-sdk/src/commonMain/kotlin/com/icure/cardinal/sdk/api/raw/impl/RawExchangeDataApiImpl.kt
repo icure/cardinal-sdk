@@ -7,6 +7,7 @@ import com.icure.cardinal.sdk.api.raw.RawExchangeDataApi
 import com.icure.cardinal.sdk.api.raw.wrap
 import com.icure.cardinal.sdk.auth.services.AuthProvider
 import com.icure.cardinal.sdk.model.ExchangeData
+import com.icure.cardinal.sdk.model.IdWithRev
 import com.icure.cardinal.sdk.model.ListOfIds
 import com.icure.cardinal.sdk.model.PaginatedList
 import com.icure.utils.InternalIcureApi
@@ -41,6 +42,17 @@ class RawExchangeDataApiImpl(
 			contentType(Application.Json)
 			accept(Application.Json)
 			setBody(exchangeData)
+		}.wrap()
+
+	override suspend fun createExchangeDataInBulk(exchangeDatas: List<ExchangeData>): HttpResponse<List<IdWithRev>> =
+		post(authProvider) {
+			url {
+				takeFrom(apiUrl)
+				appendPathSegments("rest", "v2", "exchangedata", "bulk")
+			}
+			contentType(Application.Json)
+			accept(Application.Json)
+			setBody(exchangeDatas)
 		}.wrap()
 
 	override suspend fun modifyExchangeData(exchangeData: ExchangeData): HttpResponse<ExchangeData> =
