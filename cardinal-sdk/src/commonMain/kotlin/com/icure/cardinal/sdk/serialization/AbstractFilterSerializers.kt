@@ -18,6 +18,7 @@ import com.icure.cardinal.sdk.model.MaintenanceTask
 import com.icure.cardinal.sdk.model.MedicalLocation
 import com.icure.cardinal.sdk.model.Message
 import com.icure.cardinal.sdk.model.Patient
+import com.icure.cardinal.sdk.model.Tarification
 import com.icure.cardinal.sdk.model.TimeTable
 import com.icure.cardinal.sdk.model.Topic
 import com.icure.cardinal.sdk.model.User
@@ -64,7 +65,9 @@ import com.icure.cardinal.sdk.model.filter.device.AllDevicesFilter
 import com.icure.cardinal.sdk.model.filter.device.DeviceByHcPartyFilter
 import com.icure.cardinal.sdk.model.filter.device.DeviceByIdsFilter
 import com.icure.cardinal.sdk.model.filter.document.AllDocumentsFilter
+import com.icure.cardinal.sdk.model.filter.document.DocumentByDataOwnerCodeFilter
 import com.icure.cardinal.sdk.model.filter.document.DocumentByDataOwnerPatientDateFilter
+import com.icure.cardinal.sdk.model.filter.document.DocumentByDataOwnerTagFilter
 import com.icure.cardinal.sdk.model.filter.document.DocumentByTypeDataOwnerPatientFilter
 import com.icure.cardinal.sdk.model.filter.form.FormByDataOwnerParentIdFilter
 import com.icure.cardinal.sdk.model.filter.form.FormByDataOwnerPatientOpeningDateFilter
@@ -120,12 +123,20 @@ import com.icure.cardinal.sdk.model.filter.patient.PatientByHcPartyFilter
 import com.icure.cardinal.sdk.model.filter.patient.PatientByHcPartyGenderEducationProfession
 import com.icure.cardinal.sdk.model.filter.patient.PatientByHcPartyNameFilter
 import com.icure.cardinal.sdk.model.filter.patient.PatientByIdsFilter
+import com.icure.cardinal.sdk.model.filter.pricing.AllPricingFilter
+import com.icure.cardinal.sdk.model.filter.pricing.PricingByRegionTypesLanguageLabelFilter
 import com.icure.cardinal.sdk.model.filter.service.ServiceByAssociationIdFilter
 import com.icure.cardinal.sdk.model.filter.service.ServiceByDataOwnerPatientDateFilter
+import com.icure.cardinal.sdk.model.filter.service.ServiceByHcPartyCodePrefixFilter
 import com.icure.cardinal.sdk.model.filter.service.ServiceByHcPartyFilter
 import com.icure.cardinal.sdk.model.filter.service.ServiceByHcPartyHealthElementIdsFilter
 import com.icure.cardinal.sdk.model.filter.service.ServiceByHcPartyIdentifiersFilter
+import com.icure.cardinal.sdk.model.filter.service.ServiceByHcPartyMonthCodePrefixFilter
+import com.icure.cardinal.sdk.model.filter.service.ServiceByHcPartyMonthTagPrefixFilter
+import com.icure.cardinal.sdk.model.filter.service.ServiceByHcPartyPatientCodePrefixFilter
+import com.icure.cardinal.sdk.model.filter.service.ServiceByHcPartyPatientTagPrefixFilter
 import com.icure.cardinal.sdk.model.filter.service.ServiceByHcPartyTagCodeDateFilter
+import com.icure.cardinal.sdk.model.filter.service.ServiceByHcPartyTagPrefixFilter
 import com.icure.cardinal.sdk.model.filter.service.ServiceByIdsFilter
 import com.icure.cardinal.sdk.model.filter.service.ServiceByQualifiedLinkFilter
 import com.icure.cardinal.sdk.model.filter.service.ServiceBySecretForeignKeys
@@ -178,6 +189,7 @@ internal object AnyAbstractFilterSerializer :
 					?: MessageAbstractFilterSerializer.getSerializerBySerialName(serialName)
 					?: PatientAbstractFilterSerializer.getSerializerBySerialName(serialName)
 					?: ServiceAbstractFilterSerializer.getSerializerBySerialName(serialName)
+					?: TarificationAbstractFilterSerializer.getSerializerBySerialName(serialName)
 					?: TimeTableAbstractFilterSerializer.getSerializerBySerialName(serialName)
 					?: TopicAbstractFilterSerializer.getSerializerBySerialName(serialName)
 					?: UserAbstractFilterSerializer.getSerializerBySerialName(serialName)
@@ -263,6 +275,10 @@ internal object AnyAbstractFilterSerializer :
 					?: ServiceAbstractFilterSerializer.getSerializerByClass(
 						kclass as
 							KClass<out AbstractFilter<Service>>,
+					)
+					?: TarificationAbstractFilterSerializer.getSerializerByClass(
+						kclass as
+							KClass<out AbstractFilter<Tarification>>,
 					)
 					?: TimeTableAbstractFilterSerializer.getSerializerByClass(
 						kclass as
@@ -515,7 +531,9 @@ internal object DocumentAbstractFilterSerializer :
 			"IntersectionFilter" -> IntersectionFilterSerializer(this)
 			"UnionFilter" -> UnionFilterSerializer(this)
 			"AllDocumentsFilter" -> AllDocumentsFilter.serializer()
+			"DocumentByDataOwnerCodeFilter" -> DocumentByDataOwnerCodeFilter.serializer()
 			"DocumentByDataOwnerPatientDateFilter" -> DocumentByDataOwnerPatientDateFilter.serializer()
+			"DocumentByDataOwnerTagFilter" -> DocumentByDataOwnerTagFilter.serializer()
 			"DocumentByTypeDataOwnerPatientFilter" -> DocumentByTypeDataOwnerPatientFilter.serializer()
 			else -> null
 		}
@@ -526,7 +544,9 @@ internal object DocumentAbstractFilterSerializer :
 			IntersectionFilter::class -> IntersectionFilterSerializer(this)
 			UnionFilter::class -> UnionFilterSerializer(this)
 			AllDocumentsFilter::class -> AllDocumentsFilter.serializer()
+			DocumentByDataOwnerCodeFilter::class -> DocumentByDataOwnerCodeFilter.serializer()
 			DocumentByDataOwnerPatientDateFilter::class -> DocumentByDataOwnerPatientDateFilter.serializer()
+			DocumentByDataOwnerTagFilter::class -> DocumentByDataOwnerTagFilter.serializer()
 			DocumentByTypeDataOwnerPatientFilter::class -> DocumentByTypeDataOwnerPatientFilter.serializer()
 			else -> null
 		}
@@ -861,10 +881,16 @@ internal object ServiceAbstractFilterSerializer :
 			"UnionFilter" -> UnionFilterSerializer(this)
 			"ServiceByAssociationIdFilter" -> ServiceByAssociationIdFilter.serializer()
 			"ServiceByDataOwnerPatientDateFilter" -> ServiceByDataOwnerPatientDateFilter.serializer()
+			"ServiceByHcPartyCodePrefixFilter" -> ServiceByHcPartyCodePrefixFilter.serializer()
 			"ServiceByHcPartyFilter" -> ServiceByHcPartyFilter.serializer()
 			"ServiceByHcPartyHealthElementIdsFilter" -> ServiceByHcPartyHealthElementIdsFilter.serializer()
 			"ServiceByHcPartyIdentifiersFilter" -> ServiceByHcPartyIdentifiersFilter.serializer()
+			"ServiceByHcPartyMonthCodePrefixFilter" -> ServiceByHcPartyMonthCodePrefixFilter.serializer()
+			"ServiceByHcPartyMonthTagPrefixFilter" -> ServiceByHcPartyMonthTagPrefixFilter.serializer()
+			"ServiceByHcPartyPatientCodePrefixFilter" -> ServiceByHcPartyPatientCodePrefixFilter.serializer()
+			"ServiceByHcPartyPatientTagPrefixFilter" -> ServiceByHcPartyPatientTagPrefixFilter.serializer()
 			"ServiceByHcPartyTagCodeDateFilter" -> ServiceByHcPartyTagCodeDateFilter.serializer()
+			"ServiceByHcPartyTagPrefixFilter" -> ServiceByHcPartyTagPrefixFilter.serializer()
 			"ServiceByIdsFilter" -> ServiceByIdsFilter.serializer()
 			"ServiceByQualifiedLinkFilter" -> ServiceByQualifiedLinkFilter.serializer()
 			"ServiceBySecretForeignKeys" -> ServiceBySecretForeignKeys.serializer()
@@ -878,14 +904,49 @@ internal object ServiceAbstractFilterSerializer :
 			UnionFilter::class -> UnionFilterSerializer(this)
 			ServiceByAssociationIdFilter::class -> ServiceByAssociationIdFilter.serializer()
 			ServiceByDataOwnerPatientDateFilter::class -> ServiceByDataOwnerPatientDateFilter.serializer()
+			ServiceByHcPartyCodePrefixFilter::class -> ServiceByHcPartyCodePrefixFilter.serializer()
 			ServiceByHcPartyFilter::class -> ServiceByHcPartyFilter.serializer()
 			ServiceByHcPartyHealthElementIdsFilter::class ->
 				ServiceByHcPartyHealthElementIdsFilter.serializer()
 			ServiceByHcPartyIdentifiersFilter::class -> ServiceByHcPartyIdentifiersFilter.serializer()
+			ServiceByHcPartyMonthCodePrefixFilter::class -> ServiceByHcPartyMonthCodePrefixFilter.serializer()
+			ServiceByHcPartyMonthTagPrefixFilter::class -> ServiceByHcPartyMonthTagPrefixFilter.serializer()
+			ServiceByHcPartyPatientCodePrefixFilter::class ->
+				ServiceByHcPartyPatientCodePrefixFilter.serializer()
+			ServiceByHcPartyPatientTagPrefixFilter::class ->
+				ServiceByHcPartyPatientTagPrefixFilter.serializer()
 			ServiceByHcPartyTagCodeDateFilter::class -> ServiceByHcPartyTagCodeDateFilter.serializer()
+			ServiceByHcPartyTagPrefixFilter::class -> ServiceByHcPartyTagPrefixFilter.serializer()
 			ServiceByIdsFilter::class -> ServiceByIdsFilter.serializer()
 			ServiceByQualifiedLinkFilter::class -> ServiceByQualifiedLinkFilter.serializer()
 			ServiceBySecretForeignKeys::class -> ServiceBySecretForeignKeys.serializer()
+			else -> null
+		}
+}
+
+internal object TarificationAbstractFilterSerializer :
+	CustomJsonPolymorphicSerializer<AbstractFilter<Tarification>>(
+		"${'$'}type",
+		"AbstractFilter<Tarification>",
+	) {
+	override fun getSerializerBySerialName(serialName: String): KSerializer<out AbstractFilter<Tarification>>? =
+		when (serialName) {
+			"ComplementFilter" -> ComplementFilterSerializer(this)
+			"IntersectionFilter" -> IntersectionFilterSerializer(this)
+			"UnionFilter" -> UnionFilterSerializer(this)
+			"AllPricingFilter" -> AllPricingFilter.serializer()
+			"PricingByRegionTypesLanguageLabelFilter" -> PricingByRegionTypesLanguageLabelFilter.serializer()
+			else -> null
+		}
+
+	override fun getSerializerByClass(kclass: KClass<out AbstractFilter<Tarification>>): KSerializer<out AbstractFilter<Tarification>>? =
+		when (kclass) {
+			ComplementFilter::class -> ComplementFilterSerializer(this)
+			IntersectionFilter::class -> IntersectionFilterSerializer(this)
+			UnionFilter::class -> UnionFilterSerializer(this)
+			AllPricingFilter::class -> AllPricingFilter.serializer()
+			PricingByRegionTypesLanguageLabelFilter::class ->
+				PricingByRegionTypesLanguageLabelFilter.serializer()
 			else -> null
 		}
 }

@@ -9,7 +9,6 @@ import com.icure.cardinal.sdk.model.base.Person
 import com.icure.cardinal.sdk.model.base.StoredDocument
 import com.icure.cardinal.sdk.model.embed.Address
 import com.icure.cardinal.sdk.model.embed.Annotation
-import com.icure.cardinal.sdk.model.embed.DeactivationReason
 import com.icure.cardinal.sdk.model.embed.DecryptedAddress
 import com.icure.cardinal.sdk.model.embed.DecryptedEmploymentInfo
 import com.icure.cardinal.sdk.model.embed.DecryptedFinancialInstitutionInformation
@@ -54,6 +53,7 @@ import kotlin.String
 import kotlin.collections.List
 import kotlin.collections.Map
 import kotlin.collections.Set
+import com.icure.cardinal.sdk.model.embed.DeactivationReason
 
 // WARNING: This file is auto-generated. If you change it manually, your changes will be lost.
 // If you want to change the way this class is generated, see [this repo](https://github.com/icure/sdk-codegen).
@@ -112,7 +112,7 @@ sealed interface Patient :
 
 	public val active: Boolean
 
-	public val deactivationReason: DeactivationReason
+	public val deactivationReason: String
 
 	public val deactivationDate: Int?
 
@@ -272,8 +272,8 @@ data class DecryptedPatient(
 	override val alias: String? = null,
 	@DefaultValue("true")
 	override val active: Boolean = true,
-	@DefaultValue("com.icure.cardinal.sdk.model.embed.DeactivationReason.None")
-	override val deactivationReason: DeactivationReason = DeactivationReason.None,
+	@DefaultValue("\"none\"")
+	override val deactivationReason: String = "none",
 	override val deactivationDate: Int? = null,
 	override val ssin: String? = null,
 	override val maidenName: String? = null,
@@ -401,8 +401,8 @@ data class EncryptedPatient(
 	override val alias: String? = null,
 	@DefaultValue("true")
 	override val active: Boolean = true,
-	@DefaultValue("com.icure.cardinal.sdk.model.embed.DeactivationReason.None")
-	override val deactivationReason: DeactivationReason = DeactivationReason.None,
+	@DefaultValue("\"none\"")
+	override val deactivationReason: String = "none",
 	override val deactivationDate: Int? = null,
 	override val ssin: String? = null,
 	override val maidenName: String? = null,
