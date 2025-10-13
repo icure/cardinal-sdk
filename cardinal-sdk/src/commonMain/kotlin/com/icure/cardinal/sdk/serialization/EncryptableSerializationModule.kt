@@ -2,11 +2,13 @@
 package com.icure.cardinal.sdk.serialization
 
 import com.icure.cardinal.sdk.model.AccessLog
+import com.icure.cardinal.sdk.model.ApplicationSettings
 import com.icure.cardinal.sdk.model.Article
 import com.icure.cardinal.sdk.model.CalendarItem
 import com.icure.cardinal.sdk.model.Classification
 import com.icure.cardinal.sdk.model.Contact
 import com.icure.cardinal.sdk.model.DecryptedAccessLog
+import com.icure.cardinal.sdk.model.DecryptedApplicationSettings
 import com.icure.cardinal.sdk.model.DecryptedArticle
 import com.icure.cardinal.sdk.model.DecryptedCalendarItem
 import com.icure.cardinal.sdk.model.DecryptedClassification
@@ -25,6 +27,7 @@ import com.icure.cardinal.sdk.model.DecryptedSecureDelegationKeyMap
 import com.icure.cardinal.sdk.model.DecryptedTopic
 import com.icure.cardinal.sdk.model.Document
 import com.icure.cardinal.sdk.model.EncryptedAccessLog
+import com.icure.cardinal.sdk.model.EncryptedApplicationSettings
 import com.icure.cardinal.sdk.model.EncryptedArticle
 import com.icure.cardinal.sdk.model.EncryptedCalendarItem
 import com.icure.cardinal.sdk.model.EncryptedClassification
@@ -126,6 +129,10 @@ internal object EncryptableSerializationModule {
 			polymorphic(Address::class) {
 				subclass(DecryptedAddress::class)
 				subclass(EncryptedAddress::class)
+			}
+			polymorphic(ApplicationSettings::class) {
+				subclass(DecryptedApplicationSettings::class)
+				subclass(EncryptedApplicationSettings::class)
 			}
 			polymorphic(Article::class) {
 				subclass(DecryptedArticle::class)

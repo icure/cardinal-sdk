@@ -10,6 +10,7 @@ import kotlin.collections.Set
 
 @Serializable
 data class RegistrationInformation(
+	public val applicationId: String? = null,
 	public val firstName: String? = null,
 	public val lastName: String? = null,
 	public val companyName: String? = null,
