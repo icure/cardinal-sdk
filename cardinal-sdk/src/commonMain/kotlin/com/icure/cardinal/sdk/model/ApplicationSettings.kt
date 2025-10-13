@@ -95,6 +95,8 @@ data class DecryptedApplicationSettings(
 	override val encryptedSelf: Base64String? = null,
 ) : ApplicationSettings {
 	// region ApplicationSettings-DecryptedApplicationSettings
+	override fun copyWithSecurityMetadata(securityMetadata: SecurityMetadata, secretForeignKeys: Set<String>): DecryptedApplicationSettings =
+		copy(securityMetadata = securityMetadata, secretForeignKeys = secretForeignKeys)
 	// endregion
 }
 
@@ -129,5 +131,7 @@ data class EncryptedApplicationSettings(
 	override val encryptedSelf: Base64String? = null,
 ) : ApplicationSettings {
 	// region ApplicationSettings-EncryptedApplicationSettings
+	override fun copyWithSecurityMetadata(securityMetadata: SecurityMetadata, secretForeignKeys: Set<String>): EncryptedApplicationSettings =
+		copy(securityMetadata = securityMetadata, secretForeignKeys = secretForeignKeys)
 	// endregion
 }
