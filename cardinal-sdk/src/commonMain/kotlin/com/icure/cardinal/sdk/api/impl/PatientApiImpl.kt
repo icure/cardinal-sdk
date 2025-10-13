@@ -1092,8 +1092,8 @@ private class PatientApiImpl(
 		config.crypto.exchangeDataManager.getOrCreateEncryptionDataTo(
 			null,
 			EntityReferenceInGroup(patientId, null),
-			true,
-			false
+			allowCreationWithoutDelegateKey = true,
+			allowCreationWithoutDelegatorKey = false
 		)
 		return true
 	}
@@ -1114,7 +1114,14 @@ private class PatientApiImpl(
 		matchPatientsBy(filter)
 
 	private suspend fun doMatchPatientsBy(groupId: String?, filter: FilterOptions<Patient>): List<String> =
-		rawApi.matchPatientsBy(mapPatientFilterOptions(filter, config, groupId)).successBody()
+		if (groupId == null) {
+			rawApi.matchPatientsBy(mapPatientFilterOptions(filter, config, groupId)).successBody()
+		} else {
+			rawApi.matchPatientsInGroupBy(
+				groupId,
+				mapPatientFilterOptions(filter, config, groupId)
+			).successBody()
+		}
 
 	override suspend fun subscribeToEvents(
 		events: Set<SubscriptionEventType>,
