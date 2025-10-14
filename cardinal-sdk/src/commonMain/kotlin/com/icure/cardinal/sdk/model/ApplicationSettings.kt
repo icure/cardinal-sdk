@@ -95,6 +95,7 @@ data class DecryptedApplicationSettings(
 	override val encryptedSelf: Base64String? = null,
 ) : ApplicationSettings {
 	// region ApplicationSettings-DecryptedApplicationSettings
+
 	// endregion
 }
 
@@ -129,5 +130,6 @@ data class EncryptedApplicationSettings(
 	override val encryptedSelf: Base64String? = null,
 ) : ApplicationSettings {
 	// region ApplicationSettings-EncryptedApplicationSettings
+
 	// endregion
 }

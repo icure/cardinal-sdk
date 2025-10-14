@@ -23,5 +23,6 @@ data class ServiceByHcPartyPatientTagPrefixFilter(
 	override val desc: String? = null,
 ) : AbstractFilter<Service> {
 	// region ServiceByHcPartyPatientTagPrefixFilter-ServiceByHcPartyPatientTagPrefixFilter
+
 	// endregion
 }

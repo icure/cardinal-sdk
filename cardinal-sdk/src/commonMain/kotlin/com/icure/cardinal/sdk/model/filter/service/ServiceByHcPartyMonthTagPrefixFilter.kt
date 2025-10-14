@@ -24,5 +24,6 @@ data class ServiceByHcPartyMonthTagPrefixFilter(
 	override val desc: String? = null,
 ) : AbstractFilter<Service> {
 	// region ServiceByHcPartyMonthTagPrefixFilter-ServiceByHcPartyMonthTagPrefixFilter
+
 	// endregion
 }
