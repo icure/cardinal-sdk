@@ -18,5 +18,6 @@ data class DocumentByDataOwnerCodeFilter(
 	override val desc: String? = null,
 ) : AbstractFilter<Document> {
 	// region DocumentByDataOwnerCodeFilter-DocumentByDataOwnerCodeFilter
+
 	// endregion
 }

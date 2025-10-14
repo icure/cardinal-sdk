@@ -16,5 +16,6 @@ data class AllPricingFilter(
 	override val desc: String? = null,
 ) : AbstractFilter<Tarification>, Filter.AllFilter<Tarification> {
 	// region AllPricingFilter-AllPricingFilter
+
 	// endregion
 }

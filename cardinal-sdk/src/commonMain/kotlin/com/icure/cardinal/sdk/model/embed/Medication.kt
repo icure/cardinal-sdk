@@ -56,6 +56,7 @@ data class Medication(
 	public val suspension: List<Suspension>? = null,
 	public val prescriptionRID: String? = null,
 	public val status: Int? = null,
+	public val stockLocation: DecryptedAddress? = null,
 ) {
 	// region Medication-Medication
 
