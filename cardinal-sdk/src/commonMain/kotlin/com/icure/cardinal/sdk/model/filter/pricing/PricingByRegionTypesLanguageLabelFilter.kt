@@ -20,5 +20,6 @@ data class PricingByRegionTypesLanguageLabelFilter(
 	override val desc: String? = null,
 ) : AbstractFilter<Tarification> {
 	// region PricingByRegionTypesLanguageLabelFilter-PricingByRegionTypesLanguageLabelFilter
+
 	// endregion
 }
