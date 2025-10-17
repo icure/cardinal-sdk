@@ -12,6 +12,9 @@ import com.icure.cardinal.sdk.js.model.CheckedConverters.objectToMap
 import com.icure.cardinal.sdk.js.model.CheckedConverters.setToArray
 import com.icure.cardinal.sdk.js.model.CheckedConverters.undefinedToNull
 import com.icure.cardinal.sdk.model.CalendarItemType
+import com.icure.cardinal.sdk.model.DecryptedPropertyStub
+import kotlin.Double
+import kotlin.Int
 import kotlin.String
 import kotlin.Suppress
 
@@ -38,6 +41,11 @@ public fun calendarItemType_toJs(obj: CalendarItemType): CalendarItemTypeJs {
 		obj.color
 	)
 	val duration = intToNumber(obj.duration)
+	val extraDurationsConfig = nullToUndefined(
+		obj.extraDurationsConfig?.let { nonNull1 ->
+			calendarItemType_DurationConfig_toJs(nonNull1)
+		}
+	)
 	val externalRef = nullToUndefined(
 		obj.externalRef
 	)
@@ -68,6 +76,14 @@ public fun calendarItemType_toJs(obj: CalendarItemType): CalendarItemTypeJs {
 			x1
 		},
 	)
+	val publicProperties = nullToUndefined(
+		setToArray(
+			obj.publicProperties,
+			{ x1: DecryptedPropertyStub ->
+				propertyStub_toJs(x1)
+			},
+		)
+	)
 	return CalendarItemTypeJs(js("{" +
 		"id:id," +
 		"rev:rev," +
@@ -78,11 +94,13 @@ public fun calendarItemType_toJs(obj: CalendarItemType): CalendarItemTypeJs {
 		"name:name," +
 		"color:color," +
 		"duration:duration," +
+		"extraDurationsConfig:extraDurationsConfig," +
 		"externalRef:externalRef," +
 		"mikronoId:mikronoId," +
 		"docIds:docIds," +
 		"otherInfos:otherInfos," +
-		"subjectByLanguage:subjectByLanguage" +
+		"subjectByLanguage:subjectByLanguage," +
+		"publicProperties:publicProperties" +
 	"}"))
 }
 
@@ -96,6 +114,9 @@ public fun calendarItemType_fromJs(obj: CalendarItemTypeJs): CalendarItemType {
 	val name = undefinedToNull(obj.name)
 	val color = undefinedToNull(obj.color)
 	val duration = numberToInt(obj.duration, "obj.duration")
+	val extraDurationsConfig = obj.extraDurationsConfig?.let { nonNull1 ->
+		calendarItemType_DurationConfig_fromJs(nonNull1)
+	}
 	val externalRef = undefinedToNull(obj.externalRef)
 	val mikronoId = undefinedToNull(obj.mikronoId)
 	val docIds = arrayToSet(
@@ -125,6 +146,13 @@ public fun calendarItemType_fromJs(obj: CalendarItemTypeJs): CalendarItemType {
 			x1
 		},
 	)
+	val publicProperties = arrayToSet(
+		obj.publicProperties,
+		"obj.publicProperties",
+		{ x1: DecryptedPropertyStubJs ->
+			propertyStub_fromJs(x1)
+		},
+	)
 	return CalendarItemType(
 		id = id,
 		rev = rev,
@@ -135,10 +163,87 @@ public fun calendarItemType_fromJs(obj: CalendarItemTypeJs): CalendarItemType {
 		name = name,
 		color = color,
 		duration = duration,
+		extraDurationsConfig = extraDurationsConfig,
 		externalRef = externalRef,
 		mikronoId = mikronoId,
 		docIds = docIds,
 		otherInfos = otherInfos,
 		subjectByLanguage = subjectByLanguage,
+		publicProperties = publicProperties,
+	)
+}
+
+@Suppress("UNUSED_VARIABLE")
+public fun calendarItemType_DurationConfig_toJs(obj: CalendarItemType.DurationConfig):
+		CalendarItemTypeJs_DurationConfigJs = when (obj) {
+	is CalendarItemType.DurationConfig.Set -> calendarItemType_DurationConfig_Set_toJs(obj)
+	is CalendarItemType.DurationConfig.Formula -> calendarItemType_DurationConfig_Formula_toJs(obj)
+}
+
+public fun calendarItemType_DurationConfig_fromJs(obj: CalendarItemTypeJs_DurationConfigJs):
+		CalendarItemType.DurationConfig = when {
+	obj is CalendarItemTypeJs_DurationConfigJs_SetJs || obj.ktClass ==
+			"com.icure.cardinal.sdk.model.CalendarItemType.DurationConfig.Set" ->calendarItemType_DurationConfig_Set_fromJs(obj
+			as com.icure.cardinal.sdk.js.model.CalendarItemTypeJs_DurationConfigJs_SetJs)
+	obj is CalendarItemTypeJs_DurationConfigJs_FormulaJs || obj.ktClass ==
+			"com.icure.cardinal.sdk.model.CalendarItemType.DurationConfig.Formula" ->calendarItemType_DurationConfig_Formula_fromJs(obj
+			as com.icure.cardinal.sdk.js.model.CalendarItemTypeJs_DurationConfigJs_FormulaJs)
+	else -> throw
+			IllegalArgumentException("""Unknown concrete implementation for com.icure.cardinal.sdk.model.CalendarItemType.DurationConfig: $obj""")
+}
+
+@Suppress("UNUSED_VARIABLE")
+public fun calendarItemType_DurationConfig_Set_toJs(obj: CalendarItemType.DurationConfig.Set):
+		CalendarItemTypeJs_DurationConfigJs_SetJs {
+	val durations = setToArray(
+		obj.durations,
+		{ x1: Int ->
+			intToNumber(x1)
+		},
+	)
+	return CalendarItemTypeJs_DurationConfigJs_SetJs(js("{" +
+		"durations:durations" +
+	"}"))
+}
+
+public
+		fun calendarItemType_DurationConfig_Set_fromJs(obj: CalendarItemTypeJs_DurationConfigJs_SetJs):
+		CalendarItemType.DurationConfig.Set {
+	val durations = arrayToSet(
+		obj.durations,
+		"obj.durations",
+		{ x1: Double ->
+			numberToInt(x1, "x1")
+		},
+	)
+	return CalendarItemType.DurationConfig.Set(
+		durations = durations,
+	)
+}
+
+@Suppress("UNUSED_VARIABLE")
+public
+		fun calendarItemType_DurationConfig_Formula_toJs(obj: CalendarItemType.DurationConfig.Formula):
+		CalendarItemTypeJs_DurationConfigJs_FormulaJs {
+	val min = intToNumber(obj.min)
+	val max = intToNumber(obj.max)
+	val step = intToNumber(obj.step)
+	return CalendarItemTypeJs_DurationConfigJs_FormulaJs(js("{" +
+		"min:min," +
+		"max:max," +
+		"step:step" +
+	"}"))
+}
+
+public
+		fun calendarItemType_DurationConfig_Formula_fromJs(obj: CalendarItemTypeJs_DurationConfigJs_FormulaJs):
+		CalendarItemType.DurationConfig.Formula {
+	val min = numberToInt(obj.min, "obj.min")
+	val max = numberToInt(obj.max, "obj.max")
+	val step = numberToInt(obj.step, "obj.step")
+	return CalendarItemType.DurationConfig.Formula(
+		min = min,
+		max = max,
+		step = step,
 	)
 }

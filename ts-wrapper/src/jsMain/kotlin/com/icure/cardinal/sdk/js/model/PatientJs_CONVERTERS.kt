@@ -80,7 +80,6 @@ import com.icure.cardinal.sdk.model.Patient
 import com.icure.cardinal.sdk.model.base.CodeStub
 import com.icure.cardinal.sdk.model.base.Identifier
 import com.icure.cardinal.sdk.model.embed.Annotation
-import com.icure.cardinal.sdk.model.embed.DeactivationReason
 import com.icure.cardinal.sdk.model.embed.DecryptedAddress
 import com.icure.cardinal.sdk.model.embed.DecryptedEmploymentInfo
 import com.icure.cardinal.sdk.model.embed.DecryptedFinancialInstitutionInformation
@@ -206,7 +205,7 @@ public fun patient_toJs(obj: DecryptedPatient): DecryptedPatientJs {
 		obj.alias
 	)
 	val active = obj.active
-	val deactivationReason = obj.deactivationReason.name
+	val deactivationReason = obj.deactivationReason
 	val deactivationDate = nullToUndefined(
 		intToNumber(obj.deactivationDate)
 	)
@@ -697,7 +696,7 @@ public fun patient_fromJs(obj: DecryptedPatientJs): DecryptedPatient {
 	)
 	val alias = undefinedToNull(obj.alias)
 	val active = obj.active
-	val deactivationReason = DeactivationReason.valueOf(obj.deactivationReason)
+	val deactivationReason = obj.deactivationReason
 	val deactivationDate = numberToInt(obj.deactivationDate, "obj.deactivationDate")
 	val ssin = undefinedToNull(obj.ssin)
 	val maidenName = undefinedToNull(obj.maidenName)
@@ -1174,7 +1173,7 @@ public fun patient_toJs(obj: EncryptedPatient): EncryptedPatientJs {
 		obj.alias
 	)
 	val active = obj.active
-	val deactivationReason = obj.deactivationReason.name
+	val deactivationReason = obj.deactivationReason
 	val deactivationDate = nullToUndefined(
 		intToNumber(obj.deactivationDate)
 	)
@@ -1665,7 +1664,7 @@ public fun patient_fromJs(obj: EncryptedPatientJs): EncryptedPatient {
 	)
 	val alias = undefinedToNull(obj.alias)
 	val active = obj.active
-	val deactivationReason = DeactivationReason.valueOf(obj.deactivationReason)
+	val deactivationReason = obj.deactivationReason
 	val deactivationDate = numberToInt(obj.deactivationDate, "obj.deactivationDate")
 	val ssin = undefinedToNull(obj.ssin)
 	val maidenName = undefinedToNull(obj.maidenName)

@@ -12,6 +12,8 @@ import kotlin.js.JsQualifier
 public external class RegistrationInformationJs(
 	partial: dynamic,
 ) {
+	public val applicationId: String?
+
 	public val firstName: String?
 
 	public val lastName: String?

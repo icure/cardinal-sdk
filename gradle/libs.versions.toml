@@ -1,7 +1,7 @@
 [versions]
-kotlin = "2.2.0"
+kotlin = "2.2.20"
 ktor = "3.2.1"
-coroutines = "1.10.1"
+coroutines = "1.10.2"
 kotlinIo = "0.6.0"
 kotlinSerialization = "1.9.0"
 kotlinDateTime = "0.7.1"
@@ -12,7 +12,7 @@ kermit = "2.0.3"
 okio = "3.9.1"
 bouncyCastle = "1.70"
 kotp = "1.0.1"
-kerberus = "1.1.5"
+kerberus = "1.1.7"
 
 [libraries]
 

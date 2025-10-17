@@ -99,4 +99,6 @@ public external class MedicationJs(
 	public val prescriptionRID: String?
 
 	public val status: Double?
+
+	public val stockLocation: DecryptedAddressJs?
 }

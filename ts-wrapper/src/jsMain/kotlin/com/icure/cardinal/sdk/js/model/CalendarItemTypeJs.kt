@@ -34,6 +34,8 @@ public external class CalendarItemTypeJs(
 
 	public val duration: Double
 
+	public val extraDurationsConfig: CalendarItemTypeJs_DurationConfigJs?
+
 	public val externalRef: String?
 
 	public val mikronoId: String?
@@ -43,4 +45,6 @@ public external class CalendarItemTypeJs(
 	public val otherInfos: Record<String, String>
 
 	public val subjectByLanguage: Record<String, String>
+
+	public val publicProperties: Array<DecryptedPropertyStubJs>?
 }

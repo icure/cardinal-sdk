@@ -1,13 +1,13 @@
 // auto-generated file
-import {ApplicationSettings} from '../model/ApplicationSettings.mjs';
+import {EncryptedApplicationSettings} from '../model/ApplicationSettings.mjs';
 
 
 export interface ApplicationSettingsApi {
 
-	getApplicationSettings(): Promise<Array<ApplicationSettings>>;
+	getApplicationSettings(): Promise<Array<EncryptedApplicationSettings>>;
 
-	createApplicationSettings(applicationSettings: ApplicationSettings): Promise<ApplicationSettings>;
+	createApplicationSettings(applicationSettings: EncryptedApplicationSettings): Promise<EncryptedApplicationSettings>;
 
-	updateApplicationSettings(applicationSettings: ApplicationSettings): Promise<ApplicationSettings>;
+	updateApplicationSettings(applicationSettings: EncryptedApplicationSettings): Promise<EncryptedApplicationSettings>;
 
 }

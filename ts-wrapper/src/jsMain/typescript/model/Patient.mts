@@ -10,7 +10,6 @@ import {Person} from './base/Person.mjs';
 import {StoredDocument} from './base/StoredDocument.mjs';
 import {DecryptedAddress, EncryptedAddress} from './embed/Address.mjs';
 import {Annotation} from './embed/Annotation.mjs';
-import {DeactivationReason} from './embed/DeactivationReason.mjs';
 import {Delegation} from './embed/Delegation.mjs';
 import {DecryptedEmploymentInfo, EmploymentInfo, EncryptedEmploymentInfo} from './embed/EmploymentInfo.mjs';
 import {Encryptable} from './embed/Encryptable.mjs';
@@ -43,7 +42,7 @@ export interface Patient extends StoredDocument, ICureDocument<string>, Person, 
 
 	active: boolean;
 
-	deactivationReason: DeactivationReason;
+	deactivationReason: string;
 
 	deactivationDate: number | undefined;
 
@@ -185,7 +184,7 @@ export class DecryptedPatient {
 
 	active: boolean = true;
 
-	deactivationReason: DeactivationReason = DeactivationReason.None;
+	deactivationReason: string = "none";
 
 	deactivationDate: number | undefined = undefined;
 
@@ -443,7 +442,7 @@ export class EncryptedPatient {
 
 	active: boolean = true;
 
-	deactivationReason: DeactivationReason = DeactivationReason.None;
+	deactivationReason: string = "none";
 
 	deactivationDate: number | undefined = undefined;
 
