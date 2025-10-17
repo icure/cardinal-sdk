@@ -2,6 +2,8 @@
 
 export class RegistrationInformation {
 
+	applicationId: string | undefined = undefined;
+
 	firstName: string | undefined = undefined;
 
 	lastName: string | undefined = undefined;
@@ -19,6 +21,7 @@ export class RegistrationInformation {
 	cluster: string | undefined = undefined;
 
 	constructor(partial: Partial<RegistrationInformation> & Pick<RegistrationInformation, "emailAddress">) {
+		if ('applicationId' in partial) this.applicationId = partial.applicationId;
 		if ('firstName' in partial) this.firstName = partial.firstName;
 		if ('lastName' in partial) this.lastName = partial.lastName;
 		if ('companyName' in partial) this.companyName = partial.companyName;

@@ -178,6 +178,11 @@ public fun medication_toJs(obj: Medication): MedicationJs {
 	val status = nullToUndefined(
 		intToNumber(obj.status)
 	)
+	val stockLocation = nullToUndefined(
+		obj.stockLocation?.let { nonNull1 ->
+			address_toJs(nonNull1)
+		}
+	)
 	return MedicationJs(js("{" +
 		"compoundPrescription:compoundPrescription," +
 		"substanceProduct:substanceProduct," +
@@ -220,7 +225,8 @@ public fun medication_toJs(obj: Medication): MedicationJs {
 		"posologyChanged:posologyChanged," +
 		"suspension:suspension," +
 		"prescriptionRID:prescriptionRID," +
-		"status:status" +
+		"status:status," +
+		"stockLocation:stockLocation" +
 	"}"))
 }
 
@@ -302,6 +308,9 @@ public fun medication_fromJs(obj: MedicationJs): Medication {
 	)
 	val prescriptionRID = undefinedToNull(obj.prescriptionRID)
 	val status = numberToInt(obj.status, "obj.status")
+	val stockLocation = obj.stockLocation?.let { nonNull1 ->
+		address_fromJs(nonNull1)
+	}
 	return Medication(
 		compoundPrescription = compoundPrescription,
 		substanceProduct = substanceProduct,
@@ -345,5 +354,6 @@ public fun medication_fromJs(obj: MedicationJs): Medication {
 		suspension = suspension,
 		prescriptionRID = prescriptionRID,
 		status = status,
+		stockLocation = stockLocation,
 	)
 }
