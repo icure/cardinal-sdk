@@ -1,5 +1,6 @@
 // auto-generated file
 import {randomUuid} from '../utils/Id.mjs';
+import {DecryptedPropertyStub} from './PropertyStub.mjs';
 import {StoredDocument} from './base/StoredDocument.mjs';
 
 
@@ -35,6 +36,8 @@ export class CalendarItemType implements StoredDocument {
 
 	subjectByLanguage: { [ key: string ]: string } = {};
 
+	publicProperties: Array<DecryptedPropertyStub> | undefined = undefined;
+
 	constructor(partial: Partial<CalendarItemType>) {
 		this.id = partial.id ?? randomUuid();
 		if ('rev' in partial) this.rev = partial.rev;
@@ -51,6 +54,7 @@ export class CalendarItemType implements StoredDocument {
 		if ('docIds' in partial && partial.docIds !== undefined) this.docIds = partial.docIds;
 		if ('otherInfos' in partial && partial.otherInfos !== undefined) this.otherInfos = partial.otherInfos;
 		if ('subjectByLanguage' in partial && partial.subjectByLanguage !== undefined) this.subjectByLanguage = partial.subjectByLanguage;
+		if ('publicProperties' in partial) this.publicProperties = partial.publicProperties;
 	}
 
 }
