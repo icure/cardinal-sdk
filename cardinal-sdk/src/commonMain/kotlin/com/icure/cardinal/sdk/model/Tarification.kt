@@ -19,11 +19,8 @@ import kotlin.collections.List
 import kotlin.collections.Map
 import kotlin.collections.Set
 
-// WARNING: This file is auto-generated. If you change it manually, your changes will be lost.
-// If you want to change the way this class is generated, see [this repo](https://github.com/icure/sdk-codegen).
-
 @Serializable
-data class Tarification(
+public data class Tarification(
 	override val id: String,
 	override val rev: String? = null,
 	override val deletionDate: Long? = null,
@@ -64,8 +61,4 @@ data class Tarification(
 	public val ngroup: String? = null,
 	@DefaultValue("emptyList()")
 	public val letterValues: List<LetterValue> = emptyList(),
-) : StoredDocument, CodeIdentification<String> {
-	// region Tarification-Tarification
-
-	// endregion
-}
+) : StoredDocument, CodeIdentification<String>
