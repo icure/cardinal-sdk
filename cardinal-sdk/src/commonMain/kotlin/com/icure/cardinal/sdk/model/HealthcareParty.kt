@@ -24,15 +24,6 @@ import com.icure.cardinal.sdk.model.specializations.SpkiHexString
 import com.icure.cardinal.sdk.serialization.ByteArraySerializer
 import com.icure.cardinal.sdk.utils.DefaultValue
 import kotlinx.serialization.Serializable
-import kotlin.Boolean
-import kotlin.ByteArray
-import kotlin.Deprecated
-import kotlin.Int
-import kotlin.Long
-import kotlin.String
-import kotlin.collections.List
-import kotlin.collections.Map
-import kotlin.collections.Set
 
 // WARNING: This file is auto-generated. If you change it manually, your changes will be lost.
 // If you want to change the way this class is generated, see [this repo](https://github.com/icure/sdk-codegen).
@@ -108,6 +99,7 @@ data class HealthcareParty(
 	override val properties: Set<DecryptedPropertyStub> = emptySet(),
 	@DefaultValue("false")
 	public val `public`: Boolean = false,
+	public val publicProperties: Set<DecryptedPropertyStub>? = null,
 	override val cryptoActorProperties: Set<DecryptedPropertyStub>? = null,
 	@DefaultValue("emptyMap()")
 	override val hcPartyKeys: Map<String, List<HexString>> = emptyMap(),

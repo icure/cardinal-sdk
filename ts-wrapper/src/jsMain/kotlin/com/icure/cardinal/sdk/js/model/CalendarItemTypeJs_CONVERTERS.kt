@@ -12,6 +12,7 @@ import com.icure.cardinal.sdk.js.model.CheckedConverters.objectToMap
 import com.icure.cardinal.sdk.js.model.CheckedConverters.setToArray
 import com.icure.cardinal.sdk.js.model.CheckedConverters.undefinedToNull
 import com.icure.cardinal.sdk.model.CalendarItemType
+import com.icure.cardinal.sdk.model.DecryptedPropertyStub
 import kotlin.Double
 import kotlin.Int
 import kotlin.String
@@ -75,6 +76,14 @@ public fun calendarItemType_toJs(obj: CalendarItemType): CalendarItemTypeJs {
 			x1
 		},
 	)
+	val publicProperties = nullToUndefined(
+		setToArray(
+			obj.publicProperties,
+			{ x1: DecryptedPropertyStub ->
+				propertyStub_toJs(x1)
+			},
+		)
+	)
 	return CalendarItemTypeJs(js("{" +
 		"id:id," +
 		"rev:rev," +
@@ -90,7 +99,8 @@ public fun calendarItemType_toJs(obj: CalendarItemType): CalendarItemTypeJs {
 		"mikronoId:mikronoId," +
 		"docIds:docIds," +
 		"otherInfos:otherInfos," +
-		"subjectByLanguage:subjectByLanguage" +
+		"subjectByLanguage:subjectByLanguage," +
+		"publicProperties:publicProperties" +
 	"}"))
 }
 
@@ -136,6 +146,13 @@ public fun calendarItemType_fromJs(obj: CalendarItemTypeJs): CalendarItemType {
 			x1
 		},
 	)
+	val publicProperties = arrayToSet(
+		obj.publicProperties,
+		"obj.publicProperties",
+		{ x1: DecryptedPropertyStubJs ->
+			propertyStub_fromJs(x1)
+		},
+	)
 	return CalendarItemType(
 		id = id,
 		rev = rev,
@@ -152,6 +169,7 @@ public fun calendarItemType_fromJs(obj: CalendarItemTypeJs): CalendarItemType {
 		docIds = docIds,
 		otherInfos = otherInfos,
 		subjectByLanguage = subjectByLanguage,
+		publicProperties = publicProperties,
 	)
 }
 

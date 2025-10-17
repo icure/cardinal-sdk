@@ -45,4 +45,6 @@ public external class CalendarItemTypeJs(
 	public val otherInfos: Record<String, String>
 
 	public val subjectByLanguage: Record<String, String>
+
+	public val publicProperties: Array<DecryptedPropertyStubJs>?
 }
