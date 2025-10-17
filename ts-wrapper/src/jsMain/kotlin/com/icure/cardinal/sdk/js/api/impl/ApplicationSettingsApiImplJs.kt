@@ -3,11 +3,11 @@ package com.icure.cardinal.sdk.js.api.`impl`
 
 import com.icure.cardinal.sdk.api.ApplicationSettingsApi
 import com.icure.cardinal.sdk.js.api.ApplicationSettingsApiJs
-import com.icure.cardinal.sdk.js.model.ApplicationSettingsJs
 import com.icure.cardinal.sdk.js.model.CheckedConverters.listToArray
+import com.icure.cardinal.sdk.js.model.EncryptedApplicationSettingsJs
 import com.icure.cardinal.sdk.js.model.applicationSettings_fromJs
 import com.icure.cardinal.sdk.js.model.applicationSettings_toJs
-import com.icure.cardinal.sdk.model.ApplicationSettings
+import com.icure.cardinal.sdk.model.EncryptedApplicationSettings
 import kotlin.Array
 import kotlin.OptIn
 import kotlin.js.Promise
@@ -19,21 +19,21 @@ import kotlinx.coroutines.promise
 internal class ApplicationSettingsApiImplJs(
 	private val applicationSettingsApi: ApplicationSettingsApi,
 ) : ApplicationSettingsApiJs {
-	override fun getApplicationSettings(): Promise<Array<ApplicationSettingsJs>> =
+	override fun getApplicationSettings(): Promise<Array<EncryptedApplicationSettingsJs>> =
 			GlobalScope.promise {
 		val result = applicationSettingsApi.getApplicationSettings(
 		)
 		listToArray(
 			result,
-			{ x1: ApplicationSettings ->
+			{ x1: EncryptedApplicationSettings ->
 				applicationSettings_toJs(x1)
 			},
 		)
 	}
 
-	override fun createApplicationSettings(applicationSettings: ApplicationSettingsJs):
-			Promise<ApplicationSettingsJs> = GlobalScope.promise {
-		val applicationSettingsConverted: ApplicationSettings =
+	override fun createApplicationSettings(applicationSettings: EncryptedApplicationSettingsJs):
+			Promise<EncryptedApplicationSettingsJs> = GlobalScope.promise {
+		val applicationSettingsConverted: EncryptedApplicationSettings =
 				applicationSettings_fromJs(applicationSettings)
 		val result = applicationSettingsApi.createApplicationSettings(
 			applicationSettingsConverted,
@@ -41,9 +41,9 @@ internal class ApplicationSettingsApiImplJs(
 		applicationSettings_toJs(result)
 	}
 
-	override fun updateApplicationSettings(applicationSettings: ApplicationSettingsJs):
-			Promise<ApplicationSettingsJs> = GlobalScope.promise {
-		val applicationSettingsConverted: ApplicationSettings =
+	override fun updateApplicationSettings(applicationSettings: EncryptedApplicationSettingsJs):
+			Promise<EncryptedApplicationSettingsJs> = GlobalScope.promise {
+		val applicationSettingsConverted: EncryptedApplicationSettings =
 				applicationSettings_fromJs(applicationSettings)
 		val result = applicationSettingsApi.updateApplicationSettings(
 			applicationSettingsConverted,

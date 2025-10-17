@@ -23,6 +23,8 @@ export class CalendarItemType implements StoredDocument {
 
 	duration: number = 0;
 
+	extraDurationsConfig: CalendarItemType.DurationConfig | undefined = undefined;
+
 	externalRef: string | undefined = undefined;
 
 	mikronoId: string | undefined = undefined;
@@ -43,11 +45,52 @@ export class CalendarItemType implements StoredDocument {
 		if ('name' in partial) this.name = partial.name;
 		if ('color' in partial) this.color = partial.color;
 		if ('duration' in partial && partial.duration !== undefined) this.duration = partial.duration;
+		if ('extraDurationsConfig' in partial) this.extraDurationsConfig = partial.extraDurationsConfig;
 		if ('externalRef' in partial) this.externalRef = partial.externalRef;
 		if ('mikronoId' in partial) this.mikronoId = partial.mikronoId;
 		if ('docIds' in partial && partial.docIds !== undefined) this.docIds = partial.docIds;
 		if ('otherInfos' in partial && partial.otherInfos !== undefined) this.otherInfos = partial.otherInfos;
 		if ('subjectByLanguage' in partial && partial.subjectByLanguage !== undefined) this.subjectByLanguage = partial.subjectByLanguage;
 	}
+
+}
+
+export namespace CalendarItemType {
+
+	export namespace DurationConfig {
+
+		export class Set {
+
+			durations: Array<number> = [];
+
+			readonly $ktClass: 'com.icure.cardinal.sdk.model.CalendarItemType.DurationConfig.Set' = 'com.icure.cardinal.sdk.model.CalendarItemType.DurationConfig.Set';
+
+			constructor(partial: Partial<Set>) {
+				if ('durations' in partial && partial.durations !== undefined) this.durations = partial.durations;
+			}
+
+		}
+
+		export class Formula {
+
+			min: number;
+
+			max: number;
+
+			step: number;
+
+			readonly $ktClass: 'com.icure.cardinal.sdk.model.CalendarItemType.DurationConfig.Formula' = 'com.icure.cardinal.sdk.model.CalendarItemType.DurationConfig.Formula';
+
+			constructor(partial: Partial<Formula> & Pick<Formula, "min" | "max" | "step">) {
+				this.min = partial.min;
+				this.max = partial.max;
+				this.step = partial.step;
+			}
+
+		}
+
+	}
+
+	export type DurationConfig = DurationConfig.Set | DurationConfig.Formula;
 
 }

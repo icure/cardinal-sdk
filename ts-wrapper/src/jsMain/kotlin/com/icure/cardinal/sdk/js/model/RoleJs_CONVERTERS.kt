@@ -2,8 +2,10 @@
 package com.icure.cardinal.sdk.js.model
 
 import com.icure.cardinal.sdk.js.model.CheckedConverters.arrayToSet
+import com.icure.cardinal.sdk.js.model.CheckedConverters.intToNumber
 import com.icure.cardinal.sdk.js.model.CheckedConverters.longToNumber
 import com.icure.cardinal.sdk.js.model.CheckedConverters.nullToUndefined
+import com.icure.cardinal.sdk.js.model.CheckedConverters.numberToInt
 import com.icure.cardinal.sdk.js.model.CheckedConverters.numberToLong
 import com.icure.cardinal.sdk.js.model.CheckedConverters.setToArray
 import com.icure.cardinal.sdk.js.model.CheckedConverters.undefinedToNull
@@ -23,6 +25,9 @@ public fun role_toJs(obj: Role): RoleJs {
 	val name = nullToUndefined(
 		obj.name
 	)
+	val inheritableUpTo = nullToUndefined(
+		intToNumber(obj.inheritableUpTo)
+	)
 	val permissions = setToArray(
 		obj.permissions,
 		{ x1: String ->
@@ -34,6 +39,7 @@ public fun role_toJs(obj: Role): RoleJs {
 		"rev:rev," +
 		"deletionDate:deletionDate," +
 		"name:name," +
+		"inheritableUpTo:inheritableUpTo," +
 		"permissions:permissions" +
 	"}"))
 }
@@ -43,6 +49,7 @@ public fun role_fromJs(obj: RoleJs): Role {
 	val rev = undefinedToNull(obj.rev)
 	val deletionDate = numberToLong(obj.deletionDate, "obj.deletionDate")
 	val name = undefinedToNull(obj.name)
+	val inheritableUpTo = numberToInt(obj.inheritableUpTo, "obj.inheritableUpTo")
 	val permissions = arrayToSet(
 		obj.permissions,
 		"obj.permissions",
@@ -55,6 +62,7 @@ public fun role_fromJs(obj: RoleJs): Role {
 		rev = rev,
 		deletionDate = deletionDate,
 		name = name,
+		inheritableUpTo = inheritableUpTo,
 		permissions = permissions,
 	)
 }

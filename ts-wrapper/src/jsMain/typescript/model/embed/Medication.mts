@@ -1,5 +1,6 @@
 // auto-generated file
 import {CodeStub} from '../base/CodeStub.mjs';
+import {DecryptedAddress} from './Address.mjs';
 import {Duration} from './Duration.mjs';
 import {Medicinalproduct} from './Medicinalproduct.mjs';
 import {ParagraphAgreement} from './ParagraphAgreement.mjs';
@@ -95,6 +96,8 @@ export class Medication {
 
 	status: number | undefined = undefined;
 
+	stockLocation: DecryptedAddress | undefined = undefined;
+
 	constructor(partial: Partial<Medication>) {
 		if ('compoundPrescription' in partial) this.compoundPrescription = partial.compoundPrescription;
 		if ('substanceProduct' in partial) this.substanceProduct = partial.substanceProduct;
@@ -138,6 +141,7 @@ export class Medication {
 		if ('suspension' in partial) this.suspension = partial.suspension;
 		if ('prescriptionRID' in partial) this.prescriptionRID = partial.prescriptionRID;
 		if ('status' in partial) this.status = partial.status;
+		if ('stockLocation' in partial) this.stockLocation = partial.stockLocation;
 	}
 
 }

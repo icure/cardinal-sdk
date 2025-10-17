@@ -163,7 +163,7 @@ val prepareTypescriptSourceCompilation = tasks.register("prepareTypescriptSource
 			into(mergedTsProject)
 		}
 		copyJsPatching(
-			from = ktJsCompiledPackage.resolve("$moduleName.d.ts"),
+			from = ktJsCompiledPackage.resolve("$moduleName.d.mts"),
 			into = mergedTsProject.resolve("$moduleName.d.mts"),
 			importing = getTypescriptSourcePackages().map { it.tsPackageAsImport() },
 			exporting = getTypescriptSourcePackages().map { it.tsPackageAsExport() },
@@ -172,10 +172,6 @@ val prepareTypescriptSourceCompilation = tasks.register("prepareTypescriptSource
 					of = "cryptoService?: Nullable<XCryptoService>",
 					with = "cryptoService?: Nullable<crypto.XCryptoService>"
 				),
-				Replacement(
-					of = "get(): XCryptoService;",
-					with = "get(): crypto.XCryptoService;"
-				)
 			)
 		)
 		// Generate index files for each package
@@ -217,7 +213,7 @@ tasks.register("prepareDistributionPackage") {
 	dependsOn(compileTypescriptSources)
 	val filesNeedingPatch = setOf(
 		"$moduleName.mjs",
-		"$moduleName.d.ts",
+		"$moduleName.d.mts",
 		"package.json",
 	)
 	doLast {
@@ -236,7 +232,7 @@ tasks.register("prepareDistributionPackage") {
 		val tsSourcePackagesImport = tsSourcePackages.map { it.tsPackageAsImport() }
 		val tsSourcePackageExports = tsSourcePackages.map { it.tsPackageAsExport() }
 		copyJsPatching(
-			from = ktJsCompiledPackage.resolve("$moduleName.d.ts"),
+			from = ktJsCompiledPackage.resolve("$moduleName.d.mts"),
 			into = tsPackage.resolve("$moduleName.d.mts"),
 			importing = tsSourcePackagesImport,
 			exporting = tsSourcePackageExports,
@@ -261,7 +257,6 @@ tasks.register("prepareDistributionPackage") {
 			from = ktJsCompiledPackage.resolve("package.json"),
 			into = tsPackage.resolve("package.json"),
 			replacing = listOf(
-				Replacement("$moduleName.d.ts", with = "$moduleName.d.mts"),
 				Replacement("\"name\": \"$moduleName\"", with = "\"name\": \"@icure/cardinal-sdk\""),
 			)
 		)
