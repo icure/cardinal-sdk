@@ -258,6 +258,7 @@ tasks.register("prepareDistributionPackage") {
 			into = tsPackage.resolve("package.json"),
 			replacing = listOf(
 				Replacement("\"name\": \"$moduleName\"", with = "\"name\": \"@icure/cardinal-sdk\""),
+				Replacement("\"version\": \"0.0.0-unspecified\"", with = "\"version\": \"${project(":cardinal-sdk").version}\""),
 			)
 		)
 	}
