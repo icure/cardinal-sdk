@@ -99,6 +99,13 @@ interface Import {
 		override val entry: String
 			get() = "import * as $importedName from '$from'"
 	}
+	data class Selective(
+		val items: Set<String>,
+		val from: String
+	) : Import  {
+		override val entry: String
+			get() = "import { ${items.joinToString(", ")} } from '$from'"
+	}
 }
 data class Replacement(
 	val of: String,
@@ -169,8 +176,8 @@ val prepareTypescriptSourceCompilation = tasks.register("prepareTypescriptSource
 			exporting = getTypescriptSourcePackages().map { it.tsPackageAsExport() },
 			replacing = listOf(
 				Replacement(
-					of = "cryptoService?: Nullable<XCryptoService>",
-					with = "cryptoService?: Nullable<crypto.XCryptoService>"
+					of = "cryptoService?: Nullable<PartialXCryptoService>",
+					with = "cryptoService?: Nullable<crypto.PartialXCryptoService>"
 				),
 			)
 		)
@@ -215,6 +222,7 @@ tasks.register("prepareDistributionPackage") {
 		"$moduleName.mjs",
 		"$moduleName.d.mts",
 		"package.json",
+		"kotlinx-coroutines-core.mjs"
 	)
 	doLast {
 		copy {
@@ -238,9 +246,33 @@ tasks.register("prepareDistributionPackage") {
 			exporting = tsSourcePackageExports,
 			replacing = listOf(
 				Replacement(
-					of = "cryptoService?: Nullable<XCryptoService>",
-					with = "cryptoService?: Nullable<crypto.XCryptoService>"
+					of = "cryptoService?: Nullable<PartialXCryptoService>",
+					with = "cryptoService?: Nullable<crypto.PartialXCryptoService>"
 				)
+			)
+		)
+		copyJsPatching(
+			from = ktJsCompiledPackage.resolve("kotlinx-coroutines-core.mjs"),
+			into = tsPackage.resolve("kotlinx-coroutines-core.mjs"),
+			replacing = listOf(
+				Replacement(
+					of = "if (isJsdom()) {",
+					with = "if (isJsdom() || (typeof navigator !== 'undefined' && navigator !== null && navigator.product === \"ReactNative\")) {\n" +
+						"    if (schedule_queue_patch == undefined) {\n" +
+						"      schedule_queue_patch = process.nextTick ?? setImmediate\n" +
+						"    }\n",
+				),
+				Replacement(
+					of = "function NodeDispatcher() {",
+					with = "var schedule_queue_patch;\n" +
+						"function NodeDispatcher() {"
+				),
+				Replacement(
+					of = " = function () {\n" +
+						"  process.nextTick(",
+					with = " = function () {\n" +
+						"  schedule_queue_patch("
+				),
 			)
 		)
 		copyJsPatching(
