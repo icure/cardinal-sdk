@@ -6,7 +6,6 @@ import com.icure.cardinal.sdk.crypto.CryptoStrategies
 import com.icure.cardinal.sdk.crypto.ExchangeDataManager
 import com.icure.cardinal.sdk.crypto.UserEncryptionKeysManager
 import com.icure.cardinal.sdk.crypto.entities.CardinalKeyInfo
-import com.icure.cardinal.sdk.model.EntityReferenceInGroup
 import com.icure.cardinal.sdk.crypto.entities.EntityWithEncryptionMetadataTypeName
 import com.icure.cardinal.sdk.crypto.entities.ExchangeDataInjectionDetails
 import com.icure.cardinal.sdk.crypto.entities.ExchangeDataWithPotentiallyDecryptedContent
@@ -18,6 +17,7 @@ import com.icure.cardinal.sdk.crypto.entities.VerifiedRsaEncryptionKeysSet
 import com.icure.cardinal.sdk.crypto.entities.resolve
 import com.icure.cardinal.sdk.crypto.entities.toPrivateKeyInfo
 import com.icure.cardinal.sdk.crypto.entities.toPublicKeyInfo
+import com.icure.cardinal.sdk.model.EntityReferenceInGroup
 import com.icure.cardinal.sdk.model.ExchangeData
 import com.icure.cardinal.sdk.model.extensions.algorithmOfEncryptionKey
 import com.icure.cardinal.sdk.model.specializations.Base64String
@@ -249,7 +249,9 @@ abstract class AbstractExchangeDataManagerInGroup(
 		ensure(!allowCreationWithoutDelegateKey || !allowCreationWithoutDelegatorKey) { "Cannot allow creation of exchange data without both delegate and delegator keys." }
 		val selfEncryptionKeys = userEncryptionKeys.getSelfVerifiedKeys().map { it.toPublicKeyInfo() }
 		if (selfEncryptionKeys.isEmpty()) {
-			check(allowCreationWithoutDelegatorKey) { "If the sdk is initialized in keyless mode you must create exchange data explicitly. Please use CardinalSdk.crypto.keylessCreateExchangeDataTo or CardinalSdk.crypto.injectExchangeData." }
+			check(allowCreationWithoutDelegatorKey) {
+				"Can't delegate to ${delegateReference}. If the sdk is initialized in keyless mode you must create exchange data to each delegate explicitly. Please use CardinalSdk.crypto.keylessCreateExchangeDataTo or CardinalSdk.crypto.injectExchangeData."
+			}
 		}
 		val verifiedDelegateKeys = if (delegateReference != dataOwnerApi.getCurrentDataOwnerReference()) {
 			val delegate =
