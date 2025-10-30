@@ -8,6 +8,7 @@ import com.icure.cardinal.sdk.filters.BaseFilterOptions
 import com.icure.cardinal.sdk.filters.BaseSortableFilterOptions
 import com.icure.cardinal.sdk.filters.FilterOptions
 import com.icure.cardinal.sdk.filters.mapHealthcarePartyFilterOptions
+import com.icure.cardinal.sdk.filters.mapPatientFilterOptions
 import com.icure.cardinal.sdk.model.HealthcareParty
 import com.icure.cardinal.sdk.model.StoredDocumentIdentifier
 import com.icure.cardinal.sdk.model.ListOfIds
@@ -20,6 +21,7 @@ import com.icure.cardinal.sdk.subscription.SubscriptionEventType
 import com.icure.cardinal.sdk.subscription.WebSocketSubscription
 import com.icure.cardinal.sdk.utils.Serialization
 import com.icure.cardinal.sdk.model.ListOfIdsAndRev
+import com.icure.cardinal.sdk.model.Patient
 import com.icure.cardinal.sdk.model.couchdb.DocIdentifier
 import com.icure.cardinal.sdk.utils.pagination.IdsPageIterator
 import com.icure.cardinal.sdk.utils.pagination.PaginatedListIterator
@@ -115,6 +117,12 @@ internal class HealthcarePartyApiImpl(
 	override suspend fun matchHealthcarePartiesBy(filter: BaseFilterOptions<HealthcareParty>) =
 		rawApi.matchHealthcarePartiesBy(mapHealthcarePartyFilterOptions(filter)).successBody()
 
+	override suspend fun matchHealthcarePartiesInGroupBy(groupId: String, filter: BaseFilterOptions<HealthcareParty>): List<String> {
+		return rawApi.matchHealthcarePartiesInGroupBy(
+			groupId = groupId,
+			filter = mapHealthcarePartyFilterOptions(filter)
+		).successBody()
+	}
 	override suspend fun filterHealthPartiesBy(filter: BaseFilterOptions<HealthcareParty>): PaginatedListIterator<HealthcareParty> =
 		IdsPageIterator(matchHealthcarePartiesBy(filter), this::getHealthcareParties)
 

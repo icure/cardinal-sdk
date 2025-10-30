@@ -109,6 +109,7 @@ interface HealthcarePartyApi: Subscribable<HealthcareParty, HealthcareParty, Fil
 	suspend fun getPublicKey(healthcarePartyId: String): PublicKey
 	suspend fun modifyHealthcareParty(healthcareParty: HealthcareParty): HealthcareParty
 	suspend fun matchHealthcarePartiesBy(filter: BaseFilterOptions<HealthcareParty>): List<String>
+	suspend fun matchHealthcarePartiesInGroupBy(groupId: String, filter: BaseFilterOptions<HealthcareParty>): List<String>
 
 	suspend fun filterHealthPartiesBy(
 		filter: BaseFilterOptions<HealthcareParty>,
