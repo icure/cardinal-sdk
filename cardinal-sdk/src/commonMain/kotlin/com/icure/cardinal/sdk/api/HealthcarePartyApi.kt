@@ -15,6 +15,14 @@ import com.icure.cardinal.sdk.utils.DefaultValue
 import com.icure.cardinal.sdk.utils.pagination.PaginatedListIterator
 
 interface HealthcarePartyApi: Subscribable<HealthcareParty, HealthcareParty, FilterOptions<HealthcareParty>> {
+
+	/**
+	 * Gives access to methods of the api that allow to use entities or work with data owners in groups other than the
+	 * current user's group.
+	 * These methods aren't available when connected to a kraken-lite instance.
+	 */
+	val inGroup: HealthcarePartyApiInGroup
+
 	@Deprecated("Deletion without rev is unsafe")
 	suspend fun deleteHealthcarePartyUnsafe(entityId: String): DocIdentifier
 	@Deprecated("Deletion without rev is unsafe")
@@ -109,7 +117,6 @@ interface HealthcarePartyApi: Subscribable<HealthcareParty, HealthcareParty, Fil
 	suspend fun getPublicKey(healthcarePartyId: String): PublicKey
 	suspend fun modifyHealthcareParty(healthcareParty: HealthcareParty): HealthcareParty
 	suspend fun matchHealthcarePartiesBy(filter: BaseFilterOptions<HealthcareParty>): List<String>
-	suspend fun matchHealthcarePartiesInGroupBy(groupId: String, filter: BaseFilterOptions<HealthcareParty>): List<String>
 
 	suspend fun filterHealthPartiesBy(
 		filter: BaseFilterOptions<HealthcareParty>,
@@ -260,3 +267,6 @@ interface HealthcarePartyApi: Subscribable<HealthcareParty, HealthcareParty, Fil
 		)
 }
 
+interface HealthcarePartyApiInGroup {
+	suspend fun matchHealthcarePartiesBy(groupId: String, filter: BaseFilterOptions<HealthcareParty>): List<String>
+}

@@ -1,6 +1,7 @@
 package com.icure.cardinal.sdk.api.impl
 
 import com.icure.cardinal.sdk.api.HealthcarePartyApi
+import com.icure.cardinal.sdk.api.HealthcarePartyApiInGroup
 import com.icure.cardinal.sdk.api.raw.RawHealthcarePartyApi
 import com.icure.cardinal.sdk.api.raw.successBodyOrNull404
 import com.icure.cardinal.sdk.api.raw.successBodyOrThrowRevisionConflict
@@ -30,6 +31,15 @@ internal class HealthcarePartyApiImpl(
 	private val rawApi: RawHealthcarePartyApi,
 	private val config: BasicApiConfiguration,
 ) : HealthcarePartyApi {
+
+	override val inGroup = object : HealthcarePartyApiInGroup {
+		override suspend fun matchHealthcarePartiesBy(groupId: String, filter: BaseFilterOptions<HealthcareParty>): List<String> {
+			return rawApi.matchHealthcarePartiesInGroupBy(
+				groupId = groupId,
+				filter = mapHealthcarePartyFilterOptions(filter)
+			).successBody()
+		}
+	}
 
 	@Deprecated("Deletion without rev is unsafe")
 	override suspend fun deleteHealthcarePartyUnsafe(entityId: String): DocIdentifier =
@@ -70,7 +80,7 @@ internal class HealthcarePartyApiImpl(
 	@Deprecated(
 		"Find methods are deprecated",
 		ReplaceWith(
-			expression = "filterHealthPartiesBy(HealthcarePartyByNameFilter(name = name, descending = desc)",
+			expression = "filterHealthPartiesBy(HealthcarePartyByNameFilter(name = name, descending = desc))",
 			imports = arrayOf("com.icure.cardinal.sdk.model.filter.hcparty.HealthcarePartyByNameFilter")
 		)
 	)
@@ -115,12 +125,6 @@ internal class HealthcarePartyApiImpl(
 	override suspend fun matchHealthcarePartiesBy(filter: BaseFilterOptions<HealthcareParty>) =
 		rawApi.matchHealthcarePartiesBy(mapHealthcarePartyFilterOptions(filter)).successBody()
 
-	override suspend fun matchHealthcarePartiesInGroupBy(groupId: String, filter: BaseFilterOptions<HealthcareParty>): List<String> {
-		return rawApi.matchHealthcarePartiesInGroupBy(
-			groupId = groupId,
-			filter = mapHealthcarePartyFilterOptions(filter)
-		).successBody()
-	}
 	override suspend fun filterHealthPartiesBy(filter: BaseFilterOptions<HealthcareParty>): PaginatedListIterator<HealthcareParty> =
 		IdsPageIterator(matchHealthcarePartiesBy(filter), this::getHealthcareParties)
 
