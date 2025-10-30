@@ -2,19 +2,23 @@ package com.icure.cardinal.sdk.js.options
 
  import com.icure.cardinal.sdk.js.crypto.CryptoStrategiesBridge
 import com.icure.cardinal.sdk.js.model.userGroup_toJs
- import com.icure.cardinal.sdk.js.options.external.AnonymousSdkOptionsJs
- import com.icure.cardinal.sdk.js.options.external.BasicSdkOptionsJs
+import com.icure.cardinal.sdk.js.options.external.AnonymousSdkOptionsJs
+import com.icure.cardinal.sdk.js.options.external.BasicSdkOptionsJs
 import com.icure.cardinal.sdk.js.options.external.EncryptedFieldsConfigurationJs
 import com.icure.cardinal.sdk.js.options.external.JsonPatcherJs
 import com.icure.cardinal.sdk.js.options.external.SdkOptionsJs
 import com.icure.cardinal.sdk.js.storage.loadKeyStorageOptions
+ import com.icure.cardinal.sdk.js.utils.cardinalInternalGlobals
  import com.icure.cardinal.sdk.options.AnonymousSdkOptions
- import com.icure.cardinal.sdk.options.BasicSdkOptions
+import com.icure.cardinal.sdk.options.BasicSdkOptions
 import com.icure.cardinal.sdk.options.EncryptedFieldsConfiguration
 import com.icure.cardinal.sdk.options.JsonPatcher
 import com.icure.cardinal.sdk.options.SdkOptions
+import com.icure.kryptom.crypto.CryptoService
+import com.icure.kryptom.crypto.external.XCryptoService
 import com.icure.kryptom.crypto.external.adaptCryptoServiceForExternal
 import com.icure.kryptom.crypto.external.adaptExternalCryptoService
+import com.icure.kryptom.js.defaultJsCryptoAvailable
 import kotlinx.coroutines.await
 import kotlinx.serialization.ExperimentalSerializationApi
 import kotlinx.serialization.json.Json
@@ -28,7 +32,7 @@ suspend fun SdkOptionsJs.toKt(): SdkOptions {
 		encryptedFields = this.encryptedFields?.toKt() ?: defaultSdkOptions.encryptedFields,
 		useHierarchicalDataOwners = this.useHierarchicalDataOwners ?: defaultSdkOptions.useHierarchicalDataOwners,
 		createTransferKeys = this.createTransferKeys ?: defaultSdkOptions.createTransferKeys,
-		cryptoService = this.cryptoService?.let { adaptExternalCryptoService(it) } ?: defaultSdkOptions.cryptoService,
+		cryptoService = this.cryptoService.checkRequiredAdaptAndPolyfillRandom() ?: defaultSdkOptions.cryptoService,
 		saltPasswordWithApplicationId = this.saltPasswordWithApplicationId ?: defaultSdkOptions.saltPasswordWithApplicationId,
 		groupSelector = this.groupSelector?.let { groupSelectorJs ->
 			{ ktGroups ->
@@ -49,7 +53,7 @@ suspend fun BasicSdkOptionsJs.toKt(): BasicSdkOptions {
 	val defaultApiOptions = BasicSdkOptions()
 	return BasicSdkOptions(
 		encryptedFields = this.encryptedFields?.toKt() ?: defaultApiOptions.encryptedFields,
-		cryptoService = this.cryptoService?.let { adaptExternalCryptoService(it) } ?: defaultApiOptions.cryptoService,
+		cryptoService = this.cryptoService.checkRequiredAdaptAndPolyfillRandom() ?: defaultApiOptions.cryptoService,
 		saltPasswordWithApplicationId = this.saltPasswordWithApplicationId ?: defaultApiOptions.saltPasswordWithApplicationId,
 		groupSelector = this.groupSelector?.let { groupSelectorJs ->
 			{ ktGroups ->
@@ -170,4 +174,19 @@ private class JsonPatcherBridge(
 	private inline fun adaptJsPatchMethod(crossinline doPatchJs: (dynamic) -> dynamic): (JsonElement) -> JsonElement = { x ->
 		Json.decodeFromDynamic(doPatchJs(Json.encodeToDynamic(x)))
 	}
+}
+
+private fun XCryptoService?.checkRequiredAdaptAndPolyfillRandom(): CryptoService? {
+	check (defaultJsCryptoAvailable() || this != null) {
+		"""
+			Js crypto or crypto.subtle is not available.
+			To use CardinalSdk with node and ES modules you need to use node 19 or later.
+			To use CardinalSdk in expo / react native you need to use the @icure/nitro-kryptom npm package and pass the `nitroKryptomCryptoService` explicitly as the `cryptoService` in the SDK initialization options.
+		""".trimIndent()
+	}
+	val adapted = this?.let(::adaptExternalCryptoService)
+	if (adapted != null && cardinalInternalGlobals.randomUuid == null) {
+		cardinalInternalGlobals.randomUuid = adapted.strongRandom::randomUUID
+	}
+	return adapted
 }
