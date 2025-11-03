@@ -4,6 +4,7 @@ import com.icure.cardinal.sdk.model.Insurance
 import com.icure.cardinal.sdk.model.ListOfIds
 import com.icure.cardinal.sdk.model.PaginatedList
 import com.icure.cardinal.sdk.model.couchdb.DocIdentifier
+import com.icure.cardinal.sdk.model.filter.AbstractFilter
 import com.icure.utils.InternalIcureApi
 import kotlin.Int
 import kotlin.String
@@ -51,5 +52,10 @@ public interface RawInsuranceApi {
 		groupId: String,
 		insuranceBatch: List<Insurance>,
 	): HttpResponse<List<Insurance>>
+
+	suspend fun matchInsurancesBy(
+		groupId: String,
+		filter: AbstractFilter<Insurance>,
+	): HttpResponse<List<String>>
 	// endregion
 }

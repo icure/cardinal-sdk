@@ -10,6 +10,8 @@ import com.icure.cardinal.sdk.model.Insurance
 import com.icure.cardinal.sdk.model.ListOfIds
 import com.icure.cardinal.sdk.model.PaginatedList
 import com.icure.cardinal.sdk.model.couchdb.DocIdentifier
+import com.icure.cardinal.sdk.model.filter.AbstractFilter
+import com.icure.cardinal.sdk.serialization.InsuranceAbstractFilterSerializer
 import com.icure.utils.InternalIcureApi
 import io.ktor.client.request.accept
 import io.ktor.client.request.parameter
@@ -163,6 +165,20 @@ class RawInsuranceApiImpl(
 			contentType(Application.Json)
 			accept(Application.Json)
 			setBody(insuranceBatch)
+		}.wrap()
+
+	override suspend fun matchInsurancesBy(
+		groupId: String,
+		filter: AbstractFilter<Insurance>,
+	): HttpResponse<List<String>> =
+		post(authProvider) {
+			url {
+				takeFrom(apiUrl)
+				appendPathSegments("rest", "v2", "insurance", "inGroup", groupId, "match")
+			}
+			contentType(Application.Json)
+			accept(Application.Json)
+			setBodyWithSerializer(InsuranceAbstractFilterSerializer, filter)
 		}.wrap()
 
 	// endregion
