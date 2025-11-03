@@ -152,7 +152,7 @@ fun copyJsPatching(
 	}
 }
 
-fun getTypescriptSourcePackages() = tsSources.listFiles()!!.filter { it.isDirectory }
+fun getTypescriptSourcePackages() = tsSources.listFiles()!!.filter { it.isDirectory && it.name != "internal" }
 
 fun File.tsPackageAsImport() =
 	Import.Module(name, "./${name}.mjs")
@@ -182,7 +182,7 @@ val prepareTypescriptSourceCompilation = tasks.register("prepareTypescriptSource
 			)
 		)
 		// Generate index files for each package
-		val tsPackages = tsSources.listFiles()!!.filter { it.isDirectory }
+		val tsPackages = tsSources.listFiles()!!.filter { it.isDirectory && it.name != "internal" }
 		tsPackages.forEach { tsPackage ->
 			FileWriter(mergedTsProject.resolve("${tsPackage.name}.mts")).use { fw ->
 				tsPackage.walkTopDown().filter {
