@@ -1,5 +1,5 @@
 // auto-generated file
-import {expectString, requireEntry} from '../../internal/JsonDecodeUtils.mjs';
+import {expectString, extractEntry} from '../../internal/JsonDecodeUtils.mjs';
 
 
 export class LoginIdentifier {
@@ -20,11 +20,18 @@ export class LoginIdentifier {
 		return res
 	}
 
-	static fromJSON(json: any, path: Array<string> = ['LoginIdentifier']): LoginIdentifier {
-		return new LoginIdentifier({
-			assigner: expectString(requireEntry(json.assigner, 'assigner', path), false, [...path, ".assigner"]),
-			value: expectString(requireEntry(json.value, 'value', path), false, [...path, ".value"]),
+	static fromJSON(json: any, ignoreUnknownKeys: boolean = false,
+			path: Array<string> = ['LoginIdentifier']): LoginIdentifier {
+		if (typeof json != 'object') throw new Error(`Expected json object at path ${path.join("")}`)
+		const jCpy = { ...json }
+		const res = new LoginIdentifier({
+			assigner: expectString(extractEntry(jCpy.assigner, 'assigner', true, path), false, [...path, ".assigner"]),
+			value: expectString(extractEntry(jCpy.value, 'value', true, path), false, [...path, ".value"]),
 		})
+		if (!ignoreUnknownKeys) {
+			const unused = Object.keys(jCpy)
+			if (unused.length > 0) throw new Error(`Unexpected key(s) for json object LoginIdentifier at path ${path.join("")}: ${unused}`)}
+		return res
 	}
 
 }

@@ -1,5 +1,5 @@
 // auto-generated file
-import {expectNumber, expectStringEnum} from '../../internal/JsonDecodeUtils.mjs';
+import {expectNumber, expectStringEnum, extractEntry} from '../../internal/JsonDecodeUtils.mjs';
 import {PaymentType} from './PaymentType.mjs';
 
 
@@ -25,12 +25,19 @@ export class Payment {
 		return res
 	}
 
-	static fromJSON(json: any, path: Array<string> = ['Payment']): Payment {
-		return new Payment({
-			paymentDate: expectNumber(json.paymentDate, false, true, [...path, ".paymentDate"]),
-			paymentType: expectStringEnum(json.paymentType, true, [...path, ".paymentType"], PaymentType, 'PaymentType'),
-			paid: expectNumber(json.paid, true, false, [...path, ".paid"]),
+	static fromJSON(json: any, ignoreUnknownKeys: boolean = false,
+			path: Array<string> = ['Payment']): Payment {
+		if (typeof json != 'object') throw new Error(`Expected json object at path ${path.join("")}`)
+		const jCpy = { ...json }
+		const res = new Payment({
+			paymentDate: expectNumber(extractEntry(jCpy.paymentDate, 'paymentDate', false, path), false, true, [...path, ".paymentDate"]),
+			paymentType: expectStringEnum(extractEntry(jCpy.paymentType, 'paymentType', false, path), true, [...path, ".paymentType"], PaymentType, 'PaymentType'),
+			paid: expectNumber(extractEntry(jCpy.paid, 'paid', false, path), true, false, [...path, ".paid"]),
 		})
+		if (!ignoreUnknownKeys) {
+			const unused = Object.keys(jCpy)
+			if (unused.length > 0) throw new Error(`Unexpected key(s) for json object Payment at path ${path.join("")}: ${unused}`)}
+		return res
 	}
 
 }

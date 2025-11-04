@@ -1,5 +1,5 @@
 // auto-generated file
-import {expectArray, expectBoolean, expectMap, expectNumber, expectString, requireEntry} from '../../internal/JsonDecodeUtils.mjs';
+import {expectArray, expectBoolean, expectMap, expectNumber, expectObject, expectString, extractEntry} from '../../internal/JsonDecodeUtils.mjs';
 import {randomUuid} from '../../utils/Id.mjs';
 import {Versionable} from '../base/Versionable.mjs';
 import {Remote} from './Remote.mjs';
@@ -72,21 +72,24 @@ export class ReplicatorDocument implements Versionable<string> {
 		return res
 	}
 
-	static fromJSON(json: any, path: Array<string> = ['ReplicatorDocument']): ReplicatorDocument {
-		return new ReplicatorDocument({
-			id: expectString(requireEntry(json.id, 'id', path), false, [...path, ".id"]),
-			rev: expectString(json.rev, true, [...path, ".rev"]),
-			source: Remote.fromJSON(json.source, [...path, ".source"]),
-			target: Remote.fromJSON(json.target, [...path, ".target"]),
-			owner: expectString(json.owner, true, [...path, ".owner"]),
-			create_target: expectBoolean(json.create_target, true, [...path, ".create_target"]),
-			continuous: expectBoolean(json.continuous, true, [...path, ".continuous"]),
-			doc_ids: expectArray(json.doc_ids, true, [...path, ".doc_ids"], (x0, p0) => expectString(x0, false, p0)),
-			replicationState: expectString(json.replicationState, true, [...path, ".replicationState"]),
-			replicationStateTime: expectString(json.replicationStateTime, true, [...path, ".replicationStateTime"]),
-			replicationStats: ReplicationStats.fromJSON(json.replicationStats, [...path, ".replicationStats"]),
-			errorCount: expectNumber(json.errorCount, true, true, [...path, ".errorCount"]),
-			revsInfo: expectArray(json.revsInfo, true, [...path, ".revsInfo"], (x0, p0) => expectMap(
+	static fromJSON(json: any, ignoreUnknownKeys: boolean = false,
+			path: Array<string> = ['ReplicatorDocument']): ReplicatorDocument {
+		if (typeof json != 'object') throw new Error(`Expected json object at path ${path.join("")}`)
+		const jCpy = { ...json }
+		const res = new ReplicatorDocument({
+			id: expectString(extractEntry(jCpy.id, 'id', true, path), false, [...path, ".id"]),
+			rev: expectString(extractEntry(jCpy.rev, 'rev', false, path), true, [...path, ".rev"]),
+			source: expectObject(extractEntry(jCpy.source, 'source', false, path), true, ignoreUnknownKeys, [...path, ".source"], Remote.fromJSON),
+			target: expectObject(extractEntry(jCpy.target, 'target', false, path), true, ignoreUnknownKeys, [...path, ".target"], Remote.fromJSON),
+			owner: expectString(extractEntry(jCpy.owner, 'owner', false, path), true, [...path, ".owner"]),
+			create_target: expectBoolean(extractEntry(jCpy.create_target, 'create_target', false, path), true, [...path, ".create_target"]),
+			continuous: expectBoolean(extractEntry(jCpy.continuous, 'continuous', false, path), true, [...path, ".continuous"]),
+			doc_ids: expectArray(extractEntry(jCpy.doc_ids, 'doc_ids', false, path), true, [...path, ".doc_ids"], (x0, p0) => expectString(x0, false, p0)),
+			replicationState: expectString(extractEntry(jCpy.replicationState, 'replicationState', false, path), true, [...path, ".replicationState"]),
+			replicationStateTime: expectString(extractEntry(jCpy.replicationStateTime, 'replicationStateTime', false, path), true, [...path, ".replicationStateTime"]),
+			replicationStats: expectObject(extractEntry(jCpy.replicationStats, 'replicationStats', false, path), true, ignoreUnknownKeys, [...path, ".replicationStats"], ReplicationStats.fromJSON),
+			errorCount: expectNumber(extractEntry(jCpy.errorCount, 'errorCount', false, path), true, true, [...path, ".errorCount"]),
+			revsInfo: expectArray(extractEntry(jCpy.revsInfo, 'revsInfo', false, path), true, [...path, ".revsInfo"], (x0, p0) => expectMap(
 				x0,
 				false,
 				p0,
@@ -94,13 +97,17 @@ export class ReplicatorDocument implements Versionable<string> {
 				(v1, p1) => expectString(v1, false, p1)
 			)),
 			revHistory: expectMap(
-				json.revHistory,
+				extractEntry(jCpy.revHistory, 'revHistory', false, path),
 				true,
 				[...path, ".revHistory"],
 				(k0, p0) => expectString(k0, false, p0),
 				(v0, p0) => expectString(v0, false, p0)
 			),
 		})
+		if (!ignoreUnknownKeys) {
+			const unused = Object.keys(jCpy)
+			if (unused.length > 0) throw new Error(`Unexpected key(s) for json object ReplicatorDocument at path ${path.join("")}: ${unused}`)}
+		return res
 	}
 
 }

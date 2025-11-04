@@ -1,5 +1,5 @@
 // auto-generated file
-import {expectArray, expectNumber, expectString} from '../../internal/JsonDecodeUtils.mjs';
+import {expectArray, expectNumber, expectString, extractEntry} from '../../internal/JsonDecodeUtils.mjs';
 
 
 export class TimeSeries {
@@ -40,16 +40,23 @@ export class TimeSeries {
 		return res
 	}
 
-	static fromJSON(json: any, path: Array<string> = ['TimeSeries']): TimeSeries {
-		return new TimeSeries({
-			fields: expectArray(json.fields, false, [...path, ".fields"], (x0, p0) => expectString(x0, false, p0)),
-			samples: expectArray(json.samples, false, [...path, ".samples"], (x0, p0) => expectArray(x0, false, p0, (x1, p1) => expectNumber(x1, false, false, p1))),
-			min: expectArray(json.min, false, [...path, ".min"], (x0, p0) => expectNumber(x0, false, false, p0)),
-			max: expectArray(json.max, false, [...path, ".max"], (x0, p0) => expectNumber(x0, false, false, p0)),
-			mean: expectArray(json.mean, false, [...path, ".mean"], (x0, p0) => expectNumber(x0, false, false, p0)),
-			median: expectArray(json.median, false, [...path, ".median"], (x0, p0) => expectNumber(x0, false, false, p0)),
-			variance: expectArray(json.variance, false, [...path, ".variance"], (x0, p0) => expectNumber(x0, false, false, p0)),
+	static fromJSON(json: any, ignoreUnknownKeys: boolean = false,
+			path: Array<string> = ['TimeSeries']): TimeSeries {
+		if (typeof json != 'object') throw new Error(`Expected json object at path ${path.join("")}`)
+		const jCpy = { ...json }
+		const res = new TimeSeries({
+			fields: expectArray(extractEntry(jCpy.fields, 'fields', false, path), false, [...path, ".fields"], (x0, p0) => expectString(x0, false, p0)),
+			samples: expectArray(extractEntry(jCpy.samples, 'samples', false, path), false, [...path, ".samples"], (x0, p0) => expectArray(x0, false, p0, (x1, p1) => expectNumber(x1, false, false, p1))),
+			min: expectArray(extractEntry(jCpy.min, 'min', false, path), false, [...path, ".min"], (x0, p0) => expectNumber(x0, false, false, p0)),
+			max: expectArray(extractEntry(jCpy.max, 'max', false, path), false, [...path, ".max"], (x0, p0) => expectNumber(x0, false, false, p0)),
+			mean: expectArray(extractEntry(jCpy.mean, 'mean', false, path), false, [...path, ".mean"], (x0, p0) => expectNumber(x0, false, false, p0)),
+			median: expectArray(extractEntry(jCpy.median, 'median', false, path), false, [...path, ".median"], (x0, p0) => expectNumber(x0, false, false, p0)),
+			variance: expectArray(extractEntry(jCpy.variance, 'variance', false, path), false, [...path, ".variance"], (x0, p0) => expectNumber(x0, false, false, p0)),
 		})
+		if (!ignoreUnknownKeys) {
+			const unused = Object.keys(jCpy)
+			if (unused.length > 0) throw new Error(`Unexpected key(s) for json object TimeSeries at path ${path.join("")}: ${unused}`)}
+		return res
 	}
 
 }

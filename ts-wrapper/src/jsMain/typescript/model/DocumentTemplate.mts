@@ -1,6 +1,6 @@
 // auto-generated file
 import {decodeBase64, encodeBase64} from '../internal/BytesEncoding.mjs';
-import {expectArray, expectNumber, expectString, expectStringEnum, requireEntry} from '../internal/JsonDecodeUtils.mjs';
+import {expectArray, expectNumber, expectObject, expectString, expectStringEnum, extractEntry} from '../internal/JsonDecodeUtils.mjs';
 import {randomUuid} from '../utils/Id.mjs';
 import {CodeStub} from './base/CodeStub.mjs';
 import {ICureDocument} from './base/ICureDocument.mjs';
@@ -116,33 +116,40 @@ export class DocumentTemplate implements StoredDocument, ICureDocument<string> {
 		return res
 	}
 
-	static fromJSON(json: any, path: Array<string> = ['DocumentTemplate']): DocumentTemplate {
-		return new DocumentTemplate({
-			id: expectString(requireEntry(json.id, 'id', path), false, [...path, ".id"]),
-			rev: expectString(json.rev, true, [...path, ".rev"]),
-			created: expectNumber(json.created, true, true, [...path, ".created"]),
-			modified: expectNumber(json.modified, true, true, [...path, ".modified"]),
-			author: expectString(json.author, true, [...path, ".author"]),
-			responsible: expectString(json.responsible, true, [...path, ".responsible"]),
-			medicalLocationId: expectString(json.medicalLocationId, true, [...path, ".medicalLocationId"]),
-			tags: expectArray(json.tags, false, [...path, ".tags"], (x0, p0) => CodeStub.fromJSON(x0, p0)),
-			codes: expectArray(json.codes, false, [...path, ".codes"], (x0, p0) => CodeStub.fromJSON(x0, p0)),
-			endOfLife: expectNumber(json.endOfLife, true, true, [...path, ".endOfLife"]),
-			deletionDate: expectNumber(json.deletionDate, true, true, [...path, ".deletionDate"]),
-			attachment: decodeBase64(expectString(json.attachment, true, [...path, ".attachment"]), [...path, ".attachment"]),
-			documentType: expectStringEnum(json.documentType, true, [...path, ".documentType"], DocumentType, 'DocumentType'),
-			mainUti: expectString(json.mainUti, true, [...path, ".mainUti"]),
-			name: expectString(json.name, true, [...path, ".name"]),
-			otherUtis: expectArray(json.otherUtis, false, [...path, ".otherUtis"], (x0, p0) => expectString(x0, false, p0)),
-			attachmentId: expectString(json.attachmentId, true, [...path, ".attachmentId"]),
-			version: expectStringEnum(json.version, true, [...path, ".version"], ReportVersion, 'ReportVersion'),
-			owner: expectString(json.owner, true, [...path, ".owner"]),
-			guid: expectString(json.guid, true, [...path, ".guid"]),
-			group: DocumentGroup.fromJSON(json.group, [...path, ".group"]),
-			descr: expectString(json.descr, true, [...path, ".descr"]),
-			disabled: expectString(json.disabled, true, [...path, ".disabled"]),
-			specialty: CodeStub.fromJSON(json.specialty, [...path, ".specialty"]),
+	static fromJSON(json: any, ignoreUnknownKeys: boolean = false,
+			path: Array<string> = ['DocumentTemplate']): DocumentTemplate {
+		if (typeof json != 'object') throw new Error(`Expected json object at path ${path.join("")}`)
+		const jCpy = { ...json }
+		const res = new DocumentTemplate({
+			id: expectString(extractEntry(jCpy.id, 'id', true, path), false, [...path, ".id"]),
+			rev: expectString(extractEntry(jCpy.rev, 'rev', false, path), true, [...path, ".rev"]),
+			created: expectNumber(extractEntry(jCpy.created, 'created', false, path), true, true, [...path, ".created"]),
+			modified: expectNumber(extractEntry(jCpy.modified, 'modified', false, path), true, true, [...path, ".modified"]),
+			author: expectString(extractEntry(jCpy.author, 'author', false, path), true, [...path, ".author"]),
+			responsible: expectString(extractEntry(jCpy.responsible, 'responsible', false, path), true, [...path, ".responsible"]),
+			medicalLocationId: expectString(extractEntry(jCpy.medicalLocationId, 'medicalLocationId', false, path), true, [...path, ".medicalLocationId"]),
+			tags: expectArray(extractEntry(jCpy.tags, 'tags', false, path), false, [...path, ".tags"], (x0, p0) => expectObject(x0, false, ignoreUnknownKeys, p0, CodeStub.fromJSON)),
+			codes: expectArray(extractEntry(jCpy.codes, 'codes', false, path), false, [...path, ".codes"], (x0, p0) => expectObject(x0, false, ignoreUnknownKeys, p0, CodeStub.fromJSON)),
+			endOfLife: expectNumber(extractEntry(jCpy.endOfLife, 'endOfLife', false, path), true, true, [...path, ".endOfLife"]),
+			deletionDate: expectNumber(extractEntry(jCpy.deletionDate, 'deletionDate', false, path), true, true, [...path, ".deletionDate"]),
+			attachment: decodeBase64(expectString(extractEntry(jCpy.attachment, 'attachment', false, path), true, [...path, ".attachment"]), [...path, ".attachment"]),
+			documentType: expectStringEnum(extractEntry(jCpy.documentType, 'documentType', false, path), true, [...path, ".documentType"], DocumentType, 'DocumentType'),
+			mainUti: expectString(extractEntry(jCpy.mainUti, 'mainUti', false, path), true, [...path, ".mainUti"]),
+			name: expectString(extractEntry(jCpy.name, 'name', false, path), true, [...path, ".name"]),
+			otherUtis: expectArray(extractEntry(jCpy.otherUtis, 'otherUtis', false, path), false, [...path, ".otherUtis"], (x0, p0) => expectString(x0, false, p0)),
+			attachmentId: expectString(extractEntry(jCpy.attachmentId, 'attachmentId', false, path), true, [...path, ".attachmentId"]),
+			version: expectStringEnum(extractEntry(jCpy.version, 'version', false, path), true, [...path, ".version"], ReportVersion, 'ReportVersion'),
+			owner: expectString(extractEntry(jCpy.owner, 'owner', false, path), true, [...path, ".owner"]),
+			guid: expectString(extractEntry(jCpy.guid, 'guid', false, path), true, [...path, ".guid"]),
+			group: expectObject(extractEntry(jCpy.group, 'group', false, path), true, ignoreUnknownKeys, [...path, ".group"], DocumentGroup.fromJSON),
+			descr: expectString(extractEntry(jCpy.descr, 'descr', false, path), true, [...path, ".descr"]),
+			disabled: expectString(extractEntry(jCpy.disabled, 'disabled', false, path), true, [...path, ".disabled"]),
+			specialty: expectObject(extractEntry(jCpy.specialty, 'specialty', false, path), true, ignoreUnknownKeys, [...path, ".specialty"], CodeStub.fromJSON),
 		})
+		if (!ignoreUnknownKeys) {
+			const unused = Object.keys(jCpy)
+			if (unused.length > 0) throw new Error(`Unexpected key(s) for json object DocumentTemplate at path ${path.join("")}: ${unused}`)}
+		return res
 	}
 
 }

@@ -1,5 +1,5 @@
 // auto-generated file
-import {expectArray, expectNumber, expectString, requireEntry} from '../internal/JsonDecodeUtils.mjs';
+import {expectArray, expectNumber, expectString, extractEntry} from '../internal/JsonDecodeUtils.mjs';
 import {randomUuid} from '../utils/Id.mjs';
 import {StoredDocument} from './base/StoredDocument.mjs';
 
@@ -38,15 +38,22 @@ export class Role implements StoredDocument {
 		return res
 	}
 
-	static fromJSON(json: any, path: Array<string> = ['Role']): Role {
-		return new Role({
-			id: expectString(requireEntry(json.id, 'id', path), false, [...path, ".id"]),
-			rev: expectString(json.rev, true, [...path, ".rev"]),
-			deletionDate: expectNumber(json.deletionDate, true, true, [...path, ".deletionDate"]),
-			name: expectString(json.name, true, [...path, ".name"]),
-			inheritableUpTo: expectNumber(json.inheritableUpTo, true, true, [...path, ".inheritableUpTo"]),
-			permissions: expectArray(json.permissions, false, [...path, ".permissions"], (x0, p0) => expectString(x0, false, p0)),
+	static fromJSON(json: any, ignoreUnknownKeys: boolean = false,
+			path: Array<string> = ['Role']): Role {
+		if (typeof json != 'object') throw new Error(`Expected json object at path ${path.join("")}`)
+		const jCpy = { ...json }
+		const res = new Role({
+			id: expectString(extractEntry(jCpy.id, 'id', true, path), false, [...path, ".id"]),
+			rev: expectString(extractEntry(jCpy.rev, 'rev', false, path), true, [...path, ".rev"]),
+			deletionDate: expectNumber(extractEntry(jCpy.deletionDate, 'deletionDate', false, path), true, true, [...path, ".deletionDate"]),
+			name: expectString(extractEntry(jCpy.name, 'name', false, path), true, [...path, ".name"]),
+			inheritableUpTo: expectNumber(extractEntry(jCpy.inheritableUpTo, 'inheritableUpTo', false, path), true, true, [...path, ".inheritableUpTo"]),
+			permissions: expectArray(extractEntry(jCpy.permissions, 'permissions', false, path), false, [...path, ".permissions"], (x0, p0) => expectString(x0, false, p0)),
 		})
+		if (!ignoreUnknownKeys) {
+			const unused = Object.keys(jCpy)
+			if (unused.length > 0) throw new Error(`Unexpected key(s) for json object Role at path ${path.join("")}: ${unused}`)}
+		return res
 	}
 
 }

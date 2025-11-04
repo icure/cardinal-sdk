@@ -1,5 +1,5 @@
 // auto-generated file
-import {expectNumber, expectString} from '../../internal/JsonDecodeUtils.mjs';
+import {expectNumber, expectString, extractEntry} from '../../internal/JsonDecodeUtils.mjs';
 
 
 export class DeletedAttachment {
@@ -28,13 +28,20 @@ export class DeletedAttachment {
 		return res
 	}
 
-	static fromJSON(json: any, path: Array<string> = ['DeletedAttachment']): DeletedAttachment {
-		return new DeletedAttachment({
-			couchDbAttachmentId: expectString(json.couchDbAttachmentId, true, [...path, ".couchDbAttachmentId"]),
-			objectStoreAttachmentId: expectString(json.objectStoreAttachmentId, true, [...path, ".objectStoreAttachmentId"]),
-			key: expectString(json.key, true, [...path, ".key"]),
-			deletionTime: expectNumber(json.deletionTime, true, true, [...path, ".deletionTime"]),
+	static fromJSON(json: any, ignoreUnknownKeys: boolean = false,
+			path: Array<string> = ['DeletedAttachment']): DeletedAttachment {
+		if (typeof json != 'object') throw new Error(`Expected json object at path ${path.join("")}`)
+		const jCpy = { ...json }
+		const res = new DeletedAttachment({
+			couchDbAttachmentId: expectString(extractEntry(jCpy.couchDbAttachmentId, 'couchDbAttachmentId', false, path), true, [...path, ".couchDbAttachmentId"]),
+			objectStoreAttachmentId: expectString(extractEntry(jCpy.objectStoreAttachmentId, 'objectStoreAttachmentId', false, path), true, [...path, ".objectStoreAttachmentId"]),
+			key: expectString(extractEntry(jCpy.key, 'key', false, path), true, [...path, ".key"]),
+			deletionTime: expectNumber(extractEntry(jCpy.deletionTime, 'deletionTime', false, path), true, true, [...path, ".deletionTime"]),
 		})
+		if (!ignoreUnknownKeys) {
+			const unused = Object.keys(jCpy)
+			if (unused.length > 0) throw new Error(`Unexpected key(s) for json object DeletedAttachment at path ${path.join("")}: ${unused}`)}
+		return res
 	}
 
 }

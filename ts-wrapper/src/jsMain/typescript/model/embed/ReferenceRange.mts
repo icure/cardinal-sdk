@@ -1,5 +1,5 @@
 // auto-generated file
-import {expectArray, expectNumber, expectString} from '../../internal/JsonDecodeUtils.mjs';
+import {expectArray, expectNumber, expectObject, expectString, extractEntry} from '../../internal/JsonDecodeUtils.mjs';
 import {CodeStub} from '../base/CodeStub.mjs';
 import {Annotation} from './Annotation.mjs';
 import {Range} from './Range.mjs';
@@ -43,16 +43,23 @@ export class ReferenceRange {
 		return res
 	}
 
-	static fromJSON(json: any, path: Array<string> = ['ReferenceRange']): ReferenceRange {
-		return new ReferenceRange({
-			low: expectNumber(json.low, true, false, [...path, ".low"]),
-			high: expectNumber(json.high, true, false, [...path, ".high"]),
-			stringValue: expectString(json.stringValue, true, [...path, ".stringValue"]),
-			tags: expectArray(json.tags, false, [...path, ".tags"], (x0, p0) => CodeStub.fromJSON(x0, p0)),
-			codes: expectArray(json.codes, false, [...path, ".codes"], (x0, p0) => CodeStub.fromJSON(x0, p0)),
-			notes: expectArray(json.notes, false, [...path, ".notes"], (x0, p0) => Annotation.fromJSON(x0, p0)),
-			age: Range.fromJSON(json.age, [...path, ".age"]),
+	static fromJSON(json: any, ignoreUnknownKeys: boolean = false,
+			path: Array<string> = ['ReferenceRange']): ReferenceRange {
+		if (typeof json != 'object') throw new Error(`Expected json object at path ${path.join("")}`)
+		const jCpy = { ...json }
+		const res = new ReferenceRange({
+			low: expectNumber(extractEntry(jCpy.low, 'low', false, path), true, false, [...path, ".low"]),
+			high: expectNumber(extractEntry(jCpy.high, 'high', false, path), true, false, [...path, ".high"]),
+			stringValue: expectString(extractEntry(jCpy.stringValue, 'stringValue', false, path), true, [...path, ".stringValue"]),
+			tags: expectArray(extractEntry(jCpy.tags, 'tags', false, path), false, [...path, ".tags"], (x0, p0) => expectObject(x0, false, ignoreUnknownKeys, p0, CodeStub.fromJSON)),
+			codes: expectArray(extractEntry(jCpy.codes, 'codes', false, path), false, [...path, ".codes"], (x0, p0) => expectObject(x0, false, ignoreUnknownKeys, p0, CodeStub.fromJSON)),
+			notes: expectArray(extractEntry(jCpy.notes, 'notes', false, path), false, [...path, ".notes"], (x0, p0) => expectObject(x0, false, ignoreUnknownKeys, p0, Annotation.fromJSON)),
+			age: expectObject(extractEntry(jCpy.age, 'age', false, path), true, ignoreUnknownKeys, [...path, ".age"], Range.fromJSON),
 		})
+		if (!ignoreUnknownKeys) {
+			const unused = Object.keys(jCpy)
+			if (unused.length > 0) throw new Error(`Unexpected key(s) for json object ReferenceRange at path ${path.join("")}: ${unused}`)}
+		return res
 	}
 
 }

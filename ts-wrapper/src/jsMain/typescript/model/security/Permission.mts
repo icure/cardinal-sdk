@@ -1,5 +1,5 @@
 // auto-generated file
-import {expectArray} from '../../internal/JsonDecodeUtils.mjs';
+import {expectArray, expectObject, extractEntry} from '../../internal/JsonDecodeUtils.mjs';
 import {PermissionItem} from './PermissionItem.mjs';
 
 
@@ -21,11 +21,18 @@ export class Permission {
 		return res
 	}
 
-	static fromJSON(json: any, path: Array<string> = ['Permission']): Permission {
-		return new Permission({
-			grants: expectArray(json.grants, false, [...path, ".grants"], (x0, p0) => PermissionItem.fromJSON(x0, p0)),
-			revokes: expectArray(json.revokes, false, [...path, ".revokes"], (x0, p0) => PermissionItem.fromJSON(x0, p0)),
+	static fromJSON(json: any, ignoreUnknownKeys: boolean = false,
+			path: Array<string> = ['Permission']): Permission {
+		if (typeof json != 'object') throw new Error(`Expected json object at path ${path.join("")}`)
+		const jCpy = { ...json }
+		const res = new Permission({
+			grants: expectArray(extractEntry(jCpy.grants, 'grants', false, path), false, [...path, ".grants"], (x0, p0) => expectObject(x0, false, ignoreUnknownKeys, p0, PermissionItem.fromJSON)),
+			revokes: expectArray(extractEntry(jCpy.revokes, 'revokes', false, path), false, [...path, ".revokes"], (x0, p0) => expectObject(x0, false, ignoreUnknownKeys, p0, PermissionItem.fromJSON)),
 		})
+		if (!ignoreUnknownKeys) {
+			const unused = Object.keys(jCpy)
+			if (unused.length > 0) throw new Error(`Unexpected key(s) for json object Permission at path ${path.join("")}: ${unused}`)}
+		return res
 	}
 
 }

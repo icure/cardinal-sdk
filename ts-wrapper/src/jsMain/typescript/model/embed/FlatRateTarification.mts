@@ -1,5 +1,5 @@
 // auto-generated file
-import {expectArray, expectMap, expectString, expectStringEnum} from '../../internal/JsonDecodeUtils.mjs';
+import {expectArray, expectMap, expectObject, expectString, expectStringEnum, extractEntry} from '../../internal/JsonDecodeUtils.mjs';
 import {Base64String} from '../specializations/Base64String.mjs';
 import {Encryptable} from './Encryptable.mjs';
 import {FlatRateType} from './FlatRateType.mjs';
@@ -53,21 +53,27 @@ export class DecryptedFlatRateTarification {
 		return res
 	}
 
-	static fromJSON(json: any,
+	static fromJSON(json: any, ignoreUnknownKeys: boolean = false,
 			path: Array<string> = ['DecryptedFlatRateTarification']): DecryptedFlatRateTarification {
-		return new DecryptedFlatRateTarification({
-			code: expectString(json.code, true, [...path, ".code"]),
-			flatRateType: expectStringEnum(json.flatRateType, true, [...path, ".flatRateType"], FlatRateType, 'FlatRateType'),
+		if (typeof json != 'object') throw new Error(`Expected json object at path ${path.join("")}`)
+		const jCpy = { ...json }
+		const res = new DecryptedFlatRateTarification({
+			code: expectString(extractEntry(jCpy.code, 'code', false, path), true, [...path, ".code"]),
+			flatRateType: expectStringEnum(extractEntry(jCpy.flatRateType, 'flatRateType', false, path), true, [...path, ".flatRateType"], FlatRateType, 'FlatRateType'),
 			label: expectMap(
-				json.label,
+				extractEntry(jCpy.label, 'label', false, path),
 				true,
 				[...path, ".label"],
 				(k0, p0) => expectString(k0, false, p0),
 				(v0, p0) => expectString(v0, false, p0)
 			),
-			valorisations: expectArray(json.valorisations, false, [...path, ".valorisations"], (x0, p0) => DecryptedValorisation.fromJSON(x0, p0)),
-			encryptedSelf: expectString(json.encryptedSelf, false, [...path, ".encryptedSelf"]),
+			valorisations: expectArray(extractEntry(jCpy.valorisations, 'valorisations', false, path), false, [...path, ".valorisations"], (x0, p0) => expectObject(x0, false, ignoreUnknownKeys, p0, DecryptedValorisation.fromJSON)),
+			encryptedSelf: expectString(extractEntry(jCpy.encryptedSelf, 'encryptedSelf', false, path), false, [...path, ".encryptedSelf"]),
 		})
+		if (!ignoreUnknownKeys) {
+			const unused = Object.keys(jCpy)
+			if (unused.length > 0) throw new Error(`Unexpected key(s) for json object DecryptedFlatRateTarification at path ${path.join("")}: ${unused}`)}
+		return res
 	}
 
 }
@@ -105,21 +111,27 @@ export class EncryptedFlatRateTarification {
 		return res
 	}
 
-	static fromJSON(json: any,
+	static fromJSON(json: any, ignoreUnknownKeys: boolean = false,
 			path: Array<string> = ['EncryptedFlatRateTarification']): EncryptedFlatRateTarification {
-		return new EncryptedFlatRateTarification({
-			code: expectString(json.code, true, [...path, ".code"]),
-			flatRateType: expectStringEnum(json.flatRateType, true, [...path, ".flatRateType"], FlatRateType, 'FlatRateType'),
+		if (typeof json != 'object') throw new Error(`Expected json object at path ${path.join("")}`)
+		const jCpy = { ...json }
+		const res = new EncryptedFlatRateTarification({
+			code: expectString(extractEntry(jCpy.code, 'code', false, path), true, [...path, ".code"]),
+			flatRateType: expectStringEnum(extractEntry(jCpy.flatRateType, 'flatRateType', false, path), true, [...path, ".flatRateType"], FlatRateType, 'FlatRateType'),
 			label: expectMap(
-				json.label,
+				extractEntry(jCpy.label, 'label', false, path),
 				true,
 				[...path, ".label"],
 				(k0, p0) => expectString(k0, false, p0),
 				(v0, p0) => expectString(v0, false, p0)
 			),
-			valorisations: expectArray(json.valorisations, false, [...path, ".valorisations"], (x0, p0) => EncryptedValorisation.fromJSON(x0, p0)),
-			encryptedSelf: expectString(json.encryptedSelf, false, [...path, ".encryptedSelf"]),
+			valorisations: expectArray(extractEntry(jCpy.valorisations, 'valorisations', false, path), false, [...path, ".valorisations"], (x0, p0) => expectObject(x0, false, ignoreUnknownKeys, p0, EncryptedValorisation.fromJSON)),
+			encryptedSelf: expectString(extractEntry(jCpy.encryptedSelf, 'encryptedSelf', false, path), false, [...path, ".encryptedSelf"]),
 		})
+		if (!ignoreUnknownKeys) {
+			const unused = Object.keys(jCpy)
+			if (unused.length > 0) throw new Error(`Unexpected key(s) for json object EncryptedFlatRateTarification at path ${path.join("")}: ${unused}`)}
+		return res
 	}
 
 }

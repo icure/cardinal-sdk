@@ -1,5 +1,5 @@
 // auto-generated file
-import {expectNumber} from '../../internal/JsonDecodeUtils.mjs';
+import {expectNumber, expectObject, extractEntry} from '../../internal/JsonDecodeUtils.mjs';
 import {Duration} from './Duration.mjs';
 
 
@@ -21,11 +21,18 @@ export class Renewal {
 		return res
 	}
 
-	static fromJSON(json: any, path: Array<string> = ['Renewal']): Renewal {
-		return new Renewal({
-			decimal: expectNumber(json.decimal, true, true, [...path, ".decimal"]),
-			duration: Duration.fromJSON(json.duration, [...path, ".duration"]),
+	static fromJSON(json: any, ignoreUnknownKeys: boolean = false,
+			path: Array<string> = ['Renewal']): Renewal {
+		if (typeof json != 'object') throw new Error(`Expected json object at path ${path.join("")}`)
+		const jCpy = { ...json }
+		const res = new Renewal({
+			decimal: expectNumber(extractEntry(jCpy.decimal, 'decimal', false, path), true, true, [...path, ".decimal"]),
+			duration: expectObject(extractEntry(jCpy.duration, 'duration', false, path), true, ignoreUnknownKeys, [...path, ".duration"], Duration.fromJSON),
 		})
+		if (!ignoreUnknownKeys) {
+			const unused = Object.keys(jCpy)
+			if (unused.length > 0) throw new Error(`Unexpected key(s) for json object Renewal at path ${path.join("")}: ${unused}`)}
+		return res
 	}
 
 }

@@ -1,5 +1,5 @@
 // auto-generated file
-import {expectArray, expectBoolean, expectMap, expectNumber, expectString, expectStringEnum, requireEntry} from '../internal/JsonDecodeUtils.mjs';
+import {expectArray, expectBoolean, expectMap, expectNumber, expectObject, expectString, expectStringEnum, extractEntry} from '../internal/JsonDecodeUtils.mjs';
 import {randomUuid} from '../utils/Id.mjs';
 import {DecryptedPropertyStub} from './PropertyStub.mjs';
 import {CodeStub} from './base/CodeStub.mjs';
@@ -109,37 +109,44 @@ export class Agenda implements StoredDocument, ICureDocument<string> {
 		return res
 	}
 
-	static fromJSON(json: any, path: Array<string> = ['Agenda']): Agenda {
-		return new Agenda({
-			id: expectString(requireEntry(json.id, 'id', path), false, [...path, ".id"]),
-			rev: expectString(json.rev, true, [...path, ".rev"]),
-			created: expectNumber(json.created, true, true, [...path, ".created"]),
-			modified: expectNumber(json.modified, true, true, [...path, ".modified"]),
-			author: expectString(json.author, true, [...path, ".author"]),
-			responsible: expectString(json.responsible, true, [...path, ".responsible"]),
-			medicalLocationId: expectString(json.medicalLocationId, true, [...path, ".medicalLocationId"]),
-			tags: expectArray(json.tags, false, [...path, ".tags"], (x0, p0) => CodeStub.fromJSON(x0, p0)),
-			codes: expectArray(json.codes, false, [...path, ".codes"], (x0, p0) => CodeStub.fromJSON(x0, p0)),
-			endOfLife: expectNumber(json.endOfLife, true, true, [...path, ".endOfLife"]),
-			deletionDate: expectNumber(json.deletionDate, true, true, [...path, ".deletionDate"]),
-			daySplitHour: expectNumber(json.daySplitHour, true, true, [...path, ".daySplitHour"]),
-			unpublished: expectBoolean(json.unpublished, false, [...path, ".unpublished"]),
-			name: expectString(json.name, true, [...path, ".name"]),
-			userId: expectString(json.userId, true, [...path, ".userId"]),
-			zoneId: expectString(json.zoneId, true, [...path, ".zoneId"]),
-			rights: expectArray(json.rights, false, [...path, ".rights"], (x0, p0) => Right.fromJSON(x0, p0)),
+	static fromJSON(json: any, ignoreUnknownKeys: boolean = false,
+			path: Array<string> = ['Agenda']): Agenda {
+		if (typeof json != 'object') throw new Error(`Expected json object at path ${path.join("")}`)
+		const jCpy = { ...json }
+		const res = new Agenda({
+			id: expectString(extractEntry(jCpy.id, 'id', true, path), false, [...path, ".id"]),
+			rev: expectString(extractEntry(jCpy.rev, 'rev', false, path), true, [...path, ".rev"]),
+			created: expectNumber(extractEntry(jCpy.created, 'created', false, path), true, true, [...path, ".created"]),
+			modified: expectNumber(extractEntry(jCpy.modified, 'modified', false, path), true, true, [...path, ".modified"]),
+			author: expectString(extractEntry(jCpy.author, 'author', false, path), true, [...path, ".author"]),
+			responsible: expectString(extractEntry(jCpy.responsible, 'responsible', false, path), true, [...path, ".responsible"]),
+			medicalLocationId: expectString(extractEntry(jCpy.medicalLocationId, 'medicalLocationId', false, path), true, [...path, ".medicalLocationId"]),
+			tags: expectArray(extractEntry(jCpy.tags, 'tags', false, path), false, [...path, ".tags"], (x0, p0) => expectObject(x0, false, ignoreUnknownKeys, p0, CodeStub.fromJSON)),
+			codes: expectArray(extractEntry(jCpy.codes, 'codes', false, path), false, [...path, ".codes"], (x0, p0) => expectObject(x0, false, ignoreUnknownKeys, p0, CodeStub.fromJSON)),
+			endOfLife: expectNumber(extractEntry(jCpy.endOfLife, 'endOfLife', false, path), true, true, [...path, ".endOfLife"]),
+			deletionDate: expectNumber(extractEntry(jCpy.deletionDate, 'deletionDate', false, path), true, true, [...path, ".deletionDate"]),
+			daySplitHour: expectNumber(extractEntry(jCpy.daySplitHour, 'daySplitHour', false, path), true, true, [...path, ".daySplitHour"]),
+			unpublished: expectBoolean(extractEntry(jCpy.unpublished, 'unpublished', false, path), false, [...path, ".unpublished"]),
+			name: expectString(extractEntry(jCpy.name, 'name', false, path), true, [...path, ".name"]),
+			userId: expectString(extractEntry(jCpy.userId, 'userId', false, path), true, [...path, ".userId"]),
+			zoneId: expectString(extractEntry(jCpy.zoneId, 'zoneId', false, path), true, [...path, ".zoneId"]),
+			rights: expectArray(extractEntry(jCpy.rights, 'rights', false, path), false, [...path, ".rights"], (x0, p0) => expectObject(x0, false, ignoreUnknownKeys, p0, Right.fromJSON)),
 			userRights: expectMap(
-				json.userRights,
+				extractEntry(jCpy.userRights, 'userRights', false, path),
 				false,
 				[...path, ".userRights"],
 				(k0, p0) => expectString(k0, false, p0),
 				(v0, p0) => expectStringEnum(v0, false, p0, UserAccessLevel, 'UserAccessLevel')
 			),
-			slottingAlgorithm: AgendaSlottingAlgorithm.fromJSON(json.slottingAlgorithm, [...path, ".slottingAlgorithm"]),
-			publicBookingQuota: expectNumber(json.publicBookingQuota, true, true, [...path, ".publicBookingQuota"]),
-			properties: expectArray(json.properties, false, [...path, ".properties"], (x0, p0) => DecryptedPropertyStub.fromJSON(x0, p0)),
-			schedules: expectArray(json.schedules, false, [...path, ".schedules"], (x0, p0) => ResourceGroupAllocationSchedule.fromJSON(x0, p0)),
+			slottingAlgorithm: expectObject(extractEntry(jCpy.slottingAlgorithm, 'slottingAlgorithm', false, path), true, ignoreUnknownKeys, [...path, ".slottingAlgorithm"], AgendaSlottingAlgorithm.fromJSON),
+			publicBookingQuota: expectNumber(extractEntry(jCpy.publicBookingQuota, 'publicBookingQuota', false, path), true, true, [...path, ".publicBookingQuota"]),
+			properties: expectArray(extractEntry(jCpy.properties, 'properties', false, path), false, [...path, ".properties"], (x0, p0) => expectObject(x0, false, ignoreUnknownKeys, p0, DecryptedPropertyStub.fromJSON)),
+			schedules: expectArray(extractEntry(jCpy.schedules, 'schedules', false, path), false, [...path, ".schedules"], (x0, p0) => expectObject(x0, false, ignoreUnknownKeys, p0, ResourceGroupAllocationSchedule.fromJSON)),
 		})
+		if (!ignoreUnknownKeys) {
+			const unused = Object.keys(jCpy)
+			if (unused.length > 0) throw new Error(`Unexpected key(s) for json object Agenda at path ${path.join("")}: ${unused}`)}
+		return res
 	}
 
 }

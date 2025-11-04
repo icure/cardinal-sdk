@@ -1,5 +1,5 @@
 // auto-generated file
-import {expectNumber, expectString, expectStringEnum} from '../../internal/JsonDecodeUtils.mjs';
+import {expectNumber, expectString, expectStringEnum, extractEntry} from '../../internal/JsonDecodeUtils.mjs';
 import {Base64String} from '../specializations/Base64String.mjs';
 import {Encryptable} from './Encryptable.mjs';
 import {MembershipType} from './MembershipType.mjs';
@@ -52,15 +52,21 @@ export class DecryptedCareTeamMembership {
 		return res
 	}
 
-	static fromJSON(json: any,
+	static fromJSON(json: any, ignoreUnknownKeys: boolean = false,
 			path: Array<string> = ['DecryptedCareTeamMembership']): DecryptedCareTeamMembership {
-		return new DecryptedCareTeamMembership({
-			startDate: expectNumber(json.startDate, true, true, [...path, ".startDate"]),
-			endDate: expectNumber(json.endDate, true, true, [...path, ".endDate"]),
-			careTeamMemberId: expectString(json.careTeamMemberId, true, [...path, ".careTeamMemberId"]),
-			membershipType: expectStringEnum(json.membershipType, true, [...path, ".membershipType"], MembershipType, 'MembershipType'),
-			encryptedSelf: expectString(json.encryptedSelf, false, [...path, ".encryptedSelf"]),
+		if (typeof json != 'object') throw new Error(`Expected json object at path ${path.join("")}`)
+		const jCpy = { ...json }
+		const res = new DecryptedCareTeamMembership({
+			startDate: expectNumber(extractEntry(jCpy.startDate, 'startDate', false, path), true, true, [...path, ".startDate"]),
+			endDate: expectNumber(extractEntry(jCpy.endDate, 'endDate', false, path), true, true, [...path, ".endDate"]),
+			careTeamMemberId: expectString(extractEntry(jCpy.careTeamMemberId, 'careTeamMemberId', false, path), true, [...path, ".careTeamMemberId"]),
+			membershipType: expectStringEnum(extractEntry(jCpy.membershipType, 'membershipType', false, path), true, [...path, ".membershipType"], MembershipType, 'MembershipType'),
+			encryptedSelf: expectString(extractEntry(jCpy.encryptedSelf, 'encryptedSelf', false, path), false, [...path, ".encryptedSelf"]),
 		})
+		if (!ignoreUnknownKeys) {
+			const unused = Object.keys(jCpy)
+			if (unused.length > 0) throw new Error(`Unexpected key(s) for json object DecryptedCareTeamMembership at path ${path.join("")}: ${unused}`)}
+		return res
 	}
 
 }
@@ -98,15 +104,21 @@ export class EncryptedCareTeamMembership {
 		return res
 	}
 
-	static fromJSON(json: any,
+	static fromJSON(json: any, ignoreUnknownKeys: boolean = false,
 			path: Array<string> = ['EncryptedCareTeamMembership']): EncryptedCareTeamMembership {
-		return new EncryptedCareTeamMembership({
-			startDate: expectNumber(json.startDate, true, true, [...path, ".startDate"]),
-			endDate: expectNumber(json.endDate, true, true, [...path, ".endDate"]),
-			careTeamMemberId: expectString(json.careTeamMemberId, true, [...path, ".careTeamMemberId"]),
-			membershipType: expectStringEnum(json.membershipType, true, [...path, ".membershipType"], MembershipType, 'MembershipType'),
-			encryptedSelf: expectString(json.encryptedSelf, false, [...path, ".encryptedSelf"]),
+		if (typeof json != 'object') throw new Error(`Expected json object at path ${path.join("")}`)
+		const jCpy = { ...json }
+		const res = new EncryptedCareTeamMembership({
+			startDate: expectNumber(extractEntry(jCpy.startDate, 'startDate', false, path), true, true, [...path, ".startDate"]),
+			endDate: expectNumber(extractEntry(jCpy.endDate, 'endDate', false, path), true, true, [...path, ".endDate"]),
+			careTeamMemberId: expectString(extractEntry(jCpy.careTeamMemberId, 'careTeamMemberId', false, path), true, [...path, ".careTeamMemberId"]),
+			membershipType: expectStringEnum(extractEntry(jCpy.membershipType, 'membershipType', false, path), true, [...path, ".membershipType"], MembershipType, 'MembershipType'),
+			encryptedSelf: expectString(extractEntry(jCpy.encryptedSelf, 'encryptedSelf', false, path), false, [...path, ".encryptedSelf"]),
 		})
+		if (!ignoreUnknownKeys) {
+			const unused = Object.keys(jCpy)
+			if (unused.length > 0) throw new Error(`Unexpected key(s) for json object EncryptedCareTeamMembership at path ${path.join("")}: ${unused}`)}
+		return res
 	}
 
 }

@@ -1,5 +1,5 @@
 // auto-generated file
-import {expectStringEnum, requireEntry} from '../internal/JsonDecodeUtils.mjs';
+import {expectObject, expectStringEnum, extractEntry} from '../internal/JsonDecodeUtils.mjs';
 import {CryptoActorStub} from './CryptoActorStub.mjs';
 import {DataOwnerType} from './DataOwnerType.mjs';
 
@@ -22,12 +22,18 @@ export class CryptoActorStubWithType {
 		return res
 	}
 
-	static fromJSON(json: any,
+	static fromJSON(json: any, ignoreUnknownKeys: boolean = false,
 			path: Array<string> = ['CryptoActorStubWithType']): CryptoActorStubWithType {
-		return new CryptoActorStubWithType({
-			type: expectStringEnum(requireEntry(json.type, 'type', path), false, [...path, ".type"], DataOwnerType, 'DataOwnerType'),
-			stub: CryptoActorStub.fromJSON(requireEntry(json.stub, 'stub', path), [...path, ".stub"]),
+		if (typeof json != 'object') throw new Error(`Expected json object at path ${path.join("")}`)
+		const jCpy = { ...json }
+		const res = new CryptoActorStubWithType({
+			type: expectStringEnum(extractEntry(jCpy.type, 'type', true, path), false, [...path, ".type"], DataOwnerType, 'DataOwnerType'),
+			stub: expectObject(extractEntry(jCpy.stub, 'stub', true, path), false, ignoreUnknownKeys, [...path, ".stub"], CryptoActorStub.fromJSON),
 		})
+		if (!ignoreUnknownKeys) {
+			const unused = Object.keys(jCpy)
+			if (unused.length > 0) throw new Error(`Unexpected key(s) for json object CryptoActorStubWithType at path ${path.join("")}: ${unused}`)}
+		return res
 	}
 
 }

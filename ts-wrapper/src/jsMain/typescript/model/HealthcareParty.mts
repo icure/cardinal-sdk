@@ -1,6 +1,6 @@
 // auto-generated file
 import {decodeBase64, encodeBase64} from '../internal/BytesEncoding.mjs';
-import {expectArray, expectBoolean, expectMap, expectNumber, expectString, expectStringEnum, requireEntry} from '../internal/JsonDecodeUtils.mjs';
+import {expectArray, expectBoolean, expectMap, expectNumber, expectObject, expectString, expectStringEnum, extractEntry} from '../internal/JsonDecodeUtils.mjs';
 import {randomUuid} from '../utils/Id.mjs';
 import {DecryptedPropertyStub} from './PropertyStub.mjs';
 import {CodeStub} from './base/CodeStub.mjs';
@@ -264,92 +264,95 @@ export class HealthcareParty implements StoredDocument, Named, Person, CryptoAct
 		return res
 	}
 
-	static fromJSON(json: any, path: Array<string> = ['HealthcareParty']): HealthcareParty {
-		return new HealthcareParty({
-			id: expectString(requireEntry(json.id, 'id', path), false, [...path, ".id"]),
-			rev: expectString(json.rev, true, [...path, ".rev"]),
-			created: expectNumber(json.created, true, true, [...path, ".created"]),
-			modified: expectNumber(json.modified, true, true, [...path, ".modified"]),
-			deletionDate: expectNumber(json.deletionDate, true, true, [...path, ".deletionDate"]),
-			identifier: expectArray(json.identifier, false, [...path, ".identifier"], (x0, p0) => Identifier.fromJSON(x0, p0)),
-			tags: expectArray(json.tags, false, [...path, ".tags"], (x0, p0) => CodeStub.fromJSON(x0, p0)),
-			codes: expectArray(json.codes, false, [...path, ".codes"], (x0, p0) => CodeStub.fromJSON(x0, p0)),
-			name: expectString(json.name, true, [...path, ".name"]),
-			lastName: expectString(json.lastName, true, [...path, ".lastName"]),
-			firstName: expectString(json.firstName, true, [...path, ".firstName"]),
-			names: expectArray(json.names, false, [...path, ".names"], (x0, p0) => PersonName.fromJSON(x0, p0)),
-			gender: expectStringEnum(json.gender, true, [...path, ".gender"], Gender, 'Gender'),
-			civility: expectString(json.civility, true, [...path, ".civility"]),
-			companyName: expectString(json.companyName, true, [...path, ".companyName"]),
-			speciality: expectString(json.speciality, true, [...path, ".speciality"]),
-			bankAccount: expectString(json.bankAccount, true, [...path, ".bankAccount"]),
-			bic: expectString(json.bic, true, [...path, ".bic"]),
-			proxyBankAccount: expectString(json.proxyBankAccount, true, [...path, ".proxyBankAccount"]),
-			proxyBic: expectString(json.proxyBic, true, [...path, ".proxyBic"]),
-			invoiceHeader: expectString(json.invoiceHeader, true, [...path, ".invoiceHeader"]),
-			cbe: expectString(json.cbe, true, [...path, ".cbe"]),
-			ehp: expectString(json.ehp, true, [...path, ".ehp"]),
-			userId: expectString(json.userId, true, [...path, ".userId"]),
-			parentId: expectString(json.parentId, true, [...path, ".parentId"]),
-			convention: expectNumber(json.convention, true, true, [...path, ".convention"]),
-			nihii: expectString(json.nihii, true, [...path, ".nihii"]),
-			nihiiSpecCode: expectString(json.nihiiSpecCode, true, [...path, ".nihiiSpecCode"]),
-			ssin: expectString(json.ssin, true, [...path, ".ssin"]),
-			addresses: expectArray(json.addresses, false, [...path, ".addresses"], (x0, p0) => DecryptedAddress.fromJSON(x0, p0)),
-			languages: expectArray(json.languages, false, [...path, ".languages"], (x0, p0) => expectString(x0, false, p0)),
-			picture: decodeBase64(expectString(json.picture, true, [...path, ".picture"]), [...path, ".picture"]),
-			statuses: expectArray(json.statuses, false, [...path, ".statuses"], (x0, p0) => expectStringEnum(x0, false, p0, HealthcarePartyStatus, 'HealthcarePartyStatus')),
-			statusHistory: expectArray(json.statusHistory, false, [...path, ".statusHistory"], (x0, p0) => HealthcarePartyHistoryStatus.fromJSON(x0, p0)),
-			specialityCodes: expectArray(json.specialityCodes, false, [...path, ".specialityCodes"], (x0, p0) => CodeStub.fromJSON(x0, p0)),
+	static fromJSON(json: any, ignoreUnknownKeys: boolean = false,
+			path: Array<string> = ['HealthcareParty']): HealthcareParty {
+		if (typeof json != 'object') throw new Error(`Expected json object at path ${path.join("")}`)
+		const jCpy = { ...json }
+		const res = new HealthcareParty({
+			id: expectString(extractEntry(jCpy.id, 'id', true, path), false, [...path, ".id"]),
+			rev: expectString(extractEntry(jCpy.rev, 'rev', false, path), true, [...path, ".rev"]),
+			created: expectNumber(extractEntry(jCpy.created, 'created', false, path), true, true, [...path, ".created"]),
+			modified: expectNumber(extractEntry(jCpy.modified, 'modified', false, path), true, true, [...path, ".modified"]),
+			deletionDate: expectNumber(extractEntry(jCpy.deletionDate, 'deletionDate', false, path), true, true, [...path, ".deletionDate"]),
+			identifier: expectArray(extractEntry(jCpy.identifier, 'identifier', false, path), false, [...path, ".identifier"], (x0, p0) => expectObject(x0, false, ignoreUnknownKeys, p0, Identifier.fromJSON)),
+			tags: expectArray(extractEntry(jCpy.tags, 'tags', false, path), false, [...path, ".tags"], (x0, p0) => expectObject(x0, false, ignoreUnknownKeys, p0, CodeStub.fromJSON)),
+			codes: expectArray(extractEntry(jCpy.codes, 'codes', false, path), false, [...path, ".codes"], (x0, p0) => expectObject(x0, false, ignoreUnknownKeys, p0, CodeStub.fromJSON)),
+			name: expectString(extractEntry(jCpy.name, 'name', false, path), true, [...path, ".name"]),
+			lastName: expectString(extractEntry(jCpy.lastName, 'lastName', false, path), true, [...path, ".lastName"]),
+			firstName: expectString(extractEntry(jCpy.firstName, 'firstName', false, path), true, [...path, ".firstName"]),
+			names: expectArray(extractEntry(jCpy.names, 'names', false, path), false, [...path, ".names"], (x0, p0) => expectObject(x0, false, ignoreUnknownKeys, p0, PersonName.fromJSON)),
+			gender: expectStringEnum(extractEntry(jCpy.gender, 'gender', false, path), true, [...path, ".gender"], Gender, 'Gender'),
+			civility: expectString(extractEntry(jCpy.civility, 'civility', false, path), true, [...path, ".civility"]),
+			companyName: expectString(extractEntry(jCpy.companyName, 'companyName', false, path), true, [...path, ".companyName"]),
+			speciality: expectString(extractEntry(jCpy.speciality, 'speciality', false, path), true, [...path, ".speciality"]),
+			bankAccount: expectString(extractEntry(jCpy.bankAccount, 'bankAccount', false, path), true, [...path, ".bankAccount"]),
+			bic: expectString(extractEntry(jCpy.bic, 'bic', false, path), true, [...path, ".bic"]),
+			proxyBankAccount: expectString(extractEntry(jCpy.proxyBankAccount, 'proxyBankAccount', false, path), true, [...path, ".proxyBankAccount"]),
+			proxyBic: expectString(extractEntry(jCpy.proxyBic, 'proxyBic', false, path), true, [...path, ".proxyBic"]),
+			invoiceHeader: expectString(extractEntry(jCpy.invoiceHeader, 'invoiceHeader', false, path), true, [...path, ".invoiceHeader"]),
+			cbe: expectString(extractEntry(jCpy.cbe, 'cbe', false, path), true, [...path, ".cbe"]),
+			ehp: expectString(extractEntry(jCpy.ehp, 'ehp', false, path), true, [...path, ".ehp"]),
+			userId: expectString(extractEntry(jCpy.userId, 'userId', false, path), true, [...path, ".userId"]),
+			parentId: expectString(extractEntry(jCpy.parentId, 'parentId', false, path), true, [...path, ".parentId"]),
+			convention: expectNumber(extractEntry(jCpy.convention, 'convention', false, path), true, true, [...path, ".convention"]),
+			nihii: expectString(extractEntry(jCpy.nihii, 'nihii', false, path), true, [...path, ".nihii"]),
+			nihiiSpecCode: expectString(extractEntry(jCpy.nihiiSpecCode, 'nihiiSpecCode', false, path), true, [...path, ".nihiiSpecCode"]),
+			ssin: expectString(extractEntry(jCpy.ssin, 'ssin', false, path), true, [...path, ".ssin"]),
+			addresses: expectArray(extractEntry(jCpy.addresses, 'addresses', false, path), false, [...path, ".addresses"], (x0, p0) => expectObject(x0, false, ignoreUnknownKeys, p0, DecryptedAddress.fromJSON)),
+			languages: expectArray(extractEntry(jCpy.languages, 'languages', false, path), false, [...path, ".languages"], (x0, p0) => expectString(x0, false, p0)),
+			picture: decodeBase64(expectString(extractEntry(jCpy.picture, 'picture', false, path), true, [...path, ".picture"]), [...path, ".picture"]),
+			statuses: expectArray(extractEntry(jCpy.statuses, 'statuses', false, path), false, [...path, ".statuses"], (x0, p0) => expectStringEnum(x0, false, p0, HealthcarePartyStatus, 'HealthcarePartyStatus')),
+			statusHistory: expectArray(extractEntry(jCpy.statusHistory, 'statusHistory', false, path), false, [...path, ".statusHistory"], (x0, p0) => expectObject(x0, false, ignoreUnknownKeys, p0, HealthcarePartyHistoryStatus.fromJSON)),
+			specialityCodes: expectArray(extractEntry(jCpy.specialityCodes, 'specialityCodes', false, path), false, [...path, ".specialityCodes"], (x0, p0) => expectObject(x0, false, ignoreUnknownKeys, p0, CodeStub.fromJSON)),
 			sendFormats: expectMap(
-				json.sendFormats,
+				extractEntry(jCpy.sendFormats, 'sendFormats', false, path),
 				false,
 				[...path, ".sendFormats"],
 				(k0, p0) => expectStringEnum(k0, false, p0, TelecomType, 'TelecomType'),
 				(v0, p0) => expectString(v0, false, p0)
 			),
-			notes: expectString(json.notes, true, [...path, ".notes"]),
-			financialInstitutionInformation: expectArray(json.financialInstitutionInformation, false, [...path, ".financialInstitutionInformation"], (x0, p0) => DecryptedFinancialInstitutionInformation.fromJSON(x0, p0)),
+			notes: expectString(extractEntry(jCpy.notes, 'notes', false, path), true, [...path, ".notes"]),
+			financialInstitutionInformation: expectArray(extractEntry(jCpy.financialInstitutionInformation, 'financialInstitutionInformation', false, path), false, [...path, ".financialInstitutionInformation"], (x0, p0) => expectObject(x0, false, ignoreUnknownKeys, p0, DecryptedFinancialInstitutionInformation.fromJSON)),
 			descr: expectMap(
-				json.descr,
+				extractEntry(jCpy.descr, 'descr', false, path),
 				true,
 				[...path, ".descr"],
 				(k0, p0) => expectString(k0, false, p0),
 				(v0, p0) => expectString(v0, false, p0)
 			),
-			billingType: expectString(json.billingType, true, [...path, ".billingType"]),
-			type: expectString(json.type, true, [...path, ".type"]),
-			contactPerson: expectString(json.contactPerson, true, [...path, ".contactPerson"]),
-			contactPersonHcpId: expectString(json.contactPersonHcpId, true, [...path, ".contactPersonHcpId"]),
-			supervisorId: expectString(json.supervisorId, true, [...path, ".supervisorId"]),
-			flatRateTarifications: expectArray(json.flatRateTarifications, false, [...path, ".flatRateTarifications"], (x0, p0) => DecryptedFlatRateTarification.fromJSON(x0, p0)),
+			billingType: expectString(extractEntry(jCpy.billingType, 'billingType', false, path), true, [...path, ".billingType"]),
+			type: expectString(extractEntry(jCpy.type, 'type', false, path), true, [...path, ".type"]),
+			contactPerson: expectString(extractEntry(jCpy.contactPerson, 'contactPerson', false, path), true, [...path, ".contactPerson"]),
+			contactPersonHcpId: expectString(extractEntry(jCpy.contactPersonHcpId, 'contactPersonHcpId', false, path), true, [...path, ".contactPersonHcpId"]),
+			supervisorId: expectString(extractEntry(jCpy.supervisorId, 'supervisorId', false, path), true, [...path, ".supervisorId"]),
+			flatRateTarifications: expectArray(extractEntry(jCpy.flatRateTarifications, 'flatRateTarifications', false, path), false, [...path, ".flatRateTarifications"], (x0, p0) => expectObject(x0, false, ignoreUnknownKeys, p0, DecryptedFlatRateTarification.fromJSON)),
 			importedData: expectMap(
-				json.importedData,
+				extractEntry(jCpy.importedData, 'importedData', false, path),
 				false,
 				[...path, ".importedData"],
 				(k0, p0) => expectString(k0, false, p0),
 				(v0, p0) => expectString(v0, false, p0)
 			),
 			options: expectMap(
-				json.options,
+				extractEntry(jCpy.options, 'options', false, path),
 				false,
 				[...path, ".options"],
 				(k0, p0) => expectString(k0, false, p0),
 				(v0, p0) => expectString(v0, false, p0)
 			),
-			properties: expectArray(json.properties, false, [...path, ".properties"], (x0, p0) => DecryptedPropertyStub.fromJSON(x0, p0)),
-			public: expectBoolean(json.public, false, [...path, ".public"]),
-			publicProperties: expectArray(json.publicProperties, true, [...path, ".publicProperties"], (x0, p0) => DecryptedPropertyStub.fromJSON(x0, p0)),
-			cryptoActorProperties: expectArray(json.cryptoActorProperties, true, [...path, ".cryptoActorProperties"], (x0, p0) => DecryptedPropertyStub.fromJSON(x0, p0)),
+			properties: expectArray(extractEntry(jCpy.properties, 'properties', false, path), false, [...path, ".properties"], (x0, p0) => expectObject(x0, false, ignoreUnknownKeys, p0, DecryptedPropertyStub.fromJSON)),
+			public: expectBoolean(extractEntry(jCpy.public, 'public', false, path), false, [...path, ".public"]),
+			publicProperties: expectArray(extractEntry(jCpy.publicProperties, 'publicProperties', false, path), true, [...path, ".publicProperties"], (x0, p0) => expectObject(x0, false, ignoreUnknownKeys, p0, DecryptedPropertyStub.fromJSON)),
+			cryptoActorProperties: expectArray(extractEntry(jCpy.cryptoActorProperties, 'cryptoActorProperties', false, path), true, [...path, ".cryptoActorProperties"], (x0, p0) => expectObject(x0, false, ignoreUnknownKeys, p0, DecryptedPropertyStub.fromJSON)),
 			hcPartyKeys: expectMap(
-				json.hcPartyKeys,
+				extractEntry(jCpy.hcPartyKeys, 'hcPartyKeys', false, path),
 				false,
 				[...path, ".hcPartyKeys"],
 				(k0, p0) => expectString(k0, false, p0),
 				(v0, p0) => expectArray(v0, false, p0, (x1, p1) => expectString(x1, false, p1))
 			),
 			aesExchangeKeys: expectMap(
-				json.aesExchangeKeys,
+				extractEntry(jCpy.aesExchangeKeys, 'aesExchangeKeys', false, path),
 				false,
 				[...path, ".aesExchangeKeys"],
 				(k0, p0) => expectString(k0, false, p0),
@@ -368,7 +371,7 @@ export class HealthcareParty implements StoredDocument, Named, Person, CryptoAct
 				)
 			),
 			transferKeys: expectMap(
-				json.transferKeys,
+				extractEntry(jCpy.transferKeys, 'transferKeys', false, path),
 				false,
 				[...path, ".transferKeys"],
 				(k0, p0) => expectString(k0, false, p0),
@@ -381,15 +384,19 @@ export class HealthcareParty implements StoredDocument, Named, Person, CryptoAct
 				)
 			),
 			privateKeyShamirPartitions: expectMap(
-				json.privateKeyShamirPartitions,
+				extractEntry(jCpy.privateKeyShamirPartitions, 'privateKeyShamirPartitions', false, path),
 				false,
 				[...path, ".privateKeyShamirPartitions"],
 				(k0, p0) => expectString(k0, false, p0),
 				(v0, p0) => expectString(v0, false, p0)
 			),
-			publicKey: expectString(json.publicKey, false, [...path, ".publicKey"]),
-			publicKeysForOaepWithSha256: expectArray(json.publicKeysForOaepWithSha256, false, [...path, ".publicKeysForOaepWithSha256"], (x0, p0) => expectString(x0, false, p0)),
+			publicKey: expectString(extractEntry(jCpy.publicKey, 'publicKey', false, path), false, [...path, ".publicKey"]),
+			publicKeysForOaepWithSha256: expectArray(extractEntry(jCpy.publicKeysForOaepWithSha256, 'publicKeysForOaepWithSha256', false, path), false, [...path, ".publicKeysForOaepWithSha256"], (x0, p0) => expectString(x0, false, p0)),
 		})
+		if (!ignoreUnknownKeys) {
+			const unused = Object.keys(jCpy)
+			if (unused.length > 0) throw new Error(`Unexpected key(s) for json object HealthcareParty at path ${path.join("")}: ${unused}`)}
+		return res
 	}
 
 }

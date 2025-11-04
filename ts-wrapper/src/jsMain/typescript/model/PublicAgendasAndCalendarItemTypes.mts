@@ -1,5 +1,5 @@
 // auto-generated file
-import {expectArray, requireEntry} from '../internal/JsonDecodeUtils.mjs';
+import {expectArray, expectObject, extractEntry} from '../internal/JsonDecodeUtils.mjs';
 import {Agenda} from './Agenda.mjs';
 import {CalendarItemType} from './CalendarItemType.mjs';
 
@@ -22,12 +22,18 @@ export class PublicAgendasAndCalendarItemTypes {
 		return res
 	}
 
-	static fromJSON(json: any,
+	static fromJSON(json: any, ignoreUnknownKeys: boolean = false,
 			path: Array<string> = ['PublicAgendasAndCalendarItemTypes']): PublicAgendasAndCalendarItemTypes {
-		return new PublicAgendasAndCalendarItemTypes({
-			agendas: expectArray(requireEntry(json.agendas, 'agendas', path), false, [...path, ".agendas"], (x0, p0) => Agenda.fromJSON(x0, p0)),
-			calendarItemTypes: expectArray(requireEntry(json.calendarItemTypes, 'calendarItemTypes', path), false, [...path, ".calendarItemTypes"], (x0, p0) => CalendarItemType.fromJSON(x0, p0)),
+		if (typeof json != 'object') throw new Error(`Expected json object at path ${path.join("")}`)
+		const jCpy = { ...json }
+		const res = new PublicAgendasAndCalendarItemTypes({
+			agendas: expectArray(extractEntry(jCpy.agendas, 'agendas', true, path), false, [...path, ".agendas"], (x0, p0) => expectObject(x0, false, ignoreUnknownKeys, p0, Agenda.fromJSON)),
+			calendarItemTypes: expectArray(extractEntry(jCpy.calendarItemTypes, 'calendarItemTypes', true, path), false, [...path, ".calendarItemTypes"], (x0, p0) => expectObject(x0, false, ignoreUnknownKeys, p0, CalendarItemType.fromJSON)),
 		})
+		if (!ignoreUnknownKeys) {
+			const unused = Object.keys(jCpy)
+			if (unused.length > 0) throw new Error(`Unexpected key(s) for json object PublicAgendasAndCalendarItemTypes at path ${path.join("")}: ${unused}`)}
+		return res
 	}
 
 }

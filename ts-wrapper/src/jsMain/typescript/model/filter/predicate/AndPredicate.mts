@@ -1,5 +1,5 @@
 // auto-generated file
-import {expectArray} from '../../../internal/JsonDecodeUtils.mjs';
+import {expectArray, expectObject, extractEntry} from '../../../internal/JsonDecodeUtils.mjs';
 import {Predicate} from './Predicate.mjs';
 
 
@@ -19,10 +19,17 @@ export class AndPredicate {
 		return res
 	}
 
-	static fromJSON(json: any, path: Array<string> = ['AndPredicate']): AndPredicate {
-		return new AndPredicate({
-			predicates: expectArray(json.predicates, false, [...path, ".predicates"], (x0, p0) => Predicate.fromJSON(x0, p0)),
+	static fromJSON(json: any, ignoreUnknownKeys: boolean = false,
+			path: Array<string> = ['AndPredicate']): AndPredicate {
+		if (typeof json != 'object') throw new Error(`Expected json object at path ${path.join("")}`)
+		const jCpy = { ...json }
+		const res = new AndPredicate({
+			predicates: expectArray(extractEntry(jCpy.predicates, 'predicates', false, path), false, [...path, ".predicates"], (x0, p0) => expectObject(x0, false, ignoreUnknownKeys, p0, Predicate.fromJSON)),
 		})
+		if (!ignoreUnknownKeys) {
+			const unused = Object.keys(jCpy)
+			if (unused.length > 0) throw new Error(`Unexpected key(s) for json object AndPredicate at path ${path.join("")}: ${unused}`)}
+		return res
 	}
 
 }

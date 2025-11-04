@@ -1,5 +1,5 @@
 // auto-generated file
-import {expectString, expectStringEnum} from '../../internal/JsonDecodeUtils.mjs';
+import {expectString, expectStringEnum, extractEntry} from '../../internal/JsonDecodeUtils.mjs';
 import {Base64String} from '../specializations/Base64String.mjs';
 import {Encryptable} from './Encryptable.mjs';
 import {TelecomType} from './TelecomType.mjs';
@@ -46,13 +46,20 @@ export class DecryptedTelecom {
 		return res
 	}
 
-	static fromJSON(json: any, path: Array<string> = ['DecryptedTelecom']): DecryptedTelecom {
-		return new DecryptedTelecom({
-			telecomType: expectStringEnum(json.telecomType, true, [...path, ".telecomType"], TelecomType, 'TelecomType'),
-			telecomNumber: expectString(json.telecomNumber, true, [...path, ".telecomNumber"]),
-			telecomDescription: expectString(json.telecomDescription, true, [...path, ".telecomDescription"]),
-			encryptedSelf: expectString(json.encryptedSelf, false, [...path, ".encryptedSelf"]),
+	static fromJSON(json: any, ignoreUnknownKeys: boolean = false,
+			path: Array<string> = ['DecryptedTelecom']): DecryptedTelecom {
+		if (typeof json != 'object') throw new Error(`Expected json object at path ${path.join("")}`)
+		const jCpy = { ...json }
+		const res = new DecryptedTelecom({
+			telecomType: expectStringEnum(extractEntry(jCpy.telecomType, 'telecomType', false, path), true, [...path, ".telecomType"], TelecomType, 'TelecomType'),
+			telecomNumber: expectString(extractEntry(jCpy.telecomNumber, 'telecomNumber', false, path), true, [...path, ".telecomNumber"]),
+			telecomDescription: expectString(extractEntry(jCpy.telecomDescription, 'telecomDescription', false, path), true, [...path, ".telecomDescription"]),
+			encryptedSelf: expectString(extractEntry(jCpy.encryptedSelf, 'encryptedSelf', false, path), false, [...path, ".encryptedSelf"]),
 		})
+		if (!ignoreUnknownKeys) {
+			const unused = Object.keys(jCpy)
+			if (unused.length > 0) throw new Error(`Unexpected key(s) for json object DecryptedTelecom at path ${path.join("")}: ${unused}`)}
+		return res
 	}
 
 }
@@ -86,13 +93,20 @@ export class EncryptedTelecom {
 		return res
 	}
 
-	static fromJSON(json: any, path: Array<string> = ['EncryptedTelecom']): EncryptedTelecom {
-		return new EncryptedTelecom({
-			telecomType: expectStringEnum(json.telecomType, true, [...path, ".telecomType"], TelecomType, 'TelecomType'),
-			telecomNumber: expectString(json.telecomNumber, true, [...path, ".telecomNumber"]),
-			telecomDescription: expectString(json.telecomDescription, true, [...path, ".telecomDescription"]),
-			encryptedSelf: expectString(json.encryptedSelf, false, [...path, ".encryptedSelf"]),
+	static fromJSON(json: any, ignoreUnknownKeys: boolean = false,
+			path: Array<string> = ['EncryptedTelecom']): EncryptedTelecom {
+		if (typeof json != 'object') throw new Error(`Expected json object at path ${path.join("")}`)
+		const jCpy = { ...json }
+		const res = new EncryptedTelecom({
+			telecomType: expectStringEnum(extractEntry(jCpy.telecomType, 'telecomType', false, path), true, [...path, ".telecomType"], TelecomType, 'TelecomType'),
+			telecomNumber: expectString(extractEntry(jCpy.telecomNumber, 'telecomNumber', false, path), true, [...path, ".telecomNumber"]),
+			telecomDescription: expectString(extractEntry(jCpy.telecomDescription, 'telecomDescription', false, path), true, [...path, ".telecomDescription"]),
+			encryptedSelf: expectString(extractEntry(jCpy.encryptedSelf, 'encryptedSelf', false, path), false, [...path, ".encryptedSelf"]),
 		})
+		if (!ignoreUnknownKeys) {
+			const unused = Object.keys(jCpy)
+			if (unused.length > 0) throw new Error(`Unexpected key(s) for json object EncryptedTelecom at path ${path.join("")}: ${unused}`)}
+		return res
 	}
 
 }

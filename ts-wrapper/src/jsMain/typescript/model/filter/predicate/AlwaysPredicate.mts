@@ -12,9 +12,16 @@ export class AlwaysPredicate {
 		return res
 	}
 
-	static fromJSON(json: any, path: Array<string> = ['AlwaysPredicate']): AlwaysPredicate {
-		return new AlwaysPredicate({
+	static fromJSON(json: any, ignoreUnknownKeys: boolean = false,
+			path: Array<string> = ['AlwaysPredicate']): AlwaysPredicate {
+		if (typeof json != 'object') throw new Error(`Expected json object at path ${path.join("")}`)
+		const jCpy = { ...json }
+		const res = new AlwaysPredicate({
 		})
+		if (!ignoreUnknownKeys) {
+			const unused = Object.keys(jCpy)
+			if (unused.length > 0) throw new Error(`Unexpected key(s) for json object AlwaysPredicate at path ${path.join("")}: ${unused}`)}
+		return res
 	}
 
 }

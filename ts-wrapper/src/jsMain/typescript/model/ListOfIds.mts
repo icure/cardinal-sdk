@@ -1,5 +1,5 @@
 // auto-generated file
-import {expectArray, expectString} from '../internal/JsonDecodeUtils.mjs';
+import {expectArray, expectString, extractEntry} from '../internal/JsonDecodeUtils.mjs';
 
 
 export class ListOfIds {
@@ -16,10 +16,17 @@ export class ListOfIds {
 		return res
 	}
 
-	static fromJSON(json: any, path: Array<string> = ['ListOfIds']): ListOfIds {
-		return new ListOfIds({
-			ids: expectArray(json.ids, false, [...path, ".ids"], (x0, p0) => expectString(x0, false, p0)),
+	static fromJSON(json: any, ignoreUnknownKeys: boolean = false,
+			path: Array<string> = ['ListOfIds']): ListOfIds {
+		if (typeof json != 'object') throw new Error(`Expected json object at path ${path.join("")}`)
+		const jCpy = { ...json }
+		const res = new ListOfIds({
+			ids: expectArray(extractEntry(jCpy.ids, 'ids', false, path), false, [...path, ".ids"], (x0, p0) => expectString(x0, false, p0)),
 		})
+		if (!ignoreUnknownKeys) {
+			const unused = Object.keys(jCpy)
+			if (unused.length > 0) throw new Error(`Unexpected key(s) for json object ListOfIds at path ${path.join("")}: ${unused}`)}
+		return res
 	}
 
 }

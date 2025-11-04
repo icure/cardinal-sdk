@@ -1,5 +1,5 @@
 // auto-generated file
-import {expectArray, expectString} from '../../internal/JsonDecodeUtils.mjs';
+import {expectArray, expectObject, expectString, extractEntry} from '../../internal/JsonDecodeUtils.mjs';
 import {KeywordSubword as KeywordSubword_} from './KeywordSubword.mjs';
 
 
@@ -21,11 +21,18 @@ export class KeywordSubword {
 		return res
 	}
 
-	static fromJSON(json: any, path: Array<string> = ['KeywordSubword']): KeywordSubword {
-		return new KeywordSubword({
-			value: expectString(json.value, true, [...path, ".value"]),
-			subWords: expectArray(json.subWords, true, [...path, ".subWords"], (x0, p0) => KeywordSubword.fromJSON(x0, p0)),
+	static fromJSON(json: any, ignoreUnknownKeys: boolean = false,
+			path: Array<string> = ['KeywordSubword']): KeywordSubword {
+		if (typeof json != 'object') throw new Error(`Expected json object at path ${path.join("")}`)
+		const jCpy = { ...json }
+		const res = new KeywordSubword({
+			value: expectString(extractEntry(jCpy.value, 'value', false, path), true, [...path, ".value"]),
+			subWords: expectArray(extractEntry(jCpy.subWords, 'subWords', false, path), true, [...path, ".subWords"], (x0, p0) => expectObject(x0, false, ignoreUnknownKeys, p0, KeywordSubword.fromJSON)),
 		})
+		if (!ignoreUnknownKeys) {
+			const unused = Object.keys(jCpy)
+			if (unused.length > 0) throw new Error(`Unexpected key(s) for json object KeywordSubword at path ${path.join("")}: ${unused}`)}
+		return res
 	}
 
 }

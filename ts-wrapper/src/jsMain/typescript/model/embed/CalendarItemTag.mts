@@ -1,5 +1,5 @@
 // auto-generated file
-import {expectNumber, expectString} from '../../internal/JsonDecodeUtils.mjs';
+import {expectNumber, expectString, extractEntry} from '../../internal/JsonDecodeUtils.mjs';
 import {Base64String} from '../specializations/Base64String.mjs';
 import {Encryptable} from './Encryptable.mjs';
 
@@ -51,15 +51,21 @@ export class DecryptedCalendarItemTag {
 		return res
 	}
 
-	static fromJSON(json: any,
+	static fromJSON(json: any, ignoreUnknownKeys: boolean = false,
 			path: Array<string> = ['DecryptedCalendarItemTag']): DecryptedCalendarItemTag {
-		return new DecryptedCalendarItemTag({
-			code: expectString(json.code, true, [...path, ".code"]),
-			date: expectNumber(json.date, true, true, [...path, ".date"]),
-			userId: expectString(json.userId, true, [...path, ".userId"]),
-			userName: expectString(json.userName, true, [...path, ".userName"]),
-			encryptedSelf: expectString(json.encryptedSelf, false, [...path, ".encryptedSelf"]),
+		if (typeof json != 'object') throw new Error(`Expected json object at path ${path.join("")}`)
+		const jCpy = { ...json }
+		const res = new DecryptedCalendarItemTag({
+			code: expectString(extractEntry(jCpy.code, 'code', false, path), true, [...path, ".code"]),
+			date: expectNumber(extractEntry(jCpy.date, 'date', false, path), true, true, [...path, ".date"]),
+			userId: expectString(extractEntry(jCpy.userId, 'userId', false, path), true, [...path, ".userId"]),
+			userName: expectString(extractEntry(jCpy.userName, 'userName', false, path), true, [...path, ".userName"]),
+			encryptedSelf: expectString(extractEntry(jCpy.encryptedSelf, 'encryptedSelf', false, path), false, [...path, ".encryptedSelf"]),
 		})
+		if (!ignoreUnknownKeys) {
+			const unused = Object.keys(jCpy)
+			if (unused.length > 0) throw new Error(`Unexpected key(s) for json object DecryptedCalendarItemTag at path ${path.join("")}: ${unused}`)}
+		return res
 	}
 
 }
@@ -97,15 +103,21 @@ export class EncryptedCalendarItemTag {
 		return res
 	}
 
-	static fromJSON(json: any,
+	static fromJSON(json: any, ignoreUnknownKeys: boolean = false,
 			path: Array<string> = ['EncryptedCalendarItemTag']): EncryptedCalendarItemTag {
-		return new EncryptedCalendarItemTag({
-			code: expectString(json.code, true, [...path, ".code"]),
-			date: expectNumber(json.date, true, true, [...path, ".date"]),
-			userId: expectString(json.userId, true, [...path, ".userId"]),
-			userName: expectString(json.userName, true, [...path, ".userName"]),
-			encryptedSelf: expectString(json.encryptedSelf, false, [...path, ".encryptedSelf"]),
+		if (typeof json != 'object') throw new Error(`Expected json object at path ${path.join("")}`)
+		const jCpy = { ...json }
+		const res = new EncryptedCalendarItemTag({
+			code: expectString(extractEntry(jCpy.code, 'code', false, path), true, [...path, ".code"]),
+			date: expectNumber(extractEntry(jCpy.date, 'date', false, path), true, true, [...path, ".date"]),
+			userId: expectString(extractEntry(jCpy.userId, 'userId', false, path), true, [...path, ".userId"]),
+			userName: expectString(extractEntry(jCpy.userName, 'userName', false, path), true, [...path, ".userName"]),
+			encryptedSelf: expectString(extractEntry(jCpy.encryptedSelf, 'encryptedSelf', false, path), false, [...path, ".encryptedSelf"]),
 		})
+		if (!ignoreUnknownKeys) {
+			const unused = Object.keys(jCpy)
+			if (unused.length > 0) throw new Error(`Unexpected key(s) for json object EncryptedCalendarItemTag at path ${path.join("")}: ${unused}`)}
+		return res
 	}
 
 }

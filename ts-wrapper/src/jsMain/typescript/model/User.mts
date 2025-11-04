@@ -1,5 +1,5 @@
 // auto-generated file
-import {expectArray, expectBoolean, expectMap, expectNumber, expectString, expectStringEnum, requireEntry} from '../internal/JsonDecodeUtils.mjs';
+import {expectArray, expectBoolean, expectMap, expectNumber, expectObject, expectString, expectStringEnum, extractEntry} from '../internal/JsonDecodeUtils.mjs';
 import {randomUuid} from '../utils/Id.mjs';
 import {DecryptedPropertyStub} from './PropertyStub.mjs';
 import {Identifier} from './base/Identifier.mjs';
@@ -122,52 +122,59 @@ export class User implements StoredDocument {
 		return res
 	}
 
-	static fromJSON(json: any, path: Array<string> = ['User']): User {
-		return new User({
-			id: expectString(requireEntry(json.id, 'id', path), false, [...path, ".id"]),
-			rev: expectString(json.rev, true, [...path, ".rev"]),
-			deletionDate: expectNumber(json.deletionDate, true, true, [...path, ".deletionDate"]),
-			created: expectNumber(json.created, true, true, [...path, ".created"]),
-			identifier: expectArray(json.identifier, false, [...path, ".identifier"], (x0, p0) => Identifier.fromJSON(x0, p0)),
-			name: expectString(json.name, true, [...path, ".name"]),
-			properties: expectArray(json.properties, false, [...path, ".properties"], (x0, p0) => DecryptedPropertyStub.fromJSON(x0, p0)),
-			permissions: expectArray(json.permissions, false, [...path, ".permissions"], (x0, p0) => Permission.fromJSON(x0, p0)),
-			roles: expectArray(json.roles, false, [...path, ".roles"], (x0, p0) => expectString(x0, false, p0)),
-			type: expectStringEnum(json.type, true, [...path, ".type"], UsersType, 'UsersType'),
-			status: expectStringEnum(json.status, true, [...path, ".status"], UsersStatus, 'UsersStatus'),
-			login: expectString(json.login, true, [...path, ".login"]),
-			passwordHash: expectString(json.passwordHash, true, [...path, ".passwordHash"]),
-			groupId: expectString(json.groupId, true, [...path, ".groupId"]),
-			healthcarePartyId: expectString(json.healthcarePartyId, true, [...path, ".healthcarePartyId"]),
-			patientId: expectString(json.patientId, true, [...path, ".patientId"]),
-			deviceId: expectString(json.deviceId, true, [...path, ".deviceId"]),
+	static fromJSON(json: any, ignoreUnknownKeys: boolean = false,
+			path: Array<string> = ['User']): User {
+		if (typeof json != 'object') throw new Error(`Expected json object at path ${path.join("")}`)
+		const jCpy = { ...json }
+		const res = new User({
+			id: expectString(extractEntry(jCpy.id, 'id', true, path), false, [...path, ".id"]),
+			rev: expectString(extractEntry(jCpy.rev, 'rev', false, path), true, [...path, ".rev"]),
+			deletionDate: expectNumber(extractEntry(jCpy.deletionDate, 'deletionDate', false, path), true, true, [...path, ".deletionDate"]),
+			created: expectNumber(extractEntry(jCpy.created, 'created', false, path), true, true, [...path, ".created"]),
+			identifier: expectArray(extractEntry(jCpy.identifier, 'identifier', false, path), false, [...path, ".identifier"], (x0, p0) => expectObject(x0, false, ignoreUnknownKeys, p0, Identifier.fromJSON)),
+			name: expectString(extractEntry(jCpy.name, 'name', false, path), true, [...path, ".name"]),
+			properties: expectArray(extractEntry(jCpy.properties, 'properties', false, path), false, [...path, ".properties"], (x0, p0) => expectObject(x0, false, ignoreUnknownKeys, p0, DecryptedPropertyStub.fromJSON)),
+			permissions: expectArray(extractEntry(jCpy.permissions, 'permissions', false, path), false, [...path, ".permissions"], (x0, p0) => expectObject(x0, false, ignoreUnknownKeys, p0, Permission.fromJSON)),
+			roles: expectArray(extractEntry(jCpy.roles, 'roles', false, path), false, [...path, ".roles"], (x0, p0) => expectString(x0, false, p0)),
+			type: expectStringEnum(extractEntry(jCpy.type, 'type', false, path), true, [...path, ".type"], UsersType, 'UsersType'),
+			status: expectStringEnum(extractEntry(jCpy.status, 'status', false, path), true, [...path, ".status"], UsersStatus, 'UsersStatus'),
+			login: expectString(extractEntry(jCpy.login, 'login', false, path), true, [...path, ".login"]),
+			passwordHash: expectString(extractEntry(jCpy.passwordHash, 'passwordHash', false, path), true, [...path, ".passwordHash"]),
+			groupId: expectString(extractEntry(jCpy.groupId, 'groupId', false, path), true, [...path, ".groupId"]),
+			healthcarePartyId: expectString(extractEntry(jCpy.healthcarePartyId, 'healthcarePartyId', false, path), true, [...path, ".healthcarePartyId"]),
+			patientId: expectString(extractEntry(jCpy.patientId, 'patientId', false, path), true, [...path, ".patientId"]),
+			deviceId: expectString(extractEntry(jCpy.deviceId, 'deviceId', false, path), true, [...path, ".deviceId"]),
 			autoDelegations: expectMap(
-				json.autoDelegations,
+				extractEntry(jCpy.autoDelegations, 'autoDelegations', false, path),
 				false,
 				[...path, ".autoDelegations"],
 				(k0, p0) => expectStringEnum(k0, false, p0, DelegationTag, 'DelegationTag'),
 				(v0, p0) => expectArray(v0, false, p0, (x1, p1) => expectString(x1, false, p1))
 			),
-			createdDate: expectNumber(json.createdDate, true, true, [...path, ".createdDate"]),
-			termsOfUseDate: expectNumber(json.termsOfUseDate, true, true, [...path, ".termsOfUseDate"]),
-			email: expectString(json.email, true, [...path, ".email"]),
-			mobilePhone: expectString(json.mobilePhone, true, [...path, ".mobilePhone"]),
+			createdDate: expectNumber(extractEntry(jCpy.createdDate, 'createdDate', false, path), true, true, [...path, ".createdDate"]),
+			termsOfUseDate: expectNumber(extractEntry(jCpy.termsOfUseDate, 'termsOfUseDate', false, path), true, true, [...path, ".termsOfUseDate"]),
+			email: expectString(extractEntry(jCpy.email, 'email', false, path), true, [...path, ".email"]),
+			mobilePhone: expectString(extractEntry(jCpy.mobilePhone, 'mobilePhone', false, path), true, [...path, ".mobilePhone"]),
 			applicationTokens: expectMap(
-				json.applicationTokens,
+				extractEntry(jCpy.applicationTokens, 'applicationTokens', false, path),
 				false,
 				[...path, ".applicationTokens"],
 				(k0, p0) => expectString(k0, false, p0),
 				(v0, p0) => expectString(v0, false, p0)
 			),
 			authenticationTokens: expectMap(
-				json.authenticationTokens,
+				extractEntry(jCpy.authenticationTokens, 'authenticationTokens', false, path),
 				false,
 				[...path, ".authenticationTokens"],
 				(k0, p0) => expectString(k0, false, p0),
-				(v0, p0) => AuthenticationToken.fromJSON(v0, p0)
+				(v0, p0) => expectObject(v0, false, ignoreUnknownKeys, p0, AuthenticationToken.fromJSON)
 			),
-			systemMetadata: User.SystemMetadata.fromJSON(json.systemMetadata, [...path, ".systemMetadata"]),
+			systemMetadata: expectObject(extractEntry(jCpy.systemMetadata, 'systemMetadata', false, path), true, ignoreUnknownKeys, [...path, ".systemMetadata"], User.SystemMetadata.fromJSON),
 		})
+		if (!ignoreUnknownKeys) {
+			const unused = Object.keys(jCpy)
+			if (unused.length > 0) throw new Error(`Unexpected key(s) for json object User at path ${path.join("")}: ${unused}`)}
+		return res
 	}
 
 }
@@ -200,13 +207,20 @@ export namespace User {
 			return res
 		}
 
-		static fromJSON(json: any, path: Array<string> = ['SystemMetadata']): SystemMetadata {
-			return new SystemMetadata({
-				roles: expectArray(requireEntry(json.roles, 'roles', path), false, [...path, ".roles"], (x0, p0) => expectString(x0, false, p0)),
-				isAdmin: expectBoolean(requireEntry(json.isAdmin, 'isAdmin', path), false, [...path, ".isAdmin"]),
-				inheritsRoles: expectBoolean(requireEntry(json.inheritsRoles, 'inheritsRoles', path), false, [...path, ".inheritsRoles"]),
-				loginIdentifiers: expectArray(json.loginIdentifiers, false, [...path, ".loginIdentifiers"], (x0, p0) => LoginIdentifier.fromJSON(x0, p0)),
+		static fromJSON(json: any, ignoreUnknownKeys: boolean = false,
+				path: Array<string> = ['SystemMetadata']): SystemMetadata {
+			if (typeof json != 'object') throw new Error(`Expected json object at path ${path.join("")}`)
+			const jCpy = { ...json }
+			const res = new SystemMetadata({
+				roles: expectArray(extractEntry(jCpy.roles, 'roles', true, path), false, [...path, ".roles"], (x0, p0) => expectString(x0, false, p0)),
+				isAdmin: expectBoolean(extractEntry(jCpy.isAdmin, 'isAdmin', true, path), false, [...path, ".isAdmin"]),
+				inheritsRoles: expectBoolean(extractEntry(jCpy.inheritsRoles, 'inheritsRoles', true, path), false, [...path, ".inheritsRoles"]),
+				loginIdentifiers: expectArray(extractEntry(jCpy.loginIdentifiers, 'loginIdentifiers', false, path), false, [...path, ".loginIdentifiers"], (x0, p0) => expectObject(x0, false, ignoreUnknownKeys, p0, LoginIdentifier.fromJSON)),
 			})
+			if (!ignoreUnknownKeys) {
+				const unused = Object.keys(jCpy)
+				if (unused.length > 0) throw new Error(`Unexpected key(s) for json object SystemMetadata at path ${path.join("")}: ${unused}`)}
+			return res
 		}
 
 	}

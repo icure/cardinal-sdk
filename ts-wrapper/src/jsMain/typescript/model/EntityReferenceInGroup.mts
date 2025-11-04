@@ -1,5 +1,5 @@
 // auto-generated file
-import {expectString, requireEntry} from '../internal/JsonDecodeUtils.mjs';
+import {expectString, extractEntry} from '../internal/JsonDecodeUtils.mjs';
 
 
 export class EntityReferenceInGroup {
@@ -20,12 +20,18 @@ export class EntityReferenceInGroup {
 		return res
 	}
 
-	static fromJSON(json: any,
+	static fromJSON(json: any, ignoreUnknownKeys: boolean = false,
 			path: Array<string> = ['EntityReferenceInGroup']): EntityReferenceInGroup {
-		return new EntityReferenceInGroup({
-			entityId: expectString(requireEntry(json.entityId, 'entityId', path), false, [...path, ".entityId"]),
-			groupId: expectString(json.groupId, true, [...path, ".groupId"]),
+		if (typeof json != 'object') throw new Error(`Expected json object at path ${path.join("")}`)
+		const jCpy = { ...json }
+		const res = new EntityReferenceInGroup({
+			entityId: expectString(extractEntry(jCpy.entityId, 'entityId', true, path), false, [...path, ".entityId"]),
+			groupId: expectString(extractEntry(jCpy.groupId, 'groupId', false, path), true, [...path, ".groupId"]),
 		})
+		if (!ignoreUnknownKeys) {
+			const unused = Object.keys(jCpy)
+			if (unused.length > 0) throw new Error(`Unexpected key(s) for json object EntityReferenceInGroup at path ${path.join("")}: ${unused}`)}
+		return res
 	}
 
 }

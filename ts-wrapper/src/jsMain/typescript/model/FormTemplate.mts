@@ -1,6 +1,6 @@
 // auto-generated file
 import {decodeBase64, encodeBase64} from '../internal/BytesEncoding.mjs';
-import {expectArray, expectNumber, expectString, requireEntry} from '../internal/JsonDecodeUtils.mjs';
+import {expectArray, expectNumber, expectObject, expectString, extractEntry} from '../internal/JsonDecodeUtils.mjs';
 import {randomUuid} from '../utils/Id.mjs';
 import {CodeStub} from './base/CodeStub.mjs';
 import {StoredDocument} from './base/StoredDocument.mjs';
@@ -102,30 +102,37 @@ export class FormTemplate implements StoredDocument {
 		return res
 	}
 
-	static fromJSON(json: any, path: Array<string> = ['FormTemplate']): FormTemplate {
-		return new FormTemplate({
-			id: expectString(requireEntry(json.id, 'id', path), false, [...path, ".id"]),
-			rev: expectString(json.rev, true, [...path, ".rev"]),
-			deletionDate: expectNumber(json.deletionDate, true, true, [...path, ".deletionDate"]),
-			templateLayout: FormTemplateLayout.fromJSON(json.templateLayout, [...path, ".templateLayout"]),
-			rawTemplateLayout: decodeBase64(expectString(json.rawTemplateLayout, true, [...path, ".rawTemplateLayout"]), [...path, ".rawTemplateLayout"]),
-			name: expectString(json.name, true, [...path, ".name"]),
-			guid: expectString(json.guid, true, [...path, ".guid"]),
-			group: DocumentGroup.fromJSON(json.group, [...path, ".group"]),
-			descr: expectString(json.descr, true, [...path, ".descr"]),
-			disabled: expectString(json.disabled, true, [...path, ".disabled"]),
-			specialty: CodeStub.fromJSON(json.specialty, [...path, ".specialty"]),
-			author: expectString(json.author, true, [...path, ".author"]),
-			formInstancePreferredLocation: expectString(json.formInstancePreferredLocation, true, [...path, ".formInstancePreferredLocation"]),
-			keyboardShortcut: expectString(json.keyboardShortcut, true, [...path, ".keyboardShortcut"]),
-			shortReport: expectString(json.shortReport, true, [...path, ".shortReport"]),
-			mediumReport: expectString(json.mediumReport, true, [...path, ".mediumReport"]),
-			longReport: expectString(json.longReport, true, [...path, ".longReport"]),
-			reports: expectArray(json.reports, false, [...path, ".reports"], (x0, p0) => expectString(x0, false, p0)),
-			tags: expectArray(json.tags, false, [...path, ".tags"], (x0, p0) => CodeStub.fromJSON(x0, p0)),
-			layoutAttachmentId: expectString(json.layoutAttachmentId, true, [...path, ".layoutAttachmentId"]),
-			templateLayoutAttachmentId: expectString(json.templateLayoutAttachmentId, true, [...path, ".templateLayoutAttachmentId"]),
+	static fromJSON(json: any, ignoreUnknownKeys: boolean = false,
+			path: Array<string> = ['FormTemplate']): FormTemplate {
+		if (typeof json != 'object') throw new Error(`Expected json object at path ${path.join("")}`)
+		const jCpy = { ...json }
+		const res = new FormTemplate({
+			id: expectString(extractEntry(jCpy.id, 'id', true, path), false, [...path, ".id"]),
+			rev: expectString(extractEntry(jCpy.rev, 'rev', false, path), true, [...path, ".rev"]),
+			deletionDate: expectNumber(extractEntry(jCpy.deletionDate, 'deletionDate', false, path), true, true, [...path, ".deletionDate"]),
+			templateLayout: expectObject(extractEntry(jCpy.templateLayout, 'templateLayout', false, path), true, ignoreUnknownKeys, [...path, ".templateLayout"], FormTemplateLayout.fromJSON),
+			rawTemplateLayout: decodeBase64(expectString(extractEntry(jCpy.rawTemplateLayout, 'rawTemplateLayout', false, path), true, [...path, ".rawTemplateLayout"]), [...path, ".rawTemplateLayout"]),
+			name: expectString(extractEntry(jCpy.name, 'name', false, path), true, [...path, ".name"]),
+			guid: expectString(extractEntry(jCpy.guid, 'guid', false, path), true, [...path, ".guid"]),
+			group: expectObject(extractEntry(jCpy.group, 'group', false, path), true, ignoreUnknownKeys, [...path, ".group"], DocumentGroup.fromJSON),
+			descr: expectString(extractEntry(jCpy.descr, 'descr', false, path), true, [...path, ".descr"]),
+			disabled: expectString(extractEntry(jCpy.disabled, 'disabled', false, path), true, [...path, ".disabled"]),
+			specialty: expectObject(extractEntry(jCpy.specialty, 'specialty', false, path), true, ignoreUnknownKeys, [...path, ".specialty"], CodeStub.fromJSON),
+			author: expectString(extractEntry(jCpy.author, 'author', false, path), true, [...path, ".author"]),
+			formInstancePreferredLocation: expectString(extractEntry(jCpy.formInstancePreferredLocation, 'formInstancePreferredLocation', false, path), true, [...path, ".formInstancePreferredLocation"]),
+			keyboardShortcut: expectString(extractEntry(jCpy.keyboardShortcut, 'keyboardShortcut', false, path), true, [...path, ".keyboardShortcut"]),
+			shortReport: expectString(extractEntry(jCpy.shortReport, 'shortReport', false, path), true, [...path, ".shortReport"]),
+			mediumReport: expectString(extractEntry(jCpy.mediumReport, 'mediumReport', false, path), true, [...path, ".mediumReport"]),
+			longReport: expectString(extractEntry(jCpy.longReport, 'longReport', false, path), true, [...path, ".longReport"]),
+			reports: expectArray(extractEntry(jCpy.reports, 'reports', false, path), false, [...path, ".reports"], (x0, p0) => expectString(x0, false, p0)),
+			tags: expectArray(extractEntry(jCpy.tags, 'tags', false, path), false, [...path, ".tags"], (x0, p0) => expectObject(x0, false, ignoreUnknownKeys, p0, CodeStub.fromJSON)),
+			layoutAttachmentId: expectString(extractEntry(jCpy.layoutAttachmentId, 'layoutAttachmentId', false, path), true, [...path, ".layoutAttachmentId"]),
+			templateLayoutAttachmentId: expectString(extractEntry(jCpy.templateLayoutAttachmentId, 'templateLayoutAttachmentId', false, path), true, [...path, ".templateLayoutAttachmentId"]),
 		})
+		if (!ignoreUnknownKeys) {
+			const unused = Object.keys(jCpy)
+			if (unused.length > 0) throw new Error(`Unexpected key(s) for json object FormTemplate at path ${path.join("")}: ${unused}`)}
+		return res
 	}
 
 }

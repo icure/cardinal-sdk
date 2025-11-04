@@ -1,5 +1,5 @@
 // auto-generated file
-import {expectArray, expectString, requireEntry} from '../internal/JsonDecodeUtils.mjs';
+import {expectArray, expectString, extractEntry} from '../internal/JsonDecodeUtils.mjs';
 
 
 export class RegistrationInformation {
@@ -48,19 +48,25 @@ export class RegistrationInformation {
 		return res
 	}
 
-	static fromJSON(json: any,
+	static fromJSON(json: any, ignoreUnknownKeys: boolean = false,
 			path: Array<string> = ['RegistrationInformation']): RegistrationInformation {
-		return new RegistrationInformation({
-			applicationId: expectString(json.applicationId, true, [...path, ".applicationId"]),
-			firstName: expectString(json.firstName, true, [...path, ".firstName"]),
-			lastName: expectString(json.lastName, true, [...path, ".lastName"]),
-			companyName: expectString(json.companyName, true, [...path, ".companyName"]),
-			emailAddress: expectString(requireEntry(json.emailAddress, 'emailAddress', path), false, [...path, ".emailAddress"]),
-			userOptions: expectString(json.userOptions, true, [...path, ".userOptions"]),
-			userRoles: expectArray(json.userRoles, false, [...path, ".userRoles"], (x0, p0) => expectString(x0, false, p0)),
-			minimumKrakenVersion: expectString(json.minimumKrakenVersion, true, [...path, ".minimumKrakenVersion"]),
-			cluster: expectString(json.cluster, true, [...path, ".cluster"]),
+		if (typeof json != 'object') throw new Error(`Expected json object at path ${path.join("")}`)
+		const jCpy = { ...json }
+		const res = new RegistrationInformation({
+			applicationId: expectString(extractEntry(jCpy.applicationId, 'applicationId', false, path), true, [...path, ".applicationId"]),
+			firstName: expectString(extractEntry(jCpy.firstName, 'firstName', false, path), true, [...path, ".firstName"]),
+			lastName: expectString(extractEntry(jCpy.lastName, 'lastName', false, path), true, [...path, ".lastName"]),
+			companyName: expectString(extractEntry(jCpy.companyName, 'companyName', false, path), true, [...path, ".companyName"]),
+			emailAddress: expectString(extractEntry(jCpy.emailAddress, 'emailAddress', true, path), false, [...path, ".emailAddress"]),
+			userOptions: expectString(extractEntry(jCpy.userOptions, 'userOptions', false, path), true, [...path, ".userOptions"]),
+			userRoles: expectArray(extractEntry(jCpy.userRoles, 'userRoles', false, path), false, [...path, ".userRoles"], (x0, p0) => expectString(x0, false, p0)),
+			minimumKrakenVersion: expectString(extractEntry(jCpy.minimumKrakenVersion, 'minimumKrakenVersion', false, path), true, [...path, ".minimumKrakenVersion"]),
+			cluster: expectString(extractEntry(jCpy.cluster, 'cluster', false, path), true, [...path, ".cluster"]),
 		})
+		if (!ignoreUnknownKeys) {
+			const unused = Object.keys(jCpy)
+			if (unused.length > 0) throw new Error(`Unexpected key(s) for json object RegistrationInformation at path ${path.join("")}: ${unused}`)}
+		return res
 	}
 
 }

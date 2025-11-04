@@ -1,5 +1,5 @@
 // auto-generated file
-import {expectArray, expectString} from '../../internal/JsonDecodeUtils.mjs';
+import {expectArray, expectObject, expectString, extractEntry} from '../../internal/JsonDecodeUtils.mjs';
 import {CodeStub} from '../base/CodeStub.mjs';
 
 
@@ -33,14 +33,21 @@ export class Substanceproduct {
 		return res
 	}
 
-	static fromJSON(json: any, path: Array<string> = ['Substanceproduct']): Substanceproduct {
-		return new Substanceproduct({
-			intendedcds: expectArray(json.intendedcds, false, [...path, ".intendedcds"], (x0, p0) => CodeStub.fromJSON(x0, p0)),
-			deliveredcds: expectArray(json.deliveredcds, false, [...path, ".deliveredcds"], (x0, p0) => CodeStub.fromJSON(x0, p0)),
-			intendedname: expectString(json.intendedname, true, [...path, ".intendedname"]),
-			deliveredname: expectString(json.deliveredname, true, [...path, ".deliveredname"]),
-			productId: expectString(json.productId, true, [...path, ".productId"]),
+	static fromJSON(json: any, ignoreUnknownKeys: boolean = false,
+			path: Array<string> = ['Substanceproduct']): Substanceproduct {
+		if (typeof json != 'object') throw new Error(`Expected json object at path ${path.join("")}`)
+		const jCpy = { ...json }
+		const res = new Substanceproduct({
+			intendedcds: expectArray(extractEntry(jCpy.intendedcds, 'intendedcds', false, path), false, [...path, ".intendedcds"], (x0, p0) => expectObject(x0, false, ignoreUnknownKeys, p0, CodeStub.fromJSON)),
+			deliveredcds: expectArray(extractEntry(jCpy.deliveredcds, 'deliveredcds', false, path), false, [...path, ".deliveredcds"], (x0, p0) => expectObject(x0, false, ignoreUnknownKeys, p0, CodeStub.fromJSON)),
+			intendedname: expectString(extractEntry(jCpy.intendedname, 'intendedname', false, path), true, [...path, ".intendedname"]),
+			deliveredname: expectString(extractEntry(jCpy.deliveredname, 'deliveredname', false, path), true, [...path, ".deliveredname"]),
+			productId: expectString(extractEntry(jCpy.productId, 'productId', false, path), true, [...path, ".productId"]),
 		})
+		if (!ignoreUnknownKeys) {
+			const unused = Object.keys(jCpy)
+			if (unused.length > 0) throw new Error(`Unexpected key(s) for json object Substanceproduct at path ${path.join("")}: ${unused}`)}
+		return res
 	}
 
 }

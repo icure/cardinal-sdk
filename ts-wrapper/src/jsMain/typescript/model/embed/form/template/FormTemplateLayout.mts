@@ -1,5 +1,5 @@
 // auto-generated file
-import {expectArray, expectString, requireEntry} from '../../../../internal/JsonDecodeUtils.mjs';
+import {expectArray, expectObject, expectString, extractEntry} from '../../../../internal/JsonDecodeUtils.mjs';
 import {Action} from './Action.mjs';
 import {Section} from './Section.mjs';
 
@@ -34,14 +34,21 @@ export class FormTemplateLayout {
 		return res
 	}
 
-	static fromJSON(json: any, path: Array<string> = ['FormTemplateLayout']): FormTemplateLayout {
-		return new FormTemplateLayout({
-			form: expectString(requireEntry(json.form, 'form', path), false, [...path, ".form"]),
-			actions: expectArray(json.actions, false, [...path, ".actions"], (x0, p0) => Action.fromJSON(x0, p0)),
-			sections: expectArray(json.sections, false, [...path, ".sections"], (x0, p0) => Section.fromJSON(x0, p0)),
-			description: expectString(json.description, true, [...path, ".description"]),
-			keywords: expectArray(json.keywords, true, [...path, ".keywords"], (x0, p0) => expectString(x0, false, p0)),
+	static fromJSON(json: any, ignoreUnknownKeys: boolean = false,
+			path: Array<string> = ['FormTemplateLayout']): FormTemplateLayout {
+		if (typeof json != 'object') throw new Error(`Expected json object at path ${path.join("")}`)
+		const jCpy = { ...json }
+		const res = new FormTemplateLayout({
+			form: expectString(extractEntry(jCpy.form, 'form', true, path), false, [...path, ".form"]),
+			actions: expectArray(extractEntry(jCpy.actions, 'actions', false, path), false, [...path, ".actions"], (x0, p0) => expectObject(x0, false, ignoreUnknownKeys, p0, Action.fromJSON)),
+			sections: expectArray(extractEntry(jCpy.sections, 'sections', false, path), false, [...path, ".sections"], (x0, p0) => expectObject(x0, false, ignoreUnknownKeys, p0, Section.fromJSON)),
+			description: expectString(extractEntry(jCpy.description, 'description', false, path), true, [...path, ".description"]),
+			keywords: expectArray(extractEntry(jCpy.keywords, 'keywords', false, path), true, [...path, ".keywords"], (x0, p0) => expectString(x0, false, p0)),
 		})
+		if (!ignoreUnknownKeys) {
+			const unused = Object.keys(jCpy)
+			if (unused.length > 0) throw new Error(`Unexpected key(s) for json object FormTemplateLayout at path ${path.join("")}: ${unused}`)}
+		return res
 	}
 
 }

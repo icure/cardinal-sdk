@@ -1,5 +1,5 @@
 // auto-generated file
-import {expectString} from '../internal/JsonDecodeUtils.mjs';
+import {expectString, extractEntry} from '../internal/JsonDecodeUtils.mjs';
 
 
 export class PaginatedDocumentKeyIdPair {
@@ -20,12 +20,18 @@ export class PaginatedDocumentKeyIdPair {
 		return res
 	}
 
-	static fromJSON(json: any,
+	static fromJSON(json: any, ignoreUnknownKeys: boolean = false,
 			path: Array<string> = ['PaginatedDocumentKeyIdPair']): PaginatedDocumentKeyIdPair {
-		return new PaginatedDocumentKeyIdPair({
-			startKey: json.startKey,
-			startKeyDocId: expectString(json.startKeyDocId, true, [...path, ".startKeyDocId"]),
+		if (typeof json != 'object') throw new Error(`Expected json object at path ${path.join("")}`)
+		const jCpy = { ...json }
+		const res = new PaginatedDocumentKeyIdPair({
+			startKey: extractEntry(jCpy.startKey, 'startKey', false, path),
+			startKeyDocId: expectString(extractEntry(jCpy.startKeyDocId, 'startKeyDocId', false, path), true, [...path, ".startKeyDocId"]),
 		})
+		if (!ignoreUnknownKeys) {
+			const unused = Object.keys(jCpy)
+			if (unused.length > 0) throw new Error(`Unexpected key(s) for json object PaginatedDocumentKeyIdPair at path ${path.join("")}: ${unused}`)}
+		return res
 	}
 
 }

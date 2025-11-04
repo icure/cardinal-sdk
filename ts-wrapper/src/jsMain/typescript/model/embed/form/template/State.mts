@@ -1,5 +1,5 @@
 // auto-generated file
-import {expectBoolean, expectString, expectStringEnum, requireEntry} from '../../../../internal/JsonDecodeUtils.mjs';
+import {expectBoolean, expectString, expectStringEnum, extractEntry} from '../../../../internal/JsonDecodeUtils.mjs';
 import {StateToUpdate} from './StateToUpdate.mjs';
 
 
@@ -25,12 +25,19 @@ export class State {
 		return res
 	}
 
-	static fromJSON(json: any, path: Array<string> = ['State']): State {
-		return new State({
-			name: expectString(requireEntry(json.name, 'name', path), false, [...path, ".name"]),
-			stateToUpdate: expectStringEnum(requireEntry(json.stateToUpdate, 'stateToUpdate', path), false, [...path, ".stateToUpdate"], StateToUpdate, 'StateToUpdate'),
-			canLaunchLauncher: expectBoolean(json.canLaunchLauncher, false, [...path, ".canLaunchLauncher"]),
+	static fromJSON(json: any, ignoreUnknownKeys: boolean = false,
+			path: Array<string> = ['State']): State {
+		if (typeof json != 'object') throw new Error(`Expected json object at path ${path.join("")}`)
+		const jCpy = { ...json }
+		const res = new State({
+			name: expectString(extractEntry(jCpy.name, 'name', true, path), false, [...path, ".name"]),
+			stateToUpdate: expectStringEnum(extractEntry(jCpy.stateToUpdate, 'stateToUpdate', true, path), false, [...path, ".stateToUpdate"], StateToUpdate, 'StateToUpdate'),
+			canLaunchLauncher: expectBoolean(extractEntry(jCpy.canLaunchLauncher, 'canLaunchLauncher', false, path), false, [...path, ".canLaunchLauncher"]),
 		})
+		if (!ignoreUnknownKeys) {
+			const unused = Object.keys(jCpy)
+			if (unused.length > 0) throw new Error(`Unexpected key(s) for json object State at path ${path.join("")}: ${unused}`)}
+		return res
 	}
 
 }

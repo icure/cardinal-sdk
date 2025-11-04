@@ -1,5 +1,5 @@
 // auto-generated file
-import {expectArray, expectNumber, expectString, expectStringEnum, requireEntry} from '../internal/JsonDecodeUtils.mjs';
+import {expectArray, expectNumber, expectObject, expectString, expectStringEnum, extractEntry} from '../internal/JsonDecodeUtils.mjs';
 import {randomUuid} from '../utils/Id.mjs';
 import {DecryptedPropertyStub} from './PropertyStub.mjs';
 import {StoredDocument} from './base/StoredDocument.mjs';
@@ -68,22 +68,29 @@ export class FrontEndMigration implements StoredDocument {
 		return res
 	}
 
-	static fromJSON(json: any, path: Array<string> = ['FrontEndMigration']): FrontEndMigration {
-		return new FrontEndMigration({
-			id: expectString(requireEntry(json.id, 'id', path), false, [...path, ".id"]),
-			rev: expectString(json.rev, true, [...path, ".rev"]),
-			deletionDate: expectNumber(json.deletionDate, true, true, [...path, ".deletionDate"]),
-			name: expectString(json.name, true, [...path, ".name"]),
-			startDate: expectNumber(json.startDate, true, true, [...path, ".startDate"]),
-			endDate: expectNumber(json.endDate, true, true, [...path, ".endDate"]),
-			status: expectStringEnum(json.status, true, [...path, ".status"], FrontEndMigrationStatus, 'FrontEndMigrationStatus'),
-			logs: expectString(json.logs, true, [...path, ".logs"]),
-			userId: expectString(json.userId, true, [...path, ".userId"]),
-			startKey: expectString(json.startKey, true, [...path, ".startKey"]),
-			startKeyDocId: expectString(json.startKeyDocId, true, [...path, ".startKeyDocId"]),
-			processCount: expectNumber(json.processCount, true, true, [...path, ".processCount"]),
-			properties: expectArray(json.properties, false, [...path, ".properties"], (x0, p0) => DecryptedPropertyStub.fromJSON(x0, p0)),
+	static fromJSON(json: any, ignoreUnknownKeys: boolean = false,
+			path: Array<string> = ['FrontEndMigration']): FrontEndMigration {
+		if (typeof json != 'object') throw new Error(`Expected json object at path ${path.join("")}`)
+		const jCpy = { ...json }
+		const res = new FrontEndMigration({
+			id: expectString(extractEntry(jCpy.id, 'id', true, path), false, [...path, ".id"]),
+			rev: expectString(extractEntry(jCpy.rev, 'rev', false, path), true, [...path, ".rev"]),
+			deletionDate: expectNumber(extractEntry(jCpy.deletionDate, 'deletionDate', false, path), true, true, [...path, ".deletionDate"]),
+			name: expectString(extractEntry(jCpy.name, 'name', false, path), true, [...path, ".name"]),
+			startDate: expectNumber(extractEntry(jCpy.startDate, 'startDate', false, path), true, true, [...path, ".startDate"]),
+			endDate: expectNumber(extractEntry(jCpy.endDate, 'endDate', false, path), true, true, [...path, ".endDate"]),
+			status: expectStringEnum(extractEntry(jCpy.status, 'status', false, path), true, [...path, ".status"], FrontEndMigrationStatus, 'FrontEndMigrationStatus'),
+			logs: expectString(extractEntry(jCpy.logs, 'logs', false, path), true, [...path, ".logs"]),
+			userId: expectString(extractEntry(jCpy.userId, 'userId', false, path), true, [...path, ".userId"]),
+			startKey: expectString(extractEntry(jCpy.startKey, 'startKey', false, path), true, [...path, ".startKey"]),
+			startKeyDocId: expectString(extractEntry(jCpy.startKeyDocId, 'startKeyDocId', false, path), true, [...path, ".startKeyDocId"]),
+			processCount: expectNumber(extractEntry(jCpy.processCount, 'processCount', false, path), true, true, [...path, ".processCount"]),
+			properties: expectArray(extractEntry(jCpy.properties, 'properties', false, path), false, [...path, ".properties"], (x0, p0) => expectObject(x0, false, ignoreUnknownKeys, p0, DecryptedPropertyStub.fromJSON)),
 		})
+		if (!ignoreUnknownKeys) {
+			const unused = Object.keys(jCpy)
+			if (unused.length > 0) throw new Error(`Unexpected key(s) for json object FrontEndMigration at path ${path.join("")}: ${unused}`)}
+		return res
 	}
 
 }

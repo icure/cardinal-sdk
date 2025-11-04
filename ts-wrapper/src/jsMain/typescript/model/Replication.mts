@@ -1,5 +1,5 @@
 // auto-generated file
-import {expectArray, expectNumber, expectString, requireEntry} from '../internal/JsonDecodeUtils.mjs';
+import {expectArray, expectNumber, expectObject, expectString, extractEntry} from '../internal/JsonDecodeUtils.mjs';
 import {randomUuid} from '../utils/Id.mjs';
 import {Identifiable} from './base/Identifiable.mjs';
 import {Named} from './base/Named.mjs';
@@ -41,15 +41,22 @@ export class Replication implements StoredDocument, Identifiable<string>, Named 
 		return res
 	}
 
-	static fromJSON(json: any, path: Array<string> = ['Replication']): Replication {
-		return new Replication({
-			id: expectString(requireEntry(json.id, 'id', path), false, [...path, ".id"]),
-			rev: expectString(json.rev, true, [...path, ".rev"]),
-			deletionDate: expectNumber(json.deletionDate, true, true, [...path, ".deletionDate"]),
-			name: expectString(json.name, true, [...path, ".name"]),
-			context: expectString(json.context, true, [...path, ".context"]),
-			databaseSynchronizations: expectArray(json.databaseSynchronizations, false, [...path, ".databaseSynchronizations"], (x0, p0) => DatabaseSynchronization.fromJSON(x0, p0)),
+	static fromJSON(json: any, ignoreUnknownKeys: boolean = false,
+			path: Array<string> = ['Replication']): Replication {
+		if (typeof json != 'object') throw new Error(`Expected json object at path ${path.join("")}`)
+		const jCpy = { ...json }
+		const res = new Replication({
+			id: expectString(extractEntry(jCpy.id, 'id', true, path), false, [...path, ".id"]),
+			rev: expectString(extractEntry(jCpy.rev, 'rev', false, path), true, [...path, ".rev"]),
+			deletionDate: expectNumber(extractEntry(jCpy.deletionDate, 'deletionDate', false, path), true, true, [...path, ".deletionDate"]),
+			name: expectString(extractEntry(jCpy.name, 'name', false, path), true, [...path, ".name"]),
+			context: expectString(extractEntry(jCpy.context, 'context', false, path), true, [...path, ".context"]),
+			databaseSynchronizations: expectArray(extractEntry(jCpy.databaseSynchronizations, 'databaseSynchronizations', false, path), false, [...path, ".databaseSynchronizations"], (x0, p0) => expectObject(x0, false, ignoreUnknownKeys, p0, DatabaseSynchronization.fromJSON)),
 		})
+		if (!ignoreUnknownKeys) {
+			const unused = Object.keys(jCpy)
+			if (unused.length > 0) throw new Error(`Unexpected key(s) for json object Replication at path ${path.join("")}: ${unused}`)}
+		return res
 	}
 
 }

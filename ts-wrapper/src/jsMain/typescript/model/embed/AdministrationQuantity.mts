@@ -1,5 +1,5 @@
 // auto-generated file
-import {expectNumber, expectString} from '../../internal/JsonDecodeUtils.mjs';
+import {expectNumber, expectObject, expectString, extractEntry} from '../../internal/JsonDecodeUtils.mjs';
 import {CodeStub} from '../base/CodeStub.mjs';
 
 
@@ -25,13 +25,19 @@ export class AdministrationQuantity {
 		return res
 	}
 
-	static fromJSON(json: any,
+	static fromJSON(json: any, ignoreUnknownKeys: boolean = false,
 			path: Array<string> = ['AdministrationQuantity']): AdministrationQuantity {
-		return new AdministrationQuantity({
-			quantity: expectNumber(json.quantity, true, false, [...path, ".quantity"]),
-			administrationUnit: CodeStub.fromJSON(json.administrationUnit, [...path, ".administrationUnit"]),
-			unit: expectString(json.unit, true, [...path, ".unit"]),
+		if (typeof json != 'object') throw new Error(`Expected json object at path ${path.join("")}`)
+		const jCpy = { ...json }
+		const res = new AdministrationQuantity({
+			quantity: expectNumber(extractEntry(jCpy.quantity, 'quantity', false, path), true, false, [...path, ".quantity"]),
+			administrationUnit: expectObject(extractEntry(jCpy.administrationUnit, 'administrationUnit', false, path), true, ignoreUnknownKeys, [...path, ".administrationUnit"], CodeStub.fromJSON),
+			unit: expectString(extractEntry(jCpy.unit, 'unit', false, path), true, [...path, ".unit"]),
 		})
+		if (!ignoreUnknownKeys) {
+			const unused = Object.keys(jCpy)
+			if (unused.length > 0) throw new Error(`Unexpected key(s) for json object AdministrationQuantity at path ${path.join("")}: ${unused}`)}
+		return res
 	}
 
 }

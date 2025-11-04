@@ -1,5 +1,5 @@
 // auto-generated file
-import {expectArray, expectMap, expectString, requireEntry} from '../internal/JsonDecodeUtils.mjs';
+import {expectArray, expectMap, expectObject, expectString, extractEntry} from '../internal/JsonDecodeUtils.mjs';
 import {randomUuid} from '../utils/Id.mjs';
 import {DecryptedPropertyStub} from './PropertyStub.mjs';
 import {CryptoActor} from './base/CryptoActor.mjs';
@@ -60,19 +60,22 @@ export class CryptoActorStub implements Versionable<string>, CryptoActor {
 		return res
 	}
 
-	static fromJSON(json: any, path: Array<string> = ['CryptoActorStub']): CryptoActorStub {
-		return new CryptoActorStub({
-			id: expectString(requireEntry(json.id, 'id', path), false, [...path, ".id"]),
-			rev: expectString(requireEntry(json.rev, 'rev', path), false, [...path, ".rev"]),
+	static fromJSON(json: any, ignoreUnknownKeys: boolean = false,
+			path: Array<string> = ['CryptoActorStub']): CryptoActorStub {
+		if (typeof json != 'object') throw new Error(`Expected json object at path ${path.join("")}`)
+		const jCpy = { ...json }
+		const res = new CryptoActorStub({
+			id: expectString(extractEntry(jCpy.id, 'id', true, path), false, [...path, ".id"]),
+			rev: expectString(extractEntry(jCpy.rev, 'rev', true, path), false, [...path, ".rev"]),
 			hcPartyKeys: expectMap(
-				json.hcPartyKeys,
+				extractEntry(jCpy.hcPartyKeys, 'hcPartyKeys', false, path),
 				false,
 				[...path, ".hcPartyKeys"],
 				(k0, p0) => expectString(k0, false, p0),
 				(v0, p0) => expectArray(v0, false, p0, (x1, p1) => expectString(x1, false, p1))
 			),
 			aesExchangeKeys: expectMap(
-				json.aesExchangeKeys,
+				extractEntry(jCpy.aesExchangeKeys, 'aesExchangeKeys', false, path),
 				false,
 				[...path, ".aesExchangeKeys"],
 				(k0, p0) => expectString(k0, false, p0),
@@ -91,7 +94,7 @@ export class CryptoActorStub implements Versionable<string>, CryptoActor {
 				)
 			),
 			transferKeys: expectMap(
-				json.transferKeys,
+				extractEntry(jCpy.transferKeys, 'transferKeys', false, path),
 				false,
 				[...path, ".transferKeys"],
 				(k0, p0) => expectString(k0, false, p0),
@@ -104,17 +107,21 @@ export class CryptoActorStub implements Versionable<string>, CryptoActor {
 				)
 			),
 			privateKeyShamirPartitions: expectMap(
-				json.privateKeyShamirPartitions,
+				extractEntry(jCpy.privateKeyShamirPartitions, 'privateKeyShamirPartitions', false, path),
 				false,
 				[...path, ".privateKeyShamirPartitions"],
 				(k0, p0) => expectString(k0, false, p0),
 				(v0, p0) => expectString(v0, false, p0)
 			),
-			publicKey: expectString(json.publicKey, false, [...path, ".publicKey"]),
-			publicKeysForOaepWithSha256: expectArray(requireEntry(json.publicKeysForOaepWithSha256, 'publicKeysForOaepWithSha256', path), false, [...path, ".publicKeysForOaepWithSha256"], (x0, p0) => expectString(x0, false, p0)),
-			parentId: expectString(json.parentId, true, [...path, ".parentId"]),
-			cryptoActorProperties: expectArray(json.cryptoActorProperties, true, [...path, ".cryptoActorProperties"], (x0, p0) => DecryptedPropertyStub.fromJSON(x0, p0)),
+			publicKey: expectString(extractEntry(jCpy.publicKey, 'publicKey', false, path), false, [...path, ".publicKey"]),
+			publicKeysForOaepWithSha256: expectArray(extractEntry(jCpy.publicKeysForOaepWithSha256, 'publicKeysForOaepWithSha256', true, path), false, [...path, ".publicKeysForOaepWithSha256"], (x0, p0) => expectString(x0, false, p0)),
+			parentId: expectString(extractEntry(jCpy.parentId, 'parentId', false, path), true, [...path, ".parentId"]),
+			cryptoActorProperties: expectArray(extractEntry(jCpy.cryptoActorProperties, 'cryptoActorProperties', false, path), true, [...path, ".cryptoActorProperties"], (x0, p0) => expectObject(x0, false, ignoreUnknownKeys, p0, DecryptedPropertyStub.fromJSON)),
 		})
+		if (!ignoreUnknownKeys) {
+			const unused = Object.keys(jCpy)
+			if (unused.length > 0) throw new Error(`Unexpected key(s) for json object CryptoActorStub at path ${path.join("")}: ${unused}`)}
+		return res
 	}
 
 }

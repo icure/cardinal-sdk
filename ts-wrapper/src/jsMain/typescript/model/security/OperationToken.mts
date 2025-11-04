@@ -1,5 +1,5 @@
 // auto-generated file
-import {expectNumber, expectString, expectStringEnum, requireEntry} from '../../internal/JsonDecodeUtils.mjs';
+import {expectNumber, expectString, expectStringEnum, extractEntry} from '../../internal/JsonDecodeUtils.mjs';
 import {Operation} from './Operation.mjs';
 
 
@@ -33,14 +33,21 @@ export class OperationToken {
 		return res
 	}
 
-	static fromJSON(json: any, path: Array<string> = ['OperationToken']): OperationToken {
-		return new OperationToken({
-			tokenHash: expectString(requireEntry(json.tokenHash, 'tokenHash', path), false, [...path, ".tokenHash"]),
-			creationTime: expectNumber(requireEntry(json.creationTime, 'creationTime', path), false, true, [...path, ".creationTime"]),
-			validity: expectNumber(requireEntry(json.validity, 'validity', path), false, true, [...path, ".validity"]),
-			operation: expectStringEnum(requireEntry(json.operation, 'operation', path), false, [...path, ".operation"], Operation, 'Operation'),
-			description: expectString(json.description, true, [...path, ".description"]),
+	static fromJSON(json: any, ignoreUnknownKeys: boolean = false,
+			path: Array<string> = ['OperationToken']): OperationToken {
+		if (typeof json != 'object') throw new Error(`Expected json object at path ${path.join("")}`)
+		const jCpy = { ...json }
+		const res = new OperationToken({
+			tokenHash: expectString(extractEntry(jCpy.tokenHash, 'tokenHash', true, path), false, [...path, ".tokenHash"]),
+			creationTime: expectNumber(extractEntry(jCpy.creationTime, 'creationTime', true, path), false, true, [...path, ".creationTime"]),
+			validity: expectNumber(extractEntry(jCpy.validity, 'validity', true, path), false, true, [...path, ".validity"]),
+			operation: expectStringEnum(extractEntry(jCpy.operation, 'operation', true, path), false, [...path, ".operation"], Operation, 'Operation'),
+			description: expectString(extractEntry(jCpy.description, 'description', false, path), true, [...path, ".description"]),
 		})
+		if (!ignoreUnknownKeys) {
+			const unused = Object.keys(jCpy)
+			if (unused.length > 0) throw new Error(`Unexpected key(s) for json object OperationToken at path ${path.join("")}: ${unused}`)}
+		return res
 	}
 
 }

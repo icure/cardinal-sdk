@@ -1,5 +1,5 @@
 // auto-generated file
-import {expectNumber} from '../../internal/JsonDecodeUtils.mjs';
+import {expectNumber, expectObject, extractEntry} from '../../internal/JsonDecodeUtils.mjs';
 import {CodeStub} from '../base/CodeStub.mjs';
 
 
@@ -21,11 +21,18 @@ export class Duration {
 		return res
 	}
 
-	static fromJSON(json: any, path: Array<string> = ['Duration']): Duration {
-		return new Duration({
-			value: expectNumber(json.value, true, false, [...path, ".value"]),
-			unit: CodeStub.fromJSON(json.unit, [...path, ".unit"]),
+	static fromJSON(json: any, ignoreUnknownKeys: boolean = false,
+			path: Array<string> = ['Duration']): Duration {
+		if (typeof json != 'object') throw new Error(`Expected json object at path ${path.join("")}`)
+		const jCpy = { ...json }
+		const res = new Duration({
+			value: expectNumber(extractEntry(jCpy.value, 'value', false, path), true, false, [...path, ".value"]),
+			unit: expectObject(extractEntry(jCpy.unit, 'unit', false, path), true, ignoreUnknownKeys, [...path, ".unit"], CodeStub.fromJSON),
 		})
+		if (!ignoreUnknownKeys) {
+			const unused = Object.keys(jCpy)
+			if (unused.length > 0) throw new Error(`Unexpected key(s) for json object Duration at path ${path.join("")}: ${unused}`)}
+		return res
 	}
 
 }

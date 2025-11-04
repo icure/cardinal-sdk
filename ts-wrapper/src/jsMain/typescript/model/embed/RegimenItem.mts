@@ -1,5 +1,5 @@
 // auto-generated file
-import {expectNumber} from '../../internal/JsonDecodeUtils.mjs';
+import {expectNumber, expectObject, extractEntry} from '../../internal/JsonDecodeUtils.mjs';
 import {CodeStub} from '../base/CodeStub.mjs';
 import {AdministrationQuantity} from './AdministrationQuantity.mjs';
 import {Weekday} from './Weekday.mjs';
@@ -39,15 +39,22 @@ export class RegimenItem {
 		return res
 	}
 
-	static fromJSON(json: any, path: Array<string> = ['RegimenItem']): RegimenItem {
-		return new RegimenItem({
-			date: expectNumber(json.date, true, true, [...path, ".date"]),
-			dayNumber: expectNumber(json.dayNumber, true, true, [...path, ".dayNumber"]),
-			weekday: Weekday.fromJSON(json.weekday, [...path, ".weekday"]),
-			dayPeriod: CodeStub.fromJSON(json.dayPeriod, [...path, ".dayPeriod"]),
-			timeOfDay: expectNumber(json.timeOfDay, true, true, [...path, ".timeOfDay"]),
-			administratedQuantity: AdministrationQuantity.fromJSON(json.administratedQuantity, [...path, ".administratedQuantity"]),
+	static fromJSON(json: any, ignoreUnknownKeys: boolean = false,
+			path: Array<string> = ['RegimenItem']): RegimenItem {
+		if (typeof json != 'object') throw new Error(`Expected json object at path ${path.join("")}`)
+		const jCpy = { ...json }
+		const res = new RegimenItem({
+			date: expectNumber(extractEntry(jCpy.date, 'date', false, path), true, true, [...path, ".date"]),
+			dayNumber: expectNumber(extractEntry(jCpy.dayNumber, 'dayNumber', false, path), true, true, [...path, ".dayNumber"]),
+			weekday: expectObject(extractEntry(jCpy.weekday, 'weekday', false, path), true, ignoreUnknownKeys, [...path, ".weekday"], Weekday.fromJSON),
+			dayPeriod: expectObject(extractEntry(jCpy.dayPeriod, 'dayPeriod', false, path), true, ignoreUnknownKeys, [...path, ".dayPeriod"], CodeStub.fromJSON),
+			timeOfDay: expectNumber(extractEntry(jCpy.timeOfDay, 'timeOfDay', false, path), true, true, [...path, ".timeOfDay"]),
+			administratedQuantity: expectObject(extractEntry(jCpy.administratedQuantity, 'administratedQuantity', false, path), true, ignoreUnknownKeys, [...path, ".administratedQuantity"], AdministrationQuantity.fromJSON),
 		})
+		if (!ignoreUnknownKeys) {
+			const unused = Object.keys(jCpy)
+			if (unused.length > 0) throw new Error(`Unexpected key(s) for json object RegimenItem at path ${path.join("")}: ${unused}`)}
+		return res
 	}
 
 }

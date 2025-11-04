@@ -1,5 +1,5 @@
 // auto-generated file
-import {expectString, requireEntry} from '../../internal/JsonDecodeUtils.mjs';
+import {expectString, extractEntry} from '../../internal/JsonDecodeUtils.mjs';
 
 
 export class Basic {
@@ -20,11 +20,18 @@ export class Basic {
 		return res
 	}
 
-	static fromJSON(json: any, path: Array<string> = ['Basic']): Basic {
-		return new Basic({
-			username: expectString(requireEntry(json.username, 'username', path), false, [...path, ".username"]),
-			password: expectString(requireEntry(json.password, 'password', path), false, [...path, ".password"]),
+	static fromJSON(json: any, ignoreUnknownKeys: boolean = false,
+			path: Array<string> = ['Basic']): Basic {
+		if (typeof json != 'object') throw new Error(`Expected json object at path ${path.join("")}`)
+		const jCpy = { ...json }
+		const res = new Basic({
+			username: expectString(extractEntry(jCpy.username, 'username', true, path), false, [...path, ".username"]),
+			password: expectString(extractEntry(jCpy.password, 'password', true, path), false, [...path, ".password"]),
 		})
+		if (!ignoreUnknownKeys) {
+			const unused = Object.keys(jCpy)
+			if (unused.length > 0) throw new Error(`Unexpected key(s) for json object Basic at path ${path.join("")}: ${unused}`)}
+		return res
 	}
 
 }

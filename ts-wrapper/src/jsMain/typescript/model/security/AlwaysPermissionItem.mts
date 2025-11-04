@@ -1,5 +1,5 @@
 // auto-generated file
-import {expectStringEnum, requireEntry} from '../../internal/JsonDecodeUtils.mjs';
+import {expectStringEnum, extractEntry} from '../../internal/JsonDecodeUtils.mjs';
 import {PermissionType} from './PermissionType.mjs';
 
 
@@ -19,10 +19,17 @@ export class AlwaysPermissionItem {
 		return res
 	}
 
-	static fromJSON(json: any, path: Array<string> = ['AlwaysPermissionItem']): AlwaysPermissionItem {
-		return new AlwaysPermissionItem({
-			type: expectStringEnum(requireEntry(json.type, 'type', path), false, [...path, ".type"], PermissionType, 'PermissionType'),
+	static fromJSON(json: any, ignoreUnknownKeys: boolean = false,
+			path: Array<string> = ['AlwaysPermissionItem']): AlwaysPermissionItem {
+		if (typeof json != 'object') throw new Error(`Expected json object at path ${path.join("")}`)
+		const jCpy = { ...json }
+		const res = new AlwaysPermissionItem({
+			type: expectStringEnum(extractEntry(jCpy.type, 'type', true, path), false, [...path, ".type"], PermissionType, 'PermissionType'),
 		})
+		if (!ignoreUnknownKeys) {
+			const unused = Object.keys(jCpy)
+			if (unused.length > 0) throw new Error(`Unexpected key(s) for json object AlwaysPermissionItem at path ${path.join("")}: ${unused}`)}
+		return res
 	}
 
 }

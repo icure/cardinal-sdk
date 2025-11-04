@@ -1,5 +1,5 @@
 // auto-generated file
-import {expectArray, expectBoolean, expectMap, expectNumber, expectString, expectStringEnum, requireEntry} from '../internal/JsonDecodeUtils.mjs';
+import {expectArray, expectBoolean, expectMap, expectNumber, expectObject, expectString, expectStringEnum, extractEntry} from '../internal/JsonDecodeUtils.mjs';
 import {randomUuid} from '../utils/Id.mjs';
 import {DecryptedPropertyStub} from './PropertyStub.mjs';
 import {CodeStub} from './base/CodeStub.mjs';
@@ -93,51 +93,58 @@ export class Group implements StoredDocument, HasTags {
 		return res
 	}
 
-	static fromJSON(json: any, path: Array<string> = ['Group']): Group {
-		return new Group({
-			id: expectString(requireEntry(json.id, 'id', path), false, [...path, ".id"]),
-			rev: expectString(json.rev, true, [...path, ".rev"]),
-			deletionDate: expectNumber(json.deletionDate, true, true, [...path, ".deletionDate"]),
-			tags: expectArray(json.tags, false, [...path, ".tags"], (x0, p0) => CodeStub.fromJSON(x0, p0)),
-			publicTags: expectArray(json.publicTags, false, [...path, ".publicTags"], (x0, p0) => CodeStub.fromJSON(x0, p0)),
-			name: expectString(json.name, true, [...path, ".name"]),
-			password: expectString(json.password, true, [...path, ".password"]),
-			servers: expectArray(json.servers, true, [...path, ".servers"], (x0, p0) => expectString(x0, false, p0)),
-			superAdmin: expectBoolean(json.superAdmin, false, [...path, ".superAdmin"]),
-			properties: expectArray(json.properties, false, [...path, ".properties"], (x0, p0) => DecryptedPropertyStub.fromJSON(x0, p0)),
+	static fromJSON(json: any, ignoreUnknownKeys: boolean = false,
+			path: Array<string> = ['Group']): Group {
+		if (typeof json != 'object') throw new Error(`Expected json object at path ${path.join("")}`)
+		const jCpy = { ...json }
+		const res = new Group({
+			id: expectString(extractEntry(jCpy.id, 'id', true, path), false, [...path, ".id"]),
+			rev: expectString(extractEntry(jCpy.rev, 'rev', false, path), true, [...path, ".rev"]),
+			deletionDate: expectNumber(extractEntry(jCpy.deletionDate, 'deletionDate', false, path), true, true, [...path, ".deletionDate"]),
+			tags: expectArray(extractEntry(jCpy.tags, 'tags', false, path), false, [...path, ".tags"], (x0, p0) => expectObject(x0, false, ignoreUnknownKeys, p0, CodeStub.fromJSON)),
+			publicTags: expectArray(extractEntry(jCpy.publicTags, 'publicTags', false, path), false, [...path, ".publicTags"], (x0, p0) => expectObject(x0, false, ignoreUnknownKeys, p0, CodeStub.fromJSON)),
+			name: expectString(extractEntry(jCpy.name, 'name', false, path), true, [...path, ".name"]),
+			password: expectString(extractEntry(jCpy.password, 'password', false, path), true, [...path, ".password"]),
+			servers: expectArray(extractEntry(jCpy.servers, 'servers', false, path), true, [...path, ".servers"], (x0, p0) => expectString(x0, false, p0)),
+			superAdmin: expectBoolean(extractEntry(jCpy.superAdmin, 'superAdmin', false, path), false, [...path, ".superAdmin"]),
+			properties: expectArray(extractEntry(jCpy.properties, 'properties', false, path), false, [...path, ".properties"], (x0, p0) => expectObject(x0, false, ignoreUnknownKeys, p0, DecryptedPropertyStub.fromJSON)),
 			defaultUserRoles: expectMap(
-				json.defaultUserRoles,
+				extractEntry(jCpy.defaultUserRoles, 'defaultUserRoles', false, path),
 				false,
 				[...path, ".defaultUserRoles"],
 				(k0, p0) => expectStringEnum(k0, false, p0, UserType, 'UserType'),
 				(v0, p0) => expectArray(v0, false, p0, (x1, p1) => expectString(x1, false, p1))
 			),
 			operationTokens: expectMap(
-				json.operationTokens,
+				extractEntry(jCpy.operationTokens, 'operationTokens', false, path),
 				false,
 				[...path, ".operationTokens"],
 				(k0, p0) => expectString(k0, false, p0),
-				(v0, p0) => OperationToken.fromJSON(v0, p0)
+				(v0, p0) => expectObject(v0, false, ignoreUnknownKeys, p0, OperationToken.fromJSON)
 			),
 			sharedEntities: expectMap(
-				json.sharedEntities,
+				extractEntry(jCpy.sharedEntities, 'sharedEntities', false, path),
 				false,
 				[...path, ".sharedEntities"],
 				(k0, p0) => expectString(k0, false, p0),
 				(v0, p0) => expectString(v0, false, p0)
 			),
-			minimumKrakenVersion: expectString(json.minimumKrakenVersion, true, [...path, ".minimumKrakenVersion"]),
+			minimumKrakenVersion: expectString(extractEntry(jCpy.minimumKrakenVersion, 'minimumKrakenVersion', false, path), true, [...path, ".minimumKrakenVersion"]),
 			externalJwtConfig: expectMap(
-				json.externalJwtConfig,
+				extractEntry(jCpy.externalJwtConfig, 'externalJwtConfig', false, path),
 				false,
 				[...path, ".externalJwtConfig"],
 				(k0, p0) => expectString(k0, false, p0),
-				(v0, p0) => ExternalJwtConfig.fromJSON(v0, p0)
+				(v0, p0) => expectObject(v0, false, ignoreUnknownKeys, p0, ExternalJwtConfig.fromJSON)
 			),
-			minimumAuthenticationClassForElevatedPrivileges: expectStringEnum(requireEntry(json.minimumAuthenticationClassForElevatedPrivileges, 'minimumAuthenticationClassForElevatedPrivileges', path), false, [...path, ".minimumAuthenticationClassForElevatedPrivileges"], AuthenticationClass, 'AuthenticationClass'),
-			superGroup: expectString(json.superGroup, true, [...path, ".superGroup"]),
-			applicationId: expectString(json.applicationId, true, [...path, ".applicationId"]),
+			minimumAuthenticationClassForElevatedPrivileges: expectStringEnum(extractEntry(jCpy.minimumAuthenticationClassForElevatedPrivileges, 'minimumAuthenticationClassForElevatedPrivileges', true, path), false, [...path, ".minimumAuthenticationClassForElevatedPrivileges"], AuthenticationClass, 'AuthenticationClass'),
+			superGroup: expectString(extractEntry(jCpy.superGroup, 'superGroup', false, path), true, [...path, ".superGroup"]),
+			applicationId: expectString(extractEntry(jCpy.applicationId, 'applicationId', false, path), true, [...path, ".applicationId"]),
 		})
+		if (!ignoreUnknownKeys) {
+			const unused = Object.keys(jCpy)
+			if (unused.length > 0) throw new Error(`Unexpected key(s) for json object Group at path ${path.join("")}: ${unused}`)}
+		return res
 	}
 
 }

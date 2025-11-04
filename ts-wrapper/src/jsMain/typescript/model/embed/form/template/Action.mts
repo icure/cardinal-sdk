@@ -1,5 +1,5 @@
 // auto-generated file
-import {expectArray, expectString} from '../../../../internal/JsonDecodeUtils.mjs';
+import {expectArray, expectObject, expectString, extractEntry} from '../../../../internal/JsonDecodeUtils.mjs';
 import {Launcher} from './Launcher.mjs';
 import {State} from './State.mjs';
 
@@ -26,12 +26,19 @@ export class Action {
 		return res
 	}
 
-	static fromJSON(json: any, path: Array<string> = ['Action']): Action {
-		return new Action({
-			launchers: expectArray(json.launchers, true, [...path, ".launchers"], (x0, p0) => Launcher.fromJSON(x0, p0)),
-			expression: expectString(json.expression, true, [...path, ".expression"]),
-			states: expectArray(json.states, true, [...path, ".states"], (x0, p0) => State.fromJSON(x0, p0)),
+	static fromJSON(json: any, ignoreUnknownKeys: boolean = false,
+			path: Array<string> = ['Action']): Action {
+		if (typeof json != 'object') throw new Error(`Expected json object at path ${path.join("")}`)
+		const jCpy = { ...json }
+		const res = new Action({
+			launchers: expectArray(extractEntry(jCpy.launchers, 'launchers', false, path), true, [...path, ".launchers"], (x0, p0) => expectObject(x0, false, ignoreUnknownKeys, p0, Launcher.fromJSON)),
+			expression: expectString(extractEntry(jCpy.expression, 'expression', false, path), true, [...path, ".expression"]),
+			states: expectArray(extractEntry(jCpy.states, 'states', false, path), true, [...path, ".states"], (x0, p0) => expectObject(x0, false, ignoreUnknownKeys, p0, State.fromJSON)),
 		})
+		if (!ignoreUnknownKeys) {
+			const unused = Object.keys(jCpy)
+			if (unused.length > 0) throw new Error(`Unexpected key(s) for json object Action at path ${path.join("")}: ${unused}`)}
+		return res
 	}
 
 }

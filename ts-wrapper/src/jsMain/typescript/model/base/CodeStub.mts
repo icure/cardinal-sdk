@@ -1,5 +1,5 @@
 // auto-generated file
-import {expectMap, expectString} from '../../internal/JsonDecodeUtils.mjs';
+import {expectMap, expectString, extractEntry} from '../../internal/JsonDecodeUtils.mjs';
 import {CodeIdentification} from './CodeIdentification.mjs';
 
 
@@ -41,22 +41,29 @@ export class CodeStub implements CodeIdentification<string | undefined> {
 		return res
 	}
 
-	static fromJSON(json: any, path: Array<string> = ['CodeStub']): CodeStub {
-		return new CodeStub({
-			id: expectString(json.id, true, [...path, ".id"]),
-			context: expectString(json.context, true, [...path, ".context"]),
-			type: expectString(json.type, true, [...path, ".type"]),
-			code: expectString(json.code, true, [...path, ".code"]),
-			version: expectString(json.version, true, [...path, ".version"]),
-			contextLabel: expectString(json.contextLabel, true, [...path, ".contextLabel"]),
+	static fromJSON(json: any, ignoreUnknownKeys: boolean = false,
+			path: Array<string> = ['CodeStub']): CodeStub {
+		if (typeof json != 'object') throw new Error(`Expected json object at path ${path.join("")}`)
+		const jCpy = { ...json }
+		const res = new CodeStub({
+			id: expectString(extractEntry(jCpy.id, 'id', false, path), true, [...path, ".id"]),
+			context: expectString(extractEntry(jCpy.context, 'context', false, path), true, [...path, ".context"]),
+			type: expectString(extractEntry(jCpy.type, 'type', false, path), true, [...path, ".type"]),
+			code: expectString(extractEntry(jCpy.code, 'code', false, path), true, [...path, ".code"]),
+			version: expectString(extractEntry(jCpy.version, 'version', false, path), true, [...path, ".version"]),
+			contextLabel: expectString(extractEntry(jCpy.contextLabel, 'contextLabel', false, path), true, [...path, ".contextLabel"]),
 			label: expectMap(
-				json.label,
+				extractEntry(jCpy.label, 'label', false, path),
 				true,
 				[...path, ".label"],
 				(k0, p0) => expectString(k0, false, p0),
 				(v0, p0) => expectString(v0, false, p0)
 			),
 		})
+		if (!ignoreUnknownKeys) {
+			const unused = Object.keys(jCpy)
+			if (unused.length > 0) throw new Error(`Unexpected key(s) for json object CodeStub at path ${path.join("")}: ${unused}`)}
+		return res
 	}
 
 }

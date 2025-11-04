@@ -1,5 +1,5 @@
 // auto-generated file
-import {expectNumber, expectString} from '../../internal/JsonDecodeUtils.mjs';
+import {expectNumber, expectString, extractEntry} from '../../internal/JsonDecodeUtils.mjs';
 
 
 export class Suspension {
@@ -28,13 +28,20 @@ export class Suspension {
 		return res
 	}
 
-	static fromJSON(json: any, path: Array<string> = ['Suspension']): Suspension {
-		return new Suspension({
-			beginMoment: expectNumber(json.beginMoment, true, true, [...path, ".beginMoment"]),
-			endMoment: expectNumber(json.endMoment, true, true, [...path, ".endMoment"]),
-			suspensionReason: expectString(json.suspensionReason, true, [...path, ".suspensionReason"]),
-			lifecycle: expectString(json.lifecycle, true, [...path, ".lifecycle"]),
+	static fromJSON(json: any, ignoreUnknownKeys: boolean = false,
+			path: Array<string> = ['Suspension']): Suspension {
+		if (typeof json != 'object') throw new Error(`Expected json object at path ${path.join("")}`)
+		const jCpy = { ...json }
+		const res = new Suspension({
+			beginMoment: expectNumber(extractEntry(jCpy.beginMoment, 'beginMoment', false, path), true, true, [...path, ".beginMoment"]),
+			endMoment: expectNumber(extractEntry(jCpy.endMoment, 'endMoment', false, path), true, true, [...path, ".endMoment"]),
+			suspensionReason: expectString(extractEntry(jCpy.suspensionReason, 'suspensionReason', false, path), true, [...path, ".suspensionReason"]),
+			lifecycle: expectString(extractEntry(jCpy.lifecycle, 'lifecycle', false, path), true, [...path, ".lifecycle"]),
 		})
+		if (!ignoreUnknownKeys) {
+			const unused = Object.keys(jCpy)
+			if (unused.length > 0) throw new Error(`Unexpected key(s) for json object Suspension at path ${path.join("")}: ${unused}`)}
+		return res
 	}
 
 }

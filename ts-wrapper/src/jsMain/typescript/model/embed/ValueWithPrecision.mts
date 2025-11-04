@@ -1,5 +1,5 @@
 // auto-generated file
-import {expectNumber, requireEntry} from '../../internal/JsonDecodeUtils.mjs';
+import {expectNumber, extractEntry} from '../../internal/JsonDecodeUtils.mjs';
 
 
 export class ValueWithPrecision {
@@ -20,11 +20,18 @@ export class ValueWithPrecision {
 		return res
 	}
 
-	static fromJSON(json: any, path: Array<string> = ['ValueWithPrecision']): ValueWithPrecision {
-		return new ValueWithPrecision({
-			value: expectNumber(requireEntry(json.value, 'value', path), false, true, [...path, ".value"]),
-			precision: expectNumber(requireEntry(json.precision, 'precision', path), false, true, [...path, ".precision"]),
+	static fromJSON(json: any, ignoreUnknownKeys: boolean = false,
+			path: Array<string> = ['ValueWithPrecision']): ValueWithPrecision {
+		if (typeof json != 'object') throw new Error(`Expected json object at path ${path.join("")}`)
+		const jCpy = { ...json }
+		const res = new ValueWithPrecision({
+			value: expectNumber(extractEntry(jCpy.value, 'value', true, path), false, true, [...path, ".value"]),
+			precision: expectNumber(extractEntry(jCpy.precision, 'precision', true, path), false, true, [...path, ".precision"]),
 		})
+		if (!ignoreUnknownKeys) {
+			const unused = Object.keys(jCpy)
+			if (unused.length > 0) throw new Error(`Unexpected key(s) for json object ValueWithPrecision at path ${path.join("")}: ${unused}`)}
+		return res
 	}
 
 }

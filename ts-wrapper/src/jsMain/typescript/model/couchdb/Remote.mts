@@ -1,5 +1,5 @@
 // auto-generated file
-import {expectString, requireEntry} from '../../internal/JsonDecodeUtils.mjs';
+import {expectObject, expectString, extractEntry} from '../../internal/JsonDecodeUtils.mjs';
 import {RemoteAuthentication} from './RemoteAuthentication.mjs';
 
 
@@ -21,11 +21,18 @@ export class Remote {
 		return res
 	}
 
-	static fromJSON(json: any, path: Array<string> = ['Remote']): Remote {
-		return new Remote({
-			url: expectString(requireEntry(json.url, 'url', path), false, [...path, ".url"]),
-			auth: RemoteAuthentication.fromJSON(json.auth, [...path, ".auth"]),
+	static fromJSON(json: any, ignoreUnknownKeys: boolean = false,
+			path: Array<string> = ['Remote']): Remote {
+		if (typeof json != 'object') throw new Error(`Expected json object at path ${path.join("")}`)
+		const jCpy = { ...json }
+		const res = new Remote({
+			url: expectString(extractEntry(jCpy.url, 'url', true, path), false, [...path, ".url"]),
+			auth: expectObject(extractEntry(jCpy.auth, 'auth', false, path), true, ignoreUnknownKeys, [...path, ".auth"], RemoteAuthentication.fromJSON),
 		})
+		if (!ignoreUnknownKeys) {
+			const unused = Object.keys(jCpy)
+			if (unused.length > 0) throw new Error(`Unexpected key(s) for json object Remote at path ${path.join("")}: ${unused}`)}
+		return res
 	}
 
 }

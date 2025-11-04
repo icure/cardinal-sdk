@@ -1,5 +1,5 @@
 // auto-generated file
-import {expectNumber, expectString} from '../../internal/JsonDecodeUtils.mjs';
+import {expectNumber, expectString, extractEntry} from '../../internal/JsonDecodeUtils.mjs';
 
 
 export class IdentityDocumentReader {
@@ -36,16 +36,22 @@ export class IdentityDocumentReader {
 		return res
 	}
 
-	static fromJSON(json: any,
+	static fromJSON(json: any, ignoreUnknownKeys: boolean = false,
 			path: Array<string> = ['IdentityDocumentReader']): IdentityDocumentReader {
-		return new IdentityDocumentReader({
-			justificatifDocumentNumber: expectString(json.justificatifDocumentNumber, true, [...path, ".justificatifDocumentNumber"]),
-			supportSerialNumber: expectString(json.supportSerialNumber, true, [...path, ".supportSerialNumber"]),
-			timeReadingEIdDocument: expectNumber(json.timeReadingEIdDocument, true, true, [...path, ".timeReadingEIdDocument"]),
-			eidDocumentSupportType: expectNumber(json.eidDocumentSupportType, false, true, [...path, ".eidDocumentSupportType"]),
-			reasonManualEncoding: expectNumber(json.reasonManualEncoding, false, true, [...path, ".reasonManualEncoding"]),
-			reasonUsingVignette: expectNumber(json.reasonUsingVignette, false, true, [...path, ".reasonUsingVignette"]),
+		if (typeof json != 'object') throw new Error(`Expected json object at path ${path.join("")}`)
+		const jCpy = { ...json }
+		const res = new IdentityDocumentReader({
+			justificatifDocumentNumber: expectString(extractEntry(jCpy.justificatifDocumentNumber, 'justificatifDocumentNumber', false, path), true, [...path, ".justificatifDocumentNumber"]),
+			supportSerialNumber: expectString(extractEntry(jCpy.supportSerialNumber, 'supportSerialNumber', false, path), true, [...path, ".supportSerialNumber"]),
+			timeReadingEIdDocument: expectNumber(extractEntry(jCpy.timeReadingEIdDocument, 'timeReadingEIdDocument', false, path), true, true, [...path, ".timeReadingEIdDocument"]),
+			eidDocumentSupportType: expectNumber(extractEntry(jCpy.eidDocumentSupportType, 'eidDocumentSupportType', false, path), false, true, [...path, ".eidDocumentSupportType"]),
+			reasonManualEncoding: expectNumber(extractEntry(jCpy.reasonManualEncoding, 'reasonManualEncoding', false, path), false, true, [...path, ".reasonManualEncoding"]),
+			reasonUsingVignette: expectNumber(extractEntry(jCpy.reasonUsingVignette, 'reasonUsingVignette', false, path), false, true, [...path, ".reasonUsingVignette"]),
 		})
+		if (!ignoreUnknownKeys) {
+			const unused = Object.keys(jCpy)
+			if (unused.length > 0) throw new Error(`Unexpected key(s) for json object IdentityDocumentReader at path ${path.join("")}: ${unused}`)}
+		return res
 	}
 
 }

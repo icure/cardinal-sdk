@@ -1,8 +1,21 @@
-export function requireEntry(json: any, name: string, path: string[]): any {
+export function extractEntry(json: any, name: string, required: boolean, path: string[]): any {
   if (name in json) {
-    return json[name]
+    const res = json[name]
+    delete json[name]
+    return res
   }
-  throw new Error(`Missing required entry '${name}' at ${path.join("")}`)
+  if (required) throw new Error(`Missing required entry '${name}' at ${path.join("")}`)
+  return undefined
+}
+
+export function expectObject<T>(json: any, nullable: true, ignoreUnknown: boolean, path: string[], decoder: (j: any, i: boolean, p: string[]) => T): T | undefined
+export function expectObject<T>(json: any, nullable: false, ignoreUnknown: boolean, path: string[], decoder: (j: any, i: boolean, p: string[]) => T): T
+export function expectObject<T>(json: any, nullable: boolean, ignoreUnknown: boolean, path: string[], decoder: (j: any, i: boolean, p: string[]) => T): T | undefined {
+  if (json == undefined) {
+    if (!nullable) throw new Error(`Expected non-nullable object but got nullish value at ${path.join("")}`)
+    return undefined
+  }
+  return decoder(json, ignoreUnknown, path)
 }
 
 export function expectNullish(json: any, path: string[]): undefined {

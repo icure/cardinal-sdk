@@ -1,5 +1,5 @@
 // auto-generated file
-import {expectNumber, requireEntry} from '../../internal/JsonDecodeUtils.mjs';
+import {expectNumber, extractEntry} from '../../internal/JsonDecodeUtils.mjs';
 
 
 export class EmbeddedTimeTableHour {
@@ -20,12 +20,18 @@ export class EmbeddedTimeTableHour {
 		return res
 	}
 
-	static fromJSON(json: any,
+	static fromJSON(json: any, ignoreUnknownKeys: boolean = false,
 			path: Array<string> = ['EmbeddedTimeTableHour']): EmbeddedTimeTableHour {
-		return new EmbeddedTimeTableHour({
-			startHour: expectNumber(requireEntry(json.startHour, 'startHour', path), false, true, [...path, ".startHour"]),
-			endHour: expectNumber(requireEntry(json.endHour, 'endHour', path), false, true, [...path, ".endHour"]),
+		if (typeof json != 'object') throw new Error(`Expected json object at path ${path.join("")}`)
+		const jCpy = { ...json }
+		const res = new EmbeddedTimeTableHour({
+			startHour: expectNumber(extractEntry(jCpy.startHour, 'startHour', true, path), false, true, [...path, ".startHour"]),
+			endHour: expectNumber(extractEntry(jCpy.endHour, 'endHour', true, path), false, true, [...path, ".endHour"]),
 		})
+		if (!ignoreUnknownKeys) {
+			const unused = Object.keys(jCpy)
+			if (unused.length > 0) throw new Error(`Unexpected key(s) for json object EmbeddedTimeTableHour at path ${path.join("")}: ${unused}`)}
+		return res
 	}
 
 }

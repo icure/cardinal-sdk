@@ -1,5 +1,5 @@
 // auto-generated file
-import {expectString} from '../internal/JsonDecodeUtils.mjs';
+import {expectString, extractEntry} from '../internal/JsonDecodeUtils.mjs';
 
 
 export class PublicKey {
@@ -20,11 +20,18 @@ export class PublicKey {
 		return res
 	}
 
-	static fromJSON(json: any, path: Array<string> = ['PublicKey']): PublicKey {
-		return new PublicKey({
-			hcPartyId: expectString(json.hcPartyId, true, [...path, ".hcPartyId"]),
-			hexString: expectString(json.hexString, true, [...path, ".hexString"]),
+	static fromJSON(json: any, ignoreUnknownKeys: boolean = false,
+			path: Array<string> = ['PublicKey']): PublicKey {
+		if (typeof json != 'object') throw new Error(`Expected json object at path ${path.join("")}`)
+		const jCpy = { ...json }
+		const res = new PublicKey({
+			hcPartyId: expectString(extractEntry(jCpy.hcPartyId, 'hcPartyId', false, path), true, [...path, ".hcPartyId"]),
+			hexString: expectString(extractEntry(jCpy.hexString, 'hexString', false, path), true, [...path, ".hexString"]),
 		})
+		if (!ignoreUnknownKeys) {
+			const unused = Object.keys(jCpy)
+			if (unused.length > 0) throw new Error(`Unexpected key(s) for json object PublicKey at path ${path.join("")}: ${unused}`)}
+		return res
 	}
 
 }

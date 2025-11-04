@@ -1,5 +1,5 @@
 // auto-generated file
-import {expectString, expectStringEnum} from '../internal/JsonDecodeUtils.mjs';
+import {expectString, expectStringEnum, extractEntry} from '../internal/JsonDecodeUtils.mjs';
 import {TypedValuesType} from './embed/TypedValuesType.mjs';
 
 
@@ -21,11 +21,18 @@ export class PropertyTypeStub {
 		return res
 	}
 
-	static fromJSON(json: any, path: Array<string> = ['PropertyTypeStub']): PropertyTypeStub {
-		return new PropertyTypeStub({
-			identifier: expectString(json.identifier, true, [...path, ".identifier"]),
-			type: expectStringEnum(json.type, true, [...path, ".type"], TypedValuesType, 'TypedValuesType'),
+	static fromJSON(json: any, ignoreUnknownKeys: boolean = false,
+			path: Array<string> = ['PropertyTypeStub']): PropertyTypeStub {
+		if (typeof json != 'object') throw new Error(`Expected json object at path ${path.join("")}`)
+		const jCpy = { ...json }
+		const res = new PropertyTypeStub({
+			identifier: expectString(extractEntry(jCpy.identifier, 'identifier', false, path), true, [...path, ".identifier"]),
+			type: expectStringEnum(extractEntry(jCpy.type, 'type', false, path), true, [...path, ".type"], TypedValuesType, 'TypedValuesType'),
 		})
+		if (!ignoreUnknownKeys) {
+			const unused = Object.keys(jCpy)
+			if (unused.length > 0) throw new Error(`Unexpected key(s) for json object PropertyTypeStub at path ${path.join("")}: ${unused}`)}
+		return res
 	}
 
 }

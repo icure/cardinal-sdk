@@ -1,5 +1,5 @@
 // auto-generated file
-import {expectMap, expectString, requireEntry} from '../../internal/JsonDecodeUtils.mjs';
+import {expectMap, expectObject, expectString, extractEntry} from '../../internal/JsonDecodeUtils.mjs';
 import {SecureDelegation} from './SecureDelegation.mjs';
 
 
@@ -17,16 +17,23 @@ export class SecurityMetadata {
 		return res
 	}
 
-	static fromJSON(json: any, path: Array<string> = ['SecurityMetadata']): SecurityMetadata {
-		return new SecurityMetadata({
+	static fromJSON(json: any, ignoreUnknownKeys: boolean = false,
+			path: Array<string> = ['SecurityMetadata']): SecurityMetadata {
+		if (typeof json != 'object') throw new Error(`Expected json object at path ${path.join("")}`)
+		const jCpy = { ...json }
+		const res = new SecurityMetadata({
 			secureDelegations: expectMap(
-				requireEntry(json.secureDelegations, 'secureDelegations', path),
+				extractEntry(jCpy.secureDelegations, 'secureDelegations', true, path),
 				false,
 				[...path, ".secureDelegations"],
 				(k0, p0) => expectString(k0, false, p0),
-				(v0, p0) => SecureDelegation.fromJSON(v0, p0)
+				(v0, p0) => expectObject(v0, false, ignoreUnknownKeys, p0, SecureDelegation.fromJSON)
 			),
 		})
+		if (!ignoreUnknownKeys) {
+			const unused = Object.keys(jCpy)
+			if (unused.length > 0) throw new Error(`Unexpected key(s) for json object SecurityMetadata at path ${path.join("")}: ${unused}`)}
+		return res
 	}
 
 }

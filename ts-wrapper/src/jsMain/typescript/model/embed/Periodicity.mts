@@ -1,4 +1,5 @@
 // auto-generated file
+import {expectObject, extractEntry} from '../../internal/JsonDecodeUtils.mjs';
 import {CodeStub} from '../base/CodeStub.mjs';
 
 
@@ -20,11 +21,18 @@ export class Periodicity {
 		return res
 	}
 
-	static fromJSON(json: any, path: Array<string> = ['Periodicity']): Periodicity {
-		return new Periodicity({
-			relatedCode: CodeStub.fromJSON(json.relatedCode, [...path, ".relatedCode"]),
-			relatedPeriodicity: CodeStub.fromJSON(json.relatedPeriodicity, [...path, ".relatedPeriodicity"]),
+	static fromJSON(json: any, ignoreUnknownKeys: boolean = false,
+			path: Array<string> = ['Periodicity']): Periodicity {
+		if (typeof json != 'object') throw new Error(`Expected json object at path ${path.join("")}`)
+		const jCpy = { ...json }
+		const res = new Periodicity({
+			relatedCode: expectObject(extractEntry(jCpy.relatedCode, 'relatedCode', false, path), true, ignoreUnknownKeys, [...path, ".relatedCode"], CodeStub.fromJSON),
+			relatedPeriodicity: expectObject(extractEntry(jCpy.relatedPeriodicity, 'relatedPeriodicity', false, path), true, ignoreUnknownKeys, [...path, ".relatedPeriodicity"], CodeStub.fromJSON),
 		})
+		if (!ignoreUnknownKeys) {
+			const unused = Object.keys(jCpy)
+			if (unused.length > 0) throw new Error(`Unexpected key(s) for json object Periodicity at path ${path.join("")}: ${unused}`)}
+		return res
 	}
 
 }

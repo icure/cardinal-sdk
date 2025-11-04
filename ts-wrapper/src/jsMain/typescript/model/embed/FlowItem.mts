@@ -1,5 +1,5 @@
 // auto-generated file
-import {expectBoolean, expectNumber, expectString} from '../../internal/JsonDecodeUtils.mjs';
+import {expectBoolean, expectNumber, expectString, extractEntry} from '../../internal/JsonDecodeUtils.mjs';
 
 
 export class FlowItem {
@@ -144,42 +144,49 @@ export class FlowItem {
 		return res
 	}
 
-	static fromJSON(json: any, path: Array<string> = ['FlowItem']): FlowItem {
-		return new FlowItem({
-			id: expectString(json.id, true, [...path, ".id"]),
-			title: expectString(json.title, true, [...path, ".title"]),
-			comment: expectString(json.comment, true, [...path, ".comment"]),
-			receptionDate: expectNumber(json.receptionDate, true, true, [...path, ".receptionDate"]),
-			processingDate: expectNumber(json.processingDate, true, true, [...path, ".processingDate"]),
-			processer: expectString(json.processer, true, [...path, ".processer"]),
-			cancellationDate: expectNumber(json.cancellationDate, true, true, [...path, ".cancellationDate"]),
-			canceller: expectString(json.canceller, true, [...path, ".canceller"]),
-			cancellationReason: expectString(json.cancellationReason, true, [...path, ".cancellationReason"]),
-			cancellationNote: expectString(json.cancellationNote, true, [...path, ".cancellationNote"]),
-			status: expectString(json.status, true, [...path, ".status"]),
-			homeVisit: expectBoolean(json.homeVisit, true, [...path, ".homeVisit"]),
-			municipality: expectString(json.municipality, true, [...path, ".municipality"]),
-			town: expectString(json.town, true, [...path, ".town"]),
-			zipCode: expectString(json.zipCode, true, [...path, ".zipCode"]),
-			street: expectString(json.street, true, [...path, ".street"]),
-			building: expectString(json.building, true, [...path, ".building"]),
-			buildingNumber: expectString(json.buildingNumber, true, [...path, ".buildingNumber"]),
-			doorbellName: expectString(json.doorbellName, true, [...path, ".doorbellName"]),
-			floor: expectString(json.floor, true, [...path, ".floor"]),
-			letterBox: expectString(json.letterBox, true, [...path, ".letterBox"]),
-			notesOps: expectString(json.notesOps, true, [...path, ".notesOps"]),
-			notesContact: expectString(json.notesContact, true, [...path, ".notesContact"]),
-			latitude: expectString(json.latitude, true, [...path, ".latitude"]),
-			longitude: expectString(json.longitude, true, [...path, ".longitude"]),
-			type: expectString(json.type, true, [...path, ".type"]),
-			emergency: expectBoolean(json.emergency, true, [...path, ".emergency"]),
-			phoneNumber: expectString(json.phoneNumber, true, [...path, ".phoneNumber"]),
-			patientId: expectString(json.patientId, true, [...path, ".patientId"]),
-			patientLastName: expectString(json.patientLastName, true, [...path, ".patientLastName"]),
-			patientFirstName: expectString(json.patientFirstName, true, [...path, ".patientFirstName"]),
-			description: expectString(json.description, true, [...path, ".description"]),
-			interventionCode: expectString(json.interventionCode, true, [...path, ".interventionCode"]),
+	static fromJSON(json: any, ignoreUnknownKeys: boolean = false,
+			path: Array<string> = ['FlowItem']): FlowItem {
+		if (typeof json != 'object') throw new Error(`Expected json object at path ${path.join("")}`)
+		const jCpy = { ...json }
+		const res = new FlowItem({
+			id: expectString(extractEntry(jCpy.id, 'id', false, path), true, [...path, ".id"]),
+			title: expectString(extractEntry(jCpy.title, 'title', false, path), true, [...path, ".title"]),
+			comment: expectString(extractEntry(jCpy.comment, 'comment', false, path), true, [...path, ".comment"]),
+			receptionDate: expectNumber(extractEntry(jCpy.receptionDate, 'receptionDate', false, path), true, true, [...path, ".receptionDate"]),
+			processingDate: expectNumber(extractEntry(jCpy.processingDate, 'processingDate', false, path), true, true, [...path, ".processingDate"]),
+			processer: expectString(extractEntry(jCpy.processer, 'processer', false, path), true, [...path, ".processer"]),
+			cancellationDate: expectNumber(extractEntry(jCpy.cancellationDate, 'cancellationDate', false, path), true, true, [...path, ".cancellationDate"]),
+			canceller: expectString(extractEntry(jCpy.canceller, 'canceller', false, path), true, [...path, ".canceller"]),
+			cancellationReason: expectString(extractEntry(jCpy.cancellationReason, 'cancellationReason', false, path), true, [...path, ".cancellationReason"]),
+			cancellationNote: expectString(extractEntry(jCpy.cancellationNote, 'cancellationNote', false, path), true, [...path, ".cancellationNote"]),
+			status: expectString(extractEntry(jCpy.status, 'status', false, path), true, [...path, ".status"]),
+			homeVisit: expectBoolean(extractEntry(jCpy.homeVisit, 'homeVisit', false, path), true, [...path, ".homeVisit"]),
+			municipality: expectString(extractEntry(jCpy.municipality, 'municipality', false, path), true, [...path, ".municipality"]),
+			town: expectString(extractEntry(jCpy.town, 'town', false, path), true, [...path, ".town"]),
+			zipCode: expectString(extractEntry(jCpy.zipCode, 'zipCode', false, path), true, [...path, ".zipCode"]),
+			street: expectString(extractEntry(jCpy.street, 'street', false, path), true, [...path, ".street"]),
+			building: expectString(extractEntry(jCpy.building, 'building', false, path), true, [...path, ".building"]),
+			buildingNumber: expectString(extractEntry(jCpy.buildingNumber, 'buildingNumber', false, path), true, [...path, ".buildingNumber"]),
+			doorbellName: expectString(extractEntry(jCpy.doorbellName, 'doorbellName', false, path), true, [...path, ".doorbellName"]),
+			floor: expectString(extractEntry(jCpy.floor, 'floor', false, path), true, [...path, ".floor"]),
+			letterBox: expectString(extractEntry(jCpy.letterBox, 'letterBox', false, path), true, [...path, ".letterBox"]),
+			notesOps: expectString(extractEntry(jCpy.notesOps, 'notesOps', false, path), true, [...path, ".notesOps"]),
+			notesContact: expectString(extractEntry(jCpy.notesContact, 'notesContact', false, path), true, [...path, ".notesContact"]),
+			latitude: expectString(extractEntry(jCpy.latitude, 'latitude', false, path), true, [...path, ".latitude"]),
+			longitude: expectString(extractEntry(jCpy.longitude, 'longitude', false, path), true, [...path, ".longitude"]),
+			type: expectString(extractEntry(jCpy.type, 'type', false, path), true, [...path, ".type"]),
+			emergency: expectBoolean(extractEntry(jCpy.emergency, 'emergency', false, path), true, [...path, ".emergency"]),
+			phoneNumber: expectString(extractEntry(jCpy.phoneNumber, 'phoneNumber', false, path), true, [...path, ".phoneNumber"]),
+			patientId: expectString(extractEntry(jCpy.patientId, 'patientId', false, path), true, [...path, ".patientId"]),
+			patientLastName: expectString(extractEntry(jCpy.patientLastName, 'patientLastName', false, path), true, [...path, ".patientLastName"]),
+			patientFirstName: expectString(extractEntry(jCpy.patientFirstName, 'patientFirstName', false, path), true, [...path, ".patientFirstName"]),
+			description: expectString(extractEntry(jCpy.description, 'description', false, path), true, [...path, ".description"]),
+			interventionCode: expectString(extractEntry(jCpy.interventionCode, 'interventionCode', false, path), true, [...path, ".interventionCode"]),
 		})
+		if (!ignoreUnknownKeys) {
+			const unused = Object.keys(jCpy)
+			if (unused.length > 0) throw new Error(`Unexpected key(s) for json object FlowItem at path ${path.join("")}: ${unused}`)}
+		return res
 	}
 
 }

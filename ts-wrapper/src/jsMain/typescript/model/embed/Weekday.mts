@@ -1,5 +1,5 @@
 // auto-generated file
-import {expectNumber} from '../../internal/JsonDecodeUtils.mjs';
+import {expectNumber, expectObject, extractEntry} from '../../internal/JsonDecodeUtils.mjs';
 import {CodeStub} from '../base/CodeStub.mjs';
 
 
@@ -21,11 +21,18 @@ export class Weekday {
 		return res
 	}
 
-	static fromJSON(json: any, path: Array<string> = ['Weekday']): Weekday {
-		return new Weekday({
-			weekday: CodeStub.fromJSON(json.weekday, [...path, ".weekday"]),
-			weekNumber: expectNumber(json.weekNumber, true, true, [...path, ".weekNumber"]),
+	static fromJSON(json: any, ignoreUnknownKeys: boolean = false,
+			path: Array<string> = ['Weekday']): Weekday {
+		if (typeof json != 'object') throw new Error(`Expected json object at path ${path.join("")}`)
+		const jCpy = { ...json }
+		const res = new Weekday({
+			weekday: expectObject(extractEntry(jCpy.weekday, 'weekday', false, path), true, ignoreUnknownKeys, [...path, ".weekday"], CodeStub.fromJSON),
+			weekNumber: expectNumber(extractEntry(jCpy.weekNumber, 'weekNumber', false, path), true, true, [...path, ".weekNumber"]),
 		})
+		if (!ignoreUnknownKeys) {
+			const unused = Object.keys(jCpy)
+			if (unused.length > 0) throw new Error(`Unexpected key(s) for json object Weekday at path ${path.join("")}: ${unused}`)}
+		return res
 	}
 
 }

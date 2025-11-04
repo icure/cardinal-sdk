@@ -1,5 +1,5 @@
 // auto-generated file
-import {expectString, requireEntry} from '../internal/JsonDecodeUtils.mjs';
+import {expectString, extractEntry} from '../internal/JsonDecodeUtils.mjs';
 import {randomUuid} from '../utils/Id.mjs';
 import {Identifiable} from './base/Identifiable.mjs';
 
@@ -22,12 +22,18 @@ export class StoredDocumentIdentifier implements Identifiable<string> {
 		return res
 	}
 
-	static fromJSON(json: any,
+	static fromJSON(json: any, ignoreUnknownKeys: boolean = false,
 			path: Array<string> = ['StoredDocumentIdentifier']): StoredDocumentIdentifier {
-		return new StoredDocumentIdentifier({
-			id: expectString(requireEntry(json.id, 'id', path), false, [...path, ".id"]),
-			rev: expectString(requireEntry(json.rev, 'rev', path), false, [...path, ".rev"]),
+		if (typeof json != 'object') throw new Error(`Expected json object at path ${path.join("")}`)
+		const jCpy = { ...json }
+		const res = new StoredDocumentIdentifier({
+			id: expectString(extractEntry(jCpy.id, 'id', true, path), false, [...path, ".id"]),
+			rev: expectString(extractEntry(jCpy.rev, 'rev', true, path), false, [...path, ".rev"]),
 		})
+		if (!ignoreUnknownKeys) {
+			const unused = Object.keys(jCpy)
+			if (unused.length > 0) throw new Error(`Unexpected key(s) for json object StoredDocumentIdentifier at path ${path.join("")}: ${unused}`)}
+		return res
 	}
 
 }

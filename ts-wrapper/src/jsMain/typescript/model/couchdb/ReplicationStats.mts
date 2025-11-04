@@ -1,5 +1,5 @@
 // auto-generated file
-import {expectNumber, expectString} from '../../internal/JsonDecodeUtils.mjs';
+import {expectNumber, expectString, extractEntry} from '../../internal/JsonDecodeUtils.mjs';
 
 
 export class ReplicationStats {
@@ -48,18 +48,25 @@ export class ReplicationStats {
 		return res
 	}
 
-	static fromJSON(json: any, path: Array<string> = ['ReplicationStats']): ReplicationStats {
-		return new ReplicationStats({
-			revisionsChecked: expectNumber(json.revisionsChecked, true, true, [...path, ".revisionsChecked"]),
-			missingRevisionsFound: expectNumber(json.missingRevisionsFound, true, true, [...path, ".missingRevisionsFound"]),
-			docsRead: expectNumber(json.docsRead, true, true, [...path, ".docsRead"]),
-			docsWritten: expectNumber(json.docsWritten, true, true, [...path, ".docsWritten"]),
-			changesPending: expectNumber(json.changesPending, true, true, [...path, ".changesPending"]),
-			docWriteFailures: expectNumber(json.docWriteFailures, true, true, [...path, ".docWriteFailures"]),
-			checkpointedSourceSeq: expectString(json.checkpointedSourceSeq, true, [...path, ".checkpointedSourceSeq"]),
-			startTime: expectString(json.startTime, true, [...path, ".startTime"]),
-			error: expectString(json.error, true, [...path, ".error"]),
+	static fromJSON(json: any, ignoreUnknownKeys: boolean = false,
+			path: Array<string> = ['ReplicationStats']): ReplicationStats {
+		if (typeof json != 'object') throw new Error(`Expected json object at path ${path.join("")}`)
+		const jCpy = { ...json }
+		const res = new ReplicationStats({
+			revisionsChecked: expectNumber(extractEntry(jCpy.revisionsChecked, 'revisionsChecked', false, path), true, true, [...path, ".revisionsChecked"]),
+			missingRevisionsFound: expectNumber(extractEntry(jCpy.missingRevisionsFound, 'missingRevisionsFound', false, path), true, true, [...path, ".missingRevisionsFound"]),
+			docsRead: expectNumber(extractEntry(jCpy.docsRead, 'docsRead', false, path), true, true, [...path, ".docsRead"]),
+			docsWritten: expectNumber(extractEntry(jCpy.docsWritten, 'docsWritten', false, path), true, true, [...path, ".docsWritten"]),
+			changesPending: expectNumber(extractEntry(jCpy.changesPending, 'changesPending', false, path), true, true, [...path, ".changesPending"]),
+			docWriteFailures: expectNumber(extractEntry(jCpy.docWriteFailures, 'docWriteFailures', false, path), true, true, [...path, ".docWriteFailures"]),
+			checkpointedSourceSeq: expectString(extractEntry(jCpy.checkpointedSourceSeq, 'checkpointedSourceSeq', false, path), true, [...path, ".checkpointedSourceSeq"]),
+			startTime: expectString(extractEntry(jCpy.startTime, 'startTime', false, path), true, [...path, ".startTime"]),
+			error: expectString(extractEntry(jCpy.error, 'error', false, path), true, [...path, ".error"]),
 		})
+		if (!ignoreUnknownKeys) {
+			const unused = Object.keys(jCpy)
+			if (unused.length > 0) throw new Error(`Unexpected key(s) for json object ReplicationStats at path ${path.join("")}: ${unused}`)}
+		return res
 	}
 
 }

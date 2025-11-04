@@ -1,5 +1,5 @@
 // auto-generated file
-import {expectArray, expectNumber, expectString} from '../../internal/JsonDecodeUtils.mjs';
+import {expectArray, expectNumber, expectObject, expectString, extractEntry} from '../../internal/JsonDecodeUtils.mjs';
 import {CodeStub} from '../base/CodeStub.mjs';
 import {ICureDocument} from '../base/ICureDocument.mjs';
 import {Base64String} from '../specializations/Base64String.mjs';
@@ -114,27 +114,34 @@ export class DecryptedSubContact {
 		return res
 	}
 
-	static fromJSON(json: any, path: Array<string> = ['DecryptedSubContact']): DecryptedSubContact {
-		return new DecryptedSubContact({
-			id: expectString(json.id, true, [...path, ".id"]),
-			created: expectNumber(json.created, true, true, [...path, ".created"]),
-			modified: expectNumber(json.modified, true, true, [...path, ".modified"]),
-			author: expectString(json.author, true, [...path, ".author"]),
-			responsible: expectString(json.responsible, true, [...path, ".responsible"]),
-			medicalLocationId: expectString(json.medicalLocationId, true, [...path, ".medicalLocationId"]),
-			tags: expectArray(json.tags, false, [...path, ".tags"], (x0, p0) => CodeStub.fromJSON(x0, p0)),
-			codes: expectArray(json.codes, false, [...path, ".codes"], (x0, p0) => CodeStub.fromJSON(x0, p0)),
-			endOfLife: expectNumber(json.endOfLife, true, true, [...path, ".endOfLife"]),
-			descr: expectString(json.descr, true, [...path, ".descr"]),
-			protocol: expectString(json.protocol, true, [...path, ".protocol"]),
-			status: expectNumber(json.status, true, true, [...path, ".status"]),
-			formId: expectString(json.formId, true, [...path, ".formId"]),
-			planOfActionId: expectString(json.planOfActionId, true, [...path, ".planOfActionId"]),
-			healthElementId: expectString(json.healthElementId, true, [...path, ".healthElementId"]),
-			classificationId: expectString(json.classificationId, true, [...path, ".classificationId"]),
-			services: expectArray(json.services, false, [...path, ".services"], (x0, p0) => ServiceLink.fromJSON(x0, p0)),
-			encryptedSelf: expectString(json.encryptedSelf, false, [...path, ".encryptedSelf"]),
+	static fromJSON(json: any, ignoreUnknownKeys: boolean = false,
+			path: Array<string> = ['DecryptedSubContact']): DecryptedSubContact {
+		if (typeof json != 'object') throw new Error(`Expected json object at path ${path.join("")}`)
+		const jCpy = { ...json }
+		const res = new DecryptedSubContact({
+			id: expectString(extractEntry(jCpy.id, 'id', false, path), true, [...path, ".id"]),
+			created: expectNumber(extractEntry(jCpy.created, 'created', false, path), true, true, [...path, ".created"]),
+			modified: expectNumber(extractEntry(jCpy.modified, 'modified', false, path), true, true, [...path, ".modified"]),
+			author: expectString(extractEntry(jCpy.author, 'author', false, path), true, [...path, ".author"]),
+			responsible: expectString(extractEntry(jCpy.responsible, 'responsible', false, path), true, [...path, ".responsible"]),
+			medicalLocationId: expectString(extractEntry(jCpy.medicalLocationId, 'medicalLocationId', false, path), true, [...path, ".medicalLocationId"]),
+			tags: expectArray(extractEntry(jCpy.tags, 'tags', false, path), false, [...path, ".tags"], (x0, p0) => expectObject(x0, false, ignoreUnknownKeys, p0, CodeStub.fromJSON)),
+			codes: expectArray(extractEntry(jCpy.codes, 'codes', false, path), false, [...path, ".codes"], (x0, p0) => expectObject(x0, false, ignoreUnknownKeys, p0, CodeStub.fromJSON)),
+			endOfLife: expectNumber(extractEntry(jCpy.endOfLife, 'endOfLife', false, path), true, true, [...path, ".endOfLife"]),
+			descr: expectString(extractEntry(jCpy.descr, 'descr', false, path), true, [...path, ".descr"]),
+			protocol: expectString(extractEntry(jCpy.protocol, 'protocol', false, path), true, [...path, ".protocol"]),
+			status: expectNumber(extractEntry(jCpy.status, 'status', false, path), true, true, [...path, ".status"]),
+			formId: expectString(extractEntry(jCpy.formId, 'formId', false, path), true, [...path, ".formId"]),
+			planOfActionId: expectString(extractEntry(jCpy.planOfActionId, 'planOfActionId', false, path), true, [...path, ".planOfActionId"]),
+			healthElementId: expectString(extractEntry(jCpy.healthElementId, 'healthElementId', false, path), true, [...path, ".healthElementId"]),
+			classificationId: expectString(extractEntry(jCpy.classificationId, 'classificationId', false, path), true, [...path, ".classificationId"]),
+			services: expectArray(extractEntry(jCpy.services, 'services', false, path), false, [...path, ".services"], (x0, p0) => expectObject(x0, false, ignoreUnknownKeys, p0, ServiceLink.fromJSON)),
+			encryptedSelf: expectString(extractEntry(jCpy.encryptedSelf, 'encryptedSelf', false, path), false, [...path, ".encryptedSelf"]),
 		})
+		if (!ignoreUnknownKeys) {
+			const unused = Object.keys(jCpy)
+			if (unused.length > 0) throw new Error(`Unexpected key(s) for json object DecryptedSubContact at path ${path.join("")}: ${unused}`)}
+		return res
 	}
 
 }
@@ -224,27 +231,34 @@ export class EncryptedSubContact {
 		return res
 	}
 
-	static fromJSON(json: any, path: Array<string> = ['EncryptedSubContact']): EncryptedSubContact {
-		return new EncryptedSubContact({
-			id: expectString(json.id, true, [...path, ".id"]),
-			created: expectNumber(json.created, true, true, [...path, ".created"]),
-			modified: expectNumber(json.modified, true, true, [...path, ".modified"]),
-			author: expectString(json.author, true, [...path, ".author"]),
-			responsible: expectString(json.responsible, true, [...path, ".responsible"]),
-			medicalLocationId: expectString(json.medicalLocationId, true, [...path, ".medicalLocationId"]),
-			tags: expectArray(json.tags, false, [...path, ".tags"], (x0, p0) => CodeStub.fromJSON(x0, p0)),
-			codes: expectArray(json.codes, false, [...path, ".codes"], (x0, p0) => CodeStub.fromJSON(x0, p0)),
-			endOfLife: expectNumber(json.endOfLife, true, true, [...path, ".endOfLife"]),
-			descr: expectString(json.descr, true, [...path, ".descr"]),
-			protocol: expectString(json.protocol, true, [...path, ".protocol"]),
-			status: expectNumber(json.status, true, true, [...path, ".status"]),
-			formId: expectString(json.formId, true, [...path, ".formId"]),
-			planOfActionId: expectString(json.planOfActionId, true, [...path, ".planOfActionId"]),
-			healthElementId: expectString(json.healthElementId, true, [...path, ".healthElementId"]),
-			classificationId: expectString(json.classificationId, true, [...path, ".classificationId"]),
-			services: expectArray(json.services, false, [...path, ".services"], (x0, p0) => ServiceLink.fromJSON(x0, p0)),
-			encryptedSelf: expectString(json.encryptedSelf, false, [...path, ".encryptedSelf"]),
+	static fromJSON(json: any, ignoreUnknownKeys: boolean = false,
+			path: Array<string> = ['EncryptedSubContact']): EncryptedSubContact {
+		if (typeof json != 'object') throw new Error(`Expected json object at path ${path.join("")}`)
+		const jCpy = { ...json }
+		const res = new EncryptedSubContact({
+			id: expectString(extractEntry(jCpy.id, 'id', false, path), true, [...path, ".id"]),
+			created: expectNumber(extractEntry(jCpy.created, 'created', false, path), true, true, [...path, ".created"]),
+			modified: expectNumber(extractEntry(jCpy.modified, 'modified', false, path), true, true, [...path, ".modified"]),
+			author: expectString(extractEntry(jCpy.author, 'author', false, path), true, [...path, ".author"]),
+			responsible: expectString(extractEntry(jCpy.responsible, 'responsible', false, path), true, [...path, ".responsible"]),
+			medicalLocationId: expectString(extractEntry(jCpy.medicalLocationId, 'medicalLocationId', false, path), true, [...path, ".medicalLocationId"]),
+			tags: expectArray(extractEntry(jCpy.tags, 'tags', false, path), false, [...path, ".tags"], (x0, p0) => expectObject(x0, false, ignoreUnknownKeys, p0, CodeStub.fromJSON)),
+			codes: expectArray(extractEntry(jCpy.codes, 'codes', false, path), false, [...path, ".codes"], (x0, p0) => expectObject(x0, false, ignoreUnknownKeys, p0, CodeStub.fromJSON)),
+			endOfLife: expectNumber(extractEntry(jCpy.endOfLife, 'endOfLife', false, path), true, true, [...path, ".endOfLife"]),
+			descr: expectString(extractEntry(jCpy.descr, 'descr', false, path), true, [...path, ".descr"]),
+			protocol: expectString(extractEntry(jCpy.protocol, 'protocol', false, path), true, [...path, ".protocol"]),
+			status: expectNumber(extractEntry(jCpy.status, 'status', false, path), true, true, [...path, ".status"]),
+			formId: expectString(extractEntry(jCpy.formId, 'formId', false, path), true, [...path, ".formId"]),
+			planOfActionId: expectString(extractEntry(jCpy.planOfActionId, 'planOfActionId', false, path), true, [...path, ".planOfActionId"]),
+			healthElementId: expectString(extractEntry(jCpy.healthElementId, 'healthElementId', false, path), true, [...path, ".healthElementId"]),
+			classificationId: expectString(extractEntry(jCpy.classificationId, 'classificationId', false, path), true, [...path, ".classificationId"]),
+			services: expectArray(extractEntry(jCpy.services, 'services', false, path), false, [...path, ".services"], (x0, p0) => expectObject(x0, false, ignoreUnknownKeys, p0, ServiceLink.fromJSON)),
+			encryptedSelf: expectString(extractEntry(jCpy.encryptedSelf, 'encryptedSelf', false, path), false, [...path, ".encryptedSelf"]),
 		})
+		if (!ignoreUnknownKeys) {
+			const unused = Object.keys(jCpy)
+			if (unused.length > 0) throw new Error(`Unexpected key(s) for json object EncryptedSubContact at path ${path.join("")}: ${unused}`)}
+		return res
 	}
 
 }

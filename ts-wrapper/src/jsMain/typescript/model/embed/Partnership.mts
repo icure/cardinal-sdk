@@ -1,5 +1,5 @@
 // auto-generated file
-import {expectString, expectStringEnum} from '../../internal/JsonDecodeUtils.mjs';
+import {expectString, expectStringEnum, extractEntry} from '../../internal/JsonDecodeUtils.mjs';
 import {PartnershipStatus} from './PartnershipStatus.mjs';
 import {PartnershipType} from './PartnershipType.mjs';
 
@@ -34,14 +34,21 @@ export class Partnership {
 		return res
 	}
 
-	static fromJSON(json: any, path: Array<string> = ['Partnership']): Partnership {
-		return new Partnership({
-			type: expectStringEnum(json.type, true, [...path, ".type"], PartnershipType, 'PartnershipType'),
-			status: expectStringEnum(json.status, true, [...path, ".status"], PartnershipStatus, 'PartnershipStatus'),
-			partnerId: expectString(json.partnerId, true, [...path, ".partnerId"]),
-			meToOtherRelationshipDescription: expectString(json.meToOtherRelationshipDescription, true, [...path, ".meToOtherRelationshipDescription"]),
-			otherToMeRelationshipDescription: expectString(json.otherToMeRelationshipDescription, true, [...path, ".otherToMeRelationshipDescription"]),
+	static fromJSON(json: any, ignoreUnknownKeys: boolean = false,
+			path: Array<string> = ['Partnership']): Partnership {
+		if (typeof json != 'object') throw new Error(`Expected json object at path ${path.join("")}`)
+		const jCpy = { ...json }
+		const res = new Partnership({
+			type: expectStringEnum(extractEntry(jCpy.type, 'type', false, path), true, [...path, ".type"], PartnershipType, 'PartnershipType'),
+			status: expectStringEnum(extractEntry(jCpy.status, 'status', false, path), true, [...path, ".status"], PartnershipStatus, 'PartnershipStatus'),
+			partnerId: expectString(extractEntry(jCpy.partnerId, 'partnerId', false, path), true, [...path, ".partnerId"]),
+			meToOtherRelationshipDescription: expectString(extractEntry(jCpy.meToOtherRelationshipDescription, 'meToOtherRelationshipDescription', false, path), true, [...path, ".meToOtherRelationshipDescription"]),
+			otherToMeRelationshipDescription: expectString(extractEntry(jCpy.otherToMeRelationshipDescription, 'otherToMeRelationshipDescription', false, path), true, [...path, ".otherToMeRelationshipDescription"]),
 		})
+		if (!ignoreUnknownKeys) {
+			const unused = Object.keys(jCpy)
+			if (unused.length > 0) throw new Error(`Unexpected key(s) for json object Partnership at path ${path.join("")}: ${unused}`)}
+		return res
 	}
 
 }

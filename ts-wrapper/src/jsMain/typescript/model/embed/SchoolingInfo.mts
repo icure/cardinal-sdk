@@ -1,5 +1,5 @@
 // auto-generated file
-import {expectNumber, expectString} from '../../internal/JsonDecodeUtils.mjs';
+import {expectNumber, expectObject, expectString, extractEntry} from '../../internal/JsonDecodeUtils.mjs';
 import {CodeStub} from '../base/CodeStub.mjs';
 import {Base64String} from '../specializations/Base64String.mjs';
 import {Encryptable} from './Encryptable.mjs';
@@ -52,15 +52,21 @@ export class DecryptedSchoolingInfo {
 		return res
 	}
 
-	static fromJSON(json: any,
+	static fromJSON(json: any, ignoreUnknownKeys: boolean = false,
 			path: Array<string> = ['DecryptedSchoolingInfo']): DecryptedSchoolingInfo {
-		return new DecryptedSchoolingInfo({
-			startDate: expectNumber(json.startDate, true, true, [...path, ".startDate"]),
-			endDate: expectNumber(json.endDate, true, true, [...path, ".endDate"]),
-			school: expectString(json.school, true, [...path, ".school"]),
-			typeOfEducation: CodeStub.fromJSON(json.typeOfEducation, [...path, ".typeOfEducation"]),
-			encryptedSelf: expectString(json.encryptedSelf, false, [...path, ".encryptedSelf"]),
+		if (typeof json != 'object') throw new Error(`Expected json object at path ${path.join("")}`)
+		const jCpy = { ...json }
+		const res = new DecryptedSchoolingInfo({
+			startDate: expectNumber(extractEntry(jCpy.startDate, 'startDate', false, path), true, true, [...path, ".startDate"]),
+			endDate: expectNumber(extractEntry(jCpy.endDate, 'endDate', false, path), true, true, [...path, ".endDate"]),
+			school: expectString(extractEntry(jCpy.school, 'school', false, path), true, [...path, ".school"]),
+			typeOfEducation: expectObject(extractEntry(jCpy.typeOfEducation, 'typeOfEducation', false, path), true, ignoreUnknownKeys, [...path, ".typeOfEducation"], CodeStub.fromJSON),
+			encryptedSelf: expectString(extractEntry(jCpy.encryptedSelf, 'encryptedSelf', false, path), false, [...path, ".encryptedSelf"]),
 		})
+		if (!ignoreUnknownKeys) {
+			const unused = Object.keys(jCpy)
+			if (unused.length > 0) throw new Error(`Unexpected key(s) for json object DecryptedSchoolingInfo at path ${path.join("")}: ${unused}`)}
+		return res
 	}
 
 }
@@ -98,15 +104,21 @@ export class EncryptedSchoolingInfo {
 		return res
 	}
 
-	static fromJSON(json: any,
+	static fromJSON(json: any, ignoreUnknownKeys: boolean = false,
 			path: Array<string> = ['EncryptedSchoolingInfo']): EncryptedSchoolingInfo {
-		return new EncryptedSchoolingInfo({
-			startDate: expectNumber(json.startDate, true, true, [...path, ".startDate"]),
-			endDate: expectNumber(json.endDate, true, true, [...path, ".endDate"]),
-			school: expectString(json.school, true, [...path, ".school"]),
-			typeOfEducation: CodeStub.fromJSON(json.typeOfEducation, [...path, ".typeOfEducation"]),
-			encryptedSelf: expectString(json.encryptedSelf, false, [...path, ".encryptedSelf"]),
+		if (typeof json != 'object') throw new Error(`Expected json object at path ${path.join("")}`)
+		const jCpy = { ...json }
+		const res = new EncryptedSchoolingInfo({
+			startDate: expectNumber(extractEntry(jCpy.startDate, 'startDate', false, path), true, true, [...path, ".startDate"]),
+			endDate: expectNumber(extractEntry(jCpy.endDate, 'endDate', false, path), true, true, [...path, ".endDate"]),
+			school: expectString(extractEntry(jCpy.school, 'school', false, path), true, [...path, ".school"]),
+			typeOfEducation: expectObject(extractEntry(jCpy.typeOfEducation, 'typeOfEducation', false, path), true, ignoreUnknownKeys, [...path, ".typeOfEducation"], CodeStub.fromJSON),
+			encryptedSelf: expectString(extractEntry(jCpy.encryptedSelf, 'encryptedSelf', false, path), false, [...path, ".encryptedSelf"]),
 		})
+		if (!ignoreUnknownKeys) {
+			const unused = Object.keys(jCpy)
+			if (unused.length > 0) throw new Error(`Unexpected key(s) for json object EncryptedSchoolingInfo at path ${path.join("")}: ${unused}`)}
+		return res
 	}
 
 }

@@ -1,5 +1,5 @@
 // auto-generated file
-import {expectString} from '../../internal/JsonDecodeUtils.mjs';
+import {expectString, extractEntry} from '../../internal/JsonDecodeUtils.mjs';
 
 
 export class DocIdentifier {
@@ -20,11 +20,18 @@ export class DocIdentifier {
 		return res
 	}
 
-	static fromJSON(json: any, path: Array<string> = ['DocIdentifier']): DocIdentifier {
-		return new DocIdentifier({
-			id: expectString(json.id, true, [...path, ".id"]),
-			rev: expectString(json.rev, true, [...path, ".rev"]),
+	static fromJSON(json: any, ignoreUnknownKeys: boolean = false,
+			path: Array<string> = ['DocIdentifier']): DocIdentifier {
+		if (typeof json != 'object') throw new Error(`Expected json object at path ${path.join("")}`)
+		const jCpy = { ...json }
+		const res = new DocIdentifier({
+			id: expectString(extractEntry(jCpy.id, 'id', false, path), true, [...path, ".id"]),
+			rev: expectString(extractEntry(jCpy.rev, 'rev', false, path), true, [...path, ".rev"]),
 		})
+		if (!ignoreUnknownKeys) {
+			const unused = Object.keys(jCpy)
+			if (unused.length > 0) throw new Error(`Unexpected key(s) for json object DocIdentifier at path ${path.join("")}: ${unused}`)}
+		return res
 	}
 
 }

@@ -1,5 +1,5 @@
 // auto-generated file
-import {expectNumber, expectString, requireEntry} from '../../internal/JsonDecodeUtils.mjs';
+import {expectNumber, expectString, extractEntry} from '../../internal/JsonDecodeUtils.mjs';
 import {randomUuid} from '../../utils/Id.mjs';
 
 
@@ -53,19 +53,26 @@ export class DatabaseInfo {
 		return res
 	}
 
-	static fromJSON(json: any, path: Array<string> = ['DatabaseInfo']): DatabaseInfo {
-		return new DatabaseInfo({
-			id: expectString(requireEntry(json.id, 'id', path), false, [...path, ".id"]),
-			updateSeq: expectString(json.updateSeq, true, [...path, ".updateSeq"]),
-			fileSize: expectNumber(json.fileSize, true, true, [...path, ".fileSize"]),
-			externalSize: expectNumber(json.externalSize, true, true, [...path, ".externalSize"]),
-			activeSize: expectNumber(json.activeSize, true, true, [...path, ".activeSize"]),
-			docs: expectNumber(json.docs, true, true, [...path, ".docs"]),
-			q: expectNumber(json.q, true, true, [...path, ".q"]),
-			n: expectNumber(json.n, true, true, [...path, ".n"]),
-			w: expectNumber(json.w, true, true, [...path, ".w"]),
-			r: expectNumber(json.r, true, true, [...path, ".r"]),
+	static fromJSON(json: any, ignoreUnknownKeys: boolean = false,
+			path: Array<string> = ['DatabaseInfo']): DatabaseInfo {
+		if (typeof json != 'object') throw new Error(`Expected json object at path ${path.join("")}`)
+		const jCpy = { ...json }
+		const res = new DatabaseInfo({
+			id: expectString(extractEntry(jCpy.id, 'id', true, path), false, [...path, ".id"]),
+			updateSeq: expectString(extractEntry(jCpy.updateSeq, 'updateSeq', false, path), true, [...path, ".updateSeq"]),
+			fileSize: expectNumber(extractEntry(jCpy.fileSize, 'fileSize', false, path), true, true, [...path, ".fileSize"]),
+			externalSize: expectNumber(extractEntry(jCpy.externalSize, 'externalSize', false, path), true, true, [...path, ".externalSize"]),
+			activeSize: expectNumber(extractEntry(jCpy.activeSize, 'activeSize', false, path), true, true, [...path, ".activeSize"]),
+			docs: expectNumber(extractEntry(jCpy.docs, 'docs', false, path), true, true, [...path, ".docs"]),
+			q: expectNumber(extractEntry(jCpy.q, 'q', false, path), true, true, [...path, ".q"]),
+			n: expectNumber(extractEntry(jCpy.n, 'n', false, path), true, true, [...path, ".n"]),
+			w: expectNumber(extractEntry(jCpy.w, 'w', false, path), true, true, [...path, ".w"]),
+			r: expectNumber(extractEntry(jCpy.r, 'r', false, path), true, true, [...path, ".r"]),
 		})
+		if (!ignoreUnknownKeys) {
+			const unused = Object.keys(jCpy)
+			if (unused.length > 0) throw new Error(`Unexpected key(s) for json object DatabaseInfo at path ${path.join("")}: ${unused}`)}
+		return res
 	}
 
 }

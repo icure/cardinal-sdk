@@ -1,5 +1,5 @@
 // auto-generated file
-import {expectNumber, expectString, requireEntry} from '../../internal/JsonDecodeUtils.mjs';
+import {expectNumber, expectString, extractEntry} from '../../internal/JsonDecodeUtils.mjs';
 
 
 export class AuthenticationToken {
@@ -28,13 +28,20 @@ export class AuthenticationToken {
 		return res
 	}
 
-	static fromJSON(json: any, path: Array<string> = ['AuthenticationToken']): AuthenticationToken {
-		return new AuthenticationToken({
-			token: expectString(json.token, true, [...path, ".token"]),
-			creationTime: expectNumber(requireEntry(json.creationTime, 'creationTime', path), false, true, [...path, ".creationTime"]),
-			validity: expectNumber(requireEntry(json.validity, 'validity', path), false, true, [...path, ".validity"]),
-			deletionDate: expectNumber(json.deletionDate, true, true, [...path, ".deletionDate"]),
+	static fromJSON(json: any, ignoreUnknownKeys: boolean = false,
+			path: Array<string> = ['AuthenticationToken']): AuthenticationToken {
+		if (typeof json != 'object') throw new Error(`Expected json object at path ${path.join("")}`)
+		const jCpy = { ...json }
+		const res = new AuthenticationToken({
+			token: expectString(extractEntry(jCpy.token, 'token', false, path), true, [...path, ".token"]),
+			creationTime: expectNumber(extractEntry(jCpy.creationTime, 'creationTime', true, path), false, true, [...path, ".creationTime"]),
+			validity: expectNumber(extractEntry(jCpy.validity, 'validity', true, path), false, true, [...path, ".validity"]),
+			deletionDate: expectNumber(extractEntry(jCpy.deletionDate, 'deletionDate', false, path), true, true, [...path, ".deletionDate"]),
 		})
+		if (!ignoreUnknownKeys) {
+			const unused = Object.keys(jCpy)
+			if (unused.length > 0) throw new Error(`Unexpected key(s) for json object AuthenticationToken at path ${path.join("")}: ${unused}`)}
+		return res
 	}
 
 }

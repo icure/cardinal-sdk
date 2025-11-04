@@ -1,5 +1,5 @@
 // auto-generated file
-import {expectArray, expectString, expectStringEnum, requireEntry} from '../../internal/JsonDecodeUtils.mjs';
+import {expectArray, expectString, expectStringEnum, extractEntry} from '../../internal/JsonDecodeUtils.mjs';
 
 
 export class RoleConfiguration {
@@ -20,11 +20,18 @@ export class RoleConfiguration {
 		return res
 	}
 
-	static fromJSON(json: any, path: Array<string> = ['RoleConfiguration']): RoleConfiguration {
-		return new RoleConfiguration({
-			source: expectStringEnum(requireEntry(json.source, 'source', path), false, [...path, ".source"], RoleConfiguration.Source, 'RoleConfiguration.Source'),
-			roles: expectArray(json.roles, false, [...path, ".roles"], (x0, p0) => expectString(x0, false, p0)),
+	static fromJSON(json: any, ignoreUnknownKeys: boolean = false,
+			path: Array<string> = ['RoleConfiguration']): RoleConfiguration {
+		if (typeof json != 'object') throw new Error(`Expected json object at path ${path.join("")}`)
+		const jCpy = { ...json }
+		const res = new RoleConfiguration({
+			source: expectStringEnum(extractEntry(jCpy.source, 'source', true, path), false, [...path, ".source"], RoleConfiguration.Source, 'RoleConfiguration.Source'),
+			roles: expectArray(extractEntry(jCpy.roles, 'roles', false, path), false, [...path, ".roles"], (x0, p0) => expectString(x0, false, p0)),
 		})
+		if (!ignoreUnknownKeys) {
+			const unused = Object.keys(jCpy)
+			if (unused.length > 0) throw new Error(`Unexpected key(s) for json object RoleConfiguration at path ${path.join("")}: ${unused}`)}
+		return res
 	}
 
 }

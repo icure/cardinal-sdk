@@ -1,5 +1,5 @@
 // auto-generated file
-import {expectString, requireEntry} from '../../internal/JsonDecodeUtils.mjs';
+import {expectString, extractEntry} from '../../internal/JsonDecodeUtils.mjs';
 
 
 export class View {
@@ -20,11 +20,18 @@ export class View {
 		return res
 	}
 
-	static fromJSON(json: any, path: Array<string> = ['View']): View {
-		return new View({
-			map: expectString(requireEntry(json.map, 'map', path), false, [...path, ".map"]),
-			reduce: expectString(json.reduce, true, [...path, ".reduce"]),
+	static fromJSON(json: any, ignoreUnknownKeys: boolean = false,
+			path: Array<string> = ['View']): View {
+		if (typeof json != 'object') throw new Error(`Expected json object at path ${path.join("")}`)
+		const jCpy = { ...json }
+		const res = new View({
+			map: expectString(extractEntry(jCpy.map, 'map', true, path), false, [...path, ".map"]),
+			reduce: expectString(extractEntry(jCpy.reduce, 'reduce', false, path), true, [...path, ".reduce"]),
 		})
+		if (!ignoreUnknownKeys) {
+			const unused = Object.keys(jCpy)
+			if (unused.length > 0) throw new Error(`Unexpected key(s) for json object View at path ${path.join("")}: ${unused}`)}
+		return res
 	}
 
 }

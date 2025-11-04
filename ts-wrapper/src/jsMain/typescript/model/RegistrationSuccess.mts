@@ -1,5 +1,5 @@
 // auto-generated file
-import {expectString, requireEntry} from '../internal/JsonDecodeUtils.mjs';
+import {expectString, extractEntry} from '../internal/JsonDecodeUtils.mjs';
 
 
 export class RegistrationSuccess {
@@ -24,12 +24,19 @@ export class RegistrationSuccess {
 		return res
 	}
 
-	static fromJSON(json: any, path: Array<string> = ['RegistrationSuccess']): RegistrationSuccess {
-		return new RegistrationSuccess({
-			groupId: expectString(requireEntry(json.groupId, 'groupId', path), false, [...path, ".groupId"]),
-			userId: expectString(requireEntry(json.userId, 'userId', path), false, [...path, ".userId"]),
-			token: expectString(requireEntry(json.token, 'token', path), false, [...path, ".token"]),
+	static fromJSON(json: any, ignoreUnknownKeys: boolean = false,
+			path: Array<string> = ['RegistrationSuccess']): RegistrationSuccess {
+		if (typeof json != 'object') throw new Error(`Expected json object at path ${path.join("")}`)
+		const jCpy = { ...json }
+		const res = new RegistrationSuccess({
+			groupId: expectString(extractEntry(jCpy.groupId, 'groupId', true, path), false, [...path, ".groupId"]),
+			userId: expectString(extractEntry(jCpy.userId, 'userId', true, path), false, [...path, ".userId"]),
+			token: expectString(extractEntry(jCpy.token, 'token', true, path), false, [...path, ".token"]),
 		})
+		if (!ignoreUnknownKeys) {
+			const unused = Object.keys(jCpy)
+			if (unused.length > 0) throw new Error(`Unexpected key(s) for json object RegistrationSuccess at path ${path.join("")}: ${unused}`)}
+		return res
 	}
 
 }

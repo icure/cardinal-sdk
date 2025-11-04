@@ -1,5 +1,5 @@
 // auto-generated file
-import {expectBoolean, expectNumber} from '../../internal/JsonDecodeUtils.mjs';
+import {expectBoolean, expectNumber, extractEntry} from '../../internal/JsonDecodeUtils.mjs';
 
 
 export class MessageReadStatus {
@@ -20,11 +20,18 @@ export class MessageReadStatus {
 		return res
 	}
 
-	static fromJSON(json: any, path: Array<string> = ['MessageReadStatus']): MessageReadStatus {
-		return new MessageReadStatus({
-			time: expectNumber(json.time, true, true, [...path, ".time"]),
-			read: expectBoolean(json.read, false, [...path, ".read"]),
+	static fromJSON(json: any, ignoreUnknownKeys: boolean = false,
+			path: Array<string> = ['MessageReadStatus']): MessageReadStatus {
+		if (typeof json != 'object') throw new Error(`Expected json object at path ${path.join("")}`)
+		const jCpy = { ...json }
+		const res = new MessageReadStatus({
+			time: expectNumber(extractEntry(jCpy.time, 'time', false, path), true, true, [...path, ".time"]),
+			read: expectBoolean(extractEntry(jCpy.read, 'read', false, path), false, [...path, ".read"]),
 		})
+		if (!ignoreUnknownKeys) {
+			const unused = Object.keys(jCpy)
+			if (unused.length > 0) throw new Error(`Unexpected key(s) for json object MessageReadStatus at path ${path.join("")}: ${unused}`)}
+		return res
 	}
 
 }

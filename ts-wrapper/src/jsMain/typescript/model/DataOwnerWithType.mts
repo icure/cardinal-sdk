@@ -1,5 +1,5 @@
 // auto-generated file
-import {requireEntry} from '../internal/JsonDecodeUtils.mjs';
+import {expectObject, extractEntry} from '../internal/JsonDecodeUtils.mjs';
 import {Device} from './Device.mjs';
 import {HealthcareParty} from './HealthcareParty.mjs';
 import {EncryptedPatient} from './Patient.mjs';
@@ -25,10 +25,17 @@ export namespace DataOwnerWithType {
 			return res
 		}
 
-		static fromJSON(json: any, path: Array<string> = ['HcpDataOwner']): HcpDataOwner {
-			return new HcpDataOwner({
-				dataOwner: HealthcareParty.fromJSON(requireEntry(json.dataOwner, 'dataOwner', path), [...path, ".dataOwner"]),
+		static fromJSON(json: any, ignoreUnknownKeys: boolean = false,
+				path: Array<string> = ['HcpDataOwner']): HcpDataOwner {
+			if (typeof json != 'object') throw new Error(`Expected json object at path ${path.join("")}`)
+			const jCpy = { ...json }
+			const res = new HcpDataOwner({
+				dataOwner: expectObject(extractEntry(jCpy.dataOwner, 'dataOwner', true, path), false, ignoreUnknownKeys, [...path, ".dataOwner"], HealthcareParty.fromJSON),
 			})
+			if (!ignoreUnknownKeys) {
+				const unused = Object.keys(jCpy)
+				if (unused.length > 0) throw new Error(`Unexpected key(s) for json object HcpDataOwner at path ${path.join("")}: ${unused}`)}
+			return res
 		}
 
 	}
@@ -49,10 +56,17 @@ export namespace DataOwnerWithType {
 			return res
 		}
 
-		static fromJSON(json: any, path: Array<string> = ['PatientDataOwner']): PatientDataOwner {
-			return new PatientDataOwner({
-				dataOwner: EncryptedPatient.fromJSON(requireEntry(json.dataOwner, 'dataOwner', path), [...path, ".dataOwner"]),
+		static fromJSON(json: any, ignoreUnknownKeys: boolean = false,
+				path: Array<string> = ['PatientDataOwner']): PatientDataOwner {
+			if (typeof json != 'object') throw new Error(`Expected json object at path ${path.join("")}`)
+			const jCpy = { ...json }
+			const res = new PatientDataOwner({
+				dataOwner: expectObject(extractEntry(jCpy.dataOwner, 'dataOwner', true, path), false, ignoreUnknownKeys, [...path, ".dataOwner"], EncryptedPatient.fromJSON),
 			})
+			if (!ignoreUnknownKeys) {
+				const unused = Object.keys(jCpy)
+				if (unused.length > 0) throw new Error(`Unexpected key(s) for json object PatientDataOwner at path ${path.join("")}: ${unused}`)}
+			return res
 		}
 
 	}
@@ -73,20 +87,27 @@ export namespace DataOwnerWithType {
 			return res
 		}
 
-		static fromJSON(json: any, path: Array<string> = ['DeviceDataOwner']): DeviceDataOwner {
-			return new DeviceDataOwner({
-				dataOwner: Device.fromJSON(requireEntry(json.dataOwner, 'dataOwner', path), [...path, ".dataOwner"]),
+		static fromJSON(json: any, ignoreUnknownKeys: boolean = false,
+				path: Array<string> = ['DeviceDataOwner']): DeviceDataOwner {
+			if (typeof json != 'object') throw new Error(`Expected json object at path ${path.join("")}`)
+			const jCpy = { ...json }
+			const res = new DeviceDataOwner({
+				dataOwner: expectObject(extractEntry(jCpy.dataOwner, 'dataOwner', true, path), false, ignoreUnknownKeys, [...path, ".dataOwner"], Device.fromJSON),
 			})
+			if (!ignoreUnknownKeys) {
+				const unused = Object.keys(jCpy)
+				if (unused.length > 0) throw new Error(`Unexpected key(s) for json object DeviceDataOwner at path ${path.join("")}: ${unused}`)}
+			return res
 		}
 
 	}
 
-	export function fromJSON(json: any,
+	export function fromJSON(json: any, ignoreUnknownKeys: boolean = false,
 			path: Array<string> = ['DataOwnerWithType']): DataOwnerWithType {
 		switch ((json as DataOwnerWithType).$ktClass) {
-			case 'com.icure.cardinal.sdk.model.DataOwnerWithType.HcpDataOwner': return HcpDataOwner.fromJSON(json)
-			case 'com.icure.cardinal.sdk.model.DataOwnerWithType.PatientDataOwner': return PatientDataOwner.fromJSON(json)
-			case 'com.icure.cardinal.sdk.model.DataOwnerWithType.DeviceDataOwner': return DeviceDataOwner.fromJSON(json)
+			case 'com.icure.cardinal.sdk.model.DataOwnerWithType.HcpDataOwner': return HcpDataOwner.fromJSON(json, ignoreUnknownKeys)
+			case 'com.icure.cardinal.sdk.model.DataOwnerWithType.PatientDataOwner': return PatientDataOwner.fromJSON(json, ignoreUnknownKeys)
+			case 'com.icure.cardinal.sdk.model.DataOwnerWithType.DeviceDataOwner': return DeviceDataOwner.fromJSON(json, ignoreUnknownKeys)
 			default: throw new Error('Unexpected discriminator for DataOwnerWithType: ' + json.$ktClass)
 		}
 	}

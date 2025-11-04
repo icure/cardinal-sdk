@@ -1,5 +1,5 @@
 // auto-generated file
-import {expectString} from '../../internal/JsonDecodeUtils.mjs';
+import {expectString, extractEntry} from '../../internal/JsonDecodeUtils.mjs';
 
 
 export class ServiceLink {
@@ -16,10 +16,17 @@ export class ServiceLink {
 		return res
 	}
 
-	static fromJSON(json: any, path: Array<string> = ['ServiceLink']): ServiceLink {
-		return new ServiceLink({
-			serviceId: expectString(json.serviceId, true, [...path, ".serviceId"]),
+	static fromJSON(json: any, ignoreUnknownKeys: boolean = false,
+			path: Array<string> = ['ServiceLink']): ServiceLink {
+		if (typeof json != 'object') throw new Error(`Expected json object at path ${path.join("")}`)
+		const jCpy = { ...json }
+		const res = new ServiceLink({
+			serviceId: expectString(extractEntry(jCpy.serviceId, 'serviceId', false, path), true, [...path, ".serviceId"]),
 		})
+		if (!ignoreUnknownKeys) {
+			const unused = Object.keys(jCpy)
+			if (unused.length > 0) throw new Error(`Unexpected key(s) for json object ServiceLink at path ${path.join("")}: ${unused}`)}
+		return res
 	}
 
 }

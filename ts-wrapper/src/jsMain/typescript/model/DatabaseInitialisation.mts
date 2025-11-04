@@ -1,5 +1,5 @@
 // auto-generated file
-import {expectArray, expectString} from '../internal/JsonDecodeUtils.mjs';
+import {expectArray, expectObject, expectString, extractEntry} from '../internal/JsonDecodeUtils.mjs';
 import {HealthcareParty} from './HealthcareParty.mjs';
 import {Replication} from './Replication.mjs';
 import {User} from './User.mjs';
@@ -31,14 +31,20 @@ export class DatabaseInitialisation {
 		return res
 	}
 
-	static fromJSON(json: any,
+	static fromJSON(json: any, ignoreUnknownKeys: boolean = false,
 			path: Array<string> = ['DatabaseInitialisation']): DatabaseInitialisation {
-		return new DatabaseInitialisation({
-			users: expectArray(json.users, true, [...path, ".users"], (x0, p0) => User.fromJSON(x0, p0)),
-			healthcareParties: expectArray(json.healthcareParties, true, [...path, ".healthcareParties"], (x0, p0) => HealthcareParty.fromJSON(x0, p0)),
-			replication: Replication.fromJSON(json.replication, [...path, ".replication"]),
-			minimumKrakenVersion: expectString(json.minimumKrakenVersion, true, [...path, ".minimumKrakenVersion"]),
+		if (typeof json != 'object') throw new Error(`Expected json object at path ${path.join("")}`)
+		const jCpy = { ...json }
+		const res = new DatabaseInitialisation({
+			users: expectArray(extractEntry(jCpy.users, 'users', false, path), true, [...path, ".users"], (x0, p0) => expectObject(x0, false, ignoreUnknownKeys, p0, User.fromJSON)),
+			healthcareParties: expectArray(extractEntry(jCpy.healthcareParties, 'healthcareParties', false, path), true, [...path, ".healthcareParties"], (x0, p0) => expectObject(x0, false, ignoreUnknownKeys, p0, HealthcareParty.fromJSON)),
+			replication: expectObject(extractEntry(jCpy.replication, 'replication', false, path), true, ignoreUnknownKeys, [...path, ".replication"], Replication.fromJSON),
+			minimumKrakenVersion: expectString(extractEntry(jCpy.minimumKrakenVersion, 'minimumKrakenVersion', false, path), true, [...path, ".minimumKrakenVersion"]),
 		})
+		if (!ignoreUnknownKeys) {
+			const unused = Object.keys(jCpy)
+			if (unused.length > 0) throw new Error(`Unexpected key(s) for json object DatabaseInitialisation at path ${path.join("")}: ${unused}`)}
+		return res
 	}
 
 }

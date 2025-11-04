@@ -1,5 +1,5 @@
 // auto-generated file
-import {expectBoolean, expectString} from '../../internal/JsonDecodeUtils.mjs';
+import {expectBoolean, expectString, extractEntry} from '../../internal/JsonDecodeUtils.mjs';
 
 
 export class Right {
@@ -28,13 +28,20 @@ export class Right {
 		return res
 	}
 
-	static fromJSON(json: any, path: Array<string> = ['Right']): Right {
-		return new Right({
-			userId: expectString(json.userId, true, [...path, ".userId"]),
-			read: expectBoolean(json.read, false, [...path, ".read"]),
-			write: expectBoolean(json.write, false, [...path, ".write"]),
-			administration: expectBoolean(json.administration, false, [...path, ".administration"]),
+	static fromJSON(json: any, ignoreUnknownKeys: boolean = false,
+			path: Array<string> = ['Right']): Right {
+		if (typeof json != 'object') throw new Error(`Expected json object at path ${path.join("")}`)
+		const jCpy = { ...json }
+		const res = new Right({
+			userId: expectString(extractEntry(jCpy.userId, 'userId', false, path), true, [...path, ".userId"]),
+			read: expectBoolean(extractEntry(jCpy.read, 'read', false, path), false, [...path, ".read"]),
+			write: expectBoolean(extractEntry(jCpy.write, 'write', false, path), false, [...path, ".write"]),
+			administration: expectBoolean(extractEntry(jCpy.administration, 'administration', false, path), false, [...path, ".administration"]),
 		})
+		if (!ignoreUnknownKeys) {
+			const unused = Object.keys(jCpy)
+			if (unused.length > 0) throw new Error(`Unexpected key(s) for json object Right at path ${path.join("")}: ${unused}`)}
+		return res
 	}
 
 }

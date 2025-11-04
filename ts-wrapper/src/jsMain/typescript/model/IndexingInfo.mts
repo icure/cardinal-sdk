@@ -1,5 +1,5 @@
 // auto-generated file
-import {expectMap, expectNumber, expectString} from '../internal/JsonDecodeUtils.mjs';
+import {expectMap, expectNumber, expectString, extractEntry} from '../internal/JsonDecodeUtils.mjs';
 
 
 export class IndexingInfo {
@@ -16,16 +16,23 @@ export class IndexingInfo {
 		return res
 	}
 
-	static fromJSON(json: any, path: Array<string> = ['IndexingInfo']): IndexingInfo {
-		return new IndexingInfo({
+	static fromJSON(json: any, ignoreUnknownKeys: boolean = false,
+			path: Array<string> = ['IndexingInfo']): IndexingInfo {
+		if (typeof json != 'object') throw new Error(`Expected json object at path ${path.join("")}`)
+		const jCpy = { ...json }
+		const res = new IndexingInfo({
 			statuses: expectMap(
-				json.statuses,
+				extractEntry(jCpy.statuses, 'statuses', false, path),
 				true,
 				[...path, ".statuses"],
 				(k0, p0) => expectString(k0, false, p0),
 				(v0, p0) => expectNumber(v0, false, true, p0)
 			),
 		})
+		if (!ignoreUnknownKeys) {
+			const unused = Object.keys(jCpy)
+			if (unused.length > 0) throw new Error(`Unexpected key(s) for json object IndexingInfo at path ${path.join("")}: ${unused}`)}
+		return res
 	}
 
 }

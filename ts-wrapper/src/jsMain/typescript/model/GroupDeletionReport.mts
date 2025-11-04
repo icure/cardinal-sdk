@@ -1,5 +1,5 @@
 // auto-generated file
-import {expectString, requireEntry} from '../internal/JsonDecodeUtils.mjs';
+import {expectString, extractEntry} from '../internal/JsonDecodeUtils.mjs';
 import {randomUuid} from '../utils/Id.mjs';
 
 
@@ -25,12 +25,19 @@ export class GroupDeletionReport {
 		return res
 	}
 
-	static fromJSON(json: any, path: Array<string> = ['GroupDeletionReport']): GroupDeletionReport {
-		return new GroupDeletionReport({
-			type: expectString(requireEntry(json.type, 'type', path), false, [...path, ".type"]),
-			id: expectString(requireEntry(json.id, 'id', path), false, [...path, ".id"]),
-			server: expectString(requireEntry(json.server, 'server', path), false, [...path, ".server"]),
+	static fromJSON(json: any, ignoreUnknownKeys: boolean = false,
+			path: Array<string> = ['GroupDeletionReport']): GroupDeletionReport {
+		if (typeof json != 'object') throw new Error(`Expected json object at path ${path.join("")}`)
+		const jCpy = { ...json }
+		const res = new GroupDeletionReport({
+			type: expectString(extractEntry(jCpy.type, 'type', true, path), false, [...path, ".type"]),
+			id: expectString(extractEntry(jCpy.id, 'id', true, path), false, [...path, ".id"]),
+			server: expectString(extractEntry(jCpy.server, 'server', true, path), false, [...path, ".server"]),
 		})
+		if (!ignoreUnknownKeys) {
+			const unused = Object.keys(jCpy)
+			if (unused.length > 0) throw new Error(`Unexpected key(s) for json object GroupDeletionReport at path ${path.join("")}: ${unused}`)}
+		return res
 	}
 
 }

@@ -1,5 +1,5 @@
 // auto-generated file
-import {expectBoolean, requireEntry} from '../internal/JsonDecodeUtils.mjs';
+import {expectBoolean, extractEntry} from '../internal/JsonDecodeUtils.mjs';
 
 
 export class BooleanResponse {
@@ -16,10 +16,17 @@ export class BooleanResponse {
 		return res
 	}
 
-	static fromJSON(json: any, path: Array<string> = ['BooleanResponse']): BooleanResponse {
-		return new BooleanResponse({
-			response: expectBoolean(requireEntry(json.response, 'response', path), false, [...path, ".response"]),
+	static fromJSON(json: any, ignoreUnknownKeys: boolean = false,
+			path: Array<string> = ['BooleanResponse']): BooleanResponse {
+		if (typeof json != 'object') throw new Error(`Expected json object at path ${path.join("")}`)
+		const jCpy = { ...json }
+		const res = new BooleanResponse({
+			response: expectBoolean(extractEntry(jCpy.response, 'response', true, path), false, [...path, ".response"]),
 		})
+		if (!ignoreUnknownKeys) {
+			const unused = Object.keys(jCpy)
+			if (unused.length > 0) throw new Error(`Unexpected key(s) for json object BooleanResponse at path ${path.join("")}: ${unused}`)}
+		return res
 	}
 
 }

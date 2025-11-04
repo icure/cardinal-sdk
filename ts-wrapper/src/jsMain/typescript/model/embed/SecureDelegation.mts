@@ -1,5 +1,5 @@
 // auto-generated file
-import {expectArray, expectString, expectStringEnum, requireEntry} from '../../internal/JsonDecodeUtils.mjs';
+import {expectArray, expectString, expectStringEnum, extractEntry} from '../../internal/JsonDecodeUtils.mjs';
 import {Base64String} from '../specializations/Base64String.mjs';
 import {SecureDelegationKeyString} from '../specializations/SecureDelegationKeyString.mjs';
 import {AccessLevel} from './AccessLevel.mjs';
@@ -47,17 +47,24 @@ export class SecureDelegation {
 		return res
 	}
 
-	static fromJSON(json: any, path: Array<string> = ['SecureDelegation']): SecureDelegation {
-		return new SecureDelegation({
-			delegator: expectString(json.delegator, true, [...path, ".delegator"]),
-			delegate: expectString(json.delegate, true, [...path, ".delegate"]),
-			secretIds: expectArray(json.secretIds, false, [...path, ".secretIds"], (x0, p0) => expectString(x0, false, p0)),
-			encryptionKeys: expectArray(json.encryptionKeys, false, [...path, ".encryptionKeys"], (x0, p0) => expectString(x0, false, p0)),
-			owningEntityIds: expectArray(json.owningEntityIds, false, [...path, ".owningEntityIds"], (x0, p0) => expectString(x0, false, p0)),
-			parentDelegations: expectArray(json.parentDelegations, false, [...path, ".parentDelegations"], (x0, p0) => expectString(x0, false, p0)),
-			exchangeDataId: expectString(json.exchangeDataId, true, [...path, ".exchangeDataId"]),
-			permissions: expectStringEnum(requireEntry(json.permissions, 'permissions', path), false, [...path, ".permissions"], AccessLevel, 'AccessLevel'),
+	static fromJSON(json: any, ignoreUnknownKeys: boolean = false,
+			path: Array<string> = ['SecureDelegation']): SecureDelegation {
+		if (typeof json != 'object') throw new Error(`Expected json object at path ${path.join("")}`)
+		const jCpy = { ...json }
+		const res = new SecureDelegation({
+			delegator: expectString(extractEntry(jCpy.delegator, 'delegator', false, path), true, [...path, ".delegator"]),
+			delegate: expectString(extractEntry(jCpy.delegate, 'delegate', false, path), true, [...path, ".delegate"]),
+			secretIds: expectArray(extractEntry(jCpy.secretIds, 'secretIds', false, path), false, [...path, ".secretIds"], (x0, p0) => expectString(x0, false, p0)),
+			encryptionKeys: expectArray(extractEntry(jCpy.encryptionKeys, 'encryptionKeys', false, path), false, [...path, ".encryptionKeys"], (x0, p0) => expectString(x0, false, p0)),
+			owningEntityIds: expectArray(extractEntry(jCpy.owningEntityIds, 'owningEntityIds', false, path), false, [...path, ".owningEntityIds"], (x0, p0) => expectString(x0, false, p0)),
+			parentDelegations: expectArray(extractEntry(jCpy.parentDelegations, 'parentDelegations', false, path), false, [...path, ".parentDelegations"], (x0, p0) => expectString(x0, false, p0)),
+			exchangeDataId: expectString(extractEntry(jCpy.exchangeDataId, 'exchangeDataId', false, path), true, [...path, ".exchangeDataId"]),
+			permissions: expectStringEnum(extractEntry(jCpy.permissions, 'permissions', true, path), false, [...path, ".permissions"], AccessLevel, 'AccessLevel'),
 		})
+		if (!ignoreUnknownKeys) {
+			const unused = Object.keys(jCpy)
+			if (unused.length > 0) throw new Error(`Unexpected key(s) for json object SecureDelegation at path ${path.join("")}: ${unused}`)}
+		return res
 	}
 
 }

@@ -1,5 +1,5 @@
 // auto-generated file
-import {expectString, requireEntry} from '../../internal/JsonDecodeUtils.mjs';
+import {expectString, extractEntry} from '../../internal/JsonDecodeUtils.mjs';
 
 
 export class TokenWithGroup {
@@ -24,12 +24,19 @@ export class TokenWithGroup {
 		return res
 	}
 
-	static fromJSON(json: any, path: Array<string> = ['TokenWithGroup']): TokenWithGroup {
-		return new TokenWithGroup({
-			token: expectString(requireEntry(json.token, 'token', path), false, [...path, ".token"]),
-			groupId: expectString(requireEntry(json.groupId, 'groupId', path), false, [...path, ".groupId"]),
-			groupName: expectString(json.groupName, true, [...path, ".groupName"]),
+	static fromJSON(json: any, ignoreUnknownKeys: boolean = false,
+			path: Array<string> = ['TokenWithGroup']): TokenWithGroup {
+		if (typeof json != 'object') throw new Error(`Expected json object at path ${path.join("")}`)
+		const jCpy = { ...json }
+		const res = new TokenWithGroup({
+			token: expectString(extractEntry(jCpy.token, 'token', true, path), false, [...path, ".token"]),
+			groupId: expectString(extractEntry(jCpy.groupId, 'groupId', true, path), false, [...path, ".groupId"]),
+			groupName: expectString(extractEntry(jCpy.groupName, 'groupName', false, path), true, [...path, ".groupName"]),
 		})
+		if (!ignoreUnknownKeys) {
+			const unused = Object.keys(jCpy)
+			if (unused.length > 0) throw new Error(`Unexpected key(s) for json object TokenWithGroup at path ${path.join("")}: ${unused}`)}
+		return res
 	}
 
 }

@@ -1,5 +1,5 @@
 // auto-generated file
-import {expectBoolean, expectNumber, expectString, expectStringEnum} from '../../internal/JsonDecodeUtils.mjs';
+import {expectBoolean, expectNumber, expectString, expectStringEnum, extractEntry} from '../../internal/JsonDecodeUtils.mjs';
 import {Base64String} from '../specializations/Base64String.mjs';
 import {Encryptable} from './Encryptable.mjs';
 import {TypedValuesType} from './TypedValuesType.mjs';
@@ -64,16 +64,23 @@ export class DecryptedTypedValue {
 		return res
 	}
 
-	static fromJSON(json: any, path: Array<string> = ['DecryptedTypedValue']): DecryptedTypedValue {
-		return new DecryptedTypedValue({
-			type: expectStringEnum(json.type, true, [...path, ".type"], TypedValuesType, 'TypedValuesType'),
-			booleanValue: expectBoolean(json.booleanValue, true, [...path, ".booleanValue"]),
-			integerValue: expectNumber(json.integerValue, true, true, [...path, ".integerValue"]),
-			doubleValue: expectNumber(json.doubleValue, true, false, [...path, ".doubleValue"]),
-			stringValue: expectString(json.stringValue, true, [...path, ".stringValue"]),
-			dateValue: expectNumber(json.dateValue, true, true, [...path, ".dateValue"]),
-			encryptedSelf: expectString(json.encryptedSelf, false, [...path, ".encryptedSelf"]),
+	static fromJSON(json: any, ignoreUnknownKeys: boolean = false,
+			path: Array<string> = ['DecryptedTypedValue']): DecryptedTypedValue {
+		if (typeof json != 'object') throw new Error(`Expected json object at path ${path.join("")}`)
+		const jCpy = { ...json }
+		const res = new DecryptedTypedValue({
+			type: expectStringEnum(extractEntry(jCpy.type, 'type', false, path), true, [...path, ".type"], TypedValuesType, 'TypedValuesType'),
+			booleanValue: expectBoolean(extractEntry(jCpy.booleanValue, 'booleanValue', false, path), true, [...path, ".booleanValue"]),
+			integerValue: expectNumber(extractEntry(jCpy.integerValue, 'integerValue', false, path), true, true, [...path, ".integerValue"]),
+			doubleValue: expectNumber(extractEntry(jCpy.doubleValue, 'doubleValue', false, path), true, false, [...path, ".doubleValue"]),
+			stringValue: expectString(extractEntry(jCpy.stringValue, 'stringValue', false, path), true, [...path, ".stringValue"]),
+			dateValue: expectNumber(extractEntry(jCpy.dateValue, 'dateValue', false, path), true, true, [...path, ".dateValue"]),
+			encryptedSelf: expectString(extractEntry(jCpy.encryptedSelf, 'encryptedSelf', false, path), false, [...path, ".encryptedSelf"]),
 		})
+		if (!ignoreUnknownKeys) {
+			const unused = Object.keys(jCpy)
+			if (unused.length > 0) throw new Error(`Unexpected key(s) for json object DecryptedTypedValue at path ${path.join("")}: ${unused}`)}
+		return res
 	}
 
 }
@@ -119,16 +126,23 @@ export class EncryptedTypedValue {
 		return res
 	}
 
-	static fromJSON(json: any, path: Array<string> = ['EncryptedTypedValue']): EncryptedTypedValue {
-		return new EncryptedTypedValue({
-			type: expectStringEnum(json.type, true, [...path, ".type"], TypedValuesType, 'TypedValuesType'),
-			booleanValue: expectBoolean(json.booleanValue, true, [...path, ".booleanValue"]),
-			integerValue: expectNumber(json.integerValue, true, true, [...path, ".integerValue"]),
-			doubleValue: expectNumber(json.doubleValue, true, false, [...path, ".doubleValue"]),
-			stringValue: expectString(json.stringValue, true, [...path, ".stringValue"]),
-			dateValue: expectNumber(json.dateValue, true, true, [...path, ".dateValue"]),
-			encryptedSelf: expectString(json.encryptedSelf, false, [...path, ".encryptedSelf"]),
+	static fromJSON(json: any, ignoreUnknownKeys: boolean = false,
+			path: Array<string> = ['EncryptedTypedValue']): EncryptedTypedValue {
+		if (typeof json != 'object') throw new Error(`Expected json object at path ${path.join("")}`)
+		const jCpy = { ...json }
+		const res = new EncryptedTypedValue({
+			type: expectStringEnum(extractEntry(jCpy.type, 'type', false, path), true, [...path, ".type"], TypedValuesType, 'TypedValuesType'),
+			booleanValue: expectBoolean(extractEntry(jCpy.booleanValue, 'booleanValue', false, path), true, [...path, ".booleanValue"]),
+			integerValue: expectNumber(extractEntry(jCpy.integerValue, 'integerValue', false, path), true, true, [...path, ".integerValue"]),
+			doubleValue: expectNumber(extractEntry(jCpy.doubleValue, 'doubleValue', false, path), true, false, [...path, ".doubleValue"]),
+			stringValue: expectString(extractEntry(jCpy.stringValue, 'stringValue', false, path), true, [...path, ".stringValue"]),
+			dateValue: expectNumber(extractEntry(jCpy.dateValue, 'dateValue', false, path), true, true, [...path, ".dateValue"]),
+			encryptedSelf: expectString(extractEntry(jCpy.encryptedSelf, 'encryptedSelf', false, path), false, [...path, ".encryptedSelf"]),
 		})
+		if (!ignoreUnknownKeys) {
+			const unused = Object.keys(jCpy)
+			if (unused.length > 0) throw new Error(`Unexpected key(s) for json object EncryptedTypedValue at path ${path.join("")}: ${unused}`)}
+		return res
 	}
 
 }

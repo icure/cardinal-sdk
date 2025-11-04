@@ -1,5 +1,5 @@
 // auto-generated file
-import {expectArray, expectBoolean, expectMap, expectNumber, expectString, requireEntry} from '../../../../internal/JsonDecodeUtils.mjs';
+import {expectArray, expectBoolean, expectMap, expectNumber, expectString, extractEntry} from '../../../../internal/JsonDecodeUtils.mjs';
 
 
 export class CheckBox {
@@ -82,38 +82,45 @@ export class CheckBox {
 		return res
 	}
 
-	static fromJSON(json: any, path: Array<string> = ['CheckBox']): CheckBox {
-		return new CheckBox({
-			field: expectString(requireEntry(json.field, 'field', path), false, [...path, ".field"]),
-			shortLabel: expectString(json.shortLabel, true, [...path, ".shortLabel"]),
-			rows: expectNumber(json.rows, true, true, [...path, ".rows"]),
-			columns: expectNumber(json.columns, true, true, [...path, ".columns"]),
-			grows: expectBoolean(json.grows, true, [...path, ".grows"]),
-			multiline: expectBoolean(json.multiline, true, [...path, ".multiline"]),
-			schema: expectString(json.schema, true, [...path, ".schema"]),
-			tags: expectArray(json.tags, true, [...path, ".tags"], (x0, p0) => expectString(x0, false, p0)),
-			codifications: expectArray(json.codifications, true, [...path, ".codifications"], (x0, p0) => expectString(x0, false, p0)),
+	static fromJSON(json: any, ignoreUnknownKeys: boolean = false,
+			path: Array<string> = ['CheckBox']): CheckBox {
+		if (typeof json != 'object') throw new Error(`Expected json object at path ${path.join("")}`)
+		const jCpy = { ...json }
+		const res = new CheckBox({
+			field: expectString(extractEntry(jCpy.field, 'field', true, path), false, [...path, ".field"]),
+			shortLabel: expectString(extractEntry(jCpy.shortLabel, 'shortLabel', false, path), true, [...path, ".shortLabel"]),
+			rows: expectNumber(extractEntry(jCpy.rows, 'rows', false, path), true, true, [...path, ".rows"]),
+			columns: expectNumber(extractEntry(jCpy.columns, 'columns', false, path), true, true, [...path, ".columns"]),
+			grows: expectBoolean(extractEntry(jCpy.grows, 'grows', false, path), true, [...path, ".grows"]),
+			multiline: expectBoolean(extractEntry(jCpy.multiline, 'multiline', false, path), true, [...path, ".multiline"]),
+			schema: expectString(extractEntry(jCpy.schema, 'schema', false, path), true, [...path, ".schema"]),
+			tags: expectArray(extractEntry(jCpy.tags, 'tags', false, path), true, [...path, ".tags"], (x0, p0) => expectString(x0, false, p0)),
+			codifications: expectArray(extractEntry(jCpy.codifications, 'codifications', false, path), true, [...path, ".codifications"], (x0, p0) => expectString(x0, false, p0)),
 			options: expectMap(
-				json.options,
+				extractEntry(jCpy.options, 'options', false, path),
 				true,
 				[...path, ".options"],
 				(k0, p0) => expectString(k0, false, p0),
 				(v0, p0) => expectString(v0, false, p0)
 			),
 			labels: expectMap(
-				json.labels,
+				extractEntry(jCpy.labels, 'labels', false, path),
 				true,
 				[...path, ".labels"],
 				(k0, p0) => expectString(k0, false, p0),
 				(v0, p0) => expectString(v0, false, p0)
 			),
-			value: expectString(json.value, true, [...path, ".value"]),
-			unit: expectString(json.unit, true, [...path, ".unit"]),
-			required: expectBoolean(json.required, true, [...path, ".required"]),
-			hideCondition: expectString(json.hideCondition, true, [...path, ".hideCondition"]),
-			now: expectBoolean(json.now, true, [...path, ".now"]),
-			translate: expectBoolean(json.translate, true, [...path, ".translate"]),
+			value: expectString(extractEntry(jCpy.value, 'value', false, path), true, [...path, ".value"]),
+			unit: expectString(extractEntry(jCpy.unit, 'unit', false, path), true, [...path, ".unit"]),
+			required: expectBoolean(extractEntry(jCpy.required, 'required', false, path), true, [...path, ".required"]),
+			hideCondition: expectString(extractEntry(jCpy.hideCondition, 'hideCondition', false, path), true, [...path, ".hideCondition"]),
+			now: expectBoolean(extractEntry(jCpy.now, 'now', false, path), true, [...path, ".now"]),
+			translate: expectBoolean(extractEntry(jCpy.translate, 'translate', false, path), true, [...path, ".translate"]),
 		})
+		if (!ignoreUnknownKeys) {
+			const unused = Object.keys(jCpy)
+			if (unused.length > 0) throw new Error(`Unexpected key(s) for json object CheckBox at path ${path.join("")}: ${unused}`)}
+		return res
 	}
 
 }

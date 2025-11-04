@@ -1,5 +1,5 @@
 // auto-generated file
-import {expectMap, expectString, requireEntry} from '../../internal/JsonDecodeUtils.mjs';
+import {expectMap, expectObject, expectString, extractEntry} from '../../internal/JsonDecodeUtils.mjs';
 import {randomUuid} from '../../utils/Id.mjs';
 import {View} from './View.mjs';
 
@@ -50,54 +50,61 @@ export class DesignDocument {
 		return res
 	}
 
-	static fromJSON(json: any, path: Array<string> = ['DesignDocument']): DesignDocument {
-		return new DesignDocument({
-			id: expectString(requireEntry(json.id, 'id', path), false, [...path, ".id"]),
-			rev: expectString(json.rev, true, [...path, ".rev"]),
+	static fromJSON(json: any, ignoreUnknownKeys: boolean = false,
+			path: Array<string> = ['DesignDocument']): DesignDocument {
+		if (typeof json != 'object') throw new Error(`Expected json object at path ${path.join("")}`)
+		const jCpy = { ...json }
+		const res = new DesignDocument({
+			id: expectString(extractEntry(jCpy.id, 'id', true, path), false, [...path, ".id"]),
+			rev: expectString(extractEntry(jCpy.rev, 'rev', false, path), true, [...path, ".rev"]),
 			revHistory: expectMap(
-				json.revHistory,
+				extractEntry(jCpy.revHistory, 'revHistory', false, path),
 				false,
 				[...path, ".revHistory"],
 				(k0, p0) => expectString(k0, false, p0),
 				(v0, p0) => expectString(v0, false, p0)
 			),
-			language: expectString(json.language, true, [...path, ".language"]),
+			language: expectString(extractEntry(jCpy.language, 'language', false, path), true, [...path, ".language"]),
 			views: expectMap(
-				json.views,
+				extractEntry(jCpy.views, 'views', false, path),
 				false,
 				[...path, ".views"],
 				(k0, p0) => expectString(k0, false, p0),
-				(v0, p0) => View.fromJSON(v0, p0)
+				(v0, p0) => expectObject(v0, false, ignoreUnknownKeys, p0, View.fromJSON)
 			),
 			lists: expectMap(
-				json.lists,
+				extractEntry(jCpy.lists, 'lists', false, path),
 				false,
 				[...path, ".lists"],
 				(k0, p0) => expectString(k0, false, p0),
 				(v0, p0) => expectString(v0, false, p0)
 			),
 			shows: expectMap(
-				json.shows,
+				extractEntry(jCpy.shows, 'shows', false, path),
 				false,
 				[...path, ".shows"],
 				(k0, p0) => expectString(k0, false, p0),
 				(v0, p0) => expectString(v0, false, p0)
 			),
 			updateHandlers: expectMap(
-				json.updateHandlers,
+				extractEntry(jCpy.updateHandlers, 'updateHandlers', false, path),
 				true,
 				[...path, ".updateHandlers"],
 				(k0, p0) => expectString(k0, false, p0),
 				(v0, p0) => expectString(v0, false, p0)
 			),
 			filters: expectMap(
-				json.filters,
+				extractEntry(jCpy.filters, 'filters', false, path),
 				false,
 				[...path, ".filters"],
 				(k0, p0) => expectString(k0, false, p0),
 				(v0, p0) => expectString(v0, false, p0)
 			),
 		})
+		if (!ignoreUnknownKeys) {
+			const unused = Object.keys(jCpy)
+			if (unused.length > 0) throw new Error(`Unexpected key(s) for json object DesignDocument at path ${path.join("")}: ${unused}`)}
+		return res
 	}
 
 }

@@ -1,5 +1,5 @@
 // auto-generated file
-import {expectBoolean, expectMap, expectNumber, expectString, requireEntry} from '../internal/JsonDecodeUtils.mjs';
+import {expectBoolean, expectMap, expectNumber, expectObject, expectString, extractEntry} from '../internal/JsonDecodeUtils.mjs';
 import {randomUuid} from '../utils/Id.mjs';
 import {StoredDocument} from './base/StoredDocument.mjs';
 import {DecryptedAddress} from './embed/Address.mjs';
@@ -59,26 +59,33 @@ export class Insurance implements StoredDocument {
 		return res
 	}
 
-	static fromJSON(json: any, path: Array<string> = ['Insurance']): Insurance {
-		return new Insurance({
-			id: expectString(requireEntry(json.id, 'id', path), false, [...path, ".id"]),
-			rev: expectString(json.rev, true, [...path, ".rev"]),
-			deletionDate: expectNumber(json.deletionDate, true, true, [...path, ".deletionDate"]),
+	static fromJSON(json: any, ignoreUnknownKeys: boolean = false,
+			path: Array<string> = ['Insurance']): Insurance {
+		if (typeof json != 'object') throw new Error(`Expected json object at path ${path.join("")}`)
+		const jCpy = { ...json }
+		const res = new Insurance({
+			id: expectString(extractEntry(jCpy.id, 'id', true, path), false, [...path, ".id"]),
+			rev: expectString(extractEntry(jCpy.rev, 'rev', false, path), true, [...path, ".rev"]),
+			deletionDate: expectNumber(extractEntry(jCpy.deletionDate, 'deletionDate', false, path), true, true, [...path, ".deletionDate"]),
 			name: expectMap(
-				json.name,
+				extractEntry(jCpy.name, 'name', false, path),
 				false,
 				[...path, ".name"],
 				(k0, p0) => expectString(k0, false, p0),
 				(v0, p0) => expectString(v0, false, p0)
 			),
-			privateInsurance: expectBoolean(json.privateInsurance, false, [...path, ".privateInsurance"]),
-			hospitalisationInsurance: expectBoolean(json.hospitalisationInsurance, false, [...path, ".hospitalisationInsurance"]),
-			ambulatoryInsurance: expectBoolean(json.ambulatoryInsurance, false, [...path, ".ambulatoryInsurance"]),
-			code: expectString(json.code, true, [...path, ".code"]),
-			agreementNumber: expectString(json.agreementNumber, true, [...path, ".agreementNumber"]),
-			parent: expectString(json.parent, true, [...path, ".parent"]),
-			address: DecryptedAddress.fromJSON(requireEntry(json.address, 'address', path), [...path, ".address"]),
+			privateInsurance: expectBoolean(extractEntry(jCpy.privateInsurance, 'privateInsurance', false, path), false, [...path, ".privateInsurance"]),
+			hospitalisationInsurance: expectBoolean(extractEntry(jCpy.hospitalisationInsurance, 'hospitalisationInsurance', false, path), false, [...path, ".hospitalisationInsurance"]),
+			ambulatoryInsurance: expectBoolean(extractEntry(jCpy.ambulatoryInsurance, 'ambulatoryInsurance', false, path), false, [...path, ".ambulatoryInsurance"]),
+			code: expectString(extractEntry(jCpy.code, 'code', false, path), true, [...path, ".code"]),
+			agreementNumber: expectString(extractEntry(jCpy.agreementNumber, 'agreementNumber', false, path), true, [...path, ".agreementNumber"]),
+			parent: expectString(extractEntry(jCpy.parent, 'parent', false, path), true, [...path, ".parent"]),
+			address: expectObject(extractEntry(jCpy.address, 'address', true, path), false, ignoreUnknownKeys, [...path, ".address"], DecryptedAddress.fromJSON),
 		})
+		if (!ignoreUnknownKeys) {
+			const unused = Object.keys(jCpy)
+			if (unused.length > 0) throw new Error(`Unexpected key(s) for json object Insurance at path ${path.join("")}: ${unused}`)}
+		return res
 	}
 
 }

@@ -1,5 +1,5 @@
 // auto-generated file
-import {expectArray, expectMap, expectNumber, expectString} from '../../internal/JsonDecodeUtils.mjs';
+import {expectArray, expectMap, expectNumber, expectString, extractEntry} from '../../internal/JsonDecodeUtils.mjs';
 import {Base64String} from '../specializations/Base64String.mjs';
 import {Encryptable} from './Encryptable.mjs';
 
@@ -87,27 +87,33 @@ export class DecryptedValorisation {
 		return res
 	}
 
-	static fromJSON(json: any,
+	static fromJSON(json: any, ignoreUnknownKeys: boolean = false,
 			path: Array<string> = ['DecryptedValorisation']): DecryptedValorisation {
-		return new DecryptedValorisation({
-			startOfValidity: expectNumber(json.startOfValidity, true, true, [...path, ".startOfValidity"]),
-			endOfValidity: expectNumber(json.endOfValidity, true, true, [...path, ".endOfValidity"]),
-			predicate: expectString(json.predicate, true, [...path, ".predicate"]),
-			reference: expectArray(json.reference, true, [...path, ".reference"], (x0, p0) => expectNumber(x0, false, true, p0)),
-			totalAmount: expectNumber(json.totalAmount, true, false, [...path, ".totalAmount"]),
-			reimbursement: expectNumber(json.reimbursement, true, false, [...path, ".reimbursement"]),
-			patientIntervention: expectNumber(json.patientIntervention, true, false, [...path, ".patientIntervention"]),
-			doctorSupplement: expectNumber(json.doctorSupplement, true, false, [...path, ".doctorSupplement"]),
-			vat: expectNumber(json.vat, true, false, [...path, ".vat"]),
+		if (typeof json != 'object') throw new Error(`Expected json object at path ${path.join("")}`)
+		const jCpy = { ...json }
+		const res = new DecryptedValorisation({
+			startOfValidity: expectNumber(extractEntry(jCpy.startOfValidity, 'startOfValidity', false, path), true, true, [...path, ".startOfValidity"]),
+			endOfValidity: expectNumber(extractEntry(jCpy.endOfValidity, 'endOfValidity', false, path), true, true, [...path, ".endOfValidity"]),
+			predicate: expectString(extractEntry(jCpy.predicate, 'predicate', false, path), true, [...path, ".predicate"]),
+			reference: expectArray(extractEntry(jCpy.reference, 'reference', false, path), true, [...path, ".reference"], (x0, p0) => expectNumber(x0, false, true, p0)),
+			totalAmount: expectNumber(extractEntry(jCpy.totalAmount, 'totalAmount', false, path), true, false, [...path, ".totalAmount"]),
+			reimbursement: expectNumber(extractEntry(jCpy.reimbursement, 'reimbursement', false, path), true, false, [...path, ".reimbursement"]),
+			patientIntervention: expectNumber(extractEntry(jCpy.patientIntervention, 'patientIntervention', false, path), true, false, [...path, ".patientIntervention"]),
+			doctorSupplement: expectNumber(extractEntry(jCpy.doctorSupplement, 'doctorSupplement', false, path), true, false, [...path, ".doctorSupplement"]),
+			vat: expectNumber(extractEntry(jCpy.vat, 'vat', false, path), true, false, [...path, ".vat"]),
 			label: expectMap(
-				json.label,
+				extractEntry(jCpy.label, 'label', false, path),
 				true,
 				[...path, ".label"],
 				(k0, p0) => expectString(k0, false, p0),
 				(v0, p0) => expectString(v0, false, p0)
 			),
-			encryptedSelf: expectString(json.encryptedSelf, false, [...path, ".encryptedSelf"]),
+			encryptedSelf: expectString(extractEntry(jCpy.encryptedSelf, 'encryptedSelf', false, path), false, [...path, ".encryptedSelf"]),
 		})
+		if (!ignoreUnknownKeys) {
+			const unused = Object.keys(jCpy)
+			if (unused.length > 0) throw new Error(`Unexpected key(s) for json object DecryptedValorisation at path ${path.join("")}: ${unused}`)}
+		return res
 	}
 
 }
@@ -169,27 +175,33 @@ export class EncryptedValorisation {
 		return res
 	}
 
-	static fromJSON(json: any,
+	static fromJSON(json: any, ignoreUnknownKeys: boolean = false,
 			path: Array<string> = ['EncryptedValorisation']): EncryptedValorisation {
-		return new EncryptedValorisation({
-			startOfValidity: expectNumber(json.startOfValidity, true, true, [...path, ".startOfValidity"]),
-			endOfValidity: expectNumber(json.endOfValidity, true, true, [...path, ".endOfValidity"]),
-			predicate: expectString(json.predicate, true, [...path, ".predicate"]),
-			reference: expectArray(json.reference, true, [...path, ".reference"], (x0, p0) => expectNumber(x0, false, true, p0)),
-			totalAmount: expectNumber(json.totalAmount, true, false, [...path, ".totalAmount"]),
-			reimbursement: expectNumber(json.reimbursement, true, false, [...path, ".reimbursement"]),
-			patientIntervention: expectNumber(json.patientIntervention, true, false, [...path, ".patientIntervention"]),
-			doctorSupplement: expectNumber(json.doctorSupplement, true, false, [...path, ".doctorSupplement"]),
-			vat: expectNumber(json.vat, true, false, [...path, ".vat"]),
+		if (typeof json != 'object') throw new Error(`Expected json object at path ${path.join("")}`)
+		const jCpy = { ...json }
+		const res = new EncryptedValorisation({
+			startOfValidity: expectNumber(extractEntry(jCpy.startOfValidity, 'startOfValidity', false, path), true, true, [...path, ".startOfValidity"]),
+			endOfValidity: expectNumber(extractEntry(jCpy.endOfValidity, 'endOfValidity', false, path), true, true, [...path, ".endOfValidity"]),
+			predicate: expectString(extractEntry(jCpy.predicate, 'predicate', false, path), true, [...path, ".predicate"]),
+			reference: expectArray(extractEntry(jCpy.reference, 'reference', false, path), true, [...path, ".reference"], (x0, p0) => expectNumber(x0, false, true, p0)),
+			totalAmount: expectNumber(extractEntry(jCpy.totalAmount, 'totalAmount', false, path), true, false, [...path, ".totalAmount"]),
+			reimbursement: expectNumber(extractEntry(jCpy.reimbursement, 'reimbursement', false, path), true, false, [...path, ".reimbursement"]),
+			patientIntervention: expectNumber(extractEntry(jCpy.patientIntervention, 'patientIntervention', false, path), true, false, [...path, ".patientIntervention"]),
+			doctorSupplement: expectNumber(extractEntry(jCpy.doctorSupplement, 'doctorSupplement', false, path), true, false, [...path, ".doctorSupplement"]),
+			vat: expectNumber(extractEntry(jCpy.vat, 'vat', false, path), true, false, [...path, ".vat"]),
 			label: expectMap(
-				json.label,
+				extractEntry(jCpy.label, 'label', false, path),
 				true,
 				[...path, ".label"],
 				(k0, p0) => expectString(k0, false, p0),
 				(v0, p0) => expectString(v0, false, p0)
 			),
-			encryptedSelf: expectString(json.encryptedSelf, false, [...path, ".encryptedSelf"]),
+			encryptedSelf: expectString(extractEntry(jCpy.encryptedSelf, 'encryptedSelf', false, path), false, [...path, ".encryptedSelf"]),
 		})
+		if (!ignoreUnknownKeys) {
+			const unused = Object.keys(jCpy)
+			if (unused.length > 0) throw new Error(`Unexpected key(s) for json object EncryptedValorisation at path ${path.join("")}: ${unused}`)}
+		return res
 	}
 
 }

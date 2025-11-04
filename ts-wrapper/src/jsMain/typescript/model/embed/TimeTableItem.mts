@@ -1,5 +1,5 @@
 // auto-generated file
-import {expectArray, expectBoolean, expectNumber, expectString} from '../../internal/JsonDecodeUtils.mjs';
+import {expectArray, expectBoolean, expectNumber, expectObject, expectString, extractEntry} from '../../internal/JsonDecodeUtils.mjs';
 import {TimeTableHour} from './TimeTableHour.mjs';
 
 
@@ -73,24 +73,31 @@ export class TimeTableItem {
 		return res
 	}
 
-	static fromJSON(json: any, path: Array<string> = ['TimeTableItem']): TimeTableItem {
-		return new TimeTableItem({
-			rruleStartDate: expectNumber(json.rruleStartDate, true, true, [...path, ".rruleStartDate"]),
-			rrule: expectString(json.rrule, true, [...path, ".rrule"]),
-			notBeforeInMinutes: expectNumber(json.notBeforeInMinutes, true, true, [...path, ".notBeforeInMinutes"]),
-			notAfterInMinutes: expectNumber(json.notAfterInMinutes, true, true, [...path, ".notAfterInMinutes"]),
-			zoneId: expectString(json.zoneId, true, [...path, ".zoneId"]),
-			days: expectArray(json.days, false, [...path, ".days"], (x0, p0) => expectString(x0, false, p0)),
-			recurrenceTypes: expectArray(json.recurrenceTypes, false, [...path, ".recurrenceTypes"], (x0, p0) => expectString(x0, false, p0)),
-			hours: expectArray(json.hours, false, [...path, ".hours"], (x0, p0) => TimeTableHour.fromJSON(x0, p0)),
-			calendarItemTypeId: expectString(json.calendarItemTypeId, true, [...path, ".calendarItemTypeId"]),
-			homeVisit: expectBoolean(json.homeVisit, false, [...path, ".homeVisit"]),
-			placeId: expectString(json.placeId, true, [...path, ".placeId"]),
-			publicTimeTableItem: expectBoolean(json.publicTimeTableItem, false, [...path, ".publicTimeTableItem"]),
-			acceptsNewPatient: expectBoolean(json.acceptsNewPatient, false, [...path, ".acceptsNewPatient"]),
-			unavailable: expectBoolean(json.unavailable, false, [...path, ".unavailable"]),
-			reservingRights: expectArray(json.reservingRights, false, [...path, ".reservingRights"], (x0, p0) => expectString(x0, false, p0)),
+	static fromJSON(json: any, ignoreUnknownKeys: boolean = false,
+			path: Array<string> = ['TimeTableItem']): TimeTableItem {
+		if (typeof json != 'object') throw new Error(`Expected json object at path ${path.join("")}`)
+		const jCpy = { ...json }
+		const res = new TimeTableItem({
+			rruleStartDate: expectNumber(extractEntry(jCpy.rruleStartDate, 'rruleStartDate', false, path), true, true, [...path, ".rruleStartDate"]),
+			rrule: expectString(extractEntry(jCpy.rrule, 'rrule', false, path), true, [...path, ".rrule"]),
+			notBeforeInMinutes: expectNumber(extractEntry(jCpy.notBeforeInMinutes, 'notBeforeInMinutes', false, path), true, true, [...path, ".notBeforeInMinutes"]),
+			notAfterInMinutes: expectNumber(extractEntry(jCpy.notAfterInMinutes, 'notAfterInMinutes', false, path), true, true, [...path, ".notAfterInMinutes"]),
+			zoneId: expectString(extractEntry(jCpy.zoneId, 'zoneId', false, path), true, [...path, ".zoneId"]),
+			days: expectArray(extractEntry(jCpy.days, 'days', false, path), false, [...path, ".days"], (x0, p0) => expectString(x0, false, p0)),
+			recurrenceTypes: expectArray(extractEntry(jCpy.recurrenceTypes, 'recurrenceTypes', false, path), false, [...path, ".recurrenceTypes"], (x0, p0) => expectString(x0, false, p0)),
+			hours: expectArray(extractEntry(jCpy.hours, 'hours', false, path), false, [...path, ".hours"], (x0, p0) => expectObject(x0, false, ignoreUnknownKeys, p0, TimeTableHour.fromJSON)),
+			calendarItemTypeId: expectString(extractEntry(jCpy.calendarItemTypeId, 'calendarItemTypeId', false, path), true, [...path, ".calendarItemTypeId"]),
+			homeVisit: expectBoolean(extractEntry(jCpy.homeVisit, 'homeVisit', false, path), false, [...path, ".homeVisit"]),
+			placeId: expectString(extractEntry(jCpy.placeId, 'placeId', false, path), true, [...path, ".placeId"]),
+			publicTimeTableItem: expectBoolean(extractEntry(jCpy.publicTimeTableItem, 'publicTimeTableItem', false, path), false, [...path, ".publicTimeTableItem"]),
+			acceptsNewPatient: expectBoolean(extractEntry(jCpy.acceptsNewPatient, 'acceptsNewPatient', false, path), false, [...path, ".acceptsNewPatient"]),
+			unavailable: expectBoolean(extractEntry(jCpy.unavailable, 'unavailable', false, path), false, [...path, ".unavailable"]),
+			reservingRights: expectArray(extractEntry(jCpy.reservingRights, 'reservingRights', false, path), false, [...path, ".reservingRights"], (x0, p0) => expectString(x0, false, p0)),
 		})
+		if (!ignoreUnknownKeys) {
+			const unused = Object.keys(jCpy)
+			if (unused.length > 0) throw new Error(`Unexpected key(s) for json object TimeTableItem at path ${path.join("")}: ${unused}`)}
+		return res
 	}
 
 }

@@ -1,5 +1,5 @@
 // auto-generated file
-import {expectNumber} from '../../internal/JsonDecodeUtils.mjs';
+import {expectNumber, extractEntry} from '../../internal/JsonDecodeUtils.mjs';
 
 
 export class Range {
@@ -20,11 +20,18 @@ export class Range {
 		return res
 	}
 
-	static fromJSON(json: any, path: Array<string> = ['Range']): Range {
-		return new Range({
-			low: expectNumber(json.low, true, false, [...path, ".low"]),
-			high: expectNumber(json.high, true, false, [...path, ".high"]),
+	static fromJSON(json: any, ignoreUnknownKeys: boolean = false,
+			path: Array<string> = ['Range']): Range {
+		if (typeof json != 'object') throw new Error(`Expected json object at path ${path.join("")}`)
+		const jCpy = { ...json }
+		const res = new Range({
+			low: expectNumber(extractEntry(jCpy.low, 'low', false, path), true, false, [...path, ".low"]),
+			high: expectNumber(extractEntry(jCpy.high, 'high', false, path), true, false, [...path, ".high"]),
 		})
+		if (!ignoreUnknownKeys) {
+			const unused = Object.keys(jCpy)
+			if (unused.length > 0) throw new Error(`Unexpected key(s) for json object Range at path ${path.join("")}: ${unused}`)}
+		return res
 	}
 
 }

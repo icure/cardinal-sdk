@@ -1,5 +1,5 @@
 // auto-generated file
-import {expectString} from '../../internal/JsonDecodeUtils.mjs';
+import {expectObject, expectString, extractEntry} from '../../internal/JsonDecodeUtils.mjs';
 import {CodeStub} from './CodeStub.mjs';
 
 
@@ -45,17 +45,24 @@ export class Identifier {
 		return res
 	}
 
-	static fromJSON(json: any, path: Array<string> = ['Identifier']): Identifier {
-		return new Identifier({
-			id: expectString(json.id, true, [...path, ".id"]),
-			assigner: expectString(json.assigner, true, [...path, ".assigner"]),
-			start: expectString(json.start, true, [...path, ".start"]),
-			end: expectString(json.end, true, [...path, ".end"]),
-			system: expectString(json.system, true, [...path, ".system"]),
-			type: CodeStub.fromJSON(json.type, [...path, ".type"]),
-			use: expectString(json.use, true, [...path, ".use"]),
-			value: expectString(json.value, true, [...path, ".value"]),
+	static fromJSON(json: any, ignoreUnknownKeys: boolean = false,
+			path: Array<string> = ['Identifier']): Identifier {
+		if (typeof json != 'object') throw new Error(`Expected json object at path ${path.join("")}`)
+		const jCpy = { ...json }
+		const res = new Identifier({
+			id: expectString(extractEntry(jCpy.id, 'id', false, path), true, [...path, ".id"]),
+			assigner: expectString(extractEntry(jCpy.assigner, 'assigner', false, path), true, [...path, ".assigner"]),
+			start: expectString(extractEntry(jCpy.start, 'start', false, path), true, [...path, ".start"]),
+			end: expectString(extractEntry(jCpy.end, 'end', false, path), true, [...path, ".end"]),
+			system: expectString(extractEntry(jCpy.system, 'system', false, path), true, [...path, ".system"]),
+			type: expectObject(extractEntry(jCpy.type, 'type', false, path), true, ignoreUnknownKeys, [...path, ".type"], CodeStub.fromJSON),
+			use: expectString(extractEntry(jCpy.use, 'use', false, path), true, [...path, ".use"]),
+			value: expectString(extractEntry(jCpy.value, 'value', false, path), true, [...path, ".value"]),
 		})
+		if (!ignoreUnknownKeys) {
+			const unused = Object.keys(jCpy)
+			if (unused.length > 0) throw new Error(`Unexpected key(s) for json object Identifier at path ${path.join("")}: ${unused}`)}
+		return res
 	}
 
 }

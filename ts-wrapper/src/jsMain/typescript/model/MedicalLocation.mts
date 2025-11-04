@@ -1,5 +1,5 @@
 // auto-generated file
-import {expectArray, expectBoolean, expectMap, expectNumber, expectString, requireEntry} from '../internal/JsonDecodeUtils.mjs';
+import {expectArray, expectBoolean, expectMap, expectNumber, expectObject, expectString, extractEntry} from '../internal/JsonDecodeUtils.mjs';
 import {randomUuid} from '../utils/Id.mjs';
 import {Named} from './base/Named.mjs';
 import {StoredDocument} from './base/StoredDocument.mjs';
@@ -80,37 +80,44 @@ export class MedicalLocation implements StoredDocument, Named {
 		return res
 	}
 
-	static fromJSON(json: any, path: Array<string> = ['MedicalLocation']): MedicalLocation {
-		return new MedicalLocation({
-			id: expectString(requireEntry(json.id, 'id', path), false, [...path, ".id"]),
-			rev: expectString(json.rev, true, [...path, ".rev"]),
-			deletionDate: expectNumber(json.deletionDate, true, true, [...path, ".deletionDate"]),
-			name: expectString(json.name, true, [...path, ".name"]),
-			description: expectString(json.description, true, [...path, ".description"]),
-			responsible: expectString(json.responsible, true, [...path, ".responsible"]),
-			guardPost: expectBoolean(json.guardPost, true, [...path, ".guardPost"]),
-			cbe: expectString(json.cbe, true, [...path, ".cbe"]),
-			bic: expectString(json.bic, true, [...path, ".bic"]),
-			bankAccount: expectString(json.bankAccount, true, [...path, ".bankAccount"]),
-			nihii: expectString(json.nihii, true, [...path, ".nihii"]),
-			ssin: expectString(json.ssin, true, [...path, ".ssin"]),
-			address: DecryptedAddress.fromJSON(json.address, [...path, ".address"]),
-			agendaIds: expectArray(json.agendaIds, false, [...path, ".agendaIds"], (x0, p0) => expectString(x0, false, p0)),
+	static fromJSON(json: any, ignoreUnknownKeys: boolean = false,
+			path: Array<string> = ['MedicalLocation']): MedicalLocation {
+		if (typeof json != 'object') throw new Error(`Expected json object at path ${path.join("")}`)
+		const jCpy = { ...json }
+		const res = new MedicalLocation({
+			id: expectString(extractEntry(jCpy.id, 'id', true, path), false, [...path, ".id"]),
+			rev: expectString(extractEntry(jCpy.rev, 'rev', false, path), true, [...path, ".rev"]),
+			deletionDate: expectNumber(extractEntry(jCpy.deletionDate, 'deletionDate', false, path), true, true, [...path, ".deletionDate"]),
+			name: expectString(extractEntry(jCpy.name, 'name', false, path), true, [...path, ".name"]),
+			description: expectString(extractEntry(jCpy.description, 'description', false, path), true, [...path, ".description"]),
+			responsible: expectString(extractEntry(jCpy.responsible, 'responsible', false, path), true, [...path, ".responsible"]),
+			guardPost: expectBoolean(extractEntry(jCpy.guardPost, 'guardPost', false, path), true, [...path, ".guardPost"]),
+			cbe: expectString(extractEntry(jCpy.cbe, 'cbe', false, path), true, [...path, ".cbe"]),
+			bic: expectString(extractEntry(jCpy.bic, 'bic', false, path), true, [...path, ".bic"]),
+			bankAccount: expectString(extractEntry(jCpy.bankAccount, 'bankAccount', false, path), true, [...path, ".bankAccount"]),
+			nihii: expectString(extractEntry(jCpy.nihii, 'nihii', false, path), true, [...path, ".nihii"]),
+			ssin: expectString(extractEntry(jCpy.ssin, 'ssin', false, path), true, [...path, ".ssin"]),
+			address: expectObject(extractEntry(jCpy.address, 'address', false, path), true, ignoreUnknownKeys, [...path, ".address"], DecryptedAddress.fromJSON),
+			agendaIds: expectArray(extractEntry(jCpy.agendaIds, 'agendaIds', false, path), false, [...path, ".agendaIds"], (x0, p0) => expectString(x0, false, p0)),
 			options: expectMap(
-				json.options,
+				extractEntry(jCpy.options, 'options', false, path),
 				false,
 				[...path, ".options"],
 				(k0, p0) => expectString(k0, false, p0),
 				(v0, p0) => expectString(v0, false, p0)
 			),
 			publicInformations: expectMap(
-				json.publicInformations,
+				extractEntry(jCpy.publicInformations, 'publicInformations', false, path),
 				false,
 				[...path, ".publicInformations"],
 				(k0, p0) => expectString(k0, false, p0),
 				(v0, p0) => expectString(v0, false, p0)
 			),
 		})
+		if (!ignoreUnknownKeys) {
+			const unused = Object.keys(jCpy)
+			if (unused.length > 0) throw new Error(`Unexpected key(s) for json object MedicalLocation at path ${path.join("")}: ${unused}`)}
+		return res
 	}
 
 }

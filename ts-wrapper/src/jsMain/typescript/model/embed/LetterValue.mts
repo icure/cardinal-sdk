@@ -1,5 +1,5 @@
 // auto-generated file
-import {expectNumber, expectString} from '../../internal/JsonDecodeUtils.mjs';
+import {expectNumber, expectString, extractEntry} from '../../internal/JsonDecodeUtils.mjs';
 
 
 export class LetterValue {
@@ -28,13 +28,20 @@ export class LetterValue {
 		return res
 	}
 
-	static fromJSON(json: any, path: Array<string> = ['LetterValue']): LetterValue {
-		return new LetterValue({
-			letter: expectString(json.letter, true, [...path, ".letter"]),
-			index: expectString(json.index, true, [...path, ".index"]),
-			coefficient: expectNumber(json.coefficient, true, false, [...path, ".coefficient"]),
-			value: expectNumber(json.value, true, false, [...path, ".value"]),
+	static fromJSON(json: any, ignoreUnknownKeys: boolean = false,
+			path: Array<string> = ['LetterValue']): LetterValue {
+		if (typeof json != 'object') throw new Error(`Expected json object at path ${path.join("")}`)
+		const jCpy = { ...json }
+		const res = new LetterValue({
+			letter: expectString(extractEntry(jCpy.letter, 'letter', false, path), true, [...path, ".letter"]),
+			index: expectString(extractEntry(jCpy.index, 'index', false, path), true, [...path, ".index"]),
+			coefficient: expectNumber(extractEntry(jCpy.coefficient, 'coefficient', false, path), true, false, [...path, ".coefficient"]),
+			value: expectNumber(extractEntry(jCpy.value, 'value', false, path), true, false, [...path, ".value"]),
 		})
+		if (!ignoreUnknownKeys) {
+			const unused = Object.keys(jCpy)
+			if (unused.length > 0) throw new Error(`Unexpected key(s) for json object LetterValue at path ${path.join("")}: ${unused}`)}
+		return res
 	}
 
 }

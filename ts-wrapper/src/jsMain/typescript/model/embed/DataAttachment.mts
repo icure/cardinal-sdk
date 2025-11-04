@@ -1,5 +1,5 @@
 // auto-generated file
-import {expectArray, expectString} from '../../internal/JsonDecodeUtils.mjs';
+import {expectArray, expectString, extractEntry} from '../../internal/JsonDecodeUtils.mjs';
 
 
 export class DataAttachment {
@@ -24,12 +24,19 @@ export class DataAttachment {
 		return res
 	}
 
-	static fromJSON(json: any, path: Array<string> = ['DataAttachment']): DataAttachment {
-		return new DataAttachment({
-			couchDbAttachmentId: expectString(json.couchDbAttachmentId, true, [...path, ".couchDbAttachmentId"]),
-			objectStoreAttachmentId: expectString(json.objectStoreAttachmentId, true, [...path, ".objectStoreAttachmentId"]),
-			utis: expectArray(json.utis, false, [...path, ".utis"], (x0, p0) => expectString(x0, false, p0)),
+	static fromJSON(json: any, ignoreUnknownKeys: boolean = false,
+			path: Array<string> = ['DataAttachment']): DataAttachment {
+		if (typeof json != 'object') throw new Error(`Expected json object at path ${path.join("")}`)
+		const jCpy = { ...json }
+		const res = new DataAttachment({
+			couchDbAttachmentId: expectString(extractEntry(jCpy.couchDbAttachmentId, 'couchDbAttachmentId', false, path), true, [...path, ".couchDbAttachmentId"]),
+			objectStoreAttachmentId: expectString(extractEntry(jCpy.objectStoreAttachmentId, 'objectStoreAttachmentId', false, path), true, [...path, ".objectStoreAttachmentId"]),
+			utis: expectArray(extractEntry(jCpy.utis, 'utis', false, path), false, [...path, ".utis"], (x0, p0) => expectString(x0, false, p0)),
 		})
+		if (!ignoreUnknownKeys) {
+			const unused = Object.keys(jCpy)
+			if (unused.length > 0) throw new Error(`Unexpected key(s) for json object DataAttachment at path ${path.join("")}: ${unused}`)}
+		return res
 	}
 
 }

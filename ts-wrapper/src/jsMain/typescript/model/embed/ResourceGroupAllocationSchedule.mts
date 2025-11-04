@@ -1,5 +1,5 @@
 // auto-generated file
-import {expectArray, expectNumber, expectString} from '../../internal/JsonDecodeUtils.mjs';
+import {expectArray, expectNumber, expectObject, expectString, extractEntry} from '../../internal/JsonDecodeUtils.mjs';
 import {CodeStub} from '../base/CodeStub.mjs';
 import {EmbeddedTimeTableItem} from './EmbeddedTimeTableItem.mjs';
 
@@ -42,17 +42,23 @@ export class ResourceGroupAllocationSchedule {
 		return res
 	}
 
-	static fromJSON(json: any,
+	static fromJSON(json: any, ignoreUnknownKeys: boolean = false,
 			path: Array<string> = ['ResourceGroupAllocationSchedule']): ResourceGroupAllocationSchedule {
-		return new ResourceGroupAllocationSchedule({
-			resourceGroup: CodeStub.fromJSON(json.resourceGroup, [...path, ".resourceGroup"]),
-			tags: expectArray(json.tags, false, [...path, ".tags"], (x0, p0) => CodeStub.fromJSON(x0, p0)),
-			codes: expectArray(json.codes, false, [...path, ".codes"], (x0, p0) => CodeStub.fromJSON(x0, p0)),
-			name: expectString(json.name, true, [...path, ".name"]),
-			startDateTime: expectNumber(json.startDateTime, true, true, [...path, ".startDateTime"]),
-			endDateTime: expectNumber(json.endDateTime, true, true, [...path, ".endDateTime"]),
-			items: expectArray(json.items, false, [...path, ".items"], (x0, p0) => EmbeddedTimeTableItem.fromJSON(x0, p0)),
+		if (typeof json != 'object') throw new Error(`Expected json object at path ${path.join("")}`)
+		const jCpy = { ...json }
+		const res = new ResourceGroupAllocationSchedule({
+			resourceGroup: expectObject(extractEntry(jCpy.resourceGroup, 'resourceGroup', false, path), true, ignoreUnknownKeys, [...path, ".resourceGroup"], CodeStub.fromJSON),
+			tags: expectArray(extractEntry(jCpy.tags, 'tags', false, path), false, [...path, ".tags"], (x0, p0) => expectObject(x0, false, ignoreUnknownKeys, p0, CodeStub.fromJSON)),
+			codes: expectArray(extractEntry(jCpy.codes, 'codes', false, path), false, [...path, ".codes"], (x0, p0) => expectObject(x0, false, ignoreUnknownKeys, p0, CodeStub.fromJSON)),
+			name: expectString(extractEntry(jCpy.name, 'name', false, path), true, [...path, ".name"]),
+			startDateTime: expectNumber(extractEntry(jCpy.startDateTime, 'startDateTime', false, path), true, true, [...path, ".startDateTime"]),
+			endDateTime: expectNumber(extractEntry(jCpy.endDateTime, 'endDateTime', false, path), true, true, [...path, ".endDateTime"]),
+			items: expectArray(extractEntry(jCpy.items, 'items', false, path), false, [...path, ".items"], (x0, p0) => expectObject(x0, false, ignoreUnknownKeys, p0, EmbeddedTimeTableItem.fromJSON)),
 		})
+		if (!ignoreUnknownKeys) {
+			const unused = Object.keys(jCpy)
+			if (unused.length > 0) throw new Error(`Unexpected key(s) for json object ResourceGroupAllocationSchedule at path ${path.join("")}: ${unused}`)}
+		return res
 	}
 
 }

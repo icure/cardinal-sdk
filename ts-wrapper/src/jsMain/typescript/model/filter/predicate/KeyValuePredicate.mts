@@ -1,5 +1,5 @@
 // auto-generated file
-import {expectString, expectStringEnum} from '../../../internal/JsonDecodeUtils.mjs';
+import {expectString, expectStringEnum, extractEntry} from '../../../internal/JsonDecodeUtils.mjs';
 import {Operator} from './Operator.mjs';
 
 
@@ -27,12 +27,19 @@ export class KeyValuePredicate {
 		return res
 	}
 
-	static fromJSON(json: any, path: Array<string> = ['KeyValuePredicate']): KeyValuePredicate {
-		return new KeyValuePredicate({
-			key: expectString(json.key, true, [...path, ".key"]),
-			operator: expectStringEnum(json.operator, true, [...path, ".operator"], Operator, 'Operator'),
-			value: json.value,
+	static fromJSON(json: any, ignoreUnknownKeys: boolean = false,
+			path: Array<string> = ['KeyValuePredicate']): KeyValuePredicate {
+		if (typeof json != 'object') throw new Error(`Expected json object at path ${path.join("")}`)
+		const jCpy = { ...json }
+		const res = new KeyValuePredicate({
+			key: expectString(extractEntry(jCpy.key, 'key', false, path), true, [...path, ".key"]),
+			operator: expectStringEnum(extractEntry(jCpy.operator, 'operator', false, path), true, [...path, ".operator"], Operator, 'Operator'),
+			value: extractEntry(jCpy.value, 'value', false, path),
 		})
+		if (!ignoreUnknownKeys) {
+			const unused = Object.keys(jCpy)
+			if (unused.length > 0) throw new Error(`Unexpected key(s) for json object KeyValuePredicate at path ${path.join("")}: ${unused}`)}
+		return res
 	}
 
 }

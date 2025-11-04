@@ -1,5 +1,5 @@
 // auto-generated file
-import {expectArray, expectString, requireEntry} from '../../../../internal/JsonDecodeUtils.mjs';
+import {expectArray, expectObject, expectString, extractEntry} from '../../../../internal/JsonDecodeUtils.mjs';
 import {StructureElement} from './StructureElement.mjs';
 
 
@@ -29,13 +29,20 @@ export class Section {
 		return res
 	}
 
-	static fromJSON(json: any, path: Array<string> = ['Section']): Section {
-		return new Section({
-			section: expectString(requireEntry(json.section, 'section', path), false, [...path, ".section"]),
-			fields: expectArray(requireEntry(json.fields, 'fields', path), false, [...path, ".fields"], (x0, p0) => StructureElement.fromJSON(x0, p0)),
-			description: expectString(json.description, true, [...path, ".description"]),
-			keywords: expectArray(json.keywords, true, [...path, ".keywords"], (x0, p0) => expectString(x0, false, p0)),
+	static fromJSON(json: any, ignoreUnknownKeys: boolean = false,
+			path: Array<string> = ['Section']): Section {
+		if (typeof json != 'object') throw new Error(`Expected json object at path ${path.join("")}`)
+		const jCpy = { ...json }
+		const res = new Section({
+			section: expectString(extractEntry(jCpy.section, 'section', true, path), false, [...path, ".section"]),
+			fields: expectArray(extractEntry(jCpy.fields, 'fields', true, path), false, [...path, ".fields"], (x0, p0) => expectObject(x0, false, ignoreUnknownKeys, p0, StructureElement.fromJSON)),
+			description: expectString(extractEntry(jCpy.description, 'description', false, path), true, [...path, ".description"]),
+			keywords: expectArray(extractEntry(jCpy.keywords, 'keywords', false, path), true, [...path, ".keywords"], (x0, p0) => expectString(x0, false, p0)),
 		})
+		if (!ignoreUnknownKeys) {
+			const unused = Object.keys(jCpy)
+			if (unused.length > 0) throw new Error(`Unexpected key(s) for json object Section at path ${path.join("")}: ${unused}`)}
+		return res
 	}
 
 }

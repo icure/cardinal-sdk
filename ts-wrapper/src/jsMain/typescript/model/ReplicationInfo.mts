@@ -1,5 +1,5 @@
 // auto-generated file
-import {expectBoolean, expectNumber} from '../internal/JsonDecodeUtils.mjs';
+import {expectBoolean, expectNumber, extractEntry} from '../internal/JsonDecodeUtils.mjs';
 
 
 export class ReplicationInfo {
@@ -28,13 +28,20 @@ export class ReplicationInfo {
 		return res
 	}
 
-	static fromJSON(json: any, path: Array<string> = ['ReplicationInfo']): ReplicationInfo {
-		return new ReplicationInfo({
-			active: expectBoolean(json.active, false, [...path, ".active"]),
-			running: expectBoolean(json.running, false, [...path, ".running"]),
-			pendingFrom: expectNumber(json.pendingFrom, true, true, [...path, ".pendingFrom"]),
-			pendingTo: expectNumber(json.pendingTo, true, true, [...path, ".pendingTo"]),
+	static fromJSON(json: any, ignoreUnknownKeys: boolean = false,
+			path: Array<string> = ['ReplicationInfo']): ReplicationInfo {
+		if (typeof json != 'object') throw new Error(`Expected json object at path ${path.join("")}`)
+		const jCpy = { ...json }
+		const res = new ReplicationInfo({
+			active: expectBoolean(extractEntry(jCpy.active, 'active', false, path), false, [...path, ".active"]),
+			running: expectBoolean(extractEntry(jCpy.running, 'running', false, path), false, [...path, ".running"]),
+			pendingFrom: expectNumber(extractEntry(jCpy.pendingFrom, 'pendingFrom', false, path), true, true, [...path, ".pendingFrom"]),
+			pendingTo: expectNumber(extractEntry(jCpy.pendingTo, 'pendingTo', false, path), true, true, [...path, ".pendingTo"]),
 		})
+		if (!ignoreUnknownKeys) {
+			const unused = Object.keys(jCpy)
+			if (unused.length > 0) throw new Error(`Unexpected key(s) for json object ReplicationInfo at path ${path.join("")}: ${unused}`)}
+		return res
 	}
 
 }

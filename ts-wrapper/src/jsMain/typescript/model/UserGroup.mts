@@ -1,5 +1,5 @@
 // auto-generated file
-import {expectArray, expectString} from '../internal/JsonDecodeUtils.mjs';
+import {expectArray, expectObject, expectString, extractEntry} from '../internal/JsonDecodeUtils.mjs';
 import {Group} from './Group.mjs';
 
 
@@ -61,21 +61,28 @@ export class UserGroup {
 		return res
 	}
 
-	static fromJSON(json: any, path: Array<string> = ['UserGroup']): UserGroup {
-		return new UserGroup({
-			groupId: expectString(json.groupId, true, [...path, ".groupId"]),
-			groupName: expectString(json.groupName, true, [...path, ".groupName"]),
-			groupsHierarchy: expectArray(json.groupsHierarchy, false, [...path, ".groupsHierarchy"], (x0, p0) => Group.fromJSON(x0, p0)),
-			userId: expectString(json.userId, true, [...path, ".userId"]),
-			login: expectString(json.login, true, [...path, ".login"]),
-			name: expectString(json.name, true, [...path, ".name"]),
-			email: expectString(json.email, true, [...path, ".email"]),
-			phone: expectString(json.phone, true, [...path, ".phone"]),
-			patientId: expectString(json.patientId, true, [...path, ".patientId"]),
-			healthcarePartyId: expectString(json.healthcarePartyId, true, [...path, ".healthcarePartyId"]),
-			deviceId: expectString(json.deviceId, true, [...path, ".deviceId"]),
-			nameOfParentOfTopmostGroupInHierarchy: expectString(json.nameOfParentOfTopmostGroupInHierarchy, true, [...path, ".nameOfParentOfTopmostGroupInHierarchy"]),
+	static fromJSON(json: any, ignoreUnknownKeys: boolean = false,
+			path: Array<string> = ['UserGroup']): UserGroup {
+		if (typeof json != 'object') throw new Error(`Expected json object at path ${path.join("")}`)
+		const jCpy = { ...json }
+		const res = new UserGroup({
+			groupId: expectString(extractEntry(jCpy.groupId, 'groupId', false, path), true, [...path, ".groupId"]),
+			groupName: expectString(extractEntry(jCpy.groupName, 'groupName', false, path), true, [...path, ".groupName"]),
+			groupsHierarchy: expectArray(extractEntry(jCpy.groupsHierarchy, 'groupsHierarchy', false, path), false, [...path, ".groupsHierarchy"], (x0, p0) => expectObject(x0, false, ignoreUnknownKeys, p0, Group.fromJSON)),
+			userId: expectString(extractEntry(jCpy.userId, 'userId', false, path), true, [...path, ".userId"]),
+			login: expectString(extractEntry(jCpy.login, 'login', false, path), true, [...path, ".login"]),
+			name: expectString(extractEntry(jCpy.name, 'name', false, path), true, [...path, ".name"]),
+			email: expectString(extractEntry(jCpy.email, 'email', false, path), true, [...path, ".email"]),
+			phone: expectString(extractEntry(jCpy.phone, 'phone', false, path), true, [...path, ".phone"]),
+			patientId: expectString(extractEntry(jCpy.patientId, 'patientId', false, path), true, [...path, ".patientId"]),
+			healthcarePartyId: expectString(extractEntry(jCpy.healthcarePartyId, 'healthcarePartyId', false, path), true, [...path, ".healthcarePartyId"]),
+			deviceId: expectString(extractEntry(jCpy.deviceId, 'deviceId', false, path), true, [...path, ".deviceId"]),
+			nameOfParentOfTopmostGroupInHierarchy: expectString(extractEntry(jCpy.nameOfParentOfTopmostGroupInHierarchy, 'nameOfParentOfTopmostGroupInHierarchy', false, path), true, [...path, ".nameOfParentOfTopmostGroupInHierarchy"]),
 		})
+		if (!ignoreUnknownKeys) {
+			const unused = Object.keys(jCpy)
+			if (unused.length > 0) throw new Error(`Unexpected key(s) for json object UserGroup at path ${path.join("")}: ${unused}`)}
+		return res
 	}
 
 }

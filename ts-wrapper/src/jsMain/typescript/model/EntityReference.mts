@@ -1,5 +1,5 @@
 // auto-generated file
-import {expectNumber, expectString, requireEntry} from '../internal/JsonDecodeUtils.mjs';
+import {expectNumber, expectString, extractEntry} from '../internal/JsonDecodeUtils.mjs';
 import {randomUuid} from '../utils/Id.mjs';
 import {StoredDocument} from './base/StoredDocument.mjs';
 
@@ -30,13 +30,20 @@ export class EntityReference implements StoredDocument {
 		return res
 	}
 
-	static fromJSON(json: any, path: Array<string> = ['EntityReference']): EntityReference {
-		return new EntityReference({
-			id: expectString(requireEntry(json.id, 'id', path), false, [...path, ".id"]),
-			rev: expectString(json.rev, true, [...path, ".rev"]),
-			deletionDate: expectNumber(json.deletionDate, true, true, [...path, ".deletionDate"]),
-			docId: expectString(json.docId, true, [...path, ".docId"]),
+	static fromJSON(json: any, ignoreUnknownKeys: boolean = false,
+			path: Array<string> = ['EntityReference']): EntityReference {
+		if (typeof json != 'object') throw new Error(`Expected json object at path ${path.join("")}`)
+		const jCpy = { ...json }
+		const res = new EntityReference({
+			id: expectString(extractEntry(jCpy.id, 'id', true, path), false, [...path, ".id"]),
+			rev: expectString(extractEntry(jCpy.rev, 'rev', false, path), true, [...path, ".rev"]),
+			deletionDate: expectNumber(extractEntry(jCpy.deletionDate, 'deletionDate', false, path), true, true, [...path, ".deletionDate"]),
+			docId: expectString(extractEntry(jCpy.docId, 'docId', false, path), true, [...path, ".docId"]),
 		})
+		if (!ignoreUnknownKeys) {
+			const unused = Object.keys(jCpy)
+			if (unused.length > 0) throw new Error(`Unexpected key(s) for json object EntityReference at path ${path.join("")}: ${unused}`)}
+		return res
 	}
 
 }

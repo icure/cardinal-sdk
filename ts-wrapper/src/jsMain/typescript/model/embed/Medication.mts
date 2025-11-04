@@ -1,5 +1,5 @@
 // auto-generated file
-import {expectArray, expectBoolean, expectMap, expectNumber, expectString} from '../../internal/JsonDecodeUtils.mjs';
+import {expectArray, expectBoolean, expectMap, expectNumber, expectObject, expectString, extractEntry} from '../../internal/JsonDecodeUtils.mjs';
 import {CodeStub} from '../base/CodeStub.mjs';
 import {DecryptedAddress} from './Address.mjs';
 import {Duration} from './Duration.mjs';
@@ -193,58 +193,65 @@ export class Medication {
 		return res
 	}
 
-	static fromJSON(json: any, path: Array<string> = ['Medication']): Medication {
-		return new Medication({
-			compoundPrescription: expectString(json.compoundPrescription, true, [...path, ".compoundPrescription"]),
-			substanceProduct: Substanceproduct.fromJSON(json.substanceProduct, [...path, ".substanceProduct"]),
-			medicinalProduct: Medicinalproduct.fromJSON(json.medicinalProduct, [...path, ".medicinalProduct"]),
-			numberOfPackages: expectNumber(json.numberOfPackages, true, true, [...path, ".numberOfPackages"]),
-			batch: expectString(json.batch, true, [...path, ".batch"]),
-			expirationDate: expectNumber(json.expirationDate, true, true, [...path, ".expirationDate"]),
-			instructionForPatient: expectString(json.instructionForPatient, true, [...path, ".instructionForPatient"]),
-			instructionForReimbursement: expectString(json.instructionForReimbursement, true, [...path, ".instructionForReimbursement"]),
-			commentForDelivery: expectString(json.commentForDelivery, true, [...path, ".commentForDelivery"]),
-			drugRoute: expectString(json.drugRoute, true, [...path, ".drugRoute"]),
-			temporality: expectString(json.temporality, true, [...path, ".temporality"]),
-			frequency: CodeStub.fromJSON(json.frequency, [...path, ".frequency"]),
-			reimbursementReason: CodeStub.fromJSON(json.reimbursementReason, [...path, ".reimbursementReason"]),
-			substitutionAllowed: expectBoolean(json.substitutionAllowed, true, [...path, ".substitutionAllowed"]),
-			beginMoment: expectNumber(json.beginMoment, true, true, [...path, ".beginMoment"]),
-			endMoment: expectNumber(json.endMoment, true, true, [...path, ".endMoment"]),
-			deliveryMoment: expectNumber(json.deliveryMoment, true, true, [...path, ".deliveryMoment"]),
-			endExecutionMoment: expectNumber(json.endExecutionMoment, true, true, [...path, ".endExecutionMoment"]),
-			duration: Duration.fromJSON(json.duration, [...path, ".duration"]),
-			renewal: Renewal.fromJSON(json.renewal, [...path, ".renewal"]),
-			knownUsage: expectBoolean(json.knownUsage, true, [...path, ".knownUsage"]),
-			regimen: expectArray(json.regimen, true, [...path, ".regimen"], (x0, p0) => RegimenItem.fromJSON(x0, p0)),
-			posology: expectString(json.posology, true, [...path, ".posology"]),
+	static fromJSON(json: any, ignoreUnknownKeys: boolean = false,
+			path: Array<string> = ['Medication']): Medication {
+		if (typeof json != 'object') throw new Error(`Expected json object at path ${path.join("")}`)
+		const jCpy = { ...json }
+		const res = new Medication({
+			compoundPrescription: expectString(extractEntry(jCpy.compoundPrescription, 'compoundPrescription', false, path), true, [...path, ".compoundPrescription"]),
+			substanceProduct: expectObject(extractEntry(jCpy.substanceProduct, 'substanceProduct', false, path), true, ignoreUnknownKeys, [...path, ".substanceProduct"], Substanceproduct.fromJSON),
+			medicinalProduct: expectObject(extractEntry(jCpy.medicinalProduct, 'medicinalProduct', false, path), true, ignoreUnknownKeys, [...path, ".medicinalProduct"], Medicinalproduct.fromJSON),
+			numberOfPackages: expectNumber(extractEntry(jCpy.numberOfPackages, 'numberOfPackages', false, path), true, true, [...path, ".numberOfPackages"]),
+			batch: expectString(extractEntry(jCpy.batch, 'batch', false, path), true, [...path, ".batch"]),
+			expirationDate: expectNumber(extractEntry(jCpy.expirationDate, 'expirationDate', false, path), true, true, [...path, ".expirationDate"]),
+			instructionForPatient: expectString(extractEntry(jCpy.instructionForPatient, 'instructionForPatient', false, path), true, [...path, ".instructionForPatient"]),
+			instructionForReimbursement: expectString(extractEntry(jCpy.instructionForReimbursement, 'instructionForReimbursement', false, path), true, [...path, ".instructionForReimbursement"]),
+			commentForDelivery: expectString(extractEntry(jCpy.commentForDelivery, 'commentForDelivery', false, path), true, [...path, ".commentForDelivery"]),
+			drugRoute: expectString(extractEntry(jCpy.drugRoute, 'drugRoute', false, path), true, [...path, ".drugRoute"]),
+			temporality: expectString(extractEntry(jCpy.temporality, 'temporality', false, path), true, [...path, ".temporality"]),
+			frequency: expectObject(extractEntry(jCpy.frequency, 'frequency', false, path), true, ignoreUnknownKeys, [...path, ".frequency"], CodeStub.fromJSON),
+			reimbursementReason: expectObject(extractEntry(jCpy.reimbursementReason, 'reimbursementReason', false, path), true, ignoreUnknownKeys, [...path, ".reimbursementReason"], CodeStub.fromJSON),
+			substitutionAllowed: expectBoolean(extractEntry(jCpy.substitutionAllowed, 'substitutionAllowed', false, path), true, [...path, ".substitutionAllowed"]),
+			beginMoment: expectNumber(extractEntry(jCpy.beginMoment, 'beginMoment', false, path), true, true, [...path, ".beginMoment"]),
+			endMoment: expectNumber(extractEntry(jCpy.endMoment, 'endMoment', false, path), true, true, [...path, ".endMoment"]),
+			deliveryMoment: expectNumber(extractEntry(jCpy.deliveryMoment, 'deliveryMoment', false, path), true, true, [...path, ".deliveryMoment"]),
+			endExecutionMoment: expectNumber(extractEntry(jCpy.endExecutionMoment, 'endExecutionMoment', false, path), true, true, [...path, ".endExecutionMoment"]),
+			duration: expectObject(extractEntry(jCpy.duration, 'duration', false, path), true, ignoreUnknownKeys, [...path, ".duration"], Duration.fromJSON),
+			renewal: expectObject(extractEntry(jCpy.renewal, 'renewal', false, path), true, ignoreUnknownKeys, [...path, ".renewal"], Renewal.fromJSON),
+			knownUsage: expectBoolean(extractEntry(jCpy.knownUsage, 'knownUsage', false, path), true, [...path, ".knownUsage"]),
+			regimen: expectArray(extractEntry(jCpy.regimen, 'regimen', false, path), true, [...path, ".regimen"], (x0, p0) => expectObject(x0, false, ignoreUnknownKeys, p0, RegimenItem.fromJSON)),
+			posology: expectString(extractEntry(jCpy.posology, 'posology', false, path), true, [...path, ".posology"]),
 			agreements: expectMap(
-				json.agreements,
+				extractEntry(jCpy.agreements, 'agreements', false, path),
 				true,
 				[...path, ".agreements"],
 				(k0, p0) => expectString(k0, false, p0),
-				(v0, p0) => ParagraphAgreement.fromJSON(v0, p0)
+				(v0, p0) => expectObject(v0, false, ignoreUnknownKeys, p0, ParagraphAgreement.fromJSON)
 			),
-			medicationSchemeIdOnSafe: expectString(json.medicationSchemeIdOnSafe, true, [...path, ".medicationSchemeIdOnSafe"]),
-			medicationSchemeSafeVersion: expectNumber(json.medicationSchemeSafeVersion, true, true, [...path, ".medicationSchemeSafeVersion"]),
-			medicationSchemeTimeStampOnSafe: expectNumber(json.medicationSchemeTimeStampOnSafe, true, true, [...path, ".medicationSchemeTimeStampOnSafe"]),
-			medicationSchemeDocumentId: expectString(json.medicationSchemeDocumentId, true, [...path, ".medicationSchemeDocumentId"]),
-			safeIdName: expectString(json.safeIdName, true, [...path, ".safeIdName"]),
-			idOnSafes: expectString(json.idOnSafes, true, [...path, ".idOnSafes"]),
-			timestampOnSafe: expectNumber(json.timestampOnSafe, true, true, [...path, ".timestampOnSafe"]),
-			changeValidated: expectBoolean(json.changeValidated, true, [...path, ".changeValidated"]),
-			newSafeMedication: expectBoolean(json.newSafeMedication, true, [...path, ".newSafeMedication"]),
-			medicationUse: expectString(json.medicationUse, true, [...path, ".medicationUse"]),
-			beginCondition: expectString(json.beginCondition, true, [...path, ".beginCondition"]),
-			endCondition: expectString(json.endCondition, true, [...path, ".endCondition"]),
-			origin: expectString(json.origin, true, [...path, ".origin"]),
-			medicationChanged: expectBoolean(json.medicationChanged, true, [...path, ".medicationChanged"]),
-			posologyChanged: expectBoolean(json.posologyChanged, true, [...path, ".posologyChanged"]),
-			suspension: expectArray(json.suspension, true, [...path, ".suspension"], (x0, p0) => Suspension.fromJSON(x0, p0)),
-			prescriptionRID: expectString(json.prescriptionRID, true, [...path, ".prescriptionRID"]),
-			status: expectNumber(json.status, true, true, [...path, ".status"]),
-			stockLocation: DecryptedAddress.fromJSON(json.stockLocation, [...path, ".stockLocation"]),
+			medicationSchemeIdOnSafe: expectString(extractEntry(jCpy.medicationSchemeIdOnSafe, 'medicationSchemeIdOnSafe', false, path), true, [...path, ".medicationSchemeIdOnSafe"]),
+			medicationSchemeSafeVersion: expectNumber(extractEntry(jCpy.medicationSchemeSafeVersion, 'medicationSchemeSafeVersion', false, path), true, true, [...path, ".medicationSchemeSafeVersion"]),
+			medicationSchemeTimeStampOnSafe: expectNumber(extractEntry(jCpy.medicationSchemeTimeStampOnSafe, 'medicationSchemeTimeStampOnSafe', false, path), true, true, [...path, ".medicationSchemeTimeStampOnSafe"]),
+			medicationSchemeDocumentId: expectString(extractEntry(jCpy.medicationSchemeDocumentId, 'medicationSchemeDocumentId', false, path), true, [...path, ".medicationSchemeDocumentId"]),
+			safeIdName: expectString(extractEntry(jCpy.safeIdName, 'safeIdName', false, path), true, [...path, ".safeIdName"]),
+			idOnSafes: expectString(extractEntry(jCpy.idOnSafes, 'idOnSafes', false, path), true, [...path, ".idOnSafes"]),
+			timestampOnSafe: expectNumber(extractEntry(jCpy.timestampOnSafe, 'timestampOnSafe', false, path), true, true, [...path, ".timestampOnSafe"]),
+			changeValidated: expectBoolean(extractEntry(jCpy.changeValidated, 'changeValidated', false, path), true, [...path, ".changeValidated"]),
+			newSafeMedication: expectBoolean(extractEntry(jCpy.newSafeMedication, 'newSafeMedication', false, path), true, [...path, ".newSafeMedication"]),
+			medicationUse: expectString(extractEntry(jCpy.medicationUse, 'medicationUse', false, path), true, [...path, ".medicationUse"]),
+			beginCondition: expectString(extractEntry(jCpy.beginCondition, 'beginCondition', false, path), true, [...path, ".beginCondition"]),
+			endCondition: expectString(extractEntry(jCpy.endCondition, 'endCondition', false, path), true, [...path, ".endCondition"]),
+			origin: expectString(extractEntry(jCpy.origin, 'origin', false, path), true, [...path, ".origin"]),
+			medicationChanged: expectBoolean(extractEntry(jCpy.medicationChanged, 'medicationChanged', false, path), true, [...path, ".medicationChanged"]),
+			posologyChanged: expectBoolean(extractEntry(jCpy.posologyChanged, 'posologyChanged', false, path), true, [...path, ".posologyChanged"]),
+			suspension: expectArray(extractEntry(jCpy.suspension, 'suspension', false, path), true, [...path, ".suspension"], (x0, p0) => expectObject(x0, false, ignoreUnknownKeys, p0, Suspension.fromJSON)),
+			prescriptionRID: expectString(extractEntry(jCpy.prescriptionRID, 'prescriptionRID', false, path), true, [...path, ".prescriptionRID"]),
+			status: expectNumber(extractEntry(jCpy.status, 'status', false, path), true, true, [...path, ".status"]),
+			stockLocation: expectObject(extractEntry(jCpy.stockLocation, 'stockLocation', false, path), true, ignoreUnknownKeys, [...path, ".stockLocation"], DecryptedAddress.fromJSON),
 		})
+		if (!ignoreUnknownKeys) {
+			const unused = Object.keys(jCpy)
+			if (unused.length > 0) throw new Error(`Unexpected key(s) for json object Medication at path ${path.join("")}: ${unused}`)}
+		return res
 	}
 
 }

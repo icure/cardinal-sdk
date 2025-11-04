@@ -1,5 +1,5 @@
 // auto-generated file
-import {expectArray, expectBoolean, expectMap, expectNumber, expectString, requireEntry} from '../../internal/JsonDecodeUtils.mjs';
+import {expectArray, expectBoolean, expectMap, expectNumber, expectObject, expectString, extractEntry} from '../../internal/JsonDecodeUtils.mjs';
 import {randomUuid} from '../../utils/Id.mjs';
 import {CodeStub} from '../base/CodeStub.mjs';
 import {Identifiable} from '../base/Identifiable.mjs';
@@ -55,25 +55,32 @@ export class Annotation implements Identifiable<string> {
 		return res
 	}
 
-	static fromJSON(json: any, path: Array<string> = ['Annotation']): Annotation {
-		return new Annotation({
-			id: expectString(requireEntry(json.id, 'id', path), false, [...path, ".id"]),
-			author: expectString(json.author, true, [...path, ".author"]),
-			created: expectNumber(json.created, true, true, [...path, ".created"]),
-			modified: expectNumber(json.modified, true, true, [...path, ".modified"]),
-			text: expectString(json.text, true, [...path, ".text"]),
+	static fromJSON(json: any, ignoreUnknownKeys: boolean = false,
+			path: Array<string> = ['Annotation']): Annotation {
+		if (typeof json != 'object') throw new Error(`Expected json object at path ${path.join("")}`)
+		const jCpy = { ...json }
+		const res = new Annotation({
+			id: expectString(extractEntry(jCpy.id, 'id', true, path), false, [...path, ".id"]),
+			author: expectString(extractEntry(jCpy.author, 'author', false, path), true, [...path, ".author"]),
+			created: expectNumber(extractEntry(jCpy.created, 'created', false, path), true, true, [...path, ".created"]),
+			modified: expectNumber(extractEntry(jCpy.modified, 'modified', false, path), true, true, [...path, ".modified"]),
+			text: expectString(extractEntry(jCpy.text, 'text', false, path), true, [...path, ".text"]),
 			markdown: expectMap(
-				json.markdown,
+				extractEntry(jCpy.markdown, 'markdown', false, path),
 				false,
 				[...path, ".markdown"],
 				(k0, p0) => expectString(k0, false, p0),
 				(v0, p0) => expectString(v0, false, p0)
 			),
-			location: expectString(json.location, true, [...path, ".location"]),
-			confidential: expectBoolean(json.confidential, true, [...path, ".confidential"]),
-			tags: expectArray(json.tags, false, [...path, ".tags"], (x0, p0) => CodeStub.fromJSON(x0, p0)),
-			encryptedSelf: expectString(json.encryptedSelf, true, [...path, ".encryptedSelf"]),
+			location: expectString(extractEntry(jCpy.location, 'location', false, path), true, [...path, ".location"]),
+			confidential: expectBoolean(extractEntry(jCpy.confidential, 'confidential', false, path), true, [...path, ".confidential"]),
+			tags: expectArray(extractEntry(jCpy.tags, 'tags', false, path), false, [...path, ".tags"], (x0, p0) => expectObject(x0, false, ignoreUnknownKeys, p0, CodeStub.fromJSON)),
+			encryptedSelf: expectString(extractEntry(jCpy.encryptedSelf, 'encryptedSelf', false, path), true, [...path, ".encryptedSelf"]),
 		})
+		if (!ignoreUnknownKeys) {
+			const unused = Object.keys(jCpy)
+			if (unused.length > 0) throw new Error(`Unexpected key(s) for json object Annotation at path ${path.join("")}: ${unused}`)}
+		return res
 	}
 
 }

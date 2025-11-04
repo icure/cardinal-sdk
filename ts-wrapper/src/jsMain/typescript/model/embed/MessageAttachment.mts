@@ -1,5 +1,5 @@
 // auto-generated file
-import {expectArray, expectString, expectStringEnum} from '../../internal/JsonDecodeUtils.mjs';
+import {expectArray, expectString, expectStringEnum, extractEntry} from '../../internal/JsonDecodeUtils.mjs';
 import {DocumentLocation} from './DocumentLocation.mjs';
 
 
@@ -21,11 +21,18 @@ export class MessageAttachment {
 		return res
 	}
 
-	static fromJSON(json: any, path: Array<string> = ['MessageAttachment']): MessageAttachment {
-		return new MessageAttachment({
-			type: expectStringEnum(json.type, true, [...path, ".type"], DocumentLocation, 'DocumentLocation'),
-			ids: expectArray(json.ids, false, [...path, ".ids"], (x0, p0) => expectString(x0, false, p0)),
+	static fromJSON(json: any, ignoreUnknownKeys: boolean = false,
+			path: Array<string> = ['MessageAttachment']): MessageAttachment {
+		if (typeof json != 'object') throw new Error(`Expected json object at path ${path.join("")}`)
+		const jCpy = { ...json }
+		const res = new MessageAttachment({
+			type: expectStringEnum(extractEntry(jCpy.type, 'type', false, path), true, [...path, ".type"], DocumentLocation, 'DocumentLocation'),
+			ids: expectArray(extractEntry(jCpy.ids, 'ids', false, path), false, [...path, ".ids"], (x0, p0) => expectString(x0, false, p0)),
 		})
+		if (!ignoreUnknownKeys) {
+			const unused = Object.keys(jCpy)
+			if (unused.length > 0) throw new Error(`Unexpected key(s) for json object MessageAttachment at path ${path.join("")}: ${unused}`)}
+		return res
 	}
 
 }

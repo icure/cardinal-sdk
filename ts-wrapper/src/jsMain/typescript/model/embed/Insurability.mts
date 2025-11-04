@@ -1,5 +1,5 @@
 // auto-generated file
-import {expectBoolean, expectMap, expectNumber, expectString} from '../../internal/JsonDecodeUtils.mjs';
+import {expectBoolean, expectMap, expectNumber, expectString, extractEntry} from '../../internal/JsonDecodeUtils.mjs';
 import {Base64String} from '../specializations/Base64String.mjs';
 import {Encryptable} from './Encryptable.mjs';
 
@@ -81,26 +81,32 @@ export class DecryptedInsurability {
 		return res
 	}
 
-	static fromJSON(json: any,
+	static fromJSON(json: any, ignoreUnknownKeys: boolean = false,
 			path: Array<string> = ['DecryptedInsurability']): DecryptedInsurability {
-		return new DecryptedInsurability({
+		if (typeof json != 'object') throw new Error(`Expected json object at path ${path.join("")}`)
+		const jCpy = { ...json }
+		const res = new DecryptedInsurability({
 			parameters: expectMap(
-				json.parameters,
+				extractEntry(jCpy.parameters, 'parameters', false, path),
 				false,
 				[...path, ".parameters"],
 				(k0, p0) => expectString(k0, false, p0),
 				(v0, p0) => expectString(v0, false, p0)
 			),
-			hospitalisation: expectBoolean(json.hospitalisation, true, [...path, ".hospitalisation"]),
-			ambulatory: expectBoolean(json.ambulatory, true, [...path, ".ambulatory"]),
-			dental: expectBoolean(json.dental, true, [...path, ".dental"]),
-			identificationNumber: expectString(json.identificationNumber, true, [...path, ".identificationNumber"]),
-			insuranceId: expectString(json.insuranceId, true, [...path, ".insuranceId"]),
-			startDate: expectNumber(json.startDate, true, true, [...path, ".startDate"]),
-			endDate: expectNumber(json.endDate, true, true, [...path, ".endDate"]),
-			titularyId: expectString(json.titularyId, true, [...path, ".titularyId"]),
-			encryptedSelf: expectString(json.encryptedSelf, false, [...path, ".encryptedSelf"]),
+			hospitalisation: expectBoolean(extractEntry(jCpy.hospitalisation, 'hospitalisation', false, path), true, [...path, ".hospitalisation"]),
+			ambulatory: expectBoolean(extractEntry(jCpy.ambulatory, 'ambulatory', false, path), true, [...path, ".ambulatory"]),
+			dental: expectBoolean(extractEntry(jCpy.dental, 'dental', false, path), true, [...path, ".dental"]),
+			identificationNumber: expectString(extractEntry(jCpy.identificationNumber, 'identificationNumber', false, path), true, [...path, ".identificationNumber"]),
+			insuranceId: expectString(extractEntry(jCpy.insuranceId, 'insuranceId', false, path), true, [...path, ".insuranceId"]),
+			startDate: expectNumber(extractEntry(jCpy.startDate, 'startDate', false, path), true, true, [...path, ".startDate"]),
+			endDate: expectNumber(extractEntry(jCpy.endDate, 'endDate', false, path), true, true, [...path, ".endDate"]),
+			titularyId: expectString(extractEntry(jCpy.titularyId, 'titularyId', false, path), true, [...path, ".titularyId"]),
+			encryptedSelf: expectString(extractEntry(jCpy.encryptedSelf, 'encryptedSelf', false, path), false, [...path, ".encryptedSelf"]),
 		})
+		if (!ignoreUnknownKeys) {
+			const unused = Object.keys(jCpy)
+			if (unused.length > 0) throw new Error(`Unexpected key(s) for json object DecryptedInsurability at path ${path.join("")}: ${unused}`)}
+		return res
 	}
 
 }
@@ -158,26 +164,32 @@ export class EncryptedInsurability {
 		return res
 	}
 
-	static fromJSON(json: any,
+	static fromJSON(json: any, ignoreUnknownKeys: boolean = false,
 			path: Array<string> = ['EncryptedInsurability']): EncryptedInsurability {
-		return new EncryptedInsurability({
+		if (typeof json != 'object') throw new Error(`Expected json object at path ${path.join("")}`)
+		const jCpy = { ...json }
+		const res = new EncryptedInsurability({
 			parameters: expectMap(
-				json.parameters,
+				extractEntry(jCpy.parameters, 'parameters', false, path),
 				false,
 				[...path, ".parameters"],
 				(k0, p0) => expectString(k0, false, p0),
 				(v0, p0) => expectString(v0, false, p0)
 			),
-			hospitalisation: expectBoolean(json.hospitalisation, true, [...path, ".hospitalisation"]),
-			ambulatory: expectBoolean(json.ambulatory, true, [...path, ".ambulatory"]),
-			dental: expectBoolean(json.dental, true, [...path, ".dental"]),
-			identificationNumber: expectString(json.identificationNumber, true, [...path, ".identificationNumber"]),
-			insuranceId: expectString(json.insuranceId, true, [...path, ".insuranceId"]),
-			startDate: expectNumber(json.startDate, true, true, [...path, ".startDate"]),
-			endDate: expectNumber(json.endDate, true, true, [...path, ".endDate"]),
-			titularyId: expectString(json.titularyId, true, [...path, ".titularyId"]),
-			encryptedSelf: expectString(json.encryptedSelf, false, [...path, ".encryptedSelf"]),
+			hospitalisation: expectBoolean(extractEntry(jCpy.hospitalisation, 'hospitalisation', false, path), true, [...path, ".hospitalisation"]),
+			ambulatory: expectBoolean(extractEntry(jCpy.ambulatory, 'ambulatory', false, path), true, [...path, ".ambulatory"]),
+			dental: expectBoolean(extractEntry(jCpy.dental, 'dental', false, path), true, [...path, ".dental"]),
+			identificationNumber: expectString(extractEntry(jCpy.identificationNumber, 'identificationNumber', false, path), true, [...path, ".identificationNumber"]),
+			insuranceId: expectString(extractEntry(jCpy.insuranceId, 'insuranceId', false, path), true, [...path, ".insuranceId"]),
+			startDate: expectNumber(extractEntry(jCpy.startDate, 'startDate', false, path), true, true, [...path, ".startDate"]),
+			endDate: expectNumber(extractEntry(jCpy.endDate, 'endDate', false, path), true, true, [...path, ".endDate"]),
+			titularyId: expectString(extractEntry(jCpy.titularyId, 'titularyId', false, path), true, [...path, ".titularyId"]),
+			encryptedSelf: expectString(extractEntry(jCpy.encryptedSelf, 'encryptedSelf', false, path), false, [...path, ".encryptedSelf"]),
 		})
+		if (!ignoreUnknownKeys) {
+			const unused = Object.keys(jCpy)
+			if (unused.length > 0) throw new Error(`Unexpected key(s) for json object EncryptedInsurability at path ${path.join("")}: ${unused}`)}
+		return res
 	}
 
 }

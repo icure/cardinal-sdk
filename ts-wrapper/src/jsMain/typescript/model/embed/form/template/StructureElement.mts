@@ -17,19 +17,20 @@ export type StructureElement = Field | FieldsGroup;
 
 export namespace StructureElement {
 
-	export function fromJSON(json: any, path: Array<string> = ['StructureElement']): StructureElement {
+	export function fromJSON(json: any, ignoreUnknownKeys: boolean = false,
+			path: Array<string> = ['StructureElement']): StructureElement {
 		switch ((json as StructureElement).$ktClass) {
-			case 'com.icure.cardinal.sdk.model.embed.form.template.DropdownField': return DropdownField.fromJSON(json)
-			case 'com.icure.cardinal.sdk.model.embed.form.template.RadioButton': return RadioButton.fromJSON(json)
-			case 'com.icure.cardinal.sdk.model.embed.form.template.DatePicker': return DatePicker.fromJSON(json)
-			case 'com.icure.cardinal.sdk.model.embed.form.template.TimePicker': return TimePicker.fromJSON(json)
-			case 'com.icure.cardinal.sdk.model.embed.form.template.DateTimePicker': return DateTimePicker.fromJSON(json)
-			case 'com.icure.cardinal.sdk.model.embed.form.template.NumberField': return NumberField.fromJSON(json)
-			case 'com.icure.cardinal.sdk.model.embed.form.template.TextField': return TextField.fromJSON(json)
-			case 'com.icure.cardinal.sdk.model.embed.form.template.CheckBox': return CheckBox.fromJSON(json)
-			case 'com.icure.cardinal.sdk.model.embed.form.template.MultipleChoice': return MultipleChoice.fromJSON(json)
-			case 'com.icure.cardinal.sdk.model.embed.form.template.MeasureField': return MeasureField.fromJSON(json)
-			case 'com.icure.cardinal.sdk.model.embed.form.template.FieldsGroup': return FieldsGroup.fromJSON(json)
+			case 'com.icure.cardinal.sdk.model.embed.form.template.DropdownField': return DropdownField.fromJSON(json, ignoreUnknownKeys)
+			case 'com.icure.cardinal.sdk.model.embed.form.template.RadioButton': return RadioButton.fromJSON(json, ignoreUnknownKeys)
+			case 'com.icure.cardinal.sdk.model.embed.form.template.DatePicker': return DatePicker.fromJSON(json, ignoreUnknownKeys)
+			case 'com.icure.cardinal.sdk.model.embed.form.template.TimePicker': return TimePicker.fromJSON(json, ignoreUnknownKeys)
+			case 'com.icure.cardinal.sdk.model.embed.form.template.DateTimePicker': return DateTimePicker.fromJSON(json, ignoreUnknownKeys)
+			case 'com.icure.cardinal.sdk.model.embed.form.template.NumberField': return NumberField.fromJSON(json, ignoreUnknownKeys)
+			case 'com.icure.cardinal.sdk.model.embed.form.template.TextField': return TextField.fromJSON(json, ignoreUnknownKeys)
+			case 'com.icure.cardinal.sdk.model.embed.form.template.CheckBox': return CheckBox.fromJSON(json, ignoreUnknownKeys)
+			case 'com.icure.cardinal.sdk.model.embed.form.template.MultipleChoice': return MultipleChoice.fromJSON(json, ignoreUnknownKeys)
+			case 'com.icure.cardinal.sdk.model.embed.form.template.MeasureField': return MeasureField.fromJSON(json, ignoreUnknownKeys)
+			case 'com.icure.cardinal.sdk.model.embed.form.template.FieldsGroup': return FieldsGroup.fromJSON(json, ignoreUnknownKeys)
 			default: throw new Error('Unexpected discriminator for StructureElement: ' + json.$ktClass)
 		}
 	}

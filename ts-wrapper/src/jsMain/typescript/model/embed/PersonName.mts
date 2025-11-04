@@ -1,5 +1,5 @@
 // auto-generated file
-import {expectArray, expectNumber, expectString, expectStringEnum} from '../../internal/JsonDecodeUtils.mjs';
+import {expectArray, expectNumber, expectString, expectStringEnum, extractEntry} from '../../internal/JsonDecodeUtils.mjs';
 import {PersonNameUse} from './PersonNameUse.mjs';
 
 
@@ -45,17 +45,24 @@ export class PersonName {
 		return res
 	}
 
-	static fromJSON(json: any, path: Array<string> = ['PersonName']): PersonName {
-		return new PersonName({
-			lastName: expectString(json.lastName, true, [...path, ".lastName"]),
-			firstNames: expectArray(json.firstNames, false, [...path, ".firstNames"], (x0, p0) => expectString(x0, false, p0)),
-			start: expectNumber(json.start, true, true, [...path, ".start"]),
-			end: expectNumber(json.end, true, true, [...path, ".end"]),
-			prefix: expectArray(json.prefix, false, [...path, ".prefix"], (x0, p0) => expectString(x0, false, p0)),
-			suffix: expectArray(json.suffix, false, [...path, ".suffix"], (x0, p0) => expectString(x0, false, p0)),
-			text: expectString(json.text, true, [...path, ".text"]),
-			use: expectStringEnum(json.use, true, [...path, ".use"], PersonNameUse, 'PersonNameUse'),
+	static fromJSON(json: any, ignoreUnknownKeys: boolean = false,
+			path: Array<string> = ['PersonName']): PersonName {
+		if (typeof json != 'object') throw new Error(`Expected json object at path ${path.join("")}`)
+		const jCpy = { ...json }
+		const res = new PersonName({
+			lastName: expectString(extractEntry(jCpy.lastName, 'lastName', false, path), true, [...path, ".lastName"]),
+			firstNames: expectArray(extractEntry(jCpy.firstNames, 'firstNames', false, path), false, [...path, ".firstNames"], (x0, p0) => expectString(x0, false, p0)),
+			start: expectNumber(extractEntry(jCpy.start, 'start', false, path), true, true, [...path, ".start"]),
+			end: expectNumber(extractEntry(jCpy.end, 'end', false, path), true, true, [...path, ".end"]),
+			prefix: expectArray(extractEntry(jCpy.prefix, 'prefix', false, path), false, [...path, ".prefix"], (x0, p0) => expectString(x0, false, p0)),
+			suffix: expectArray(extractEntry(jCpy.suffix, 'suffix', false, path), false, [...path, ".suffix"], (x0, p0) => expectString(x0, false, p0)),
+			text: expectString(extractEntry(jCpy.text, 'text', false, path), true, [...path, ".text"]),
+			use: expectStringEnum(extractEntry(jCpy.use, 'use', false, path), true, [...path, ".use"], PersonNameUse, 'PersonNameUse'),
 		})
+		if (!ignoreUnknownKeys) {
+			const unused = Object.keys(jCpy)
+			if (unused.length > 0) throw new Error(`Unexpected key(s) for json object PersonName at path ${path.join("")}: ${unused}`)}
+		return res
 	}
 
 }

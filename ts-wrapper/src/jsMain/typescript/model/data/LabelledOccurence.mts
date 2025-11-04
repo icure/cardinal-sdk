@@ -1,5 +1,5 @@
 // auto-generated file
-import {expectNumber, expectString, requireEntry} from '../../internal/JsonDecodeUtils.mjs';
+import {expectNumber, expectString, extractEntry} from '../../internal/JsonDecodeUtils.mjs';
 
 
 export class LabelledOccurence {
@@ -20,11 +20,18 @@ export class LabelledOccurence {
 		return res
 	}
 
-	static fromJSON(json: any, path: Array<string> = ['LabelledOccurence']): LabelledOccurence {
-		return new LabelledOccurence({
-			label: expectString(requireEntry(json.label, 'label', path), false, [...path, ".label"]),
-			occurence: expectNumber(requireEntry(json.occurence, 'occurence', path), false, true, [...path, ".occurence"]),
+	static fromJSON(json: any, ignoreUnknownKeys: boolean = false,
+			path: Array<string> = ['LabelledOccurence']): LabelledOccurence {
+		if (typeof json != 'object') throw new Error(`Expected json object at path ${path.join("")}`)
+		const jCpy = { ...json }
+		const res = new LabelledOccurence({
+			label: expectString(extractEntry(jCpy.label, 'label', true, path), false, [...path, ".label"]),
+			occurence: expectNumber(extractEntry(jCpy.occurence, 'occurence', true, path), false, true, [...path, ".occurence"]),
 		})
+		if (!ignoreUnknownKeys) {
+			const unused = Object.keys(jCpy)
+			if (unused.length > 0) throw new Error(`Unexpected key(s) for json object LabelledOccurence at path ${path.join("")}: ${unused}`)}
+		return res
 	}
 
 }

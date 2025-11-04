@@ -1,5 +1,5 @@
 // auto-generated file
-import {expectArray, expectString, requireEntry} from '../../../../internal/JsonDecodeUtils.mjs';
+import {expectArray, expectObject, expectString, extractEntry} from '../../../../internal/JsonDecodeUtils.mjs';
 import {StructureElement} from './StructureElement.mjs';
 
 
@@ -23,11 +23,18 @@ export class FieldsGroup {
 		return res
 	}
 
-	static fromJSON(json: any, path: Array<string> = ['FieldsGroup']): FieldsGroup {
-		return new FieldsGroup({
-			group: expectString(requireEntry(json.group, 'group', path), false, [...path, ".group"]),
-			fields: expectArray(json.fields, true, [...path, ".fields"], (x0, p0) => StructureElement.fromJSON(x0, p0)),
+	static fromJSON(json: any, ignoreUnknownKeys: boolean = false,
+			path: Array<string> = ['FieldsGroup']): FieldsGroup {
+		if (typeof json != 'object') throw new Error(`Expected json object at path ${path.join("")}`)
+		const jCpy = { ...json }
+		const res = new FieldsGroup({
+			group: expectString(extractEntry(jCpy.group, 'group', true, path), false, [...path, ".group"]),
+			fields: expectArray(extractEntry(jCpy.fields, 'fields', false, path), true, [...path, ".fields"], (x0, p0) => expectObject(x0, false, ignoreUnknownKeys, p0, StructureElement.fromJSON)),
 		})
+		if (!ignoreUnknownKeys) {
+			const unused = Object.keys(jCpy)
+			if (unused.length > 0) throw new Error(`Unexpected key(s) for json object FieldsGroup at path ${path.join("")}: ${unused}`)}
+		return res
 	}
 
 }

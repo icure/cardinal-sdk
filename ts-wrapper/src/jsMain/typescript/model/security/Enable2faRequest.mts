@@ -1,5 +1,5 @@
 // auto-generated file
-import {expectNumber, expectString, requireEntry} from '../../internal/JsonDecodeUtils.mjs';
+import {expectNumber, expectString, extractEntry} from '../../internal/JsonDecodeUtils.mjs';
 
 
 export class Enable2faRequest {
@@ -20,11 +20,18 @@ export class Enable2faRequest {
 		return res
 	}
 
-	static fromJSON(json: any, path: Array<string> = ['Enable2faRequest']): Enable2faRequest {
-		return new Enable2faRequest({
-			secret: expectString(requireEntry(json.secret, 'secret', path), false, [...path, ".secret"]),
-			otpLength: expectNumber(requireEntry(json.otpLength, 'otpLength', path), false, true, [...path, ".otpLength"]),
+	static fromJSON(json: any, ignoreUnknownKeys: boolean = false,
+			path: Array<string> = ['Enable2faRequest']): Enable2faRequest {
+		if (typeof json != 'object') throw new Error(`Expected json object at path ${path.join("")}`)
+		const jCpy = { ...json }
+		const res = new Enable2faRequest({
+			secret: expectString(extractEntry(jCpy.secret, 'secret', true, path), false, [...path, ".secret"]),
+			otpLength: expectNumber(extractEntry(jCpy.otpLength, 'otpLength', true, path), false, true, [...path, ".otpLength"]),
 		})
+		if (!ignoreUnknownKeys) {
+			const unused = Object.keys(jCpy)
+			if (unused.length > 0) throw new Error(`Unexpected key(s) for json object Enable2faRequest at path ${path.join("")}: ${unused}`)}
+		return res
 	}
 
 }

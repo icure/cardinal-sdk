@@ -1,5 +1,5 @@
 // auto-generated file
-import {expectBoolean, expectMap, expectNumber, expectString, expectStringEnum} from '../../internal/JsonDecodeUtils.mjs';
+import {expectBoolean, expectMap, expectNumber, expectString, expectStringEnum, extractEntry} from '../../internal/JsonDecodeUtils.mjs';
 import {Base64String} from '../specializations/Base64String.mjs';
 import {ContractChangeType} from './ContractChangeType.mjs';
 import {Encryptable} from './Encryptable.mjs';
@@ -222,55 +222,61 @@ export class DecryptedMedicalHouseContract {
 		return res
 	}
 
-	static fromJSON(json: any,
+	static fromJSON(json: any, ignoreUnknownKeys: boolean = false,
 			path: Array<string> = ['DecryptedMedicalHouseContract']): DecryptedMedicalHouseContract {
-		return new DecryptedMedicalHouseContract({
-			contractId: expectString(json.contractId, true, [...path, ".contractId"]),
-			validFrom: expectNumber(json.validFrom, true, true, [...path, ".validFrom"]),
-			validTo: expectNumber(json.validTo, true, true, [...path, ".validTo"]),
-			mmNihii: expectString(json.mmNihii, true, [...path, ".mmNihii"]),
-			hcpId: expectString(json.hcpId, true, [...path, ".hcpId"]),
-			changeType: expectStringEnum(json.changeType, true, [...path, ".changeType"], ContractChangeType, 'ContractChangeType'),
-			parentContractId: expectString(json.parentContractId, true, [...path, ".parentContractId"]),
-			changedBy: expectString(json.changedBy, true, [...path, ".changedBy"]),
-			startOfContract: expectNumber(json.startOfContract, true, true, [...path, ".startOfContract"]),
-			startOfCoverage: expectNumber(json.startOfCoverage, true, true, [...path, ".startOfCoverage"]),
-			endOfContract: expectNumber(json.endOfContract, true, true, [...path, ".endOfContract"]),
-			endOfCoverage: expectNumber(json.endOfCoverage, true, true, [...path, ".endOfCoverage"]),
-			kine: expectBoolean(json.kine, false, [...path, ".kine"]),
-			gp: expectBoolean(json.gp, false, [...path, ".gp"]),
-			ptd: expectBoolean(json.ptd, false, [...path, ".ptd"]),
-			nurse: expectBoolean(json.nurse, false, [...path, ".nurse"]),
-			noKine: expectBoolean(json.noKine, false, [...path, ".noKine"]),
-			noGp: expectBoolean(json.noGp, false, [...path, ".noGp"]),
-			noNurse: expectBoolean(json.noNurse, false, [...path, ".noNurse"]),
-			unsubscriptionReasonId: expectNumber(json.unsubscriptionReasonId, true, true, [...path, ".unsubscriptionReasonId"]),
-			ptdStart: expectNumber(json.ptdStart, true, true, [...path, ".ptdStart"]),
-			ptdEnd: expectNumber(json.ptdEnd, true, true, [...path, ".ptdEnd"]),
-			ptdLastInvoiced: expectNumber(json.ptdLastInvoiced, true, true, [...path, ".ptdLastInvoiced"]),
-			startOfSuspension: expectNumber(json.startOfSuspension, true, true, [...path, ".startOfSuspension"]),
-			endOfSuspension: expectNumber(json.endOfSuspension, true, true, [...path, ".endOfSuspension"]),
-			suspensionReason: expectStringEnum(json.suspensionReason, true, [...path, ".suspensionReason"], SuspensionReason, 'SuspensionReason'),
-			suspensionSource: expectString(json.suspensionSource, true, [...path, ".suspensionSource"]),
-			forcedSuspension: expectBoolean(json.forcedSuspension, false, [...path, ".forcedSuspension"]),
-			signatureType: expectStringEnum(json.signatureType, true, [...path, ".signatureType"], MhcSignatureType, 'MhcSignatureType'),
-			status: expectNumber(json.status, true, true, [...path, ".status"]),
+		if (typeof json != 'object') throw new Error(`Expected json object at path ${path.join("")}`)
+		const jCpy = { ...json }
+		const res = new DecryptedMedicalHouseContract({
+			contractId: expectString(extractEntry(jCpy.contractId, 'contractId', false, path), true, [...path, ".contractId"]),
+			validFrom: expectNumber(extractEntry(jCpy.validFrom, 'validFrom', false, path), true, true, [...path, ".validFrom"]),
+			validTo: expectNumber(extractEntry(jCpy.validTo, 'validTo', false, path), true, true, [...path, ".validTo"]),
+			mmNihii: expectString(extractEntry(jCpy.mmNihii, 'mmNihii', false, path), true, [...path, ".mmNihii"]),
+			hcpId: expectString(extractEntry(jCpy.hcpId, 'hcpId', false, path), true, [...path, ".hcpId"]),
+			changeType: expectStringEnum(extractEntry(jCpy.changeType, 'changeType', false, path), true, [...path, ".changeType"], ContractChangeType, 'ContractChangeType'),
+			parentContractId: expectString(extractEntry(jCpy.parentContractId, 'parentContractId', false, path), true, [...path, ".parentContractId"]),
+			changedBy: expectString(extractEntry(jCpy.changedBy, 'changedBy', false, path), true, [...path, ".changedBy"]),
+			startOfContract: expectNumber(extractEntry(jCpy.startOfContract, 'startOfContract', false, path), true, true, [...path, ".startOfContract"]),
+			startOfCoverage: expectNumber(extractEntry(jCpy.startOfCoverage, 'startOfCoverage', false, path), true, true, [...path, ".startOfCoverage"]),
+			endOfContract: expectNumber(extractEntry(jCpy.endOfContract, 'endOfContract', false, path), true, true, [...path, ".endOfContract"]),
+			endOfCoverage: expectNumber(extractEntry(jCpy.endOfCoverage, 'endOfCoverage', false, path), true, true, [...path, ".endOfCoverage"]),
+			kine: expectBoolean(extractEntry(jCpy.kine, 'kine', false, path), false, [...path, ".kine"]),
+			gp: expectBoolean(extractEntry(jCpy.gp, 'gp', false, path), false, [...path, ".gp"]),
+			ptd: expectBoolean(extractEntry(jCpy.ptd, 'ptd', false, path), false, [...path, ".ptd"]),
+			nurse: expectBoolean(extractEntry(jCpy.nurse, 'nurse', false, path), false, [...path, ".nurse"]),
+			noKine: expectBoolean(extractEntry(jCpy.noKine, 'noKine', false, path), false, [...path, ".noKine"]),
+			noGp: expectBoolean(extractEntry(jCpy.noGp, 'noGp', false, path), false, [...path, ".noGp"]),
+			noNurse: expectBoolean(extractEntry(jCpy.noNurse, 'noNurse', false, path), false, [...path, ".noNurse"]),
+			unsubscriptionReasonId: expectNumber(extractEntry(jCpy.unsubscriptionReasonId, 'unsubscriptionReasonId', false, path), true, true, [...path, ".unsubscriptionReasonId"]),
+			ptdStart: expectNumber(extractEntry(jCpy.ptdStart, 'ptdStart', false, path), true, true, [...path, ".ptdStart"]),
+			ptdEnd: expectNumber(extractEntry(jCpy.ptdEnd, 'ptdEnd', false, path), true, true, [...path, ".ptdEnd"]),
+			ptdLastInvoiced: expectNumber(extractEntry(jCpy.ptdLastInvoiced, 'ptdLastInvoiced', false, path), true, true, [...path, ".ptdLastInvoiced"]),
+			startOfSuspension: expectNumber(extractEntry(jCpy.startOfSuspension, 'startOfSuspension', false, path), true, true, [...path, ".startOfSuspension"]),
+			endOfSuspension: expectNumber(extractEntry(jCpy.endOfSuspension, 'endOfSuspension', false, path), true, true, [...path, ".endOfSuspension"]),
+			suspensionReason: expectStringEnum(extractEntry(jCpy.suspensionReason, 'suspensionReason', false, path), true, [...path, ".suspensionReason"], SuspensionReason, 'SuspensionReason'),
+			suspensionSource: expectString(extractEntry(jCpy.suspensionSource, 'suspensionSource', false, path), true, [...path, ".suspensionSource"]),
+			forcedSuspension: expectBoolean(extractEntry(jCpy.forcedSuspension, 'forcedSuspension', false, path), false, [...path, ".forcedSuspension"]),
+			signatureType: expectStringEnum(extractEntry(jCpy.signatureType, 'signatureType', false, path), true, [...path, ".signatureType"], MhcSignatureType, 'MhcSignatureType'),
+			status: expectNumber(extractEntry(jCpy.status, 'status', false, path), true, true, [...path, ".status"]),
 			options: expectMap(
-				json.options,
+				extractEntry(jCpy.options, 'options', false, path),
 				false,
 				[...path, ".options"],
 				(k0, p0) => expectString(k0, false, p0),
 				(v0, p0) => expectString(v0, false, p0)
 			),
 			receipts: expectMap(
-				json.receipts,
+				extractEntry(jCpy.receipts, 'receipts', false, path),
 				false,
 				[...path, ".receipts"],
 				(k0, p0) => expectString(k0, false, p0),
 				(v0, p0) => expectString(v0, false, p0)
 			),
-			encryptedSelf: expectString(json.encryptedSelf, false, [...path, ".encryptedSelf"]),
+			encryptedSelf: expectString(extractEntry(jCpy.encryptedSelf, 'encryptedSelf', false, path), false, [...path, ".encryptedSelf"]),
 		})
+		if (!ignoreUnknownKeys) {
+			const unused = Object.keys(jCpy)
+			if (unused.length > 0) throw new Error(`Unexpected key(s) for json object DecryptedMedicalHouseContract at path ${path.join("")}: ${unused}`)}
+		return res
 	}
 
 }
@@ -420,55 +426,61 @@ export class EncryptedMedicalHouseContract {
 		return res
 	}
 
-	static fromJSON(json: any,
+	static fromJSON(json: any, ignoreUnknownKeys: boolean = false,
 			path: Array<string> = ['EncryptedMedicalHouseContract']): EncryptedMedicalHouseContract {
-		return new EncryptedMedicalHouseContract({
-			contractId: expectString(json.contractId, true, [...path, ".contractId"]),
-			validFrom: expectNumber(json.validFrom, true, true, [...path, ".validFrom"]),
-			validTo: expectNumber(json.validTo, true, true, [...path, ".validTo"]),
-			mmNihii: expectString(json.mmNihii, true, [...path, ".mmNihii"]),
-			hcpId: expectString(json.hcpId, true, [...path, ".hcpId"]),
-			changeType: expectStringEnum(json.changeType, true, [...path, ".changeType"], ContractChangeType, 'ContractChangeType'),
-			parentContractId: expectString(json.parentContractId, true, [...path, ".parentContractId"]),
-			changedBy: expectString(json.changedBy, true, [...path, ".changedBy"]),
-			startOfContract: expectNumber(json.startOfContract, true, true, [...path, ".startOfContract"]),
-			startOfCoverage: expectNumber(json.startOfCoverage, true, true, [...path, ".startOfCoverage"]),
-			endOfContract: expectNumber(json.endOfContract, true, true, [...path, ".endOfContract"]),
-			endOfCoverage: expectNumber(json.endOfCoverage, true, true, [...path, ".endOfCoverage"]),
-			kine: expectBoolean(json.kine, false, [...path, ".kine"]),
-			gp: expectBoolean(json.gp, false, [...path, ".gp"]),
-			ptd: expectBoolean(json.ptd, false, [...path, ".ptd"]),
-			nurse: expectBoolean(json.nurse, false, [...path, ".nurse"]),
-			noKine: expectBoolean(json.noKine, false, [...path, ".noKine"]),
-			noGp: expectBoolean(json.noGp, false, [...path, ".noGp"]),
-			noNurse: expectBoolean(json.noNurse, false, [...path, ".noNurse"]),
-			unsubscriptionReasonId: expectNumber(json.unsubscriptionReasonId, true, true, [...path, ".unsubscriptionReasonId"]),
-			ptdStart: expectNumber(json.ptdStart, true, true, [...path, ".ptdStart"]),
-			ptdEnd: expectNumber(json.ptdEnd, true, true, [...path, ".ptdEnd"]),
-			ptdLastInvoiced: expectNumber(json.ptdLastInvoiced, true, true, [...path, ".ptdLastInvoiced"]),
-			startOfSuspension: expectNumber(json.startOfSuspension, true, true, [...path, ".startOfSuspension"]),
-			endOfSuspension: expectNumber(json.endOfSuspension, true, true, [...path, ".endOfSuspension"]),
-			suspensionReason: expectStringEnum(json.suspensionReason, true, [...path, ".suspensionReason"], SuspensionReason, 'SuspensionReason'),
-			suspensionSource: expectString(json.suspensionSource, true, [...path, ".suspensionSource"]),
-			forcedSuspension: expectBoolean(json.forcedSuspension, false, [...path, ".forcedSuspension"]),
-			signatureType: expectStringEnum(json.signatureType, true, [...path, ".signatureType"], MhcSignatureType, 'MhcSignatureType'),
-			status: expectNumber(json.status, true, true, [...path, ".status"]),
+		if (typeof json != 'object') throw new Error(`Expected json object at path ${path.join("")}`)
+		const jCpy = { ...json }
+		const res = new EncryptedMedicalHouseContract({
+			contractId: expectString(extractEntry(jCpy.contractId, 'contractId', false, path), true, [...path, ".contractId"]),
+			validFrom: expectNumber(extractEntry(jCpy.validFrom, 'validFrom', false, path), true, true, [...path, ".validFrom"]),
+			validTo: expectNumber(extractEntry(jCpy.validTo, 'validTo', false, path), true, true, [...path, ".validTo"]),
+			mmNihii: expectString(extractEntry(jCpy.mmNihii, 'mmNihii', false, path), true, [...path, ".mmNihii"]),
+			hcpId: expectString(extractEntry(jCpy.hcpId, 'hcpId', false, path), true, [...path, ".hcpId"]),
+			changeType: expectStringEnum(extractEntry(jCpy.changeType, 'changeType', false, path), true, [...path, ".changeType"], ContractChangeType, 'ContractChangeType'),
+			parentContractId: expectString(extractEntry(jCpy.parentContractId, 'parentContractId', false, path), true, [...path, ".parentContractId"]),
+			changedBy: expectString(extractEntry(jCpy.changedBy, 'changedBy', false, path), true, [...path, ".changedBy"]),
+			startOfContract: expectNumber(extractEntry(jCpy.startOfContract, 'startOfContract', false, path), true, true, [...path, ".startOfContract"]),
+			startOfCoverage: expectNumber(extractEntry(jCpy.startOfCoverage, 'startOfCoverage', false, path), true, true, [...path, ".startOfCoverage"]),
+			endOfContract: expectNumber(extractEntry(jCpy.endOfContract, 'endOfContract', false, path), true, true, [...path, ".endOfContract"]),
+			endOfCoverage: expectNumber(extractEntry(jCpy.endOfCoverage, 'endOfCoverage', false, path), true, true, [...path, ".endOfCoverage"]),
+			kine: expectBoolean(extractEntry(jCpy.kine, 'kine', false, path), false, [...path, ".kine"]),
+			gp: expectBoolean(extractEntry(jCpy.gp, 'gp', false, path), false, [...path, ".gp"]),
+			ptd: expectBoolean(extractEntry(jCpy.ptd, 'ptd', false, path), false, [...path, ".ptd"]),
+			nurse: expectBoolean(extractEntry(jCpy.nurse, 'nurse', false, path), false, [...path, ".nurse"]),
+			noKine: expectBoolean(extractEntry(jCpy.noKine, 'noKine', false, path), false, [...path, ".noKine"]),
+			noGp: expectBoolean(extractEntry(jCpy.noGp, 'noGp', false, path), false, [...path, ".noGp"]),
+			noNurse: expectBoolean(extractEntry(jCpy.noNurse, 'noNurse', false, path), false, [...path, ".noNurse"]),
+			unsubscriptionReasonId: expectNumber(extractEntry(jCpy.unsubscriptionReasonId, 'unsubscriptionReasonId', false, path), true, true, [...path, ".unsubscriptionReasonId"]),
+			ptdStart: expectNumber(extractEntry(jCpy.ptdStart, 'ptdStart', false, path), true, true, [...path, ".ptdStart"]),
+			ptdEnd: expectNumber(extractEntry(jCpy.ptdEnd, 'ptdEnd', false, path), true, true, [...path, ".ptdEnd"]),
+			ptdLastInvoiced: expectNumber(extractEntry(jCpy.ptdLastInvoiced, 'ptdLastInvoiced', false, path), true, true, [...path, ".ptdLastInvoiced"]),
+			startOfSuspension: expectNumber(extractEntry(jCpy.startOfSuspension, 'startOfSuspension', false, path), true, true, [...path, ".startOfSuspension"]),
+			endOfSuspension: expectNumber(extractEntry(jCpy.endOfSuspension, 'endOfSuspension', false, path), true, true, [...path, ".endOfSuspension"]),
+			suspensionReason: expectStringEnum(extractEntry(jCpy.suspensionReason, 'suspensionReason', false, path), true, [...path, ".suspensionReason"], SuspensionReason, 'SuspensionReason'),
+			suspensionSource: expectString(extractEntry(jCpy.suspensionSource, 'suspensionSource', false, path), true, [...path, ".suspensionSource"]),
+			forcedSuspension: expectBoolean(extractEntry(jCpy.forcedSuspension, 'forcedSuspension', false, path), false, [...path, ".forcedSuspension"]),
+			signatureType: expectStringEnum(extractEntry(jCpy.signatureType, 'signatureType', false, path), true, [...path, ".signatureType"], MhcSignatureType, 'MhcSignatureType'),
+			status: expectNumber(extractEntry(jCpy.status, 'status', false, path), true, true, [...path, ".status"]),
 			options: expectMap(
-				json.options,
+				extractEntry(jCpy.options, 'options', false, path),
 				false,
 				[...path, ".options"],
 				(k0, p0) => expectString(k0, false, p0),
 				(v0, p0) => expectString(v0, false, p0)
 			),
 			receipts: expectMap(
-				json.receipts,
+				extractEntry(jCpy.receipts, 'receipts', false, path),
 				false,
 				[...path, ".receipts"],
 				(k0, p0) => expectString(k0, false, p0),
 				(v0, p0) => expectString(v0, false, p0)
 			),
-			encryptedSelf: expectString(json.encryptedSelf, false, [...path, ".encryptedSelf"]),
+			encryptedSelf: expectString(extractEntry(jCpy.encryptedSelf, 'encryptedSelf', false, path), false, [...path, ".encryptedSelf"]),
 		})
+		if (!ignoreUnknownKeys) {
+			const unused = Object.keys(jCpy)
+			if (unused.length > 0) throw new Error(`Unexpected key(s) for json object EncryptedMedicalHouseContract at path ${path.join("")}: ${unused}`)}
+		return res
 	}
 
 }

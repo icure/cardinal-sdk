@@ -1,5 +1,5 @@
 // auto-generated file
-import {expectNumber, expectString} from '../../internal/JsonDecodeUtils.mjs';
+import {expectNumber, expectString, extractEntry} from '../../internal/JsonDecodeUtils.mjs';
 
 
 export class AgreementAppendix {
@@ -28,13 +28,20 @@ export class AgreementAppendix {
 		return res
 	}
 
-	static fromJSON(json: any, path: Array<string> = ['AgreementAppendix']): AgreementAppendix {
-		return new AgreementAppendix({
-			docSeq: expectNumber(json.docSeq, true, true, [...path, ".docSeq"]),
-			verseSeq: expectNumber(json.verseSeq, true, true, [...path, ".verseSeq"]),
-			documentId: expectString(json.documentId, true, [...path, ".documentId"]),
-			path: expectString(json.path, true, [...path, ".path"]),
+	static fromJSON(json: any, ignoreUnknownKeys: boolean = false,
+			path: Array<string> = ['AgreementAppendix']): AgreementAppendix {
+		if (typeof json != 'object') throw new Error(`Expected json object at path ${path.join("")}`)
+		const jCpy = { ...json }
+		const res = new AgreementAppendix({
+			docSeq: expectNumber(extractEntry(jCpy.docSeq, 'docSeq', false, path), true, true, [...path, ".docSeq"]),
+			verseSeq: expectNumber(extractEntry(jCpy.verseSeq, 'verseSeq', false, path), true, true, [...path, ".verseSeq"]),
+			documentId: expectString(extractEntry(jCpy.documentId, 'documentId', false, path), true, [...path, ".documentId"]),
+			path: expectString(extractEntry(jCpy.path, 'path', false, path), true, [...path, ".path"]),
 		})
+		if (!ignoreUnknownKeys) {
+			const unused = Object.keys(jCpy)
+			if (unused.length > 0) throw new Error(`Unexpected key(s) for json object AgreementAppendix at path ${path.join("")}: ${unused}`)}
+		return res
 	}
 
 }

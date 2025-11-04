@@ -1,5 +1,5 @@
 // auto-generated file
-import {expectArray, expectString} from '../../internal/JsonDecodeUtils.mjs';
+import {expectArray, expectString, extractEntry} from '../../internal/JsonDecodeUtils.mjs';
 import {Base64String} from '../specializations/Base64String.mjs';
 import {Encryptable} from './Encryptable.mjs';
 
@@ -69,18 +69,24 @@ export class DecryptedFinancialInstitutionInformation {
 		return res
 	}
 
-	static fromJSON(json: any,
+	static fromJSON(json: any, ignoreUnknownKeys: boolean = false,
 			path: Array<string> = ['DecryptedFinancialInstitutionInformation']): DecryptedFinancialInstitutionInformation {
-		return new DecryptedFinancialInstitutionInformation({
-			name: expectString(json.name, true, [...path, ".name"]),
-			key: expectString(json.key, true, [...path, ".key"]),
-			bankAccount: expectString(json.bankAccount, true, [...path, ".bankAccount"]),
-			bic: expectString(json.bic, true, [...path, ".bic"]),
-			proxyBankAccount: expectString(json.proxyBankAccount, true, [...path, ".proxyBankAccount"]),
-			proxyBic: expectString(json.proxyBic, true, [...path, ".proxyBic"]),
-			preferredFiiForPartners: expectArray(json.preferredFiiForPartners, false, [...path, ".preferredFiiForPartners"], (x0, p0) => expectString(x0, false, p0)),
-			encryptedSelf: expectString(json.encryptedSelf, false, [...path, ".encryptedSelf"]),
+		if (typeof json != 'object') throw new Error(`Expected json object at path ${path.join("")}`)
+		const jCpy = { ...json }
+		const res = new DecryptedFinancialInstitutionInformation({
+			name: expectString(extractEntry(jCpy.name, 'name', false, path), true, [...path, ".name"]),
+			key: expectString(extractEntry(jCpy.key, 'key', false, path), true, [...path, ".key"]),
+			bankAccount: expectString(extractEntry(jCpy.bankAccount, 'bankAccount', false, path), true, [...path, ".bankAccount"]),
+			bic: expectString(extractEntry(jCpy.bic, 'bic', false, path), true, [...path, ".bic"]),
+			proxyBankAccount: expectString(extractEntry(jCpy.proxyBankAccount, 'proxyBankAccount', false, path), true, [...path, ".proxyBankAccount"]),
+			proxyBic: expectString(extractEntry(jCpy.proxyBic, 'proxyBic', false, path), true, [...path, ".proxyBic"]),
+			preferredFiiForPartners: expectArray(extractEntry(jCpy.preferredFiiForPartners, 'preferredFiiForPartners', false, path), false, [...path, ".preferredFiiForPartners"], (x0, p0) => expectString(x0, false, p0)),
+			encryptedSelf: expectString(extractEntry(jCpy.encryptedSelf, 'encryptedSelf', false, path), false, [...path, ".encryptedSelf"]),
 		})
+		if (!ignoreUnknownKeys) {
+			const unused = Object.keys(jCpy)
+			if (unused.length > 0) throw new Error(`Unexpected key(s) for json object DecryptedFinancialInstitutionInformation at path ${path.join("")}: ${unused}`)}
+		return res
 	}
 
 }
@@ -130,18 +136,24 @@ export class EncryptedFinancialInstitutionInformation {
 		return res
 	}
 
-	static fromJSON(json: any,
+	static fromJSON(json: any, ignoreUnknownKeys: boolean = false,
 			path: Array<string> = ['EncryptedFinancialInstitutionInformation']): EncryptedFinancialInstitutionInformation {
-		return new EncryptedFinancialInstitutionInformation({
-			name: expectString(json.name, true, [...path, ".name"]),
-			key: expectString(json.key, true, [...path, ".key"]),
-			bankAccount: expectString(json.bankAccount, true, [...path, ".bankAccount"]),
-			bic: expectString(json.bic, true, [...path, ".bic"]),
-			proxyBankAccount: expectString(json.proxyBankAccount, true, [...path, ".proxyBankAccount"]),
-			proxyBic: expectString(json.proxyBic, true, [...path, ".proxyBic"]),
-			preferredFiiForPartners: expectArray(json.preferredFiiForPartners, false, [...path, ".preferredFiiForPartners"], (x0, p0) => expectString(x0, false, p0)),
-			encryptedSelf: expectString(json.encryptedSelf, false, [...path, ".encryptedSelf"]),
+		if (typeof json != 'object') throw new Error(`Expected json object at path ${path.join("")}`)
+		const jCpy = { ...json }
+		const res = new EncryptedFinancialInstitutionInformation({
+			name: expectString(extractEntry(jCpy.name, 'name', false, path), true, [...path, ".name"]),
+			key: expectString(extractEntry(jCpy.key, 'key', false, path), true, [...path, ".key"]),
+			bankAccount: expectString(extractEntry(jCpy.bankAccount, 'bankAccount', false, path), true, [...path, ".bankAccount"]),
+			bic: expectString(extractEntry(jCpy.bic, 'bic', false, path), true, [...path, ".bic"]),
+			proxyBankAccount: expectString(extractEntry(jCpy.proxyBankAccount, 'proxyBankAccount', false, path), true, [...path, ".proxyBankAccount"]),
+			proxyBic: expectString(extractEntry(jCpy.proxyBic, 'proxyBic', false, path), true, [...path, ".proxyBic"]),
+			preferredFiiForPartners: expectArray(extractEntry(jCpy.preferredFiiForPartners, 'preferredFiiForPartners', false, path), false, [...path, ".preferredFiiForPartners"], (x0, p0) => expectString(x0, false, p0)),
+			encryptedSelf: expectString(extractEntry(jCpy.encryptedSelf, 'encryptedSelf', false, path), false, [...path, ".encryptedSelf"]),
 		})
+		if (!ignoreUnknownKeys) {
+			const unused = Object.keys(jCpy)
+			if (unused.length > 0) throw new Error(`Unexpected key(s) for json object EncryptedFinancialInstitutionInformation at path ${path.join("")}: ${unused}`)}
+		return res
 	}
 
 }
