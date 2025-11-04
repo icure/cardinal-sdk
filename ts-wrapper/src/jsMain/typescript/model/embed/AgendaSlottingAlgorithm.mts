@@ -30,4 +30,12 @@ export namespace AgendaSlottingAlgorithm {
 
 	}
 
+	export function fromJSON(json: any,
+			path: Array<string> = ['AgendaSlottingAlgorithm']): AgendaSlottingAlgorithm {
+		switch ((json as AgendaSlottingAlgorithm).$ktClass) {
+			case 'com.icure.cardinal.sdk.model.embed.AgendaSlottingAlgorithm.FixedIntervals': return FixedIntervals.fromJSON(json)
+			default: throw new Error('Unexpected discriminator for AgendaSlottingAlgorithm: ' + json.$ktClass)
+		}
+	}
+
 }

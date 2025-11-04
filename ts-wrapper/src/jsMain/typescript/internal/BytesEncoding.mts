@@ -86,6 +86,7 @@ function a2b(s: string): string {
 
 // Decode a base64 string using the url-unsafe alphabet to an Int8Array
 export function decodeBase64(s: string, path: string[]): Int8Array
+export function decodeBase64(s: string | undefined, path: string[]): Int8Array | undefined
 export function decodeBase64(s: string | undefined, path: string[]): Int8Array | undefined {
   if (s == undefined) return undefined
   const padded = validateAndPadBase64(s)

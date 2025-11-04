@@ -81,4 +81,14 @@ export namespace DataOwnerWithType {
 
 	}
 
+	export function fromJSON(json: any,
+			path: Array<string> = ['DataOwnerWithType']): DataOwnerWithType {
+		switch ((json as DataOwnerWithType).$ktClass) {
+			case 'com.icure.cardinal.sdk.model.DataOwnerWithType.HcpDataOwner': return HcpDataOwner.fromJSON(json)
+			case 'com.icure.cardinal.sdk.model.DataOwnerWithType.PatientDataOwner': return PatientDataOwner.fromJSON(json)
+			case 'com.icure.cardinal.sdk.model.DataOwnerWithType.DeviceDataOwner': return DeviceDataOwner.fromJSON(json)
+			default: throw new Error('Unexpected discriminator for DataOwnerWithType: ' + json.$ktClass)
+		}
+	}
+
 }

@@ -87,6 +87,15 @@ export namespace ExternalJwtConfig {
 
 		}
 
+		export function fromJSON(json: any,
+				path: Array<string> = ['ValidationMethod']): ValidationMethod {
+			switch ((json as ValidationMethod).$ktClass) {
+				case 'com.icure.cardinal.sdk.model.security.ExternalJwtConfig.ValidationMethod.PublicKey': return PublicKey.fromJSON(json)
+				case 'com.icure.cardinal.sdk.model.security.ExternalJwtConfig.ValidationMethod.Oidc': return Oidc.fromJSON(json)
+				default: throw new Error('Unexpected discriminator for ValidationMethod: ' + json.$ktClass)
+			}
+		}
+
 	}
 
 	export type ValidationMethod = ValidationMethod.PublicKey | ValidationMethod.Oidc;
@@ -216,6 +225,17 @@ export namespace ExternalJwtConfig {
 				})
 			}
 
+		}
+
+		export function fromJSON(json: any, path: Array<string> = ['FieldSelector']): FieldSelector {
+			switch ((json as FieldSelector).$ktClass) {
+				case 'com.icure.cardinal.sdk.model.security.ExternalJwtConfig.FieldSelector.LocalId': return LocalId.fromJSON(json)
+				case 'com.icure.cardinal.sdk.model.security.ExternalJwtConfig.FieldSelector.Email': return Email.fromJSON(json)
+				case 'com.icure.cardinal.sdk.model.security.ExternalJwtConfig.FieldSelector.MobilePhone': return MobilePhone.fromJSON(json)
+				case 'com.icure.cardinal.sdk.model.security.ExternalJwtConfig.FieldSelector.Username': return Username.fromJSON(json)
+				case 'com.icure.cardinal.sdk.model.security.ExternalJwtConfig.FieldSelector.Identifier': return Identifier.fromJSON(json)
+				default: throw new Error('Unexpected discriminator for FieldSelector: ' + json.$ktClass)
+			}
 		}
 
 	}

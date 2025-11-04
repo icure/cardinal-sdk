@@ -176,6 +176,14 @@ export namespace CalendarItemType {
 
 		}
 
+		export function fromJSON(json: any, path: Array<string> = ['DurationConfig']): DurationConfig {
+			switch ((json as DurationConfig).$ktClass) {
+				case 'com.icure.cardinal.sdk.model.CalendarItemType.DurationConfig.Set': return Set.fromJSON(json)
+				case 'com.icure.cardinal.sdk.model.CalendarItemType.DurationConfig.Formula': return Formula.fromJSON(json)
+				default: throw new Error('Unexpected discriminator for DurationConfig: ' + json.$ktClass)
+			}
+		}
+
 	}
 
 	export type DurationConfig = DurationConfig.Set | DurationConfig.Formula;
