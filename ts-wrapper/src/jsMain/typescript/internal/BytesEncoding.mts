@@ -49,8 +49,7 @@ function b2a(a: string): string {
 
 // Check if the input is a valid base64 string, returning null if invalid, or the properly padded string otherwise.
 // If the input is already padded but the amount of padding is wrong the method returns null else it is retuned as is
-function validateAndPadBase64(str: any): string | null {
-  if (typeof str !== 'string') return null;
+function validateAndPadBase64(str: string): string | null {
   if (str.length % 4 === 1) return null;
   if (!/^[A-Za-z0-9+/]*={0,2}$/.test(str)) return null;
   const padding = (str.match(/=*$/) || [''])[0].length;
@@ -86,9 +85,11 @@ function a2b(s: string): string {
 }
 
 // Decode a base64 string using the url-unsafe alphabet to an Int8Array
-export function decodeBase64(s: string): Int8Array {
+export function decodeBase64(s: string, path: string[]): Int8Array
+export function decodeBase64(s: string | undefined, path: string[]): Int8Array | undefined {
+  if (s == undefined) return undefined
   const padded = validateAndPadBase64(s)
-  if (padded == null) throw new Error(`Invalid base64 string '${s}'`)
+  if (padded == null) throw new Error(`Invalid base64 string '${s}' at ${path.join()}`)
   return stringAsBytes(a2b(s))
 }
 
