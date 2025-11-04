@@ -1,4 +1,5 @@
 // auto-generated file
+import {expectArray, expectBoolean, expectMap, expectNumber, expectString, expectStringEnum, requireEntry} from '../internal/JsonDecodeUtils.mjs';
 import {randomUuid} from '../utils/Id.mjs';
 import {DecryptedPropertyStub} from './PropertyStub.mjs';
 import {Identifier} from './base/Identifier.mjs';
@@ -91,6 +92,84 @@ export class User implements StoredDocument {
 		if ('systemMetadata' in partial) this.systemMetadata = partial.systemMetadata;
 	}
 
+	toJSON(): any {
+		const res: { [k: string]: any } = {}
+		res['id'] = this.id
+		if (this.rev != undefined) res['rev'] = this.rev
+		if (this.deletionDate != undefined) res['deletionDate'] = this.deletionDate
+		if (this.created != undefined) res['created'] = this.created
+		res['identifier'] = this.identifier.map((x0) => x0.toJSON() )
+		if (this.name != undefined) res['name'] = this.name
+		res['properties'] = this.properties.map((x0) => x0.toJSON() )
+		res['permissions'] = this.permissions.map((x0) => x0.toJSON() )
+		res['roles'] = this.roles.map((x0) => x0 )
+		if (this.type != undefined) res['type'] = this.type
+		if (this.status != undefined) res['status'] = this.status
+		if (this.login != undefined) res['login'] = this.login
+		if (this.passwordHash != undefined) res['passwordHash'] = this.passwordHash
+		if (this.groupId != undefined) res['groupId'] = this.groupId
+		if (this.healthcarePartyId != undefined) res['healthcarePartyId'] = this.healthcarePartyId
+		if (this.patientId != undefined) res['patientId'] = this.patientId
+		if (this.deviceId != undefined) res['deviceId'] = this.deviceId
+		res['autoDelegations'] = Object.fromEntries(Object.entries(this.autoDelegations).map(([k0, v0]) => [k0, v0.map((x1) => x1 )]))
+		if (this.createdDate != undefined) res['createdDate'] = this.createdDate
+		if (this.termsOfUseDate != undefined) res['termsOfUseDate'] = this.termsOfUseDate
+		if (this.email != undefined) res['email'] = this.email
+		if (this.mobilePhone != undefined) res['mobilePhone'] = this.mobilePhone
+		res['applicationTokens'] = Object.fromEntries(Object.entries(this.applicationTokens).map(([k0, v0]) => [k0, v0]))
+		res['authenticationTokens'] = Object.fromEntries(Object.entries(this.authenticationTokens).map(([k0, v0]) => [k0, v0.toJSON()]))
+		if (this.systemMetadata != undefined) res['systemMetadata'] = this.systemMetadata.toJSON()
+		return res
+	}
+
+	static fromJSON(json: any, path: Array<string> = ['User']): User {
+		return new User({
+			id: expectString(requireEntry(json.id, 'id', path), false, [...path, ".id"]),
+			rev: expectString(json.rev, true, [...path, ".rev"]),
+			deletionDate: expectNumber(json.deletionDate, true, true, [...path, ".deletionDate"]),
+			created: expectNumber(json.created, true, true, [...path, ".created"]),
+			identifier: expectArray(json.identifier, false, [...path, ".identifier"], (x0, p0) => Identifier.fromJSON(x0, p0)),
+			name: expectString(json.name, true, [...path, ".name"]),
+			properties: expectArray(json.properties, false, [...path, ".properties"], (x0, p0) => DecryptedPropertyStub.fromJSON(x0, p0)),
+			permissions: expectArray(json.permissions, false, [...path, ".permissions"], (x0, p0) => Permission.fromJSON(x0, p0)),
+			roles: expectArray(json.roles, false, [...path, ".roles"], (x0, p0) => expectString(x0, false, p0)),
+			type: expectStringEnum(json.type, true, [...path, ".type"], UsersType, 'UsersType'),
+			status: expectStringEnum(json.status, true, [...path, ".status"], UsersStatus, 'UsersStatus'),
+			login: expectString(json.login, true, [...path, ".login"]),
+			passwordHash: expectString(json.passwordHash, true, [...path, ".passwordHash"]),
+			groupId: expectString(json.groupId, true, [...path, ".groupId"]),
+			healthcarePartyId: expectString(json.healthcarePartyId, true, [...path, ".healthcarePartyId"]),
+			patientId: expectString(json.patientId, true, [...path, ".patientId"]),
+			deviceId: expectString(json.deviceId, true, [...path, ".deviceId"]),
+			autoDelegations: expectMap(
+				json.autoDelegations,
+				false,
+				[...path, ".autoDelegations"],
+				(k0, p0) => expectStringEnum(k0, false, p0, DelegationTag, 'DelegationTag'),
+				(v0, p0) => expectArray(v0, false, p0, (x1, p1) => expectString(x1, false, p1))
+			),
+			createdDate: expectNumber(json.createdDate, true, true, [...path, ".createdDate"]),
+			termsOfUseDate: expectNumber(json.termsOfUseDate, true, true, [...path, ".termsOfUseDate"]),
+			email: expectString(json.email, true, [...path, ".email"]),
+			mobilePhone: expectString(json.mobilePhone, true, [...path, ".mobilePhone"]),
+			applicationTokens: expectMap(
+				json.applicationTokens,
+				false,
+				[...path, ".applicationTokens"],
+				(k0, p0) => expectString(k0, false, p0),
+				(v0, p0) => expectString(v0, false, p0)
+			),
+			authenticationTokens: expectMap(
+				json.authenticationTokens,
+				false,
+				[...path, ".authenticationTokens"],
+				(k0, p0) => expectString(k0, false, p0),
+				(v0, p0) => AuthenticationToken.fromJSON(v0, p0)
+			),
+			systemMetadata: User.SystemMetadata.fromJSON(json.systemMetadata, [...path, ".systemMetadata"]),
+		})
+	}
+
 }
 
 export namespace User {
@@ -110,6 +189,24 @@ export namespace User {
 			this.isAdmin = partial.isAdmin;
 			this.inheritsRoles = partial.inheritsRoles;
 			if ('loginIdentifiers' in partial && partial.loginIdentifiers !== undefined) this.loginIdentifiers = partial.loginIdentifiers;
+		}
+
+		toJSON(): any {
+			const res: { [k: string]: any } = {}
+			res['roles'] = this.roles.map((x0) => x0 )
+			res['isAdmin'] = this.isAdmin
+			res['inheritsRoles'] = this.inheritsRoles
+			res['loginIdentifiers'] = this.loginIdentifiers.map((x0) => x0.toJSON() )
+			return res
+		}
+
+		static fromJSON(json: any, path: Array<string> = ['SystemMetadata']): SystemMetadata {
+			return new SystemMetadata({
+				roles: expectArray(requireEntry(json.roles, 'roles', path), false, [...path, ".roles"], (x0, p0) => expectString(x0, false, p0)),
+				isAdmin: expectBoolean(requireEntry(json.isAdmin, 'isAdmin', path), false, [...path, ".isAdmin"]),
+				inheritsRoles: expectBoolean(requireEntry(json.inheritsRoles, 'inheritsRoles', path), false, [...path, ".inheritsRoles"]),
+				loginIdentifiers: expectArray(json.loginIdentifiers, false, [...path, ".loginIdentifiers"], (x0, p0) => LoginIdentifier.fromJSON(x0, p0)),
+			})
 		}
 
 	}

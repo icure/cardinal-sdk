@@ -1,4 +1,5 @@
 // auto-generated file
+import {expectArray, expectString} from '../../internal/JsonDecodeUtils.mjs';
 import {Base64String} from '../specializations/Base64String.mjs';
 import {Encryptable} from './Encryptable.mjs';
 
@@ -55,6 +56,33 @@ export class DecryptedFinancialInstitutionInformation {
 		if ('encryptedSelf' in partial) this.encryptedSelf = partial.encryptedSelf;
 	}
 
+	toJSON(): any {
+		const res: { [k: string]: any } = {}
+		if (this.name != undefined) res['name'] = this.name
+		if (this.key != undefined) res['key'] = this.key
+		if (this.bankAccount != undefined) res['bankAccount'] = this.bankAccount
+		if (this.bic != undefined) res['bic'] = this.bic
+		if (this.proxyBankAccount != undefined) res['proxyBankAccount'] = this.proxyBankAccount
+		if (this.proxyBic != undefined) res['proxyBic'] = this.proxyBic
+		res['preferredFiiForPartners'] = this.preferredFiiForPartners.map((x0) => x0 )
+		if (this.encryptedSelf != undefined) res['encryptedSelf'] = this.encryptedSelf
+		return res
+	}
+
+	static fromJSON(json: any,
+			path: Array<string> = ['DecryptedFinancialInstitutionInformation']): DecryptedFinancialInstitutionInformation {
+		return new DecryptedFinancialInstitutionInformation({
+			name: expectString(json.name, true, [...path, ".name"]),
+			key: expectString(json.key, true, [...path, ".key"]),
+			bankAccount: expectString(json.bankAccount, true, [...path, ".bankAccount"]),
+			bic: expectString(json.bic, true, [...path, ".bic"]),
+			proxyBankAccount: expectString(json.proxyBankAccount, true, [...path, ".proxyBankAccount"]),
+			proxyBic: expectString(json.proxyBic, true, [...path, ".proxyBic"]),
+			preferredFiiForPartners: expectArray(json.preferredFiiForPartners, false, [...path, ".preferredFiiForPartners"], (x0, p0) => expectString(x0, false, p0)),
+			encryptedSelf: expectString(json.encryptedSelf, false, [...path, ".encryptedSelf"]),
+		})
+	}
+
 }
 
 export class EncryptedFinancialInstitutionInformation {
@@ -87,6 +115,33 @@ export class EncryptedFinancialInstitutionInformation {
 		if ('proxyBic' in partial) this.proxyBic = partial.proxyBic;
 		if ('preferredFiiForPartners' in partial && partial.preferredFiiForPartners !== undefined) this.preferredFiiForPartners = partial.preferredFiiForPartners;
 		if ('encryptedSelf' in partial) this.encryptedSelf = partial.encryptedSelf;
+	}
+
+	toJSON(): any {
+		const res: { [k: string]: any } = {}
+		if (this.name != undefined) res['name'] = this.name
+		if (this.key != undefined) res['key'] = this.key
+		if (this.bankAccount != undefined) res['bankAccount'] = this.bankAccount
+		if (this.bic != undefined) res['bic'] = this.bic
+		if (this.proxyBankAccount != undefined) res['proxyBankAccount'] = this.proxyBankAccount
+		if (this.proxyBic != undefined) res['proxyBic'] = this.proxyBic
+		res['preferredFiiForPartners'] = this.preferredFiiForPartners.map((x0) => x0 )
+		if (this.encryptedSelf != undefined) res['encryptedSelf'] = this.encryptedSelf
+		return res
+	}
+
+	static fromJSON(json: any,
+			path: Array<string> = ['EncryptedFinancialInstitutionInformation']): EncryptedFinancialInstitutionInformation {
+		return new EncryptedFinancialInstitutionInformation({
+			name: expectString(json.name, true, [...path, ".name"]),
+			key: expectString(json.key, true, [...path, ".key"]),
+			bankAccount: expectString(json.bankAccount, true, [...path, ".bankAccount"]),
+			bic: expectString(json.bic, true, [...path, ".bic"]),
+			proxyBankAccount: expectString(json.proxyBankAccount, true, [...path, ".proxyBankAccount"]),
+			proxyBic: expectString(json.proxyBic, true, [...path, ".proxyBic"]),
+			preferredFiiForPartners: expectArray(json.preferredFiiForPartners, false, [...path, ".preferredFiiForPartners"], (x0, p0) => expectString(x0, false, p0)),
+			encryptedSelf: expectString(json.encryptedSelf, false, [...path, ".encryptedSelf"]),
+		})
 	}
 
 }

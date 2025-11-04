@@ -1,4 +1,5 @@
 // auto-generated file
+import {expectArray, expectBoolean, expectMap, expectNumber, expectString, expectStringEnum, requireEntry} from '../internal/JsonDecodeUtils.mjs';
 import {randomUuid} from '../utils/Id.mjs';
 import {CalendarItem as CalendarItem_} from './CalendarItem.mjs';
 import {CodeStub} from './base/CodeStub.mjs';
@@ -209,6 +210,121 @@ export class DecryptedCalendarItem {
 		if ('securityMetadata' in partial) this.securityMetadata = partial.securityMetadata;
 	}
 
+	toJSON(): any {
+		const res: { [k: string]: any } = {}
+		res['id'] = this.id
+		if (this.rev != undefined) res['rev'] = this.rev
+		if (this.created != undefined) res['created'] = this.created
+		if (this.modified != undefined) res['modified'] = this.modified
+		if (this.author != undefined) res['author'] = this.author
+		if (this.responsible != undefined) res['responsible'] = this.responsible
+		if (this.medicalLocationId != undefined) res['medicalLocationId'] = this.medicalLocationId
+		res['tags'] = this.tags.map((x0) => x0.toJSON() )
+		res['codes'] = this.codes.map((x0) => x0.toJSON() )
+		if (this.endOfLife != undefined) res['endOfLife'] = this.endOfLife
+		if (this.deletionDate != undefined) res['deletionDate'] = this.deletionDate
+		if (this.title != undefined) res['title'] = this.title
+		if (this.calendarItemTypeId != undefined) res['calendarItemTypeId'] = this.calendarItemTypeId
+		if (this.masterCalendarItemId != undefined) res['masterCalendarItemId'] = this.masterCalendarItemId
+		if (this.patientId != undefined) res['patientId'] = this.patientId
+		if (this.important != undefined) res['important'] = this.important
+		if (this.homeVisit != undefined) res['homeVisit'] = this.homeVisit
+		if (this.phoneNumber != undefined) res['phoneNumber'] = this.phoneNumber
+		if (this.placeId != undefined) res['placeId'] = this.placeId
+		if (this.address != undefined) res['address'] = this.address.toJSON()
+		if (this.addressText != undefined) res['addressText'] = this.addressText
+		if (this.startTime != undefined) res['startTime'] = this.startTime
+		if (this.endTime != undefined) res['endTime'] = this.endTime
+		if (this.confirmationTime != undefined) res['confirmationTime'] = this.confirmationTime
+		if (this.cancellationTimestamp != undefined) res['cancellationTimestamp'] = this.cancellationTimestamp
+		if (this.confirmationId != undefined) res['confirmationId'] = this.confirmationId
+		if (this.duration != undefined) res['duration'] = this.duration
+		if (this.allDay != undefined) res['allDay'] = this.allDay
+		if (this.details != undefined) res['details'] = this.details
+		if (this.wasMigrated != undefined) res['wasMigrated'] = this.wasMigrated
+		if (this.agendaId != undefined) res['agendaId'] = this.agendaId
+		if (this.resourceGroup != undefined) res['resourceGroup'] = this.resourceGroup.toJSON()
+		if (this.availabilitiesAssignmentStrategy != undefined) res['availabilitiesAssignmentStrategy'] = this.availabilitiesAssignmentStrategy
+		if (this.hcpId != undefined) res['hcpId'] = this.hcpId
+		if (this.recurrenceId != undefined) res['recurrenceId'] = this.recurrenceId
+		res['meetingTags'] = this.meetingTags.map((x0) => x0.toJSON() )
+		if (this.flowItem != undefined) res['flowItem'] = this.flowItem.toJSON()
+		res['secretForeignKeys'] = this.secretForeignKeys.map((x0) => x0 )
+		res['cryptedForeignKeys'] = Object.fromEntries(Object.entries(this.cryptedForeignKeys).map(([k0, v0]) => [k0, v0.map((x1) => x1.toJSON() )]))
+		res['delegations'] = Object.fromEntries(Object.entries(this.delegations).map(([k0, v0]) => [k0, v0.map((x1) => x1.toJSON() )]))
+		res['encryptionKeys'] = Object.fromEntries(Object.entries(this.encryptionKeys).map(([k0, v0]) => [k0, v0.map((x1) => x1.toJSON() )]))
+		if (this.encryptedSelf != undefined) res['encryptedSelf'] = this.encryptedSelf
+		if (this.securityMetadata != undefined) res['securityMetadata'] = this.securityMetadata.toJSON()
+		return res
+	}
+
+	static fromJSON(json: any,
+			path: Array<string> = ['DecryptedCalendarItem']): DecryptedCalendarItem {
+		return new DecryptedCalendarItem({
+			id: expectString(requireEntry(json.id, 'id', path), false, [...path, ".id"]),
+			rev: expectString(json.rev, true, [...path, ".rev"]),
+			created: expectNumber(json.created, true, true, [...path, ".created"]),
+			modified: expectNumber(json.modified, true, true, [...path, ".modified"]),
+			author: expectString(json.author, true, [...path, ".author"]),
+			responsible: expectString(json.responsible, true, [...path, ".responsible"]),
+			medicalLocationId: expectString(json.medicalLocationId, true, [...path, ".medicalLocationId"]),
+			tags: expectArray(json.tags, false, [...path, ".tags"], (x0, p0) => CodeStub.fromJSON(x0, p0)),
+			codes: expectArray(json.codes, false, [...path, ".codes"], (x0, p0) => CodeStub.fromJSON(x0, p0)),
+			endOfLife: expectNumber(json.endOfLife, true, true, [...path, ".endOfLife"]),
+			deletionDate: expectNumber(json.deletionDate, true, true, [...path, ".deletionDate"]),
+			title: expectString(json.title, true, [...path, ".title"]),
+			calendarItemTypeId: expectString(json.calendarItemTypeId, true, [...path, ".calendarItemTypeId"]),
+			masterCalendarItemId: expectString(json.masterCalendarItemId, true, [...path, ".masterCalendarItemId"]),
+			patientId: expectString(json.patientId, true, [...path, ".patientId"]),
+			important: expectBoolean(json.important, true, [...path, ".important"]),
+			homeVisit: expectBoolean(json.homeVisit, true, [...path, ".homeVisit"]),
+			phoneNumber: expectString(json.phoneNumber, true, [...path, ".phoneNumber"]),
+			placeId: expectString(json.placeId, true, [...path, ".placeId"]),
+			address: DecryptedAddress.fromJSON(json.address, [...path, ".address"]),
+			addressText: expectString(json.addressText, true, [...path, ".addressText"]),
+			startTime: expectNumber(json.startTime, true, true, [...path, ".startTime"]),
+			endTime: expectNumber(json.endTime, true, true, [...path, ".endTime"]),
+			confirmationTime: expectNumber(json.confirmationTime, true, true, [...path, ".confirmationTime"]),
+			cancellationTimestamp: expectNumber(json.cancellationTimestamp, true, true, [...path, ".cancellationTimestamp"]),
+			confirmationId: expectString(json.confirmationId, true, [...path, ".confirmationId"]),
+			duration: expectNumber(json.duration, true, true, [...path, ".duration"]),
+			allDay: expectBoolean(json.allDay, true, [...path, ".allDay"]),
+			details: expectString(json.details, true, [...path, ".details"]),
+			wasMigrated: expectBoolean(json.wasMigrated, true, [...path, ".wasMigrated"]),
+			agendaId: expectString(json.agendaId, true, [...path, ".agendaId"]),
+			resourceGroup: CodeStub.fromJSON(json.resourceGroup, [...path, ".resourceGroup"]),
+			availabilitiesAssignmentStrategy: expectStringEnum(json.availabilitiesAssignmentStrategy, true, [...path, ".availabilitiesAssignmentStrategy"], CalendarItem_.AvailabilitiesAssignmentStrategy, 'CalendarItem.AvailabilitiesAssignmentStrategy'),
+			hcpId: expectString(json.hcpId, true, [...path, ".hcpId"]),
+			recurrenceId: expectString(json.recurrenceId, true, [...path, ".recurrenceId"]),
+			meetingTags: expectArray(json.meetingTags, false, [...path, ".meetingTags"], (x0, p0) => DecryptedCalendarItemTag.fromJSON(x0, p0)),
+			flowItem: FlowItem.fromJSON(json.flowItem, [...path, ".flowItem"]),
+			secretForeignKeys: expectArray(json.secretForeignKeys, false, [...path, ".secretForeignKeys"], (x0, p0) => expectString(x0, false, p0)),
+			cryptedForeignKeys: expectMap(
+				json.cryptedForeignKeys,
+				false,
+				[...path, ".cryptedForeignKeys"],
+				(k0, p0) => expectString(k0, false, p0),
+				(v0, p0) => expectArray(v0, false, p0, (x1, p1) => Delegation.fromJSON(x1, p1))
+			),
+			delegations: expectMap(
+				json.delegations,
+				false,
+				[...path, ".delegations"],
+				(k0, p0) => expectString(k0, false, p0),
+				(v0, p0) => expectArray(v0, false, p0, (x1, p1) => Delegation.fromJSON(x1, p1))
+			),
+			encryptionKeys: expectMap(
+				json.encryptionKeys,
+				false,
+				[...path, ".encryptionKeys"],
+				(k0, p0) => expectString(k0, false, p0),
+				(v0, p0) => expectArray(v0, false, p0, (x1, p1) => Delegation.fromJSON(x1, p1))
+			),
+			encryptedSelf: expectString(json.encryptedSelf, false, [...path, ".encryptedSelf"]),
+			securityMetadata: SecurityMetadata.fromJSON(json.securityMetadata, [...path, ".securityMetadata"]),
+		})
+	}
+
 }
 
 export class EncryptedCalendarItem {
@@ -346,6 +462,121 @@ export class EncryptedCalendarItem {
 		if ('encryptionKeys' in partial && partial.encryptionKeys !== undefined) this.encryptionKeys = partial.encryptionKeys;
 		if ('encryptedSelf' in partial) this.encryptedSelf = partial.encryptedSelf;
 		if ('securityMetadata' in partial) this.securityMetadata = partial.securityMetadata;
+	}
+
+	toJSON(): any {
+		const res: { [k: string]: any } = {}
+		res['id'] = this.id
+		if (this.rev != undefined) res['rev'] = this.rev
+		if (this.created != undefined) res['created'] = this.created
+		if (this.modified != undefined) res['modified'] = this.modified
+		if (this.author != undefined) res['author'] = this.author
+		if (this.responsible != undefined) res['responsible'] = this.responsible
+		if (this.medicalLocationId != undefined) res['medicalLocationId'] = this.medicalLocationId
+		res['tags'] = this.tags.map((x0) => x0.toJSON() )
+		res['codes'] = this.codes.map((x0) => x0.toJSON() )
+		if (this.endOfLife != undefined) res['endOfLife'] = this.endOfLife
+		if (this.deletionDate != undefined) res['deletionDate'] = this.deletionDate
+		if (this.title != undefined) res['title'] = this.title
+		if (this.calendarItemTypeId != undefined) res['calendarItemTypeId'] = this.calendarItemTypeId
+		if (this.masterCalendarItemId != undefined) res['masterCalendarItemId'] = this.masterCalendarItemId
+		if (this.patientId != undefined) res['patientId'] = this.patientId
+		if (this.important != undefined) res['important'] = this.important
+		if (this.homeVisit != undefined) res['homeVisit'] = this.homeVisit
+		if (this.phoneNumber != undefined) res['phoneNumber'] = this.phoneNumber
+		if (this.placeId != undefined) res['placeId'] = this.placeId
+		if (this.address != undefined) res['address'] = this.address.toJSON()
+		if (this.addressText != undefined) res['addressText'] = this.addressText
+		if (this.startTime != undefined) res['startTime'] = this.startTime
+		if (this.endTime != undefined) res['endTime'] = this.endTime
+		if (this.confirmationTime != undefined) res['confirmationTime'] = this.confirmationTime
+		if (this.cancellationTimestamp != undefined) res['cancellationTimestamp'] = this.cancellationTimestamp
+		if (this.confirmationId != undefined) res['confirmationId'] = this.confirmationId
+		if (this.duration != undefined) res['duration'] = this.duration
+		if (this.allDay != undefined) res['allDay'] = this.allDay
+		if (this.details != undefined) res['details'] = this.details
+		if (this.wasMigrated != undefined) res['wasMigrated'] = this.wasMigrated
+		if (this.agendaId != undefined) res['agendaId'] = this.agendaId
+		if (this.resourceGroup != undefined) res['resourceGroup'] = this.resourceGroup.toJSON()
+		if (this.availabilitiesAssignmentStrategy != undefined) res['availabilitiesAssignmentStrategy'] = this.availabilitiesAssignmentStrategy
+		if (this.hcpId != undefined) res['hcpId'] = this.hcpId
+		if (this.recurrenceId != undefined) res['recurrenceId'] = this.recurrenceId
+		res['meetingTags'] = this.meetingTags.map((x0) => x0.toJSON() )
+		if (this.flowItem != undefined) res['flowItem'] = this.flowItem.toJSON()
+		res['secretForeignKeys'] = this.secretForeignKeys.map((x0) => x0 )
+		res['cryptedForeignKeys'] = Object.fromEntries(Object.entries(this.cryptedForeignKeys).map(([k0, v0]) => [k0, v0.map((x1) => x1.toJSON() )]))
+		res['delegations'] = Object.fromEntries(Object.entries(this.delegations).map(([k0, v0]) => [k0, v0.map((x1) => x1.toJSON() )]))
+		res['encryptionKeys'] = Object.fromEntries(Object.entries(this.encryptionKeys).map(([k0, v0]) => [k0, v0.map((x1) => x1.toJSON() )]))
+		if (this.encryptedSelf != undefined) res['encryptedSelf'] = this.encryptedSelf
+		if (this.securityMetadata != undefined) res['securityMetadata'] = this.securityMetadata.toJSON()
+		return res
+	}
+
+	static fromJSON(json: any,
+			path: Array<string> = ['EncryptedCalendarItem']): EncryptedCalendarItem {
+		return new EncryptedCalendarItem({
+			id: expectString(requireEntry(json.id, 'id', path), false, [...path, ".id"]),
+			rev: expectString(json.rev, true, [...path, ".rev"]),
+			created: expectNumber(json.created, true, true, [...path, ".created"]),
+			modified: expectNumber(json.modified, true, true, [...path, ".modified"]),
+			author: expectString(json.author, true, [...path, ".author"]),
+			responsible: expectString(json.responsible, true, [...path, ".responsible"]),
+			medicalLocationId: expectString(json.medicalLocationId, true, [...path, ".medicalLocationId"]),
+			tags: expectArray(json.tags, false, [...path, ".tags"], (x0, p0) => CodeStub.fromJSON(x0, p0)),
+			codes: expectArray(json.codes, false, [...path, ".codes"], (x0, p0) => CodeStub.fromJSON(x0, p0)),
+			endOfLife: expectNumber(json.endOfLife, true, true, [...path, ".endOfLife"]),
+			deletionDate: expectNumber(json.deletionDate, true, true, [...path, ".deletionDate"]),
+			title: expectString(json.title, true, [...path, ".title"]),
+			calendarItemTypeId: expectString(json.calendarItemTypeId, true, [...path, ".calendarItemTypeId"]),
+			masterCalendarItemId: expectString(json.masterCalendarItemId, true, [...path, ".masterCalendarItemId"]),
+			patientId: expectString(json.patientId, true, [...path, ".patientId"]),
+			important: expectBoolean(json.important, true, [...path, ".important"]),
+			homeVisit: expectBoolean(json.homeVisit, true, [...path, ".homeVisit"]),
+			phoneNumber: expectString(json.phoneNumber, true, [...path, ".phoneNumber"]),
+			placeId: expectString(json.placeId, true, [...path, ".placeId"]),
+			address: EncryptedAddress.fromJSON(json.address, [...path, ".address"]),
+			addressText: expectString(json.addressText, true, [...path, ".addressText"]),
+			startTime: expectNumber(json.startTime, true, true, [...path, ".startTime"]),
+			endTime: expectNumber(json.endTime, true, true, [...path, ".endTime"]),
+			confirmationTime: expectNumber(json.confirmationTime, true, true, [...path, ".confirmationTime"]),
+			cancellationTimestamp: expectNumber(json.cancellationTimestamp, true, true, [...path, ".cancellationTimestamp"]),
+			confirmationId: expectString(json.confirmationId, true, [...path, ".confirmationId"]),
+			duration: expectNumber(json.duration, true, true, [...path, ".duration"]),
+			allDay: expectBoolean(json.allDay, true, [...path, ".allDay"]),
+			details: expectString(json.details, true, [...path, ".details"]),
+			wasMigrated: expectBoolean(json.wasMigrated, true, [...path, ".wasMigrated"]),
+			agendaId: expectString(json.agendaId, true, [...path, ".agendaId"]),
+			resourceGroup: CodeStub.fromJSON(json.resourceGroup, [...path, ".resourceGroup"]),
+			availabilitiesAssignmentStrategy: expectStringEnum(json.availabilitiesAssignmentStrategy, true, [...path, ".availabilitiesAssignmentStrategy"], CalendarItem_.AvailabilitiesAssignmentStrategy, 'CalendarItem.AvailabilitiesAssignmentStrategy'),
+			hcpId: expectString(json.hcpId, true, [...path, ".hcpId"]),
+			recurrenceId: expectString(json.recurrenceId, true, [...path, ".recurrenceId"]),
+			meetingTags: expectArray(json.meetingTags, false, [...path, ".meetingTags"], (x0, p0) => EncryptedCalendarItemTag.fromJSON(x0, p0)),
+			flowItem: FlowItem.fromJSON(json.flowItem, [...path, ".flowItem"]),
+			secretForeignKeys: expectArray(json.secretForeignKeys, false, [...path, ".secretForeignKeys"], (x0, p0) => expectString(x0, false, p0)),
+			cryptedForeignKeys: expectMap(
+				json.cryptedForeignKeys,
+				false,
+				[...path, ".cryptedForeignKeys"],
+				(k0, p0) => expectString(k0, false, p0),
+				(v0, p0) => expectArray(v0, false, p0, (x1, p1) => Delegation.fromJSON(x1, p1))
+			),
+			delegations: expectMap(
+				json.delegations,
+				false,
+				[...path, ".delegations"],
+				(k0, p0) => expectString(k0, false, p0),
+				(v0, p0) => expectArray(v0, false, p0, (x1, p1) => Delegation.fromJSON(x1, p1))
+			),
+			encryptionKeys: expectMap(
+				json.encryptionKeys,
+				false,
+				[...path, ".encryptionKeys"],
+				(k0, p0) => expectString(k0, false, p0),
+				(v0, p0) => expectArray(v0, false, p0, (x1, p1) => Delegation.fromJSON(x1, p1))
+			),
+			encryptedSelf: expectString(json.encryptedSelf, false, [...path, ".encryptedSelf"]),
+			securityMetadata: SecurityMetadata.fromJSON(json.securityMetadata, [...path, ".securityMetadata"]),
+		})
 	}
 
 }

@@ -1,4 +1,5 @@
 // auto-generated file
+import {expectArray, expectBoolean, expectMap, expectNumber, expectString, requireEntry} from '../internal/JsonDecodeUtils.mjs';
 import {randomUuid} from '../utils/Id.mjs';
 import {Named} from './base/Named.mjs';
 import {StoredDocument} from './base/StoredDocument.mjs';
@@ -56,6 +57,60 @@ export class MedicalLocation implements StoredDocument, Named {
 		if ('agendaIds' in partial && partial.agendaIds !== undefined) this.agendaIds = partial.agendaIds;
 		if ('options' in partial && partial.options !== undefined) this.options = partial.options;
 		if ('publicInformations' in partial && partial.publicInformations !== undefined) this.publicInformations = partial.publicInformations;
+	}
+
+	toJSON(): any {
+		const res: { [k: string]: any } = {}
+		res['id'] = this.id
+		if (this.rev != undefined) res['rev'] = this.rev
+		if (this.deletionDate != undefined) res['deletionDate'] = this.deletionDate
+		if (this.name != undefined) res['name'] = this.name
+		if (this.description != undefined) res['description'] = this.description
+		if (this.responsible != undefined) res['responsible'] = this.responsible
+		if (this.guardPost != undefined) res['guardPost'] = this.guardPost
+		if (this.cbe != undefined) res['cbe'] = this.cbe
+		if (this.bic != undefined) res['bic'] = this.bic
+		if (this.bankAccount != undefined) res['bankAccount'] = this.bankAccount
+		if (this.nihii != undefined) res['nihii'] = this.nihii
+		if (this.ssin != undefined) res['ssin'] = this.ssin
+		if (this.address != undefined) res['address'] = this.address.toJSON()
+		res['agendaIds'] = this.agendaIds.map((x0) => x0 )
+		res['options'] = Object.fromEntries(Object.entries(this.options).map(([k0, v0]) => [k0, v0]))
+		res['publicInformations'] = Object.fromEntries(Object.entries(this.publicInformations).map(([k0, v0]) => [k0, v0]))
+		return res
+	}
+
+	static fromJSON(json: any, path: Array<string> = ['MedicalLocation']): MedicalLocation {
+		return new MedicalLocation({
+			id: expectString(requireEntry(json.id, 'id', path), false, [...path, ".id"]),
+			rev: expectString(json.rev, true, [...path, ".rev"]),
+			deletionDate: expectNumber(json.deletionDate, true, true, [...path, ".deletionDate"]),
+			name: expectString(json.name, true, [...path, ".name"]),
+			description: expectString(json.description, true, [...path, ".description"]),
+			responsible: expectString(json.responsible, true, [...path, ".responsible"]),
+			guardPost: expectBoolean(json.guardPost, true, [...path, ".guardPost"]),
+			cbe: expectString(json.cbe, true, [...path, ".cbe"]),
+			bic: expectString(json.bic, true, [...path, ".bic"]),
+			bankAccount: expectString(json.bankAccount, true, [...path, ".bankAccount"]),
+			nihii: expectString(json.nihii, true, [...path, ".nihii"]),
+			ssin: expectString(json.ssin, true, [...path, ".ssin"]),
+			address: DecryptedAddress.fromJSON(json.address, [...path, ".address"]),
+			agendaIds: expectArray(json.agendaIds, false, [...path, ".agendaIds"], (x0, p0) => expectString(x0, false, p0)),
+			options: expectMap(
+				json.options,
+				false,
+				[...path, ".options"],
+				(k0, p0) => expectString(k0, false, p0),
+				(v0, p0) => expectString(v0, false, p0)
+			),
+			publicInformations: expectMap(
+				json.publicInformations,
+				false,
+				[...path, ".publicInformations"],
+				(k0, p0) => expectString(k0, false, p0),
+				(v0, p0) => expectString(v0, false, p0)
+			),
+		})
 	}
 
 }

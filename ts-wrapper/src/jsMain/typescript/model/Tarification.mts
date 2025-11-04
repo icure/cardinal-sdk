@@ -1,4 +1,5 @@
 // auto-generated file
+import {expectArray, expectBoolean, expectMap, expectNumber, expectString, expectStringEnum, requireEntry} from '../internal/JsonDecodeUtils.mjs';
 import {randomUuid} from '../utils/Id.mjs';
 import {AppendixType} from './base/AppendixType.mjs';
 import {CodeFlag} from './base/CodeFlag.mjs';
@@ -94,6 +95,100 @@ export class Tarification implements StoredDocument, CodeIdentification<string> 
 		if ('relatedCodes' in partial && partial.relatedCodes !== undefined) this.relatedCodes = partial.relatedCodes;
 		if ('ngroup' in partial) this.ngroup = partial.ngroup;
 		if ('letterValues' in partial && partial.letterValues !== undefined) this.letterValues = partial.letterValues;
+	}
+
+	toJSON(): any {
+		const res: { [k: string]: any } = {}
+		res['id'] = this.id
+		if (this.rev != undefined) res['rev'] = this.rev
+		if (this.deletionDate != undefined) res['deletionDate'] = this.deletionDate
+		if (this.label != undefined) res['label'] = Object.fromEntries(Object.entries(this.label).map(([k0, v0]) => [k0, v0]))
+		if (this.context != undefined) res['context'] = this.context
+		if (this.type != undefined) res['type'] = this.type
+		if (this.code != undefined) res['code'] = this.code
+		if (this.version != undefined) res['version'] = this.version
+		if (this.author != undefined) res['author'] = this.author
+		res['regions'] = this.regions.map((x0) => x0 )
+		res['periodicity'] = this.periodicity.map((x0) => x0.toJSON() )
+		if (this.level != undefined) res['level'] = this.level
+		res['links'] = this.links.map((x0) => x0 )
+		res['qualifiedLinks'] = Object.fromEntries(Object.entries(this.qualifiedLinks).map(([k0, v0]) => [k0, v0.map((x1) => x1 )]))
+		res['flags'] = this.flags.map((x0) => x0 )
+		res['searchTerms'] = Object.fromEntries(Object.entries(this.searchTerms).map(([k0, v0]) => [k0, v0.map((x1) => x1 )]))
+		if (this.data != undefined) res['data'] = this.data
+		res['appendices'] = Object.fromEntries(Object.entries(this.appendices).map(([k0, v0]) => [k0, v0]))
+		res['disabled'] = this.disabled
+		res['valorisations'] = this.valorisations.map((x0) => x0.toJSON() )
+		res['category'] = Object.fromEntries(Object.entries(this.category).map(([k0, v0]) => [k0, v0]))
+		if (this.consultationCode != undefined) res['consultationCode'] = this.consultationCode
+		if (this.hasRelatedCode != undefined) res['hasRelatedCode'] = this.hasRelatedCode
+		if (this.needsPrescriber != undefined) res['needsPrescriber'] = this.needsPrescriber
+		res['relatedCodes'] = this.relatedCodes.map((x0) => x0 )
+		if (this.ngroup != undefined) res['ngroup'] = this.ngroup
+		res['letterValues'] = this.letterValues.map((x0) => x0.toJSON() )
+		return res
+	}
+
+	static fromJSON(json: any, path: Array<string> = ['Tarification']): Tarification {
+		return new Tarification({
+			id: expectString(requireEntry(json.id, 'id', path), false, [...path, ".id"]),
+			rev: expectString(json.rev, true, [...path, ".rev"]),
+			deletionDate: expectNumber(json.deletionDate, true, true, [...path, ".deletionDate"]),
+			label: expectMap(
+				json.label,
+				true,
+				[...path, ".label"],
+				(k0, p0) => expectString(k0, false, p0),
+				(v0, p0) => expectString(v0, false, p0)
+			),
+			context: expectString(json.context, true, [...path, ".context"]),
+			type: expectString(json.type, true, [...path, ".type"]),
+			code: expectString(json.code, true, [...path, ".code"]),
+			version: expectString(json.version, true, [...path, ".version"]),
+			author: expectString(json.author, true, [...path, ".author"]),
+			regions: expectArray(json.regions, false, [...path, ".regions"], (x0, p0) => expectString(x0, false, p0)),
+			periodicity: expectArray(json.periodicity, false, [...path, ".periodicity"], (x0, p0) => Periodicity.fromJSON(x0, p0)),
+			level: expectNumber(json.level, true, true, [...path, ".level"]),
+			links: expectArray(json.links, false, [...path, ".links"], (x0, p0) => expectString(x0, false, p0)),
+			qualifiedLinks: expectMap(
+				json.qualifiedLinks,
+				false,
+				[...path, ".qualifiedLinks"],
+				(k0, p0) => expectStringEnum(k0, false, p0, LinkQualification, 'LinkQualification'),
+				(v0, p0) => expectArray(v0, false, p0, (x1, p1) => expectString(x1, false, p1))
+			),
+			flags: expectArray(json.flags, false, [...path, ".flags"], (x0, p0) => expectStringEnum(x0, false, p0, CodeFlag, 'CodeFlag')),
+			searchTerms: expectMap(
+				json.searchTerms,
+				false,
+				[...path, ".searchTerms"],
+				(k0, p0) => expectString(k0, false, p0),
+				(v0, p0) => expectArray(v0, false, p0, (x1, p1) => expectString(x1, false, p1))
+			),
+			data: expectString(json.data, true, [...path, ".data"]),
+			appendices: expectMap(
+				json.appendices,
+				false,
+				[...path, ".appendices"],
+				(k0, p0) => expectStringEnum(k0, false, p0, AppendixType, 'AppendixType'),
+				(v0, p0) => expectString(v0, false, p0)
+			),
+			disabled: expectBoolean(json.disabled, false, [...path, ".disabled"]),
+			valorisations: expectArray(json.valorisations, false, [...path, ".valorisations"], (x0, p0) => DecryptedValorisation.fromJSON(x0, p0)),
+			category: expectMap(
+				json.category,
+				false,
+				[...path, ".category"],
+				(k0, p0) => expectString(k0, false, p0),
+				(v0, p0) => expectString(v0, false, p0)
+			),
+			consultationCode: expectBoolean(json.consultationCode, true, [...path, ".consultationCode"]),
+			hasRelatedCode: expectBoolean(json.hasRelatedCode, true, [...path, ".hasRelatedCode"]),
+			needsPrescriber: expectBoolean(json.needsPrescriber, true, [...path, ".needsPrescriber"]),
+			relatedCodes: expectArray(json.relatedCodes, false, [...path, ".relatedCodes"], (x0, p0) => expectString(x0, false, p0)),
+			ngroup: expectString(json.ngroup, true, [...path, ".ngroup"]),
+			letterValues: expectArray(json.letterValues, false, [...path, ".letterValues"], (x0, p0) => LetterValue.fromJSON(x0, p0)),
+		})
 	}
 
 }

@@ -1,4 +1,6 @@
 // auto-generated file
+import {decodeBase64, encodeBase64} from '../internal/BytesEncoding.mjs';
+import {expectArray, expectMap, expectNumber, expectString, requireEntry} from '../internal/JsonDecodeUtils.mjs';
 import {randomUuid} from '../utils/Id.mjs';
 import {DecryptedPropertyStub} from './PropertyStub.mjs';
 import {CodeStub} from './base/CodeStub.mjs';
@@ -101,6 +103,114 @@ export class Device implements StoredDocument, ICureDocument<string>, Named, Cry
 		if ('publicKey' in partial) this.publicKey = partial.publicKey;
 		if ('publicKeysForOaepWithSha256' in partial && partial.publicKeysForOaepWithSha256 !== undefined) this.publicKeysForOaepWithSha256 = partial.publicKeysForOaepWithSha256;
 		if ('cryptoActorProperties' in partial) this.cryptoActorProperties = partial.cryptoActorProperties;
+	}
+
+	toJSON(): any {
+		const res: { [k: string]: any } = {}
+		res['id'] = this.id
+		if (this.rev != undefined) res['rev'] = this.rev
+		if (this.deletionDate != undefined) res['deletionDate'] = this.deletionDate
+		res['identifiers'] = this.identifiers.map((x0) => x0.toJSON() )
+		if (this.created != undefined) res['created'] = this.created
+		if (this.modified != undefined) res['modified'] = this.modified
+		if (this.author != undefined) res['author'] = this.author
+		if (this.responsible != undefined) res['responsible'] = this.responsible
+		res['tags'] = this.tags.map((x0) => x0.toJSON() )
+		res['codes'] = this.codes.map((x0) => x0.toJSON() )
+		if (this.endOfLife != undefined) res['endOfLife'] = this.endOfLife
+		if (this.medicalLocationId != undefined) res['medicalLocationId'] = this.medicalLocationId
+		if (this.externalId != undefined) res['externalId'] = this.externalId
+		if (this.name != undefined) res['name'] = this.name
+		if (this.type != undefined) res['type'] = this.type
+		if (this.brand != undefined) res['brand'] = this.brand
+		if (this.model != undefined) res['model'] = this.model
+		if (this.serialNumber != undefined) res['serialNumber'] = this.serialNumber
+		if (this.parentId != undefined) res['parentId'] = this.parentId
+		if (this.picture != undefined) res['picture'] = encodeBase64(this.picture)
+		res['properties'] = this.properties.map((x0) => x0.toJSON() )
+		res['hcPartyKeys'] = Object.fromEntries(Object.entries(this.hcPartyKeys).map(([k0, v0]) => [k0, v0.map((x1) => x1 )]))
+		res['aesExchangeKeys'] = Object.fromEntries(Object.entries(this.aesExchangeKeys).map(([k0, v0]) => [k0, Object.fromEntries(Object.entries(v0).map(([k1, v1]) => [k1, Object.fromEntries(Object.entries(v1).map(([k2, v2]) => [k2, v2]))]))]))
+		res['transferKeys'] = Object.fromEntries(Object.entries(this.transferKeys).map(([k0, v0]) => [k0, Object.fromEntries(Object.entries(v0).map(([k1, v1]) => [k1, v1]))]))
+		res['privateKeyShamirPartitions'] = Object.fromEntries(Object.entries(this.privateKeyShamirPartitions).map(([k0, v0]) => [k0, v0]))
+		if (this.publicKey != undefined) res['publicKey'] = this.publicKey
+		res['publicKeysForOaepWithSha256'] = this.publicKeysForOaepWithSha256.map((x0) => x0 )
+		if (this.cryptoActorProperties != undefined) res['cryptoActorProperties'] = this.cryptoActorProperties.map((x0) => x0.toJSON() )
+		return res
+	}
+
+	static fromJSON(json: any, path: Array<string> = ['Device']): Device {
+		return new Device({
+			id: expectString(requireEntry(json.id, 'id', path), false, [...path, ".id"]),
+			rev: expectString(json.rev, true, [...path, ".rev"]),
+			deletionDate: expectNumber(json.deletionDate, true, true, [...path, ".deletionDate"]),
+			identifiers: expectArray(json.identifiers, false, [...path, ".identifiers"], (x0, p0) => Identifier.fromJSON(x0, p0)),
+			created: expectNumber(json.created, true, true, [...path, ".created"]),
+			modified: expectNumber(json.modified, true, true, [...path, ".modified"]),
+			author: expectString(json.author, true, [...path, ".author"]),
+			responsible: expectString(json.responsible, true, [...path, ".responsible"]),
+			tags: expectArray(json.tags, false, [...path, ".tags"], (x0, p0) => CodeStub.fromJSON(x0, p0)),
+			codes: expectArray(json.codes, false, [...path, ".codes"], (x0, p0) => CodeStub.fromJSON(x0, p0)),
+			endOfLife: expectNumber(json.endOfLife, true, true, [...path, ".endOfLife"]),
+			medicalLocationId: expectString(json.medicalLocationId, true, [...path, ".medicalLocationId"]),
+			externalId: expectString(json.externalId, true, [...path, ".externalId"]),
+			name: expectString(json.name, true, [...path, ".name"]),
+			type: expectString(json.type, true, [...path, ".type"]),
+			brand: expectString(json.brand, true, [...path, ".brand"]),
+			model: expectString(json.model, true, [...path, ".model"]),
+			serialNumber: expectString(json.serialNumber, true, [...path, ".serialNumber"]),
+			parentId: expectString(json.parentId, true, [...path, ".parentId"]),
+			picture: decodeBase64(expectString(json.picture, true, [...path, ".picture"]), [...path, ".picture"]),
+			properties: expectArray(json.properties, false, [...path, ".properties"], (x0, p0) => DecryptedPropertyStub.fromJSON(x0, p0)),
+			hcPartyKeys: expectMap(
+				json.hcPartyKeys,
+				false,
+				[...path, ".hcPartyKeys"],
+				(k0, p0) => expectString(k0, false, p0),
+				(v0, p0) => expectArray(v0, false, p0, (x1, p1) => expectString(x1, false, p1))
+			),
+			aesExchangeKeys: expectMap(
+				json.aesExchangeKeys,
+				false,
+				[...path, ".aesExchangeKeys"],
+				(k0, p0) => expectString(k0, false, p0),
+				(v0, p0) => expectMap(
+					v0,
+					false,
+					p0,
+					(k1, p1) => expectString(k1, false, p1),
+					(v1, p1) => expectMap(
+						v1,
+						false,
+						p1,
+						(k2, p2) => expectString(k2, false, p2),
+						(v2, p2) => expectString(v2, false, p2)
+					)
+				)
+			),
+			transferKeys: expectMap(
+				json.transferKeys,
+				false,
+				[...path, ".transferKeys"],
+				(k0, p0) => expectString(k0, false, p0),
+				(v0, p0) => expectMap(
+					v0,
+					false,
+					p0,
+					(k1, p1) => expectString(k1, false, p1),
+					(v1, p1) => expectString(v1, false, p1)
+				)
+			),
+			privateKeyShamirPartitions: expectMap(
+				json.privateKeyShamirPartitions,
+				false,
+				[...path, ".privateKeyShamirPartitions"],
+				(k0, p0) => expectString(k0, false, p0),
+				(v0, p0) => expectString(v0, false, p0)
+			),
+			publicKey: expectString(json.publicKey, false, [...path, ".publicKey"]),
+			publicKeysForOaepWithSha256: expectArray(json.publicKeysForOaepWithSha256, false, [...path, ".publicKeysForOaepWithSha256"], (x0, p0) => expectString(x0, false, p0)),
+			cryptoActorProperties: expectArray(json.cryptoActorProperties, true, [...path, ".cryptoActorProperties"], (x0, p0) => DecryptedPropertyStub.fromJSON(x0, p0)),
+		})
 	}
 
 }

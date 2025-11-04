@@ -1,4 +1,5 @@
 // auto-generated file
+import {expectArray} from '../../internal/JsonDecodeUtils.mjs';
 import {PermissionItem} from './PermissionItem.mjs';
 
 
@@ -11,6 +12,20 @@ export class Permission {
 	constructor(partial: Partial<Permission>) {
 		if ('grants' in partial && partial.grants !== undefined) this.grants = partial.grants;
 		if ('revokes' in partial && partial.revokes !== undefined) this.revokes = partial.revokes;
+	}
+
+	toJSON(): any {
+		const res: { [k: string]: any } = {}
+		res['grants'] = this.grants.map((x0) => x0.toJSON() )
+		res['revokes'] = this.revokes.map((x0) => x0.toJSON() )
+		return res
+	}
+
+	static fromJSON(json: any, path: Array<string> = ['Permission']): Permission {
+		return new Permission({
+			grants: expectArray(json.grants, false, [...path, ".grants"], (x0, p0) => PermissionItem.fromJSON(x0, p0)),
+			revokes: expectArray(json.revokes, false, [...path, ".revokes"], (x0, p0) => PermissionItem.fromJSON(x0, p0)),
+		})
 	}
 
 }

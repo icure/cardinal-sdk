@@ -1,4 +1,5 @@
 // auto-generated file
+import {expectNumber, expectString} from '../internal/JsonDecodeUtils.mjs';
 import {PropertyTypeStub} from './PropertyTypeStub.mjs';
 import {Encryptable} from './embed/Encryptable.mjs';
 import {DecryptedTypedValue, EncryptedTypedValue, TypedValue} from './embed/TypedValue.mjs';
@@ -42,6 +43,27 @@ export class DecryptedPropertyStub {
 		if ('encryptedSelf' in partial) this.encryptedSelf = partial.encryptedSelf;
 	}
 
+	toJSON(): any {
+		const res: { [k: string]: any } = {}
+		if (this.id != undefined) res['id'] = this.id
+		if (this.type != undefined) res['type'] = this.type.toJSON()
+		if (this.typedValue != undefined) res['typedValue'] = this.typedValue.toJSON()
+		if (this.deletionDate != undefined) res['deletionDate'] = this.deletionDate
+		if (this.encryptedSelf != undefined) res['encryptedSelf'] = this.encryptedSelf
+		return res
+	}
+
+	static fromJSON(json: any,
+			path: Array<string> = ['DecryptedPropertyStub']): DecryptedPropertyStub {
+		return new DecryptedPropertyStub({
+			id: expectString(json.id, true, [...path, ".id"]),
+			type: PropertyTypeStub.fromJSON(json.type, [...path, ".type"]),
+			typedValue: DecryptedTypedValue.fromJSON(json.typedValue, [...path, ".typedValue"]),
+			deletionDate: expectNumber(json.deletionDate, true, true, [...path, ".deletionDate"]),
+			encryptedSelf: expectString(json.encryptedSelf, false, [...path, ".encryptedSelf"]),
+		})
+	}
+
 }
 
 export class EncryptedPropertyStub {
@@ -65,6 +87,27 @@ export class EncryptedPropertyStub {
 		if ('typedValue' in partial) this.typedValue = partial.typedValue;
 		if ('deletionDate' in partial) this.deletionDate = partial.deletionDate;
 		if ('encryptedSelf' in partial) this.encryptedSelf = partial.encryptedSelf;
+	}
+
+	toJSON(): any {
+		const res: { [k: string]: any } = {}
+		if (this.id != undefined) res['id'] = this.id
+		if (this.type != undefined) res['type'] = this.type.toJSON()
+		if (this.typedValue != undefined) res['typedValue'] = this.typedValue.toJSON()
+		if (this.deletionDate != undefined) res['deletionDate'] = this.deletionDate
+		if (this.encryptedSelf != undefined) res['encryptedSelf'] = this.encryptedSelf
+		return res
+	}
+
+	static fromJSON(json: any,
+			path: Array<string> = ['EncryptedPropertyStub']): EncryptedPropertyStub {
+		return new EncryptedPropertyStub({
+			id: expectString(json.id, true, [...path, ".id"]),
+			type: PropertyTypeStub.fromJSON(json.type, [...path, ".type"]),
+			typedValue: EncryptedTypedValue.fromJSON(json.typedValue, [...path, ".typedValue"]),
+			deletionDate: expectNumber(json.deletionDate, true, true, [...path, ".deletionDate"]),
+			encryptedSelf: expectString(json.encryptedSelf, false, [...path, ".encryptedSelf"]),
+		})
 	}
 
 }

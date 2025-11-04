@@ -1,4 +1,5 @@
 // auto-generated file
+import {expectNumber, expectString, requireEntry} from '../../internal/JsonDecodeUtils.mjs';
 import {randomUuid} from '../../utils/Id.mjs';
 import {Identifiable} from '../base/Identifiable.mjs';
 import {Named} from '../base/Named.mjs';
@@ -44,6 +45,28 @@ export class DecryptedEpisode {
 		if ('encryptedSelf' in partial) this.encryptedSelf = partial.encryptedSelf;
 	}
 
+	toJSON(): any {
+		const res: { [k: string]: any } = {}
+		res['id'] = this.id
+		if (this.name != undefined) res['name'] = this.name
+		if (this.comment != undefined) res['comment'] = this.comment
+		if (this.startDate != undefined) res['startDate'] = this.startDate
+		if (this.endDate != undefined) res['endDate'] = this.endDate
+		if (this.encryptedSelf != undefined) res['encryptedSelf'] = this.encryptedSelf
+		return res
+	}
+
+	static fromJSON(json: any, path: Array<string> = ['DecryptedEpisode']): DecryptedEpisode {
+		return new DecryptedEpisode({
+			id: expectString(requireEntry(json.id, 'id', path), false, [...path, ".id"]),
+			name: expectString(json.name, true, [...path, ".name"]),
+			comment: expectString(json.comment, true, [...path, ".comment"]),
+			startDate: expectNumber(json.startDate, true, true, [...path, ".startDate"]),
+			endDate: expectNumber(json.endDate, true, true, [...path, ".endDate"]),
+			encryptedSelf: expectString(json.encryptedSelf, false, [...path, ".encryptedSelf"]),
+		})
+	}
+
 }
 
 export class EncryptedEpisode {
@@ -70,6 +93,28 @@ export class EncryptedEpisode {
 		if ('startDate' in partial) this.startDate = partial.startDate;
 		if ('endDate' in partial) this.endDate = partial.endDate;
 		if ('encryptedSelf' in partial) this.encryptedSelf = partial.encryptedSelf;
+	}
+
+	toJSON(): any {
+		const res: { [k: string]: any } = {}
+		res['id'] = this.id
+		if (this.name != undefined) res['name'] = this.name
+		if (this.comment != undefined) res['comment'] = this.comment
+		if (this.startDate != undefined) res['startDate'] = this.startDate
+		if (this.endDate != undefined) res['endDate'] = this.endDate
+		if (this.encryptedSelf != undefined) res['encryptedSelf'] = this.encryptedSelf
+		return res
+	}
+
+	static fromJSON(json: any, path: Array<string> = ['EncryptedEpisode']): EncryptedEpisode {
+		return new EncryptedEpisode({
+			id: expectString(requireEntry(json.id, 'id', path), false, [...path, ".id"]),
+			name: expectString(json.name, true, [...path, ".name"]),
+			comment: expectString(json.comment, true, [...path, ".comment"]),
+			startDate: expectNumber(json.startDate, true, true, [...path, ".startDate"]),
+			endDate: expectNumber(json.endDate, true, true, [...path, ".endDate"]),
+			encryptedSelf: expectString(json.encryptedSelf, false, [...path, ".encryptedSelf"]),
+		})
 	}
 
 }

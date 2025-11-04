@@ -1,4 +1,5 @@
 // auto-generated file
+import {expectArray, expectNumber, expectString, expectStringEnum, requireEntry} from '../internal/JsonDecodeUtils.mjs';
 import {randomUuid} from '../utils/Id.mjs';
 import {DecryptedPropertyStub} from './PropertyStub.mjs';
 import {StoredDocument} from './base/StoredDocument.mjs';
@@ -47,6 +48,42 @@ export class FrontEndMigration implements StoredDocument {
 		if ('startKeyDocId' in partial) this.startKeyDocId = partial.startKeyDocId;
 		if ('processCount' in partial) this.processCount = partial.processCount;
 		if ('properties' in partial && partial.properties !== undefined) this.properties = partial.properties;
+	}
+
+	toJSON(): any {
+		const res: { [k: string]: any } = {}
+		res['id'] = this.id
+		if (this.rev != undefined) res['rev'] = this.rev
+		if (this.deletionDate != undefined) res['deletionDate'] = this.deletionDate
+		if (this.name != undefined) res['name'] = this.name
+		if (this.startDate != undefined) res['startDate'] = this.startDate
+		if (this.endDate != undefined) res['endDate'] = this.endDate
+		if (this.status != undefined) res['status'] = this.status
+		if (this.logs != undefined) res['logs'] = this.logs
+		if (this.userId != undefined) res['userId'] = this.userId
+		if (this.startKey != undefined) res['startKey'] = this.startKey
+		if (this.startKeyDocId != undefined) res['startKeyDocId'] = this.startKeyDocId
+		if (this.processCount != undefined) res['processCount'] = this.processCount
+		res['properties'] = this.properties.map((x0) => x0.toJSON() )
+		return res
+	}
+
+	static fromJSON(json: any, path: Array<string> = ['FrontEndMigration']): FrontEndMigration {
+		return new FrontEndMigration({
+			id: expectString(requireEntry(json.id, 'id', path), false, [...path, ".id"]),
+			rev: expectString(json.rev, true, [...path, ".rev"]),
+			deletionDate: expectNumber(json.deletionDate, true, true, [...path, ".deletionDate"]),
+			name: expectString(json.name, true, [...path, ".name"]),
+			startDate: expectNumber(json.startDate, true, true, [...path, ".startDate"]),
+			endDate: expectNumber(json.endDate, true, true, [...path, ".endDate"]),
+			status: expectStringEnum(json.status, true, [...path, ".status"], FrontEndMigrationStatus, 'FrontEndMigrationStatus'),
+			logs: expectString(json.logs, true, [...path, ".logs"]),
+			userId: expectString(json.userId, true, [...path, ".userId"]),
+			startKey: expectString(json.startKey, true, [...path, ".startKey"]),
+			startKeyDocId: expectString(json.startKeyDocId, true, [...path, ".startKeyDocId"]),
+			processCount: expectNumber(json.processCount, true, true, [...path, ".processCount"]),
+			properties: expectArray(json.properties, false, [...path, ".properties"], (x0, p0) => DecryptedPropertyStub.fromJSON(x0, p0)),
+		})
 	}
 
 }

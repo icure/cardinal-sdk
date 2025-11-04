@@ -9,9 +9,12 @@ import {DocIdentifier} from '../model/couchdb/DocIdentifier.mjs';
 import {EntitySubscription} from '../subscription/EntitySubscription.mjs';
 import {EntitySubscriptionConfiguration} from '../subscription/EntitySubscriptionConfiguration.mjs';
 import {SubscriptionEventType} from '../subscription/SubscriptionEventType.mjs';
+import {HealthcarePartyApiInGroup} from './HealthcarePartyApiInGroup.mjs';
 
 
 export interface HealthcarePartyApi {
+
+	inGroup: HealthcarePartyApiInGroup;
 
 	deleteHealthcarePartyUnsafe(entityId: string): Promise<DocIdentifier>;
 

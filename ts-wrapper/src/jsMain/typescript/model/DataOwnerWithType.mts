@@ -1,4 +1,5 @@
 // auto-generated file
+import {requireEntry} from '../internal/JsonDecodeUtils.mjs';
 import {Device} from './Device.mjs';
 import {HealthcareParty} from './HealthcareParty.mjs';
 import {EncryptedPatient} from './Patient.mjs';
@@ -18,6 +19,18 @@ export namespace DataOwnerWithType {
 			this.dataOwner = partial.dataOwner;
 		}
 
+		toJSON(): any {
+			const res: { [k: string]: any } = {}
+			res['dataOwner'] = this.dataOwner.toJSON()
+			return res
+		}
+
+		static fromJSON(json: any, path: Array<string> = ['HcpDataOwner']): HcpDataOwner {
+			return new HcpDataOwner({
+				dataOwner: HealthcareParty.fromJSON(requireEntry(json.dataOwner, 'dataOwner', path), [...path, ".dataOwner"]),
+			})
+		}
+
 	}
 
 	export class PatientDataOwner {
@@ -30,6 +43,18 @@ export namespace DataOwnerWithType {
 			this.dataOwner = partial.dataOwner;
 		}
 
+		toJSON(): any {
+			const res: { [k: string]: any } = {}
+			res['dataOwner'] = this.dataOwner.toJSON()
+			return res
+		}
+
+		static fromJSON(json: any, path: Array<string> = ['PatientDataOwner']): PatientDataOwner {
+			return new PatientDataOwner({
+				dataOwner: EncryptedPatient.fromJSON(requireEntry(json.dataOwner, 'dataOwner', path), [...path, ".dataOwner"]),
+			})
+		}
+
 	}
 
 	export class DeviceDataOwner {
@@ -40,6 +65,18 @@ export namespace DataOwnerWithType {
 
 		constructor(partial: Partial<DeviceDataOwner> & Pick<DeviceDataOwner, "dataOwner">) {
 			this.dataOwner = partial.dataOwner;
+		}
+
+		toJSON(): any {
+			const res: { [k: string]: any } = {}
+			res['dataOwner'] = this.dataOwner.toJSON()
+			return res
+		}
+
+		static fromJSON(json: any, path: Array<string> = ['DeviceDataOwner']): DeviceDataOwner {
+			return new DeviceDataOwner({
+				dataOwner: Device.fromJSON(requireEntry(json.dataOwner, 'dataOwner', path), [...path, ".dataOwner"]),
+			})
 		}
 
 	}

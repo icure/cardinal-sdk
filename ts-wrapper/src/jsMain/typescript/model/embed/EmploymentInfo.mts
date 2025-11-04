@@ -1,4 +1,5 @@
 // auto-generated file
+import {expectNumber, expectString} from '../../internal/JsonDecodeUtils.mjs';
 import {CodeStub} from '../base/CodeStub.mjs';
 import {Base64String} from '../specializations/Base64String.mjs';
 import {Employer} from './Employer.mjs';
@@ -42,6 +43,27 @@ export class DecryptedEmploymentInfo {
 		if ('encryptedSelf' in partial) this.encryptedSelf = partial.encryptedSelf;
 	}
 
+	toJSON(): any {
+		const res: { [k: string]: any } = {}
+		if (this.startDate != undefined) res['startDate'] = this.startDate
+		if (this.endDate != undefined) res['endDate'] = this.endDate
+		if (this.professionType != undefined) res['professionType'] = this.professionType.toJSON()
+		if (this.employer != undefined) res['employer'] = this.employer.toJSON()
+		if (this.encryptedSelf != undefined) res['encryptedSelf'] = this.encryptedSelf
+		return res
+	}
+
+	static fromJSON(json: any,
+			path: Array<string> = ['DecryptedEmploymentInfo']): DecryptedEmploymentInfo {
+		return new DecryptedEmploymentInfo({
+			startDate: expectNumber(json.startDate, true, true, [...path, ".startDate"]),
+			endDate: expectNumber(json.endDate, true, true, [...path, ".endDate"]),
+			professionType: CodeStub.fromJSON(json.professionType, [...path, ".professionType"]),
+			employer: Employer.fromJSON(json.employer, [...path, ".employer"]),
+			encryptedSelf: expectString(json.encryptedSelf, false, [...path, ".encryptedSelf"]),
+		})
+	}
+
 }
 
 export class EncryptedEmploymentInfo {
@@ -65,6 +87,27 @@ export class EncryptedEmploymentInfo {
 		if ('professionType' in partial) this.professionType = partial.professionType;
 		if ('employer' in partial) this.employer = partial.employer;
 		if ('encryptedSelf' in partial) this.encryptedSelf = partial.encryptedSelf;
+	}
+
+	toJSON(): any {
+		const res: { [k: string]: any } = {}
+		if (this.startDate != undefined) res['startDate'] = this.startDate
+		if (this.endDate != undefined) res['endDate'] = this.endDate
+		if (this.professionType != undefined) res['professionType'] = this.professionType.toJSON()
+		if (this.employer != undefined) res['employer'] = this.employer.toJSON()
+		if (this.encryptedSelf != undefined) res['encryptedSelf'] = this.encryptedSelf
+		return res
+	}
+
+	static fromJSON(json: any,
+			path: Array<string> = ['EncryptedEmploymentInfo']): EncryptedEmploymentInfo {
+		return new EncryptedEmploymentInfo({
+			startDate: expectNumber(json.startDate, true, true, [...path, ".startDate"]),
+			endDate: expectNumber(json.endDate, true, true, [...path, ".endDate"]),
+			professionType: CodeStub.fromJSON(json.professionType, [...path, ".professionType"]),
+			employer: Employer.fromJSON(json.employer, [...path, ".employer"]),
+			encryptedSelf: expectString(json.encryptedSelf, false, [...path, ".encryptedSelf"]),
+		})
 	}
 
 }

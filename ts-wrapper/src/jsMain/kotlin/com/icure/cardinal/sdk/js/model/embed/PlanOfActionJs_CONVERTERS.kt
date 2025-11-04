@@ -100,12 +100,8 @@ public fun planOfAction_toJs(obj: DecryptedPlanOfAction): DecryptedPlanOfActionJ
 	)
 	val careTeamMemberships = listToArray(
 		obj.careTeamMemberships,
-		{ x1: DecryptedCareTeamMembership? ->
-			nullToUndefined(
-				x1?.let { nonNull2 ->
-					careTeamMembership_toJs(nonNull2)
-				}
-			)
+		{ x1: DecryptedCareTeamMembership ->
+			careTeamMembership_toJs(x1)
 		},
 	)
 	val relevant = obj.relevant
@@ -187,10 +183,8 @@ public fun planOfAction_fromJs(obj: DecryptedPlanOfActionJs): DecryptedPlanOfAct
 	val careTeamMemberships = arrayToList(
 		obj.careTeamMemberships,
 		"obj.careTeamMemberships",
-		{ x1: DecryptedCareTeamMembershipJs? ->
-			x1?.let { nonNull2 ->
-				careTeamMembership_fromJs(nonNull2)
-			}
+		{ x1: DecryptedCareTeamMembershipJs ->
+			careTeamMembership_fromJs(x1)
 		},
 	)
 	val relevant = obj.relevant
@@ -301,12 +295,8 @@ public fun planOfAction_toJs(obj: EncryptedPlanOfAction): EncryptedPlanOfActionJ
 	)
 	val careTeamMemberships = listToArray(
 		obj.careTeamMemberships,
-		{ x1: EncryptedCareTeamMembership? ->
-			nullToUndefined(
-				x1?.let { nonNull2 ->
-					careTeamMembership_toJs(nonNull2)
-				}
-			)
+		{ x1: EncryptedCareTeamMembership ->
+			careTeamMembership_toJs(x1)
 		},
 	)
 	val relevant = obj.relevant
@@ -388,10 +378,8 @@ public fun planOfAction_fromJs(obj: EncryptedPlanOfActionJs): EncryptedPlanOfAct
 	val careTeamMemberships = arrayToList(
 		obj.careTeamMemberships,
 		"obj.careTeamMemberships",
-		{ x1: EncryptedCareTeamMembershipJs? ->
-			x1?.let { nonNull2 ->
-				careTeamMembership_fromJs(nonNull2)
-			}
+		{ x1: EncryptedCareTeamMembershipJs ->
+			careTeamMembership_fromJs(x1)
 		},
 	)
 	val relevant = obj.relevant

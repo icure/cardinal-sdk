@@ -1,4 +1,5 @@
 // auto-generated file
+import {expectBoolean, expectMap, expectNumber, expectString} from '../../internal/JsonDecodeUtils.mjs';
 import {Base64String} from '../specializations/Base64String.mjs';
 import {Encryptable} from './Encryptable.mjs';
 
@@ -65,6 +66,43 @@ export class DecryptedInsurability {
 		if ('encryptedSelf' in partial) this.encryptedSelf = partial.encryptedSelf;
 	}
 
+	toJSON(): any {
+		const res: { [k: string]: any } = {}
+		res['parameters'] = Object.fromEntries(Object.entries(this.parameters).map(([k0, v0]) => [k0, v0]))
+		if (this.hospitalisation != undefined) res['hospitalisation'] = this.hospitalisation
+		if (this.ambulatory != undefined) res['ambulatory'] = this.ambulatory
+		if (this.dental != undefined) res['dental'] = this.dental
+		if (this.identificationNumber != undefined) res['identificationNumber'] = this.identificationNumber
+		if (this.insuranceId != undefined) res['insuranceId'] = this.insuranceId
+		if (this.startDate != undefined) res['startDate'] = this.startDate
+		if (this.endDate != undefined) res['endDate'] = this.endDate
+		if (this.titularyId != undefined) res['titularyId'] = this.titularyId
+		if (this.encryptedSelf != undefined) res['encryptedSelf'] = this.encryptedSelf
+		return res
+	}
+
+	static fromJSON(json: any,
+			path: Array<string> = ['DecryptedInsurability']): DecryptedInsurability {
+		return new DecryptedInsurability({
+			parameters: expectMap(
+				json.parameters,
+				false,
+				[...path, ".parameters"],
+				(k0, p0) => expectString(k0, false, p0),
+				(v0, p0) => expectString(v0, false, p0)
+			),
+			hospitalisation: expectBoolean(json.hospitalisation, true, [...path, ".hospitalisation"]),
+			ambulatory: expectBoolean(json.ambulatory, true, [...path, ".ambulatory"]),
+			dental: expectBoolean(json.dental, true, [...path, ".dental"]),
+			identificationNumber: expectString(json.identificationNumber, true, [...path, ".identificationNumber"]),
+			insuranceId: expectString(json.insuranceId, true, [...path, ".insuranceId"]),
+			startDate: expectNumber(json.startDate, true, true, [...path, ".startDate"]),
+			endDate: expectNumber(json.endDate, true, true, [...path, ".endDate"]),
+			titularyId: expectString(json.titularyId, true, [...path, ".titularyId"]),
+			encryptedSelf: expectString(json.encryptedSelf, false, [...path, ".encryptedSelf"]),
+		})
+	}
+
 }
 
 export class EncryptedInsurability {
@@ -103,6 +141,43 @@ export class EncryptedInsurability {
 		if ('endDate' in partial) this.endDate = partial.endDate;
 		if ('titularyId' in partial) this.titularyId = partial.titularyId;
 		if ('encryptedSelf' in partial) this.encryptedSelf = partial.encryptedSelf;
+	}
+
+	toJSON(): any {
+		const res: { [k: string]: any } = {}
+		res['parameters'] = Object.fromEntries(Object.entries(this.parameters).map(([k0, v0]) => [k0, v0]))
+		if (this.hospitalisation != undefined) res['hospitalisation'] = this.hospitalisation
+		if (this.ambulatory != undefined) res['ambulatory'] = this.ambulatory
+		if (this.dental != undefined) res['dental'] = this.dental
+		if (this.identificationNumber != undefined) res['identificationNumber'] = this.identificationNumber
+		if (this.insuranceId != undefined) res['insuranceId'] = this.insuranceId
+		if (this.startDate != undefined) res['startDate'] = this.startDate
+		if (this.endDate != undefined) res['endDate'] = this.endDate
+		if (this.titularyId != undefined) res['titularyId'] = this.titularyId
+		if (this.encryptedSelf != undefined) res['encryptedSelf'] = this.encryptedSelf
+		return res
+	}
+
+	static fromJSON(json: any,
+			path: Array<string> = ['EncryptedInsurability']): EncryptedInsurability {
+		return new EncryptedInsurability({
+			parameters: expectMap(
+				json.parameters,
+				false,
+				[...path, ".parameters"],
+				(k0, p0) => expectString(k0, false, p0),
+				(v0, p0) => expectString(v0, false, p0)
+			),
+			hospitalisation: expectBoolean(json.hospitalisation, true, [...path, ".hospitalisation"]),
+			ambulatory: expectBoolean(json.ambulatory, true, [...path, ".ambulatory"]),
+			dental: expectBoolean(json.dental, true, [...path, ".dental"]),
+			identificationNumber: expectString(json.identificationNumber, true, [...path, ".identificationNumber"]),
+			insuranceId: expectString(json.insuranceId, true, [...path, ".insuranceId"]),
+			startDate: expectNumber(json.startDate, true, true, [...path, ".startDate"]),
+			endDate: expectNumber(json.endDate, true, true, [...path, ".endDate"]),
+			titularyId: expectString(json.titularyId, true, [...path, ".titularyId"]),
+			encryptedSelf: expectString(json.encryptedSelf, false, [...path, ".encryptedSelf"]),
+		})
 	}
 
 }

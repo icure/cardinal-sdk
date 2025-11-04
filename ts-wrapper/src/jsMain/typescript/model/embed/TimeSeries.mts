@@ -1,4 +1,6 @@
 // auto-generated file
+import {expectArray, expectNumber, expectString} from '../../internal/JsonDecodeUtils.mjs';
+
 
 export class TimeSeries {
 
@@ -24,6 +26,30 @@ export class TimeSeries {
 		if ('mean' in partial && partial.mean !== undefined) this.mean = partial.mean;
 		if ('median' in partial && partial.median !== undefined) this.median = partial.median;
 		if ('variance' in partial && partial.variance !== undefined) this.variance = partial.variance;
+	}
+
+	toJSON(): any {
+		const res: { [k: string]: any } = {}
+		res['fields'] = this.fields.map((x0) => x0 )
+		res['samples'] = this.samples.map((x0) => x0.map((x1) => x1 ) )
+		res['min'] = this.min.map((x0) => x0 )
+		res['max'] = this.max.map((x0) => x0 )
+		res['mean'] = this.mean.map((x0) => x0 )
+		res['median'] = this.median.map((x0) => x0 )
+		res['variance'] = this.variance.map((x0) => x0 )
+		return res
+	}
+
+	static fromJSON(json: any, path: Array<string> = ['TimeSeries']): TimeSeries {
+		return new TimeSeries({
+			fields: expectArray(json.fields, false, [...path, ".fields"], (x0, p0) => expectString(x0, false, p0)),
+			samples: expectArray(json.samples, false, [...path, ".samples"], (x0, p0) => expectArray(x0, false, p0, (x1, p1) => expectNumber(x1, false, false, p1))),
+			min: expectArray(json.min, false, [...path, ".min"], (x0, p0) => expectNumber(x0, false, false, p0)),
+			max: expectArray(json.max, false, [...path, ".max"], (x0, p0) => expectNumber(x0, false, false, p0)),
+			mean: expectArray(json.mean, false, [...path, ".mean"], (x0, p0) => expectNumber(x0, false, false, p0)),
+			median: expectArray(json.median, false, [...path, ".median"], (x0, p0) => expectNumber(x0, false, false, p0)),
+			variance: expectArray(json.variance, false, [...path, ".variance"], (x0, p0) => expectNumber(x0, false, false, p0)),
+		})
 	}
 
 }

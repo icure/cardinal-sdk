@@ -1,4 +1,6 @@
 // auto-generated file
+import {decodeBase64, encodeBase64} from '../internal/BytesEncoding.mjs';
+import {expectArray, expectNumber, expectString, requireEntry} from '../internal/JsonDecodeUtils.mjs';
 import {randomUuid} from '../utils/Id.mjs';
 import {CodeStub} from './base/CodeStub.mjs';
 import {StoredDocument} from './base/StoredDocument.mjs';
@@ -72,6 +74,58 @@ export class FormTemplate implements StoredDocument {
 		if ('tags' in partial && partial.tags !== undefined) this.tags = partial.tags;
 		if ('layoutAttachmentId' in partial) this.layoutAttachmentId = partial.layoutAttachmentId;
 		if ('templateLayoutAttachmentId' in partial) this.templateLayoutAttachmentId = partial.templateLayoutAttachmentId;
+	}
+
+	toJSON(): any {
+		const res: { [k: string]: any } = {}
+		res['id'] = this.id
+		if (this.rev != undefined) res['rev'] = this.rev
+		if (this.deletionDate != undefined) res['deletionDate'] = this.deletionDate
+		if (this.templateLayout != undefined) res['templateLayout'] = this.templateLayout.toJSON()
+		if (this.rawTemplateLayout != undefined) res['rawTemplateLayout'] = encodeBase64(this.rawTemplateLayout)
+		if (this.name != undefined) res['name'] = this.name
+		if (this.guid != undefined) res['guid'] = this.guid
+		if (this.group != undefined) res['group'] = this.group.toJSON()
+		if (this.descr != undefined) res['descr'] = this.descr
+		if (this.disabled != undefined) res['disabled'] = this.disabled
+		if (this.specialty != undefined) res['specialty'] = this.specialty.toJSON()
+		if (this.author != undefined) res['author'] = this.author
+		if (this.formInstancePreferredLocation != undefined) res['formInstancePreferredLocation'] = this.formInstancePreferredLocation
+		if (this.keyboardShortcut != undefined) res['keyboardShortcut'] = this.keyboardShortcut
+		if (this.shortReport != undefined) res['shortReport'] = this.shortReport
+		if (this.mediumReport != undefined) res['mediumReport'] = this.mediumReport
+		if (this.longReport != undefined) res['longReport'] = this.longReport
+		res['reports'] = this.reports.map((x0) => x0 )
+		res['tags'] = this.tags.map((x0) => x0.toJSON() )
+		if (this.layoutAttachmentId != undefined) res['layoutAttachmentId'] = this.layoutAttachmentId
+		if (this.templateLayoutAttachmentId != undefined) res['templateLayoutAttachmentId'] = this.templateLayoutAttachmentId
+		return res
+	}
+
+	static fromJSON(json: any, path: Array<string> = ['FormTemplate']): FormTemplate {
+		return new FormTemplate({
+			id: expectString(requireEntry(json.id, 'id', path), false, [...path, ".id"]),
+			rev: expectString(json.rev, true, [...path, ".rev"]),
+			deletionDate: expectNumber(json.deletionDate, true, true, [...path, ".deletionDate"]),
+			templateLayout: FormTemplateLayout.fromJSON(json.templateLayout, [...path, ".templateLayout"]),
+			rawTemplateLayout: decodeBase64(expectString(json.rawTemplateLayout, true, [...path, ".rawTemplateLayout"]), [...path, ".rawTemplateLayout"]),
+			name: expectString(json.name, true, [...path, ".name"]),
+			guid: expectString(json.guid, true, [...path, ".guid"]),
+			group: DocumentGroup.fromJSON(json.group, [...path, ".group"]),
+			descr: expectString(json.descr, true, [...path, ".descr"]),
+			disabled: expectString(json.disabled, true, [...path, ".disabled"]),
+			specialty: CodeStub.fromJSON(json.specialty, [...path, ".specialty"]),
+			author: expectString(json.author, true, [...path, ".author"]),
+			formInstancePreferredLocation: expectString(json.formInstancePreferredLocation, true, [...path, ".formInstancePreferredLocation"]),
+			keyboardShortcut: expectString(json.keyboardShortcut, true, [...path, ".keyboardShortcut"]),
+			shortReport: expectString(json.shortReport, true, [...path, ".shortReport"]),
+			mediumReport: expectString(json.mediumReport, true, [...path, ".mediumReport"]),
+			longReport: expectString(json.longReport, true, [...path, ".longReport"]),
+			reports: expectArray(json.reports, false, [...path, ".reports"], (x0, p0) => expectString(x0, false, p0)),
+			tags: expectArray(json.tags, false, [...path, ".tags"], (x0, p0) => CodeStub.fromJSON(x0, p0)),
+			layoutAttachmentId: expectString(json.layoutAttachmentId, true, [...path, ".layoutAttachmentId"]),
+			templateLayoutAttachmentId: expectString(json.templateLayoutAttachmentId, true, [...path, ".templateLayoutAttachmentId"]),
+		})
 	}
 
 }

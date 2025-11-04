@@ -1,4 +1,5 @@
 // auto-generated file
+import {expectString, expectStringEnum, requireEntry} from '../../internal/JsonDecodeUtils.mjs';
 import {randomUuid} from '../../utils/Id.mjs';
 import {CodeStub} from '../base/CodeStub.mjs';
 import {Identifiable} from '../base/Identifiable.mjs';
@@ -42,6 +43,27 @@ export class DecryptedCareTeamMember {
 		if ('encryptedSelf' in partial) this.encryptedSelf = partial.encryptedSelf;
 	}
 
+	toJSON(): any {
+		const res: { [k: string]: any } = {}
+		res['id'] = this.id
+		if (this.careTeamMemberType != undefined) res['careTeamMemberType'] = this.careTeamMemberType
+		if (this.healthcarePartyId != undefined) res['healthcarePartyId'] = this.healthcarePartyId
+		if (this.quality != undefined) res['quality'] = this.quality.toJSON()
+		if (this.encryptedSelf != undefined) res['encryptedSelf'] = this.encryptedSelf
+		return res
+	}
+
+	static fromJSON(json: any,
+			path: Array<string> = ['DecryptedCareTeamMember']): DecryptedCareTeamMember {
+		return new DecryptedCareTeamMember({
+			id: expectString(requireEntry(json.id, 'id', path), false, [...path, ".id"]),
+			careTeamMemberType: expectStringEnum(json.careTeamMemberType, true, [...path, ".careTeamMemberType"], CareTeamMemberType, 'CareTeamMemberType'),
+			healthcarePartyId: expectString(json.healthcarePartyId, true, [...path, ".healthcarePartyId"]),
+			quality: CodeStub.fromJSON(json.quality, [...path, ".quality"]),
+			encryptedSelf: expectString(json.encryptedSelf, false, [...path, ".encryptedSelf"]),
+		})
+	}
+
 }
 
 export class EncryptedCareTeamMember {
@@ -65,6 +87,27 @@ export class EncryptedCareTeamMember {
 		if ('healthcarePartyId' in partial) this.healthcarePartyId = partial.healthcarePartyId;
 		if ('quality' in partial) this.quality = partial.quality;
 		if ('encryptedSelf' in partial) this.encryptedSelf = partial.encryptedSelf;
+	}
+
+	toJSON(): any {
+		const res: { [k: string]: any } = {}
+		res['id'] = this.id
+		if (this.careTeamMemberType != undefined) res['careTeamMemberType'] = this.careTeamMemberType
+		if (this.healthcarePartyId != undefined) res['healthcarePartyId'] = this.healthcarePartyId
+		if (this.quality != undefined) res['quality'] = this.quality.toJSON()
+		if (this.encryptedSelf != undefined) res['encryptedSelf'] = this.encryptedSelf
+		return res
+	}
+
+	static fromJSON(json: any,
+			path: Array<string> = ['EncryptedCareTeamMember']): EncryptedCareTeamMember {
+		return new EncryptedCareTeamMember({
+			id: expectString(requireEntry(json.id, 'id', path), false, [...path, ".id"]),
+			careTeamMemberType: expectStringEnum(json.careTeamMemberType, true, [...path, ".careTeamMemberType"], CareTeamMemberType, 'CareTeamMemberType'),
+			healthcarePartyId: expectString(json.healthcarePartyId, true, [...path, ".healthcarePartyId"]),
+			quality: CodeStub.fromJSON(json.quality, [...path, ".quality"]),
+			encryptedSelf: expectString(json.encryptedSelf, false, [...path, ".encryptedSelf"]),
+		})
 	}
 
 }

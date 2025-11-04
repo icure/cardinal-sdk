@@ -1,4 +1,6 @@
 // auto-generated file
+import {decodeBase64, encodeBase64} from '../internal/BytesEncoding.mjs';
+import {expectArray, expectNumber, expectString, expectStringEnum, requireEntry} from '../internal/JsonDecodeUtils.mjs';
 import {randomUuid} from '../utils/Id.mjs';
 import {CodeStub} from './base/CodeStub.mjs';
 import {ICureDocument} from './base/ICureDocument.mjs';
@@ -83,6 +85,64 @@ export class DocumentTemplate implements StoredDocument, ICureDocument<string> {
 		if ('descr' in partial) this.descr = partial.descr;
 		if ('disabled' in partial) this.disabled = partial.disabled;
 		if ('specialty' in partial) this.specialty = partial.specialty;
+	}
+
+	toJSON(): any {
+		const res: { [k: string]: any } = {}
+		res['id'] = this.id
+		if (this.rev != undefined) res['rev'] = this.rev
+		if (this.created != undefined) res['created'] = this.created
+		if (this.modified != undefined) res['modified'] = this.modified
+		if (this.author != undefined) res['author'] = this.author
+		if (this.responsible != undefined) res['responsible'] = this.responsible
+		if (this.medicalLocationId != undefined) res['medicalLocationId'] = this.medicalLocationId
+		res['tags'] = this.tags.map((x0) => x0.toJSON() )
+		res['codes'] = this.codes.map((x0) => x0.toJSON() )
+		if (this.endOfLife != undefined) res['endOfLife'] = this.endOfLife
+		if (this.deletionDate != undefined) res['deletionDate'] = this.deletionDate
+		if (this.attachment != undefined) res['attachment'] = encodeBase64(this.attachment)
+		if (this.documentType != undefined) res['documentType'] = this.documentType
+		if (this.mainUti != undefined) res['mainUti'] = this.mainUti
+		if (this.name != undefined) res['name'] = this.name
+		res['otherUtis'] = this.otherUtis.map((x0) => x0 )
+		if (this.attachmentId != undefined) res['attachmentId'] = this.attachmentId
+		if (this.version != undefined) res['version'] = this.version
+		if (this.owner != undefined) res['owner'] = this.owner
+		if (this.guid != undefined) res['guid'] = this.guid
+		if (this.group != undefined) res['group'] = this.group.toJSON()
+		if (this.descr != undefined) res['descr'] = this.descr
+		if (this.disabled != undefined) res['disabled'] = this.disabled
+		if (this.specialty != undefined) res['specialty'] = this.specialty.toJSON()
+		return res
+	}
+
+	static fromJSON(json: any, path: Array<string> = ['DocumentTemplate']): DocumentTemplate {
+		return new DocumentTemplate({
+			id: expectString(requireEntry(json.id, 'id', path), false, [...path, ".id"]),
+			rev: expectString(json.rev, true, [...path, ".rev"]),
+			created: expectNumber(json.created, true, true, [...path, ".created"]),
+			modified: expectNumber(json.modified, true, true, [...path, ".modified"]),
+			author: expectString(json.author, true, [...path, ".author"]),
+			responsible: expectString(json.responsible, true, [...path, ".responsible"]),
+			medicalLocationId: expectString(json.medicalLocationId, true, [...path, ".medicalLocationId"]),
+			tags: expectArray(json.tags, false, [...path, ".tags"], (x0, p0) => CodeStub.fromJSON(x0, p0)),
+			codes: expectArray(json.codes, false, [...path, ".codes"], (x0, p0) => CodeStub.fromJSON(x0, p0)),
+			endOfLife: expectNumber(json.endOfLife, true, true, [...path, ".endOfLife"]),
+			deletionDate: expectNumber(json.deletionDate, true, true, [...path, ".deletionDate"]),
+			attachment: decodeBase64(expectString(json.attachment, true, [...path, ".attachment"]), [...path, ".attachment"]),
+			documentType: expectStringEnum(json.documentType, true, [...path, ".documentType"], DocumentType, 'DocumentType'),
+			mainUti: expectString(json.mainUti, true, [...path, ".mainUti"]),
+			name: expectString(json.name, true, [...path, ".name"]),
+			otherUtis: expectArray(json.otherUtis, false, [...path, ".otherUtis"], (x0, p0) => expectString(x0, false, p0)),
+			attachmentId: expectString(json.attachmentId, true, [...path, ".attachmentId"]),
+			version: expectStringEnum(json.version, true, [...path, ".version"], ReportVersion, 'ReportVersion'),
+			owner: expectString(json.owner, true, [...path, ".owner"]),
+			guid: expectString(json.guid, true, [...path, ".guid"]),
+			group: DocumentGroup.fromJSON(json.group, [...path, ".group"]),
+			descr: expectString(json.descr, true, [...path, ".descr"]),
+			disabled: expectString(json.disabled, true, [...path, ".disabled"]),
+			specialty: CodeStub.fromJSON(json.specialty, [...path, ".specialty"]),
+		})
 	}
 
 }

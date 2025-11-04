@@ -1,4 +1,5 @@
 // auto-generated file
+import {expectArray, expectBoolean, expectMap, expectNumber, expectString} from '../../internal/JsonDecodeUtils.mjs';
 import {CodeStub} from '../base/CodeStub.mjs';
 import {DecryptedAddress} from './Address.mjs';
 import {Duration} from './Duration.mjs';
@@ -142,6 +143,108 @@ export class Medication {
 		if ('prescriptionRID' in partial) this.prescriptionRID = partial.prescriptionRID;
 		if ('status' in partial) this.status = partial.status;
 		if ('stockLocation' in partial) this.stockLocation = partial.stockLocation;
+	}
+
+	toJSON(): any {
+		const res: { [k: string]: any } = {}
+		if (this.compoundPrescription != undefined) res['compoundPrescription'] = this.compoundPrescription
+		if (this.substanceProduct != undefined) res['substanceProduct'] = this.substanceProduct.toJSON()
+		if (this.medicinalProduct != undefined) res['medicinalProduct'] = this.medicinalProduct.toJSON()
+		if (this.numberOfPackages != undefined) res['numberOfPackages'] = this.numberOfPackages
+		if (this.batch != undefined) res['batch'] = this.batch
+		if (this.expirationDate != undefined) res['expirationDate'] = this.expirationDate
+		if (this.instructionForPatient != undefined) res['instructionForPatient'] = this.instructionForPatient
+		if (this.instructionForReimbursement != undefined) res['instructionForReimbursement'] = this.instructionForReimbursement
+		if (this.commentForDelivery != undefined) res['commentForDelivery'] = this.commentForDelivery
+		if (this.drugRoute != undefined) res['drugRoute'] = this.drugRoute
+		if (this.temporality != undefined) res['temporality'] = this.temporality
+		if (this.frequency != undefined) res['frequency'] = this.frequency.toJSON()
+		if (this.reimbursementReason != undefined) res['reimbursementReason'] = this.reimbursementReason.toJSON()
+		if (this.substitutionAllowed != undefined) res['substitutionAllowed'] = this.substitutionAllowed
+		if (this.beginMoment != undefined) res['beginMoment'] = this.beginMoment
+		if (this.endMoment != undefined) res['endMoment'] = this.endMoment
+		if (this.deliveryMoment != undefined) res['deliveryMoment'] = this.deliveryMoment
+		if (this.endExecutionMoment != undefined) res['endExecutionMoment'] = this.endExecutionMoment
+		if (this.duration != undefined) res['duration'] = this.duration.toJSON()
+		if (this.renewal != undefined) res['renewal'] = this.renewal.toJSON()
+		if (this.knownUsage != undefined) res['knownUsage'] = this.knownUsage
+		if (this.regimen != undefined) res['regimen'] = this.regimen.map((x0) => x0.toJSON() )
+		if (this.posology != undefined) res['posology'] = this.posology
+		if (this.agreements != undefined) res['agreements'] = Object.fromEntries(Object.entries(this.agreements).map(([k0, v0]) => [k0, v0.toJSON()]))
+		if (this.medicationSchemeIdOnSafe != undefined) res['medicationSchemeIdOnSafe'] = this.medicationSchemeIdOnSafe
+		if (this.medicationSchemeSafeVersion != undefined) res['medicationSchemeSafeVersion'] = this.medicationSchemeSafeVersion
+		if (this.medicationSchemeTimeStampOnSafe != undefined) res['medicationSchemeTimeStampOnSafe'] = this.medicationSchemeTimeStampOnSafe
+		if (this.medicationSchemeDocumentId != undefined) res['medicationSchemeDocumentId'] = this.medicationSchemeDocumentId
+		if (this.safeIdName != undefined) res['safeIdName'] = this.safeIdName
+		if (this.idOnSafes != undefined) res['idOnSafes'] = this.idOnSafes
+		if (this.timestampOnSafe != undefined) res['timestampOnSafe'] = this.timestampOnSafe
+		if (this.changeValidated != undefined) res['changeValidated'] = this.changeValidated
+		if (this.newSafeMedication != undefined) res['newSafeMedication'] = this.newSafeMedication
+		if (this.medicationUse != undefined) res['medicationUse'] = this.medicationUse
+		if (this.beginCondition != undefined) res['beginCondition'] = this.beginCondition
+		if (this.endCondition != undefined) res['endCondition'] = this.endCondition
+		if (this.origin != undefined) res['origin'] = this.origin
+		if (this.medicationChanged != undefined) res['medicationChanged'] = this.medicationChanged
+		if (this.posologyChanged != undefined) res['posologyChanged'] = this.posologyChanged
+		if (this.suspension != undefined) res['suspension'] = this.suspension.map((x0) => x0.toJSON() )
+		if (this.prescriptionRID != undefined) res['prescriptionRID'] = this.prescriptionRID
+		if (this.status != undefined) res['status'] = this.status
+		if (this.stockLocation != undefined) res['stockLocation'] = this.stockLocation.toJSON()
+		return res
+	}
+
+	static fromJSON(json: any, path: Array<string> = ['Medication']): Medication {
+		return new Medication({
+			compoundPrescription: expectString(json.compoundPrescription, true, [...path, ".compoundPrescription"]),
+			substanceProduct: Substanceproduct.fromJSON(json.substanceProduct, [...path, ".substanceProduct"]),
+			medicinalProduct: Medicinalproduct.fromJSON(json.medicinalProduct, [...path, ".medicinalProduct"]),
+			numberOfPackages: expectNumber(json.numberOfPackages, true, true, [...path, ".numberOfPackages"]),
+			batch: expectString(json.batch, true, [...path, ".batch"]),
+			expirationDate: expectNumber(json.expirationDate, true, true, [...path, ".expirationDate"]),
+			instructionForPatient: expectString(json.instructionForPatient, true, [...path, ".instructionForPatient"]),
+			instructionForReimbursement: expectString(json.instructionForReimbursement, true, [...path, ".instructionForReimbursement"]),
+			commentForDelivery: expectString(json.commentForDelivery, true, [...path, ".commentForDelivery"]),
+			drugRoute: expectString(json.drugRoute, true, [...path, ".drugRoute"]),
+			temporality: expectString(json.temporality, true, [...path, ".temporality"]),
+			frequency: CodeStub.fromJSON(json.frequency, [...path, ".frequency"]),
+			reimbursementReason: CodeStub.fromJSON(json.reimbursementReason, [...path, ".reimbursementReason"]),
+			substitutionAllowed: expectBoolean(json.substitutionAllowed, true, [...path, ".substitutionAllowed"]),
+			beginMoment: expectNumber(json.beginMoment, true, true, [...path, ".beginMoment"]),
+			endMoment: expectNumber(json.endMoment, true, true, [...path, ".endMoment"]),
+			deliveryMoment: expectNumber(json.deliveryMoment, true, true, [...path, ".deliveryMoment"]),
+			endExecutionMoment: expectNumber(json.endExecutionMoment, true, true, [...path, ".endExecutionMoment"]),
+			duration: Duration.fromJSON(json.duration, [...path, ".duration"]),
+			renewal: Renewal.fromJSON(json.renewal, [...path, ".renewal"]),
+			knownUsage: expectBoolean(json.knownUsage, true, [...path, ".knownUsage"]),
+			regimen: expectArray(json.regimen, true, [...path, ".regimen"], (x0, p0) => RegimenItem.fromJSON(x0, p0)),
+			posology: expectString(json.posology, true, [...path, ".posology"]),
+			agreements: expectMap(
+				json.agreements,
+				true,
+				[...path, ".agreements"],
+				(k0, p0) => expectString(k0, false, p0),
+				(v0, p0) => ParagraphAgreement.fromJSON(v0, p0)
+			),
+			medicationSchemeIdOnSafe: expectString(json.medicationSchemeIdOnSafe, true, [...path, ".medicationSchemeIdOnSafe"]),
+			medicationSchemeSafeVersion: expectNumber(json.medicationSchemeSafeVersion, true, true, [...path, ".medicationSchemeSafeVersion"]),
+			medicationSchemeTimeStampOnSafe: expectNumber(json.medicationSchemeTimeStampOnSafe, true, true, [...path, ".medicationSchemeTimeStampOnSafe"]),
+			medicationSchemeDocumentId: expectString(json.medicationSchemeDocumentId, true, [...path, ".medicationSchemeDocumentId"]),
+			safeIdName: expectString(json.safeIdName, true, [...path, ".safeIdName"]),
+			idOnSafes: expectString(json.idOnSafes, true, [...path, ".idOnSafes"]),
+			timestampOnSafe: expectNumber(json.timestampOnSafe, true, true, [...path, ".timestampOnSafe"]),
+			changeValidated: expectBoolean(json.changeValidated, true, [...path, ".changeValidated"]),
+			newSafeMedication: expectBoolean(json.newSafeMedication, true, [...path, ".newSafeMedication"]),
+			medicationUse: expectString(json.medicationUse, true, [...path, ".medicationUse"]),
+			beginCondition: expectString(json.beginCondition, true, [...path, ".beginCondition"]),
+			endCondition: expectString(json.endCondition, true, [...path, ".endCondition"]),
+			origin: expectString(json.origin, true, [...path, ".origin"]),
+			medicationChanged: expectBoolean(json.medicationChanged, true, [...path, ".medicationChanged"]),
+			posologyChanged: expectBoolean(json.posologyChanged, true, [...path, ".posologyChanged"]),
+			suspension: expectArray(json.suspension, true, [...path, ".suspension"], (x0, p0) => Suspension.fromJSON(x0, p0)),
+			prescriptionRID: expectString(json.prescriptionRID, true, [...path, ".prescriptionRID"]),
+			status: expectNumber(json.status, true, true, [...path, ".status"]),
+			stockLocation: DecryptedAddress.fromJSON(json.stockLocation, [...path, ".stockLocation"]),
+		})
 	}
 
 }

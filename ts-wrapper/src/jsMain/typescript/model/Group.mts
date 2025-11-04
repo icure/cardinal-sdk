@@ -1,4 +1,5 @@
 // auto-generated file
+import {expectArray, expectBoolean, expectMap, expectNumber, expectString, expectStringEnum, requireEntry} from '../internal/JsonDecodeUtils.mjs';
 import {randomUuid} from '../utils/Id.mjs';
 import {DecryptedPropertyStub} from './PropertyStub.mjs';
 import {CodeStub} from './base/CodeStub.mjs';
@@ -67,6 +68,76 @@ export class Group implements StoredDocument, HasTags {
 		this.minimumAuthenticationClassForElevatedPrivileges = partial.minimumAuthenticationClassForElevatedPrivileges;
 		if ('superGroup' in partial) this.superGroup = partial.superGroup;
 		if ('applicationId' in partial) this.applicationId = partial.applicationId;
+	}
+
+	toJSON(): any {
+		const res: { [k: string]: any } = {}
+		res['id'] = this.id
+		if (this.rev != undefined) res['rev'] = this.rev
+		if (this.deletionDate != undefined) res['deletionDate'] = this.deletionDate
+		res['tags'] = this.tags.map((x0) => x0.toJSON() )
+		res['publicTags'] = this.publicTags.map((x0) => x0.toJSON() )
+		if (this.name != undefined) res['name'] = this.name
+		if (this.password != undefined) res['password'] = this.password
+		if (this.servers != undefined) res['servers'] = this.servers.map((x0) => x0 )
+		res['superAdmin'] = this.superAdmin
+		res['properties'] = this.properties.map((x0) => x0.toJSON() )
+		res['defaultUserRoles'] = Object.fromEntries(Object.entries(this.defaultUserRoles).map(([k0, v0]) => [k0, v0.map((x1) => x1 )]))
+		res['operationTokens'] = Object.fromEntries(Object.entries(this.operationTokens).map(([k0, v0]) => [k0, v0.toJSON()]))
+		res['sharedEntities'] = Object.fromEntries(Object.entries(this.sharedEntities).map(([k0, v0]) => [k0, v0]))
+		if (this.minimumKrakenVersion != undefined) res['minimumKrakenVersion'] = this.minimumKrakenVersion
+		res['externalJwtConfig'] = Object.fromEntries(Object.entries(this.externalJwtConfig).map(([k0, v0]) => [k0, v0.toJSON()]))
+		res['minimumAuthenticationClassForElevatedPrivileges'] = this.minimumAuthenticationClassForElevatedPrivileges
+		if (this.superGroup != undefined) res['superGroup'] = this.superGroup
+		if (this.applicationId != undefined) res['applicationId'] = this.applicationId
+		return res
+	}
+
+	static fromJSON(json: any, path: Array<string> = ['Group']): Group {
+		return new Group({
+			id: expectString(requireEntry(json.id, 'id', path), false, [...path, ".id"]),
+			rev: expectString(json.rev, true, [...path, ".rev"]),
+			deletionDate: expectNumber(json.deletionDate, true, true, [...path, ".deletionDate"]),
+			tags: expectArray(json.tags, false, [...path, ".tags"], (x0, p0) => CodeStub.fromJSON(x0, p0)),
+			publicTags: expectArray(json.publicTags, false, [...path, ".publicTags"], (x0, p0) => CodeStub.fromJSON(x0, p0)),
+			name: expectString(json.name, true, [...path, ".name"]),
+			password: expectString(json.password, true, [...path, ".password"]),
+			servers: expectArray(json.servers, true, [...path, ".servers"], (x0, p0) => expectString(x0, false, p0)),
+			superAdmin: expectBoolean(json.superAdmin, false, [...path, ".superAdmin"]),
+			properties: expectArray(json.properties, false, [...path, ".properties"], (x0, p0) => DecryptedPropertyStub.fromJSON(x0, p0)),
+			defaultUserRoles: expectMap(
+				json.defaultUserRoles,
+				false,
+				[...path, ".defaultUserRoles"],
+				(k0, p0) => expectStringEnum(k0, false, p0, UserType, 'UserType'),
+				(v0, p0) => expectArray(v0, false, p0, (x1, p1) => expectString(x1, false, p1))
+			),
+			operationTokens: expectMap(
+				json.operationTokens,
+				false,
+				[...path, ".operationTokens"],
+				(k0, p0) => expectString(k0, false, p0),
+				(v0, p0) => OperationToken.fromJSON(v0, p0)
+			),
+			sharedEntities: expectMap(
+				json.sharedEntities,
+				false,
+				[...path, ".sharedEntities"],
+				(k0, p0) => expectString(k0, false, p0),
+				(v0, p0) => expectString(v0, false, p0)
+			),
+			minimumKrakenVersion: expectString(json.minimumKrakenVersion, true, [...path, ".minimumKrakenVersion"]),
+			externalJwtConfig: expectMap(
+				json.externalJwtConfig,
+				false,
+				[...path, ".externalJwtConfig"],
+				(k0, p0) => expectString(k0, false, p0),
+				(v0, p0) => ExternalJwtConfig.fromJSON(v0, p0)
+			),
+			minimumAuthenticationClassForElevatedPrivileges: expectStringEnum(requireEntry(json.minimumAuthenticationClassForElevatedPrivileges, 'minimumAuthenticationClassForElevatedPrivileges', path), false, [...path, ".minimumAuthenticationClassForElevatedPrivileges"], AuthenticationClass, 'AuthenticationClass'),
+			superGroup: expectString(json.superGroup, true, [...path, ".superGroup"]),
+			applicationId: expectString(json.applicationId, true, [...path, ".applicationId"]),
+		})
 	}
 
 }

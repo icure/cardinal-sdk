@@ -1,4 +1,5 @@
 // auto-generated file
+import {expectBoolean, expectMap, expectNumber, expectString, expectStringEnum} from '../../internal/JsonDecodeUtils.mjs';
 import {Base64String} from '../specializations/Base64String.mjs';
 import {ContractChangeType} from './ContractChangeType.mjs';
 import {Encryptable} from './Encryptable.mjs';
@@ -183,6 +184,95 @@ export class DecryptedMedicalHouseContract {
 		if ('encryptedSelf' in partial) this.encryptedSelf = partial.encryptedSelf;
 	}
 
+	toJSON(): any {
+		const res: { [k: string]: any } = {}
+		if (this.contractId != undefined) res['contractId'] = this.contractId
+		if (this.validFrom != undefined) res['validFrom'] = this.validFrom
+		if (this.validTo != undefined) res['validTo'] = this.validTo
+		if (this.mmNihii != undefined) res['mmNihii'] = this.mmNihii
+		if (this.hcpId != undefined) res['hcpId'] = this.hcpId
+		if (this.changeType != undefined) res['changeType'] = this.changeType
+		if (this.parentContractId != undefined) res['parentContractId'] = this.parentContractId
+		if (this.changedBy != undefined) res['changedBy'] = this.changedBy
+		if (this.startOfContract != undefined) res['startOfContract'] = this.startOfContract
+		if (this.startOfCoverage != undefined) res['startOfCoverage'] = this.startOfCoverage
+		if (this.endOfContract != undefined) res['endOfContract'] = this.endOfContract
+		if (this.endOfCoverage != undefined) res['endOfCoverage'] = this.endOfCoverage
+		res['kine'] = this.kine
+		res['gp'] = this.gp
+		res['ptd'] = this.ptd
+		res['nurse'] = this.nurse
+		res['noKine'] = this.noKine
+		res['noGp'] = this.noGp
+		res['noNurse'] = this.noNurse
+		if (this.unsubscriptionReasonId != undefined) res['unsubscriptionReasonId'] = this.unsubscriptionReasonId
+		if (this.ptdStart != undefined) res['ptdStart'] = this.ptdStart
+		if (this.ptdEnd != undefined) res['ptdEnd'] = this.ptdEnd
+		if (this.ptdLastInvoiced != undefined) res['ptdLastInvoiced'] = this.ptdLastInvoiced
+		if (this.startOfSuspension != undefined) res['startOfSuspension'] = this.startOfSuspension
+		if (this.endOfSuspension != undefined) res['endOfSuspension'] = this.endOfSuspension
+		if (this.suspensionReason != undefined) res['suspensionReason'] = this.suspensionReason
+		if (this.suspensionSource != undefined) res['suspensionSource'] = this.suspensionSource
+		res['forcedSuspension'] = this.forcedSuspension
+		if (this.signatureType != undefined) res['signatureType'] = this.signatureType
+		if (this.status != undefined) res['status'] = this.status
+		res['options'] = Object.fromEntries(Object.entries(this.options).map(([k0, v0]) => [k0, v0]))
+		res['receipts'] = Object.fromEntries(Object.entries(this.receipts).map(([k0, v0]) => [k0, v0]))
+		if (this.encryptedSelf != undefined) res['encryptedSelf'] = this.encryptedSelf
+		return res
+	}
+
+	static fromJSON(json: any,
+			path: Array<string> = ['DecryptedMedicalHouseContract']): DecryptedMedicalHouseContract {
+		return new DecryptedMedicalHouseContract({
+			contractId: expectString(json.contractId, true, [...path, ".contractId"]),
+			validFrom: expectNumber(json.validFrom, true, true, [...path, ".validFrom"]),
+			validTo: expectNumber(json.validTo, true, true, [...path, ".validTo"]),
+			mmNihii: expectString(json.mmNihii, true, [...path, ".mmNihii"]),
+			hcpId: expectString(json.hcpId, true, [...path, ".hcpId"]),
+			changeType: expectStringEnum(json.changeType, true, [...path, ".changeType"], ContractChangeType, 'ContractChangeType'),
+			parentContractId: expectString(json.parentContractId, true, [...path, ".parentContractId"]),
+			changedBy: expectString(json.changedBy, true, [...path, ".changedBy"]),
+			startOfContract: expectNumber(json.startOfContract, true, true, [...path, ".startOfContract"]),
+			startOfCoverage: expectNumber(json.startOfCoverage, true, true, [...path, ".startOfCoverage"]),
+			endOfContract: expectNumber(json.endOfContract, true, true, [...path, ".endOfContract"]),
+			endOfCoverage: expectNumber(json.endOfCoverage, true, true, [...path, ".endOfCoverage"]),
+			kine: expectBoolean(json.kine, false, [...path, ".kine"]),
+			gp: expectBoolean(json.gp, false, [...path, ".gp"]),
+			ptd: expectBoolean(json.ptd, false, [...path, ".ptd"]),
+			nurse: expectBoolean(json.nurse, false, [...path, ".nurse"]),
+			noKine: expectBoolean(json.noKine, false, [...path, ".noKine"]),
+			noGp: expectBoolean(json.noGp, false, [...path, ".noGp"]),
+			noNurse: expectBoolean(json.noNurse, false, [...path, ".noNurse"]),
+			unsubscriptionReasonId: expectNumber(json.unsubscriptionReasonId, true, true, [...path, ".unsubscriptionReasonId"]),
+			ptdStart: expectNumber(json.ptdStart, true, true, [...path, ".ptdStart"]),
+			ptdEnd: expectNumber(json.ptdEnd, true, true, [...path, ".ptdEnd"]),
+			ptdLastInvoiced: expectNumber(json.ptdLastInvoiced, true, true, [...path, ".ptdLastInvoiced"]),
+			startOfSuspension: expectNumber(json.startOfSuspension, true, true, [...path, ".startOfSuspension"]),
+			endOfSuspension: expectNumber(json.endOfSuspension, true, true, [...path, ".endOfSuspension"]),
+			suspensionReason: expectStringEnum(json.suspensionReason, true, [...path, ".suspensionReason"], SuspensionReason, 'SuspensionReason'),
+			suspensionSource: expectString(json.suspensionSource, true, [...path, ".suspensionSource"]),
+			forcedSuspension: expectBoolean(json.forcedSuspension, false, [...path, ".forcedSuspension"]),
+			signatureType: expectStringEnum(json.signatureType, true, [...path, ".signatureType"], MhcSignatureType, 'MhcSignatureType'),
+			status: expectNumber(json.status, true, true, [...path, ".status"]),
+			options: expectMap(
+				json.options,
+				false,
+				[...path, ".options"],
+				(k0, p0) => expectString(k0, false, p0),
+				(v0, p0) => expectString(v0, false, p0)
+			),
+			receipts: expectMap(
+				json.receipts,
+				false,
+				[...path, ".receipts"],
+				(k0, p0) => expectString(k0, false, p0),
+				(v0, p0) => expectString(v0, false, p0)
+			),
+			encryptedSelf: expectString(json.encryptedSelf, false, [...path, ".encryptedSelf"]),
+		})
+	}
+
 }
 
 export class EncryptedMedicalHouseContract {
@@ -290,6 +380,95 @@ export class EncryptedMedicalHouseContract {
 		if ('options' in partial && partial.options !== undefined) this.options = partial.options;
 		if ('receipts' in partial && partial.receipts !== undefined) this.receipts = partial.receipts;
 		if ('encryptedSelf' in partial) this.encryptedSelf = partial.encryptedSelf;
+	}
+
+	toJSON(): any {
+		const res: { [k: string]: any } = {}
+		if (this.contractId != undefined) res['contractId'] = this.contractId
+		if (this.validFrom != undefined) res['validFrom'] = this.validFrom
+		if (this.validTo != undefined) res['validTo'] = this.validTo
+		if (this.mmNihii != undefined) res['mmNihii'] = this.mmNihii
+		if (this.hcpId != undefined) res['hcpId'] = this.hcpId
+		if (this.changeType != undefined) res['changeType'] = this.changeType
+		if (this.parentContractId != undefined) res['parentContractId'] = this.parentContractId
+		if (this.changedBy != undefined) res['changedBy'] = this.changedBy
+		if (this.startOfContract != undefined) res['startOfContract'] = this.startOfContract
+		if (this.startOfCoverage != undefined) res['startOfCoverage'] = this.startOfCoverage
+		if (this.endOfContract != undefined) res['endOfContract'] = this.endOfContract
+		if (this.endOfCoverage != undefined) res['endOfCoverage'] = this.endOfCoverage
+		res['kine'] = this.kine
+		res['gp'] = this.gp
+		res['ptd'] = this.ptd
+		res['nurse'] = this.nurse
+		res['noKine'] = this.noKine
+		res['noGp'] = this.noGp
+		res['noNurse'] = this.noNurse
+		if (this.unsubscriptionReasonId != undefined) res['unsubscriptionReasonId'] = this.unsubscriptionReasonId
+		if (this.ptdStart != undefined) res['ptdStart'] = this.ptdStart
+		if (this.ptdEnd != undefined) res['ptdEnd'] = this.ptdEnd
+		if (this.ptdLastInvoiced != undefined) res['ptdLastInvoiced'] = this.ptdLastInvoiced
+		if (this.startOfSuspension != undefined) res['startOfSuspension'] = this.startOfSuspension
+		if (this.endOfSuspension != undefined) res['endOfSuspension'] = this.endOfSuspension
+		if (this.suspensionReason != undefined) res['suspensionReason'] = this.suspensionReason
+		if (this.suspensionSource != undefined) res['suspensionSource'] = this.suspensionSource
+		res['forcedSuspension'] = this.forcedSuspension
+		if (this.signatureType != undefined) res['signatureType'] = this.signatureType
+		if (this.status != undefined) res['status'] = this.status
+		res['options'] = Object.fromEntries(Object.entries(this.options).map(([k0, v0]) => [k0, v0]))
+		res['receipts'] = Object.fromEntries(Object.entries(this.receipts).map(([k0, v0]) => [k0, v0]))
+		if (this.encryptedSelf != undefined) res['encryptedSelf'] = this.encryptedSelf
+		return res
+	}
+
+	static fromJSON(json: any,
+			path: Array<string> = ['EncryptedMedicalHouseContract']): EncryptedMedicalHouseContract {
+		return new EncryptedMedicalHouseContract({
+			contractId: expectString(json.contractId, true, [...path, ".contractId"]),
+			validFrom: expectNumber(json.validFrom, true, true, [...path, ".validFrom"]),
+			validTo: expectNumber(json.validTo, true, true, [...path, ".validTo"]),
+			mmNihii: expectString(json.mmNihii, true, [...path, ".mmNihii"]),
+			hcpId: expectString(json.hcpId, true, [...path, ".hcpId"]),
+			changeType: expectStringEnum(json.changeType, true, [...path, ".changeType"], ContractChangeType, 'ContractChangeType'),
+			parentContractId: expectString(json.parentContractId, true, [...path, ".parentContractId"]),
+			changedBy: expectString(json.changedBy, true, [...path, ".changedBy"]),
+			startOfContract: expectNumber(json.startOfContract, true, true, [...path, ".startOfContract"]),
+			startOfCoverage: expectNumber(json.startOfCoverage, true, true, [...path, ".startOfCoverage"]),
+			endOfContract: expectNumber(json.endOfContract, true, true, [...path, ".endOfContract"]),
+			endOfCoverage: expectNumber(json.endOfCoverage, true, true, [...path, ".endOfCoverage"]),
+			kine: expectBoolean(json.kine, false, [...path, ".kine"]),
+			gp: expectBoolean(json.gp, false, [...path, ".gp"]),
+			ptd: expectBoolean(json.ptd, false, [...path, ".ptd"]),
+			nurse: expectBoolean(json.nurse, false, [...path, ".nurse"]),
+			noKine: expectBoolean(json.noKine, false, [...path, ".noKine"]),
+			noGp: expectBoolean(json.noGp, false, [...path, ".noGp"]),
+			noNurse: expectBoolean(json.noNurse, false, [...path, ".noNurse"]),
+			unsubscriptionReasonId: expectNumber(json.unsubscriptionReasonId, true, true, [...path, ".unsubscriptionReasonId"]),
+			ptdStart: expectNumber(json.ptdStart, true, true, [...path, ".ptdStart"]),
+			ptdEnd: expectNumber(json.ptdEnd, true, true, [...path, ".ptdEnd"]),
+			ptdLastInvoiced: expectNumber(json.ptdLastInvoiced, true, true, [...path, ".ptdLastInvoiced"]),
+			startOfSuspension: expectNumber(json.startOfSuspension, true, true, [...path, ".startOfSuspension"]),
+			endOfSuspension: expectNumber(json.endOfSuspension, true, true, [...path, ".endOfSuspension"]),
+			suspensionReason: expectStringEnum(json.suspensionReason, true, [...path, ".suspensionReason"], SuspensionReason, 'SuspensionReason'),
+			suspensionSource: expectString(json.suspensionSource, true, [...path, ".suspensionSource"]),
+			forcedSuspension: expectBoolean(json.forcedSuspension, false, [...path, ".forcedSuspension"]),
+			signatureType: expectStringEnum(json.signatureType, true, [...path, ".signatureType"], MhcSignatureType, 'MhcSignatureType'),
+			status: expectNumber(json.status, true, true, [...path, ".status"]),
+			options: expectMap(
+				json.options,
+				false,
+				[...path, ".options"],
+				(k0, p0) => expectString(k0, false, p0),
+				(v0, p0) => expectString(v0, false, p0)
+			),
+			receipts: expectMap(
+				json.receipts,
+				false,
+				[...path, ".receipts"],
+				(k0, p0) => expectString(k0, false, p0),
+				(v0, p0) => expectString(v0, false, p0)
+			),
+			encryptedSelf: expectString(json.encryptedSelf, false, [...path, ".encryptedSelf"]),
+		})
 	}
 
 }

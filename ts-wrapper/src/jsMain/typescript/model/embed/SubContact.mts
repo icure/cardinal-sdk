@@ -1,4 +1,5 @@
 // auto-generated file
+import {expectArray, expectNumber, expectString} from '../../internal/JsonDecodeUtils.mjs';
 import {CodeStub} from '../base/CodeStub.mjs';
 import {ICureDocument} from '../base/ICureDocument.mjs';
 import {Base64String} from '../specializations/Base64String.mjs';
@@ -90,6 +91,52 @@ export class DecryptedSubContact {
 		if ('encryptedSelf' in partial) this.encryptedSelf = partial.encryptedSelf;
 	}
 
+	toJSON(): any {
+		const res: { [k: string]: any } = {}
+		if (this.id != undefined) res['id'] = this.id
+		if (this.created != undefined) res['created'] = this.created
+		if (this.modified != undefined) res['modified'] = this.modified
+		if (this.author != undefined) res['author'] = this.author
+		if (this.responsible != undefined) res['responsible'] = this.responsible
+		if (this.medicalLocationId != undefined) res['medicalLocationId'] = this.medicalLocationId
+		res['tags'] = this.tags.map((x0) => x0.toJSON() )
+		res['codes'] = this.codes.map((x0) => x0.toJSON() )
+		if (this.endOfLife != undefined) res['endOfLife'] = this.endOfLife
+		if (this.descr != undefined) res['descr'] = this.descr
+		if (this.protocol != undefined) res['protocol'] = this.protocol
+		if (this.status != undefined) res['status'] = this.status
+		if (this.formId != undefined) res['formId'] = this.formId
+		if (this.planOfActionId != undefined) res['planOfActionId'] = this.planOfActionId
+		if (this.healthElementId != undefined) res['healthElementId'] = this.healthElementId
+		if (this.classificationId != undefined) res['classificationId'] = this.classificationId
+		res['services'] = this.services.map((x0) => x0.toJSON() )
+		if (this.encryptedSelf != undefined) res['encryptedSelf'] = this.encryptedSelf
+		return res
+	}
+
+	static fromJSON(json: any, path: Array<string> = ['DecryptedSubContact']): DecryptedSubContact {
+		return new DecryptedSubContact({
+			id: expectString(json.id, true, [...path, ".id"]),
+			created: expectNumber(json.created, true, true, [...path, ".created"]),
+			modified: expectNumber(json.modified, true, true, [...path, ".modified"]),
+			author: expectString(json.author, true, [...path, ".author"]),
+			responsible: expectString(json.responsible, true, [...path, ".responsible"]),
+			medicalLocationId: expectString(json.medicalLocationId, true, [...path, ".medicalLocationId"]),
+			tags: expectArray(json.tags, false, [...path, ".tags"], (x0, p0) => CodeStub.fromJSON(x0, p0)),
+			codes: expectArray(json.codes, false, [...path, ".codes"], (x0, p0) => CodeStub.fromJSON(x0, p0)),
+			endOfLife: expectNumber(json.endOfLife, true, true, [...path, ".endOfLife"]),
+			descr: expectString(json.descr, true, [...path, ".descr"]),
+			protocol: expectString(json.protocol, true, [...path, ".protocol"]),
+			status: expectNumber(json.status, true, true, [...path, ".status"]),
+			formId: expectString(json.formId, true, [...path, ".formId"]),
+			planOfActionId: expectString(json.planOfActionId, true, [...path, ".planOfActionId"]),
+			healthElementId: expectString(json.healthElementId, true, [...path, ".healthElementId"]),
+			classificationId: expectString(json.classificationId, true, [...path, ".classificationId"]),
+			services: expectArray(json.services, false, [...path, ".services"], (x0, p0) => ServiceLink.fromJSON(x0, p0)),
+			encryptedSelf: expectString(json.encryptedSelf, false, [...path, ".encryptedSelf"]),
+		})
+	}
+
 }
 
 export class EncryptedSubContact {
@@ -152,6 +199,52 @@ export class EncryptedSubContact {
 		if ('classificationId' in partial) this.classificationId = partial.classificationId;
 		if ('services' in partial && partial.services !== undefined) this.services = partial.services;
 		if ('encryptedSelf' in partial) this.encryptedSelf = partial.encryptedSelf;
+	}
+
+	toJSON(): any {
+		const res: { [k: string]: any } = {}
+		if (this.id != undefined) res['id'] = this.id
+		if (this.created != undefined) res['created'] = this.created
+		if (this.modified != undefined) res['modified'] = this.modified
+		if (this.author != undefined) res['author'] = this.author
+		if (this.responsible != undefined) res['responsible'] = this.responsible
+		if (this.medicalLocationId != undefined) res['medicalLocationId'] = this.medicalLocationId
+		res['tags'] = this.tags.map((x0) => x0.toJSON() )
+		res['codes'] = this.codes.map((x0) => x0.toJSON() )
+		if (this.endOfLife != undefined) res['endOfLife'] = this.endOfLife
+		if (this.descr != undefined) res['descr'] = this.descr
+		if (this.protocol != undefined) res['protocol'] = this.protocol
+		if (this.status != undefined) res['status'] = this.status
+		if (this.formId != undefined) res['formId'] = this.formId
+		if (this.planOfActionId != undefined) res['planOfActionId'] = this.planOfActionId
+		if (this.healthElementId != undefined) res['healthElementId'] = this.healthElementId
+		if (this.classificationId != undefined) res['classificationId'] = this.classificationId
+		res['services'] = this.services.map((x0) => x0.toJSON() )
+		if (this.encryptedSelf != undefined) res['encryptedSelf'] = this.encryptedSelf
+		return res
+	}
+
+	static fromJSON(json: any, path: Array<string> = ['EncryptedSubContact']): EncryptedSubContact {
+		return new EncryptedSubContact({
+			id: expectString(json.id, true, [...path, ".id"]),
+			created: expectNumber(json.created, true, true, [...path, ".created"]),
+			modified: expectNumber(json.modified, true, true, [...path, ".modified"]),
+			author: expectString(json.author, true, [...path, ".author"]),
+			responsible: expectString(json.responsible, true, [...path, ".responsible"]),
+			medicalLocationId: expectString(json.medicalLocationId, true, [...path, ".medicalLocationId"]),
+			tags: expectArray(json.tags, false, [...path, ".tags"], (x0, p0) => CodeStub.fromJSON(x0, p0)),
+			codes: expectArray(json.codes, false, [...path, ".codes"], (x0, p0) => CodeStub.fromJSON(x0, p0)),
+			endOfLife: expectNumber(json.endOfLife, true, true, [...path, ".endOfLife"]),
+			descr: expectString(json.descr, true, [...path, ".descr"]),
+			protocol: expectString(json.protocol, true, [...path, ".protocol"]),
+			status: expectNumber(json.status, true, true, [...path, ".status"]),
+			formId: expectString(json.formId, true, [...path, ".formId"]),
+			planOfActionId: expectString(json.planOfActionId, true, [...path, ".planOfActionId"]),
+			healthElementId: expectString(json.healthElementId, true, [...path, ".healthElementId"]),
+			classificationId: expectString(json.classificationId, true, [...path, ".classificationId"]),
+			services: expectArray(json.services, false, [...path, ".services"], (x0, p0) => ServiceLink.fromJSON(x0, p0)),
+			encryptedSelf: expectString(json.encryptedSelf, false, [...path, ".encryptedSelf"]),
+		})
 	}
 
 }

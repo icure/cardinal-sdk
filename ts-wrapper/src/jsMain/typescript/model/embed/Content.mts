@@ -1,4 +1,6 @@
 // auto-generated file
+import {decodeBase64, encodeBase64} from '../../internal/BytesEncoding.mjs';
+import {expectArray, expectBoolean, expectNumber, expectString} from '../../internal/JsonDecodeUtils.mjs';
 import {Measure} from './Measure.mjs';
 import {Medication} from './Medication.mjs';
 import {DecryptedService, EncryptedService, Service} from './Service.mjs';
@@ -84,6 +86,42 @@ export class DecryptedContent {
 		if ('range' in partial) this.range = partial.range;
 	}
 
+	toJSON(): any {
+		const res: { [k: string]: any } = {}
+		if (this.stringValue != undefined) res['stringValue'] = this.stringValue
+		if (this.numberValue != undefined) res['numberValue'] = this.numberValue
+		if (this.booleanValue != undefined) res['booleanValue'] = this.booleanValue
+		if (this.instantValue != undefined) res['instantValue'] = this.instantValue
+		if (this.fuzzyDateValue != undefined) res['fuzzyDateValue'] = this.fuzzyDateValue
+		if (this.binaryValue != undefined) res['binaryValue'] = encodeBase64(this.binaryValue)
+		if (this.documentId != undefined) res['documentId'] = this.documentId
+		if (this.measureValue != undefined) res['measureValue'] = this.measureValue.toJSON()
+		if (this.medicationValue != undefined) res['medicationValue'] = this.medicationValue.toJSON()
+		if (this.timeSeries != undefined) res['timeSeries'] = this.timeSeries.toJSON()
+		if (this.compoundValue != undefined) res['compoundValue'] = this.compoundValue.map((x0) => x0.toJSON() )
+		if (this.ratio != undefined) res['ratio'] = this.ratio.map((x0) => x0.toJSON() )
+		if (this.range != undefined) res['range'] = this.range.map((x0) => x0.toJSON() )
+		return res
+	}
+
+	static fromJSON(json: any, path: Array<string> = ['DecryptedContent']): DecryptedContent {
+		return new DecryptedContent({
+			stringValue: expectString(json.stringValue, true, [...path, ".stringValue"]),
+			numberValue: expectNumber(json.numberValue, true, false, [...path, ".numberValue"]),
+			booleanValue: expectBoolean(json.booleanValue, true, [...path, ".booleanValue"]),
+			instantValue: expectNumber(json.instantValue, true, true, [...path, ".instantValue"]),
+			fuzzyDateValue: expectNumber(json.fuzzyDateValue, true, true, [...path, ".fuzzyDateValue"]),
+			binaryValue: decodeBase64(expectString(json.binaryValue, true, [...path, ".binaryValue"]), [...path, ".binaryValue"]),
+			documentId: expectString(json.documentId, true, [...path, ".documentId"]),
+			measureValue: Measure.fromJSON(json.measureValue, [...path, ".measureValue"]),
+			medicationValue: Medication.fromJSON(json.medicationValue, [...path, ".medicationValue"]),
+			timeSeries: TimeSeries.fromJSON(json.timeSeries, [...path, ".timeSeries"]),
+			compoundValue: expectArray(json.compoundValue, true, [...path, ".compoundValue"], (x0, p0) => DecryptedService.fromJSON(x0, p0)),
+			ratio: expectArray(json.ratio, true, [...path, ".ratio"], (x0, p0) => Measure.fromJSON(x0, p0)),
+			range: expectArray(json.range, true, [...path, ".range"], (x0, p0) => Measure.fromJSON(x0, p0)),
+		})
+	}
+
 }
 
 export class EncryptedContent {
@@ -131,6 +169,42 @@ export class EncryptedContent {
 		if ('compoundValue' in partial) this.compoundValue = partial.compoundValue;
 		if ('ratio' in partial) this.ratio = partial.ratio;
 		if ('range' in partial) this.range = partial.range;
+	}
+
+	toJSON(): any {
+		const res: { [k: string]: any } = {}
+		if (this.stringValue != undefined) res['stringValue'] = this.stringValue
+		if (this.numberValue != undefined) res['numberValue'] = this.numberValue
+		if (this.booleanValue != undefined) res['booleanValue'] = this.booleanValue
+		if (this.instantValue != undefined) res['instantValue'] = this.instantValue
+		if (this.fuzzyDateValue != undefined) res['fuzzyDateValue'] = this.fuzzyDateValue
+		if (this.binaryValue != undefined) res['binaryValue'] = encodeBase64(this.binaryValue)
+		if (this.documentId != undefined) res['documentId'] = this.documentId
+		if (this.measureValue != undefined) res['measureValue'] = this.measureValue.toJSON()
+		if (this.medicationValue != undefined) res['medicationValue'] = this.medicationValue.toJSON()
+		if (this.timeSeries != undefined) res['timeSeries'] = this.timeSeries.toJSON()
+		if (this.compoundValue != undefined) res['compoundValue'] = this.compoundValue.map((x0) => x0.toJSON() )
+		if (this.ratio != undefined) res['ratio'] = this.ratio.map((x0) => x0.toJSON() )
+		if (this.range != undefined) res['range'] = this.range.map((x0) => x0.toJSON() )
+		return res
+	}
+
+	static fromJSON(json: any, path: Array<string> = ['EncryptedContent']): EncryptedContent {
+		return new EncryptedContent({
+			stringValue: expectString(json.stringValue, true, [...path, ".stringValue"]),
+			numberValue: expectNumber(json.numberValue, true, false, [...path, ".numberValue"]),
+			booleanValue: expectBoolean(json.booleanValue, true, [...path, ".booleanValue"]),
+			instantValue: expectNumber(json.instantValue, true, true, [...path, ".instantValue"]),
+			fuzzyDateValue: expectNumber(json.fuzzyDateValue, true, true, [...path, ".fuzzyDateValue"]),
+			binaryValue: decodeBase64(expectString(json.binaryValue, true, [...path, ".binaryValue"]), [...path, ".binaryValue"]),
+			documentId: expectString(json.documentId, true, [...path, ".documentId"]),
+			measureValue: Measure.fromJSON(json.measureValue, [...path, ".measureValue"]),
+			medicationValue: Medication.fromJSON(json.medicationValue, [...path, ".medicationValue"]),
+			timeSeries: TimeSeries.fromJSON(json.timeSeries, [...path, ".timeSeries"]),
+			compoundValue: expectArray(json.compoundValue, true, [...path, ".compoundValue"], (x0, p0) => EncryptedService.fromJSON(x0, p0)),
+			ratio: expectArray(json.ratio, true, [...path, ".ratio"], (x0, p0) => Measure.fromJSON(x0, p0)),
+			range: expectArray(json.range, true, [...path, ".range"], (x0, p0) => Measure.fromJSON(x0, p0)),
+		})
 	}
 
 }

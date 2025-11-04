@@ -1,4 +1,5 @@
 // auto-generated file
+import {expectArray, expectBoolean, expectMap, expectNumber, expectString, expectStringEnum, requireEntry} from '../internal/JsonDecodeUtils.mjs';
 import {randomUuid} from '../utils/Id.mjs';
 import {CodeStub} from './base/CodeStub.mjs';
 import {HasEncryptionMetadata} from './base/HasEncryptionMetadata.mjs';
@@ -363,6 +364,192 @@ export class DecryptedInvoice {
 		if ('securityMetadata' in partial) this.securityMetadata = partial.securityMetadata;
 	}
 
+	toJSON(): any {
+		const res: { [k: string]: any } = {}
+		res['id'] = this.id
+		if (this.rev != undefined) res['rev'] = this.rev
+		res['identifier'] = this.identifier.map((x0) => x0.toJSON() )
+		if (this.created != undefined) res['created'] = this.created
+		if (this.modified != undefined) res['modified'] = this.modified
+		if (this.author != undefined) res['author'] = this.author
+		if (this.responsible != undefined) res['responsible'] = this.responsible
+		if (this.medicalLocationId != undefined) res['medicalLocationId'] = this.medicalLocationId
+		res['tags'] = this.tags.map((x0) => x0.toJSON() )
+		res['codes'] = this.codes.map((x0) => x0.toJSON() )
+		if (this.endOfLife != undefined) res['endOfLife'] = this.endOfLife
+		if (this.deletionDate != undefined) res['deletionDate'] = this.deletionDate
+		if (this.invoiceDate != undefined) res['invoiceDate'] = this.invoiceDate
+		if (this.sentDate != undefined) res['sentDate'] = this.sentDate
+		if (this.printedDate != undefined) res['printedDate'] = this.printedDate
+		res['invoicingCodes'] = this.invoicingCodes.map((x0) => x0.toJSON() )
+		res['receipts'] = Object.fromEntries(Object.entries(this.receipts).map(([k0, v0]) => [k0, v0]))
+		if (this.recipientType != undefined) res['recipientType'] = this.recipientType
+		if (this.recipientId != undefined) res['recipientId'] = this.recipientId
+		if (this.invoiceReference != undefined) res['invoiceReference'] = this.invoiceReference
+		if (this.decisionReference != undefined) res['decisionReference'] = this.decisionReference
+		if (this.thirdPartyReference != undefined) res['thirdPartyReference'] = this.thirdPartyReference
+		if (this.thirdPartyPaymentJustification != undefined) res['thirdPartyPaymentJustification'] = this.thirdPartyPaymentJustification
+		if (this.thirdPartyPaymentReason != undefined) res['thirdPartyPaymentReason'] = this.thirdPartyPaymentReason
+		if (this.reason != undefined) res['reason'] = this.reason
+		if (this.invoiceType != undefined) res['invoiceType'] = this.invoiceType
+		if (this.sentMediumType != undefined) res['sentMediumType'] = this.sentMediumType
+		if (this.interventionType != undefined) res['interventionType'] = this.interventionType
+		if (this.groupId != undefined) res['groupId'] = this.groupId
+		if (this.paymentType != undefined) res['paymentType'] = this.paymentType
+		if (this.paid != undefined) res['paid'] = this.paid
+		if (this.payments != undefined) res['payments'] = this.payments.map((x0) => x0.toJSON() )
+		if (this.gnotionNihii != undefined) res['gnotionNihii'] = this.gnotionNihii
+		if (this.gnotionSsin != undefined) res['gnotionSsin'] = this.gnotionSsin
+		if (this.gnotionLastName != undefined) res['gnotionLastName'] = this.gnotionLastName
+		if (this.gnotionFirstName != undefined) res['gnotionFirstName'] = this.gnotionFirstName
+		if (this.gnotionCdHcParty != undefined) res['gnotionCdHcParty'] = this.gnotionCdHcParty
+		if (this.invoicePeriod != undefined) res['invoicePeriod'] = this.invoicePeriod
+		if (this.careProviderType != undefined) res['careProviderType'] = this.careProviderType
+		if (this.internshipNihii != undefined) res['internshipNihii'] = this.internshipNihii
+		if (this.internshipSsin != undefined) res['internshipSsin'] = this.internshipSsin
+		if (this.internshipLastName != undefined) res['internshipLastName'] = this.internshipLastName
+		if (this.internshipFirstName != undefined) res['internshipFirstName'] = this.internshipFirstName
+		if (this.internshipCdHcParty != undefined) res['internshipCdHcParty'] = this.internshipCdHcParty
+		if (this.internshipCbe != undefined) res['internshipCbe'] = this.internshipCbe
+		if (this.supervisorNihii != undefined) res['supervisorNihii'] = this.supervisorNihii
+		if (this.supervisorSsin != undefined) res['supervisorSsin'] = this.supervisorSsin
+		if (this.supervisorLastName != undefined) res['supervisorLastName'] = this.supervisorLastName
+		if (this.supervisorFirstName != undefined) res['supervisorFirstName'] = this.supervisorFirstName
+		if (this.supervisorCdHcParty != undefined) res['supervisorCdHcParty'] = this.supervisorCdHcParty
+		if (this.supervisorCbe != undefined) res['supervisorCbe'] = this.supervisorCbe
+		if (this.error != undefined) res['error'] = this.error
+		if (this.encounterLocationName != undefined) res['encounterLocationName'] = this.encounterLocationName
+		if (this.encounterLocationNihii != undefined) res['encounterLocationNihii'] = this.encounterLocationNihii
+		if (this.encounterLocationNorm != undefined) res['encounterLocationNorm'] = this.encounterLocationNorm
+		if (this.longDelayJustification != undefined) res['longDelayJustification'] = this.longDelayJustification
+		if (this.correctiveInvoiceId != undefined) res['correctiveInvoiceId'] = this.correctiveInvoiceId
+		if (this.correctedInvoiceId != undefined) res['correctedInvoiceId'] = this.correctedInvoiceId
+		if (this.creditNote != undefined) res['creditNote'] = this.creditNote
+		if (this.creditNoteRelatedInvoiceId != undefined) res['creditNoteRelatedInvoiceId'] = this.creditNoteRelatedInvoiceId
+		if (this.idDocument != undefined) res['idDocument'] = this.idDocument.toJSON()
+		if (this.admissionDate != undefined) res['admissionDate'] = this.admissionDate
+		if (this.locationNihii != undefined) res['locationNihii'] = this.locationNihii
+		if (this.locationService != undefined) res['locationService'] = this.locationService
+		if (this.cancelReason != undefined) res['cancelReason'] = this.cancelReason
+		if (this.cancelDate != undefined) res['cancelDate'] = this.cancelDate
+		res['options'] = Object.fromEntries(Object.entries(this.options).map(([k0, v0]) => [k0, v0]))
+		res['secretForeignKeys'] = this.secretForeignKeys.map((x0) => x0 )
+		res['cryptedForeignKeys'] = Object.fromEntries(Object.entries(this.cryptedForeignKeys).map(([k0, v0]) => [k0, v0.map((x1) => x1.toJSON() )]))
+		res['delegations'] = Object.fromEntries(Object.entries(this.delegations).map(([k0, v0]) => [k0, v0.map((x1) => x1.toJSON() )]))
+		res['encryptionKeys'] = Object.fromEntries(Object.entries(this.encryptionKeys).map(([k0, v0]) => [k0, v0.map((x1) => x1.toJSON() )]))
+		if (this.encryptedSelf != undefined) res['encryptedSelf'] = this.encryptedSelf
+		if (this.securityMetadata != undefined) res['securityMetadata'] = this.securityMetadata.toJSON()
+		return res
+	}
+
+	static fromJSON(json: any, path: Array<string> = ['DecryptedInvoice']): DecryptedInvoice {
+		return new DecryptedInvoice({
+			id: expectString(requireEntry(json.id, 'id', path), false, [...path, ".id"]),
+			rev: expectString(json.rev, true, [...path, ".rev"]),
+			identifier: expectArray(json.identifier, false, [...path, ".identifier"], (x0, p0) => Identifier.fromJSON(x0, p0)),
+			created: expectNumber(json.created, true, true, [...path, ".created"]),
+			modified: expectNumber(json.modified, true, true, [...path, ".modified"]),
+			author: expectString(json.author, true, [...path, ".author"]),
+			responsible: expectString(json.responsible, true, [...path, ".responsible"]),
+			medicalLocationId: expectString(json.medicalLocationId, true, [...path, ".medicalLocationId"]),
+			tags: expectArray(json.tags, false, [...path, ".tags"], (x0, p0) => CodeStub.fromJSON(x0, p0)),
+			codes: expectArray(json.codes, false, [...path, ".codes"], (x0, p0) => CodeStub.fromJSON(x0, p0)),
+			endOfLife: expectNumber(json.endOfLife, true, true, [...path, ".endOfLife"]),
+			deletionDate: expectNumber(json.deletionDate, true, true, [...path, ".deletionDate"]),
+			invoiceDate: expectNumber(json.invoiceDate, true, true, [...path, ".invoiceDate"]),
+			sentDate: expectNumber(json.sentDate, true, true, [...path, ".sentDate"]),
+			printedDate: expectNumber(json.printedDate, true, true, [...path, ".printedDate"]),
+			invoicingCodes: expectArray(json.invoicingCodes, false, [...path, ".invoicingCodes"], (x0, p0) => DecryptedInvoicingCode.fromJSON(x0, p0)),
+			receipts: expectMap(
+				json.receipts,
+				false,
+				[...path, ".receipts"],
+				(k0, p0) => expectString(k0, false, p0),
+				(v0, p0) => expectString(v0, false, p0)
+			),
+			recipientType: expectString(json.recipientType, true, [...path, ".recipientType"]),
+			recipientId: expectString(json.recipientId, true, [...path, ".recipientId"]),
+			invoiceReference: expectString(json.invoiceReference, true, [...path, ".invoiceReference"]),
+			decisionReference: expectString(json.decisionReference, true, [...path, ".decisionReference"]),
+			thirdPartyReference: expectString(json.thirdPartyReference, true, [...path, ".thirdPartyReference"]),
+			thirdPartyPaymentJustification: expectString(json.thirdPartyPaymentJustification, true, [...path, ".thirdPartyPaymentJustification"]),
+			thirdPartyPaymentReason: expectString(json.thirdPartyPaymentReason, true, [...path, ".thirdPartyPaymentReason"]),
+			reason: expectString(json.reason, true, [...path, ".reason"]),
+			invoiceType: expectStringEnum(json.invoiceType, true, [...path, ".invoiceType"], InvoiceType, 'InvoiceType'),
+			sentMediumType: expectStringEnum(json.sentMediumType, true, [...path, ".sentMediumType"], MediumType, 'MediumType'),
+			interventionType: expectStringEnum(json.interventionType, true, [...path, ".interventionType"], InvoiceInterventionType, 'InvoiceInterventionType'),
+			groupId: expectString(json.groupId, true, [...path, ".groupId"]),
+			paymentType: expectStringEnum(json.paymentType, true, [...path, ".paymentType"], PaymentType, 'PaymentType'),
+			paid: expectNumber(json.paid, true, false, [...path, ".paid"]),
+			payments: expectArray(json.payments, true, [...path, ".payments"], (x0, p0) => Payment.fromJSON(x0, p0)),
+			gnotionNihii: expectString(json.gnotionNihii, true, [...path, ".gnotionNihii"]),
+			gnotionSsin: expectString(json.gnotionSsin, true, [...path, ".gnotionSsin"]),
+			gnotionLastName: expectString(json.gnotionLastName, true, [...path, ".gnotionLastName"]),
+			gnotionFirstName: expectString(json.gnotionFirstName, true, [...path, ".gnotionFirstName"]),
+			gnotionCdHcParty: expectString(json.gnotionCdHcParty, true, [...path, ".gnotionCdHcParty"]),
+			invoicePeriod: expectNumber(json.invoicePeriod, true, true, [...path, ".invoicePeriod"]),
+			careProviderType: expectString(json.careProviderType, true, [...path, ".careProviderType"]),
+			internshipNihii: expectString(json.internshipNihii, true, [...path, ".internshipNihii"]),
+			internshipSsin: expectString(json.internshipSsin, true, [...path, ".internshipSsin"]),
+			internshipLastName: expectString(json.internshipLastName, true, [...path, ".internshipLastName"]),
+			internshipFirstName: expectString(json.internshipFirstName, true, [...path, ".internshipFirstName"]),
+			internshipCdHcParty: expectString(json.internshipCdHcParty, true, [...path, ".internshipCdHcParty"]),
+			internshipCbe: expectString(json.internshipCbe, true, [...path, ".internshipCbe"]),
+			supervisorNihii: expectString(json.supervisorNihii, true, [...path, ".supervisorNihii"]),
+			supervisorSsin: expectString(json.supervisorSsin, true, [...path, ".supervisorSsin"]),
+			supervisorLastName: expectString(json.supervisorLastName, true, [...path, ".supervisorLastName"]),
+			supervisorFirstName: expectString(json.supervisorFirstName, true, [...path, ".supervisorFirstName"]),
+			supervisorCdHcParty: expectString(json.supervisorCdHcParty, true, [...path, ".supervisorCdHcParty"]),
+			supervisorCbe: expectString(json.supervisorCbe, true, [...path, ".supervisorCbe"]),
+			error: expectString(json.error, true, [...path, ".error"]),
+			encounterLocationName: expectString(json.encounterLocationName, true, [...path, ".encounterLocationName"]),
+			encounterLocationNihii: expectString(json.encounterLocationNihii, true, [...path, ".encounterLocationNihii"]),
+			encounterLocationNorm: expectNumber(json.encounterLocationNorm, true, true, [...path, ".encounterLocationNorm"]),
+			longDelayJustification: expectNumber(json.longDelayJustification, true, true, [...path, ".longDelayJustification"]),
+			correctiveInvoiceId: expectString(json.correctiveInvoiceId, true, [...path, ".correctiveInvoiceId"]),
+			correctedInvoiceId: expectString(json.correctedInvoiceId, true, [...path, ".correctedInvoiceId"]),
+			creditNote: expectBoolean(json.creditNote, true, [...path, ".creditNote"]),
+			creditNoteRelatedInvoiceId: expectString(json.creditNoteRelatedInvoiceId, true, [...path, ".creditNoteRelatedInvoiceId"]),
+			idDocument: IdentityDocumentReader.fromJSON(json.idDocument, [...path, ".idDocument"]),
+			admissionDate: expectNumber(json.admissionDate, true, true, [...path, ".admissionDate"]),
+			locationNihii: expectString(json.locationNihii, true, [...path, ".locationNihii"]),
+			locationService: expectNumber(json.locationService, true, true, [...path, ".locationService"]),
+			cancelReason: expectString(json.cancelReason, true, [...path, ".cancelReason"]),
+			cancelDate: expectNumber(json.cancelDate, true, true, [...path, ".cancelDate"]),
+			options: expectMap(
+				json.options,
+				false,
+				[...path, ".options"],
+				(k0, p0) => expectString(k0, false, p0),
+				(v0, p0) => expectString(v0, false, p0)
+			),
+			secretForeignKeys: expectArray(json.secretForeignKeys, false, [...path, ".secretForeignKeys"], (x0, p0) => expectString(x0, false, p0)),
+			cryptedForeignKeys: expectMap(
+				json.cryptedForeignKeys,
+				false,
+				[...path, ".cryptedForeignKeys"],
+				(k0, p0) => expectString(k0, false, p0),
+				(v0, p0) => expectArray(v0, false, p0, (x1, p1) => Delegation.fromJSON(x1, p1))
+			),
+			delegations: expectMap(
+				json.delegations,
+				false,
+				[...path, ".delegations"],
+				(k0, p0) => expectString(k0, false, p0),
+				(v0, p0) => expectArray(v0, false, p0, (x1, p1) => Delegation.fromJSON(x1, p1))
+			),
+			encryptionKeys: expectMap(
+				json.encryptionKeys,
+				false,
+				[...path, ".encryptionKeys"],
+				(k0, p0) => expectString(k0, false, p0),
+				(v0, p0) => expectArray(v0, false, p0, (x1, p1) => Delegation.fromJSON(x1, p1))
+			),
+			encryptedSelf: expectString(json.encryptedSelf, false, [...path, ".encryptedSelf"]),
+			securityMetadata: SecurityMetadata.fromJSON(json.securityMetadata, [...path, ".securityMetadata"]),
+		})
+	}
+
 }
 
 export class EncryptedInvoice {
@@ -590,6 +777,192 @@ export class EncryptedInvoice {
 		if ('encryptionKeys' in partial && partial.encryptionKeys !== undefined) this.encryptionKeys = partial.encryptionKeys;
 		if ('encryptedSelf' in partial) this.encryptedSelf = partial.encryptedSelf;
 		if ('securityMetadata' in partial) this.securityMetadata = partial.securityMetadata;
+	}
+
+	toJSON(): any {
+		const res: { [k: string]: any } = {}
+		res['id'] = this.id
+		if (this.rev != undefined) res['rev'] = this.rev
+		res['identifier'] = this.identifier.map((x0) => x0.toJSON() )
+		if (this.created != undefined) res['created'] = this.created
+		if (this.modified != undefined) res['modified'] = this.modified
+		if (this.author != undefined) res['author'] = this.author
+		if (this.responsible != undefined) res['responsible'] = this.responsible
+		if (this.medicalLocationId != undefined) res['medicalLocationId'] = this.medicalLocationId
+		res['tags'] = this.tags.map((x0) => x0.toJSON() )
+		res['codes'] = this.codes.map((x0) => x0.toJSON() )
+		if (this.endOfLife != undefined) res['endOfLife'] = this.endOfLife
+		if (this.deletionDate != undefined) res['deletionDate'] = this.deletionDate
+		if (this.invoiceDate != undefined) res['invoiceDate'] = this.invoiceDate
+		if (this.sentDate != undefined) res['sentDate'] = this.sentDate
+		if (this.printedDate != undefined) res['printedDate'] = this.printedDate
+		res['invoicingCodes'] = this.invoicingCodes.map((x0) => x0.toJSON() )
+		res['receipts'] = Object.fromEntries(Object.entries(this.receipts).map(([k0, v0]) => [k0, v0]))
+		if (this.recipientType != undefined) res['recipientType'] = this.recipientType
+		if (this.recipientId != undefined) res['recipientId'] = this.recipientId
+		if (this.invoiceReference != undefined) res['invoiceReference'] = this.invoiceReference
+		if (this.decisionReference != undefined) res['decisionReference'] = this.decisionReference
+		if (this.thirdPartyReference != undefined) res['thirdPartyReference'] = this.thirdPartyReference
+		if (this.thirdPartyPaymentJustification != undefined) res['thirdPartyPaymentJustification'] = this.thirdPartyPaymentJustification
+		if (this.thirdPartyPaymentReason != undefined) res['thirdPartyPaymentReason'] = this.thirdPartyPaymentReason
+		if (this.reason != undefined) res['reason'] = this.reason
+		if (this.invoiceType != undefined) res['invoiceType'] = this.invoiceType
+		if (this.sentMediumType != undefined) res['sentMediumType'] = this.sentMediumType
+		if (this.interventionType != undefined) res['interventionType'] = this.interventionType
+		if (this.groupId != undefined) res['groupId'] = this.groupId
+		if (this.paymentType != undefined) res['paymentType'] = this.paymentType
+		if (this.paid != undefined) res['paid'] = this.paid
+		if (this.payments != undefined) res['payments'] = this.payments.map((x0) => x0.toJSON() )
+		if (this.gnotionNihii != undefined) res['gnotionNihii'] = this.gnotionNihii
+		if (this.gnotionSsin != undefined) res['gnotionSsin'] = this.gnotionSsin
+		if (this.gnotionLastName != undefined) res['gnotionLastName'] = this.gnotionLastName
+		if (this.gnotionFirstName != undefined) res['gnotionFirstName'] = this.gnotionFirstName
+		if (this.gnotionCdHcParty != undefined) res['gnotionCdHcParty'] = this.gnotionCdHcParty
+		if (this.invoicePeriod != undefined) res['invoicePeriod'] = this.invoicePeriod
+		if (this.careProviderType != undefined) res['careProviderType'] = this.careProviderType
+		if (this.internshipNihii != undefined) res['internshipNihii'] = this.internshipNihii
+		if (this.internshipSsin != undefined) res['internshipSsin'] = this.internshipSsin
+		if (this.internshipLastName != undefined) res['internshipLastName'] = this.internshipLastName
+		if (this.internshipFirstName != undefined) res['internshipFirstName'] = this.internshipFirstName
+		if (this.internshipCdHcParty != undefined) res['internshipCdHcParty'] = this.internshipCdHcParty
+		if (this.internshipCbe != undefined) res['internshipCbe'] = this.internshipCbe
+		if (this.supervisorNihii != undefined) res['supervisorNihii'] = this.supervisorNihii
+		if (this.supervisorSsin != undefined) res['supervisorSsin'] = this.supervisorSsin
+		if (this.supervisorLastName != undefined) res['supervisorLastName'] = this.supervisorLastName
+		if (this.supervisorFirstName != undefined) res['supervisorFirstName'] = this.supervisorFirstName
+		if (this.supervisorCdHcParty != undefined) res['supervisorCdHcParty'] = this.supervisorCdHcParty
+		if (this.supervisorCbe != undefined) res['supervisorCbe'] = this.supervisorCbe
+		if (this.error != undefined) res['error'] = this.error
+		if (this.encounterLocationName != undefined) res['encounterLocationName'] = this.encounterLocationName
+		if (this.encounterLocationNihii != undefined) res['encounterLocationNihii'] = this.encounterLocationNihii
+		if (this.encounterLocationNorm != undefined) res['encounterLocationNorm'] = this.encounterLocationNorm
+		if (this.longDelayJustification != undefined) res['longDelayJustification'] = this.longDelayJustification
+		if (this.correctiveInvoiceId != undefined) res['correctiveInvoiceId'] = this.correctiveInvoiceId
+		if (this.correctedInvoiceId != undefined) res['correctedInvoiceId'] = this.correctedInvoiceId
+		if (this.creditNote != undefined) res['creditNote'] = this.creditNote
+		if (this.creditNoteRelatedInvoiceId != undefined) res['creditNoteRelatedInvoiceId'] = this.creditNoteRelatedInvoiceId
+		if (this.idDocument != undefined) res['idDocument'] = this.idDocument.toJSON()
+		if (this.admissionDate != undefined) res['admissionDate'] = this.admissionDate
+		if (this.locationNihii != undefined) res['locationNihii'] = this.locationNihii
+		if (this.locationService != undefined) res['locationService'] = this.locationService
+		if (this.cancelReason != undefined) res['cancelReason'] = this.cancelReason
+		if (this.cancelDate != undefined) res['cancelDate'] = this.cancelDate
+		res['options'] = Object.fromEntries(Object.entries(this.options).map(([k0, v0]) => [k0, v0]))
+		res['secretForeignKeys'] = this.secretForeignKeys.map((x0) => x0 )
+		res['cryptedForeignKeys'] = Object.fromEntries(Object.entries(this.cryptedForeignKeys).map(([k0, v0]) => [k0, v0.map((x1) => x1.toJSON() )]))
+		res['delegations'] = Object.fromEntries(Object.entries(this.delegations).map(([k0, v0]) => [k0, v0.map((x1) => x1.toJSON() )]))
+		res['encryptionKeys'] = Object.fromEntries(Object.entries(this.encryptionKeys).map(([k0, v0]) => [k0, v0.map((x1) => x1.toJSON() )]))
+		if (this.encryptedSelf != undefined) res['encryptedSelf'] = this.encryptedSelf
+		if (this.securityMetadata != undefined) res['securityMetadata'] = this.securityMetadata.toJSON()
+		return res
+	}
+
+	static fromJSON(json: any, path: Array<string> = ['EncryptedInvoice']): EncryptedInvoice {
+		return new EncryptedInvoice({
+			id: expectString(requireEntry(json.id, 'id', path), false, [...path, ".id"]),
+			rev: expectString(json.rev, true, [...path, ".rev"]),
+			identifier: expectArray(json.identifier, false, [...path, ".identifier"], (x0, p0) => Identifier.fromJSON(x0, p0)),
+			created: expectNumber(json.created, true, true, [...path, ".created"]),
+			modified: expectNumber(json.modified, true, true, [...path, ".modified"]),
+			author: expectString(json.author, true, [...path, ".author"]),
+			responsible: expectString(json.responsible, true, [...path, ".responsible"]),
+			medicalLocationId: expectString(json.medicalLocationId, true, [...path, ".medicalLocationId"]),
+			tags: expectArray(json.tags, false, [...path, ".tags"], (x0, p0) => CodeStub.fromJSON(x0, p0)),
+			codes: expectArray(json.codes, false, [...path, ".codes"], (x0, p0) => CodeStub.fromJSON(x0, p0)),
+			endOfLife: expectNumber(json.endOfLife, true, true, [...path, ".endOfLife"]),
+			deletionDate: expectNumber(json.deletionDate, true, true, [...path, ".deletionDate"]),
+			invoiceDate: expectNumber(json.invoiceDate, true, true, [...path, ".invoiceDate"]),
+			sentDate: expectNumber(json.sentDate, true, true, [...path, ".sentDate"]),
+			printedDate: expectNumber(json.printedDate, true, true, [...path, ".printedDate"]),
+			invoicingCodes: expectArray(json.invoicingCodes, false, [...path, ".invoicingCodes"], (x0, p0) => EncryptedInvoicingCode.fromJSON(x0, p0)),
+			receipts: expectMap(
+				json.receipts,
+				false,
+				[...path, ".receipts"],
+				(k0, p0) => expectString(k0, false, p0),
+				(v0, p0) => expectString(v0, false, p0)
+			),
+			recipientType: expectString(json.recipientType, true, [...path, ".recipientType"]),
+			recipientId: expectString(json.recipientId, true, [...path, ".recipientId"]),
+			invoiceReference: expectString(json.invoiceReference, true, [...path, ".invoiceReference"]),
+			decisionReference: expectString(json.decisionReference, true, [...path, ".decisionReference"]),
+			thirdPartyReference: expectString(json.thirdPartyReference, true, [...path, ".thirdPartyReference"]),
+			thirdPartyPaymentJustification: expectString(json.thirdPartyPaymentJustification, true, [...path, ".thirdPartyPaymentJustification"]),
+			thirdPartyPaymentReason: expectString(json.thirdPartyPaymentReason, true, [...path, ".thirdPartyPaymentReason"]),
+			reason: expectString(json.reason, true, [...path, ".reason"]),
+			invoiceType: expectStringEnum(json.invoiceType, true, [...path, ".invoiceType"], InvoiceType, 'InvoiceType'),
+			sentMediumType: expectStringEnum(json.sentMediumType, true, [...path, ".sentMediumType"], MediumType, 'MediumType'),
+			interventionType: expectStringEnum(json.interventionType, true, [...path, ".interventionType"], InvoiceInterventionType, 'InvoiceInterventionType'),
+			groupId: expectString(json.groupId, true, [...path, ".groupId"]),
+			paymentType: expectStringEnum(json.paymentType, true, [...path, ".paymentType"], PaymentType, 'PaymentType'),
+			paid: expectNumber(json.paid, true, false, [...path, ".paid"]),
+			payments: expectArray(json.payments, true, [...path, ".payments"], (x0, p0) => Payment.fromJSON(x0, p0)),
+			gnotionNihii: expectString(json.gnotionNihii, true, [...path, ".gnotionNihii"]),
+			gnotionSsin: expectString(json.gnotionSsin, true, [...path, ".gnotionSsin"]),
+			gnotionLastName: expectString(json.gnotionLastName, true, [...path, ".gnotionLastName"]),
+			gnotionFirstName: expectString(json.gnotionFirstName, true, [...path, ".gnotionFirstName"]),
+			gnotionCdHcParty: expectString(json.gnotionCdHcParty, true, [...path, ".gnotionCdHcParty"]),
+			invoicePeriod: expectNumber(json.invoicePeriod, true, true, [...path, ".invoicePeriod"]),
+			careProviderType: expectString(json.careProviderType, true, [...path, ".careProviderType"]),
+			internshipNihii: expectString(json.internshipNihii, true, [...path, ".internshipNihii"]),
+			internshipSsin: expectString(json.internshipSsin, true, [...path, ".internshipSsin"]),
+			internshipLastName: expectString(json.internshipLastName, true, [...path, ".internshipLastName"]),
+			internshipFirstName: expectString(json.internshipFirstName, true, [...path, ".internshipFirstName"]),
+			internshipCdHcParty: expectString(json.internshipCdHcParty, true, [...path, ".internshipCdHcParty"]),
+			internshipCbe: expectString(json.internshipCbe, true, [...path, ".internshipCbe"]),
+			supervisorNihii: expectString(json.supervisorNihii, true, [...path, ".supervisorNihii"]),
+			supervisorSsin: expectString(json.supervisorSsin, true, [...path, ".supervisorSsin"]),
+			supervisorLastName: expectString(json.supervisorLastName, true, [...path, ".supervisorLastName"]),
+			supervisorFirstName: expectString(json.supervisorFirstName, true, [...path, ".supervisorFirstName"]),
+			supervisorCdHcParty: expectString(json.supervisorCdHcParty, true, [...path, ".supervisorCdHcParty"]),
+			supervisorCbe: expectString(json.supervisorCbe, true, [...path, ".supervisorCbe"]),
+			error: expectString(json.error, true, [...path, ".error"]),
+			encounterLocationName: expectString(json.encounterLocationName, true, [...path, ".encounterLocationName"]),
+			encounterLocationNihii: expectString(json.encounterLocationNihii, true, [...path, ".encounterLocationNihii"]),
+			encounterLocationNorm: expectNumber(json.encounterLocationNorm, true, true, [...path, ".encounterLocationNorm"]),
+			longDelayJustification: expectNumber(json.longDelayJustification, true, true, [...path, ".longDelayJustification"]),
+			correctiveInvoiceId: expectString(json.correctiveInvoiceId, true, [...path, ".correctiveInvoiceId"]),
+			correctedInvoiceId: expectString(json.correctedInvoiceId, true, [...path, ".correctedInvoiceId"]),
+			creditNote: expectBoolean(json.creditNote, true, [...path, ".creditNote"]),
+			creditNoteRelatedInvoiceId: expectString(json.creditNoteRelatedInvoiceId, true, [...path, ".creditNoteRelatedInvoiceId"]),
+			idDocument: IdentityDocumentReader.fromJSON(json.idDocument, [...path, ".idDocument"]),
+			admissionDate: expectNumber(json.admissionDate, true, true, [...path, ".admissionDate"]),
+			locationNihii: expectString(json.locationNihii, true, [...path, ".locationNihii"]),
+			locationService: expectNumber(json.locationService, true, true, [...path, ".locationService"]),
+			cancelReason: expectString(json.cancelReason, true, [...path, ".cancelReason"]),
+			cancelDate: expectNumber(json.cancelDate, true, true, [...path, ".cancelDate"]),
+			options: expectMap(
+				json.options,
+				false,
+				[...path, ".options"],
+				(k0, p0) => expectString(k0, false, p0),
+				(v0, p0) => expectString(v0, false, p0)
+			),
+			secretForeignKeys: expectArray(json.secretForeignKeys, false, [...path, ".secretForeignKeys"], (x0, p0) => expectString(x0, false, p0)),
+			cryptedForeignKeys: expectMap(
+				json.cryptedForeignKeys,
+				false,
+				[...path, ".cryptedForeignKeys"],
+				(k0, p0) => expectString(k0, false, p0),
+				(v0, p0) => expectArray(v0, false, p0, (x1, p1) => Delegation.fromJSON(x1, p1))
+			),
+			delegations: expectMap(
+				json.delegations,
+				false,
+				[...path, ".delegations"],
+				(k0, p0) => expectString(k0, false, p0),
+				(v0, p0) => expectArray(v0, false, p0, (x1, p1) => Delegation.fromJSON(x1, p1))
+			),
+			encryptionKeys: expectMap(
+				json.encryptionKeys,
+				false,
+				[...path, ".encryptionKeys"],
+				(k0, p0) => expectString(k0, false, p0),
+				(v0, p0) => expectArray(v0, false, p0, (x1, p1) => Delegation.fromJSON(x1, p1))
+			),
+			encryptedSelf: expectString(json.encryptedSelf, false, [...path, ".encryptedSelf"]),
+			securityMetadata: SecurityMetadata.fromJSON(json.securityMetadata, [...path, ".securityMetadata"]),
+		})
 	}
 
 }

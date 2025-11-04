@@ -1,4 +1,5 @@
 // auto-generated file
+import {expectArray, expectMap, expectNumber, expectString, expectStringEnum, requireEntry} from '../../internal/JsonDecodeUtils.mjs';
 import {randomUuid} from '../../utils/Id.mjs';
 import {CodeStub} from '../base/CodeStub.mjs';
 import {ICureDocument} from '../base/ICureDocument.mjs';
@@ -186,6 +187,130 @@ export class DecryptedService {
 		if ('securityMetadata' in partial) this.securityMetadata = partial.securityMetadata;
 	}
 
+	toJSON(): any {
+		const res: { [k: string]: any } = {}
+		res['id'] = this.id
+		if (this.transactionId != undefined) res['transactionId'] = this.transactionId
+		res['identifier'] = this.identifier.map((x0) => x0.toJSON() )
+		if (this.contactId != undefined) res['contactId'] = this.contactId
+		if (this.subContactIds != undefined) res['subContactIds'] = this.subContactIds.map((x0) => x0 )
+		if (this.plansOfActionIds != undefined) res['plansOfActionIds'] = this.plansOfActionIds.map((x0) => x0 )
+		if (this.healthElementsIds != undefined) res['healthElementsIds'] = this.healthElementsIds.map((x0) => x0 )
+		if (this.formIds != undefined) res['formIds'] = this.formIds.map((x0) => x0 )
+		if (this.secretForeignKeys != undefined) res['secretForeignKeys'] = this.secretForeignKeys.map((x0) => x0 )
+		res['cryptedForeignKeys'] = Object.fromEntries(Object.entries(this.cryptedForeignKeys).map(([k0, v0]) => [k0, v0.map((x1) => x1.toJSON() )]))
+		res['delegations'] = Object.fromEntries(Object.entries(this.delegations).map(([k0, v0]) => [k0, v0.map((x1) => x1.toJSON() )]))
+		res['encryptionKeys'] = Object.fromEntries(Object.entries(this.encryptionKeys).map(([k0, v0]) => [k0, v0.map((x1) => x1.toJSON() )]))
+		if (this.label != undefined) res['label'] = this.label
+		if (this.index != undefined) res['index'] = this.index
+		res['content'] = Object.fromEntries(Object.entries(this.content).map(([k0, v0]) => [k0, v0.toJSON()]))
+		if (this.encryptedContent != undefined) res['encryptedContent'] = this.encryptedContent
+		res['textIndexes'] = Object.fromEntries(Object.entries(this.textIndexes).map(([k0, v0]) => [k0, v0]))
+		if (this.valueDate != undefined) res['valueDate'] = this.valueDate
+		if (this.openingDate != undefined) res['openingDate'] = this.openingDate
+		if (this.closingDate != undefined) res['closingDate'] = this.closingDate
+		if (this.formId != undefined) res['formId'] = this.formId
+		if (this.created != undefined) res['created'] = this.created
+		if (this.modified != undefined) res['modified'] = this.modified
+		if (this.endOfLife != undefined) res['endOfLife'] = this.endOfLife
+		if (this.author != undefined) res['author'] = this.author
+		if (this.responsible != undefined) res['responsible'] = this.responsible
+		if (this.medicalLocationId != undefined) res['medicalLocationId'] = this.medicalLocationId
+		if (this.comment != undefined) res['comment'] = this.comment
+		if (this.status != undefined) res['status'] = this.status
+		res['invoicingCodes'] = this.invoicingCodes.map((x0) => x0 )
+		res['notes'] = this.notes.map((x0) => x0.toJSON() )
+		res['qualifiedLinks'] = Object.fromEntries(Object.entries(this.qualifiedLinks).map(([k0, v0]) => [k0, Object.fromEntries(Object.entries(v0).map(([k1, v1]) => [k1, v1]))]))
+		res['codes'] = this.codes.map((x0) => x0.toJSON() )
+		res['tags'] = this.tags.map((x0) => x0.toJSON() )
+		if (this.encryptedSelf != undefined) res['encryptedSelf'] = this.encryptedSelf
+		if (this.securityMetadata != undefined) res['securityMetadata'] = this.securityMetadata.toJSON()
+		return res
+	}
+
+	static fromJSON(json: any, path: Array<string> = ['DecryptedService']): DecryptedService {
+		return new DecryptedService({
+			id: expectString(requireEntry(json.id, 'id', path), false, [...path, ".id"]),
+			transactionId: expectString(json.transactionId, true, [...path, ".transactionId"]),
+			identifier: expectArray(json.identifier, false, [...path, ".identifier"], (x0, p0) => Identifier.fromJSON(x0, p0)),
+			contactId: expectString(json.contactId, true, [...path, ".contactId"]),
+			subContactIds: expectArray(json.subContactIds, true, [...path, ".subContactIds"], (x0, p0) => expectString(x0, false, p0)),
+			plansOfActionIds: expectArray(json.plansOfActionIds, true, [...path, ".plansOfActionIds"], (x0, p0) => expectString(x0, false, p0)),
+			healthElementsIds: expectArray(json.healthElementsIds, true, [...path, ".healthElementsIds"], (x0, p0) => expectString(x0, false, p0)),
+			formIds: expectArray(json.formIds, true, [...path, ".formIds"], (x0, p0) => expectString(x0, false, p0)),
+			secretForeignKeys: expectArray(json.secretForeignKeys, true, [...path, ".secretForeignKeys"], (x0, p0) => expectString(x0, false, p0)),
+			cryptedForeignKeys: expectMap(
+				json.cryptedForeignKeys,
+				false,
+				[...path, ".cryptedForeignKeys"],
+				(k0, p0) => expectString(k0, false, p0),
+				(v0, p0) => expectArray(v0, false, p0, (x1, p1) => Delegation.fromJSON(x1, p1))
+			),
+			delegations: expectMap(
+				json.delegations,
+				false,
+				[...path, ".delegations"],
+				(k0, p0) => expectString(k0, false, p0),
+				(v0, p0) => expectArray(v0, false, p0, (x1, p1) => Delegation.fromJSON(x1, p1))
+			),
+			encryptionKeys: expectMap(
+				json.encryptionKeys,
+				false,
+				[...path, ".encryptionKeys"],
+				(k0, p0) => expectString(k0, false, p0),
+				(v0, p0) => expectArray(v0, false, p0, (x1, p1) => Delegation.fromJSON(x1, p1))
+			),
+			label: expectString(json.label, true, [...path, ".label"]),
+			index: expectNumber(json.index, true, true, [...path, ".index"]),
+			content: expectMap(
+				json.content,
+				false,
+				[...path, ".content"],
+				(k0, p0) => expectString(k0, false, p0),
+				(v0, p0) => DecryptedContent.fromJSON(v0, p0)
+			),
+			encryptedContent: expectString(json.encryptedContent, true, [...path, ".encryptedContent"]),
+			textIndexes: expectMap(
+				json.textIndexes,
+				false,
+				[...path, ".textIndexes"],
+				(k0, p0) => expectString(k0, false, p0),
+				(v0, p0) => expectString(v0, false, p0)
+			),
+			valueDate: expectNumber(json.valueDate, true, true, [...path, ".valueDate"]),
+			openingDate: expectNumber(json.openingDate, true, true, [...path, ".openingDate"]),
+			closingDate: expectNumber(json.closingDate, true, true, [...path, ".closingDate"]),
+			formId: expectString(json.formId, true, [...path, ".formId"]),
+			created: expectNumber(json.created, true, true, [...path, ".created"]),
+			modified: expectNumber(json.modified, true, true, [...path, ".modified"]),
+			endOfLife: expectNumber(json.endOfLife, true, true, [...path, ".endOfLife"]),
+			author: expectString(json.author, true, [...path, ".author"]),
+			responsible: expectString(json.responsible, true, [...path, ".responsible"]),
+			medicalLocationId: expectString(json.medicalLocationId, true, [...path, ".medicalLocationId"]),
+			comment: expectString(json.comment, true, [...path, ".comment"]),
+			status: expectNumber(json.status, true, true, [...path, ".status"]),
+			invoicingCodes: expectArray(json.invoicingCodes, false, [...path, ".invoicingCodes"], (x0, p0) => expectString(x0, false, p0)),
+			notes: expectArray(json.notes, false, [...path, ".notes"], (x0, p0) => Annotation.fromJSON(x0, p0)),
+			qualifiedLinks: expectMap(
+				json.qualifiedLinks,
+				false,
+				[...path, ".qualifiedLinks"],
+				(k0, p0) => expectStringEnum(k0, false, p0, LinkQualification, 'LinkQualification'),
+				(v0, p0) => expectMap(
+					v0,
+					false,
+					p0,
+					(k1, p1) => expectString(k1, false, p1),
+					(v1, p1) => expectString(v1, false, p1)
+				)
+			),
+			codes: expectArray(json.codes, false, [...path, ".codes"], (x0, p0) => CodeStub.fromJSON(x0, p0)),
+			tags: expectArray(json.tags, false, [...path, ".tags"], (x0, p0) => CodeStub.fromJSON(x0, p0)),
+			encryptedSelf: expectString(json.encryptedSelf, false, [...path, ".encryptedSelf"]),
+			securityMetadata: SecurityMetadata.fromJSON(json.securityMetadata, [...path, ".securityMetadata"]),
+		})
+	}
+
 }
 
 export class EncryptedService {
@@ -302,6 +427,130 @@ export class EncryptedService {
 		if ('tags' in partial && partial.tags !== undefined) this.tags = partial.tags;
 		if ('encryptedSelf' in partial) this.encryptedSelf = partial.encryptedSelf;
 		if ('securityMetadata' in partial) this.securityMetadata = partial.securityMetadata;
+	}
+
+	toJSON(): any {
+		const res: { [k: string]: any } = {}
+		res['id'] = this.id
+		if (this.transactionId != undefined) res['transactionId'] = this.transactionId
+		res['identifier'] = this.identifier.map((x0) => x0.toJSON() )
+		if (this.contactId != undefined) res['contactId'] = this.contactId
+		if (this.subContactIds != undefined) res['subContactIds'] = this.subContactIds.map((x0) => x0 )
+		if (this.plansOfActionIds != undefined) res['plansOfActionIds'] = this.plansOfActionIds.map((x0) => x0 )
+		if (this.healthElementsIds != undefined) res['healthElementsIds'] = this.healthElementsIds.map((x0) => x0 )
+		if (this.formIds != undefined) res['formIds'] = this.formIds.map((x0) => x0 )
+		if (this.secretForeignKeys != undefined) res['secretForeignKeys'] = this.secretForeignKeys.map((x0) => x0 )
+		res['cryptedForeignKeys'] = Object.fromEntries(Object.entries(this.cryptedForeignKeys).map(([k0, v0]) => [k0, v0.map((x1) => x1.toJSON() )]))
+		res['delegations'] = Object.fromEntries(Object.entries(this.delegations).map(([k0, v0]) => [k0, v0.map((x1) => x1.toJSON() )]))
+		res['encryptionKeys'] = Object.fromEntries(Object.entries(this.encryptionKeys).map(([k0, v0]) => [k0, v0.map((x1) => x1.toJSON() )]))
+		if (this.label != undefined) res['label'] = this.label
+		if (this.index != undefined) res['index'] = this.index
+		res['content'] = Object.fromEntries(Object.entries(this.content).map(([k0, v0]) => [k0, v0.toJSON()]))
+		if (this.encryptedContent != undefined) res['encryptedContent'] = this.encryptedContent
+		res['textIndexes'] = Object.fromEntries(Object.entries(this.textIndexes).map(([k0, v0]) => [k0, v0]))
+		if (this.valueDate != undefined) res['valueDate'] = this.valueDate
+		if (this.openingDate != undefined) res['openingDate'] = this.openingDate
+		if (this.closingDate != undefined) res['closingDate'] = this.closingDate
+		if (this.formId != undefined) res['formId'] = this.formId
+		if (this.created != undefined) res['created'] = this.created
+		if (this.modified != undefined) res['modified'] = this.modified
+		if (this.endOfLife != undefined) res['endOfLife'] = this.endOfLife
+		if (this.author != undefined) res['author'] = this.author
+		if (this.responsible != undefined) res['responsible'] = this.responsible
+		if (this.medicalLocationId != undefined) res['medicalLocationId'] = this.medicalLocationId
+		if (this.comment != undefined) res['comment'] = this.comment
+		if (this.status != undefined) res['status'] = this.status
+		res['invoicingCodes'] = this.invoicingCodes.map((x0) => x0 )
+		res['notes'] = this.notes.map((x0) => x0.toJSON() )
+		res['qualifiedLinks'] = Object.fromEntries(Object.entries(this.qualifiedLinks).map(([k0, v0]) => [k0, Object.fromEntries(Object.entries(v0).map(([k1, v1]) => [k1, v1]))]))
+		res['codes'] = this.codes.map((x0) => x0.toJSON() )
+		res['tags'] = this.tags.map((x0) => x0.toJSON() )
+		if (this.encryptedSelf != undefined) res['encryptedSelf'] = this.encryptedSelf
+		if (this.securityMetadata != undefined) res['securityMetadata'] = this.securityMetadata.toJSON()
+		return res
+	}
+
+	static fromJSON(json: any, path: Array<string> = ['EncryptedService']): EncryptedService {
+		return new EncryptedService({
+			id: expectString(requireEntry(json.id, 'id', path), false, [...path, ".id"]),
+			transactionId: expectString(json.transactionId, true, [...path, ".transactionId"]),
+			identifier: expectArray(json.identifier, false, [...path, ".identifier"], (x0, p0) => Identifier.fromJSON(x0, p0)),
+			contactId: expectString(json.contactId, true, [...path, ".contactId"]),
+			subContactIds: expectArray(json.subContactIds, true, [...path, ".subContactIds"], (x0, p0) => expectString(x0, false, p0)),
+			plansOfActionIds: expectArray(json.plansOfActionIds, true, [...path, ".plansOfActionIds"], (x0, p0) => expectString(x0, false, p0)),
+			healthElementsIds: expectArray(json.healthElementsIds, true, [...path, ".healthElementsIds"], (x0, p0) => expectString(x0, false, p0)),
+			formIds: expectArray(json.formIds, true, [...path, ".formIds"], (x0, p0) => expectString(x0, false, p0)),
+			secretForeignKeys: expectArray(json.secretForeignKeys, true, [...path, ".secretForeignKeys"], (x0, p0) => expectString(x0, false, p0)),
+			cryptedForeignKeys: expectMap(
+				json.cryptedForeignKeys,
+				false,
+				[...path, ".cryptedForeignKeys"],
+				(k0, p0) => expectString(k0, false, p0),
+				(v0, p0) => expectArray(v0, false, p0, (x1, p1) => Delegation.fromJSON(x1, p1))
+			),
+			delegations: expectMap(
+				json.delegations,
+				false,
+				[...path, ".delegations"],
+				(k0, p0) => expectString(k0, false, p0),
+				(v0, p0) => expectArray(v0, false, p0, (x1, p1) => Delegation.fromJSON(x1, p1))
+			),
+			encryptionKeys: expectMap(
+				json.encryptionKeys,
+				false,
+				[...path, ".encryptionKeys"],
+				(k0, p0) => expectString(k0, false, p0),
+				(v0, p0) => expectArray(v0, false, p0, (x1, p1) => Delegation.fromJSON(x1, p1))
+			),
+			label: expectString(json.label, true, [...path, ".label"]),
+			index: expectNumber(json.index, true, true, [...path, ".index"]),
+			content: expectMap(
+				json.content,
+				false,
+				[...path, ".content"],
+				(k0, p0) => expectString(k0, false, p0),
+				(v0, p0) => EncryptedContent.fromJSON(v0, p0)
+			),
+			encryptedContent: expectString(json.encryptedContent, true, [...path, ".encryptedContent"]),
+			textIndexes: expectMap(
+				json.textIndexes,
+				false,
+				[...path, ".textIndexes"],
+				(k0, p0) => expectString(k0, false, p0),
+				(v0, p0) => expectString(v0, false, p0)
+			),
+			valueDate: expectNumber(json.valueDate, true, true, [...path, ".valueDate"]),
+			openingDate: expectNumber(json.openingDate, true, true, [...path, ".openingDate"]),
+			closingDate: expectNumber(json.closingDate, true, true, [...path, ".closingDate"]),
+			formId: expectString(json.formId, true, [...path, ".formId"]),
+			created: expectNumber(json.created, true, true, [...path, ".created"]),
+			modified: expectNumber(json.modified, true, true, [...path, ".modified"]),
+			endOfLife: expectNumber(json.endOfLife, true, true, [...path, ".endOfLife"]),
+			author: expectString(json.author, true, [...path, ".author"]),
+			responsible: expectString(json.responsible, true, [...path, ".responsible"]),
+			medicalLocationId: expectString(json.medicalLocationId, true, [...path, ".medicalLocationId"]),
+			comment: expectString(json.comment, true, [...path, ".comment"]),
+			status: expectNumber(json.status, true, true, [...path, ".status"]),
+			invoicingCodes: expectArray(json.invoicingCodes, false, [...path, ".invoicingCodes"], (x0, p0) => expectString(x0, false, p0)),
+			notes: expectArray(json.notes, false, [...path, ".notes"], (x0, p0) => Annotation.fromJSON(x0, p0)),
+			qualifiedLinks: expectMap(
+				json.qualifiedLinks,
+				false,
+				[...path, ".qualifiedLinks"],
+				(k0, p0) => expectStringEnum(k0, false, p0, LinkQualification, 'LinkQualification'),
+				(v0, p0) => expectMap(
+					v0,
+					false,
+					p0,
+					(k1, p1) => expectString(k1, false, p1),
+					(v1, p1) => expectString(v1, false, p1)
+				)
+			),
+			codes: expectArray(json.codes, false, [...path, ".codes"], (x0, p0) => CodeStub.fromJSON(x0, p0)),
+			tags: expectArray(json.tags, false, [...path, ".tags"], (x0, p0) => CodeStub.fromJSON(x0, p0)),
+			encryptedSelf: expectString(json.encryptedSelf, false, [...path, ".encryptedSelf"]),
+			securityMetadata: SecurityMetadata.fromJSON(json.securityMetadata, [...path, ".securityMetadata"]),
+		})
 	}
 
 }

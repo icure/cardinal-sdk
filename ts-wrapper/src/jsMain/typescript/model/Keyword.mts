@@ -1,4 +1,5 @@
 // auto-generated file
+import {expectArray, expectNumber, expectString, requireEntry} from '../internal/JsonDecodeUtils.mjs';
 import {randomUuid} from '../utils/Id.mjs';
 import {CodeStub} from './base/CodeStub.mjs';
 import {ICureDocument} from './base/ICureDocument.mjs';
@@ -51,6 +52,44 @@ export class Keyword implements StoredDocument, ICureDocument<string> {
 		if ('value' in partial) this.value = partial.value;
 		if ('subWords' in partial && partial.subWords !== undefined) this.subWords = partial.subWords;
 		if ('userId' in partial) this.userId = partial.userId;
+	}
+
+	toJSON(): any {
+		const res: { [k: string]: any } = {}
+		res['id'] = this.id
+		if (this.rev != undefined) res['rev'] = this.rev
+		if (this.created != undefined) res['created'] = this.created
+		if (this.modified != undefined) res['modified'] = this.modified
+		if (this.author != undefined) res['author'] = this.author
+		if (this.responsible != undefined) res['responsible'] = this.responsible
+		if (this.medicalLocationId != undefined) res['medicalLocationId'] = this.medicalLocationId
+		res['tags'] = this.tags.map((x0) => x0.toJSON() )
+		res['codes'] = this.codes.map((x0) => x0.toJSON() )
+		if (this.endOfLife != undefined) res['endOfLife'] = this.endOfLife
+		if (this.deletionDate != undefined) res['deletionDate'] = this.deletionDate
+		if (this.value != undefined) res['value'] = this.value
+		res['subWords'] = this.subWords.map((x0) => x0.toJSON() )
+		if (this.userId != undefined) res['userId'] = this.userId
+		return res
+	}
+
+	static fromJSON(json: any, path: Array<string> = ['Keyword']): Keyword {
+		return new Keyword({
+			id: expectString(requireEntry(json.id, 'id', path), false, [...path, ".id"]),
+			rev: expectString(json.rev, true, [...path, ".rev"]),
+			created: expectNumber(json.created, true, true, [...path, ".created"]),
+			modified: expectNumber(json.modified, true, true, [...path, ".modified"]),
+			author: expectString(json.author, true, [...path, ".author"]),
+			responsible: expectString(json.responsible, true, [...path, ".responsible"]),
+			medicalLocationId: expectString(json.medicalLocationId, true, [...path, ".medicalLocationId"]),
+			tags: expectArray(json.tags, false, [...path, ".tags"], (x0, p0) => CodeStub.fromJSON(x0, p0)),
+			codes: expectArray(json.codes, false, [...path, ".codes"], (x0, p0) => CodeStub.fromJSON(x0, p0)),
+			endOfLife: expectNumber(json.endOfLife, true, true, [...path, ".endOfLife"]),
+			deletionDate: expectNumber(json.deletionDate, true, true, [...path, ".deletionDate"]),
+			value: expectString(json.value, true, [...path, ".value"]),
+			subWords: expectArray(json.subWords, false, [...path, ".subWords"], (x0, p0) => KeywordSubword.fromJSON(x0, p0)),
+			userId: expectString(json.userId, true, [...path, ".userId"]),
+		})
 	}
 
 }

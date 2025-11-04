@@ -1,4 +1,5 @@
 // auto-generated file
+import {expectString, expectStringEnum, requireEntry} from '../../internal/JsonDecodeUtils.mjs';
 import {AuthenticationClass} from '../embed/AuthenticationClass.mjs';
 
 
@@ -14,6 +15,22 @@ export class ExternalJwtConfig {
 		this.validationMethod = partial.validationMethod;
 		this.fieldSelector = partial.fieldSelector;
 		if ('authenticationClass' in partial && partial.authenticationClass !== undefined) this.authenticationClass = partial.authenticationClass;
+	}
+
+	toJSON(): any {
+		const res: { [k: string]: any } = {}
+		res['validationMethod'] = this.validationMethod.toJSON()
+		res['fieldSelector'] = this.fieldSelector.toJSON()
+		res['authenticationClass'] = this.authenticationClass
+		return res
+	}
+
+	static fromJSON(json: any, path: Array<string> = ['ExternalJwtConfig']): ExternalJwtConfig {
+		return new ExternalJwtConfig({
+			validationMethod: ExternalJwtConfig.ValidationMethod.fromJSON(requireEntry(json.validationMethod, 'validationMethod', path), [...path, ".validationMethod"]),
+			fieldSelector: ExternalJwtConfig.FieldSelector.fromJSON(requireEntry(json.fieldSelector, 'fieldSelector', path), [...path, ".fieldSelector"]),
+			authenticationClass: expectStringEnum(json.authenticationClass, false, [...path, ".authenticationClass"], AuthenticationClass, 'AuthenticationClass'),
+		})
 	}
 
 }
@@ -32,6 +49,18 @@ export namespace ExternalJwtConfig {
 				this.key = partial.key;
 			}
 
+			toJSON(): any {
+				const res: { [k: string]: any } = {}
+				res['key'] = this.key
+				return res
+			}
+
+			static fromJSON(json: any, path: Array<string> = ['PublicKey']): PublicKey {
+				return new PublicKey({
+					key: expectString(requireEntry(json.key, 'key', path), false, [...path, ".key"]),
+				})
+			}
+
 		}
 
 		export class Oidc {
@@ -42,6 +71,18 @@ export namespace ExternalJwtConfig {
 
 			constructor(partial: Partial<Oidc> & Pick<Oidc, "issureLocation">) {
 				this.issureLocation = partial.issureLocation;
+			}
+
+			toJSON(): any {
+				const res: { [k: string]: any } = {}
+				res['issureLocation'] = this.issureLocation
+				return res
+			}
+
+			static fromJSON(json: any, path: Array<string> = ['Oidc']): Oidc {
+				return new Oidc({
+					issureLocation: expectString(requireEntry(json.issureLocation, 'issureLocation', path), false, [...path, ".issureLocation"]),
+				})
 			}
 
 		}
@@ -62,6 +103,18 @@ export namespace ExternalJwtConfig {
 				this.fieldName = partial.fieldName;
 			}
 
+			toJSON(): any {
+				const res: { [k: string]: any } = {}
+				res['fieldName'] = this.fieldName
+				return res
+			}
+
+			static fromJSON(json: any, path: Array<string> = ['LocalId']): LocalId {
+				return new LocalId({
+					fieldName: expectString(requireEntry(json.fieldName, 'fieldName', path), false, [...path, ".fieldName"]),
+				})
+			}
+
 		}
 
 		export class Email {
@@ -72,6 +125,18 @@ export namespace ExternalJwtConfig {
 
 			constructor(partial: Partial<Email> & Pick<Email, "fieldName">) {
 				this.fieldName = partial.fieldName;
+			}
+
+			toJSON(): any {
+				const res: { [k: string]: any } = {}
+				res['fieldName'] = this.fieldName
+				return res
+			}
+
+			static fromJSON(json: any, path: Array<string> = ['Email']): Email {
+				return new Email({
+					fieldName: expectString(requireEntry(json.fieldName, 'fieldName', path), false, [...path, ".fieldName"]),
+				})
 			}
 
 		}
@@ -86,6 +151,18 @@ export namespace ExternalJwtConfig {
 				this.fieldName = partial.fieldName;
 			}
 
+			toJSON(): any {
+				const res: { [k: string]: any } = {}
+				res['fieldName'] = this.fieldName
+				return res
+			}
+
+			static fromJSON(json: any, path: Array<string> = ['MobilePhone']): MobilePhone {
+				return new MobilePhone({
+					fieldName: expectString(requireEntry(json.fieldName, 'fieldName', path), false, [...path, ".fieldName"]),
+				})
+			}
+
 		}
 
 		export class Username {
@@ -96,6 +173,18 @@ export namespace ExternalJwtConfig {
 
 			constructor(partial: Partial<Username> & Pick<Username, "fieldName">) {
 				this.fieldName = partial.fieldName;
+			}
+
+			toJSON(): any {
+				const res: { [k: string]: any } = {}
+				res['fieldName'] = this.fieldName
+				return res
+			}
+
+			static fromJSON(json: any, path: Array<string> = ['Username']): Username {
+				return new Username({
+					fieldName: expectString(requireEntry(json.fieldName, 'fieldName', path), false, [...path, ".fieldName"]),
+				})
 			}
 
 		}
@@ -111,6 +200,20 @@ export namespace ExternalJwtConfig {
 			constructor(partial: Partial<Identifier> & Pick<Identifier, "identifierAssigner" | "fieldName">) {
 				this.identifierAssigner = partial.identifierAssigner;
 				this.fieldName = partial.fieldName;
+			}
+
+			toJSON(): any {
+				const res: { [k: string]: any } = {}
+				res['identifierAssigner'] = this.identifierAssigner
+				res['fieldName'] = this.fieldName
+				return res
+			}
+
+			static fromJSON(json: any, path: Array<string> = ['Identifier']): Identifier {
+				return new Identifier({
+					identifierAssigner: expectString(requireEntry(json.identifierAssigner, 'identifierAssigner', path), false, [...path, ".identifierAssigner"]),
+					fieldName: expectString(requireEntry(json.fieldName, 'fieldName', path), false, [...path, ".fieldName"]),
+				})
 			}
 
 		}

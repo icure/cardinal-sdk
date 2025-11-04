@@ -1,4 +1,6 @@
 // auto-generated file
+import {expectNumber, expectString} from '../../internal/JsonDecodeUtils.mjs';
+
 
 export class IdentityDocumentReader {
 
@@ -21,6 +23,29 @@ export class IdentityDocumentReader {
 		if ('eidDocumentSupportType' in partial && partial.eidDocumentSupportType !== undefined) this.eidDocumentSupportType = partial.eidDocumentSupportType;
 		if ('reasonManualEncoding' in partial && partial.reasonManualEncoding !== undefined) this.reasonManualEncoding = partial.reasonManualEncoding;
 		if ('reasonUsingVignette' in partial && partial.reasonUsingVignette !== undefined) this.reasonUsingVignette = partial.reasonUsingVignette;
+	}
+
+	toJSON(): any {
+		const res: { [k: string]: any } = {}
+		if (this.justificatifDocumentNumber != undefined) res['justificatifDocumentNumber'] = this.justificatifDocumentNumber
+		if (this.supportSerialNumber != undefined) res['supportSerialNumber'] = this.supportSerialNumber
+		if (this.timeReadingEIdDocument != undefined) res['timeReadingEIdDocument'] = this.timeReadingEIdDocument
+		res['eidDocumentSupportType'] = this.eidDocumentSupportType
+		res['reasonManualEncoding'] = this.reasonManualEncoding
+		res['reasonUsingVignette'] = this.reasonUsingVignette
+		return res
+	}
+
+	static fromJSON(json: any,
+			path: Array<string> = ['IdentityDocumentReader']): IdentityDocumentReader {
+		return new IdentityDocumentReader({
+			justificatifDocumentNumber: expectString(json.justificatifDocumentNumber, true, [...path, ".justificatifDocumentNumber"]),
+			supportSerialNumber: expectString(json.supportSerialNumber, true, [...path, ".supportSerialNumber"]),
+			timeReadingEIdDocument: expectNumber(json.timeReadingEIdDocument, true, true, [...path, ".timeReadingEIdDocument"]),
+			eidDocumentSupportType: expectNumber(json.eidDocumentSupportType, false, true, [...path, ".eidDocumentSupportType"]),
+			reasonManualEncoding: expectNumber(json.reasonManualEncoding, false, true, [...path, ".reasonManualEncoding"]),
+			reasonUsingVignette: expectNumber(json.reasonUsingVignette, false, true, [...path, ".reasonUsingVignette"]),
+		})
 	}
 
 }
