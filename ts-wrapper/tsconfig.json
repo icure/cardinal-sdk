@@ -11,7 +11,7 @@
     "allowSyntheticDefaultImports": true,
     "preserveConstEnums": true,
     "lib": [
-      "es2017",
+      "es2019",
       "es6",
       "es5",
       "dom"

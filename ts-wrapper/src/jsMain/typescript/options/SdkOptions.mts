@@ -1,4 +1,4 @@
-import {XCryptoService} from "../crypto/CryptoService.mjs";
+import {PartialXCryptoService} from "../crypto/CryptoService.mjs";
 import {UserGroup} from "../model/UserGroup.mjs";
 import {KeyStorageFacade} from "../storage/StorageFacade.mjs";
 import {CryptoStrategies} from "../crypto/CryptoStrategies.mjs";
@@ -30,7 +30,7 @@ export interface SdkOptions {
   /**
    * Service for encryption primitives.
    */
-  readonly cryptoService?: XCryptoService
+  readonly cryptoService?: PartialXCryptoService
   /**
    * If true (default) the password of the user will be salted together with the application id before sending it to
    * the iCure backend for login or when changing the user password.
@@ -94,7 +94,7 @@ export interface BasicSdkOptions {
   /**
    * Service for encryption primitives.
    */
-  readonly cryptoService?: XCryptoService
+  readonly cryptoService?: PartialXCryptoService
   /**
    * If true (default) the password of the user will be salted together with the application id before sending it to
    * the iCure backend for login or when changing the user password.

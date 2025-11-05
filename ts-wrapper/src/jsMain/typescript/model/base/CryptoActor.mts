@@ -1,4 +1,8 @@
 // auto-generated file
+import {CryptoActorStub} from '../CryptoActorStub.mjs';
+import {Device} from '../Device.mjs';
+import {HealthcareParty} from '../HealthcareParty.mjs';
+import {DecryptedPatient, EncryptedPatient} from '../Patient.mjs';
 import {DecryptedPropertyStub} from '../PropertyStub.mjs';
 import {HexString} from '../specializations/HexString.mjs';
 import {SpkiHexString} from '../specializations/SpkiHexString.mjs';
@@ -24,5 +28,21 @@ export interface CryptoActor extends Versionable<string> {
 	cryptoActorProperties: Array<DecryptedPropertyStub> | undefined;
 
 	readonly $ktClass: string;
+
+}
+
+export namespace CryptoActor {
+
+	export function fromJSON(json: any, ignoreUnknownKeys: boolean = false,
+			path: Array<string> = ['CryptoActor']): CryptoActor {
+		switch ((json as CryptoActor).$ktClass) {
+			case 'com.icure.cardinal.sdk.model.CryptoActorStub': return CryptoActorStub.fromJSON(json, ignoreUnknownKeys)
+			case 'com.icure.cardinal.sdk.model.EncryptedPatient': return EncryptedPatient.fromJSON(json, ignoreUnknownKeys)
+			case 'com.icure.cardinal.sdk.model.DecryptedPatient': return DecryptedPatient.fromJSON(json, ignoreUnknownKeys)
+			case 'com.icure.cardinal.sdk.model.Device': return Device.fromJSON(json, ignoreUnknownKeys)
+			case 'com.icure.cardinal.sdk.model.HealthcareParty': return HealthcareParty.fromJSON(json, ignoreUnknownKeys)
+			default: throw new Error('Unexpected discriminator for CryptoActor: ' + json.$ktClass)
+		}
+	}
 
 }

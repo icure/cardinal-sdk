@@ -1,4 +1,6 @@
 // auto-generated file
+import {decodeBase64, encodeBase64} from '../internal/BytesEncoding.mjs';
+import {expectArray, expectBoolean, expectMap, expectNullish, expectNumber, expectObject, expectString, expectStringEnum, extractEntry} from '../internal/JsonDecodeUtils.mjs';
 import {randomUuid} from '../utils/Id.mjs';
 import {DecryptedPropertyStub, EncryptedPropertyStub, PropertyStub} from './PropertyStub.mjs';
 import {CodeStub} from './base/CodeStub.mjs';
@@ -131,6 +133,8 @@ export interface Patient extends StoredDocument, ICureDocument<string>, Person, 
 	parentId: undefined;
 
 	readonly isEncrypted: boolean;
+
+	toJSON(): object;
 
 }
 
@@ -390,6 +394,257 @@ export class DecryptedPatient {
 		if ('parentId' in partial) this.parentId = partial.parentId;
 	}
 
+	toJSON(): object {
+		const res: { [k: string]: any } = {}
+		res['id'] = this.id
+		res['identifier'] = this.identifier.map((x0) => x0.toJSON() )
+		if (this.rev != undefined) res['rev'] = this.rev
+		if (this.created != undefined) res['created'] = this.created
+		if (this.modified != undefined) res['modified'] = this.modified
+		if (this.author != undefined) res['author'] = this.author
+		if (this.responsible != undefined) res['responsible'] = this.responsible
+		res['tags'] = this.tags.map((x0) => x0.toJSON() )
+		res['codes'] = this.codes.map((x0) => x0.toJSON() )
+		if (this.endOfLife != undefined) res['endOfLife'] = this.endOfLife
+		if (this.deletionDate != undefined) res['deletionDate'] = this.deletionDate
+		if (this.firstName != undefined) res['firstName'] = this.firstName
+		if (this.lastName != undefined) res['lastName'] = this.lastName
+		res['names'] = this.names.map((x0) => x0.toJSON() )
+		if (this.companyName != undefined) res['companyName'] = this.companyName
+		res['languages'] = this.languages.map((x0) => x0 )
+		res['addresses'] = this.addresses.map((x0) => x0.toJSON() )
+		if (this.civility != undefined) res['civility'] = this.civility
+		if (this.gender != undefined) res['gender'] = this.gender
+		if (this.birthSex != undefined) res['birthSex'] = this.birthSex
+		if (this.mergeToPatientId != undefined) res['mergeToPatientId'] = this.mergeToPatientId
+		res['mergedIds'] = this.mergedIds.map((x0) => x0 )
+		if (this.alias != undefined) res['alias'] = this.alias
+		res['active'] = this.active
+		res['deactivationReason'] = this.deactivationReason
+		if (this.deactivationDate != undefined) res['deactivationDate'] = this.deactivationDate
+		if (this.ssin != undefined) res['ssin'] = this.ssin
+		if (this.maidenName != undefined) res['maidenName'] = this.maidenName
+		if (this.spouseName != undefined) res['spouseName'] = this.spouseName
+		if (this.partnerName != undefined) res['partnerName'] = this.partnerName
+		if (this.personalStatus != undefined) res['personalStatus'] = this.personalStatus
+		if (this.dateOfBirth != undefined) res['dateOfBirth'] = this.dateOfBirth
+		if (this.dateOfDeath != undefined) res['dateOfDeath'] = this.dateOfDeath
+		if (this.timestampOfLatestEidReading != undefined) res['timestampOfLatestEidReading'] = this.timestampOfLatestEidReading
+		if (this.placeOfBirth != undefined) res['placeOfBirth'] = this.placeOfBirth
+		if (this.placeOfDeath != undefined) res['placeOfDeath'] = this.placeOfDeath
+		if (this.deceased != undefined) res['deceased'] = this.deceased
+		if (this.education != undefined) res['education'] = this.education
+		if (this.profession != undefined) res['profession'] = this.profession
+		res['notes'] = this.notes.map((x0) => x0.toJSON() )
+		if (this.note != undefined) res['note'] = this.note
+		if (this.administrativeNote != undefined) res['administrativeNote'] = this.administrativeNote
+		if (this.nationality != undefined) res['nationality'] = this.nationality
+		if (this.race != undefined) res['race'] = this.race
+		if (this.ethnicity != undefined) res['ethnicity'] = this.ethnicity
+		if (this.preferredUserId != undefined) res['preferredUserId'] = this.preferredUserId
+		if (this.picture != undefined) res['picture'] = encodeBase64(this.picture)
+		if (this.externalId != undefined) res['externalId'] = this.externalId
+		res['insurabilities'] = this.insurabilities.map((x0) => x0.toJSON() )
+		res['partnerships'] = this.partnerships.map((x0) => x0.toJSON() )
+		res['patientHealthCareParties'] = this.patientHealthCareParties.map((x0) => x0.toJSON() )
+		res['financialInstitutionInformation'] = this.financialInstitutionInformation.map((x0) => x0.toJSON() )
+		res['medicalHouseContracts'] = this.medicalHouseContracts.map((x0) => x0.toJSON() )
+		res['patientProfessions'] = this.patientProfessions.map((x0) => x0.toJSON() )
+		res['parameters'] = Object.fromEntries(Object.entries(this.parameters).map(([k0, v0]) => [k0, v0.map((x1) => x1 )]))
+		res['properties'] = this.properties.map((x0) => x0.toJSON() )
+		res['hcPartyKeys'] = Object.fromEntries(Object.entries(this.hcPartyKeys).map(([k0, v0]) => [k0, v0.map((x1) => x1 )]))
+		res['aesExchangeKeys'] = Object.fromEntries(Object.entries(this.aesExchangeKeys).map(([k0, v0]) => [k0, Object.fromEntries(Object.entries(v0).map(([k1, v1]) => [k1, Object.fromEntries(Object.entries(v1).map(([k2, v2]) => [k2, v2]))]))]))
+		res['transferKeys'] = Object.fromEntries(Object.entries(this.transferKeys).map(([k0, v0]) => [k0, Object.fromEntries(Object.entries(v0).map(([k1, v1]) => [k1, v1]))]))
+		res['privateKeyShamirPartitions'] = Object.fromEntries(Object.entries(this.privateKeyShamirPartitions).map(([k0, v0]) => [k0, v0]))
+		if (this.publicKey != undefined) res['publicKey'] = this.publicKey
+		res['publicKeysForOaepWithSha256'] = this.publicKeysForOaepWithSha256.map((x0) => x0 )
+		res['secretForeignKeys'] = this.secretForeignKeys.map((x0) => x0 )
+		res['cryptedForeignKeys'] = Object.fromEntries(Object.entries(this.cryptedForeignKeys).map(([k0, v0]) => [k0, v0.map((x1) => x1.toJSON() )]))
+		res['delegations'] = Object.fromEntries(Object.entries(this.delegations).map(([k0, v0]) => [k0, v0.map((x1) => x1.toJSON() )]))
+		res['encryptionKeys'] = Object.fromEntries(Object.entries(this.encryptionKeys).map(([k0, v0]) => [k0, v0.map((x1) => x1.toJSON() )]))
+		if (this.encryptedSelf != undefined) res['encryptedSelf'] = this.encryptedSelf
+		if (this.securityMetadata != undefined) res['securityMetadata'] = this.securityMetadata.toJSON()
+		if (this.cryptoActorProperties != undefined) res['cryptoActorProperties'] = this.cryptoActorProperties.map((x0) => x0.toJSON() )
+		if (this.medicalLocationId != undefined) res['medicalLocationId'] = this.medicalLocationId
+		res['nonDuplicateIds'] = this.nonDuplicateIds.map((x0) => x0 )
+		res['encryptedAdministrativesDocuments'] = this.encryptedAdministrativesDocuments.map((x0) => x0 )
+		if (this.comment != undefined) res['comment'] = this.comment
+		if (this.warning != undefined) res['warning'] = this.warning
+		if (this.fatherBirthCountry != undefined) res['fatherBirthCountry'] = this.fatherBirthCountry.toJSON()
+		if (this.birthCountry != undefined) res['birthCountry'] = this.birthCountry.toJSON()
+		if (this.nativeCountry != undefined) res['nativeCountry'] = this.nativeCountry.toJSON()
+		if (this.socialStatus != undefined) res['socialStatus'] = this.socialStatus.toJSON()
+		if (this.mainSourceOfIncome != undefined) res['mainSourceOfIncome'] = this.mainSourceOfIncome.toJSON()
+		res['schoolingInfos'] = this.schoolingInfos.map((x0) => x0.toJSON() )
+		res['employementInfos'] = this.employementInfos.map((x0) => x0.toJSON() )
+		if (this.parentId != undefined) throw new Error('Unexpected nullish value for parentId')
+		res['isEncrypted'] = false
+		res['$ktClass'] = 'com.icure.cardinal.sdk.model.DecryptedPatient'
+		return res
+	}
+
+	static fromJSON(json: any, ignoreUnknownKeys: boolean = false,
+			path: Array<string> = ['DecryptedPatient']): DecryptedPatient {
+		if (typeof json != 'object') throw new Error(`Expected json object at path ${path.join("")}`)
+		const jCpy = { ...json }
+		if (extractEntry(jCpy, "isEncrypted", true, path) !== false) throw new Error(`Unexpected value for ${path.join("")} isEncrypted marker, should be false. The provided json doesn't represent a DecryptedPatient`)
+		if (extractEntry(jCpy, '\$ktClass', true, path) !== 'com.icure.cardinal.sdk.model.DecryptedPatient') throw new Error(`Unexpected value for ${path.join("")} class marker, should be "com.icure.cardinal.sdk.model.DecryptedPatient". The provided json doesn't represent a DecryptedPatient`)
+		const res = new DecryptedPatient({
+			id: expectString(extractEntry(jCpy, 'id', true, path), false, [...path, ".id"]),
+			identifier: expectArray(extractEntry(jCpy, 'identifier', false, path), false, [...path, ".identifier"], (x0, p0) => expectObject(x0, false, ignoreUnknownKeys, p0, Identifier.fromJSON)),
+			rev: expectString(extractEntry(jCpy, 'rev', false, path), true, [...path, ".rev"]),
+			created: expectNumber(extractEntry(jCpy, 'created', false, path), true, true, [...path, ".created"]),
+			modified: expectNumber(extractEntry(jCpy, 'modified', false, path), true, true, [...path, ".modified"]),
+			author: expectString(extractEntry(jCpy, 'author', false, path), true, [...path, ".author"]),
+			responsible: expectString(extractEntry(jCpy, 'responsible', false, path), true, [...path, ".responsible"]),
+			tags: expectArray(extractEntry(jCpy, 'tags', false, path), false, [...path, ".tags"], (x0, p0) => expectObject(x0, false, ignoreUnknownKeys, p0, CodeStub.fromJSON)),
+			codes: expectArray(extractEntry(jCpy, 'codes', false, path), false, [...path, ".codes"], (x0, p0) => expectObject(x0, false, ignoreUnknownKeys, p0, CodeStub.fromJSON)),
+			endOfLife: expectNumber(extractEntry(jCpy, 'endOfLife', false, path), true, true, [...path, ".endOfLife"]),
+			deletionDate: expectNumber(extractEntry(jCpy, 'deletionDate', false, path), true, true, [...path, ".deletionDate"]),
+			firstName: expectString(extractEntry(jCpy, 'firstName', false, path), true, [...path, ".firstName"]),
+			lastName: expectString(extractEntry(jCpy, 'lastName', false, path), true, [...path, ".lastName"]),
+			names: expectArray(extractEntry(jCpy, 'names', false, path), false, [...path, ".names"], (x0, p0) => expectObject(x0, false, ignoreUnknownKeys, p0, PersonName.fromJSON)),
+			companyName: expectString(extractEntry(jCpy, 'companyName', false, path), true, [...path, ".companyName"]),
+			languages: expectArray(extractEntry(jCpy, 'languages', false, path), false, [...path, ".languages"], (x0, p0) => expectString(x0, false, p0)),
+			addresses: expectArray(extractEntry(jCpy, 'addresses', false, path), false, [...path, ".addresses"], (x0, p0) => expectObject(x0, false, ignoreUnknownKeys, p0, DecryptedAddress.fromJSON)),
+			civility: expectString(extractEntry(jCpy, 'civility', false, path), true, [...path, ".civility"]),
+			gender: expectStringEnum(extractEntry(jCpy, 'gender', false, path), true, [...path, ".gender"], Gender, 'Gender'),
+			birthSex: expectStringEnum(extractEntry(jCpy, 'birthSex', false, path), true, [...path, ".birthSex"], Gender, 'Gender'),
+			mergeToPatientId: expectString(extractEntry(jCpy, 'mergeToPatientId', false, path), true, [...path, ".mergeToPatientId"]),
+			mergedIds: expectArray(extractEntry(jCpy, 'mergedIds', false, path), false, [...path, ".mergedIds"], (x0, p0) => expectString(x0, false, p0)),
+			alias: expectString(extractEntry(jCpy, 'alias', false, path), true, [...path, ".alias"]),
+			active: expectBoolean(extractEntry(jCpy, 'active', false, path), false, [...path, ".active"]),
+			deactivationReason: expectString(extractEntry(jCpy, 'deactivationReason', false, path), false, [...path, ".deactivationReason"]),
+			deactivationDate: expectNumber(extractEntry(jCpy, 'deactivationDate', false, path), true, true, [...path, ".deactivationDate"]),
+			ssin: expectString(extractEntry(jCpy, 'ssin', false, path), true, [...path, ".ssin"]),
+			maidenName: expectString(extractEntry(jCpy, 'maidenName', false, path), true, [...path, ".maidenName"]),
+			spouseName: expectString(extractEntry(jCpy, 'spouseName', false, path), true, [...path, ".spouseName"]),
+			partnerName: expectString(extractEntry(jCpy, 'partnerName', false, path), true, [...path, ".partnerName"]),
+			personalStatus: expectStringEnum(extractEntry(jCpy, 'personalStatus', false, path), true, [...path, ".personalStatus"], PersonalStatus, 'PersonalStatus'),
+			dateOfBirth: expectNumber(extractEntry(jCpy, 'dateOfBirth', false, path), true, true, [...path, ".dateOfBirth"]),
+			dateOfDeath: expectNumber(extractEntry(jCpy, 'dateOfDeath', false, path), true, true, [...path, ".dateOfDeath"]),
+			timestampOfLatestEidReading: expectNumber(extractEntry(jCpy, 'timestampOfLatestEidReading', false, path), true, true, [...path, ".timestampOfLatestEidReading"]),
+			placeOfBirth: expectString(extractEntry(jCpy, 'placeOfBirth', false, path), true, [...path, ".placeOfBirth"]),
+			placeOfDeath: expectString(extractEntry(jCpy, 'placeOfDeath', false, path), true, [...path, ".placeOfDeath"]),
+			deceased: expectBoolean(extractEntry(jCpy, 'deceased', false, path), true, [...path, ".deceased"]),
+			education: expectString(extractEntry(jCpy, 'education', false, path), true, [...path, ".education"]),
+			profession: expectString(extractEntry(jCpy, 'profession', false, path), true, [...path, ".profession"]),
+			notes: expectArray(extractEntry(jCpy, 'notes', false, path), false, [...path, ".notes"], (x0, p0) => expectObject(x0, false, ignoreUnknownKeys, p0, Annotation.fromJSON)),
+			note: expectString(extractEntry(jCpy, 'note', false, path), true, [...path, ".note"]),
+			administrativeNote: expectString(extractEntry(jCpy, 'administrativeNote', false, path), true, [...path, ".administrativeNote"]),
+			nationality: expectString(extractEntry(jCpy, 'nationality', false, path), true, [...path, ".nationality"]),
+			race: expectString(extractEntry(jCpy, 'race', false, path), true, [...path, ".race"]),
+			ethnicity: expectString(extractEntry(jCpy, 'ethnicity', false, path), true, [...path, ".ethnicity"]),
+			preferredUserId: expectString(extractEntry(jCpy, 'preferredUserId', false, path), true, [...path, ".preferredUserId"]),
+			picture: decodeBase64(expectString(extractEntry(jCpy, 'picture', false, path), true, [...path, ".picture"]), [...path, ".picture"]),
+			externalId: expectString(extractEntry(jCpy, 'externalId', false, path), true, [...path, ".externalId"]),
+			insurabilities: expectArray(extractEntry(jCpy, 'insurabilities', false, path), false, [...path, ".insurabilities"], (x0, p0) => expectObject(x0, false, ignoreUnknownKeys, p0, DecryptedInsurability.fromJSON)),
+			partnerships: expectArray(extractEntry(jCpy, 'partnerships', false, path), false, [...path, ".partnerships"], (x0, p0) => expectObject(x0, false, ignoreUnknownKeys, p0, Partnership.fromJSON)),
+			patientHealthCareParties: expectArray(extractEntry(jCpy, 'patientHealthCareParties', false, path), false, [...path, ".patientHealthCareParties"], (x0, p0) => expectObject(x0, false, ignoreUnknownKeys, p0, DecryptedPatientHealthCareParty.fromJSON)),
+			financialInstitutionInformation: expectArray(extractEntry(jCpy, 'financialInstitutionInformation', false, path), false, [...path, ".financialInstitutionInformation"], (x0, p0) => expectObject(x0, false, ignoreUnknownKeys, p0, DecryptedFinancialInstitutionInformation.fromJSON)),
+			medicalHouseContracts: expectArray(extractEntry(jCpy, 'medicalHouseContracts', false, path), false, [...path, ".medicalHouseContracts"], (x0, p0) => expectObject(x0, false, ignoreUnknownKeys, p0, DecryptedMedicalHouseContract.fromJSON)),
+			patientProfessions: expectArray(extractEntry(jCpy, 'patientProfessions', false, path), false, [...path, ".patientProfessions"], (x0, p0) => expectObject(x0, false, ignoreUnknownKeys, p0, CodeStub.fromJSON)),
+			parameters: expectMap(
+				extractEntry(jCpy, 'parameters', false, path),
+				false,
+				[...path, ".parameters"],
+				(k0, p0) => expectString(k0, false, p0),
+				(v0, p0) => expectArray(v0, false, p0, (x1, p1) => expectString(x1, false, p1))
+			),
+			properties: expectArray(extractEntry(jCpy, 'properties', false, path), false, [...path, ".properties"], (x0, p0) => expectObject(x0, false, ignoreUnknownKeys, p0, DecryptedPropertyStub.fromJSON)),
+			hcPartyKeys: expectMap(
+				extractEntry(jCpy, 'hcPartyKeys', false, path),
+				false,
+				[...path, ".hcPartyKeys"],
+				(k0, p0) => expectString(k0, false, p0),
+				(v0, p0) => expectArray(v0, false, p0, (x1, p1) => expectString(x1, false, p1))
+			),
+			aesExchangeKeys: expectMap(
+				extractEntry(jCpy, 'aesExchangeKeys', false, path),
+				false,
+				[...path, ".aesExchangeKeys"],
+				(k0, p0) => expectString(k0, false, p0),
+				(v0, p0) => expectMap(
+					v0,
+					false,
+					p0,
+					(k1, p1) => expectString(k1, false, p1),
+					(v1, p1) => expectMap(
+						v1,
+						false,
+						p1,
+						(k2, p2) => expectString(k2, false, p2),
+						(v2, p2) => expectString(v2, false, p2)
+					)
+				)
+			),
+			transferKeys: expectMap(
+				extractEntry(jCpy, 'transferKeys', false, path),
+				false,
+				[...path, ".transferKeys"],
+				(k0, p0) => expectString(k0, false, p0),
+				(v0, p0) => expectMap(
+					v0,
+					false,
+					p0,
+					(k1, p1) => expectString(k1, false, p1),
+					(v1, p1) => expectString(v1, false, p1)
+				)
+			),
+			privateKeyShamirPartitions: expectMap(
+				extractEntry(jCpy, 'privateKeyShamirPartitions', false, path),
+				false,
+				[...path, ".privateKeyShamirPartitions"],
+				(k0, p0) => expectString(k0, false, p0),
+				(v0, p0) => expectString(v0, false, p0)
+			),
+			publicKey: expectString(extractEntry(jCpy, 'publicKey', false, path), true, [...path, ".publicKey"]),
+			publicKeysForOaepWithSha256: expectArray(extractEntry(jCpy, 'publicKeysForOaepWithSha256', false, path), false, [...path, ".publicKeysForOaepWithSha256"], (x0, p0) => expectString(x0, false, p0)),
+			secretForeignKeys: expectArray(extractEntry(jCpy, 'secretForeignKeys', false, path), false, [...path, ".secretForeignKeys"], (x0, p0) => expectString(x0, false, p0)),
+			cryptedForeignKeys: expectMap(
+				extractEntry(jCpy, 'cryptedForeignKeys', false, path),
+				false,
+				[...path, ".cryptedForeignKeys"],
+				(k0, p0) => expectString(k0, false, p0),
+				(v0, p0) => expectArray(v0, false, p0, (x1, p1) => expectObject(x1, false, ignoreUnknownKeys, p1, Delegation.fromJSON))
+			),
+			delegations: expectMap(
+				extractEntry(jCpy, 'delegations', false, path),
+				false,
+				[...path, ".delegations"],
+				(k0, p0) => expectString(k0, false, p0),
+				(v0, p0) => expectArray(v0, false, p0, (x1, p1) => expectObject(x1, false, ignoreUnknownKeys, p1, Delegation.fromJSON))
+			),
+			encryptionKeys: expectMap(
+				extractEntry(jCpy, 'encryptionKeys', false, path),
+				false,
+				[...path, ".encryptionKeys"],
+				(k0, p0) => expectString(k0, false, p0),
+				(v0, p0) => expectArray(v0, false, p0, (x1, p1) => expectObject(x1, false, ignoreUnknownKeys, p1, Delegation.fromJSON))
+			),
+			encryptedSelf: expectString(extractEntry(jCpy, 'encryptedSelf', false, path), true, [...path, ".encryptedSelf"]),
+			securityMetadata: expectObject(extractEntry(jCpy, 'securityMetadata', false, path), true, ignoreUnknownKeys, [...path, ".securityMetadata"], SecurityMetadata.fromJSON),
+			cryptoActorProperties: expectArray(extractEntry(jCpy, 'cryptoActorProperties', false, path), true, [...path, ".cryptoActorProperties"], (x0, p0) => expectObject(x0, false, ignoreUnknownKeys, p0, DecryptedPropertyStub.fromJSON)),
+			medicalLocationId: expectString(extractEntry(jCpy, 'medicalLocationId', false, path), true, [...path, ".medicalLocationId"]),
+			nonDuplicateIds: expectArray(extractEntry(jCpy, 'nonDuplicateIds', false, path), false, [...path, ".nonDuplicateIds"], (x0, p0) => expectString(x0, false, p0)),
+			encryptedAdministrativesDocuments: expectArray(extractEntry(jCpy, 'encryptedAdministrativesDocuments', false, path), false, [...path, ".encryptedAdministrativesDocuments"], (x0, p0) => expectString(x0, false, p0)),
+			comment: expectString(extractEntry(jCpy, 'comment', false, path), true, [...path, ".comment"]),
+			warning: expectString(extractEntry(jCpy, 'warning', false, path), true, [...path, ".warning"]),
+			fatherBirthCountry: expectObject(extractEntry(jCpy, 'fatherBirthCountry', false, path), true, ignoreUnknownKeys, [...path, ".fatherBirthCountry"], CodeStub.fromJSON),
+			birthCountry: expectObject(extractEntry(jCpy, 'birthCountry', false, path), true, ignoreUnknownKeys, [...path, ".birthCountry"], CodeStub.fromJSON),
+			nativeCountry: expectObject(extractEntry(jCpy, 'nativeCountry', false, path), true, ignoreUnknownKeys, [...path, ".nativeCountry"], CodeStub.fromJSON),
+			socialStatus: expectObject(extractEntry(jCpy, 'socialStatus', false, path), true, ignoreUnknownKeys, [...path, ".socialStatus"], CodeStub.fromJSON),
+			mainSourceOfIncome: expectObject(extractEntry(jCpy, 'mainSourceOfIncome', false, path), true, ignoreUnknownKeys, [...path, ".mainSourceOfIncome"], CodeStub.fromJSON),
+			schoolingInfos: expectArray(extractEntry(jCpy, 'schoolingInfos', false, path), false, [...path, ".schoolingInfos"], (x0, p0) => expectObject(x0, false, ignoreUnknownKeys, p0, DecryptedSchoolingInfo.fromJSON)),
+			employementInfos: expectArray(extractEntry(jCpy, 'employementInfos', false, path), false, [...path, ".employementInfos"], (x0, p0) => expectObject(x0, false, ignoreUnknownKeys, p0, DecryptedEmploymentInfo.fromJSON)),
+			parentId: expectNullish(extractEntry(jCpy, 'parentId', false, path), [...path, ".parentId"]),
+		})
+		if (!ignoreUnknownKeys) {
+			const unused = Object.keys(jCpy)
+			if (unused.length > 0) throw new Error(`Unexpected key(s) for json object DecryptedPatient at path ${path.join("")}: ${unused}`)}
+		return res
+	}
+
 }
 
 export class EncryptedPatient {
@@ -646,6 +901,257 @@ export class EncryptedPatient {
 		if ('schoolingInfos' in partial && partial.schoolingInfos !== undefined) this.schoolingInfos = partial.schoolingInfos;
 		if ('employementInfos' in partial && partial.employementInfos !== undefined) this.employementInfos = partial.employementInfos;
 		if ('parentId' in partial) this.parentId = partial.parentId;
+	}
+
+	toJSON(): object {
+		const res: { [k: string]: any } = {}
+		res['id'] = this.id
+		res['identifier'] = this.identifier.map((x0) => x0.toJSON() )
+		if (this.rev != undefined) res['rev'] = this.rev
+		if (this.created != undefined) res['created'] = this.created
+		if (this.modified != undefined) res['modified'] = this.modified
+		if (this.author != undefined) res['author'] = this.author
+		if (this.responsible != undefined) res['responsible'] = this.responsible
+		res['tags'] = this.tags.map((x0) => x0.toJSON() )
+		res['codes'] = this.codes.map((x0) => x0.toJSON() )
+		if (this.endOfLife != undefined) res['endOfLife'] = this.endOfLife
+		if (this.deletionDate != undefined) res['deletionDate'] = this.deletionDate
+		if (this.firstName != undefined) res['firstName'] = this.firstName
+		if (this.lastName != undefined) res['lastName'] = this.lastName
+		res['names'] = this.names.map((x0) => x0.toJSON() )
+		if (this.companyName != undefined) res['companyName'] = this.companyName
+		res['languages'] = this.languages.map((x0) => x0 )
+		res['addresses'] = this.addresses.map((x0) => x0.toJSON() )
+		if (this.civility != undefined) res['civility'] = this.civility
+		if (this.gender != undefined) res['gender'] = this.gender
+		if (this.birthSex != undefined) res['birthSex'] = this.birthSex
+		if (this.mergeToPatientId != undefined) res['mergeToPatientId'] = this.mergeToPatientId
+		res['mergedIds'] = this.mergedIds.map((x0) => x0 )
+		if (this.alias != undefined) res['alias'] = this.alias
+		res['active'] = this.active
+		res['deactivationReason'] = this.deactivationReason
+		if (this.deactivationDate != undefined) res['deactivationDate'] = this.deactivationDate
+		if (this.ssin != undefined) res['ssin'] = this.ssin
+		if (this.maidenName != undefined) res['maidenName'] = this.maidenName
+		if (this.spouseName != undefined) res['spouseName'] = this.spouseName
+		if (this.partnerName != undefined) res['partnerName'] = this.partnerName
+		if (this.personalStatus != undefined) res['personalStatus'] = this.personalStatus
+		if (this.dateOfBirth != undefined) res['dateOfBirth'] = this.dateOfBirth
+		if (this.dateOfDeath != undefined) res['dateOfDeath'] = this.dateOfDeath
+		if (this.timestampOfLatestEidReading != undefined) res['timestampOfLatestEidReading'] = this.timestampOfLatestEidReading
+		if (this.placeOfBirth != undefined) res['placeOfBirth'] = this.placeOfBirth
+		if (this.placeOfDeath != undefined) res['placeOfDeath'] = this.placeOfDeath
+		if (this.deceased != undefined) res['deceased'] = this.deceased
+		if (this.education != undefined) res['education'] = this.education
+		if (this.profession != undefined) res['profession'] = this.profession
+		res['notes'] = this.notes.map((x0) => x0.toJSON() )
+		if (this.note != undefined) res['note'] = this.note
+		if (this.administrativeNote != undefined) res['administrativeNote'] = this.administrativeNote
+		if (this.nationality != undefined) res['nationality'] = this.nationality
+		if (this.race != undefined) res['race'] = this.race
+		if (this.ethnicity != undefined) res['ethnicity'] = this.ethnicity
+		if (this.preferredUserId != undefined) res['preferredUserId'] = this.preferredUserId
+		if (this.picture != undefined) res['picture'] = encodeBase64(this.picture)
+		if (this.externalId != undefined) res['externalId'] = this.externalId
+		res['insurabilities'] = this.insurabilities.map((x0) => x0.toJSON() )
+		res['partnerships'] = this.partnerships.map((x0) => x0.toJSON() )
+		res['patientHealthCareParties'] = this.patientHealthCareParties.map((x0) => x0.toJSON() )
+		res['financialInstitutionInformation'] = this.financialInstitutionInformation.map((x0) => x0.toJSON() )
+		res['medicalHouseContracts'] = this.medicalHouseContracts.map((x0) => x0.toJSON() )
+		res['patientProfessions'] = this.patientProfessions.map((x0) => x0.toJSON() )
+		res['parameters'] = Object.fromEntries(Object.entries(this.parameters).map(([k0, v0]) => [k0, v0.map((x1) => x1 )]))
+		res['properties'] = this.properties.map((x0) => x0.toJSON() )
+		res['hcPartyKeys'] = Object.fromEntries(Object.entries(this.hcPartyKeys).map(([k0, v0]) => [k0, v0.map((x1) => x1 )]))
+		res['aesExchangeKeys'] = Object.fromEntries(Object.entries(this.aesExchangeKeys).map(([k0, v0]) => [k0, Object.fromEntries(Object.entries(v0).map(([k1, v1]) => [k1, Object.fromEntries(Object.entries(v1).map(([k2, v2]) => [k2, v2]))]))]))
+		res['transferKeys'] = Object.fromEntries(Object.entries(this.transferKeys).map(([k0, v0]) => [k0, Object.fromEntries(Object.entries(v0).map(([k1, v1]) => [k1, v1]))]))
+		res['privateKeyShamirPartitions'] = Object.fromEntries(Object.entries(this.privateKeyShamirPartitions).map(([k0, v0]) => [k0, v0]))
+		if (this.publicKey != undefined) res['publicKey'] = this.publicKey
+		res['publicKeysForOaepWithSha256'] = this.publicKeysForOaepWithSha256.map((x0) => x0 )
+		res['secretForeignKeys'] = this.secretForeignKeys.map((x0) => x0 )
+		res['cryptedForeignKeys'] = Object.fromEntries(Object.entries(this.cryptedForeignKeys).map(([k0, v0]) => [k0, v0.map((x1) => x1.toJSON() )]))
+		res['delegations'] = Object.fromEntries(Object.entries(this.delegations).map(([k0, v0]) => [k0, v0.map((x1) => x1.toJSON() )]))
+		res['encryptionKeys'] = Object.fromEntries(Object.entries(this.encryptionKeys).map(([k0, v0]) => [k0, v0.map((x1) => x1.toJSON() )]))
+		if (this.encryptedSelf != undefined) res['encryptedSelf'] = this.encryptedSelf
+		if (this.securityMetadata != undefined) res['securityMetadata'] = this.securityMetadata.toJSON()
+		if (this.cryptoActorProperties != undefined) res['cryptoActorProperties'] = this.cryptoActorProperties.map((x0) => x0.toJSON() )
+		if (this.medicalLocationId != undefined) res['medicalLocationId'] = this.medicalLocationId
+		res['nonDuplicateIds'] = this.nonDuplicateIds.map((x0) => x0 )
+		res['encryptedAdministrativesDocuments'] = this.encryptedAdministrativesDocuments.map((x0) => x0 )
+		if (this.comment != undefined) res['comment'] = this.comment
+		if (this.warning != undefined) res['warning'] = this.warning
+		if (this.fatherBirthCountry != undefined) res['fatherBirthCountry'] = this.fatherBirthCountry.toJSON()
+		if (this.birthCountry != undefined) res['birthCountry'] = this.birthCountry.toJSON()
+		if (this.nativeCountry != undefined) res['nativeCountry'] = this.nativeCountry.toJSON()
+		if (this.socialStatus != undefined) res['socialStatus'] = this.socialStatus.toJSON()
+		if (this.mainSourceOfIncome != undefined) res['mainSourceOfIncome'] = this.mainSourceOfIncome.toJSON()
+		res['schoolingInfos'] = this.schoolingInfos.map((x0) => x0.toJSON() )
+		res['employementInfos'] = this.employementInfos.map((x0) => x0.toJSON() )
+		if (this.parentId != undefined) throw new Error('Unexpected nullish value for parentId')
+		res['isEncrypted'] = true
+		res['$ktClass'] = 'com.icure.cardinal.sdk.model.EncryptedPatient'
+		return res
+	}
+
+	static fromJSON(json: any, ignoreUnknownKeys: boolean = false,
+			path: Array<string> = ['EncryptedPatient']): EncryptedPatient {
+		if (typeof json != 'object') throw new Error(`Expected json object at path ${path.join("")}`)
+		const jCpy = { ...json }
+		if (extractEntry(jCpy, "isEncrypted", true, path) !== true) throw new Error(`Unexpected value for ${path.join("")} isEncrypted marker, should be true. The provided json doesn't represent a EncryptedPatient`)
+		if (extractEntry(jCpy, '\$ktClass', true, path) !== 'com.icure.cardinal.sdk.model.EncryptedPatient') throw new Error(`Unexpected value for ${path.join("")} class marker, should be "com.icure.cardinal.sdk.model.EncryptedPatient". The provided json doesn't represent a EncryptedPatient`)
+		const res = new EncryptedPatient({
+			id: expectString(extractEntry(jCpy, 'id', true, path), false, [...path, ".id"]),
+			identifier: expectArray(extractEntry(jCpy, 'identifier', false, path), false, [...path, ".identifier"], (x0, p0) => expectObject(x0, false, ignoreUnknownKeys, p0, Identifier.fromJSON)),
+			rev: expectString(extractEntry(jCpy, 'rev', false, path), true, [...path, ".rev"]),
+			created: expectNumber(extractEntry(jCpy, 'created', false, path), true, true, [...path, ".created"]),
+			modified: expectNumber(extractEntry(jCpy, 'modified', false, path), true, true, [...path, ".modified"]),
+			author: expectString(extractEntry(jCpy, 'author', false, path), true, [...path, ".author"]),
+			responsible: expectString(extractEntry(jCpy, 'responsible', false, path), true, [...path, ".responsible"]),
+			tags: expectArray(extractEntry(jCpy, 'tags', false, path), false, [...path, ".tags"], (x0, p0) => expectObject(x0, false, ignoreUnknownKeys, p0, CodeStub.fromJSON)),
+			codes: expectArray(extractEntry(jCpy, 'codes', false, path), false, [...path, ".codes"], (x0, p0) => expectObject(x0, false, ignoreUnknownKeys, p0, CodeStub.fromJSON)),
+			endOfLife: expectNumber(extractEntry(jCpy, 'endOfLife', false, path), true, true, [...path, ".endOfLife"]),
+			deletionDate: expectNumber(extractEntry(jCpy, 'deletionDate', false, path), true, true, [...path, ".deletionDate"]),
+			firstName: expectString(extractEntry(jCpy, 'firstName', false, path), true, [...path, ".firstName"]),
+			lastName: expectString(extractEntry(jCpy, 'lastName', false, path), true, [...path, ".lastName"]),
+			names: expectArray(extractEntry(jCpy, 'names', false, path), false, [...path, ".names"], (x0, p0) => expectObject(x0, false, ignoreUnknownKeys, p0, PersonName.fromJSON)),
+			companyName: expectString(extractEntry(jCpy, 'companyName', false, path), true, [...path, ".companyName"]),
+			languages: expectArray(extractEntry(jCpy, 'languages', false, path), false, [...path, ".languages"], (x0, p0) => expectString(x0, false, p0)),
+			addresses: expectArray(extractEntry(jCpy, 'addresses', false, path), false, [...path, ".addresses"], (x0, p0) => expectObject(x0, false, ignoreUnknownKeys, p0, EncryptedAddress.fromJSON)),
+			civility: expectString(extractEntry(jCpy, 'civility', false, path), true, [...path, ".civility"]),
+			gender: expectStringEnum(extractEntry(jCpy, 'gender', false, path), true, [...path, ".gender"], Gender, 'Gender'),
+			birthSex: expectStringEnum(extractEntry(jCpy, 'birthSex', false, path), true, [...path, ".birthSex"], Gender, 'Gender'),
+			mergeToPatientId: expectString(extractEntry(jCpy, 'mergeToPatientId', false, path), true, [...path, ".mergeToPatientId"]),
+			mergedIds: expectArray(extractEntry(jCpy, 'mergedIds', false, path), false, [...path, ".mergedIds"], (x0, p0) => expectString(x0, false, p0)),
+			alias: expectString(extractEntry(jCpy, 'alias', false, path), true, [...path, ".alias"]),
+			active: expectBoolean(extractEntry(jCpy, 'active', false, path), false, [...path, ".active"]),
+			deactivationReason: expectString(extractEntry(jCpy, 'deactivationReason', false, path), false, [...path, ".deactivationReason"]),
+			deactivationDate: expectNumber(extractEntry(jCpy, 'deactivationDate', false, path), true, true, [...path, ".deactivationDate"]),
+			ssin: expectString(extractEntry(jCpy, 'ssin', false, path), true, [...path, ".ssin"]),
+			maidenName: expectString(extractEntry(jCpy, 'maidenName', false, path), true, [...path, ".maidenName"]),
+			spouseName: expectString(extractEntry(jCpy, 'spouseName', false, path), true, [...path, ".spouseName"]),
+			partnerName: expectString(extractEntry(jCpy, 'partnerName', false, path), true, [...path, ".partnerName"]),
+			personalStatus: expectStringEnum(extractEntry(jCpy, 'personalStatus', false, path), true, [...path, ".personalStatus"], PersonalStatus, 'PersonalStatus'),
+			dateOfBirth: expectNumber(extractEntry(jCpy, 'dateOfBirth', false, path), true, true, [...path, ".dateOfBirth"]),
+			dateOfDeath: expectNumber(extractEntry(jCpy, 'dateOfDeath', false, path), true, true, [...path, ".dateOfDeath"]),
+			timestampOfLatestEidReading: expectNumber(extractEntry(jCpy, 'timestampOfLatestEidReading', false, path), true, true, [...path, ".timestampOfLatestEidReading"]),
+			placeOfBirth: expectString(extractEntry(jCpy, 'placeOfBirth', false, path), true, [...path, ".placeOfBirth"]),
+			placeOfDeath: expectString(extractEntry(jCpy, 'placeOfDeath', false, path), true, [...path, ".placeOfDeath"]),
+			deceased: expectBoolean(extractEntry(jCpy, 'deceased', false, path), true, [...path, ".deceased"]),
+			education: expectString(extractEntry(jCpy, 'education', false, path), true, [...path, ".education"]),
+			profession: expectString(extractEntry(jCpy, 'profession', false, path), true, [...path, ".profession"]),
+			notes: expectArray(extractEntry(jCpy, 'notes', false, path), false, [...path, ".notes"], (x0, p0) => expectObject(x0, false, ignoreUnknownKeys, p0, Annotation.fromJSON)),
+			note: expectString(extractEntry(jCpy, 'note', false, path), true, [...path, ".note"]),
+			administrativeNote: expectString(extractEntry(jCpy, 'administrativeNote', false, path), true, [...path, ".administrativeNote"]),
+			nationality: expectString(extractEntry(jCpy, 'nationality', false, path), true, [...path, ".nationality"]),
+			race: expectString(extractEntry(jCpy, 'race', false, path), true, [...path, ".race"]),
+			ethnicity: expectString(extractEntry(jCpy, 'ethnicity', false, path), true, [...path, ".ethnicity"]),
+			preferredUserId: expectString(extractEntry(jCpy, 'preferredUserId', false, path), true, [...path, ".preferredUserId"]),
+			picture: decodeBase64(expectString(extractEntry(jCpy, 'picture', false, path), true, [...path, ".picture"]), [...path, ".picture"]),
+			externalId: expectString(extractEntry(jCpy, 'externalId', false, path), true, [...path, ".externalId"]),
+			insurabilities: expectArray(extractEntry(jCpy, 'insurabilities', false, path), false, [...path, ".insurabilities"], (x0, p0) => expectObject(x0, false, ignoreUnknownKeys, p0, EncryptedInsurability.fromJSON)),
+			partnerships: expectArray(extractEntry(jCpy, 'partnerships', false, path), false, [...path, ".partnerships"], (x0, p0) => expectObject(x0, false, ignoreUnknownKeys, p0, Partnership.fromJSON)),
+			patientHealthCareParties: expectArray(extractEntry(jCpy, 'patientHealthCareParties', false, path), false, [...path, ".patientHealthCareParties"], (x0, p0) => expectObject(x0, false, ignoreUnknownKeys, p0, EncryptedPatientHealthCareParty.fromJSON)),
+			financialInstitutionInformation: expectArray(extractEntry(jCpy, 'financialInstitutionInformation', false, path), false, [...path, ".financialInstitutionInformation"], (x0, p0) => expectObject(x0, false, ignoreUnknownKeys, p0, EncryptedFinancialInstitutionInformation.fromJSON)),
+			medicalHouseContracts: expectArray(extractEntry(jCpy, 'medicalHouseContracts', false, path), false, [...path, ".medicalHouseContracts"], (x0, p0) => expectObject(x0, false, ignoreUnknownKeys, p0, EncryptedMedicalHouseContract.fromJSON)),
+			patientProfessions: expectArray(extractEntry(jCpy, 'patientProfessions', false, path), false, [...path, ".patientProfessions"], (x0, p0) => expectObject(x0, false, ignoreUnknownKeys, p0, CodeStub.fromJSON)),
+			parameters: expectMap(
+				extractEntry(jCpy, 'parameters', false, path),
+				false,
+				[...path, ".parameters"],
+				(k0, p0) => expectString(k0, false, p0),
+				(v0, p0) => expectArray(v0, false, p0, (x1, p1) => expectString(x1, false, p1))
+			),
+			properties: expectArray(extractEntry(jCpy, 'properties', false, path), false, [...path, ".properties"], (x0, p0) => expectObject(x0, false, ignoreUnknownKeys, p0, EncryptedPropertyStub.fromJSON)),
+			hcPartyKeys: expectMap(
+				extractEntry(jCpy, 'hcPartyKeys', false, path),
+				false,
+				[...path, ".hcPartyKeys"],
+				(k0, p0) => expectString(k0, false, p0),
+				(v0, p0) => expectArray(v0, false, p0, (x1, p1) => expectString(x1, false, p1))
+			),
+			aesExchangeKeys: expectMap(
+				extractEntry(jCpy, 'aesExchangeKeys', false, path),
+				false,
+				[...path, ".aesExchangeKeys"],
+				(k0, p0) => expectString(k0, false, p0),
+				(v0, p0) => expectMap(
+					v0,
+					false,
+					p0,
+					(k1, p1) => expectString(k1, false, p1),
+					(v1, p1) => expectMap(
+						v1,
+						false,
+						p1,
+						(k2, p2) => expectString(k2, false, p2),
+						(v2, p2) => expectString(v2, false, p2)
+					)
+				)
+			),
+			transferKeys: expectMap(
+				extractEntry(jCpy, 'transferKeys', false, path),
+				false,
+				[...path, ".transferKeys"],
+				(k0, p0) => expectString(k0, false, p0),
+				(v0, p0) => expectMap(
+					v0,
+					false,
+					p0,
+					(k1, p1) => expectString(k1, false, p1),
+					(v1, p1) => expectString(v1, false, p1)
+				)
+			),
+			privateKeyShamirPartitions: expectMap(
+				extractEntry(jCpy, 'privateKeyShamirPartitions', false, path),
+				false,
+				[...path, ".privateKeyShamirPartitions"],
+				(k0, p0) => expectString(k0, false, p0),
+				(v0, p0) => expectString(v0, false, p0)
+			),
+			publicKey: expectString(extractEntry(jCpy, 'publicKey', false, path), true, [...path, ".publicKey"]),
+			publicKeysForOaepWithSha256: expectArray(extractEntry(jCpy, 'publicKeysForOaepWithSha256', false, path), false, [...path, ".publicKeysForOaepWithSha256"], (x0, p0) => expectString(x0, false, p0)),
+			secretForeignKeys: expectArray(extractEntry(jCpy, 'secretForeignKeys', false, path), false, [...path, ".secretForeignKeys"], (x0, p0) => expectString(x0, false, p0)),
+			cryptedForeignKeys: expectMap(
+				extractEntry(jCpy, 'cryptedForeignKeys', false, path),
+				false,
+				[...path, ".cryptedForeignKeys"],
+				(k0, p0) => expectString(k0, false, p0),
+				(v0, p0) => expectArray(v0, false, p0, (x1, p1) => expectObject(x1, false, ignoreUnknownKeys, p1, Delegation.fromJSON))
+			),
+			delegations: expectMap(
+				extractEntry(jCpy, 'delegations', false, path),
+				false,
+				[...path, ".delegations"],
+				(k0, p0) => expectString(k0, false, p0),
+				(v0, p0) => expectArray(v0, false, p0, (x1, p1) => expectObject(x1, false, ignoreUnknownKeys, p1, Delegation.fromJSON))
+			),
+			encryptionKeys: expectMap(
+				extractEntry(jCpy, 'encryptionKeys', false, path),
+				false,
+				[...path, ".encryptionKeys"],
+				(k0, p0) => expectString(k0, false, p0),
+				(v0, p0) => expectArray(v0, false, p0, (x1, p1) => expectObject(x1, false, ignoreUnknownKeys, p1, Delegation.fromJSON))
+			),
+			encryptedSelf: expectString(extractEntry(jCpy, 'encryptedSelf', false, path), true, [...path, ".encryptedSelf"]),
+			securityMetadata: expectObject(extractEntry(jCpy, 'securityMetadata', false, path), true, ignoreUnknownKeys, [...path, ".securityMetadata"], SecurityMetadata.fromJSON),
+			cryptoActorProperties: expectArray(extractEntry(jCpy, 'cryptoActorProperties', false, path), true, [...path, ".cryptoActorProperties"], (x0, p0) => expectObject(x0, false, ignoreUnknownKeys, p0, DecryptedPropertyStub.fromJSON)),
+			medicalLocationId: expectString(extractEntry(jCpy, 'medicalLocationId', false, path), true, [...path, ".medicalLocationId"]),
+			nonDuplicateIds: expectArray(extractEntry(jCpy, 'nonDuplicateIds', false, path), false, [...path, ".nonDuplicateIds"], (x0, p0) => expectString(x0, false, p0)),
+			encryptedAdministrativesDocuments: expectArray(extractEntry(jCpy, 'encryptedAdministrativesDocuments', false, path), false, [...path, ".encryptedAdministrativesDocuments"], (x0, p0) => expectString(x0, false, p0)),
+			comment: expectString(extractEntry(jCpy, 'comment', false, path), true, [...path, ".comment"]),
+			warning: expectString(extractEntry(jCpy, 'warning', false, path), true, [...path, ".warning"]),
+			fatherBirthCountry: expectObject(extractEntry(jCpy, 'fatherBirthCountry', false, path), true, ignoreUnknownKeys, [...path, ".fatherBirthCountry"], CodeStub.fromJSON),
+			birthCountry: expectObject(extractEntry(jCpy, 'birthCountry', false, path), true, ignoreUnknownKeys, [...path, ".birthCountry"], CodeStub.fromJSON),
+			nativeCountry: expectObject(extractEntry(jCpy, 'nativeCountry', false, path), true, ignoreUnknownKeys, [...path, ".nativeCountry"], CodeStub.fromJSON),
+			socialStatus: expectObject(extractEntry(jCpy, 'socialStatus', false, path), true, ignoreUnknownKeys, [...path, ".socialStatus"], CodeStub.fromJSON),
+			mainSourceOfIncome: expectObject(extractEntry(jCpy, 'mainSourceOfIncome', false, path), true, ignoreUnknownKeys, [...path, ".mainSourceOfIncome"], CodeStub.fromJSON),
+			schoolingInfos: expectArray(extractEntry(jCpy, 'schoolingInfos', false, path), false, [...path, ".schoolingInfos"], (x0, p0) => expectObject(x0, false, ignoreUnknownKeys, p0, EncryptedSchoolingInfo.fromJSON)),
+			employementInfos: expectArray(extractEntry(jCpy, 'employementInfos', false, path), false, [...path, ".employementInfos"], (x0, p0) => expectObject(x0, false, ignoreUnknownKeys, p0, EncryptedEmploymentInfo.fromJSON)),
+			parentId: expectNullish(extractEntry(jCpy, 'parentId', false, path), [...path, ".parentId"]),
+		})
+		if (!ignoreUnknownKeys) {
+			const unused = Object.keys(jCpy)
+			if (unused.length > 0) throw new Error(`Unexpected key(s) for json object EncryptedPatient at path ${path.join("")}: ${unused}`)}
+		return res
 	}
 
 }

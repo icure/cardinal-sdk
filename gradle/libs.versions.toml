@@ -7,12 +7,12 @@ kotlinSerialization = "1.9.0"
 kotlinDateTime = "0.7.1"
 kotest = "6.0.0.M1"
 androidLibrary = "8.10.0"
-kryptom = "1.3.0"
+kryptom = "1.4.0"
 kermit = "2.0.3"
 okio = "3.9.1"
 bouncyCastle = "1.70"
 kotp = "1.0.1"
-kerberus = "1.1.7"
+kerberus = "1.1.8"
 
 [libraries]
 

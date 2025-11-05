@@ -1,4 +1,5 @@
 // auto-generated file
+import {expectBoolean, expectMap, expectNumber, expectString, expectStringEnum, extractEntry} from '../../internal/JsonDecodeUtils.mjs';
 import {Base64String} from '../specializations/Base64String.mjs';
 import {ContractChangeType} from './ContractChangeType.mjs';
 import {Encryptable} from './Encryptable.mjs';
@@ -73,6 +74,8 @@ export interface MedicalHouseContract extends Encryptable {
 	receipts: { [ key: string ]: string };
 
 	readonly isEncrypted: boolean;
+
+	toJSON(): object;
 
 }
 
@@ -183,6 +186,103 @@ export class DecryptedMedicalHouseContract {
 		if ('encryptedSelf' in partial) this.encryptedSelf = partial.encryptedSelf;
 	}
 
+	toJSON(): object {
+		const res: { [k: string]: any } = {}
+		if (this.contractId != undefined) res['contractId'] = this.contractId
+		if (this.validFrom != undefined) res['validFrom'] = this.validFrom
+		if (this.validTo != undefined) res['validTo'] = this.validTo
+		if (this.mmNihii != undefined) res['mmNihii'] = this.mmNihii
+		if (this.hcpId != undefined) res['hcpId'] = this.hcpId
+		if (this.changeType != undefined) res['changeType'] = this.changeType
+		if (this.parentContractId != undefined) res['parentContractId'] = this.parentContractId
+		if (this.changedBy != undefined) res['changedBy'] = this.changedBy
+		if (this.startOfContract != undefined) res['startOfContract'] = this.startOfContract
+		if (this.startOfCoverage != undefined) res['startOfCoverage'] = this.startOfCoverage
+		if (this.endOfContract != undefined) res['endOfContract'] = this.endOfContract
+		if (this.endOfCoverage != undefined) res['endOfCoverage'] = this.endOfCoverage
+		res['kine'] = this.kine
+		res['gp'] = this.gp
+		res['ptd'] = this.ptd
+		res['nurse'] = this.nurse
+		res['noKine'] = this.noKine
+		res['noGp'] = this.noGp
+		res['noNurse'] = this.noNurse
+		if (this.unsubscriptionReasonId != undefined) res['unsubscriptionReasonId'] = this.unsubscriptionReasonId
+		if (this.ptdStart != undefined) res['ptdStart'] = this.ptdStart
+		if (this.ptdEnd != undefined) res['ptdEnd'] = this.ptdEnd
+		if (this.ptdLastInvoiced != undefined) res['ptdLastInvoiced'] = this.ptdLastInvoiced
+		if (this.startOfSuspension != undefined) res['startOfSuspension'] = this.startOfSuspension
+		if (this.endOfSuspension != undefined) res['endOfSuspension'] = this.endOfSuspension
+		if (this.suspensionReason != undefined) res['suspensionReason'] = this.suspensionReason
+		if (this.suspensionSource != undefined) res['suspensionSource'] = this.suspensionSource
+		res['forcedSuspension'] = this.forcedSuspension
+		if (this.signatureType != undefined) res['signatureType'] = this.signatureType
+		if (this.status != undefined) res['status'] = this.status
+		res['options'] = Object.fromEntries(Object.entries(this.options).map(([k0, v0]) => [k0, v0]))
+		res['receipts'] = Object.fromEntries(Object.entries(this.receipts).map(([k0, v0]) => [k0, v0]))
+		if (this.encryptedSelf != undefined) res['encryptedSelf'] = this.encryptedSelf
+		res['isEncrypted'] = false
+		return res
+	}
+
+	static fromJSON(json: any, ignoreUnknownKeys: boolean = false,
+			path: Array<string> = ['DecryptedMedicalHouseContract']): DecryptedMedicalHouseContract {
+		if (typeof json != 'object') throw new Error(`Expected json object at path ${path.join("")}`)
+		const jCpy = { ...json }
+		if (extractEntry(jCpy, "isEncrypted", true, path) !== false) throw new Error(`Unexpected value for ${path.join("")} isEncrypted marker, should be false. The provided json doesn't represent a DecryptedMedicalHouseContract`)
+		const res = new DecryptedMedicalHouseContract({
+			contractId: expectString(extractEntry(jCpy, 'contractId', false, path), true, [...path, ".contractId"]),
+			validFrom: expectNumber(extractEntry(jCpy, 'validFrom', false, path), true, true, [...path, ".validFrom"]),
+			validTo: expectNumber(extractEntry(jCpy, 'validTo', false, path), true, true, [...path, ".validTo"]),
+			mmNihii: expectString(extractEntry(jCpy, 'mmNihii', false, path), true, [...path, ".mmNihii"]),
+			hcpId: expectString(extractEntry(jCpy, 'hcpId', false, path), true, [...path, ".hcpId"]),
+			changeType: expectStringEnum(extractEntry(jCpy, 'changeType', false, path), true, [...path, ".changeType"], ContractChangeType, 'ContractChangeType'),
+			parentContractId: expectString(extractEntry(jCpy, 'parentContractId', false, path), true, [...path, ".parentContractId"]),
+			changedBy: expectString(extractEntry(jCpy, 'changedBy', false, path), true, [...path, ".changedBy"]),
+			startOfContract: expectNumber(extractEntry(jCpy, 'startOfContract', false, path), true, true, [...path, ".startOfContract"]),
+			startOfCoverage: expectNumber(extractEntry(jCpy, 'startOfCoverage', false, path), true, true, [...path, ".startOfCoverage"]),
+			endOfContract: expectNumber(extractEntry(jCpy, 'endOfContract', false, path), true, true, [...path, ".endOfContract"]),
+			endOfCoverage: expectNumber(extractEntry(jCpy, 'endOfCoverage', false, path), true, true, [...path, ".endOfCoverage"]),
+			kine: expectBoolean(extractEntry(jCpy, 'kine', false, path), false, [...path, ".kine"]),
+			gp: expectBoolean(extractEntry(jCpy, 'gp', false, path), false, [...path, ".gp"]),
+			ptd: expectBoolean(extractEntry(jCpy, 'ptd', false, path), false, [...path, ".ptd"]),
+			nurse: expectBoolean(extractEntry(jCpy, 'nurse', false, path), false, [...path, ".nurse"]),
+			noKine: expectBoolean(extractEntry(jCpy, 'noKine', false, path), false, [...path, ".noKine"]),
+			noGp: expectBoolean(extractEntry(jCpy, 'noGp', false, path), false, [...path, ".noGp"]),
+			noNurse: expectBoolean(extractEntry(jCpy, 'noNurse', false, path), false, [...path, ".noNurse"]),
+			unsubscriptionReasonId: expectNumber(extractEntry(jCpy, 'unsubscriptionReasonId', false, path), true, true, [...path, ".unsubscriptionReasonId"]),
+			ptdStart: expectNumber(extractEntry(jCpy, 'ptdStart', false, path), true, true, [...path, ".ptdStart"]),
+			ptdEnd: expectNumber(extractEntry(jCpy, 'ptdEnd', false, path), true, true, [...path, ".ptdEnd"]),
+			ptdLastInvoiced: expectNumber(extractEntry(jCpy, 'ptdLastInvoiced', false, path), true, true, [...path, ".ptdLastInvoiced"]),
+			startOfSuspension: expectNumber(extractEntry(jCpy, 'startOfSuspension', false, path), true, true, [...path, ".startOfSuspension"]),
+			endOfSuspension: expectNumber(extractEntry(jCpy, 'endOfSuspension', false, path), true, true, [...path, ".endOfSuspension"]),
+			suspensionReason: expectStringEnum(extractEntry(jCpy, 'suspensionReason', false, path), true, [...path, ".suspensionReason"], SuspensionReason, 'SuspensionReason'),
+			suspensionSource: expectString(extractEntry(jCpy, 'suspensionSource', false, path), true, [...path, ".suspensionSource"]),
+			forcedSuspension: expectBoolean(extractEntry(jCpy, 'forcedSuspension', false, path), false, [...path, ".forcedSuspension"]),
+			signatureType: expectStringEnum(extractEntry(jCpy, 'signatureType', false, path), true, [...path, ".signatureType"], MhcSignatureType, 'MhcSignatureType'),
+			status: expectNumber(extractEntry(jCpy, 'status', false, path), true, true, [...path, ".status"]),
+			options: expectMap(
+				extractEntry(jCpy, 'options', false, path),
+				false,
+				[...path, ".options"],
+				(k0, p0) => expectString(k0, false, p0),
+				(v0, p0) => expectString(v0, false, p0)
+			),
+			receipts: expectMap(
+				extractEntry(jCpy, 'receipts', false, path),
+				false,
+				[...path, ".receipts"],
+				(k0, p0) => expectString(k0, false, p0),
+				(v0, p0) => expectString(v0, false, p0)
+			),
+			encryptedSelf: expectString(extractEntry(jCpy, 'encryptedSelf', false, path), true, [...path, ".encryptedSelf"]),
+		})
+		if (!ignoreUnknownKeys) {
+			const unused = Object.keys(jCpy)
+			if (unused.length > 0) throw new Error(`Unexpected key(s) for json object DecryptedMedicalHouseContract at path ${path.join("")}: ${unused}`)}
+		return res
+	}
+
 }
 
 export class EncryptedMedicalHouseContract {
@@ -290,6 +390,103 @@ export class EncryptedMedicalHouseContract {
 		if ('options' in partial && partial.options !== undefined) this.options = partial.options;
 		if ('receipts' in partial && partial.receipts !== undefined) this.receipts = partial.receipts;
 		if ('encryptedSelf' in partial) this.encryptedSelf = partial.encryptedSelf;
+	}
+
+	toJSON(): object {
+		const res: { [k: string]: any } = {}
+		if (this.contractId != undefined) res['contractId'] = this.contractId
+		if (this.validFrom != undefined) res['validFrom'] = this.validFrom
+		if (this.validTo != undefined) res['validTo'] = this.validTo
+		if (this.mmNihii != undefined) res['mmNihii'] = this.mmNihii
+		if (this.hcpId != undefined) res['hcpId'] = this.hcpId
+		if (this.changeType != undefined) res['changeType'] = this.changeType
+		if (this.parentContractId != undefined) res['parentContractId'] = this.parentContractId
+		if (this.changedBy != undefined) res['changedBy'] = this.changedBy
+		if (this.startOfContract != undefined) res['startOfContract'] = this.startOfContract
+		if (this.startOfCoverage != undefined) res['startOfCoverage'] = this.startOfCoverage
+		if (this.endOfContract != undefined) res['endOfContract'] = this.endOfContract
+		if (this.endOfCoverage != undefined) res['endOfCoverage'] = this.endOfCoverage
+		res['kine'] = this.kine
+		res['gp'] = this.gp
+		res['ptd'] = this.ptd
+		res['nurse'] = this.nurse
+		res['noKine'] = this.noKine
+		res['noGp'] = this.noGp
+		res['noNurse'] = this.noNurse
+		if (this.unsubscriptionReasonId != undefined) res['unsubscriptionReasonId'] = this.unsubscriptionReasonId
+		if (this.ptdStart != undefined) res['ptdStart'] = this.ptdStart
+		if (this.ptdEnd != undefined) res['ptdEnd'] = this.ptdEnd
+		if (this.ptdLastInvoiced != undefined) res['ptdLastInvoiced'] = this.ptdLastInvoiced
+		if (this.startOfSuspension != undefined) res['startOfSuspension'] = this.startOfSuspension
+		if (this.endOfSuspension != undefined) res['endOfSuspension'] = this.endOfSuspension
+		if (this.suspensionReason != undefined) res['suspensionReason'] = this.suspensionReason
+		if (this.suspensionSource != undefined) res['suspensionSource'] = this.suspensionSource
+		res['forcedSuspension'] = this.forcedSuspension
+		if (this.signatureType != undefined) res['signatureType'] = this.signatureType
+		if (this.status != undefined) res['status'] = this.status
+		res['options'] = Object.fromEntries(Object.entries(this.options).map(([k0, v0]) => [k0, v0]))
+		res['receipts'] = Object.fromEntries(Object.entries(this.receipts).map(([k0, v0]) => [k0, v0]))
+		if (this.encryptedSelf != undefined) res['encryptedSelf'] = this.encryptedSelf
+		res['isEncrypted'] = true
+		return res
+	}
+
+	static fromJSON(json: any, ignoreUnknownKeys: boolean = false,
+			path: Array<string> = ['EncryptedMedicalHouseContract']): EncryptedMedicalHouseContract {
+		if (typeof json != 'object') throw new Error(`Expected json object at path ${path.join("")}`)
+		const jCpy = { ...json }
+		if (extractEntry(jCpy, "isEncrypted", true, path) !== true) throw new Error(`Unexpected value for ${path.join("")} isEncrypted marker, should be true. The provided json doesn't represent a EncryptedMedicalHouseContract`)
+		const res = new EncryptedMedicalHouseContract({
+			contractId: expectString(extractEntry(jCpy, 'contractId', false, path), true, [...path, ".contractId"]),
+			validFrom: expectNumber(extractEntry(jCpy, 'validFrom', false, path), true, true, [...path, ".validFrom"]),
+			validTo: expectNumber(extractEntry(jCpy, 'validTo', false, path), true, true, [...path, ".validTo"]),
+			mmNihii: expectString(extractEntry(jCpy, 'mmNihii', false, path), true, [...path, ".mmNihii"]),
+			hcpId: expectString(extractEntry(jCpy, 'hcpId', false, path), true, [...path, ".hcpId"]),
+			changeType: expectStringEnum(extractEntry(jCpy, 'changeType', false, path), true, [...path, ".changeType"], ContractChangeType, 'ContractChangeType'),
+			parentContractId: expectString(extractEntry(jCpy, 'parentContractId', false, path), true, [...path, ".parentContractId"]),
+			changedBy: expectString(extractEntry(jCpy, 'changedBy', false, path), true, [...path, ".changedBy"]),
+			startOfContract: expectNumber(extractEntry(jCpy, 'startOfContract', false, path), true, true, [...path, ".startOfContract"]),
+			startOfCoverage: expectNumber(extractEntry(jCpy, 'startOfCoverage', false, path), true, true, [...path, ".startOfCoverage"]),
+			endOfContract: expectNumber(extractEntry(jCpy, 'endOfContract', false, path), true, true, [...path, ".endOfContract"]),
+			endOfCoverage: expectNumber(extractEntry(jCpy, 'endOfCoverage', false, path), true, true, [...path, ".endOfCoverage"]),
+			kine: expectBoolean(extractEntry(jCpy, 'kine', false, path), false, [...path, ".kine"]),
+			gp: expectBoolean(extractEntry(jCpy, 'gp', false, path), false, [...path, ".gp"]),
+			ptd: expectBoolean(extractEntry(jCpy, 'ptd', false, path), false, [...path, ".ptd"]),
+			nurse: expectBoolean(extractEntry(jCpy, 'nurse', false, path), false, [...path, ".nurse"]),
+			noKine: expectBoolean(extractEntry(jCpy, 'noKine', false, path), false, [...path, ".noKine"]),
+			noGp: expectBoolean(extractEntry(jCpy, 'noGp', false, path), false, [...path, ".noGp"]),
+			noNurse: expectBoolean(extractEntry(jCpy, 'noNurse', false, path), false, [...path, ".noNurse"]),
+			unsubscriptionReasonId: expectNumber(extractEntry(jCpy, 'unsubscriptionReasonId', false, path), true, true, [...path, ".unsubscriptionReasonId"]),
+			ptdStart: expectNumber(extractEntry(jCpy, 'ptdStart', false, path), true, true, [...path, ".ptdStart"]),
+			ptdEnd: expectNumber(extractEntry(jCpy, 'ptdEnd', false, path), true, true, [...path, ".ptdEnd"]),
+			ptdLastInvoiced: expectNumber(extractEntry(jCpy, 'ptdLastInvoiced', false, path), true, true, [...path, ".ptdLastInvoiced"]),
+			startOfSuspension: expectNumber(extractEntry(jCpy, 'startOfSuspension', false, path), true, true, [...path, ".startOfSuspension"]),
+			endOfSuspension: expectNumber(extractEntry(jCpy, 'endOfSuspension', false, path), true, true, [...path, ".endOfSuspension"]),
+			suspensionReason: expectStringEnum(extractEntry(jCpy, 'suspensionReason', false, path), true, [...path, ".suspensionReason"], SuspensionReason, 'SuspensionReason'),
+			suspensionSource: expectString(extractEntry(jCpy, 'suspensionSource', false, path), true, [...path, ".suspensionSource"]),
+			forcedSuspension: expectBoolean(extractEntry(jCpy, 'forcedSuspension', false, path), false, [...path, ".forcedSuspension"]),
+			signatureType: expectStringEnum(extractEntry(jCpy, 'signatureType', false, path), true, [...path, ".signatureType"], MhcSignatureType, 'MhcSignatureType'),
+			status: expectNumber(extractEntry(jCpy, 'status', false, path), true, true, [...path, ".status"]),
+			options: expectMap(
+				extractEntry(jCpy, 'options', false, path),
+				false,
+				[...path, ".options"],
+				(k0, p0) => expectString(k0, false, p0),
+				(v0, p0) => expectString(v0, false, p0)
+			),
+			receipts: expectMap(
+				extractEntry(jCpy, 'receipts', false, path),
+				false,
+				[...path, ".receipts"],
+				(k0, p0) => expectString(k0, false, p0),
+				(v0, p0) => expectString(v0, false, p0)
+			),
+			encryptedSelf: expectString(extractEntry(jCpy, 'encryptedSelf', false, path), true, [...path, ".encryptedSelf"]),
+		})
+		if (!ignoreUnknownKeys) {
+			const unused = Object.keys(jCpy)
+			if (unused.length > 0) throw new Error(`Unexpected key(s) for json object EncryptedMedicalHouseContract at path ${path.join("")}: ${unused}`)}
+		return res
 	}
 
 }

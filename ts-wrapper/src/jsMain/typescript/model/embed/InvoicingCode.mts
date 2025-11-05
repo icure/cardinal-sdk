@@ -1,4 +1,5 @@
 // auto-generated file
+import {expectBoolean, expectMap, expectNumber, expectString, expectStringEnum, extractEntry} from '../../internal/JsonDecodeUtils.mjs';
 import {Base64String} from '../specializations/Base64String.mjs';
 import {Encryptable} from './Encryptable.mjs';
 import {PaymentType} from './PaymentType.mjs';
@@ -117,6 +118,8 @@ export interface InvoicingCode extends Encryptable {
 	options: { [ key: string ]: string };
 
 	readonly isEncrypted: boolean;
+
+	toJSON(): object;
 
 }
 
@@ -296,6 +299,143 @@ export class DecryptedInvoicingCode {
 		if ('encryptedSelf' in partial) this.encryptedSelf = partial.encryptedSelf;
 	}
 
+	toJSON(): object {
+		const res: { [k: string]: any } = {}
+		res['id'] = this.id ?? null
+		if (this.dateCode != undefined) res['dateCode'] = this.dateCode
+		if (this.logicalId != undefined) res['logicalId'] = this.logicalId
+		if (this.label != undefined) res['label'] = this.label
+		if (this.userId != undefined) res['userId'] = this.userId
+		if (this.contactId != undefined) res['contactId'] = this.contactId
+		if (this.serviceId != undefined) res['serviceId'] = this.serviceId
+		if (this.tarificationId != undefined) res['tarificationId'] = this.tarificationId
+		if (this.code != undefined) res['code'] = this.code
+		if (this.paymentType != undefined) res['paymentType'] = this.paymentType
+		if (this.paid != undefined) res['paid'] = this.paid
+		if (this.totalAmount != undefined) res['totalAmount'] = this.totalAmount
+		if (this.reimbursement != undefined) res['reimbursement'] = this.reimbursement
+		if (this.patientIntervention != undefined) res['patientIntervention'] = this.patientIntervention
+		if (this.amiIntervention != undefined) res['amiIntervention'] = this.amiIntervention
+		if (this.doctorSupplement != undefined) res['doctorSupplement'] = this.doctorSupplement
+		if (this.conventionAmount != undefined) res['conventionAmount'] = this.conventionAmount
+		if (this.vat != undefined) res['vat'] = this.vat
+		if (this.error != undefined) res['error'] = this.error
+		if (this.contract != undefined) res['contract'] = this.contract
+		if (this.contractDate != undefined) res['contractDate'] = this.contractDate
+		if (this.units != undefined) res['units'] = this.units
+		if (this.side != undefined) res['side'] = this.side
+		if (this.timeOfDay != undefined) res['timeOfDay'] = this.timeOfDay
+		if (this.eidReadingHour != undefined) res['eidReadingHour'] = this.eidReadingHour
+		if (this.eidReadingValue != undefined) res['eidReadingValue'] = this.eidReadingValue
+		if (this.override3rdPayerCode != undefined) res['override3rdPayerCode'] = this.override3rdPayerCode
+		if (this.override3rdPayerReason != undefined) res['override3rdPayerReason'] = this.override3rdPayerReason
+		if (this.transplantationCode != undefined) res['transplantationCode'] = this.transplantationCode
+		if (this.prescriberNorm != undefined) res['prescriberNorm'] = this.prescriberNorm
+		if (this.productLabel != undefined) res['productLabel'] = this.productLabel
+		if (this.percentNorm != undefined) res['percentNorm'] = this.percentNorm
+		if (this.prescriberNihii != undefined) res['prescriberNihii'] = this.prescriberNihii
+		if (this.relatedCode != undefined) res['relatedCode'] = this.relatedCode
+		if (this.prescriptionDate != undefined) res['prescriptionDate'] = this.prescriptionDate
+		if (this.derogationMaxNumber != undefined) res['derogationMaxNumber'] = this.derogationMaxNumber
+		if (this.prescriberSsin != undefined) res['prescriberSsin'] = this.prescriberSsin
+		if (this.prescriberLastName != undefined) res['prescriberLastName'] = this.prescriberLastName
+		if (this.prescriberFirstName != undefined) res['prescriberFirstName'] = this.prescriberFirstName
+		if (this.prescriberCdHcParty != undefined) res['prescriberCdHcParty'] = this.prescriberCdHcParty
+		if (this.locationNihii != undefined) res['locationNihii'] = this.locationNihii
+		if (this.locationCdHcParty != undefined) res['locationCdHcParty'] = this.locationCdHcParty
+		if (this.locationService != undefined) res['locationService'] = this.locationService
+		if (this.admissionDate != undefined) res['admissionDate'] = this.admissionDate
+		if (this.canceled != undefined) res['canceled'] = this.canceled
+		if (this.accepted != undefined) res['accepted'] = this.accepted
+		if (this.pending != undefined) res['pending'] = this.pending
+		if (this.resent != undefined) res['resent'] = this.resent
+		if (this.archived != undefined) res['archived'] = this.archived
+		if (this.lost != undefined) res['lost'] = this.lost
+		if (this.insuranceJustification != undefined) res['insuranceJustification'] = this.insuranceJustification
+		if (this.cancelPatientInterventionReason != undefined) res['cancelPatientInterventionReason'] = this.cancelPatientInterventionReason
+		if (this.status != undefined) res['status'] = this.status
+		if (this.codeLabel != undefined) res['codeLabel'] = this.codeLabel
+		res['options'] = Object.fromEntries(Object.entries(this.options).map(([k0, v0]) => [k0, v0]))
+		if (this.encryptedSelf != undefined) res['encryptedSelf'] = this.encryptedSelf
+		res['isEncrypted'] = false
+		return res
+	}
+
+	static fromJSON(json: any, ignoreUnknownKeys: boolean = false,
+			path: Array<string> = ['DecryptedInvoicingCode']): DecryptedInvoicingCode {
+		if (typeof json != 'object') throw new Error(`Expected json object at path ${path.join("")}`)
+		const jCpy = { ...json }
+		if (extractEntry(jCpy, "isEncrypted", true, path) !== false) throw new Error(`Unexpected value for ${path.join("")} isEncrypted marker, should be false. The provided json doesn't represent a DecryptedInvoicingCode`)
+		const res = new DecryptedInvoicingCode({
+			id: expectString(extractEntry(jCpy, 'id', true, path), true, [...path, ".id"]),
+			dateCode: expectNumber(extractEntry(jCpy, 'dateCode', false, path), true, true, [...path, ".dateCode"]),
+			logicalId: expectString(extractEntry(jCpy, 'logicalId', false, path), true, [...path, ".logicalId"]),
+			label: expectString(extractEntry(jCpy, 'label', false, path), true, [...path, ".label"]),
+			userId: expectString(extractEntry(jCpy, 'userId', false, path), true, [...path, ".userId"]),
+			contactId: expectString(extractEntry(jCpy, 'contactId', false, path), true, [...path, ".contactId"]),
+			serviceId: expectString(extractEntry(jCpy, 'serviceId', false, path), true, [...path, ".serviceId"]),
+			tarificationId: expectString(extractEntry(jCpy, 'tarificationId', false, path), true, [...path, ".tarificationId"]),
+			code: expectString(extractEntry(jCpy, 'code', false, path), true, [...path, ".code"]),
+			paymentType: expectStringEnum(extractEntry(jCpy, 'paymentType', false, path), true, [...path, ".paymentType"], PaymentType, 'PaymentType'),
+			paid: expectNumber(extractEntry(jCpy, 'paid', false, path), true, false, [...path, ".paid"]),
+			totalAmount: expectNumber(extractEntry(jCpy, 'totalAmount', false, path), true, false, [...path, ".totalAmount"]),
+			reimbursement: expectNumber(extractEntry(jCpy, 'reimbursement', false, path), true, false, [...path, ".reimbursement"]),
+			patientIntervention: expectNumber(extractEntry(jCpy, 'patientIntervention', false, path), true, false, [...path, ".patientIntervention"]),
+			amiIntervention: expectNumber(extractEntry(jCpy, 'amiIntervention', false, path), true, false, [...path, ".amiIntervention"]),
+			doctorSupplement: expectNumber(extractEntry(jCpy, 'doctorSupplement', false, path), true, false, [...path, ".doctorSupplement"]),
+			conventionAmount: expectNumber(extractEntry(jCpy, 'conventionAmount', false, path), true, false, [...path, ".conventionAmount"]),
+			vat: expectNumber(extractEntry(jCpy, 'vat', false, path), true, false, [...path, ".vat"]),
+			error: expectString(extractEntry(jCpy, 'error', false, path), true, [...path, ".error"]),
+			contract: expectString(extractEntry(jCpy, 'contract', false, path), true, [...path, ".contract"]),
+			contractDate: expectNumber(extractEntry(jCpy, 'contractDate', false, path), true, true, [...path, ".contractDate"]),
+			units: expectNumber(extractEntry(jCpy, 'units', false, path), true, true, [...path, ".units"]),
+			side: expectNumber(extractEntry(jCpy, 'side', false, path), true, true, [...path, ".side"]),
+			timeOfDay: expectNumber(extractEntry(jCpy, 'timeOfDay', false, path), true, true, [...path, ".timeOfDay"]),
+			eidReadingHour: expectNumber(extractEntry(jCpy, 'eidReadingHour', false, path), true, true, [...path, ".eidReadingHour"]),
+			eidReadingValue: expectString(extractEntry(jCpy, 'eidReadingValue', false, path), true, [...path, ".eidReadingValue"]),
+			override3rdPayerCode: expectNumber(extractEntry(jCpy, 'override3rdPayerCode', false, path), true, true, [...path, ".override3rdPayerCode"]),
+			override3rdPayerReason: expectString(extractEntry(jCpy, 'override3rdPayerReason', false, path), true, [...path, ".override3rdPayerReason"]),
+			transplantationCode: expectNumber(extractEntry(jCpy, 'transplantationCode', false, path), true, true, [...path, ".transplantationCode"]),
+			prescriberNorm: expectNumber(extractEntry(jCpy, 'prescriberNorm', false, path), true, true, [...path, ".prescriberNorm"]),
+			productLabel: expectString(extractEntry(jCpy, 'productLabel', false, path), true, [...path, ".productLabel"]),
+			percentNorm: expectNumber(extractEntry(jCpy, 'percentNorm', false, path), true, true, [...path, ".percentNorm"]),
+			prescriberNihii: expectString(extractEntry(jCpy, 'prescriberNihii', false, path), true, [...path, ".prescriberNihii"]),
+			relatedCode: expectString(extractEntry(jCpy, 'relatedCode', false, path), true, [...path, ".relatedCode"]),
+			prescriptionDate: expectNumber(extractEntry(jCpy, 'prescriptionDate', false, path), true, true, [...path, ".prescriptionDate"]),
+			derogationMaxNumber: expectNumber(extractEntry(jCpy, 'derogationMaxNumber', false, path), true, true, [...path, ".derogationMaxNumber"]),
+			prescriberSsin: expectString(extractEntry(jCpy, 'prescriberSsin', false, path), true, [...path, ".prescriberSsin"]),
+			prescriberLastName: expectString(extractEntry(jCpy, 'prescriberLastName', false, path), true, [...path, ".prescriberLastName"]),
+			prescriberFirstName: expectString(extractEntry(jCpy, 'prescriberFirstName', false, path), true, [...path, ".prescriberFirstName"]),
+			prescriberCdHcParty: expectString(extractEntry(jCpy, 'prescriberCdHcParty', false, path), true, [...path, ".prescriberCdHcParty"]),
+			locationNihii: expectString(extractEntry(jCpy, 'locationNihii', false, path), true, [...path, ".locationNihii"]),
+			locationCdHcParty: expectString(extractEntry(jCpy, 'locationCdHcParty', false, path), true, [...path, ".locationCdHcParty"]),
+			locationService: expectNumber(extractEntry(jCpy, 'locationService', false, path), true, true, [...path, ".locationService"]),
+			admissionDate: expectNumber(extractEntry(jCpy, 'admissionDate', false, path), true, true, [...path, ".admissionDate"]),
+			canceled: expectBoolean(extractEntry(jCpy, 'canceled', false, path), true, [...path, ".canceled"]),
+			accepted: expectBoolean(extractEntry(jCpy, 'accepted', false, path), true, [...path, ".accepted"]),
+			pending: expectBoolean(extractEntry(jCpy, 'pending', false, path), true, [...path, ".pending"]),
+			resent: expectBoolean(extractEntry(jCpy, 'resent', false, path), true, [...path, ".resent"]),
+			archived: expectBoolean(extractEntry(jCpy, 'archived', false, path), true, [...path, ".archived"]),
+			lost: expectBoolean(extractEntry(jCpy, 'lost', false, path), true, [...path, ".lost"]),
+			insuranceJustification: expectNumber(extractEntry(jCpy, 'insuranceJustification', false, path), true, true, [...path, ".insuranceJustification"]),
+			cancelPatientInterventionReason: expectNumber(extractEntry(jCpy, 'cancelPatientInterventionReason', false, path), true, true, [...path, ".cancelPatientInterventionReason"]),
+			status: expectNumber(extractEntry(jCpy, 'status', false, path), true, true, [...path, ".status"]),
+			codeLabel: expectString(extractEntry(jCpy, 'codeLabel', false, path), true, [...path, ".codeLabel"]),
+			options: expectMap(
+				extractEntry(jCpy, 'options', false, path),
+				false,
+				[...path, ".options"],
+				(k0, p0) => expectString(k0, false, p0),
+				(v0, p0) => expectString(v0, false, p0)
+			),
+			encryptedSelf: expectString(extractEntry(jCpy, 'encryptedSelf', false, path), true, [...path, ".encryptedSelf"]),
+		})
+		if (!ignoreUnknownKeys) {
+			const unused = Object.keys(jCpy)
+			if (unused.length > 0) throw new Error(`Unexpected key(s) for json object DecryptedInvoicingCode at path ${path.join("")}: ${unused}`)}
+		return res
+	}
+
 }
 
 export class EncryptedInvoicingCode {
@@ -472,6 +612,143 @@ export class EncryptedInvoicingCode {
 		if ('codeLabel' in partial) this.codeLabel = partial.codeLabel;
 		if ('options' in partial && partial.options !== undefined) this.options = partial.options;
 		if ('encryptedSelf' in partial) this.encryptedSelf = partial.encryptedSelf;
+	}
+
+	toJSON(): object {
+		const res: { [k: string]: any } = {}
+		res['id'] = this.id ?? null
+		if (this.dateCode != undefined) res['dateCode'] = this.dateCode
+		if (this.logicalId != undefined) res['logicalId'] = this.logicalId
+		if (this.label != undefined) res['label'] = this.label
+		if (this.userId != undefined) res['userId'] = this.userId
+		if (this.contactId != undefined) res['contactId'] = this.contactId
+		if (this.serviceId != undefined) res['serviceId'] = this.serviceId
+		if (this.tarificationId != undefined) res['tarificationId'] = this.tarificationId
+		if (this.code != undefined) res['code'] = this.code
+		if (this.paymentType != undefined) res['paymentType'] = this.paymentType
+		if (this.paid != undefined) res['paid'] = this.paid
+		if (this.totalAmount != undefined) res['totalAmount'] = this.totalAmount
+		if (this.reimbursement != undefined) res['reimbursement'] = this.reimbursement
+		if (this.patientIntervention != undefined) res['patientIntervention'] = this.patientIntervention
+		if (this.amiIntervention != undefined) res['amiIntervention'] = this.amiIntervention
+		if (this.doctorSupplement != undefined) res['doctorSupplement'] = this.doctorSupplement
+		if (this.conventionAmount != undefined) res['conventionAmount'] = this.conventionAmount
+		if (this.vat != undefined) res['vat'] = this.vat
+		if (this.error != undefined) res['error'] = this.error
+		if (this.contract != undefined) res['contract'] = this.contract
+		if (this.contractDate != undefined) res['contractDate'] = this.contractDate
+		if (this.units != undefined) res['units'] = this.units
+		if (this.side != undefined) res['side'] = this.side
+		if (this.timeOfDay != undefined) res['timeOfDay'] = this.timeOfDay
+		if (this.eidReadingHour != undefined) res['eidReadingHour'] = this.eidReadingHour
+		if (this.eidReadingValue != undefined) res['eidReadingValue'] = this.eidReadingValue
+		if (this.override3rdPayerCode != undefined) res['override3rdPayerCode'] = this.override3rdPayerCode
+		if (this.override3rdPayerReason != undefined) res['override3rdPayerReason'] = this.override3rdPayerReason
+		if (this.transplantationCode != undefined) res['transplantationCode'] = this.transplantationCode
+		if (this.prescriberNorm != undefined) res['prescriberNorm'] = this.prescriberNorm
+		if (this.productLabel != undefined) res['productLabel'] = this.productLabel
+		if (this.percentNorm != undefined) res['percentNorm'] = this.percentNorm
+		if (this.prescriberNihii != undefined) res['prescriberNihii'] = this.prescriberNihii
+		if (this.relatedCode != undefined) res['relatedCode'] = this.relatedCode
+		if (this.prescriptionDate != undefined) res['prescriptionDate'] = this.prescriptionDate
+		if (this.derogationMaxNumber != undefined) res['derogationMaxNumber'] = this.derogationMaxNumber
+		if (this.prescriberSsin != undefined) res['prescriberSsin'] = this.prescriberSsin
+		if (this.prescriberLastName != undefined) res['prescriberLastName'] = this.prescriberLastName
+		if (this.prescriberFirstName != undefined) res['prescriberFirstName'] = this.prescriberFirstName
+		if (this.prescriberCdHcParty != undefined) res['prescriberCdHcParty'] = this.prescriberCdHcParty
+		if (this.locationNihii != undefined) res['locationNihii'] = this.locationNihii
+		if (this.locationCdHcParty != undefined) res['locationCdHcParty'] = this.locationCdHcParty
+		if (this.locationService != undefined) res['locationService'] = this.locationService
+		if (this.admissionDate != undefined) res['admissionDate'] = this.admissionDate
+		if (this.canceled != undefined) res['canceled'] = this.canceled
+		if (this.accepted != undefined) res['accepted'] = this.accepted
+		if (this.pending != undefined) res['pending'] = this.pending
+		if (this.resent != undefined) res['resent'] = this.resent
+		if (this.archived != undefined) res['archived'] = this.archived
+		if (this.lost != undefined) res['lost'] = this.lost
+		if (this.insuranceJustification != undefined) res['insuranceJustification'] = this.insuranceJustification
+		if (this.cancelPatientInterventionReason != undefined) res['cancelPatientInterventionReason'] = this.cancelPatientInterventionReason
+		if (this.status != undefined) res['status'] = this.status
+		if (this.codeLabel != undefined) res['codeLabel'] = this.codeLabel
+		res['options'] = Object.fromEntries(Object.entries(this.options).map(([k0, v0]) => [k0, v0]))
+		if (this.encryptedSelf != undefined) res['encryptedSelf'] = this.encryptedSelf
+		res['isEncrypted'] = true
+		return res
+	}
+
+	static fromJSON(json: any, ignoreUnknownKeys: boolean = false,
+			path: Array<string> = ['EncryptedInvoicingCode']): EncryptedInvoicingCode {
+		if (typeof json != 'object') throw new Error(`Expected json object at path ${path.join("")}`)
+		const jCpy = { ...json }
+		if (extractEntry(jCpy, "isEncrypted", true, path) !== true) throw new Error(`Unexpected value for ${path.join("")} isEncrypted marker, should be true. The provided json doesn't represent a EncryptedInvoicingCode`)
+		const res = new EncryptedInvoicingCode({
+			id: expectString(extractEntry(jCpy, 'id', true, path), true, [...path, ".id"]),
+			dateCode: expectNumber(extractEntry(jCpy, 'dateCode', false, path), true, true, [...path, ".dateCode"]),
+			logicalId: expectString(extractEntry(jCpy, 'logicalId', false, path), true, [...path, ".logicalId"]),
+			label: expectString(extractEntry(jCpy, 'label', false, path), true, [...path, ".label"]),
+			userId: expectString(extractEntry(jCpy, 'userId', false, path), true, [...path, ".userId"]),
+			contactId: expectString(extractEntry(jCpy, 'contactId', false, path), true, [...path, ".contactId"]),
+			serviceId: expectString(extractEntry(jCpy, 'serviceId', false, path), true, [...path, ".serviceId"]),
+			tarificationId: expectString(extractEntry(jCpy, 'tarificationId', false, path), true, [...path, ".tarificationId"]),
+			code: expectString(extractEntry(jCpy, 'code', false, path), true, [...path, ".code"]),
+			paymentType: expectStringEnum(extractEntry(jCpy, 'paymentType', false, path), true, [...path, ".paymentType"], PaymentType, 'PaymentType'),
+			paid: expectNumber(extractEntry(jCpy, 'paid', false, path), true, false, [...path, ".paid"]),
+			totalAmount: expectNumber(extractEntry(jCpy, 'totalAmount', false, path), true, false, [...path, ".totalAmount"]),
+			reimbursement: expectNumber(extractEntry(jCpy, 'reimbursement', false, path), true, false, [...path, ".reimbursement"]),
+			patientIntervention: expectNumber(extractEntry(jCpy, 'patientIntervention', false, path), true, false, [...path, ".patientIntervention"]),
+			amiIntervention: expectNumber(extractEntry(jCpy, 'amiIntervention', false, path), true, false, [...path, ".amiIntervention"]),
+			doctorSupplement: expectNumber(extractEntry(jCpy, 'doctorSupplement', false, path), true, false, [...path, ".doctorSupplement"]),
+			conventionAmount: expectNumber(extractEntry(jCpy, 'conventionAmount', false, path), true, false, [...path, ".conventionAmount"]),
+			vat: expectNumber(extractEntry(jCpy, 'vat', false, path), true, false, [...path, ".vat"]),
+			error: expectString(extractEntry(jCpy, 'error', false, path), true, [...path, ".error"]),
+			contract: expectString(extractEntry(jCpy, 'contract', false, path), true, [...path, ".contract"]),
+			contractDate: expectNumber(extractEntry(jCpy, 'contractDate', false, path), true, true, [...path, ".contractDate"]),
+			units: expectNumber(extractEntry(jCpy, 'units', false, path), true, true, [...path, ".units"]),
+			side: expectNumber(extractEntry(jCpy, 'side', false, path), true, true, [...path, ".side"]),
+			timeOfDay: expectNumber(extractEntry(jCpy, 'timeOfDay', false, path), true, true, [...path, ".timeOfDay"]),
+			eidReadingHour: expectNumber(extractEntry(jCpy, 'eidReadingHour', false, path), true, true, [...path, ".eidReadingHour"]),
+			eidReadingValue: expectString(extractEntry(jCpy, 'eidReadingValue', false, path), true, [...path, ".eidReadingValue"]),
+			override3rdPayerCode: expectNumber(extractEntry(jCpy, 'override3rdPayerCode', false, path), true, true, [...path, ".override3rdPayerCode"]),
+			override3rdPayerReason: expectString(extractEntry(jCpy, 'override3rdPayerReason', false, path), true, [...path, ".override3rdPayerReason"]),
+			transplantationCode: expectNumber(extractEntry(jCpy, 'transplantationCode', false, path), true, true, [...path, ".transplantationCode"]),
+			prescriberNorm: expectNumber(extractEntry(jCpy, 'prescriberNorm', false, path), true, true, [...path, ".prescriberNorm"]),
+			productLabel: expectString(extractEntry(jCpy, 'productLabel', false, path), true, [...path, ".productLabel"]),
+			percentNorm: expectNumber(extractEntry(jCpy, 'percentNorm', false, path), true, true, [...path, ".percentNorm"]),
+			prescriberNihii: expectString(extractEntry(jCpy, 'prescriberNihii', false, path), true, [...path, ".prescriberNihii"]),
+			relatedCode: expectString(extractEntry(jCpy, 'relatedCode', false, path), true, [...path, ".relatedCode"]),
+			prescriptionDate: expectNumber(extractEntry(jCpy, 'prescriptionDate', false, path), true, true, [...path, ".prescriptionDate"]),
+			derogationMaxNumber: expectNumber(extractEntry(jCpy, 'derogationMaxNumber', false, path), true, true, [...path, ".derogationMaxNumber"]),
+			prescriberSsin: expectString(extractEntry(jCpy, 'prescriberSsin', false, path), true, [...path, ".prescriberSsin"]),
+			prescriberLastName: expectString(extractEntry(jCpy, 'prescriberLastName', false, path), true, [...path, ".prescriberLastName"]),
+			prescriberFirstName: expectString(extractEntry(jCpy, 'prescriberFirstName', false, path), true, [...path, ".prescriberFirstName"]),
+			prescriberCdHcParty: expectString(extractEntry(jCpy, 'prescriberCdHcParty', false, path), true, [...path, ".prescriberCdHcParty"]),
+			locationNihii: expectString(extractEntry(jCpy, 'locationNihii', false, path), true, [...path, ".locationNihii"]),
+			locationCdHcParty: expectString(extractEntry(jCpy, 'locationCdHcParty', false, path), true, [...path, ".locationCdHcParty"]),
+			locationService: expectNumber(extractEntry(jCpy, 'locationService', false, path), true, true, [...path, ".locationService"]),
+			admissionDate: expectNumber(extractEntry(jCpy, 'admissionDate', false, path), true, true, [...path, ".admissionDate"]),
+			canceled: expectBoolean(extractEntry(jCpy, 'canceled', false, path), true, [...path, ".canceled"]),
+			accepted: expectBoolean(extractEntry(jCpy, 'accepted', false, path), true, [...path, ".accepted"]),
+			pending: expectBoolean(extractEntry(jCpy, 'pending', false, path), true, [...path, ".pending"]),
+			resent: expectBoolean(extractEntry(jCpy, 'resent', false, path), true, [...path, ".resent"]),
+			archived: expectBoolean(extractEntry(jCpy, 'archived', false, path), true, [...path, ".archived"]),
+			lost: expectBoolean(extractEntry(jCpy, 'lost', false, path), true, [...path, ".lost"]),
+			insuranceJustification: expectNumber(extractEntry(jCpy, 'insuranceJustification', false, path), true, true, [...path, ".insuranceJustification"]),
+			cancelPatientInterventionReason: expectNumber(extractEntry(jCpy, 'cancelPatientInterventionReason', false, path), true, true, [...path, ".cancelPatientInterventionReason"]),
+			status: expectNumber(extractEntry(jCpy, 'status', false, path), true, true, [...path, ".status"]),
+			codeLabel: expectString(extractEntry(jCpy, 'codeLabel', false, path), true, [...path, ".codeLabel"]),
+			options: expectMap(
+				extractEntry(jCpy, 'options', false, path),
+				false,
+				[...path, ".options"],
+				(k0, p0) => expectString(k0, false, p0),
+				(v0, p0) => expectString(v0, false, p0)
+			),
+			encryptedSelf: expectString(extractEntry(jCpy, 'encryptedSelf', false, path), true, [...path, ".encryptedSelf"]),
+		})
+		if (!ignoreUnknownKeys) {
+			const unused = Object.keys(jCpy)
+			if (unused.length > 0) throw new Error(`Unexpected key(s) for json object EncryptedInvoicingCode at path ${path.join("")}: ${unused}`)}
+		return res
 	}
 
 }

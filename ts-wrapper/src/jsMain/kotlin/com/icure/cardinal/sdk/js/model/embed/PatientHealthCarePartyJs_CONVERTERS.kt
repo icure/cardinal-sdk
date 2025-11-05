@@ -2,13 +2,21 @@
 package com.icure.cardinal.sdk.js.model.embed
 
 import com.icure.cardinal.sdk.js.model.CheckedConverters.arrayToList
+import com.icure.cardinal.sdk.js.model.CheckedConverters.arrayToSet
 import com.icure.cardinal.sdk.js.model.CheckedConverters.listToArray
 import com.icure.cardinal.sdk.js.model.CheckedConverters.mapToObject
 import com.icure.cardinal.sdk.js.model.CheckedConverters.nullToUndefined
 import com.icure.cardinal.sdk.js.model.CheckedConverters.objectToMap
+import com.icure.cardinal.sdk.js.model.CheckedConverters.setToArray
 import com.icure.cardinal.sdk.js.model.CheckedConverters.undefinedToNull
+import com.icure.cardinal.sdk.js.model.DecryptedPropertyStubJs
+import com.icure.cardinal.sdk.js.model.EncryptedPropertyStubJs
+import com.icure.cardinal.sdk.js.model.propertyStub_fromJs
+import com.icure.cardinal.sdk.js.model.propertyStub_toJs
 import com.icure.cardinal.sdk.js.model.specializations.base64String_fromJs
 import com.icure.cardinal.sdk.js.model.specializations.base64String_toJs
+import com.icure.cardinal.sdk.model.DecryptedPropertyStub
+import com.icure.cardinal.sdk.model.EncryptedPropertyStub
 import com.icure.cardinal.sdk.model.embed.DecryptedPatientHealthCareParty
 import com.icure.cardinal.sdk.model.embed.EncryptedPatientHealthCareParty
 import com.icure.cardinal.sdk.model.embed.PatientHealthCareParty
@@ -45,6 +53,14 @@ public fun patientHealthCareParty_toJs(obj: DecryptedPatientHealthCareParty):
 		},
 	)
 	val referral = obj.referral
+	val properties = nullToUndefined(
+		setToArray(
+			obj.properties,
+			{ x1: DecryptedPropertyStub ->
+				propertyStub_toJs(x1)
+			},
+		)
+	)
 	val encryptedSelf = nullToUndefined(
 		obj.encryptedSelf?.let { nonNull1 ->
 			base64String_toJs(nonNull1)
@@ -56,6 +72,7 @@ public fun patientHealthCareParty_toJs(obj: DecryptedPatientHealthCareParty):
 		"sendFormats:sendFormats," +
 		"referralPeriods:referralPeriods," +
 		"referral:referral," +
+		"properties:properties," +
 		"encryptedSelf:encryptedSelf" +
 	"}"))
 }
@@ -84,6 +101,13 @@ public fun patientHealthCareParty_fromJs(obj: DecryptedPatientHealthCarePartyJs)
 		},
 	)
 	val referral = obj.referral
+	val properties = arrayToSet(
+		obj.properties,
+		"obj.properties",
+		{ x1: DecryptedPropertyStubJs ->
+			propertyStub_fromJs(x1)
+		},
+	)
 	val encryptedSelf = obj.encryptedSelf?.let { nonNull1 ->
 		base64String_fromJs(nonNull1)
 	}
@@ -93,6 +117,7 @@ public fun patientHealthCareParty_fromJs(obj: DecryptedPatientHealthCarePartyJs)
 		sendFormats = sendFormats,
 		referralPeriods = referralPeriods,
 		referral = referral,
+		properties = properties,
 		encryptedSelf = encryptedSelf,
 	)
 }
@@ -124,6 +149,14 @@ public fun patientHealthCareParty_toJs(obj: EncryptedPatientHealthCareParty):
 		},
 	)
 	val referral = obj.referral
+	val properties = nullToUndefined(
+		setToArray(
+			obj.properties,
+			{ x1: EncryptedPropertyStub ->
+				propertyStub_toJs(x1)
+			},
+		)
+	)
 	val encryptedSelf = nullToUndefined(
 		obj.encryptedSelf?.let { nonNull1 ->
 			base64String_toJs(nonNull1)
@@ -135,6 +168,7 @@ public fun patientHealthCareParty_toJs(obj: EncryptedPatientHealthCareParty):
 		"sendFormats:sendFormats," +
 		"referralPeriods:referralPeriods," +
 		"referral:referral," +
+		"properties:properties," +
 		"encryptedSelf:encryptedSelf" +
 	"}"))
 }
@@ -163,6 +197,13 @@ public fun patientHealthCareParty_fromJs(obj: EncryptedPatientHealthCarePartyJs)
 		},
 	)
 	val referral = obj.referral
+	val properties = arrayToSet(
+		obj.properties,
+		"obj.properties",
+		{ x1: EncryptedPropertyStubJs ->
+			propertyStub_fromJs(x1)
+		},
+	)
 	val encryptedSelf = obj.encryptedSelf?.let { nonNull1 ->
 		base64String_fromJs(nonNull1)
 	}
@@ -172,6 +213,7 @@ public fun patientHealthCareParty_fromJs(obj: EncryptedPatientHealthCarePartyJs)
 		sendFormats = sendFormats,
 		referralPeriods = referralPeriods,
 		referral = referral,
+		properties = properties,
 		encryptedSelf = encryptedSelf,
 	)
 }
