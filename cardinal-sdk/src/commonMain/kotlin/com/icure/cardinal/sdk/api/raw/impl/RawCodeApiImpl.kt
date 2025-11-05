@@ -339,7 +339,7 @@ class RawCodeApiImpl(
 			setBody(codeBatch)
 		}.wrap()
 
-	override suspend fun getCodes(
+	override suspend fun getCodesInGroup(
 		groupId: String,
 		codeIds: ListOfIds,
 	): HttpResponse<List<Code>> =
