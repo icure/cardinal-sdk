@@ -33,10 +33,10 @@ export class DatabaseSynchronization {
 		if (typeof json != 'object') throw new Error(`Expected json object at path ${path.join("")}`)
 		const jCpy = { ...json }
 		const res = new DatabaseSynchronization({
-			source: expectString(extractEntry(jCpy.source, 'source', false, path), true, [...path, ".source"]),
-			target: expectString(extractEntry(jCpy.target, 'target', false, path), true, [...path, ".target"]),
-			filter: expectString(extractEntry(jCpy.filter, 'filter', false, path), true, [...path, ".filter"]),
-			localTarget: expectStringEnum(extractEntry(jCpy.localTarget, 'localTarget', false, path), true, [...path, ".localTarget"], DatabaseSynchronization.Target, 'DatabaseSynchronization.Target'),
+			source: expectString(extractEntry(jCpy, 'source', false, path), true, [...path, ".source"]),
+			target: expectString(extractEntry(jCpy, 'target', false, path), true, [...path, ".target"]),
+			filter: expectString(extractEntry(jCpy, 'filter', false, path), true, [...path, ".filter"]),
+			localTarget: expectStringEnum(extractEntry(jCpy, 'localTarget', false, path), true, [...path, ".localTarget"], DatabaseSynchronization.Target, 'DatabaseSynchronization.Target'),
 		})
 		if (!ignoreUnknownKeys) {
 			const unused = Object.keys(jCpy)

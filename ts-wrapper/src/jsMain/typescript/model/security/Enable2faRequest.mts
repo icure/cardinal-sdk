@@ -25,8 +25,8 @@ export class Enable2faRequest {
 		if (typeof json != 'object') throw new Error(`Expected json object at path ${path.join("")}`)
 		const jCpy = { ...json }
 		const res = new Enable2faRequest({
-			secret: expectString(extractEntry(jCpy.secret, 'secret', true, path), false, [...path, ".secret"]),
-			otpLength: expectNumber(extractEntry(jCpy.otpLength, 'otpLength', true, path), false, true, [...path, ".otpLength"]),
+			secret: expectString(extractEntry(jCpy, 'secret', true, path), false, [...path, ".secret"]),
+			otpLength: expectNumber(extractEntry(jCpy, 'otpLength', true, path), false, true, [...path, ".otpLength"]),
 		})
 		if (!ignoreUnknownKeys) {
 			const unused = Object.keys(jCpy)

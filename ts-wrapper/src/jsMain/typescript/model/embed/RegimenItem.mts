@@ -44,12 +44,12 @@ export class RegimenItem {
 		if (typeof json != 'object') throw new Error(`Expected json object at path ${path.join("")}`)
 		const jCpy = { ...json }
 		const res = new RegimenItem({
-			date: expectNumber(extractEntry(jCpy.date, 'date', false, path), true, true, [...path, ".date"]),
-			dayNumber: expectNumber(extractEntry(jCpy.dayNumber, 'dayNumber', false, path), true, true, [...path, ".dayNumber"]),
-			weekday: expectObject(extractEntry(jCpy.weekday, 'weekday', false, path), true, ignoreUnknownKeys, [...path, ".weekday"], Weekday.fromJSON),
-			dayPeriod: expectObject(extractEntry(jCpy.dayPeriod, 'dayPeriod', false, path), true, ignoreUnknownKeys, [...path, ".dayPeriod"], CodeStub.fromJSON),
-			timeOfDay: expectNumber(extractEntry(jCpy.timeOfDay, 'timeOfDay', false, path), true, true, [...path, ".timeOfDay"]),
-			administratedQuantity: expectObject(extractEntry(jCpy.administratedQuantity, 'administratedQuantity', false, path), true, ignoreUnknownKeys, [...path, ".administratedQuantity"], AdministrationQuantity.fromJSON),
+			date: expectNumber(extractEntry(jCpy, 'date', false, path), true, true, [...path, ".date"]),
+			dayNumber: expectNumber(extractEntry(jCpy, 'dayNumber', false, path), true, true, [...path, ".dayNumber"]),
+			weekday: expectObject(extractEntry(jCpy, 'weekday', false, path), true, ignoreUnknownKeys, [...path, ".weekday"], Weekday.fromJSON),
+			dayPeriod: expectObject(extractEntry(jCpy, 'dayPeriod', false, path), true, ignoreUnknownKeys, [...path, ".dayPeriod"], CodeStub.fromJSON),
+			timeOfDay: expectNumber(extractEntry(jCpy, 'timeOfDay', false, path), true, true, [...path, ".timeOfDay"]),
+			administratedQuantity: expectObject(extractEntry(jCpy, 'administratedQuantity', false, path), true, ignoreUnknownKeys, [...path, ".administratedQuantity"], AdministrationQuantity.fromJSON),
 		})
 		if (!ignoreUnknownKeys) {
 			const unused = Object.keys(jCpy)

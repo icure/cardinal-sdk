@@ -27,8 +27,8 @@ export class Employer implements Named {
 		if (typeof json != 'object') throw new Error(`Expected json object at path ${path.join("")}`)
 		const jCpy = { ...json }
 		const res = new Employer({
-			name: expectString(extractEntry(jCpy.name, 'name', false, path), true, [...path, ".name"]),
-			addresse: expectObject(extractEntry(jCpy.addresse, 'addresse', false, path), true, ignoreUnknownKeys, [...path, ".addresse"], DecryptedAddress.fromJSON),
+			name: expectString(extractEntry(jCpy, 'name', false, path), true, [...path, ".name"]),
+			addresse: expectObject(extractEntry(jCpy, 'addresse', false, path), true, ignoreUnknownKeys, [...path, ".addresse"], DecryptedAddress.fromJSON),
 		})
 		if (!ignoreUnknownKeys) {
 			const unused = Object.keys(jCpy)

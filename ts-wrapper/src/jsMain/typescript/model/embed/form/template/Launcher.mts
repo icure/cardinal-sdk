@@ -30,9 +30,9 @@ export class Launcher {
 		if (typeof json != 'object') throw new Error(`Expected json object at path ${path.join("")}`)
 		const jCpy = { ...json }
 		const res = new Launcher({
-			name: expectString(extractEntry(jCpy.name, 'name', true, path), false, [...path, ".name"]),
-			triggerer: expectStringEnum(extractEntry(jCpy.triggerer, 'triggerer', true, path), false, [...path, ".triggerer"], Trigger, 'Trigger'),
-			shouldPassValue: expectBoolean(extractEntry(jCpy.shouldPassValue, 'shouldPassValue', false, path), false, [...path, ".shouldPassValue"]),
+			name: expectString(extractEntry(jCpy, 'name', true, path), false, [...path, ".name"]),
+			triggerer: expectStringEnum(extractEntry(jCpy, 'triggerer', true, path), false, [...path, ".triggerer"], Trigger, 'Trigger'),
+			shouldPassValue: expectBoolean(extractEntry(jCpy, 'shouldPassValue', false, path), false, [...path, ".shouldPassValue"]),
 		})
 		if (!ignoreUnknownKeys) {
 			const unused = Object.keys(jCpy)

@@ -50,6 +50,7 @@ export class DecryptedCareTeamMember {
 		if (this.healthcarePartyId != undefined) res['healthcarePartyId'] = this.healthcarePartyId
 		if (this.quality != undefined) res['quality'] = this.quality.toJSON()
 		if (this.encryptedSelf != undefined) res['encryptedSelf'] = this.encryptedSelf
+		res['isEncrypted'] = false
 		return res
 	}
 
@@ -57,12 +58,13 @@ export class DecryptedCareTeamMember {
 			path: Array<string> = ['DecryptedCareTeamMember']): DecryptedCareTeamMember {
 		if (typeof json != 'object') throw new Error(`Expected json object at path ${path.join("")}`)
 		const jCpy = { ...json }
+		if (extractEntry(jCpy, "isEncrypted", true, path) !== false) throw new Error(`Unexpected value for ${path.join("")} isEncrypted marker, should be false`)
 		const res = new DecryptedCareTeamMember({
-			id: expectString(extractEntry(jCpy.id, 'id', true, path), false, [...path, ".id"]),
-			careTeamMemberType: expectStringEnum(extractEntry(jCpy.careTeamMemberType, 'careTeamMemberType', false, path), true, [...path, ".careTeamMemberType"], CareTeamMemberType, 'CareTeamMemberType'),
-			healthcarePartyId: expectString(extractEntry(jCpy.healthcarePartyId, 'healthcarePartyId', false, path), true, [...path, ".healthcarePartyId"]),
-			quality: expectObject(extractEntry(jCpy.quality, 'quality', false, path), true, ignoreUnknownKeys, [...path, ".quality"], CodeStub.fromJSON),
-			encryptedSelf: expectString(extractEntry(jCpy.encryptedSelf, 'encryptedSelf', false, path), false, [...path, ".encryptedSelf"]),
+			id: expectString(extractEntry(jCpy, 'id', true, path), false, [...path, ".id"]),
+			careTeamMemberType: expectStringEnum(extractEntry(jCpy, 'careTeamMemberType', false, path), true, [...path, ".careTeamMemberType"], CareTeamMemberType, 'CareTeamMemberType'),
+			healthcarePartyId: expectString(extractEntry(jCpy, 'healthcarePartyId', false, path), true, [...path, ".healthcarePartyId"]),
+			quality: expectObject(extractEntry(jCpy, 'quality', false, path), true, ignoreUnknownKeys, [...path, ".quality"], CodeStub.fromJSON),
+			encryptedSelf: expectString(extractEntry(jCpy, 'encryptedSelf', false, path), false, [...path, ".encryptedSelf"]),
 		})
 		if (!ignoreUnknownKeys) {
 			const unused = Object.keys(jCpy)
@@ -102,6 +104,7 @@ export class EncryptedCareTeamMember {
 		if (this.healthcarePartyId != undefined) res['healthcarePartyId'] = this.healthcarePartyId
 		if (this.quality != undefined) res['quality'] = this.quality.toJSON()
 		if (this.encryptedSelf != undefined) res['encryptedSelf'] = this.encryptedSelf
+		res['isEncrypted'] = true
 		return res
 	}
 
@@ -109,12 +112,13 @@ export class EncryptedCareTeamMember {
 			path: Array<string> = ['EncryptedCareTeamMember']): EncryptedCareTeamMember {
 		if (typeof json != 'object') throw new Error(`Expected json object at path ${path.join("")}`)
 		const jCpy = { ...json }
+		if (extractEntry(jCpy, "isEncrypted", true, path) !== true) throw new Error(`Unexpected value for ${path.join("")} isEncrypted marker, should be true`)
 		const res = new EncryptedCareTeamMember({
-			id: expectString(extractEntry(jCpy.id, 'id', true, path), false, [...path, ".id"]),
-			careTeamMemberType: expectStringEnum(extractEntry(jCpy.careTeamMemberType, 'careTeamMemberType', false, path), true, [...path, ".careTeamMemberType"], CareTeamMemberType, 'CareTeamMemberType'),
-			healthcarePartyId: expectString(extractEntry(jCpy.healthcarePartyId, 'healthcarePartyId', false, path), true, [...path, ".healthcarePartyId"]),
-			quality: expectObject(extractEntry(jCpy.quality, 'quality', false, path), true, ignoreUnknownKeys, [...path, ".quality"], CodeStub.fromJSON),
-			encryptedSelf: expectString(extractEntry(jCpy.encryptedSelf, 'encryptedSelf', false, path), false, [...path, ".encryptedSelf"]),
+			id: expectString(extractEntry(jCpy, 'id', true, path), false, [...path, ".id"]),
+			careTeamMemberType: expectStringEnum(extractEntry(jCpy, 'careTeamMemberType', false, path), true, [...path, ".careTeamMemberType"], CareTeamMemberType, 'CareTeamMemberType'),
+			healthcarePartyId: expectString(extractEntry(jCpy, 'healthcarePartyId', false, path), true, [...path, ".healthcarePartyId"]),
+			quality: expectObject(extractEntry(jCpy, 'quality', false, path), true, ignoreUnknownKeys, [...path, ".quality"], CodeStub.fromJSON),
+			encryptedSelf: expectString(extractEntry(jCpy, 'encryptedSelf', false, path), false, [...path, ".encryptedSelf"]),
 		})
 		if (!ignoreUnknownKeys) {
 			const unused = Object.keys(jCpy)

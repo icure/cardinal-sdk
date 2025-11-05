@@ -66,18 +66,18 @@ export class UserGroup {
 		if (typeof json != 'object') throw new Error(`Expected json object at path ${path.join("")}`)
 		const jCpy = { ...json }
 		const res = new UserGroup({
-			groupId: expectString(extractEntry(jCpy.groupId, 'groupId', false, path), true, [...path, ".groupId"]),
-			groupName: expectString(extractEntry(jCpy.groupName, 'groupName', false, path), true, [...path, ".groupName"]),
-			groupsHierarchy: expectArray(extractEntry(jCpy.groupsHierarchy, 'groupsHierarchy', false, path), false, [...path, ".groupsHierarchy"], (x0, p0) => expectObject(x0, false, ignoreUnknownKeys, p0, Group.fromJSON)),
-			userId: expectString(extractEntry(jCpy.userId, 'userId', false, path), true, [...path, ".userId"]),
-			login: expectString(extractEntry(jCpy.login, 'login', false, path), true, [...path, ".login"]),
-			name: expectString(extractEntry(jCpy.name, 'name', false, path), true, [...path, ".name"]),
-			email: expectString(extractEntry(jCpy.email, 'email', false, path), true, [...path, ".email"]),
-			phone: expectString(extractEntry(jCpy.phone, 'phone', false, path), true, [...path, ".phone"]),
-			patientId: expectString(extractEntry(jCpy.patientId, 'patientId', false, path), true, [...path, ".patientId"]),
-			healthcarePartyId: expectString(extractEntry(jCpy.healthcarePartyId, 'healthcarePartyId', false, path), true, [...path, ".healthcarePartyId"]),
-			deviceId: expectString(extractEntry(jCpy.deviceId, 'deviceId', false, path), true, [...path, ".deviceId"]),
-			nameOfParentOfTopmostGroupInHierarchy: expectString(extractEntry(jCpy.nameOfParentOfTopmostGroupInHierarchy, 'nameOfParentOfTopmostGroupInHierarchy', false, path), true, [...path, ".nameOfParentOfTopmostGroupInHierarchy"]),
+			groupId: expectString(extractEntry(jCpy, 'groupId', false, path), true, [...path, ".groupId"]),
+			groupName: expectString(extractEntry(jCpy, 'groupName', false, path), true, [...path, ".groupName"]),
+			groupsHierarchy: expectArray(extractEntry(jCpy, 'groupsHierarchy', false, path), false, [...path, ".groupsHierarchy"], (x0, p0) => expectObject(x0, false, ignoreUnknownKeys, p0, Group.fromJSON)),
+			userId: expectString(extractEntry(jCpy, 'userId', false, path), true, [...path, ".userId"]),
+			login: expectString(extractEntry(jCpy, 'login', false, path), true, [...path, ".login"]),
+			name: expectString(extractEntry(jCpy, 'name', false, path), true, [...path, ".name"]),
+			email: expectString(extractEntry(jCpy, 'email', false, path), true, [...path, ".email"]),
+			phone: expectString(extractEntry(jCpy, 'phone', false, path), true, [...path, ".phone"]),
+			patientId: expectString(extractEntry(jCpy, 'patientId', false, path), true, [...path, ".patientId"]),
+			healthcarePartyId: expectString(extractEntry(jCpy, 'healthcarePartyId', false, path), true, [...path, ".healthcarePartyId"]),
+			deviceId: expectString(extractEntry(jCpy, 'deviceId', false, path), true, [...path, ".deviceId"]),
+			nameOfParentOfTopmostGroupInHierarchy: expectString(extractEntry(jCpy, 'nameOfParentOfTopmostGroupInHierarchy', false, path), true, [...path, ".nameOfParentOfTopmostGroupInHierarchy"]),
 		})
 		if (!ignoreUnknownKeys) {
 			const unused = Object.keys(jCpy)

@@ -61,6 +61,7 @@ export class DecryptedTypedValue {
 		if (this.stringValue != undefined) res['stringValue'] = this.stringValue
 		if (this.dateValue != undefined) res['dateValue'] = this.dateValue
 		if (this.encryptedSelf != undefined) res['encryptedSelf'] = this.encryptedSelf
+		res['isEncrypted'] = false
 		return res
 	}
 
@@ -68,14 +69,15 @@ export class DecryptedTypedValue {
 			path: Array<string> = ['DecryptedTypedValue']): DecryptedTypedValue {
 		if (typeof json != 'object') throw new Error(`Expected json object at path ${path.join("")}`)
 		const jCpy = { ...json }
+		if (extractEntry(jCpy, "isEncrypted", true, path) !== false) throw new Error(`Unexpected value for ${path.join("")} isEncrypted marker, should be false`)
 		const res = new DecryptedTypedValue({
-			type: expectStringEnum(extractEntry(jCpy.type, 'type', false, path), true, [...path, ".type"], TypedValuesType, 'TypedValuesType'),
-			booleanValue: expectBoolean(extractEntry(jCpy.booleanValue, 'booleanValue', false, path), true, [...path, ".booleanValue"]),
-			integerValue: expectNumber(extractEntry(jCpy.integerValue, 'integerValue', false, path), true, true, [...path, ".integerValue"]),
-			doubleValue: expectNumber(extractEntry(jCpy.doubleValue, 'doubleValue', false, path), true, false, [...path, ".doubleValue"]),
-			stringValue: expectString(extractEntry(jCpy.stringValue, 'stringValue', false, path), true, [...path, ".stringValue"]),
-			dateValue: expectNumber(extractEntry(jCpy.dateValue, 'dateValue', false, path), true, true, [...path, ".dateValue"]),
-			encryptedSelf: expectString(extractEntry(jCpy.encryptedSelf, 'encryptedSelf', false, path), false, [...path, ".encryptedSelf"]),
+			type: expectStringEnum(extractEntry(jCpy, 'type', false, path), true, [...path, ".type"], TypedValuesType, 'TypedValuesType'),
+			booleanValue: expectBoolean(extractEntry(jCpy, 'booleanValue', false, path), true, [...path, ".booleanValue"]),
+			integerValue: expectNumber(extractEntry(jCpy, 'integerValue', false, path), true, true, [...path, ".integerValue"]),
+			doubleValue: expectNumber(extractEntry(jCpy, 'doubleValue', false, path), true, false, [...path, ".doubleValue"]),
+			stringValue: expectString(extractEntry(jCpy, 'stringValue', false, path), true, [...path, ".stringValue"]),
+			dateValue: expectNumber(extractEntry(jCpy, 'dateValue', false, path), true, true, [...path, ".dateValue"]),
+			encryptedSelf: expectString(extractEntry(jCpy, 'encryptedSelf', false, path), false, [...path, ".encryptedSelf"]),
 		})
 		if (!ignoreUnknownKeys) {
 			const unused = Object.keys(jCpy)
@@ -123,6 +125,7 @@ export class EncryptedTypedValue {
 		if (this.stringValue != undefined) res['stringValue'] = this.stringValue
 		if (this.dateValue != undefined) res['dateValue'] = this.dateValue
 		if (this.encryptedSelf != undefined) res['encryptedSelf'] = this.encryptedSelf
+		res['isEncrypted'] = true
 		return res
 	}
 
@@ -130,14 +133,15 @@ export class EncryptedTypedValue {
 			path: Array<string> = ['EncryptedTypedValue']): EncryptedTypedValue {
 		if (typeof json != 'object') throw new Error(`Expected json object at path ${path.join("")}`)
 		const jCpy = { ...json }
+		if (extractEntry(jCpy, "isEncrypted", true, path) !== true) throw new Error(`Unexpected value for ${path.join("")} isEncrypted marker, should be true`)
 		const res = new EncryptedTypedValue({
-			type: expectStringEnum(extractEntry(jCpy.type, 'type', false, path), true, [...path, ".type"], TypedValuesType, 'TypedValuesType'),
-			booleanValue: expectBoolean(extractEntry(jCpy.booleanValue, 'booleanValue', false, path), true, [...path, ".booleanValue"]),
-			integerValue: expectNumber(extractEntry(jCpy.integerValue, 'integerValue', false, path), true, true, [...path, ".integerValue"]),
-			doubleValue: expectNumber(extractEntry(jCpy.doubleValue, 'doubleValue', false, path), true, false, [...path, ".doubleValue"]),
-			stringValue: expectString(extractEntry(jCpy.stringValue, 'stringValue', false, path), true, [...path, ".stringValue"]),
-			dateValue: expectNumber(extractEntry(jCpy.dateValue, 'dateValue', false, path), true, true, [...path, ".dateValue"]),
-			encryptedSelf: expectString(extractEntry(jCpy.encryptedSelf, 'encryptedSelf', false, path), false, [...path, ".encryptedSelf"]),
+			type: expectStringEnum(extractEntry(jCpy, 'type', false, path), true, [...path, ".type"], TypedValuesType, 'TypedValuesType'),
+			booleanValue: expectBoolean(extractEntry(jCpy, 'booleanValue', false, path), true, [...path, ".booleanValue"]),
+			integerValue: expectNumber(extractEntry(jCpy, 'integerValue', false, path), true, true, [...path, ".integerValue"]),
+			doubleValue: expectNumber(extractEntry(jCpy, 'doubleValue', false, path), true, false, [...path, ".doubleValue"]),
+			stringValue: expectString(extractEntry(jCpy, 'stringValue', false, path), true, [...path, ".stringValue"]),
+			dateValue: expectNumber(extractEntry(jCpy, 'dateValue', false, path), true, true, [...path, ".dateValue"]),
+			encryptedSelf: expectString(extractEntry(jCpy, 'encryptedSelf', false, path), false, [...path, ".encryptedSelf"]),
 		})
 		if (!ignoreUnknownKeys) {
 			const unused = Object.keys(jCpy)

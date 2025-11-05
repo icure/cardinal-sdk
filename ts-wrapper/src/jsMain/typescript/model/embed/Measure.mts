@@ -68,18 +68,18 @@ export class Measure {
 		if (typeof json != 'object') throw new Error(`Expected json object at path ${path.join("")}`)
 		const jCpy = { ...json }
 		const res = new Measure({
-			value: expectNumber(extractEntry(jCpy.value, 'value', false, path), true, false, [...path, ".value"]),
-			ref: expectNumber(extractEntry(jCpy.ref, 'ref', false, path), true, false, [...path, ".ref"]),
-			severity: expectNumber(extractEntry(jCpy.severity, 'severity', false, path), true, true, [...path, ".severity"]),
-			severityCode: expectString(extractEntry(jCpy.severityCode, 'severityCode', false, path), true, [...path, ".severityCode"]),
-			evolution: expectNumber(extractEntry(jCpy.evolution, 'evolution', false, path), true, true, [...path, ".evolution"]),
-			unit: expectString(extractEntry(jCpy.unit, 'unit', false, path), true, [...path, ".unit"]),
-			unitCodes: expectArray(extractEntry(jCpy.unitCodes, 'unitCodes', false, path), true, [...path, ".unitCodes"], (x0, p0) => expectObject(x0, false, ignoreUnknownKeys, p0, CodeStub.fromJSON)),
-			comment: expectString(extractEntry(jCpy.comment, 'comment', false, path), true, [...path, ".comment"]),
-			comparator: expectString(extractEntry(jCpy.comparator, 'comparator', false, path), true, [...path, ".comparator"]),
-			sign: expectString(extractEntry(jCpy.sign, 'sign', false, path), true, [...path, ".sign"]),
-			referenceRanges: expectArray(extractEntry(jCpy.referenceRanges, 'referenceRanges', false, path), false, [...path, ".referenceRanges"], (x0, p0) => expectObject(x0, false, ignoreUnknownKeys, p0, ReferenceRange.fromJSON)),
-			valueWithPrecision: expectObject(extractEntry(jCpy.valueWithPrecision, 'valueWithPrecision', false, path), true, ignoreUnknownKeys, [...path, ".valueWithPrecision"], ValueWithPrecision.fromJSON),
+			value: expectNumber(extractEntry(jCpy, 'value', false, path), true, false, [...path, ".value"]),
+			ref: expectNumber(extractEntry(jCpy, 'ref', false, path), true, false, [...path, ".ref"]),
+			severity: expectNumber(extractEntry(jCpy, 'severity', false, path), true, true, [...path, ".severity"]),
+			severityCode: expectString(extractEntry(jCpy, 'severityCode', false, path), true, [...path, ".severityCode"]),
+			evolution: expectNumber(extractEntry(jCpy, 'evolution', false, path), true, true, [...path, ".evolution"]),
+			unit: expectString(extractEntry(jCpy, 'unit', false, path), true, [...path, ".unit"]),
+			unitCodes: expectArray(extractEntry(jCpy, 'unitCodes', false, path), true, [...path, ".unitCodes"], (x0, p0) => expectObject(x0, false, ignoreUnknownKeys, p0, CodeStub.fromJSON)),
+			comment: expectString(extractEntry(jCpy, 'comment', false, path), true, [...path, ".comment"]),
+			comparator: expectString(extractEntry(jCpy, 'comparator', false, path), true, [...path, ".comparator"]),
+			sign: expectString(extractEntry(jCpy, 'sign', false, path), true, [...path, ".sign"]),
+			referenceRanges: expectArray(extractEntry(jCpy, 'referenceRanges', false, path), false, [...path, ".referenceRanges"], (x0, p0) => expectObject(x0, false, ignoreUnknownKeys, p0, ReferenceRange.fromJSON)),
+			valueWithPrecision: expectObject(extractEntry(jCpy, 'valueWithPrecision', false, path), true, ignoreUnknownKeys, [...path, ".valueWithPrecision"], ValueWithPrecision.fromJSON),
 		})
 		if (!ignoreUnknownKeys) {
 			const unused = Object.keys(jCpy)

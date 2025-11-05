@@ -25,8 +25,8 @@ export class ValueWithPrecision {
 		if (typeof json != 'object') throw new Error(`Expected json object at path ${path.join("")}`)
 		const jCpy = { ...json }
 		const res = new ValueWithPrecision({
-			value: expectNumber(extractEntry(jCpy.value, 'value', true, path), false, true, [...path, ".value"]),
-			precision: expectNumber(extractEntry(jCpy.precision, 'precision', true, path), false, true, [...path, ".precision"]),
+			value: expectNumber(extractEntry(jCpy, 'value', true, path), false, true, [...path, ".value"]),
+			precision: expectNumber(extractEntry(jCpy, 'precision', true, path), false, true, [...path, ".precision"]),
 		})
 		if (!ignoreUnknownKeys) {
 			const unused = Object.keys(jCpy)

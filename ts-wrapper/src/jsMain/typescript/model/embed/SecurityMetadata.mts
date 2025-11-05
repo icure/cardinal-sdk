@@ -23,7 +23,7 @@ export class SecurityMetadata {
 		const jCpy = { ...json }
 		const res = new SecurityMetadata({
 			secureDelegations: expectMap(
-				extractEntry(jCpy.secureDelegations, 'secureDelegations', true, path),
+				extractEntry(jCpy, 'secureDelegations', true, path),
 				false,
 				[...path, ".secureDelegations"],
 				(k0, p0) => expectString(k0, false, p0),

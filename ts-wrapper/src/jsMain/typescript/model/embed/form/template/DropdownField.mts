@@ -79,6 +79,7 @@ export class DropdownField {
 		if (this.hideCondition != undefined) res['hideCondition'] = this.hideCondition
 		if (this.now != undefined) res['now'] = this.now
 		if (this.translate != undefined) res['translate'] = this.translate
+		res['$ktClass'] = 'com.icure.cardinal.sdk.model.embed.form.template.DropdownField'
 		return res
 	}
 
@@ -86,36 +87,37 @@ export class DropdownField {
 			path: Array<string> = ['DropdownField']): DropdownField {
 		if (typeof json != 'object') throw new Error(`Expected json object at path ${path.join("")}`)
 		const jCpy = { ...json }
+		if (extractEntry(jCpy, '\$ktClass', true, path) !== 'com.icure.cardinal.sdk.model.embed.form.template.DropdownField') throw new Error(`Unexpected value f+or ${path.join("")} class marker, should be "com.icure.cardinal.sdk.model.embed.form.template.DropdownField"`)
 		const res = new DropdownField({
-			field: expectString(extractEntry(jCpy.field, 'field', true, path), false, [...path, ".field"]),
-			shortLabel: expectString(extractEntry(jCpy.shortLabel, 'shortLabel', false, path), true, [...path, ".shortLabel"]),
-			rows: expectNumber(extractEntry(jCpy.rows, 'rows', false, path), true, true, [...path, ".rows"]),
-			columns: expectNumber(extractEntry(jCpy.columns, 'columns', false, path), true, true, [...path, ".columns"]),
-			grows: expectBoolean(extractEntry(jCpy.grows, 'grows', false, path), true, [...path, ".grows"]),
-			multiline: expectBoolean(extractEntry(jCpy.multiline, 'multiline', false, path), true, [...path, ".multiline"]),
-			schema: expectString(extractEntry(jCpy.schema, 'schema', false, path), true, [...path, ".schema"]),
-			tags: expectArray(extractEntry(jCpy.tags, 'tags', false, path), true, [...path, ".tags"], (x0, p0) => expectString(x0, false, p0)),
-			codifications: expectArray(extractEntry(jCpy.codifications, 'codifications', false, path), true, [...path, ".codifications"], (x0, p0) => expectString(x0, false, p0)),
+			field: expectString(extractEntry(jCpy, 'field', true, path), false, [...path, ".field"]),
+			shortLabel: expectString(extractEntry(jCpy, 'shortLabel', false, path), true, [...path, ".shortLabel"]),
+			rows: expectNumber(extractEntry(jCpy, 'rows', false, path), true, true, [...path, ".rows"]),
+			columns: expectNumber(extractEntry(jCpy, 'columns', false, path), true, true, [...path, ".columns"]),
+			grows: expectBoolean(extractEntry(jCpy, 'grows', false, path), true, [...path, ".grows"]),
+			multiline: expectBoolean(extractEntry(jCpy, 'multiline', false, path), true, [...path, ".multiline"]),
+			schema: expectString(extractEntry(jCpy, 'schema', false, path), true, [...path, ".schema"]),
+			tags: expectArray(extractEntry(jCpy, 'tags', false, path), true, [...path, ".tags"], (x0, p0) => expectString(x0, false, p0)),
+			codifications: expectArray(extractEntry(jCpy, 'codifications', false, path), true, [...path, ".codifications"], (x0, p0) => expectString(x0, false, p0)),
 			options: expectMap(
-				extractEntry(jCpy.options, 'options', false, path),
+				extractEntry(jCpy, 'options', false, path),
 				true,
 				[...path, ".options"],
 				(k0, p0) => expectString(k0, false, p0),
 				(v0, p0) => expectString(v0, false, p0)
 			),
 			labels: expectMap(
-				extractEntry(jCpy.labels, 'labels', false, path),
+				extractEntry(jCpy, 'labels', false, path),
 				true,
 				[...path, ".labels"],
 				(k0, p0) => expectString(k0, false, p0),
 				(v0, p0) => expectString(v0, false, p0)
 			),
-			value: expectString(extractEntry(jCpy.value, 'value', false, path), true, [...path, ".value"]),
-			unit: expectString(extractEntry(jCpy.unit, 'unit', false, path), true, [...path, ".unit"]),
-			required: expectBoolean(extractEntry(jCpy.required, 'required', false, path), true, [...path, ".required"]),
-			hideCondition: expectString(extractEntry(jCpy.hideCondition, 'hideCondition', false, path), true, [...path, ".hideCondition"]),
-			now: expectBoolean(extractEntry(jCpy.now, 'now', false, path), true, [...path, ".now"]),
-			translate: expectBoolean(extractEntry(jCpy.translate, 'translate', false, path), true, [...path, ".translate"]),
+			value: expectString(extractEntry(jCpy, 'value', false, path), true, [...path, ".value"]),
+			unit: expectString(extractEntry(jCpy, 'unit', false, path), true, [...path, ".unit"]),
+			required: expectBoolean(extractEntry(jCpy, 'required', false, path), true, [...path, ".required"]),
+			hideCondition: expectString(extractEntry(jCpy, 'hideCondition', false, path), true, [...path, ".hideCondition"]),
+			now: expectBoolean(extractEntry(jCpy, 'now', false, path), true, [...path, ".now"]),
+			translate: expectBoolean(extractEntry(jCpy, 'translate', false, path), true, [...path, ".translate"]),
 		})
 		if (!ignoreUnknownKeys) {
 			const unused = Object.keys(jCpy)

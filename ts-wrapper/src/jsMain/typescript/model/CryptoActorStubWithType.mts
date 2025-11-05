@@ -27,8 +27,8 @@ export class CryptoActorStubWithType {
 		if (typeof json != 'object') throw new Error(`Expected json object at path ${path.join("")}`)
 		const jCpy = { ...json }
 		const res = new CryptoActorStubWithType({
-			type: expectStringEnum(extractEntry(jCpy.type, 'type', true, path), false, [...path, ".type"], DataOwnerType, 'DataOwnerType'),
-			stub: expectObject(extractEntry(jCpy.stub, 'stub', true, path), false, ignoreUnknownKeys, [...path, ".stub"], CryptoActorStub.fromJSON),
+			type: expectStringEnum(extractEntry(jCpy, 'type', true, path), false, [...path, ".type"], DataOwnerType, 'DataOwnerType'),
+			stub: expectObject(extractEntry(jCpy, 'stub', true, path), false, ignoreUnknownKeys, [...path, ".stub"], CryptoActorStub.fromJSON),
 		})
 		if (!ignoreUnknownKeys) {
 			const unused = Object.keys(jCpy)

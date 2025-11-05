@@ -53,15 +53,15 @@ export class ReplicationStats {
 		if (typeof json != 'object') throw new Error(`Expected json object at path ${path.join("")}`)
 		const jCpy = { ...json }
 		const res = new ReplicationStats({
-			revisionsChecked: expectNumber(extractEntry(jCpy.revisionsChecked, 'revisionsChecked', false, path), true, true, [...path, ".revisionsChecked"]),
-			missingRevisionsFound: expectNumber(extractEntry(jCpy.missingRevisionsFound, 'missingRevisionsFound', false, path), true, true, [...path, ".missingRevisionsFound"]),
-			docsRead: expectNumber(extractEntry(jCpy.docsRead, 'docsRead', false, path), true, true, [...path, ".docsRead"]),
-			docsWritten: expectNumber(extractEntry(jCpy.docsWritten, 'docsWritten', false, path), true, true, [...path, ".docsWritten"]),
-			changesPending: expectNumber(extractEntry(jCpy.changesPending, 'changesPending', false, path), true, true, [...path, ".changesPending"]),
-			docWriteFailures: expectNumber(extractEntry(jCpy.docWriteFailures, 'docWriteFailures', false, path), true, true, [...path, ".docWriteFailures"]),
-			checkpointedSourceSeq: expectString(extractEntry(jCpy.checkpointedSourceSeq, 'checkpointedSourceSeq', false, path), true, [...path, ".checkpointedSourceSeq"]),
-			startTime: expectString(extractEntry(jCpy.startTime, 'startTime', false, path), true, [...path, ".startTime"]),
-			error: expectString(extractEntry(jCpy.error, 'error', false, path), true, [...path, ".error"]),
+			revisionsChecked: expectNumber(extractEntry(jCpy, 'revisionsChecked', false, path), true, true, [...path, ".revisionsChecked"]),
+			missingRevisionsFound: expectNumber(extractEntry(jCpy, 'missingRevisionsFound', false, path), true, true, [...path, ".missingRevisionsFound"]),
+			docsRead: expectNumber(extractEntry(jCpy, 'docsRead', false, path), true, true, [...path, ".docsRead"]),
+			docsWritten: expectNumber(extractEntry(jCpy, 'docsWritten', false, path), true, true, [...path, ".docsWritten"]),
+			changesPending: expectNumber(extractEntry(jCpy, 'changesPending', false, path), true, true, [...path, ".changesPending"]),
+			docWriteFailures: expectNumber(extractEntry(jCpy, 'docWriteFailures', false, path), true, true, [...path, ".docWriteFailures"]),
+			checkpointedSourceSeq: expectString(extractEntry(jCpy, 'checkpointedSourceSeq', false, path), true, [...path, ".checkpointedSourceSeq"]),
+			startTime: expectString(extractEntry(jCpy, 'startTime', false, path), true, [...path, ".startTime"]),
+			error: expectString(extractEntry(jCpy, 'error', false, path), true, [...path, ".error"]),
 		})
 		if (!ignoreUnknownKeys) {
 			const unused = Object.keys(jCpy)

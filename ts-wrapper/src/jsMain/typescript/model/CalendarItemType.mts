@@ -84,34 +84,34 @@ export class CalendarItemType implements StoredDocument {
 		if (typeof json != 'object') throw new Error(`Expected json object at path ${path.join("")}`)
 		const jCpy = { ...json }
 		const res = new CalendarItemType({
-			id: expectString(extractEntry(jCpy.id, 'id', true, path), false, [...path, ".id"]),
-			rev: expectString(extractEntry(jCpy.rev, 'rev', false, path), true, [...path, ".rev"]),
-			deletionDate: expectNumber(extractEntry(jCpy.deletionDate, 'deletionDate', false, path), true, true, [...path, ".deletionDate"]),
-			healthcarePartyId: expectString(extractEntry(jCpy.healthcarePartyId, 'healthcarePartyId', false, path), true, [...path, ".healthcarePartyId"]),
-			agendaId: expectString(extractEntry(jCpy.agendaId, 'agendaId', false, path), true, [...path, ".agendaId"]),
-			defaultCalendarItemType: expectBoolean(extractEntry(jCpy.defaultCalendarItemType, 'defaultCalendarItemType', false, path), false, [...path, ".defaultCalendarItemType"]),
-			name: expectString(extractEntry(jCpy.name, 'name', false, path), true, [...path, ".name"]),
-			color: expectString(extractEntry(jCpy.color, 'color', false, path), true, [...path, ".color"]),
-			duration: expectNumber(extractEntry(jCpy.duration, 'duration', false, path), false, true, [...path, ".duration"]),
-			extraDurationsConfig: expectObject(extractEntry(jCpy.extraDurationsConfig, 'extraDurationsConfig', false, path), true, ignoreUnknownKeys, [...path, ".extraDurationsConfig"], CalendarItemType.DurationConfig.fromJSON),
-			externalRef: expectString(extractEntry(jCpy.externalRef, 'externalRef', false, path), true, [...path, ".externalRef"]),
-			mikronoId: expectString(extractEntry(jCpy.mikronoId, 'mikronoId', false, path), true, [...path, ".mikronoId"]),
-			docIds: expectArray(extractEntry(jCpy.docIds, 'docIds', false, path), false, [...path, ".docIds"], (x0, p0) => expectString(x0, false, p0)),
+			id: expectString(extractEntry(jCpy, 'id', true, path), false, [...path, ".id"]),
+			rev: expectString(extractEntry(jCpy, 'rev', false, path), true, [...path, ".rev"]),
+			deletionDate: expectNumber(extractEntry(jCpy, 'deletionDate', false, path), true, true, [...path, ".deletionDate"]),
+			healthcarePartyId: expectString(extractEntry(jCpy, 'healthcarePartyId', false, path), true, [...path, ".healthcarePartyId"]),
+			agendaId: expectString(extractEntry(jCpy, 'agendaId', false, path), true, [...path, ".agendaId"]),
+			defaultCalendarItemType: expectBoolean(extractEntry(jCpy, 'defaultCalendarItemType', false, path), false, [...path, ".defaultCalendarItemType"]),
+			name: expectString(extractEntry(jCpy, 'name', false, path), true, [...path, ".name"]),
+			color: expectString(extractEntry(jCpy, 'color', false, path), true, [...path, ".color"]),
+			duration: expectNumber(extractEntry(jCpy, 'duration', false, path), false, true, [...path, ".duration"]),
+			extraDurationsConfig: expectObject(extractEntry(jCpy, 'extraDurationsConfig', false, path), true, ignoreUnknownKeys, [...path, ".extraDurationsConfig"], CalendarItemType.DurationConfig.fromJSON),
+			externalRef: expectString(extractEntry(jCpy, 'externalRef', false, path), true, [...path, ".externalRef"]),
+			mikronoId: expectString(extractEntry(jCpy, 'mikronoId', false, path), true, [...path, ".mikronoId"]),
+			docIds: expectArray(extractEntry(jCpy, 'docIds', false, path), false, [...path, ".docIds"], (x0, p0) => expectString(x0, false, p0)),
 			otherInfos: expectMap(
-				extractEntry(jCpy.otherInfos, 'otherInfos', false, path),
+				extractEntry(jCpy, 'otherInfos', false, path),
 				false,
 				[...path, ".otherInfos"],
 				(k0, p0) => expectString(k0, false, p0),
 				(v0, p0) => expectString(v0, false, p0)
 			),
 			subjectByLanguage: expectMap(
-				extractEntry(jCpy.subjectByLanguage, 'subjectByLanguage', false, path),
+				extractEntry(jCpy, 'subjectByLanguage', false, path),
 				false,
 				[...path, ".subjectByLanguage"],
 				(k0, p0) => expectString(k0, false, p0),
 				(v0, p0) => expectString(v0, false, p0)
 			),
-			publicProperties: expectArray(extractEntry(jCpy.publicProperties, 'publicProperties', false, path), true, [...path, ".publicProperties"], (x0, p0) => expectObject(x0, false, ignoreUnknownKeys, p0, DecryptedPropertyStub.fromJSON)),
+			publicProperties: expectArray(extractEntry(jCpy, 'publicProperties', false, path), true, [...path, ".publicProperties"], (x0, p0) => expectObject(x0, false, ignoreUnknownKeys, p0, DecryptedPropertyStub.fromJSON)),
 		})
 		if (!ignoreUnknownKeys) {
 			const unused = Object.keys(jCpy)
@@ -138,6 +138,7 @@ export namespace CalendarItemType {
 			toJSON(): any {
 				const res: { [k: string]: any } = {}
 				res['durations'] = this.durations.map((x0) => x0 )
+				res['$ktClass'] = 'com.icure.cardinal.sdk.model.CalendarItemType.DurationConfig.Set'
 				return res
 			}
 
@@ -145,8 +146,9 @@ export namespace CalendarItemType {
 					path: Array<string> = ['Set']): Set {
 				if (typeof json != 'object') throw new Error(`Expected json object at path ${path.join("")}`)
 				const jCpy = { ...json }
+				if (extractEntry(jCpy, '\$ktClass', true, path) !== 'com.icure.cardinal.sdk.model.CalendarItemType.DurationConfig.Set') throw new Error(`Unexpected value f+or ${path.join("")} class marker, should be "com.icure.cardinal.sdk.model.CalendarItemType.DurationConfig.Set"`)
 				const res = new Set({
-					durations: expectArray(extractEntry(jCpy.durations, 'durations', false, path), false, [...path, ".durations"], (x0, p0) => expectNumber(x0, false, true, p0)),
+					durations: expectArray(extractEntry(jCpy, 'durations', false, path), false, [...path, ".durations"], (x0, p0) => expectNumber(x0, false, true, p0)),
 				})
 				if (!ignoreUnknownKeys) {
 					const unused = Object.keys(jCpy)
@@ -177,6 +179,7 @@ export namespace CalendarItemType {
 				res['min'] = this.min
 				res['max'] = this.max
 				res['step'] = this.step
+				res['$ktClass'] = 'com.icure.cardinal.sdk.model.CalendarItemType.DurationConfig.Formula'
 				return res
 			}
 
@@ -184,10 +187,11 @@ export namespace CalendarItemType {
 					path: Array<string> = ['Formula']): Formula {
 				if (typeof json != 'object') throw new Error(`Expected json object at path ${path.join("")}`)
 				const jCpy = { ...json }
+				if (extractEntry(jCpy, '\$ktClass', true, path) !== 'com.icure.cardinal.sdk.model.CalendarItemType.DurationConfig.Formula') throw new Error(`Unexpected value f+or ${path.join("")} class marker, should be "com.icure.cardinal.sdk.model.CalendarItemType.DurationConfig.Formula"`)
 				const res = new Formula({
-					min: expectNumber(extractEntry(jCpy.min, 'min', true, path), false, true, [...path, ".min"]),
-					max: expectNumber(extractEntry(jCpy.max, 'max', true, path), false, true, [...path, ".max"]),
-					step: expectNumber(extractEntry(jCpy.step, 'step', true, path), false, true, [...path, ".step"]),
+					min: expectNumber(extractEntry(jCpy, 'min', true, path), false, true, [...path, ".min"]),
+					max: expectNumber(extractEntry(jCpy, 'max', true, path), false, true, [...path, ".max"]),
+					step: expectNumber(extractEntry(jCpy, 'step', true, path), false, true, [...path, ".step"]),
 				})
 				if (!ignoreUnknownKeys) {
 					const unused = Object.keys(jCpy)

@@ -25,8 +25,8 @@ export class PaginatedDocumentKeyIdPair {
 		if (typeof json != 'object') throw new Error(`Expected json object at path ${path.join("")}`)
 		const jCpy = { ...json }
 		const res = new PaginatedDocumentKeyIdPair({
-			startKey: extractEntry(jCpy.startKey, 'startKey', false, path),
-			startKeyDocId: expectString(extractEntry(jCpy.startKeyDocId, 'startKeyDocId', false, path), true, [...path, ".startKeyDocId"]),
+			startKey: extractEntry(jCpy, 'startKey', false, path),
+			startKeyDocId: expectString(extractEntry(jCpy, 'startKeyDocId', false, path), true, [...path, ".startKeyDocId"]),
 		})
 		if (!ignoreUnknownKeys) {
 			const unused = Object.keys(jCpy)

@@ -30,9 +30,9 @@ export class Payment {
 		if (typeof json != 'object') throw new Error(`Expected json object at path ${path.join("")}`)
 		const jCpy = { ...json }
 		const res = new Payment({
-			paymentDate: expectNumber(extractEntry(jCpy.paymentDate, 'paymentDate', false, path), false, true, [...path, ".paymentDate"]),
-			paymentType: expectStringEnum(extractEntry(jCpy.paymentType, 'paymentType', false, path), true, [...path, ".paymentType"], PaymentType, 'PaymentType'),
-			paid: expectNumber(extractEntry(jCpy.paid, 'paid', false, path), true, false, [...path, ".paid"]),
+			paymentDate: expectNumber(extractEntry(jCpy, 'paymentDate', false, path), false, true, [...path, ".paymentDate"]),
+			paymentType: expectStringEnum(extractEntry(jCpy, 'paymentType', false, path), true, [...path, ".paymentType"], PaymentType, 'PaymentType'),
+			paid: expectNumber(extractEntry(jCpy, 'paid', false, path), true, false, [...path, ".paid"]),
 		})
 		if (!ignoreUnknownKeys) {
 			const unused = Object.keys(jCpy)

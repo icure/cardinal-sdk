@@ -22,7 +22,7 @@ export class ListOfProperties {
 		if (typeof json != 'object') throw new Error(`Expected json object at path ${path.join("")}`)
 		const jCpy = { ...json }
 		const res = new ListOfProperties({
-			properties: expectArray(extractEntry(jCpy.properties, 'properties', false, path), false, [...path, ".properties"], (x0, p0) => expectObject(x0, false, ignoreUnknownKeys, p0, DecryptedPropertyStub.fromJSON)),
+			properties: expectArray(extractEntry(jCpy, 'properties', false, path), false, [...path, ".properties"], (x0, p0) => expectObject(x0, false, ignoreUnknownKeys, p0, DecryptedPropertyStub.fromJSON)),
 		})
 		if (!ignoreUnknownKeys) {
 			const unused = Object.keys(jCpy)

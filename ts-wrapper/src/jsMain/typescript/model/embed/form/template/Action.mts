@@ -31,9 +31,9 @@ export class Action {
 		if (typeof json != 'object') throw new Error(`Expected json object at path ${path.join("")}`)
 		const jCpy = { ...json }
 		const res = new Action({
-			launchers: expectArray(extractEntry(jCpy.launchers, 'launchers', false, path), true, [...path, ".launchers"], (x0, p0) => expectObject(x0, false, ignoreUnknownKeys, p0, Launcher.fromJSON)),
-			expression: expectString(extractEntry(jCpy.expression, 'expression', false, path), true, [...path, ".expression"]),
-			states: expectArray(extractEntry(jCpy.states, 'states', false, path), true, [...path, ".states"], (x0, p0) => expectObject(x0, false, ignoreUnknownKeys, p0, State.fromJSON)),
+			launchers: expectArray(extractEntry(jCpy, 'launchers', false, path), true, [...path, ".launchers"], (x0, p0) => expectObject(x0, false, ignoreUnknownKeys, p0, Launcher.fromJSON)),
+			expression: expectString(extractEntry(jCpy, 'expression', false, path), true, [...path, ".expression"]),
+			states: expectArray(extractEntry(jCpy, 'states', false, path), true, [...path, ".states"], (x0, p0) => expectObject(x0, false, ignoreUnknownKeys, p0, State.fromJSON)),
 		})
 		if (!ignoreUnknownKeys) {
 			const unused = Object.keys(jCpy)

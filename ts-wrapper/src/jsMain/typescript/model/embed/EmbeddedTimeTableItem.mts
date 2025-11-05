@@ -54,15 +54,15 @@ export class EmbeddedTimeTableItem {
 		if (typeof json != 'object') throw new Error(`Expected json object at path ${path.join("")}`)
 		const jCpy = { ...json }
 		const res = new EmbeddedTimeTableItem({
-			rrule: expectString(extractEntry(jCpy.rrule, 'rrule', true, path), false, [...path, ".rrule"]),
-			rruleStartDate: expectNumber(extractEntry(jCpy.rruleStartDate, 'rruleStartDate', false, path), true, true, [...path, ".rruleStartDate"]),
-			notBeforeInMinutes: expectNumber(extractEntry(jCpy.notBeforeInMinutes, 'notBeforeInMinutes', false, path), true, true, [...path, ".notBeforeInMinutes"]),
-			notAfterInMinutes: expectNumber(extractEntry(jCpy.notAfterInMinutes, 'notAfterInMinutes', false, path), true, true, [...path, ".notAfterInMinutes"]),
-			hours: expectArray(extractEntry(jCpy.hours, 'hours', true, path), false, [...path, ".hours"], (x0, p0) => expectObject(x0, false, ignoreUnknownKeys, p0, EmbeddedTimeTableHour.fromJSON)),
-			calendarItemTypesIds: expectArray(extractEntry(jCpy.calendarItemTypesIds, 'calendarItemTypesIds', true, path), false, [...path, ".calendarItemTypesIds"], (x0, p0) => expectString(x0, false, p0)),
-			availabilities: expectNumber(extractEntry(jCpy.availabilities, 'availabilities', false, path), false, true, [...path, ".availabilities"]),
-			reservingRights: expectArray(extractEntry(jCpy.reservingRights, 'reservingRights', false, path), false, [...path, ".reservingRights"], (x0, p0) => expectString(x0, false, p0)),
-			public: expectBoolean(extractEntry(jCpy.public, 'public', false, path), false, [...path, ".public"]),
+			rrule: expectString(extractEntry(jCpy, 'rrule', true, path), false, [...path, ".rrule"]),
+			rruleStartDate: expectNumber(extractEntry(jCpy, 'rruleStartDate', false, path), true, true, [...path, ".rruleStartDate"]),
+			notBeforeInMinutes: expectNumber(extractEntry(jCpy, 'notBeforeInMinutes', false, path), true, true, [...path, ".notBeforeInMinutes"]),
+			notAfterInMinutes: expectNumber(extractEntry(jCpy, 'notAfterInMinutes', false, path), true, true, [...path, ".notAfterInMinutes"]),
+			hours: expectArray(extractEntry(jCpy, 'hours', true, path), false, [...path, ".hours"], (x0, p0) => expectObject(x0, false, ignoreUnknownKeys, p0, EmbeddedTimeTableHour.fromJSON)),
+			calendarItemTypesIds: expectArray(extractEntry(jCpy, 'calendarItemTypesIds', true, path), false, [...path, ".calendarItemTypesIds"], (x0, p0) => expectString(x0, false, p0)),
+			availabilities: expectNumber(extractEntry(jCpy, 'availabilities', false, path), false, true, [...path, ".availabilities"]),
+			reservingRights: expectArray(extractEntry(jCpy, 'reservingRights', false, path), false, [...path, ".reservingRights"], (x0, p0) => expectString(x0, false, p0)),
+			public: expectBoolean(extractEntry(jCpy, 'public', false, path), false, [...path, ".public"]),
 		})
 		if (!ignoreUnknownKeys) {
 			const unused = Object.keys(jCpy)

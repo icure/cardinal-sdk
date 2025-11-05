@@ -60,22 +60,22 @@ export class Annotation implements Identifiable<string> {
 		if (typeof json != 'object') throw new Error(`Expected json object at path ${path.join("")}`)
 		const jCpy = { ...json }
 		const res = new Annotation({
-			id: expectString(extractEntry(jCpy.id, 'id', true, path), false, [...path, ".id"]),
-			author: expectString(extractEntry(jCpy.author, 'author', false, path), true, [...path, ".author"]),
-			created: expectNumber(extractEntry(jCpy.created, 'created', false, path), true, true, [...path, ".created"]),
-			modified: expectNumber(extractEntry(jCpy.modified, 'modified', false, path), true, true, [...path, ".modified"]),
-			text: expectString(extractEntry(jCpy.text, 'text', false, path), true, [...path, ".text"]),
+			id: expectString(extractEntry(jCpy, 'id', true, path), false, [...path, ".id"]),
+			author: expectString(extractEntry(jCpy, 'author', false, path), true, [...path, ".author"]),
+			created: expectNumber(extractEntry(jCpy, 'created', false, path), true, true, [...path, ".created"]),
+			modified: expectNumber(extractEntry(jCpy, 'modified', false, path), true, true, [...path, ".modified"]),
+			text: expectString(extractEntry(jCpy, 'text', false, path), true, [...path, ".text"]),
 			markdown: expectMap(
-				extractEntry(jCpy.markdown, 'markdown', false, path),
+				extractEntry(jCpy, 'markdown', false, path),
 				false,
 				[...path, ".markdown"],
 				(k0, p0) => expectString(k0, false, p0),
 				(v0, p0) => expectString(v0, false, p0)
 			),
-			location: expectString(extractEntry(jCpy.location, 'location', false, path), true, [...path, ".location"]),
-			confidential: expectBoolean(extractEntry(jCpy.confidential, 'confidential', false, path), true, [...path, ".confidential"]),
-			tags: expectArray(extractEntry(jCpy.tags, 'tags', false, path), false, [...path, ".tags"], (x0, p0) => expectObject(x0, false, ignoreUnknownKeys, p0, CodeStub.fromJSON)),
-			encryptedSelf: expectString(extractEntry(jCpy.encryptedSelf, 'encryptedSelf', false, path), true, [...path, ".encryptedSelf"]),
+			location: expectString(extractEntry(jCpy, 'location', false, path), true, [...path, ".location"]),
+			confidential: expectBoolean(extractEntry(jCpy, 'confidential', false, path), true, [...path, ".confidential"]),
+			tags: expectArray(extractEntry(jCpy, 'tags', false, path), false, [...path, ".tags"], (x0, p0) => expectObject(x0, false, ignoreUnknownKeys, p0, CodeStub.fromJSON)),
+			encryptedSelf: expectString(extractEntry(jCpy, 'encryptedSelf', false, path), true, [...path, ".encryptedSelf"]),
 		})
 		if (!ignoreUnknownKeys) {
 			const unused = Object.keys(jCpy)

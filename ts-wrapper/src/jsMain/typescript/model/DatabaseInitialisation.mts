@@ -36,10 +36,10 @@ export class DatabaseInitialisation {
 		if (typeof json != 'object') throw new Error(`Expected json object at path ${path.join("")}`)
 		const jCpy = { ...json }
 		const res = new DatabaseInitialisation({
-			users: expectArray(extractEntry(jCpy.users, 'users', false, path), true, [...path, ".users"], (x0, p0) => expectObject(x0, false, ignoreUnknownKeys, p0, User.fromJSON)),
-			healthcareParties: expectArray(extractEntry(jCpy.healthcareParties, 'healthcareParties', false, path), true, [...path, ".healthcareParties"], (x0, p0) => expectObject(x0, false, ignoreUnknownKeys, p0, HealthcareParty.fromJSON)),
-			replication: expectObject(extractEntry(jCpy.replication, 'replication', false, path), true, ignoreUnknownKeys, [...path, ".replication"], Replication.fromJSON),
-			minimumKrakenVersion: expectString(extractEntry(jCpy.minimumKrakenVersion, 'minimumKrakenVersion', false, path), true, [...path, ".minimumKrakenVersion"]),
+			users: expectArray(extractEntry(jCpy, 'users', false, path), true, [...path, ".users"], (x0, p0) => expectObject(x0, false, ignoreUnknownKeys, p0, User.fromJSON)),
+			healthcareParties: expectArray(extractEntry(jCpy, 'healthcareParties', false, path), true, [...path, ".healthcareParties"], (x0, p0) => expectObject(x0, false, ignoreUnknownKeys, p0, HealthcareParty.fromJSON)),
+			replication: expectObject(extractEntry(jCpy, 'replication', false, path), true, ignoreUnknownKeys, [...path, ".replication"], Replication.fromJSON),
+			minimumKrakenVersion: expectString(extractEntry(jCpy, 'minimumKrakenVersion', false, path), true, [...path, ".minimumKrakenVersion"]),
 		})
 		if (!ignoreUnknownKeys) {
 			const unused = Object.keys(jCpy)

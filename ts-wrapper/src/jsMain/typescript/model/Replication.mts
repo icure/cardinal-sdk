@@ -46,12 +46,12 @@ export class Replication implements StoredDocument, Identifiable<string>, Named 
 		if (typeof json != 'object') throw new Error(`Expected json object at path ${path.join("")}`)
 		const jCpy = { ...json }
 		const res = new Replication({
-			id: expectString(extractEntry(jCpy.id, 'id', true, path), false, [...path, ".id"]),
-			rev: expectString(extractEntry(jCpy.rev, 'rev', false, path), true, [...path, ".rev"]),
-			deletionDate: expectNumber(extractEntry(jCpy.deletionDate, 'deletionDate', false, path), true, true, [...path, ".deletionDate"]),
-			name: expectString(extractEntry(jCpy.name, 'name', false, path), true, [...path, ".name"]),
-			context: expectString(extractEntry(jCpy.context, 'context', false, path), true, [...path, ".context"]),
-			databaseSynchronizations: expectArray(extractEntry(jCpy.databaseSynchronizations, 'databaseSynchronizations', false, path), false, [...path, ".databaseSynchronizations"], (x0, p0) => expectObject(x0, false, ignoreUnknownKeys, p0, DatabaseSynchronization.fromJSON)),
+			id: expectString(extractEntry(jCpy, 'id', true, path), false, [...path, ".id"]),
+			rev: expectString(extractEntry(jCpy, 'rev', false, path), true, [...path, ".rev"]),
+			deletionDate: expectNumber(extractEntry(jCpy, 'deletionDate', false, path), true, true, [...path, ".deletionDate"]),
+			name: expectString(extractEntry(jCpy, 'name', false, path), true, [...path, ".name"]),
+			context: expectString(extractEntry(jCpy, 'context', false, path), true, [...path, ".context"]),
+			databaseSynchronizations: expectArray(extractEntry(jCpy, 'databaseSynchronizations', false, path), false, [...path, ".databaseSynchronizations"], (x0, p0) => expectObject(x0, false, ignoreUnknownKeys, p0, DatabaseSynchronization.fromJSON)),
 		})
 		if (!ignoreUnknownKeys) {
 			const unused = Object.keys(jCpy)

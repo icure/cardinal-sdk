@@ -73,19 +73,19 @@ export class FrontEndMigration implements StoredDocument {
 		if (typeof json != 'object') throw new Error(`Expected json object at path ${path.join("")}`)
 		const jCpy = { ...json }
 		const res = new FrontEndMigration({
-			id: expectString(extractEntry(jCpy.id, 'id', true, path), false, [...path, ".id"]),
-			rev: expectString(extractEntry(jCpy.rev, 'rev', false, path), true, [...path, ".rev"]),
-			deletionDate: expectNumber(extractEntry(jCpy.deletionDate, 'deletionDate', false, path), true, true, [...path, ".deletionDate"]),
-			name: expectString(extractEntry(jCpy.name, 'name', false, path), true, [...path, ".name"]),
-			startDate: expectNumber(extractEntry(jCpy.startDate, 'startDate', false, path), true, true, [...path, ".startDate"]),
-			endDate: expectNumber(extractEntry(jCpy.endDate, 'endDate', false, path), true, true, [...path, ".endDate"]),
-			status: expectStringEnum(extractEntry(jCpy.status, 'status', false, path), true, [...path, ".status"], FrontEndMigrationStatus, 'FrontEndMigrationStatus'),
-			logs: expectString(extractEntry(jCpy.logs, 'logs', false, path), true, [...path, ".logs"]),
-			userId: expectString(extractEntry(jCpy.userId, 'userId', false, path), true, [...path, ".userId"]),
-			startKey: expectString(extractEntry(jCpy.startKey, 'startKey', false, path), true, [...path, ".startKey"]),
-			startKeyDocId: expectString(extractEntry(jCpy.startKeyDocId, 'startKeyDocId', false, path), true, [...path, ".startKeyDocId"]),
-			processCount: expectNumber(extractEntry(jCpy.processCount, 'processCount', false, path), true, true, [...path, ".processCount"]),
-			properties: expectArray(extractEntry(jCpy.properties, 'properties', false, path), false, [...path, ".properties"], (x0, p0) => expectObject(x0, false, ignoreUnknownKeys, p0, DecryptedPropertyStub.fromJSON)),
+			id: expectString(extractEntry(jCpy, 'id', true, path), false, [...path, ".id"]),
+			rev: expectString(extractEntry(jCpy, 'rev', false, path), true, [...path, ".rev"]),
+			deletionDate: expectNumber(extractEntry(jCpy, 'deletionDate', false, path), true, true, [...path, ".deletionDate"]),
+			name: expectString(extractEntry(jCpy, 'name', false, path), true, [...path, ".name"]),
+			startDate: expectNumber(extractEntry(jCpy, 'startDate', false, path), true, true, [...path, ".startDate"]),
+			endDate: expectNumber(extractEntry(jCpy, 'endDate', false, path), true, true, [...path, ".endDate"]),
+			status: expectStringEnum(extractEntry(jCpy, 'status', false, path), true, [...path, ".status"], FrontEndMigrationStatus, 'FrontEndMigrationStatus'),
+			logs: expectString(extractEntry(jCpy, 'logs', false, path), true, [...path, ".logs"]),
+			userId: expectString(extractEntry(jCpy, 'userId', false, path), true, [...path, ".userId"]),
+			startKey: expectString(extractEntry(jCpy, 'startKey', false, path), true, [...path, ".startKey"]),
+			startKeyDocId: expectString(extractEntry(jCpy, 'startKeyDocId', false, path), true, [...path, ".startKeyDocId"]),
+			processCount: expectNumber(extractEntry(jCpy, 'processCount', false, path), true, true, [...path, ".processCount"]),
+			properties: expectArray(extractEntry(jCpy, 'properties', false, path), false, [...path, ".properties"], (x0, p0) => expectObject(x0, false, ignoreUnknownKeys, p0, DecryptedPropertyStub.fromJSON)),
 		})
 		if (!ignoreUnknownKeys) {
 			const unused = Object.keys(jCpy)

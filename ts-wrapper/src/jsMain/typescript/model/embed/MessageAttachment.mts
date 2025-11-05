@@ -26,8 +26,8 @@ export class MessageAttachment {
 		if (typeof json != 'object') throw new Error(`Expected json object at path ${path.join("")}`)
 		const jCpy = { ...json }
 		const res = new MessageAttachment({
-			type: expectStringEnum(extractEntry(jCpy.type, 'type', false, path), true, [...path, ".type"], DocumentLocation, 'DocumentLocation'),
-			ids: expectArray(extractEntry(jCpy.ids, 'ids', false, path), false, [...path, ".ids"], (x0, p0) => expectString(x0, false, p0)),
+			type: expectStringEnum(extractEntry(jCpy, 'type', false, path), true, [...path, ".type"], DocumentLocation, 'DocumentLocation'),
+			ids: expectArray(extractEntry(jCpy, 'ids', false, path), false, [...path, ".ids"], (x0, p0) => expectString(x0, false, p0)),
 		})
 		if (!ignoreUnknownKeys) {
 			const unused = Object.keys(jCpy)

@@ -30,9 +30,9 @@ export class AdministrationQuantity {
 		if (typeof json != 'object') throw new Error(`Expected json object at path ${path.join("")}`)
 		const jCpy = { ...json }
 		const res = new AdministrationQuantity({
-			quantity: expectNumber(extractEntry(jCpy.quantity, 'quantity', false, path), true, false, [...path, ".quantity"]),
-			administrationUnit: expectObject(extractEntry(jCpy.administrationUnit, 'administrationUnit', false, path), true, ignoreUnknownKeys, [...path, ".administrationUnit"], CodeStub.fromJSON),
-			unit: expectString(extractEntry(jCpy.unit, 'unit', false, path), true, [...path, ".unit"]),
+			quantity: expectNumber(extractEntry(jCpy, 'quantity', false, path), true, false, [...path, ".quantity"]),
+			administrationUnit: expectObject(extractEntry(jCpy, 'administrationUnit', false, path), true, ignoreUnknownKeys, [...path, ".administrationUnit"], CodeStub.fromJSON),
+			unit: expectString(extractEntry(jCpy, 'unit', false, path), true, [...path, ".unit"]),
 		})
 		if (!ignoreUnknownKeys) {
 			const unused = Object.keys(jCpy)

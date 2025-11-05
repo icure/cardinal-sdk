@@ -52,14 +52,14 @@ export class SecureDelegation {
 		if (typeof json != 'object') throw new Error(`Expected json object at path ${path.join("")}`)
 		const jCpy = { ...json }
 		const res = new SecureDelegation({
-			delegator: expectString(extractEntry(jCpy.delegator, 'delegator', false, path), true, [...path, ".delegator"]),
-			delegate: expectString(extractEntry(jCpy.delegate, 'delegate', false, path), true, [...path, ".delegate"]),
-			secretIds: expectArray(extractEntry(jCpy.secretIds, 'secretIds', false, path), false, [...path, ".secretIds"], (x0, p0) => expectString(x0, false, p0)),
-			encryptionKeys: expectArray(extractEntry(jCpy.encryptionKeys, 'encryptionKeys', false, path), false, [...path, ".encryptionKeys"], (x0, p0) => expectString(x0, false, p0)),
-			owningEntityIds: expectArray(extractEntry(jCpy.owningEntityIds, 'owningEntityIds', false, path), false, [...path, ".owningEntityIds"], (x0, p0) => expectString(x0, false, p0)),
-			parentDelegations: expectArray(extractEntry(jCpy.parentDelegations, 'parentDelegations', false, path), false, [...path, ".parentDelegations"], (x0, p0) => expectString(x0, false, p0)),
-			exchangeDataId: expectString(extractEntry(jCpy.exchangeDataId, 'exchangeDataId', false, path), true, [...path, ".exchangeDataId"]),
-			permissions: expectStringEnum(extractEntry(jCpy.permissions, 'permissions', true, path), false, [...path, ".permissions"], AccessLevel, 'AccessLevel'),
+			delegator: expectString(extractEntry(jCpy, 'delegator', false, path), true, [...path, ".delegator"]),
+			delegate: expectString(extractEntry(jCpy, 'delegate', false, path), true, [...path, ".delegate"]),
+			secretIds: expectArray(extractEntry(jCpy, 'secretIds', false, path), false, [...path, ".secretIds"], (x0, p0) => expectString(x0, false, p0)),
+			encryptionKeys: expectArray(extractEntry(jCpy, 'encryptionKeys', false, path), false, [...path, ".encryptionKeys"], (x0, p0) => expectString(x0, false, p0)),
+			owningEntityIds: expectArray(extractEntry(jCpy, 'owningEntityIds', false, path), false, [...path, ".owningEntityIds"], (x0, p0) => expectString(x0, false, p0)),
+			parentDelegations: expectArray(extractEntry(jCpy, 'parentDelegations', false, path), false, [...path, ".parentDelegations"], (x0, p0) => expectString(x0, false, p0)),
+			exchangeDataId: expectString(extractEntry(jCpy, 'exchangeDataId', false, path), true, [...path, ".exchangeDataId"]),
+			permissions: expectStringEnum(extractEntry(jCpy, 'permissions', true, path), false, [...path, ".permissions"], AccessLevel, 'AccessLevel'),
 		})
 		if (!ignoreUnknownKeys) {
 			const unused = Object.keys(jCpy)

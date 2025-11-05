@@ -101,6 +101,7 @@ export class DecryptedContent {
 		if (this.compoundValue != undefined) res['compoundValue'] = this.compoundValue.map((x0) => x0.toJSON() )
 		if (this.ratio != undefined) res['ratio'] = this.ratio.map((x0) => x0.toJSON() )
 		if (this.range != undefined) res['range'] = this.range.map((x0) => x0.toJSON() )
+		res['isEncrypted'] = false
 		return res
 	}
 
@@ -108,20 +109,21 @@ export class DecryptedContent {
 			path: Array<string> = ['DecryptedContent']): DecryptedContent {
 		if (typeof json != 'object') throw new Error(`Expected json object at path ${path.join("")}`)
 		const jCpy = { ...json }
+		if (extractEntry(jCpy, "isEncrypted", true, path) !== false) throw new Error(`Unexpected value for ${path.join("")} isEncrypted marker, should be false`)
 		const res = new DecryptedContent({
-			stringValue: expectString(extractEntry(jCpy.stringValue, 'stringValue', false, path), true, [...path, ".stringValue"]),
-			numberValue: expectNumber(extractEntry(jCpy.numberValue, 'numberValue', false, path), true, false, [...path, ".numberValue"]),
-			booleanValue: expectBoolean(extractEntry(jCpy.booleanValue, 'booleanValue', false, path), true, [...path, ".booleanValue"]),
-			instantValue: expectNumber(extractEntry(jCpy.instantValue, 'instantValue', false, path), true, true, [...path, ".instantValue"]),
-			fuzzyDateValue: expectNumber(extractEntry(jCpy.fuzzyDateValue, 'fuzzyDateValue', false, path), true, true, [...path, ".fuzzyDateValue"]),
-			binaryValue: decodeBase64(expectString(extractEntry(jCpy.binaryValue, 'binaryValue', false, path), true, [...path, ".binaryValue"]), [...path, ".binaryValue"]),
-			documentId: expectString(extractEntry(jCpy.documentId, 'documentId', false, path), true, [...path, ".documentId"]),
-			measureValue: expectObject(extractEntry(jCpy.measureValue, 'measureValue', false, path), true, ignoreUnknownKeys, [...path, ".measureValue"], Measure.fromJSON),
-			medicationValue: expectObject(extractEntry(jCpy.medicationValue, 'medicationValue', false, path), true, ignoreUnknownKeys, [...path, ".medicationValue"], Medication.fromJSON),
-			timeSeries: expectObject(extractEntry(jCpy.timeSeries, 'timeSeries', false, path), true, ignoreUnknownKeys, [...path, ".timeSeries"], TimeSeries.fromJSON),
-			compoundValue: expectArray(extractEntry(jCpy.compoundValue, 'compoundValue', false, path), true, [...path, ".compoundValue"], (x0, p0) => expectObject(x0, false, ignoreUnknownKeys, p0, DecryptedService.fromJSON)),
-			ratio: expectArray(extractEntry(jCpy.ratio, 'ratio', false, path), true, [...path, ".ratio"], (x0, p0) => expectObject(x0, false, ignoreUnknownKeys, p0, Measure.fromJSON)),
-			range: expectArray(extractEntry(jCpy.range, 'range', false, path), true, [...path, ".range"], (x0, p0) => expectObject(x0, false, ignoreUnknownKeys, p0, Measure.fromJSON)),
+			stringValue: expectString(extractEntry(jCpy, 'stringValue', false, path), true, [...path, ".stringValue"]),
+			numberValue: expectNumber(extractEntry(jCpy, 'numberValue', false, path), true, false, [...path, ".numberValue"]),
+			booleanValue: expectBoolean(extractEntry(jCpy, 'booleanValue', false, path), true, [...path, ".booleanValue"]),
+			instantValue: expectNumber(extractEntry(jCpy, 'instantValue', false, path), true, true, [...path, ".instantValue"]),
+			fuzzyDateValue: expectNumber(extractEntry(jCpy, 'fuzzyDateValue', false, path), true, true, [...path, ".fuzzyDateValue"]),
+			binaryValue: decodeBase64(expectString(extractEntry(jCpy, 'binaryValue', false, path), true, [...path, ".binaryValue"]), [...path, ".binaryValue"]),
+			documentId: expectString(extractEntry(jCpy, 'documentId', false, path), true, [...path, ".documentId"]),
+			measureValue: expectObject(extractEntry(jCpy, 'measureValue', false, path), true, ignoreUnknownKeys, [...path, ".measureValue"], Measure.fromJSON),
+			medicationValue: expectObject(extractEntry(jCpy, 'medicationValue', false, path), true, ignoreUnknownKeys, [...path, ".medicationValue"], Medication.fromJSON),
+			timeSeries: expectObject(extractEntry(jCpy, 'timeSeries', false, path), true, ignoreUnknownKeys, [...path, ".timeSeries"], TimeSeries.fromJSON),
+			compoundValue: expectArray(extractEntry(jCpy, 'compoundValue', false, path), true, [...path, ".compoundValue"], (x0, p0) => expectObject(x0, false, ignoreUnknownKeys, p0, DecryptedService.fromJSON)),
+			ratio: expectArray(extractEntry(jCpy, 'ratio', false, path), true, [...path, ".ratio"], (x0, p0) => expectObject(x0, false, ignoreUnknownKeys, p0, Measure.fromJSON)),
+			range: expectArray(extractEntry(jCpy, 'range', false, path), true, [...path, ".range"], (x0, p0) => expectObject(x0, false, ignoreUnknownKeys, p0, Measure.fromJSON)),
 		})
 		if (!ignoreUnknownKeys) {
 			const unused = Object.keys(jCpy)
@@ -193,6 +195,7 @@ export class EncryptedContent {
 		if (this.compoundValue != undefined) res['compoundValue'] = this.compoundValue.map((x0) => x0.toJSON() )
 		if (this.ratio != undefined) res['ratio'] = this.ratio.map((x0) => x0.toJSON() )
 		if (this.range != undefined) res['range'] = this.range.map((x0) => x0.toJSON() )
+		res['isEncrypted'] = true
 		return res
 	}
 
@@ -200,20 +203,21 @@ export class EncryptedContent {
 			path: Array<string> = ['EncryptedContent']): EncryptedContent {
 		if (typeof json != 'object') throw new Error(`Expected json object at path ${path.join("")}`)
 		const jCpy = { ...json }
+		if (extractEntry(jCpy, "isEncrypted", true, path) !== true) throw new Error(`Unexpected value for ${path.join("")} isEncrypted marker, should be true`)
 		const res = new EncryptedContent({
-			stringValue: expectString(extractEntry(jCpy.stringValue, 'stringValue', false, path), true, [...path, ".stringValue"]),
-			numberValue: expectNumber(extractEntry(jCpy.numberValue, 'numberValue', false, path), true, false, [...path, ".numberValue"]),
-			booleanValue: expectBoolean(extractEntry(jCpy.booleanValue, 'booleanValue', false, path), true, [...path, ".booleanValue"]),
-			instantValue: expectNumber(extractEntry(jCpy.instantValue, 'instantValue', false, path), true, true, [...path, ".instantValue"]),
-			fuzzyDateValue: expectNumber(extractEntry(jCpy.fuzzyDateValue, 'fuzzyDateValue', false, path), true, true, [...path, ".fuzzyDateValue"]),
-			binaryValue: decodeBase64(expectString(extractEntry(jCpy.binaryValue, 'binaryValue', false, path), true, [...path, ".binaryValue"]), [...path, ".binaryValue"]),
-			documentId: expectString(extractEntry(jCpy.documentId, 'documentId', false, path), true, [...path, ".documentId"]),
-			measureValue: expectObject(extractEntry(jCpy.measureValue, 'measureValue', false, path), true, ignoreUnknownKeys, [...path, ".measureValue"], Measure.fromJSON),
-			medicationValue: expectObject(extractEntry(jCpy.medicationValue, 'medicationValue', false, path), true, ignoreUnknownKeys, [...path, ".medicationValue"], Medication.fromJSON),
-			timeSeries: expectObject(extractEntry(jCpy.timeSeries, 'timeSeries', false, path), true, ignoreUnknownKeys, [...path, ".timeSeries"], TimeSeries.fromJSON),
-			compoundValue: expectArray(extractEntry(jCpy.compoundValue, 'compoundValue', false, path), true, [...path, ".compoundValue"], (x0, p0) => expectObject(x0, false, ignoreUnknownKeys, p0, EncryptedService.fromJSON)),
-			ratio: expectArray(extractEntry(jCpy.ratio, 'ratio', false, path), true, [...path, ".ratio"], (x0, p0) => expectObject(x0, false, ignoreUnknownKeys, p0, Measure.fromJSON)),
-			range: expectArray(extractEntry(jCpy.range, 'range', false, path), true, [...path, ".range"], (x0, p0) => expectObject(x0, false, ignoreUnknownKeys, p0, Measure.fromJSON)),
+			stringValue: expectString(extractEntry(jCpy, 'stringValue', false, path), true, [...path, ".stringValue"]),
+			numberValue: expectNumber(extractEntry(jCpy, 'numberValue', false, path), true, false, [...path, ".numberValue"]),
+			booleanValue: expectBoolean(extractEntry(jCpy, 'booleanValue', false, path), true, [...path, ".booleanValue"]),
+			instantValue: expectNumber(extractEntry(jCpy, 'instantValue', false, path), true, true, [...path, ".instantValue"]),
+			fuzzyDateValue: expectNumber(extractEntry(jCpy, 'fuzzyDateValue', false, path), true, true, [...path, ".fuzzyDateValue"]),
+			binaryValue: decodeBase64(expectString(extractEntry(jCpy, 'binaryValue', false, path), true, [...path, ".binaryValue"]), [...path, ".binaryValue"]),
+			documentId: expectString(extractEntry(jCpy, 'documentId', false, path), true, [...path, ".documentId"]),
+			measureValue: expectObject(extractEntry(jCpy, 'measureValue', false, path), true, ignoreUnknownKeys, [...path, ".measureValue"], Measure.fromJSON),
+			medicationValue: expectObject(extractEntry(jCpy, 'medicationValue', false, path), true, ignoreUnknownKeys, [...path, ".medicationValue"], Medication.fromJSON),
+			timeSeries: expectObject(extractEntry(jCpy, 'timeSeries', false, path), true, ignoreUnknownKeys, [...path, ".timeSeries"], TimeSeries.fromJSON),
+			compoundValue: expectArray(extractEntry(jCpy, 'compoundValue', false, path), true, [...path, ".compoundValue"], (x0, p0) => expectObject(x0, false, ignoreUnknownKeys, p0, EncryptedService.fromJSON)),
+			ratio: expectArray(extractEntry(jCpy, 'ratio', false, path), true, [...path, ".ratio"], (x0, p0) => expectObject(x0, false, ignoreUnknownKeys, p0, Measure.fromJSON)),
+			range: expectArray(extractEntry(jCpy, 'range', false, path), true, [...path, ".range"], (x0, p0) => expectObject(x0, false, ignoreUnknownKeys, p0, Measure.fromJSON)),
 		})
 		if (!ignoreUnknownKeys) {
 			const unused = Object.keys(jCpy)

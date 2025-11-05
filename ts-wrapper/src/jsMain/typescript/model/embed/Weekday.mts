@@ -26,8 +26,8 @@ export class Weekday {
 		if (typeof json != 'object') throw new Error(`Expected json object at path ${path.join("")}`)
 		const jCpy = { ...json }
 		const res = new Weekday({
-			weekday: expectObject(extractEntry(jCpy.weekday, 'weekday', false, path), true, ignoreUnknownKeys, [...path, ".weekday"], CodeStub.fromJSON),
-			weekNumber: expectNumber(extractEntry(jCpy.weekNumber, 'weekNumber', false, path), true, true, [...path, ".weekNumber"]),
+			weekday: expectObject(extractEntry(jCpy, 'weekday', false, path), true, ignoreUnknownKeys, [...path, ".weekday"], CodeStub.fromJSON),
+			weekNumber: expectNumber(extractEntry(jCpy, 'weekNumber', false, path), true, true, [...path, ".weekNumber"]),
 		})
 		if (!ignoreUnknownKeys) {
 			const unused = Object.keys(jCpy)

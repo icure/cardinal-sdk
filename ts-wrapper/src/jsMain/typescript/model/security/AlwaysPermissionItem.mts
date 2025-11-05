@@ -16,6 +16,7 @@ export class AlwaysPermissionItem {
 	toJSON(): any {
 		const res: { [k: string]: any } = {}
 		res['type'] = this.type
+		res['$ktClass'] = 'com.icure.cardinal.sdk.model.security.AlwaysPermissionItem'
 		return res
 	}
 
@@ -23,8 +24,9 @@ export class AlwaysPermissionItem {
 			path: Array<string> = ['AlwaysPermissionItem']): AlwaysPermissionItem {
 		if (typeof json != 'object') throw new Error(`Expected json object at path ${path.join("")}`)
 		const jCpy = { ...json }
+		if (extractEntry(jCpy, '\$ktClass', true, path) !== 'com.icure.cardinal.sdk.model.security.AlwaysPermissionItem') throw new Error(`Unexpected value f+or ${path.join("")} class marker, should be "com.icure.cardinal.sdk.model.security.AlwaysPermissionItem"`)
 		const res = new AlwaysPermissionItem({
-			type: expectStringEnum(extractEntry(jCpy.type, 'type', true, path), false, [...path, ".type"], PermissionType, 'PermissionType'),
+			type: expectStringEnum(extractEntry(jCpy, 'type', true, path), false, [...path, ".type"], PermissionType, 'PermissionType'),
 		})
 		if (!ignoreUnknownKeys) {
 			const unused = Object.keys(jCpy)

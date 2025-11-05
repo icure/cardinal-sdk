@@ -33,10 +33,10 @@ export class LetterValue {
 		if (typeof json != 'object') throw new Error(`Expected json object at path ${path.join("")}`)
 		const jCpy = { ...json }
 		const res = new LetterValue({
-			letter: expectString(extractEntry(jCpy.letter, 'letter', false, path), true, [...path, ".letter"]),
-			index: expectString(extractEntry(jCpy.index, 'index', false, path), true, [...path, ".index"]),
-			coefficient: expectNumber(extractEntry(jCpy.coefficient, 'coefficient', false, path), true, false, [...path, ".coefficient"]),
-			value: expectNumber(extractEntry(jCpy.value, 'value', false, path), true, false, [...path, ".value"]),
+			letter: expectString(extractEntry(jCpy, 'letter', false, path), true, [...path, ".letter"]),
+			index: expectString(extractEntry(jCpy, 'index', false, path), true, [...path, ".index"]),
+			coefficient: expectNumber(extractEntry(jCpy, 'coefficient', false, path), true, false, [...path, ".coefficient"]),
+			value: expectNumber(extractEntry(jCpy, 'value', false, path), true, false, [...path, ".value"]),
 		})
 		if (!ignoreUnknownKeys) {
 			const unused = Object.keys(jCpy)

@@ -29,9 +29,9 @@ export class ReferralPeriod {
 		if (typeof json != 'object') throw new Error(`Expected json object at path ${path.join("")}`)
 		const jCpy = { ...json }
 		const res = new ReferralPeriod({
-			startDate: expectNumber(extractEntry(jCpy.startDate, 'startDate', false, path), true, true, [...path, ".startDate"]),
-			endDate: expectNumber(extractEntry(jCpy.endDate, 'endDate', false, path), true, true, [...path, ".endDate"]),
-			comment: expectString(extractEntry(jCpy.comment, 'comment', false, path), true, [...path, ".comment"]),
+			startDate: expectNumber(extractEntry(jCpy, 'startDate', false, path), true, true, [...path, ".startDate"]),
+			endDate: expectNumber(extractEntry(jCpy, 'endDate', false, path), true, true, [...path, ".endDate"]),
+			comment: expectString(extractEntry(jCpy, 'comment', false, path), true, [...path, ".comment"]),
 		})
 		if (!ignoreUnknownKeys) {
 			const unused = Object.keys(jCpy)

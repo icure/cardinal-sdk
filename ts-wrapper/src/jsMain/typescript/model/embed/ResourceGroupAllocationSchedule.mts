@@ -47,13 +47,13 @@ export class ResourceGroupAllocationSchedule {
 		if (typeof json != 'object') throw new Error(`Expected json object at path ${path.join("")}`)
 		const jCpy = { ...json }
 		const res = new ResourceGroupAllocationSchedule({
-			resourceGroup: expectObject(extractEntry(jCpy.resourceGroup, 'resourceGroup', false, path), true, ignoreUnknownKeys, [...path, ".resourceGroup"], CodeStub.fromJSON),
-			tags: expectArray(extractEntry(jCpy.tags, 'tags', false, path), false, [...path, ".tags"], (x0, p0) => expectObject(x0, false, ignoreUnknownKeys, p0, CodeStub.fromJSON)),
-			codes: expectArray(extractEntry(jCpy.codes, 'codes', false, path), false, [...path, ".codes"], (x0, p0) => expectObject(x0, false, ignoreUnknownKeys, p0, CodeStub.fromJSON)),
-			name: expectString(extractEntry(jCpy.name, 'name', false, path), true, [...path, ".name"]),
-			startDateTime: expectNumber(extractEntry(jCpy.startDateTime, 'startDateTime', false, path), true, true, [...path, ".startDateTime"]),
-			endDateTime: expectNumber(extractEntry(jCpy.endDateTime, 'endDateTime', false, path), true, true, [...path, ".endDateTime"]),
-			items: expectArray(extractEntry(jCpy.items, 'items', false, path), false, [...path, ".items"], (x0, p0) => expectObject(x0, false, ignoreUnknownKeys, p0, EmbeddedTimeTableItem.fromJSON)),
+			resourceGroup: expectObject(extractEntry(jCpy, 'resourceGroup', false, path), true, ignoreUnknownKeys, [...path, ".resourceGroup"], CodeStub.fromJSON),
+			tags: expectArray(extractEntry(jCpy, 'tags', false, path), false, [...path, ".tags"], (x0, p0) => expectObject(x0, false, ignoreUnknownKeys, p0, CodeStub.fromJSON)),
+			codes: expectArray(extractEntry(jCpy, 'codes', false, path), false, [...path, ".codes"], (x0, p0) => expectObject(x0, false, ignoreUnknownKeys, p0, CodeStub.fromJSON)),
+			name: expectString(extractEntry(jCpy, 'name', false, path), true, [...path, ".name"]),
+			startDateTime: expectNumber(extractEntry(jCpy, 'startDateTime', false, path), true, true, [...path, ".startDateTime"]),
+			endDateTime: expectNumber(extractEntry(jCpy, 'endDateTime', false, path), true, true, [...path, ".endDateTime"]),
+			items: expectArray(extractEntry(jCpy, 'items', false, path), false, [...path, ".items"], (x0, p0) => expectObject(x0, false, ignoreUnknownKeys, p0, EmbeddedTimeTableItem.fromJSON)),
 		})
 		if (!ignoreUnknownKeys) {
 			const unused = Object.keys(jCpy)

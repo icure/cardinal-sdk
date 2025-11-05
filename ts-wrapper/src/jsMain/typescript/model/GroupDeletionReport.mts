@@ -30,9 +30,9 @@ export class GroupDeletionReport {
 		if (typeof json != 'object') throw new Error(`Expected json object at path ${path.join("")}`)
 		const jCpy = { ...json }
 		const res = new GroupDeletionReport({
-			type: expectString(extractEntry(jCpy.type, 'type', true, path), false, [...path, ".type"]),
-			id: expectString(extractEntry(jCpy.id, 'id', true, path), false, [...path, ".id"]),
-			server: expectString(extractEntry(jCpy.server, 'server', true, path), false, [...path, ".server"]),
+			type: expectString(extractEntry(jCpy, 'type', true, path), false, [...path, ".type"]),
+			id: expectString(extractEntry(jCpy, 'id', true, path), false, [...path, ".id"]),
+			server: expectString(extractEntry(jCpy, 'server', true, path), false, [...path, ".server"]),
 		})
 		if (!ignoreUnknownKeys) {
 			const unused = Object.keys(jCpy)

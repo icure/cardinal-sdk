@@ -48,13 +48,13 @@ export class ReferenceRange {
 		if (typeof json != 'object') throw new Error(`Expected json object at path ${path.join("")}`)
 		const jCpy = { ...json }
 		const res = new ReferenceRange({
-			low: expectNumber(extractEntry(jCpy.low, 'low', false, path), true, false, [...path, ".low"]),
-			high: expectNumber(extractEntry(jCpy.high, 'high', false, path), true, false, [...path, ".high"]),
-			stringValue: expectString(extractEntry(jCpy.stringValue, 'stringValue', false, path), true, [...path, ".stringValue"]),
-			tags: expectArray(extractEntry(jCpy.tags, 'tags', false, path), false, [...path, ".tags"], (x0, p0) => expectObject(x0, false, ignoreUnknownKeys, p0, CodeStub.fromJSON)),
-			codes: expectArray(extractEntry(jCpy.codes, 'codes', false, path), false, [...path, ".codes"], (x0, p0) => expectObject(x0, false, ignoreUnknownKeys, p0, CodeStub.fromJSON)),
-			notes: expectArray(extractEntry(jCpy.notes, 'notes', false, path), false, [...path, ".notes"], (x0, p0) => expectObject(x0, false, ignoreUnknownKeys, p0, Annotation.fromJSON)),
-			age: expectObject(extractEntry(jCpy.age, 'age', false, path), true, ignoreUnknownKeys, [...path, ".age"], Range.fromJSON),
+			low: expectNumber(extractEntry(jCpy, 'low', false, path), true, false, [...path, ".low"]),
+			high: expectNumber(extractEntry(jCpy, 'high', false, path), true, false, [...path, ".high"]),
+			stringValue: expectString(extractEntry(jCpy, 'stringValue', false, path), true, [...path, ".stringValue"]),
+			tags: expectArray(extractEntry(jCpy, 'tags', false, path), false, [...path, ".tags"], (x0, p0) => expectObject(x0, false, ignoreUnknownKeys, p0, CodeStub.fromJSON)),
+			codes: expectArray(extractEntry(jCpy, 'codes', false, path), false, [...path, ".codes"], (x0, p0) => expectObject(x0, false, ignoreUnknownKeys, p0, CodeStub.fromJSON)),
+			notes: expectArray(extractEntry(jCpy, 'notes', false, path), false, [...path, ".notes"], (x0, p0) => expectObject(x0, false, ignoreUnknownKeys, p0, Annotation.fromJSON)),
+			age: expectObject(extractEntry(jCpy, 'age', false, path), true, ignoreUnknownKeys, [...path, ".age"], Range.fromJSON),
 		})
 		if (!ignoreUnknownKeys) {
 			const unused = Object.keys(jCpy)

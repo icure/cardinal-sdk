@@ -25,8 +25,8 @@ export class DocumentGroup {
 		if (typeof json != 'object') throw new Error(`Expected json object at path ${path.join("")}`)
 		const jCpy = { ...json }
 		const res = new DocumentGroup({
-			guid: expectString(extractEntry(jCpy.guid, 'guid', false, path), true, [...path, ".guid"]),
-			name: expectString(extractEntry(jCpy.name, 'name', false, path), true, [...path, ".name"]),
+			guid: expectString(extractEntry(jCpy, 'guid', false, path), true, [...path, ".guid"]),
+			name: expectString(extractEntry(jCpy, 'name', false, path), true, [...path, ".name"]),
 		})
 		if (!ignoreUnknownKeys) {
 			const unused = Object.keys(jCpy)

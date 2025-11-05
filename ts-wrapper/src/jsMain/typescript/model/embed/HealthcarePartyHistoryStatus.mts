@@ -34,10 +34,10 @@ export class HealthcarePartyHistoryStatus {
 		if (typeof json != 'object') throw new Error(`Expected json object at path ${path.join("")}`)
 		const jCpy = { ...json }
 		const res = new HealthcarePartyHistoryStatus({
-			status: expectStringEnum(extractEntry(jCpy.status, 'status', true, path), false, [...path, ".status"], HealthcarePartyStatus, 'HealthcarePartyStatus'),
-			specialisationCode: expectString(extractEntry(jCpy.specialisationCode, 'specialisationCode', true, path), false, [...path, ".specialisationCode"]),
-			startDate: expectNumber(extractEntry(jCpy.startDate, 'startDate', true, path), false, true, [...path, ".startDate"]),
-			active: expectBoolean(extractEntry(jCpy.active, 'active', true, path), false, [...path, ".active"]),
+			status: expectStringEnum(extractEntry(jCpy, 'status', true, path), false, [...path, ".status"], HealthcarePartyStatus, 'HealthcarePartyStatus'),
+			specialisationCode: expectString(extractEntry(jCpy, 'specialisationCode', true, path), false, [...path, ".specialisationCode"]),
+			startDate: expectNumber(extractEntry(jCpy, 'startDate', true, path), false, true, [...path, ".startDate"]),
+			active: expectBoolean(extractEntry(jCpy, 'active', true, path), false, [...path, ".active"]),
 		})
 		if (!ignoreUnknownKeys) {
 			const unused = Object.keys(jCpy)

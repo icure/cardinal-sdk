@@ -50,14 +50,14 @@ export class Identifier {
 		if (typeof json != 'object') throw new Error(`Expected json object at path ${path.join("")}`)
 		const jCpy = { ...json }
 		const res = new Identifier({
-			id: expectString(extractEntry(jCpy.id, 'id', false, path), true, [...path, ".id"]),
-			assigner: expectString(extractEntry(jCpy.assigner, 'assigner', false, path), true, [...path, ".assigner"]),
-			start: expectString(extractEntry(jCpy.start, 'start', false, path), true, [...path, ".start"]),
-			end: expectString(extractEntry(jCpy.end, 'end', false, path), true, [...path, ".end"]),
-			system: expectString(extractEntry(jCpy.system, 'system', false, path), true, [...path, ".system"]),
-			type: expectObject(extractEntry(jCpy.type, 'type', false, path), true, ignoreUnknownKeys, [...path, ".type"], CodeStub.fromJSON),
-			use: expectString(extractEntry(jCpy.use, 'use', false, path), true, [...path, ".use"]),
-			value: expectString(extractEntry(jCpy.value, 'value', false, path), true, [...path, ".value"]),
+			id: expectString(extractEntry(jCpy, 'id', false, path), true, [...path, ".id"]),
+			assigner: expectString(extractEntry(jCpy, 'assigner', false, path), true, [...path, ".assigner"]),
+			start: expectString(extractEntry(jCpy, 'start', false, path), true, [...path, ".start"]),
+			end: expectString(extractEntry(jCpy, 'end', false, path), true, [...path, ".end"]),
+			system: expectString(extractEntry(jCpy, 'system', false, path), true, [...path, ".system"]),
+			type: expectObject(extractEntry(jCpy, 'type', false, path), true, ignoreUnknownKeys, [...path, ".type"], CodeStub.fromJSON),
+			use: expectString(extractEntry(jCpy, 'use', false, path), true, [...path, ".use"]),
+			value: expectString(extractEntry(jCpy, 'value', false, path), true, [...path, ".value"]),
 		})
 		if (!ignoreUnknownKeys) {
 			const unused = Object.keys(jCpy)

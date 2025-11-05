@@ -26,8 +26,8 @@ export class Periodicity {
 		if (typeof json != 'object') throw new Error(`Expected json object at path ${path.join("")}`)
 		const jCpy = { ...json }
 		const res = new Periodicity({
-			relatedCode: expectObject(extractEntry(jCpy.relatedCode, 'relatedCode', false, path), true, ignoreUnknownKeys, [...path, ".relatedCode"], CodeStub.fromJSON),
-			relatedPeriodicity: expectObject(extractEntry(jCpy.relatedPeriodicity, 'relatedPeriodicity', false, path), true, ignoreUnknownKeys, [...path, ".relatedPeriodicity"], CodeStub.fromJSON),
+			relatedCode: expectObject(extractEntry(jCpy, 'relatedCode', false, path), true, ignoreUnknownKeys, [...path, ".relatedCode"], CodeStub.fromJSON),
+			relatedPeriodicity: expectObject(extractEntry(jCpy, 'relatedPeriodicity', false, path), true, ignoreUnknownKeys, [...path, ".relatedPeriodicity"], CodeStub.fromJSON),
 		})
 		if (!ignoreUnknownKeys) {
 			const unused = Object.keys(jCpy)

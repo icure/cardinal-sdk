@@ -25,8 +25,8 @@ export class LabelledOccurence {
 		if (typeof json != 'object') throw new Error(`Expected json object at path ${path.join("")}`)
 		const jCpy = { ...json }
 		const res = new LabelledOccurence({
-			label: expectString(extractEntry(jCpy.label, 'label', true, path), false, [...path, ".label"]),
-			occurence: expectNumber(extractEntry(jCpy.occurence, 'occurence', true, path), false, true, [...path, ".occurence"]),
+			label: expectString(extractEntry(jCpy, 'label', true, path), false, [...path, ".label"]),
+			occurence: expectNumber(extractEntry(jCpy, 'occurence', true, path), false, true, [...path, ".occurence"]),
 		})
 		if (!ignoreUnknownKeys) {
 			const unused = Object.keys(jCpy)

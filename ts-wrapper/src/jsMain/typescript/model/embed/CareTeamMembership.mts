@@ -49,6 +49,7 @@ export class DecryptedCareTeamMembership {
 		if (this.careTeamMemberId != undefined) res['careTeamMemberId'] = this.careTeamMemberId
 		if (this.membershipType != undefined) res['membershipType'] = this.membershipType
 		if (this.encryptedSelf != undefined) res['encryptedSelf'] = this.encryptedSelf
+		res['isEncrypted'] = false
 		return res
 	}
 
@@ -56,12 +57,13 @@ export class DecryptedCareTeamMembership {
 			path: Array<string> = ['DecryptedCareTeamMembership']): DecryptedCareTeamMembership {
 		if (typeof json != 'object') throw new Error(`Expected json object at path ${path.join("")}`)
 		const jCpy = { ...json }
+		if (extractEntry(jCpy, "isEncrypted", true, path) !== false) throw new Error(`Unexpected value for ${path.join("")} isEncrypted marker, should be false`)
 		const res = new DecryptedCareTeamMembership({
-			startDate: expectNumber(extractEntry(jCpy.startDate, 'startDate', false, path), true, true, [...path, ".startDate"]),
-			endDate: expectNumber(extractEntry(jCpy.endDate, 'endDate', false, path), true, true, [...path, ".endDate"]),
-			careTeamMemberId: expectString(extractEntry(jCpy.careTeamMemberId, 'careTeamMemberId', false, path), true, [...path, ".careTeamMemberId"]),
-			membershipType: expectStringEnum(extractEntry(jCpy.membershipType, 'membershipType', false, path), true, [...path, ".membershipType"], MembershipType, 'MembershipType'),
-			encryptedSelf: expectString(extractEntry(jCpy.encryptedSelf, 'encryptedSelf', false, path), false, [...path, ".encryptedSelf"]),
+			startDate: expectNumber(extractEntry(jCpy, 'startDate', false, path), true, true, [...path, ".startDate"]),
+			endDate: expectNumber(extractEntry(jCpy, 'endDate', false, path), true, true, [...path, ".endDate"]),
+			careTeamMemberId: expectString(extractEntry(jCpy, 'careTeamMemberId', false, path), true, [...path, ".careTeamMemberId"]),
+			membershipType: expectStringEnum(extractEntry(jCpy, 'membershipType', false, path), true, [...path, ".membershipType"], MembershipType, 'MembershipType'),
+			encryptedSelf: expectString(extractEntry(jCpy, 'encryptedSelf', false, path), false, [...path, ".encryptedSelf"]),
 		})
 		if (!ignoreUnknownKeys) {
 			const unused = Object.keys(jCpy)
@@ -101,6 +103,7 @@ export class EncryptedCareTeamMembership {
 		if (this.careTeamMemberId != undefined) res['careTeamMemberId'] = this.careTeamMemberId
 		if (this.membershipType != undefined) res['membershipType'] = this.membershipType
 		if (this.encryptedSelf != undefined) res['encryptedSelf'] = this.encryptedSelf
+		res['isEncrypted'] = true
 		return res
 	}
 
@@ -108,12 +111,13 @@ export class EncryptedCareTeamMembership {
 			path: Array<string> = ['EncryptedCareTeamMembership']): EncryptedCareTeamMembership {
 		if (typeof json != 'object') throw new Error(`Expected json object at path ${path.join("")}`)
 		const jCpy = { ...json }
+		if (extractEntry(jCpy, "isEncrypted", true, path) !== true) throw new Error(`Unexpected value for ${path.join("")} isEncrypted marker, should be true`)
 		const res = new EncryptedCareTeamMembership({
-			startDate: expectNumber(extractEntry(jCpy.startDate, 'startDate', false, path), true, true, [...path, ".startDate"]),
-			endDate: expectNumber(extractEntry(jCpy.endDate, 'endDate', false, path), true, true, [...path, ".endDate"]),
-			careTeamMemberId: expectString(extractEntry(jCpy.careTeamMemberId, 'careTeamMemberId', false, path), true, [...path, ".careTeamMemberId"]),
-			membershipType: expectStringEnum(extractEntry(jCpy.membershipType, 'membershipType', false, path), true, [...path, ".membershipType"], MembershipType, 'MembershipType'),
-			encryptedSelf: expectString(extractEntry(jCpy.encryptedSelf, 'encryptedSelf', false, path), false, [...path, ".encryptedSelf"]),
+			startDate: expectNumber(extractEntry(jCpy, 'startDate', false, path), true, true, [...path, ".startDate"]),
+			endDate: expectNumber(extractEntry(jCpy, 'endDate', false, path), true, true, [...path, ".endDate"]),
+			careTeamMemberId: expectString(extractEntry(jCpy, 'careTeamMemberId', false, path), true, [...path, ".careTeamMemberId"]),
+			membershipType: expectStringEnum(extractEntry(jCpy, 'membershipType', false, path), true, [...path, ".membershipType"], MembershipType, 'MembershipType'),
+			encryptedSelf: expectString(extractEntry(jCpy, 'encryptedSelf', false, path), false, [...path, ".encryptedSelf"]),
 		})
 		if (!ignoreUnknownKeys) {
 			const unused = Object.keys(jCpy)

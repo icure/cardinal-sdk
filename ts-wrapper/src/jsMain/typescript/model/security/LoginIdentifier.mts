@@ -25,8 +25,8 @@ export class LoginIdentifier {
 		if (typeof json != 'object') throw new Error(`Expected json object at path ${path.join("")}`)
 		const jCpy = { ...json }
 		const res = new LoginIdentifier({
-			assigner: expectString(extractEntry(jCpy.assigner, 'assigner', true, path), false, [...path, ".assigner"]),
-			value: expectString(extractEntry(jCpy.value, 'value', true, path), false, [...path, ".value"]),
+			assigner: expectString(extractEntry(jCpy, 'assigner', true, path), false, [...path, ".assigner"]),
+			value: expectString(extractEntry(jCpy, 'value', true, path), false, [...path, ".value"]),
 		})
 		if (!ignoreUnknownKeys) {
 			const unused = Object.keys(jCpy)

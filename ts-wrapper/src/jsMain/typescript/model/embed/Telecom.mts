@@ -43,6 +43,7 @@ export class DecryptedTelecom {
 		if (this.telecomNumber != undefined) res['telecomNumber'] = this.telecomNumber
 		if (this.telecomDescription != undefined) res['telecomDescription'] = this.telecomDescription
 		if (this.encryptedSelf != undefined) res['encryptedSelf'] = this.encryptedSelf
+		res['isEncrypted'] = false
 		return res
 	}
 
@@ -50,11 +51,12 @@ export class DecryptedTelecom {
 			path: Array<string> = ['DecryptedTelecom']): DecryptedTelecom {
 		if (typeof json != 'object') throw new Error(`Expected json object at path ${path.join("")}`)
 		const jCpy = { ...json }
+		if (extractEntry(jCpy, "isEncrypted", true, path) !== false) throw new Error(`Unexpected value for ${path.join("")} isEncrypted marker, should be false`)
 		const res = new DecryptedTelecom({
-			telecomType: expectStringEnum(extractEntry(jCpy.telecomType, 'telecomType', false, path), true, [...path, ".telecomType"], TelecomType, 'TelecomType'),
-			telecomNumber: expectString(extractEntry(jCpy.telecomNumber, 'telecomNumber', false, path), true, [...path, ".telecomNumber"]),
-			telecomDescription: expectString(extractEntry(jCpy.telecomDescription, 'telecomDescription', false, path), true, [...path, ".telecomDescription"]),
-			encryptedSelf: expectString(extractEntry(jCpy.encryptedSelf, 'encryptedSelf', false, path), false, [...path, ".encryptedSelf"]),
+			telecomType: expectStringEnum(extractEntry(jCpy, 'telecomType', false, path), true, [...path, ".telecomType"], TelecomType, 'TelecomType'),
+			telecomNumber: expectString(extractEntry(jCpy, 'telecomNumber', false, path), true, [...path, ".telecomNumber"]),
+			telecomDescription: expectString(extractEntry(jCpy, 'telecomDescription', false, path), true, [...path, ".telecomDescription"]),
+			encryptedSelf: expectString(extractEntry(jCpy, 'encryptedSelf', false, path), false, [...path, ".encryptedSelf"]),
 		})
 		if (!ignoreUnknownKeys) {
 			const unused = Object.keys(jCpy)
@@ -90,6 +92,7 @@ export class EncryptedTelecom {
 		if (this.telecomNumber != undefined) res['telecomNumber'] = this.telecomNumber
 		if (this.telecomDescription != undefined) res['telecomDescription'] = this.telecomDescription
 		if (this.encryptedSelf != undefined) res['encryptedSelf'] = this.encryptedSelf
+		res['isEncrypted'] = true
 		return res
 	}
 
@@ -97,11 +100,12 @@ export class EncryptedTelecom {
 			path: Array<string> = ['EncryptedTelecom']): EncryptedTelecom {
 		if (typeof json != 'object') throw new Error(`Expected json object at path ${path.join("")}`)
 		const jCpy = { ...json }
+		if (extractEntry(jCpy, "isEncrypted", true, path) !== true) throw new Error(`Unexpected value for ${path.join("")} isEncrypted marker, should be true`)
 		const res = new EncryptedTelecom({
-			telecomType: expectStringEnum(extractEntry(jCpy.telecomType, 'telecomType', false, path), true, [...path, ".telecomType"], TelecomType, 'TelecomType'),
-			telecomNumber: expectString(extractEntry(jCpy.telecomNumber, 'telecomNumber', false, path), true, [...path, ".telecomNumber"]),
-			telecomDescription: expectString(extractEntry(jCpy.telecomDescription, 'telecomDescription', false, path), true, [...path, ".telecomDescription"]),
-			encryptedSelf: expectString(extractEntry(jCpy.encryptedSelf, 'encryptedSelf', false, path), false, [...path, ".encryptedSelf"]),
+			telecomType: expectStringEnum(extractEntry(jCpy, 'telecomType', false, path), true, [...path, ".telecomType"], TelecomType, 'TelecomType'),
+			telecomNumber: expectString(extractEntry(jCpy, 'telecomNumber', false, path), true, [...path, ".telecomNumber"]),
+			telecomDescription: expectString(extractEntry(jCpy, 'telecomDescription', false, path), true, [...path, ".telecomDescription"]),
+			encryptedSelf: expectString(extractEntry(jCpy, 'encryptedSelf', false, path), false, [...path, ".encryptedSelf"]),
 		})
 		if (!ignoreUnknownKeys) {
 			const unused = Object.keys(jCpy)

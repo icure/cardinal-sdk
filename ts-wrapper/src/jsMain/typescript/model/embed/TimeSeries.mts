@@ -45,13 +45,13 @@ export class TimeSeries {
 		if (typeof json != 'object') throw new Error(`Expected json object at path ${path.join("")}`)
 		const jCpy = { ...json }
 		const res = new TimeSeries({
-			fields: expectArray(extractEntry(jCpy.fields, 'fields', false, path), false, [...path, ".fields"], (x0, p0) => expectString(x0, false, p0)),
-			samples: expectArray(extractEntry(jCpy.samples, 'samples', false, path), false, [...path, ".samples"], (x0, p0) => expectArray(x0, false, p0, (x1, p1) => expectNumber(x1, false, false, p1))),
-			min: expectArray(extractEntry(jCpy.min, 'min', false, path), false, [...path, ".min"], (x0, p0) => expectNumber(x0, false, false, p0)),
-			max: expectArray(extractEntry(jCpy.max, 'max', false, path), false, [...path, ".max"], (x0, p0) => expectNumber(x0, false, false, p0)),
-			mean: expectArray(extractEntry(jCpy.mean, 'mean', false, path), false, [...path, ".mean"], (x0, p0) => expectNumber(x0, false, false, p0)),
-			median: expectArray(extractEntry(jCpy.median, 'median', false, path), false, [...path, ".median"], (x0, p0) => expectNumber(x0, false, false, p0)),
-			variance: expectArray(extractEntry(jCpy.variance, 'variance', false, path), false, [...path, ".variance"], (x0, p0) => expectNumber(x0, false, false, p0)),
+			fields: expectArray(extractEntry(jCpy, 'fields', false, path), false, [...path, ".fields"], (x0, p0) => expectString(x0, false, p0)),
+			samples: expectArray(extractEntry(jCpy, 'samples', false, path), false, [...path, ".samples"], (x0, p0) => expectArray(x0, false, p0, (x1, p1) => expectNumber(x1, false, false, p1))),
+			min: expectArray(extractEntry(jCpy, 'min', false, path), false, [...path, ".min"], (x0, p0) => expectNumber(x0, false, false, p0)),
+			max: expectArray(extractEntry(jCpy, 'max', false, path), false, [...path, ".max"], (x0, p0) => expectNumber(x0, false, false, p0)),
+			mean: expectArray(extractEntry(jCpy, 'mean', false, path), false, [...path, ".mean"], (x0, p0) => expectNumber(x0, false, false, p0)),
+			median: expectArray(extractEntry(jCpy, 'median', false, path), false, [...path, ".median"], (x0, p0) => expectNumber(x0, false, false, p0)),
+			variance: expectArray(extractEntry(jCpy, 'variance', false, path), false, [...path, ".variance"], (x0, p0) => expectNumber(x0, false, false, p0)),
 		})
 		if (!ignoreUnknownKeys) {
 			const unused = Object.keys(jCpy)

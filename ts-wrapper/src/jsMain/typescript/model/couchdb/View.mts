@@ -25,8 +25,8 @@ export class View {
 		if (typeof json != 'object') throw new Error(`Expected json object at path ${path.join("")}`)
 		const jCpy = { ...json }
 		const res = new View({
-			map: expectString(extractEntry(jCpy.map, 'map', true, path), false, [...path, ".map"]),
-			reduce: expectString(extractEntry(jCpy.reduce, 'reduce', false, path), true, [...path, ".reduce"]),
+			map: expectString(extractEntry(jCpy, 'map', true, path), false, [...path, ".map"]),
+			reduce: expectString(extractEntry(jCpy, 'reduce', false, path), true, [...path, ".reduce"]),
 		})
 		if (!ignoreUnknownKeys) {
 			const unused = Object.keys(jCpy)

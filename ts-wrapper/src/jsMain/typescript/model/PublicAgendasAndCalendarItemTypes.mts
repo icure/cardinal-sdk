@@ -27,8 +27,8 @@ export class PublicAgendasAndCalendarItemTypes {
 		if (typeof json != 'object') throw new Error(`Expected json object at path ${path.join("")}`)
 		const jCpy = { ...json }
 		const res = new PublicAgendasAndCalendarItemTypes({
-			agendas: expectArray(extractEntry(jCpy.agendas, 'agendas', true, path), false, [...path, ".agendas"], (x0, p0) => expectObject(x0, false, ignoreUnknownKeys, p0, Agenda.fromJSON)),
-			calendarItemTypes: expectArray(extractEntry(jCpy.calendarItemTypes, 'calendarItemTypes', true, path), false, [...path, ".calendarItemTypes"], (x0, p0) => expectObject(x0, false, ignoreUnknownKeys, p0, CalendarItemType.fromJSON)),
+			agendas: expectArray(extractEntry(jCpy, 'agendas', true, path), false, [...path, ".agendas"], (x0, p0) => expectObject(x0, false, ignoreUnknownKeys, p0, Agenda.fromJSON)),
+			calendarItemTypes: expectArray(extractEntry(jCpy, 'calendarItemTypes', true, path), false, [...path, ".calendarItemTypes"], (x0, p0) => expectObject(x0, false, ignoreUnknownKeys, p0, CalendarItemType.fromJSON)),
 		})
 		if (!ignoreUnknownKeys) {
 			const unused = Object.keys(jCpy)

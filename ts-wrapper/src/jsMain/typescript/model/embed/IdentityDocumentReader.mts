@@ -41,12 +41,12 @@ export class IdentityDocumentReader {
 		if (typeof json != 'object') throw new Error(`Expected json object at path ${path.join("")}`)
 		const jCpy = { ...json }
 		const res = new IdentityDocumentReader({
-			justificatifDocumentNumber: expectString(extractEntry(jCpy.justificatifDocumentNumber, 'justificatifDocumentNumber', false, path), true, [...path, ".justificatifDocumentNumber"]),
-			supportSerialNumber: expectString(extractEntry(jCpy.supportSerialNumber, 'supportSerialNumber', false, path), true, [...path, ".supportSerialNumber"]),
-			timeReadingEIdDocument: expectNumber(extractEntry(jCpy.timeReadingEIdDocument, 'timeReadingEIdDocument', false, path), true, true, [...path, ".timeReadingEIdDocument"]),
-			eidDocumentSupportType: expectNumber(extractEntry(jCpy.eidDocumentSupportType, 'eidDocumentSupportType', false, path), false, true, [...path, ".eidDocumentSupportType"]),
-			reasonManualEncoding: expectNumber(extractEntry(jCpy.reasonManualEncoding, 'reasonManualEncoding', false, path), false, true, [...path, ".reasonManualEncoding"]),
-			reasonUsingVignette: expectNumber(extractEntry(jCpy.reasonUsingVignette, 'reasonUsingVignette', false, path), false, true, [...path, ".reasonUsingVignette"]),
+			justificatifDocumentNumber: expectString(extractEntry(jCpy, 'justificatifDocumentNumber', false, path), true, [...path, ".justificatifDocumentNumber"]),
+			supportSerialNumber: expectString(extractEntry(jCpy, 'supportSerialNumber', false, path), true, [...path, ".supportSerialNumber"]),
+			timeReadingEIdDocument: expectNumber(extractEntry(jCpy, 'timeReadingEIdDocument', false, path), true, true, [...path, ".timeReadingEIdDocument"]),
+			eidDocumentSupportType: expectNumber(extractEntry(jCpy, 'eidDocumentSupportType', false, path), false, true, [...path, ".eidDocumentSupportType"]),
+			reasonManualEncoding: expectNumber(extractEntry(jCpy, 'reasonManualEncoding', false, path), false, true, [...path, ".reasonManualEncoding"]),
+			reasonUsingVignette: expectNumber(extractEntry(jCpy, 'reasonUsingVignette', false, path), false, true, [...path, ".reasonUsingVignette"]),
 		})
 		if (!ignoreUnknownKeys) {
 			const unused = Object.keys(jCpy)

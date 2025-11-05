@@ -117,6 +117,7 @@ export class DecryptedAddress {
 		res['notes'] = this.notes.map((x0) => x0.toJSON() )
 		res['telecoms'] = this.telecoms.map((x0) => x0.toJSON() )
 		if (this.encryptedSelf != undefined) res['encryptedSelf'] = this.encryptedSelf
+		res['isEncrypted'] = false
 		return res
 	}
 
@@ -124,23 +125,24 @@ export class DecryptedAddress {
 			path: Array<string> = ['DecryptedAddress']): DecryptedAddress {
 		if (typeof json != 'object') throw new Error(`Expected json object at path ${path.join("")}`)
 		const jCpy = { ...json }
+		if (extractEntry(jCpy, "isEncrypted", true, path) !== false) throw new Error(`Unexpected value for ${path.join("")} isEncrypted marker, should be false`)
 		const res = new DecryptedAddress({
-			tags: expectArray(extractEntry(jCpy.tags, 'tags', false, path), false, [...path, ".tags"], (x0, p0) => expectObject(x0, false, ignoreUnknownKeys, p0, CodeStub.fromJSON)),
-			codes: expectArray(extractEntry(jCpy.codes, 'codes', false, path), false, [...path, ".codes"], (x0, p0) => expectObject(x0, false, ignoreUnknownKeys, p0, CodeStub.fromJSON)),
-			identifier: expectArray(extractEntry(jCpy.identifier, 'identifier', false, path), false, [...path, ".identifier"], (x0, p0) => expectObject(x0, false, ignoreUnknownKeys, p0, Identifier.fromJSON)),
-			addressType: expectStringEnum(extractEntry(jCpy.addressType, 'addressType', false, path), true, [...path, ".addressType"], AddressType, 'AddressType'),
-			descr: expectString(extractEntry(jCpy.descr, 'descr', false, path), true, [...path, ".descr"]),
-			street: expectString(extractEntry(jCpy.street, 'street', false, path), true, [...path, ".street"]),
-			houseNumber: expectString(extractEntry(jCpy.houseNumber, 'houseNumber', false, path), true, [...path, ".houseNumber"]),
-			postboxNumber: expectString(extractEntry(jCpy.postboxNumber, 'postboxNumber', false, path), true, [...path, ".postboxNumber"]),
-			postalCode: expectString(extractEntry(jCpy.postalCode, 'postalCode', false, path), true, [...path, ".postalCode"]),
-			city: expectString(extractEntry(jCpy.city, 'city', false, path), true, [...path, ".city"]),
-			state: expectString(extractEntry(jCpy.state, 'state', false, path), true, [...path, ".state"]),
-			country: expectString(extractEntry(jCpy.country, 'country', false, path), true, [...path, ".country"]),
-			note: expectString(extractEntry(jCpy.note, 'note', false, path), true, [...path, ".note"]),
-			notes: expectArray(extractEntry(jCpy.notes, 'notes', false, path), false, [...path, ".notes"], (x0, p0) => expectObject(x0, false, ignoreUnknownKeys, p0, Annotation.fromJSON)),
-			telecoms: expectArray(extractEntry(jCpy.telecoms, 'telecoms', false, path), false, [...path, ".telecoms"], (x0, p0) => expectObject(x0, false, ignoreUnknownKeys, p0, DecryptedTelecom.fromJSON)),
-			encryptedSelf: expectString(extractEntry(jCpy.encryptedSelf, 'encryptedSelf', false, path), false, [...path, ".encryptedSelf"]),
+			tags: expectArray(extractEntry(jCpy, 'tags', false, path), false, [...path, ".tags"], (x0, p0) => expectObject(x0, false, ignoreUnknownKeys, p0, CodeStub.fromJSON)),
+			codes: expectArray(extractEntry(jCpy, 'codes', false, path), false, [...path, ".codes"], (x0, p0) => expectObject(x0, false, ignoreUnknownKeys, p0, CodeStub.fromJSON)),
+			identifier: expectArray(extractEntry(jCpy, 'identifier', false, path), false, [...path, ".identifier"], (x0, p0) => expectObject(x0, false, ignoreUnknownKeys, p0, Identifier.fromJSON)),
+			addressType: expectStringEnum(extractEntry(jCpy, 'addressType', false, path), true, [...path, ".addressType"], AddressType, 'AddressType'),
+			descr: expectString(extractEntry(jCpy, 'descr', false, path), true, [...path, ".descr"]),
+			street: expectString(extractEntry(jCpy, 'street', false, path), true, [...path, ".street"]),
+			houseNumber: expectString(extractEntry(jCpy, 'houseNumber', false, path), true, [...path, ".houseNumber"]),
+			postboxNumber: expectString(extractEntry(jCpy, 'postboxNumber', false, path), true, [...path, ".postboxNumber"]),
+			postalCode: expectString(extractEntry(jCpy, 'postalCode', false, path), true, [...path, ".postalCode"]),
+			city: expectString(extractEntry(jCpy, 'city', false, path), true, [...path, ".city"]),
+			state: expectString(extractEntry(jCpy, 'state', false, path), true, [...path, ".state"]),
+			country: expectString(extractEntry(jCpy, 'country', false, path), true, [...path, ".country"]),
+			note: expectString(extractEntry(jCpy, 'note', false, path), true, [...path, ".note"]),
+			notes: expectArray(extractEntry(jCpy, 'notes', false, path), false, [...path, ".notes"], (x0, p0) => expectObject(x0, false, ignoreUnknownKeys, p0, Annotation.fromJSON)),
+			telecoms: expectArray(extractEntry(jCpy, 'telecoms', false, path), false, [...path, ".telecoms"], (x0, p0) => expectObject(x0, false, ignoreUnknownKeys, p0, DecryptedTelecom.fromJSON)),
+			encryptedSelf: expectString(extractEntry(jCpy, 'encryptedSelf', false, path), false, [...path, ".encryptedSelf"]),
 		})
 		if (!ignoreUnknownKeys) {
 			const unused = Object.keys(jCpy)
@@ -224,6 +226,7 @@ export class EncryptedAddress {
 		res['notes'] = this.notes.map((x0) => x0.toJSON() )
 		res['telecoms'] = this.telecoms.map((x0) => x0.toJSON() )
 		if (this.encryptedSelf != undefined) res['encryptedSelf'] = this.encryptedSelf
+		res['isEncrypted'] = true
 		return res
 	}
 
@@ -231,23 +234,24 @@ export class EncryptedAddress {
 			path: Array<string> = ['EncryptedAddress']): EncryptedAddress {
 		if (typeof json != 'object') throw new Error(`Expected json object at path ${path.join("")}`)
 		const jCpy = { ...json }
+		if (extractEntry(jCpy, "isEncrypted", true, path) !== true) throw new Error(`Unexpected value for ${path.join("")} isEncrypted marker, should be true`)
 		const res = new EncryptedAddress({
-			tags: expectArray(extractEntry(jCpy.tags, 'tags', false, path), false, [...path, ".tags"], (x0, p0) => expectObject(x0, false, ignoreUnknownKeys, p0, CodeStub.fromJSON)),
-			codes: expectArray(extractEntry(jCpy.codes, 'codes', false, path), false, [...path, ".codes"], (x0, p0) => expectObject(x0, false, ignoreUnknownKeys, p0, CodeStub.fromJSON)),
-			identifier: expectArray(extractEntry(jCpy.identifier, 'identifier', false, path), false, [...path, ".identifier"], (x0, p0) => expectObject(x0, false, ignoreUnknownKeys, p0, Identifier.fromJSON)),
-			addressType: expectStringEnum(extractEntry(jCpy.addressType, 'addressType', false, path), true, [...path, ".addressType"], AddressType, 'AddressType'),
-			descr: expectString(extractEntry(jCpy.descr, 'descr', false, path), true, [...path, ".descr"]),
-			street: expectString(extractEntry(jCpy.street, 'street', false, path), true, [...path, ".street"]),
-			houseNumber: expectString(extractEntry(jCpy.houseNumber, 'houseNumber', false, path), true, [...path, ".houseNumber"]),
-			postboxNumber: expectString(extractEntry(jCpy.postboxNumber, 'postboxNumber', false, path), true, [...path, ".postboxNumber"]),
-			postalCode: expectString(extractEntry(jCpy.postalCode, 'postalCode', false, path), true, [...path, ".postalCode"]),
-			city: expectString(extractEntry(jCpy.city, 'city', false, path), true, [...path, ".city"]),
-			state: expectString(extractEntry(jCpy.state, 'state', false, path), true, [...path, ".state"]),
-			country: expectString(extractEntry(jCpy.country, 'country', false, path), true, [...path, ".country"]),
-			note: expectString(extractEntry(jCpy.note, 'note', false, path), true, [...path, ".note"]),
-			notes: expectArray(extractEntry(jCpy.notes, 'notes', false, path), false, [...path, ".notes"], (x0, p0) => expectObject(x0, false, ignoreUnknownKeys, p0, Annotation.fromJSON)),
-			telecoms: expectArray(extractEntry(jCpy.telecoms, 'telecoms', false, path), false, [...path, ".telecoms"], (x0, p0) => expectObject(x0, false, ignoreUnknownKeys, p0, EncryptedTelecom.fromJSON)),
-			encryptedSelf: expectString(extractEntry(jCpy.encryptedSelf, 'encryptedSelf', false, path), false, [...path, ".encryptedSelf"]),
+			tags: expectArray(extractEntry(jCpy, 'tags', false, path), false, [...path, ".tags"], (x0, p0) => expectObject(x0, false, ignoreUnknownKeys, p0, CodeStub.fromJSON)),
+			codes: expectArray(extractEntry(jCpy, 'codes', false, path), false, [...path, ".codes"], (x0, p0) => expectObject(x0, false, ignoreUnknownKeys, p0, CodeStub.fromJSON)),
+			identifier: expectArray(extractEntry(jCpy, 'identifier', false, path), false, [...path, ".identifier"], (x0, p0) => expectObject(x0, false, ignoreUnknownKeys, p0, Identifier.fromJSON)),
+			addressType: expectStringEnum(extractEntry(jCpy, 'addressType', false, path), true, [...path, ".addressType"], AddressType, 'AddressType'),
+			descr: expectString(extractEntry(jCpy, 'descr', false, path), true, [...path, ".descr"]),
+			street: expectString(extractEntry(jCpy, 'street', false, path), true, [...path, ".street"]),
+			houseNumber: expectString(extractEntry(jCpy, 'houseNumber', false, path), true, [...path, ".houseNumber"]),
+			postboxNumber: expectString(extractEntry(jCpy, 'postboxNumber', false, path), true, [...path, ".postboxNumber"]),
+			postalCode: expectString(extractEntry(jCpy, 'postalCode', false, path), true, [...path, ".postalCode"]),
+			city: expectString(extractEntry(jCpy, 'city', false, path), true, [...path, ".city"]),
+			state: expectString(extractEntry(jCpy, 'state', false, path), true, [...path, ".state"]),
+			country: expectString(extractEntry(jCpy, 'country', false, path), true, [...path, ".country"]),
+			note: expectString(extractEntry(jCpy, 'note', false, path), true, [...path, ".note"]),
+			notes: expectArray(extractEntry(jCpy, 'notes', false, path), false, [...path, ".notes"], (x0, p0) => expectObject(x0, false, ignoreUnknownKeys, p0, Annotation.fromJSON)),
+			telecoms: expectArray(extractEntry(jCpy, 'telecoms', false, path), false, [...path, ".telecoms"], (x0, p0) => expectObject(x0, false, ignoreUnknownKeys, p0, EncryptedTelecom.fromJSON)),
+			encryptedSelf: expectString(extractEntry(jCpy, 'encryptedSelf', false, path), false, [...path, ".encryptedSelf"]),
 		})
 		if (!ignoreUnknownKeys) {
 			const unused = Object.keys(jCpy)

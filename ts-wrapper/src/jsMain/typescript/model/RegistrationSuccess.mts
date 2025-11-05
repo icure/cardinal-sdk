@@ -29,9 +29,9 @@ export class RegistrationSuccess {
 		if (typeof json != 'object') throw new Error(`Expected json object at path ${path.join("")}`)
 		const jCpy = { ...json }
 		const res = new RegistrationSuccess({
-			groupId: expectString(extractEntry(jCpy.groupId, 'groupId', true, path), false, [...path, ".groupId"]),
-			userId: expectString(extractEntry(jCpy.userId, 'userId', true, path), false, [...path, ".userId"]),
-			token: expectString(extractEntry(jCpy.token, 'token', true, path), false, [...path, ".token"]),
+			groupId: expectString(extractEntry(jCpy, 'groupId', true, path), false, [...path, ".groupId"]),
+			userId: expectString(extractEntry(jCpy, 'userId', true, path), false, [...path, ".userId"]),
+			token: expectString(extractEntry(jCpy, 'token', true, path), false, [...path, ".token"]),
 		})
 		if (!ignoreUnknownKeys) {
 			const unused = Object.keys(jCpy)

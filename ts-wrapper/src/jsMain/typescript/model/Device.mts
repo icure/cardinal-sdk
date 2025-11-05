@@ -135,6 +135,7 @@ export class Device implements StoredDocument, ICureDocument<string>, Named, Cry
 		if (this.publicKey != undefined) res['publicKey'] = this.publicKey
 		res['publicKeysForOaepWithSha256'] = this.publicKeysForOaepWithSha256.map((x0) => x0 )
 		if (this.cryptoActorProperties != undefined) res['cryptoActorProperties'] = this.cryptoActorProperties.map((x0) => x0.toJSON() )
+		res['$ktClass'] = 'com.icure.cardinal.sdk.model.Device'
 		return res
 	}
 
@@ -142,37 +143,38 @@ export class Device implements StoredDocument, ICureDocument<string>, Named, Cry
 			path: Array<string> = ['Device']): Device {
 		if (typeof json != 'object') throw new Error(`Expected json object at path ${path.join("")}`)
 		const jCpy = { ...json }
+		if (extractEntry(jCpy, '\$ktClass', true, path) !== 'com.icure.cardinal.sdk.model.Device') throw new Error(`Unexpected value f+or ${path.join("")} class marker, should be "com.icure.cardinal.sdk.model.Device"`)
 		const res = new Device({
-			id: expectString(extractEntry(jCpy.id, 'id', true, path), false, [...path, ".id"]),
-			rev: expectString(extractEntry(jCpy.rev, 'rev', false, path), true, [...path, ".rev"]),
-			deletionDate: expectNumber(extractEntry(jCpy.deletionDate, 'deletionDate', false, path), true, true, [...path, ".deletionDate"]),
-			identifiers: expectArray(extractEntry(jCpy.identifiers, 'identifiers', false, path), false, [...path, ".identifiers"], (x0, p0) => expectObject(x0, false, ignoreUnknownKeys, p0, Identifier.fromJSON)),
-			created: expectNumber(extractEntry(jCpy.created, 'created', false, path), true, true, [...path, ".created"]),
-			modified: expectNumber(extractEntry(jCpy.modified, 'modified', false, path), true, true, [...path, ".modified"]),
-			author: expectString(extractEntry(jCpy.author, 'author', false, path), true, [...path, ".author"]),
-			responsible: expectString(extractEntry(jCpy.responsible, 'responsible', false, path), true, [...path, ".responsible"]),
-			tags: expectArray(extractEntry(jCpy.tags, 'tags', false, path), false, [...path, ".tags"], (x0, p0) => expectObject(x0, false, ignoreUnknownKeys, p0, CodeStub.fromJSON)),
-			codes: expectArray(extractEntry(jCpy.codes, 'codes', false, path), false, [...path, ".codes"], (x0, p0) => expectObject(x0, false, ignoreUnknownKeys, p0, CodeStub.fromJSON)),
-			endOfLife: expectNumber(extractEntry(jCpy.endOfLife, 'endOfLife', false, path), true, true, [...path, ".endOfLife"]),
-			medicalLocationId: expectString(extractEntry(jCpy.medicalLocationId, 'medicalLocationId', false, path), true, [...path, ".medicalLocationId"]),
-			externalId: expectString(extractEntry(jCpy.externalId, 'externalId', false, path), true, [...path, ".externalId"]),
-			name: expectString(extractEntry(jCpy.name, 'name', false, path), true, [...path, ".name"]),
-			type: expectString(extractEntry(jCpy.type, 'type', false, path), true, [...path, ".type"]),
-			brand: expectString(extractEntry(jCpy.brand, 'brand', false, path), true, [...path, ".brand"]),
-			model: expectString(extractEntry(jCpy.model, 'model', false, path), true, [...path, ".model"]),
-			serialNumber: expectString(extractEntry(jCpy.serialNumber, 'serialNumber', false, path), true, [...path, ".serialNumber"]),
-			parentId: expectString(extractEntry(jCpy.parentId, 'parentId', false, path), true, [...path, ".parentId"]),
-			picture: decodeBase64(expectString(extractEntry(jCpy.picture, 'picture', false, path), true, [...path, ".picture"]), [...path, ".picture"]),
-			properties: expectArray(extractEntry(jCpy.properties, 'properties', false, path), false, [...path, ".properties"], (x0, p0) => expectObject(x0, false, ignoreUnknownKeys, p0, DecryptedPropertyStub.fromJSON)),
+			id: expectString(extractEntry(jCpy, 'id', true, path), false, [...path, ".id"]),
+			rev: expectString(extractEntry(jCpy, 'rev', false, path), true, [...path, ".rev"]),
+			deletionDate: expectNumber(extractEntry(jCpy, 'deletionDate', false, path), true, true, [...path, ".deletionDate"]),
+			identifiers: expectArray(extractEntry(jCpy, 'identifiers', false, path), false, [...path, ".identifiers"], (x0, p0) => expectObject(x0, false, ignoreUnknownKeys, p0, Identifier.fromJSON)),
+			created: expectNumber(extractEntry(jCpy, 'created', false, path), true, true, [...path, ".created"]),
+			modified: expectNumber(extractEntry(jCpy, 'modified', false, path), true, true, [...path, ".modified"]),
+			author: expectString(extractEntry(jCpy, 'author', false, path), true, [...path, ".author"]),
+			responsible: expectString(extractEntry(jCpy, 'responsible', false, path), true, [...path, ".responsible"]),
+			tags: expectArray(extractEntry(jCpy, 'tags', false, path), false, [...path, ".tags"], (x0, p0) => expectObject(x0, false, ignoreUnknownKeys, p0, CodeStub.fromJSON)),
+			codes: expectArray(extractEntry(jCpy, 'codes', false, path), false, [...path, ".codes"], (x0, p0) => expectObject(x0, false, ignoreUnknownKeys, p0, CodeStub.fromJSON)),
+			endOfLife: expectNumber(extractEntry(jCpy, 'endOfLife', false, path), true, true, [...path, ".endOfLife"]),
+			medicalLocationId: expectString(extractEntry(jCpy, 'medicalLocationId', false, path), true, [...path, ".medicalLocationId"]),
+			externalId: expectString(extractEntry(jCpy, 'externalId', false, path), true, [...path, ".externalId"]),
+			name: expectString(extractEntry(jCpy, 'name', false, path), true, [...path, ".name"]),
+			type: expectString(extractEntry(jCpy, 'type', false, path), true, [...path, ".type"]),
+			brand: expectString(extractEntry(jCpy, 'brand', false, path), true, [...path, ".brand"]),
+			model: expectString(extractEntry(jCpy, 'model', false, path), true, [...path, ".model"]),
+			serialNumber: expectString(extractEntry(jCpy, 'serialNumber', false, path), true, [...path, ".serialNumber"]),
+			parentId: expectString(extractEntry(jCpy, 'parentId', false, path), true, [...path, ".parentId"]),
+			picture: decodeBase64(expectString(extractEntry(jCpy, 'picture', false, path), true, [...path, ".picture"]), [...path, ".picture"]),
+			properties: expectArray(extractEntry(jCpy, 'properties', false, path), false, [...path, ".properties"], (x0, p0) => expectObject(x0, false, ignoreUnknownKeys, p0, DecryptedPropertyStub.fromJSON)),
 			hcPartyKeys: expectMap(
-				extractEntry(jCpy.hcPartyKeys, 'hcPartyKeys', false, path),
+				extractEntry(jCpy, 'hcPartyKeys', false, path),
 				false,
 				[...path, ".hcPartyKeys"],
 				(k0, p0) => expectString(k0, false, p0),
 				(v0, p0) => expectArray(v0, false, p0, (x1, p1) => expectString(x1, false, p1))
 			),
 			aesExchangeKeys: expectMap(
-				extractEntry(jCpy.aesExchangeKeys, 'aesExchangeKeys', false, path),
+				extractEntry(jCpy, 'aesExchangeKeys', false, path),
 				false,
 				[...path, ".aesExchangeKeys"],
 				(k0, p0) => expectString(k0, false, p0),
@@ -191,7 +193,7 @@ export class Device implements StoredDocument, ICureDocument<string>, Named, Cry
 				)
 			),
 			transferKeys: expectMap(
-				extractEntry(jCpy.transferKeys, 'transferKeys', false, path),
+				extractEntry(jCpy, 'transferKeys', false, path),
 				false,
 				[...path, ".transferKeys"],
 				(k0, p0) => expectString(k0, false, p0),
@@ -204,15 +206,15 @@ export class Device implements StoredDocument, ICureDocument<string>, Named, Cry
 				)
 			),
 			privateKeyShamirPartitions: expectMap(
-				extractEntry(jCpy.privateKeyShamirPartitions, 'privateKeyShamirPartitions', false, path),
+				extractEntry(jCpy, 'privateKeyShamirPartitions', false, path),
 				false,
 				[...path, ".privateKeyShamirPartitions"],
 				(k0, p0) => expectString(k0, false, p0),
 				(v0, p0) => expectString(v0, false, p0)
 			),
-			publicKey: expectString(extractEntry(jCpy.publicKey, 'publicKey', false, path), false, [...path, ".publicKey"]),
-			publicKeysForOaepWithSha256: expectArray(extractEntry(jCpy.publicKeysForOaepWithSha256, 'publicKeysForOaepWithSha256', false, path), false, [...path, ".publicKeysForOaepWithSha256"], (x0, p0) => expectString(x0, false, p0)),
-			cryptoActorProperties: expectArray(extractEntry(jCpy.cryptoActorProperties, 'cryptoActorProperties', false, path), true, [...path, ".cryptoActorProperties"], (x0, p0) => expectObject(x0, false, ignoreUnknownKeys, p0, DecryptedPropertyStub.fromJSON)),
+			publicKey: expectString(extractEntry(jCpy, 'publicKey', false, path), false, [...path, ".publicKey"]),
+			publicKeysForOaepWithSha256: expectArray(extractEntry(jCpy, 'publicKeysForOaepWithSha256', false, path), false, [...path, ".publicKeysForOaepWithSha256"], (x0, p0) => expectString(x0, false, p0)),
+			cryptoActorProperties: expectArray(extractEntry(jCpy, 'cryptoActorProperties', false, path), true, [...path, ".cryptoActorProperties"], (x0, p0) => expectObject(x0, false, ignoreUnknownKeys, p0, DecryptedPropertyStub.fromJSON)),
 		})
 		if (!ignoreUnknownKeys) {
 			const unused = Object.keys(jCpy)

@@ -30,9 +30,9 @@ export class GroupDatabasesInfo {
 		if (typeof json != 'object') throw new Error(`Expected json object at path ${path.join("")}`)
 		const jCpy = { ...json }
 		const res = new GroupDatabasesInfo({
-			groupId: expectString(extractEntry(jCpy.groupId, 'groupId', true, path), false, [...path, ".groupId"]),
-			databasesInfo: expectArray(extractEntry(jCpy.databasesInfo, 'databasesInfo', true, path), false, [...path, ".databasesInfo"], (x0, p0) => expectObject(x0, false, ignoreUnknownKeys, p0, DatabaseInfo.fromJSON)),
-			gcpStorageSize: expectNumber(extractEntry(jCpy.gcpStorageSize, 'gcpStorageSize', true, path), false, true, [...path, ".gcpStorageSize"]),
+			groupId: expectString(extractEntry(jCpy, 'groupId', true, path), false, [...path, ".groupId"]),
+			databasesInfo: expectArray(extractEntry(jCpy, 'databasesInfo', true, path), false, [...path, ".databasesInfo"], (x0, p0) => expectObject(x0, false, ignoreUnknownKeys, p0, DatabaseInfo.fromJSON)),
+			gcpStorageSize: expectNumber(extractEntry(jCpy, 'gcpStorageSize', true, path), false, true, [...path, ".gcpStorageSize"]),
 		})
 		if (!ignoreUnknownKeys) {
 			const unused = Object.keys(jCpy)

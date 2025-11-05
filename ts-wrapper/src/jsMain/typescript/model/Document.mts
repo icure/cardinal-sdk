@@ -215,6 +215,7 @@ export class DecryptedDocument {
 		res['encryptionKeys'] = Object.fromEntries(Object.entries(this.encryptionKeys).map(([k0, v0]) => [k0, v0.map((x1) => x1.toJSON() )]))
 		if (this.encryptedSelf != undefined) res['encryptedSelf'] = this.encryptedSelf
 		if (this.securityMetadata != undefined) res['securityMetadata'] = this.securityMetadata.toJSON()
+		res['isEncrypted'] = false
 		return res
 	}
 
@@ -222,67 +223,68 @@ export class DecryptedDocument {
 			path: Array<string> = ['DecryptedDocument']): DecryptedDocument {
 		if (typeof json != 'object') throw new Error(`Expected json object at path ${path.join("")}`)
 		const jCpy = { ...json }
+		if (extractEntry(jCpy, "isEncrypted", true, path) !== false) throw new Error(`Unexpected value for ${path.join("")} isEncrypted marker, should be false`)
 		const res = new DecryptedDocument({
-			id: expectString(extractEntry(jCpy.id, 'id', true, path), false, [...path, ".id"]),
-			rev: expectString(extractEntry(jCpy.rev, 'rev', false, path), true, [...path, ".rev"]),
-			created: expectNumber(extractEntry(jCpy.created, 'created', false, path), true, true, [...path, ".created"]),
-			modified: expectNumber(extractEntry(jCpy.modified, 'modified', false, path), true, true, [...path, ".modified"]),
-			author: expectString(extractEntry(jCpy.author, 'author', false, path), true, [...path, ".author"]),
-			responsible: expectString(extractEntry(jCpy.responsible, 'responsible', false, path), true, [...path, ".responsible"]),
-			medicalLocationId: expectString(extractEntry(jCpy.medicalLocationId, 'medicalLocationId', false, path), true, [...path, ".medicalLocationId"]),
-			tags: expectArray(extractEntry(jCpy.tags, 'tags', false, path), false, [...path, ".tags"], (x0, p0) => expectObject(x0, false, ignoreUnknownKeys, p0, CodeStub.fromJSON)),
-			codes: expectArray(extractEntry(jCpy.codes, 'codes', false, path), false, [...path, ".codes"], (x0, p0) => expectObject(x0, false, ignoreUnknownKeys, p0, CodeStub.fromJSON)),
-			endOfLife: expectNumber(extractEntry(jCpy.endOfLife, 'endOfLife', false, path), true, true, [...path, ".endOfLife"]),
-			deletionDate: expectNumber(extractEntry(jCpy.deletionDate, 'deletionDate', false, path), true, true, [...path, ".deletionDate"]),
-			documentLocation: expectStringEnum(extractEntry(jCpy.documentLocation, 'documentLocation', false, path), true, [...path, ".documentLocation"], DocumentLocation, 'DocumentLocation'),
-			documentType: expectStringEnum(extractEntry(jCpy.documentType, 'documentType', false, path), true, [...path, ".documentType"], DocumentType, 'DocumentType'),
-			documentStatus: expectStringEnum(extractEntry(jCpy.documentStatus, 'documentStatus', false, path), true, [...path, ".documentStatus"], DocumentStatus, 'DocumentStatus'),
-			externalUri: expectString(extractEntry(jCpy.externalUri, 'externalUri', false, path), true, [...path, ".externalUri"]),
-			name: expectString(extractEntry(jCpy.name, 'name', false, path), true, [...path, ".name"]),
-			version: expectString(extractEntry(jCpy.version, 'version', false, path), true, [...path, ".version"]),
-			storedICureDocumentId: expectString(extractEntry(jCpy.storedICureDocumentId, 'storedICureDocumentId', false, path), true, [...path, ".storedICureDocumentId"]),
-			externalUuid: expectString(extractEntry(jCpy.externalUuid, 'externalUuid', false, path), true, [...path, ".externalUuid"]),
-			size: expectNumber(extractEntry(jCpy.size, 'size', false, path), true, true, [...path, ".size"]),
-			hash: expectString(extractEntry(jCpy.hash, 'hash', false, path), true, [...path, ".hash"]),
-			openingContactId: expectString(extractEntry(jCpy.openingContactId, 'openingContactId', false, path), true, [...path, ".openingContactId"]),
-			attachmentId: expectString(extractEntry(jCpy.attachmentId, 'attachmentId', false, path), true, [...path, ".attachmentId"]),
-			objectStoreReference: expectString(extractEntry(jCpy.objectStoreReference, 'objectStoreReference', false, path), true, [...path, ".objectStoreReference"]),
-			mainUti: expectString(extractEntry(jCpy.mainUti, 'mainUti', false, path), true, [...path, ".mainUti"]),
-			otherUtis: expectArray(extractEntry(jCpy.otherUtis, 'otherUtis', false, path), false, [...path, ".otherUtis"], (x0, p0) => expectString(x0, false, p0)),
+			id: expectString(extractEntry(jCpy, 'id', true, path), false, [...path, ".id"]),
+			rev: expectString(extractEntry(jCpy, 'rev', false, path), true, [...path, ".rev"]),
+			created: expectNumber(extractEntry(jCpy, 'created', false, path), true, true, [...path, ".created"]),
+			modified: expectNumber(extractEntry(jCpy, 'modified', false, path), true, true, [...path, ".modified"]),
+			author: expectString(extractEntry(jCpy, 'author', false, path), true, [...path, ".author"]),
+			responsible: expectString(extractEntry(jCpy, 'responsible', false, path), true, [...path, ".responsible"]),
+			medicalLocationId: expectString(extractEntry(jCpy, 'medicalLocationId', false, path), true, [...path, ".medicalLocationId"]),
+			tags: expectArray(extractEntry(jCpy, 'tags', false, path), false, [...path, ".tags"], (x0, p0) => expectObject(x0, false, ignoreUnknownKeys, p0, CodeStub.fromJSON)),
+			codes: expectArray(extractEntry(jCpy, 'codes', false, path), false, [...path, ".codes"], (x0, p0) => expectObject(x0, false, ignoreUnknownKeys, p0, CodeStub.fromJSON)),
+			endOfLife: expectNumber(extractEntry(jCpy, 'endOfLife', false, path), true, true, [...path, ".endOfLife"]),
+			deletionDate: expectNumber(extractEntry(jCpy, 'deletionDate', false, path), true, true, [...path, ".deletionDate"]),
+			documentLocation: expectStringEnum(extractEntry(jCpy, 'documentLocation', false, path), true, [...path, ".documentLocation"], DocumentLocation, 'DocumentLocation'),
+			documentType: expectStringEnum(extractEntry(jCpy, 'documentType', false, path), true, [...path, ".documentType"], DocumentType, 'DocumentType'),
+			documentStatus: expectStringEnum(extractEntry(jCpy, 'documentStatus', false, path), true, [...path, ".documentStatus"], DocumentStatus, 'DocumentStatus'),
+			externalUri: expectString(extractEntry(jCpy, 'externalUri', false, path), true, [...path, ".externalUri"]),
+			name: expectString(extractEntry(jCpy, 'name', false, path), true, [...path, ".name"]),
+			version: expectString(extractEntry(jCpy, 'version', false, path), true, [...path, ".version"]),
+			storedICureDocumentId: expectString(extractEntry(jCpy, 'storedICureDocumentId', false, path), true, [...path, ".storedICureDocumentId"]),
+			externalUuid: expectString(extractEntry(jCpy, 'externalUuid', false, path), true, [...path, ".externalUuid"]),
+			size: expectNumber(extractEntry(jCpy, 'size', false, path), true, true, [...path, ".size"]),
+			hash: expectString(extractEntry(jCpy, 'hash', false, path), true, [...path, ".hash"]),
+			openingContactId: expectString(extractEntry(jCpy, 'openingContactId', false, path), true, [...path, ".openingContactId"]),
+			attachmentId: expectString(extractEntry(jCpy, 'attachmentId', false, path), true, [...path, ".attachmentId"]),
+			objectStoreReference: expectString(extractEntry(jCpy, 'objectStoreReference', false, path), true, [...path, ".objectStoreReference"]),
+			mainUti: expectString(extractEntry(jCpy, 'mainUti', false, path), true, [...path, ".mainUti"]),
+			otherUtis: expectArray(extractEntry(jCpy, 'otherUtis', false, path), false, [...path, ".otherUtis"], (x0, p0) => expectString(x0, false, p0)),
 			secondaryAttachments: expectMap(
-				extractEntry(jCpy.secondaryAttachments, 'secondaryAttachments', false, path),
+				extractEntry(jCpy, 'secondaryAttachments', false, path),
 				false,
 				[...path, ".secondaryAttachments"],
 				(k0, p0) => expectString(k0, false, p0),
 				(v0, p0) => expectObject(v0, false, ignoreUnknownKeys, p0, DataAttachment.fromJSON)
 			),
-			deletedAttachments: expectArray(extractEntry(jCpy.deletedAttachments, 'deletedAttachments', false, path), false, [...path, ".deletedAttachments"], (x0, p0) => expectObject(x0, false, ignoreUnknownKeys, p0, DeletedAttachment.fromJSON)),
-			encryptedAttachment: decodeBase64(expectString(extractEntry(jCpy.encryptedAttachment, 'encryptedAttachment', false, path), true, [...path, ".encryptedAttachment"]), [...path, ".encryptedAttachment"]),
-			decryptedAttachment: decodeBase64(expectString(extractEntry(jCpy.decryptedAttachment, 'decryptedAttachment', false, path), true, [...path, ".decryptedAttachment"]), [...path, ".decryptedAttachment"]),
-			secretForeignKeys: expectArray(extractEntry(jCpy.secretForeignKeys, 'secretForeignKeys', false, path), false, [...path, ".secretForeignKeys"], (x0, p0) => expectString(x0, false, p0)),
+			deletedAttachments: expectArray(extractEntry(jCpy, 'deletedAttachments', false, path), false, [...path, ".deletedAttachments"], (x0, p0) => expectObject(x0, false, ignoreUnknownKeys, p0, DeletedAttachment.fromJSON)),
+			encryptedAttachment: decodeBase64(expectString(extractEntry(jCpy, 'encryptedAttachment', false, path), true, [...path, ".encryptedAttachment"]), [...path, ".encryptedAttachment"]),
+			decryptedAttachment: decodeBase64(expectString(extractEntry(jCpy, 'decryptedAttachment', false, path), true, [...path, ".decryptedAttachment"]), [...path, ".decryptedAttachment"]),
+			secretForeignKeys: expectArray(extractEntry(jCpy, 'secretForeignKeys', false, path), false, [...path, ".secretForeignKeys"], (x0, p0) => expectString(x0, false, p0)),
 			cryptedForeignKeys: expectMap(
-				extractEntry(jCpy.cryptedForeignKeys, 'cryptedForeignKeys', false, path),
+				extractEntry(jCpy, 'cryptedForeignKeys', false, path),
 				false,
 				[...path, ".cryptedForeignKeys"],
 				(k0, p0) => expectString(k0, false, p0),
 				(v0, p0) => expectArray(v0, false, p0, (x1, p1) => expectObject(x1, false, ignoreUnknownKeys, p1, Delegation.fromJSON))
 			),
 			delegations: expectMap(
-				extractEntry(jCpy.delegations, 'delegations', false, path),
+				extractEntry(jCpy, 'delegations', false, path),
 				false,
 				[...path, ".delegations"],
 				(k0, p0) => expectString(k0, false, p0),
 				(v0, p0) => expectArray(v0, false, p0, (x1, p1) => expectObject(x1, false, ignoreUnknownKeys, p1, Delegation.fromJSON))
 			),
 			encryptionKeys: expectMap(
-				extractEntry(jCpy.encryptionKeys, 'encryptionKeys', false, path),
+				extractEntry(jCpy, 'encryptionKeys', false, path),
 				false,
 				[...path, ".encryptionKeys"],
 				(k0, p0) => expectString(k0, false, p0),
 				(v0, p0) => expectArray(v0, false, p0, (x1, p1) => expectObject(x1, false, ignoreUnknownKeys, p1, Delegation.fromJSON))
 			),
-			encryptedSelf: expectString(extractEntry(jCpy.encryptedSelf, 'encryptedSelf', false, path), false, [...path, ".encryptedSelf"]),
-			securityMetadata: expectObject(extractEntry(jCpy.securityMetadata, 'securityMetadata', false, path), true, ignoreUnknownKeys, [...path, ".securityMetadata"], SecurityMetadata.fromJSON),
+			encryptedSelf: expectString(extractEntry(jCpy, 'encryptedSelf', false, path), false, [...path, ".encryptedSelf"]),
+			securityMetadata: expectObject(extractEntry(jCpy, 'securityMetadata', false, path), true, ignoreUnknownKeys, [...path, ".securityMetadata"], SecurityMetadata.fromJSON),
 		})
 		if (!ignoreUnknownKeys) {
 			const unused = Object.keys(jCpy)
@@ -446,6 +448,7 @@ export class EncryptedDocument {
 		res['encryptionKeys'] = Object.fromEntries(Object.entries(this.encryptionKeys).map(([k0, v0]) => [k0, v0.map((x1) => x1.toJSON() )]))
 		if (this.encryptedSelf != undefined) res['encryptedSelf'] = this.encryptedSelf
 		if (this.securityMetadata != undefined) res['securityMetadata'] = this.securityMetadata.toJSON()
+		res['isEncrypted'] = true
 		return res
 	}
 
@@ -453,67 +456,68 @@ export class EncryptedDocument {
 			path: Array<string> = ['EncryptedDocument']): EncryptedDocument {
 		if (typeof json != 'object') throw new Error(`Expected json object at path ${path.join("")}`)
 		const jCpy = { ...json }
+		if (extractEntry(jCpy, "isEncrypted", true, path) !== true) throw new Error(`Unexpected value for ${path.join("")} isEncrypted marker, should be true`)
 		const res = new EncryptedDocument({
-			id: expectString(extractEntry(jCpy.id, 'id', true, path), false, [...path, ".id"]),
-			rev: expectString(extractEntry(jCpy.rev, 'rev', false, path), true, [...path, ".rev"]),
-			created: expectNumber(extractEntry(jCpy.created, 'created', false, path), true, true, [...path, ".created"]),
-			modified: expectNumber(extractEntry(jCpy.modified, 'modified', false, path), true, true, [...path, ".modified"]),
-			author: expectString(extractEntry(jCpy.author, 'author', false, path), true, [...path, ".author"]),
-			responsible: expectString(extractEntry(jCpy.responsible, 'responsible', false, path), true, [...path, ".responsible"]),
-			medicalLocationId: expectString(extractEntry(jCpy.medicalLocationId, 'medicalLocationId', false, path), true, [...path, ".medicalLocationId"]),
-			tags: expectArray(extractEntry(jCpy.tags, 'tags', false, path), false, [...path, ".tags"], (x0, p0) => expectObject(x0, false, ignoreUnknownKeys, p0, CodeStub.fromJSON)),
-			codes: expectArray(extractEntry(jCpy.codes, 'codes', false, path), false, [...path, ".codes"], (x0, p0) => expectObject(x0, false, ignoreUnknownKeys, p0, CodeStub.fromJSON)),
-			endOfLife: expectNumber(extractEntry(jCpy.endOfLife, 'endOfLife', false, path), true, true, [...path, ".endOfLife"]),
-			deletionDate: expectNumber(extractEntry(jCpy.deletionDate, 'deletionDate', false, path), true, true, [...path, ".deletionDate"]),
-			documentLocation: expectStringEnum(extractEntry(jCpy.documentLocation, 'documentLocation', false, path), true, [...path, ".documentLocation"], DocumentLocation, 'DocumentLocation'),
-			documentType: expectStringEnum(extractEntry(jCpy.documentType, 'documentType', false, path), true, [...path, ".documentType"], DocumentType, 'DocumentType'),
-			documentStatus: expectStringEnum(extractEntry(jCpy.documentStatus, 'documentStatus', false, path), true, [...path, ".documentStatus"], DocumentStatus, 'DocumentStatus'),
-			externalUri: expectString(extractEntry(jCpy.externalUri, 'externalUri', false, path), true, [...path, ".externalUri"]),
-			name: expectString(extractEntry(jCpy.name, 'name', false, path), true, [...path, ".name"]),
-			version: expectString(extractEntry(jCpy.version, 'version', false, path), true, [...path, ".version"]),
-			storedICureDocumentId: expectString(extractEntry(jCpy.storedICureDocumentId, 'storedICureDocumentId', false, path), true, [...path, ".storedICureDocumentId"]),
-			externalUuid: expectString(extractEntry(jCpy.externalUuid, 'externalUuid', false, path), true, [...path, ".externalUuid"]),
-			size: expectNumber(extractEntry(jCpy.size, 'size', false, path), true, true, [...path, ".size"]),
-			hash: expectString(extractEntry(jCpy.hash, 'hash', false, path), true, [...path, ".hash"]),
-			openingContactId: expectString(extractEntry(jCpy.openingContactId, 'openingContactId', false, path), true, [...path, ".openingContactId"]),
-			attachmentId: expectString(extractEntry(jCpy.attachmentId, 'attachmentId', false, path), true, [...path, ".attachmentId"]),
-			objectStoreReference: expectString(extractEntry(jCpy.objectStoreReference, 'objectStoreReference', false, path), true, [...path, ".objectStoreReference"]),
-			mainUti: expectString(extractEntry(jCpy.mainUti, 'mainUti', false, path), true, [...path, ".mainUti"]),
-			otherUtis: expectArray(extractEntry(jCpy.otherUtis, 'otherUtis', false, path), false, [...path, ".otherUtis"], (x0, p0) => expectString(x0, false, p0)),
+			id: expectString(extractEntry(jCpy, 'id', true, path), false, [...path, ".id"]),
+			rev: expectString(extractEntry(jCpy, 'rev', false, path), true, [...path, ".rev"]),
+			created: expectNumber(extractEntry(jCpy, 'created', false, path), true, true, [...path, ".created"]),
+			modified: expectNumber(extractEntry(jCpy, 'modified', false, path), true, true, [...path, ".modified"]),
+			author: expectString(extractEntry(jCpy, 'author', false, path), true, [...path, ".author"]),
+			responsible: expectString(extractEntry(jCpy, 'responsible', false, path), true, [...path, ".responsible"]),
+			medicalLocationId: expectString(extractEntry(jCpy, 'medicalLocationId', false, path), true, [...path, ".medicalLocationId"]),
+			tags: expectArray(extractEntry(jCpy, 'tags', false, path), false, [...path, ".tags"], (x0, p0) => expectObject(x0, false, ignoreUnknownKeys, p0, CodeStub.fromJSON)),
+			codes: expectArray(extractEntry(jCpy, 'codes', false, path), false, [...path, ".codes"], (x0, p0) => expectObject(x0, false, ignoreUnknownKeys, p0, CodeStub.fromJSON)),
+			endOfLife: expectNumber(extractEntry(jCpy, 'endOfLife', false, path), true, true, [...path, ".endOfLife"]),
+			deletionDate: expectNumber(extractEntry(jCpy, 'deletionDate', false, path), true, true, [...path, ".deletionDate"]),
+			documentLocation: expectStringEnum(extractEntry(jCpy, 'documentLocation', false, path), true, [...path, ".documentLocation"], DocumentLocation, 'DocumentLocation'),
+			documentType: expectStringEnum(extractEntry(jCpy, 'documentType', false, path), true, [...path, ".documentType"], DocumentType, 'DocumentType'),
+			documentStatus: expectStringEnum(extractEntry(jCpy, 'documentStatus', false, path), true, [...path, ".documentStatus"], DocumentStatus, 'DocumentStatus'),
+			externalUri: expectString(extractEntry(jCpy, 'externalUri', false, path), true, [...path, ".externalUri"]),
+			name: expectString(extractEntry(jCpy, 'name', false, path), true, [...path, ".name"]),
+			version: expectString(extractEntry(jCpy, 'version', false, path), true, [...path, ".version"]),
+			storedICureDocumentId: expectString(extractEntry(jCpy, 'storedICureDocumentId', false, path), true, [...path, ".storedICureDocumentId"]),
+			externalUuid: expectString(extractEntry(jCpy, 'externalUuid', false, path), true, [...path, ".externalUuid"]),
+			size: expectNumber(extractEntry(jCpy, 'size', false, path), true, true, [...path, ".size"]),
+			hash: expectString(extractEntry(jCpy, 'hash', false, path), true, [...path, ".hash"]),
+			openingContactId: expectString(extractEntry(jCpy, 'openingContactId', false, path), true, [...path, ".openingContactId"]),
+			attachmentId: expectString(extractEntry(jCpy, 'attachmentId', false, path), true, [...path, ".attachmentId"]),
+			objectStoreReference: expectString(extractEntry(jCpy, 'objectStoreReference', false, path), true, [...path, ".objectStoreReference"]),
+			mainUti: expectString(extractEntry(jCpy, 'mainUti', false, path), true, [...path, ".mainUti"]),
+			otherUtis: expectArray(extractEntry(jCpy, 'otherUtis', false, path), false, [...path, ".otherUtis"], (x0, p0) => expectString(x0, false, p0)),
 			secondaryAttachments: expectMap(
-				extractEntry(jCpy.secondaryAttachments, 'secondaryAttachments', false, path),
+				extractEntry(jCpy, 'secondaryAttachments', false, path),
 				false,
 				[...path, ".secondaryAttachments"],
 				(k0, p0) => expectString(k0, false, p0),
 				(v0, p0) => expectObject(v0, false, ignoreUnknownKeys, p0, DataAttachment.fromJSON)
 			),
-			deletedAttachments: expectArray(extractEntry(jCpy.deletedAttachments, 'deletedAttachments', false, path), false, [...path, ".deletedAttachments"], (x0, p0) => expectObject(x0, false, ignoreUnknownKeys, p0, DeletedAttachment.fromJSON)),
-			encryptedAttachment: decodeBase64(expectString(extractEntry(jCpy.encryptedAttachment, 'encryptedAttachment', false, path), true, [...path, ".encryptedAttachment"]), [...path, ".encryptedAttachment"]),
-			decryptedAttachment: decodeBase64(expectString(extractEntry(jCpy.decryptedAttachment, 'decryptedAttachment', false, path), true, [...path, ".decryptedAttachment"]), [...path, ".decryptedAttachment"]),
-			secretForeignKeys: expectArray(extractEntry(jCpy.secretForeignKeys, 'secretForeignKeys', false, path), false, [...path, ".secretForeignKeys"], (x0, p0) => expectString(x0, false, p0)),
+			deletedAttachments: expectArray(extractEntry(jCpy, 'deletedAttachments', false, path), false, [...path, ".deletedAttachments"], (x0, p0) => expectObject(x0, false, ignoreUnknownKeys, p0, DeletedAttachment.fromJSON)),
+			encryptedAttachment: decodeBase64(expectString(extractEntry(jCpy, 'encryptedAttachment', false, path), true, [...path, ".encryptedAttachment"]), [...path, ".encryptedAttachment"]),
+			decryptedAttachment: decodeBase64(expectString(extractEntry(jCpy, 'decryptedAttachment', false, path), true, [...path, ".decryptedAttachment"]), [...path, ".decryptedAttachment"]),
+			secretForeignKeys: expectArray(extractEntry(jCpy, 'secretForeignKeys', false, path), false, [...path, ".secretForeignKeys"], (x0, p0) => expectString(x0, false, p0)),
 			cryptedForeignKeys: expectMap(
-				extractEntry(jCpy.cryptedForeignKeys, 'cryptedForeignKeys', false, path),
+				extractEntry(jCpy, 'cryptedForeignKeys', false, path),
 				false,
 				[...path, ".cryptedForeignKeys"],
 				(k0, p0) => expectString(k0, false, p0),
 				(v0, p0) => expectArray(v0, false, p0, (x1, p1) => expectObject(x1, false, ignoreUnknownKeys, p1, Delegation.fromJSON))
 			),
 			delegations: expectMap(
-				extractEntry(jCpy.delegations, 'delegations', false, path),
+				extractEntry(jCpy, 'delegations', false, path),
 				false,
 				[...path, ".delegations"],
 				(k0, p0) => expectString(k0, false, p0),
 				(v0, p0) => expectArray(v0, false, p0, (x1, p1) => expectObject(x1, false, ignoreUnknownKeys, p1, Delegation.fromJSON))
 			),
 			encryptionKeys: expectMap(
-				extractEntry(jCpy.encryptionKeys, 'encryptionKeys', false, path),
+				extractEntry(jCpy, 'encryptionKeys', false, path),
 				false,
 				[...path, ".encryptionKeys"],
 				(k0, p0) => expectString(k0, false, p0),
 				(v0, p0) => expectArray(v0, false, p0, (x1, p1) => expectObject(x1, false, ignoreUnknownKeys, p1, Delegation.fromJSON))
 			),
-			encryptedSelf: expectString(extractEntry(jCpy.encryptedSelf, 'encryptedSelf', false, path), false, [...path, ".encryptedSelf"]),
-			securityMetadata: expectObject(extractEntry(jCpy.securityMetadata, 'securityMetadata', false, path), true, ignoreUnknownKeys, [...path, ".securityMetadata"], SecurityMetadata.fromJSON),
+			encryptedSelf: expectString(extractEntry(jCpy, 'encryptedSelf', false, path), false, [...path, ".encryptedSelf"]),
+			securityMetadata: expectObject(extractEntry(jCpy, 'securityMetadata', false, path), true, ignoreUnknownKeys, [...path, ".securityMetadata"], SecurityMetadata.fromJSON),
 		})
 		if (!ignoreUnknownKeys) {
 			const unused = Object.keys(jCpy)

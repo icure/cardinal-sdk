@@ -132,6 +132,7 @@ export class DecryptedTopic {
 		if (this.encryptedSelf != undefined) res['encryptedSelf'] = this.encryptedSelf
 		res['linkedHealthElements'] = this.linkedHealthElements.map((x0) => x0 )
 		res['linkedServices'] = this.linkedServices.map((x0) => x0 )
+		res['isEncrypted'] = false
 		return res
 	}
 
@@ -139,54 +140,55 @@ export class DecryptedTopic {
 			path: Array<string> = ['DecryptedTopic']): DecryptedTopic {
 		if (typeof json != 'object') throw new Error(`Expected json object at path ${path.join("")}`)
 		const jCpy = { ...json }
+		if (extractEntry(jCpy, "isEncrypted", true, path) !== false) throw new Error(`Unexpected value for ${path.join("")} isEncrypted marker, should be false`)
 		const res = new DecryptedTopic({
-			id: expectString(extractEntry(jCpy.id, 'id', true, path), false, [...path, ".id"]),
-			rev: expectString(extractEntry(jCpy.rev, 'rev', false, path), true, [...path, ".rev"]),
-			created: expectNumber(extractEntry(jCpy.created, 'created', false, path), true, true, [...path, ".created"]),
-			modified: expectNumber(extractEntry(jCpy.modified, 'modified', false, path), true, true, [...path, ".modified"]),
-			healthElementId: expectString(extractEntry(jCpy.healthElementId, 'healthElementId', false, path), true, [...path, ".healthElementId"]),
-			contactId: expectString(extractEntry(jCpy.contactId, 'contactId', false, path), true, [...path, ".contactId"]),
-			description: expectString(extractEntry(jCpy.description, 'description', false, path), true, [...path, ".description"]),
-			codes: expectArray(extractEntry(jCpy.codes, 'codes', false, path), false, [...path, ".codes"], (x0, p0) => expectObject(x0, false, ignoreUnknownKeys, p0, CodeStub.fromJSON)),
-			tags: expectArray(extractEntry(jCpy.tags, 'tags', false, path), false, [...path, ".tags"], (x0, p0) => expectObject(x0, false, ignoreUnknownKeys, p0, CodeStub.fromJSON)),
-			author: expectString(extractEntry(jCpy.author, 'author', false, path), true, [...path, ".author"]),
-			responsible: expectString(extractEntry(jCpy.responsible, 'responsible', false, path), true, [...path, ".responsible"]),
-			medicalLocationId: expectString(extractEntry(jCpy.medicalLocationId, 'medicalLocationId', false, path), true, [...path, ".medicalLocationId"]),
-			endOfLife: expectNumber(extractEntry(jCpy.endOfLife, 'endOfLife', false, path), true, true, [...path, ".endOfLife"]),
-			deletionDate: expectNumber(extractEntry(jCpy.deletionDate, 'deletionDate', false, path), true, true, [...path, ".deletionDate"]),
+			id: expectString(extractEntry(jCpy, 'id', true, path), false, [...path, ".id"]),
+			rev: expectString(extractEntry(jCpy, 'rev', false, path), true, [...path, ".rev"]),
+			created: expectNumber(extractEntry(jCpy, 'created', false, path), true, true, [...path, ".created"]),
+			modified: expectNumber(extractEntry(jCpy, 'modified', false, path), true, true, [...path, ".modified"]),
+			healthElementId: expectString(extractEntry(jCpy, 'healthElementId', false, path), true, [...path, ".healthElementId"]),
+			contactId: expectString(extractEntry(jCpy, 'contactId', false, path), true, [...path, ".contactId"]),
+			description: expectString(extractEntry(jCpy, 'description', false, path), true, [...path, ".description"]),
+			codes: expectArray(extractEntry(jCpy, 'codes', false, path), false, [...path, ".codes"], (x0, p0) => expectObject(x0, false, ignoreUnknownKeys, p0, CodeStub.fromJSON)),
+			tags: expectArray(extractEntry(jCpy, 'tags', false, path), false, [...path, ".tags"], (x0, p0) => expectObject(x0, false, ignoreUnknownKeys, p0, CodeStub.fromJSON)),
+			author: expectString(extractEntry(jCpy, 'author', false, path), true, [...path, ".author"]),
+			responsible: expectString(extractEntry(jCpy, 'responsible', false, path), true, [...path, ".responsible"]),
+			medicalLocationId: expectString(extractEntry(jCpy, 'medicalLocationId', false, path), true, [...path, ".medicalLocationId"]),
+			endOfLife: expectNumber(extractEntry(jCpy, 'endOfLife', false, path), true, true, [...path, ".endOfLife"]),
+			deletionDate: expectNumber(extractEntry(jCpy, 'deletionDate', false, path), true, true, [...path, ".deletionDate"]),
 			activeParticipants: expectMap(
-				extractEntry(jCpy.activeParticipants, 'activeParticipants', false, path),
+				extractEntry(jCpy, 'activeParticipants', false, path),
 				false,
 				[...path, ".activeParticipants"],
 				(k0, p0) => expectString(k0, false, p0),
 				(v0, p0) => expectStringEnum(v0, false, p0, TopicRole, 'TopicRole')
 			),
-			securityMetadata: expectObject(extractEntry(jCpy.securityMetadata, 'securityMetadata', false, path), true, ignoreUnknownKeys, [...path, ".securityMetadata"], SecurityMetadata.fromJSON),
-			secretForeignKeys: expectArray(extractEntry(jCpy.secretForeignKeys, 'secretForeignKeys', false, path), false, [...path, ".secretForeignKeys"], (x0, p0) => expectString(x0, false, p0)),
+			securityMetadata: expectObject(extractEntry(jCpy, 'securityMetadata', false, path), true, ignoreUnknownKeys, [...path, ".securityMetadata"], SecurityMetadata.fromJSON),
+			secretForeignKeys: expectArray(extractEntry(jCpy, 'secretForeignKeys', false, path), false, [...path, ".secretForeignKeys"], (x0, p0) => expectString(x0, false, p0)),
 			cryptedForeignKeys: expectMap(
-				extractEntry(jCpy.cryptedForeignKeys, 'cryptedForeignKeys', false, path),
+				extractEntry(jCpy, 'cryptedForeignKeys', false, path),
 				false,
 				[...path, ".cryptedForeignKeys"],
 				(k0, p0) => expectString(k0, false, p0),
 				(v0, p0) => expectArray(v0, false, p0, (x1, p1) => expectObject(x1, false, ignoreUnknownKeys, p1, Delegation.fromJSON))
 			),
 			delegations: expectMap(
-				extractEntry(jCpy.delegations, 'delegations', false, path),
+				extractEntry(jCpy, 'delegations', false, path),
 				false,
 				[...path, ".delegations"],
 				(k0, p0) => expectString(k0, false, p0),
 				(v0, p0) => expectArray(v0, false, p0, (x1, p1) => expectObject(x1, false, ignoreUnknownKeys, p1, Delegation.fromJSON))
 			),
 			encryptionKeys: expectMap(
-				extractEntry(jCpy.encryptionKeys, 'encryptionKeys', false, path),
+				extractEntry(jCpy, 'encryptionKeys', false, path),
 				false,
 				[...path, ".encryptionKeys"],
 				(k0, p0) => expectString(k0, false, p0),
 				(v0, p0) => expectArray(v0, false, p0, (x1, p1) => expectObject(x1, false, ignoreUnknownKeys, p1, Delegation.fromJSON))
 			),
-			encryptedSelf: expectString(extractEntry(jCpy.encryptedSelf, 'encryptedSelf', false, path), false, [...path, ".encryptedSelf"]),
-			linkedHealthElements: expectArray(extractEntry(jCpy.linkedHealthElements, 'linkedHealthElements', false, path), false, [...path, ".linkedHealthElements"], (x0, p0) => expectString(x0, false, p0)),
-			linkedServices: expectArray(extractEntry(jCpy.linkedServices, 'linkedServices', false, path), false, [...path, ".linkedServices"], (x0, p0) => expectString(x0, false, p0)),
+			encryptedSelf: expectString(extractEntry(jCpy, 'encryptedSelf', false, path), false, [...path, ".encryptedSelf"]),
+			linkedHealthElements: expectArray(extractEntry(jCpy, 'linkedHealthElements', false, path), false, [...path, ".linkedHealthElements"], (x0, p0) => expectString(x0, false, p0)),
+			linkedServices: expectArray(extractEntry(jCpy, 'linkedServices', false, path), false, [...path, ".linkedServices"], (x0, p0) => expectString(x0, false, p0)),
 		})
 		if (!ignoreUnknownKeys) {
 			const unused = Object.keys(jCpy)
@@ -298,6 +300,7 @@ export class EncryptedTopic {
 		if (this.encryptedSelf != undefined) res['encryptedSelf'] = this.encryptedSelf
 		res['linkedHealthElements'] = this.linkedHealthElements.map((x0) => x0 )
 		res['linkedServices'] = this.linkedServices.map((x0) => x0 )
+		res['isEncrypted'] = true
 		return res
 	}
 
@@ -305,54 +308,55 @@ export class EncryptedTopic {
 			path: Array<string> = ['EncryptedTopic']): EncryptedTopic {
 		if (typeof json != 'object') throw new Error(`Expected json object at path ${path.join("")}`)
 		const jCpy = { ...json }
+		if (extractEntry(jCpy, "isEncrypted", true, path) !== true) throw new Error(`Unexpected value for ${path.join("")} isEncrypted marker, should be true`)
 		const res = new EncryptedTopic({
-			id: expectString(extractEntry(jCpy.id, 'id', true, path), false, [...path, ".id"]),
-			rev: expectString(extractEntry(jCpy.rev, 'rev', false, path), true, [...path, ".rev"]),
-			created: expectNumber(extractEntry(jCpy.created, 'created', false, path), true, true, [...path, ".created"]),
-			modified: expectNumber(extractEntry(jCpy.modified, 'modified', false, path), true, true, [...path, ".modified"]),
-			healthElementId: expectString(extractEntry(jCpy.healthElementId, 'healthElementId', false, path), true, [...path, ".healthElementId"]),
-			contactId: expectString(extractEntry(jCpy.contactId, 'contactId', false, path), true, [...path, ".contactId"]),
-			description: expectString(extractEntry(jCpy.description, 'description', false, path), true, [...path, ".description"]),
-			codes: expectArray(extractEntry(jCpy.codes, 'codes', false, path), false, [...path, ".codes"], (x0, p0) => expectObject(x0, false, ignoreUnknownKeys, p0, CodeStub.fromJSON)),
-			tags: expectArray(extractEntry(jCpy.tags, 'tags', false, path), false, [...path, ".tags"], (x0, p0) => expectObject(x0, false, ignoreUnknownKeys, p0, CodeStub.fromJSON)),
-			author: expectString(extractEntry(jCpy.author, 'author', false, path), true, [...path, ".author"]),
-			responsible: expectString(extractEntry(jCpy.responsible, 'responsible', false, path), true, [...path, ".responsible"]),
-			medicalLocationId: expectString(extractEntry(jCpy.medicalLocationId, 'medicalLocationId', false, path), true, [...path, ".medicalLocationId"]),
-			endOfLife: expectNumber(extractEntry(jCpy.endOfLife, 'endOfLife', false, path), true, true, [...path, ".endOfLife"]),
-			deletionDate: expectNumber(extractEntry(jCpy.deletionDate, 'deletionDate', false, path), true, true, [...path, ".deletionDate"]),
+			id: expectString(extractEntry(jCpy, 'id', true, path), false, [...path, ".id"]),
+			rev: expectString(extractEntry(jCpy, 'rev', false, path), true, [...path, ".rev"]),
+			created: expectNumber(extractEntry(jCpy, 'created', false, path), true, true, [...path, ".created"]),
+			modified: expectNumber(extractEntry(jCpy, 'modified', false, path), true, true, [...path, ".modified"]),
+			healthElementId: expectString(extractEntry(jCpy, 'healthElementId', false, path), true, [...path, ".healthElementId"]),
+			contactId: expectString(extractEntry(jCpy, 'contactId', false, path), true, [...path, ".contactId"]),
+			description: expectString(extractEntry(jCpy, 'description', false, path), true, [...path, ".description"]),
+			codes: expectArray(extractEntry(jCpy, 'codes', false, path), false, [...path, ".codes"], (x0, p0) => expectObject(x0, false, ignoreUnknownKeys, p0, CodeStub.fromJSON)),
+			tags: expectArray(extractEntry(jCpy, 'tags', false, path), false, [...path, ".tags"], (x0, p0) => expectObject(x0, false, ignoreUnknownKeys, p0, CodeStub.fromJSON)),
+			author: expectString(extractEntry(jCpy, 'author', false, path), true, [...path, ".author"]),
+			responsible: expectString(extractEntry(jCpy, 'responsible', false, path), true, [...path, ".responsible"]),
+			medicalLocationId: expectString(extractEntry(jCpy, 'medicalLocationId', false, path), true, [...path, ".medicalLocationId"]),
+			endOfLife: expectNumber(extractEntry(jCpy, 'endOfLife', false, path), true, true, [...path, ".endOfLife"]),
+			deletionDate: expectNumber(extractEntry(jCpy, 'deletionDate', false, path), true, true, [...path, ".deletionDate"]),
 			activeParticipants: expectMap(
-				extractEntry(jCpy.activeParticipants, 'activeParticipants', false, path),
+				extractEntry(jCpy, 'activeParticipants', false, path),
 				false,
 				[...path, ".activeParticipants"],
 				(k0, p0) => expectString(k0, false, p0),
 				(v0, p0) => expectStringEnum(v0, false, p0, TopicRole, 'TopicRole')
 			),
-			securityMetadata: expectObject(extractEntry(jCpy.securityMetadata, 'securityMetadata', false, path), true, ignoreUnknownKeys, [...path, ".securityMetadata"], SecurityMetadata.fromJSON),
-			secretForeignKeys: expectArray(extractEntry(jCpy.secretForeignKeys, 'secretForeignKeys', false, path), false, [...path, ".secretForeignKeys"], (x0, p0) => expectString(x0, false, p0)),
+			securityMetadata: expectObject(extractEntry(jCpy, 'securityMetadata', false, path), true, ignoreUnknownKeys, [...path, ".securityMetadata"], SecurityMetadata.fromJSON),
+			secretForeignKeys: expectArray(extractEntry(jCpy, 'secretForeignKeys', false, path), false, [...path, ".secretForeignKeys"], (x0, p0) => expectString(x0, false, p0)),
 			cryptedForeignKeys: expectMap(
-				extractEntry(jCpy.cryptedForeignKeys, 'cryptedForeignKeys', false, path),
+				extractEntry(jCpy, 'cryptedForeignKeys', false, path),
 				false,
 				[...path, ".cryptedForeignKeys"],
 				(k0, p0) => expectString(k0, false, p0),
 				(v0, p0) => expectArray(v0, false, p0, (x1, p1) => expectObject(x1, false, ignoreUnknownKeys, p1, Delegation.fromJSON))
 			),
 			delegations: expectMap(
-				extractEntry(jCpy.delegations, 'delegations', false, path),
+				extractEntry(jCpy, 'delegations', false, path),
 				false,
 				[...path, ".delegations"],
 				(k0, p0) => expectString(k0, false, p0),
 				(v0, p0) => expectArray(v0, false, p0, (x1, p1) => expectObject(x1, false, ignoreUnknownKeys, p1, Delegation.fromJSON))
 			),
 			encryptionKeys: expectMap(
-				extractEntry(jCpy.encryptionKeys, 'encryptionKeys', false, path),
+				extractEntry(jCpy, 'encryptionKeys', false, path),
 				false,
 				[...path, ".encryptionKeys"],
 				(k0, p0) => expectString(k0, false, p0),
 				(v0, p0) => expectArray(v0, false, p0, (x1, p1) => expectObject(x1, false, ignoreUnknownKeys, p1, Delegation.fromJSON))
 			),
-			encryptedSelf: expectString(extractEntry(jCpy.encryptedSelf, 'encryptedSelf', false, path), false, [...path, ".encryptedSelf"]),
-			linkedHealthElements: expectArray(extractEntry(jCpy.linkedHealthElements, 'linkedHealthElements', false, path), false, [...path, ".linkedHealthElements"], (x0, p0) => expectString(x0, false, p0)),
-			linkedServices: expectArray(extractEntry(jCpy.linkedServices, 'linkedServices', false, path), false, [...path, ".linkedServices"], (x0, p0) => expectString(x0, false, p0)),
+			encryptedSelf: expectString(extractEntry(jCpy, 'encryptedSelf', false, path), false, [...path, ".encryptedSelf"]),
+			linkedHealthElements: expectArray(extractEntry(jCpy, 'linkedHealthElements', false, path), false, [...path, ".linkedHealthElements"], (x0, p0) => expectString(x0, false, p0)),
+			linkedServices: expectArray(extractEntry(jCpy, 'linkedServices', false, path), false, [...path, ".linkedServices"], (x0, p0) => expectString(x0, false, p0)),
 		})
 		if (!ignoreUnknownKeys) {
 			const unused = Object.keys(jCpy)

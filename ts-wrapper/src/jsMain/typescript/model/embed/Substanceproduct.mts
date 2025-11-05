@@ -38,11 +38,11 @@ export class Substanceproduct {
 		if (typeof json != 'object') throw new Error(`Expected json object at path ${path.join("")}`)
 		const jCpy = { ...json }
 		const res = new Substanceproduct({
-			intendedcds: expectArray(extractEntry(jCpy.intendedcds, 'intendedcds', false, path), false, [...path, ".intendedcds"], (x0, p0) => expectObject(x0, false, ignoreUnknownKeys, p0, CodeStub.fromJSON)),
-			deliveredcds: expectArray(extractEntry(jCpy.deliveredcds, 'deliveredcds', false, path), false, [...path, ".deliveredcds"], (x0, p0) => expectObject(x0, false, ignoreUnknownKeys, p0, CodeStub.fromJSON)),
-			intendedname: expectString(extractEntry(jCpy.intendedname, 'intendedname', false, path), true, [...path, ".intendedname"]),
-			deliveredname: expectString(extractEntry(jCpy.deliveredname, 'deliveredname', false, path), true, [...path, ".deliveredname"]),
-			productId: expectString(extractEntry(jCpy.productId, 'productId', false, path), true, [...path, ".productId"]),
+			intendedcds: expectArray(extractEntry(jCpy, 'intendedcds', false, path), false, [...path, ".intendedcds"], (x0, p0) => expectObject(x0, false, ignoreUnknownKeys, p0, CodeStub.fromJSON)),
+			deliveredcds: expectArray(extractEntry(jCpy, 'deliveredcds', false, path), false, [...path, ".deliveredcds"], (x0, p0) => expectObject(x0, false, ignoreUnknownKeys, p0, CodeStub.fromJSON)),
+			intendedname: expectString(extractEntry(jCpy, 'intendedname', false, path), true, [...path, ".intendedname"]),
+			deliveredname: expectString(extractEntry(jCpy, 'deliveredname', false, path), true, [...path, ".deliveredname"]),
+			productId: expectString(extractEntry(jCpy, 'productId', false, path), true, [...path, ".productId"]),
 		})
 		if (!ignoreUnknownKeys) {
 			const unused = Object.keys(jCpy)

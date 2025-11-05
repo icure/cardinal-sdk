@@ -26,8 +26,8 @@ export class PropertyTypeStub {
 		if (typeof json != 'object') throw new Error(`Expected json object at path ${path.join("")}`)
 		const jCpy = { ...json }
 		const res = new PropertyTypeStub({
-			identifier: expectString(extractEntry(jCpy.identifier, 'identifier', false, path), true, [...path, ".identifier"]),
-			type: expectStringEnum(extractEntry(jCpy.type, 'type', false, path), true, [...path, ".type"], TypedValuesType, 'TypedValuesType'),
+			identifier: expectString(extractEntry(jCpy, 'identifier', false, path), true, [...path, ".identifier"]),
+			type: expectStringEnum(extractEntry(jCpy, 'type', false, path), true, [...path, ".type"], TypedValuesType, 'TypedValuesType'),
 		})
 		if (!ignoreUnknownKeys) {
 			const unused = Object.keys(jCpy)

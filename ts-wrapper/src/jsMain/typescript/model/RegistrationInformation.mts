@@ -53,15 +53,15 @@ export class RegistrationInformation {
 		if (typeof json != 'object') throw new Error(`Expected json object at path ${path.join("")}`)
 		const jCpy = { ...json }
 		const res = new RegistrationInformation({
-			applicationId: expectString(extractEntry(jCpy.applicationId, 'applicationId', false, path), true, [...path, ".applicationId"]),
-			firstName: expectString(extractEntry(jCpy.firstName, 'firstName', false, path), true, [...path, ".firstName"]),
-			lastName: expectString(extractEntry(jCpy.lastName, 'lastName', false, path), true, [...path, ".lastName"]),
-			companyName: expectString(extractEntry(jCpy.companyName, 'companyName', false, path), true, [...path, ".companyName"]),
-			emailAddress: expectString(extractEntry(jCpy.emailAddress, 'emailAddress', true, path), false, [...path, ".emailAddress"]),
-			userOptions: expectString(extractEntry(jCpy.userOptions, 'userOptions', false, path), true, [...path, ".userOptions"]),
-			userRoles: expectArray(extractEntry(jCpy.userRoles, 'userRoles', false, path), false, [...path, ".userRoles"], (x0, p0) => expectString(x0, false, p0)),
-			minimumKrakenVersion: expectString(extractEntry(jCpy.minimumKrakenVersion, 'minimumKrakenVersion', false, path), true, [...path, ".minimumKrakenVersion"]),
-			cluster: expectString(extractEntry(jCpy.cluster, 'cluster', false, path), true, [...path, ".cluster"]),
+			applicationId: expectString(extractEntry(jCpy, 'applicationId', false, path), true, [...path, ".applicationId"]),
+			firstName: expectString(extractEntry(jCpy, 'firstName', false, path), true, [...path, ".firstName"]),
+			lastName: expectString(extractEntry(jCpy, 'lastName', false, path), true, [...path, ".lastName"]),
+			companyName: expectString(extractEntry(jCpy, 'companyName', false, path), true, [...path, ".companyName"]),
+			emailAddress: expectString(extractEntry(jCpy, 'emailAddress', true, path), false, [...path, ".emailAddress"]),
+			userOptions: expectString(extractEntry(jCpy, 'userOptions', false, path), true, [...path, ".userOptions"]),
+			userRoles: expectArray(extractEntry(jCpy, 'userRoles', false, path), false, [...path, ".userRoles"], (x0, p0) => expectString(x0, false, p0)),
+			minimumKrakenVersion: expectString(extractEntry(jCpy, 'minimumKrakenVersion', false, path), true, [...path, ".minimumKrakenVersion"]),
+			cluster: expectString(extractEntry(jCpy, 'cluster', false, path), true, [...path, ".cluster"]),
 		})
 		if (!ignoreUnknownKeys) {
 			const unused = Object.keys(jCpy)

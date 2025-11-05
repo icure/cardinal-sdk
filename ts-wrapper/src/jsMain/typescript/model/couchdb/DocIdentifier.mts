@@ -25,8 +25,8 @@ export class DocIdentifier {
 		if (typeof json != 'object') throw new Error(`Expected json object at path ${path.join("")}`)
 		const jCpy = { ...json }
 		const res = new DocIdentifier({
-			id: expectString(extractEntry(jCpy.id, 'id', false, path), true, [...path, ".id"]),
-			rev: expectString(extractEntry(jCpy.rev, 'rev', false, path), true, [...path, ".rev"]),
+			id: expectString(extractEntry(jCpy, 'id', false, path), true, [...path, ".id"]),
+			rev: expectString(extractEntry(jCpy, 'rev', false, path), true, [...path, ".rev"]),
 		})
 		if (!ignoreUnknownKeys) {
 			const unused = Object.keys(jCpy)

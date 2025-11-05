@@ -59,16 +59,16 @@ export class EntityTemplate implements StoredDocument {
 		if (typeof json != 'object') throw new Error(`Expected json object at path ${path.join("")}`)
 		const jCpy = { ...json }
 		const res = new EntityTemplate({
-			id: expectString(extractEntry(jCpy.id, 'id', true, path), false, [...path, ".id"]),
-			rev: expectString(extractEntry(jCpy.rev, 'rev', false, path), true, [...path, ".rev"]),
-			deletionDate: expectNumber(extractEntry(jCpy.deletionDate, 'deletionDate', false, path), true, true, [...path, ".deletionDate"]),
-			userId: expectString(extractEntry(jCpy.userId, 'userId', false, path), true, [...path, ".userId"]),
-			descr: expectString(extractEntry(jCpy.descr, 'descr', false, path), true, [...path, ".descr"]),
-			keywords: expectArray(extractEntry(jCpy.keywords, 'keywords', false, path), true, [...path, ".keywords"], (x0, p0) => expectString(x0, false, p0)),
-			entityType: expectString(extractEntry(jCpy.entityType, 'entityType', false, path), true, [...path, ".entityType"]),
-			subType: expectString(extractEntry(jCpy.subType, 'subType', false, path), true, [...path, ".subType"]),
-			defaultTemplate: expectBoolean(extractEntry(jCpy.defaultTemplate, 'defaultTemplate', false, path), true, [...path, ".defaultTemplate"]),
-			entity: expectArray(extractEntry(jCpy.entity, 'entity', false, path), false, [...path, ".entity"], (x0, p0) => x0),
+			id: expectString(extractEntry(jCpy, 'id', true, path), false, [...path, ".id"]),
+			rev: expectString(extractEntry(jCpy, 'rev', false, path), true, [...path, ".rev"]),
+			deletionDate: expectNumber(extractEntry(jCpy, 'deletionDate', false, path), true, true, [...path, ".deletionDate"]),
+			userId: expectString(extractEntry(jCpy, 'userId', false, path), true, [...path, ".userId"]),
+			descr: expectString(extractEntry(jCpy, 'descr', false, path), true, [...path, ".descr"]),
+			keywords: expectArray(extractEntry(jCpy, 'keywords', false, path), true, [...path, ".keywords"], (x0, p0) => expectString(x0, false, p0)),
+			entityType: expectString(extractEntry(jCpy, 'entityType', false, path), true, [...path, ".entityType"]),
+			subType: expectString(extractEntry(jCpy, 'subType', false, path), true, [...path, ".subType"]),
+			defaultTemplate: expectBoolean(extractEntry(jCpy, 'defaultTemplate', false, path), true, [...path, ".defaultTemplate"]),
+			entity: expectArray(extractEntry(jCpy, 'entity', false, path), false, [...path, ".entity"], (x0, p0) => x0),
 		})
 		if (!ignoreUnknownKeys) {
 			const unused = Object.keys(jCpy)

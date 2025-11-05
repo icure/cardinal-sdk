@@ -26,8 +26,8 @@ export class Remote {
 		if (typeof json != 'object') throw new Error(`Expected json object at path ${path.join("")}`)
 		const jCpy = { ...json }
 		const res = new Remote({
-			url: expectString(extractEntry(jCpy.url, 'url', true, path), false, [...path, ".url"]),
-			auth: expectObject(extractEntry(jCpy.auth, 'auth', false, path), true, ignoreUnknownKeys, [...path, ".auth"], RemoteAuthentication.fromJSON),
+			url: expectString(extractEntry(jCpy, 'url', true, path), false, [...path, ".url"]),
+			auth: expectObject(extractEntry(jCpy, 'auth', false, path), true, ignoreUnknownKeys, [...path, ".auth"], RemoteAuthentication.fromJSON),
 		})
 		if (!ignoreUnknownKeys) {
 			const unused = Object.keys(jCpy)

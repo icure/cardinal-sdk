@@ -26,8 +26,8 @@ export class Duration {
 		if (typeof json != 'object') throw new Error(`Expected json object at path ${path.join("")}`)
 		const jCpy = { ...json }
 		const res = new Duration({
-			value: expectNumber(extractEntry(jCpy.value, 'value', false, path), true, false, [...path, ".value"]),
-			unit: expectObject(extractEntry(jCpy.unit, 'unit', false, path), true, ignoreUnknownKeys, [...path, ".unit"], CodeStub.fromJSON),
+			value: expectNumber(extractEntry(jCpy, 'value', false, path), true, false, [...path, ".value"]),
+			unit: expectObject(extractEntry(jCpy, 'unit', false, path), true, ignoreUnknownKeys, [...path, ".unit"], CodeStub.fromJSON),
 		})
 		if (!ignoreUnknownKeys) {
 			const unused = Object.keys(jCpy)

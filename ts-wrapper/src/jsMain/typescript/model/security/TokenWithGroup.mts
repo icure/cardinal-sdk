@@ -29,9 +29,9 @@ export class TokenWithGroup {
 		if (typeof json != 'object') throw new Error(`Expected json object at path ${path.join("")}`)
 		const jCpy = { ...json }
 		const res = new TokenWithGroup({
-			token: expectString(extractEntry(jCpy.token, 'token', true, path), false, [...path, ".token"]),
-			groupId: expectString(extractEntry(jCpy.groupId, 'groupId', true, path), false, [...path, ".groupId"]),
-			groupName: expectString(extractEntry(jCpy.groupName, 'groupName', false, path), true, [...path, ".groupName"]),
+			token: expectString(extractEntry(jCpy, 'token', true, path), false, [...path, ".token"]),
+			groupId: expectString(extractEntry(jCpy, 'groupId', true, path), false, [...path, ".groupId"]),
+			groupName: expectString(extractEntry(jCpy, 'groupName', false, path), true, [...path, ".groupName"]),
 		})
 		if (!ignoreUnknownKeys) {
 			const unused = Object.keys(jCpy)

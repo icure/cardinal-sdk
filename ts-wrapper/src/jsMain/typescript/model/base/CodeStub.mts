@@ -46,14 +46,14 @@ export class CodeStub implements CodeIdentification<string | undefined> {
 		if (typeof json != 'object') throw new Error(`Expected json object at path ${path.join("")}`)
 		const jCpy = { ...json }
 		const res = new CodeStub({
-			id: expectString(extractEntry(jCpy.id, 'id', false, path), true, [...path, ".id"]),
-			context: expectString(extractEntry(jCpy.context, 'context', false, path), true, [...path, ".context"]),
-			type: expectString(extractEntry(jCpy.type, 'type', false, path), true, [...path, ".type"]),
-			code: expectString(extractEntry(jCpy.code, 'code', false, path), true, [...path, ".code"]),
-			version: expectString(extractEntry(jCpy.version, 'version', false, path), true, [...path, ".version"]),
-			contextLabel: expectString(extractEntry(jCpy.contextLabel, 'contextLabel', false, path), true, [...path, ".contextLabel"]),
+			id: expectString(extractEntry(jCpy, 'id', false, path), true, [...path, ".id"]),
+			context: expectString(extractEntry(jCpy, 'context', false, path), true, [...path, ".context"]),
+			type: expectString(extractEntry(jCpy, 'type', false, path), true, [...path, ".type"]),
+			code: expectString(extractEntry(jCpy, 'code', false, path), true, [...path, ".code"]),
+			version: expectString(extractEntry(jCpy, 'version', false, path), true, [...path, ".version"]),
+			contextLabel: expectString(extractEntry(jCpy, 'contextLabel', false, path), true, [...path, ".contextLabel"]),
 			label: expectMap(
-				extractEntry(jCpy.label, 'label', false, path),
+				extractEntry(jCpy, 'label', false, path),
 				true,
 				[...path, ".label"],
 				(k0, p0) => expectString(k0, false, p0),

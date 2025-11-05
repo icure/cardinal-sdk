@@ -26,8 +26,8 @@ export class Permission {
 		if (typeof json != 'object') throw new Error(`Expected json object at path ${path.join("")}`)
 		const jCpy = { ...json }
 		const res = new Permission({
-			grants: expectArray(extractEntry(jCpy.grants, 'grants', false, path), false, [...path, ".grants"], (x0, p0) => expectObject(x0, false, ignoreUnknownKeys, p0, PermissionItem.fromJSON)),
-			revokes: expectArray(extractEntry(jCpy.revokes, 'revokes', false, path), false, [...path, ".revokes"], (x0, p0) => expectObject(x0, false, ignoreUnknownKeys, p0, PermissionItem.fromJSON)),
+			grants: expectArray(extractEntry(jCpy, 'grants', false, path), false, [...path, ".grants"], (x0, p0) => expectObject(x0, false, ignoreUnknownKeys, p0, PermissionItem.fromJSON)),
+			revokes: expectArray(extractEntry(jCpy, 'revokes', false, path), false, [...path, ".revokes"], (x0, p0) => expectObject(x0, false, ignoreUnknownKeys, p0, PermissionItem.fromJSON)),
 		})
 		if (!ignoreUnknownKeys) {
 			const unused = Object.keys(jCpy)

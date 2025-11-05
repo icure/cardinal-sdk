@@ -34,10 +34,10 @@ export class Section {
 		if (typeof json != 'object') throw new Error(`Expected json object at path ${path.join("")}`)
 		const jCpy = { ...json }
 		const res = new Section({
-			section: expectString(extractEntry(jCpy.section, 'section', true, path), false, [...path, ".section"]),
-			fields: expectArray(extractEntry(jCpy.fields, 'fields', true, path), false, [...path, ".fields"], (x0, p0) => expectObject(x0, false, ignoreUnknownKeys, p0, StructureElement.fromJSON)),
-			description: expectString(extractEntry(jCpy.description, 'description', false, path), true, [...path, ".description"]),
-			keywords: expectArray(extractEntry(jCpy.keywords, 'keywords', false, path), true, [...path, ".keywords"], (x0, p0) => expectString(x0, false, p0)),
+			section: expectString(extractEntry(jCpy, 'section', true, path), false, [...path, ".section"]),
+			fields: expectArray(extractEntry(jCpy, 'fields', true, path), false, [...path, ".fields"], (x0, p0) => expectObject(x0, false, ignoreUnknownKeys, p0, StructureElement.fromJSON)),
+			description: expectString(extractEntry(jCpy, 'description', false, path), true, [...path, ".description"]),
+			keywords: expectArray(extractEntry(jCpy, 'keywords', false, path), true, [...path, ".keywords"], (x0, p0) => expectString(x0, false, p0)),
 		})
 		if (!ignoreUnknownKeys) {
 			const unused = Object.keys(jCpy)

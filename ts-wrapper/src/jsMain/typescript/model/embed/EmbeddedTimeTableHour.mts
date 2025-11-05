@@ -25,8 +25,8 @@ export class EmbeddedTimeTableHour {
 		if (typeof json != 'object') throw new Error(`Expected json object at path ${path.join("")}`)
 		const jCpy = { ...json }
 		const res = new EmbeddedTimeTableHour({
-			startHour: expectNumber(extractEntry(jCpy.startHour, 'startHour', true, path), false, true, [...path, ".startHour"]),
-			endHour: expectNumber(extractEntry(jCpy.endHour, 'endHour', true, path), false, true, [...path, ".endHour"]),
+			startHour: expectNumber(extractEntry(jCpy, 'startHour', true, path), false, true, [...path, ".startHour"]),
+			endHour: expectNumber(extractEntry(jCpy, 'endHour', true, path), false, true, [...path, ".endHour"]),
 		})
 		if (!ignoreUnknownKeys) {
 			const unused = Object.keys(jCpy)

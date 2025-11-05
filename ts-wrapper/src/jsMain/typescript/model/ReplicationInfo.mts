@@ -33,10 +33,10 @@ export class ReplicationInfo {
 		if (typeof json != 'object') throw new Error(`Expected json object at path ${path.join("")}`)
 		const jCpy = { ...json }
 		const res = new ReplicationInfo({
-			active: expectBoolean(extractEntry(jCpy.active, 'active', false, path), false, [...path, ".active"]),
-			running: expectBoolean(extractEntry(jCpy.running, 'running', false, path), false, [...path, ".running"]),
-			pendingFrom: expectNumber(extractEntry(jCpy.pendingFrom, 'pendingFrom', false, path), true, true, [...path, ".pendingFrom"]),
-			pendingTo: expectNumber(extractEntry(jCpy.pendingTo, 'pendingTo', false, path), true, true, [...path, ".pendingTo"]),
+			active: expectBoolean(extractEntry(jCpy, 'active', false, path), false, [...path, ".active"]),
+			running: expectBoolean(extractEntry(jCpy, 'running', false, path), false, [...path, ".running"]),
+			pendingFrom: expectNumber(extractEntry(jCpy, 'pendingFrom', false, path), true, true, [...path, ".pendingFrom"]),
+			pendingTo: expectNumber(extractEntry(jCpy, 'pendingTo', false, path), true, true, [...path, ".pendingTo"]),
 		})
 		if (!ignoreUnknownKeys) {
 			const unused = Object.keys(jCpy)

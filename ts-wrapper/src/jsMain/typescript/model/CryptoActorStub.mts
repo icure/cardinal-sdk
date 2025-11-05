@@ -57,6 +57,7 @@ export class CryptoActorStub implements Versionable<string>, CryptoActor {
 		res['publicKeysForOaepWithSha256'] = this.publicKeysForOaepWithSha256.map((x0) => x0 )
 		if (this.parentId != undefined) res['parentId'] = this.parentId
 		if (this.cryptoActorProperties != undefined) res['cryptoActorProperties'] = this.cryptoActorProperties.map((x0) => x0.toJSON() )
+		res['$ktClass'] = 'com.icure.cardinal.sdk.model.CryptoActorStub'
 		return res
 	}
 
@@ -64,18 +65,19 @@ export class CryptoActorStub implements Versionable<string>, CryptoActor {
 			path: Array<string> = ['CryptoActorStub']): CryptoActorStub {
 		if (typeof json != 'object') throw new Error(`Expected json object at path ${path.join("")}`)
 		const jCpy = { ...json }
+		if (extractEntry(jCpy, '\$ktClass', true, path) !== 'com.icure.cardinal.sdk.model.CryptoActorStub') throw new Error(`Unexpected value f+or ${path.join("")} class marker, should be "com.icure.cardinal.sdk.model.CryptoActorStub"`)
 		const res = new CryptoActorStub({
-			id: expectString(extractEntry(jCpy.id, 'id', true, path), false, [...path, ".id"]),
-			rev: expectString(extractEntry(jCpy.rev, 'rev', true, path), false, [...path, ".rev"]),
+			id: expectString(extractEntry(jCpy, 'id', true, path), false, [...path, ".id"]),
+			rev: expectString(extractEntry(jCpy, 'rev', true, path), false, [...path, ".rev"]),
 			hcPartyKeys: expectMap(
-				extractEntry(jCpy.hcPartyKeys, 'hcPartyKeys', false, path),
+				extractEntry(jCpy, 'hcPartyKeys', false, path),
 				false,
 				[...path, ".hcPartyKeys"],
 				(k0, p0) => expectString(k0, false, p0),
 				(v0, p0) => expectArray(v0, false, p0, (x1, p1) => expectString(x1, false, p1))
 			),
 			aesExchangeKeys: expectMap(
-				extractEntry(jCpy.aesExchangeKeys, 'aesExchangeKeys', false, path),
+				extractEntry(jCpy, 'aesExchangeKeys', false, path),
 				false,
 				[...path, ".aesExchangeKeys"],
 				(k0, p0) => expectString(k0, false, p0),
@@ -94,7 +96,7 @@ export class CryptoActorStub implements Versionable<string>, CryptoActor {
 				)
 			),
 			transferKeys: expectMap(
-				extractEntry(jCpy.transferKeys, 'transferKeys', false, path),
+				extractEntry(jCpy, 'transferKeys', false, path),
 				false,
 				[...path, ".transferKeys"],
 				(k0, p0) => expectString(k0, false, p0),
@@ -107,16 +109,16 @@ export class CryptoActorStub implements Versionable<string>, CryptoActor {
 				)
 			),
 			privateKeyShamirPartitions: expectMap(
-				extractEntry(jCpy.privateKeyShamirPartitions, 'privateKeyShamirPartitions', false, path),
+				extractEntry(jCpy, 'privateKeyShamirPartitions', false, path),
 				false,
 				[...path, ".privateKeyShamirPartitions"],
 				(k0, p0) => expectString(k0, false, p0),
 				(v0, p0) => expectString(v0, false, p0)
 			),
-			publicKey: expectString(extractEntry(jCpy.publicKey, 'publicKey', false, path), false, [...path, ".publicKey"]),
-			publicKeysForOaepWithSha256: expectArray(extractEntry(jCpy.publicKeysForOaepWithSha256, 'publicKeysForOaepWithSha256', true, path), false, [...path, ".publicKeysForOaepWithSha256"], (x0, p0) => expectString(x0, false, p0)),
-			parentId: expectString(extractEntry(jCpy.parentId, 'parentId', false, path), true, [...path, ".parentId"]),
-			cryptoActorProperties: expectArray(extractEntry(jCpy.cryptoActorProperties, 'cryptoActorProperties', false, path), true, [...path, ".cryptoActorProperties"], (x0, p0) => expectObject(x0, false, ignoreUnknownKeys, p0, DecryptedPropertyStub.fromJSON)),
+			publicKey: expectString(extractEntry(jCpy, 'publicKey', false, path), false, [...path, ".publicKey"]),
+			publicKeysForOaepWithSha256: expectArray(extractEntry(jCpy, 'publicKeysForOaepWithSha256', true, path), false, [...path, ".publicKeysForOaepWithSha256"], (x0, p0) => expectString(x0, false, p0)),
+			parentId: expectString(extractEntry(jCpy, 'parentId', false, path), true, [...path, ".parentId"]),
+			cryptoActorProperties: expectArray(extractEntry(jCpy, 'cryptoActorProperties', false, path), true, [...path, ".cryptoActorProperties"], (x0, p0) => expectObject(x0, false, ignoreUnknownKeys, p0, DecryptedPropertyStub.fromJSON)),
 		})
 		if (!ignoreUnknownKeys) {
 			const unused = Object.keys(jCpy)

@@ -19,6 +19,7 @@ export namespace AgendaSlottingAlgorithm {
 		toJSON(): any {
 			const res: { [k: string]: any } = {}
 			res['intervalMinutes'] = this.intervalMinutes
+			res['$ktClass'] = 'com.icure.cardinal.sdk.model.embed.AgendaSlottingAlgorithm.FixedIntervals'
 			return res
 		}
 
@@ -26,8 +27,9 @@ export namespace AgendaSlottingAlgorithm {
 				path: Array<string> = ['FixedIntervals']): FixedIntervals {
 			if (typeof json != 'object') throw new Error(`Expected json object at path ${path.join("")}`)
 			const jCpy = { ...json }
+			if (extractEntry(jCpy, '\$ktClass', true, path) !== 'com.icure.cardinal.sdk.model.embed.AgendaSlottingAlgorithm.FixedIntervals') throw new Error(`Unexpected value f+or ${path.join("")} class marker, should be "com.icure.cardinal.sdk.model.embed.AgendaSlottingAlgorithm.FixedIntervals"`)
 			const res = new FixedIntervals({
-				intervalMinutes: expectNumber(extractEntry(jCpy.intervalMinutes, 'intervalMinutes', true, path), false, true, [...path, ".intervalMinutes"]),
+				intervalMinutes: expectNumber(extractEntry(jCpy, 'intervalMinutes', true, path), false, true, [...path, ".intervalMinutes"]),
 			})
 			if (!ignoreUnknownKeys) {
 				const unused = Object.keys(jCpy)

@@ -26,8 +26,8 @@ export class Renewal {
 		if (typeof json != 'object') throw new Error(`Expected json object at path ${path.join("")}`)
 		const jCpy = { ...json }
 		const res = new Renewal({
-			decimal: expectNumber(extractEntry(jCpy.decimal, 'decimal', false, path), true, true, [...path, ".decimal"]),
-			duration: expectObject(extractEntry(jCpy.duration, 'duration', false, path), true, ignoreUnknownKeys, [...path, ".duration"], Duration.fromJSON),
+			decimal: expectNumber(extractEntry(jCpy, 'decimal', false, path), true, true, [...path, ".decimal"]),
+			duration: expectObject(extractEntry(jCpy, 'duration', false, path), true, ignoreUnknownKeys, [...path, ".duration"], Duration.fromJSON),
 		})
 		if (!ignoreUnknownKeys) {
 			const unused = Object.keys(jCpy)

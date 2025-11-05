@@ -21,7 +21,7 @@ export class ListOfIds {
 		if (typeof json != 'object') throw new Error(`Expected json object at path ${path.join("")}`)
 		const jCpy = { ...json }
 		const res = new ListOfIds({
-			ids: expectArray(extractEntry(jCpy.ids, 'ids', false, path), false, [...path, ".ids"], (x0, p0) => expectString(x0, false, p0)),
+			ids: expectArray(extractEntry(jCpy, 'ids', false, path), false, [...path, ".ids"], (x0, p0) => expectString(x0, false, p0)),
 		})
 		if (!ignoreUnknownKeys) {
 			const unused = Object.keys(jCpy)

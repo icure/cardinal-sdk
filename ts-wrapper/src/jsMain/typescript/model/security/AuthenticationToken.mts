@@ -33,10 +33,10 @@ export class AuthenticationToken {
 		if (typeof json != 'object') throw new Error(`Expected json object at path ${path.join("")}`)
 		const jCpy = { ...json }
 		const res = new AuthenticationToken({
-			token: expectString(extractEntry(jCpy.token, 'token', false, path), true, [...path, ".token"]),
-			creationTime: expectNumber(extractEntry(jCpy.creationTime, 'creationTime', true, path), false, true, [...path, ".creationTime"]),
-			validity: expectNumber(extractEntry(jCpy.validity, 'validity', true, path), false, true, [...path, ".validity"]),
-			deletionDate: expectNumber(extractEntry(jCpy.deletionDate, 'deletionDate', false, path), true, true, [...path, ".deletionDate"]),
+			token: expectString(extractEntry(jCpy, 'token', false, path), true, [...path, ".token"]),
+			creationTime: expectNumber(extractEntry(jCpy, 'creationTime', true, path), false, true, [...path, ".creationTime"]),
+			validity: expectNumber(extractEntry(jCpy, 'validity', true, path), false, true, [...path, ".validity"]),
+			deletionDate: expectNumber(extractEntry(jCpy, 'deletionDate', false, path), true, true, [...path, ".deletionDate"]),
 		})
 		if (!ignoreUnknownKeys) {
 			const unused = Object.keys(jCpy)

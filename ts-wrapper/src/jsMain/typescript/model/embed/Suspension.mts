@@ -33,10 +33,10 @@ export class Suspension {
 		if (typeof json != 'object') throw new Error(`Expected json object at path ${path.join("")}`)
 		const jCpy = { ...json }
 		const res = new Suspension({
-			beginMoment: expectNumber(extractEntry(jCpy.beginMoment, 'beginMoment', false, path), true, true, [...path, ".beginMoment"]),
-			endMoment: expectNumber(extractEntry(jCpy.endMoment, 'endMoment', false, path), true, true, [...path, ".endMoment"]),
-			suspensionReason: expectString(extractEntry(jCpy.suspensionReason, 'suspensionReason', false, path), true, [...path, ".suspensionReason"]),
-			lifecycle: expectString(extractEntry(jCpy.lifecycle, 'lifecycle', false, path), true, [...path, ".lifecycle"]),
+			beginMoment: expectNumber(extractEntry(jCpy, 'beginMoment', false, path), true, true, [...path, ".beginMoment"]),
+			endMoment: expectNumber(extractEntry(jCpy, 'endMoment', false, path), true, true, [...path, ".endMoment"]),
+			suspensionReason: expectString(extractEntry(jCpy, 'suspensionReason', false, path), true, [...path, ".suspensionReason"]),
+			lifecycle: expectString(extractEntry(jCpy, 'lifecycle', false, path), true, [...path, ".lifecycle"]),
 		})
 		if (!ignoreUnknownKeys) {
 			const unused = Object.keys(jCpy)

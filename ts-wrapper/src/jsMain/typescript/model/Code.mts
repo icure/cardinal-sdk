@@ -99,49 +99,49 @@ export class Code implements StoredDocument, CodeIdentification<string> {
 		if (typeof json != 'object') throw new Error(`Expected json object at path ${path.join("")}`)
 		const jCpy = { ...json }
 		const res = new Code({
-			id: expectString(extractEntry(jCpy.id, 'id', true, path), false, [...path, ".id"]),
-			rev: expectString(extractEntry(jCpy.rev, 'rev', false, path), true, [...path, ".rev"]),
-			deletionDate: expectNumber(extractEntry(jCpy.deletionDate, 'deletionDate', false, path), true, true, [...path, ".deletionDate"]),
-			context: expectString(extractEntry(jCpy.context, 'context', false, path), true, [...path, ".context"]),
-			type: expectString(extractEntry(jCpy.type, 'type', false, path), true, [...path, ".type"]),
-			code: expectString(extractEntry(jCpy.code, 'code', false, path), true, [...path, ".code"]),
-			version: expectString(extractEntry(jCpy.version, 'version', false, path), true, [...path, ".version"]),
+			id: expectString(extractEntry(jCpy, 'id', true, path), false, [...path, ".id"]),
+			rev: expectString(extractEntry(jCpy, 'rev', false, path), true, [...path, ".rev"]),
+			deletionDate: expectNumber(extractEntry(jCpy, 'deletionDate', false, path), true, true, [...path, ".deletionDate"]),
+			context: expectString(extractEntry(jCpy, 'context', false, path), true, [...path, ".context"]),
+			type: expectString(extractEntry(jCpy, 'type', false, path), true, [...path, ".type"]),
+			code: expectString(extractEntry(jCpy, 'code', false, path), true, [...path, ".code"]),
+			version: expectString(extractEntry(jCpy, 'version', false, path), true, [...path, ".version"]),
 			label: expectMap(
-				extractEntry(jCpy.label, 'label', false, path),
+				extractEntry(jCpy, 'label', false, path),
 				true,
 				[...path, ".label"],
 				(k0, p0) => expectString(k0, false, p0),
 				(v0, p0) => expectString(v0, false, p0)
 			),
-			author: expectString(extractEntry(jCpy.author, 'author', false, path), true, [...path, ".author"]),
-			regions: expectArray(extractEntry(jCpy.regions, 'regions', false, path), false, [...path, ".regions"], (x0, p0) => expectString(x0, false, p0)),
-			periodicity: expectArray(extractEntry(jCpy.periodicity, 'periodicity', false, path), false, [...path, ".periodicity"], (x0, p0) => expectObject(x0, false, ignoreUnknownKeys, p0, Periodicity.fromJSON)),
-			level: expectNumber(extractEntry(jCpy.level, 'level', false, path), true, true, [...path, ".level"]),
-			links: expectArray(extractEntry(jCpy.links, 'links', false, path), false, [...path, ".links"], (x0, p0) => expectString(x0, false, p0)),
+			author: expectString(extractEntry(jCpy, 'author', false, path), true, [...path, ".author"]),
+			regions: expectArray(extractEntry(jCpy, 'regions', false, path), false, [...path, ".regions"], (x0, p0) => expectString(x0, false, p0)),
+			periodicity: expectArray(extractEntry(jCpy, 'periodicity', false, path), false, [...path, ".periodicity"], (x0, p0) => expectObject(x0, false, ignoreUnknownKeys, p0, Periodicity.fromJSON)),
+			level: expectNumber(extractEntry(jCpy, 'level', false, path), true, true, [...path, ".level"]),
+			links: expectArray(extractEntry(jCpy, 'links', false, path), false, [...path, ".links"], (x0, p0) => expectString(x0, false, p0)),
 			qualifiedLinks: expectMap(
-				extractEntry(jCpy.qualifiedLinks, 'qualifiedLinks', false, path),
+				extractEntry(jCpy, 'qualifiedLinks', false, path),
 				false,
 				[...path, ".qualifiedLinks"],
 				(k0, p0) => expectString(k0, false, p0),
 				(v0, p0) => expectArray(v0, false, p0, (x1, p1) => expectString(x1, false, p1))
 			),
-			flags: expectArray(extractEntry(jCpy.flags, 'flags', false, path), false, [...path, ".flags"], (x0, p0) => expectStringEnum(x0, false, p0, CodeFlag, 'CodeFlag')),
+			flags: expectArray(extractEntry(jCpy, 'flags', false, path), false, [...path, ".flags"], (x0, p0) => expectStringEnum(x0, false, p0, CodeFlag, 'CodeFlag')),
 			searchTerms: expectMap(
-				extractEntry(jCpy.searchTerms, 'searchTerms', false, path),
+				extractEntry(jCpy, 'searchTerms', false, path),
 				false,
 				[...path, ".searchTerms"],
 				(k0, p0) => expectString(k0, false, p0),
 				(v0, p0) => expectArray(v0, false, p0, (x1, p1) => expectString(x1, false, p1))
 			),
-			data: expectString(extractEntry(jCpy.data, 'data', false, path), true, [...path, ".data"]),
+			data: expectString(extractEntry(jCpy, 'data', false, path), true, [...path, ".data"]),
 			appendices: expectMap(
-				extractEntry(jCpy.appendices, 'appendices', false, path),
+				extractEntry(jCpy, 'appendices', false, path),
 				false,
 				[...path, ".appendices"],
 				(k0, p0) => expectStringEnum(k0, false, p0, AppendixType, 'AppendixType'),
 				(v0, p0) => expectString(v0, false, p0)
 			),
-			disabled: expectBoolean(extractEntry(jCpy.disabled, 'disabled', false, path), false, [...path, ".disabled"]),
+			disabled: expectBoolean(extractEntry(jCpy, 'disabled', false, path), false, [...path, ".disabled"]),
 		})
 		if (!ignoreUnknownKeys) {
 			const unused = Object.keys(jCpy)

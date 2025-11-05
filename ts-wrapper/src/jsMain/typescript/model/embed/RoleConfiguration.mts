@@ -25,8 +25,8 @@ export class RoleConfiguration {
 		if (typeof json != 'object') throw new Error(`Expected json object at path ${path.join("")}`)
 		const jCpy = { ...json }
 		const res = new RoleConfiguration({
-			source: expectStringEnum(extractEntry(jCpy.source, 'source', true, path), false, [...path, ".source"], RoleConfiguration.Source, 'RoleConfiguration.Source'),
-			roles: expectArray(extractEntry(jCpy.roles, 'roles', false, path), false, [...path, ".roles"], (x0, p0) => expectString(x0, false, p0)),
+			source: expectStringEnum(extractEntry(jCpy, 'source', true, path), false, [...path, ".source"], RoleConfiguration.Source, 'RoleConfiguration.Source'),
+			roles: expectArray(extractEntry(jCpy, 'roles', false, path), false, [...path, ".roles"], (x0, p0) => expectString(x0, false, p0)),
 		})
 		if (!ignoreUnknownKeys) {
 			const unused = Object.keys(jCpy)

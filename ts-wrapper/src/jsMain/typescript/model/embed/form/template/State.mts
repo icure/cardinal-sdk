@@ -30,9 +30,9 @@ export class State {
 		if (typeof json != 'object') throw new Error(`Expected json object at path ${path.join("")}`)
 		const jCpy = { ...json }
 		const res = new State({
-			name: expectString(extractEntry(jCpy.name, 'name', true, path), false, [...path, ".name"]),
-			stateToUpdate: expectStringEnum(extractEntry(jCpy.stateToUpdate, 'stateToUpdate', true, path), false, [...path, ".stateToUpdate"], StateToUpdate, 'StateToUpdate'),
-			canLaunchLauncher: expectBoolean(extractEntry(jCpy.canLaunchLauncher, 'canLaunchLauncher', false, path), false, [...path, ".canLaunchLauncher"]),
+			name: expectString(extractEntry(jCpy, 'name', true, path), false, [...path, ".name"]),
+			stateToUpdate: expectStringEnum(extractEntry(jCpy, 'stateToUpdate', true, path), false, [...path, ".stateToUpdate"], StateToUpdate, 'StateToUpdate'),
+			canLaunchLauncher: expectBoolean(extractEntry(jCpy, 'canLaunchLauncher', false, path), false, [...path, ".canLaunchLauncher"]),
 		})
 		if (!ignoreUnknownKeys) {
 			const unused = Object.keys(jCpy)

@@ -22,7 +22,7 @@ export class RemoteAuthentication {
 		if (typeof json != 'object') throw new Error(`Expected json object at path ${path.join("")}`)
 		const jCpy = { ...json }
 		const res = new RemoteAuthentication({
-			basic: expectObject(extractEntry(jCpy.basic, 'basic', false, path), true, ignoreUnknownKeys, [...path, ".basic"], Basic.fromJSON),
+			basic: expectObject(extractEntry(jCpy, 'basic', false, path), true, ignoreUnknownKeys, [...path, ".basic"], Basic.fromJSON),
 		})
 		if (!ignoreUnknownKeys) {
 			const unused = Object.keys(jCpy)

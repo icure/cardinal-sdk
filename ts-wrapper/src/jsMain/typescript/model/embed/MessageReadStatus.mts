@@ -25,8 +25,8 @@ export class MessageReadStatus {
 		if (typeof json != 'object') throw new Error(`Expected json object at path ${path.join("")}`)
 		const jCpy = { ...json }
 		const res = new MessageReadStatus({
-			time: expectNumber(extractEntry(jCpy.time, 'time', false, path), true, true, [...path, ".time"]),
-			read: expectBoolean(extractEntry(jCpy.read, 'read', false, path), false, [...path, ".read"]),
+			time: expectNumber(extractEntry(jCpy, 'time', false, path), true, true, [...path, ".time"]),
+			read: expectBoolean(extractEntry(jCpy, 'read', false, path), false, [...path, ".read"]),
 		})
 		if (!ignoreUnknownKeys) {
 			const unused = Object.keys(jCpy)

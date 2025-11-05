@@ -98,48 +98,48 @@ export class Group implements StoredDocument, HasTags {
 		if (typeof json != 'object') throw new Error(`Expected json object at path ${path.join("")}`)
 		const jCpy = { ...json }
 		const res = new Group({
-			id: expectString(extractEntry(jCpy.id, 'id', true, path), false, [...path, ".id"]),
-			rev: expectString(extractEntry(jCpy.rev, 'rev', false, path), true, [...path, ".rev"]),
-			deletionDate: expectNumber(extractEntry(jCpy.deletionDate, 'deletionDate', false, path), true, true, [...path, ".deletionDate"]),
-			tags: expectArray(extractEntry(jCpy.tags, 'tags', false, path), false, [...path, ".tags"], (x0, p0) => expectObject(x0, false, ignoreUnknownKeys, p0, CodeStub.fromJSON)),
-			publicTags: expectArray(extractEntry(jCpy.publicTags, 'publicTags', false, path), false, [...path, ".publicTags"], (x0, p0) => expectObject(x0, false, ignoreUnknownKeys, p0, CodeStub.fromJSON)),
-			name: expectString(extractEntry(jCpy.name, 'name', false, path), true, [...path, ".name"]),
-			password: expectString(extractEntry(jCpy.password, 'password', false, path), true, [...path, ".password"]),
-			servers: expectArray(extractEntry(jCpy.servers, 'servers', false, path), true, [...path, ".servers"], (x0, p0) => expectString(x0, false, p0)),
-			superAdmin: expectBoolean(extractEntry(jCpy.superAdmin, 'superAdmin', false, path), false, [...path, ".superAdmin"]),
-			properties: expectArray(extractEntry(jCpy.properties, 'properties', false, path), false, [...path, ".properties"], (x0, p0) => expectObject(x0, false, ignoreUnknownKeys, p0, DecryptedPropertyStub.fromJSON)),
+			id: expectString(extractEntry(jCpy, 'id', true, path), false, [...path, ".id"]),
+			rev: expectString(extractEntry(jCpy, 'rev', false, path), true, [...path, ".rev"]),
+			deletionDate: expectNumber(extractEntry(jCpy, 'deletionDate', false, path), true, true, [...path, ".deletionDate"]),
+			tags: expectArray(extractEntry(jCpy, 'tags', false, path), false, [...path, ".tags"], (x0, p0) => expectObject(x0, false, ignoreUnknownKeys, p0, CodeStub.fromJSON)),
+			publicTags: expectArray(extractEntry(jCpy, 'publicTags', false, path), false, [...path, ".publicTags"], (x0, p0) => expectObject(x0, false, ignoreUnknownKeys, p0, CodeStub.fromJSON)),
+			name: expectString(extractEntry(jCpy, 'name', false, path), true, [...path, ".name"]),
+			password: expectString(extractEntry(jCpy, 'password', false, path), true, [...path, ".password"]),
+			servers: expectArray(extractEntry(jCpy, 'servers', false, path), true, [...path, ".servers"], (x0, p0) => expectString(x0, false, p0)),
+			superAdmin: expectBoolean(extractEntry(jCpy, 'superAdmin', false, path), false, [...path, ".superAdmin"]),
+			properties: expectArray(extractEntry(jCpy, 'properties', false, path), false, [...path, ".properties"], (x0, p0) => expectObject(x0, false, ignoreUnknownKeys, p0, DecryptedPropertyStub.fromJSON)),
 			defaultUserRoles: expectMap(
-				extractEntry(jCpy.defaultUserRoles, 'defaultUserRoles', false, path),
+				extractEntry(jCpy, 'defaultUserRoles', false, path),
 				false,
 				[...path, ".defaultUserRoles"],
 				(k0, p0) => expectStringEnum(k0, false, p0, UserType, 'UserType'),
 				(v0, p0) => expectArray(v0, false, p0, (x1, p1) => expectString(x1, false, p1))
 			),
 			operationTokens: expectMap(
-				extractEntry(jCpy.operationTokens, 'operationTokens', false, path),
+				extractEntry(jCpy, 'operationTokens', false, path),
 				false,
 				[...path, ".operationTokens"],
 				(k0, p0) => expectString(k0, false, p0),
 				(v0, p0) => expectObject(v0, false, ignoreUnknownKeys, p0, OperationToken.fromJSON)
 			),
 			sharedEntities: expectMap(
-				extractEntry(jCpy.sharedEntities, 'sharedEntities', false, path),
+				extractEntry(jCpy, 'sharedEntities', false, path),
 				false,
 				[...path, ".sharedEntities"],
 				(k0, p0) => expectString(k0, false, p0),
 				(v0, p0) => expectString(v0, false, p0)
 			),
-			minimumKrakenVersion: expectString(extractEntry(jCpy.minimumKrakenVersion, 'minimumKrakenVersion', false, path), true, [...path, ".minimumKrakenVersion"]),
+			minimumKrakenVersion: expectString(extractEntry(jCpy, 'minimumKrakenVersion', false, path), true, [...path, ".minimumKrakenVersion"]),
 			externalJwtConfig: expectMap(
-				extractEntry(jCpy.externalJwtConfig, 'externalJwtConfig', false, path),
+				extractEntry(jCpy, 'externalJwtConfig', false, path),
 				false,
 				[...path, ".externalJwtConfig"],
 				(k0, p0) => expectString(k0, false, p0),
 				(v0, p0) => expectObject(v0, false, ignoreUnknownKeys, p0, ExternalJwtConfig.fromJSON)
 			),
-			minimumAuthenticationClassForElevatedPrivileges: expectStringEnum(extractEntry(jCpy.minimumAuthenticationClassForElevatedPrivileges, 'minimumAuthenticationClassForElevatedPrivileges', true, path), false, [...path, ".minimumAuthenticationClassForElevatedPrivileges"], AuthenticationClass, 'AuthenticationClass'),
-			superGroup: expectString(extractEntry(jCpy.superGroup, 'superGroup', false, path), true, [...path, ".superGroup"]),
-			applicationId: expectString(extractEntry(jCpy.applicationId, 'applicationId', false, path), true, [...path, ".applicationId"]),
+			minimumAuthenticationClassForElevatedPrivileges: expectStringEnum(extractEntry(jCpy, 'minimumAuthenticationClassForElevatedPrivileges', true, path), false, [...path, ".minimumAuthenticationClassForElevatedPrivileges"], AuthenticationClass, 'AuthenticationClass'),
+			superGroup: expectString(extractEntry(jCpy, 'superGroup', false, path), true, [...path, ".superGroup"]),
+			applicationId: expectString(extractEntry(jCpy, 'applicationId', false, path), true, [...path, ".applicationId"]),
 		})
 		if (!ignoreUnknownKeys) {
 			const unused = Object.keys(jCpy)

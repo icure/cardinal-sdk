@@ -50,6 +50,7 @@ export class DecryptedEmploymentInfo {
 		if (this.professionType != undefined) res['professionType'] = this.professionType.toJSON()
 		if (this.employer != undefined) res['employer'] = this.employer.toJSON()
 		if (this.encryptedSelf != undefined) res['encryptedSelf'] = this.encryptedSelf
+		res['isEncrypted'] = false
 		return res
 	}
 
@@ -57,12 +58,13 @@ export class DecryptedEmploymentInfo {
 			path: Array<string> = ['DecryptedEmploymentInfo']): DecryptedEmploymentInfo {
 		if (typeof json != 'object') throw new Error(`Expected json object at path ${path.join("")}`)
 		const jCpy = { ...json }
+		if (extractEntry(jCpy, "isEncrypted", true, path) !== false) throw new Error(`Unexpected value for ${path.join("")} isEncrypted marker, should be false`)
 		const res = new DecryptedEmploymentInfo({
-			startDate: expectNumber(extractEntry(jCpy.startDate, 'startDate', false, path), true, true, [...path, ".startDate"]),
-			endDate: expectNumber(extractEntry(jCpy.endDate, 'endDate', false, path), true, true, [...path, ".endDate"]),
-			professionType: expectObject(extractEntry(jCpy.professionType, 'professionType', false, path), true, ignoreUnknownKeys, [...path, ".professionType"], CodeStub.fromJSON),
-			employer: expectObject(extractEntry(jCpy.employer, 'employer', false, path), true, ignoreUnknownKeys, [...path, ".employer"], Employer.fromJSON),
-			encryptedSelf: expectString(extractEntry(jCpy.encryptedSelf, 'encryptedSelf', false, path), false, [...path, ".encryptedSelf"]),
+			startDate: expectNumber(extractEntry(jCpy, 'startDate', false, path), true, true, [...path, ".startDate"]),
+			endDate: expectNumber(extractEntry(jCpy, 'endDate', false, path), true, true, [...path, ".endDate"]),
+			professionType: expectObject(extractEntry(jCpy, 'professionType', false, path), true, ignoreUnknownKeys, [...path, ".professionType"], CodeStub.fromJSON),
+			employer: expectObject(extractEntry(jCpy, 'employer', false, path), true, ignoreUnknownKeys, [...path, ".employer"], Employer.fromJSON),
+			encryptedSelf: expectString(extractEntry(jCpy, 'encryptedSelf', false, path), false, [...path, ".encryptedSelf"]),
 		})
 		if (!ignoreUnknownKeys) {
 			const unused = Object.keys(jCpy)
@@ -102,6 +104,7 @@ export class EncryptedEmploymentInfo {
 		if (this.professionType != undefined) res['professionType'] = this.professionType.toJSON()
 		if (this.employer != undefined) res['employer'] = this.employer.toJSON()
 		if (this.encryptedSelf != undefined) res['encryptedSelf'] = this.encryptedSelf
+		res['isEncrypted'] = true
 		return res
 	}
 
@@ -109,12 +112,13 @@ export class EncryptedEmploymentInfo {
 			path: Array<string> = ['EncryptedEmploymentInfo']): EncryptedEmploymentInfo {
 		if (typeof json != 'object') throw new Error(`Expected json object at path ${path.join("")}`)
 		const jCpy = { ...json }
+		if (extractEntry(jCpy, "isEncrypted", true, path) !== true) throw new Error(`Unexpected value for ${path.join("")} isEncrypted marker, should be true`)
 		const res = new EncryptedEmploymentInfo({
-			startDate: expectNumber(extractEntry(jCpy.startDate, 'startDate', false, path), true, true, [...path, ".startDate"]),
-			endDate: expectNumber(extractEntry(jCpy.endDate, 'endDate', false, path), true, true, [...path, ".endDate"]),
-			professionType: expectObject(extractEntry(jCpy.professionType, 'professionType', false, path), true, ignoreUnknownKeys, [...path, ".professionType"], CodeStub.fromJSON),
-			employer: expectObject(extractEntry(jCpy.employer, 'employer', false, path), true, ignoreUnknownKeys, [...path, ".employer"], Employer.fromJSON),
-			encryptedSelf: expectString(extractEntry(jCpy.encryptedSelf, 'encryptedSelf', false, path), false, [...path, ".encryptedSelf"]),
+			startDate: expectNumber(extractEntry(jCpy, 'startDate', false, path), true, true, [...path, ".startDate"]),
+			endDate: expectNumber(extractEntry(jCpy, 'endDate', false, path), true, true, [...path, ".endDate"]),
+			professionType: expectObject(extractEntry(jCpy, 'professionType', false, path), true, ignoreUnknownKeys, [...path, ".professionType"], CodeStub.fromJSON),
+			employer: expectObject(extractEntry(jCpy, 'employer', false, path), true, ignoreUnknownKeys, [...path, ".employer"], Employer.fromJSON),
+			encryptedSelf: expectString(extractEntry(jCpy, 'encryptedSelf', false, path), false, [...path, ".encryptedSelf"]),
 		})
 		if (!ignoreUnknownKeys) {
 			const unused = Object.keys(jCpy)

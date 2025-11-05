@@ -21,7 +21,7 @@ export class BooleanResponse {
 		if (typeof json != 'object') throw new Error(`Expected json object at path ${path.join("")}`)
 		const jCpy = { ...json }
 		const res = new BooleanResponse({
-			response: expectBoolean(extractEntry(jCpy.response, 'response', true, path), false, [...path, ".response"]),
+			response: expectBoolean(extractEntry(jCpy, 'response', true, path), false, [...path, ".response"]),
 		})
 		if (!ignoreUnknownKeys) {
 			const unused = Object.keys(jCpy)

@@ -50,6 +50,7 @@ export class DecryptedPropertyStub {
 		if (this.typedValue != undefined) res['typedValue'] = this.typedValue.toJSON()
 		if (this.deletionDate != undefined) res['deletionDate'] = this.deletionDate
 		if (this.encryptedSelf != undefined) res['encryptedSelf'] = this.encryptedSelf
+		res['isEncrypted'] = false
 		return res
 	}
 
@@ -57,12 +58,13 @@ export class DecryptedPropertyStub {
 			path: Array<string> = ['DecryptedPropertyStub']): DecryptedPropertyStub {
 		if (typeof json != 'object') throw new Error(`Expected json object at path ${path.join("")}`)
 		const jCpy = { ...json }
+		if (extractEntry(jCpy, "isEncrypted", true, path) !== false) throw new Error(`Unexpected value for ${path.join("")} isEncrypted marker, should be false`)
 		const res = new DecryptedPropertyStub({
-			id: expectString(extractEntry(jCpy.id, 'id', false, path), true, [...path, ".id"]),
-			type: expectObject(extractEntry(jCpy.type, 'type', false, path), true, ignoreUnknownKeys, [...path, ".type"], PropertyTypeStub.fromJSON),
-			typedValue: expectObject(extractEntry(jCpy.typedValue, 'typedValue', false, path), true, ignoreUnknownKeys, [...path, ".typedValue"], DecryptedTypedValue.fromJSON),
-			deletionDate: expectNumber(extractEntry(jCpy.deletionDate, 'deletionDate', false, path), true, true, [...path, ".deletionDate"]),
-			encryptedSelf: expectString(extractEntry(jCpy.encryptedSelf, 'encryptedSelf', false, path), false, [...path, ".encryptedSelf"]),
+			id: expectString(extractEntry(jCpy, 'id', false, path), true, [...path, ".id"]),
+			type: expectObject(extractEntry(jCpy, 'type', false, path), true, ignoreUnknownKeys, [...path, ".type"], PropertyTypeStub.fromJSON),
+			typedValue: expectObject(extractEntry(jCpy, 'typedValue', false, path), true, ignoreUnknownKeys, [...path, ".typedValue"], DecryptedTypedValue.fromJSON),
+			deletionDate: expectNumber(extractEntry(jCpy, 'deletionDate', false, path), true, true, [...path, ".deletionDate"]),
+			encryptedSelf: expectString(extractEntry(jCpy, 'encryptedSelf', false, path), false, [...path, ".encryptedSelf"]),
 		})
 		if (!ignoreUnknownKeys) {
 			const unused = Object.keys(jCpy)
@@ -102,6 +104,7 @@ export class EncryptedPropertyStub {
 		if (this.typedValue != undefined) res['typedValue'] = this.typedValue.toJSON()
 		if (this.deletionDate != undefined) res['deletionDate'] = this.deletionDate
 		if (this.encryptedSelf != undefined) res['encryptedSelf'] = this.encryptedSelf
+		res['isEncrypted'] = true
 		return res
 	}
 
@@ -109,12 +112,13 @@ export class EncryptedPropertyStub {
 			path: Array<string> = ['EncryptedPropertyStub']): EncryptedPropertyStub {
 		if (typeof json != 'object') throw new Error(`Expected json object at path ${path.join("")}`)
 		const jCpy = { ...json }
+		if (extractEntry(jCpy, "isEncrypted", true, path) !== true) throw new Error(`Unexpected value for ${path.join("")} isEncrypted marker, should be true`)
 		const res = new EncryptedPropertyStub({
-			id: expectString(extractEntry(jCpy.id, 'id', false, path), true, [...path, ".id"]),
-			type: expectObject(extractEntry(jCpy.type, 'type', false, path), true, ignoreUnknownKeys, [...path, ".type"], PropertyTypeStub.fromJSON),
-			typedValue: expectObject(extractEntry(jCpy.typedValue, 'typedValue', false, path), true, ignoreUnknownKeys, [...path, ".typedValue"], EncryptedTypedValue.fromJSON),
-			deletionDate: expectNumber(extractEntry(jCpy.deletionDate, 'deletionDate', false, path), true, true, [...path, ".deletionDate"]),
-			encryptedSelf: expectString(extractEntry(jCpy.encryptedSelf, 'encryptedSelf', false, path), false, [...path, ".encryptedSelf"]),
+			id: expectString(extractEntry(jCpy, 'id', false, path), true, [...path, ".id"]),
+			type: expectObject(extractEntry(jCpy, 'type', false, path), true, ignoreUnknownKeys, [...path, ".type"], PropertyTypeStub.fromJSON),
+			typedValue: expectObject(extractEntry(jCpy, 'typedValue', false, path), true, ignoreUnknownKeys, [...path, ".typedValue"], EncryptedTypedValue.fromJSON),
+			deletionDate: expectNumber(extractEntry(jCpy, 'deletionDate', false, path), true, true, [...path, ".deletionDate"]),
+			encryptedSelf: expectString(extractEntry(jCpy, 'encryptedSelf', false, path), false, [...path, ".encryptedSelf"]),
 		})
 		if (!ignoreUnknownKeys) {
 			const unused = Object.keys(jCpy)

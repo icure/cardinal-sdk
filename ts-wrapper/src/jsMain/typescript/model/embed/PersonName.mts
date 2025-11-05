@@ -50,14 +50,14 @@ export class PersonName {
 		if (typeof json != 'object') throw new Error(`Expected json object at path ${path.join("")}`)
 		const jCpy = { ...json }
 		const res = new PersonName({
-			lastName: expectString(extractEntry(jCpy.lastName, 'lastName', false, path), true, [...path, ".lastName"]),
-			firstNames: expectArray(extractEntry(jCpy.firstNames, 'firstNames', false, path), false, [...path, ".firstNames"], (x0, p0) => expectString(x0, false, p0)),
-			start: expectNumber(extractEntry(jCpy.start, 'start', false, path), true, true, [...path, ".start"]),
-			end: expectNumber(extractEntry(jCpy.end, 'end', false, path), true, true, [...path, ".end"]),
-			prefix: expectArray(extractEntry(jCpy.prefix, 'prefix', false, path), false, [...path, ".prefix"], (x0, p0) => expectString(x0, false, p0)),
-			suffix: expectArray(extractEntry(jCpy.suffix, 'suffix', false, path), false, [...path, ".suffix"], (x0, p0) => expectString(x0, false, p0)),
-			text: expectString(extractEntry(jCpy.text, 'text', false, path), true, [...path, ".text"]),
-			use: expectStringEnum(extractEntry(jCpy.use, 'use', false, path), true, [...path, ".use"], PersonNameUse, 'PersonNameUse'),
+			lastName: expectString(extractEntry(jCpy, 'lastName', false, path), true, [...path, ".lastName"]),
+			firstNames: expectArray(extractEntry(jCpy, 'firstNames', false, path), false, [...path, ".firstNames"], (x0, p0) => expectString(x0, false, p0)),
+			start: expectNumber(extractEntry(jCpy, 'start', false, path), true, true, [...path, ".start"]),
+			end: expectNumber(extractEntry(jCpy, 'end', false, path), true, true, [...path, ".end"]),
+			prefix: expectArray(extractEntry(jCpy, 'prefix', false, path), false, [...path, ".prefix"], (x0, p0) => expectString(x0, false, p0)),
+			suffix: expectArray(extractEntry(jCpy, 'suffix', false, path), false, [...path, ".suffix"], (x0, p0) => expectString(x0, false, p0)),
+			text: expectString(extractEntry(jCpy, 'text', false, path), true, [...path, ".text"]),
+			use: expectStringEnum(extractEntry(jCpy, 'use', false, path), true, [...path, ".use"], PersonNameUse, 'PersonNameUse'),
 		})
 		if (!ignoreUnknownKeys) {
 			const unused = Object.keys(jCpy)

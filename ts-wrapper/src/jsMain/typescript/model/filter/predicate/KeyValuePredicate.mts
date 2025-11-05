@@ -24,6 +24,7 @@ export class KeyValuePredicate {
 		if (this.key != undefined) res['key'] = this.key
 		if (this.operator != undefined) res['operator'] = this.operator
 		if (this.value != undefined) res['value'] = this.value
+		res['$ktClass'] = 'com.icure.cardinal.sdk.model.filter.predicate.KeyValuePredicate'
 		return res
 	}
 
@@ -31,10 +32,11 @@ export class KeyValuePredicate {
 			path: Array<string> = ['KeyValuePredicate']): KeyValuePredicate {
 		if (typeof json != 'object') throw new Error(`Expected json object at path ${path.join("")}`)
 		const jCpy = { ...json }
+		if (extractEntry(jCpy, '\$ktClass', true, path) !== 'com.icure.cardinal.sdk.model.filter.predicate.KeyValuePredicate') throw new Error(`Unexpected value f+or ${path.join("")} class marker, should be "com.icure.cardinal.sdk.model.filter.predicate.KeyValuePredicate"`)
 		const res = new KeyValuePredicate({
-			key: expectString(extractEntry(jCpy.key, 'key', false, path), true, [...path, ".key"]),
-			operator: expectStringEnum(extractEntry(jCpy.operator, 'operator', false, path), true, [...path, ".operator"], Operator, 'Operator'),
-			value: extractEntry(jCpy.value, 'value', false, path),
+			key: expectString(extractEntry(jCpy, 'key', false, path), true, [...path, ".key"]),
+			operator: expectStringEnum(extractEntry(jCpy, 'operator', false, path), true, [...path, ".operator"], Operator, 'Operator'),
+			value: extractEntry(jCpy, 'value', false, path),
 		})
 		if (!ignoreUnknownKeys) {
 			const unused = Object.keys(jCpy)

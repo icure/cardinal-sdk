@@ -48,6 +48,7 @@ export class DecryptedCalendarItemTag {
 		if (this.userId != undefined) res['userId'] = this.userId
 		if (this.userName != undefined) res['userName'] = this.userName
 		if (this.encryptedSelf != undefined) res['encryptedSelf'] = this.encryptedSelf
+		res['isEncrypted'] = false
 		return res
 	}
 
@@ -55,12 +56,13 @@ export class DecryptedCalendarItemTag {
 			path: Array<string> = ['DecryptedCalendarItemTag']): DecryptedCalendarItemTag {
 		if (typeof json != 'object') throw new Error(`Expected json object at path ${path.join("")}`)
 		const jCpy = { ...json }
+		if (extractEntry(jCpy, "isEncrypted", true, path) !== false) throw new Error(`Unexpected value for ${path.join("")} isEncrypted marker, should be false`)
 		const res = new DecryptedCalendarItemTag({
-			code: expectString(extractEntry(jCpy.code, 'code', false, path), true, [...path, ".code"]),
-			date: expectNumber(extractEntry(jCpy.date, 'date', false, path), true, true, [...path, ".date"]),
-			userId: expectString(extractEntry(jCpy.userId, 'userId', false, path), true, [...path, ".userId"]),
-			userName: expectString(extractEntry(jCpy.userName, 'userName', false, path), true, [...path, ".userName"]),
-			encryptedSelf: expectString(extractEntry(jCpy.encryptedSelf, 'encryptedSelf', false, path), false, [...path, ".encryptedSelf"]),
+			code: expectString(extractEntry(jCpy, 'code', false, path), true, [...path, ".code"]),
+			date: expectNumber(extractEntry(jCpy, 'date', false, path), true, true, [...path, ".date"]),
+			userId: expectString(extractEntry(jCpy, 'userId', false, path), true, [...path, ".userId"]),
+			userName: expectString(extractEntry(jCpy, 'userName', false, path), true, [...path, ".userName"]),
+			encryptedSelf: expectString(extractEntry(jCpy, 'encryptedSelf', false, path), false, [...path, ".encryptedSelf"]),
 		})
 		if (!ignoreUnknownKeys) {
 			const unused = Object.keys(jCpy)
@@ -100,6 +102,7 @@ export class EncryptedCalendarItemTag {
 		if (this.userId != undefined) res['userId'] = this.userId
 		if (this.userName != undefined) res['userName'] = this.userName
 		if (this.encryptedSelf != undefined) res['encryptedSelf'] = this.encryptedSelf
+		res['isEncrypted'] = true
 		return res
 	}
 
@@ -107,12 +110,13 @@ export class EncryptedCalendarItemTag {
 			path: Array<string> = ['EncryptedCalendarItemTag']): EncryptedCalendarItemTag {
 		if (typeof json != 'object') throw new Error(`Expected json object at path ${path.join("")}`)
 		const jCpy = { ...json }
+		if (extractEntry(jCpy, "isEncrypted", true, path) !== true) throw new Error(`Unexpected value for ${path.join("")} isEncrypted marker, should be true`)
 		const res = new EncryptedCalendarItemTag({
-			code: expectString(extractEntry(jCpy.code, 'code', false, path), true, [...path, ".code"]),
-			date: expectNumber(extractEntry(jCpy.date, 'date', false, path), true, true, [...path, ".date"]),
-			userId: expectString(extractEntry(jCpy.userId, 'userId', false, path), true, [...path, ".userId"]),
-			userName: expectString(extractEntry(jCpy.userName, 'userName', false, path), true, [...path, ".userName"]),
-			encryptedSelf: expectString(extractEntry(jCpy.encryptedSelf, 'encryptedSelf', false, path), false, [...path, ".encryptedSelf"]),
+			code: expectString(extractEntry(jCpy, 'code', false, path), true, [...path, ".code"]),
+			date: expectNumber(extractEntry(jCpy, 'date', false, path), true, true, [...path, ".date"]),
+			userId: expectString(extractEntry(jCpy, 'userId', false, path), true, [...path, ".userId"]),
+			userName: expectString(extractEntry(jCpy, 'userName', false, path), true, [...path, ".userName"]),
+			encryptedSelf: expectString(extractEntry(jCpy, 'encryptedSelf', false, path), false, [...path, ".encryptedSelf"]),
 		})
 		if (!ignoreUnknownKeys) {
 			const unused = Object.keys(jCpy)

@@ -25,8 +25,8 @@ export class PublicKey {
 		if (typeof json != 'object') throw new Error(`Expected json object at path ${path.join("")}`)
 		const jCpy = { ...json }
 		const res = new PublicKey({
-			hcPartyId: expectString(extractEntry(jCpy.hcPartyId, 'hcPartyId', false, path), true, [...path, ".hcPartyId"]),
-			hexString: expectString(extractEntry(jCpy.hexString, 'hexString', false, path), true, [...path, ".hexString"]),
+			hcPartyId: expectString(extractEntry(jCpy, 'hcPartyId', false, path), true, [...path, ".hcPartyId"]),
+			hexString: expectString(extractEntry(jCpy, 'hexString', false, path), true, [...path, ".hexString"]),
 		})
 		if (!ignoreUnknownKeys) {
 			const unused = Object.keys(jCpy)

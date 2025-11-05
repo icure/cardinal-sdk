@@ -25,8 +25,8 @@ export class Range {
 		if (typeof json != 'object') throw new Error(`Expected json object at path ${path.join("")}`)
 		const jCpy = { ...json }
 		const res = new Range({
-			low: expectNumber(extractEntry(jCpy.low, 'low', false, path), true, false, [...path, ".low"]),
-			high: expectNumber(extractEntry(jCpy.high, 'high', false, path), true, false, [...path, ".high"]),
+			low: expectNumber(extractEntry(jCpy, 'low', false, path), true, false, [...path, ".low"]),
+			high: expectNumber(extractEntry(jCpy, 'high', false, path), true, false, [...path, ".high"]),
 		})
 		if (!ignoreUnknownKeys) {
 			const unused = Object.keys(jCpy)

@@ -25,8 +25,8 @@ export class TimeTableHour {
 		if (typeof json != 'object') throw new Error(`Expected json object at path ${path.join("")}`)
 		const jCpy = { ...json }
 		const res = new TimeTableHour({
-			startHour: expectNumber(extractEntry(jCpy.startHour, 'startHour', false, path), true, true, [...path, ".startHour"]),
-			endHour: expectNumber(extractEntry(jCpy.endHour, 'endHour', false, path), true, true, [...path, ".endHour"]),
+			startHour: expectNumber(extractEntry(jCpy, 'startHour', false, path), true, true, [...path, ".startHour"]),
+			endHour: expectNumber(extractEntry(jCpy, 'endHour', false, path), true, true, [...path, ".endHour"]),
 		})
 		if (!ignoreUnknownKeys) {
 			const unused = Object.keys(jCpy)

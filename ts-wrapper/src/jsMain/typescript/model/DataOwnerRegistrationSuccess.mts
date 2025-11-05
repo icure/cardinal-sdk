@@ -29,9 +29,9 @@ export class DataOwnerRegistrationSuccess {
 		if (typeof json != 'object') throw new Error(`Expected json object at path ${path.join("")}`)
 		const jCpy = { ...json }
 		const res = new DataOwnerRegistrationSuccess({
-			userLogin: expectString(extractEntry(jCpy.userLogin, 'userLogin', true, path), false, [...path, ".userLogin"]),
-			userId: expectString(extractEntry(jCpy.userId, 'userId', true, path), false, [...path, ".userId"]),
-			token: expectString(extractEntry(jCpy.token, 'token', true, path), false, [...path, ".token"]),
+			userLogin: expectString(extractEntry(jCpy, 'userLogin', true, path), false, [...path, ".userLogin"]),
+			userId: expectString(extractEntry(jCpy, 'userId', true, path), false, [...path, ".userId"]),
+			token: expectString(extractEntry(jCpy, 'token', true, path), false, [...path, ".token"]),
 		})
 		if (!ignoreUnknownKeys) {
 			const unused = Object.keys(jCpy)

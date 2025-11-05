@@ -39,11 +39,11 @@ export class FormTemplateLayout {
 		if (typeof json != 'object') throw new Error(`Expected json object at path ${path.join("")}`)
 		const jCpy = { ...json }
 		const res = new FormTemplateLayout({
-			form: expectString(extractEntry(jCpy.form, 'form', true, path), false, [...path, ".form"]),
-			actions: expectArray(extractEntry(jCpy.actions, 'actions', false, path), false, [...path, ".actions"], (x0, p0) => expectObject(x0, false, ignoreUnknownKeys, p0, Action.fromJSON)),
-			sections: expectArray(extractEntry(jCpy.sections, 'sections', false, path), false, [...path, ".sections"], (x0, p0) => expectObject(x0, false, ignoreUnknownKeys, p0, Section.fromJSON)),
-			description: expectString(extractEntry(jCpy.description, 'description', false, path), true, [...path, ".description"]),
-			keywords: expectArray(extractEntry(jCpy.keywords, 'keywords', false, path), true, [...path, ".keywords"], (x0, p0) => expectString(x0, false, p0)),
+			form: expectString(extractEntry(jCpy, 'form', true, path), false, [...path, ".form"]),
+			actions: expectArray(extractEntry(jCpy, 'actions', false, path), false, [...path, ".actions"], (x0, p0) => expectObject(x0, false, ignoreUnknownKeys, p0, Action.fromJSON)),
+			sections: expectArray(extractEntry(jCpy, 'sections', false, path), false, [...path, ".sections"], (x0, p0) => expectObject(x0, false, ignoreUnknownKeys, p0, Section.fromJSON)),
+			description: expectString(extractEntry(jCpy, 'description', false, path), true, [...path, ".description"]),
+			keywords: expectArray(extractEntry(jCpy, 'keywords', false, path), true, [...path, ".keywords"], (x0, p0) => expectString(x0, false, p0)),
 		})
 		if (!ignoreUnknownKeys) {
 			const unused = Object.keys(jCpy)

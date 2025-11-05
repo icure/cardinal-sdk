@@ -55,46 +55,46 @@ export class DesignDocument {
 		if (typeof json != 'object') throw new Error(`Expected json object at path ${path.join("")}`)
 		const jCpy = { ...json }
 		const res = new DesignDocument({
-			id: expectString(extractEntry(jCpy.id, 'id', true, path), false, [...path, ".id"]),
-			rev: expectString(extractEntry(jCpy.rev, 'rev', false, path), true, [...path, ".rev"]),
+			id: expectString(extractEntry(jCpy, 'id', true, path), false, [...path, ".id"]),
+			rev: expectString(extractEntry(jCpy, 'rev', false, path), true, [...path, ".rev"]),
 			revHistory: expectMap(
-				extractEntry(jCpy.revHistory, 'revHistory', false, path),
+				extractEntry(jCpy, 'revHistory', false, path),
 				false,
 				[...path, ".revHistory"],
 				(k0, p0) => expectString(k0, false, p0),
 				(v0, p0) => expectString(v0, false, p0)
 			),
-			language: expectString(extractEntry(jCpy.language, 'language', false, path), true, [...path, ".language"]),
+			language: expectString(extractEntry(jCpy, 'language', false, path), true, [...path, ".language"]),
 			views: expectMap(
-				extractEntry(jCpy.views, 'views', false, path),
+				extractEntry(jCpy, 'views', false, path),
 				false,
 				[...path, ".views"],
 				(k0, p0) => expectString(k0, false, p0),
 				(v0, p0) => expectObject(v0, false, ignoreUnknownKeys, p0, View.fromJSON)
 			),
 			lists: expectMap(
-				extractEntry(jCpy.lists, 'lists', false, path),
+				extractEntry(jCpy, 'lists', false, path),
 				false,
 				[...path, ".lists"],
 				(k0, p0) => expectString(k0, false, p0),
 				(v0, p0) => expectString(v0, false, p0)
 			),
 			shows: expectMap(
-				extractEntry(jCpy.shows, 'shows', false, path),
+				extractEntry(jCpy, 'shows', false, path),
 				false,
 				[...path, ".shows"],
 				(k0, p0) => expectString(k0, false, p0),
 				(v0, p0) => expectString(v0, false, p0)
 			),
 			updateHandlers: expectMap(
-				extractEntry(jCpy.updateHandlers, 'updateHandlers', false, path),
+				extractEntry(jCpy, 'updateHandlers', false, path),
 				true,
 				[...path, ".updateHandlers"],
 				(k0, p0) => expectString(k0, false, p0),
 				(v0, p0) => expectString(v0, false, p0)
 			),
 			filters: expectMap(
-				extractEntry(jCpy.filters, 'filters', false, path),
+				extractEntry(jCpy, 'filters', false, path),
 				false,
 				[...path, ".filters"],
 				(k0, p0) => expectString(k0, false, p0),

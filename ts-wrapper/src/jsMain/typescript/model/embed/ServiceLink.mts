@@ -21,7 +21,7 @@ export class ServiceLink {
 		if (typeof json != 'object') throw new Error(`Expected json object at path ${path.join("")}`)
 		const jCpy = { ...json }
 		const res = new ServiceLink({
-			serviceId: expectString(extractEntry(jCpy.serviceId, 'serviceId', false, path), true, [...path, ".serviceId"]),
+			serviceId: expectString(extractEntry(jCpy, 'serviceId', false, path), true, [...path, ".serviceId"]),
 		})
 		if (!ignoreUnknownKeys) {
 			const unused = Object.keys(jCpy)

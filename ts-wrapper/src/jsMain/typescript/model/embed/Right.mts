@@ -33,10 +33,10 @@ export class Right {
 		if (typeof json != 'object') throw new Error(`Expected json object at path ${path.join("")}`)
 		const jCpy = { ...json }
 		const res = new Right({
-			userId: expectString(extractEntry(jCpy.userId, 'userId', false, path), true, [...path, ".userId"]),
-			read: expectBoolean(extractEntry(jCpy.read, 'read', false, path), false, [...path, ".read"]),
-			write: expectBoolean(extractEntry(jCpy.write, 'write', false, path), false, [...path, ".write"]),
-			administration: expectBoolean(extractEntry(jCpy.administration, 'administration', false, path), false, [...path, ".administration"]),
+			userId: expectString(extractEntry(jCpy, 'userId', false, path), true, [...path, ".userId"]),
+			read: expectBoolean(extractEntry(jCpy, 'read', false, path), false, [...path, ".read"]),
+			write: expectBoolean(extractEntry(jCpy, 'write', false, path), false, [...path, ".write"]),
+			administration: expectBoolean(extractEntry(jCpy, 'administration', false, path), false, [...path, ".administration"]),
 		})
 		if (!ignoreUnknownKeys) {
 			const unused = Object.keys(jCpy)

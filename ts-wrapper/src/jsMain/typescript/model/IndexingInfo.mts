@@ -22,7 +22,7 @@ export class IndexingInfo {
 		const jCpy = { ...json }
 		const res = new IndexingInfo({
 			statuses: expectMap(
-				extractEntry(jCpy.statuses, 'statuses', false, path),
+				extractEntry(jCpy, 'statuses', false, path),
 				true,
 				[...path, ".statuses"],
 				(k0, p0) => expectString(k0, false, p0),

@@ -49,6 +49,7 @@ export class DecryptedSchoolingInfo {
 		if (this.school != undefined) res['school'] = this.school
 		if (this.typeOfEducation != undefined) res['typeOfEducation'] = this.typeOfEducation.toJSON()
 		if (this.encryptedSelf != undefined) res['encryptedSelf'] = this.encryptedSelf
+		res['isEncrypted'] = false
 		return res
 	}
 
@@ -56,12 +57,13 @@ export class DecryptedSchoolingInfo {
 			path: Array<string> = ['DecryptedSchoolingInfo']): DecryptedSchoolingInfo {
 		if (typeof json != 'object') throw new Error(`Expected json object at path ${path.join("")}`)
 		const jCpy = { ...json }
+		if (extractEntry(jCpy, "isEncrypted", true, path) !== false) throw new Error(`Unexpected value for ${path.join("")} isEncrypted marker, should be false`)
 		const res = new DecryptedSchoolingInfo({
-			startDate: expectNumber(extractEntry(jCpy.startDate, 'startDate', false, path), true, true, [...path, ".startDate"]),
-			endDate: expectNumber(extractEntry(jCpy.endDate, 'endDate', false, path), true, true, [...path, ".endDate"]),
-			school: expectString(extractEntry(jCpy.school, 'school', false, path), true, [...path, ".school"]),
-			typeOfEducation: expectObject(extractEntry(jCpy.typeOfEducation, 'typeOfEducation', false, path), true, ignoreUnknownKeys, [...path, ".typeOfEducation"], CodeStub.fromJSON),
-			encryptedSelf: expectString(extractEntry(jCpy.encryptedSelf, 'encryptedSelf', false, path), false, [...path, ".encryptedSelf"]),
+			startDate: expectNumber(extractEntry(jCpy, 'startDate', false, path), true, true, [...path, ".startDate"]),
+			endDate: expectNumber(extractEntry(jCpy, 'endDate', false, path), true, true, [...path, ".endDate"]),
+			school: expectString(extractEntry(jCpy, 'school', false, path), true, [...path, ".school"]),
+			typeOfEducation: expectObject(extractEntry(jCpy, 'typeOfEducation', false, path), true, ignoreUnknownKeys, [...path, ".typeOfEducation"], CodeStub.fromJSON),
+			encryptedSelf: expectString(extractEntry(jCpy, 'encryptedSelf', false, path), false, [...path, ".encryptedSelf"]),
 		})
 		if (!ignoreUnknownKeys) {
 			const unused = Object.keys(jCpy)
@@ -101,6 +103,7 @@ export class EncryptedSchoolingInfo {
 		if (this.school != undefined) res['school'] = this.school
 		if (this.typeOfEducation != undefined) res['typeOfEducation'] = this.typeOfEducation.toJSON()
 		if (this.encryptedSelf != undefined) res['encryptedSelf'] = this.encryptedSelf
+		res['isEncrypted'] = true
 		return res
 	}
 
@@ -108,12 +111,13 @@ export class EncryptedSchoolingInfo {
 			path: Array<string> = ['EncryptedSchoolingInfo']): EncryptedSchoolingInfo {
 		if (typeof json != 'object') throw new Error(`Expected json object at path ${path.join("")}`)
 		const jCpy = { ...json }
+		if (extractEntry(jCpy, "isEncrypted", true, path) !== true) throw new Error(`Unexpected value for ${path.join("")} isEncrypted marker, should be true`)
 		const res = new EncryptedSchoolingInfo({
-			startDate: expectNumber(extractEntry(jCpy.startDate, 'startDate', false, path), true, true, [...path, ".startDate"]),
-			endDate: expectNumber(extractEntry(jCpy.endDate, 'endDate', false, path), true, true, [...path, ".endDate"]),
-			school: expectString(extractEntry(jCpy.school, 'school', false, path), true, [...path, ".school"]),
-			typeOfEducation: expectObject(extractEntry(jCpy.typeOfEducation, 'typeOfEducation', false, path), true, ignoreUnknownKeys, [...path, ".typeOfEducation"], CodeStub.fromJSON),
-			encryptedSelf: expectString(extractEntry(jCpy.encryptedSelf, 'encryptedSelf', false, path), false, [...path, ".encryptedSelf"]),
+			startDate: expectNumber(extractEntry(jCpy, 'startDate', false, path), true, true, [...path, ".startDate"]),
+			endDate: expectNumber(extractEntry(jCpy, 'endDate', false, path), true, true, [...path, ".endDate"]),
+			school: expectString(extractEntry(jCpy, 'school', false, path), true, [...path, ".school"]),
+			typeOfEducation: expectObject(extractEntry(jCpy, 'typeOfEducation', false, path), true, ignoreUnknownKeys, [...path, ".typeOfEducation"], CodeStub.fromJSON),
+			encryptedSelf: expectString(extractEntry(jCpy, 'encryptedSelf', false, path), false, [...path, ".encryptedSelf"]),
 		})
 		if (!ignoreUnknownKeys) {
 			const unused = Object.keys(jCpy)

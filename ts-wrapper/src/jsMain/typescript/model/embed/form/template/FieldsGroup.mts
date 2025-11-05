@@ -20,6 +20,7 @@ export class FieldsGroup {
 		const res: { [k: string]: any } = {}
 		res['group'] = this.group
 		if (this.fields != undefined) res['fields'] = this.fields.map((x0) => x0.toJSON() )
+		res['$ktClass'] = 'com.icure.cardinal.sdk.model.embed.form.template.FieldsGroup'
 		return res
 	}
 
@@ -27,9 +28,10 @@ export class FieldsGroup {
 			path: Array<string> = ['FieldsGroup']): FieldsGroup {
 		if (typeof json != 'object') throw new Error(`Expected json object at path ${path.join("")}`)
 		const jCpy = { ...json }
+		if (extractEntry(jCpy, '\$ktClass', true, path) !== 'com.icure.cardinal.sdk.model.embed.form.template.FieldsGroup') throw new Error(`Unexpected value f+or ${path.join("")} class marker, should be "com.icure.cardinal.sdk.model.embed.form.template.FieldsGroup"`)
 		const res = new FieldsGroup({
-			group: expectString(extractEntry(jCpy.group, 'group', true, path), false, [...path, ".group"]),
-			fields: expectArray(extractEntry(jCpy.fields, 'fields', false, path), true, [...path, ".fields"], (x0, p0) => expectObject(x0, false, ignoreUnknownKeys, p0, StructureElement.fromJSON)),
+			group: expectString(extractEntry(jCpy, 'group', true, path), false, [...path, ".group"]),
+			fields: expectArray(extractEntry(jCpy, 'fields', false, path), true, [...path, ".fields"], (x0, p0) => expectObject(x0, false, ignoreUnknownKeys, p0, StructureElement.fromJSON)),
 		})
 		if (!ignoreUnknownKeys) {
 			const unused = Object.keys(jCpy)

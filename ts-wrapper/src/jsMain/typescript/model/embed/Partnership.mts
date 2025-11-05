@@ -39,11 +39,11 @@ export class Partnership {
 		if (typeof json != 'object') throw new Error(`Expected json object at path ${path.join("")}`)
 		const jCpy = { ...json }
 		const res = new Partnership({
-			type: expectStringEnum(extractEntry(jCpy.type, 'type', false, path), true, [...path, ".type"], PartnershipType, 'PartnershipType'),
-			status: expectStringEnum(extractEntry(jCpy.status, 'status', false, path), true, [...path, ".status"], PartnershipStatus, 'PartnershipStatus'),
-			partnerId: expectString(extractEntry(jCpy.partnerId, 'partnerId', false, path), true, [...path, ".partnerId"]),
-			meToOtherRelationshipDescription: expectString(extractEntry(jCpy.meToOtherRelationshipDescription, 'meToOtherRelationshipDescription', false, path), true, [...path, ".meToOtherRelationshipDescription"]),
-			otherToMeRelationshipDescription: expectString(extractEntry(jCpy.otherToMeRelationshipDescription, 'otherToMeRelationshipDescription', false, path), true, [...path, ".otherToMeRelationshipDescription"]),
+			type: expectStringEnum(extractEntry(jCpy, 'type', false, path), true, [...path, ".type"], PartnershipType, 'PartnershipType'),
+			status: expectStringEnum(extractEntry(jCpy, 'status', false, path), true, [...path, ".status"], PartnershipStatus, 'PartnershipStatus'),
+			partnerId: expectString(extractEntry(jCpy, 'partnerId', false, path), true, [...path, ".partnerId"]),
+			meToOtherRelationshipDescription: expectString(extractEntry(jCpy, 'meToOtherRelationshipDescription', false, path), true, [...path, ".meToOtherRelationshipDescription"]),
+			otherToMeRelationshipDescription: expectString(extractEntry(jCpy, 'otherToMeRelationshipDescription', false, path), true, [...path, ".otherToMeRelationshipDescription"]),
 		})
 		if (!ignoreUnknownKeys) {
 			const unused = Object.keys(jCpy)

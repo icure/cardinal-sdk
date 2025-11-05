@@ -25,8 +25,8 @@ export class Basic {
 		if (typeof json != 'object') throw new Error(`Expected json object at path ${path.join("")}`)
 		const jCpy = { ...json }
 		const res = new Basic({
-			username: expectString(extractEntry(jCpy.username, 'username', true, path), false, [...path, ".username"]),
-			password: expectString(extractEntry(jCpy.password, 'password', true, path), false, [...path, ".password"]),
+			username: expectString(extractEntry(jCpy, 'username', true, path), false, [...path, ".username"]),
+			password: expectString(extractEntry(jCpy, 'password', true, path), false, [...path, ".password"]),
 		})
 		if (!ignoreUnknownKeys) {
 			const unused = Object.keys(jCpy)

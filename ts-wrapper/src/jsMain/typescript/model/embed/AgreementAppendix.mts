@@ -33,10 +33,10 @@ export class AgreementAppendix {
 		if (typeof json != 'object') throw new Error(`Expected json object at path ${path.join("")}`)
 		const jCpy = { ...json }
 		const res = new AgreementAppendix({
-			docSeq: expectNumber(extractEntry(jCpy.docSeq, 'docSeq', false, path), true, true, [...path, ".docSeq"]),
-			verseSeq: expectNumber(extractEntry(jCpy.verseSeq, 'verseSeq', false, path), true, true, [...path, ".verseSeq"]),
-			documentId: expectString(extractEntry(jCpy.documentId, 'documentId', false, path), true, [...path, ".documentId"]),
-			path: expectString(extractEntry(jCpy.path, 'path', false, path), true, [...path, ".path"]),
+			docSeq: expectNumber(extractEntry(jCpy, 'docSeq', false, path), true, true, [...path, ".docSeq"]),
+			verseSeq: expectNumber(extractEntry(jCpy, 'verseSeq', false, path), true, true, [...path, ".verseSeq"]),
+			documentId: expectString(extractEntry(jCpy, 'documentId', false, path), true, [...path, ".documentId"]),
+			path: expectString(extractEntry(jCpy, 'path', false, path), true, [...path, ".path"]),
 		})
 		if (!ignoreUnknownKeys) {
 			const unused = Object.keys(jCpy)

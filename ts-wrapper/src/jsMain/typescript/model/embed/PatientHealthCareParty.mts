@@ -64,6 +64,7 @@ export class DecryptedPatientHealthCareParty {
 		res['referral'] = this.referral
 		if (this.properties != undefined) res['properties'] = this.properties.map((x0) => x0.toJSON() )
 		if (this.encryptedSelf != undefined) res['encryptedSelf'] = this.encryptedSelf
+		res['isEncrypted'] = false
 		return res
 	}
 
@@ -71,20 +72,21 @@ export class DecryptedPatientHealthCareParty {
 			path: Array<string> = ['DecryptedPatientHealthCareParty']): DecryptedPatientHealthCareParty {
 		if (typeof json != 'object') throw new Error(`Expected json object at path ${path.join("")}`)
 		const jCpy = { ...json }
+		if (extractEntry(jCpy, "isEncrypted", true, path) !== false) throw new Error(`Unexpected value for ${path.join("")} isEncrypted marker, should be false`)
 		const res = new DecryptedPatientHealthCareParty({
-			type: expectStringEnum(extractEntry(jCpy.type, 'type', false, path), true, [...path, ".type"], PatientHealthCarePartyType, 'PatientHealthCarePartyType'),
-			healthcarePartyId: expectString(extractEntry(jCpy.healthcarePartyId, 'healthcarePartyId', false, path), true, [...path, ".healthcarePartyId"]),
+			type: expectStringEnum(extractEntry(jCpy, 'type', false, path), true, [...path, ".type"], PatientHealthCarePartyType, 'PatientHealthCarePartyType'),
+			healthcarePartyId: expectString(extractEntry(jCpy, 'healthcarePartyId', false, path), true, [...path, ".healthcarePartyId"]),
 			sendFormats: expectMap(
-				extractEntry(jCpy.sendFormats, 'sendFormats', false, path),
+				extractEntry(jCpy, 'sendFormats', false, path),
 				false,
 				[...path, ".sendFormats"],
 				(k0, p0) => expectStringEnum(k0, false, p0, TelecomType, 'TelecomType'),
 				(v0, p0) => expectString(v0, false, p0)
 			),
-			referralPeriods: expectArray(extractEntry(jCpy.referralPeriods, 'referralPeriods', false, path), false, [...path, ".referralPeriods"], (x0, p0) => expectObject(x0, false, ignoreUnknownKeys, p0, ReferralPeriod.fromJSON)),
-			referral: expectBoolean(extractEntry(jCpy.referral, 'referral', false, path), false, [...path, ".referral"]),
-			properties: expectArray(extractEntry(jCpy.properties, 'properties', false, path), true, [...path, ".properties"], (x0, p0) => expectObject(x0, false, ignoreUnknownKeys, p0, DecryptedPropertyStub.fromJSON)),
-			encryptedSelf: expectString(extractEntry(jCpy.encryptedSelf, 'encryptedSelf', false, path), false, [...path, ".encryptedSelf"]),
+			referralPeriods: expectArray(extractEntry(jCpy, 'referralPeriods', false, path), false, [...path, ".referralPeriods"], (x0, p0) => expectObject(x0, false, ignoreUnknownKeys, p0, ReferralPeriod.fromJSON)),
+			referral: expectBoolean(extractEntry(jCpy, 'referral', false, path), false, [...path, ".referral"]),
+			properties: expectArray(extractEntry(jCpy, 'properties', false, path), true, [...path, ".properties"], (x0, p0) => expectObject(x0, false, ignoreUnknownKeys, p0, DecryptedPropertyStub.fromJSON)),
+			encryptedSelf: expectString(extractEntry(jCpy, 'encryptedSelf', false, path), false, [...path, ".encryptedSelf"]),
 		})
 		if (!ignoreUnknownKeys) {
 			const unused = Object.keys(jCpy)
@@ -132,6 +134,7 @@ export class EncryptedPatientHealthCareParty {
 		res['referral'] = this.referral
 		if (this.properties != undefined) res['properties'] = this.properties.map((x0) => x0.toJSON() )
 		if (this.encryptedSelf != undefined) res['encryptedSelf'] = this.encryptedSelf
+		res['isEncrypted'] = true
 		return res
 	}
 
@@ -139,20 +142,21 @@ export class EncryptedPatientHealthCareParty {
 			path: Array<string> = ['EncryptedPatientHealthCareParty']): EncryptedPatientHealthCareParty {
 		if (typeof json != 'object') throw new Error(`Expected json object at path ${path.join("")}`)
 		const jCpy = { ...json }
+		if (extractEntry(jCpy, "isEncrypted", true, path) !== true) throw new Error(`Unexpected value for ${path.join("")} isEncrypted marker, should be true`)
 		const res = new EncryptedPatientHealthCareParty({
-			type: expectStringEnum(extractEntry(jCpy.type, 'type', false, path), true, [...path, ".type"], PatientHealthCarePartyType, 'PatientHealthCarePartyType'),
-			healthcarePartyId: expectString(extractEntry(jCpy.healthcarePartyId, 'healthcarePartyId', false, path), true, [...path, ".healthcarePartyId"]),
+			type: expectStringEnum(extractEntry(jCpy, 'type', false, path), true, [...path, ".type"], PatientHealthCarePartyType, 'PatientHealthCarePartyType'),
+			healthcarePartyId: expectString(extractEntry(jCpy, 'healthcarePartyId', false, path), true, [...path, ".healthcarePartyId"]),
 			sendFormats: expectMap(
-				extractEntry(jCpy.sendFormats, 'sendFormats', false, path),
+				extractEntry(jCpy, 'sendFormats', false, path),
 				false,
 				[...path, ".sendFormats"],
 				(k0, p0) => expectStringEnum(k0, false, p0, TelecomType, 'TelecomType'),
 				(v0, p0) => expectString(v0, false, p0)
 			),
-			referralPeriods: expectArray(extractEntry(jCpy.referralPeriods, 'referralPeriods', false, path), false, [...path, ".referralPeriods"], (x0, p0) => expectObject(x0, false, ignoreUnknownKeys, p0, ReferralPeriod.fromJSON)),
-			referral: expectBoolean(extractEntry(jCpy.referral, 'referral', false, path), false, [...path, ".referral"]),
-			properties: expectArray(extractEntry(jCpy.properties, 'properties', false, path), true, [...path, ".properties"], (x0, p0) => expectObject(x0, false, ignoreUnknownKeys, p0, EncryptedPropertyStub.fromJSON)),
-			encryptedSelf: expectString(extractEntry(jCpy.encryptedSelf, 'encryptedSelf', false, path), false, [...path, ".encryptedSelf"]),
+			referralPeriods: expectArray(extractEntry(jCpy, 'referralPeriods', false, path), false, [...path, ".referralPeriods"], (x0, p0) => expectObject(x0, false, ignoreUnknownKeys, p0, ReferralPeriod.fromJSON)),
+			referral: expectBoolean(extractEntry(jCpy, 'referral', false, path), false, [...path, ".referral"]),
+			properties: expectArray(extractEntry(jCpy, 'properties', false, path), true, [...path, ".properties"], (x0, p0) => expectObject(x0, false, ignoreUnknownKeys, p0, EncryptedPropertyStub.fromJSON)),
+			encryptedSelf: expectString(extractEntry(jCpy, 'encryptedSelf', false, path), false, [...path, ".encryptedSelf"]),
 		})
 		if (!ignoreUnknownKeys) {
 			const unused = Object.keys(jCpy)

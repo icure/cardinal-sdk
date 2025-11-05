@@ -29,9 +29,9 @@ export class DataAttachment {
 		if (typeof json != 'object') throw new Error(`Expected json object at path ${path.join("")}`)
 		const jCpy = { ...json }
 		const res = new DataAttachment({
-			couchDbAttachmentId: expectString(extractEntry(jCpy.couchDbAttachmentId, 'couchDbAttachmentId', false, path), true, [...path, ".couchDbAttachmentId"]),
-			objectStoreAttachmentId: expectString(extractEntry(jCpy.objectStoreAttachmentId, 'objectStoreAttachmentId', false, path), true, [...path, ".objectStoreAttachmentId"]),
-			utis: expectArray(extractEntry(jCpy.utis, 'utis', false, path), false, [...path, ".utis"], (x0, p0) => expectString(x0, false, p0)),
+			couchDbAttachmentId: expectString(extractEntry(jCpy, 'couchDbAttachmentId', false, path), true, [...path, ".couchDbAttachmentId"]),
+			objectStoreAttachmentId: expectString(extractEntry(jCpy, 'objectStoreAttachmentId', false, path), true, [...path, ".objectStoreAttachmentId"]),
+			utis: expectArray(extractEntry(jCpy, 'utis', false, path), false, [...path, ".utis"], (x0, p0) => expectString(x0, false, p0)),
 		})
 		if (!ignoreUnknownKeys) {
 			const unused = Object.keys(jCpy)

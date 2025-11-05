@@ -33,10 +33,10 @@ export class DeletedAttachment {
 		if (typeof json != 'object') throw new Error(`Expected json object at path ${path.join("")}`)
 		const jCpy = { ...json }
 		const res = new DeletedAttachment({
-			couchDbAttachmentId: expectString(extractEntry(jCpy.couchDbAttachmentId, 'couchDbAttachmentId', false, path), true, [...path, ".couchDbAttachmentId"]),
-			objectStoreAttachmentId: expectString(extractEntry(jCpy.objectStoreAttachmentId, 'objectStoreAttachmentId', false, path), true, [...path, ".objectStoreAttachmentId"]),
-			key: expectString(extractEntry(jCpy.key, 'key', false, path), true, [...path, ".key"]),
-			deletionTime: expectNumber(extractEntry(jCpy.deletionTime, 'deletionTime', false, path), true, true, [...path, ".deletionTime"]),
+			couchDbAttachmentId: expectString(extractEntry(jCpy, 'couchDbAttachmentId', false, path), true, [...path, ".couchDbAttachmentId"]),
+			objectStoreAttachmentId: expectString(extractEntry(jCpy, 'objectStoreAttachmentId', false, path), true, [...path, ".objectStoreAttachmentId"]),
+			key: expectString(extractEntry(jCpy, 'key', false, path), true, [...path, ".key"]),
+			deletionTime: expectNumber(extractEntry(jCpy, 'deletionTime', false, path), true, true, [...path, ".deletionTime"]),
 		})
 		if (!ignoreUnknownKeys) {
 			const unused = Object.keys(jCpy)

@@ -26,8 +26,8 @@ export class KeywordSubword {
 		if (typeof json != 'object') throw new Error(`Expected json object at path ${path.join("")}`)
 		const jCpy = { ...json }
 		const res = new KeywordSubword({
-			value: expectString(extractEntry(jCpy.value, 'value', false, path), true, [...path, ".value"]),
-			subWords: expectArray(extractEntry(jCpy.subWords, 'subWords', false, path), true, [...path, ".subWords"], (x0, p0) => expectObject(x0, false, ignoreUnknownKeys, p0, KeywordSubword.fromJSON)),
+			value: expectString(extractEntry(jCpy, 'value', false, path), true, [...path, ".value"]),
+			subWords: expectArray(extractEntry(jCpy, 'subWords', false, path), true, [...path, ".subWords"], (x0, p0) => expectObject(x0, false, ignoreUnknownKeys, p0, KeywordSubword.fromJSON)),
 		})
 		if (!ignoreUnknownKeys) {
 			const unused = Object.keys(jCpy)

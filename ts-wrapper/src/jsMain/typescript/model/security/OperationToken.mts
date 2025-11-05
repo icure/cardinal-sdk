@@ -38,11 +38,11 @@ export class OperationToken {
 		if (typeof json != 'object') throw new Error(`Expected json object at path ${path.join("")}`)
 		const jCpy = { ...json }
 		const res = new OperationToken({
-			tokenHash: expectString(extractEntry(jCpy.tokenHash, 'tokenHash', true, path), false, [...path, ".tokenHash"]),
-			creationTime: expectNumber(extractEntry(jCpy.creationTime, 'creationTime', true, path), false, true, [...path, ".creationTime"]),
-			validity: expectNumber(extractEntry(jCpy.validity, 'validity', true, path), false, true, [...path, ".validity"]),
-			operation: expectStringEnum(extractEntry(jCpy.operation, 'operation', true, path), false, [...path, ".operation"], Operation, 'Operation'),
-			description: expectString(extractEntry(jCpy.description, 'description', false, path), true, [...path, ".description"]),
+			tokenHash: expectString(extractEntry(jCpy, 'tokenHash', true, path), false, [...path, ".tokenHash"]),
+			creationTime: expectNumber(extractEntry(jCpy, 'creationTime', true, path), false, true, [...path, ".creationTime"]),
+			validity: expectNumber(extractEntry(jCpy, 'validity', true, path), false, true, [...path, ".validity"]),
+			operation: expectStringEnum(extractEntry(jCpy, 'operation', true, path), false, [...path, ".operation"], Operation, 'Operation'),
+			description: expectString(extractEntry(jCpy, 'description', false, path), true, [...path, ".description"]),
 		})
 		if (!ignoreUnknownKeys) {
 			const unused = Object.keys(jCpy)

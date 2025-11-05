@@ -30,9 +30,9 @@ export class ExternalJwtConfig {
 		if (typeof json != 'object') throw new Error(`Expected json object at path ${path.join("")}`)
 		const jCpy = { ...json }
 		const res = new ExternalJwtConfig({
-			validationMethod: expectObject(extractEntry(jCpy.validationMethod, 'validationMethod', true, path), false, ignoreUnknownKeys, [...path, ".validationMethod"], ExternalJwtConfig.ValidationMethod.fromJSON),
-			fieldSelector: expectObject(extractEntry(jCpy.fieldSelector, 'fieldSelector', true, path), false, ignoreUnknownKeys, [...path, ".fieldSelector"], ExternalJwtConfig.FieldSelector.fromJSON),
-			authenticationClass: expectStringEnum(extractEntry(jCpy.authenticationClass, 'authenticationClass', false, path), false, [...path, ".authenticationClass"], AuthenticationClass, 'AuthenticationClass'),
+			validationMethod: expectObject(extractEntry(jCpy, 'validationMethod', true, path), false, ignoreUnknownKeys, [...path, ".validationMethod"], ExternalJwtConfig.ValidationMethod.fromJSON),
+			fieldSelector: expectObject(extractEntry(jCpy, 'fieldSelector', true, path), false, ignoreUnknownKeys, [...path, ".fieldSelector"], ExternalJwtConfig.FieldSelector.fromJSON),
+			authenticationClass: expectStringEnum(extractEntry(jCpy, 'authenticationClass', false, path), false, [...path, ".authenticationClass"], AuthenticationClass, 'AuthenticationClass'),
 		})
 		if (!ignoreUnknownKeys) {
 			const unused = Object.keys(jCpy)
@@ -59,6 +59,7 @@ export namespace ExternalJwtConfig {
 			toJSON(): any {
 				const res: { [k: string]: any } = {}
 				res['key'] = this.key
+				res['$ktClass'] = 'com.icure.cardinal.sdk.model.security.ExternalJwtConfig.ValidationMethod.PublicKey'
 				return res
 			}
 
@@ -66,8 +67,9 @@ export namespace ExternalJwtConfig {
 					path: Array<string> = ['PublicKey']): PublicKey {
 				if (typeof json != 'object') throw new Error(`Expected json object at path ${path.join("")}`)
 				const jCpy = { ...json }
+				if (extractEntry(jCpy, '\$ktClass', true, path) !== 'com.icure.cardinal.sdk.model.security.ExternalJwtConfig.ValidationMethod.PublicKey') throw new Error(`Unexpected value f+or ${path.join("")} class marker, should be "com.icure.cardinal.sdk.model.security.ExternalJwtConfig.ValidationMethod.PublicKey"`)
 				const res = new PublicKey({
-					key: expectString(extractEntry(jCpy.key, 'key', true, path), false, [...path, ".key"]),
+					key: expectString(extractEntry(jCpy, 'key', true, path), false, [...path, ".key"]),
 				})
 				if (!ignoreUnknownKeys) {
 					const unused = Object.keys(jCpy)
@@ -90,6 +92,7 @@ export namespace ExternalJwtConfig {
 			toJSON(): any {
 				const res: { [k: string]: any } = {}
 				res['issureLocation'] = this.issureLocation
+				res['$ktClass'] = 'com.icure.cardinal.sdk.model.security.ExternalJwtConfig.ValidationMethod.Oidc'
 				return res
 			}
 
@@ -97,8 +100,9 @@ export namespace ExternalJwtConfig {
 					path: Array<string> = ['Oidc']): Oidc {
 				if (typeof json != 'object') throw new Error(`Expected json object at path ${path.join("")}`)
 				const jCpy = { ...json }
+				if (extractEntry(jCpy, '\$ktClass', true, path) !== 'com.icure.cardinal.sdk.model.security.ExternalJwtConfig.ValidationMethod.Oidc') throw new Error(`Unexpected value f+or ${path.join("")} class marker, should be "com.icure.cardinal.sdk.model.security.ExternalJwtConfig.ValidationMethod.Oidc"`)
 				const res = new Oidc({
-					issureLocation: expectString(extractEntry(jCpy.issureLocation, 'issureLocation', true, path), false, [...path, ".issureLocation"]),
+					issureLocation: expectString(extractEntry(jCpy, 'issureLocation', true, path), false, [...path, ".issureLocation"]),
 				})
 				if (!ignoreUnknownKeys) {
 					const unused = Object.keys(jCpy)
@@ -136,6 +140,7 @@ export namespace ExternalJwtConfig {
 			toJSON(): any {
 				const res: { [k: string]: any } = {}
 				res['fieldName'] = this.fieldName
+				res['$ktClass'] = 'com.icure.cardinal.sdk.model.security.ExternalJwtConfig.FieldSelector.LocalId'
 				return res
 			}
 
@@ -143,8 +148,9 @@ export namespace ExternalJwtConfig {
 					path: Array<string> = ['LocalId']): LocalId {
 				if (typeof json != 'object') throw new Error(`Expected json object at path ${path.join("")}`)
 				const jCpy = { ...json }
+				if (extractEntry(jCpy, '\$ktClass', true, path) !== 'com.icure.cardinal.sdk.model.security.ExternalJwtConfig.FieldSelector.LocalId') throw new Error(`Unexpected value f+or ${path.join("")} class marker, should be "com.icure.cardinal.sdk.model.security.ExternalJwtConfig.FieldSelector.LocalId"`)
 				const res = new LocalId({
-					fieldName: expectString(extractEntry(jCpy.fieldName, 'fieldName', true, path), false, [...path, ".fieldName"]),
+					fieldName: expectString(extractEntry(jCpy, 'fieldName', true, path), false, [...path, ".fieldName"]),
 				})
 				if (!ignoreUnknownKeys) {
 					const unused = Object.keys(jCpy)
@@ -167,6 +173,7 @@ export namespace ExternalJwtConfig {
 			toJSON(): any {
 				const res: { [k: string]: any } = {}
 				res['fieldName'] = this.fieldName
+				res['$ktClass'] = 'com.icure.cardinal.sdk.model.security.ExternalJwtConfig.FieldSelector.Email'
 				return res
 			}
 
@@ -174,8 +181,9 @@ export namespace ExternalJwtConfig {
 					path: Array<string> = ['Email']): Email {
 				if (typeof json != 'object') throw new Error(`Expected json object at path ${path.join("")}`)
 				const jCpy = { ...json }
+				if (extractEntry(jCpy, '\$ktClass', true, path) !== 'com.icure.cardinal.sdk.model.security.ExternalJwtConfig.FieldSelector.Email') throw new Error(`Unexpected value f+or ${path.join("")} class marker, should be "com.icure.cardinal.sdk.model.security.ExternalJwtConfig.FieldSelector.Email"`)
 				const res = new Email({
-					fieldName: expectString(extractEntry(jCpy.fieldName, 'fieldName', true, path), false, [...path, ".fieldName"]),
+					fieldName: expectString(extractEntry(jCpy, 'fieldName', true, path), false, [...path, ".fieldName"]),
 				})
 				if (!ignoreUnknownKeys) {
 					const unused = Object.keys(jCpy)
@@ -198,6 +206,7 @@ export namespace ExternalJwtConfig {
 			toJSON(): any {
 				const res: { [k: string]: any } = {}
 				res['fieldName'] = this.fieldName
+				res['$ktClass'] = 'com.icure.cardinal.sdk.model.security.ExternalJwtConfig.FieldSelector.MobilePhone'
 				return res
 			}
 
@@ -205,8 +214,9 @@ export namespace ExternalJwtConfig {
 					path: Array<string> = ['MobilePhone']): MobilePhone {
 				if (typeof json != 'object') throw new Error(`Expected json object at path ${path.join("")}`)
 				const jCpy = { ...json }
+				if (extractEntry(jCpy, '\$ktClass', true, path) !== 'com.icure.cardinal.sdk.model.security.ExternalJwtConfig.FieldSelector.MobilePhone') throw new Error(`Unexpected value f+or ${path.join("")} class marker, should be "com.icure.cardinal.sdk.model.security.ExternalJwtConfig.FieldSelector.MobilePhone"`)
 				const res = new MobilePhone({
-					fieldName: expectString(extractEntry(jCpy.fieldName, 'fieldName', true, path), false, [...path, ".fieldName"]),
+					fieldName: expectString(extractEntry(jCpy, 'fieldName', true, path), false, [...path, ".fieldName"]),
 				})
 				if (!ignoreUnknownKeys) {
 					const unused = Object.keys(jCpy)
@@ -229,6 +239,7 @@ export namespace ExternalJwtConfig {
 			toJSON(): any {
 				const res: { [k: string]: any } = {}
 				res['fieldName'] = this.fieldName
+				res['$ktClass'] = 'com.icure.cardinal.sdk.model.security.ExternalJwtConfig.FieldSelector.Username'
 				return res
 			}
 
@@ -236,8 +247,9 @@ export namespace ExternalJwtConfig {
 					path: Array<string> = ['Username']): Username {
 				if (typeof json != 'object') throw new Error(`Expected json object at path ${path.join("")}`)
 				const jCpy = { ...json }
+				if (extractEntry(jCpy, '\$ktClass', true, path) !== 'com.icure.cardinal.sdk.model.security.ExternalJwtConfig.FieldSelector.Username') throw new Error(`Unexpected value f+or ${path.join("")} class marker, should be "com.icure.cardinal.sdk.model.security.ExternalJwtConfig.FieldSelector.Username"`)
 				const res = new Username({
-					fieldName: expectString(extractEntry(jCpy.fieldName, 'fieldName', true, path), false, [...path, ".fieldName"]),
+					fieldName: expectString(extractEntry(jCpy, 'fieldName', true, path), false, [...path, ".fieldName"]),
 				})
 				if (!ignoreUnknownKeys) {
 					const unused = Object.keys(jCpy)
@@ -264,6 +276,7 @@ export namespace ExternalJwtConfig {
 				const res: { [k: string]: any } = {}
 				res['identifierAssigner'] = this.identifierAssigner
 				res['fieldName'] = this.fieldName
+				res['$ktClass'] = 'com.icure.cardinal.sdk.model.security.ExternalJwtConfig.FieldSelector.Identifier'
 				return res
 			}
 
@@ -271,9 +284,10 @@ export namespace ExternalJwtConfig {
 					path: Array<string> = ['Identifier']): Identifier {
 				if (typeof json != 'object') throw new Error(`Expected json object at path ${path.join("")}`)
 				const jCpy = { ...json }
+				if (extractEntry(jCpy, '\$ktClass', true, path) !== 'com.icure.cardinal.sdk.model.security.ExternalJwtConfig.FieldSelector.Identifier') throw new Error(`Unexpected value f+or ${path.join("")} class marker, should be "com.icure.cardinal.sdk.model.security.ExternalJwtConfig.FieldSelector.Identifier"`)
 				const res = new Identifier({
-					identifierAssigner: expectString(extractEntry(jCpy.identifierAssigner, 'identifierAssigner', true, path), false, [...path, ".identifierAssigner"]),
-					fieldName: expectString(extractEntry(jCpy.fieldName, 'fieldName', true, path), false, [...path, ".fieldName"]),
+					identifierAssigner: expectString(extractEntry(jCpy, 'identifierAssigner', true, path), false, [...path, ".identifierAssigner"]),
+					fieldName: expectString(extractEntry(jCpy, 'fieldName', true, path), false, [...path, ".fieldName"]),
 				})
 				if (!ignoreUnknownKeys) {
 					const unused = Object.keys(jCpy)
