@@ -142,7 +142,7 @@ export class DecryptedAddress {
 			note: expectString(extractEntry(jCpy, 'note', false, path), true, [...path, ".note"]),
 			notes: expectArray(extractEntry(jCpy, 'notes', false, path), false, [...path, ".notes"], (x0, p0) => expectObject(x0, false, ignoreUnknownKeys, p0, Annotation.fromJSON)),
 			telecoms: expectArray(extractEntry(jCpy, 'telecoms', false, path), false, [...path, ".telecoms"], (x0, p0) => expectObject(x0, false, ignoreUnknownKeys, p0, DecryptedTelecom.fromJSON)),
-			encryptedSelf: expectString(extractEntry(jCpy, 'encryptedSelf', false, path), false, [...path, ".encryptedSelf"]),
+			encryptedSelf: expectString(extractEntry(jCpy, 'encryptedSelf', false, path), true, [...path, ".encryptedSelf"]),
 		})
 		if (!ignoreUnknownKeys) {
 			const unused = Object.keys(jCpy)
@@ -251,7 +251,7 @@ export class EncryptedAddress {
 			note: expectString(extractEntry(jCpy, 'note', false, path), true, [...path, ".note"]),
 			notes: expectArray(extractEntry(jCpy, 'notes', false, path), false, [...path, ".notes"], (x0, p0) => expectObject(x0, false, ignoreUnknownKeys, p0, Annotation.fromJSON)),
 			telecoms: expectArray(extractEntry(jCpy, 'telecoms', false, path), false, [...path, ".telecoms"], (x0, p0) => expectObject(x0, false, ignoreUnknownKeys, p0, EncryptedTelecom.fromJSON)),
-			encryptedSelf: expectString(extractEntry(jCpy, 'encryptedSelf', false, path), false, [...path, ".encryptedSelf"]),
+			encryptedSelf: expectString(extractEntry(jCpy, 'encryptedSelf', false, path), true, [...path, ".encryptedSelf"]),
 		})
 		if (!ignoreUnknownKeys) {
 			const unused = Object.keys(jCpy)

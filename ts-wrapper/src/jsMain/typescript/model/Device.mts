@@ -212,7 +212,7 @@ export class Device implements StoredDocument, ICureDocument<string>, Named, Cry
 				(k0, p0) => expectString(k0, false, p0),
 				(v0, p0) => expectString(v0, false, p0)
 			),
-			publicKey: expectString(extractEntry(jCpy, 'publicKey', false, path), false, [...path, ".publicKey"]),
+			publicKey: expectString(extractEntry(jCpy, 'publicKey', false, path), true, [...path, ".publicKey"]),
 			publicKeysForOaepWithSha256: expectArray(extractEntry(jCpy, 'publicKeysForOaepWithSha256', false, path), false, [...path, ".publicKeysForOaepWithSha256"], (x0, p0) => expectString(x0, false, p0)),
 			cryptoActorProperties: expectArray(extractEntry(jCpy, 'cryptoActorProperties', false, path), true, [...path, ".cryptoActorProperties"], (x0, p0) => expectObject(x0, false, ignoreUnknownKeys, p0, DecryptedPropertyStub.fromJSON)),
 		})

@@ -70,7 +70,7 @@ export class DecryptedFlatRateTarification {
 				(v0, p0) => expectString(v0, false, p0)
 			),
 			valorisations: expectArray(extractEntry(jCpy, 'valorisations', false, path), false, [...path, ".valorisations"], (x0, p0) => expectObject(x0, false, ignoreUnknownKeys, p0, DecryptedValorisation.fromJSON)),
-			encryptedSelf: expectString(extractEntry(jCpy, 'encryptedSelf', false, path), false, [...path, ".encryptedSelf"]),
+			encryptedSelf: expectString(extractEntry(jCpy, 'encryptedSelf', false, path), true, [...path, ".encryptedSelf"]),
 		})
 		if (!ignoreUnknownKeys) {
 			const unused = Object.keys(jCpy)
@@ -130,7 +130,7 @@ export class EncryptedFlatRateTarification {
 				(v0, p0) => expectString(v0, false, p0)
 			),
 			valorisations: expectArray(extractEntry(jCpy, 'valorisations', false, path), false, [...path, ".valorisations"], (x0, p0) => expectObject(x0, false, ignoreUnknownKeys, p0, EncryptedValorisation.fromJSON)),
-			encryptedSelf: expectString(extractEntry(jCpy, 'encryptedSelf', false, path), false, [...path, ".encryptedSelf"]),
+			encryptedSelf: expectString(extractEntry(jCpy, 'encryptedSelf', false, path), true, [...path, ".encryptedSelf"]),
 		})
 		if (!ignoreUnknownKeys) {
 			const unused = Object.keys(jCpy)

@@ -83,7 +83,7 @@ export class DecryptedFinancialInstitutionInformation {
 			proxyBankAccount: expectString(extractEntry(jCpy, 'proxyBankAccount', false, path), true, [...path, ".proxyBankAccount"]),
 			proxyBic: expectString(extractEntry(jCpy, 'proxyBic', false, path), true, [...path, ".proxyBic"]),
 			preferredFiiForPartners: expectArray(extractEntry(jCpy, 'preferredFiiForPartners', false, path), false, [...path, ".preferredFiiForPartners"], (x0, p0) => expectString(x0, false, p0)),
-			encryptedSelf: expectString(extractEntry(jCpy, 'encryptedSelf', false, path), false, [...path, ".encryptedSelf"]),
+			encryptedSelf: expectString(extractEntry(jCpy, 'encryptedSelf', false, path), true, [...path, ".encryptedSelf"]),
 		})
 		if (!ignoreUnknownKeys) {
 			const unused = Object.keys(jCpy)
@@ -152,7 +152,7 @@ export class EncryptedFinancialInstitutionInformation {
 			proxyBankAccount: expectString(extractEntry(jCpy, 'proxyBankAccount', false, path), true, [...path, ".proxyBankAccount"]),
 			proxyBic: expectString(extractEntry(jCpy, 'proxyBic', false, path), true, [...path, ".proxyBic"]),
 			preferredFiiForPartners: expectArray(extractEntry(jCpy, 'preferredFiiForPartners', false, path), false, [...path, ".preferredFiiForPartners"], (x0, p0) => expectString(x0, false, p0)),
-			encryptedSelf: expectString(extractEntry(jCpy, 'encryptedSelf', false, path), false, [...path, ".encryptedSelf"]),
+			encryptedSelf: expectString(extractEntry(jCpy, 'encryptedSelf', false, path), true, [...path, ".encryptedSelf"]),
 		})
 		if (!ignoreUnknownKeys) {
 			const unused = Object.keys(jCpy)

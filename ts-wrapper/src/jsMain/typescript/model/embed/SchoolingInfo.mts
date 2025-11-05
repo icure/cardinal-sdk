@@ -63,7 +63,7 @@ export class DecryptedSchoolingInfo {
 			endDate: expectNumber(extractEntry(jCpy, 'endDate', false, path), true, true, [...path, ".endDate"]),
 			school: expectString(extractEntry(jCpy, 'school', false, path), true, [...path, ".school"]),
 			typeOfEducation: expectObject(extractEntry(jCpy, 'typeOfEducation', false, path), true, ignoreUnknownKeys, [...path, ".typeOfEducation"], CodeStub.fromJSON),
-			encryptedSelf: expectString(extractEntry(jCpy, 'encryptedSelf', false, path), false, [...path, ".encryptedSelf"]),
+			encryptedSelf: expectString(extractEntry(jCpy, 'encryptedSelf', false, path), true, [...path, ".encryptedSelf"]),
 		})
 		if (!ignoreUnknownKeys) {
 			const unused = Object.keys(jCpy)
@@ -117,7 +117,7 @@ export class EncryptedSchoolingInfo {
 			endDate: expectNumber(extractEntry(jCpy, 'endDate', false, path), true, true, [...path, ".endDate"]),
 			school: expectString(extractEntry(jCpy, 'school', false, path), true, [...path, ".school"]),
 			typeOfEducation: expectObject(extractEntry(jCpy, 'typeOfEducation', false, path), true, ignoreUnknownKeys, [...path, ".typeOfEducation"], CodeStub.fromJSON),
-			encryptedSelf: expectString(extractEntry(jCpy, 'encryptedSelf', false, path), false, [...path, ".encryptedSelf"]),
+			encryptedSelf: expectString(extractEntry(jCpy, 'encryptedSelf', false, path), true, [...path, ".encryptedSelf"]),
 		})
 		if (!ignoreUnknownKeys) {
 			const unused = Object.keys(jCpy)

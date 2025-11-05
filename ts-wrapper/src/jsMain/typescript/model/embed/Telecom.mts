@@ -56,7 +56,7 @@ export class DecryptedTelecom {
 			telecomType: expectStringEnum(extractEntry(jCpy, 'telecomType', false, path), true, [...path, ".telecomType"], TelecomType, 'TelecomType'),
 			telecomNumber: expectString(extractEntry(jCpy, 'telecomNumber', false, path), true, [...path, ".telecomNumber"]),
 			telecomDescription: expectString(extractEntry(jCpy, 'telecomDescription', false, path), true, [...path, ".telecomDescription"]),
-			encryptedSelf: expectString(extractEntry(jCpy, 'encryptedSelf', false, path), false, [...path, ".encryptedSelf"]),
+			encryptedSelf: expectString(extractEntry(jCpy, 'encryptedSelf', false, path), true, [...path, ".encryptedSelf"]),
 		})
 		if (!ignoreUnknownKeys) {
 			const unused = Object.keys(jCpy)
@@ -105,7 +105,7 @@ export class EncryptedTelecom {
 			telecomType: expectStringEnum(extractEntry(jCpy, 'telecomType', false, path), true, [...path, ".telecomType"], TelecomType, 'TelecomType'),
 			telecomNumber: expectString(extractEntry(jCpy, 'telecomNumber', false, path), true, [...path, ".telecomNumber"]),
 			telecomDescription: expectString(extractEntry(jCpy, 'telecomDescription', false, path), true, [...path, ".telecomDescription"]),
-			encryptedSelf: expectString(extractEntry(jCpy, 'encryptedSelf', false, path), false, [...path, ".encryptedSelf"]),
+			encryptedSelf: expectString(extractEntry(jCpy, 'encryptedSelf', false, path), true, [...path, ".encryptedSelf"]),
 		})
 		if (!ignoreUnknownKeys) {
 			const unused = Object.keys(jCpy)

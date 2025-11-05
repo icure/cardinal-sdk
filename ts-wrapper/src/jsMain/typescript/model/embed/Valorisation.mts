@@ -110,7 +110,7 @@ export class DecryptedValorisation {
 				(k0, p0) => expectString(k0, false, p0),
 				(v0, p0) => expectString(v0, false, p0)
 			),
-			encryptedSelf: expectString(extractEntry(jCpy, 'encryptedSelf', false, path), false, [...path, ".encryptedSelf"]),
+			encryptedSelf: expectString(extractEntry(jCpy, 'encryptedSelf', false, path), true, [...path, ".encryptedSelf"]),
 		})
 		if (!ignoreUnknownKeys) {
 			const unused = Object.keys(jCpy)
@@ -200,7 +200,7 @@ export class EncryptedValorisation {
 				(k0, p0) => expectString(k0, false, p0),
 				(v0, p0) => expectString(v0, false, p0)
 			),
-			encryptedSelf: expectString(extractEntry(jCpy, 'encryptedSelf', false, path), false, [...path, ".encryptedSelf"]),
+			encryptedSelf: expectString(extractEntry(jCpy, 'encryptedSelf', false, path), true, [...path, ".encryptedSelf"]),
 		})
 		if (!ignoreUnknownKeys) {
 			const unused = Object.keys(jCpy)
