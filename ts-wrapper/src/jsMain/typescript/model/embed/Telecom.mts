@@ -1,4 +1,5 @@
 // auto-generated file
+import {expectString, expectStringEnum, extractEntry} from '../../internal/JsonDecodeUtils.mjs';
 import {Base64String} from '../specializations/Base64String.mjs';
 import {Encryptable} from './Encryptable.mjs';
 import {TelecomType} from './TelecomType.mjs';
@@ -13,6 +14,8 @@ export interface Telecom extends Encryptable {
 	telecomDescription: string | undefined;
 
 	readonly isEncrypted: boolean;
+
+	toJSON(): object;
 
 }
 
@@ -36,6 +39,33 @@ export class DecryptedTelecom {
 		if ('encryptedSelf' in partial) this.encryptedSelf = partial.encryptedSelf;
 	}
 
+	toJSON(): object {
+		const res: { [k: string]: any } = {}
+		if (this.telecomType != undefined) res['telecomType'] = this.telecomType
+		if (this.telecomNumber != undefined) res['telecomNumber'] = this.telecomNumber
+		if (this.telecomDescription != undefined) res['telecomDescription'] = this.telecomDescription
+		if (this.encryptedSelf != undefined) res['encryptedSelf'] = this.encryptedSelf
+		res['isEncrypted'] = false
+		return res
+	}
+
+	static fromJSON(json: any, ignoreUnknownKeys: boolean = false,
+			path: Array<string> = ['DecryptedTelecom']): DecryptedTelecom {
+		if (typeof json != 'object') throw new Error(`Expected json object at path ${path.join("")}`)
+		const jCpy = { ...json }
+		if (extractEntry(jCpy, "isEncrypted", true, path) !== false) throw new Error(`Unexpected value for ${path.join("")} isEncrypted marker, should be false. The provided json doesn't represent a DecryptedTelecom`)
+		const res = new DecryptedTelecom({
+			telecomType: expectStringEnum(extractEntry(jCpy, 'telecomType', false, path), true, [...path, ".telecomType"], TelecomType, 'TelecomType'),
+			telecomNumber: expectString(extractEntry(jCpy, 'telecomNumber', false, path), true, [...path, ".telecomNumber"]),
+			telecomDescription: expectString(extractEntry(jCpy, 'telecomDescription', false, path), true, [...path, ".telecomDescription"]),
+			encryptedSelf: expectString(extractEntry(jCpy, 'encryptedSelf', false, path), true, [...path, ".encryptedSelf"]),
+		})
+		if (!ignoreUnknownKeys) {
+			const unused = Object.keys(jCpy)
+			if (unused.length > 0) throw new Error(`Unexpected key(s) for json object DecryptedTelecom at path ${path.join("")}: ${unused}`)}
+		return res
+	}
+
 }
 
 export class EncryptedTelecom {
@@ -56,6 +86,33 @@ export class EncryptedTelecom {
 		if ('telecomNumber' in partial) this.telecomNumber = partial.telecomNumber;
 		if ('telecomDescription' in partial) this.telecomDescription = partial.telecomDescription;
 		if ('encryptedSelf' in partial) this.encryptedSelf = partial.encryptedSelf;
+	}
+
+	toJSON(): object {
+		const res: { [k: string]: any } = {}
+		if (this.telecomType != undefined) res['telecomType'] = this.telecomType
+		if (this.telecomNumber != undefined) res['telecomNumber'] = this.telecomNumber
+		if (this.telecomDescription != undefined) res['telecomDescription'] = this.telecomDescription
+		if (this.encryptedSelf != undefined) res['encryptedSelf'] = this.encryptedSelf
+		res['isEncrypted'] = true
+		return res
+	}
+
+	static fromJSON(json: any, ignoreUnknownKeys: boolean = false,
+			path: Array<string> = ['EncryptedTelecom']): EncryptedTelecom {
+		if (typeof json != 'object') throw new Error(`Expected json object at path ${path.join("")}`)
+		const jCpy = { ...json }
+		if (extractEntry(jCpy, "isEncrypted", true, path) !== true) throw new Error(`Unexpected value for ${path.join("")} isEncrypted marker, should be true. The provided json doesn't represent a EncryptedTelecom`)
+		const res = new EncryptedTelecom({
+			telecomType: expectStringEnum(extractEntry(jCpy, 'telecomType', false, path), true, [...path, ".telecomType"], TelecomType, 'TelecomType'),
+			telecomNumber: expectString(extractEntry(jCpy, 'telecomNumber', false, path), true, [...path, ".telecomNumber"]),
+			telecomDescription: expectString(extractEntry(jCpy, 'telecomDescription', false, path), true, [...path, ".telecomDescription"]),
+			encryptedSelf: expectString(extractEntry(jCpy, 'encryptedSelf', false, path), true, [...path, ".encryptedSelf"]),
+		})
+		if (!ignoreUnknownKeys) {
+			const unused = Object.keys(jCpy)
+			if (unused.length > 0) throw new Error(`Unexpected key(s) for json object EncryptedTelecom at path ${path.join("")}: ${unused}`)}
+		return res
 	}
 
 }

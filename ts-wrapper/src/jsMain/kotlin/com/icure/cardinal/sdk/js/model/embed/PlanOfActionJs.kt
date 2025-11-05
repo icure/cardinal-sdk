@@ -39,7 +39,7 @@ public sealed external interface PlanOfActionJs : EncryptableJs, ICureDocumentJs
 
 	public val numberOfCares: Double?
 
-	public val careTeamMemberships: Array<out CareTeamMembershipJs?>
+	public val careTeamMemberships: Array<out CareTeamMembershipJs>
 
 	public val relevant: Boolean
 
@@ -94,7 +94,7 @@ public external class DecryptedPlanOfActionJs(
 
 	override val numberOfCares: Double?
 
-	override val careTeamMemberships: Array<DecryptedCareTeamMembershipJs?>
+	override val careTeamMemberships: Array<DecryptedCareTeamMembershipJs>
 
 	override val relevant: Boolean
 
@@ -151,7 +151,7 @@ public external class EncryptedPlanOfActionJs(
 
 	override val numberOfCares: Double?
 
-	override val careTeamMemberships: Array<EncryptedCareTeamMembershipJs?>
+	override val careTeamMemberships: Array<EncryptedCareTeamMembershipJs>
 
 	override val relevant: Boolean
 

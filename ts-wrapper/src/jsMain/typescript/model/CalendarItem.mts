@@ -1,4 +1,5 @@
 // auto-generated file
+import {expectArray, expectBoolean, expectMap, expectNumber, expectObject, expectString, expectStringEnum, extractEntry} from '../internal/JsonDecodeUtils.mjs';
 import {randomUuid} from '../utils/Id.mjs';
 import {CalendarItem as CalendarItem_} from './CalendarItem.mjs';
 import {CodeStub} from './base/CodeStub.mjs';
@@ -69,6 +70,8 @@ export interface CalendarItem extends StoredDocument, ICureDocument<string>, Has
 	flowItem: FlowItem | undefined;
 
 	readonly isEncrypted: boolean;
+
+	toJSON(): object;
 
 }
 
@@ -209,6 +212,129 @@ export class DecryptedCalendarItem {
 		if ('securityMetadata' in partial) this.securityMetadata = partial.securityMetadata;
 	}
 
+	toJSON(): object {
+		const res: { [k: string]: any } = {}
+		res['id'] = this.id
+		if (this.rev != undefined) res['rev'] = this.rev
+		if (this.created != undefined) res['created'] = this.created
+		if (this.modified != undefined) res['modified'] = this.modified
+		if (this.author != undefined) res['author'] = this.author
+		if (this.responsible != undefined) res['responsible'] = this.responsible
+		if (this.medicalLocationId != undefined) res['medicalLocationId'] = this.medicalLocationId
+		res['tags'] = this.tags.map((x0) => x0.toJSON() )
+		res['codes'] = this.codes.map((x0) => x0.toJSON() )
+		if (this.endOfLife != undefined) res['endOfLife'] = this.endOfLife
+		if (this.deletionDate != undefined) res['deletionDate'] = this.deletionDate
+		if (this.title != undefined) res['title'] = this.title
+		if (this.calendarItemTypeId != undefined) res['calendarItemTypeId'] = this.calendarItemTypeId
+		if (this.masterCalendarItemId != undefined) res['masterCalendarItemId'] = this.masterCalendarItemId
+		if (this.patientId != undefined) res['patientId'] = this.patientId
+		if (this.important != undefined) res['important'] = this.important
+		if (this.homeVisit != undefined) res['homeVisit'] = this.homeVisit
+		if (this.phoneNumber != undefined) res['phoneNumber'] = this.phoneNumber
+		if (this.placeId != undefined) res['placeId'] = this.placeId
+		if (this.address != undefined) res['address'] = this.address.toJSON()
+		if (this.addressText != undefined) res['addressText'] = this.addressText
+		if (this.startTime != undefined) res['startTime'] = this.startTime
+		if (this.endTime != undefined) res['endTime'] = this.endTime
+		if (this.confirmationTime != undefined) res['confirmationTime'] = this.confirmationTime
+		if (this.cancellationTimestamp != undefined) res['cancellationTimestamp'] = this.cancellationTimestamp
+		if (this.confirmationId != undefined) res['confirmationId'] = this.confirmationId
+		if (this.duration != undefined) res['duration'] = this.duration
+		if (this.allDay != undefined) res['allDay'] = this.allDay
+		if (this.details != undefined) res['details'] = this.details
+		if (this.wasMigrated != undefined) res['wasMigrated'] = this.wasMigrated
+		if (this.agendaId != undefined) res['agendaId'] = this.agendaId
+		if (this.resourceGroup != undefined) res['resourceGroup'] = this.resourceGroup.toJSON()
+		if (this.availabilitiesAssignmentStrategy != undefined) res['availabilitiesAssignmentStrategy'] = this.availabilitiesAssignmentStrategy
+		if (this.hcpId != undefined) res['hcpId'] = this.hcpId
+		if (this.recurrenceId != undefined) res['recurrenceId'] = this.recurrenceId
+		res['meetingTags'] = this.meetingTags.map((x0) => x0.toJSON() )
+		if (this.flowItem != undefined) res['flowItem'] = this.flowItem.toJSON()
+		res['secretForeignKeys'] = this.secretForeignKeys.map((x0) => x0 )
+		res['cryptedForeignKeys'] = Object.fromEntries(Object.entries(this.cryptedForeignKeys).map(([k0, v0]) => [k0, v0.map((x1) => x1.toJSON() )]))
+		res['delegations'] = Object.fromEntries(Object.entries(this.delegations).map(([k0, v0]) => [k0, v0.map((x1) => x1.toJSON() )]))
+		res['encryptionKeys'] = Object.fromEntries(Object.entries(this.encryptionKeys).map(([k0, v0]) => [k0, v0.map((x1) => x1.toJSON() )]))
+		if (this.encryptedSelf != undefined) res['encryptedSelf'] = this.encryptedSelf
+		if (this.securityMetadata != undefined) res['securityMetadata'] = this.securityMetadata.toJSON()
+		res['isEncrypted'] = false
+		return res
+	}
+
+	static fromJSON(json: any, ignoreUnknownKeys: boolean = false,
+			path: Array<string> = ['DecryptedCalendarItem']): DecryptedCalendarItem {
+		if (typeof json != 'object') throw new Error(`Expected json object at path ${path.join("")}`)
+		const jCpy = { ...json }
+		if (extractEntry(jCpy, "isEncrypted", true, path) !== false) throw new Error(`Unexpected value for ${path.join("")} isEncrypted marker, should be false. The provided json doesn't represent a DecryptedCalendarItem`)
+		const res = new DecryptedCalendarItem({
+			id: expectString(extractEntry(jCpy, 'id', true, path), false, [...path, ".id"]),
+			rev: expectString(extractEntry(jCpy, 'rev', false, path), true, [...path, ".rev"]),
+			created: expectNumber(extractEntry(jCpy, 'created', false, path), true, true, [...path, ".created"]),
+			modified: expectNumber(extractEntry(jCpy, 'modified', false, path), true, true, [...path, ".modified"]),
+			author: expectString(extractEntry(jCpy, 'author', false, path), true, [...path, ".author"]),
+			responsible: expectString(extractEntry(jCpy, 'responsible', false, path), true, [...path, ".responsible"]),
+			medicalLocationId: expectString(extractEntry(jCpy, 'medicalLocationId', false, path), true, [...path, ".medicalLocationId"]),
+			tags: expectArray(extractEntry(jCpy, 'tags', false, path), false, [...path, ".tags"], (x0, p0) => expectObject(x0, false, ignoreUnknownKeys, p0, CodeStub.fromJSON)),
+			codes: expectArray(extractEntry(jCpy, 'codes', false, path), false, [...path, ".codes"], (x0, p0) => expectObject(x0, false, ignoreUnknownKeys, p0, CodeStub.fromJSON)),
+			endOfLife: expectNumber(extractEntry(jCpy, 'endOfLife', false, path), true, true, [...path, ".endOfLife"]),
+			deletionDate: expectNumber(extractEntry(jCpy, 'deletionDate', false, path), true, true, [...path, ".deletionDate"]),
+			title: expectString(extractEntry(jCpy, 'title', false, path), true, [...path, ".title"]),
+			calendarItemTypeId: expectString(extractEntry(jCpy, 'calendarItemTypeId', false, path), true, [...path, ".calendarItemTypeId"]),
+			masterCalendarItemId: expectString(extractEntry(jCpy, 'masterCalendarItemId', false, path), true, [...path, ".masterCalendarItemId"]),
+			patientId: expectString(extractEntry(jCpy, 'patientId', false, path), true, [...path, ".patientId"]),
+			important: expectBoolean(extractEntry(jCpy, 'important', false, path), true, [...path, ".important"]),
+			homeVisit: expectBoolean(extractEntry(jCpy, 'homeVisit', false, path), true, [...path, ".homeVisit"]),
+			phoneNumber: expectString(extractEntry(jCpy, 'phoneNumber', false, path), true, [...path, ".phoneNumber"]),
+			placeId: expectString(extractEntry(jCpy, 'placeId', false, path), true, [...path, ".placeId"]),
+			address: expectObject(extractEntry(jCpy, 'address', false, path), true, ignoreUnknownKeys, [...path, ".address"], DecryptedAddress.fromJSON),
+			addressText: expectString(extractEntry(jCpy, 'addressText', false, path), true, [...path, ".addressText"]),
+			startTime: expectNumber(extractEntry(jCpy, 'startTime', false, path), true, true, [...path, ".startTime"]),
+			endTime: expectNumber(extractEntry(jCpy, 'endTime', false, path), true, true, [...path, ".endTime"]),
+			confirmationTime: expectNumber(extractEntry(jCpy, 'confirmationTime', false, path), true, true, [...path, ".confirmationTime"]),
+			cancellationTimestamp: expectNumber(extractEntry(jCpy, 'cancellationTimestamp', false, path), true, true, [...path, ".cancellationTimestamp"]),
+			confirmationId: expectString(extractEntry(jCpy, 'confirmationId', false, path), true, [...path, ".confirmationId"]),
+			duration: expectNumber(extractEntry(jCpy, 'duration', false, path), true, true, [...path, ".duration"]),
+			allDay: expectBoolean(extractEntry(jCpy, 'allDay', false, path), true, [...path, ".allDay"]),
+			details: expectString(extractEntry(jCpy, 'details', false, path), true, [...path, ".details"]),
+			wasMigrated: expectBoolean(extractEntry(jCpy, 'wasMigrated', false, path), true, [...path, ".wasMigrated"]),
+			agendaId: expectString(extractEntry(jCpy, 'agendaId', false, path), true, [...path, ".agendaId"]),
+			resourceGroup: expectObject(extractEntry(jCpy, 'resourceGroup', false, path), true, ignoreUnknownKeys, [...path, ".resourceGroup"], CodeStub.fromJSON),
+			availabilitiesAssignmentStrategy: expectStringEnum(extractEntry(jCpy, 'availabilitiesAssignmentStrategy', false, path), true, [...path, ".availabilitiesAssignmentStrategy"], CalendarItem_.AvailabilitiesAssignmentStrategy, 'CalendarItem.AvailabilitiesAssignmentStrategy'),
+			hcpId: expectString(extractEntry(jCpy, 'hcpId', false, path), true, [...path, ".hcpId"]),
+			recurrenceId: expectString(extractEntry(jCpy, 'recurrenceId', false, path), true, [...path, ".recurrenceId"]),
+			meetingTags: expectArray(extractEntry(jCpy, 'meetingTags', false, path), false, [...path, ".meetingTags"], (x0, p0) => expectObject(x0, false, ignoreUnknownKeys, p0, DecryptedCalendarItemTag.fromJSON)),
+			flowItem: expectObject(extractEntry(jCpy, 'flowItem', false, path), true, ignoreUnknownKeys, [...path, ".flowItem"], FlowItem.fromJSON),
+			secretForeignKeys: expectArray(extractEntry(jCpy, 'secretForeignKeys', false, path), false, [...path, ".secretForeignKeys"], (x0, p0) => expectString(x0, false, p0)),
+			cryptedForeignKeys: expectMap(
+				extractEntry(jCpy, 'cryptedForeignKeys', false, path),
+				false,
+				[...path, ".cryptedForeignKeys"],
+				(k0, p0) => expectString(k0, false, p0),
+				(v0, p0) => expectArray(v0, false, p0, (x1, p1) => expectObject(x1, false, ignoreUnknownKeys, p1, Delegation.fromJSON))
+			),
+			delegations: expectMap(
+				extractEntry(jCpy, 'delegations', false, path),
+				false,
+				[...path, ".delegations"],
+				(k0, p0) => expectString(k0, false, p0),
+				(v0, p0) => expectArray(v0, false, p0, (x1, p1) => expectObject(x1, false, ignoreUnknownKeys, p1, Delegation.fromJSON))
+			),
+			encryptionKeys: expectMap(
+				extractEntry(jCpy, 'encryptionKeys', false, path),
+				false,
+				[...path, ".encryptionKeys"],
+				(k0, p0) => expectString(k0, false, p0),
+				(v0, p0) => expectArray(v0, false, p0, (x1, p1) => expectObject(x1, false, ignoreUnknownKeys, p1, Delegation.fromJSON))
+			),
+			encryptedSelf: expectString(extractEntry(jCpy, 'encryptedSelf', false, path), true, [...path, ".encryptedSelf"]),
+			securityMetadata: expectObject(extractEntry(jCpy, 'securityMetadata', false, path), true, ignoreUnknownKeys, [...path, ".securityMetadata"], SecurityMetadata.fromJSON),
+		})
+		if (!ignoreUnknownKeys) {
+			const unused = Object.keys(jCpy)
+			if (unused.length > 0) throw new Error(`Unexpected key(s) for json object DecryptedCalendarItem at path ${path.join("")}: ${unused}`)}
+		return res
+	}
+
 }
 
 export class EncryptedCalendarItem {
@@ -346,6 +472,129 @@ export class EncryptedCalendarItem {
 		if ('encryptionKeys' in partial && partial.encryptionKeys !== undefined) this.encryptionKeys = partial.encryptionKeys;
 		if ('encryptedSelf' in partial) this.encryptedSelf = partial.encryptedSelf;
 		if ('securityMetadata' in partial) this.securityMetadata = partial.securityMetadata;
+	}
+
+	toJSON(): object {
+		const res: { [k: string]: any } = {}
+		res['id'] = this.id
+		if (this.rev != undefined) res['rev'] = this.rev
+		if (this.created != undefined) res['created'] = this.created
+		if (this.modified != undefined) res['modified'] = this.modified
+		if (this.author != undefined) res['author'] = this.author
+		if (this.responsible != undefined) res['responsible'] = this.responsible
+		if (this.medicalLocationId != undefined) res['medicalLocationId'] = this.medicalLocationId
+		res['tags'] = this.tags.map((x0) => x0.toJSON() )
+		res['codes'] = this.codes.map((x0) => x0.toJSON() )
+		if (this.endOfLife != undefined) res['endOfLife'] = this.endOfLife
+		if (this.deletionDate != undefined) res['deletionDate'] = this.deletionDate
+		if (this.title != undefined) res['title'] = this.title
+		if (this.calendarItemTypeId != undefined) res['calendarItemTypeId'] = this.calendarItemTypeId
+		if (this.masterCalendarItemId != undefined) res['masterCalendarItemId'] = this.masterCalendarItemId
+		if (this.patientId != undefined) res['patientId'] = this.patientId
+		if (this.important != undefined) res['important'] = this.important
+		if (this.homeVisit != undefined) res['homeVisit'] = this.homeVisit
+		if (this.phoneNumber != undefined) res['phoneNumber'] = this.phoneNumber
+		if (this.placeId != undefined) res['placeId'] = this.placeId
+		if (this.address != undefined) res['address'] = this.address.toJSON()
+		if (this.addressText != undefined) res['addressText'] = this.addressText
+		if (this.startTime != undefined) res['startTime'] = this.startTime
+		if (this.endTime != undefined) res['endTime'] = this.endTime
+		if (this.confirmationTime != undefined) res['confirmationTime'] = this.confirmationTime
+		if (this.cancellationTimestamp != undefined) res['cancellationTimestamp'] = this.cancellationTimestamp
+		if (this.confirmationId != undefined) res['confirmationId'] = this.confirmationId
+		if (this.duration != undefined) res['duration'] = this.duration
+		if (this.allDay != undefined) res['allDay'] = this.allDay
+		if (this.details != undefined) res['details'] = this.details
+		if (this.wasMigrated != undefined) res['wasMigrated'] = this.wasMigrated
+		if (this.agendaId != undefined) res['agendaId'] = this.agendaId
+		if (this.resourceGroup != undefined) res['resourceGroup'] = this.resourceGroup.toJSON()
+		if (this.availabilitiesAssignmentStrategy != undefined) res['availabilitiesAssignmentStrategy'] = this.availabilitiesAssignmentStrategy
+		if (this.hcpId != undefined) res['hcpId'] = this.hcpId
+		if (this.recurrenceId != undefined) res['recurrenceId'] = this.recurrenceId
+		res['meetingTags'] = this.meetingTags.map((x0) => x0.toJSON() )
+		if (this.flowItem != undefined) res['flowItem'] = this.flowItem.toJSON()
+		res['secretForeignKeys'] = this.secretForeignKeys.map((x0) => x0 )
+		res['cryptedForeignKeys'] = Object.fromEntries(Object.entries(this.cryptedForeignKeys).map(([k0, v0]) => [k0, v0.map((x1) => x1.toJSON() )]))
+		res['delegations'] = Object.fromEntries(Object.entries(this.delegations).map(([k0, v0]) => [k0, v0.map((x1) => x1.toJSON() )]))
+		res['encryptionKeys'] = Object.fromEntries(Object.entries(this.encryptionKeys).map(([k0, v0]) => [k0, v0.map((x1) => x1.toJSON() )]))
+		if (this.encryptedSelf != undefined) res['encryptedSelf'] = this.encryptedSelf
+		if (this.securityMetadata != undefined) res['securityMetadata'] = this.securityMetadata.toJSON()
+		res['isEncrypted'] = true
+		return res
+	}
+
+	static fromJSON(json: any, ignoreUnknownKeys: boolean = false,
+			path: Array<string> = ['EncryptedCalendarItem']): EncryptedCalendarItem {
+		if (typeof json != 'object') throw new Error(`Expected json object at path ${path.join("")}`)
+		const jCpy = { ...json }
+		if (extractEntry(jCpy, "isEncrypted", true, path) !== true) throw new Error(`Unexpected value for ${path.join("")} isEncrypted marker, should be true. The provided json doesn't represent a EncryptedCalendarItem`)
+		const res = new EncryptedCalendarItem({
+			id: expectString(extractEntry(jCpy, 'id', true, path), false, [...path, ".id"]),
+			rev: expectString(extractEntry(jCpy, 'rev', false, path), true, [...path, ".rev"]),
+			created: expectNumber(extractEntry(jCpy, 'created', false, path), true, true, [...path, ".created"]),
+			modified: expectNumber(extractEntry(jCpy, 'modified', false, path), true, true, [...path, ".modified"]),
+			author: expectString(extractEntry(jCpy, 'author', false, path), true, [...path, ".author"]),
+			responsible: expectString(extractEntry(jCpy, 'responsible', false, path), true, [...path, ".responsible"]),
+			medicalLocationId: expectString(extractEntry(jCpy, 'medicalLocationId', false, path), true, [...path, ".medicalLocationId"]),
+			tags: expectArray(extractEntry(jCpy, 'tags', false, path), false, [...path, ".tags"], (x0, p0) => expectObject(x0, false, ignoreUnknownKeys, p0, CodeStub.fromJSON)),
+			codes: expectArray(extractEntry(jCpy, 'codes', false, path), false, [...path, ".codes"], (x0, p0) => expectObject(x0, false, ignoreUnknownKeys, p0, CodeStub.fromJSON)),
+			endOfLife: expectNumber(extractEntry(jCpy, 'endOfLife', false, path), true, true, [...path, ".endOfLife"]),
+			deletionDate: expectNumber(extractEntry(jCpy, 'deletionDate', false, path), true, true, [...path, ".deletionDate"]),
+			title: expectString(extractEntry(jCpy, 'title', false, path), true, [...path, ".title"]),
+			calendarItemTypeId: expectString(extractEntry(jCpy, 'calendarItemTypeId', false, path), true, [...path, ".calendarItemTypeId"]),
+			masterCalendarItemId: expectString(extractEntry(jCpy, 'masterCalendarItemId', false, path), true, [...path, ".masterCalendarItemId"]),
+			patientId: expectString(extractEntry(jCpy, 'patientId', false, path), true, [...path, ".patientId"]),
+			important: expectBoolean(extractEntry(jCpy, 'important', false, path), true, [...path, ".important"]),
+			homeVisit: expectBoolean(extractEntry(jCpy, 'homeVisit', false, path), true, [...path, ".homeVisit"]),
+			phoneNumber: expectString(extractEntry(jCpy, 'phoneNumber', false, path), true, [...path, ".phoneNumber"]),
+			placeId: expectString(extractEntry(jCpy, 'placeId', false, path), true, [...path, ".placeId"]),
+			address: expectObject(extractEntry(jCpy, 'address', false, path), true, ignoreUnknownKeys, [...path, ".address"], EncryptedAddress.fromJSON),
+			addressText: expectString(extractEntry(jCpy, 'addressText', false, path), true, [...path, ".addressText"]),
+			startTime: expectNumber(extractEntry(jCpy, 'startTime', false, path), true, true, [...path, ".startTime"]),
+			endTime: expectNumber(extractEntry(jCpy, 'endTime', false, path), true, true, [...path, ".endTime"]),
+			confirmationTime: expectNumber(extractEntry(jCpy, 'confirmationTime', false, path), true, true, [...path, ".confirmationTime"]),
+			cancellationTimestamp: expectNumber(extractEntry(jCpy, 'cancellationTimestamp', false, path), true, true, [...path, ".cancellationTimestamp"]),
+			confirmationId: expectString(extractEntry(jCpy, 'confirmationId', false, path), true, [...path, ".confirmationId"]),
+			duration: expectNumber(extractEntry(jCpy, 'duration', false, path), true, true, [...path, ".duration"]),
+			allDay: expectBoolean(extractEntry(jCpy, 'allDay', false, path), true, [...path, ".allDay"]),
+			details: expectString(extractEntry(jCpy, 'details', false, path), true, [...path, ".details"]),
+			wasMigrated: expectBoolean(extractEntry(jCpy, 'wasMigrated', false, path), true, [...path, ".wasMigrated"]),
+			agendaId: expectString(extractEntry(jCpy, 'agendaId', false, path), true, [...path, ".agendaId"]),
+			resourceGroup: expectObject(extractEntry(jCpy, 'resourceGroup', false, path), true, ignoreUnknownKeys, [...path, ".resourceGroup"], CodeStub.fromJSON),
+			availabilitiesAssignmentStrategy: expectStringEnum(extractEntry(jCpy, 'availabilitiesAssignmentStrategy', false, path), true, [...path, ".availabilitiesAssignmentStrategy"], CalendarItem_.AvailabilitiesAssignmentStrategy, 'CalendarItem.AvailabilitiesAssignmentStrategy'),
+			hcpId: expectString(extractEntry(jCpy, 'hcpId', false, path), true, [...path, ".hcpId"]),
+			recurrenceId: expectString(extractEntry(jCpy, 'recurrenceId', false, path), true, [...path, ".recurrenceId"]),
+			meetingTags: expectArray(extractEntry(jCpy, 'meetingTags', false, path), false, [...path, ".meetingTags"], (x0, p0) => expectObject(x0, false, ignoreUnknownKeys, p0, EncryptedCalendarItemTag.fromJSON)),
+			flowItem: expectObject(extractEntry(jCpy, 'flowItem', false, path), true, ignoreUnknownKeys, [...path, ".flowItem"], FlowItem.fromJSON),
+			secretForeignKeys: expectArray(extractEntry(jCpy, 'secretForeignKeys', false, path), false, [...path, ".secretForeignKeys"], (x0, p0) => expectString(x0, false, p0)),
+			cryptedForeignKeys: expectMap(
+				extractEntry(jCpy, 'cryptedForeignKeys', false, path),
+				false,
+				[...path, ".cryptedForeignKeys"],
+				(k0, p0) => expectString(k0, false, p0),
+				(v0, p0) => expectArray(v0, false, p0, (x1, p1) => expectObject(x1, false, ignoreUnknownKeys, p1, Delegation.fromJSON))
+			),
+			delegations: expectMap(
+				extractEntry(jCpy, 'delegations', false, path),
+				false,
+				[...path, ".delegations"],
+				(k0, p0) => expectString(k0, false, p0),
+				(v0, p0) => expectArray(v0, false, p0, (x1, p1) => expectObject(x1, false, ignoreUnknownKeys, p1, Delegation.fromJSON))
+			),
+			encryptionKeys: expectMap(
+				extractEntry(jCpy, 'encryptionKeys', false, path),
+				false,
+				[...path, ".encryptionKeys"],
+				(k0, p0) => expectString(k0, false, p0),
+				(v0, p0) => expectArray(v0, false, p0, (x1, p1) => expectObject(x1, false, ignoreUnknownKeys, p1, Delegation.fromJSON))
+			),
+			encryptedSelf: expectString(extractEntry(jCpy, 'encryptedSelf', false, path), true, [...path, ".encryptedSelf"]),
+			securityMetadata: expectObject(extractEntry(jCpy, 'securityMetadata', false, path), true, ignoreUnknownKeys, [...path, ".securityMetadata"], SecurityMetadata.fromJSON),
+		})
+		if (!ignoreUnknownKeys) {
+			const unused = Object.keys(jCpy)
+			if (unused.length > 0) throw new Error(`Unexpected key(s) for json object EncryptedCalendarItem at path ${path.join("")}: ${unused}`)}
+		return res
 	}
 
 }

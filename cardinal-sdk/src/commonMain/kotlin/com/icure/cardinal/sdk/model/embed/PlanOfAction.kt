@@ -6,12 +6,6 @@ import com.icure.cardinal.sdk.model.base.Named
 import com.icure.cardinal.sdk.model.specializations.Base64String
 import com.icure.cardinal.sdk.utils.DefaultValue
 import kotlinx.serialization.Serializable
-import kotlin.Boolean
-import kotlin.Int
-import kotlin.Long
-import kotlin.String
-import kotlin.collections.List
-import kotlin.collections.Set
 
 // WARNING: This file is auto-generated. If you change it manually, your changes will be lost.
 // If you want to change the way this class is generated, see [this repo](https://github.com/icure/sdk-codegen).
@@ -60,7 +54,7 @@ sealed interface PlanOfAction : Encryptable, ICureDocument<String>, Named {
 
 	public val numberOfCares: Int?
 
-	public val careTeamMemberships: List<CareTeamMembership?>
+	public val careTeamMemberships: List<CareTeamMembership>
 
 	public val relevant: Boolean
 
@@ -99,7 +93,7 @@ data class DecryptedPlanOfAction(
 	override val documentIds: Set<String> = emptySet(),
 	override val numberOfCares: Int? = null,
 	@DefaultValue("emptyList()")
-	override val careTeamMemberships: List<DecryptedCareTeamMembership?> = emptyList(),
+	override val careTeamMemberships: List<DecryptedCareTeamMembership> = emptyList(),
 	@DefaultValue("true")
 	override val relevant: Boolean = true,
 	override val encryptedSelf: Base64String? = null,
@@ -138,7 +132,7 @@ data class EncryptedPlanOfAction(
 	override val documentIds: Set<String> = emptySet(),
 	override val numberOfCares: Int? = null,
 	@DefaultValue("emptyList()")
-	override val careTeamMemberships: List<EncryptedCareTeamMembership?> = emptyList(),
+	override val careTeamMemberships: List<EncryptedCareTeamMembership> = emptyList(),
 	@DefaultValue("true")
 	override val relevant: Boolean = true,
 	override val encryptedSelf: Base64String? = null,

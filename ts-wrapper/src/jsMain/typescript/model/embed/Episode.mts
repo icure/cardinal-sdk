@@ -1,4 +1,5 @@
 // auto-generated file
+import {expectNumber, expectString, extractEntry} from '../../internal/JsonDecodeUtils.mjs';
 import {randomUuid} from '../../utils/Id.mjs';
 import {Identifiable} from '../base/Identifiable.mjs';
 import {Named} from '../base/Named.mjs';
@@ -15,6 +16,8 @@ export interface Episode extends Encryptable, Identifiable<string>, Named {
 	endDate: number | undefined;
 
 	readonly isEncrypted: boolean;
+
+	toJSON(): object;
 
 }
 
@@ -44,6 +47,37 @@ export class DecryptedEpisode {
 		if ('encryptedSelf' in partial) this.encryptedSelf = partial.encryptedSelf;
 	}
 
+	toJSON(): object {
+		const res: { [k: string]: any } = {}
+		res['id'] = this.id
+		if (this.name != undefined) res['name'] = this.name
+		if (this.comment != undefined) res['comment'] = this.comment
+		if (this.startDate != undefined) res['startDate'] = this.startDate
+		if (this.endDate != undefined) res['endDate'] = this.endDate
+		if (this.encryptedSelf != undefined) res['encryptedSelf'] = this.encryptedSelf
+		res['isEncrypted'] = false
+		return res
+	}
+
+	static fromJSON(json: any, ignoreUnknownKeys: boolean = false,
+			path: Array<string> = ['DecryptedEpisode']): DecryptedEpisode {
+		if (typeof json != 'object') throw new Error(`Expected json object at path ${path.join("")}`)
+		const jCpy = { ...json }
+		if (extractEntry(jCpy, "isEncrypted", true, path) !== false) throw new Error(`Unexpected value for ${path.join("")} isEncrypted marker, should be false. The provided json doesn't represent a DecryptedEpisode`)
+		const res = new DecryptedEpisode({
+			id: expectString(extractEntry(jCpy, 'id', true, path), false, [...path, ".id"]),
+			name: expectString(extractEntry(jCpy, 'name', false, path), true, [...path, ".name"]),
+			comment: expectString(extractEntry(jCpy, 'comment', false, path), true, [...path, ".comment"]),
+			startDate: expectNumber(extractEntry(jCpy, 'startDate', false, path), true, true, [...path, ".startDate"]),
+			endDate: expectNumber(extractEntry(jCpy, 'endDate', false, path), true, true, [...path, ".endDate"]),
+			encryptedSelf: expectString(extractEntry(jCpy, 'encryptedSelf', false, path), true, [...path, ".encryptedSelf"]),
+		})
+		if (!ignoreUnknownKeys) {
+			const unused = Object.keys(jCpy)
+			if (unused.length > 0) throw new Error(`Unexpected key(s) for json object DecryptedEpisode at path ${path.join("")}: ${unused}`)}
+		return res
+	}
+
 }
 
 export class EncryptedEpisode {
@@ -70,6 +104,37 @@ export class EncryptedEpisode {
 		if ('startDate' in partial) this.startDate = partial.startDate;
 		if ('endDate' in partial) this.endDate = partial.endDate;
 		if ('encryptedSelf' in partial) this.encryptedSelf = partial.encryptedSelf;
+	}
+
+	toJSON(): object {
+		const res: { [k: string]: any } = {}
+		res['id'] = this.id
+		if (this.name != undefined) res['name'] = this.name
+		if (this.comment != undefined) res['comment'] = this.comment
+		if (this.startDate != undefined) res['startDate'] = this.startDate
+		if (this.endDate != undefined) res['endDate'] = this.endDate
+		if (this.encryptedSelf != undefined) res['encryptedSelf'] = this.encryptedSelf
+		res['isEncrypted'] = true
+		return res
+	}
+
+	static fromJSON(json: any, ignoreUnknownKeys: boolean = false,
+			path: Array<string> = ['EncryptedEpisode']): EncryptedEpisode {
+		if (typeof json != 'object') throw new Error(`Expected json object at path ${path.join("")}`)
+		const jCpy = { ...json }
+		if (extractEntry(jCpy, "isEncrypted", true, path) !== true) throw new Error(`Unexpected value for ${path.join("")} isEncrypted marker, should be true. The provided json doesn't represent a EncryptedEpisode`)
+		const res = new EncryptedEpisode({
+			id: expectString(extractEntry(jCpy, 'id', true, path), false, [...path, ".id"]),
+			name: expectString(extractEntry(jCpy, 'name', false, path), true, [...path, ".name"]),
+			comment: expectString(extractEntry(jCpy, 'comment', false, path), true, [...path, ".comment"]),
+			startDate: expectNumber(extractEntry(jCpy, 'startDate', false, path), true, true, [...path, ".startDate"]),
+			endDate: expectNumber(extractEntry(jCpy, 'endDate', false, path), true, true, [...path, ".endDate"]),
+			encryptedSelf: expectString(extractEntry(jCpy, 'encryptedSelf', false, path), true, [...path, ".encryptedSelf"]),
+		})
+		if (!ignoreUnknownKeys) {
+			const unused = Object.keys(jCpy)
+			if (unused.length > 0) throw new Error(`Unexpected key(s) for json object EncryptedEpisode at path ${path.join("")}: ${unused}`)}
+		return res
 	}
 
 }

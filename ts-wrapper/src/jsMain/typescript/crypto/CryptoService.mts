@@ -18,11 +18,15 @@ export interface XAesKey {
   readonly aesKey?: any;
   readonly algorithm: string;
 }
-export interface XCryptoService {
-  readonly aes: XAesService;
-  readonly digest: XDigestService;
+export interface XCryptoService extends PartialXCryptoService {
   readonly rsa: XRsaService;
   readonly strongRandom: XStrongRandom;
+}
+export interface PartialXCryptoService {
+  readonly aes: XAesService;
+  readonly digest: XDigestService;
+  readonly rsa: PartialXRsaService & Partial<XRsaService>;
+  readonly strongRandom: PartialXStrongRandom & Partial<XStrongRandom>;
   readonly hmac: XHmacService;
 }
 export interface XDigestService {
@@ -56,21 +60,23 @@ export enum RsaSignatureAlgorithm {
   PssWithSha256 = "PssWithSha256"
 }
 export type RsaAlgorithm = RsaEncryptionAlgorithm | RsaSignatureAlgorithm
-export interface XRsaService {
+interface PartialXRsaService {
   generateKeyPair(algorithm: RsaAlgorithm, keySize: RsaKeySize): Promise<XRsaKeypair>;
   exportPrivateKeyPkcs8(key: XPrivateRsaKey): Promise<Int8Array>;
   exportPublicKeySpki(key: XPublicRsaKey): Promise<Int8Array>;
-  loadKeyPairPkcs8(algorithm: RsaAlgorithm, privateKeyPkcs8: Int8Array): Promise<XRsaKeypair>;
   loadPrivateKeyPkcs8(algorithm: RsaAlgorithm, privateKeyPkcs8: Int8Array): Promise<XPrivateRsaKey>;
   loadPublicKeySpki(algorithm: RsaAlgorithm, publicKeySpki: Int8Array): Promise<XPublicRsaKey>;
   encrypt(data: Int8Array, publicKey: XPublicRsaKey): Promise<Int8Array>;
   decrypt(data: Int8Array, privateKey: XPrivateRsaKey): Promise<Int8Array>;
   sign(data: Int8Array, privateKey: XPrivateRsaKey): Promise<Int8Array>;
   verifySignature(signature: Int8Array, data: Int8Array, publicKey: XPublicRsaKey): Promise<boolean>;
-  exportPrivateKeyJwk(key: XPrivateRsaKey): Promise<JsonWebKey>
-  exportPublicKeyJwk(key: XPublicRsaKey): Promise<JsonWebKey>
-  loadPrivateKeyJwk(privateKeyJwk: JsonWebKey): Promise<XPrivateRsaKey>
-  loadPublicKeyJwk(publicKeyJwk: JsonWebKey): Promise<XPublicRsaKey>
+}
+interface XRsaService extends PartialXRsaService {
+  loadKeyPairPkcs8(algorithm: RsaAlgorithm, privateKeyPkcs8: Int8Array): Promise<XRsaKeypair>;
+  exportPrivateKeyJwk(key: XPrivateRsaKey): Promise<JsonWebKey>;
+  exportPublicKeyJwk(key: XPublicRsaKey): Promise<JsonWebKey>;
+  loadPrivateKeyJwk(privateKeyJwk: JsonWebKey): Promise<XPrivateRsaKey>;
+  loadPublicKeyJwk(publicKeyJwk: JsonWebKey): Promise<XPublicRsaKey>;
 }
 export interface XRsaKeypair {
   readonly private: XPrivateRsaKey;
@@ -84,7 +90,10 @@ export interface XPublicRsaKey {
   readonly publicKey?: any;
   readonly algorithm: string;
 }
-export interface XStrongRandom {
-  randomBytes(length: number): Int8Array;
+export interface XStrongRandom extends PartialXStrongRandom {
   randomUUID(): string;
+  fill(array: Int8Array): void;
+}
+export interface PartialXStrongRandom {
+  randomBytes(length: number): Int8Array;
 }

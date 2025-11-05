@@ -7,6 +7,7 @@ import com.icure.cardinal.sdk.filters.BaseSortableFilterOptions
 import com.icure.cardinal.sdk.filters.FilterOptions
 import com.icure.cardinal.sdk.js.api.DefaultParametersSupport.convertingOptionOrDefaultNonNull
 import com.icure.cardinal.sdk.js.api.DefaultParametersSupport.convertingOptionOrDefaultNullable
+import com.icure.cardinal.sdk.js.api.HealthcarePartyApiInGroupJs
 import com.icure.cardinal.sdk.js.api.HealthcarePartyApiJs
 import com.icure.cardinal.sdk.js.filters.BaseFilterOptionsJs
 import com.icure.cardinal.sdk.js.filters.BaseSortableFilterOptionsJs
@@ -62,6 +63,24 @@ import kotlinx.coroutines.promise
 internal class HealthcarePartyApiImplJs(
 	private val healthcarePartyApi: HealthcarePartyApi,
 ) : HealthcarePartyApiJs {
+	override val inGroup: HealthcarePartyApiInGroupJs = object : HealthcarePartyApiInGroupJs {
+		override fun matchHealthcarePartiesBy(groupId: String,
+				filter: BaseFilterOptionsJs<HealthcarePartyJs>): Promise<Array<String>> = GlobalScope.promise {
+			val groupIdConverted: String = groupId
+			val filterConverted: BaseFilterOptions<HealthcareParty> = baseFilterOptions_fromJs(filter)
+			val result = healthcarePartyApi.inGroup.matchHealthcarePartiesBy(
+				groupIdConverted,
+				filterConverted,
+			)
+			listToArray(
+				result,
+				{ x1: String ->
+					x1
+				},
+			)
+		}
+	}
+
 	override fun deleteHealthcarePartyUnsafe(entityId: String): Promise<DocIdentifierJs> =
 			GlobalScope.promise {
 		val entityIdConverted: String = entityId
