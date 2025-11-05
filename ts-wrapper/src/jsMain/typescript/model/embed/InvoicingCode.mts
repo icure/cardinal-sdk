@@ -299,7 +299,7 @@ export class DecryptedInvoicingCode {
 
 	toJSON(): any {
 		const res: { [k: string]: any } = {}
-		if (this.id != undefined) res['id'] = this.id
+		res['id'] = this.id ?? null
 		if (this.dateCode != undefined) res['dateCode'] = this.dateCode
 		if (this.logicalId != undefined) res['logicalId'] = this.logicalId
 		if (this.label != undefined) res['label'] = this.label
@@ -614,7 +614,7 @@ export class EncryptedInvoicingCode {
 
 	toJSON(): any {
 		const res: { [k: string]: any } = {}
-		if (this.id != undefined) res['id'] = this.id
+		res['id'] = this.id ?? null
 		if (this.dateCode != undefined) res['dateCode'] = this.dateCode
 		if (this.logicalId != undefined) res['logicalId'] = this.logicalId
 		if (this.label != undefined) res['label'] = this.label

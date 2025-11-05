@@ -2,7 +2,7 @@ export function extractEntry(json: any, name: string, required: boolean, path: s
   if (name in json) {
     const res = json[name]
     delete json[name]
-    return res
+    return res ?? undefined
   }
   if (required) throw new Error(`Missing required entry '${name}' at ${path.join("")}`)
   return undefined
