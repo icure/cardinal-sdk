@@ -10,7 +10,7 @@ export class ListOfIds {
 		if ('ids' in partial && partial.ids !== undefined) this.ids = partial.ids;
 	}
 
-	toJSON(): any {
+	toJSON(): object {
 		const res: { [k: string]: any } = {}
 		res['ids'] = this.ids.map((x0) => x0 )
 		return res

@@ -13,7 +13,7 @@ export class TimeTableHour {
 		if ('endHour' in partial) this.endHour = partial.endHour;
 	}
 
-	toJSON(): any {
+	toJSON(): object {
 		const res: { [k: string]: any } = {}
 		if (this.startHour != undefined) res['startHour'] = this.startHour
 		if (this.endHour != undefined) res['endHour'] = this.endHour

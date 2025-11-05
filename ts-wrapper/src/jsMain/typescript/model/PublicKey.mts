@@ -13,7 +13,7 @@ export class PublicKey {
 		if ('hexString' in partial) this.hexString = partial.hexString;
 	}
 
-	toJSON(): any {
+	toJSON(): object {
 		const res: { [k: string]: any } = {}
 		if (this.hcPartyId != undefined) res['hcPartyId'] = this.hcPartyId
 		if (this.hexString != undefined) res['hexString'] = this.hexString

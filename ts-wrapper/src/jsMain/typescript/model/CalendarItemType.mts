@@ -58,7 +58,7 @@ export class CalendarItemType implements StoredDocument {
 		if ('publicProperties' in partial) this.publicProperties = partial.publicProperties;
 	}
 
-	toJSON(): any {
+	toJSON(): object {
 		const res: { [k: string]: any } = {}
 		res['id'] = this.id
 		if (this.rev != undefined) res['rev'] = this.rev
@@ -135,7 +135,7 @@ export namespace CalendarItemType {
 				if ('durations' in partial && partial.durations !== undefined) this.durations = partial.durations;
 			}
 
-			toJSON(): any {
+			toJSON(): object {
 				const res: { [k: string]: any } = {}
 				res['durations'] = this.durations.map((x0) => x0 )
 				res['$ktClass'] = 'com.icure.cardinal.sdk.model.CalendarItemType.DurationConfig.Set'
@@ -174,7 +174,7 @@ export namespace CalendarItemType {
 				this.step = partial.step;
 			}
 
-			toJSON(): any {
+			toJSON(): object {
 				const res: { [k: string]: any } = {}
 				res['min'] = this.min
 				res['max'] = this.max

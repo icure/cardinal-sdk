@@ -18,6 +18,8 @@ export interface CareTeamMember extends Encryptable, Identifiable<string> {
 
 	readonly isEncrypted: boolean;
 
+	toJSON(): object;
+
 }
 
 export class DecryptedCareTeamMember {
@@ -43,7 +45,7 @@ export class DecryptedCareTeamMember {
 		if ('encryptedSelf' in partial) this.encryptedSelf = partial.encryptedSelf;
 	}
 
-	toJSON(): any {
+	toJSON(): object {
 		const res: { [k: string]: any } = {}
 		res['id'] = this.id
 		if (this.careTeamMemberType != undefined) res['careTeamMemberType'] = this.careTeamMemberType
@@ -97,7 +99,7 @@ export class EncryptedCareTeamMember {
 		if ('encryptedSelf' in partial) this.encryptedSelf = partial.encryptedSelf;
 	}
 
-	toJSON(): any {
+	toJSON(): object {
 		const res: { [k: string]: any } = {}
 		res['id'] = this.id
 		if (this.careTeamMemberType != undefined) res['careTeamMemberType'] = this.careTeamMemberType

@@ -17,6 +17,8 @@ export interface CareTeamMembership extends Encryptable {
 
 	readonly isEncrypted: boolean;
 
+	toJSON(): object;
+
 }
 
 export class DecryptedCareTeamMembership {
@@ -42,7 +44,7 @@ export class DecryptedCareTeamMembership {
 		if ('encryptedSelf' in partial) this.encryptedSelf = partial.encryptedSelf;
 	}
 
-	toJSON(): any {
+	toJSON(): object {
 		const res: { [k: string]: any } = {}
 		if (this.startDate != undefined) res['startDate'] = this.startDate
 		if (this.endDate != undefined) res['endDate'] = this.endDate
@@ -96,7 +98,7 @@ export class EncryptedCareTeamMembership {
 		if ('encryptedSelf' in partial) this.encryptedSelf = partial.encryptedSelf;
 	}
 
-	toJSON(): any {
+	toJSON(): object {
 		const res: { [k: string]: any } = {}
 		if (this.startDate != undefined) res['startDate'] = this.startDate
 		if (this.endDate != undefined) res['endDate'] = this.endDate

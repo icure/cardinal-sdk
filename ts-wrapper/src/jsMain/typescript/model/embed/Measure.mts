@@ -46,7 +46,7 @@ export class Measure {
 		if ('valueWithPrecision' in partial) this.valueWithPrecision = partial.valueWithPrecision;
 	}
 
-	toJSON(): any {
+	toJSON(): object {
 		const res: { [k: string]: any } = {}
 		if (this.value != undefined) res['value'] = this.value
 		if (this.ref != undefined) res['ref'] = this.ref

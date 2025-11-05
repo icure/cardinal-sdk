@@ -15,7 +15,7 @@ export class Employer implements Named {
 		if ('addresse' in partial) this.addresse = partial.addresse;
 	}
 
-	toJSON(): any {
+	toJSON(): object {
 		const res: { [k: string]: any } = {}
 		if (this.name != undefined) res['name'] = this.name
 		if (this.addresse != undefined) res['addresse'] = this.addresse.toJSON()

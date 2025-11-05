@@ -27,6 +27,8 @@ export interface SubContact extends Encryptable, ICureDocument<string | undefine
 
 	readonly isEncrypted: boolean;
 
+	toJSON(): object;
+
 }
 
 export class DecryptedSubContact {
@@ -91,7 +93,7 @@ export class DecryptedSubContact {
 		if ('encryptedSelf' in partial) this.encryptedSelf = partial.encryptedSelf;
 	}
 
-	toJSON(): any {
+	toJSON(): object {
 		const res: { [k: string]: any } = {}
 		if (this.id != undefined) res['id'] = this.id
 		if (this.created != undefined) res['created'] = this.created
@@ -210,7 +212,7 @@ export class EncryptedSubContact {
 		if ('encryptedSelf' in partial) this.encryptedSelf = partial.encryptedSelf;
 	}
 
-	toJSON(): any {
+	toJSON(): object {
 		const res: { [k: string]: any } = {}
 		if (this.id != undefined) res['id'] = this.id
 		if (this.created != undefined) res['created'] = this.created

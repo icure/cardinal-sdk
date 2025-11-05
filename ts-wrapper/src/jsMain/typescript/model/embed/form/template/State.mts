@@ -17,7 +17,7 @@ export class State {
 		if ('canLaunchLauncher' in partial && partial.canLaunchLauncher !== undefined) this.canLaunchLauncher = partial.canLaunchLauncher;
 	}
 
-	toJSON(): any {
+	toJSON(): object {
 		const res: { [k: string]: any } = {}
 		res['name'] = this.name
 		res['stateToUpdate'] = this.stateToUpdate

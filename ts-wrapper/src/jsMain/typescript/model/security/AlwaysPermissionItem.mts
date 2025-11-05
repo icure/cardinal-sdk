@@ -13,7 +13,7 @@ export class AlwaysPermissionItem {
 		this.type = partial.type;
 	}
 
-	toJSON(): any {
+	toJSON(): object {
 		const res: { [k: string]: any } = {}
 		res['type'] = this.type
 		res['$ktClass'] = 'com.icure.cardinal.sdk.model.security.AlwaysPermissionItem'

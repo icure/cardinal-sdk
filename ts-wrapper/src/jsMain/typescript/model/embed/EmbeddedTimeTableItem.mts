@@ -35,7 +35,7 @@ export class EmbeddedTimeTableItem {
 		if ('public' in partial && partial.public !== undefined) this.public = partial.public;
 	}
 
-	toJSON(): any {
+	toJSON(): object {
 		const res: { [k: string]: any } = {}
 		res['rrule'] = this.rrule
 		if (this.rruleStartDate != undefined) res['rruleStartDate'] = this.rruleStartDate

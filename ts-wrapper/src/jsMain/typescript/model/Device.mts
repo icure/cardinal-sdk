@@ -105,7 +105,7 @@ export class Device implements StoredDocument, ICureDocument<string>, Named, Cry
 		if ('cryptoActorProperties' in partial) this.cryptoActorProperties = partial.cryptoActorProperties;
 	}
 
-	toJSON(): any {
+	toJSON(): object {
 		const res: { [k: string]: any } = {}
 		res['id'] = this.id
 		if (this.rev != undefined) res['rev'] = this.rev

@@ -14,7 +14,7 @@ export class IdWithRev {
 		if ('rev' in partial) this.rev = partial.rev;
 	}
 
-	toJSON(): any {
+	toJSON(): object {
 		const res: { [k: string]: any } = {}
 		res['id'] = this.id
 		if (this.rev != undefined) res['rev'] = this.rev

@@ -16,7 +16,7 @@ export class RegistrationSuccess {
 		this.token = partial.token;
 	}
 
-	toJSON(): any {
+	toJSON(): object {
 		const res: { [k: string]: any } = {}
 		res['groupId'] = this.groupId
 		res['userId'] = this.userId

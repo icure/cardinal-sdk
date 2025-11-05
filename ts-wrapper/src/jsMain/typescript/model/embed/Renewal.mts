@@ -14,7 +14,7 @@ export class Renewal {
 		if ('duration' in partial) this.duration = partial.duration;
 	}
 
-	toJSON(): any {
+	toJSON(): object {
 		const res: { [k: string]: any } = {}
 		if (this.decimal != undefined) res['decimal'] = this.decimal
 		if (this.duration != undefined) res['duration'] = this.duration.toJSON()

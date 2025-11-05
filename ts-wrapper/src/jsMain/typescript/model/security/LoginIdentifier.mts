@@ -13,7 +13,7 @@ export class LoginIdentifier {
 		this.value = partial.value;
 	}
 
-	toJSON(): any {
+	toJSON(): object {
 		const res: { [k: string]: any } = {}
 		res['assigner'] = this.assigner
 		res['value'] = this.value

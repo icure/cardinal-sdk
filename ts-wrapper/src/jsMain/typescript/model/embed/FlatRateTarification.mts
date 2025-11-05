@@ -18,6 +18,8 @@ export interface FlatRateTarification extends Encryptable {
 
 	readonly isEncrypted: boolean;
 
+	toJSON(): object;
+
 }
 
 export class DecryptedFlatRateTarification {
@@ -43,7 +45,7 @@ export class DecryptedFlatRateTarification {
 		if ('encryptedSelf' in partial) this.encryptedSelf = partial.encryptedSelf;
 	}
 
-	toJSON(): any {
+	toJSON(): object {
 		const res: { [k: string]: any } = {}
 		if (this.code != undefined) res['code'] = this.code
 		if (this.flatRateType != undefined) res['flatRateType'] = this.flatRateType
@@ -103,7 +105,7 @@ export class EncryptedFlatRateTarification {
 		if ('encryptedSelf' in partial) this.encryptedSelf = partial.encryptedSelf;
 	}
 
-	toJSON(): any {
+	toJSON(): object {
 		const res: { [k: string]: any } = {}
 		if (this.code != undefined) res['code'] = this.code
 		if (this.flatRateType != undefined) res['flatRateType'] = this.flatRateType

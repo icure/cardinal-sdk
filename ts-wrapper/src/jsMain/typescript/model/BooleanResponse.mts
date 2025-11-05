@@ -10,7 +10,7 @@ export class BooleanResponse {
 		this.response = partial.response;
 	}
 
-	toJSON(): any {
+	toJSON(): object {
 		const res: { [k: string]: any } = {}
 		res['response'] = this.response
 		return res

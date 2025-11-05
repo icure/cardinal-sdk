@@ -15,7 +15,7 @@ export class CryptoActorStubWithType {
 		this.stub = partial.stub;
 	}
 
-	toJSON(): any {
+	toJSON(): object {
 		const res: { [k: string]: any } = {}
 		res['type'] = this.type
 		res['stub'] = this.stub.toJSON()

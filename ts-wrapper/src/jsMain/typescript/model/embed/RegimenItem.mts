@@ -28,7 +28,7 @@ export class RegimenItem {
 		if ('administratedQuantity' in partial) this.administratedQuantity = partial.administratedQuantity;
 	}
 
-	toJSON(): any {
+	toJSON(): object {
 		const res: { [k: string]: any } = {}
 		if (this.date != undefined) res['date'] = this.date
 		if (this.dayNumber != undefined) res['dayNumber'] = this.dayNumber

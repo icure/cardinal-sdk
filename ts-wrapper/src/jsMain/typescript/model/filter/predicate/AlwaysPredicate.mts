@@ -9,7 +9,7 @@ export class AlwaysPredicate {
 	constructor(partial: Partial<AlwaysPredicate>) {
 	}
 
-	toJSON(): any {
+	toJSON(): object {
 		const res: { [k: string]: any } = {}
 		res['$ktClass'] = 'com.icure.cardinal.sdk.model.filter.predicate.AlwaysPredicate'
 		return res

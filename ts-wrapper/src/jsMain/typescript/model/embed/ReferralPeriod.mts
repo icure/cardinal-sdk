@@ -16,7 +16,7 @@ export class ReferralPeriod {
 		if ('comment' in partial) this.comment = partial.comment;
 	}
 
-	toJSON(): any {
+	toJSON(): object {
 		const res: { [k: string]: any } = {}
 		if (this.startDate != undefined) res['startDate'] = this.startDate
 		if (this.endDate != undefined) res['endDate'] = this.endDate

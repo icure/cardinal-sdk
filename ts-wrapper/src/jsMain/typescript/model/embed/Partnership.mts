@@ -24,7 +24,7 @@ export class Partnership {
 		if ('otherToMeRelationshipDescription' in partial) this.otherToMeRelationshipDescription = partial.otherToMeRelationshipDescription;
 	}
 
-	toJSON(): any {
+	toJSON(): object {
 		const res: { [k: string]: any } = {}
 		if (this.type != undefined) res['type'] = this.type
 		if (this.status != undefined) res['status'] = this.status

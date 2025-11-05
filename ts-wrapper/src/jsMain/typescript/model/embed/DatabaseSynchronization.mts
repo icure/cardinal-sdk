@@ -19,7 +19,7 @@ export class DatabaseSynchronization {
 		if ('localTarget' in partial) this.localTarget = partial.localTarget;
 	}
 
-	toJSON(): any {
+	toJSON(): object {
 		const res: { [k: string]: any } = {}
 		if (this.source != undefined) res['source'] = this.source
 		if (this.target != undefined) res['target'] = this.target

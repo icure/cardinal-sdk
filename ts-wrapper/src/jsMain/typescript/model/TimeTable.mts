@@ -60,7 +60,7 @@ export class TimeTable implements StoredDocument, ICureDocument<string> {
 		if ('items' in partial && partial.items !== undefined) this.items = partial.items;
 	}
 
-	toJSON(): any {
+	toJSON(): object {
 		const res: { [k: string]: any } = {}
 		res['id'] = this.id
 		if (this.rev != undefined) res['rev'] = this.rev

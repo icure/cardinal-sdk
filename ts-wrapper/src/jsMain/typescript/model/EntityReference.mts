@@ -21,7 +21,7 @@ export class EntityReference implements StoredDocument {
 		if ('docId' in partial) this.docId = partial.docId;
 	}
 
-	toJSON(): any {
+	toJSON(): object {
 		const res: { [k: string]: any } = {}
 		res['id'] = this.id
 		if (this.rev != undefined) res['rev'] = this.rev

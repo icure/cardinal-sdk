@@ -97,7 +97,7 @@ export class Tarification implements StoredDocument, CodeIdentification<string> 
 		if ('letterValues' in partial && partial.letterValues !== undefined) this.letterValues = partial.letterValues;
 	}
 
-	toJSON(): any {
+	toJSON(): object {
 		const res: { [k: string]: any } = {}
 		res['id'] = this.id
 		if (this.rev != undefined) res['rev'] = this.rev

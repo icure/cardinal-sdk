@@ -44,7 +44,7 @@ export class UserGroup {
 		if ('nameOfParentOfTopmostGroupInHierarchy' in partial) this.nameOfParentOfTopmostGroupInHierarchy = partial.nameOfParentOfTopmostGroupInHierarchy;
 	}
 
-	toJSON(): any {
+	toJSON(): object {
 		const res: { [k: string]: any } = {}
 		if (this.groupId != undefined) res['groupId'] = this.groupId
 		if (this.groupName != undefined) res['groupName'] = this.groupName

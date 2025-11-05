@@ -24,7 +24,7 @@ export class FormTemplateLayout {
 		if ('keywords' in partial) this.keywords = partial.keywords;
 	}
 
-	toJSON(): any {
+	toJSON(): object {
 		const res: { [k: string]: any } = {}
 		res['form'] = this.form
 		res['actions'] = this.actions.map((x0) => x0.toJSON() )

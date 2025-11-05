@@ -14,7 +14,7 @@ export class PropertyTypeStub {
 		if ('type' in partial) this.type = partial.type;
 	}
 
-	toJSON(): any {
+	toJSON(): object {
 		const res: { [k: string]: any } = {}
 		if (this.identifier != undefined) res['identifier'] = this.identifier
 		if (this.type != undefined) res['type'] = this.type

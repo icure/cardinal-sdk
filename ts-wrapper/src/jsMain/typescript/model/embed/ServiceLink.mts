@@ -10,7 +10,7 @@ export class ServiceLink {
 		if ('serviceId' in partial) this.serviceId = partial.serviceId;
 	}
 
-	toJSON(): any {
+	toJSON(): object {
 		const res: { [k: string]: any } = {}
 		if (this.serviceId != undefined) res['serviceId'] = this.serviceId
 		return res

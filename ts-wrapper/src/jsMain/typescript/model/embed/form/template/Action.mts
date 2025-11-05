@@ -18,7 +18,7 @@ export class Action {
 		if ('states' in partial) this.states = partial.states;
 	}
 
-	toJSON(): any {
+	toJSON(): object {
 		const res: { [k: string]: any } = {}
 		if (this.launchers != undefined) res['launchers'] = this.launchers.map((x0) => x0.toJSON() )
 		if (this.expression != undefined) res['expression'] = this.expression

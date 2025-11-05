@@ -19,7 +19,7 @@ export class AuthenticationToken {
 		if ('deletionDate' in partial) this.deletionDate = partial.deletionDate;
 	}
 
-	toJSON(): any {
+	toJSON(): object {
 		const res: { [k: string]: any } = {}
 		if (this.token != undefined) res['token'] = this.token
 		res['creationTime'] = this.creationTime

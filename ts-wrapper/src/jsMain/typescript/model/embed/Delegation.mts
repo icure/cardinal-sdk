@@ -20,7 +20,7 @@ export class Delegation {
 		if ('tags' in partial && partial.tags !== undefined) this.tags = partial.tags;
 	}
 
-	toJSON(): any {
+	toJSON(): object {
 		const res: { [k: string]: any } = {}
 		if (this.owner != undefined) res['owner'] = this.owner
 		if (this.delegatedTo != undefined) res['delegatedTo'] = this.delegatedTo

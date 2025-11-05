@@ -13,7 +13,7 @@ export class LabelledOccurence {
 		this.occurence = partial.occurence;
 	}
 
-	toJSON(): any {
+	toJSON(): object {
 		const res: { [k: string]: any } = {}
 		res['label'] = this.label
 		res['occurence'] = this.occurence

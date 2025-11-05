@@ -14,7 +14,7 @@ export class Periodicity {
 		if ('relatedPeriodicity' in partial) this.relatedPeriodicity = partial.relatedPeriodicity;
 	}
 
-	toJSON(): any {
+	toJSON(): object {
 		const res: { [k: string]: any } = {}
 		if (this.relatedCode != undefined) res['relatedCode'] = this.relatedCode.toJSON()
 		if (this.relatedPeriodicity != undefined) res['relatedPeriodicity'] = this.relatedPeriodicity.toJSON()

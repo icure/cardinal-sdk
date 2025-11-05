@@ -50,7 +50,7 @@ export class FrontEndMigration implements StoredDocument {
 		if ('properties' in partial && partial.properties !== undefined) this.properties = partial.properties;
 	}
 
-	toJSON(): any {
+	toJSON(): object {
 		const res: { [k: string]: any } = {}
 		res['id'] = this.id
 		if (this.rev != undefined) res['rev'] = this.rev

@@ -13,7 +13,7 @@ export class DocumentGroup {
 		if ('name' in partial) this.name = partial.name;
 	}
 
-	toJSON(): any {
+	toJSON(): object {
 		const res: { [k: string]: any } = {}
 		if (this.guid != undefined) res['guid'] = this.guid
 		if (this.name != undefined) res['name'] = this.name

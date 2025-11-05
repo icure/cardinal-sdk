@@ -32,7 +32,7 @@ export class Identifier {
 		if ('value' in partial) this.value = partial.value;
 	}
 
-	toJSON(): any {
+	toJSON(): object {
 		const res: { [k: string]: any } = {}
 		if (this.id != undefined) res['id'] = this.id
 		if (this.assigner != undefined) res['assigner'] = this.assigner

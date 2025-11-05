@@ -19,7 +19,7 @@ export class AgreementAppendix {
 		if ('path' in partial) this.path = partial.path;
 	}
 
-	toJSON(): any {
+	toJSON(): object {
 		const res: { [k: string]: any } = {}
 		if (this.docSeq != undefined) res['docSeq'] = this.docSeq
 		if (this.verseSeq != undefined) res['verseSeq'] = this.verseSeq

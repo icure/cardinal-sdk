@@ -145,7 +145,7 @@ export class Medication {
 		if ('stockLocation' in partial) this.stockLocation = partial.stockLocation;
 	}
 
-	toJSON(): any {
+	toJSON(): object {
 		const res: { [k: string]: any } = {}
 		if (this.compoundPrescription != undefined) res['compoundPrescription'] = this.compoundPrescription
 		if (this.substanceProduct != undefined) res['substanceProduct'] = this.substanceProduct.toJSON()

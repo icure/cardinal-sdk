@@ -106,7 +106,7 @@ export class FlowItem {
 		if ('interventionCode' in partial) this.interventionCode = partial.interventionCode;
 	}
 
-	toJSON(): any {
+	toJSON(): object {
 		const res: { [k: string]: any } = {}
 		if (this.id != undefined) res['id'] = this.id
 		if (this.title != undefined) res['title'] = this.title

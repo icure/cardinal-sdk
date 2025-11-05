@@ -13,7 +13,7 @@ export class EntityReferenceInGroup {
 		if ('groupId' in partial) this.groupId = partial.groupId;
 	}
 
-	toJSON(): any {
+	toJSON(): object {
 		const res: { [k: string]: any } = {}
 		res['entityId'] = this.entityId
 		if (this.groupId != undefined) res['groupId'] = this.groupId

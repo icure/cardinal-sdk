@@ -22,7 +22,7 @@ export class DatabaseInitialisation {
 		if ('minimumKrakenVersion' in partial) this.minimumKrakenVersion = partial.minimumKrakenVersion;
 	}
 
-	toJSON(): any {
+	toJSON(): object {
 		const res: { [k: string]: any } = {}
 		if (this.users != undefined) res['users'] = this.users.map((x0) => x0.toJSON() )
 		if (this.healthcareParties != undefined) res['healthcareParties'] = this.healthcareParties.map((x0) => x0.toJSON() )

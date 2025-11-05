@@ -87,7 +87,7 @@ export class DocumentTemplate implements StoredDocument, ICureDocument<string> {
 		if ('specialty' in partial) this.specialty = partial.specialty;
 	}
 
-	toJSON(): any {
+	toJSON(): object {
 		const res: { [k: string]: any } = {}
 		res['id'] = this.id
 		if (this.rev != undefined) res['rev'] = this.rev

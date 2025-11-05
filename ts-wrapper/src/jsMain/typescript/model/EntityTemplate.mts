@@ -39,7 +39,7 @@ export class EntityTemplate implements StoredDocument {
 		if ('entity' in partial && partial.entity !== undefined) this.entity = partial.entity;
 	}
 
-	toJSON(): any {
+	toJSON(): object {
 		const res: { [k: string]: any } = {}
 		res['id'] = this.id
 		if (this.rev != undefined) res['rev'] = this.rev

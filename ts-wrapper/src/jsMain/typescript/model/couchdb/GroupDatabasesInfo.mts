@@ -17,7 +17,7 @@ export class GroupDatabasesInfo {
 		this.gcpStorageSize = partial.gcpStorageSize;
 	}
 
-	toJSON(): any {
+	toJSON(): object {
 		const res: { [k: string]: any } = {}
 		res['groupId'] = this.groupId
 		res['databasesInfo'] = this.databasesInfo.map((x0) => x0.toJSON() )

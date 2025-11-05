@@ -13,7 +13,7 @@ export class PaginatedDocumentKeyIdPair {
 		if ('startKeyDocId' in partial) this.startKeyDocId = partial.startKeyDocId;
 	}
 
-	toJSON(): any {
+	toJSON(): object {
 		const res: { [k: string]: any } = {}
 		if (this.startKey != undefined) res['startKey'] = this.startKey
 		if (this.startKeyDocId != undefined) res['startKeyDocId'] = this.startKeyDocId

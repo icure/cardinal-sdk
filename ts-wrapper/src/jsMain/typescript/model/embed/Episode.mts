@@ -17,6 +17,8 @@ export interface Episode extends Encryptable, Identifiable<string>, Named {
 
 	readonly isEncrypted: boolean;
 
+	toJSON(): object;
+
 }
 
 export class DecryptedEpisode {
@@ -45,7 +47,7 @@ export class DecryptedEpisode {
 		if ('encryptedSelf' in partial) this.encryptedSelf = partial.encryptedSelf;
 	}
 
-	toJSON(): any {
+	toJSON(): object {
 		const res: { [k: string]: any } = {}
 		res['id'] = this.id
 		if (this.name != undefined) res['name'] = this.name
@@ -104,7 +106,7 @@ export class EncryptedEpisode {
 		if ('encryptedSelf' in partial) this.encryptedSelf = partial.encryptedSelf;
 	}
 
-	toJSON(): any {
+	toJSON(): object {
 		const res: { [k: string]: any } = {}
 		res['id'] = this.id
 		if (this.name != undefined) res['name'] = this.name

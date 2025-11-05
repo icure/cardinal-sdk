@@ -17,7 +17,7 @@ export class ExternalJwtConfig {
 		if ('authenticationClass' in partial && partial.authenticationClass !== undefined) this.authenticationClass = partial.authenticationClass;
 	}
 
-	toJSON(): any {
+	toJSON(): object {
 		const res: { [k: string]: any } = {}
 		res['validationMethod'] = this.validationMethod.toJSON()
 		res['fieldSelector'] = this.fieldSelector.toJSON()
@@ -56,7 +56,7 @@ export namespace ExternalJwtConfig {
 				this.key = partial.key;
 			}
 
-			toJSON(): any {
+			toJSON(): object {
 				const res: { [k: string]: any } = {}
 				res['key'] = this.key
 				res['$ktClass'] = 'com.icure.cardinal.sdk.model.security.ExternalJwtConfig.ValidationMethod.PublicKey'
@@ -89,7 +89,7 @@ export namespace ExternalJwtConfig {
 				this.issureLocation = partial.issureLocation;
 			}
 
-			toJSON(): any {
+			toJSON(): object {
 				const res: { [k: string]: any } = {}
 				res['issureLocation'] = this.issureLocation
 				res['$ktClass'] = 'com.icure.cardinal.sdk.model.security.ExternalJwtConfig.ValidationMethod.Oidc'
@@ -137,7 +137,7 @@ export namespace ExternalJwtConfig {
 				this.fieldName = partial.fieldName;
 			}
 
-			toJSON(): any {
+			toJSON(): object {
 				const res: { [k: string]: any } = {}
 				res['fieldName'] = this.fieldName
 				res['$ktClass'] = 'com.icure.cardinal.sdk.model.security.ExternalJwtConfig.FieldSelector.LocalId'
@@ -170,7 +170,7 @@ export namespace ExternalJwtConfig {
 				this.fieldName = partial.fieldName;
 			}
 
-			toJSON(): any {
+			toJSON(): object {
 				const res: { [k: string]: any } = {}
 				res['fieldName'] = this.fieldName
 				res['$ktClass'] = 'com.icure.cardinal.sdk.model.security.ExternalJwtConfig.FieldSelector.Email'
@@ -203,7 +203,7 @@ export namespace ExternalJwtConfig {
 				this.fieldName = partial.fieldName;
 			}
 
-			toJSON(): any {
+			toJSON(): object {
 				const res: { [k: string]: any } = {}
 				res['fieldName'] = this.fieldName
 				res['$ktClass'] = 'com.icure.cardinal.sdk.model.security.ExternalJwtConfig.FieldSelector.MobilePhone'
@@ -236,7 +236,7 @@ export namespace ExternalJwtConfig {
 				this.fieldName = partial.fieldName;
 			}
 
-			toJSON(): any {
+			toJSON(): object {
 				const res: { [k: string]: any } = {}
 				res['fieldName'] = this.fieldName
 				res['$ktClass'] = 'com.icure.cardinal.sdk.model.security.ExternalJwtConfig.FieldSelector.Username'
@@ -272,7 +272,7 @@ export namespace ExternalJwtConfig {
 				this.fieldName = partial.fieldName;
 			}
 
-			toJSON(): any {
+			toJSON(): object {
 				const res: { [k: string]: any } = {}
 				res['identifierAssigner'] = this.identifierAssigner
 				res['fieldName'] = this.fieldName

@@ -53,7 +53,7 @@ export class ReplicatorDocument implements Versionable<string> {
 		if ('revHistory' in partial) this.revHistory = partial.revHistory;
 	}
 
-	toJSON(): any {
+	toJSON(): object {
 		const res: { [k: string]: any } = {}
 		res['id'] = this.id
 		if (this.rev != undefined) res['rev'] = this.rev

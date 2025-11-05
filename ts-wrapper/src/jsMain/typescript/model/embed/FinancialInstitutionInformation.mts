@@ -22,6 +22,8 @@ export interface FinancialInstitutionInformation extends Encryptable {
 
 	readonly isEncrypted: boolean;
 
+	toJSON(): object;
+
 }
 
 export class DecryptedFinancialInstitutionInformation {
@@ -56,7 +58,7 @@ export class DecryptedFinancialInstitutionInformation {
 		if ('encryptedSelf' in partial) this.encryptedSelf = partial.encryptedSelf;
 	}
 
-	toJSON(): any {
+	toJSON(): object {
 		const res: { [k: string]: any } = {}
 		if (this.name != undefined) res['name'] = this.name
 		if (this.key != undefined) res['key'] = this.key
@@ -125,7 +127,7 @@ export class EncryptedFinancialInstitutionInformation {
 		if ('encryptedSelf' in partial) this.encryptedSelf = partial.encryptedSelf;
 	}
 
-	toJSON(): any {
+	toJSON(): object {
 		const res: { [k: string]: any } = {}
 		if (this.name != undefined) res['name'] = this.name
 		if (this.key != undefined) res['key'] = this.key

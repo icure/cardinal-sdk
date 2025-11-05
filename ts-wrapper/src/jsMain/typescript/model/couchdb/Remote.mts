@@ -14,7 +14,7 @@ export class Remote {
 		if ('auth' in partial) this.auth = partial.auth;
 	}
 
-	toJSON(): any {
+	toJSON(): object {
 		const res: { [k: string]: any } = {}
 		res['url'] = this.url
 		if (this.auth != undefined) res['auth'] = this.auth.toJSON()

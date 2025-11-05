@@ -28,7 +28,7 @@ export class TimeSeries {
 		if ('variance' in partial && partial.variance !== undefined) this.variance = partial.variance;
 	}
 
-	toJSON(): any {
+	toJSON(): object {
 		const res: { [k: string]: any } = {}
 		res['fields'] = this.fields.map((x0) => x0 )
 		res['samples'] = this.samples.map((x0) => x0.map((x1) => x1 ) )

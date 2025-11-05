@@ -30,7 +30,7 @@ export class Replication implements StoredDocument, Identifiable<string>, Named 
 		if ('databaseSynchronizations' in partial && partial.databaseSynchronizations !== undefined) this.databaseSynchronizations = partial.databaseSynchronizations;
 	}
 
-	toJSON(): any {
+	toJSON(): object {
 		const res: { [k: string]: any } = {}
 		res['id'] = this.id
 		if (this.rev != undefined) res['rev'] = this.rev

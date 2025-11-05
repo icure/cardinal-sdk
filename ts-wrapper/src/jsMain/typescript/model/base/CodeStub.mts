@@ -29,7 +29,7 @@ export class CodeStub implements CodeIdentification<string | undefined> {
 		if ('label' in partial) this.label = partial.label;
 	}
 
-	toJSON(): any {
+	toJSON(): object {
 		const res: { [k: string]: any } = {}
 		if (this.id != undefined) res['id'] = this.id
 		if (this.context != undefined) res['context'] = this.context

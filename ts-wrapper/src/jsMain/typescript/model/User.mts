@@ -92,7 +92,7 @@ export class User implements StoredDocument {
 		if ('systemMetadata' in partial) this.systemMetadata = partial.systemMetadata;
 	}
 
-	toJSON(): any {
+	toJSON(): object {
 		const res: { [k: string]: any } = {}
 		res['id'] = this.id
 		if (this.rev != undefined) res['rev'] = this.rev
@@ -198,7 +198,7 @@ export namespace User {
 			if ('loginIdentifiers' in partial && partial.loginIdentifiers !== undefined) this.loginIdentifiers = partial.loginIdentifiers;
 		}
 
-		toJSON(): any {
+		toJSON(): object {
 			const res: { [k: string]: any } = {}
 			res['roles'] = this.roles.map((x0) => x0 )
 			res['isAdmin'] = this.isAdmin

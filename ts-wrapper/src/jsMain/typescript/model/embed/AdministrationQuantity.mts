@@ -17,7 +17,7 @@ export class AdministrationQuantity {
 		if ('unit' in partial) this.unit = partial.unit;
 	}
 
-	toJSON(): any {
+	toJSON(): object {
 		const res: { [k: string]: any } = {}
 		if (this.quantity != undefined) res['quantity'] = this.quantity
 		if (this.administrationUnit != undefined) res['administrationUnit'] = this.administrationUnit.toJSON()

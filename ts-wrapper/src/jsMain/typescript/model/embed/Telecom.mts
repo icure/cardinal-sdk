@@ -15,6 +15,8 @@ export interface Telecom extends Encryptable {
 
 	readonly isEncrypted: boolean;
 
+	toJSON(): object;
+
 }
 
 export class DecryptedTelecom {
@@ -37,7 +39,7 @@ export class DecryptedTelecom {
 		if ('encryptedSelf' in partial) this.encryptedSelf = partial.encryptedSelf;
 	}
 
-	toJSON(): any {
+	toJSON(): object {
 		const res: { [k: string]: any } = {}
 		if (this.telecomType != undefined) res['telecomType'] = this.telecomType
 		if (this.telecomNumber != undefined) res['telecomNumber'] = this.telecomNumber
@@ -86,7 +88,7 @@ export class EncryptedTelecom {
 		if ('encryptedSelf' in partial) this.encryptedSelf = partial.encryptedSelf;
 	}
 
-	toJSON(): any {
+	toJSON(): object {
 		const res: { [k: string]: any } = {}
 		if (this.telecomType != undefined) res['telecomType'] = this.telecomType
 		if (this.telecomNumber != undefined) res['telecomNumber'] = this.telecomNumber

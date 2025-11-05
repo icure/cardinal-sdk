@@ -34,7 +34,7 @@ export class SecureDelegation {
 		this.permissions = partial.permissions;
 	}
 
-	toJSON(): any {
+	toJSON(): object {
 		const res: { [k: string]: any } = {}
 		if (this.delegator != undefined) res['delegator'] = this.delegator
 		if (this.delegate != undefined) res['delegate'] = this.delegate

@@ -11,7 +11,7 @@ export class ListOfProperties {
 		if ('properties' in partial && partial.properties !== undefined) this.properties = partial.properties;
 	}
 
-	toJSON(): any {
+	toJSON(): object {
 		const res: { [k: string]: any } = {}
 		res['properties'] = this.properties.map((x0) => x0.toJSON() )
 		return res

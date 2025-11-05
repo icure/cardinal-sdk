@@ -55,6 +55,8 @@ export interface HealthElement extends StoredDocument, ICureDocument<string>, Ha
 
 	readonly isEncrypted: boolean;
 
+	toJSON(): object;
+
 }
 
 export class DecryptedHealthElement {
@@ -167,7 +169,7 @@ export class DecryptedHealthElement {
 		if ('securityMetadata' in partial) this.securityMetadata = partial.securityMetadata;
 	}
 
-	toJSON(): any {
+	toJSON(): object {
 		const res: { [k: string]: any } = {}
 		res['id'] = this.id
 		res['identifiers'] = this.identifiers.map((x0) => x0.toJSON() )
@@ -384,7 +386,7 @@ export class EncryptedHealthElement {
 		if ('securityMetadata' in partial) this.securityMetadata = partial.securityMetadata;
 	}
 
-	toJSON(): any {
+	toJSON(): object {
 		const res: { [k: string]: any } = {}
 		res['id'] = this.id
 		res['identifiers'] = this.identifiers.map((x0) => x0.toJSON() )

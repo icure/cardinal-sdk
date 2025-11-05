@@ -28,6 +28,8 @@ export interface Valorisation extends Encryptable {
 
 	readonly isEncrypted: boolean;
 
+	toJSON(): object;
+
 }
 
 export class DecryptedValorisation {
@@ -71,7 +73,7 @@ export class DecryptedValorisation {
 		if ('encryptedSelf' in partial) this.encryptedSelf = partial.encryptedSelf;
 	}
 
-	toJSON(): any {
+	toJSON(): object {
 		const res: { [k: string]: any } = {}
 		if (this.startOfValidity != undefined) res['startOfValidity'] = this.startOfValidity
 		if (this.endOfValidity != undefined) res['endOfValidity'] = this.endOfValidity
@@ -161,7 +163,7 @@ export class EncryptedValorisation {
 		if ('encryptedSelf' in partial) this.encryptedSelf = partial.encryptedSelf;
 	}
 
-	toJSON(): any {
+	toJSON(): object {
 		const res: { [k: string]: any } = {}
 		if (this.startOfValidity != undefined) res['startOfValidity'] = this.startOfValidity
 		if (this.endOfValidity != undefined) res['endOfValidity'] = this.endOfValidity

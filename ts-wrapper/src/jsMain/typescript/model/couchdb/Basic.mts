@@ -13,7 +13,7 @@ export class Basic {
 		this.password = partial.password;
 	}
 
-	toJSON(): any {
+	toJSON(): object {
 		const res: { [k: string]: any } = {}
 		res['username'] = this.username
 		res['password'] = this.password

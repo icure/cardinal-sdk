@@ -71,6 +71,8 @@ export interface CalendarItem extends StoredDocument, ICureDocument<string>, Has
 
 	readonly isEncrypted: boolean;
 
+	toJSON(): object;
+
 }
 
 export class DecryptedCalendarItem {
@@ -210,7 +212,7 @@ export class DecryptedCalendarItem {
 		if ('securityMetadata' in partial) this.securityMetadata = partial.securityMetadata;
 	}
 
-	toJSON(): any {
+	toJSON(): object {
 		const res: { [k: string]: any } = {}
 		res['id'] = this.id
 		if (this.rev != undefined) res['rev'] = this.rev
@@ -472,7 +474,7 @@ export class EncryptedCalendarItem {
 		if ('securityMetadata' in partial) this.securityMetadata = partial.securityMetadata;
 	}
 
-	toJSON(): any {
+	toJSON(): object {
 		const res: { [k: string]: any } = {}
 		res['id'] = this.id
 		if (this.rev != undefined) res['rev'] = this.rev

@@ -70,7 +70,7 @@ export class Group implements StoredDocument, HasTags {
 		if ('applicationId' in partial) this.applicationId = partial.applicationId;
 	}
 
-	toJSON(): any {
+	toJSON(): object {
 		const res: { [k: string]: any } = {}
 		res['id'] = this.id
 		if (this.rev != undefined) res['rev'] = this.rev

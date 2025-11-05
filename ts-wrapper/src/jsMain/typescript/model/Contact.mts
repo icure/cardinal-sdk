@@ -51,6 +51,8 @@ export interface Contact extends StoredDocument, ICureDocument<string>, HasEncry
 
 	readonly isEncrypted: boolean;
 
+	toJSON(): object;
+
 }
 
 export class DecryptedContact {
@@ -157,7 +159,7 @@ export class DecryptedContact {
 		if ('notes' in partial && partial.notes !== undefined) this.notes = partial.notes;
 	}
 
-	toJSON(): any {
+	toJSON(): object {
 		const res: { [k: string]: any } = {}
 		res['id'] = this.id
 		if (this.rev != undefined) res['rev'] = this.rev
@@ -370,7 +372,7 @@ export class EncryptedContact {
 		if ('notes' in partial && partial.notes !== undefined) this.notes = partial.notes;
 	}
 
-	toJSON(): any {
+	toJSON(): object {
 		const res: { [k: string]: any } = {}
 		res['id'] = this.id
 		if (this.rev != undefined) res['rev'] = this.rev

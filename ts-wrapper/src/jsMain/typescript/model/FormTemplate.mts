@@ -76,7 +76,7 @@ export class FormTemplate implements StoredDocument {
 		if ('templateLayoutAttachmentId' in partial) this.templateLayoutAttachmentId = partial.templateLayoutAttachmentId;
 	}
 
-	toJSON(): any {
+	toJSON(): object {
 		const res: { [k: string]: any } = {}
 		res['id'] = this.id
 		if (this.rev != undefined) res['rev'] = this.rev

@@ -59,6 +59,8 @@ export interface Document extends StoredDocument, ICureDocument<string>, HasEncr
 
 	readonly isEncrypted: boolean;
 
+	toJSON(): object;
+
 }
 
 export class DecryptedDocument {
@@ -177,7 +179,7 @@ export class DecryptedDocument {
 		if ('securityMetadata' in partial) this.securityMetadata = partial.securityMetadata;
 	}
 
-	toJSON(): any {
+	toJSON(): object {
 		const res: { [k: string]: any } = {}
 		res['id'] = this.id
 		if (this.rev != undefined) res['rev'] = this.rev
@@ -410,7 +412,7 @@ export class EncryptedDocument {
 		if ('securityMetadata' in partial) this.securityMetadata = partial.securityMetadata;
 	}
 
-	toJSON(): any {
+	toJSON(): object {
 		const res: { [k: string]: any } = {}
 		res['id'] = this.id
 		if (this.rev != undefined) res['rev'] = this.rev

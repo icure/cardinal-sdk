@@ -14,7 +14,7 @@ export class Duration {
 		if ('unit' in partial) this.unit = partial.unit;
 	}
 
-	toJSON(): any {
+	toJSON(): object {
 		const res: { [k: string]: any } = {}
 		if (this.value != undefined) res['value'] = this.value
 		if (this.unit != undefined) res['unit'] = this.unit.toJSON()

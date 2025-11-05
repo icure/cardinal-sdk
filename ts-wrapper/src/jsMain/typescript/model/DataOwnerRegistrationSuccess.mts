@@ -16,7 +16,7 @@ export class DataOwnerRegistrationSuccess {
 		this.token = partial.token;
 	}
 
-	toJSON(): any {
+	toJSON(): object {
 		const res: { [k: string]: any } = {}
 		res['userLogin'] = this.userLogin
 		res['userId'] = this.userId

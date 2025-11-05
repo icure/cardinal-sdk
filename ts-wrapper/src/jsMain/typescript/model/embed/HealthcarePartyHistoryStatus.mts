@@ -20,7 +20,7 @@ export class HealthcarePartyHistoryStatus {
 		this.active = partial.active;
 	}
 
-	toJSON(): any {
+	toJSON(): object {
 		const res: { [k: string]: any } = {}
 		res['status'] = this.status
 		res['specialisationCode'] = this.specialisationCode

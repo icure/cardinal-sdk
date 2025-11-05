@@ -13,7 +13,7 @@ export class DocIdentifier {
 		if ('rev' in partial) this.rev = partial.rev;
 	}
 
-	toJSON(): any {
+	toJSON(): object {
 		const res: { [k: string]: any } = {}
 		if (this.id != undefined) res['id'] = this.id
 		if (this.rev != undefined) res['rev'] = this.rev

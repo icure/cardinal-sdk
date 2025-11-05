@@ -13,7 +13,7 @@ export class AndPredicate {
 		if ('predicates' in partial && partial.predicates !== undefined) this.predicates = partial.predicates;
 	}
 
-	toJSON(): any {
+	toJSON(): object {
 		const res: { [k: string]: any } = {}
 		res['predicates'] = this.predicates.map((x0) => x0.toJSON() )
 		res['$ktClass'] = 'com.icure.cardinal.sdk.model.filter.predicate.AndPredicate'

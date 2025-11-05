@@ -27,7 +27,7 @@ export class Role implements StoredDocument {
 		if ('permissions' in partial && partial.permissions !== undefined) this.permissions = partial.permissions;
 	}
 
-	toJSON(): any {
+	toJSON(): object {
 		const res: { [k: string]: any } = {}
 		res['id'] = this.id
 		if (this.rev != undefined) res['rev'] = this.rev

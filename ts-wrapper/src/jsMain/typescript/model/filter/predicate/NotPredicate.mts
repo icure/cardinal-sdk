@@ -13,7 +13,7 @@ export class NotPredicate {
 		this.predicate = partial.predicate;
 	}
 
-	toJSON(): any {
+	toJSON(): object {
 		const res: { [k: string]: any } = {}
 		res['predicate'] = this.predicate.toJSON()
 		res['$ktClass'] = 'com.icure.cardinal.sdk.model.filter.predicate.NotPredicate'

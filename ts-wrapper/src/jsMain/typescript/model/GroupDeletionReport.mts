@@ -17,7 +17,7 @@ export class GroupDeletionReport {
 		this.server = partial.server;
 	}
 
-	toJSON(): any {
+	toJSON(): object {
 		const res: { [k: string]: any } = {}
 		res['type'] = this.type
 		res['id'] = this.id

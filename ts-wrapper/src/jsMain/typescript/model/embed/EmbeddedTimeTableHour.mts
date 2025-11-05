@@ -13,7 +13,7 @@ export class EmbeddedTimeTableHour {
 		this.endHour = partial.endHour;
 	}
 
-	toJSON(): any {
+	toJSON(): object {
 		const res: { [k: string]: any } = {}
 		res['startHour'] = this.startHour
 		res['endHour'] = this.endHour

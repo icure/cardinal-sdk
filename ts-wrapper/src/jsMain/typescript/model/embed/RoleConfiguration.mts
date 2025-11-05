@@ -13,7 +13,7 @@ export class RoleConfiguration {
 		if ('roles' in partial && partial.roles !== undefined) this.roles = partial.roles;
 	}
 
-	toJSON(): any {
+	toJSON(): object {
 		const res: { [k: string]: any } = {}
 		res['source'] = this.source
 		res['roles'] = this.roles.map((x0) => x0 )

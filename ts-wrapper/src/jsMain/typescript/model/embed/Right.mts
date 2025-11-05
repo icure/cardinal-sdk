@@ -19,7 +19,7 @@ export class Right {
 		if ('administration' in partial && partial.administration !== undefined) this.administration = partial.administration;
 	}
 
-	toJSON(): any {
+	toJSON(): object {
 		const res: { [k: string]: any } = {}
 		if (this.userId != undefined) res['userId'] = this.userId
 		res['read'] = this.read

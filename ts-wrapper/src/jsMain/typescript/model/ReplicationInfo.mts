@@ -19,7 +19,7 @@ export class ReplicationInfo {
 		if ('pendingTo' in partial) this.pendingTo = partial.pendingTo;
 	}
 
-	toJSON(): any {
+	toJSON(): object {
 		const res: { [k: string]: any } = {}
 		res['active'] = this.active
 		res['running'] = this.running

@@ -69,6 +69,8 @@ export interface Service extends Encryptable, ICureDocument<string> {
 
 	readonly isEncrypted: boolean;
 
+	toJSON(): object;
+
 }
 
 export class DecryptedService {
@@ -187,7 +189,7 @@ export class DecryptedService {
 		if ('securityMetadata' in partial) this.securityMetadata = partial.securityMetadata;
 	}
 
-	toJSON(): any {
+	toJSON(): object {
 		const res: { [k: string]: any } = {}
 		res['id'] = this.id
 		if (this.transactionId != undefined) res['transactionId'] = this.transactionId
@@ -438,7 +440,7 @@ export class EncryptedService {
 		if ('securityMetadata' in partial) this.securityMetadata = partial.securityMetadata;
 	}
 
-	toJSON(): any {
+	toJSON(): object {
 		const res: { [k: string]: any } = {}
 		res['id'] = this.id
 		if (this.transactionId != undefined) res['transactionId'] = this.transactionId

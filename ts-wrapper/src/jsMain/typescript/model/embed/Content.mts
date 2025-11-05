@@ -37,6 +37,8 @@ export interface Content {
 
 	readonly isEncrypted: boolean;
 
+	toJSON(): object;
+
 }
 
 export class DecryptedContent {
@@ -86,7 +88,7 @@ export class DecryptedContent {
 		if ('range' in partial) this.range = partial.range;
 	}
 
-	toJSON(): any {
+	toJSON(): object {
 		const res: { [k: string]: any } = {}
 		if (this.stringValue != undefined) res['stringValue'] = this.stringValue
 		if (this.numberValue != undefined) res['numberValue'] = this.numberValue
@@ -180,7 +182,7 @@ export class EncryptedContent {
 		if ('range' in partial) this.range = partial.range;
 	}
 
-	toJSON(): any {
+	toJSON(): object {
 		const res: { [k: string]: any } = {}
 		if (this.stringValue != undefined) res['stringValue'] = this.stringValue
 		if (this.numberValue != undefined) res['numberValue'] = this.numberValue

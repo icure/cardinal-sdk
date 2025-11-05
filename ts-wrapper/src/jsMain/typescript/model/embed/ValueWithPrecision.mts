@@ -13,7 +13,7 @@ export class ValueWithPrecision {
 		this.precision = partial.precision;
 	}
 
-	toJSON(): any {
+	toJSON(): object {
 		const res: { [k: string]: any } = {}
 		res['value'] = this.value
 		res['precision'] = this.precision

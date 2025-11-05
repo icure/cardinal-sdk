@@ -18,6 +18,8 @@ export interface PropertyStub extends Encryptable {
 
 	readonly isEncrypted: boolean;
 
+	toJSON(): object;
+
 }
 
 export class DecryptedPropertyStub {
@@ -43,7 +45,7 @@ export class DecryptedPropertyStub {
 		if ('encryptedSelf' in partial) this.encryptedSelf = partial.encryptedSelf;
 	}
 
-	toJSON(): any {
+	toJSON(): object {
 		const res: { [k: string]: any } = {}
 		if (this.id != undefined) res['id'] = this.id
 		if (this.type != undefined) res['type'] = this.type.toJSON()
@@ -97,7 +99,7 @@ export class EncryptedPropertyStub {
 		if ('encryptedSelf' in partial) this.encryptedSelf = partial.encryptedSelf;
 	}
 
-	toJSON(): any {
+	toJSON(): object {
 		const res: { [k: string]: any } = {}
 		if (this.id != undefined) res['id'] = this.id
 		if (this.type != undefined) res['type'] = this.type.toJSON()

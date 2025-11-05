@@ -82,7 +82,7 @@ export class Agenda implements StoredDocument, ICureDocument<string> {
 		if ('schedules' in partial && partial.schedules !== undefined) this.schedules = partial.schedules;
 	}
 
-	toJSON(): any {
+	toJSON(): object {
 		const res: { [k: string]: any } = {}
 		res['id'] = this.id
 		if (this.rev != undefined) res['rev'] = this.rev

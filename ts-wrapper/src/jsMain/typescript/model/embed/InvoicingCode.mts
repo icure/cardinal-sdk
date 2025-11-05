@@ -119,6 +119,8 @@ export interface InvoicingCode extends Encryptable {
 
 	readonly isEncrypted: boolean;
 
+	toJSON(): object;
+
 }
 
 export class DecryptedInvoicingCode {
@@ -297,7 +299,7 @@ export class DecryptedInvoicingCode {
 		if ('encryptedSelf' in partial) this.encryptedSelf = partial.encryptedSelf;
 	}
 
-	toJSON(): any {
+	toJSON(): object {
 		const res: { [k: string]: any } = {}
 		res['id'] = this.id ?? null
 		if (this.dateCode != undefined) res['dateCode'] = this.dateCode
@@ -612,7 +614,7 @@ export class EncryptedInvoicingCode {
 		if ('encryptedSelf' in partial) this.encryptedSelf = partial.encryptedSelf;
 	}
 
-	toJSON(): any {
+	toJSON(): object {
 		const res: { [k: string]: any } = {}
 		res['id'] = this.id ?? null
 		if (this.dateCode != undefined) res['dateCode'] = this.dateCode

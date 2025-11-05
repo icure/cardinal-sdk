@@ -41,6 +41,8 @@ export interface PlanOfAction extends Encryptable, ICureDocument<string>, Named 
 
 	readonly isEncrypted: boolean;
 
+	toJSON(): object;
+
 }
 
 export class DecryptedPlanOfAction {
@@ -126,7 +128,7 @@ export class DecryptedPlanOfAction {
 		if ('encryptedSelf' in partial) this.encryptedSelf = partial.encryptedSelf;
 	}
 
-	toJSON(): any {
+	toJSON(): object {
 		const res: { [k: string]: any } = {}
 		res['id'] = this.id
 		if (this.created != undefined) res['created'] = this.created
@@ -280,7 +282,7 @@ export class EncryptedPlanOfAction {
 		if ('encryptedSelf' in partial) this.encryptedSelf = partial.encryptedSelf;
 	}
 
-	toJSON(): any {
+	toJSON(): object {
 		const res: { [k: string]: any } = {}
 		res['id'] = this.id
 		if (this.created != undefined) res['created'] = this.created

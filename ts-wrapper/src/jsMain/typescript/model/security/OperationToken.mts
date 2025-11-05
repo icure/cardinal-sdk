@@ -23,7 +23,7 @@ export class OperationToken {
 		if ('description' in partial) this.description = partial.description;
 	}
 
-	toJSON(): any {
+	toJSON(): object {
 		const res: { [k: string]: any } = {}
 		res['tokenHash'] = this.tokenHash
 		res['creationTime'] = this.creationTime

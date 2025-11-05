@@ -36,7 +36,7 @@ export class DesignDocument {
 		if ('filters' in partial && partial.filters !== undefined) this.filters = partial.filters;
 	}
 
-	toJSON(): any {
+	toJSON(): object {
 		const res: { [k: string]: any } = {}
 		res['id'] = this.id
 		if (this.rev != undefined) res['rev'] = this.rev

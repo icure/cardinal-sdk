@@ -53,7 +53,7 @@ export class TimeTableItem {
 		if ('reservingRights' in partial && partial.reservingRights !== undefined) this.reservingRights = partial.reservingRights;
 	}
 
-	toJSON(): any {
+	toJSON(): object {
 		const res: { [k: string]: any } = {}
 		if (this.rruleStartDate != undefined) res['rruleStartDate'] = this.rruleStartDate
 		if (this.rrule != undefined) res['rrule'] = this.rrule

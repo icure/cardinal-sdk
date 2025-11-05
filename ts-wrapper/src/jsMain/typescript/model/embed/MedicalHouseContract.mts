@@ -75,6 +75,8 @@ export interface MedicalHouseContract extends Encryptable {
 
 	readonly isEncrypted: boolean;
 
+	toJSON(): object;
+
 }
 
 export class DecryptedMedicalHouseContract {
@@ -184,7 +186,7 @@ export class DecryptedMedicalHouseContract {
 		if ('encryptedSelf' in partial) this.encryptedSelf = partial.encryptedSelf;
 	}
 
-	toJSON(): any {
+	toJSON(): object {
 		const res: { [k: string]: any } = {}
 		if (this.contractId != undefined) res['contractId'] = this.contractId
 		if (this.validFrom != undefined) res['validFrom'] = this.validFrom
@@ -390,7 +392,7 @@ export class EncryptedMedicalHouseContract {
 		if ('encryptedSelf' in partial) this.encryptedSelf = partial.encryptedSelf;
 	}
 
-	toJSON(): any {
+	toJSON(): object {
 		const res: { [k: string]: any } = {}
 		if (this.contractId != undefined) res['contractId'] = this.contractId
 		if (this.validFrom != undefined) res['validFrom'] = this.validFrom

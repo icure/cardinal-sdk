@@ -61,6 +61,8 @@ export interface Message extends StoredDocument, ICureDocument<string>, HasEncry
 
 	readonly isEncrypted: boolean;
 
+	toJSON(): object;
+
 }
 
 export class DecryptedMessage {
@@ -188,7 +190,7 @@ export class DecryptedMessage {
 		if ('securityMetadata' in partial) this.securityMetadata = partial.securityMetadata;
 	}
 
-	toJSON(): any {
+	toJSON(): object {
 		const res: { [k: string]: any } = {}
 		res['id'] = this.id
 		if (this.rev != undefined) res['rev'] = this.rev
@@ -454,7 +456,7 @@ export class EncryptedMessage {
 		if ('securityMetadata' in partial) this.securityMetadata = partial.securityMetadata;
 	}
 
-	toJSON(): any {
+	toJSON(): object {
 		const res: { [k: string]: any } = {}
 		res['id'] = this.id
 		if (this.rev != undefined) res['rev'] = this.rev

@@ -134,6 +134,8 @@ export interface Patient extends StoredDocument, ICureDocument<string>, Person, 
 
 	readonly isEncrypted: boolean;
 
+	toJSON(): object;
+
 }
 
 export class DecryptedPatient {
@@ -392,7 +394,7 @@ export class DecryptedPatient {
 		if ('parentId' in partial) this.parentId = partial.parentId;
 	}
 
-	toJSON(): any {
+	toJSON(): object {
 		const res: { [k: string]: any } = {}
 		res['id'] = this.id
 		res['identifier'] = this.identifier.map((x0) => x0.toJSON() )
@@ -901,7 +903,7 @@ export class EncryptedPatient {
 		if ('parentId' in partial) this.parentId = partial.parentId;
 	}
 
-	toJSON(): any {
+	toJSON(): object {
 		const res: { [k: string]: any } = {}
 		res['id'] = this.id
 		res['identifier'] = this.identifier.map((x0) => x0.toJSON() )

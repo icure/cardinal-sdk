@@ -59,7 +59,7 @@ export class MedicalLocation implements StoredDocument, Named {
 		if ('publicInformations' in partial && partial.publicInformations !== undefined) this.publicInformations = partial.publicInformations;
 	}
 
-	toJSON(): any {
+	toJSON(): object {
 		const res: { [k: string]: any } = {}
 		res['id'] = this.id
 		if (this.rev != undefined) res['rev'] = this.rev

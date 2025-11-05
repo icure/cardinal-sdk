@@ -15,7 +15,7 @@ export class PublicAgendasAndCalendarItemTypes {
 		this.calendarItemTypes = partial.calendarItemTypes;
 	}
 
-	toJSON(): any {
+	toJSON(): object {
 		const res: { [k: string]: any } = {}
 		res['agendas'] = this.agendas.map((x0) => x0.toJSON() )
 		res['calendarItemTypes'] = this.calendarItemTypes.map((x0) => x0.toJSON() )

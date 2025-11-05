@@ -17,7 +17,7 @@ export class Payment {
 		if ('paid' in partial) this.paid = partial.paid;
 	}
 
-	toJSON(): any {
+	toJSON(): object {
 		const res: { [k: string]: any } = {}
 		res['paymentDate'] = this.paymentDate
 		if (this.paymentType != undefined) res['paymentType'] = this.paymentType

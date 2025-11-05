@@ -17,7 +17,7 @@ export class Launcher {
 		if ('shouldPassValue' in partial && partial.shouldPassValue !== undefined) this.shouldPassValue = partial.shouldPassValue;
 	}
 
-	toJSON(): any {
+	toJSON(): object {
 		const res: { [k: string]: any } = {}
 		res['name'] = this.name
 		res['triggerer'] = this.triggerer

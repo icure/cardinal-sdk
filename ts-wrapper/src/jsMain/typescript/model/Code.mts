@@ -70,7 +70,7 @@ export class Code implements StoredDocument, CodeIdentification<string> {
 		if ('disabled' in partial && partial.disabled !== undefined) this.disabled = partial.disabled;
 	}
 
-	toJSON(): any {
+	toJSON(): object {
 		const res: { [k: string]: any } = {}
 		res['id'] = this.id
 		if (this.rev != undefined) res['rev'] = this.rev

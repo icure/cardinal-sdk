@@ -38,7 +38,7 @@ export class DatabaseInfo {
 		if ('r' in partial) this.r = partial.r;
 	}
 
-	toJSON(): any {
+	toJSON(): object {
 		const res: { [k: string]: any } = {}
 		res['id'] = this.id
 		if (this.updateSeq != undefined) res['updateSeq'] = this.updateSeq

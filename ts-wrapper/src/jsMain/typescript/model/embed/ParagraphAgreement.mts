@@ -74,7 +74,7 @@ export class ParagraphAgreement {
 		if ('documentId' in partial) this.documentId = partial.documentId;
 	}
 
-	toJSON(): any {
+	toJSON(): object {
 		const res: { [k: string]: any } = {}
 		if (this.timestamp != undefined) res['timestamp'] = this.timestamp
 		if (this.paragraph != undefined) res['paragraph'] = this.paragraph

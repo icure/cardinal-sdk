@@ -30,7 +30,7 @@ export class ResourceGroupAllocationSchedule {
 		if ('items' in partial && partial.items !== undefined) this.items = partial.items;
 	}
 
-	toJSON(): any {
+	toJSON(): object {
 		const res: { [k: string]: any } = {}
 		if (this.resourceGroup != undefined) res['resourceGroup'] = this.resourceGroup.toJSON()
 		res['tags'] = this.tags.map((x0) => x0.toJSON() )

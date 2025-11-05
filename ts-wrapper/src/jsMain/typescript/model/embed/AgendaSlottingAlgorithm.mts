@@ -16,7 +16,7 @@ export namespace AgendaSlottingAlgorithm {
 			this.intervalMinutes = partial.intervalMinutes;
 		}
 
-		toJSON(): any {
+		toJSON(): object {
 			const res: { [k: string]: any } = {}
 			res['intervalMinutes'] = this.intervalMinutes
 			res['$ktClass'] = 'com.icure.cardinal.sdk.model.embed.AgendaSlottingAlgorithm.FixedIntervals'

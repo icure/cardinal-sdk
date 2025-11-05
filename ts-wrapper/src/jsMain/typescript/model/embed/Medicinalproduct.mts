@@ -23,7 +23,7 @@ export class Medicinalproduct {
 		if ('productId' in partial) this.productId = partial.productId;
 	}
 
-	toJSON(): any {
+	toJSON(): object {
 		const res: { [k: string]: any } = {}
 		res['intendedcds'] = this.intendedcds.map((x0) => x0.toJSON() )
 		res['deliveredcds'] = this.deliveredcds.map((x0) => x0.toJSON() )

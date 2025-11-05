@@ -13,7 +13,7 @@ export class Range {
 		if ('high' in partial) this.high = partial.high;
 	}
 
-	toJSON(): any {
+	toJSON(): object {
 		const res: { [k: string]: any } = {}
 		if (this.low != undefined) res['low'] = this.low
 		if (this.high != undefined) res['high'] = this.high

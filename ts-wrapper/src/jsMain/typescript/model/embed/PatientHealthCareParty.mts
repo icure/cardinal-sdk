@@ -24,6 +24,8 @@ export interface PatientHealthCareParty extends Encryptable {
 
 	readonly isEncrypted: boolean;
 
+	toJSON(): object;
+
 }
 
 export class DecryptedPatientHealthCareParty {
@@ -55,7 +57,7 @@ export class DecryptedPatientHealthCareParty {
 		if ('encryptedSelf' in partial) this.encryptedSelf = partial.encryptedSelf;
 	}
 
-	toJSON(): any {
+	toJSON(): object {
 		const res: { [k: string]: any } = {}
 		if (this.type != undefined) res['type'] = this.type
 		if (this.healthcarePartyId != undefined) res['healthcarePartyId'] = this.healthcarePartyId
@@ -125,7 +127,7 @@ export class EncryptedPatientHealthCareParty {
 		if ('encryptedSelf' in partial) this.encryptedSelf = partial.encryptedSelf;
 	}
 
-	toJSON(): any {
+	toJSON(): object {
 		const res: { [k: string]: any } = {}
 		if (this.type != undefined) res['type'] = this.type
 		if (this.healthcarePartyId != undefined) res['healthcarePartyId'] = this.healthcarePartyId

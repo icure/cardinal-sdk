@@ -10,7 +10,7 @@ export class IndexingInfo {
 		if ('statuses' in partial) this.statuses = partial.statuses;
 	}
 
-	toJSON(): any {
+	toJSON(): object {
 		const res: { [k: string]: any } = {}
 		if (this.statuses != undefined) res['statuses'] = Object.fromEntries(Object.entries(this.statuses).map(([k0, v0]) => [k0, v0]))
 		return res

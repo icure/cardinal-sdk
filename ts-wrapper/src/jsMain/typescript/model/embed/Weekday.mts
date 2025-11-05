@@ -14,7 +14,7 @@ export class Weekday {
 		if ('weekNumber' in partial) this.weekNumber = partial.weekNumber;
 	}
 
-	toJSON(): any {
+	toJSON(): object {
 		const res: { [k: string]: any } = {}
 		if (this.weekday != undefined) res['weekday'] = this.weekday.toJSON()
 		if (this.weekNumber != undefined) res['weekNumber'] = this.weekNumber

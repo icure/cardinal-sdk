@@ -54,7 +54,7 @@ export class Keyword implements StoredDocument, ICureDocument<string> {
 		if ('userId' in partial) this.userId = partial.userId;
 	}
 
-	toJSON(): any {
+	toJSON(): object {
 		const res: { [k: string]: any } = {}
 		res['id'] = this.id
 		if (this.rev != undefined) res['rev'] = this.rev

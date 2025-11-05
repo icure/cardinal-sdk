@@ -14,7 +14,7 @@ export class Permission {
 		if ('revokes' in partial && partial.revokes !== undefined) this.revokes = partial.revokes;
 	}
 
-	toJSON(): any {
+	toJSON(): object {
 		const res: { [k: string]: any } = {}
 		res['grants'] = this.grants.map((x0) => x0.toJSON() )
 		res['revokes'] = this.revokes.map((x0) => x0.toJSON() )

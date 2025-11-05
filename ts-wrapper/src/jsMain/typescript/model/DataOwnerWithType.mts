@@ -19,7 +19,7 @@ export namespace DataOwnerWithType {
 			this.dataOwner = partial.dataOwner;
 		}
 
-		toJSON(): any {
+		toJSON(): object {
 			const res: { [k: string]: any } = {}
 			res['dataOwner'] = this.dataOwner.toJSON()
 			res['$ktClass'] = 'com.icure.cardinal.sdk.model.DataOwnerWithType.HcpDataOwner'
@@ -52,7 +52,7 @@ export namespace DataOwnerWithType {
 			this.dataOwner = partial.dataOwner;
 		}
 
-		toJSON(): any {
+		toJSON(): object {
 			const res: { [k: string]: any } = {}
 			res['dataOwner'] = this.dataOwner.toJSON()
 			res['$ktClass'] = 'com.icure.cardinal.sdk.model.DataOwnerWithType.PatientDataOwner'
@@ -85,7 +85,7 @@ export namespace DataOwnerWithType {
 			this.dataOwner = partial.dataOwner;
 		}
 
-		toJSON(): any {
+		toJSON(): object {
 			const res: { [k: string]: any } = {}
 			res['dataOwner'] = this.dataOwner.toJSON()
 			res['$ktClass'] = 'com.icure.cardinal.sdk.model.DataOwnerWithType.DeviceDataOwner'

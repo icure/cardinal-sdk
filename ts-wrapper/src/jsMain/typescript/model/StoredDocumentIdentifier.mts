@@ -15,7 +15,7 @@ export class StoredDocumentIdentifier implements Identifiable<string> {
 		this.rev = partial.rev;
 	}
 
-	toJSON(): any {
+	toJSON(): object {
 		const res: { [k: string]: any } = {}
 		res['id'] = this.id
 		res['rev'] = this.rev

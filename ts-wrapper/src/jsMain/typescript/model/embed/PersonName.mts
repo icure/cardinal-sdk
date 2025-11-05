@@ -32,7 +32,7 @@ export class PersonName {
 		if ('use' in partial) this.use = partial.use;
 	}
 
-	toJSON(): any {
+	toJSON(): object {
 		const res: { [k: string]: any } = {}
 		if (this.lastName != undefined) res['lastName'] = this.lastName
 		res['firstNames'] = this.firstNames.map((x0) => x0 )

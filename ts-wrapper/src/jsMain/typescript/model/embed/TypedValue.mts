@@ -21,6 +21,8 @@ export interface TypedValue extends Encryptable {
 
 	readonly isEncrypted: boolean;
 
+	toJSON(): object;
+
 }
 
 export class DecryptedTypedValue {
@@ -52,7 +54,7 @@ export class DecryptedTypedValue {
 		if ('encryptedSelf' in partial) this.encryptedSelf = partial.encryptedSelf;
 	}
 
-	toJSON(): any {
+	toJSON(): object {
 		const res: { [k: string]: any } = {}
 		if (this.type != undefined) res['type'] = this.type
 		if (this.booleanValue != undefined) res['booleanValue'] = this.booleanValue
@@ -116,7 +118,7 @@ export class EncryptedTypedValue {
 		if ('encryptedSelf' in partial) this.encryptedSelf = partial.encryptedSelf;
 	}
 
-	toJSON(): any {
+	toJSON(): object {
 		const res: { [k: string]: any } = {}
 		if (this.type != undefined) res['type'] = this.type
 		if (this.booleanValue != undefined) res['booleanValue'] = this.booleanValue

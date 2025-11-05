@@ -26,6 +26,8 @@ export interface Insurability extends Encryptable {
 
 	readonly isEncrypted: boolean;
 
+	toJSON(): object;
+
 }
 
 export class DecryptedInsurability {
@@ -66,7 +68,7 @@ export class DecryptedInsurability {
 		if ('encryptedSelf' in partial) this.encryptedSelf = partial.encryptedSelf;
 	}
 
-	toJSON(): any {
+	toJSON(): object {
 		const res: { [k: string]: any } = {}
 		res['parameters'] = Object.fromEntries(Object.entries(this.parameters).map(([k0, v0]) => [k0, v0]))
 		if (this.hospitalisation != undefined) res['hospitalisation'] = this.hospitalisation
@@ -151,7 +153,7 @@ export class EncryptedInsurability {
 		if ('encryptedSelf' in partial) this.encryptedSelf = partial.encryptedSelf;
 	}
 
-	toJSON(): any {
+	toJSON(): object {
 		const res: { [k: string]: any } = {}
 		res['parameters'] = Object.fromEntries(Object.entries(this.parameters).map(([k0, v0]) => [k0, v0]))
 		if (this.hospitalisation != undefined) res['hospitalisation'] = this.hospitalisation

@@ -19,7 +19,7 @@ export class LetterValue {
 		if ('value' in partial) this.value = partial.value;
 	}
 
-	toJSON(): any {
+	toJSON(): object {
 		const res: { [k: string]: any } = {}
 		if (this.letter != undefined) res['letter'] = this.letter
 		if (this.index != undefined) res['index'] = this.index

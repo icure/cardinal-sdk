@@ -25,7 +25,7 @@ export class IdentityDocumentReader {
 		if ('reasonUsingVignette' in partial && partial.reasonUsingVignette !== undefined) this.reasonUsingVignette = partial.reasonUsingVignette;
 	}
 
-	toJSON(): any {
+	toJSON(): object {
 		const res: { [k: string]: any } = {}
 		if (this.justificatifDocumentNumber != undefined) res['justificatifDocumentNumber'] = this.justificatifDocumentNumber
 		if (this.supportSerialNumber != undefined) res['supportSerialNumber'] = this.supportSerialNumber

@@ -45,7 +45,7 @@ export class CryptoActorStub implements Versionable<string>, CryptoActor {
 		if ('cryptoActorProperties' in partial) this.cryptoActorProperties = partial.cryptoActorProperties;
 	}
 
-	toJSON(): any {
+	toJSON(): object {
 		const res: { [k: string]: any } = {}
 		res['id'] = this.id
 		res['rev'] = this.rev

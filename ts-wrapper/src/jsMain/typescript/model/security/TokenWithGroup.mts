@@ -16,7 +16,7 @@ export class TokenWithGroup {
 		if ('groupName' in partial) this.groupName = partial.groupName;
 	}
 
-	toJSON(): any {
+	toJSON(): object {
 		const res: { [k: string]: any } = {}
 		res['token'] = this.token
 		res['groupId'] = this.groupId

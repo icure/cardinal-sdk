@@ -19,7 +19,7 @@ export class Suspension {
 		if ('lifecycle' in partial) this.lifecycle = partial.lifecycle;
 	}
 
-	toJSON(): any {
+	toJSON(): object {
 		const res: { [k: string]: any } = {}
 		if (this.beginMoment != undefined) res['beginMoment'] = this.beginMoment
 		if (this.endMoment != undefined) res['endMoment'] = this.endMoment

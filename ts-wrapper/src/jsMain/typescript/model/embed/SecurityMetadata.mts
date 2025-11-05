@@ -11,7 +11,7 @@ export class SecurityMetadata {
 		this.secureDelegations = partial.secureDelegations;
 	}
 
-	toJSON(): any {
+	toJSON(): object {
 		const res: { [k: string]: any } = {}
 		res['secureDelegations'] = Object.fromEntries(Object.entries(this.secureDelegations).map(([k0, v0]) => [k0, v0.toJSON()]))
 		return res

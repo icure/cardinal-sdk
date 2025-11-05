@@ -16,6 +16,8 @@ export interface CalendarItemTag extends Encryptable {
 
 	readonly isEncrypted: boolean;
 
+	toJSON(): object;
+
 }
 
 export class DecryptedCalendarItemTag {
@@ -41,7 +43,7 @@ export class DecryptedCalendarItemTag {
 		if ('encryptedSelf' in partial) this.encryptedSelf = partial.encryptedSelf;
 	}
 
-	toJSON(): any {
+	toJSON(): object {
 		const res: { [k: string]: any } = {}
 		if (this.code != undefined) res['code'] = this.code
 		if (this.date != undefined) res['date'] = this.date
@@ -95,7 +97,7 @@ export class EncryptedCalendarItemTag {
 		if ('encryptedSelf' in partial) this.encryptedSelf = partial.encryptedSelf;
 	}
 
-	toJSON(): any {
+	toJSON(): object {
 		const res: { [k: string]: any } = {}
 		if (this.code != undefined) res['code'] = this.code
 		if (this.date != undefined) res['date'] = this.date

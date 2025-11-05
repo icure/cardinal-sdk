@@ -20,7 +20,7 @@ export class Section {
 		if ('keywords' in partial) this.keywords = partial.keywords;
 	}
 
-	toJSON(): any {
+	toJSON(): object {
 		const res: { [k: string]: any } = {}
 		res['section'] = this.section
 		res['fields'] = this.fields.map((x0) => x0.toJSON() )

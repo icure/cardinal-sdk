@@ -40,7 +40,7 @@ export class Annotation implements Identifiable<string> {
 		if ('encryptedSelf' in partial) this.encryptedSelf = partial.encryptedSelf;
 	}
 
-	toJSON(): any {
+	toJSON(): object {
 		const res: { [k: string]: any } = {}
 		res['id'] = this.id
 		if (this.author != undefined) res['author'] = this.author

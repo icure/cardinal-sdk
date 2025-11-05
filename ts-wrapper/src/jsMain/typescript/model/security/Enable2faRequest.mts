@@ -13,7 +13,7 @@ export class Enable2faRequest {
 		this.otpLength = partial.otpLength;
 	}
 
-	toJSON(): any {
+	toJSON(): object {
 		const res: { [k: string]: any } = {}
 		res['secret'] = this.secret
 		res['otpLength'] = this.otpLength

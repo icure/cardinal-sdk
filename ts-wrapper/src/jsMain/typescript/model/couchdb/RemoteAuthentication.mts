@@ -11,7 +11,7 @@ export class RemoteAuthentication {
 		if ('basic' in partial) this.basic = partial.basic;
 	}
 
-	toJSON(): any {
+	toJSON(): object {
 		const res: { [k: string]: any } = {}
 		if (this.basic != undefined) res['basic'] = this.basic.toJSON()
 		return res

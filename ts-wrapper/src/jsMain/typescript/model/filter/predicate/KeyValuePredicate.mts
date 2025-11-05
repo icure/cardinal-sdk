@@ -19,7 +19,7 @@ export class KeyValuePredicate {
 		if ('value' in partial) this.value = partial.value;
 	}
 
-	toJSON(): any {
+	toJSON(): object {
 		const res: { [k: string]: any } = {}
 		if (this.key != undefined) res['key'] = this.key
 		if (this.operator != undefined) res['operator'] = this.operator

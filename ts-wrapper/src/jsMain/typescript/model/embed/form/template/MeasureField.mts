@@ -60,7 +60,7 @@ export class MeasureField {
 		if ('translate' in partial) this.translate = partial.translate;
 	}
 
-	toJSON(): any {
+	toJSON(): object {
 		const res: { [k: string]: any } = {}
 		res['field'] = this.field
 		if (this.shortLabel != undefined) res['shortLabel'] = this.shortLabel

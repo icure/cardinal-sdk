@@ -14,7 +14,7 @@ export class KeywordSubword {
 		if ('subWords' in partial) this.subWords = partial.subWords;
 	}
 
-	toJSON(): any {
+	toJSON(): object {
 		const res: { [k: string]: any } = {}
 		if (this.value != undefined) res['value'] = this.value
 		if (this.subWords != undefined) res['subWords'] = this.subWords.map((x0) => x0.toJSON() )

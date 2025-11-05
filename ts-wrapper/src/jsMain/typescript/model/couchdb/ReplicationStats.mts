@@ -34,7 +34,7 @@ export class ReplicationStats {
 		if ('error' in partial) this.error = partial.error;
 	}
 
-	toJSON(): any {
+	toJSON(): object {
 		const res: { [k: string]: any } = {}
 		if (this.revisionsChecked != undefined) res['revisionsChecked'] = this.revisionsChecked
 		if (this.missingRevisionsFound != undefined) res['missingRevisionsFound'] = this.missingRevisionsFound

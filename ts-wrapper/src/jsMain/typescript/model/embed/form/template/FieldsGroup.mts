@@ -16,7 +16,7 @@ export class FieldsGroup {
 		if ('fields' in partial) this.fields = partial.fields;
 	}
 
-	toJSON(): any {
+	toJSON(): object {
 		const res: { [k: string]: any } = {}
 		res['group'] = this.group
 		if (this.fields != undefined) res['fields'] = this.fields.map((x0) => x0.toJSON() )

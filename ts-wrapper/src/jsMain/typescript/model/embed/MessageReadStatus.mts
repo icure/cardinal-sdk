@@ -13,7 +13,7 @@ export class MessageReadStatus {
 		if ('read' in partial && partial.read !== undefined) this.read = partial.read;
 	}
 
-	toJSON(): any {
+	toJSON(): object {
 		const res: { [k: string]: any } = {}
 		if (this.time != undefined) res['time'] = this.time
 		res['read'] = this.read

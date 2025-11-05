@@ -13,7 +13,7 @@ export class View {
 		if ('reduce' in partial) this.reduce = partial.reduce;
 	}
 
-	toJSON(): any {
+	toJSON(): object {
 		const res: { [k: string]: any } = {}
 		res['map'] = this.map
 		if (this.reduce != undefined) res['reduce'] = this.reduce

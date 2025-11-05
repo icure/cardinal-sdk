@@ -34,7 +34,7 @@ export class RegistrationInformation {
 		if ('cluster' in partial) this.cluster = partial.cluster;
 	}
 
-	toJSON(): any {
+	toJSON(): object {
 		const res: { [k: string]: any } = {}
 		if (this.applicationId != undefined) res['applicationId'] = this.applicationId
 		if (this.firstName != undefined) res['firstName'] = this.firstName
