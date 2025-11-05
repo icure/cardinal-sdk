@@ -69,7 +69,7 @@ export class DecryptedTypedValue {
 			path: Array<string> = ['DecryptedTypedValue']): DecryptedTypedValue {
 		if (typeof json != 'object') throw new Error(`Expected json object at path ${path.join("")}`)
 		const jCpy = { ...json }
-		if (extractEntry(jCpy, "isEncrypted", true, path) !== false) throw new Error(`Unexpected value for ${path.join("")} isEncrypted marker, should be false`)
+		if (extractEntry(jCpy, "isEncrypted", true, path) !== false) throw new Error(`Unexpected value for ${path.join("")} isEncrypted marker, should be false. The provided json doesn't represent a DecryptedTypedValue`)
 		const res = new DecryptedTypedValue({
 			type: expectStringEnum(extractEntry(jCpy, 'type', false, path), true, [...path, ".type"], TypedValuesType, 'TypedValuesType'),
 			booleanValue: expectBoolean(extractEntry(jCpy, 'booleanValue', false, path), true, [...path, ".booleanValue"]),
@@ -133,7 +133,7 @@ export class EncryptedTypedValue {
 			path: Array<string> = ['EncryptedTypedValue']): EncryptedTypedValue {
 		if (typeof json != 'object') throw new Error(`Expected json object at path ${path.join("")}`)
 		const jCpy = { ...json }
-		if (extractEntry(jCpy, "isEncrypted", true, path) !== true) throw new Error(`Unexpected value for ${path.join("")} isEncrypted marker, should be true`)
+		if (extractEntry(jCpy, "isEncrypted", true, path) !== true) throw new Error(`Unexpected value for ${path.join("")} isEncrypted marker, should be true. The provided json doesn't represent a EncryptedTypedValue`)
 		const res = new EncryptedTypedValue({
 			type: expectStringEnum(extractEntry(jCpy, 'type', false, path), true, [...path, ".type"], TypedValuesType, 'TypedValuesType'),
 			booleanValue: expectBoolean(extractEntry(jCpy, 'booleanValue', false, path), true, [...path, ".booleanValue"]),

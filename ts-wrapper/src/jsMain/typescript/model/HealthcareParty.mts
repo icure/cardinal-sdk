@@ -269,7 +269,7 @@ export class HealthcareParty implements StoredDocument, Named, Person, CryptoAct
 			path: Array<string> = ['HealthcareParty']): HealthcareParty {
 		if (typeof json != 'object') throw new Error(`Expected json object at path ${path.join("")}`)
 		const jCpy = { ...json }
-		if (extractEntry(jCpy, '\$ktClass', true, path) !== 'com.icure.cardinal.sdk.model.HealthcareParty') throw new Error(`Unexpected value f+or ${path.join("")} class marker, should be "com.icure.cardinal.sdk.model.HealthcareParty"`)
+		if (extractEntry(jCpy, '\$ktClass', true, path) !== 'com.icure.cardinal.sdk.model.HealthcareParty') throw new Error(`Unexpected value for ${path.join("")} class marker, should be "com.icure.cardinal.sdk.model.HealthcareParty". The provided json doesn't represent a HealthcareParty`)
 		const res = new HealthcareParty({
 			id: expectString(extractEntry(jCpy, 'id', true, path), false, [...path, ".id"]),
 			rev: expectString(extractEntry(jCpy, 'rev', false, path), true, [...path, ".rev"]),

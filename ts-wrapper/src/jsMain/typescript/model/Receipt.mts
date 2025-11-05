@@ -134,7 +134,7 @@ export class DecryptedReceipt {
 			path: Array<string> = ['DecryptedReceipt']): DecryptedReceipt {
 		if (typeof json != 'object') throw new Error(`Expected json object at path ${path.join("")}`)
 		const jCpy = { ...json }
-		if (extractEntry(jCpy, "isEncrypted", true, path) !== false) throw new Error(`Unexpected value for ${path.join("")} isEncrypted marker, should be false`)
+		if (extractEntry(jCpy, "isEncrypted", true, path) !== false) throw new Error(`Unexpected value for ${path.join("")} isEncrypted marker, should be false. The provided json doesn't represent a DecryptedReceipt`)
 		const res = new DecryptedReceipt({
 			id: expectString(extractEntry(jCpy, 'id', true, path), false, [...path, ".id"]),
 			rev: expectString(extractEntry(jCpy, 'rev', false, path), true, [...path, ".rev"]),
@@ -297,7 +297,7 @@ export class EncryptedReceipt {
 			path: Array<string> = ['EncryptedReceipt']): EncryptedReceipt {
 		if (typeof json != 'object') throw new Error(`Expected json object at path ${path.join("")}`)
 		const jCpy = { ...json }
-		if (extractEntry(jCpy, "isEncrypted", true, path) !== true) throw new Error(`Unexpected value for ${path.join("")} isEncrypted marker, should be true`)
+		if (extractEntry(jCpy, "isEncrypted", true, path) !== true) throw new Error(`Unexpected value for ${path.join("")} isEncrypted marker, should be true. The provided json doesn't represent a EncryptedReceipt`)
 		const res = new EncryptedReceipt({
 			id: expectString(extractEntry(jCpy, 'id', true, path), false, [...path, ".id"]),
 			rev: expectString(extractEntry(jCpy, 'rev', false, path), true, [...path, ".rev"]),

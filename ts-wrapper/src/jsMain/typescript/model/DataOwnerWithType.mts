@@ -30,7 +30,7 @@ export namespace DataOwnerWithType {
 				path: Array<string> = ['HcpDataOwner']): HcpDataOwner {
 			if (typeof json != 'object') throw new Error(`Expected json object at path ${path.join("")}`)
 			const jCpy = { ...json }
-			if (extractEntry(jCpy, '\$ktClass', true, path) !== 'com.icure.cardinal.sdk.model.DataOwnerWithType.HcpDataOwner') throw new Error(`Unexpected value f+or ${path.join("")} class marker, should be "com.icure.cardinal.sdk.model.DataOwnerWithType.HcpDataOwner"`)
+			if (extractEntry(jCpy, '\$ktClass', true, path) !== 'com.icure.cardinal.sdk.model.DataOwnerWithType.HcpDataOwner') throw new Error(`Unexpected value for ${path.join("")} class marker, should be "com.icure.cardinal.sdk.model.DataOwnerWithType.HcpDataOwner". The provided json doesn't represent a HcpDataOwner`)
 			const res = new HcpDataOwner({
 				dataOwner: expectObject(extractEntry(jCpy, 'dataOwner', true, path), false, ignoreUnknownKeys, [...path, ".dataOwner"], HealthcareParty.fromJSON),
 			})
@@ -63,7 +63,7 @@ export namespace DataOwnerWithType {
 				path: Array<string> = ['PatientDataOwner']): PatientDataOwner {
 			if (typeof json != 'object') throw new Error(`Expected json object at path ${path.join("")}`)
 			const jCpy = { ...json }
-			if (extractEntry(jCpy, '\$ktClass', true, path) !== 'com.icure.cardinal.sdk.model.DataOwnerWithType.PatientDataOwner') throw new Error(`Unexpected value f+or ${path.join("")} class marker, should be "com.icure.cardinal.sdk.model.DataOwnerWithType.PatientDataOwner"`)
+			if (extractEntry(jCpy, '\$ktClass', true, path) !== 'com.icure.cardinal.sdk.model.DataOwnerWithType.PatientDataOwner') throw new Error(`Unexpected value for ${path.join("")} class marker, should be "com.icure.cardinal.sdk.model.DataOwnerWithType.PatientDataOwner". The provided json doesn't represent a PatientDataOwner`)
 			const res = new PatientDataOwner({
 				dataOwner: expectObject(extractEntry(jCpy, 'dataOwner', true, path), false, ignoreUnknownKeys, [...path, ".dataOwner"], EncryptedPatient.fromJSON),
 			})
@@ -96,7 +96,7 @@ export namespace DataOwnerWithType {
 				path: Array<string> = ['DeviceDataOwner']): DeviceDataOwner {
 			if (typeof json != 'object') throw new Error(`Expected json object at path ${path.join("")}`)
 			const jCpy = { ...json }
-			if (extractEntry(jCpy, '\$ktClass', true, path) !== 'com.icure.cardinal.sdk.model.DataOwnerWithType.DeviceDataOwner') throw new Error(`Unexpected value f+or ${path.join("")} class marker, should be "com.icure.cardinal.sdk.model.DataOwnerWithType.DeviceDataOwner"`)
+			if (extractEntry(jCpy, '\$ktClass', true, path) !== 'com.icure.cardinal.sdk.model.DataOwnerWithType.DeviceDataOwner') throw new Error(`Unexpected value for ${path.join("")} class marker, should be "com.icure.cardinal.sdk.model.DataOwnerWithType.DeviceDataOwner". The provided json doesn't represent a DeviceDataOwner`)
 			const res = new DeviceDataOwner({
 				dataOwner: expectObject(extractEntry(jCpy, 'dataOwner', true, path), false, ignoreUnknownKeys, [...path, ".dataOwner"], Device.fromJSON),
 			})

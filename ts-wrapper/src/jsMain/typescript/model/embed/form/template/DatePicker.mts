@@ -87,7 +87,7 @@ export class DatePicker {
 			path: Array<string> = ['DatePicker']): DatePicker {
 		if (typeof json != 'object') throw new Error(`Expected json object at path ${path.join("")}`)
 		const jCpy = { ...json }
-		if (extractEntry(jCpy, '\$ktClass', true, path) !== 'com.icure.cardinal.sdk.model.embed.form.template.DatePicker') throw new Error(`Unexpected value f+or ${path.join("")} class marker, should be "com.icure.cardinal.sdk.model.embed.form.template.DatePicker"`)
+		if (extractEntry(jCpy, '\$ktClass', true, path) !== 'com.icure.cardinal.sdk.model.embed.form.template.DatePicker') throw new Error(`Unexpected value for ${path.join("")} class marker, should be "com.icure.cardinal.sdk.model.embed.form.template.DatePicker". The provided json doesn't represent a DatePicker`)
 		const res = new DatePicker({
 			field: expectString(extractEntry(jCpy, 'field', true, path), false, [...path, ".field"]),
 			shortLabel: expectString(extractEntry(jCpy, 'shortLabel', false, path), true, [...path, ".shortLabel"]),

@@ -119,7 +119,7 @@ export class DecryptedSubContact {
 			path: Array<string> = ['DecryptedSubContact']): DecryptedSubContact {
 		if (typeof json != 'object') throw new Error(`Expected json object at path ${path.join("")}`)
 		const jCpy = { ...json }
-		if (extractEntry(jCpy, "isEncrypted", true, path) !== false) throw new Error(`Unexpected value for ${path.join("")} isEncrypted marker, should be false`)
+		if (extractEntry(jCpy, "isEncrypted", true, path) !== false) throw new Error(`Unexpected value for ${path.join("")} isEncrypted marker, should be false. The provided json doesn't represent a DecryptedSubContact`)
 		const res = new DecryptedSubContact({
 			id: expectString(extractEntry(jCpy, 'id', false, path), true, [...path, ".id"]),
 			created: expectNumber(extractEntry(jCpy, 'created', false, path), true, true, [...path, ".created"]),
@@ -238,7 +238,7 @@ export class EncryptedSubContact {
 			path: Array<string> = ['EncryptedSubContact']): EncryptedSubContact {
 		if (typeof json != 'object') throw new Error(`Expected json object at path ${path.join("")}`)
 		const jCpy = { ...json }
-		if (extractEntry(jCpy, "isEncrypted", true, path) !== true) throw new Error(`Unexpected value for ${path.join("")} isEncrypted marker, should be true`)
+		if (extractEntry(jCpy, "isEncrypted", true, path) !== true) throw new Error(`Unexpected value for ${path.join("")} isEncrypted marker, should be true. The provided json doesn't represent a EncryptedSubContact`)
 		const res = new EncryptedSubContact({
 			id: expectString(extractEntry(jCpy, 'id', false, path), true, [...path, ".id"]),
 			created: expectNumber(extractEntry(jCpy, 'created', false, path), true, true, [...path, ".created"]),

@@ -65,7 +65,7 @@ export class CryptoActorStub implements Versionable<string>, CryptoActor {
 			path: Array<string> = ['CryptoActorStub']): CryptoActorStub {
 		if (typeof json != 'object') throw new Error(`Expected json object at path ${path.join("")}`)
 		const jCpy = { ...json }
-		if (extractEntry(jCpy, '\$ktClass', true, path) !== 'com.icure.cardinal.sdk.model.CryptoActorStub') throw new Error(`Unexpected value f+or ${path.join("")} class marker, should be "com.icure.cardinal.sdk.model.CryptoActorStub"`)
+		if (extractEntry(jCpy, '\$ktClass', true, path) !== 'com.icure.cardinal.sdk.model.CryptoActorStub') throw new Error(`Unexpected value for ${path.join("")} class marker, should be "com.icure.cardinal.sdk.model.CryptoActorStub". The provided json doesn't represent a CryptoActorStub`)
 		const res = new CryptoActorStub({
 			id: expectString(extractEntry(jCpy, 'id', true, path), false, [...path, ".id"]),
 			rev: expectString(extractEntry(jCpy, 'rev', true, path), false, [...path, ".rev"]),

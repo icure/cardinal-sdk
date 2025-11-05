@@ -74,7 +74,7 @@ export class DecryptedFinancialInstitutionInformation {
 			path: Array<string> = ['DecryptedFinancialInstitutionInformation']): DecryptedFinancialInstitutionInformation {
 		if (typeof json != 'object') throw new Error(`Expected json object at path ${path.join("")}`)
 		const jCpy = { ...json }
-		if (extractEntry(jCpy, "isEncrypted", true, path) !== false) throw new Error(`Unexpected value for ${path.join("")} isEncrypted marker, should be false`)
+		if (extractEntry(jCpy, "isEncrypted", true, path) !== false) throw new Error(`Unexpected value for ${path.join("")} isEncrypted marker, should be false. The provided json doesn't represent a DecryptedFinancialInstitutionInformation`)
 		const res = new DecryptedFinancialInstitutionInformation({
 			name: expectString(extractEntry(jCpy, 'name', false, path), true, [...path, ".name"]),
 			key: expectString(extractEntry(jCpy, 'key', false, path), true, [...path, ".key"]),
@@ -143,7 +143,7 @@ export class EncryptedFinancialInstitutionInformation {
 			path: Array<string> = ['EncryptedFinancialInstitutionInformation']): EncryptedFinancialInstitutionInformation {
 		if (typeof json != 'object') throw new Error(`Expected json object at path ${path.join("")}`)
 		const jCpy = { ...json }
-		if (extractEntry(jCpy, "isEncrypted", true, path) !== true) throw new Error(`Unexpected value for ${path.join("")} isEncrypted marker, should be true`)
+		if (extractEntry(jCpy, "isEncrypted", true, path) !== true) throw new Error(`Unexpected value for ${path.join("")} isEncrypted marker, should be true. The provided json doesn't represent a EncryptedFinancialInstitutionInformation`)
 		const res = new EncryptedFinancialInstitutionInformation({
 			name: expectString(extractEntry(jCpy, 'name', false, path), true, [...path, ".name"]),
 			key: expectString(extractEntry(jCpy, 'key', false, path), true, [...path, ".key"]),

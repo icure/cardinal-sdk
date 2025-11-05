@@ -27,7 +27,7 @@ export namespace AgendaSlottingAlgorithm {
 				path: Array<string> = ['FixedIntervals']): FixedIntervals {
 			if (typeof json != 'object') throw new Error(`Expected json object at path ${path.join("")}`)
 			const jCpy = { ...json }
-			if (extractEntry(jCpy, '\$ktClass', true, path) !== 'com.icure.cardinal.sdk.model.embed.AgendaSlottingAlgorithm.FixedIntervals') throw new Error(`Unexpected value f+or ${path.join("")} class marker, should be "com.icure.cardinal.sdk.model.embed.AgendaSlottingAlgorithm.FixedIntervals"`)
+			if (extractEntry(jCpy, '\$ktClass', true, path) !== 'com.icure.cardinal.sdk.model.embed.AgendaSlottingAlgorithm.FixedIntervals') throw new Error(`Unexpected value for ${path.join("")} class marker, should be "com.icure.cardinal.sdk.model.embed.AgendaSlottingAlgorithm.FixedIntervals". The provided json doesn't represent a FixedIntervals`)
 			const res = new FixedIntervals({
 				intervalMinutes: expectNumber(extractEntry(jCpy, 'intervalMinutes', true, path), false, true, [...path, ".intervalMinutes"]),
 			})

@@ -24,7 +24,7 @@ export class AlwaysPermissionItem {
 			path: Array<string> = ['AlwaysPermissionItem']): AlwaysPermissionItem {
 		if (typeof json != 'object') throw new Error(`Expected json object at path ${path.join("")}`)
 		const jCpy = { ...json }
-		if (extractEntry(jCpy, '\$ktClass', true, path) !== 'com.icure.cardinal.sdk.model.security.AlwaysPermissionItem') throw new Error(`Unexpected value f+or ${path.join("")} class marker, should be "com.icure.cardinal.sdk.model.security.AlwaysPermissionItem"`)
+		if (extractEntry(jCpy, '\$ktClass', true, path) !== 'com.icure.cardinal.sdk.model.security.AlwaysPermissionItem') throw new Error(`Unexpected value for ${path.join("")} class marker, should be "com.icure.cardinal.sdk.model.security.AlwaysPermissionItem". The provided json doesn't represent a AlwaysPermissionItem`)
 		const res = new AlwaysPermissionItem({
 			type: expectStringEnum(extractEntry(jCpy, 'type', true, path), false, [...path, ".type"], PermissionType, 'PermissionType'),
 		})

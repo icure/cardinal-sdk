@@ -87,7 +87,7 @@ export class DropdownField {
 			path: Array<string> = ['DropdownField']): DropdownField {
 		if (typeof json != 'object') throw new Error(`Expected json object at path ${path.join("")}`)
 		const jCpy = { ...json }
-		if (extractEntry(jCpy, '\$ktClass', true, path) !== 'com.icure.cardinal.sdk.model.embed.form.template.DropdownField') throw new Error(`Unexpected value f+or ${path.join("")} class marker, should be "com.icure.cardinal.sdk.model.embed.form.template.DropdownField"`)
+		if (extractEntry(jCpy, '\$ktClass', true, path) !== 'com.icure.cardinal.sdk.model.embed.form.template.DropdownField') throw new Error(`Unexpected value for ${path.join("")} class marker, should be "com.icure.cardinal.sdk.model.embed.form.template.DropdownField". The provided json doesn't represent a DropdownField`)
 		const res = new DropdownField({
 			field: expectString(extractEntry(jCpy, 'field', true, path), false, [...path, ".field"]),
 			shortLabel: expectString(extractEntry(jCpy, 'shortLabel', false, path), true, [...path, ".shortLabel"]),

@@ -86,7 +86,7 @@ export class DecryptedInsurability {
 			path: Array<string> = ['DecryptedInsurability']): DecryptedInsurability {
 		if (typeof json != 'object') throw new Error(`Expected json object at path ${path.join("")}`)
 		const jCpy = { ...json }
-		if (extractEntry(jCpy, "isEncrypted", true, path) !== false) throw new Error(`Unexpected value for ${path.join("")} isEncrypted marker, should be false`)
+		if (extractEntry(jCpy, "isEncrypted", true, path) !== false) throw new Error(`Unexpected value for ${path.join("")} isEncrypted marker, should be false. The provided json doesn't represent a DecryptedInsurability`)
 		const res = new DecryptedInsurability({
 			parameters: expectMap(
 				extractEntry(jCpy, 'parameters', false, path),
@@ -171,7 +171,7 @@ export class EncryptedInsurability {
 			path: Array<string> = ['EncryptedInsurability']): EncryptedInsurability {
 		if (typeof json != 'object') throw new Error(`Expected json object at path ${path.join("")}`)
 		const jCpy = { ...json }
-		if (extractEntry(jCpy, "isEncrypted", true, path) !== true) throw new Error(`Unexpected value for ${path.join("")} isEncrypted marker, should be true`)
+		if (extractEntry(jCpy, "isEncrypted", true, path) !== true) throw new Error(`Unexpected value for ${path.join("")} isEncrypted marker, should be true. The provided json doesn't represent a EncryptedInsurability`)
 		const res = new EncryptedInsurability({
 			parameters: expectMap(
 				extractEntry(jCpy, 'parameters', false, path),

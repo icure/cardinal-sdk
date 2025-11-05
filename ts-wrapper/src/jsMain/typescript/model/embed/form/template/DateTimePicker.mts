@@ -87,7 +87,7 @@ export class DateTimePicker {
 			path: Array<string> = ['DateTimePicker']): DateTimePicker {
 		if (typeof json != 'object') throw new Error(`Expected json object at path ${path.join("")}`)
 		const jCpy = { ...json }
-		if (extractEntry(jCpy, '\$ktClass', true, path) !== 'com.icure.cardinal.sdk.model.embed.form.template.DateTimePicker') throw new Error(`Unexpected value f+or ${path.join("")} class marker, should be "com.icure.cardinal.sdk.model.embed.form.template.DateTimePicker"`)
+		if (extractEntry(jCpy, '\$ktClass', true, path) !== 'com.icure.cardinal.sdk.model.embed.form.template.DateTimePicker') throw new Error(`Unexpected value for ${path.join("")} class marker, should be "com.icure.cardinal.sdk.model.embed.form.template.DateTimePicker". The provided json doesn't represent a DateTimePicker`)
 		const res = new DateTimePicker({
 			field: expectString(extractEntry(jCpy, 'field', true, path), false, [...path, ".field"]),
 			shortLabel: expectString(extractEntry(jCpy, 'shortLabel', false, path), true, [...path, ".shortLabel"]),

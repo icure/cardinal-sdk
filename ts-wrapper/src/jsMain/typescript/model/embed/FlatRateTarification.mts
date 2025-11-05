@@ -58,7 +58,7 @@ export class DecryptedFlatRateTarification {
 			path: Array<string> = ['DecryptedFlatRateTarification']): DecryptedFlatRateTarification {
 		if (typeof json != 'object') throw new Error(`Expected json object at path ${path.join("")}`)
 		const jCpy = { ...json }
-		if (extractEntry(jCpy, "isEncrypted", true, path) !== false) throw new Error(`Unexpected value for ${path.join("")} isEncrypted marker, should be false`)
+		if (extractEntry(jCpy, "isEncrypted", true, path) !== false) throw new Error(`Unexpected value for ${path.join("")} isEncrypted marker, should be false. The provided json doesn't represent a DecryptedFlatRateTarification`)
 		const res = new DecryptedFlatRateTarification({
 			code: expectString(extractEntry(jCpy, 'code', false, path), true, [...path, ".code"]),
 			flatRateType: expectStringEnum(extractEntry(jCpy, 'flatRateType', false, path), true, [...path, ".flatRateType"], FlatRateType, 'FlatRateType'),
@@ -118,7 +118,7 @@ export class EncryptedFlatRateTarification {
 			path: Array<string> = ['EncryptedFlatRateTarification']): EncryptedFlatRateTarification {
 		if (typeof json != 'object') throw new Error(`Expected json object at path ${path.join("")}`)
 		const jCpy = { ...json }
-		if (extractEntry(jCpy, "isEncrypted", true, path) !== true) throw new Error(`Unexpected value for ${path.join("")} isEncrypted marker, should be true`)
+		if (extractEntry(jCpy, "isEncrypted", true, path) !== true) throw new Error(`Unexpected value for ${path.join("")} isEncrypted marker, should be true. The provided json doesn't represent a EncryptedFlatRateTarification`)
 		const res = new EncryptedFlatRateTarification({
 			code: expectString(extractEntry(jCpy, 'code', false, path), true, [...path, ".code"]),
 			flatRateType: expectStringEnum(extractEntry(jCpy, 'flatRateType', false, path), true, [...path, ".flatRateType"], FlatRateType, 'FlatRateType'),

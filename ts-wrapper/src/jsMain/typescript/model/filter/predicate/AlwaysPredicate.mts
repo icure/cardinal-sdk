@@ -19,7 +19,7 @@ export class AlwaysPredicate {
 			path: Array<string> = ['AlwaysPredicate']): AlwaysPredicate {
 		if (typeof json != 'object') throw new Error(`Expected json object at path ${path.join("")}`)
 		const jCpy = { ...json }
-		if (extractEntry(jCpy, '\$ktClass', true, path) !== 'com.icure.cardinal.sdk.model.filter.predicate.AlwaysPredicate') throw new Error(`Unexpected value f+or ${path.join("")} class marker, should be "com.icure.cardinal.sdk.model.filter.predicate.AlwaysPredicate"`)
+		if (extractEntry(jCpy, '\$ktClass', true, path) !== 'com.icure.cardinal.sdk.model.filter.predicate.AlwaysPredicate') throw new Error(`Unexpected value for ${path.join("")} class marker, should be "com.icure.cardinal.sdk.model.filter.predicate.AlwaysPredicate". The provided json doesn't represent a AlwaysPredicate`)
 		const res = new AlwaysPredicate({
 		})
 		if (!ignoreUnknownKeys) {

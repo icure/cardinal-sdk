@@ -56,7 +56,7 @@ export class DecryptedCalendarItemTag {
 			path: Array<string> = ['DecryptedCalendarItemTag']): DecryptedCalendarItemTag {
 		if (typeof json != 'object') throw new Error(`Expected json object at path ${path.join("")}`)
 		const jCpy = { ...json }
-		if (extractEntry(jCpy, "isEncrypted", true, path) !== false) throw new Error(`Unexpected value for ${path.join("")} isEncrypted marker, should be false`)
+		if (extractEntry(jCpy, "isEncrypted", true, path) !== false) throw new Error(`Unexpected value for ${path.join("")} isEncrypted marker, should be false. The provided json doesn't represent a DecryptedCalendarItemTag`)
 		const res = new DecryptedCalendarItemTag({
 			code: expectString(extractEntry(jCpy, 'code', false, path), true, [...path, ".code"]),
 			date: expectNumber(extractEntry(jCpy, 'date', false, path), true, true, [...path, ".date"]),
@@ -110,7 +110,7 @@ export class EncryptedCalendarItemTag {
 			path: Array<string> = ['EncryptedCalendarItemTag']): EncryptedCalendarItemTag {
 		if (typeof json != 'object') throw new Error(`Expected json object at path ${path.join("")}`)
 		const jCpy = { ...json }
-		if (extractEntry(jCpy, "isEncrypted", true, path) !== true) throw new Error(`Unexpected value for ${path.join("")} isEncrypted marker, should be true`)
+		if (extractEntry(jCpy, "isEncrypted", true, path) !== true) throw new Error(`Unexpected value for ${path.join("")} isEncrypted marker, should be true. The provided json doesn't represent a EncryptedCalendarItemTag`)
 		const res = new EncryptedCalendarItemTag({
 			code: expectString(extractEntry(jCpy, 'code', false, path), true, [...path, ".code"]),
 			date: expectNumber(extractEntry(jCpy, 'date', false, path), true, true, [...path, ".date"]),

@@ -58,7 +58,7 @@ export class DecryptedPropertyStub {
 			path: Array<string> = ['DecryptedPropertyStub']): DecryptedPropertyStub {
 		if (typeof json != 'object') throw new Error(`Expected json object at path ${path.join("")}`)
 		const jCpy = { ...json }
-		if (extractEntry(jCpy, "isEncrypted", true, path) !== false) throw new Error(`Unexpected value for ${path.join("")} isEncrypted marker, should be false`)
+		if (extractEntry(jCpy, "isEncrypted", true, path) !== false) throw new Error(`Unexpected value for ${path.join("")} isEncrypted marker, should be false. The provided json doesn't represent a DecryptedPropertyStub`)
 		const res = new DecryptedPropertyStub({
 			id: expectString(extractEntry(jCpy, 'id', false, path), true, [...path, ".id"]),
 			type: expectObject(extractEntry(jCpy, 'type', false, path), true, ignoreUnknownKeys, [...path, ".type"], PropertyTypeStub.fromJSON),
@@ -112,7 +112,7 @@ export class EncryptedPropertyStub {
 			path: Array<string> = ['EncryptedPropertyStub']): EncryptedPropertyStub {
 		if (typeof json != 'object') throw new Error(`Expected json object at path ${path.join("")}`)
 		const jCpy = { ...json }
-		if (extractEntry(jCpy, "isEncrypted", true, path) !== true) throw new Error(`Unexpected value for ${path.join("")} isEncrypted marker, should be true`)
+		if (extractEntry(jCpy, "isEncrypted", true, path) !== true) throw new Error(`Unexpected value for ${path.join("")} isEncrypted marker, should be true. The provided json doesn't represent a EncryptedPropertyStub`)
 		const res = new EncryptedPropertyStub({
 			id: expectString(extractEntry(jCpy, 'id', false, path), true, [...path, ".id"]),
 			type: expectObject(extractEntry(jCpy, 'type', false, path), true, ignoreUnknownKeys, [...path, ".type"], PropertyTypeStub.fromJSON),

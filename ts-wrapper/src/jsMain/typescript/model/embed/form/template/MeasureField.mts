@@ -87,7 +87,7 @@ export class MeasureField {
 			path: Array<string> = ['MeasureField']): MeasureField {
 		if (typeof json != 'object') throw new Error(`Expected json object at path ${path.join("")}`)
 		const jCpy = { ...json }
-		if (extractEntry(jCpy, '\$ktClass', true, path) !== 'com.icure.cardinal.sdk.model.embed.form.template.MeasureField') throw new Error(`Unexpected value f+or ${path.join("")} class marker, should be "com.icure.cardinal.sdk.model.embed.form.template.MeasureField"`)
+		if (extractEntry(jCpy, '\$ktClass', true, path) !== 'com.icure.cardinal.sdk.model.embed.form.template.MeasureField') throw new Error(`Unexpected value for ${path.join("")} class marker, should be "com.icure.cardinal.sdk.model.embed.form.template.MeasureField". The provided json doesn't represent a MeasureField`)
 		const res = new MeasureField({
 			field: expectString(extractEntry(jCpy, 'field', true, path), false, [...path, ".field"]),
 			shortLabel: expectString(extractEntry(jCpy, 'shortLabel', false, path), true, [...path, ".shortLabel"]),

@@ -58,7 +58,7 @@ export class DecryptedCareTeamMember {
 			path: Array<string> = ['DecryptedCareTeamMember']): DecryptedCareTeamMember {
 		if (typeof json != 'object') throw new Error(`Expected json object at path ${path.join("")}`)
 		const jCpy = { ...json }
-		if (extractEntry(jCpy, "isEncrypted", true, path) !== false) throw new Error(`Unexpected value for ${path.join("")} isEncrypted marker, should be false`)
+		if (extractEntry(jCpy, "isEncrypted", true, path) !== false) throw new Error(`Unexpected value for ${path.join("")} isEncrypted marker, should be false. The provided json doesn't represent a DecryptedCareTeamMember`)
 		const res = new DecryptedCareTeamMember({
 			id: expectString(extractEntry(jCpy, 'id', true, path), false, [...path, ".id"]),
 			careTeamMemberType: expectStringEnum(extractEntry(jCpy, 'careTeamMemberType', false, path), true, [...path, ".careTeamMemberType"], CareTeamMemberType, 'CareTeamMemberType'),
@@ -112,7 +112,7 @@ export class EncryptedCareTeamMember {
 			path: Array<string> = ['EncryptedCareTeamMember']): EncryptedCareTeamMember {
 		if (typeof json != 'object') throw new Error(`Expected json object at path ${path.join("")}`)
 		const jCpy = { ...json }
-		if (extractEntry(jCpy, "isEncrypted", true, path) !== true) throw new Error(`Unexpected value for ${path.join("")} isEncrypted marker, should be true`)
+		if (extractEntry(jCpy, "isEncrypted", true, path) !== true) throw new Error(`Unexpected value for ${path.join("")} isEncrypted marker, should be true. The provided json doesn't represent a EncryptedCareTeamMember`)
 		const res = new EncryptedCareTeamMember({
 			id: expectString(extractEntry(jCpy, 'id', true, path), false, [...path, ".id"]),
 			careTeamMemberType: expectStringEnum(extractEntry(jCpy, 'careTeamMemberType', false, path), true, [...path, ".careTeamMemberType"], CareTeamMemberType, 'CareTeamMemberType'),

@@ -211,7 +211,7 @@ export class DecryptedHealthElement {
 			path: Array<string> = ['DecryptedHealthElement']): DecryptedHealthElement {
 		if (typeof json != 'object') throw new Error(`Expected json object at path ${path.join("")}`)
 		const jCpy = { ...json }
-		if (extractEntry(jCpy, "isEncrypted", true, path) !== false) throw new Error(`Unexpected value for ${path.join("")} isEncrypted marker, should be false`)
+		if (extractEntry(jCpy, "isEncrypted", true, path) !== false) throw new Error(`Unexpected value for ${path.join("")} isEncrypted marker, should be false. The provided json doesn't represent a DecryptedHealthElement`)
 		const res = new DecryptedHealthElement({
 			id: expectString(extractEntry(jCpy, 'id', true, path), false, [...path, ".id"]),
 			identifiers: expectArray(extractEntry(jCpy, 'identifiers', false, path), false, [...path, ".identifiers"], (x0, p0) => expectObject(x0, false, ignoreUnknownKeys, p0, Identifier.fromJSON)),
@@ -428,7 +428,7 @@ export class EncryptedHealthElement {
 			path: Array<string> = ['EncryptedHealthElement']): EncryptedHealthElement {
 		if (typeof json != 'object') throw new Error(`Expected json object at path ${path.join("")}`)
 		const jCpy = { ...json }
-		if (extractEntry(jCpy, "isEncrypted", true, path) !== true) throw new Error(`Unexpected value for ${path.join("")} isEncrypted marker, should be true`)
+		if (extractEntry(jCpy, "isEncrypted", true, path) !== true) throw new Error(`Unexpected value for ${path.join("")} isEncrypted marker, should be true. The provided json doesn't represent a EncryptedHealthElement`)
 		const res = new EncryptedHealthElement({
 			id: expectString(extractEntry(jCpy, 'id', true, path), false, [...path, ".id"]),
 			identifiers: expectArray(extractEntry(jCpy, 'identifiers', false, path), false, [...path, ".identifiers"], (x0, p0) => expectObject(x0, false, ignoreUnknownKeys, p0, Identifier.fromJSON)),

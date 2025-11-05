@@ -24,7 +24,7 @@ export class OrPredicate {
 			path: Array<string> = ['OrPredicate']): OrPredicate {
 		if (typeof json != 'object') throw new Error(`Expected json object at path ${path.join("")}`)
 		const jCpy = { ...json }
-		if (extractEntry(jCpy, '\$ktClass', true, path) !== 'com.icure.cardinal.sdk.model.filter.predicate.OrPredicate') throw new Error(`Unexpected value f+or ${path.join("")} class marker, should be "com.icure.cardinal.sdk.model.filter.predicate.OrPredicate"`)
+		if (extractEntry(jCpy, '\$ktClass', true, path) !== 'com.icure.cardinal.sdk.model.filter.predicate.OrPredicate') throw new Error(`Unexpected value for ${path.join("")} class marker, should be "com.icure.cardinal.sdk.model.filter.predicate.OrPredicate". The provided json doesn't represent a OrPredicate`)
 		const res = new OrPredicate({
 			predicates: expectArray(extractEntry(jCpy, 'predicates', false, path), false, [...path, ".predicates"], (x0, p0) => expectObject(x0, false, ignoreUnknownKeys, p0, Predicate.fromJSON)),
 		})

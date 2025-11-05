@@ -92,7 +92,7 @@ export class DecryptedValorisation {
 			path: Array<string> = ['DecryptedValorisation']): DecryptedValorisation {
 		if (typeof json != 'object') throw new Error(`Expected json object at path ${path.join("")}`)
 		const jCpy = { ...json }
-		if (extractEntry(jCpy, "isEncrypted", true, path) !== false) throw new Error(`Unexpected value for ${path.join("")} isEncrypted marker, should be false`)
+		if (extractEntry(jCpy, "isEncrypted", true, path) !== false) throw new Error(`Unexpected value for ${path.join("")} isEncrypted marker, should be false. The provided json doesn't represent a DecryptedValorisation`)
 		const res = new DecryptedValorisation({
 			startOfValidity: expectNumber(extractEntry(jCpy, 'startOfValidity', false, path), true, true, [...path, ".startOfValidity"]),
 			endOfValidity: expectNumber(extractEntry(jCpy, 'endOfValidity', false, path), true, true, [...path, ".endOfValidity"]),
@@ -182,7 +182,7 @@ export class EncryptedValorisation {
 			path: Array<string> = ['EncryptedValorisation']): EncryptedValorisation {
 		if (typeof json != 'object') throw new Error(`Expected json object at path ${path.join("")}`)
 		const jCpy = { ...json }
-		if (extractEntry(jCpy, "isEncrypted", true, path) !== true) throw new Error(`Unexpected value for ${path.join("")} isEncrypted marker, should be true`)
+		if (extractEntry(jCpy, "isEncrypted", true, path) !== true) throw new Error(`Unexpected value for ${path.join("")} isEncrypted marker, should be true. The provided json doesn't represent a EncryptedValorisation`)
 		const res = new EncryptedValorisation({
 			startOfValidity: expectNumber(extractEntry(jCpy, 'startOfValidity', false, path), true, true, [...path, ".startOfValidity"]),
 			endOfValidity: expectNumber(extractEntry(jCpy, 'endOfValidity', false, path), true, true, [...path, ".endOfValidity"]),

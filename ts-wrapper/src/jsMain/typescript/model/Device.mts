@@ -143,7 +143,7 @@ export class Device implements StoredDocument, ICureDocument<string>, Named, Cry
 			path: Array<string> = ['Device']): Device {
 		if (typeof json != 'object') throw new Error(`Expected json object at path ${path.join("")}`)
 		const jCpy = { ...json }
-		if (extractEntry(jCpy, '\$ktClass', true, path) !== 'com.icure.cardinal.sdk.model.Device') throw new Error(`Unexpected value f+or ${path.join("")} class marker, should be "com.icure.cardinal.sdk.model.Device"`)
+		if (extractEntry(jCpy, '\$ktClass', true, path) !== 'com.icure.cardinal.sdk.model.Device') throw new Error(`Unexpected value for ${path.join("")} class marker, should be "com.icure.cardinal.sdk.model.Device". The provided json doesn't represent a Device`)
 		const res = new Device({
 			id: expectString(extractEntry(jCpy, 'id', true, path), false, [...path, ".id"]),
 			rev: expectString(extractEntry(jCpy, 'rev', false, path), true, [...path, ".rev"]),

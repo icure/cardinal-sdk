@@ -51,7 +51,7 @@ export class DecryptedTelecom {
 			path: Array<string> = ['DecryptedTelecom']): DecryptedTelecom {
 		if (typeof json != 'object') throw new Error(`Expected json object at path ${path.join("")}`)
 		const jCpy = { ...json }
-		if (extractEntry(jCpy, "isEncrypted", true, path) !== false) throw new Error(`Unexpected value for ${path.join("")} isEncrypted marker, should be false`)
+		if (extractEntry(jCpy, "isEncrypted", true, path) !== false) throw new Error(`Unexpected value for ${path.join("")} isEncrypted marker, should be false. The provided json doesn't represent a DecryptedTelecom`)
 		const res = new DecryptedTelecom({
 			telecomType: expectStringEnum(extractEntry(jCpy, 'telecomType', false, path), true, [...path, ".telecomType"], TelecomType, 'TelecomType'),
 			telecomNumber: expectString(extractEntry(jCpy, 'telecomNumber', false, path), true, [...path, ".telecomNumber"]),
@@ -100,7 +100,7 @@ export class EncryptedTelecom {
 			path: Array<string> = ['EncryptedTelecom']): EncryptedTelecom {
 		if (typeof json != 'object') throw new Error(`Expected json object at path ${path.join("")}`)
 		const jCpy = { ...json }
-		if (extractEntry(jCpy, "isEncrypted", true, path) !== true) throw new Error(`Unexpected value for ${path.join("")} isEncrypted marker, should be true`)
+		if (extractEntry(jCpy, "isEncrypted", true, path) !== true) throw new Error(`Unexpected value for ${path.join("")} isEncrypted marker, should be true. The provided json doesn't represent a EncryptedTelecom`)
 		const res = new EncryptedTelecom({
 			telecomType: expectStringEnum(extractEntry(jCpy, 'telecomType', false, path), true, [...path, ".telecomType"], TelecomType, 'TelecomType'),
 			telecomNumber: expectString(extractEntry(jCpy, 'telecomNumber', false, path), true, [...path, ".telecomNumber"]),

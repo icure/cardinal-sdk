@@ -146,7 +146,7 @@ export namespace CalendarItemType {
 					path: Array<string> = ['Set']): Set {
 				if (typeof json != 'object') throw new Error(`Expected json object at path ${path.join("")}`)
 				const jCpy = { ...json }
-				if (extractEntry(jCpy, '\$ktClass', true, path) !== 'com.icure.cardinal.sdk.model.CalendarItemType.DurationConfig.Set') throw new Error(`Unexpected value f+or ${path.join("")} class marker, should be "com.icure.cardinal.sdk.model.CalendarItemType.DurationConfig.Set"`)
+				if (extractEntry(jCpy, '\$ktClass', true, path) !== 'com.icure.cardinal.sdk.model.CalendarItemType.DurationConfig.Set') throw new Error(`Unexpected value for ${path.join("")} class marker, should be "com.icure.cardinal.sdk.model.CalendarItemType.DurationConfig.Set". The provided json doesn't represent a Set`)
 				const res = new Set({
 					durations: expectArray(extractEntry(jCpy, 'durations', false, path), false, [...path, ".durations"], (x0, p0) => expectNumber(x0, false, true, p0)),
 				})
@@ -187,7 +187,7 @@ export namespace CalendarItemType {
 					path: Array<string> = ['Formula']): Formula {
 				if (typeof json != 'object') throw new Error(`Expected json object at path ${path.join("")}`)
 				const jCpy = { ...json }
-				if (extractEntry(jCpy, '\$ktClass', true, path) !== 'com.icure.cardinal.sdk.model.CalendarItemType.DurationConfig.Formula') throw new Error(`Unexpected value f+or ${path.join("")} class marker, should be "com.icure.cardinal.sdk.model.CalendarItemType.DurationConfig.Formula"`)
+				if (extractEntry(jCpy, '\$ktClass', true, path) !== 'com.icure.cardinal.sdk.model.CalendarItemType.DurationConfig.Formula') throw new Error(`Unexpected value for ${path.join("")} class marker, should be "com.icure.cardinal.sdk.model.CalendarItemType.DurationConfig.Formula". The provided json doesn't represent a Formula`)
 				const res = new Formula({
 					min: expectNumber(extractEntry(jCpy, 'min', true, path), false, true, [...path, ".min"]),
 					max: expectNumber(extractEntry(jCpy, 'max', true, path), false, true, [...path, ".max"]),
