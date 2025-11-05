@@ -9,13 +9,13 @@ declare global {
 export function randomUuid(): string {
   if (doRandomUuid == undefined) {
     if (typeof crypto !== 'undefined' && crypto.randomUUID != undefined) {
-      doRandomUuid = crypto.randomUUID
+      doRandomUuid = () => { return crypto.randomUUID() }
     } else if (typeof window !== 'undefined' && window.crypto?.randomUUID != undefined) {
-      doRandomUuid = window.crypto.randomUUID
+      doRandomUuid = () => { return window.crypto.randomUUID() }
     } else if (typeof self !== 'undefined' && self.crypto?.randomUUID != undefined) {
-      doRandomUuid = self.crypto.randomUUID
+      doRandomUuid = () => { return self.crypto.randomUUID() }
     } else if (typeof globalThis !== 'undefined' && globalThis.cardinalInternalGlobals?.randomUuid != undefined) {
-      doRandomUuid = globalThis.cardinalInternalGlobals?.randomUuid
+      doRandomUuid = () => { return globalThis.cardinalInternalGlobals!.randomUuid!() }
     } else throw new Error(
       "Can't generate uuid as js crypto is not available.\n"
       + "This error may happen if you're creating an instance of a CardinalSdk model class on js environments that are not supported out-of-the-box, such as node<19, or react-native\n"
