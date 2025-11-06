@@ -36,7 +36,6 @@ private data class PySdkParams(
 	val useHierarchicalDataOwners: Boolean = false,
 	val createTransferKeys: Boolean = true,
 	val keyStorage: StorageFacadeOptions? = null,
-	val saltPasswordWithApplicationId: Boolean = true,
 	val lenientJson: Boolean = true,
 ) {
 	@OptIn(ExperimentalForeignApi::class)
@@ -131,12 +130,10 @@ private data class PyBaseSdkParams(
 	val baseUrl: String,
 	val authenticationMethod: PyAuthMethod,
 	val encryptedFields: EncryptedFieldsConfiguration = EncryptedFieldsConfiguration(),
-	val saltPasswordWithApplicationId: Boolean = true,
 ) {
 	fun getRichApiParams(): RichPyBaseApiParams {
 		val options = BasicSdkOptions(
-			encryptedFields = encryptedFields,
-			saltPasswordWithApplicationId = saltPasswordWithApplicationId,
+			encryptedFields = encryptedFields
 		)
 		return RichPyBaseApiParams(
 			options,

@@ -18,7 +18,6 @@ import kotlinx.serialization.json.JsonObject
 @Serializable
 data class DartSdkOptions(
 	val encryptedFields: EncryptedFieldsConfiguration,
-	val saltPasswordWithApplicationId: Boolean,
 	val useHierarchicalDataOwners: Boolean,
 	val createTransferKeys: Boolean,
 	val lenientJson: Boolean,
@@ -27,7 +26,6 @@ data class DartSdkOptions(
 ) {
 	fun toMultiplatform(): SdkOptions = SdkOptions(
 		encryptedFields = encryptedFields,
-		saltPasswordWithApplicationId = saltPasswordWithApplicationId,
 		useHierarchicalDataOwners = useHierarchicalDataOwners,
 		createTransferKeys = createTransferKeys,
 		lenientJson = lenientJson,
@@ -49,13 +47,11 @@ data class DartSdkOptions(
 @Serializable
 data class DartBasicSdkOptions(
 	val encryptedFields: EncryptedFieldsConfiguration,
-	val saltPasswordWithApplicationId: Boolean,
 	val lenientJson: Boolean,
 	val groupSelector: String?
 ) {
 	fun toMultiplatform(): BasicSdkOptions = BasicSdkOptions(
 		encryptedFields = encryptedFields,
-		saltPasswordWithApplicationId = saltPasswordWithApplicationId,
 		lenientJson = lenientJson,
 		groupSelector = groupSelector?.let(::makeGroupSelectorDartCallback)
 	)

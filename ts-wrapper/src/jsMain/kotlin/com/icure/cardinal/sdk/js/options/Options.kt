@@ -33,7 +33,6 @@ suspend fun SdkOptionsJs.toKt(): SdkOptions {
 		useHierarchicalDataOwners = this.useHierarchicalDataOwners ?: defaultSdkOptions.useHierarchicalDataOwners,
 		createTransferKeys = this.createTransferKeys ?: defaultSdkOptions.createTransferKeys,
 		cryptoService = this.cryptoService.checkRequiredAdaptAndPolyfillRandom() ?: defaultSdkOptions.cryptoService,
-		saltPasswordWithApplicationId = this.saltPasswordWithApplicationId ?: defaultSdkOptions.saltPasswordWithApplicationId,
 		groupSelector = this.groupSelector?.let { groupSelectorJs ->
 			{ ktGroups ->
 				groupSelectorJs(ktGroups.map { userGroup_toJs(it) }.toTypedArray()).await()
@@ -54,7 +53,6 @@ suspend fun BasicSdkOptionsJs.toKt(): BasicSdkOptions {
 	return BasicSdkOptions(
 		encryptedFields = this.encryptedFields?.toKt() ?: defaultApiOptions.encryptedFields,
 		cryptoService = this.cryptoService.checkRequiredAdaptAndPolyfillRandom() ?: defaultApiOptions.cryptoService,
-		saltPasswordWithApplicationId = this.saltPasswordWithApplicationId ?: defaultApiOptions.saltPasswordWithApplicationId,
 		groupSelector = this.groupSelector?.let { groupSelectorJs ->
 			{ ktGroups ->
 				groupSelectorJs(ktGroups.map { userGroup_toJs(it) }.toTypedArray()).await()
