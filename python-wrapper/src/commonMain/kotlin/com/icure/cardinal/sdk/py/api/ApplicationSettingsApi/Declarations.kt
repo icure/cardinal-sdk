@@ -2,7 +2,7 @@
 package com.icure.cardinal.sdk.py.api.ApplicationSettingsApi
 
 import com.icure.cardinal.sdk.CardinalNonCryptoApis
-import com.icure.cardinal.sdk.model.ApplicationSettings
+import com.icure.cardinal.sdk.model.EncryptedApplicationSettings
 import com.icure.cardinal.sdk.py.utils.failureToPyStringAsyncCallback
 import com.icure.cardinal.sdk.py.utils.toPyString
 import com.icure.cardinal.sdk.py.utils.toPyStringAsyncCallback
@@ -28,7 +28,7 @@ public fun getApplicationSettingsBlocking(sdk: CardinalNonCryptoApis): String = 
 	runBlocking {
 		sdk.applicationSettings.getApplicationSettings()
 	}
-}.toPyString(ListSerializer(ApplicationSettings.serializer()))
+}.toPyString(ListSerializer(EncryptedApplicationSettings.serializer()))
 
 @OptIn(ExperimentalForeignApi::class)
 public fun getApplicationSettingsAsync(sdk: CardinalNonCryptoApis,
@@ -37,13 +37,14 @@ public fun getApplicationSettingsAsync(sdk: CardinalNonCryptoApis,
 	GlobalScope.launch {
 		kotlin.runCatching {
 			sdk.applicationSettings.getApplicationSettings()
-		}.toPyStringAsyncCallback(ListSerializer(ApplicationSettings.serializer()), resultCallback)
+		}.toPyStringAsyncCallback(ListSerializer(EncryptedApplicationSettings.serializer()),
+				resultCallback)
 	}
 }.failureToPyStringAsyncCallback(resultCallback)
 
 @Serializable
 private class CreateApplicationSettingsParams(
-	public val applicationSettings: ApplicationSettings,
+	public val applicationSettings: EncryptedApplicationSettings,
 )
 
 @OptIn(InternalIcureApi::class)
@@ -56,7 +57,7 @@ public fun createApplicationSettingsBlocking(sdk: CardinalNonCryptoApis, params:
 			decodedParams.applicationSettings,
 		)
 	}
-}.toPyString(ApplicationSettings.serializer())
+}.toPyString(EncryptedApplicationSettings.serializer())
 
 @OptIn(
 	ExperimentalForeignApi::class,
@@ -75,13 +76,13 @@ public fun createApplicationSettingsAsync(
 			sdk.applicationSettings.createApplicationSettings(
 				decodedParams.applicationSettings,
 			)
-		}.toPyStringAsyncCallback(ApplicationSettings.serializer(), resultCallback)
+		}.toPyStringAsyncCallback(EncryptedApplicationSettings.serializer(), resultCallback)
 	}
 }.failureToPyStringAsyncCallback(resultCallback)
 
 @Serializable
 private class UpdateApplicationSettingsParams(
-	public val applicationSettings: ApplicationSettings,
+	public val applicationSettings: EncryptedApplicationSettings,
 )
 
 @OptIn(InternalIcureApi::class)
@@ -94,7 +95,7 @@ public fun updateApplicationSettingsBlocking(sdk: CardinalNonCryptoApis, params:
 			decodedParams.applicationSettings,
 		)
 	}
-}.toPyString(ApplicationSettings.serializer())
+}.toPyString(EncryptedApplicationSettings.serializer())
 
 @OptIn(
 	ExperimentalForeignApi::class,
@@ -113,6 +114,6 @@ public fun updateApplicationSettingsAsync(
 			sdk.applicationSettings.updateApplicationSettings(
 				decodedParams.applicationSettings,
 			)
-		}.toPyStringAsyncCallback(ApplicationSettings.serializer(), resultCallback)
+		}.toPyStringAsyncCallback(EncryptedApplicationSettings.serializer(), resultCallback)
 	}
 }.failureToPyStringAsyncCallback(resultCallback)

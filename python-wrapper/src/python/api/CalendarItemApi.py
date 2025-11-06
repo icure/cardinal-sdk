@@ -741,6 +741,37 @@ class CalendarItemApi:
 			return_value = DecryptedCalendarItem._deserialize(result_info.success)
 			return return_value
 
+	async def book_calendar_item_checking_availability_async(self, entity: DecryptedCalendarItem) -> DecryptedCalendarItem:
+		def do_decode(raw_result):
+			return DecryptedCalendarItem._deserialize(raw_result)
+		payload = {
+			"entity": entity.__serialize__(),
+		}
+		return await execute_async_method_job(
+			self.cardinal_sdk._executor,
+			True,
+			do_decode,
+			symbols.kotlin.root.com.icure.cardinal.sdk.py.api.CalendarItemApi.bookCalendarItemCheckingAvailabilityAsync,
+			self.cardinal_sdk._native,
+			json.dumps(payload).encode('utf-8'),
+		)
+
+	def book_calendar_item_checking_availability_blocking(self, entity: DecryptedCalendarItem) -> DecryptedCalendarItem:
+		payload = {
+			"entity": entity.__serialize__(),
+		}
+		call_result = symbols.kotlin.root.com.icure.cardinal.sdk.py.api.CalendarItemApi.bookCalendarItemCheckingAvailabilityBlocking(
+			self.cardinal_sdk._native,
+			json.dumps(payload).encode('utf-8'),
+		)
+		result_info = create_result_from_json(cast(call_result, c_char_p).value.decode('utf-8'))
+		symbols.DisposeString(call_result)
+		if result_info.failure is not None:
+			raise interpret_kt_error(result_info.failure)
+		else:
+			return_value = DecryptedCalendarItem._deserialize(result_info.success)
+			return return_value
+
 	async def undelete_calendar_item_by_id_async(self, id: str, rev: str) -> DecryptedCalendarItem:
 		def do_decode(raw_result):
 			return DecryptedCalendarItem._deserialize(raw_result)
@@ -1168,6 +1199,37 @@ class CalendarItemApiEncrypted:
 			return_value = EncryptedCalendarItem._deserialize(result_info.success)
 			return return_value
 
+	async def book_calendar_item_checking_availability_async(self, entity: EncryptedCalendarItem) -> EncryptedCalendarItem:
+		def do_decode(raw_result):
+			return EncryptedCalendarItem._deserialize(raw_result)
+		payload = {
+			"entity": entity.__serialize__(),
+		}
+		return await execute_async_method_job(
+			self.cardinal_sdk._executor,
+			True,
+			do_decode,
+			symbols.kotlin.root.com.icure.cardinal.sdk.py.api.CalendarItemApi.encrypted.bookCalendarItemCheckingAvailabilityAsync,
+			self.cardinal_sdk._native,
+			json.dumps(payload).encode('utf-8'),
+		)
+
+	def book_calendar_item_checking_availability_blocking(self, entity: EncryptedCalendarItem) -> EncryptedCalendarItem:
+		payload = {
+			"entity": entity.__serialize__(),
+		}
+		call_result = symbols.kotlin.root.com.icure.cardinal.sdk.py.api.CalendarItemApi.encrypted.bookCalendarItemCheckingAvailabilityBlocking(
+			self.cardinal_sdk._native,
+			json.dumps(payload).encode('utf-8'),
+		)
+		result_info = create_result_from_json(cast(call_result, c_char_p).value.decode('utf-8'))
+		symbols.DisposeString(call_result)
+		if result_info.failure is not None:
+			raise interpret_kt_error(result_info.failure)
+		else:
+			return_value = EncryptedCalendarItem._deserialize(result_info.success)
+			return return_value
+
 	async def undelete_calendar_item_by_id_async(self, id: str, rev: str) -> EncryptedCalendarItem:
 		def do_decode(raw_result):
 			return EncryptedCalendarItem._deserialize(raw_result)
@@ -1538,6 +1600,37 @@ class CalendarItemApiTryAndRecover:
 			"entity": serialize_calendar_item(entity),
 		}
 		call_result = symbols.kotlin.root.com.icure.cardinal.sdk.py.api.CalendarItemApi.tryAndRecover.createCalendarItemBlocking(
+			self.cardinal_sdk._native,
+			json.dumps(payload).encode('utf-8'),
+		)
+		result_info = create_result_from_json(cast(call_result, c_char_p).value.decode('utf-8'))
+		symbols.DisposeString(call_result)
+		if result_info.failure is not None:
+			raise interpret_kt_error(result_info.failure)
+		else:
+			return_value = deserialize_calendar_item(result_info.success)
+			return return_value
+
+	async def book_calendar_item_checking_availability_async(self, entity: CalendarItem) -> CalendarItem:
+		def do_decode(raw_result):
+			return deserialize_calendar_item(raw_result)
+		payload = {
+			"entity": serialize_calendar_item(entity),
+		}
+		return await execute_async_method_job(
+			self.cardinal_sdk._executor,
+			True,
+			do_decode,
+			symbols.kotlin.root.com.icure.cardinal.sdk.py.api.CalendarItemApi.tryAndRecover.bookCalendarItemCheckingAvailabilityAsync,
+			self.cardinal_sdk._native,
+			json.dumps(payload).encode('utf-8'),
+		)
+
+	def book_calendar_item_checking_availability_blocking(self, entity: CalendarItem) -> CalendarItem:
+		payload = {
+			"entity": serialize_calendar_item(entity),
+		}
+		call_result = symbols.kotlin.root.com.icure.cardinal.sdk.py.api.CalendarItemApi.tryAndRecover.bookCalendarItemCheckingAvailabilityBlocking(
 			self.cardinal_sdk._native,
 			json.dumps(payload).encode('utf-8'),
 		)

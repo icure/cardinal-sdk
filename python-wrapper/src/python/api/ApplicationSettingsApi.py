@@ -2,7 +2,7 @@
 import json
 from cardinal_sdk.async_utils import execute_async_method_job
 from cardinal_sdk.kotlin_types import symbols
-from cardinal_sdk.model import ApplicationSettings
+from cardinal_sdk.model import EncryptedApplicationSettings
 from cardinal_sdk.model.CallResult import create_result_from_json, interpret_kt_error
 from ctypes import cast, c_char_p
 
@@ -12,9 +12,9 @@ class ApplicationSettingsApi:
 	def __init__(self, cardinal_sdk):
 		self.cardinal_sdk = cardinal_sdk
 
-	async def get_application_settings_async(self) -> list[ApplicationSettings]:
+	async def get_application_settings_async(self) -> list[EncryptedApplicationSettings]:
 		def do_decode(raw_result):
-			return [ApplicationSettings._deserialize(x1) for x1 in raw_result]
+			return [EncryptedApplicationSettings._deserialize(x1) for x1 in raw_result]
 		return await execute_async_method_job(
 			self.cardinal_sdk._executor,
 			True,
@@ -23,7 +23,7 @@ class ApplicationSettingsApi:
 			self.cardinal_sdk._native,
 		)
 
-	def get_application_settings_blocking(self) -> list[ApplicationSettings]:
+	def get_application_settings_blocking(self) -> list[EncryptedApplicationSettings]:
 		call_result = symbols.kotlin.root.com.icure.cardinal.sdk.py.api.ApplicationSettingsApi.getApplicationSettingsBlocking(
 			self.cardinal_sdk._native,
 		)
@@ -32,12 +32,12 @@ class ApplicationSettingsApi:
 		if result_info.failure is not None:
 			raise interpret_kt_error(result_info.failure)
 		else:
-			return_value = [ApplicationSettings._deserialize(x1) for x1 in result_info.success]
+			return_value = [EncryptedApplicationSettings._deserialize(x1) for x1 in result_info.success]
 			return return_value
 
-	async def create_application_settings_async(self, application_settings: ApplicationSettings) -> ApplicationSettings:
+	async def create_application_settings_async(self, application_settings: EncryptedApplicationSettings) -> EncryptedApplicationSettings:
 		def do_decode(raw_result):
-			return ApplicationSettings._deserialize(raw_result)
+			return EncryptedApplicationSettings._deserialize(raw_result)
 		payload = {
 			"applicationSettings": application_settings.__serialize__(),
 		}
@@ -50,7 +50,7 @@ class ApplicationSettingsApi:
 			json.dumps(payload).encode('utf-8'),
 		)
 
-	def create_application_settings_blocking(self, application_settings: ApplicationSettings) -> ApplicationSettings:
+	def create_application_settings_blocking(self, application_settings: EncryptedApplicationSettings) -> EncryptedApplicationSettings:
 		payload = {
 			"applicationSettings": application_settings.__serialize__(),
 		}
@@ -63,12 +63,12 @@ class ApplicationSettingsApi:
 		if result_info.failure is not None:
 			raise interpret_kt_error(result_info.failure)
 		else:
-			return_value = ApplicationSettings._deserialize(result_info.success)
+			return_value = EncryptedApplicationSettings._deserialize(result_info.success)
 			return return_value
 
-	async def update_application_settings_async(self, application_settings: ApplicationSettings) -> ApplicationSettings:
+	async def update_application_settings_async(self, application_settings: EncryptedApplicationSettings) -> EncryptedApplicationSettings:
 		def do_decode(raw_result):
-			return ApplicationSettings._deserialize(raw_result)
+			return EncryptedApplicationSettings._deserialize(raw_result)
 		payload = {
 			"applicationSettings": application_settings.__serialize__(),
 		}
@@ -81,7 +81,7 @@ class ApplicationSettingsApi:
 			json.dumps(payload).encode('utf-8'),
 		)
 
-	def update_application_settings_blocking(self, application_settings: ApplicationSettings) -> ApplicationSettings:
+	def update_application_settings_blocking(self, application_settings: EncryptedApplicationSettings) -> EncryptedApplicationSettings:
 		payload = {
 			"applicationSettings": application_settings.__serialize__(),
 		}
@@ -94,5 +94,5 @@ class ApplicationSettingsApi:
 		if result_info.failure is not None:
 			raise interpret_kt_error(result_info.failure)
 		else:
-			return_value = ApplicationSettings._deserialize(result_info.success)
+			return_value = EncryptedApplicationSettings._deserialize(result_info.success)
 			return return_value

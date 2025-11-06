@@ -325,6 +325,44 @@ public fun createCalendarItemAsync(
 }.failureToPyStringAsyncCallback(resultCallback)
 
 @Serializable
+private class BookCalendarItemCheckingAvailabilityParams(
+	public val entity: CalendarItem,
+)
+
+@OptIn(InternalIcureApi::class)
+public fun bookCalendarItemCheckingAvailabilityBlocking(sdk: CardinalApis, params: String): String =
+		kotlin.runCatching {
+	val decodedParams =
+			fullLanguageInteropJson.decodeFromString<BookCalendarItemCheckingAvailabilityParams>(params)
+	runBlocking {
+		sdk.calendarItem.tryAndRecover.bookCalendarItemCheckingAvailability(
+			decodedParams.entity,
+		)
+	}
+}.toPyString(PolymorphicSerializer(CalendarItem::class))
+
+@OptIn(
+	ExperimentalForeignApi::class,
+	InternalIcureApi::class,
+)
+public fun bookCalendarItemCheckingAvailabilityAsync(
+	sdk: CardinalApis,
+	params: String,
+	resultCallback: CPointer<CFunction<(CValues<ByteVarOf<Byte>>?,
+			CValues<ByteVarOf<Byte>>?) -> Unit>>,
+): COpaquePointer? = kotlin.runCatching {
+	val decodedParams =
+			fullLanguageInteropJson.decodeFromString<BookCalendarItemCheckingAvailabilityParams>(params)
+	GlobalScope.launch {
+		kotlin.runCatching {
+			sdk.calendarItem.tryAndRecover.bookCalendarItemCheckingAvailability(
+				decodedParams.entity,
+			)
+		}.toPyStringAsyncCallback(PolymorphicSerializer(CalendarItem::class), resultCallback)
+	}
+}.failureToPyStringAsyncCallback(resultCallback)
+
+@Serializable
 private class UndeleteCalendarItemByIdParams(
 	public val id: String,
 	public val rev: String,

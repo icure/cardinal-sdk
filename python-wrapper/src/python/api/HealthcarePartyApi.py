@@ -15,6 +15,7 @@ class HealthcarePartyApi:
 
 	def __init__(self, cardinal_sdk):
 		self.cardinal_sdk = cardinal_sdk
+		self.in_group = HealthcarePartyApiInGroup(self.cardinal_sdk)
 
 	async def get_healthcare_party_async(self, healthcare_party_id: str) -> Optional[HealthcareParty]:
 		def do_decode(raw_result):
@@ -967,3 +968,42 @@ class HealthcarePartyApi:
 				deserializer = lambda x: HealthcareParty._deserialize(x),
 				executor = self.cardinal_sdk._executor
 			)
+
+
+class HealthcarePartyApiInGroup:
+
+	def __init__(self, cardinal_sdk):
+		self.cardinal_sdk = cardinal_sdk
+
+	async def match_healthcare_parties_by_async(self, group_id: str, filter: BaseFilterOptions[HealthcareParty]) -> list[str]:
+		def do_decode(raw_result):
+			return [x1 for x1 in raw_result]
+		payload = {
+			"groupId": group_id,
+			"filter": filter.__serialize__(),
+		}
+		return await execute_async_method_job(
+			self.cardinal_sdk._executor,
+			True,
+			do_decode,
+			symbols.kotlin.root.com.icure.cardinal.sdk.py.api.HealthcarePartyApi.inGroup.matchHealthcarePartiesByAsync,
+			self.cardinal_sdk._native,
+			json.dumps(payload).encode('utf-8'),
+		)
+
+	def match_healthcare_parties_by_blocking(self, group_id: str, filter: BaseFilterOptions[HealthcareParty]) -> list[str]:
+		payload = {
+			"groupId": group_id,
+			"filter": filter.__serialize__(),
+		}
+		call_result = symbols.kotlin.root.com.icure.cardinal.sdk.py.api.HealthcarePartyApi.inGroup.matchHealthcarePartiesByBlocking(
+			self.cardinal_sdk._native,
+			json.dumps(payload).encode('utf-8'),
+		)
+		result_info = create_result_from_json(cast(call_result, c_char_p).value.decode('utf-8'))
+		symbols.DisposeString(call_result)
+		if result_info.failure is not None:
+			raise interpret_kt_error(result_info.failure)
+		else:
+			return_value = [x1 for x1 in result_info.success]
+			return return_value

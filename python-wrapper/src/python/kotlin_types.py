@@ -325,6 +325,8 @@ class AuthApi(Structure):
 
 class CalendarItemApi_encrypted(Structure):
 	_fields_ = [
+		("bookCalendarItemCheckingAvailabilityAsync", CFUNCTYPE(None, AnyKtRef, c_char_p, DATA_RESULT_CALLBACK_FUNC)),
+		("bookCalendarItemCheckingAvailabilityBlocking", CFUNCTYPE(c_void_p, AnyKtRef, c_char_p)),
 		("createCalendarItemAsync", CFUNCTYPE(None, AnyKtRef, c_char_p, DATA_RESULT_CALLBACK_FUNC)),
 		("createCalendarItemBlocking", CFUNCTYPE(c_void_p, AnyKtRef, c_char_p)),
 		("filterCalendarItemsByAsync", CFUNCTYPE(None, AnyKtRef, c_char_p, PTR_RESULT_CALLBACK_FUNC)),
@@ -453,6 +455,8 @@ class CalendarItemApi_inGroup(Structure):
 
 class CalendarItemApi_tryAndRecover(Structure):
 	_fields_ = [
+		("bookCalendarItemCheckingAvailabilityAsync", CFUNCTYPE(None, AnyKtRef, c_char_p, DATA_RESULT_CALLBACK_FUNC)),
+		("bookCalendarItemCheckingAvailabilityBlocking", CFUNCTYPE(c_void_p, AnyKtRef, c_char_p)),
 		("createCalendarItemAsync", CFUNCTYPE(None, AnyKtRef, c_char_p, DATA_RESULT_CALLBACK_FUNC)),
 		("createCalendarItemBlocking", CFUNCTYPE(c_void_p, AnyKtRef, c_char_p)),
 		("filterCalendarItemsByAsync", CFUNCTYPE(None, AnyKtRef, c_char_p, PTR_RESULT_CALLBACK_FUNC)),
@@ -491,6 +495,8 @@ class CalendarItemApi(Structure):
 		("encrypted", CalendarItemApi_encrypted),
 		("inGroup", CalendarItemApi_inGroup),
 		("tryAndRecover", CalendarItemApi_tryAndRecover),
+		("bookCalendarItemCheckingAvailabilityAsync", CFUNCTYPE(None, AnyKtRef, c_char_p, DATA_RESULT_CALLBACK_FUNC)),
+		("bookCalendarItemCheckingAvailabilityBlocking", CFUNCTYPE(c_void_p, AnyKtRef, c_char_p)),
 		("createCalendarItemAsync", CFUNCTYPE(None, AnyKtRef, c_char_p, DATA_RESULT_CALLBACK_FUNC)),
 		("createCalendarItemBlocking", CFUNCTYPE(c_void_p, AnyKtRef, c_char_p)),
 		("createDelegationDeAnonymizationMetadataAsync", CFUNCTYPE(None, AnyKtRef, c_char_p, DATA_RESULT_CALLBACK_FUNC)),
@@ -594,6 +600,8 @@ class CalendarItemBasicApi_inGroup(Structure):
 class CalendarItemBasicApi(Structure):
 	_fields_ = [
 		("inGroup", CalendarItemBasicApi_inGroup),
+		("bookCalendarItemCheckingAvailabilityAsync", CFUNCTYPE(None, AnyKtRef, c_char_p, DATA_RESULT_CALLBACK_FUNC)),
+		("bookCalendarItemCheckingAvailabilityBlocking", CFUNCTYPE(c_void_p, AnyKtRef, c_char_p)),
 		("createCalendarItemAsync", CFUNCTYPE(None, AnyKtRef, c_char_p, DATA_RESULT_CALLBACK_FUNC)),
 		("createCalendarItemBlocking", CFUNCTYPE(c_void_p, AnyKtRef, c_char_p)),
 		("deleteCalendarItemAsync", CFUNCTYPE(None, AnyKtRef, c_char_p, DATA_RESULT_CALLBACK_FUNC)),
@@ -2124,8 +2132,16 @@ class HealthElementBasicApi(Structure):
 	]
 
 
+class HealthcarePartyApi_inGroup(Structure):
+	_fields_ = [
+		("matchHealthcarePartiesByAsync", CFUNCTYPE(None, AnyKtRef, c_char_p, DATA_RESULT_CALLBACK_FUNC)),
+		("matchHealthcarePartiesByBlocking", CFUNCTYPE(c_void_p, AnyKtRef, c_char_p)),
+	]
+
+
 class HealthcarePartyApi(Structure):
 	_fields_ = [
+		("inGroup", HealthcarePartyApi_inGroup),
 		("createHealthcarePartyAsync", CFUNCTYPE(None, AnyKtRef, c_char_p, DATA_RESULT_CALLBACK_FUNC)),
 		("createHealthcarePartyBlocking", CFUNCTYPE(c_void_p, AnyKtRef, c_char_p)),
 		("createHealthcarePartyInGroupAsync", CFUNCTYPE(None, AnyKtRef, c_char_p, DATA_RESULT_CALLBACK_FUNC)),
