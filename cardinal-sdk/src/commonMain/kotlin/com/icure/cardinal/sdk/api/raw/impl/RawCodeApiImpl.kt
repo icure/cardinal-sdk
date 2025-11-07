@@ -199,16 +199,16 @@ class RawCodeApiImpl(
 			accept(Application.Json)
 		}.wrap()
 
-	override suspend fun getCodeByRegionLanguageTypeLabel(
+	override suspend fun getCodeByRegionLanguageTypeLabelOr404(
 		region: String,
 		label: String,
 		type: String,
 		languages: String?,
-	): HttpResponse<Code?> =
+	): HttpResponse<Code> =
 		get(authProvider) {
 			url {
 				takeFrom(apiUrl)
-				appendPathSegments("rest", "v2", "code", "byRegionLanguagesTypeLabel")
+				appendPathSegments("rest", "v2", "code", "byRegionLanguagesTypeLabelOr404")
 				parameter("region", region)
 				parameter("label", label)
 				parameter("type", type)
@@ -339,7 +339,7 @@ class RawCodeApiImpl(
 			setBody(codeBatch)
 		}.wrap()
 
-	override suspend fun getCodes(
+	override suspend fun getCodesInGroup(
 		groupId: String,
 		codeIds: ListOfIds,
 	): HttpResponse<List<Code>> =
