@@ -124,9 +124,6 @@ sealed interface AuthenticationMethod {
 	}
 }
 
-private fun CommonSdkOptions.getPasswordClientSideSalt(applicationId: String?) =
-	applicationId?.takeIf { saltPasswordWithApplicationId }
-
 // This does not have the internal modifier because we need it in other components like kmehr
 @InternalIcureApi
 fun AuthenticationMethod.getAuthProvider(
@@ -141,7 +138,6 @@ fun AuthenticationMethod.getAuthProvider(
 		is ThirdPartyAuthentication -> smartAuthWithConstantSecret(
 			authApi = authApi,
 			cryptoService = cryptoService,
-			passwordClientSideSalt = options.getPasswordClientSideSalt(applicationId),
 			authSecretDetails = AuthSecretDetails.ExternalAuthenticationDetails(this.credentials.token, this.credentials.provider),
 			login = null,
 			messageGatewayApi = messageGatewayApi,
@@ -151,7 +147,6 @@ fun AuthenticationMethod.getAuthProvider(
 		is UsernameLongToken -> smartAuthWithConstantSecret(
 			authApi = authApi,
 			cryptoService = cryptoService,
-			passwordClientSideSalt = options.getPasswordClientSideSalt(applicationId),
 			authSecretDetails = AuthSecretDetails.LongLivedTokenDetails(this.credentials.token),
 			login = this.credentials.username,
 			messageGatewayApi = messageGatewayApi,
@@ -161,7 +156,6 @@ fun AuthenticationMethod.getAuthProvider(
 		is UsernamePassword -> smartAuthWithConstantSecret(
 			authApi = authApi,
 			cryptoService = cryptoService,
-			passwordClientSideSalt = options.getPasswordClientSideSalt(applicationId),
 			authSecretDetails = AuthSecretDetails.PasswordDetails(this.credentials.password),
 			login = this.credentials.username,
 			messageGatewayApi = messageGatewayApi,
@@ -188,7 +182,6 @@ fun AuthenticationMethod.getAuthProvider(
 		},
 		groupId = null,
 		applicationId = applicationId,
-		passwordClientSideSalt = options.getPasswordClientSideSalt(applicationId),
 		cryptoService = cryptoService,
 		cacheSecrets = this.cacheSecrets,
 		allowSecretRetry = true,
@@ -235,7 +228,6 @@ internal suspend fun AuthenticationMethod.getGroupAndAuthProvider(
 private fun smartAuthWithConstantSecret(
 	authApi: RawAnonymousAuthApi,
 	cryptoService: CryptoService,
-	passwordClientSideSalt: String?,
 	authSecretDetails: AuthSecretDetails.Cacheable,
 	login: String?,
 	messageGatewayApi: RawMessageGatewayApi,
@@ -250,7 +242,6 @@ private fun smartAuthWithConstantSecret(
 	initialSecret = authSecretDetails,
 	groupId = null,
 	applicationId = applicationId,
-	passwordClientSideSalt = passwordClientSideSalt,
 	cryptoService = cryptoService,
 	cacheSecrets = true,
 	allowSecretRetry = false,

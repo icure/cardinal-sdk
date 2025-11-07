@@ -87,7 +87,6 @@ internal class SmartTokenProvider(
 	private val authApi: RawAnonymousAuthApi,
 	private val authSecretProvider: AuthSecretProvider,
 	private val cryptoService: CryptoService,
-	private val passwordClientSideSalt: String?,
 	private val cacheSecrets: Boolean,
 	private val allowSecretRetry: Boolean,
 	private val krakenUrl: String,
@@ -147,7 +146,6 @@ internal class SmartTokenProvider(
 			authApi = authApi,
 			authSecretProvider = authSecretProvider,
 			cryptoService = cryptoService,
-			passwordClientSideSalt = passwordClientSideSalt,
 			cacheSecrets = cacheSecrets,
 			refreshPadding = refreshPadding,
 			allowSecretRetry = allowSecretRetry,
@@ -269,16 +267,6 @@ internal class SmartTokenProvider(
 
 			secret is AuthSecretDetails.DigitalIdDetails ->
 				TODO("Digital id login is not yet implemented for smart auth")
-
-			passwordClientSideSalt != null && secret is AuthSecretDetails.PasswordDetails ->
-				authApi.login(
-					loginCredentials = LoginCredentials(
-						username = requireLoginUsername,
-						password = base64Encode(cryptoService.digest.sha256((secret.secret + passwordClientSideSalt).toByteArray()))
-					),
-					groupId = groupId,
-					applicationId = applicationId
-				)
 
 			secret is AuthSecretDetails.ShortLivedTokenDetails -> {
 				messageGatewayApi.completeProcess(

@@ -68,7 +68,6 @@ external interface SdkOptionsJs {
 	val useHierarchicalDataOwners: Boolean?
 	val createTransferKeys: Boolean?
 	val cryptoService: XCryptoService?
-	val saltPasswordWithApplicationId: Boolean?
 	val groupSelector: ((availableGroups: Array<UserGroupJs>) -> Promise<String>)?
 	val autoCreateEncryptionKeyForExistingLegacyData: Boolean?
 	val keyStorage: KeyStorageFacadeJs?
@@ -81,7 +80,6 @@ external interface SdkOptionsJs {
 external interface BasicSdkOptionsJs {
 	val encryptedFields: EncryptedFieldsConfigurationJs?
 	val cryptoService: XCryptoService?
-	val saltPasswordWithApplicationId: Boolean?
 	val groupSelector: ((availableGroups: Array<UserGroupJs>) -> Promise<String>)?
 	val lenientJson: Boolean?
 }
