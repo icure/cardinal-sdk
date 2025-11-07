@@ -1,5 +1,4 @@
 import org.gradle.kotlin.dsl.PluginDependenciesSpecScope
-import org.gradle.kotlin.dsl.version
 
 fun PluginDependenciesSpecScope.kotlinMultiplatform(apply: Boolean = true) {
 	id("org.jetbrains.kotlin.multiplatform").apply(apply)
@@ -9,8 +8,12 @@ fun PluginDependenciesSpecScope.kotlinSerialization(apply: Boolean = true) {
 	id("org.jetbrains.kotlin.plugin.serialization").apply(apply)
 }
 
-fun PluginDependenciesSpecScope.kotestMultiplatform(apply: Boolean = true) {
-	id("io.kotest.multiplatform").apply(apply)
+fun PluginDependenciesSpecScope.kotest(apply: Boolean = true) {
+	id("io.kotest").apply(apply)
+}
+
+fun PluginDependenciesSpecScope.ksp(apply: Boolean = true) {
+	id("com.google.devtools.ksp").apply(apply)
 }
 
 fun PluginDependenciesSpecScope.androidLibrary(apply: Boolean = true) {

@@ -3,7 +3,6 @@ import com.vanniktech.maven.publish.SonatypeHost
 plugins {
 	kotlinMultiplatform()
 	kotlinSerialization()
-	kotestMultiplatform()
 	androidLibrary()
 	id("maven-publish")
 	signing

@@ -27,6 +27,7 @@ import io.kotest.assertions.throwables.shouldThrow
 import io.kotest.core.spec.style.StringSpec
 import io.kotest.matchers.nulls.shouldNotBeNull
 import io.kotest.matchers.shouldBe
+import kotlin.random.Random
 
 @OptIn(InternalIcureApi::class)
 class KeylessPatientUserTest : StringSpec(
@@ -74,7 +75,7 @@ class KeylessPatientUserTest : StringSpec(
 		}
 
 		suspend fun createCalendarItem(patientApi: CardinalSdk, patient: Patient, patientUser: User): DecryptedCalendarItem {
-			val startTime = currentEpochMs() + Math.random().toInt()
+			val startTime = currentEpochMs() + Random.nextInt(100)
 			return patientApi.calendarItem.createCalendarItem(
 				patientApi.calendarItem.withEncryptionMetadata(
 					base = DecryptedCalendarItem(

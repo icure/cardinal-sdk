@@ -13,7 +13,8 @@ repositories {
 dependencies {
 	implementation(libs.kotlinMultiplatformPlugin)
 	implementation(libs.kotlinSerializationPlugin)
-	implementation(libs.kotestMultiplatformPlugin)
+	implementation(libs.kotestPlugin)
+	implementation(libs.kspPlugin)
 	implementation(libs.androidLibraryPlugin)
 	implementation(libs.coroutinesCore)
 	implementation(libs.ktorClientCore)

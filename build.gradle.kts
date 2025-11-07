@@ -4,7 +4,8 @@ import com.github.jk1.license.render.ReportRenderer
 plugins {
 	kotlinMultiplatform(false)
 	kotlinSerialization(false)
-	kotestMultiplatform(false)
+	kotest(false)
+	ksp(false)
 	androidLibrary(false)
 	licenseReportPlugin(true)
 	id("com.vanniktech.maven.publish") version "0.31.0" apply false

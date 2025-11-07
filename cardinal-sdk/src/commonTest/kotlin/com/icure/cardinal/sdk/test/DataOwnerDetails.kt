@@ -141,7 +141,8 @@ data class DataOwnerDetails private constructor (
 			defaultCryptoService,
 			null,
 			SdkOptions(saltPasswordWithApplicationId = false),
-			messageGatewayApi = RawMessageGatewayApi(CardinalSdk.sharedHttpClient, defaultCryptoService)
+			messageGatewayApi = RawMessageGatewayApi(CardinalSdk.sharedHttpClient, defaultCryptoService),
+			krakenUrl = baseUrl
 		)
 
 

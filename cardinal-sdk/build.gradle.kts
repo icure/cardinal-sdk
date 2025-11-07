@@ -2,14 +2,14 @@ import com.vanniktech.maven.publish.SonatypeHost
 import tasks.InitializeTestEnvironment
 
 plugins {
+	ksp()
+	kotest()
 	kotlinMultiplatform()
 	kotlinSerialization()
-	kotestMultiplatform()
 	androidLibrary()
 	id("maven-publish")
 	signing
 	id("com.vanniktech.maven.publish") apply true
-	id("com.google.devtools.ksp") version "2.2.20-2.0.4"
 }
 
 val repoUsername: String by project

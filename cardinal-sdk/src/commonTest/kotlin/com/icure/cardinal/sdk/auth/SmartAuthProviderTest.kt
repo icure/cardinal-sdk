@@ -104,7 +104,8 @@ class SmartAuthProviderTest : StringSpec({
 			passwordClientSideSalt = null,
 			cacheSecrets = true,
 			allowSecretRetry = true,
-			messageGatewayApi = RawMessageGatewayApi(CardinalSdk.sharedHttpClient, defaultCryptoService)
+			messageGatewayApi = RawMessageGatewayApi(CardinalSdk.sharedHttpClient, defaultCryptoService),
+			krakenUrl = baseUrl
 		)
 
 		val userApi = getUserApiWithProvider(authProvider)
@@ -174,7 +175,8 @@ class SmartAuthProviderTest : StringSpec({
 			passwordClientSideSalt = null,
 			cacheSecrets = true,
 			allowSecretRetry = true,
-			messageGatewayApi = RawMessageGatewayApi(CardinalSdk.sharedHttpClient, defaultCryptoService)
+			messageGatewayApi = RawMessageGatewayApi(CardinalSdk.sharedHttpClient, defaultCryptoService),
+			krakenUrl = baseUrl
 		)
 
 		val userApi = getUserApiWithProvider(authProvider)
@@ -194,7 +196,8 @@ class SmartAuthProviderTest : StringSpec({
 				defaultCryptoService,
 				null,
 				SdkOptions(),
-				RawMessageGatewayApi(CardinalSdk.sharedHttpClient, defaultCryptoService)
+				RawMessageGatewayApi(CardinalSdk.sharedHttpClient, defaultCryptoService),
+				krakenUrl = baseUrl
 			)
 		).getCurrentUser().successBody()
 		retrievedWithNewPwd shouldBe userWithNewPwd
@@ -205,7 +208,8 @@ class SmartAuthProviderTest : StringSpec({
 					defaultCryptoService,
 					null,
 					SdkOptions(),
-					RawMessageGatewayApi(CardinalSdk.sharedHttpClient, defaultCryptoService)
+					RawMessageGatewayApi(CardinalSdk.sharedHttpClient, defaultCryptoService),
+					krakenUrl = baseUrl
 				)
 			).getCurrentUser()
 		}.statusCode shouldBe 401
@@ -272,7 +276,8 @@ class SmartAuthProviderTest : StringSpec({
 			passwordClientSideSalt = null,
 			cacheSecrets = true,
 			allowSecretRetry = true,
-			messageGatewayApi = RawMessageGatewayApi(CardinalSdk.sharedHttpClient, defaultCryptoService)
+			messageGatewayApi = RawMessageGatewayApi(CardinalSdk.sharedHttpClient, defaultCryptoService),
+			krakenUrl = baseUrl
 		)
 
 		val userApi = getUserApiWithProvider(authProvider)
@@ -320,7 +325,8 @@ class SmartAuthProviderTest : StringSpec({
 			passwordClientSideSalt = null,
 			cacheSecrets = true,
 			allowSecretRetry = true,
-			messageGatewayApi = RawMessageGatewayApi(CardinalSdk.sharedHttpClient, defaultCryptoService)
+			messageGatewayApi = RawMessageGatewayApi(CardinalSdk.sharedHttpClient, defaultCryptoService),
+			krakenUrl = baseUrl
 		)
 
 		val userApi = getUserApiWithProvider(authProvider)
@@ -371,7 +377,8 @@ class SmartAuthProviderTest : StringSpec({
 			passwordClientSideSalt = null,
 			cacheSecrets = true,
 			allowSecretRetry = true,
-			messageGatewayApi = RawMessageGatewayApi(CardinalSdk.sharedHttpClient, defaultCryptoService)
+			messageGatewayApi = RawMessageGatewayApi(CardinalSdk.sharedHttpClient, defaultCryptoService),
+			krakenUrl = baseUrl
 		)
 		val userApi = getUserApiWithProvider(authProvider)
 		userApi.getCurrentUser().response.status.isSuccess() shouldBe true
@@ -448,7 +455,8 @@ class SmartAuthProviderTest : StringSpec({
 			passwordClientSideSalt = null,
 			cacheSecrets = true,
 			allowSecretRetry = true,
-			messageGatewayApi = RawMessageGatewayApi(CardinalSdk.sharedHttpClient, defaultCryptoService)
+			messageGatewayApi = RawMessageGatewayApi(CardinalSdk.sharedHttpClient, defaultCryptoService),
+			krakenUrl = baseUrl
 		)
 
 		val userApi = getUserApiWithProvider(authProvider)
@@ -471,7 +479,8 @@ class SmartAuthProviderTest : StringSpec({
 				defaultCryptoService,
 				null,
 				SdkOptions(),
-				RawMessageGatewayApi(CardinalSdk.sharedHttpClient, defaultCryptoService)
+				RawMessageGatewayApi(CardinalSdk.sharedHttpClient, defaultCryptoService),
+				krakenUrl = baseUrl
 			)
 		).getCurrentUser().successBody()
 		retrievedWithNewPwd shouldBe updatedUser
@@ -482,7 +491,8 @@ class SmartAuthProviderTest : StringSpec({
 					defaultCryptoService,
 					null,
 					SdkOptions(),
-					RawMessageGatewayApi(CardinalSdk.sharedHttpClient, defaultCryptoService)
+					RawMessageGatewayApi(CardinalSdk.sharedHttpClient, defaultCryptoService),
+					krakenUrl = baseUrl
 				)
 			).getCurrentUser()
 		}.statusCode shouldBe 401
@@ -514,7 +524,8 @@ class SmartAuthProviderTest : StringSpec({
 			passwordClientSideSalt = null,
 			cacheSecrets = true,
 			allowSecretRetry = true,
-			messageGatewayApi = RawMessageGatewayApi(CardinalSdk.sharedHttpClient, defaultCryptoService)
+			messageGatewayApi = RawMessageGatewayApi(CardinalSdk.sharedHttpClient, defaultCryptoService),
+			krakenUrl = baseUrl
 		)
 		val defaultGroupUserApi = getUserApiWithProvider(authProvider)
 		val defaultGroupUser = defaultGroupUserApi.getCurrentUser().successBody()

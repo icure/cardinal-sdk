@@ -86,11 +86,11 @@ fun Project.configureMultiplatform(
 
     if (jvm) {
         jvmToolchain {
-            languageVersion.set(JavaLanguageVersion.of(8))
+            languageVersion.set(JavaLanguageVersion.of(11))
         }
         jvm {
             compilerOptions {
-                jvmTarget.set(JvmTarget.JVM_1_8)
+                jvmTarget.set(JvmTarget.JVM_11)
             }
         }
     }
@@ -100,7 +100,7 @@ fun Project.configureMultiplatform(
     if (android) {
         androidTarget {
             compilerOptions {
-                jvmTarget.set(JvmTarget.JVM_1_8)
+                jvmTarget.set(JvmTarget.JVM_11)
             }
             // Important: otherwise android will use the jvm library and it will not work...
             publishLibraryVariants("release", "debug")
