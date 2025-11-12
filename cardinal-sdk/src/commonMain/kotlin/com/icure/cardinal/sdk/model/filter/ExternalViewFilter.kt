@@ -6,20 +6,13 @@ import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 import kotlin.String
 
-// WARNING: This file is auto-generated. If you change it manually, your changes will be lost.
-// If you want to change the way this class is generated, see [this repo](https://github.com/icure/sdk-codegen).
-
 @SerialName("ExternalViewFilter")
 @Serializable
-data class ExternalViewFilter(
+public data class ExternalViewFilter(
 	override val desc: String? = null,
 	public val view: String,
 	public val partition: String,
 	public val entityQualifiedName: String,
 	public val startKey: ExternalFilterKey?,
 	public val endKey: ExternalFilterKey?,
-) : AbstractFilter<Identifiable<String>> {
-	// region ExternalViewFilter-ExternalViewFilter
-
-	// endregion
-}
+) : AbstractFilter<Identifiable<String>>

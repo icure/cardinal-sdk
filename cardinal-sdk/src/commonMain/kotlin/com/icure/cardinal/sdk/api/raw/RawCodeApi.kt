@@ -118,7 +118,7 @@ public interface RawCodeApi {
 		codeBatch: List<Code>,
 	): HttpResponse<List<Code>>
 
-	suspend fun getCodes(
+	suspend fun getCodesInGroup(
 		groupId: String,
 		codeIds: ListOfIds,
 	): HttpResponse<List<Code>>
