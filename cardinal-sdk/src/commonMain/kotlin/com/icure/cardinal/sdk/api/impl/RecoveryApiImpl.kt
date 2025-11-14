@@ -5,6 +5,7 @@ import com.icure.cardinal.sdk.api.raw.HttpResponse
 import com.icure.cardinal.sdk.crypto.InternalCryptoServices
 import com.icure.cardinal.sdk.model.EntityReferenceInGroup
 import com.icure.cardinal.sdk.crypto.entities.ExchangeDataRecoveryDetails
+import com.icure.cardinal.sdk.crypto.entities.RawDecryptedExchangeData
 import com.icure.cardinal.sdk.crypto.entities.RecoveryDataKey
 import com.icure.cardinal.sdk.crypto.entities.RecoveryDataUseFailureReason
 import com.icure.cardinal.sdk.crypto.entities.RecoveryKeyOptions
@@ -72,15 +73,31 @@ internal class RecoveryApiImpl(
 	override suspend fun createExchangeDataRecoveryInfo(
 		delegateId: String,
 		lifetimeSeconds: Int?,
-		recoveryKeyOptions: RecoveryKeyOptions?
-	): RecoveryDataKey {
-		val exchangeDataToDelegate = crypto.exchangeDataManager.base.getExchangeDataByDelegatorDelegatePair(
-			null,
-			crypto.dataOwnerApi.getCurrentDataOwnerReference(),
-			EntityReferenceInGroup(delegateId, null)
-		)
+		recoveryKeyOptions: RecoveryKeyOptions?,
+		includeBiDirectional: Boolean,
+		includeAsParent: Boolean
+	): RecoveryDataKey? {
+		val exchangeDataToShare = (
+			if (includeAsParent)
+				crypto.dataOwnerApi.getCurrentDataOwnerHierarchyIdsReference()
+			else
+				listOf(crypto.dataOwnerApi.getCurrentDataOwnerReference())
+		).flatMap { selfOrParent ->
+			val fromSelf = crypto.exchangeDataManager.base.getExchangeDataByDelegatorDelegatePair(
+				null,
+				selfOrParent,
+				EntityReferenceInGroup(delegateId, null),
+			)
+			if (includeBiDirectional) {
+				fromSelf + crypto.exchangeDataManager.base.getExchangeDataByDelegatorDelegatePair(
+					null,
+					EntityReferenceInGroup(delegateId, null),
+					selfOrParent,
+				)
+			} else fromSelf
+		}
 		val decryptionKeys = crypto.userEncryptionKeysManager.getDecryptionKeys(true)
-		val decryptedInformation = exchangeDataToDelegate.mapNotNull { exchangeData ->
+		val decryptedInformation = exchangeDataToShare.mapNotNull { exchangeData ->
 			crypto.exchangeDataManager.base.tryRawDecryptExchangeData(exchangeData, decryptionKeys)?.let { decryptedData ->
 				ExchangeDataRecoveryDetails(
 					exchangeDataId = exchangeData.id,
@@ -90,6 +107,7 @@ internal class RecoveryApiImpl(
 				)
 			}
 		}
+		if (decryptedInformation.isEmpty()) return null
 		return crypto.recoveryDataEncryption.createAndSaveExchangeDataRecoveryData(delegateId, decryptedInformation, lifetimeSeconds, recoveryKeyOptions)
 	}
 
@@ -98,8 +116,9 @@ internal class RecoveryApiImpl(
 			val selfEncryptionKeys = VerifiedRsaEncryptionKeysSet(
 				crypto.userEncryptionKeysManager.getSelfVerifiedKeys().map { it.toPublicKeyInfo() }
 			)
+			val retrieved = crypto.exchangeDataManager.base.getExchangeDataByIds(null, recoveredExchangeData.map { it.exchangeDataId }).associateBy { it.id }
 			recoveredExchangeData.forEach { exchangeDataInfo ->
-				val retrievedData = crypto.exchangeDataManager.base.getExchangeDataByIds(null, listOf(exchangeDataInfo.exchangeDataId)).singleOrNull()
+				val retrievedData = retrieved[exchangeDataInfo.exchangeDataId]
 				if (retrievedData == null) {
 					log.w { "Could not recover exchange data with id ${exchangeDataInfo.exchangeDataId} as it was not found. Ignoring" }
 				} else {
@@ -123,6 +142,28 @@ internal class RecoveryApiImpl(
 				}
 				crypto.exchangeDataManager.clearOrRepopulateCache()
 				null
+			}
+		}
+
+	override suspend fun getRecoveryExchangeData(
+		recoveryKey: RecoveryDataKey,
+		autoDelete: Boolean
+	): RecoveryResult<List<RawDecryptedExchangeData>> =
+		crypto.recoveryDataEncryption.getAndDecryptExchangeDataRecoveryData(recoveryKey).map { recoveredExchangeData ->
+			recoveredExchangeData.map {
+				RawDecryptedExchangeData(
+					exchangeDataId = it.exchangeDataId,
+					exchangeKey = it.rawExchangeKey.decode(),
+					accessControlSecret = it.rawAccessControlSecret.decode(),
+					sharedSignatureKey = it.rawSharedSignatureKey.decode()
+				)
+			}
+		}.also {
+			if (autoDelete && it is RecoveryResult.Success) {
+				val deleteResult = crypto.recoveryDataEncryption.raw.deleteRecoveryData(crypto.recoveryDataEncryption.recoveryKeyToId(recoveryKey))
+				if (!deleteResult.status.isSuccess()) {
+					log.w { "Could not delete recovery data with id $recoveryKey after successful recovery: ${deleteResult.status}. Ignoring." }
+				}
 			}
 		}
 

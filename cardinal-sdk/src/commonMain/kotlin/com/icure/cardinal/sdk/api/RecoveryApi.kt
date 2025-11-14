@@ -1,6 +1,7 @@
 package com.icure.cardinal.sdk.api
 
 import com.icure.cardinal.sdk.crypto.KeyPairRecoverer
+import com.icure.cardinal.sdk.crypto.entities.RawDecryptedExchangeData
 import com.icure.cardinal.sdk.crypto.entities.RecoveryDataKey
 import com.icure.cardinal.sdk.crypto.entities.RecoveryDataUseFailureReason
 import com.icure.cardinal.sdk.crypto.entities.RecoveryKeyOptions
@@ -71,8 +72,17 @@ interface RecoveryApi {
 	): RecoveryResult<Map<String, Map<SpkiHexString, RsaKeypair<RsaAlgorithm.RsaEncryptionAlgorithm>>>>
 
 	/**
-	 * Create recovery data that allows the delegate {@link delegateId} recover the content of exchange data from the
-	 * current data owner to the delegate.
+	 * Create recovery data that allows the delegate [delegateId] to recover the content of exchange data where the
+	 * current data owner (or a parent) is involved.
+	 *
+	 * The recovery data always includes exchange data where the current user is the delegator and [delegateId] is the
+	 * delegate.
+	 * If [includeBiDirectional] is true the recovery data will also include exchange data where the current user is the delegate
+	 * and [delegateId] delegator
+	 * If [includeAsParent] is true the recovery data will also include exchange data between where a parent of the current data owner is the delegator
+	 * and [delegateId] is the delegate.
+	 * If both [includeBiDirectional] and [includeAsParent] are true then any exchange data where [delegateId] is the
+	 * delegator and a parent of the current data owner is the delegate is also included.
 	 *
 	 * This can be useful in the following situations:
 	 * - A user lost access to his old keypair and is asking for access back to his data. This is similar to the
@@ -84,6 +94,7 @@ interface RecoveryApi {
 	 *   through the {@link IccPatientXApi.forceInitializeExchangeDataToNewlyInvitedPatient} method, then create recovery data
 	 *   for it and share the recovery key with the patient. The moment the patient logs in and creates his keypair he
 	 *   will use the {@link recoverExchangeData} method to "complete" the placeholder exchange data.
+	 * - An hcp wants to share data with a patient that is working in keyless mode.
 	 *
 	 * @param delegateId id of the delegate that needs access to his exchange data from the current data owner. This can't
 	 * be the id of the current data owner (you should instead recover the keypair).
@@ -91,9 +102,12 @@ interface RecoveryApi {
 	 * data will be available until it is explicitly deleted.
 	 * @param recoveryKeyOptions specifies the size of the recovery key to generate, or if it should use a precomputed
 	 * key.
+	 * @param includeBiDirectional specifies if extra exchange data should be included in the recovery data
+	 * @param includeAsParent specifies if extra exchange data should be included in the recovery data
 	 * @return an hexadecimal string that is the `recoveryKey` which will allow the delegate to gain access to the exchange data.
 	 * This value must be kept secret from users other than the current data owner and the delegate.
-	 * You can use this value with {@link recoverExchangeData}
+	 * You can use this value with {@link recoverExchangeData}. Returns null if there is no exchange data that can be
+	 * included in the recovery info
 	 */
 	suspend fun createExchangeDataRecoveryInfo(
 		delegateId: String,
@@ -101,19 +115,46 @@ interface RecoveryApi {
 		lifetimeSeconds: Int? = null,
 		@DefaultValue("null")
 		recoveryKeyOptions: RecoveryKeyOptions? = null,
-	): RecoveryDataKey
+		@DefaultValue("false")
+		includeBiDirectional: Boolean = false,
+		@DefaultValue("false")
+		includeAsParent: Boolean = false,
+	): RecoveryDataKey?
 
 	/**
-	 * Recover the content of exchange data from the delegator that created the recovery data at the provided.
-	 * {@link recoveryKey} to the current delegate. This will enable the current user to access the exchange data with
-	 * any of his private keys available on the device from which this method was called.
+	 * Recover access to the exchange data obtainable from the recovery key.
+	 *
+	 * The exchange data will be automatically re-encrypted with all available verified keypairs.
+	 *
+	 * This will enable the current user to access the exchange data included in this recovery key without having
+	 * to call this method again, as long as one of the keypairs used for re-encryption is available.
+	 *
 	 * The exchange data will be automatically deleted from the server after the process completes successfully.
 	 *
 	 * @param recoveryKey the result of a call to {@link createExchangeDataRecoveryInfo} by a delegator.
 	 * @return null on success or a failure reason if the recovery data could not be used to perform the operation.
-	 * @throws If the recovery data is valid but the process fails for other reasons.
 	 */
 	suspend fun recoverExchangeData(recoveryKey: RecoveryDataKey): RecoveryDataUseFailureReason?
+
+
+	/**
+	 * Get the exchange data recovery information available using the provided recovery key.
+	 *
+	 * This method does nothing else: if you want to use the exchange data in this SDK you will have to inject it using
+	 * the corresponding crypto api method.
+	 *
+	 * Use [recoverExchangeData] if you want to make the exchange data available to future instances of the SDK using
+	 * the current user keypairs.
+	 *
+	 * @param recoveryKey the result of a call to {@link createExchangeDataRecoveryInfo} by a delegator.
+	 * @param autoDelete if true, the recovery data will be deleted from the server after it could be used successfully.
+	 * This will prevent the recovery key from being used again.
+	 * @return a recovery result wrapping the exchange data included in this
+	 */
+	suspend fun getRecoveryExchangeData(
+		recoveryKey: RecoveryDataKey,
+		autoDelete: Boolean,
+	): RecoveryResult<List<RawDecryptedExchangeData>>
 
 	/**
 	 * Deletes the recovery information associated to a certain recovery key. You can use this method with the recovery key for any kind of data,
