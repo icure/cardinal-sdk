@@ -1,5 +1,6 @@
 // auto-generated file
 import {XRsaKeypair} from '../cardinal-sdk-ts.mjs';
+import {RawDecryptedExchangeData} from '../crypto/entities/RawDecryptedExchangeData.mjs';
 import {RecoveryDataKey} from '../crypto/entities/RecoveryDataKey.mjs';
 import {RecoveryDataUseFailureReason} from '../crypto/entities/RecoveryDataUseFailureReason.mjs';
 import {RecoveryKeyOptions} from '../crypto/entities/RecoveryKeyOptions.mjs';
@@ -19,9 +20,12 @@ export interface RecoveryApi {
 			waitSeconds: number): CancellablePromise<RecoveryResult<{ [ key: string ]: { [ key: string ]: XRsaKeypair } }>>;
 
 	createExchangeDataRecoveryInfo(delegateId: string,
-			options?: { lifetimeSeconds?: number | undefined, recoveryKeyOptions?: RecoveryKeyOptions | undefined }): Promise<RecoveryDataKey>;
+			options?: { lifetimeSeconds?: number | undefined, recoveryKeyOptions?: RecoveryKeyOptions | undefined, includeBiDirectional?: boolean, includeAsParent?: boolean }): Promise<RecoveryDataKey | undefined>;
 
 	recoverExchangeData(recoveryKey: RecoveryDataKey): Promise<RecoveryDataUseFailureReason | undefined>;
+
+	getRecoveryExchangeData(recoveryKey: RecoveryDataKey,
+			autoDelete: boolean): Promise<RecoveryResult<Array<RawDecryptedExchangeData>>>;
 
 	purgeRecoveryInfo(recoveryKey: RecoveryDataKey): Promise<void>;
 
