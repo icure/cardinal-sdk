@@ -107,7 +107,6 @@ class SdkOptions:
     use_hierarchical_data_owners: bool = False
     create_transfer_keys: bool = True
     key_storage: Optional[StorageOptions] = None
-    salt_password_with_application_id: bool = True
     crypto_strategies: Optional[CryptoStrategies] = None
     json_patcher: Optional[JsonPatcher] = None
     lenient_json: bool = False

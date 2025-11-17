@@ -2,6 +2,7 @@ package com.icure.cardinal.sdk.api
 
 import com.icure.cardinal.sdk.filters.PatientFilters
 import com.icure.cardinal.sdk.model.DecryptedPatient
+import com.icure.cardinal.sdk.test.autoCancelJob
 import com.icure.cardinal.sdk.test.createHcpUser
 import com.icure.cardinal.sdk.test.initializeTestEnvironment
 import com.icure.cardinal.sdk.test.uuid
@@ -10,6 +11,7 @@ import io.kotest.matchers.nulls.shouldNotBeNull
 import io.kotest.matchers.shouldBe
 
 class NativeFilterTest : StringSpec({
+	val specJob = autoCancelJob()
 
 	beforeAny {
 		initializeTestEnvironment()

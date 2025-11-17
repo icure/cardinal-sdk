@@ -26,8 +26,9 @@ internal val testGroupAdminAuth =
 		RawAnonymousAuthApiImpl(baseUrl, DefaultRawApiConfig),
 		defaultCryptoService,
 		null,
-		SdkOptions(saltPasswordWithApplicationId = false),
-		messageGatewayApi = RawMessageGatewayApi(CardinalSdk.sharedHttpClient, defaultCryptoService)
+		SdkOptions(),
+		messageGatewayApi = RawMessageGatewayApi(CardinalSdk.sharedHttpClient, defaultCryptoService),
+		krakenUrl = baseUrl
 	)
 
 @OptIn(InternalIcureApi::class)
@@ -38,6 +39,7 @@ internal val superadminAuth =
 		RawAnonymousAuthApiImpl(baseUrl, DefaultRawApiConfig),
 		defaultCryptoService,
 		null,
-		SdkOptions(saltPasswordWithApplicationId = false),
-		messageGatewayApi = RawMessageGatewayApi(CardinalSdk.sharedHttpClient, defaultCryptoService)
+		SdkOptions(),
+		messageGatewayApi = RawMessageGatewayApi(CardinalSdk.sharedHttpClient, defaultCryptoService),
+		krakenUrl = baseUrl
 	)

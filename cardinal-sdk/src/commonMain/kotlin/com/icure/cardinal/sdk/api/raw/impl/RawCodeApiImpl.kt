@@ -199,16 +199,16 @@ class RawCodeApiImpl(
 			accept(Application.Json)
 		}.wrap()
 
-	override suspend fun getCodeByRegionLanguageTypeLabel(
+	override suspend fun getCodeByRegionLanguageTypeLabelOr404(
 		region: String,
 		label: String,
 		type: String,
 		languages: String?,
-	): HttpResponse<Code?> =
+	): HttpResponse<Code> =
 		get(authProvider) {
 			url {
 				takeFrom(apiUrl)
-				appendPathSegments("rest", "v2", "code", "byRegionLanguagesTypeLabel")
+				appendPathSegments("rest", "v2", "code", "getCodeByRegionLanguageTypeLabelOr404")
 				parameter("region", region)
 				parameter("label", label)
 				parameter("type", type)

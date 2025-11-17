@@ -5,7 +5,7 @@ coroutines = "1.10.2"
 kotlinIo = "0.6.0"
 kotlinSerialization = "1.9.0"
 kotlinDateTime = "0.7.1"
-kotest = "6.0.0.M1"
+kotest = "6.0.4"
 androidLibrary = "8.10.0"
 kryptom = "1.4.0"
 kermit = "2.0.3"
@@ -13,13 +13,15 @@ okio = "3.9.1"
 bouncyCastle = "1.70"
 kotp = "1.0.1"
 kerberus = "1.1.8"
+ksp = "2.2.20-2.0.4"
 
 [libraries]
 
 # Gradle plugins
 kotlinMultiplatformPlugin = { group = "org.jetbrains.kotlin.multiplatform", name = "org.jetbrains.kotlin.multiplatform.gradle.plugin", version.ref = "kotlin" }
 kotlinSerializationPlugin = { group = "org.jetbrains.kotlin.plugin.serialization", name = "org.jetbrains.kotlin.plugin.serialization.gradle.plugin", version.ref = "kotlin" }
-kotestMultiplatformPlugin = { group = "io.kotest.multiplatform", name = "io.kotest.multiplatform.gradle.plugin", version.ref = "kotest" }
+kotestPlugin = { group = "io.kotest", name = "io.kotest.gradle.plugin", version.ref = "kotest" }
+kspPlugin = { group = "com.google.devtools.ksp", name = "com.google.devtools.ksp.gradle.plugin", version.ref = "ksp" }
 androidLibraryPlugin = { group = "com.android.library", name = "com.android.library.gradle.plugin", version.ref = "androidLibrary" }
 
 # Ktor

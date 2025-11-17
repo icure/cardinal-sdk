@@ -79,7 +79,7 @@ internal class CodeApiImpl(
 		label: String,
 		type: String,
 		languages: String?,
-	): Code? = rawApi.getCodeByRegionLanguageTypeLabel(region, label, type, languages).successBody()
+	): Code? = rawApi.getCodeByRegionLanguageTypeLabelOr404(region, label, type, languages).successBodyOrNull404()
 
 	override suspend fun getCodes(codeIds: List<String>): List<Code> = rawApi.getCodes(
 		ListOfIds(codeIds)

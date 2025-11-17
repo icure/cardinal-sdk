@@ -10,6 +10,7 @@ import com.icure.cardinal.sdk.model.Patient
 import com.icure.cardinal.sdk.model.DecryptedPatient
 import com.icure.cardinal.sdk.model.EntityReferenceInGroup
 import com.icure.cardinal.sdk.model.User
+import com.icure.cardinal.sdk.model.embed.AccessLevel
 import com.icure.cardinal.sdk.model.extensions.dataOwnerId
 import com.icure.cardinal.sdk.storage.impl.VolatileStorageFacade
 import com.icure.cardinal.sdk.test.DataOwnerDetails
@@ -27,6 +28,7 @@ import io.kotest.assertions.throwables.shouldThrow
 import io.kotest.core.spec.style.StringSpec
 import io.kotest.matchers.nulls.shouldNotBeNull
 import io.kotest.matchers.shouldBe
+import kotlin.random.Random
 
 @OptIn(InternalIcureApi::class)
 class KeylessPatientUserTest : StringSpec(
@@ -74,7 +76,7 @@ class KeylessPatientUserTest : StringSpec(
 		}
 
 		suspend fun createCalendarItem(patientApi: CardinalSdk, patient: Patient, patientUser: User): DecryptedCalendarItem {
-			val startTime = currentEpochMs() + Math.random().toInt()
+			val startTime = currentEpochMs() + Random.nextInt(100)
 			return patientApi.calendarItem.createCalendarItem(
 				patientApi.calendarItem.withEncryptionMetadata(
 					base = DecryptedCalendarItem(
@@ -306,6 +308,59 @@ class KeylessPatientUserTest : StringSpec(
 			retrievedByNewApi.shouldNotBeNull()
 			retrievedByNewApi.title shouldBe ci.title
 			newPatientApiWithKeyAndInjected.calendarItem.decryptPatientIdOf(retrievedByNewApi).map { it.entityId } shouldBe listOf(patient.id)
+		}
+
+		"Should allow to use data shared by hcp as keyless" {
+			val patientApi = patientDetails.api(
+				specJob,
+				object : CryptoStrategies {
+					override suspend fun generateNewKeyForDataOwner(
+						self: DataOwnerWithType,
+						cryptoPrimitives: CryptoService,
+					): CryptoStrategies.KeyGenerationRequestResult {
+						return CryptoStrategies.KeyGenerationRequestResult.Keyless
+					}
+				},
+			)
+			val hcp = hcp.api(specJob)
+
+			val patientUser = patientApi.user.getCurrentUser()
+			val patient = patientApi.patient.encrypted.getPatient(patientUser.dataOwnerId).shouldNotBeNull()
+
+			hcp.patient.forceInitializeExchangeDataToNewlyInvitedPatient(patient.id)
+
+			val ci = (currentEpochMs() + Random.nextInt(100)).let { startTime ->
+				hcpApi.calendarItem.createCalendarItem(
+					hcpApi.calendarItem.withEncryptionMetadata(
+						base = DecryptedCalendarItem(
+							id = defaultCryptoService.strongRandom.randomUUID(),
+							title = "My appointment",
+							startTime = startTime,
+							endTime = startTime + 3600000, // 1 hour later
+							details = "This note will not be visible to the patient"
+						),
+						patient = patient,
+						secretId = SecretIdUseOption.UseNone,
+						delegates = mapOf(patient.id to AccessLevel.Write)
+					)
+				)
+			}
+			val patientRecoveryKey = hcp.recovery.createExchangeDataRecoveryInfo(patient.id).shouldNotBeNull()
+			shouldThrow<RequestStatusException> { patientApi.calendarItem.getCalendarItem(ci.id) }.statusCode shouldBe 403
+			patientApi.crypto.injectExchangeData(
+				null,
+				patientApi.recovery.getRecoveryExchangeData(patientRecoveryKey, false).value.map {
+					ExchangeDataInjectionDetails(
+						it.exchangeDataId,
+						it.accessControlSecret,
+						it.exchangeKey,
+						it.sharedSignatureKey,
+						false
+					)
+				},
+				false
+			)
+			patientApi.calendarItem.getCalendarItem(ci.id) shouldBe ci
 		}
 
 	}

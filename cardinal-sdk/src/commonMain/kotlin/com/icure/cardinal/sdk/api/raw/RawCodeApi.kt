@@ -75,12 +75,12 @@ public interface RawCodeApi {
 		version: String?,
 	): HttpResponse<BooleanResponse>
 
-	suspend fun getCodeByRegionLanguageTypeLabel(
+	suspend fun getCodeByRegionLanguageTypeLabelOr404(
 		region: String,
 		label: String,
 		type: String,
 		languages: String?,
-	): HttpResponse<Code?>
+	): HttpResponse<Code>
 
 	suspend fun getCodes(codeIds: ListOfIds): HttpResponse<List<Code>>
 

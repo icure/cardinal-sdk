@@ -312,7 +312,10 @@ private class FullyCachedExchangeDataManagerInGroup(
 					dataByDelegationKey = awaited.dataByDelegationKey + exchangeDataDetailsMap.values
 						.flatMap { it.decryptedDetails?.secureDelegationKeys?.map { k -> k to it } ?: emptyList() }
 						.associate { it },
-					verifiedDataByDelegateId = awaited.verifiedDataByDelegateId + exchangeDataDetailsMap.values.filter { it.decryptedDetails?.verified == true }
+					verifiedDataByDelegateId = awaited.verifiedDataByDelegateId + exchangeDataDetailsMap.values.filter {
+						it.decryptedDetails?.verified == true &&
+							it.exchangeData.delegator == dataOwnerApi.getCurrentDataOwnerId()
+						}
 						.associateBy { it.exchangeData.delegate },
 				)
 			}.also { caches = it }
