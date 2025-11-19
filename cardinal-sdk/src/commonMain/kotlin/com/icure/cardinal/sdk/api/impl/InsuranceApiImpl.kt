@@ -37,8 +37,8 @@ internal class InsuranceApiImpl(
 	override suspend fun createInsurancesInGroup(groupId: String, insuranceBatch: List<Insurance>): List<Insurance> =
 		rawApi.createInsurancesInGroup(groupId, insuranceBatch).successBody()
 
-	override suspend fun getInsurancesInGroup(groupId: String, insuranceIds: String): List<Insurance> =
-		rawApi.getInsurancesInGroup(groupId, insuranceIds).successBody()
+	override suspend fun getInsurancesInGroup(groupId: String, insuranceIds: List<String>): List<Insurance> =
+		rawApi.getInsurancesInGroup(groupId, ListOfIds(insuranceIds)).successBody()
 
 	override suspend fun modifyInsurancesInGroup(groupId: String, insuranceBatch: List<Insurance>): List<Insurance> =
 		rawApi.modifyInsurancesInGroup(groupId, insuranceBatch).successBody()

@@ -113,9 +113,7 @@ internal class CodeApiImpl(
 
 	override suspend fun createCodes(groupId: String, codeBatch: List<Code>): List<Code> = rawApi.createCodesInGroup(groupId, codeBatch).successBody()
 
-	override suspend fun getCodes(groupId: String, codeIds: List<String>): List<Code> = rawApi.getCodes(groupId,
-		ListOfIds(ids = codeIds)
-	).successBody()
+	override suspend fun getCodes(groupId: String, codeIds: List<String>): List<Code> = rawApi.getCodesInGroup(groupId, ListOfIds(ids = codeIds)).successBody()
 
 	override suspend fun modifyCodes(groupId: String, codeBatch: List<Code>): List<Code> = rawApi.modifyCodesInGroup(groupId, codeBatch).successBody()
 }
