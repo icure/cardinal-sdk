@@ -208,7 +208,7 @@ class RawCodeApiImpl(
 		get(authProvider) {
 			url {
 				takeFrom(apiUrl)
-				appendPathSegments("rest", "v2", "code", "getCodeByRegionLanguageTypeLabelOr404")
+				appendPathSegments("rest", "v2", "code", "byRegionLanguagesTypeLabelOr404")
 				parameter("region", region)
 				parameter("label", label)
 				parameter("type", type)
@@ -339,7 +339,7 @@ class RawCodeApiImpl(
 			setBody(codeBatch)
 		}.wrap()
 
-	override suspend fun getCodes(
+	override suspend fun getCodesInGroup(
 		groupId: String,
 		codeIds: ListOfIds,
 	): HttpResponse<List<Code>> =

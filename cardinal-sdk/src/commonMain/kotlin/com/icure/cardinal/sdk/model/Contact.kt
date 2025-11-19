@@ -8,6 +8,7 @@ import com.icure.cardinal.sdk.model.base.ParticipantType
 import com.icure.cardinal.sdk.model.base.StoredDocument
 import com.icure.cardinal.sdk.model.embed.Address
 import com.icure.cardinal.sdk.model.embed.Annotation
+import com.icure.cardinal.sdk.model.embed.ContactParticipant
 import com.icure.cardinal.sdk.model.embed.DecryptedAddress
 import com.icure.cardinal.sdk.model.embed.DecryptedService
 import com.icure.cardinal.sdk.model.embed.DecryptedSubContact
@@ -22,6 +23,7 @@ import com.icure.cardinal.sdk.model.embed.SubContact
 import com.icure.cardinal.sdk.model.specializations.Base64String
 import com.icure.cardinal.sdk.utils.DefaultValue
 import kotlinx.serialization.Serializable
+import kotlin.Deprecated
 import kotlin.Long
 import kotlin.String
 import kotlin.collections.List
@@ -79,7 +81,10 @@ sealed interface Contact :
 
 	public val services: Set<Service>
 
+	@Deprecated("Use participantList")
 	public val participants: Map<ParticipantType, String>
+
+	public val participantList: List<ContactParticipant>
 
 	public val healthcarePartyId: String?
 
@@ -135,7 +140,10 @@ data class DecryptedContact(
 	@DefaultValue("emptySet()")
 	override val services: Set<DecryptedService> = emptySet(),
 	@DefaultValue("emptyMap()")
+	@Deprecated("Use participantList")
 	override val participants: Map<ParticipantType, String> = emptyMap(),
+	@DefaultValue("emptyList()")
+	override val participantList: List<ContactParticipant> = emptyList(),
 	override val healthcarePartyId: String? = null,
 	override val modifiedContactId: String? = null,
 	@DefaultValue("emptySet()")
@@ -187,7 +195,10 @@ data class EncryptedContact(
 	@DefaultValue("emptySet()")
 	override val services: Set<EncryptedService> = emptySet(),
 	@DefaultValue("emptyMap()")
+	@Deprecated("Use participantList")
 	override val participants: Map<ParticipantType, String> = emptyMap(),
+	@DefaultValue("emptyList()")
+	override val participantList: List<ContactParticipant> = emptyList(),
 	override val healthcarePartyId: String? = null,
 	override val modifiedContactId: String? = null,
 	@DefaultValue("emptySet()")
