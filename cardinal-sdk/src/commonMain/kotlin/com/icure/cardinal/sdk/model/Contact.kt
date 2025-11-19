@@ -8,6 +8,7 @@ import com.icure.cardinal.sdk.model.base.ParticipantType
 import com.icure.cardinal.sdk.model.base.StoredDocument
 import com.icure.cardinal.sdk.model.embed.Address
 import com.icure.cardinal.sdk.model.embed.Annotation
+import com.icure.cardinal.sdk.model.embed.ContactParticipant
 import com.icure.cardinal.sdk.model.embed.DecryptedAddress
 import com.icure.cardinal.sdk.model.embed.DecryptedService
 import com.icure.cardinal.sdk.model.embed.DecryptedSubContact
@@ -22,15 +23,14 @@ import com.icure.cardinal.sdk.model.embed.SubContact
 import com.icure.cardinal.sdk.model.specializations.Base64String
 import com.icure.cardinal.sdk.utils.DefaultValue
 import kotlinx.serialization.Serializable
+import kotlin.Deprecated
 import kotlin.Long
 import kotlin.String
 import kotlin.collections.List
 import kotlin.collections.Map
 import kotlin.collections.Set
 
-// WARNING: This file is auto-generated. If you change it manually, your changes will be lost.
-// If you want to change the way this class is generated, see [this repo](https://github.com/icure/sdk-codegen).
-sealed interface Contact :
+public sealed interface Contact :
 	StoredDocument,
 	ICureDocument<String>,
 	HasEncryptionMetadata,
@@ -79,7 +79,10 @@ sealed interface Contact :
 
 	public val services: Set<Service>
 
+	@Deprecated("Use participantList")
 	public val participants: Map<ParticipantType, String>
+
+	public val participantList: List<ContactParticipant>
 
 	public val healthcarePartyId: String?
 
@@ -98,15 +101,10 @@ sealed interface Contact :
 	override val securityMetadata: SecurityMetadata?
 
 	public val notes: List<Annotation>
-	// region Contact-Contact
-	companion object {
-		const val KRAKEN_QUALIFIED_NAME = "org.taktik.icure.entities.Contact"
-	}
-	// endregion
 }
 
 @Serializable
-data class DecryptedContact(
+public data class DecryptedContact(
 	override val id: String,
 	override val rev: String? = null,
 	override val created: Long? = null,
@@ -135,7 +133,10 @@ data class DecryptedContact(
 	@DefaultValue("emptySet()")
 	override val services: Set<DecryptedService> = emptySet(),
 	@DefaultValue("emptyMap()")
+	@Deprecated("Use participantList")
 	override val participants: Map<ParticipantType, String> = emptyMap(),
+	@DefaultValue("emptyList()")
+	override val participantList: List<ContactParticipant> = emptyList(),
 	override val healthcarePartyId: String? = null,
 	override val modifiedContactId: String? = null,
 	@DefaultValue("emptySet()")
@@ -150,15 +151,10 @@ data class DecryptedContact(
 	override val securityMetadata: SecurityMetadata? = null,
 	@DefaultValue("emptyList()")
 	override val notes: List<Annotation> = emptyList(),
-) : Contact {
-	// region Contact-DecryptedContact
-override fun copyWithSecurityMetadata(securityMetadata: SecurityMetadata, secretForeignKeys: Set<String>): DecryptedContact =
-		copy(securityMetadata = securityMetadata, secretForeignKeys = secretForeignKeys)
-	// endregion
-}
+) : Contact
 
 @Serializable
-data class EncryptedContact(
+public data class EncryptedContact(
 	override val id: String,
 	override val rev: String? = null,
 	override val created: Long? = null,
@@ -187,7 +183,10 @@ data class EncryptedContact(
 	@DefaultValue("emptySet()")
 	override val services: Set<EncryptedService> = emptySet(),
 	@DefaultValue("emptyMap()")
+	@Deprecated("Use participantList")
 	override val participants: Map<ParticipantType, String> = emptyMap(),
+	@DefaultValue("emptyList()")
+	override val participantList: List<ContactParticipant> = emptyList(),
 	override val healthcarePartyId: String? = null,
 	override val modifiedContactId: String? = null,
 	@DefaultValue("emptySet()")
@@ -202,9 +201,4 @@ data class EncryptedContact(
 	override val securityMetadata: SecurityMetadata? = null,
 	@DefaultValue("emptyList()")
 	override val notes: List<Annotation> = emptyList(),
-) : Contact {
-	// region Contact-EncryptedContact
-override fun copyWithSecurityMetadata(securityMetadata: SecurityMetadata, secretForeignKeys: Set<String>): EncryptedContact =
-		copy(securityMetadata = securityMetadata, secretForeignKeys = secretForeignKeys)
-	// endregion
-}
+) : Contact

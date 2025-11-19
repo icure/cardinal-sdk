@@ -7,17 +7,10 @@ import kotlinx.serialization.Serializable
 import kotlin.Boolean
 import kotlin.String
 
-// WARNING: This file is auto-generated. If you change it manually, your changes will be lost.
-// If you want to change the way this class is generated, see [this repo](https://github.com/icure/sdk-codegen).
-
 @SerialName("FormByLogicalUuidFilter")
 @Serializable
-data class FormByLogicalUuidFilter(
+public data class FormByLogicalUuidFilter(
 	public val logicalUuid: String,
 	public val descending: Boolean? = null,
 	override val desc: String? = null,
-) : AbstractFilter<Form> {
-	// region FormByLogicalUuidFilter-FormByLogicalUuidFilter
-
-	// endregion
-}
+) : AbstractFilter<Form>
