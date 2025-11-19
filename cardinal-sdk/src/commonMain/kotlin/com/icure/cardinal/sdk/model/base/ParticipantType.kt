@@ -49,4 +49,7 @@ enum class ParticipantType(
 
 	@SerialName("location")
 	Location("location"),
+
+	@SerialName("recorder")
+	Recorder("recorder"),
 }
