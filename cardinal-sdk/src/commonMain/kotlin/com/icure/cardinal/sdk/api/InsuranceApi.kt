@@ -23,6 +23,6 @@ interface InsuranceApi {
 
 	// Wrappers for missing methods in rawApi
 	suspend fun createInsurancesInGroup(groupId: String, insuranceBatch: List<Insurance>): List<Insurance>
-	suspend fun getInsurancesInGroup(groupId: String, insuranceIds: String): List<Insurance>
+	suspend fun getInsurancesInGroup(groupId: String, insuranceIds: List<String>): List<Insurance>
 	suspend fun modifyInsurancesInGroup(groupId: String, insuranceBatch: List<Insurance>): List<Insurance>
 }
