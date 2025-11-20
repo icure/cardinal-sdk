@@ -19,7 +19,6 @@ import com.icure.kryptom.utils.base64UrlEncode
 import com.icure.utils.InternalIcureApi
 import io.kotest.core.spec.style.StringSpec
 import io.kotest.matchers.shouldBe
-import kotlinx.serialization.json.Json
 import kotlin.time.Clock
 
 @OptIn(InternalIcureApi::class)
@@ -103,14 +102,3 @@ class ExternalAuthTest : StringSpec({
 		sdk.user.getCurrentUser().email shouldBe userDetails.email
 	}
 })
-
-/*
-{
-	"alg":"PS256",
-	"e":"AQAB",
-	"ext":true,
-	"key_ops":["verify"],
-	"kty":"RSA",
-	"n":"iRs6-P-J0xOsB0eeoPsrmOj8T3lTgqTm_Y6Mm5DXHAjIpFdRcHaW8WFCwXOka9YVuVA0VsMW8AkigJJh6EKODtxXmAVX5pntkmUzuOQ_uidBlpLcMPdHiM5b51sHd9WQLWO88IxDU0L6q4Neu-P2oMxTyirEE9KHrD5j0PPFeQ57gpix4Qb84Bhv6vxUI6dVMzmlwVC9iAN5MZkdISUIWxDGlfbukBer7ajb5z9FZ8jkzHAYwbGPJkbFBSrqKDYDEKmxMmmFyIP64raVUswgXE9ahKNF80zjS3I1OP_UGQhLCmMCwliVWP_yIaxi30NL2fe9f8udoulf-hONqp3d8w"
-}
- */
