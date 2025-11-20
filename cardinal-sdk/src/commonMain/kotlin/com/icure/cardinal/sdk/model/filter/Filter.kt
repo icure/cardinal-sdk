@@ -6,11 +6,8 @@ import kotlin.String
 import kotlin.collections.List
 import kotlin.collections.Set
 
-// WARNING: This file is auto-generated. If you change it manually, your changes will be lost.
-// If you want to change the way this class is generated, see [this repo](https://github.com/icure/sdk-codegen).
-
 @Serializable
-sealed interface Filter<O : Identifiable<*>> {
+public sealed interface Filter<O : Identifiable<*>> {
 	public interface IdsFilter<T, O : Identifiable<T>> : Filter<O> {
 		public val ids: Set<T>
 	}
@@ -34,7 +31,4 @@ sealed interface Filter<O : Identifiable<*>> {
 	public interface ByHcpartyFilter<O : Identifiable<*>> : Filter<O> {
 		public val hcpId: String
 	}
-  // region Filter-Filter
-
-  // endregion
 }
