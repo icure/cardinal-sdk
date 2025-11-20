@@ -130,7 +130,7 @@ interface CardinalUnboundBaseSdk : CardinalBaseApis {
 		 * @param options optional parameters for the initialization of the sdk.
 		 */
 		@InternalIcureApi
-		fun initialize(
+		suspend fun initialize(
 			baseUrl: String,
 			authenticationMethod: AuthenticationMethod,
 			options: UnboundBasicSdkOptions = UnboundBasicSdkOptions()

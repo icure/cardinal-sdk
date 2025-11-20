@@ -133,7 +133,7 @@ data class DataOwnerDetails private constructor (
 		)
 	}
 
-	fun authService() =
+	suspend fun authService() =
 		AuthenticationMethod.UsingCredentials(
 			UsernamePassword(username, password),
 		).getAuthProvider(
