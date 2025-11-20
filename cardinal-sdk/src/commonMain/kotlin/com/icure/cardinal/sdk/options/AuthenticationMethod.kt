@@ -9,11 +9,11 @@ import com.icure.cardinal.sdk.auth.AuthSecretDetails
 import com.icure.cardinal.sdk.auth.AuthSecretProvider
 import com.icure.cardinal.sdk.auth.AuthenticationProcessApi
 import com.icure.cardinal.sdk.auth.Credentials
+import com.icure.cardinal.sdk.auth.ExternalAuthenticationToken
 import com.icure.cardinal.sdk.auth.JwtCredentials
-import com.icure.cardinal.sdk.auth.ThirdPartyAuthentication
-import com.icure.cardinal.sdk.auth.ThirdPartyProvider
 import com.icure.cardinal.sdk.auth.UsernameLongToken
 import com.icure.cardinal.sdk.auth.UsernamePassword
+import com.icure.cardinal.sdk.auth.level
 import com.icure.cardinal.sdk.auth.services.AuthProvider
 import com.icure.cardinal.sdk.auth.services.JwtAuthProvider
 import com.icure.cardinal.sdk.auth.services.SmartAuthProvider
@@ -119,14 +119,14 @@ sealed interface AuthenticationMethod {
 			@Serializable
 			data class LongLivedToken(val token: String) : InitialSecret
 			@Serializable
-			data class OAuth(val secret: String, val oauthType: ThirdPartyProvider) : InitialSecret
+			data class ExternalAuthenticationToken(val token: String, val configId: String) : InitialSecret
 		}
 	}
 }
 
 // This does not have the internal modifier because we need it in other components like kmehr
 @InternalIcureApi
-fun AuthenticationMethod.getAuthProvider(
+suspend fun AuthenticationMethod.getAuthProvider(
 	authApi: RawAnonymousAuthApi,
 	cryptoService: CryptoService,
 	applicationId: String?,
@@ -135,10 +135,10 @@ fun AuthenticationMethod.getAuthProvider(
 	krakenUrl: String
 ): AuthProvider = when(this) {
 	is AuthenticationMethod.UsingCredentials -> when (this.credentials) {
-		is ThirdPartyAuthentication -> smartAuthWithConstantSecret(
+		is ExternalAuthenticationToken -> smartAuthWithConstantSecret(
 			authApi = authApi,
 			cryptoService = cryptoService,
-			authSecretDetails = AuthSecretDetails.ExternalAuthenticationDetails(this.credentials.token, this.credentials.provider),
+			authSecretDetails = AuthSecretDetails.ConfiguredExternalAuthenticationDetails(this.credentials.configId, this.credentials.token),
 			login = null,
 			messageGatewayApi = messageGatewayApi,
 			applicationId = applicationId,
@@ -174,8 +174,8 @@ fun AuthenticationMethod.getAuthProvider(
 		initialSecret = when (initialSecret) {
 			is AuthenticationMethod.UsingSecretProvider.InitialSecret.LongLivedToken ->
 				AuthSecretDetails.LongLivedTokenDetails(initialSecret.token)
-			is AuthenticationMethod.UsingSecretProvider.InitialSecret.OAuth ->
-				AuthSecretDetails.ExternalAuthenticationDetails(initialSecret.secret, initialSecret.oauthType)
+			is AuthenticationMethod.UsingSecretProvider.InitialSecret.ExternalAuthenticationToken ->
+				AuthSecretDetails.ConfiguredExternalAuthenticationDetails(initialSecret.configId, initialSecret.token)
 			is AuthenticationMethod.UsingSecretProvider.InitialSecret.Password ->
 				AuthSecretDetails.PasswordDetails(initialSecret.password)
 			null -> null
@@ -225,10 +225,10 @@ internal suspend fun AuthenticationMethod.getGroupAndAuthProvider(
 }
 
 @InternalIcureApi
-private fun smartAuthWithConstantSecret(
+private suspend fun smartAuthWithConstantSecret(
 	authApi: RawAnonymousAuthApi,
 	cryptoService: CryptoService,
-	authSecretDetails: AuthSecretDetails.Cacheable,
+	authSecretDetails: AuthSecretDetails,
 	login: String?,
 	messageGatewayApi: RawMessageGatewayApi,
 	applicationId: String?,
@@ -243,14 +243,14 @@ private fun smartAuthWithConstantSecret(
 	groupId = null,
 	applicationId = applicationId,
 	cryptoService = cryptoService,
-	cacheSecrets = true,
+	cacheSecrets = false,
 	allowSecretRetry = false,
 	messageGatewayApi = messageGatewayApi,
 	krakenUrl = krakenUrl,
 )
 
 private class ConstantSecretProvider(
-	private val authSecretDetails: AuthSecretDetails.Cacheable
+	private val authSecretDetails: AuthSecretDetails
 ) : AuthSecretProvider {
 	override suspend fun getSecret(
 		acceptedSecrets: Set<AuthenticationClass>,
@@ -260,7 +260,16 @@ private class ConstantSecretProvider(
 		if (authSecretDetails.type in acceptedSecrets) {
 			if (previousAttempts.isEmpty())
 				return authSecretDetails
-			else throw IllegalStateException("Provided credentials can't be used to request new tokens. This method can't be used")
+			else
+				throw IllegalStateException(
+					if (acceptedSecrets.allowsMinClass)
+						"The secret used to login is not valid anymore, and the current refresh tokens have expired. If you want to be able to use an instance of SDK for a period of time longer than the period of validity of a refresh token (24 hours), please initialize the SDK using AuthenticationMethod.UsingSecretProvider."
+					else
+						"Provided credentials can't be used to request new tokens. This method can't be used."
+				)
 		} else throw IllegalStateException("This method can't be used when logged in with a secret of type ${authSecretDetails.type}")
 	}
+
+	private val Set<AuthenticationClass>.allowsMinClass get() =
+		contains(AuthenticationClass.entries.minBy { it.level })
 }

@@ -1,10 +1,6 @@
 import {AuthenticationClass} from "../model/embed/AuthenticationClass.mjs";
 import {CaptchaOptions} from "../auth/CaptchaOptions.mjs";
 
-export enum ThirdPartyProvider {
-  GOOGLE = "GOOGLE"
-}
-
 export namespace AuthenticationMethod {
   /**
    * The sdk will perform requests using jwt obtained from the provided credentials.
@@ -54,16 +50,23 @@ export namespace AuthenticationMethod {
       ) {}
     }
 
-    export class ThirdPartyAuth {
+    export class ExternalAuthenticationToken {
       constructor(
         /**
-         * A token used to perform the third party authentication
+         * The id of the configuration that specifies how the token should be validated and how it should be used to find
+         * the corresponding user in iCure.
+         *
+         * Note you can only use external authentication if the sdk instance was initialized with an application id.
+         */
+        readonly configId: string,
+        /**
+         * A token used to perform the external authentication
          */
         readonly token: string,
         /**
-         * The authentication provider
+         * During login consider only configurations that can provide at least this authentication class
          */
-        readonly provider: ThirdPartyProvider,
+        readonly minimumAuthenticationClass?: AuthenticationClass,
       ) {}
     }
 
@@ -109,7 +112,7 @@ export namespace AuthenticationMethod {
 export type AuthenticationMethod =
   AuthenticationMethod.UsingCredentials.UsernamePassword |
   AuthenticationMethod.UsingCredentials.UsernameLongToken |
-  AuthenticationMethod.UsingCredentials.ThirdPartyAuth |
+  AuthenticationMethod.UsingCredentials.ExternalAuthenticationToken |
   AuthenticationMethod.UsingCredentials.JwtCredentials |
   AuthenticationMethod.UsingSecretProvider
 
@@ -151,10 +154,10 @@ export namespace SecretProviderAuthenticationOptions {
   export namespace InitialSecret {
     export class Password { constructor(readonly password: string) {} }
     export class LongLivedToken { constructor(readonly token: string) {} }
-    export class OAuth { constructor(readonly secret: string, readonly oauthType: ThirdPartyProvider) {} }
+    export class ExternalAuthenticationToken { constructor(readonly token: string, readonly configId: string) {} }
   }
 
-  export type InitialSecret = InitialSecret.Password | InitialSecret.LongLivedToken | InitialSecret.OAuth
+  export type InitialSecret = InitialSecret.Password | InitialSecret.LongLivedToken | InitialSecret.ExternalAuthenticationToken
 }
 
 export interface AuthSecretProvider {
@@ -232,19 +235,20 @@ export namespace AuthSecretDetails {
     constructor (readonly secret: String) {}
   }
   
-  export class ExternalAuthenticationDetails {
+  export class ConfiguredExternalAuthenticationDetails {
     /**
-     * @param secret some token or another secret that can be used to authenticate the user to a supported third party service
-     * @param oauthType the third party service that should recognize the provided secret.
+     * Login using a token or other secret provided by another authentication service configured for your project.
+     *
+     * This AuthSecretDetails type can only be used if the sdk initialization provided an application id: using
+     * this AuthSecretDetails with an instance of SDK that doesn't have a configured application id will result in a
+     * runtime exception.
+     *
+     * @param configId id of the configuration to use for authentication.
+     * @param secret the token or another secret that will be used for authentication.
+     * @param minimumAuthenticationClass only consider configurations that can provide at least this authentication class. The actual
+     * authentication class obtained for the token may be higher.
      */
-    constructor (readonly secret: String, readonly oauthType: ThirdPartyProvider) {}
-  }
-  
-  export class DigitalIdDetails {
-    /**
-     * Not yet implemented
-     */
-    constructor (readonly secret: String) {}
+    constructor (readonly configId: string, readonly secret: string, readonly minimumAuthenticationClass?: AuthenticationClass) {}
   }
 }
 export type AuthSecretDetails =
@@ -252,8 +256,7 @@ export type AuthSecretDetails =
   AuthSecretDetails.TwoFactorAuthTokenDetails |
   AuthSecretDetails.ShortLivedTokenDetails |
   AuthSecretDetails.LongLivedTokenDetails |
-  AuthSecretDetails.ExternalAuthenticationDetails |
-  AuthSecretDetails.DigitalIdDetails
+  AuthSecretDetails.ConfiguredExternalAuthenticationDetails
 
 /**
  * Allows initializing processes for the registration and authentication of users.

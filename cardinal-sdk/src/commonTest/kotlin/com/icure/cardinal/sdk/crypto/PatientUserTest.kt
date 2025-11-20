@@ -155,7 +155,7 @@ class PatientUserTest : StringSpec({
 	}
 
 	"Initializing the encryption metadata for a new patient user should fail with appropriate exception if attempting to share with hcp that has no key" {
-		val hcpRawApi = RawHealthcarePartyApiImpl(baseUrl, superadminAuth, DefaultRawApiConfig)
+		val hcpRawApi = RawHealthcarePartyApiImpl(baseUrl, superadminAuth(), DefaultRawApiConfig)
 		val hcpId = defaultCryptoService.strongRandom.randomUUID()
 		hcpRawApi.createHealthcarePartyInGroup(
 			testGroupId,

@@ -257,10 +257,11 @@ tasks.register("prepareDistributionPackage") {
 			replacing = listOf(
 				Replacement(
 					of = "if (isJsdom()) {",
-					with = "if (isJsdom() || (typeof navigator !== 'undefined' && navigator !== null && navigator.product === \"ReactNative\")) {\n" +
-						"    if (schedule_queue_patch == undefined) {\n" +
-						"      schedule_queue_patch = process.nextTick ?? setImmediate\n" +
-						"    }\n",
+					with =
+						"if (schedule_queue_patch == undefined) {\n" +
+						"  schedule_queue_patch = process.nextTick ?? setImmediate\n" +
+						"}\n" +
+						"if (isJsdom() || (typeof navigator !== 'undefined' && navigator !== null && navigator.product === \"ReactNative\")) {\n",
 				),
 				Replacement(
 					of = "function NodeDispatcher() {",

@@ -17,11 +17,11 @@ internal class SmartAuthProvider private constructor(
 ) : JwtBasedAuthProvider {
 	companion object {
 
-		fun initialize(
+		suspend fun initialize(
 			authApi: RawAnonymousAuthApi,
 			loginUsername: String?,
 			secretProvider: AuthSecretProvider,
-			initialSecret: AuthSecretDetails.Cacheable?,
+			initialSecret: AuthSecretDetails?,
 			initialAuthToken: String?,
 			initialRefreshToken: String?,
 			groupId: String?,
@@ -36,11 +36,9 @@ internal class SmartAuthProvider private constructor(
 				loginUsername = loginUsername,
 				groupId = groupId,
 				applicationId = applicationId,
-				currentLongLivedSecret = if (
-					cacheSecrets || initialRefreshToken == null || isJwtExpiredOrInvalid(initialRefreshToken)
-				) initialSecret else null, // Even if cache secret is false, in case the initial refresh token is not valid the secret will actually be cached until the first request
-				cachedToken = initialAuthToken,
-				cachedRefreshToken = initialRefreshToken,
+				initializationSecret = initialSecret,
+				initialBearerToken = initialAuthToken,
+				initialRefreshToken = initialRefreshToken,
 				authApi = authApi,
 				authSecretProvider = secretProvider,
 				cacheSecrets = cacheSecrets,

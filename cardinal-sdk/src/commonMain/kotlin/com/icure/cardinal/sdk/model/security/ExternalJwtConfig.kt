@@ -23,6 +23,8 @@ data class ExternalJwtConfig(
 		@SerialName("PublicKey")
 		public data class PublicKey(
 			public val key: String,
+			@DefaultValue("null")
+			public val signatureAlgorithm: String? = null,
 		) : ValidationMethod
 
 		@Serializable
