@@ -4,6 +4,7 @@ import com.icure.cardinal.sdk.api.CryptoApi
 import com.icure.cardinal.sdk.api.CryptoInGroupApi
 import com.icure.cardinal.sdk.api.ShamirKeysManagerApi
 import com.icure.cardinal.sdk.crypto.InternalCryptoServices
+import com.icure.cardinal.sdk.crypto.entities.EntityWithEncryptionMetadataTypeName
 import com.icure.cardinal.sdk.crypto.entities.ExchangeDataInjectionDetails
 import com.icure.cardinal.sdk.crypto.entities.RawDecryptedExchangeData
 import com.icure.cardinal.sdk.crypto.impl.exportSpkiHex
@@ -25,7 +26,13 @@ internal class CryptoApiImpl(
 			groupId: String?,
 			delegate: EntityReferenceInGroup
 		) = doKeylessCreateExchangeDataTo(groupId, delegate)
+
+		override suspend fun getAccessControlKeys(groupId: String?, entityType: EntityWithEncryptionMetadataTypeName): List<String> =
+			internal.headersProvider.getAccessControlKeysHeadersFor(groupId, entityType)
 	}
+
+	override suspend fun getAccessControlKeys(entityType: EntityWithEncryptionMetadataTypeName): List<String> =
+		internal.headersProvider.getAccessControlKeysHeadersFor(groupId = null, entityType)
 
 	override suspend fun forceReload() {
 		internal.forceReload()
