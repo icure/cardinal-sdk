@@ -87,6 +87,40 @@ data class AnonymousSdkOptions(
 	override val requestRetryConfiguration: RequestRetryConfiguration = RequestRetryConfiguration()
 ): HttpSdkOptions
 
+/**
+ * Optional parameters used in teh conversion from a basic sdk to a full sdk.
+ */
+data class BasicToFullSdkOptions(
+	/**
+	 * Refer to [SdkOptions.useHierarchicalDataOwners]
+	 */
+	val useHierarchicalDataOwners: Boolean = true,
+	/**
+	 * Refer to [SdkOptions.createTransferKeys]
+	 */
+	val createTransferKeys: Boolean = true,
+	/**
+	 * Refer to [SdkOptions.autoCreateEncryptionKeyForExistingLegacyData]
+	 */
+	val autoCreateEncryptionKeyForExistingLegacyData: Boolean = false,
+	/**
+	 * Refer to [SdkOptions.keyStorage]
+	 */
+	val keyStorage: KeyStorageFacade? = null,
+	/**
+	 * Refer to [SdkOptions.cryptoStrategies]
+	 */
+	val cryptoStrategies: CryptoStrategies? = null,
+	/**
+	 * Refer to [SdkOptions.jsonPatcher]
+	 */
+	val jsonPatcher: JsonPatcher? = null,
+	/**
+	 * Refer to [SdkOptions.parentJob]
+	 */
+	val parentJob: Job? = null,
+)
+
 data class SdkOptions(
 	override val encryptedFields: EncryptedFieldsConfiguration = EncryptedFieldsConfiguration(),
 	/**
