@@ -163,7 +163,9 @@ import com.icure.cardinal.sdk.model.extensions.type
 import com.icure.cardinal.sdk.options.ApiConfiguration
 import com.icure.cardinal.sdk.options.ApiConfigurationImpl
 import com.icure.cardinal.sdk.options.AuthenticationMethod
+import com.icure.cardinal.sdk.options.EncryptedFieldsConfiguration
 import com.icure.cardinal.sdk.options.EntitiesEncryptedFieldsManifests
+import com.icure.cardinal.sdk.options.GroupSelector
 import com.icure.cardinal.sdk.options.JsonPatcher
 import com.icure.cardinal.sdk.options.RequestRetryConfiguration
 import com.icure.cardinal.sdk.options.SdkOptions
@@ -171,6 +173,7 @@ import com.icure.cardinal.sdk.options.configuredClientOrDefault
 import com.icure.cardinal.sdk.options.configuredJsonOrDefault
 import com.icure.cardinal.sdk.options.getGroupAndAuthProvider
 import com.icure.cardinal.sdk.storage.CardinalStorageFacade
+import com.icure.cardinal.sdk.storage.KeyStorageFacade
 import com.icure.cardinal.sdk.storage.StorageFacade
 import com.icure.cardinal.sdk.storage.impl.DefaultStorageEntryKeysFactory
 import com.icure.cardinal.sdk.storage.impl.JsonAndBase64KeyStorage
@@ -181,6 +184,7 @@ import com.icure.cardinal.sdk.utils.retryWithDelays
 import com.icure.kryptom.crypto.CryptoService
 import com.icure.kryptom.crypto.RsaAlgorithm
 import com.icure.kryptom.crypto.RsaKeypair
+import com.icure.kryptom.crypto.defaultCryptoService
 import com.icure.utils.InternalIcureApi
 import io.ktor.client.HttpClient
 import io.ktor.client.plugins.HttpTimeout
@@ -189,8 +193,10 @@ import io.ktor.client.plugins.websocket.WebSockets
 import io.ktor.serialization.kotlinx.json.json
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.SupervisorJob
 import kotlinx.serialization.json.Json
+import kotlin.time.Duration
 import kotlin.time.Duration.Companion.milliseconds
 import kotlin.time.Duration.Companion.seconds
 
@@ -300,14 +306,10 @@ interface CardinalSdk : CardinalApis {
 			baseStorage: StorageFacade,
 			options: SdkOptions = SdkOptions()
 		): CardinalSdk {
-			val cryptoStrategies = options.cryptoStrategies ?: BasicCryptoStrategies
 			val client = options.configuredClientOrDefault()
 			val json = options.configuredJsonOrDefault()
 			val cryptoService = options.cryptoService
 			val apiUrl = baseUrl
-			val keysStorage = options.keyStorage ?: JsonAndBase64KeyStorage(baseStorage)
-			val iCureStorage =
-				CardinalStorageFacade(keysStorage, baseStorage, DefaultStorageEntryKeysFactory, cryptoService, false)
 			val (chosenGroupId, authProvider) = authenticationMethod.getGroupAndAuthProvider(
 				baseUrl = baseUrl,
 				apiUrl = apiUrl,
@@ -320,25 +322,24 @@ interface CardinalSdk : CardinalApis {
 					additionalHeaders = emptyMap(),
 					requestTimeout = options.requestTimeout,
 					json = json,
-					retryConfiguration = options.requestRetryConfiguration ?: RequestRetryConfiguration()
+					retryConfiguration = options.requestRetryConfiguration
 				)
 			)
+			val initializedSdkOptions = options.asInitialized(baseStorage)
 			val (initializedCrypto, newKey, scope) = initializeApiCrypto(
 				apiUrl,
 				authProvider,
 				client,
 				json,
-				cryptoStrategies,
+				options.cryptoStrategies,
 				cryptoService,
-				iCureStorage,
 				chosenGroupId,
-				options,
+				initializedSdkOptions,
 			)
-			return CardinalApiImpl(
+			return CardinalSdkImpl(
 				authProvider,
-				json,
 				initializedCrypto,
-				options,
+				initializedSdkOptions,
 				chosenGroupId,
 				scope
 			).also { initializedCrypto.notifyNewKeyIfAny(it, newKey) }
@@ -455,19 +456,48 @@ private class AuthenticationWithProcessStepImpl(
 	}
 }
 
+private fun SdkOptions.asInitialized(baseStorage: StorageFacade): InitializedSdkOptions = InitializedSdkOptions(
+	encryptedFields = encryptedFields,
+	useHierarchicalDataOwners = useHierarchicalDataOwners,
+	createTransferKeys = createTransferKeys,
+	autoCreateEncryptionKeyForExistingLegacyData = autoCreateEncryptionKeyForExistingLegacyData,
+	jsonPatcher = jsonPatcher,
+	parentJob = parentJob,
+	requestTimeout = requestTimeout,
+	requestRetryConfiguration = requestRetryConfiguration,
+	baseStorage = baseStorage,
+	keyStorage = keyStorage
+)
+
+internal data class InitializedSdkOptions(
+	val encryptedFields: EncryptedFieldsConfiguration,
+	val useHierarchicalDataOwners: Boolean,
+	val createTransferKeys: Boolean,
+	val autoCreateEncryptionKeyForExistingLegacyData: Boolean,
+	val jsonPatcher: JsonPatcher?,
+	val parentJob: Job?,
+	val requestTimeout: Duration?,
+	val requestRetryConfiguration: RequestRetryConfiguration,
+	val keyStorage: KeyStorageFacade?,
+	val baseStorage: StorageFacade,
+)
+
 private const val ANONYMITY_HEADER = "Icure-Request-Autofix-Anonymity"
 @InternalIcureApi
-private suspend fun initializeApiCrypto(
+internal suspend fun initializeApiCrypto(
 	apiUrl: String,
 	authProvider: AuthProvider,
 	client: HttpClient,
 	json: Json,
-	cryptoStrategies: CryptoStrategies,
+	providedCryptoStrategies: CryptoStrategies?,
 	cryptoService: CryptoService,
-	iCureStorage: CardinalStorageFacade,
 	groupId: String?,
-	options: SdkOptions
+	options: InitializedSdkOptions
 ): Triple<ApiConfiguration, RsaKeypair<RsaAlgorithm.RsaEncryptionAlgorithm.OaepWithSha256>?, CoroutineScope> {
+	val cryptoStrategies = providedCryptoStrategies ?: BasicCryptoStrategies
+	val keysStorage = options.keyStorage ?: JsonAndBase64KeyStorage(options.baseStorage)
+	val iCureStorage =
+		CardinalStorageFacade(keysStorage, options.baseStorage, DefaultStorageEntryKeysFactory, cryptoService, false)
 	val boundGroup = groupId?.let(::SdkBoundGroup)
 	// Failure of any child doesn't cause the scope nor the parent to cancel
 	val sdkScope = CoroutineScope(Dispatchers.Default + SupervisorJob(options.parentJob))
@@ -670,11 +700,10 @@ private suspend fun initializeApiCrypto(
 }
 
 @OptIn(InternalIcureApi::class)
-private class CardinalApiImpl(
+internal class CardinalSdkImpl(
 	private val authProvider: AuthProvider,
-	private val httpClientJson: Json,
 	private val config: ApiConfiguration,
-	private val options: SdkOptions,
+	private val options: InitializedSdkOptions,
 	override val boundGroupId: String?,
 	override val scope: CoroutineScope
 ): CardinalSdk {
@@ -1052,13 +1081,11 @@ private class CardinalApiImpl(
 			config.rawApiConfig.json,
 			config.crypto.strategies,
 			config.crypto.primitives,
-			config.crypto.storage,
 			groupId,
 			options
 		)
-		return CardinalApiImpl(
+		return CardinalSdkImpl(
 			switchedProvider,
-			httpClientJson,
 			switchedCryptoConfigs,
 			options,
 			groupId,
@@ -1068,7 +1095,7 @@ private class CardinalApiImpl(
 }
 
 @InternalIcureApi
-private suspend fun ApiConfiguration.notifyNewKeyIfAny(
+internal suspend fun ApiConfiguration.notifyNewKeyIfAny(
 	sdk: CardinalSdk,
 	key: RsaKeypair<RsaAlgorithm.RsaEncryptionAlgorithm.OaepWithSha256>?
 ) {

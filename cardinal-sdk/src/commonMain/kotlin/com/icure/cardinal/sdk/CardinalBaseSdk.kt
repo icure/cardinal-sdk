@@ -101,15 +101,27 @@ import com.icure.cardinal.sdk.options.AuthenticationMethod
 import com.icure.cardinal.sdk.options.BasicApiConfiguration
 import com.icure.cardinal.sdk.options.BasicApiConfigurationImpl
 import com.icure.cardinal.sdk.options.BasicSdkOptions
+import com.icure.cardinal.sdk.options.BasicToFullSdkOptions
+import com.icure.cardinal.sdk.options.EncryptedFieldsConfiguration
 import com.icure.cardinal.sdk.options.EntitiesEncryptedFieldsManifests
+import com.icure.cardinal.sdk.options.GroupSelector
+import com.icure.cardinal.sdk.options.RequestRetryConfiguration
+import com.icure.cardinal.sdk.options.SdkOptions
 import com.icure.cardinal.sdk.options.UnboundBasicApiConfigurationImpl
 import com.icure.cardinal.sdk.options.UnboundBasicSdkOptions
 import com.icure.cardinal.sdk.options.configuredClientOrDefault
 import com.icure.cardinal.sdk.options.configuredJsonOrDefault
 import com.icure.cardinal.sdk.options.getAuthProvider
 import com.icure.cardinal.sdk.options.getGroupAndAuthProvider
+import com.icure.cardinal.sdk.storage.StorageFacade
+import com.icure.kryptom.crypto.CryptoService
+import com.icure.kryptom.crypto.defaultCryptoService
 import com.icure.utils.InternalIcureApi
+import io.ktor.client.HttpClient
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.serialization.json.Json
 import kotlin.coroutines.CoroutineContext
+import kotlin.time.Duration
 
 /**
  * Similar to the [CardinalBaseSdk] but is not bound to a specific user and/or group.
@@ -163,8 +175,9 @@ interface CardinalUnboundBaseSdk : CardinalBaseApis {
 			val boundGroupProvider = { context: CoroutineContext -> options.getBoundGroupId(context)?.let(::SdkBoundGroup) }
 			val config = UnboundBasicApiConfigurationImpl(
 				apiUrl,
-				if (authProvider is JwtBasedAuthProvider) authProvider else null,
+				authProvider as? JwtBasedAuthProvider,
 				BasicInternalCryptoApiImpl(
+					options.cryptoService,
 					jsonEncryptionService,
 					EntityValidationServiceImpl(jsonEncryptionService),
 					BasicEntityAccessInformationProvider(boundGroupProvider)
@@ -173,11 +186,7 @@ interface CardinalUnboundBaseSdk : CardinalBaseApis {
 				rawApiConfig,
 				boundGroupProvider
 			)
-			return object : CardinalUnboundBaseSdk, CardinalBaseApis by CardinalBaseSdkImpl(
-				authProvider,
-				config,
-				null
-			) {}
+			return object : CardinalUnboundBaseSdk, CardinalBaseApis by CardinalBaseApisImpl(authProvider, config) {}
 		}
 	}
 }
@@ -200,6 +209,18 @@ interface CardinalBaseSdk : CardinalBaseApis {
 	 * @return a new sdk for executing requests in the provided group
 	 */
 	suspend fun switchGroup(groupId: String): CardinalBaseSdk
+
+	/**
+	 * Use the authentication for this base sdk to create a full sdk for the same user. Can only be used if the
+	 * current user is a data owner.
+	 * @param baseStorage an implementation of the [StorageFacade], used for persistent storage of various
+	 * information including the user keys if [BasicToFullSdkOptions.keyStorage] is not provided.
+	 * @param options additional options for the creation of the full sdk
+	 */
+	suspend fun toFullSdk(
+		baseStorage: StorageFacade,
+		options: BasicToFullSdkOptions
+	): CardinalSdk
 
 	companion object {
 		/**
@@ -244,6 +265,7 @@ interface CardinalBaseSdk : CardinalBaseApis {
 				apiUrl,
 				if (authProvider is JwtBasedAuthProvider) authProvider else null,
 				BasicInternalCryptoApiImpl(
+					options.cryptoService,
 					jsonEncryptionService,
 					EntityValidationServiceImpl(jsonEncryptionService),
 					BasicEntityAccessInformationProvider { boundGroup }
@@ -255,7 +277,8 @@ interface CardinalBaseSdk : CardinalBaseApis {
 			return CardinalBaseSdkImpl(
 				authProvider,
 				config,
-				chosenGroup
+				chosenGroup,
+				options.asInitialized()
 			)
 		}
 	}
@@ -499,15 +522,71 @@ private class CardinalBaseApisImpl(
 	}
 }
 
+private fun BasicSdkOptions.asInitialized() =
+	InitializedBaseSdkOptions(
+		encryptedFields = encryptedFields,
+		requestTimeout = requestTimeout,
+		requestRetryConfiguration = requestRetryConfiguration,
+	)
+
+private data class InitializedBaseSdkOptions(
+	val encryptedFields: EncryptedFieldsConfiguration = EncryptedFieldsConfiguration(),
+	val requestTimeout: Duration? = null,
+	val requestRetryConfiguration: RequestRetryConfiguration = RequestRetryConfiguration(),
+)
+
+private fun makeInitializedSdkOptions(
+	base: InitializedBaseSdkOptions,
+	full: BasicToFullSdkOptions,
+	storage: StorageFacade
+) = InitializedSdkOptions(
+	encryptedFields = base.encryptedFields,
+	useHierarchicalDataOwners = full.useHierarchicalDataOwners,
+	createTransferKeys = full.createTransferKeys,
+	autoCreateEncryptionKeyForExistingLegacyData = full.autoCreateEncryptionKeyForExistingLegacyData,
+	jsonPatcher = full.jsonPatcher,
+	parentJob = full.parentJob,
+	requestTimeout = base.requestTimeout,
+	requestRetryConfiguration = base.requestRetryConfiguration,
+	keyStorage = full.keyStorage,
+	baseStorage = storage,
+)
+
 @InternalIcureApi
 private class CardinalBaseSdkImpl(
 	private val authProvider: AuthProvider,
 	private val config: BasicApiConfiguration,
-	override val boundGroupId: String?
+	override val boundGroupId: String?,
+	private val options: InitializedBaseSdkOptions,
 ) : CardinalBaseSdk, CardinalBaseApis by CardinalBaseApisImpl(authProvider, config) {
 	override suspend fun switchGroup(groupId: String): CardinalBaseSdk = CardinalBaseSdkImpl(
 		authProvider.switchGroup(groupId),
 		config,
-		groupId
+		groupId,
+		options,
 	)
+
+	override suspend fun toFullSdk(
+		baseStorage: StorageFacade,
+		options: BasicToFullSdkOptions
+	): CardinalSdk {
+		val initializedSdkOptions = makeInitializedSdkOptions(this.options, options, baseStorage)
+		val (initializedCrypto, newKey, scope) = initializeApiCrypto(
+			config.apiUrl,
+			authProvider,
+			config.rawApiConfig.httpClient,
+			config.rawApiConfig.json,
+			options.cryptoStrategies,
+			config.crypto.primitives,
+			boundGroupId,
+			initializedSdkOptions,
+		)
+		return CardinalSdkImpl(
+			this.authProvider,
+			initializedCrypto,
+			initializedSdkOptions,
+			boundGroupId,
+			scope
+		).also { initializedCrypto.notifyNewKeyIfAny(it, newKey) }
+	}
 }

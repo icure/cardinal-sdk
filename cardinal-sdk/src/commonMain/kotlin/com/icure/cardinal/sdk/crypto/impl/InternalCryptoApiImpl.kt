@@ -57,6 +57,7 @@ class InternalCryptoApiImpl(
 
 @InternalIcureApi
 class BasicInternalCryptoApiImpl(
+	override val primitives: CryptoService,
 	override val jsonEncryption: JsonEncryptionService,
 	override val validationService: EntityValidationService,
 	override val entityAccessInformationProvider: EntityAccessInformationProvider
