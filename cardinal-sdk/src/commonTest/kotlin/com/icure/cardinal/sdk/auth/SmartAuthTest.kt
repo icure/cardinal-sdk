@@ -44,7 +44,7 @@ import io.ktor.http.isSuccess
 import kotlin.time.Clock
 
 @OptIn(InternalIcureApi::class)
-class SmartAuthProviderTest : StringSpec({
+class SmartAuthTest : StringSpec({
 	val specJob = autoCancelJob()
 
 	val authApi = RawAnonymousAuthApiImpl(
@@ -117,7 +117,7 @@ class SmartAuthProviderTest : StringSpec({
 		val hcpDetails = createHcpUser()
 		val api = hcpDetails.api(specJob)
 		val initialUser = api.user.getCurrentUser()
-		val adminUserApi = RawUserApiImpl(baseUrl, testGroupAdminAuth, DefaultRawApiConfig)
+		val adminUserApi = RawUserApiImpl(baseUrl, testGroupAdminAuth(), DefaultRawApiConfig)
 		val userToken = uuid()
 		val userPwd = uuid()
 		val userWithLongTokenAndPwd = adminUserApi.modifyUser(
@@ -218,7 +218,7 @@ class SmartAuthProviderTest : StringSpec({
 		val api = hcpDetails.api(specJob)
 		val otpLength = 8
 		val initialUser = api.user.getCurrentUser()
-		val adminUserApi = RawUserApiImpl(baseUrl, testGroupAdminAuth, DefaultRawApiConfig)
+		val adminUserApi = RawUserApiImpl(baseUrl, testGroupAdminAuth(), DefaultRawApiConfig)
 		val totpSecret = Totp.generateTOTPSecret(32, HmacAlgorithm.HmacSha256)
 		val totp = Totp(secret = totpSecret, shaVersion = ShaVersion.Sha256)
 		val userPwd = uuid()
@@ -287,7 +287,7 @@ class SmartAuthProviderTest : StringSpec({
 		val api = hcpDetails.api(specJob)
 		val otpLength = 8
 		val initialUser = api.user.getCurrentUser()
-		val adminUserApi = RawUserApiImpl(baseUrl, testGroupAdminAuth, DefaultRawApiConfig)
+		val adminUserApi = RawUserApiImpl(baseUrl, testGroupAdminAuth(), DefaultRawApiConfig)
 		val totpSecret = Totp.generateTOTPSecret(32, HmacAlgorithm.HmacSha256)
 		val totp = Totp(secret = totpSecret, shaVersion = ShaVersion.Sha256)
 		val userPwd = uuid()
@@ -384,7 +384,7 @@ class SmartAuthProviderTest : StringSpec({
 		val hcpDetails = createHcpUser()
 		val api = hcpDetails.api(specJob)
 		val initialUser = api.user.getCurrentUser()
-		val adminUserApi = RawUserApiImpl(baseUrl, testGroupAdminAuth, DefaultRawApiConfig)
+		val adminUserApi = RawUserApiImpl(baseUrl, testGroupAdminAuth(), DefaultRawApiConfig)
 		val userToken = uuid()
 		val userPwd = uuid()
 		val userWithLongTokenAndPwd = adminUserApi.modifyUser(

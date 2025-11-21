@@ -10,6 +10,7 @@ import com.icure.cardinal.sdk.js.model.base.IdentifierJs
 import com.icure.cardinal.sdk.js.model.base.StoredDocumentJs
 import com.icure.cardinal.sdk.js.model.embed.AddressJs
 import com.icure.cardinal.sdk.js.model.embed.AnnotationJs
+import com.icure.cardinal.sdk.js.model.embed.ContactParticipantJs
 import com.icure.cardinal.sdk.js.model.embed.DecryptedAddressJs
 import com.icure.cardinal.sdk.js.model.embed.DecryptedServiceJs
 import com.icure.cardinal.sdk.js.model.embed.DecryptedSubContactJs
@@ -55,6 +56,8 @@ public sealed external interface ContactJs : StoredDocumentJs, ICureDocumentJs<S
 	public val services: Array<out ServiceJs>
 
 	public val participants: Record<String, out String>
+
+	public val participantList: Array<out ContactParticipantJs>
 
 	public val healthcarePartyId: String?
 
@@ -114,6 +117,8 @@ public external class DecryptedContactJs(
 	override val services: Array<DecryptedServiceJs>
 
 	override val participants: Record<String, String>
+
+	override val participantList: Array<ContactParticipantJs>
 
 	override val healthcarePartyId: String?
 
@@ -185,6 +190,8 @@ public external class EncryptedContactJs(
 	override val services: Array<EncryptedServiceJs>
 
 	override val participants: Record<String, String>
+
+	override val participantList: Array<ContactParticipantJs>
 
 	override val healthcarePartyId: String?
 

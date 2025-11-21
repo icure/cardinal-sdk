@@ -4,6 +4,7 @@ import com.icure.cardinal.sdk.api.raw.impl.RawGroupApiImpl
 import com.icure.cardinal.sdk.api.raw.impl.RawHealthcarePartyApiImpl
 import com.icure.cardinal.sdk.api.raw.impl.RawPatientApiImpl
 import com.icure.cardinal.sdk.api.raw.impl.RawUserApiImpl
+import com.icure.cardinal.sdk.auth.AuthSecretDetails
 import com.icure.cardinal.sdk.crypto.impl.NoAccessControlKeysHeadersProvider
 import com.icure.cardinal.sdk.model.DatabaseInitialisation
 import com.icure.cardinal.sdk.model.EncryptedPatient
@@ -31,8 +32,8 @@ suspend fun createUserInMultipleGroups(): List<DataOwnerDetails> {
 	val userId1 = uuid()
 	val userId2 = uuid()
 	val userId3 = uuid()
-	val groupRawApi = RawGroupApiImpl(baseUrl, superadminAuth, DefaultRawApiConfig)
-	val userRawApi = RawUserApiImpl(baseUrl, superadminAuth, DefaultRawApiConfig)
+	val groupRawApi = RawGroupApiImpl(baseUrl, superadminAuth(), DefaultRawApiConfig)
+	val userRawApi = RawUserApiImpl(baseUrl, superadminAuth(), DefaultRawApiConfig)
 	groupRawApi.createGroup(
 		id = groupId1,
 		name = "test-group-1-${groupId1}",
@@ -136,8 +137,8 @@ suspend fun createHcpUser(
 	inGroup: String = testGroupId,
 	inheritsPermissions: Boolean = false
 ): DataOwnerDetails {
-	val hcpRawApi = RawHealthcarePartyApiImpl(baseUrl, superadminAuth, DefaultRawApiConfig)
-	val userRawApi = RawUserApiImpl(baseUrl, superadminAuth, DefaultRawApiConfig)
+	val hcpRawApi = RawHealthcarePartyApiImpl(baseUrl, superadminAuth(), DefaultRawApiConfig)
+	val userRawApi = RawUserApiImpl(baseUrl, superadminAuth(), DefaultRawApiConfig)
 	val hcpId = uuid()
 	val login = "hcp-${uuid()}"
 	val password = uuid()
@@ -193,14 +194,50 @@ suspend fun createHcpUser(
 	return DataOwnerDetails(hcpId, login, password, keypair, parent, inGroup)
 }
 
+data class PlainUserDetails(
+	val login: String,
+	val email: String,
+	val password: String,
+)
+
+@OptIn(InternalIcureApi::class)
+suspend fun createPlainUser(
+	roles: Set<String>? = null,
+	inGroup: String = testGroupId,
+	inheritsPermissions: Boolean = false
+): PlainUserDetails {
+	val userRawApi = RawUserApiImpl(baseUrl, superadminAuth(), DefaultRawApiConfig)
+	val login = "hcp-${uuid()}"
+	val password = uuid()
+	val created = userRawApi.createUserInGroup(
+		groupId = inGroup,
+		User(
+			uuid(),
+			login = login,
+			email = DataOwnerDetails.testEmailForLogin(login),
+			passwordHash = password,
+		)
+	).successBody()
+	if (roles != null) {
+		userRawApi.setRolesForUserInGroup(
+			userId = created.id,
+			groupId = inGroup,
+			rolesId = ListOfIds(roles.toList())
+		)
+	}
+	if (inheritsPermissions) userRawApi.setUserInheritsPermissions(userId = created.id, groupId = inGroup, value = true)
+	return PlainUserDetails(login, DataOwnerDetails.testEmailForLogin(login), password)
+}
+
+
 @OptIn(InternalIcureApi::class)
 suspend fun createPatientUser(
 	existingPatientId: String? = null,
 	inGroup: String = testGroupId,
 	inheritsPermissions: Boolean = false
 ): DataOwnerDetails {
-	val patientRawApi = RawPatientApiImpl(baseUrl, superadminAuth, null, DefaultRawApiConfig)
-	val userRawApi = RawUserApiImpl(baseUrl, superadminAuth, DefaultRawApiConfig)
+	val patientRawApi = RawPatientApiImpl(baseUrl, superadminAuth(), null, DefaultRawApiConfig)
+	val userRawApi = RawUserApiImpl(baseUrl, superadminAuth(), DefaultRawApiConfig)
 	val patientId = existingPatientId ?: uuid()
 	val login = "patient-${uuid()}"
 	val password = uuid()
@@ -237,8 +274,8 @@ suspend fun createPatientUser(
 
 @OptIn(InternalIcureApi::class)
 suspend fun createUserFromExistingPatient(patient: Patient, keylessPatient: Boolean = false): DataOwnerDetails {
-	val patientRawApi = RawPatientApiImpl(baseUrl, testGroupAdminAuth, NoAccessControlKeysHeadersProvider, DefaultRawApiConfig)
-	val userRawApi = RawUserApiImpl(baseUrl, testGroupAdminAuth, DefaultRawApiConfig)
+	val patientRawApi = RawPatientApiImpl(baseUrl, testGroupAdminAuth(), NoAccessControlKeysHeadersProvider, DefaultRawApiConfig)
+	val userRawApi = RawUserApiImpl(baseUrl, testGroupAdminAuth(), DefaultRawApiConfig)
 	val login = "patient-${uuid()}"
 	val password = uuid()
 	val keypair = defaultCryptoService.rsa.generateKeyPair(RsaAlgorithm.RsaEncryptionAlgorithm.OaepWithSha256)

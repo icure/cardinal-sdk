@@ -177,9 +177,9 @@ private suspend fun createTestDataAndApis(): TestData {
 		"encryptedSelf": "jgAFAlmd2QStXpOt3LnIhs4upJv2e10fp0u6/PburW7mq1r3vo/Q5/a4Yk7EWXG7oydMWb2i1UCCiNN80czGdA==" 
 	}
 	""")
-	val userApi = RawUserApiImpl(baseUrl, testGroupAdminAuth, DefaultRawApiConfig)
-	val patientApi = RawPatientApiImpl(baseUrl, testGroupAdminAuth, null, DefaultRawApiConfig)
-	val healthcarePartyApi = RawHealthcarePartyApiImpl(baseUrl, testGroupAdminAuth, DefaultRawApiConfig)
+	val userApi = RawUserApiImpl(baseUrl, testGroupAdminAuth(), DefaultRawApiConfig)
+	val patientApi = RawPatientApiImpl(baseUrl, testGroupAdminAuth(), null, DefaultRawApiConfig)
+	val healthcarePartyApi = RawHealthcarePartyApiImpl(baseUrl, testGroupAdminAuth(), DefaultRawApiConfig)
 	healthcarePartyApi.createHealthcareParty(pHcpBase)
 	healthcarePartyApi.createHealthcareParty(aHcpBase)
 	healthcarePartyApi.createHealthcareParty(bHcpBase)

@@ -2,6 +2,7 @@ package com.icure.cardinal.sdk.auth
 
 import com.icure.cardinal.sdk.model.Group
 import com.icure.cardinal.sdk.model.User
+import com.icure.cardinal.sdk.model.embed.AuthenticationClass
 import com.icure.utils.InternalIcureApi
 
 sealed interface Credentials
@@ -36,15 +37,22 @@ data class UsernameLongToken(
 	val token: String,
 ) : Credentials
 
-data class ThirdPartyAuthentication(
+data class ExternalAuthenticationToken(
 	/**
-	 * A token used to perform the third party authentication
+	 * The id of the configuration that specifies how the token should be validated and how it should be used to find
+	 * the corresponding user in iCure.
+	 *
+	 * Note you can only use external authentication if the sdk instance was initialized with an application id.
+	 */
+	val configId: String,
+	/**
+	 * A token used to perform the external authentication
 	 */
 	val token: String,
 	/**
-	 * The authentication provider
+	 * During login consider only configurations that can provide at least this authentication class
 	 */
-	val provider: ThirdPartyProvider
+	val minimumAuthenticationClass: AuthenticationClass = AuthenticationClass.ExternalAuthentication
 ) : Credentials
 
 @InternalIcureApi

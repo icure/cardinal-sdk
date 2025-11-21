@@ -105,6 +105,37 @@ export interface BasicSdkOptions {
   readonly lenientJson?: boolean
 }
 
+/**
+ * Optional parameters used in the conversion from a basic sdk to a full sdk.
+ */
+export interface BasicToFullSdkOptions {
+  /**
+   * Refer to {@link SdkOptions.useHierarchicalDataOwners }
+   */
+  readonly useHierarchicalDataOwners?: boolean
+  /**
+   * Refer to {@link SdkOptions.createTransferKeys }
+   */
+  readonly createTransferKeys?: boolean
+  /**
+   * Refer to {@link SdkOptions.autoCreateEncryptionKeyForExistingLegacyData }
+   */
+  readonly autoCreateEncryptionKeyForExistingLegacyData?: boolean
+  /**
+   * Refer to {@link SdkOptions.keyStorage }
+   */
+  readonly keyStorage?: KeyStorageFacade | CardinalKeyStorageOptions
+  /**
+   * Refer to {@link SdkOptions.cryptoStrategies }
+   */
+  readonly cryptoStrategies?: CryptoStrategies
+  /**
+   * Refer to {@link SdkOptions.jsonPatcher }
+   */
+  readonly jsonPatcher?: JsonPatcher
+}
+
+
 export interface AnonymousSdkOptions {
   /**
    * If true the SDK will use lenient deserialization of the entities coming from the backend.

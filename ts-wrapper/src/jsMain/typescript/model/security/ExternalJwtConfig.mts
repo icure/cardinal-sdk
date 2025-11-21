@@ -50,15 +50,19 @@ export namespace ExternalJwtConfig {
 
 			key: string;
 
+			signatureAlgorithm: string | undefined = undefined;
+
 			readonly $ktClass: 'com.icure.cardinal.sdk.model.security.ExternalJwtConfig.ValidationMethod.PublicKey' = 'com.icure.cardinal.sdk.model.security.ExternalJwtConfig.ValidationMethod.PublicKey';
 
 			constructor(partial: Partial<PublicKey> & Pick<PublicKey, "key">) {
 				this.key = partial.key;
+				if ('signatureAlgorithm' in partial) this.signatureAlgorithm = partial.signatureAlgorithm;
 			}
 
 			toJSON(): object {
 				const res: { [k: string]: any } = {}
 				res['key'] = this.key
+				if (this.signatureAlgorithm != undefined) res['signatureAlgorithm'] = this.signatureAlgorithm
 				res['$ktClass'] = 'com.icure.cardinal.sdk.model.security.ExternalJwtConfig.ValidationMethod.PublicKey'
 				return res
 			}
@@ -70,6 +74,7 @@ export namespace ExternalJwtConfig {
 				if (extractEntry(jCpy, '\$ktClass', true, path) !== 'com.icure.cardinal.sdk.model.security.ExternalJwtConfig.ValidationMethod.PublicKey') throw new Error(`Unexpected value for ${path.join("")} class marker, should be "com.icure.cardinal.sdk.model.security.ExternalJwtConfig.ValidationMethod.PublicKey". The provided json doesn't represent a PublicKey`)
 				const res = new PublicKey({
 					key: expectString(extractEntry(jCpy, 'key', true, path), false, [...path, ".key"]),
+					signatureAlgorithm: expectString(extractEntry(jCpy, 'signatureAlgorithm', false, path), true, [...path, ".signatureAlgorithm"]),
 				})
 				if (!ignoreUnknownKeys) {
 					const unused = Object.keys(jCpy)

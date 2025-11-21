@@ -10,7 +10,6 @@ interface InternalCryptoServices : BasicInternalCryptoApi{
 	suspend fun forceReload()
 
 	val entity: EntityEncryptionService
-	val primitives: CryptoService
 	val exchangeDataManager: ExchangeDataManager
 	val exchangeKeysManager: ExchangeKeysManager
 	val delegationsDeAnonymization: DelegationsDeAnonymization
@@ -32,6 +31,7 @@ interface InternalCryptoServices : BasicInternalCryptoApi{
 
 @InternalIcureApi
 interface BasicInternalCryptoApi {
+	val primitives: CryptoService
 	val jsonEncryption: JsonEncryptionService
 	val validationService: EntityValidationService
 	val entityAccessInformationProvider: EntityAccessInformationProvider

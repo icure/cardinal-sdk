@@ -19,7 +19,7 @@ val testGroupAdmin = "admin-{${uuid()}}@icure.com"
 val testGroupAdminPassword = "admin-${uuid()}"
 
 @OptIn(InternalIcureApi::class)
-internal val testGroupAdminAuth =
+internal suspend fun testGroupAdminAuth() =
 	AuthenticationMethod.UsingCredentials(
 		UsernamePassword(testGroupAdmin, testGroupAdminPassword)
 	).getAuthProvider(
@@ -32,7 +32,7 @@ internal val testGroupAdminAuth =
 	)
 
 @OptIn(InternalIcureApi::class)
-internal val superadminAuth =
+internal suspend fun superadminAuth() =
 	AuthenticationMethod.UsingCredentials(
 		UsernamePassword("john", "LetMeIn"),
 	).getAuthProvider(

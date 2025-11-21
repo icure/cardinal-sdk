@@ -1,3 +1,5 @@
+// TODO update for switch from ThirdPartyAuthentication to external jwt
+
 class Credentials {
 
   final Map<String, dynamic> _json;

@@ -4,6 +4,7 @@ package com.icure.cardinal.sdk.js.options
 import com.icure.cardinal.sdk.js.model.userGroup_toJs
 import com.icure.cardinal.sdk.js.options.external.AnonymousSdkOptionsJs
 import com.icure.cardinal.sdk.js.options.external.BasicSdkOptionsJs
+import com.icure.cardinal.sdk.js.options.external.BasicToFullSdkOptionsJs
 import com.icure.cardinal.sdk.js.options.external.EncryptedFieldsConfigurationJs
 import com.icure.cardinal.sdk.js.options.external.JsonPatcherJs
 import com.icure.cardinal.sdk.js.options.external.SdkOptionsJs
@@ -11,6 +12,7 @@ import com.icure.cardinal.sdk.js.storage.loadKeyStorageOptions
  import com.icure.cardinal.sdk.js.utils.cardinalInternalGlobals
  import com.icure.cardinal.sdk.options.AnonymousSdkOptions
 import com.icure.cardinal.sdk.options.BasicSdkOptions
+import com.icure.cardinal.sdk.options.BasicToFullSdkOptions
 import com.icure.cardinal.sdk.options.EncryptedFieldsConfiguration
 import com.icure.cardinal.sdk.options.JsonPatcher
 import com.icure.cardinal.sdk.options.SdkOptions
@@ -59,6 +61,20 @@ suspend fun BasicSdkOptionsJs.toKt(): BasicSdkOptions {
 			}
 		} ?: defaultApiOptions.groupSelector,
 		lenientJson = this.lenientJson ?: defaultApiOptions.lenientJson
+	)
+}
+
+suspend fun BasicToFullSdkOptionsJs.toKt(jsCryptoService: XCryptoService): BasicToFullSdkOptions {
+	val defaultOptions = BasicToFullSdkOptions()
+	return BasicToFullSdkOptions(
+		useHierarchicalDataOwners = this.useHierarchicalDataOwners ?: defaultOptions.useHierarchicalDataOwners,
+		createTransferKeys = this.createTransferKeys ?: defaultOptions.createTransferKeys,
+		autoCreateEncryptionKeyForExistingLegacyData = this.autoCreateEncryptionKeyForExistingLegacyData ?: defaultOptions.autoCreateEncryptionKeyForExistingLegacyData,
+		keyStorage = this.keyStorage?.let { loadKeyStorageOptions(it) } ?: defaultOptions.keyStorage,
+		cryptoStrategies = this.cryptoStrategies?.let {
+			CryptoStrategiesBridge(it, jsCryptoService)
+		} ?: defaultOptions.cryptoStrategies,
+		jsonPatcher = this.jsonPatcher?.let { JsonPatcherBridge(it) } ?: defaultOptions.jsonPatcher
 	)
 }
 

@@ -13,5 +13,6 @@ export enum ParticipantType {
 	Participation = "Participation",
 	Translator = "Translator",
 	Emergency = "Emergency",
-	Location = "Location"
+	Location = "Location",
+	Recorder = "Recorder"
 }

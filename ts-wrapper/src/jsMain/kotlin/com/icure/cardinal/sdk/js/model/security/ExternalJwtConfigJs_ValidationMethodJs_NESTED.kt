@@ -13,6 +13,8 @@ public external class ExternalJwtConfigJs_ValidationMethodJs_PublicKeyJs(
 ) : ExternalJwtConfigJs_ValidationMethodJs {
 	public val key: String
 
+	public val signatureAlgorithm: String?
+
 	override val ktClass: String
 }
 

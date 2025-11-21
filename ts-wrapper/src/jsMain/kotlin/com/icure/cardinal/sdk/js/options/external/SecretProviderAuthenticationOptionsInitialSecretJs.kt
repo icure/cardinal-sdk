@@ -11,8 +11,8 @@ external class InitialSecretLongLivedTokenJs : InitialSecretJs {
 	val token: String
 }
 
-@JsName("OAuth")
-external class InitialSecretOAuthJs : InitialSecretJs {
-	val secret: String
-	val oauthType: String
+@JsName("ExternalAuthenticationToken")
+external class ExternalAuthenticationTokenJs : InitialSecretJs {
+	val token: String
+	val configId: String
 }

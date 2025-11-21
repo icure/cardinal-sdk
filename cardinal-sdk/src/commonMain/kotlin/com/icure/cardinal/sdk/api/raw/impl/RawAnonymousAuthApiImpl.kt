@@ -123,7 +123,7 @@ class RawAnonymousAuthApiImpl(
 	override suspend fun loginWithExternalJwt(
 		token: String,
 		configId: String,
-		applicationId: String?,
+		applicationId: String,
 		groupId: String?,
 		minimumAuthenticationClass: String?,
 	): HttpResponse<JwtResponse> =

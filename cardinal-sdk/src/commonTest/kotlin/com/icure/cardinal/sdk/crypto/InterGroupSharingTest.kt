@@ -34,7 +34,7 @@ class InterGroupSharingTest : StringSpec({
 
 	beforeSpec {
 		initializeTestEnvironment()
-		val groupApi = RawGroupApiImpl(baseUrl, superadminAuth, DefaultRawApiConfig)
+		val groupApi = RawGroupApiImpl(baseUrl, superadminAuth(), DefaultRawApiConfig)
 		groupApi.createGroup(
 			grandparentGroupId,
 			name = "grandparent",

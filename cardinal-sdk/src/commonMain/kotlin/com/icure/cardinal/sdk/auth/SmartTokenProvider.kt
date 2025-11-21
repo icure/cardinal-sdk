@@ -13,9 +13,7 @@ import com.icure.cardinal.sdk.utils.ensureNonNull
 import com.icure.cardinal.sdk.utils.isJwtExpiredOrInvalid
 import com.icure.cardinal.sdk.utils.retryWithDelays
 import com.icure.kryptom.crypto.CryptoService
-import com.icure.kryptom.utils.base64Encode
 import com.icure.utils.InternalIcureApi
-import io.ktor.utils.io.core.toByteArray
 import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.sync.withLock
 import kotlin.time.Duration
@@ -76,7 +74,7 @@ private class AuthProcessApiImpl(
 }
 
 @InternalIcureApi
-internal class SmartTokenProvider(
+internal class SmartTokenProvider private constructor (
 	private val messageGatewayApi: RawMessageGatewayApi,
 	private val loginUsername: String?,
 	private val groupId: String?,
@@ -92,6 +90,53 @@ internal class SmartTokenProvider(
 	private val krakenUrl: String,
 	private val refreshPadding: Duration = 30.seconds,
 ) {
+	companion object {
+		suspend operator fun invoke(
+			messageGatewayApi: RawMessageGatewayApi,
+			loginUsername: String?,
+			groupId: String?,
+			applicationId: String?,
+			initializationSecret: AuthSecretDetails?,
+			initialBearerToken: String?,
+			initialRefreshToken: String?,
+			authApi: RawAnonymousAuthApi,
+			authSecretProvider: AuthSecretProvider,
+			cryptoService: CryptoService,
+			cacheSecrets: Boolean,
+			allowSecretRetry: Boolean,
+			krakenUrl: String,
+			refreshPadding: Duration = 30.seconds,
+		): SmartTokenProvider {
+			val initialSecretCacheable = if (cacheSecrets) initializationSecret?.let { it as? AuthSecretDetails.Cacheable } else null
+			val provider = SmartTokenProvider(
+				messageGatewayApi = messageGatewayApi,
+				loginUsername = loginUsername,
+				groupId = groupId,
+				applicationId = applicationId,
+				currentLongLivedSecret = initialSecretCacheable,
+				cachedToken = initialBearerToken,
+				cachedRefreshToken = initialRefreshToken,
+				authApi = authApi,
+				authSecretProvider = authSecretProvider,
+				cryptoService = cryptoService,
+				cacheSecrets = cacheSecrets,
+				allowSecretRetry = allowSecretRetry,
+				krakenUrl = krakenUrl,
+				refreshPadding = refreshPadding
+			)
+			if (initializationSecret != null && (initialRefreshToken == null || isJwtExpiredOrInvalid(initialRefreshToken))) {
+				val token = provider.doGetTokenWithSecret(initializationSecret, null)
+				if (token is DoGetTokenResult.Success) {
+					provider.cachedToken = token.bearer.token
+					provider.cachedRefreshToken = token.refresh.token
+				} else {
+					throw IllegalArgumentException("Could not get a token with the provided initial secret of type ${initializationSecret::class.simpleName}.")
+				}
+			}
+			return provider
+		}
+	}
+
 	enum class RetrievedTokenType { New, Cached, Refreshed }
 	data class RetrievedJwt(val jwt: String, val type: RetrievedTokenType)
 
@@ -168,7 +213,9 @@ internal class SmartTokenProvider(
 			RetrievedJwt(it.token, RetrievedTokenType.Refreshed)
 		} ?: RetrievedJwt(getAndCacheNewTokens(null).bearer.token, RetrievedTokenType.New)
 
-	private suspend fun getNewToken(minimumAuthenticationClass: AuthenticationClass?): JwtBearerAndRefresh = currentLongLivedSecret?.takeIf {
+	private suspend fun getNewToken(
+		minimumAuthenticationClass: AuthenticationClass?
+	): JwtBearerAndRefresh = currentLongLivedSecret?.takeIf {
 		minimumAuthenticationClass == null || it.type.level >= minimumAuthenticationClass.level
 	}?.let { secret ->
 		val result = doGetTokenWithSecret(secret, secret.type)
@@ -255,19 +302,17 @@ internal class SmartTokenProvider(
 		minimumAuthenticationClass: AuthenticationClass?,
 	): DoGetTokenResult {
 		val authResponse = when {
-			secret is AuthSecretDetails.ExternalAuthenticationDetails -> {
-				when (secret.oauthType) {
-					ThirdPartyProvider.GOOGLE -> authApi.loginGoogle(
-						secret.secret,
-						groupId = groupId,
-						applicationId = applicationId
-					)
-				}
+			secret is AuthSecretDetails.ConfiguredExternalAuthenticationDetails -> {
+				authApi.loginWithExternalJwt(
+					configId = secret.configId,
+					token = secret.secret,
+					groupId = groupId,
+					applicationId = requireNotNull(applicationId) {
+						"Authentication using ConfiguredExternalAuthenticationDetails requires an applicationId to be set in the SDK initialization."
+					},
+					minimumAuthenticationClass = secret.minimumAuthenticationClass.dtoSerialName
+				)
 			}
-
-			secret is AuthSecretDetails.DigitalIdDetails ->
-				TODO("Digital id login is not yet implemented for smart auth")
-
 			secret is AuthSecretDetails.ShortLivedTokenDetails -> {
 				messageGatewayApi.completeProcess(
 					messageGatewayUrl = secret.authenticationProcessInfo.messageGwUrl,

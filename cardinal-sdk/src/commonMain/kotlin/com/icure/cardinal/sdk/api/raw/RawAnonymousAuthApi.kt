@@ -46,7 +46,7 @@ public interface RawAnonymousAuthApi {
 	suspend fun loginWithExternalJwt(
 		token: String,
 		configId: String,
-		applicationId: String? = null,
+		applicationId: String,
 		groupId: String? = null,
 		minimumAuthenticationClass: String? = null,
 	): HttpResponse<JwtResponse>

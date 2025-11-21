@@ -76,6 +76,16 @@ external interface SdkOptionsJs {
 	val lenientJson: Boolean?
 }
 
+@JsName("BasicToFullSdkOptions")
+external interface BasicToFullSdkOptionsJs {
+	val useHierarchicalDataOwners: Boolean?
+	val createTransferKeys: Boolean?
+	val autoCreateEncryptionKeyForExistingLegacyData: Boolean?
+	val keyStorage: KeyStorageFacadeJs?
+	val cryptoStrategies: CryptoStrategiesJs?
+	val jsonPatcher: JsonPatcherJs?
+}
+
 @JsName("BasicSdkOptions")
 external interface BasicSdkOptionsJs {
 	val encryptedFields: EncryptedFieldsConfigurationJs?

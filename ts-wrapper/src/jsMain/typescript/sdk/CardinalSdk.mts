@@ -26,7 +26,7 @@ import {
 } from "../options/AuthenticationMethod.mjs";
 import {StorageFacade} from "../storage/StorageFacade.mjs";
 import {CardinalStorageOptions, InternalSdkInitializers} from "../cardinal-sdk-ts.mjs";
-import {SdkOptions, BasicSdkOptions, AnonymousSdkOptions} from "../options/SdkOptions.mjs";
+import {SdkOptions, BasicSdkOptions, AnonymousSdkOptions, BasicToFullSdkOptions} from "../options/SdkOptions.mjs";
 import {ApplicationSettingsApi} from "../api/ApplicationSettingsApi.mjs";
 import {CodeApi} from "../api/CodeApi.mjs";
 import {DocumentTemplateApi} from "../api/DocumentTemplateApi.mjs";
@@ -183,6 +183,18 @@ export interface CardinalBaseSdk extends CardinalBaseApis {
    * @return a new sdk for executing requests in the provided group
    */
   switchGroup(groupId: string): Promise<CardinalBaseSdk>
+
+  /**
+   * Use the authentication for this base sdk to create a full sdk for the same user. Can only be used if the
+   * current user is a data owner.
+   * @param baseStorage an implementation of the [StorageFacade], used for persistent storage of various
+   * information including the user keys if [BasicToFullSdkOptions.keyStorage] is not provided.
+   * @param options additional options for the creation of the full sdk
+   */
+  toFullSdk(
+    baseStorage: StorageFacade | CardinalStorageOptions,
+    options?: BasicToFullSdkOptions
+  ): Promise<CardinalSdk>
 }
 
 export namespace CardinalSdk {
@@ -294,6 +306,62 @@ export namespace CardinalBaseSdk {
       authenticationMethod,
       options
     )
+  }
+
+  /**
+   * Initialize a new instance of the icure base sdk for a specific user.
+   * The authentication will be performed through an authentication process.
+   *
+   * @param applicationId a string to uniquely identify your iCure application.
+   * @param baseUrl the url of the iCure backend to use
+   * @param messageGatewayUrl the url of the iCure message gateway you want to use. Usually this should be
+   * @param externalServicesSpecId an identifier that allows the message gateway to connect the request to your
+   * services for email / sms communication of the process tokens.
+   * @param processId the id of the process you want to execute.
+   * @param userTelecomType the type of telecom number used for the user.
+   * @param userTelecom the telecom number of the user for which you want to execute the process. This should be an
+   * email address or phone number depending on the type of process you are executing.
+   * @param captchaOptions the captcha options
+   * @param authenticationProcessTemplateParameters optional parameters which may be used by sms/email templates.
+   * @param options optional parameters for the initialization of the sdk.
+   */
+  export async function initializeWithProcess(
+    applicationId: string | undefined,
+    baseUrl: string,
+    messageGatewayUrl: string,
+    externalServicesSpecId: string,
+    processId: string,
+    userTelecomType: AuthenticationProcessTelecomType,
+    userTelecom: string,
+    captchaOptions: CaptchaOptions,
+    authenticationProcessTemplateParameters?: AuthenticationProcessTemplateParameters,
+    options?: BasicSdkOptions
+  ): Promise<BaseAuthenticationWithProcessStep> {
+    return await InternalSdkInitializers.getInstance().initializeWithProcessBase(
+      applicationId,
+      baseUrl,
+      messageGatewayUrl,
+      externalServicesSpecId,
+      processId,
+      userTelecomType,
+      userTelecom,
+      captchaOptions,
+      authenticationProcessTemplateParameters,
+      options,
+    )
+  }
+
+  /**
+   * Represents an intermediate stage in the initialization of a base SDK through an authentication process
+   * The initialization can complete only after the user provides the validation code received via email/sms.
+   */
+  export interface BaseAuthenticationWithProcessStep {
+    /**
+     * Complete the authentication of the user and finishes the initialization of the SDK.
+     * In case the provided validation code is wrong this method will throw an exception, but it is still possible
+     * to call to re-attempt authentication by calling this method with a different validation code.
+     */
+    completeAuthentication(validationCode: String): Promise<CardinalBaseSdk>
   }
 }
 
