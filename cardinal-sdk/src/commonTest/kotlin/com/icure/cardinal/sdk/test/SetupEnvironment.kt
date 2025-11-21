@@ -18,11 +18,11 @@ suspend fun initializeTestEnvironment() {
 	}
 	initialized = true
 	println("Creating test group")
-	val groupApi = RawGroupApiImpl(baseUrl, superadminAuth, DefaultRawApiConfig)
+	val groupApi = RawGroupApiImpl(baseUrl, superadminAuth(), DefaultRawApiConfig)
 	if (groupApi.getGroup(testGroupId).status.value == 200) {
 		println("Group already exist")
 	} else  {
-		println("Creating group")
+		println("Creating group - $testGroupId")
 		if (
 		groupApi.createGroup(
 			testGroupId,
@@ -40,7 +40,7 @@ suspend fun initializeTestEnvironment() {
 		}
 	}
 	println("Creating admin user - $testGroupAdmin:$testGroupAdminPassword")
-	RawUserApiImpl(baseUrl, superadminAuth, DefaultRawApiConfig).createAdminUserInGroup(
+	RawUserApiImpl(baseUrl, superadminAuth(), DefaultRawApiConfig).createAdminUserInGroup(
 		testGroupId,
 		User(
 			uuid(),
