@@ -18,6 +18,7 @@ import com.icure.cardinal.sdk.js.model.base.codeStub_toJs
 import com.icure.cardinal.sdk.js.model.base.identifier_fromJs
 import com.icure.cardinal.sdk.js.model.base.identifier_toJs
 import com.icure.cardinal.sdk.js.model.embed.AnnotationJs
+import com.icure.cardinal.sdk.js.model.embed.ContactParticipantJs
 import com.icure.cardinal.sdk.js.model.embed.DecryptedServiceJs
 import com.icure.cardinal.sdk.js.model.embed.DecryptedSubContactJs
 import com.icure.cardinal.sdk.js.model.embed.DelegationJs
@@ -27,6 +28,8 @@ import com.icure.cardinal.sdk.js.model.embed.address_fromJs
 import com.icure.cardinal.sdk.js.model.embed.address_toJs
 import com.icure.cardinal.sdk.js.model.embed.annotation_fromJs
 import com.icure.cardinal.sdk.js.model.embed.annotation_toJs
+import com.icure.cardinal.sdk.js.model.embed.contactParticipant_fromJs
+import com.icure.cardinal.sdk.js.model.embed.contactParticipant_toJs
 import com.icure.cardinal.sdk.js.model.embed.delegation_fromJs
 import com.icure.cardinal.sdk.js.model.embed.delegation_toJs
 import com.icure.cardinal.sdk.js.model.embed.securityMetadata_fromJs
@@ -44,6 +47,7 @@ import com.icure.cardinal.sdk.model.base.CodeStub
 import com.icure.cardinal.sdk.model.base.Identifier
 import com.icure.cardinal.sdk.model.base.ParticipantType
 import com.icure.cardinal.sdk.model.embed.Annotation
+import com.icure.cardinal.sdk.model.embed.ContactParticipant
 import com.icure.cardinal.sdk.model.embed.DecryptedService
 import com.icure.cardinal.sdk.model.embed.DecryptedSubContact
 import com.icure.cardinal.sdk.model.embed.Delegation
@@ -148,6 +152,12 @@ public fun contact_toJs(obj: DecryptedContact): DecryptedContactJs {
 			x1
 		},
 	)
+	val participantList = listToArray(
+		obj.participantList,
+		{ x1: ContactParticipant ->
+			contactParticipant_toJs(x1)
+		},
+	)
 	val healthcarePartyId = nullToUndefined(
 		obj.healthcarePartyId
 	)
@@ -242,6 +252,7 @@ public fun contact_toJs(obj: DecryptedContact): DecryptedContactJs {
 		"subContacts:subContacts," +
 		"services:services," +
 		"participants:participants," +
+		"participantList:participantList," +
 		"healthcarePartyId:healthcarePartyId," +
 		"modifiedContactId:modifiedContactId," +
 		"secretForeignKeys:secretForeignKeys," +
@@ -319,6 +330,13 @@ public fun contact_fromJs(obj: DecryptedContactJs): DecryptedContact {
 		},
 		{ x1: String ->
 			x1
+		},
+	)
+	val participantList = arrayToList(
+		obj.participantList,
+		"obj.participantList",
+		{ x1: ContactParticipantJs ->
+			contactParticipant_fromJs(x1)
 		},
 	)
 	val healthcarePartyId = undefinedToNull(obj.healthcarePartyId)
@@ -415,6 +433,7 @@ public fun contact_fromJs(obj: DecryptedContactJs): DecryptedContact {
 		subContacts = subContacts,
 		services = services,
 		participants = participants,
+		participantList = participantList,
 		healthcarePartyId = healthcarePartyId,
 		modifiedContactId = modifiedContactId,
 		secretForeignKeys = secretForeignKeys,
@@ -521,6 +540,12 @@ public fun contact_toJs(obj: EncryptedContact): EncryptedContactJs {
 			x1
 		},
 	)
+	val participantList = listToArray(
+		obj.participantList,
+		{ x1: ContactParticipant ->
+			contactParticipant_toJs(x1)
+		},
+	)
 	val healthcarePartyId = nullToUndefined(
 		obj.healthcarePartyId
 	)
@@ -615,6 +640,7 @@ public fun contact_toJs(obj: EncryptedContact): EncryptedContactJs {
 		"subContacts:subContacts," +
 		"services:services," +
 		"participants:participants," +
+		"participantList:participantList," +
 		"healthcarePartyId:healthcarePartyId," +
 		"modifiedContactId:modifiedContactId," +
 		"secretForeignKeys:secretForeignKeys," +
@@ -692,6 +718,13 @@ public fun contact_fromJs(obj: EncryptedContactJs): EncryptedContact {
 		},
 		{ x1: String ->
 			x1
+		},
+	)
+	val participantList = arrayToList(
+		obj.participantList,
+		"obj.participantList",
+		{ x1: ContactParticipantJs ->
+			contactParticipant_fromJs(x1)
 		},
 	)
 	val healthcarePartyId = undefinedToNull(obj.healthcarePartyId)
@@ -788,6 +821,7 @@ public fun contact_fromJs(obj: EncryptedContactJs): EncryptedContact {
 		subContacts = subContacts,
 		services = services,
 		participants = participants,
+		participantList = participantList,
 		healthcarePartyId = healthcarePartyId,
 		modifiedContactId = modifiedContactId,
 		secretForeignKeys = secretForeignKeys,
