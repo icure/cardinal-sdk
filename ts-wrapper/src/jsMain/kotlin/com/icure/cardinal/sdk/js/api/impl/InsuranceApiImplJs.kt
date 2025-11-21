@@ -168,10 +168,16 @@ internal class InsuranceApiImplJs(
 		)
 	}
 
-	override fun getInsurancesInGroup(groupId: String, insuranceIds: String):
+	override fun getInsurancesInGroup(groupId: String, insuranceIds: Array<String>):
 			Promise<Array<InsuranceJs>> = GlobalScope.promise {
 		val groupIdConverted: String = groupId
-		val insuranceIdsConverted: String = insuranceIds
+		val insuranceIdsConverted: List<String> = arrayToList(
+			insuranceIds,
+			"insuranceIds",
+			{ x1: String ->
+				x1
+			},
+		)
 		val result = insuranceApi.getInsurancesInGroup(
 			groupIdConverted,
 			insuranceIdsConverted,

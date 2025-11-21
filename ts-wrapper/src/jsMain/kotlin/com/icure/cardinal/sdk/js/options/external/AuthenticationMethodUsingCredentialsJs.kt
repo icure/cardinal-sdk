@@ -10,10 +10,11 @@ external class AuthenticationMethodUsingCredentialsUsernameLongTokenJs : Authent
 	val username: String
 	val token: String
 }
-@JsName("ThirdPartyAuth")
-external class AuthenticationMethodUsingCredentialsThirdPartyAuthJs : AuthenticationMethodJs {
+@JsName("ExternalAuthenticationToken")
+external class AuthenticationMethodUsingCredentialsExternalAuthenticationTokenJs : AuthenticationMethodJs {
+	val configId: String
 	val token: String
-	val provider: String
+	val minimumAuthenticationClass: String?
 }
 @JsName("JwtCredentials")
 external class AuthenticationMethodUsingCredentialsJwtCredentialsJs : AuthenticationMethodJs {

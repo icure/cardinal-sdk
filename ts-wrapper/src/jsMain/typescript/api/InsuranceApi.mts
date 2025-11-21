@@ -25,7 +25,7 @@ export interface InsuranceApi {
 	createInsurancesInGroup(groupId: string,
 			insuranceBatch: Array<Insurance>): Promise<Array<Insurance>>;
 
-	getInsurancesInGroup(groupId: string, insuranceIds: string): Promise<Array<Insurance>>;
+	getInsurancesInGroup(groupId: string, insuranceIds: Array<string>): Promise<Array<Insurance>>;
 
 	modifyInsurancesInGroup(groupId: string,
 			insuranceBatch: Array<Insurance>): Promise<Array<Insurance>>;

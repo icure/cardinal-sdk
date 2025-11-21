@@ -1,6 +1,8 @@
 // auto-generated file
 package com.icure.cardinal.sdk.js.model.security
 
+import com.icure.cardinal.sdk.js.model.CheckedConverters.nullToUndefined
+import com.icure.cardinal.sdk.js.model.CheckedConverters.undefinedToNull
 import com.icure.cardinal.sdk.model.embed.AuthenticationClass
 import com.icure.cardinal.sdk.model.security.ExternalJwtConfig
 import kotlin.Suppress
@@ -86,8 +88,12 @@ public
 		fun externalJwtConfig_ValidationMethod_PublicKey_toJs(obj: ExternalJwtConfig.ValidationMethod.PublicKey):
 		ExternalJwtConfigJs_ValidationMethodJs_PublicKeyJs {
 	val key = obj.key
+	val signatureAlgorithm = nullToUndefined(
+		obj.signatureAlgorithm
+	)
 	return ExternalJwtConfigJs_ValidationMethodJs_PublicKeyJs(js("{" +
-		"key:key" +
+		"key:key," +
+		"signatureAlgorithm:signatureAlgorithm" +
 	"}"))
 }
 
@@ -95,8 +101,10 @@ public
 		fun externalJwtConfig_ValidationMethod_PublicKey_fromJs(obj: ExternalJwtConfigJs_ValidationMethodJs_PublicKeyJs):
 		ExternalJwtConfig.ValidationMethod.PublicKey {
 	val key = obj.key
+	val signatureAlgorithm = undefinedToNull(obj.signatureAlgorithm)
 	return ExternalJwtConfig.ValidationMethod.PublicKey(
 		key = key,
+		signatureAlgorithm = signatureAlgorithm,
 	)
 }
 

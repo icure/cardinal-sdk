@@ -9,6 +9,7 @@ import {ParticipantType} from './base/ParticipantType.mjs';
 import {StoredDocument} from './base/StoredDocument.mjs';
 import {Address, DecryptedAddress, EncryptedAddress} from './embed/Address.mjs';
 import {Annotation} from './embed/Annotation.mjs';
+import {ContactParticipant} from './embed/ContactParticipant.mjs';
 import {Delegation} from './embed/Delegation.mjs';
 import {Encryptable} from './embed/Encryptable.mjs';
 import {SecurityMetadata} from './embed/SecurityMetadata.mjs';
@@ -42,6 +43,8 @@ export interface Contact extends StoredDocument, ICureDocument<string>, HasEncry
 	services: Array<Service>;
 
 	participants: { [ key in ParticipantType ]?: string };
+
+	participantList: Array<ContactParticipant>;
 
 	healthcarePartyId: string | undefined;
 
@@ -103,6 +106,8 @@ export class DecryptedContact {
 
 	participants: { [ key in ParticipantType ]?: string } = {};
 
+	participantList: Array<ContactParticipant> = [];
+
 	healthcarePartyId: string | undefined = undefined;
 
 	modifiedContactId: string | undefined = undefined;
@@ -148,6 +153,7 @@ export class DecryptedContact {
 		if ('subContacts' in partial && partial.subContacts !== undefined) this.subContacts = partial.subContacts;
 		if ('services' in partial && partial.services !== undefined) this.services = partial.services;
 		if ('participants' in partial && partial.participants !== undefined) this.participants = partial.participants;
+		if ('participantList' in partial && partial.participantList !== undefined) this.participantList = partial.participantList;
 		if ('healthcarePartyId' in partial) this.healthcarePartyId = partial.healthcarePartyId;
 		if ('modifiedContactId' in partial) this.modifiedContactId = partial.modifiedContactId;
 		if ('secretForeignKeys' in partial && partial.secretForeignKeys !== undefined) this.secretForeignKeys = partial.secretForeignKeys;
@@ -184,6 +190,7 @@ export class DecryptedContact {
 		res['subContacts'] = this.subContacts.map((x0) => x0.toJSON() )
 		res['services'] = this.services.map((x0) => x0.toJSON() )
 		res['participants'] = Object.fromEntries(Object.entries(this.participants).map(([k0, v0]) => [k0, v0]))
+		res['participantList'] = this.participantList.map((x0) => x0.toJSON() )
 		if (this.healthcarePartyId != undefined) res['healthcarePartyId'] = this.healthcarePartyId
 		if (this.modifiedContactId != undefined) res['modifiedContactId'] = this.modifiedContactId
 		res['secretForeignKeys'] = this.secretForeignKeys.map((x0) => x0 )
@@ -232,6 +239,7 @@ export class DecryptedContact {
 				(k0, p0) => expectStringEnum(k0, false, p0, ParticipantType, 'ParticipantType'),
 				(v0, p0) => expectString(v0, false, p0)
 			),
+			participantList: expectArray(extractEntry(jCpy, 'participantList', false, path), false, [...path, ".participantList"], (x0, p0) => expectObject(x0, false, ignoreUnknownKeys, p0, ContactParticipant.fromJSON)),
 			healthcarePartyId: expectString(extractEntry(jCpy, 'healthcarePartyId', false, path), true, [...path, ".healthcarePartyId"]),
 			modifiedContactId: expectString(extractEntry(jCpy, 'modifiedContactId', false, path), true, [...path, ".modifiedContactId"]),
 			secretForeignKeys: expectArray(extractEntry(jCpy, 'secretForeignKeys', false, path), false, [...path, ".secretForeignKeys"], (x0, p0) => expectString(x0, false, p0)),
@@ -316,6 +324,8 @@ export class EncryptedContact {
 
 	participants: { [ key in ParticipantType ]?: string } = {};
 
+	participantList: Array<ContactParticipant> = [];
+
 	healthcarePartyId: string | undefined = undefined;
 
 	modifiedContactId: string | undefined = undefined;
@@ -361,6 +371,7 @@ export class EncryptedContact {
 		if ('subContacts' in partial && partial.subContacts !== undefined) this.subContacts = partial.subContacts;
 		if ('services' in partial && partial.services !== undefined) this.services = partial.services;
 		if ('participants' in partial && partial.participants !== undefined) this.participants = partial.participants;
+		if ('participantList' in partial && partial.participantList !== undefined) this.participantList = partial.participantList;
 		if ('healthcarePartyId' in partial) this.healthcarePartyId = partial.healthcarePartyId;
 		if ('modifiedContactId' in partial) this.modifiedContactId = partial.modifiedContactId;
 		if ('secretForeignKeys' in partial && partial.secretForeignKeys !== undefined) this.secretForeignKeys = partial.secretForeignKeys;
@@ -397,6 +408,7 @@ export class EncryptedContact {
 		res['subContacts'] = this.subContacts.map((x0) => x0.toJSON() )
 		res['services'] = this.services.map((x0) => x0.toJSON() )
 		res['participants'] = Object.fromEntries(Object.entries(this.participants).map(([k0, v0]) => [k0, v0]))
+		res['participantList'] = this.participantList.map((x0) => x0.toJSON() )
 		if (this.healthcarePartyId != undefined) res['healthcarePartyId'] = this.healthcarePartyId
 		if (this.modifiedContactId != undefined) res['modifiedContactId'] = this.modifiedContactId
 		res['secretForeignKeys'] = this.secretForeignKeys.map((x0) => x0 )
@@ -445,6 +457,7 @@ export class EncryptedContact {
 				(k0, p0) => expectStringEnum(k0, false, p0, ParticipantType, 'ParticipantType'),
 				(v0, p0) => expectString(v0, false, p0)
 			),
+			participantList: expectArray(extractEntry(jCpy, 'participantList', false, path), false, [...path, ".participantList"], (x0, p0) => expectObject(x0, false, ignoreUnknownKeys, p0, ContactParticipant.fromJSON)),
 			healthcarePartyId: expectString(extractEntry(jCpy, 'healthcarePartyId', false, path), true, [...path, ".healthcarePartyId"]),
 			modifiedContactId: expectString(extractEntry(jCpy, 'modifiedContactId', false, path), true, [...path, ".modifiedContactId"]),
 			secretForeignKeys: expectArray(extractEntry(jCpy, 'secretForeignKeys', false, path), false, [...path, ".secretForeignKeys"], (x0, p0) => expectString(x0, false, p0)),
