@@ -259,7 +259,13 @@ tasks.register("prepareDistributionPackage") {
 					of = "if (isJsdom()) {",
 					with =
 						"if (schedule_queue_patch == undefined) {\n" +
-						"  schedule_queue_patch = process.nextTick ?? setImmediate\n" +
+						"  if (typeof process !== 'undefined' && process !== null && typeof process.nextTick !== 'undefined') {\n" +
+						"    schedule_queue_patch = process.nextTick;\n" +
+						"  } else if (typeof setImmediate !== 'undefined') {\n" +
+						"    schedule_queue_patch = setImmediate;\n" +
+						"  } else {\n" +
+						"    schedule_queue_patch = () => { throw new Error('Not used in this environment') };\n" +
+						"  }\n" +
 						"}\n" +
 						"if (isJsdom() || (typeof navigator !== 'undefined' && navigator !== null && navigator.product === \"ReactNative\")) {\n",
 				),
