@@ -165,7 +165,6 @@ import com.icure.cardinal.sdk.options.ApiConfigurationImpl
 import com.icure.cardinal.sdk.options.AuthenticationMethod
 import com.icure.cardinal.sdk.options.EncryptedFieldsConfiguration
 import com.icure.cardinal.sdk.options.EntitiesEncryptedFieldsManifests
-import com.icure.cardinal.sdk.options.GroupSelector
 import com.icure.cardinal.sdk.options.JsonPatcher
 import com.icure.cardinal.sdk.options.RequestRetryConfiguration
 import com.icure.cardinal.sdk.options.SdkOptions
@@ -184,7 +183,6 @@ import com.icure.cardinal.sdk.utils.retryWithDelays
 import com.icure.kryptom.crypto.CryptoService
 import com.icure.kryptom.crypto.RsaAlgorithm
 import com.icure.kryptom.crypto.RsaKeypair
-import com.icure.kryptom.crypto.defaultCryptoService
 import com.icure.utils.InternalIcureApi
 import io.ktor.client.HttpClient
 import io.ktor.client.plugins.HttpTimeout

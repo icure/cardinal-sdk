@@ -52,6 +52,7 @@ import com.icure.cardinal.sdk.api.impl.UserApiImpl
 import com.icure.cardinal.sdk.api.impl.initCalendarItemBasicApi
 import com.icure.cardinal.sdk.api.impl.initHealthElementBasicApi
 import com.icure.cardinal.sdk.api.impl.initPatientBasicApi
+import com.icure.cardinal.sdk.api.raw.RawAnonymousAuthApi
 import com.icure.cardinal.sdk.api.raw.RawApiConfig
 import com.icure.cardinal.sdk.api.raw.RawMessageGatewayApi
 import com.icure.cardinal.sdk.api.raw.impl.RawAccessLogApiImpl
@@ -89,6 +90,12 @@ import com.icure.cardinal.sdk.api.raw.impl.RawTarificationApiImpl
 import com.icure.cardinal.sdk.api.raw.impl.RawTimeTableApiImpl
 import com.icure.cardinal.sdk.api.raw.impl.RawTopicApiImpl
 import com.icure.cardinal.sdk.api.raw.impl.RawUserApiImpl
+import com.icure.cardinal.sdk.auth.AuthenticationProcessTelecomType
+import com.icure.cardinal.sdk.auth.AuthenticationProcessTemplateParameters
+import com.icure.cardinal.sdk.auth.CaptchaOptions
+import com.icure.cardinal.sdk.auth.JwtBearer
+import com.icure.cardinal.sdk.auth.JwtCredentials
+import com.icure.cardinal.sdk.auth.JwtRefresh
 import com.icure.cardinal.sdk.auth.services.AuthProvider
 import com.icure.cardinal.sdk.auth.services.JwtBasedAuthProvider
 import com.icure.cardinal.sdk.crypto.entities.SdkBoundGroup
@@ -97,6 +104,7 @@ import com.icure.cardinal.sdk.crypto.impl.BasicInternalCryptoApiImpl
 import com.icure.cardinal.sdk.crypto.impl.EntityValidationServiceImpl
 import com.icure.cardinal.sdk.crypto.impl.JsonEncryptionServiceImpl
 import com.icure.cardinal.sdk.crypto.impl.NoAccessControlKeysHeadersProvider
+import com.icure.cardinal.sdk.model.LoginCredentials
 import com.icure.cardinal.sdk.options.AuthenticationMethod
 import com.icure.cardinal.sdk.options.BasicApiConfiguration
 import com.icure.cardinal.sdk.options.BasicApiConfigurationImpl
@@ -104,7 +112,6 @@ import com.icure.cardinal.sdk.options.BasicSdkOptions
 import com.icure.cardinal.sdk.options.BasicToFullSdkOptions
 import com.icure.cardinal.sdk.options.EncryptedFieldsConfiguration
 import com.icure.cardinal.sdk.options.EntitiesEncryptedFieldsManifests
-import com.icure.cardinal.sdk.options.GroupSelector
 import com.icure.cardinal.sdk.options.RequestRetryConfiguration
 import com.icure.cardinal.sdk.options.SdkOptions
 import com.icure.cardinal.sdk.options.UnboundBasicApiConfigurationImpl
@@ -114,14 +121,13 @@ import com.icure.cardinal.sdk.options.configuredJsonOrDefault
 import com.icure.cardinal.sdk.options.getAuthProvider
 import com.icure.cardinal.sdk.options.getGroupAndAuthProvider
 import com.icure.cardinal.sdk.storage.StorageFacade
-import com.icure.kryptom.crypto.CryptoService
-import com.icure.kryptom.crypto.defaultCryptoService
+import com.icure.cardinal.sdk.utils.ensureNonNull
+import com.icure.cardinal.sdk.utils.retryWithDelays
 import com.icure.utils.InternalIcureApi
-import io.ktor.client.HttpClient
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.serialization.json.Json
 import kotlin.coroutines.CoroutineContext
 import kotlin.time.Duration
+import kotlin.time.Duration.Companion.milliseconds
+import kotlin.time.Duration.Companion.seconds
 
 /**
  * Similar to the [CardinalBaseSdk] but is not bound to a specific user and/or group.
@@ -222,6 +228,19 @@ interface CardinalBaseSdk : CardinalBaseApis {
 		options: BasicToFullSdkOptions
 	): CardinalSdk
 
+	/**
+	 * Represents an intermediate stage in the initialization of a base SDK through an authentication process
+	 * The initialization can complete only after the user provides the validation code received via email/sms.
+	 */
+	interface BaseAuthenticationWithProcessStep {
+		/**
+		 * Complete the authentication of the user and finishes the initialization of the SDK.
+		 * In case the provided validation code is wrong this method will throw an exception, but it is still possible
+		 * to call to re-attempt authentication by calling this method with a different validation code.
+		 */
+		suspend fun completeAuthentication(validationCode: String): CardinalBaseSdk
+	}
+
 	companion object {
 		/**
 		 * Initialize a new instance of icure base sdks for a specific user.
@@ -263,7 +282,7 @@ interface CardinalBaseSdk : CardinalBaseApis {
 			val jsonEncryptionService = JsonEncryptionServiceImpl(cryptoService)
 			val config = BasicApiConfigurationImpl(
 				apiUrl,
-				if (authProvider is JwtBasedAuthProvider) authProvider else null,
+				authProvider as? JwtBasedAuthProvider,
 				BasicInternalCryptoApiImpl(
 					options.cryptoService,
 					jsonEncryptionService,
@@ -281,6 +300,109 @@ interface CardinalBaseSdk : CardinalBaseApis {
 				options.asInitialized()
 			)
 		}
+
+		/**
+		 * Initialize a new instance of the icure base sdk for a specific user.
+		 * The authentication will be performed through an authentication process.
+		 *
+		 * @param applicationId a string to uniquely identify your iCure application.
+		 * @param baseUrl the url of the iCure backend to use
+		 * @param messageGatewayUrl the url of the iCure message gateway you want to use. Usually this should be
+		 * @param externalServicesSpecId an identifier that allows the message gateway to connect the request to your
+		 * services for email / sms communication of the process tokens.
+		 * @param processId the id of the process you want to execute.
+		 * @param userTelecomType the type of telecom number used for the user.
+		 * @param userTelecom the telecom number of the user for which you want to execute the process. This should be an
+		 * email address or phone number depending on the type of process you are executing.
+		 * @param captcha Captcha options for authentication. This is used to prevent abuse of the message gateway and
+		 * connected external services.
+		 * @param authenticationProcessTemplateParameters optional parameters which may be used by sms/email templates.
+		 * @param options optional parameters for the initialization of the sdk.
+		 */
+		@OptIn(InternalIcureApi::class)
+		suspend fun initializeWithProcess(
+			applicationId: String?,
+			baseUrl: String,
+			messageGatewayUrl: String,
+			externalServicesSpecId: String,
+			processId: String,
+			userTelecomType: AuthenticationProcessTelecomType,
+			userTelecom: String,
+			captcha: CaptchaOptions,
+			authenticationProcessTemplateParameters: AuthenticationProcessTemplateParameters = AuthenticationProcessTemplateParameters(),
+			options: BasicSdkOptions = BasicSdkOptions()
+		): BaseAuthenticationWithProcessStep {
+			val api = RawMessageGatewayApi(options.configuredClientOrDefault(), options.cryptoService)
+			val requestId = api.startProcess(
+				messageGatewayUrl = messageGatewayUrl,
+				externalServicesSpecId = externalServicesSpecId,
+				processId = processId,
+				captcha = captcha,
+				firstName = authenticationProcessTemplateParameters.firstName,
+				lastName = authenticationProcessTemplateParameters.lastName,
+				userTelecom = userTelecom,
+				userTelecomType = userTelecomType,
+				krakenUrl = baseUrl
+			)
+			return BaseAuthenticationWithProcessStepImpl(
+				applicationId = applicationId,
+				baseUrl = baseUrl,
+				options = options,
+				api = api,
+				messageGatewayUrl = messageGatewayUrl,
+				externalServicesSpecId = externalServicesSpecId,
+				requestId = requestId,
+				userTelecom = userTelecom,
+			)
+		}
+	}
+}
+
+@InternalIcureApi
+private class BaseAuthenticationWithProcessStepImpl(
+	private val applicationId: String?,
+	private val baseUrl: String,
+	private val options: BasicSdkOptions,
+	private val api: RawMessageGatewayApi,
+	private val messageGatewayUrl: String,
+	private val externalServicesSpecId: String,
+	private val requestId: String,
+	private val userTelecom: String,
+) : CardinalBaseSdk.BaseAuthenticationWithProcessStep {
+	override suspend fun completeAuthentication(validationCode: String): CardinalBaseSdk {
+		api.completeProcess(
+			messageGatewayUrl = messageGatewayUrl,
+			externalServicesSpecId = externalServicesSpecId,
+			requestId = requestId,
+			validationCode = validationCode
+		)
+		val rawAuthApi: RawAnonymousAuthApi = RawAnonymousAuthApiImpl(
+			apiUrl = baseUrl,
+			RawApiConfig(
+				httpClient = options.configuredClientOrDefault(),
+				json = options.configuredJsonOrDefault(),
+				additionalHeaders = emptyMap(),
+				requestTimeout = options.requestTimeout,
+				retryConfiguration = options.requestRetryConfiguration
+			)
+		)
+		val loginResult = retryWithDelays(
+			listOf(100.milliseconds, 500.milliseconds, 1.seconds)
+		) {
+			rawAuthApi.login(
+				loginCredentials = LoginCredentials(username = userTelecom, password = validationCode),
+				applicationId = applicationId
+			).successBody()
+		}
+		return CardinalBaseSdk.initialize(
+			applicationId,
+			baseUrl,
+			AuthenticationMethod.UsingCredentials(JwtCredentials(
+				JwtBearer(ensureNonNull(loginResult.token)  { "Successful login gave null bearer token"}),
+				JwtRefresh(ensureNonNull(loginResult.refreshToken)  { "Successful login gave null refresh token"}),
+			)),
+			options
+		)
 	}
 }
 
