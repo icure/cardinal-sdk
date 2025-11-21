@@ -364,7 +364,7 @@ internal class CardinalBaseSdkJsImpl(
 		CardinalBaseSdkJsImpl(sdk.switchGroup(groupId), jsCryptoService)
 	}
 
-	override fun toFull(baseStorage: dynamic, options: BasicToFullSdkOptionsJs?): Promise<CardinalSdkJs> = GlobalScope.promise {
+	override fun toFullSdk(baseStorage: dynamic, options: BasicToFullSdkOptionsJs?): Promise<CardinalSdkJs> = GlobalScope.promise {
 		val storageFacade = loadStorageOptions(baseStorage)
 		val ktOptions = options?.toKt(jsCryptoService) ?: BasicToFullSdkOptions()
 		CardinalSdkJsImpl(sdk.toFullSdk(storageFacade, ktOptions))

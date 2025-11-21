@@ -149,7 +149,7 @@ external interface CardinalBaseApisJs {
 @JsName("CardinalBaseSdk")
 external interface CardinalBaseSdkJs : CardinalBaseApisJs {
 	fun switchGroup(groupId: String): Promise<CardinalBaseSdkJs>
-	fun toFull(baseStorage: dynamic, options: BasicToFullSdkOptionsJs?): Promise<CardinalSdkJs>
+	fun toFullSdk(baseStorage: dynamic, options: BasicToFullSdkOptionsJs?): Promise<CardinalSdkJs>
 }
 
 @JsName("CardinalAnonymousApis")
