@@ -13,11 +13,8 @@ import kotlin.String
 import kotlin.collections.Map
 import kotlin.collections.Set
 
-// WARNING: This file is auto-generated. If you change it manually, your changes will be lost.
-// If you want to change the way this class is generated, see [this repo](https://github.com/icure/sdk-codegen).
-
 @Serializable
-data class IcureStub(
+public data class IcureStub(
 	override val id: String,
 	override val rev: String? = null,
 	override val created: Long? = null,
@@ -39,9 +36,4 @@ data class IcureStub(
 	@DefaultValue("emptyMap()")
 	override val encryptionKeys: Map<String, Set<Delegation>> = emptyMap(),
 	override val securityMetadata: SecurityMetadata? = null,
-) : ICureDocument<String>, Versionable<String>, HasEncryptionMetadata {
-	// region IcureStub-IcureStub
-override fun copyWithSecurityMetadata(securityMetadata: SecurityMetadata, secretForeignKeys: Set<String>): IcureStub =
-		copy(securityMetadata = securityMetadata, secretForeignKeys = secretForeignKeys)
-	// endregion
-}
+) : ICureDocument<String>, Versionable<String>, HasEncryptionMetadata

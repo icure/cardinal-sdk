@@ -11,9 +11,7 @@ import kotlin.String
 import kotlin.collections.List
 import kotlin.collections.Set
 
-// WARNING: This file is auto-generated. If you change it manually, your changes will be lost.
-// If you want to change the way this class is generated, see [this repo](https://github.com/icure/sdk-codegen).
-sealed interface Address : Encryptable, HasTags, HasCodes {
+public sealed interface Address : Encryptable, HasTags, HasCodes {
 	override val tags: Set<CodeStub>
 
 	override val codes: Set<CodeStub>
@@ -45,13 +43,10 @@ sealed interface Address : Encryptable, HasTags, HasCodes {
 	public val telecoms: List<Telecom>
 
 	override val encryptedSelf: Base64String?
-  // region Address-Address
-
-  // endregion
 }
 
 @Serializable
-data class DecryptedAddress(
+public data class DecryptedAddress(
 	@DefaultValue("emptySet()")
 	override val tags: Set<CodeStub> = emptySet(),
 	@DefaultValue("emptySet()")
@@ -73,14 +68,10 @@ data class DecryptedAddress(
 	@DefaultValue("emptyList()")
 	override val telecoms: List<DecryptedTelecom> = emptyList(),
 	override val encryptedSelf: Base64String? = null,
-) : Address {
-	// region Address-DecryptedAddress
-
-	// endregion
-}
+) : Address
 
 @Serializable
-data class EncryptedAddress(
+public data class EncryptedAddress(
 	@DefaultValue("emptySet()")
 	override val tags: Set<CodeStub> = emptySet(),
 	@DefaultValue("emptySet()")
@@ -102,8 +93,4 @@ data class EncryptedAddress(
 	@DefaultValue("emptyList()")
 	override val telecoms: List<EncryptedTelecom> = emptyList(),
 	override val encryptedSelf: Base64String? = null,
-) : Address {
-	// region Address-EncryptedAddress
-
-	// endregion
-}
+) : Address

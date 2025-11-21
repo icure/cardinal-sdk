@@ -9,11 +9,8 @@ import kotlin.Boolean
 import kotlin.Long
 import kotlin.String
 
-// WARNING: This file is auto-generated. If you change it manually, your changes will be lost.
-// If you want to change the way this class is generated, see [this repo](https://github.com/icure/sdk-codegen).
-
 @Serializable
-data class PropertyType(
+public data class PropertyType(
 	override val id: String,
 	override val rev: String? = null,
 	override val deletionDate: Long? = null,
@@ -25,8 +22,4 @@ data class PropertyType(
 	public val editor: String? = null,
 	@DefaultValue("false")
 	public val localized: Boolean = false,
-) : StoredDocument {
-	// region PropertyType-PropertyType
-
-	// endregion
-}
+) : StoredDocument
