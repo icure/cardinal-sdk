@@ -119,9 +119,10 @@ import com.icure.cardinal.sdk.js.api.impl.UserApiImplJs
 import com.icure.cardinal.sdk.js.auth.CaptchaOptionsJs
 import com.icure.cardinal.sdk.js.auth.captchaOptions_fromJs
 import com.icure.cardinal.sdk.js.externalsdk.AuthenticationWithProcessStepJs
+import com.icure.cardinal.sdk.js.externalsdk.BaseAuthenticationWithProcessStepJs
+import com.icure.cardinal.sdk.js.externalsdk.CardinalApisJs
 import com.icure.cardinal.sdk.js.externalsdk.CardinalAnonymousApisJs
 import com.icure.cardinal.sdk.js.externalsdk.CardinalAnonymousSdkJs
-import com.icure.cardinal.sdk.js.externalsdk.CardinalApisJs
 import com.icure.cardinal.sdk.js.externalsdk.CardinalBaseApisJs
 import com.icure.cardinal.sdk.js.externalsdk.CardinalBaseSdkJs
 import com.icure.cardinal.sdk.js.externalsdk.CardinalSdkJs
@@ -129,12 +130,17 @@ import com.icure.cardinal.sdk.js.options.external.AnonymousSdkOptionsJs
 import com.icure.cardinal.sdk.js.options.external.AuthenticationMethodJs
 import com.icure.cardinal.sdk.js.options.external.AuthenticationProcessTemplateParametersJs
 import com.icure.cardinal.sdk.js.options.external.BasicSdkOptionsJs
+import com.icure.cardinal.sdk.js.options.external.BasicToFullSdkOptionsJs
 import com.icure.cardinal.sdk.js.options.external.SdkOptionsJs
 import com.icure.cardinal.sdk.js.options.toKt
 import com.icure.cardinal.sdk.js.storage.loadStorageOptions
 import com.icure.cardinal.sdk.options.AnonymousSdkOptions
 import com.icure.cardinal.sdk.options.BasicSdkOptions
+import com.icure.cardinal.sdk.options.BasicToFullSdkOptions
 import com.icure.cardinal.sdk.options.SdkOptions
+import com.icure.kryptom.crypto.defaultCryptoService
+import com.icure.kryptom.crypto.external.XCryptoService
+import com.icure.kryptom.crypto.external.adaptCryptoServiceForExternal
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.cancel
 import kotlinx.coroutines.promise
@@ -198,12 +204,49 @@ object InternalSdkInitializers {
 		authenticationMethod: AuthenticationMethodJs,
 		options: BasicSdkOptionsJs?
 	): Promise<CardinalBaseSdkJs> = GlobalScope.promise {
-		CardinalBaseSdkJsImpl(CardinalBaseSdk.initialize(
+		CardinalBaseSdkJsImpl(
+			CardinalBaseSdk.initialize(
+				applicationId,
+				baseUrl,
+				authenticationMethod.toKt(),
+				options?.toKt() ?: BasicSdkOptions()
+			),
+			options?.cryptoService ?: adaptCryptoServiceForExternal(defaultCryptoService)
+		)
+	}
+
+	fun initializeWithProcessBase(
+		applicationId: String?,
+		baseUrl: String,
+		messageGatewayUrl: String,
+		externalServicesSpecId: String,
+		processId: String,
+		userTelecomType: String,
+		userTelecom: String,
+		captchaOptions: CaptchaOptionsJs,
+		authenticationProcessTemplateParameters: AuthenticationProcessTemplateParametersJs?,
+		options: BasicSdkOptionsJs?
+	): Promise<BaseAuthenticationWithProcessStepJs> = GlobalScope.promise {
+		val ktStep = CardinalBaseSdk.initializeWithProcess(
 			applicationId,
 			baseUrl,
-			authenticationMethod.toKt(),
+			messageGatewayUrl,
+			externalServicesSpecId,
+			processId,
+			AuthenticationProcessTelecomType.valueOf(userTelecomType),
+			userTelecom,
+			captchaOptions_fromJs(captchaOptions),
+			authenticationProcessTemplateParameters?.toKt() ?: AuthenticationProcessTemplateParameters(),
 			options?.toKt() ?: BasicSdkOptions()
-		))
+		)
+		object : BaseAuthenticationWithProcessStepJs {
+			override fun completeAuthentication(validationCode: String): Promise<CardinalBaseSdkJs> = GlobalScope.promise {
+				CardinalBaseSdkJsImpl(
+					ktStep.completeAuthentication(validationCode),
+					options?.cryptoService ?: adaptCryptoServiceForExternal(defaultCryptoService)
+				)
+			}
+		}
 	}
 
 	fun initializeAnonymous(
@@ -314,10 +357,17 @@ internal class CardinalBaseApisJsImpl(
 }
 
 internal class CardinalBaseSdkJsImpl(
-	private val sdk: CardinalBaseSdk
+	private val sdk: CardinalBaseSdk,
+	private val jsCryptoService: XCryptoService
 ) : CardinalBaseSdkJs, CardinalBaseApisJs by CardinalBaseApisJsImpl(sdk) {
 	override fun switchGroup(groupId: String): Promise<CardinalBaseSdkJs> = GlobalScope.promise {
-		CardinalBaseSdkJsImpl(sdk.switchGroup(groupId))
+		CardinalBaseSdkJsImpl(sdk.switchGroup(groupId), jsCryptoService)
+	}
+
+	override fun toFull(baseStorage: dynamic, options: BasicToFullSdkOptionsJs?): Promise<CardinalSdkJs> = GlobalScope.promise {
+		val storageFacade = loadStorageOptions(baseStorage)
+		val ktOptions = options?.toKt(jsCryptoService) ?: BasicToFullSdkOptions()
+		CardinalSdkJsImpl(sdk.toFullSdk(storageFacade, ktOptions))
 	}
 }
 

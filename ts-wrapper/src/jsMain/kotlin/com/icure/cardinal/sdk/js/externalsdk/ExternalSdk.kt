@@ -55,6 +55,7 @@ import com.icure.cardinal.sdk.js.api.TimeTableApiJs
 import com.icure.cardinal.sdk.js.api.TopicApiJs
 import com.icure.cardinal.sdk.js.api.TopicBasicApiJs
 import com.icure.cardinal.sdk.js.api.UserApiJs
+import com.icure.cardinal.sdk.js.options.external.BasicToFullSdkOptionsJs
 import kotlin.js.Promise
 
 @JsName("CardinalApis")
@@ -148,6 +149,7 @@ external interface CardinalBaseApisJs {
 @JsName("CardinalBaseSdk")
 external interface CardinalBaseSdkJs : CardinalBaseApisJs {
 	fun switchGroup(groupId: String): Promise<CardinalBaseSdkJs>
+	fun toFull(baseStorage: dynamic, options: BasicToFullSdkOptionsJs?): Promise<CardinalSdkJs>
 }
 
 @JsName("CardinalAnonymousApis")
