@@ -13,5 +13,6 @@ data class ContactParticipant(
 	public val hcpId: String,
 ) {
 	// region ContactParticipant-ContactParticipant
+
 	// endregion
 }
