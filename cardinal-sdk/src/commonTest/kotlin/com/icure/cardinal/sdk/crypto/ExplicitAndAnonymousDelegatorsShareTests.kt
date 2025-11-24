@@ -11,6 +11,7 @@ import com.icure.cardinal.sdk.test.autoCancelJob
 import com.icure.cardinal.sdk.test.createHcpUser
 import com.icure.cardinal.sdk.test.createPatientUser
 import com.icure.cardinal.sdk.test.initializeTestEnvironment
+import com.icure.cardinal.sdk.utils.DEFAULT_ENABLED
 import com.icure.kryptom.crypto.defaultCryptoService
 import io.kotest.core.spec.style.StringSpec
 import io.kotest.matchers.collections.shouldHaveSize
@@ -112,35 +113,35 @@ class ExplicitAndAnonymousDelegatorsShareTests : StringSpec({
 		}
 	}
 
-	"Test create shared data explicit->explicit" {
+	"Test create shared data explicit->explicit".config(enabled = DEFAULT_ENABLED) {
 		testCreateSharedData(createHcpUser(), createHcpUser())
 	}
 
-	"Test create shared data explicit->anonymous" {
+	"Test create shared data explicit->anonymous".config(enabled = DEFAULT_ENABLED) {
 		testCreateSharedData(createHcpUser(), createPatientUser())
 	}
 
-	"Test create shared data anonymous->explicit" {
+	"Test create shared data anonymous->explicit".config(enabled = DEFAULT_ENABLED) {
 		testCreateSharedData(createHcpUser(), createPatientUser())
 	}
 
-	"Test create shared data anonymous->anonymous" {
+	"Test create shared data anonymous->anonymous".config(enabled = DEFAULT_ENABLED) {
 		testCreateSharedData(createPatientUser(), createPatientUser())
 	}
 
-	"Test share existing data explicit->explicit" {
+	"Test share existing data explicit->explicit".config(enabled = DEFAULT_ENABLED) {
 		testShareExistingData(createHcpUser(), createHcpUser())
 	}
 
-	"Test share existing data explicit->anonymous" {
+	"Test share existing data explicit->anonymous".config(enabled = DEFAULT_ENABLED) {
 		testShareExistingData(createHcpUser(), createPatientUser())
 	}
 
-	"Test share existing data anonymous->explicit" {
+	"Test share existing data anonymous->explicit".config(enabled = DEFAULT_ENABLED) {
 		testShareExistingData(createHcpUser(), createPatientUser())
 	}
 
-	"Test share existing data anonymous->anonymous" {
+	"Test share existing data anonymous->anonymous".config(enabled = DEFAULT_ENABLED) {
 		testShareExistingData(createPatientUser(), createPatientUser())
 	}
 })

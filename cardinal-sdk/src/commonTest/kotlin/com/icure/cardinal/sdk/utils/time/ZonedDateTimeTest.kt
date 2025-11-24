@@ -1,11 +1,12 @@
 package com.icure.cardinal.sdk.utils.time
 
+import com.icure.cardinal.sdk.utils.DEFAULT_ENABLED
 import io.kotest.assertions.throwables.shouldThrow
 import io.kotest.core.spec.style.StringSpec
 import io.kotest.matchers.shouldBe
 
 class ZonedDateTimeTest : StringSpec({
-	"Full zoned date time test" {
+	"Full zoned date time test".config(enabled = DEFAULT_ENABLED) {
 		listOf(
 			Triple("2025-02-24T15:07:01.564571","-05:00", "America/New_York"),
 			Triple("2025-02-24T15:07:01","Z", "UTC"),
@@ -17,7 +18,7 @@ class ZonedDateTimeTest : StringSpec({
 		}
 	}
 
-	"Offset only zone test" {
+	"Offset only zone test".config(enabled = DEFAULT_ENABLED) {
 		listOf(
 			Pair("2025-02-24T15:06:08.886342","+01:00"),
 			Pair("2025-02-24T15:06:08.886342","-02:30"),
@@ -30,7 +31,7 @@ class ZonedDateTimeTest : StringSpec({
 		}
 	}
 
-	"Invalid input test" {
+	"Invalid input test".config(enabled = DEFAULT_ENABLED) {
 		listOf(
 			"2025-02-24T12:00:12",
 			"2025-02-24T12:00:12UTC",

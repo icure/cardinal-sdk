@@ -3,6 +3,7 @@ package com.icure.cardinal.sdk.crypto
 import com.icure.kryptom.crypto.defaultCryptoService
 import com.icure.cardinal.sdk.crypto.entities.ShamirSecretShare
 import com.icure.cardinal.sdk.crypto.impl.ShamirSecretSharingService
+import com.icure.cardinal.sdk.utils.DEFAULT_ENABLED
 import io.kotest.core.spec.style.StringSpec
 import io.kotest.matchers.shouldBe
 import io.kotest.matchers.shouldNotBe
@@ -28,7 +29,7 @@ class ShamirSecretSharingServiceTest : StringSpec({
 		}
 	}
 
-	"Should be able to split and recombine" {
+	"Should be able to split and recombine".config(enabled = DEFAULT_ENABLED) {
 		listOf(
 			2 to 3,
 			3 to 5,
@@ -50,7 +51,7 @@ class ShamirSecretSharingServiceTest : StringSpec({
 		}
 	}
 
-	"Should be able to combine secrets from the original typescript SDK" {
+	"Should be able to combine secrets from the original typescript SDK".config(enabled = DEFAULT_ENABLED) {
 		val secret = "This secret was created using the og iCure typescript SDK".toByteArray()
 		val shares = listOf(
 			ShamirSecretShare("801162ab4b5061600ba382f8dcedf844961226c36e982947d306753655587ae0b069e90f8ba9580552bc18633512f18357141c48053918cdd598a74"),

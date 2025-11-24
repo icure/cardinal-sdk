@@ -3,6 +3,7 @@ package com.icure.cardinal.sdk.storage
 import com.icure.cardinal.sdk.storage.impl.FileStorageFacade
 import com.icure.cardinal.sdk.test.nextUuid
 import com.icure.cardinal.sdk.utils.CardinalPlatform
+import com.icure.cardinal.sdk.utils.DEFAULT_ENABLED
 import com.icure.cardinal.sdk.utils.currentPlatform
 import io.kotest.core.spec.style.StringSpec
 import io.kotest.matchers.shouldBe
@@ -21,6 +22,7 @@ class FileStorageTest : StringSpec({
 	}
 
 	"File storage should be able to create read and delete entries".config(
+		enabled = DEFAULT_ENABLED,
 		enabledIf = { platformTestDirectoryBase != null }
 	) {
 		val subdir = Random.nextUuid()

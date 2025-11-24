@@ -32,6 +32,7 @@ import com.icure.cardinal.sdk.test.DataOwnerDetails
 import com.icure.cardinal.sdk.test.autoCancelJob
 import com.icure.cardinal.sdk.test.createHcpUser
 import com.icure.cardinal.sdk.test.initializeTestEnvironment
+import com.icure.cardinal.sdk.utils.DEFAULT_ENABLED
 import com.icure.kryptom.crypto.defaultCryptoService
 import io.kotest.assertions.fail
 import io.kotest.core.spec.style.StringSpec
@@ -54,7 +55,7 @@ fun <BaseType : Identifiable<String>, MaybeDecryptedType : BaseType> subscribabl
 ) = with(context) {
 	stringSpec {
 		name should {
-			"Should subscribe to $name updates" {
+			"Should subscribe to $name updates".config(enabled = DEFAULT_ENABLED) {
 				val subscription = subscribableApi
 					.subscribeToEvents(
 						events = setOf(SubscriptionEventType.Create),

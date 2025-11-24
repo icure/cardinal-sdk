@@ -5,6 +5,7 @@ import com.icure.cardinal.sdk.test.autoCancelJob
 import com.icure.cardinal.sdk.test.createHcpUser
 import com.icure.cardinal.sdk.test.initializeTestEnvironment
 import com.icure.cardinal.sdk.test.uuid
+import com.icure.cardinal.sdk.utils.DEFAULT_ENABLED
 import com.icure.kryptom.crypto.defaultCryptoService
 import io.kotest.core.spec.style.StringSpec
 import io.kotest.matchers.nulls.shouldNotBeNull
@@ -17,7 +18,7 @@ class  ByteArrayPayloadTest : StringSpec({
 		initializeTestEnvironment()
 	}
 
-	"It is possible to send a ByteArray payload and retrieve it" {
+	"It is possible to send a ByteArray payload and retrieve it".config(enabled = DEFAULT_ENABLED) {
 		val hcpDetails = createHcpUser()
 		val api = hcpDetails.api(specJob)
 		val hcpUser = api.user.getCurrentUser()

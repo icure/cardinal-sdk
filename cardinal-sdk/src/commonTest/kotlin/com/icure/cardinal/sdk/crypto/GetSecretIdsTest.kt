@@ -7,6 +7,7 @@ import com.icure.cardinal.sdk.model.EntityReferenceInGroup
 import com.icure.cardinal.sdk.test.autoCancelJob
 import com.icure.cardinal.sdk.test.createHcpUser
 import com.icure.cardinal.sdk.test.uuid
+import com.icure.cardinal.sdk.utils.DEFAULT_ENABLED
 import io.kotest.core.spec.style.StringSpec
 import io.kotest.matchers.maps.shouldContainKey
 import io.kotest.matchers.maps.shouldHaveSize
@@ -15,7 +16,7 @@ import io.kotest.matchers.shouldBe
 class GetSecretIdsTest : StringSpec({
 	val job = autoCancelJob()
 
-	"Get secret ids method should provide the data owners that are known to have access to each available secret id" {
+	"Get secret ids method should provide the data owners that are known to have access to each available secret id".config(enabled = DEFAULT_ENABLED) {
 		val parent = createHcpUser()
 		val child1 = createHcpUser(parent)
 		val child2 = createHcpUser(parent)

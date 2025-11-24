@@ -2,6 +2,7 @@ package com.icure.cardinal.sdk.crypto
 
 import com.icure.cardinal.sdk.crypto.entities.EncryptedFieldsManifest
 import com.icure.cardinal.sdk.crypto.impl.JsonEncryptionServiceImpl
+import com.icure.cardinal.sdk.utils.DEFAULT_ENABLED
 import com.icure.cardinal.sdk.utils.EntityEncryptionException
 import com.icure.kryptom.crypto.AesAlgorithm
 import com.icure.kryptom.crypto.defaultCryptoService
@@ -33,7 +34,7 @@ class JsonEncryptionServiceTest : StringSpec({
 		else -> json
 	}
 
-	"Encrypted fields parsing should create the appropriate structure" {
+	"Encrypted fields parsing should create the appropriate structure".config(enabled = DEFAULT_ENABLED) {
 		val fields = setOf(
 			"field1",
 			"field2",
@@ -143,7 +144,7 @@ class JsonEncryptionServiceTest : StringSpec({
 		)
 	}
 
-	"Encrypted fields parsing should fail in case of any field being invalid" {
+	"Encrypted fields parsing should fail in case of any field being invalid".config(enabled = DEFAULT_ENABLED) {
 		val sampleValidFields = setOf(
 			"field1",
 			"nestedField.field3",
@@ -293,7 +294,7 @@ class JsonEncryptionServiceTest : StringSpec({
 		"mapData.*.field3",
 	)
 
-	"encrypted object should delete encrypted fields and set encryptedSelf" {
+	"encrypted object should delete encrypted fields and set encryptedSelf".config(enabled = DEFAULT_ENABLED) {
 		val encryptedSelf = "VGVzdA=="
 		val expectedEncrypted = JsonObject(mapOf(
 			"field1" to JsonPrimitive("nonEncryptedValue1A"),
@@ -395,7 +396,7 @@ class JsonEncryptionServiceTest : StringSpec({
 		encryptedObj shouldBe expectedEncrypted
 	}
 
-	"Encrypted then decrypted object should equal the original (excluding for the addition of encrypted self" {
+	"Encrypted then decrypted object should equal the original (excluding for the addition of encrypted self".config(enabled = DEFAULT_ENABLED) {
 		val key = defaultCryptoService.aes.generateKey(AesAlgorithm.CbcWithPkcs7Padding)
 		val encryptedObj = jsonEncryptionService.encrypt(
 			key,
@@ -406,7 +407,7 @@ class JsonEncryptionServiceTest : StringSpec({
 		stripEncryptedSelf(decryptedObj) shouldBe sampleObj
 	}
 	
-	"Encrypt should fail if the fields type does not match the expected type from manifest" {
+	"Encrypt should fail if the fields type does not match the expected type from manifest".config(enabled = DEFAULT_ENABLED) {
 		val cases: List<Triple<EncryptedFieldsManifest, JsonObject, String>> = listOf(
 			Triple(
 				JsonEncryptionService.parseEncryptedFields(setOf("shouldBeObject.nestedShouldBeObject.field1"), "Test."),
@@ -461,7 +462,7 @@ class JsonEncryptionServiceTest : StringSpec({
 		}
 	}
 
-	"If the content of encrypted self in an object is the same as the updated content it should be reused" {
+	"If the content of encrypted self in an object is the same as the updated content it should be reused".config(enabled = DEFAULT_ENABLED) {
 		val key = defaultCryptoService.aes.generateKey(AesAlgorithm.CbcWithPkcs7Padding)
 		val manifest = JsonEncryptionService.parseEncryptedFields(setOf("encryptThis"), "Test.")
 		val obj = JsonObject(mapOf(
@@ -487,7 +488,7 @@ class JsonEncryptionServiceTest : StringSpec({
 		reEncryptedObjWithDifferentEncryptedData["leaveThis"].shouldNotBeNull() shouldBe decryptedObj["leaveThis"]
 	}
 
-	"Wildcard encryption: should encrypt all fields of the entity" {
+	"Wildcard encryption: should encrypt all fields of the entity".config(enabled = DEFAULT_ENABLED) {
 		val key = defaultCryptoService.aes.generateKey(AesAlgorithm.CbcWithPkcs7Padding)
 		val manifest = JsonEncryptionService.parseEncryptedFields(
 			setOf(
@@ -529,7 +530,7 @@ class JsonEncryptionServiceTest : StringSpec({
 		}
 	}
 
-	"Wildcard encryption: should reuse encrypted self when same" {
+	"Wildcard encryption: should reuse encrypted self when same".config(enabled = DEFAULT_ENABLED) {
 		val key = defaultCryptoService.aes.generateKey(AesAlgorithm.CbcWithPkcs7Padding)
 		val manifest = JsonEncryptionService.parseEncryptedFields(
 			setOf(
@@ -573,7 +574,7 @@ class JsonEncryptionServiceTest : StringSpec({
 		array1[1] shouldNotBe array2[1]
 	}
 
-	"Decrypt should be able to decrypt pieces that were encrypted with different keys" {
+	"Decrypt should be able to decrypt pieces that were encrypted with different keys".config(enabled = DEFAULT_ENABLED) {
 		repeat(2000) {
 			// Repeat test many times to have a high chance of decrypt with only 1 key give at least once a false
 			// decryption success (AES-CBC has ~1/256 chances to seem successful even with wrong key if the structure

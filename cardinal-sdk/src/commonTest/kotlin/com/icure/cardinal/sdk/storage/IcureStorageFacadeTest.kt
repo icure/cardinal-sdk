@@ -8,6 +8,7 @@ import com.icure.cardinal.sdk.storage.impl.DefaultStorageEntryKeysFactory
 import com.icure.cardinal.sdk.storage.impl.JsonAndBase64KeyStorage
 import com.icure.cardinal.sdk.storage.impl.VolatileStorageFacade
 import com.icure.utils.InternalIcureApi
+import com.icure.cardinal.sdk.utils.DEFAULT_ENABLED
 import com.icure.cardinal.sdk.utils.InternalCardinalException
 import io.kotest.assertions.throwables.shouldThrow
 import io.kotest.core.spec.style.StringSpec
@@ -34,7 +35,7 @@ class IcureStorageFacadeTest : StringSpec({
 		)
 	}
 
-	"Should be capable of storing and retrieving encryption keys" {
+	"Should be capable of storing and retrieving encryption keys".config(enabled = DEFAULT_ENABLED) {
 		suspend fun testWithIsDevice(isDevice: Boolean) {
 			val keypair = defaultCryptoService.rsa.generateKeyPair(
 				RsaAlgorithm.RsaEncryptionAlgorithm.OaepWithSha256,
@@ -70,7 +71,7 @@ class IcureStorageFacadeTest : StringSpec({
 		testWithIsDevice(false)
 	}
 
-	"Should be capable of updating and retrieving verification results" {
+	"Should be capable of updating and retrieving verification results".config(enabled = DEFAULT_ENABLED) {
 		storage.loadSelfVerifiedKeys(dataOwner).shouldBeEmpty()
 		val pub1Spki = defaultCryptoService.rsa.exportSpkiHex(
 			defaultCryptoService.rsa.generateKeyPair(
@@ -91,7 +92,7 @@ class IcureStorageFacadeTest : StringSpec({
 		storage.loadSelfVerifiedKeys(dataOwner) shouldBe value2
 	}
 
-	"Should be capable of storing and retrieving signature keys" {
+	"Should be capable of storing and retrieving signature keys".config(enabled = DEFAULT_ENABLED) {
 		val keypair = defaultCryptoService.rsa.generateKeyPair(
 			RsaAlgorithm.RsaSignatureAlgorithm.PssWithSha256,
 			RsaService.KeySize.Rsa2048
@@ -119,7 +120,7 @@ class IcureStorageFacadeTest : StringSpec({
 		}
 	}
 
-	"Should be capable of retrieving keys in legacy locations" {
+	"Should be capable of retrieving keys in legacy locations".config(enabled = DEFAULT_ENABLED) {
 		val key1 = defaultCryptoService.rsa.generateKeyPair(
 			RsaAlgorithm.RsaEncryptionAlgorithm.OaepWithSha1,
 			RsaService.KeySize.Rsa2048

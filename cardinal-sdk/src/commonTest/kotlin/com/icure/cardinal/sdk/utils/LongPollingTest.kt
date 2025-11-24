@@ -5,7 +5,7 @@ import io.kotest.matchers.ints.shouldBeLessThanOrEqual
 import io.kotest.matchers.shouldBe
 
 class LongPollingTest : StringSpec({
-	"Long polling timeouts split should return a list that adds up to the full timeout with each element not exceeding the max request time" {
+	"Long polling timeouts split should return a list that adds up to the full timeout with each element not exceeding the max request time".config(enabled = DEFAULT_ENABLED) {
 		(1 .. 1000).forEach { totalDuration ->
 			listOf(2, 3, 5, 10, 30).forEach { maxRequestDuration ->
 				val split = LongPollingUtils.splitForRequestsDuration(
@@ -19,7 +19,7 @@ class LongPollingTest : StringSpec({
 		}
 	}
 
-	"Do long poll request should get in input the timeouts, in order" {
+	"Do long poll request should get in input the timeouts, in order".config(enabled = DEFAULT_ENABLED) {
 		var curr = 0
 		val timeouts = listOf(30, 20, 10)
 		LongPollingUtils.doLongPoll(
@@ -33,7 +33,7 @@ class LongPollingTest : StringSpec({
 		curr shouldBe 3
 	}
 
-	"Do long poll should return latest result if all requests fail" {
+	"Do long poll should return latest result if all requests fail".config(enabled = DEFAULT_ENABLED) {
 		var curr = 0
 		val timeouts = listOf(30, 20, 10)
 		LongPollingUtils.doLongPoll(
@@ -47,7 +47,7 @@ class LongPollingTest : StringSpec({
 		curr shouldBe 3
 	}
 
-	"Do long poll should stop at the first success" {
+	"Do long poll should stop at the first success".config(enabled = DEFAULT_ENABLED) {
 		var curr = 0
 		val timeouts = listOf(30, 20, 10)
 		LongPollingUtils.doLongPoll(

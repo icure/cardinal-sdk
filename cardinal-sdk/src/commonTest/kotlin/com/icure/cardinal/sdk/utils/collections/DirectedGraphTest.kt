@@ -1,5 +1,6 @@
 package com.icure.cardinal.sdk.utils.collections
 
+import com.icure.cardinal.sdk.utils.DEFAULT_ENABLED
 import io.kotest.core.spec.style.StringSpec
 import io.kotest.matchers.collections.shouldBeIn
 import io.kotest.matchers.collections.shouldContainExactlyInAnyOrder
@@ -32,7 +33,7 @@ class DirectedGraphTest : StringSpec({
 		'N' to 'L',
 	)
 
-	"Strongly connected graph should match expected" {
+	"Strongly connected graph should match expected".config(enabled = DEFAULT_ENABLED) {
 		repeat(100) {
 			val graph = testGraphEdges.shuffled().let { edges ->
 				DirectedGraph.fromEdges(*edges.toTypedArray())
@@ -72,7 +73,7 @@ class DirectedGraphTest : StringSpec({
 		}
 	}
 
-	"reachSet should match expected" {
+	"reachSet should match expected".config(enabled = DEFAULT_ENABLED) {
 		val graph = DirectedGraph.fromEdges(*testGraphEdges.toTypedArray()).acyclic()
 		val A = 'A'
 		val B = 'B'
