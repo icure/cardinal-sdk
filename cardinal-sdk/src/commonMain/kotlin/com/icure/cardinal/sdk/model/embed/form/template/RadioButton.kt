@@ -8,12 +8,9 @@ import kotlin.String
 import kotlin.collections.List
 import kotlin.collections.Map
 
-// WARNING: This file is auto-generated. If you change it manually, your changes will be lost.
-// If you want to change the way this class is generated, see [this repo](https://github.com/icure/sdk-codegen).
-
 @SerialName("radio-button")
 @Serializable
-data class RadioButton(
+public data class RadioButton(
 	override val `field`: String,
 	override val shortLabel: String? = null,
 	override val rows: Int? = null,
@@ -31,8 +28,4 @@ data class RadioButton(
 	override val hideCondition: String? = null,
 	override val now: Boolean? = null,
 	override val translate: Boolean? = null,
-) : Field {
-	// region RadioButton-RadioButton
-
-	// endregion
-}
+) : Field

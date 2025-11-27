@@ -7,16 +7,9 @@ import kotlinx.serialization.Serializable
 import kotlin.String
 import kotlin.collections.Set
 
-// WARNING: This file is auto-generated. If you change it manually, your changes will be lost.
-// If you want to change the way this class is generated, see [this repo](https://github.com/icure/sdk-codegen).
-
 @SerialName("MessageByInvoiceIdsFilter")
 @Serializable
-data class MessageByInvoiceIdsFilter(
+public data class MessageByInvoiceIdsFilter(
 	public val invoiceIds: Set<String>,
 	override val desc: String? = null,
-) : AbstractFilter<Message> {
-	// region MessageByInvoiceIdsFilter-MessageByInvoiceIdsFilter
-
-	// endregion
-}
+) : AbstractFilter<Message>
