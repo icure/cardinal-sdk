@@ -286,5 +286,105 @@ class RawAccessLogApiImpl(
 			setBodyWithSerializer(AccessLogAbstractFilterSerializer, filter)
 		}.wrap()
 
+	override suspend fun createAccessLogInGroup(
+		groupId: String,
+		accessLogDto: EncryptedAccessLog,
+	): HttpResponse<EncryptedAccessLog> =
+		post(authProvider, groupId) {
+			url {
+				takeFrom(apiUrl)
+				appendPathSegments("rest", "v2", "accesslog", "inGroup", groupId)
+			}
+			contentType(Application.Json)
+			accept(Application.Json)
+			setBody(accessLogDto)
+		}.wrap()
+
+	override suspend fun modifyAccessLogInGroup(
+		groupId: String,
+		accessLogDto: EncryptedAccessLog,
+	): HttpResponse<EncryptedAccessLog> =
+		put(authProvider, groupId) {
+			url {
+				takeFrom(apiUrl)
+				appendPathSegments("rest", "v2", "accesslog", "inGroup", groupId)
+			}
+			contentType(Application.Json)
+			accept(Application.Json)
+			setBody(accessLogDto)
+		}.wrap()
+
+	override suspend fun getAccessLogInGroup(
+		groupId: String,
+		accessLogId: String,
+	): HttpResponse<EncryptedAccessLog> =
+		get(authProvider, groupId) {
+			url {
+				takeFrom(apiUrl)
+				appendPathSegments("rest", "v2", "accesslog", "inGroup", groupId, accessLogId)
+				parameter("ts", GMTDate().timestamp)
+			}
+			accept(Application.Json)
+		}.wrap()
+
+	override suspend fun getAccessLogsInGroup(
+		groupId: String,
+		accessLogIds: ListOfIds,
+	): HttpResponse<List<EncryptedAccessLog>> =
+		post(authProvider, groupId) {
+			url {
+				takeFrom(apiUrl)
+				appendPathSegments("rest", "v2", "accesslog", "inGroup", groupId, "byIds")
+			}
+			contentType(Application.Json)
+			accept(Application.Json)
+			setBody(accessLogIds)
+		}.wrap()
+
+	override suspend fun deleteAccessLogsInGroup(
+		groupId: String,
+		accessLogIdsAndRevs: ListOfIdsAndRev,
+	): HttpResponse<List<DocIdentifier>> =
+		post(
+			authProvider,
+			groupId,
+		) {
+			url {
+				takeFrom(apiUrl)
+				appendPathSegments("rest", "v2", "accesslog", "inGroup", groupId, "delete", "batch")
+			}
+			contentType(Application.Json)
+			accept(Application.Json)
+			setBody(accessLogIdsAndRevs)
+		}.wrap()
+
+	override suspend fun deleteAccessLogInGroup(
+		groupId: String,
+		accessLogId: String,
+		rev: String,
+	): HttpResponse<DocIdentifier> =
+		delete(authProvider, groupId) {
+			url {
+				takeFrom(apiUrl)
+				appendPathSegments("rest", "v2", "accesslog", "inGroup", groupId, accessLogId)
+				parameter("rev", rev)
+			}
+			accept(Application.Json)
+		}.wrap()
+
+	override suspend fun bulkShare(
+		request: BulkShareOrUpdateMetadataParams,
+		groupId: String,
+	): HttpResponse<List<EntityBulkShareResult<EncryptedAccessLog>>> =
+		put(authProvider, groupId) {
+			url {
+				takeFrom(apiUrl)
+				appendPathSegments("rest", "v2", "accesslog", "inGroup", groupId, "bulkSharedMetadataUpdate")
+			}
+			contentType(Application.Json)
+			accept(Application.Json)
+			setBody(request)
+		}.wrap()
+
 	// endregion
 }
