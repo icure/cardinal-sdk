@@ -4,16 +4,21 @@ import com.icure.cardinal.sdk.CardinalBaseApis
 import com.icure.cardinal.sdk.crypto.EntityEncryptionService
 import com.icure.cardinal.sdk.crypto.entities.EntityWithEncryptionMetadataStub
 import com.icure.cardinal.sdk.crypto.entities.EntityWithEncryptionMetadataTypeName
+import com.icure.cardinal.sdk.crypto.entities.SdkBoundGroup
 import com.icure.cardinal.sdk.crypto.entities.toEncryptionMetadataStub
 import com.icure.cardinal.sdk.model.AccessLog
+import com.icure.cardinal.sdk.model.EntityReferenceInGroup
 import com.icure.cardinal.sdk.model.Patient
 import com.icure.cardinal.sdk.model.filter.AbstractFilter
 import com.icure.cardinal.sdk.model.filter.accesslog.AccessLogByDataOwnerPatientDateFilter
 import com.icure.cardinal.sdk.model.filter.accesslog.AccessLogByDateFilter
 import com.icure.cardinal.sdk.model.filter.accesslog.AccessLogByUserIdUserTypeDateFilter
+import com.icure.cardinal.sdk.options.ApiConfiguration
+import com.icure.cardinal.sdk.options.BasicApiConfiguration
 import com.icure.cardinal.sdk.utils.DefaultValue
 import com.icure.utils.InternalIcureApi
 import kotlinx.serialization.Serializable
+import kotlin.coroutines.coroutineContext
 import kotlin.time.Instant
 
 object AccessLogFilters {
@@ -264,13 +269,31 @@ object AccessLogFilters {
 @InternalIcureApi
 internal suspend fun mapAccessLogFilterOptions(
 	filterOptions: FilterOptions<AccessLog>,
-	selfDataOwnerId: String?,
-	entityEncryptionService: EntityEncryptionService?
+	config: BasicApiConfiguration,
+	requestGroup: String?
+): AbstractFilter<AccessLog> {
+	val nonBasicConfig = config as? ApiConfiguration
+	return mapAccessLogFilterOptions(
+		filterOptions,
+		nonBasicConfig?.crypto?.dataOwnerApi?.getCurrentDataOwnerReference(),
+		nonBasicConfig?.crypto?.entity,
+		config.getBoundGroup(coroutineContext),
+		requestGroup
+	)
+}
+
+@InternalIcureApi
+internal suspend fun mapAccessLogFilterOptions(
+	filterOptions: FilterOptions<AccessLog>,
+	selfDataOwner: EntityReferenceInGroup?,
+	entityEncryptionService: EntityEncryptionService?,
+	boundGroup: SdkBoundGroup?,
+	requestGroup: String?
 ): AbstractFilter<AccessLog> = mapIfMetaFilterOptions(filterOptions) {
-	mapAccessLogFilterOptions(it, selfDataOwnerId, entityEncryptionService)
+	mapAccessLogFilterOptions(it, selfDataOwner, entityEncryptionService, boundGroup, requestGroup)
 } ?: when (filterOptions) {
 	is AccessLogFilters.ByPatientsDateForDataOwner -> {
-		filterOptions.ensureNonBaseEnvironment(selfDataOwnerId, entityEncryptionService)
+		filterOptions.ensureNonBaseEnvironment(selfDataOwner, entityEncryptionService)
 		AccessLogByDataOwnerPatientDateFilter(
 			dataOwnerId = filterOptions.dataOwnerId,
 			secretPatientIds = entityEncryptionService.secretIdsOf(null, filterOptions.patients, EntityWithEncryptionMetadataTypeName.Patient, null).values.flatten().toSet(),
@@ -280,9 +303,9 @@ internal suspend fun mapAccessLogFilterOptions(
 		)
 	}
 	is AccessLogFilters.ByPatientsDateForSelf -> {
-		filterOptions.ensureNonBaseEnvironment(selfDataOwnerId, entityEncryptionService)
+		filterOptions.ensureNonBaseEnvironment(selfDataOwner, entityEncryptionService)
 		AccessLogByDataOwnerPatientDateFilter(
-			dataOwnerId = selfDataOwnerId,
+			dataOwnerId = selfDataOwner.asReferenceStringInGroup(requestGroup, boundGroup),
 			secretPatientIds = entityEncryptionService.secretIdsOf(null, filterOptions.patients, EntityWithEncryptionMetadataTypeName.Patient, null).values.flatten().toSet(),
 			startDate = filterOptions.from,
 			endDate = filterOptions.to,
@@ -297,9 +320,9 @@ internal suspend fun mapAccessLogFilterOptions(
 		descending = filterOptions.descending
 	)
 	is AccessLogFilters.ByPatientSecretIdsDateForSelf -> {
-		filterOptions.ensureNonBaseEnvironment(selfDataOwnerId, entityEncryptionService)
+		filterOptions.ensureNonBaseEnvironment(selfDataOwner, entityEncryptionService)
 		AccessLogByDataOwnerPatientDateFilter(
-			dataOwnerId = selfDataOwnerId,
+			dataOwnerId = selfDataOwner.asReferenceStringInGroup(requestGroup, boundGroup),
 			secretPatientIds = filterOptions.secretIds.toSet(),
 			startDate = filterOptions.from,
 			endDate = filterOptions.to,
@@ -307,7 +330,7 @@ internal suspend fun mapAccessLogFilterOptions(
 		)
 	}
 	is AccessLogFilters.ByDate -> {
-		filterOptions.ensureNonBaseEnvironment(selfDataOwnerId, entityEncryptionService)
+		filterOptions.ensureNonBaseEnvironment(selfDataOwner, entityEncryptionService)
 		AccessLogByDateFilter(
 			startDate = filterOptions.from,
 			endDate = filterOptions.to,

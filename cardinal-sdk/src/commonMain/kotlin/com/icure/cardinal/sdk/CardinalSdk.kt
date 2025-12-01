@@ -39,7 +39,6 @@ import com.icure.cardinal.sdk.api.TarificationApi
 import com.icure.cardinal.sdk.api.TimeTableApi
 import com.icure.cardinal.sdk.api.TopicApi
 import com.icure.cardinal.sdk.api.UserApi
-import com.icure.cardinal.sdk.api.impl.AccessLogApiImpl
 import com.icure.cardinal.sdk.api.impl.AgendaApiImpl
 import com.icure.cardinal.sdk.api.impl.ApplicationSettingsApiImpl
 import com.icure.cardinal.sdk.api.impl.AuthApiImpl
@@ -76,6 +75,7 @@ import com.icure.cardinal.sdk.api.impl.TarificationApiImpl
 import com.icure.cardinal.sdk.api.impl.TimeTableApiImpl
 import com.icure.cardinal.sdk.api.impl.TopicApiImpl
 import com.icure.cardinal.sdk.api.impl.UserApiImpl
+import com.icure.cardinal.sdk.api.impl.initAccessLogApi
 import com.icure.cardinal.sdk.api.impl.initCalendarItemApi
 import com.icure.cardinal.sdk.api.impl.initHealthElementApi
 import com.icure.cardinal.sdk.api.impl.initPatientApi
@@ -862,7 +862,7 @@ internal class CardinalSdkImpl(
 	}
 
 	override val accessLog: AccessLogApi by lazy {
-		AccessLogApiImpl(
+		initAccessLogApi(
 			rawAccessLogApi,
 			config
 		)

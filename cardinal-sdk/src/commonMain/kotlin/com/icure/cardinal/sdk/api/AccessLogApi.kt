@@ -10,6 +10,8 @@ import com.icure.cardinal.sdk.filters.SortableFilterOptions
 import com.icure.cardinal.sdk.model.AccessLog
 import com.icure.cardinal.sdk.model.DecryptedAccessLog
 import com.icure.cardinal.sdk.model.EncryptedAccessLog
+import com.icure.cardinal.sdk.model.EntityReferenceInGroup
+import com.icure.cardinal.sdk.model.GroupScoped
 import com.icure.cardinal.sdk.model.PaginatedList
 import com.icure.cardinal.sdk.model.Patient
 import com.icure.cardinal.sdk.model.StoredDocumentIdentifier
@@ -17,8 +19,10 @@ import com.icure.cardinal.sdk.model.User
 import com.icure.cardinal.sdk.model.couchdb.DocIdentifier
 import com.icure.cardinal.sdk.model.embed.AccessLevel
 import com.icure.cardinal.sdk.model.specializations.HexString
+import com.icure.cardinal.sdk.model.toStoredDocumentIdentifier
 import com.icure.cardinal.sdk.utils.DefaultValue
 import com.icure.cardinal.sdk.utils.EntityEncryptionException
+import com.icure.cardinal.sdk.utils.generation.JsMapAsObjectArray
 import com.icure.cardinal.sdk.utils.pagination.PaginatedListIterator
 
 /* This interface includes the API calls that do not need encryption keys and do not return or consume encrypted/decrypted items, they are completely agnostic towards the presence of encrypted items */
@@ -35,7 +39,7 @@ interface AccessLogBasicFlavourlessApi {
 	 * @return the id and revision of the deleted accessLog.
 	 * @throws RevisionConflictException if the provided revision doesn't match the latest known revision
 	 */
-	suspend fun deleteAccessLogById(entityId: String, rev: String): DocIdentifier
+	suspend fun deleteAccessLogById(entityId: String, rev: String): StoredDocumentIdentifier
 
 	/**
 	 * Deletes many accessLogs. Ids that don't correspond to an entity, or that correspond to an entity for which
@@ -44,7 +48,7 @@ interface AccessLogBasicFlavourlessApi {
 	 * @return the id and revision of the deleted accessLogs. If some entities couldn't be deleted (for example
 	 * because you had no write access to them) they will not be included in this list.
 	 */
-	suspend fun deleteAccessLogsByIds(entityIds: List<StoredDocumentIdentifier>): List<DocIdentifier>
+	suspend fun deleteAccessLogsByIds(entityIds: List<StoredDocumentIdentifier>): List<StoredDocumentIdentifier>
 
 	/**
 	 * Permanently deletes a accessLog.
@@ -60,7 +64,7 @@ interface AccessLogBasicFlavourlessApi {
 	 * @return the id and revision of the deleted accessLog.
 	 * @throws RevisionConflictException if the provided accessLog doesn't match the latest known revision
 	 */
-	suspend fun deleteAccessLog(accessLog: AccessLog): DocIdentifier =
+	suspend fun deleteAccessLog(accessLog: AccessLog): StoredDocumentIdentifier =
 		deleteAccessLogById(accessLog.id, requireNotNull(accessLog.rev) { "Can't delete an accessLog that has no rev" })
 
 	/**
@@ -69,7 +73,7 @@ interface AccessLogBasicFlavourlessApi {
 	 * @return the id and revision of the deleted accessLogs. If some entities couldn't be deleted they will not be
 	 * included in this list.
 	 */
-	suspend fun deleteAccessLogs(accessLogs: List<AccessLog>): List<DocIdentifier> =
+	suspend fun deleteAccessLogs(accessLogs: List<AccessLog>): List<StoredDocumentIdentifier> =
 		deleteAccessLogsByIds(accessLogs.map { accessLog ->
 			StoredDocumentIdentifier(accessLog.id, requireNotNull(accessLog.rev) { "Can't delete an accessLog that has no rev" })
 		})
@@ -82,6 +86,40 @@ interface AccessLogBasicFlavourlessApi {
 	suspend fun purgeAccessLog(accessLog: AccessLog) {
 		purgeAccessLogById(accessLog.id, requireNotNull(accessLog.rev) { "Can't delete an accessLog that has no rev" })
 	}
+}
+
+interface AccessLogBasicFlavourlessInGroupApi {
+	/**
+	 * In-group version of [AccessLogBasicFlavourlessApi.deleteAccessLogById]
+	 */
+	suspend fun deleteAccessLogById(entityId: GroupScoped<StoredDocumentIdentifier>): GroupScoped<StoredDocumentIdentifier>
+
+	/**
+	 * In-group version of [AccessLogBasicFlavourlessApi.deleteAccessLogsByIds]
+	 */
+	suspend fun deleteAccessLogsByIds(entityIds: List<GroupScoped<StoredDocumentIdentifier>>): List<GroupScoped<StoredDocumentIdentifier>>
+
+	/**
+	 * In-group version of [AccessLogBasicFlavourlessApi.purgeAccessLogById]
+	 */
+	// TODO suspend fun purgeAccessLogById(entityId: GroupScoped<StoredDocumentIdentifier>)
+
+	/**
+	 * In-group version of [AccessLogBasicFlavourlessApi.deleteAccessLog]
+	 */
+	suspend fun deleteAccessLog(accessLog: GroupScoped<AccessLog>): GroupScoped<StoredDocumentIdentifier> =
+		deleteAccessLogById(accessLog.toStoredDocumentIdentifier())
+
+	/**
+	 * In-group version of [AccessLogBasicFlavourlessApi.deleteAccessLogs]
+	 */
+	suspend fun deleteAccessLogs(accessLogs: List<GroupScoped<AccessLog>>): List<GroupScoped<StoredDocumentIdentifier>> =
+		deleteAccessLogsByIds(accessLogs.toStoredDocumentIdentifier())
+
+	/**
+	 * In-group version of [AccessLogBasicFlavourlessApi.purgeAccessLog]
+	 */
+	// TODO suspend fun purgeAccessLog(accessLog: GroupScoped<AccessLog>)
 }
 
 /* This interface includes the API calls can be used on decrypted items if encryption keys are available *or* encrypted items if no encryption keys are available */
@@ -179,6 +217,38 @@ interface AccessLogBasicFlavouredApi<E : AccessLog> {
 	): PaginatedList<E>
 }
 
+interface AccessLogBasicFlavouredInGroupApi<E : AccessLog> {
+	/**
+	 * In-group version of [AccessLogBasicFlavouredApi.createAccessLog].
+	 */
+	suspend fun createAccessLog(entity: GroupScoped<E>): GroupScoped<E>
+
+	/**
+	 * In-group version of [AccessLogBasicFlavouredApi.undeleteAccessLogById]
+	 */
+	// TODO suspend fun undeleteAccessLogById(entityId: GroupScoped<StoredDocumentIdentifier>): GroupScoped<E>
+
+	/**
+	 * In-group version of [AccessLogBasicFlavouredApi.undeleteAccessLog]
+	 */
+	// TODO suspend fun undeleteAccessLog(accessLog: GroupScoped<AccessLog>): GroupScoped<E>
+
+	/**
+	 * In-group version of [AccessLogBasicFlavouredApi.modifyAccessLog]
+	 */
+	suspend fun modifyAccessLog(entity: GroupScoped<E>): GroupScoped<E>
+
+	/**
+	 * In-group version of [AccessLogBasicFlavouredApi.getAccessLog]
+	 */
+	suspend fun getAccessLog(groupId: String, entityId: String): GroupScoped<E>?
+
+	/**
+	 * In-group version of [AccessLogBasicFlavouredApi.getAccessLogs]
+	 */
+	suspend fun getAccessLogs(groupId: String, entityIds: List<String>): List<GroupScoped<E>>
+}
+
 /* The extra API calls declared in this interface are the ones that can be used on encrypted or decrypted items but only when the user is a data owner */
 interface AccessLogFlavouredApi<E : AccessLog> : AccessLogBasicFlavouredApi<E> {
 	/**
@@ -229,7 +299,7 @@ interface AccessLogFlavouredApi<E : AccessLog> : AccessLogBasicFlavouredApi<E> {
 	 * or to the internal iCure implementations, may cause future invocations to return unordered data.
 	 * If you need ordered data use [filterAccessLogsBySorted] instead.
 	 *
-	 * @param filter a access log filter
+	 * @param filter an access log filter
 	 * @return an iterator that iterates over all access logs matching the provided filter.
 	 */
 	suspend fun filterAccessLogsBy(
@@ -243,12 +313,42 @@ interface AccessLogFlavouredApi<E : AccessLog> : AccessLogBasicFlavouredApi<E> {
 	 * This method guarantees that the returned data will be ordered using the rules specified by the provided filter,
 	 * but the operation may take longer than [filterAccessLogsBy].
 	 *
-	 * @param filter a access log filter
+	 * @param filter an access log filter
 	 * @return an iterator that iterates over all access logs matching the provided filter.
 	 */
 	suspend fun filterAccessLogsBySorted(
 		filter: SortableFilterOptions<AccessLog>
 	): PaginatedListIterator<E>
+}
+
+interface AccessLogFlavouredInGroupApi<E : AccessLog> : AccessLogBasicFlavouredInGroupApi<E> {
+	/**
+	 * In-group version of [AccessLogFlavouredApi.shareWith]
+	 */
+	suspend fun shareWith(
+		delegate: EntityReferenceInGroup,
+		accessLog: GroupScoped<E>,
+		@DefaultValue("null")
+		options: AccessLogShareOptions? = null
+	): GroupScoped<E>
+
+	/**
+	 * In-group version of [AccessLogFlavouredApi.shareWithMany]
+	 */
+	suspend fun shareWithMany(
+		accessLog: GroupScoped<E>,
+		delegates: @JsMapAsObjectArray(keyEntryName = "delegate", valueEntryName = "shareOptions") Map<EntityReferenceInGroup, AccessLogShareOptions>
+	): GroupScoped<E>
+
+	/**
+	 * In-group version of [AccessLogFlavouredApi.filterAccessLogsBy]
+	 */
+	suspend fun filterAccessLogsBy(groupId: String, filter: FilterOptions<AccessLog>): PaginatedListIterator<GroupScoped<E>>
+
+	/**
+	 * In-group version of [AccessLogFlavouredApi.filterAccessLogsBySorted]
+	 */
+	suspend fun filterAccessLogsBySorted(groupId: String, filter: SortableFilterOptions<AccessLog>): PaginatedListIterator<GroupScoped<E>>
 }
 
 /* The extra API calls declared in this interface are the ones that can only be used on decrypted items when encryption keys are available */
@@ -307,7 +407,7 @@ interface AccessLogApi : AccessLogBasicFlavourlessApi, AccessLogFlavouredApi<Dec
 	 * @return the id of the patient linked to the access log, or empty if the current user can't access any patient id
 	 * of the access log.
 	 */
-	suspend fun decryptPatientIdOf(accessLog: AccessLog): Set<String>
+	suspend fun decryptPatientIdOf(accessLog: AccessLog): Set<EntityReferenceInGroup>
 
 	/**
 	 * Create metadata to allow other users to identify the anonymous delegates of an entity.
@@ -368,6 +468,13 @@ interface AccessLogApi : AccessLogBasicFlavourlessApi, AccessLogFlavouredApi<Dec
 	val tryAndRecover: AccessLogFlavouredApi<AccessLog>
 
 	/**
+	 * Gives access to methods of the api that allow to use entities or work with data owners in groups other than the
+	 * current user's group.
+	 * These methods aren't available when connected to a kraken-lite instance.
+	 */
+	val inGroup: AccessLogInGroupApi
+
+	/**
 	 * Get the ids of all access logs matching the provided filter.
 	 *
 	 * This method does not guarantee that the returned data will be ordered when using sortable filter options.
@@ -375,7 +482,7 @@ interface AccessLogApi : AccessLogBasicFlavourlessApi, AccessLogFlavouredApi<Dec
 	 * or to the internal iCure implementations, may cause future invocations to return unordered data.
 	 * If you need ordered data use [matchAccessLogsBySorted] instead.
 	 *
-	 * @param filter a access log filter
+	 * @param filter an access log filter
 	 * @return a list of access log ids
 	 */
 	suspend fun matchAccessLogsBy(filter: FilterOptions<AccessLog>): List<String>
@@ -386,13 +493,90 @@ interface AccessLogApi : AccessLogBasicFlavourlessApi, AccessLogFlavouredApi<Dec
 	 * This method guarantees that the returned data will be ordered using the rules specified by the provided filter,
 	 * but the operation may take longer than [matchAccessLogsBy].
 	 *
-	 * @param filter a access log filter
+	 * @param filter an access log filter
 	 * @return a list of access log ids
 	 */
 	suspend fun matchAccessLogsBySorted(filter: SortableFilterOptions<AccessLog>): List<String>
 }
 
+interface AccessLogInGroupApi : AccessLogBasicFlavourlessInGroupApi, AccessLogBasicFlavouredInGroupApi<DecryptedAccessLog> {
+	/**
+	 * Give access to the encrypted flavour of the api
+	 */
+	val encrypted: AccessLogFlavouredInGroupApi<EncryptedAccessLog>
+
+	/**
+	 * Gives access to the polymorphic flavour of the api
+	 */
+	val tryAndRecover: AccessLogFlavouredInGroupApi<AccessLog>
+
+	/**
+	 * In-group version of [AccessLogApi.withEncryptionMetadata]
+	 */
+	suspend fun withEncryptionMetadata(
+		entityGroupId: String,
+		base: DecryptedAccessLog?,
+		patient: GroupScoped<Patient>,
+		@DefaultValue("null")
+		user: User? = null,
+		@DefaultValue("emptyMap()")
+		delegates: @JsMapAsObjectArray(keyEntryName = "delegate", valueEntryName = "accessLevel") Map<EntityReferenceInGroup, AccessLevel> = emptyMap(),
+		@DefaultValue("com.icure.cardinal.sdk.crypto.entities.SecretIdUseOption.UseAnySharedWithParent")
+		secretId: SecretIdUseOption = SecretIdUseOption.UseAnySharedWithParent,
+		@DefaultValue("null")
+		alternateRootDelegateReference: EntityReferenceInGroup? = null,
+	): GroupScoped<DecryptedAccessLog>
+
+	/**
+	 * In-group version of [AccessLogApi.getEncryptionKeysOf]
+	 */
+	suspend fun getEncryptionKeysOf(accessLog: GroupScoped<AccessLog>): Set<HexString>
+
+	/**
+	 * In-group version of [AccessLogApi.hasWriteAccess]
+	 */
+	suspend fun hasWriteAccess(accessLog: GroupScoped<AccessLog>): Boolean
+
+	/**
+	 * In-group version of [AccessLogApi.decryptPatientIdOf]
+	 */
+	suspend fun decryptPatientIdOf(accessLog: GroupScoped<AccessLog>): Set<EntityReferenceInGroup>
+
+	/**
+	 * In-group version of [AccessLogApi.createDelegationDeAnonymizationMetadata]
+	 */
+	suspend fun createDelegationDeAnonymizationMetadata(entity: GroupScoped<AccessLog>, delegates: Set<EntityReferenceInGroup>)
+
+	/**
+	 * In-group version of [AccessLogApi.decrypt]
+	 */
+	suspend fun decrypt(accessLogs: List<GroupScoped<EncryptedAccessLog>>): List<GroupScoped<DecryptedAccessLog>>
+
+	/**
+	 * In-group version of [AccessLogApi.tryDecrypt]
+	 */
+	suspend fun tryDecrypt(accessLogs: List<GroupScoped<EncryptedAccessLog>>): List<GroupScoped<AccessLog>>
+
+	/**
+	 * In-group version of [AccessLogApi.matchAccessLogsBy]
+	 */
+	suspend fun matchAccessLogsBy(groupId: String, filter: FilterOptions<AccessLog>): List<String>
+
+	/**
+	 * In-group version of [AccessLogApi.matchAccessLogsBySorted]
+	 */
+	suspend fun matchAccessLogsBySorted(groupId: String, filter: SortableFilterOptions<AccessLog>): List<String>
+}
+
 interface AccessLogBasicApi : AccessLogBasicFlavourlessApi, AccessLogBasicFlavouredApi<EncryptedAccessLog> {
+
+	/**
+	 * Gives access to methods of the api that allow to use entities or work with data owners in groups other than the
+	 * current user's group.
+	 * These methods aren't available when connected to a kraken-lite instance.
+	 */
+	val inGroup: AccessLogBasicInGroupApi
+
 	/**
 	 * Get the ids of all access logs matching the provided filter.
 	 *
@@ -401,7 +585,7 @@ interface AccessLogBasicApi : AccessLogBasicFlavourlessApi, AccessLogBasicFlavou
 	 * or to the internal iCure implementations, may cause future invocations to return unordered data.
 	 * If you need ordered data use [matchAccessLogsBySorted] instead.
 	 *
-	 * @param filter a access log filter
+	 * @param filter an access log filter
 	 * @return a list of access log ids
 	 */
 	suspend fun matchAccessLogsBy(filter: BaseFilterOptions<AccessLog>): List<String>
@@ -412,7 +596,7 @@ interface AccessLogBasicApi : AccessLogBasicFlavourlessApi, AccessLogBasicFlavou
 	 * This method guarantees that the returned data will be ordered using the rules specified by the provided filter,
 	 * but the operation may take longer than [matchAccessLogsBy].
 	 *
-	 * @param filter a access log filter
+	 * @param filter an access log filter
 	 * @return a list of access log ids
 	 */
 	suspend fun matchAccessLogsBySorted(filter: BaseSortableFilterOptions<AccessLog>): List<String>
@@ -426,7 +610,7 @@ interface AccessLogBasicApi : AccessLogBasicFlavourlessApi, AccessLogBasicFlavou
 	 * or to the internal iCure implementations, may cause future invocations to return unordered data.
 	 * If you need ordered data use [filterAccessLogsBySorted] instead.
 	 *
-	 * @param filter a access log filter
+	 * @param filter an access log filter
 	 * @return an iterator that iterates over all access logs matching the provided filter.
 	 */
 	suspend fun filterAccessLogsBy(
@@ -440,10 +624,33 @@ interface AccessLogBasicApi : AccessLogBasicFlavourlessApi, AccessLogBasicFlavou
 	 * This method guarantees that the returned data will be ordered using the rules specified by the provided filter,
 	 * but the operation may take longer than [filterAccessLogsBy].
 	 *
-	 * @param filter a access log filter
+	 * @param filter an access log filter
 	 * @return an iterator that iterates over all access logs matching the provided filter.
 	 */
 	suspend fun filterAccessLogsBySorted(
 		filter: BaseSortableFilterOptions<AccessLog>
 	): PaginatedListIterator<EncryptedAccessLog>
 }
+
+interface AccessLogBasicInGroupApi : AccessLogBasicFlavourlessInGroupApi, AccessLogBasicFlavouredInGroupApi<EncryptedAccessLog> {
+	/**
+	 * In-group version of [AccessLogBasicApi.matchAccessLogsBy]
+	 */
+	suspend fun matchAccessLogsBy(groupId: String, filter: BaseFilterOptions<AccessLog>): List<String>
+
+	/**
+	 * In-group version of [AccessLogBasicApi.matchAccessLogsBySorted]
+	 */
+	suspend fun matchAccessLogsBySorted(groupId: String, filter: BaseSortableFilterOptions<AccessLog>): List<String>
+
+	/**
+	 * In-group version of [AccessLogBasicApi.filterAccessLogsBy]
+	 */
+	suspend fun filterAccessLogsBy(groupId: String, filter: BaseFilterOptions<AccessLog>): PaginatedListIterator<GroupScoped<EncryptedAccessLog>>
+
+	/**
+	 * In-group version of [AccessLogBasicApi.filterAccessLogsBySorted]
+	 */
+	suspend fun filterAccessLogsBySorted(groupId: String, filter: BaseSortableFilterOptions<AccessLog>): PaginatedListIterator<GroupScoped<EncryptedAccessLog>>
+}
+
