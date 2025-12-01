@@ -96,5 +96,41 @@ public interface RawAccessLogApi {
 		filter: AbstractFilter<AccessLog>,
 		groupId: String,
 	): HttpResponse<List<String>>
+
+	suspend fun createAccessLogInGroup(
+		groupId: String,
+		accessLogDto: EncryptedAccessLog,
+	): HttpResponse<EncryptedAccessLog>
+
+	suspend fun modifyAccessLogInGroup(
+		groupId: String,
+		accessLogDto: EncryptedAccessLog,
+	): HttpResponse<EncryptedAccessLog>
+
+	suspend fun getAccessLogInGroup(
+		groupId: String,
+		accessLogId: String,
+	): HttpResponse<EncryptedAccessLog>
+
+	suspend fun getAccessLogsInGroup(
+		groupId: String,
+		accessLogIds: ListOfIds,
+	): HttpResponse<List<EncryptedAccessLog>>
+
+	suspend fun deleteAccessLogsInGroup(
+		groupId: String,
+		accessLogIdsAndRevs: ListOfIdsAndRev,
+	): HttpResponse<List<DocIdentifier>>
+
+	suspend fun deleteAccessLogInGroup(
+		groupId: String,
+		accessLogId: String,
+		rev: String,
+	): HttpResponse<DocIdentifier>
+
+	suspend fun bulkShare(
+		request: BulkShareOrUpdateMetadataParams,
+		groupId: String,
+	): HttpResponse<List<EntityBulkShareResult<EncryptedAccessLog>>>
 	// endregion
 }

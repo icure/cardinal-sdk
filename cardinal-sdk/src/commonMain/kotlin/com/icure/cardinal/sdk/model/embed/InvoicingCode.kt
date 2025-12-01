@@ -10,9 +10,7 @@ import kotlin.Long
 import kotlin.String
 import kotlin.collections.Map
 
-// WARNING: This file is auto-generated. If you change it manually, your changes will be lost.
-// If you want to change the way this class is generated, see [this repo](https://github.com/icure/sdk-codegen).
-sealed interface InvoicingCode : Encryptable {
+public sealed interface InvoicingCode : Encryptable {
 	public val id: String?
 
 	public val dateCode: Long?
@@ -124,13 +122,10 @@ sealed interface InvoicingCode : Encryptable {
 	public val options: Map<String, String>
 
 	override val encryptedSelf: Base64String?
-	// region InvoicingCode-InvoicingCode
-
-	// endregion
 }
 
 @Serializable
-data class DecryptedInvoicingCode(
+public data class DecryptedInvoicingCode(
 	override val id: String?,
 	override val dateCode: Long? = null,
 	override val logicalId: String? = null,
@@ -188,14 +183,10 @@ data class DecryptedInvoicingCode(
 	@DefaultValue("emptyMap()")
 	override val options: Map<String, String> = emptyMap(),
 	override val encryptedSelf: Base64String? = null,
-) : InvoicingCode {
-	// region InvoicingCode-DecryptedInvoicingCode
-
-	// endregion
-}
+) : InvoicingCode
 
 @Serializable
-data class EncryptedInvoicingCode(
+public data class EncryptedInvoicingCode(
 	override val id: String?,
 	override val dateCode: Long? = null,
 	override val logicalId: String? = null,
@@ -253,8 +244,4 @@ data class EncryptedInvoicingCode(
 	@DefaultValue("emptyMap()")
 	override val options: Map<String, String> = emptyMap(),
 	override val encryptedSelf: Base64String? = null,
-) : InvoicingCode {
-	// region InvoicingCode-EncryptedInvoicingCode
-
-	// endregion
-}
+) : InvoicingCode

@@ -15,9 +15,7 @@ import kotlin.String
 import kotlin.collections.Map
 import kotlin.collections.Set
 
-// WARNING: This file is auto-generated. If you change it manually, your changes will be lost.
-// If you want to change the way this class is generated, see [this repo](https://github.com/icure/sdk-codegen).
-sealed interface Article :
+public sealed interface Article :
 	StoredDocument,
 	ICureDocument<String>,
 	HasEncryptionMetadata,
@@ -59,13 +57,10 @@ sealed interface Article :
 	override val encryptedSelf: Base64String?
 
 	override val securityMetadata: SecurityMetadata?
-	// region Article-Article
-
-	// endregion
 }
 
 @Serializable
-data class DecryptedArticle(
+public data class DecryptedArticle(
 	override val id: String,
 	override val rev: String? = null,
 	override val created: Long? = null,
@@ -91,15 +86,10 @@ data class DecryptedArticle(
 	override val encryptionKeys: Map<String, Set<Delegation>> = emptyMap(),
 	override val encryptedSelf: Base64String? = null,
 	override val securityMetadata: SecurityMetadata? = null,
-) : Article {
-	// region Article-DecryptedArticle
-override fun copyWithSecurityMetadata(securityMetadata: SecurityMetadata, secretForeignKeys: Set<String>): DecryptedArticle =
-		copy(securityMetadata = securityMetadata, secretForeignKeys = secretForeignKeys)
-	// endregion
-}
+) : Article
 
 @Serializable
-data class EncryptedArticle(
+public data class EncryptedArticle(
 	override val id: String,
 	override val rev: String? = null,
 	override val created: Long? = null,
@@ -125,9 +115,4 @@ data class EncryptedArticle(
 	override val encryptionKeys: Map<String, Set<Delegation>> = emptyMap(),
 	override val encryptedSelf: Base64String? = null,
 	override val securityMetadata: SecurityMetadata? = null,
-) : Article {
-	// region Article-EncryptedArticle
-override fun copyWithSecurityMetadata(securityMetadata: SecurityMetadata, secretForeignKeys: Set<String>): EncryptedArticle =
-		copy(securityMetadata = securityMetadata, secretForeignKeys = secretForeignKeys)
-	// endregion
-}
+) : Article
