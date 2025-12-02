@@ -311,6 +311,10 @@ internal class CardinalSdkJsImpl(
 		CardinalSdkJsImpl(sdk.switchGroup(groupId))
 	}
 
+	override fun changeScope(dataOwnerId: String): Promise<CardinalSdkJs> = GlobalScope.promise {
+		CardinalSdkJsImpl(sdk.changeScope(dataOwnerId))
+	}
+
 	override fun close() {
 		sdk.scope.cancel()
 	}
