@@ -231,6 +231,20 @@ interface CardinalSdk : CardinalApis {
 	suspend fun switchGroup(groupId: String): CardinalSdk
 
 	/**
+	 * Get a new instance of the sdk associated to a data owner that may be different from the one linked to the logged
+	 * user.
+	 *
+	 * You need appropriate permissions and access to the keys of the data owner.
+	 *
+	 * Note that the switched sdk will reuse components like the http client.
+	 * Don't close the client of this sdk while you are using the new sdk.
+	 *
+	 * @param dataOwnerId id of the data owner to use in the new sdk
+	 * @return a new sdk for executing requests as the provided data owner
+	 */
+	suspend fun changeScope(dataOwnerId: String): CardinalSdk
+
+	/**
 	 * Exposes the scope used by the SDK to perform background tasks.
 	 * Should be canceled when the SDK is not needed anymore.
 	 */
@@ -1070,8 +1084,16 @@ internal class CardinalSdkImpl(
 		AgendaApiImpl(RawAgendaApiImpl(apiUrl, authProvider, config.rawApiConfig), config)
 	}
 
-	override suspend fun switchGroup(groupId: String): CardinalSdk {
-		val switchedProvider = authProvider.switchGroup(groupId)
+	override suspend fun switchGroup(groupId: String): CardinalSdk =
+		withSwitchedProvider(authProvider.switchGroup(groupId), groupId)
+
+	override suspend fun changeScope(dataOwnerId: String): CardinalSdk =
+		withSwitchedProvider(authProvider.changeScope(dataOwnerId), this.boundGroupId)
+
+	private suspend fun withSwitchedProvider(
+		switchedProvider: AuthProvider,
+		boundGroupId: String?
+	): CardinalSdk {
 		val (switchedCryptoConfigs, newKey, scope) = initializeApiCrypto(
 			config.apiUrl,
 			switchedProvider,
@@ -1079,14 +1101,14 @@ internal class CardinalSdkImpl(
 			config.rawApiConfig.json,
 			config.crypto.strategies,
 			config.crypto.primitives,
-			groupId,
+			boundGroupId,
 			options
 		)
 		return CardinalSdkImpl(
 			switchedProvider,
 			switchedCryptoConfigs,
 			options,
-			groupId,
+			boundGroupId,
 			scope
 		).also { switchedCryptoConfigs.notifyNewKeyIfAny(it, newKey) }
 	}
