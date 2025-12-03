@@ -119,7 +119,21 @@ export interface CardinalSdk extends CardinalApis {
    * @param groupId the id of the new group to switch to
    * @return a new sdk for executing requests in the provided group
    */
-  switchGroup(groupId: String): Promise<CardinalSdk>
+  switchGroup(groupId: string): Promise<CardinalSdk>
+
+  /**
+   * Get a new instance of the sdk associated to a data owner that may be different from the one linked to the logged
+   * user.
+   *
+   * You need appropriate permissions and access to the keys of the data owner.
+   *
+   * Note that the switched sdk will reuse components like the http client.
+   * Don't close the client of this sdk while you are using the new sdk.
+   *
+   * @param dataOwnerId id of the data owner to use in the new sdk
+   * @return a new sdk for executing requests as the provided data owner
+   */
+  changeScope(dataOwnerId: string): Promise<CardinalSdk>
 
   /**
    * Closes the SDK instance freeing any held resources and canceling ongoing tasks.
