@@ -17,7 +17,6 @@ import com.icure.cardinal.sdk.api.RoleApi
 import com.icure.cardinal.sdk.api.SystemApi
 import com.icure.cardinal.sdk.api.TarificationApi
 import com.icure.cardinal.sdk.api.UserApi
-import com.icure.cardinal.sdk.api.impl.AccessLogBasicApiImpl
 import com.icure.cardinal.sdk.api.impl.AgendaApiImpl
 import com.icure.cardinal.sdk.api.impl.ApplicationSettingsApiImpl
 import com.icure.cardinal.sdk.api.impl.AuthApiImpl
@@ -49,6 +48,7 @@ import com.icure.cardinal.sdk.api.impl.TarificationApiImpl
 import com.icure.cardinal.sdk.api.impl.TimeTableApiImpl
 import com.icure.cardinal.sdk.api.impl.TopicBasicApiImpl
 import com.icure.cardinal.sdk.api.impl.UserApiImpl
+import com.icure.cardinal.sdk.api.impl.initAccessLogBasicApi
 import com.icure.cardinal.sdk.api.impl.initCalendarItemBasicApi
 import com.icure.cardinal.sdk.api.impl.initHealthElementBasicApi
 import com.icure.cardinal.sdk.api.impl.initPatientBasicApi
@@ -113,7 +113,6 @@ import com.icure.cardinal.sdk.options.BasicToFullSdkOptions
 import com.icure.cardinal.sdk.options.EncryptedFieldsConfiguration
 import com.icure.cardinal.sdk.options.EntitiesEncryptedFieldsManifests
 import com.icure.cardinal.sdk.options.RequestRetryConfiguration
-import com.icure.cardinal.sdk.options.SdkOptions
 import com.icure.cardinal.sdk.options.UnboundBasicApiConfigurationImpl
 import com.icure.cardinal.sdk.options.UnboundBasicSdkOptions
 import com.icure.cardinal.sdk.options.configuredClientOrDefault
@@ -420,7 +419,7 @@ private class CardinalBaseApisImpl(
 	}
 
 	override val accessLog by lazy {
-		AccessLogBasicApiImpl(
+		initAccessLogBasicApi(
 			RawAccessLogApiImpl(
 				apiUrl,
 				authProvider,
