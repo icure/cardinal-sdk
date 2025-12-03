@@ -97,4 +97,8 @@ class KeyRecoveryTest : StringSpec({
 			values.single().keys shouldBe setOf(hcp.publicKeySpki!!.fingerprintV1(), secondKeySpki.fingerprintV1())
 		}
 	}
+
+	"Should be able to use keys of the parent HCP to recover shamir splits".config(enabled = DEFAULT_ENABLED) {
+		TODO("Implement test and functionality (was part of typescript sdk)")
+	}
 })
