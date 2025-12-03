@@ -248,10 +248,13 @@ private class KeyLoader(
 					isDevice = false
 				)
 			} ?: emptyList()
+			val availableSpki = (loaded.map { it.publicKeyString } + recoveredByStrategies.map { it.publicKeyString }).toSet()
 			val reRecoveredByIcure = cardinalKeyRecovery.recoverKeys(
 				dataOwnerInfo,
 				(loaded + recoveredByStrategies).mapTo(mutableSetOf()) { CardinalKeyInfo(it.publicKeyString, it.pair) }
-			).map {
+			).filter {
+				it.pubSpkiHexString !in availableSpki
+			}.map {
 				DataOwnerKeyInfo.Found(
 					it.pubSpkiHexString,
 					it.key,
