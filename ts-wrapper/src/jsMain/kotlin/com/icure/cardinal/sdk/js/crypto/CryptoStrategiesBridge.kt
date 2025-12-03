@@ -142,19 +142,15 @@ private class KeyPairRecovererBridge(
 		}
 	}
 
-	override fun recoverWithEncryptionKeys(
+	override fun getRecoverableWithEncryptionKeys(
 		dataOwner: DataOwnerWithTypeJs,
 		recoveredKeys: Array<XRsaKeypair>
-	): Promise<Record<String, XRsaKeypair>> = scope.promise {
-		val ktResult = recoverer.recoverWithEncryptionKeys(
+	): Promise<Array<String>> = scope.promise {
+		val ktResult = recoverer.getRecoverableWithEncryptionKeys(
 			dataOwnerWithType_fromJs(dataOwner),
 			recoveredKeys.map { it.toKryptom(RsaAlgorithm.RsaEncryptionAlgorithm.fromIdentifier(it.private.algorithm)) },
 		)
-		CheckedConverters.mapToObject(
-			ktResult,
-			{ it.s },
-			{ it.toExternal() }
-		)
+		CheckedConverters.setToArray(ktResult) { it.s }
 	}
 }
 

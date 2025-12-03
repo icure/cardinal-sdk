@@ -54,8 +54,8 @@ external interface KeyPairRecovererJs {
 		autoDelete: Boolean
 	): Promise<RecoveryResultJs<Record<String, Record<String, XRsaKeypair>>>>
 
-	fun recoverWithEncryptionKeys(
+	fun getRecoverableWithEncryptionKeys(
 		dataOwner: DataOwnerWithTypeJs,
 		recoveredKeys: Array<XRsaKeypair>
-	): Promise<Record<String, XRsaKeypair>>
+	): Promise<Array<String>>
 }

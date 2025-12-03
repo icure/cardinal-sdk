@@ -49,13 +49,15 @@ interface KeyPairRecoverer {
 	): RecoveryResult<Map<String, Map<SpkiHexString, RsaKeypair<RsaAlgorithm.RsaEncryptionAlgorithm>>>>
 
 	/**
-	 * Try to recover keypairs of a data owner user using other recovered keypairs, through transfer keys or shamir
-	 * shares.
-	 * This method uses the provided [recoveredKeys] together with keys already accessible to the SDK to try to recover
-	 * additional keypairs of the provided [dataOwner] using transfer keys or shamir secret shares.
+	 * Get information on which keys the SDK will be able to recover autonomously through transfer keys or shamir
+	 * shares using the provided [recoveredKeys] plus any already available keys (i.e. keys that were already in the
+	 * storage or recovered using transfer keys and/or shamir from the keys already in the storage).
+	 *
+	 * When prompting the user to recover more of his keys you can ignore any key that are returned by this method, as
+	 * those keys will be automatically recovered by the SDK if you return [recoveredKeys].
 	 */
-	suspend fun recoverWithEncryptionKeys(
+	suspend fun getRecoverableWithEncryptionKeys(
 		dataOwner: DataOwnerWithType,
 		recoveredKeys: Collection<RsaKeypair<RsaAlgorithm.RsaEncryptionAlgorithm>>
-	): Map<SpkiHexString, RsaKeypair<RsaAlgorithm.RsaEncryptionAlgorithm>>
+	): Set<SpkiHexString>
 }
