@@ -7,11 +7,8 @@ import kotlin.Any
 import kotlin.Long
 import kotlin.String
 
-// WARNING: This file is auto-generated. If you change it manually, your changes will be lost.
-// If you want to change the way this class is generated, see [this repo](https://github.com/icure/sdk-codegen).
-
 @Serializable
-sealed interface ExternalFilterKey {
+public sealed interface ExternalFilterKey {
 	public val key: Any
 
 	@Serializable
@@ -31,7 +28,4 @@ sealed interface ExternalFilterKey {
 	public data class ExternalFilterComplexKey(
 		override val key: JsonElement,
 	) : ExternalFilterKey
-	// region ExternalFilterKey-ExternalFilterKey
-
-	// endregion
 }

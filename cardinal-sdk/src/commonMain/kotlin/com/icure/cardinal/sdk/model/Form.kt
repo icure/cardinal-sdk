@@ -16,9 +16,7 @@ import kotlin.String
 import kotlin.collections.Map
 import kotlin.collections.Set
 
-// WARNING: This file is auto-generated. If you change it manually, your changes will be lost.
-// If you want to change the way this class is generated, see [this repo](https://github.com/icure/sdk-codegen).
-sealed interface Form :
+public sealed interface Form :
 	StoredDocument,
 	ICureDocument<String>,
 	HasEncryptionMetadata,
@@ -80,13 +78,10 @@ sealed interface Form :
 	override val encryptedSelf: Base64String?
 
 	override val securityMetadata: SecurityMetadata?
-	// region Form-Form
-
-	// endregion
 }
 
 @Serializable
-data class DecryptedForm(
+public data class DecryptedForm(
 	override val id: String,
 	override val rev: String? = null,
 	override val created: Long? = null,
@@ -122,15 +117,10 @@ data class DecryptedForm(
 	override val encryptionKeys: Map<String, Set<Delegation>> = emptyMap(),
 	override val encryptedSelf: Base64String? = null,
 	override val securityMetadata: SecurityMetadata? = null,
-) : Form {
-	// region Form-DecryptedForm
-override fun copyWithSecurityMetadata(securityMetadata: SecurityMetadata, secretForeignKeys: Set<String>): DecryptedForm =
-		copy(securityMetadata = securityMetadata, secretForeignKeys = secretForeignKeys)
-	// endregion
-}
+) : Form
 
 @Serializable
-data class EncryptedForm(
+public data class EncryptedForm(
 	override val id: String,
 	override val rev: String? = null,
 	override val created: Long? = null,
@@ -166,9 +156,4 @@ data class EncryptedForm(
 	override val encryptionKeys: Map<String, Set<Delegation>> = emptyMap(),
 	override val encryptedSelf: Base64String? = null,
 	override val securityMetadata: SecurityMetadata? = null,
-) : Form {
-	// region Form-EncryptedForm
-override fun copyWithSecurityMetadata(securityMetadata: SecurityMetadata, secretForeignKeys: Set<String>): EncryptedForm =
-		copy(securityMetadata = securityMetadata, secretForeignKeys = secretForeignKeys)
-	// endregion
-}
+) : Form

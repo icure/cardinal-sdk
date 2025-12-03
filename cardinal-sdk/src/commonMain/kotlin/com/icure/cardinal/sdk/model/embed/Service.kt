@@ -14,9 +14,7 @@ import kotlin.collections.List
 import kotlin.collections.Map
 import kotlin.collections.Set
 
-// WARNING: This file is auto-generated. If you change it manually, your changes will be lost.
-// If you want to change the way this class is generated, see [this repo](https://github.com/icure/sdk-codegen).
-sealed interface Service : Encryptable, ICureDocument<String> {
+public sealed interface Service : Encryptable, ICureDocument<String> {
 	override val id: String
 
 	public val transactionId: String?
@@ -88,15 +86,10 @@ sealed interface Service : Encryptable, ICureDocument<String> {
 	override val encryptedSelf: Base64String?
 
 	public val securityMetadata: SecurityMetadata?
-	// region Service-Service
-	companion object {
-		const val KRAKEN_QUALIFIED_NAME = "org.taktik.icure.entities.embed.Service"
-	}
-	// endregion
 }
 
 @Serializable
-data class DecryptedService(
+public data class DecryptedService(
 	override val id: String,
 	override val transactionId: String? = null,
 	@DefaultValue("emptyList()")
@@ -145,14 +138,10 @@ data class DecryptedService(
 	override val tags: Set<CodeStub> = emptySet(),
 	override val encryptedSelf: Base64String? = null,
 	override val securityMetadata: SecurityMetadata? = null,
-) : Service {
-	// region Service-DecryptedService
-
-	// endregion
-}
+) : Service
 
 @Serializable
-data class EncryptedService(
+public data class EncryptedService(
 	override val id: String,
 	override val transactionId: String? = null,
 	@DefaultValue("emptyList()")
@@ -201,8 +190,4 @@ data class EncryptedService(
 	override val tags: Set<CodeStub> = emptySet(),
 	override val encryptedSelf: Base64String? = null,
 	override val securityMetadata: SecurityMetadata? = null,
-) : Service {
-	// region Service-EncryptedService
-
-	// endregion
-}
+) : Service
