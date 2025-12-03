@@ -9,11 +9,8 @@ import kotlin.collections.List
 import kotlin.collections.Map
 import kotlin.collections.Set
 
-// WARNING: This file is auto-generated. If you change it manually, your changes will be lost.
-// If you want to change the way this class is generated, see [this repo](https://github.com/icure/sdk-codegen).
-
 @Serializable
-data class ParagraphAgreement(
+public data class ParagraphAgreement(
 	public val timestamp: Long? = null,
 	public val paragraph: String? = null,
 	public val accepted: Boolean? = null,
@@ -36,8 +33,4 @@ data class ParagraphAgreement(
 	public val strengthUnit: String? = null,
 	public val agreementAppendices: List<AgreementAppendix>? = null,
 	public val documentId: String? = null,
-) {
-	// region ParagraphAgreement-ParagraphAgreement
-
-	// endregion
-}
+)

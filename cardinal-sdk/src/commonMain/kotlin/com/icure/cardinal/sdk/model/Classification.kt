@@ -15,9 +15,7 @@ import kotlin.String
 import kotlin.collections.Map
 import kotlin.collections.Set
 
-// WARNING: This file is auto-generated. If you change it manually, your changes will be lost.
-// If you want to change the way this class is generated, see [this repo](https://github.com/icure/sdk-codegen).
-sealed interface Classification :
+public sealed interface Classification :
 	StoredDocument,
 	ICureDocument<String>,
 	HasEncryptionMetadata,
@@ -61,13 +59,10 @@ sealed interface Classification :
 	override val encryptedSelf: Base64String?
 
 	override val securityMetadata: SecurityMetadata?
-	// region Classification-Classification
-
-	// endregion
 }
 
 @Serializable
-data class DecryptedClassification(
+public data class DecryptedClassification(
 	override val id: String,
 	override val rev: String? = null,
 	override val created: Long? = null,
@@ -95,15 +90,10 @@ data class DecryptedClassification(
 	override val encryptionKeys: Map<String, Set<Delegation>> = emptyMap(),
 	override val encryptedSelf: Base64String? = null,
 	override val securityMetadata: SecurityMetadata? = null,
-) : Classification {
-	// region Classification-DecryptedClassification
-override fun copyWithSecurityMetadata(securityMetadata: SecurityMetadata, secretForeignKeys: Set<String>): DecryptedClassification =
-		copy(securityMetadata = securityMetadata, secretForeignKeys = secretForeignKeys)
-	// endregion
-}
+) : Classification
 
 @Serializable
-data class EncryptedClassification(
+public data class EncryptedClassification(
 	override val id: String,
 	override val rev: String? = null,
 	override val created: Long? = null,
@@ -131,9 +121,4 @@ data class EncryptedClassification(
 	override val encryptionKeys: Map<String, Set<Delegation>> = emptyMap(),
 	override val encryptedSelf: Base64String? = null,
 	override val securityMetadata: SecurityMetadata? = null,
-) : Classification {
-	// region Classification-EncryptedClassification
-override fun copyWithSecurityMetadata(securityMetadata: SecurityMetadata, secretForeignKeys: Set<String>): EncryptedClassification =
-		copy(securityMetadata = securityMetadata, secretForeignKeys = secretForeignKeys)
-	// endregion
-}
+) : Classification
