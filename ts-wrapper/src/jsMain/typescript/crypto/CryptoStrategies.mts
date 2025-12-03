@@ -202,4 +202,15 @@ export interface KeyPairRecoverer {
     recoveryKey: RecoveryDataKey,
     autoDelete: boolean
   ): Promise<RecoveryResult<{ [dataOwnerId: string]: { [publicKeySpki: SpkiHexString]: XRsaKeypair } }>>
+
+  /**
+   * Try to recover keypairs of a data owner user using other recovered keypairs, through transfer keys or shamir
+   * shares.
+   * This method uses the provided {@link recoveredKeys} together with keys already accessible to the SDK to try to recover
+   * additional keypairs of the provided {@link dataOwner} using transfer keys or shamir secret shares.
+   */
+  recoverWithEncryptionKeys(
+    dataOwner: DataOwnerWithType,
+    recoveredKeys: XRsaKeypair[]
+  ): Promise<{ [publicKeySpki: SpkiHexString]: XRsaKeypair }>
 }

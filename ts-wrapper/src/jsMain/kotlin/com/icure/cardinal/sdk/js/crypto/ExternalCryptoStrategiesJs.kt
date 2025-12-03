@@ -7,6 +7,10 @@ import com.icure.cardinal.sdk.js.externalsdk.CardinalApisJs
 import com.icure.cardinal.sdk.js.model.CryptoActorStubWithTypeJs
 import com.icure.cardinal.sdk.js.model.DataOwnerWithTypeJs
 import com.icure.cardinal.sdk.js.utils.Record
+import com.icure.cardinal.sdk.model.DataOwnerWithType
+import com.icure.cardinal.sdk.model.specializations.SpkiHexString
+import com.icure.kryptom.crypto.RsaAlgorithm
+import com.icure.kryptom.crypto.RsaKeypair
 import com.icure.kryptom.crypto.external.XCryptoService
 import com.icure.kryptom.crypto.external.XRsaKeypair
 import kotlin.js.Promise
@@ -49,4 +53,9 @@ external interface KeyPairRecovererJs {
 		recoveryKey: RecoveryDataKeyJs,
 		autoDelete: Boolean
 	): Promise<RecoveryResultJs<Record<String, Record<String, XRsaKeypair>>>>
+
+	fun recoverWithEncryptionKeys(
+		dataOwner: DataOwnerWithTypeJs,
+		recoveredKeys: Array<XRsaKeypair>
+	): Promise<Record<String, XRsaKeypair>>
 }
