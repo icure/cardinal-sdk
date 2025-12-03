@@ -577,7 +577,7 @@ internal suspend fun initializeApiCrypto(
 		dataOwnerApi,
 		iCureStorage,
 		icureKeyRecovery,
-		KeyPairRecovererImpl(recoveryDataEncryption),
+		recoveryDataEncryption,
 		options.useHierarchicalDataOwners,
 	).initialize()
 	val userEncryptionKeys = userEncryptionKeysInitInfo.manager

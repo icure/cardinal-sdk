@@ -4,6 +4,7 @@ import com.icure.cardinal.sdk.api.DataOwnerApi
 import com.icure.cardinal.sdk.crypto.CardinalKeyRecovery
 import com.icure.cardinal.sdk.crypto.CryptoStrategies
 import com.icure.cardinal.sdk.crypto.KeyPairRecoverer
+import com.icure.cardinal.sdk.crypto.RecoveryDataEncryption
 import com.icure.cardinal.sdk.crypto.UserEncryptionKeysManager
 import com.icure.cardinal.sdk.crypto.entities.CachedKeypairDetails
 import com.icure.cardinal.sdk.crypto.entities.CardinalKeyInfo
@@ -103,7 +104,7 @@ class UserEncryptionKeysManagerImpl private constructor (
 		private val dataOwnerApi: DataOwnerApi,
 		private val icureStorage: CardinalStorageFacade,
 		private val cardinalKeyRecovery: CardinalKeyRecovery,
-		private val keyPairRecoverer: KeyPairRecoverer,
+		private val recoveryDataEncryption: RecoveryDataEncryption,
 		private val initializeParentKeys: Boolean
 	): UserEncryptionKeysManager.Factory {
 		override suspend fun initialize(): UserEncryptionKeysManager.Factory.InitialisationDetails {
@@ -112,7 +113,7 @@ class UserEncryptionKeysManagerImpl private constructor (
 				dataOwnerApi,
 				icureStorage,
 				cardinalKeyRecovery,
-				keyPairRecoverer,
+				recoveryDataEncryption,
 				initializeParentKeys
 			)
 			val (initialKeyData, newKey) = keyLoader.doLoadKeys(
@@ -163,7 +164,7 @@ private class KeyLoader(
 	private val dataOwnerApi: DataOwnerApi,
 	private val icureStorage: CardinalStorageFacade,
 	private val cardinalKeyRecovery: CardinalKeyRecovery,
-	private val keyPairRecoverer: KeyPairRecoverer,
+	private val recoveryDataEncryption: RecoveryDataEncryption,
 	private val initializeParentKeys: Boolean,
 ) {
 
@@ -196,6 +197,16 @@ private class KeyLoader(
 				unavailableKeys = missing.map { it.asUnavailableKeyInfo() }
 			)
 		}
+		val keyPairRecoverer = KeyPairRecovererImpl(
+			recoveryDataEncryption,
+			cardinalKeyRecovery,
+			cryptoService,
+			loadedKeyInfo.associate { (dataOwnerWithType, loadedKeysInfo) ->
+				dataOwnerWithType.dataOwner.id to loadedKeysInfo.first.associate {
+					it.publicKeyString to it.pair
+				}
+			}
+		)
 		val recoveredKeyData = if (recoveryRequest.any { it.unknownKeys.isNotEmpty() || it.unavailableKeys.isNotEmpty() })
 			recoverAndVerifySelfHierarchyKeys(recoveryRequest,cryptoService, keyPairRecoverer)
 		else
@@ -349,14 +360,14 @@ private class KeyLoader(
 		val recoveredKeysByPub = cardinalKeyRecovery.recoverKeys(
 			dataOwnerInfo,
 			loadedKeysByPub.values.mapTo(mutableSetOf()) { CardinalKeyInfo(it.publicKeyString, it.pair) }
-		).map {
+		).associate {
 			it.pubSpkiHexString to DataOwnerKeyInfo.Found(
 				it.pubSpkiHexString,
 				it.key,
 				verificationDetails[it.pubSpkiHexString.fingerprintV1()] == true,
 				false
 			)
-		}.toMap()
+		}
 		recoveredKeysByPub.values.forEach {
 			icureStorage.saveEncryptionKeypair(dataOwnerInfo.dataOwner.id, it.pair, false)
 		}
