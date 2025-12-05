@@ -9,6 +9,7 @@ import com.icure.cardinal.sdk.js.filters.SortableFilterOptionsJs
 import com.icure.cardinal.sdk.js.model.AccessLogJs
 import com.icure.cardinal.sdk.js.model.DecryptedAccessLogJs
 import com.icure.cardinal.sdk.js.model.EncryptedAccessLogJs
+import com.icure.cardinal.sdk.js.model.EntityReferenceInGroupJs
 import com.icure.cardinal.sdk.js.model.PaginatedListJs
 import com.icure.cardinal.sdk.js.model.PatientJs
 import com.icure.cardinal.sdk.js.model.StoredDocumentIdentifierJs
@@ -30,6 +31,8 @@ public external interface AccessLogApiJs {
 
 	public val tryAndRecover: AccessLogFlavouredApiJs<AccessLogJs>
 
+	public val inGroup: AccessLogInGroupApiJs
+
 	public fun withEncryptionMetadata(
 		base: DecryptedAccessLogJs?,
 		patient: PatientJs,
@@ -40,7 +43,7 @@ public external interface AccessLogApiJs {
 
 	public fun hasWriteAccess(accessLog: AccessLogJs): Promise<Boolean>
 
-	public fun decryptPatientIdOf(accessLog: AccessLogJs): Promise<Array<String>>
+	public fun decryptPatientIdOf(accessLog: AccessLogJs): Promise<Array<EntityReferenceInGroupJs>>
 
 	public fun createDelegationDeAnonymizationMetadata(entity: AccessLogJs, delegates: Array<String>):
 			Promise<Unit>
@@ -58,16 +61,17 @@ public external interface AccessLogApiJs {
 
 	public fun deleteAccessLogsUnsafe(entityIds: Array<String>): Promise<Array<DocIdentifierJs>>
 
-	public fun deleteAccessLogById(entityId: String, rev: String): Promise<DocIdentifierJs>
+	public fun deleteAccessLogById(entityId: String, rev: String): Promise<StoredDocumentIdentifierJs>
 
 	public fun deleteAccessLogsByIds(entityIds: Array<StoredDocumentIdentifierJs>):
-			Promise<Array<DocIdentifierJs>>
+			Promise<Array<StoredDocumentIdentifierJs>>
 
 	public fun purgeAccessLogById(id: String, rev: String): Promise<Unit>
 
-	public fun deleteAccessLog(accessLog: AccessLogJs): Promise<DocIdentifierJs>
+	public fun deleteAccessLog(accessLog: AccessLogJs): Promise<StoredDocumentIdentifierJs>
 
-	public fun deleteAccessLogs(accessLogs: Array<AccessLogJs>): Promise<Array<DocIdentifierJs>>
+	public fun deleteAccessLogs(accessLogs: Array<AccessLogJs>):
+			Promise<Array<StoredDocumentIdentifierJs>>
 
 	public fun purgeAccessLog(accessLog: AccessLogJs): Promise<Unit>
 

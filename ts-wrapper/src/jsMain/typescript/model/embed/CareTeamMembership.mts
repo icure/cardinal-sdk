@@ -65,7 +65,7 @@ export class DecryptedCareTeamMembership {
 			endDate: expectNumber(extractEntry(jCpy, 'endDate', false, path), true, true, [...path, ".endDate"]),
 			careTeamMemberId: expectString(extractEntry(jCpy, 'careTeamMemberId', false, path), true, [...path, ".careTeamMemberId"]),
 			membershipType: expectStringEnum(extractEntry(jCpy, 'membershipType', false, path), true, [...path, ".membershipType"], MembershipType, 'MembershipType'),
-			encryptedSelf: expectString(extractEntry(jCpy, 'encryptedSelf', false, path), true, [...path, ".encryptedSelf"]),
+			encryptedSelf: expectString(extractEntry(jCpy, 'encryptedSelf', false, path), true, [...path, ".encryptedSelf"]) as Base64String,
 		})
 		if (!ignoreUnknownKeys) {
 			const unused = Object.keys(jCpy)
@@ -119,7 +119,7 @@ export class EncryptedCareTeamMembership {
 			endDate: expectNumber(extractEntry(jCpy, 'endDate', false, path), true, true, [...path, ".endDate"]),
 			careTeamMemberId: expectString(extractEntry(jCpy, 'careTeamMemberId', false, path), true, [...path, ".careTeamMemberId"]),
 			membershipType: expectStringEnum(extractEntry(jCpy, 'membershipType', false, path), true, [...path, ".membershipType"], MembershipType, 'MembershipType'),
-			encryptedSelf: expectString(extractEntry(jCpy, 'encryptedSelf', false, path), true, [...path, ".encryptedSelf"]),
+			encryptedSelf: expectString(extractEntry(jCpy, 'encryptedSelf', false, path), true, [...path, ".encryptedSelf"]) as Base64String,
 		})
 		if (!ignoreUnknownKeys) {
 			const unused = Object.keys(jCpy)

@@ -3,6 +3,7 @@ import {FilterOptions, PaginatedListIterator, SortableFilterOptions} from '../ca
 import {AccessLogShareOptions} from '../crypto/entities/AccessLogShareOptions.mjs';
 import {SecretIdUseOption} from '../crypto/entities/SecretIdUseOption.mjs';
 import {AccessLog, DecryptedAccessLog, EncryptedAccessLog} from '../model/AccessLog.mjs';
+import {EntityReferenceInGroup} from '../model/EntityReferenceInGroup.mjs';
 import {PaginatedList} from '../model/PaginatedList.mjs';
 import {Patient} from '../model/Patient.mjs';
 import {StoredDocumentIdentifier} from '../model/StoredDocumentIdentifier.mjs';
@@ -11,6 +12,7 @@ import {DocIdentifier} from '../model/couchdb/DocIdentifier.mjs';
 import {AccessLevel} from '../model/embed/AccessLevel.mjs';
 import {HexString} from '../model/specializations/HexString.mjs';
 import {AccessLogFlavouredApi} from './AccessLogFlavouredApi.mjs';
+import {AccessLogInGroupApi} from './AccessLogInGroupApi.mjs';
 
 
 export interface AccessLogApi {
@@ -19,6 +21,8 @@ export interface AccessLogApi {
 
 	tryAndRecover: AccessLogFlavouredApi<AccessLog>;
 
+	inGroup: AccessLogInGroupApi;
+
 	withEncryptionMetadata(base: DecryptedAccessLog | undefined, patient: Patient,
 			options?: { user?: User | undefined, delegates?: { [ key: string ]: AccessLevel }, secretId?: SecretIdUseOption, alternateRootDelegateId?: string | undefined }): Promise<DecryptedAccessLog>;
 
@@ -26,7 +30,7 @@ export interface AccessLogApi {
 
 	hasWriteAccess(accessLog: AccessLog): Promise<boolean>;
 
-	decryptPatientIdOf(accessLog: AccessLog): Promise<Array<string>>;
+	decryptPatientIdOf(accessLog: AccessLog): Promise<Array<EntityReferenceInGroup>>;
 
 	createDelegationDeAnonymizationMetadata(entity: AccessLog,
 			delegates: Array<string>): Promise<void>;
@@ -43,15 +47,15 @@ export interface AccessLogApi {
 
 	deleteAccessLogsUnsafe(entityIds: Array<string>): Promise<Array<DocIdentifier>>;
 
-	deleteAccessLogById(entityId: string, rev: string): Promise<DocIdentifier>;
+	deleteAccessLogById(entityId: string, rev: string): Promise<StoredDocumentIdentifier>;
 
-	deleteAccessLogsByIds(entityIds: Array<StoredDocumentIdentifier>): Promise<Array<DocIdentifier>>;
+	deleteAccessLogsByIds(entityIds: Array<StoredDocumentIdentifier>): Promise<Array<StoredDocumentIdentifier>>;
 
 	purgeAccessLogById(id: string, rev: string): Promise<void>;
 
-	deleteAccessLog(accessLog: AccessLog): Promise<DocIdentifier>;
+	deleteAccessLog(accessLog: AccessLog): Promise<StoredDocumentIdentifier>;
 
-	deleteAccessLogs(accessLogs: Array<AccessLog>): Promise<Array<DocIdentifier>>;
+	deleteAccessLogs(accessLogs: Array<AccessLog>): Promise<Array<StoredDocumentIdentifier>>;
 
 	purgeAccessLog(accessLog: AccessLog): Promise<void>;
 

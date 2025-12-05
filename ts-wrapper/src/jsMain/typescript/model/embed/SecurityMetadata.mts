@@ -1,5 +1,6 @@
 // auto-generated file
 import {expectMap, expectObject, expectString, extractEntry} from '../../internal/JsonDecodeUtils.mjs';
+import {SecureDelegationKeyString} from '../specializations/SecureDelegationKeyString.mjs';
 import {SecureDelegation} from './SecureDelegation.mjs';
 
 
@@ -26,7 +27,7 @@ export class SecurityMetadata {
 				extractEntry(jCpy, 'secureDelegations', true, path),
 				false,
 				[...path, ".secureDelegations"],
-				(k0, p0) => expectString(k0, false, p0),
+				(k0, p0) => expectString(k0, false, p0) as SecureDelegationKeyString,
 				(v0, p0) => expectObject(v0, false, ignoreUnknownKeys, p0, SecureDelegation.fromJSON)
 			),
 		})
