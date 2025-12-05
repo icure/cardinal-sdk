@@ -10,11 +10,8 @@ import kotlin.String
 import kotlin.collections.List
 import kotlin.collections.Set
 
-// WARNING: This file is auto-generated. If you change it manually, your changes will be lost.
-// If you want to change the way this class is generated, see [this repo](https://github.com/icure/sdk-codegen).
-
 @Serializable
-class ResultInfo(
+public class ResultInfo(
 	public val ssin: String? = null,
 	public val lastName: String? = null,
 	public val firstName: String? = null,
@@ -29,8 +26,4 @@ class ResultInfo(
 	@DefaultValue("emptySet()")
 	public val codes: Set<CodeStub> = emptySet(),
 	public val services: List<DecryptedService>? = null,
-) {
-	// region ResultInfo-ResultInfo
-
-	// endregion
-}
+)

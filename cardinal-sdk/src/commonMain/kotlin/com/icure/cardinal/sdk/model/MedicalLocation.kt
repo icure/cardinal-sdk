@@ -11,11 +11,8 @@ import kotlin.String
 import kotlin.collections.Map
 import kotlin.collections.Set
 
-// WARNING: This file is auto-generated. If you change it manually, your changes will be lost.
-// If you want to change the way this class is generated, see [this repo](https://github.com/icure/sdk-codegen).
-
 @Serializable
-data class MedicalLocation(
+public data class MedicalLocation(
 	override val id: String,
 	override val rev: String? = null,
 	override val deletionDate: Long? = null,
@@ -35,8 +32,4 @@ data class MedicalLocation(
 	public val options: Map<String, String> = emptyMap(),
 	@DefaultValue("emptyMap()")
 	public val publicInformations: Map<String, String> = emptyMap(),
-) : StoredDocument, Named {
-	// region MedicalLocation-MedicalLocation
-
-	// endregion
-}
+) : StoredDocument, Named

@@ -6,9 +6,7 @@ import kotlinx.serialization.Serializable
 import kotlin.String
 import kotlin.collections.Set
 
-// WARNING: This file is auto-generated. If you change it manually, your changes will be lost.
-// If you want to change the way this class is generated, see [this repo](https://github.com/icure/sdk-codegen).
-sealed interface FinancialInstitutionInformation : Encryptable {
+public sealed interface FinancialInstitutionInformation : Encryptable {
 	public val name: String?
 
 	public val key: String?
@@ -24,13 +22,10 @@ sealed interface FinancialInstitutionInformation : Encryptable {
 	public val preferredFiiForPartners: Set<String>
 
 	override val encryptedSelf: Base64String?
-	// region FinancialInstitutionInformation-FinancialInstitutionInformation
-
-	// endregion
 }
 
 @Serializable
-data class DecryptedFinancialInstitutionInformation(
+public data class DecryptedFinancialInstitutionInformation(
 	override val name: String? = null,
 	override val key: String? = null,
 	override val bankAccount: String? = null,
@@ -40,14 +35,10 @@ data class DecryptedFinancialInstitutionInformation(
 	@DefaultValue("emptySet()")
 	override val preferredFiiForPartners: Set<String> = emptySet(),
 	override val encryptedSelf: Base64String? = null,
-) : FinancialInstitutionInformation {
-	// region FinancialInstitutionInformation-DecryptedFinancialInstitutionInformation
-
-	// endregion
-}
+) : FinancialInstitutionInformation
 
 @Serializable
-data class EncryptedFinancialInstitutionInformation(
+public data class EncryptedFinancialInstitutionInformation(
 	override val name: String? = null,
 	override val key: String? = null,
 	override val bankAccount: String? = null,
@@ -57,8 +48,4 @@ data class EncryptedFinancialInstitutionInformation(
 	@DefaultValue("emptySet()")
 	override val preferredFiiForPartners: Set<String> = emptySet(),
 	override val encryptedSelf: Base64String? = null,
-) : FinancialInstitutionInformation {
-	// region FinancialInstitutionInformation-EncryptedFinancialInstitutionInformation
-
-	// endregion
-}
+) : FinancialInstitutionInformation
