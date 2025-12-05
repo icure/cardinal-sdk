@@ -10,11 +10,8 @@ import kotlin.Long
 import kotlin.String
 import kotlin.collections.List
 
-// WARNING: This file is auto-generated. If you change it manually, your changes will be lost.
-// If you want to change the way this class is generated, see [this repo](https://github.com/icure/sdk-codegen).
-
 @Serializable
-data class Replication(
+public data class Replication(
 	override val id: String,
 	override val rev: String? = null,
 	override val deletionDate: Long? = null,
@@ -22,8 +19,4 @@ data class Replication(
 	public val context: String? = null,
 	@DefaultValue("emptyList()")
 	public val databaseSynchronizations: List<DatabaseSynchronization> = emptyList(),
-) : StoredDocument, Identifiable<String>, Named {
-	// region Replication-Replication
-
-	// endregion
-}
+) : StoredDocument, Identifiable<String>, Named

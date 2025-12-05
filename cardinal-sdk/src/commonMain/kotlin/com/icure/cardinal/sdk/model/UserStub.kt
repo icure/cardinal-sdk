@@ -7,11 +7,8 @@ import kotlinx.serialization.Serializable
 import kotlin.Long
 import kotlin.String
 
-// WARNING: This file is auto-generated. If you change it manually, your changes will be lost.
-// If you want to change the way this class is generated, see [this repo](https://github.com/icure/sdk-codegen).
-
 @Serializable
-data class UserStub(
+public data class UserStub(
 	override val id: String,
 	override val rev: String? = null,
 	override val deletionDate: Long? = null,
@@ -23,8 +20,4 @@ data class UserStub(
 	public val healthcarePartyId: String? = null,
 	public val patientId: String? = null,
 	public val email: String? = null,
-) : StoredDocument {
-	// region UserStub-UserStub
-
-	// endregion
-}
+) : StoredDocument
