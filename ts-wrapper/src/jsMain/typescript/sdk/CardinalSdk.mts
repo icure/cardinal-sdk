@@ -199,6 +199,20 @@ export interface CardinalBaseSdk extends CardinalBaseApis {
   switchGroup(groupId: string): Promise<CardinalBaseSdk>
 
   /**
+   * Get a new instance of the sdk associated to a data owner that may be different from the one linked to the logged
+   * user.
+   *
+   * You need appropriate permissions and access to the keys of the data owner.
+   *
+   * Note that the switched sdk will reuse components like the http client.
+   * Don't close the client of this sdk while you are using the new sdk.
+   *
+   * @param dataOwnerId id of the data owner to use in the new sdk
+   * @return a new sdk for executing requests as the provided data owner
+   */
+  changeScope(dataOwnerId: string): Promise<CardinalBaseSdk>
+
+  /**
    * Use the authentication for this base sdk to create a full sdk for the same user. Can only be used if the
    * current user is a data owner.
    * @param baseStorage an implementation of the [StorageFacade], used for persistent storage of various

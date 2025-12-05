@@ -368,6 +368,10 @@ internal class CardinalBaseSdkJsImpl(
 		CardinalBaseSdkJsImpl(sdk.switchGroup(groupId), jsCryptoService)
 	}
 
+	override fun changeScope(dataOwnerId: String): Promise<CardinalBaseSdkJs> = GlobalScope.promise {
+		CardinalBaseSdkJsImpl(sdk.changeScope(dataOwnerId), jsCryptoService)
+	}
+
 	override fun toFullSdk(baseStorage: dynamic, options: BasicToFullSdkOptionsJs?): Promise<CardinalSdkJs> = GlobalScope.promise {
 		val storageFacade = loadStorageOptions(baseStorage)
 		val ktOptions = options?.toKt(jsCryptoService) ?: BasicToFullSdkOptions()

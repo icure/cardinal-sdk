@@ -328,7 +328,6 @@ interface CardinalSdk : CardinalApis {
 				cryptoService = cryptoService,
 				applicationId = applicationId,
 				options = options,
-				groupSelector = options.groupSelector,
 				rawApiConfig = RawApiConfig(
 					httpClient = client,
 					additionalHeaders = emptyMap(),
