@@ -15,11 +15,8 @@ import kotlin.collections.List
 import kotlin.collections.Map
 import kotlin.collections.Set
 
-// WARNING: This file is auto-generated. If you change it manually, your changes will be lost.
-// If you want to change the way this class is generated, see [this repo](https://github.com/icure/sdk-codegen).
-
 @Serializable
-data class Code(
+public data class Code(
 	override val id: String,
 	override val rev: String? = null,
 	override val deletionDate: Long? = null,
@@ -47,8 +44,4 @@ data class Code(
 	public val appendices: Map<AppendixType, String> = emptyMap(),
 	@DefaultValue("false")
 	public val disabled: Boolean = false,
-) : StoredDocument, CodeIdentification<String> {
-	// region Code-Code
-
-	// endregion
-}
+) : StoredDocument, CodeIdentification<String>
