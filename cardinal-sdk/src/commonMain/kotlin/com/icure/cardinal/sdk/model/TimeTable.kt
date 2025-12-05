@@ -10,18 +10,9 @@ import kotlin.Long
 import kotlin.String
 import kotlin.collections.List
 import kotlin.collections.Set
-import com.icure.cardinal.sdk.model.base.HasEncryptionMetadata
-import com.icure.cardinal.sdk.model.embed.Delegation
-import com.icure.cardinal.sdk.model.embed.Encryptable
-import com.icure.cardinal.sdk.model.embed.SecurityMetadata
-import com.icure.cardinal.sdk.model.specializations.Base64String
-import kotlin.collections.Map
-
-// WARNING: This file is auto-generated. If you change it manually, your changes will be lost.
-// If you want to change the way this class is generated, see [this repo](https://github.com/icure/sdk-codegen).
 
 @Serializable
-data class TimeTable(
+public data class TimeTable(
 	override val id: String,
 	override val rev: String? = null,
 	override val created: Long? = null,
@@ -41,8 +32,4 @@ data class TimeTable(
 	public val endTime: Long? = null,
 	@DefaultValue("emptyList()")
 	public val items: List<TimeTableItem> = emptyList(),
-) : StoredDocument, ICureDocument<String> {
-	// region TimeTable-TimeTable
-
-	// endregion
-}
+) : StoredDocument, ICureDocument<String>
