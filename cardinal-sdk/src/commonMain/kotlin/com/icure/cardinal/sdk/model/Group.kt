@@ -9,6 +9,7 @@ import com.icure.cardinal.sdk.model.security.ExternalJwtConfig
 import com.icure.cardinal.sdk.model.security.OperationToken
 import com.icure.cardinal.sdk.utils.DefaultValue
 import kotlinx.serialization.Serializable
+import kotlinx.serialization.json.JsonNames
 import kotlin.Boolean
 import kotlin.Long
 import kotlin.String
@@ -46,8 +47,10 @@ data class Group(
 	public val externalJwtConfig: Map<String, ExternalJwtConfig> = emptyMap(),
 	public val minimumAuthenticationClassForElevatedPrivileges: AuthenticationClass,
 	public val superGroup: String? = null,
-	public val applicationId: String? = null,
+	@JsonNames("applicationId")
+	projectId: String? = null,
 ) : StoredDocument, HasTags {
+	public val applicationId: String? = applicationId
 	// region Group-Group
 
 	// endregion
