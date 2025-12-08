@@ -30,7 +30,7 @@ export interface GroupApi {
 			name: string,
 			password: string,
 			initialisationData: DatabaseInitialisation,
-			options?: { type?: GroupType | undefined, server?: string | undefined, q?: number | undefined, n?: number | undefined, superGroup?: string | undefined, applicationId?: string | undefined }
+			options?: { type?: GroupType | undefined, server?: string | undefined, q?: number | undefined, n?: number | undefined, superGroup?: string | undefined, projectId?: string | undefined }
 	): Promise<Group>;
 
 	registerNewGroupAdministrator(registrationInformation: RegistrationInformation,
@@ -91,5 +91,8 @@ export interface GroupApi {
 
 	getOperationTokenForGroup(groupId: string, operation: Operation, duration: number | undefined,
 			description: string | undefined): Promise<string>;
+
+	setGroupProjectId(groupId: string, projectId: string | undefined,
+			applyToSubgroups: boolean): Promise<void>;
 
 }

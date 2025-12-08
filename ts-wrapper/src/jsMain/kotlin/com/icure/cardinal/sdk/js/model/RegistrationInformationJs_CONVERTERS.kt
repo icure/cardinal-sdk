@@ -11,8 +11,8 @@ import kotlin.Suppress
 
 @Suppress("UNUSED_VARIABLE")
 public fun registrationInformation_toJs(obj: RegistrationInformation): RegistrationInformationJs {
-	val applicationId = nullToUndefined(
-		obj.applicationId
+	val projectId = nullToUndefined(
+		obj.projectId
 	)
 	val firstName = nullToUndefined(
 		obj.firstName
@@ -40,7 +40,7 @@ public fun registrationInformation_toJs(obj: RegistrationInformation): Registrat
 		obj.cluster
 	)
 	return RegistrationInformationJs(js("{" +
-		"applicationId:applicationId," +
+		"projectId:projectId," +
 		"firstName:firstName," +
 		"lastName:lastName," +
 		"companyName:companyName," +
@@ -53,7 +53,7 @@ public fun registrationInformation_toJs(obj: RegistrationInformation): Registrat
 }
 
 public fun registrationInformation_fromJs(obj: RegistrationInformationJs): RegistrationInformation {
-	val applicationId = undefinedToNull(obj.applicationId)
+	val projectId = undefinedToNull(obj.projectId)
 	val firstName = undefinedToNull(obj.firstName)
 	val lastName = undefinedToNull(obj.lastName)
 	val companyName = undefinedToNull(obj.companyName)
@@ -69,7 +69,7 @@ public fun registrationInformation_fromJs(obj: RegistrationInformationJs): Regis
 	val minimumKrakenVersion = undefinedToNull(obj.minimumKrakenVersion)
 	val cluster = undefinedToNull(obj.cluster)
 	return RegistrationInformation(
-		applicationId = applicationId,
+		projectId = projectId,
 		firstName = firstName,
 		lastName = lastName,
 		companyName = companyName,

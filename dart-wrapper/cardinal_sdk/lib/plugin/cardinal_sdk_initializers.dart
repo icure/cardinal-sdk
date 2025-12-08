@@ -8,14 +8,14 @@ import 'package:cardinal_sdk/options/storage_options.dart';
 
 abstract class CardinalSdkInitializersPlugin {
   Future<CardinalSdk> initialize(
-      String? applicationId,
+      String? projectId,
       String baseUrl,
       AuthenticationMethod authenticationMethod,
       StorageOptions storageOptions,
       SdkOptions options
   );
   Future<CardinalBaseSdk> initializeBase(
-      String? applicationId,
+      String? projectId,
       String baseUrl,
       AuthenticationMethod authenticationMethod,
       BasicSdkOptions options
@@ -29,7 +29,7 @@ abstract class CardinalSdkInitializersPlugin {
       String groupId
   );
   Future<AuthenticationWithProcessStep> initializeWithProcess(
-      String? applicationId,
+      String? projectId,
       String baseUrl,
       String messageGatewayUrl,
       String externalServicesSpecId,

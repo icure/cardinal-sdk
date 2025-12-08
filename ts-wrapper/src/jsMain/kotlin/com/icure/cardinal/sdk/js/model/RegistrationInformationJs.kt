@@ -12,7 +12,7 @@ import kotlin.js.JsQualifier
 public external class RegistrationInformationJs(
 	partial: dynamic,
 ) {
-	public val applicationId: String?
+	public val projectId: String?
 
 	public val firstName: String?
 

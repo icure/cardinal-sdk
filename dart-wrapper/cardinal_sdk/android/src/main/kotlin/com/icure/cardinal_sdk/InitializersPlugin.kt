@@ -54,7 +54,7 @@ class InitializersPlugin(
     ) {
         Initializers.initializeSdk(
             resultCallback,
-            applicationIdString = parameters.getValue("applicationId"),
+            projectIdString = parameters.getValue("projectId"),
             baseUrlString = parameters.getValue("baseUrl"),
             authenticationMethodString = parameters.getValue("authenticationMethod"),
             storageFacade = StorageHelper.getStorage(
@@ -76,7 +76,7 @@ class InitializersPlugin(
     ) {
         Initializers.initializeBaseSdk(
             resultCallback,
-            applicationIdString = parameters.getValue("applicationId"),
+            projectIdString = parameters.getValue("projectId"),
             baseUrlString = parameters.getValue("baseUrl"),
             authenticationMethodString = parameters.getValue("authenticationMethod"),
             optionsString = parameters.getValue("options")
@@ -126,7 +126,7 @@ class InitializersPlugin(
     ) {
         Initializers.initializeWithAuthProcess(
             resultCallback,
-            applicationIdString = parameters.getValue("applicationId"),
+            projectIdString = parameters.getValue("projectId"),
             baseUrlString = parameters.getValue("baseUrl"),
             messageGatewayUrlString = parameters.getValue("messageGatewayUrl"),
             externalServicesSpecIdString = parameters.getValue("externalServicesSpecId"),

@@ -142,12 +142,12 @@ internal class GroupApiImplJs(
 			) { superGroup: String? ->
 				undefinedToNull(superGroup)
 			}
-			val applicationIdConverted: String? = convertingOptionOrDefaultNullable(
+			val projectIdConverted: String? = convertingOptionOrDefaultNullable(
 				_options,
-				"applicationId",
+				"projectId",
 				null
-			) { applicationId: String? ->
-				undefinedToNull(applicationId)
+			) { projectId: String? ->
+				undefinedToNull(projectId)
 			}
 			val initialisationDataConverted: DatabaseInitialisation =
 					databaseInitialisation_fromJs(initialisationData)
@@ -160,7 +160,7 @@ internal class GroupApiImplJs(
 				qConverted,
 				nConverted,
 				superGroupConverted,
-				applicationIdConverted,
+				projectIdConverted,
 				initialisationDataConverted,
 			)
 			group_toJs(result)
@@ -628,5 +628,21 @@ internal class GroupApiImplJs(
 			descriptionConverted,
 		)
 		result
+	}
+
+	override fun setGroupProjectId(
+		groupId: String,
+		projectId: String?,
+		applyToSubgroups: Boolean,
+	): Promise<Unit> = GlobalScope.promise {
+		val groupIdConverted: String = groupId
+		val projectIdConverted: String? = undefinedToNull(projectId)
+		val applyToSubgroupsConverted: Boolean = applyToSubgroups
+		groupApi.setGroupProjectId(
+			groupIdConverted,
+			projectIdConverted,
+			applyToSubgroupsConverted,
+		)
+
 	}
 }
