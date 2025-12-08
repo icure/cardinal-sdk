@@ -48,9 +48,8 @@ data class Group(
 	public val minimumAuthenticationClassForElevatedPrivileges: AuthenticationClass,
 	public val superGroup: String? = null,
 	@JsonNames("applicationId")
-	projectId: String? = null,
+	public val projectId: String? = null,
 ) : StoredDocument, HasTags {
-	public val applicationId: String? = applicationId
 	// region Group-Group
 
 	// endregion
