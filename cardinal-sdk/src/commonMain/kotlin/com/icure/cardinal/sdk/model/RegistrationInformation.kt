@@ -6,11 +6,8 @@ import kotlinx.serialization.json.JsonNames
 import kotlin.String
 import kotlin.collections.Set
 
-// WARNING: This file is auto-generated. If you change it manually, your changes will be lost.
-// If you want to change the way this class is generated, see [this repo](https://github.com/icure/sdk-codegen).
-
 @Serializable
-data class RegistrationInformation(
+public data class RegistrationInformation(
 	@JsonNames("applicationId")
 	projectId: String? = null,
 	public val firstName: String? = null,
@@ -24,7 +21,4 @@ data class RegistrationInformation(
 	public val cluster: String? = null,
 ) {
 	public val applicationId: String? = applicationId
-	// region RegistrationInformation-RegistrationInformation
-
-	// endregion
 }

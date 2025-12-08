@@ -5,9 +5,7 @@ import kotlinx.serialization.Serializable
 import kotlin.Long
 import kotlin.String
 
-// WARNING: This file is auto-generated. If you change it manually, your changes will be lost.
-// If you want to change the way this class is generated, see [this repo](https://github.com/icure/sdk-codegen).
-sealed interface CareTeamMembership : Encryptable {
+public sealed interface CareTeamMembership : Encryptable {
 	public val startDate: Long?
 
 	public val endDate: Long?
@@ -17,33 +15,22 @@ sealed interface CareTeamMembership : Encryptable {
 	public val membershipType: MembershipType?
 
 	override val encryptedSelf: Base64String?
-	// region CareTeamMembership-CareTeamMembership
-
-	// endregion
 }
 
 @Serializable
-data class DecryptedCareTeamMembership(
+public data class DecryptedCareTeamMembership(
 	override val startDate: Long? = null,
 	override val endDate: Long? = null,
 	override val careTeamMemberId: String? = null,
 	override val membershipType: MembershipType? = null,
 	override val encryptedSelf: Base64String? = null,
-) : CareTeamMembership {
-	// region CareTeamMembership-DecryptedCareTeamMembership
-
-	// endregion
-}
+) : CareTeamMembership
 
 @Serializable
-data class EncryptedCareTeamMembership(
+public data class EncryptedCareTeamMembership(
 	override val startDate: Long? = null,
 	override val endDate: Long? = null,
 	override val careTeamMemberId: String? = null,
 	override val membershipType: MembershipType? = null,
 	override val encryptedSelf: Base64String? = null,
-) : CareTeamMembership {
-	// region CareTeamMembership-EncryptedCareTeamMembership
-
-	// endregion
-}
+) : CareTeamMembership
