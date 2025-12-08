@@ -3,6 +3,7 @@ package com.icure.cardinal.sdk
 import com.icure.cardinal.sdk.test.DataOwnerDetails
 import com.icure.cardinal.sdk.test.createHcpUser
 import com.icure.cardinal.sdk.test.initializeTestEnvironment
+import com.icure.cardinal.sdk.utils.DEFAULT_ENABLED
 import io.kotest.core.spec.style.StringSpec
 import io.kotest.matchers.shouldBe
 import kotlinx.coroutines.Job
@@ -11,7 +12,7 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
 
-class SdkScopeTest : StringSpec({
+class SdkCoroutineScopeTest : StringSpec({
 	lateinit var hcp: DataOwnerDetails
 
 	beforeSpec {
@@ -19,7 +20,7 @@ class SdkScopeTest : StringSpec({
 		hcp = createHcpUser()
 	}
 
-	"When providing a parent job if the parent job gets canceled the SDK scope should be canceled too" {
+	"When providing a parent job if the parent job gets canceled the SDK scope should be canceled too".config(enabled = DEFAULT_ENABLED) {
 		val parentJob = Job()
 		val sdk = hcp.api(parentJob)
 		sdk.scope.isActive shouldBe true
@@ -27,7 +28,7 @@ class SdkScopeTest : StringSpec({
 		sdk.scope.isActive shouldBe false
 	}
 
-	"When providing a parent job if the SDK scope gets canceled the parent job shouldn't be canceled" {
+	"When providing a parent job if the SDK scope gets canceled the parent job shouldn't be canceled".config(enabled = DEFAULT_ENABLED) {
 		val parentJob = Job()
 		val sdk = hcp.api(parentJob)
 		sdk.scope.isActive shouldBe true
@@ -37,7 +38,7 @@ class SdkScopeTest : StringSpec({
 		parentJob.cancel()
 	}
 
-	"If a child job of the SDK scope fails or is cancelled the SDK scope and parent job shouldn't be canceled" {
+	"If a child job of the SDK scope fails or is cancelled the SDK scope and parent job shouldn't be canceled".config(enabled = DEFAULT_ENABLED) {
 		val parentJob = Job()
 		val sdk = hcp.api(parentJob)
 		sdk.scope.isActive shouldBe true

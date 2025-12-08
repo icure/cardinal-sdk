@@ -19,6 +19,7 @@ import com.icure.cardinal.sdk.storage.CardinalStorageFacade
 import com.icure.cardinal.sdk.storage.impl.DefaultStorageEntryKeysFactory
 import com.icure.cardinal.sdk.storage.impl.JsonAndBase64KeyStorage
 import com.icure.cardinal.sdk.storage.impl.VolatileStorageFacade
+import com.icure.cardinal.sdk.utils.DEFAULT_ENABLED
 import com.icure.utils.InternalIcureApi
 import com.icure.cardinal.sdk.utils.collections.DirectedGraph
 import com.icure.cardinal.sdk.utils.collections.StronglyConnectedGraph
@@ -209,7 +210,7 @@ class TransferKeysManagerUnitTests : StringSpec({
 		verifyFullyConnected(applySuggestions(suggestedTransferKeys, dataOwner))
 	}
 
-	"Suggested transfer keys with all keys available and verified should match expected - case 1" {
+	"Suggested transfer keys with all keys available and verified should match expected - case 1".config(enabled = DEFAULT_ENABLED) {
 		// A -> B -> C
 		addKey(keys.pairs.a, true, true)
 		addKey(keys.pairs.b, true, true)
@@ -224,7 +225,7 @@ class TransferKeysManagerUnitTests : StringSpec({
 		applySuggestionsAndVerifyFullyConnected(suggestedTransferKeys)
 	}
 
-	"Suggested transfer keys with all keys available and verified should match expected - case 2" {
+	"Suggested transfer keys with all keys available and verified should match expected - case 2".config(enabled = DEFAULT_ENABLED) {
 		// A -> B <-> C -> D <-> E
 		addKey(keys.pairs.a, true, true)
 		addKey(keys.pairs.b, true, true)
@@ -248,7 +249,7 @@ class TransferKeysManagerUnitTests : StringSpec({
 		applySuggestionsAndVerifyFullyConnected(suggestedTransferKeys)
 	}
 
-	"Suggested transfer keys with all keys available and verified should match expected - case 3" {
+	"Suggested transfer keys with all keys available and verified should match expected - case 3".config(enabled = DEFAULT_ENABLED) {
 		// A -> B -> C
 		// D
 		addKey(keys.pairs.a, true, true)
@@ -278,7 +279,7 @@ class TransferKeysManagerUnitTests : StringSpec({
 		applySuggestionsAndVerifyFullyConnected(suggestedTransferKeys)
 	}
 
-	"Should not suggest transfer keys to non-available keys" {
+	"Should not suggest transfer keys to non-available keys".config(enabled = DEFAULT_ENABLED) {
 		// A (non available) -> B (available)
 		addKey(keys.pairs.b, true, true)
 		addKey(keys.pairs.a, false, true)
@@ -286,7 +287,7 @@ class TransferKeysManagerUnitTests : StringSpec({
 		getSuggestedTransferKeysAndPrint().shouldBeEmpty()
 	}
 
-	"Should suggest transfer keys even if the from is not-available" {
+	"Should suggest transfer keys even if the from is not-available".config(enabled = DEFAULT_ENABLED) {
 		// A (available), B (non available), should suggest B -> A
 		addKey(keys.pairs.a, true, true)
 		addKey(keys.pairs.b, false, true)
@@ -297,7 +298,7 @@ class TransferKeysManagerUnitTests : StringSpec({
 		getSuggestedTransferKeysAndPrint(applySuggestions(suggestions)).shouldBeEmpty()
 	}
 
-	"Should not suggest transfer keys from unverified keys" {
+	"Should not suggest transfer keys from unverified keys".config(enabled = DEFAULT_ENABLED) {
 		// A (verified) -> B (unverified)
 		addKey(keys.pairs.a, true, true)
 		addKey(keys.pairs.b, true, false)
@@ -305,7 +306,7 @@ class TransferKeysManagerUnitTests : StringSpec({
 		getSuggestedTransferKeysAndPrint().shouldBeEmpty()
 	}
 
-	"Should still suggest transfer keys to unverified keys" {
+	"Should still suggest transfer keys to unverified keys".config(enabled = DEFAULT_ENABLED) {
 		// A (unverified) -> B (verified)
 		addKey(keys.pairs.a, true, false)
 		addKey(keys.pairs.b, true, true)
@@ -317,7 +318,7 @@ class TransferKeysManagerUnitTests : StringSpec({
 		getSuggestedTransferKeysAndPrint(applySuggestions(suggestions)).shouldBeEmpty()
 	}
 
-	"When there are groups of mixed verified and unverified keys it should prefer to create links between verified keys" {
+	"When there are groups of mixed verified and unverified keys it should prefer to create links between verified keys".config(enabled = DEFAULT_ENABLED) {
 		// A (v) -> B -> C -> A
 		//          |
 		//          v
@@ -348,7 +349,7 @@ class TransferKeysManagerUnitTests : StringSpec({
 		}
 	}
 
-	"Should not suggest transfer keys if there is already an equivalent transfer key involving different members of the same group" {
+	"Should not suggest transfer keys if there is already an equivalent transfer key involving different members of the same group".config(enabled = DEFAULT_ENABLED) {
 		// A (v) -> B -> C -> A
 		//          |
 		//          v

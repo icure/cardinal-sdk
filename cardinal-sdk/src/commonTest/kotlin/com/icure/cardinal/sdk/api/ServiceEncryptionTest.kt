@@ -15,6 +15,7 @@ import com.icure.cardinal.sdk.test.autoCancelJob
 import com.icure.cardinal.sdk.test.createHcpUser
 import com.icure.cardinal.sdk.test.initializeTestEnvironment
 import com.icure.cardinal.sdk.test.uuid
+import com.icure.cardinal.sdk.utils.DEFAULT_ENABLED
 import com.icure.cardinal.sdk.utils.EntityEncryptionException
 import io.kotest.assertions.throwables.shouldThrow
 import io.kotest.core.spec.style.StringSpec
@@ -358,7 +359,7 @@ class ServiceEncryptionTest : StringSpec({
 		sdk.contact.encrypted.modifyContact(legalChanges).rev shouldNotBe legalChanges.rev // It should work
 	}
 
-	"Content of service should be encrypted in full if it contains non compound data" {
+	"Content of service should be encrypted in full if it contains non compound data".config(enabled = DEFAULT_ENABLED) {
 		val contact = sdk.contact.createContact(
 			sdk.contact.withEncryptionMetadata(
                 DecryptedContact(
@@ -379,7 +380,7 @@ class ServiceEncryptionTest : StringSpec({
 		checkEncryptedValidation(encryptedContact)
 	}
 
-	"Content of service should be encrypted recursively on compound data" {
+	"Content of service should be encrypted recursively on compound data".config(enabled = DEFAULT_ENABLED) {
 		val contact = sdk.contact.createContact(
 			sdk.contact.withEncryptionMetadata(
                 DecryptedContact(
@@ -400,7 +401,7 @@ class ServiceEncryptionTest : StringSpec({
 		checkEncryptedValidation(encryptedContact)
 	}
 
-	"A mix of compund and simple service should each have their content encrypted as needed" {
+	"A mix of compund and simple service should each have their content encrypted as needed".config(enabled = DEFAULT_ENABLED) {
 		val contact = sdk.contact.createContact(
 			sdk.contact.withEncryptionMetadata(
                 DecryptedContact(

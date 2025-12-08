@@ -6,6 +6,7 @@ import com.icure.cardinal.sdk.test.createHcpUser
 import com.icure.cardinal.sdk.test.createPatientUser
 import com.icure.cardinal.sdk.test.initializeTestEnvironment
 import com.icure.cardinal.sdk.test.internal
+import com.icure.cardinal.sdk.utils.DEFAULT_ENABLED
 import com.icure.utils.InternalIcureApi
 import io.kotest.core.spec.style.StringSpec
 import io.kotest.matchers.shouldBe
@@ -18,7 +19,7 @@ class ExchangeDataManagerTest : StringSpec({
 		initializeTestEnvironment()
 	}
 
-	"Exchange data created with different instances of the SDK should be reusable if still verifiable" {
+	"Exchange data created with different instances of the SDK should be reusable if still verifiable".config(enabled = DEFAULT_ENABLED) {
 		val hcp = createHcpUser()
 		val patient = createPatientUser()
 		val createdHcp = hcp.api(specJob).crypto.internal.exchangeDataManager.getOrCreateEncryptionDataTo(
@@ -49,7 +50,7 @@ class ExchangeDataManagerTest : StringSpec({
 		createdPatient.exchangeData.id shouldBe retrievedPatient.exchangeData.id
 	}
 
-	"Detailed tests like in typescript SDK" {
+	"Detailed tests like in typescript SDK".config(enabled = DEFAULT_ENABLED) {
 		TODO()
 	}
 })

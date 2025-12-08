@@ -16,6 +16,7 @@ import com.icure.cardinal.sdk.test.baseUrl
 import com.icure.cardinal.sdk.test.createHcpUser
 import com.icure.cardinal.sdk.test.createPatientUser
 import com.icure.cardinal.sdk.test.initializeTestEnvironment
+import com.icure.cardinal.sdk.utils.DEFAULT_ENABLED
 import com.icure.kryptom.crypto.defaultCryptoService
 import com.icure.utils.InternalIcureApi
 import io.kotest.core.spec.style.StringSpec
@@ -42,7 +43,7 @@ class DelegationsDeAnonymizationTest : StringSpec({
 			)
 		).shouldNotBeNull()
 
-	"without de-anonymisation metadata the data owners should be able to identify anonymous delegates only if they are part of the delegation with that delegate." {
+	"without de-anonymisation metadata the data owners should be able to identify anonymous delegates only if they are part of the delegation with that delegate.".config(enabled = DEFAULT_ENABLED) {
 		val (userInfoA, apiA) = createHcpUser().let { it to it.api(specJob) }
 		val (userInfoB, apiB) = createHcpUser().let { it to it.api(specJob) }
 		val (userInfoP1, apiP1) = createPatientUser().let { it to it.api(specJob) }
@@ -244,7 +245,7 @@ class DelegationsDeAnonymizationTest : StringSpec({
 		}
 	}
 
-	"Even without de-anonymization metadata the data owners should be able to identify anonymous delegates if their parent is part of the delegation with that delegate." {
+	"Even without de-anonymization metadata the data owners should be able to identify anonymous delegates if their parent is part of the delegation with that delegate.".config(enabled = DEFAULT_ENABLED) {
 		val (parentUserInfo, parentApi) = createHcpUser().let { it to it.api(specJob) }
 		val (childUserInfo, childApi) = createHcpUser(parentUserInfo).let { it to it.api(specJob) }
 		println("${childUserInfo.username} ${childUserInfo.password}")
@@ -269,7 +270,7 @@ class DelegationsDeAnonymizationTest : StringSpec({
 		patientApi.patient.getDataOwnersWithAccessTo(entity) shouldBe expectedAccessInfo
 	}
 
-	"De-anonymization metadata should allow data owners that are not part of a delegation to figure out the members of that delegation." {
+	"De-anonymization metadata should allow data owners that are not part of a delegation to figure out the members of that delegation.".config(enabled = DEFAULT_ENABLED) {
 		val (userInfoA, apiA) = createHcpUser().let { it to it.api(specJob) }
 		val (userInfoB, apiB) = createHcpUser().let { it to it.api(specJob) }
 		val (userInfoP1, apiP1) = createPatientUser().let { it to it.api(specJob) }
@@ -368,7 +369,7 @@ class DelegationsDeAnonymizationTest : StringSpec({
 		}
 	}
 
-	"Hcp should be able to use de-anonymization metadata for parent" {
+	"Hcp should be able to use de-anonymization metadata for parent".config(enabled = DEFAULT_ENABLED) {
 		val (grandUserInfo, grandApi) = createHcpUser().let { it to it.api(specJob) }
 		val (parentUserInfo, parentApi) = createHcpUser(grandUserInfo).let { it to it.api(specJob) }
 		val (child1UserInfo, child1Api) = createHcpUser(parentUserInfo).let { it to it.api(specJob) }
@@ -398,7 +399,7 @@ class DelegationsDeAnonymizationTest : StringSpec({
 		parentApi.patient.getDataOwnersWithAccessTo(entity) shouldBe expectedAccess
 	}
 
-	"De-anonymization metadata should encrypt delegator and delegate, and its creation should be optimised" {
+	"De-anonymization metadata should encrypt delegator and delegate, and its creation should be optimised".config(enabled = DEFAULT_ENABLED) {
 		val (userInfoA, apiA) = createHcpUser().let { it to it.api(specJob) }
 		val (userInfoB, apiB) = createHcpUser().let { it to it.api(specJob) }
 		val (userInfoP, apiP) = createPatientUser().let { it to it.api(specJob) }
@@ -435,7 +436,7 @@ class DelegationsDeAnonymizationTest : StringSpec({
 		secureDelegationKeyMaps.single().delegationKey shouldBe delegationKeysToAnonymous.keys.single().s
 	}
 
-	"De-anonymization metadata should be usable for different entities of the same type" {
+	"De-anonymization metadata should be usable for different entities of the same type".config(enabled = DEFAULT_ENABLED) {
 		val (userInfoA, apiA) = createHcpUser().let { it to it.api(specJob) }
 		val (userInfoB, apiB) = createHcpUser().let { it to it.api(specJob) }
 		val (userInfoP1, apiP1) = createPatientUser().let { it to it.api(specJob) }
@@ -479,7 +480,7 @@ class DelegationsDeAnonymizationTest : StringSpec({
 		apiP1.patient.getDataOwnersWithAccessTo(entity2) shouldBe expectedAccess
 	}
 
-	"De-anonymization metadata optimization: the metadata should not be re-shared with the anonymous delegator/delegate by third parties" {
+	"De-anonymization metadata optimization: the metadata should not be re-shared with the anonymous delegator/delegate by third parties".config(enabled = DEFAULT_ENABLED) {
 		val (userInfoA, apiA) = createHcpUser().let { it to it.api(specJob) }
 		val (userInfoP1, apiP1) = createPatientUser().let { it to it.api(specJob) }
 		val (userInfoP2, apiP2) = createPatientUser().let { it to it.api(specJob) }
@@ -523,7 +524,7 @@ class DelegationsDeAnonymizationTest : StringSpec({
 		delegationMapAfterAttemptedResharingByA.rev shouldBe delegationMapBeforeAttemptedResharingByA.rev
 	}
 
-	"De-anonymization metadata should be shared only with selected data owners" {
+	"De-anonymization metadata should be shared only with selected data owners".config(enabled = DEFAULT_ENABLED) {
 		val (userInfoA, apiA) = createHcpUser().let { it to it.api(specJob) }
 		val (userInfoB, apiB) = createHcpUser().let { it to it.api(specJob) }
 		val (userInfoC, apiC) = createHcpUser().let { it to it.api(specJob) }
@@ -569,7 +570,7 @@ class DelegationsDeAnonymizationTest : StringSpec({
 		)
 	}
 
-	"A member of a delegation should be able to update the corresponding de-anonymization metadata even if he was not the original creator" {
+	"A member of a delegation should be able to update the corresponding de-anonymization metadata even if he was not the original creator".config(enabled = DEFAULT_ENABLED) {
 		val (userInfoA, apiA) = createHcpUser().let{ it to it.api(specJob) }
 		val (userInfoB, apiB) = createHcpUser().let{ it to it.api(specJob) }
 		val (userInfoC, apiC) = createHcpUser().let{ it to it.api(specJob) }

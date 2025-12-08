@@ -9,6 +9,7 @@ import com.icure.cardinal.sdk.test.autoCancelJob
 import com.icure.cardinal.sdk.test.createHcpUser
 import com.icure.cardinal.sdk.test.initializeTestEnvironment
 import com.icure.cardinal.sdk.test.internal
+import com.icure.cardinal.sdk.utils.DEFAULT_ENABLED
 import com.icure.kryptom.crypto.CryptoService
 import com.icure.kryptom.crypto.defaultCryptoService
 import com.icure.utils.InternalIcureApi
@@ -63,7 +64,7 @@ class TransferKeyRecoveryTest : StringSpec({
 			dataOwner.type == DataOwnerType.Patient
 	}
 
-	"Api should automatically create needed transfer keys and use them to recover missing keys" {
+	"Api should automatically create needed transfer keys and use them to recover missing keys".config(enabled = DEFAULT_ENABLED) {
 		val hcp = createHcpUser()
 		val originalKeyIdentifier = hcp.publicKeySpki.shouldNotBeNull().fingerprintV1().asAmbiguousIdentifier()
 		val originalApi = hcp.api(specJob, VerifyEverythingStrategy(false))

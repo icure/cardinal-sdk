@@ -21,6 +21,8 @@ import kotlin.js.Promise
 
 @JsName("AccessLogBasicApi")
 public external interface AccessLogBasicApiJs {
+	public val inGroup: AccessLogBasicInGroupApiJs
+
 	public fun matchAccessLogsBy(filter: BaseFilterOptionsJs<AccessLogJs>): Promise<Array<String>>
 
 	public fun matchAccessLogsBySorted(filter: BaseSortableFilterOptionsJs<AccessLogJs>):
@@ -36,16 +38,17 @@ public external interface AccessLogBasicApiJs {
 
 	public fun deleteAccessLogsUnsafe(entityIds: Array<String>): Promise<Array<DocIdentifierJs>>
 
-	public fun deleteAccessLogById(entityId: String, rev: String): Promise<DocIdentifierJs>
+	public fun deleteAccessLogById(entityId: String, rev: String): Promise<StoredDocumentIdentifierJs>
 
 	public fun deleteAccessLogsByIds(entityIds: Array<StoredDocumentIdentifierJs>):
-			Promise<Array<DocIdentifierJs>>
+			Promise<Array<StoredDocumentIdentifierJs>>
 
 	public fun purgeAccessLogById(id: String, rev: String): Promise<Unit>
 
-	public fun deleteAccessLog(accessLog: AccessLogJs): Promise<DocIdentifierJs>
+	public fun deleteAccessLog(accessLog: AccessLogJs): Promise<StoredDocumentIdentifierJs>
 
-	public fun deleteAccessLogs(accessLogs: Array<AccessLogJs>): Promise<Array<DocIdentifierJs>>
+	public fun deleteAccessLogs(accessLogs: Array<AccessLogJs>):
+			Promise<Array<StoredDocumentIdentifierJs>>
 
 	public fun purgeAccessLog(accessLog: AccessLogJs): Promise<Unit>
 

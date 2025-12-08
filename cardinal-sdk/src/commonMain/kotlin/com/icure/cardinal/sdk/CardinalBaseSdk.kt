@@ -17,7 +17,6 @@ import com.icure.cardinal.sdk.api.RoleApi
 import com.icure.cardinal.sdk.api.SystemApi
 import com.icure.cardinal.sdk.api.TarificationApi
 import com.icure.cardinal.sdk.api.UserApi
-import com.icure.cardinal.sdk.api.impl.AccessLogBasicApiImpl
 import com.icure.cardinal.sdk.api.impl.AgendaApiImpl
 import com.icure.cardinal.sdk.api.impl.ApplicationSettingsApiImpl
 import com.icure.cardinal.sdk.api.impl.AuthApiImpl
@@ -49,6 +48,7 @@ import com.icure.cardinal.sdk.api.impl.TarificationApiImpl
 import com.icure.cardinal.sdk.api.impl.TimeTableApiImpl
 import com.icure.cardinal.sdk.api.impl.TopicBasicApiImpl
 import com.icure.cardinal.sdk.api.impl.UserApiImpl
+import com.icure.cardinal.sdk.api.impl.initAccessLogBasicApi
 import com.icure.cardinal.sdk.api.impl.initCalendarItemBasicApi
 import com.icure.cardinal.sdk.api.impl.initHealthElementBasicApi
 import com.icure.cardinal.sdk.api.impl.initPatientBasicApi
@@ -113,7 +113,6 @@ import com.icure.cardinal.sdk.options.BasicToFullSdkOptions
 import com.icure.cardinal.sdk.options.EncryptedFieldsConfiguration
 import com.icure.cardinal.sdk.options.EntitiesEncryptedFieldsManifests
 import com.icure.cardinal.sdk.options.RequestRetryConfiguration
-import com.icure.cardinal.sdk.options.SdkOptions
 import com.icure.cardinal.sdk.options.UnboundBasicApiConfigurationImpl
 import com.icure.cardinal.sdk.options.UnboundBasicSdkOptions
 import com.icure.cardinal.sdk.options.configuredClientOrDefault
@@ -217,6 +216,20 @@ interface CardinalBaseSdk : CardinalBaseApis {
 	suspend fun switchGroup(groupId: String): CardinalBaseSdk
 
 	/**
+	 * Get a new sdk using the same configurations and user authentication methods but for a different data owner
+	 * in the same group.
+	 * To use this method, the authentication method provided at initialization of this sdk must be valid also for the
+	 * new data owner.
+	 *
+	 * Note that the switched sdk will reuse components like the http client.
+	 * Don't close the client of this sdk while you are using the new sdk.
+	 *
+	 * @param dataOwnerId the id of the new data owner to act as
+	 * @return a new sdk for executing requests as the provided data owner
+	 */
+	suspend fun changeScope(dataOwnerId: String): CardinalBaseSdk
+
+	/**
 	 * Use the authentication for this base sdk to create a full sdk for the same user. Can only be used if the
 	 * current user is a data owner.
 	 * @param baseStorage an implementation of the [StorageFacade], used for persistent storage of various
@@ -274,7 +287,6 @@ interface CardinalBaseSdk : CardinalBaseApis {
 				cryptoService = cryptoService,
 				applicationId = applicationId,
 				options = options,
-				groupSelector = options.groupSelector,
 				rawApiConfig = rawApiConfig,
 			)
 			val boundGroup = chosenGroup?.let(::SdkBoundGroup)
@@ -420,7 +432,7 @@ private class CardinalBaseApisImpl(
 	}
 
 	override val accessLog by lazy {
-		AccessLogBasicApiImpl(
+		initAccessLogBasicApi(
 			RawAccessLogApiImpl(
 				apiUrl,
 				authProvider,
@@ -685,6 +697,13 @@ private class CardinalBaseSdkImpl(
 		authProvider.switchGroup(groupId),
 		config,
 		groupId,
+		options,
+	)
+
+	override suspend fun changeScope(dataOwnerId: String): CardinalBaseSdk = CardinalBaseSdkImpl(
+		authProvider.changeScope(dataOwnerId),
+		config,
+		boundGroupId,
 		options,
 	)
 

@@ -104,6 +104,7 @@ external interface CardinalApisJs {
 @JsName("CardinalSdk")
 external interface CardinalSdkJs : CardinalApisJs {
 	fun switchGroup(groupId: String): Promise<CardinalSdkJs>
+	fun changeScope(dataOwnerId: String): Promise<CardinalSdkJs>
 	fun close()
 }
 
@@ -149,6 +150,7 @@ external interface CardinalBaseApisJs {
 @JsName("CardinalBaseSdk")
 external interface CardinalBaseSdkJs : CardinalBaseApisJs {
 	fun switchGroup(groupId: String): Promise<CardinalBaseSdkJs>
+	fun changeScope(dataOwnerId: String): Promise<CardinalBaseSdkJs>
 	fun toFullSdk(baseStorage: dynamic, options: BasicToFullSdkOptionsJs?): Promise<CardinalSdkJs>
 }
 

@@ -49,6 +49,16 @@ internal class JwtAuthProvider(
 			refreshPadding
 		)
 	}
+
+	override suspend fun changeScope(dataOwnerId: String): AuthProvider {
+		val switchedRefresh = authApi.scoped(refreshToken.token, dataOwnerId).successBody()
+		return JwtAuthProvider(
+			authApi,
+			switchedRefresh.token?.let(::JwtBearer),
+			JwtRefresh(ensureNonNull(switchedRefresh.refreshToken) { "Schange scope gave a null refresh token" }),
+			refreshPadding
+		)
+	}
 }
 
 @InternalIcureApi

@@ -39,7 +39,6 @@ import com.icure.cardinal.sdk.api.TarificationApi
 import com.icure.cardinal.sdk.api.TimeTableApi
 import com.icure.cardinal.sdk.api.TopicApi
 import com.icure.cardinal.sdk.api.UserApi
-import com.icure.cardinal.sdk.api.impl.AccessLogApiImpl
 import com.icure.cardinal.sdk.api.impl.AgendaApiImpl
 import com.icure.cardinal.sdk.api.impl.ApplicationSettingsApiImpl
 import com.icure.cardinal.sdk.api.impl.AuthApiImpl
@@ -76,6 +75,7 @@ import com.icure.cardinal.sdk.api.impl.TarificationApiImpl
 import com.icure.cardinal.sdk.api.impl.TimeTableApiImpl
 import com.icure.cardinal.sdk.api.impl.TopicApiImpl
 import com.icure.cardinal.sdk.api.impl.UserApiImpl
+import com.icure.cardinal.sdk.api.impl.initAccessLogApi
 import com.icure.cardinal.sdk.api.impl.initCalendarItemApi
 import com.icure.cardinal.sdk.api.impl.initHealthElementApi
 import com.icure.cardinal.sdk.api.impl.initPatientApi
@@ -231,6 +231,20 @@ interface CardinalSdk : CardinalApis {
 	suspend fun switchGroup(groupId: String): CardinalSdk
 
 	/**
+	 * Get a new instance of the sdk associated to a data owner that may be different from the one linked to the logged
+	 * user.
+	 *
+	 * You need appropriate permissions and access to the keys of the data owner.
+	 *
+	 * Note that the switched sdk will reuse components like the http client.
+	 * Don't close the client of this sdk while you are using the new sdk.
+	 *
+	 * @param dataOwnerId id of the data owner to use in the new sdk
+	 * @return a new sdk for executing requests as the provided data owner
+	 */
+	suspend fun changeScope(dataOwnerId: String): CardinalSdk
+
+	/**
 	 * Exposes the scope used by the SDK to perform background tasks.
 	 * Should be canceled when the SDK is not needed anymore.
 	 */
@@ -314,7 +328,6 @@ interface CardinalSdk : CardinalApis {
 				cryptoService = cryptoService,
 				applicationId = applicationId,
 				options = options,
-				groupSelector = options.groupSelector,
 				rawApiConfig = RawApiConfig(
 					httpClient = client,
 					additionalHeaders = emptyMap(),
@@ -563,7 +576,7 @@ internal suspend fun initializeApiCrypto(
 		dataOwnerApi,
 		iCureStorage,
 		icureKeyRecovery,
-		KeyPairRecovererImpl(recoveryDataEncryption),
+		recoveryDataEncryption,
 		options.useHierarchicalDataOwners,
 	).initialize()
 	val userEncryptionKeys = userEncryptionKeysInitInfo.manager
@@ -862,7 +875,7 @@ internal class CardinalSdkImpl(
 	}
 
 	override val accessLog: AccessLogApi by lazy {
-		AccessLogApiImpl(
+		initAccessLogApi(
 			rawAccessLogApi,
 			config
 		)
@@ -1070,8 +1083,16 @@ internal class CardinalSdkImpl(
 		AgendaApiImpl(RawAgendaApiImpl(apiUrl, authProvider, config.rawApiConfig), config)
 	}
 
-	override suspend fun switchGroup(groupId: String): CardinalSdk {
-		val switchedProvider = authProvider.switchGroup(groupId)
+	override suspend fun switchGroup(groupId: String): CardinalSdk =
+		withSwitchedProvider(authProvider.switchGroup(groupId), groupId)
+
+	override suspend fun changeScope(dataOwnerId: String): CardinalSdk =
+		withSwitchedProvider(authProvider.changeScope(dataOwnerId), this.boundGroupId)
+
+	private suspend fun withSwitchedProvider(
+		switchedProvider: AuthProvider,
+		boundGroupId: String?
+	): CardinalSdk {
 		val (switchedCryptoConfigs, newKey, scope) = initializeApiCrypto(
 			config.apiUrl,
 			switchedProvider,
@@ -1079,14 +1100,14 @@ internal class CardinalSdkImpl(
 			config.rawApiConfig.json,
 			config.crypto.strategies,
 			config.crypto.primitives,
-			groupId,
+			boundGroupId,
 			options
 		)
 		return CardinalSdkImpl(
 			switchedProvider,
 			switchedCryptoConfigs,
 			options,
-			groupId,
+			boundGroupId,
 			scope
 		).also { switchedCryptoConfigs.notifyNewKeyIfAny(it, newKey) }
 	}

@@ -4,6 +4,8 @@ import {randomUuid} from '../utils/Id.mjs';
 import {DecryptedPropertyStub} from './PropertyStub.mjs';
 import {CryptoActor} from './base/CryptoActor.mjs';
 import {Versionable} from './base/Versionable.mjs';
+import {AesExchangeKeyEncryptionKeypairIdentifier} from './specializations/AesExchangeKeyEncryptionKeypairIdentifier.mjs';
+import {AesExchangeKeyEntryKeyString} from './specializations/AesExchangeKeyEntryKeyString.mjs';
 import {HexString} from './specializations/HexString.mjs';
 import {SpkiHexString} from './specializations/SpkiHexString.mjs';
 
@@ -74,13 +76,13 @@ export class CryptoActorStub implements Versionable<string>, CryptoActor {
 				false,
 				[...path, ".hcPartyKeys"],
 				(k0, p0) => expectString(k0, false, p0),
-				(v0, p0) => expectArray(v0, false, p0, (x1, p1) => expectString(x1, false, p1))
+				(v0, p0) => expectArray(v0, false, p0, (x1, p1) => expectString(x1, false, p1) as HexString)
 			),
 			aesExchangeKeys: expectMap(
 				extractEntry(jCpy, 'aesExchangeKeys', false, path),
 				false,
 				[...path, ".aesExchangeKeys"],
-				(k0, p0) => expectString(k0, false, p0),
+				(k0, p0) => expectString(k0, false, p0) as AesExchangeKeyEntryKeyString,
 				(v0, p0) => expectMap(
 					v0,
 					false,
@@ -90,8 +92,8 @@ export class CryptoActorStub implements Versionable<string>, CryptoActor {
 						v1,
 						false,
 						p1,
-						(k2, p2) => expectString(k2, false, p2),
-						(v2, p2) => expectString(v2, false, p2)
+						(k2, p2) => expectString(k2, false, p2) as AesExchangeKeyEncryptionKeypairIdentifier,
+						(v2, p2) => expectString(v2, false, p2) as HexString
 					)
 				)
 			),
@@ -99,13 +101,13 @@ export class CryptoActorStub implements Versionable<string>, CryptoActor {
 				extractEntry(jCpy, 'transferKeys', false, path),
 				false,
 				[...path, ".transferKeys"],
-				(k0, p0) => expectString(k0, false, p0),
+				(k0, p0) => expectString(k0, false, p0) as AesExchangeKeyEncryptionKeypairIdentifier,
 				(v0, p0) => expectMap(
 					v0,
 					false,
 					p0,
-					(k1, p1) => expectString(k1, false, p1),
-					(v1, p1) => expectString(v1, false, p1)
+					(k1, p1) => expectString(k1, false, p1) as AesExchangeKeyEncryptionKeypairIdentifier,
+					(v1, p1) => expectString(v1, false, p1) as HexString
 				)
 			),
 			privateKeyShamirPartitions: expectMap(
@@ -113,10 +115,10 @@ export class CryptoActorStub implements Versionable<string>, CryptoActor {
 				false,
 				[...path, ".privateKeyShamirPartitions"],
 				(k0, p0) => expectString(k0, false, p0),
-				(v0, p0) => expectString(v0, false, p0)
+				(v0, p0) => expectString(v0, false, p0) as HexString
 			),
-			publicKey: expectString(extractEntry(jCpy, 'publicKey', false, path), true, [...path, ".publicKey"]),
-			publicKeysForOaepWithSha256: expectArray(extractEntry(jCpy, 'publicKeysForOaepWithSha256', true, path), false, [...path, ".publicKeysForOaepWithSha256"], (x0, p0) => expectString(x0, false, p0)),
+			publicKey: expectString(extractEntry(jCpy, 'publicKey', false, path), true, [...path, ".publicKey"]) as SpkiHexString,
+			publicKeysForOaepWithSha256: expectArray(extractEntry(jCpy, 'publicKeysForOaepWithSha256', true, path), false, [...path, ".publicKeysForOaepWithSha256"], (x0, p0) => expectString(x0, false, p0) as SpkiHexString),
 			parentId: expectString(extractEntry(jCpy, 'parentId', false, path), true, [...path, ".parentId"]),
 			cryptoActorProperties: expectArray(extractEntry(jCpy, 'cryptoActorProperties', false, path), true, [...path, ".cryptoActorProperties"], (x0, p0) => expectObject(x0, false, ignoreUnknownKeys, p0, DecryptedPropertyStub.fromJSON)),
 		})

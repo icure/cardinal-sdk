@@ -1,16 +1,17 @@
 package com.icure.cardinal.sdk.crypto
 
+import com.icure.cardinal.sdk.crypto.entities.CardinalKeyInfo
 import com.icure.cardinal.sdk.crypto.entities.RecoveryDataKey
 import com.icure.cardinal.sdk.crypto.entities.RecoveryDataUseFailureReason
 import com.icure.cardinal.sdk.crypto.entities.RecoveryResult
+import com.icure.cardinal.sdk.model.DataOwnerWithType
 import com.icure.cardinal.sdk.model.specializations.SpkiHexString
 import com.icure.kryptom.crypto.RsaAlgorithm
 import com.icure.kryptom.crypto.RsaKeypair
 
 /**
  * Allows to recover user keypairs using builtin recovery mechanisms.
- * This interface includes recovery methods that require some input from your application (e.g. a recovery key created from a different device).
- * Other recovery methods (such as transfer keys) are used automatically by the sdk when available and don't require any input from your application.
+ * This includes recovery methods that require some input from your application (e.g. a recovery key created from a different device).
  */
 interface KeyPairRecoverer {
 	/**
@@ -46,4 +47,17 @@ interface KeyPairRecoverer {
 		autoDelete: Boolean,
 		waitSeconds: Int
 	): RecoveryResult<Map<String, Map<SpkiHexString, RsaKeypair<RsaAlgorithm.RsaEncryptionAlgorithm>>>>
+
+	/**
+	 * Get information on which keys the SDK will be able to recover autonomously through transfer keys or shamir
+	 * shares using the provided [recoveredKeys] plus any already available keys (i.e. keys that were already in the
+	 * storage or recovered using transfer keys and/or shamir from the keys already in the storage).
+	 *
+	 * When prompting the user to recover more of his keys you can ignore any key that are returned by this method, as
+	 * those keys will be automatically recovered by the SDK if you return [recoveredKeys].
+	 */
+	suspend fun getRecoverableWithEncryptionKeys(
+		dataOwner: DataOwnerWithType,
+		recoveredKeys: Collection<RsaKeypair<RsaAlgorithm.RsaEncryptionAlgorithm>>
+	): Set<SpkiHexString>
 }

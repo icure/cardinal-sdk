@@ -64,7 +64,7 @@ export class DecryptedCalendarItemTag {
 			date: expectNumber(extractEntry(jCpy, 'date', false, path), true, true, [...path, ".date"]),
 			userId: expectString(extractEntry(jCpy, 'userId', false, path), true, [...path, ".userId"]),
 			userName: expectString(extractEntry(jCpy, 'userName', false, path), true, [...path, ".userName"]),
-			encryptedSelf: expectString(extractEntry(jCpy, 'encryptedSelf', false, path), true, [...path, ".encryptedSelf"]),
+			encryptedSelf: expectString(extractEntry(jCpy, 'encryptedSelf', false, path), true, [...path, ".encryptedSelf"]) as Base64String,
 		})
 		if (!ignoreUnknownKeys) {
 			const unused = Object.keys(jCpy)
@@ -118,7 +118,7 @@ export class EncryptedCalendarItemTag {
 			date: expectNumber(extractEntry(jCpy, 'date', false, path), true, true, [...path, ".date"]),
 			userId: expectString(extractEntry(jCpy, 'userId', false, path), true, [...path, ".userId"]),
 			userName: expectString(extractEntry(jCpy, 'userName', false, path), true, [...path, ".userName"]),
-			encryptedSelf: expectString(extractEntry(jCpy, 'encryptedSelf', false, path), true, [...path, ".encryptedSelf"]),
+			encryptedSelf: expectString(extractEntry(jCpy, 'encryptedSelf', false, path), true, [...path, ".encryptedSelf"]) as Base64String,
 		})
 		if (!ignoreUnknownKeys) {
 			const unused = Object.keys(jCpy)

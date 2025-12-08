@@ -13,6 +13,7 @@ import com.icure.cardinal.sdk.test.DefaultRawApiConfig
 import com.icure.cardinal.sdk.test.baseUrl
 import com.icure.cardinal.sdk.test.testGroupAdminAuth
 import com.icure.cardinal.sdk.test.testGroupId
+import com.icure.cardinal.sdk.utils.DEFAULT_ENABLED
 import com.icure.cardinal.sdk.utils.Serialization
 import com.icure.kryptom.crypto.RsaAlgorithm
 import com.icure.kryptom.crypto.defaultCryptoService
@@ -225,7 +226,7 @@ private suspend fun createTestDataAndApis(): TestData {
 }
 
 class LegacyMetadataMigrationTest : StringSpec({
-	"TODO: actually implement this test" {
+	"TODO: actually implement this test".config(enabled = DEFAULT_ENABLED) {
 		TODO("Adapt the ts test")
 	}
 })

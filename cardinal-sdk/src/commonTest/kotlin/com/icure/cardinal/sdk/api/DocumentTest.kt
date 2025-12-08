@@ -5,6 +5,7 @@ import com.icure.cardinal.sdk.test.autoCancelJob
 import com.icure.cardinal.sdk.test.createHcpUser
 import com.icure.cardinal.sdk.test.initializeTestEnvironment
 import com.icure.cardinal.sdk.test.shouldBeNextRevOf
+import com.icure.cardinal.sdk.utils.DEFAULT_ENABLED
 import com.icure.kryptom.crypto.defaultCryptoService
 import com.icure.kryptom.utils.toHexString
 import io.kotest.core.spec.style.StringSpec
@@ -19,7 +20,7 @@ class DocumentTest : StringSpec({
 		initializeTestEnvironment()
 	}
 
-	"Should be able to create document and set attachment with chosen uti" {
+	"Should be able to create document and set attachment with chosen uti".config(enabled = DEFAULT_ENABLED) {
 		val api = createHcpUser().api(specJob)
 		val doc = api.document.createDocument(
 			api.document.withEncryptionMetadataUnlinked(
@@ -43,7 +44,7 @@ class DocumentTest : StringSpec({
 		api.document.getAndDecryptMainAttachment(doc).decodeToString() shouldBe textAttachment
 	}
 
-	"Modifying a document after setting the attachment should preserve the attachment" {
+	"Modifying a document after setting the attachment should preserve the attachment".config(enabled = DEFAULT_ENABLED) {
 		val api = createHcpUser().api(specJob)
 		val doc = api.document.createDocument(
 			api.document.withEncryptionMetadataUnlinked(

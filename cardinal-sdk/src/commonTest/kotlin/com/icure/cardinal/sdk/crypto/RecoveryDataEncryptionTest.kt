@@ -19,6 +19,7 @@ import com.icure.cardinal.sdk.test.createHcpUser
 import com.icure.cardinal.sdk.test.createPatientUser
 import com.icure.cardinal.sdk.test.initializeTestEnvironment
 import com.icure.cardinal.sdk.test.internal
+import com.icure.cardinal.sdk.utils.DEFAULT_ENABLED
 import com.icure.cardinal.sdk.utils.EntityEncryptionException
 import com.icure.cardinal.sdk.utils.base64Encode
 import com.icure.cardinal.sdk.utils.decode
@@ -49,7 +50,7 @@ import kotlin.random.Random
 class RecoveryDataEncryptionTest : StringSpec({
 	val specJob = autoCancelJob()
 	beforeSpec { initializeTestEnvironment() }
-	"User should be able to create and use key recovery info" {
+	"User should be able to create and use key recovery info".config(enabled = DEFAULT_ENABLED) {
 		val hcp = createHcpUser()
 		val api = hcp.api(specJob)
 		val recoveryKey = api.recovery.createRecoveryInfoForAvailableKeyPairs()
@@ -91,7 +92,7 @@ class RecoveryDataEncryptionTest : StringSpec({
 		calledRecovery shouldBe true
 	}
 
-	"User should be able to share data with a patient that did not yet do a first login" {
+	"User should be able to share data with a patient that did not yet do a first login".config(enabled = DEFAULT_ENABLED) {
 		val hcp = createHcpUser()
 		val api = hcp.api(specJob)
 		val patient = api.patient.createPatient(
@@ -118,7 +119,7 @@ class RecoveryDataEncryptionTest : StringSpec({
 		apiPatient.patient.getPatient(patient.id).shouldNotBeNull().note shouldBe patient.note
 	}
 
-	"Existing key recovery info should be decrypted correctly" {
+	"Existing key recovery info should be decrypted correctly".config(enabled = DEFAULT_ENABLED) {
 		// All data was created only for testing purposes
 		val childId = defaultCryptoService.strongRandom.randomUUID()
 		val childPrivate = "MIIEvQIBADANBgkqhkiG9w0BAQEFAASCBKcwggSjAgEAAoIBAQCNwFBObvWcTPk/xdtzGVjqrlFxTlSMVbsO4UGT" +
@@ -206,7 +207,7 @@ class RecoveryDataEncryptionTest : StringSpec({
 		}
 	}
 
-	"Existing exchange data recovery info should be decrypted correctly" {
+	"Existing exchange data recovery info should be decrypted correctly".config(enabled = DEFAULT_ENABLED) {
 		val key = defaultCryptoService.aes.generateKey(AesAlgorithm.CbcWithPkcs7Padding, AesService.KeySize.Aes256)
 		val recoveryKey = RecoveryDataKey.fromRawBytes(defaultCryptoService.aes.exportKey(key))
 		val exchangeDataId = defaultCryptoService.strongRandom.randomUUID()
@@ -240,7 +241,7 @@ class RecoveryDataEncryptionTest : StringSpec({
 		)
 	}
 
-	"Recovery data key options should be respected" {
+	"Recovery data key options should be respected".config(enabled = DEFAULT_ENABLED) {
 		val hcp = createHcpUser()
 		val api = hcp.api(specJob)
 		val recoveryKey1 = api.recovery.createRecoveryInfoForAvailableKeyPairs(
@@ -274,7 +275,7 @@ class RecoveryDataEncryptionTest : StringSpec({
 		}
 	}
 
-	"Attempting to create recovery data with an already used key should fail" {
+	"Attempting to create recovery data with an already used key should fail".config(enabled = DEFAULT_ENABLED) {
 		val hcp = createHcpUser()
 		val api = hcp.api(specJob)
 		val existingRecoveryKey = api.recovery.createRecoveryInfoForAvailableKeyPairs()
@@ -289,7 +290,7 @@ class RecoveryDataEncryptionTest : StringSpec({
 		) // after purging should be ok
 	}
 
-	"Should be able to wait for recovery data to be created" {
+	"Should be able to wait for recovery data to be created".config(enabled = DEFAULT_ENABLED) {
 		val hcp = createHcpUser()
 		val api = hcp.api(specJob)
 		val precomputedKey = api.recovery.preGenerateRecoveryKey(RecoveryKeySize.Bytes32)

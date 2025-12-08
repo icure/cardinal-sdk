@@ -1,5 +1,6 @@
 package com.icure.cardinal.sdk.utils.pagination
 
+import com.icure.cardinal.sdk.utils.DEFAULT_ENABLED
 import com.icure.kryptom.crypto.defaultCryptoService
 import io.kotest.assertions.throwables.shouldThrow
 import io.kotest.core.spec.style.StringSpec
@@ -28,7 +29,7 @@ class IdsPageIteratorTest : StringSpec({
 	}
 
 
-	"A IdsPageIterator can iterate over multiple pages" {
+	"A IdsPageIterator can iterate over multiple pages".config(enabled = DEFAULT_ENABLED) {
 		val iterator = createIterator()
 		val results = mutableListOf<Datum>()
 
@@ -40,7 +41,7 @@ class IdsPageIteratorTest : StringSpec({
 		iterator.shouldHaveNoMoreElements()
 	}
 
-	"A IdsPageIterator hasNext is idempotent" {
+	"A IdsPageIterator hasNext is idempotent".config(enabled = DEFAULT_ENABLED) {
 		val iterator = createIterator()
 		val results = mutableListOf<Datum>()
 
@@ -53,7 +54,7 @@ class IdsPageIteratorTest : StringSpec({
 		iterator.shouldHaveNoMoreElements()
 	}
 
-	"IdsPageIterator - Any exception thrown in the request is not caught by the iterator" {
+	"IdsPageIterator - Any exception thrown in the request is not caught by the iterator".config(enabled = DEFAULT_ENABLED) {
 		class CustomException : Exception()
 
 		val iterator = IdsPageIterator(
@@ -69,14 +70,14 @@ class IdsPageIteratorTest : StringSpec({
 		}
 	}
 
-	"IdsPageIterator - If the request returns an empty page, hasNext is false" {
+	"IdsPageIterator - If the request returns an empty page, hasNext is false".config(enabled = DEFAULT_ENABLED) {
 		val iterator = IdsPageIterator(
 			ids = elements.keys.toList(),
 		) { emptyList() }
 		iterator.shouldHaveNoMoreElements()
 	}
 
-	"IdsPageIterator - Will skip empty pages" {
+	"IdsPageIterator - Will skip empty pages".config(enabled = DEFAULT_ENABLED) {
 		val splitIndex = Random.nextInt(1, elements.size)
 		val iterator = IdsPageIterator(
 			ids = elements.keys.toList().subList(0, splitIndex) + List(500) { defaultCryptoService.strongRandom.randomUUID() } + elements.keys.toList().subList(splitIndex, elements.size),

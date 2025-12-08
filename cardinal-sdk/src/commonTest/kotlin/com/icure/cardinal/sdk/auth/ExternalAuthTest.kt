@@ -11,6 +11,7 @@ import com.icure.cardinal.sdk.test.createPlainUser
 import com.icure.cardinal.sdk.test.initializeTestEnvironment
 import com.icure.cardinal.sdk.test.superadminAuth
 import com.icure.cardinal.sdk.test.uuid
+import com.icure.cardinal.sdk.utils.DEFAULT_ENABLED
 import com.icure.kryptom.crypto.PrivateRsaKey
 import com.icure.kryptom.crypto.RsaAlgorithm
 import com.icure.kryptom.crypto.defaultCryptoService
@@ -87,7 +88,7 @@ class ExternalAuthTest : StringSpec({
 		return "$unsignedToken.$signature"
 	}
 
-	"Should be able to login using external JWT" {
+	"Should be able to login using external JWT".config(enabled = DEFAULT_ENABLED) {
 		val userDetails = createPlainUser(inGroup = group1Id)
 		val sdk = CardinalBaseSdk.initialize(
 			appId,

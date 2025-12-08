@@ -10,6 +10,7 @@ import com.icure.cardinal.sdk.serialization.FilterChainSerializer
 import com.icure.cardinal.sdk.serialization.PatientAbstractFilterSerializer
 import com.icure.cardinal.sdk.serialization.SubscriptionSerializer
 import com.icure.cardinal.sdk.serialization.UnionFilterSerializer
+import com.icure.cardinal.sdk.utils.DEFAULT_ENABLED
 import com.icure.cardinal.sdk.utils.Serialization
 import io.kotest.core.spec.style.StringSpec
 import io.kotest.matchers.shouldBe
@@ -20,7 +21,7 @@ import kotlinx.serialization.json.JsonPrimitive
 
 class AbstractFilterSerializationTest: StringSpec({
 
-	"Should be able to serialize Filters and Subscriptions" {
+	"Should be able to serialize Filters and Subscriptions".config(enabled = DEFAULT_ENABLED) {
 		val filterSpecific: AbstractFilter<Patient> = PatientByIdsFilter(setOf("whatever"))
 		val filterJson = JsonObject(
             mapOf(

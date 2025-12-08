@@ -79,7 +79,7 @@ export class DecryptedTypedValue {
 			doubleValue: expectNumber(extractEntry(jCpy, 'doubleValue', false, path), true, false, [...path, ".doubleValue"]),
 			stringValue: expectString(extractEntry(jCpy, 'stringValue', false, path), true, [...path, ".stringValue"]),
 			dateValue: expectNumber(extractEntry(jCpy, 'dateValue', false, path), true, true, [...path, ".dateValue"]),
-			encryptedSelf: expectString(extractEntry(jCpy, 'encryptedSelf', false, path), true, [...path, ".encryptedSelf"]),
+			encryptedSelf: expectString(extractEntry(jCpy, 'encryptedSelf', false, path), true, [...path, ".encryptedSelf"]) as Base64String,
 		})
 		if (!ignoreUnknownKeys) {
 			const unused = Object.keys(jCpy)
@@ -143,7 +143,7 @@ export class EncryptedTypedValue {
 			doubleValue: expectNumber(extractEntry(jCpy, 'doubleValue', false, path), true, false, [...path, ".doubleValue"]),
 			stringValue: expectString(extractEntry(jCpy, 'stringValue', false, path), true, [...path, ".stringValue"]),
 			dateValue: expectNumber(extractEntry(jCpy, 'dateValue', false, path), true, true, [...path, ".dateValue"]),
-			encryptedSelf: expectString(extractEntry(jCpy, 'encryptedSelf', false, path), true, [...path, ".encryptedSelf"]),
+			encryptedSelf: expectString(extractEntry(jCpy, 'encryptedSelf', false, path), true, [...path, ".encryptedSelf"]) as Base64String,
 		})
 		if (!ignoreUnknownKeys) {
 			const unused = Object.keys(jCpy)

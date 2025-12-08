@@ -7,6 +7,7 @@ import com.icure.kryptom.utils.toHexString
 import com.icure.cardinal.sdk.model.specializations.KeypairFingerprintV1String
 import com.icure.cardinal.sdk.model.specializations.KeypairFingerprintV2String
 import com.icure.cardinal.sdk.model.specializations.SpkiHexString
+import com.icure.cardinal.sdk.utils.DEFAULT_ENABLED
 import com.icure.cardinal.sdk.utils.Serialization
 import io.kotest.core.spec.style.StringSpec
 import io.kotest.matchers.shouldBe
@@ -51,19 +52,19 @@ val keys = listOf(
 
 
 class StringSpecializationTest : StringSpec({
-	"Spki hex string should be serialized as a simple string" {
+	"Spki hex string should be serialized as a simple string".config(enabled = DEFAULT_ENABLED) {
 		keys.forEach {
 			Serialization.json.encodeToJsonElement(SpkiHexString(it.spkiHex)).shouldBeStringPrimitive()
 		}
 	}
 
-	"Spki hex string should be deserializable from a simple string" {
+	"Spki hex string should be deserializable from a simple string".config(enabled = DEFAULT_ENABLED) {
 		keys.forEach {
 			Serialization.json.decodeFromString<SpkiHexString>("\"${it.spkiHex}\"") shouldBe SpkiHexString(it.spkiHex)
 		}
 	}
 
-	"Spki hex string fingerprints should match expected" {
+	"Spki hex string fingerprints should match expected".config(enabled = DEFAULT_ENABLED) {
 		keys.forEach {
 			val spki = SpkiHexString(it.spkiHex)
 			spki.fingerprintV1().s shouldBe it.fingerprintV1
@@ -73,31 +74,31 @@ class StringSpecializationTest : StringSpec({
 		}
 	}
 
-	"KeypairFingerprintV1String should be serialized as a simple string" {
+	"KeypairFingerprintV1String should be serialized as a simple string".config(enabled = DEFAULT_ENABLED) {
 		keys.forEach {
 			Serialization.json.encodeToJsonElement(KeypairFingerprintV1String(it.fingerprintV1)).shouldBeStringPrimitive()
 		}
 	}
 
-	"KeypairFingerprintV1String should be deserializable from a simple string" {
+	"KeypairFingerprintV1String should be deserializable from a simple string".config(enabled = DEFAULT_ENABLED) {
 		keys.forEach {
 			Serialization.json.decodeFromString<KeypairFingerprintV1String>("\"${it.fingerprintV1}\"") shouldBe KeypairFingerprintV1String(it.fingerprintV1)
 		}
 	}
 
-	"KeypairFingerprintV2String should be serialized as a simple string" {
+	"KeypairFingerprintV2String should be serialized as a simple string".config(enabled = DEFAULT_ENABLED) {
 		keys.forEach {
 			Serialization.json.encodeToJsonElement(KeypairFingerprintV2String(it.fingerprintV2)).shouldBeStringPrimitive()
 		}
 	}
 
-	"KeypairFingerprintV2String should be deserializable from a simple string" {
+	"KeypairFingerprintV2String should be deserializable from a simple string".config(enabled = DEFAULT_ENABLED) {
 		keys.forEach {
 			Serialization.json.decodeFromString<KeypairFingerprintV2String>("\"${it.fingerprintV2}\"") shouldBe KeypairFingerprintV2String(it.fingerprintV2)
 		}
 	}
 
-	"Generated keys should match expected formats" {
+	"Generated keys should match expected formats".config(enabled = DEFAULT_ENABLED) {
 		listOf(
 			RsaAlgorithm.RsaEncryptionAlgorithm.OaepWithSha256,
 			RsaAlgorithm.RsaEncryptionAlgorithm.OaepWithSha1,

@@ -311,6 +311,10 @@ internal class CardinalSdkJsImpl(
 		CardinalSdkJsImpl(sdk.switchGroup(groupId))
 	}
 
+	override fun changeScope(dataOwnerId: String): Promise<CardinalSdkJs> = GlobalScope.promise {
+		CardinalSdkJsImpl(sdk.changeScope(dataOwnerId))
+	}
+
 	override fun close() {
 		sdk.scope.cancel()
 	}
@@ -362,6 +366,10 @@ internal class CardinalBaseSdkJsImpl(
 ) : CardinalBaseSdkJs, CardinalBaseApisJs by CardinalBaseApisJsImpl(sdk) {
 	override fun switchGroup(groupId: String): Promise<CardinalBaseSdkJs> = GlobalScope.promise {
 		CardinalBaseSdkJsImpl(sdk.switchGroup(groupId), jsCryptoService)
+	}
+
+	override fun changeScope(dataOwnerId: String): Promise<CardinalBaseSdkJs> = GlobalScope.promise {
+		CardinalBaseSdkJsImpl(sdk.changeScope(dataOwnerId), jsCryptoService)
 	}
 
 	override fun toFullSdk(baseStorage: dynamic, options: BasicToFullSdkOptionsJs?): Promise<CardinalSdkJs> = GlobalScope.promise {
