@@ -21,8 +21,8 @@ public external interface EntityReferenceInGroupToPatientShareOptionsMapObject_d
 
 public
     fun EntityReferenceInGroupToPatientShareOptionsMapObject_delegate_shareOptions_toJs(ktMap: Map<EntityReferenceInGroup, PatientShareOptions>):
-    Array<EntityReferenceInGroupToPatientShareOptionsMapObject_delegate_shareOptions> = ktMap.map {
-    entry ->
+    Array<EntityReferenceInGroupToPatientShareOptionsMapObject_delegate_shareOptions> =
+    ktMap.map { entry ->
   val delegateKt = entry.key
   val delegate: EntityReferenceInGroupJs = entityReferenceInGroup_toJs(delegateKt)
   val shareOptionsKt = entry.value

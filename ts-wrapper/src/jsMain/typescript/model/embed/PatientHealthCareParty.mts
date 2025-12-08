@@ -88,7 +88,7 @@ export class DecryptedPatientHealthCareParty {
 			referralPeriods: expectArray(extractEntry(jCpy, 'referralPeriods', false, path), false, [...path, ".referralPeriods"], (x0, p0) => expectObject(x0, false, ignoreUnknownKeys, p0, ReferralPeriod.fromJSON)),
 			referral: expectBoolean(extractEntry(jCpy, 'referral', false, path), false, [...path, ".referral"]),
 			properties: expectArray(extractEntry(jCpy, 'properties', false, path), true, [...path, ".properties"], (x0, p0) => expectObject(x0, false, ignoreUnknownKeys, p0, DecryptedPropertyStub.fromJSON)),
-			encryptedSelf: expectString(extractEntry(jCpy, 'encryptedSelf', false, path), true, [...path, ".encryptedSelf"]),
+			encryptedSelf: expectString(extractEntry(jCpy, 'encryptedSelf', false, path), true, [...path, ".encryptedSelf"]) as Base64String,
 		})
 		if (!ignoreUnknownKeys) {
 			const unused = Object.keys(jCpy)
@@ -158,7 +158,7 @@ export class EncryptedPatientHealthCareParty {
 			referralPeriods: expectArray(extractEntry(jCpy, 'referralPeriods', false, path), false, [...path, ".referralPeriods"], (x0, p0) => expectObject(x0, false, ignoreUnknownKeys, p0, ReferralPeriod.fromJSON)),
 			referral: expectBoolean(extractEntry(jCpy, 'referral', false, path), false, [...path, ".referral"]),
 			properties: expectArray(extractEntry(jCpy, 'properties', false, path), true, [...path, ".properties"], (x0, p0) => expectObject(x0, false, ignoreUnknownKeys, p0, EncryptedPropertyStub.fromJSON)),
-			encryptedSelf: expectString(extractEntry(jCpy, 'encryptedSelf', false, path), true, [...path, ".encryptedSelf"]),
+			encryptedSelf: expectString(extractEntry(jCpy, 'encryptedSelf', false, path), true, [...path, ".encryptedSelf"]) as Base64String,
 		})
 		if (!ignoreUnknownKeys) {
 			const unused = Object.keys(jCpy)

@@ -9,7 +9,9 @@ import com.icure.cardinal.sdk.js.crypto.entities.RecoveryResultJs
 import com.icure.cardinal.sdk.js.crypto.entities.recoveryDataKey_fromJs
 import com.icure.cardinal.sdk.js.crypto.entities.recoveryResult_toJs
 import com.icure.cardinal.sdk.js.model.CheckedConverters
+import com.icure.cardinal.sdk.js.model.DataOwnerWithTypeJs
 import com.icure.cardinal.sdk.js.model.cryptoActorStubWithType_toJs
+import com.icure.cardinal.sdk.js.model.dataOwnerWithType_fromJs
 import com.icure.cardinal.sdk.js.model.dataOwnerWithType_toJs
 import com.icure.cardinal.sdk.js.utils.Record
 import com.icure.cardinal.sdk.model.CryptoActorStubWithType
@@ -138,6 +140,17 @@ private class KeyPairRecovererBridge(
 				}
 			)
 		}
+	}
+
+	override fun getRecoverableWithEncryptionKeys(
+		dataOwner: DataOwnerWithTypeJs,
+		recoveredKeys: Array<XRsaKeypair>
+	): Promise<Array<String>> = scope.promise {
+		val ktResult = recoverer.getRecoverableWithEncryptionKeys(
+			dataOwnerWithType_fromJs(dataOwner),
+			recoveredKeys.map { it.toKryptom(RsaAlgorithm.RsaEncryptionAlgorithm.fromIdentifier(it.private.algorithm)) },
+		)
+		CheckedConverters.setToArray(ktResult) { it.s }
 	}
 }
 

@@ -200,8 +200,7 @@ internal suspend fun AuthenticationMethod.getGroupAndAuthProvider(
 	apiUrl: String,
 	cryptoService: CryptoService,
 	applicationId: String?,
-	options: CommonSdkOptions,
-	groupSelector: GroupSelector?,
+	options: BoundSdkOptions,
 	rawApiConfig: RawApiConfig,
 ): Pair<String?, AuthProvider> {
 	val rawAuthApi = RawAnonymousAuthApiImpl(apiUrl, rawApiConfig)
@@ -212,17 +211,28 @@ internal suspend fun AuthenticationMethod.getGroupAndAuthProvider(
 	val matches = userApi.getMatchingUsers().takeIf { it.status.value != 404 }?.successBody()
 	return if (matches != null) {
 		val chosenGroupId = if (matches.size > 1) {
-			requireNotNull(groupSelector) {
+			requireNotNull(options.groupSelector) {
 				"The provided credentials allow the user to login to multiple groups, but no group selector is provided"
 			}.invoke(matches)
 		} else {
 			ensureNonNull(matches.first().groupId) { "Group id of single match is null" }
 		}
-		Pair(chosenGroupId, authProvider.switchGroup(chosenGroupId))
+		Pair(
+			chosenGroupId,
+			authProvider.switchGroup(chosenGroupId).changeScope(options.dataOwnerScope)
+		)
 	} else {
-		Pair(null, authProvider)
+		Pair(null, authProvider.changeScope(options.dataOwnerScope))
 	}
 }
+
+@InternalIcureApi
+private suspend fun AuthProvider.changeScope(scope: String?) =
+	if (scope != null) {
+		this.changeScope(scope)
+	} else {
+		this
+	}
 
 @InternalIcureApi
 private suspend fun smartAuthWithConstantSecret(

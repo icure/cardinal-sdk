@@ -18,6 +18,7 @@ public interface RawAnonymousAuthApi {
 		loginCredentials: LoginCredentials,
 		groupId: String? = null,
 		applicationId: String? = null,
+		scopeDataOwner: String? = null,
 	): HttpResponse<JwtResponse>
 
 	suspend fun refresh(
@@ -37,10 +38,16 @@ public interface RawAnonymousAuthApi {
 		groupId: String,
 	): HttpResponse<JwtResponse>
 
+	suspend fun scoped(
+		refreshToken: String,
+		dataOwnerId: String,
+	): HttpResponse<JwtResponse>
+
 	suspend fun loginGoogle(
 		token: String,
 		groupId: String? = null,
 		applicationId: String? = null,
+		scopeDataOwner: String? = null,
 	): HttpResponse<JwtResponse>
 
 	suspend fun loginWithExternalJwt(
@@ -49,12 +56,14 @@ public interface RawAnonymousAuthApi {
 		applicationId: String,
 		groupId: String? = null,
 		minimumAuthenticationClass: String? = null,
+		scopeDataOwner: String? = null,
 	): HttpResponse<JwtResponse>
 
 	suspend fun loginFas(
 		token: String,
 		groupId: String? = null,
 		applicationId: String? = null,
+		scopeDataOwner: String? = null,
 	): HttpResponse<JwtResponse>
 
 	suspend fun invalidateRefreshJWT(refreshToken: String): HttpResponse<Unit>

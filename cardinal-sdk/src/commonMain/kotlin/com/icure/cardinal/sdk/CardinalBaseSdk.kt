@@ -216,6 +216,20 @@ interface CardinalBaseSdk : CardinalBaseApis {
 	suspend fun switchGroup(groupId: String): CardinalBaseSdk
 
 	/**
+	 * Get a new sdk using the same configurations and user authentication methods but for a different data owner
+	 * in the same group.
+	 * To use this method, the authentication method provided at initialization of this sdk must be valid also for the
+	 * new data owner.
+	 *
+	 * Note that the switched sdk will reuse components like the http client.
+	 * Don't close the client of this sdk while you are using the new sdk.
+	 *
+	 * @param dataOwnerId the id of the new data owner to act as
+	 * @return a new sdk for executing requests as the provided data owner
+	 */
+	suspend fun changeScope(dataOwnerId: String): CardinalBaseSdk
+
+	/**
 	 * Use the authentication for this base sdk to create a full sdk for the same user. Can only be used if the
 	 * current user is a data owner.
 	 * @param baseStorage an implementation of the [StorageFacade], used for persistent storage of various
@@ -273,7 +287,6 @@ interface CardinalBaseSdk : CardinalBaseApis {
 				cryptoService = cryptoService,
 				applicationId = applicationId,
 				options = options,
-				groupSelector = options.groupSelector,
 				rawApiConfig = rawApiConfig,
 			)
 			val boundGroup = chosenGroup?.let(::SdkBoundGroup)
@@ -684,6 +697,13 @@ private class CardinalBaseSdkImpl(
 		authProvider.switchGroup(groupId),
 		config,
 		groupId,
+		options,
+	)
+
+	override suspend fun changeScope(dataOwnerId: String): CardinalBaseSdk = CardinalBaseSdkImpl(
+		authProvider.changeScope(dataOwnerId),
+		config,
+		boundGroupId,
 		options,
 	)
 

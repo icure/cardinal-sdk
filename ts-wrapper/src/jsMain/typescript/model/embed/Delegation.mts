@@ -36,7 +36,7 @@ export class Delegation {
 		const res = new Delegation({
 			owner: expectString(extractEntry(jCpy, 'owner', false, path), true, [...path, ".owner"]),
 			delegatedTo: expectString(extractEntry(jCpy, 'delegatedTo', false, path), true, [...path, ".delegatedTo"]),
-			key: expectString(extractEntry(jCpy, 'key', false, path), true, [...path, ".key"]),
+			key: expectString(extractEntry(jCpy, 'key', false, path), true, [...path, ".key"]) as HexString,
 			tags: expectArray(extractEntry(jCpy, 'tags', false, path), false, [...path, ".tags"], (x0, p0) => expectString(x0, false, p0)),
 		})
 		if (!ignoreUnknownKeys) {

@@ -14,6 +14,10 @@ abstract class ProxyAuthProvider : JwtBasedAuthProvider, TokenBasedAuthService<J
 		throw UnsupportedOperationException("Proxy auth provider can't be group switched")
 	}
 
+	override suspend fun changeScope(dataOwnerId: String): AuthProvider {
+		throw UnsupportedOperationException("Proxy auth provider can't change scope")
+	}
+
 	override fun getAuthService(): TokenBasedAuthService<JwtBearer> = this
 
 	override suspend fun getBearerAndRefreshToken(): JwtBearerAndRefresh {

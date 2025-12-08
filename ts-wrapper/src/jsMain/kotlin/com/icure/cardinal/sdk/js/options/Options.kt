@@ -46,7 +46,8 @@ suspend fun SdkOptionsJs.toKt(): SdkOptions {
 			CryptoStrategiesBridge(it, this.cryptoService ?: adaptCryptoServiceForExternal(defaultSdkOptions.cryptoService))
 		} ?: defaultSdkOptions.cryptoStrategies,
 		jsonPatcher = this.jsonPatcher?.let { JsonPatcherBridge(it) } ?: defaultSdkOptions.jsonPatcher,
-		lenientJson = this.lenientJson ?: defaultSdkOptions.lenientJson
+		lenientJson = this.lenientJson ?: defaultSdkOptions.lenientJson,
+		dataOwnerScope = this.dataOwnerScope ?: defaultSdkOptions.dataOwnerScope,
 	)
 }
 
@@ -60,7 +61,8 @@ suspend fun BasicSdkOptionsJs.toKt(): BasicSdkOptions {
 				groupSelectorJs(ktGroups.map { userGroup_toJs(it) }.toTypedArray()).await()
 			}
 		} ?: defaultApiOptions.groupSelector,
-		lenientJson = this.lenientJson ?: defaultApiOptions.lenientJson
+		lenientJson = this.lenientJson ?: defaultApiOptions.lenientJson,
+		dataOwnerScope = this.dataOwnerScope ?: defaultApiOptions.dataOwnerScope,
 	)
 }
 
@@ -74,7 +76,7 @@ suspend fun BasicToFullSdkOptionsJs.toKt(jsCryptoService: XCryptoService): Basic
 		cryptoStrategies = this.cryptoStrategies?.let {
 			CryptoStrategiesBridge(it, jsCryptoService)
 		} ?: defaultOptions.cryptoStrategies,
-		jsonPatcher = this.jsonPatcher?.let { JsonPatcherBridge(it) } ?: defaultOptions.jsonPatcher
+		jsonPatcher = this.jsonPatcher?.let { JsonPatcherBridge(it) } ?: defaultOptions.jsonPatcher,
 	)
 }
 

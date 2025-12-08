@@ -25,6 +25,8 @@ import {PersonName} from './embed/PersonName.mjs';
 import {PersonalStatus} from './embed/PersonalStatus.mjs';
 import {DecryptedSchoolingInfo, EncryptedSchoolingInfo, SchoolingInfo} from './embed/SchoolingInfo.mjs';
 import {SecurityMetadata} from './embed/SecurityMetadata.mjs';
+import {AesExchangeKeyEncryptionKeypairIdentifier} from './specializations/AesExchangeKeyEncryptionKeypairIdentifier.mjs';
+import {AesExchangeKeyEntryKeyString} from './specializations/AesExchangeKeyEntryKeyString.mjs';
 import {Base64String} from './specializations/Base64String.mjs';
 import {HexString} from './specializations/HexString.mjs';
 import {SpkiHexString} from './specializations/SpkiHexString.mjs';
@@ -557,13 +559,13 @@ export class DecryptedPatient {
 				false,
 				[...path, ".hcPartyKeys"],
 				(k0, p0) => expectString(k0, false, p0),
-				(v0, p0) => expectArray(v0, false, p0, (x1, p1) => expectString(x1, false, p1))
+				(v0, p0) => expectArray(v0, false, p0, (x1, p1) => expectString(x1, false, p1) as HexString)
 			),
 			aesExchangeKeys: expectMap(
 				extractEntry(jCpy, 'aesExchangeKeys', false, path),
 				false,
 				[...path, ".aesExchangeKeys"],
-				(k0, p0) => expectString(k0, false, p0),
+				(k0, p0) => expectString(k0, false, p0) as AesExchangeKeyEntryKeyString,
 				(v0, p0) => expectMap(
 					v0,
 					false,
@@ -573,8 +575,8 @@ export class DecryptedPatient {
 						v1,
 						false,
 						p1,
-						(k2, p2) => expectString(k2, false, p2),
-						(v2, p2) => expectString(v2, false, p2)
+						(k2, p2) => expectString(k2, false, p2) as AesExchangeKeyEncryptionKeypairIdentifier,
+						(v2, p2) => expectString(v2, false, p2) as HexString
 					)
 				)
 			),
@@ -582,13 +584,13 @@ export class DecryptedPatient {
 				extractEntry(jCpy, 'transferKeys', false, path),
 				false,
 				[...path, ".transferKeys"],
-				(k0, p0) => expectString(k0, false, p0),
+				(k0, p0) => expectString(k0, false, p0) as AesExchangeKeyEncryptionKeypairIdentifier,
 				(v0, p0) => expectMap(
 					v0,
 					false,
 					p0,
-					(k1, p1) => expectString(k1, false, p1),
-					(v1, p1) => expectString(v1, false, p1)
+					(k1, p1) => expectString(k1, false, p1) as AesExchangeKeyEncryptionKeypairIdentifier,
+					(v1, p1) => expectString(v1, false, p1) as HexString
 				)
 			),
 			privateKeyShamirPartitions: expectMap(
@@ -596,10 +598,10 @@ export class DecryptedPatient {
 				false,
 				[...path, ".privateKeyShamirPartitions"],
 				(k0, p0) => expectString(k0, false, p0),
-				(v0, p0) => expectString(v0, false, p0)
+				(v0, p0) => expectString(v0, false, p0) as HexString
 			),
-			publicKey: expectString(extractEntry(jCpy, 'publicKey', false, path), true, [...path, ".publicKey"]),
-			publicKeysForOaepWithSha256: expectArray(extractEntry(jCpy, 'publicKeysForOaepWithSha256', false, path), false, [...path, ".publicKeysForOaepWithSha256"], (x0, p0) => expectString(x0, false, p0)),
+			publicKey: expectString(extractEntry(jCpy, 'publicKey', false, path), true, [...path, ".publicKey"]) as SpkiHexString,
+			publicKeysForOaepWithSha256: expectArray(extractEntry(jCpy, 'publicKeysForOaepWithSha256', false, path), false, [...path, ".publicKeysForOaepWithSha256"], (x0, p0) => expectString(x0, false, p0) as SpkiHexString),
 			secretForeignKeys: expectArray(extractEntry(jCpy, 'secretForeignKeys', false, path), false, [...path, ".secretForeignKeys"], (x0, p0) => expectString(x0, false, p0)),
 			cryptedForeignKeys: expectMap(
 				extractEntry(jCpy, 'cryptedForeignKeys', false, path),
@@ -622,7 +624,7 @@ export class DecryptedPatient {
 				(k0, p0) => expectString(k0, false, p0),
 				(v0, p0) => expectArray(v0, false, p0, (x1, p1) => expectObject(x1, false, ignoreUnknownKeys, p1, Delegation.fromJSON))
 			),
-			encryptedSelf: expectString(extractEntry(jCpy, 'encryptedSelf', false, path), true, [...path, ".encryptedSelf"]),
+			encryptedSelf: expectString(extractEntry(jCpy, 'encryptedSelf', false, path), true, [...path, ".encryptedSelf"]) as Base64String,
 			securityMetadata: expectObject(extractEntry(jCpy, 'securityMetadata', false, path), true, ignoreUnknownKeys, [...path, ".securityMetadata"], SecurityMetadata.fromJSON),
 			cryptoActorProperties: expectArray(extractEntry(jCpy, 'cryptoActorProperties', false, path), true, [...path, ".cryptoActorProperties"], (x0, p0) => expectObject(x0, false, ignoreUnknownKeys, p0, DecryptedPropertyStub.fromJSON)),
 			medicalLocationId: expectString(extractEntry(jCpy, 'medicalLocationId', false, path), true, [...path, ".medicalLocationId"]),
@@ -1066,13 +1068,13 @@ export class EncryptedPatient {
 				false,
 				[...path, ".hcPartyKeys"],
 				(k0, p0) => expectString(k0, false, p0),
-				(v0, p0) => expectArray(v0, false, p0, (x1, p1) => expectString(x1, false, p1))
+				(v0, p0) => expectArray(v0, false, p0, (x1, p1) => expectString(x1, false, p1) as HexString)
 			),
 			aesExchangeKeys: expectMap(
 				extractEntry(jCpy, 'aesExchangeKeys', false, path),
 				false,
 				[...path, ".aesExchangeKeys"],
-				(k0, p0) => expectString(k0, false, p0),
+				(k0, p0) => expectString(k0, false, p0) as AesExchangeKeyEntryKeyString,
 				(v0, p0) => expectMap(
 					v0,
 					false,
@@ -1082,8 +1084,8 @@ export class EncryptedPatient {
 						v1,
 						false,
 						p1,
-						(k2, p2) => expectString(k2, false, p2),
-						(v2, p2) => expectString(v2, false, p2)
+						(k2, p2) => expectString(k2, false, p2) as AesExchangeKeyEncryptionKeypairIdentifier,
+						(v2, p2) => expectString(v2, false, p2) as HexString
 					)
 				)
 			),
@@ -1091,13 +1093,13 @@ export class EncryptedPatient {
 				extractEntry(jCpy, 'transferKeys', false, path),
 				false,
 				[...path, ".transferKeys"],
-				(k0, p0) => expectString(k0, false, p0),
+				(k0, p0) => expectString(k0, false, p0) as AesExchangeKeyEncryptionKeypairIdentifier,
 				(v0, p0) => expectMap(
 					v0,
 					false,
 					p0,
-					(k1, p1) => expectString(k1, false, p1),
-					(v1, p1) => expectString(v1, false, p1)
+					(k1, p1) => expectString(k1, false, p1) as AesExchangeKeyEncryptionKeypairIdentifier,
+					(v1, p1) => expectString(v1, false, p1) as HexString
 				)
 			),
 			privateKeyShamirPartitions: expectMap(
@@ -1105,10 +1107,10 @@ export class EncryptedPatient {
 				false,
 				[...path, ".privateKeyShamirPartitions"],
 				(k0, p0) => expectString(k0, false, p0),
-				(v0, p0) => expectString(v0, false, p0)
+				(v0, p0) => expectString(v0, false, p0) as HexString
 			),
-			publicKey: expectString(extractEntry(jCpy, 'publicKey', false, path), true, [...path, ".publicKey"]),
-			publicKeysForOaepWithSha256: expectArray(extractEntry(jCpy, 'publicKeysForOaepWithSha256', false, path), false, [...path, ".publicKeysForOaepWithSha256"], (x0, p0) => expectString(x0, false, p0)),
+			publicKey: expectString(extractEntry(jCpy, 'publicKey', false, path), true, [...path, ".publicKey"]) as SpkiHexString,
+			publicKeysForOaepWithSha256: expectArray(extractEntry(jCpy, 'publicKeysForOaepWithSha256', false, path), false, [...path, ".publicKeysForOaepWithSha256"], (x0, p0) => expectString(x0, false, p0) as SpkiHexString),
 			secretForeignKeys: expectArray(extractEntry(jCpy, 'secretForeignKeys', false, path), false, [...path, ".secretForeignKeys"], (x0, p0) => expectString(x0, false, p0)),
 			cryptedForeignKeys: expectMap(
 				extractEntry(jCpy, 'cryptedForeignKeys', false, path),
@@ -1131,7 +1133,7 @@ export class EncryptedPatient {
 				(k0, p0) => expectString(k0, false, p0),
 				(v0, p0) => expectArray(v0, false, p0, (x1, p1) => expectObject(x1, false, ignoreUnknownKeys, p1, Delegation.fromJSON))
 			),
-			encryptedSelf: expectString(extractEntry(jCpy, 'encryptedSelf', false, path), true, [...path, ".encryptedSelf"]),
+			encryptedSelf: expectString(extractEntry(jCpy, 'encryptedSelf', false, path), true, [...path, ".encryptedSelf"]) as Base64String,
 			securityMetadata: expectObject(extractEntry(jCpy, 'securityMetadata', false, path), true, ignoreUnknownKeys, [...path, ".securityMetadata"], SecurityMetadata.fromJSON),
 			cryptoActorProperties: expectArray(extractEntry(jCpy, 'cryptoActorProperties', false, path), true, [...path, ".cryptoActorProperties"], (x0, p0) => expectObject(x0, false, ignoreUnknownKeys, p0, DecryptedPropertyStub.fromJSON)),
 			medicalLocationId: expectString(extractEntry(jCpy, 'medicalLocationId', false, path), true, [...path, ".medicalLocationId"]),

@@ -18,6 +18,12 @@ interface AuthProvider {
 	 * The newGroupId must be a group for which the authentication credentials can be used.
 	 */
 	suspend fun switchGroup(newGroupId: String): AuthProvider
+
+	/**
+	 * Create a new authentication provider based on this to act as a different data owner in the same group of the
+	 * user.
+	 */
+	suspend fun changeScope(dataOwnerId: String): AuthProvider
 }
 
 @InternalIcureApi

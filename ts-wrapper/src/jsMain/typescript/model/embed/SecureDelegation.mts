@@ -54,10 +54,10 @@ export class SecureDelegation {
 		const res = new SecureDelegation({
 			delegator: expectString(extractEntry(jCpy, 'delegator', false, path), true, [...path, ".delegator"]),
 			delegate: expectString(extractEntry(jCpy, 'delegate', false, path), true, [...path, ".delegate"]),
-			secretIds: expectArray(extractEntry(jCpy, 'secretIds', false, path), false, [...path, ".secretIds"], (x0, p0) => expectString(x0, false, p0)),
-			encryptionKeys: expectArray(extractEntry(jCpy, 'encryptionKeys', false, path), false, [...path, ".encryptionKeys"], (x0, p0) => expectString(x0, false, p0)),
-			owningEntityIds: expectArray(extractEntry(jCpy, 'owningEntityIds', false, path), false, [...path, ".owningEntityIds"], (x0, p0) => expectString(x0, false, p0)),
-			parentDelegations: expectArray(extractEntry(jCpy, 'parentDelegations', false, path), false, [...path, ".parentDelegations"], (x0, p0) => expectString(x0, false, p0)),
+			secretIds: expectArray(extractEntry(jCpy, 'secretIds', false, path), false, [...path, ".secretIds"], (x0, p0) => expectString(x0, false, p0) as Base64String),
+			encryptionKeys: expectArray(extractEntry(jCpy, 'encryptionKeys', false, path), false, [...path, ".encryptionKeys"], (x0, p0) => expectString(x0, false, p0) as Base64String),
+			owningEntityIds: expectArray(extractEntry(jCpy, 'owningEntityIds', false, path), false, [...path, ".owningEntityIds"], (x0, p0) => expectString(x0, false, p0) as Base64String),
+			parentDelegations: expectArray(extractEntry(jCpy, 'parentDelegations', false, path), false, [...path, ".parentDelegations"], (x0, p0) => expectString(x0, false, p0) as SecureDelegationKeyString),
 			exchangeDataId: expectString(extractEntry(jCpy, 'exchangeDataId', false, path), true, [...path, ".exchangeDataId"]),
 			permissions: expectStringEnum(extractEntry(jCpy, 'permissions', true, path), false, [...path, ".permissions"], AccessLevel, 'AccessLevel'),
 		})

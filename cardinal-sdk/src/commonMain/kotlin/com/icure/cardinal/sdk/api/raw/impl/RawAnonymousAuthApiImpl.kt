@@ -35,6 +35,7 @@ class RawAnonymousAuthApiImpl(
 		loginCredentials: LoginCredentials,
 		groupId: String?,
 		applicationId: String?,
+		scopeDataOwner: String?,
 	): HttpResponse<JwtResponse> =
 		post {
 			url {
@@ -43,6 +44,7 @@ class RawAnonymousAuthApiImpl(
 				parameter("duration", duration)
 				parameter("groupId", groupId)
 				parameter("applicationId", applicationId)
+				parameter("scopeDataOwner", scopeDataOwner)
 			}
 			contentType(Application.Json)
 			accept(Application.Json)
@@ -103,10 +105,25 @@ class RawAnonymousAuthApiImpl(
 			`header`("Refresh-Token", refreshToken)
 		}.wrap()
 
+	override suspend fun scoped(
+		refreshToken: String,
+		dataOwnerId: String,
+	): HttpResponse<JwtResponse> =
+		post {
+			url {
+				takeFrom(apiUrl)
+				appendPathSegments("rest", "v2", "auth", "scoped", dataOwnerId)
+			}
+			contentType(Application.Json)
+			accept(Application.Json)
+			`header`("Refresh-Token", refreshToken)
+		}.wrap()
+
 	override suspend fun loginGoogle(
 		token: String,
 		groupId: String?,
 		applicationId: String?,
+		scopeDataOwner: String?,
 	): HttpResponse<JwtResponse> =
 		post {
 			url {
@@ -114,6 +131,7 @@ class RawAnonymousAuthApiImpl(
 				appendPathSegments("rest", "v2", "auth", "login", "google")
 				parameter("groupId", groupId)
 				parameter("applicationId", applicationId)
+				parameter("scopeDataOwner", scopeDataOwner)
 			}
 			contentType(Application.Json)
 			accept(Application.Json)
@@ -126,6 +144,7 @@ class RawAnonymousAuthApiImpl(
 		applicationId: String,
 		groupId: String?,
 		minimumAuthenticationClass: String?,
+		scopeDataOwner: String?,
 	): HttpResponse<JwtResponse> =
 		post {
 			url {
@@ -134,6 +153,7 @@ class RawAnonymousAuthApiImpl(
 				parameter("applicationId", applicationId)
 				parameter("groupId", groupId)
 				parameter("minimumAuthenticationClass", minimumAuthenticationClass)
+				parameter("scopeDataOwner", scopeDataOwner)
 			}
 			contentType(Application.Json)
 			accept(Application.Json)
@@ -144,6 +164,7 @@ class RawAnonymousAuthApiImpl(
 		token: String,
 		groupId: String?,
 		applicationId: String?,
+		scopeDataOwner: String?,
 	): HttpResponse<JwtResponse> =
 		post {
 			url {
@@ -151,6 +172,7 @@ class RawAnonymousAuthApiImpl(
 				appendPathSegments("rest", "v2", "auth", "login", "be.fas")
 				parameter("groupId", groupId)
 				parameter("applicationId", applicationId)
+				parameter("scopeDataOwner", scopeDataOwner)
 			}
 			contentType(Application.Json)
 			accept(Application.Json)

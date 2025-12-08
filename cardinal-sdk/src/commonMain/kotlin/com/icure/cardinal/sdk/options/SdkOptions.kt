@@ -71,6 +71,10 @@ interface BoundSdkOptions : CommonSdkOptions {
 	 * In single-group applications this parameter won't be used, so it can be left as null.
 	 */
 	val groupSelector: GroupSelector?
+	/**
+	 * If not null the SDK will immediately set the data owner scope to the provided value after login.
+	 */
+	val dataOwnerScope: String?
 }
 
 /**
@@ -179,6 +183,7 @@ data class SdkOptions(
 	val parentJob: Job? = null,
 	override val requestTimeout: Duration? = null,
 	override val requestRetryConfiguration: RequestRetryConfiguration = RequestRetryConfiguration(),
+	override val dataOwnerScope: String? = null,
 ): BoundSdkOptions {
 	init {
 		if (httpClientJson != null) {
@@ -204,6 +209,7 @@ data class BasicSdkOptions(
 	override val lenientJson: Boolean = false,
 	override val requestTimeout: Duration? = null,
 	override val requestRetryConfiguration: RequestRetryConfiguration = RequestRetryConfiguration(),
+	override val dataOwnerScope: String? = null
 ): BoundSdkOptions {
 	init {
 		if (httpClientJson != null) {

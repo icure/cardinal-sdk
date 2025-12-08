@@ -1,3 +1,5 @@
 // auto-generated file
+import {Tagged} from '../../internal/TaggedType.mjs';
 
-export type AesExchangeKeyEncryptionKeypairIdentifier = string;
+
+export type AesExchangeKeyEncryptionKeypairIdentifier = Tagged<string, 'com.icure.cardinal.sdk.model.specializations.AesExchangeKeyEncryptionKeypairIdentifier'>;

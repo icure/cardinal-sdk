@@ -74,6 +74,7 @@ external interface SdkOptionsJs {
 	val cryptoStrategies: CryptoStrategiesJs?
 	val jsonPatcher: JsonPatcherJs?
 	val lenientJson: Boolean?
+	val dataOwnerScope: String?
 }
 
 @JsName("BasicToFullSdkOptions")
@@ -92,6 +93,7 @@ external interface BasicSdkOptionsJs {
 	val cryptoService: XCryptoService?
 	val groupSelector: ((availableGroups: Array<UserGroupJs>) -> Promise<String>)?
 	val lenientJson: Boolean?
+	val dataOwnerScope: String?
 }
 
 @JsName("AnonymousSdkOptions")

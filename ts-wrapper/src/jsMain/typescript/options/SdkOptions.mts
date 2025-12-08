@@ -74,6 +74,10 @@ export interface SdkOptions {
    * This option however could cause loss of data when connecting with incompatible versions of the backend, and should be disabled in production.
    */
   readonly lenientJson?: boolean
+  /**
+   * If not null the SDK will immediately set the data owner scope to the provided value after login.
+   */
+  readonly dataOwnerScope?: string
 }
 
 export interface BasicSdkOptions {
@@ -103,6 +107,10 @@ export interface BasicSdkOptions {
    * This option however could cause loss of data when connecting with incompatible versions of the backend, and should be disabled in production.
    */
   readonly lenientJson?: boolean
+  /**
+   * If not null the SDK will immediately set the data owner scope to the provided value after login.
+   */
+  readonly dataOwnerScope?: string
 }
 
 /**

@@ -4,9 +4,12 @@ import {AccessLog, EncryptedAccessLog} from '../model/AccessLog.mjs';
 import {PaginatedList} from '../model/PaginatedList.mjs';
 import {StoredDocumentIdentifier} from '../model/StoredDocumentIdentifier.mjs';
 import {DocIdentifier} from '../model/couchdb/DocIdentifier.mjs';
+import {AccessLogBasicInGroupApi} from './AccessLogBasicInGroupApi.mjs';
 
 
 export interface AccessLogBasicApi {
+
+	inGroup: AccessLogBasicInGroupApi;
 
 	matchAccessLogsBy(filter: BaseFilterOptions<AccessLog>): Promise<Array<string>>;
 
@@ -20,15 +23,15 @@ export interface AccessLogBasicApi {
 
 	deleteAccessLogsUnsafe(entityIds: Array<string>): Promise<Array<DocIdentifier>>;
 
-	deleteAccessLogById(entityId: string, rev: string): Promise<DocIdentifier>;
+	deleteAccessLogById(entityId: string, rev: string): Promise<StoredDocumentIdentifier>;
 
-	deleteAccessLogsByIds(entityIds: Array<StoredDocumentIdentifier>): Promise<Array<DocIdentifier>>;
+	deleteAccessLogsByIds(entityIds: Array<StoredDocumentIdentifier>): Promise<Array<StoredDocumentIdentifier>>;
 
 	purgeAccessLogById(id: string, rev: string): Promise<void>;
 
-	deleteAccessLog(accessLog: AccessLog): Promise<DocIdentifier>;
+	deleteAccessLog(accessLog: AccessLog): Promise<StoredDocumentIdentifier>;
 
-	deleteAccessLogs(accessLogs: Array<AccessLog>): Promise<Array<DocIdentifier>>;
+	deleteAccessLogs(accessLogs: Array<AccessLog>): Promise<Array<StoredDocumentIdentifier>>;
 
 	purgeAccessLog(accessLog: AccessLog): Promise<void>;
 

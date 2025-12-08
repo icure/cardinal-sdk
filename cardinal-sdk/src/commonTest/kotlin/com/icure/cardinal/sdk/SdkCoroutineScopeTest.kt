@@ -12,7 +12,7 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
 
-class SdkScopeTest : StringSpec({
+class SdkCoroutineScopeTest : StringSpec({
 	lateinit var hcp: DataOwnerDetails
 
 	beforeSpec {

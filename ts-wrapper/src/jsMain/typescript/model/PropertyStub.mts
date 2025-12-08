@@ -66,7 +66,7 @@ export class DecryptedPropertyStub {
 			type: expectObject(extractEntry(jCpy, 'type', false, path), true, ignoreUnknownKeys, [...path, ".type"], PropertyTypeStub.fromJSON),
 			typedValue: expectObject(extractEntry(jCpy, 'typedValue', false, path), true, ignoreUnknownKeys, [...path, ".typedValue"], DecryptedTypedValue.fromJSON),
 			deletionDate: expectNumber(extractEntry(jCpy, 'deletionDate', false, path), true, true, [...path, ".deletionDate"]),
-			encryptedSelf: expectString(extractEntry(jCpy, 'encryptedSelf', false, path), true, [...path, ".encryptedSelf"]),
+			encryptedSelf: expectString(extractEntry(jCpy, 'encryptedSelf', false, path), true, [...path, ".encryptedSelf"]) as Base64String,
 		})
 		if (!ignoreUnknownKeys) {
 			const unused = Object.keys(jCpy)
@@ -120,7 +120,7 @@ export class EncryptedPropertyStub {
 			type: expectObject(extractEntry(jCpy, 'type', false, path), true, ignoreUnknownKeys, [...path, ".type"], PropertyTypeStub.fromJSON),
 			typedValue: expectObject(extractEntry(jCpy, 'typedValue', false, path), true, ignoreUnknownKeys, [...path, ".typedValue"], EncryptedTypedValue.fromJSON),
 			deletionDate: expectNumber(extractEntry(jCpy, 'deletionDate', false, path), true, true, [...path, ".deletionDate"]),
-			encryptedSelf: expectString(extractEntry(jCpy, 'encryptedSelf', false, path), true, [...path, ".encryptedSelf"]),
+			encryptedSelf: expectString(extractEntry(jCpy, 'encryptedSelf', false, path), true, [...path, ".encryptedSelf"]) as Base64String,
 		})
 		if (!ignoreUnknownKeys) {
 			const unused = Object.keys(jCpy)

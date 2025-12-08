@@ -78,6 +78,7 @@ internal class SmartTokenProvider private constructor (
 	private val messageGatewayApi: RawMessageGatewayApi,
 	private val loginUsername: String?,
 	private val groupId: String?,
+	private val scopeDataOwnerId: String?,
 	private val applicationId: String?,
 	private var currentLongLivedSecret: AuthSecretDetails.Cacheable?,
 	private var cachedToken: String?,
@@ -95,6 +96,7 @@ internal class SmartTokenProvider private constructor (
 			messageGatewayApi: RawMessageGatewayApi,
 			loginUsername: String?,
 			groupId: String?,
+			scopeDataOwnerId: String?,
 			applicationId: String?,
 			initializationSecret: AuthSecretDetails?,
 			initialBearerToken: String?,
@@ -112,6 +114,7 @@ internal class SmartTokenProvider private constructor (
 				messageGatewayApi = messageGatewayApi,
 				loginUsername = loginUsername,
 				groupId = groupId,
+				scopeDataOwnerId = scopeDataOwnerId,
 				applicationId = applicationId,
 				currentLongLivedSecret = initialSecretCacheable,
 				cachedToken = initialBearerToken,
@@ -194,7 +197,40 @@ internal class SmartTokenProvider private constructor (
 			cacheSecrets = cacheSecrets,
 			refreshPadding = refreshPadding,
 			allowSecretRetry = allowSecretRetry,
-			krakenUrl = krakenUrl
+			krakenUrl = krakenUrl,
+			scopeDataOwnerId = null, // Reset scope on group switch
+		)
+	}
+
+	suspend fun changeScope(dataOwnerId: String): SmartTokenProvider {
+		// Take the mutable cached data while holding the lock
+		val (cachedRefreshToken, currentLongLivedSecret) = tokenCacheMutex.withLock {
+			this.cachedRefreshToken to this.currentLongLivedSecret
+		}
+		val (switchedJwt, switchedRefresh) = cachedRefreshToken?.let { refreshJwt ->
+			authApi.scoped(refreshJwt, dataOwnerId).successBodyOrNull()?.let { response ->
+				ensure (response.token != null && response.refreshToken != null) {
+					"Internal error: scope change succeeded but no token was returned."
+				}
+				response.token to response.refreshToken
+			}
+		} ?: (null to null)
+		return SmartTokenProvider(
+			messageGatewayApi = messageGatewayApi,
+			loginUsername = loginUsername,
+			groupId = groupId,
+			applicationId = applicationId,
+			currentLongLivedSecret = currentLongLivedSecret,
+			cachedToken = switchedJwt,
+			cachedRefreshToken = switchedRefresh,
+			authApi = authApi,
+			authSecretProvider = authSecretProvider,
+			cryptoService = cryptoService,
+			cacheSecrets = cacheSecrets,
+			refreshPadding = refreshPadding,
+			allowSecretRetry = allowSecretRetry,
+			krakenUrl = krakenUrl,
+			scopeDataOwnerId = dataOwnerId,
 		)
 	}
 
@@ -310,7 +346,8 @@ internal class SmartTokenProvider private constructor (
 					applicationId = requireNotNull(applicationId) {
 						"Authentication using ConfiguredExternalAuthenticationDetails requires an applicationId to be set in the SDK initialization."
 					},
-					minimumAuthenticationClass = secret.minimumAuthenticationClass.dtoSerialName
+					minimumAuthenticationClass = secret.minimumAuthenticationClass.dtoSerialName,
+					scopeDataOwner = scopeDataOwnerId,
 				)
 			}
 			secret is AuthSecretDetails.ShortLivedTokenDetails -> {
@@ -329,7 +366,8 @@ internal class SmartTokenProvider private constructor (
 							password = secret.secret
 						),
 						groupId = groupId,
-						applicationId = applicationId
+						applicationId = applicationId,
+						scopeDataOwner = scopeDataOwnerId,
 					)
 				}
 			}
@@ -338,7 +376,8 @@ internal class SmartTokenProvider private constructor (
 				authApi.login(
 					loginCredentials = LoginCredentials(username = requireLoginUsername, password = secret.secret),
 					groupId = groupId,
-					applicationId = applicationId
+					applicationId = applicationId,
+					scopeDataOwner = scopeDataOwnerId,
 				)
 		}
 		return try {

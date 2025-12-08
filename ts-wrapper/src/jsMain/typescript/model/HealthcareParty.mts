@@ -20,6 +20,8 @@ import {HealthcarePartyHistoryStatus} from './embed/HealthcarePartyHistoryStatus
 import {HealthcarePartyStatus} from './embed/HealthcarePartyStatus.mjs';
 import {PersonName} from './embed/PersonName.mjs';
 import {TelecomType} from './embed/TelecomType.mjs';
+import {AesExchangeKeyEncryptionKeypairIdentifier} from './specializations/AesExchangeKeyEncryptionKeypairIdentifier.mjs';
+import {AesExchangeKeyEntryKeyString} from './specializations/AesExchangeKeyEntryKeyString.mjs';
 import {HexString} from './specializations/HexString.mjs';
 import {SpkiHexString} from './specializations/SpkiHexString.mjs';
 
@@ -351,13 +353,13 @@ export class HealthcareParty implements StoredDocument, Named, Person, CryptoAct
 				false,
 				[...path, ".hcPartyKeys"],
 				(k0, p0) => expectString(k0, false, p0),
-				(v0, p0) => expectArray(v0, false, p0, (x1, p1) => expectString(x1, false, p1))
+				(v0, p0) => expectArray(v0, false, p0, (x1, p1) => expectString(x1, false, p1) as HexString)
 			),
 			aesExchangeKeys: expectMap(
 				extractEntry(jCpy, 'aesExchangeKeys', false, path),
 				false,
 				[...path, ".aesExchangeKeys"],
-				(k0, p0) => expectString(k0, false, p0),
+				(k0, p0) => expectString(k0, false, p0) as AesExchangeKeyEntryKeyString,
 				(v0, p0) => expectMap(
 					v0,
 					false,
@@ -367,8 +369,8 @@ export class HealthcareParty implements StoredDocument, Named, Person, CryptoAct
 						v1,
 						false,
 						p1,
-						(k2, p2) => expectString(k2, false, p2),
-						(v2, p2) => expectString(v2, false, p2)
+						(k2, p2) => expectString(k2, false, p2) as AesExchangeKeyEncryptionKeypairIdentifier,
+						(v2, p2) => expectString(v2, false, p2) as HexString
 					)
 				)
 			),
@@ -376,13 +378,13 @@ export class HealthcareParty implements StoredDocument, Named, Person, CryptoAct
 				extractEntry(jCpy, 'transferKeys', false, path),
 				false,
 				[...path, ".transferKeys"],
-				(k0, p0) => expectString(k0, false, p0),
+				(k0, p0) => expectString(k0, false, p0) as AesExchangeKeyEncryptionKeypairIdentifier,
 				(v0, p0) => expectMap(
 					v0,
 					false,
 					p0,
-					(k1, p1) => expectString(k1, false, p1),
-					(v1, p1) => expectString(v1, false, p1)
+					(k1, p1) => expectString(k1, false, p1) as AesExchangeKeyEncryptionKeypairIdentifier,
+					(v1, p1) => expectString(v1, false, p1) as HexString
 				)
 			),
 			privateKeyShamirPartitions: expectMap(
@@ -390,10 +392,10 @@ export class HealthcareParty implements StoredDocument, Named, Person, CryptoAct
 				false,
 				[...path, ".privateKeyShamirPartitions"],
 				(k0, p0) => expectString(k0, false, p0),
-				(v0, p0) => expectString(v0, false, p0)
+				(v0, p0) => expectString(v0, false, p0) as HexString
 			),
-			publicKey: expectString(extractEntry(jCpy, 'publicKey', false, path), true, [...path, ".publicKey"]),
-			publicKeysForOaepWithSha256: expectArray(extractEntry(jCpy, 'publicKeysForOaepWithSha256', false, path), false, [...path, ".publicKeysForOaepWithSha256"], (x0, p0) => expectString(x0, false, p0)),
+			publicKey: expectString(extractEntry(jCpy, 'publicKey', false, path), true, [...path, ".publicKey"]) as SpkiHexString,
+			publicKeysForOaepWithSha256: expectArray(extractEntry(jCpy, 'publicKeysForOaepWithSha256', false, path), false, [...path, ".publicKeysForOaepWithSha256"], (x0, p0) => expectString(x0, false, p0) as SpkiHexString),
 		})
 		if (!ignoreUnknownKeys) {
 			const unused = Object.keys(jCpy)

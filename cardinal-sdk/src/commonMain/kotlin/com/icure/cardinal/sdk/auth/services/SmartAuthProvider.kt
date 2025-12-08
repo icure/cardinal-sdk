@@ -45,7 +45,8 @@ internal class SmartAuthProvider private constructor(
 				cryptoService = cryptoService,
 				allowSecretRetry = allowSecretRetry,
 				messageGatewayApi = messageGatewayApi,
-				krakenUrl = krakenUrl
+				krakenUrl = krakenUrl,
+				scopeDataOwnerId = null,
 			),
 			groupId
 		)
@@ -61,6 +62,11 @@ internal class SmartAuthProvider private constructor(
 			groupId = newGroupId,
 		)
 	}
+
+	override suspend fun changeScope(dataOwnerId: String): AuthProvider = SmartAuthProvider(
+		smartTokenProvider = smartTokenProvider.changeScope(dataOwnerId),
+		groupId = groupId,
+	)
 
 	override suspend fun getBearerAndRefreshToken(): JwtBearerAndRefresh =
 		smartTokenProvider.getCachedTokensOrLoad()

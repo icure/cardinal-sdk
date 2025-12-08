@@ -189,7 +189,7 @@ export class DecryptedPlanOfAction {
 			numberOfCares: expectNumber(extractEntry(jCpy, 'numberOfCares', false, path), true, true, [...path, ".numberOfCares"]),
 			careTeamMemberships: expectArray(extractEntry(jCpy, 'careTeamMemberships', false, path), false, [...path, ".careTeamMemberships"], (x0, p0) => expectObject(x0, false, ignoreUnknownKeys, p0, DecryptedCareTeamMembership.fromJSON)),
 			relevant: expectBoolean(extractEntry(jCpy, 'relevant', false, path), false, [...path, ".relevant"]),
-			encryptedSelf: expectString(extractEntry(jCpy, 'encryptedSelf', false, path), true, [...path, ".encryptedSelf"]),
+			encryptedSelf: expectString(extractEntry(jCpy, 'encryptedSelf', false, path), true, [...path, ".encryptedSelf"]) as Base64String,
 		})
 		if (!ignoreUnknownKeys) {
 			const unused = Object.keys(jCpy)
@@ -343,7 +343,7 @@ export class EncryptedPlanOfAction {
 			numberOfCares: expectNumber(extractEntry(jCpy, 'numberOfCares', false, path), true, true, [...path, ".numberOfCares"]),
 			careTeamMemberships: expectArray(extractEntry(jCpy, 'careTeamMemberships', false, path), false, [...path, ".careTeamMemberships"], (x0, p0) => expectObject(x0, false, ignoreUnknownKeys, p0, EncryptedCareTeamMembership.fromJSON)),
 			relevant: expectBoolean(extractEntry(jCpy, 'relevant', false, path), false, [...path, ".relevant"]),
-			encryptedSelf: expectString(extractEntry(jCpy, 'encryptedSelf', false, path), true, [...path, ".encryptedSelf"]),
+			encryptedSelf: expectString(extractEntry(jCpy, 'encryptedSelf', false, path), true, [...path, ".encryptedSelf"]) as Base64String,
 		})
 		if (!ignoreUnknownKeys) {
 			const unused = Object.keys(jCpy)
