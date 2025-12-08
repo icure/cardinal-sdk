@@ -9,6 +9,7 @@ import com.icure.cardinal.sdk.model.security.ExternalJwtConfig
 import com.icure.cardinal.sdk.model.security.OperationToken
 import com.icure.cardinal.sdk.utils.DefaultValue
 import kotlinx.serialization.Serializable
+import kotlinx.serialization.json.JsonNames
 import kotlin.Boolean
 import kotlin.Long
 import kotlin.String
@@ -16,11 +17,8 @@ import kotlin.collections.List
 import kotlin.collections.Map
 import kotlin.collections.Set
 
-// WARNING: This file is auto-generated. If you change it manually, your changes will be lost.
-// If you want to change the way this class is generated, see [this repo](https://github.com/icure/sdk-codegen).
-
 @Serializable
-data class Group(
+public data class Group(
 	override val id: String,
 	override val rev: String? = null,
 	override val deletionDate: Long? = null,
@@ -46,9 +44,8 @@ data class Group(
 	public val externalJwtConfig: Map<String, ExternalJwtConfig> = emptyMap(),
 	public val minimumAuthenticationClassForElevatedPrivileges: AuthenticationClass,
 	public val superGroup: String? = null,
-	public val applicationId: String? = null,
+	@JsonNames("applicationId")
+	projectId: String? = null,
 ) : StoredDocument, HasTags {
-	// region Group-Group
-
-	// endregion
+	public val applicationId: String? = applicationId
 }

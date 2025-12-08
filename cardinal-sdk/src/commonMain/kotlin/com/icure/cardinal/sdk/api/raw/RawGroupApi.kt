@@ -87,6 +87,12 @@ public interface RawGroupApi {
 	suspend fun modifyGroupApplicationId(
 		id: String,
 		applicationId: String,
+		applyToSubGroups: Boolean? = null,
+	): HttpResponse<Group>
+
+	suspend fun deleteGroupApplicationId(
+		id: String,
+		applyToSubGroups: Boolean? = null,
 	): HttpResponse<Group>
 
 	suspend fun getOperationToken(

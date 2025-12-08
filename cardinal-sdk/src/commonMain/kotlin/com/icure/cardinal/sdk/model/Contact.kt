@@ -30,9 +30,7 @@ import kotlin.collections.List
 import kotlin.collections.Map
 import kotlin.collections.Set
 
-// WARNING: This file is auto-generated. If you change it manually, your changes will be lost.
-// If you want to change the way this class is generated, see [this repo](https://github.com/icure/sdk-codegen).
-sealed interface Contact :
+public sealed interface Contact :
 	StoredDocument,
 	ICureDocument<String>,
 	HasEncryptionMetadata,
@@ -103,15 +101,10 @@ sealed interface Contact :
 	override val securityMetadata: SecurityMetadata?
 
 	public val notes: List<Annotation>
-	// region Contact-Contact
-	companion object {
-		const val KRAKEN_QUALIFIED_NAME = "org.taktik.icure.entities.Contact"
-	}
-	// endregion
 }
 
 @Serializable
-data class DecryptedContact(
+public data class DecryptedContact(
 	override val id: String,
 	override val rev: String? = null,
 	override val created: Long? = null,
@@ -158,15 +151,10 @@ data class DecryptedContact(
 	override val securityMetadata: SecurityMetadata? = null,
 	@DefaultValue("emptyList()")
 	override val notes: List<Annotation> = emptyList(),
-) : Contact {
-	// region Contact-DecryptedContact
-override fun copyWithSecurityMetadata(securityMetadata: SecurityMetadata, secretForeignKeys: Set<String>): DecryptedContact =
-		copy(securityMetadata = securityMetadata, secretForeignKeys = secretForeignKeys)
-	// endregion
-}
+) : Contact
 
 @Serializable
-data class EncryptedContact(
+public data class EncryptedContact(
 	override val id: String,
 	override val rev: String? = null,
 	override val created: Long? = null,
@@ -213,9 +201,4 @@ data class EncryptedContact(
 	override val securityMetadata: SecurityMetadata? = null,
 	@DefaultValue("emptyList()")
 	override val notes: List<Annotation> = emptyList(),
-) : Contact {
-	// region Contact-EncryptedContact
-override fun copyWithSecurityMetadata(securityMetadata: SecurityMetadata, secretForeignKeys: Set<String>): EncryptedContact =
-		copy(securityMetadata = securityMetadata, secretForeignKeys = secretForeignKeys)
-	// endregion
-}
+) : Contact
