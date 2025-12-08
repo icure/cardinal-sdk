@@ -137,4 +137,15 @@ internal class GroupApiImpl(
 		rawApi.removeExternalJwtConfig(groupId, key).successBody()
 	override suspend fun getOperationTokenForGroup(groupId: String, operation: Operation, duration: Long?, description: String?): String =
 		rawApi.getOperationTokenForGroup(groupId, operation, duration, description).successBody()
+
+	override suspend fun setGroupProjectId(
+		groupId: String,
+		projectId: String?,
+		applyToSubgroups: Boolean
+	) {
+		if (projectId == null)
+			rawApi.deleteGroupApplicationId(groupId, applyToSubgroups).successBody()
+		else
+			rawApi.modifyGroupApplicationId(groupId, projectId, applyToSubgroups).successBody()
+	}
 }
