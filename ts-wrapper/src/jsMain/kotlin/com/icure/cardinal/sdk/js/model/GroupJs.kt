@@ -54,5 +54,5 @@ public external class GroupJs(
 
 	public val superGroup: String?
 
-	public val applicationId: String?
+	public val projectId: String?
 }
