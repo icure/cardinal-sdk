@@ -150,14 +150,14 @@ import kotlin.js.Promise
 @JsExport
 object InternalSdkInitializers {
 	fun initializeSdk(
-		applicationId: String?,
+		projectId: String?,
 		baseUrl: String,
 		authenticationMethod: AuthenticationMethodJs,
 		storageFacade: dynamic,
 		options: SdkOptionsJs?
 	): Promise<CardinalSdkJs> = GlobalScope.promise {
 		CardinalSdkJsImpl(CardinalSdk.initialize(
-			applicationId,
+			projectId,
 			baseUrl,
 			authenticationMethod.toKt(),
 			loadStorageOptions(storageFacade),
@@ -166,7 +166,7 @@ object InternalSdkInitializers {
 	}
 
 	fun initializeWithProcess(
-		applicationId: String?,
+		projectId: String?,
 		baseUrl: String,
 		messageGatewayUrl: String,
 		externalServicesSpecId: String,
@@ -179,7 +179,7 @@ object InternalSdkInitializers {
 		options: SdkOptionsJs?
 	): Promise<AuthenticationWithProcessStepJs> = GlobalScope.promise {
 		val ktStep = CardinalSdk.initializeWithProcess(
-			applicationId,
+			projectId,
 			baseUrl,
 			messageGatewayUrl,
 			externalServicesSpecId,
@@ -199,14 +199,14 @@ object InternalSdkInitializers {
 	}
 
 	fun initializeBase(
-		applicationId: String?,
+		projectId: String?,
 		baseUrl: String,
 		authenticationMethod: AuthenticationMethodJs,
 		options: BasicSdkOptionsJs?
 	): Promise<CardinalBaseSdkJs> = GlobalScope.promise {
 		CardinalBaseSdkJsImpl(
 			CardinalBaseSdk.initialize(
-				applicationId,
+				projectId,
 				baseUrl,
 				authenticationMethod.toKt(),
 				options?.toKt() ?: BasicSdkOptions()
@@ -216,7 +216,7 @@ object InternalSdkInitializers {
 	}
 
 	fun initializeWithProcessBase(
-		applicationId: String?,
+		projectId: String?,
 		baseUrl: String,
 		messageGatewayUrl: String,
 		externalServicesSpecId: String,
@@ -228,7 +228,7 @@ object InternalSdkInitializers {
 		options: BasicSdkOptionsJs?
 	): Promise<BaseAuthenticationWithProcessStepJs> = GlobalScope.promise {
 		val ktStep = CardinalBaseSdk.initializeWithProcess(
-			applicationId,
+			projectId,
 			baseUrl,
 			messageGatewayUrl,
 			externalServicesSpecId,

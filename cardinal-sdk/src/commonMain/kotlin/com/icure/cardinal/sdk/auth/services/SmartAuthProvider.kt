@@ -6,7 +6,6 @@ import com.icure.cardinal.sdk.auth.AuthSecretDetails
 import com.icure.cardinal.sdk.auth.AuthSecretProvider
 import com.icure.cardinal.sdk.auth.JwtBearerAndRefresh
 import com.icure.cardinal.sdk.auth.SmartTokenProvider
-import com.icure.cardinal.sdk.utils.isJwtExpiredOrInvalid
 import com.icure.kryptom.crypto.CryptoService
 import com.icure.utils.InternalIcureApi
 
@@ -25,7 +24,7 @@ internal class SmartAuthProvider private constructor(
 			initialAuthToken: String?,
 			initialRefreshToken: String?,
 			groupId: String?,
-			applicationId: String?,
+			projectId: String?,
 			cryptoService: CryptoService,
 			cacheSecrets: Boolean,
 			allowSecretRetry: Boolean,
@@ -35,7 +34,7 @@ internal class SmartAuthProvider private constructor(
 			SmartTokenProvider(
 				loginUsername = loginUsername,
 				groupId = groupId,
-				applicationId = applicationId,
+				projectId = projectId,
 				initializationSecret = initialSecret,
 				initialBearerToken = initialAuthToken,
 				initialRefreshToken = initialRefreshToken,

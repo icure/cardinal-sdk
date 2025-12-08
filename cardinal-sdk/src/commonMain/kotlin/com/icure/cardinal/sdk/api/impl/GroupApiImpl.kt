@@ -32,16 +32,16 @@ internal class GroupApiImpl(
     override suspend fun listGroups(): List<Group> = rawApi.listGroups().successBody()
     override suspend fun getGroup(id: String): Group = rawApi.getGroup(id).successBody()
     override suspend fun createGroup(
-	    id: String,
-	    name: String,
-	    type: GroupType?,
-	    password: String,
-	    server: String?,
-	    q: Int?,
-	    n: Int?,
-	    superGroup: String?,
-	    applicationId: String?,
-	    initialisationData: DatabaseInitialisation,
+		id: String,
+		name: String,
+		type: GroupType?,
+		password: String,
+		server: String?,
+		q: Int?,
+		n: Int?,
+		superGroup: String?,
+		projectId: String?,
+		initialisationData: DatabaseInitialisation,
     ): Group = rawApi.createGroup(
 	    id = id,
 	    name = name,
@@ -51,7 +51,7 @@ internal class GroupApiImpl(
 	    q = q,
 	    n = n,
 	    superGroup = superGroup,
-	    applicationId = applicationId,
+	    applicationId = projectId,
 	    initialisationData = initialisationData,
     ).successBody()
 

@@ -79,7 +79,7 @@ internal class SmartTokenProvider private constructor (
 	private val loginUsername: String?,
 	private val groupId: String?,
 	private val scopeDataOwnerId: String?,
-	private val applicationId: String?,
+	private val projectId: String?,
 	private var currentLongLivedSecret: AuthSecretDetails.Cacheable?,
 	private var cachedToken: String?,
 	private var cachedRefreshToken: String?,
@@ -97,7 +97,7 @@ internal class SmartTokenProvider private constructor (
 			loginUsername: String?,
 			groupId: String?,
 			scopeDataOwnerId: String?,
-			applicationId: String?,
+			projectId: String?,
 			initializationSecret: AuthSecretDetails?,
 			initialBearerToken: String?,
 			initialRefreshToken: String?,
@@ -115,7 +115,7 @@ internal class SmartTokenProvider private constructor (
 				loginUsername = loginUsername,
 				groupId = groupId,
 				scopeDataOwnerId = scopeDataOwnerId,
-				applicationId = applicationId,
+				projectId = projectId,
 				currentLongLivedSecret = initialSecretCacheable,
 				cachedToken = initialBearerToken,
 				cachedRefreshToken = initialRefreshToken,
@@ -187,7 +187,7 @@ internal class SmartTokenProvider private constructor (
 			messageGatewayApi = messageGatewayApi,
 			loginUsername = loginUsername,
 			groupId = newGroupId,
-			applicationId = applicationId,
+			projectId = projectId,
 			currentLongLivedSecret = currentLongLivedSecret,
 			cachedToken = switchedJwt,
 			cachedRefreshToken = switchedRefresh,
@@ -219,7 +219,7 @@ internal class SmartTokenProvider private constructor (
 			messageGatewayApi = messageGatewayApi,
 			loginUsername = loginUsername,
 			groupId = groupId,
-			applicationId = applicationId,
+			projectId = projectId,
 			currentLongLivedSecret = currentLongLivedSecret,
 			cachedToken = switchedJwt,
 			cachedRefreshToken = switchedRefresh,
@@ -343,8 +343,8 @@ internal class SmartTokenProvider private constructor (
 					configId = secret.configId,
 					token = secret.secret,
 					groupId = groupId,
-					applicationId = requireNotNull(applicationId) {
-						"Authentication using ConfiguredExternalAuthenticationDetails requires an applicationId to be set in the SDK initialization."
+					applicationId = requireNotNull(projectId) {
+						"Authentication using ConfiguredExternalAuthenticationDetails requires a projectId to be set in the SDK initialization."
 					},
 					minimumAuthenticationClass = secret.minimumAuthenticationClass.dtoSerialName,
 					scopeDataOwner = scopeDataOwnerId,
@@ -366,7 +366,7 @@ internal class SmartTokenProvider private constructor (
 							password = secret.secret
 						),
 						groupId = groupId,
-						applicationId = applicationId,
+						applicationId = projectId,
 						scopeDataOwner = scopeDataOwnerId,
 					)
 				}
@@ -376,7 +376,7 @@ internal class SmartTokenProvider private constructor (
 				authApi.login(
 					loginCredentials = LoginCredentials(username = requireLoginUsername, password = secret.secret),
 					groupId = groupId,
-					applicationId = applicationId,
+					applicationId = projectId,
 					scopeDataOwner = scopeDataOwnerId,
 				)
 		}

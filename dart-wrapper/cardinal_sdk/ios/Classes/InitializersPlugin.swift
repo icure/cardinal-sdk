@@ -53,7 +53,7 @@ class InitializersPlugin {
 	) -> Void {
 		Initializers.shared.initializeSdk(
 			dartResultCallback: resultCallback,
-			applicationIdString: parameters["applicationId"]!,
+			projectIdString: parameters["projectId"]!,
 			baseUrlString: parameters["baseUrl"]!,
 			authenticationMethodString: parameters["authenticationMethod"]!,
 			storageFacade: StorageHelper.shared.getStorage(options: parameters["storageOptions"]!),
@@ -72,7 +72,7 @@ class InitializersPlugin {
 	) -> Void {
 		Initializers.shared.initializeBaseSdk(
 			dartResultCallback: resultCallback,
-			applicationIdString: parameters["applicationId"]!,
+			projectIdString: parameters["projectId"]!,
 			baseUrlString: parameters["baseUrl"]!,
 			authenticationMethodString: parameters["authenticationMethod"]!,
 			optionsString: parameters["options"]!
@@ -122,7 +122,7 @@ class InitializersPlugin {
 	) -> Void {
 		Initializers.shared.initializeWithAuthProcess(
 			dartResultCallback: resultCallback,
-			applicationIdString: parameters["applicationId"]!,
+			projectIdString: parameters["projectId"]!,
 			baseUrlString: parameters["baseUrl"]!,
 			messageGatewayUrlString: parameters["messageGatewayUrl"]!,
 			externalServicesSpecIdString: parameters["externalServicesSpecId"]!,
