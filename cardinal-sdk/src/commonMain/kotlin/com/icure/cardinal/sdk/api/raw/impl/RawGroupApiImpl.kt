@@ -206,13 +206,28 @@ class RawGroupApiImpl(
 	override suspend fun modifyGroupApplicationId(
 		id: String,
 		applicationId: String,
+		applyToSubGroups: Boolean?,
 	): HttpResponse<Group> =
 		put(authProvider) {
 			url {
 				takeFrom(apiUrl)
 				appendPathSegments("rest", "v2", "group", id, "applicationId", applicationId)
+				parameter("applyToSubGroups", applyToSubGroups)
 			}
 			contentType(Application.Json)
+			accept(Application.Json)
+		}.wrap()
+
+	override suspend fun deleteGroupApplicationId(
+		id: String,
+		applyToSubGroups: Boolean?,
+	): HttpResponse<Group> =
+		delete(authProvider) {
+			url {
+				takeFrom(apiUrl)
+				appendPathSegments("rest", "v2", "group", id, "applicationId")
+				parameter("applyToSubGroups", applyToSubGroups)
+			}
 			accept(Application.Json)
 		}.wrap()
 
