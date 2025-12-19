@@ -123,8 +123,8 @@ public fun group_toJs(obj: Group): GroupJs {
 	val superGroup = nullToUndefined(
 		obj.superGroup
 	)
-	val applicationId = nullToUndefined(
-		obj.applicationId
+	val projectId = nullToUndefined(
+		obj.projectId
 	)
 	return GroupJs(js("{" +
 		"id:id," +
@@ -144,7 +144,7 @@ public fun group_toJs(obj: Group): GroupJs {
 		"externalJwtConfig:externalJwtConfig," +
 		"minimumAuthenticationClassForElevatedPrivileges:minimumAuthenticationClassForElevatedPrivileges," +
 		"superGroup:superGroup," +
-		"applicationId:applicationId" +
+		"projectId:projectId" +
 	"}"))
 }
 
@@ -233,7 +233,7 @@ public fun group_fromJs(obj: GroupJs): Group {
 	val minimumAuthenticationClassForElevatedPrivileges =
 			AuthenticationClass.valueOf(obj.minimumAuthenticationClassForElevatedPrivileges)
 	val superGroup = undefinedToNull(obj.superGroup)
-	val applicationId = undefinedToNull(obj.applicationId)
+	val projectId = undefinedToNull(obj.projectId)
 	return Group(
 		id = id,
 		rev = rev,
@@ -252,6 +252,6 @@ public fun group_fromJs(obj: GroupJs): Group {
 		externalJwtConfig = externalJwtConfig,
 		minimumAuthenticationClassForElevatedPrivileges = minimumAuthenticationClassForElevatedPrivileges,
 		superGroup = superGroup,
-		applicationId = applicationId,
+		projectId = projectId,
 	)
 }

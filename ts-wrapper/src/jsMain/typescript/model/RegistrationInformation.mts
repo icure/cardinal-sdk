@@ -4,7 +4,7 @@ import {expectArray, expectString, extractEntry} from '../internal/JsonDecodeUti
 
 export class RegistrationInformation {
 
-	applicationId: string | undefined = undefined;
+	projectId: string | undefined = undefined;
 
 	firstName: string | undefined = undefined;
 
@@ -23,7 +23,7 @@ export class RegistrationInformation {
 	cluster: string | undefined = undefined;
 
 	constructor(partial: Partial<RegistrationInformation> & Pick<RegistrationInformation, "emailAddress">) {
-		if ('applicationId' in partial) this.applicationId = partial.applicationId;
+		if ('projectId' in partial) this.projectId = partial.projectId;
 		if ('firstName' in partial) this.firstName = partial.firstName;
 		if ('lastName' in partial) this.lastName = partial.lastName;
 		if ('companyName' in partial) this.companyName = partial.companyName;
@@ -36,7 +36,7 @@ export class RegistrationInformation {
 
 	toJSON(): object {
 		const res: { [k: string]: any } = {}
-		if (this.applicationId != undefined) res['applicationId'] = this.applicationId
+		if (this.projectId != undefined) res['projectId'] = this.projectId
 		if (this.firstName != undefined) res['firstName'] = this.firstName
 		if (this.lastName != undefined) res['lastName'] = this.lastName
 		if (this.companyName != undefined) res['companyName'] = this.companyName
@@ -53,7 +53,7 @@ export class RegistrationInformation {
 		if (typeof json != 'object') throw new Error(`Expected json object at path ${path.join("")}`)
 		const jCpy = { ...json }
 		const res = new RegistrationInformation({
-			applicationId: expectString(extractEntry(jCpy, 'applicationId', false, path), true, [...path, ".applicationId"]),
+			projectId: expectString(extractEntry(jCpy, 'projectId', false, path), true, [...path, ".projectId"]),
 			firstName: expectString(extractEntry(jCpy, 'firstName', false, path), true, [...path, ".firstName"]),
 			lastName: expectString(extractEntry(jCpy, 'lastName', false, path), true, [...path, ".lastName"]),
 			companyName: expectString(extractEntry(jCpy, 'companyName', false, path), true, [...path, ".companyName"]),
