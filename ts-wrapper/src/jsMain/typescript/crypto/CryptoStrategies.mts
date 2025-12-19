@@ -63,7 +63,7 @@ export class CryptoStrategies {
   generateNewKeyForDataOwner(
     self: DataOwnerWithType,
     cryptoPrimitives: XCryptoService,
-  ): Promise<boolean | XRsaKeypair | "keyless"> {
+  ): Promise<boolean | XRsaKeypair | "keyless" | "parent-delegator"> {
     return Promise.resolve(true)
   }
 
