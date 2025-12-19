@@ -93,6 +93,24 @@ data class DataOwnerDetails private constructor (
 			}
 		}
 
+	suspend fun apiWithParentKeysOnly(
+		baseJob: Job,
+		cryptoStrategies: CryptoStrategies = BasicCryptoStrategies
+	): CardinalSdk =
+		initApi(baseJob, cryptoStrategies) { storage ->
+			var currParent = this.parent
+			while (currParent != null) {
+				currParent.keypair?.also {
+					storage.saveEncryptionKeypair(
+						currParent.dataOwnerId,
+						it,
+						true
+					)
+				}
+				currParent = currParent.parent
+			}
+		}
+
 	/**
 	 * Creates an api simulating the loss of all keys for the user, prompting the creation of a new key.
 	 * @return the api and the new key
