@@ -35,7 +35,6 @@ class FullyCachedExchangeDataManager(
 	cryptoStrategies: CryptoStrategies,
 	dataOwnerApi: DataOwnerApi,
 	cryptoService: CryptoService,
-	useParentKeys: Boolean,
 	sdkScope: CoroutineScope,
 	sdkBoundGroup: SdkBoundGroup?,
 ) : AbstractExchangeDataManager(
@@ -44,7 +43,6 @@ class FullyCachedExchangeDataManager(
 	cryptoStrategies = cryptoStrategies,
 	dataOwnerApi = dataOwnerApi,
 	cryptoService = cryptoService,
-	useParentKeys = useParentKeys,
 	sdkScope = sdkScope,
 	sdkBoundGroup = sdkBoundGroup,
 ) {
@@ -55,7 +53,6 @@ class FullyCachedExchangeDataManager(
 			cryptoStrategies = cryptoStrategies,
 			dataOwnerApi = dataOwnerApi,
 			cryptoService = cryptoService,
-			useParentKeys = useParentKeys,
 			sdkBoundGroup = sdkBoundGroup,
 			sdkScope = sdkScope,
 			requestGroup = groupId,
@@ -69,7 +66,6 @@ private class FullyCachedExchangeDataManagerInGroup(
 	cryptoStrategies: CryptoStrategies,
 	dataOwnerApi: DataOwnerApi,
 	cryptoService: CryptoService,
-	useParentKeys: Boolean,
 	sdkBoundGroup: SdkBoundGroup?,
 	sdkScope: CoroutineScope,
 	requestGroup: String?,
@@ -79,7 +75,6 @@ private class FullyCachedExchangeDataManagerInGroup(
 	cryptoStrategies = cryptoStrategies,
 	dataOwnerApi = dataOwnerApi,
 	cryptoService = cryptoService,
-	useParentKeys = useParentKeys,
 	sdkBoundGroup = sdkBoundGroup,
 	requestGroup = requestGroup,
 ) {
@@ -314,7 +309,7 @@ private class FullyCachedExchangeDataManagerInGroup(
 						.associate { it },
 					verifiedDataByDelegateId = awaited.verifiedDataByDelegateId + exchangeDataDetailsMap.values.filter {
 						it.decryptedDetails?.verified == true &&
-							it.exchangeData.delegator == dataOwnerApi.getCurrentDataOwnerId()
+							it.exchangeData.delegator == userEncryptionKeys.delegatorActorReferenceString()
 						}
 						.associateBy { it.exchangeData.delegate },
 				)
@@ -330,9 +325,7 @@ private class FullyCachedExchangeDataManagerInGroup(
 		val cacheById = mutableMapOf<String, CachedExchangeDataDetails>()
 		val cacheByHash = mutableMapOf<SecureDelegationKeyString, CachedExchangeDataDetails>()
 		val cacheByDelegateId = mutableMapOf<String, CachedExchangeDataDetails>()
-		ensureNonNull(base.getAllExchangeDataForCurrentDataOwnerIfAllowed(requestGroup)) {
-			"Could not get all exchange data of current data owner"
-		}.forEach { exchangeData ->
+		base.getAllExchangeDataForDataOwner(userEncryptionKeys.delegatorActorId(), requestGroup).forEach { exchangeData ->
 			val decryptedInfo = decryptData(exchangeData)
 			if (decryptedInfo != null) {
 				val secureDelegationKeys = decryptedInfo.first.accessControlSecret
@@ -350,7 +343,7 @@ private class FullyCachedExchangeDataManagerInGroup(
 				secureDelegationKeys.forEach {
 					cacheByHash[it] = cachedDetails
 				}
-				if (decryptedInfo.second) {
+				if (decryptedInfo.second && exchangeData.delegator == userEncryptionKeys.delegatorActorReferenceString()) {
 					cacheByDelegateId[exchangeData.delegate] = cachedDetails
 				}
 			} else {
@@ -374,4 +367,13 @@ private class FullyCachedExchangeDataManagerInGroup(
 			}
 		},
 	)
+
+	private fun UserEncryptionKeysManager.delegatorActorReferenceString() =
+		EntityReferenceInGroup(
+			entityId = delegatorActorId(),
+			groupId = null,
+		).asReferenceStringInGroup(
+			requestGroup,
+			sdkBoundGroup,
+		)
 }

@@ -1,5 +1,6 @@
 package com.icure.cardinal.sdk.crypto
 
+import com.icure.cardinal.sdk.api.DataOwnerApi
 import com.icure.kryptom.crypto.RsaAlgorithm
 import com.icure.kryptom.crypto.RsaKeypair
 import com.icure.kryptom.crypto.defaultCryptoService
@@ -78,15 +79,18 @@ class TransferKeysManagerUnitTests : StringSpec({
 			defaultCryptoService,
 			false
 		)
-		encryptionKeysManage = FakeUserEncryptionKeysManager()
+		self = HealthcareParty(defaultCryptoService.strongRandom.randomUUID())
+		encryptionKeysManage = FakeUserEncryptionKeysManager(self.id)
 		transferKeysManager = TransferKeysManagerImpl(
 			encryptionKeysManage,
 			storage,
 			defaultCryptoService,
 			NoExchangeDataManager,
-			NoDataOwnerApi
+			object : DataOwnerApi by NoDataOwnerApi {
+				override suspend fun getCurrentDataOwnerId(): String = self.id
+			}
 		)
-		self = HealthcareParty(defaultCryptoService.strongRandom.randomUUID())
+
 		val (aKey, a) = createKeyInfo()
 		val (bKey, b) = createKeyInfo()
 		val (cKey, c) = createKeyInfo()

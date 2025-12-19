@@ -45,7 +45,6 @@ class SecureDelegationsManagerImpl (
 	private val cryptoService: CryptoService,
 	private val dataOwnerApi: DataOwnerApi,
 	private val cryptoStrategies: CryptoStrategies,
-	private val selfNeedsAnonymousDelegations: Boolean,
 	private val boundGroup: SdkBoundGroup?
 ) : SecureDelegationsManager {
 	// Data owner id -> (is anonymous, verified keys if needed)
@@ -65,8 +64,16 @@ class SecureDelegationsManagerImpl (
 		autoDelegations: Map<EntityReferenceInGroup, AccessLevel>,
 		alternateRootDataOwnerReference: EntityReferenceInGroup?
 	): T {
-		val selfReference = dataOwnerApi.getCurrentDataOwnerReference()
-		val rootDelegationReference = alternateRootDataOwnerReference ?: selfReference
+		if (userKeys.delegatorActorVerifiedKeys().isEmpty()) { //isKeyless
+			require (alternateRootDataOwnerReference != null) {
+				"Cannot initialize encrypted metadata without an alternate root delegation when running in keyless mode."
+			}
+		} else {
+			require (alternateRootDataOwnerReference == null) {
+				"Cannot specify an alternate root delegation when not running in keyless mode."
+			}
+		}
+		val rootDelegationReference = alternateRootDataOwnerReference ?: EntityReferenceInGroup(userKeys.delegatorActorId(), null)
 		val rootDelegationInfo = makeSecureDelegationInfo(
 			entityGroupId = entityGroupId,
 			entityType = entityType,
@@ -115,10 +122,10 @@ class SecureDelegationsManagerImpl (
 		newDelegationPermissions: RequestedPermission
 	): EntityShareOrMetadataUpdateRequest? {
 		val exchangeData = exchangeDataManager.getOrCreateEncryptionDataTo(
-			entityGroupId,
-			delegate,
-			false,
-			false
+			groupId = entityGroupId,
+			delegateReference = delegate,
+			allowCreationWithoutDelegateKey = false,
+			allowCreationWithoutDelegatorKey = false
 		)
 		val accessControlKey = exchangeData.unencryptedContent.accessControlSecret.toAccessControlKeyStringFor(
 			entityType,
@@ -269,11 +276,11 @@ class SecureDelegationsManagerImpl (
 		shareEncryptionKeys: Set<HexString>,
 		shareOwningEntityIds: Set<String>
 	): EncryptedExchangeDataInfo {
-		val selfReference = this.dataOwnerApi.getCurrentDataOwnerReference()
-		val exchangeDataIdInfo = if (delegate == selfReference) {
-			makeExchangeDataIdInfoForSelf(entityGroupId, selfReference, exchangeDataInfo)
+		val delegatorReference = EntityReferenceInGroup(this.userKeys.delegatorActorId(), null)
+		val exchangeDataIdInfo = if (delegate == delegatorReference) {
+			makeExchangeDataIdInfoForEncryptionActor(entityGroupId, delegatorReference, exchangeDataInfo)
 		} else {
-			makeExchangeDataIdInfoForDelegate(entityGroupId, selfReference, delegate, exchangeDataInfo)
+			makeExchangeDataIdInfoForDelegate(entityGroupId, delegatorReference, delegate, exchangeDataInfo)
 		}
 		val encryptedSecretIds = secureDelegationsEncryption.encryptSecretIds(shareSecretIds.toSet(), exchangeDataInfo.unencryptedContent.exchangeKey)
 		val encryptedEncryptionKeys = secureDelegationsEncryption.encryptEncryptionKeys(shareEncryptionKeys.toSet(), exchangeDataInfo.unencryptedContent.exchangeKey)
@@ -286,17 +293,17 @@ class SecureDelegationsManagerImpl (
 		)
 	}
 
-	private fun makeExchangeDataIdInfoForSelf(
+	private fun makeExchangeDataIdInfoForEncryptionActor(
 		entityGroupId: String?,
-		self: EntityReferenceInGroup,
+		delegatorReference: EntityReferenceInGroup,
 		exchangeDataInfo: ExchangeDataWithUnencryptedContent
 	): EncryptedExchangeDataIdInfo =
-		if (selfNeedsAnonymousDelegations) {
+		if (userKeys.delegatorActorIsAnonymous()) {
 			EncryptedExchangeDataIdInfo(null, null, null, null)
 		} else {
 			EncryptedExchangeDataIdInfo(
-				explicitDelegator = self.asReferenceStringInGroup(entityGroupId, boundGroup),
-				explicitDelegate = self.asReferenceStringInGroup(entityGroupId, boundGroup),
+				explicitDelegator = delegatorReference.asReferenceStringInGroup(entityGroupId, boundGroup),
+				explicitDelegate = delegatorReference.asReferenceStringInGroup(entityGroupId, boundGroup),
 				exchangeDataId = exchangeDataInfo.exchangeData.id,
 				encryptedExchangeDataId = null
 			)
@@ -304,16 +311,17 @@ class SecureDelegationsManagerImpl (
 
 	private suspend fun makeExchangeDataIdInfoForDelegate(
 		entityGroupId: String?,
-		selfReference: EntityReferenceInGroup,
+		delegatorReference: EntityReferenceInGroup,
 		delegateReference: EntityReferenceInGroup,
 		verifiedExchangeData: ExchangeDataWithUnencryptedContent
 	): EncryptedExchangeDataIdInfo {
+		val delegatorActorIsAnonymous = userKeys.delegatorActorIsAnonymous()
 		val (delegateIsAnonymous, verifiedDelegateKeys) = dataOwnerAnonymityCache.get(delegateReference) ?: dataOwnerApi.getCryptoActorStubInGroup(delegateReference).let { delegate ->
 			val delegateIsAnonymous = cryptoStrategies.dataOwnerRequiresAnonymousDelegation(
 				dataOwner = delegate,
 				groupId = delegateReference.normalized(boundGroup).groupId
 			)
-			if (selfNeedsAnonymousDelegations && !delegateIsAnonymous) {
+			if (delegatorActorIsAnonymous && !delegateIsAnonymous) {
 				// Important: this requires that the exchange data signature also validates the authenticity of the public keys included in there.
 				val allDelegateKeys = cryptoService.loadEncryptionKeysForDataOwner(delegate.stub)
 				val verifiedExchangeDataFingerprints = verifiedExchangeData.exchangeData.exchangeKey.keys
@@ -322,24 +330,32 @@ class SecureDelegationsManagerImpl (
 			} else Pair(delegateIsAnonymous, null)
 		}
 		return when {
-			!delegateIsAnonymous && !selfNeedsAnonymousDelegations ->
+			!delegateIsAnonymous && !delegatorActorIsAnonymous ->
 				EncryptedExchangeDataIdInfo(
-					explicitDelegator = selfReference.asReferenceStringInGroup(entityGroupId, boundGroup),
+					explicitDelegator = delegatorReference.asReferenceStringInGroup(entityGroupId, boundGroup),
 					explicitDelegate = delegateReference.asReferenceStringInGroup(entityGroupId, boundGroup),
 					exchangeDataId = verifiedExchangeData.exchangeData.id,
 					encryptedExchangeDataId = null
 				)
-			delegateIsAnonymous && !selfNeedsAnonymousDelegations ->
+			delegateIsAnonymous && !delegatorActorIsAnonymous ->
 				EncryptedExchangeDataIdInfo(
-					explicitDelegator = selfReference.asReferenceStringInGroup(entityGroupId, boundGroup),
+					explicitDelegator = delegatorReference.asReferenceStringInGroup(entityGroupId, boundGroup),
 					explicitDelegate = null,
 					exchangeDataId = null,
 					encryptedExchangeDataId = secureDelegationsEncryption.encryptExchangeDataId(
 						verifiedExchangeData.exchangeData.id,
-						VerifiedRsaEncryptionKeysSet(userKeys.getSelfVerifiedKeys().map { it.toPublicKeyInfo() })
+						VerifiedRsaEncryptionKeysSet(
+							userKeys.delegatorActorVerifiedKeys().also {
+								check(it.isNotEmpty()) {
+									"Keyless mode doesn't support sharing from explicit delegator to anonymous delegate."
+								}
+							}.map {
+								it.toPublicKeyInfo()
+							}
+						)
 					)
 				)
-			!delegateIsAnonymous && selfNeedsAnonymousDelegations ->
+			!delegateIsAnonymous && delegatorActorIsAnonymous ->
 				EncryptedExchangeDataIdInfo(
 					explicitDelegator = null,
 					explicitDelegate = delegateReference.asReferenceStringInGroup(entityGroupId, boundGroup),

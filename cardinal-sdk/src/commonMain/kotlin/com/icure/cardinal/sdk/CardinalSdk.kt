@@ -148,7 +148,6 @@ import com.icure.cardinal.sdk.crypto.impl.FullyCachedExchangeDataManager
 import com.icure.cardinal.sdk.crypto.impl.IncrementalSecurityMetadataDecryptorImpl
 import com.icure.cardinal.sdk.crypto.impl.InternalCryptoApiImpl
 import com.icure.cardinal.sdk.crypto.impl.JsonEncryptionServiceImpl
-import com.icure.cardinal.sdk.crypto.impl.KeyPairRecovererImpl
 import com.icure.cardinal.sdk.crypto.impl.NoAccessControlKeysHeadersProvider
 import com.icure.cardinal.sdk.crypto.impl.RecoveryDataEncryptionImpl
 import com.icure.cardinal.sdk.crypto.impl.SecureDelegationsEncryptionImpl
@@ -547,9 +546,7 @@ internal suspend fun initializeApiCrypto(
 	)
 	val baseExchangeDataManager = BaseExchangeDataManagerImpl(
 		RawExchangeDataApiImpl(apiUrl, authProvider, rawApiConfig),
-		dataOwnerApi,
 		cryptoService,
-		selfIsAnonymous,
 		boundGroup
 	)
 	val baseExchangeKeysManager = BaseExchangeKeysManagerImpl(
@@ -580,14 +577,14 @@ internal suspend fun initializeApiCrypto(
 		options.useHierarchicalDataOwners,
 	).initialize()
 	val userEncryptionKeys = userEncryptionKeysInitInfo.manager
-	val exchangeDataManager = if (selfIsAnonymous)
+	val delegatorActorIsAnonymous = userEncryptionKeys.delegatorActorIsAnonymous()
+	val exchangeDataManager = if (delegatorActorIsAnonymous)
 		FullyCachedExchangeDataManager(
 			baseExchangeDataManager,
 			userEncryptionKeys,
 			cryptoStrategies,
 			dataOwnerApi,
 			cryptoService,
-			options.useHierarchicalDataOwners,
 			sdkScope,
 			boundGroup
 		).also {
@@ -600,7 +597,6 @@ internal suspend fun initializeApiCrypto(
 			cryptoStrategies,
 			dataOwnerApi,
 			cryptoService,
-			options.useHierarchicalDataOwners,
 			sdkScope,
 			boundGroup
 		)
@@ -616,7 +612,6 @@ internal suspend fun initializeApiCrypto(
 		cryptoService,
 		dataOwnerApi,
 		cryptoStrategies,
-		selfIsAnonymous,
 		boundGroup
 	)
 	val exchangeKeysManager = ExchangeKeysManagerImpl(
@@ -632,28 +627,27 @@ internal suspend fun initializeApiCrypto(
 		exchangeDataManager,
 		secureDelegationsEncryption,
 		exchangeDataMapManager,
-		dataOwnerApi,
-		options.useHierarchicalDataOwners
+		userEncryptionKeys
 	)
 	val incrementalSecurityMetadataDecryptor = IncrementalSecurityMetadataDecryptorImpl(
 		baseSecurityMetadataDecryptor,
-		dataOwnerApi,
+		userEncryptionKeys,
 		cryptoService
 	)
 	val jsonEncryptionService = JsonEncryptionServiceImpl(cryptoService)
 	val entityEncryptionService = EntityEncryptionServiceImpl(
-		secureDelegationsManager,
-		baseSecurityMetadataDecryptor,
-		incrementalSecurityMetadataDecryptor,
-		dataOwnerApi,
-		cryptoService,
-		jsonEncryptionService,
-		options.useHierarchicalDataOwners,
-		options.autoCreateEncryptionKeyForExistingLegacyData,
-		boundGroup
+		secureDelegationsManager = secureDelegationsManager,
+		baseSecurityMetadataDecryptor = baseSecurityMetadataDecryptor,
+		incrementalSecurityMetadataDecryptor = incrementalSecurityMetadataDecryptor,
+		dataOwnerApi = dataOwnerApi,
+		cryptoService = cryptoService,
+		jsonEncryptionService = jsonEncryptionService,
+		autoCreateEncryptionKeyForExistingLegacyData = options.autoCreateEncryptionKeyForExistingLegacyData,
+		userEncryptionKeysManager = userEncryptionKeys,
+		boundGroup = boundGroup
 	)
 	val headersProvider: AccessControlKeysHeadersProvider =
-		if (selfIsAnonymous)
+		if (delegatorActorIsAnonymous)
 			AccessControlKeysHeadersProviderImpl(exchangeDataManager)
 		else
 			NoAccessControlKeysHeadersProvider
@@ -668,9 +662,9 @@ internal suspend fun initializeApiCrypto(
 			RawSecureDelegationKeyMapApiImpl(apiUrl, authProvider, rawApiConfig),
 			headersProvider,
 			entityEncryptionService,
-			dataOwnerApi,
 			cryptoService,
-			boundGroup
+			boundGroup,
+			userEncryptionKeys
 		),
 		dataOwnerApi,
 		userEncryptionKeys,
@@ -689,7 +683,7 @@ internal suspend fun initializeApiCrypto(
 			cryptoService,
 			exchangeDataManager,
 			dataOwnerApi
-		).updateTransferKeys(dataOwnerApi.getCurrentDataOwnerStub())
+		).updateSelfTransferKeys()
 	}
 
 	val manifests = EntitiesEncryptedFieldsManifests.fromEncryptedFields(options.encryptedFields)

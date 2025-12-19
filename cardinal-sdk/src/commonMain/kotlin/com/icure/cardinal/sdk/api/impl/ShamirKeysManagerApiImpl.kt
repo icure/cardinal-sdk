@@ -48,8 +48,11 @@ class ShamirKeysManagerApiImpl(
 		keySplitsToDelete: Set<KeypairFingerprintV1String>,
 	): CryptoActorStubWithType {
 		val self = this.dataOwnerApi.getCurrentDataOwner().asStub()
+		if (dataOwnerApi.getCurrentDataOwnerId() != encryptionKeysManager.delegatorActorId()) throw UnsupportedOperationException(
+			"Update of own shamir splits is currently not supported when the SDK is initialized in ParentDelegator mode"
+		)
 		val existingSplits = getExistingSplitsInfo(self.stub).keys
-		val allKeys = encryptionKeysManager.getDecryptionKeys(true)
+		val allKeys = encryptionKeysManager.getAllDecryptionKeys()
 		keySplitsToDelete.intersect(keySplitsToUpdate.keys).let {
 			require (it.isEmpty()) {
 				"Can't update and delete the same key at once. $it"

@@ -37,7 +37,6 @@ class CachedLruExchangeDataManager(
 	cryptoStrategies: CryptoStrategies,
 	dataOwnerApi: DataOwnerApi,
 	cryptoService: CryptoService,
-	useParentKeys: Boolean,
 	sdkScope: CoroutineScope,
 	sdkBoundGroup: SdkBoundGroup?
 ) : AbstractExchangeDataManager(
@@ -46,7 +45,6 @@ class CachedLruExchangeDataManager(
 	cryptoStrategies,
 	dataOwnerApi,
 	cryptoService,
-	useParentKeys,
 	sdkScope,
 	sdkBoundGroup
 ) {
@@ -57,7 +55,6 @@ class CachedLruExchangeDataManager(
 			cryptoStrategies = cryptoStrategies,
 			dataOwnerApi = dataOwnerApi,
 			cryptoService = cryptoService,
-			useParentKeys = useParentKeys,
 			sdkBoundGroup = sdkBoundGroup,
 			sdkScope = sdkScope,
 			requestGroup = groupId,
@@ -72,7 +69,6 @@ private class CachedLruExchangeDataManagerInGroup(
 	cryptoStrategies: CryptoStrategies,
 	dataOwnerApi: DataOwnerApi,
 	cryptoService: CryptoService,
-	useParentKeys: Boolean,
 	sdkBoundGroup: SdkBoundGroup?,
 	sdkScope: CoroutineScope,
 	requestGroup: String?,
@@ -83,7 +79,6 @@ private class CachedLruExchangeDataManagerInGroup(
 	cryptoStrategies = cryptoStrategies,
 	dataOwnerApi = dataOwnerApi,
 	cryptoService = cryptoService,
-	useParentKeys = useParentKeys,
 	sdkBoundGroup = sdkBoundGroup,
 	requestGroup = requestGroup
 ) {
@@ -176,7 +171,7 @@ private class CachedLruExchangeDataManagerInGroup(
 				val job = cacheRequestsScope.async {
 					val verifiedData = base.getExchangeDataByDelegatorDelegatePair(
 						requestGroup,
-						dataOwnerApi.getCurrentDataOwnerReference(),
+						EntityReferenceInGroup(userEncryptionKeys.delegatorActorId(), null),
 						delegateReference
 					).firstNotNullOfOrNull { exchangeData ->
 						this@async.ensureActive()

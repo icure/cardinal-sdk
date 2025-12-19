@@ -21,6 +21,7 @@ interface ExchangeDataManager {
 	 * Updates all exchange data between the current data owner and another data owner to allow the other data owner to access existing exchange data
 	 * using a new public key.
 	 * TODO currently supports only give access back to users in the same group
+	 * TODO no support for delegator actor different from current data owner
 	 * @param otherDataOwner the other data owner.
 	 * @param newDataOwnerPublicKey a new public key of the other data owner. The key MUST BE VERIFIED.
 	 */

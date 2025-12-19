@@ -48,24 +48,6 @@ interface UserEncryptionKeysManager {
 	fun getCurrentUserHierarchyAvailableKeypairs(): UserKeyPairInformation
 
 	/**
-	 * Get the public keys of available key pairs for the current user in hex-encoded spki representation (uses cached keys: no request is done to the
-	 * server).
-	 * By setting {@link verifiedOnly} to true only the public keys for verified key pairs will be returned: these will include only key pairs created
-	 * on this device or which have been verified using {@link CryptoStrategies} on this device.
-	 * @param verifiedOnly if true only the verified public keys will be returned.
-	 * @return the spki representation of public keys of available keypairs for the current user.
-	 */
-	fun getCurrentUserAvailablePublicKeysHex(verifiedOnly: Boolean): Set<SpkiHexString>
-
-	/**
-	 * Get the public keys of available key pairs for the current user and his parents in hex-encoded spki representation (uses cached keys: no request
-	 * is done to the server).
-	 * Note that this will also include unverified keys.
-	 * @return the spki representation of public keys of available keypairs for the current user.
-	 */
-	fun getCurrentUserHierarchyAvailablePublicKeysHex(): Set<SpkiHexString>
-
-	/**
 	 * Get a key pair with the provided fingerprint if present.
 	 * @param fingerprint a key-pair/public-key fingerprint
 	 * @return the pair associated to the fingerprint and a boolean indicating if the pair is verified, if present, else undefined
@@ -73,11 +55,41 @@ interface UserEncryptionKeysManager {
 	fun getKeyPairForFingerprint(fingerprint: KeypairFingerprintV2String): CachedKeypairDetails?
 
 	/**
-	 * Get all verified key pairs for the current data owner which can safely be used for encryption. The keys are in no
-	 * particular order. The returned keys include all key pairs created on the current device and all recovered key
-	 * pairs which have been verified through the crypto strategies.
+	 * Get the data owner to use as delegator in this SDK instance when:
+	 * - creating exchange data, or
+	 * - creating security metadata
+	 * This is normally the data owner associated to the current user of the SDK instance
 	 */
-	fun getSelfVerifiedKeys(): Set<CardinalKeyInfo<RsaKeypair<RsaAlgorithm.RsaEncryptionAlgorithm>>>
+	fun delegatorActorId(): String
+
+	/**
+	 * Get the hierarchy of data owners that can participate in the encryption / decryption of data.
+	 * @param parentId the id of a member of the current data owner hierarchy.
+	 * @return an array starting at the topmost parent and ending at the provided parent id.
+	 * @throws IllegalArgumentException If the provided id is not part of the hierarchy
+	 */
+	fun delegatorActorHierarchy(from: String? = null): List<String>
+
+	/**
+	 * If the data owner from [delegatorActorId] is an anonymous data owner, according to the crypto strategies
+	 * configured for this SDK instance.
+	 */
+	fun delegatorActorIsAnonymous(): Boolean
+
+	/**
+	 * Get the verified key pairs of the data owner from [delegatorActorId].
+	 * The returned keys can be safely used for encryption.
+	 * The returned keys include all key pairs created on the current device and all recovered key pairs which have been
+	 * verified through the crypto strategies.
+	 * Guaranteed to be non-empty unless the SDK is in keyless mode, in which case the returned set will be empty.
+	 */
+	fun delegatorActorVerifiedKeys(): Set<CardinalKeyInfo<RsaKeypair<RsaAlgorithm.RsaEncryptionAlgorithm>>>
+
+	/**
+	 * Get the verified keys / keys safe for encryption of a data owner if he is part of the current data owner hierarchy.
+	 * Returns null if the data owner is not part of the current data owner hierarchy, else returns his verified keys available to this instance of the SDK (maybe be empty in some initialization settings).
+	 */
+	fun getVerifiedEncryptionKeysForDataOwnerIfInCurrentHierarchy(dataOwnerId: String): Set<CardinalKeyInfo<RsaKeypair<RsaAlgorithm.RsaEncryptionAlgorithm>>>?
 
 	/**
 	 * Get all verified keys for a member of the current data owner hierarchy in no particular order.
@@ -87,12 +99,16 @@ interface UserEncryptionKeysManager {
 	fun getVerifiedPublicKeysFor(dataOwner: CryptoActorStub): Set<SpkiHexString>
 
 	/**
-	 * Get all key pairs for the current data owner and his parents. These keys should be used only for decryption as they may have not been verified.
-	 * @return all key pairs available for decryption.
+	 * Get all available decryption keys, for the current data owner and its parent.
+	 * These keys should be used only for decryption as they may have not been verified.
 	 */
-	fun getDecryptionKeys(
-		includeParent: Boolean
-	): RsaDecryptionKeysSet
+	fun getAllDecryptionKeys(): RsaDecryptionKeysSet
+
+	/**
+	 * Get the decryption keys for a data owner if he is part of the current data owner hierarchy.
+	 * Returns null if the data owner is not part of the current data owner hierarchy, else returns his decryption keys available to this instance of the SDK (maybe be empty in some initialization settings).
+	 */
+	fun getDecryptionKeysForDataOwnerIfInCurrentHierarchy(dataOwnerId: String): RsaDecryptionKeysSet?
 
 	/**
 	 * Forces to reload keys for the current data owner. This could be useful if the data owner has logged in from another device in order to

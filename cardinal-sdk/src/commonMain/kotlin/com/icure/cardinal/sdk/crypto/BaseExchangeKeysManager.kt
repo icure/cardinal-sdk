@@ -19,6 +19,7 @@ interface BaseExchangeKeysManager {
 	 * @param otherDataOwner the other data owner.
 	 * @param newDataOwnerPublicKey a new public key of the other data owner.
 	 * @param keyPairsByFingerprint all available key pairs to use for the decryption of existing aes exchange keys.
+	 * // TODO no support for delegator actor different from current data owner
 	 */
 	suspend fun giveAccessBackTo(
 		otherDataOwner: String,

@@ -21,7 +21,9 @@ import com.icure.cardinal.sdk.model.specializations.KeypairFingerprintV1String
 import com.icure.cardinal.sdk.model.specializations.KeypairFingerprintV2String
 import com.icure.cardinal.sdk.model.specializations.SpkiHexString
 import com.icure.cardinal.sdk.storage.CardinalStorageFacade
+import com.icure.cardinal.sdk.utils.InternalCardinalException
 import com.icure.cardinal.sdk.utils.ensure
+import com.icure.cardinal.sdk.utils.ensureNonNull
 import com.icure.cardinal.sdk.utils.tryWithLock
 import com.icure.kryptom.crypto.CryptoService
 import com.icure.kryptom.crypto.RsaAlgorithm
@@ -34,7 +36,7 @@ import kotlin.concurrent.Volatile
 @InternalIcureApi
 class UserEncryptionKeysManagerImpl private constructor (
 	initialKeyData: KeyData,
-	private val keyLoader: KeyLoader
+	private val keyLoader: KeyLoader,
 ) : UserEncryptionKeysManager {
 	@Volatile // Writes use mutex, but reads do not.
 	private var cachedKeyData: KeyData = initialKeyData
@@ -47,38 +49,60 @@ class UserEncryptionKeysManagerImpl private constructor (
 
 	override suspend fun reloadKeys() {
 		cacheWriteMutex.tryWithLock {
+			val prevData = cachedKeyData
 			val (updatedKeys, newKey) = keyLoader.doLoadKeys(
+				prevData.keys.map { it.first },
+				prevData.delegatorActorIsAnonymous,
 				NoOpRecoveryFunction
-			) { _, _ -> throw IllegalStateException("Can't create new key during key reload") }
-			ensure (newKey == null) { "New key created during key reload." }
+			) { _, _ -> prevData.specialOperationMode ?: throw InternalCardinalException("Shouldn't create new key during key reload") }
+			ensure (newKey == null) {
+				"New key created during key reload."
+			}
 			cachedKeyData = updatedKeys
 		} ?: throw IllegalStateException("Multiple concurrent requests to reload keys. This is not allowed.")
 	}
 
 	override fun getCurrentUserHierarchyAvailableKeypairs(): UserKeyPairInformation = with (cachedKeyData) {
+		val mappedInfo = keys.map { (parentId, parentKeys) -> DataOwnerKeyInfo(parentId, parentKeys.values.toList()) }
 		UserKeyPairInformation(
-			DataOwnerKeyInfo(selfId, selfKeys.values.toList()),
-			parentsKeys.map { (parentId, parentKeys) -> DataOwnerKeyInfo(parentId, parentKeys.values.toList()) }
+			mappedInfo.last(),
+			mappedInfo.dropLast(1),
 		)
-	}
-
-	override fun getCurrentUserAvailablePublicKeysHex(verifiedOnly: Boolean): Set<SpkiHexString> = with (cachedKeyData) {
-		selfKeys.values.let { keys ->
-			if (verifiedOnly) keys.filter { it.isSafeForEncryption } else keys
-		}.mapTo(mutableSetOf()) { it.keyPair.pubSpkiHexString }
-	}
-
-	override fun getCurrentUserHierarchyAvailablePublicKeysHex(): Set<SpkiHexString> = with (cachedKeyData) {
-		keys.flatMap { it.second.values }.mapTo(mutableSetOf()) { it.keyPair.pubSpkiHexString }
 	}
 
 	override fun getKeyPairForFingerprint(fingerprint: KeypairFingerprintV2String): CachedKeypairDetails? = with (cachedKeyData) {
 		keys.firstNotNullOfOrNull { it.second[fingerprint] }
 	}
 
+	override fun delegatorActorId(): String = with (cachedKeyData) {
+		alternateEncryptionDataOwnerId ?: keys.last().first
+	}
 
-	override fun getSelfVerifiedKeys(): Set<CardinalKeyInfo<RsaKeypair<RsaAlgorithm.RsaEncryptionAlgorithm>>> = with (cachedKeyData) {
-		selfKeys.values.filter { it.isSafeForEncryption }.mapTo(mutableSetOf()) { it.keyPair }
+	override fun delegatorActorHierarchy(from: String?): List<String> = with (cachedKeyData) {
+		if (alternateEncryptionDataOwnerId == null && from == null) {
+			keys.map { it.first }
+		} else {
+			val index = keys.indexOfFirst { it.first == from || it.first == alternateEncryptionDataOwnerId }
+			ensure(index >= 0) {
+				"Alternate encryption data owner id not in keys list"
+			}
+			val res = keys.take(index + 1).map { it.first }
+			require(from == null || res.last() == from) {
+				"Provided 'from' id is not part of the current delegator hierarchy"
+			}
+			res
+		}
+	}
+
+	override fun delegatorActorIsAnonymous(): Boolean = cachedKeyData.delegatorActorIsAnonymous
+
+	override fun delegatorActorVerifiedKeys(): Set<CardinalKeyInfo<RsaKeypair<RsaAlgorithm.RsaEncryptionAlgorithm>>> =
+		with (cachedKeyData) {
+			delegatorActorKeys.second.values.filter { it.isSafeForEncryption }.mapTo(mutableSetOf()) { it.keyPair }
+		}
+
+	override fun getVerifiedEncryptionKeysForDataOwnerIfInCurrentHierarchy(dataOwnerId: String): Set<CardinalKeyInfo<RsaKeypair<RsaAlgorithm.RsaEncryptionAlgorithm>>>? = with (cachedKeyData) {
+		keys.firstOrNull { it.first == dataOwnerId }?.second?.values?.filter { it.isSafeForEncryption }?.mapTo(mutableSetOf()) { it.keyPair }
 	}
 
 	override fun getVerifiedPublicKeysFor(dataOwner: CryptoActorStub): Set<SpkiHexString> = with (cachedKeyData) {
@@ -89,14 +113,14 @@ class UserEncryptionKeysManagerImpl private constructor (
 		} ?: throw IllegalArgumentException("Data owner is not part of the current data owner hierarchy")
 	}
 
-	override fun getDecryptionKeys(includeParent: Boolean) = with (cachedKeyData) {
-		RsaDecryptionKeysSet((
-			if (includeParent) {
-				keys.map { it.second }
-			} else {
-				listOf(selfKeys)
-			}
-		).flatMap { keyMap -> keyMap.values.map { it.keyPair.toPrivateKeyInfo() } })
+	override fun getAllDecryptionKeys(): RsaDecryptionKeysSet = with (cachedKeyData) {
+		RsaDecryptionKeysSet(
+			keys.map { it.second }.flatMap { keyMap -> keyMap.values.map { it.keyPair.toPrivateKeyInfo() } }
+		)
+	}
+
+	override fun getDecryptionKeysForDataOwnerIfInCurrentHierarchy(dataOwnerId: String): RsaDecryptionKeysSet? = with (cachedKeyData) {
+		keys.firstOrNull { it.first == dataOwnerId }?.second?.values?.map { it.keyPair.toPrivateKeyInfo() }?.let(::RsaDecryptionKeysSet)
 	}
 
 	class Factory(
@@ -115,11 +139,15 @@ class UserEncryptionKeysManagerImpl private constructor (
 				icureStorage,
 				cardinalKeyRecovery,
 				recoveryDataEncryption,
-				initializeParentKeys
+				initializeParentKeys,
+				cryptoStrategies
 			)
 			val (initialKeyData, newKey) = keyLoader.doLoadKeys(
+				null,
+				null,
 				cryptoStrategies::recoverAndVerifySelfHierarchyKeys,
-				cryptoStrategies::generateNewKeyForDataOwner
+				cryptoStrategies::generateNewKeyForDataOwner,
+
 			)
 			val manager =
 				UserEncryptionKeysManagerImpl(initialKeyData, keyLoader)
@@ -130,14 +158,17 @@ class UserEncryptionKeysManagerImpl private constructor (
 }
 
 @InternalIcureApi
-private data class KeyData(
-	val selfId: String,
-	val keys: List<Pair<String, Map<KeypairFingerprintV2String, CachedKeypairDetails>>>
+private class KeyData(
+	val alternateEncryptionDataOwnerId: String?,
+	val delegatorActorIsAnonymous: Boolean,
+	val keys: List<Pair<String, Map<KeypairFingerprintV2String, CachedKeypairDetails>>>,
+	val specialOperationMode: CryptoStrategies.KeyGenerationRequestResult?
 ) {
-	val selfKeys: Map<KeypairFingerprintV2String, CachedKeypairDetails>
-		get() = keys.last().second
-	val parentsKeys: List<Pair<String, Map<KeypairFingerprintV2String, CachedKeypairDetails>>>
-		get() = keys.dropLast(1)
+	val delegatorActorKeys = if (alternateEncryptionDataOwnerId != null) {
+		keys.first { it.first == alternateEncryptionDataOwnerId }
+	} else {
+		keys.last()
+	}
 }
 
 
@@ -167,6 +198,7 @@ private class KeyLoader(
 	private val cardinalKeyRecovery: CardinalKeyRecovery,
 	private val recoveryDataEncryption: RecoveryDataEncryption,
 	private val initializeParentKeys: Boolean,
+	private val cryptoStrategies: CryptoStrategies
 ) {
 
 	/*
@@ -178,13 +210,20 @@ private class KeyLoader(
 	 * 4. If a key for the current data owner
 	 */
 	suspend fun doLoadKeys(
+		expectHierarchyIds: List<String>?,
+		expectDelegatorAnonymity: Boolean?,
 		recoverAndVerifySelfHierarchyKeys: RecoveryFunction,
-		generateNewKeyForDataOwner: KeyGenerationFunction
+		generateNewKeyForDataOwner: KeyGenerationFunction,
 	): Pair<KeyData, CardinalKeyInfo<RsaKeypair<RsaAlgorithm.RsaEncryptionAlgorithm.OaepWithSha256>>?> {
 		val hierarchy = if (initializeParentKeys)
 			dataOwnerApi.getCurrentDataOwnerHierarchy()
 		else
 			listOf(dataOwnerApi.getCurrentDataOwner())
+		if (expectHierarchyIds != null) {
+			check(hierarchy.map { it.dataOwner.id } == expectHierarchyIds) {
+				"Data owner hierarchy changed during key reload, aborting. You need to re-initialize the entire SDK to reflect data owner hierarchy changes."
+			}
+		}
 		val loadedKeyInfo = hierarchy.map { it to loadAndIcureRecoverKeysFor(it) }
 		val recoveryRequest = loadedKeyInfo.map { (dataOwnerInfo, loaded) ->
 			val (found, missing) = loaded
@@ -278,21 +317,72 @@ private class KeyLoader(
 		)
 		return if (fullyRecoveredKeyData.last().second.none { it.value.isSafeForEncryption }) {
 			val selfInfo = hierarchy.last()
-			val newKey = when (val newKeyRequest = generateNewKeyForDataOwner(selfInfo, cryptoService)) {
-				CryptoStrategies.KeyGenerationRequestResult.Allow ->
-					cryptoService.rsa.generateKeyPair(
-						RsaAlgorithm.RsaEncryptionAlgorithm.OaepWithSha256,
-						RsaService.KeySize.Rsa2048
+			val keyRequestResult = generateNewKeyForDataOwner(selfInfo, cryptoService)
+			val (alternateEncryptionDataOwnerId, newKey) = when (keyRequestResult) {
+				CryptoStrategies.KeyGenerationRequestResult.Allow -> {
+					Pair(
+						null,
+						cryptoService.rsa.generateKeyPair(
+							RsaAlgorithm.RsaEncryptionAlgorithm.OaepWithSha256,
+							RsaService.KeySize.Rsa2048
+						)
 					)
-
-				is CryptoStrategies.KeyGenerationRequestResult.Use ->
-					newKeyRequest.keyPair
-
-				is CryptoStrategies.KeyGenerationRequestResult.Keyless ->
-					null // Keyless mode, no new key is created.
-
-				CryptoStrategies.KeyGenerationRequestResult.Deny ->
+				}
+				is CryptoStrategies.KeyGenerationRequestResult.Use -> {
+					Pair(
+						null,
+						keyRequestResult.keyPair,
+					)
+				}
+				is CryptoStrategies.KeyGenerationRequestResult.Keyless -> {
+					// Keyless mode, no new key is created, and can't create encryption metadata
+					Pair(
+						null,
+						null
+					)
+				}
+				CryptoStrategies.KeyGenerationRequestResult.Deny -> {
 					throw IllegalStateException("No verified key available for the current data owner and crypto strategies do not allow for the creation of a new key. Aborting api initialisation")
+				}
+				is CryptoStrategies.KeyGenerationRequestResult.ParentDelegator -> {
+					val parentId = selfInfo.dataOwner.parentId
+					require (parentId != null && fullyRecoveredKeyData[fullyRecoveredKeyData.size - 2].second.isNotEmpty()) {
+						"ParentDelegator option is only available if the current data owner has a parent, the SDK is initialized using hierarchical data owners, and at least a key of the parent is available for encryption."
+					}
+					Pair(
+						parentId,
+						null
+					)
+				}
+			}
+			val isDelegatorAnonymous = cryptoStrategies.dataOwnerRequiresAnonymousDelegation(
+				if (alternateEncryptionDataOwnerId == null) selfInfo.asStub() else hierarchy.first { it.dataOwner.id == alternateEncryptionDataOwnerId }.asStub(),
+				null
+			)
+			if (expectDelegatorAnonymity != null) {
+				check(isDelegatorAnonymous == expectDelegatorAnonymity) {
+					"Delegator anonymity requirement changed during key reload, aborting. You need to re-initialize the entire SDK to reflect data owner hierarchy changes.\n" +
+					"Note that changing anonymity of data owners is generally strongly discouraged:\n" +
+					"- When changing from explicit to anonymous existing data is not updated, and an observer may be able to link the old data where the delegator appears explicitly to new anonymous data\n" +
+					"- When changing from anonymous to explicit your data owner may not be able to find data that was previously accessible to him."
+				}
+			}
+			if (isDelegatorAnonymous && hierarchy.size > 1) {
+				// TODO this is untested, may be very messed up. Currently never had a use case for this.
+				// Could be particularly problematic with how keys are fully cached for anonymous data owners
+				throw UnsupportedOperationException("Anonymous data owners are currently incompatible with hierarchical data owners.")
+			}
+			if (isDelegatorAnonymous && alternateEncryptionDataOwnerId != null) {
+				// TODO this is untested, may be very messed up. Currently never had a use case for this.
+				// Could be particularly problematic with how keys are fully cached for anonymous data owners
+				throw UnsupportedOperationException("Anonymous data owners are currently incompatible with alternate delegators (ParentDelegator).")
+			}
+			val specialOperationMode = when (keyRequestResult) {
+				CryptoStrategies.KeyGenerationRequestResult.Keyless,
+				CryptoStrategies.KeyGenerationRequestResult.ParentDelegator ->
+					keyRequestResult
+				else ->
+					null
 			}
 			newKey?.let { newKey ->
 				val newKeySpki = cryptoService.rsa.exportSpkiHex(newKey.public)
@@ -302,23 +392,32 @@ private class KeyLoader(
 				dataOwnerApi.modifyDataOwnerStub(selfWithNewKey)
 				icureStorage.saveEncryptionKeypair(selfInfo.dataOwner.id, newKey, true)
 				KeyData(
-					selfInfo.dataOwner.id,
-					fullyRecoveredKeyData.dropLast(1) + fullyRecoveredKeyData.last().copy(
+					alternateEncryptionDataOwnerId = alternateEncryptionDataOwnerId,
+					delegatorActorIsAnonymous = isDelegatorAnonymous,
+					keys = fullyRecoveredKeyData.dropLast(1) + fullyRecoveredKeyData.last().copy(
 						second = fullyRecoveredKeyData.last().second + (newKeySpki.fingerprintV2() to CachedKeypairDetails(
 							CardinalKeyInfo(newKeySpki, newKey),
 							isVerified = true,
 							isDevice = true
 						))
-					)
+					),
+					specialOperationMode = specialOperationMode
 				) to CardinalKeyInfo(newKeySpki, newKey)
 			} ?: (KeyData(
-				hierarchy.last().dataOwner.id,
-				fullyRecoveredKeyData
+				alternateEncryptionDataOwnerId = alternateEncryptionDataOwnerId,
+				delegatorActorIsAnonymous = isDelegatorAnonymous,
+				fullyRecoveredKeyData,
+				specialOperationMode = specialOperationMode
 			) to null)
 		} else {
 			KeyData(
-				hierarchy.last().dataOwner.id,
-				fullyRecoveredKeyData
+				null,
+				cryptoStrategies.dataOwnerRequiresAnonymousDelegation(
+					hierarchy.last().asStub(),
+					null
+				),
+				fullyRecoveredKeyData,
+				null
 			) to null
 		}
 	}
