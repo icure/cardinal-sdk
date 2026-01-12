@@ -8,6 +8,7 @@ import {PaginatedList} from '../model/PaginatedList.mjs';
 import {RegistrationInformation} from '../model/RegistrationInformation.mjs';
 import {RegistrationSuccess} from '../model/RegistrationSuccess.mjs';
 import {ReplicationInfo} from '../model/ReplicationInfo.mjs';
+import {CodeStub} from '../model/base/CodeStub.mjs';
 import {DesignDocument} from '../model/couchdb/DesignDocument.mjs';
 import {DocIdentifier} from '../model/couchdb/DocIdentifier.mjs';
 import {GroupDatabasesInfo} from '../model/couchdb/GroupDatabasesInfo.mjs';
@@ -94,5 +95,11 @@ export interface GroupApi {
 
 	setGroupProjectId(groupId: string, projectId: string | undefined,
 			applyToSubgroups: boolean): Promise<void>;
+
+	modifyGroupApplicationId(id: string, applicationId: string): Promise<Group>;
+
+	addTagToGroup(id: string, rev: string, tag: CodeStub): Promise<Group>;
+
+	removeTagFromGroup(id: string, rev: string, tagId: string): Promise<Group>;
 
 }

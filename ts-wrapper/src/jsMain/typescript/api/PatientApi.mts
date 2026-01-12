@@ -57,7 +57,7 @@ export interface PatientApi {
 
 	matchPatientsBySorted(filter: SortableFilterOptions<Patient>): Promise<Array<string>>;
 
-	ensureEncryptionMetadataForSelfIsInitialized(options?: { sharingWith?: { [ key: string ]: AccessLevel } }): Promise<EncryptedPatient>;
+	ensureEncryptionMetadataForSelfIsInitialized(options?: { sharingWith?: { [ key: string ]: AccessLevel }, ignoreIfEncryptionMetadataExists?: boolean, alternateRootDelegateId?: string | undefined }): Promise<EncryptedPatient>;
 
 	deletePatientUnsafe(entityId: string): Promise<StoredDocumentIdentifier>;
 

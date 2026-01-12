@@ -12,6 +12,7 @@ import com.icure.cardinal.sdk.js.model.PaginatedListJs
 import com.icure.cardinal.sdk.js.model.RegistrationInformationJs
 import com.icure.cardinal.sdk.js.model.RegistrationSuccessJs
 import com.icure.cardinal.sdk.js.model.ReplicationInfoJs
+import com.icure.cardinal.sdk.js.model.base.CodeStubJs
 import com.icure.cardinal.sdk.js.model.couchdb.DesignDocumentJs
 import com.icure.cardinal.sdk.js.model.couchdb.DocIdentifierJs
 import com.icure.cardinal.sdk.js.model.couchdb.GroupDatabasesInfoJs
@@ -131,4 +132,18 @@ public external interface GroupApiJs {
 		projectId: String?,
 		applyToSubgroups: Boolean,
 	): Promise<Unit>
+
+	public fun modifyGroupApplicationId(id: String, applicationId: String): Promise<GroupJs>
+
+	public fun addTagToGroup(
+		id: String,
+		rev: String,
+		tag: CodeStubJs,
+	): Promise<GroupJs>
+
+	public fun removeTagFromGroup(
+		id: String,
+		rev: String,
+		tagId: String,
+	): Promise<GroupJs>
 }

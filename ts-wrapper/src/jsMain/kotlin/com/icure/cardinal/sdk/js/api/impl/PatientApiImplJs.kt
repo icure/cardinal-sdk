@@ -3321,8 +3321,24 @@ internal class PatientApiImplJs(
 					},
 				)
 			}
+			val ignoreIfEncryptionMetadataExistsConverted: Boolean = convertingOptionOrDefaultNonNull(
+				_options,
+				"ignoreIfEncryptionMetadataExists",
+				false
+			) { ignoreIfEncryptionMetadataExists: Boolean ->
+				ignoreIfEncryptionMetadataExists
+			}
+			val alternateRootDelegateIdConverted: String? = convertingOptionOrDefaultNullable(
+				_options,
+				"alternateRootDelegateId",
+				null
+			) { alternateRootDelegateId: String? ->
+				undefinedToNull(alternateRootDelegateId)
+			}
 			val result = patientApi.ensureEncryptionMetadataForSelfIsInitialized(
 				sharingWithConverted,
+				ignoreIfEncryptionMetadataExistsConverted,
+				alternateRootDelegateIdConverted,
 			)
 			patient_toJs(result)
 		}
