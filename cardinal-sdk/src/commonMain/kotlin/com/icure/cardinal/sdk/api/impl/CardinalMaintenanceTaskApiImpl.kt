@@ -39,6 +39,9 @@ class CardinalMaintenanceTaskApiImpl(
 		require(updateRequest.newPublicKey in concernedDataOwnerStub.publicKeysSpki) {
 			"Invalid key pair update notification: data owner ${updateRequest.concernedDataOwnerId} does not have a key ${updateRequest.newPublicKey}"
 		}
+		if (dataOwnerApi.getCurrentDataOwnerId() != userKeysManager.delegatorActorId()) throw UnsupportedOperationException(
+			"Give access back is currently not supported when the SDK is initialized in ParentDelegator mode"
+		)
 		exchangeDataManager.giveAccessBackTo(
 			updateRequest.concernedDataOwnerId,
 			updateRequest.newPublicKey
@@ -46,7 +49,7 @@ class CardinalMaintenanceTaskApiImpl(
 		baseExchangeKeysManager.giveAccessBackTo(
 			updateRequest.concernedDataOwnerId,
 			updateRequest.newPublicKey,
-			userKeysManager.getDecryptionKeys(true)
+			userKeysManager.getAllDecryptionKeys()
 		)
 	}
 
@@ -54,6 +57,9 @@ class CardinalMaintenanceTaskApiImpl(
 		key: SpkiHexString,
 		requestToOwnerTypes: Set<DataOwnerType>?
 	) {
+		if (dataOwnerApi.getCurrentDataOwnerId() != userKeysManager.delegatorActorId()) throw UnsupportedOperationException(
+			"Give access back requests are currently not supported when the SDK is initialized in ParentDelegator mode"
+		)
 		val doRequestTo = requestToOwnerTypes ?: when (dataOwnerApi.getCurrentDataOwnerType()) {
 			DataOwnerType.Device -> {
 				log.w { "Current data owner is a device, no maintenance task for updated keypair will be created by default." }
@@ -69,7 +75,12 @@ class CardinalMaintenanceTaskApiImpl(
 	override suspend fun createKeyPairUpdateNotificationTo(
 		dataOwnerId: String,
 		key: SpkiHexString
-	) = doCreateKeyPairUpdateNotifications(setOf(dataOwnerId), key)
+	) {
+		if (dataOwnerApi.getCurrentDataOwnerId() != userKeysManager.delegatorActorId()) throw UnsupportedOperationException(
+			"Give access back requests are currently not supported when the SDK is initialized in ParentDelegator mode"
+		)
+		return doCreateKeyPairUpdateNotifications(setOf(dataOwnerId), key)
+	}
 
 	// TODO way to lookup key pair update maintenance tasks
 

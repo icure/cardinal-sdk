@@ -1,12 +1,12 @@
 package com.icure.cardinal.sdk.crypto.impl
 
-import com.icure.cardinal.sdk.api.DataOwnerApi
 import com.icure.cardinal.sdk.api.raw.RawSecureDelegationKeyMapApi
 import com.icure.cardinal.sdk.crypto.AccessControlKeysHeadersProvider
 import com.icure.cardinal.sdk.crypto.BaseSecurityMetadataDecryptor
 import com.icure.cardinal.sdk.crypto.DelegationsDeAnonymization
 import com.icure.cardinal.sdk.crypto.EntityEncryptionService
 import com.icure.cardinal.sdk.crypto.JsonEncryptionService
+import com.icure.cardinal.sdk.crypto.UserEncryptionKeysManager
 import com.icure.cardinal.sdk.crypto.entities.EntityAccessInformation
 import com.icure.cardinal.sdk.crypto.entities.EntityWithEncryptionMetadataTypeName
 import com.icure.cardinal.sdk.crypto.entities.SdkBoundGroup
@@ -37,9 +37,9 @@ class DelegationsDeAnonymizationImpl(
 	private val delegationKeyMapsApi: RawSecureDelegationKeyMapApi,
 	private val accessControlKeysHeadersProvider: AccessControlKeysHeadersProvider,
 	private val entity: EntityEncryptionService,
-	private val dataOwnerApi: DataOwnerApi,
 	private val crypto: CryptoService,
-	private val boundGroup: SdkBoundGroup?
+	private val boundGroup: SdkBoundGroup?,
+	private val encryptionKeys: UserEncryptionKeysManager
 ) : DelegationsDeAnonymization {
 	companion object {
 		private val log = getLogger("DelegationsDeAnonymization")
@@ -250,12 +250,12 @@ class DelegationsDeAnonymizationImpl(
 		) {
 			"Delegation members details are missing delegate, delegator or access control secret info."
 		}
-		val selfDoReference = dataOwnerApi.getCurrentDataOwnerReference()
+		val delegatorReference = EntityReferenceInGroup(encryptionKeys.delegatorActorId(), null)
 		val initialDelegates = setOf(
 			delegationMembersDetails.delegate,
 			delegationMembersDetails.delegator,
 			*delegates.toTypedArray()
-		).filter { it != selfDoReference }
+		).filter { it != delegatorReference }
 		val resolvedGroup = boundGroup.resolve(entityGroupId)
 		val initialMapInfo = entity.entityWithInitializedEncryptedMetadata(
             entityGroupId = resolvedGroup,

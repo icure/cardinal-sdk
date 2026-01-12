@@ -60,7 +60,7 @@ internal class CryptoApiImpl(
 		delegate: EntityReferenceInGroup
 	): RawDecryptedExchangeData {
 		require(delegate.groupId == null && delegate.entityId != this.internal.dataOwnerApi.getCurrentDataOwnerId()) { "Can't create exchange data to yourself in keyless mode." }
-		check(this.internal.userEncryptionKeysManager.getSelfVerifiedKeys().isEmpty()) { "This method can only be used in keyless mode." }
+		check(this.internal.userEncryptionKeysManager.delegatorActorVerifiedKeys().isEmpty()) { "This method can only be used in keyless mode." }
 
 		val created = this.internal.exchangeDataManager.getOrCreateEncryptionDataTo(
 			groupId = groupId,
@@ -86,37 +86,5 @@ internal class CryptoApiImpl(
 			exchangeDataDetails = details,
 			reEncryptWithOwnKeys = reEncryptWithOwnKeys
 		)
-	}
-
-	override suspend fun addAndStoreNewSelfVerifiedKey(
-		algorithm: RsaAlgorithm.RsaEncryptionAlgorithm,
-		pkcs8Bytes: Pkcs8Bytes,
-	) {
-		val keyPair = internal.primitives.rsa.loadKeyPairPkcs8(algorithm, pkcs8Bytes.bytes)
-		val self = internal.dataOwnerApi.getCurrentDataOwnerStub()
-		val anonymous = internal.strategies.dataOwnerRequiresAnonymousDelegation(self, null)
-
-		val pubKey = internal.primitives.rsa.exportSpkiHex(keyPair.public)
-		internal.storage.saveEncryptionKeypair(self.stub.id, keyPair, isDevice = true)
-
-		if (pubKey !in self.stub.publicKeysSpki) {
-			val modifiedSelf = self.copy(
-				stub = when(algorithm) {
-					RsaAlgorithm.RsaEncryptionAlgorithm.OaepWithSha256 -> self.stub.copy(
-						publicKeysForOaepWithSha256 = self.stub.publicKeysForOaepWithSha256 + pubKey
-					)
-					RsaAlgorithm.RsaEncryptionAlgorithm.OaepWithSha1 -> self.stub.copy(
-						aesExchangeKeys = self.stub.aesExchangeKeys + (pubKey.asExchangeKeyEntryKeyString() to emptyMap())
-					)
-				}
-			)
-			internal.dataOwnerApi.modifyDataOwnerStub(
-modifiedSelf
-			)
-		}
-
-		if (anonymous) {
-			forceReload()
-		}
 	}
 }

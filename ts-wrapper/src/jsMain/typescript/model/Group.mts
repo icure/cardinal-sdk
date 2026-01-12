@@ -47,7 +47,7 @@ export class Group implements StoredDocument, HasTags {
 
 	superGroup: string | undefined = undefined;
 
-	applicationId: string | undefined = undefined;
+	projectId: string | undefined = undefined;
 
 	constructor(partial: Partial<Group> & Pick<Group, "minimumAuthenticationClassForElevatedPrivileges">) {
 		this.id = partial.id ?? randomUuid();
@@ -67,7 +67,7 @@ export class Group implements StoredDocument, HasTags {
 		if ('externalJwtConfig' in partial && partial.externalJwtConfig !== undefined) this.externalJwtConfig = partial.externalJwtConfig;
 		this.minimumAuthenticationClassForElevatedPrivileges = partial.minimumAuthenticationClassForElevatedPrivileges;
 		if ('superGroup' in partial) this.superGroup = partial.superGroup;
-		if ('applicationId' in partial) this.applicationId = partial.applicationId;
+		if ('projectId' in partial) this.projectId = partial.projectId;
 	}
 
 	toJSON(): object {
@@ -89,7 +89,7 @@ export class Group implements StoredDocument, HasTags {
 		res['externalJwtConfig'] = Object.fromEntries(Object.entries(this.externalJwtConfig).map(([k0, v0]) => [k0, v0.toJSON()]))
 		res['minimumAuthenticationClassForElevatedPrivileges'] = this.minimumAuthenticationClassForElevatedPrivileges
 		if (this.superGroup != undefined) res['superGroup'] = this.superGroup
-		if (this.applicationId != undefined) res['applicationId'] = this.applicationId
+		if (this.projectId != undefined) res['projectId'] = this.projectId
 		return res
 	}
 
@@ -139,7 +139,7 @@ export class Group implements StoredDocument, HasTags {
 			),
 			minimumAuthenticationClassForElevatedPrivileges: expectStringEnum(extractEntry(jCpy, 'minimumAuthenticationClassForElevatedPrivileges', true, path), false, [...path, ".minimumAuthenticationClassForElevatedPrivileges"], AuthenticationClass, 'AuthenticationClass'),
 			superGroup: expectString(extractEntry(jCpy, 'superGroup', false, path), true, [...path, ".superGroup"]),
-			applicationId: expectString(extractEntry(jCpy, 'applicationId', false, path), true, [...path, ".applicationId"]),
+			projectId: expectString(extractEntry(jCpy, 'projectId', false, path), true, [...path, ".projectId"]),
 		})
 		if (!ignoreUnknownKeys) {
 			const unused = Object.keys(jCpy)

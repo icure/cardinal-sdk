@@ -770,7 +770,7 @@ private class PatientApiImpl(
 				encrypted.modifyPatient(it)
 			} ?: patient
 		} ?: throw NotFoundException("Patient $patientId not found")
-		val selfHierarchySet = config.crypto.dataOwnerApi.getCurrentDataOwnerHierarchyIds().toSet()
+		val selfHierarchySet = config.crypto.userEncryptionKeysManager.delegatorActorHierarchy().toSet()
 
 		val delegationSecretKeys = getSecretIdsOf(patient).keys
 
@@ -1147,7 +1147,10 @@ private class PatientApiImpl(
 
 	override suspend fun ensureEncryptionMetadataForSelfIsInitialized(sharingWith: Map<String, AccessLevel>): EncryptedPatient {
 		val self = config.crypto.dataOwnerApi.getCurrentDataOwner()
-		require (self is DataOwnerWithType.PatientDataOwner) { "Current user is not a data owner" }
+		require (self is DataOwnerWithType.PatientDataOwner) { "Current user is not a patient data owner" }
+		if (config.crypto.userEncryptionKeysManager.delegatorActorId() != self.dataOwner.id) throw UnsupportedOperationException(
+			"Initialization of encryption metadata for self is currently not supported when the SDK is initialized in ParentDelegator mode"
+		)
 
 		suspend fun doWith(self: EncryptedPatient): EncryptedPatient {
 			val availableSecretIds = config.crypto.entity.secretIdsOf(null, self, EntityWithEncryptionMetadataTypeName.Patient, null)

@@ -26,7 +26,7 @@ external interface CryptoStrategiesJs {
 	fun generateNewKeyForDataOwner(
 		self: DataOwnerWithTypeJs,
 		cryptoPrimitives: XCryptoService
-	): Promise<dynamic> // boolean | XRsaKeypair | "keyless"
+	): Promise<dynamic> // boolean | XRsaKeypair | "keyless" | "parent-delegator"
 
 	fun verifyDelegatePublicKeys(
 		delegate: CryptoActorStubWithTypeJs,

@@ -7,6 +7,7 @@ import com.icure.cardinal.sdk.crypto.EntityValidationService
 import com.icure.cardinal.sdk.crypto.IncrementalSecurityMetadataDecryptor
 import com.icure.cardinal.sdk.crypto.JsonEncryptionService
 import com.icure.cardinal.sdk.crypto.SecureDelegationsManager
+import com.icure.cardinal.sdk.crypto.UserEncryptionKeysManager
 import com.icure.cardinal.sdk.crypto.decrypt
 import com.icure.cardinal.sdk.crypto.entities.BulkShareResult
 import com.icure.cardinal.sdk.crypto.entities.DecryptedMetadataDetails
@@ -60,8 +61,8 @@ class EntityEncryptionServiceImpl(
 	private val dataOwnerApi: DataOwnerApi,
 	private val cryptoService: CryptoService,
 	private val jsonEncryptionService: JsonEncryptionService,
-	private val useParentKeys: Boolean,
 	private val autoCreateEncryptionKeyForExistingLegacyData: Boolean,
+	private val userEncryptionKeysManager: UserEncryptionKeysManager,
 	private val boundGroup: SdkBoundGroup?
 ) : EntityEncryptionService, EntityValidationService by EntityValidationServiceImpl(jsonEncryptionService) {
 	/*
@@ -945,7 +946,7 @@ class EntityEncryptionServiceImpl(
 			entityGroupId,
 			entity,
 			entityType,
-			mapOf(dataOwnerApi.getCurrentDataOwnerReference() to SimpleDelegateShareOptionsImpl(
+			mapOf(EntityReferenceInGroup(userEncryptionKeysManager.delegatorActorId(), null) to SimpleDelegateShareOptionsImpl(
 				shareSecretIds = SecretIdShareOptions.UseExactly(
 					secretIds = setOf(cryptoService.strongRandom.randomUUID()),
 					createUnknownSecretIds = true
@@ -968,7 +969,7 @@ class EntityEncryptionServiceImpl(
 		dataOwnerId: String?
 	): Set<String> {
 		val secretIdsInfo = secretIdsForHcpHierarchyOf(entityGroupId, entity, entityType)
-		val targetDataOwner = dataOwnerId ?: dataOwnerApi.getCurrentDataOwnerId()
+		val targetDataOwner = dataOwnerId ?: userEncryptionKeysManager.delegatorActorId()
 		val parents = secretIdsInfo.takeWhile { it.ownerId != targetDataOwner }
 		require(parents.size < secretIdsInfo.size) {
 			"Target data owner $targetDataOwner is not in the hierarchy of the logged data owner"
@@ -1060,17 +1061,6 @@ class EntityEncryptionServiceImpl(
 			}
 	}
 
-	private suspend fun dataOwnersForDecryption(startingFrom: String?) =
-		if (useParentKeys) {
-			if (startingFrom != null)
-				dataOwnerApi.getCurrentDataOwnerHierarchyIdsFrom(startingFrom)
-			else
-				dataOwnerApi.getCurrentDataOwnerHierarchyIds()
-		} else {
-			val self = dataOwnerApi.getCurrentDataOwnerId()
-			ensure(startingFrom == null || startingFrom == self) {
-				"$startingFrom is not part of the current data owner hierarchy"
-			}
-			listOf(self)
-		}
+	private fun dataOwnersForDecryption(startingFrom: String?) =
+		userEncryptionKeysManager.delegatorActorHierarchy(startingFrom)
 }

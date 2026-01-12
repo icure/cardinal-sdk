@@ -425,7 +425,7 @@ interface EntityEncryptionService : EntityValidationService {
 	): T?
 
 	/**
-	 * Get all existing confidential secret ids of the provided entity for [dataOwnerId] (current data owner if null).
+	 * Get all existing confidential secret ids of the provided entity for [dataOwnerId] (delegator data owner if null).
 	 * A confidential secret id is a secret id known by the data owner but not known by any of his parents: note however
 	 * that children will know confidential secret ids.
 	 * @param entity an entity for which you want to retrieve the confidential secret id.

@@ -1,6 +1,5 @@
 package com.icure.cardinal.sdk.crypto.impl
 
-import com.icure.cardinal.sdk.api.DataOwnerApi
 import com.icure.cardinal.sdk.api.raw.RawExchangeDataApi
 import com.icure.cardinal.sdk.crypto.BaseExchangeDataManager
 import com.icure.cardinal.sdk.model.EntityReferenceInGroup
@@ -42,34 +41,31 @@ import kotlin.reflect.KProperty1
 @InternalIcureApi
 class BaseExchangeDataManagerImpl(
 	override val raw: RawExchangeDataApi,
-	private val dataOwnerApi: DataOwnerApi,
 	private val cryptoService: CryptoService,
-	private val selfIsAnonymousDataOwner: Boolean,
 	private val sdkBoundGroup: SdkBoundGroup?
 ) : BaseExchangeDataManager {
-	override suspend fun getAllExchangeDataForCurrentDataOwnerIfAllowed(inGroup: String?): List<ExchangeData>? {
-		if (!selfIsAnonymousDataOwner) return null
-		val selfReferenceString = dataOwnerApi.getCurrentDataOwnerReference()
+	override suspend fun getAllExchangeDataForDataOwner(dataOwnerId: String, inGroup: String?): List<ExchangeData> {
+		val targetReferenceString = EntityReferenceInGroup(dataOwnerId, null)
 			.asReferenceStringInGroup(inGroup, sdkBoundGroup)
 		return exhaustPaginatedRequest { next ->
-			validateResponseContent(next == null || (next.startKey as? JsonPrimitive)?.takeIf { it.isString }?.content == selfReferenceString) {
+			validateResponseContent(next == null || (next.startKey as? JsonPrimitive)?.takeIf { it.isString }?.content == targetReferenceString) {
 				"Received next key should be the current data owner id"
 			}
 			sdkBoundGroup.resolve(inGroup)?.let {
 				raw.getExchangeDataByParticipant(
-					dataOwnerId = selfReferenceString,
+					dataOwnerId = targetReferenceString,
 					startDocumentId = next?.startKeyDocId,
 					groupId = it
 				).successBody()
-			} ?: if (selfReferenceString.contains('/')) {
+			} ?: if (targetReferenceString.contains('/')) {
 				raw.getExchangeDataByParticipantQuery(
-					dataOwnerId = selfReferenceString,
+					dataOwnerId = targetReferenceString,
 					startDocumentId = next?.startKeyDocId,
 				).successBody()
 			} else {
 				// TODO Temporary, to allow still usage of new cardinal sdk without using inter-group sharing also on older kraken versions
 				raw.getExchangeDataByParticipant(
-					dataOwnerId = selfReferenceString,
+					dataOwnerId = targetReferenceString,
 					startDocumentId = next?.startKeyDocId,
 				).successBody()
 			}
@@ -119,11 +115,11 @@ class BaseExchangeDataManagerImpl(
 	override suspend fun verifyExchangeData(
 		data: ExchangeDataWithUnencryptedContent,
 		delegatorSignatureKeys: SelfVerifiedKeysSet,
-		verifyAsDelegator: Boolean
+		verifyAsDelegator: String?
 	): Boolean {
 		if (
-			verifyAsDelegator && (
-				data.exchangeData.delegator != dataOwnerApi.getCurrentDataOwnerId()
+			verifyAsDelegator != null && (
+				data.exchangeData.delegator != verifyAsDelegator
 				|| !(verifyDelegatorSignature(data.exchangeData, data.unencryptedContent.sharedSignatureKey, delegatorSignatureKeys))
 			)
 		) return false
@@ -180,6 +176,7 @@ class BaseExchangeDataManagerImpl(
 
 	override suspend fun createExchangeData(
 		inGroup: String?,
+		delegatorReference: EntityReferenceInGroup,
 		delegateReference: EntityReferenceInGroup,
 		signatureKeys: SelfVerifiedKeysSet,
 		encryptionKeys: VerifiedRsaEncryptionKeysSet,
@@ -194,7 +191,7 @@ class BaseExchangeDataManagerImpl(
 		val encryptedExchangeKey = cryptoService.encryptDataWithKeys(rawExchangeKey, encryptionKeys, KeyIdentifierFormat.FingerprintV2)
 		val encryptedSharedSignatureKey = cryptoService.encryptDataWithKeys(rawSharedSignatureKey, encryptionKeys, KeyIdentifierFormat.FingerprintV2)
 		val encryptedAccessControlSecret = cryptoService.encryptDataWithKeys(rawAccessControlSecret, encryptionKeys, KeyIdentifierFormat.FingerprintV2)
-		val delegatorReferenceString = dataOwnerApi.getCurrentDataOwnerReference().asReferenceStringInGroup(inGroup, sdkBoundGroup)
+		val delegatorReferenceString = delegatorReference.asReferenceStringInGroup(inGroup, sdkBoundGroup)
 		val delegateReferenceString = delegateReference.asReferenceStringInGroup(inGroup, sdkBoundGroup)
 		val sharedSignature = cryptoService.hmac.sign(
 			bytesToSignForSharedSignature(
@@ -255,12 +252,12 @@ class BaseExchangeDataManagerImpl(
 		exchangeData: ExchangeData,
 		decryptionKeys: RsaDecryptionKeysSet,
 		newEncryptionKeys: VerifiedRsaEncryptionKeysSet,
-		newDelegatorSignatureKeys: SelfVerifiedKeysSet,
+		delegatorSignatureKeys: Pair<EntityReferenceInGroup, SelfVerifiedKeysSet>?,
 		): ExchangeDataWithUnencryptedContent? = tryRawDecryptExchangeData(exchangeData, decryptionKeys)?.let {
 		updateExchangeDataWithRawDecryptedContent(
 			exchangeData = exchangeData,
 			newEncryptionKeys = newEncryptionKeys,
-			newDelegatorSignatureKeys =newDelegatorSignatureKeys,
+			delegatorSignatureKeys = delegatorSignatureKeys,
 			rawExchangeKey = it.exchangeKey,
 			rawAccessControlSecret = it.accessControlSecret,
 			rawSharedSignatureKey = it.sharedSignatureKey
@@ -270,7 +267,7 @@ class BaseExchangeDataManagerImpl(
 	override suspend fun updateExchangeDataWithRawDecryptedContent(
 		exchangeData: ExchangeData,
 		newEncryptionKeys: VerifiedRsaEncryptionKeysSet,
-		newDelegatorSignatureKeys: SelfVerifiedKeysSet,
+		delegatorSignatureKeys: Pair<EntityReferenceInGroup, SelfVerifiedKeysSet>?,
 		rawExchangeKey: ByteArray,
 		rawAccessControlSecret: ByteArray,
 		rawSharedSignatureKey: ByteArray,
@@ -281,7 +278,7 @@ class BaseExchangeDataManagerImpl(
 		return updateExchangeDataWithDecryptedContent(
 			exchangeData = exchangeData,
 			newEncryptionKeys = newEncryptionKeys,
-			newDelegatorSignatureKeys = newDelegatorSignatureKeys,
+			delegatorSignatureKeys = delegatorSignatureKeys,
 			unencryptedExchangeDataContent = UnencryptedExchangeDataContent(
 				exchangeKey = exchangeKey,
 				accessControlSecret = accessControlSecret,
@@ -293,8 +290,8 @@ class BaseExchangeDataManagerImpl(
 	override suspend fun updateExchangeDataWithDecryptedContent(
 		exchangeData: ExchangeData,
 		newEncryptionKeys: VerifiedRsaEncryptionKeysSet,
-		newDelegatorSignatureKeys: SelfVerifiedKeysSet,
-		unencryptedExchangeDataContent: UnencryptedExchangeDataContent
+		delegatorSignatureKeys: Pair<EntityReferenceInGroup, SelfVerifiedKeysSet>?,
+		unencryptedExchangeDataContent: UnencryptedExchangeDataContent,
 	): ExchangeDataWithUnencryptedContent {
 		val existingExchangeKeyEntries = exchangeData.exchangeKey.keys.toSet()
 		val existingAcsEntries = exchangeData.accessControlSecret.keys.toSet()
@@ -306,9 +303,16 @@ class BaseExchangeDataManagerImpl(
 				!existingSharedSignatureKeyEntries.contains(it.pubSpkiHexString.fingerprintV2())
 		}
 
-		val self = dataOwnerApi.getCurrentDataOwnerId()
 		val existingDelegatorSignatureKeys = exchangeData.delegatorSignature.keys
-		val missingDelegatorSignatureEntries = if (exchangeData.delegator == self) newDelegatorSignatureKeys.allKeys.filter { k -> !existingDelegatorSignatureKeys.contains(k.pubSpkiHexString.fingerprintV2()) } else emptySet()
+		val delegatorMatches = delegatorSignatureKeys != null && exchangeData.delegator == delegatorSignatureKeys.first.asReferenceStringInGroup(
+			inGroup = null,
+			sdkGroupId = sdkBoundGroup
+		)
+		val missingDelegatorSignatureEntries =
+			if (delegatorMatches)
+				delegatorSignatureKeys.second.allKeys.filter { k -> !existingDelegatorSignatureKeys.contains(k.pubSpkiHexString.fingerprintV2()) }
+			else
+				emptySet()
 
 		if (missingEncryptionEntries.isEmpty() && missingDelegatorSignatureEntries.isEmpty()) {
 			return ExchangeDataWithUnencryptedContent(
@@ -338,12 +342,6 @@ class BaseExchangeDataManagerImpl(
 				encryptionKeysForMissingEntries,
 				KeyIdentifierFormat.FingerprintV2
 			),
-			delegatorSignature = exchangeData.delegatorSignature + missingDelegatorSignatureEntries.associate { keyInfo ->
-				keyInfo.pubSpkiHexString.fingerprintV2() to cryptoService.hmac.sign(
-					bytesToSignForDelegatorSignature(sharedSignatureKey = unencryptedExchangeDataContent.sharedSignatureKey),
-					selfEncryptionKeyToHmac(keyInfo.key)
-				).base64Encode()
-			}
 		).let {
 			val isVerified = verifyExchangeData(
 				data = ExchangeDataWithUnencryptedContent(
@@ -355,20 +353,41 @@ class BaseExchangeDataManagerImpl(
 					)
 				),
 				delegatorSignatureKeys = SelfVerifiedKeysSet.empty,
-				verifyAsDelegator = false
+				verifyAsDelegator = null
 			)
-			if (isVerified) it.copy(
-				sharedSignature = cryptoService.hmac.sign(
-					bytesToSignForSharedSignature(
-						delegator = it.delegator,
-						delegate = it.delegate,
-						decryptedAccessControlSecret = unencryptedExchangeDataContent.accessControlSecret,
-						decryptedExchangeKey = unencryptedExchangeDataContent.exchangeKey,
-						publicKeysFingerprints = it.exchangeKey.keys
-					),
-					unencryptedExchangeDataContent.sharedSignatureKey
-				).base64Encode()
-			) else it
+			if (isVerified) {
+				val withUpdatedSharedSignature = it.copy(
+					sharedSignature = cryptoService.hmac.sign(
+						bytesToSignForSharedSignature(
+							delegator = it.delegator,
+							delegate = it.delegate,
+							decryptedAccessControlSecret = unencryptedExchangeDataContent.accessControlSecret,
+							decryptedExchangeKey = unencryptedExchangeDataContent.exchangeKey,
+							publicKeysFingerprints = it.exchangeKey.keys
+						),
+						unencryptedExchangeDataContent.sharedSignatureKey
+					).base64Encode()
+				)
+				if (
+					missingDelegatorSignatureEntries.isNotEmpty() && (
+						it.delegatorSignature.isEmpty() || verifyDelegatorSignature(
+							it,
+							unencryptedExchangeDataContent.sharedSignatureKey,
+							delegatorSignatureKeys!!.second
+						)
+					)
+				) {
+					val delegatorSignatureBytes = bytesToSignForDelegatorSignature(sharedSignatureKey = unencryptedExchangeDataContent.sharedSignatureKey)
+					withUpdatedSharedSignature.copy(
+						delegatorSignature = withUpdatedSharedSignature.delegatorSignature + missingDelegatorSignatureEntries.associate { keyInfo ->
+							keyInfo.pubSpkiHexString.fingerprintV2() to cryptoService.hmac.sign(
+								delegatorSignatureBytes,
+								selfEncryptionKeyToHmac(keyInfo.key)
+							).base64Encode()
+						}
+					)
+				} else withUpdatedSharedSignature
+			} else it
 		}
 
 		return ExchangeDataWithUnencryptedContent(

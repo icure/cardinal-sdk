@@ -49,6 +49,9 @@ data class EntityReferenceInGroup(
 		return if (thisGroup != forGroup) "$thisGroup/$entityId" else entityId
 	}
 
+	/**
+	 * If this reference is in the same group as [sdkGroupId], returns a reference with null groupId.
+	 */
 	@InternalIcureApi
 	internal fun normalized(sdkGroupId: SdkBoundGroup?): EntityReferenceInGroup {
 		if (sdkGroupId == null) require(groupId == null) { "Can't use in-group references on kraken-lite" }

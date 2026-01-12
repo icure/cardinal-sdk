@@ -7,7 +7,8 @@ import kotlin.contracts.contract
 
 /**
  * Implementation based on [kotlinx.coroutines.sync.withLock]. Tries to acquire the lock and if it succeeds exectutes
- * the action. If the lock is already acquired by another coroutine, the function returns false and the action is not
+ * the action.
+ * If the lock is already acquired by another coroutine returns null
  */
 @OptIn(ExperimentalContracts::class)
 inline fun <T : Any> Mutex.tryWithLock(owner: Any? = null, action: () -> T): T? {
