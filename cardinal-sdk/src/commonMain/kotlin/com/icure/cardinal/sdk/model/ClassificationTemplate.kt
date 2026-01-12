@@ -9,11 +9,8 @@ import kotlin.Long
 import kotlin.String
 import kotlin.collections.Set
 
-// WARNING: This file is auto-generated. If you change it manually, your changes will be lost.
-// If you want to change the way this class is generated, see [this repo](https://github.com/icure/sdk-codegen).
-
 @Serializable
-data class ClassificationTemplate(
+public data class ClassificationTemplate(
 	override val id: String,
 	override val rev: String? = null,
 	override val created: Long? = null,
@@ -29,8 +26,4 @@ data class ClassificationTemplate(
 	override val deletionDate: Long? = null,
 	public val parentId: String? = null,
 	public val label: String,
-) : StoredDocument, ICureDocument<String> {
-	// region ClassificationTemplate-ClassificationTemplate
-
-	// endregion
-}
+) : StoredDocument, ICureDocument<String>
