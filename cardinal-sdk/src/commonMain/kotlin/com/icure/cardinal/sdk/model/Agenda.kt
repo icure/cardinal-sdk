@@ -18,11 +18,8 @@ import kotlin.collections.List
 import kotlin.collections.Map
 import kotlin.collections.Set
 
-// WARNING: This file is auto-generated. If you change it manually, your changes will be lost.
-// If you want to change the way this class is generated, see [this repo](https://github.com/icure/sdk-codegen).
-
 @Serializable
-data class Agenda(
+public data class Agenda(
 	override val id: String,
 	override val rev: String? = null,
 	override val created: Long? = null,
@@ -53,8 +50,4 @@ data class Agenda(
 	public val properties: Set<DecryptedPropertyStub> = emptySet(),
 	@DefaultValue("emptyList()")
 	public val schedules: List<ResourceGroupAllocationSchedule> = emptyList(),
-) : StoredDocument, ICureDocument<String> {
-	// region Agenda-Agenda
-
-	// endregion
-}
+) : StoredDocument, ICureDocument<String>

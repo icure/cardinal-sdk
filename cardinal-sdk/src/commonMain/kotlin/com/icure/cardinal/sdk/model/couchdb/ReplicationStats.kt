@@ -6,11 +6,8 @@ import kotlinx.serialization.Serializable
 import kotlin.Int
 import kotlin.String
 
-// WARNING: This file is auto-generated. If you change it manually, your changes will be lost.
-// If you want to change the way this class is generated, see [this repo](https://github.com/icure/sdk-codegen).
-
 @Serializable
-data class ReplicationStats(
+public data class ReplicationStats(
 	public val revisionsChecked: Int? = null,
 	public val missingRevisionsFound: Int? = null,
 	public val docsRead: Int? = null,
@@ -21,8 +18,4 @@ data class ReplicationStats(
 	@Serializable(with = ZonedDateTimeSerializer::class)
 	public val startTime: ZonedDateTime? = null,
 	public val error: String? = null,
-) {
-	// region ReplicationStats-ReplicationStats
-
-	// endregion
-}
+)
