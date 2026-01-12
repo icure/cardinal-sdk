@@ -13,6 +13,7 @@ import com.icure.cardinal.sdk.model.PaginatedList
 import com.icure.cardinal.sdk.model.RegistrationInformation
 import com.icure.cardinal.sdk.model.RegistrationSuccess
 import com.icure.cardinal.sdk.model.ReplicationInfo
+import com.icure.cardinal.sdk.model.base.CodeStub
 import com.icure.cardinal.sdk.model.couchdb.DesignDocument
 import com.icure.cardinal.sdk.model.couchdb.DocIdentifier
 import com.icure.cardinal.sdk.model.couchdb.GroupDatabasesInfo
@@ -128,7 +129,24 @@ internal class GroupApiImpl(
     override suspend fun getGroupsStorageInfos(groups: List<String>): List<GroupDatabasesInfo> =
         rawApi.getGroupsStorageInfos(ListOfIds(groups)).successBody()
 
-    override suspend fun getReplicationInfo(id: String): ReplicationInfo = rawApi.getReplicationInfo(id).successBody()
+	override suspend fun modifyGroupApplicationId(
+		id: String,
+		applicationId: String,
+	): Group = rawApi.modifyGroupApplicationId(id, applicationId).successBody()
+
+	override suspend fun addTagToGroup(
+		id: String,
+		rev: String,
+		tag: CodeStub,
+	): Group = rawApi.addTagToGroup(id, rev, tag).successBody()
+
+	override suspend fun removeTagFromGroup(
+		id: String,
+		rev: String,
+		tagId: String,
+	): Group = rawApi.removeTagFromGroup(id, rev, tagId).successBody()
+
+	override suspend fun getReplicationInfo(id: String): ReplicationInfo = rawApi.getReplicationInfo(id).successBody()
     override suspend fun getHierarchy(id: String): List<String> = rawApi.getHierarchy(id).successBody()
     override suspend fun listAllGroupsIds(): List<DocIdentifier> = rawApi.listAllGroupsIds().successBody()
 	override suspend fun createOrUpdateExternalJwtConfig(groupId: String, key: String, config: ExternalJwtConfig): Group =

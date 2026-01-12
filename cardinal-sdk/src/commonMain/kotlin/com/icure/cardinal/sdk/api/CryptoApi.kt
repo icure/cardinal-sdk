@@ -64,12 +64,6 @@ interface CryptoApi {
 		details: List<ExchangeDataInjectionDetails>,
 		reEncryptWithOwnKeys: Boolean
 	)
-
-	suspend fun addAndStoreNewSelfVerifiedKey(
-		algorithm: RsaAlgorithm.RsaEncryptionAlgorithm,
-		pkcs8Bytes: Pkcs8Bytes,
-	)
-
 }
 
 interface CryptoInGroupApi {

@@ -85,10 +85,24 @@ interface CryptoStrategies {
 		data object Deny : KeyGenerationRequestResult
 
 		/**
-		 * The SDK must not generate a new key for the data owner. The SDK initialisation will go through but the initialised
-		 * SDK will run in keyless mode. In keyless mode, exchange data has to be created explicitly before data can be shared.
+		 * The SDK must not generate a new key for the data owner.
+		 * The SDK initialisation will continue, but the initialised SDK will run in keyless mode.
+		 * In keyless mode, exchange data has to be created explicitly before data can be shared.
 		 */
 		data object Keyless : KeyGenerationRequestResult
+
+		/**
+		 * The SDK must not generate a new key for the data owner.
+		 * Instead, whenever a delegator is needed for an action (creating new encrypted data, or sharing existing data)
+		 * the SDK will use the (direct) parent data owner and its key as delegator.
+		 * This option is only available if the data owner has a parent and the SDK was initialized using hierarchical
+		 * data owners.
+		 * Note that this will not have an effect on the author/responsible fields of created data, the only observable
+		 * effect is on the created exchange data and delegations.
+		 */
+		//TODO if the current data owner has some keys but not verified they will be ignored during decryption -> in
+		// parent delegator mode all encryption AND decryption is done as if the user is the parent
+		data object ParentDelegator : KeyGenerationRequestResult
 
 		/**
 		 * The SDK should use the provided key pair as a new key for the data owner.

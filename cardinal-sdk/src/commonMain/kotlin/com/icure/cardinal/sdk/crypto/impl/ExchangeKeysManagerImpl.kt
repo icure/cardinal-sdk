@@ -63,7 +63,7 @@ class ExchangeKeysManagerImpl(
 	}
 
 	private suspend fun doLoadCache(): Map<String, Map<String, Deferred<List<AesKey<AesAlgorithm.CbcWithPkcs7Padding>>>>> = coroutineScope {
-		val encryptedKeysDataByHierarchyMember = dataOwnerApi.getCurrentDataOwnerHierarchyIds().map {
+		val encryptedKeysDataByHierarchyMember = userKeysManager.delegatorActorHierarchy().map {
 			async { base.getAllExchangeKeysWith(it, DataOwnerType.entries.toSet()) }
 		}.awaitAll()
 		val encryptedData = mutableMapOf<String, MutableMap<String, MutableList<Map<AesExchangeKeyEncryptionKeypairIdentifier, HexString>>>>()
@@ -81,7 +81,7 @@ class ExchangeKeysManagerImpl(
 					.addAll(encryptedEntries)
 			}
 		}
-		val keys = userKeysManager.getDecryptionKeys(true)
+		val keys = userKeysManager.getAllDecryptionKeys()
 		encryptedData.mapValues { (_, keysByDelegate) ->
 			keysByDelegate.mapValues { (_, encryptedKeys) ->
 				sdkScope.async(start = CoroutineStart.LAZY) {

@@ -71,6 +71,8 @@ internal class CryptoStrategiesBridge(
 				CryptoStrategies.KeyGenerationRequestResult.Deny
 			jsResult === "keyless" ->
 				CryptoStrategies.KeyGenerationRequestResult.Keyless
+			jsResult === "parent-delegator" ->
+				CryptoStrategies.KeyGenerationRequestResult.ParentDelegator
 			jsTypeOf(jsResult.public) === "object" && jsTypeOf(jsResult.private) === "object" -> {
 				val xKeypair = jsResult as XRsaKeypair
 				require(xKeypair.private.algorithm == RsaAlgorithm.RsaEncryptionAlgorithm.OaepWithSha256.identifier) {

@@ -54,6 +54,10 @@ internal class RecoveryApiImpl(
 				} else null
 			}
 		}
+		check (keyPairsToSave.isNotEmpty()) {
+			"There are no available key pairs to create recovery info for.\n" +
+			"In keyless or parent-delegator there are no keys available for the current data owner."
+		}
 		return crypto.recoveryDataEncryption.createAndSaveKeyPairsRecoveryDataFor(selfId, keyPairsToSave, lifetimeSeconds, recoveryKeyOptions)
 	}
 
@@ -77,6 +81,9 @@ internal class RecoveryApiImpl(
 		includeBiDirectional: Boolean,
 		includeAsParent: Boolean
 	): RecoveryDataKey? {
+		if (crypto.dataOwnerApi.getCurrentDataOwnerId() != crypto.userEncryptionKeysManager.delegatorActorId()) throw UnsupportedOperationException(
+			"Create exchange data recovery info is currently unsupported when using ParentDelegator mode"
+		)
 		val exchangeDataToShare = (
 			if (includeAsParent)
 				crypto.dataOwnerApi.getCurrentDataOwnerHierarchyIdsReference()
@@ -96,7 +103,7 @@ internal class RecoveryApiImpl(
 				)
 			} else fromSelf
 		}
-		val decryptionKeys = crypto.userEncryptionKeysManager.getDecryptionKeys(true)
+		val decryptionKeys = crypto.userEncryptionKeysManager.getAllDecryptionKeys()
 		val decryptedInformation = exchangeDataToShare.mapNotNull { exchangeData ->
 			crypto.exchangeDataManager.base.tryRawDecryptExchangeData(exchangeData, decryptionKeys)?.let { decryptedData ->
 				ExchangeDataRecoveryDetails(
@@ -113,19 +120,27 @@ internal class RecoveryApiImpl(
 
 	override suspend fun recoverExchangeData(recoveryKey: RecoveryDataKey): RecoveryDataUseFailureReason? =
 		crypto.recoveryDataEncryption.getAndDecryptExchangeDataRecoveryData(recoveryKey).map { recoveredExchangeData ->
-			val selfEncryptionKeys = VerifiedRsaEncryptionKeysSet(
-				crypto.userEncryptionKeysManager.getSelfVerifiedKeys().map { it.toPublicKeyInfo() }
-			)
-			val retrieved = crypto.exchangeDataManager.base.getExchangeDataByIds(null, recoveredExchangeData.map { it.exchangeDataId }).associateBy { it.id }
+			val retrieved = crypto.exchangeDataManager.base.getExchangeDataByIds(null, recoveredExchangeData.map { it.exchangeDataId }).associate { exchangeData ->
+				val newEncryptionKeys = setOf(exchangeData.delegator, exchangeData.delegate).flatMapTo( mutableSetOf()) { memberId ->
+					crypto.userEncryptionKeysManager.getVerifiedEncryptionKeysForDataOwnerIfInCurrentHierarchy(memberId).orEmpty().map { it.toPublicKeyInfo() }
+				}
+				check (newEncryptionKeys.isNotEmpty()) {
+					"Can't recover exchange data with id ${exchangeData.id} as no verified encryption keys could be found for either delegator ${exchangeData.delegator} or delegate ${exchangeData.delegate} in the current data owner hierarchy (would not be able to re-decrypt the exchange data in future)"
+				}
+				Pair(
+					exchangeData.id,
+					Pair(exchangeData, VerifiedRsaEncryptionKeysSet(newEncryptionKeys))
+				)
+			}
 			recoveredExchangeData.forEach { exchangeDataInfo ->
-				val retrievedData = retrieved[exchangeDataInfo.exchangeDataId]
-				if (retrievedData == null) {
+				val retrievedDataAndNewEncryptionKeys = retrieved[exchangeDataInfo.exchangeDataId]
+				if (retrievedDataAndNewEncryptionKeys == null) {
 					log.w { "Could not recover exchange data with id ${exchangeDataInfo.exchangeDataId} as it was not found. Ignoring" }
 				} else {
 					crypto.exchangeDataManager.base.updateExchangeDataWithRawDecryptedContent(
-						exchangeData = retrievedData,
-						newEncryptionKeys = selfEncryptionKeys,
-						newDelegatorSignatureKeys = SelfVerifiedKeysSet(emptySet()),
+						exchangeData = retrievedDataAndNewEncryptionKeys.first,
+						newEncryptionKeys = retrievedDataAndNewEncryptionKeys.second,
+						delegatorSignatureKeys = null,
 						rawExchangeKey = exchangeDataInfo.rawExchangeKey.decode(),
 						rawAccessControlSecret = exchangeDataInfo.rawAccessControlSecret.decode(),
 						rawSharedSignatureKey = exchangeDataInfo.rawSharedSignatureKey.decode()

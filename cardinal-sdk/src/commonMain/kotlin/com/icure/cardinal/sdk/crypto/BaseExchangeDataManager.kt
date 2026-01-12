@@ -26,15 +26,13 @@ interface BaseExchangeDataManager {
 	val raw: RawExchangeDataApi
 
 	/**
-	 * Get all the exchange data where the current data owner is the delegator or the delegate if the implementation
-	 * allows it.
-	 * Since "explicit" data owners (usually HCPs) may have a prohibitively high amount of exchange data this method only
-	 * returns an array if the current data owner is an "anonymous" data owner (according to the crypto strategies), else
-	 * it will return null.
-	 * @return all the exchange data for the current data owner or null if the crypto strategies don't allow to retrieve
-	 * all data for the current data owner.
+	 * Get all the exchange data where the current data owner is the delegator or the delegate.
+	 * This method shouldn't be called with "explicit" data owners (usually HCPs), since they may have a prohibitively
+	 * high amount of exchange data this method.
+	 * This metho instead should only be used when the current data owner is an "anonymous" data owner (according to the crypto strategies).
+	 * @return all the exchange data for the current data owner.
 	 */
-	suspend fun getAllExchangeDataForCurrentDataOwnerIfAllowed(inGroup: String?): List<ExchangeData>?
+	suspend fun getAllExchangeDataForDataOwner(dataOwnerId: String, inGroup: String?): List<ExchangeData>
 
 	/**
 	 * Get all exchange data for the provided delegator-delegate pair.
@@ -65,15 +63,16 @@ interface BaseExchangeDataManager {
 	 * @param data information about the exchange data to verify.
 	 * @param delegatorSignatureKeys verified keys used to ensure the authenticity of exchange data created by the current
 	 * data owner.
-	 * @param verifyAsDelegator if true the method will also verify that the hmac key used for the signature was created by the delegator of the
-	 * exchange data. If true and the data was not created by the current data owner this method will return false.
+	 * @param verifyAsDelegator if not null and matches the delegator of the provided data the method will also verify
+	 * that the hmac key used for the signature was created by the delegator of the exchange data.
+	 * If not null, and the exchange data's delegator doesn't match, the delegator signature didn't use the provided keys,
+	 * or the verification fails this method returns false.
 	 * @return the exchange data which could be verified given his signature and the available verification keys.
-	 * @throws IllegalArgumentException if any of the provided exchange data has been created by a data owner other than the current data owner.
 	 */
 	suspend fun verifyExchangeData(
 		data: ExchangeDataWithUnencryptedContent,
 		delegatorSignatureKeys: SelfVerifiedKeysSet,
-		verifyAsDelegator: Boolean
+		verifyAsDelegator: String?
 	): Boolean
 
 	/**
@@ -129,6 +128,7 @@ interface BaseExchangeDataManager {
 	 */
 	suspend fun createExchangeData(
 		inGroup: String?,
+		delegatorReference: EntityReferenceInGroup,
 		delegateReference: EntityReferenceInGroup,
 		signatureKeys: SelfVerifiedKeysSet,
 		encryptionKeys: VerifiedRsaEncryptionKeysSet,
@@ -155,6 +155,10 @@ interface BaseExchangeDataManager {
 	 * @param exchangeData exchange data to update.
 	 * @param decryptionKeys keys to use to extract the content of the exchange data which will be shared with the new keys.
 	 * @param newEncryptionKeys new keys to add to the exchange data.
+	 * @param delegatorSignatureKeys if not null and the delegator of the exchange data matches the provided id keys to use to update the delegator signature:
+	 * - If there is already a signature from the delegator that can be verified with the provided keys, the signature will be updated to include also any of the provided keys that are missing.
+	 * - If there is no signature from the delegator a new signature will be created using the provided keys.
+	 * - If there is already a signature from the delegator but it can't be verified with the provided keys the method will not update the delegator signature.
 	 * @return the updated exchange data, and its decrypted exchange key and access control secret, or null if the exchange data content could not
 	 * be decrypted and the exchange data could not be updated.
 	 */
@@ -162,7 +166,7 @@ interface BaseExchangeDataManager {
 		exchangeData: ExchangeData,
 		decryptionKeys: RsaDecryptionKeysSet,
 		newEncryptionKeys: VerifiedRsaEncryptionKeysSet,
-		newDelegatorSignatureKeys: SelfVerifiedKeysSet
+		delegatorSignatureKeys: Pair<EntityReferenceInGroup, SelfVerifiedKeysSet>?
 	): ExchangeDataWithUnencryptedContent?
 
 	/**
@@ -171,17 +175,17 @@ interface BaseExchangeDataManager {
 	suspend fun updateExchangeDataWithDecryptedContent(
 		exchangeData: ExchangeData,
 		newEncryptionKeys: VerifiedRsaEncryptionKeysSet,
-		newDelegatorSignatureKeys: SelfVerifiedKeysSet,
+		delegatorSignatureKeys: Pair<EntityReferenceInGroup, SelfVerifiedKeysSet>?,
 		unencryptedExchangeDataContent: UnencryptedExchangeDataContent
 	): ExchangeDataWithUnencryptedContent
 
 	/**
-	 * Same as [tryUpdateExchangeData] but the RAW decrypted content is already provided.
+	 * Same as [updateExchangeDataWithDecryptedContent] but the decrypted content is provided "raw".
 	 */
 	suspend fun updateExchangeDataWithRawDecryptedContent(
 		exchangeData: ExchangeData,
 		newEncryptionKeys: VerifiedRsaEncryptionKeysSet,
-		newDelegatorSignatureKeys: SelfVerifiedKeysSet,
+		delegatorSignatureKeys: Pair<EntityReferenceInGroup, SelfVerifiedKeysSet>?,
 		rawExchangeKey: ByteArray,
 		rawAccessControlSecret: ByteArray,
 		rawSharedSignatureKey: ByteArray

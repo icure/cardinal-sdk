@@ -845,18 +845,26 @@ interface PatientApi : PatientBasicFlavourlessApi, PatientFlavouredApi<Decrypted
 	 * - If there is no encryption metadata initialized at all, the method will initialize the encryption key and secret
 	 *   ids for the patient.
 	 * - If there is some encryption metadata initialized but the current user can't access any secret id of the patient
-	 *   this method will create a new secret id for the patient.
+	 *   this method will create a new secret id for the patient, unless [ignoreIfEncryptionMetadataExists] is true: in
+	 *   that case this method does nothing.
 	 * - In all other cases, this method does nothing. Note that this doesn't mean that the patient can access his own
 	 *   encrypted information. If the encryption key was initialized by someone else and not shared with the patient,
-	 *   then the patient will only have access to a new secret id.
+	 *   then the patient will only have access to a new secret id (unless [ignoreIfEncryptionMetadataExists] is true,
+	 *   in that case the patient won't even have access to the secret id).
 	 * If you provided any value for [sharingWith] any metadata created by this method will be immediately shared with
 	 * the provided delegates: note that this doesn't share any existing data (if no new data was created the delegates
 	 * may not have access to any secret id for the current patient).
+	 * If the patient is initialized in keyless mode [alternateRootDelegateId] must be provided to specify which
+	 * delegate to use in the root delegation. If not in keyless mode this parameter must be null.
 	 * @throws IllegalArgumentException If the current user is not a patient
 	 */
 	suspend fun ensureEncryptionMetadataForSelfIsInitialized(
 		@DefaultValue("emptyMap()")
-		sharingWith: Map<String, AccessLevel> = emptyMap()
+		sharingWith: Map<String, AccessLevel> = emptyMap(),
+		@DefaultValue("false")
+		ignoreIfEncryptionMetadataExists: Boolean = false,
+		@DefaultValue("null")
+		alternateRootDelegateId: String? = null,
 	): EncryptedPatient
 }
 

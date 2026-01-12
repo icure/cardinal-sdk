@@ -35,11 +35,13 @@ internal class TransferKeysManagerImpl(
 	private val exchangeDataManager: ExchangeDataManager,
 	private val dataOwnerApi: DataOwnerApi,
 ) : TransferKeysManager {
-	override suspend fun updateTransferKeys(self: CryptoActorStubWithType) {
+	override suspend fun updateSelfTransferKeys() {
+		if (encryptionKeysManager.delegatorActorId() != dataOwnerApi.getCurrentDataOwnerId()) return // Only update transfer keys if using the current data owner as delegator
+		val self = dataOwnerApi.getCurrentDataOwnerStub()
 		val newEdgesByTarget = getSuggestedTransferKeys(self.stub)
 		if (newEdgesByTarget.isEmpty()) return
 		val selfId = self.stub.id
-		val verifiedFps = encryptionKeysManager.getSelfVerifiedKeys().map { it.pubSpkiHexString.fingerprintV1() }.toSet()
+		val verifiedFps = encryptionKeysManager.delegatorActorVerifiedKeys().map { it.pubSpkiHexString.fingerprintV1() }.toSet()
 		val allVerifiedSourcesAndTarget = newEdgesByTarget.flatMap { x ->
 			if (verifiedFps.contains(x.target.pubSpkiHexString.fingerprintV1())) {
 				listOf(x.target.pubSpkiHexString) + x.sources
@@ -58,7 +60,7 @@ internal class TransferKeysManagerImpl(
 		exchangeDataManager.base.updateExchangeDataWithDecryptedContent(
 			exchangeData = exchangeData.exchangeData,
 			newEncryptionKeys = keysToUse,
-			newDelegatorSignatureKeys = SelfVerifiedKeysSet(emptySet()),
+			delegatorSignatureKeys = null,
 			unencryptedExchangeDataContent = exchangeData.unencryptedContent
         )
 		val updatedTransferKeys = self.stub.transferKeys.toList().associate { (identifier, transferKeys) ->
@@ -97,12 +99,12 @@ internal class TransferKeysManagerImpl(
 		val currentTransferKeysGraph = transferKeysFpGraphOf(self)
 		val verifiedKeysFpSet = (
 			icureStorage.loadSelfVerifiedKeys(self.id).filter { it.value }.keys
-				+ encryptionKeysManager.getSelfVerifiedKeys().map { it.pubSpkiHexString.fingerprintV1() }
+				+ encryptionKeysManager.delegatorActorVerifiedKeys().map { it.pubSpkiHexString.fingerprintV1() }
 		).toSet()
 		if (verifiedKeysFpSet.isEmpty()) return emptyList()
 		val fpToSpki = self.publicKeysSpki.associateBy { it.fingerprintV1() }
 		// 1. Choose keys available in this device which should be reachable from all other verified keys
-		val targetKeys = currentTransferKeysGraph.transferTargetKeys()
+		val targetKeys = currentTransferKeysGraph.transferTargetKeys(self.id)
 		return targetKeys.flatMap { targetKey ->
 			// 2. Find groups which can't reach the existing target keys
 			val candidatesFp = currentTransferKeysGraph.transferKeysCandidatesFp(targetKey.pubSpkiHexString.fingerprintV1())
@@ -145,18 +147,18 @@ internal class TransferKeysManagerImpl(
 		return DirectedGraph.fromEdges(*edges.toTypedArray(), additionalNodes = publicKeys).acyclic()
 	}
 
-	private fun StronglyConnectedGraph<KeypairFingerprintV1String>.transferTargetKeys(): List<CardinalKeyInfo<RsaKeypair<RsaAlgorithm.RsaEncryptionAlgorithm>>> {
+	private fun StronglyConnectedGraph<KeypairFingerprintV1String>.transferTargetKeys(currentDataOwnerId: String): List<CardinalKeyInfo<RsaKeypair<RsaAlgorithm.RsaEncryptionAlgorithm>>> {
 		// The groups of all keys available on this device -> we have the ability to create transfer keys to them
-		val availableGroups = encryptionKeysManager.getDecryptionKeys(false).allKeys.map { key ->
+		val availableGroups = encryptionKeysManager.getDecryptionKeysForDataOwnerIfInCurrentHierarchy(currentDataOwnerId)?.allKeys?.map { key ->
 			key.pubSpkiHexString.fingerprintV1().let { fp -> originalLabelToAcyclicLabel[fp] ?: fp }
-		}.toSet()
+		}?.toSet().orEmpty()
 		// Drop candidates that are already reachable from another transfer keys group
 		val groupsReachableFromAvailable = acyclicGraph.nodesToEdges.entries.flatMap { (source, reachables) ->
 			if (availableGroups.contains(source)) reachables else emptyList()
 		}.toSet()
 		val targetCandidates = availableGroups.filter { it !in groupsReachableFromAvailable }
 		// Remap candidate groups to prefer verified keys if available on that group
-		val verifiedFps = encryptionKeysManager.getSelfVerifiedKeys().map { it.pubSpkiHexString.fingerprintV1() }
+		val verifiedFps = encryptionKeysManager.delegatorActorVerifiedKeys().map { it.pubSpkiHexString.fingerprintV1() }
 		return targetCandidates.map { candidateFp ->
 			val candidateGroup = acyclicLabelToGroup[candidateFp] ?: setOf(candidateFp) // May not be part of transfer keys graph yet
 			val bestCandidateOfGroup = candidateGroup.find { verifiedFps.contains(it) } ?: candidateFp

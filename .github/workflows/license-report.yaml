@@ -1,4 +1,7 @@
 on:
+    push:
+        branches:
+            - "develop"
     pull_request:
         types:
             - closed
@@ -29,7 +32,7 @@ jobs:
               env:
                   ORG_GRADLE_PROJECT_repoUsername: ${{ secrets.REPO_USERNAME }}
                   ORG_GRADLE_PROJECT_repoPassword: ${{ secrets.REPO_PASSWORD }}
-                  ORG_GRADLE_PROJECT_mavenReleasesRepository: ""
+                  ORG_GRADLE_PROJECT_mavenReleasesRepository: "https://maven.taktik.be/content/repositories/releases/"
               run: |
                 echo githubUsername= > local.properties
                 echo githubPassword= >> local.properties

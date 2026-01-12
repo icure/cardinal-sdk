@@ -3,6 +3,7 @@ package com.icure.cardinal.sdk.crypto.impl
 import com.icure.cardinal.sdk.api.DataOwnerApi
 import com.icure.cardinal.sdk.crypto.BaseSecurityMetadataDecryptor
 import com.icure.cardinal.sdk.crypto.IncrementalSecurityMetadataDecryptor
+import com.icure.cardinal.sdk.crypto.UserEncryptionKeysManager
 import com.icure.cardinal.sdk.crypto.entities.EntityEncryptionKeyDetails
 import com.icure.cardinal.sdk.crypto.entities.EntityWithEncryptionMetadataTypeName
 import com.icure.cardinal.sdk.crypto.entities.SecurityMetadataType
@@ -16,7 +17,7 @@ import com.icure.utils.InternalIcureApi
 @InternalIcureApi
 class IncrementalSecurityMetadataDecryptorImpl(
 	private val base: BaseSecurityMetadataDecryptor,
-	private val dataOwnerApi: DataOwnerApi,
+	private val userEncryptionKeysManager: UserEncryptionKeysManager,
 	private val cryptoService: CryptoService
 ) : IncrementalSecurityMetadataDecryptor {
 	override suspend fun <E : HasEncryptionMetadata, T : Any> doIncrementallyDecryptingKeys(
@@ -43,7 +44,7 @@ class IncrementalSecurityMetadataDecryptorImpl(
 		require (remainingEntitiesById.size == entities.size) {
 			"Duplicate entries for entities ${entities.groupBy { it.id }.filter { it.value.size > 1 }.keys}"
 		}
-		val hierarchy = dataOwnerApi.getCurrentDataOwnerHierarchyIds().toSet()
+		val hierarchy = userEncryptionKeysManager.delegatorActorHierarchy().toSet()
 		val allExtractedKeysForEntities = entities.associate { it.id to mutableSetOf<HexString>() }
 		val newlyExtractedKeysForEntities = entities.associate { it.id to mutableSetOf<HexString>() }
 		val latestResults = mutableMapOf<String, Result<T>>()

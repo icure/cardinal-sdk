@@ -9,6 +9,7 @@ import com.icure.cardinal.sdk.model.PaginatedList
 import com.icure.cardinal.sdk.model.RegistrationInformation
 import com.icure.cardinal.sdk.model.RegistrationSuccess
 import com.icure.cardinal.sdk.model.ReplicationInfo
+import com.icure.cardinal.sdk.model.base.CodeStub
 import com.icure.cardinal.sdk.model.couchdb.DesignDocument
 import com.icure.cardinal.sdk.model.couchdb.DocIdentifier
 import com.icure.cardinal.sdk.model.couchdb.GroupDatabasesInfo
@@ -126,4 +127,7 @@ interface GroupApi {
 	 * @param applyToSubgroups if true, the change will be applied
 	 */
 	suspend fun setGroupProjectId(groupId: String, projectId: String?, applyToSubgroups: Boolean)
+	suspend fun modifyGroupApplicationId(id: String, applicationId: String): Group
+	suspend fun addTagToGroup(id: String, rev: String, tag: CodeStub): Group
+	suspend fun removeTagFromGroup(id: String, rev: String, tagId: String): Group
 }

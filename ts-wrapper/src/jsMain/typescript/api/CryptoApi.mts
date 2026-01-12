@@ -1,4 +1,5 @@
 // auto-generated file
+import {EntityWithEncryptionMetadataTypeName} from '../crypto/entities/EntityWithEncryptionMetadataTypeName.mjs';
 import {ExchangeDataInjectionDetails} from '../crypto/entities/ExchangeDataInjectionDetails.mjs';
 import {RawDecryptedExchangeData} from '../crypto/entities/RawDecryptedExchangeData.mjs';
 import {Pkcs8Bytes} from '../model/specializations/Pkcs8Bytes.mjs';
@@ -11,6 +12,8 @@ export interface CryptoApi {
 	shamirKeysManager: ShamirKeysManagerApi;
 
 	inGroup: CryptoInGroupApi;
+
+	getAccessControlKeys(entityType: EntityWithEncryptionMetadataTypeName): Promise<Array<string>>;
 
 	forceReload(): Promise<void>;
 

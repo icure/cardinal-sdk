@@ -2,6 +2,7 @@
 package com.icure.cardinal.sdk.js.api.`impl`
 
 import com.icure.cardinal.sdk.api.CryptoApi
+import com.icure.cardinal.sdk.crypto.entities.EntityWithEncryptionMetadataTypeName
 import com.icure.cardinal.sdk.crypto.entities.ExchangeDataInjectionDetails
 import com.icure.cardinal.sdk.crypto.entities.ShamirUpdateRequest
 import com.icure.cardinal.sdk.js.api.CryptoApiJs
@@ -16,6 +17,7 @@ import com.icure.cardinal.sdk.js.crypto.entities.rawDecryptedExchangeData_toJs
 import com.icure.cardinal.sdk.js.crypto.entities.shamirUpdateRequest_fromJs
 import com.icure.cardinal.sdk.js.model.CheckedConverters.arrayToList
 import com.icure.cardinal.sdk.js.model.CheckedConverters.arrayToSet
+import com.icure.cardinal.sdk.js.model.CheckedConverters.listToArray
 import com.icure.cardinal.sdk.js.model.CheckedConverters.mapToObject
 import com.icure.cardinal.sdk.js.model.CheckedConverters.objectToMap
 import com.icure.cardinal.sdk.js.model.CheckedConverters.setToArray
@@ -113,6 +115,38 @@ internal class CryptoApiImplJs(
 			)
 			rawDecryptedExchangeData_toJs(result)
 		}
+
+		override fun getAccessControlKeys(groupId: String?, entityType: String): Promise<Array<String>> =
+				GlobalScope.promise {
+			val groupIdConverted: String? = undefinedToNull(groupId)
+			val entityTypeConverted: EntityWithEncryptionMetadataTypeName =
+					EntityWithEncryptionMetadataTypeName.valueOf(entityType)
+			val result = cryptoApi.inGroup.getAccessControlKeys(
+				groupIdConverted,
+				entityTypeConverted,
+			)
+			listToArray(
+				result,
+				{ x1: String ->
+					x1
+				},
+			)
+		}
+	}
+
+	override fun getAccessControlKeys(entityType: String): Promise<Array<String>> =
+			GlobalScope.promise {
+		val entityTypeConverted: EntityWithEncryptionMetadataTypeName =
+				EntityWithEncryptionMetadataTypeName.valueOf(entityType)
+		val result = cryptoApi.getAccessControlKeys(
+			entityTypeConverted,
+		)
+		listToArray(
+			result,
+			{ x1: String ->
+				x1
+			},
+		)
 	}
 
 	override fun forceReload(): Promise<Unit> = GlobalScope.promise {

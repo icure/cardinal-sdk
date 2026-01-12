@@ -21,6 +21,8 @@ public external interface CryptoApiJs {
 
 	public val inGroup: CryptoInGroupApiJs
 
+	public fun getAccessControlKeys(entityType: String): Promise<Array<String>>
+
 	public fun forceReload(): Promise<Unit>
 
 	public fun currentDataOwnerKeys(options: dynamic):

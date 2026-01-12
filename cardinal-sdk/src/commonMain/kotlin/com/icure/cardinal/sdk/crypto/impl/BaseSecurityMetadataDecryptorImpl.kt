@@ -1,11 +1,11 @@
 package com.icure.cardinal.sdk.crypto.impl
 
-import com.icure.cardinal.sdk.api.DataOwnerApi
 import com.icure.cardinal.sdk.crypto.BaseSecurityMetadataDecryptor
 import com.icure.cardinal.sdk.crypto.ExchangeDataManager
 import com.icure.cardinal.sdk.crypto.ExchangeDataMapManager
 import com.icure.cardinal.sdk.crypto.ExchangeKeysManager
 import com.icure.cardinal.sdk.crypto.SecureDelegationsEncryption
+import com.icure.cardinal.sdk.crypto.UserEncryptionKeysManager
 import com.icure.cardinal.sdk.crypto.entities.DecryptedMetadataDetails
 import com.icure.cardinal.sdk.crypto.entities.EntityWithEncryptionMetadataTypeName
 import com.icure.cardinal.sdk.crypto.entities.ExchangeDataWithPotentiallyDecryptedContent
@@ -31,8 +31,7 @@ internal class BaseSecurityMetadataDecryptorImpl(
 	private val exchangeDataManager: ExchangeDataManager,
 	private val secureDelegationsEncryption: SecureDelegationsEncryption,
 	private val exchangeDataMap: ExchangeDataMapManager,
-	private val dataOwner: DataOwnerApi,
-	private val useParentKeys: Boolean,
+	private val encryptionKeysManager: UserEncryptionKeysManager
 ) : BaseSecurityMetadataDecryptor {
 	override suspend fun <T : Any> decryptLegacyDelegations(
 		entitiesGroupId: String?,
@@ -358,16 +357,10 @@ internal class BaseSecurityMetadataDecryptorImpl(
 		entity: HasEncryptionMetadata,
 		entityType: EntityWithEncryptionMetadataTypeName,
 	): Map<SecureDelegationKeyString, SecureDelegationMembersDetails> {
-		val dataOwnersHierarchyReferences = (
-			if (useParentKeys)
-				dataOwner.getCurrentDataOwnerHierarchyIdsReference()
-			else
-				listOf(dataOwner.getCurrentDataOwnerReference())
-		).mapTo(mutableSetOf()) { it.asReferenceStringInGroup(entityGroupId, boundGroup) }
 		val loadedExchangeData = loadAllExchangeDataForEntitiesSecureDelegations(
 			entityGroupId,
 			listOf(entity),
-			dataOwnersHierarchyReferences
+			encryptionKeysManager.delegatorActorHierarchy().toSet()
 		) {
 			it.delegate == null || it.delegator == null
 		}

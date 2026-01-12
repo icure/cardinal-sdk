@@ -14,7 +14,7 @@ import com.icure.cardinal.sdk.model.specializations.SpkiHexString
 import com.icure.utils.InternalIcureApi
 
 @OptIn(InternalIcureApi::class)
-class FakeUserEncryptionKeysManager : UserEncryptionKeysManager {
+class FakeUserEncryptionKeysManager(private val selfDelegatorActorId: String) : UserEncryptionKeysManager {
 	private val selfKeys = mutableMapOf<KeypairFingerprintV2String, CachedKeypairDetails>()
 
 	fun addSelfKey(
@@ -28,25 +28,42 @@ class FakeUserEncryptionKeysManager : UserEncryptionKeysManager {
 		TODO("Not yet implemented")
 	}
 
-	override fun getCurrentUserAvailablePublicKeysHex(verifiedOnly: Boolean): Set<SpkiHexString> =
-		selfKeys.values.filter { !verifiedOnly || it.isVerified }.map { it.keyPair.pubSpkiHexString }.toSet()
-
-	override fun getCurrentUserHierarchyAvailablePublicKeysHex(): Set<SpkiHexString> =
-		selfKeys.values.map { it.keyPair.pubSpkiHexString }.toSet()
-
 	override fun getKeyPairForFingerprint(fingerprint: KeypairFingerprintV2String): CachedKeypairDetails? =
 		selfKeys[fingerprint]
 
-	override fun getSelfVerifiedKeys(): Set<CardinalKeyInfo<RsaKeypair<RsaAlgorithm.RsaEncryptionAlgorithm>>> =
+	override fun delegatorActorVerifiedKeys(): Set<CardinalKeyInfo<RsaKeypair<RsaAlgorithm.RsaEncryptionAlgorithm>>> =
 		selfKeys.values.filter { it.isVerified }.map { it.keyPair }.toSet()
 
 	override fun getVerifiedPublicKeysFor(dataOwner: CryptoActorStub): Set<SpkiHexString> {
 		TODO("Not yet implemented")
 	}
 
-	override fun getDecryptionKeys(includeParent: Boolean): RsaDecryptionKeysSet =
+	override fun getAllDecryptionKeys(): RsaDecryptionKeysSet =
 		RsaDecryptionKeysSet(selfKeys.values.map { it.keyPair.toPrivateKeyInfo() })
 
 	override suspend fun reloadKeys() {
+	}
+
+	override fun delegatorActorId(): String =
+		selfDelegatorActorId
+
+	override fun delegatorActorIsAnonymous(): Boolean {
+		TODO("Not yet implemented")
+	}
+
+	override fun getVerifiedEncryptionKeysForDataOwnerIfInCurrentHierarchy(dataOwnerId: String): Set<CardinalKeyInfo<RsaKeypair<RsaAlgorithm.RsaEncryptionAlgorithm>>>? {
+		if (dataOwnerId == selfDelegatorActorId) {
+			return delegatorActorVerifiedKeys()
+		} else TODO("Not yet implemented")
+	}
+
+	override fun getDecryptionKeysForDataOwnerIfInCurrentHierarchy(dataOwnerId: String): RsaDecryptionKeysSet? {
+		if (dataOwnerId == selfDelegatorActorId) {
+			return getAllDecryptionKeys()
+		} else TODO("Not yet implemented")
+	}
+
+	override fun delegatorActorHierarchy(from: String?): List<String> {
+		TODO("Not yet implemented")
 	}
 }

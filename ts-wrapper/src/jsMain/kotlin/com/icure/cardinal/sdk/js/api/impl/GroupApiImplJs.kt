@@ -20,6 +20,8 @@ import com.icure.cardinal.sdk.js.model.PaginatedListJs
 import com.icure.cardinal.sdk.js.model.RegistrationInformationJs
 import com.icure.cardinal.sdk.js.model.RegistrationSuccessJs
 import com.icure.cardinal.sdk.js.model.ReplicationInfoJs
+import com.icure.cardinal.sdk.js.model.base.CodeStubJs
+import com.icure.cardinal.sdk.js.model.base.codeStub_fromJs
 import com.icure.cardinal.sdk.js.model.couchdb.DesignDocumentJs
 import com.icure.cardinal.sdk.js.model.couchdb.DocIdentifierJs
 import com.icure.cardinal.sdk.js.model.couchdb.GroupDatabasesInfoJs
@@ -46,6 +48,7 @@ import com.icure.cardinal.sdk.model.GroupDeletionReport
 import com.icure.cardinal.sdk.model.IdWithRev
 import com.icure.cardinal.sdk.model.ListOfProperties
 import com.icure.cardinal.sdk.model.RegistrationInformation
+import com.icure.cardinal.sdk.model.base.CodeStub
 import com.icure.cardinal.sdk.model.couchdb.DesignDocument
 import com.icure.cardinal.sdk.model.couchdb.DocIdentifier
 import com.icure.cardinal.sdk.model.couchdb.GroupDatabasesInfo
@@ -644,5 +647,48 @@ internal class GroupApiImplJs(
 			applyToSubgroupsConverted,
 		)
 
+	}
+
+	override fun modifyGroupApplicationId(id: String, applicationId: String): Promise<GroupJs> =
+			GlobalScope.promise {
+		val idConverted: String = id
+		val applicationIdConverted: String = applicationId
+		val result = groupApi.modifyGroupApplicationId(
+			idConverted,
+			applicationIdConverted,
+		)
+		group_toJs(result)
+	}
+
+	override fun addTagToGroup(
+		id: String,
+		rev: String,
+		tag: CodeStubJs,
+	): Promise<GroupJs> = GlobalScope.promise {
+		val idConverted: String = id
+		val revConverted: String = rev
+		val tagConverted: CodeStub = codeStub_fromJs(tag)
+		val result = groupApi.addTagToGroup(
+			idConverted,
+			revConverted,
+			tagConverted,
+		)
+		group_toJs(result)
+	}
+
+	override fun removeTagFromGroup(
+		id: String,
+		rev: String,
+		tagId: String,
+	): Promise<GroupJs> = GlobalScope.promise {
+		val idConverted: String = id
+		val revConverted: String = rev
+		val tagIdConverted: String = tagId
+		val result = groupApi.removeTagFromGroup(
+			idConverted,
+			revConverted,
+			tagIdConverted,
+		)
+		group_toJs(result)
 	}
 }

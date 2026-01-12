@@ -38,7 +38,6 @@ abstract class AbstractExchangeDataManager(
 	protected val cryptoStrategies: CryptoStrategies,
 	protected val dataOwnerApi: DataOwnerApi,
 	protected val cryptoService: CryptoService,
-	protected val useParentKeys: Boolean,
 	protected val sdkScope: CoroutineScope,
 	protected val sdkBoundGroup: SdkBoundGroup?
 ) : ExchangeDataManager {
@@ -54,7 +53,7 @@ abstract class AbstractExchangeDataManager(
 			other.stub.algorithmOfEncryptionKey(newDataOwnerPublicKey),
 			newDataOwnerPublicKey.bytes()
 		)
-		val decryptionKeys = userEncryptionKeys.getDecryptionKeys(true)
+		val decryptionKeys = userEncryptionKeys.getAllDecryptionKeys()
 		val allExchangeDataToUpdate = if (self == otherDataOwner) {
 			base.getExchangeDataByDelegatorDelegatePair(
 				null,
@@ -78,7 +77,7 @@ abstract class AbstractExchangeDataManager(
 				exchangeData = it,
 				decryptionKeys = decryptionKeys,
 				newEncryptionKeys = VerifiedRsaEncryptionKeysSet(listOf(CardinalKeyInfo(newDataOwnerPublicKey, importedNewKey))),
-				newDelegatorSignatureKeys = SelfVerifiedKeysSet.empty,
+				delegatorSignatureKeys = null,
 			)
 		}
 	}
@@ -127,7 +126,8 @@ abstract class AbstractExchangeDataManager(
 		exchangeDataDetails: List<ExchangeDataInjectionDetails>,
 		reEncryptWithOwnKeys: Boolean,
 	) {
-		val self = dataOwnerApi.getCurrentDataOwnerReference().asReferenceStringInGroup(groupId, sdkBoundGroup)
+		val selfReference = dataOwnerApi.getCurrentDataOwnerReference()
+		val self = selfReference.asReferenceStringInGroup(groupId, sdkBoundGroup)
 		val retrievedExchangeData = base.getExchangeDataByIds(groupId, exchangeDataDetails.map { it.exchangeDataId }.toSet())
 		if (retrievedExchangeData.any { it.delegator != self && it.delegate != self }) {
 			throw IllegalArgumentException("Should only inject exchange data from/to the current user")
@@ -135,8 +135,11 @@ abstract class AbstractExchangeDataManager(
 		val exchangeDataById = retrievedExchangeData.associateBy { it.id }
 
 		if (reEncryptWithOwnKeys) {
-			val selfVerifiedKeys = userEncryptionKeys.getSelfVerifiedKeys()
-			check(!selfVerifiedKeys.isEmpty()) { "Can't re-encrypt injected exchange data with own keys if in keyless mode" }
+			if (userEncryptionKeys.delegatorActorId() != selfReference.entityId) UnsupportedOperationException(
+				"Currently re-encryption of injected exchange data is not supported in ParentDelegator mode" // TODO is there a case for supporting this?
+			)
+			val selfVerifiedKeys = userEncryptionKeys.delegatorActorVerifiedKeys()
+			check(selfVerifiedKeys.isNotEmpty()) { "Can't re-encrypt injected exchange data with own keys if in keyless mode" }
 
 			val encryptionKeys = VerifiedRsaEncryptionKeysSet(selfVerifiedKeys.map { k -> CardinalKeyInfo(k.pubSpkiHexString, k.toPublicKeyInfo().key) })
 			val signatureKeys = SelfVerifiedKeysSet(selfVerifiedKeys.map { k -> CardinalKeyInfo(k.pubSpkiHexString, k.toPrivateKeyInfo().key) })
@@ -146,7 +149,11 @@ abstract class AbstractExchangeDataManager(
 					base.updateExchangeDataWithRawDecryptedContent(
 						exchangeData = exchangeData,
 						newEncryptionKeys = encryptionKeys,
-						newDelegatorSignatureKeys = if (exchangeData.delegator == self && details.verified) signatureKeys else SelfVerifiedKeysSet(emptySet()),
+						delegatorSignatureKeys =
+							if (details.verified) Pair(
+								EntityReferenceInGroup(userEncryptionKeys.delegatorActorId(), null),
+								signatureKeys
+							) else null,
 						rawExchangeKey = details.exchangeKey,
 						rawAccessControlSecret = details.accessControlSecret,
 						rawSharedSignatureKey = details.sharedSignatureKey,
@@ -186,11 +193,10 @@ abstract class AbstractExchangeDataManager(
 @InternalIcureApi
 abstract class AbstractExchangeDataManagerInGroup(
 	protected val base: BaseExchangeDataManager,
-	private val userEncryptionKeys: UserEncryptionKeysManager,
+	protected val userEncryptionKeys: UserEncryptionKeysManager,
 	private val cryptoStrategies: CryptoStrategies,
 	protected val dataOwnerApi: DataOwnerApi,
 	protected val cryptoService: CryptoService,
-	private val useParentKeys: Boolean,
 	protected val sdkBoundGroup: SdkBoundGroup?,
 	protected val requestGroup: String?
 ) {
@@ -208,7 +214,7 @@ abstract class AbstractExchangeDataManagerInGroup(
 	protected suspend fun decryptData(
 		data: ExchangeData
 	): Pair<UnencryptedExchangeDataContent, Boolean>? {
-		val decryptionKeys = userEncryptionKeys.getDecryptionKeys(true)
+		val decryptionKeys = userEncryptionKeys.getAllDecryptionKeys()
 
 		val decryptedExchangeKeyResult = base.tryDecryptExchangeKeys(listOf(data), decryptionKeys)
 		val decryptedExchangeKey = decryptedExchangeKeyResult.successfulDecryptions.firstOrNull()
@@ -231,8 +237,8 @@ abstract class AbstractExchangeDataManagerInGroup(
 				exchangeData = data,
 				unencryptedContent = unencryptedContent
 			),
-			SelfVerifiedKeysSet(userEncryptionKeys.getSelfVerifiedKeys().map { it.toPrivateKeyInfo() }),
-			true
+			SelfVerifiedKeysSet(userEncryptionKeys.delegatorActorVerifiedKeys().map { it.toPrivateKeyInfo() }),
+			userEncryptionKeys.delegatorActorId()
 		)
 		return Pair(
 			unencryptedContent,
@@ -247,13 +253,13 @@ abstract class AbstractExchangeDataManagerInGroup(
 		allowCreationWithoutDelegatorKey: Boolean,
 	): ExchangeDataWithUnencryptedContent {
 		ensure(!allowCreationWithoutDelegateKey || !allowCreationWithoutDelegatorKey) { "Cannot allow creation of exchange data without both delegate and delegator keys." }
-		val selfEncryptionKeys = userEncryptionKeys.getSelfVerifiedKeys().map { it.toPublicKeyInfo() }
-		if (selfEncryptionKeys.isEmpty()) {
+		val delegatorEncryptionKeys = userEncryptionKeys.delegatorActorVerifiedKeys().map { it.toPublicKeyInfo() }
+		if (delegatorEncryptionKeys.isEmpty()) {
 			check(allowCreationWithoutDelegatorKey) {
 				"Can't delegate to ${delegateReference}. If the sdk is initialized in keyless mode you must create exchange data to each delegate explicitly. Please use CardinalSdk.crypto.keylessCreateExchangeDataTo or CardinalSdk.crypto.injectExchangeData."
 			}
 		}
-		val verifiedDelegateKeys = if (delegateReference != dataOwnerApi.getCurrentDataOwnerReference()) {
+		val verifiedDelegateKeys = if (delegateReference != EntityReferenceInGroup(userEncryptionKeys.delegatorActorId(), null)) {
 			val delegate =
 				dataOwnerApi.getCryptoActorStubInGroup(delegateReference)
 			val delegateKeys = cryptoService.loadEncryptionKeysForDataOwner(delegate.stub)
@@ -262,17 +268,25 @@ abstract class AbstractExchangeDataManagerInGroup(
 				emptyList()
 			} else {
 				val delegateKeysBySpki = delegateKeys.associateBy { it.pubSpkiHexString }
-				val verifiedSpki = if (useParentKeys && delegateReference in dataOwnerApi.getCurrentDataOwnerHierarchyIdsReference()) {
-					userEncryptionKeys.getVerifiedPublicKeysFor(delegate.stub).filter { delegateKeysBySpki.containsKey(it) }
-				} else {
-					cryptoStrategies.verifyDelegatePublicKeys(
-						delegate = delegate,
-						publicKeys = delegateKeys.map { it.pubSpkiHexString },
-						cryptoPrimitives = cryptoService,
-						groupId = delegateReference.normalized(sdkBoundGroup).groupId
-					)
+				require (allowCreationWithoutDelegateKey || delegateKeysBySpki.isNotEmpty()) {
+					"Could not create exchange data to $delegateReference as the delegate has no public key."
 				}
-				require (allowCreationWithoutDelegateKey || verifiedSpki.isNotEmpty()) {
+				val verifiedSpki =
+					if (
+						delegateReference.normalized(sdkBoundGroup).groupId == null &&
+						delegateReference.entityId in userEncryptionKeys.delegatorActorHierarchy()
+					) {
+						userEncryptionKeys.getVerifiedPublicKeysFor(delegate.stub).filter { delegateKeysBySpki.containsKey(it) }
+					} else {
+						cryptoStrategies.verifyDelegatePublicKeys(
+							delegate = delegate,
+							publicKeys = delegateKeys.map { it.pubSpkiHexString },
+							cryptoPrimitives = cryptoService,
+							groupId = delegateReference.normalized(sdkBoundGroup).groupId
+						)
+					}
+				// Creation to keyless is allowed if allowCreationWithoutDelegateKey true, but creation to user with keys but no verifiable key is not allowed
+				require (delegateKeysBySpki.isEmpty() || verifiedSpki.isNotEmpty()) {
 					"Could not create exchange data to $delegateReference as no public key for the delegate could be verified."
 				}
 				verifiedSpki.map {
@@ -282,11 +296,12 @@ abstract class AbstractExchangeDataManagerInGroup(
 				}
 			}
 		} else emptyList()
-		val allEncryptionKeys = VerifiedRsaEncryptionKeysSet(selfEncryptionKeys + verifiedDelegateKeys)
+		val allEncryptionKeys = VerifiedRsaEncryptionKeysSet(delegatorEncryptionKeys + verifiedDelegateKeys)
 		return base.createExchangeData(
 			requestGroup,
+			EntityReferenceInGroup(userEncryptionKeys.delegatorActorId(), null),
 			delegateReference,
-			SelfVerifiedKeysSet(userEncryptionKeys.getSelfVerifiedKeys().map { it.toPrivateKeyInfo() }),
+			SelfVerifiedKeysSet(userEncryptionKeys.delegatorActorVerifiedKeys().map { it.toPrivateKeyInfo() }),
 			allEncryptionKeys,
 			newDataId
 		)

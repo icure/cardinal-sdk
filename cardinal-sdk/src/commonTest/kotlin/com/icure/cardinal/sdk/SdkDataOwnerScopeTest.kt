@@ -20,7 +20,7 @@ import io.kotest.core.spec.style.StringSpec
 import io.kotest.matchers.nulls.shouldNotBeNull
 import io.kotest.matchers.shouldBe
 
-@InternalIcureApi
+@OptIn(InternalIcureApi::class)
 class SdkDataOwnerScopeTest : StringSpec({
 	val specJob = autoCancelJob()
 	lateinit var actingScopeRoleId: String
