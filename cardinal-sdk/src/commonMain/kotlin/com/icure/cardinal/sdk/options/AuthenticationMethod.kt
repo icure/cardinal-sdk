@@ -129,7 +129,7 @@ sealed interface AuthenticationMethod {
 suspend fun AuthenticationMethod.getAuthProvider(
 	authApi: RawAnonymousAuthApi,
 	cryptoService: CryptoService,
-	applicationId: String?,
+	projectId: String?,
 	options: CommonSdkOptions,
 	messageGatewayApi: RawMessageGatewayApi,
 	krakenUrl: String
@@ -141,7 +141,7 @@ suspend fun AuthenticationMethod.getAuthProvider(
 			authSecretDetails = AuthSecretDetails.ConfiguredExternalAuthenticationDetails(this.credentials.configId, this.credentials.token),
 			login = null,
 			messageGatewayApi = messageGatewayApi,
-			applicationId = applicationId,
+			projectId = projectId,
 			krakenUrl = krakenUrl
 		)
 		is UsernameLongToken -> smartAuthWithConstantSecret(
@@ -150,7 +150,7 @@ suspend fun AuthenticationMethod.getAuthProvider(
 			authSecretDetails = AuthSecretDetails.LongLivedTokenDetails(this.credentials.token),
 			login = this.credentials.username,
 			messageGatewayApi = messageGatewayApi,
-			applicationId = applicationId,
+			projectId = projectId,
 			krakenUrl = krakenUrl
 		)
 		is UsernamePassword -> smartAuthWithConstantSecret(
@@ -159,7 +159,7 @@ suspend fun AuthenticationMethod.getAuthProvider(
 			authSecretDetails = AuthSecretDetails.PasswordDetails(this.credentials.password),
 			login = this.credentials.username,
 			messageGatewayApi = messageGatewayApi,
-			applicationId = applicationId,
+			projectId = projectId,
 			krakenUrl = krakenUrl
 		)
 		is JwtCredentials -> JwtAuthProvider(authApi, this.credentials.initialBearer, this.credentials.refresh)
@@ -181,7 +181,7 @@ suspend fun AuthenticationMethod.getAuthProvider(
 			null -> null
 		},
 		groupId = null,
-		applicationId = applicationId,
+		projectId = projectId,
 		cryptoService = cryptoService,
 		cacheSecrets = this.cacheSecrets,
 		allowSecretRetry = true,
@@ -199,13 +199,13 @@ internal suspend fun AuthenticationMethod.getGroupAndAuthProvider(
 	baseUrl: String,
 	apiUrl: String,
 	cryptoService: CryptoService,
-	applicationId: String?,
+	projectId: String?,
 	options: BoundSdkOptions,
 	rawApiConfig: RawApiConfig,
 ): Pair<String?, AuthProvider> {
 	val rawAuthApi = RawAnonymousAuthApiImpl(apiUrl, rawApiConfig)
 	val messageGatewayApi = RawMessageGatewayApi(rawApiConfig.httpClient, cryptoService)
-	val authProvider = getAuthProvider(rawAuthApi, cryptoService, applicationId, options, messageGatewayApi, krakenUrl = baseUrl)
+	val authProvider = getAuthProvider(rawAuthApi, cryptoService, projectId, options, messageGatewayApi, krakenUrl = baseUrl)
 	val userApi = RawUserApiImpl(apiUrl, authProvider, rawApiConfig)
 	// On local there is no groups, need to handle that possibility
 	val matches = userApi.getMatchingUsers().takeIf { it.status.value != 404 }?.successBody()
@@ -241,7 +241,7 @@ private suspend fun smartAuthWithConstantSecret(
 	authSecretDetails: AuthSecretDetails,
 	login: String?,
 	messageGatewayApi: RawMessageGatewayApi,
-	applicationId: String?,
+	projectId: String?,
 	krakenUrl: String,
 ) = SmartAuthProvider.initialize(
 	authApi = authApi,
@@ -251,7 +251,7 @@ private suspend fun smartAuthWithConstantSecret(
 	initialRefreshToken = null,
 	initialSecret = authSecretDetails,
 	groupId = null,
-	applicationId = applicationId,
+	projectId = projectId,
 	cryptoService = cryptoService,
 	cacheSecrets = false,
 	allowSecretRetry = false,

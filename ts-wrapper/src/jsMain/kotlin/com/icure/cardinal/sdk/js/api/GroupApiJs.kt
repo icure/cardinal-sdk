@@ -125,4 +125,10 @@ public external interface GroupApiJs {
 		duration: Double?,
 		description: String?,
 	): Promise<String>
+
+	public fun setGroupProjectId(
+		groupId: String,
+		projectId: String?,
+		applyToSubgroups: Boolean,
+	): Promise<Unit>
 }

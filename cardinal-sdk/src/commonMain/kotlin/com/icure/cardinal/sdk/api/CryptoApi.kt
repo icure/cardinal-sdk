@@ -1,5 +1,6 @@
 package com.icure.cardinal.sdk.api
 
+import com.icure.cardinal.sdk.crypto.entities.EntityWithEncryptionMetadataTypeName
 import com.icure.cardinal.sdk.crypto.entities.ExchangeDataInjectionDetails
 import com.icure.cardinal.sdk.crypto.entities.RawDecryptedExchangeData
 import com.icure.cardinal.sdk.model.EntityReferenceInGroup
@@ -15,6 +16,13 @@ import com.icure.kryptom.crypto.RsaAlgorithm
 interface CryptoApi {
 	val shamirKeysManager: ShamirKeysManagerApi
 	val inGroup: CryptoInGroupApi
+
+	/**
+	 * @param entityType the type of entity to get access control keys for.
+	 * @return a List containing all the access control keys for an entity type in the current group. This method returns a non-empty list
+	 * only if the current data owner is not anonymous
+	 */
+	suspend fun getAccessControlKeys(entityType: EntityWithEncryptionMetadataTypeName): List<String>
 
 	/**
 	 * Clears the cache of the api and reloads the user keys and exchange keys.
@@ -63,4 +71,12 @@ interface CryptoInGroupApi {
 		groupId: String?,
 		delegate: EntityReferenceInGroup
 	): RawDecryptedExchangeData
+
+	/**
+	 * @param groupId the id of the group where the access control keys will be used.
+	 * @param entityType the type of entity to get access control keys for.
+	 * @return a List containing all the access control keys for an entity type in a specific group. This method returns a non-empty list
+	 * only if the current data owner is not anonymous
+	 */
+	suspend fun getAccessControlKeys(groupId: String?, entityType: EntityWithEncryptionMetadataTypeName): List<String>
 }

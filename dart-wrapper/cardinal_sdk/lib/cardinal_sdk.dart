@@ -203,7 +203,7 @@ class CardinalSdk extends CardinalApis {
   }
 
   static Future<AuthenticationWithProcessStep> initializeWithProcess(
-      String? applicationId,
+      String? projectId,
       String baseUrl,
       String messageGatewayUrl,
       String externalServicesSpecId,
@@ -218,7 +218,7 @@ class CardinalSdk extends CardinalApis {
       }
   ) {
     return CardinalSdkPlatformInterface.instance.initializers.initializeWithProcess(
-        applicationId,
+        projectId,
         baseUrl,
         messageGatewayUrl,
         externalServicesSpecId,
@@ -233,14 +233,14 @@ class CardinalSdk extends CardinalApis {
   }
 
   static Future<CardinalSdk> initialize(
-      String? applicationId,
+      String? projectId,
       String baseUrl,
       AuthenticationMethod authenticationMethod,
       StorageOptions storageOptions,
       {SdkOptions options = const SdkOptions()}
   ) {
     return CardinalSdkPlatformInterface.instance.initializers.initialize(
-        applicationId,
+        projectId,
         baseUrl,
         authenticationMethod,
         storageOptions,
@@ -439,13 +439,13 @@ class CardinalBaseSdk extends CardinalBaseApis {
   }
 
   static Future<CardinalBaseSdk> initialize(
-      String? applicationId,
+      String? projectId,
       String baseUrl,
       AuthenticationMethod authenticationMethod,
       {BasicSdkOptions options = const BasicSdkOptions()}
       ) {
     return CardinalSdkPlatformInterface.instance.initializers.initializeBase(
-        applicationId,
+        projectId,
         baseUrl,
         authenticationMethod,
         options
@@ -525,7 +525,7 @@ class CardinalSdkMethodChannelInitializers extends CardinalSdkInitializersPlugin
 
   @override
   Future<AuthenticationWithProcessStep> initializeWithProcess(
-      String? applicationId,
+      String? projectId,
       String baseUrl,
       String messageGatewayUrl,
       String externalServicesSpecId,
@@ -540,7 +540,7 @@ class CardinalSdkMethodChannelInitializers extends CardinalSdkInitializersPlugin
     final res = await _methodChannel.invokeMethod<String>(
         "initializeWithAuthProcess",
         {
-          "applicationId": jsonEncode(applicationId),
+          "projectId": jsonEncode(projectId),
           "baseUrl": jsonEncode(baseUrl),
           "messageGatewayUrl": jsonEncode(messageGatewayUrl),
           "externalServicesSpecId": jsonEncode(externalServicesSpecId),
@@ -574,7 +574,7 @@ class CardinalSdkMethodChannelInitializers extends CardinalSdkInitializersPlugin
 
   @override
   Future<CardinalSdk> initialize(
-      String? applicationId,
+      String? projectId,
       String baseUrl,
       AuthenticationMethod authenticationMethod,
       StorageOptions storageOptions,
@@ -583,7 +583,7 @@ class CardinalSdkMethodChannelInitializers extends CardinalSdkInitializersPlugin
     final res = await _methodChannel.invokeMethod<String>(
         "initialize",
         {
-          "applicationId": jsonEncode(applicationId),
+          "projectId": jsonEncode(projectId),
           "baseUrl": jsonEncode(baseUrl),
           "authenticationMethod": jsonEncode(AuthenticationMethod.encode(authenticationMethod)),
           "storageOptions": jsonEncode(StorageOptions.encode(storageOptions)),
@@ -597,7 +597,7 @@ class CardinalSdkMethodChannelInitializers extends CardinalSdkInitializersPlugin
 
   @override
   Future<CardinalBaseSdk> initializeBase(
-    String? applicationId,
+    String? projectId,
     String baseUrl,
     AuthenticationMethod authenticationMethod,
     BasicSdkOptions options
@@ -605,7 +605,7 @@ class CardinalSdkMethodChannelInitializers extends CardinalSdkInitializersPlugin
     final res = await _methodChannel.invokeMethod<String>(
         "initializeBase",
         {
-          "applicationId": jsonEncode(applicationId),
+          "projectId": jsonEncode(projectId),
           "baseUrl": jsonEncode(baseUrl),
           "authenticationMethod": jsonEncode(AuthenticationMethod.encode(authenticationMethod)),
           "options": jsonEncode(BasicSdkOptions.encode(options))

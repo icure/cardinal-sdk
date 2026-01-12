@@ -52,7 +52,7 @@ class CardinalSdk:
 
     def __init__(
         self,
-        application_id: Optional[str],
+        project_id: Optional[str],
         baseurl: str,
         authentication_method: AuthenticationMethod,
         storage_facade: StorageOptions,
@@ -64,7 +64,7 @@ class CardinalSdk:
             _serialize_storage_options(options.key_storage)) if options.key_storage is not None else (None, None)
 
         data_params = {
-            'applicationId': application_id,
+            'projectId': project_id,
             'baseUrl': baseurl,
             'authenticationMethod': _serialize_authentication_method(authentication_method),
             'storageFacade': storage_info[0],

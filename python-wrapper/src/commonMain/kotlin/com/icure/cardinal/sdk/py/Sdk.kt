@@ -28,7 +28,7 @@ import kotlinx.serialization.Serializable
 @Serializable
 @InternalIcureApi
 private data class PySdkParams(
-	val applicationId: String? = null,
+	val projectId: String? = null,
 	val baseUrl: String,
 	val authenticationMethod: PyAuthMethod,
 	val storageFacade: StorageFacadeOptions,
@@ -112,7 +112,7 @@ fun initializeSdk(
 			customJsonPatcher = customJsonPatcher,
 		)
 		CardinalSdk.initialize(
-			decodedParams.applicationId,
+			decodedParams.projectId,
 			decodedParams.baseUrl,
 			richParams.authenticationMethod,
 			richParams.storageFacade,
@@ -126,7 +126,7 @@ fun initializeSdk(
 
 @Serializable
 private data class PyBaseSdkParams(
-	val applicationId: String? = null,
+	val projectId: String? = null,
 	val baseUrl: String,
 	val authenticationMethod: PyAuthMethod,
 	val encryptedFields: EncryptedFieldsConfiguration = EncryptedFieldsConfiguration(),
@@ -159,7 +159,7 @@ fun initializeBaseSdk(
 		val decodedParams = Serialization.json.decodeFromString<PyBaseSdkParams>(dataParams)
 		val richParams = decodedParams.getRichApiParams()
 		CardinalBaseSdk.initialize(
-			decodedParams.applicationId,
+			decodedParams.projectId,
 			decodedParams.baseUrl,
 			richParams.authenticationMethod,
 			richParams.apiOptions

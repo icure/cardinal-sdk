@@ -302,7 +302,7 @@ interface CardinalSdk : CardinalApis {
 		/**
 		 * Initialize a new instance of the icure sdk for a specific user.
 		 *
-		 * @param applicationId a string to uniquely identify your iCure application.
+		 * @param projectId a string to uniquely identify your iCure project.
 		 * @param baseUrl the url of the iCure backend to use
 		 * @param authenticationMethod specifies how the sdk should authenticate.
 		 * @param baseStorage an implementation of the [StorageFacade], used for persistent storage of various
@@ -311,7 +311,7 @@ interface CardinalSdk : CardinalApis {
 		 */
 		@OptIn(InternalIcureApi::class)
 		suspend fun initialize(
-			applicationId: String?,
+			projectId: String?,
 			baseUrl: String,
 			authenticationMethod: AuthenticationMethod,
 			baseStorage: StorageFacade,
@@ -325,7 +325,7 @@ interface CardinalSdk : CardinalApis {
 				baseUrl = baseUrl,
 				apiUrl = apiUrl,
 				cryptoService = cryptoService,
-				applicationId = applicationId,
+				projectId = projectId,
 				options = options,
 				rawApiConfig = RawApiConfig(
 					httpClient = client,
@@ -359,7 +359,7 @@ interface CardinalSdk : CardinalApis {
 		 * Initialize a new instance of the icure sdk for a specific user.
 		 * The authentication will be performed through an authentication process.
 		 *
-		 * @param applicationId a string to uniquely identify your iCure application.
+		 * @param projectId a string to uniquely identify your iCure project.
 		 * @param baseUrl the url of the iCure backend to use
 		 * @param messageGatewayUrl the url of the iCure message gateway you want to use. Usually this should be
 		 * @param externalServicesSpecId an identifier that allows the message gateway to connect the request to your
@@ -377,7 +377,7 @@ interface CardinalSdk : CardinalApis {
 		 */
 		@OptIn(InternalIcureApi::class)
 		suspend fun initializeWithProcess(
-			applicationId: String?,
+			projectId: String?,
 			baseUrl: String,
 			messageGatewayUrl: String,
 			externalServicesSpecId: String,
@@ -402,7 +402,7 @@ interface CardinalSdk : CardinalApis {
 				krakenUrl = baseUrl
 			)
 			return AuthenticationWithProcessStepImpl(
-				applicationId = applicationId,
+				projectId = projectId,
 				baseUrl = baseUrl,
 				baseStorage = baseStorage,
 				options = options,
@@ -418,7 +418,7 @@ interface CardinalSdk : CardinalApis {
 
 @InternalIcureApi
 private class AuthenticationWithProcessStepImpl(
-	private val applicationId: String?,
+	private val projectId: String?,
 	private val baseUrl: String,
 	private val baseStorage: StorageFacade,
 	private val options: SdkOptions,
@@ -450,11 +450,11 @@ private class AuthenticationWithProcessStepImpl(
 		) {
 			rawAuthApi.login(
 				loginCredentials = LoginCredentials(username = userTelecom, password = validationCode),
-				applicationId = applicationId
+				applicationId = projectId
 			).successBody()
 		}
 		return CardinalSdk.initialize(
-			applicationId,
+			projectId,
 			baseUrl,
 			AuthenticationMethod.UsingCredentials(JwtCredentials(
 				JwtBearer(ensureNonNull(loginResult.token)  { "Successful login gave null bearer token"}),

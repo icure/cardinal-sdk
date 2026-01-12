@@ -39,7 +39,7 @@ interface GroupApi {
 		@DefaultValue("null")
 		superGroup: String? = null,
 		@DefaultValue("null")
-		applicationId: String? = null,
+		projectId: String? = null,
 		initialisationData: DatabaseInitialisation,
 	): Group
 
@@ -118,5 +118,12 @@ interface GroupApi {
 	suspend fun createOrUpdateExternalJwtConfig(groupId: String, key: String, config: ExternalJwtConfig): Group
 	suspend fun removeExternalJwtConfig(groupId: String, key: String): Group
 	suspend fun getOperationTokenForGroup(groupId: String, operation: Operation, duration: Long?, description: String? = null) : String
-}
 
+	/**
+	 * Sets the projectId of a group and optionally applies the change to all its subgroups (direct and indirect child groups).
+	 * @param groupId the id of the group to update.
+	 * @param projectId the new projectId to set. If null, any existing projectId will be removed.
+	 * @param applyToSubgroups if true, the change will be applied
+	 */
+	suspend fun setGroupProjectId(groupId: String, projectId: String?, applyToSubgroups: Boolean)
+}

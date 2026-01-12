@@ -229,7 +229,7 @@ export namespace CardinalSdk {
   /**
    * Initialize a new instance of the icure sdk for a specific user.
    *
-   * @param applicationId a string to uniquely identify your iCure application.
+   * @param projectId a string to uniquely identify your iCure project.
    * @param baseUrl the url of the iCure backend to use
    * @param authenticationMethod specifies how the sdk should authenticate.
    * @param baseStorage an implementation of {@link StorageFacade} or standard icure storage options, used for persistent
@@ -237,14 +237,14 @@ export namespace CardinalSdk {
    * @param options optional parameters for the initialization of the sdk.
    */
   export async function initialize(
-    applicationId: string | undefined,
+    projectId: string | undefined,
     baseUrl: string,
     authenticationMethod: AuthenticationMethod,
     baseStorage: StorageFacade | CardinalStorageOptions,
     options?: SdkOptions
   ): Promise<CardinalSdk> {
     return await InternalSdkInitializers.getInstance().initializeSdk(
-      applicationId,
+      projectId,
       baseUrl,
       authenticationMethod,
       baseStorage,
@@ -256,7 +256,7 @@ export namespace CardinalSdk {
    * Initialize a new instance of the icure sdk for a specific user.
    * The authentication will be performed through an authentication process.
    *
-   * @param applicationId a string to uniquely identify your iCure application.
+   * @param projectId a string to uniquely identify your iCure project.
    * @param baseUrl the url of the iCure backend to use
    * @param messageGatewayUrl the url of the iCure message gateway you want to use. Usually this should be
    * @param externalServicesSpecId an identifier that allows the message gateway to connect the request to your
@@ -272,7 +272,7 @@ export namespace CardinalSdk {
    * @param options optional parameters for the initialization of the sdk.
    */
   export async function initializeWithProcess(
-    applicationId: string | undefined,
+    projectId: string | undefined,
     baseUrl: string,
     messageGatewayUrl: string,
     externalServicesSpecId: string,
@@ -285,7 +285,7 @@ export namespace CardinalSdk {
     options?: SdkOptions
   ): Promise<AuthenticationWithProcessStep> {
     return await InternalSdkInitializers.getInstance().initializeWithProcess(
-      applicationId,
+      projectId,
       baseUrl,
       messageGatewayUrl,
       externalServicesSpecId,
@@ -317,19 +317,19 @@ export namespace CardinalBaseSdk {
   /**
    * Initialize a new instance of the icure sdk for a specific user.
    *
-   * @param applicationId a string to uniquely identify your iCure application.
+   * @param projectId a string to uniquely identify your iCure project.
    * @param baseUrl the url of the iCure backend to use
    * @param authenticationMethod specifies how the sdk should authenticate.
    * @param options optional parameters for the initialization of the sdk.
    */
   export async function initialize(
-    applicationId: string | undefined,
+    projectId: string | undefined,
     baseUrl: string,
     authenticationMethod: AuthenticationMethod,
     options?: BasicSdkOptions
   ): Promise<CardinalBaseSdk> {
     return await InternalSdkInitializers.getInstance().initializeBase(
-      applicationId,
+      projectId,
       baseUrl,
       authenticationMethod,
       options
@@ -340,7 +340,7 @@ export namespace CardinalBaseSdk {
    * Initialize a new instance of the icure base sdk for a specific user.
    * The authentication will be performed through an authentication process.
    *
-   * @param applicationId a string to uniquely identify your iCure application.
+   * @param projectId a string to uniquely identify your iCure project.
    * @param baseUrl the url of the iCure backend to use
    * @param messageGatewayUrl the url of the iCure message gateway you want to use. Usually this should be
    * @param externalServicesSpecId an identifier that allows the message gateway to connect the request to your
@@ -354,7 +354,7 @@ export namespace CardinalBaseSdk {
    * @param options optional parameters for the initialization of the sdk.
    */
   export async function initializeWithProcess(
-    applicationId: string | undefined,
+    projectId: string | undefined,
     baseUrl: string,
     messageGatewayUrl: string,
     externalServicesSpecId: string,
@@ -366,7 +366,7 @@ export namespace CardinalBaseSdk {
     options?: BasicSdkOptions
   ): Promise<BaseAuthenticationWithProcessStep> {
     return await InternalSdkInitializers.getInstance().initializeWithProcessBase(
-      applicationId,
+      projectId,
       baseUrl,
       messageGatewayUrl,
       externalServicesSpecId,
