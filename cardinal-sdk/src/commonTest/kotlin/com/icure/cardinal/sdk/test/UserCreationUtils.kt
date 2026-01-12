@@ -4,7 +4,6 @@ import com.icure.cardinal.sdk.api.raw.impl.RawGroupApiImpl
 import com.icure.cardinal.sdk.api.raw.impl.RawHealthcarePartyApiImpl
 import com.icure.cardinal.sdk.api.raw.impl.RawPatientApiImpl
 import com.icure.cardinal.sdk.api.raw.impl.RawUserApiImpl
-import com.icure.cardinal.sdk.auth.AuthSecretDetails
 import com.icure.cardinal.sdk.crypto.impl.NoAccessControlKeysHeadersProvider
 import com.icure.cardinal.sdk.model.DatabaseInitialisation
 import com.icure.cardinal.sdk.model.EncryptedPatient
@@ -234,14 +233,15 @@ suspend fun createPlainUser(
 suspend fun createPatientUser(
 	existingPatientId: String? = null,
 	inGroup: String = testGroupId,
-	inheritsPermissions: Boolean = false
+	inheritsPermissions: Boolean = false,
+	initializeKey: Boolean = true
 ): DataOwnerDetails {
 	val patientRawApi = RawPatientApiImpl(baseUrl, superadminAuth(), null, DefaultRawApiConfig)
 	val userRawApi = RawUserApiImpl(baseUrl, superadminAuth(), DefaultRawApiConfig)
 	val patientId = existingPatientId ?: uuid()
 	val login = "patient-${uuid()}"
 	val password = uuid()
-	val keypair = defaultCryptoService.rsa.generateKeyPair(RsaAlgorithm.RsaEncryptionAlgorithm.OaepWithSha256)
+	val keypair = if (initializeKey) defaultCryptoService.rsa.generateKeyPair(RsaAlgorithm.RsaEncryptionAlgorithm.OaepWithSha256) else null
 	val patientToCreateOrModify = (
 		existingPatientId?.let {
 			patientRawApi.getPatientInGroup(groupId = inGroup, patientId = it).successBody()
@@ -250,9 +250,14 @@ suspend fun createPatientUser(
 			firstName = "Patient-$patientId",
 			lastName = "Patient-$patientId",
 		)
-	).copy(
-		publicKeysForOaepWithSha256 = setOf(defaultCryptoService.rsa.exportPublicKeySpki(keypair.public).toHexString().let { SpkiHexString(it) })
-	)
+	).let {
+		if (initializeKey)
+			it.copy(
+				publicKeysForOaepWithSha256 = setOf(defaultCryptoService.rsa.exportPublicKeySpki(keypair!!.public).toHexString().let { SpkiHexString(it) })
+			)
+		else
+			it
+	}
 	val patient = if (patientToCreateOrModify.rev != null) {
 		patientRawApi.modifyPatientInGroup(inGroup, patientToCreateOrModify).successBody()
 	} else {

@@ -1145,7 +1145,11 @@ private class PatientApiImpl(
 		)
 	}
 
-	override suspend fun ensureEncryptionMetadataForSelfIsInitialized(sharingWith: Map<String, AccessLevel>): EncryptedPatient {
+	override suspend fun ensureEncryptionMetadataForSelfIsInitialized(
+		sharingWith: Map<String, AccessLevel>,
+		ignoreIfEncryptionMetadataExists: Boolean,
+		alternateRootDelegateId: String?
+	): EncryptedPatient {
 		val self = config.crypto.dataOwnerApi.getCurrentDataOwner()
 		require (self is DataOwnerWithType.PatientDataOwner) { "Current user is not a patient data owner" }
 		if (config.crypto.userEncryptionKeysManager.delegatorActorId() != self.dataOwner.id) throw UnsupportedOperationException(
@@ -1163,11 +1167,28 @@ private class PatientApiImpl(
 					entityType = EntityWithEncryptionMetadataTypeName.Patient,
 					owningEntityDetails = null,
 					initializeEncryptionKey = true,
-					autoDelegations = sharingWith.keyAsLocalDataOwnerReferences()
+					autoDelegations = sharingWith.keyAsLocalDataOwnerReferences(),
+					alternateRootDataOwnerReference = alternateRootDelegateId?.let { EntityReferenceInGroup(it, null) },
 				).updatedEntity.let {
 					encrypted.modifyPatient(it)
 				}
-			} else {
+			} else if (!ignoreIfEncryptionMetadataExists) {
+				if (config.crypto.userEncryptionKeysManager.delegatorActorVerifiedKeys().isEmpty()) { //isKeyless
+					require (alternateRootDelegateId != null) {
+						"Cannot initialize encrypted metadata without an alternate root delegation when running in keyless mode."
+					}
+					require (alternateRootDelegateId !in sharingWith.keys) {
+						"Alternate root delegation cannot be also in the sharingWith map."
+					}
+				} else {
+					require (alternateRootDelegateId == null) {
+						"Cannot specify an alternate root delegation when not running in keyless mode."
+					}
+				}
+				if (alternateRootDelegateId != null) throw NotImplementedError(
+					"Alternate root delegation in ensureEncryptionMetadataForSelfIsInitialized when the patient already has encryption metadata initialized is not yet supported."
+				)
+				// TODO (alternateRootDelegateId ?: self.id) in the delegates of simpleShareOrUpdateEncryptedEntityMetadata might be sufficient, but needs testing
 				val secretIdShareOptions = SecretIdShareOptions.UseExactly(
 					secretIds = setOf(config.crypto.primitives.strongRandom.randomUUID()),
 					createUnknownSecretIds = true
@@ -1177,7 +1198,7 @@ private class PatientApiImpl(
 					entity = self,
 					entityType = EntityWithEncryptionMetadataTypeName.Patient,
 					delegates = (mapOf(
-						self.id to SimpleDelegateShareOptionsImpl(
+						(alternateRootDelegateId ?: self.id) to SimpleDelegateShareOptionsImpl(
 							shareEncryptionKey = ShareMetadataBehaviour.IfAvailable,
 							shareOwningEntityIds = ShareMetadataBehaviour.Never,
 							shareSecretIds = secretIdShareOptions,
@@ -1196,7 +1217,7 @@ private class PatientApiImpl(
 					}).keyAsLocalDataOwnerReferences(),
 					autoRetry = false, // Will retry with the updated entity: maybe no need to update metadata after all
 					getUpdatedEntity = { throw UnsupportedOperationException("No retry") },
-					doRequestBulkShareOrUpdate = { rawApi.bulkShare(it).successBody() }
+					doRequestBulkShareOrUpdate = { rawApi.bulkShare(it).successBody() },
 				)
 				if (shareResult is SimpleShareResult.Failure && shareResult.errorsDetails.all { it.shouldRetry }) {
 					val updatedSelf = rawApi.getPatient(self.id).successBody()
@@ -1204,6 +1225,9 @@ private class PatientApiImpl(
 						ensureEncryptionMetadataForSelfIsInitialized(sharingWith)
 					} else shareResult.updatedEntityOrThrow()
 				} else shareResult.updatedEntityOrThrow()
+			} else {
+				// The current user won't have any secret id accessible.
+				self
 			}
 		}
 
