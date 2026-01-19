@@ -29,6 +29,7 @@ mixin _$DecryptedInvoicingCode {
   double? get totalAmount;
   double? get reimbursement;
   double? get patientIntervention;
+  double? get amiIntervention;
   double? get doctorSupplement;
   double? get conventionAmount;
   double? get vat;
@@ -67,6 +68,8 @@ mixin _$DecryptedInvoicingCode {
   int? get insuranceJustification;
   int? get cancelPatientInterventionReason;
   int? get status;
+  String? get codeLabel;
+  Map<String, String> get options;
   Base64String? get encryptedSelf;
 
   /// Create a copy of DecryptedInvoicingCode
@@ -105,6 +108,8 @@ mixin _$DecryptedInvoicingCode {
                 other.reimbursement == reimbursement) &&
             (identical(other.patientIntervention, patientIntervention) ||
                 other.patientIntervention == patientIntervention) &&
+            (identical(other.amiIntervention, amiIntervention) ||
+                other.amiIntervention == amiIntervention) &&
             (identical(other.doctorSupplement, doctorSupplement) ||
                 other.doctorSupplement == doctorSupplement) &&
             (identical(other.conventionAmount, conventionAmount) ||
@@ -170,11 +175,13 @@ mixin _$DecryptedInvoicingCode {
             (identical(other.lost, lost) || other.lost == lost) &&
             (identical(other.insuranceJustification, insuranceJustification) ||
                 other.insuranceJustification == insuranceJustification) &&
-            (identical(other.cancelPatientInterventionReason,
-                    cancelPatientInterventionReason) ||
+            (identical(other.cancelPatientInterventionReason, cancelPatientInterventionReason) ||
                 other.cancelPatientInterventionReason ==
                     cancelPatientInterventionReason) &&
             (identical(other.status, status) || other.status == status) &&
+            (identical(other.codeLabel, codeLabel) ||
+                other.codeLabel == codeLabel) &&
+            const DeepCollectionEquality().equals(other.options, options) &&
             (identical(other.encryptedSelf, encryptedSelf) ||
                 other.encryptedSelf == encryptedSelf));
   }
@@ -196,6 +203,7 @@ mixin _$DecryptedInvoicingCode {
         totalAmount,
         reimbursement,
         patientIntervention,
+        amiIntervention,
         doctorSupplement,
         conventionAmount,
         vat,
@@ -234,12 +242,14 @@ mixin _$DecryptedInvoicingCode {
         insuranceJustification,
         cancelPatientInterventionReason,
         status,
+        codeLabel,
+        const DeepCollectionEquality().hash(options),
         encryptedSelf
       ]);
 
   @override
   String toString() {
-    return 'DecryptedInvoicingCode(id: $id, dateCode: $dateCode, logicalId: $logicalId, label: $label, userId: $userId, contactId: $contactId, serviceId: $serviceId, tarificationId: $tarificationId, code: $code, paymentType: $paymentType, paid: $paid, totalAmount: $totalAmount, reimbursement: $reimbursement, patientIntervention: $patientIntervention, doctorSupplement: $doctorSupplement, conventionAmount: $conventionAmount, vat: $vat, error: $error, contract: $contract, contractDate: $contractDate, units: $units, side: $side, timeOfDay: $timeOfDay, eidReadingHour: $eidReadingHour, eidReadingValue: $eidReadingValue, override3rdPayerCode: $override3rdPayerCode, override3rdPayerReason: $override3rdPayerReason, transplantationCode: $transplantationCode, prescriberNorm: $prescriberNorm, productLabel: $productLabel, percentNorm: $percentNorm, prescriberNihii: $prescriberNihii, relatedCode: $relatedCode, prescriptionDate: $prescriptionDate, derogationMaxNumber: $derogationMaxNumber, prescriberSsin: $prescriberSsin, prescriberLastName: $prescriberLastName, prescriberFirstName: $prescriberFirstName, prescriberCdHcParty: $prescriberCdHcParty, locationNihii: $locationNihii, locationCdHcParty: $locationCdHcParty, locationService: $locationService, admissionDate: $admissionDate, canceled: $canceled, accepted: $accepted, pending: $pending, resent: $resent, archived: $archived, lost: $lost, insuranceJustification: $insuranceJustification, cancelPatientInterventionReason: $cancelPatientInterventionReason, status: $status, encryptedSelf: $encryptedSelf)';
+    return 'DecryptedInvoicingCode(id: $id, dateCode: $dateCode, logicalId: $logicalId, label: $label, userId: $userId, contactId: $contactId, serviceId: $serviceId, tarificationId: $tarificationId, code: $code, paymentType: $paymentType, paid: $paid, totalAmount: $totalAmount, reimbursement: $reimbursement, patientIntervention: $patientIntervention, amiIntervention: $amiIntervention, doctorSupplement: $doctorSupplement, conventionAmount: $conventionAmount, vat: $vat, error: $error, contract: $contract, contractDate: $contractDate, units: $units, side: $side, timeOfDay: $timeOfDay, eidReadingHour: $eidReadingHour, eidReadingValue: $eidReadingValue, override3rdPayerCode: $override3rdPayerCode, override3rdPayerReason: $override3rdPayerReason, transplantationCode: $transplantationCode, prescriberNorm: $prescriberNorm, productLabel: $productLabel, percentNorm: $percentNorm, prescriberNihii: $prescriberNihii, relatedCode: $relatedCode, prescriptionDate: $prescriptionDate, derogationMaxNumber: $derogationMaxNumber, prescriberSsin: $prescriberSsin, prescriberLastName: $prescriberLastName, prescriberFirstName: $prescriberFirstName, prescriberCdHcParty: $prescriberCdHcParty, locationNihii: $locationNihii, locationCdHcParty: $locationCdHcParty, locationService: $locationService, admissionDate: $admissionDate, canceled: $canceled, accepted: $accepted, pending: $pending, resent: $resent, archived: $archived, lost: $lost, insuranceJustification: $insuranceJustification, cancelPatientInterventionReason: $cancelPatientInterventionReason, status: $status, codeLabel: $codeLabel, options: $options, encryptedSelf: $encryptedSelf)';
   }
 }
 
@@ -264,6 +274,7 @@ abstract mixin class $DecryptedInvoicingCodeCopyWith<$Res> {
       double? totalAmount,
       double? reimbursement,
       double? patientIntervention,
+      double? amiIntervention,
       double? doctorSupplement,
       double? conventionAmount,
       double? vat,
@@ -302,6 +313,8 @@ abstract mixin class $DecryptedInvoicingCodeCopyWith<$Res> {
       int? insuranceJustification,
       int? cancelPatientInterventionReason,
       int? status,
+      String? codeLabel,
+      Map<String, String> options,
       Base64String? encryptedSelf});
 }
 
@@ -332,6 +345,7 @@ class _$DecryptedInvoicingCodeCopyWithImpl<$Res>
     Object? totalAmount = freezed,
     Object? reimbursement = freezed,
     Object? patientIntervention = freezed,
+    Object? amiIntervention = freezed,
     Object? doctorSupplement = freezed,
     Object? conventionAmount = freezed,
     Object? vat = freezed,
@@ -370,6 +384,8 @@ class _$DecryptedInvoicingCodeCopyWithImpl<$Res>
     Object? insuranceJustification = freezed,
     Object? cancelPatientInterventionReason = freezed,
     Object? status = freezed,
+    Object? codeLabel = freezed,
+    Object? options = null,
     Object? encryptedSelf = freezed,
   }) {
     return _then(_self.copyWith(
@@ -428,6 +444,10 @@ class _$DecryptedInvoicingCodeCopyWithImpl<$Res>
       patientIntervention: freezed == patientIntervention
           ? _self.patientIntervention
           : patientIntervention // ignore: cast_nullable_to_non_nullable
+              as double?,
+      amiIntervention: freezed == amiIntervention
+          ? _self.amiIntervention
+          : amiIntervention // ignore: cast_nullable_to_non_nullable
               as double?,
       doctorSupplement: freezed == doctorSupplement
           ? _self.doctorSupplement
@@ -582,6 +602,14 @@ class _$DecryptedInvoicingCodeCopyWithImpl<$Res>
           ? _self.status
           : status // ignore: cast_nullable_to_non_nullable
               as int?,
+      codeLabel: freezed == codeLabel
+          ? _self.codeLabel
+          : codeLabel // ignore: cast_nullable_to_non_nullable
+              as String?,
+      options: null == options
+          ? _self.options
+          : options // ignore: cast_nullable_to_non_nullable
+              as Map<String, String>,
       encryptedSelf: freezed == encryptedSelf
           ? _self.encryptedSelf
           : encryptedSelf // ignore: cast_nullable_to_non_nullable
@@ -608,6 +636,7 @@ class _DecryptedInvoicingCode implements DecryptedInvoicingCode {
       this.totalAmount = null,
       this.reimbursement = null,
       this.patientIntervention = null,
+      this.amiIntervention = null,
       this.doctorSupplement = null,
       this.conventionAmount = null,
       this.vat = null,
@@ -646,7 +675,10 @@ class _DecryptedInvoicingCode implements DecryptedInvoicingCode {
       this.insuranceJustification = null,
       this.cancelPatientInterventionReason = null,
       this.status = null,
-      this.encryptedSelf = null});
+      this.codeLabel = null,
+      final Map<String, String> options = const {},
+      this.encryptedSelf = null})
+      : _options = options;
 
   @override
   final String? id;
@@ -689,6 +721,9 @@ class _DecryptedInvoicingCode implements DecryptedInvoicingCode {
   @override
   @JsonKey()
   final double? patientIntervention;
+  @override
+  @JsonKey()
+  final double? amiIntervention;
   @override
   @JsonKey()
   final double? doctorSupplement;
@@ -805,6 +840,18 @@ class _DecryptedInvoicingCode implements DecryptedInvoicingCode {
   final int? status;
   @override
   @JsonKey()
+  final String? codeLabel;
+  final Map<String, String> _options;
+  @override
+  @JsonKey()
+  Map<String, String> get options {
+    if (_options is EqualUnmodifiableMapView) return _options;
+    // ignore: implicit_dynamic_type
+    return EqualUnmodifiableMapView(_options);
+  }
+
+  @override
+  @JsonKey()
   final Base64String? encryptedSelf;
 
   /// Create a copy of DecryptedInvoicingCode
@@ -844,6 +891,8 @@ class _DecryptedInvoicingCode implements DecryptedInvoicingCode {
                 other.reimbursement == reimbursement) &&
             (identical(other.patientIntervention, patientIntervention) ||
                 other.patientIntervention == patientIntervention) &&
+            (identical(other.amiIntervention, amiIntervention) ||
+                other.amiIntervention == amiIntervention) &&
             (identical(other.doctorSupplement, doctorSupplement) ||
                 other.doctorSupplement == doctorSupplement) &&
             (identical(other.conventionAmount, conventionAmount) ||
@@ -909,11 +958,13 @@ class _DecryptedInvoicingCode implements DecryptedInvoicingCode {
             (identical(other.lost, lost) || other.lost == lost) &&
             (identical(other.insuranceJustification, insuranceJustification) ||
                 other.insuranceJustification == insuranceJustification) &&
-            (identical(other.cancelPatientInterventionReason,
-                    cancelPatientInterventionReason) ||
+            (identical(other.cancelPatientInterventionReason, cancelPatientInterventionReason) ||
                 other.cancelPatientInterventionReason ==
                     cancelPatientInterventionReason) &&
             (identical(other.status, status) || other.status == status) &&
+            (identical(other.codeLabel, codeLabel) ||
+                other.codeLabel == codeLabel) &&
+            const DeepCollectionEquality().equals(other._options, _options) &&
             (identical(other.encryptedSelf, encryptedSelf) ||
                 other.encryptedSelf == encryptedSelf));
   }
@@ -935,6 +986,7 @@ class _DecryptedInvoicingCode implements DecryptedInvoicingCode {
         totalAmount,
         reimbursement,
         patientIntervention,
+        amiIntervention,
         doctorSupplement,
         conventionAmount,
         vat,
@@ -973,12 +1025,14 @@ class _DecryptedInvoicingCode implements DecryptedInvoicingCode {
         insuranceJustification,
         cancelPatientInterventionReason,
         status,
+        codeLabel,
+        const DeepCollectionEquality().hash(_options),
         encryptedSelf
       ]);
 
   @override
   String toString() {
-    return 'DecryptedInvoicingCode(id: $id, dateCode: $dateCode, logicalId: $logicalId, label: $label, userId: $userId, contactId: $contactId, serviceId: $serviceId, tarificationId: $tarificationId, code: $code, paymentType: $paymentType, paid: $paid, totalAmount: $totalAmount, reimbursement: $reimbursement, patientIntervention: $patientIntervention, doctorSupplement: $doctorSupplement, conventionAmount: $conventionAmount, vat: $vat, error: $error, contract: $contract, contractDate: $contractDate, units: $units, side: $side, timeOfDay: $timeOfDay, eidReadingHour: $eidReadingHour, eidReadingValue: $eidReadingValue, override3rdPayerCode: $override3rdPayerCode, override3rdPayerReason: $override3rdPayerReason, transplantationCode: $transplantationCode, prescriberNorm: $prescriberNorm, productLabel: $productLabel, percentNorm: $percentNorm, prescriberNihii: $prescriberNihii, relatedCode: $relatedCode, prescriptionDate: $prescriptionDate, derogationMaxNumber: $derogationMaxNumber, prescriberSsin: $prescriberSsin, prescriberLastName: $prescriberLastName, prescriberFirstName: $prescriberFirstName, prescriberCdHcParty: $prescriberCdHcParty, locationNihii: $locationNihii, locationCdHcParty: $locationCdHcParty, locationService: $locationService, admissionDate: $admissionDate, canceled: $canceled, accepted: $accepted, pending: $pending, resent: $resent, archived: $archived, lost: $lost, insuranceJustification: $insuranceJustification, cancelPatientInterventionReason: $cancelPatientInterventionReason, status: $status, encryptedSelf: $encryptedSelf)';
+    return 'DecryptedInvoicingCode(id: $id, dateCode: $dateCode, logicalId: $logicalId, label: $label, userId: $userId, contactId: $contactId, serviceId: $serviceId, tarificationId: $tarificationId, code: $code, paymentType: $paymentType, paid: $paid, totalAmount: $totalAmount, reimbursement: $reimbursement, patientIntervention: $patientIntervention, amiIntervention: $amiIntervention, doctorSupplement: $doctorSupplement, conventionAmount: $conventionAmount, vat: $vat, error: $error, contract: $contract, contractDate: $contractDate, units: $units, side: $side, timeOfDay: $timeOfDay, eidReadingHour: $eidReadingHour, eidReadingValue: $eidReadingValue, override3rdPayerCode: $override3rdPayerCode, override3rdPayerReason: $override3rdPayerReason, transplantationCode: $transplantationCode, prescriberNorm: $prescriberNorm, productLabel: $productLabel, percentNorm: $percentNorm, prescriberNihii: $prescriberNihii, relatedCode: $relatedCode, prescriptionDate: $prescriptionDate, derogationMaxNumber: $derogationMaxNumber, prescriberSsin: $prescriberSsin, prescriberLastName: $prescriberLastName, prescriberFirstName: $prescriberFirstName, prescriberCdHcParty: $prescriberCdHcParty, locationNihii: $locationNihii, locationCdHcParty: $locationCdHcParty, locationService: $locationService, admissionDate: $admissionDate, canceled: $canceled, accepted: $accepted, pending: $pending, resent: $resent, archived: $archived, lost: $lost, insuranceJustification: $insuranceJustification, cancelPatientInterventionReason: $cancelPatientInterventionReason, status: $status, codeLabel: $codeLabel, options: $options, encryptedSelf: $encryptedSelf)';
   }
 }
 
@@ -1005,6 +1059,7 @@ abstract mixin class _$DecryptedInvoicingCodeCopyWith<$Res>
       double? totalAmount,
       double? reimbursement,
       double? patientIntervention,
+      double? amiIntervention,
       double? doctorSupplement,
       double? conventionAmount,
       double? vat,
@@ -1043,6 +1098,8 @@ abstract mixin class _$DecryptedInvoicingCodeCopyWith<$Res>
       int? insuranceJustification,
       int? cancelPatientInterventionReason,
       int? status,
+      String? codeLabel,
+      Map<String, String> options,
       Base64String? encryptedSelf});
 }
 
@@ -1073,6 +1130,7 @@ class __$DecryptedInvoicingCodeCopyWithImpl<$Res>
     Object? totalAmount = freezed,
     Object? reimbursement = freezed,
     Object? patientIntervention = freezed,
+    Object? amiIntervention = freezed,
     Object? doctorSupplement = freezed,
     Object? conventionAmount = freezed,
     Object? vat = freezed,
@@ -1111,6 +1169,8 @@ class __$DecryptedInvoicingCodeCopyWithImpl<$Res>
     Object? insuranceJustification = freezed,
     Object? cancelPatientInterventionReason = freezed,
     Object? status = freezed,
+    Object? codeLabel = freezed,
+    Object? options = null,
     Object? encryptedSelf = freezed,
   }) {
     return _then(_DecryptedInvoicingCode(
@@ -1170,6 +1230,10 @@ class __$DecryptedInvoicingCodeCopyWithImpl<$Res>
           ? _self.patientIntervention
           : patientIntervention // ignore: cast_nullable_to_non_nullable
               as double?,
+      amiIntervention: freezed == amiIntervention
+          ? _self.amiIntervention
+          : amiIntervention // ignore: cast_nullable_to_non_nullable
+              as double?,
       doctorSupplement: freezed == doctorSupplement
           ? _self.doctorSupplement
           : doctorSupplement // ignore: cast_nullable_to_non_nullable
@@ -1323,6 +1387,14 @@ class __$DecryptedInvoicingCodeCopyWithImpl<$Res>
           ? _self.status
           : status // ignore: cast_nullable_to_non_nullable
               as int?,
+      codeLabel: freezed == codeLabel
+          ? _self.codeLabel
+          : codeLabel // ignore: cast_nullable_to_non_nullable
+              as String?,
+      options: null == options
+          ? _self._options
+          : options // ignore: cast_nullable_to_non_nullable
+              as Map<String, String>,
       encryptedSelf: freezed == encryptedSelf
           ? _self.encryptedSelf
           : encryptedSelf // ignore: cast_nullable_to_non_nullable
@@ -1347,6 +1419,7 @@ mixin _$EncryptedInvoicingCode {
   double? get totalAmount;
   double? get reimbursement;
   double? get patientIntervention;
+  double? get amiIntervention;
   double? get doctorSupplement;
   double? get conventionAmount;
   double? get vat;
@@ -1385,6 +1458,8 @@ mixin _$EncryptedInvoicingCode {
   int? get insuranceJustification;
   int? get cancelPatientInterventionReason;
   int? get status;
+  String? get codeLabel;
+  Map<String, String> get options;
   Base64String? get encryptedSelf;
 
   /// Create a copy of EncryptedInvoicingCode
@@ -1423,6 +1498,8 @@ mixin _$EncryptedInvoicingCode {
                 other.reimbursement == reimbursement) &&
             (identical(other.patientIntervention, patientIntervention) ||
                 other.patientIntervention == patientIntervention) &&
+            (identical(other.amiIntervention, amiIntervention) ||
+                other.amiIntervention == amiIntervention) &&
             (identical(other.doctorSupplement, doctorSupplement) ||
                 other.doctorSupplement == doctorSupplement) &&
             (identical(other.conventionAmount, conventionAmount) ||
@@ -1488,11 +1565,13 @@ mixin _$EncryptedInvoicingCode {
             (identical(other.lost, lost) || other.lost == lost) &&
             (identical(other.insuranceJustification, insuranceJustification) ||
                 other.insuranceJustification == insuranceJustification) &&
-            (identical(other.cancelPatientInterventionReason,
-                    cancelPatientInterventionReason) ||
+            (identical(other.cancelPatientInterventionReason, cancelPatientInterventionReason) ||
                 other.cancelPatientInterventionReason ==
                     cancelPatientInterventionReason) &&
             (identical(other.status, status) || other.status == status) &&
+            (identical(other.codeLabel, codeLabel) ||
+                other.codeLabel == codeLabel) &&
+            const DeepCollectionEquality().equals(other.options, options) &&
             (identical(other.encryptedSelf, encryptedSelf) ||
                 other.encryptedSelf == encryptedSelf));
   }
@@ -1514,6 +1593,7 @@ mixin _$EncryptedInvoicingCode {
         totalAmount,
         reimbursement,
         patientIntervention,
+        amiIntervention,
         doctorSupplement,
         conventionAmount,
         vat,
@@ -1552,12 +1632,14 @@ mixin _$EncryptedInvoicingCode {
         insuranceJustification,
         cancelPatientInterventionReason,
         status,
+        codeLabel,
+        const DeepCollectionEquality().hash(options),
         encryptedSelf
       ]);
 
   @override
   String toString() {
-    return 'EncryptedInvoicingCode(id: $id, dateCode: $dateCode, logicalId: $logicalId, label: $label, userId: $userId, contactId: $contactId, serviceId: $serviceId, tarificationId: $tarificationId, code: $code, paymentType: $paymentType, paid: $paid, totalAmount: $totalAmount, reimbursement: $reimbursement, patientIntervention: $patientIntervention, doctorSupplement: $doctorSupplement, conventionAmount: $conventionAmount, vat: $vat, error: $error, contract: $contract, contractDate: $contractDate, units: $units, side: $side, timeOfDay: $timeOfDay, eidReadingHour: $eidReadingHour, eidReadingValue: $eidReadingValue, override3rdPayerCode: $override3rdPayerCode, override3rdPayerReason: $override3rdPayerReason, transplantationCode: $transplantationCode, prescriberNorm: $prescriberNorm, productLabel: $productLabel, percentNorm: $percentNorm, prescriberNihii: $prescriberNihii, relatedCode: $relatedCode, prescriptionDate: $prescriptionDate, derogationMaxNumber: $derogationMaxNumber, prescriberSsin: $prescriberSsin, prescriberLastName: $prescriberLastName, prescriberFirstName: $prescriberFirstName, prescriberCdHcParty: $prescriberCdHcParty, locationNihii: $locationNihii, locationCdHcParty: $locationCdHcParty, locationService: $locationService, admissionDate: $admissionDate, canceled: $canceled, accepted: $accepted, pending: $pending, resent: $resent, archived: $archived, lost: $lost, insuranceJustification: $insuranceJustification, cancelPatientInterventionReason: $cancelPatientInterventionReason, status: $status, encryptedSelf: $encryptedSelf)';
+    return 'EncryptedInvoicingCode(id: $id, dateCode: $dateCode, logicalId: $logicalId, label: $label, userId: $userId, contactId: $contactId, serviceId: $serviceId, tarificationId: $tarificationId, code: $code, paymentType: $paymentType, paid: $paid, totalAmount: $totalAmount, reimbursement: $reimbursement, patientIntervention: $patientIntervention, amiIntervention: $amiIntervention, doctorSupplement: $doctorSupplement, conventionAmount: $conventionAmount, vat: $vat, error: $error, contract: $contract, contractDate: $contractDate, units: $units, side: $side, timeOfDay: $timeOfDay, eidReadingHour: $eidReadingHour, eidReadingValue: $eidReadingValue, override3rdPayerCode: $override3rdPayerCode, override3rdPayerReason: $override3rdPayerReason, transplantationCode: $transplantationCode, prescriberNorm: $prescriberNorm, productLabel: $productLabel, percentNorm: $percentNorm, prescriberNihii: $prescriberNihii, relatedCode: $relatedCode, prescriptionDate: $prescriptionDate, derogationMaxNumber: $derogationMaxNumber, prescriberSsin: $prescriberSsin, prescriberLastName: $prescriberLastName, prescriberFirstName: $prescriberFirstName, prescriberCdHcParty: $prescriberCdHcParty, locationNihii: $locationNihii, locationCdHcParty: $locationCdHcParty, locationService: $locationService, admissionDate: $admissionDate, canceled: $canceled, accepted: $accepted, pending: $pending, resent: $resent, archived: $archived, lost: $lost, insuranceJustification: $insuranceJustification, cancelPatientInterventionReason: $cancelPatientInterventionReason, status: $status, codeLabel: $codeLabel, options: $options, encryptedSelf: $encryptedSelf)';
   }
 }
 
@@ -1582,6 +1664,7 @@ abstract mixin class $EncryptedInvoicingCodeCopyWith<$Res> {
       double? totalAmount,
       double? reimbursement,
       double? patientIntervention,
+      double? amiIntervention,
       double? doctorSupplement,
       double? conventionAmount,
       double? vat,
@@ -1620,6 +1703,8 @@ abstract mixin class $EncryptedInvoicingCodeCopyWith<$Res> {
       int? insuranceJustification,
       int? cancelPatientInterventionReason,
       int? status,
+      String? codeLabel,
+      Map<String, String> options,
       Base64String? encryptedSelf});
 }
 
@@ -1650,6 +1735,7 @@ class _$EncryptedInvoicingCodeCopyWithImpl<$Res>
     Object? totalAmount = freezed,
     Object? reimbursement = freezed,
     Object? patientIntervention = freezed,
+    Object? amiIntervention = freezed,
     Object? doctorSupplement = freezed,
     Object? conventionAmount = freezed,
     Object? vat = freezed,
@@ -1688,6 +1774,8 @@ class _$EncryptedInvoicingCodeCopyWithImpl<$Res>
     Object? insuranceJustification = freezed,
     Object? cancelPatientInterventionReason = freezed,
     Object? status = freezed,
+    Object? codeLabel = freezed,
+    Object? options = null,
     Object? encryptedSelf = freezed,
   }) {
     return _then(_self.copyWith(
@@ -1746,6 +1834,10 @@ class _$EncryptedInvoicingCodeCopyWithImpl<$Res>
       patientIntervention: freezed == patientIntervention
           ? _self.patientIntervention
           : patientIntervention // ignore: cast_nullable_to_non_nullable
+              as double?,
+      amiIntervention: freezed == amiIntervention
+          ? _self.amiIntervention
+          : amiIntervention // ignore: cast_nullable_to_non_nullable
               as double?,
       doctorSupplement: freezed == doctorSupplement
           ? _self.doctorSupplement
@@ -1900,6 +1992,14 @@ class _$EncryptedInvoicingCodeCopyWithImpl<$Res>
           ? _self.status
           : status // ignore: cast_nullable_to_non_nullable
               as int?,
+      codeLabel: freezed == codeLabel
+          ? _self.codeLabel
+          : codeLabel // ignore: cast_nullable_to_non_nullable
+              as String?,
+      options: null == options
+          ? _self.options
+          : options // ignore: cast_nullable_to_non_nullable
+              as Map<String, String>,
       encryptedSelf: freezed == encryptedSelf
           ? _self.encryptedSelf
           : encryptedSelf // ignore: cast_nullable_to_non_nullable
@@ -1926,6 +2026,7 @@ class _EncryptedInvoicingCode implements EncryptedInvoicingCode {
       this.totalAmount = null,
       this.reimbursement = null,
       this.patientIntervention = null,
+      this.amiIntervention = null,
       this.doctorSupplement = null,
       this.conventionAmount = null,
       this.vat = null,
@@ -1964,7 +2065,10 @@ class _EncryptedInvoicingCode implements EncryptedInvoicingCode {
       this.insuranceJustification = null,
       this.cancelPatientInterventionReason = null,
       this.status = null,
-      this.encryptedSelf = null});
+      this.codeLabel = null,
+      final Map<String, String> options = const {},
+      this.encryptedSelf = null})
+      : _options = options;
 
   @override
   final String? id;
@@ -2007,6 +2111,9 @@ class _EncryptedInvoicingCode implements EncryptedInvoicingCode {
   @override
   @JsonKey()
   final double? patientIntervention;
+  @override
+  @JsonKey()
+  final double? amiIntervention;
   @override
   @JsonKey()
   final double? doctorSupplement;
@@ -2123,6 +2230,18 @@ class _EncryptedInvoicingCode implements EncryptedInvoicingCode {
   final int? status;
   @override
   @JsonKey()
+  final String? codeLabel;
+  final Map<String, String> _options;
+  @override
+  @JsonKey()
+  Map<String, String> get options {
+    if (_options is EqualUnmodifiableMapView) return _options;
+    // ignore: implicit_dynamic_type
+    return EqualUnmodifiableMapView(_options);
+  }
+
+  @override
+  @JsonKey()
   final Base64String? encryptedSelf;
 
   /// Create a copy of EncryptedInvoicingCode
@@ -2162,6 +2281,8 @@ class _EncryptedInvoicingCode implements EncryptedInvoicingCode {
                 other.reimbursement == reimbursement) &&
             (identical(other.patientIntervention, patientIntervention) ||
                 other.patientIntervention == patientIntervention) &&
+            (identical(other.amiIntervention, amiIntervention) ||
+                other.amiIntervention == amiIntervention) &&
             (identical(other.doctorSupplement, doctorSupplement) ||
                 other.doctorSupplement == doctorSupplement) &&
             (identical(other.conventionAmount, conventionAmount) ||
@@ -2227,11 +2348,13 @@ class _EncryptedInvoicingCode implements EncryptedInvoicingCode {
             (identical(other.lost, lost) || other.lost == lost) &&
             (identical(other.insuranceJustification, insuranceJustification) ||
                 other.insuranceJustification == insuranceJustification) &&
-            (identical(other.cancelPatientInterventionReason,
-                    cancelPatientInterventionReason) ||
+            (identical(other.cancelPatientInterventionReason, cancelPatientInterventionReason) ||
                 other.cancelPatientInterventionReason ==
                     cancelPatientInterventionReason) &&
             (identical(other.status, status) || other.status == status) &&
+            (identical(other.codeLabel, codeLabel) ||
+                other.codeLabel == codeLabel) &&
+            const DeepCollectionEquality().equals(other._options, _options) &&
             (identical(other.encryptedSelf, encryptedSelf) ||
                 other.encryptedSelf == encryptedSelf));
   }
@@ -2253,6 +2376,7 @@ class _EncryptedInvoicingCode implements EncryptedInvoicingCode {
         totalAmount,
         reimbursement,
         patientIntervention,
+        amiIntervention,
         doctorSupplement,
         conventionAmount,
         vat,
@@ -2291,12 +2415,14 @@ class _EncryptedInvoicingCode implements EncryptedInvoicingCode {
         insuranceJustification,
         cancelPatientInterventionReason,
         status,
+        codeLabel,
+        const DeepCollectionEquality().hash(_options),
         encryptedSelf
       ]);
 
   @override
   String toString() {
-    return 'EncryptedInvoicingCode(id: $id, dateCode: $dateCode, logicalId: $logicalId, label: $label, userId: $userId, contactId: $contactId, serviceId: $serviceId, tarificationId: $tarificationId, code: $code, paymentType: $paymentType, paid: $paid, totalAmount: $totalAmount, reimbursement: $reimbursement, patientIntervention: $patientIntervention, doctorSupplement: $doctorSupplement, conventionAmount: $conventionAmount, vat: $vat, error: $error, contract: $contract, contractDate: $contractDate, units: $units, side: $side, timeOfDay: $timeOfDay, eidReadingHour: $eidReadingHour, eidReadingValue: $eidReadingValue, override3rdPayerCode: $override3rdPayerCode, override3rdPayerReason: $override3rdPayerReason, transplantationCode: $transplantationCode, prescriberNorm: $prescriberNorm, productLabel: $productLabel, percentNorm: $percentNorm, prescriberNihii: $prescriberNihii, relatedCode: $relatedCode, prescriptionDate: $prescriptionDate, derogationMaxNumber: $derogationMaxNumber, prescriberSsin: $prescriberSsin, prescriberLastName: $prescriberLastName, prescriberFirstName: $prescriberFirstName, prescriberCdHcParty: $prescriberCdHcParty, locationNihii: $locationNihii, locationCdHcParty: $locationCdHcParty, locationService: $locationService, admissionDate: $admissionDate, canceled: $canceled, accepted: $accepted, pending: $pending, resent: $resent, archived: $archived, lost: $lost, insuranceJustification: $insuranceJustification, cancelPatientInterventionReason: $cancelPatientInterventionReason, status: $status, encryptedSelf: $encryptedSelf)';
+    return 'EncryptedInvoicingCode(id: $id, dateCode: $dateCode, logicalId: $logicalId, label: $label, userId: $userId, contactId: $contactId, serviceId: $serviceId, tarificationId: $tarificationId, code: $code, paymentType: $paymentType, paid: $paid, totalAmount: $totalAmount, reimbursement: $reimbursement, patientIntervention: $patientIntervention, amiIntervention: $amiIntervention, doctorSupplement: $doctorSupplement, conventionAmount: $conventionAmount, vat: $vat, error: $error, contract: $contract, contractDate: $contractDate, units: $units, side: $side, timeOfDay: $timeOfDay, eidReadingHour: $eidReadingHour, eidReadingValue: $eidReadingValue, override3rdPayerCode: $override3rdPayerCode, override3rdPayerReason: $override3rdPayerReason, transplantationCode: $transplantationCode, prescriberNorm: $prescriberNorm, productLabel: $productLabel, percentNorm: $percentNorm, prescriberNihii: $prescriberNihii, relatedCode: $relatedCode, prescriptionDate: $prescriptionDate, derogationMaxNumber: $derogationMaxNumber, prescriberSsin: $prescriberSsin, prescriberLastName: $prescriberLastName, prescriberFirstName: $prescriberFirstName, prescriberCdHcParty: $prescriberCdHcParty, locationNihii: $locationNihii, locationCdHcParty: $locationCdHcParty, locationService: $locationService, admissionDate: $admissionDate, canceled: $canceled, accepted: $accepted, pending: $pending, resent: $resent, archived: $archived, lost: $lost, insuranceJustification: $insuranceJustification, cancelPatientInterventionReason: $cancelPatientInterventionReason, status: $status, codeLabel: $codeLabel, options: $options, encryptedSelf: $encryptedSelf)';
   }
 }
 
@@ -2323,6 +2449,7 @@ abstract mixin class _$EncryptedInvoicingCodeCopyWith<$Res>
       double? totalAmount,
       double? reimbursement,
       double? patientIntervention,
+      double? amiIntervention,
       double? doctorSupplement,
       double? conventionAmount,
       double? vat,
@@ -2361,6 +2488,8 @@ abstract mixin class _$EncryptedInvoicingCodeCopyWith<$Res>
       int? insuranceJustification,
       int? cancelPatientInterventionReason,
       int? status,
+      String? codeLabel,
+      Map<String, String> options,
       Base64String? encryptedSelf});
 }
 
@@ -2391,6 +2520,7 @@ class __$EncryptedInvoicingCodeCopyWithImpl<$Res>
     Object? totalAmount = freezed,
     Object? reimbursement = freezed,
     Object? patientIntervention = freezed,
+    Object? amiIntervention = freezed,
     Object? doctorSupplement = freezed,
     Object? conventionAmount = freezed,
     Object? vat = freezed,
@@ -2429,6 +2559,8 @@ class __$EncryptedInvoicingCodeCopyWithImpl<$Res>
     Object? insuranceJustification = freezed,
     Object? cancelPatientInterventionReason = freezed,
     Object? status = freezed,
+    Object? codeLabel = freezed,
+    Object? options = null,
     Object? encryptedSelf = freezed,
   }) {
     return _then(_EncryptedInvoicingCode(
@@ -2487,6 +2619,10 @@ class __$EncryptedInvoicingCodeCopyWithImpl<$Res>
       patientIntervention: freezed == patientIntervention
           ? _self.patientIntervention
           : patientIntervention // ignore: cast_nullable_to_non_nullable
+              as double?,
+      amiIntervention: freezed == amiIntervention
+          ? _self.amiIntervention
+          : amiIntervention // ignore: cast_nullable_to_non_nullable
               as double?,
       doctorSupplement: freezed == doctorSupplement
           ? _self.doctorSupplement
@@ -2641,6 +2777,14 @@ class __$EncryptedInvoicingCodeCopyWithImpl<$Res>
           ? _self.status
           : status // ignore: cast_nullable_to_non_nullable
               as int?,
+      codeLabel: freezed == codeLabel
+          ? _self.codeLabel
+          : codeLabel // ignore: cast_nullable_to_non_nullable
+              as String?,
+      options: null == options
+          ? _self._options
+          : options // ignore: cast_nullable_to_non_nullable
+              as Map<String, String>,
       encryptedSelf: freezed == encryptedSelf
           ? _self.encryptedSelf
           : encryptedSelf // ignore: cast_nullable_to_non_nullable

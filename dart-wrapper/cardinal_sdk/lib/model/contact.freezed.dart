@@ -38,6 +38,7 @@ mixin _$DecryptedContact {
   Set<DecryptedSubContact> get subContacts;
   Set<DecryptedService> get services;
   Map<ParticipantType, String> get participants;
+  List<ContactParticipant> get participantList;
   String? get healthcarePartyId;
   String? get modifiedContactId;
   Set<String> get secretForeignKeys;
@@ -98,6 +99,8 @@ mixin _$DecryptedContact {
             const DeepCollectionEquality().equals(other.services, services) &&
             const DeepCollectionEquality()
                 .equals(other.participants, participants) &&
+            const DeepCollectionEquality()
+                .equals(other.participantList, participantList) &&
             (identical(other.healthcarePartyId, healthcarePartyId) ||
                 other.healthcarePartyId == healthcarePartyId) &&
             (identical(other.modifiedContactId, modifiedContactId) ||
@@ -143,6 +146,7 @@ mixin _$DecryptedContact {
         const DeepCollectionEquality().hash(subContacts),
         const DeepCollectionEquality().hash(services),
         const DeepCollectionEquality().hash(participants),
+        const DeepCollectionEquality().hash(participantList),
         healthcarePartyId,
         modifiedContactId,
         const DeepCollectionEquality().hash(secretForeignKeys),
@@ -156,7 +160,7 @@ mixin _$DecryptedContact {
 
   @override
   String toString() {
-    return 'DecryptedContact(id: $id, rev: $rev, created: $created, modified: $modified, author: $author, responsible: $responsible, medicalLocationId: $medicalLocationId, tags: $tags, codes: $codes, identifier: $identifier, endOfLife: $endOfLife, deletionDate: $deletionDate, groupId: $groupId, openingDate: $openingDate, closingDate: $closingDate, descr: $descr, location: $location, externalId: $externalId, encounterType: $encounterType, encounterLocation: $encounterLocation, subContacts: $subContacts, services: $services, participants: $participants, healthcarePartyId: $healthcarePartyId, modifiedContactId: $modifiedContactId, secretForeignKeys: $secretForeignKeys, cryptedForeignKeys: $cryptedForeignKeys, delegations: $delegations, encryptionKeys: $encryptionKeys, encryptedSelf: $encryptedSelf, securityMetadata: $securityMetadata, notes: $notes)';
+    return 'DecryptedContact(id: $id, rev: $rev, created: $created, modified: $modified, author: $author, responsible: $responsible, medicalLocationId: $medicalLocationId, tags: $tags, codes: $codes, identifier: $identifier, endOfLife: $endOfLife, deletionDate: $deletionDate, groupId: $groupId, openingDate: $openingDate, closingDate: $closingDate, descr: $descr, location: $location, externalId: $externalId, encounterType: $encounterType, encounterLocation: $encounterLocation, subContacts: $subContacts, services: $services, participants: $participants, participantList: $participantList, healthcarePartyId: $healthcarePartyId, modifiedContactId: $modifiedContactId, secretForeignKeys: $secretForeignKeys, cryptedForeignKeys: $cryptedForeignKeys, delegations: $delegations, encryptionKeys: $encryptionKeys, encryptedSelf: $encryptedSelf, securityMetadata: $securityMetadata, notes: $notes)';
   }
 }
 
@@ -190,6 +194,7 @@ abstract mixin class $DecryptedContactCopyWith<$Res> {
       Set<DecryptedSubContact> subContacts,
       Set<DecryptedService> services,
       Map<ParticipantType, String> participants,
+      List<ContactParticipant> participantList,
       String? healthcarePartyId,
       String? modifiedContactId,
       Set<String> secretForeignKeys,
@@ -241,6 +246,7 @@ class _$DecryptedContactCopyWithImpl<$Res>
     Object? subContacts = null,
     Object? services = null,
     Object? participants = null,
+    Object? participantList = null,
     Object? healthcarePartyId = freezed,
     Object? modifiedContactId = freezed,
     Object? secretForeignKeys = null,
@@ -344,6 +350,10 @@ class _$DecryptedContactCopyWithImpl<$Res>
           ? _self.participants
           : participants // ignore: cast_nullable_to_non_nullable
               as Map<ParticipantType, String>,
+      participantList: null == participantList
+          ? _self.participantList
+          : participantList // ignore: cast_nullable_to_non_nullable
+              as List<ContactParticipant>,
       healthcarePartyId: freezed == healthcarePartyId
           ? _self.healthcarePartyId
           : healthcarePartyId // ignore: cast_nullable_to_non_nullable
@@ -453,6 +463,7 @@ class _DecryptedContact implements DecryptedContact {
       final Set<DecryptedSubContact> subContacts = const {},
       final Set<DecryptedService> services = const {},
       final Map<ParticipantType, String> participants = const {},
+      final List<ContactParticipant> participantList = const [],
       this.healthcarePartyId = null,
       this.modifiedContactId = null,
       final Set<String> secretForeignKeys = const {},
@@ -468,6 +479,7 @@ class _DecryptedContact implements DecryptedContact {
         _subContacts = subContacts,
         _services = services,
         _participants = participants,
+        _participantList = participantList,
         _secretForeignKeys = secretForeignKeys,
         _cryptedForeignKeys = cryptedForeignKeys,
         _delegations = delegations,
@@ -576,6 +588,15 @@ class _DecryptedContact implements DecryptedContact {
     if (_participants is EqualUnmodifiableMapView) return _participants;
     // ignore: implicit_dynamic_type
     return EqualUnmodifiableMapView(_participants);
+  }
+
+  final List<ContactParticipant> _participantList;
+  @override
+  @JsonKey()
+  List<ContactParticipant> get participantList {
+    if (_participantList is EqualUnmodifiableListView) return _participantList;
+    // ignore: implicit_dynamic_type
+    return EqualUnmodifiableListView(_participantList);
   }
 
   @override
@@ -687,6 +708,8 @@ class _DecryptedContact implements DecryptedContact {
             const DeepCollectionEquality().equals(other._services, _services) &&
             const DeepCollectionEquality()
                 .equals(other._participants, _participants) &&
+            const DeepCollectionEquality()
+                .equals(other._participantList, _participantList) &&
             (identical(other.healthcarePartyId, healthcarePartyId) ||
                 other.healthcarePartyId == healthcarePartyId) &&
             (identical(other.modifiedContactId, modifiedContactId) ||
@@ -732,6 +755,7 @@ class _DecryptedContact implements DecryptedContact {
         const DeepCollectionEquality().hash(_subContacts),
         const DeepCollectionEquality().hash(_services),
         const DeepCollectionEquality().hash(_participants),
+        const DeepCollectionEquality().hash(_participantList),
         healthcarePartyId,
         modifiedContactId,
         const DeepCollectionEquality().hash(_secretForeignKeys),
@@ -745,7 +769,7 @@ class _DecryptedContact implements DecryptedContact {
 
   @override
   String toString() {
-    return 'DecryptedContact(id: $id, rev: $rev, created: $created, modified: $modified, author: $author, responsible: $responsible, medicalLocationId: $medicalLocationId, tags: $tags, codes: $codes, identifier: $identifier, endOfLife: $endOfLife, deletionDate: $deletionDate, groupId: $groupId, openingDate: $openingDate, closingDate: $closingDate, descr: $descr, location: $location, externalId: $externalId, encounterType: $encounterType, encounterLocation: $encounterLocation, subContacts: $subContacts, services: $services, participants: $participants, healthcarePartyId: $healthcarePartyId, modifiedContactId: $modifiedContactId, secretForeignKeys: $secretForeignKeys, cryptedForeignKeys: $cryptedForeignKeys, delegations: $delegations, encryptionKeys: $encryptionKeys, encryptedSelf: $encryptedSelf, securityMetadata: $securityMetadata, notes: $notes)';
+    return 'DecryptedContact(id: $id, rev: $rev, created: $created, modified: $modified, author: $author, responsible: $responsible, medicalLocationId: $medicalLocationId, tags: $tags, codes: $codes, identifier: $identifier, endOfLife: $endOfLife, deletionDate: $deletionDate, groupId: $groupId, openingDate: $openingDate, closingDate: $closingDate, descr: $descr, location: $location, externalId: $externalId, encounterType: $encounterType, encounterLocation: $encounterLocation, subContacts: $subContacts, services: $services, participants: $participants, participantList: $participantList, healthcarePartyId: $healthcarePartyId, modifiedContactId: $modifiedContactId, secretForeignKeys: $secretForeignKeys, cryptedForeignKeys: $cryptedForeignKeys, delegations: $delegations, encryptionKeys: $encryptionKeys, encryptedSelf: $encryptedSelf, securityMetadata: $securityMetadata, notes: $notes)';
   }
 }
 
@@ -781,6 +805,7 @@ abstract mixin class _$DecryptedContactCopyWith<$Res>
       Set<DecryptedSubContact> subContacts,
       Set<DecryptedService> services,
       Map<ParticipantType, String> participants,
+      List<ContactParticipant> participantList,
       String? healthcarePartyId,
       String? modifiedContactId,
       Set<String> secretForeignKeys,
@@ -835,6 +860,7 @@ class __$DecryptedContactCopyWithImpl<$Res>
     Object? subContacts = null,
     Object? services = null,
     Object? participants = null,
+    Object? participantList = null,
     Object? healthcarePartyId = freezed,
     Object? modifiedContactId = freezed,
     Object? secretForeignKeys = null,
@@ -938,6 +964,10 @@ class __$DecryptedContactCopyWithImpl<$Res>
           ? _self._participants
           : participants // ignore: cast_nullable_to_non_nullable
               as Map<ParticipantType, String>,
+      participantList: null == participantList
+          ? _self._participantList
+          : participantList // ignore: cast_nullable_to_non_nullable
+              as List<ContactParticipant>,
       healthcarePartyId: freezed == healthcarePartyId
           ? _self.healthcarePartyId
           : healthcarePartyId // ignore: cast_nullable_to_non_nullable
@@ -1045,6 +1075,7 @@ mixin _$EncryptedContact {
   Set<EncryptedSubContact> get subContacts;
   Set<EncryptedService> get services;
   Map<ParticipantType, String> get participants;
+  List<ContactParticipant> get participantList;
   String? get healthcarePartyId;
   String? get modifiedContactId;
   Set<String> get secretForeignKeys;
@@ -1105,6 +1136,8 @@ mixin _$EncryptedContact {
             const DeepCollectionEquality().equals(other.services, services) &&
             const DeepCollectionEquality()
                 .equals(other.participants, participants) &&
+            const DeepCollectionEquality()
+                .equals(other.participantList, participantList) &&
             (identical(other.healthcarePartyId, healthcarePartyId) ||
                 other.healthcarePartyId == healthcarePartyId) &&
             (identical(other.modifiedContactId, modifiedContactId) ||
@@ -1150,6 +1183,7 @@ mixin _$EncryptedContact {
         const DeepCollectionEquality().hash(subContacts),
         const DeepCollectionEquality().hash(services),
         const DeepCollectionEquality().hash(participants),
+        const DeepCollectionEquality().hash(participantList),
         healthcarePartyId,
         modifiedContactId,
         const DeepCollectionEquality().hash(secretForeignKeys),
@@ -1163,7 +1197,7 @@ mixin _$EncryptedContact {
 
   @override
   String toString() {
-    return 'EncryptedContact(id: $id, rev: $rev, created: $created, modified: $modified, author: $author, responsible: $responsible, medicalLocationId: $medicalLocationId, tags: $tags, codes: $codes, identifier: $identifier, endOfLife: $endOfLife, deletionDate: $deletionDate, groupId: $groupId, openingDate: $openingDate, closingDate: $closingDate, descr: $descr, location: $location, externalId: $externalId, encounterType: $encounterType, encounterLocation: $encounterLocation, subContacts: $subContacts, services: $services, participants: $participants, healthcarePartyId: $healthcarePartyId, modifiedContactId: $modifiedContactId, secretForeignKeys: $secretForeignKeys, cryptedForeignKeys: $cryptedForeignKeys, delegations: $delegations, encryptionKeys: $encryptionKeys, encryptedSelf: $encryptedSelf, securityMetadata: $securityMetadata, notes: $notes)';
+    return 'EncryptedContact(id: $id, rev: $rev, created: $created, modified: $modified, author: $author, responsible: $responsible, medicalLocationId: $medicalLocationId, tags: $tags, codes: $codes, identifier: $identifier, endOfLife: $endOfLife, deletionDate: $deletionDate, groupId: $groupId, openingDate: $openingDate, closingDate: $closingDate, descr: $descr, location: $location, externalId: $externalId, encounterType: $encounterType, encounterLocation: $encounterLocation, subContacts: $subContacts, services: $services, participants: $participants, participantList: $participantList, healthcarePartyId: $healthcarePartyId, modifiedContactId: $modifiedContactId, secretForeignKeys: $secretForeignKeys, cryptedForeignKeys: $cryptedForeignKeys, delegations: $delegations, encryptionKeys: $encryptionKeys, encryptedSelf: $encryptedSelf, securityMetadata: $securityMetadata, notes: $notes)';
   }
 }
 
@@ -1197,6 +1231,7 @@ abstract mixin class $EncryptedContactCopyWith<$Res> {
       Set<EncryptedSubContact> subContacts,
       Set<EncryptedService> services,
       Map<ParticipantType, String> participants,
+      List<ContactParticipant> participantList,
       String? healthcarePartyId,
       String? modifiedContactId,
       Set<String> secretForeignKeys,
@@ -1248,6 +1283,7 @@ class _$EncryptedContactCopyWithImpl<$Res>
     Object? subContacts = null,
     Object? services = null,
     Object? participants = null,
+    Object? participantList = null,
     Object? healthcarePartyId = freezed,
     Object? modifiedContactId = freezed,
     Object? secretForeignKeys = null,
@@ -1351,6 +1387,10 @@ class _$EncryptedContactCopyWithImpl<$Res>
           ? _self.participants
           : participants // ignore: cast_nullable_to_non_nullable
               as Map<ParticipantType, String>,
+      participantList: null == participantList
+          ? _self.participantList
+          : participantList // ignore: cast_nullable_to_non_nullable
+              as List<ContactParticipant>,
       healthcarePartyId: freezed == healthcarePartyId
           ? _self.healthcarePartyId
           : healthcarePartyId // ignore: cast_nullable_to_non_nullable
@@ -1460,6 +1500,7 @@ class _EncryptedContact implements EncryptedContact {
       final Set<EncryptedSubContact> subContacts = const {},
       final Set<EncryptedService> services = const {},
       final Map<ParticipantType, String> participants = const {},
+      final List<ContactParticipant> participantList = const [],
       this.healthcarePartyId = null,
       this.modifiedContactId = null,
       final Set<String> secretForeignKeys = const {},
@@ -1475,6 +1516,7 @@ class _EncryptedContact implements EncryptedContact {
         _subContacts = subContacts,
         _services = services,
         _participants = participants,
+        _participantList = participantList,
         _secretForeignKeys = secretForeignKeys,
         _cryptedForeignKeys = cryptedForeignKeys,
         _delegations = delegations,
@@ -1583,6 +1625,15 @@ class _EncryptedContact implements EncryptedContact {
     if (_participants is EqualUnmodifiableMapView) return _participants;
     // ignore: implicit_dynamic_type
     return EqualUnmodifiableMapView(_participants);
+  }
+
+  final List<ContactParticipant> _participantList;
+  @override
+  @JsonKey()
+  List<ContactParticipant> get participantList {
+    if (_participantList is EqualUnmodifiableListView) return _participantList;
+    // ignore: implicit_dynamic_type
+    return EqualUnmodifiableListView(_participantList);
   }
 
   @override
@@ -1694,6 +1745,8 @@ class _EncryptedContact implements EncryptedContact {
             const DeepCollectionEquality().equals(other._services, _services) &&
             const DeepCollectionEquality()
                 .equals(other._participants, _participants) &&
+            const DeepCollectionEquality()
+                .equals(other._participantList, _participantList) &&
             (identical(other.healthcarePartyId, healthcarePartyId) ||
                 other.healthcarePartyId == healthcarePartyId) &&
             (identical(other.modifiedContactId, modifiedContactId) ||
@@ -1739,6 +1792,7 @@ class _EncryptedContact implements EncryptedContact {
         const DeepCollectionEquality().hash(_subContacts),
         const DeepCollectionEquality().hash(_services),
         const DeepCollectionEquality().hash(_participants),
+        const DeepCollectionEquality().hash(_participantList),
         healthcarePartyId,
         modifiedContactId,
         const DeepCollectionEquality().hash(_secretForeignKeys),
@@ -1752,7 +1806,7 @@ class _EncryptedContact implements EncryptedContact {
 
   @override
   String toString() {
-    return 'EncryptedContact(id: $id, rev: $rev, created: $created, modified: $modified, author: $author, responsible: $responsible, medicalLocationId: $medicalLocationId, tags: $tags, codes: $codes, identifier: $identifier, endOfLife: $endOfLife, deletionDate: $deletionDate, groupId: $groupId, openingDate: $openingDate, closingDate: $closingDate, descr: $descr, location: $location, externalId: $externalId, encounterType: $encounterType, encounterLocation: $encounterLocation, subContacts: $subContacts, services: $services, participants: $participants, healthcarePartyId: $healthcarePartyId, modifiedContactId: $modifiedContactId, secretForeignKeys: $secretForeignKeys, cryptedForeignKeys: $cryptedForeignKeys, delegations: $delegations, encryptionKeys: $encryptionKeys, encryptedSelf: $encryptedSelf, securityMetadata: $securityMetadata, notes: $notes)';
+    return 'EncryptedContact(id: $id, rev: $rev, created: $created, modified: $modified, author: $author, responsible: $responsible, medicalLocationId: $medicalLocationId, tags: $tags, codes: $codes, identifier: $identifier, endOfLife: $endOfLife, deletionDate: $deletionDate, groupId: $groupId, openingDate: $openingDate, closingDate: $closingDate, descr: $descr, location: $location, externalId: $externalId, encounterType: $encounterType, encounterLocation: $encounterLocation, subContacts: $subContacts, services: $services, participants: $participants, participantList: $participantList, healthcarePartyId: $healthcarePartyId, modifiedContactId: $modifiedContactId, secretForeignKeys: $secretForeignKeys, cryptedForeignKeys: $cryptedForeignKeys, delegations: $delegations, encryptionKeys: $encryptionKeys, encryptedSelf: $encryptedSelf, securityMetadata: $securityMetadata, notes: $notes)';
   }
 }
 
@@ -1788,6 +1842,7 @@ abstract mixin class _$EncryptedContactCopyWith<$Res>
       Set<EncryptedSubContact> subContacts,
       Set<EncryptedService> services,
       Map<ParticipantType, String> participants,
+      List<ContactParticipant> participantList,
       String? healthcarePartyId,
       String? modifiedContactId,
       Set<String> secretForeignKeys,
@@ -1842,6 +1897,7 @@ class __$EncryptedContactCopyWithImpl<$Res>
     Object? subContacts = null,
     Object? services = null,
     Object? participants = null,
+    Object? participantList = null,
     Object? healthcarePartyId = freezed,
     Object? modifiedContactId = freezed,
     Object? secretForeignKeys = null,
@@ -1945,6 +2001,10 @@ class __$EncryptedContactCopyWithImpl<$Res>
           ? _self._participants
           : participants // ignore: cast_nullable_to_non_nullable
               as Map<ParticipantType, String>,
+      participantList: null == participantList
+          ? _self._participantList
+          : participantList // ignore: cast_nullable_to_non_nullable
+              as List<ContactParticipant>,
       healthcarePartyId: freezed == healthcarePartyId
           ? _self.healthcarePartyId
           : healthcarePartyId // ignore: cast_nullable_to_non_nullable

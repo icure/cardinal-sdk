@@ -46,6 +46,9 @@ mixin _$DecryptedCalendarItem {
   String? get details;
   bool? get wasMigrated;
   String? get agendaId;
+  CodeStub? get resourceGroup;
+  CalendarItemAvailabilitiesAssignmentStrategy?
+      get availabilitiesAssignmentStrategy;
   String? get hcpId;
   String? get recurrenceId;
   Set<DecryptedCalendarItemTag> get meetingTags;
@@ -120,6 +123,12 @@ mixin _$DecryptedCalendarItem {
                 other.wasMigrated == wasMigrated) &&
             (identical(other.agendaId, agendaId) ||
                 other.agendaId == agendaId) &&
+            (identical(other.resourceGroup, resourceGroup) ||
+                other.resourceGroup == resourceGroup) &&
+            (identical(other.availabilitiesAssignmentStrategy,
+                    availabilitiesAssignmentStrategy) ||
+                other.availabilitiesAssignmentStrategy ==
+                    availabilitiesAssignmentStrategy) &&
             (identical(other.hcpId, hcpId) || other.hcpId == hcpId) &&
             (identical(other.recurrenceId, recurrenceId) ||
                 other.recurrenceId == recurrenceId) &&
@@ -175,6 +184,8 @@ mixin _$DecryptedCalendarItem {
         details,
         wasMigrated,
         agendaId,
+        resourceGroup,
+        availabilitiesAssignmentStrategy,
         hcpId,
         recurrenceId,
         const DeepCollectionEquality().hash(meetingTags),
@@ -189,7 +200,7 @@ mixin _$DecryptedCalendarItem {
 
   @override
   String toString() {
-    return 'DecryptedCalendarItem(id: $id, rev: $rev, created: $created, modified: $modified, author: $author, responsible: $responsible, medicalLocationId: $medicalLocationId, tags: $tags, codes: $codes, endOfLife: $endOfLife, deletionDate: $deletionDate, title: $title, calendarItemTypeId: $calendarItemTypeId, masterCalendarItemId: $masterCalendarItemId, patientId: $patientId, important: $important, homeVisit: $homeVisit, phoneNumber: $phoneNumber, placeId: $placeId, address: $address, addressText: $addressText, startTime: $startTime, endTime: $endTime, confirmationTime: $confirmationTime, cancellationTimestamp: $cancellationTimestamp, confirmationId: $confirmationId, duration: $duration, allDay: $allDay, details: $details, wasMigrated: $wasMigrated, agendaId: $agendaId, hcpId: $hcpId, recurrenceId: $recurrenceId, meetingTags: $meetingTags, flowItem: $flowItem, secretForeignKeys: $secretForeignKeys, cryptedForeignKeys: $cryptedForeignKeys, delegations: $delegations, encryptionKeys: $encryptionKeys, encryptedSelf: $encryptedSelf, securityMetadata: $securityMetadata)';
+    return 'DecryptedCalendarItem(id: $id, rev: $rev, created: $created, modified: $modified, author: $author, responsible: $responsible, medicalLocationId: $medicalLocationId, tags: $tags, codes: $codes, endOfLife: $endOfLife, deletionDate: $deletionDate, title: $title, calendarItemTypeId: $calendarItemTypeId, masterCalendarItemId: $masterCalendarItemId, patientId: $patientId, important: $important, homeVisit: $homeVisit, phoneNumber: $phoneNumber, placeId: $placeId, address: $address, addressText: $addressText, startTime: $startTime, endTime: $endTime, confirmationTime: $confirmationTime, cancellationTimestamp: $cancellationTimestamp, confirmationId: $confirmationId, duration: $duration, allDay: $allDay, details: $details, wasMigrated: $wasMigrated, agendaId: $agendaId, resourceGroup: $resourceGroup, availabilitiesAssignmentStrategy: $availabilitiesAssignmentStrategy, hcpId: $hcpId, recurrenceId: $recurrenceId, meetingTags: $meetingTags, flowItem: $flowItem, secretForeignKeys: $secretForeignKeys, cryptedForeignKeys: $cryptedForeignKeys, delegations: $delegations, encryptionKeys: $encryptionKeys, encryptedSelf: $encryptedSelf, securityMetadata: $securityMetadata)';
   }
 }
 
@@ -231,6 +242,9 @@ abstract mixin class $DecryptedCalendarItemCopyWith<$Res> {
       String? details,
       bool? wasMigrated,
       String? agendaId,
+      CodeStub? resourceGroup,
+      CalendarItemAvailabilitiesAssignmentStrategy?
+          availabilitiesAssignmentStrategy,
       String? hcpId,
       String? recurrenceId,
       Set<DecryptedCalendarItemTag> meetingTags,
@@ -243,6 +257,7 @@ abstract mixin class $DecryptedCalendarItemCopyWith<$Res> {
       SecurityMetadata? securityMetadata});
 
   $DecryptedAddressCopyWith<$Res>? get address;
+  $CodeStubCopyWith<$Res>? get resourceGroup;
   $FlowItemCopyWith<$Res>? get flowItem;
   $SecurityMetadataCopyWith<$Res>? get securityMetadata;
 }
@@ -291,6 +306,8 @@ class _$DecryptedCalendarItemCopyWithImpl<$Res>
     Object? details = freezed,
     Object? wasMigrated = freezed,
     Object? agendaId = freezed,
+    Object? resourceGroup = freezed,
+    Object? availabilitiesAssignmentStrategy = freezed,
     Object? hcpId = freezed,
     Object? recurrenceId = freezed,
     Object? meetingTags = null,
@@ -427,6 +444,15 @@ class _$DecryptedCalendarItemCopyWithImpl<$Res>
           ? _self.agendaId
           : agendaId // ignore: cast_nullable_to_non_nullable
               as String?,
+      resourceGroup: freezed == resourceGroup
+          ? _self.resourceGroup
+          : resourceGroup // ignore: cast_nullable_to_non_nullable
+              as CodeStub?,
+      availabilitiesAssignmentStrategy: freezed ==
+              availabilitiesAssignmentStrategy
+          ? _self.availabilitiesAssignmentStrategy
+          : availabilitiesAssignmentStrategy // ignore: cast_nullable_to_non_nullable
+              as CalendarItemAvailabilitiesAssignmentStrategy?,
       hcpId: freezed == hcpId
           ? _self.hcpId
           : hcpId // ignore: cast_nullable_to_non_nullable
@@ -481,6 +507,20 @@ class _$DecryptedCalendarItemCopyWithImpl<$Res>
 
     return $DecryptedAddressCopyWith<$Res>(_self.address!, (value) {
       return _then(_self.copyWith(address: value));
+    });
+  }
+
+  /// Create a copy of DecryptedCalendarItem
+  /// with the given fields replaced by the non-null parameter values.
+  @override
+  @pragma('vm:prefer-inline')
+  $CodeStubCopyWith<$Res>? get resourceGroup {
+    if (_self.resourceGroup == null) {
+      return null;
+    }
+
+    return $CodeStubCopyWith<$Res>(_self.resourceGroup!, (value) {
+      return _then(_self.copyWith(resourceGroup: value));
     });
   }
 
@@ -548,6 +588,8 @@ class _DecryptedCalendarItem implements DecryptedCalendarItem {
       this.details = null,
       this.wasMigrated = null,
       this.agendaId = null,
+      this.resourceGroup = null,
+      this.availabilitiesAssignmentStrategy = null,
       this.hcpId = null,
       this.recurrenceId = null,
       final Set<DecryptedCalendarItemTag> meetingTags = const {},
@@ -670,6 +712,13 @@ class _DecryptedCalendarItem implements DecryptedCalendarItem {
   @override
   @JsonKey()
   final String? agendaId;
+  @override
+  @JsonKey()
+  final CodeStub? resourceGroup;
+  @override
+  @JsonKey()
+  final CalendarItemAvailabilitiesAssignmentStrategy?
+      availabilitiesAssignmentStrategy;
   @override
   @JsonKey()
   final String? hcpId;
@@ -797,6 +846,12 @@ class _DecryptedCalendarItem implements DecryptedCalendarItem {
                 other.wasMigrated == wasMigrated) &&
             (identical(other.agendaId, agendaId) ||
                 other.agendaId == agendaId) &&
+            (identical(other.resourceGroup, resourceGroup) ||
+                other.resourceGroup == resourceGroup) &&
+            (identical(other.availabilitiesAssignmentStrategy,
+                    availabilitiesAssignmentStrategy) ||
+                other.availabilitiesAssignmentStrategy ==
+                    availabilitiesAssignmentStrategy) &&
             (identical(other.hcpId, hcpId) || other.hcpId == hcpId) &&
             (identical(other.recurrenceId, recurrenceId) ||
                 other.recurrenceId == recurrenceId) &&
@@ -852,6 +907,8 @@ class _DecryptedCalendarItem implements DecryptedCalendarItem {
         details,
         wasMigrated,
         agendaId,
+        resourceGroup,
+        availabilitiesAssignmentStrategy,
         hcpId,
         recurrenceId,
         const DeepCollectionEquality().hash(_meetingTags),
@@ -866,7 +923,7 @@ class _DecryptedCalendarItem implements DecryptedCalendarItem {
 
   @override
   String toString() {
-    return 'DecryptedCalendarItem(id: $id, rev: $rev, created: $created, modified: $modified, author: $author, responsible: $responsible, medicalLocationId: $medicalLocationId, tags: $tags, codes: $codes, endOfLife: $endOfLife, deletionDate: $deletionDate, title: $title, calendarItemTypeId: $calendarItemTypeId, masterCalendarItemId: $masterCalendarItemId, patientId: $patientId, important: $important, homeVisit: $homeVisit, phoneNumber: $phoneNumber, placeId: $placeId, address: $address, addressText: $addressText, startTime: $startTime, endTime: $endTime, confirmationTime: $confirmationTime, cancellationTimestamp: $cancellationTimestamp, confirmationId: $confirmationId, duration: $duration, allDay: $allDay, details: $details, wasMigrated: $wasMigrated, agendaId: $agendaId, hcpId: $hcpId, recurrenceId: $recurrenceId, meetingTags: $meetingTags, flowItem: $flowItem, secretForeignKeys: $secretForeignKeys, cryptedForeignKeys: $cryptedForeignKeys, delegations: $delegations, encryptionKeys: $encryptionKeys, encryptedSelf: $encryptedSelf, securityMetadata: $securityMetadata)';
+    return 'DecryptedCalendarItem(id: $id, rev: $rev, created: $created, modified: $modified, author: $author, responsible: $responsible, medicalLocationId: $medicalLocationId, tags: $tags, codes: $codes, endOfLife: $endOfLife, deletionDate: $deletionDate, title: $title, calendarItemTypeId: $calendarItemTypeId, masterCalendarItemId: $masterCalendarItemId, patientId: $patientId, important: $important, homeVisit: $homeVisit, phoneNumber: $phoneNumber, placeId: $placeId, address: $address, addressText: $addressText, startTime: $startTime, endTime: $endTime, confirmationTime: $confirmationTime, cancellationTimestamp: $cancellationTimestamp, confirmationId: $confirmationId, duration: $duration, allDay: $allDay, details: $details, wasMigrated: $wasMigrated, agendaId: $agendaId, resourceGroup: $resourceGroup, availabilitiesAssignmentStrategy: $availabilitiesAssignmentStrategy, hcpId: $hcpId, recurrenceId: $recurrenceId, meetingTags: $meetingTags, flowItem: $flowItem, secretForeignKeys: $secretForeignKeys, cryptedForeignKeys: $cryptedForeignKeys, delegations: $delegations, encryptionKeys: $encryptionKeys, encryptedSelf: $encryptedSelf, securityMetadata: $securityMetadata)';
   }
 }
 
@@ -910,6 +967,9 @@ abstract mixin class _$DecryptedCalendarItemCopyWith<$Res>
       String? details,
       bool? wasMigrated,
       String? agendaId,
+      CodeStub? resourceGroup,
+      CalendarItemAvailabilitiesAssignmentStrategy?
+          availabilitiesAssignmentStrategy,
       String? hcpId,
       String? recurrenceId,
       Set<DecryptedCalendarItemTag> meetingTags,
@@ -923,6 +983,8 @@ abstract mixin class _$DecryptedCalendarItemCopyWith<$Res>
 
   @override
   $DecryptedAddressCopyWith<$Res>? get address;
+  @override
+  $CodeStubCopyWith<$Res>? get resourceGroup;
   @override
   $FlowItemCopyWith<$Res>? get flowItem;
   @override
@@ -973,6 +1035,8 @@ class __$DecryptedCalendarItemCopyWithImpl<$Res>
     Object? details = freezed,
     Object? wasMigrated = freezed,
     Object? agendaId = freezed,
+    Object? resourceGroup = freezed,
+    Object? availabilitiesAssignmentStrategy = freezed,
     Object? hcpId = freezed,
     Object? recurrenceId = freezed,
     Object? meetingTags = null,
@@ -1109,6 +1173,15 @@ class __$DecryptedCalendarItemCopyWithImpl<$Res>
           ? _self.agendaId
           : agendaId // ignore: cast_nullable_to_non_nullable
               as String?,
+      resourceGroup: freezed == resourceGroup
+          ? _self.resourceGroup
+          : resourceGroup // ignore: cast_nullable_to_non_nullable
+              as CodeStub?,
+      availabilitiesAssignmentStrategy: freezed ==
+              availabilitiesAssignmentStrategy
+          ? _self.availabilitiesAssignmentStrategy
+          : availabilitiesAssignmentStrategy // ignore: cast_nullable_to_non_nullable
+              as CalendarItemAvailabilitiesAssignmentStrategy?,
       hcpId: freezed == hcpId
           ? _self.hcpId
           : hcpId // ignore: cast_nullable_to_non_nullable
@@ -1163,6 +1236,20 @@ class __$DecryptedCalendarItemCopyWithImpl<$Res>
 
     return $DecryptedAddressCopyWith<$Res>(_self.address!, (value) {
       return _then(_self.copyWith(address: value));
+    });
+  }
+
+  /// Create a copy of DecryptedCalendarItem
+  /// with the given fields replaced by the non-null parameter values.
+  @override
+  @pragma('vm:prefer-inline')
+  $CodeStubCopyWith<$Res>? get resourceGroup {
+    if (_self.resourceGroup == null) {
+      return null;
+    }
+
+    return $CodeStubCopyWith<$Res>(_self.resourceGroup!, (value) {
+      return _then(_self.copyWith(resourceGroup: value));
     });
   }
 
@@ -1228,6 +1315,9 @@ mixin _$EncryptedCalendarItem {
   String? get details;
   bool? get wasMigrated;
   String? get agendaId;
+  CodeStub? get resourceGroup;
+  CalendarItemAvailabilitiesAssignmentStrategy?
+      get availabilitiesAssignmentStrategy;
   String? get hcpId;
   String? get recurrenceId;
   Set<EncryptedCalendarItemTag> get meetingTags;
@@ -1302,6 +1392,12 @@ mixin _$EncryptedCalendarItem {
                 other.wasMigrated == wasMigrated) &&
             (identical(other.agendaId, agendaId) ||
                 other.agendaId == agendaId) &&
+            (identical(other.resourceGroup, resourceGroup) ||
+                other.resourceGroup == resourceGroup) &&
+            (identical(other.availabilitiesAssignmentStrategy,
+                    availabilitiesAssignmentStrategy) ||
+                other.availabilitiesAssignmentStrategy ==
+                    availabilitiesAssignmentStrategy) &&
             (identical(other.hcpId, hcpId) || other.hcpId == hcpId) &&
             (identical(other.recurrenceId, recurrenceId) ||
                 other.recurrenceId == recurrenceId) &&
@@ -1357,6 +1453,8 @@ mixin _$EncryptedCalendarItem {
         details,
         wasMigrated,
         agendaId,
+        resourceGroup,
+        availabilitiesAssignmentStrategy,
         hcpId,
         recurrenceId,
         const DeepCollectionEquality().hash(meetingTags),
@@ -1371,7 +1469,7 @@ mixin _$EncryptedCalendarItem {
 
   @override
   String toString() {
-    return 'EncryptedCalendarItem(id: $id, rev: $rev, created: $created, modified: $modified, author: $author, responsible: $responsible, medicalLocationId: $medicalLocationId, tags: $tags, codes: $codes, endOfLife: $endOfLife, deletionDate: $deletionDate, title: $title, calendarItemTypeId: $calendarItemTypeId, masterCalendarItemId: $masterCalendarItemId, patientId: $patientId, important: $important, homeVisit: $homeVisit, phoneNumber: $phoneNumber, placeId: $placeId, address: $address, addressText: $addressText, startTime: $startTime, endTime: $endTime, confirmationTime: $confirmationTime, cancellationTimestamp: $cancellationTimestamp, confirmationId: $confirmationId, duration: $duration, allDay: $allDay, details: $details, wasMigrated: $wasMigrated, agendaId: $agendaId, hcpId: $hcpId, recurrenceId: $recurrenceId, meetingTags: $meetingTags, flowItem: $flowItem, secretForeignKeys: $secretForeignKeys, cryptedForeignKeys: $cryptedForeignKeys, delegations: $delegations, encryptionKeys: $encryptionKeys, encryptedSelf: $encryptedSelf, securityMetadata: $securityMetadata)';
+    return 'EncryptedCalendarItem(id: $id, rev: $rev, created: $created, modified: $modified, author: $author, responsible: $responsible, medicalLocationId: $medicalLocationId, tags: $tags, codes: $codes, endOfLife: $endOfLife, deletionDate: $deletionDate, title: $title, calendarItemTypeId: $calendarItemTypeId, masterCalendarItemId: $masterCalendarItemId, patientId: $patientId, important: $important, homeVisit: $homeVisit, phoneNumber: $phoneNumber, placeId: $placeId, address: $address, addressText: $addressText, startTime: $startTime, endTime: $endTime, confirmationTime: $confirmationTime, cancellationTimestamp: $cancellationTimestamp, confirmationId: $confirmationId, duration: $duration, allDay: $allDay, details: $details, wasMigrated: $wasMigrated, agendaId: $agendaId, resourceGroup: $resourceGroup, availabilitiesAssignmentStrategy: $availabilitiesAssignmentStrategy, hcpId: $hcpId, recurrenceId: $recurrenceId, meetingTags: $meetingTags, flowItem: $flowItem, secretForeignKeys: $secretForeignKeys, cryptedForeignKeys: $cryptedForeignKeys, delegations: $delegations, encryptionKeys: $encryptionKeys, encryptedSelf: $encryptedSelf, securityMetadata: $securityMetadata)';
   }
 }
 
@@ -1413,6 +1511,9 @@ abstract mixin class $EncryptedCalendarItemCopyWith<$Res> {
       String? details,
       bool? wasMigrated,
       String? agendaId,
+      CodeStub? resourceGroup,
+      CalendarItemAvailabilitiesAssignmentStrategy?
+          availabilitiesAssignmentStrategy,
       String? hcpId,
       String? recurrenceId,
       Set<EncryptedCalendarItemTag> meetingTags,
@@ -1425,6 +1526,7 @@ abstract mixin class $EncryptedCalendarItemCopyWith<$Res> {
       SecurityMetadata? securityMetadata});
 
   $EncryptedAddressCopyWith<$Res>? get address;
+  $CodeStubCopyWith<$Res>? get resourceGroup;
   $FlowItemCopyWith<$Res>? get flowItem;
   $SecurityMetadataCopyWith<$Res>? get securityMetadata;
 }
@@ -1473,6 +1575,8 @@ class _$EncryptedCalendarItemCopyWithImpl<$Res>
     Object? details = freezed,
     Object? wasMigrated = freezed,
     Object? agendaId = freezed,
+    Object? resourceGroup = freezed,
+    Object? availabilitiesAssignmentStrategy = freezed,
     Object? hcpId = freezed,
     Object? recurrenceId = freezed,
     Object? meetingTags = null,
@@ -1609,6 +1713,15 @@ class _$EncryptedCalendarItemCopyWithImpl<$Res>
           ? _self.agendaId
           : agendaId // ignore: cast_nullable_to_non_nullable
               as String?,
+      resourceGroup: freezed == resourceGroup
+          ? _self.resourceGroup
+          : resourceGroup // ignore: cast_nullable_to_non_nullable
+              as CodeStub?,
+      availabilitiesAssignmentStrategy: freezed ==
+              availabilitiesAssignmentStrategy
+          ? _self.availabilitiesAssignmentStrategy
+          : availabilitiesAssignmentStrategy // ignore: cast_nullable_to_non_nullable
+              as CalendarItemAvailabilitiesAssignmentStrategy?,
       hcpId: freezed == hcpId
           ? _self.hcpId
           : hcpId // ignore: cast_nullable_to_non_nullable
@@ -1663,6 +1776,20 @@ class _$EncryptedCalendarItemCopyWithImpl<$Res>
 
     return $EncryptedAddressCopyWith<$Res>(_self.address!, (value) {
       return _then(_self.copyWith(address: value));
+    });
+  }
+
+  /// Create a copy of EncryptedCalendarItem
+  /// with the given fields replaced by the non-null parameter values.
+  @override
+  @pragma('vm:prefer-inline')
+  $CodeStubCopyWith<$Res>? get resourceGroup {
+    if (_self.resourceGroup == null) {
+      return null;
+    }
+
+    return $CodeStubCopyWith<$Res>(_self.resourceGroup!, (value) {
+      return _then(_self.copyWith(resourceGroup: value));
     });
   }
 
@@ -1730,6 +1857,8 @@ class _EncryptedCalendarItem implements EncryptedCalendarItem {
       this.details = null,
       this.wasMigrated = null,
       this.agendaId = null,
+      this.resourceGroup = null,
+      this.availabilitiesAssignmentStrategy = null,
       this.hcpId = null,
       this.recurrenceId = null,
       final Set<EncryptedCalendarItemTag> meetingTags = const {},
@@ -1852,6 +1981,13 @@ class _EncryptedCalendarItem implements EncryptedCalendarItem {
   @override
   @JsonKey()
   final String? agendaId;
+  @override
+  @JsonKey()
+  final CodeStub? resourceGroup;
+  @override
+  @JsonKey()
+  final CalendarItemAvailabilitiesAssignmentStrategy?
+      availabilitiesAssignmentStrategy;
   @override
   @JsonKey()
   final String? hcpId;
@@ -1979,6 +2115,12 @@ class _EncryptedCalendarItem implements EncryptedCalendarItem {
                 other.wasMigrated == wasMigrated) &&
             (identical(other.agendaId, agendaId) ||
                 other.agendaId == agendaId) &&
+            (identical(other.resourceGroup, resourceGroup) ||
+                other.resourceGroup == resourceGroup) &&
+            (identical(other.availabilitiesAssignmentStrategy,
+                    availabilitiesAssignmentStrategy) ||
+                other.availabilitiesAssignmentStrategy ==
+                    availabilitiesAssignmentStrategy) &&
             (identical(other.hcpId, hcpId) || other.hcpId == hcpId) &&
             (identical(other.recurrenceId, recurrenceId) ||
                 other.recurrenceId == recurrenceId) &&
@@ -2034,6 +2176,8 @@ class _EncryptedCalendarItem implements EncryptedCalendarItem {
         details,
         wasMigrated,
         agendaId,
+        resourceGroup,
+        availabilitiesAssignmentStrategy,
         hcpId,
         recurrenceId,
         const DeepCollectionEquality().hash(_meetingTags),
@@ -2048,7 +2192,7 @@ class _EncryptedCalendarItem implements EncryptedCalendarItem {
 
   @override
   String toString() {
-    return 'EncryptedCalendarItem(id: $id, rev: $rev, created: $created, modified: $modified, author: $author, responsible: $responsible, medicalLocationId: $medicalLocationId, tags: $tags, codes: $codes, endOfLife: $endOfLife, deletionDate: $deletionDate, title: $title, calendarItemTypeId: $calendarItemTypeId, masterCalendarItemId: $masterCalendarItemId, patientId: $patientId, important: $important, homeVisit: $homeVisit, phoneNumber: $phoneNumber, placeId: $placeId, address: $address, addressText: $addressText, startTime: $startTime, endTime: $endTime, confirmationTime: $confirmationTime, cancellationTimestamp: $cancellationTimestamp, confirmationId: $confirmationId, duration: $duration, allDay: $allDay, details: $details, wasMigrated: $wasMigrated, agendaId: $agendaId, hcpId: $hcpId, recurrenceId: $recurrenceId, meetingTags: $meetingTags, flowItem: $flowItem, secretForeignKeys: $secretForeignKeys, cryptedForeignKeys: $cryptedForeignKeys, delegations: $delegations, encryptionKeys: $encryptionKeys, encryptedSelf: $encryptedSelf, securityMetadata: $securityMetadata)';
+    return 'EncryptedCalendarItem(id: $id, rev: $rev, created: $created, modified: $modified, author: $author, responsible: $responsible, medicalLocationId: $medicalLocationId, tags: $tags, codes: $codes, endOfLife: $endOfLife, deletionDate: $deletionDate, title: $title, calendarItemTypeId: $calendarItemTypeId, masterCalendarItemId: $masterCalendarItemId, patientId: $patientId, important: $important, homeVisit: $homeVisit, phoneNumber: $phoneNumber, placeId: $placeId, address: $address, addressText: $addressText, startTime: $startTime, endTime: $endTime, confirmationTime: $confirmationTime, cancellationTimestamp: $cancellationTimestamp, confirmationId: $confirmationId, duration: $duration, allDay: $allDay, details: $details, wasMigrated: $wasMigrated, agendaId: $agendaId, resourceGroup: $resourceGroup, availabilitiesAssignmentStrategy: $availabilitiesAssignmentStrategy, hcpId: $hcpId, recurrenceId: $recurrenceId, meetingTags: $meetingTags, flowItem: $flowItem, secretForeignKeys: $secretForeignKeys, cryptedForeignKeys: $cryptedForeignKeys, delegations: $delegations, encryptionKeys: $encryptionKeys, encryptedSelf: $encryptedSelf, securityMetadata: $securityMetadata)';
   }
 }
 
@@ -2092,6 +2236,9 @@ abstract mixin class _$EncryptedCalendarItemCopyWith<$Res>
       String? details,
       bool? wasMigrated,
       String? agendaId,
+      CodeStub? resourceGroup,
+      CalendarItemAvailabilitiesAssignmentStrategy?
+          availabilitiesAssignmentStrategy,
       String? hcpId,
       String? recurrenceId,
       Set<EncryptedCalendarItemTag> meetingTags,
@@ -2105,6 +2252,8 @@ abstract mixin class _$EncryptedCalendarItemCopyWith<$Res>
 
   @override
   $EncryptedAddressCopyWith<$Res>? get address;
+  @override
+  $CodeStubCopyWith<$Res>? get resourceGroup;
   @override
   $FlowItemCopyWith<$Res>? get flowItem;
   @override
@@ -2155,6 +2304,8 @@ class __$EncryptedCalendarItemCopyWithImpl<$Res>
     Object? details = freezed,
     Object? wasMigrated = freezed,
     Object? agendaId = freezed,
+    Object? resourceGroup = freezed,
+    Object? availabilitiesAssignmentStrategy = freezed,
     Object? hcpId = freezed,
     Object? recurrenceId = freezed,
     Object? meetingTags = null,
@@ -2291,6 +2442,15 @@ class __$EncryptedCalendarItemCopyWithImpl<$Res>
           ? _self.agendaId
           : agendaId // ignore: cast_nullable_to_non_nullable
               as String?,
+      resourceGroup: freezed == resourceGroup
+          ? _self.resourceGroup
+          : resourceGroup // ignore: cast_nullable_to_non_nullable
+              as CodeStub?,
+      availabilitiesAssignmentStrategy: freezed ==
+              availabilitiesAssignmentStrategy
+          ? _self.availabilitiesAssignmentStrategy
+          : availabilitiesAssignmentStrategy // ignore: cast_nullable_to_non_nullable
+              as CalendarItemAvailabilitiesAssignmentStrategy?,
       hcpId: freezed == hcpId
           ? _self.hcpId
           : hcpId // ignore: cast_nullable_to_non_nullable
@@ -2345,6 +2505,20 @@ class __$EncryptedCalendarItemCopyWithImpl<$Res>
 
     return $EncryptedAddressCopyWith<$Res>(_self.address!, (value) {
       return _then(_self.copyWith(address: value));
+    });
+  }
+
+  /// Create a copy of EncryptedCalendarItem
+  /// with the given fields replaced by the non-null parameter values.
+  @override
+  @pragma('vm:prefer-inline')
+  $CodeStubCopyWith<$Res>? get resourceGroup {
+    if (_self.resourceGroup == null) {
+      return null;
+    }
+
+    return $CodeStubCopyWith<$Res>(_self.resourceGroup!, (value) {
+      return _then(_self.copyWith(resourceGroup: value));
     });
   }
 

@@ -26,12 +26,17 @@ mixin _$Agenda {
   Set<CodeStub> get codes;
   int? get endOfLife;
   int? get deletionDate;
+  int? get daySplitHour;
+  bool get unpublished;
   String? get name;
   String? get userId;
+  String? get zoneId;
   List<Right> get rights;
   Map<String, UserAccessLevel> get userRights;
+  AgendaSlottingAlgorithm? get slottingAlgorithm;
+  int? get publicBookingQuota;
   Set<DecryptedPropertyStub> get properties;
-  List<EmbeddedTimeTable> get timeTables;
+  List<ResourceGroupAllocationSchedule> get schedules;
 
   /// Create a copy of Agenda
   /// with the given fields replaced by the non-null parameter values.
@@ -61,41 +66,55 @@ mixin _$Agenda {
                 other.endOfLife == endOfLife) &&
             (identical(other.deletionDate, deletionDate) ||
                 other.deletionDate == deletionDate) &&
+            (identical(other.daySplitHour, daySplitHour) ||
+                other.daySplitHour == daySplitHour) &&
+            (identical(other.unpublished, unpublished) ||
+                other.unpublished == unpublished) &&
             (identical(other.name, name) || other.name == name) &&
             (identical(other.userId, userId) || other.userId == userId) &&
+            (identical(other.zoneId, zoneId) || other.zoneId == zoneId) &&
             const DeepCollectionEquality().equals(other.rights, rights) &&
             const DeepCollectionEquality()
                 .equals(other.userRights, userRights) &&
+            (identical(other.slottingAlgorithm, slottingAlgorithm) ||
+                other.slottingAlgorithm == slottingAlgorithm) &&
+            (identical(other.publicBookingQuota, publicBookingQuota) ||
+                other.publicBookingQuota == publicBookingQuota) &&
             const DeepCollectionEquality()
                 .equals(other.properties, properties) &&
-            const DeepCollectionEquality()
-                .equals(other.timeTables, timeTables));
+            const DeepCollectionEquality().equals(other.schedules, schedules));
   }
 
   @override
-  int get hashCode => Object.hash(
-      runtimeType,
-      id,
-      rev,
-      created,
-      modified,
-      author,
-      responsible,
-      medicalLocationId,
-      const DeepCollectionEquality().hash(tags),
-      const DeepCollectionEquality().hash(codes),
-      endOfLife,
-      deletionDate,
-      name,
-      userId,
-      const DeepCollectionEquality().hash(rights),
-      const DeepCollectionEquality().hash(userRights),
-      const DeepCollectionEquality().hash(properties),
-      const DeepCollectionEquality().hash(timeTables));
+  int get hashCode => Object.hashAll([
+        runtimeType,
+        id,
+        rev,
+        created,
+        modified,
+        author,
+        responsible,
+        medicalLocationId,
+        const DeepCollectionEquality().hash(tags),
+        const DeepCollectionEquality().hash(codes),
+        endOfLife,
+        deletionDate,
+        daySplitHour,
+        unpublished,
+        name,
+        userId,
+        zoneId,
+        const DeepCollectionEquality().hash(rights),
+        const DeepCollectionEquality().hash(userRights),
+        slottingAlgorithm,
+        publicBookingQuota,
+        const DeepCollectionEquality().hash(properties),
+        const DeepCollectionEquality().hash(schedules)
+      ]);
 
   @override
   String toString() {
-    return 'Agenda(id: $id, rev: $rev, created: $created, modified: $modified, author: $author, responsible: $responsible, medicalLocationId: $medicalLocationId, tags: $tags, codes: $codes, endOfLife: $endOfLife, deletionDate: $deletionDate, name: $name, userId: $userId, rights: $rights, userRights: $userRights, properties: $properties, timeTables: $timeTables)';
+    return 'Agenda(id: $id, rev: $rev, created: $created, modified: $modified, author: $author, responsible: $responsible, medicalLocationId: $medicalLocationId, tags: $tags, codes: $codes, endOfLife: $endOfLife, deletionDate: $deletionDate, daySplitHour: $daySplitHour, unpublished: $unpublished, name: $name, userId: $userId, zoneId: $zoneId, rights: $rights, userRights: $userRights, slottingAlgorithm: $slottingAlgorithm, publicBookingQuota: $publicBookingQuota, properties: $properties, schedules: $schedules)';
   }
 }
 
@@ -116,12 +135,17 @@ abstract mixin class $AgendaCopyWith<$Res> {
       Set<CodeStub> codes,
       int? endOfLife,
       int? deletionDate,
+      int? daySplitHour,
+      bool unpublished,
       String? name,
       String? userId,
+      String? zoneId,
       List<Right> rights,
       Map<String, UserAccessLevel> userRights,
+      AgendaSlottingAlgorithm? slottingAlgorithm,
+      int? publicBookingQuota,
       Set<DecryptedPropertyStub> properties,
-      List<EmbeddedTimeTable> timeTables});
+      List<ResourceGroupAllocationSchedule> schedules});
 }
 
 /// @nodoc
@@ -147,12 +171,17 @@ class _$AgendaCopyWithImpl<$Res> implements $AgendaCopyWith<$Res> {
     Object? codes = null,
     Object? endOfLife = freezed,
     Object? deletionDate = freezed,
+    Object? daySplitHour = freezed,
+    Object? unpublished = null,
     Object? name = freezed,
     Object? userId = freezed,
+    Object? zoneId = freezed,
     Object? rights = null,
     Object? userRights = null,
+    Object? slottingAlgorithm = freezed,
+    Object? publicBookingQuota = freezed,
     Object? properties = null,
-    Object? timeTables = null,
+    Object? schedules = null,
   }) {
     return _then(_self.copyWith(
       id: null == id
@@ -199,6 +228,14 @@ class _$AgendaCopyWithImpl<$Res> implements $AgendaCopyWith<$Res> {
           ? _self.deletionDate
           : deletionDate // ignore: cast_nullable_to_non_nullable
               as int?,
+      daySplitHour: freezed == daySplitHour
+          ? _self.daySplitHour
+          : daySplitHour // ignore: cast_nullable_to_non_nullable
+              as int?,
+      unpublished: null == unpublished
+          ? _self.unpublished
+          : unpublished // ignore: cast_nullable_to_non_nullable
+              as bool,
       name: freezed == name
           ? _self.name
           : name // ignore: cast_nullable_to_non_nullable
@@ -206,6 +243,10 @@ class _$AgendaCopyWithImpl<$Res> implements $AgendaCopyWith<$Res> {
       userId: freezed == userId
           ? _self.userId
           : userId // ignore: cast_nullable_to_non_nullable
+              as String?,
+      zoneId: freezed == zoneId
+          ? _self.zoneId
+          : zoneId // ignore: cast_nullable_to_non_nullable
               as String?,
       rights: null == rights
           ? _self.rights
@@ -215,14 +256,22 @@ class _$AgendaCopyWithImpl<$Res> implements $AgendaCopyWith<$Res> {
           ? _self.userRights
           : userRights // ignore: cast_nullable_to_non_nullable
               as Map<String, UserAccessLevel>,
+      slottingAlgorithm: freezed == slottingAlgorithm
+          ? _self.slottingAlgorithm
+          : slottingAlgorithm // ignore: cast_nullable_to_non_nullable
+              as AgendaSlottingAlgorithm?,
+      publicBookingQuota: freezed == publicBookingQuota
+          ? _self.publicBookingQuota
+          : publicBookingQuota // ignore: cast_nullable_to_non_nullable
+              as int?,
       properties: null == properties
           ? _self.properties
           : properties // ignore: cast_nullable_to_non_nullable
               as Set<DecryptedPropertyStub>,
-      timeTables: null == timeTables
-          ? _self.timeTables
-          : timeTables // ignore: cast_nullable_to_non_nullable
-              as List<EmbeddedTimeTable>,
+      schedules: null == schedules
+          ? _self.schedules
+          : schedules // ignore: cast_nullable_to_non_nullable
+              as List<ResourceGroupAllocationSchedule>,
     ));
   }
 }
@@ -242,18 +291,23 @@ class _Agenda implements Agenda {
       final Set<CodeStub> codes = const {},
       this.endOfLife = null,
       this.deletionDate = null,
+      this.daySplitHour = null,
+      this.unpublished = false,
       this.name = null,
       this.userId = null,
+      this.zoneId = null,
       final List<Right> rights = const [],
       final Map<String, UserAccessLevel> userRights = const {},
+      this.slottingAlgorithm = null,
+      this.publicBookingQuota = null,
       final Set<DecryptedPropertyStub> properties = const {},
-      final List<EmbeddedTimeTable> timeTables = const []})
+      final List<ResourceGroupAllocationSchedule> schedules = const []})
       : _tags = tags,
         _codes = codes,
         _rights = rights,
         _userRights = userRights,
         _properties = properties,
-        _timeTables = timeTables;
+        _schedules = schedules;
 
   @override
   final String id;
@@ -301,10 +355,19 @@ class _Agenda implements Agenda {
   final int? deletionDate;
   @override
   @JsonKey()
+  final int? daySplitHour;
+  @override
+  @JsonKey()
+  final bool unpublished;
+  @override
+  @JsonKey()
   final String? name;
   @override
   @JsonKey()
   final String? userId;
+  @override
+  @JsonKey()
+  final String? zoneId;
   final List<Right> _rights;
   @override
   @JsonKey()
@@ -323,6 +386,12 @@ class _Agenda implements Agenda {
     return EqualUnmodifiableMapView(_userRights);
   }
 
+  @override
+  @JsonKey()
+  final AgendaSlottingAlgorithm? slottingAlgorithm;
+  @override
+  @JsonKey()
+  final int? publicBookingQuota;
   final Set<DecryptedPropertyStub> _properties;
   @override
   @JsonKey()
@@ -332,13 +401,13 @@ class _Agenda implements Agenda {
     return EqualUnmodifiableSetView(_properties);
   }
 
-  final List<EmbeddedTimeTable> _timeTables;
+  final List<ResourceGroupAllocationSchedule> _schedules;
   @override
   @JsonKey()
-  List<EmbeddedTimeTable> get timeTables {
-    if (_timeTables is EqualUnmodifiableListView) return _timeTables;
+  List<ResourceGroupAllocationSchedule> get schedules {
+    if (_schedules is EqualUnmodifiableListView) return _schedules;
     // ignore: implicit_dynamic_type
-    return EqualUnmodifiableListView(_timeTables);
+    return EqualUnmodifiableListView(_schedules);
   }
 
   /// Create a copy of Agenda
@@ -370,41 +439,56 @@ class _Agenda implements Agenda {
                 other.endOfLife == endOfLife) &&
             (identical(other.deletionDate, deletionDate) ||
                 other.deletionDate == deletionDate) &&
+            (identical(other.daySplitHour, daySplitHour) ||
+                other.daySplitHour == daySplitHour) &&
+            (identical(other.unpublished, unpublished) ||
+                other.unpublished == unpublished) &&
             (identical(other.name, name) || other.name == name) &&
             (identical(other.userId, userId) || other.userId == userId) &&
+            (identical(other.zoneId, zoneId) || other.zoneId == zoneId) &&
             const DeepCollectionEquality().equals(other._rights, _rights) &&
             const DeepCollectionEquality()
                 .equals(other._userRights, _userRights) &&
+            (identical(other.slottingAlgorithm, slottingAlgorithm) ||
+                other.slottingAlgorithm == slottingAlgorithm) &&
+            (identical(other.publicBookingQuota, publicBookingQuota) ||
+                other.publicBookingQuota == publicBookingQuota) &&
             const DeepCollectionEquality()
                 .equals(other._properties, _properties) &&
             const DeepCollectionEquality()
-                .equals(other._timeTables, _timeTables));
+                .equals(other._schedules, _schedules));
   }
 
   @override
-  int get hashCode => Object.hash(
-      runtimeType,
-      id,
-      rev,
-      created,
-      modified,
-      author,
-      responsible,
-      medicalLocationId,
-      const DeepCollectionEquality().hash(_tags),
-      const DeepCollectionEquality().hash(_codes),
-      endOfLife,
-      deletionDate,
-      name,
-      userId,
-      const DeepCollectionEquality().hash(_rights),
-      const DeepCollectionEquality().hash(_userRights),
-      const DeepCollectionEquality().hash(_properties),
-      const DeepCollectionEquality().hash(_timeTables));
+  int get hashCode => Object.hashAll([
+        runtimeType,
+        id,
+        rev,
+        created,
+        modified,
+        author,
+        responsible,
+        medicalLocationId,
+        const DeepCollectionEquality().hash(_tags),
+        const DeepCollectionEquality().hash(_codes),
+        endOfLife,
+        deletionDate,
+        daySplitHour,
+        unpublished,
+        name,
+        userId,
+        zoneId,
+        const DeepCollectionEquality().hash(_rights),
+        const DeepCollectionEquality().hash(_userRights),
+        slottingAlgorithm,
+        publicBookingQuota,
+        const DeepCollectionEquality().hash(_properties),
+        const DeepCollectionEquality().hash(_schedules)
+      ]);
 
   @override
   String toString() {
-    return 'Agenda(id: $id, rev: $rev, created: $created, modified: $modified, author: $author, responsible: $responsible, medicalLocationId: $medicalLocationId, tags: $tags, codes: $codes, endOfLife: $endOfLife, deletionDate: $deletionDate, name: $name, userId: $userId, rights: $rights, userRights: $userRights, properties: $properties, timeTables: $timeTables)';
+    return 'Agenda(id: $id, rev: $rev, created: $created, modified: $modified, author: $author, responsible: $responsible, medicalLocationId: $medicalLocationId, tags: $tags, codes: $codes, endOfLife: $endOfLife, deletionDate: $deletionDate, daySplitHour: $daySplitHour, unpublished: $unpublished, name: $name, userId: $userId, zoneId: $zoneId, rights: $rights, userRights: $userRights, slottingAlgorithm: $slottingAlgorithm, publicBookingQuota: $publicBookingQuota, properties: $properties, schedules: $schedules)';
   }
 }
 
@@ -426,12 +510,17 @@ abstract mixin class _$AgendaCopyWith<$Res> implements $AgendaCopyWith<$Res> {
       Set<CodeStub> codes,
       int? endOfLife,
       int? deletionDate,
+      int? daySplitHour,
+      bool unpublished,
       String? name,
       String? userId,
+      String? zoneId,
       List<Right> rights,
       Map<String, UserAccessLevel> userRights,
+      AgendaSlottingAlgorithm? slottingAlgorithm,
+      int? publicBookingQuota,
       Set<DecryptedPropertyStub> properties,
-      List<EmbeddedTimeTable> timeTables});
+      List<ResourceGroupAllocationSchedule> schedules});
 }
 
 /// @nodoc
@@ -457,12 +546,17 @@ class __$AgendaCopyWithImpl<$Res> implements _$AgendaCopyWith<$Res> {
     Object? codes = null,
     Object? endOfLife = freezed,
     Object? deletionDate = freezed,
+    Object? daySplitHour = freezed,
+    Object? unpublished = null,
     Object? name = freezed,
     Object? userId = freezed,
+    Object? zoneId = freezed,
     Object? rights = null,
     Object? userRights = null,
+    Object? slottingAlgorithm = freezed,
+    Object? publicBookingQuota = freezed,
     Object? properties = null,
-    Object? timeTables = null,
+    Object? schedules = null,
   }) {
     return _then(_Agenda(
       id: null == id
@@ -509,6 +603,14 @@ class __$AgendaCopyWithImpl<$Res> implements _$AgendaCopyWith<$Res> {
           ? _self.deletionDate
           : deletionDate // ignore: cast_nullable_to_non_nullable
               as int?,
+      daySplitHour: freezed == daySplitHour
+          ? _self.daySplitHour
+          : daySplitHour // ignore: cast_nullable_to_non_nullable
+              as int?,
+      unpublished: null == unpublished
+          ? _self.unpublished
+          : unpublished // ignore: cast_nullable_to_non_nullable
+              as bool,
       name: freezed == name
           ? _self.name
           : name // ignore: cast_nullable_to_non_nullable
@@ -516,6 +618,10 @@ class __$AgendaCopyWithImpl<$Res> implements _$AgendaCopyWith<$Res> {
       userId: freezed == userId
           ? _self.userId
           : userId // ignore: cast_nullable_to_non_nullable
+              as String?,
+      zoneId: freezed == zoneId
+          ? _self.zoneId
+          : zoneId // ignore: cast_nullable_to_non_nullable
               as String?,
       rights: null == rights
           ? _self._rights
@@ -525,14 +631,22 @@ class __$AgendaCopyWithImpl<$Res> implements _$AgendaCopyWith<$Res> {
           ? _self._userRights
           : userRights // ignore: cast_nullable_to_non_nullable
               as Map<String, UserAccessLevel>,
+      slottingAlgorithm: freezed == slottingAlgorithm
+          ? _self.slottingAlgorithm
+          : slottingAlgorithm // ignore: cast_nullable_to_non_nullable
+              as AgendaSlottingAlgorithm?,
+      publicBookingQuota: freezed == publicBookingQuota
+          ? _self.publicBookingQuota
+          : publicBookingQuota // ignore: cast_nullable_to_non_nullable
+              as int?,
       properties: null == properties
           ? _self._properties
           : properties // ignore: cast_nullable_to_non_nullable
               as Set<DecryptedPropertyStub>,
-      timeTables: null == timeTables
-          ? _self._timeTables
-          : timeTables // ignore: cast_nullable_to_non_nullable
-              as List<EmbeddedTimeTable>,
+      schedules: null == schedules
+          ? _self._schedules
+          : schedules // ignore: cast_nullable_to_non_nullable
+              as List<ResourceGroupAllocationSchedule>,
     ));
   }
 }

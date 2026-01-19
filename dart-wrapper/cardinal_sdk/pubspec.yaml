@@ -1,6 +1,6 @@
 name: cardinal_sdk
 description: "Cardinal SDK is a multiplatform SDK for the iCure platform."
-version: 2.0.0-PREVIEW-3-dart-1
+version: 2.0.0-PREVIEW-25
 homepage: "https://cardinalsdk.com"
 repository: "https://github.com/icure"
 documentation: "https://docs.icure.com/"

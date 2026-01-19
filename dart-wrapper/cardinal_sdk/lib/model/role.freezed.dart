@@ -19,6 +19,7 @@ mixin _$Role {
   String? get rev;
   int? get deletionDate;
   String? get name;
+  int? get inheritableUpTo;
   Set<String> get permissions;
 
   /// Create a copy of Role
@@ -38,17 +39,19 @@ mixin _$Role {
             (identical(other.deletionDate, deletionDate) ||
                 other.deletionDate == deletionDate) &&
             (identical(other.name, name) || other.name == name) &&
+            (identical(other.inheritableUpTo, inheritableUpTo) ||
+                other.inheritableUpTo == inheritableUpTo) &&
             const DeepCollectionEquality()
                 .equals(other.permissions, permissions));
   }
 
   @override
   int get hashCode => Object.hash(runtimeType, id, rev, deletionDate, name,
-      const DeepCollectionEquality().hash(permissions));
+      inheritableUpTo, const DeepCollectionEquality().hash(permissions));
 
   @override
   String toString() {
-    return 'Role(id: $id, rev: $rev, deletionDate: $deletionDate, name: $name, permissions: $permissions)';
+    return 'Role(id: $id, rev: $rev, deletionDate: $deletionDate, name: $name, inheritableUpTo: $inheritableUpTo, permissions: $permissions)';
   }
 }
 
@@ -62,6 +65,7 @@ abstract mixin class $RoleCopyWith<$Res> {
       String? rev,
       int? deletionDate,
       String? name,
+      int? inheritableUpTo,
       Set<String> permissions});
 }
 
@@ -81,6 +85,7 @@ class _$RoleCopyWithImpl<$Res> implements $RoleCopyWith<$Res> {
     Object? rev = freezed,
     Object? deletionDate = freezed,
     Object? name = freezed,
+    Object? inheritableUpTo = freezed,
     Object? permissions = null,
   }) {
     return _then(_self.copyWith(
@@ -100,6 +105,10 @@ class _$RoleCopyWithImpl<$Res> implements $RoleCopyWith<$Res> {
           ? _self.name
           : name // ignore: cast_nullable_to_non_nullable
               as String?,
+      inheritableUpTo: freezed == inheritableUpTo
+          ? _self.inheritableUpTo
+          : inheritableUpTo // ignore: cast_nullable_to_non_nullable
+              as int?,
       permissions: null == permissions
           ? _self.permissions
           : permissions // ignore: cast_nullable_to_non_nullable
@@ -116,6 +125,7 @@ class _Role implements Role {
       this.rev = null,
       this.deletionDate = null,
       this.name = null,
+      this.inheritableUpTo = null,
       final Set<String> permissions = const {}})
       : _permissions = permissions;
 
@@ -130,6 +140,9 @@ class _Role implements Role {
   @override
   @JsonKey()
   final String? name;
+  @override
+  @JsonKey()
+  final int? inheritableUpTo;
   final Set<String> _permissions;
   @override
   @JsonKey()
@@ -157,17 +170,19 @@ class _Role implements Role {
             (identical(other.deletionDate, deletionDate) ||
                 other.deletionDate == deletionDate) &&
             (identical(other.name, name) || other.name == name) &&
+            (identical(other.inheritableUpTo, inheritableUpTo) ||
+                other.inheritableUpTo == inheritableUpTo) &&
             const DeepCollectionEquality()
                 .equals(other._permissions, _permissions));
   }
 
   @override
   int get hashCode => Object.hash(runtimeType, id, rev, deletionDate, name,
-      const DeepCollectionEquality().hash(_permissions));
+      inheritableUpTo, const DeepCollectionEquality().hash(_permissions));
 
   @override
   String toString() {
-    return 'Role(id: $id, rev: $rev, deletionDate: $deletionDate, name: $name, permissions: $permissions)';
+    return 'Role(id: $id, rev: $rev, deletionDate: $deletionDate, name: $name, inheritableUpTo: $inheritableUpTo, permissions: $permissions)';
   }
 }
 
@@ -182,6 +197,7 @@ abstract mixin class _$RoleCopyWith<$Res> implements $RoleCopyWith<$Res> {
       String? rev,
       int? deletionDate,
       String? name,
+      int? inheritableUpTo,
       Set<String> permissions});
 }
 
@@ -201,6 +217,7 @@ class __$RoleCopyWithImpl<$Res> implements _$RoleCopyWith<$Res> {
     Object? rev = freezed,
     Object? deletionDate = freezed,
     Object? name = freezed,
+    Object? inheritableUpTo = freezed,
     Object? permissions = null,
   }) {
     return _then(_Role(
@@ -220,6 +237,10 @@ class __$RoleCopyWithImpl<$Res> implements _$RoleCopyWith<$Res> {
           ? _self.name
           : name // ignore: cast_nullable_to_non_nullable
               as String?,
+      inheritableUpTo: freezed == inheritableUpTo
+          ? _self.inheritableUpTo
+          : inheritableUpTo // ignore: cast_nullable_to_non_nullable
+              as int?,
       permissions: null == permissions
           ? _self._permissions
           : permissions // ignore: cast_nullable_to_non_nullable

@@ -24,11 +24,13 @@ mixin _$CalendarItemType {
   String? get name;
   String? get color;
   int get duration;
+  CalendarItemTypeDurationConfig? get extraDurationsConfig;
   String? get externalRef;
   String? get mikronoId;
   Set<String> get docIds;
   Map<String, String> get otherInfos;
   Map<String, String> get subjectByLanguage;
+  Set<DecryptedPropertyStub>? get publicProperties;
 
   /// Create a copy of CalendarItemType
   /// with the given fields replaced by the non-null parameter values.
@@ -58,6 +60,8 @@ mixin _$CalendarItemType {
             (identical(other.color, color) || other.color == color) &&
             (identical(other.duration, duration) ||
                 other.duration == duration) &&
+            (identical(other.extraDurationsConfig, extraDurationsConfig) ||
+                other.extraDurationsConfig == extraDurationsConfig) &&
             (identical(other.externalRef, externalRef) ||
                 other.externalRef == externalRef) &&
             (identical(other.mikronoId, mikronoId) ||
@@ -66,7 +70,9 @@ mixin _$CalendarItemType {
             const DeepCollectionEquality()
                 .equals(other.otherInfos, otherInfos) &&
             const DeepCollectionEquality()
-                .equals(other.subjectByLanguage, subjectByLanguage));
+                .equals(other.subjectByLanguage, subjectByLanguage) &&
+            const DeepCollectionEquality()
+                .equals(other.publicProperties, publicProperties));
   }
 
   @override
@@ -81,15 +87,17 @@ mixin _$CalendarItemType {
       name,
       color,
       duration,
+      extraDurationsConfig,
       externalRef,
       mikronoId,
       const DeepCollectionEquality().hash(docIds),
       const DeepCollectionEquality().hash(otherInfos),
-      const DeepCollectionEquality().hash(subjectByLanguage));
+      const DeepCollectionEquality().hash(subjectByLanguage),
+      const DeepCollectionEquality().hash(publicProperties));
 
   @override
   String toString() {
-    return 'CalendarItemType(id: $id, rev: $rev, deletionDate: $deletionDate, healthcarePartyId: $healthcarePartyId, agendaId: $agendaId, defaultCalendarItemType: $defaultCalendarItemType, name: $name, color: $color, duration: $duration, externalRef: $externalRef, mikronoId: $mikronoId, docIds: $docIds, otherInfos: $otherInfos, subjectByLanguage: $subjectByLanguage)';
+    return 'CalendarItemType(id: $id, rev: $rev, deletionDate: $deletionDate, healthcarePartyId: $healthcarePartyId, agendaId: $agendaId, defaultCalendarItemType: $defaultCalendarItemType, name: $name, color: $color, duration: $duration, extraDurationsConfig: $extraDurationsConfig, externalRef: $externalRef, mikronoId: $mikronoId, docIds: $docIds, otherInfos: $otherInfos, subjectByLanguage: $subjectByLanguage, publicProperties: $publicProperties)';
   }
 }
 
@@ -109,11 +117,13 @@ abstract mixin class $CalendarItemTypeCopyWith<$Res> {
       String? name,
       String? color,
       int duration,
+      CalendarItemTypeDurationConfig? extraDurationsConfig,
       String? externalRef,
       String? mikronoId,
       Set<String> docIds,
       Map<String, String> otherInfos,
-      Map<String, String> subjectByLanguage});
+      Map<String, String> subjectByLanguage,
+      Set<DecryptedPropertyStub>? publicProperties});
 }
 
 /// @nodoc
@@ -138,11 +148,13 @@ class _$CalendarItemTypeCopyWithImpl<$Res>
     Object? name = freezed,
     Object? color = freezed,
     Object? duration = null,
+    Object? extraDurationsConfig = freezed,
     Object? externalRef = freezed,
     Object? mikronoId = freezed,
     Object? docIds = null,
     Object? otherInfos = null,
     Object? subjectByLanguage = null,
+    Object? publicProperties = freezed,
   }) {
     return _then(_self.copyWith(
       id: null == id
@@ -181,6 +193,10 @@ class _$CalendarItemTypeCopyWithImpl<$Res>
           ? _self.duration
           : duration // ignore: cast_nullable_to_non_nullable
               as int,
+      extraDurationsConfig: freezed == extraDurationsConfig
+          ? _self.extraDurationsConfig
+          : extraDurationsConfig // ignore: cast_nullable_to_non_nullable
+              as CalendarItemTypeDurationConfig?,
       externalRef: freezed == externalRef
           ? _self.externalRef
           : externalRef // ignore: cast_nullable_to_non_nullable
@@ -201,6 +217,10 @@ class _$CalendarItemTypeCopyWithImpl<$Res>
           ? _self.subjectByLanguage
           : subjectByLanguage // ignore: cast_nullable_to_non_nullable
               as Map<String, String>,
+      publicProperties: freezed == publicProperties
+          ? _self.publicProperties
+          : publicProperties // ignore: cast_nullable_to_non_nullable
+              as Set<DecryptedPropertyStub>?,
     ));
   }
 }
@@ -218,14 +238,17 @@ class _CalendarItemType implements CalendarItemType {
       this.name = null,
       this.color = null,
       this.duration = 0,
+      this.extraDurationsConfig = null,
       this.externalRef = null,
       this.mikronoId = null,
       final Set<String> docIds = const {},
       final Map<String, String> otherInfos = const {},
-      final Map<String, String> subjectByLanguage = const {}})
+      final Map<String, String> subjectByLanguage = const {},
+      final Set<DecryptedPropertyStub>? publicProperties = null})
       : _docIds = docIds,
         _otherInfos = otherInfos,
-        _subjectByLanguage = subjectByLanguage;
+        _subjectByLanguage = subjectByLanguage,
+        _publicProperties = publicProperties;
 
   @override
   final String id;
@@ -253,6 +276,9 @@ class _CalendarItemType implements CalendarItemType {
   @override
   @JsonKey()
   final int duration;
+  @override
+  @JsonKey()
+  final CalendarItemTypeDurationConfig? extraDurationsConfig;
   @override
   @JsonKey()
   final String? externalRef;
@@ -287,6 +313,17 @@ class _CalendarItemType implements CalendarItemType {
     return EqualUnmodifiableMapView(_subjectByLanguage);
   }
 
+  final Set<DecryptedPropertyStub>? _publicProperties;
+  @override
+  @JsonKey()
+  Set<DecryptedPropertyStub>? get publicProperties {
+    final value = _publicProperties;
+    if (value == null) return null;
+    if (_publicProperties is EqualUnmodifiableSetView) return _publicProperties;
+    // ignore: implicit_dynamic_type
+    return EqualUnmodifiableSetView(value);
+  }
+
   /// Create a copy of CalendarItemType
   /// with the given fields replaced by the non-null parameter values.
   @override
@@ -315,6 +352,8 @@ class _CalendarItemType implements CalendarItemType {
             (identical(other.color, color) || other.color == color) &&
             (identical(other.duration, duration) ||
                 other.duration == duration) &&
+            (identical(other.extraDurationsConfig, extraDurationsConfig) ||
+                other.extraDurationsConfig == extraDurationsConfig) &&
             (identical(other.externalRef, externalRef) ||
                 other.externalRef == externalRef) &&
             (identical(other.mikronoId, mikronoId) ||
@@ -323,7 +362,9 @@ class _CalendarItemType implements CalendarItemType {
             const DeepCollectionEquality()
                 .equals(other._otherInfos, _otherInfos) &&
             const DeepCollectionEquality()
-                .equals(other._subjectByLanguage, _subjectByLanguage));
+                .equals(other._subjectByLanguage, _subjectByLanguage) &&
+            const DeepCollectionEquality()
+                .equals(other._publicProperties, _publicProperties));
   }
 
   @override
@@ -338,15 +379,17 @@ class _CalendarItemType implements CalendarItemType {
       name,
       color,
       duration,
+      extraDurationsConfig,
       externalRef,
       mikronoId,
       const DeepCollectionEquality().hash(_docIds),
       const DeepCollectionEquality().hash(_otherInfos),
-      const DeepCollectionEquality().hash(_subjectByLanguage));
+      const DeepCollectionEquality().hash(_subjectByLanguage),
+      const DeepCollectionEquality().hash(_publicProperties));
 
   @override
   String toString() {
-    return 'CalendarItemType(id: $id, rev: $rev, deletionDate: $deletionDate, healthcarePartyId: $healthcarePartyId, agendaId: $agendaId, defaultCalendarItemType: $defaultCalendarItemType, name: $name, color: $color, duration: $duration, externalRef: $externalRef, mikronoId: $mikronoId, docIds: $docIds, otherInfos: $otherInfos, subjectByLanguage: $subjectByLanguage)';
+    return 'CalendarItemType(id: $id, rev: $rev, deletionDate: $deletionDate, healthcarePartyId: $healthcarePartyId, agendaId: $agendaId, defaultCalendarItemType: $defaultCalendarItemType, name: $name, color: $color, duration: $duration, extraDurationsConfig: $extraDurationsConfig, externalRef: $externalRef, mikronoId: $mikronoId, docIds: $docIds, otherInfos: $otherInfos, subjectByLanguage: $subjectByLanguage, publicProperties: $publicProperties)';
   }
 }
 
@@ -368,11 +411,13 @@ abstract mixin class _$CalendarItemTypeCopyWith<$Res>
       String? name,
       String? color,
       int duration,
+      CalendarItemTypeDurationConfig? extraDurationsConfig,
       String? externalRef,
       String? mikronoId,
       Set<String> docIds,
       Map<String, String> otherInfos,
-      Map<String, String> subjectByLanguage});
+      Map<String, String> subjectByLanguage,
+      Set<DecryptedPropertyStub>? publicProperties});
 }
 
 /// @nodoc
@@ -397,11 +442,13 @@ class __$CalendarItemTypeCopyWithImpl<$Res>
     Object? name = freezed,
     Object? color = freezed,
     Object? duration = null,
+    Object? extraDurationsConfig = freezed,
     Object? externalRef = freezed,
     Object? mikronoId = freezed,
     Object? docIds = null,
     Object? otherInfos = null,
     Object? subjectByLanguage = null,
+    Object? publicProperties = freezed,
   }) {
     return _then(_CalendarItemType(
       id: null == id
@@ -440,6 +487,10 @@ class __$CalendarItemTypeCopyWithImpl<$Res>
           ? _self.duration
           : duration // ignore: cast_nullable_to_non_nullable
               as int,
+      extraDurationsConfig: freezed == extraDurationsConfig
+          ? _self.extraDurationsConfig
+          : extraDurationsConfig // ignore: cast_nullable_to_non_nullable
+              as CalendarItemTypeDurationConfig?,
       externalRef: freezed == externalRef
           ? _self.externalRef
           : externalRef // ignore: cast_nullable_to_non_nullable
@@ -460,6 +511,325 @@ class __$CalendarItemTypeCopyWithImpl<$Res>
           ? _self._subjectByLanguage
           : subjectByLanguage // ignore: cast_nullable_to_non_nullable
               as Map<String, String>,
+      publicProperties: freezed == publicProperties
+          ? _self._publicProperties
+          : publicProperties // ignore: cast_nullable_to_non_nullable
+              as Set<DecryptedPropertyStub>?,
+    ));
+  }
+}
+
+/// @nodoc
+mixin _$CalendarItemTypeDurationConfigSet {
+  Set<int> get durations;
+
+  /// Create a copy of CalendarItemTypeDurationConfigSet
+  /// with the given fields replaced by the non-null parameter values.
+  @JsonKey(includeFromJson: false, includeToJson: false)
+  @pragma('vm:prefer-inline')
+  $CalendarItemTypeDurationConfigSetCopyWith<CalendarItemTypeDurationConfigSet>
+      get copyWith => _$CalendarItemTypeDurationConfigSetCopyWithImpl<
+              CalendarItemTypeDurationConfigSet>(
+          this as CalendarItemTypeDurationConfigSet, _$identity);
+
+  @override
+  bool operator ==(Object other) {
+    return identical(this, other) ||
+        (other.runtimeType == runtimeType &&
+            other is CalendarItemTypeDurationConfigSet &&
+            const DeepCollectionEquality().equals(other.durations, durations));
+  }
+
+  @override
+  int get hashCode =>
+      Object.hash(runtimeType, const DeepCollectionEquality().hash(durations));
+
+  @override
+  String toString() {
+    return 'CalendarItemTypeDurationConfigSet(durations: $durations)';
+  }
+}
+
+/// @nodoc
+abstract mixin class $CalendarItemTypeDurationConfigSetCopyWith<$Res> {
+  factory $CalendarItemTypeDurationConfigSetCopyWith(
+          CalendarItemTypeDurationConfigSet value,
+          $Res Function(CalendarItemTypeDurationConfigSet) _then) =
+      _$CalendarItemTypeDurationConfigSetCopyWithImpl;
+  @useResult
+  $Res call({Set<int> durations});
+}
+
+/// @nodoc
+class _$CalendarItemTypeDurationConfigSetCopyWithImpl<$Res>
+    implements $CalendarItemTypeDurationConfigSetCopyWith<$Res> {
+  _$CalendarItemTypeDurationConfigSetCopyWithImpl(this._self, this._then);
+
+  final CalendarItemTypeDurationConfigSet _self;
+  final $Res Function(CalendarItemTypeDurationConfigSet) _then;
+
+  /// Create a copy of CalendarItemTypeDurationConfigSet
+  /// with the given fields replaced by the non-null parameter values.
+  @pragma('vm:prefer-inline')
+  @override
+  $Res call({
+    Object? durations = null,
+  }) {
+    return _then(_self.copyWith(
+      durations: null == durations
+          ? _self.durations
+          : durations // ignore: cast_nullable_to_non_nullable
+              as Set<int>,
+    ));
+  }
+}
+
+/// @nodoc
+
+class _CalendarItemTypeDurationConfigSet
+    implements CalendarItemTypeDurationConfigSet {
+  const _CalendarItemTypeDurationConfigSet(
+      {final Set<int> durations = const {}})
+      : _durations = durations;
+
+  final Set<int> _durations;
+  @override
+  @JsonKey()
+  Set<int> get durations {
+    if (_durations is EqualUnmodifiableSetView) return _durations;
+    // ignore: implicit_dynamic_type
+    return EqualUnmodifiableSetView(_durations);
+  }
+
+  /// Create a copy of CalendarItemTypeDurationConfigSet
+  /// with the given fields replaced by the non-null parameter values.
+  @override
+  @JsonKey(includeFromJson: false, includeToJson: false)
+  @pragma('vm:prefer-inline')
+  _$CalendarItemTypeDurationConfigSetCopyWith<
+          _CalendarItemTypeDurationConfigSet>
+      get copyWith => __$CalendarItemTypeDurationConfigSetCopyWithImpl<
+          _CalendarItemTypeDurationConfigSet>(this, _$identity);
+
+  @override
+  bool operator ==(Object other) {
+    return identical(this, other) ||
+        (other.runtimeType == runtimeType &&
+            other is _CalendarItemTypeDurationConfigSet &&
+            const DeepCollectionEquality()
+                .equals(other._durations, _durations));
+  }
+
+  @override
+  int get hashCode =>
+      Object.hash(runtimeType, const DeepCollectionEquality().hash(_durations));
+
+  @override
+  String toString() {
+    return 'CalendarItemTypeDurationConfigSet(durations: $durations)';
+  }
+}
+
+/// @nodoc
+abstract mixin class _$CalendarItemTypeDurationConfigSetCopyWith<$Res>
+    implements $CalendarItemTypeDurationConfigSetCopyWith<$Res> {
+  factory _$CalendarItemTypeDurationConfigSetCopyWith(
+          _CalendarItemTypeDurationConfigSet value,
+          $Res Function(_CalendarItemTypeDurationConfigSet) _then) =
+      __$CalendarItemTypeDurationConfigSetCopyWithImpl;
+  @override
+  @useResult
+  $Res call({Set<int> durations});
+}
+
+/// @nodoc
+class __$CalendarItemTypeDurationConfigSetCopyWithImpl<$Res>
+    implements _$CalendarItemTypeDurationConfigSetCopyWith<$Res> {
+  __$CalendarItemTypeDurationConfigSetCopyWithImpl(this._self, this._then);
+
+  final _CalendarItemTypeDurationConfigSet _self;
+  final $Res Function(_CalendarItemTypeDurationConfigSet) _then;
+
+  /// Create a copy of CalendarItemTypeDurationConfigSet
+  /// with the given fields replaced by the non-null parameter values.
+  @override
+  @pragma('vm:prefer-inline')
+  $Res call({
+    Object? durations = null,
+  }) {
+    return _then(_CalendarItemTypeDurationConfigSet(
+      durations: null == durations
+          ? _self._durations
+          : durations // ignore: cast_nullable_to_non_nullable
+              as Set<int>,
+    ));
+  }
+}
+
+/// @nodoc
+mixin _$CalendarItemTypeDurationConfigFormula {
+  int get min;
+  int get max;
+  int get step;
+
+  /// Create a copy of CalendarItemTypeDurationConfigFormula
+  /// with the given fields replaced by the non-null parameter values.
+  @JsonKey(includeFromJson: false, includeToJson: false)
+  @pragma('vm:prefer-inline')
+  $CalendarItemTypeDurationConfigFormulaCopyWith<
+          CalendarItemTypeDurationConfigFormula>
+      get copyWith => _$CalendarItemTypeDurationConfigFormulaCopyWithImpl<
+              CalendarItemTypeDurationConfigFormula>(
+          this as CalendarItemTypeDurationConfigFormula, _$identity);
+
+  @override
+  bool operator ==(Object other) {
+    return identical(this, other) ||
+        (other.runtimeType == runtimeType &&
+            other is CalendarItemTypeDurationConfigFormula &&
+            (identical(other.min, min) || other.min == min) &&
+            (identical(other.max, max) || other.max == max) &&
+            (identical(other.step, step) || other.step == step));
+  }
+
+  @override
+  int get hashCode => Object.hash(runtimeType, min, max, step);
+
+  @override
+  String toString() {
+    return 'CalendarItemTypeDurationConfigFormula(min: $min, max: $max, step: $step)';
+  }
+}
+
+/// @nodoc
+abstract mixin class $CalendarItemTypeDurationConfigFormulaCopyWith<$Res> {
+  factory $CalendarItemTypeDurationConfigFormulaCopyWith(
+          CalendarItemTypeDurationConfigFormula value,
+          $Res Function(CalendarItemTypeDurationConfigFormula) _then) =
+      _$CalendarItemTypeDurationConfigFormulaCopyWithImpl;
+  @useResult
+  $Res call({int min, int max, int step});
+}
+
+/// @nodoc
+class _$CalendarItemTypeDurationConfigFormulaCopyWithImpl<$Res>
+    implements $CalendarItemTypeDurationConfigFormulaCopyWith<$Res> {
+  _$CalendarItemTypeDurationConfigFormulaCopyWithImpl(this._self, this._then);
+
+  final CalendarItemTypeDurationConfigFormula _self;
+  final $Res Function(CalendarItemTypeDurationConfigFormula) _then;
+
+  /// Create a copy of CalendarItemTypeDurationConfigFormula
+  /// with the given fields replaced by the non-null parameter values.
+  @pragma('vm:prefer-inline')
+  @override
+  $Res call({
+    Object? min = null,
+    Object? max = null,
+    Object? step = null,
+  }) {
+    return _then(_self.copyWith(
+      min: null == min
+          ? _self.min
+          : min // ignore: cast_nullable_to_non_nullable
+              as int,
+      max: null == max
+          ? _self.max
+          : max // ignore: cast_nullable_to_non_nullable
+              as int,
+      step: null == step
+          ? _self.step
+          : step // ignore: cast_nullable_to_non_nullable
+              as int,
+    ));
+  }
+}
+
+/// @nodoc
+
+class _CalendarItemTypeDurationConfigFormula
+    implements CalendarItemTypeDurationConfigFormula {
+  const _CalendarItemTypeDurationConfigFormula(
+      {required this.min, required this.max, required this.step});
+
+  @override
+  final int min;
+  @override
+  final int max;
+  @override
+  final int step;
+
+  /// Create a copy of CalendarItemTypeDurationConfigFormula
+  /// with the given fields replaced by the non-null parameter values.
+  @override
+  @JsonKey(includeFromJson: false, includeToJson: false)
+  @pragma('vm:prefer-inline')
+  _$CalendarItemTypeDurationConfigFormulaCopyWith<
+          _CalendarItemTypeDurationConfigFormula>
+      get copyWith => __$CalendarItemTypeDurationConfigFormulaCopyWithImpl<
+          _CalendarItemTypeDurationConfigFormula>(this, _$identity);
+
+  @override
+  bool operator ==(Object other) {
+    return identical(this, other) ||
+        (other.runtimeType == runtimeType &&
+            other is _CalendarItemTypeDurationConfigFormula &&
+            (identical(other.min, min) || other.min == min) &&
+            (identical(other.max, max) || other.max == max) &&
+            (identical(other.step, step) || other.step == step));
+  }
+
+  @override
+  int get hashCode => Object.hash(runtimeType, min, max, step);
+
+  @override
+  String toString() {
+    return 'CalendarItemTypeDurationConfigFormula(min: $min, max: $max, step: $step)';
+  }
+}
+
+/// @nodoc
+abstract mixin class _$CalendarItemTypeDurationConfigFormulaCopyWith<$Res>
+    implements $CalendarItemTypeDurationConfigFormulaCopyWith<$Res> {
+  factory _$CalendarItemTypeDurationConfigFormulaCopyWith(
+          _CalendarItemTypeDurationConfigFormula value,
+          $Res Function(_CalendarItemTypeDurationConfigFormula) _then) =
+      __$CalendarItemTypeDurationConfigFormulaCopyWithImpl;
+  @override
+  @useResult
+  $Res call({int min, int max, int step});
+}
+
+/// @nodoc
+class __$CalendarItemTypeDurationConfigFormulaCopyWithImpl<$Res>
+    implements _$CalendarItemTypeDurationConfigFormulaCopyWith<$Res> {
+  __$CalendarItemTypeDurationConfigFormulaCopyWithImpl(this._self, this._then);
+
+  final _CalendarItemTypeDurationConfigFormula _self;
+  final $Res Function(_CalendarItemTypeDurationConfigFormula) _then;
+
+  /// Create a copy of CalendarItemTypeDurationConfigFormula
+  /// with the given fields replaced by the non-null parameter values.
+  @override
+  @pragma('vm:prefer-inline')
+  $Res call({
+    Object? min = null,
+    Object? max = null,
+    Object? step = null,
+  }) {
+    return _then(_CalendarItemTypeDurationConfigFormula(
+      min: null == min
+          ? _self.min
+          : min // ignore: cast_nullable_to_non_nullable
+              as int,
+      max: null == max
+          ? _self.max
+          : max // ignore: cast_nullable_to_non_nullable
+              as int,
+      step: null == step
+          ? _self.step
+          : step // ignore: cast_nullable_to_non_nullable
+              as int,
     ));
   }
 }

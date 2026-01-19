@@ -64,6 +64,8 @@ mixin _$HealthcareParty {
   Map<String, String> get importedData;
   Map<String, String> get options;
   Set<DecryptedPropertyStub> get properties;
+  bool get public;
+  Set<DecryptedPropertyStub>? get publicProperties;
   Set<DecryptedPropertyStub>? get cryptoActorProperties;
   Map<String, List<HexString>> get hcPartyKeys;
   Map<
@@ -166,6 +168,9 @@ mixin _$HealthcareParty {
             const DeepCollectionEquality().equals(other.options, options) &&
             const DeepCollectionEquality()
                 .equals(other.properties, properties) &&
+            (identical(other.public, public) || other.public == public) &&
+            const DeepCollectionEquality()
+                .equals(other.publicProperties, publicProperties) &&
             const DeepCollectionEquality()
                 .equals(other.cryptoActorProperties, cryptoActorProperties) &&
             const DeepCollectionEquality()
@@ -234,6 +239,8 @@ mixin _$HealthcareParty {
         const DeepCollectionEquality().hash(importedData),
         const DeepCollectionEquality().hash(options),
         const DeepCollectionEquality().hash(properties),
+        public,
+        const DeepCollectionEquality().hash(publicProperties),
         const DeepCollectionEquality().hash(cryptoActorProperties),
         const DeepCollectionEquality().hash(hcPartyKeys),
         const DeepCollectionEquality().hash(aesExchangeKeys),
@@ -245,7 +252,7 @@ mixin _$HealthcareParty {
 
   @override
   String toString() {
-    return 'HealthcareParty(id: $id, rev: $rev, created: $created, modified: $modified, deletionDate: $deletionDate, identifier: $identifier, tags: $tags, codes: $codes, name: $name, lastName: $lastName, firstName: $firstName, names: $names, gender: $gender, civility: $civility, companyName: $companyName, speciality: $speciality, bankAccount: $bankAccount, bic: $bic, proxyBankAccount: $proxyBankAccount, proxyBic: $proxyBic, invoiceHeader: $invoiceHeader, cbe: $cbe, ehp: $ehp, userId: $userId, parentId: $parentId, convention: $convention, nihii: $nihii, nihiiSpecCode: $nihiiSpecCode, ssin: $ssin, addresses: $addresses, languages: $languages, picture: $picture, statuses: $statuses, statusHistory: $statusHistory, specialityCodes: $specialityCodes, sendFormats: $sendFormats, notes: $notes, financialInstitutionInformation: $financialInstitutionInformation, descr: $descr, billingType: $billingType, type: $type, contactPerson: $contactPerson, contactPersonHcpId: $contactPersonHcpId, supervisorId: $supervisorId, flatRateTarifications: $flatRateTarifications, importedData: $importedData, options: $options, properties: $properties, cryptoActorProperties: $cryptoActorProperties, hcPartyKeys: $hcPartyKeys, aesExchangeKeys: $aesExchangeKeys, transferKeys: $transferKeys, privateKeyShamirPartitions: $privateKeyShamirPartitions, publicKey: $publicKey, publicKeysForOaepWithSha256: $publicKeysForOaepWithSha256)';
+    return 'HealthcareParty(id: $id, rev: $rev, created: $created, modified: $modified, deletionDate: $deletionDate, identifier: $identifier, tags: $tags, codes: $codes, name: $name, lastName: $lastName, firstName: $firstName, names: $names, gender: $gender, civility: $civility, companyName: $companyName, speciality: $speciality, bankAccount: $bankAccount, bic: $bic, proxyBankAccount: $proxyBankAccount, proxyBic: $proxyBic, invoiceHeader: $invoiceHeader, cbe: $cbe, ehp: $ehp, userId: $userId, parentId: $parentId, convention: $convention, nihii: $nihii, nihiiSpecCode: $nihiiSpecCode, ssin: $ssin, addresses: $addresses, languages: $languages, picture: $picture, statuses: $statuses, statusHistory: $statusHistory, specialityCodes: $specialityCodes, sendFormats: $sendFormats, notes: $notes, financialInstitutionInformation: $financialInstitutionInformation, descr: $descr, billingType: $billingType, type: $type, contactPerson: $contactPerson, contactPersonHcpId: $contactPersonHcpId, supervisorId: $supervisorId, flatRateTarifications: $flatRateTarifications, importedData: $importedData, options: $options, properties: $properties, public: $public, publicProperties: $publicProperties, cryptoActorProperties: $cryptoActorProperties, hcPartyKeys: $hcPartyKeys, aesExchangeKeys: $aesExchangeKeys, transferKeys: $transferKeys, privateKeyShamirPartitions: $privateKeyShamirPartitions, publicKey: $publicKey, publicKeysForOaepWithSha256: $publicKeysForOaepWithSha256)';
   }
 }
 
@@ -305,6 +312,8 @@ abstract mixin class $HealthcarePartyCopyWith<$Res> {
       Map<String, String> importedData,
       Map<String, String> options,
       Set<DecryptedPropertyStub> properties,
+      bool public,
+      Set<DecryptedPropertyStub>? publicProperties,
       Set<DecryptedPropertyStub>? cryptoActorProperties,
       Map<String, List<HexString>> hcPartyKeys,
       Map<
@@ -381,6 +390,8 @@ class _$HealthcarePartyCopyWithImpl<$Res>
     Object? importedData = null,
     Object? options = null,
     Object? properties = null,
+    Object? public = null,
+    Object? publicProperties = freezed,
     Object? cryptoActorProperties = freezed,
     Object? hcPartyKeys = null,
     Object? aesExchangeKeys = null,
@@ -582,6 +593,14 @@ class _$HealthcarePartyCopyWithImpl<$Res>
           ? _self.properties
           : properties // ignore: cast_nullable_to_non_nullable
               as Set<DecryptedPropertyStub>,
+      public: null == public
+          ? _self.public
+          : public // ignore: cast_nullable_to_non_nullable
+              as bool,
+      publicProperties: freezed == publicProperties
+          ? _self.publicProperties
+          : publicProperties // ignore: cast_nullable_to_non_nullable
+              as Set<DecryptedPropertyStub>?,
       cryptoActorProperties: freezed == cryptoActorProperties
           ? _self.cryptoActorProperties
           : cryptoActorProperties // ignore: cast_nullable_to_non_nullable
@@ -674,6 +693,8 @@ class _HealthcareParty implements HealthcareParty {
       final Map<String, String> importedData = const {},
       final Map<String, String> options = const {},
       final Set<DecryptedPropertyStub> properties = const {},
+      this.public = false,
+      final Set<DecryptedPropertyStub>? publicProperties = null,
       final Set<DecryptedPropertyStub>? cryptoActorProperties = null,
       final Map<String, List<HexString>> hcPartyKeys = const {},
       final Map<
@@ -703,6 +724,7 @@ class _HealthcareParty implements HealthcareParty {
         _importedData = importedData,
         _options = options,
         _properties = properties,
+        _publicProperties = publicProperties,
         _cryptoActorProperties = cryptoActorProperties,
         _hcPartyKeys = hcPartyKeys,
         _aesExchangeKeys = aesExchangeKeys,
@@ -955,6 +977,20 @@ class _HealthcareParty implements HealthcareParty {
     return EqualUnmodifiableSetView(_properties);
   }
 
+  @override
+  @JsonKey()
+  final bool public;
+  final Set<DecryptedPropertyStub>? _publicProperties;
+  @override
+  @JsonKey()
+  Set<DecryptedPropertyStub>? get publicProperties {
+    final value = _publicProperties;
+    if (value == null) return null;
+    if (_publicProperties is EqualUnmodifiableSetView) return _publicProperties;
+    // ignore: implicit_dynamic_type
+    return EqualUnmodifiableSetView(value);
+  }
+
   final Set<DecryptedPropertyStub>? _cryptoActorProperties;
   @override
   @JsonKey()
@@ -1118,6 +1154,9 @@ class _HealthcareParty implements HealthcareParty {
             const DeepCollectionEquality().equals(other._options, _options) &&
             const DeepCollectionEquality()
                 .equals(other._properties, _properties) &&
+            (identical(other.public, public) || other.public == public) &&
+            const DeepCollectionEquality()
+                .equals(other._publicProperties, _publicProperties) &&
             const DeepCollectionEquality()
                 .equals(other._cryptoActorProperties, _cryptoActorProperties) &&
             const DeepCollectionEquality()
@@ -1187,6 +1226,8 @@ class _HealthcareParty implements HealthcareParty {
         const DeepCollectionEquality().hash(_importedData),
         const DeepCollectionEquality().hash(_options),
         const DeepCollectionEquality().hash(_properties),
+        public,
+        const DeepCollectionEquality().hash(_publicProperties),
         const DeepCollectionEquality().hash(_cryptoActorProperties),
         const DeepCollectionEquality().hash(_hcPartyKeys),
         const DeepCollectionEquality().hash(_aesExchangeKeys),
@@ -1198,7 +1239,7 @@ class _HealthcareParty implements HealthcareParty {
 
   @override
   String toString() {
-    return 'HealthcareParty(id: $id, rev: $rev, created: $created, modified: $modified, deletionDate: $deletionDate, identifier: $identifier, tags: $tags, codes: $codes, name: $name, lastName: $lastName, firstName: $firstName, names: $names, gender: $gender, civility: $civility, companyName: $companyName, speciality: $speciality, bankAccount: $bankAccount, bic: $bic, proxyBankAccount: $proxyBankAccount, proxyBic: $proxyBic, invoiceHeader: $invoiceHeader, cbe: $cbe, ehp: $ehp, userId: $userId, parentId: $parentId, convention: $convention, nihii: $nihii, nihiiSpecCode: $nihiiSpecCode, ssin: $ssin, addresses: $addresses, languages: $languages, picture: $picture, statuses: $statuses, statusHistory: $statusHistory, specialityCodes: $specialityCodes, sendFormats: $sendFormats, notes: $notes, financialInstitutionInformation: $financialInstitutionInformation, descr: $descr, billingType: $billingType, type: $type, contactPerson: $contactPerson, contactPersonHcpId: $contactPersonHcpId, supervisorId: $supervisorId, flatRateTarifications: $flatRateTarifications, importedData: $importedData, options: $options, properties: $properties, cryptoActorProperties: $cryptoActorProperties, hcPartyKeys: $hcPartyKeys, aesExchangeKeys: $aesExchangeKeys, transferKeys: $transferKeys, privateKeyShamirPartitions: $privateKeyShamirPartitions, publicKey: $publicKey, publicKeysForOaepWithSha256: $publicKeysForOaepWithSha256)';
+    return 'HealthcareParty(id: $id, rev: $rev, created: $created, modified: $modified, deletionDate: $deletionDate, identifier: $identifier, tags: $tags, codes: $codes, name: $name, lastName: $lastName, firstName: $firstName, names: $names, gender: $gender, civility: $civility, companyName: $companyName, speciality: $speciality, bankAccount: $bankAccount, bic: $bic, proxyBankAccount: $proxyBankAccount, proxyBic: $proxyBic, invoiceHeader: $invoiceHeader, cbe: $cbe, ehp: $ehp, userId: $userId, parentId: $parentId, convention: $convention, nihii: $nihii, nihiiSpecCode: $nihiiSpecCode, ssin: $ssin, addresses: $addresses, languages: $languages, picture: $picture, statuses: $statuses, statusHistory: $statusHistory, specialityCodes: $specialityCodes, sendFormats: $sendFormats, notes: $notes, financialInstitutionInformation: $financialInstitutionInformation, descr: $descr, billingType: $billingType, type: $type, contactPerson: $contactPerson, contactPersonHcpId: $contactPersonHcpId, supervisorId: $supervisorId, flatRateTarifications: $flatRateTarifications, importedData: $importedData, options: $options, properties: $properties, public: $public, publicProperties: $publicProperties, cryptoActorProperties: $cryptoActorProperties, hcPartyKeys: $hcPartyKeys, aesExchangeKeys: $aesExchangeKeys, transferKeys: $transferKeys, privateKeyShamirPartitions: $privateKeyShamirPartitions, publicKey: $publicKey, publicKeysForOaepWithSha256: $publicKeysForOaepWithSha256)';
   }
 }
 
@@ -1260,6 +1301,8 @@ abstract mixin class _$HealthcarePartyCopyWith<$Res>
       Map<String, String> importedData,
       Map<String, String> options,
       Set<DecryptedPropertyStub> properties,
+      bool public,
+      Set<DecryptedPropertyStub>? publicProperties,
       Set<DecryptedPropertyStub>? cryptoActorProperties,
       Map<String, List<HexString>> hcPartyKeys,
       Map<
@@ -1336,6 +1379,8 @@ class __$HealthcarePartyCopyWithImpl<$Res>
     Object? importedData = null,
     Object? options = null,
     Object? properties = null,
+    Object? public = null,
+    Object? publicProperties = freezed,
     Object? cryptoActorProperties = freezed,
     Object? hcPartyKeys = null,
     Object? aesExchangeKeys = null,
@@ -1537,6 +1582,14 @@ class __$HealthcarePartyCopyWithImpl<$Res>
           ? _self._properties
           : properties // ignore: cast_nullable_to_non_nullable
               as Set<DecryptedPropertyStub>,
+      public: null == public
+          ? _self.public
+          : public // ignore: cast_nullable_to_non_nullable
+              as bool,
+      publicProperties: freezed == publicProperties
+          ? _self._publicProperties
+          : publicProperties // ignore: cast_nullable_to_non_nullable
+              as Set<DecryptedPropertyStub>?,
       cryptoActorProperties: freezed == cryptoActorProperties
           ? _self._cryptoActorProperties
           : cryptoActorProperties // ignore: cast_nullable_to_non_nullable

@@ -194,6 +194,7 @@ class __$ExternalJwtConfigCopyWithImpl<$Res>
 /// @nodoc
 mixin _$ExternalJwtConfigValidationMethodPublicKey {
   String get key;
+  String? get signatureAlgorithm;
 
   /// Create a copy of ExternalJwtConfigValidationMethodPublicKey
   /// with the given fields replaced by the non-null parameter values.
@@ -210,15 +211,17 @@ mixin _$ExternalJwtConfigValidationMethodPublicKey {
     return identical(this, other) ||
         (other.runtimeType == runtimeType &&
             other is ExternalJwtConfigValidationMethodPublicKey &&
-            (identical(other.key, key) || other.key == key));
+            (identical(other.key, key) || other.key == key) &&
+            (identical(other.signatureAlgorithm, signatureAlgorithm) ||
+                other.signatureAlgorithm == signatureAlgorithm));
   }
 
   @override
-  int get hashCode => Object.hash(runtimeType, key);
+  int get hashCode => Object.hash(runtimeType, key, signatureAlgorithm);
 
   @override
   String toString() {
-    return 'ExternalJwtConfigValidationMethodPublicKey(key: $key)';
+    return 'ExternalJwtConfigValidationMethodPublicKey(key: $key, signatureAlgorithm: $signatureAlgorithm)';
   }
 }
 
@@ -229,7 +232,7 @@ abstract mixin class $ExternalJwtConfigValidationMethodPublicKeyCopyWith<$Res> {
           $Res Function(ExternalJwtConfigValidationMethodPublicKey) _then) =
       _$ExternalJwtConfigValidationMethodPublicKeyCopyWithImpl;
   @useResult
-  $Res call({String key});
+  $Res call({String key, String? signatureAlgorithm});
 }
 
 /// @nodoc
@@ -247,12 +250,17 @@ class _$ExternalJwtConfigValidationMethodPublicKeyCopyWithImpl<$Res>
   @override
   $Res call({
     Object? key = null,
+    Object? signatureAlgorithm = freezed,
   }) {
     return _then(_self.copyWith(
       key: null == key
           ? _self.key
           : key // ignore: cast_nullable_to_non_nullable
               as String,
+      signatureAlgorithm: freezed == signatureAlgorithm
+          ? _self.signatureAlgorithm
+          : signatureAlgorithm // ignore: cast_nullable_to_non_nullable
+              as String?,
     ));
   }
 }
@@ -261,10 +269,14 @@ class _$ExternalJwtConfigValidationMethodPublicKeyCopyWithImpl<$Res>
 
 class _ExternalJwtConfigValidationMethodPublicKey
     implements ExternalJwtConfigValidationMethodPublicKey {
-  const _ExternalJwtConfigValidationMethodPublicKey({required this.key});
+  const _ExternalJwtConfigValidationMethodPublicKey(
+      {required this.key, this.signatureAlgorithm = null});
 
   @override
   final String key;
+  @override
+  @JsonKey()
+  final String? signatureAlgorithm;
 
   /// Create a copy of ExternalJwtConfigValidationMethodPublicKey
   /// with the given fields replaced by the non-null parameter values.
@@ -281,15 +293,17 @@ class _ExternalJwtConfigValidationMethodPublicKey
     return identical(this, other) ||
         (other.runtimeType == runtimeType &&
             other is _ExternalJwtConfigValidationMethodPublicKey &&
-            (identical(other.key, key) || other.key == key));
+            (identical(other.key, key) || other.key == key) &&
+            (identical(other.signatureAlgorithm, signatureAlgorithm) ||
+                other.signatureAlgorithm == signatureAlgorithm));
   }
 
   @override
-  int get hashCode => Object.hash(runtimeType, key);
+  int get hashCode => Object.hash(runtimeType, key, signatureAlgorithm);
 
   @override
   String toString() {
-    return 'ExternalJwtConfigValidationMethodPublicKey(key: $key)';
+    return 'ExternalJwtConfigValidationMethodPublicKey(key: $key, signatureAlgorithm: $signatureAlgorithm)';
   }
 }
 
@@ -302,7 +316,7 @@ abstract mixin class _$ExternalJwtConfigValidationMethodPublicKeyCopyWith<$Res>
       __$ExternalJwtConfigValidationMethodPublicKeyCopyWithImpl;
   @override
   @useResult
-  $Res call({String key});
+  $Res call({String key, String? signatureAlgorithm});
 }
 
 /// @nodoc
@@ -320,12 +334,17 @@ class __$ExternalJwtConfigValidationMethodPublicKeyCopyWithImpl<$Res>
   @pragma('vm:prefer-inline')
   $Res call({
     Object? key = null,
+    Object? signatureAlgorithm = freezed,
   }) {
     return _then(_ExternalJwtConfigValidationMethodPublicKey(
       key: null == key
           ? _self.key
           : key // ignore: cast_nullable_to_non_nullable
               as String,
+      signatureAlgorithm: freezed == signatureAlgorithm
+          ? _self.signatureAlgorithm
+          : signatureAlgorithm // ignore: cast_nullable_to_non_nullable
+              as String?,
     ));
   }
 }

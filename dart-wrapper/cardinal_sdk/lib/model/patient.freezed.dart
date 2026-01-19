@@ -39,7 +39,7 @@ mixin _$EncryptedPatient {
   Set<String> get mergedIds;
   String? get alias;
   bool get active;
-  DeactivationReason get deactivationReason;
+  String get deactivationReason;
   int? get deactivationDate;
   String? get ssin;
   String? get maidenName;
@@ -364,7 +364,7 @@ abstract mixin class $EncryptedPatientCopyWith<$Res> {
       Set<String> mergedIds,
       String? alias,
       bool active,
-      DeactivationReason deactivationReason,
+      String deactivationReason,
       int? deactivationDate,
       String? ssin,
       String? maidenName,
@@ -634,7 +634,7 @@ class _$EncryptedPatientCopyWithImpl<$Res>
       deactivationReason: null == deactivationReason
           ? _self.deactivationReason
           : deactivationReason // ignore: cast_nullable_to_non_nullable
-              as DeactivationReason,
+              as String,
       deactivationDate: freezed == deactivationDate
           ? _self.deactivationDate
           : deactivationDate // ignore: cast_nullable_to_non_nullable
@@ -986,7 +986,7 @@ class _EncryptedPatient implements EncryptedPatient {
       final Set<String> mergedIds = const {},
       this.alias = null,
       this.active = true,
-      this.deactivationReason = DeactivationReason.none,
+      this.deactivationReason = "none",
       this.deactivationDate = null,
       this.ssin = null,
       this.maidenName = null,
@@ -1199,7 +1199,7 @@ class _EncryptedPatient implements EncryptedPatient {
   final bool active;
   @override
   @JsonKey()
-  final DeactivationReason deactivationReason;
+  final String deactivationReason;
   @override
   @JsonKey()
   final int? deactivationDate;
@@ -1798,7 +1798,7 @@ abstract mixin class _$EncryptedPatientCopyWith<$Res>
       Set<String> mergedIds,
       String? alias,
       bool active,
-      DeactivationReason deactivationReason,
+      String deactivationReason,
       int? deactivationDate,
       String? ssin,
       String? maidenName,
@@ -2074,7 +2074,7 @@ class __$EncryptedPatientCopyWithImpl<$Res>
       deactivationReason: null == deactivationReason
           ? _self.deactivationReason
           : deactivationReason // ignore: cast_nullable_to_non_nullable
-              as DeactivationReason,
+              as String,
       deactivationDate: freezed == deactivationDate
           ? _self.deactivationDate
           : deactivationDate // ignore: cast_nullable_to_non_nullable
@@ -2424,7 +2424,7 @@ mixin _$DecryptedPatient {
   Set<String> get mergedIds;
   String? get alias;
   bool get active;
-  DeactivationReason get deactivationReason;
+  String get deactivationReason;
   int? get deactivationDate;
   String? get ssin;
   String? get maidenName;
@@ -2749,7 +2749,7 @@ abstract mixin class $DecryptedPatientCopyWith<$Res> {
       Set<String> mergedIds,
       String? alias,
       bool active,
-      DeactivationReason deactivationReason,
+      String deactivationReason,
       int? deactivationDate,
       String? ssin,
       String? maidenName,
@@ -3019,7 +3019,7 @@ class _$DecryptedPatientCopyWithImpl<$Res>
       deactivationReason: null == deactivationReason
           ? _self.deactivationReason
           : deactivationReason // ignore: cast_nullable_to_non_nullable
-              as DeactivationReason,
+              as String,
       deactivationDate: freezed == deactivationDate
           ? _self.deactivationDate
           : deactivationDate // ignore: cast_nullable_to_non_nullable
@@ -3371,7 +3371,7 @@ class _DecryptedPatient implements DecryptedPatient {
       final Set<String> mergedIds = const {},
       this.alias = null,
       this.active = true,
-      this.deactivationReason = DeactivationReason.none,
+      this.deactivationReason = "none",
       this.deactivationDate = null,
       this.ssin = null,
       this.maidenName = null,
@@ -3584,7 +3584,7 @@ class _DecryptedPatient implements DecryptedPatient {
   final bool active;
   @override
   @JsonKey()
-  final DeactivationReason deactivationReason;
+  final String deactivationReason;
   @override
   @JsonKey()
   final int? deactivationDate;
@@ -4183,7 +4183,7 @@ abstract mixin class _$DecryptedPatientCopyWith<$Res>
       Set<String> mergedIds,
       String? alias,
       bool active,
-      DeactivationReason deactivationReason,
+      String deactivationReason,
       int? deactivationDate,
       String? ssin,
       String? maidenName,
@@ -4459,7 +4459,7 @@ class __$DecryptedPatientCopyWithImpl<$Res>
       deactivationReason: null == deactivationReason
           ? _self.deactivationReason
           : deactivationReason // ignore: cast_nullable_to_non_nullable
-              as DeactivationReason,
+              as String,
       deactivationDate: freezed == deactivationDate
           ? _self.deactivationDate
           : deactivationDate // ignore: cast_nullable_to_non_nullable

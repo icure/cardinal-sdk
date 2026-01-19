@@ -136,7 +136,7 @@ class _EncryptedSchoolingInfo implements EncryptedSchoolingInfo {
       this.endDate = null,
       this.school = null,
       this.typeOfEducation = null,
-      required this.encryptedSelf});
+      this.encryptedSelf = null});
 
   @override
   @JsonKey()
@@ -151,6 +151,7 @@ class _EncryptedSchoolingInfo implements EncryptedSchoolingInfo {
   @JsonKey()
   final CodeStub? typeOfEducation;
   @override
+  @JsonKey()
   final Base64String? encryptedSelf;
 
   /// Create a copy of EncryptedSchoolingInfo
@@ -387,7 +388,7 @@ class _DecryptedSchoolingInfo implements DecryptedSchoolingInfo {
       this.endDate = null,
       this.school = null,
       this.typeOfEducation = null,
-      required this.encryptedSelf});
+      this.encryptedSelf = null});
 
   @override
   @JsonKey()
@@ -402,6 +403,7 @@ class _DecryptedSchoolingInfo implements DecryptedSchoolingInfo {
   @JsonKey()
   final CodeStub? typeOfEducation;
   @override
+  @JsonKey()
   final Base64String? encryptedSelf;
 
   /// Create a copy of DecryptedSchoolingInfo

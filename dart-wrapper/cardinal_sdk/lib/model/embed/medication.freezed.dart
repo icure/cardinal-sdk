@@ -57,6 +57,7 @@ mixin _$Medication {
   List<Suspension>? get suspension;
   String? get prescriptionRID;
   int? get status;
+  DecryptedAddress? get stockLocation;
 
   /// Create a copy of Medication
   /// with the given fields replaced by the non-null parameter values.
@@ -145,7 +146,8 @@ mixin _$Medication {
             (identical(other.posologyChanged, posologyChanged) || other.posologyChanged == posologyChanged) &&
             const DeepCollectionEquality().equals(other.suspension, suspension) &&
             (identical(other.prescriptionRID, prescriptionRID) || other.prescriptionRID == prescriptionRID) &&
-            (identical(other.status, status) || other.status == status));
+            (identical(other.status, status) || other.status == status) &&
+            (identical(other.stockLocation, stockLocation) || other.stockLocation == stockLocation));
   }
 
   @override
@@ -192,12 +194,13 @@ mixin _$Medication {
         posologyChanged,
         const DeepCollectionEquality().hash(suspension),
         prescriptionRID,
-        status
+        status,
+        stockLocation
       ]);
 
   @override
   String toString() {
-    return 'Medication(compoundPrescription: $compoundPrescription, substanceProduct: $substanceProduct, medicinalProduct: $medicinalProduct, numberOfPackages: $numberOfPackages, batch: $batch, expirationDate: $expirationDate, instructionForPatient: $instructionForPatient, instructionForReimbursement: $instructionForReimbursement, commentForDelivery: $commentForDelivery, drugRoute: $drugRoute, temporality: $temporality, frequency: $frequency, reimbursementReason: $reimbursementReason, substitutionAllowed: $substitutionAllowed, beginMoment: $beginMoment, endMoment: $endMoment, deliveryMoment: $deliveryMoment, endExecutionMoment: $endExecutionMoment, duration: $duration, renewal: $renewal, knownUsage: $knownUsage, regimen: $regimen, posology: $posology, agreements: $agreements, medicationSchemeIdOnSafe: $medicationSchemeIdOnSafe, medicationSchemeSafeVersion: $medicationSchemeSafeVersion, medicationSchemeTimeStampOnSafe: $medicationSchemeTimeStampOnSafe, medicationSchemeDocumentId: $medicationSchemeDocumentId, safeIdName: $safeIdName, idOnSafes: $idOnSafes, timestampOnSafe: $timestampOnSafe, changeValidated: $changeValidated, newSafeMedication: $newSafeMedication, medicationUse: $medicationUse, beginCondition: $beginCondition, endCondition: $endCondition, origin: $origin, medicationChanged: $medicationChanged, posologyChanged: $posologyChanged, suspension: $suspension, prescriptionRID: $prescriptionRID, status: $status)';
+    return 'Medication(compoundPrescription: $compoundPrescription, substanceProduct: $substanceProduct, medicinalProduct: $medicinalProduct, numberOfPackages: $numberOfPackages, batch: $batch, expirationDate: $expirationDate, instructionForPatient: $instructionForPatient, instructionForReimbursement: $instructionForReimbursement, commentForDelivery: $commentForDelivery, drugRoute: $drugRoute, temporality: $temporality, frequency: $frequency, reimbursementReason: $reimbursementReason, substitutionAllowed: $substitutionAllowed, beginMoment: $beginMoment, endMoment: $endMoment, deliveryMoment: $deliveryMoment, endExecutionMoment: $endExecutionMoment, duration: $duration, renewal: $renewal, knownUsage: $knownUsage, regimen: $regimen, posology: $posology, agreements: $agreements, medicationSchemeIdOnSafe: $medicationSchemeIdOnSafe, medicationSchemeSafeVersion: $medicationSchemeSafeVersion, medicationSchemeTimeStampOnSafe: $medicationSchemeTimeStampOnSafe, medicationSchemeDocumentId: $medicationSchemeDocumentId, safeIdName: $safeIdName, idOnSafes: $idOnSafes, timestampOnSafe: $timestampOnSafe, changeValidated: $changeValidated, newSafeMedication: $newSafeMedication, medicationUse: $medicationUse, beginCondition: $beginCondition, endCondition: $endCondition, origin: $origin, medicationChanged: $medicationChanged, posologyChanged: $posologyChanged, suspension: $suspension, prescriptionRID: $prescriptionRID, status: $status, stockLocation: $stockLocation)';
   }
 }
 
@@ -249,7 +252,8 @@ abstract mixin class $MedicationCopyWith<$Res> {
       bool? posologyChanged,
       List<Suspension>? suspension,
       String? prescriptionRID,
-      int? status});
+      int? status,
+      DecryptedAddress? stockLocation});
 
   $SubstanceproductCopyWith<$Res>? get substanceProduct;
   $MedicinalproductCopyWith<$Res>? get medicinalProduct;
@@ -257,6 +261,7 @@ abstract mixin class $MedicationCopyWith<$Res> {
   $CodeStubCopyWith<$Res>? get reimbursementReason;
   $DurationCopyWith<$Res>? get duration;
   $RenewalCopyWith<$Res>? get renewal;
+  $DecryptedAddressCopyWith<$Res>? get stockLocation;
 }
 
 /// @nodoc
@@ -313,6 +318,7 @@ class _$MedicationCopyWithImpl<$Res> implements $MedicationCopyWith<$Res> {
     Object? suspension = freezed,
     Object? prescriptionRID = freezed,
     Object? status = freezed,
+    Object? stockLocation = freezed,
   }) {
     return _then(_self.copyWith(
       compoundPrescription: freezed == compoundPrescription
@@ -484,6 +490,10 @@ class _$MedicationCopyWithImpl<$Res> implements $MedicationCopyWith<$Res> {
           ? _self.status
           : status // ignore: cast_nullable_to_non_nullable
               as int?,
+      stockLocation: freezed == stockLocation
+          ? _self.stockLocation
+          : stockLocation // ignore: cast_nullable_to_non_nullable
+              as DecryptedAddress?,
     ));
   }
 
@@ -570,6 +580,20 @@ class _$MedicationCopyWithImpl<$Res> implements $MedicationCopyWith<$Res> {
       return _then(_self.copyWith(renewal: value));
     });
   }
+
+  /// Create a copy of Medication
+  /// with the given fields replaced by the non-null parameter values.
+  @override
+  @pragma('vm:prefer-inline')
+  $DecryptedAddressCopyWith<$Res>? get stockLocation {
+    if (_self.stockLocation == null) {
+      return null;
+    }
+
+    return $DecryptedAddressCopyWith<$Res>(_self.stockLocation!, (value) {
+      return _then(_self.copyWith(stockLocation: value));
+    });
+  }
 }
 
 /// @nodoc
@@ -617,7 +641,8 @@ class _Medication implements Medication {
       this.posologyChanged = null,
       final List<Suspension>? suspension = null,
       this.prescriptionRID = null,
-      this.status = null})
+      this.status = null,
+      this.stockLocation = null})
       : _regimen = regimen,
         _agreements = agreements,
         _suspension = suspension;
@@ -772,6 +797,9 @@ class _Medication implements Medication {
   @override
   @JsonKey()
   final int? status;
+  @override
+  @JsonKey()
+  final DecryptedAddress? stockLocation;
 
   /// Create a copy of Medication
   /// with the given fields replaced by the non-null parameter values.
@@ -861,7 +889,8 @@ class _Medication implements Medication {
             (identical(other.posologyChanged, posologyChanged) || other.posologyChanged == posologyChanged) &&
             const DeepCollectionEquality().equals(other._suspension, _suspension) &&
             (identical(other.prescriptionRID, prescriptionRID) || other.prescriptionRID == prescriptionRID) &&
-            (identical(other.status, status) || other.status == status));
+            (identical(other.status, status) || other.status == status) &&
+            (identical(other.stockLocation, stockLocation) || other.stockLocation == stockLocation));
   }
 
   @override
@@ -908,12 +937,13 @@ class _Medication implements Medication {
         posologyChanged,
         const DeepCollectionEquality().hash(_suspension),
         prescriptionRID,
-        status
+        status,
+        stockLocation
       ]);
 
   @override
   String toString() {
-    return 'Medication(compoundPrescription: $compoundPrescription, substanceProduct: $substanceProduct, medicinalProduct: $medicinalProduct, numberOfPackages: $numberOfPackages, batch: $batch, expirationDate: $expirationDate, instructionForPatient: $instructionForPatient, instructionForReimbursement: $instructionForReimbursement, commentForDelivery: $commentForDelivery, drugRoute: $drugRoute, temporality: $temporality, frequency: $frequency, reimbursementReason: $reimbursementReason, substitutionAllowed: $substitutionAllowed, beginMoment: $beginMoment, endMoment: $endMoment, deliveryMoment: $deliveryMoment, endExecutionMoment: $endExecutionMoment, duration: $duration, renewal: $renewal, knownUsage: $knownUsage, regimen: $regimen, posology: $posology, agreements: $agreements, medicationSchemeIdOnSafe: $medicationSchemeIdOnSafe, medicationSchemeSafeVersion: $medicationSchemeSafeVersion, medicationSchemeTimeStampOnSafe: $medicationSchemeTimeStampOnSafe, medicationSchemeDocumentId: $medicationSchemeDocumentId, safeIdName: $safeIdName, idOnSafes: $idOnSafes, timestampOnSafe: $timestampOnSafe, changeValidated: $changeValidated, newSafeMedication: $newSafeMedication, medicationUse: $medicationUse, beginCondition: $beginCondition, endCondition: $endCondition, origin: $origin, medicationChanged: $medicationChanged, posologyChanged: $posologyChanged, suspension: $suspension, prescriptionRID: $prescriptionRID, status: $status)';
+    return 'Medication(compoundPrescription: $compoundPrescription, substanceProduct: $substanceProduct, medicinalProduct: $medicinalProduct, numberOfPackages: $numberOfPackages, batch: $batch, expirationDate: $expirationDate, instructionForPatient: $instructionForPatient, instructionForReimbursement: $instructionForReimbursement, commentForDelivery: $commentForDelivery, drugRoute: $drugRoute, temporality: $temporality, frequency: $frequency, reimbursementReason: $reimbursementReason, substitutionAllowed: $substitutionAllowed, beginMoment: $beginMoment, endMoment: $endMoment, deliveryMoment: $deliveryMoment, endExecutionMoment: $endExecutionMoment, duration: $duration, renewal: $renewal, knownUsage: $knownUsage, regimen: $regimen, posology: $posology, agreements: $agreements, medicationSchemeIdOnSafe: $medicationSchemeIdOnSafe, medicationSchemeSafeVersion: $medicationSchemeSafeVersion, medicationSchemeTimeStampOnSafe: $medicationSchemeTimeStampOnSafe, medicationSchemeDocumentId: $medicationSchemeDocumentId, safeIdName: $safeIdName, idOnSafes: $idOnSafes, timestampOnSafe: $timestampOnSafe, changeValidated: $changeValidated, newSafeMedication: $newSafeMedication, medicationUse: $medicationUse, beginCondition: $beginCondition, endCondition: $endCondition, origin: $origin, medicationChanged: $medicationChanged, posologyChanged: $posologyChanged, suspension: $suspension, prescriptionRID: $prescriptionRID, status: $status, stockLocation: $stockLocation)';
   }
 }
 
@@ -967,7 +997,8 @@ abstract mixin class _$MedicationCopyWith<$Res>
       bool? posologyChanged,
       List<Suspension>? suspension,
       String? prescriptionRID,
-      int? status});
+      int? status,
+      DecryptedAddress? stockLocation});
 
   @override
   $SubstanceproductCopyWith<$Res>? get substanceProduct;
@@ -981,6 +1012,8 @@ abstract mixin class _$MedicationCopyWith<$Res>
   $DurationCopyWith<$Res>? get duration;
   @override
   $RenewalCopyWith<$Res>? get renewal;
+  @override
+  $DecryptedAddressCopyWith<$Res>? get stockLocation;
 }
 
 /// @nodoc
@@ -1037,6 +1070,7 @@ class __$MedicationCopyWithImpl<$Res> implements _$MedicationCopyWith<$Res> {
     Object? suspension = freezed,
     Object? prescriptionRID = freezed,
     Object? status = freezed,
+    Object? stockLocation = freezed,
   }) {
     return _then(_Medication(
       compoundPrescription: freezed == compoundPrescription
@@ -1208,6 +1242,10 @@ class __$MedicationCopyWithImpl<$Res> implements _$MedicationCopyWith<$Res> {
           ? _self.status
           : status // ignore: cast_nullable_to_non_nullable
               as int?,
+      stockLocation: freezed == stockLocation
+          ? _self.stockLocation
+          : stockLocation // ignore: cast_nullable_to_non_nullable
+              as DecryptedAddress?,
     ));
   }
 
@@ -1292,6 +1330,20 @@ class __$MedicationCopyWithImpl<$Res> implements _$MedicationCopyWith<$Res> {
 
     return $RenewalCopyWith<$Res>(_self.renewal!, (value) {
       return _then(_self.copyWith(renewal: value));
+    });
+  }
+
+  /// Create a copy of Medication
+  /// with the given fields replaced by the non-null parameter values.
+  @override
+  @pragma('vm:prefer-inline')
+  $DecryptedAddressCopyWith<$Res>? get stockLocation {
+    if (_self.stockLocation == null) {
+      return null;
+    }
+
+    return $DecryptedAddressCopyWith<$Res>(_self.stockLocation!, (value) {
+      return _then(_self.copyWith(stockLocation: value));
     });
   }
 }
