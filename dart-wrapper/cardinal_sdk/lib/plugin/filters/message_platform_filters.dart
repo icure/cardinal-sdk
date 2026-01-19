@@ -5,6 +5,7 @@ import 'dart:convert';
 import 'package:cardinal_sdk/utils/internal/platform_exception_convertion.dart';
 import 'package:cardinal_sdk/model/message.dart';
 import 'package:cardinal_sdk/model/patient.dart';
+import 'package:cardinal_sdk/model/entity_reference_in_group.dart';
 
 
 class MessagePlatformFilters {
@@ -171,14 +172,14 @@ class MessagePlatformFilters {
 		return FilterOptions.fromJSON(parsedResJson);
 	}
 
-	Future<BaseSortableFilterOptions<Message>> byTransportGuidSentDateForDataOwner(String dataOwnerId, String transportGuid, DateTime from, DateTime to, { bool descending = false }) async {
+	Future<BaseSortableFilterOptions<Message>> byTransportGuidSentDateForDataOwner(String dataOwnerId, String transportGuid, DateTime? from, DateTime? to, { bool descending = false }) async {
 		final res = await _methodChannel.invokeMethod<String>(
 			'MessageFilters.byTransportGuidSentDateForDataOwner',
 			{
 				"dataOwnerId": jsonEncode(dataOwnerId),
 				"transportGuid": jsonEncode(transportGuid),
-				"from": jsonEncode(from.millisecondsSinceEpoch),
-				"to": jsonEncode(to.millisecondsSinceEpoch),
+				"from": jsonEncode(from?.millisecondsSinceEpoch),
+				"to": jsonEncode(to?.millisecondsSinceEpoch),
 				"descending": jsonEncode(descending),
 			}
 		).catchError(convertPlatformException);
@@ -187,13 +188,13 @@ class MessagePlatformFilters {
 		return BaseSortableFilterOptions.fromJSON(parsedResJson);
 	}
 
-	Future<SortableFilterOptions<Message>> byTransportGuidSentDateForSelf(String transportGuid, DateTime from, DateTime to, { bool descending = false }) async {
+	Future<SortableFilterOptions<Message>> byTransportGuidSentDateForSelf(String transportGuid, DateTime? from, DateTime? to, { bool descending = false }) async {
 		final res = await _methodChannel.invokeMethod<String>(
 			'MessageFilters.byTransportGuidSentDateForSelf',
 			{
 				"transportGuid": jsonEncode(transportGuid),
-				"from": jsonEncode(from.millisecondsSinceEpoch),
-				"to": jsonEncode(to.millisecondsSinceEpoch),
+				"from": jsonEncode(from?.millisecondsSinceEpoch),
+				"to": jsonEncode(to?.millisecondsSinceEpoch),
 				"descending": jsonEncode(descending),
 			}
 		).catchError(convertPlatformException);
@@ -249,5 +250,49 @@ class MessagePlatformFilters {
 		if (res == null) throw AssertionError("received null result from platform method byParentIds");
 		final parsedResJson = jsonDecode(res);
 		return BaseFilterOptions.fromJSON(parsedResJson);
+	}
+
+	Future<BaseFilterOptions<Message>> lifecycleBetweenForDataOwner(String dataOwnerId, int? startTimestamp, int? endTimestamp, bool descending) async {
+		final res = await _methodChannel.invokeMethod<String>(
+			'MessageFilters.lifecycleBetweenForDataOwner',
+			{
+				"dataOwnerId": jsonEncode(dataOwnerId),
+				"startTimestamp": jsonEncode(startTimestamp),
+				"endTimestamp": jsonEncode(endTimestamp),
+				"descending": jsonEncode(descending),
+			}
+		).catchError(convertPlatformException);
+		if (res == null) throw AssertionError("received null result from platform method lifecycleBetweenForDataOwner");
+		final parsedResJson = jsonDecode(res);
+		return BaseFilterOptions.fromJSON(parsedResJson);
+	}
+
+	Future<BaseFilterOptions<Message>> lifecycleBetweenForDataOwnerInGroup(EntityReferenceInGroup dataOwner, int? startTimestamp, int? endTimestamp, bool descending) async {
+		final res = await _methodChannel.invokeMethod<String>(
+			'MessageFilters.lifecycleBetweenForDataOwnerInGroup',
+			{
+				"dataOwner": jsonEncode(EntityReferenceInGroup.encode(dataOwner)),
+				"startTimestamp": jsonEncode(startTimestamp),
+				"endTimestamp": jsonEncode(endTimestamp),
+				"descending": jsonEncode(descending),
+			}
+		).catchError(convertPlatformException);
+		if (res == null) throw AssertionError("received null result from platform method lifecycleBetweenForDataOwnerInGroup");
+		final parsedResJson = jsonDecode(res);
+		return BaseFilterOptions.fromJSON(parsedResJson);
+	}
+
+	Future<FilterOptions<Message>> lifecycleBetweenForSelf(int? startTimestamp, int? endTimestamp, bool descending) async {
+		final res = await _methodChannel.invokeMethod<String>(
+			'MessageFilters.lifecycleBetweenForSelf',
+			{
+				"startTimestamp": jsonEncode(startTimestamp),
+				"endTimestamp": jsonEncode(endTimestamp),
+				"descending": jsonEncode(descending),
+			}
+		).catchError(convertPlatformException);
+		if (res == null) throw AssertionError("received null result from platform method lifecycleBetweenForSelf");
+		final parsedResJson = jsonDecode(res);
+		return FilterOptions.fromJSON(parsedResJson);
 	}
 }

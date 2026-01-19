@@ -224,6 +224,7 @@ public object PatientApiDispatcher {
       parameters.getValue("base"),
       parameters.getValue("user"),
       parameters.getValue("delegates"),
+      parameters.getValue("alternateRootDelegateId"),
     )
   }
 
@@ -333,6 +334,8 @@ public object PatientApiDispatcher {
       resultCallback,
       parameters.getValue("sdkId"),
       parameters.getValue("sharingWith"),
+      parameters.getValue("ignoreIfEncryptionMetadataExists"),
+      parameters.getValue("alternateRootDelegateId"),
     )
   }
 
@@ -1246,6 +1249,7 @@ public object PatientApiDispatcher {
       parameters.getValue("base"),
       parameters.getValue("user"),
       parameters.getValue("delegates"),
+      parameters.getValue("alternateRootDelegateReference"),
     )
   }
 

@@ -8,23 +8,26 @@ import 'package:cardinal_sdk/crypto/entities/secret_id_use_option.dart';
 import 'dart:convert';
 import 'package:cardinal_sdk/utils/internal/platform_exception_convertion.dart';
 import 'package:cardinal_sdk/model/specializations/hex_string.dart';
+import 'package:cardinal_sdk/model/entity_reference_in_group.dart';
 import 'package:cardinal_sdk/filters/filter_options.dart';
-import 'package:cardinal_sdk/model/couchdb/doc_identifier.dart';
 import 'package:cardinal_sdk/model/stored_document_identifier.dart';
 import 'package:cardinal_sdk/crypto/entities/access_log_share_options.dart';
 import 'package:cardinal_sdk/utils/pagination/paginated_list_iterator.dart';
+import 'package:cardinal_sdk/model/group_scoped.dart';
 
 
 class AccessLogPlatformApi {
 	MethodChannel _methodChannel;
 	AccessLogEncryptedPlatformApi encrypted;
 	AccessLogTryAndRecoverPlatformApi tryAndRecover;
+	AccessLogInGroupPlatformApi inGroup;
 	AccessLogPlatformApi(
 		this._methodChannel
 		) : encrypted = AccessLogEncryptedPlatformApi(_methodChannel),
-		tryAndRecover = AccessLogTryAndRecoverPlatformApi(_methodChannel);
+		tryAndRecover = AccessLogTryAndRecoverPlatformApi(_methodChannel),
+		inGroup = AccessLogInGroupPlatformApi(_methodChannel);
 
-	Future<DecryptedAccessLog> withEncryptionMetadata(String sdkId, DecryptedAccessLog? base, Patient patient, User? user, Map<String, AccessLevel> delegates, SecretIdUseOption secretId) async {
+	Future<DecryptedAccessLog> withEncryptionMetadata(String sdkId, DecryptedAccessLog? base, Patient patient, User? user, Map<String, AccessLevel> delegates, SecretIdUseOption secretId, String? alternateRootDelegateId) async {
 		final res = await _methodChannel.invokeMethod<String>(
 			'AccessLogApi.withEncryptionMetadata',
 			{
@@ -34,6 +37,7 @@ class AccessLogPlatformApi {
 				"user": jsonEncode(user == null ? null : User.encode(user!)),
 				"delegates": jsonEncode(delegates.map((k0, v0) => MapEntry(k0, AccessLevel.encode(v0)))),
 				"secretId": jsonEncode(SecretIdUseOption.encode(secretId)),
+				"alternateRootDelegateId": jsonEncode(alternateRootDelegateId),
 			}
 		).catchError(convertPlatformException);
 		if (res == null) throw AssertionError("received null result from platform method withEncryptionMetadata");
@@ -67,7 +71,7 @@ class AccessLogPlatformApi {
 		return (parsedResJson as bool);
 	}
 
-	Future<Set<String>> decryptPatientIdOf(String sdkId, AccessLog accessLog) async {
+	Future<Set<EntityReferenceInGroup>> decryptPatientIdOf(String sdkId, AccessLog accessLog) async {
 		final res = await _methodChannel.invokeMethod<String>(
 			'AccessLogApi.decryptPatientIdOf',
 			{
@@ -77,7 +81,7 @@ class AccessLogPlatformApi {
 		).catchError(convertPlatformException);
 		if (res == null) throw AssertionError("received null result from platform method decryptPatientIdOf");
 		final parsedResJson = jsonDecode(res);
-		return (parsedResJson as List<dynamic>).map((x1) => (x1 as String) ).toSet();
+		return (parsedResJson as List<dynamic>).map((x1) => EntityReferenceInGroup.fromJSON(x1) ).toSet();
 	}
 
 	Future<void> createDelegationDeAnonymizationMetadata(String sdkId, AccessLog entity, Set<String> delegates) async {
@@ -143,7 +147,7 @@ class AccessLogPlatformApi {
 		return (parsedResJson as List<dynamic>).map((x1) => (x1 as String) ).toList();
 	}
 
-	Future<DocIdentifier> deleteAccessLogById(String sdkId, String entityId, String rev) async {
+	Future<StoredDocumentIdentifier> deleteAccessLogById(String sdkId, String entityId, String rev) async {
 		final res = await _methodChannel.invokeMethod<String>(
 			'AccessLogApi.deleteAccessLogById',
 			{
@@ -154,10 +158,10 @@ class AccessLogPlatformApi {
 		).catchError(convertPlatformException);
 		if (res == null) throw AssertionError("received null result from platform method deleteAccessLogById");
 		final parsedResJson = jsonDecode(res);
-		return DocIdentifier.fromJSON(parsedResJson);
+		return StoredDocumentIdentifier.fromJSON(parsedResJson);
 	}
 
-	Future<List<DocIdentifier>> deleteAccessLogsByIds(String sdkId, List<StoredDocumentIdentifier> entityIds) async {
+	Future<List<StoredDocumentIdentifier>> deleteAccessLogsByIds(String sdkId, List<StoredDocumentIdentifier> entityIds) async {
 		final res = await _methodChannel.invokeMethod<String>(
 			'AccessLogApi.deleteAccessLogsByIds',
 			{
@@ -167,7 +171,7 @@ class AccessLogPlatformApi {
 		).catchError(convertPlatformException);
 		if (res == null) throw AssertionError("received null result from platform method deleteAccessLogsByIds");
 		final parsedResJson = jsonDecode(res);
-		return (parsedResJson as List<dynamic>).map((x1) => DocIdentifier.fromJSON(x1) ).toList();
+		return (parsedResJson as List<dynamic>).map((x1) => StoredDocumentIdentifier.fromJSON(x1) ).toList();
 	}
 
 	Future<void> purgeAccessLogById(String sdkId, String id, String rev) async {
@@ -181,7 +185,7 @@ class AccessLogPlatformApi {
 		).catchError(convertPlatformException);
 	}
 
-	Future<DocIdentifier> deleteAccessLog(String sdkId, AccessLog accessLog) async {
+	Future<StoredDocumentIdentifier> deleteAccessLog(String sdkId, AccessLog accessLog) async {
 		final res = await _methodChannel.invokeMethod<String>(
 			'AccessLogApi.deleteAccessLog',
 			{
@@ -191,10 +195,10 @@ class AccessLogPlatformApi {
 		).catchError(convertPlatformException);
 		if (res == null) throw AssertionError("received null result from platform method deleteAccessLog");
 		final parsedResJson = jsonDecode(res);
-		return DocIdentifier.fromJSON(parsedResJson);
+		return StoredDocumentIdentifier.fromJSON(parsedResJson);
 	}
 
-	Future<List<DocIdentifier>> deleteAccessLogs(String sdkId, List<AccessLog> accessLogs) async {
+	Future<List<StoredDocumentIdentifier>> deleteAccessLogs(String sdkId, List<AccessLog> accessLogs) async {
 		final res = await _methodChannel.invokeMethod<String>(
 			'AccessLogApi.deleteAccessLogs',
 			{
@@ -204,7 +208,7 @@ class AccessLogPlatformApi {
 		).catchError(convertPlatformException);
 		if (res == null) throw AssertionError("received null result from platform method deleteAccessLogs");
 		final parsedResJson = jsonDecode(res);
-		return (parsedResJson as List<dynamic>).map((x1) => DocIdentifier.fromJSON(x1) ).toList();
+		return (parsedResJson as List<dynamic>).map((x1) => StoredDocumentIdentifier.fromJSON(x1) ).toList();
 	}
 
 	Future<void> purgeAccessLog(String sdkId, AccessLog accessLog) async {
@@ -627,5 +631,725 @@ class AccessLogEncryptedPlatformApi {
 		if (res == null) throw AssertionError("received null result from platform method getAccessLogs");
 		final parsedResJson = jsonDecode(res);
 		return (parsedResJson as List<dynamic>).map((x1) => EncryptedAccessLog.fromJSON(x1) ).toList();
+	}
+}
+
+class AccessLogInGroupPlatformApi {
+	MethodChannel _methodChannel;
+	AccessLogInGroupEncryptedPlatformApi encrypted;
+	AccessLogInGroupTryAndRecoverPlatformApi tryAndRecover;
+	AccessLogInGroupPlatformApi(
+		this._methodChannel
+		) : encrypted = AccessLogInGroupEncryptedPlatformApi(_methodChannel),
+		tryAndRecover = AccessLogInGroupTryAndRecoverPlatformApi(_methodChannel);
+
+	Future<GroupScoped<DecryptedAccessLog>> withEncryptionMetadata(String sdkId, String entityGroupId, DecryptedAccessLog? base, GroupScoped<Patient> patient, User? user, Map<EntityReferenceInGroup, AccessLevel> delegates, SecretIdUseOption secretId, EntityReferenceInGroup? alternateRootDelegateReference) async {
+		final res = await _methodChannel.invokeMethod<String>(
+			'AccessLogApi.inGroup.withEncryptionMetadata',
+			{
+				"sdkId": sdkId,
+				"entityGroupId": jsonEncode(entityGroupId),
+				"base": jsonEncode(base == null ? null : DecryptedAccessLog.encode(base!)),
+				"patient": jsonEncode(GroupScoped.encode(
+					patient,
+					(x0) {
+						return Patient.encode(x0);
+					},
+				)),
+				"user": jsonEncode(user == null ? null : User.encode(user!)),
+				"delegates": jsonEncode(delegates.entries.map((x0) => {
+					"k": EntityReferenceInGroup.encode(x0.key),
+					"v": AccessLevel.encode(x0.value),
+				}).toList()),
+				"secretId": jsonEncode(SecretIdUseOption.encode(secretId)),
+				"alternateRootDelegateReference": jsonEncode(alternateRootDelegateReference == null ? null : EntityReferenceInGroup.encode(alternateRootDelegateReference!)),
+			}
+		).catchError(convertPlatformException);
+		if (res == null) throw AssertionError("received null result from platform method withEncryptionMetadata");
+		final parsedResJson = jsonDecode(res);
+		return GroupScoped.fromJSON(
+			parsedResJson,
+			(x1) {
+				return DecryptedAccessLog.fromJSON(x1);
+			},
+		);
+	}
+
+	Future<Set<HexString>> getEncryptionKeysOf(String sdkId, GroupScoped<AccessLog> accessLog) async {
+		final res = await _methodChannel.invokeMethod<String>(
+			'AccessLogApi.inGroup.getEncryptionKeysOf',
+			{
+				"sdkId": sdkId,
+				"accessLog": jsonEncode(GroupScoped.encode(
+					accessLog,
+					(x0) {
+						return AccessLog.encode(x0);
+					},
+				)),
+			}
+		).catchError(convertPlatformException);
+		if (res == null) throw AssertionError("received null result from platform method getEncryptionKeysOf");
+		final parsedResJson = jsonDecode(res);
+		return (parsedResJson as List<dynamic>).map((x1) => (x1 as HexString) ).toSet();
+	}
+
+	Future<bool> hasWriteAccess(String sdkId, GroupScoped<AccessLog> accessLog) async {
+		final res = await _methodChannel.invokeMethod<String>(
+			'AccessLogApi.inGroup.hasWriteAccess',
+			{
+				"sdkId": sdkId,
+				"accessLog": jsonEncode(GroupScoped.encode(
+					accessLog,
+					(x0) {
+						return AccessLog.encode(x0);
+					},
+				)),
+			}
+		).catchError(convertPlatformException);
+		if (res == null) throw AssertionError("received null result from platform method hasWriteAccess");
+		final parsedResJson = jsonDecode(res);
+		return (parsedResJson as bool);
+	}
+
+	Future<Set<EntityReferenceInGroup>> decryptPatientIdOf(String sdkId, GroupScoped<AccessLog> accessLog) async {
+		final res = await _methodChannel.invokeMethod<String>(
+			'AccessLogApi.inGroup.decryptPatientIdOf',
+			{
+				"sdkId": sdkId,
+				"accessLog": jsonEncode(GroupScoped.encode(
+					accessLog,
+					(x0) {
+						return AccessLog.encode(x0);
+					},
+				)),
+			}
+		).catchError(convertPlatformException);
+		if (res == null) throw AssertionError("received null result from platform method decryptPatientIdOf");
+		final parsedResJson = jsonDecode(res);
+		return (parsedResJson as List<dynamic>).map((x1) => EntityReferenceInGroup.fromJSON(x1) ).toSet();
+	}
+
+	Future<void> createDelegationDeAnonymizationMetadata(String sdkId, GroupScoped<AccessLog> entity, Set<EntityReferenceInGroup> delegates) async {
+		final res = await _methodChannel.invokeMethod<String>(
+			'AccessLogApi.inGroup.createDelegationDeAnonymizationMetadata',
+			{
+				"sdkId": sdkId,
+				"entity": jsonEncode(GroupScoped.encode(
+					entity,
+					(x0) {
+						return AccessLog.encode(x0);
+					},
+				)),
+				"delegates": jsonEncode(delegates.map((x0) => EntityReferenceInGroup.encode(x0)).toList()),
+			}
+		).catchError(convertPlatformException);
+	}
+
+	Future<List<GroupScoped<DecryptedAccessLog>>> decrypt(String sdkId, List<GroupScoped<EncryptedAccessLog>> accessLogs) async {
+		final res = await _methodChannel.invokeMethod<String>(
+			'AccessLogApi.inGroup.decrypt',
+			{
+				"sdkId": sdkId,
+				"accessLogs": jsonEncode(accessLogs.map((x0) => GroupScoped.encode(
+					x0,
+					(x1) {
+						return EncryptedAccessLog.encode(x1);
+					},
+				)).toList()),
+			}
+		).catchError(convertPlatformException);
+		if (res == null) throw AssertionError("received null result from platform method decrypt");
+		final parsedResJson = jsonDecode(res);
+		return (parsedResJson as List<dynamic>).map((x1) => GroupScoped.fromJSON(
+			x1,
+			(x2) {
+				return DecryptedAccessLog.fromJSON(x2);
+			},
+		) ).toList();
+	}
+
+	Future<List<GroupScoped<AccessLog>>> tryDecrypt(String sdkId, List<GroupScoped<EncryptedAccessLog>> accessLogs) async {
+		final res = await _methodChannel.invokeMethod<String>(
+			'AccessLogApi.inGroup.tryDecrypt',
+			{
+				"sdkId": sdkId,
+				"accessLogs": jsonEncode(accessLogs.map((x0) => GroupScoped.encode(
+					x0,
+					(x1) {
+						return EncryptedAccessLog.encode(x1);
+					},
+				)).toList()),
+			}
+		).catchError(convertPlatformException);
+		if (res == null) throw AssertionError("received null result from platform method tryDecrypt");
+		final parsedResJson = jsonDecode(res);
+		return (parsedResJson as List<dynamic>).map((x1) => GroupScoped.fromJSON(
+			x1,
+			(x2) {
+				return AccessLog.fromJSON(x2);
+			},
+		) ).toList();
+	}
+
+	Future<List<String>> matchAccessLogsBy(String sdkId, String groupId, FilterOptions<AccessLog> filter) async {
+		final res = await _methodChannel.invokeMethod<String>(
+			'AccessLogApi.inGroup.matchAccessLogsBy',
+			{
+				"sdkId": sdkId,
+				"groupId": jsonEncode(groupId),
+				"filter": jsonEncode(FilterOptions.encode(filter)),
+			}
+		).catchError(convertPlatformException);
+		if (res == null) throw AssertionError("received null result from platform method matchAccessLogsBy");
+		final parsedResJson = jsonDecode(res);
+		return (parsedResJson as List<dynamic>).map((x1) => (x1 as String) ).toList();
+	}
+
+	Future<List<String>> matchAccessLogsBySorted(String sdkId, String groupId, SortableFilterOptions<AccessLog> filter) async {
+		final res = await _methodChannel.invokeMethod<String>(
+			'AccessLogApi.inGroup.matchAccessLogsBySorted',
+			{
+				"sdkId": sdkId,
+				"groupId": jsonEncode(groupId),
+				"filter": jsonEncode(SortableFilterOptions.encode(filter)),
+			}
+		).catchError(convertPlatformException);
+		if (res == null) throw AssertionError("received null result from platform method matchAccessLogsBySorted");
+		final parsedResJson = jsonDecode(res);
+		return (parsedResJson as List<dynamic>).map((x1) => (x1 as String) ).toList();
+	}
+
+	Future<GroupScoped<StoredDocumentIdentifier>> deleteAccessLogById(String sdkId, GroupScoped<StoredDocumentIdentifier> entityId) async {
+		final res = await _methodChannel.invokeMethod<String>(
+			'AccessLogApi.inGroup.deleteAccessLogById',
+			{
+				"sdkId": sdkId,
+				"entityId": jsonEncode(GroupScoped.encode(
+					entityId,
+					(x0) {
+						return StoredDocumentIdentifier.encode(x0);
+					},
+				)),
+			}
+		).catchError(convertPlatformException);
+		if (res == null) throw AssertionError("received null result from platform method deleteAccessLogById");
+		final parsedResJson = jsonDecode(res);
+		return GroupScoped.fromJSON(
+			parsedResJson,
+			(x1) {
+				return StoredDocumentIdentifier.fromJSON(x1);
+			},
+		);
+	}
+
+	Future<List<GroupScoped<StoredDocumentIdentifier>>> deleteAccessLogsByIds(String sdkId, List<GroupScoped<StoredDocumentIdentifier>> entityIds) async {
+		final res = await _methodChannel.invokeMethod<String>(
+			'AccessLogApi.inGroup.deleteAccessLogsByIds',
+			{
+				"sdkId": sdkId,
+				"entityIds": jsonEncode(entityIds.map((x0) => GroupScoped.encode(
+					x0,
+					(x1) {
+						return StoredDocumentIdentifier.encode(x1);
+					},
+				)).toList()),
+			}
+		).catchError(convertPlatformException);
+		if (res == null) throw AssertionError("received null result from platform method deleteAccessLogsByIds");
+		final parsedResJson = jsonDecode(res);
+		return (parsedResJson as List<dynamic>).map((x1) => GroupScoped.fromJSON(
+			x1,
+			(x2) {
+				return StoredDocumentIdentifier.fromJSON(x2);
+			},
+		) ).toList();
+	}
+
+	Future<GroupScoped<StoredDocumentIdentifier>> deleteAccessLog(String sdkId, GroupScoped<AccessLog> accessLog) async {
+		final res = await _methodChannel.invokeMethod<String>(
+			'AccessLogApi.inGroup.deleteAccessLog',
+			{
+				"sdkId": sdkId,
+				"accessLog": jsonEncode(GroupScoped.encode(
+					accessLog,
+					(x0) {
+						return AccessLog.encode(x0);
+					},
+				)),
+			}
+		).catchError(convertPlatformException);
+		if (res == null) throw AssertionError("received null result from platform method deleteAccessLog");
+		final parsedResJson = jsonDecode(res);
+		return GroupScoped.fromJSON(
+			parsedResJson,
+			(x1) {
+				return StoredDocumentIdentifier.fromJSON(x1);
+			},
+		);
+	}
+
+	Future<List<GroupScoped<StoredDocumentIdentifier>>> deleteAccessLogs(String sdkId, List<GroupScoped<AccessLog>> accessLogs) async {
+		final res = await _methodChannel.invokeMethod<String>(
+			'AccessLogApi.inGroup.deleteAccessLogs',
+			{
+				"sdkId": sdkId,
+				"accessLogs": jsonEncode(accessLogs.map((x0) => GroupScoped.encode(
+					x0,
+					(x1) {
+						return AccessLog.encode(x1);
+					},
+				)).toList()),
+			}
+		).catchError(convertPlatformException);
+		if (res == null) throw AssertionError("received null result from platform method deleteAccessLogs");
+		final parsedResJson = jsonDecode(res);
+		return (parsedResJson as List<dynamic>).map((x1) => GroupScoped.fromJSON(
+			x1,
+			(x2) {
+				return StoredDocumentIdentifier.fromJSON(x2);
+			},
+		) ).toList();
+	}
+
+	Future<GroupScoped<DecryptedAccessLog>> createAccessLog(String sdkId, GroupScoped<DecryptedAccessLog> entity) async {
+		final res = await _methodChannel.invokeMethod<String>(
+			'AccessLogApi.inGroup.createAccessLog',
+			{
+				"sdkId": sdkId,
+				"entity": jsonEncode(GroupScoped.encode(
+					entity,
+					(x0) {
+						return DecryptedAccessLog.encode(x0);
+					},
+				)),
+			}
+		).catchError(convertPlatformException);
+		if (res == null) throw AssertionError("received null result from platform method createAccessLog");
+		final parsedResJson = jsonDecode(res);
+		return GroupScoped.fromJSON(
+			parsedResJson,
+			(x1) {
+				return DecryptedAccessLog.fromJSON(x1);
+			},
+		);
+	}
+
+	Future<GroupScoped<DecryptedAccessLog>> modifyAccessLog(String sdkId, GroupScoped<DecryptedAccessLog> entity) async {
+		final res = await _methodChannel.invokeMethod<String>(
+			'AccessLogApi.inGroup.modifyAccessLog',
+			{
+				"sdkId": sdkId,
+				"entity": jsonEncode(GroupScoped.encode(
+					entity,
+					(x0) {
+						return DecryptedAccessLog.encode(x0);
+					},
+				)),
+			}
+		).catchError(convertPlatformException);
+		if (res == null) throw AssertionError("received null result from platform method modifyAccessLog");
+		final parsedResJson = jsonDecode(res);
+		return GroupScoped.fromJSON(
+			parsedResJson,
+			(x1) {
+				return DecryptedAccessLog.fromJSON(x1);
+			},
+		);
+	}
+
+	Future<GroupScoped<DecryptedAccessLog>?> getAccessLog(String sdkId, String groupId, String entityId) async {
+		final res = await _methodChannel.invokeMethod<String>(
+			'AccessLogApi.inGroup.getAccessLog',
+			{
+				"sdkId": sdkId,
+				"groupId": jsonEncode(groupId),
+				"entityId": jsonEncode(entityId),
+			}
+		).catchError(convertPlatformException);
+		if (res == null) throw AssertionError("received null result from platform method getAccessLog");
+		final parsedResJson = jsonDecode(res);
+		return parsedResJson == null ? null : GroupScoped.fromJSON(
+			parsedResJson,
+			(x1) {
+				return DecryptedAccessLog.fromJSON(x1);
+			},
+		);
+	}
+
+	Future<List<GroupScoped<DecryptedAccessLog>>> getAccessLogs(String sdkId, String groupId, List<String> entityIds) async {
+		final res = await _methodChannel.invokeMethod<String>(
+			'AccessLogApi.inGroup.getAccessLogs',
+			{
+				"sdkId": sdkId,
+				"groupId": jsonEncode(groupId),
+				"entityIds": jsonEncode(entityIds.map((x0) => x0).toList()),
+			}
+		).catchError(convertPlatformException);
+		if (res == null) throw AssertionError("received null result from platform method getAccessLogs");
+		final parsedResJson = jsonDecode(res);
+		return (parsedResJson as List<dynamic>).map((x1) => GroupScoped.fromJSON(
+			x1,
+			(x2) {
+				return DecryptedAccessLog.fromJSON(x2);
+			},
+		) ).toList();
+	}
+}
+
+class AccessLogInGroupEncryptedPlatformApi {
+	MethodChannel _methodChannel;
+	AccessLogInGroupEncryptedPlatformApi(this._methodChannel);
+
+	Future<GroupScoped<EncryptedAccessLog>> shareWith(String sdkId, EntityReferenceInGroup delegate, GroupScoped<EncryptedAccessLog> accessLog, AccessLogShareOptions? options) async {
+		final res = await _methodChannel.invokeMethod<String>(
+			'AccessLogApi.inGroup.encrypted.shareWith',
+			{
+				"sdkId": sdkId,
+				"delegate": jsonEncode(EntityReferenceInGroup.encode(delegate)),
+				"accessLog": jsonEncode(GroupScoped.encode(
+					accessLog,
+					(x0) {
+						return EncryptedAccessLog.encode(x0);
+					},
+				)),
+				"options": jsonEncode(options == null ? null : AccessLogShareOptions.encode(options!)),
+			}
+		).catchError(convertPlatformException);
+		if (res == null) throw AssertionError("received null result from platform method shareWith");
+		final parsedResJson = jsonDecode(res);
+		return GroupScoped.fromJSON(
+			parsedResJson,
+			(x1) {
+				return EncryptedAccessLog.fromJSON(x1);
+			},
+		);
+	}
+
+	Future<GroupScoped<EncryptedAccessLog>> shareWithMany(String sdkId, GroupScoped<EncryptedAccessLog> accessLog, Map<EntityReferenceInGroup, AccessLogShareOptions> delegates) async {
+		final res = await _methodChannel.invokeMethod<String>(
+			'AccessLogApi.inGroup.encrypted.shareWithMany',
+			{
+				"sdkId": sdkId,
+				"accessLog": jsonEncode(GroupScoped.encode(
+					accessLog,
+					(x0) {
+						return EncryptedAccessLog.encode(x0);
+					},
+				)),
+				"delegates": jsonEncode(delegates.entries.map((x0) => {
+					"k": EntityReferenceInGroup.encode(x0.key),
+					"v": AccessLogShareOptions.encode(x0.value),
+				}).toList()),
+			}
+		).catchError(convertPlatformException);
+		if (res == null) throw AssertionError("received null result from platform method shareWithMany");
+		final parsedResJson = jsonDecode(res);
+		return GroupScoped.fromJSON(
+			parsedResJson,
+			(x1) {
+				return EncryptedAccessLog.fromJSON(x1);
+			},
+		);
+	}
+
+	Future<PaginatedListIterator<GroupScoped<EncryptedAccessLog>>> filterAccessLogsBy(String sdkId, String groupId, FilterOptions<AccessLog> filter) async {
+		final res = await _methodChannel.invokeMethod<String>(
+			'AccessLogApi.inGroup.encrypted.filterAccessLogsBy',
+			{
+				"sdkId": sdkId,
+				"groupId": jsonEncode(groupId),
+				"filter": jsonEncode(FilterOptions.encode(filter)),
+			}
+		).catchError(convertPlatformException);
+		if (res == null) throw AssertionError("received null result from platform method filterAccessLogsBy");
+		final parsedResJson = jsonDecode(res);
+		return PaginatedListIterator(parsedResJson, (x0) => GroupScoped.fromJSON(
+			x0,
+			(x1) {
+				return EncryptedAccessLog.fromJSON(x1);
+			},
+		));
+	}
+
+	Future<PaginatedListIterator<GroupScoped<EncryptedAccessLog>>> filterAccessLogsBySorted(String sdkId, String groupId, SortableFilterOptions<AccessLog> filter) async {
+		final res = await _methodChannel.invokeMethod<String>(
+			'AccessLogApi.inGroup.encrypted.filterAccessLogsBySorted',
+			{
+				"sdkId": sdkId,
+				"groupId": jsonEncode(groupId),
+				"filter": jsonEncode(SortableFilterOptions.encode(filter)),
+			}
+		).catchError(convertPlatformException);
+		if (res == null) throw AssertionError("received null result from platform method filterAccessLogsBySorted");
+		final parsedResJson = jsonDecode(res);
+		return PaginatedListIterator(parsedResJson, (x0) => GroupScoped.fromJSON(
+			x0,
+			(x1) {
+				return EncryptedAccessLog.fromJSON(x1);
+			},
+		));
+	}
+
+	Future<GroupScoped<EncryptedAccessLog>> createAccessLog(String sdkId, GroupScoped<EncryptedAccessLog> entity) async {
+		final res = await _methodChannel.invokeMethod<String>(
+			'AccessLogApi.inGroup.encrypted.createAccessLog',
+			{
+				"sdkId": sdkId,
+				"entity": jsonEncode(GroupScoped.encode(
+					entity,
+					(x0) {
+						return EncryptedAccessLog.encode(x0);
+					},
+				)),
+			}
+		).catchError(convertPlatformException);
+		if (res == null) throw AssertionError("received null result from platform method createAccessLog");
+		final parsedResJson = jsonDecode(res);
+		return GroupScoped.fromJSON(
+			parsedResJson,
+			(x1) {
+				return EncryptedAccessLog.fromJSON(x1);
+			},
+		);
+	}
+
+	Future<GroupScoped<EncryptedAccessLog>> modifyAccessLog(String sdkId, GroupScoped<EncryptedAccessLog> entity) async {
+		final res = await _methodChannel.invokeMethod<String>(
+			'AccessLogApi.inGroup.encrypted.modifyAccessLog',
+			{
+				"sdkId": sdkId,
+				"entity": jsonEncode(GroupScoped.encode(
+					entity,
+					(x0) {
+						return EncryptedAccessLog.encode(x0);
+					},
+				)),
+			}
+		).catchError(convertPlatformException);
+		if (res == null) throw AssertionError("received null result from platform method modifyAccessLog");
+		final parsedResJson = jsonDecode(res);
+		return GroupScoped.fromJSON(
+			parsedResJson,
+			(x1) {
+				return EncryptedAccessLog.fromJSON(x1);
+			},
+		);
+	}
+
+	Future<GroupScoped<EncryptedAccessLog>?> getAccessLog(String sdkId, String groupId, String entityId) async {
+		final res = await _methodChannel.invokeMethod<String>(
+			'AccessLogApi.inGroup.encrypted.getAccessLog',
+			{
+				"sdkId": sdkId,
+				"groupId": jsonEncode(groupId),
+				"entityId": jsonEncode(entityId),
+			}
+		).catchError(convertPlatformException);
+		if (res == null) throw AssertionError("received null result from platform method getAccessLog");
+		final parsedResJson = jsonDecode(res);
+		return parsedResJson == null ? null : GroupScoped.fromJSON(
+			parsedResJson,
+			(x1) {
+				return EncryptedAccessLog.fromJSON(x1);
+			},
+		);
+	}
+
+	Future<List<GroupScoped<EncryptedAccessLog>>> getAccessLogs(String sdkId, String groupId, List<String> entityIds) async {
+		final res = await _methodChannel.invokeMethod<String>(
+			'AccessLogApi.inGroup.encrypted.getAccessLogs',
+			{
+				"sdkId": sdkId,
+				"groupId": jsonEncode(groupId),
+				"entityIds": jsonEncode(entityIds.map((x0) => x0).toList()),
+			}
+		).catchError(convertPlatformException);
+		if (res == null) throw AssertionError("received null result from platform method getAccessLogs");
+		final parsedResJson = jsonDecode(res);
+		return (parsedResJson as List<dynamic>).map((x1) => GroupScoped.fromJSON(
+			x1,
+			(x2) {
+				return EncryptedAccessLog.fromJSON(x2);
+			},
+		) ).toList();
+	}
+}
+
+class AccessLogInGroupTryAndRecoverPlatformApi {
+	MethodChannel _methodChannel;
+	AccessLogInGroupTryAndRecoverPlatformApi(this._methodChannel);
+
+	Future<GroupScoped<AccessLog>> shareWith(String sdkId, EntityReferenceInGroup delegate, GroupScoped<AccessLog> accessLog, AccessLogShareOptions? options) async {
+		final res = await _methodChannel.invokeMethod<String>(
+			'AccessLogApi.inGroup.tryAndRecover.shareWith',
+			{
+				"sdkId": sdkId,
+				"delegate": jsonEncode(EntityReferenceInGroup.encode(delegate)),
+				"accessLog": jsonEncode(GroupScoped.encode(
+					accessLog,
+					(x0) {
+						return AccessLog.encode(x0);
+					},
+				)),
+				"options": jsonEncode(options == null ? null : AccessLogShareOptions.encode(options!)),
+			}
+		).catchError(convertPlatformException);
+		if (res == null) throw AssertionError("received null result from platform method shareWith");
+		final parsedResJson = jsonDecode(res);
+		return GroupScoped.fromJSON(
+			parsedResJson,
+			(x1) {
+				return AccessLog.fromJSON(x1);
+			},
+		);
+	}
+
+	Future<GroupScoped<AccessLog>> shareWithMany(String sdkId, GroupScoped<AccessLog> accessLog, Map<EntityReferenceInGroup, AccessLogShareOptions> delegates) async {
+		final res = await _methodChannel.invokeMethod<String>(
+			'AccessLogApi.inGroup.tryAndRecover.shareWithMany',
+			{
+				"sdkId": sdkId,
+				"accessLog": jsonEncode(GroupScoped.encode(
+					accessLog,
+					(x0) {
+						return AccessLog.encode(x0);
+					},
+				)),
+				"delegates": jsonEncode(delegates.entries.map((x0) => {
+					"k": EntityReferenceInGroup.encode(x0.key),
+					"v": AccessLogShareOptions.encode(x0.value),
+				}).toList()),
+			}
+		).catchError(convertPlatformException);
+		if (res == null) throw AssertionError("received null result from platform method shareWithMany");
+		final parsedResJson = jsonDecode(res);
+		return GroupScoped.fromJSON(
+			parsedResJson,
+			(x1) {
+				return AccessLog.fromJSON(x1);
+			},
+		);
+	}
+
+	Future<PaginatedListIterator<GroupScoped<AccessLog>>> filterAccessLogsBy(String sdkId, String groupId, FilterOptions<AccessLog> filter) async {
+		final res = await _methodChannel.invokeMethod<String>(
+			'AccessLogApi.inGroup.tryAndRecover.filterAccessLogsBy',
+			{
+				"sdkId": sdkId,
+				"groupId": jsonEncode(groupId),
+				"filter": jsonEncode(FilterOptions.encode(filter)),
+			}
+		).catchError(convertPlatformException);
+		if (res == null) throw AssertionError("received null result from platform method filterAccessLogsBy");
+		final parsedResJson = jsonDecode(res);
+		return PaginatedListIterator(parsedResJson, (x0) => GroupScoped.fromJSON(
+			x0,
+			(x1) {
+				return AccessLog.fromJSON(x1);
+			},
+		));
+	}
+
+	Future<PaginatedListIterator<GroupScoped<AccessLog>>> filterAccessLogsBySorted(String sdkId, String groupId, SortableFilterOptions<AccessLog> filter) async {
+		final res = await _methodChannel.invokeMethod<String>(
+			'AccessLogApi.inGroup.tryAndRecover.filterAccessLogsBySorted',
+			{
+				"sdkId": sdkId,
+				"groupId": jsonEncode(groupId),
+				"filter": jsonEncode(SortableFilterOptions.encode(filter)),
+			}
+		).catchError(convertPlatformException);
+		if (res == null) throw AssertionError("received null result from platform method filterAccessLogsBySorted");
+		final parsedResJson = jsonDecode(res);
+		return PaginatedListIterator(parsedResJson, (x0) => GroupScoped.fromJSON(
+			x0,
+			(x1) {
+				return AccessLog.fromJSON(x1);
+			},
+		));
+	}
+
+	Future<GroupScoped<AccessLog>> createAccessLog(String sdkId, GroupScoped<AccessLog> entity) async {
+		final res = await _methodChannel.invokeMethod<String>(
+			'AccessLogApi.inGroup.tryAndRecover.createAccessLog',
+			{
+				"sdkId": sdkId,
+				"entity": jsonEncode(GroupScoped.encode(
+					entity,
+					(x0) {
+						return AccessLog.encode(x0);
+					},
+				)),
+			}
+		).catchError(convertPlatformException);
+		if (res == null) throw AssertionError("received null result from platform method createAccessLog");
+		final parsedResJson = jsonDecode(res);
+		return GroupScoped.fromJSON(
+			parsedResJson,
+			(x1) {
+				return AccessLog.fromJSON(x1);
+			},
+		);
+	}
+
+	Future<GroupScoped<AccessLog>> modifyAccessLog(String sdkId, GroupScoped<AccessLog> entity) async {
+		final res = await _methodChannel.invokeMethod<String>(
+			'AccessLogApi.inGroup.tryAndRecover.modifyAccessLog',
+			{
+				"sdkId": sdkId,
+				"entity": jsonEncode(GroupScoped.encode(
+					entity,
+					(x0) {
+						return AccessLog.encode(x0);
+					},
+				)),
+			}
+		).catchError(convertPlatformException);
+		if (res == null) throw AssertionError("received null result from platform method modifyAccessLog");
+		final parsedResJson = jsonDecode(res);
+		return GroupScoped.fromJSON(
+			parsedResJson,
+			(x1) {
+				return AccessLog.fromJSON(x1);
+			},
+		);
+	}
+
+	Future<GroupScoped<AccessLog>?> getAccessLog(String sdkId, String groupId, String entityId) async {
+		final res = await _methodChannel.invokeMethod<String>(
+			'AccessLogApi.inGroup.tryAndRecover.getAccessLog',
+			{
+				"sdkId": sdkId,
+				"groupId": jsonEncode(groupId),
+				"entityId": jsonEncode(entityId),
+			}
+		).catchError(convertPlatformException);
+		if (res == null) throw AssertionError("received null result from platform method getAccessLog");
+		final parsedResJson = jsonDecode(res);
+		return parsedResJson == null ? null : GroupScoped.fromJSON(
+			parsedResJson,
+			(x1) {
+				return AccessLog.fromJSON(x1);
+			},
+		);
+	}
+
+	Future<List<GroupScoped<AccessLog>>> getAccessLogs(String sdkId, String groupId, List<String> entityIds) async {
+		final res = await _methodChannel.invokeMethod<String>(
+			'AccessLogApi.inGroup.tryAndRecover.getAccessLogs',
+			{
+				"sdkId": sdkId,
+				"groupId": jsonEncode(groupId),
+				"entityIds": jsonEncode(entityIds.map((x0) => x0).toList()),
+			}
+		).catchError(convertPlatformException);
+		if (res == null) throw AssertionError("received null result from platform method getAccessLogs");
+		final parsedResJson = jsonDecode(res);
+		return (parsedResJson as List<dynamic>).map((x1) => GroupScoped.fromJSON(
+			x1,
+			(x2) {
+				return AccessLog.fromJSON(x2);
+			},
+		) ).toList();
 	}
 }

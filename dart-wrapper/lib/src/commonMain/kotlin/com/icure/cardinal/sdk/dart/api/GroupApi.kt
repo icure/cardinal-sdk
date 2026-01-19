@@ -12,6 +12,7 @@ import com.icure.cardinal.sdk.model.ListOfProperties
 import com.icure.cardinal.sdk.model.RegistrationInformation
 import com.icure.cardinal.sdk.model.RegistrationSuccess
 import com.icure.cardinal.sdk.model.ReplicationInfo
+import com.icure.cardinal.sdk.model.base.CodeStub
 import com.icure.cardinal.sdk.model.couchdb.DesignDocument
 import com.icure.cardinal.sdk.model.couchdb.DocIdentifier
 import com.icure.cardinal.sdk.model.couchdb.GroupDatabasesInfo
@@ -88,7 +89,7 @@ public object GroupApi {
     qString: String,
     nString: String,
     superGroupString: String,
-    applicationIdString: String,
+    projectIdString: String,
     initialisationDataString: String,
   ) {
     val id = fullLanguageInteropJson.decodeFromString(
@@ -123,9 +124,9 @@ public object GroupApi {
       String.serializer().nullable,
       superGroupString
     )
-    val applicationId = fullLanguageInteropJson.decodeFromString(
+    val projectId = fullLanguageInteropJson.decodeFromString(
       String.serializer().nullable,
-      applicationIdString
+      projectIdString
     )
     val initialisationData = fullLanguageInteropJson.decodeFromString(
       DatabaseInitialisation.serializer(),
@@ -143,7 +144,7 @@ public object GroupApi {
         q,
         n,
         superGroup,
-        applicationId,
+        projectId,
         initialisationData,
       )
     }
@@ -798,6 +799,140 @@ public object GroupApi {
         operation,
         duration,
         description,
+      )
+    }
+  }
+
+  public fun setGroupProjectId(
+    dartResultCallback: (
+      String?,
+      String?,
+      String?,
+      String?,
+    ) -> Unit,
+    sdkId: String,
+    groupIdString: String,
+    projectIdString: String,
+    applyToSubgroupsString: String,
+  ) {
+    val groupId = fullLanguageInteropJson.decodeFromString(
+      String.serializer(),
+      groupIdString
+    )
+    val projectId = fullLanguageInteropJson.decodeFromString(
+      String.serializer().nullable,
+      projectIdString
+    )
+    val applyToSubgroups = fullLanguageInteropJson.decodeFromString(
+      Boolean.serializer(),
+      applyToSubgroupsString
+    )
+    ApiScope.execute(
+      dartResultCallback,
+      Unit.serializer()) {
+      NativeReferences.get<CardinalNonCryptoApis>(sdkId).group.setGroupProjectId(
+        groupId,
+        projectId,
+        applyToSubgroups,
+      )
+    }
+  }
+
+  public fun modifyGroupApplicationId(
+    dartResultCallback: (
+      String?,
+      String?,
+      String?,
+      String?,
+    ) -> Unit,
+    sdkId: String,
+    idString: String,
+    applicationIdString: String,
+  ) {
+    val id = fullLanguageInteropJson.decodeFromString(
+      String.serializer(),
+      idString
+    )
+    val applicationId = fullLanguageInteropJson.decodeFromString(
+      String.serializer(),
+      applicationIdString
+    )
+    ApiScope.execute(
+      dartResultCallback,
+      Group.serializer()) {
+      NativeReferences.get<CardinalNonCryptoApis>(sdkId).group.modifyGroupApplicationId(
+        id,
+        applicationId,
+      )
+    }
+  }
+
+  public fun addTagToGroup(
+    dartResultCallback: (
+      String?,
+      String?,
+      String?,
+      String?,
+    ) -> Unit,
+    sdkId: String,
+    idString: String,
+    revString: String,
+    tagString: String,
+  ) {
+    val id = fullLanguageInteropJson.decodeFromString(
+      String.serializer(),
+      idString
+    )
+    val rev = fullLanguageInteropJson.decodeFromString(
+      String.serializer(),
+      revString
+    )
+    val tag = fullLanguageInteropJson.decodeFromString(
+      CodeStub.serializer(),
+      tagString
+    )
+    ApiScope.execute(
+      dartResultCallback,
+      Group.serializer()) {
+      NativeReferences.get<CardinalNonCryptoApis>(sdkId).group.addTagToGroup(
+        id,
+        rev,
+        tag,
+      )
+    }
+  }
+
+  public fun removeTagFromGroup(
+    dartResultCallback: (
+      String?,
+      String?,
+      String?,
+      String?,
+    ) -> Unit,
+    sdkId: String,
+    idString: String,
+    revString: String,
+    tagIdString: String,
+  ) {
+    val id = fullLanguageInteropJson.decodeFromString(
+      String.serializer(),
+      idString
+    )
+    val rev = fullLanguageInteropJson.decodeFromString(
+      String.serializer(),
+      revString
+    )
+    val tagId = fullLanguageInteropJson.decodeFromString(
+      String.serializer(),
+      tagIdString
+    )
+    ApiScope.execute(
+      dartResultCallback,
+      Group.serializer()) {
+      NativeReferences.get<CardinalNonCryptoApis>(sdkId).group.removeTagFromGroup(
+        id,
+        rev,
+        tagId,
       )
     }
   }

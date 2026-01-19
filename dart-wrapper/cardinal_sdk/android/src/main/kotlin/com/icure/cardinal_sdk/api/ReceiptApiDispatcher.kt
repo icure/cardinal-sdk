@@ -67,6 +67,7 @@ public object ReceiptApiDispatcher {
       parameters.getValue("user"),
       parameters.getValue("delegates"),
       parameters.getValue("secretId"),
+      parameters.getValue("alternateRootDelegateId"),
     )
   }
 

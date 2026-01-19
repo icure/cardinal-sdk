@@ -79,6 +79,7 @@ public object MaintenanceTaskApiDispatcher {
       parameters.getValue("maintenanceTask"),
       parameters.getValue("user"),
       parameters.getValue("delegates"),
+      parameters.getValue("alternateRootDelegateId"),
     )
   }
 

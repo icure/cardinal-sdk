@@ -11,12 +11,14 @@ import com.icure.cardinal.sdk.filters.SortableFilterOptions
 import com.icure.cardinal.sdk.model.AccessLog
 import com.icure.cardinal.sdk.model.DecryptedAccessLog
 import com.icure.cardinal.sdk.model.EncryptedAccessLog
+import com.icure.cardinal.sdk.model.EntityReferenceInGroup
+import com.icure.cardinal.sdk.model.GroupScoped
 import com.icure.cardinal.sdk.model.Patient
 import com.icure.cardinal.sdk.model.StoredDocumentIdentifier
 import com.icure.cardinal.sdk.model.User
-import com.icure.cardinal.sdk.model.couchdb.DocIdentifier
 import com.icure.cardinal.sdk.model.embed.AccessLevel
 import com.icure.cardinal.sdk.model.specializations.HexString
+import com.icure.cardinal.sdk.serialization.MapAsArraySerializer
 import com.icure.cardinal.sdk.serialization.PaginatedListIteratorWithSerializer
 import com.icure.cardinal.sdk.utils.Serialization.fullLanguageInteropJson
 import com.icure.utils.InternalIcureApi
@@ -46,6 +48,7 @@ public object AccessLogApi {
     userString: String,
     delegatesString: String,
     secretIdString: String,
+    alternateRootDelegateIdString: String,
   ) {
     val base = fullLanguageInteropJson.decodeFromString(
       DecryptedAccessLog.serializer().nullable,
@@ -67,6 +70,10 @@ public object AccessLogApi {
       SecretIdUseOption.serializer(),
       secretIdString
     )
+    val alternateRootDelegateId = fullLanguageInteropJson.decodeFromString(
+      String.serializer().nullable,
+      alternateRootDelegateIdString
+    )
     ApiScope.execute(
       dartResultCallback,
       DecryptedAccessLog.serializer()) {
@@ -76,6 +83,7 @@ public object AccessLogApi {
         user,
         delegates,
         secretId,
+        alternateRootDelegateId,
       )
     }
   }
@@ -142,7 +150,7 @@ public object AccessLogApi {
     )
     ApiScope.execute(
       dartResultCallback,
-      SetSerializer(String.serializer())) {
+      SetSerializer(EntityReferenceInGroup.serializer())) {
       NativeReferences.get<CardinalApis>(sdkId).accessLog.decryptPatientIdOf(
         accessLog,
       )
@@ -291,7 +299,7 @@ public object AccessLogApi {
     )
     ApiScope.execute(
       dartResultCallback,
-      DocIdentifier.serializer()) {
+      StoredDocumentIdentifier.serializer()) {
       NativeReferences.get<CardinalApis>(sdkId).accessLog.deleteAccessLogById(
         entityId,
         rev,
@@ -315,7 +323,7 @@ public object AccessLogApi {
     )
     ApiScope.execute(
       dartResultCallback,
-      ListSerializer(DocIdentifier.serializer())) {
+      ListSerializer(StoredDocumentIdentifier.serializer())) {
       NativeReferences.get<CardinalApis>(sdkId).accessLog.deleteAccessLogsByIds(
         entityIds,
       )
@@ -367,7 +375,7 @@ public object AccessLogApi {
     )
     ApiScope.execute(
       dartResultCallback,
-      DocIdentifier.serializer()) {
+      StoredDocumentIdentifier.serializer()) {
       NativeReferences.get<CardinalApis>(sdkId).accessLog.deleteAccessLog(
         accessLog,
       )
@@ -390,7 +398,7 @@ public object AccessLogApi {
     )
     ApiScope.execute(
       dartResultCallback,
-      ListSerializer(DocIdentifier.serializer())) {
+      ListSerializer(StoredDocumentIdentifier.serializer())) {
       NativeReferences.get<CardinalApis>(sdkId).accessLog.deleteAccessLogs(
         accessLogs,
       )
@@ -1212,6 +1220,946 @@ public object AccessLogApi {
         NativeReferences.get<CardinalApis>(sdkId).accessLog.tryAndRecover.getAccessLogs(
           entityIds,
         )
+      }
+    }
+  }
+
+  @OptIn(InternalIcureApi::class)
+  public object inGroup {
+    public fun withEncryptionMetadata(
+      dartResultCallback: (
+        String?,
+        String?,
+        String?,
+        String?,
+      ) -> Unit,
+      sdkId: String,
+      entityGroupIdString: String,
+      baseString: String,
+      patientString: String,
+      userString: String,
+      delegatesString: String,
+      secretIdString: String,
+      alternateRootDelegateReferenceString: String,
+    ) {
+      val entityGroupId = fullLanguageInteropJson.decodeFromString(
+        String.serializer(),
+        entityGroupIdString
+      )
+      val base = fullLanguageInteropJson.decodeFromString(
+        DecryptedAccessLog.serializer().nullable,
+        baseString
+      )
+      val patient = fullLanguageInteropJson.decodeFromString(
+        GroupScoped.serializer(PolymorphicSerializer(Patient::class)),
+        patientString
+      )
+      val user = fullLanguageInteropJson.decodeFromString(
+        User.serializer().nullable,
+        userString
+      )
+      val delegates = fullLanguageInteropJson.decodeFromString(
+        MapAsArraySerializer(EntityReferenceInGroup.serializer(), AccessLevel.serializer()),
+        delegatesString
+      )
+      val secretId = fullLanguageInteropJson.decodeFromString(
+        SecretIdUseOption.serializer(),
+        secretIdString
+      )
+      val alternateRootDelegateReference = fullLanguageInteropJson.decodeFromString(
+        EntityReferenceInGroup.serializer().nullable,
+        alternateRootDelegateReferenceString
+      )
+      ApiScope.execute(
+        dartResultCallback,
+        GroupScoped.serializer(DecryptedAccessLog.serializer())) {
+        NativeReferences.get<CardinalApis>(sdkId).accessLog.inGroup.withEncryptionMetadata(
+          entityGroupId,
+          base,
+          patient,
+          user,
+          delegates,
+          secretId,
+          alternateRootDelegateReference,
+        )
+      }
+    }
+
+    public fun getEncryptionKeysOf(
+      dartResultCallback: (
+        String?,
+        String?,
+        String?,
+        String?,
+      ) -> Unit,
+      sdkId: String,
+      accessLogString: String,
+    ) {
+      val accessLog = fullLanguageInteropJson.decodeFromString(
+        GroupScoped.serializer(PolymorphicSerializer(AccessLog::class)),
+        accessLogString
+      )
+      ApiScope.execute(
+        dartResultCallback,
+        SetSerializer(HexString.serializer())) {
+        NativeReferences.get<CardinalApis>(sdkId).accessLog.inGroup.getEncryptionKeysOf(
+          accessLog,
+        )
+      }
+    }
+
+    public fun hasWriteAccess(
+      dartResultCallback: (
+        String?,
+        String?,
+        String?,
+        String?,
+      ) -> Unit,
+      sdkId: String,
+      accessLogString: String,
+    ) {
+      val accessLog = fullLanguageInteropJson.decodeFromString(
+        GroupScoped.serializer(PolymorphicSerializer(AccessLog::class)),
+        accessLogString
+      )
+      ApiScope.execute(
+        dartResultCallback,
+        Boolean.serializer()) {
+        NativeReferences.get<CardinalApis>(sdkId).accessLog.inGroup.hasWriteAccess(
+          accessLog,
+        )
+      }
+    }
+
+    public fun decryptPatientIdOf(
+      dartResultCallback: (
+        String?,
+        String?,
+        String?,
+        String?,
+      ) -> Unit,
+      sdkId: String,
+      accessLogString: String,
+    ) {
+      val accessLog = fullLanguageInteropJson.decodeFromString(
+        GroupScoped.serializer(PolymorphicSerializer(AccessLog::class)),
+        accessLogString
+      )
+      ApiScope.execute(
+        dartResultCallback,
+        SetSerializer(EntityReferenceInGroup.serializer())) {
+        NativeReferences.get<CardinalApis>(sdkId).accessLog.inGroup.decryptPatientIdOf(
+          accessLog,
+        )
+      }
+    }
+
+    public fun createDelegationDeAnonymizationMetadata(
+      dartResultCallback: (
+        String?,
+        String?,
+        String?,
+        String?,
+      ) -> Unit,
+      sdkId: String,
+      entityString: String,
+      delegatesString: String,
+    ) {
+      val entity = fullLanguageInteropJson.decodeFromString(
+        GroupScoped.serializer(PolymorphicSerializer(AccessLog::class)),
+        entityString
+      )
+      val delegates = fullLanguageInteropJson.decodeFromString(
+        SetSerializer(EntityReferenceInGroup.serializer()),
+        delegatesString
+      )
+      ApiScope.execute(
+        dartResultCallback,
+        Unit.serializer()) {
+        NativeReferences.get<CardinalApis>(sdkId).accessLog.inGroup.createDelegationDeAnonymizationMetadata(
+          entity,
+          delegates,
+        )
+      }
+    }
+
+    public fun decrypt(
+      dartResultCallback: (
+        String?,
+        String?,
+        String?,
+        String?,
+      ) -> Unit,
+      sdkId: String,
+      accessLogsString: String,
+    ) {
+      val accessLogs = fullLanguageInteropJson.decodeFromString(
+        ListSerializer(GroupScoped.serializer(EncryptedAccessLog.serializer())),
+        accessLogsString
+      )
+      ApiScope.execute(
+        dartResultCallback,
+        ListSerializer(GroupScoped.serializer(DecryptedAccessLog.serializer()))) {
+        NativeReferences.get<CardinalApis>(sdkId).accessLog.inGroup.decrypt(
+          accessLogs,
+        )
+      }
+    }
+
+    public fun tryDecrypt(
+      dartResultCallback: (
+        String?,
+        String?,
+        String?,
+        String?,
+      ) -> Unit,
+      sdkId: String,
+      accessLogsString: String,
+    ) {
+      val accessLogs = fullLanguageInteropJson.decodeFromString(
+        ListSerializer(GroupScoped.serializer(EncryptedAccessLog.serializer())),
+        accessLogsString
+      )
+      ApiScope.execute(
+        dartResultCallback,
+        ListSerializer(GroupScoped.serializer(PolymorphicSerializer(AccessLog::class)))) {
+        NativeReferences.get<CardinalApis>(sdkId).accessLog.inGroup.tryDecrypt(
+          accessLogs,
+        )
+      }
+    }
+
+    public fun matchAccessLogsBy(
+      dartResultCallback: (
+        String?,
+        String?,
+        String?,
+        String?,
+      ) -> Unit,
+      sdkId: String,
+      groupIdString: String,
+      filterString: String,
+    ) {
+      val groupId = fullLanguageInteropJson.decodeFromString(
+        String.serializer(),
+        groupIdString
+      )
+      val filter = fullLanguageInteropJson.decodeFromString(
+        FilterOptions.serializer(PolymorphicSerializer(AccessLog::class)),
+        filterString
+      )
+      ApiScope.execute(
+        dartResultCallback,
+        ListSerializer(String.serializer())) {
+        NativeReferences.get<CardinalApis>(sdkId).accessLog.inGroup.matchAccessLogsBy(
+          groupId,
+          filter,
+        )
+      }
+    }
+
+    public fun matchAccessLogsBySorted(
+      dartResultCallback: (
+        String?,
+        String?,
+        String?,
+        String?,
+      ) -> Unit,
+      sdkId: String,
+      groupIdString: String,
+      filterString: String,
+    ) {
+      val groupId = fullLanguageInteropJson.decodeFromString(
+        String.serializer(),
+        groupIdString
+      )
+      val filter = fullLanguageInteropJson.decodeFromString(
+        SortableFilterOptions.serializer(PolymorphicSerializer(AccessLog::class)),
+        filterString
+      )
+      ApiScope.execute(
+        dartResultCallback,
+        ListSerializer(String.serializer())) {
+        NativeReferences.get<CardinalApis>(sdkId).accessLog.inGroup.matchAccessLogsBySorted(
+          groupId,
+          filter,
+        )
+      }
+    }
+
+    public fun deleteAccessLogById(
+      dartResultCallback: (
+        String?,
+        String?,
+        String?,
+        String?,
+      ) -> Unit,
+      sdkId: String,
+      entityIdString: String,
+    ) {
+      val entityId = fullLanguageInteropJson.decodeFromString(
+        GroupScoped.serializer(StoredDocumentIdentifier.serializer()),
+        entityIdString
+      )
+      ApiScope.execute(
+        dartResultCallback,
+        GroupScoped.serializer(StoredDocumentIdentifier.serializer())) {
+        NativeReferences.get<CardinalApis>(sdkId).accessLog.inGroup.deleteAccessLogById(
+          entityId,
+        )
+      }
+    }
+
+    public fun deleteAccessLogsByIds(
+      dartResultCallback: (
+        String?,
+        String?,
+        String?,
+        String?,
+      ) -> Unit,
+      sdkId: String,
+      entityIdsString: String,
+    ) {
+      val entityIds = fullLanguageInteropJson.decodeFromString(
+        ListSerializer(GroupScoped.serializer(StoredDocumentIdentifier.serializer())),
+        entityIdsString
+      )
+      ApiScope.execute(
+        dartResultCallback,
+        ListSerializer(GroupScoped.serializer(StoredDocumentIdentifier.serializer()))) {
+        NativeReferences.get<CardinalApis>(sdkId).accessLog.inGroup.deleteAccessLogsByIds(
+          entityIds,
+        )
+      }
+    }
+
+    public fun deleteAccessLog(
+      dartResultCallback: (
+        String?,
+        String?,
+        String?,
+        String?,
+      ) -> Unit,
+      sdkId: String,
+      accessLogString: String,
+    ) {
+      val accessLog = fullLanguageInteropJson.decodeFromString(
+        GroupScoped.serializer(PolymorphicSerializer(AccessLog::class)),
+        accessLogString
+      )
+      ApiScope.execute(
+        dartResultCallback,
+        GroupScoped.serializer(StoredDocumentIdentifier.serializer())) {
+        NativeReferences.get<CardinalApis>(sdkId).accessLog.inGroup.deleteAccessLog(
+          accessLog,
+        )
+      }
+    }
+
+    public fun deleteAccessLogs(
+      dartResultCallback: (
+        String?,
+        String?,
+        String?,
+        String?,
+      ) -> Unit,
+      sdkId: String,
+      accessLogsString: String,
+    ) {
+      val accessLogs = fullLanguageInteropJson.decodeFromString(
+        ListSerializer(GroupScoped.serializer(PolymorphicSerializer(AccessLog::class))),
+        accessLogsString
+      )
+      ApiScope.execute(
+        dartResultCallback,
+        ListSerializer(GroupScoped.serializer(StoredDocumentIdentifier.serializer()))) {
+        NativeReferences.get<CardinalApis>(sdkId).accessLog.inGroup.deleteAccessLogs(
+          accessLogs,
+        )
+      }
+    }
+
+    public fun createAccessLog(
+      dartResultCallback: (
+        String?,
+        String?,
+        String?,
+        String?,
+      ) -> Unit,
+      sdkId: String,
+      entityString: String,
+    ) {
+      val entity = fullLanguageInteropJson.decodeFromString(
+        GroupScoped.serializer(DecryptedAccessLog.serializer()),
+        entityString
+      )
+      ApiScope.execute(
+        dartResultCallback,
+        GroupScoped.serializer(DecryptedAccessLog.serializer())) {
+        NativeReferences.get<CardinalApis>(sdkId).accessLog.inGroup.createAccessLog(
+          entity,
+        )
+      }
+    }
+
+    public fun modifyAccessLog(
+      dartResultCallback: (
+        String?,
+        String?,
+        String?,
+        String?,
+      ) -> Unit,
+      sdkId: String,
+      entityString: String,
+    ) {
+      val entity = fullLanguageInteropJson.decodeFromString(
+        GroupScoped.serializer(DecryptedAccessLog.serializer()),
+        entityString
+      )
+      ApiScope.execute(
+        dartResultCallback,
+        GroupScoped.serializer(DecryptedAccessLog.serializer())) {
+        NativeReferences.get<CardinalApis>(sdkId).accessLog.inGroup.modifyAccessLog(
+          entity,
+        )
+      }
+    }
+
+    public fun getAccessLog(
+      dartResultCallback: (
+        String?,
+        String?,
+        String?,
+        String?,
+      ) -> Unit,
+      sdkId: String,
+      groupIdString: String,
+      entityIdString: String,
+    ) {
+      val groupId = fullLanguageInteropJson.decodeFromString(
+        String.serializer(),
+        groupIdString
+      )
+      val entityId = fullLanguageInteropJson.decodeFromString(
+        String.serializer(),
+        entityIdString
+      )
+      ApiScope.execute(
+        dartResultCallback,
+        GroupScoped.serializer(DecryptedAccessLog.serializer()).nullable) {
+        NativeReferences.get<CardinalApis>(sdkId).accessLog.inGroup.getAccessLog(
+          groupId,
+          entityId,
+        )
+      }
+    }
+
+    public fun getAccessLogs(
+      dartResultCallback: (
+        String?,
+        String?,
+        String?,
+        String?,
+      ) -> Unit,
+      sdkId: String,
+      groupIdString: String,
+      entityIdsString: String,
+    ) {
+      val groupId = fullLanguageInteropJson.decodeFromString(
+        String.serializer(),
+        groupIdString
+      )
+      val entityIds = fullLanguageInteropJson.decodeFromString(
+        ListSerializer(String.serializer()),
+        entityIdsString
+      )
+      ApiScope.execute(
+        dartResultCallback,
+        ListSerializer(GroupScoped.serializer(DecryptedAccessLog.serializer()))) {
+        NativeReferences.get<CardinalApis>(sdkId).accessLog.inGroup.getAccessLogs(
+          groupId,
+          entityIds,
+        )
+      }
+    }
+
+    @OptIn(InternalIcureApi::class)
+    public object encrypted {
+      public fun shareWith(
+        dartResultCallback: (
+          String?,
+          String?,
+          String?,
+          String?,
+        ) -> Unit,
+        sdkId: String,
+        delegateString: String,
+        accessLogString: String,
+        optionsString: String,
+      ) {
+        val delegate = fullLanguageInteropJson.decodeFromString(
+          EntityReferenceInGroup.serializer(),
+          delegateString
+        )
+        val accessLog = fullLanguageInteropJson.decodeFromString(
+          GroupScoped.serializer(EncryptedAccessLog.serializer()),
+          accessLogString
+        )
+        val options = fullLanguageInteropJson.decodeFromString(
+          AccessLogShareOptions.serializer().nullable,
+          optionsString
+        )
+        ApiScope.execute(
+          dartResultCallback,
+          GroupScoped.serializer(EncryptedAccessLog.serializer())) {
+          NativeReferences.get<CardinalApis>(sdkId).accessLog.inGroup.encrypted.shareWith(
+            delegate,
+            accessLog,
+            options,
+          )
+        }
+      }
+
+      public fun shareWithMany(
+        dartResultCallback: (
+          String?,
+          String?,
+          String?,
+          String?,
+        ) -> Unit,
+        sdkId: String,
+        accessLogString: String,
+        delegatesString: String,
+      ) {
+        val accessLog = fullLanguageInteropJson.decodeFromString(
+          GroupScoped.serializer(EncryptedAccessLog.serializer()),
+          accessLogString
+        )
+        val delegates = fullLanguageInteropJson.decodeFromString(
+          MapAsArraySerializer(EntityReferenceInGroup.serializer(),
+              AccessLogShareOptions.serializer()),
+          delegatesString
+        )
+        ApiScope.execute(
+          dartResultCallback,
+          GroupScoped.serializer(EncryptedAccessLog.serializer())) {
+          NativeReferences.get<CardinalApis>(sdkId).accessLog.inGroup.encrypted.shareWithMany(
+            accessLog,
+            delegates,
+          )
+        }
+      }
+
+      public fun filterAccessLogsBy(
+        dartResultCallback: (
+          String?,
+          String?,
+          String?,
+          String?,
+        ) -> Unit,
+        sdkId: String,
+        groupIdString: String,
+        filterString: String,
+      ) {
+        val groupId = fullLanguageInteropJson.decodeFromString(
+          String.serializer(),
+          groupIdString
+        )
+        val filter = fullLanguageInteropJson.decodeFromString(
+          FilterOptions.serializer(PolymorphicSerializer(AccessLog::class)),
+          filterString
+        )
+        ApiScope.execute(
+          dartResultCallback,
+          String.serializer()) {
+          val richResult =
+              NativeReferences.get<CardinalApis>(sdkId).accessLog.inGroup.encrypted.filterAccessLogsBy(
+            groupId,
+            filter,
+          )
+          NativeReferences.create(PaginatedListIteratorWithSerializer(
+            richResult,
+            GroupScoped.serializer(EncryptedAccessLog.serializer())
+          ))
+        }
+      }
+
+      public fun filterAccessLogsBySorted(
+        dartResultCallback: (
+          String?,
+          String?,
+          String?,
+          String?,
+        ) -> Unit,
+        sdkId: String,
+        groupIdString: String,
+        filterString: String,
+      ) {
+        val groupId = fullLanguageInteropJson.decodeFromString(
+          String.serializer(),
+          groupIdString
+        )
+        val filter = fullLanguageInteropJson.decodeFromString(
+          SortableFilterOptions.serializer(PolymorphicSerializer(AccessLog::class)),
+          filterString
+        )
+        ApiScope.execute(
+          dartResultCallback,
+          String.serializer()) {
+          val richResult =
+              NativeReferences.get<CardinalApis>(sdkId).accessLog.inGroup.encrypted.filterAccessLogsBySorted(
+            groupId,
+            filter,
+          )
+          NativeReferences.create(PaginatedListIteratorWithSerializer(
+            richResult,
+            GroupScoped.serializer(EncryptedAccessLog.serializer())
+          ))
+        }
+      }
+
+      public fun createAccessLog(
+        dartResultCallback: (
+          String?,
+          String?,
+          String?,
+          String?,
+        ) -> Unit,
+        sdkId: String,
+        entityString: String,
+      ) {
+        val entity = fullLanguageInteropJson.decodeFromString(
+          GroupScoped.serializer(EncryptedAccessLog.serializer()),
+          entityString
+        )
+        ApiScope.execute(
+          dartResultCallback,
+          GroupScoped.serializer(EncryptedAccessLog.serializer())) {
+          NativeReferences.get<CardinalApis>(sdkId).accessLog.inGroup.encrypted.createAccessLog(
+            entity,
+          )
+        }
+      }
+
+      public fun modifyAccessLog(
+        dartResultCallback: (
+          String?,
+          String?,
+          String?,
+          String?,
+        ) -> Unit,
+        sdkId: String,
+        entityString: String,
+      ) {
+        val entity = fullLanguageInteropJson.decodeFromString(
+          GroupScoped.serializer(EncryptedAccessLog.serializer()),
+          entityString
+        )
+        ApiScope.execute(
+          dartResultCallback,
+          GroupScoped.serializer(EncryptedAccessLog.serializer())) {
+          NativeReferences.get<CardinalApis>(sdkId).accessLog.inGroup.encrypted.modifyAccessLog(
+            entity,
+          )
+        }
+      }
+
+      public fun getAccessLog(
+        dartResultCallback: (
+          String?,
+          String?,
+          String?,
+          String?,
+        ) -> Unit,
+        sdkId: String,
+        groupIdString: String,
+        entityIdString: String,
+      ) {
+        val groupId = fullLanguageInteropJson.decodeFromString(
+          String.serializer(),
+          groupIdString
+        )
+        val entityId = fullLanguageInteropJson.decodeFromString(
+          String.serializer(),
+          entityIdString
+        )
+        ApiScope.execute(
+          dartResultCallback,
+          GroupScoped.serializer(EncryptedAccessLog.serializer()).nullable) {
+          NativeReferences.get<CardinalApis>(sdkId).accessLog.inGroup.encrypted.getAccessLog(
+            groupId,
+            entityId,
+          )
+        }
+      }
+
+      public fun getAccessLogs(
+        dartResultCallback: (
+          String?,
+          String?,
+          String?,
+          String?,
+        ) -> Unit,
+        sdkId: String,
+        groupIdString: String,
+        entityIdsString: String,
+      ) {
+        val groupId = fullLanguageInteropJson.decodeFromString(
+          String.serializer(),
+          groupIdString
+        )
+        val entityIds = fullLanguageInteropJson.decodeFromString(
+          ListSerializer(String.serializer()),
+          entityIdsString
+        )
+        ApiScope.execute(
+          dartResultCallback,
+          ListSerializer(GroupScoped.serializer(EncryptedAccessLog.serializer()))) {
+          NativeReferences.get<CardinalApis>(sdkId).accessLog.inGroup.encrypted.getAccessLogs(
+            groupId,
+            entityIds,
+          )
+        }
+      }
+    }
+
+    @OptIn(InternalIcureApi::class)
+    public object tryAndRecover {
+      public fun shareWith(
+        dartResultCallback: (
+          String?,
+          String?,
+          String?,
+          String?,
+        ) -> Unit,
+        sdkId: String,
+        delegateString: String,
+        accessLogString: String,
+        optionsString: String,
+      ) {
+        val delegate = fullLanguageInteropJson.decodeFromString(
+          EntityReferenceInGroup.serializer(),
+          delegateString
+        )
+        val accessLog = fullLanguageInteropJson.decodeFromString(
+          GroupScoped.serializer(PolymorphicSerializer(AccessLog::class)),
+          accessLogString
+        )
+        val options = fullLanguageInteropJson.decodeFromString(
+          AccessLogShareOptions.serializer().nullable,
+          optionsString
+        )
+        ApiScope.execute(
+          dartResultCallback,
+          GroupScoped.serializer(PolymorphicSerializer(AccessLog::class))) {
+          NativeReferences.get<CardinalApis>(sdkId).accessLog.inGroup.tryAndRecover.shareWith(
+            delegate,
+            accessLog,
+            options,
+          )
+        }
+      }
+
+      public fun shareWithMany(
+        dartResultCallback: (
+          String?,
+          String?,
+          String?,
+          String?,
+        ) -> Unit,
+        sdkId: String,
+        accessLogString: String,
+        delegatesString: String,
+      ) {
+        val accessLog = fullLanguageInteropJson.decodeFromString(
+          GroupScoped.serializer(PolymorphicSerializer(AccessLog::class)),
+          accessLogString
+        )
+        val delegates = fullLanguageInteropJson.decodeFromString(
+          MapAsArraySerializer(EntityReferenceInGroup.serializer(),
+              AccessLogShareOptions.serializer()),
+          delegatesString
+        )
+        ApiScope.execute(
+          dartResultCallback,
+          GroupScoped.serializer(PolymorphicSerializer(AccessLog::class))) {
+          NativeReferences.get<CardinalApis>(sdkId).accessLog.inGroup.tryAndRecover.shareWithMany(
+            accessLog,
+            delegates,
+          )
+        }
+      }
+
+      public fun filterAccessLogsBy(
+        dartResultCallback: (
+          String?,
+          String?,
+          String?,
+          String?,
+        ) -> Unit,
+        sdkId: String,
+        groupIdString: String,
+        filterString: String,
+      ) {
+        val groupId = fullLanguageInteropJson.decodeFromString(
+          String.serializer(),
+          groupIdString
+        )
+        val filter = fullLanguageInteropJson.decodeFromString(
+          FilterOptions.serializer(PolymorphicSerializer(AccessLog::class)),
+          filterString
+        )
+        ApiScope.execute(
+          dartResultCallback,
+          String.serializer()) {
+          val richResult =
+              NativeReferences.get<CardinalApis>(sdkId).accessLog.inGroup.tryAndRecover.filterAccessLogsBy(
+            groupId,
+            filter,
+          )
+          NativeReferences.create(PaginatedListIteratorWithSerializer(
+            richResult,
+            GroupScoped.serializer(PolymorphicSerializer(AccessLog::class))
+          ))
+        }
+      }
+
+      public fun filterAccessLogsBySorted(
+        dartResultCallback: (
+          String?,
+          String?,
+          String?,
+          String?,
+        ) -> Unit,
+        sdkId: String,
+        groupIdString: String,
+        filterString: String,
+      ) {
+        val groupId = fullLanguageInteropJson.decodeFromString(
+          String.serializer(),
+          groupIdString
+        )
+        val filter = fullLanguageInteropJson.decodeFromString(
+          SortableFilterOptions.serializer(PolymorphicSerializer(AccessLog::class)),
+          filterString
+        )
+        ApiScope.execute(
+          dartResultCallback,
+          String.serializer()) {
+          val richResult =
+              NativeReferences.get<CardinalApis>(sdkId).accessLog.inGroup.tryAndRecover.filterAccessLogsBySorted(
+            groupId,
+            filter,
+          )
+          NativeReferences.create(PaginatedListIteratorWithSerializer(
+            richResult,
+            GroupScoped.serializer(PolymorphicSerializer(AccessLog::class))
+          ))
+        }
+      }
+
+      public fun createAccessLog(
+        dartResultCallback: (
+          String?,
+          String?,
+          String?,
+          String?,
+        ) -> Unit,
+        sdkId: String,
+        entityString: String,
+      ) {
+        val entity = fullLanguageInteropJson.decodeFromString(
+          GroupScoped.serializer(PolymorphicSerializer(AccessLog::class)),
+          entityString
+        )
+        ApiScope.execute(
+          dartResultCallback,
+          GroupScoped.serializer(PolymorphicSerializer(AccessLog::class))) {
+          NativeReferences.get<CardinalApis>(sdkId).accessLog.inGroup.tryAndRecover.createAccessLog(
+            entity,
+          )
+        }
+      }
+
+      public fun modifyAccessLog(
+        dartResultCallback: (
+          String?,
+          String?,
+          String?,
+          String?,
+        ) -> Unit,
+        sdkId: String,
+        entityString: String,
+      ) {
+        val entity = fullLanguageInteropJson.decodeFromString(
+          GroupScoped.serializer(PolymorphicSerializer(AccessLog::class)),
+          entityString
+        )
+        ApiScope.execute(
+          dartResultCallback,
+          GroupScoped.serializer(PolymorphicSerializer(AccessLog::class))) {
+          NativeReferences.get<CardinalApis>(sdkId).accessLog.inGroup.tryAndRecover.modifyAccessLog(
+            entity,
+          )
+        }
+      }
+
+      public fun getAccessLog(
+        dartResultCallback: (
+          String?,
+          String?,
+          String?,
+          String?,
+        ) -> Unit,
+        sdkId: String,
+        groupIdString: String,
+        entityIdString: String,
+      ) {
+        val groupId = fullLanguageInteropJson.decodeFromString(
+          String.serializer(),
+          groupIdString
+        )
+        val entityId = fullLanguageInteropJson.decodeFromString(
+          String.serializer(),
+          entityIdString
+        )
+        ApiScope.execute(
+          dartResultCallback,
+          GroupScoped.serializer(PolymorphicSerializer(AccessLog::class)).nullable) {
+          NativeReferences.get<CardinalApis>(sdkId).accessLog.inGroup.tryAndRecover.getAccessLog(
+            groupId,
+            entityId,
+          )
+        }
+      }
+
+      public fun getAccessLogs(
+        dartResultCallback: (
+          String?,
+          String?,
+          String?,
+          String?,
+        ) -> Unit,
+        sdkId: String,
+        groupIdString: String,
+        entityIdsString: String,
+      ) {
+        val groupId = fullLanguageInteropJson.decodeFromString(
+          String.serializer(),
+          groupIdString
+        )
+        val entityIds = fullLanguageInteropJson.decodeFromString(
+          ListSerializer(String.serializer()),
+          entityIdsString
+        )
+        ApiScope.execute(
+          dartResultCallback,
+          ListSerializer(GroupScoped.serializer(PolymorphicSerializer(AccessLog::class)))) {
+          NativeReferences.get<CardinalApis>(sdkId).accessLog.inGroup.tryAndRecover.getAccessLogs(
+            groupId,
+            entityIds,
+          )
+        }
       }
     }
   }

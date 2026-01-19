@@ -30,7 +30,7 @@ class CalendarItemPlatformApi {
 		tryAndRecover = CalendarItemTryAndRecoverPlatformApi(_methodChannel),
 		inGroup = CalendarItemInGroupPlatformApi(_methodChannel);
 
-	Future<DecryptedCalendarItem> withEncryptionMetadata(String sdkId, DecryptedCalendarItem? base, Patient? patient, User? user, Map<String, AccessLevel> delegates, SecretIdUseOption secretId) async {
+	Future<DecryptedCalendarItem> withEncryptionMetadata(String sdkId, DecryptedCalendarItem? base, Patient? patient, User? user, Map<String, AccessLevel> delegates, SecretIdUseOption secretId, String? alternateRootDelegateId) async {
 		final res = await _methodChannel.invokeMethod<String>(
 			'CalendarItemApi.withEncryptionMetadata',
 			{
@@ -40,6 +40,7 @@ class CalendarItemPlatformApi {
 				"user": jsonEncode(user == null ? null : User.encode(user!)),
 				"delegates": jsonEncode(delegates.map((k0, v0) => MapEntry(k0, AccessLevel.encode(v0)))),
 				"secretId": jsonEncode(SecretIdUseOption.encode(secretId)),
+				"alternateRootDelegateId": jsonEncode(alternateRootDelegateId),
 			}
 		).catchError(convertPlatformException);
 		if (res == null) throw AssertionError("received null result from platform method withEncryptionMetadata");
@@ -319,6 +320,19 @@ class CalendarItemPlatformApi {
 		return DecryptedCalendarItem.fromJSON(parsedResJson);
 	}
 
+	Future<DecryptedCalendarItem> bookCalendarItemCheckingAvailability(String sdkId, DecryptedCalendarItem entity) async {
+		final res = await _methodChannel.invokeMethod<String>(
+			'CalendarItemApi.bookCalendarItemCheckingAvailability',
+			{
+				"sdkId": sdkId,
+				"entity": jsonEncode(DecryptedCalendarItem.encode(entity)),
+			}
+		).catchError(convertPlatformException);
+		if (res == null) throw AssertionError("received null result from platform method bookCalendarItemCheckingAvailability");
+		final parsedResJson = jsonDecode(res);
+		return DecryptedCalendarItem.fromJSON(parsedResJson);
+	}
+
 	Future<DecryptedCalendarItem> undeleteCalendarItemById(String sdkId, String id, String rev) async {
 		final res = await _methodChannel.invokeMethod<String>(
 			'CalendarItemApi.undeleteCalendarItemById',
@@ -488,6 +502,19 @@ class CalendarItemTryAndRecoverPlatformApi {
 		return CalendarItem.fromJSON(parsedResJson);
 	}
 
+	Future<CalendarItem> bookCalendarItemCheckingAvailability(String sdkId, CalendarItem entity) async {
+		final res = await _methodChannel.invokeMethod<String>(
+			'CalendarItemApi.tryAndRecover.bookCalendarItemCheckingAvailability',
+			{
+				"sdkId": sdkId,
+				"entity": jsonEncode(CalendarItem.encode(entity)),
+			}
+		).catchError(convertPlatformException);
+		if (res == null) throw AssertionError("received null result from platform method bookCalendarItemCheckingAvailability");
+		final parsedResJson = jsonDecode(res);
+		return CalendarItem.fromJSON(parsedResJson);
+	}
+
 	Future<CalendarItem> undeleteCalendarItemById(String sdkId, String id, String rev) async {
 		final res = await _methodChannel.invokeMethod<String>(
 			'CalendarItemApi.tryAndRecover.undeleteCalendarItemById',
@@ -642,6 +669,19 @@ class CalendarItemEncryptedPlatformApi {
 		return EncryptedCalendarItem.fromJSON(parsedResJson);
 	}
 
+	Future<EncryptedCalendarItem> bookCalendarItemCheckingAvailability(String sdkId, EncryptedCalendarItem entity) async {
+		final res = await _methodChannel.invokeMethod<String>(
+			'CalendarItemApi.encrypted.bookCalendarItemCheckingAvailability',
+			{
+				"sdkId": sdkId,
+				"entity": jsonEncode(EncryptedCalendarItem.encode(entity)),
+			}
+		).catchError(convertPlatformException);
+		if (res == null) throw AssertionError("received null result from platform method bookCalendarItemCheckingAvailability");
+		final parsedResJson = jsonDecode(res);
+		return EncryptedCalendarItem.fromJSON(parsedResJson);
+	}
+
 	Future<EncryptedCalendarItem> undeleteCalendarItemById(String sdkId, String id, String rev) async {
 		final res = await _methodChannel.invokeMethod<String>(
 			'CalendarItemApi.encrypted.undeleteCalendarItemById',
@@ -718,7 +758,7 @@ class CalendarItemInGroupPlatformApi {
 		) : encrypted = CalendarItemInGroupEncryptedPlatformApi(_methodChannel),
 		tryAndRecover = CalendarItemInGroupTryAndRecoverPlatformApi(_methodChannel);
 
-	Future<GroupScoped<DecryptedCalendarItem>> withEncryptionMetadata(String sdkId, String entityGroupId, DecryptedCalendarItem? base, GroupScoped<Patient>? patient, User? user, Map<EntityReferenceInGroup, AccessLevel> delegates, SecretIdUseOption secretId) async {
+	Future<GroupScoped<DecryptedCalendarItem>> withEncryptionMetadata(String sdkId, String entityGroupId, DecryptedCalendarItem? base, GroupScoped<Patient>? patient, User? user, Map<EntityReferenceInGroup, AccessLevel> delegates, SecretIdUseOption secretId, EntityReferenceInGroup? alternateRootDelegateReference) async {
 		final res = await _methodChannel.invokeMethod<String>(
 			'CalendarItemApi.inGroup.withEncryptionMetadata',
 			{
@@ -737,6 +777,7 @@ class CalendarItemInGroupPlatformApi {
 					"v": AccessLevel.encode(x0.value),
 				}).toList()),
 				"secretId": jsonEncode(SecretIdUseOption.encode(secretId)),
+				"alternateRootDelegateReference": jsonEncode(alternateRootDelegateReference == null ? null : EntityReferenceInGroup.encode(alternateRootDelegateReference!)),
 			}
 		).catchError(convertPlatformException);
 		if (res == null) throw AssertionError("received null result from platform method withEncryptionMetadata");

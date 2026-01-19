@@ -25,6 +25,7 @@ class CalendarItemBasicApiDispatcher {
     case "deleteCalendarItems": deleteCalendarItems(parameters: parameters, resultCallback: resultCallback)
     case "purgeCalendarItem": purgeCalendarItem(parameters: parameters, resultCallback: resultCallback)
     case "createCalendarItem": createCalendarItem(parameters: parameters, resultCallback: resultCallback)
+    case "bookCalendarItemCheckingAvailability": bookCalendarItemCheckingAvailability(parameters: parameters, resultCallback: resultCallback)
     case "undeleteCalendarItemById": undeleteCalendarItemById(parameters: parameters, resultCallback: resultCallback)
     case "undeleteCalendarItem": undeleteCalendarItem(parameters: parameters, resultCallback: resultCallback)
     case "modifyCalendarItem": modifyCalendarItem(parameters: parameters, resultCallback: resultCallback)
@@ -187,6 +188,19 @@ class CalendarItemBasicApiDispatcher {
     String?
   ) -> Void) {
     CalendarItemBasicApi.shared.createCalendarItem(
+    	dartResultCallback: resultCallback,
+    	sdkId: parameters["sdkId"]!,
+    	entityString: parameters["entity"]!
+    )
+  }
+
+  private static func bookCalendarItemCheckingAvailability(parameters: [String : String], resultCallback: @escaping (
+    String?,
+    String?,
+    String?,
+    String?
+  ) -> Void) {
+    CalendarItemBasicApi.shared.bookCalendarItemCheckingAvailability(
     	dartResultCallback: resultCallback,
     	sdkId: parameters["sdkId"]!,
     	entityString: parameters["entity"]!

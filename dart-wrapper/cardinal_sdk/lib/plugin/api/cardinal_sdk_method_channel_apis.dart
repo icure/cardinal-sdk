@@ -18,6 +18,7 @@ import 'package:cardinal_sdk/plugin/api/maintenance_task_basic_platform_api.dart
 import 'package:cardinal_sdk/plugin/api/tarification_platform_api.dart';
 import 'package:cardinal_sdk/plugin/api/contact_platform_api.dart';
 import 'package:cardinal_sdk/plugin/api/receipt_platform_api.dart';
+import 'package:cardinal_sdk/plugin/api/anonymous_agenda_platform_api.dart';
 import 'package:cardinal_sdk/plugin/api/healthcare_party_platform_api.dart';
 import 'package:cardinal_sdk/plugin/api/access_log_platform_api.dart';
 import 'package:cardinal_sdk/plugin/api/permission_platform_api.dart';
@@ -41,6 +42,7 @@ import 'package:cardinal_sdk/plugin/api/auth_platform_api.dart';
 import 'package:cardinal_sdk/plugin/api/data_owner_platform_api.dart';
 import 'package:cardinal_sdk/plugin/api/user_platform_api.dart';
 import 'package:cardinal_sdk/plugin/api/role_platform_api.dart';
+import 'package:cardinal_sdk/plugin/api/anonymous_healthcare_party_platform_api.dart';
 import 'package:cardinal_sdk/plugin/api/message_basic_platform_api.dart';
 import 'package:cardinal_sdk/plugin/api/form_platform_api.dart';
 import 'package:cardinal_sdk/plugin/api/cardinal_maintenance_task_platform_api.dart';
@@ -94,6 +96,8 @@ class CardinalSdkMethodChannelApis extends CardinalSdkPlatformApisPlugin {
 	@override ContactPlatformApi get contact => _contact;
 	ReceiptPlatformApi _receipt = ReceiptPlatformApi(_methodChannel);
 	@override ReceiptPlatformApi get receipt => _receipt;
+	AnonymousAgendaPlatformApi _anonymousAgenda = AnonymousAgendaPlatformApi(_methodChannel);
+	@override AnonymousAgendaPlatformApi get anonymousAgenda => _anonymousAgenda;
 	HealthcarePartyPlatformApi _healthcareParty = HealthcarePartyPlatformApi(_methodChannel);
 	@override HealthcarePartyPlatformApi get healthcareParty => _healthcareParty;
 	AccessLogPlatformApi _accessLog = AccessLogPlatformApi(_methodChannel);
@@ -140,6 +144,8 @@ class CardinalSdkMethodChannelApis extends CardinalSdkPlatformApisPlugin {
 	@override UserPlatformApi get user => _user;
 	RolePlatformApi _role = RolePlatformApi(_methodChannel);
 	@override RolePlatformApi get role => _role;
+	AnonymousHealthcarePartyPlatformApi _anonymousHealthcareParty = AnonymousHealthcarePartyPlatformApi(_methodChannel);
+	@override AnonymousHealthcarePartyPlatformApi get anonymousHealthcareParty => _anonymousHealthcareParty;
 	MessageBasicPlatformApi _messageBasic = MessageBasicPlatformApi(_methodChannel);
 	@override MessageBasicPlatformApi get messageBasic => _messageBasic;
 	FormPlatformApi _form = FormPlatformApi(_methodChannel);

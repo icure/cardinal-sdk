@@ -34,6 +34,18 @@ public object AccessLogBasicApiDispatcher {
     "modifyAccessLog" -> modifyAccessLog(parameters, resultCallback)
     "getAccessLog" -> getAccessLog(parameters, resultCallback)
     "getAccessLogs" -> getAccessLogs(parameters, resultCallback)
+    "inGroup.matchAccessLogsBy" -> inGroup_matchAccessLogsBy(parameters, resultCallback)
+    "inGroup.matchAccessLogsBySorted" -> inGroup_matchAccessLogsBySorted(parameters, resultCallback)
+    "inGroup.filterAccessLogsBy" -> inGroup_filterAccessLogsBy(parameters, resultCallback)
+    "inGroup.filterAccessLogsBySorted" -> inGroup_filterAccessLogsBySorted(parameters, resultCallback)
+    "inGroup.deleteAccessLogById" -> inGroup_deleteAccessLogById(parameters, resultCallback)
+    "inGroup.deleteAccessLogsByIds" -> inGroup_deleteAccessLogsByIds(parameters, resultCallback)
+    "inGroup.deleteAccessLog" -> inGroup_deleteAccessLog(parameters, resultCallback)
+    "inGroup.deleteAccessLogs" -> inGroup_deleteAccessLogs(parameters, resultCallback)
+    "inGroup.createAccessLog" -> inGroup_createAccessLog(parameters, resultCallback)
+    "inGroup.modifyAccessLog" -> inGroup_modifyAccessLog(parameters, resultCallback)
+    "inGroup.getAccessLog" -> inGroup_getAccessLog(parameters, resultCallback)
+    "inGroup.getAccessLogs" -> inGroup_getAccessLogs(parameters, resultCallback)
     else -> null
   }?.let { true } ?: false
 
@@ -244,6 +256,168 @@ public object AccessLogBasicApiDispatcher {
     AccessLogBasicApi.getAccessLogs(
       resultCallback,
       parameters.getValue("sdkId"),
+      parameters.getValue("entityIds"),
+    )
+  }
+
+  private fun inGroup_matchAccessLogsBy(parameters: Map<String, String>, resultCallback: (
+    String?,
+    String?,
+    String?,
+    String?,
+  ) -> Unit) {
+    AccessLogBasicApi.inGroup.matchAccessLogsBy(
+      resultCallback,
+      parameters.getValue("sdkId"),
+      parameters.getValue("groupId"),
+      parameters.getValue("filter"),
+    )
+  }
+
+  private fun inGroup_matchAccessLogsBySorted(parameters: Map<String, String>, resultCallback: (
+    String?,
+    String?,
+    String?,
+    String?,
+  ) -> Unit) {
+    AccessLogBasicApi.inGroup.matchAccessLogsBySorted(
+      resultCallback,
+      parameters.getValue("sdkId"),
+      parameters.getValue("groupId"),
+      parameters.getValue("filter"),
+    )
+  }
+
+  private fun inGroup_filterAccessLogsBy(parameters: Map<String, String>, resultCallback: (
+    String?,
+    String?,
+    String?,
+    String?,
+  ) -> Unit) {
+    AccessLogBasicApi.inGroup.filterAccessLogsBy(
+      resultCallback,
+      parameters.getValue("sdkId"),
+      parameters.getValue("groupId"),
+      parameters.getValue("filter"),
+    )
+  }
+
+  private fun inGroup_filterAccessLogsBySorted(parameters: Map<String, String>, resultCallback: (
+    String?,
+    String?,
+    String?,
+    String?,
+  ) -> Unit) {
+    AccessLogBasicApi.inGroup.filterAccessLogsBySorted(
+      resultCallback,
+      parameters.getValue("sdkId"),
+      parameters.getValue("groupId"),
+      parameters.getValue("filter"),
+    )
+  }
+
+  private fun inGroup_deleteAccessLogById(parameters: Map<String, String>, resultCallback: (
+    String?,
+    String?,
+    String?,
+    String?,
+  ) -> Unit) {
+    AccessLogBasicApi.inGroup.deleteAccessLogById(
+      resultCallback,
+      parameters.getValue("sdkId"),
+      parameters.getValue("entityId"),
+    )
+  }
+
+  private fun inGroup_deleteAccessLogsByIds(parameters: Map<String, String>, resultCallback: (
+    String?,
+    String?,
+    String?,
+    String?,
+  ) -> Unit) {
+    AccessLogBasicApi.inGroup.deleteAccessLogsByIds(
+      resultCallback,
+      parameters.getValue("sdkId"),
+      parameters.getValue("entityIds"),
+    )
+  }
+
+  private fun inGroup_deleteAccessLog(parameters: Map<String, String>, resultCallback: (
+    String?,
+    String?,
+    String?,
+    String?,
+  ) -> Unit) {
+    AccessLogBasicApi.inGroup.deleteAccessLog(
+      resultCallback,
+      parameters.getValue("sdkId"),
+      parameters.getValue("accessLog"),
+    )
+  }
+
+  private fun inGroup_deleteAccessLogs(parameters: Map<String, String>, resultCallback: (
+    String?,
+    String?,
+    String?,
+    String?,
+  ) -> Unit) {
+    AccessLogBasicApi.inGroup.deleteAccessLogs(
+      resultCallback,
+      parameters.getValue("sdkId"),
+      parameters.getValue("accessLogs"),
+    )
+  }
+
+  private fun inGroup_createAccessLog(parameters: Map<String, String>, resultCallback: (
+    String?,
+    String?,
+    String?,
+    String?,
+  ) -> Unit) {
+    AccessLogBasicApi.inGroup.createAccessLog(
+      resultCallback,
+      parameters.getValue("sdkId"),
+      parameters.getValue("entity"),
+    )
+  }
+
+  private fun inGroup_modifyAccessLog(parameters: Map<String, String>, resultCallback: (
+    String?,
+    String?,
+    String?,
+    String?,
+  ) -> Unit) {
+    AccessLogBasicApi.inGroup.modifyAccessLog(
+      resultCallback,
+      parameters.getValue("sdkId"),
+      parameters.getValue("entity"),
+    )
+  }
+
+  private fun inGroup_getAccessLog(parameters: Map<String, String>, resultCallback: (
+    String?,
+    String?,
+    String?,
+    String?,
+  ) -> Unit) {
+    AccessLogBasicApi.inGroup.getAccessLog(
+      resultCallback,
+      parameters.getValue("sdkId"),
+      parameters.getValue("groupId"),
+      parameters.getValue("entityId"),
+    )
+  }
+
+  private fun inGroup_getAccessLogs(parameters: Map<String, String>, resultCallback: (
+    String?,
+    String?,
+    String?,
+    String?,
+  ) -> Unit) {
+    AccessLogBasicApi.inGroup.getAccessLogs(
+      resultCallback,
+      parameters.getValue("sdkId"),
+      parameters.getValue("groupId"),
       parameters.getValue("entityIds"),
     )
   }

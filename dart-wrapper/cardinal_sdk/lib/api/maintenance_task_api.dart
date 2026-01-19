@@ -25,12 +25,13 @@ class MaintenanceTaskApi {
 		) : encrypted = MaintenanceTaskEncryptedApi(_sdkId, _dartSdk),
 		tryAndRecover = MaintenanceTaskTryAndRecoverApi(_sdkId, _dartSdk);
 
-	Future<DecryptedMaintenanceTask> withEncryptionMetadata(DecryptedMaintenanceTask? maintenanceTask, { User? user, Map<String, AccessLevel> delegates = const {} }) async {
+	Future<DecryptedMaintenanceTask> withEncryptionMetadata(DecryptedMaintenanceTask? maintenanceTask, { User? user, Map<String, AccessLevel> delegates = const {}, String? alternateRootDelegateId }) async {
 		return await CardinalSdkPlatformInterface.instance.apis.maintenanceTask.withEncryptionMetadata(
 			_sdkId,
 			maintenanceTask,
 			user,
 			delegates,
+			alternateRootDelegateId,
 		);
 	}
 

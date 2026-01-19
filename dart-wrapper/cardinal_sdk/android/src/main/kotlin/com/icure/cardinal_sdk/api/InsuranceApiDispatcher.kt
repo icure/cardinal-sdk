@@ -25,6 +25,9 @@ public object InsuranceApiDispatcher {
     "listInsurancesByCode" -> listInsurancesByCode(parameters, resultCallback)
     "listInsurancesByName" -> listInsurancesByName(parameters, resultCallback)
     "modifyInsurance" -> modifyInsurance(parameters, resultCallback)
+    "createInsurancesInGroup" -> createInsurancesInGroup(parameters, resultCallback)
+    "getInsurancesInGroup" -> getInsurancesInGroup(parameters, resultCallback)
+    "modifyInsurancesInGroup" -> modifyInsurancesInGroup(parameters, resultCallback)
     else -> null
   }?.let { true } ?: false
 
@@ -116,6 +119,48 @@ public object InsuranceApiDispatcher {
       resultCallback,
       parameters.getValue("sdkId"),
       parameters.getValue("insurance"),
+    )
+  }
+
+  private fun createInsurancesInGroup(parameters: Map<String, String>, resultCallback: (
+    String?,
+    String?,
+    String?,
+    String?,
+  ) -> Unit) {
+    InsuranceApi.createInsurancesInGroup(
+      resultCallback,
+      parameters.getValue("sdkId"),
+      parameters.getValue("groupId"),
+      parameters.getValue("insuranceBatch"),
+    )
+  }
+
+  private fun getInsurancesInGroup(parameters: Map<String, String>, resultCallback: (
+    String?,
+    String?,
+    String?,
+    String?,
+  ) -> Unit) {
+    InsuranceApi.getInsurancesInGroup(
+      resultCallback,
+      parameters.getValue("sdkId"),
+      parameters.getValue("groupId"),
+      parameters.getValue("insuranceIds"),
+    )
+  }
+
+  private fun modifyInsurancesInGroup(parameters: Map<String, String>, resultCallback: (
+    String?,
+    String?,
+    String?,
+    String?,
+  ) -> Unit) {
+    InsuranceApi.modifyInsurancesInGroup(
+      resultCallback,
+      parameters.getValue("sdkId"),
+      parameters.getValue("groupId"),
+      parameters.getValue("insuranceBatch"),
     )
   }
 }

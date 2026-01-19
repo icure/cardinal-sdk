@@ -36,6 +36,9 @@ public object MessageFiltersDispatcher {
     "latestByTransportGuidForSelf" -> latestByTransportGuidForSelf(parameters, resultCallback)
     "byInvoiceIds" -> byInvoiceIds(parameters, resultCallback)
     "byParentIds" -> byParentIds(parameters, resultCallback)
+    "lifecycleBetweenForDataOwner" -> lifecycleBetweenForDataOwner(parameters, resultCallback)
+    "lifecycleBetweenForDataOwnerInGroup" -> lifecycleBetweenForDataOwnerInGroup(parameters, resultCallback)
+    "lifecycleBetweenForSelf" -> lifecycleBetweenForSelf(parameters, resultCallback)
     else -> null
   }?.let { true } ?: false
 
@@ -277,6 +280,50 @@ public object MessageFiltersDispatcher {
     MessageFilters.byParentIds(
       resultCallback,
       parameters.getValue("parentIds"),
+    )
+  }
+
+  private fun lifecycleBetweenForDataOwner(parameters: Map<String, String>, resultCallback: (
+    String?,
+    String?,
+    String?,
+    String?,
+  ) -> Unit) {
+    MessageFilters.lifecycleBetweenForDataOwner(
+      resultCallback,
+      parameters.getValue("dataOwnerId"),
+      parameters.getValue("startTimestamp"),
+      parameters.getValue("endTimestamp"),
+      parameters.getValue("descending"),
+    )
+  }
+
+  private fun lifecycleBetweenForDataOwnerInGroup(parameters: Map<String, String>, resultCallback: (
+    String?,
+    String?,
+    String?,
+    String?,
+  ) -> Unit) {
+    MessageFilters.lifecycleBetweenForDataOwnerInGroup(
+      resultCallback,
+      parameters.getValue("dataOwner"),
+      parameters.getValue("startTimestamp"),
+      parameters.getValue("endTimestamp"),
+      parameters.getValue("descending"),
+    )
+  }
+
+  private fun lifecycleBetweenForSelf(parameters: Map<String, String>, resultCallback: (
+    String?,
+    String?,
+    String?,
+    String?,
+  ) -> Unit) {
+    MessageFilters.lifecycleBetweenForSelf(
+      resultCallback,
+      parameters.getValue("startTimestamp"),
+      parameters.getValue("endTimestamp"),
+      parameters.getValue("descending"),
     )
   }
 }

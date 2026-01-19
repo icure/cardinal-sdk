@@ -19,13 +19,17 @@ public object DocumentFiltersDispatcher {
     ) -> Unit,
   ): Boolean = when(methodName) {
     "byPatientsCreatedForDataOwner" -> byPatientsCreatedForDataOwner(parameters, resultCallback)
+    "byMessagesCreatedForDataOwner" -> byMessagesCreatedForDataOwner(parameters, resultCallback)
     "byPatientsCreatedForSelf" -> byPatientsCreatedForSelf(parameters, resultCallback)
-    "byPatientSecretIdsCreatedForDataOwner" -> byPatientSecretIdsCreatedForDataOwner(parameters, resultCallback)
-    "byPatientSecretIdsCreatedForSelf" -> byPatientSecretIdsCreatedForSelf(parameters, resultCallback)
+    "byMessagesCreatedForSelf" -> byMessagesCreatedForSelf(parameters, resultCallback)
+    "byOwningEntitySecretIdsCreatedForDataOwner" -> byOwningEntitySecretIdsCreatedForDataOwner(parameters, resultCallback)
+    "byOwningEntitySecretIdsCreatedForSelf" -> byOwningEntitySecretIdsCreatedForSelf(parameters, resultCallback)
     "byPatientsAndTypeForDataOwner" -> byPatientsAndTypeForDataOwner(parameters, resultCallback)
+    "byMessagesAndTypeForDataOwner" -> byMessagesAndTypeForDataOwner(parameters, resultCallback)
     "byPatientsAndTypeForSelf" -> byPatientsAndTypeForSelf(parameters, resultCallback)
-    "byPatientSecretIdsAndTypeForDataOwner" -> byPatientSecretIdsAndTypeForDataOwner(parameters, resultCallback)
-    "byPatientSecretIdsAndTypeForSelf" -> byPatientSecretIdsAndTypeForSelf(parameters, resultCallback)
+    "byMessagesAndTypeForSelf" -> byMessagesAndTypeForSelf(parameters, resultCallback)
+    "byOwningEntitySecretIdsAndTypeForDataOwner" -> byOwningEntitySecretIdsAndTypeForDataOwner(parameters, resultCallback)
+    "byOwningEntitySecretIdsAndTypeForSelf" -> byOwningEntitySecretIdsAndTypeForSelf(parameters, resultCallback)
     else -> null
   }?.let { true } ?: false
 
@@ -39,6 +43,22 @@ public object DocumentFiltersDispatcher {
       resultCallback,
       parameters.getValue("dataOwnerId"),
       parameters.getValue("patients"),
+      parameters.getValue("from"),
+      parameters.getValue("to"),
+      parameters.getValue("descending"),
+    )
+  }
+
+  private fun byMessagesCreatedForDataOwner(parameters: Map<String, String>, resultCallback: (
+    String?,
+    String?,
+    String?,
+    String?,
+  ) -> Unit) {
+    DocumentFilters.byMessagesCreatedForDataOwner(
+      resultCallback,
+      parameters.getValue("dataOwnerId"),
+      parameters.getValue("messages"),
       parameters.getValue("from"),
       parameters.getValue("to"),
       parameters.getValue("descending"),
@@ -60,14 +80,29 @@ public object DocumentFiltersDispatcher {
     )
   }
 
-  private fun byPatientSecretIdsCreatedForDataOwner(parameters: Map<String, String>,
+  private fun byMessagesCreatedForSelf(parameters: Map<String, String>, resultCallback: (
+    String?,
+    String?,
+    String?,
+    String?,
+  ) -> Unit) {
+    DocumentFilters.byMessagesCreatedForSelf(
+      resultCallback,
+      parameters.getValue("messages"),
+      parameters.getValue("from"),
+      parameters.getValue("to"),
+      parameters.getValue("descending"),
+    )
+  }
+
+  private fun byOwningEntitySecretIdsCreatedForDataOwner(parameters: Map<String, String>,
       resultCallback: (
     String?,
     String?,
     String?,
     String?,
   ) -> Unit) {
-    DocumentFilters.byPatientSecretIdsCreatedForDataOwner(
+    DocumentFilters.byOwningEntitySecretIdsCreatedForDataOwner(
       resultCallback,
       parameters.getValue("dataOwnerId"),
       parameters.getValue("secretIds"),
@@ -77,13 +112,14 @@ public object DocumentFiltersDispatcher {
     )
   }
 
-  private fun byPatientSecretIdsCreatedForSelf(parameters: Map<String, String>, resultCallback: (
+  private fun byOwningEntitySecretIdsCreatedForSelf(parameters: Map<String, String>,
+      resultCallback: (
     String?,
     String?,
     String?,
     String?,
   ) -> Unit) {
-    DocumentFilters.byPatientSecretIdsCreatedForSelf(
+    DocumentFilters.byOwningEntitySecretIdsCreatedForSelf(
       resultCallback,
       parameters.getValue("secretIds"),
       parameters.getValue("from"),
@@ -106,6 +142,20 @@ public object DocumentFiltersDispatcher {
     )
   }
 
+  private fun byMessagesAndTypeForDataOwner(parameters: Map<String, String>, resultCallback: (
+    String?,
+    String?,
+    String?,
+    String?,
+  ) -> Unit) {
+    DocumentFilters.byMessagesAndTypeForDataOwner(
+      resultCallback,
+      parameters.getValue("dataOwnerId"),
+      parameters.getValue("documentType"),
+      parameters.getValue("messages"),
+    )
+  }
+
   private fun byPatientsAndTypeForSelf(parameters: Map<String, String>, resultCallback: (
     String?,
     String?,
@@ -119,14 +169,27 @@ public object DocumentFiltersDispatcher {
     )
   }
 
-  private fun byPatientSecretIdsAndTypeForDataOwner(parameters: Map<String, String>,
+  private fun byMessagesAndTypeForSelf(parameters: Map<String, String>, resultCallback: (
+    String?,
+    String?,
+    String?,
+    String?,
+  ) -> Unit) {
+    DocumentFilters.byMessagesAndTypeForSelf(
+      resultCallback,
+      parameters.getValue("documentType"),
+      parameters.getValue("messages"),
+    )
+  }
+
+  private fun byOwningEntitySecretIdsAndTypeForDataOwner(parameters: Map<String, String>,
       resultCallback: (
     String?,
     String?,
     String?,
     String?,
   ) -> Unit) {
-    DocumentFilters.byPatientSecretIdsAndTypeForDataOwner(
+    DocumentFilters.byOwningEntitySecretIdsAndTypeForDataOwner(
       resultCallback,
       parameters.getValue("dataOwnerId"),
       parameters.getValue("documentType"),
@@ -134,13 +197,14 @@ public object DocumentFiltersDispatcher {
     )
   }
 
-  private fun byPatientSecretIdsAndTypeForSelf(parameters: Map<String, String>, resultCallback: (
+  private fun byOwningEntitySecretIdsAndTypeForSelf(parameters: Map<String, String>,
+      resultCallback: (
     String?,
     String?,
     String?,
     String?,
   ) -> Unit) {
-    DocumentFilters.byPatientSecretIdsAndTypeForSelf(
+    DocumentFilters.byOwningEntitySecretIdsAndTypeForSelf(
       resultCallback,
       parameters.getValue("documentType"),
       parameters.getValue("secretIds"),

@@ -28,7 +28,7 @@ class TopicApi {
 		) : encrypted = TopicEncryptedApi(_sdkId, _dartSdk),
 		tryAndRecover = TopicTryAndRecoverApi(_sdkId, _dartSdk);
 
-	Future<DecryptedTopic> withEncryptionMetadata(DecryptedTopic? base, Patient? patient, { User? user, Map<String, AccessLevel> delegates = const {}, SecretIdUseOption secretId = SecretIdUseOption.UseAnySharedWithParent }) async {
+	Future<DecryptedTopic> withEncryptionMetadata(DecryptedTopic? base, Patient? patient, { User? user, Map<String, AccessLevel> delegates = const {}, SecretIdUseOption secretId = SecretIdUseOption.UseAnySharedWithParent, String? alternateRootDelegateId }) async {
 		return await CardinalSdkPlatformInterface.instance.apis.topic.withEncryptionMetadata(
 			_sdkId,
 			base,
@@ -36,6 +36,7 @@ class TopicApi {
 			user,
 			delegates,
 			secretId,
+			alternateRootDelegateId,
 		);
 	}
 

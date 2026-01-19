@@ -5,6 +5,7 @@ import 'package:cardinal_sdk/model/user.dart';
 import 'package:cardinal_sdk/model/embed/access_level.dart';
 import 'package:cardinal_sdk/crypto/entities/secret_id_use_option.dart';
 import 'package:cardinal_sdk/plugin/cardinal_sdk_platform_interface.dart';
+import 'package:cardinal_sdk/model/patient.dart';
 import 'dart:typed_data';
 import 'package:cardinal_sdk/model/specializations/hex_string.dart';
 import 'package:cardinal_sdk/filters/filter_options.dart';
@@ -25,14 +26,37 @@ class DocumentApi {
 		) : encrypted = DocumentEncryptedApi(_sdkId, _dartSdk),
 		tryAndRecover = DocumentTryAndRecoverApi(_sdkId, _dartSdk);
 
-	Future<DecryptedDocument> withEncryptionMetadata(DecryptedDocument? base, Message? message, { User? user, Map<String, AccessLevel> delegates = const {}, SecretIdUseOption secretId = SecretIdUseOption.UseAnySharedWithParent }) async {
-		return await CardinalSdkPlatformInterface.instance.apis.document.withEncryptionMetadata(
+	Future<DecryptedDocument> withEncryptionMetadataLinkedToMessage(DecryptedDocument? base, Message message, { User? user, Map<String, AccessLevel> delegates = const {}, SecretIdUseOption secretId = SecretIdUseOption.UseAnySharedWithParent, String? alternateRootDelegateId }) async {
+		return await CardinalSdkPlatformInterface.instance.apis.document.withEncryptionMetadataLinkedToMessage(
 			_sdkId,
 			base,
 			message,
 			user,
 			delegates,
 			secretId,
+			alternateRootDelegateId,
+		);
+	}
+
+	Future<DecryptedDocument> withEncryptionMetadataLinkedToPatient(DecryptedDocument? base, Patient patient, { User? user, Map<String, AccessLevel> delegates = const {}, SecretIdUseOption secretId = SecretIdUseOption.UseAnySharedWithParent, String? alternateRootDelegateId }) async {
+		return await CardinalSdkPlatformInterface.instance.apis.document.withEncryptionMetadataLinkedToPatient(
+			_sdkId,
+			base,
+			patient,
+			user,
+			delegates,
+			secretId,
+			alternateRootDelegateId,
+		);
+	}
+
+	Future<DecryptedDocument> withEncryptionMetadataUnlinked(DecryptedDocument? base, { User? user, Map<String, AccessLevel> delegates = const {}, String? alternateRootDelegateId }) async {
+		return await CardinalSdkPlatformInterface.instance.apis.document.withEncryptionMetadataUnlinked(
+			_sdkId,
+			base,
+			user,
+			delegates,
+			alternateRootDelegateId,
 		);
 	}
 
@@ -94,8 +118,8 @@ class DocumentApi {
 		);
 	}
 
-	Future<Set<String>> decryptPatientIdOf(Document document) async {
-		return await CardinalSdkPlatformInterface.instance.apis.document.decryptPatientIdOf(
+	Future<Set<String>> decryptOwningEntityIdsOf(Document document) async {
+		return await CardinalSdkPlatformInterface.instance.apis.document.decryptOwningEntityIdsOf(
 			_sdkId,
 			document,
 		);

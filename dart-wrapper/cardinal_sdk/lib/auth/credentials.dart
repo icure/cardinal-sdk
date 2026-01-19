@@ -37,17 +37,6 @@ class Credentials {
     });
   }
 
-  /// Instantiates the credentials to log in using a third-party authentication provider.
-  /// The [provider] is the provider using to log in and [token] is the token
-  /// received upon completing the third-party authentication flow.
-  factory Credentials.ThirdPartyAuthentication(String token, ThirdPartyProvider provider) {
-    return Credentials._internal({
-      "provider": ThirdPartyProvider.encode(provider),
-      "token": token,
-      "kotlinType": "com.icure.cardinal.sdk.dart.auth.Credentials.UsernamePassword"
-    });
-  }
-
   static Map<String, dynamic> encode(Credentials value) {
     return Map.unmodifiable(value._json);
   }

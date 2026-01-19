@@ -43,6 +43,7 @@ public object ReceiptApi {
     userString: String,
     delegatesString: String,
     secretIdString: String,
+    alternateRootDelegateIdString: String,
   ) {
     val base = fullLanguageInteropJson.decodeFromString(
       DecryptedReceipt.serializer().nullable,
@@ -64,6 +65,10 @@ public object ReceiptApi {
       SecretIdUseOption.serializer(),
       secretIdString
     )
+    val alternateRootDelegateId = fullLanguageInteropJson.decodeFromString(
+      String.serializer().nullable,
+      alternateRootDelegateIdString
+    )
     ApiScope.execute(
       dartResultCallback,
       DecryptedReceipt.serializer()) {
@@ -73,6 +78,7 @@ public object ReceiptApi {
         user,
         delegates,
         secretId,
+        alternateRootDelegateId,
       )
     }
   }

@@ -95,7 +95,7 @@ class PatientPlatformApi {
 		return (parsedResJson as List<dynamic>).map((x1) => (x1 as HexString) ).toSet();
 	}
 
-	Future<DecryptedPatient> withEncryptionMetadata(String sdkId, DecryptedPatient? base, User? user, Map<String, AccessLevel> delegates) async {
+	Future<DecryptedPatient> withEncryptionMetadata(String sdkId, DecryptedPatient? base, User? user, Map<String, AccessLevel> delegates, String? alternateRootDelegateId) async {
 		final res = await _methodChannel.invokeMethod<String>(
 			'PatientApi.withEncryptionMetadata',
 			{
@@ -103,6 +103,7 @@ class PatientPlatformApi {
 				"base": jsonEncode(base == null ? null : DecryptedPatient.encode(base!)),
 				"user": jsonEncode(user == null ? null : User.encode(user!)),
 				"delegates": jsonEncode(delegates.map((k0, v0) => MapEntry(k0, AccessLevel.encode(v0)))),
+				"alternateRootDelegateId": jsonEncode(alternateRootDelegateId),
 			}
 		).catchError(convertPlatformException);
 		if (res == null) throw AssertionError("received null result from platform method withEncryptionMetadata");
@@ -200,12 +201,14 @@ class PatientPlatformApi {
 		return (parsedResJson as List<dynamic>).map((x1) => (x1 as String) ).toList();
 	}
 
-	Future<EncryptedPatient> ensureEncryptionMetadataForSelfIsInitialized(String sdkId, Map<String, AccessLevel> sharingWith) async {
+	Future<EncryptedPatient> ensureEncryptionMetadataForSelfIsInitialized(String sdkId, Map<String, AccessLevel> sharingWith, bool ignoreIfEncryptionMetadataExists, String? alternateRootDelegateId) async {
 		final res = await _methodChannel.invokeMethod<String>(
 			'PatientApi.ensureEncryptionMetadataForSelfIsInitialized',
 			{
 				"sdkId": sdkId,
 				"sharingWith": jsonEncode(sharingWith.map((k0, v0) => MapEntry(k0, AccessLevel.encode(v0)))),
+				"ignoreIfEncryptionMetadataExists": jsonEncode(ignoreIfEncryptionMetadataExists),
+				"alternateRootDelegateId": jsonEncode(alternateRootDelegateId),
 			}
 		).catchError(convertPlatformException);
 		if (res == null) throw AssertionError("received null result from platform method ensureEncryptionMetadataForSelfIsInitialized");
@@ -1160,7 +1163,7 @@ class PatientInGroupPlatformApi {
 		return (parsedResJson as List<dynamic>).map((x1) => (x1 as HexString) ).toSet();
 	}
 
-	Future<GroupScoped<DecryptedPatient>> withEncryptionMetadata(String sdkId, String entityGroupId, DecryptedPatient? base, User? user, Map<EntityReferenceInGroup, AccessLevel> delegates) async {
+	Future<GroupScoped<DecryptedPatient>> withEncryptionMetadata(String sdkId, String entityGroupId, DecryptedPatient? base, User? user, Map<EntityReferenceInGroup, AccessLevel> delegates, EntityReferenceInGroup? alternateRootDelegateReference) async {
 		final res = await _methodChannel.invokeMethod<String>(
 			'PatientApi.inGroup.withEncryptionMetadata',
 			{
@@ -1172,6 +1175,7 @@ class PatientInGroupPlatformApi {
 					"k": EntityReferenceInGroup.encode(x0.key),
 					"v": AccessLevel.encode(x0.value),
 				}).toList()),
+				"alternateRootDelegateReference": jsonEncode(alternateRootDelegateReference == null ? null : EntityReferenceInGroup.encode(alternateRootDelegateReference!)),
 			}
 		).catchError(convertPlatformException);
 		if (res == null) throw AssertionError("received null result from platform method withEncryptionMetadata");

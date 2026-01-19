@@ -7,6 +7,7 @@ import 'package:cardinal_sdk/model/embed/renewal.dart';
 import 'package:cardinal_sdk/model/embed/regimen_item.dart';
 import 'package:cardinal_sdk/model/embed/paragraph_agreement.dart';
 import 'package:cardinal_sdk/model/embed/suspension.dart';
+import 'package:cardinal_sdk/model/embed/address.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 part "medication.freezed.dart";
 
@@ -56,6 +57,7 @@ abstract class Medication with _$Medication {
 		@Default(null) List<Suspension>? suspension,
 		@Default(null) String? prescriptionRID,
 		@Default(null) int? status,
+		@Default(null) DecryptedAddress? stockLocation,
 	}) = _Medication;
 
 
@@ -102,7 +104,8 @@ abstract class Medication with _$Medication {
 			"posologyChanged" : value.posologyChanged,
 			"suspension" : value.suspension?.map((x0) => Suspension.encode(x0)).toList(),
 			"prescriptionRID" : value.prescriptionRID,
-			"status" : value.status
+			"status" : value.status,
+			"stockLocation" : value.stockLocation == null ? null : DecryptedAddress.encode(value.stockLocation!)
 		};
 		return entityAsMap;
 	}
@@ -150,7 +153,8 @@ abstract class Medication with _$Medication {
 			medicationChanged: (data["medicationChanged"] as bool?),
 			posologyChanged: (data["posologyChanged"] as bool?),
 			suspension: (data["suspension"] as List<dynamic>?)?.map((x0) => Suspension.fromJSON(x0) ).toList(),
-			prescriptionRID: (data["prescriptionRID"] as String?)
+			prescriptionRID: (data["prescriptionRID"] as String?),
+			stockLocation: data["stockLocation"] == null ? null : DecryptedAddress.fromJSON(data["stockLocation"])
 		);
 	}
 }

@@ -17,6 +17,7 @@ import 'package:cardinal_sdk/plugin/api/maintenance_task_basic_platform_api.dart
 import 'package:cardinal_sdk/plugin/api/tarification_platform_api.dart';
 import 'package:cardinal_sdk/plugin/api/contact_platform_api.dart';
 import 'package:cardinal_sdk/plugin/api/receipt_platform_api.dart';
+import 'package:cardinal_sdk/plugin/api/anonymous_agenda_platform_api.dart';
 import 'package:cardinal_sdk/plugin/api/healthcare_party_platform_api.dart';
 import 'package:cardinal_sdk/plugin/api/access_log_platform_api.dart';
 import 'package:cardinal_sdk/plugin/api/permission_platform_api.dart';
@@ -40,6 +41,7 @@ import 'package:cardinal_sdk/plugin/api/auth_platform_api.dart';
 import 'package:cardinal_sdk/plugin/api/data_owner_platform_api.dart';
 import 'package:cardinal_sdk/plugin/api/user_platform_api.dart';
 import 'package:cardinal_sdk/plugin/api/role_platform_api.dart';
+import 'package:cardinal_sdk/plugin/api/anonymous_healthcare_party_platform_api.dart';
 import 'package:cardinal_sdk/plugin/api/message_basic_platform_api.dart';
 import 'package:cardinal_sdk/plugin/api/form_platform_api.dart';
 import 'package:cardinal_sdk/plugin/api/cardinal_maintenance_task_platform_api.dart';
@@ -92,6 +94,8 @@ abstract class CardinalSdkPlatformApisPlugin {
 
 	ReceiptPlatformApi get receipt;
 
+	AnonymousAgendaPlatformApi get anonymousAgenda;
+
 	HealthcarePartyPlatformApi get healthcareParty;
 
 	AccessLogPlatformApi get accessLog;
@@ -137,6 +141,8 @@ abstract class CardinalSdkPlatformApisPlugin {
 	UserPlatformApi get user;
 
 	RolePlatformApi get role;
+
+	AnonymousHealthcarePartyPlatformApi get anonymousHealthcareParty;
 
 	MessageBasicPlatformApi get messageBasic;
 

@@ -1,6 +1,7 @@
 // auto-generated file
 package com.icure.cardinal.sdk.dart.api
 
+import com.icure.cardinal.sdk.CardinalApis
 import com.icure.cardinal.sdk.CardinalNonCryptoApis
 import com.icure.cardinal.sdk.dart.utils.ApiScope
 import com.icure.cardinal.sdk.dart.utils.NativeReferences
@@ -800,6 +801,38 @@ public object HealthcarePartyApi {
         richResult,
         HealthcareParty.serializer()
       ))
+    }
+  }
+
+  @OptIn(InternalIcureApi::class)
+  public object inGroup {
+    public fun matchHealthcarePartiesBy(
+      dartResultCallback: (
+        String?,
+        String?,
+        String?,
+        String?,
+      ) -> Unit,
+      sdkId: String,
+      groupIdString: String,
+      filterString: String,
+    ) {
+      val groupId = fullLanguageInteropJson.decodeFromString(
+        String.serializer(),
+        groupIdString
+      )
+      val filter = fullLanguageInteropJson.decodeFromString(
+        BaseFilterOptions.serializer(HealthcareParty.serializer()),
+        filterString
+      )
+      ApiScope.execute(
+        dartResultCallback,
+        ListSerializer(String.serializer())) {
+        NativeReferences.get<CardinalApis>(sdkId).healthcareParty.inGroup.matchHealthcarePartiesBy(
+          groupId,
+          filter,
+        )
+      }
     }
   }
 }

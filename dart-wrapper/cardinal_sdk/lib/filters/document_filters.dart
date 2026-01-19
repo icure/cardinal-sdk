@@ -3,6 +3,7 @@ import 'package:cardinal_sdk/model/patient.dart';
 import 'package:cardinal_sdk/plugin/cardinal_sdk_platform_interface.dart';
 import 'package:cardinal_sdk/filters/filter_options.dart';
 import 'package:cardinal_sdk/model/document.dart';
+import 'package:cardinal_sdk/model/message.dart';
 import 'package:cardinal_sdk/model/embed/document_type.dart';
 
 
@@ -19,6 +20,16 @@ abstract class DocumentFilters {
 		);
 	}
 
+	static Future<SortableFilterOptions<Document>> byMessagesCreatedForDataOwner(String dataOwnerId, List<Message> messages, { DateTime? from, DateTime? to, bool descending = false }) async {
+		return CardinalSdkPlatformInterface.instance.filters.document.byMessagesCreatedForDataOwner(
+			dataOwnerId,
+			messages,
+			from: from,
+			to: to,
+			descending: descending,
+		);
+	}
+
 	static Future<SortableFilterOptions<Document>> byPatientsCreatedForSelf(List<Patient> patients, { DateTime? from, DateTime? to, bool descending = false }) async {
 		return CardinalSdkPlatformInterface.instance.filters.document.byPatientsCreatedForSelf(
 			patients,
@@ -28,8 +39,17 @@ abstract class DocumentFilters {
 		);
 	}
 
-	static Future<BaseSortableFilterOptions<Document>> byPatientSecretIdsCreatedForDataOwner(String dataOwnerId, List<String> secretIds, { DateTime? from, DateTime? to, bool descending = false }) async {
-		return CardinalSdkPlatformInterface.instance.filters.document.byPatientSecretIdsCreatedForDataOwner(
+	static Future<SortableFilterOptions<Document>> byMessagesCreatedForSelf(List<Message> messages, { DateTime? from, DateTime? to, bool descending = false }) async {
+		return CardinalSdkPlatformInterface.instance.filters.document.byMessagesCreatedForSelf(
+			messages,
+			from: from,
+			to: to,
+			descending: descending,
+		);
+	}
+
+	static Future<BaseSortableFilterOptions<Document>> byOwningEntitySecretIdsCreatedForDataOwner(String dataOwnerId, List<String> secretIds, { DateTime? from, DateTime? to, bool descending = false }) async {
+		return CardinalSdkPlatformInterface.instance.filters.document.byOwningEntitySecretIdsCreatedForDataOwner(
 			dataOwnerId,
 			secretIds,
 			from: from,
@@ -38,8 +58,8 @@ abstract class DocumentFilters {
 		);
 	}
 
-	static Future<SortableFilterOptions<Document>> byPatientSecretIdsCreatedForSelf(List<String> secretIds, { DateTime? from, DateTime? to, bool descending = false }) async {
-		return CardinalSdkPlatformInterface.instance.filters.document.byPatientSecretIdsCreatedForSelf(
+	static Future<SortableFilterOptions<Document>> byOwningEntitySecretIdsCreatedForSelf(List<String> secretIds, { DateTime? from, DateTime? to, bool descending = false }) async {
+		return CardinalSdkPlatformInterface.instance.filters.document.byOwningEntitySecretIdsCreatedForSelf(
 			secretIds,
 			from: from,
 			to: to,
@@ -55,6 +75,14 @@ abstract class DocumentFilters {
 		);
 	}
 
+	static Future<FilterOptions<Document>> byMessagesAndTypeForDataOwner(String dataOwnerId, DocumentType documentType, List<Message> messages) async {
+		return CardinalSdkPlatformInterface.instance.filters.document.byMessagesAndTypeForDataOwner(
+			dataOwnerId,
+			documentType,
+			messages,
+		);
+	}
+
 	static Future<FilterOptions<Document>> byPatientsAndTypeForSelf(DocumentType documentType, List<Patient> patients) async {
 		return CardinalSdkPlatformInterface.instance.filters.document.byPatientsAndTypeForSelf(
 			documentType,
@@ -62,16 +90,23 @@ abstract class DocumentFilters {
 		);
 	}
 
-	static Future<FilterOptions<Document>> byPatientSecretIdsAndTypeForDataOwner(String dataOwnerId, DocumentType documentType, List<String> secretIds) async {
-		return CardinalSdkPlatformInterface.instance.filters.document.byPatientSecretIdsAndTypeForDataOwner(
+	static Future<FilterOptions<Document>> byMessagesAndTypeForSelf(DocumentType documentType, List<Message> messages) async {
+		return CardinalSdkPlatformInterface.instance.filters.document.byMessagesAndTypeForSelf(
+			documentType,
+			messages,
+		);
+	}
+
+	static Future<FilterOptions<Document>> byOwningEntitySecretIdsAndTypeForDataOwner(String dataOwnerId, DocumentType documentType, List<String> secretIds) async {
+		return CardinalSdkPlatformInterface.instance.filters.document.byOwningEntitySecretIdsAndTypeForDataOwner(
 			dataOwnerId,
 			documentType,
 			secretIds,
 		);
 	}
 
-	static Future<FilterOptions<Document>> byPatientSecretIdsAndTypeForSelf(DocumentType documentType, List<String> secretIds) async {
-		return CardinalSdkPlatformInterface.instance.filters.document.byPatientSecretIdsAndTypeForSelf(
+	static Future<FilterOptions<Document>> byOwningEntitySecretIdsAndTypeForSelf(DocumentType documentType, List<String> secretIds) async {
+		return CardinalSdkPlatformInterface.instance.filters.document.byOwningEntitySecretIdsAndTypeForSelf(
 			documentType,
 			secretIds,
 		);

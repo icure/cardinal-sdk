@@ -146,6 +146,7 @@ public object ContactApi {
     userString: String,
     delegatesString: String,
     secretIdString: String,
+    alternateRootDelegateIdString: String,
   ) {
     val base = fullLanguageInteropJson.decodeFromString(
       DecryptedContact.serializer().nullable,
@@ -167,6 +168,10 @@ public object ContactApi {
       SecretIdUseOption.serializer(),
       secretIdString
     )
+    val alternateRootDelegateId = fullLanguageInteropJson.decodeFromString(
+      String.serializer().nullable,
+      alternateRootDelegateIdString
+    )
     ApiScope.execute(
       dartResultCallback,
       DecryptedContact.serializer()) {
@@ -176,6 +181,7 @@ public object ContactApi {
         user,
         delegates,
         secretId,
+        alternateRootDelegateId,
       )
     }
   }

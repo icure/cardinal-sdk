@@ -23,6 +23,7 @@ sealed class InvoicingCode implements Encryptable {
 	abstract final double? totalAmount;
 	abstract final double? reimbursement;
 	abstract final double? patientIntervention;
+	abstract final double? amiIntervention;
 	abstract final double? doctorSupplement;
 	abstract final double? conventionAmount;
 	abstract final double? vat;
@@ -61,6 +62,8 @@ sealed class InvoicingCode implements Encryptable {
 	@actualInt32 abstract final int? insuranceJustification;
 	@actualInt32 abstract final int? cancelPatientInterventionReason;
 	abstract final int? status;
+	abstract final String? codeLabel;
+	abstract final Map<String, String> options;
 	@override abstract final Base64String? encryptedSelf;
 
 	static Map<String, dynamic> encode(InvoicingCode value) {
@@ -109,6 +112,7 @@ abstract class DecryptedInvoicingCode with _$DecryptedInvoicingCode implements I
 		@Default(null) double? totalAmount,
 		@Default(null) double? reimbursement,
 		@Default(null) double? patientIntervention,
+		@Default(null) double? amiIntervention,
 		@Default(null) double? doctorSupplement,
 		@Default(null) double? conventionAmount,
 		@Default(null) double? vat,
@@ -147,6 +151,8 @@ abstract class DecryptedInvoicingCode with _$DecryptedInvoicingCode implements I
 		@Default(null) int? insuranceJustification,
 		@Default(null) int? cancelPatientInterventionReason,
 		@Default(null) int? status,
+		@Default(null) String? codeLabel,
+		@Default({}) Map<String, String> options,
 		@Default(null) Base64String? encryptedSelf,
 	}) = _DecryptedInvoicingCode;
 
@@ -167,6 +173,7 @@ abstract class DecryptedInvoicingCode with _$DecryptedInvoicingCode implements I
 			"totalAmount" : value.totalAmount,
 			"reimbursement" : value.reimbursement,
 			"patientIntervention" : value.patientIntervention,
+			"amiIntervention" : value.amiIntervention,
 			"doctorSupplement" : value.doctorSupplement,
 			"conventionAmount" : value.conventionAmount,
 			"vat" : value.vat,
@@ -205,6 +212,8 @@ abstract class DecryptedInvoicingCode with _$DecryptedInvoicingCode implements I
 			"insuranceJustification" : value.insuranceJustification,
 			"cancelPatientInterventionReason" : value.cancelPatientInterventionReason,
 			"status" : value.status,
+			"codeLabel" : value.codeLabel,
+			"options" : value.options.map((k0, v0) => MapEntry(k0, v0)),
 			"encryptedSelf" : value.encryptedSelf
 		};
 		return entityAsMap;
@@ -238,6 +247,7 @@ abstract class DecryptedInvoicingCode with _$DecryptedInvoicingCode implements I
 			totalAmount: (data["totalAmount"] as num?)?.toDouble(),
 			reimbursement: (data["reimbursement"] as num?)?.toDouble(),
 			patientIntervention: (data["patientIntervention"] as num?)?.toDouble(),
+			amiIntervention: (data["amiIntervention"] as num?)?.toDouble(),
 			doctorSupplement: (data["doctorSupplement"] as num?)?.toDouble(),
 			conventionAmount: (data["conventionAmount"] as num?)?.toDouble(),
 			vat: (data["vat"] as num?)?.toDouble(),
@@ -264,6 +274,8 @@ abstract class DecryptedInvoicingCode with _$DecryptedInvoicingCode implements I
 			archived: (data["archived"] as bool?),
 			lost: (data["lost"] as bool?),
 			status: (data["status"] as int?),
+			codeLabel: (data["codeLabel"] as String?),
+			options: (data["options"] as Map<String, dynamic>).map((k0, v0) => MapEntry((k0 as String), (v0 as String))),
 			encryptedSelf: (data["encryptedSelf"] as Base64String?)
 		);
 	}
@@ -286,6 +298,7 @@ abstract class EncryptedInvoicingCode with _$EncryptedInvoicingCode implements I
 		@Default(null) double? totalAmount,
 		@Default(null) double? reimbursement,
 		@Default(null) double? patientIntervention,
+		@Default(null) double? amiIntervention,
 		@Default(null) double? doctorSupplement,
 		@Default(null) double? conventionAmount,
 		@Default(null) double? vat,
@@ -324,6 +337,8 @@ abstract class EncryptedInvoicingCode with _$EncryptedInvoicingCode implements I
 		@Default(null) int? insuranceJustification,
 		@Default(null) int? cancelPatientInterventionReason,
 		@Default(null) int? status,
+		@Default(null) String? codeLabel,
+		@Default({}) Map<String, String> options,
 		@Default(null) Base64String? encryptedSelf,
 	}) = _EncryptedInvoicingCode;
 
@@ -344,6 +359,7 @@ abstract class EncryptedInvoicingCode with _$EncryptedInvoicingCode implements I
 			"totalAmount" : value.totalAmount,
 			"reimbursement" : value.reimbursement,
 			"patientIntervention" : value.patientIntervention,
+			"amiIntervention" : value.amiIntervention,
 			"doctorSupplement" : value.doctorSupplement,
 			"conventionAmount" : value.conventionAmount,
 			"vat" : value.vat,
@@ -382,6 +398,8 @@ abstract class EncryptedInvoicingCode with _$EncryptedInvoicingCode implements I
 			"insuranceJustification" : value.insuranceJustification,
 			"cancelPatientInterventionReason" : value.cancelPatientInterventionReason,
 			"status" : value.status,
+			"codeLabel" : value.codeLabel,
+			"options" : value.options.map((k0, v0) => MapEntry(k0, v0)),
 			"encryptedSelf" : value.encryptedSelf
 		};
 		return entityAsMap;
@@ -415,6 +433,7 @@ abstract class EncryptedInvoicingCode with _$EncryptedInvoicingCode implements I
 			totalAmount: (data["totalAmount"] as num?)?.toDouble(),
 			reimbursement: (data["reimbursement"] as num?)?.toDouble(),
 			patientIntervention: (data["patientIntervention"] as num?)?.toDouble(),
+			amiIntervention: (data["amiIntervention"] as num?)?.toDouble(),
 			doctorSupplement: (data["doctorSupplement"] as num?)?.toDouble(),
 			conventionAmount: (data["conventionAmount"] as num?)?.toDouble(),
 			vat: (data["vat"] as num?)?.toDouble(),
@@ -441,6 +460,8 @@ abstract class EncryptedInvoicingCode with _$EncryptedInvoicingCode implements I
 			archived: (data["archived"] as bool?),
 			lost: (data["lost"] as bool?),
 			status: (data["status"] as int?),
+			codeLabel: (data["codeLabel"] as String?),
+			options: (data["options"] as Map<String, dynamic>).map((k0, v0) => MapEntry((k0 as String), (v0 as String))),
 			encryptedSelf: (data["encryptedSelf"] as Base64String?)
 		);
 	}

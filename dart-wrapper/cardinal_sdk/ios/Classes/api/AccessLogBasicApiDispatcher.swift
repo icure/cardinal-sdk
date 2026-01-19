@@ -30,6 +30,18 @@ class AccessLogBasicApiDispatcher {
     case "modifyAccessLog": modifyAccessLog(parameters: parameters, resultCallback: resultCallback)
     case "getAccessLog": getAccessLog(parameters: parameters, resultCallback: resultCallback)
     case "getAccessLogs": getAccessLogs(parameters: parameters, resultCallback: resultCallback)
+    case "inGroup.matchAccessLogsBy": inGroup_matchAccessLogsBy(parameters: parameters, resultCallback: resultCallback)
+    case "inGroup.matchAccessLogsBySorted": inGroup_matchAccessLogsBySorted(parameters: parameters, resultCallback: resultCallback)
+    case "inGroup.filterAccessLogsBy": inGroup_filterAccessLogsBy(parameters: parameters, resultCallback: resultCallback)
+    case "inGroup.filterAccessLogsBySorted": inGroup_filterAccessLogsBySorted(parameters: parameters, resultCallback: resultCallback)
+    case "inGroup.deleteAccessLogById": inGroup_deleteAccessLogById(parameters: parameters, resultCallback: resultCallback)
+    case "inGroup.deleteAccessLogsByIds": inGroup_deleteAccessLogsByIds(parameters: parameters, resultCallback: resultCallback)
+    case "inGroup.deleteAccessLog": inGroup_deleteAccessLog(parameters: parameters, resultCallback: resultCallback)
+    case "inGroup.deleteAccessLogs": inGroup_deleteAccessLogs(parameters: parameters, resultCallback: resultCallback)
+    case "inGroup.createAccessLog": inGroup_createAccessLog(parameters: parameters, resultCallback: resultCallback)
+    case "inGroup.modifyAccessLog": inGroup_modifyAccessLog(parameters: parameters, resultCallback: resultCallback)
+    case "inGroup.getAccessLog": inGroup_getAccessLog(parameters: parameters, resultCallback: resultCallback)
+    case "inGroup.getAccessLogs": inGroup_getAccessLogs(parameters: parameters, resultCallback: resultCallback)
     default: return false
     }
     return true
@@ -242,6 +254,168 @@ class AccessLogBasicApiDispatcher {
     AccessLogBasicApi.shared.getAccessLogs(
     	dartResultCallback: resultCallback,
     	sdkId: parameters["sdkId"]!,
+    	entityIdsString: parameters["entityIds"]!
+    )
+  }
+
+  private static func inGroup_matchAccessLogsBy(parameters: [String : String], resultCallback: @escaping (
+    String?,
+    String?,
+    String?,
+    String?
+  ) -> Void) {
+    AccessLogBasicApi.inGroup.shared.matchAccessLogsBy(
+    	dartResultCallback: resultCallback,
+    	sdkId: parameters["sdkId"]!,
+    	groupIdString: parameters["groupId"]!,
+    	filterString: parameters["filter"]!
+    )
+  }
+
+  private static func inGroup_matchAccessLogsBySorted(parameters: [String : String], resultCallback: @escaping (
+    String?,
+    String?,
+    String?,
+    String?
+  ) -> Void) {
+    AccessLogBasicApi.inGroup.shared.matchAccessLogsBySorted(
+    	dartResultCallback: resultCallback,
+    	sdkId: parameters["sdkId"]!,
+    	groupIdString: parameters["groupId"]!,
+    	filterString: parameters["filter"]!
+    )
+  }
+
+  private static func inGroup_filterAccessLogsBy(parameters: [String : String], resultCallback: @escaping (
+    String?,
+    String?,
+    String?,
+    String?
+  ) -> Void) {
+    AccessLogBasicApi.inGroup.shared.filterAccessLogsBy(
+    	dartResultCallback: resultCallback,
+    	sdkId: parameters["sdkId"]!,
+    	groupIdString: parameters["groupId"]!,
+    	filterString: parameters["filter"]!
+    )
+  }
+
+  private static func inGroup_filterAccessLogsBySorted(parameters: [String : String], resultCallback: @escaping (
+    String?,
+    String?,
+    String?,
+    String?
+  ) -> Void) {
+    AccessLogBasicApi.inGroup.shared.filterAccessLogsBySorted(
+    	dartResultCallback: resultCallback,
+    	sdkId: parameters["sdkId"]!,
+    	groupIdString: parameters["groupId"]!,
+    	filterString: parameters["filter"]!
+    )
+  }
+
+  private static func inGroup_deleteAccessLogById(parameters: [String : String], resultCallback: @escaping (
+    String?,
+    String?,
+    String?,
+    String?
+  ) -> Void) {
+    AccessLogBasicApi.inGroup.shared.deleteAccessLogById(
+    	dartResultCallback: resultCallback,
+    	sdkId: parameters["sdkId"]!,
+    	entityIdString: parameters["entityId"]!
+    )
+  }
+
+  private static func inGroup_deleteAccessLogsByIds(parameters: [String : String], resultCallback: @escaping (
+    String?,
+    String?,
+    String?,
+    String?
+  ) -> Void) {
+    AccessLogBasicApi.inGroup.shared.deleteAccessLogsByIds(
+    	dartResultCallback: resultCallback,
+    	sdkId: parameters["sdkId"]!,
+    	entityIdsString: parameters["entityIds"]!
+    )
+  }
+
+  private static func inGroup_deleteAccessLog(parameters: [String : String], resultCallback: @escaping (
+    String?,
+    String?,
+    String?,
+    String?
+  ) -> Void) {
+    AccessLogBasicApi.inGroup.shared.deleteAccessLog(
+    	dartResultCallback: resultCallback,
+    	sdkId: parameters["sdkId"]!,
+    	accessLogString: parameters["accessLog"]!
+    )
+  }
+
+  private static func inGroup_deleteAccessLogs(parameters: [String : String], resultCallback: @escaping (
+    String?,
+    String?,
+    String?,
+    String?
+  ) -> Void) {
+    AccessLogBasicApi.inGroup.shared.deleteAccessLogs(
+    	dartResultCallback: resultCallback,
+    	sdkId: parameters["sdkId"]!,
+    	accessLogsString: parameters["accessLogs"]!
+    )
+  }
+
+  private static func inGroup_createAccessLog(parameters: [String : String], resultCallback: @escaping (
+    String?,
+    String?,
+    String?,
+    String?
+  ) -> Void) {
+    AccessLogBasicApi.inGroup.shared.createAccessLog(
+    	dartResultCallback: resultCallback,
+    	sdkId: parameters["sdkId"]!,
+    	entityString: parameters["entity"]!
+    )
+  }
+
+  private static func inGroup_modifyAccessLog(parameters: [String : String], resultCallback: @escaping (
+    String?,
+    String?,
+    String?,
+    String?
+  ) -> Void) {
+    AccessLogBasicApi.inGroup.shared.modifyAccessLog(
+    	dartResultCallback: resultCallback,
+    	sdkId: parameters["sdkId"]!,
+    	entityString: parameters["entity"]!
+    )
+  }
+
+  private static func inGroup_getAccessLog(parameters: [String : String], resultCallback: @escaping (
+    String?,
+    String?,
+    String?,
+    String?
+  ) -> Void) {
+    AccessLogBasicApi.inGroup.shared.getAccessLog(
+    	dartResultCallback: resultCallback,
+    	sdkId: parameters["sdkId"]!,
+    	groupIdString: parameters["groupId"]!,
+    	entityIdString: parameters["entityId"]!
+    )
+  }
+
+  private static func inGroup_getAccessLogs(parameters: [String : String], resultCallback: @escaping (
+    String?,
+    String?,
+    String?,
+    String?
+  ) -> Void) {
+    AccessLogBasicApi.inGroup.shared.getAccessLogs(
+    	dartResultCallback: resultCallback,
+    	sdkId: parameters["sdkId"]!,
+    	groupIdString: parameters["groupId"]!,
     	entityIdsString: parameters["entityIds"]!
     )
   }

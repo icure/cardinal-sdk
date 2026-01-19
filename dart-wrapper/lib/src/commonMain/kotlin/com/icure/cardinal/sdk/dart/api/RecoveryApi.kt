@@ -2,6 +2,7 @@
 package com.icure.cardinal.sdk.dart.api
 
 import com.icure.cardinal.sdk.CardinalApis
+import com.icure.cardinal.sdk.crypto.entities.RawDecryptedExchangeData
 import com.icure.cardinal.sdk.crypto.entities.RecoveryDataKey
 import com.icure.cardinal.sdk.crypto.entities.RecoveryDataUseFailureReason
 import com.icure.cardinal.sdk.crypto.entities.RecoveryKeyOptions
@@ -21,6 +22,7 @@ import kotlin.Long
 import kotlin.OptIn
 import kotlin.String
 import kotlin.Unit
+import kotlinx.serialization.builtins.ListSerializer
 import kotlinx.serialization.builtins.MapSerializer
 import kotlinx.serialization.builtins.nullable
 import kotlinx.serialization.builtins.serializer
@@ -164,6 +166,8 @@ public object RecoveryApi {
     delegateIdString: String,
     lifetimeSecondsString: String,
     recoveryKeyOptionsString: String,
+    includeBiDirectionalString: String,
+    includeAsParentString: String,
   ) {
     val delegateId = fullLanguageInteropJson.decodeFromString(
       String.serializer(),
@@ -177,13 +181,23 @@ public object RecoveryApi {
       RecoveryKeyOptions.serializer().nullable,
       recoveryKeyOptionsString
     )
+    val includeBiDirectional = fullLanguageInteropJson.decodeFromString(
+      Boolean.serializer(),
+      includeBiDirectionalString
+    )
+    val includeAsParent = fullLanguageInteropJson.decodeFromString(
+      Boolean.serializer(),
+      includeAsParentString
+    )
     ApiScope.execute(
       dartResultCallback,
-      RecoveryDataKey.serializer()) {
+      RecoveryDataKey.serializer().nullable) {
       NativeReferences.get<CardinalApis>(sdkId).recovery.createExchangeDataRecoveryInfo(
         delegateId,
         lifetimeSeconds,
         recoveryKeyOptions,
+        includeBiDirectional,
+        includeAsParent,
       )
     }
   }
@@ -207,6 +221,35 @@ public object RecoveryApi {
       RecoveryDataUseFailureReason.serializer().nullable) {
       NativeReferences.get<CardinalApis>(sdkId).recovery.recoverExchangeData(
         recoveryKey,
+      )
+    }
+  }
+
+  public fun getRecoveryExchangeData(
+    dartResultCallback: (
+      String?,
+      String?,
+      String?,
+      String?,
+    ) -> Unit,
+    sdkId: String,
+    recoveryKeyString: String,
+    autoDeleteString: String,
+  ) {
+    val recoveryKey = fullLanguageInteropJson.decodeFromString(
+      RecoveryDataKey.serializer(),
+      recoveryKeyString
+    )
+    val autoDelete = fullLanguageInteropJson.decodeFromString(
+      Boolean.serializer(),
+      autoDeleteString
+    )
+    ApiScope.execute(
+      dartResultCallback,
+      RecoveryResult.serializer(ListSerializer(RawDecryptedExchangeData.serializer()))) {
+      NativeReferences.get<CardinalApis>(sdkId).recovery.getRecoveryExchangeData(
+        recoveryKey,
+        autoDelete,
       )
     }
   }

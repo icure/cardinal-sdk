@@ -14,7 +14,9 @@ class DocumentApiDispatcher {
     ) -> Void
   ) -> Bool {
     switch methodName {
-    case "withEncryptionMetadata": withEncryptionMetadata(parameters: parameters, resultCallback: resultCallback)
+    case "withEncryptionMetadataLinkedToMessage": withEncryptionMetadataLinkedToMessage(parameters: parameters, resultCallback: resultCallback)
+    case "withEncryptionMetadataLinkedToPatient": withEncryptionMetadataLinkedToPatient(parameters: parameters, resultCallback: resultCallback)
+    case "withEncryptionMetadataUnlinked": withEncryptionMetadataUnlinked(parameters: parameters, resultCallback: resultCallback)
     case "getAndTryDecryptMainAttachment": getAndTryDecryptMainAttachment(parameters: parameters, resultCallback: resultCallback)
     case "getAndDecryptMainAttachment": getAndDecryptMainAttachment(parameters: parameters, resultCallback: resultCallback)
     case "encryptAndSetMainAttachment": encryptAndSetMainAttachment(parameters: parameters, resultCallback: resultCallback)
@@ -22,7 +24,7 @@ class DocumentApiDispatcher {
     case "encryptAndSetSecondaryAttachment": encryptAndSetSecondaryAttachment(parameters: parameters, resultCallback: resultCallback)
     case "getEncryptionKeysOf": getEncryptionKeysOf(parameters: parameters, resultCallback: resultCallback)
     case "hasWriteAccess": hasWriteAccess(parameters: parameters, resultCallback: resultCallback)
-    case "decryptPatientIdOf": decryptPatientIdOf(parameters: parameters, resultCallback: resultCallback)
+    case "decryptOwningEntityIdsOf": decryptOwningEntityIdsOf(parameters: parameters, resultCallback: resultCallback)
     case "createDelegationDeAnonymizationMetadata": createDelegationDeAnonymizationMetadata(parameters: parameters, resultCallback: resultCallback)
     case "decrypt": decrypt(parameters: parameters, resultCallback: resultCallback)
     case "tryDecrypt": tryDecrypt(parameters: parameters, resultCallback: resultCallback)
@@ -79,20 +81,55 @@ class DocumentApiDispatcher {
     return true
   }
 
-  private static func withEncryptionMetadata(parameters: [String : String], resultCallback: @escaping (
+  private static func withEncryptionMetadataLinkedToMessage(parameters: [String : String], resultCallback: @escaping (
     String?,
     String?,
     String?,
     String?
   ) -> Void) {
-    DocumentApi.shared.withEncryptionMetadata(
+    DocumentApi.shared.withEncryptionMetadataLinkedToMessage(
     	dartResultCallback: resultCallback,
     	sdkId: parameters["sdkId"]!,
     	baseString: parameters["base"]!,
     	messageString: parameters["message"]!,
     	userString: parameters["user"]!,
     	delegatesString: parameters["delegates"]!,
-    	secretIdString: parameters["secretId"]!
+    	secretIdString: parameters["secretId"]!,
+    	alternateRootDelegateIdString: parameters["alternateRootDelegateId"]!
+    )
+  }
+
+  private static func withEncryptionMetadataLinkedToPatient(parameters: [String : String], resultCallback: @escaping (
+    String?,
+    String?,
+    String?,
+    String?
+  ) -> Void) {
+    DocumentApi.shared.withEncryptionMetadataLinkedToPatient(
+    	dartResultCallback: resultCallback,
+    	sdkId: parameters["sdkId"]!,
+    	baseString: parameters["base"]!,
+    	patientString: parameters["patient"]!,
+    	userString: parameters["user"]!,
+    	delegatesString: parameters["delegates"]!,
+    	secretIdString: parameters["secretId"]!,
+    	alternateRootDelegateIdString: parameters["alternateRootDelegateId"]!
+    )
+  }
+
+  private static func withEncryptionMetadataUnlinked(parameters: [String : String], resultCallback: @escaping (
+    String?,
+    String?,
+    String?,
+    String?
+  ) -> Void) {
+    DocumentApi.shared.withEncryptionMetadataUnlinked(
+    	dartResultCallback: resultCallback,
+    	sdkId: parameters["sdkId"]!,
+    	baseString: parameters["base"]!,
+    	userString: parameters["user"]!,
+    	delegatesString: parameters["delegates"]!,
+    	alternateRootDelegateIdString: parameters["alternateRootDelegateId"]!
     )
   }
 
@@ -196,13 +233,13 @@ class DocumentApiDispatcher {
     )
   }
 
-  private static func decryptPatientIdOf(parameters: [String : String], resultCallback: @escaping (
+  private static func decryptOwningEntityIdsOf(parameters: [String : String], resultCallback: @escaping (
     String?,
     String?,
     String?,
     String?
   ) -> Void) {
-    DocumentApi.shared.decryptPatientIdOf(
+    DocumentApi.shared.decryptOwningEntityIdsOf(
     	dartResultCallback: resultCallback,
     	sdkId: parameters["sdkId"]!,
     	documentString: parameters["document"]!

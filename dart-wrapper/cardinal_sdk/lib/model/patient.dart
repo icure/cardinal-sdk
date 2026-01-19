@@ -4,7 +4,6 @@ import 'package:cardinal_sdk/model/base/code_stub.dart';
 import 'package:cardinal_sdk/model/embed/person_name.dart';
 import 'package:cardinal_sdk/model/embed/address.dart';
 import 'package:cardinal_sdk/model/embed/gender.dart';
-import 'package:cardinal_sdk/model/embed/deactivation_reason.dart';
 import 'package:cardinal_sdk/annotations/actual_int32.dart';
 import 'package:cardinal_sdk/model/embed/personal_status.dart';
 import 'package:cardinal_sdk/model/embed/annotation.dart';
@@ -61,7 +60,7 @@ sealed class Patient implements StoredDocument, ICureDocument<String>, Person, H
 	abstract final Set<String> mergedIds;
 	abstract final String? alias;
 	abstract final bool active;
-	abstract final DeactivationReason deactivationReason;
+	abstract final String deactivationReason;
 	@actualInt32 abstract final int? deactivationDate;
 	abstract final String? ssin;
 	abstract final String? maidenName;
@@ -176,7 +175,7 @@ abstract class EncryptedPatient with _$EncryptedPatient implements Patient {
 		@Default({}) Set<String> mergedIds,
 		@Default(null) String? alias,
 		@Default(true) bool active,
-		@Default(DeactivationReason.none) DeactivationReason deactivationReason,
+		@Default("none") String deactivationReason,
 		@Default(null) int? deactivationDate,
 		@Default(null) String? ssin,
 		@Default(null) String? maidenName,
@@ -263,7 +262,7 @@ abstract class EncryptedPatient with _$EncryptedPatient implements Patient {
 			"mergedIds" : value.mergedIds.map((x0) => x0).toList(),
 			"alias" : value.alias,
 			"active" : value.active,
-			"deactivationReason" : DeactivationReason.encode(value.deactivationReason),
+			"deactivationReason" : value.deactivationReason,
 			"deactivationDate" : value.deactivationDate,
 			"ssin" : value.ssin,
 			"maidenName" : value.maidenName,
@@ -354,7 +353,7 @@ abstract class EncryptedPatient with _$EncryptedPatient implements Patient {
 			mergedIds: (data["mergedIds"] as List<dynamic>).map((x0) => (x0 as String) ).toSet(),
 			alias: (data["alias"] as String?),
 			active: (data["active"] as bool),
-			deactivationReason: DeactivationReason.fromJSON(data["deactivationReason"]),
+			deactivationReason: (data["deactivationReason"] as String),
 			ssin: (data["ssin"] as String?),
 			maidenName: (data["maidenName"] as String?),
 			spouseName: (data["spouseName"] as String?),
@@ -440,7 +439,7 @@ abstract class DecryptedPatient with _$DecryptedPatient implements Patient {
 		@Default({}) Set<String> mergedIds,
 		@Default(null) String? alias,
 		@Default(true) bool active,
-		@Default(DeactivationReason.none) DeactivationReason deactivationReason,
+		@Default("none") String deactivationReason,
 		@Default(null) int? deactivationDate,
 		@Default(null) String? ssin,
 		@Default(null) String? maidenName,
@@ -527,7 +526,7 @@ abstract class DecryptedPatient with _$DecryptedPatient implements Patient {
 			"mergedIds" : value.mergedIds.map((x0) => x0).toList(),
 			"alias" : value.alias,
 			"active" : value.active,
-			"deactivationReason" : DeactivationReason.encode(value.deactivationReason),
+			"deactivationReason" : value.deactivationReason,
 			"deactivationDate" : value.deactivationDate,
 			"ssin" : value.ssin,
 			"maidenName" : value.maidenName,
@@ -618,7 +617,7 @@ abstract class DecryptedPatient with _$DecryptedPatient implements Patient {
 			mergedIds: (data["mergedIds"] as List<dynamic>).map((x0) => (x0 as String) ).toSet(),
 			alias: (data["alias"] as String?),
 			active: (data["active"] as bool),
-			deactivationReason: DeactivationReason.fromJSON(data["deactivationReason"]),
+			deactivationReason: (data["deactivationReason"] as String),
 			ssin: (data["ssin"] as String?),
 			maidenName: (data["maidenName"] as String?),
 			spouseName: (data["spouseName"] as String?),

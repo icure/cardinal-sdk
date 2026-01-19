@@ -13,6 +13,7 @@ import com.icure.cardinal.sdk.model.DecryptedDocument
 import com.icure.cardinal.sdk.model.Document
 import com.icure.cardinal.sdk.model.EncryptedDocument
 import com.icure.cardinal.sdk.model.Message
+import com.icure.cardinal.sdk.model.Patient
 import com.icure.cardinal.sdk.model.StoredDocumentIdentifier
 import com.icure.cardinal.sdk.model.User
 import com.icure.cardinal.sdk.model.couchdb.DocIdentifier
@@ -36,7 +37,7 @@ import kotlinx.serialization.json.JsonObject
 
 @OptIn(InternalIcureApi::class)
 public object DocumentApi {
-  public fun withEncryptionMetadata(
+  public fun withEncryptionMetadataLinkedToMessage(
     dartResultCallback: (
       String?,
       String?,
@@ -49,13 +50,14 @@ public object DocumentApi {
     userString: String,
     delegatesString: String,
     secretIdString: String,
+    alternateRootDelegateIdString: String,
   ) {
     val base = fullLanguageInteropJson.decodeFromString(
       DecryptedDocument.serializer().nullable,
       baseString
     )
     val message = fullLanguageInteropJson.decodeFromString(
-      PolymorphicSerializer(Message::class).nullable,
+      PolymorphicSerializer(Message::class),
       messageString
     )
     val user = fullLanguageInteropJson.decodeFromString(
@@ -70,15 +72,114 @@ public object DocumentApi {
       SecretIdUseOption.serializer(),
       secretIdString
     )
+    val alternateRootDelegateId = fullLanguageInteropJson.decodeFromString(
+      String.serializer().nullable,
+      alternateRootDelegateIdString
+    )
     ApiScope.execute(
       dartResultCallback,
       DecryptedDocument.serializer()) {
-      NativeReferences.get<CardinalApis>(sdkId).document.withEncryptionMetadata(
+      NativeReferences.get<CardinalApis>(sdkId).document.withEncryptionMetadataLinkedToMessage(
         base,
         message,
         user,
         delegates,
         secretId,
+        alternateRootDelegateId,
+      )
+    }
+  }
+
+  public fun withEncryptionMetadataLinkedToPatient(
+    dartResultCallback: (
+      String?,
+      String?,
+      String?,
+      String?,
+    ) -> Unit,
+    sdkId: String,
+    baseString: String,
+    patientString: String,
+    userString: String,
+    delegatesString: String,
+    secretIdString: String,
+    alternateRootDelegateIdString: String,
+  ) {
+    val base = fullLanguageInteropJson.decodeFromString(
+      DecryptedDocument.serializer().nullable,
+      baseString
+    )
+    val patient = fullLanguageInteropJson.decodeFromString(
+      PolymorphicSerializer(Patient::class),
+      patientString
+    )
+    val user = fullLanguageInteropJson.decodeFromString(
+      User.serializer().nullable,
+      userString
+    )
+    val delegates = fullLanguageInteropJson.decodeFromString(
+      MapSerializer(String.serializer(), AccessLevel.serializer()),
+      delegatesString
+    )
+    val secretId = fullLanguageInteropJson.decodeFromString(
+      SecretIdUseOption.serializer(),
+      secretIdString
+    )
+    val alternateRootDelegateId = fullLanguageInteropJson.decodeFromString(
+      String.serializer().nullable,
+      alternateRootDelegateIdString
+    )
+    ApiScope.execute(
+      dartResultCallback,
+      DecryptedDocument.serializer()) {
+      NativeReferences.get<CardinalApis>(sdkId).document.withEncryptionMetadataLinkedToPatient(
+        base,
+        patient,
+        user,
+        delegates,
+        secretId,
+        alternateRootDelegateId,
+      )
+    }
+  }
+
+  public fun withEncryptionMetadataUnlinked(
+    dartResultCallback: (
+      String?,
+      String?,
+      String?,
+      String?,
+    ) -> Unit,
+    sdkId: String,
+    baseString: String,
+    userString: String,
+    delegatesString: String,
+    alternateRootDelegateIdString: String,
+  ) {
+    val base = fullLanguageInteropJson.decodeFromString(
+      DecryptedDocument.serializer().nullable,
+      baseString
+    )
+    val user = fullLanguageInteropJson.decodeFromString(
+      User.serializer().nullable,
+      userString
+    )
+    val delegates = fullLanguageInteropJson.decodeFromString(
+      MapSerializer(String.serializer(), AccessLevel.serializer()),
+      delegatesString
+    )
+    val alternateRootDelegateId = fullLanguageInteropJson.decodeFromString(
+      String.serializer().nullable,
+      alternateRootDelegateIdString
+    )
+    ApiScope.execute(
+      dartResultCallback,
+      DecryptedDocument.serializer()) {
+      NativeReferences.get<CardinalApis>(sdkId).document.withEncryptionMetadataUnlinked(
+        base,
+        user,
+        delegates,
+        alternateRootDelegateId,
       )
     }
   }
@@ -352,7 +453,7 @@ public object DocumentApi {
     }
   }
 
-  public fun decryptPatientIdOf(
+  public fun decryptOwningEntityIdsOf(
     dartResultCallback: (
       String?,
       String?,
@@ -369,7 +470,7 @@ public object DocumentApi {
     ApiScope.execute(
       dartResultCallback,
       SetSerializer(String.serializer())) {
-      NativeReferences.get<CardinalApis>(sdkId).document.decryptPatientIdOf(
+      NativeReferences.get<CardinalApis>(sdkId).document.decryptOwningEntityIdsOf(
         document,
       )
     }

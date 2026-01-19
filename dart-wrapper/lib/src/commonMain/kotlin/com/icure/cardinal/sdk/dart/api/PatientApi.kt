@@ -165,6 +165,7 @@ public object PatientApi {
     baseString: String,
     userString: String,
     delegatesString: String,
+    alternateRootDelegateIdString: String,
   ) {
     val base = fullLanguageInteropJson.decodeFromString(
       DecryptedPatient.serializer().nullable,
@@ -178,6 +179,10 @@ public object PatientApi {
       MapSerializer(String.serializer(), AccessLevel.serializer()),
       delegatesString
     )
+    val alternateRootDelegateId = fullLanguageInteropJson.decodeFromString(
+      String.serializer().nullable,
+      alternateRootDelegateIdString
+    )
     ApiScope.execute(
       dartResultCallback,
       DecryptedPatient.serializer()) {
@@ -185,6 +190,7 @@ public object PatientApi {
         base,
         user,
         delegates,
+        alternateRootDelegateId,
       )
     }
   }
@@ -372,16 +378,28 @@ public object PatientApi {
     ) -> Unit,
     sdkId: String,
     sharingWithString: String,
+    ignoreIfEncryptionMetadataExistsString: String,
+    alternateRootDelegateIdString: String,
   ) {
     val sharingWith = fullLanguageInteropJson.decodeFromString(
       MapSerializer(String.serializer(), AccessLevel.serializer()),
       sharingWithString
+    )
+    val ignoreIfEncryptionMetadataExists = fullLanguageInteropJson.decodeFromString(
+      Boolean.serializer(),
+      ignoreIfEncryptionMetadataExistsString
+    )
+    val alternateRootDelegateId = fullLanguageInteropJson.decodeFromString(
+      String.serializer().nullable,
+      alternateRootDelegateIdString
     )
     ApiScope.execute(
       dartResultCallback,
       EncryptedPatient.serializer()) {
       NativeReferences.get<CardinalApis>(sdkId).patient.ensureEncryptionMetadataForSelfIsInitialized(
         sharingWith,
+        ignoreIfEncryptionMetadataExists,
+        alternateRootDelegateId,
       )
     }
   }
@@ -2111,6 +2129,7 @@ public object PatientApi {
       baseString: String,
       userString: String,
       delegatesString: String,
+      alternateRootDelegateReferenceString: String,
     ) {
       val entityGroupId = fullLanguageInteropJson.decodeFromString(
         String.serializer(),
@@ -2128,6 +2147,10 @@ public object PatientApi {
         MapAsArraySerializer(EntityReferenceInGroup.serializer(), AccessLevel.serializer()),
         delegatesString
       )
+      val alternateRootDelegateReference = fullLanguageInteropJson.decodeFromString(
+        EntityReferenceInGroup.serializer().nullable,
+        alternateRootDelegateReferenceString
+      )
       ApiScope.execute(
         dartResultCallback,
         GroupScoped.serializer(DecryptedPatient.serializer())) {
@@ -2136,6 +2159,7 @@ public object PatientApi {
           base,
           user,
           delegates,
+          alternateRootDelegateReference,
         )
       }
     }

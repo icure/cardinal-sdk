@@ -36,6 +36,7 @@ class CalendarItemApiDispatcher {
     case "filterCalendarItemsBy": filterCalendarItemsBy(parameters: parameters, resultCallback: resultCallback)
     case "filterCalendarItemsBySorted": filterCalendarItemsBySorted(parameters: parameters, resultCallback: resultCallback)
     case "createCalendarItem": createCalendarItem(parameters: parameters, resultCallback: resultCallback)
+    case "bookCalendarItemCheckingAvailability": bookCalendarItemCheckingAvailability(parameters: parameters, resultCallback: resultCallback)
     case "undeleteCalendarItemById": undeleteCalendarItemById(parameters: parameters, resultCallback: resultCallback)
     case "undeleteCalendarItem": undeleteCalendarItem(parameters: parameters, resultCallback: resultCallback)
     case "modifyCalendarItem": modifyCalendarItem(parameters: parameters, resultCallback: resultCallback)
@@ -48,6 +49,7 @@ class CalendarItemApiDispatcher {
     case "encrypted.filterCalendarItemsBy": encrypted_filterCalendarItemsBy(parameters: parameters, resultCallback: resultCallback)
     case "encrypted.filterCalendarItemsBySorted": encrypted_filterCalendarItemsBySorted(parameters: parameters, resultCallback: resultCallback)
     case "encrypted.createCalendarItem": encrypted_createCalendarItem(parameters: parameters, resultCallback: resultCallback)
+    case "encrypted.bookCalendarItemCheckingAvailability": encrypted_bookCalendarItemCheckingAvailability(parameters: parameters, resultCallback: resultCallback)
     case "encrypted.undeleteCalendarItemById": encrypted_undeleteCalendarItemById(parameters: parameters, resultCallback: resultCallback)
     case "encrypted.undeleteCalendarItem": encrypted_undeleteCalendarItem(parameters: parameters, resultCallback: resultCallback)
     case "encrypted.modifyCalendarItem": encrypted_modifyCalendarItem(parameters: parameters, resultCallback: resultCallback)
@@ -59,6 +61,7 @@ class CalendarItemApiDispatcher {
     case "tryAndRecover.filterCalendarItemsBy": tryAndRecover_filterCalendarItemsBy(parameters: parameters, resultCallback: resultCallback)
     case "tryAndRecover.filterCalendarItemsBySorted": tryAndRecover_filterCalendarItemsBySorted(parameters: parameters, resultCallback: resultCallback)
     case "tryAndRecover.createCalendarItem": tryAndRecover_createCalendarItem(parameters: parameters, resultCallback: resultCallback)
+    case "tryAndRecover.bookCalendarItemCheckingAvailability": tryAndRecover_bookCalendarItemCheckingAvailability(parameters: parameters, resultCallback: resultCallback)
     case "tryAndRecover.undeleteCalendarItemById": tryAndRecover_undeleteCalendarItemById(parameters: parameters, resultCallback: resultCallback)
     case "tryAndRecover.undeleteCalendarItem": tryAndRecover_undeleteCalendarItem(parameters: parameters, resultCallback: resultCallback)
     case "tryAndRecover.modifyCalendarItem": tryAndRecover_modifyCalendarItem(parameters: parameters, resultCallback: resultCallback)
@@ -120,7 +123,8 @@ class CalendarItemApiDispatcher {
     	patientString: parameters["patient"]!,
     	userString: parameters["user"]!,
     	delegatesString: parameters["delegates"]!,
-    	secretIdString: parameters["secretId"]!
+    	secretIdString: parameters["secretId"]!,
+    	alternateRootDelegateIdString: parameters["alternateRootDelegateId"]!
     )
   }
 
@@ -405,6 +409,19 @@ class CalendarItemApiDispatcher {
     )
   }
 
+  private static func bookCalendarItemCheckingAvailability(parameters: [String : String], resultCallback: @escaping (
+    String?,
+    String?,
+    String?,
+    String?
+  ) -> Void) {
+    CalendarItemApi.shared.bookCalendarItemCheckingAvailability(
+    	dartResultCallback: resultCallback,
+    	sdkId: parameters["sdkId"]!,
+    	entityString: parameters["entity"]!
+    )
+  }
+
   private static func undeleteCalendarItemById(parameters: [String : String], resultCallback: @escaping (
     String?,
     String?,
@@ -569,6 +586,19 @@ class CalendarItemApiDispatcher {
     )
   }
 
+  private static func encrypted_bookCalendarItemCheckingAvailability(parameters: [String : String], resultCallback: @escaping (
+    String?,
+    String?,
+    String?,
+    String?
+  ) -> Void) {
+    CalendarItemApi.encrypted.shared.bookCalendarItemCheckingAvailability(
+    	dartResultCallback: resultCallback,
+    	sdkId: parameters["sdkId"]!,
+    	entityString: parameters["entity"]!
+    )
+  }
+
   private static func encrypted_undeleteCalendarItemById(parameters: [String : String], resultCallback: @escaping (
     String?,
     String?,
@@ -718,6 +748,19 @@ class CalendarItemApiDispatcher {
     )
   }
 
+  private static func tryAndRecover_bookCalendarItemCheckingAvailability(parameters: [String : String], resultCallback: @escaping (
+    String?,
+    String?,
+    String?,
+    String?
+  ) -> Void) {
+    CalendarItemApi.tryAndRecover.shared.bookCalendarItemCheckingAvailability(
+    	dartResultCallback: resultCallback,
+    	sdkId: parameters["sdkId"]!,
+    	entityString: parameters["entity"]!
+    )
+  }
+
   private static func tryAndRecover_undeleteCalendarItemById(parameters: [String : String], resultCallback: @escaping (
     String?,
     String?,
@@ -798,7 +841,8 @@ class CalendarItemApiDispatcher {
     	patientString: parameters["patient"]!,
     	userString: parameters["user"]!,
     	delegatesString: parameters["delegates"]!,
-    	secretIdString: parameters["secretId"]!
+    	secretIdString: parameters["secretId"]!,
+    	alternateRootDelegateReferenceString: parameters["alternateRootDelegateReference"]!
     )
   }
 

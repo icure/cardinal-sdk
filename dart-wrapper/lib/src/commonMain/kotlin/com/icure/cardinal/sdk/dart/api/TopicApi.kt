@@ -50,6 +50,7 @@ public object TopicApi {
     userString: String,
     delegatesString: String,
     secretIdString: String,
+    alternateRootDelegateIdString: String,
   ) {
     val base = fullLanguageInteropJson.decodeFromString(
       DecryptedTopic.serializer().nullable,
@@ -71,6 +72,10 @@ public object TopicApi {
       SecretIdUseOption.serializer(),
       secretIdString
     )
+    val alternateRootDelegateId = fullLanguageInteropJson.decodeFromString(
+      String.serializer().nullable,
+      alternateRootDelegateIdString
+    )
     ApiScope.execute(
       dartResultCallback,
       DecryptedTopic.serializer()) {
@@ -80,6 +85,7 @@ public object TopicApi {
         user,
         delegates,
         secretId,
+        alternateRootDelegateId,
       )
     }
   }

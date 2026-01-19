@@ -25,7 +25,7 @@ class MaintenanceTaskPlatformApi {
 		) : encrypted = MaintenanceTaskEncryptedPlatformApi(_methodChannel),
 		tryAndRecover = MaintenanceTaskTryAndRecoverPlatformApi(_methodChannel);
 
-	Future<DecryptedMaintenanceTask> withEncryptionMetadata(String sdkId, DecryptedMaintenanceTask? maintenanceTask, User? user, Map<String, AccessLevel> delegates) async {
+	Future<DecryptedMaintenanceTask> withEncryptionMetadata(String sdkId, DecryptedMaintenanceTask? maintenanceTask, User? user, Map<String, AccessLevel> delegates, String? alternateRootDelegateId) async {
 		final res = await _methodChannel.invokeMethod<String>(
 			'MaintenanceTaskApi.withEncryptionMetadata',
 			{
@@ -33,6 +33,7 @@ class MaintenanceTaskPlatformApi {
 				"maintenanceTask": jsonEncode(maintenanceTask == null ? null : DecryptedMaintenanceTask.encode(maintenanceTask!)),
 				"user": jsonEncode(user == null ? null : User.encode(user!)),
 				"delegates": jsonEncode(delegates.map((k0, v0) => MapEntry(k0, AccessLevel.encode(v0)))),
+				"alternateRootDelegateId": jsonEncode(alternateRootDelegateId),
 			}
 		).catchError(convertPlatformException);
 		if (res == null) throw AssertionError("received null result from platform method withEncryptionMetadata");

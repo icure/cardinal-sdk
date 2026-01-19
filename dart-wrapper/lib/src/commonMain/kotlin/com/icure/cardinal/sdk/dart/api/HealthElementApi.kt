@@ -51,6 +51,7 @@ public object HealthElementApi {
     userString: String,
     delegatesString: String,
     secretIdString: String,
+    alternateRootDelegateIdString: String,
   ) {
     val base = fullLanguageInteropJson.decodeFromString(
       DecryptedHealthElement.serializer().nullable,
@@ -72,6 +73,10 @@ public object HealthElementApi {
       SecretIdUseOption.serializer(),
       secretIdString
     )
+    val alternateRootDelegateId = fullLanguageInteropJson.decodeFromString(
+      String.serializer().nullable,
+      alternateRootDelegateIdString
+    )
     ApiScope.execute(
       dartResultCallback,
       DecryptedHealthElement.serializer()) {
@@ -81,6 +86,7 @@ public object HealthElementApi {
         user,
         delegates,
         secretId,
+        alternateRootDelegateId,
       )
     }
   }
@@ -1439,6 +1445,7 @@ public object HealthElementApi {
       userString: String,
       delegatesString: String,
       secretIdString: String,
+      alternateRootDelegateReferenceString: String,
     ) {
       val entityGroupId = fullLanguageInteropJson.decodeFromString(
         String.serializer(),
@@ -1464,6 +1471,10 @@ public object HealthElementApi {
         SecretIdUseOption.serializer(),
         secretIdString
       )
+      val alternateRootDelegateReference = fullLanguageInteropJson.decodeFromString(
+        EntityReferenceInGroup.serializer().nullable,
+        alternateRootDelegateReferenceString
+      )
       ApiScope.execute(
         dartResultCallback,
         GroupScoped.serializer(DecryptedHealthElement.serializer())) {
@@ -1474,6 +1485,7 @@ public object HealthElementApi {
           user,
           delegates,
           secretId,
+          alternateRootDelegateReference,
         )
       }
     }

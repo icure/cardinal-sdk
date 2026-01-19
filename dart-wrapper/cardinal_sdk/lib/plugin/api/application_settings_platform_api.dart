@@ -9,7 +9,7 @@ class ApplicationSettingsPlatformApi {
 	MethodChannel _methodChannel;
 	ApplicationSettingsPlatformApi(this._methodChannel);
 
-	Future<List<ApplicationSettings>> getApplicationSettings(String sdkId) async {
+	Future<List<EncryptedApplicationSettings>> getApplicationSettings(String sdkId) async {
 		final res = await _methodChannel.invokeMethod<String>(
 			'ApplicationSettingsApi.getApplicationSettings',
 			{
@@ -18,32 +18,32 @@ class ApplicationSettingsPlatformApi {
 		).catchError(convertPlatformException);
 		if (res == null) throw AssertionError("received null result from platform method getApplicationSettings");
 		final parsedResJson = jsonDecode(res);
-		return (parsedResJson as List<dynamic>).map((x1) => ApplicationSettings.fromJSON(x1) ).toList();
+		return (parsedResJson as List<dynamic>).map((x1) => EncryptedApplicationSettings.fromJSON(x1) ).toList();
 	}
 
-	Future<ApplicationSettings> createApplicationSettings(String sdkId, ApplicationSettings applicationSettings) async {
+	Future<EncryptedApplicationSettings> createApplicationSettings(String sdkId, EncryptedApplicationSettings applicationSettings) async {
 		final res = await _methodChannel.invokeMethod<String>(
 			'ApplicationSettingsApi.createApplicationSettings',
 			{
 				"sdkId": sdkId,
-				"applicationSettings": jsonEncode(ApplicationSettings.encode(applicationSettings)),
+				"applicationSettings": jsonEncode(EncryptedApplicationSettings.encode(applicationSettings)),
 			}
 		).catchError(convertPlatformException);
 		if (res == null) throw AssertionError("received null result from platform method createApplicationSettings");
 		final parsedResJson = jsonDecode(res);
-		return ApplicationSettings.fromJSON(parsedResJson);
+		return EncryptedApplicationSettings.fromJSON(parsedResJson);
 	}
 
-	Future<ApplicationSettings> updateApplicationSettings(String sdkId, ApplicationSettings applicationSettings) async {
+	Future<EncryptedApplicationSettings> updateApplicationSettings(String sdkId, EncryptedApplicationSettings applicationSettings) async {
 		final res = await _methodChannel.invokeMethod<String>(
 			'ApplicationSettingsApi.updateApplicationSettings',
 			{
 				"sdkId": sdkId,
-				"applicationSettings": jsonEncode(ApplicationSettings.encode(applicationSettings)),
+				"applicationSettings": jsonEncode(EncryptedApplicationSettings.encode(applicationSettings)),
 			}
 		).catchError(convertPlatformException);
 		if (res == null) throw AssertionError("received null result from platform method updateApplicationSettings");
 		final parsedResJson = jsonDecode(res);
-		return ApplicationSettings.fromJSON(parsedResJson);
+		return EncryptedApplicationSettings.fromJSON(parsedResJson);
 	}
 }

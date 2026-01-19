@@ -39,14 +39,16 @@ sealed class CalendarItem implements StoredDocument, ICureDocument<String>, HasE
 	abstract final String? addressText;
 	abstract final int? startTime;
 	abstract final int? endTime;
-	abstract final int? confirmationTime;
-	abstract final int? cancellationTimestamp;
-	abstract final String? confirmationId;
-	abstract final int? duration;
-	abstract final bool? allDay;
+	@Deprecated('Ignored by availabilities algorithm, will be replaced by another more descriptive field') abstract final int? confirmationTime;
+	@Deprecated('Ignored by availabilities algorithm, will be replaced by another more descriptive field') abstract final int? cancellationTimestamp;
+	@Deprecated('Ignored by availabilities algorithm, will be replaced by another more descriptive field') abstract final String? confirmationId;
+	@Deprecated('Ignored by availabilities algorithm, use appropriate startTime and endTime') abstract final int? duration;
+	@Deprecated('Ignored by availabilities algorithm, use appropriate startTime and endTime') abstract final bool? allDay;
 	abstract final String? details;
 	abstract final bool? wasMigrated;
 	abstract final String? agendaId;
+	abstract final CodeStub? resourceGroup;
+	abstract final CalendarItemAvailabilitiesAssignmentStrategy? availabilitiesAssignmentStrategy;
 	abstract final String? hcpId;
 	abstract final String? recurrenceId;
 	Set<CalendarItemTag> get meetingTags;
@@ -87,6 +89,33 @@ sealed class CalendarItem implements StoredDocument, ICureDocument<String>, HasE
 	}
 }
 
+enum CalendarItemAvailabilitiesAssignmentStrategy {
+	strict,
+	loose;
+
+	static String encode(CalendarItemAvailabilitiesAssignmentStrategy value) {
+		switch (value) {
+			case CalendarItemAvailabilitiesAssignmentStrategy.strict:
+				return 'S';
+			case CalendarItemAvailabilitiesAssignmentStrategy.loose:
+				return 'L';
+			}
+	}
+
+
+	static CalendarItemAvailabilitiesAssignmentStrategy fromJSON(String data) {
+		switch (data) {
+			case "S":
+				return CalendarItemAvailabilitiesAssignmentStrategy.strict;
+			case "L":
+				return CalendarItemAvailabilitiesAssignmentStrategy.loose;
+			default:
+				throw ArgumentError('Invalid CalendarItemAvailabilitiesAssignmentStrategy entry value $data');
+			}
+	}
+
+}
+
 @freezed
 abstract class DecryptedCalendarItem with _$DecryptedCalendarItem implements CalendarItem {
 	const factory DecryptedCalendarItem({
@@ -121,6 +150,8 @@ abstract class DecryptedCalendarItem with _$DecryptedCalendarItem implements Cal
 		@Default(null) String? details,
 		@Default(null) bool? wasMigrated,
 		@Default(null) String? agendaId,
+		@Default(null) CodeStub? resourceGroup,
+		@Default(null) CalendarItemAvailabilitiesAssignmentStrategy? availabilitiesAssignmentStrategy,
 		@Default(null) String? hcpId,
 		@Default(null) String? recurrenceId,
 		@Default({}) Set<DecryptedCalendarItemTag> meetingTags,
@@ -167,6 +198,8 @@ abstract class DecryptedCalendarItem with _$DecryptedCalendarItem implements Cal
 			"details" : value.details,
 			"wasMigrated" : value.wasMigrated,
 			"agendaId" : value.agendaId,
+			"resourceGroup" : value.resourceGroup == null ? null : CodeStub.encode(value.resourceGroup!),
+			"availabilitiesAssignmentStrategy" : value.availabilitiesAssignmentStrategy == null ? null : CalendarItemAvailabilitiesAssignmentStrategy.encode(value.availabilitiesAssignmentStrategy!),
 			"hcpId" : value.hcpId,
 			"recurrenceId" : value.recurrenceId,
 			"meetingTags" : value.meetingTags.map((x0) => DecryptedCalendarItemTag.encode(x0)).toList(),
@@ -214,6 +247,8 @@ abstract class DecryptedCalendarItem with _$DecryptedCalendarItem implements Cal
 			details: (data["details"] as String?),
 			wasMigrated: (data["wasMigrated"] as bool?),
 			agendaId: (data["agendaId"] as String?),
+			resourceGroup: data["resourceGroup"] == null ? null : CodeStub.fromJSON(data["resourceGroup"]),
+			availabilitiesAssignmentStrategy: data["availabilitiesAssignmentStrategy"] == null ? null : CalendarItemAvailabilitiesAssignmentStrategy.fromJSON(data["availabilitiesAssignmentStrategy"]),
 			hcpId: (data["hcpId"] as String?),
 			recurrenceId: (data["recurrenceId"] as String?),
 			meetingTags: (data["meetingTags"] as List<dynamic>).map((x0) => DecryptedCalendarItemTag.fromJSON(x0) ).toSet(),
@@ -262,6 +297,8 @@ abstract class EncryptedCalendarItem with _$EncryptedCalendarItem implements Cal
 		@Default(null) String? details,
 		@Default(null) bool? wasMigrated,
 		@Default(null) String? agendaId,
+		@Default(null) CodeStub? resourceGroup,
+		@Default(null) CalendarItemAvailabilitiesAssignmentStrategy? availabilitiesAssignmentStrategy,
 		@Default(null) String? hcpId,
 		@Default(null) String? recurrenceId,
 		@Default({}) Set<EncryptedCalendarItemTag> meetingTags,
@@ -308,6 +345,8 @@ abstract class EncryptedCalendarItem with _$EncryptedCalendarItem implements Cal
 			"details" : value.details,
 			"wasMigrated" : value.wasMigrated,
 			"agendaId" : value.agendaId,
+			"resourceGroup" : value.resourceGroup == null ? null : CodeStub.encode(value.resourceGroup!),
+			"availabilitiesAssignmentStrategy" : value.availabilitiesAssignmentStrategy == null ? null : CalendarItemAvailabilitiesAssignmentStrategy.encode(value.availabilitiesAssignmentStrategy!),
 			"hcpId" : value.hcpId,
 			"recurrenceId" : value.recurrenceId,
 			"meetingTags" : value.meetingTags.map((x0) => EncryptedCalendarItemTag.encode(x0)).toList(),
@@ -355,6 +394,8 @@ abstract class EncryptedCalendarItem with _$EncryptedCalendarItem implements Cal
 			details: (data["details"] as String?),
 			wasMigrated: (data["wasMigrated"] as bool?),
 			agendaId: (data["agendaId"] as String?),
+			resourceGroup: data["resourceGroup"] == null ? null : CodeStub.fromJSON(data["resourceGroup"]),
+			availabilitiesAssignmentStrategy: data["availabilitiesAssignmentStrategy"] == null ? null : CalendarItemAvailabilitiesAssignmentStrategy.fromJSON(data["availabilitiesAssignmentStrategy"]),
 			hcpId: (data["hcpId"] as String?),
 			recurrenceId: (data["recurrenceId"] as String?),
 			meetingTags: (data["meetingTags"] as List<dynamic>).map((x0) => EncryptedCalendarItemTag.fromJSON(x0) ).toSet(),

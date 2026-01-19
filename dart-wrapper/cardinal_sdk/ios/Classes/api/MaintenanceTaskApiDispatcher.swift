@@ -76,7 +76,8 @@ class MaintenanceTaskApiDispatcher {
     	sdkId: parameters["sdkId"]!,
     	maintenanceTaskString: parameters["maintenanceTask"]!,
     	userString: parameters["user"]!,
-    	delegatesString: parameters["delegates"]!
+    	delegatesString: parameters["delegates"]!,
+    	alternateRootDelegateIdString: parameters["alternateRootDelegateId"]!
     )
   }
 

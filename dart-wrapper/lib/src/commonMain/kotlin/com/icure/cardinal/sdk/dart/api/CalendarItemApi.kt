@@ -51,6 +51,7 @@ public object CalendarItemApi {
     userString: String,
     delegatesString: String,
     secretIdString: String,
+    alternateRootDelegateIdString: String,
   ) {
     val base = fullLanguageInteropJson.decodeFromString(
       DecryptedCalendarItem.serializer().nullable,
@@ -72,6 +73,10 @@ public object CalendarItemApi {
       SecretIdUseOption.serializer(),
       secretIdString
     )
+    val alternateRootDelegateId = fullLanguageInteropJson.decodeFromString(
+      String.serializer().nullable,
+      alternateRootDelegateIdString
+    )
     ApiScope.execute(
       dartResultCallback,
       DecryptedCalendarItem.serializer()) {
@@ -81,6 +86,7 @@ public object CalendarItemApi {
         user,
         delegates,
         secretId,
+        alternateRootDelegateId,
       )
     }
   }
@@ -625,6 +631,29 @@ public object CalendarItemApi {
     }
   }
 
+  public fun bookCalendarItemCheckingAvailability(
+    dartResultCallback: (
+      String?,
+      String?,
+      String?,
+      String?,
+    ) -> Unit,
+    sdkId: String,
+    entityString: String,
+  ) {
+    val entity = fullLanguageInteropJson.decodeFromString(
+      DecryptedCalendarItem.serializer(),
+      entityString
+    )
+    ApiScope.execute(
+      dartResultCallback,
+      DecryptedCalendarItem.serializer()) {
+      NativeReferences.get<CardinalApis>(sdkId).calendarItem.bookCalendarItemCheckingAvailability(
+        entity,
+      )
+    }
+  }
+
   public fun undeleteCalendarItemById(
     dartResultCallback: (
       String?,
@@ -965,6 +994,29 @@ public object CalendarItemApi {
       }
     }
 
+    public fun bookCalendarItemCheckingAvailability(
+      dartResultCallback: (
+        String?,
+        String?,
+        String?,
+        String?,
+      ) -> Unit,
+      sdkId: String,
+      entityString: String,
+    ) {
+      val entity = fullLanguageInteropJson.decodeFromString(
+        EncryptedCalendarItem.serializer(),
+        entityString
+      )
+      ApiScope.execute(
+        dartResultCallback,
+        EncryptedCalendarItem.serializer()) {
+        NativeReferences.get<CardinalApis>(sdkId).calendarItem.encrypted.bookCalendarItemCheckingAvailability(
+          entity,
+        )
+      }
+    }
+
     public fun undeleteCalendarItemById(
       dartResultCallback: (
         String?,
@@ -1267,6 +1319,29 @@ public object CalendarItemApi {
       }
     }
 
+    public fun bookCalendarItemCheckingAvailability(
+      dartResultCallback: (
+        String?,
+        String?,
+        String?,
+        String?,
+      ) -> Unit,
+      sdkId: String,
+      entityString: String,
+    ) {
+      val entity = fullLanguageInteropJson.decodeFromString(
+        PolymorphicSerializer(CalendarItem::class),
+        entityString
+      )
+      ApiScope.execute(
+        dartResultCallback,
+        PolymorphicSerializer(CalendarItem::class)) {
+        NativeReferences.get<CardinalApis>(sdkId).calendarItem.tryAndRecover.bookCalendarItemCheckingAvailability(
+          entity,
+        )
+      }
+    }
+
     public fun undeleteCalendarItemById(
       dartResultCallback: (
         String?,
@@ -1405,6 +1480,7 @@ public object CalendarItemApi {
       userString: String,
       delegatesString: String,
       secretIdString: String,
+      alternateRootDelegateReferenceString: String,
     ) {
       val entityGroupId = fullLanguageInteropJson.decodeFromString(
         String.serializer(),
@@ -1430,6 +1506,10 @@ public object CalendarItemApi {
         SecretIdUseOption.serializer(),
         secretIdString
       )
+      val alternateRootDelegateReference = fullLanguageInteropJson.decodeFromString(
+        EntityReferenceInGroup.serializer().nullable,
+        alternateRootDelegateReferenceString
+      )
       ApiScope.execute(
         dartResultCallback,
         GroupScoped.serializer(DecryptedCalendarItem.serializer())) {
@@ -1440,6 +1520,7 @@ public object CalendarItemApi {
           user,
           delegates,
           secretId,
+          alternateRootDelegateReference,
         )
       }
     }

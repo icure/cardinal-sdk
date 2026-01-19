@@ -2,6 +2,7 @@
 import 'package:cardinal_sdk/model/embed/patient_health_care_party_type.dart';
 import 'package:cardinal_sdk/model/embed/telecom_type.dart';
 import 'package:cardinal_sdk/model/embed/referral_period.dart';
+import 'package:cardinal_sdk/model/property_stub.dart';
 import 'package:cardinal_sdk/model/specializations/base64string.dart';
 import 'package:cardinal_sdk/model/embed/patient_health_care_party.dart';
 import 'package:cardinal_sdk/model/embed/encryptable.dart';
@@ -15,6 +16,7 @@ sealed class PatientHealthCareParty implements Encryptable {
 	abstract final Map<TelecomType, String> sendFormats;
 	abstract final List<ReferralPeriod> referralPeriods;
 	abstract final bool referral;
+	Set<PropertyStub>? get properties;
 	@override abstract final Base64String? encryptedSelf;
 
 	static Map<String, dynamic> encode(PatientHealthCareParty value) {
@@ -54,6 +56,7 @@ abstract class EncryptedPatientHealthCareParty with _$EncryptedPatientHealthCare
 		@Default({}) Map<TelecomType, String> sendFormats,
 		@Default([]) List<ReferralPeriod> referralPeriods,
 		@Default(false) bool referral,
+		@Default(null) Set<EncryptedPropertyStub>? properties,
 		@Default(null) Base64String? encryptedSelf,
 	}) = _EncryptedPatientHealthCareParty;
 
@@ -65,6 +68,7 @@ abstract class EncryptedPatientHealthCareParty with _$EncryptedPatientHealthCare
 			"sendFormats" : value.sendFormats.map((k0, v0) => MapEntry(TelecomType.encode(k0), v0)),
 			"referralPeriods" : value.referralPeriods.map((x0) => ReferralPeriod.encode(x0)).toList(),
 			"referral" : value.referral,
+			"properties" : value.properties?.map((x0) => EncryptedPropertyStub.encode(x0)).toList(),
 			"encryptedSelf" : value.encryptedSelf
 		};
 		return entityAsMap;
@@ -77,6 +81,7 @@ abstract class EncryptedPatientHealthCareParty with _$EncryptedPatientHealthCare
 			sendFormats: (data["sendFormats"] as Map<String, dynamic>).map((k0, v0) => MapEntry(TelecomType.fromJSON(k0), (v0 as String))),
 			referralPeriods: (data["referralPeriods"] as List<dynamic>).map((x0) => ReferralPeriod.fromJSON(x0) ).toList(),
 			referral: (data["referral"] as bool),
+			properties: (data["properties"] as List<dynamic>?)?.map((x0) => EncryptedPropertyStub.fromJSON(x0) ).toSet(),
 			encryptedSelf: (data["encryptedSelf"] as Base64String?)
 		);
 	}
@@ -90,6 +95,7 @@ abstract class DecryptedPatientHealthCareParty with _$DecryptedPatientHealthCare
 		@Default({}) Map<TelecomType, String> sendFormats,
 		@Default([]) List<ReferralPeriod> referralPeriods,
 		@Default(false) bool referral,
+		@Default(null) Set<DecryptedPropertyStub>? properties,
 		@Default(null) Base64String? encryptedSelf,
 	}) = _DecryptedPatientHealthCareParty;
 
@@ -101,6 +107,7 @@ abstract class DecryptedPatientHealthCareParty with _$DecryptedPatientHealthCare
 			"sendFormats" : value.sendFormats.map((k0, v0) => MapEntry(TelecomType.encode(k0), v0)),
 			"referralPeriods" : value.referralPeriods.map((x0) => ReferralPeriod.encode(x0)).toList(),
 			"referral" : value.referral,
+			"properties" : value.properties?.map((x0) => DecryptedPropertyStub.encode(x0)).toList(),
 			"encryptedSelf" : value.encryptedSelf
 		};
 		return entityAsMap;
@@ -113,6 +120,7 @@ abstract class DecryptedPatientHealthCareParty with _$DecryptedPatientHealthCare
 			sendFormats: (data["sendFormats"] as Map<String, dynamic>).map((k0, v0) => MapEntry(TelecomType.fromJSON(k0), (v0 as String))),
 			referralPeriods: (data["referralPeriods"] as List<dynamic>).map((x0) => ReferralPeriod.fromJSON(x0) ).toList(),
 			referral: (data["referral"] as bool),
+			properties: (data["properties"] as List<dynamic>?)?.map((x0) => DecryptedPropertyStub.fromJSON(x0) ).toSet(),
 			encryptedSelf: (data["encryptedSelf"] as Base64String?)
 		);
 	}

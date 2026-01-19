@@ -18,6 +18,7 @@ abstract class Group with _$Group implements StoredDocument, HasTags {
 		@Default(null) String? rev,
 		@Default(null) int? deletionDate,
 		@Default({}) Set<CodeStub> tags,
+		@Default({}) Set<CodeStub> publicTags,
 		@Default(null) String? name,
 		@Default(null) String? password,
 		@Default(null) List<String>? servers,
@@ -30,7 +31,7 @@ abstract class Group with _$Group implements StoredDocument, HasTags {
 		@Default({}) Map<String, ExternalJwtConfig> externalJwtConfig,
 		required AuthenticationClass minimumAuthenticationClassForElevatedPrivileges,
 		@Default(null) String? superGroup,
-		@Default(null) String? applicationId,
+		@Default(null) String? projectId,
 	}) = _Group;
 
 
@@ -40,6 +41,7 @@ abstract class Group with _$Group implements StoredDocument, HasTags {
 			"rev" : value.rev,
 			"deletionDate" : value.deletionDate,
 			"tags" : value.tags.map((x0) => CodeStub.encode(x0)).toList(),
+			"publicTags" : value.publicTags.map((x0) => CodeStub.encode(x0)).toList(),
 			"name" : value.name,
 			"password" : value.password,
 			"servers" : value.servers?.map((x0) => x0).toList(),
@@ -52,7 +54,7 @@ abstract class Group with _$Group implements StoredDocument, HasTags {
 			"externalJwtConfig" : value.externalJwtConfig.map((k0, v0) => MapEntry(k0, ExternalJwtConfig.encode(v0))),
 			"minimumAuthenticationClassForElevatedPrivileges" : AuthenticationClass.encode(value.minimumAuthenticationClassForElevatedPrivileges),
 			"superGroup" : value.superGroup,
-			"applicationId" : value.applicationId
+			"projectId" : value.projectId
 		};
 		return entityAsMap;
 	}
@@ -64,6 +66,7 @@ abstract class Group with _$Group implements StoredDocument, HasTags {
 			rev: (data["rev"] as String?),
 			deletionDate: (data["deletionDate"] as int?),
 			tags: (data["tags"] as List<dynamic>).map((x0) => CodeStub.fromJSON(x0) ).toSet(),
+			publicTags: (data["publicTags"] as List<dynamic>).map((x0) => CodeStub.fromJSON(x0) ).toSet(),
 			name: (data["name"] as String?),
 			password: (data["password"] as String?),
 			servers: (data["servers"] as List<dynamic>?)?.map((x0) => (x0 as String) ).toList(),
@@ -75,7 +78,7 @@ abstract class Group with _$Group implements StoredDocument, HasTags {
 			minimumKrakenVersion: (data["minimumKrakenVersion"] as String?),
 			externalJwtConfig: (data["externalJwtConfig"] as Map<String, dynamic>).map((k0, v0) => MapEntry((k0 as String), ExternalJwtConfig.fromJSON(v0))),
 			superGroup: (data["superGroup"] as String?),
-			applicationId: (data["applicationId"] as String?),
+			projectId: (data["projectId"] as String?),
 		);
 	}
 }

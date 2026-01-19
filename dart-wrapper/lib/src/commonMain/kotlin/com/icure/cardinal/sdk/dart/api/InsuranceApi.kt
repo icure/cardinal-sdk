@@ -177,4 +177,91 @@ public object InsuranceApi {
       )
     }
   }
+
+  public fun createInsurancesInGroup(
+    dartResultCallback: (
+      String?,
+      String?,
+      String?,
+      String?,
+    ) -> Unit,
+    sdkId: String,
+    groupIdString: String,
+    insuranceBatchString: String,
+  ) {
+    val groupId = fullLanguageInteropJson.decodeFromString(
+      String.serializer(),
+      groupIdString
+    )
+    val insuranceBatch = fullLanguageInteropJson.decodeFromString(
+      ListSerializer(Insurance.serializer()),
+      insuranceBatchString
+    )
+    ApiScope.execute(
+      dartResultCallback,
+      ListSerializer(Insurance.serializer())) {
+      NativeReferences.get<CardinalNonCryptoApis>(sdkId).insurance.createInsurancesInGroup(
+        groupId,
+        insuranceBatch,
+      )
+    }
+  }
+
+  public fun getInsurancesInGroup(
+    dartResultCallback: (
+      String?,
+      String?,
+      String?,
+      String?,
+    ) -> Unit,
+    sdkId: String,
+    groupIdString: String,
+    insuranceIdsString: String,
+  ) {
+    val groupId = fullLanguageInteropJson.decodeFromString(
+      String.serializer(),
+      groupIdString
+    )
+    val insuranceIds = fullLanguageInteropJson.decodeFromString(
+      ListSerializer(String.serializer()),
+      insuranceIdsString
+    )
+    ApiScope.execute(
+      dartResultCallback,
+      ListSerializer(Insurance.serializer())) {
+      NativeReferences.get<CardinalNonCryptoApis>(sdkId).insurance.getInsurancesInGroup(
+        groupId,
+        insuranceIds,
+      )
+    }
+  }
+
+  public fun modifyInsurancesInGroup(
+    dartResultCallback: (
+      String?,
+      String?,
+      String?,
+      String?,
+    ) -> Unit,
+    sdkId: String,
+    groupIdString: String,
+    insuranceBatchString: String,
+  ) {
+    val groupId = fullLanguageInteropJson.decodeFromString(
+      String.serializer(),
+      groupIdString
+    )
+    val insuranceBatch = fullLanguageInteropJson.decodeFromString(
+      ListSerializer(Insurance.serializer()),
+      insuranceBatchString
+    )
+    ApiScope.execute(
+      dartResultCallback,
+      ListSerializer(Insurance.serializer())) {
+      NativeReferences.get<CardinalNonCryptoApis>(sdkId).insurance.modifyInsurancesInGroup(
+        groupId,
+        insuranceBatch,
+      )
+    }
+  }
 }

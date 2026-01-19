@@ -50,7 +50,7 @@ abstract class EncryptedSchoolingInfo with _$EncryptedSchoolingInfo implements S
 		@Default(null) int? endDate,
 		@Default(null) String? school,
 		@Default(null) CodeStub? typeOfEducation,
-		required Base64String? encryptedSelf,
+		@Default(null) Base64String? encryptedSelf,
 	}) = _EncryptedSchoolingInfo;
 
 
@@ -83,7 +83,7 @@ abstract class DecryptedSchoolingInfo with _$DecryptedSchoolingInfo implements S
 		@Default(null) int? endDate,
 		@Default(null) String? school,
 		@Default(null) CodeStub? typeOfEducation,
-		required Base64String? encryptedSelf,
+		@Default(null) Base64String? encryptedSelf,
 	}) = _DecryptedSchoolingInfo;
 
 

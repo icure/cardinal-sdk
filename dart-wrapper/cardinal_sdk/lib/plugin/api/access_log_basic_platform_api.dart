@@ -5,13 +5,16 @@ import 'package:cardinal_sdk/model/access_log.dart';
 import 'dart:convert';
 import 'package:cardinal_sdk/utils/internal/platform_exception_convertion.dart';
 import 'package:cardinal_sdk/utils/pagination/paginated_list_iterator.dart';
-import 'package:cardinal_sdk/model/couchdb/doc_identifier.dart';
 import 'package:cardinal_sdk/model/stored_document_identifier.dart';
+import 'package:cardinal_sdk/model/group_scoped.dart';
 
 
 class AccessLogBasicPlatformApi {
 	MethodChannel _methodChannel;
-	AccessLogBasicPlatformApi(this._methodChannel);
+	AccessLogBasicInGroupPlatformApi inGroup;
+	AccessLogBasicPlatformApi(
+		this._methodChannel
+		) : inGroup = AccessLogBasicInGroupPlatformApi(_methodChannel);
 
 	Future<List<String>> matchAccessLogsBy(String sdkId, BaseFilterOptions<AccessLog> filter) async {
 		final res = await _methodChannel.invokeMethod<String>(
@@ -65,7 +68,7 @@ class AccessLogBasicPlatformApi {
 		return PaginatedListIterator(parsedResJson, (x0) => EncryptedAccessLog.fromJSON(x0));
 	}
 
-	Future<DocIdentifier> deleteAccessLogById(String sdkId, String entityId, String rev) async {
+	Future<StoredDocumentIdentifier> deleteAccessLogById(String sdkId, String entityId, String rev) async {
 		final res = await _methodChannel.invokeMethod<String>(
 			'AccessLogBasicApi.deleteAccessLogById',
 			{
@@ -76,10 +79,10 @@ class AccessLogBasicPlatformApi {
 		).catchError(convertPlatformException);
 		if (res == null) throw AssertionError("received null result from platform method deleteAccessLogById");
 		final parsedResJson = jsonDecode(res);
-		return DocIdentifier.fromJSON(parsedResJson);
+		return StoredDocumentIdentifier.fromJSON(parsedResJson);
 	}
 
-	Future<List<DocIdentifier>> deleteAccessLogsByIds(String sdkId, List<StoredDocumentIdentifier> entityIds) async {
+	Future<List<StoredDocumentIdentifier>> deleteAccessLogsByIds(String sdkId, List<StoredDocumentIdentifier> entityIds) async {
 		final res = await _methodChannel.invokeMethod<String>(
 			'AccessLogBasicApi.deleteAccessLogsByIds',
 			{
@@ -89,7 +92,7 @@ class AccessLogBasicPlatformApi {
 		).catchError(convertPlatformException);
 		if (res == null) throw AssertionError("received null result from platform method deleteAccessLogsByIds");
 		final parsedResJson = jsonDecode(res);
-		return (parsedResJson as List<dynamic>).map((x1) => DocIdentifier.fromJSON(x1) ).toList();
+		return (parsedResJson as List<dynamic>).map((x1) => StoredDocumentIdentifier.fromJSON(x1) ).toList();
 	}
 
 	Future<void> purgeAccessLogById(String sdkId, String id, String rev) async {
@@ -103,7 +106,7 @@ class AccessLogBasicPlatformApi {
 		).catchError(convertPlatformException);
 	}
 
-	Future<DocIdentifier> deleteAccessLog(String sdkId, AccessLog accessLog) async {
+	Future<StoredDocumentIdentifier> deleteAccessLog(String sdkId, AccessLog accessLog) async {
 		final res = await _methodChannel.invokeMethod<String>(
 			'AccessLogBasicApi.deleteAccessLog',
 			{
@@ -113,10 +116,10 @@ class AccessLogBasicPlatformApi {
 		).catchError(convertPlatformException);
 		if (res == null) throw AssertionError("received null result from platform method deleteAccessLog");
 		final parsedResJson = jsonDecode(res);
-		return DocIdentifier.fromJSON(parsedResJson);
+		return StoredDocumentIdentifier.fromJSON(parsedResJson);
 	}
 
-	Future<List<DocIdentifier>> deleteAccessLogs(String sdkId, List<AccessLog> accessLogs) async {
+	Future<List<StoredDocumentIdentifier>> deleteAccessLogs(String sdkId, List<AccessLog> accessLogs) async {
 		final res = await _methodChannel.invokeMethod<String>(
 			'AccessLogBasicApi.deleteAccessLogs',
 			{
@@ -126,7 +129,7 @@ class AccessLogBasicPlatformApi {
 		).catchError(convertPlatformException);
 		if (res == null) throw AssertionError("received null result from platform method deleteAccessLogs");
 		final parsedResJson = jsonDecode(res);
-		return (parsedResJson as List<dynamic>).map((x1) => DocIdentifier.fromJSON(x1) ).toList();
+		return (parsedResJson as List<dynamic>).map((x1) => StoredDocumentIdentifier.fromJSON(x1) ).toList();
 	}
 
 	Future<void> purgeAccessLog(String sdkId, AccessLog accessLog) async {
@@ -216,5 +219,252 @@ class AccessLogBasicPlatformApi {
 		if (res == null) throw AssertionError("received null result from platform method getAccessLogs");
 		final parsedResJson = jsonDecode(res);
 		return (parsedResJson as List<dynamic>).map((x1) => EncryptedAccessLog.fromJSON(x1) ).toList();
+	}
+}
+
+class AccessLogBasicInGroupPlatformApi {
+	MethodChannel _methodChannel;
+	AccessLogBasicInGroupPlatformApi(this._methodChannel);
+
+	Future<List<String>> matchAccessLogsBy(String sdkId, String groupId, BaseFilterOptions<AccessLog> filter) async {
+		final res = await _methodChannel.invokeMethod<String>(
+			'AccessLogBasicApi.inGroup.matchAccessLogsBy',
+			{
+				"sdkId": sdkId,
+				"groupId": jsonEncode(groupId),
+				"filter": jsonEncode(BaseFilterOptions.encode(filter)),
+			}
+		).catchError(convertPlatformException);
+		if (res == null) throw AssertionError("received null result from platform method matchAccessLogsBy");
+		final parsedResJson = jsonDecode(res);
+		return (parsedResJson as List<dynamic>).map((x1) => (x1 as String) ).toList();
+	}
+
+	Future<List<String>> matchAccessLogsBySorted(String sdkId, String groupId, BaseSortableFilterOptions<AccessLog> filter) async {
+		final res = await _methodChannel.invokeMethod<String>(
+			'AccessLogBasicApi.inGroup.matchAccessLogsBySorted',
+			{
+				"sdkId": sdkId,
+				"groupId": jsonEncode(groupId),
+				"filter": jsonEncode(BaseSortableFilterOptions.encode(filter)),
+			}
+		).catchError(convertPlatformException);
+		if (res == null) throw AssertionError("received null result from platform method matchAccessLogsBySorted");
+		final parsedResJson = jsonDecode(res);
+		return (parsedResJson as List<dynamic>).map((x1) => (x1 as String) ).toList();
+	}
+
+	Future<PaginatedListIterator<GroupScoped<EncryptedAccessLog>>> filterAccessLogsBy(String sdkId, String groupId, BaseFilterOptions<AccessLog> filter) async {
+		final res = await _methodChannel.invokeMethod<String>(
+			'AccessLogBasicApi.inGroup.filterAccessLogsBy',
+			{
+				"sdkId": sdkId,
+				"groupId": jsonEncode(groupId),
+				"filter": jsonEncode(BaseFilterOptions.encode(filter)),
+			}
+		).catchError(convertPlatformException);
+		if (res == null) throw AssertionError("received null result from platform method filterAccessLogsBy");
+		final parsedResJson = jsonDecode(res);
+		return PaginatedListIterator(parsedResJson, (x0) => GroupScoped.fromJSON(
+			x0,
+			(x1) {
+				return EncryptedAccessLog.fromJSON(x1);
+			},
+		));
+	}
+
+	Future<PaginatedListIterator<GroupScoped<EncryptedAccessLog>>> filterAccessLogsBySorted(String sdkId, String groupId, BaseSortableFilterOptions<AccessLog> filter) async {
+		final res = await _methodChannel.invokeMethod<String>(
+			'AccessLogBasicApi.inGroup.filterAccessLogsBySorted',
+			{
+				"sdkId": sdkId,
+				"groupId": jsonEncode(groupId),
+				"filter": jsonEncode(BaseSortableFilterOptions.encode(filter)),
+			}
+		).catchError(convertPlatformException);
+		if (res == null) throw AssertionError("received null result from platform method filterAccessLogsBySorted");
+		final parsedResJson = jsonDecode(res);
+		return PaginatedListIterator(parsedResJson, (x0) => GroupScoped.fromJSON(
+			x0,
+			(x1) {
+				return EncryptedAccessLog.fromJSON(x1);
+			},
+		));
+	}
+
+	Future<GroupScoped<StoredDocumentIdentifier>> deleteAccessLogById(String sdkId, GroupScoped<StoredDocumentIdentifier> entityId) async {
+		final res = await _methodChannel.invokeMethod<String>(
+			'AccessLogBasicApi.inGroup.deleteAccessLogById',
+			{
+				"sdkId": sdkId,
+				"entityId": jsonEncode(GroupScoped.encode(
+					entityId,
+					(x0) {
+						return StoredDocumentIdentifier.encode(x0);
+					},
+				)),
+			}
+		).catchError(convertPlatformException);
+		if (res == null) throw AssertionError("received null result from platform method deleteAccessLogById");
+		final parsedResJson = jsonDecode(res);
+		return GroupScoped.fromJSON(
+			parsedResJson,
+			(x1) {
+				return StoredDocumentIdentifier.fromJSON(x1);
+			},
+		);
+	}
+
+	Future<List<GroupScoped<StoredDocumentIdentifier>>> deleteAccessLogsByIds(String sdkId, List<GroupScoped<StoredDocumentIdentifier>> entityIds) async {
+		final res = await _methodChannel.invokeMethod<String>(
+			'AccessLogBasicApi.inGroup.deleteAccessLogsByIds',
+			{
+				"sdkId": sdkId,
+				"entityIds": jsonEncode(entityIds.map((x0) => GroupScoped.encode(
+					x0,
+					(x1) {
+						return StoredDocumentIdentifier.encode(x1);
+					},
+				)).toList()),
+			}
+		).catchError(convertPlatformException);
+		if (res == null) throw AssertionError("received null result from platform method deleteAccessLogsByIds");
+		final parsedResJson = jsonDecode(res);
+		return (parsedResJson as List<dynamic>).map((x1) => GroupScoped.fromJSON(
+			x1,
+			(x2) {
+				return StoredDocumentIdentifier.fromJSON(x2);
+			},
+		) ).toList();
+	}
+
+	Future<GroupScoped<StoredDocumentIdentifier>> deleteAccessLog(String sdkId, GroupScoped<AccessLog> accessLog) async {
+		final res = await _methodChannel.invokeMethod<String>(
+			'AccessLogBasicApi.inGroup.deleteAccessLog',
+			{
+				"sdkId": sdkId,
+				"accessLog": jsonEncode(GroupScoped.encode(
+					accessLog,
+					(x0) {
+						return AccessLog.encode(x0);
+					},
+				)),
+			}
+		).catchError(convertPlatformException);
+		if (res == null) throw AssertionError("received null result from platform method deleteAccessLog");
+		final parsedResJson = jsonDecode(res);
+		return GroupScoped.fromJSON(
+			parsedResJson,
+			(x1) {
+				return StoredDocumentIdentifier.fromJSON(x1);
+			},
+		);
+	}
+
+	Future<List<GroupScoped<StoredDocumentIdentifier>>> deleteAccessLogs(String sdkId, List<GroupScoped<AccessLog>> accessLogs) async {
+		final res = await _methodChannel.invokeMethod<String>(
+			'AccessLogBasicApi.inGroup.deleteAccessLogs',
+			{
+				"sdkId": sdkId,
+				"accessLogs": jsonEncode(accessLogs.map((x0) => GroupScoped.encode(
+					x0,
+					(x1) {
+						return AccessLog.encode(x1);
+					},
+				)).toList()),
+			}
+		).catchError(convertPlatformException);
+		if (res == null) throw AssertionError("received null result from platform method deleteAccessLogs");
+		final parsedResJson = jsonDecode(res);
+		return (parsedResJson as List<dynamic>).map((x1) => GroupScoped.fromJSON(
+			x1,
+			(x2) {
+				return StoredDocumentIdentifier.fromJSON(x2);
+			},
+		) ).toList();
+	}
+
+	Future<GroupScoped<EncryptedAccessLog>> createAccessLog(String sdkId, GroupScoped<EncryptedAccessLog> entity) async {
+		final res = await _methodChannel.invokeMethod<String>(
+			'AccessLogBasicApi.inGroup.createAccessLog',
+			{
+				"sdkId": sdkId,
+				"entity": jsonEncode(GroupScoped.encode(
+					entity,
+					(x0) {
+						return EncryptedAccessLog.encode(x0);
+					},
+				)),
+			}
+		).catchError(convertPlatformException);
+		if (res == null) throw AssertionError("received null result from platform method createAccessLog");
+		final parsedResJson = jsonDecode(res);
+		return GroupScoped.fromJSON(
+			parsedResJson,
+			(x1) {
+				return EncryptedAccessLog.fromJSON(x1);
+			},
+		);
+	}
+
+	Future<GroupScoped<EncryptedAccessLog>> modifyAccessLog(String sdkId, GroupScoped<EncryptedAccessLog> entity) async {
+		final res = await _methodChannel.invokeMethod<String>(
+			'AccessLogBasicApi.inGroup.modifyAccessLog',
+			{
+				"sdkId": sdkId,
+				"entity": jsonEncode(GroupScoped.encode(
+					entity,
+					(x0) {
+						return EncryptedAccessLog.encode(x0);
+					},
+				)),
+			}
+		).catchError(convertPlatformException);
+		if (res == null) throw AssertionError("received null result from platform method modifyAccessLog");
+		final parsedResJson = jsonDecode(res);
+		return GroupScoped.fromJSON(
+			parsedResJson,
+			(x1) {
+				return EncryptedAccessLog.fromJSON(x1);
+			},
+		);
+	}
+
+	Future<GroupScoped<EncryptedAccessLog>?> getAccessLog(String sdkId, String groupId, String entityId) async {
+		final res = await _methodChannel.invokeMethod<String>(
+			'AccessLogBasicApi.inGroup.getAccessLog',
+			{
+				"sdkId": sdkId,
+				"groupId": jsonEncode(groupId),
+				"entityId": jsonEncode(entityId),
+			}
+		).catchError(convertPlatformException);
+		if (res == null) throw AssertionError("received null result from platform method getAccessLog");
+		final parsedResJson = jsonDecode(res);
+		return parsedResJson == null ? null : GroupScoped.fromJSON(
+			parsedResJson,
+			(x1) {
+				return EncryptedAccessLog.fromJSON(x1);
+			},
+		);
+	}
+
+	Future<List<GroupScoped<EncryptedAccessLog>>> getAccessLogs(String sdkId, String groupId, List<String> entityIds) async {
+		final res = await _methodChannel.invokeMethod<String>(
+			'AccessLogBasicApi.inGroup.getAccessLogs',
+			{
+				"sdkId": sdkId,
+				"groupId": jsonEncode(groupId),
+				"entityIds": jsonEncode(entityIds.map((x0) => x0).toList()),
+			}
+		).catchError(convertPlatformException);
+		if (res == null) throw AssertionError("received null result from platform method getAccessLogs");
+		final parsedResJson = jsonDecode(res);
+		return (parsedResJson as List<dynamic>).map((x1) => GroupScoped.fromJSON(
+			x1,
+			(x2) {
+				return EncryptedAccessLog.fromJSON(x2);
+			},
+		) ).toList();
 	}
 }

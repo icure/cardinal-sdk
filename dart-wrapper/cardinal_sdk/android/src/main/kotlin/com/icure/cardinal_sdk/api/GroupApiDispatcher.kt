@@ -44,6 +44,10 @@ public object GroupApiDispatcher {
     "createOrUpdateExternalJwtConfig" -> createOrUpdateExternalJwtConfig(parameters, resultCallback)
     "removeExternalJwtConfig" -> removeExternalJwtConfig(parameters, resultCallback)
     "getOperationTokenForGroup" -> getOperationTokenForGroup(parameters, resultCallback)
+    "setGroupProjectId" -> setGroupProjectId(parameters, resultCallback)
+    "modifyGroupApplicationId" -> modifyGroupApplicationId(parameters, resultCallback)
+    "addTagToGroup" -> addTagToGroup(parameters, resultCallback)
+    "removeTagFromGroup" -> removeTagFromGroup(parameters, resultCallback)
     else -> null
   }?.let { true } ?: false
 
@@ -89,7 +93,7 @@ public object GroupApiDispatcher {
       parameters.getValue("q"),
       parameters.getValue("n"),
       parameters.getValue("superGroup"),
-      parameters.getValue("applicationId"),
+      parameters.getValue("projectId"),
       parameters.getValue("initialisationData"),
     )
   }
@@ -412,6 +416,65 @@ public object GroupApiDispatcher {
       parameters.getValue("operation"),
       parameters.getValue("duration"),
       parameters.getValue("description"),
+    )
+  }
+
+  private fun setGroupProjectId(parameters: Map<String, String>, resultCallback: (
+    String?,
+    String?,
+    String?,
+    String?,
+  ) -> Unit) {
+    GroupApi.setGroupProjectId(
+      resultCallback,
+      parameters.getValue("sdkId"),
+      parameters.getValue("groupId"),
+      parameters.getValue("projectId"),
+      parameters.getValue("applyToSubgroups"),
+    )
+  }
+
+  private fun modifyGroupApplicationId(parameters: Map<String, String>, resultCallback: (
+    String?,
+    String?,
+    String?,
+    String?,
+  ) -> Unit) {
+    GroupApi.modifyGroupApplicationId(
+      resultCallback,
+      parameters.getValue("sdkId"),
+      parameters.getValue("id"),
+      parameters.getValue("applicationId"),
+    )
+  }
+
+  private fun addTagToGroup(parameters: Map<String, String>, resultCallback: (
+    String?,
+    String?,
+    String?,
+    String?,
+  ) -> Unit) {
+    GroupApi.addTagToGroup(
+      resultCallback,
+      parameters.getValue("sdkId"),
+      parameters.getValue("id"),
+      parameters.getValue("rev"),
+      parameters.getValue("tag"),
+    )
+  }
+
+  private fun removeTagFromGroup(parameters: Map<String, String>, resultCallback: (
+    String?,
+    String?,
+    String?,
+    String?,
+  ) -> Unit) {
+    GroupApi.removeTagFromGroup(
+      resultCallback,
+      parameters.getValue("sdkId"),
+      parameters.getValue("id"),
+      parameters.getValue("rev"),
+      parameters.getValue("tagId"),
     )
   }
 }

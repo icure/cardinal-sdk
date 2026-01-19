@@ -7,6 +7,7 @@ import 'package:cardinal_sdk/model/embed/access_level.dart';
 import 'package:cardinal_sdk/crypto/entities/secret_id_use_option.dart';
 import 'dart:convert';
 import 'package:cardinal_sdk/utils/internal/platform_exception_convertion.dart';
+import 'package:cardinal_sdk/model/patient.dart';
 import 'dart:typed_data';
 import 'package:cardinal_sdk/utils/internal/callback_references.dart';
 import 'package:cardinal_sdk/model/specializations/hex_string.dart';
@@ -26,19 +27,54 @@ class DocumentPlatformApi {
 		) : encrypted = DocumentEncryptedPlatformApi(_methodChannel),
 		tryAndRecover = DocumentTryAndRecoverPlatformApi(_methodChannel);
 
-	Future<DecryptedDocument> withEncryptionMetadata(String sdkId, DecryptedDocument? base, Message? message, User? user, Map<String, AccessLevel> delegates, SecretIdUseOption secretId) async {
+	Future<DecryptedDocument> withEncryptionMetadataLinkedToMessage(String sdkId, DecryptedDocument? base, Message message, User? user, Map<String, AccessLevel> delegates, SecretIdUseOption secretId, String? alternateRootDelegateId) async {
 		final res = await _methodChannel.invokeMethod<String>(
-			'DocumentApi.withEncryptionMetadata',
+			'DocumentApi.withEncryptionMetadataLinkedToMessage',
 			{
 				"sdkId": sdkId,
 				"base": jsonEncode(base == null ? null : DecryptedDocument.encode(base!)),
-				"message": jsonEncode(message == null ? null : Message.encode(message!)),
+				"message": jsonEncode(Message.encode(message)),
 				"user": jsonEncode(user == null ? null : User.encode(user!)),
 				"delegates": jsonEncode(delegates.map((k0, v0) => MapEntry(k0, AccessLevel.encode(v0)))),
 				"secretId": jsonEncode(SecretIdUseOption.encode(secretId)),
+				"alternateRootDelegateId": jsonEncode(alternateRootDelegateId),
 			}
 		).catchError(convertPlatformException);
-		if (res == null) throw AssertionError("received null result from platform method withEncryptionMetadata");
+		if (res == null) throw AssertionError("received null result from platform method withEncryptionMetadataLinkedToMessage");
+		final parsedResJson = jsonDecode(res);
+		return DecryptedDocument.fromJSON(parsedResJson);
+	}
+
+	Future<DecryptedDocument> withEncryptionMetadataLinkedToPatient(String sdkId, DecryptedDocument? base, Patient patient, User? user, Map<String, AccessLevel> delegates, SecretIdUseOption secretId, String? alternateRootDelegateId) async {
+		final res = await _methodChannel.invokeMethod<String>(
+			'DocumentApi.withEncryptionMetadataLinkedToPatient',
+			{
+				"sdkId": sdkId,
+				"base": jsonEncode(base == null ? null : DecryptedDocument.encode(base!)),
+				"patient": jsonEncode(Patient.encode(patient)),
+				"user": jsonEncode(user == null ? null : User.encode(user!)),
+				"delegates": jsonEncode(delegates.map((k0, v0) => MapEntry(k0, AccessLevel.encode(v0)))),
+				"secretId": jsonEncode(SecretIdUseOption.encode(secretId)),
+				"alternateRootDelegateId": jsonEncode(alternateRootDelegateId),
+			}
+		).catchError(convertPlatformException);
+		if (res == null) throw AssertionError("received null result from platform method withEncryptionMetadataLinkedToPatient");
+		final parsedResJson = jsonDecode(res);
+		return DecryptedDocument.fromJSON(parsedResJson);
+	}
+
+	Future<DecryptedDocument> withEncryptionMetadataUnlinked(String sdkId, DecryptedDocument? base, User? user, Map<String, AccessLevel> delegates, String? alternateRootDelegateId) async {
+		final res = await _methodChannel.invokeMethod<String>(
+			'DocumentApi.withEncryptionMetadataUnlinked',
+			{
+				"sdkId": sdkId,
+				"base": jsonEncode(base == null ? null : DecryptedDocument.encode(base!)),
+				"user": jsonEncode(user == null ? null : User.encode(user!)),
+				"delegates": jsonEncode(delegates.map((k0, v0) => MapEntry(k0, AccessLevel.encode(v0)))),
+				"alternateRootDelegateId": jsonEncode(alternateRootDelegateId),
+			}
+		).catchError(convertPlatformException);
+		if (res == null) throw AssertionError("received null result from platform method withEncryptionMetadataUnlinked");
 		final parsedResJson = jsonDecode(res);
 		return DecryptedDocument.fromJSON(parsedResJson);
 	}
@@ -170,15 +206,15 @@ class DocumentPlatformApi {
 		return (parsedResJson as bool);
 	}
 
-	Future<Set<String>> decryptPatientIdOf(String sdkId, Document document) async {
+	Future<Set<String>> decryptOwningEntityIdsOf(String sdkId, Document document) async {
 		final res = await _methodChannel.invokeMethod<String>(
-			'DocumentApi.decryptPatientIdOf',
+			'DocumentApi.decryptOwningEntityIdsOf',
 			{
 				"sdkId": sdkId,
 				"document": jsonEncode(Document.encode(document)),
 			}
 		).catchError(convertPlatformException);
-		if (res == null) throw AssertionError("received null result from platform method decryptPatientIdOf");
+		if (res == null) throw AssertionError("received null result from platform method decryptOwningEntityIdsOf");
 		final parsedResJson = jsonDecode(res);
 		return (parsedResJson as List<dynamic>).map((x1) => (x1 as String) ).toSet();
 	}

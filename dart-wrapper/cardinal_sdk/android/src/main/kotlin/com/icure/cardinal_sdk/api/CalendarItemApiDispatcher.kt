@@ -40,6 +40,7 @@ public object CalendarItemApiDispatcher {
     "filterCalendarItemsBy" -> filterCalendarItemsBy(parameters, resultCallback)
     "filterCalendarItemsBySorted" -> filterCalendarItemsBySorted(parameters, resultCallback)
     "createCalendarItem" -> createCalendarItem(parameters, resultCallback)
+    "bookCalendarItemCheckingAvailability" -> bookCalendarItemCheckingAvailability(parameters, resultCallback)
     "undeleteCalendarItemById" -> undeleteCalendarItemById(parameters, resultCallback)
     "undeleteCalendarItem" -> undeleteCalendarItem(parameters, resultCallback)
     "modifyCalendarItem" -> modifyCalendarItem(parameters, resultCallback)
@@ -52,6 +53,7 @@ public object CalendarItemApiDispatcher {
     "encrypted.filterCalendarItemsBy" -> encrypted_filterCalendarItemsBy(parameters, resultCallback)
     "encrypted.filterCalendarItemsBySorted" -> encrypted_filterCalendarItemsBySorted(parameters, resultCallback)
     "encrypted.createCalendarItem" -> encrypted_createCalendarItem(parameters, resultCallback)
+    "encrypted.bookCalendarItemCheckingAvailability" -> encrypted_bookCalendarItemCheckingAvailability(parameters, resultCallback)
     "encrypted.undeleteCalendarItemById" -> encrypted_undeleteCalendarItemById(parameters, resultCallback)
     "encrypted.undeleteCalendarItem" -> encrypted_undeleteCalendarItem(parameters, resultCallback)
     "encrypted.modifyCalendarItem" -> encrypted_modifyCalendarItem(parameters, resultCallback)
@@ -63,6 +65,7 @@ public object CalendarItemApiDispatcher {
     "tryAndRecover.filterCalendarItemsBy" -> tryAndRecover_filterCalendarItemsBy(parameters, resultCallback)
     "tryAndRecover.filterCalendarItemsBySorted" -> tryAndRecover_filterCalendarItemsBySorted(parameters, resultCallback)
     "tryAndRecover.createCalendarItem" -> tryAndRecover_createCalendarItem(parameters, resultCallback)
+    "tryAndRecover.bookCalendarItemCheckingAvailability" -> tryAndRecover_bookCalendarItemCheckingAvailability(parameters, resultCallback)
     "tryAndRecover.undeleteCalendarItemById" -> tryAndRecover_undeleteCalendarItemById(parameters, resultCallback)
     "tryAndRecover.undeleteCalendarItem" -> tryAndRecover_undeleteCalendarItem(parameters, resultCallback)
     "tryAndRecover.modifyCalendarItem" -> tryAndRecover_modifyCalendarItem(parameters, resultCallback)
@@ -123,6 +126,7 @@ public object CalendarItemApiDispatcher {
       parameters.getValue("user"),
       parameters.getValue("delegates"),
       parameters.getValue("secretId"),
+      parameters.getValue("alternateRootDelegateId"),
     )
   }
 
@@ -408,6 +412,20 @@ public object CalendarItemApiDispatcher {
     )
   }
 
+  private fun bookCalendarItemCheckingAvailability(parameters: Map<String, String>,
+      resultCallback: (
+    String?,
+    String?,
+    String?,
+    String?,
+  ) -> Unit) {
+    CalendarItemApi.bookCalendarItemCheckingAvailability(
+      resultCallback,
+      parameters.getValue("sdkId"),
+      parameters.getValue("entity"),
+    )
+  }
+
   private fun undeleteCalendarItemById(parameters: Map<String, String>, resultCallback: (
     String?,
     String?,
@@ -573,6 +591,20 @@ public object CalendarItemApiDispatcher {
     )
   }
 
+  private fun encrypted_bookCalendarItemCheckingAvailability(parameters: Map<String, String>,
+      resultCallback: (
+    String?,
+    String?,
+    String?,
+    String?,
+  ) -> Unit) {
+    CalendarItemApi.encrypted.bookCalendarItemCheckingAvailability(
+      resultCallback,
+      parameters.getValue("sdkId"),
+      parameters.getValue("entity"),
+    )
+  }
+
   private fun encrypted_undeleteCalendarItemById(parameters: Map<String, String>, resultCallback: (
     String?,
     String?,
@@ -723,6 +755,20 @@ public object CalendarItemApiDispatcher {
     )
   }
 
+  private fun tryAndRecover_bookCalendarItemCheckingAvailability(parameters: Map<String, String>,
+      resultCallback: (
+    String?,
+    String?,
+    String?,
+    String?,
+  ) -> Unit) {
+    CalendarItemApi.tryAndRecover.bookCalendarItemCheckingAvailability(
+      resultCallback,
+      parameters.getValue("sdkId"),
+      parameters.getValue("entity"),
+    )
+  }
+
   private fun tryAndRecover_undeleteCalendarItemById(parameters: Map<String, String>,
       resultCallback: (
     String?,
@@ -805,6 +851,7 @@ public object CalendarItemApiDispatcher {
       parameters.getValue("user"),
       parameters.getValue("delegates"),
       parameters.getValue("secretId"),
+      parameters.getValue("alternateRootDelegateReference"),
     )
   }
 

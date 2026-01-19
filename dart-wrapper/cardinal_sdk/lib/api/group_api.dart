@@ -17,6 +17,7 @@ import 'package:cardinal_sdk/model/couchdb/group_databases_info.dart';
 import 'package:cardinal_sdk/model/replication_info.dart';
 import 'package:cardinal_sdk/model/couchdb/doc_identifier.dart';
 import 'package:cardinal_sdk/model/security/external_jwt_config.dart';
+import 'package:cardinal_sdk/model/base/code_stub.dart';
 
 
 class GroupApi {
@@ -40,7 +41,7 @@ class GroupApi {
 		);
 	}
 
-	Future<Group> createGroup(String id, String name, String password, DatabaseInitialisation initialisationData, { GroupType? type, String? server, int? q, int? n, String? superGroup, String? applicationId }) async {
+	Future<Group> createGroup(String id, String name, String password, DatabaseInitialisation initialisationData, { GroupType? type, String? server, int? q, int? n, String? superGroup, String? projectId }) async {
 		return await CardinalSdkPlatformInterface.instance.apis.group.createGroup(
 			_sdkId,
 			id,
@@ -51,7 +52,7 @@ class GroupApi {
 			q,
 			n,
 			superGroup,
-			applicationId,
+			projectId,
 			initialisationData,
 		);
 	}
@@ -236,6 +237,41 @@ class GroupApi {
 			operation,
 			duration,
 			description,
+		);
+	}
+
+	Future<void> setGroupProjectId(String groupId, String? projectId, bool applyToSubgroups) async {
+		return await CardinalSdkPlatformInterface.instance.apis.group.setGroupProjectId(
+			_sdkId,
+			groupId,
+			projectId,
+			applyToSubgroups,
+		);
+	}
+
+	Future<Group> modifyGroupApplicationId(String id, String applicationId) async {
+		return await CardinalSdkPlatformInterface.instance.apis.group.modifyGroupApplicationId(
+			_sdkId,
+			id,
+			applicationId,
+		);
+	}
+
+	Future<Group> addTagToGroup(String id, String rev, CodeStub tag) async {
+		return await CardinalSdkPlatformInterface.instance.apis.group.addTagToGroup(
+			_sdkId,
+			id,
+			rev,
+			tag,
+		);
+	}
+
+	Future<Group> removeTagFromGroup(String id, String rev, String tagId) async {
+		return await CardinalSdkPlatformInterface.instance.apis.group.removeTagFromGroup(
+			_sdkId,
+			id,
+			rev,
+			tagId,
 		);
 	}
 }

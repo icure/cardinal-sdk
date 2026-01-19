@@ -40,7 +40,7 @@ class InvoiceApi {
 		);
 	}
 
-	Future<DecryptedInvoice> withEncryptionMetadata(DecryptedInvoice? base, Patient? patient, { User? user, Map<String, AccessLevel> delegates = const {}, SecretIdUseOption secretId = SecretIdUseOption.UseAnySharedWithParent }) async {
+	Future<DecryptedInvoice> withEncryptionMetadata(DecryptedInvoice? base, Patient? patient, { User? user, Map<String, AccessLevel> delegates = const {}, SecretIdUseOption secretId = SecretIdUseOption.UseAnySharedWithParent, String? alternateRootDelegateId }) async {
 		return await CardinalSdkPlatformInterface.instance.apis.invoice.withEncryptionMetadata(
 			_sdkId,
 			base,
@@ -48,6 +48,7 @@ class InvoiceApi {
 			user,
 			delegates,
 			secretId,
+			alternateRootDelegateId,
 		);
 	}
 
