@@ -13,8 +13,8 @@ import kotlin.collections.Set
 @SerialName("MessageByInvoiceIdsFilter")
 @Serializable
 data class MessageByInvoiceIdsFilter(
-	public val invoiceIds: Set<String>,
-	override val desc: String? = null,
+	invoiceIds: Set<String>,
+	desc: String? = null,
 ) : AbstractFilter<Message> {
 	// region MessageByInvoiceIdsFilter-MessageByInvoiceIdsFilter
 

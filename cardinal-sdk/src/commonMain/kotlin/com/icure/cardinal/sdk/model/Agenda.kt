@@ -5,18 +5,18 @@ import com.icure.cardinal.sdk.model.base.ICureDocument
 import com.icure.cardinal.sdk.model.base.StoredDocument
 import com.icure.cardinal.sdk.model.embed.AgendaSlottingAlgorithm
 import com.icure.cardinal.sdk.model.embed.ResourceGroupAllocationSchedule
-import com.icure.cardinal.sdk.model.embed.Right
 import com.icure.cardinal.sdk.model.embed.UserAccessLevel
 import com.icure.cardinal.sdk.utils.DefaultValue
 import kotlinx.serialization.Serializable
 import kotlin.Boolean
-import kotlin.Deprecated
 import kotlin.Int
 import kotlin.Long
 import kotlin.String
 import kotlin.collections.List
 import kotlin.collections.Map
 import kotlin.collections.Set
+import com.icure.cardinal.sdk.model.embed.Right
+import kotlin.Deprecated
 
 // WARNING: This file is auto-generated. If you change it manually, your changes will be lost.
 // If you want to change the way this class is generated, see [this repo](https://github.com/icure/sdk-codegen).
@@ -29,7 +29,6 @@ data class Agenda(
 	override val modified: Long? = null,
 	override val author: String? = null,
 	override val responsible: String? = null,
-	override val medicalLocationId: String? = null,
 	@DefaultValue("emptySet()")
 	override val tags: Set<CodeStub> = emptySet(),
 	@DefaultValue("emptySet()")
@@ -42,9 +41,6 @@ data class Agenda(
 	public val name: String? = null,
 	public val userId: String? = null,
 	public val zoneId: String? = null,
-	@DefaultValue("emptyList()")
-	@Deprecated("Use `userRights` instead")
-	public val rights: List<Right> = emptyList(),
 	@DefaultValue("emptyMap()")
 	public val userRights: Map<String, UserAccessLevel> = emptyMap(),
 	public val slottingAlgorithm: AgendaSlottingAlgorithm? = null,

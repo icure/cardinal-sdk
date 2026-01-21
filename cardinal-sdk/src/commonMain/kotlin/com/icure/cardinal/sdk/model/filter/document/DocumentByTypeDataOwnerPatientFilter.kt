@@ -14,10 +14,10 @@ import kotlin.collections.Set
 @SerialName("DocumentByTypeDataOwnerPatientFilter")
 @Serializable
 data class DocumentByTypeDataOwnerPatientFilter(
-	public val dataOwnerId: String,
-	public val documentType: DocumentType,
-	public val secretPatientKeys: Set<String>,
-	override val desc: String? = null,
+	dataOwnerId: String,
+	documentType: DocumentType,
+	secretPatientKeys: Set<String>,
+	desc: String? = null,
 ) : AbstractFilter<Document> {
 	// region DocumentByTypeDataOwnerPatientFilter-DocumentByTypeDataOwnerPatientFilter
 

@@ -12,13 +12,13 @@ import kotlin.String
 @SerialName("CodeIdsByTypeCodeVersionIntervalFilter")
 @Serializable
 data class CodeIdsByTypeCodeVersionIntervalFilter(
-	override val desc: String? = null,
-	public val startType: String? = null,
-	public val startCode: String? = null,
-	public val startVersion: String? = null,
-	public val endType: String? = null,
-	public val endCode: String? = null,
-	public val endVersion: String? = null,
+	desc: String? = null,
+	startType: String? = null,
+	startCode: String? = null,
+	startVersion: String? = null,
+	endType: String? = null,
+	endCode: String? = null,
+	endVersion: String? = null,
 ) : AbstractFilter<Code> {
 	// region CodeIdsByTypeCodeVersionIntervalFilter-CodeIdsByTypeCodeVersionIntervalFilter
 

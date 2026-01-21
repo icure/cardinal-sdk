@@ -13,11 +13,11 @@ import kotlin.collections.List
 @SerialName("PricingByRegionTypesLanguageLabelFilter")
 @Serializable
 data class PricingByRegionTypesLanguageLabelFilter(
-	public val region: String? = null,
-	public val types: List<String>,
-	public val language: String,
-	public val label: String,
-	override val desc: String? = null,
+	region: String? = null,
+	types: List<String>,
+	language: String,
+	label: String,
+	desc: String? = null,
 ) : AbstractFilter<Tarification> {
 	// region PricingByRegionTypesLanguageLabelFilter-PricingByRegionTypesLanguageLabelFilter
 

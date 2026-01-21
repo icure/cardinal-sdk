@@ -14,11 +14,11 @@ import kotlin.String
 @SerialName("PatientByDataOwnerModifiedAfterFilter")
 @Serializable
 data class PatientByDataOwnerModifiedAfterFilter(
-	public val dataOwnerId: String,
-	public val startDate: Long?,
-	public val endDate: Long?,
-	public val descending: Boolean?,
-	override val desc: String?,
+	dataOwnerId: String,
+	startDate: Long?,
+	endDate: Long?,
+	descending: Boolean?,
+	desc: String?,
 ) : AbstractFilter<Patient> {
 	// region PatientByDataOwnerModifiedAfterFilter-PatientByDataOwnerModifiedAfterFilter
 

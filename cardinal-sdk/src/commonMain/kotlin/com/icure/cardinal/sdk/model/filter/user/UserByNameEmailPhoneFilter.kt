@@ -12,8 +12,8 @@ import kotlin.String
 @SerialName("UserByNameEmailPhoneFilter")
 @Serializable
 data class UserByNameEmailPhoneFilter(
-	public val searchString: String,
-	override val desc: String? = null,
+	searchString: String,
+	desc: String? = null,
 ) : AbstractFilter<User> {
 	// region UserByNameEmailPhoneFilter-UserByNameEmailPhoneFilter
 

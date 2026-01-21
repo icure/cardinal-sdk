@@ -15,12 +15,12 @@ import kotlin.collections.Set
 @SerialName("ServiceByDataOwnerPatientDateFilter")
 @Serializable
 data class ServiceByDataOwnerPatientDateFilter(
-	public val dataOwnerId: String,
-	public val secretForeignKeys: Set<String>,
-	public val startDate: Long? = null,
-	public val endDate: Long? = null,
-	public val descending: Boolean? = null,
-	override val desc: String? = null,
+	dataOwnerId: String,
+	secretForeignKeys: Set<String>,
+	startDate: Long? = null,
+	endDate: Long? = null,
+	descending: Boolean? = null,
+	desc: String? = null,
 ) : AbstractFilter<Service> {
 	// region ServiceByDataOwnerPatientDateFilter-ServiceByDataOwnerPatientDateFilter
 

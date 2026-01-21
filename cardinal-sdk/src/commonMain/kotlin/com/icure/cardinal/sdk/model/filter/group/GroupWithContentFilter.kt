@@ -12,9 +12,9 @@ import kotlin.String
 @SerialName("GroupWithContentFilter")
 @Serializable
 data class GroupWithContentFilter(
-	public val superGroupId: String,
-	public val searchString: String,
-	override val desc: String? = null,
+	superGroupId: String,
+	searchString: String,
+	desc: String? = null,
 ) : AbstractFilter<Group> {
 	// region GroupWithContentFilter-GroupWithContentFilter
 

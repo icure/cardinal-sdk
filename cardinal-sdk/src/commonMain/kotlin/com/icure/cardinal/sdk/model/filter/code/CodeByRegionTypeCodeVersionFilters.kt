@@ -12,11 +12,11 @@ import kotlin.String
 @SerialName("CodeByRegionTypeCodeVersionFilters")
 @Serializable
 data class CodeByRegionTypeCodeVersionFilters(
-	public val region: String,
-	public val type: String?,
-	public val code: String?,
-	public val version: String?,
-	override val desc: String?,
+	region: String,
+	type: String?,
+	code: String?,
+	version: String?,
+	desc: String?,
 ) : AbstractFilter<Code> {
 	// region CodeByRegionTypeCodeVersionFilters-CodeByRegionTypeCodeVersionFilters
 

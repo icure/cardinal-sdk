@@ -12,10 +12,10 @@ import kotlin.String
 @SerialName("ContactByDataOwnerServiceTagFilter")
 @Serializable
 data class ContactByDataOwnerServiceTagFilter(
-	public val dataOwnerId: String,
-	public val tagType: String,
-	public val tagCode: String?,
-	override val desc: String? = null,
+	dataOwnerId: String,
+	tagType: String,
+	tagCode: String?,
+	desc: String? = null,
 ) : AbstractFilter<Contact> {
 	// region ContactByDataOwnerServiceTagFilter-ContactByDataOwnerServiceTagFilter
 

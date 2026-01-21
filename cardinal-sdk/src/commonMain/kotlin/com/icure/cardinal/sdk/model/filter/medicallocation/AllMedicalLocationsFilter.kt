@@ -12,7 +12,7 @@ import kotlin.String
 @SerialName("AllMedicalLocationsFilter")
 @Serializable
 data class AllMedicalLocationsFilter(
-	override val desc: String? = null,
+	desc: String? = null,
 ) : AbstractFilter<MedicalLocation> {
 	// region AllMedicalLocationsFilter-AllMedicalLocationsFilter
 

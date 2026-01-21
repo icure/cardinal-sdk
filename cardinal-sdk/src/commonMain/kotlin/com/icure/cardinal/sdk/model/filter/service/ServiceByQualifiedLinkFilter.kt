@@ -14,9 +14,9 @@ import kotlin.collections.List
 @SerialName("ServiceByQualifiedLinkFilter")
 @Serializable
 data class ServiceByQualifiedLinkFilter(
-	public val linkValues: List<String>,
-	public val linkQualification: LinkQualification? = null,
-	override val desc: String? = null,
+	linkValues: List<String>,
+	linkQualification: LinkQualification? = null,
+	desc: String? = null,
 ) : AbstractFilter<Service> {
 	// region ServiceByQualifiedLinkFilter-ServiceByQualifiedLinkFilter
 

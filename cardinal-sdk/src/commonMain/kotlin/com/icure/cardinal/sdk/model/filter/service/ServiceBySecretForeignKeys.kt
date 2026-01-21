@@ -13,9 +13,9 @@ import kotlin.collections.Set
 @SerialName("ServiceBySecretForeignKeys")
 @Serializable
 data class ServiceBySecretForeignKeys(
-	override val desc: String? = null,
-	public val healthcarePartyId: String? = null,
-	public val patientSecretForeignKeys: Set<String>,
+	desc: String? = null,
+	healthcarePartyId: String? = null,
+	patientSecretForeignKeys: Set<String>,
 ) : AbstractFilter<Service> {
 	// region ServiceBySecretForeignKeys-ServiceBySecretForeignKeys
 

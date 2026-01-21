@@ -14,15 +14,15 @@ import kotlin.collections.List
 @SerialName("ContactByHcPartyPatientTagCodeDateFilter")
 @Serializable
 data class ContactByHcPartyPatientTagCodeDateFilter(
-	override val desc: String? = null,
-	public val healthcarePartyId: String? = null,
-	public val patientSecretForeignKeys: List<String>? = null,
-	public val tagType: String? = null,
-	public val tagCode: String? = null,
-	public val codeType: String? = null,
-	public val codeCode: String? = null,
-	public val startOfContactOpeningDate: Long? = null,
-	public val endOfContactOpeningDate: Long? = null,
+	desc: String? = null,
+	healthcarePartyId: String? = null,
+	patientSecretForeignKeys: List<String>? = null,
+	tagType: String? = null,
+	tagCode: String? = null,
+	codeType: String? = null,
+	codeCode: String? = null,
+	startOfContactOpeningDate: Long? = null,
+	endOfContactOpeningDate: Long? = null,
 ) : AbstractFilter<Contact> {
 	// region ContactByHcPartyPatientTagCodeDateFilter-ContactByHcPartyPatientTagCodeDateFilter
 

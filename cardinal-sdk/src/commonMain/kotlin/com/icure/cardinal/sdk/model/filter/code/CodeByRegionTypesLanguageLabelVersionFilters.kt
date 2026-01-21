@@ -13,12 +13,12 @@ import kotlin.collections.List
 @SerialName("CodeByRegionTypesLanguageLabelVersionFilters")
 @Serializable
 data class CodeByRegionTypesLanguageLabelVersionFilters(
-	public val region: String? = null,
-	public val types: List<String>,
-	public val language: String,
-	public val label: String,
-	public val version: String? = null,
-	override val desc: String? = null,
+	region: String? = null,
+	types: List<String>,
+	language: String,
+	label: String,
+	version: String? = null,
+	desc: String? = null,
 ) : AbstractFilter<Code> {
 	// region CodeByRegionTypesLanguageLabelVersionFilters-CodeByRegionTypesLanguageLabelVersionFilters
 

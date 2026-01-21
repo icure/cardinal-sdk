@@ -12,10 +12,10 @@ import kotlin.String
 @SerialName("ContactByDataOwnerServiceCodeFilter")
 @Serializable
 data class ContactByDataOwnerServiceCodeFilter(
-	public val dataOwnerId: String,
-	public val codeType: String,
-	public val codeCode: String?,
-	override val desc: String? = null,
+	dataOwnerId: String,
+	codeType: String,
+	codeCode: String?,
+	desc: String? = null,
 ) : AbstractFilter<Contact> {
 	// region ContactByDataOwnerServiceCodeFilter-ContactByDataOwnerServiceCodeFilter
 

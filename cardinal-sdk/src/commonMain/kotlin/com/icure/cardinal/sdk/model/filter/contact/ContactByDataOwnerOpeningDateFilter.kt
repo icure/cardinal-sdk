@@ -14,11 +14,11 @@ import kotlin.String
 @SerialName("ContactByDataOwnerOpeningDateFilter")
 @Serializable
 data class ContactByDataOwnerOpeningDateFilter(
-	public val dataOwnerId: String,
-	public val startDate: Long? = null,
-	public val endDate: Long? = null,
-	public val descending: Boolean? = null,
-	override val desc: String? = null,
+	dataOwnerId: String,
+	startDate: Long? = null,
+	endDate: Long? = null,
+	descending: Boolean? = null,
+	desc: String? = null,
 ) : AbstractFilter<Contact> {
 	// region ContactByDataOwnerOpeningDateFilter-ContactByDataOwnerOpeningDateFilter
 

@@ -12,12 +12,12 @@ import kotlin.String
 @SerialName("ExternalViewFilter")
 @Serializable
 data class ExternalViewFilter(
-	override val desc: String? = null,
-	public val view: String,
-	public val partition: String,
-	public val entityQualifiedName: String,
-	public val startKey: ExternalFilterKey?,
-	public val endKey: ExternalFilterKey?,
+	desc: String? = null,
+	view: String,
+	partition: String,
+	entityQualifiedName: String,
+	startKey: ExternalFilterKey?,
+	endKey: ExternalFilterKey?,
 ) : AbstractFilter<Identifiable<String>> {
 	// region ExternalViewFilter-ExternalViewFilter
 

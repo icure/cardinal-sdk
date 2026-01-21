@@ -12,7 +12,7 @@ import kotlin.String
 @SerialName("AllGroupsFilter")
 @Serializable
 data class AllGroupsFilter(
-	override val desc: String? = null,
+	desc: String? = null,
 ) : AbstractFilter<Group> {
 	// region AllGroupsFilter-AllGroupsFilter
 

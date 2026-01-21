@@ -12,11 +12,11 @@ import kotlin.String
 @SerialName("HealthcarePartyByTagCodeFilter")
 @Serializable
 data class HealthcarePartyByTagCodeFilter(
-	public val tagType: String? = null,
-	public val tagCode: String? = null,
-	public val codeType: String? = null,
-	public val codeCode: String? = null,
-	override val desc: String? = null,
+	tagType: String? = null,
+	tagCode: String? = null,
+	codeType: String? = null,
+	codeCode: String? = null,
+	desc: String? = null,
 ) : AbstractFilter<HealthcareParty> {
 	// region HealthcarePartyByTagCodeFilter-HealthcarePartyByTagCodeFilter
 

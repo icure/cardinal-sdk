@@ -13,10 +13,10 @@ import kotlin.String
 @SerialName("PatientByHcPartyDateOfBirthBetweenFilter")
 @Serializable
 data class PatientByHcPartyDateOfBirthBetweenFilter(
-	override val desc: String? = null,
-	public val minDateOfBirth: Int? = null,
-	public val maxDateOfBirth: Int? = null,
-	public val healthcarePartyId: String? = null,
+	desc: String? = null,
+	minDateOfBirth: Int? = null,
+	maxDateOfBirth: Int? = null,
+	healthcarePartyId: String? = null,
 ) : AbstractFilter<Patient> {
 	// region PatientByHcPartyDateOfBirthBetweenFilter-PatientByHcPartyDateOfBirthBetweenFilter
 

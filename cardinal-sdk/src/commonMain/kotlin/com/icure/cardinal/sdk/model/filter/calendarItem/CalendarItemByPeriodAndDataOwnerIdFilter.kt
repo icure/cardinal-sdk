@@ -13,10 +13,10 @@ import kotlin.String
 @SerialName("CalendarItemByPeriodAndDataOwnerIdFilter")
 @Serializable
 data class CalendarItemByPeriodAndDataOwnerIdFilter(
-	public val dataOwnerId: String,
-	public val startTime: Long,
-	public val endTime: Long,
-	override val desc: String? = null,
+	dataOwnerId: String,
+	startTime: Long,
+	endTime: Long,
+	desc: String? = null,
 ) : AbstractFilter<CalendarItem> {
 	// region CalendarItemByPeriodAndDataOwnerIdFilter-CalendarItemByPeriodAndDataOwnerIdFilter
 

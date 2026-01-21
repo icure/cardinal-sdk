@@ -12,8 +12,8 @@ import kotlin.String
 @SerialName("ContactByExternalIdFilter")
 @Serializable
 data class ContactByExternalIdFilter(
-	public val externalId: String,
-	override val desc: String? = null,
+	externalId: String,
+	desc: String? = null,
 ) : AbstractFilter<Contact> {
 	// region ContactByExternalIdFilter-ContactByExternalIdFilter
 

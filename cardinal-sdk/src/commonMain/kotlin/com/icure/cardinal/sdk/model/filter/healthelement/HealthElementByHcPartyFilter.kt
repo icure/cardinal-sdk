@@ -13,8 +13,8 @@ import kotlin.String
 @SerialName("HealthElementByHcPartyFilter")
 @Serializable
 data class HealthElementByHcPartyFilter(
-	override val hcpId: String,
-	override val desc: String? = null,
+	hcpId: String,
+	desc: String? = null,
 ) : AbstractFilter<HealthElement>, Filter.ByHcpartyFilter<HealthElement> {
 	// region HealthElementByHcPartyFilter-HealthElementByHcPartyFilter
 

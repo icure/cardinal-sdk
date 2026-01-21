@@ -12,8 +12,8 @@ import kotlin.String
 @SerialName("GroupBySuperGroupFilter")
 @Serializable
 class GroupBySuperGroupFilter(
-	public val superGroupId: String,
-	override val desc: String? = null,
+	superGroupId: String,
+	desc: String? = null,
 ) : AbstractFilter<Group> {
 	// region GroupBySuperGroupFilter-GroupBySuperGroupFilter
 

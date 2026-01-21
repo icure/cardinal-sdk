@@ -12,8 +12,8 @@ import kotlin.String
 @SerialName("ServiceByAssociationIdFilter")
 @Serializable
 data class ServiceByAssociationIdFilter(
-	public val associationId: String,
-	override val desc: String? = null,
+	associationId: String,
+	desc: String? = null,
 ) : AbstractFilter<Service> {
 	// region ServiceByAssociationIdFilter-ServiceByAssociationIdFilter
 

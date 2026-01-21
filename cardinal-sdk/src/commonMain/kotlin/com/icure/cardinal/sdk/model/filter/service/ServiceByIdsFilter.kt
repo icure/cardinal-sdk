@@ -14,8 +14,8 @@ import kotlin.collections.Set
 @SerialName("ServiceByIdsFilter")
 @Serializable
 data class ServiceByIdsFilter(
-	override val ids: Set<String>,
-	override val desc: String? = null,
+	ids: Set<String>,
+	desc: String? = null,
 ) : AbstractFilter<Service>, Filter.IdsFilter<String, Service> {
 	// region ServiceByIdsFilter-ServiceByIdsFilter
 

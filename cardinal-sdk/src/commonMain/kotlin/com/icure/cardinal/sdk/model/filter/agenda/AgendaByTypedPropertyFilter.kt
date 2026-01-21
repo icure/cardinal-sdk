@@ -13,8 +13,8 @@ import kotlin.String
 @SerialName("AgendaByTypedPropertyFilter")
 @Serializable
 data class AgendaByTypedPropertyFilter(
-	public val `property`: DecryptedPropertyStub,
-	override val desc: String?,
+	`property`: DecryptedPropertyStub,
+	desc: String?,
 ) : AbstractFilter<Agenda> {
 	// region AgendaByTypedPropertyFilter-AgendaByTypedPropertyFilter
 

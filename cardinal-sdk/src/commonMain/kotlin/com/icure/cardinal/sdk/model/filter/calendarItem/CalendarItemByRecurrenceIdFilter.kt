@@ -12,8 +12,8 @@ import kotlin.String
 @SerialName("CalendarItemByRecurrenceIdFilter")
 @Serializable
 data class CalendarItemByRecurrenceIdFilter(
-	public val recurrenceId: String,
-	override val desc: String? = null,
+	recurrenceId: String,
+	desc: String? = null,
 ) : AbstractFilter<CalendarItem> {
 	// region CalendarItemByRecurrenceIdFilter-CalendarItemByRecurrenceIdFilter
 

@@ -14,8 +14,8 @@ import kotlin.collections.Set
 @SerialName("DeviceByIdsFilter")
 @Serializable
 data class DeviceByIdsFilter(
-	override val ids: Set<String>,
-	override val desc: String? = null,
+	ids: Set<String>,
+	desc: String? = null,
 ) : AbstractFilter<Device>, Filter.IdsFilter<String, Device> {
 	// region DeviceByIdsFilter-DeviceByIdsFilter
 

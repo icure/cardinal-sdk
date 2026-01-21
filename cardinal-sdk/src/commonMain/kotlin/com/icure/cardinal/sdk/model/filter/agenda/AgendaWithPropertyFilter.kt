@@ -12,8 +12,8 @@ import kotlin.String
 @SerialName("AgendaWithPropertyFilter")
 @Serializable
 data class AgendaWithPropertyFilter(
-	public val propertyId: String,
-	override val desc: String? = null,
+	propertyId: String,
+	desc: String? = null,
 ) : AbstractFilter<Agenda> {
 	// region AgendaWithPropertyFilter-AgendaWithPropertyFilter
 

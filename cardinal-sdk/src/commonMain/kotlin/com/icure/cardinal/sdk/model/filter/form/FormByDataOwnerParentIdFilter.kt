@@ -12,9 +12,9 @@ import kotlin.String
 @SerialName("FormByDataOwnerParentIdFilter")
 @Serializable
 data class FormByDataOwnerParentIdFilter(
-	public val dataOwnerId: String,
-	public val parentId: String,
-	override val desc: String? = null,
+	dataOwnerId: String,
+	parentId: String,
+	desc: String? = null,
 ) : AbstractFilter<Form> {
 	// region FormByDataOwnerParentIdFilter-FormByDataOwnerParentIdFilter
 

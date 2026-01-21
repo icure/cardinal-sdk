@@ -12,9 +12,9 @@ import kotlin.String
 @SerialName("CodeByQualifiedLinkFilter")
 @Serializable
 data class CodeByQualifiedLinkFilter(
-	public val linkType: String,
-	public val linkedId: String? = null,
-	override val desc: String? = null,
+	linkType: String,
+	linkedId: String? = null,
+	desc: String? = null,
 ) : AbstractFilter<Code> {
 	// region CodeByQualifiedLinkFilter-CodeByQualifiedLinkFilter
 

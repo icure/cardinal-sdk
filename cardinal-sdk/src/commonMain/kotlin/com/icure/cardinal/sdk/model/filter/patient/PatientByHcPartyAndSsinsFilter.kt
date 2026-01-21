@@ -13,9 +13,9 @@ import kotlin.collections.List
 @SerialName("PatientByHcPartyAndSsinsFilter")
 @Serializable
 data class PatientByHcPartyAndSsinsFilter(
-	override val desc: String? = null,
-	public val ssins: List<String>? = null,
-	public val healthcarePartyId: String? = null,
+	desc: String? = null,
+	ssins: List<String>? = null,
+	healthcarePartyId: String? = null,
 ) : AbstractFilter<Patient> {
 	// region PatientByHcPartyAndSsinsFilter-PatientByHcPartyAndSsinsFilter
 

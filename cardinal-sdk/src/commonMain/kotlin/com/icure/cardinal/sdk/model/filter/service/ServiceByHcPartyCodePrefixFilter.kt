@@ -12,10 +12,10 @@ import kotlin.String
 @SerialName("ServiceByHcPartyCodePrefixFilter")
 @Serializable
 data class ServiceByHcPartyCodePrefixFilter(
-	public val healthcarePartyId: String,
-	public val codeType: String,
-	public val codeCodePrefix: String,
-	override val desc: String? = null,
+	healthcarePartyId: String,
+	codeType: String,
+	codeCodePrefix: String,
+	desc: String? = null,
 ) : AbstractFilter<Service> {
 	// region ServiceByHcPartyCodePrefixFilter-ServiceByHcPartyCodePrefixFilter
 

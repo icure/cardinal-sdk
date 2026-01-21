@@ -13,9 +13,9 @@ import kotlin.String
 @SerialName("FormByUniqueUuidFilter")
 @Serializable
 data class FormByUniqueUuidFilter(
-	public val uniqueId: String,
-	public val descending: Boolean? = null,
-	override val desc: String? = null,
+	uniqueId: String,
+	descending: Boolean? = null,
+	desc: String? = null,
 ) : AbstractFilter<Form> {
 	// region FormByUniqueUuidFilter-FormByUniqueUuidFilter
 

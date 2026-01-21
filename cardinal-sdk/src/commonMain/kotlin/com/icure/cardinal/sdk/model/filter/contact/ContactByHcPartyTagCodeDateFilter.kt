@@ -13,14 +13,14 @@ import kotlin.String
 @SerialName("ContactByHcPartyTagCodeDateFilter")
 @Serializable
 data class ContactByHcPartyTagCodeDateFilter(
-	override val desc: String? = null,
-	public val healthcarePartyId: String? = null,
-	public val tagType: String? = null,
-	public val tagCode: String? = null,
-	public val codeType: String? = null,
-	public val codeCode: String? = null,
-	public val startOfContactOpeningDate: Long? = null,
-	public val endOfContactOpeningDate: Long? = null,
+	desc: String? = null,
+	healthcarePartyId: String? = null,
+	tagType: String? = null,
+	tagCode: String? = null,
+	codeType: String? = null,
+	codeCode: String? = null,
+	startOfContactOpeningDate: Long? = null,
+	endOfContactOpeningDate: Long? = null,
 ) : AbstractFilter<Contact> {
 	// region ContactByHcPartyTagCodeDateFilter-ContactByHcPartyTagCodeDateFilter
 

@@ -13,9 +13,9 @@ import kotlin.String
 @SerialName("HealthElementByHcPartyStatusFilter")
 @Serializable
 data class HealthElementByHcPartyStatusFilter(
-	override val desc: String? = null,
-	public val hcPartyId: String,
-	public val status: Int,
+	desc: String? = null,
+	hcPartyId: String,
+	status: Int,
 ) : AbstractFilter<HealthElement> {
 	// region HealthElementByHcPartyStatusFilter-HealthElementByHcPartyStatusFilter
 

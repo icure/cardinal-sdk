@@ -12,8 +12,8 @@ import kotlin.String
 @SerialName("AgendaReadableByUserRightsFilter")
 @Serializable
 data class AgendaReadableByUserRightsFilter(
-	public val userId: String,
-	override val desc: String?,
+	userId: String,
+	desc: String?,
 ) : AbstractFilter<Agenda> {
 	// region AgendaReadableByUserRightsFilter-AgendaReadableByUserRightsFilter
 

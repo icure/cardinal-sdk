@@ -14,8 +14,8 @@ import kotlin.collections.Set
 @SerialName("HealthElementByIdsFilter")
 @Serializable
 data class HealthElementByIdsFilter(
-	override val ids: Set<String>,
-	override val desc: String? = null,
+	ids: Set<String>,
+	desc: String? = null,
 ) : AbstractFilter<HealthElement>, Filter.IdsFilter<String, HealthElement> {
 	// region HealthElementByIdsFilter-HealthElementByIdsFilter
 

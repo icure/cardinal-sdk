@@ -12,8 +12,8 @@ import kotlin.String
 @SerialName("TimeTableByAgendaIdFilter")
 @Serializable
 data class TimeTableByAgendaIdFilter(
-	public val agendaId: String,
-	override val desc: String? = null,
+	agendaId: String,
+	desc: String? = null,
 ) : AbstractFilter<TimeTable> {
 	// region TimeTableByAgendaIdFilter-TimeTableByAgendaIdFilter
 

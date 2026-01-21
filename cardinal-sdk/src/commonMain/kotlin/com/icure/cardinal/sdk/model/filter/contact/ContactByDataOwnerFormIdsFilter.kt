@@ -13,9 +13,9 @@ import kotlin.collections.Set
 @SerialName("ContactByDataOwnerFormIdsFilter")
 @Serializable
 data class ContactByDataOwnerFormIdsFilter(
-	public val dataOwnerId: String,
-	public val formIds: Set<String>,
-	override val desc: String? = null,
+	dataOwnerId: String,
+	formIds: Set<String>,
+	desc: String? = null,
 ) : AbstractFilter<Contact> {
 	// region ContactByDataOwnerFormIdsFilter-ContactByDataOwnerFormIdsFilter
 

@@ -55,10 +55,14 @@ public interface RawHealthElementApi {
 		rev: String,
 	): HttpResponse<EncryptedHealthElement>
 
+	suspend fun undeleteHealthElements(healthElementIds: ListOfIdsAndRev): HttpResponse<List<EncryptedHealthElement>>
+
 	suspend fun purgeHealthElement(
 		healthElementId: String,
 		rev: String,
 	): HttpResponse<DocIdentifier>
+
+	suspend fun purgeHealthElements(healthElementIds: ListOfIdsAndRev): HttpResponse<List<DocIdentifier>>
 
 	suspend fun modifyHealthElement(healthElementDto: EncryptedHealthElement): HttpResponse<EncryptedHealthElement>
 
@@ -86,19 +90,72 @@ public interface RawHealthElementApi {
 		healthElementDto: EncryptedHealthElement,
 	): HttpResponse<EncryptedHealthElement>
 
+	suspend fun createHealthElementsInGroup(
+		groupId: String,
+		healthElementDtos: List<EncryptedHealthElement>,
+	): HttpResponse<List<EncryptedHealthElement>>
+
 	suspend fun modifyHealthElementInGroup(
 		groupId: String,
 		healthElementDto: EncryptedHealthElement,
 	): HttpResponse<EncryptedHealthElement>
+
+	suspend fun modifyHealthElementsInGroup(
+		groupId: String,
+		healthElementDtos: List<EncryptedHealthElement>,
+	): HttpResponse<List<EncryptedHealthElement>>
 
 	suspend fun getHealthElementInGroup(
 		groupId: String,
 		healthElementId: String,
 	): HttpResponse<EncryptedHealthElement>
 
+	suspend fun getHealthElementsInGroup(
+		groupId: String,
+		healthElementIds: ListOfIds,
+	): HttpResponse<List<EncryptedHealthElement>>
+
+	suspend fun deleteHealthElementInGroup(
+		groupId: String,
+		healthElementId: String,
+		rev: String,
+	): HttpResponse<DocIdentifier>
+
+	suspend fun deleteHealthElementsInGroup(
+		groupId: String,
+		healthElementIds: ListOfIdsAndRev,
+	): HttpResponse<List<DocIdentifier>>
+
+	suspend fun undeleteHealthElementInGroup(
+		groupId: String,
+		healthElementId: String,
+		rev: String,
+	): HttpResponse<EncryptedHealthElement>
+
+	suspend fun undeleteHealthElementsInGroup(
+		groupId: String,
+		healthElementIds: ListOfIdsAndRev,
+	): HttpResponse<List<EncryptedHealthElement>>
+
+	suspend fun purgeHealthElementInGroup(
+		groupId: String,
+		healthElementId: String,
+		rev: String,
+	): HttpResponse<DocIdentifier>
+
+	suspend fun purgeHealthElementsInGroup(
+		groupId: String,
+		healthElementIds: ListOfIdsAndRev,
+	): HttpResponse<List<DocIdentifier>>
+
 	suspend fun bulkShare(
 		request: BulkShareOrUpdateMetadataParams,
 		groupId: String,
 	): HttpResponse<List<EntityBulkShareResult<EncryptedHealthElement>>>
+
+	suspend fun matchHealthElementsInGroupBy(
+		filter: AbstractFilter<HealthElement>,
+		groupId: String,
+	): HttpResponse<List<String>>
 	// endregion
 }

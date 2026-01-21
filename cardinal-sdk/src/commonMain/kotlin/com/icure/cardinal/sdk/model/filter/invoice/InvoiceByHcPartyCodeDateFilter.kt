@@ -13,11 +13,11 @@ import kotlin.String
 @SerialName("InvoiceByHcPartyCodeDateFilter")
 @Serializable
 data class InvoiceByHcPartyCodeDateFilter(
-	override val desc: String? = null,
-	public val healthcarePartyId: String? = null,
-	public val code: String,
-	public val startInvoiceDate: Long? = null,
-	public val endInvoiceDate: Long? = null,
+	desc: String? = null,
+	healthcarePartyId: String? = null,
+	code: String,
+	startInvoiceDate: Long? = null,
+	endInvoiceDate: Long? = null,
 ) : AbstractFilter<Invoice> {
 	// region InvoiceByHcPartyCodeDateFilter-InvoiceByHcPartyCodeDateFilter
 

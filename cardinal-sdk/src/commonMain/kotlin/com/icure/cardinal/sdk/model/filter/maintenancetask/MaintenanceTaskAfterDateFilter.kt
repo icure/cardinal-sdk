@@ -13,9 +13,9 @@ import kotlin.String
 @SerialName("MaintenanceTaskAfterDateFilter")
 @Serializable
 data class MaintenanceTaskAfterDateFilter(
-	override val desc: String? = null,
-	public val healthcarePartyId: String? = null,
-	public val date: Long,
+	desc: String? = null,
+	healthcarePartyId: String? = null,
+	date: Long,
 ) : AbstractFilter<MaintenanceTask> {
 	// region MaintenanceTaskAfterDateFilter-MaintenanceTaskAfterDateFilter
 

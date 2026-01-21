@@ -13,8 +13,8 @@ import kotlin.String
 @SerialName("TopicByHcPartyFilter")
 @Serializable
 data class TopicByHcPartyFilter(
-	override val hcpId: String,
-	override val desc: String? = null,
+	hcpId: String,
+	desc: String? = null,
 ) : AbstractFilter<Topic>, Filter.ByHcpartyFilter<Topic> {
 	// region TopicByHcPartyFilter-TopicByHcPartyFilter
 

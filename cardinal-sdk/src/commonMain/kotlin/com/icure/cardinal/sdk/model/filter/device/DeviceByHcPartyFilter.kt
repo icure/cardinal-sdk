@@ -12,8 +12,8 @@ import kotlin.String
 @SerialName("DeviceByHcPartyFilter")
 @Serializable
 data class DeviceByHcPartyFilter(
-	override val desc: String? = null,
-	public val responsibleId: String? = null,
+	desc: String? = null,
+	responsibleId: String? = null,
 ) : AbstractFilter<Device> {
 	// region DeviceByHcPartyFilter-DeviceByHcPartyFilter
 

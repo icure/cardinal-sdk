@@ -12,9 +12,9 @@ import kotlin.String
 @SerialName("MessageByDataOwnerToAddressFilter")
 @Serializable
 data class MessageByDataOwnerToAddressFilter(
-	public val dataOwnerId: String,
-	public val toAddress: String,
-	override val desc: String? = null,
+	dataOwnerId: String,
+	toAddress: String,
+	desc: String? = null,
 ) : AbstractFilter<Message> {
 	// region MessageByDataOwnerToAddressFilter-MessageByDataOwnerToAddressFilter
 

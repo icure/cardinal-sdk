@@ -12,8 +12,8 @@ import kotlin.String
 @SerialName("HealthcarePartyByParentIdFilter")
 @Serializable
 data class HealthcarePartyByParentIdFilter(
-	public val parentId: String,
-	override val desc: String? = null,
+	parentId: String,
+	desc: String? = null,
 ) : AbstractFilter<HealthcareParty> {
 	// region HealthcarePartyByParentIdFilter-HealthcarePartyByParentIdFilter
 

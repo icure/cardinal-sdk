@@ -13,10 +13,10 @@ import kotlin.String
 @SerialName("MessageByHcPartyTransportGuidReceivedFilter")
 @Serializable
 data class MessageByHcPartyTransportGuidReceivedFilter(
-	public val healthcarePartyId: String,
-	public val transportGuid: String,
-	public val descending: Boolean? = null,
-	override val desc: String? = null,
+	healthcarePartyId: String,
+	transportGuid: String,
+	descending: Boolean? = null,
+	desc: String? = null,
 ) : AbstractFilter<Message> {
 	// region MessageByHcPartyTransportGuidReceivedFilter-MessageByHcPartyTransportGuidReceivedFilter
 

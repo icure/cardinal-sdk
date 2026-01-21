@@ -12,8 +12,8 @@ import kotlin.String
 @SerialName("ServiceByHcPartyFilter")
 @Serializable
 data class ServiceByHcPartyFilter(
-	public val hcpId: String,
-	override val desc: String? = null,
+	hcpId: String,
+	desc: String? = null,
 ) : AbstractFilter<Service> {
 	// region ServiceByHcPartyFilter-ServiceByHcPartyFilter
 

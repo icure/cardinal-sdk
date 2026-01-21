@@ -13,7 +13,7 @@ import kotlin.String
 @SerialName("AllCodesFilter")
 @Serializable
 data class AllCodesFilter(
-	override val desc: String? = null,
+	desc: String? = null,
 ) : AbstractFilter<Code>, Filter.AllFilter<Code> {
 	// region AllCodesFilter-AllCodesFilter
 

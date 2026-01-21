@@ -15,12 +15,12 @@ import kotlin.collections.Set
 @SerialName("CalendarItemByDataOwnerPatientStartTimeFilter")
 @Serializable
 data class CalendarItemByDataOwnerPatientStartTimeFilter(
-	public val dataOwnerId: String,
-	public val startDate: Long?,
-	public val endDate: Long?,
-	public val secretPatientIds: Set<String>,
-	public val descending: Boolean?,
-	override val desc: String? = null,
+	dataOwnerId: String,
+	startDate: Long?,
+	endDate: Long?,
+	secretPatientIds: Set<String>,
+	descending: Boolean?,
+	desc: String? = null,
 ) : AbstractFilter<CalendarItem> {
 	// region CalendarItemByDataOwnerPatientStartTimeFilter-CalendarItemByDataOwnerPatientStartTimeFilter
 

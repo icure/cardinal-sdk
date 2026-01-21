@@ -12,8 +12,8 @@ import kotlin.String
 @SerialName("TopicByParticipantFilter")
 @Serializable
 data class TopicByParticipantFilter(
-	public val participantId: String,
-	override val desc: String? = null,
+	participantId: String,
+	desc: String? = null,
 ) : AbstractFilter<Topic> {
 	// region TopicByParticipantFilter-TopicByParticipantFilter
 

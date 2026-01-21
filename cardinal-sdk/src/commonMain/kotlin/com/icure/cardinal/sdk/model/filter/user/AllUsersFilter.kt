@@ -13,7 +13,7 @@ import kotlin.String
 @SerialName("AllUsersFilter")
 @Serializable
 data class AllUsersFilter(
-	override val desc: String? = null,
+	desc: String? = null,
 ) : AbstractFilter<User>, Filter.AllFilter<User> {
 	// region AllUsersFilter-AllUsersFilter
 

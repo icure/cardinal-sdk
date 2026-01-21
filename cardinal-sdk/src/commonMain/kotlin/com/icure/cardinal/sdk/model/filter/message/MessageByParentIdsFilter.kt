@@ -13,8 +13,8 @@ import kotlin.collections.List
 @SerialName("MessageByParentIdsFilter")
 @Serializable
 data class MessageByParentIdsFilter(
-	public val parentIds: List<String>,
-	override val desc: String? = null,
+	parentIds: List<String>,
+	desc: String? = null,
 ) : AbstractFilter<Message> {
 	// region MessageByParentIdsFilter-MessageByParentIdsFilter
 
