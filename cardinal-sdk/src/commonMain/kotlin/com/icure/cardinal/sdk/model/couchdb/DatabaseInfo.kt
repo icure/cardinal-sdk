@@ -5,11 +5,8 @@ import kotlin.Int
 import kotlin.Long
 import kotlin.String
 
-// WARNING: This file is auto-generated. If you change it manually, your changes will be lost.
-// If you want to change the way this class is generated, see [this repo](https://github.com/icure/sdk-codegen).
-
 @Serializable
-data class DatabaseInfo(
+public data class DatabaseInfo(
 	public val id: String,
 	public val updateSeq: String? = null,
 	public val fileSize: Long? = null,
@@ -20,8 +17,4 @@ data class DatabaseInfo(
 	public val n: Int? = null,
 	public val w: Int? = null,
 	public val r: Int? = null,
-) {
-	// region DatabaseInfo-DatabaseInfo
-
-	// endregion
-}
+)

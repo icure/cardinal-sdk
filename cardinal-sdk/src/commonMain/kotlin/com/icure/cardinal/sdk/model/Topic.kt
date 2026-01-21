@@ -15,9 +15,7 @@ import kotlin.String
 import kotlin.collections.Map
 import kotlin.collections.Set
 
-// WARNING: This file is auto-generated. If you change it manually, your changes will be lost.
-// If you want to change the way this class is generated, see [this repo](https://github.com/icure/sdk-codegen).
-sealed interface Topic :
+public sealed interface Topic :
 	StoredDocument,
 	ICureDocument<String>,
 	HasEncryptionMetadata,
@@ -44,10 +42,6 @@ sealed interface Topic :
 
 	override val responsible: String?
 
-	override val medicalLocationId: String?
-
-	override val endOfLife: Long?
-
 	override val deletionDate: Long?
 
 	public val activeParticipants: Map<String, TopicRole>
@@ -67,15 +61,10 @@ sealed interface Topic :
 	public val linkedHealthElements: Set<String>
 
 	public val linkedServices: Set<String>
-	// region Topic-Topic
-	companion object {
-		const val KRAKEN_QUALIFIED_NAME = "org.taktik.icure.entities.Topic"
-	}
-	// endregion
 }
 
 @Serializable
-data class DecryptedTopic(
+public data class DecryptedTopic(
 	override val id: String,
 	override val rev: String? = null,
 	override val created: Long? = null,
@@ -89,8 +78,6 @@ data class DecryptedTopic(
 	override val tags: Set<CodeStub> = emptySet(),
 	override val author: String? = null,
 	override val responsible: String? = null,
-	override val medicalLocationId: String? = null,
-	override val endOfLife: Long? = null,
 	override val deletionDate: Long? = null,
 	@DefaultValue("emptyMap()")
 	override val activeParticipants: Map<String, TopicRole> = emptyMap(),
@@ -108,15 +95,10 @@ data class DecryptedTopic(
 	override val linkedHealthElements: Set<String> = emptySet(),
 	@DefaultValue("emptySet()")
 	override val linkedServices: Set<String> = emptySet(),
-) : Topic {
-	// region Topic-DecryptedTopic
-override fun copyWithSecurityMetadata(securityMetadata: SecurityMetadata, secretForeignKeys: Set<String>): DecryptedTopic =
-		copy(securityMetadata = securityMetadata, secretForeignKeys = secretForeignKeys)
-	// endregion
-}
+) : Topic
 
 @Serializable
-data class EncryptedTopic(
+public data class EncryptedTopic(
 	override val id: String,
 	override val rev: String? = null,
 	override val created: Long? = null,
@@ -130,8 +112,6 @@ data class EncryptedTopic(
 	override val tags: Set<CodeStub> = emptySet(),
 	override val author: String? = null,
 	override val responsible: String? = null,
-	override val medicalLocationId: String? = null,
-	override val endOfLife: Long? = null,
 	override val deletionDate: Long? = null,
 	@DefaultValue("emptyMap()")
 	override val activeParticipants: Map<String, TopicRole> = emptyMap(),
@@ -149,9 +129,4 @@ data class EncryptedTopic(
 	override val linkedHealthElements: Set<String> = emptySet(),
 	@DefaultValue("emptySet()")
 	override val linkedServices: Set<String> = emptySet(),
-) : Topic {
-	// region Topic-EncryptedTopic
-override fun copyWithSecurityMetadata(securityMetadata: SecurityMetadata, secretForeignKeys: Set<String>): EncryptedTopic =
-		copy(securityMetadata = securityMetadata, secretForeignKeys = secretForeignKeys)
-	// endregion
-}
+) : Topic

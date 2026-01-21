@@ -7,25 +7,19 @@ import com.icure.cardinal.sdk.model.base.StoredDocument
 import com.icure.cardinal.sdk.model.embed.DataAttachment
 import com.icure.cardinal.sdk.model.embed.Delegation
 import com.icure.cardinal.sdk.model.embed.DeletedAttachment
-import com.icure.cardinal.sdk.model.embed.DocumentLocation
 import com.icure.cardinal.sdk.model.embed.DocumentStatus
-import com.icure.cardinal.sdk.model.embed.DocumentType
 import com.icure.cardinal.sdk.model.embed.Encryptable
 import com.icure.cardinal.sdk.model.embed.SecurityMetadata
 import com.icure.cardinal.sdk.model.specializations.Base64String
-import com.icure.cardinal.sdk.serialization.ByteArraySerializer
 import com.icure.cardinal.sdk.utils.DefaultValue
 import kotlinx.serialization.Serializable
-import kotlin.ByteArray
 import kotlin.Long
 import kotlin.String
 import kotlin.collections.List
 import kotlin.collections.Map
 import kotlin.collections.Set
 
-// WARNING: This file is auto-generated. If you change it manually, your changes will be lost.
-// If you want to change the way this class is generated, see [this repo](https://github.com/icure/sdk-codegen).
-sealed interface Document :
+public sealed interface Document :
 	StoredDocument,
 	ICureDocument<String>,
 	HasEncryptionMetadata,
@@ -42,19 +36,11 @@ sealed interface Document :
 
 	override val responsible: String?
 
-	override val medicalLocationId: String?
-
 	override val tags: Set<CodeStub>
 
 	override val codes: Set<CodeStub>
 
-	override val endOfLife: Long?
-
 	override val deletionDate: Long?
-
-	public val documentLocation: DocumentLocation?
-
-	public val documentType: DocumentType?
 
 	public val documentStatus: DocumentStatus?
 
@@ -63,10 +49,6 @@ sealed interface Document :
 	public val name: String?
 
 	public val version: String?
-
-	public val storedICureDocumentId: String?
-
-	public val externalUuid: String?
 
 	public val size: Long?
 
@@ -86,10 +68,6 @@ sealed interface Document :
 
 	public val deletedAttachments: List<DeletedAttachment>
 
-	public val encryptedAttachment: ByteArray?
-
-	public val decryptedAttachment: ByteArray?
-
 	override val secretForeignKeys: Set<String>
 
 	override val cryptedForeignKeys: Map<String, Set<Delegation>>
@@ -101,34 +79,25 @@ sealed interface Document :
 	override val encryptedSelf: Base64String?
 
 	override val securityMetadata: SecurityMetadata?
-	// region Document-Document
-
-	// endregion
 }
 
 @Serializable
-data class DecryptedDocument(
+public data class DecryptedDocument(
 	override val id: String,
 	override val rev: String? = null,
 	override val created: Long? = null,
 	override val modified: Long? = null,
 	override val author: String? = null,
 	override val responsible: String? = null,
-	override val medicalLocationId: String? = null,
 	@DefaultValue("emptySet()")
 	override val tags: Set<CodeStub> = emptySet(),
 	@DefaultValue("emptySet()")
 	override val codes: Set<CodeStub> = emptySet(),
-	override val endOfLife: Long? = null,
 	override val deletionDate: Long? = null,
-	override val documentLocation: DocumentLocation? = null,
-	override val documentType: DocumentType? = null,
 	override val documentStatus: DocumentStatus? = null,
 	override val externalUri: String? = null,
 	override val name: String? = null,
 	override val version: String? = null,
-	override val storedICureDocumentId: String? = null,
-	override val externalUuid: String? = null,
 	override val size: Long? = null,
 	override val hash: String? = null,
 	override val openingContactId: String? = null,
@@ -141,10 +110,6 @@ data class DecryptedDocument(
 	override val secondaryAttachments: Map<String, DataAttachment> = emptyMap(),
 	@DefaultValue("emptyList()")
 	override val deletedAttachments: List<DeletedAttachment> = emptyList(),
-	@Serializable(with = ByteArraySerializer::class)
-	override val encryptedAttachment: ByteArray? = null,
-	@Serializable(with = ByteArraySerializer::class)
-	override val decryptedAttachment: ByteArray? = null,
 	@DefaultValue("emptySet()")
 	override val secretForeignKeys: Set<String> = emptySet(),
 	@DefaultValue("emptyMap()")
@@ -155,36 +120,25 @@ data class DecryptedDocument(
 	override val encryptionKeys: Map<String, Set<Delegation>> = emptyMap(),
 	override val encryptedSelf: Base64String? = null,
 	override val securityMetadata: SecurityMetadata? = null,
-) : Document {
-	// region Document-DecryptedDocument
-override fun copyWithSecurityMetadata(securityMetadata: SecurityMetadata, secretForeignKeys: Set<String>): DecryptedDocument =
-		copy(securityMetadata = securityMetadata, secretForeignKeys = secretForeignKeys)
-	// endregion
-}
+) : Document
 
 @Serializable
-data class EncryptedDocument(
+public data class EncryptedDocument(
 	override val id: String,
 	override val rev: String? = null,
 	override val created: Long? = null,
 	override val modified: Long? = null,
 	override val author: String? = null,
 	override val responsible: String? = null,
-	override val medicalLocationId: String? = null,
 	@DefaultValue("emptySet()")
 	override val tags: Set<CodeStub> = emptySet(),
 	@DefaultValue("emptySet()")
 	override val codes: Set<CodeStub> = emptySet(),
-	override val endOfLife: Long? = null,
 	override val deletionDate: Long? = null,
-	override val documentLocation: DocumentLocation? = null,
-	override val documentType: DocumentType? = null,
 	override val documentStatus: DocumentStatus? = null,
 	override val externalUri: String? = null,
 	override val name: String? = null,
 	override val version: String? = null,
-	override val storedICureDocumentId: String? = null,
-	override val externalUuid: String? = null,
 	override val size: Long? = null,
 	override val hash: String? = null,
 	override val openingContactId: String? = null,
@@ -197,10 +151,6 @@ data class EncryptedDocument(
 	override val secondaryAttachments: Map<String, DataAttachment> = emptyMap(),
 	@DefaultValue("emptyList()")
 	override val deletedAttachments: List<DeletedAttachment> = emptyList(),
-	@Serializable(with = ByteArraySerializer::class)
-	override val encryptedAttachment: ByteArray? = null,
-	@Serializable(with = ByteArraySerializer::class)
-	override val decryptedAttachment: ByteArray? = null,
 	@DefaultValue("emptySet()")
 	override val secretForeignKeys: Set<String> = emptySet(),
 	@DefaultValue("emptyMap()")
@@ -211,9 +161,4 @@ data class EncryptedDocument(
 	override val encryptionKeys: Map<String, Set<Delegation>> = emptyMap(),
 	override val encryptedSelf: Base64String? = null,
 	override val securityMetadata: SecurityMetadata? = null,
-) : Document {
-	// region Document-EncryptedDocument
-override fun copyWithSecurityMetadata(securityMetadata: SecurityMetadata, secretForeignKeys: Set<String>): EncryptedDocument =
-		copy(securityMetadata = securityMetadata, secretForeignKeys = secretForeignKeys)
-	// endregion
-}
+) : Document

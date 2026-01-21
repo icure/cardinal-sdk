@@ -10,12 +10,9 @@ import kotlin.Long
 import kotlin.String
 import kotlin.collections.Set
 
-// WARNING: This file is auto-generated. If you change it manually, your changes will be lost.
-// If you want to change the way this class is generated, see [this repo](https://github.com/icure/sdk-codegen).
-
 @SerialName("HealthElementByDataOwnerPatientOpeningDate")
 @Serializable
-data class HealthElementByDataOwnerPatientOpeningDate(
+public data class HealthElementByDataOwnerPatientOpeningDate(
 	override val desc: String? = null,
 	public val healthcarePartyId: String,
 	@DefaultValue("emptySet()")
@@ -24,8 +21,4 @@ data class HealthElementByDataOwnerPatientOpeningDate(
 	public val endDate: Long? = null,
 	@DefaultValue("false")
 	public val descending: Boolean = false,
-) : AbstractFilter<HealthElement> {
-	// region HealthElementByDataOwnerPatientOpeningDate-HealthElementByDataOwnerPatientOpeningDate
-
-	// endregion
-}
+) : AbstractFilter<HealthElement>
