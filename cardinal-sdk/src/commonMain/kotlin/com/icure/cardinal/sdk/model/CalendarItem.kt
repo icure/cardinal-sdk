@@ -12,22 +12,18 @@ import com.icure.cardinal.sdk.model.embed.Delegation
 import com.icure.cardinal.sdk.model.embed.Encryptable
 import com.icure.cardinal.sdk.model.embed.EncryptedAddress
 import com.icure.cardinal.sdk.model.embed.EncryptedCalendarItemTag
-import com.icure.cardinal.sdk.model.embed.FlowItem
 import com.icure.cardinal.sdk.model.embed.SecurityMetadata
 import com.icure.cardinal.sdk.model.specializations.Base64String
 import com.icure.cardinal.sdk.utils.DefaultValue
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 import kotlin.Boolean
-import kotlin.Deprecated
 import kotlin.Long
 import kotlin.String
 import kotlin.collections.Map
 import kotlin.collections.Set
 
-// WARNING: This file is auto-generated. If you change it manually, your changes will be lost.
-// If you want to change the way this class is generated, see [this repo](https://github.com/icure/sdk-codegen).
-sealed interface CalendarItem :
+public sealed interface CalendarItem :
 	StoredDocument,
 	ICureDocument<String>,
 	HasEncryptionMetadata,
@@ -44,13 +40,9 @@ sealed interface CalendarItem :
 
 	override val responsible: String?
 
-	override val medicalLocationId: String?
-
 	override val tags: Set<CodeStub>
 
 	override val codes: Set<CodeStub>
-
-	override val endOfLife: Long?
 
 	override val deletionDate: Long?
 
@@ -60,13 +52,9 @@ sealed interface CalendarItem :
 
 	public val masterCalendarItemId: String?
 
-	public val patientId: String?
-
 	public val important: Boolean?
 
 	public val homeVisit: Boolean?
-
-	public val phoneNumber: String?
 
 	public val placeId: String?
 
@@ -78,21 +66,6 @@ sealed interface CalendarItem :
 
 	public val endTime: Long?
 
-	@Deprecated("Ignored by availabilities algorithm, will be replaced by another more descriptive field")
-	public val confirmationTime: Long?
-
-	@Deprecated("Ignored by availabilities algorithm, will be replaced by another more descriptive field")
-	public val cancellationTimestamp: Long?
-
-	@Deprecated("Ignored by availabilities algorithm, will be replaced by another more descriptive field")
-	public val confirmationId: String?
-
-	@Deprecated("Ignored by availabilities algorithm, use appropriate startTime and endTime")
-	public val duration: Long?
-
-	@Deprecated("Ignored by availabilities algorithm, use appropriate startTime and endTime")
-	public val allDay: Boolean?
-
 	public val details: String?
 
 	public val wasMigrated: Boolean?
@@ -103,13 +76,9 @@ sealed interface CalendarItem :
 
 	public val availabilitiesAssignmentStrategy: AvailabilitiesAssignmentStrategy?
 
-	public val hcpId: String?
-
 	public val recurrenceId: String?
 
 	public val meetingTags: Set<CalendarItemTag>
-
-	public val flowItem: FlowItem?
 
 	override val secretForeignKeys: Set<String>
 
@@ -133,62 +102,40 @@ sealed interface CalendarItem :
 		@SerialName("L")
 		Loose("L"),
 	}
-	// region CalendarItem-CalendarItem
-
-	companion object {
-		const val KRAKEN_QUALIFIED_NAME = "org.taktik.icure.entities.CalendarItem"
-	}
-	// endregion
 }
 
 @Serializable
-data class DecryptedCalendarItem(
+public data class DecryptedCalendarItem(
 	override val id: String,
 	override val rev: String? = null,
 	override val created: Long? = null,
 	override val modified: Long? = null,
 	override val author: String? = null,
 	override val responsible: String? = null,
-	override val medicalLocationId: String? = null,
 	@DefaultValue("emptySet()")
 	override val tags: Set<CodeStub> = emptySet(),
 	@DefaultValue("emptySet()")
 	override val codes: Set<CodeStub> = emptySet(),
-	override val endOfLife: Long? = null,
 	override val deletionDate: Long? = null,
 	override val title: String? = null,
 	override val calendarItemTypeId: String? = null,
 	override val masterCalendarItemId: String? = null,
-	override val patientId: String? = null,
 	override val important: Boolean? = null,
 	override val homeVisit: Boolean? = null,
-	override val phoneNumber: String? = null,
 	override val placeId: String? = null,
 	override val address: DecryptedAddress? = null,
 	override val addressText: String? = null,
 	override val startTime: Long? = null,
 	override val endTime: Long? = null,
-	@Deprecated("Ignored by availabilities algorithm, will be replaced by another more descriptive field")
-	override val confirmationTime: Long? = null,
-	@Deprecated("Ignored by availabilities algorithm, will be replaced by another more descriptive field")
-	override val cancellationTimestamp: Long? = null,
-	@Deprecated("Ignored by availabilities algorithm, will be replaced by another more descriptive field")
-	override val confirmationId: String? = null,
-	@Deprecated("Ignored by availabilities algorithm, use appropriate startTime and endTime")
-	override val duration: Long? = null,
-	@Deprecated("Ignored by availabilities algorithm, use appropriate startTime and endTime")
-	override val allDay: Boolean? = null,
 	override val details: String? = null,
 	override val wasMigrated: Boolean? = null,
 	override val agendaId: String? = null,
 	override val resourceGroup: CodeStub? = null,
 	override val availabilitiesAssignmentStrategy: CalendarItem.AvailabilitiesAssignmentStrategy? =
 		null,
-	override val hcpId: String? = null,
 	override val recurrenceId: String? = null,
 	@DefaultValue("emptySet()")
 	override val meetingTags: Set<DecryptedCalendarItemTag> = emptySet(),
-	override val flowItem: FlowItem? = null,
 	@DefaultValue("emptySet()")
 	override val secretForeignKeys: Set<String> = emptySet(),
 	@DefaultValue("emptyMap()")
@@ -199,75 +146,40 @@ data class DecryptedCalendarItem(
 	override val encryptionKeys: Map<String, Set<Delegation>> = emptyMap(),
 	override val encryptedSelf: Base64String? = null,
 	override val securityMetadata: SecurityMetadata? = null,
-) : CalendarItem {
-	// region CalendarItem-DecryptedCalendarItem
-override fun copyWithSecurityMetadata(securityMetadata: SecurityMetadata, secretForeignKeys: Set<String>): DecryptedCalendarItem =
-		copy(securityMetadata = securityMetadata, secretForeignKeys = secretForeignKeys)
-
-	/**
-	 * Resets the following delegation objects from the
-	 * [CalendarItem] instance: [CalendarItem.cryptedForeignKeys], [CalendarItem.secretForeignKeys].
-	 *
-	 * The [CalendarItem.delegations] & [CalendarItem.encryptionKeys] objects are not removed because
-	 * in the case the [CalendarItem] is saved in the DB & then encrypted,
-	 * if later we remove the patient from it, it'd reset the delegations
-	 * and encryptionKeys thus making impossible to further access it.
-	 */
-	fun resetCalendarDelegationObjects(): DecryptedCalendarItem = copy(
-		cryptedForeignKeys = emptyMap(),
-		secretForeignKeys = emptySet()
-	)
-	// endregion
-}
+) : CalendarItem
 
 @Serializable
-data class EncryptedCalendarItem(
+public data class EncryptedCalendarItem(
 	override val id: String,
 	override val rev: String? = null,
 	override val created: Long? = null,
 	override val modified: Long? = null,
 	override val author: String? = null,
 	override val responsible: String? = null,
-	override val medicalLocationId: String? = null,
 	@DefaultValue("emptySet()")
 	override val tags: Set<CodeStub> = emptySet(),
 	@DefaultValue("emptySet()")
 	override val codes: Set<CodeStub> = emptySet(),
-	override val endOfLife: Long? = null,
 	override val deletionDate: Long? = null,
 	override val title: String? = null,
 	override val calendarItemTypeId: String? = null,
 	override val masterCalendarItemId: String? = null,
-	override val patientId: String? = null,
 	override val important: Boolean? = null,
 	override val homeVisit: Boolean? = null,
-	override val phoneNumber: String? = null,
 	override val placeId: String? = null,
 	override val address: EncryptedAddress? = null,
 	override val addressText: String? = null,
 	override val startTime: Long? = null,
 	override val endTime: Long? = null,
-	@Deprecated("Ignored by availabilities algorithm, will be replaced by another more descriptive field")
-	override val confirmationTime: Long? = null,
-	@Deprecated("Ignored by availabilities algorithm, will be replaced by another more descriptive field")
-	override val cancellationTimestamp: Long? = null,
-	@Deprecated("Ignored by availabilities algorithm, will be replaced by another more descriptive field")
-	override val confirmationId: String? = null,
-	@Deprecated("Ignored by availabilities algorithm, use appropriate startTime and endTime")
-	override val duration: Long? = null,
-	@Deprecated("Ignored by availabilities algorithm, use appropriate startTime and endTime")
-	override val allDay: Boolean? = null,
 	override val details: String? = null,
 	override val wasMigrated: Boolean? = null,
 	override val agendaId: String? = null,
 	override val resourceGroup: CodeStub? = null,
 	override val availabilitiesAssignmentStrategy: CalendarItem.AvailabilitiesAssignmentStrategy? =
 		null,
-	override val hcpId: String? = null,
 	override val recurrenceId: String? = null,
 	@DefaultValue("emptySet()")
 	override val meetingTags: Set<EncryptedCalendarItemTag> = emptySet(),
-	override val flowItem: FlowItem? = null,
 	@DefaultValue("emptySet()")
 	override val secretForeignKeys: Set<String> = emptySet(),
 	@DefaultValue("emptyMap()")
@@ -278,23 +190,4 @@ data class EncryptedCalendarItem(
 	override val encryptionKeys: Map<String, Set<Delegation>> = emptyMap(),
 	override val encryptedSelf: Base64String? = null,
 	override val securityMetadata: SecurityMetadata? = null,
-) : CalendarItem {
-	// region CalendarItem-EncryptedCalendarItem
-override fun copyWithSecurityMetadata(securityMetadata: SecurityMetadata, secretForeignKeys: Set<String>): EncryptedCalendarItem =
-		copy(securityMetadata = securityMetadata, secretForeignKeys = secretForeignKeys)
-
-	/**
-	 * Resets the following delegation objects from the
-	 * [CalendarItem] instance: [CalendarItem.cryptedForeignKeys], [CalendarItem.secretForeignKeys].
-	 *
-	 * The [CalendarItem.delegations] & [CalendarItem.encryptionKeys] objects are not removed because
-	 * in the case the [CalendarItem] is saved in the DB & then encrypted,
-	 * if later we remove the patient from it, it'd reset the delegations
-	 * and encryptionKeys thus making impossible to further access it.
-	 */
-	fun resetCalendarDelegationObjects(): EncryptedCalendarItem = copy(
-		cryptedForeignKeys = emptyMap(),
-		secretForeignKeys = emptySet()
-	)
-	// endregion
-}
+) : CalendarItem

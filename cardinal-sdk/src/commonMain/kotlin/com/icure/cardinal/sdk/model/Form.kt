@@ -16,9 +16,7 @@ import kotlin.String
 import kotlin.collections.Map
 import kotlin.collections.Set
 
-// WARNING: This file is auto-generated. If you change it manually, your changes will be lost.
-// If you want to change the way this class is generated, see [this repo](https://github.com/icure/sdk-codegen).
-sealed interface Form :
+public sealed interface Form :
 	StoredDocument,
 	ICureDocument<String>,
 	HasEncryptionMetadata,
@@ -35,13 +33,9 @@ sealed interface Form :
 
 	override val responsible: String?
 
-	override val medicalLocationId: String?
-
 	override val tags: Set<CodeStub>
 
 	override val codes: Set<CodeStub>
-
-	override val endOfLife: Long?
 
 	override val deletionDate: Long?
 
@@ -50,8 +44,6 @@ sealed interface Form :
 	public val status: String?
 
 	public val version: Int?
-
-	public val logicalUuid: String?
 
 	public val descr: String?
 
@@ -80,30 +72,24 @@ sealed interface Form :
 	override val encryptedSelf: Base64String?
 
 	override val securityMetadata: SecurityMetadata?
-	// region Form-Form
-
-	// endregion
 }
 
 @Serializable
-data class DecryptedForm(
+public data class DecryptedForm(
 	override val id: String,
 	override val rev: String? = null,
 	override val created: Long? = null,
 	override val modified: Long? = null,
 	override val author: String? = null,
 	override val responsible: String? = null,
-	override val medicalLocationId: String? = null,
 	@DefaultValue("emptySet()")
 	override val tags: Set<CodeStub> = emptySet(),
 	@DefaultValue("emptySet()")
 	override val codes: Set<CodeStub> = emptySet(),
-	override val endOfLife: Long? = null,
 	override val deletionDate: Long? = null,
 	override val openingDate: Long? = null,
 	override val status: String? = null,
 	override val version: Int? = null,
-	override val logicalUuid: String? = null,
 	override val descr: String? = null,
 	override val uniqueId: String? = null,
 	override val formTemplateId: String? = null,
@@ -122,32 +108,24 @@ data class DecryptedForm(
 	override val encryptionKeys: Map<String, Set<Delegation>> = emptyMap(),
 	override val encryptedSelf: Base64String? = null,
 	override val securityMetadata: SecurityMetadata? = null,
-) : Form {
-	// region Form-DecryptedForm
-override fun copyWithSecurityMetadata(securityMetadata: SecurityMetadata, secretForeignKeys: Set<String>): DecryptedForm =
-		copy(securityMetadata = securityMetadata, secretForeignKeys = secretForeignKeys)
-	// endregion
-}
+) : Form
 
 @Serializable
-data class EncryptedForm(
+public data class EncryptedForm(
 	override val id: String,
 	override val rev: String? = null,
 	override val created: Long? = null,
 	override val modified: Long? = null,
 	override val author: String? = null,
 	override val responsible: String? = null,
-	override val medicalLocationId: String? = null,
 	@DefaultValue("emptySet()")
 	override val tags: Set<CodeStub> = emptySet(),
 	@DefaultValue("emptySet()")
 	override val codes: Set<CodeStub> = emptySet(),
-	override val endOfLife: Long? = null,
 	override val deletionDate: Long? = null,
 	override val openingDate: Long? = null,
 	override val status: String? = null,
 	override val version: Int? = null,
-	override val logicalUuid: String? = null,
 	override val descr: String? = null,
 	override val uniqueId: String? = null,
 	override val formTemplateId: String? = null,
@@ -166,9 +144,4 @@ data class EncryptedForm(
 	override val encryptionKeys: Map<String, Set<Delegation>> = emptyMap(),
 	override val encryptedSelf: Base64String? = null,
 	override val securityMetadata: SecurityMetadata? = null,
-) : Form {
-	// region Form-EncryptedForm
-override fun copyWithSecurityMetadata(securityMetadata: SecurityMetadata, secretForeignKeys: Set<String>): EncryptedForm =
-		copy(securityMetadata = securityMetadata, secretForeignKeys = secretForeignKeys)
-	// endregion
-}
+) : Form

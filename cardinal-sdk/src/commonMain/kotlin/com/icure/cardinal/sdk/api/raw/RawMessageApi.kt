@@ -26,6 +26,8 @@ public interface RawMessageApi {
 
 	suspend fun createMessage(messageDto: EncryptedMessage): HttpResponse<EncryptedMessage>
 
+	suspend fun createMessages(messageDtos: List<EncryptedMessage>): HttpResponse<List<EncryptedMessage>>
+
 	suspend fun deleteMessages(messageIds: ListOfIds): HttpResponse<List<DocIdentifier>>
 
 	suspend fun deleteMessagesWithRev(messageIds: ListOfIdsAndRev): HttpResponse<List<DocIdentifier>>
@@ -40,10 +42,14 @@ public interface RawMessageApi {
 		rev: String,
 	): HttpResponse<EncryptedMessage>
 
+	suspend fun undeleteMessages(messageIds: ListOfIdsAndRev): HttpResponse<List<EncryptedMessage>>
+
 	suspend fun purgeMessage(
 		messageId: String,
 		rev: String,
 	): HttpResponse<DocIdentifier>
+
+	suspend fun purgeMessages(messageIds: ListOfIdsAndRev): HttpResponse<List<DocIdentifier>>
 
 	suspend fun getMessage(messageId: String): HttpResponse<EncryptedMessage>
 
@@ -112,6 +118,8 @@ public interface RawMessageApi {
 
 	suspend fun modifyMessage(messageDto: EncryptedMessage): HttpResponse<EncryptedMessage>
 
+	suspend fun modifyMessages(messageDtos: List<EncryptedMessage>): HttpResponse<List<EncryptedMessage>>
+
 	suspend fun setMessagesStatusBits(
 		status: Int,
 		messageIds: ListOfIds,
@@ -132,11 +140,79 @@ public interface RawMessageApi {
 
 	// region cloud endpoints
 
+	suspend fun getMessageInGroup(
+		groupId: String,
+		messageId: String,
+	): HttpResponse<EncryptedMessage>
+
+	suspend fun getMessagesInGroup(
+		groupId: String,
+		messageIds: ListOfIds,
+	): HttpResponse<List<EncryptedMessage>>
+
 	suspend fun createMessageInTopic(messageDto: EncryptedMessage): HttpResponse<EncryptedMessage>
+
+	suspend fun createMessageInGroup(
+		groupId: String,
+		messageDto: EncryptedMessage,
+	): HttpResponse<EncryptedMessage>
+
+	suspend fun createMessagesInGroup(
+		groupId: String,
+		messageDtos: List<EncryptedMessage>,
+	): HttpResponse<List<EncryptedMessage>>
+
+	suspend fun modifyMessageInGroup(
+		groupId: String,
+		messageDto: EncryptedMessage,
+	): HttpResponse<EncryptedMessage>
+
+	suspend fun modifyMessagesInGroup(
+		groupId: String,
+		messageDtos: List<EncryptedMessage>,
+	): HttpResponse<List<EncryptedMessage>>
+
+	suspend fun deleteMessagesInGroup(
+		groupId: String,
+		messageIds: ListOfIdsAndRev,
+	): HttpResponse<List<DocIdentifier>>
+
+	suspend fun deleteMessageInGroup(
+		groupId: String,
+		messageId: String,
+		rev: String,
+	): HttpResponse<DocIdentifier>
+
+	suspend fun undeleteMessageInGroup(
+		groupId: String,
+		messageId: String,
+		rev: String,
+	): HttpResponse<EncryptedMessage>
+
+	suspend fun undeleteMessagesInGroup(
+		groupId: String,
+		messageIds: ListOfIdsAndRev,
+	): HttpResponse<List<EncryptedMessage>>
+
+	suspend fun purgeMessageInGroup(
+		groupId: String,
+		messageId: String,
+		rev: String,
+	): HttpResponse<DocIdentifier>
+
+	suspend fun purgeMessagesInGroup(
+		groupId: String,
+		messageIds: ListOfIdsAndRev,
+	): HttpResponse<List<DocIdentifier>>
 
 	suspend fun matchMessagesBy(
 		groupId: String,
 		filter: AbstractFilter<Message>,
 	): HttpResponse<List<String>>
+
+	suspend fun bulkShare(
+		request: BulkShareOrUpdateMetadataParams,
+		groupId: String,
+	): HttpResponse<List<EntityBulkShareResult<EncryptedMessage>>>
 	// endregion
 }
