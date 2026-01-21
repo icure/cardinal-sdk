@@ -44,10 +44,6 @@ sealed interface Topic :
 
 	override val responsible: String?
 
-	override val medicalLocationId: String?
-
-	override val endOfLife: Long?
-
 	override val deletionDate: Long?
 
 	public val activeParticipants: Map<String, TopicRole>
@@ -89,8 +85,6 @@ data class DecryptedTopic(
 	override val tags: Set<CodeStub> = emptySet(),
 	override val author: String? = null,
 	override val responsible: String? = null,
-	override val medicalLocationId: String? = null,
-	override val endOfLife: Long? = null,
 	override val deletionDate: Long? = null,
 	@DefaultValue("emptyMap()")
 	override val activeParticipants: Map<String, TopicRole> = emptyMap(),
@@ -130,8 +124,6 @@ data class EncryptedTopic(
 	override val tags: Set<CodeStub> = emptySet(),
 	override val author: String? = null,
 	override val responsible: String? = null,
-	override val medicalLocationId: String? = null,
-	override val endOfLife: Long? = null,
 	override val deletionDate: Long? = null,
 	@DefaultValue("emptyMap()")
 	override val activeParticipants: Map<String, TopicRole> = emptyMap(),

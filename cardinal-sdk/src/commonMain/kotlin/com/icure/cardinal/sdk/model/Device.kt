@@ -11,15 +11,15 @@ import com.icure.cardinal.sdk.model.specializations.AesExchangeKeyEncryptionKeyp
 import com.icure.cardinal.sdk.model.specializations.AesExchangeKeyEntryKeyString
 import com.icure.cardinal.sdk.model.specializations.HexString
 import com.icure.cardinal.sdk.model.specializations.SpkiHexString
-import com.icure.cardinal.sdk.serialization.ByteArraySerializer
 import com.icure.cardinal.sdk.utils.DefaultValue
 import kotlinx.serialization.Serializable
-import kotlin.ByteArray
 import kotlin.Long
 import kotlin.String
 import kotlin.collections.List
 import kotlin.collections.Map
 import kotlin.collections.Set
+import com.icure.cardinal.sdk.serialization.ByteArraySerializer
+import kotlin.ByteArray
 
 // WARNING: This file is auto-generated. If you change it manually, your changes will be lost.
 // If you want to change the way this class is generated, see [this repo](https://github.com/icure/sdk-codegen).
@@ -39,17 +39,12 @@ data class Device(
 	override val tags: Set<CodeStub> = emptySet(),
 	@DefaultValue("emptySet()")
 	override val codes: Set<CodeStub> = emptySet(),
-	override val endOfLife: Long? = null,
-	override val medicalLocationId: String? = null,
-	public val externalId: String? = null,
 	override val name: String? = null,
 	public val type: String? = null,
 	public val brand: String? = null,
 	public val model: String? = null,
 	public val serialNumber: String? = null,
 	override val parentId: String? = null,
-	@Serializable(with = ByteArraySerializer::class)
-	public val picture: ByteArray? = null,
 	@DefaultValue("emptySet()")
 	override val properties: Set<DecryptedPropertyStub> = emptySet(),
 	@DefaultValue("emptyMap()")
