@@ -59,10 +59,14 @@ public interface RawFormApi {
 		rev: String,
 	): HttpResponse<EncryptedForm>
 
+	suspend fun undeleteForms(formIds: ListOfIdsAndRev): HttpResponse<List<EncryptedForm>>
+
 	suspend fun purgeForm(
 		formId: String,
 		rev: String,
 	): HttpResponse<DocIdentifier>
+
+	suspend fun purgeForms(formIds: ListOfIdsAndRev): HttpResponse<List<DocIdentifier>>
 
 	suspend fun modifyForms(formDtos: List<EncryptedForm>): HttpResponse<List<EncryptedForm>>
 
@@ -113,5 +117,81 @@ public interface RawFormApi {
 	suspend fun bulkShareMinimal(request: BulkShareOrUpdateMetadataParams): HttpResponse<List<EntityBulkShareResult<Nothing>>>
 
 	suspend fun matchFormsBy(filter: AbstractFilter<Form>): HttpResponse<List<String>>
+	// endregion
+
+	// region cloud endpoints
+
+	suspend fun createFormInGroup(
+		groupId: String,
+		formDto: EncryptedForm,
+	): HttpResponse<EncryptedForm>
+
+	suspend fun createFormsInGroup(
+		groupId: String,
+		formDtos: List<EncryptedForm>,
+	): HttpResponse<List<EncryptedForm>>
+
+	suspend fun modifyFormInGroup(
+		groupId: String,
+		formDto: EncryptedForm,
+	): HttpResponse<EncryptedForm>
+
+	suspend fun modifyFormsInGroup(
+		groupId: String,
+		formDtos: List<EncryptedForm>,
+	): HttpResponse<List<EncryptedForm>>
+
+	suspend fun getFormInGroup(
+		groupId: String,
+		formId: String,
+	): HttpResponse<EncryptedForm>
+
+	suspend fun getFormsInGroup(
+		groupId: String,
+		formIds: ListOfIds,
+	): HttpResponse<List<EncryptedForm>>
+
+	suspend fun deleteFormInGroup(
+		groupId: String,
+		formId: String,
+		rev: String,
+	): HttpResponse<DocIdentifier>
+
+	suspend fun deleteFormsInGroup(
+		groupId: String,
+		formIds: ListOfIdsAndRev,
+	): HttpResponse<List<DocIdentifier>>
+
+	suspend fun undeleteFormInGroup(
+		groupId: String,
+		formId: String,
+		rev: String,
+	): HttpResponse<EncryptedForm>
+
+	suspend fun undeleteFormsInGroup(
+		groupId: String,
+		formIds: ListOfIdsAndRev,
+	): HttpResponse<List<EncryptedForm>>
+
+	suspend fun purgeFormInGroup(
+		groupId: String,
+		formId: String,
+		rev: String,
+	): HttpResponse<DocIdentifier>
+
+	suspend fun purgeFormsInGroup(
+		groupId: String,
+		formIds: ListOfIdsAndRev,
+	): HttpResponse<List<DocIdentifier>>
+
+	suspend fun bulkShare(
+		request: BulkShareOrUpdateMetadataParams,
+		groupId: String,
+	): HttpResponse<List<EntityBulkShareResult<EncryptedForm>>>
+
+	suspend fun matchFormsInGroupBy(
+		filter: AbstractFilter<Form>,
+		groupId: String,
+	): HttpResponse<List<String>>
 	// endregion
 }

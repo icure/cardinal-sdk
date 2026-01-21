@@ -4,7 +4,6 @@ import com.icure.cardinal.sdk.model.base.CodeStub
 import com.icure.cardinal.sdk.model.base.HasEncryptionMetadata
 import com.icure.cardinal.sdk.model.base.ICureDocument
 import com.icure.cardinal.sdk.model.base.Identifier
-import com.icure.cardinal.sdk.model.base.ParticipantType
 import com.icure.cardinal.sdk.model.base.StoredDocument
 import com.icure.cardinal.sdk.model.embed.Address
 import com.icure.cardinal.sdk.model.embed.Annotation
@@ -23,12 +22,13 @@ import com.icure.cardinal.sdk.model.embed.SubContact
 import com.icure.cardinal.sdk.model.specializations.Base64String
 import com.icure.cardinal.sdk.utils.DefaultValue
 import kotlinx.serialization.Serializable
-import kotlin.Deprecated
 import kotlin.Long
 import kotlin.String
 import kotlin.collections.List
 import kotlin.collections.Map
 import kotlin.collections.Set
+import com.icure.cardinal.sdk.model.base.ParticipantType
+import kotlin.Deprecated
 
 // WARNING: This file is auto-generated. If you change it manually, your changes will be lost.
 // If you want to change the way this class is generated, see [this repo](https://github.com/icure/sdk-codegen).
@@ -71,8 +71,6 @@ sealed interface Contact :
 
 	public val location: String?
 
-	public val externalId: String?
-
 	public val encounterType: CodeStub?
 
 	public val encounterLocation: Address?
@@ -81,14 +79,7 @@ sealed interface Contact :
 
 	public val services: Set<Service>
 
-	@Deprecated("Use participantList")
-	public val participants: Map<ParticipantType, String>
-
 	public val participantList: List<ContactParticipant>
-
-	public val healthcarePartyId: String?
-
-	public val modifiedContactId: String?
 
 	override val secretForeignKeys: Set<String>
 
@@ -132,20 +123,14 @@ data class DecryptedContact(
 	override val closingDate: Long? = null,
 	override val descr: String? = null,
 	override val location: String? = null,
-	override val externalId: String? = null,
 	override val encounterType: CodeStub? = null,
 	override val encounterLocation: DecryptedAddress? = null,
 	@DefaultValue("emptySet()")
 	override val subContacts: Set<DecryptedSubContact> = emptySet(),
 	@DefaultValue("emptySet()")
 	override val services: Set<DecryptedService> = emptySet(),
-	@DefaultValue("emptyMap()")
-	@Deprecated("Use participantList")
-	override val participants: Map<ParticipantType, String> = emptyMap(),
 	@DefaultValue("emptyList()")
 	override val participantList: List<ContactParticipant> = emptyList(),
-	override val healthcarePartyId: String? = null,
-	override val modifiedContactId: String? = null,
 	@DefaultValue("emptySet()")
 	override val secretForeignKeys: Set<String> = emptySet(),
 	@DefaultValue("emptyMap()")
@@ -187,20 +172,14 @@ data class EncryptedContact(
 	override val closingDate: Long? = null,
 	override val descr: String? = null,
 	override val location: String? = null,
-	override val externalId: String? = null,
 	override val encounterType: CodeStub? = null,
 	override val encounterLocation: EncryptedAddress? = null,
 	@DefaultValue("emptySet()")
 	override val subContacts: Set<EncryptedSubContact> = emptySet(),
 	@DefaultValue("emptySet()")
 	override val services: Set<EncryptedService> = emptySet(),
-	@DefaultValue("emptyMap()")
-	@Deprecated("Use participantList")
-	override val participants: Map<ParticipantType, String> = emptyMap(),
 	@DefaultValue("emptyList()")
 	override val participantList: List<ContactParticipant> = emptyList(),
-	override val healthcarePartyId: String? = null,
-	override val modifiedContactId: String? = null,
 	@DefaultValue("emptySet()")
 	override val secretForeignKeys: Set<String> = emptySet(),
 	@DefaultValue("emptyMap()")
