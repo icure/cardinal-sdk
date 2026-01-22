@@ -6,7 +6,6 @@ import com.icure.cardinal.sdk.filters.BaseSortableFilterOptions
 import com.icure.cardinal.sdk.model.Agenda
 import com.icure.cardinal.sdk.model.GroupScoped
 import com.icure.cardinal.sdk.model.StoredDocumentIdentifier
-import com.icure.cardinal.sdk.model.couchdb.DocIdentifier
 import com.icure.cardinal.sdk.model.toStoredDocumentIdentifier
 import com.icure.cardinal.sdk.utils.pagination.PaginatedListIterator
 
@@ -75,7 +74,7 @@ interface AgendaApi {
 	 * @return the id and revision of the deleted agenda.
 	 * @throws RevisionConflictException if the provided agenda doesn't match the latest known revision
 	 */
-	suspend fun deleteAgenda(agenda: Agenda): DocIdentifier =
+	suspend fun deleteAgenda(agenda: Agenda): StoredDocumentIdentifier =
 		deleteAgendaById(agenda.id, requireNotNull(agenda.rev) { "Can't delete an agenda that has no rev" })
 
 	/**
@@ -84,7 +83,7 @@ interface AgendaApi {
 	 * @return the id and revision of the deleted agendas. If some entities couldn't be deleted they will not be
 	 * included in this list.
 	 */
-	suspend fun deleteAgendas(agendas: List<Agenda>): List<DocIdentifier> =
+	suspend fun deleteAgendas(agendas: List<Agenda>): List<StoredDocumentIdentifier> =
 		deleteAgendasByIds(agendas.map { agenda ->
 			agenda.toStoredDocumentIdentifier()
 		})

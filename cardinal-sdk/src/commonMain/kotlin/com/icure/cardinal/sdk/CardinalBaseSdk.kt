@@ -19,7 +19,6 @@ import com.icure.cardinal.sdk.api.UserApi
 import com.icure.cardinal.sdk.api.impl.AgendaApiImpl
 import com.icure.cardinal.sdk.api.impl.AuthApiImpl
 import com.icure.cardinal.sdk.api.impl.CalendarItemTypeApiImpl
-import com.icure.cardinal.sdk.api.impl.ClassificationBasicApiImpl
 import com.icure.cardinal.sdk.api.impl.CodeApiImpl
 import com.icure.cardinal.sdk.api.impl.ContactBasicApiImpl
 import com.icure.cardinal.sdk.api.impl.DeviceApiImpl
@@ -58,7 +57,6 @@ import com.icure.cardinal.sdk.api.raw.impl.RawAgendaApiImpl
 import com.icure.cardinal.sdk.api.raw.impl.RawAnonymousAuthApiImpl
 import com.icure.cardinal.sdk.api.raw.impl.RawCalendarItemApiImpl
 import com.icure.cardinal.sdk.api.raw.impl.RawCalendarItemTypeApiImpl
-import com.icure.cardinal.sdk.api.raw.impl.RawClassificationApiImpl
 import com.icure.cardinal.sdk.api.raw.impl.RawCodeApiImpl
 import com.icure.cardinal.sdk.api.raw.impl.RawContactApiImpl
 import com.icure.cardinal.sdk.api.raw.impl.RawDeviceApiImpl
@@ -439,16 +437,6 @@ private class CardinalBaseApisImpl(
 	override val calendarItem by lazy {
 		initCalendarItemBasicApi(
 			RawCalendarItemApiImpl(
-				apiUrl,
-				authProvider,
-				NoAccessControlKeysHeadersProvider,
-				config.rawApiConfig
-			), config
-		)
-	}
-	override val classification by lazy {
-		ClassificationBasicApiImpl(
-			RawClassificationApiImpl(
 				apiUrl,
 				authProvider,
 				NoAccessControlKeysHeadersProvider,

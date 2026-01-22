@@ -112,15 +112,19 @@ private open class AbstractAccessLogBasicFlavouredApi<E : AccessLog>(
 		}
 	}
 
-	override suspend fun createAccessLogs(entities: List<E>): List<E> = doCreateAccessLogs(groupId = null, entities)
+	override suspend fun createAccessLogs(entities: List<E>): List<E> {
+		requireIsValidForCreation(entities)
+		return doCreateAccessLogs(groupId = null, entities)
+	}
 
-	override suspend fun createAccessLogs(entities: List<GroupScoped<E>>): List<GroupScoped<E>> =
-		entities.mapUniqueIdentifiablesChunkedByGroup { groupId, batch ->
+	override suspend fun createAccessLogs(entities: List<GroupScoped<E>>): List<GroupScoped<E>> {
+		requireIsValidForCreation(entities)
+		return entities.mapUniqueIdentifiablesChunkedByGroup { groupId, batch ->
 			doCreateAccessLogs(groupId, batch)
 		}
+	}
 
 	private suspend fun doCreateAccessLogs(groupId: String?, entities: List<E>): List<E> = skipRequestOnNullList(entities) { accessLogs ->
-		requireIsValidForCreation(accessLogs)
 		val encrypted = validateAndMaybeEncrypt(entitiesGroupId = groupId, entities)
 		if (groupId == null) {
 			rawApi.createAccessLogs(encrypted)
@@ -175,15 +179,19 @@ private open class AbstractAccessLogBasicFlavouredApi<E : AccessLog>(
 		}
 	}
 
-	override suspend fun modifyAccessLogs(entities: List<E>): List<E> = doModifyAccessLogs(groupId = null, entities)
+	override suspend fun modifyAccessLogs(entities: List<E>): List<E> {
+		requireIsValidForModification(entities)
+		return doModifyAccessLogs(groupId = null, entities)
+	}
 
-	override suspend fun modifyAccessLogs(entities: List<GroupScoped<E>>): List<GroupScoped<E>> =
-		entities.mapUniqueIdentifiablesChunkedByGroup { groupId, batch ->
+	override suspend fun modifyAccessLogs(entities: List<GroupScoped<E>>): List<GroupScoped<E>> {
+		requireIsValidForModification(entities)
+		return entities.mapUniqueIdentifiablesChunkedByGroup { groupId, batch ->
 			doModifyAccessLogs(groupId, batch)
 		}
+	}
 
 	private suspend fun doModifyAccessLogs(groupId: String?, entities: List<E>): List<E> = skipRequestOnNullList(entities) { accessLogs ->
-		requireIsValidForModification(accessLogs)
 		val encrypted = validateAndMaybeEncrypt(groupId, entities)
 		return (
 			if (groupId == null) rawApi.modifyAccessLogs(encrypted)

@@ -121,16 +121,20 @@ private open class AbstractCalendarItemBasicFlavouredApi<E : CalendarItem>(
 		}
 	}
 
-	override suspend fun createCalendarItems(entities: List<E>): List<E> = doCreateCalendarItems(groupId = null, entities)
+	override suspend fun createCalendarItems(entities: List<E>): List<E> {
+		requireIsValidForCreation(entities)
+		return doCreateCalendarItems(groupId = null, entities)
+	}
 
-	override suspend fun createCalendarItems(entities: List<GroupScoped<E>>): List<GroupScoped<E>> =
-		entities.mapUniqueIdentifiablesChunkedByGroup { groupId, batch ->
+	override suspend fun createCalendarItems(entities: List<GroupScoped<E>>): List<GroupScoped<E>> {
+		requireIsValidForCreation(entities)
+		return entities.mapUniqueIdentifiablesChunkedByGroup { groupId, batch ->
 			doCreateCalendarItems(groupId, batch)
 		}
+	}
 
 	private suspend fun doCreateCalendarItems(groupId: String?, entities: List<E>): List<E> = skipRequestOnNullList(entities) { calendarItems ->
-		requireIsValidForCreation(calendarItems)
-		val encrypted = validateAndMaybeEncrypt(groupId, entities)
+		val encrypted = validateAndMaybeEncrypt(groupId, calendarItems)
 		if (groupId == null) {
 			rawApi.createCalendarItems(encrypted)
 		} else {
@@ -203,18 +207,21 @@ private open class AbstractCalendarItemBasicFlavouredApi<E : CalendarItem>(
 		}
 	}
 
-	override suspend fun modifyCalendarItems(entities: List<E>): List<E> = doModifyCalendarItems(groupId = null, entities = entities)
+	override suspend fun modifyCalendarItems(entities: List<E>): List<E> {
+		requireIsValidForModification(entities)
+		return doModifyCalendarItems(groupId = null, entities = entities) }
 
-	override suspend fun modifyCalendarItems(entities: List<GroupScoped<E>>) =
-		entities.mapUniqueIdentifiablesChunkedByGroup { groupId, batch ->
+	override suspend fun modifyCalendarItems(entities: List<GroupScoped<E>>): List<GroupScoped<E>> {
+		requireIsValidForModification(entities)
+		return entities.mapUniqueIdentifiablesChunkedByGroup { groupId, batch ->
 			doModifyCalendarItems(groupId, batch)
 		}
+	}
 
 	private suspend fun doModifyCalendarItems(
 		groupId: String?,
 		entities: List<E>
 	): List<E> = skipRequestOnNullList(entities) { calendarItems ->
-		requireIsValidForModification(calendarItems)
 		val encrypted = validateAndMaybeEncrypt(groupId, calendarItems)
 		return if (groupId == null) {
 			rawApi.modifyCalendarItems(encrypted)

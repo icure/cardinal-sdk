@@ -90,7 +90,6 @@ interface CardinalApis : CardinalNonCryptoApis {
 	// flavoured
 	val accessLog: AccessLogApi
 	val calendarItem: CalendarItemApi
-	val classification: ClassificationApi
 	val contact: ContactApi
 	val document: DocumentApi
 	val form: FormApi
@@ -121,7 +120,6 @@ interface CardinalApis : CardinalNonCryptoApis {
 interface CardinalBaseApis : CardinalNonCryptoApis {
 	val accessLog: AccessLogBasicApi
 	val calendarItem: CalendarItemBasicApi
-	val classification: ClassificationBasicApi
 	val contact: ContactBasicApi
 	val document: DocumentBasicApi
 	val form: FormBasicApi

@@ -10,7 +10,6 @@ import com.icure.cardinal.sdk.filters.BaseSortableFilterOptions
 import com.icure.cardinal.sdk.filters.mapAgendaFilterOptions
 import com.icure.cardinal.sdk.model.Agenda
 import com.icure.cardinal.sdk.model.GroupScoped
-import com.icure.cardinal.sdk.model.IdWithRev
 import com.icure.cardinal.sdk.model.StoredDocumentIdentifier
 import com.icure.cardinal.sdk.model.ListOfIds
 import com.icure.cardinal.sdk.model.ListOfIdsAndRev
@@ -20,67 +19,161 @@ import com.icure.cardinal.sdk.utils.pagination.IdsPageIterator
 import com.icure.cardinal.sdk.utils.pagination.PaginatedListIterator
 import com.icure.utils.InternalIcureApi
 
+@OptIn(InternalIcureApi::class)
+internal abstract class AbstractAgendaApi(
+	private val rawApi: RawAgendaApi,
+	private val config: BasicApiConfiguration
+) {
+
+	protected suspend fun doCreateAgenda(groupId: String?, agenda: Agenda): Agenda {
+		basicRequireIsValidForCreation(agenda)
+		return if (groupId == null) {
+			rawApi.createAgenda(agenda)
+		} else {
+			rawApi.createAgendaInGroup(groupId, agenda)
+		}.successBody()
+	}
+
+	protected suspend fun doCreateAgendas(groupId: String?, entities: List<Agenda>): List<Agenda> = skipRequestOnNullList(entities) { agendas ->
+		basicRequireIsValidForCreation(agendas)
+		return if (groupId == null) {
+			rawApi.createAgendas(entities)
+		} else {
+			rawApi.createAgendasInGroup(groupId, agendas)
+		}.successBody()
+	}
+
+	protected suspend fun doDeleteAgendaById(groupId: String?, agendaId: String, rev: String): StoredDocumentIdentifier =
+		if (groupId == null) {
+			rawApi.deleteAgenda(agendaId, rev)
+		} else {
+			rawApi.deleteAgendaInGroup(groupId, agendaId, rev)
+		}.successBodyOrThrowRevisionConflict().toStoredDocumentIdentifier()
+
+	protected suspend fun doDeleteAgendasByIds(groupId: String?, entityIds: List<StoredDocumentIdentifier>): List<StoredDocumentIdentifier> =
+		skipRequestOnNullList(entityIds) { agendaIds ->
+			if (groupId == null) {
+				rawApi.deleteAgendasWithRev(ListOfIdsAndRev(agendaIds))
+			} else {
+				rawApi.deleteAgendasInGroup(groupId = groupId, agendaIdsAndRevs = ListOfIdsAndRev(agendaIds))
+			}.successBody().map { it.toStoredDocumentIdentifier() }
+		}
+
+	protected suspend fun doPurgeAgendaById(groupId: String?, agendaId: String, rev: String) {
+		if (groupId == null) {
+			rawApi.purgeAgenda(agendaId, rev)
+		} else {
+			rawApi.purgeAgendaInGroup(groupId, agendaId, rev)
+		}.successBodyOrThrowRevisionConflict()
+	}
+
+	protected suspend fun doPurgeAgendasByIds(groupId: String?, entityIds: List<StoredDocumentIdentifier>): List<StoredDocumentIdentifier> =
+		skipRequestOnNullList(entityIds) { agendaIds ->
+			if (groupId == null) {
+				rawApi.purgeAgendas(ListOfIdsAndRev(agendaIds))
+			} else {
+				rawApi.purgeAgendasInGroup(groupId = groupId, agendaIdsAndRevs = ListOfIdsAndRev(agendaIds))
+			}.successBody().map { it.toStoredDocumentIdentifier() }
+		}
+
+	protected suspend fun doUndeleteAgendaById(groupId: String?, agendaId: String, rev: String): Agenda =
+		if (groupId == null) {
+			rawApi.undeleteAgenda(agendaId, rev)
+		} else {
+			rawApi.undeleteAgendaInGroup(groupId, agendaId, rev)
+		}.successBodyOrThrowRevisionConflict()
+
+	protected suspend fun doUndeleteAgendasByIds(groupId: String?, entityIds: List<StoredDocumentIdentifier>): List<Agenda> =
+		skipRequestOnNullList(entityIds) { agendaIds ->
+			if (groupId == null) {
+				rawApi.undeleteAgendas(ListOfIdsAndRev(agendaIds))
+			} else {
+				rawApi.undeleteAgendasInGroup(groupId = groupId, agendaIdsAndRevs = ListOfIdsAndRev(agendaIds))
+			}.successBody()
+		}
+
+	protected suspend fun doGetAgendasByIds(groupId: String?, entityIds: List<String>): List<Agenda> =
+		skipRequestOnNullList(entityIds) { agendaIds ->
+			if (groupId == null) {
+				rawApi.getAgendasByIds(ListOfIds(agendaIds))
+			} else {
+				rawApi.getAgendasInGroup(groupId = groupId, ListOfIds(agendaIds))
+			}.successBody()
+		}
+
+	protected suspend fun doGetAgenda(groupId: String?, agendaId: String): Agenda? =
+		if (groupId == null) {
+			rawApi.getAgenda(agendaId)
+		} else {
+			rawApi.getAgendaInGroup(groupId = groupId, agendaId = agendaId)
+		}.successBodyOrNull404()
+
+	protected suspend fun doModifyAgenda(groupId: String?, agenda: Agenda): Agenda {
+		basicRequireIsValidForCreation(agenda)
+		return if (groupId == null) {
+			rawApi.modifyAgenda(agenda)
+		} else {
+			rawApi.modifyAgendaInGroup(groupId, agenda)
+		}.successBodyOrThrowRevisionConflict()
+	}
+
+	protected suspend fun doModifyAgendas(groupId: String?, agendas: List<Agenda>): List<Agenda> = skipRequestOnNullList(agendas) { entities ->
+		basicRequireIsValidForCreation(entities)
+		return if (groupId == null) {
+			rawApi.modifyAgendas(entities)
+		} else {
+			rawApi.modifyAgendasInGroup(groupId, entities)
+		}.successBodyOrThrowRevisionConflict()
+	}
+
+	protected suspend fun doMatchAgendasBy(groupId: String?, filter: BaseFilterOptions<Agenda>): List<String> =
+		if (groupId == null) {
+			rawApi.matchAgendasBy(mapAgendaFilterOptions(filter, config))
+		} else {
+			rawApi.matchAgendasInGroupBy(groupId = groupId, filter = mapAgendaFilterOptions(filter, config, groupId))
+		}.successBody()
+}
+
 @InternalIcureApi
 internal class AgendaApiImpl (
-	private val rawApi: RawAgendaApi,
-	private val config: BasicApiConfiguration,
-) : AgendaApi {
+	rawApi: RawAgendaApi,
+	config: BasicApiConfiguration,
+) : AgendaApi, AbstractAgendaApi(rawApi, config) {
 
 	override val inGroup: AgendaInGroupApi = AgendaGroupApiImpl(rawApi, config)
 
-	override suspend fun createAgenda(agenda: Agenda): Agenda {
-		basicRequireIsValidForCreation(agenda)
-		return rawApi.createAgenda(agenda).successBody()
-	}
+	override suspend fun createAgenda(agenda: Agenda): Agenda = doCreateAgenda(groupId = null, agenda)
 
-	override suspend fun createAgendas(agendas: List<Agenda>): List<Agenda> = skipRequestOnNullList(agendas) { entities ->
-		basicRequireIsValidForCreation(agendas)
-		rawApi.createAgendas(entities).successBody()
-	}
+	override suspend fun createAgendas(agendas: List<Agenda>): List<Agenda> = doCreateAgendas(groupId = null, agendas)
 
 	override suspend fun deleteAgendaById(entityId: String, rev: String): StoredDocumentIdentifier =
-		rawApi.deleteAgenda(entityId, rev).successBodyOrThrowRevisionConflict().toStoredDocumentIdentifier()
+		doDeleteAgendaById(groupId = null, agendaId = entityId, rev = rev)
 
 	override suspend fun deleteAgendasByIds(entityIds: List<StoredDocumentIdentifier>): List<StoredDocumentIdentifier> =
-		skipRequestOnNullList(entityIds) { ids ->
-			rawApi.deleteAgendasWithRev(ListOfIdsAndRev(ids)).successBody().map { it.toStoredDocumentIdentifier() }
-		}
+		doDeleteAgendasByIds(groupId = null, entityIds = entityIds)
 
 	override suspend fun purgeAgendaById(id: String, rev: String) {
-		rawApi.purgeAgenda(id, rev).successBodyOrThrowRevisionConflict()
+		doPurgeAgendaById(groupId = null, agendaId = id, rev = rev)
 	}
 
 	override suspend fun purgeAgendasByIds(entityIds: List<StoredDocumentIdentifier>): List<StoredDocumentIdentifier> =
-		skipRequestOnNullList(entityIds) { ids ->
-			rawApi.purgeAgendas(ListOfIdsAndRev(ids = ids)).successBody().map { it.toStoredDocumentIdentifier() }
-		}
+		doPurgeAgendasByIds(groupId = null, entityIds = entityIds)
 
 	override suspend fun undeleteAgendaById(id: String, rev: String): Agenda =
-		rawApi.undeleteAgenda(id, rev).successBodyOrThrowRevisionConflict()
+		doUndeleteAgendaById(groupId = null, agendaId = id, rev = rev)
 
 	override suspend fun undeleteAgendasByIds(entityIds: List<StoredDocumentIdentifier>): List<Agenda> =
-		skipRequestOnNullList(entityIds) { ids ->
-			rawApi.undeleteAgendas(ListOfIdsAndRev(ids = ids)).successBodyOrThrowRevisionConflict()
-		}
+		doUndeleteAgendasByIds(groupId = null, entityIds = entityIds)
 
-	override suspend fun getAgenda(agendaId: String): Agenda? = rawApi.getAgenda(agendaId).successBodyOrNull404()
+	override suspend fun getAgenda(agendaId: String): Agenda? = doGetAgenda(groupId = null, agendaId = agendaId)
 
-	override suspend fun getAgendas(agendaIds: List<String>): List<Agenda> = skipRequestOnNullList(agendaIds) { ids ->
-		rawApi.getAgendasByIds(ListOfIds(ids)).successBody()
-	}
+	override suspend fun getAgendas(agendaIds: List<String>): List<Agenda> = doGetAgendasByIds(groupId = null, entityIds = agendaIds)
 
-	override suspend fun modifyAgenda(agenda: Agenda): Agenda {
-		basicRequireIsValidForCreation(agenda)
-		return rawApi.modifyAgenda(agenda).successBodyOrThrowRevisionConflict()
-	}
+	override suspend fun modifyAgenda(agenda: Agenda): Agenda = doModifyAgenda(groupId = null, agenda)
 
-	override suspend fun modifyAgendas(agendas: List<Agenda>): List<Agenda> = skipRequestOnNullList(agendas) { entities ->
-		basicRequireIsValidForCreation(entities)
-		rawApi.modifyAgendas(entities).successBody()
-	}
+	override suspend fun modifyAgendas(agendas: List<Agenda>): List<Agenda> = doModifyAgendas(groupId = null, agendas)
 
-	override suspend fun matchAgendasBy(filter: BaseFilterOptions<Agenda>): List<String> =
-		rawApi.matchAgendasBy(mapAgendaFilterOptions(filter, config)).successBody()
+	override suspend fun matchAgendasBy(filter: BaseFilterOptions<Agenda>): List<String> = doMatchAgendasBy(groupId = null, filter = filter)
 
 	override suspend fun matchAgendasBySorted(filter: BaseSortableFilterOptions<Agenda>): List<String> =
 		matchAgendasBy(filter)
@@ -94,102 +187,82 @@ internal class AgendaApiImpl (
 
 @InternalIcureApi
 internal class AgendaGroupApiImpl (
-	private val rawApi: RawAgendaApi,
-	private val config: BasicApiConfiguration,
-) : AgendaInGroupApi {
+	rawApi: RawAgendaApi,
+	config: BasicApiConfiguration,
+) : AgendaInGroupApi, AbstractAgendaApi(rawApi, config) {
 
 	override suspend fun getAgenda(
 		groupId: String,
 		entityId: String,
 	): GroupScoped<Agenda>? =
-		rawApi.getAgendaInGroup(groupId, entityId).successBodyOrNull404()?.let { GroupScoped(it, groupId) }
+		doGetAgenda(groupId = groupId, agendaId = entityId)?.let { GroupScoped(entity = it, groupId = groupId) }
 
 	override suspend fun getAgendas(
 		groupId: String,
 		entityIds: List<String>,
-	): List<GroupScoped<Agenda>> = skipRequestOnNullList(entityIds) { ids ->
-		rawApi.getAgendasInGroup(groupId, ListOfIds(ids)).successBody().map { GroupScoped(it, groupId) }
-	}
+	): List<GroupScoped<Agenda>> = doGetAgendasByIds(groupId, entityIds).map { GroupScoped(entity = it, groupId = groupId) }
 
-	override suspend fun createAgenda(entity: GroupScoped<Agenda>): GroupScoped<Agenda> {
-		basicRequireIsValidForCreation(entity)
-		return rawApi.createAgendaInGroup(entity.groupId, entity.entity ).successBody().let {
-			GroupScoped(it, entity.groupId)
-		}
-	}
-
+	override suspend fun createAgenda(entity: GroupScoped<Agenda>): GroupScoped<Agenda> =
+		GroupScoped(entity = doCreateAgenda(entity.groupId, entity.entity), groupId = entity.groupId)
 
 	override suspend fun createAgendas(entities: List<GroupScoped<Agenda>>): List<GroupScoped<Agenda>> {
 		basicRequireIsValidForCreation(entities)
 		return entities.mapUniqueIdentifiablesChunkedByGroup { groupId, batch ->
-			rawApi.createAgendasInGroup(groupId, batch).successBody()
+			doCreateAgendas(groupId, batch)
 		}
 	}
 
-	override suspend fun modifyAgenda(entity: GroupScoped<Agenda>): GroupScoped<Agenda> {
-		requireIsValidForModification(entity)
-		return rawApi.modifyAgendaInGroup(entity.groupId, entity.entity ).successBody().let {
-			GroupScoped(it, entity.groupId)
-		}
-	}
+
+	override suspend fun modifyAgenda(entity: GroupScoped<Agenda>): GroupScoped<Agenda> = GroupScoped(
+		entity = doModifyAgenda(entity.groupId, entity.entity),
+		groupId = entity.groupId
+	)
 
 	override suspend fun modifyAgendas(entities: List<GroupScoped<Agenda>>): List<GroupScoped<Agenda>> {
 		requireIsValidForModification(entities)
 		return entities.mapUniqueIdentifiablesChunkedByGroup { groupId, batch ->
-			rawApi.modifyAgendasInGroup(groupId, batch).successBody()
+			doModifyAgendas(groupId, batch)
 		}
 	}
 
 	override suspend fun deleteAgendasByIds(
 		entityIds: List<GroupScoped<StoredDocumentIdentifier>>
 	): List<GroupScoped<StoredDocumentIdentifier>> = entityIds.mapUniqueIdentifiablesChunkedByGroup { groupId, entityIds ->
-		rawApi.deleteAgendasInGroup(
-			groupId = groupId,
-			agendaIdsAndRevs = ListOfIdsAndRev(entityIds.map { IdWithRev(it.id, it.rev) })
-		).successBody().map { it.toStoredDocumentIdentifier() }
+		doDeleteAgendasByIds(groupId, entityIds)
 	}
 
 	override suspend fun deleteAgendaById(entityId: GroupScoped<StoredDocumentIdentifier>): GroupScoped<StoredDocumentIdentifier> =
-		 rawApi.deleteAgendaInGroup(entityId.groupId, entityId.entity.id, entityId.entity.rev).successBody().let {
-			 GroupScoped(it.toStoredDocumentIdentifier(), entityId.groupId)
-		 }
+		GroupScoped(
+			doDeleteAgendaById(groupId = entityId.groupId, agendaId = entityId.entity.id, rev = entityId.entity.rev),
+			groupId = entityId.groupId,
+		)
 
 	override suspend fun undeleteAgendaById(entityId: GroupScoped<StoredDocumentIdentifier>): GroupScoped<Agenda> =
-		rawApi.undeleteAgendaInGroup(entityId.groupId, entityId.entity.id, entityId.entity.rev).successBody().let {
-			GroupScoped(it, entityId.groupId)
-		}
+		GroupScoped(
+			entity = doUndeleteAgendaById(groupId = entityId.groupId, agendaId = entityId.entity.id, rev = entityId.entity.rev),
+			groupId = entityId.groupId
+		)
 
 	override suspend fun undeleteAgendasByIds(
 		entityIds: List<GroupScoped<StoredDocumentIdentifier>>
 	): List<GroupScoped<Agenda>> = entityIds.mapUniqueIdentifiablesChunkedByGroup { groupId, entityIds ->
-		rawApi.undeleteAgendasInGroup(
-			groupId = groupId,
-			agendaIdsAndRevs = ListOfIdsAndRev(entityIds.map { IdWithRev(it.id, it.rev) })
-		).successBody()
+		doUndeleteAgendasByIds(groupId, entityIds)
 	}
 
 	override suspend fun purgeAgendaById(entityId: GroupScoped<StoredDocumentIdentifier>) {
-		rawApi.purgeAgendaInGroup(entityId.groupId, entityId.entity.id, entityId.entity.rev).successBody().let {
-			GroupScoped(it.toStoredDocumentIdentifier(), entityId.groupId)
-		}
+		doPurgeAgendaById(groupId = entityId.groupId, agendaId = entityId.entity.id, rev = entityId.entity.rev)
 	}
 
 	override suspend fun purgeAgendasByIds(
 		entityIds: List<GroupScoped<StoredDocumentIdentifier>>
 	): List<GroupScoped<StoredDocumentIdentifier>> = entityIds.mapUniqueIdentifiablesChunkedByGroup { groupId, entityIds ->
-		rawApi.purgeAgendasInGroup(
-			groupId = groupId,
-			agendaIdsAndRevs = ListOfIdsAndRev(entityIds.map { IdWithRev(it.id, it.rev) })
-		).successBody().map { it.toStoredDocumentIdentifier() }
+		doPurgeAgendasByIds(groupId, entityIds)
 	}
 
 	override suspend fun matchAgendasBy(
 		groupId: String,
 		filter: BaseFilterOptions<Agenda>,
-	): List<String> = rawApi.matchAgendasInGroupBy(
-		groupId = groupId,
-		filter = mapAgendaFilterOptions(filter, config, groupId)
-	).successBody()
+	): List<String> = doMatchAgendasBy(groupId = groupId, filter = filter)
 
 	override suspend fun matchAgendasBySorted(
 		groupId: String,

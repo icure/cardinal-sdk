@@ -80,6 +80,18 @@ fun Set<EntityReferenceInGroup>.mapNullGroupTo(groupId: String): Set<EntityRefer
 	if (it.groupId == null) EntityReferenceInGroup(entityId = it.entityId, groupId = groupId) else it
 }
 
+internal inline fun <E, T> groupScopedWith(input: GroupScoped<E>, block: (String, E) -> T): GroupScoped<T> =
+	GroupScoped(
+		entity = block(input.groupId, input.entity),
+		groupId = input.groupId,
+	)
+
+internal inline fun <T> groupScopedIn(groupId: String, block: (String) -> T?): GroupScoped<T>? =
+	block(groupId)?.let { GroupScoped(entity = it, groupId = groupId) }
+
+internal inline fun <T> groupScopedListIn(groupId: String, block: (String) -> List<T>): List<GroupScoped<T>> =
+	block(groupId).map { GroupScoped(entity = it, groupId = groupId) }
+
 internal inline fun <T, U> skipRequestOnNullList(input: List<T>, block: (List<T>) -> List<U>): List<U> =
 	if (input.isNotEmpty()) block(input)
 	else emptyList()
@@ -89,9 +101,6 @@ internal fun <E : Versionable<String>> basicRequireIsValidForCreation(entity: E)
 		"Entity ${entity.id} must have a null rev for creation."
 	}
 }
-
-internal fun <E : Versionable<String>> basicRequireIsValidForCreation(entity: GroupScoped<E>) =
-	basicRequireIsValidForCreation(entity.entity)
 
 internal fun <E : HasEncryptionMetadata> requireIsValidForCreation(entity: E) {
 	basicRequireIsValidForCreation(entity)
@@ -108,6 +117,9 @@ internal fun <E : Versionable<String>> basicRequireIsValidForCreation(entities: 
 
 internal fun <E : HasEncryptionMetadata> requireIsValidForCreation(entities: List<E>) =
 	entities.forEach { requireIsValidForCreation(it) }
+
+internal fun <E : HasEncryptionMetadata> requireIsValidForCreation(entities: List<GroupScoped<E>>) =
+	entities.forEach { requireIsValidForCreation(it.entity) }
 
 internal fun <E : Versionable<String>> requireIsValidForModification(entity: E) {
 	require(entity.rev != null) {
