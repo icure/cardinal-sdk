@@ -80,16 +80,16 @@ fun Set<EntityReferenceInGroup>.mapNullGroupTo(groupId: String): Set<EntityRefer
 	if (it.groupId == null) EntityReferenceInGroup(entityId = it.entityId, groupId = groupId) else it
 }
 
-internal inline fun <E, T> groupScopedWith(input: GroupScoped<E>, block: (String, E) -> T): GroupScoped<T> =
+internal inline fun <E, T> groupScopedWith(input: GroupScoped<E>, block: (groupId: String, entity: E) -> T): GroupScoped<T> =
 	GroupScoped(
 		entity = block(input.groupId, input.entity),
 		groupId = input.groupId,
 	)
 
-internal inline fun <T> groupScopedIn(groupId: String, block: (String) -> T?): GroupScoped<T>? =
+internal inline fun <T> groupScopedIn(groupId: String, block: (groupId: String) -> T?): GroupScoped<T>? =
 	block(groupId)?.let { GroupScoped(entity = it, groupId = groupId) }
 
-internal inline fun <T> groupScopedListIn(groupId: String, block: (String) -> List<T>): List<GroupScoped<T>> =
+internal inline fun <T> groupScopedListIn(groupId: String, block: (groupId: String) -> List<T>): List<GroupScoped<T>> =
 	block(groupId).map { GroupScoped(entity = it, groupId = groupId) }
 
 internal inline fun <T, U> skipRequestOnNullList(input: List<T>, block: (List<T>) -> List<U>): List<U> =
