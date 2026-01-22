@@ -158,9 +158,9 @@ interface AccessLogBasicFlavouredApi<E : AccessLog> {
 
 	/**
 	 * Create a batch of new access logs. All the provided access log must have the encryption metadata initialized.
-	 * @param entities an access log with initialized encryption metadata
+	 * @param entities the accessLogs with initialized encryption metadata
 	 * @return the created access logs with updated revision.
-	 * @throws IllegalArgumentException if the encryption metadata of the entities was not initialized.
+	 * @throws IllegalArgumentException if the encryption metadata was not initialized in any of the entities.
 	 */
 	suspend fun createAccessLogs(entities: List<E>): List<E>
 

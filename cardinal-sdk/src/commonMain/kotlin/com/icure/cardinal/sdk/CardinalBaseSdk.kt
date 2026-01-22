@@ -1,7 +1,6 @@
 package com.icure.cardinal.sdk
 
 import com.icure.cardinal.sdk.api.AgendaApi
-import com.icure.cardinal.sdk.api.ApplicationSettingsApi
 import com.icure.cardinal.sdk.api.AuthApi
 import com.icure.cardinal.sdk.api.CalendarItemTypeApi
 import com.icure.cardinal.sdk.api.DocumentTemplateApi
@@ -18,7 +17,6 @@ import com.icure.cardinal.sdk.api.SystemApi
 import com.icure.cardinal.sdk.api.TarificationApi
 import com.icure.cardinal.sdk.api.UserApi
 import com.icure.cardinal.sdk.api.impl.AgendaApiImpl
-import com.icure.cardinal.sdk.api.impl.ApplicationSettingsApiImpl
 import com.icure.cardinal.sdk.api.impl.AuthApiImpl
 import com.icure.cardinal.sdk.api.impl.CalendarItemTypeApiImpl
 import com.icure.cardinal.sdk.api.impl.ClassificationBasicApiImpl
@@ -58,7 +56,6 @@ import com.icure.cardinal.sdk.api.raw.RawMessageGatewayApi
 import com.icure.cardinal.sdk.api.raw.impl.RawAccessLogApiImpl
 import com.icure.cardinal.sdk.api.raw.impl.RawAgendaApiImpl
 import com.icure.cardinal.sdk.api.raw.impl.RawAnonymousAuthApiImpl
-import com.icure.cardinal.sdk.api.raw.impl.RawApplicationSettingsApiImpl
 import com.icure.cardinal.sdk.api.raw.impl.RawCalendarItemApiImpl
 import com.icure.cardinal.sdk.api.raw.impl.RawCalendarItemTypeApiImpl
 import com.icure.cardinal.sdk.api.raw.impl.RawClassificationApiImpl
@@ -155,7 +152,6 @@ interface CardinalUnboundBaseSdk : CardinalBaseApis {
 			val client = options.configuredClientOrDefault()
 			val json = options.configuredJsonOrDefault()
 			val cryptoService = options.cryptoService
-			val apiUrl = baseUrl
 			val rawApiConfig = RawApiConfig(
 				httpClient = client,
 				json = json,
@@ -164,7 +160,7 @@ interface CardinalUnboundBaseSdk : CardinalBaseApis {
 				retryConfiguration = options.requestRetryConfiguration
 			)
 			val rawAuthApi = RawAnonymousAuthApiImpl(
-				apiUrl = apiUrl,
+				apiUrl = baseUrl,
 				rawApiConfig = rawApiConfig
 			)
 			val authProvider = authenticationMethod.getAuthProvider(
@@ -179,17 +175,17 @@ interface CardinalUnboundBaseSdk : CardinalBaseApis {
 			val jsonEncryptionService = JsonEncryptionServiceImpl(cryptoService)
 			val boundGroupProvider = { context: CoroutineContext -> options.getBoundGroupId(context)?.let(::SdkBoundGroup) }
 			val config = UnboundBasicApiConfigurationImpl(
-				apiUrl,
-				authProvider as? JwtBasedAuthProvider,
-				BasicInternalCryptoApiImpl(
-					options.cryptoService,
-					jsonEncryptionService,
-					EntityValidationServiceImpl(jsonEncryptionService),
-					BasicEntityAccessInformationProvider(boundGroupProvider)
+				apiUrl = baseUrl,
+				webSocketAuthProvider = authProvider as? JwtBasedAuthProvider,
+				crypto = BasicInternalCryptoApiImpl(
+					primitives = options.cryptoService,
+					jsonEncryption = jsonEncryptionService,
+					validationService = EntityValidationServiceImpl(jsonEncryptionService),
+					entityAccessInformationProvider = BasicEntityAccessInformationProvider(boundGroupProvider)
 				),
-				manifests,
-				rawApiConfig,
-				boundGroupProvider
+				encryption =manifests,
+				rawApiConfig = rawApiConfig,
+				boundGroupProvider = boundGroupProvider
 			)
 			return object : CardinalUnboundBaseSdk, CardinalBaseApis by CardinalBaseApisImpl(authProvider, config) {}
 		}
@@ -273,7 +269,6 @@ interface CardinalBaseSdk : CardinalBaseApis {
 			val client = options.configuredClientOrDefault()
 			val json = options.configuredJsonOrDefault()
 			val cryptoService = options.cryptoService
-			val apiUrl = baseUrl
 			val rawApiConfig = RawApiConfig(
 				httpClient = client,
 				json = json,
@@ -283,7 +278,7 @@ interface CardinalBaseSdk : CardinalBaseApis {
 			)
 			val (chosenGroup, authProvider) = authenticationMethod.getGroupAndAuthProvider(
 				baseUrl = baseUrl,
-				apiUrl = apiUrl,
+				apiUrl = baseUrl,
 				cryptoService = cryptoService,
 				projectId = projectId,
 				options = options,
@@ -293,17 +288,17 @@ interface CardinalBaseSdk : CardinalBaseApis {
 			val manifests = EntitiesEncryptedFieldsManifests.fromEncryptedFields(options.encryptedFields)
 			val jsonEncryptionService = JsonEncryptionServiceImpl(cryptoService)
 			val config = BasicApiConfigurationImpl(
-				apiUrl,
-				authProvider as? JwtBasedAuthProvider,
-				BasicInternalCryptoApiImpl(
-					options.cryptoService,
-					jsonEncryptionService,
-					EntityValidationServiceImpl(jsonEncryptionService),
-					BasicEntityAccessInformationProvider { boundGroup }
+				apiUrl = baseUrl,
+				webSocketAuthProvider = authProvider as? JwtBasedAuthProvider,
+				crypto = BasicInternalCryptoApiImpl(
+					primitives = options.cryptoService,
+					jsonEncryption = jsonEncryptionService,
+					validationService = EntityValidationServiceImpl(jsonEncryptionService),
+					entityAccessInformationProvider = BasicEntityAccessInformationProvider { boundGroup }
 				),
-				manifests,
-				rawApiConfig,
-				boundGroup
+				encryption = manifests,
+				rawApiConfig = rawApiConfig,
+				boundGroup = boundGroup
 			)
 			return CardinalBaseSdkImpl(
 				authProvider,
@@ -615,9 +610,6 @@ private class CardinalBaseApisImpl(
 		)
 	}
 
-	override val applicationSettings: ApplicationSettingsApi by lazy {
-		ApplicationSettingsApiImpl(RawApplicationSettingsApiImpl(apiUrl, authProvider, config.rawApiConfig))
-	}
 	override val documentTemplate: DocumentTemplateApi by lazy {
 		DocumentTemplateApiImpl(apiUrl, RawDocumentTemplateApiImpl(apiUrl, authProvider, config.rawApiConfig))
 	}

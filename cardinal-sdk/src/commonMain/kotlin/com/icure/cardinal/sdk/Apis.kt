@@ -60,7 +60,6 @@ import com.icure.cardinal.sdk.api.UserApi
  */
 interface CardinalNonCryptoApis {
 	// api root
-	val applicationSettings: ApplicationSettingsApi
 	val code: CodeApi
 	val calendarItemType: CalendarItemTypeApi
 	val device: DeviceApi
