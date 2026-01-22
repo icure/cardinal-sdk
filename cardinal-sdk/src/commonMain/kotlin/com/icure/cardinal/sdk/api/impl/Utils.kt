@@ -3,7 +3,10 @@ package com.icure.cardinal.sdk.api.impl
 import com.icure.cardinal.sdk.crypto.entities.EntityAccessInformation
 import com.icure.cardinal.sdk.model.EntityReferenceInGroup
 import com.icure.cardinal.sdk.model.GroupScoped
+import com.icure.cardinal.sdk.model.base.HasEncryptionMetadata
 import com.icure.cardinal.sdk.model.base.Identifiable
+import com.icure.cardinal.sdk.model.base.Versionable
+import com.icure.cardinal.sdk.model.embed.Encryptable
 import com.icure.cardinal.sdk.utils.ensure
 import com.icure.cardinal.sdk.utils.ensureNonNull
 import com.icure.utils.InternalIcureApi
@@ -76,3 +79,47 @@ fun EntityAccessInformation.mapNullGroupTo(groupId: String): EntityAccessInforma
 fun Set<EntityReferenceInGroup>.mapNullGroupTo(groupId: String): Set<EntityReferenceInGroup> = mapTo(mutableSetOf()) {
 	if (it.groupId == null) EntityReferenceInGroup(entityId = it.entityId, groupId = groupId) else it
 }
+
+internal inline fun <T, U> skipRequestOnNullList(input: List<T>, block: (List<T>) -> List<U>): List<U> =
+	if (input.isNotEmpty()) block(input)
+	else emptyList()
+
+internal fun <E : Versionable<String>> basicRequireIsValidForCreation(entity: E) {
+	require(entity.rev == null) {
+		"Entity ${entity.id} must have a null rev for creation."
+	}
+}
+
+internal fun <E : Versionable<String>> basicRequireIsValidForCreation(entity: GroupScoped<E>) =
+	basicRequireIsValidForCreation(entity.entity)
+
+internal fun <E : HasEncryptionMetadata> requireIsValidForCreation(entity: E) {
+	basicRequireIsValidForCreation(entity)
+	require(entity.securityMetadata != null) {
+		"Entity must have security metadata initialized. Make sure to use the `withEncryptionMetadata` method."
+	}
+}
+
+internal fun <E : Versionable<String>> basicRequireIsValidForCreation(entities: List<E>) =
+	entities.forEach { basicRequireIsValidForCreation(it) }
+
+internal fun <E : Versionable<String>> basicRequireIsValidForCreation(entities: List<GroupScoped<E>>) =
+	entities.forEach { basicRequireIsValidForCreation(it.entity) }
+
+internal fun <E : HasEncryptionMetadata> requireIsValidForCreation(entities: List<E>) =
+	entities.forEach { requireIsValidForCreation(it) }
+
+internal fun <E : Versionable<String>> requireIsValidForModification(entity: E) {
+	require(entity.rev != null) {
+		"Entity ${entity.id} must have a non-null rev for modification. Try to get the latest revision of the entity before update."
+	}
+}
+
+internal fun <E : Versionable<String>> requireIsValidForModification(entity: GroupScoped<E>) =
+	requireIsValidForModification(entity.entity)
+
+internal fun <E : Versionable<String>> requireIsValidForModification(entities: List<E>) =
+	entities.forEach { requireIsValidForModification(it) }
+
+internal fun <E : Versionable<String>> requireIsValidForModification(entities: List<GroupScoped<E>>) =
+	entities.forEach { requireIsValidForModification(it) }

@@ -99,8 +99,7 @@ private open class AbstractAccessLogBasicFlavouredApi<E : AccessLog>(
 		GroupScoped(doCreateAccessLog(entity.groupId, entity.entity), entity.groupId)
 
 	private suspend fun doCreateAccessLog(groupId: String?, entity: E): E {
-		require(entity.rev == null) { "A new entity must have a null revision." }
-		require(entity.securityMetadata != null) { "Entity must have security metadata initialized. Make sure to use the `withEncryptionMetadata` method." }
+		requireIsValidForCreation(entity)
 		val encrypted = validateAndMaybeEncrypt(groupId, entity)
 		return (
 			if (groupId == null) {
@@ -120,22 +119,16 @@ private open class AbstractAccessLogBasicFlavouredApi<E : AccessLog>(
 			doCreateAccessLogs(groupId, batch)
 		}
 
-	private suspend fun doCreateAccessLogs(groupId: String?, entities: List<E>): List<E> {
-		if (entities.isEmpty()) return emptyList()
-		entities.forEach {
-			require(it.rev == null) { "Entity ${it.id} must have a null revision." }
-			require(it.securityMetadata != null) { "Entity ${it.id} must have security metadata initialized. Make sure to use the `withEncryptionMetadata` method." }
-		}
+	private suspend fun doCreateAccessLogs(groupId: String?, entities: List<E>): List<E> = skipRequestOnNullList(entities) { accessLogs ->
+		requireIsValidForCreation(accessLogs)
 		val encrypted = validateAndMaybeEncrypt(entitiesGroupId = groupId, entities)
-		return (
-			if (groupId == null) {
-				rawApi.createAccessLogs(encrypted)
-			} else {
-				rawApi.createAccessLogsInGroup(groupId, encrypted)
-			}
-			).successBody().let {
-				maybeDecrypt(groupId, it)
-			}
+		if (groupId == null) {
+			rawApi.createAccessLogs(encrypted)
+		} else {
+			rawApi.createAccessLogsInGroup(groupId, encrypted)
+		}.successBody().let {
+			maybeDecrypt(groupId, it)
+		}
 	}
 
 	override suspend fun undeleteAccessLogById(id: String, rev: String): E =
@@ -146,16 +139,15 @@ private open class AbstractAccessLogBasicFlavouredApi<E : AccessLog>(
 			.successBodyOrThrowRevisionConflict()
 			.let { GroupScoped(entity = maybeDecrypt(entitiesGroupId = entityId.groupId, entity = it), groupId = entityId.groupId) }
 
-	override suspend fun undeleteAccessLogsByIds(entityIds: List<StoredDocumentIdentifier>): List<E> =
-		if(entityIds.isNotEmpty()) {
-			rawApi.undeleteAccessLogs(ListOfIdsAndRev(ids = entityIds)).successBody().let {
-				maybeDecrypt(entitiesGroupId = null, entities = it)
-			}
-		} else emptyList()
+	override suspend fun undeleteAccessLogsByIds(entityIds: List<StoredDocumentIdentifier>): List<E> = skipRequestOnNullList(entityIds) { ids ->
+		rawApi.undeleteAccessLogs(ListOfIdsAndRev(ids = ids)).successBody().let {
+			maybeDecrypt(entitiesGroupId = null, entities = it)
+		}
+	}
 
 	override suspend fun undeleteAccessLogsByIds(entityIds: List<GroupScoped<StoredDocumentIdentifier>>): List<GroupScoped<E>> =
-		if(entityIds.isNotEmpty()) {
-			entityIds.mapUniqueIdentifiablesChunkedByGroup { groupId, batch ->
+		skipRequestOnNullList(entityIds) { ids ->
+			ids.mapUniqueIdentifiablesChunkedByGroup { groupId, batch ->
 				rawApi.undeleteAccessLogsInGroup(
 					groupId = groupId,
 					accessLogIdsAndRevs = ListOfIdsAndRev(ids = batch),
@@ -163,8 +155,7 @@ private open class AbstractAccessLogBasicFlavouredApi<E : AccessLog>(
 					maybeDecrypt(entitiesGroupId = groupId, entities = it)
 				}
 			}
-		} else emptyList()
-
+		}
 	override suspend fun modifyAccessLog(entity: E): E = doModifyAccessLog(groupId = null, entity)
 
 	override suspend fun modifyAccessLog(entity: GroupScoped<E>): GroupScoped<E> =
@@ -174,7 +165,7 @@ private open class AbstractAccessLogBasicFlavouredApi<E : AccessLog>(
 		)
 
 	private suspend fun doModifyAccessLog(groupId: String?, entity: E): E {
-		require(entity.rev != null) { "Entity must have a non-null revision." }
+		requireIsValidForModification(entity)
 		val encrypted = validateAndMaybeEncrypt(groupId, entity)
 		return (
 			if (groupId == null) rawApi.modifyAccessLog(encrypted)
@@ -191,11 +182,8 @@ private open class AbstractAccessLogBasicFlavouredApi<E : AccessLog>(
 			doModifyAccessLogs(groupId, batch)
 		}
 
-	private suspend fun doModifyAccessLogs(groupId: String?, entities: List<E>): List<E> {
-		if (entities.isEmpty()) return emptyList()
-		entities.forEach {
-			require(it.rev != null) { "Entity ${it.id} must have a non-null revision." }
-		}
+	private suspend fun doModifyAccessLogs(groupId: String?, entities: List<E>): List<E> = skipRequestOnNullList(entities) { accessLogs ->
+		requireIsValidForModification(accessLogs)
 		val encrypted = validateAndMaybeEncrypt(groupId, entities)
 		return (
 			if (groupId == null) rawApi.modifyAccessLogs(encrypted)
@@ -204,7 +192,6 @@ private open class AbstractAccessLogBasicFlavouredApi<E : AccessLog>(
 			maybeDecrypt(groupId, it)
 		}
 	}
-
 
 	override suspend fun getAccessLog(entityId: String): E? =
 		doGetAccessLog(groupId = null, entityId)
@@ -228,16 +215,15 @@ private open class AbstractAccessLogBasicFlavouredApi<E : AccessLog>(
 	override suspend fun getAccessLogs(groupId: String, entityIds: List<String>): List<GroupScoped<E>> =
 		doGetAccessLogs(groupId, entityIds).map { GroupScoped(it, groupId) }
 
-	suspend fun doGetAccessLogs(groupId: String?, entityIds: List<String>): List<E> =
-		if (entityIds.isNotEmpty()) {
-			maybeDecrypt(
-				groupId,
-				if (groupId == null)
-					rawApi.getAccessLogByIds(ListOfIds(entityIds)).successBody()
-				else
-					rawApi.getAccessLogsInGroup(groupId, ListOfIds(entityIds)).successBody()
-			)
-		} else emptyList()
+	suspend fun doGetAccessLogs(groupId: String?, entityIds: List<String>): List<E> = skipRequestOnNullList(entityIds) { ids ->
+		maybeDecrypt(
+			groupId,
+			if (groupId == null)
+				rawApi.getAccessLogByIds(ListOfIds(ids)).successBody()
+			else
+				rawApi.getAccessLogsInGroup(groupId, ListOfIds(ids)).successBody()
+		)
+	}
 
 }
 
@@ -351,14 +337,13 @@ private abstract class AbstractAccessLogBasicFlavourless(
 		).successBodyOrThrowRevisionConflict().toStoredDocumentIdentifier()
 
 	protected suspend fun doDeleteAccessLogsByIds(groupId: String?, entityIds: List<StoredDocumentIdentifier>): List<StoredDocumentIdentifier> =
-		if (entityIds.isNotEmpty()) {
-			(
-				if (groupId == null)
-					rawApi.deleteAccessLogsWithRev(ListOfIdsAndRev(entityIds))
-				else
-					rawApi.deleteAccessLogsInGroup(groupId, ListOfIdsAndRev(entityIds))
-				).successBody().toStoredDocumentIdentifier()
-		} else emptyList()
+		skipRequestOnNullList(entityIds) { ids ->
+			if (groupId == null) {
+				rawApi.deleteAccessLogsWithRev(ListOfIdsAndRev(ids))
+			} else {
+				rawApi.deleteAccessLogsInGroup(groupId, ListOfIdsAndRev(ids))
+			}.successBody().toStoredDocumentIdentifier()
+		}
 
 	protected suspend fun doPurgeAccessLogById(groupId: String?, entityId: String, rev: String) {
 		(
@@ -370,14 +355,13 @@ private abstract class AbstractAccessLogBasicFlavourless(
 	}
 
 	protected suspend fun doPurgeAccessLogsByIds(groupId: String?, entityIds: List<StoredDocumentIdentifier>): List<StoredDocumentIdentifier> =
-		if (entityIds.isNotEmpty()) {
-			(
-				if (groupId == null)
-					rawApi.purgeAccessLogs(ListOfIdsAndRev(entityIds))
-				else
-					rawApi.purgeAccessLogsInGroup(groupId, ListOfIdsAndRev(entityIds))
-				).successBody().toStoredDocumentIdentifier()
-		} else emptyList()
+		skipRequestOnNullList(entityIds) { ids ->
+			if (groupId == null) {
+				rawApi.purgeAccessLogs(ListOfIdsAndRev(ids))
+			} else {
+				rawApi.purgeAccessLogsInGroup(groupId, ListOfIdsAndRev(ids))
+			}.successBody().toStoredDocumentIdentifier()
+		}
 }
 
 @InternalIcureApi

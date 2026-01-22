@@ -5,27 +5,18 @@ import com.icure.cardinal.sdk.filters.BaseFilterOptions
 import com.icure.cardinal.sdk.filters.BaseSortableFilterOptions
 import com.icure.cardinal.sdk.model.Agenda
 import com.icure.cardinal.sdk.model.GroupScoped
-import com.icure.cardinal.sdk.model.PaginatedList
 import com.icure.cardinal.sdk.model.StoredDocumentIdentifier
 import com.icure.cardinal.sdk.model.couchdb.DocIdentifier
+import com.icure.cardinal.sdk.model.toStoredDocumentIdentifier
 import com.icure.cardinal.sdk.utils.pagination.PaginatedListIterator
 
 interface AgendaApi {
 
 	val inGroup: AgendaInGroupApi
 
-	@Deprecated("Use filter instead")
-	suspend fun getAllAgendas(
-		startDocumentId: String? = null,
-		limit: Int? = null,
-	): PaginatedList<Agenda>
+	suspend fun createAgenda(agenda: Agenda): Agenda
 
-	suspend fun createAgenda(agendaDto: Agenda): Agenda
-
-	@Deprecated("Deletion without rev is unsafe")
-	suspend fun deleteAgendaUnsafe(entityId: String): DocIdentifier
-	@Deprecated("Deletion without rev is unsafe")
-	suspend fun deleteAgendasUnsafe(entityIds: List<String>): List<DocIdentifier>
+	suspend fun createAgendas(agendas: List<Agenda>): List<Agenda>
 
 	/**
 	 * Deletes an agenda. If you don't have write access to the agenda the method will fail.
@@ -34,7 +25,7 @@ interface AgendaApi {
 	 * @return the id and revision of the deleted agenda.
 	 * @throws RevisionConflictException if the provided revision doesn't match the latest known revision
 	 */
-	suspend fun deleteAgendaById(entityId: String, rev: String): DocIdentifier
+	suspend fun deleteAgendaById(entityId: String, rev: String): StoredDocumentIdentifier
 
 	/**
 	 * Deletes many agendas. Ids that don't correspond to an entity, or that correspond to an entity for which
@@ -43,7 +34,7 @@ interface AgendaApi {
 	 * @return the id and revision of the deleted agendas. If some entities couldn't be deleted (for example
 	 * because you had no write access to them) they will not be included in this list.
 	 */
-	suspend fun deleteAgendasByIds(entityIds: List<StoredDocumentIdentifier>): List<DocIdentifier>
+	suspend fun deleteAgendasByIds(entityIds: List<StoredDocumentIdentifier>): List<StoredDocumentIdentifier>
 
 	/**
 	 * Permanently deletes a agenda.
@@ -54,6 +45,14 @@ interface AgendaApi {
 	suspend fun purgeAgendaById(id: String, rev: String)
 
 	/**
+	 * Permanently deletes a batch of agendas.
+	 * @param entityIds ids and revisions of the agendas to purge
+	 * @return the id and revision of the purged agendas. If some entities couldn't be deleted (for example
+	 * because you had no write access to them or their revision is outdated) they will not be included in this list.
+	 */
+	suspend fun purgeAgendasByIds(entityIds: List<StoredDocumentIdentifier>): List<StoredDocumentIdentifier>
+
+	/**
 	 * Restores an agenda that was marked as deleted.
 	 * @param id the id of the entity
 	 * @param rev the latest revision of the entity.
@@ -61,6 +60,14 @@ interface AgendaApi {
 	 * @throws RevisionConflictException if the provided revision doesn't match the latest known revision
 	 */
 	suspend fun undeleteAgendaById(id: String, rev: String): Agenda
+
+	/**
+	 * Restores a batch of agendas that were marked as deleted.
+	 * @param entityIds the ids and the revisions of the agendas to restore.
+	 * @return the restored agendas. If some entities couldn't be restored (because the user does not have access or the revision is not
+	 * outdated), then those entities will not be restored and will not appear in this list.
+	 */
+	suspend fun undeleteAgendasByIds(entityIds: List<StoredDocumentIdentifier>): List<Agenda>
 
 	/**
 	 * Deletes an agenda. If you don't have write access to the agenda the method will fail.
@@ -79,7 +86,7 @@ interface AgendaApi {
 	 */
 	suspend fun deleteAgendas(agendas: List<Agenda>): List<DocIdentifier> =
 		deleteAgendasByIds(agendas.map { agenda ->
-			StoredDocumentIdentifier(agenda.id, requireNotNull(agenda.rev) { "Can't delete an agenda that has no rev" })
+			agenda.toStoredDocumentIdentifier()
 		})
 
 	/**
@@ -92,6 +99,15 @@ interface AgendaApi {
 	}
 
 	/**
+	 * Permanently deletes a batch of agendas.
+	 * @param agendas the agendas to purge
+	 * @return the id and revision of the purged agendas. If some entities couldn't be deleted (for example
+	 * because you had no write access to them or their revision is outdated) they will not be included in this list.
+	 */
+	suspend fun purgeAgendas(agendas: List<Agenda>): List<StoredDocumentIdentifier> =
+		purgeAgendasByIds(agendas.map { it.toStoredDocumentIdentifier() })
+
+	/**
 	 * Restores an agenda that was marked as deleted.
 	 * @param agenda the agenda to undelete
 	 * @return the restored agenda.
@@ -100,14 +116,22 @@ interface AgendaApi {
 	suspend fun undeleteAgenda(agenda: Agenda): Agenda =
 		undeleteAgendaById(agenda.id, requireNotNull(agenda.rev) { "Can't delete an agenda that has no rev" })
 
+	/**
+	 * Restores a batch of agendas that were marked as deleted.
+	 * @param agendas the agendas to restore.
+	 * @return the restored agendas. If some entities couldn't be restored (because the user does not have access or the revision is not
+	 * outdated), then those entities will not be restored and will not appear in this list.
+	 */
+	suspend fun undeleteAgendas(agendas: List<Agenda>): List<Agenda> =
+		undeleteAgendasByIds(agendas.map { it.toStoredDocumentIdentifier() })
+
 	suspend fun getAgenda(agendaId: String): Agenda?
 
 	suspend fun getAgendas(agendaIds: List<String>): List<Agenda>
 
-	@Deprecated("Use filter instead")
-	suspend fun getAgendasForUser(userId: String): Agenda
+	suspend fun modifyAgenda(agenda: Agenda): Agenda
 
-	suspend fun modifyAgenda(agendaDto: Agenda): Agenda
+	suspend fun modifyAgendas(agendas: List<Agenda>): List<Agenda>
 
 	suspend fun matchAgendasBy(filter: BaseFilterOptions<Agenda>): List<String>
 
@@ -127,15 +151,42 @@ interface AgendaInGroupApi {
 
 	suspend fun createAgenda(entity: GroupScoped<Agenda>): GroupScoped<Agenda>
 
+	suspend fun createAgendas(entities: List<GroupScoped<Agenda>>): List<GroupScoped<Agenda>>
+
 	suspend fun modifyAgenda(entity: GroupScoped<Agenda>): GroupScoped<Agenda>
 
-	suspend fun deleteAgendas(agendas: List<GroupScoped<Agenda>>): List<GroupScoped<StoredDocumentIdentifier>>
-
-	suspend fun deleteAgenda(agenda: GroupScoped<Agenda>): GroupScoped<StoredDocumentIdentifier>
+	suspend fun modifyAgendas(entities: List<GroupScoped<Agenda>>): List<GroupScoped<Agenda>>
 
 	suspend fun deleteAgendasByIds(entityIds: List<GroupScoped<StoredDocumentIdentifier>>): List<GroupScoped<StoredDocumentIdentifier>>
 
 	suspend fun deleteAgendaById(entityId: GroupScoped<StoredDocumentIdentifier>): GroupScoped<StoredDocumentIdentifier>
+
+	suspend fun deleteAgendas(agendas: List<GroupScoped<Agenda>>): List<GroupScoped<StoredDocumentIdentifier>> =
+		deleteAgendasByIds(agendas.map { it.toStoredDocumentIdentifier() })
+
+	suspend fun deleteAgenda(agenda: GroupScoped<Agenda>): GroupScoped<StoredDocumentIdentifier> =
+		deleteAgendaById(agenda.toStoredDocumentIdentifier())
+
+	suspend fun undeleteAgendasByIds(entityIds: List<GroupScoped<StoredDocumentIdentifier>>): List<GroupScoped<Agenda>>
+
+	suspend fun undeleteAgendaById(entityId: GroupScoped<StoredDocumentIdentifier>): GroupScoped<Agenda>
+
+	suspend fun undeleteAgendas(agendas: List<GroupScoped<Agenda>>): List<GroupScoped<Agenda>> =
+		undeleteAgendasByIds(agendas.map { it.toStoredDocumentIdentifier() })
+
+	suspend fun undeleteAgenda(agenda: GroupScoped<Agenda>): GroupScoped<Agenda> =
+		undeleteAgendaById(agenda.toStoredDocumentIdentifier())
+
+	suspend fun purgeAgendasByIds(entityIds: List<GroupScoped<StoredDocumentIdentifier>>): List<GroupScoped<StoredDocumentIdentifier>>
+
+	suspend fun purgeAgendaById(entityId: GroupScoped<StoredDocumentIdentifier>)
+
+	suspend fun purgeAgendas(agendas: List<GroupScoped<Agenda>>): List<GroupScoped<StoredDocumentIdentifier>> =
+		purgeAgendasByIds(agendas.map { it.toStoredDocumentIdentifier() })
+
+	suspend fun purgeAgenda(agenda: GroupScoped<Agenda>) {
+		purgeAgendaById(agenda.toStoredDocumentIdentifier())
+	}
 
 	suspend fun matchAgendasBy(groupId: String, filter: BaseFilterOptions<Agenda>): List<String>
 
