@@ -2,12 +2,10 @@ package com.icure.cardinal.sdk
 
 import com.icure.cardinal.sdk.api.AccessLogApi
 import com.icure.cardinal.sdk.api.AgendaApi
-import com.icure.cardinal.sdk.api.ApplicationSettingsApi
 import com.icure.cardinal.sdk.api.AuthApi
 import com.icure.cardinal.sdk.api.CalendarItemApi
 import com.icure.cardinal.sdk.api.CalendarItemTypeApi
 import com.icure.cardinal.sdk.api.CardinalMaintenanceTaskApi
-import com.icure.cardinal.sdk.api.ClassificationApi
 import com.icure.cardinal.sdk.api.CodeApi
 import com.icure.cardinal.sdk.api.ContactApi
 import com.icure.cardinal.sdk.api.CryptoApi
@@ -40,13 +38,10 @@ import com.icure.cardinal.sdk.api.TimeTableApi
 import com.icure.cardinal.sdk.api.TopicApi
 import com.icure.cardinal.sdk.api.UserApi
 import com.icure.cardinal.sdk.api.impl.AgendaApiImpl
-import com.icure.cardinal.sdk.api.impl.ApplicationSettingsApiImpl
 import com.icure.cardinal.sdk.api.impl.AuthApiImpl
 import com.icure.cardinal.sdk.api.impl.CalendarItemTypeApiImpl
 import com.icure.cardinal.sdk.api.impl.CardinalMaintenanceTaskApiImpl
-import com.icure.cardinal.sdk.api.impl.ClassificationApiImpl
 import com.icure.cardinal.sdk.api.impl.CodeApiImpl
-import com.icure.cardinal.sdk.api.impl.ContactApiImpl
 import com.icure.cardinal.sdk.api.impl.CryptoApiImpl
 import com.icure.cardinal.sdk.api.impl.DataOwnerApiImpl
 import com.icure.cardinal.sdk.api.impl.DeviceApiImpl
@@ -77,6 +72,7 @@ import com.icure.cardinal.sdk.api.impl.TopicApiImpl
 import com.icure.cardinal.sdk.api.impl.UserApiImpl
 import com.icure.cardinal.sdk.api.impl.initAccessLogApi
 import com.icure.cardinal.sdk.api.impl.initCalendarItemApi
+import com.icure.cardinal.sdk.api.impl.initContactApi
 import com.icure.cardinal.sdk.api.impl.initHealthElementApi
 import com.icure.cardinal.sdk.api.impl.initPatientApi
 import com.icure.cardinal.sdk.api.raw.RawAnonymousAuthApi
@@ -85,7 +81,6 @@ import com.icure.cardinal.sdk.api.raw.RawMessageGatewayApi
 import com.icure.cardinal.sdk.api.raw.impl.RawAccessLogApiImpl
 import com.icure.cardinal.sdk.api.raw.impl.RawAgendaApiImpl
 import com.icure.cardinal.sdk.api.raw.impl.RawAnonymousAuthApiImpl
-import com.icure.cardinal.sdk.api.raw.impl.RawApplicationSettingsApiImpl
 import com.icure.cardinal.sdk.api.raw.impl.RawCalendarItemApiImpl
 import com.icure.cardinal.sdk.api.raw.impl.RawCalendarItemTypeApiImpl
 import com.icure.cardinal.sdk.api.raw.impl.RawClassificationApiImpl
@@ -320,10 +315,9 @@ interface CardinalSdk : CardinalApis {
 			val client = options.configuredClientOrDefault()
 			val json = options.configuredJsonOrDefault()
 			val cryptoService = options.cryptoService
-			val apiUrl = baseUrl
 			val (chosenGroupId, authProvider) = authenticationMethod.getGroupAndAuthProvider(
 				baseUrl = baseUrl,
-				apiUrl = apiUrl,
+				apiUrl = baseUrl,
 				cryptoService = cryptoService,
 				projectId = projectId,
 				options = options,
@@ -337,7 +331,7 @@ interface CardinalSdk : CardinalApis {
 			)
 			val initializedSdkOptions = options.asInitialized(baseStorage)
 			val (initializedCrypto, newKey, scope) = initializeApiCrypto(
-				apiUrl,
+				baseUrl,
 				authProvider,
 				client,
 				json,
@@ -757,9 +751,9 @@ internal class CardinalSdkImpl(
 	}
 
 	override val contact: ContactApi by lazy {
-		ContactApiImpl(
+		initContactApi(
 			rawContactApi,
-			config
+			config,
 		)
 	}
 
@@ -944,13 +938,6 @@ internal class CardinalSdkImpl(
 		)
 	}
 
-	override val classification: ClassificationApi by lazy {
-		ClassificationApiImpl(
-			rawClassificationApi,
-			config
-		)
-	}
-
 	private val rawFormApi by lazy {
 		RawFormApiImpl(
 			apiUrl,
@@ -1022,11 +1009,12 @@ internal class CardinalSdkImpl(
 		PermissionApiImpl(RawPermissionApiImpl(apiUrl, authProvider, config.rawApiConfig))
 	}
 
-	override val applicationSettings: ApplicationSettingsApi by lazy {
-		ApplicationSettingsApiImpl(RawApplicationSettingsApiImpl(apiUrl, authProvider, config.rawApiConfig))
-	}
+
 	override val code: CodeApi by lazy {
-		CodeApiImpl(RawCodeApiImpl(apiUrl, authProvider, config.rawApiConfig))
+		CodeApiImpl(
+			RawCodeApiImpl(apiUrl, authProvider, config.rawApiConfig),
+			config
+		)
 	}
 	override val calendarItemType: CalendarItemTypeApi by lazy {
 		CalendarItemTypeApiImpl(RawCalendarItemTypeApiImpl(apiUrl, authProvider, config.rawApiConfig))

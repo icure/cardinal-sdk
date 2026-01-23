@@ -11,31 +11,27 @@ import com.icure.cardinal.sdk.model.Contact
 import com.icure.cardinal.sdk.model.DecryptedContact
 import com.icure.cardinal.sdk.model.EncryptedContact
 import com.icure.cardinal.sdk.model.EntityReferenceInGroup
-import com.icure.cardinal.sdk.model.PaginatedList
+import com.icure.cardinal.sdk.model.GroupScoped
 import com.icure.cardinal.sdk.model.Patient
 import com.icure.cardinal.sdk.model.StoredDocumentIdentifier
 import com.icure.cardinal.sdk.model.User
-import com.icure.cardinal.sdk.model.couchdb.DocIdentifier
 import com.icure.cardinal.sdk.model.data.LabelledOccurence
 import com.icure.cardinal.sdk.model.embed.AccessLevel
 import com.icure.cardinal.sdk.model.embed.DecryptedService
 import com.icure.cardinal.sdk.model.embed.EncryptedService
 import com.icure.cardinal.sdk.model.embed.Service
 import com.icure.cardinal.sdk.model.specializations.HexString
+import com.icure.cardinal.sdk.model.toStoredDocumentIdentifier
 import com.icure.cardinal.sdk.subscription.EntitySubscription
 import com.icure.cardinal.sdk.subscription.EntitySubscriptionConfiguration
 import com.icure.cardinal.sdk.subscription.Subscribable
 import com.icure.cardinal.sdk.utils.DefaultValue
 import com.icure.cardinal.sdk.utils.EntityEncryptionException
+import com.icure.cardinal.sdk.utils.generation.JsMapAsObjectArray
 import com.icure.cardinal.sdk.utils.pagination.PaginatedListIterator
-import kotlinx.serialization.json.JsonElement
 
 /* This interface includes the API calls that do not need encryption keys and do not return or consume encrypted/decrypted items, they are completely agnostic towards the presence of encrypted items */
 interface ContactBasicFlavourlessApi {
-	@Deprecated("Deletion without rev is unsafe")
-	suspend fun deleteContactUnsafe(entityId: String): DocIdentifier
-	@Deprecated("Deletion without rev is unsafe")
-	suspend fun deleteContactsUnsafe(entityIds: List<String>): List<DocIdentifier>
 
 	/**
 	 * Deletes a contact. If you don't have write access to the contact the method will fail.
@@ -44,7 +40,7 @@ interface ContactBasicFlavourlessApi {
 	 * @return the id and revision of the deleted contact.
 	 * @throws RevisionConflictException if the provided revision doesn't match the latest known revision
 	 */
-	suspend fun deleteContactById(entityId: String, rev: String): DocIdentifier
+	suspend fun deleteContactById(entityId: String, rev: String): StoredDocumentIdentifier
 
 	/**
 	 * Deletes many contacts. Ids that don't correspond to an entity, or that correspond to an entity for which
@@ -53,7 +49,7 @@ interface ContactBasicFlavourlessApi {
 	 * @return the id and revision of the deleted contacts. If some entities couldn't be deleted (for example
 	 * because you had no write access to them) they will not be included in this list.
 	 */
-	suspend fun deleteContactsByIds(entityIds: List<StoredDocumentIdentifier>): List<DocIdentifier>
+	suspend fun deleteContactsByIds(entityIds: List<StoredDocumentIdentifier>): List<StoredDocumentIdentifier>
 
 	/**
 	 * Permanently deletes a contact.
@@ -64,12 +60,20 @@ interface ContactBasicFlavourlessApi {
 	suspend fun purgeContactById(id: String, rev: String)
 
 	/**
+	 * Permanently deletes many contacts.
+	 * @param entityIds ids and revisions of the contacts to delete
+	 * @return the id and revision of the deleted contacts. If some entities couldn't be deleted (for example
+	 * because you had no write access to them) they will not be included in this list.
+	 */
+	suspend fun purgeContactsByIds(entityIds: List<StoredDocumentIdentifier>): List<StoredDocumentIdentifier>
+
+	/**
 	 * Deletes a contact. If you don't have write access to the contact the method will fail.
 	 * @param contact the contact to delete
 	 * @return the id and revision of the deleted contact.
 	 * @throws RevisionConflictException if the provided contact doesn't match the latest known revision
 	 */
-	suspend fun deleteContact(contact: Contact): DocIdentifier =
+	suspend fun deleteContact(contact: Contact): StoredDocumentIdentifier =
 		deleteContactById(contact.id, requireNotNull(contact.rev) { "Can't delete a contact that has no rev" })
 
 	/**
@@ -78,7 +82,7 @@ interface ContactBasicFlavourlessApi {
 	 * @return the id and revision of the deleted contacts. If some entities couldn't be deleted they will not be
 	 * included in this list.
 	 */
-	suspend fun deleteContacts(contacts: List<Contact>): List<DocIdentifier> =
+	suspend fun deleteContacts(contacts: List<Contact>): List<StoredDocumentIdentifier> =
 		deleteContactsByIds(contacts.map { contact ->
 			StoredDocumentIdentifier(contact.id, requireNotNull(contact.rev) { "Can't delete a contact that has no rev" })
 		})
@@ -93,6 +97,15 @@ interface ContactBasicFlavourlessApi {
 	}
 
 	/**
+	 * Permanently deletes many contacts.
+	 * @param contacts the contacts to delete
+	 * @return the id and revision of the deleted contacts. If some entities couldn't be deleted (for example
+	 * because you had no write access to them) they will not be included in this list.
+	 */
+	suspend fun purgeContacts(contacts: List<Contact>): List<StoredDocumentIdentifier> =
+		purgeContactsByIds(contacts.map { it.toStoredDocumentIdentifier() })
+
+	/**
 	 * Gives an approximation of the amount of times each code of type [codeType] is used in services where the current
 	 * data owner is a direct delegate (does not count situations where the data owner has access to the service through
 	 * delegations to a parent data owner).
@@ -102,6 +115,53 @@ interface ContactBasicFlavourlessApi {
 	 * @return the occurrences for codes of type [codeType] in services.
 	 */
 	suspend fun getServiceCodesOccurrences(codeType: String, minOccurrences: Long): List<LabelledOccurence>
+}
+
+interface ContactBasicFlavourlessInGroupApi {
+	/**
+	 * In-group version of [ContactBasicFlavourlessApi.deleteContactById]
+	 */
+	suspend fun deleteContactById(entityId: GroupScoped<StoredDocumentIdentifier>): GroupScoped<StoredDocumentIdentifier>
+
+	/**
+	 * In-group version of [ContactBasicFlavourlessApi.deleteContactsByIds]
+	 */
+	suspend fun deleteContactsByIds(entityIds: List<GroupScoped<StoredDocumentIdentifier>>): List<GroupScoped<StoredDocumentIdentifier>>
+
+	/**
+	 * In-group version of [ContactBasicFlavourlessApi.purgeContactById]
+	 */
+	suspend fun purgeContactById(entityId: GroupScoped<StoredDocumentIdentifier>)
+
+	/**
+	 * In-group version of [ContactBasicFlavourlessApi.purgeContactsByIds]
+	 */
+	suspend fun purgeContactsByIds(entityIds: List<GroupScoped<StoredDocumentIdentifier>>): List<GroupScoped<StoredDocumentIdentifier>>
+
+	/**
+	 * In-group version of [ContactBasicFlavourlessApi.deleteContact]
+	 */
+	suspend fun deleteContact(contact: GroupScoped<Contact>): GroupScoped<StoredDocumentIdentifier> =
+		deleteContactById(contact.toStoredDocumentIdentifier())
+
+	/**
+	 * In-group version of [ContactBasicFlavourlessApi.deleteContacts]
+	 */
+	suspend fun deleteContacts(contacts: List<GroupScoped<Contact>>): List<GroupScoped<StoredDocumentIdentifier>> =
+		deleteContactsByIds(contacts.toStoredDocumentIdentifier())
+
+	/**
+	 * In-group version of [ContactBasicFlavourlessApi.purgeContact]
+	 */
+	suspend fun purgeContact(contact: GroupScoped<Contact>) {
+		purgeContactById(contact.toStoredDocumentIdentifier())
+	}
+
+	/**
+	 * In-group version of [ContactBasicFlavourlessApi.purgeContacts]
+	 */
+	suspend fun purgeContacts(contacts: List<GroupScoped<Contact>>): List<GroupScoped<StoredDocumentIdentifier>> =
+		purgeContactsByIds(contacts.map { it.toStoredDocumentIdentifier() })
 }
 
 /* This interface includes the API calls can be used on decrypted items if encryption keys are available *or* encrypted items if no encryption keys are available */
@@ -133,6 +193,14 @@ interface ContactBasicFlavouredApi<E : Contact, S : Service> {
 	suspend fun undeleteContactById(id: String, rev: String): E
 
 	/**
+	 * Restores a batch of contacts that were marked as deleted.
+	 * @param entityIds the ids and the revisions of the contacts to restore.
+	 * @return the restored contacts. If some entities couldn't be restored (because the user does not have access or the revision is not
+	 * up-to-date), then those entities will not be restored and will not appear in this list.
+	 */
+	suspend fun undeleteContactsByIds(entityIds: List<StoredDocumentIdentifier>): List<E>
+
+	/**
 	 * Restores a contact that was marked as deleted.
 	 * @param contact the contact to undelete
 	 * @return the restored contact.
@@ -140,6 +208,15 @@ interface ContactBasicFlavouredApi<E : Contact, S : Service> {
 	 */
 	suspend fun undeleteContact(contact: Contact): E =
 		undeleteContactById(contact.id, requireNotNull(contact.rev) { "Can't delete a contact that has no rev" })
+
+	/**
+	 * Restores a batch of contacts that were marked as deleted.
+	 * @param contacts the contacts to restore.
+	 * @return the restored contacts. If some entities couldn't be restored (because the user does not have access or the revision is not
+	 * up-to-date), then those entities will not be restored and will not appear in this list.
+	 */
+	suspend fun undeleteContacts(contacts: List<Contact>): List<E> =
+		undeleteContactsByIds(contacts.map { it.toStoredDocumentIdentifier() })
 
 	/**
 	 * Modifies a contact. You need to have write access to the entity.
@@ -176,18 +253,6 @@ interface ContactBasicFlavouredApi<E : Contact, S : Service> {
 	 */
 	suspend fun getContacts(entityIds: List<String>): List<E>
 
-	@Deprecated("Use filter instead")
-	suspend fun listContactByHCPartyServiceId(hcPartyId: String, serviceId: String): List<E>
-
-	@Deprecated("Use filter instead")
-	suspend fun listContactsByExternalId(externalId: String): List<E>
-
-	@Deprecated("Use filter instead")
-	suspend fun listContactsByHCPartyAndFormId(hcPartyId: String, formId: String): List<E>
-
-	@Deprecated("Use filter instead")
-	suspend fun listContactsByHCPartyAndFormIds(hcPartyId: String, formIds: List<String>): List<E>
-
 	/**
 	 * Get a service by its id. You must have read access to the entity. Fails if the id does not correspond to any
 	 * entity, corresponds to an entity that is not a service, or corresponds to an entity for which you don't have
@@ -196,7 +261,7 @@ interface ContactBasicFlavouredApi<E : Contact, S : Service> {
 	 * @param serviceId a service id
 	 * @return the service with id [serviceId].
 	 */
-	suspend fun getService(serviceId: String): S
+	suspend fun getService(serviceId: String): S?
 
 	/**
 	 * Get multiple services by their ids. Ignores all ids that do not correspond to an entity, correspond to
@@ -207,33 +272,70 @@ interface ContactBasicFlavouredApi<E : Contact, S : Service> {
 	 */
 	suspend fun getServices(entityIds: List<String>): List<S>
 
-	@Deprecated("Use filter instead")
-	suspend fun getServicesLinkedTo(linkType: String, ids: List<String>): List<S>
+}
 
-	@Deprecated("Use filter instead")
-	suspend fun listServicesByAssociationId(associationId: String): List<S>
+interface ContactBasicFlavouredInGroupApi<E : Contact, S: Service> {
+	/**
+	 * In-group version of [ContactBasicFlavouredApi.createContact].
+	 */
+	suspend fun createContact(entity: GroupScoped<E>): GroupScoped<E>
 
-	@Deprecated("Use filter instead")
-	suspend fun listServicesByHealthElementId(hcPartyId: String, healthElementId: String): List<S>
+	/**
+	 * In-group version of [ContactBasicFlavouredApi.createContacts].
+	 */
+	suspend fun createContacts(entities: List<GroupScoped<E>>): List<GroupScoped<E>>
 
-	@Deprecated(
-		"Find methods are deprecated",
-		ReplaceWith(
-			expression = "filterContactsBy(ContactByHcPartyTagCodeDateFilter(healthcarePartyId = hcPartyId, startOfContactOpeningDate = startDate, endOfContactOpeningDate = endDate))",
-			imports = arrayOf("com.icure.cardinal.sdk.model.filter.contact.ContactByHcPartyTagCodeDateFilter")
-		)
-	)
-	suspend fun findContactsByOpeningDate(
-		startDate: Long,
-		endDate: Long,
-		hcPartyId: String,
-		@DefaultValue("null")
-		startKey: JsonElement? = null,
-		@DefaultValue("null")
-		startDocumentId: String? = null,
-		@DefaultValue("null")
-		limit: Int? = null,
-	): PaginatedList<E>
+	/**
+	 * In-group version of [ContactBasicFlavouredApi.undeleteContactById]
+	 */
+	suspend fun undeleteContactById(entityId: GroupScoped<StoredDocumentIdentifier>): GroupScoped<E>
+
+	/**
+	 * In-group version of [ContactBasicFlavouredApi.undeleteContactsByIds]
+	 */
+	suspend fun undeleteContactsByIds(entityIds: List<GroupScoped<StoredDocumentIdentifier>>): List<GroupScoped<E>>
+
+	/**
+	 * In-group version of [ContactBasicFlavouredApi.undeleteContact]
+	 */
+	suspend fun undeleteContact(contact: GroupScoped<Contact>): GroupScoped<E> =
+		undeleteContactById(contact.toStoredDocumentIdentifier())
+
+	/**
+	 * In-group version of [ContactBasicFlavouredApi.undeleteContacts]
+	 */
+	suspend fun undeleteContacts(contacts: List<GroupScoped<E>>): List<GroupScoped<E>> =
+		undeleteContactsByIds(contacts.map { it.toStoredDocumentIdentifier() })
+
+	/**
+	 * In-group version of [ContactBasicFlavouredApi.modifyContact]
+	 */
+	suspend fun modifyContact(entity: GroupScoped<E>): GroupScoped<E>
+
+	/**
+	 * In-group version of [ContactBasicFlavouredApi.modifyContacts]
+	 */
+	suspend fun modifyContacts(entities: List<GroupScoped<E>>): List<GroupScoped<E>>
+
+	/**
+	 * In-group version of [ContactBasicFlavouredApi.getContact]
+	 */
+	suspend fun getContact(groupId: String, entityId: String): GroupScoped<E>?
+
+	/**
+	 * In-group version of [ContactBasicFlavouredApi.getContacts]
+	 */
+	suspend fun getContacts(groupId: String, entityIds: List<String>): List<GroupScoped<E>>
+
+	/**
+	 * In-group version of [ContactBasicFlavouredApi.getService]
+	 */
+	suspend fun getService(groupId: String, serviceId: String): GroupScoped<S>?
+
+	/**
+	 * In-group version of [ContactBasicFlavouredApi.getServices]
+	 */
+	suspend fun getServices(groupId: String, entityIds: List<String>): List<GroupScoped<S>>
 }
 
 /* The extra API calls declared in this interface are the ones that can be used on encrypted or decrypted items but only when the user is a data owner */
@@ -272,18 +374,6 @@ interface ContactFlavouredApi<E : Contact, S : Service> : ContactBasicFlavouredA
 		contact: E,
 		delegates: Map<String, ContactShareOptions>
 	): E
-
-	@Deprecated("Use filter instead")
-	suspend fun findContactsByHcPartyPatient(
-		hcPartyId: String,
-		patient: Patient,
-		@DefaultValue("null")
-		startDate: Long? = null,
-		@DefaultValue("null")
-		endDate: Long? = null,
-		@DefaultValue("null")
-		descending: Boolean? = null,
-	): PaginatedListIterator<E>
 
 	/**
 	 * Get an iterator that iterates through all contacts matching the provided filter, executing multiple requests to
@@ -336,6 +426,36 @@ interface ContactFlavouredApi<E : Contact, S : Service> : ContactBasicFlavouredA
 	 * @return an iterator that iterates over all services matching the provided filter.
 	 */
 	suspend fun filterServicesBySorted(filter: SortableFilterOptions<Service>): PaginatedListIterator<S>
+}
+
+interface ContactFlavouredInGroupApi<E : Contact, S : Service> : ContactBasicFlavouredInGroupApi<E, S> {
+	/**
+	 * In-group version of [ContactFlavouredApi.shareWith]
+	 */
+	suspend fun shareWith(
+		delegate: EntityReferenceInGroup,
+		contact: GroupScoped<E>,
+		@DefaultValue("null")
+		options: ContactShareOptions? = null
+	): GroupScoped<E>
+
+	/**
+	 * In-group version of [ContactFlavouredApi.shareWithMany]
+	 */
+	suspend fun shareWithMany(
+		contact: GroupScoped<E>,
+		delegates: @JsMapAsObjectArray(keyEntryName = "delegate", valueEntryName = "shareOptions") Map<EntityReferenceInGroup, ContactShareOptions>
+	): GroupScoped<E>
+
+	/**
+	 * In-group version of [ContactFlavouredApi.filterContactsBy]
+	 */
+	suspend fun filterContactsBy(groupId: String, filter: FilterOptions<Contact>): PaginatedListIterator<GroupScoped<E>>
+
+	/**
+	 * In-group version of [ContactFlavouredApi.filterContactsBySorted]
+	 */
+	suspend fun filterContactsBySorted(groupId: String, filter: SortableFilterOptions<Contact>): PaginatedListIterator<GroupScoped<E>>
 }
 
 /* The extra API calls declared in this interface are the ones that can only be used on decrypted items when encryption keys are available */
@@ -442,7 +562,7 @@ interface ContactApi : ContactBasicFlavourlessApi, ContactFlavouredApi<Decrypted
 	 * @return the id of the patient linked to the contact, or empty if the current user can't access any patient id
 	 * of the contact.
 	 */
-	suspend fun decryptPatientIdOf(contact: Contact): Set<String>
+	suspend fun decryptPatientIdOf(contact: Contact): Set<EntityReferenceInGroup>
 
 	/**
 	 * Create metadata to allow other users to identify the anonymous delegates of a contact.
@@ -504,6 +624,12 @@ interface ContactApi : ContactBasicFlavourlessApi, ContactFlavouredApi<Decrypted
 
 	val encrypted: ContactFlavouredApi<EncryptedContact, EncryptedService>
 	val tryAndRecover: ContactFlavouredApi<Contact, Service>
+	/**
+	 * Gives access to methods of the api that allow to use entities or work with data owners in groups other than the
+	 * current user's group.
+	 * These methods aren't available when connected to a kraken-lite instance.
+	 */
+	val inGroup: ContactInGroupApi
 
 
 	/**
@@ -520,7 +646,104 @@ interface ContactApi : ContactBasicFlavourlessApi, ContactFlavouredApi<Decrypted
 	): EntitySubscription<EncryptedService>
 }
 
+interface ContactInGroupApi : ContactBasicFlavourlessInGroupApi, ContactFlavouredInGroupApi<DecryptedContact, DecryptedService> {
+	/**
+	 * Give access to the encrypted flavour of the api
+	 */
+	val encrypted: ContactFlavouredInGroupApi<EncryptedContact, EncryptedService>
+
+	/**
+	 * Gives access to the polymorphic flavour of the api
+	 */
+	val tryAndRecover: ContactFlavouredInGroupApi<Contact, Service>
+
+	/**
+	 * In-group version of [ContactApi.withEncryptionMetadata]
+	 */
+	suspend fun withEncryptionMetadata(
+		entityGroupId: String,
+		base: DecryptedContact?,
+		patient: GroupScoped<Patient>?,
+		@DefaultValue("null")
+		user: User? = null,
+		@DefaultValue("emptyMap()")
+		delegates: @JsMapAsObjectArray(keyEntryName = "delegate", valueEntryName = "accessLevel") Map<EntityReferenceInGroup, AccessLevel> = emptyMap(),
+		@DefaultValue("com.icure.cardinal.sdk.crypto.entities.SecretIdUseOption.UseAnySharedWithParent")
+		secretId: SecretIdUseOption = SecretIdUseOption.UseAnySharedWithParent,
+		@DefaultValue("null")
+		alternateRootDelegateReference: EntityReferenceInGroup? = null,
+	): GroupScoped<DecryptedContact>
+
+	/**
+	 * In-group version of [ContactApi.getEncryptionKeysOf]
+	 */
+	suspend fun getEncryptionKeysOf(contact: GroupScoped<Contact>): Set<HexString>
+
+	/**
+	 * In-group version of [ContactApi.hasWriteAccess]
+	 */
+	suspend fun hasWriteAccess(contact: GroupScoped<Contact>): Boolean
+
+	/**
+	 * In-group version of [ContactApi.decryptPatientIdOf]
+	 */
+	suspend fun decryptPatientIdOf(contact: GroupScoped<Contact>): Set<EntityReferenceInGroup>
+
+	/**
+	 * In-group version of [ContactApi.createDelegationDeAnonymizationMetadata]
+	 */
+	suspend fun createDelegationDeAnonymizationMetadata(entity: GroupScoped<Contact>, delegates: Set<EntityReferenceInGroup>)
+
+	/**
+	 * In-group version of [ContactApi.decrypt]
+	 */
+	suspend fun decrypt(contacts: List<GroupScoped<EncryptedContact>>): List<GroupScoped<DecryptedContact>>
+
+	/**
+	 * In-group version of [ContactApi.tryDecrypt]
+	 */
+	suspend fun tryDecrypt(contacts: List<GroupScoped<EncryptedContact>>): List<GroupScoped<Contact>>
+
+	/**
+	 * In-group version of [ContactApi.decryptService]
+	 */
+	suspend fun decryptService(service: GroupScoped<EncryptedService>): GroupScoped<DecryptedService>
+
+	/**
+	 * In-group version of [ContactApi.tryDecryptService]
+	 */
+	suspend fun tryDecryptService(service: GroupScoped<EncryptedService>): GroupScoped<Service>
+
+	/**
+	 * In-group version of [ContactApi.matchContactsBy]
+	 */
+	suspend fun matchContactsBy(groupId: String, filter: FilterOptions<Contact>): List<String>
+
+	/**
+	 * In-group version of [ContactApi.matchContactsBySorted]
+	 */
+	suspend fun matchContactsBySorted(groupId: String, filter: SortableFilterOptions<Contact>): List<String>
+
+	/**
+	 * In-group version of [ContactApi.matchServicesBy]
+	 */
+	suspend fun matchServicesBy(groupId: String, filter: FilterOptions<Service>): List<String>
+
+	/**
+	 * In-group version of [ContactApi.matchServicesBySorted]
+	 */
+	suspend fun matchServicesBySorted(groupId: String, filter: SortableFilterOptions<Service>): List<String>
+}
+
 interface ContactBasicApi : ContactBasicFlavourlessApi, ContactBasicFlavouredApi<EncryptedContact, EncryptedService>, Subscribable<Contact, EncryptedContact, BaseFilterOptions<Contact>> {
+
+	/**
+	 * Gives access to methods of the api that allow to use entities or work with data owners in groups other than the
+	 * current user's group.
+	 * These methods aren't available when connected to a kraken-lite instance.
+	 */
+	val inGroup: ContactBasicInGroupApi
+
 	/**
 	 * Get the ids of all contacts matching the provided filter.
 	 *
@@ -634,4 +857,46 @@ interface ContactBasicApi : ContactBasicFlavourlessApi, ContactBasicFlavouredApi
 		@DefaultValue("null")
 		subscriptionConfig: EntitySubscriptionConfiguration? = null
 	): EntitySubscription<EncryptedService>
+}
+
+interface ContactBasicInGroupApi : ContactBasicFlavourlessInGroupApi, ContactBasicFlavouredInGroupApi<EncryptedContact, EncryptedService> { // TODO subscribable
+	/**
+	 * In-group version of [ContactBasicApi.matchContactsBy]
+	 */
+	suspend fun matchContactsBy(groupId: String, filter: BaseFilterOptions<Contact>): List<String>
+
+	/**
+	 * In-group version of [ContactBasicApi.matchContactsBySorted]
+	 */
+	suspend fun matchContactsBySorted(groupId: String, filter: BaseSortableFilterOptions<Contact>): List<String>
+
+	/**
+	 * In-group version of [ContactBasicApi.matchServicesBy]
+	 */
+	suspend fun matchServicesBy(groupId: String, filter: BaseFilterOptions<Service>): List<String>
+
+	/**
+	 * In-group version of [ContactBasicApi.matchServicesBySorted]
+	 */
+	suspend fun matchServicesBySorted(groupId: String, filter: BaseSortableFilterOptions<Service>): List<String>
+
+	/**
+	 * In-group version of [ContactBasicApi.filterContactsBy]
+	 */
+	suspend fun filterContactsBy(groupId: String, filter: BaseFilterOptions<Contact>): PaginatedListIterator<GroupScoped<EncryptedContact>>
+
+	/**
+	 * In-group version of [ContactBasicApi.filterContactsBySorted]
+	 */
+	suspend fun filterContactsBySorted(groupId: String, filter: BaseSortableFilterOptions<Contact>): PaginatedListIterator<GroupScoped<EncryptedContact>>
+
+	/**
+	 * In-group version of [ContactBasicApi.filterServicesBy]
+	 */
+	suspend fun filterServicesBy(groupId: String, filter: BaseFilterOptions<Service>): PaginatedListIterator<GroupScoped<EncryptedService>>
+
+	/**
+	 * In-group version of [ContactBasicApi.filterServicesBySorted]
+	 */
+	suspend fun filterServicesBySorted(groupId: String, filter: BaseSortableFilterOptions<Service>): PaginatedListIterator<GroupScoped<EncryptedService>>
 }

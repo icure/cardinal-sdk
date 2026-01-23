@@ -238,7 +238,7 @@ private open class AbstractCalendarItemBasicFlavouredApi<E : CalendarItem>(
 	override suspend fun getCalendarItem(entityId: String): E? =
 		doGetCalendarItem(groupId = null, entityId)
 
-	protected suspend fun doGetCalendarItem(groupId: String?, entityId: String): E? =
+	protected  suspend fun doGetCalendarItem(groupId: String?, entityId: String): E? =
 		if (groupId == null) {
 			rawApi.getCalendarItem(entityId)
 		} else {
@@ -287,7 +287,7 @@ private class AbstractCalendarItemFlavouredApi<E : CalendarItem>(
 		shareWithMany(calendarItem, mapOf(delegate to (options ?: CalendarItemShareOptions())))
 
 	override suspend fun shareWithMany(calendarItem: E, delegates: Map<String, CalendarItemShareOptions>): E =
-		doShareWithMany(null, calendarItem, delegates.keyAsLocalDataOwnerReferences())
+		doShareWithMany(groupId = null, calendarItem, delegates.keyAsLocalDataOwnerReferences())
 
 	override suspend fun shareWithMany(
 		calendarItem: GroupScoped<E>,

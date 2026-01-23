@@ -7,7 +7,6 @@ import com.icure.cardinal.sdk.filters.BaseFilterOptions
 import com.icure.cardinal.sdk.filters.BaseSortableFilterOptions
 import com.icure.cardinal.sdk.filters.FilterOptions
 import com.icure.cardinal.sdk.filters.SortableFilterOptions
-import com.icure.cardinal.sdk.model.AccessLog
 import com.icure.cardinal.sdk.model.CalendarItem
 import com.icure.cardinal.sdk.model.DecryptedCalendarItem
 import com.icure.cardinal.sdk.model.EncryptedCalendarItem
@@ -216,7 +215,7 @@ interface CalendarItemBasicFlavouredApi<E : CalendarItem> {
 	 * @return the restored calendarItems. If some entities couldn't be restored (because the user does not have access or the revision is not
 	 * up-to-date), then those entities will not be restored and will not appear in this list.
 	 */
-	suspend fun undeleteCalendarItems(calendarItems: List<AccessLog>): List<E> =
+	suspend fun undeleteCalendarItems(calendarItems: List<CalendarItem>): List<E> =
 		undeleteCalendarItemsByIds(calendarItems.map { it.toStoredDocumentIdentifier() })
 
 	/**

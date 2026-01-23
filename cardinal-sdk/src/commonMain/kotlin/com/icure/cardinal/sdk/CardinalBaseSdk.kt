@@ -20,7 +20,6 @@ import com.icure.cardinal.sdk.api.impl.AgendaApiImpl
 import com.icure.cardinal.sdk.api.impl.AuthApiImpl
 import com.icure.cardinal.sdk.api.impl.CalendarItemTypeApiImpl
 import com.icure.cardinal.sdk.api.impl.CodeApiImpl
-import com.icure.cardinal.sdk.api.impl.ContactBasicApiImpl
 import com.icure.cardinal.sdk.api.impl.DeviceApiImpl
 import com.icure.cardinal.sdk.api.impl.DocumentBasicApiImpl
 import com.icure.cardinal.sdk.api.impl.DocumentTemplateApiImpl
@@ -47,6 +46,7 @@ import com.icure.cardinal.sdk.api.impl.TopicBasicApiImpl
 import com.icure.cardinal.sdk.api.impl.UserApiImpl
 import com.icure.cardinal.sdk.api.impl.initAccessLogBasicApi
 import com.icure.cardinal.sdk.api.impl.initCalendarItemBasicApi
+import com.icure.cardinal.sdk.api.impl.initContactBasicApi
 import com.icure.cardinal.sdk.api.impl.initHealthElementBasicApi
 import com.icure.cardinal.sdk.api.impl.initPatientBasicApi
 import com.icure.cardinal.sdk.api.raw.RawAnonymousAuthApi
@@ -449,13 +449,14 @@ private class CardinalBaseApisImpl(
 		CalendarItemTypeApiImpl(RawCalendarItemTypeApiImpl(apiUrl, authProvider, config.rawApiConfig))
 	}
 	override val contact by lazy {
-		ContactBasicApiImpl(
+		initContactBasicApi(
 			RawContactApiImpl(
 				apiUrl,
 				authProvider,
 				NoAccessControlKeysHeadersProvider,
 				config.rawApiConfig
-			), config
+			),
+			config
 		)
 	}
 	override val device by lazy { DeviceApiImpl(RawDeviceApiImpl(apiUrl, authProvider, config.rawApiConfig), config) }
