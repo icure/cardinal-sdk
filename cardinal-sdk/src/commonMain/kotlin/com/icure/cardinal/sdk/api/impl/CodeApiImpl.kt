@@ -50,7 +50,7 @@ internal abstract class AbstractCodeApi(
 			rawApi.getCode(entityId)
 		} else {
 			rawApi.getCodeInGroup(groupId, entityId)
-		}.successBodyOrNull()
+		}.successBodyOrNull404()
 
 	protected suspend fun doGetCodes(groupId: String?, entityIds: List<String>): List<Code> =
 		skipRequestOnNullList(entityIds) { ids ->
