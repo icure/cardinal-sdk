@@ -5,11 +5,8 @@ import kotlin.Boolean
 import kotlin.Long
 import kotlin.String
 
-// WARNING: This file is auto-generated. If you change it manually, your changes will be lost.
-// If you want to change the way this class is generated, see [this repo](https://github.com/icure/sdk-codegen).
-
 @Serializable
-data class FlowItem(
+public data class FlowItem(
 	public val id: String? = null,
 	public val title: String? = null,
 	public val comment: String? = null,
@@ -43,8 +40,4 @@ data class FlowItem(
 	public val patientFirstName: String? = null,
 	public val description: String? = null,
 	public val interventionCode: String? = null,
-) {
-	// region FlowItem-FlowItem
-
-	// endregion
-}
+)

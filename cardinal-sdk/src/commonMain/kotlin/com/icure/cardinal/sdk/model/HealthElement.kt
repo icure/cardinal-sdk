@@ -23,16 +23,13 @@ import com.icure.cardinal.sdk.model.specializations.Base64String
 import com.icure.cardinal.sdk.utils.DefaultValue
 import kotlinx.serialization.Serializable
 import kotlin.Boolean
-import kotlin.Int
 import kotlin.Long
 import kotlin.String
 import kotlin.collections.List
 import kotlin.collections.Map
 import kotlin.collections.Set
 
-// WARNING: This file is auto-generated. If you change it manually, your changes will be lost.
-// If you want to change the way this class is generated, see [this repo](https://github.com/icure/sdk-codegen).
-sealed interface HealthElement :
+public sealed interface HealthElement :
 	StoredDocument,
 	ICureDocument<String>,
 	HasEncryptionMetadata,
@@ -51,8 +48,6 @@ sealed interface HealthElement :
 
 	override val responsible: String?
 
-	override val medicalLocationId: String?
-
 	override val tags: Set<CodeStub>
 
 	override val codes: Set<CodeStub>
@@ -60,8 +55,6 @@ sealed interface HealthElement :
 	override val endOfLife: Long?
 
 	override val deletionDate: Long?
-
-	public val healthElementId: String?
 
 	public val valueDate: Long?
 
@@ -83,8 +76,6 @@ sealed interface HealthElement :
 
 	public val idService: String?
 
-	public val status: Int
-
 	public val laterality: Laterality?
 
 	public val plansOfAction: List<PlanOfAction>
@@ -104,16 +95,10 @@ sealed interface HealthElement :
 	override val encryptedSelf: Base64String?
 
 	override val securityMetadata: SecurityMetadata?
-	// region HealthElement-HealthElement
-
-	companion object {
-		const val KRAKEN_QUALIFIED_NAME = "org.taktik.icure.entities.HealthElement"
-	}
-	// endregion
 }
 
 @Serializable
-data class DecryptedHealthElement(
+public data class DecryptedHealthElement(
 	override val id: String,
 	@DefaultValue("emptyList()")
 	override val identifiers: List<Identifier> = emptyList(),
@@ -122,14 +107,12 @@ data class DecryptedHealthElement(
 	override val modified: Long? = null,
 	override val author: String? = null,
 	override val responsible: String? = null,
-	override val medicalLocationId: String? = null,
 	@DefaultValue("emptySet()")
 	override val tags: Set<CodeStub> = emptySet(),
 	@DefaultValue("emptySet()")
 	override val codes: Set<CodeStub> = emptySet(),
 	override val endOfLife: Long? = null,
 	override val deletionDate: Long? = null,
-	override val healthElementId: String? = null,
 	override val valueDate: Long? = null,
 	override val openingDate: Long? = null,
 	override val closingDate: Long? = null,
@@ -142,8 +125,6 @@ data class DecryptedHealthElement(
 	override val idOpeningContact: String? = null,
 	override val idClosingContact: String? = null,
 	override val idService: String? = null,
-	@DefaultValue("0")
-	override val status: Int = 0,
 	override val laterality: Laterality? = null,
 	@DefaultValue("emptyList()")
 	override val plansOfAction: List<DecryptedPlanOfAction> = emptyList(),
@@ -161,15 +142,10 @@ data class DecryptedHealthElement(
 	override val encryptionKeys: Map<String, Set<Delegation>> = emptyMap(),
 	override val encryptedSelf: Base64String? = null,
 	override val securityMetadata: SecurityMetadata? = null,
-) : HealthElement {
-	// region HealthElement-DecryptedHealthElement
-override fun copyWithSecurityMetadata(securityMetadata: SecurityMetadata, secretForeignKeys: Set<String>): DecryptedHealthElement =
-		copy(securityMetadata = securityMetadata, secretForeignKeys = secretForeignKeys)
-	// endregion
-}
+) : HealthElement
 
 @Serializable
-data class EncryptedHealthElement(
+public data class EncryptedHealthElement(
 	override val id: String,
 	@DefaultValue("emptyList()")
 	override val identifiers: List<Identifier> = emptyList(),
@@ -178,14 +154,12 @@ data class EncryptedHealthElement(
 	override val modified: Long? = null,
 	override val author: String? = null,
 	override val responsible: String? = null,
-	override val medicalLocationId: String? = null,
 	@DefaultValue("emptySet()")
 	override val tags: Set<CodeStub> = emptySet(),
 	@DefaultValue("emptySet()")
 	override val codes: Set<CodeStub> = emptySet(),
 	override val endOfLife: Long? = null,
 	override val deletionDate: Long? = null,
-	override val healthElementId: String? = null,
 	override val valueDate: Long? = null,
 	override val openingDate: Long? = null,
 	override val closingDate: Long? = null,
@@ -198,8 +172,6 @@ data class EncryptedHealthElement(
 	override val idOpeningContact: String? = null,
 	override val idClosingContact: String? = null,
 	override val idService: String? = null,
-	@DefaultValue("0")
-	override val status: Int = 0,
 	override val laterality: Laterality? = null,
 	@DefaultValue("emptyList()")
 	override val plansOfAction: List<EncryptedPlanOfAction> = emptyList(),
@@ -217,9 +189,4 @@ data class EncryptedHealthElement(
 	override val encryptionKeys: Map<String, Set<Delegation>> = emptyMap(),
 	override val encryptedSelf: Base64String? = null,
 	override val securityMetadata: SecurityMetadata? = null,
-) : HealthElement {
-	// region HealthElement-EncryptedHealthElement
-override fun copyWithSecurityMetadata(securityMetadata: SecurityMetadata, secretForeignKeys: Set<String>): EncryptedHealthElement =
-		copy(securityMetadata = securityMetadata, secretForeignKeys = secretForeignKeys)
-	// endregion
-}
+) : HealthElement

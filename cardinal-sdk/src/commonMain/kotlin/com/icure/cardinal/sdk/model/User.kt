@@ -4,7 +4,6 @@ import com.icure.cardinal.sdk.model.base.Identifier
 import com.icure.cardinal.sdk.model.base.StoredDocument
 import com.icure.cardinal.sdk.model.embed.DelegationTag
 import com.icure.cardinal.sdk.model.enums.UsersStatus
-import com.icure.cardinal.sdk.model.enums.UsersType
 import com.icure.cardinal.sdk.model.security.AuthenticationToken
 import com.icure.cardinal.sdk.model.security.LoginIdentifier
 import com.icure.cardinal.sdk.model.security.Permission
@@ -19,11 +18,8 @@ import kotlin.collections.Map
 import kotlin.collections.Set
 import kotlin.time.Instant
 
-// WARNING: This file is auto-generated. If you change it manually, your changes will be lost.
-// If you want to change the way this class is generated, see [this repo](https://github.com/icure/sdk-codegen).
-
 @Serializable
-data class User(
+public data class User(
 	override val id: String,
 	override val rev: String? = null,
 	override val deletionDate: Long? = null,
@@ -37,7 +33,6 @@ data class User(
 	public val permissions: Set<Permission> = emptySet(),
 	@DefaultValue("emptySet()")
 	public val roles: Set<String> = emptySet(),
-	public val type: UsersType? = null,
 	public val status: UsersStatus? = null,
 	public val login: String? = null,
 	public val passwordHash: String? = null,
@@ -48,13 +43,9 @@ data class User(
 	@DefaultValue("emptyMap()")
 	public val autoDelegations: Map<DelegationTag, Set<String>> = emptyMap(),
 	@Serializable(with = InstantSerializer::class)
-	public val createdDate: Instant? = null,
-	@Serializable(with = InstantSerializer::class)
 	public val termsOfUseDate: Instant? = null,
 	public val email: String? = null,
 	public val mobilePhone: String? = null,
-	@DefaultValue("emptyMap()")
-	public val applicationTokens: Map<String, String> = emptyMap(),
 	@DefaultValue("emptyMap()")
 	public val authenticationTokens: Map<String, AuthenticationToken> = emptyMap(),
 	public val systemMetadata: SystemMetadata? = null,
@@ -67,10 +58,4 @@ data class User(
 		@DefaultValue("emptyList()")
 		public val loginIdentifiers: List<LoginIdentifier> = emptyList(),
 	)
-	// region User-User
-
-	companion object {
-		const val KRAKEN_QUALIFIED_NAME = "org.taktik.icure.entities.User"
-	}
-	// endregion
 }
