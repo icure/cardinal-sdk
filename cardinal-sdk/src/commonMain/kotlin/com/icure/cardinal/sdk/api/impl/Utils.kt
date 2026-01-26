@@ -6,7 +6,6 @@ import com.icure.cardinal.sdk.model.GroupScoped
 import com.icure.cardinal.sdk.model.base.HasEncryptionMetadata
 import com.icure.cardinal.sdk.model.base.Identifiable
 import com.icure.cardinal.sdk.model.base.Versionable
-import com.icure.cardinal.sdk.model.embed.Encryptable
 import com.icure.cardinal.sdk.utils.ensure
 import com.icure.cardinal.sdk.utils.ensureNonNull
 import com.icure.utils.InternalIcureApi
@@ -92,7 +91,7 @@ internal inline fun <T> groupScopedIn(groupId: String, block: (groupId: String) 
 internal inline fun <T> groupScopedListIn(groupId: String, block: (groupId: String) -> List<T>): List<GroupScoped<T>> =
 	block(groupId).map { GroupScoped(entity = it, groupId = groupId) }
 
-internal inline fun <T, U> skipRequestOnNullList(input: List<T>, block: (List<T>) -> List<U>): List<U> =
+internal inline fun <T, U> skipRequestOnEmptyList(input: List<T>, block: (List<T>) -> List<U>): List<U> =
 	if (input.isNotEmpty()) block(input)
 	else emptyList()
 

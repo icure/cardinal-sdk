@@ -133,7 +133,7 @@ private open class AbstractCalendarItemBasicFlavouredApi<E : CalendarItem>(
 		}
 	}
 
-	private suspend fun doCreateCalendarItems(groupId: String?, entities: List<E>): List<E> = skipRequestOnNullList(entities) { calendarItems ->
+	private suspend fun doCreateCalendarItems(groupId: String?, entities: List<E>): List<E> = skipRequestOnEmptyList(entities) { calendarItems ->
 		val encrypted = validateAndMaybeEncrypt(groupId, calendarItems)
 		if (groupId == null) {
 			rawApi.createCalendarItems(encrypted)
@@ -167,7 +167,7 @@ private open class AbstractCalendarItemBasicFlavouredApi<E : CalendarItem>(
 			rawApi.undeleteCalendarItem(id, rev)
 		} else {
 			rawApi.undeleteCalendarItemInGroup(groupId = groupId, calendarItemId = id, rev = rev)
-		}.successBodyOrThrowRevisionConflict().let { maybeDecrypt(null, it) }
+		}.successBodyOrThrowRevisionConflict().let { maybeDecrypt(groupId, it) }
 
 	override suspend fun undeleteCalendarItemsByIds(entityIds: List<StoredDocumentIdentifier>): List<E> =
 		doUndeleteCalendarItemsByIds(groupId = null, entityIds = entityIds)
@@ -178,7 +178,7 @@ private open class AbstractCalendarItemBasicFlavouredApi<E : CalendarItem>(
 		}
 
 	protected suspend fun doUndeleteCalendarItemsByIds(groupId: String?, entityIds: List<StoredDocumentIdentifier>): List<E> =
-		skipRequestOnNullList(entityIds) { ids ->
+		skipRequestOnEmptyList(entityIds) { ids ->
 			if (groupId == null) {
 				rawApi.undeleteCalendarItems(ListOfIdsAndRev(ids))
 			} else {
@@ -221,7 +221,7 @@ private open class AbstractCalendarItemBasicFlavouredApi<E : CalendarItem>(
 	private suspend fun doModifyCalendarItems(
 		groupId: String?,
 		entities: List<E>
-	): List<E> = skipRequestOnNullList(entities) { calendarItems ->
+	): List<E> = skipRequestOnEmptyList(entities) { calendarItems ->
 		val encrypted = validateAndMaybeEncrypt(groupId, calendarItems)
 		return if (groupId == null) {
 			rawApi.modifyCalendarItems(encrypted)
@@ -238,7 +238,7 @@ private open class AbstractCalendarItemBasicFlavouredApi<E : CalendarItem>(
 	override suspend fun getCalendarItem(entityId: String): E? =
 		doGetCalendarItem(groupId = null, entityId)
 
-	protected  suspend fun doGetCalendarItem(groupId: String?, entityId: String): E? =
+	protected suspend fun doGetCalendarItem(groupId: String?, entityId: String): E? =
 		if (groupId == null) {
 			rawApi.getCalendarItem(entityId)
 		} else {
@@ -253,7 +253,7 @@ private open class AbstractCalendarItemBasicFlavouredApi<E : CalendarItem>(
 	override suspend fun getCalendarItems(entityIds: List<String>): List<E> =
 		doGetCalendarItems(groupId = null, entityIds)
 
-	suspend fun doGetCalendarItems(groupId: String?, entityIds: List<String>): List<E> = skipRequestOnNullList(entityIds) { ids ->
+	suspend fun doGetCalendarItems(groupId: String?, entityIds: List<String>): List<E> = skipRequestOnEmptyList(entityIds) { ids ->
 		if (groupId == null) {
 			rawApi.getCalendarItemsWithIds(ListOfIds(ids))
 		} else {
@@ -420,7 +420,7 @@ private abstract class AbstractCalendarItemBasicFlavourless(
 		}.successBodyOrThrowRevisionConflict().toStoredDocumentIdentifier()
 
 	protected suspend fun doDeleteCalendarItemsByIds(groupId: String?, entityIds: List<StoredDocumentIdentifier>): List<StoredDocumentIdentifier> =
-		skipRequestOnNullList(entityIds) { ids ->
+		skipRequestOnEmptyList(entityIds) { ids ->
 			if (groupId == null) {
 				rawApi.deleteCalendarItemsWithRev(ListOfIdsAndRev(ids))
 			} else {
@@ -437,7 +437,7 @@ private abstract class AbstractCalendarItemBasicFlavourless(
 	}
 
 	protected suspend fun doPurgeCalendarItemsByIds(groupId: String?, entityIds: List<StoredDocumentIdentifier>): List<StoredDocumentIdentifier> =
-		skipRequestOnNullList(entityIds) { ids ->
+		skipRequestOnEmptyList(entityIds) { ids ->
 			if (groupId == null) {
 				rawApi.purgeCalendarItems(ListOfIdsAndRev(ids))
 			} else {
@@ -548,10 +548,10 @@ private class CalendarItemApiImpl(
 			user: User?,
 			delegates: @JsMapAsObjectArray(
 				keyEntryName = "delegate",
-				valueEntryName = "accessLevel"
+				valueEntryName = "accessLevel",
 			) Map<EntityReferenceInGroup, AccessLevel>,
 			secretId: SecretIdUseOption,
-			alternateRootDelegateReference: EntityReferenceInGroup?
+			alternateRootDelegateReference: EntityReferenceInGroup?,
 		): GroupScoped<DecryptedCalendarItem> =
 			GroupScoped(
 				doWithEncryptionMetadata(
@@ -561,9 +561,9 @@ private class CalendarItemApiImpl(
 					user,
 					delegates,
 					secretId,
-					alternateRootDelegateReference
+					alternateRootDelegateReference,
 				),
-				entityGroupId
+				entityGroupId,
 			)
 
 		override suspend fun decryptPatientIdOf(calendarItem: GroupScoped<CalendarItem>): Set<EntityReferenceInGroup> =
@@ -571,7 +571,7 @@ private class CalendarItemApiImpl(
 
 		override suspend fun createDelegationDeAnonymizationMetadata(
 			entity: GroupScoped<CalendarItem>,
-			delegates: Set<EntityReferenceInGroup>
+			delegates: Set<EntityReferenceInGroup>,
 		) =
 			doCreateDelegationDeAnonymizationMetadata(entity.groupId, entity.entity, delegates)
 
@@ -586,7 +586,7 @@ private class CalendarItemApiImpl(
 
 		override suspend fun matchCalendarItemsBySorted(
 			groupId: String,
-			filter: SortableFilterOptions<CalendarItem>
+			filter: SortableFilterOptions<CalendarItem>,
 		): List<String> = doMatchCalendarItemsBySorted(groupId, filter)
 	}
 

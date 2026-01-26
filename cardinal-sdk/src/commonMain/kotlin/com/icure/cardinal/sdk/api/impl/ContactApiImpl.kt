@@ -384,7 +384,7 @@ private open class AbstractContactBasicFlavouredApi<E : Contact, S : Service>(
 		}
 	}
 
-	private suspend fun doCreateContacts(groupId: String?, entities: List<E>): List<E> = skipRequestOnNullList(entities) { contacts ->
+	private suspend fun doCreateContacts(groupId: String?, entities: List<E>): List<E> = skipRequestOnEmptyList(entities) { contacts ->
 		val encrypted = validateAndMaybeEncrypt(groupId, contacts)
 		if (groupId == null) {
 			rawApi.createContacts(encrypted)
@@ -407,7 +407,7 @@ private open class AbstractContactBasicFlavouredApi<E : Contact, S : Service>(
 			rawApi.undeleteContact(id, rev)
 		} else {
 			rawApi.undeleteContactInGroup(groupId = groupId, contactId = id, rev = rev)
-		}.successBodyOrThrowRevisionConflict().let { maybeDecrypt(null, it) }
+		}.successBodyOrThrowRevisionConflict().let { maybeDecrypt(groupId, it) }
 
 	override suspend fun undeleteContactsByIds(entityIds: List<StoredDocumentIdentifier>): List<E> =
 		doUndeleteContacts(groupId = null, entityIds = entityIds)
@@ -418,7 +418,7 @@ private open class AbstractContactBasicFlavouredApi<E : Contact, S : Service>(
 		}
 
 	private suspend fun doUndeleteContacts(groupId: String?, entityIds: List<StoredDocumentIdentifier>): List<E> =
-		skipRequestOnNullList(entityIds) { ids ->
+		skipRequestOnEmptyList(entityIds) { ids ->
 			if (groupId == null) {
 				rawApi.undeleteContacts(ListOfIdsAndRev(ids))
 			} else {
@@ -459,7 +459,7 @@ private open class AbstractContactBasicFlavouredApi<E : Contact, S : Service>(
 	private suspend fun doModifyContacts(
 		groupId: String?,
 		entities: List<E>
-	): List<E> = skipRequestOnNullList(entities) { contacts ->
+	): List<E> = skipRequestOnEmptyList(entities) { contacts ->
 		val encrypted = validateAndMaybeEncrypt(groupId, contacts)
 		return if (groupId == null) {
 			rawApi.modifyContacts(encrypted)
@@ -491,7 +491,7 @@ private open class AbstractContactBasicFlavouredApi<E : Contact, S : Service>(
 		doGetContacts(groupId = groupId, entityIds = entityIds)
 	}
 
-	suspend fun doGetContacts(groupId: String?, entityIds: List<String>): List<E> = skipRequestOnNullList(entityIds) { ids ->
+	suspend fun doGetContacts(groupId: String?, entityIds: List<String>): List<E> = skipRequestOnEmptyList(entityIds) { ids ->
 		if (groupId == null) {
 			rawApi.getContacts(ListOfIds(ids))
 		} else {
@@ -521,7 +521,7 @@ private open class AbstractContactBasicFlavouredApi<E : Contact, S : Service>(
 		doGetServices(groupId = groupId, entityIds = entityIds)
 	}
 
-	protected suspend fun doGetServices(groupId: String?, entityIds: List<String>): List<S> = skipRequestOnNullList(entityIds) { ids ->
+	protected suspend fun doGetServices(groupId: String?, entityIds: List<String>): List<S> = skipRequestOnEmptyList(entityIds) { ids ->
 		if (groupId == null) {
 			rawApi.getServices(ListOfIds(ids))
 		} else {
@@ -648,7 +648,7 @@ private abstract class AbstractContactBasicFlavourless(
 		}.successBodyOrThrowRevisionConflict().toStoredDocumentIdentifier()
 
 	protected suspend fun doDeleteContacts(groupId: String?, entityIds: List<StoredDocumentIdentifier>): List<StoredDocumentIdentifier> =
-		skipRequestOnNullList(entityIds) { ids ->
+		skipRequestOnEmptyList(entityIds) { ids ->
 			if (groupId == null) {
 				rawApi.deleteContactsWithRev(ListOfIdsAndRev(ids))
 			} else {
@@ -665,7 +665,7 @@ private abstract class AbstractContactBasicFlavourless(
 	}
 
 	protected suspend fun doPurgeContacts(groupId: String?, entityIds: List<StoredDocumentIdentifier>): List<StoredDocumentIdentifier> =
-		skipRequestOnNullList(entityIds) { ids ->
+		skipRequestOnEmptyList(entityIds) { ids ->
 			if (groupId == null) {
 				rawApi.purgeContacts(ListOfIdsAndRev(ids))
 			} else {

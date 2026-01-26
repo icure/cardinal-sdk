@@ -3,18 +3,13 @@ package com.icure.cardinal.sdk.api.impl
 import com.icure.cardinal.sdk.api.CalendarItemTypeApi
 import com.icure.cardinal.sdk.api.CalendarItemTypeInGroupApi
 import com.icure.cardinal.sdk.api.raw.RawCalendarItemTypeApi
-import com.icure.cardinal.sdk.api.raw.successBodyOrNull
 import com.icure.cardinal.sdk.api.raw.successBodyOrNull404
 import com.icure.cardinal.sdk.api.raw.successBodyOrThrowRevisionConflict
-import com.icure.cardinal.sdk.model.Agenda
 import com.icure.cardinal.sdk.model.CalendarItemType
 import com.icure.cardinal.sdk.model.GroupScoped
 import com.icure.cardinal.sdk.model.ListOfIds
 import com.icure.cardinal.sdk.model.ListOfIdsAndRev
-import com.icure.cardinal.sdk.model.ListOfIdsAndRev.Companion.invoke
-import com.icure.cardinal.sdk.model.PaginatedList
 import com.icure.cardinal.sdk.model.StoredDocumentIdentifier
-import com.icure.cardinal.sdk.model.couchdb.DocIdentifier
 import com.icure.cardinal.sdk.model.toStoredDocumentIdentifier
 import com.icure.utils.InternalIcureApi
 
@@ -33,7 +28,7 @@ internal abstract class AbstractCalendarItemTypeApi(
 	}
 
 	protected suspend fun doCreateCalendarItemTypes(groupId: String?, entities: List<CalendarItemType>): List<CalendarItemType> =
-		skipRequestOnNullList(entities) { calendarItemTypes ->
+		skipRequestOnEmptyList(entities) { calendarItemTypes ->
 			if (groupId == null) {
 				rawApi.createCalendarItemTypes(calendarItemTypes)
 			} else {
@@ -49,7 +44,7 @@ internal abstract class AbstractCalendarItemTypeApi(
 		}.successBodyOrNull404()
 
 	protected suspend fun doGetCalendarItemTypes(groupId: String?, entityIds: List<String>): List<CalendarItemType> =
-		skipRequestOnNullList(entityIds) { ids ->
+		skipRequestOnEmptyList(entityIds) { ids ->
 			if (groupId == null) {
 				rawApi.getCalendarItemTypesById(ListOfIds(ids))
 			} else {
@@ -67,7 +62,7 @@ internal abstract class AbstractCalendarItemTypeApi(
 	}
 
 	protected suspend fun doModifyCalendarItemTypes(groupId: String?, entities: List<CalendarItemType>): List<CalendarItemType> =
-		skipRequestOnNullList(entities) { calendarItemTypes ->
+		skipRequestOnEmptyList(entities) { calendarItemTypes ->
 			if (groupId == null) {
 				rawApi.modifyCalendarItemTypes(calendarItemTypes)
 			} else {
@@ -83,7 +78,7 @@ internal abstract class AbstractCalendarItemTypeApi(
 		}.successBodyOrThrowRevisionConflict().toStoredDocumentIdentifier()
 
 	protected suspend fun doDeleteCalendarItemTypes(groupId: String?, entityIds: List<StoredDocumentIdentifier>): List<StoredDocumentIdentifier> =
-		skipRequestOnNullList(entityIds) { ids ->
+		skipRequestOnEmptyList(entityIds) { ids ->
 			if (groupId == null) {
 				rawApi.deleteCalendarItemTypesWithRev(ListOfIdsAndRev(ids))
 			} else {
@@ -99,7 +94,7 @@ internal abstract class AbstractCalendarItemTypeApi(
 		}.successBodyOrThrowRevisionConflict()
 
 	protected suspend fun doUndeleteCalendarItemTypes(groupId: String?, entityIds: List<StoredDocumentIdentifier>): List<CalendarItemType> =
-		skipRequestOnNullList(entityIds) { ids ->
+		skipRequestOnEmptyList(entityIds) { ids ->
 			if (groupId == null) {
 				rawApi.undeleteCalendarItemTypes(ListOfIdsAndRev(ids))
 			} else {
@@ -116,7 +111,7 @@ internal abstract class AbstractCalendarItemTypeApi(
 	}
 
 	protected suspend fun doPurgeCalendarItemTypes(groupId: String?, entityIds: List<StoredDocumentIdentifier>): List<StoredDocumentIdentifier> =
-		skipRequestOnNullList(entityIds) { ids ->
+		skipRequestOnEmptyList(entityIds) { ids ->
 			if (groupId == null) {
 				rawApi.purgeCalendarItemTypesWithRev(ListOfIdsAndRev(ids))
 			} else {

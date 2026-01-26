@@ -3,7 +3,6 @@ package com.icure.cardinal.sdk.api.impl
 import com.icure.cardinal.sdk.api.CodeApi
 import com.icure.cardinal.sdk.api.CodeInGroupApi
 import com.icure.cardinal.sdk.api.raw.RawCodeApi
-import com.icure.cardinal.sdk.api.raw.successBodyOrNull
 import com.icure.cardinal.sdk.api.raw.successBodyOrNull404
 import com.icure.cardinal.sdk.api.raw.successBodyOrThrowRevisionConflict
 import com.icure.cardinal.sdk.filters.BaseFilterOptions
@@ -37,7 +36,7 @@ internal abstract class AbstractCodeApi(
 	}
 
 	protected suspend fun doCreateCodes(groupId: String?, entities: List<Code>): List<Code> =
-		skipRequestOnNullList(entities) { calendarItemTypes ->
+		skipRequestOnEmptyList(entities) { calendarItemTypes ->
 			if (groupId == null) {
 				rawApi.createCodes(calendarItemTypes)
 			} else {
@@ -53,7 +52,7 @@ internal abstract class AbstractCodeApi(
 		}.successBodyOrNull404()
 
 	protected suspend fun doGetCodes(groupId: String?, entityIds: List<String>): List<Code> =
-		skipRequestOnNullList(entityIds) { ids ->
+		skipRequestOnEmptyList(entityIds) { ids ->
 			if (groupId == null) {
 				rawApi.getCodes(ListOfIds(ids))
 			} else {
@@ -71,7 +70,7 @@ internal abstract class AbstractCodeApi(
 	}
 
 	protected suspend fun doModifyCodes(groupId: String?, entities: List<Code>): List<Code> =
-		skipRequestOnNullList(entities) { calendarItemTypes ->
+		skipRequestOnEmptyList(entities) { calendarItemTypes ->
 			if (groupId == null) {
 				rawApi.modifyCodes(calendarItemTypes)
 			} else {
@@ -87,7 +86,7 @@ internal abstract class AbstractCodeApi(
 		}.successBodyOrThrowRevisionConflict().toStoredDocumentIdentifier()
 
 	protected suspend fun doDeleteCodes(groupId: String?, entityIds: List<StoredDocumentIdentifier>): List<StoredDocumentIdentifier> =
-		skipRequestOnNullList(entityIds) { ids ->
+		skipRequestOnEmptyList(entityIds) { ids ->
 			if (groupId == null) {
 				rawApi.deleteCodes(ListOfIdsAndRev(ids))
 			} else {
@@ -103,7 +102,7 @@ internal abstract class AbstractCodeApi(
 		}.successBodyOrThrowRevisionConflict()
 
 	protected suspend fun doUndeleteCodes(groupId: String?, entityIds: List<StoredDocumentIdentifier>): List<Code> =
-		skipRequestOnNullList(entityIds) { ids ->
+		skipRequestOnEmptyList(entityIds) { ids ->
 			if (groupId == null) {
 				rawApi.undeleteCodes(ListOfIdsAndRev(ids))
 			} else {
@@ -120,7 +119,7 @@ internal abstract class AbstractCodeApi(
 	}
 
 	protected suspend fun doPurgeCodes(groupId: String?, entityIds: List<StoredDocumentIdentifier>): List<StoredDocumentIdentifier> =
-		skipRequestOnNullList(entityIds) { ids ->
+		skipRequestOnEmptyList(entityIds) { ids ->
 			if (groupId == null) {
 				rawApi.purgeCodes(ListOfIdsAndRev(ids))
 			} else {

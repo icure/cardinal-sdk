@@ -45,7 +45,6 @@ import com.icure.cardinal.sdk.api.impl.CodeApiImpl
 import com.icure.cardinal.sdk.api.impl.CryptoApiImpl
 import com.icure.cardinal.sdk.api.impl.DataOwnerApiImpl
 import com.icure.cardinal.sdk.api.impl.DeviceApiImpl
-import com.icure.cardinal.sdk.api.impl.DocumentApiImpl
 import com.icure.cardinal.sdk.api.impl.DocumentTemplateApiImpl
 import com.icure.cardinal.sdk.api.impl.EntityReferenceApiImpl
 import com.icure.cardinal.sdk.api.impl.EntityTemplateApiImpl
@@ -73,6 +72,7 @@ import com.icure.cardinal.sdk.api.impl.UserApiImpl
 import com.icure.cardinal.sdk.api.impl.initAccessLogApi
 import com.icure.cardinal.sdk.api.impl.initCalendarItemApi
 import com.icure.cardinal.sdk.api.impl.initContactApi
+import com.icure.cardinal.sdk.api.impl.initDocumentApi
 import com.icure.cardinal.sdk.api.impl.initHealthElementApi
 import com.icure.cardinal.sdk.api.impl.initPatientApi
 import com.icure.cardinal.sdk.api.raw.RawAnonymousAuthApi
@@ -911,9 +911,9 @@ internal class CardinalSdkImpl(
 	}
 
 	override val document: DocumentApi by lazy {
-		DocumentApiImpl(
-			rawDocumentApi,
-			config
+		initDocumentApi(
+			rawApi = rawDocumentApi,
+			config = config
 		)
 	}
 

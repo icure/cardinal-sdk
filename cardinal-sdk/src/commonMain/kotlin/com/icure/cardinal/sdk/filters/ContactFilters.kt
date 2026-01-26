@@ -8,6 +8,7 @@ import com.icure.cardinal.sdk.crypto.entities.SdkBoundGroup
 import com.icure.cardinal.sdk.crypto.entities.toEncryptionMetadataStub
 import com.icure.cardinal.sdk.model.Contact
 import com.icure.cardinal.sdk.model.EntityReferenceInGroup
+import com.icure.cardinal.sdk.model.GroupScoped
 import com.icure.cardinal.sdk.model.Patient
 import com.icure.cardinal.sdk.model.base.Identifier
 import com.icure.cardinal.sdk.model.embed.Service
@@ -113,7 +114,7 @@ object ContactFilters {
 	@OptIn(InternalIcureApi::class)
 	fun byPatientsOpeningDateForDataOwner(
 		dataOwnerId: String,
-		patients: List<Patient>,
+		patients: List<GroupScoped<Patient>>,
 		@DefaultValue("null")
 		from: Long? = null,
 		@DefaultValue("null")
@@ -122,7 +123,7 @@ object ContactFilters {
 		descending: Boolean = false
 	) : SortableFilterOptions<Contact> = ByPatientsOpeningDateForDataOwner(
 		dataOwnerId = EntityReferenceInGroup(entityId = dataOwnerId, groupId = null),
-		patients = patients.map { it.toEncryptionMetadataStub() },
+		patients = patients.map { Pair(it.entity.toEncryptionMetadataStub(), it.groupId) },
 		from = from,
 		to = to,
 		descending = descending
@@ -143,7 +144,7 @@ object ContactFilters {
 		descending: Boolean = false
 	) : SortableFilterOptions<Contact> = ByPatientsOpeningDateForDataOwner(
 		dataOwnerId = dataOwner,
-		patients = patients.map { it.toEncryptionMetadataStub() },
+		patients = patients.map { Pair(it.toEncryptionMetadataStub(), null) },
 		from = from,
 		to = to,
 		descending = descending
@@ -703,7 +704,7 @@ object ContactFilters {
 		dataOwnerId: String,
 		patients: List<Patient>
 	): SortableFilterOptions<Contact> = ByPatientsForDataOwner(
-		patients = patients.map { it.toEncryptionMetadataStub() },
+		patients = patients.map { Pair(it.toEncryptionMetadataStub(), null) },
 		dataOwnerId = EntityReferenceInGroup(entityId = dataOwnerId, groupId = null),
 	)
 
@@ -713,9 +714,9 @@ object ContactFilters {
 	@OptIn(InternalIcureApi::class)
 	fun byPatientsForDataOwner(
 		dataOwner: EntityReferenceInGroup,
-		patients: List<Patient>
+		patients: List<GroupScoped<Patient>>
 	): SortableFilterOptions<Contact> = ByPatientsForDataOwner(
-		patients = patients.map { it.toEncryptionMetadataStub() },
+		patients = patients.map { Pair(it.entity.toEncryptionMetadataStub(), it.groupId) },
 		dataOwnerId = dataOwner
 	)
 
@@ -821,7 +822,7 @@ object ContactFilters {
 	@InternalIcureApi
 	internal class ByPatientsOpeningDateForDataOwner(
 		val dataOwnerId: EntityReferenceInGroup,
-		val patients: List<EntityWithEncryptionMetadataStub>,
+		val patients: List<Pair<EntityWithEncryptionMetadataStub, String?>>,
 		val from: Long?,
 		val to: Long?,
 		val descending: Boolean
@@ -966,7 +967,7 @@ object ContactFilters {
 	@Serializable
 	@InternalIcureApi
 	internal class ByPatientsForDataOwner(
-		val patients: List<EntityWithEncryptionMetadataStub>,
+		val patients: List<Pair<EntityWithEncryptionMetadataStub, String?>>,
 		val dataOwnerId: EntityReferenceInGroup
 	): BaseSortableFilterOptions<Contact>
 
@@ -1024,7 +1025,7 @@ private suspend fun mapContactFilterOptions(
 	)
 	is ContactFilters.AllForSelf -> {
 		filterOptions.ensureNonBaseEnvironment(selfDataOwner, entityEncryptionService)
-		ContactByHcPartyFilter(hcpId = selfDataOwner.asReferenceStringInGroup(requestGroup, boundGroup),)
+		ContactByHcPartyFilter(hcpId = selfDataOwner.asReferenceStringInGroup(requestGroup, boundGroup))
 	}
 	is ContactFilters.ByFormIdsForDataOwner -> ContactByDataOwnerFormIdsFilter(
 		dataOwnerId = filterOptions.dataOwnerId.asReferenceStringInGroup(requestGroup, boundGroup),
@@ -1041,7 +1042,10 @@ private suspend fun mapContactFilterOptions(
 		filterOptions.ensureNonBaseEnvironment(selfDataOwner, entityEncryptionService)
 		ContactByDataOwnerPatientOpeningDateFilter(
 			dataOwnerId = filterOptions.dataOwnerId.asReferenceStringInGroup(requestGroup, boundGroup),
-			secretForeignKeys = entityEncryptionService.secretIdsOf(null, filterOptions.patients, EntityWithEncryptionMetadataTypeName.Patient, null).values.flatten().toSet(),
+			secretForeignKeys = filterOptions.patients.mapToSecretIds(
+				entityEncryptionService,
+				EntityWithEncryptionMetadataTypeName.Patient
+			),
 			startDate = filterOptions.to,
 			endDate = filterOptions.from,
 			descending = filterOptions.descending
@@ -1051,7 +1055,10 @@ private suspend fun mapContactFilterOptions(
 		filterOptions.ensureNonBaseEnvironment(selfDataOwner, entityEncryptionService)
 		ContactByDataOwnerPatientOpeningDateFilter(
 			dataOwnerId = selfDataOwner.asReferenceStringInGroup(requestGroup, boundGroup),
-			secretForeignKeys = entityEncryptionService.secretIdsOf(null, filterOptions.patients, EntityWithEncryptionMetadataTypeName.Patient, null).values.flatten().toSet(),
+			secretForeignKeys = filterOptions.patients.map { Pair(it, null) }.mapToSecretIds(
+				entityEncryptionService,
+				EntityWithEncryptionMetadataTypeName.Patient
+			),
 			startDate = filterOptions.to,
 			endDate = filterOptions.from,
 			descending = filterOptions.descending
@@ -1111,14 +1118,20 @@ private suspend fun mapContactFilterOptions(
 	is ContactFilters.ByPatientsForDataOwner -> {
 		filterOptions.ensureNonBaseEnvironment(selfDataOwner, entityEncryptionService)
 		ContactByHcPartyPatientTagCodeDateFilter(
-			patientSecretForeignKeys = entityEncryptionService.secretIdsOf(null, filterOptions.patients, EntityWithEncryptionMetadataTypeName.Patient, null).values.flatten().distinct(),
+			patientSecretForeignKeys = filterOptions.patients.mapToSecretIds(
+				entityEncryptionService,
+				EntityWithEncryptionMetadataTypeName.Patient
+			).toList(),
 			healthcarePartyId = filterOptions.dataOwnerId.asReferenceStringInGroup(requestGroup, boundGroup)
 		)
 	}
 	is ContactFilters.ByPatientsForSelf -> {
 		filterOptions.ensureNonBaseEnvironment(selfDataOwner, entityEncryptionService)
 		ContactByHcPartyPatientTagCodeDateFilter(
-			patientSecretForeignKeys = entityEncryptionService.secretIdsOf(null, filterOptions.patients, EntityWithEncryptionMetadataTypeName.Patient, null).values.flatten().distinct(),
+			patientSecretForeignKeys = filterOptions.patients.map { Pair(it, null) }.mapToSecretIds(
+				entityEncryptionService,
+				EntityWithEncryptionMetadataTypeName.Patient
+			).toList(),
 			healthcarePartyId = selfDataOwner.asReferenceStringInGroup(requestGroup, boundGroup)
 		)
 	}

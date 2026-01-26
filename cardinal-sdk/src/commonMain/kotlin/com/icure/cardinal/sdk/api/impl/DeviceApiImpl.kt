@@ -42,7 +42,7 @@ internal abstract class AbstractDeviceApi(
 	}
 
 	protected suspend fun doCreateDevices(groupId: String?, entities: List<Device>): List<Device> =
-		skipRequestOnNullList(entities) { calendarItemTypes ->
+		skipRequestOnEmptyList(entities) { calendarItemTypes ->
 			if (groupId == null) {
 				rawApi.createDevices(calendarItemTypes)
 			} else {
@@ -58,7 +58,7 @@ internal abstract class AbstractDeviceApi(
 		}.successBodyOrNull404()
 
 	protected suspend fun doGetDevices(groupId: String?, entityIds: List<String>): List<Device> =
-		skipRequestOnNullList(entityIds) { ids ->
+		skipRequestOnEmptyList(entityIds) { ids ->
 			if (groupId == null) {
 				rawApi.getDevices(ListOfIds(ids))
 			} else {
@@ -76,7 +76,7 @@ internal abstract class AbstractDeviceApi(
 	}
 
 	protected suspend fun doModifyDevices(groupId: String?, entities: List<Device>): List<Device> =
-		skipRequestOnNullList(entities) { calendarItemTypes ->
+		skipRequestOnEmptyList(entities) { calendarItemTypes ->
 			if (groupId == null) {
 				rawApi.updateDevices(calendarItemTypes)
 			} else {
@@ -92,7 +92,7 @@ internal abstract class AbstractDeviceApi(
 		}.successBodyOrThrowRevisionConflict().toStoredDocumentIdentifier()
 
 	protected suspend fun doDeleteDevices(groupId: String?, entityIds: List<StoredDocumentIdentifier>): List<StoredDocumentIdentifier> =
-		skipRequestOnNullList(entityIds) { ids ->
+		skipRequestOnEmptyList(entityIds) { ids ->
 			if (groupId == null) {
 				rawApi.deleteDevicesWithRev(ListOfIdsAndRev(ids))
 			} else {
@@ -108,7 +108,7 @@ internal abstract class AbstractDeviceApi(
 		}.successBodyOrThrowRevisionConflict()
 
 	protected suspend fun doUndeleteDevices(groupId: String?, entityIds: List<StoredDocumentIdentifier>): List<Device> =
-		skipRequestOnNullList(entityIds) { ids ->
+		skipRequestOnEmptyList(entityIds) { ids ->
 			if (groupId == null) {
 				rawApi.undeleteDevices(ListOfIdsAndRev(ids))
 			} else {
@@ -125,7 +125,7 @@ internal abstract class AbstractDeviceApi(
 	}
 
 	protected suspend fun doPurgeDevices(groupId: String?, entityIds: List<StoredDocumentIdentifier>): List<StoredDocumentIdentifier> =
-		skipRequestOnNullList(entityIds) { ids ->
+		skipRequestOnEmptyList(entityIds) { ids ->
 			if (groupId == null) {
 				rawApi.purgeDevices(ListOfIdsAndRev(ids))
 			} else {

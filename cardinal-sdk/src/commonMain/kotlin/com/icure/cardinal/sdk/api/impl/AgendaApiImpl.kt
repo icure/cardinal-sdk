@@ -34,7 +34,7 @@ internal abstract class AbstractAgendaApi(
 		}.successBody()
 	}
 
-	protected suspend fun doCreateAgendas(groupId: String?, entities: List<Agenda>): List<Agenda> = skipRequestOnNullList(entities) { agendas ->
+	protected suspend fun doCreateAgendas(groupId: String?, entities: List<Agenda>): List<Agenda> = skipRequestOnEmptyList(entities) { agendas ->
 		basicRequireIsValidForCreation(agendas)
 		return if (groupId == null) {
 			rawApi.createAgendas(entities)
@@ -51,7 +51,7 @@ internal abstract class AbstractAgendaApi(
 		}.successBodyOrThrowRevisionConflict().toStoredDocumentIdentifier()
 
 	protected suspend fun doDeleteAgendasByIds(groupId: String?, entityIds: List<StoredDocumentIdentifier>): List<StoredDocumentIdentifier> =
-		skipRequestOnNullList(entityIds) { agendaIds ->
+		skipRequestOnEmptyList(entityIds) { agendaIds ->
 			if (groupId == null) {
 				rawApi.deleteAgendasWithRev(ListOfIdsAndRev(agendaIds))
 			} else {
@@ -68,7 +68,7 @@ internal abstract class AbstractAgendaApi(
 	}
 
 	protected suspend fun doPurgeAgendasByIds(groupId: String?, entityIds: List<StoredDocumentIdentifier>): List<StoredDocumentIdentifier> =
-		skipRequestOnNullList(entityIds) { agendaIds ->
+		skipRequestOnEmptyList(entityIds) { agendaIds ->
 			if (groupId == null) {
 				rawApi.purgeAgendas(ListOfIdsAndRev(agendaIds))
 			} else {
@@ -84,7 +84,7 @@ internal abstract class AbstractAgendaApi(
 		}.successBodyOrThrowRevisionConflict()
 
 	protected suspend fun doUndeleteAgendasByIds(groupId: String?, entityIds: List<StoredDocumentIdentifier>): List<Agenda> =
-		skipRequestOnNullList(entityIds) { agendaIds ->
+		skipRequestOnEmptyList(entityIds) { agendaIds ->
 			if (groupId == null) {
 				rawApi.undeleteAgendas(ListOfIdsAndRev(agendaIds))
 			} else {
@@ -93,7 +93,7 @@ internal abstract class AbstractAgendaApi(
 		}
 
 	protected suspend fun doGetAgendasByIds(groupId: String?, entityIds: List<String>): List<Agenda> =
-		skipRequestOnNullList(entityIds) { agendaIds ->
+		skipRequestOnEmptyList(entityIds) { agendaIds ->
 			if (groupId == null) {
 				rawApi.getAgendasByIds(ListOfIds(agendaIds))
 			} else {
@@ -117,7 +117,7 @@ internal abstract class AbstractAgendaApi(
 		}.successBodyOrThrowRevisionConflict()
 	}
 
-	protected suspend fun doModifyAgendas(groupId: String?, agendas: List<Agenda>): List<Agenda> = skipRequestOnNullList(agendas) { entities ->
+	protected suspend fun doModifyAgendas(groupId: String?, agendas: List<Agenda>): List<Agenda> = skipRequestOnEmptyList(agendas) { entities ->
 		basicRequireIsValidForCreation(entities)
 		return if (groupId == null) {
 			rawApi.modifyAgendas(entities)
