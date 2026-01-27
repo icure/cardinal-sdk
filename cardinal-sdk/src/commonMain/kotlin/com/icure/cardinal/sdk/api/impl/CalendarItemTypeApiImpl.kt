@@ -172,7 +172,6 @@ internal class CalendarItemTypeApiImpl(
 		rawApi.listCalendarItemTypesByAgendaId(agendaId).successBody()
 }
 
-
 @OptIn(InternalIcureApi::class)
 internal class CalendarItemTypeInGroupApiImpl(
 	rawApi: RawCalendarItemTypeApi
