@@ -268,13 +268,6 @@ private class AbstractHealthElementFlavouredApi<E : HealthElement>(
 private class AbstractHealthElementBasicFlavourlessApi(
 	val rawApi: RawHealthElementApi
 ) : HealthElementBasicFlavourlessApi, HealthElementBasicFlavourlessInGroupApi {
-	@Deprecated("Deletion without rev is unsafe")
-	override suspend fun deleteHealthElementUnsafe(entityId: String): StoredDocumentIdentifier =
-		rawApi.deleteHealthElement(entityId).successBodyOrThrowRevisionConflict().toStoredDocumentIdentifier()
-
-	@Deprecated("Deletion without rev is unsafe")
-	override suspend fun deleteHealthElementsUnsafe(entityIds: List<String>): List<StoredDocumentIdentifier> =
-		rawApi.deleteHealthElements(ListOfIds(entityIds)).successBody().toStoredDocumentIdentifier()
 
 	override suspend fun deleteHealthElementById(entityId: String, rev: String): StoredDocumentIdentifier =
 		rawApi.deleteHealthElement(entityId, rev).successBodyOrThrowRevisionConflict().toStoredDocumentIdentifier()
