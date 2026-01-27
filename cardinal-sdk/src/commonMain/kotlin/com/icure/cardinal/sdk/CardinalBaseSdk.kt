@@ -40,7 +40,6 @@ import com.icure.cardinal.sdk.api.impl.initAccessLogBasicApi
 import com.icure.cardinal.sdk.api.impl.initCalendarItemBasicApi
 import com.icure.cardinal.sdk.api.impl.initContactBasicApi
 import com.icure.cardinal.sdk.api.impl.initDocumentBasicApi
-import com.icure.cardinal.sdk.api.impl.initFormApi
 import com.icure.cardinal.sdk.api.impl.initFormBasicApi
 import com.icure.cardinal.sdk.api.impl.initHealthElementBasicApi
 import com.icure.cardinal.sdk.api.impl.initPatientBasicApi
