@@ -7,26 +7,26 @@ import com.icure.cardinal.sdk.filters.BaseFilterOptions
 import com.icure.cardinal.sdk.filters.BaseSortableFilterOptions
 import com.icure.cardinal.sdk.filters.FilterOptions
 import com.icure.cardinal.sdk.filters.SortableFilterOptions
+import com.icure.cardinal.sdk.model.Form
 import com.icure.cardinal.sdk.model.DecryptedForm
 import com.icure.cardinal.sdk.model.EncryptedForm
-import com.icure.cardinal.sdk.model.Form
+import com.icure.cardinal.sdk.model.EntityReferenceInGroup
 import com.icure.cardinal.sdk.model.FormTemplate
+import com.icure.cardinal.sdk.model.GroupScoped
 import com.icure.cardinal.sdk.model.Patient
 import com.icure.cardinal.sdk.model.StoredDocumentIdentifier
 import com.icure.cardinal.sdk.model.User
 import com.icure.cardinal.sdk.model.couchdb.DocIdentifier
 import com.icure.cardinal.sdk.model.embed.AccessLevel
 import com.icure.cardinal.sdk.model.specializations.HexString
+import com.icure.cardinal.sdk.model.toStoredDocumentIdentifier
 import com.icure.cardinal.sdk.utils.DefaultValue
 import com.icure.cardinal.sdk.utils.EntityEncryptionException
+import com.icure.cardinal.sdk.utils.generation.JsMapAsObjectArray
 import com.icure.cardinal.sdk.utils.pagination.PaginatedListIterator
 
 /* This interface includes the API calls that do not need encryption keys and do not return or consume encrypted/decrypted items, they are completely agnostic towards the presence of encrypted items */
 interface FormBasicFlavourlessApi {
-	@Deprecated("Deletion without rev is unsafe")
-	suspend fun deleteFormUnsafe(entityId: String): DocIdentifier
-	@Deprecated("Deletion without rev is unsafe")
-	suspend fun deleteFormsUnsafe(entityIds: List<String>): List<DocIdentifier>
 
 	/**
 	 * Deletes a form. If you don't have write access to the form the method will fail.
@@ -35,7 +35,7 @@ interface FormBasicFlavourlessApi {
 	 * @return the id and revision of the deleted form.
 	 * @throws RevisionConflictException if the provided revision doesn't match the latest known revision
 	 */
-	suspend fun deleteFormById(entityId: String, rev: String): DocIdentifier
+	suspend fun deleteFormById(entityId: String, rev: String): StoredDocumentIdentifier
 
 	/**
 	 * Deletes many forms. Ids that do not correspond to an entity, or that correspond to an entity for which
@@ -44,7 +44,7 @@ interface FormBasicFlavourlessApi {
 	 * @return the id and revision of the deleted forms. If some entities could not be deleted (for example
 	 * because you had no write access to them) they will not be included in this list.
 	 */
-	suspend fun deleteFormsByIds(entityIds: List<StoredDocumentIdentifier>): List<DocIdentifier>
+	suspend fun deleteFormsByIds(entityIds: List<StoredDocumentIdentifier>): List<StoredDocumentIdentifier>
 
 	/**
 	 * Permanently deletes a form.
@@ -55,12 +55,20 @@ interface FormBasicFlavourlessApi {
 	suspend fun purgeFormById(id: String, rev: String)
 
 	/**
+	 * Permanently deletes many forms.
+	 * @param entityIds ids and revisions of the forms to delete
+	 * @return the id and revision of the deleted forms. If some entities couldn't be deleted (for example
+	 * because you had no write access to them) they will not be included in this list.
+	 */
+	suspend fun purgeFormsByIds(entityIds: List<StoredDocumentIdentifier>): List<StoredDocumentIdentifier>
+
+	/**
 	 * Deletes a form. If you don't have write access to the form the method will fail.
 	 * @param form the form to delete
 	 * @return the id and revision of the deleted form.
 	 * @throws RevisionConflictException if the provided form doesn't match the latest known revision
 	 */
-	suspend fun deleteForm(form: Form): DocIdentifier =
+	suspend fun deleteForm(form: Form): StoredDocumentIdentifier =
 		deleteFormById(form.id, requireNotNull(form.rev) { "Can't delete a form that has no rev" })
 
 	/**
@@ -69,10 +77,8 @@ interface FormBasicFlavourlessApi {
 	 * @return the id and revision of the deleted forms. If some entities couldn't be deleted they will not be
 	 * included in this list.
 	 */
-	suspend fun deleteForms(forms: List<Form>): List<DocIdentifier> =
-		deleteFormsByIds(forms.map { form ->
-			StoredDocumentIdentifier(form.id, requireNotNull(form.rev) { "Can't delete a form that has no rev" })
-		})
+	suspend fun deleteForms(forms: List<Form>): List<StoredDocumentIdentifier> =
+		deleteFormsByIds(forms.map { it.toStoredDocumentIdentifier() })
 
 	/**
 	 * Permanently deletes a form.
@@ -83,26 +89,20 @@ interface FormBasicFlavourlessApi {
 		purgeFormById(form.id, requireNotNull(form.rev) { "Can't delete a form that has no rev" })
 	}
 
+	/**
+	 * Permanently deletes many forms.
+	 * @param forms the forms to purge.
+	 * @return the id and revision of the deleted forms. If some entities couldn't be deleted (for example
+	 * because you had no write access to them) they will not be included in this list.
+	 */
+	suspend fun purgeForms(forms: List<Form>): List<StoredDocumentIdentifier> =
+		purgeFormsByIds(forms.map { it.toStoredDocumentIdentifier() })
+
 	suspend fun getFormTemplate(
 		formTemplateId: String,
 		@DefaultValue("null")
 		raw: Boolean? = null
 	): FormTemplate
-
-	@Deprecated("Use filter instead")
-	suspend fun listFormTemplatesBySpeciality(
-		specialityCode: String,
-		@DefaultValue("null")
-		raw: Boolean? = null
-	): List<FormTemplate>
-
-	@Deprecated("Use filter instead")
-	suspend fun getFormTemplates(
-		@DefaultValue("null")
-		loadLayout: Boolean? = null,
-		@DefaultValue("null")
-		raw: Boolean? = null
-	): List<FormTemplate>
 
 	/**
 	 * Create a new form template. Your user must have the permission to create form templates.
@@ -129,6 +129,53 @@ interface FormBasicFlavourlessApi {
 	 * Sets the attachment to the form template.
 	 */
 	suspend fun setTemplateAttachment(formTemplateId: String, payload: ByteArray): String
+}
+
+interface FormBasicFlavourlessInGroupApi {
+	/**
+	 * In-group version of [FormBasicFlavourlessApi.deleteFormById]
+	 */
+	suspend fun deleteFormById(entityId: GroupScoped<StoredDocumentIdentifier>): GroupScoped<StoredDocumentIdentifier>
+
+	/**
+	 * In-group version of [FormBasicFlavourlessApi.deleteFormsByIds]
+	 */
+	suspend fun deleteFormsByIds(entityIds: List<GroupScoped<StoredDocumentIdentifier>>): List<GroupScoped<StoredDocumentIdentifier>>
+
+	/**
+	 * In-group version of [FormBasicFlavourlessApi.purgeFormById]
+	 */
+	suspend fun purgeFormById(entityId: GroupScoped<StoredDocumentIdentifier>)
+
+	/**
+	 * In-group version of [FormBasicFlavourlessApi.purgeFormsByIds]
+	 */
+	suspend fun purgeFormsByIds(entityIds: List<GroupScoped<StoredDocumentIdentifier>>): List<GroupScoped<StoredDocumentIdentifier>>
+
+	/**
+	 * In-group version of [FormBasicFlavourlessApi.deleteForm]
+	 */
+	suspend fun deleteForm(form: GroupScoped<Form>): GroupScoped<StoredDocumentIdentifier> =
+		deleteFormById(form.toStoredDocumentIdentifier())
+
+	/**
+	 * In-group version of [FormBasicFlavourlessApi.deleteForms]
+	 */
+	suspend fun deleteForms(forms: List<GroupScoped<Form>>): List<GroupScoped<StoredDocumentIdentifier>> =
+		deleteFormsByIds(forms.toStoredDocumentIdentifier())
+
+	/**
+	 * In-group version of [FormBasicFlavourlessApi.purgeForm]
+	 */
+	suspend fun purgeForm(form: GroupScoped<Form>) {
+		purgeFormById(form.toStoredDocumentIdentifier())
+	}
+
+	/**
+	 * In-group version of [FormBasicFlavourlessApi.purgeForms]
+	 */
+	suspend fun purgeForms(forms: List<GroupScoped<Form>>): List<GroupScoped<StoredDocumentIdentifier>> =
+		purgeFormsByIds(forms.map { it.toStoredDocumentIdentifier() })
 }
 
 /* This interface includes the API calls can be used on decrypted items if encryption keys are available *or* encrypted items if no encryption keys are available */
@@ -159,6 +206,14 @@ interface FormBasicFlavouredApi<E : Form> {
 	suspend fun modifyForm(entity: E): E
 
 	/**
+	 * Modifies multiple forms. Ignores all forms for which you don't have write access.
+	 * Flavoured method.
+	 * @param entities forms with update content
+	 * @return the updated forms with a new revision.
+	 */
+	suspend fun modifyForms(entities: List<E>): List<E>
+
+	/**
 	 * Restores a form that was marked as deleted.
 	 * @param id the id of the entity
 	 * @param rev the latest revision of the entity.
@@ -166,6 +221,14 @@ interface FormBasicFlavouredApi<E : Form> {
 	 * @throws RevisionConflictException if the provided revision doesn't match the latest known revision
 	 */
 	suspend fun undeleteFormById(id: String, rev: String): E
+
+	/**
+	 * Restores a batch of formIds that were marked as deleted.
+	 * @param entityIds the ids and the revisions of the formIds to restore.
+	 * @return the restored formIds. If some entities couldn't be restored (because the user does not have access or the revision is not
+	 * up-to-date), then those entities will not be restored and will not appear in this list.
+	 */
+	suspend fun undeleteFormsByIds(entityIds: List<StoredDocumentIdentifier>): List<E>
 
 	/**
 	 * Restores a form that was marked as deleted.
@@ -177,12 +240,13 @@ interface FormBasicFlavouredApi<E : Form> {
 		undeleteFormById(form.id, requireNotNull(form.rev) { "Can't delete a form that has no rev" })
 
 	/**
-	 * Modifies multiple forms. Ignores all forms for which you don't have write access.
-	 * Flavoured method.
-	 * @param entities forms with update content
-	 * @return the updated forms with a new revision.
+	 * Restores a batch of forms that were marked as deleted.
+	 * @param forms the forms to restore.
+	 * @return the restored forms. If some entities couldn't be restored (because the user does not have access or the revision is not
+	 * up-to-date), then those entities will not be restored and will not appear in this list.
 	 */
-	suspend fun modifyForms(entities: List<E>): List<E>
+	suspend fun undeleteForms(forms: List<Form>): List<E> =
+		undeleteFormsByIds(forms.map { it.toStoredDocumentIdentifier() })
 
 	/**
 	 * Get a form by its id. You must have read access to the entity. Fails if the id does not correspond to any
@@ -204,20 +268,6 @@ interface FormBasicFlavouredApi<E : Form> {
 	suspend fun getForms(entityIds: List<String>): List<E>
 
 	/**
-	 * Get the latest form according to the [Form.created] field with the provided [Form.logicalUuid].
-	 * If there are multiple forms with the provided logical uuid that have the same value for created (which also
-	 * matches the latest) the behaviour of this method is undefined. If you think this situation may happen in your
-	 * application you should not use this method and instead use filters to get all forms with the provided logical
-	 * uuid.
-	 * Flavoured method.
-	 * @param logicalUuid a form logical uuid
-	 * @return the latest form with the provided logical uuid.
-	 */
-	// TODO the backend currently get all forms, sorts them and then returns the latest. We could have the view be
-	//  sorted instead
-	suspend fun getLatestFormByLogicalUuid(logicalUuid: String): E
-
-	/**
 	 * Get the latest form according to the [Form.created] field with the provided [Form.uniqueId].
 	 * If there are multiple forms with the provided unique id that have the same value for created (which also
 	 * matches the latest) the behaviour of this method is undefined. If you think this situation may happen in your
@@ -229,15 +279,60 @@ interface FormBasicFlavouredApi<E : Form> {
 	// TODO the backend currently get all forms, sorts them and then returns the latest. We could have the view be
 	//  sorted instead
 	suspend fun getLatestFormByUniqueId(uniqueId: String): E
+}
 
-	@Deprecated("Use filter instead")
-	suspend fun getFormsByLogicalUuid(logicalUuid: String): List<E>
+interface FormBasicFlavouredInGroupApi<E : Form> {
+	/**
+	 * In-group version of [FormBasicFlavouredApi.createForm].
+	 */
+	suspend fun createForm(entity: GroupScoped<E>): GroupScoped<E>
 
-	@Deprecated("Use filter instead")
-	suspend fun getFormsByUniqueId(uniqueId: String): List<E>
+	/**
+	 * In-group version of [FormBasicFlavouredApi.createForms].
+	 */
+	suspend fun createForms(entities: List<GroupScoped<E>>): List<GroupScoped<E>>
 
-	@Deprecated("Use filter instead") // listFormsByHcPartyAndParentId
-	suspend fun getChildrenForms(hcPartyId: String, parentId: String): List<E>
+	/**
+	 * In-group version of [FormBasicFlavouredApi.undeleteFormById]
+	 */
+	suspend fun undeleteFormById(entityId: GroupScoped<StoredDocumentIdentifier>): GroupScoped<E>
+
+	/**
+	 * In-group version of [FormBasicFlavouredApi.undeleteFormsByIds]
+	 */
+	suspend fun undeleteFormsByIds(entityIds: List<GroupScoped<StoredDocumentIdentifier>>): List<GroupScoped<E>>
+
+	/**
+	 * In-group version of [FormBasicFlavouredApi.undeleteForm]
+	 */
+	suspend fun undeleteForm(form: GroupScoped<Form>): GroupScoped<E> =
+		undeleteFormById(form.toStoredDocumentIdentifier())
+
+	/**
+	 * In-group version of [FormBasicFlavouredApi.undeleteForms]
+	 */
+	suspend fun undeleteForms(forms: List<GroupScoped<E>>): List<GroupScoped<E>> =
+		undeleteFormsByIds(forms.map { it.toStoredDocumentIdentifier() })
+
+	/**
+	 * In-group version of [FormBasicFlavouredApi.modifyForm]
+	 */
+	suspend fun modifyForm(entity: GroupScoped<E>): GroupScoped<E>
+
+	/**
+	 * In-group version of [FormBasicFlavouredApi.modifyForms]
+	 */
+	suspend fun modifyForms(entities: List<GroupScoped<E>>): List<GroupScoped<E>>
+
+	/**
+	 * In-group version of [FormBasicFlavouredApi.getForm]
+	 */
+	suspend fun getForm(groupId: String, entityId: String): GroupScoped<E>?
+
+	/**
+	 * In-group version of [FormBasicFlavouredApi.getForms]
+	 */
+	suspend fun getForms(groupId: String, entityIds: List<String>): List<GroupScoped<E>>
 }
 
 /* The extra API calls declared in this interface are the ones that can be used on encrypted or decrypted items but only when the user is a data owner */
@@ -277,18 +372,6 @@ interface FormFlavouredApi<E : Form> : FormBasicFlavouredApi<E> {
 		delegates: Map<String, FormShareOptions>
 	): E
 
-	@Deprecated("Use filter instead")
-	suspend fun findFormsByHcPartyPatient(
-		hcPartyId: String,
-		patient: Patient,
-		@DefaultValue("null")
-		startDate: Long? = null,
-		@DefaultValue("null")
-		endDate: Long? = null,
-		@DefaultValue("null")
-		descending: Boolean? = null,
-	): PaginatedListIterator<E>
-
 	/**
 	 * Get an iterator that iterates through all forms matching the provided filter, executing multiple requests to
 	 * the api if needed.
@@ -318,6 +401,36 @@ interface FormFlavouredApi<E : Form> : FormBasicFlavouredApi<E> {
 	suspend fun filterFormsBySorted(
 		filter: SortableFilterOptions<Form>
 	): PaginatedListIterator<E>
+}
+
+interface FormFlavouredInGroupApi<E : Form> : FormBasicFlavouredInGroupApi<E> {
+	/**
+	 * In-group version of [FormFlavouredApi.shareWith]
+	 */
+	suspend fun shareWith(
+		delegate: EntityReferenceInGroup,
+		form: GroupScoped<E>,
+		@DefaultValue("null")
+		options: FormShareOptions? = null
+	): GroupScoped<E>
+
+	/**
+	 * In-group version of [FormFlavouredApi.shareWithMany]
+	 */
+	suspend fun shareWithMany(
+		form: GroupScoped<E>,
+		delegates: @JsMapAsObjectArray(keyEntryName = "delegate", valueEntryName = "shareOptions") Map<EntityReferenceInGroup, FormShareOptions>
+	): GroupScoped<E>
+
+	/**
+	 * In-group version of [FormFlavouredApi.filterFormsBy]
+	 */
+	suspend fun filterFormsBy(groupId: String, filter: FilterOptions<Form>): PaginatedListIterator<GroupScoped<E>>
+
+	/**
+	 * In-group version of [FormFlavouredApi.filterFormsBySorted]
+	 */
+	suspend fun filterFormsBySorted(groupId: String, filter: SortableFilterOptions<Form>): PaginatedListIterator<GroupScoped<E>>
 }
 
 /* The extra API calls declared in this interface are the ones that can only be used on decrypted items when encryption keys are available */
@@ -376,7 +489,7 @@ interface FormApi : FormBasicFlavourlessApi, FormFlavouredApi<DecryptedForm> {
 	 * @return the id of the patient linked to the form, or empty if the current user can't access any patient id
 	 * of the form.
 	 */
-	suspend fun decryptPatientIdOf(form: Form): Set<String>
+	suspend fun decryptPatientIdOf(form: Form): Set<EntityReferenceInGroup>
 
 	/**
 	 * Create metadata to allow other users to identify the anonymous delegates of a form.
@@ -437,6 +550,13 @@ interface FormApi : FormBasicFlavourlessApi, FormFlavouredApi<DecryptedForm> {
 	val tryAndRecover: FormFlavouredApi<Form>
 
 	/**
+	 * Gives access to methods of the api that allow to use entities or work with data owners in groups other than the
+	 * current user's group.
+	 * These methods aren't available when connected to a kraken-lite instance.
+	 */
+	val inGroup: FormInGroupApi
+
+	/**
 	 * Get the ids of all forms matching the provided filter.
 	 *
 	 * This method does not guarantee that the returned data will be ordered when using sortable filter options.
@@ -461,7 +581,84 @@ interface FormApi : FormBasicFlavourlessApi, FormFlavouredApi<DecryptedForm> {
 	suspend fun matchFormsBySorted(filter: SortableFilterOptions<Form>): List<String>
 }
 
+interface FormInGroupApi : FormBasicFlavourlessInGroupApi, FormFlavouredInGroupApi<DecryptedForm> { // TODO subscribable?
+	/**
+	 * Give access to the encrypted flavour of the api
+	 */
+	val encrypted: FormFlavouredInGroupApi<EncryptedForm>
+
+	/**
+	 * Gives access to the polymorphic flavour of the api
+	 */
+	val tryAndRecover: FormFlavouredInGroupApi<Form>
+
+	/**
+	 * In-group version of [FormApi.withEncryptionMetadata]
+	 */
+	suspend fun withEncryptionMetadata(
+		entityGroupId: String,
+		base: DecryptedForm?,
+		patient: GroupScoped<Patient>?,
+		@DefaultValue("null")
+		user: User? = null,
+		@DefaultValue("emptyMap()")
+		delegates: @JsMapAsObjectArray(keyEntryName = "delegate", valueEntryName = "accessLevel") Map<EntityReferenceInGroup, AccessLevel> = emptyMap(),
+		@DefaultValue("com.icure.cardinal.sdk.crypto.entities.SecretIdUseOption.UseAnySharedWithParent")
+		secretId: SecretIdUseOption = SecretIdUseOption.UseAnySharedWithParent,
+		@DefaultValue("null")
+		alternateRootDelegateReference: EntityReferenceInGroup? = null,
+	): GroupScoped<DecryptedForm>
+
+	/**
+	 * In-group version of [FormApi.getEncryptionKeysOf]
+	 */
+	suspend fun getEncryptionKeysOf(form: GroupScoped<Form>): Set<HexString>
+
+	/**
+	 * In-group version of [FormApi.hasWriteAccess]
+	 */
+	suspend fun hasWriteAccess(form: GroupScoped<Form>): Boolean
+
+	/**
+	 * In-group version of [FormApi.decryptPatientIdOf]
+	 */
+	suspend fun decryptPatientIdOf(form: GroupScoped<Form>): Set<EntityReferenceInGroup>
+
+	/**
+	 * In-group version of [FormApi.createDelegationDeAnonymizationMetadata]
+	 */
+	suspend fun createDelegationDeAnonymizationMetadata(entity: GroupScoped<Form>, delegates: Set<EntityReferenceInGroup>)
+
+	/**
+	 * In-group version of [FormApi.decrypt]
+	 */
+	suspend fun decrypt(forms: List<GroupScoped<EncryptedForm>>): List<GroupScoped<DecryptedForm>>
+
+	/**
+	 * In-group version of [FormApi.tryDecrypt]
+	 */
+	suspend fun tryDecrypt(forms: List<GroupScoped<EncryptedForm>>): List<GroupScoped<Form>>
+
+	/**
+	 * In-group version of [FormApi.matchFormsBy]
+	 */
+	suspend fun matchFormsBy(groupId: String, filter: FilterOptions<Form>): List<String>
+
+	/**
+	 * In-group version of [FormApi.matchFormsBySorted]
+	 */
+	suspend fun matchFormsBySorted(groupId: String, filter: SortableFilterOptions<Form>): List<String>
+}
+
 interface FormBasicApi : FormBasicFlavourlessApi, FormBasicFlavouredApi<EncryptedForm> {
+
+	/**
+	 * Gives access to methods of the api that allow to use entities or work with data owners in groups other than the
+	 * current user's group.
+	 * These methods aren't available when connected to a kraken-lite instance.
+	 */
+	val inGroup: FormBasicInGroupApi
+
 	/**
 	 * Get the ids of all forms matching the provided filter.
 	 *
@@ -515,4 +712,26 @@ interface FormBasicApi : FormBasicFlavourlessApi, FormBasicFlavouredApi<Encrypte
 	suspend fun filterFormsBySorted(
 		filter: BaseSortableFilterOptions<Form>
 	): PaginatedListIterator<EncryptedForm>
+}
+
+interface FormBasicInGroupApi : FormBasicFlavourlessInGroupApi, FormBasicFlavouredInGroupApi<EncryptedForm> {
+	/**
+	 * In-group version of [FormBasicApi.matchFormsBy]
+	 */
+	suspend fun matchFormsBy(groupId: String, filter: BaseFilterOptions<Form>): List<String>
+
+	/**
+	 * In-group version of [FormBasicApi.matchFormsBySorted]
+	 */
+	suspend fun matchFormsBySorted(groupId: String, filter: BaseSortableFilterOptions<Form>): List<String>
+
+	/**
+	 * In-group version of [FormBasicApi.filterFormsBy]
+	 */
+	suspend fun filterFormsBy(groupId: String, filter: BaseFilterOptions<Form>): PaginatedListIterator<GroupScoped<EncryptedForm>>
+
+	/**
+	 * In-group version of [FormBasicApi.filterFormsBySorted]
+	 */
+	suspend fun filterFormsBySorted(groupId: String, filter: BaseSortableFilterOptions<Form>): PaginatedListIterator<GroupScoped<EncryptedForm>>
 }

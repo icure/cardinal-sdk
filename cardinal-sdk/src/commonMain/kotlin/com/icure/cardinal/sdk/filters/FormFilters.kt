@@ -4,16 +4,21 @@ import com.icure.cardinal.sdk.CardinalBaseApis
 import com.icure.cardinal.sdk.crypto.EntityEncryptionService
 import com.icure.cardinal.sdk.crypto.entities.EntityWithEncryptionMetadataStub
 import com.icure.cardinal.sdk.crypto.entities.EntityWithEncryptionMetadataTypeName
+import com.icure.cardinal.sdk.crypto.entities.SdkBoundGroup
 import com.icure.cardinal.sdk.crypto.entities.toEncryptionMetadataStub
 import com.icure.cardinal.sdk.model.Form
+import com.icure.cardinal.sdk.model.EntityReferenceInGroup
+import com.icure.cardinal.sdk.model.GroupScoped
 import com.icure.cardinal.sdk.model.Patient
 import com.icure.cardinal.sdk.model.filter.AbstractFilter
 import com.icure.cardinal.sdk.model.filter.form.FormByDataOwnerParentIdFilter
 import com.icure.cardinal.sdk.model.filter.form.FormByDataOwnerPatientOpeningDateFilter
-import com.icure.cardinal.sdk.model.filter.form.FormByLogicalUuidFilter
 import com.icure.cardinal.sdk.model.filter.form.FormByUniqueUuidFilter
+import com.icure.cardinal.sdk.options.ApiConfiguration
+import com.icure.cardinal.sdk.options.BasicApiConfiguration
 import com.icure.cardinal.sdk.utils.DefaultValue
 import com.icure.utils.InternalIcureApi
+import kotlinx.coroutines.currentCoroutineContext
 import kotlinx.serialization.Serializable
 
 object FormFilters {
@@ -28,7 +33,19 @@ object FormFilters {
 	fun byParentIdForDataOwner(
 		dataOwnerId: String,
 		parentId: String,
-	): BaseFilterOptions<Form> = ByParentIdForDataOwner(dataOwnerId, parentId)
+	): BaseFilterOptions<Form> = ByParentIdForDataOwner(
+		dataOwnerId = EntityReferenceInGroup(groupId = null, entityId = dataOwnerId),
+		parentId = parentId
+	)
+
+	/**
+	 * In group version of [byParentIdForDataOwner].
+	 */
+	fun byParentIdForDataOwner(
+		dataOwner: EntityReferenceInGroup,
+		parentId: String,
+	): BaseFilterOptions<Form> = ByParentIdForDataOwner(dataOwner, parentId)
+
 
 	/**
 	 * Options for form filter which match all the forms shared directly (i.e. ignoring hierarchies) with the current data owner and where
@@ -74,8 +91,26 @@ object FormFilters {
 		@DefaultValue("false")
 		descending: Boolean = false
 	) : SortableFilterOptions<Form> = ByPatientsOpeningDateForDataOwner(
-		dataOwnerId = dataOwnerId,
-		patients = patients.map { it.toEncryptionMetadataStub() },
+		dataOwnerId = EntityReferenceInGroup(groupId = null, entityId = dataOwnerId),
+		patients = patients.map { Pair(it.toEncryptionMetadataStub(), null) },
+		from = from,
+		to = to,
+		descending = descending
+	)
+
+	@OptIn(InternalIcureApi::class)
+	fun byPatientsOpeningDateForDataOwner(
+		dataOwner: EntityReferenceInGroup,
+		patients: List<GroupScoped<Patient>>,
+		@DefaultValue("null")
+		from: Long? = null,
+		@DefaultValue("null")
+		to: Long? = null,
+		@DefaultValue("false")
+		descending: Boolean = false
+	) : SortableFilterOptions<Form> = ByPatientsOpeningDateForDataOwner(
+		dataOwnerId = dataOwner,
+		patients = patients.map { Pair(it.entity.toEncryptionMetadataStub(), it.groupId) },
 		from = from,
 		to = to,
 		descending = descending
@@ -147,7 +182,33 @@ object FormFilters {
 		to: Long? = null,
 		@DefaultValue("false")
 		descending: Boolean = false
-	) : BaseSortableFilterOptions<Form> = ByPatientSecretIdsOpeningDateForDataOwner(dataOwnerId, secretIds, from, to, descending)
+	) : BaseSortableFilterOptions<Form> = ByPatientSecretIdsOpeningDateForDataOwner(
+		dataOwnerId = EntityReferenceInGroup(groupId = null, entityId = dataOwnerId),
+		secretIds = secretIds,
+		from = from,
+		to = to,
+		descending = descending
+	)
+
+	/**
+	 * In group version of [byPatientSecretIdsOpeningDateForDataOwner].
+	 */
+	fun byPatientSecretIdsOpeningDateForDataOwner(
+		dataOwner: EntityReferenceInGroup,
+		secretIds: List<String>,
+		@DefaultValue("null")
+		from: Long? = null,
+		@DefaultValue("null")
+		to: Long? = null,
+		@DefaultValue("false")
+		descending: Boolean = false
+	) : BaseSortableFilterOptions<Form> = ByPatientSecretIdsOpeningDateForDataOwner(
+		dataOwnerId = dataOwner,
+		secretIds = secretIds,
+		from = from,
+		to = to,
+		descending = descending
+	)
 
 	/**
 	 * Options for form filtering which match all forms shared directly (i.e. ignoring hierarchies) with the current data owner
@@ -179,21 +240,6 @@ object FormFilters {
 	) : SortableFilterOptions<Form> = ByPatientSecretIdsOpeningDateForSelf(secretIds, from, to, descending)
 
 	/**
-	 * Options for form filtering which mach all the forms where [Form.logicalUuid] is equal to [logicalUuid].
-	 *
-	 * These options are sortable. When sorting using these options, the forms will be sorted by [Form.created] in ascending or descending
-	 * order according to the value of the [descending] parameter.
-	 *
-	 * @param logicalUuid the [Form.logicalUuid] to use for filtering.
-	 * @param descending whether to sort the results in descending or ascending order by [Form.created] (default: ascending).
-	 */
-	fun byLogicalUuid(
-		logicalUuid: String,
-		@DefaultValue("false")
-		descending: Boolean = false
-	) : BaseSortableFilterOptions<Form> = ByLogicalUuid(logicalUuid, descending)
-
-	/**
 	 * Options for form filtering which mach all the forms where [Form.uniqueId] is equal to [uniqueId].
 	 *
 	 * These options are sortable. When sorting using these options, the forms will be sorted by [Form.created] in ascending or descending
@@ -210,7 +256,7 @@ object FormFilters {
 
 	@Serializable
 	internal class ByParentIdForDataOwner(
-		val dataOwnerId: String,
+		val dataOwnerId: EntityReferenceInGroup,
 		val parentId: String
 	): BaseFilterOptions<Form>
 
@@ -222,8 +268,8 @@ object FormFilters {
 	@Serializable
 	@InternalIcureApi
 	internal class ByPatientsOpeningDateForDataOwner(
-		val dataOwnerId: String,
-		val patients: List<EntityWithEncryptionMetadataStub>,
+		val dataOwnerId: EntityReferenceInGroup,
+		val patients: List<Pair<EntityWithEncryptionMetadataStub, String?>>,
 		val from: Long?,
 		val to: Long?,
 		val descending: Boolean
@@ -240,7 +286,7 @@ object FormFilters {
 
 	@Serializable
 	internal class ByPatientSecretIdsOpeningDateForDataOwner(
-		val dataOwnerId: String,
+		val dataOwnerId: EntityReferenceInGroup,
 		val secretIds: List<String>,
 		val from: Long?,
 		val to: Long?,
@@ -256,12 +302,6 @@ object FormFilters {
 	) : SortableFilterOptions<Form>
 
 	@Serializable
-	internal class ByLogicalUuid(
-		val logicalUuid: String,
-		val descending: Boolean
-	): BaseSortableFilterOptions<Form>
-
-	@Serializable
 	internal class ByUniqueId(
 		val uniqueId: String,
 		val descending: Boolean
@@ -271,54 +311,83 @@ object FormFilters {
 @InternalIcureApi
 internal suspend fun mapFormFilterOptions(
 	filterOptions: FilterOptions<Form>,
-	selfDataOwnerId: String?,
-	entityEncryptionService: EntityEncryptionService?
+	config: BasicApiConfiguration,
+	requestGroup: String?
+): AbstractFilter<Form> {
+	val nonBasicConfig = config as? ApiConfiguration
+	return mapFormFilterOptions(
+		filterOptions,
+		nonBasicConfig?.crypto?.dataOwnerApi?.getCurrentDataOwnerReference(),
+		nonBasicConfig?.crypto?.entity,
+		config.getBoundGroup(currentCoroutineContext()),
+		requestGroup
+	)
+}
+
+@InternalIcureApi
+private suspend fun mapFormFilterOptions(
+	filterOptions: FilterOptions<Form>,
+	selfDataOwner: EntityReferenceInGroup?,
+	entityEncryptionService: EntityEncryptionService?,
+	boundGroup: SdkBoundGroup?,
+	requestGroup: String?
 ): AbstractFilter<Form> = mapIfMetaFilterOptions(filterOptions) {
-	mapFormFilterOptions(it, selfDataOwnerId, entityEncryptionService)
+	mapFormFilterOptions(it, selfDataOwner, entityEncryptionService, boundGroup, requestGroup)
 } ?: when (filterOptions) {
-	is FormFilters.ByParentIdForDataOwner -> FormByDataOwnerParentIdFilter(dataOwnerId = filterOptions.dataOwnerId, parentId = filterOptions.parentId)
+	is FormFilters.ByParentIdForDataOwner -> FormByDataOwnerParentIdFilter(
+		dataOwnerId = filterOptions.dataOwnerId.asReferenceStringInGroup(requestGroup, boundGroup),
+		parentId = filterOptions.parentId
+	)
 	is FormFilters.ByParentIdForSelf -> {
-		filterOptions.ensureNonBaseEnvironment(selfDataOwnerId, entityEncryptionService)
-		FormByDataOwnerParentIdFilter(dataOwnerId = selfDataOwnerId, parentId = filterOptions.parentId)
+		filterOptions.ensureNonBaseEnvironment(selfDataOwner, entityEncryptionService)
+		FormByDataOwnerParentIdFilter(
+			dataOwnerId = selfDataOwner.asReferenceStringInGroup(requestGroup, boundGroup),
+			parentId = filterOptions.parentId
+		)
 	}
 	is FormFilters.ByPatientsOpeningDateForDataOwner -> {
-		filterOptions.ensureNonBaseEnvironment(selfDataOwnerId, entityEncryptionService)
+		filterOptions.ensureNonBaseEnvironment(selfDataOwner, entityEncryptionService)
 		FormByDataOwnerPatientOpeningDateFilter(
-			dataOwnerId = filterOptions.dataOwnerId,
-			secretPatientKeys = entityEncryptionService.secretIdsOf(null, filterOptions.patients, EntityWithEncryptionMetadataTypeName.Patient, null).values.flatten().toSet(),
+			dataOwnerId = filterOptions.dataOwnerId.asReferenceStringInGroup(requestGroup, boundGroup),
+			secretPatientKeys = filterOptions.patients.mapToSecretIds(
+				entityEncryptionService,
+				EntityWithEncryptionMetadataTypeName.Patient
+			),
 			startDate = filterOptions.from,
 			endDate = filterOptions.to,
 			descending = filterOptions.descending
 		)
 	}
 	is FormFilters.ByPatientsOpeningDateForSelf -> {
-		filterOptions.ensureNonBaseEnvironment(selfDataOwnerId, entityEncryptionService)
+		filterOptions.ensureNonBaseEnvironment(selfDataOwner, entityEncryptionService)
 		FormByDataOwnerPatientOpeningDateFilter(
-			dataOwnerId = selfDataOwnerId,
-			secretPatientKeys = entityEncryptionService.secretIdsOf(null, filterOptions.patients, EntityWithEncryptionMetadataTypeName.Patient, null).values.flatten().toSet(),
+			dataOwnerId = selfDataOwner.asReferenceStringInGroup(requestGroup, boundGroup),
+			secretPatientKeys = filterOptions.patients.map { Pair(it, null) }.mapToSecretIds(
+				entityEncryptionService,
+				EntityWithEncryptionMetadataTypeName.Patient
+			),
 			startDate = filterOptions.from,
 			endDate = filterOptions.to,
 			descending = filterOptions.descending
 		)
 	}
 	is FormFilters.ByPatientSecretIdsOpeningDateForDataOwner -> FormByDataOwnerPatientOpeningDateFilter(
-		dataOwnerId = filterOptions.dataOwnerId,
+		dataOwnerId = filterOptions.dataOwnerId.asReferenceStringInGroup(requestGroup, boundGroup),
 		secretPatientKeys = filterOptions.secretIds.toSet(),
 		startDate = filterOptions.from,
 		endDate = filterOptions.to,
 		descending = filterOptions.descending
 	)
 	is FormFilters.ByPatientSecretIdsOpeningDateForSelf -> {
-		filterOptions.ensureNonBaseEnvironment(selfDataOwnerId, entityEncryptionService)
+		filterOptions.ensureNonBaseEnvironment(selfDataOwner, entityEncryptionService)
 		FormByDataOwnerPatientOpeningDateFilter(
-			dataOwnerId = selfDataOwnerId,
+			dataOwnerId = selfDataOwner.asReferenceStringInGroup(requestGroup, boundGroup),
 			secretPatientKeys = filterOptions.secretIds.toSet(),
 			startDate = filterOptions.from,
 			endDate = filterOptions.to,
 			descending = filterOptions.descending
 		)
 	}
-	is FormFilters.ByLogicalUuid -> FormByLogicalUuidFilter(logicalUuid = filterOptions.logicalUuid, descending = filterOptions.descending)
 	is FormFilters.ByUniqueId -> FormByUniqueUuidFilter(uniqueId = filterOptions.uniqueId, descending = filterOptions.descending)
 	else -> throw IllegalArgumentException("Filter options ${filterOptions::class.simpleName} are not valid for filtering Forms")
 }

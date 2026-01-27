@@ -199,7 +199,6 @@ interface CalendarItemBasicFlavouredApi<E : CalendarItem> {
 	 */
 	suspend fun undeleteCalendarItemsByIds(entityIds: List<StoredDocumentIdentifier>): List<E>
 
-
 	/**
 	 * Restores a calendarItem that was marked as deleted.
 	 * @param calendarItem the calendarItem to undelete

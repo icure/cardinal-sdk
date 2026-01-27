@@ -12,9 +12,6 @@ import com.icure.cardinal.sdk.api.CryptoApi
 import com.icure.cardinal.sdk.api.DataOwnerApi
 import com.icure.cardinal.sdk.api.DeviceApi
 import com.icure.cardinal.sdk.api.DocumentApi
-import com.icure.cardinal.sdk.api.DocumentTemplateApi
-import com.icure.cardinal.sdk.api.EntityReferenceApi
-import com.icure.cardinal.sdk.api.EntityTemplateApi
 import com.icure.cardinal.sdk.api.FormApi
 import com.icure.cardinal.sdk.api.FrontEndMigrationApi
 import com.icure.cardinal.sdk.api.GroupApi
@@ -45,10 +42,6 @@ import com.icure.cardinal.sdk.api.impl.CodeApiImpl
 import com.icure.cardinal.sdk.api.impl.CryptoApiImpl
 import com.icure.cardinal.sdk.api.impl.DataOwnerApiImpl
 import com.icure.cardinal.sdk.api.impl.DeviceApiImpl
-import com.icure.cardinal.sdk.api.impl.DocumentTemplateApiImpl
-import com.icure.cardinal.sdk.api.impl.EntityReferenceApiImpl
-import com.icure.cardinal.sdk.api.impl.EntityTemplateApiImpl
-import com.icure.cardinal.sdk.api.impl.FormApiImpl
 import com.icure.cardinal.sdk.api.impl.FrontEndMigrationApiImpl
 import com.icure.cardinal.sdk.api.impl.GroupApiImpl
 import com.icure.cardinal.sdk.api.impl.HealthcarePartyApiImpl
@@ -73,6 +66,7 @@ import com.icure.cardinal.sdk.api.impl.initAccessLogApi
 import com.icure.cardinal.sdk.api.impl.initCalendarItemApi
 import com.icure.cardinal.sdk.api.impl.initContactApi
 import com.icure.cardinal.sdk.api.impl.initDocumentApi
+import com.icure.cardinal.sdk.api.impl.initFormApi
 import com.icure.cardinal.sdk.api.impl.initHealthElementApi
 import com.icure.cardinal.sdk.api.impl.initPatientApi
 import com.icure.cardinal.sdk.api.raw.RawAnonymousAuthApi
@@ -89,9 +83,7 @@ import com.icure.cardinal.sdk.api.raw.impl.RawContactApiImpl
 import com.icure.cardinal.sdk.api.raw.impl.RawDataOwnerApiImpl
 import com.icure.cardinal.sdk.api.raw.impl.RawDeviceApiImpl
 import com.icure.cardinal.sdk.api.raw.impl.RawDocumentApiImpl
-import com.icure.cardinal.sdk.api.raw.impl.RawDocumentTemplateApiImpl
 import com.icure.cardinal.sdk.api.raw.impl.RawEntityReferenceApiImpl
-import com.icure.cardinal.sdk.api.raw.impl.RawEntityTemplateApiImpl
 import com.icure.cardinal.sdk.api.raw.impl.RawExchangeDataApiImpl
 import com.icure.cardinal.sdk.api.raw.impl.RawExchangeDataMapApiImpl
 import com.icure.cardinal.sdk.api.raw.impl.RawFormApiImpl
@@ -948,9 +940,9 @@ internal class CardinalSdkImpl(
 	}
 
 	override val form: FormApi by lazy {
-		FormApiImpl(
-			rawFormApi,
-			config
+		initFormApi(
+			rawApi = rawFormApi,
+			config = config
 		)
 	}
 
@@ -1018,15 +1010,6 @@ internal class CardinalSdkImpl(
 	}
 	override val calendarItemType: CalendarItemTypeApi by lazy {
 		CalendarItemTypeApiImpl(RawCalendarItemTypeApiImpl(apiUrl, authProvider, config.rawApiConfig))
-	}
-	override val documentTemplate: DocumentTemplateApi by lazy {
-		DocumentTemplateApiImpl(apiUrl, RawDocumentTemplateApiImpl(apiUrl, authProvider, config.rawApiConfig))
-	}
-	override val entityReference: EntityReferenceApi by lazy {
-		EntityReferenceApiImpl(RawEntityReferenceApiImpl(apiUrl, authProvider, config.rawApiConfig))
-	}
-	override val entityTemplate: EntityTemplateApi by lazy {
-		EntityTemplateApiImpl(RawEntityTemplateApiImpl(apiUrl, authProvider, config.rawApiConfig))
 	}
 	override val frontEndMigration: FrontEndMigrationApi by lazy {
 		FrontEndMigrationApiImpl(RawFrontEndMigrationApiImpl(apiUrl, authProvider, config.rawApiConfig))

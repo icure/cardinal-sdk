@@ -5,14 +5,11 @@ import com.icure.cardinal.sdk.api.AccessLogBasicApi
 import com.icure.cardinal.sdk.api.AgendaApi
 import com.icure.cardinal.sdk.api.AnonymousAgendaApi
 import com.icure.cardinal.sdk.api.AnonymousHealthcarePartyApi
-import com.icure.cardinal.sdk.api.ApplicationSettingsApi
 import com.icure.cardinal.sdk.api.AuthApi
 import com.icure.cardinal.sdk.api.CalendarItemApi
 import com.icure.cardinal.sdk.api.CalendarItemBasicApi
 import com.icure.cardinal.sdk.api.CalendarItemTypeApi
 import com.icure.cardinal.sdk.api.CardinalMaintenanceTaskApi
-import com.icure.cardinal.sdk.api.ClassificationApi
-import com.icure.cardinal.sdk.api.ClassificationBasicApi
 import com.icure.cardinal.sdk.api.CodeApi
 import com.icure.cardinal.sdk.api.ContactApi
 import com.icure.cardinal.sdk.api.ContactBasicApi
@@ -21,9 +18,6 @@ import com.icure.cardinal.sdk.api.DataOwnerApi
 import com.icure.cardinal.sdk.api.DeviceApi
 import com.icure.cardinal.sdk.api.DocumentApi
 import com.icure.cardinal.sdk.api.DocumentBasicApi
-import com.icure.cardinal.sdk.api.DocumentTemplateApi
-import com.icure.cardinal.sdk.api.EntityReferenceApi
-import com.icure.cardinal.sdk.api.EntityTemplateApi
 import com.icure.cardinal.sdk.api.FormApi
 import com.icure.cardinal.sdk.api.FormBasicApi
 import com.icure.cardinal.sdk.api.FrontEndMigrationApi
@@ -63,9 +57,6 @@ interface CardinalNonCryptoApis {
 	val code: CodeApi
 	val calendarItemType: CalendarItemTypeApi
 	val device: DeviceApi
-	val documentTemplate: DocumentTemplateApi
-	val entityReference: EntityReferenceApi
-	val entityTemplate: EntityTemplateApi
 	val frontEndMigration: FrontEndMigrationApi
 	val group: GroupApi
 	val healthcareParty: HealthcarePartyApi
