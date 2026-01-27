@@ -6,7 +6,6 @@ import com.icure.cardinal.sdk.api.CalendarItemTypeApi
 import com.icure.cardinal.sdk.api.FrontEndMigrationApi
 import com.icure.cardinal.sdk.api.GroupApi
 import com.icure.cardinal.sdk.api.InsuranceApi
-import com.icure.cardinal.sdk.api.KeywordApi
 import com.icure.cardinal.sdk.api.MedicalLocationApi
 import com.icure.cardinal.sdk.api.PlaceApi
 import com.icure.cardinal.sdk.api.RoleApi
@@ -22,9 +21,6 @@ import com.icure.cardinal.sdk.api.impl.FrontEndMigrationApiImpl
 import com.icure.cardinal.sdk.api.impl.GroupApiImpl
 import com.icure.cardinal.sdk.api.impl.HealthcarePartyApiImpl
 import com.icure.cardinal.sdk.api.impl.InsuranceApiImpl
-import com.icure.cardinal.sdk.api.impl.InvoiceBasicApiImpl
-import com.icure.cardinal.sdk.api.impl.KeywordApiImpl
-import com.icure.cardinal.sdk.api.impl.MaintenanceTaskBasicApiImpl
 import com.icure.cardinal.sdk.api.impl.MedicalLocationApiImpl
 import com.icure.cardinal.sdk.api.impl.MessageBasicApiImpl
 import com.icure.cardinal.sdk.api.impl.PermissionApiImpl
@@ -42,6 +38,7 @@ import com.icure.cardinal.sdk.api.impl.initContactBasicApi
 import com.icure.cardinal.sdk.api.impl.initDocumentBasicApi
 import com.icure.cardinal.sdk.api.impl.initFormBasicApi
 import com.icure.cardinal.sdk.api.impl.initHealthElementBasicApi
+import com.icure.cardinal.sdk.api.impl.initInvoiceBasicApi
 import com.icure.cardinal.sdk.api.impl.initPatientBasicApi
 import com.icure.cardinal.sdk.api.raw.RawAnonymousAuthApi
 import com.icure.cardinal.sdk.api.raw.RawApiConfig
@@ -63,8 +60,6 @@ import com.icure.cardinal.sdk.api.raw.impl.RawHealthcarePartyApiImpl
 import com.icure.cardinal.sdk.api.raw.impl.RawICureApiImpl
 import com.icure.cardinal.sdk.api.raw.impl.RawInsuranceApiImpl
 import com.icure.cardinal.sdk.api.raw.impl.RawInvoiceApiImpl
-import com.icure.cardinal.sdk.api.raw.impl.RawKeywordApiImpl
-import com.icure.cardinal.sdk.api.raw.impl.RawMaintenanceTaskApiImpl
 import com.icure.cardinal.sdk.api.raw.impl.RawMedicalLocationApiImpl
 import com.icure.cardinal.sdk.api.raw.impl.RawMessageApiImpl
 import com.icure.cardinal.sdk.api.raw.impl.RawPatientApiImpl
@@ -505,25 +500,17 @@ private class CardinalBaseApisImpl(
 
 	@Deprecated("The invoice API and model are highly specialised for the belgian market. They will be provided as a separate package in future")
 	override val invoice by lazy {
-		InvoiceBasicApiImpl(
-			RawInvoiceApiImpl(
+		initInvoiceBasicApi(
+			rawApi = RawInvoiceApiImpl(
 				apiUrl,
 				authProvider,
 				NoAccessControlKeysHeadersProvider,
 				config.rawApiConfig
-			), config
+			),
+			config = config
 		)
 	}
-	override val maintenanceTask by lazy {
-		MaintenanceTaskBasicApiImpl(
-			RawMaintenanceTaskApiImpl(
-				apiUrl,
-				authProvider,
-				NoAccessControlKeysHeadersProvider,
-				config.rawApiConfig
-			), config
-		)
-	}
+
 	override val message by lazy {
 		MessageBasicApiImpl(
 			RawMessageApiImpl(
@@ -599,9 +586,6 @@ private class CardinalBaseApisImpl(
 	}
 	override val insurance: InsuranceApi by lazy {
 		InsuranceApiImpl(RawInsuranceApiImpl(apiUrl, authProvider, config.rawApiConfig))
-	}
-	override val keyword: KeywordApi by lazy {
-		KeywordApiImpl(RawKeywordApiImpl(apiUrl, authProvider, config.rawApiConfig))
 	}
 	override val place: PlaceApi by lazy {
 		PlaceApiImpl(RawPlaceApiImpl(apiUrl, authProvider, config.rawApiConfig))

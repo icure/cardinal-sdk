@@ -19,7 +19,6 @@ import com.icure.cardinal.sdk.api.HealthElementApi
 import com.icure.cardinal.sdk.api.HealthcarePartyApi
 import com.icure.cardinal.sdk.api.InsuranceApi
 import com.icure.cardinal.sdk.api.InvoiceApi
-import com.icure.cardinal.sdk.api.KeywordApi
 import com.icure.cardinal.sdk.api.MaintenanceTaskApi
 import com.icure.cardinal.sdk.api.MedicalLocationApi
 import com.icure.cardinal.sdk.api.MessageApi
@@ -46,8 +45,6 @@ import com.icure.cardinal.sdk.api.impl.FrontEndMigrationApiImpl
 import com.icure.cardinal.sdk.api.impl.GroupApiImpl
 import com.icure.cardinal.sdk.api.impl.HealthcarePartyApiImpl
 import com.icure.cardinal.sdk.api.impl.InsuranceApiImpl
-import com.icure.cardinal.sdk.api.impl.InvoiceApiImpl
-import com.icure.cardinal.sdk.api.impl.KeywordApiImpl
 import com.icure.cardinal.sdk.api.impl.MaintenanceTaskApiImpl
 import com.icure.cardinal.sdk.api.impl.MedicalLocationApiImpl
 import com.icure.cardinal.sdk.api.impl.MessageApiImpl
@@ -68,6 +65,7 @@ import com.icure.cardinal.sdk.api.impl.initContactApi
 import com.icure.cardinal.sdk.api.impl.initDocumentApi
 import com.icure.cardinal.sdk.api.impl.initFormApi
 import com.icure.cardinal.sdk.api.impl.initHealthElementApi
+import com.icure.cardinal.sdk.api.impl.initInvoiceApi
 import com.icure.cardinal.sdk.api.impl.initPatientApi
 import com.icure.cardinal.sdk.api.raw.RawAnonymousAuthApi
 import com.icure.cardinal.sdk.api.raw.RawApiConfig
@@ -94,7 +92,6 @@ import com.icure.cardinal.sdk.api.raw.impl.RawHealthcarePartyApiImpl
 import com.icure.cardinal.sdk.api.raw.impl.RawICureApiImpl
 import com.icure.cardinal.sdk.api.raw.impl.RawInsuranceApiImpl
 import com.icure.cardinal.sdk.api.raw.impl.RawInvoiceApiImpl
-import com.icure.cardinal.sdk.api.raw.impl.RawKeywordApiImpl
 import com.icure.cardinal.sdk.api.raw.impl.RawMaintenanceTaskApiImpl
 import com.icure.cardinal.sdk.api.raw.impl.RawMedicalLocationApiImpl
 import com.icure.cardinal.sdk.api.raw.impl.RawMessageApiImpl
@@ -827,7 +824,7 @@ internal class CardinalSdkImpl(
 		)
 	}
 
-	override val maintenanceTask: MaintenanceTaskApi by lazy {
+	private val maintenanceTask: MaintenanceTaskApi by lazy {
 		MaintenanceTaskApiImpl(
 			rawMaintenanceTaskApi,
 			config
@@ -965,10 +962,9 @@ internal class CardinalSdkImpl(
 
 	@Deprecated("The invoice API and model are highly specialised for the belgian market. They will be provided as a separate package in future")
 	override val invoice: InvoiceApi by lazy {
-		InvoiceApiImpl(
-			rawInvoiceApi,
-			rawEntityReferenceApi,
-			config
+		initInvoiceApi(
+			rawApi = rawInvoiceApi,
+			config = config
 		)
 	}
 
@@ -1025,9 +1021,6 @@ internal class CardinalSdkImpl(
 	}
 	override val insurance: InsuranceApi by lazy {
 		InsuranceApiImpl(RawInsuranceApiImpl(apiUrl, authProvider, config.rawApiConfig))
-	}
-	override val keyword: KeywordApi by lazy {
-		KeywordApiImpl(RawKeywordApiImpl(apiUrl, authProvider, config.rawApiConfig))
 	}
 	override val place: PlaceApi by lazy {
 		PlaceApiImpl(RawPlaceApiImpl(apiUrl, authProvider, config.rawApiConfig))

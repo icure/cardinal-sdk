@@ -126,7 +126,9 @@ private open class AbstractHealthElementBasicFlavouredApi<E : HealthElement>(
 	protected val rawApi: RawHealthElementApi,
 	protected open val config: BasicApiConfiguration,
 	protected val flavour: FlavouredApi<EncryptedHealthElement, E>
-) : HealthElementBasicFlavouredApi<E>, HealthElementBasicFlavouredInGroupApi<E>, FlavouredApi<EncryptedHealthElement, E> by flavour {
+) : HealthElementBasicFlavouredApi<E>,
+	HealthElementBasicFlavouredInGroupApi<E>,
+	FlavouredApi<EncryptedHealthElement, E> by flavour {
 
 	override suspend fun createHealthElement(entity: E): E = doCreateHealthElement(groupId = null, entity = entity)
 
