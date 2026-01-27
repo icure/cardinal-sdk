@@ -328,18 +328,6 @@ interface HealthElementFlavouredApi<E : HealthElement> : HealthElementBasicFlavo
 		delegates: Map<String, HealthElementShareOptions>
 	): E
 
-	@Deprecated("Use filter instead")
-	suspend fun findHealthElementsByHcPartyPatient(
-		hcPartyId: String,
-		patient: Patient,
-		@DefaultValue("null")
-		startDate: Long? = null,
-		@DefaultValue("null")
-		endDate: Long? = null,
-		@DefaultValue("null")
-		descending: Boolean? = null,
-	): PaginatedListIterator<E>
-
 	/**
 	 * Get an iterator that iterates through all health elements matching the provided filter, executing multiple requests to
 	 * the api if needed.
@@ -508,7 +496,6 @@ interface HealthElementApi : HealthElementBasicFlavourlessApi, HealthElementFlav
 	 * @param delegates a set of data owner ids
 	 */
 	suspend fun createDelegationDeAnonymizationMetadata(entity: HealthElement, delegates: Set<String>)
-
 	/**
 	 * Decrypts HealthElements, throwing an exception if it is not possible.
 	 * @param healthElements encrypted HealthElements
