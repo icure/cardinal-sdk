@@ -12,7 +12,6 @@ import com.icure.cardinal.sdk.model.filter.AbstractFilter
 import com.icure.cardinal.sdk.model.filter.patient.PatientByDataOwnerTagFilter
 import com.icure.cardinal.sdk.model.filter.patient.PatientByHcPartyAndActiveFilter
 import com.icure.cardinal.sdk.model.filter.patient.PatientByHcPartyAndAddressFilter
-import com.icure.cardinal.sdk.model.filter.patient.PatientByHcPartyAndExternalIdFilter
 import com.icure.cardinal.sdk.model.filter.patient.PatientByHcPartyAndIdentifiersFilter
 import com.icure.cardinal.sdk.model.filter.patient.PatientByHcPartyAndSsinFilter
 import com.icure.cardinal.sdk.model.filter.patient.PatientByHcPartyAndSsinsFilter
@@ -28,8 +27,8 @@ import com.icure.cardinal.sdk.options.BasicApiConfiguration
 import com.icure.cardinal.sdk.utils.DefaultValue
 import com.icure.cardinal.sdk.utils.requireUniqueElements
 import com.icure.utils.InternalIcureApi
+import kotlinx.coroutines.currentCoroutineContext
 import kotlinx.serialization.Serializable
-import kotlin.coroutines.coroutineContext
 
 object PatientFilters {
 	/**
@@ -357,38 +356,6 @@ object PatientFilters {
 		)
 
 	/**
-	 * Options for patient filtering which match all the patients shared directly (i.e. ignoring hierarchies) with a specific data owner that have [Patient.externalId]
-	 * starting with the provided [externalIdPrefix].
-	 *
-	 * These options are sortable. When sorting using these options the patients will be ordered lexicographically by
-	 * the full [Patient.externalId].
-	 *
-	 * @param externalIdPrefix a patient external id prefix
-	 * @param dataOwnerId a data owner id
-	 */
-	fun byExternalIdForDataOwner(
-		dataOwnerId: String,
-		externalIdPrefix: String
-	) : BaseSortableFilterOptions<Patient> =
-		ByExternalIdForDataOwner(
-			externalIdPrefix = externalIdPrefix,
-			dataOwner = EntityReferenceInGroup(dataOwnerId, null)
-		)
-
-	/**
-	 * In-group version of [byExternalIdForDataOwner].
-	 * The data owner can be from a different group than the group of the user executing the query.
-	 */
-	fun byExternalIdForDataOwnerInGroup(
-		dataOwner: EntityReferenceInGroup,
-		externalIdPrefix: String
-	) : BaseSortableFilterOptions<Patient> =
-		ByExternalIdForDataOwner(
-			externalIdPrefix = externalIdPrefix,
-			dataOwner = dataOwner
-		)
-
-	/**
 	 * Options for patient filtering which match all the patients shared directly (i.e. ignoring hierarchies) with the current data owner that have at least
 	 * an identifier that has the same exact [Identifier.system] and [Identifier.value] as one of the provided
 	 * [identifiers]. Other properties of the provided identifiers are ignored.
@@ -536,19 +503,6 @@ object PatientFilters {
 	) : SortableFilterOptions<Patient> = ByAddressForSelf(searchString = searchString)
 
 	/**
-	 * Options for patient filtering which match all the patients shared directly (i.e. ignoring hierarchies) with the current data owner that have [Patient.externalId]
-	 * starting with the provided [externalIdPrefix].
-	 *
-	 * These options are sortable. When sorting using these options the patients will be ordered lexicographically by
-	 * the full [Patient.externalId].
-	 *
-	 * @param externalIdPrefix a patient external id prefix
-	 */
-	fun byExternalIdForSelf(
-		externalIdPrefix: String
-	) : SortableFilterOptions<Patient> = ByExternalIdForSelf(externalIdPrefix = externalIdPrefix)
-
-	/**
 	 * Options for patient filtering which match all the patients shared directly (i.e. ignoring hierarchies) with the current data owner
 	 * where in [Patient.tags] there is at least one tag with type equal to [tagType] and code equal to [tagCode].
 	 *
@@ -668,12 +622,6 @@ object PatientFilters {
 	) : BaseSortableFilterOptions<Patient>
 
 	@Serializable
-	internal class ByExternalIdForDataOwner(
-		val externalIdPrefix: String,
-		val dataOwner: EntityReferenceInGroup
-	) : BaseSortableFilterOptions<Patient>
-
-	@Serializable
 	internal class ByIdentifiersForSelf(
 		val identifiers: List<Identifier>
 	) : SortableFilterOptions<Patient>
@@ -730,11 +678,6 @@ object PatientFilters {
 	) : SortableFilterOptions<Patient>
 
 	@Serializable
-	internal class ByExternalIdForSelf(
-		val externalIdPrefix: String
-	) : SortableFilterOptions<Patient>
-
-	@Serializable
 	internal class ByTagForDataOwner(
 		val dataOwner: EntityReferenceInGroup,
 		val tagType: String,
@@ -759,7 +702,7 @@ internal suspend fun mapPatientFilterOptions(
 		filterOptions,
 		nonBasicConfig?.crypto?.dataOwnerApi?.getCurrentDataOwnerReference(),
 		nonBasicConfig?.crypto?.entity,
-		config.getBoundGroup(coroutineContext),
+		config.getBoundGroup(currentCoroutineContext()),
 		requestGroup
 	)
 }
@@ -823,12 +766,6 @@ private suspend fun mapPatientFilterOptions(
 				healthcarePartyId = filterOptions.dataOwner.asReferenceStringInGroup(requestGroup, boundGroup)
 			)
 		}
-	}
-	is PatientFilters.ByExternalIdForDataOwner -> {
-		PatientByHcPartyAndExternalIdFilter(
-			externalId = filterOptions.externalIdPrefix,
-			healthcarePartyId = filterOptions.dataOwner.asReferenceStringInGroup(requestGroup, boundGroup)
-		)
 	}
 	is PatientFilters.ByNameForDataOwner -> {
 		PatientByHcPartyNameFilter(
@@ -908,13 +845,6 @@ private suspend fun mapPatientFilterOptions(
 				healthcarePartyId = selfDataOwner.asReferenceStringInGroup(requestGroup, boundGroup)
 			)
 		}
-	}
-	is PatientFilters.ByExternalIdForSelf -> {
-		filterOptions.ensureNonBaseEnvironment(selfDataOwner, entityEncryptionService)
-		PatientByHcPartyAndExternalIdFilter(
-			externalId = filterOptions.externalIdPrefix,
-			healthcarePartyId = selfDataOwner.asReferenceStringInGroup(requestGroup, boundGroup)
-		)
 	}
 	is PatientFilters.ByNameForSelf -> {
 		filterOptions.ensureNonBaseEnvironment(selfDataOwner, entityEncryptionService)
