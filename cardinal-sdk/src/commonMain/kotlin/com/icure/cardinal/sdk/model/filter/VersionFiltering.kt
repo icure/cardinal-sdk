@@ -1,5 +1,6 @@
-package com.icure.cardinal.sdk.model.embed
+package com.icure.cardinal.sdk.model.filter
 
+import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 import kotlin.String
 
@@ -7,12 +8,12 @@ import kotlin.String
 // If you want to change the way this class is generated, see [this repo](https://github.com/icure/sdk-codegen).
 
 @Serializable
-data class Partnership(
-	public val type: PartnershipType? = null,
-	public val status: PartnershipStatus? = null,
-	public val partnerId: String? = null,
+enum class VersionFiltering(
+	internal val dtoSerialName: String,
 ) {
-	// region Partnership-Partnership
+	@SerialName("LATEST")
+	Latest("LATEST"),
 
-	// endregion
+	@SerialName("ANY")
+	Any("ANY"),
 }
