@@ -22,7 +22,6 @@ import com.icure.cardinal.sdk.api.impl.GroupApiImpl
 import com.icure.cardinal.sdk.api.impl.HealthcarePartyApiImpl
 import com.icure.cardinal.sdk.api.impl.InsuranceApiImpl
 import com.icure.cardinal.sdk.api.impl.MedicalLocationApiImpl
-import com.icure.cardinal.sdk.api.impl.MessageBasicApiImpl
 import com.icure.cardinal.sdk.api.impl.PermissionApiImpl
 import com.icure.cardinal.sdk.api.impl.PlaceApiImpl
 import com.icure.cardinal.sdk.api.impl.ReceiptBasicApiImpl
@@ -39,6 +38,7 @@ import com.icure.cardinal.sdk.api.impl.initDocumentBasicApi
 import com.icure.cardinal.sdk.api.impl.initFormBasicApi
 import com.icure.cardinal.sdk.api.impl.initHealthElementBasicApi
 import com.icure.cardinal.sdk.api.impl.initInvoiceBasicApi
+import com.icure.cardinal.sdk.api.impl.initMessageBasicApi
 import com.icure.cardinal.sdk.api.impl.initPatientBasicApi
 import com.icure.cardinal.sdk.api.raw.RawAnonymousAuthApi
 import com.icure.cardinal.sdk.api.raw.RawApiConfig
@@ -512,13 +512,14 @@ private class CardinalBaseApisImpl(
 	}
 
 	override val message by lazy {
-		MessageBasicApiImpl(
-			RawMessageApiImpl(
+		initMessageBasicApi(
+			rawApi = RawMessageApiImpl(
 				apiUrl,
 				authProvider,
 				NoAccessControlKeysHeadersProvider,
 				config.rawApiConfig
-			), config
+			),
+			config = config
 		)
 	}
 	override val patient by lazy {
