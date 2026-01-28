@@ -2,6 +2,7 @@ package com.icure.cardinal.sdk.api.raw
 
 import com.icure.cardinal.sdk.model.Insurance
 import com.icure.cardinal.sdk.model.ListOfIds
+import com.icure.cardinal.sdk.model.ListOfIdsAndRev
 import com.icure.cardinal.sdk.model.PaginatedList
 import com.icure.cardinal.sdk.model.couchdb.DocIdentifier
 import com.icure.cardinal.sdk.model.filter.AbstractFilter
@@ -23,7 +24,28 @@ public interface RawInsuranceApi {
 
 	suspend fun createInsurance(insuranceDto: Insurance): HttpResponse<Insurance>
 
-	suspend fun deleteInsurance(insuranceId: String): HttpResponse<DocIdentifier>
+	suspend fun createInsurances(insuranceDtos: List<Insurance>): HttpResponse<List<Insurance>>
+
+	suspend fun deleteInsurance(
+		insuranceId: String,
+		rev: String? = null,
+	): HttpResponse<DocIdentifier>
+
+	suspend fun deleteInsurances(insuranceIds: ListOfIdsAndRev): HttpResponse<List<DocIdentifier>>
+
+	suspend fun undeleteInsurance(
+		insuranceId: String,
+		rev: String,
+	): HttpResponse<Insurance>
+
+	suspend fun undeleteInsurances(insuranceIds: ListOfIdsAndRev): HttpResponse<List<Insurance>>
+
+	suspend fun purgeInsurance(
+		insuranceId: String,
+		rev: String,
+	): HttpResponse<DocIdentifier>
+
+	suspend fun purgeInsurances(insuranceIds: ListOfIdsAndRev): HttpResponse<List<DocIdentifier>>
 
 	suspend fun getInsurance(insuranceId: String): HttpResponse<Insurance>
 
@@ -34,24 +56,74 @@ public interface RawInsuranceApi {
 	suspend fun listInsurancesByName(insuranceName: String): HttpResponse<List<Insurance>>
 
 	suspend fun modifyInsurance(insuranceDto: Insurance): HttpResponse<Insurance>
+
+	suspend fun modifyInsurances(insuranceDtos: List<Insurance>): HttpResponse<List<Insurance>>
 	// endregion
 
 	// region cloud endpoints
+
+	suspend fun createInsuranceInGroup(
+		groupId: String,
+		insurance: Insurance,
+	): HttpResponse<Insurance>
 
 	suspend fun createInsurancesInGroup(
 		groupId: String,
 		insuranceBatch: List<Insurance>,
 	): HttpResponse<List<Insurance>>
 
+	suspend fun getInsuranceInGroup(
+		groupId: String,
+		insuranceId: String,
+	): HttpResponse<Insurance>
+
 	suspend fun getInsurancesInGroup(
 		groupId: String,
 		insuranceIds: ListOfIds,
 	): HttpResponse<List<Insurance>>
 
+	suspend fun modifyInsuranceInGroup(
+		groupId: String,
+		insurance: Insurance,
+	): HttpResponse<Insurance>
+
 	suspend fun modifyInsurancesInGroup(
 		groupId: String,
 		insuranceBatch: List<Insurance>,
 	): HttpResponse<List<Insurance>>
+
+	suspend fun deleteInsuranceInGroup(
+		groupId: String,
+		insuranceId: String,
+		rev: String,
+	): HttpResponse<DocIdentifier>
+
+	suspend fun deleteInsurancesInGroup(
+		groupId: String,
+		insuranceIds: ListOfIdsAndRev,
+	): HttpResponse<List<DocIdentifier>>
+
+	suspend fun undeleteInsuranceInGroup(
+		groupId: String,
+		insuranceId: String,
+		rev: String,
+	): HttpResponse<Insurance>
+
+	suspend fun undeleteInsurancesInGroup(
+		groupId: String,
+		insuranceIds: ListOfIdsAndRev,
+	): HttpResponse<List<Insurance>>
+
+	suspend fun purgeInsuranceInGroup(
+		groupId: String,
+		insuranceId: String,
+		rev: String,
+	): HttpResponse<DocIdentifier>
+
+	suspend fun purgeInsurancesInGroup(
+		groupId: String,
+		insuranceIds: ListOfIdsAndRev,
+	): HttpResponse<List<DocIdentifier>>
 
 	suspend fun matchInsurancesBy(
 		groupId: String,

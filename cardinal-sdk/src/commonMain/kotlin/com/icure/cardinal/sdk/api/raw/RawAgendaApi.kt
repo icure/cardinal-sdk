@@ -24,6 +24,8 @@ public interface RawAgendaApi {
 
 	suspend fun createAgenda(agendaDto: Agenda): HttpResponse<Agenda>
 
+	suspend fun createAgendas(agendasDto: List<Agenda>): HttpResponse<List<Agenda>>
+
 	suspend fun deleteAgendas(agendaIds: ListOfIds): HttpResponse<List<DocIdentifier>>
 
 	suspend fun deleteAgendasWithRev(agendaIds: ListOfIdsAndRev): HttpResponse<List<DocIdentifier>>
@@ -38,16 +40,22 @@ public interface RawAgendaApi {
 		rev: String,
 	): HttpResponse<Agenda>
 
+	suspend fun undeleteAgendas(agendaIds: ListOfIdsAndRev): HttpResponse<List<Agenda>>
+
 	suspend fun purgeAgenda(
 		agendaId: String,
 		rev: String,
 	): HttpResponse<DocIdentifier>
+
+	suspend fun purgeAgendas(agendaIds: ListOfIdsAndRev): HttpResponse<List<DocIdentifier>>
 
 	suspend fun getAgenda(agendaId: String): HttpResponse<Agenda>
 
 	suspend fun getAgendasForUser(userId: String): HttpResponse<Agenda>
 
 	suspend fun modifyAgenda(agendaDto: Agenda): HttpResponse<Agenda>
+
+	suspend fun modifyAgendas(agendaDtos: List<Agenda>): HttpResponse<List<Agenda>>
 
 	suspend fun matchAgendasBy(filter: AbstractFilter<Agenda>): HttpResponse<List<String>>
 
@@ -61,10 +69,20 @@ public interface RawAgendaApi {
 		agendaDto: Agenda,
 	): HttpResponse<Agenda>
 
+	suspend fun createAgendasInGroup(
+		groupId: String,
+		agendaDtos: List<Agenda>,
+	): HttpResponse<List<Agenda>>
+
 	suspend fun modifyAgendaInGroup(
 		groupId: String,
 		agendaDto: Agenda,
 	): HttpResponse<Agenda>
+
+	suspend fun modifyAgendasInGroup(
+		groupId: String,
+		agendaDtos: List<Agenda>,
+	): HttpResponse<List<Agenda>>
 
 	suspend fun getAgendaInGroup(
 		groupId: String,
@@ -82,6 +100,28 @@ public interface RawAgendaApi {
 	): HttpResponse<List<DocIdentifier>>
 
 	suspend fun deleteAgendaInGroup(
+		groupId: String,
+		agendaId: String,
+		rev: String,
+	): HttpResponse<DocIdentifier>
+
+	suspend fun undeleteAgendasInGroup(
+		groupId: String,
+		agendaIdsAndRevs: ListOfIdsAndRev,
+	): HttpResponse<List<Agenda>>
+
+	suspend fun undeleteAgendaInGroup(
+		groupId: String,
+		agendaId: String,
+		rev: String,
+	): HttpResponse<Agenda>
+
+	suspend fun purgeAgendasInGroup(
+		groupId: String,
+		agendaIdsAndRevs: ListOfIdsAndRev,
+	): HttpResponse<List<DocIdentifier>>
+
+	suspend fun purgeAgendaInGroup(
 		groupId: String,
 		agendaId: String,
 		rev: String,

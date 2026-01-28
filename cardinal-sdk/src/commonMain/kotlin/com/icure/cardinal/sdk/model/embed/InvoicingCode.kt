@@ -3,6 +3,7 @@ package com.icure.cardinal.sdk.model.embed
 import com.icure.cardinal.sdk.model.specializations.Base64String
 import com.icure.cardinal.sdk.utils.DefaultValue
 import kotlinx.serialization.Serializable
+import kotlinx.serialization.json.JsonNames
 import kotlin.Boolean
 import kotlin.Double
 import kotlin.Int
@@ -138,7 +139,8 @@ data class DecryptedInvoicingCode(
 	override val userId: String? = null,
 	override val contactId: String? = null,
 	override val serviceId: String? = null,
-	override val tarificationId: String? = null,
+	@JsonNames("tarificationId")
+	override val pricingId: String? = null,
 	override val code: String? = null,
 	override val paymentType: PaymentType? = null,
 	override val paid: Double? = null,
@@ -203,7 +205,8 @@ data class EncryptedInvoicingCode(
 	override val userId: String? = null,
 	override val contactId: String? = null,
 	override val serviceId: String? = null,
-	override val tarificationId: String? = null,
+	@JsonNames("tarificationId")
+	override val pricingId: String? = null,
 	override val code: String? = null,
 	override val paymentType: PaymentType? = null,
 	override val paid: Double? = null,

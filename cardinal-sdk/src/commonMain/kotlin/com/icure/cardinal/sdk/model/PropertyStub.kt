@@ -6,9 +6,9 @@ import com.icure.cardinal.sdk.model.embed.EncryptedTypedValue
 import com.icure.cardinal.sdk.model.embed.TypedValue
 import com.icure.cardinal.sdk.model.specializations.Base64String
 import kotlinx.serialization.Serializable
+import kotlin.String
 import kotlin.Deprecated
 import kotlin.Long
-import kotlin.String
 
 // WARNING: This file is auto-generated. If you change it manually, your changes will be lost.
 // If you want to change the way this class is generated, see [this repo](https://github.com/icure/sdk-codegen).
@@ -18,9 +18,6 @@ sealed interface PropertyStub : Encryptable {
 	public val type: PropertyTypeStub?
 
 	public val typedValue: TypedValue?
-
-	@Deprecated("Remove from list instead")
-	public val deletionDate: Long?
 
 	override val encryptedSelf: Base64String?
 	// region PropertyStub-PropertyStub
@@ -33,8 +30,6 @@ data class DecryptedPropertyStub(
 	override val id: String? = null,
 	override val type: PropertyTypeStub? = null,
 	override val typedValue: DecryptedTypedValue? = null,
-	@Deprecated("Remove from list instead")
-	override val deletionDate: Long? = null,
 	override val encryptedSelf: Base64String? = null,
 ) : PropertyStub {
 	// region PropertyStub-DecryptedPropertyStub
@@ -47,8 +42,6 @@ data class EncryptedPropertyStub(
 	override val id: String? = null,
 	override val type: PropertyTypeStub? = null,
 	override val typedValue: EncryptedTypedValue? = null,
-	@Deprecated("Remove from list instead")
-	override val deletionDate: Long? = null,
 	override val encryptedSelf: Base64String? = null,
 ) : PropertyStub {
 	// region PropertyStub-EncryptedPropertyStub

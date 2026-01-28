@@ -68,6 +68,17 @@ class RawDocumentApiImpl(
 			setBody(documentDto)
 		}.wrap()
 
+	override suspend fun createDocuments(documentDtos: List<EncryptedDocument>): HttpResponse<List<EncryptedDocument>> =
+		post(authProvider) {
+			url {
+				takeFrom(apiUrl)
+				appendPathSegments("rest", "v2", "document", "batch")
+			}
+			contentType(Application.Json)
+			accept(Application.Json)
+			setBody(documentDtos)
+		}.wrap()
+
 	override suspend fun deleteDocuments(documentIds: ListOfIds): HttpResponse<List<DocIdentifier>> =
 		post(authProvider) {
 			url {
@@ -117,6 +128,17 @@ class RawDocumentApiImpl(
 			accept(Application.Json)
 		}.wrap()
 
+	override suspend fun undeleteDocuments(documentIds: ListOfIdsAndRev): HttpResponse<List<EncryptedDocument>> =
+		post(authProvider) {
+			url {
+				takeFrom(apiUrl)
+				appendPathSegments("rest", "v2", "document", "undelete", "batch")
+			}
+			contentType(Application.Json)
+			accept(Application.Json)
+			setBody(documentIds)
+		}.wrap()
+
 	override suspend fun purgeDocument(
 		documentId: String,
 		rev: String,
@@ -128,6 +150,17 @@ class RawDocumentApiImpl(
 				parameter("rev", rev)
 			}
 			accept(Application.Json)
+		}.wrap()
+
+	override suspend fun purgeDocuments(documentIds: ListOfIdsAndRev): HttpResponse<List<DocIdentifier>> =
+		post(authProvider) {
+			url {
+				takeFrom(apiUrl)
+				appendPathSegments("rest", "v2", "document", "purge", "batch")
+			}
+			contentType(Application.Json)
+			accept(Application.Json)
+			setBody(documentIds)
 		}.wrap()
 
 	override suspend fun getMainAttachment(
@@ -355,6 +388,209 @@ class RawDocumentApiImpl(
 			url {
 				takeFrom(apiUrl)
 				appendPathSegments("rest", "v2", "document", "match")
+			}
+			contentType(Application.Json)
+			accept(Application.Json)
+			setBodyWithSerializer(DocumentAbstractFilterSerializer, filter)
+		}.wrap()
+
+	// endregion
+
+	// region cloud endpoints
+
+	override suspend fun createDocumentInGroup(
+		groupId: String,
+		documentDto: EncryptedDocument,
+	): HttpResponse<EncryptedDocument> =
+		post(authProvider, groupId) {
+			url {
+				takeFrom(apiUrl)
+				appendPathSegments("rest", "v2", "document", "inGroup", groupId)
+			}
+			contentType(Application.Json)
+			accept(Application.Json)
+			setBody(documentDto)
+		}.wrap()
+
+	override suspend fun createDocumentsInGroup(
+		groupId: String,
+		documentDtos: List<EncryptedDocument>,
+	): HttpResponse<List<EncryptedDocument>> =
+		post(authProvider, groupId) {
+			url {
+				takeFrom(apiUrl)
+				appendPathSegments("rest", "v2", "document", "inGroup", groupId, "batch")
+			}
+			contentType(Application.Json)
+			accept(Application.Json)
+			setBody(documentDtos)
+		}.wrap()
+
+	override suspend fun modifyDocumentInGroup(
+		groupId: String,
+		documentDto: EncryptedDocument,
+	): HttpResponse<EncryptedDocument> =
+		put(authProvider, groupId) {
+			url {
+				takeFrom(apiUrl)
+				appendPathSegments("rest", "v2", "document", "inGroup", groupId)
+			}
+			contentType(Application.Json)
+			accept(Application.Json)
+			setBody(documentDto)
+		}.wrap()
+
+	override suspend fun modifyDocumentsInGroup(
+		groupId: String,
+		documentDtos: List<EncryptedDocument>,
+	): HttpResponse<List<EncryptedDocument>> =
+		put(
+			authProvider,
+			groupId,
+		) {
+			url {
+				takeFrom(apiUrl)
+				appendPathSegments("rest", "v2", "document", "inGroup", groupId, "batch")
+			}
+			contentType(Application.Json)
+			accept(Application.Json)
+			setBody(documentDtos)
+		}.wrap()
+
+	override suspend fun getDocumentInGroup(
+		groupId: String,
+		documentId: String,
+	): HttpResponse<EncryptedDocument> =
+		get(authProvider, groupId) {
+			url {
+				takeFrom(apiUrl)
+				appendPathSegments("rest", "v2", "document", "inGroup", groupId, documentId)
+				parameter("ts", GMTDate().timestamp)
+			}
+			accept(Application.Json)
+		}.wrap()
+
+	override suspend fun getDocumentsInGroup(
+		groupId: String,
+		documentIds: ListOfIds,
+	): HttpResponse<List<EncryptedDocument>> =
+		post(authProvider, groupId) {
+			url {
+				takeFrom(apiUrl)
+				appendPathSegments("rest", "v2", "document", "inGroup", groupId, "byIds")
+			}
+			contentType(Application.Json)
+			accept(Application.Json)
+			setBody(documentIds)
+		}.wrap()
+
+	override suspend fun deleteDocumentInGroup(
+		groupId: String,
+		documentId: String,
+		rev: String,
+	): HttpResponse<DocIdentifier> =
+		delete(authProvider, groupId) {
+			url {
+				takeFrom(apiUrl)
+				appendPathSegments("rest", "v2", "document", "inGroup", groupId, documentId)
+				parameter("rev", rev)
+			}
+			accept(Application.Json)
+		}.wrap()
+
+	override suspend fun deleteDocumentsInGroup(
+		groupId: String,
+		documentIds: ListOfIdsAndRev,
+	): HttpResponse<List<DocIdentifier>> =
+		post(authProvider, groupId) {
+			url {
+				takeFrom(apiUrl)
+				appendPathSegments("rest", "v2", "document", "inGroup", groupId, "delete", "batch")
+			}
+			contentType(Application.Json)
+			accept(Application.Json)
+			setBody(documentIds)
+		}.wrap()
+
+	override suspend fun undeleteDocumentInGroup(
+		groupId: String,
+		documentId: String,
+		rev: String,
+	): HttpResponse<EncryptedDocument> =
+		post(authProvider, groupId) {
+			url {
+				takeFrom(apiUrl)
+				appendPathSegments("rest", "v2", "document", "inGroup", groupId, "undelete", documentId)
+				parameter("rev", rev)
+			}
+			contentType(Application.Json)
+			accept(Application.Json)
+		}.wrap()
+
+	override suspend fun undeleteDocumentsInGroup(
+		groupId: String,
+		documentIds: ListOfIdsAndRev,
+	): HttpResponse<List<EncryptedDocument>> =
+		post(authProvider, groupId) {
+			url {
+				takeFrom(apiUrl)
+				appendPathSegments("rest", "v2", "document", "inGroup", groupId, "undelete", "batch")
+			}
+			contentType(Application.Json)
+			accept(Application.Json)
+			setBody(documentIds)
+		}.wrap()
+
+	override suspend fun purgeDocumentInGroup(
+		groupId: String,
+		documentId: String,
+		rev: String,
+	): HttpResponse<DocIdentifier> =
+		delete(authProvider, groupId) {
+			url {
+				takeFrom(apiUrl)
+				appendPathSegments("rest", "v2", "document", "inGroup", groupId, "purge", documentId)
+				parameter("rev", rev)
+			}
+			accept(Application.Json)
+		}.wrap()
+
+	override suspend fun purgeDocumentsInGroup(
+		groupId: String,
+		documentIds: ListOfIdsAndRev,
+	): HttpResponse<List<DocIdentifier>> =
+		post(authProvider, groupId) {
+			url {
+				takeFrom(apiUrl)
+				appendPathSegments("rest", "v2", "document", "inGroup", groupId, "purge", "batch")
+			}
+			contentType(Application.Json)
+			accept(Application.Json)
+			setBody(documentIds)
+		}.wrap()
+
+	override suspend fun bulkShare(
+		request: BulkShareOrUpdateMetadataParams,
+		groupId: String,
+	): HttpResponse<List<EntityBulkShareResult<EncryptedDocument>>> =
+		put(authProvider, groupId) {
+			url {
+				takeFrom(apiUrl)
+				appendPathSegments("rest", "v2", "document", "inGroup", groupId, "bulkSharedMetadataUpdate")
+			}
+			contentType(Application.Json)
+			accept(Application.Json)
+			setBody(request)
+		}.wrap()
+
+	override suspend fun matchDocumentsInGroupBy(
+		filter: AbstractFilter<Document>,
+		groupId: String,
+	): HttpResponse<List<String>> =
+		post(authProvider, groupId) {
+			url {
+				takeFrom(apiUrl)
+				appendPathSegments("rest", "v2", "document", "inGroup", groupId, "match")
 			}
 			contentType(Application.Json)
 			accept(Application.Json)

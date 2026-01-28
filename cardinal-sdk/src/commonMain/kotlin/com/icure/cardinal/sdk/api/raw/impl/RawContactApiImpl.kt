@@ -251,6 +251,17 @@ class RawContactApiImpl(
 			accept(Application.Json)
 		}.wrap()
 
+	override suspend fun undeleteContacts(contactIds: ListOfIdsAndRev): HttpResponse<List<EncryptedContact>> =
+		post(authProvider) {
+			url {
+				takeFrom(apiUrl)
+				appendPathSegments("rest", "v2", "contact", "undelete", "batch")
+			}
+			contentType(Application.Json)
+			accept(Application.Json)
+			setBody(contactIds)
+		}.wrap()
+
 	override suspend fun purgeContact(
 		contactId: String,
 		rev: String,
@@ -262,6 +273,17 @@ class RawContactApiImpl(
 				parameter("rev", rev)
 			}
 			accept(Application.Json)
+		}.wrap()
+
+	override suspend fun purgeContacts(contactIds: ListOfIdsAndRev): HttpResponse<List<DocIdentifier>> =
+		post(authProvider) {
+			url {
+				takeFrom(apiUrl)
+				appendPathSegments("rest", "v2", "contact", "purge", "batch")
+			}
+			contentType(Application.Json)
+			accept(Application.Json)
+			setBody(contactIds)
 		}.wrap()
 
 	override suspend fun modifyContact(contactDto: EncryptedContact): HttpResponse<EncryptedContact> =
@@ -461,6 +483,247 @@ class RawContactApiImpl(
 			contentType(Application.Json)
 			accept(Application.Json)
 			setBody(request)
+		}.wrap()
+
+	// endregion
+
+	// region cloud endpoints
+
+	override suspend fun createContactInGroup(
+		groupId: String,
+		contactDto: EncryptedContact,
+	): HttpResponse<EncryptedContact> =
+		post(authProvider, groupId) {
+			url {
+				takeFrom(apiUrl)
+				appendPathSegments("rest", "v2", "contact", "inGroup", groupId)
+			}
+			contentType(Application.Json)
+			accept(Application.Json)
+			setBody(contactDto)
+		}.wrap()
+
+	override suspend fun createContactsInGroup(
+		groupId: String,
+		contactDtos: List<EncryptedContact>,
+	): HttpResponse<List<EncryptedContact>> =
+		post(authProvider, groupId) {
+			url {
+				takeFrom(apiUrl)
+				appendPathSegments("rest", "v2", "contact", "inGroup", groupId, "batch")
+			}
+			contentType(Application.Json)
+			accept(Application.Json)
+			setBody(contactDtos)
+		}.wrap()
+
+	override suspend fun modifyContactInGroup(
+		groupId: String,
+		contactDto: EncryptedContact,
+	): HttpResponse<EncryptedContact> =
+		put(authProvider, groupId) {
+			url {
+				takeFrom(apiUrl)
+				appendPathSegments("rest", "v2", "contact", "inGroup", groupId)
+			}
+			contentType(Application.Json)
+			accept(Application.Json)
+			setBody(contactDto)
+		}.wrap()
+
+	override suspend fun modifyContactsInGroup(
+		groupId: String,
+		contactDtos: List<EncryptedContact>,
+	): HttpResponse<List<EncryptedContact>> =
+		put(authProvider, groupId) {
+			url {
+				takeFrom(apiUrl)
+				appendPathSegments("rest", "v2", "contact", "inGroup", groupId, "batch")
+			}
+			contentType(Application.Json)
+			accept(Application.Json)
+			setBody(contactDtos)
+		}.wrap()
+
+	override suspend fun getContactInGroup(
+		groupId: String,
+		contactId: String,
+	): HttpResponse<EncryptedContact> =
+		get(authProvider, groupId) {
+			url {
+				takeFrom(apiUrl)
+				appendPathSegments("rest", "v2", "contact", "inGroup", groupId, contactId)
+				parameter("ts", GMTDate().timestamp)
+			}
+			accept(Application.Json)
+		}.wrap()
+
+	override suspend fun getContactsInGroup(
+		groupId: String,
+		contactIds: ListOfIds,
+	): HttpResponse<List<EncryptedContact>> =
+		post(authProvider, groupId) {
+			url {
+				takeFrom(apiUrl)
+				appendPathSegments("rest", "v2", "contact", "inGroup", groupId, "byIds")
+			}
+			contentType(Application.Json)
+			accept(Application.Json)
+			setBody(contactIds)
+		}.wrap()
+
+	override suspend fun deleteContactInGroup(
+		groupId: String,
+		contactId: String,
+		rev: String,
+	): HttpResponse<DocIdentifier> =
+		delete(authProvider, groupId) {
+			url {
+				takeFrom(apiUrl)
+				appendPathSegments("rest", "v2", "contact", "inGroup", groupId, contactId)
+				parameter("rev", rev)
+			}
+			accept(Application.Json)
+		}.wrap()
+
+	override suspend fun deleteContactsInGroup(
+		groupId: String,
+		contactIds: ListOfIdsAndRev,
+	): HttpResponse<List<DocIdentifier>> =
+		post(authProvider, groupId) {
+			url {
+				takeFrom(apiUrl)
+				appendPathSegments("rest", "v2", "contact", "inGroup", groupId, "delete", "batch")
+			}
+			contentType(Application.Json)
+			accept(Application.Json)
+			setBody(contactIds)
+		}.wrap()
+
+	override suspend fun undeleteContactInGroup(
+		groupId: String,
+		contactId: String,
+		rev: String,
+	): HttpResponse<EncryptedContact> =
+		post(authProvider, groupId) {
+			url {
+				takeFrom(apiUrl)
+				appendPathSegments("rest", "v2", "contact", "inGroup", groupId, "undelete", contactId)
+				parameter("rev", rev)
+			}
+			contentType(Application.Json)
+			accept(Application.Json)
+		}.wrap()
+
+	override suspend fun undeleteContactsInGroup(
+		groupId: String,
+		contactIds: ListOfIdsAndRev,
+	): HttpResponse<List<EncryptedContact>> =
+		post(authProvider, groupId) {
+			url {
+				takeFrom(apiUrl)
+				appendPathSegments("rest", "v2", "contact", "inGroup", groupId, "undelete", "batch")
+			}
+			contentType(Application.Json)
+			accept(Application.Json)
+			setBody(contactIds)
+		}.wrap()
+
+	override suspend fun purgeContactInGroup(
+		groupId: String,
+		contactId: String,
+		rev: String,
+	): HttpResponse<DocIdentifier> =
+		delete(authProvider, groupId) {
+			url {
+				takeFrom(apiUrl)
+				appendPathSegments("rest", "v2", "contact", "inGroup", groupId, "purge", contactId)
+				parameter("rev", rev)
+			}
+			accept(Application.Json)
+		}.wrap()
+
+	override suspend fun purgeContactsInGroup(
+		groupId: String,
+		contactIds: ListOfIdsAndRev,
+	): HttpResponse<List<DocIdentifier>> =
+		post(authProvider, groupId) {
+			url {
+				takeFrom(apiUrl)
+				appendPathSegments("rest", "v2", "contact", "inGroup", groupId, "purge", "batch")
+			}
+			contentType(Application.Json)
+			accept(Application.Json)
+			setBody(contactIds)
+		}.wrap()
+
+	override suspend fun bulkShare(
+		request: BulkShareOrUpdateMetadataParams,
+		groupId: String,
+	): HttpResponse<List<EntityBulkShareResult<EncryptedContact>>> =
+		put(authProvider, groupId) {
+			url {
+				takeFrom(apiUrl)
+				appendPathSegments("rest", "v2", "contact", "inGroup", groupId, "bulkSharedMetadataUpdate")
+			}
+			contentType(Application.Json)
+			accept(Application.Json)
+			setBody(request)
+		}.wrap()
+
+	override suspend fun matchContactsInGroupBy(
+		filter: AbstractFilter<Contact>,
+		groupId: String,
+	): HttpResponse<List<String>> =
+		post(authProvider, groupId) {
+			url {
+				takeFrom(apiUrl)
+				appendPathSegments("rest", "v2", "contact", "inGroup", groupId, "match")
+			}
+			contentType(Application.Json)
+			accept(Application.Json)
+			setBodyWithSerializer(ContactAbstractFilterSerializer, filter)
+		}.wrap()
+
+	override suspend fun getServiceInGroup(
+		groupId: String,
+		serviceId: String,
+	): HttpResponse<EncryptedService> =
+		get(authProvider, groupId) {
+			url {
+				takeFrom(apiUrl)
+				appendPathSegments("rest", "v2", "contact", "inGroup", groupId, "service", serviceId)
+				parameter("ts", GMTDate().timestamp)
+			}
+			accept(Application.Json)
+		}.wrap()
+
+	override suspend fun getServicesInGroup(
+		groupId: String,
+		ids: ListOfIds,
+	): HttpResponse<List<EncryptedService>> =
+		post(authProvider, groupId) {
+			url {
+				takeFrom(apiUrl)
+				appendPathSegments("rest", "v2", "contact", "inGroup", groupId, "service", "byIds")
+			}
+			contentType(Application.Json)
+			accept(Application.Json)
+			setBody(ids)
+		}.wrap()
+
+	override suspend fun matchServicesInGroupBy(
+		groupId: String,
+		filter: AbstractFilter<Service>,
+	): HttpResponse<List<String>> =
+		post(authProvider, groupId) {
+			url {
+				takeFrom(apiUrl)
+				appendPathSegments("rest", "v2", "contact", "inGroup", groupId, "service", "match")
+			}
+			contentType(Application.Json)
+			accept(Application.Json)
+			setBodyWithSerializer(ServiceAbstractFilterSerializer, filter)
 		}.wrap()
 
 	// endregion

@@ -27,9 +27,43 @@ public interface RawTopicApi {
 
 	suspend fun getTopics(topicIds: ListOfIds): HttpResponse<List<EncryptedTopic>>
 
+	suspend fun getTopicInGroup(
+		groupId: String,
+		topicId: String,
+	): HttpResponse<EncryptedTopic>
+
+	suspend fun getTopicsInGroup(
+		groupId: String,
+		topicIds: ListOfIds,
+	): HttpResponse<List<EncryptedTopic>>
+
 	suspend fun createTopic(ft: EncryptedTopic): HttpResponse<EncryptedTopic>
 
+	suspend fun createTopics(topicDtos: List<EncryptedTopic>): HttpResponse<List<EncryptedTopic>>
+
+	suspend fun createTopicInGroup(
+		groupId: String,
+		topicDto: EncryptedTopic,
+	): HttpResponse<EncryptedTopic>
+
+	suspend fun createTopicsInGroup(
+		groupId: String,
+		topicDtos: List<EncryptedTopic>,
+	): HttpResponse<List<EncryptedTopic>>
+
 	suspend fun modifyTopic(topicDto: EncryptedTopic): HttpResponse<EncryptedTopic>
+
+	suspend fun modifyTopics(topicDtos: List<EncryptedTopic>): HttpResponse<List<EncryptedTopic>>
+
+	suspend fun modifyTopicInGroup(
+		groupId: String,
+		topicDto: EncryptedTopic,
+	): HttpResponse<EncryptedTopic>
+
+	suspend fun modifyTopicsInGroup(
+		groupId: String,
+		topicDtos: List<EncryptedTopic>,
+	): HttpResponse<List<EncryptedTopic>>
 
 	suspend fun deleteTopics(topicIds: ListOfIds): HttpResponse<List<DocIdentifier>>
 
@@ -40,17 +74,59 @@ public interface RawTopicApi {
 		rev: String? = null,
 	): HttpResponse<DocIdentifier>
 
+	suspend fun deleteTopicInGroup(
+		groupId: String,
+		topicId: String,
+		rev: String,
+	): HttpResponse<DocIdentifier>
+
+	suspend fun deleteTopicsInGroup(
+		groupId: String,
+		topicIds: ListOfIdsAndRev,
+	): HttpResponse<List<DocIdentifier>>
+
 	suspend fun undeleteTopic(
 		topicId: String,
 		rev: String,
 	): HttpResponse<EncryptedTopic>
+
+	suspend fun undeleteTopics(topicIds: ListOfIdsAndRev): HttpResponse<List<EncryptedTopic>>
+
+	suspend fun undeleteTopicInGroup(
+		groupId: String,
+		topicId: String,
+		rev: String,
+	): HttpResponse<EncryptedTopic>
+
+	suspend fun undeleteTopicsInGroup(
+		groupId: String,
+		topicIds: ListOfIdsAndRev,
+	): HttpResponse<List<EncryptedTopic>>
 
 	suspend fun purgeTopic(
 		topicId: String,
 		rev: String,
 	): HttpResponse<DocIdentifier>
 
+	suspend fun purgeTopic(
+		groupId: String,
+		topicId: String,
+		rev: String,
+	): HttpResponse<DocIdentifier>
+
+	suspend fun purgeTopics(topicIds: ListOfIdsAndRev): HttpResponse<List<DocIdentifier>>
+
+	suspend fun purgeTopicsInGroup(
+		groupId: String,
+		topicIds: ListOfIdsAndRev,
+	): HttpResponse<List<DocIdentifier>>
+
 	suspend fun bulkShare(request: BulkShareOrUpdateMetadataParams): HttpResponse<List<EntityBulkShareResult<EncryptedTopic>>>
+
+	suspend fun bulkShare(
+		request: BulkShareOrUpdateMetadataParams,
+		groupId: String,
+	): HttpResponse<List<EntityBulkShareResult<EncryptedTopic>>>
 
 	suspend fun filterTopicsBy(
 		startDocumentId: String? = null,

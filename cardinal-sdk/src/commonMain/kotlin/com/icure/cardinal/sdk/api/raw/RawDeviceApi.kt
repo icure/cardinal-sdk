@@ -1,7 +1,6 @@
 package com.icure.cardinal.sdk.api.raw
 
 import com.icure.cardinal.sdk.model.Device
-import com.icure.cardinal.sdk.model.IdWithRev
 import com.icure.cardinal.sdk.model.ListOfIds
 import com.icure.cardinal.sdk.model.ListOfIdsAndRev
 import com.icure.cardinal.sdk.model.PaginatedList
@@ -30,9 +29,9 @@ public interface RawDeviceApi {
 
 	suspend fun updateDevice(deviceDto: Device): HttpResponse<Device>
 
-	suspend fun createDevices(deviceDtos: List<Device>): HttpResponse<List<IdWithRev>>
+	suspend fun createDevices(deviceDtos: List<Device>): HttpResponse<List<Device>>
 
-	suspend fun updateDevices(deviceDtos: List<Device>): HttpResponse<List<IdWithRev>>
+	suspend fun updateDevices(deviceDtos: List<Device>): HttpResponse<List<Device>>
 
 	suspend fun filterDevicesBy(
 		startDocumentId: String? = null,
@@ -60,17 +59,26 @@ public interface RawDeviceApi {
 		rev: String,
 	): HttpResponse<Device>
 
+	suspend fun undeleteDevices(deviceIds: ListOfIdsAndRev): HttpResponse<List<Device>>
+
 	suspend fun purgeDevice(
 		deviceId: String,
 		rev: String,
 	): HttpResponse<DocIdentifier>
+
+	suspend fun purgeDevices(deviceIds: ListOfIdsAndRev): HttpResponse<List<DocIdentifier>>
 	// endregion
 
 	// region cloud endpoints
 
+	suspend fun getDeviceInGroup(
+		groupId: String,
+		deviceId: String,
+	): HttpResponse<Device>
+
 	suspend fun getDevicesInGroup(
 		groupId: String,
-		deviceIds: ListOfIds? = null,
+		deviceIds: ListOfIds,
 	): HttpResponse<List<Device>>
 
 	suspend fun modifyDeviceInGroup(
@@ -78,17 +86,50 @@ public interface RawDeviceApi {
 		deviceDto: Device,
 	): HttpResponse<Device>
 
+	suspend fun modifyDevicesInGroup(
+		groupId: String,
+		deviceDtos: List<Device>,
+	): HttpResponse<List<Device>>
+
 	suspend fun createDeviceInGroup(
 		groupId: String,
 		deviceDto: Device,
 	): HttpResponse<Device>
 
-	suspend fun deleteDevicesInGroup(
+	suspend fun createDevicesInGroup(
 		groupId: String,
-		deviceIds: String,
-	): HttpResponse<List<DocIdentifier>>
+		deviceDtos: List<Device>,
+	): HttpResponse<List<Device>>
+
+	suspend fun deleteDeviceInGroup(
+		groupId: String,
+		deviceId: String,
+		rev: String,
+	): HttpResponse<DocIdentifier>
 
 	suspend fun deleteDevicesInGroupWithRev(
+		groupId: String,
+		deviceIds: ListOfIdsAndRev,
+	): HttpResponse<List<DocIdentifier>>
+
+	suspend fun undeleteDeviceInGroup(
+		groupId: String,
+		deviceId: String,
+		rev: String,
+	): HttpResponse<Device>
+
+	suspend fun undeleteDevicesInGroup(
+		groupId: String,
+		deviceIds: ListOfIdsAndRev,
+	): HttpResponse<List<Device>>
+
+	suspend fun purgeDeviceInGroup(
+		groupId: String,
+		deviceId: String,
+		rev: String,
+	): HttpResponse<DocIdentifier>
+
+	suspend fun purgeDevicesInGroup(
 		groupId: String,
 		deviceIds: ListOfIdsAndRev,
 	): HttpResponse<List<DocIdentifier>>

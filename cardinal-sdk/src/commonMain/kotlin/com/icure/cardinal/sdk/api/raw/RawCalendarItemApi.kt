@@ -31,6 +31,8 @@ public interface RawCalendarItemApi {
 
 	suspend fun createCalendarItem(calendarItemDto: EncryptedCalendarItem): HttpResponse<EncryptedCalendarItem>
 
+	suspend fun createCalendarItems(calendarItemDtos: List<EncryptedCalendarItem>): HttpResponse<List<EncryptedCalendarItem>>
+
 	suspend fun deleteCalendarItems(calendarItemIds: ListOfIds): HttpResponse<List<DocIdentifier>>
 
 	suspend fun deleteCalendarItemsWithRev(calendarItemIds: ListOfIdsAndRev): HttpResponse<List<DocIdentifier>>
@@ -45,14 +47,20 @@ public interface RawCalendarItemApi {
 		rev: String,
 	): HttpResponse<EncryptedCalendarItem>
 
+	suspend fun undeleteCalendarItems(calendarItemIds: ListOfIdsAndRev): HttpResponse<List<EncryptedCalendarItem>>
+
 	suspend fun purgeCalendarItem(
 		calendarItemId: String,
 		rev: String,
 	): HttpResponse<DocIdentifier>
 
+	suspend fun purgeCalendarItems(calendarItemIds: ListOfIdsAndRev): HttpResponse<List<DocIdentifier>>
+
 	suspend fun getCalendarItem(calendarItemId: String): HttpResponse<EncryptedCalendarItem>
 
 	suspend fun modifyCalendarItem(calendarItemDto: EncryptedCalendarItem): HttpResponse<EncryptedCalendarItem>
+
+	suspend fun modifyCalendarItems(calendarItemDtos: List<EncryptedCalendarItem>): HttpResponse<List<EncryptedCalendarItem>>
 
 	suspend fun getCalendarItemsByPeriodAndHcPartyId(
 		startDate: Long,
@@ -130,10 +138,20 @@ public interface RawCalendarItemApi {
 		calendarItemDto: EncryptedCalendarItem,
 	): HttpResponse<EncryptedCalendarItem>
 
+	suspend fun createCalendarItemsInGroup(
+		groupId: String,
+		calendarItemDtos: List<EncryptedCalendarItem>,
+	): HttpResponse<List<EncryptedCalendarItem>>
+
 	suspend fun modifyCalendarItemInGroup(
 		groupId: String,
 		calendarItemDto: EncryptedCalendarItem,
 	): HttpResponse<EncryptedCalendarItem>
+
+	suspend fun modifyCalendarItemsInGroup(
+		groupId: String,
+		calendarItemDtos: List<EncryptedCalendarItem>,
+	): HttpResponse<List<EncryptedCalendarItem>>
 
 	suspend fun getCalendarItemInGroup(
 		groupId: String,
@@ -151,6 +169,28 @@ public interface RawCalendarItemApi {
 	): HttpResponse<List<DocIdentifier>>
 
 	suspend fun deleteCalendarItemInGroup(
+		groupId: String,
+		calendarItemId: String,
+		rev: String,
+	): HttpResponse<DocIdentifier>
+
+	suspend fun undeleteCalendarItemsInGroup(
+		groupId: String,
+		calendarItemIdsAndRevs: ListOfIdsAndRev,
+	): HttpResponse<List<EncryptedCalendarItem>>
+
+	suspend fun undeleteCalendarItemInGroup(
+		groupId: String,
+		calendarItemId: String,
+		rev: String,
+	): HttpResponse<EncryptedCalendarItem>
+
+	suspend fun purgeCalendarItemsInGroup(
+		groupId: String,
+		calendarItemIdsAndRevs: ListOfIdsAndRev,
+	): HttpResponse<List<DocIdentifier>>
+
+	suspend fun purgeCalendarItemInGroup(
 		groupId: String,
 		calendarItemId: String,
 		rev: String,

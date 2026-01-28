@@ -56,6 +56,17 @@ class RawReceiptApiImpl(
 			setBody(receiptDto)
 		}.wrap()
 
+	override suspend fun createReceipts(receiptDtos: List<EncryptedReceipt>): HttpResponse<List<EncryptedReceipt>> =
+		post(authProvider) {
+			url {
+				takeFrom(apiUrl)
+				appendPathSegments("rest", "v2", "receipt", "batch")
+			}
+			contentType(Application.Json)
+			accept(Application.Json)
+			setBody(receiptDtos)
+		}.wrap()
+
 	override suspend fun deleteReceipts(receiptIds: ListOfIds): HttpResponse<List<DocIdentifier>> =
 		post(authProvider) {
 			url {
@@ -105,6 +116,17 @@ class RawReceiptApiImpl(
 			accept(Application.Json)
 		}.wrap()
 
+	override suspend fun undeleteReceipts(receiptIds: ListOfIdsAndRev): HttpResponse<List<EncryptedReceipt>> =
+		post(authProvider) {
+			url {
+				takeFrom(apiUrl)
+				appendPathSegments("rest", "v2", "receipt", "undelete", "batch")
+			}
+			contentType(Application.Json)
+			accept(Application.Json)
+			setBody(receiptIds)
+		}.wrap()
+
 	override suspend fun purgeReceipt(
 		receiptId: String,
 		rev: String,
@@ -116,6 +138,17 @@ class RawReceiptApiImpl(
 				parameter("rev", rev)
 			}
 			accept(Application.Json)
+		}.wrap()
+
+	override suspend fun purgeReceipts(receiptIds: ListOfIdsAndRev): HttpResponse<List<DocIdentifier>> =
+		post(authProvider) {
+			url {
+				takeFrom(apiUrl)
+				appendPathSegments("rest", "v2", "receipt", "purge", "batch")
+			}
+			contentType(Application.Json)
+			accept(Application.Json)
+			setBody(receiptIds)
 		}.wrap()
 
 	override suspend fun getReceiptAttachment(
@@ -157,6 +190,17 @@ class RawReceiptApiImpl(
 			accept(Application.Json)
 		}.wrap()
 
+	override suspend fun getReceipts(receiptIds: ListOfIds): HttpResponse<List<EncryptedReceipt>> =
+		post(authProvider) {
+			url {
+				takeFrom(apiUrl)
+				appendPathSegments("rest", "v2", "receipt", "byIds")
+			}
+			contentType(Application.Json)
+			accept(Application.Json)
+			setBody(receiptIds)
+		}.wrap()
+
 	override suspend fun listByReference(ref: String): HttpResponse<List<EncryptedReceipt>> =
 		get(authProvider) {
 			url {
@@ -178,11 +222,208 @@ class RawReceiptApiImpl(
 			setBody(receiptDto)
 		}.wrap()
 
+	override suspend fun modifyReceipts(receiptDtos: List<EncryptedReceipt>): HttpResponse<List<EncryptedReceipt>> =
+		put(authProvider) {
+			url {
+				takeFrom(apiUrl)
+				appendPathSegments("rest", "v2", "receipt", "batch")
+			}
+			contentType(Application.Json)
+			accept(Application.Json)
+			setBody(receiptDtos)
+		}.wrap()
+
 	override suspend fun bulkShare(request: BulkShareOrUpdateMetadataParams): HttpResponse<List<EntityBulkShareResult<EncryptedReceipt>>> =
 		put(authProvider) {
 			url {
 				takeFrom(apiUrl)
 				appendPathSegments("rest", "v2", "receipt", "bulkSharedMetadataUpdate")
+			}
+			contentType(Application.Json)
+			accept(Application.Json)
+			setBody(request)
+		}.wrap()
+
+	// endregion
+
+	// region cloud endpoints
+
+	override suspend fun createReceiptInGroup(
+		groupId: String,
+		receiptDto: EncryptedReceipt,
+	): HttpResponse<EncryptedReceipt> =
+		post(authProvider, groupId) {
+			url {
+				takeFrom(apiUrl)
+				appendPathSegments("rest", "v2", "receipt", "inGroup", groupId)
+			}
+			contentType(Application.Json)
+			accept(Application.Json)
+			setBody(receiptDto)
+		}.wrap()
+
+	override suspend fun createReceiptsInGroup(
+		groupId: String,
+		receiptDtos: List<EncryptedReceipt>,
+	): HttpResponse<List<EncryptedReceipt>> =
+		post(authProvider, groupId) {
+			url {
+				takeFrom(apiUrl)
+				appendPathSegments("rest", "v2", "receipt", "inGroup", groupId, "batch")
+			}
+			contentType(Application.Json)
+			accept(Application.Json)
+			setBody(receiptDtos)
+		}.wrap()
+
+	override suspend fun modifyReceiptInGroup(
+		groupId: String,
+		receiptDto: EncryptedReceipt,
+	): HttpResponse<EncryptedReceipt> =
+		put(authProvider, groupId) {
+			url {
+				takeFrom(apiUrl)
+				appendPathSegments("rest", "v2", "receipt", "inGroup", groupId)
+			}
+			contentType(Application.Json)
+			accept(Application.Json)
+			setBody(receiptDto)
+		}.wrap()
+
+	override suspend fun modifyReceiptsInGroup(
+		groupId: String,
+		receiptDtos: List<EncryptedReceipt>,
+	): HttpResponse<List<EncryptedReceipt>> =
+		put(authProvider, groupId) {
+			url {
+				takeFrom(apiUrl)
+				appendPathSegments("rest", "v2", "receipt", "inGroup", groupId, "batch")
+			}
+			contentType(Application.Json)
+			accept(Application.Json)
+			setBody(receiptDtos)
+		}.wrap()
+
+	override suspend fun getReceiptInGroup(
+		groupId: String,
+		receiptId: String,
+	): HttpResponse<EncryptedReceipt> =
+		get(authProvider, groupId) {
+			url {
+				takeFrom(apiUrl)
+				appendPathSegments("rest", "v2", "receipt", "inGroup", groupId, receiptId)
+				parameter("ts", GMTDate().timestamp)
+			}
+			accept(Application.Json)
+		}.wrap()
+
+	override suspend fun getReceiptsInGroup(
+		groupId: String,
+		receiptIds: ListOfIds,
+	): HttpResponse<List<EncryptedReceipt>> =
+		post(authProvider, groupId) {
+			url {
+				takeFrom(apiUrl)
+				appendPathSegments("rest", "v2", "receipt", "inGroup", groupId, "byIds")
+			}
+			contentType(Application.Json)
+			accept(Application.Json)
+			setBody(receiptIds)
+		}.wrap()
+
+	override suspend fun deleteReceiptInGroup(
+		groupId: String,
+		receiptId: String,
+		rev: String,
+	): HttpResponse<DocIdentifier> =
+		delete(authProvider, groupId) {
+			url {
+				takeFrom(apiUrl)
+				appendPathSegments("rest", "v2", "receipt", "inGroup", groupId, receiptId)
+				parameter("rev", rev)
+			}
+			accept(Application.Json)
+		}.wrap()
+
+	override suspend fun deleteReceiptsInGroup(
+		groupId: String,
+		receiptIds: ListOfIdsAndRev,
+	): HttpResponse<List<DocIdentifier>> =
+		post(authProvider, groupId) {
+			url {
+				takeFrom(apiUrl)
+				appendPathSegments("rest", "v2", "receipt", "inGroup", groupId, "delete", "batch", "withrev")
+			}
+			contentType(Application.Json)
+			accept(Application.Json)
+			setBody(receiptIds)
+		}.wrap()
+
+	override suspend fun undeleteReceiptInGroup(
+		groupId: String,
+		receiptId: String,
+		rev: String,
+	): HttpResponse<EncryptedReceipt> =
+		post(authProvider, groupId) {
+			url {
+				takeFrom(apiUrl)
+				appendPathSegments("rest", "v2", "receipt", "inGroup", groupId, "undelete", receiptId)
+				parameter("rev", rev)
+			}
+			contentType(Application.Json)
+			accept(Application.Json)
+		}.wrap()
+
+	override suspend fun undeleteReceiptsInGroup(
+		groupId: String,
+		receiptIds: ListOfIdsAndRev,
+	): HttpResponse<List<EncryptedReceipt>> =
+		post(authProvider, groupId) {
+			url {
+				takeFrom(apiUrl)
+				appendPathSegments("rest", "v2", "receipt", "inGroup", groupId, "undelete", "batch")
+			}
+			contentType(Application.Json)
+			accept(Application.Json)
+			setBody(receiptIds)
+		}.wrap()
+
+	override suspend fun purgeReceiptInGroup(
+		groupId: String,
+		receiptId: String,
+		rev: String,
+	): HttpResponse<DocIdentifier> =
+		delete(authProvider, groupId) {
+			url {
+				takeFrom(apiUrl)
+				appendPathSegments("rest", "v2", "receipt", "inGroup", groupId, "purge", receiptId)
+				parameter("rev", rev)
+			}
+			accept(Application.Json)
+		}.wrap()
+
+	override suspend fun purgeReceiptsInGroup(
+		groupId: String,
+		receiptIds: ListOfIdsAndRev,
+	): HttpResponse<List<DocIdentifier>> =
+		post(authProvider, groupId) {
+			url {
+				takeFrom(apiUrl)
+				appendPathSegments("rest", "v2", "receipt", "inGroup", groupId, "purge", "batch")
+			}
+			contentType(Application.Json)
+			accept(Application.Json)
+			setBody(receiptIds)
+		}.wrap()
+
+	override suspend fun bulkShare(
+		request: BulkShareOrUpdateMetadataParams,
+		groupId: String,
+	): HttpResponse<List<EntityBulkShareResult<EncryptedReceipt>>> =
+		put(authProvider, groupId) {
+			url {
+				takeFrom(apiUrl)
+				appendPathSegments("rest", "v2", "receipt", "inGroup", groupId, "bulkSharedMetadataUpdate")
 			}
 			contentType(Application.Json)
 			accept(Application.Json)

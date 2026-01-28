@@ -62,6 +62,17 @@ class RawAgendaApiImpl(
 			setBody(agendaDto)
 		}.wrap()
 
+	override suspend fun createAgendas(agendasDto: List<Agenda>): HttpResponse<List<Agenda>> =
+		post(authProvider) {
+			url {
+				takeFrom(apiUrl)
+				appendPathSegments("rest", "v2", "agenda", "batch")
+			}
+			contentType(Application.Json)
+			accept(Application.Json)
+			setBody(agendasDto)
+		}.wrap()
+
 	override suspend fun deleteAgendas(agendaIds: ListOfIds): HttpResponse<List<DocIdentifier>> =
 		post(authProvider) {
 			url {
@@ -111,6 +122,17 @@ class RawAgendaApiImpl(
 			accept(Application.Json)
 		}.wrap()
 
+	override suspend fun undeleteAgendas(agendaIds: ListOfIdsAndRev): HttpResponse<List<Agenda>> =
+		post(authProvider) {
+			url {
+				takeFrom(apiUrl)
+				appendPathSegments("rest", "v2", "agenda", "undelete", "batch")
+			}
+			contentType(Application.Json)
+			accept(Application.Json)
+			setBody(agendaIds)
+		}.wrap()
+
 	override suspend fun purgeAgenda(
 		agendaId: String,
 		rev: String,
@@ -122,6 +144,17 @@ class RawAgendaApiImpl(
 				parameter("rev", rev)
 			}
 			accept(Application.Json)
+		}.wrap()
+
+	override suspend fun purgeAgendas(agendaIds: ListOfIdsAndRev): HttpResponse<List<DocIdentifier>> =
+		post(authProvider) {
+			url {
+				takeFrom(apiUrl)
+				appendPathSegments("rest", "v2", "agenda", "purge", "batch")
+			}
+			contentType(Application.Json)
+			accept(Application.Json)
+			setBody(agendaIds)
 		}.wrap()
 
 	override suspend fun getAgenda(agendaId: String): HttpResponse<Agenda> =
@@ -154,6 +187,17 @@ class RawAgendaApiImpl(
 			contentType(Application.Json)
 			accept(Application.Json)
 			setBody(agendaDto)
+		}.wrap()
+
+	override suspend fun modifyAgendas(agendaDtos: List<Agenda>): HttpResponse<List<Agenda>> =
+		put(authProvider) {
+			url {
+				takeFrom(apiUrl)
+				appendPathSegments("rest", "v2", "agenda", "batch")
+			}
+			contentType(Application.Json)
+			accept(Application.Json)
+			setBody(agendaDtos)
 		}.wrap()
 
 	override suspend fun matchAgendasBy(filter: AbstractFilter<Agenda>): HttpResponse<List<String>> =
@@ -196,6 +240,20 @@ class RawAgendaApiImpl(
 			setBody(agendaDto)
 		}.wrap()
 
+	override suspend fun createAgendasInGroup(
+		groupId: String,
+		agendaDtos: List<Agenda>,
+	): HttpResponse<List<Agenda>> =
+		post(authProvider) {
+			url {
+				takeFrom(apiUrl)
+				appendPathSegments("rest", "v2", "agenda", "inGroup", groupId, "batch")
+			}
+			contentType(Application.Json)
+			accept(Application.Json)
+			setBody(agendaDtos)
+		}.wrap()
+
 	override suspend fun modifyAgendaInGroup(
 		groupId: String,
 		agendaDto: Agenda,
@@ -208,6 +266,20 @@ class RawAgendaApiImpl(
 			contentType(Application.Json)
 			accept(Application.Json)
 			setBody(agendaDto)
+		}.wrap()
+
+	override suspend fun modifyAgendasInGroup(
+		groupId: String,
+		agendaDtos: List<Agenda>,
+	): HttpResponse<List<Agenda>> =
+		put(authProvider) {
+			url {
+				takeFrom(apiUrl)
+				appendPathSegments("rest", "v2", "agenda", "inGroup", groupId, "batch")
+			}
+			contentType(Application.Json)
+			accept(Application.Json)
+			setBody(agendaDtos)
 		}.wrap()
 
 	override suspend fun getAgendaInGroup(
@@ -260,6 +332,63 @@ class RawAgendaApiImpl(
 			url {
 				takeFrom(apiUrl)
 				appendPathSegments("rest", "v2", "agenda", "inGroup", groupId, agendaId)
+				parameter("rev", rev)
+			}
+			accept(Application.Json)
+		}.wrap()
+
+	override suspend fun undeleteAgendasInGroup(
+		groupId: String,
+		agendaIdsAndRevs: ListOfIdsAndRev,
+	): HttpResponse<List<Agenda>> =
+		post(authProvider) {
+			url {
+				takeFrom(apiUrl)
+				appendPathSegments("rest", "v2", "agenda", "inGroup", groupId, "undelete", "batch")
+			}
+			contentType(Application.Json)
+			accept(Application.Json)
+			setBody(agendaIdsAndRevs)
+		}.wrap()
+
+	override suspend fun undeleteAgendaInGroup(
+		groupId: String,
+		agendaId: String,
+		rev: String,
+	): HttpResponse<Agenda> =
+		post(authProvider) {
+			url {
+				takeFrom(apiUrl)
+				appendPathSegments("rest", "v2", "agenda", "inGroup", groupId, "undelete", agendaId)
+				parameter("rev", rev)
+			}
+			contentType(Application.Json)
+			accept(Application.Json)
+		}.wrap()
+
+	override suspend fun purgeAgendasInGroup(
+		groupId: String,
+		agendaIdsAndRevs: ListOfIdsAndRev,
+	): HttpResponse<List<DocIdentifier>> =
+		post(authProvider) {
+			url {
+				takeFrom(apiUrl)
+				appendPathSegments("rest", "v2", "agenda", "inGroup", groupId, "purge", "batch")
+			}
+			contentType(Application.Json)
+			accept(Application.Json)
+			setBody(agendaIdsAndRevs)
+		}.wrap()
+
+	override suspend fun purgeAgendaInGroup(
+		groupId: String,
+		agendaId: String,
+		rev: String,
+	): HttpResponse<DocIdentifier> =
+		delete(authProvider) {
+			url {
+				takeFrom(apiUrl)
+				appendPathSegments("rest", "v2", "agenda", "inGroup", groupId, "purge", agendaId)
 				parameter("rev", rev)
 			}
 			accept(Application.Json)

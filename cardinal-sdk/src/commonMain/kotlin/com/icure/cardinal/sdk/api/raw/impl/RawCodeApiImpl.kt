@@ -9,7 +9,9 @@ import com.icure.cardinal.sdk.auth.services.AuthProvider
 import com.icure.cardinal.sdk.model.BooleanResponse
 import com.icure.cardinal.sdk.model.Code
 import com.icure.cardinal.sdk.model.ListOfIds
+import com.icure.cardinal.sdk.model.ListOfIdsAndRev
 import com.icure.cardinal.sdk.model.PaginatedList
+import com.icure.cardinal.sdk.model.couchdb.DocIdentifier
 import com.icure.cardinal.sdk.model.filter.AbstractFilter
 import com.icure.cardinal.sdk.model.filter.chain.FilterChain
 import com.icure.cardinal.sdk.serialization.CodeAbstractFilterSerializer
@@ -321,9 +323,96 @@ class RawCodeApiImpl(
 			accept(Application.Json)
 		}.wrap()
 
+	override suspend fun deleteCode(
+		codeId: String,
+		rev: String,
+	): HttpResponse<DocIdentifier> =
+		delete(authProvider) {
+			url {
+				takeFrom(apiUrl)
+				appendPathSegments("rest", "v2", "code", codeId)
+				parameter("rev", rev)
+			}
+			accept(Application.Json)
+		}.wrap()
+
+	override suspend fun deleteCodes(codeIds: ListOfIdsAndRev): HttpResponse<List<DocIdentifier>> =
+		post(authProvider) {
+			url {
+				takeFrom(apiUrl)
+				appendPathSegments("rest", "v2", "code", "delete", "batch")
+			}
+			contentType(Application.Json)
+			accept(Application.Json)
+			setBody(codeIds)
+		}.wrap()
+
+	override suspend fun undeleteCode(
+		codeId: String,
+		rev: String,
+	): HttpResponse<Code> =
+		post(authProvider) {
+			url {
+				takeFrom(apiUrl)
+				appendPathSegments("rest", "v2", "code", "undelete", codeId)
+				parameter("rev", rev)
+			}
+			contentType(Application.Json)
+			accept(Application.Json)
+		}.wrap()
+
+	override suspend fun undeleteCodes(codeIds: ListOfIdsAndRev): HttpResponse<List<Code>> =
+		post(authProvider) {
+			url {
+				takeFrom(apiUrl)
+				appendPathSegments("rest", "v2", "code", "undelete", "batch")
+			}
+			contentType(Application.Json)
+			accept(Application.Json)
+			setBody(codeIds)
+		}.wrap()
+
+	override suspend fun purgeCode(
+		codeId: String,
+		rev: String,
+	): HttpResponse<DocIdentifier> =
+		delete(authProvider) {
+			url {
+				takeFrom(apiUrl)
+				appendPathSegments("rest", "v2", "code", "purge", codeId)
+				parameter("rev", rev)
+			}
+			accept(Application.Json)
+		}.wrap()
+
+	override suspend fun purgeCodes(codeIds: ListOfIdsAndRev): HttpResponse<List<DocIdentifier>> =
+		post(authProvider) {
+			url {
+				takeFrom(apiUrl)
+				appendPathSegments("rest", "v2", "code", "purge", "batch")
+			}
+			contentType(Application.Json)
+			accept(Application.Json)
+			setBody(codeIds)
+		}.wrap()
+
 	// endregion
 
 	// region cloud endpoints
+
+	override suspend fun createCodeInGroup(
+		groupId: String,
+		c: Code,
+	): HttpResponse<Code> =
+		post(authProvider) {
+			url {
+				takeFrom(apiUrl)
+				appendPathSegments("rest", "v2", "code", "inGroup", groupId)
+			}
+			contentType(Application.Json)
+			accept(Application.Json)
+			setBody(c)
+		}.wrap()
 
 	override suspend fun createCodesInGroup(
 		groupId: String,
@@ -339,6 +428,19 @@ class RawCodeApiImpl(
 			setBody(codeBatch)
 		}.wrap()
 
+	override suspend fun getCodeInGroup(
+		groupId: String,
+		codeId: String,
+	): HttpResponse<Code> =
+		get(authProvider) {
+			url {
+				takeFrom(apiUrl)
+				appendPathSegments("rest", "v2", "code", "inGroup", groupId, codeId)
+				parameter("ts", GMTDate().timestamp)
+			}
+			accept(Application.Json)
+		}.wrap()
+
 	override suspend fun getCodesInGroup(
 		groupId: String,
 		codeIds: ListOfIds,
@@ -351,6 +453,20 @@ class RawCodeApiImpl(
 			contentType(Application.Json)
 			accept(Application.Json)
 			setBody(codeIds)
+		}.wrap()
+
+	override suspend fun modifyCodeInGroup(
+		groupId: String,
+		code: Code,
+	): HttpResponse<Code> =
+		put(authProvider) {
+			url {
+				takeFrom(apiUrl)
+				appendPathSegments("rest", "v2", "code", "inGroup", groupId)
+			}
+			contentType(Application.Json)
+			accept(Application.Json)
+			setBody(code)
 		}.wrap()
 
 	override suspend fun modifyCodesInGroup(
@@ -379,6 +495,91 @@ class RawCodeApiImpl(
 			contentType(Application.Json)
 			accept(Application.Json)
 			setBodyWithSerializer(CodeAbstractFilterSerializer, filter)
+		}.wrap()
+
+	override suspend fun deleteCodeInGroup(
+		groupId: String,
+		codeId: String,
+		rev: String,
+	): HttpResponse<DocIdentifier> =
+		delete(authProvider) {
+			url {
+				takeFrom(apiUrl)
+				appendPathSegments("rest", "v2", "code", "inGroup", groupId, codeId)
+				parameter("rev", rev)
+			}
+			accept(Application.Json)
+		}.wrap()
+
+	override suspend fun deleteCodesInGroup(
+		groupId: String,
+		codeIds: ListOfIdsAndRev,
+	): HttpResponse<List<DocIdentifier>> =
+		post(authProvider) {
+			url {
+				takeFrom(apiUrl)
+				appendPathSegments("rest", "v2", "code", "inGroup", groupId, "delete", "batch")
+			}
+			contentType(Application.Json)
+			accept(Application.Json)
+			setBody(codeIds)
+		}.wrap()
+
+	override suspend fun undeleteCodeInGroup(
+		groupId: String,
+		codeId: String,
+		rev: String,
+	): HttpResponse<Code> =
+		post(authProvider) {
+			url {
+				takeFrom(apiUrl)
+				appendPathSegments("rest", "v2", "code", "inGroup", groupId, "undelete", codeId)
+				parameter("rev", rev)
+			}
+			contentType(Application.Json)
+			accept(Application.Json)
+		}.wrap()
+
+	override suspend fun undeleteCodesInGroup(
+		groupId: String,
+		codeIds: ListOfIdsAndRev,
+	): HttpResponse<List<Code>> =
+		post(authProvider) {
+			url {
+				takeFrom(apiUrl)
+				appendPathSegments("rest", "v2", "code", "inGroup", groupId, "undelete", "batch")
+			}
+			contentType(Application.Json)
+			accept(Application.Json)
+			setBody(codeIds)
+		}.wrap()
+
+	override suspend fun purgeCodeInGroup(
+		groupId: String,
+		codeId: String,
+		rev: String,
+	): HttpResponse<DocIdentifier> =
+		delete(authProvider) {
+			url {
+				takeFrom(apiUrl)
+				appendPathSegments("rest", "v2", "code", "inGroup", groupId, "purge", codeId)
+				parameter("rev", rev)
+			}
+			accept(Application.Json)
+		}.wrap()
+
+	override suspend fun purgeCodesInGroup(
+		groupId: String,
+		codeIds: ListOfIdsAndRev,
+	): HttpResponse<List<DocIdentifier>> =
+		post(authProvider) {
+			url {
+				takeFrom(apiUrl)
+				appendPathSegments("rest", "v2", "code", "inGroup", groupId, "purge", "batch")
+			}
+			contentType(Application.Json)
+			accept(Application.Json)
+			setBody(codeIds)
 		}.wrap()
 
 	// endregion

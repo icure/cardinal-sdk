@@ -23,12 +23,12 @@ import com.icure.cardinal.sdk.model.specializations.Base64String
 import com.icure.cardinal.sdk.utils.DefaultValue
 import kotlinx.serialization.Serializable
 import kotlin.Boolean
-import kotlin.Int
 import kotlin.Long
 import kotlin.String
 import kotlin.collections.List
 import kotlin.collections.Map
 import kotlin.collections.Set
+import kotlin.Int
 
 // WARNING: This file is auto-generated. If you change it manually, your changes will be lost.
 // If you want to change the way this class is generated, see [this repo](https://github.com/icure/sdk-codegen).
@@ -51,8 +51,6 @@ sealed interface HealthElement :
 
 	override val responsible: String?
 
-	override val medicalLocationId: String?
-
 	override val tags: Set<CodeStub>
 
 	override val codes: Set<CodeStub>
@@ -60,8 +58,6 @@ sealed interface HealthElement :
 	override val endOfLife: Long?
 
 	override val deletionDate: Long?
-
-	public val healthElementId: String?
 
 	public val valueDate: Long?
 
@@ -82,8 +78,6 @@ sealed interface HealthElement :
 	public val idClosingContact: String?
 
 	public val idService: String?
-
-	public val status: Int
 
 	public val laterality: Laterality?
 
@@ -122,14 +116,12 @@ data class DecryptedHealthElement(
 	override val modified: Long? = null,
 	override val author: String? = null,
 	override val responsible: String? = null,
-	override val medicalLocationId: String? = null,
 	@DefaultValue("emptySet()")
 	override val tags: Set<CodeStub> = emptySet(),
 	@DefaultValue("emptySet()")
 	override val codes: Set<CodeStub> = emptySet(),
 	override val endOfLife: Long? = null,
 	override val deletionDate: Long? = null,
-	override val healthElementId: String? = null,
 	override val valueDate: Long? = null,
 	override val openingDate: Long? = null,
 	override val closingDate: Long? = null,
@@ -142,8 +134,6 @@ data class DecryptedHealthElement(
 	override val idOpeningContact: String? = null,
 	override val idClosingContact: String? = null,
 	override val idService: String? = null,
-	@DefaultValue("0")
-	override val status: Int = 0,
 	override val laterality: Laterality? = null,
 	@DefaultValue("emptyList()")
 	override val plansOfAction: List<DecryptedPlanOfAction> = emptyList(),
@@ -178,14 +168,12 @@ data class EncryptedHealthElement(
 	override val modified: Long? = null,
 	override val author: String? = null,
 	override val responsible: String? = null,
-	override val medicalLocationId: String? = null,
 	@DefaultValue("emptySet()")
 	override val tags: Set<CodeStub> = emptySet(),
 	@DefaultValue("emptySet()")
 	override val codes: Set<CodeStub> = emptySet(),
 	override val endOfLife: Long? = null,
 	override val deletionDate: Long? = null,
-	override val healthElementId: String? = null,
 	override val valueDate: Long? = null,
 	override val openingDate: Long? = null,
 	override val closingDate: Long? = null,
@@ -198,8 +186,6 @@ data class EncryptedHealthElement(
 	override val idOpeningContact: String? = null,
 	override val idClosingContact: String? = null,
 	override val idService: String? = null,
-	@DefaultValue("0")
-	override val status: Int = 0,
 	override val laterality: Laterality? = null,
 	@DefaultValue("emptyList()")
 	override val plansOfAction: List<EncryptedPlanOfAction> = emptyList(),

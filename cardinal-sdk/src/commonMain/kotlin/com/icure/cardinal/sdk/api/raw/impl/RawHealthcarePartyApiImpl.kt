@@ -156,6 +156,17 @@ class RawHealthcarePartyApiImpl(
 			setBody(h)
 		}.wrap()
 
+	override suspend fun createHealthcareParties(healthcareParties: List<HealthcareParty>): HttpResponse<List<HealthcareParty>> =
+		post(authProvider) {
+			url {
+				takeFrom(apiUrl)
+				appendPathSegments("rest", "v2", "hcparty", "batch")
+			}
+			contentType(Application.Json)
+			accept(Application.Json)
+			setBody(healthcareParties)
+		}.wrap()
+
 	override suspend fun getAesExchangeKeysForDelegate(
 		healthcarePartyId: String,
 	): HttpResponse<Map<String, Map<String, Map<AesExchangeKeyEncryptionKeypairIdentifier, HexString>>>> =
@@ -258,6 +269,17 @@ class RawHealthcarePartyApiImpl(
 			accept(Application.Json)
 		}.wrap()
 
+	override suspend fun undeleteHealthcareParties(healthcarePartyIds: ListOfIdsAndRev): HttpResponse<List<HealthcareParty>> =
+		post(authProvider) {
+			url {
+				takeFrom(apiUrl)
+				appendPathSegments("rest", "v2", "hcparty", "undelete", "batch")
+			}
+			contentType(Application.Json)
+			accept(Application.Json)
+			setBody(healthcarePartyIds)
+		}.wrap()
+
 	override suspend fun purgeHealthcareParty(
 		healthcarePartyId: String,
 		rev: String,
@@ -271,6 +293,17 @@ class RawHealthcarePartyApiImpl(
 			accept(Application.Json)
 		}.wrap()
 
+	override suspend fun purgeHealthcareParties(healthcarePartyIds: ListOfIdsAndRev): HttpResponse<List<DocIdentifier>> =
+		post(authProvider) {
+			url {
+				takeFrom(apiUrl)
+				appendPathSegments("rest", "v2", "hcparty", "purge", "batch")
+			}
+			contentType(Application.Json)
+			accept(Application.Json)
+			setBody(healthcarePartyIds)
+		}.wrap()
+
 	override suspend fun modifyHealthcareParty(healthcarePartyDto: HealthcareParty): HttpResponse<HealthcareParty> =
 		put(authProvider) {
 			url {
@@ -280,6 +313,17 @@ class RawHealthcarePartyApiImpl(
 			contentType(Application.Json)
 			accept(Application.Json)
 			setBody(healthcarePartyDto)
+		}.wrap()
+
+	override suspend fun modifyHealthcareParties(healthcareParties: List<HealthcareParty>): HttpResponse<List<HealthcareParty>> =
+		put(authProvider) {
+			url {
+				takeFrom(apiUrl)
+				appendPathSegments("rest", "v2", "hcparty", "batch")
+			}
+			contentType(Application.Json)
+			accept(Application.Json)
+			setBody(healthcareParties)
 		}.wrap()
 
 	override suspend fun matchHealthcarePartiesBy(filter: AbstractFilter<HealthcareParty>): HttpResponse<List<String>> =
@@ -316,6 +360,19 @@ class RawHealthcarePartyApiImpl(
 	// endregion
 
 	// region cloud endpoints
+
+	override suspend fun getHealthcarePartyInGroup(
+		groupId: String,
+		healthcarePartyId: String,
+	): HttpResponse<HealthcareParty> =
+		get(authProvider) {
+			url {
+				takeFrom(apiUrl)
+				appendPathSegments("rest", "v2", "hcparty", "inGroup", groupId, healthcarePartyId)
+				parameter("ts", GMTDate().timestamp)
+			}
+			accept(Application.Json)
+		}.wrap()
 
 	override suspend fun getHealthcarePartiesInGroup(
 		groupId: String,
@@ -359,6 +416,20 @@ class RawHealthcarePartyApiImpl(
 			setBody(healthcarePartyIds)
 		}.wrap()
 
+	override suspend fun deleteHealthcarePartiesInGroupWithRevNew(
+		groupId: String,
+		healthcarePartyIds: ListOfIdsAndRev,
+	): HttpResponse<List<DocIdentifier>> =
+		post(authProvider) {
+			url {
+				takeFrom(apiUrl)
+				appendPathSegments("rest", "v2", "hcparty", "inGroup", groupId, "delete", "batch")
+			}
+			contentType(Application.Json)
+			accept(Application.Json)
+			setBody(healthcarePartyIds)
+		}.wrap()
+
 	override suspend fun deleteHealthcarePartyInGroup(
 		healthcarePartyId: String,
 		groupId: String,
@@ -371,6 +442,77 @@ class RawHealthcarePartyApiImpl(
 				parameter("rev", rev)
 			}
 			accept(Application.Json)
+		}.wrap()
+
+	override suspend fun deleteHealthcarePartyInGroupNew(
+		groupId: String,
+		healthcarePartyId: String,
+		rev: String?,
+	): HttpResponse<DocIdentifier> =
+		delete(authProvider) {
+			url {
+				takeFrom(apiUrl)
+				appendPathSegments("rest", "v2", "hcparty", "inGroup", groupId, healthcarePartyId)
+				parameter("rev", rev)
+			}
+			accept(Application.Json)
+		}.wrap()
+
+	override suspend fun undeleteHealthcarePartyInGroup(
+		groupId: String,
+		healthcarePartyId: String,
+		rev: String,
+	): HttpResponse<HealthcareParty> =
+		post(authProvider) {
+			url {
+				takeFrom(apiUrl)
+				appendPathSegments("rest", "v2", "hcparty", "inGroup", groupId, "undelete", healthcarePartyId)
+				parameter("rev", rev)
+			}
+			contentType(Application.Json)
+			accept(Application.Json)
+		}.wrap()
+
+	override suspend fun undeleteHealthcarePartiesInGroup(
+		groupId: String,
+		healthcarePartyIds: ListOfIdsAndRev,
+	): HttpResponse<List<HealthcareParty>> =
+		post(authProvider) {
+			url {
+				takeFrom(apiUrl)
+				appendPathSegments("rest", "v2", "hcparty", "inGroup", groupId, "undelete", "batch")
+			}
+			contentType(Application.Json)
+			accept(Application.Json)
+			setBody(healthcarePartyIds)
+		}.wrap()
+
+	override suspend fun purgeHealthcarePartyInGroup(
+		groupId: String,
+		healthcarePartyId: String,
+		rev: String,
+	): HttpResponse<DocIdentifier> =
+		delete(authProvider) {
+			url {
+				takeFrom(apiUrl)
+				appendPathSegments("rest", "v2", "hcparty", "inGroup", groupId, "purge", healthcarePartyId)
+				parameter("rev", rev)
+			}
+			accept(Application.Json)
+		}.wrap()
+
+	override suspend fun purgeHealthcarePartiesInGroup(
+		groupId: String,
+		healthcarePartyIds: ListOfIdsAndRev,
+	): HttpResponse<List<DocIdentifier>> =
+		post(authProvider) {
+			url {
+				takeFrom(apiUrl)
+				appendPathSegments("rest", "v2", "hcparty", "inGroup", groupId, "purge", "batch")
+			}
+			contentType(Application.Json)
+			accept(Application.Json)
+			setBody(healthcarePartyIds)
 		}.wrap()
 
 	override suspend fun modifyHealthcarePartyInGroup(
@@ -387,6 +529,20 @@ class RawHealthcarePartyApiImpl(
 			setBody(healthcarePartyDto)
 		}.wrap()
 
+	override suspend fun modifyHealthcarePartiesInGroup(
+		groupId: String,
+		healthcareParties: List<HealthcareParty>,
+	): HttpResponse<List<HealthcareParty>> =
+		put(authProvider) {
+			url {
+				takeFrom(apiUrl)
+				appendPathSegments("rest", "v2", "hcparty", "inGroup", groupId, "batch")
+			}
+			contentType(Application.Json)
+			accept(Application.Json)
+			setBody(healthcareParties)
+		}.wrap()
+
 	override suspend fun createHealthcarePartyInGroup(
 		groupId: String,
 		h: HealthcareParty,
@@ -399,6 +555,20 @@ class RawHealthcarePartyApiImpl(
 			contentType(Application.Json)
 			accept(Application.Json)
 			setBody(h)
+		}.wrap()
+
+	override suspend fun createHealthcarePartiesInGroup(
+		groupId: String,
+		healthcareParties: List<HealthcareParty>,
+	): HttpResponse<List<HealthcareParty>> =
+		post(authProvider) {
+			url {
+				takeFrom(apiUrl)
+				appendPathSegments("rest", "v2", "hcparty", "inGroup", groupId, "batch")
+			}
+			contentType(Application.Json)
+			accept(Application.Json)
+			setBody(healthcareParties)
 		}.wrap()
 
 	override suspend fun registerPatient(
