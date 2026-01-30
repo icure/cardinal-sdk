@@ -6,11 +6,9 @@ import com.icure.cardinal.sdk.api.CalendarItemTypeApi
 import com.icure.cardinal.sdk.api.FrontEndMigrationApi
 import com.icure.cardinal.sdk.api.GroupApi
 import com.icure.cardinal.sdk.api.InsuranceApi
-import com.icure.cardinal.sdk.api.MedicalLocationApi
 import com.icure.cardinal.sdk.api.PlaceApi
 import com.icure.cardinal.sdk.api.RoleApi
 import com.icure.cardinal.sdk.api.SystemApi
-import com.icure.cardinal.sdk.api.TarificationApi
 import com.icure.cardinal.sdk.api.UserApi
 import com.icure.cardinal.sdk.api.impl.AgendaApiImpl
 import com.icure.cardinal.sdk.api.impl.AuthApiImpl
@@ -21,15 +19,11 @@ import com.icure.cardinal.sdk.api.impl.FrontEndMigrationApiImpl
 import com.icure.cardinal.sdk.api.impl.GroupApiImpl
 import com.icure.cardinal.sdk.api.impl.HealthcarePartyApiImpl
 import com.icure.cardinal.sdk.api.impl.InsuranceApiImpl
-import com.icure.cardinal.sdk.api.impl.MedicalLocationApiImpl
 import com.icure.cardinal.sdk.api.impl.PermissionApiImpl
 import com.icure.cardinal.sdk.api.impl.PlaceApiImpl
-import com.icure.cardinal.sdk.api.impl.initReceiptBasicApi
 import com.icure.cardinal.sdk.api.impl.RoleApiImpl
 import com.icure.cardinal.sdk.api.impl.SystemApiImpl
-import com.icure.cardinal.sdk.api.impl.TarificationApiImpl
-import com.icure.cardinal.sdk.api.impl.TimeTableApiImpl
-import com.icure.cardinal.sdk.api.impl.TopicBasicApiImpl
+import com.icure.cardinal.sdk.api.impl.initTopicBasicApi
 import com.icure.cardinal.sdk.api.impl.UserApiImpl
 import com.icure.cardinal.sdk.api.impl.initAccessLogBasicApi
 import com.icure.cardinal.sdk.api.impl.initCalendarItemBasicApi
@@ -40,6 +34,7 @@ import com.icure.cardinal.sdk.api.impl.initHealthElementBasicApi
 import com.icure.cardinal.sdk.api.impl.initInvoiceBasicApi
 import com.icure.cardinal.sdk.api.impl.initMessageBasicApi
 import com.icure.cardinal.sdk.api.impl.initPatientBasicApi
+import com.icure.cardinal.sdk.api.impl.initReceiptBasicApi
 import com.icure.cardinal.sdk.api.raw.RawAnonymousAuthApi
 import com.icure.cardinal.sdk.api.raw.RawApiConfig
 import com.icure.cardinal.sdk.api.raw.RawMessageGatewayApi
@@ -60,15 +55,12 @@ import com.icure.cardinal.sdk.api.raw.impl.RawHealthcarePartyApiImpl
 import com.icure.cardinal.sdk.api.raw.impl.RawICureApiImpl
 import com.icure.cardinal.sdk.api.raw.impl.RawInsuranceApiImpl
 import com.icure.cardinal.sdk.api.raw.impl.RawInvoiceApiImpl
-import com.icure.cardinal.sdk.api.raw.impl.RawMedicalLocationApiImpl
 import com.icure.cardinal.sdk.api.raw.impl.RawMessageApiImpl
 import com.icure.cardinal.sdk.api.raw.impl.RawPatientApiImpl
 import com.icure.cardinal.sdk.api.raw.impl.RawPermissionApiImpl
 import com.icure.cardinal.sdk.api.raw.impl.RawPlaceApiImpl
 import com.icure.cardinal.sdk.api.raw.impl.RawReceiptApiImpl
 import com.icure.cardinal.sdk.api.raw.impl.RawRoleApiImpl
-import com.icure.cardinal.sdk.api.raw.impl.RawTarificationApiImpl
-import com.icure.cardinal.sdk.api.raw.impl.RawTimeTableApiImpl
 import com.icure.cardinal.sdk.api.raw.impl.RawTopicApiImpl
 import com.icure.cardinal.sdk.api.raw.impl.RawUserApiImpl
 import com.icure.cardinal.sdk.auth.AuthenticationProcessTelecomType
@@ -553,17 +545,8 @@ private class CardinalBaseApisImpl(
 			), config
 		)
 	}
-	override val timeTable by lazy {
-		TimeTableApiImpl(
-			RawTimeTableApiImpl(
-				apiUrl,
-				authProvider,
-				config.rawApiConfig
-			)
-		)
-	}
 	override val topic by lazy {
-		TopicBasicApiImpl(
+		initTopicBasicApi(
 			RawTopicApiImpl(
 				apiUrl,
 				authProvider,
@@ -593,12 +576,6 @@ private class CardinalBaseApisImpl(
 	}
 	override val role: RoleApi by lazy {
 		RoleApiImpl(RawRoleApiImpl(apiUrl, authProvider, config.rawApiConfig))
-	}
-	override val tarification: TarificationApi by lazy {
-		TarificationApiImpl(RawTarificationApiImpl(apiUrl, authProvider, config.rawApiConfig))
-	}
-	override val medicalLocation: MedicalLocationApi by lazy {
-		MedicalLocationApiImpl(RawMedicalLocationApiImpl(apiUrl, authProvider, config.rawApiConfig))
 	}
 	override val agenda: AgendaApi by lazy {
 		AgendaApiImpl(RawAgendaApiImpl(apiUrl, authProvider, config.rawApiConfig), config)

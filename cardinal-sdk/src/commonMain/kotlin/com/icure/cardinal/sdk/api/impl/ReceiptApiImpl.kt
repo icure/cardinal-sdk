@@ -606,20 +606,10 @@ private class ReceiptApiImpl(
 	}
 
 	override suspend fun decrypt(receipt: EncryptedReceipt): DecryptedReceipt =
-		config.crypto.entity.decryptEntities(
-			null,
-			listOf(receipt),
-			EntityWithEncryptionMetadataTypeName.Receipt,
-			EncryptedReceipt.serializer(),
-		) { Serialization.json.decodeFromJsonElement<DecryptedReceipt>(config.jsonPatcher.patchReceipt(it)) }.single()
+		decryptedFlavour.maybeDecrypt(null, receipt)
 
 	override suspend fun tryDecrypt(receipt: EncryptedReceipt): Receipt =
-		config.crypto.entity.tryDecryptEntities(
-			null,
-			listOf(receipt),
-			EntityWithEncryptionMetadataTypeName.Receipt,
-			EncryptedReceipt.serializer(),
-		) { Serialization.json.decodeFromJsonElement<DecryptedReceipt>(config.jsonPatcher.patchReceipt(it)) }.single()
+		tryAndRecoverFlavour.maybeDecrypt(null, receipt)
 }
 
 @InternalIcureApi

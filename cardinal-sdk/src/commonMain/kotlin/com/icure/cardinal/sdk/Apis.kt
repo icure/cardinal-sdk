@@ -28,7 +28,6 @@ import com.icure.cardinal.sdk.api.HealthcarePartyApi
 import com.icure.cardinal.sdk.api.InsuranceApi
 import com.icure.cardinal.sdk.api.InvoiceApi
 import com.icure.cardinal.sdk.api.InvoiceBasicApi
-import com.icure.cardinal.sdk.api.MedicalLocationApi
 import com.icure.cardinal.sdk.api.MessageApi
 import com.icure.cardinal.sdk.api.MessageBasicApi
 import com.icure.cardinal.sdk.api.PatientApi
@@ -40,8 +39,6 @@ import com.icure.cardinal.sdk.api.ReceiptBasicApi
 import com.icure.cardinal.sdk.api.RecoveryApi
 import com.icure.cardinal.sdk.api.RoleApi
 import com.icure.cardinal.sdk.api.SystemApi
-import com.icure.cardinal.sdk.api.TarificationApi
-import com.icure.cardinal.sdk.api.TimeTableApi
 import com.icure.cardinal.sdk.api.TopicApi
 import com.icure.cardinal.sdk.api.TopicBasicApi
 import com.icure.cardinal.sdk.api.UserApi
@@ -62,9 +59,7 @@ interface CardinalNonCryptoApis {
 	val permission: PermissionApi
 	val place: PlaceApi
 	val role: RoleApi
-	val tarification: TarificationApi
 	val user: UserApi
-	val medicalLocation: MedicalLocationApi
 	val auth: AuthApi
 	val agenda: AgendaApi
 }
@@ -87,7 +82,6 @@ interface CardinalApis : CardinalNonCryptoApis {
 	val patient: PatientApi
 	@Deprecated("The receipt API and model are highly specialised for the belgian market. They will be provided as a separate package in future")
 	val receipt: ReceiptApi
-	val timeTable: TimeTableApi
 	val topic: TopicApi
 	// api root
 	val crypto: CryptoApi
@@ -116,7 +110,6 @@ interface CardinalBaseApis : CardinalNonCryptoApis {
 	val patient: PatientBasicApi
 	@Deprecated("The receipt API and model are highly specialised for the belgian market. They will be provided as a separate package in future")
 	val receipt: ReceiptBasicApi
-	val timeTable: TimeTableApi
 	val topic: TopicBasicApi
 }
 

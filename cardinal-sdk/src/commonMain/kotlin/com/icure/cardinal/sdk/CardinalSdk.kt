@@ -20,7 +20,6 @@ import com.icure.cardinal.sdk.api.HealthcarePartyApi
 import com.icure.cardinal.sdk.api.InsuranceApi
 import com.icure.cardinal.sdk.api.InvoiceApi
 import com.icure.cardinal.sdk.api.MaintenanceTaskApi
-import com.icure.cardinal.sdk.api.MedicalLocationApi
 import com.icure.cardinal.sdk.api.MessageApi
 import com.icure.cardinal.sdk.api.PatientApi
 import com.icure.cardinal.sdk.api.PermissionApi
@@ -29,8 +28,6 @@ import com.icure.cardinal.sdk.api.ReceiptApi
 import com.icure.cardinal.sdk.api.RecoveryApi
 import com.icure.cardinal.sdk.api.RoleApi
 import com.icure.cardinal.sdk.api.SystemApi
-import com.icure.cardinal.sdk.api.TarificationApi
-import com.icure.cardinal.sdk.api.TimeTableApi
 import com.icure.cardinal.sdk.api.TopicApi
 import com.icure.cardinal.sdk.api.UserApi
 import com.icure.cardinal.sdk.api.impl.AgendaApiImpl
@@ -46,17 +43,13 @@ import com.icure.cardinal.sdk.api.impl.GroupApiImpl
 import com.icure.cardinal.sdk.api.impl.HealthcarePartyApiImpl
 import com.icure.cardinal.sdk.api.impl.InsuranceApiImpl
 import com.icure.cardinal.sdk.api.impl.MaintenanceTaskApiImpl
-import com.icure.cardinal.sdk.api.impl.MedicalLocationApiImpl
 import com.icure.cardinal.sdk.api.impl.PermissionApiImpl
 import com.icure.cardinal.sdk.api.impl.PlaceApiImpl
-import com.icure.cardinal.sdk.api.impl.initReceiptApi
 import com.icure.cardinal.sdk.api.impl.RecoveryApiImpl
 import com.icure.cardinal.sdk.api.impl.RoleApiImpl
 import com.icure.cardinal.sdk.api.impl.ShamirKeysManagerApiImpl
 import com.icure.cardinal.sdk.api.impl.SystemApiImpl
-import com.icure.cardinal.sdk.api.impl.TarificationApiImpl
-import com.icure.cardinal.sdk.api.impl.TimeTableApiImpl
-import com.icure.cardinal.sdk.api.impl.TopicApiImpl
+import com.icure.cardinal.sdk.api.impl.initTopicApi
 import com.icure.cardinal.sdk.api.impl.UserApiImpl
 import com.icure.cardinal.sdk.api.impl.initAccessLogApi
 import com.icure.cardinal.sdk.api.impl.initCalendarItemApi
@@ -67,6 +60,7 @@ import com.icure.cardinal.sdk.api.impl.initHealthElementApi
 import com.icure.cardinal.sdk.api.impl.initInvoiceApi
 import com.icure.cardinal.sdk.api.impl.initMessageApi
 import com.icure.cardinal.sdk.api.impl.initPatientApi
+import com.icure.cardinal.sdk.api.impl.initReceiptApi
 import com.icure.cardinal.sdk.api.raw.RawAnonymousAuthApi
 import com.icure.cardinal.sdk.api.raw.RawApiConfig
 import com.icure.cardinal.sdk.api.raw.RawMessageGatewayApi
@@ -93,7 +87,6 @@ import com.icure.cardinal.sdk.api.raw.impl.RawICureApiImpl
 import com.icure.cardinal.sdk.api.raw.impl.RawInsuranceApiImpl
 import com.icure.cardinal.sdk.api.raw.impl.RawInvoiceApiImpl
 import com.icure.cardinal.sdk.api.raw.impl.RawMaintenanceTaskApiImpl
-import com.icure.cardinal.sdk.api.raw.impl.RawMedicalLocationApiImpl
 import com.icure.cardinal.sdk.api.raw.impl.RawMessageApiImpl
 import com.icure.cardinal.sdk.api.raw.impl.RawPatientApiImpl
 import com.icure.cardinal.sdk.api.raw.impl.RawPermissionApiImpl
@@ -102,7 +95,6 @@ import com.icure.cardinal.sdk.api.raw.impl.RawReceiptApiImpl
 import com.icure.cardinal.sdk.api.raw.impl.RawRecoveryDataApiImpl
 import com.icure.cardinal.sdk.api.raw.impl.RawRoleApiImpl
 import com.icure.cardinal.sdk.api.raw.impl.RawSecureDelegationKeyMapApiImpl
-import com.icure.cardinal.sdk.api.raw.impl.RawTarificationApiImpl
 import com.icure.cardinal.sdk.api.raw.impl.RawTimeTableApiImpl
 import com.icure.cardinal.sdk.api.raw.impl.RawTopicApiImpl
 import com.icure.cardinal.sdk.api.raw.impl.RawUserApiImpl
@@ -884,7 +876,7 @@ internal class CardinalSdkImpl(
 	}
 
 	override val topic: TopicApi by lazy {
-		TopicApiImpl(
+		initTopicApi(
 			rawTopicApi,
 			config
 		)
@@ -912,10 +904,6 @@ internal class CardinalSdkImpl(
 			authProvider,
 			config.rawApiConfig,
 		)
-	}
-
-	override val timeTable: TimeTableApi by lazy {
-		TimeTableApiImpl(rawTimeTableApi)
 	}
 
 	private val rawClassificationApi by lazy {
@@ -1027,12 +1015,6 @@ internal class CardinalSdkImpl(
 	}
 	override val role: RoleApi by lazy {
 		RoleApiImpl(RawRoleApiImpl(apiUrl, authProvider, config.rawApiConfig))
-	}
-	override val tarification: TarificationApi by lazy {
-		TarificationApiImpl(RawTarificationApiImpl(apiUrl, authProvider, config.rawApiConfig))
-	}
-	override val medicalLocation: MedicalLocationApi by lazy {
-		MedicalLocationApiImpl(RawMedicalLocationApiImpl(apiUrl, authProvider, config.rawApiConfig))
 	}
 	override val auth: AuthApi by lazy {
 		AuthApiImpl(authProvider)
