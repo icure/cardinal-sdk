@@ -9,14 +9,13 @@ import com.icure.cardinal.sdk.filters.FilterOptions
 import com.icure.cardinal.sdk.filters.SortableFilterOptions
 import com.icure.cardinal.sdk.model.Form
 import com.icure.cardinal.sdk.model.DecryptedForm
+import com.icure.cardinal.sdk.model.FormTemplate
 import com.icure.cardinal.sdk.model.EncryptedForm
 import com.icure.cardinal.sdk.model.EntityReferenceInGroup
-import com.icure.cardinal.sdk.model.FormTemplate
 import com.icure.cardinal.sdk.model.GroupScoped
 import com.icure.cardinal.sdk.model.Patient
 import com.icure.cardinal.sdk.model.StoredDocumentIdentifier
 import com.icure.cardinal.sdk.model.User
-import com.icure.cardinal.sdk.model.couchdb.DocIdentifier
 import com.icure.cardinal.sdk.model.embed.AccessLevel
 import com.icure.cardinal.sdk.model.specializations.HexString
 import com.icure.cardinal.sdk.model.toStoredDocumentIdentifier
@@ -26,7 +25,7 @@ import com.icure.cardinal.sdk.utils.generation.JsMapAsObjectArray
 import com.icure.cardinal.sdk.utils.pagination.PaginatedListIterator
 
 /* This interface includes the API calls that do not need encryption keys and do not return or consume encrypted/decrypted items, they are completely agnostic towards the presence of encrypted items */
-interface FormBasicFlavourlessApi {
+interface FormBasicFlavourlessApi : FormTemplateApi {
 
 	/**
 	 * Deletes a form. If you don't have write access to the form the method will fail.
@@ -97,41 +96,9 @@ interface FormBasicFlavourlessApi {
 	 */
 	suspend fun purgeForms(forms: List<Form>): List<StoredDocumentIdentifier> =
 		purgeFormsByIds(forms.map { it.toStoredDocumentIdentifier() })
-
-	suspend fun getFormTemplate(
-		formTemplateId: String,
-		@DefaultValue("null")
-		raw: Boolean? = null
-	): FormTemplate
-
-	/**
-	 * Create a new form template. Your user must have the permission to create form templates.
-	 * @param formTemplate a form template
-	 * @return the created form template with updated revision
-	 */
-	suspend fun createFormTemplate(formTemplate: FormTemplate): FormTemplate
-
-	/**
-	 * Deletes a form template. Your user must have the permission to delete form templates.
-	 * @param formTemplateId the id of a form template
-	 * @return the id and revision of the deleted template
-	 */
-	suspend fun deleteFormTemplate(formTemplateId: String): DocIdentifier
-
-	/**
-	 * Modifies a form template. Your user must have the permission to modify form templates.
-	 * @param formTemplate a form template with updated content
-	 * @return the updated form template, with updated revision
-	 */
-	suspend fun updateFormTemplate(formTemplate: FormTemplate): FormTemplate
-
-	/**
-	 * Sets the attachment to the form template.
-	 */
-	suspend fun setTemplateAttachment(formTemplateId: String, payload: ByteArray): String
 }
 
-interface FormBasicFlavourlessInGroupApi {
+interface FormBasicFlavourlessInGroupApi : FormTemplateInGroupApi {
 	/**
 	 * In-group version of [FormBasicFlavourlessApi.deleteFormById]
 	 */
@@ -734,4 +701,87 @@ interface FormBasicInGroupApi : FormBasicFlavourlessInGroupApi, FormBasicFlavour
 	 * In-group version of [FormBasicApi.filterFormsBySorted]
 	 */
 	suspend fun filterFormsBySorted(groupId: String, filter: BaseSortableFilterOptions<Form>): PaginatedListIterator<GroupScoped<EncryptedForm>>
+}
+
+interface FormTemplateApi {
+
+	suspend fun getFormTemplate(
+		formTemplateId: String,
+		@DefaultValue("null")
+		raw: Boolean? = null
+	): FormTemplate
+	suspend fun getFormTemplates(formTemplateIds: List<String>): List<FormTemplate>
+
+	suspend fun createFormTemplate(formTemplate: FormTemplate): FormTemplate
+	suspend fun createFormTemplates(formTemplates: List<FormTemplate>): List<FormTemplate>
+
+	suspend fun modifyFormTemplate(formTemplate: FormTemplate): FormTemplate
+	suspend fun modifyFormTemplates(formTemplates: List<FormTemplate>): List<FormTemplate>
+
+	suspend fun deleteFormTemplateById(entityId: String, rev: String): StoredDocumentIdentifier
+	suspend fun deleteFormTemplatesByIds(entityIds: List<StoredDocumentIdentifier>): List<StoredDocumentIdentifier>
+
+	suspend fun deleteFormTemplate(formTemplate: FormTemplate): StoredDocumentIdentifier =
+		deleteFormTemplateById(formTemplate.id, checkNotNull(formTemplate.rev) { "Cannot delete a form template with a null revision." })
+	suspend fun deleteFormTemplates(formTemplates: List<FormTemplate>): List<StoredDocumentIdentifier> =
+		deleteFormTemplatesByIds(formTemplates.map { it.toStoredDocumentIdentifier() })
+
+	suspend fun undeleteFormTemplateById(id: String, rev: String): FormTemplate
+	suspend fun undeleteFormTemplatesByIds(entityIds: List<StoredDocumentIdentifier>): List<FormTemplate>
+
+	suspend fun undeleteFormTemplate(formTemplate: FormTemplate): FormTemplate =
+		undeleteFormTemplateById(formTemplate.id, checkNotNull(formTemplate.rev) { "Cannot undelete a form template with a null revision." })
+	suspend fun undeleteFormTemplates(formTemplates: List<FormTemplate>): List<FormTemplate> =
+		undeleteFormTemplatesByIds(formTemplates.map { it.toStoredDocumentIdentifier() })
+
+	suspend fun purgeFormTemplateById(id: String, rev: String)
+	suspend fun purgeFormTemplatesByIds(entityIds: List<StoredDocumentIdentifier>): List<StoredDocumentIdentifier>
+
+	suspend fun purgeFormTemplate(formTemplate: FormTemplate) =
+		purgeFormTemplateById(formTemplate.id, checkNotNull(formTemplate.rev) { "Cannot purge a form template with a null revision." })
+	suspend fun purgeFormTemplates(formTemplates: List<FormTemplate>): List<StoredDocumentIdentifier> =
+		purgeFormTemplatesByIds(formTemplates.map { it.toStoredDocumentIdentifier() })
+
+	/**
+	 * Sets the attachment to the form template.
+	 */
+	suspend fun setTemplateAttachment(formTemplateId: String, payload: ByteArray): String
+}
+
+interface FormTemplateInGroupApi {
+
+	suspend fun createFormTemplate(formTemplate: GroupScoped<FormTemplate>): GroupScoped<FormTemplate>
+	suspend fun createFormTemplates(formTemplates: List<GroupScoped<FormTemplate>>): List<GroupScoped<FormTemplate>>
+
+	suspend fun getFormTemplate(groupId: String, formTemplateId: String): GroupScoped<FormTemplate>?
+	suspend fun getFormTemplates(groupId: String, formTemplatesIds: List<String>): List<GroupScoped<FormTemplate>>
+
+	suspend fun modifyFormTemplate(formTemplate: GroupScoped<FormTemplate>): GroupScoped<FormTemplate>
+	suspend fun modifyFormTemplates(formTemplates: List<GroupScoped<FormTemplate>>): List<GroupScoped<FormTemplate>>
+
+	suspend fun deleteFormTemplateById(entityId: GroupScoped<StoredDocumentIdentifier>): GroupScoped<StoredDocumentIdentifier>
+	suspend fun deleteFormTemplateByIds(entityIds: List<GroupScoped<StoredDocumentIdentifier>>): List<GroupScoped<StoredDocumentIdentifier>>
+
+	suspend fun deleteFormTemplate(formTemplate: GroupScoped<FormTemplate>): GroupScoped<StoredDocumentIdentifier> =
+		deleteFormTemplateById(formTemplate.toStoredDocumentIdentifier())
+	suspend fun deleteFormTemplates(formTemplates: List<GroupScoped<FormTemplate>>): List<GroupScoped<StoredDocumentIdentifier>> =
+		deleteFormTemplateByIds(formTemplates.map { it.toStoredDocumentIdentifier() })
+
+	suspend fun undeleteFormTemplateById(entityId: GroupScoped<StoredDocumentIdentifier>): GroupScoped<FormTemplate>
+	suspend fun undeleteFormTemplateByIds(entityIds: List<GroupScoped<StoredDocumentIdentifier>>): List<GroupScoped<FormTemplate>>
+
+	suspend fun undeleteFormTemplate(formTemplate: GroupScoped<FormTemplate>): GroupScoped<FormTemplate> =
+		undeleteFormTemplateById(formTemplate.toStoredDocumentIdentifier())
+	suspend fun undeleteFormTemplates(formTemplates: List<GroupScoped<FormTemplate>>): List<GroupScoped<FormTemplate>> =
+		undeleteFormTemplateByIds(formTemplates.map { it.toStoredDocumentIdentifier() })
+
+	suspend fun purgeFormTemplateById(entityId: GroupScoped<StoredDocumentIdentifier>)
+	suspend fun purgeFormTemplateByIds(entityIds: List<GroupScoped<StoredDocumentIdentifier>>): List<GroupScoped<StoredDocumentIdentifier>>
+
+	suspend fun purgeFormTemplate(formTemplate: GroupScoped<FormTemplate>) {
+		purgeFormTemplateById(formTemplate.toStoredDocumentIdentifier())
+	}
+	suspend fun purgeFormTemplates(formTemplates: List<GroupScoped<FormTemplate>>): List<GroupScoped<StoredDocumentIdentifier>> =
+		purgeFormTemplateByIds(formTemplates.map { it.toStoredDocumentIdentifier() })
+
 }

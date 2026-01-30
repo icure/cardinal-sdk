@@ -369,6 +369,99 @@ private abstract class AbstractFormBasicFlavourless(
 				rawApi.purgeFormsInGroup(groupId, ListOfIdsAndRev(ids))
 			}.successBody().toStoredDocumentIdentifier()
 		}
+
+	protected suspend fun doGetFormTemplates(groupId: String?, entityIds: List<String>): List<FormTemplate> = skipRequestOnEmptyList(entityIds) { ids ->
+		if (groupId == null) {
+			rawApi.getFormTemplates(ListOfIds(ids))
+		} else {
+			rawApi.getFormTemplatesInGroup(groupId, ListOfIds(ids))
+		}.successBody()
+	}
+
+	protected suspend fun doCreateFormTemplate(groupId: String?, entity: FormTemplate): FormTemplate {
+		basicRequireIsValidForCreation(entity)
+		return if (groupId == null) {
+			rawApi.createFormTemplate(entity)
+		} else {
+			rawApi.createFormTemplateInGroup(groupId, entity)
+		}.successBody()
+	}
+
+	protected suspend fun doCreateFormTemplates(groupId: String?, entities: List<FormTemplate>): List<FormTemplate> =
+		skipRequestOnEmptyList(entities) { formTemplates ->
+			if (groupId == null) {
+				rawApi.createFormTemplates(formTemplates)
+			} else {
+				rawApi.createFormTemplatesInGroup(groupId, formTemplates)
+			}.successBody()
+		}
+
+	protected suspend fun doModifyFormTemplate(groupId: String?, entity: FormTemplate): FormTemplate {
+		requireIsValidForModification(entity)
+		return if (groupId == null) {
+			rawApi.modifyFormTemplate(entity)
+		} else {
+			rawApi.modifyFormTemplateInGroup(groupId, entity)
+		}.successBodyOrThrowRevisionConflict()
+	}
+
+	protected suspend fun doModifyFormTemplates(groupId: String?, entities: List<FormTemplate>): List<FormTemplate> =
+		skipRequestOnEmptyList(entities) { formTemplates ->
+			if (groupId == null) {
+				rawApi.modifyFormTemplates(formTemplates)
+			} else {
+				rawApi.modifyFormTemplatesInGroup(groupId, formTemplates)
+			}.successBody()
+		}
+
+	protected suspend fun doDeleteFormTemplate(groupId: String?, entityId: String, rev: String): StoredDocumentIdentifier =
+		if (groupId == null) {
+			rawApi.deleteFormTemplate(entityId, rev)
+		} else {
+			rawApi.deleteFormTemplateInGroup(groupId, entityId, rev)
+		}.successBodyOrThrowRevisionConflict().toStoredDocumentIdentifier()
+
+	protected suspend fun doDeleteFormTemplates(groupId: String?, entityIds: List<StoredDocumentIdentifier>): List<StoredDocumentIdentifier> =
+		skipRequestOnEmptyList(entityIds) { ids ->
+			if (groupId == null) {
+				rawApi.deleteFormTemplates(ListOfIdsAndRev(ids))
+			} else {
+				rawApi.deleteFormTemplatesInGroup(groupId, ListOfIdsAndRev(ids))
+			}.successBody().toStoredDocumentIdentifier()
+		}
+
+	protected suspend fun doUndeleteFormTemplate(groupId: String?, entityId: String, rev: String): FormTemplate =
+		if (groupId == null) {
+			rawApi.undeleteFormTemplate(entityId, rev)
+		} else {
+			rawApi.undeleteFormTemplateInGroup(groupId, entityId, rev)
+		}.successBodyOrThrowRevisionConflict()
+
+	protected suspend fun doUndeleteFormTemplates(groupId: String?, entityIds: List<StoredDocumentIdentifier>): List<FormTemplate> =
+		skipRequestOnEmptyList(entityIds) { ids ->
+			if (groupId == null) {
+				rawApi.undeleteFormTemplates(ListOfIdsAndRev(ids))
+			} else {
+				rawApi.undeleteFormTemplatesInGroup(groupId, ListOfIdsAndRev(ids))
+			}.successBody()
+		}
+
+	protected suspend fun doPurgeFormTemplate(groupId: String?, entityId: String, rev: String) {
+		if (groupId == null) {
+			rawApi.purgeFormTemplate(entityId, rev)
+		} else {
+			rawApi.purgeFormTemplateInGroup(groupId, entityId, rev)
+		}.successBodyOrThrowRevisionConflict()
+	}
+
+	protected suspend fun doPurgeFormTemplates(groupId: String?, entityIds: List<StoredDocumentIdentifier>): List<StoredDocumentIdentifier> =
+		skipRequestOnEmptyList(entityIds) { ids ->
+			if (groupId == null) {
+				rawApi.purgeFormTemplatesWithRev(ListOfIdsAndRev(ids))
+			} else {
+				rawApi.purgeFormTemplatesInGroup(groupId, ListOfIdsAndRev(ids))
+			}.successBody().toStoredDocumentIdentifier()
+		}
 }
 
 @InternalIcureApi
@@ -392,26 +485,55 @@ private class FormBasicFlavourlessApiImpl(rawApi: RawFormApi) : AbstractFormBasi
 		raw: Boolean?,
 	) = rawApi.getFormTemplate(formTemplateId, raw).successBody()
 
-	override suspend fun createFormTemplate(
-		formTemplate: FormTemplate,
-	) = rawApi.createFormTemplate(formTemplate).successBody()
+	override suspend fun getFormTemplates(formTemplateIds: List<String>): List<FormTemplate> =
+		doGetFormTemplates(groupId = null, entityIds = formTemplateIds)
 
-	override suspend fun deleteFormTemplate(
-		formTemplateId: String,
-	) = rawApi.deleteFormTemplate(formTemplateId).successBody()
+	override suspend fun createFormTemplate(formTemplate: FormTemplate): FormTemplate =
+		doCreateFormTemplate(groupId = null, entity = formTemplate)
 
-	override suspend fun updateFormTemplate(
-		formTemplate: FormTemplate,
-	) = rawApi.updateFormTemplate(formTemplate.id, formTemplate).successBody()
+	override suspend fun createFormTemplates(formTemplates: List<FormTemplate>): List<FormTemplate> {
+		basicRequireIsValidForCreation(formTemplates)
+		return doCreateFormTemplates(groupId = null, entities = formTemplates)
+	}
+
+	override suspend fun modifyFormTemplate(formTemplate: FormTemplate): FormTemplate =
+		doModifyFormTemplate(groupId = null, entity = formTemplate)
+
+	override suspend fun modifyFormTemplates(formTemplates: List<FormTemplate>): List<FormTemplate> {
+		requireIsValidForModification(formTemplates)
+		return doModifyFormTemplates(groupId = null, entities = formTemplates)
+	}
+
+	override suspend fun deleteFormTemplateById(entityId: String, rev: String): StoredDocumentIdentifier =
+		doDeleteFormTemplate(groupId = null, entityId = entityId, rev = rev)
+
+	override suspend fun deleteFormTemplatesByIds(entityIds: List<StoredDocumentIdentifier>): List<StoredDocumentIdentifier> =
+		doDeleteFormTemplates(groupId = null, entityIds = entityIds)
+
+	override suspend fun undeleteFormTemplateById(id: String, rev: String): FormTemplate =
+		doUndeleteFormTemplate(groupId = null, entityId = id, rev = rev)
+
+	override suspend fun undeleteFormTemplatesByIds(entityIds: List<StoredDocumentIdentifier>): List<FormTemplate> =
+		doUndeleteFormTemplates(groupId = null, entityIds = entityIds)
+
+	override suspend fun purgeFormTemplateById(id: String, rev: String) {
+		doPurgeFormTemplate(groupId = null, entityId = id, rev = rev)
+	}
+
+	override suspend fun purgeFormTemplatesByIds(entityIds: List<StoredDocumentIdentifier>): List<StoredDocumentIdentifier> =
+		doPurgeFormTemplates(groupId = null, entityIds = entityIds)
 
 	override suspend fun setTemplateAttachment(
 		formTemplateId: String,
 		payload: ByteArray,
 	) = rawApi.setTemplateAttachment(formTemplateId, payload).successBody()
+
 }
 
 @InternalIcureApi
-private class FormBasicFlavourlessInGroupApiImpl(rawApi: RawFormApi) : AbstractFormBasicFlavourless(rawApi), FormBasicFlavourlessInGroupApi {
+private class FormBasicFlavourlessInGroupApiImpl(
+	rawApi: RawFormApi
+) : AbstractFormBasicFlavourless(rawApi), FormBasicFlavourlessInGroupApi {
 	override suspend fun deleteFormById(entityId: GroupScoped<StoredDocumentIdentifier>): GroupScoped<StoredDocumentIdentifier> =
 		GroupScoped(doDeleteForm(entityId.groupId, entityId.entity.id, entityId.entity.rev), entityId.groupId)
 
@@ -427,6 +549,68 @@ private class FormBasicFlavourlessInGroupApiImpl(rawApi: RawFormApi) : AbstractF
 	override suspend fun purgeFormsByIds(entityIds: List<GroupScoped<StoredDocumentIdentifier>>): List<GroupScoped<StoredDocumentIdentifier>> =
 		entityIds.mapUniqueIdentifiablesChunkedByGroup { groupId, batch ->
 			doPurgeForms(groupId, batch)
+		}
+
+	override suspend fun getFormTemplate(groupId: String, formTemplateId: String): GroupScoped<FormTemplate>? = groupScopedIn(groupId) {
+		rawApi.getFormTemplateInGroup(groupId, formTemplateId).successBodyOrNull404()
+	}
+
+	override suspend fun getFormTemplates(groupId: String, formTemplatesIds: List<String>): List<GroupScoped<FormTemplate>> =
+		groupScopedListIn(groupId) {
+			doGetFormTemplates(groupId = groupId, entityIds = formTemplatesIds)
+		}
+
+	override suspend fun createFormTemplate(formTemplate: GroupScoped<FormTemplate>): GroupScoped<FormTemplate> =
+		groupScopedWith(formTemplate) { groupId, entity ->
+			doCreateFormTemplate(groupId, entity)
+		}
+
+	override suspend fun createFormTemplates(formTemplates: List<GroupScoped<FormTemplate>>): List<GroupScoped<FormTemplate>> {
+		basicRequireIsValidForCreation(formTemplates)
+		return formTemplates.mapUniqueIdentifiablesChunkedByGroup { groupId, chunk ->
+			doCreateFormTemplates(groupId = groupId, entities = chunk)
+		}
+	}
+
+	override suspend fun modifyFormTemplate(formTemplate: GroupScoped<FormTemplate>): GroupScoped<FormTemplate> =
+		groupScopedWith(formTemplate) { groupId, entity ->
+			doModifyFormTemplate(groupId = groupId, entity = entity)
+		}
+
+	override suspend fun modifyFormTemplates(formTemplates: List<GroupScoped<FormTemplate>>): List<GroupScoped<FormTemplate>> {
+		requireIsValidForModification(formTemplates)
+		return formTemplates.mapUniqueIdentifiablesChunkedByGroup { groupId, chunk ->
+			doCreateFormTemplates(groupId = groupId, entities = chunk)
+		}
+	}
+
+	override suspend fun deleteFormTemplateById(entityId: GroupScoped<StoredDocumentIdentifier>): GroupScoped<StoredDocumentIdentifier> =
+		groupScopedWith(entityId) { groupId, it ->
+			doDeleteFormTemplate(groupId = groupId, entityId = it.id, rev = it.rev)
+		}
+
+	override suspend fun deleteFormTemplateByIds(entityIds: List<GroupScoped<StoredDocumentIdentifier>>): List<GroupScoped<StoredDocumentIdentifier>> =
+		entityIds.mapUniqueIdentifiablesChunkedByGroup { groupId, chunk ->
+			doDeleteFormTemplates(groupId = groupId, entityIds = chunk)
+		}
+
+	override suspend fun undeleteFormTemplateById(entityId: GroupScoped<StoredDocumentIdentifier>): GroupScoped<FormTemplate> =
+		groupScopedWith(entityId) { groupId, it ->
+			doUndeleteFormTemplate(groupId = groupId, entityId = it.id, rev = it.rev)
+		}
+
+	override suspend fun undeleteFormTemplateByIds(entityIds: List<GroupScoped<StoredDocumentIdentifier>>): List<GroupScoped<FormTemplate>> =
+		entityIds.mapUniqueIdentifiablesChunkedByGroup { groupId, chunk ->
+			doUndeleteFormTemplates(groupId = groupId, entityIds = chunk)
+		}
+
+	override suspend fun purgeFormTemplateById(entityId: GroupScoped<StoredDocumentIdentifier>) {
+		doPurgeFormTemplate(groupId = entityId.groupId, entityId = entityId.entity.id, rev = entityId.entity.rev)
+	}
+
+	override suspend fun purgeFormTemplateByIds(entityIds: List<GroupScoped<StoredDocumentIdentifier>>): List<GroupScoped<StoredDocumentIdentifier>> =
+		entityIds.mapUniqueIdentifiablesChunkedByGroup { groupId, chunk ->
+			doPurgeFormTemplates(groupId = groupId, entityIds = chunk)
 		}
 }
 
