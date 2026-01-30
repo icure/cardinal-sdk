@@ -24,7 +24,7 @@ import com.icure.cardinal.sdk.api.impl.InsuranceApiImpl
 import com.icure.cardinal.sdk.api.impl.MedicalLocationApiImpl
 import com.icure.cardinal.sdk.api.impl.PermissionApiImpl
 import com.icure.cardinal.sdk.api.impl.PlaceApiImpl
-import com.icure.cardinal.sdk.api.impl.ReceiptBasicApiImpl
+import com.icure.cardinal.sdk.api.impl.initReceiptBasicApi
 import com.icure.cardinal.sdk.api.impl.RoleApiImpl
 import com.icure.cardinal.sdk.api.impl.SystemApiImpl
 import com.icure.cardinal.sdk.api.impl.TarificationApiImpl
@@ -544,7 +544,7 @@ private class CardinalBaseApisImpl(
 
 	@Deprecated("The receipt API and model are highly specialised for the belgian market. They will be provided as a separate package in future")
 	override val receipt by lazy {
-		ReceiptBasicApiImpl(
+		initReceiptBasicApi(
 			RawReceiptApiImpl(
 				apiUrl,
 				authProvider,
