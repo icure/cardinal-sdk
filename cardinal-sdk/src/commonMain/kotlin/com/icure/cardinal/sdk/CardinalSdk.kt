@@ -22,7 +22,6 @@ import com.icure.cardinal.sdk.api.InvoiceApi
 import com.icure.cardinal.sdk.api.MaintenanceTaskApi
 import com.icure.cardinal.sdk.api.MessageApi
 import com.icure.cardinal.sdk.api.PatientApi
-import com.icure.cardinal.sdk.api.PermissionApi
 import com.icure.cardinal.sdk.api.PlaceApi
 import com.icure.cardinal.sdk.api.ReceiptApi
 import com.icure.cardinal.sdk.api.RecoveryApi
@@ -89,7 +88,6 @@ import com.icure.cardinal.sdk.api.raw.impl.RawInvoiceApiImpl
 import com.icure.cardinal.sdk.api.raw.impl.RawMaintenanceTaskApiImpl
 import com.icure.cardinal.sdk.api.raw.impl.RawMessageApiImpl
 import com.icure.cardinal.sdk.api.raw.impl.RawPatientApiImpl
-import com.icure.cardinal.sdk.api.raw.impl.RawPermissionApiImpl
 import com.icure.cardinal.sdk.api.raw.impl.RawPlaceApiImpl
 import com.icure.cardinal.sdk.api.raw.impl.RawReceiptApiImpl
 import com.icure.cardinal.sdk.api.raw.impl.RawRecoveryDataApiImpl
@@ -781,17 +779,12 @@ internal class CardinalSdkImpl(
 
 	override val user: UserApi by lazy {
 		UserApiImpl(
-			RawUserApiImpl(
+			rawApi = RawUserApiImpl(
 				apiUrl,
 				authProvider,
 				config.rawApiConfig,
 			),
-			RawPermissionApiImpl(
-				apiUrl,
-				authProvider,
-				config.rawApiConfig,
-			),
-			config
+			config = config
 		)
 	}
 	override val crypto: CryptoApi by lazy {
@@ -980,11 +973,6 @@ internal class CardinalSdkImpl(
 	override val device: DeviceApi by lazy {
 		DeviceApiImpl(RawDeviceApiImpl(apiUrl, authProvider, config.rawApiConfig), config)
 	}
-
-	override val permission: PermissionApi by lazy {
-		PermissionApiImpl(RawPermissionApiImpl(apiUrl, authProvider, config.rawApiConfig))
-	}
-
 
 	override val code: CodeApi by lazy {
 		CodeApiImpl(

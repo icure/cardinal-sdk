@@ -19,7 +19,6 @@ import com.icure.cardinal.sdk.api.impl.FrontEndMigrationApiImpl
 import com.icure.cardinal.sdk.api.impl.GroupApiImpl
 import com.icure.cardinal.sdk.api.impl.HealthcarePartyApiImpl
 import com.icure.cardinal.sdk.api.impl.InsuranceApiImpl
-import com.icure.cardinal.sdk.api.impl.PermissionApiImpl
 import com.icure.cardinal.sdk.api.impl.PlaceApiImpl
 import com.icure.cardinal.sdk.api.impl.RoleApiImpl
 import com.icure.cardinal.sdk.api.impl.SystemApiImpl
@@ -524,15 +523,6 @@ private class CardinalBaseApisImpl(
 			), config
 		)
 	}
-	override val permission by lazy {
-		PermissionApiImpl(
-			RawPermissionApiImpl(
-				apiUrl,
-				authProvider,
-				config.rawApiConfig
-			)
-		)
-	}
 
 	@Deprecated("The receipt API and model are highly specialised for the belgian market. They will be provided as a separate package in future")
 	override val receipt by lazy {
@@ -558,7 +548,6 @@ private class CardinalBaseApisImpl(
 	override val user: UserApi by lazy {
 		UserApiImpl(
 			RawUserApiImpl(apiUrl, authProvider, config.rawApiConfig),
-			RawPermissionApiImpl(apiUrl, authProvider, config.rawApiConfig),
 			config
 		)
 	}

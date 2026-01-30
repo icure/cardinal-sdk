@@ -56,7 +56,6 @@ interface CardinalNonCryptoApis {
 	val healthcareParty: HealthcarePartyApi
 	val system: SystemApi
 	val insurance: InsuranceApi
-	val permission: PermissionApi
 	val place: PlaceApi
 	val role: RoleApi
 	val user: UserApi
