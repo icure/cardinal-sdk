@@ -98,14 +98,36 @@ public interface RawFormApi {
 		raw: Boolean? = null,
 	): HttpResponse<List<FormTemplate>>
 
+	suspend fun getFormTemplates(formTemplateIds: ListOfIds): HttpResponse<List<FormTemplate>>
+
 	suspend fun createFormTemplate(ft: FormTemplate): HttpResponse<FormTemplate>
 
-	suspend fun deleteFormTemplate(formTemplateId: String): HttpResponse<DocIdentifier>
+	suspend fun modifyFormTemplate(ft: FormTemplate): HttpResponse<FormTemplate>
 
-	suspend fun updateFormTemplate(
+	suspend fun createFormTemplates(formTemplates: List<FormTemplate>): HttpResponse<List<FormTemplate>>
+
+	suspend fun modifyFormTemplates(formTemplates: List<FormTemplate>): HttpResponse<List<FormTemplate>>
+
+	suspend fun deleteFormTemplates(formTemplateIds: ListOfIdsAndRev): HttpResponse<List<DocIdentifier>>
+
+	suspend fun deleteFormTemplate(
 		formTemplateId: String,
-		ft: FormTemplate,
+		rev: String? = null,
+	): HttpResponse<DocIdentifier>
+
+	suspend fun undeleteFormTemplate(
+		formTemplateId: String,
+		rev: String,
 	): HttpResponse<FormTemplate>
+
+	suspend fun undeleteFormTemplates(formTemplateIds: ListOfIdsAndRev): HttpResponse<List<FormTemplate>>
+
+	suspend fun purgeFormTemplate(
+		formTemplateId: String,
+		rev: String,
+	): HttpResponse<DocIdentifier>
+
+	suspend fun purgeFormTemplatesWithRev(formTemplateIds: ListOfIdsAndRev): HttpResponse<List<DocIdentifier>>
 
 	suspend fun setTemplateAttachment(
 		formTemplateId: String,
@@ -193,5 +215,86 @@ public interface RawFormApi {
 		filter: AbstractFilter<Form>,
 		groupId: String,
 	): HttpResponse<List<String>>
+
+	suspend fun getFormTemplatesByUserInGroup(
+		groupId: String,
+		userId: String,
+		loadLayout: Boolean? = null,
+	): HttpResponse<List<FormTemplate>>
+
+	suspend fun createFormTemplateInGroup(
+		groupId: String,
+		ft: FormTemplate,
+	): HttpResponse<FormTemplate>
+
+	suspend fun deleteFormTemplateInGroup(
+		groupId: String,
+		formTemplateId: String,
+		rev: String,
+	): HttpResponse<DocIdentifier>
+
+	suspend fun deleteFormTemplatesInGroup(
+		groupId: String,
+		formTemplateIds: ListOfIdsAndRev,
+	): HttpResponse<List<DocIdentifier>>
+
+	suspend fun undeleteFormTemplatesInGroup(
+		groupId: String,
+		formTemplateIdsAndRevs: ListOfIdsAndRev,
+	): HttpResponse<List<FormTemplate>>
+
+	suspend fun undeleteFormTemplateInGroup(
+		groupId: String,
+		formTemplateTypeId: String,
+		rev: String,
+	): HttpResponse<FormTemplate>
+
+	suspend fun purgeFormTemplateInGroup(
+		groupId: String,
+		formTemplateId: String,
+		rev: String,
+	): HttpResponse<DocIdentifier>
+
+	suspend fun purgeFormTemplatesInGroup(
+		groupId: String,
+		formTemplateIds: ListOfIdsAndRev,
+	): HttpResponse<List<DocIdentifier>>
+
+	suspend fun modifyFormTemplateInGroup(
+		groupId: String,
+		ft: FormTemplate,
+	): HttpResponse<FormTemplate>
+
+	suspend fun setTemplateAttachmentMultiInGroup(
+		groupId: String,
+		formTemplateId: String,
+		payload: Nothing,
+	): HttpResponse<String>
+
+	suspend fun setTemplateAttachmentInGroup(
+		groupId: String,
+		formTemplateId: String,
+		payload: ByteArray,
+	): HttpResponse<String>
+
+	suspend fun createFormTemplatesInGroup(
+		groupId: String,
+		formTemplates: List<FormTemplate>,
+	): HttpResponse<List<FormTemplate>>
+
+	suspend fun modifyFormTemplatesInGroup(
+		groupId: String,
+		formTemplates: List<FormTemplate>,
+	): HttpResponse<List<FormTemplate>>
+
+	suspend fun getFormTemplatesInGroup(
+		groupId: String,
+		formTemplateIds: ListOfIds,
+	): HttpResponse<List<FormTemplate>>
+
+	suspend fun getFormTemplateInGroup(
+		groupId: String,
+		formTemplateId: String,
+	): HttpResponse<FormTemplate>
 	// endregion
 }
