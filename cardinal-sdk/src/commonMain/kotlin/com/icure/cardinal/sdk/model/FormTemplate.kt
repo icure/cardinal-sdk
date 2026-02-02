@@ -12,11 +12,8 @@ import kotlin.Long
 import kotlin.String
 import kotlin.collections.Set
 
-// WARNING: This file is auto-generated. If you change it manually, your changes will be lost.
-// If you want to change the way this class is generated, see [this repo](https://github.com/icure/sdk-codegen).
-
 @Serializable
-data class FormTemplate(
+public data class FormTemplate(
 	override val id: String,
 	override val rev: String? = null,
 	override val deletionDate: Long? = null,
@@ -35,14 +32,10 @@ data class FormTemplate(
 	public val shortReport: String? = null,
 	public val mediumReport: String? = null,
 	public val longReport: String? = null,
-	@DefaultValue("emptySet()")
+	@param:DefaultValue("emptySet()")
 	public val reports: Set<String> = emptySet(),
-	@DefaultValue("emptySet()")
+	@param:DefaultValue("emptySet()")
 	public val tags: Set<CodeStub> = emptySet(),
 	public val layoutAttachmentId: String? = null,
 	public val templateLayoutAttachmentId: String? = null,
-) : StoredDocument {
-	// region FormTemplate-FormTemplate
-
-	// endregion
-}
+) : StoredDocument

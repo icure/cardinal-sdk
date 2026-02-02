@@ -45,10 +45,14 @@ public interface RawInvoiceApi {
 		rev: String,
 	): HttpResponse<EncryptedInvoice>
 
+	suspend fun undeleteInvoices(invoiceIds: ListOfIdsAndRev): HttpResponse<List<EncryptedInvoice>>
+
 	suspend fun purgeInvoice(
 		invoiceId: String,
 		rev: String,
 	): HttpResponse<DocIdentifier>
+
+	suspend fun purgeInvoices(invoiceIds: ListOfIdsAndRev): HttpResponse<List<DocIdentifier>>
 
 	suspend fun getInvoice(invoiceId: String): HttpResponse<EncryptedInvoice>
 
@@ -169,5 +173,81 @@ public interface RawInvoiceApi {
 	suspend fun bulkShare(request: BulkShareOrUpdateMetadataParams): HttpResponse<List<EntityBulkShareResult<EncryptedInvoice>>>
 
 	suspend fun bulkShareMinimal(request: BulkShareOrUpdateMetadataParams): HttpResponse<List<EntityBulkShareResult<Nothing>>>
+	// endregion
+
+	// region cloud endpoints
+
+	suspend fun createInvoiceInGroup(
+		groupId: String,
+		invoiceDto: EncryptedInvoice,
+	): HttpResponse<EncryptedInvoice>
+
+	suspend fun createInvoicesInGroup(
+		groupId: String,
+		invoiceDtos: List<EncryptedInvoice>,
+	): HttpResponse<List<EncryptedInvoice>>
+
+	suspend fun modifyInvoiceInGroup(
+		groupId: String,
+		invoiceDto: EncryptedInvoice,
+	): HttpResponse<EncryptedInvoice>
+
+	suspend fun modifyInvoicesInGroup(
+		groupId: String,
+		invoiceDtos: List<EncryptedInvoice>,
+	): HttpResponse<List<EncryptedInvoice>>
+
+	suspend fun getInvoiceInGroup(
+		groupId: String,
+		invoiceId: String,
+	): HttpResponse<EncryptedInvoice>
+
+	suspend fun getInvoicesInGroup(
+		groupId: String,
+		invoiceIds: ListOfIds,
+	): HttpResponse<List<EncryptedInvoice>>
+
+	suspend fun deleteInvoicesInGroup(
+		groupId: String,
+		invoiceIds: ListOfIdsAndRev,
+	): HttpResponse<List<DocIdentifier>>
+
+	suspend fun deleteInvoiceInGroup(
+		groupId: String,
+		invoiceId: String,
+		rev: String,
+	): HttpResponse<DocIdentifier>
+
+	suspend fun undeleteInvoiceInGroup(
+		groupId: String,
+		invoiceId: String,
+		rev: String,
+	): HttpResponse<EncryptedInvoice>
+
+	suspend fun undeleteInvoicesInGroup(
+		groupId: String,
+		invoiceIds: ListOfIdsAndRev,
+	): HttpResponse<List<EncryptedInvoice>>
+
+	suspend fun purgeInvoiceInGroup(
+		groupId: String,
+		invoiceId: String,
+		rev: String,
+	): HttpResponse<DocIdentifier>
+
+	suspend fun purgeInvoicesInGroup(
+		groupId: String,
+		invoiceIds: ListOfIdsAndRev,
+	): HttpResponse<List<DocIdentifier>>
+
+	suspend fun bulkShare(
+		request: BulkShareOrUpdateMetadataParams,
+		groupId: String,
+	): HttpResponse<List<EntityBulkShareResult<EncryptedInvoice>>>
+
+	suspend fun matchInvoicesInGroupBy(
+		filter: AbstractFilter<Invoice>,
+		groupId: String,
+	): HttpResponse<List<String>>
 	// endregion
 }
