@@ -10,10 +10,10 @@ import kotlin.collections.List
 
 @Serializable
 data class Action(
-	@DefaultValue("emptyList()")
+	@param:DefaultValue("emptyList()")
 	public val launchers: List<Launcher>? = emptyList(),
 	public val expression: String? = null,
-	@DefaultValue("emptyList()")
+	@param:DefaultValue("emptyList()")
 	public val states: List<State>? = emptyList(),
 ) {
 	// region Action-Action

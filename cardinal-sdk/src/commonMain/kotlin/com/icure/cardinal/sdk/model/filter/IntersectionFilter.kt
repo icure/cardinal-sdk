@@ -14,7 +14,7 @@ import kotlin.collections.List
 @Serializable
 data class IntersectionFilter<O : Identifiable<String>>(
 	override val desc: String? = null,
-	@DefaultValue("emptyList()")
+	@param:DefaultValue("emptyList()")
 	override val filters: List<AbstractFilter<O>> = emptyList(),
 ) : AbstractFilter<O>, Filter.IntersectionFilter<O> {
 	// region IntersectionFilter-IntersectionFilter

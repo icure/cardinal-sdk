@@ -20,19 +20,19 @@ data class TimeTableItem(
 	public val notBeforeInMinutes: Int? = null,
 	public val notAfterInMinutes: Int? = null,
 	public val zoneId: String? = null,
-	@DefaultValue("emptyList()")
+	@param:DefaultValue("emptyList()")
 	public val hours: List<TimeTableHour> = emptyList(),
 	public val calendarItemTypeId: String? = null,
-	@DefaultValue("false")
+	@param:DefaultValue("false")
 	public val homeVisit: Boolean = false,
 	public val placeId: String? = null,
-	@DefaultValue("false")
+	@param:DefaultValue("false")
 	public val publicTimeTableItem: Boolean = false,
-	@DefaultValue("true")
+	@param:DefaultValue("true")
 	public val acceptsNewPatient: Boolean = true,
-	@DefaultValue("false")
+	@param:DefaultValue("false")
 	public val unavailable: Boolean = false,
-	@DefaultValue("emptySet()")
+	@param:DefaultValue("emptySet()")
 	public val reservingRights: Set<String> = emptySet(),
 ) {
 	// region TimeTableItem-TimeTableItem

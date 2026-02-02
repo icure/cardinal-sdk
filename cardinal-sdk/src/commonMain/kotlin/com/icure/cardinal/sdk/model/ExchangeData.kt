@@ -20,7 +20,7 @@ data class ExchangeData(
 	public val `delegate`: String,
 	public val exchangeKey: Map<KeypairFingerprintV2String, Base64String>,
 	public val accessControlSecret: Map<KeypairFingerprintV2String, Base64String>,
-	@DefaultValue("emptyMap()")
+	@param:DefaultValue("emptyMap()")
 	public val delegatorSignature: Map<KeypairFingerprintV2String, Base64String> = emptyMap(),
 	public val sharedSignatureKey: Map<KeypairFingerprintV2String, Base64String>,
 	public val sharedSignature: Base64String,

@@ -21,7 +21,7 @@ public interface RawCalendarItemTypeApi {
 		limit: Int? = null,
 	): HttpResponse<PaginatedList<CalendarItemType>>
 
-	suspend fun createCalendarItemTypesByIds(calendarItemTypeIds: ListOfIds): HttpResponse<List<CalendarItemType>>
+	suspend fun getCalendarItemTypesByIds(calendarItemTypeIds: ListOfIds): HttpResponse<List<CalendarItemType>>
 
 	suspend fun listCalendarItemTypesByAgendaId(agendaId: String): HttpResponse<List<CalendarItemType>>
 

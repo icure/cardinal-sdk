@@ -26,7 +26,7 @@ class ResultInfo(
 	public val demandDate: Long? = null,
 	public val labo: String? = null,
 	public val engine: String? = null,
-	@DefaultValue("emptySet()")
+	@param:DefaultValue("emptySet()")
 	public val codes: Set<CodeStub> = emptySet(),
 	public val services: List<DecryptedService>? = null,
 ) {

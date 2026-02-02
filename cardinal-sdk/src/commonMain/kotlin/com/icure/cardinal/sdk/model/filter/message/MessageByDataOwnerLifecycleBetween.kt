@@ -18,7 +18,7 @@ data class MessageByDataOwnerLifecycleBetween(
 	public val dataOwnerId: String,
 	public val startTimestamp: Long? = null,
 	public val endTimestamp: Long? = null,
-	@DefaultValue("false")
+	@param:DefaultValue("false")
 	public val descending: Boolean = false,
 	override val desc: String? = null,
 ) : AbstractFilter<Message> {

@@ -10,9 +10,9 @@ import kotlin.Int
 
 @Serializable
 data class ReplicationInfo(
-	@DefaultValue("false")
+	@param:DefaultValue("false")
 	public val active: Boolean = false,
-	@DefaultValue("false")
+	@param:DefaultValue("false")
 	public val running: Boolean = false,
 	public val pendingFrom: Int? = null,
 	public val pendingTo: Int? = null,

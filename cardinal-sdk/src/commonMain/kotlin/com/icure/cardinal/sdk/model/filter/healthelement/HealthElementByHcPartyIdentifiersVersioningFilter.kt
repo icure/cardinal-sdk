@@ -18,7 +18,7 @@ import kotlin.collections.List
 data class HealthElementByHcPartyIdentifiersVersioningFilter(
 	override val desc: String? = null,
 	public val hcPartyId: String,
-	@DefaultValue("emptyList()")
+	@param:DefaultValue("emptyList()")
 	public val identifiers: List<Identifier> = emptyList(),
 	public val versionFiltering: VersionFiltering? = null,
 ) : AbstractFilter<HealthElement> {

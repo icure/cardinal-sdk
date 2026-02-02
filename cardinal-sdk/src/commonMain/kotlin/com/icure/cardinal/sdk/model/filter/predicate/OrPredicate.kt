@@ -9,7 +9,7 @@ import kotlin.collections.List
 
 @Serializable
 data class OrPredicate(
-	@DefaultValue("emptyList()")
+	@param:DefaultValue("emptyList()")
 	public val predicates: List<Predicate> = emptyList(),
 ) : Predicate {
 	// region OrPredicate-OrPredicate

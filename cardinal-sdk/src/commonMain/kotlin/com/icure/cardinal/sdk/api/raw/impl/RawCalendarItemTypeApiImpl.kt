@@ -49,7 +49,7 @@ class RawCalendarItemTypeApiImpl(
 			accept(Application.Json)
 		}.wrap()
 
-	override suspend fun createCalendarItemTypesByIds(calendarItemTypeIds: ListOfIds): HttpResponse<List<CalendarItemType>> =
+	override suspend fun getCalendarItemTypesByIds(calendarItemTypeIds: ListOfIds): HttpResponse<List<CalendarItemType>> =
 		post(authProvider) {
 			url {
 				takeFrom(apiUrl)

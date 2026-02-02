@@ -108,13 +108,13 @@ public interface RawTopicApi {
 		rev: String,
 	): HttpResponse<DocIdentifier>
 
-	suspend fun purgeTopic(
+	suspend fun purgeTopics(topicIds: ListOfIdsAndRev): HttpResponse<List<DocIdentifier>>
+
+	suspend fun purgeTopicInGroup(
 		groupId: String,
 		topicId: String,
 		rev: String,
 	): HttpResponse<DocIdentifier>
-
-	suspend fun purgeTopics(topicIds: ListOfIdsAndRev): HttpResponse<List<DocIdentifier>>
 
 	suspend fun purgeTopicsInGroup(
 		groupId: String,

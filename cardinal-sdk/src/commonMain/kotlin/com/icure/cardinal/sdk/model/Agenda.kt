@@ -1,6 +1,7 @@
 package com.icure.cardinal.sdk.model
 
 import com.icure.cardinal.sdk.model.base.CodeStub
+import com.icure.cardinal.sdk.model.base.HasEndOfLife
 import com.icure.cardinal.sdk.model.base.ICureDocument
 import com.icure.cardinal.sdk.model.base.StoredDocument
 import com.icure.cardinal.sdk.model.embed.AgendaSlottingAlgorithm
@@ -29,27 +30,27 @@ data class Agenda(
 	override val modified: Long? = null,
 	override val author: String? = null,
 	override val responsible: String? = null,
-	@DefaultValue("emptySet()")
+	@param:DefaultValue("emptySet()")
 	override val tags: Set<CodeStub> = emptySet(),
-	@DefaultValue("emptySet()")
+	@param:DefaultValue("emptySet()")
 	override val codes: Set<CodeStub> = emptySet(),
 	override val endOfLife: Long? = null,
 	override val deletionDate: Long? = null,
 	public val daySplitHour: Int? = null,
-	@DefaultValue("false")
+	@param:DefaultValue("false")
 	public val unpublished: Boolean = false,
 	public val name: String? = null,
 	public val userId: String? = null,
 	public val zoneId: String? = null,
-	@DefaultValue("emptyMap()")
+	@param:DefaultValue("emptyMap()")
 	public val userRights: Map<String, UserAccessLevel> = emptyMap(),
 	public val slottingAlgorithm: AgendaSlottingAlgorithm? = null,
 	public val publicBookingQuota: Int? = null,
-	@DefaultValue("emptySet()")
+	@param:DefaultValue("emptySet()")
 	public val properties: Set<DecryptedPropertyStub> = emptySet(),
-	@DefaultValue("emptyList()")
+	@param:DefaultValue("emptyList()")
 	public val schedules: List<ResourceGroupAllocationSchedule> = emptyList(),
-) : StoredDocument, ICureDocument<String> {
+) : StoredDocument, ICureDocument<String>, HasEndOfLife {
 	// region Agenda-Agenda
 
 	// endregion

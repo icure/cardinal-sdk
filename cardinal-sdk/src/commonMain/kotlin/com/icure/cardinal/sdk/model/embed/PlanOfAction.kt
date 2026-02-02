@@ -1,6 +1,7 @@
 package com.icure.cardinal.sdk.model.embed
 
 import com.icure.cardinal.sdk.model.base.CodeStub
+import com.icure.cardinal.sdk.model.base.HasEndOfLife
 import com.icure.cardinal.sdk.model.base.ICureDocument
 import com.icure.cardinal.sdk.model.base.Named
 import com.icure.cardinal.sdk.model.specializations.Base64String
@@ -15,7 +16,7 @@ import kotlin.Int
 
 // WARNING: This file is auto-generated. If you change it manually, your changes will be lost.
 // If you want to change the way this class is generated, see [this repo](https://github.com/icure/sdk-codegen).
-sealed interface PlanOfAction : Encryptable, ICureDocument<String>, Named {
+sealed interface PlanOfAction : Encryptable, ICureDocument<String>, Named, HasEndOfLife {
 	override val id: String
 
 	override val created: Long?
@@ -67,9 +68,9 @@ data class DecryptedPlanOfAction(
 	override val modified: Long? = null,
 	override val author: String? = null,
 	override val responsible: String? = null,
-	@DefaultValue("emptySet()")
+	@param:DefaultValue("emptySet()")
 	override val tags: Set<CodeStub> = emptySet(),
-	@DefaultValue("emptySet()")
+	@param:DefaultValue("emptySet()")
 	override val codes: Set<CodeStub> = emptySet(),
 	override val endOfLife: Long? = null,
 	override val prescriberId: String? = null,
@@ -82,7 +83,7 @@ data class DecryptedPlanOfAction(
 	override val note: String? = null,
 	override val idOpeningContact: String? = null,
 	override val idClosingContact: String? = null,
-	@DefaultValue("emptyList()")
+	@param:DefaultValue("emptyList()")
 	override val careTeamMemberships: List<DecryptedCareTeamMembership> = emptyList(),
 	override val encryptedSelf: Base64String? = null,
 ) : PlanOfAction {
@@ -98,9 +99,9 @@ data class EncryptedPlanOfAction(
 	override val modified: Long? = null,
 	override val author: String? = null,
 	override val responsible: String? = null,
-	@DefaultValue("emptySet()")
+	@param:DefaultValue("emptySet()")
 	override val tags: Set<CodeStub> = emptySet(),
-	@DefaultValue("emptySet()")
+	@param:DefaultValue("emptySet()")
 	override val codes: Set<CodeStub> = emptySet(),
 	override val endOfLife: Long? = null,
 	override val prescriberId: String? = null,
@@ -113,7 +114,7 @@ data class EncryptedPlanOfAction(
 	override val note: String? = null,
 	override val idOpeningContact: String? = null,
 	override val idClosingContact: String? = null,
-	@DefaultValue("emptyList()")
+	@param:DefaultValue("emptyList()")
 	override val careTeamMemberships: List<EncryptedCareTeamMembership> = emptyList(),
 	override val encryptedSelf: Base64String? = null,
 ) : PlanOfAction {

@@ -24,7 +24,7 @@ data class Measure(
 	public val comment: String? = null,
 	public val comparator: String? = null,
 	public val sign: String? = null,
-	@DefaultValue("emptyList()")
+	@param:DefaultValue("emptyList()")
 	public val referenceRanges: List<ReferenceRange> = emptyList(),
 	public val valueWithPrecision: ValueWithPrecision? = null,
 ) {

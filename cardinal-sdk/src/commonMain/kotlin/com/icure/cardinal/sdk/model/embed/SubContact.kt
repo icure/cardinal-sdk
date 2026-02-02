@@ -53,16 +53,16 @@ data class DecryptedSubContact(
 	override val modified: Long? = null,
 	override val author: String? = null,
 	override val responsible: String? = null,
-	@DefaultValue("emptySet()")
+	@param:DefaultValue("emptySet()")
 	override val tags: Set<CodeStub> = emptySet(),
-	@DefaultValue("emptySet()")
+	@param:DefaultValue("emptySet()")
 	override val codes: Set<CodeStub> = emptySet(),
 	override val descr: String? = null,
 	override val protocol: String? = null,
 	override val formId: String? = null,
 	override val planOfActionId: String? = null,
 	override val healthElementId: String? = null,
-	@DefaultValue("emptyList()")
+	@param:DefaultValue("emptyList()")
 	override val services: List<ServiceLink> = emptyList(),
 	override val encryptedSelf: Base64String? = null,
 ) : SubContact {
@@ -78,16 +78,16 @@ data class EncryptedSubContact(
 	override val modified: Long? = null,
 	override val author: String? = null,
 	override val responsible: String? = null,
-	@DefaultValue("emptySet()")
+	@param:DefaultValue("emptySet()")
 	override val tags: Set<CodeStub> = emptySet(),
-	@DefaultValue("emptySet()")
+	@param:DefaultValue("emptySet()")
 	override val codes: Set<CodeStub> = emptySet(),
 	override val descr: String? = null,
 	override val protocol: String? = null,
 	override val formId: String? = null,
 	override val planOfActionId: String? = null,
 	override val healthElementId: String? = null,
-	@DefaultValue("emptyList()")
+	@param:DefaultValue("emptyList()")
 	override val services: List<ServiceLink> = emptyList(),
 	override val encryptedSelf: Base64String? = null,
 ) : SubContact {

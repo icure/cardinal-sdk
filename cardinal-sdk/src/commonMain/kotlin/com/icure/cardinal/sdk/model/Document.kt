@@ -48,6 +48,8 @@ sealed interface Document :
 
 	override val deletionDate: Long?
 
+	public val documentType: DocumentType?
+
 	public val documentStatus: DocumentStatus?
 
 	public val externalUri: String?
@@ -98,11 +100,12 @@ data class DecryptedDocument(
 	override val modified: Long? = null,
 	override val author: String? = null,
 	override val responsible: String? = null,
-	@DefaultValue("emptySet()")
+	@param:DefaultValue("emptySet()")
 	override val tags: Set<CodeStub> = emptySet(),
-	@DefaultValue("emptySet()")
+	@param:DefaultValue("emptySet()")
 	override val codes: Set<CodeStub> = emptySet(),
 	override val deletionDate: Long? = null,
+	override val documentType: DocumentType? = null,
 	override val documentStatus: DocumentStatus? = null,
 	override val externalUri: String? = null,
 	override val name: String? = null,
@@ -113,19 +116,19 @@ data class DecryptedDocument(
 	override val attachmentId: String? = null,
 	override val objectStoreReference: String? = null,
 	override val mainUti: String? = null,
-	@DefaultValue("emptySet()")
+	@param:DefaultValue("emptySet()")
 	override val otherUtis: Set<String> = emptySet(),
-	@DefaultValue("emptyMap()")
+	@param:DefaultValue("emptyMap()")
 	override val secondaryAttachments: Map<String, DataAttachment> = emptyMap(),
-	@DefaultValue("emptyList()")
+	@param:DefaultValue("emptyList()")
 	override val deletedAttachments: List<DeletedAttachment> = emptyList(),
-	@DefaultValue("emptySet()")
+	@param:DefaultValue("emptySet()")
 	override val secretForeignKeys: Set<String> = emptySet(),
-	@DefaultValue("emptyMap()")
+	@param:DefaultValue("emptyMap()")
 	override val cryptedForeignKeys: Map<String, Set<Delegation>> = emptyMap(),
-	@DefaultValue("emptyMap()")
+	@param:DefaultValue("emptyMap()")
 	override val delegations: Map<String, Set<Delegation>> = emptyMap(),
-	@DefaultValue("emptyMap()")
+	@param:DefaultValue("emptyMap()")
 	override val encryptionKeys: Map<String, Set<Delegation>> = emptyMap(),
 	override val encryptedSelf: Base64String? = null,
 	override val securityMetadata: SecurityMetadata? = null,
@@ -144,11 +147,12 @@ data class EncryptedDocument(
 	override val modified: Long? = null,
 	override val author: String? = null,
 	override val responsible: String? = null,
-	@DefaultValue("emptySet()")
+	@param:DefaultValue("emptySet()")
 	override val tags: Set<CodeStub> = emptySet(),
-	@DefaultValue("emptySet()")
+	@param:DefaultValue("emptySet()")
 	override val codes: Set<CodeStub> = emptySet(),
 	override val deletionDate: Long? = null,
+	override val documentType: DocumentType? = null,
 	override val documentStatus: DocumentStatus? = null,
 	override val externalUri: String? = null,
 	override val name: String? = null,
@@ -159,19 +163,19 @@ data class EncryptedDocument(
 	override val attachmentId: String? = null,
 	override val objectStoreReference: String? = null,
 	override val mainUti: String? = null,
-	@DefaultValue("emptySet()")
+	@param:DefaultValue("emptySet()")
 	override val otherUtis: Set<String> = emptySet(),
-	@DefaultValue("emptyMap()")
+	@param:DefaultValue("emptyMap()")
 	override val secondaryAttachments: Map<String, DataAttachment> = emptyMap(),
-	@DefaultValue("emptyList()")
+	@param:DefaultValue("emptyList()")
 	override val deletedAttachments: List<DeletedAttachment> = emptyList(),
-	@DefaultValue("emptySet()")
+	@param:DefaultValue("emptySet()")
 	override val secretForeignKeys: Set<String> = emptySet(),
-	@DefaultValue("emptyMap()")
+	@param:DefaultValue("emptyMap()")
 	override val cryptedForeignKeys: Map<String, Set<Delegation>> = emptyMap(),
-	@DefaultValue("emptyMap()")
+	@param:DefaultValue("emptyMap()")
 	override val delegations: Map<String, Set<Delegation>> = emptyMap(),
-	@DefaultValue("emptyMap()")
+	@param:DefaultValue("emptyMap()")
 	override val encryptionKeys: Map<String, Set<Delegation>> = emptyMap(),
 	override val encryptedSelf: Base64String? = null,
 	override val securityMetadata: SecurityMetadata? = null,

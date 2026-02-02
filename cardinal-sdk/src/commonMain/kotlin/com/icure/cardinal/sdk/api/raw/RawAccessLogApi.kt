@@ -40,7 +40,7 @@ public interface RawAccessLogApi {
 		rev: String,
 	): HttpResponse<EncryptedAccessLog>
 
-	suspend fun undeleteAccessLogs(accessLogIds: ListOfIdsAndRev): HttpResponse<List<DocIdentifier>>
+	suspend fun undeleteAccessLogs(accessLogIds: ListOfIdsAndRev): HttpResponse<List<EncryptedAccessLog>>
 
 	suspend fun purgeAccessLog(
 		accessLogId: String,

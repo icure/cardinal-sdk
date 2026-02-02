@@ -12,7 +12,7 @@ import kotlin.collections.Map
 
 @Serializable
 data class ExchangeDataMapCreationBatch(
-	@DefaultValue("emptyMap()")
+	@param:DefaultValue("emptyMap()")
 	public val batch: Map<AccessControlKeyHexString, Map<KeypairFingerprintV2String, Base64String>> =
 		emptyMap(),
 ) {

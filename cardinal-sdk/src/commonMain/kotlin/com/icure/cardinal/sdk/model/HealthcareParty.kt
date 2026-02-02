@@ -44,16 +44,16 @@ data class HealthcareParty(
 	public val created: Long? = null,
 	public val modified: Long? = null,
 	override val deletionDate: Long? = null,
-	@DefaultValue("emptyList()")
+	@param:DefaultValue("emptyList()")
 	public val identifier: List<Identifier> = emptyList(),
-	@DefaultValue("emptySet()")
+	@param:DefaultValue("emptySet()")
 	override val tags: Set<CodeStub> = emptySet(),
-	@DefaultValue("emptySet()")
+	@param:DefaultValue("emptySet()")
 	override val codes: Set<CodeStub> = emptySet(),
 	override val name: String? = null,
 	override val lastName: String? = null,
 	override val firstName: String? = null,
-	@DefaultValue("emptyList()")
+	@param:DefaultValue("emptyList()")
 	override val names: List<PersonName> = emptyList(),
 	override val gender: Gender? = null,
 	override val civility: String? = null,
@@ -66,36 +66,36 @@ data class HealthcareParty(
 	public val invoiceHeader: String? = null,
 	override val parentId: String? = null,
 	public val ssin: String? = null,
-	@DefaultValue("emptyList()")
+	@param:DefaultValue("emptyList()")
 	override val addresses: List<DecryptedAddress> = emptyList(),
-	@DefaultValue("emptyList()")
+	@param:DefaultValue("emptyList()")
 	override val languages: List<String> = emptyList(),
-	@DefaultValue("emptySet()")
+	@param:DefaultValue("emptySet()")
 	public val specialityCodes: Set<CodeStub> = emptySet(),
 	public val notes: String? = null,
-	@DefaultValue("emptyList()")
+	@param:DefaultValue("emptyList()")
 	public val financialInstitutionInformation: List<DecryptedFinancialInstitutionInformation> =
 		emptyList(),
-	@DefaultValue("emptyMap()")
+	@param:DefaultValue("emptyMap()")
 	public val descr: Map<String, String>? = emptyMap(),
-	@DefaultValue("emptySet()")
+	@param:DefaultValue("emptySet()")
 	override val properties: Set<DecryptedPropertyStub> = emptySet(),
-	@DefaultValue("false")
+	@param:DefaultValue("false")
 	public val `public`: Boolean = false,
 	public val publicProperties: Set<DecryptedPropertyStub>? = null,
 	override val cryptoActorProperties: Set<DecryptedPropertyStub>? = null,
-	@DefaultValue("emptyMap()")
+	@param:DefaultValue("emptyMap()")
 	override val hcPartyKeys: Map<String, List<HexString>> = emptyMap(),
-	@DefaultValue("emptyMap()")
+	@param:DefaultValue("emptyMap()")
 	override val aesExchangeKeys: Map<AesExchangeKeyEntryKeyString, Map<String, Map<AesExchangeKeyEncryptionKeypairIdentifier, HexString>>> =
 		emptyMap(),
-	@DefaultValue("emptyMap()")
+	@param:DefaultValue("emptyMap()")
 	override val transferKeys: Map<AesExchangeKeyEncryptionKeypairIdentifier, Map<AesExchangeKeyEncryptionKeypairIdentifier, HexString>> =
 		emptyMap(),
-	@DefaultValue("emptyMap()")
+	@param:DefaultValue("emptyMap()")
 	override val privateKeyShamirPartitions: Map<String, HexString> = emptyMap(),
 	override val publicKey: SpkiHexString? = null,
-	@DefaultValue("emptySet()")
+	@param:DefaultValue("emptySet()")
 	override val publicKeysForOaepWithSha256: Set<SpkiHexString> = emptySet(),
 ) : StoredDocument, Named, Person, CryptoActor, DataOwner, HasCodes, HasTags {
 	// region HealthcareParty-HealthcareParty

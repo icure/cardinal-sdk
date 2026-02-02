@@ -19,11 +19,11 @@ data class EmbeddedTimeTableItem(
 	public val notAfterInMinutes: Int? = null,
 	public val hours: List<EmbeddedTimeTableHour>,
 	public val calendarItemTypesIds: Set<String>,
-	@DefaultValue("1")
+	@param:DefaultValue("1")
 	public val availabilities: Int = 1,
-	@DefaultValue("emptySet()")
+	@param:DefaultValue("emptySet()")
 	public val reservingRights: Set<String> = emptySet(),
-	@DefaultValue("false")
+	@param:DefaultValue("false")
 	public val `public`: Boolean = false,
 ) {
 	// region EmbeddedTimeTableItem-EmbeddedTimeTableItem

@@ -37,7 +37,7 @@ data class DecryptedFinancialInstitutionInformation(
 	override val bic: String? = null,
 	override val proxyBankAccount: String? = null,
 	override val proxyBic: String? = null,
-	@DefaultValue("emptySet()")
+	@param:DefaultValue("emptySet()")
 	override val preferredFiiForPartners: Set<String> = emptySet(),
 	override val encryptedSelf: Base64String? = null,
 ) : FinancialInstitutionInformation {
@@ -54,7 +54,7 @@ data class EncryptedFinancialInstitutionInformation(
 	override val bic: String? = null,
 	override val proxyBankAccount: String? = null,
 	override val proxyBic: String? = null,
-	@DefaultValue("emptySet()")
+	@param:DefaultValue("emptySet()")
 	override val preferredFiiForPartners: Set<String> = emptySet(),
 	override val encryptedSelf: Base64String? = null,
 ) : FinancialInstitutionInformation {

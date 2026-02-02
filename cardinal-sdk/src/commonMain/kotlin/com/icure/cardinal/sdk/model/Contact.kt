@@ -2,6 +2,7 @@ package com.icure.cardinal.sdk.model
 
 import com.icure.cardinal.sdk.model.base.CodeStub
 import com.icure.cardinal.sdk.model.base.HasEncryptionMetadata
+import com.icure.cardinal.sdk.model.base.HasEndOfLife
 import com.icure.cardinal.sdk.model.base.ICureDocument
 import com.icure.cardinal.sdk.model.base.Identifier
 import com.icure.cardinal.sdk.model.base.StoredDocument
@@ -36,7 +37,8 @@ sealed interface Contact :
 	StoredDocument,
 	ICureDocument<String>,
 	HasEncryptionMetadata,
-	Encryptable {
+	Encryptable,
+	HasEndOfLife {
 	override val id: String
 
 	override val rev: String?
@@ -48,8 +50,6 @@ sealed interface Contact :
 	override val author: String?
 
 	override val responsible: String?
-
-	override val medicalLocationId: String?
 
 	override val tags: Set<CodeStub>
 
@@ -109,12 +109,11 @@ data class DecryptedContact(
 	override val modified: Long? = null,
 	override val author: String? = null,
 	override val responsible: String? = null,
-	override val medicalLocationId: String? = null,
-	@DefaultValue("emptySet()")
+	@param:DefaultValue("emptySet()")
 	override val tags: Set<CodeStub> = emptySet(),
-	@DefaultValue("emptySet()")
+	@param:DefaultValue("emptySet()")
 	override val codes: Set<CodeStub> = emptySet(),
-	@DefaultValue("emptyList()")
+	@param:DefaultValue("emptyList()")
 	override val identifier: List<Identifier> = emptyList(),
 	override val endOfLife: Long? = null,
 	override val deletionDate: Long? = null,
@@ -125,23 +124,23 @@ data class DecryptedContact(
 	override val location: String? = null,
 	override val encounterType: CodeStub? = null,
 	override val encounterLocation: DecryptedAddress? = null,
-	@DefaultValue("emptySet()")
+	@param:DefaultValue("emptySet()")
 	override val subContacts: Set<DecryptedSubContact> = emptySet(),
-	@DefaultValue("emptySet()")
+	@param:DefaultValue("emptySet()")
 	override val services: Set<DecryptedService> = emptySet(),
-	@DefaultValue("emptyList()")
+	@param:DefaultValue("emptyList()")
 	override val participantList: List<ContactParticipant> = emptyList(),
-	@DefaultValue("emptySet()")
+	@param:DefaultValue("emptySet()")
 	override val secretForeignKeys: Set<String> = emptySet(),
-	@DefaultValue("emptyMap()")
+	@param:DefaultValue("emptyMap()")
 	override val cryptedForeignKeys: Map<String, Set<Delegation>> = emptyMap(),
-	@DefaultValue("emptyMap()")
+	@param:DefaultValue("emptyMap()")
 	override val delegations: Map<String, Set<Delegation>> = emptyMap(),
-	@DefaultValue("emptyMap()")
+	@param:DefaultValue("emptyMap()")
 	override val encryptionKeys: Map<String, Set<Delegation>> = emptyMap(),
 	override val encryptedSelf: Base64String? = null,
 	override val securityMetadata: SecurityMetadata? = null,
-	@DefaultValue("emptyList()")
+	@param:DefaultValue("emptyList()")
 	override val notes: List<Annotation> = emptyList(),
 ) : Contact {
 	// region Contact-DecryptedContact
@@ -158,12 +157,11 @@ data class EncryptedContact(
 	override val modified: Long? = null,
 	override val author: String? = null,
 	override val responsible: String? = null,
-	override val medicalLocationId: String? = null,
-	@DefaultValue("emptySet()")
+	@param:DefaultValue("emptySet()")
 	override val tags: Set<CodeStub> = emptySet(),
-	@DefaultValue("emptySet()")
+	@param:DefaultValue("emptySet()")
 	override val codes: Set<CodeStub> = emptySet(),
-	@DefaultValue("emptyList()")
+	@param:DefaultValue("emptyList()")
 	override val identifier: List<Identifier> = emptyList(),
 	override val endOfLife: Long? = null,
 	override val deletionDate: Long? = null,
@@ -174,23 +172,23 @@ data class EncryptedContact(
 	override val location: String? = null,
 	override val encounterType: CodeStub? = null,
 	override val encounterLocation: EncryptedAddress? = null,
-	@DefaultValue("emptySet()")
+	@param:DefaultValue("emptySet()")
 	override val subContacts: Set<EncryptedSubContact> = emptySet(),
-	@DefaultValue("emptySet()")
+	@param:DefaultValue("emptySet()")
 	override val services: Set<EncryptedService> = emptySet(),
-	@DefaultValue("emptyList()")
+	@param:DefaultValue("emptyList()")
 	override val participantList: List<ContactParticipant> = emptyList(),
-	@DefaultValue("emptySet()")
+	@param:DefaultValue("emptySet()")
 	override val secretForeignKeys: Set<String> = emptySet(),
-	@DefaultValue("emptyMap()")
+	@param:DefaultValue("emptyMap()")
 	override val cryptedForeignKeys: Map<String, Set<Delegation>> = emptyMap(),
-	@DefaultValue("emptyMap()")
+	@param:DefaultValue("emptyMap()")
 	override val delegations: Map<String, Set<Delegation>> = emptyMap(),
-	@DefaultValue("emptyMap()")
+	@param:DefaultValue("emptyMap()")
 	override val encryptionKeys: Map<String, Set<Delegation>> = emptyMap(),
 	override val encryptedSelf: Base64String? = null,
 	override val securityMetadata: SecurityMetadata? = null,
-	@DefaultValue("emptyList()")
+	@param:DefaultValue("emptyList()")
 	override val notes: List<Annotation> = emptyList(),
 ) : Contact {
 	// region Contact-EncryptedContact

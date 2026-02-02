@@ -35,9 +35,9 @@ sealed interface PatientHealthCareParty : Encryptable {
 data class DecryptedPatientHealthCareParty(
 	override val type: PatientHealthCarePartyType? = null,
 	override val healthcarePartyId: String? = null,
-	@DefaultValue("emptyMap()")
+	@param:DefaultValue("emptyMap()")
 	override val sendFormats: Map<TelecomType, String> = emptyMap(),
-	@DefaultValue("emptyList()")
+	@param:DefaultValue("emptyList()")
 	override val referralPeriods: List<ReferralPeriod> = emptyList(),
 	override val properties: Set<DecryptedPropertyStub>? = null,
 	override val encryptedSelf: Base64String? = null,
@@ -51,9 +51,9 @@ data class DecryptedPatientHealthCareParty(
 data class EncryptedPatientHealthCareParty(
 	override val type: PatientHealthCarePartyType? = null,
 	override val healthcarePartyId: String? = null,
-	@DefaultValue("emptyMap()")
+	@param:DefaultValue("emptyMap()")
 	override val sendFormats: Map<TelecomType, String> = emptyMap(),
-	@DefaultValue("emptyList()")
+	@param:DefaultValue("emptyList()")
 	override val referralPeriods: List<ReferralPeriod> = emptyList(),
 	override val properties: Set<EncryptedPropertyStub>? = null,
 	override val encryptedSelf: Base64String? = null,

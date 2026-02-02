@@ -28,14 +28,14 @@ data class User(
 	override val rev: String? = null,
 	override val deletionDate: Long? = null,
 	public val created: Long? = null,
-	@DefaultValue("emptyList()")
+	@param:DefaultValue("emptyList()")
 	public val identifier: List<Identifier> = emptyList(),
 	public val name: String? = null,
-	@DefaultValue("emptySet()")
+	@param:DefaultValue("emptySet()")
 	public val properties: Set<DecryptedPropertyStub> = emptySet(),
-	@DefaultValue("emptySet()")
+	@param:DefaultValue("emptySet()")
 	public val permissions: Set<Permission> = emptySet(),
-	@DefaultValue("emptySet()")
+	@param:DefaultValue("emptySet()")
 	public val roles: Set<String> = emptySet(),
 	public val status: UsersStatus? = null,
 	public val login: String? = null,
@@ -44,13 +44,13 @@ data class User(
 	public val healthcarePartyId: String? = null,
 	public val patientId: String? = null,
 	public val deviceId: String? = null,
-	@DefaultValue("emptyMap()")
+	@param:DefaultValue("emptyMap()")
 	public val autoDelegations: Map<DelegationTag, Set<String>> = emptyMap(),
 	@Serializable(with = InstantSerializer::class)
 	public val termsOfUseDate: Instant? = null,
 	public val email: String? = null,
 	public val mobilePhone: String? = null,
-	@DefaultValue("emptyMap()")
+	@param:DefaultValue("emptyMap()")
 	public val authenticationTokens: Map<String, AuthenticationToken> = emptyMap(),
 	public val systemMetadata: SystemMetadata? = null,
 ) : StoredDocument {
@@ -59,7 +59,7 @@ data class User(
 		public val roles: Set<String>,
 		public val isAdmin: Boolean,
 		public val inheritsRoles: Boolean,
-		@DefaultValue("emptyList()")
+		@param:DefaultValue("emptyList()")
 		public val loginIdentifiers: List<LoginIdentifier> = emptyList(),
 	)
 	// region User-User

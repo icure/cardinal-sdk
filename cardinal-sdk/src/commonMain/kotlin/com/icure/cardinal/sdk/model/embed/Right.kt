@@ -11,11 +11,11 @@ import kotlin.String
 @Serializable
 data class Right(
 	public val userId: String? = null,
-	@DefaultValue("false")
+	@param:DefaultValue("false")
 	public val read: Boolean = false,
-	@DefaultValue("false")
+	@param:DefaultValue("false")
 	public val write: Boolean = false,
-	@DefaultValue("false")
+	@param:DefaultValue("false")
 	public val administration: Boolean = false,
 ) {
 	// region Right-Right

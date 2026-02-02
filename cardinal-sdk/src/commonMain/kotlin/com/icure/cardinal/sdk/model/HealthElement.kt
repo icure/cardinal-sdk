@@ -2,6 +2,7 @@ package com.icure.cardinal.sdk.model
 
 import com.icure.cardinal.sdk.model.base.CodeStub
 import com.icure.cardinal.sdk.model.base.HasEncryptionMetadata
+import com.icure.cardinal.sdk.model.base.HasEndOfLife
 import com.icure.cardinal.sdk.model.base.ICureDocument
 import com.icure.cardinal.sdk.model.base.Identifier
 import com.icure.cardinal.sdk.model.base.StoredDocument
@@ -36,7 +37,8 @@ sealed interface HealthElement :
 	StoredDocument,
 	ICureDocument<String>,
 	HasEncryptionMetadata,
-	Encryptable {
+	Encryptable,
+	HasEndOfLife {
 	override val id: String
 
 	public val identifiers: List<Identifier>
@@ -109,16 +111,16 @@ sealed interface HealthElement :
 @Serializable
 data class DecryptedHealthElement(
 	override val id: String,
-	@DefaultValue("emptyList()")
+	@param:DefaultValue("emptyList()")
 	override val identifiers: List<Identifier> = emptyList(),
 	override val rev: String? = null,
 	override val created: Long? = null,
 	override val modified: Long? = null,
 	override val author: String? = null,
 	override val responsible: String? = null,
-	@DefaultValue("emptySet()")
+	@param:DefaultValue("emptySet()")
 	override val tags: Set<CodeStub> = emptySet(),
-	@DefaultValue("emptySet()")
+	@param:DefaultValue("emptySet()")
 	override val codes: Set<CodeStub> = emptySet(),
 	override val endOfLife: Long? = null,
 	override val deletionDate: Long? = null,
@@ -127,27 +129,27 @@ data class DecryptedHealthElement(
 	override val closingDate: Long? = null,
 	override val descr: String? = null,
 	override val note: String? = null,
-	@DefaultValue("emptyList()")
+	@param:DefaultValue("emptyList()")
 	override val notes: List<Annotation> = emptyList(),
-	@DefaultValue("true")
+	@param:DefaultValue("true")
 	override val relevant: Boolean = true,
 	override val idOpeningContact: String? = null,
 	override val idClosingContact: String? = null,
 	override val idService: String? = null,
 	override val laterality: Laterality? = null,
-	@DefaultValue("emptyList()")
+	@param:DefaultValue("emptyList()")
 	override val plansOfAction: List<DecryptedPlanOfAction> = emptyList(),
-	@DefaultValue("emptyList()")
+	@param:DefaultValue("emptyList()")
 	override val episodes: List<DecryptedEpisode> = emptyList(),
-	@DefaultValue("emptyList()")
+	@param:DefaultValue("emptyList()")
 	override val careTeam: List<DecryptedCareTeamMember> = emptyList(),
-	@DefaultValue("emptySet()")
+	@param:DefaultValue("emptySet()")
 	override val secretForeignKeys: Set<String> = emptySet(),
-	@DefaultValue("emptyMap()")
+	@param:DefaultValue("emptyMap()")
 	override val cryptedForeignKeys: Map<String, Set<Delegation>> = emptyMap(),
-	@DefaultValue("emptyMap()")
+	@param:DefaultValue("emptyMap()")
 	override val delegations: Map<String, Set<Delegation>> = emptyMap(),
-	@DefaultValue("emptyMap()")
+	@param:DefaultValue("emptyMap()")
 	override val encryptionKeys: Map<String, Set<Delegation>> = emptyMap(),
 	override val encryptedSelf: Base64String? = null,
 	override val securityMetadata: SecurityMetadata? = null,
@@ -161,16 +163,16 @@ override fun copyWithSecurityMetadata(securityMetadata: SecurityMetadata, secret
 @Serializable
 data class EncryptedHealthElement(
 	override val id: String,
-	@DefaultValue("emptyList()")
+	@param:DefaultValue("emptyList()")
 	override val identifiers: List<Identifier> = emptyList(),
 	override val rev: String? = null,
 	override val created: Long? = null,
 	override val modified: Long? = null,
 	override val author: String? = null,
 	override val responsible: String? = null,
-	@DefaultValue("emptySet()")
+	@param:DefaultValue("emptySet()")
 	override val tags: Set<CodeStub> = emptySet(),
-	@DefaultValue("emptySet()")
+	@param:DefaultValue("emptySet()")
 	override val codes: Set<CodeStub> = emptySet(),
 	override val endOfLife: Long? = null,
 	override val deletionDate: Long? = null,
@@ -179,27 +181,27 @@ data class EncryptedHealthElement(
 	override val closingDate: Long? = null,
 	override val descr: String? = null,
 	override val note: String? = null,
-	@DefaultValue("emptyList()")
+	@param:DefaultValue("emptyList()")
 	override val notes: List<Annotation> = emptyList(),
-	@DefaultValue("true")
+	@param:DefaultValue("true")
 	override val relevant: Boolean = true,
 	override val idOpeningContact: String? = null,
 	override val idClosingContact: String? = null,
 	override val idService: String? = null,
 	override val laterality: Laterality? = null,
-	@DefaultValue("emptyList()")
+	@param:DefaultValue("emptyList()")
 	override val plansOfAction: List<EncryptedPlanOfAction> = emptyList(),
-	@DefaultValue("emptyList()")
+	@param:DefaultValue("emptyList()")
 	override val episodes: List<EncryptedEpisode> = emptyList(),
-	@DefaultValue("emptyList()")
+	@param:DefaultValue("emptyList()")
 	override val careTeam: List<EncryptedCareTeamMember> = emptyList(),
-	@DefaultValue("emptySet()")
+	@param:DefaultValue("emptySet()")
 	override val secretForeignKeys: Set<String> = emptySet(),
-	@DefaultValue("emptyMap()")
+	@param:DefaultValue("emptyMap()")
 	override val cryptedForeignKeys: Map<String, Set<Delegation>> = emptyMap(),
-	@DefaultValue("emptyMap()")
+	@param:DefaultValue("emptyMap()")
 	override val delegations: Map<String, Set<Delegation>> = emptyMap(),
-	@DefaultValue("emptyMap()")
+	@param:DefaultValue("emptyMap()")
 	override val encryptionKeys: Map<String, Set<Delegation>> = emptyMap(),
 	override val encryptedSelf: Base64String? = null,
 	override val securityMetadata: SecurityMetadata? = null,

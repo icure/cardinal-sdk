@@ -187,7 +187,7 @@ data class DecryptedInvoicingCode(
 	override val cancelPatientInterventionReason: Int? = null,
 	override val status: Long? = null,
 	override val codeLabel: String? = null,
-	@DefaultValue("emptyMap()")
+	@param:DefaultValue("emptyMap()")
 	override val options: Map<String, String> = emptyMap(),
 	override val encryptedSelf: Base64String? = null,
 ) : InvoicingCode {
@@ -253,7 +253,7 @@ data class EncryptedInvoicingCode(
 	override val cancelPatientInterventionReason: Int? = null,
 	override val status: Long? = null,
 	override val codeLabel: String? = null,
-	@DefaultValue("emptyMap()")
+	@param:DefaultValue("emptyMap()")
 	override val options: Map<String, String> = emptyMap(),
 	override val encryptedSelf: Base64String? = null,
 ) : InvoicingCode {

@@ -12,7 +12,7 @@ import kotlin.String
 class Launcher(
 	public val name: String,
 	public val triggerer: Trigger,
-	@DefaultValue("false")
+	@param:DefaultValue("false")
 	public val shouldPassValue: Boolean = false,
 ) {
 	// region Launcher-Launcher

@@ -29,15 +29,15 @@ data class Code(
 	override val version: String? = null,
 	override val label: Map<String, String>? = null,
 	public val author: String? = null,
-	@DefaultValue("emptySet()")
+	@param:DefaultValue("emptySet()")
 	public val regions: Set<String> = emptySet(),
-	@DefaultValue("emptySet()")
+	@param:DefaultValue("emptySet()")
 	public val links: Set<String> = emptySet(),
-	@DefaultValue("emptyMap()")
+	@param:DefaultValue("emptyMap()")
 	public val qualifiedLinks: Map<String, List<String>> = emptyMap(),
-	@DefaultValue("emptyMap()")
+	@param:DefaultValue("emptyMap()")
 	public val searchTerms: Map<String, Set<String>> = emptyMap(),
-	@DefaultValue("false")
+	@param:DefaultValue("false")
 	public val disabled: Boolean = false,
 ) : StoredDocument, CodeIdentification<String> {
 	// region Code-Code

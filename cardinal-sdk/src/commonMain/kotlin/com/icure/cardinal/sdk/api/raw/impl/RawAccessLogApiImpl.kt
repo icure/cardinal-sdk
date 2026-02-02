@@ -121,7 +121,7 @@ class RawAccessLogApiImpl(
 			accept(Application.Json)
 		}.wrap()
 
-	override suspend fun undeleteAccessLogs(accessLogIds: ListOfIdsAndRev): HttpResponse<List<DocIdentifier>> =
+	override suspend fun undeleteAccessLogs(accessLogIds: ListOfIdsAndRev): HttpResponse<List<EncryptedAccessLog>> =
 		post(authProvider) {
 			url {
 				takeFrom(apiUrl)

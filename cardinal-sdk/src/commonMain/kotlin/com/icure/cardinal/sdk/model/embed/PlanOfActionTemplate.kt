@@ -1,6 +1,7 @@
 package com.icure.cardinal.sdk.model.embed
 
 import com.icure.cardinal.sdk.model.base.CodeStub
+import com.icure.cardinal.sdk.model.base.HasEndOfLife
 import com.icure.cardinal.sdk.model.base.ICureDocument
 import com.icure.cardinal.sdk.model.base.Named
 import com.icure.cardinal.sdk.utils.DefaultValue
@@ -22,22 +23,21 @@ data class PlanOfActionTemplate(
 	override val modified: Long? = null,
 	override val author: String? = null,
 	override val responsible: String? = null,
-	override val medicalLocationId: String? = null,
-	@DefaultValue("emptySet()")
+	@param:DefaultValue("emptySet()")
 	override val tags: Set<CodeStub> = emptySet(),
-	@DefaultValue("emptySet()")
+	@param:DefaultValue("emptySet()")
 	override val codes: Set<CodeStub> = emptySet(),
 	override val endOfLife: Long? = null,
 	override val name: String? = null,
 	public val descr: String? = null,
 	public val note: String? = null,
-	@DefaultValue("true")
+	@param:DefaultValue("true")
 	public val relevant: Boolean = true,
-	@DefaultValue("0")
+	@param:DefaultValue("0")
 	public val status: Int = 0,
-	@DefaultValue("emptyList()")
+	@param:DefaultValue("emptyList()")
 	public val forms: List<FormSkeleton> = emptyList(),
-) : ICureDocument<String>, Named {
+) : ICureDocument<String>, Named, HasEndOfLife {
 	// region PlanOfActionTemplate-PlanOfActionTemplate
 
 	// endregion

@@ -9,9 +9,9 @@ import kotlin.collections.Set
 
 @Serializable
 data class Permission(
-	@DefaultValue("emptySet()")
+	@param:DefaultValue("emptySet()")
 	public val grants: Set<PermissionItem> = emptySet(),
-	@DefaultValue("emptySet()")
+	@param:DefaultValue("emptySet()")
 	public val revokes: Set<PermissionItem> = emptySet(),
 ) {
 	// region Permission-Permission
