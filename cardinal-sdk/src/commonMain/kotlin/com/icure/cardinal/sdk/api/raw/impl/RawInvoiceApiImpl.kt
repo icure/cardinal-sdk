@@ -118,6 +118,17 @@ class RawInvoiceApiImpl(
 			accept(Application.Json)
 		}.wrap()
 
+	override suspend fun undeleteInvoices(invoiceIds: ListOfIdsAndRev): HttpResponse<List<EncryptedInvoice>> =
+		post(authProvider) {
+			url {
+				takeFrom(apiUrl)
+				appendPathSegments("rest", "v2", "invoice", "undelete", "batch")
+			}
+			contentType(Application.Json)
+			accept(Application.Json)
+			setBody(invoiceIds)
+		}.wrap()
+
 	override suspend fun purgeInvoice(
 		invoiceId: String,
 		rev: String,
@@ -129,6 +140,17 @@ class RawInvoiceApiImpl(
 				parameter("rev", rev)
 			}
 			accept(Application.Json)
+		}.wrap()
+
+	override suspend fun purgeInvoices(invoiceIds: ListOfIdsAndRev): HttpResponse<List<DocIdentifier>> =
+		post(authProvider) {
+			url {
+				takeFrom(apiUrl)
+				appendPathSegments("rest", "v2", "invoice", "purge", "batch")
+			}
+			contentType(Application.Json)
+			accept(Application.Json)
+			setBody(invoiceIds)
 		}.wrap()
 
 	override suspend fun getInvoice(invoiceId: String): HttpResponse<EncryptedInvoice> =
@@ -555,6 +577,206 @@ class RawInvoiceApiImpl(
 			contentType(Application.Json)
 			accept(Application.Json)
 			setBody(request)
+		}.wrap()
+
+	// endregion
+
+	// region cloud endpoints
+
+	override suspend fun createInvoiceInGroup(
+		groupId: String,
+		invoiceDto: EncryptedInvoice,
+	): HttpResponse<EncryptedInvoice> =
+		post(authProvider, groupId) {
+			url {
+				takeFrom(apiUrl)
+				appendPathSegments("rest", "v2", "invoice", "inGroup", groupId)
+			}
+			contentType(Application.Json)
+			accept(Application.Json)
+			setBody(invoiceDto)
+		}.wrap()
+
+	override suspend fun createInvoicesInGroup(
+		groupId: String,
+		invoiceDtos: List<EncryptedInvoice>,
+	): HttpResponse<List<EncryptedInvoice>> =
+		post(authProvider, groupId) {
+			url {
+				takeFrom(apiUrl)
+				appendPathSegments("rest", "v2", "invoice", "inGroup", groupId, "batch")
+			}
+			contentType(Application.Json)
+			accept(Application.Json)
+			setBody(invoiceDtos)
+		}.wrap()
+
+	override suspend fun modifyInvoiceInGroup(
+		groupId: String,
+		invoiceDto: EncryptedInvoice,
+	): HttpResponse<EncryptedInvoice> =
+		put(authProvider, groupId) {
+			url {
+				takeFrom(apiUrl)
+				appendPathSegments("rest", "v2", "invoice", "inGroup", groupId)
+			}
+			contentType(Application.Json)
+			accept(Application.Json)
+			setBody(invoiceDto)
+		}.wrap()
+
+	override suspend fun modifyInvoicesInGroup(
+		groupId: String,
+		invoiceDtos: List<EncryptedInvoice>,
+	): HttpResponse<List<EncryptedInvoice>> =
+		put(authProvider, groupId) {
+			url {
+				takeFrom(apiUrl)
+				appendPathSegments("rest", "v2", "invoice", "inGroup", groupId, "batch")
+			}
+			contentType(Application.Json)
+			accept(Application.Json)
+			setBody(invoiceDtos)
+		}.wrap()
+
+	override suspend fun getInvoiceInGroup(
+		groupId: String,
+		invoiceId: String,
+	): HttpResponse<EncryptedInvoice> =
+		get(authProvider, groupId) {
+			url {
+				takeFrom(apiUrl)
+				appendPathSegments("rest", "v2", "invoice", "inGroup", groupId, invoiceId)
+				parameter("ts", GMTDate().timestamp)
+			}
+			accept(Application.Json)
+		}.wrap()
+
+	override suspend fun getInvoicesInGroup(
+		groupId: String,
+		invoiceIds: ListOfIds,
+	): HttpResponse<List<EncryptedInvoice>> =
+		post(authProvider, groupId) {
+			url {
+				takeFrom(apiUrl)
+				appendPathSegments("rest", "v2", "invoice", "inGroup", groupId, "byIds")
+			}
+			contentType(Application.Json)
+			accept(Application.Json)
+			setBody(invoiceIds)
+		}.wrap()
+
+	override suspend fun deleteInvoicesInGroup(
+		groupId: String,
+		invoiceIds: ListOfIdsAndRev,
+	): HttpResponse<List<DocIdentifier>> =
+		post(authProvider, groupId) {
+			url {
+				takeFrom(apiUrl)
+				appendPathSegments("rest", "v2", "invoice", "inGroup", groupId, "delete", "batch")
+			}
+			contentType(Application.Json)
+			accept(Application.Json)
+			setBody(invoiceIds)
+		}.wrap()
+
+	override suspend fun deleteInvoiceInGroup(
+		groupId: String,
+		invoiceId: String,
+		rev: String,
+	): HttpResponse<DocIdentifier> =
+		delete(authProvider, groupId) {
+			url {
+				takeFrom(apiUrl)
+				appendPathSegments("rest", "v2", "invoice", "inGroup", groupId, invoiceId)
+				parameter("rev", rev)
+			}
+			accept(Application.Json)
+		}.wrap()
+
+	override suspend fun undeleteInvoiceInGroup(
+		groupId: String,
+		invoiceId: String,
+		rev: String,
+	): HttpResponse<EncryptedInvoice> =
+		post(authProvider, groupId) {
+			url {
+				takeFrom(apiUrl)
+				appendPathSegments("rest", "v2", "invoice", "inGroup", groupId, "undelete", invoiceId)
+				parameter("rev", rev)
+			}
+			contentType(Application.Json)
+			accept(Application.Json)
+		}.wrap()
+
+	override suspend fun undeleteInvoicesInGroup(
+		groupId: String,
+		invoiceIds: ListOfIdsAndRev,
+	): HttpResponse<List<EncryptedInvoice>> =
+		post(authProvider, groupId) {
+			url {
+				takeFrom(apiUrl)
+				appendPathSegments("rest", "v2", "invoice", "inGroup", groupId, "undelete", "batch")
+			}
+			contentType(Application.Json)
+			accept(Application.Json)
+			setBody(invoiceIds)
+		}.wrap()
+
+	override suspend fun purgeInvoiceInGroup(
+		groupId: String,
+		invoiceId: String,
+		rev: String,
+	): HttpResponse<DocIdentifier> =
+		delete(authProvider, groupId) {
+			url {
+				takeFrom(apiUrl)
+				appendPathSegments("rest", "v2", "invoice", "inGroup", groupId, "purge", invoiceId)
+				parameter("rev", rev)
+			}
+			accept(Application.Json)
+		}.wrap()
+
+	override suspend fun purgeInvoicesInGroup(
+		groupId: String,
+		invoiceIds: ListOfIdsAndRev,
+	): HttpResponse<List<DocIdentifier>> =
+		post(authProvider, groupId) {
+			url {
+				takeFrom(apiUrl)
+				appendPathSegments("rest", "v2", "invoice", "inGroup", groupId, "purge", "batch")
+			}
+			contentType(Application.Json)
+			accept(Application.Json)
+			setBody(invoiceIds)
+		}.wrap()
+
+	override suspend fun bulkShare(
+		request: BulkShareOrUpdateMetadataParams,
+		groupId: String,
+	): HttpResponse<List<EntityBulkShareResult<EncryptedInvoice>>> =
+		put(authProvider, groupId) {
+			url {
+				takeFrom(apiUrl)
+				appendPathSegments("rest", "v2", "invoice", "inGroup", groupId, "bulkSharedMetadataUpdate")
+			}
+			contentType(Application.Json)
+			accept(Application.Json)
+			setBody(request)
+		}.wrap()
+
+	override suspend fun matchInvoicesInGroupBy(
+		filter: AbstractFilter<Invoice>,
+		groupId: String,
+	): HttpResponse<List<String>> =
+		post(authProvider, groupId) {
+			url {
+				takeFrom(apiUrl)
+				appendPathSegments("rest", "v2", "invoice", "inGroup", groupId, "match")
+			}
+			contentType(Application.Json)
+			accept(Application.Json)
+			setBodyWithSerializer(InvoiceAbstractFilterSerializer, filter)
 		}.wrap()
 
 	// endregion

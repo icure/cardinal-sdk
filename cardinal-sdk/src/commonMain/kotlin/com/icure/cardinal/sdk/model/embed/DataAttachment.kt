@@ -12,7 +12,7 @@ import kotlin.collections.List
 data class DataAttachment(
 	public val couchDbAttachmentId: String? = null,
 	public val objectStoreAttachmentId: String? = null,
-	@DefaultValue("emptyList()")
+	@param:DefaultValue("emptyList()")
 	public val utis: List<String> = emptyList(),
 ) {
 	// region DataAttachment-DataAttachment

@@ -12,7 +12,7 @@ import kotlin.collections.Set
 @Serializable
 data class RoleConfiguration(
 	public val source: Source,
-	@DefaultValue("emptySet()")
+	@param:DefaultValue("emptySet()")
 	public val roles: Set<String> = emptySet(),
 ) {
 	@Serializable

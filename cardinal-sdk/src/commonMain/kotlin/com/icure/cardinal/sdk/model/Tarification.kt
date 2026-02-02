@@ -33,36 +33,36 @@ data class Tarification(
 	override val code: String? = null,
 	override val version: String? = null,
 	public val author: String? = null,
-	@DefaultValue("emptySet()")
+	@param:DefaultValue("emptySet()")
 	public val regions: Set<String> = emptySet(),
-	@DefaultValue("emptyList()")
+	@param:DefaultValue("emptyList()")
 	public val periodicity: List<Periodicity> = emptyList(),
 	public val level: Int? = null,
-	@DefaultValue("emptyList()")
+	@param:DefaultValue("emptyList()")
 	public val links: List<String> = emptyList(),
-	@DefaultValue("emptyMap()")
+	@param:DefaultValue("emptyMap()")
 	public val qualifiedLinks: Map<LinkQualification, List<String>> = emptyMap(),
-	@DefaultValue("emptySet()")
+	@param:DefaultValue("emptySet()")
 	public val flags: Set<CodeFlag> = emptySet(),
-	@DefaultValue("emptyMap()")
+	@param:DefaultValue("emptyMap()")
 	public val searchTerms: Map<String, Set<String>> = emptyMap(),
 	public val `data`: String? = null,
-	@DefaultValue("emptyMap()")
+	@param:DefaultValue("emptyMap()")
 	public val appendices: Map<AppendixType, String> = emptyMap(),
-	@DefaultValue("false")
+	@param:DefaultValue("false")
 	public val disabled: Boolean = false,
-	@DefaultValue("emptySet()")
+	@param:DefaultValue("emptySet()")
 	public val valorisations: Set<DecryptedValorisation> = emptySet(),
-	@DefaultValue("emptyMap()")
+	@param:DefaultValue("emptyMap()")
 	public val category: Map<String, String> = emptyMap(),
 	public val consultationCode: Boolean? = null,
 	public val hasRelatedCode: Boolean? = null,
 	public val needsPrescriber: Boolean? = null,
-	@DefaultValue("emptySet()")
+	@param:DefaultValue("emptySet()")
 	public val relatedCodes: Set<String> = emptySet(),
 	@SerialName("nGroup")
 	public val ngroup: String? = null,
-	@DefaultValue("emptyList()")
+	@param:DefaultValue("emptyList()")
 	public val letterValues: List<LetterValue> = emptyList(),
 ) : StoredDocument, CodeIdentification<String> {
 	// region Tarification-Tarification

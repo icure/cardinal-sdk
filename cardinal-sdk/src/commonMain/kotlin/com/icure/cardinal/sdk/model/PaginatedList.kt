@@ -9,7 +9,7 @@ import kotlin.collections.List
 
 @Serializable
 data class PaginatedList<T>(
-	@DefaultValue("emptyList()")
+	@param:DefaultValue("emptyList()")
 	public val rows: List<T> = emptyList(),
 	public val nextKeyPair: PaginatedDocumentKeyIdPair? = null,
 ) {

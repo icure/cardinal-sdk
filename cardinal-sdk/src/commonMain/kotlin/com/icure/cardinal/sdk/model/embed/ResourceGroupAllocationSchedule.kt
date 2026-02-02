@@ -14,14 +14,14 @@ import kotlin.collections.Set
 @Serializable
 data class ResourceGroupAllocationSchedule(
 	public val resourceGroup: CodeStub? = null,
-	@DefaultValue("emptySet()")
+	@param:DefaultValue("emptySet()")
 	public val tags: Set<CodeStub> = emptySet(),
-	@DefaultValue("emptySet()")
+	@param:DefaultValue("emptySet()")
 	public val codes: Set<CodeStub> = emptySet(),
 	public val name: String? = null,
 	public val startDateTime: Long? = null,
 	public val endDateTime: Long? = null,
-	@DefaultValue("emptyList()")
+	@param:DefaultValue("emptyList()")
 	public val items: List<EmbeddedTimeTableItem> = emptyList(),
 ) {
 	// region ResourceGroupAllocationSchedule-ResourceGroupAllocationSchedule

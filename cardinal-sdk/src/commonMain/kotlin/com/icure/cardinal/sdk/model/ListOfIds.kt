@@ -10,7 +10,7 @@ import kotlin.collections.List
 
 @Serializable
 data class ListOfIds(
-	@DefaultValue("emptyList()")
+	@param:DefaultValue("emptyList()")
 	public val ids: List<String> = emptyList(),
 ) {
 	// region ListOfIds-ListOfIds

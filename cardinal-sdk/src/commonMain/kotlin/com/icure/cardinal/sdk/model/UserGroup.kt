@@ -12,7 +12,7 @@ import kotlin.collections.List
 data class UserGroup(
 	public val groupId: String? = null,
 	public val groupName: String? = null,
-	@DefaultValue("emptyList()")
+	@param:DefaultValue("emptyList()")
 	public val groupsHierarchy: List<Group> = emptyList(),
 	public val userId: String? = null,
 	public val login: String? = null,

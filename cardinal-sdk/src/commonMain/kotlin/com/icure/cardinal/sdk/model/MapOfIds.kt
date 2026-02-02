@@ -11,7 +11,7 @@ import kotlin.collections.Map
 
 @Serializable
 data class MapOfIds(
-	@DefaultValue("emptyMap()")
+	@param:DefaultValue("emptyMap()")
 	public val mapOfIds: Map<String, List<String>> = emptyMap(),
 ) {
 	// region MapOfIds-MapOfIds
