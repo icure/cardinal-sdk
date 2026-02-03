@@ -1,6 +1,7 @@
 package com.icure.cardinal.sdk.model
 
 import com.icure.cardinal.sdk.model.base.CodeStub
+import com.icure.cardinal.sdk.model.base.HasEndOfLife
 import com.icure.cardinal.sdk.model.base.ICureDocument
 import com.icure.cardinal.sdk.model.base.StoredDocument
 import com.icure.cardinal.sdk.model.embed.TimeTableItem
@@ -28,10 +29,9 @@ data class TimeTable(
 	override val modified: Long? = null,
 	override val author: String? = null,
 	override val responsible: String? = null,
-	override val medicalLocationId: String? = null,
-	@DefaultValue("emptySet()")
+	@param:DefaultValue("emptySet()")
 	override val tags: Set<CodeStub> = emptySet(),
-	@DefaultValue("emptySet()")
+	@param:DefaultValue("emptySet()")
 	override val codes: Set<CodeStub> = emptySet(),
 	override val endOfLife: Long? = null,
 	override val deletionDate: Long? = null,
@@ -39,9 +39,9 @@ data class TimeTable(
 	public val agendaId: String? = null,
 	public val startTime: Long? = null,
 	public val endTime: Long? = null,
-	@DefaultValue("emptyList()")
+	@param:DefaultValue("emptyList()")
 	public val items: List<TimeTableItem> = emptyList(),
-) : StoredDocument, ICureDocument<String> {
+) : StoredDocument, ICureDocument<String>, HasEndOfLife {
 	// region TimeTable-TimeTable
 
 	// endregion

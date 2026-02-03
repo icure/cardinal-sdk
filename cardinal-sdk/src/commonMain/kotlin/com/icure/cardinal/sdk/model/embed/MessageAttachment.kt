@@ -11,7 +11,7 @@ import kotlin.collections.List
 @Serializable
 data class MessageAttachment(
 	public val type: DocumentLocation? = null,
-	@DefaultValue("emptyList()")
+	@param:DefaultValue("emptyList()")
 	public val ids: List<String> = emptyList(),
 ) {
 	// region MessageAttachment-MessageAttachment

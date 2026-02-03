@@ -16,7 +16,7 @@ import kotlin.collections.Map
 data class ExchangeDataMap(
 	override val id: String,
 	override val rev: String? = null,
-	@DefaultValue("emptyMap()")
+	@param:DefaultValue("emptyMap()")
 	public val encryptedExchangeDataIds: Map<KeypairFingerprintV2String, Base64String> = emptyMap(),
 	override val deletionDate: Long? = null,
 ) : StoredDocument {

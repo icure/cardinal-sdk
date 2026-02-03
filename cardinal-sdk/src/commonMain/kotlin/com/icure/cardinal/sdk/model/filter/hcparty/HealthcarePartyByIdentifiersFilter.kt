@@ -15,7 +15,7 @@ import kotlin.collections.List
 @SerialName("HealthcarePartyByIdentifiersFilter")
 @Serializable
 data class HealthcarePartyByIdentifiersFilter(
-	@DefaultValue("emptyList()")
+	@param:DefaultValue("emptyList()")
 	public val identifiers: List<Identifier> = emptyList(),
 	override val desc: String? = null,
 ) : AbstractFilter<HealthcareParty> {

@@ -15,7 +15,7 @@ import kotlin.String
 @Serializable
 data class PatientByHcPartyAndActiveFilter(
 	override val desc: String? = null,
-	@DefaultValue("false")
+	@param:DefaultValue("false")
 	public val active: Boolean = false,
 	public val healthcarePartyId: String? = null,
 ) : AbstractFilter<Patient> {

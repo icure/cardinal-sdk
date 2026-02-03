@@ -10,10 +10,7 @@ import com.icure.cardinal.sdk.model.embed.Delegation
 import com.icure.cardinal.sdk.model.embed.Encryptable
 import com.icure.cardinal.sdk.model.embed.EncryptedInvoicingCode
 import com.icure.cardinal.sdk.model.embed.IdentityDocumentReader
-import com.icure.cardinal.sdk.model.embed.InvoiceInterventionType
-import com.icure.cardinal.sdk.model.embed.InvoiceType
 import com.icure.cardinal.sdk.model.embed.InvoicingCode
-import com.icure.cardinal.sdk.model.embed.MediumType
 import com.icure.cardinal.sdk.model.embed.Payment
 import com.icure.cardinal.sdk.model.embed.PaymentType
 import com.icure.cardinal.sdk.model.embed.SecurityMetadata
@@ -28,6 +25,9 @@ import kotlin.String
 import kotlin.collections.List
 import kotlin.collections.Map
 import kotlin.collections.Set
+import com.icure.cardinal.sdk.model.embed.InvoiceInterventionType
+import com.icure.cardinal.sdk.model.embed.InvoiceType
+import com.icure.cardinal.sdk.model.embed.MediumType
 
 // WARNING: This file is auto-generated. If you change it manually, your changes will be lost.
 // If you want to change the way this class is generated, see [this repo](https://github.com/icure/sdk-codegen).
@@ -50,13 +50,9 @@ sealed interface Invoice :
 
 	override val responsible: String?
 
-	override val medicalLocationId: String?
-
 	override val tags: Set<CodeStub>
 
 	override val codes: Set<CodeStub>
-
-	override val endOfLife: Long?
 
 	override val deletionDate: Long?
 
@@ -69,8 +65,6 @@ sealed interface Invoice :
 	public val invoicingCodes: List<InvoicingCode>
 
 	public val receipts: Map<String, String>
-
-	public val recipientType: String?
 
 	public val recipientId: String?
 
@@ -86,12 +80,6 @@ sealed interface Invoice :
 
 	public val reason: String?
 
-	public val invoiceType: InvoiceType?
-
-	public val sentMediumType: MediumType?
-
-	public val interventionType: InvoiceInterventionType?
-
 	public val groupId: String?
 
 	public val paymentType: PaymentType?
@@ -99,8 +87,6 @@ sealed interface Invoice :
 	public val paid: Double?
 
 	public val payments: List<Payment>?
-
-	public val gnotionNihii: String?
 
 	public val gnotionSsin: String?
 
@@ -114,8 +100,6 @@ sealed interface Invoice :
 
 	public val careProviderType: String?
 
-	public val internshipNihii: String?
-
 	public val internshipSsin: String?
 
 	public val internshipLastName: String?
@@ -125,8 +109,6 @@ sealed interface Invoice :
 	public val internshipCdHcParty: String?
 
 	public val internshipCbe: String?
-
-	public val supervisorNihii: String?
 
 	public val supervisorSsin: String?
 
@@ -141,8 +123,6 @@ sealed interface Invoice :
 	public val error: String?
 
 	public val encounterLocationName: String?
-
-	public val encounterLocationNihii: String?
 
 	public val encounterLocationNorm: Int?
 
@@ -159,8 +139,6 @@ sealed interface Invoice :
 	public val idDocument: IdentityDocumentReader?
 
 	public val admissionDate: Long?
-
-	public val locationNihii: String?
 
 	public val locationService: Int?
 
@@ -190,27 +168,24 @@ sealed interface Invoice :
 data class DecryptedInvoice(
 	override val id: String,
 	override val rev: String? = null,
-	@DefaultValue("emptyList()")
+	@param:DefaultValue("emptyList()")
 	override val identifier: List<Identifier> = emptyList(),
 	override val created: Long? = null,
 	override val modified: Long? = null,
 	override val author: String? = null,
 	override val responsible: String? = null,
-	override val medicalLocationId: String? = null,
-	@DefaultValue("emptySet()")
+	@param:DefaultValue("emptySet()")
 	override val tags: Set<CodeStub> = emptySet(),
-	@DefaultValue("emptySet()")
+	@param:DefaultValue("emptySet()")
 	override val codes: Set<CodeStub> = emptySet(),
-	override val endOfLife: Long? = null,
 	override val deletionDate: Long? = null,
 	override val invoiceDate: Long? = null,
 	override val sentDate: Long? = null,
 	override val printedDate: Long? = null,
-	@DefaultValue("emptyList()")
+	@param:DefaultValue("emptyList()")
 	override val invoicingCodes: List<DecryptedInvoicingCode> = emptyList(),
-	@DefaultValue("emptyMap()")
+	@param:DefaultValue("emptyMap()")
 	override val receipts: Map<String, String> = emptyMap(),
-	override val recipientType: String? = null,
 	override val recipientId: String? = null,
 	override val invoiceReference: String? = null,
 	override val decisionReference: String? = null,
@@ -218,27 +193,21 @@ data class DecryptedInvoice(
 	override val thirdPartyPaymentJustification: String? = null,
 	override val thirdPartyPaymentReason: String? = null,
 	override val reason: String? = null,
-	override val invoiceType: InvoiceType? = null,
-	override val sentMediumType: MediumType? = null,
-	override val interventionType: InvoiceInterventionType? = null,
 	override val groupId: String? = null,
 	override val paymentType: PaymentType? = null,
 	override val paid: Double? = null,
 	override val payments: List<Payment>? = null,
-	override val gnotionNihii: String? = null,
 	override val gnotionSsin: String? = null,
 	override val gnotionLastName: String? = null,
 	override val gnotionFirstName: String? = null,
 	override val gnotionCdHcParty: String? = null,
 	override val invoicePeriod: Int? = null,
 	override val careProviderType: String? = null,
-	override val internshipNihii: String? = null,
 	override val internshipSsin: String? = null,
 	override val internshipLastName: String? = null,
 	override val internshipFirstName: String? = null,
 	override val internshipCdHcParty: String? = null,
 	override val internshipCbe: String? = null,
-	override val supervisorNihii: String? = null,
 	override val supervisorSsin: String? = null,
 	override val supervisorLastName: String? = null,
 	override val supervisorFirstName: String? = null,
@@ -246,7 +215,6 @@ data class DecryptedInvoice(
 	override val supervisorCbe: String? = null,
 	override val error: String? = null,
 	override val encounterLocationName: String? = null,
-	override val encounterLocationNihii: String? = null,
 	override val encounterLocationNorm: Int? = null,
 	override val longDelayJustification: Int? = null,
 	override val correctiveInvoiceId: String? = null,
@@ -255,19 +223,18 @@ data class DecryptedInvoice(
 	override val creditNoteRelatedInvoiceId: String? = null,
 	override val idDocument: IdentityDocumentReader? = null,
 	override val admissionDate: Long? = null,
-	override val locationNihii: String? = null,
 	override val locationService: Int? = null,
 	override val cancelReason: String? = null,
 	override val cancelDate: Long? = null,
-	@DefaultValue("emptyMap()")
+	@param:DefaultValue("emptyMap()")
 	override val options: Map<String, String> = emptyMap(),
-	@DefaultValue("emptySet()")
+	@param:DefaultValue("emptySet()")
 	override val secretForeignKeys: Set<String> = emptySet(),
-	@DefaultValue("emptyMap()")
+	@param:DefaultValue("emptyMap()")
 	override val cryptedForeignKeys: Map<String, Set<Delegation>> = emptyMap(),
-	@DefaultValue("emptyMap()")
+	@param:DefaultValue("emptyMap()")
 	override val delegations: Map<String, Set<Delegation>> = emptyMap(),
-	@DefaultValue("emptyMap()")
+	@param:DefaultValue("emptyMap()")
 	override val encryptionKeys: Map<String, Set<Delegation>> = emptyMap(),
 	override val encryptedSelf: Base64String? = null,
 	override val securityMetadata: SecurityMetadata? = null,
@@ -282,27 +249,24 @@ override fun copyWithSecurityMetadata(securityMetadata: SecurityMetadata, secret
 data class EncryptedInvoice(
 	override val id: String,
 	override val rev: String? = null,
-	@DefaultValue("emptyList()")
+	@param:DefaultValue("emptyList()")
 	override val identifier: List<Identifier> = emptyList(),
 	override val created: Long? = null,
 	override val modified: Long? = null,
 	override val author: String? = null,
 	override val responsible: String? = null,
-	override val medicalLocationId: String? = null,
-	@DefaultValue("emptySet()")
+	@param:DefaultValue("emptySet()")
 	override val tags: Set<CodeStub> = emptySet(),
-	@DefaultValue("emptySet()")
+	@param:DefaultValue("emptySet()")
 	override val codes: Set<CodeStub> = emptySet(),
-	override val endOfLife: Long? = null,
 	override val deletionDate: Long? = null,
 	override val invoiceDate: Long? = null,
 	override val sentDate: Long? = null,
 	override val printedDate: Long? = null,
-	@DefaultValue("emptyList()")
+	@param:DefaultValue("emptyList()")
 	override val invoicingCodes: List<EncryptedInvoicingCode> = emptyList(),
-	@DefaultValue("emptyMap()")
+	@param:DefaultValue("emptyMap()")
 	override val receipts: Map<String, String> = emptyMap(),
-	override val recipientType: String? = null,
 	override val recipientId: String? = null,
 	override val invoiceReference: String? = null,
 	override val decisionReference: String? = null,
@@ -310,27 +274,21 @@ data class EncryptedInvoice(
 	override val thirdPartyPaymentJustification: String? = null,
 	override val thirdPartyPaymentReason: String? = null,
 	override val reason: String? = null,
-	override val invoiceType: InvoiceType? = null,
-	override val sentMediumType: MediumType? = null,
-	override val interventionType: InvoiceInterventionType? = null,
 	override val groupId: String? = null,
 	override val paymentType: PaymentType? = null,
 	override val paid: Double? = null,
 	override val payments: List<Payment>? = null,
-	override val gnotionNihii: String? = null,
 	override val gnotionSsin: String? = null,
 	override val gnotionLastName: String? = null,
 	override val gnotionFirstName: String? = null,
 	override val gnotionCdHcParty: String? = null,
 	override val invoicePeriod: Int? = null,
 	override val careProviderType: String? = null,
-	override val internshipNihii: String? = null,
 	override val internshipSsin: String? = null,
 	override val internshipLastName: String? = null,
 	override val internshipFirstName: String? = null,
 	override val internshipCdHcParty: String? = null,
 	override val internshipCbe: String? = null,
-	override val supervisorNihii: String? = null,
 	override val supervisorSsin: String? = null,
 	override val supervisorLastName: String? = null,
 	override val supervisorFirstName: String? = null,
@@ -338,7 +296,6 @@ data class EncryptedInvoice(
 	override val supervisorCbe: String? = null,
 	override val error: String? = null,
 	override val encounterLocationName: String? = null,
-	override val encounterLocationNihii: String? = null,
 	override val encounterLocationNorm: Int? = null,
 	override val longDelayJustification: Int? = null,
 	override val correctiveInvoiceId: String? = null,
@@ -347,19 +304,18 @@ data class EncryptedInvoice(
 	override val creditNoteRelatedInvoiceId: String? = null,
 	override val idDocument: IdentityDocumentReader? = null,
 	override val admissionDate: Long? = null,
-	override val locationNihii: String? = null,
 	override val locationService: Int? = null,
 	override val cancelReason: String? = null,
 	override val cancelDate: Long? = null,
-	@DefaultValue("emptyMap()")
+	@param:DefaultValue("emptyMap()")
 	override val options: Map<String, String> = emptyMap(),
-	@DefaultValue("emptySet()")
+	@param:DefaultValue("emptySet()")
 	override val secretForeignKeys: Set<String> = emptySet(),
-	@DefaultValue("emptyMap()")
+	@param:DefaultValue("emptyMap()")
 	override val cryptedForeignKeys: Map<String, Set<Delegation>> = emptyMap(),
-	@DefaultValue("emptyMap()")
+	@param:DefaultValue("emptyMap()")
 	override val delegations: Map<String, Set<Delegation>> = emptyMap(),
-	@DefaultValue("emptyMap()")
+	@param:DefaultValue("emptyMap()")
 	override val encryptionKeys: Map<String, Set<Delegation>> = emptyMap(),
 	override val encryptedSelf: Base64String? = null,
 	override val securityMetadata: SecurityMetadata? = null,

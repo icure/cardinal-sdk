@@ -35,9 +35,9 @@ data class FormTemplate(
 	public val shortReport: String? = null,
 	public val mediumReport: String? = null,
 	public val longReport: String? = null,
-	@DefaultValue("emptySet()")
+	@param:DefaultValue("emptySet()")
 	public val reports: Set<String> = emptySet(),
-	@DefaultValue("emptySet()")
+	@param:DefaultValue("emptySet()")
 	public val tags: Set<CodeStub> = emptySet(),
 	public val layoutAttachmentId: String? = null,
 	public val templateLayoutAttachmentId: String? = null,

@@ -11,7 +11,7 @@ import kotlin.collections.Map
 @Serializable
 data class PostalCode(
 	public val code: String? = null,
-	@DefaultValue("emptyMap()")
+	@param:DefaultValue("emptyMap()")
 	public val label: Map<String, String> = emptyMap(),
 ) {
 	// region PostalCode-PostalCode

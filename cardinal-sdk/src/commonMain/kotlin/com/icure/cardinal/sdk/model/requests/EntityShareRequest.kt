@@ -18,14 +18,14 @@ data class EntityShareRequest(
 	public val explicitDelegator: String? = null,
 	public val explicitDelegate: String? = null,
 	public val accessControlKeys: Set<AccessControlKeyHexString>,
-	@DefaultValue("emptySet()")
+	@param:DefaultValue("emptySet()")
 	public val secretIds: Set<Base64String> = emptySet(),
-	@DefaultValue("emptySet()")
+	@param:DefaultValue("emptySet()")
 	public val encryptionKeys: Set<Base64String> = emptySet(),
-	@DefaultValue("emptySet()")
+	@param:DefaultValue("emptySet()")
 	public val owningEntityIds: Set<Base64String> = emptySet(),
 	public val exchangeDataId: String? = null,
-	@DefaultValue("emptyMap()")
+	@param:DefaultValue("emptyMap()")
 	public val encryptedExchangeDataId: Map<KeypairFingerprintV2String, Base64String> = emptyMap(),
 	public val requestedPermissions: RequestedPermission,
 ) {

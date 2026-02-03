@@ -6,7 +6,6 @@ import com.icure.cardinal.sdk.model.base.ICureDocument
 import com.icure.cardinal.sdk.model.base.StoredDocument
 import com.icure.cardinal.sdk.model.embed.Delegation
 import com.icure.cardinal.sdk.model.embed.Encryptable
-import com.icure.cardinal.sdk.model.embed.ReceiptBlobType
 import com.icure.cardinal.sdk.model.embed.SecurityMetadata
 import com.icure.cardinal.sdk.model.specializations.Base64String
 import com.icure.cardinal.sdk.utils.DefaultValue
@@ -16,6 +15,7 @@ import kotlin.String
 import kotlin.collections.List
 import kotlin.collections.Map
 import kotlin.collections.Set
+import com.icure.cardinal.sdk.model.embed.ReceiptBlobType
 
 // WARNING: This file is auto-generated. If you change it manually, your changes will be lost.
 // If you want to change the way this class is generated, see [this repo](https://github.com/icure/sdk-codegen).
@@ -36,17 +36,11 @@ sealed interface Receipt :
 
 	override val responsible: String?
 
-	override val medicalLocationId: String?
-
 	override val tags: Set<CodeStub>
 
 	override val codes: Set<CodeStub>
 
-	override val endOfLife: Long?
-
 	override val deletionDate: Long?
-
-	public val attachmentIds: Map<ReceiptBlobType, String>
 
 	public val references: List<String>
 
@@ -80,27 +74,23 @@ data class DecryptedReceipt(
 	override val modified: Long? = null,
 	override val author: String? = null,
 	override val responsible: String? = null,
-	override val medicalLocationId: String? = null,
-	@DefaultValue("emptySet()")
+	@param:DefaultValue("emptySet()")
 	override val tags: Set<CodeStub> = emptySet(),
-	@DefaultValue("emptySet()")
+	@param:DefaultValue("emptySet()")
 	override val codes: Set<CodeStub> = emptySet(),
-	override val endOfLife: Long? = null,
 	override val deletionDate: Long? = null,
-	@DefaultValue("emptyMap()")
-	override val attachmentIds: Map<ReceiptBlobType, String> = emptyMap(),
-	@DefaultValue("emptyList()")
+	@param:DefaultValue("emptyList()")
 	override val references: List<String> = emptyList(),
 	override val documentId: String? = null,
 	override val category: String? = null,
 	override val subCategory: String? = null,
-	@DefaultValue("emptySet()")
+	@param:DefaultValue("emptySet()")
 	override val secretForeignKeys: Set<String> = emptySet(),
-	@DefaultValue("emptyMap()")
+	@param:DefaultValue("emptyMap()")
 	override val cryptedForeignKeys: Map<String, Set<Delegation>> = emptyMap(),
-	@DefaultValue("emptyMap()")
+	@param:DefaultValue("emptyMap()")
 	override val delegations: Map<String, Set<Delegation>> = emptyMap(),
-	@DefaultValue("emptyMap()")
+	@param:DefaultValue("emptyMap()")
 	override val encryptionKeys: Map<String, Set<Delegation>> = emptyMap(),
 	override val encryptedSelf: Base64String? = null,
 	override val securityMetadata: SecurityMetadata? = null,
@@ -119,27 +109,23 @@ data class EncryptedReceipt(
 	override val modified: Long? = null,
 	override val author: String? = null,
 	override val responsible: String? = null,
-	override val medicalLocationId: String? = null,
-	@DefaultValue("emptySet()")
+	@param:DefaultValue("emptySet()")
 	override val tags: Set<CodeStub> = emptySet(),
-	@DefaultValue("emptySet()")
+	@param:DefaultValue("emptySet()")
 	override val codes: Set<CodeStub> = emptySet(),
-	override val endOfLife: Long? = null,
 	override val deletionDate: Long? = null,
-	@DefaultValue("emptyMap()")
-	override val attachmentIds: Map<ReceiptBlobType, String> = emptyMap(),
-	@DefaultValue("emptyList()")
+	@param:DefaultValue("emptyList()")
 	override val references: List<String> = emptyList(),
 	override val documentId: String? = null,
 	override val category: String? = null,
 	override val subCategory: String? = null,
-	@DefaultValue("emptySet()")
+	@param:DefaultValue("emptySet()")
 	override val secretForeignKeys: Set<String> = emptySet(),
-	@DefaultValue("emptyMap()")
+	@param:DefaultValue("emptyMap()")
 	override val cryptedForeignKeys: Map<String, Set<Delegation>> = emptyMap(),
-	@DefaultValue("emptyMap()")
+	@param:DefaultValue("emptyMap()")
 	override val delegations: Map<String, Set<Delegation>> = emptyMap(),
-	@DefaultValue("emptyMap()")
+	@param:DefaultValue("emptyMap()")
 	override val encryptionKeys: Map<String, Set<Delegation>> = emptyMap(),
 	override val encryptedSelf: Base64String? = null,
 	override val securityMetadata: SecurityMetadata? = null,

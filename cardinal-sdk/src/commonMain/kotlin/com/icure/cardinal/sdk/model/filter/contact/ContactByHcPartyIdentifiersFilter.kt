@@ -17,7 +17,7 @@ import kotlin.collections.List
 data class ContactByHcPartyIdentifiersFilter(
 	public val healthcarePartyId: String? = null,
 	override val desc: String? = null,
-	@DefaultValue("emptyList()")
+	@param:DefaultValue("emptyList()")
 	public val identifiers: List<Identifier> = emptyList(),
 ) : AbstractFilter<Contact> {
 	// region ContactByHcPartyIdentifiersFilter-ContactByHcPartyIdentifiersFilter
