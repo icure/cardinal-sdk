@@ -28,7 +28,7 @@ sealed interface InvoicingCode : Encryptable {
 
 	public val serviceId: String?
 
-	public val tarificationId: String?
+	public val pricingId: String?
 
 	public val code: String?
 

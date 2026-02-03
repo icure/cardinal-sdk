@@ -27,7 +27,7 @@ data class Tarification(
 	override val id: String,
 	override val rev: String? = null,
 	override val deletionDate: Long? = null,
-	override val label: Map<String, String>? = null,
+	public val label: Map<String, String>? = null,
 	override val context: String? = null,
 	override val type: String? = null,
 	override val code: String? = null,

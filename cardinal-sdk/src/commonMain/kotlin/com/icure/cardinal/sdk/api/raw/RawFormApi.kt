@@ -265,12 +265,6 @@ public interface RawFormApi {
 		ft: FormTemplate,
 	): HttpResponse<FormTemplate>
 
-	suspend fun setTemplateAttachmentMultiInGroup(
-		groupId: String,
-		formTemplateId: String,
-		payload: Nothing,
-	): HttpResponse<String>
-
 	suspend fun setTemplateAttachmentInGroup(
 		groupId: String,
 		formTemplateId: String,

@@ -8,6 +8,7 @@ import com.icure.cardinal.sdk.model.embed.DataAttachment
 import com.icure.cardinal.sdk.model.embed.Delegation
 import com.icure.cardinal.sdk.model.embed.DeletedAttachment
 import com.icure.cardinal.sdk.model.embed.DocumentStatus
+import com.icure.cardinal.sdk.model.embed.DocumentType
 import com.icure.cardinal.sdk.model.embed.Encryptable
 import com.icure.cardinal.sdk.model.embed.SecurityMetadata
 import com.icure.cardinal.sdk.model.specializations.Base64String
@@ -19,7 +20,6 @@ import kotlin.collections.List
 import kotlin.collections.Map
 import kotlin.collections.Set
 import com.icure.cardinal.sdk.model.embed.DocumentLocation
-import com.icure.cardinal.sdk.model.embed.DocumentType
 import com.icure.cardinal.sdk.serialization.ByteArraySerializer
 import kotlin.ByteArray
 

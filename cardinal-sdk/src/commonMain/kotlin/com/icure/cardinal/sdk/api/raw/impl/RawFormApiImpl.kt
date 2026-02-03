@@ -837,14 +837,6 @@ class RawFormApiImpl(
 			setBody(ft)
 		}.wrap()
 
-	override suspend fun setTemplateAttachmentMultiInGroup(
-		groupId: String,
-		formTemplateId: String,
-		payload: Nothing,
-	): HttpResponse<String> {
-		// TODO: It is not worth to auto-generate this
-	}
-
 	override suspend fun setTemplateAttachmentInGroup(
 		groupId: String,
 		formTemplateId: String,
