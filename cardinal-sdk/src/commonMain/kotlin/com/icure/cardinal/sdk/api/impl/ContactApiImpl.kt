@@ -195,7 +195,6 @@ internal fun Service.asIcureStub(): IcureStub {
 		modified = modified,
 		author = author,
 		responsible = responsible,
-		medicalLocationId = medicalLocationId,
 		tags = tags,
 		codes = codes,
 		endOfLife = endOfLife,

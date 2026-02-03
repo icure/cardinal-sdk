@@ -46,7 +46,7 @@ internal abstract class AbstractCalendarItemTypeApi(
 	protected suspend fun doGetCalendarItemTypes(groupId: String?, entityIds: List<String>): List<CalendarItemType> =
 		skipRequestOnEmptyList(entityIds) { ids ->
 			if (groupId == null) {
-				rawApi.getCalendarItemTypesById(ListOfIds(ids))
+				rawApi.getCalendarItemTypesByIds(ListOfIds(ids))
 			} else {
 				rawApi.getCalendarItemTypesInGroup(groupId, ListOfIds(ids))
 			}.successBody()

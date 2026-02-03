@@ -143,45 +143,6 @@ class RawTopicApiImpl(
 			setBody(topicDtos)
 		}.wrap()
 
-	override suspend fun createTopics(topicDtos: List<EncryptedTopic>): HttpResponse<List<EncryptedTopic>> =
-		post(authProvider) {
-			url {
-				takeFrom(apiUrl)
-				appendPathSegments("rest", "v2", "topic", "batch")
-			}
-			contentType(Application.Json)
-			accept(Application.Json)
-			setBody(topicDtos)
-		}.wrap()
-
-	override suspend fun createTopicInGroup(
-		groupId: String,
-		topicDto: EncryptedTopic,
-	): HttpResponse<EncryptedTopic> =
-		post(authProvider, groupId) {
-			url {
-				takeFrom(apiUrl)
-				appendPathSegments("rest", "v2", "topic", "inGroup", groupId)
-			}
-			contentType(Application.Json)
-			accept(Application.Json)
-			setBody(topicDto)
-		}.wrap()
-
-	override suspend fun createTopicsInGroup(
-		groupId: String,
-		topicDtos: List<EncryptedTopic>,
-	): HttpResponse<List<EncryptedTopic>> =
-		post(authProvider, groupId) {
-			url {
-				takeFrom(apiUrl)
-				appendPathSegments("rest", "v2", "topic", "inGroup", groupId, "batch")
-			}
-			contentType(Application.Json)
-			accept(Application.Json)
-			setBody(topicDtos)
-		}.wrap()
-
 	override suspend fun modifyTopic(topicDto: EncryptedTopic): HttpResponse<EncryptedTopic> =
 		put(authProvider) {
 			url {
@@ -265,34 +226,6 @@ class RawTopicApiImpl(
 				parameter("rev", rev)
 			}
 			accept(Application.Json)
-		}.wrap()
-
-	override suspend fun deleteTopicInGroup(
-		groupId: String,
-		topicId: String,
-		rev: String,
-	): HttpResponse<DocIdentifier> =
-		delete(authProvider, groupId) {
-			url {
-				takeFrom(apiUrl)
-				appendPathSegments("rest", "v2", "topic", "inGroup", groupId, topicId)
-				parameter("rev", rev)
-			}
-			accept(Application.Json)
-		}.wrap()
-
-	override suspend fun deleteTopicsInGroup(
-		groupId: String,
-		topicIds: ListOfIdsAndRev,
-	): HttpResponse<List<DocIdentifier>> =
-		post(authProvider, groupId) {
-			url {
-				takeFrom(apiUrl)
-				appendPathSegments("rest", "v2", "topic", "inGroup", groupId, "delete", "batch")
-			}
-			contentType(Application.Json)
-			accept(Application.Json)
-			setBody(topicIds)
 		}.wrap()
 
 	override suspend fun deleteTopicInGroup(

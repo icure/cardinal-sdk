@@ -233,28 +233,6 @@ class RawFormApiImpl(
 			setBody(formIds)
 		}.wrap()
 
-	override suspend fun purgeForms(formIds: ListOfIdsAndRev): HttpResponse<List<DocIdentifier>> =
-		post(authProvider) {
-			url {
-				takeFrom(apiUrl)
-				appendPathSegments("rest", "v2", "form", "purge", "batch")
-			}
-			contentType(Application.Json)
-			accept(Application.Json)
-			setBody(formIds)
-		}.wrap()
-
-	override suspend fun purgeForms(formIds: ListOfIdsAndRev): HttpResponse<List<DocIdentifier>> =
-		post(authProvider) {
-			url {
-				takeFrom(apiUrl)
-				appendPathSegments("rest", "v2", "form", "purge", "batch")
-			}
-			contentType(Application.Json)
-			accept(Application.Json)
-			setBody(formIds)
-		}.wrap()
-
 	override suspend fun modifyForms(formDtos: List<EncryptedForm>): HttpResponse<List<EncryptedForm>> =
 		put(authProvider) {
 			url {
