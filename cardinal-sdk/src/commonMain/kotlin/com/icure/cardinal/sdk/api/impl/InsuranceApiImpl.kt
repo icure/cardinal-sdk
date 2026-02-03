@@ -182,7 +182,7 @@ internal class InsuranceInGroupApiImpl(
 		groupScopedWith(insurance) { groupId, entity -> doCreateInsurance(groupId, entity) }
 
 	override suspend fun createInsurances(insurances: List<GroupScoped<Insurance>>): List<GroupScoped<Insurance>> {
-		basicRequireIsValidForCreation(insurances)
+		basicRequireIsValidForCreationInGroup(insurances)
 		return insurances.mapUniqueIdentifiablesChunkedByGroup { groupId, chunk ->
 			doCreateInsurances(groupId, chunk)
 		}
@@ -198,7 +198,7 @@ internal class InsuranceInGroupApiImpl(
 		groupScopedWith(insurance) { groupId, entity -> doModifyInsurance(groupId, entity) }
 
 	override suspend fun modifyInsurances(insurances: List<GroupScoped<Insurance>>): List<GroupScoped<Insurance>> {
-		requireIsValidForModification(insurances)
+		requireIsValidForModificationInGroup(insurances)
 		return insurances.mapUniqueIdentifiablesChunkedByGroup { groupId, chunk ->
 			doModifyInsurances(groupId, chunk)
 		}

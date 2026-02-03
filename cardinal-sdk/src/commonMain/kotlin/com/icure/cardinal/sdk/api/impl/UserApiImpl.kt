@@ -288,7 +288,7 @@ internal class UserInGroupApiImpl(
 	}
 
 	override suspend fun createUsers(users: List<GroupScoped<User>>): List<GroupScoped<User>> {
-		basicRequireIsValidForCreation(users)
+		basicRequireIsValidForCreationInGroup(users)
 		return users.mapUniqueIdentifiablesChunkedByGroup { groupId, chunk ->
 			doCreateUsers(groupId = groupId, entities = chunk)
 		}
@@ -310,7 +310,7 @@ internal class UserInGroupApiImpl(
 	}
 
 	override suspend fun modifyUsers(users: List<GroupScoped<User>>): List<GroupScoped<User>> {
-		requireIsValidForModification(users)
+		requireIsValidForModificationInGroup(users)
 		return users.mapUniqueIdentifiablesChunkedByGroup { groupId, chunk ->
 			doModifyUsers(groupId = groupId, entities = chunk)
 		}

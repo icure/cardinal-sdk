@@ -84,21 +84,13 @@ private fun tryAndRecoverApiFlavour(
 )
 
 @InternalIcureApi
-private open class AbstractAccessLogBasicFlavouredApi<E : AccessLog>(
+private abstract class AbstractAccessLogBasicFlavoured<E : AccessLog>(
 	protected val rawApi: RawAccessLogApi,
 	protected open val config: BasicApiConfiguration,
 	protected val flavour: FlavouredApi<EncryptedAccessLog, E>
-) : AccessLogBasicFlavouredApi<E>,
-	AccessLogBasicFlavouredInGroupApi<E>,
-	FlavouredApi<EncryptedAccessLog, E> by flavour {
+) : FlavouredApi<EncryptedAccessLog, E> by flavour {
 
-	override suspend fun createAccessLog(entity: E): E =
-		doCreateAccessLog(groupId = null, entity)
-
-	override suspend fun createAccessLog(entity: GroupScoped<E>): GroupScoped<E> =
-		GroupScoped(doCreateAccessLog(entity.groupId, entity.entity), entity.groupId)
-
-	private suspend fun doCreateAccessLog(groupId: String?, entity: E): E {
+	protected suspend fun doCreateAccessLog(groupId: String?, entity: E): E {
 		requireIsValidForCreation(entity)
 		val encrypted = validateAndMaybeEncrypt(groupId, entity)
 		return (
@@ -112,20 +104,8 @@ private open class AbstractAccessLogBasicFlavouredApi<E : AccessLog>(
 		}
 	}
 
-	override suspend fun createAccessLogs(entities: List<E>): List<E> {
-		requireIsValidForCreation(entities)
-		return doCreateAccessLogs(groupId = null, entities)
-	}
-
-	override suspend fun createAccessLogs(entities: List<GroupScoped<E>>): List<GroupScoped<E>> {
-		requireIsValidForCreation(entities)
-		return entities.mapUniqueIdentifiablesChunkedByGroup { groupId, batch ->
-			doCreateAccessLogs(groupId, batch)
-		}
-	}
-
-	private suspend fun doCreateAccessLogs(groupId: String?, entities: List<E>): List<E> = skipRequestOnEmptyList(entities) { accessLogs ->
-		val encrypted = validateAndMaybeEncrypt(entitiesGroupId = groupId, entities)
+	protected suspend fun doCreateAccessLogs(groupId: String?, entities: List<E>): List<E> = skipRequestOnEmptyList(entities) { accessLogs ->
+		val encrypted = validateAndMaybeEncrypt(entitiesGroupId = groupId, entities = accessLogs)
 		if (groupId == null) {
 			rawApi.createAccessLogs(encrypted)
 		} else {
@@ -135,40 +115,7 @@ private open class AbstractAccessLogBasicFlavouredApi<E : AccessLog>(
 		}
 	}
 
-	override suspend fun undeleteAccessLogById(id: String, rev: String): E =
-		rawApi.undeleteAccessLog(id, rev).successBodyOrThrowRevisionConflict().let { maybeDecrypt(entitiesGroupId = null, entity = it) }
-
-	override suspend fun undeleteAccessLogById(entityId: GroupScoped<StoredDocumentIdentifier>): GroupScoped<E> =
-		rawApi.undeleteAccessLogInGroup(entityId.groupId, entityId.entity.id, entityId.entity.rev)
-			.successBodyOrThrowRevisionConflict()
-			.let { GroupScoped(entity = maybeDecrypt(entitiesGroupId = entityId.groupId, entity = it), groupId = entityId.groupId) }
-
-	override suspend fun undeleteAccessLogsByIds(entityIds: List<StoredDocumentIdentifier>): List<E> = skipRequestOnEmptyList(entityIds) { ids ->
-		rawApi.undeleteAccessLogs(ListOfIdsAndRev(ids = ids)).successBody().let {
-			maybeDecrypt(entitiesGroupId = null, entities = it)
-		}
-	}
-
-	override suspend fun undeleteAccessLogsByIds(entityIds: List<GroupScoped<StoredDocumentIdentifier>>): List<GroupScoped<E>> =
-		skipRequestOnEmptyList(entityIds) { ids ->
-			ids.mapUniqueIdentifiablesChunkedByGroup { groupId, batch ->
-				rawApi.undeleteAccessLogsInGroup(
-					groupId = groupId,
-					accessLogIdsAndRevs = ListOfIdsAndRev(ids = batch),
-				).successBody().let {
-					maybeDecrypt(entitiesGroupId = groupId, entities = it)
-				}
-			}
-		}
-	override suspend fun modifyAccessLog(entity: E): E = doModifyAccessLog(groupId = null, entity)
-
-	override suspend fun modifyAccessLog(entity: GroupScoped<E>): GroupScoped<E> =
-		GroupScoped(
-			doModifyAccessLog(entity.groupId, entity.entity),
-			entity.groupId
-		)
-
-	private suspend fun doModifyAccessLog(groupId: String?, entity: E): E {
+	protected suspend fun doModifyAccessLog(groupId: String?, entity: E): E {
 		requireIsValidForModification(entity)
 		val encrypted = validateAndMaybeEncrypt(groupId, entity)
 		return (
@@ -179,20 +126,8 @@ private open class AbstractAccessLogBasicFlavouredApi<E : AccessLog>(
 		}
 	}
 
-	override suspend fun modifyAccessLogs(entities: List<E>): List<E> {
-		requireIsValidForModification(entities)
-		return doModifyAccessLogs(groupId = null, entities)
-	}
-
-	override suspend fun modifyAccessLogs(entities: List<GroupScoped<E>>): List<GroupScoped<E>> {
-		requireIsValidForModification(entities)
-		return entities.mapUniqueIdentifiablesChunkedByGroup { groupId, batch ->
-			doModifyAccessLogs(groupId, batch)
-		}
-	}
-
-	private suspend fun doModifyAccessLogs(groupId: String?, entities: List<E>): List<E> = skipRequestOnEmptyList(entities) { accessLogs ->
-		val encrypted = validateAndMaybeEncrypt(groupId, entities)
+	protected suspend fun doModifyAccessLogs(groupId: String?, entities: List<E>): List<E> = skipRequestOnEmptyList(entities) { accessLogs ->
+		val encrypted = validateAndMaybeEncrypt(groupId, accessLogs)
 		return (
 			if (groupId == null) rawApi.modifyAccessLogs(encrypted)
 			else rawApi.modifyAccessLogsInGroup(groupId, encrypted)
@@ -200,12 +135,6 @@ private open class AbstractAccessLogBasicFlavouredApi<E : AccessLog>(
 			maybeDecrypt(groupId, it)
 		}
 	}
-
-	override suspend fun getAccessLog(entityId: String): E? =
-		doGetAccessLog(groupId = null, entityId)
-
-	override suspend fun getAccessLog(groupId: String, entityId: String): GroupScoped<E>? =
-		doGetAccessLog(groupId, entityId)?.let { GroupScoped(it, groupId) }
 
 	protected suspend fun doGetAccessLog(groupId: String?, entityId: String): E? =
 		(
@@ -216,12 +145,6 @@ private open class AbstractAccessLogBasicFlavouredApi<E : AccessLog>(
 		).successBodyOrNull404()?.let {
 			maybeDecrypt(groupId, it)
 		}
-
-	override suspend fun getAccessLogs(entityIds: List<String>): List<E> =
-		doGetAccessLogs(null, entityIds)
-
-	override suspend fun getAccessLogs(groupId: String, entityIds: List<String>): List<GroupScoped<E>> =
-		doGetAccessLogs(groupId, entityIds).map { GroupScoped(it, groupId) }
 
 	suspend fun doGetAccessLogs(groupId: String?, entityIds: List<String>): List<E> = skipRequestOnEmptyList(entityIds) { ids ->
 		maybeDecrypt(
@@ -236,38 +159,105 @@ private open class AbstractAccessLogBasicFlavouredApi<E : AccessLog>(
 }
 
 @InternalIcureApi
-private open class AbstractAccessLogFlavouredApi<E : AccessLog>(
+private open class AbstractAccessLogBasicFlavouredApi<E : AccessLog>(
+	rawApi: RawAccessLogApi,
+	config: BasicApiConfiguration,
+	flavour: FlavouredApi<EncryptedAccessLog, E>
+): AccessLogBasicFlavouredApi<E>, AbstractAccessLogBasicFlavoured<E>(rawApi, config, flavour) {
+
+	override suspend fun createAccessLog(entity: E): E =
+		doCreateAccessLog(groupId = null, entity)
+
+	override suspend fun createAccessLogs(entities: List<E>): List<E> {
+		requireIsValidForCreation(entities)
+		return doCreateAccessLogs(groupId = null, entities)
+	}
+
+	override suspend fun undeleteAccessLogById(id: String, rev: String): E =
+		rawApi.undeleteAccessLog(id, rev).successBodyOrThrowRevisionConflict().let { maybeDecrypt(entitiesGroupId = null, entity = it) }
+
+	override suspend fun undeleteAccessLogsByIds(entityIds: List<StoredDocumentIdentifier>): List<E> = skipRequestOnEmptyList(entityIds) { ids ->
+		rawApi.undeleteAccessLogs(ListOfIdsAndRev(ids = ids)).successBody().let {
+			maybeDecrypt(entitiesGroupId = null, entities = it)
+		}
+	}
+
+	override suspend fun modifyAccessLog(entity: E): E = doModifyAccessLog(groupId = null, entity)
+
+	override suspend fun modifyAccessLogs(entities: List<E>): List<E> {
+		requireIsValidForModification(entities)
+		return doModifyAccessLogs(groupId = null, entities)
+	}
+
+	override suspend fun getAccessLog(entityId: String): E? =
+		doGetAccessLog(groupId = null, entityId)
+
+	override suspend fun getAccessLogs(entityIds: List<String>): List<E> = doGetAccessLogs(groupId = null, entityIds)
+
+}
+
+@InternalIcureApi
+private open class AbstractAccessLogBasicFlavouredInGroupApi<E : AccessLog>(
+	rawApi: RawAccessLogApi,
+	config: BasicApiConfiguration,
+	flavour: FlavouredApi<EncryptedAccessLog, E>
+): AccessLogBasicFlavouredInGroupApi<E>, AbstractAccessLogBasicFlavoured<E>(rawApi, config, flavour) {
+
+	override suspend fun createAccessLog(entity: GroupScoped<E>): GroupScoped<E> =
+		GroupScoped(doCreateAccessLog(entity.groupId, entity.entity), entity.groupId)
+
+	override suspend fun createAccessLogs(entities: List<GroupScoped<E>>): List<GroupScoped<E>> {
+		requireIsValidForCreationInGroup(entities)
+		return entities.mapUniqueIdentifiablesChunkedByGroup { groupId, batch ->
+			doCreateAccessLogs(groupId, batch)
+		}
+	}
+
+	override suspend fun undeleteAccessLogById(entityId: GroupScoped<StoredDocumentIdentifier>): GroupScoped<E> =
+		rawApi.undeleteAccessLogInGroup(entityId.groupId, entityId.entity.id, entityId.entity.rev)
+			.successBodyOrThrowRevisionConflict()
+			.let { GroupScoped(entity = maybeDecrypt(entitiesGroupId = entityId.groupId, entity = it), groupId = entityId.groupId) }
+
+	override suspend fun undeleteAccessLogsByIds(entityIds: List<GroupScoped<StoredDocumentIdentifier>>): List<GroupScoped<E>> =
+		skipRequestOnEmptyList(entityIds) { ids ->
+			ids.mapUniqueIdentifiablesChunkedByGroup { groupId, batch ->
+				rawApi.undeleteAccessLogsInGroup(
+					groupId = groupId,
+					accessLogIdsAndRevs = ListOfIdsAndRev(ids = batch),
+				).successBody().let {
+					maybeDecrypt(entitiesGroupId = groupId, entities = it)
+				}
+			}
+		}
+
+	override suspend fun modifyAccessLog(entity: GroupScoped<E>): GroupScoped<E> =
+		GroupScoped(
+			doModifyAccessLog(entity.groupId, entity.entity),
+			entity.groupId
+		)
+
+	override suspend fun modifyAccessLogs(entities: List<GroupScoped<E>>): List<GroupScoped<E>> {
+		requireIsValidForModificationInGroup(entities)
+		return entities.mapUniqueIdentifiablesChunkedByGroup { groupId, batch ->
+			doModifyAccessLogs(groupId, batch)
+		}
+	}
+
+	override suspend fun getAccessLogs(groupId: String, entityIds: List<String>): List<GroupScoped<E>> =
+		doGetAccessLogs(groupId, entityIds).map { GroupScoped(it, groupId) }
+
+	override suspend fun getAccessLog(groupId: String, entityId: String): GroupScoped<E>? =
+		doGetAccessLog(groupId, entityId)?.let { GroupScoped(it, groupId) }
+}
+
+@InternalIcureApi
+private abstract class AbstractAccessLogFlavoured<E : AccessLog>(
 	rawApi: RawAccessLogApi,
 	override val config: ApiConfiguration,
 	flavour: FlavouredApi<EncryptedAccessLog, E>,
-) : AbstractAccessLogBasicFlavouredApi<E>(rawApi, config, flavour),
-	AccessLogFlavouredApi<E>,
-	AccessLogFlavouredInGroupApi<E> {
+) : AbstractAccessLogBasicFlavoured<E>(rawApi, config, flavour) {
 
-	override suspend fun shareWith(
-		delegateId: String,
-		accessLog: E,
-		options: AccessLogShareOptions?,
-	): E =
-		shareWithMany(accessLog, mapOf(Pair(delegateId, options ?: AccessLogShareOptions())))
-
-	override suspend fun shareWith(
-		delegate: EntityReferenceInGroup,
-		accessLog: GroupScoped<E>,
-		options: AccessLogShareOptions?
-	): GroupScoped<E> =
-		shareWithMany(accessLog, mapOf(delegate to (options ?: AccessLogShareOptions())))
-
-	override suspend fun shareWithMany(accessLog: E, delegates: Map<String, AccessLogShareOptions>): E =
-		doShareWithMany(null, accessLog, delegates.keyAsLocalDataOwnerReferences())
-
-	override suspend fun shareWithMany(
-		accessLog: GroupScoped<E>,
-		delegates: @JsMapAsObjectArray(keyEntryName = "delegate", valueEntryName = "shareOptions") Map<EntityReferenceInGroup, AccessLogShareOptions>
-	): GroupScoped<E> =
-		GroupScoped(doShareWithMany(accessLog.groupId, accessLog.entity, delegates), accessLog.groupId)
-
-	private suspend fun doShareWithMany(
+	protected suspend fun doShareWithMany(
 		groupId: String?,
 		accessLog: E,
 		delegates: @JsMapAsObjectArray(keyEntryName = "delegate", valueEntryName = "shareOptions") Map<EntityReferenceInGroup, AccessLogShareOptions>
@@ -278,7 +268,7 @@ private open class AbstractAccessLogFlavouredApi<E : AccessLog>(
 			EntityWithEncryptionMetadataTypeName.AccessLog,
 			delegates,
 			true,
-			{ getAccessLog(it) ?: throw NotFoundException("Access log $it not found") },
+			{ doGetAccessLog(groupId = groupId, entityId = it) ?: throw NotFoundException("Access log $it not found") },
 			{
 				maybeDecrypt(
 					groupId,
@@ -290,31 +280,7 @@ private open class AbstractAccessLogFlavouredApi<E : AccessLog>(
 			}
 		).updatedEntityOrThrow()
 
-	override suspend fun filterAccessLogsBySorted(filter: SortableFilterOptions<AccessLog>): PaginatedListIterator<E> =
-		filterAccessLogsBy(filter)
-
-	override suspend fun filterAccessLogsBy(filter: FilterOptions<AccessLog>): PaginatedListIterator<E> =
-		doFilterAccessLogsBy(
-			groupId = null,
-			filter = filter,
-		) { it }
-
-	override suspend fun filterAccessLogsBySorted(
-		groupId: String,
-		filter: SortableFilterOptions<AccessLog>
-	): PaginatedListIterator<GroupScoped<E>> =
-		filterAccessLogsBy(groupId, filter)
-
-	override suspend fun filterAccessLogsBy(
-		groupId: String,
-		filter: FilterOptions<AccessLog>
-	): PaginatedListIterator<GroupScoped<E>> =
-		doFilterAccessLogsBy(
-			groupId,
-			filter
-		) { GroupScoped(it, groupId) }
-
-	private suspend inline fun <T : Any> doFilterAccessLogsBy(
+	protected suspend inline fun <T : Any> doFilterAccessLogsBy(
 		groupId: String?,
 		filter: FilterOptions<AccessLog>,
 		crossinline mapEntity: (E) -> T
@@ -331,6 +297,74 @@ private open class AbstractAccessLogFlavouredApi<E : AccessLog>(
 			doGetAccessLogs(groupId, it).map { accessLog -> mapEntity(accessLog) }
 		}
 }
+
+@InternalIcureApi
+private class AbstractAccessLogFlavouredApi<E : AccessLog>(
+	rawApi: RawAccessLogApi,
+	config: ApiConfiguration,
+	flavour: FlavouredApi<EncryptedAccessLog, E>,
+) : AbstractAccessLogFlavoured<E>(rawApi, config, flavour),
+	AccessLogBasicFlavouredApi<E> by AbstractAccessLogBasicFlavouredApi(rawApi, config, flavour),
+	AccessLogFlavouredApi<E> {
+
+	override suspend fun shareWith(
+		delegateId: String,
+		accessLog: E,
+		options: AccessLogShareOptions?,
+	): E =
+		shareWithMany(accessLog, mapOf(Pair(delegateId, options ?: AccessLogShareOptions())))
+
+	override suspend fun shareWithMany(accessLog: E, delegates: Map<String, AccessLogShareOptions>): E =
+		doShareWithMany(null, accessLog, delegates.keyAsLocalDataOwnerReferences())
+
+	override suspend fun filterAccessLogsBySorted(filter: SortableFilterOptions<AccessLog>): PaginatedListIterator<E> =
+		filterAccessLogsBy(filter)
+
+	override suspend fun filterAccessLogsBy(filter: FilterOptions<AccessLog>): PaginatedListIterator<E> =
+		doFilterAccessLogsBy(
+			groupId = null,
+			filter = filter,
+		) { it }
+}
+
+@InternalIcureApi
+private class AbstractAccessLogFlavouredInGroupApi<E : AccessLog>(
+	rawApi: RawAccessLogApi,
+	config: ApiConfiguration,
+	flavour: FlavouredApi<EncryptedAccessLog, E>,
+) : AbstractAccessLogFlavoured<E>(rawApi, config, flavour),
+	AccessLogBasicFlavouredInGroupApi<E> by AbstractAccessLogBasicFlavouredInGroupApi(rawApi, config, flavour),
+	AccessLogFlavouredInGroupApi<E> {
+
+	override suspend fun shareWith(
+		delegate: EntityReferenceInGroup,
+		accessLog: GroupScoped<E>,
+		options: AccessLogShareOptions?
+	): GroupScoped<E> =
+		shareWithMany(accessLog, mapOf(delegate to (options ?: AccessLogShareOptions())))
+
+	override suspend fun shareWithMany(
+		accessLog: GroupScoped<E>,
+		delegates: @JsMapAsObjectArray(keyEntryName = "delegate", valueEntryName = "shareOptions") Map<EntityReferenceInGroup, AccessLogShareOptions>
+	): GroupScoped<E> =
+		GroupScoped(doShareWithMany(accessLog.groupId, accessLog.entity, delegates), accessLog.groupId)
+
+	override suspend fun filterAccessLogsBySorted(
+		groupId: String,
+		filter: SortableFilterOptions<AccessLog>
+	): PaginatedListIterator<GroupScoped<E>> =
+		filterAccessLogsBy(groupId, filter)
+
+	override suspend fun filterAccessLogsBy(
+		groupId: String,
+		filter: FilterOptions<AccessLog>
+	): PaginatedListIterator<GroupScoped<E>> =
+		doFilterAccessLogsBy(
+			groupId,
+			filter
+		) { GroupScoped(it, groupId) }
+}
+
 
 @InternalIcureApi
 private abstract class AbstractAccessLogBasicFlavourless(
@@ -413,42 +447,37 @@ private class AccessLogBasicFlavourlessInGroupApiImpl(rawApi: RawAccessLogApi) :
 internal fun initAccessLogApi(
 	rawApi: RawAccessLogApi,
 	config: ApiConfiguration
-): AccessLogApi {
-	val decryptedFlavour = decryptedApiFlavour(config)
-	val encryptedFlavour = encryptedApiFlavour(config)
-	val tryAndRecoverFlavour = tryAndRecoverApiFlavour(config)
-	val decryptedApi = AbstractAccessLogFlavouredApi(rawApi, config, decryptedFlavour)
-	val encryptedApi = AbstractAccessLogFlavouredApi(rawApi, config, encryptedFlavour)
-	val tryAndRecoverApi = AbstractAccessLogFlavouredApi(rawApi, config, tryAndRecoverFlavour)
-	return AccessLogApiImpl(
+): AccessLogApi = AccessLogApiImpl(
 		rawApi,
 		config,
-		encryptedApi,
-		decryptedApi,
-		tryAndRecoverApi
+		encryptedApiFlavour(config),
+		decryptedApiFlavour(config),
+		tryAndRecoverApiFlavour(config)
 	)
-}
 
 @InternalIcureApi
 private class AccessLogApiImpl(
 	private val rawApi: RawAccessLogApi,
 	private val config: ApiConfiguration,
-	private val encryptedFlavour: AbstractAccessLogFlavouredApi<EncryptedAccessLog>,
-	private val decryptedFlavour: AbstractAccessLogFlavouredApi<DecryptedAccessLog>,
-	private val tryAndRecoverFlavour: AbstractAccessLogFlavouredApi<AccessLog>
+	private val encryptedFlavour: FlavouredApi<EncryptedAccessLog, EncryptedAccessLog>,
+	private val decryptedFlavour: FlavouredApi<EncryptedAccessLog, DecryptedAccessLog>,
+	private val tryAndRecoverFlavour: FlavouredApi<EncryptedAccessLog, AccessLog>
 ) : AccessLogApi,
 	AccessLogBasicFlavourlessApi by AbstractAccessLogBasicFlavourlessApi(rawApi),
-	AccessLogFlavouredApi<DecryptedAccessLog> by decryptedFlavour {
+	AccessLogFlavouredApi<DecryptedAccessLog> by AbstractAccessLogFlavouredApi(rawApi, config, decryptedFlavour) {
 
-	override val encrypted: AccessLogFlavouredApi<EncryptedAccessLog> = encryptedFlavour
+	override val encrypted: AccessLogFlavouredApi<EncryptedAccessLog> = AbstractAccessLogFlavouredApi(rawApi, config, encryptedFlavour)
 
-	override val tryAndRecover: AccessLogFlavouredApi<AccessLog> = tryAndRecoverFlavour
+	override val tryAndRecover: AccessLogFlavouredApi<AccessLog> = AbstractAccessLogFlavouredApi(rawApi, config, tryAndRecoverFlavour)
 
 	override val inGroup: AccessLogInGroupApi = object : AccessLogInGroupApi,
 		AccessLogBasicFlavourlessInGroupApi by AccessLogBasicFlavourlessInGroupApiImpl(rawApi),
-		AccessLogFlavouredInGroupApi<DecryptedAccessLog> by decryptedFlavour {
-		override val encrypted: AccessLogFlavouredInGroupApi<EncryptedAccessLog> = encryptedFlavour
-		override val tryAndRecover: AccessLogFlavouredInGroupApi<AccessLog> = tryAndRecoverFlavour
+		AccessLogFlavouredInGroupApi<DecryptedAccessLog> by AbstractAccessLogFlavouredInGroupApi(rawApi, config, decryptedFlavour) {
+		override val encrypted: AccessLogFlavouredInGroupApi<EncryptedAccessLog> =
+			AbstractAccessLogFlavouredInGroupApi(rawApi, config, encryptedFlavour)
+
+		override val tryAndRecover: AccessLogFlavouredInGroupApi<AccessLog> =
+			AbstractAccessLogFlavouredInGroupApi(rawApi, config, tryAndRecoverFlavour)
 
 		override suspend fun decrypt(accessLogs: List<GroupScoped<EncryptedAccessLog>>): List<GroupScoped<DecryptedAccessLog>> =
 			accessLogs.mapExactlyChunkedByGroup { groupId, entities ->
@@ -642,21 +671,21 @@ internal fun initAccessLogBasicApi(
 ): AccessLogBasicApi = AccessLogBasicApiImpl(
 	rawApi,
 	config,
-	AbstractAccessLogBasicFlavouredApi(rawApi, config, encryptedApiFlavour(config))
+	encryptedApiFlavour(config)
 )
 
 @InternalIcureApi
 private class AccessLogBasicApiImpl(
 	private val rawApi: RawAccessLogApi,
 	private val config: BasicApiConfiguration,
-	private val encryptedFlavour: AbstractAccessLogBasicFlavouredApi<EncryptedAccessLog>,
+	private val encryptedFlavour: FlavouredApi<EncryptedAccessLog, EncryptedAccessLog>,
 ) : AccessLogBasicApi,
-	AccessLogBasicFlavouredApi<EncryptedAccessLog> by encryptedFlavour,
+	AccessLogBasicFlavouredApi<EncryptedAccessLog> by AbstractAccessLogBasicFlavouredApi(rawApi, config, encryptedFlavour),
 	AccessLogBasicFlavourlessApi by AbstractAccessLogBasicFlavourlessApi(rawApi) {
 
 	override val inGroup: AccessLogBasicInGroupApi = object : AccessLogBasicInGroupApi,
 		AccessLogBasicFlavourlessInGroupApi by AccessLogBasicFlavourlessInGroupApiImpl(rawApi),
-		AccessLogBasicFlavouredInGroupApi<EncryptedAccessLog> by encryptedFlavour {
+		AccessLogBasicFlavouredInGroupApi<EncryptedAccessLog> by AbstractAccessLogBasicFlavouredInGroupApi(rawApi, config, encryptedFlavour) {
 
 		override suspend fun matchAccessLogsBy(
 			groupId: String,
@@ -673,7 +702,9 @@ private class AccessLogBasicApiImpl(
 			groupId: String,
 			filter: BaseFilterOptions<AccessLog>
 		): PaginatedListIterator<GroupScoped<EncryptedAccessLog>> =
-			doFilterAccessLogsBy(groupId, filter) { GroupScoped(it, groupId) }
+			IdsPageIterator(
+				doMatchAccessLogsBy(groupId, filter),
+			) { getAccessLogs(groupId, it) }
 
 		override suspend fun filterAccessLogsBySorted(
 			groupId: String,
@@ -706,19 +737,10 @@ private class AccessLogBasicApiImpl(
 
 	override suspend fun matchAccessLogsBySorted(filter: BaseSortableFilterOptions<AccessLog>): List<String> = matchAccessLogsBy(filter)
 
-	private suspend inline fun <T : Any> doFilterAccessLogsBy(
-		groupId: String?,
-		filter: BaseFilterOptions<AccessLog>,
-		crossinline mapEntity: (EncryptedAccessLog) -> T
-	): PaginatedListIterator<T> =
-		IdsPageIterator(
-			doMatchAccessLogsBy(groupId, filter),
-		) {
-			encryptedFlavour.doGetAccessLogs(groupId, it).map { calendarItem -> mapEntity(calendarItem) }
-		}
-
 	override suspend fun filterAccessLogsBy(filter: BaseFilterOptions<AccessLog>): PaginatedListIterator<EncryptedAccessLog> =
-		doFilterAccessLogsBy(null, filter) { it }
+		IdsPageIterator(
+			doMatchAccessLogsBy(groupId = null, filter),
+		) { getAccessLogs(it) }
 
 	override suspend fun filterAccessLogsBySorted(filter: BaseSortableFilterOptions<AccessLog>): PaginatedListIterator<EncryptedAccessLog> =
 		filterAccessLogsBy(filter)

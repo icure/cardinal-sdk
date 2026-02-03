@@ -118,7 +118,7 @@ private open class AbstractDocumentBasicFlavouredApi<E : Document>(
 	}
 
 	override suspend fun createDocuments(entities: List<GroupScoped<E>>): List<GroupScoped<E>> {
-		requireIsValidForCreation(entities)
+		requireIsValidForCreationInGroup(entities)
 		return entities.mapUniqueIdentifiablesChunkedByGroup { groupId, chunk ->
 			doCreateDocuments(groupId = groupId, entities = chunk)
 		}
@@ -189,7 +189,7 @@ private open class AbstractDocumentBasicFlavouredApi<E : Document>(
 	}
 
 	override suspend fun modifyDocuments(entities: List<GroupScoped<E>>): List<GroupScoped<E>> {
-		requireIsValidForModification(entities)
+		requireIsValidForModificationInGroup(entities)
 		return entities.mapUniqueIdentifiablesChunkedByGroup { groupId, chunk ->
 			doModifyDocuments(groupId = groupId, entities = chunk)
 		}

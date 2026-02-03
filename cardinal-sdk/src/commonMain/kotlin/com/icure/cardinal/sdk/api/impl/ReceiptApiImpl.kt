@@ -39,11 +39,9 @@ import com.icure.cardinal.sdk.options.BasicApiConfiguration
 import com.icure.cardinal.sdk.options.EntitiesEncryptedFieldsManifests
 import com.icure.cardinal.sdk.options.JsonPatcher
 import com.icure.cardinal.sdk.utils.EntityEncryptionException
-import com.icure.cardinal.sdk.utils.Serialization
 import com.icure.cardinal.sdk.utils.currentEpochMs
 import com.icure.cardinal.sdk.utils.generation.JsMapAsObjectArray
 import com.icure.utils.InternalIcureApi
-import kotlinx.serialization.json.decodeFromJsonElement
 
 @InternalIcureApi
 private fun encryptedApiFlavour(
@@ -112,7 +110,7 @@ private open class AbstractReceiptBasicFlavouredApi<E : Receipt>(
 	}
 
 	override suspend fun createReceipts(entities: List<GroupScoped<E>>): List<GroupScoped<E>> {
-		requireIsValidForCreation(entities)
+		requireIsValidForCreationInGroup(entities)
 		return entities.mapUniqueIdentifiablesChunkedByGroup { groupId, chunk ->
 			doCreateReceipts(groupId = groupId, entities = chunk)
 		}
@@ -181,7 +179,7 @@ private open class AbstractReceiptBasicFlavouredApi<E : Receipt>(
 	}
 
 	override suspend fun modifyReceipts(entities: List<GroupScoped<E>>): List<GroupScoped<E>> {
-		requireIsValidForModification(entities)
+		requireIsValidForModificationInGroup(entities)
 		return entities.mapUniqueIdentifiablesChunkedByGroup { groupId, chunk ->
 			doModifyReceipts(groupId = groupId, entities = chunk)
 		}

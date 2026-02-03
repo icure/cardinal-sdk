@@ -174,7 +174,7 @@ private open class AbstractPatientBasicFlavouredApi<E : Patient>(
 	}
 
 	override suspend fun createPatients(patients: List<GroupScoped<E>>): List<GroupScoped<E>> {
-		requireIsValidForCreation(patients)
+		requireIsValidForCreationInGroup(patients)
 		return patients.mapUniqueIdentifiablesChunkedByGroup { groupId, chunk ->
 			doCreatePatients(groupId = groupId, patients = chunk)
 		}
@@ -244,7 +244,7 @@ private open class AbstractPatientBasicFlavouredApi<E : Patient>(
 	}
 
 	override suspend fun modifyPatients(patients: List<GroupScoped<E>>): List<GroupScoped<E>> {
-		requireIsValidForModification(patients)
+		requireIsValidForModificationInGroup(patients)
 		return patients.mapUniqueIdentifiablesChunkedByGroup { groupId, chunk ->
 			doModifyPatients(groupId = groupId, patients = chunk)
 		}

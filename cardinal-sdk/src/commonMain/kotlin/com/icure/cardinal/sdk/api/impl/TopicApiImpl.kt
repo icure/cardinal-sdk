@@ -157,7 +157,7 @@ private open class AbstractTopicBasicFlavouredApi<E : Topic>(
 	}
 
 	override suspend fun createTopics(entities: List<GroupScoped<E>>): List<GroupScoped<E>> {
-		requireIsValidForCreation(entities)
+		requireIsValidForCreationInGroup(entities)
 		return entities.mapUniqueIdentifiablesChunkedByGroup { groupId, chunk ->
 			doCreateTopics(groupId = groupId, entities = chunk)
 		}
@@ -226,7 +226,7 @@ private open class AbstractTopicBasicFlavouredApi<E : Topic>(
 	}
 
 	override suspend fun modifyTopics(entities: List<GroupScoped<E>>): List<GroupScoped<E>> {
-		requireIsValidForModification(entities)
+		requireIsValidForModificationInGroup(entities)
 		return entities.mapUniqueIdentifiablesChunkedByGroup { groupId, chunk ->
 			doModifyTopics(groupId = groupId, entities = chunk)
 		}

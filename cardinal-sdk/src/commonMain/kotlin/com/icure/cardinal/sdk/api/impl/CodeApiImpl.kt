@@ -230,7 +230,7 @@ internal class CodeInGroupApiImpl(
 		groupScopedWith(code) { groupId, entity -> doCreateCode(groupId, entity) }
 
 	override suspend fun createCodes(codes: List<GroupScoped<Code>>): List<GroupScoped<Code>> {
-		basicRequireIsValidForCreation(codes)
+		basicRequireIsValidForCreationInGroup(codes)
 		return codes.mapUniqueIdentifiablesChunkedByGroup { groupId, chunk ->
 			doCreateCodes(groupId, chunk)
 		}
@@ -250,7 +250,7 @@ internal class CodeInGroupApiImpl(
 		groupScopedWith(code) { groupId, entity -> doModifyCode(groupId, entity) }
 
 	override suspend fun modifyCodes(codes: List<GroupScoped<Code>>): List<GroupScoped<Code>> {
-		requireIsValidForModification(codes)
+		requireIsValidForModificationInGroup(codes)
 		return codes.mapUniqueIdentifiablesChunkedByGroup { groupId, chunk ->
 			doModifyCodes(groupId, chunk)
 		}

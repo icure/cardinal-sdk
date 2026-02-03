@@ -154,7 +154,7 @@ private open class AbstractHealthElementBasicFlavouredApi<E : HealthElement>(
 	}
 
 	override suspend fun createHealthElements(entities: List<GroupScoped<E>>): List<GroupScoped<E>> {
-		requireIsValidForCreation(entities)
+		requireIsValidForCreationInGroup(entities)
 		return entities.mapUniqueIdentifiablesChunkedByGroup { groupId, chunk ->
 			doCreateHealthElements(groupId = groupId, entities = chunk)
 		}
@@ -223,7 +223,7 @@ private open class AbstractHealthElementBasicFlavouredApi<E : HealthElement>(
 	}
 
 	override suspend fun modifyHealthElements(entities: List<GroupScoped<E>>): List<GroupScoped<E>> {
-		requireIsValidForModification(entities)
+		requireIsValidForModificationInGroup(entities)
 		return entities.mapUniqueIdentifiablesChunkedByGroup { groupId, chunk ->
 			doModifyHealthElements(groupId = groupId, entities = chunk)
 		}

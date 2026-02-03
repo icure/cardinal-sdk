@@ -181,7 +181,7 @@ internal class CalendarItemTypeInGroupApiImpl(
 		groupScopedWith(calendarItemType) { groupId, entity -> doCreateCalendarItemType(groupId, entity) }
 
 	override suspend fun createCalendarItemTypes(calendarItemTypes: List<GroupScoped<CalendarItemType>>): List<GroupScoped<CalendarItemType>> {
-		basicRequireIsValidForCreation(calendarItemTypes)
+		basicRequireIsValidForCreationInGroup(calendarItemTypes)
 		return calendarItemTypes.mapUniqueIdentifiablesChunkedByGroup { groupId, chunk ->
 			doCreateCalendarItemTypes(groupId, chunk)
 		}
@@ -197,7 +197,7 @@ internal class CalendarItemTypeInGroupApiImpl(
 		groupScopedWith(calendarItemType) { groupId, entity -> doModifyCalendarItemType(groupId, entity) }
 
 	override suspend fun modifyCalendarItemTypes(calendarItemTypes: List<GroupScoped<CalendarItemType>>): List<GroupScoped<CalendarItemType>> {
-		requireIsValidForModification(calendarItemTypes)
+		requireIsValidForModificationInGroup(calendarItemTypes)
 		return calendarItemTypes.mapUniqueIdentifiablesChunkedByGroup { groupId, chunk ->
 			doModifyCalendarItemTypes(groupId, chunk)
 		}

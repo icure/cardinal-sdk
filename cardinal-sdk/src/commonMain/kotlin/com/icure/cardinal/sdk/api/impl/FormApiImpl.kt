@@ -119,7 +119,7 @@ private open class AbstractFormBasicFlavouredApi<E : Form>(
 	}
 
 	override suspend fun createForms(entities: List<GroupScoped<E>>): List<GroupScoped<E>> {
-		requireIsValidForCreation(entities)
+		requireIsValidForCreationInGroup(entities)
 		return entities.mapUniqueIdentifiablesChunkedByGroup { groupId, chunk ->
 			doCreateForms(groupId = groupId, entities = chunk)
 		}
@@ -188,7 +188,7 @@ private open class AbstractFormBasicFlavouredApi<E : Form>(
 	}
 
 	override suspend fun modifyForms(entities: List<GroupScoped<E>>): List<GroupScoped<E>> {
-		requireIsValidForModification(entities)
+		requireIsValidForModificationInGroup(entities)
 		return entities.mapUniqueIdentifiablesChunkedByGroup { groupId, chunk ->
 			doModifyForms(groupId = groupId, entities = chunk)
 		}
@@ -566,7 +566,7 @@ private class FormBasicFlavourlessInGroupApiImpl(
 		}
 
 	override suspend fun createFormTemplates(formTemplates: List<GroupScoped<FormTemplate>>): List<GroupScoped<FormTemplate>> {
-		basicRequireIsValidForCreation(formTemplates)
+		basicRequireIsValidForCreationInGroup(formTemplates)
 		return formTemplates.mapUniqueIdentifiablesChunkedByGroup { groupId, chunk ->
 			doCreateFormTemplates(groupId = groupId, entities = chunk)
 		}
@@ -578,7 +578,7 @@ private class FormBasicFlavourlessInGroupApiImpl(
 		}
 
 	override suspend fun modifyFormTemplates(formTemplates: List<GroupScoped<FormTemplate>>): List<GroupScoped<FormTemplate>> {
-		requireIsValidForModification(formTemplates)
+		requireIsValidForModificationInGroup(formTemplates)
 		return formTemplates.mapUniqueIdentifiablesChunkedByGroup { groupId, chunk ->
 			doCreateFormTemplates(groupId = groupId, entities = chunk)
 		}

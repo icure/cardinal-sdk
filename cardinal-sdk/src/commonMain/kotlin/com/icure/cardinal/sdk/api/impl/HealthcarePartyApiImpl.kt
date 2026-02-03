@@ -251,7 +251,7 @@ internal class HealthcarePartyInGroupApiImpl(
 		groupScopedWith(healthcareParty) { groupId, entity -> doCreateHealthcareParty(groupId, entity) }
 
 	override suspend fun createHealthcareParties(healthcareParties: List<GroupScoped<HealthcareParty>>): List<GroupScoped<HealthcareParty>> {
-		basicRequireIsValidForCreation(healthcareParties)
+		basicRequireIsValidForCreationInGroup(healthcareParties)
 		return healthcareParties.mapUniqueIdentifiablesChunkedByGroup { groupId, chunk ->
 			doCreateHealthcareParties(groupId, chunk)
 		}
@@ -267,7 +267,7 @@ internal class HealthcarePartyInGroupApiImpl(
 		groupScopedWith(healthcareParty) { groupId, entity -> doModifyHealthcareParty(groupId, entity) }
 
 	override suspend fun modifyHealthcareParties(healthcareParties: List<GroupScoped<HealthcareParty>>): List<GroupScoped<HealthcareParty>> {
-		requireIsValidForModification(healthcareParties)
+		requireIsValidForModificationInGroup(healthcareParties)
 		return healthcareParties.mapUniqueIdentifiablesChunkedByGroup { groupId, chunk ->
 			doModifyHealthcareParties(groupId, chunk)
 		}

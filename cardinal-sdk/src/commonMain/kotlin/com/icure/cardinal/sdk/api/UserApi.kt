@@ -160,7 +160,7 @@ interface UserInGroupApi {
 	suspend fun purgeUser(user: GroupScoped<User>) {
 		purgeUserById(user.toStoredDocumentIdentifier())
 	}
-	suspend fun purgeUsersByIds(userIds: List<GroupScoped<User>>): List<GroupScoped<StoredDocumentIdentifier>> =
+	suspend fun purgeUsers(userIds: List<GroupScoped<User>>): List<GroupScoped<StoredDocumentIdentifier>> =
 		purgeUsersByIds(userIds.map { it.toStoredDocumentIdentifier() })
 
 	suspend fun undeleteUserById(userId: GroupScoped<StoredDocumentIdentifier>): GroupScoped<User>

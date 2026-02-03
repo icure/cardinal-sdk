@@ -127,7 +127,7 @@ private open class AbstractCalendarItemBasicFlavouredApi<E : CalendarItem>(
 	}
 
 	override suspend fun createCalendarItems(entities: List<GroupScoped<E>>): List<GroupScoped<E>> {
-		requireIsValidForCreation(entities)
+		requireIsValidForCreationInGroup(entities)
 		return entities.mapUniqueIdentifiablesChunkedByGroup { groupId, batch ->
 			doCreateCalendarItems(groupId, batch)
 		}
@@ -212,7 +212,7 @@ private open class AbstractCalendarItemBasicFlavouredApi<E : CalendarItem>(
 		return doModifyCalendarItems(groupId = null, entities = entities) }
 
 	override suspend fun modifyCalendarItems(entities: List<GroupScoped<E>>): List<GroupScoped<E>> {
-		requireIsValidForModification(entities)
+		requireIsValidForModificationInGroup(entities)
 		return entities.mapUniqueIdentifiablesChunkedByGroup { groupId, batch ->
 			doModifyCalendarItems(groupId, batch)
 		}

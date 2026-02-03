@@ -236,7 +236,7 @@ internal class DeviceApiInGroupImpl(
 	}
 
 	override suspend fun createDevices(devices: List<GroupScoped<Device>>): List<GroupScoped<Device>> {
-		basicRequireIsValidForCreation(devices)
+		basicRequireIsValidForCreationInGroup(devices)
 		return devices.mapUniqueIdentifiablesChunkedByGroup { groupId, chunk ->
 			doCreateDevices(groupId = groupId, entities = chunk)
 		}
@@ -257,7 +257,7 @@ internal class DeviceApiInGroupImpl(
 	}
 
 	override suspend fun modifyDevices(devices: List<GroupScoped<Device>>): List<GroupScoped<Device>> {
-		requireIsValidForModification(devices)
+		requireIsValidForModificationInGroup(devices)
 		return devices.mapUniqueIdentifiablesChunkedByGroup { groupId, chunk ->
 			doModifyDevices(groupId = groupId, entities = chunk)
 		}

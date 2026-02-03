@@ -206,7 +206,7 @@ internal class AgendaGroupApiImpl (
 		GroupScoped(entity = doCreateAgenda(entity.groupId, entity.entity), groupId = entity.groupId)
 
 	override suspend fun createAgendas(entities: List<GroupScoped<Agenda>>): List<GroupScoped<Agenda>> {
-		basicRequireIsValidForCreation(entities)
+		basicRequireIsValidForCreationInGroup(entities)
 		return entities.mapUniqueIdentifiablesChunkedByGroup { groupId, batch ->
 			doCreateAgendas(groupId, batch)
 		}
@@ -219,7 +219,7 @@ internal class AgendaGroupApiImpl (
 	)
 
 	override suspend fun modifyAgendas(entities: List<GroupScoped<Agenda>>): List<GroupScoped<Agenda>> {
-		requireIsValidForModification(entities)
+		requireIsValidForModificationInGroup(entities)
 		return entities.mapUniqueIdentifiablesChunkedByGroup { groupId, batch ->
 			doModifyAgendas(groupId, batch)
 		}

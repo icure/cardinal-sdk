@@ -377,7 +377,7 @@ private open class AbstractContactBasicFlavouredApi<E : Contact, S : Service>(
 	}
 
 	override suspend fun createContacts(entities: List<GroupScoped<E>>): List<GroupScoped<E>> {
-		requireIsValidForCreation(entities)
+		requireIsValidForCreationInGroup(entities)
 		return entities.mapUniqueIdentifiablesChunkedByGroup { groupId, entities ->
 			doCreateContacts(groupId = groupId, entities = entities)
 		}
@@ -449,7 +449,7 @@ private open class AbstractContactBasicFlavouredApi<E : Contact, S : Service>(
 	}
 
 	override suspend fun modifyContacts(entities: List<GroupScoped<E>>): List<GroupScoped<E>> {
-		requireIsValidForModification(entities)
+		requireIsValidForModificationInGroup(entities)
 		return entities.mapUniqueIdentifiablesChunkedByGroup { groupId, chunk ->
 			doModifyContacts(groupId = groupId, entities = chunk)
 		}

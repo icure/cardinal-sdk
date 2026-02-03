@@ -111,13 +111,13 @@ internal fun <E : HasEncryptionMetadata> requireIsValidForCreation(entity: E) {
 internal fun <E : Versionable<String>> basicRequireIsValidForCreation(entities: List<E>) =
 	entities.forEach { basicRequireIsValidForCreation(it) }
 
-internal fun <E : Versionable<String>> basicRequireIsValidForCreation(entities: List<GroupScoped<E>>) =
+internal fun <E : Versionable<String>> basicRequireIsValidForCreationInGroup(entities: List<GroupScoped<E>>) =
 	entities.forEach { basicRequireIsValidForCreation(it.entity) }
 
 internal fun <E : HasEncryptionMetadata> requireIsValidForCreation(entities: List<E>) =
 	entities.forEach { requireIsValidForCreation(it) }
 
-internal fun <E : HasEncryptionMetadata> requireIsValidForCreation(entities: List<GroupScoped<E>>) =
+internal fun <E : HasEncryptionMetadata> requireIsValidForCreationInGroup(entities: List<GroupScoped<E>>) =
 	entities.forEach { requireIsValidForCreation(it.entity) }
 
 internal fun <E : Versionable<String>> requireIsValidForModification(entity: E) {
@@ -132,5 +132,5 @@ internal fun <E : Versionable<String>> requireIsValidForModification(entity: Gro
 internal fun <E : Versionable<String>> requireIsValidForModification(entities: List<E>) =
 	entities.forEach { requireIsValidForModification(it) }
 
-internal fun <E : Versionable<String>> requireIsValidForModification(entities: List<GroupScoped<E>>) =
+internal fun <E : Versionable<String>> requireIsValidForModificationInGroup(entities: List<GroupScoped<E>>) =
 	entities.forEach { requireIsValidForModification(it) }

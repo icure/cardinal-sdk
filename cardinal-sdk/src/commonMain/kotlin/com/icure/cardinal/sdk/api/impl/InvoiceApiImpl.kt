@@ -120,7 +120,7 @@ private open class AbstractInvoiceBasicFlavouredApi<E : Invoice>(
 	}
 
 	override suspend fun createInvoices(entities: List<GroupScoped<E>>): List<GroupScoped<E>> {
-		requireIsValidForCreation(entities)
+		requireIsValidForCreationInGroup(entities)
 		return entities.mapUniqueIdentifiablesChunkedByGroup { groupId, chunk ->
 			doCreateInvoices(groupId = groupId, entities = chunk)
 		}
@@ -189,7 +189,7 @@ private open class AbstractInvoiceBasicFlavouredApi<E : Invoice>(
 	}
 
 	override suspend fun modifyInvoices(entities: List<GroupScoped<E>>): List<GroupScoped<E>> {
-		requireIsValidForModification(entities)
+		requireIsValidForModificationInGroup(entities)
 		return entities.mapUniqueIdentifiablesChunkedByGroup { groupId, chunk ->
 			doModifyInvoices(groupId = groupId, entities = chunk)
 		}

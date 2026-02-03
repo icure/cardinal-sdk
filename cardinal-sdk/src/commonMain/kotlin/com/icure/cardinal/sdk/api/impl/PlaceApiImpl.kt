@@ -179,7 +179,7 @@ internal class PlaceInGroupApiImpl(
 		groupScopedWith(place) { groupId, entity -> doCreatePlace(groupId, entity) }
 
 	override suspend fun createPlaces(places: List<GroupScoped<Place>>): List<GroupScoped<Place>> {
-		basicRequireIsValidForCreation(places)
+		basicRequireIsValidForCreationInGroup(places)
 		return places.mapUniqueIdentifiablesChunkedByGroup { groupId, chunk ->
 			doCreatePlaces(groupId, chunk)
 		}
@@ -195,7 +195,7 @@ internal class PlaceInGroupApiImpl(
 		groupScopedWith(place) { groupId, entity -> doModifyPlace(groupId, entity) }
 
 	override suspend fun modifyPlaces(places: List<GroupScoped<Place>>): List<GroupScoped<Place>> {
-		requireIsValidForModification(places)
+		requireIsValidForModificationInGroup(places)
 		return places.mapUniqueIdentifiablesChunkedByGroup { groupId, chunk ->
 			doModifyPlaces(groupId, chunk)
 		}

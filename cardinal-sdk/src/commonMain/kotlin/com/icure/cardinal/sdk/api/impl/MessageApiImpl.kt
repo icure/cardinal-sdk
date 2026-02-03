@@ -156,7 +156,7 @@ private open class AbstractMessageBasicFlavouredApi<E : Message>(
 	}
 
 	override suspend fun createMessages(entities: List<GroupScoped<E>>): List<GroupScoped<E>> {
-		requireIsValidForCreation(entities)
+		requireIsValidForCreationInGroup(entities)
 		return entities.mapUniqueIdentifiablesChunkedByGroup { groupId, chunk ->
 			doCreateMessages(groupId = groupId, entities = chunk)
 		}
@@ -233,7 +233,7 @@ private open class AbstractMessageBasicFlavouredApi<E : Message>(
 	}
 
 	override suspend fun modifyMessages(entities: List<GroupScoped<E>>): List<GroupScoped<E>> {
-		requireIsValidForModification(entities)
+		requireIsValidForModificationInGroup(entities)
 		return entities.mapUniqueIdentifiablesChunkedByGroup { groupId, chunk ->
 			doModifyMessages(groupId = groupId, entities = chunk)
 		}
