@@ -95,21 +95,13 @@ private fun tryAndRecoverApiFlavour(
 )
 
 @InternalIcureApi
-private open class AbstractCalendarItemBasicFlavouredApi<E : CalendarItem>(
+private abstract class AbstractCalendarItemBasicFlavouredApi<E : CalendarItem>(
 	protected val rawApi: RawCalendarItemApi,
 	protected open val config: BasicApiConfiguration,
 	protected val flavour: FlavouredApi<EncryptedCalendarItem, E>
-) : CalendarItemBasicFlavouredApi<E>,
-	CalendarItemBasicFlavouredInGroupApi<E>,
-	FlavouredApi<EncryptedCalendarItem, E> by flavour {
+) : FlavouredApi<EncryptedCalendarItem, E> by flavour {
 
-	override suspend fun createCalendarItem(entity: E): E =
-		doCreateCalendarItem(groupId = null, entity)
-
-	override suspend fun createCalendarItem(entity: GroupScoped<E>): GroupScoped<E> =
-		GroupScoped(doCreateCalendarItem(entity.groupId, entity.entity), entity.groupId)
-
-	private suspend fun doCreateCalendarItem(groupId: String?, entity: E): E {
+	protected suspend fun doCreateCalendarItem(groupId: String?, entity: E): E {
 		requireIsValidForCreation(entity)
 		val encrypted = validateAndMaybeEncrypt(groupId, entity)
 		return if (groupId == null) {
@@ -121,19 +113,7 @@ private open class AbstractCalendarItemBasicFlavouredApi<E : CalendarItem>(
 		}
 	}
 
-	override suspend fun createCalendarItems(entities: List<E>): List<E> {
-		requireIsValidForCreation(entities)
-		return doCreateCalendarItems(groupId = null, entities)
-	}
-
-	override suspend fun createCalendarItems(entities: List<GroupScoped<E>>): List<GroupScoped<E>> {
-		requireIsValidForCreationInGroup(entities)
-		return entities.mapUniqueIdentifiablesChunkedByGroup { groupId, batch ->
-			doCreateCalendarItems(groupId, batch)
-		}
-	}
-
-	private suspend fun doCreateCalendarItems(groupId: String?, entities: List<E>): List<E> = skipRequestOnEmptyList(entities) { calendarItems ->
+	protected suspend fun doCreateCalendarItems(groupId: String?, entities: List<E>): List<E> = skipRequestOnEmptyList(entities) { calendarItems ->
 		val encrypted = validateAndMaybeEncrypt(groupId, calendarItems)
 		if (groupId == null) {
 			rawApi.createCalendarItems(encrypted)
@@ -144,38 +124,12 @@ private open class AbstractCalendarItemBasicFlavouredApi<E : CalendarItem>(
 		}
 	}
 
-	override suspend fun bookCalendarItemCheckingAvailability(entity: E): E {
-		requireIsValidForCreation(entity)
-		val encrypted = validateAndMaybeEncrypt(null, entity)
-		return maybeDecrypt(
-			null,
-			rawApi.safeBook(encrypted).successBody(MissingAvailabilityException)
-		)
-	}
-
-	override suspend fun undeleteCalendarItemById(id: String, rev: String): E =
-		doUndeleteCalendarItemById(groupId = null, id = id, rev = rev)
-
-	override suspend fun undeleteCalendarItemById(entityId: GroupScoped<StoredDocumentIdentifier>): GroupScoped<E> =
-		GroupScoped(
-			entity = doUndeleteCalendarItemById(groupId = entityId.groupId, id = entityId.entity.id, rev = entityId.entity.rev),
-			groupId = entityId.groupId
-		)
-
-	private suspend fun doUndeleteCalendarItemById(groupId: String?, id: String, rev: String): E =
+	protected suspend fun doUndeleteCalendarItemById(groupId: String?, id: String, rev: String): E =
 		if (groupId == null) {
 			rawApi.undeleteCalendarItem(id, rev)
 		} else {
 			rawApi.undeleteCalendarItemInGroup(groupId = groupId, calendarItemId = id, rev = rev)
 		}.successBodyOrThrowRevisionConflict().let { maybeDecrypt(groupId, it) }
-
-	override suspend fun undeleteCalendarItemsByIds(entityIds: List<StoredDocumentIdentifier>): List<E> =
-		doUndeleteCalendarItemsByIds(groupId = null, entityIds = entityIds)
-
-	override suspend fun undeleteCalendarItemsByIds(entityIds: List<GroupScoped<StoredDocumentIdentifier>>): List<GroupScoped<E>> =
-		entityIds.mapUniqueIdentifiablesChunkedByGroup { groupId, batch ->
-			doUndeleteCalendarItemsByIds(groupId = groupId, entityIds = batch)
-		}
 
 	protected suspend fun doUndeleteCalendarItemsByIds(groupId: String?, entityIds: List<StoredDocumentIdentifier>): List<E> =
 		skipRequestOnEmptyList(entityIds) { ids ->
@@ -186,16 +140,7 @@ private open class AbstractCalendarItemBasicFlavouredApi<E : CalendarItem>(
 			}.successBody().let { maybeDecrypt(entitiesGroupId = groupId, entities = it) }
 		}
 
-	override suspend fun modifyCalendarItem(entity: GroupScoped<E>): GroupScoped<E> =
-		GroupScoped(
-			doModifyCalendarItem(entity.groupId, entity.entity),
-			entity.groupId
-		)
-
-	override suspend fun modifyCalendarItem(entity: E): E =
-		doModifyCalendarItem(groupId = null, entity)
-
-	private suspend fun doModifyCalendarItem(groupId: String?, entity: E): E {
+	protected suspend fun doModifyCalendarItem(groupId: String?, entity: E): E {
 		requireIsValidForModification(entity)
 		val encrypted = validateAndMaybeEncrypt(groupId, entity)
 		return if (groupId == null) {
@@ -207,18 +152,7 @@ private open class AbstractCalendarItemBasicFlavouredApi<E : CalendarItem>(
 		}
 	}
 
-	override suspend fun modifyCalendarItems(entities: List<E>): List<E> {
-		requireIsValidForModification(entities)
-		return doModifyCalendarItems(groupId = null, entities = entities) }
-
-	override suspend fun modifyCalendarItems(entities: List<GroupScoped<E>>): List<GroupScoped<E>> {
-		requireIsValidForModificationInGroup(entities)
-		return entities.mapUniqueIdentifiablesChunkedByGroup { groupId, batch ->
-			doModifyCalendarItems(groupId, batch)
-		}
-	}
-
-	private suspend fun doModifyCalendarItems(
+	protected suspend fun doModifyCalendarItems(
 		groupId: String?,
 		entities: List<E>
 	): List<E> = skipRequestOnEmptyList(entities) { calendarItems ->
@@ -232,12 +166,6 @@ private open class AbstractCalendarItemBasicFlavouredApi<E : CalendarItem>(
 		}
 	}
 
-	override suspend fun getCalendarItem(groupId: String, entityId: String): GroupScoped<E>? =
-		doGetCalendarItem(groupId, entityId)?.let { GroupScoped(it, groupId) }
-
-	override suspend fun getCalendarItem(entityId: String): E? =
-		doGetCalendarItem(groupId = null, entityId)
-
 	protected suspend fun doGetCalendarItem(groupId: String?, entityId: String): E? =
 		if (groupId == null) {
 			rawApi.getCalendarItem(entityId)
@@ -247,12 +175,6 @@ private open class AbstractCalendarItemBasicFlavouredApi<E : CalendarItem>(
 			maybeDecrypt(groupId, it)
 		}
 
-	override suspend fun getCalendarItems(groupId: String, entityIds: List<String>): List<GroupScoped<E>> =
-		doGetCalendarItems(groupId, entityIds).map { GroupScoped(it, groupId) }
-
-	override suspend fun getCalendarItems(entityIds: List<String>): List<E> =
-		doGetCalendarItems(groupId = null, entityIds)
-
 	suspend fun doGetCalendarItems(groupId: String?, entityIds: List<String>): List<E> = skipRequestOnEmptyList(entityIds) { ids ->
 		if (groupId == null) {
 			rawApi.getCalendarItemsWithIds(ListOfIds(ids))
@@ -260,42 +182,108 @@ private open class AbstractCalendarItemBasicFlavouredApi<E : CalendarItem>(
 			rawApi.getCalendarItemsInGroup(groupId, ListOfIds(ids))
 		}.successBody().let { maybeDecrypt(groupId, it) }
 	}
-
 }
 
 @InternalIcureApi
-private class AbstractCalendarItemFlavouredApi<E : CalendarItem>(
+private class CalendarItemBasicFlavouredApiImpl<E : CalendarItem>(
+	rawApi: RawCalendarItemApi,
+	config: BasicApiConfiguration,
+	flavour: FlavouredApi<EncryptedCalendarItem, E>
+) : AbstractCalendarItemBasicFlavouredApi<E>(rawApi, config, flavour), CalendarItemBasicFlavouredApi<E> {
+
+	override suspend fun createCalendarItem(entity: E): E =
+		doCreateCalendarItem(groupId = null, entity)
+
+	override suspend fun createCalendarItems(entities: List<E>): List<E> {
+		requireIsValidForCreation(entities)
+		return doCreateCalendarItems(groupId = null, entities)
+	}
+
+	override suspend fun bookCalendarItemCheckingAvailability(entity: E): E {
+		requireIsValidForCreation(entity)
+		val encrypted = validateAndMaybeEncrypt(null, entity)
+		return maybeDecrypt(
+			null,
+			rawApi.safeBook(encrypted).successBody(MissingAvailabilityException)
+		)
+	}
+
+	override suspend fun modifyCalendarItems(entities: List<E>): List<E> {
+		requireIsValidForModification(entities)
+		return doModifyCalendarItems(groupId = null, entities = entities)
+	}
+
+	override suspend fun undeleteCalendarItemById(id: String, rev: String): E =
+		doUndeleteCalendarItemById(groupId = null, id = id, rev = rev)
+
+	override suspend fun undeleteCalendarItemsByIds(entityIds: List<StoredDocumentIdentifier>): List<E> =
+		doUndeleteCalendarItemsByIds(groupId = null, entityIds = entityIds)
+
+	override suspend fun modifyCalendarItem(entity: E): E =
+		doModifyCalendarItem(groupId = null, entity)
+
+	override suspend fun getCalendarItem(entityId: String): E? =
+		doGetCalendarItem(groupId = null, entityId)
+
+	override suspend fun getCalendarItems(entityIds: List<String>): List<E> = doGetCalendarItems(groupId = null, entityIds)
+}
+
+@InternalIcureApi
+private class CalendarItemBasicFlavouredInGroupApiImpl<E : CalendarItem>(
+	rawApi: RawCalendarItemApi,
+	config: BasicApiConfiguration,
+	flavour: FlavouredApi<EncryptedCalendarItem, E>
+) : AbstractCalendarItemBasicFlavouredApi<E>(rawApi, config, flavour), CalendarItemBasicFlavouredInGroupApi<E> {
+
+	override suspend fun createCalendarItem(entity: GroupScoped<E>): GroupScoped<E> =
+		GroupScoped(doCreateCalendarItem(entity.groupId, entity.entity), entity.groupId)
+
+	override suspend fun createCalendarItems(entities: List<GroupScoped<E>>): List<GroupScoped<E>> {
+		requireIsValidForCreationInGroup(entities)
+		return entities.mapUniqueIdentifiablesChunkedByGroup { groupId, batch ->
+			doCreateCalendarItems(groupId, batch)
+		}
+	}
+
+	override suspend fun undeleteCalendarItemById(entityId: GroupScoped<StoredDocumentIdentifier>): GroupScoped<E> =
+		GroupScoped(
+			entity = doUndeleteCalendarItemById(groupId = entityId.groupId, id = entityId.entity.id, rev = entityId.entity.rev),
+			groupId = entityId.groupId
+		)
+
+	override suspend fun undeleteCalendarItemsByIds(entityIds: List<GroupScoped<StoredDocumentIdentifier>>): List<GroupScoped<E>> =
+		entityIds.mapUniqueIdentifiablesChunkedByGroup { groupId, batch ->
+			doUndeleteCalendarItemsByIds(groupId = groupId, entityIds = batch)
+		}
+
+	override suspend fun modifyCalendarItem(entity: GroupScoped<E>): GroupScoped<E> =
+		GroupScoped(
+			doModifyCalendarItem(entity.groupId, entity.entity),
+			entity.groupId
+		)
+
+	override suspend fun modifyCalendarItems(entities: List<GroupScoped<E>>): List<GroupScoped<E>> {
+		requireIsValidForModificationInGroup(entities)
+		return entities.mapUniqueIdentifiablesChunkedByGroup { groupId, batch ->
+			doModifyCalendarItems(groupId, batch)
+		}
+	}
+
+	override suspend fun getCalendarItem(groupId: String, entityId: String): GroupScoped<E>? =
+		doGetCalendarItem(groupId, entityId)?.let { GroupScoped(it, groupId) }
+
+	override suspend fun getCalendarItems(groupId: String, entityIds: List<String>): List<GroupScoped<E>> =
+		doGetCalendarItems(groupId, entityIds).map { GroupScoped(it, groupId) }
+}
+
+@InternalIcureApi
+private abstract class AbstractCalendarItemFlavouredApi<E : CalendarItem>(
 	rawApi: RawCalendarItemApi,
 	override val config: ApiConfiguration,
 	flavour: FlavouredApi<EncryptedCalendarItem, E>,
-	private val dataOwnerApi: RawDataOwnerApi
-) : AbstractCalendarItemBasicFlavouredApi<E>(rawApi, config, flavour),
-	CalendarItemFlavouredApi<E>,
-	CalendarItemFlavouredInGroupApi<E> {
-	override suspend fun shareWith(
-		delegateId: String,
-		calendarItem: E,
-		options: CalendarItemShareOptions?,
-	): E =
-		shareWithMany(calendarItem, mapOf(delegateId to (options ?: CalendarItemShareOptions())))
+) : AbstractCalendarItemBasicFlavouredApi<E>(rawApi, config, flavour) {
 
-	override suspend fun shareWith(
-		delegate: EntityReferenceInGroup,
-		calendarItem: GroupScoped<E>,
-		options: CalendarItemShareOptions?
-	): GroupScoped<E> =
-		shareWithMany(calendarItem, mapOf(delegate to (options ?: CalendarItemShareOptions())))
-
-	override suspend fun shareWithMany(calendarItem: E, delegates: Map<String, CalendarItemShareOptions>): E =
-		doShareWithMany(groupId = null, calendarItem, delegates.keyAsLocalDataOwnerReferences())
-
-	override suspend fun shareWithMany(
-		calendarItem: GroupScoped<E>,
-		delegates: @JsMapAsObjectArray(keyEntryName = "delegate", valueEntryName = "shareOptions") Map<EntityReferenceInGroup, CalendarItemShareOptions>
-	): GroupScoped<E> =
-		GroupScoped(doShareWithMany(calendarItem.groupId, calendarItem.entity, delegates), calendarItem.groupId)
-
-	private suspend fun doShareWithMany(
+	protected suspend fun doShareWithMany(
 		groupId: String?,
 		calendarItem: E,
 		delegates: @JsMapAsObjectArray(keyEntryName = "delegate", valueEntryName = "shareOptions") Map<EntityReferenceInGroup, CalendarItemShareOptions>
@@ -317,6 +305,44 @@ private class AbstractCalendarItemFlavouredApi<E : CalendarItem>(
 				)
 			}
 		).updatedEntityOrThrow()
+
+	protected suspend inline fun <T : Any> doFilterCalendarItemsBy(
+		groupId: String?,
+		filter: FilterOptions<CalendarItem>,
+		crossinline mapEntity: (E) -> T
+	): PaginatedListIterator<T> =
+		IdsPageIterator(
+			rawApi.matchCalendarItemsBy(
+				mapCalendarItemFilterOptions(
+					filter,
+					config,
+					groupId
+				)
+			).successBody(),
+		) {
+			doGetCalendarItems(groupId, it).map { calendarItem -> mapEntity(calendarItem) }
+		}
+}
+
+@InternalIcureApi
+private class CalendarItemFlavouredApiImpl<E : CalendarItem>(
+	rawApi: RawCalendarItemApi,
+	config: ApiConfiguration,
+	flavour: FlavouredApi<EncryptedCalendarItem, E>,
+	private val dataOwnerApi: RawDataOwnerApi
+) : AbstractCalendarItemFlavouredApi<E>(rawApi, config, flavour),
+	CalendarItemBasicFlavouredApi<E> by CalendarItemBasicFlavouredApiImpl(rawApi, config, flavour),
+	CalendarItemFlavouredApi<E> {
+
+	override suspend fun shareWith(
+		delegateId: String,
+		calendarItem: E,
+		options: CalendarItemShareOptions?,
+	): E =
+		shareWithMany(calendarItem, mapOf(delegateId to (options ?: CalendarItemShareOptions())))
+
+	override suspend fun shareWithMany(calendarItem: E, delegates: Map<String, CalendarItemShareOptions>): E =
+		doShareWithMany(groupId = null, calendarItem, delegates.keyAsLocalDataOwnerReferences())
 
 	override suspend fun linkToPatient(calendarItem: CalendarItem, patient: Patient, shareLinkWithDelegates: Set<String>): E {
 		require(calendarItem.secretForeignKeys.isNotEmpty()) { "Calendar item ${calendarItem.id} is already linked to a patient" }
@@ -370,9 +396,32 @@ private class AbstractCalendarItemFlavouredApi<E : CalendarItem>(
 
 	override suspend fun filterCalendarItemsBy(filter: FilterOptions<CalendarItem>): PaginatedListIterator<E> =
 		doFilterCalendarItemsBy(
-			null,
-			filter
+			groupId = null,
+			filter = filter
 		) { it }
+}
+
+@InternalIcureApi
+private class CalendarItemFlavouredInGroupApiImpl<E : CalendarItem>(
+	rawApi: RawCalendarItemApi,
+	config: ApiConfiguration,
+	flavour: FlavouredApi<EncryptedCalendarItem, E>,
+) : AbstractCalendarItemFlavouredApi<E>(rawApi, config, flavour),
+	CalendarItemBasicFlavouredInGroupApi<E> by CalendarItemBasicFlavouredInGroupApiImpl(rawApi, config, flavour),
+	CalendarItemFlavouredInGroupApi<E> {
+
+	override suspend fun shareWith(
+		delegate: EntityReferenceInGroup,
+		calendarItem: GroupScoped<E>,
+		options: CalendarItemShareOptions?
+	): GroupScoped<E> =
+		shareWithMany(calendarItem, mapOf(delegate to (options ?: CalendarItemShareOptions())))
+
+	override suspend fun shareWithMany(
+		calendarItem: GroupScoped<E>,
+		delegates: @JsMapAsObjectArray(keyEntryName = "delegate", valueEntryName = "shareOptions") Map<EntityReferenceInGroup, CalendarItemShareOptions>
+	): GroupScoped<E> =
+		GroupScoped(doShareWithMany(calendarItem.groupId, calendarItem.entity, delegates), calendarItem.groupId)
 
 	override suspend fun filterCalendarItemsBySorted(
 		groupId: String,
@@ -388,23 +437,6 @@ private class AbstractCalendarItemFlavouredApi<E : CalendarItem>(
 			groupId,
 			filter
 		) { GroupScoped(it, groupId) }
-
-	private suspend inline fun <T : Any> doFilterCalendarItemsBy(
-		groupId: String?,
-		filter: FilterOptions<CalendarItem>,
-		crossinline mapEntity: (E) -> T
-	): PaginatedListIterator<T> =
-		IdsPageIterator(
-			rawApi.matchCalendarItemsBy(
-				mapCalendarItemFilterOptions(
-					filter,
-					config,
-					groupId
-				)
-			).successBody(),
-		) {
-			doGetCalendarItems(groupId, it).map { calendarItem -> mapEntity(calendarItem) }
-		}
 }
 
 @InternalIcureApi
@@ -492,15 +524,13 @@ internal fun initCalendarItemApi(
 	val decryptedFlavour = decryptedApiFlavour(config)
 	val encryptedFlavour = encryptedApiFlavour(config)
 	val tryAndRecoverFlavour = tryAndRecoverApiFlavour(config)
-	val decryptedApi = AbstractCalendarItemFlavouredApi(rawApi, config, decryptedFlavour, rawDataOwnerApi)
-	val encryptedApi = AbstractCalendarItemFlavouredApi(rawApi, config, encryptedFlavour, rawDataOwnerApi)
-	val tryAndRecoverApi = AbstractCalendarItemFlavouredApi(rawApi, config, tryAndRecoverFlavour, rawDataOwnerApi)
 	return CalendarItemApiImpl(
 		rawApi,
 		config,
-		encryptedApi,
-		decryptedApi,
-		tryAndRecoverApi
+		rawDataOwnerApi,
+		encryptedFlavour,
+		decryptedFlavour,
+		tryAndRecoverFlavour
 	)
 }
 
@@ -508,23 +538,26 @@ internal fun initCalendarItemApi(
 private class CalendarItemApiImpl(
 	private val rawApi: RawCalendarItemApi,
 	private val config: ApiConfiguration,
-	private val encryptedFlavour: AbstractCalendarItemFlavouredApi<EncryptedCalendarItem>,
-	private val decryptedFlavour: AbstractCalendarItemFlavouredApi<DecryptedCalendarItem>,
-	private val tryAndRecoverFlavour: AbstractCalendarItemFlavouredApi<CalendarItem>
+	private val rawDataOwnerApi: RawDataOwnerApi,
+	private val encryptedFlavour: FlavouredApi<EncryptedCalendarItem, EncryptedCalendarItem>,
+	private val decryptedFlavour: FlavouredApi<EncryptedCalendarItem, DecryptedCalendarItem>,
+	private val tryAndRecoverFlavour: FlavouredApi<EncryptedCalendarItem, CalendarItem>
 ) : CalendarItemApi,
 	CalendarItemBasicFlavourlessApi by CalendarItemBasicFlavourlessApiImpl(rawApi),
-	CalendarItemFlavouredApi<DecryptedCalendarItem> by decryptedFlavour {
+	CalendarItemFlavouredApi<DecryptedCalendarItem> by CalendarItemFlavouredApiImpl(rawApi, config, decryptedFlavour, rawDataOwnerApi) {
 	override val encrypted: CalendarItemFlavouredApi<EncryptedCalendarItem> =
-		encryptedFlavour
+		CalendarItemFlavouredApiImpl(rawApi, config, encryptedFlavour, rawDataOwnerApi)
 
 	override val tryAndRecover: CalendarItemFlavouredApi<CalendarItem> =
-		tryAndRecoverFlavour
+		CalendarItemFlavouredApiImpl(rawApi, config, tryAndRecoverFlavour, rawDataOwnerApi)
 
 	override val inGroup: CalendarItemInGroupApi = object : CalendarItemInGroupApi,
 		CalendarItemBasicFlavourlessInGroupApi by CalendarItemBasicFlavourlessInGroupApiImpl(rawApi),
-		CalendarItemFlavouredInGroupApi<DecryptedCalendarItem> by decryptedFlavour {
-		override val encrypted: CalendarItemFlavouredInGroupApi<EncryptedCalendarItem> = encryptedFlavour
-		override val tryAndRecover: CalendarItemFlavouredInGroupApi<CalendarItem> = tryAndRecoverFlavour
+		CalendarItemFlavouredInGroupApi<DecryptedCalendarItem> by CalendarItemFlavouredInGroupApiImpl(rawApi, config, decryptedFlavour) {
+		override val encrypted: CalendarItemFlavouredInGroupApi<EncryptedCalendarItem> =
+			CalendarItemFlavouredInGroupApiImpl(rawApi, config, encryptedFlavour)
+		override val tryAndRecover: CalendarItemFlavouredInGroupApi<CalendarItem> =
+			CalendarItemFlavouredInGroupApiImpl(rawApi, config, tryAndRecoverFlavour)
 
 		override suspend fun decrypt(calendarItems: List<GroupScoped<EncryptedCalendarItem>>): List<GroupScoped<DecryptedCalendarItem>> =
 			calendarItems.mapExactlyChunkedByGroup { groupId, entities ->
@@ -756,20 +789,20 @@ internal fun initCalendarItemBasicApi(
 ): CalendarItemBasicApi = CalendarItemBasicApiImpl(
 	rawApi,
 	config,
-	AbstractCalendarItemBasicFlavouredApi(rawApi, config, encryptedApiFlavour(config))
+	encryptedApiFlavour(config)
 )
 
 @InternalIcureApi
 private class CalendarItemBasicApiImpl(
 	private val rawApi: RawCalendarItemApi,
 	private val config: BasicApiConfiguration,
-	private val encryptedFlavour: AbstractCalendarItemBasicFlavouredApi<EncryptedCalendarItem>,
+	private val encryptedFlavour: FlavouredApi<EncryptedCalendarItem, EncryptedCalendarItem>,
 ) : CalendarItemBasicApi,
-	CalendarItemBasicFlavouredApi<EncryptedCalendarItem> by encryptedFlavour,
+	CalendarItemBasicFlavouredApi<EncryptedCalendarItem> by CalendarItemBasicFlavouredApiImpl(rawApi, config, encryptedFlavour),
 	CalendarItemBasicFlavourlessApi by CalendarItemBasicFlavourlessApiImpl(rawApi) {
 	override val inGroup: CalendarItemBasicInGroupApi = object : CalendarItemBasicInGroupApi,
 		CalendarItemBasicFlavourlessInGroupApi by CalendarItemBasicFlavourlessInGroupApiImpl(rawApi),
-		CalendarItemBasicFlavouredInGroupApi<EncryptedCalendarItem> by encryptedFlavour {
+		CalendarItemBasicFlavouredInGroupApi<EncryptedCalendarItem> by CalendarItemBasicFlavouredInGroupApiImpl(rawApi, config, encryptedFlavour) {
 
 		override suspend fun matchCalendarItemsBy(
 			groupId: String,
@@ -787,7 +820,10 @@ private class CalendarItemBasicApiImpl(
 			groupId: String,
 			filter: BaseFilterOptions<CalendarItem>
 		): PaginatedListIterator<GroupScoped<EncryptedCalendarItem>> =
-			doFilterCalendarItemsBy(groupId, filter) { GroupScoped(it, groupId) }
+			IdsPageIterator(
+				doMatchCalendarItemsBy(groupId, filter),
+			) { getCalendarItems(groupId, it) }
+
 
 		override suspend fun filterCalendarItemsBySorted(
 			groupId: String,
@@ -803,7 +839,10 @@ private class CalendarItemBasicApiImpl(
 		matchCalendarItemsBy(filter)
 
 	override suspend fun filterCalendarItemsBy(filter: BaseFilterOptions<CalendarItem>): PaginatedListIterator<EncryptedCalendarItem> =
-		doFilterCalendarItemsBy(null, filter) { it }
+		IdsPageIterator(
+			doMatchCalendarItemsBy(groupId = null, filter),
+		) { getCalendarItems(it) }
+
 
 	override suspend fun filterCalendarItemsBySorted(filter: BaseSortableFilterOptions<CalendarItem>): PaginatedListIterator<EncryptedCalendarItem> =
 		filterCalendarItemsBy(filter)
@@ -826,17 +865,6 @@ private class CalendarItemBasicApiImpl(
 					groupId
 				)
 			).successBody()
-		}
-
-	private suspend inline fun <T : Any> doFilterCalendarItemsBy(
-		groupId: String?,
-		filter: BaseFilterOptions<CalendarItem>,
-		crossinline mapEntity: (EncryptedCalendarItem) -> T
-	): PaginatedListIterator<T> =
-		IdsPageIterator(
-			doMatchCalendarItemsBy(groupId, filter),
-		) {
-			encryptedFlavour.doGetCalendarItems(groupId, it).map { calendarItem -> mapEntity(calendarItem) }
 		}
 
 	override suspend fun subscribeToEvents(

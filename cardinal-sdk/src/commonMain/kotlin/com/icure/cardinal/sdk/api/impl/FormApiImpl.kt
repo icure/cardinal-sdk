@@ -87,21 +87,13 @@ private fun tryAndRecoverApiFlavour(
 )
 
 @InternalIcureApi
-private open class AbstractFormBasicFlavouredApi<E : Form>(
+private abstract class AbstractFormBasicFlavouredApi<E : Form>(
 	protected val rawApi: RawFormApi,
 	protected open val config: BasicApiConfiguration,
 	protected val flavour: FlavouredApi<EncryptedForm, E>
-) : FormBasicFlavouredApi<E>,
-	FormBasicFlavouredInGroupApi<E>,
-	FlavouredApi<EncryptedForm, E> by flavour {
+) : FlavouredApi<EncryptedForm, E> by flavour {
 
-	override suspend fun createForm(entity: E): E = doCreateForm(groupId = null, entity = entity)
-
-	override suspend fun createForm(entity: GroupScoped<E>): GroupScoped<E> = groupScopedWith(entity) { groupId, it ->
-		doCreateForm(groupId = groupId, entity = it)
-	}
-
-	private suspend fun doCreateForm(groupId: String?, entity: E): E {
+	protected suspend fun doCreateForm(groupId: String?, entity: E): E {
 		requireIsValidForCreation(entity)
 		val encrypted = validateAndMaybeEncrypt(groupId, entity)
 		return if (groupId == null) {
@@ -113,19 +105,7 @@ private open class AbstractFormBasicFlavouredApi<E : Form>(
 		}
 	}
 
-	override suspend fun createForms(entities: List<E>): List<E> {
-		requireIsValidForCreation(entities)
-		return doCreateForms(groupId = null, entities = entities)
-	}
-
-	override suspend fun createForms(entities: List<GroupScoped<E>>): List<GroupScoped<E>> {
-		requireIsValidForCreationInGroup(entities)
-		return entities.mapUniqueIdentifiablesChunkedByGroup { groupId, chunk ->
-			doCreateForms(groupId = groupId, entities = chunk)
-		}
-	}
-
-	private suspend fun doCreateForms(groupId: String?, entities: List<E>): List<E> = skipRequestOnEmptyList(entities) { forms ->
+	protected suspend fun doCreateForms(groupId: String?, entities: List<E>): List<E> = skipRequestOnEmptyList(entities) { forms ->
 		val encrypted = validateAndMaybeEncrypt(groupId, forms)
 		return if (groupId == null) {
 			rawApi.createForms(encrypted)
@@ -136,29 +116,14 @@ private open class AbstractFormBasicFlavouredApi<E : Form>(
 		}
 	}
 
-	override suspend fun undeleteFormById(id: String, rev: String): E = doUndeleteForm(groupId = null, entityId = id, rev = rev)
-
-	override suspend fun undeleteFormById(entityId: GroupScoped<StoredDocumentIdentifier>): GroupScoped<E> =
-		groupScopedWith(entityId) { groupId, it ->
-			doUndeleteForm(groupId = groupId, entityId = it.id, rev = it.rev)
-		}
-
-	private suspend fun doUndeleteForm(groupId: String?, entityId: String, rev: String): E =
+	protected suspend fun doUndeleteForm(groupId: String?, entityId: String, rev: String): E =
 		if (groupId == null) {
 			rawApi.undeleteForm(entityId, rev)
 		} else {
 			rawApi.undeleteFormInGroup(groupId, entityId, rev)
 		}.successBodyOrThrowRevisionConflict().let { maybeDecrypt(groupId, it) }
 
-	override suspend fun undeleteFormsByIds(entityIds: List<StoredDocumentIdentifier>): List<E> =
-		doUndeleteForms(groupId = null, entityIds = entityIds)
-
-	override suspend fun undeleteFormsByIds(entityIds: List<GroupScoped<StoredDocumentIdentifier>>): List<GroupScoped<E>> =
-		entityIds.mapUniqueIdentifiablesChunkedByGroup { groupId, chunk ->
-			doUndeleteForms(groupId = groupId, entityIds = chunk)
-		}
-
-	private suspend fun doUndeleteForms(groupId: String?, entityIds: List<StoredDocumentIdentifier>): List<E> = skipRequestOnEmptyList(entityIds) { ids ->
+	protected suspend fun doUndeleteForms(groupId: String?, entityIds: List<StoredDocumentIdentifier>): List<E> = skipRequestOnEmptyList(entityIds) { ids ->
 		if (groupId == null) {
 			rawApi.undeleteForms(ListOfIdsAndRev(ids))
 		} else {
@@ -166,13 +131,7 @@ private open class AbstractFormBasicFlavouredApi<E : Form>(
 		}.successBody().let { maybeDecrypt(groupId, it) }
 	}
 
-	override suspend fun modifyForm(entity: E): E = doModifyForm(groupId = null, entity = entity)
-
-	override suspend fun modifyForm(entity: GroupScoped<E>): GroupScoped<E> = groupScopedWith(entity) { groupId, it ->
-		doModifyForm(groupId = groupId, entity = it)
-	}
-
-	private suspend fun doModifyForm(groupId: String?, entity: E): E {
+	protected suspend fun doModifyForm(groupId: String?, entity: E): E {
 		requireIsValidForModification(entity)
 		val encrypted = validateAndMaybeEncrypt(groupId, entity)
 		return if (groupId == null) {
@@ -182,19 +141,7 @@ private open class AbstractFormBasicFlavouredApi<E : Form>(
 		}.successBodyOrThrowRevisionConflict().let { maybeDecrypt(groupId, it) }
 	}
 
-	override suspend fun modifyForms(entities: List<E>): List<E> {
-		requireIsValidForModification(entities)
-		return doModifyForms(groupId = null, entities = entities)
-	}
-
-	override suspend fun modifyForms(entities: List<GroupScoped<E>>): List<GroupScoped<E>> {
-		requireIsValidForModificationInGroup(entities)
-		return entities.mapUniqueIdentifiablesChunkedByGroup { groupId, chunk ->
-			doModifyForms(groupId = groupId, entities = chunk)
-		}
-	}
-
-	private suspend fun doModifyForms(groupId: String?, entities: List<E>): List<E> = skipRequestOnEmptyList(entities) { forms ->
+	protected suspend fun doModifyForms(groupId: String?, entities: List<E>): List<E> = skipRequestOnEmptyList(entities) { forms ->
 		val encrypted = validateAndMaybeEncrypt(groupId, forms)
 		return if (groupId == null) {
 			rawApi.modifyForms(encrypted)
@@ -205,24 +152,12 @@ private open class AbstractFormBasicFlavouredApi<E : Form>(
 		}
 	}
 
-	override suspend fun getForm(entityId: String): E? = doGetForm(groupId = null, entityId = entityId)
-
-	override suspend fun getForm(groupId: String, entityId: String): GroupScoped<E>? = groupScopedIn(groupId) {
-		doGetForm(groupId = groupId, entityId = entityId)
-	}
-
 	protected suspend fun doGetForm(groupId: String?, entityId: String): E? =
 		if (groupId == null) {
 			rawApi.getForm(entityId)
 		} else {
 			rawApi.getFormInGroup(groupId, entityId)
 		}.successBodyOrNull404()?.let { maybeDecrypt(groupId, it) }
-
-	override suspend fun getForms(entityIds: List<String>): List<E> = doGetForms(groupId = null, entityIds)
-
-	override suspend fun getForms(groupId: String, entityIds: List<String>): List<GroupScoped<E>> = groupScopedListIn(groupId) {
-		doGetForms(groupId = groupId, entityIds = entityIds)
-	}
 
 	suspend fun doGetForms(groupId: String?, entityIds: List<String>) = skipRequestOnEmptyList(entityIds) { ids ->
 		if (groupId == null) {
@@ -231,43 +166,97 @@ private open class AbstractFormBasicFlavouredApi<E : Form>(
 			rawApi.getFormsInGroup(groupId, ListOfIds(ids))
 		}.successBody().let { maybeDecrypt(groupId, it) }
 	}
+}
+
+@InternalIcureApi
+private class FormBasicFlavouredApiImpl<E: Form>(
+	rawApi: RawFormApi,
+	config: BasicApiConfiguration,
+	flavour: FlavouredApi<EncryptedForm, E>
+) : FormBasicFlavouredApi<E>, AbstractFormBasicFlavouredApi<E>(rawApi, config, flavour) {
+
+	override suspend fun createForm(entity: E): E = doCreateForm(groupId = null, entity = entity)
+
+	override suspend fun createForms(entities: List<E>): List<E> {
+		requireIsValidForCreation(entities)
+		return doCreateForms(groupId = null, entities = entities)
+	}
+
+	override suspend fun undeleteFormById(id: String, rev: String): E = doUndeleteForm(groupId = null, entityId = id, rev = rev)
+
+	override suspend fun undeleteFormsByIds(entityIds: List<StoredDocumentIdentifier>): List<E> =
+		doUndeleteForms(groupId = null, entityIds = entityIds)
+
+	override suspend fun modifyForm(entity: E): E = doModifyForm(groupId = null, entity = entity)
+
+	override suspend fun modifyForms(entities: List<E>): List<E> {
+		requireIsValidForModification(entities)
+		return doModifyForms(groupId = null, entities = entities)
+	}
+
+	override suspend fun getForm(entityId: String): E? = doGetForm(groupId = null, entityId = entityId)
+
+	override suspend fun getForms(entityIds: List<String>): List<E> = doGetForms(groupId = null, entityIds)
 
 	override suspend fun getLatestFormByUniqueId(uniqueId: String) = rawApi.getFormByUniqueId(uniqueId).successBody().let { maybeDecrypt(null, it) }
 }
 
 @InternalIcureApi
-private class AbstractFormFlavouredApi<E : Form>(
+private class FormBasicFlavouredInGroupApiImpl<E: Form>(
+	rawApi: RawFormApi,
+	config: BasicApiConfiguration,
+	flavour: FlavouredApi<EncryptedForm, E>
+) : FormBasicFlavouredInGroupApi<E>, AbstractFormBasicFlavouredApi<E>(rawApi, config, flavour) {
+
+	override suspend fun createForm(entity: GroupScoped<E>): GroupScoped<E> = groupScopedWith(entity) { groupId, it ->
+		doCreateForm(groupId = groupId, entity = it)
+	}
+
+	override suspend fun createForms(entities: List<GroupScoped<E>>): List<GroupScoped<E>> {
+		requireIsValidForCreationInGroup(entities)
+		return entities.mapUniqueIdentifiablesChunkedByGroup { groupId, chunk ->
+			doCreateForms(groupId = groupId, entities = chunk)
+		}
+	}
+
+	override suspend fun undeleteFormById(entityId: GroupScoped<StoredDocumentIdentifier>): GroupScoped<E> =
+		groupScopedWith(entityId) { groupId, it ->
+			doUndeleteForm(groupId = groupId, entityId = it.id, rev = it.rev)
+		}
+
+	override suspend fun undeleteFormsByIds(entityIds: List<GroupScoped<StoredDocumentIdentifier>>): List<GroupScoped<E>> =
+		entityIds.mapUniqueIdentifiablesChunkedByGroup { groupId, chunk ->
+			doUndeleteForms(groupId = groupId, entityIds = chunk)
+		}
+
+	override suspend fun modifyForm(entity: GroupScoped<E>): GroupScoped<E> = groupScopedWith(entity) { groupId, it ->
+		doModifyForm(groupId = groupId, entity = it)
+	}
+
+	override suspend fun modifyForms(entities: List<GroupScoped<E>>): List<GroupScoped<E>> {
+		requireIsValidForModificationInGroup(entities)
+		return entities.mapUniqueIdentifiablesChunkedByGroup { groupId, chunk ->
+			doModifyForms(groupId = groupId, entities = chunk)
+		}
+	}
+
+	override suspend fun getForm(groupId: String, entityId: String): GroupScoped<E>? = groupScopedIn(groupId) {
+		doGetForm(groupId = groupId, entityId = entityId)
+	}
+
+	override suspend fun getForms(groupId: String, entityIds: List<String>): List<GroupScoped<E>> = groupScopedListIn(groupId) {
+		doGetForms(groupId = groupId, entityIds = entityIds)
+	}
+}
+
+@InternalIcureApi
+private abstract class AbstractFormFlavouredApi<E : Form>(
 	rawApi: RawFormApi,
 	override val config: ApiConfiguration,
 	flavour: FlavouredApi<EncryptedForm, E>,
-) : AbstractFormBasicFlavouredApi<E>(rawApi, config, flavour),
-	FormFlavouredApi<E>,
-	FormFlavouredInGroupApi<E> {
+) : AbstractFormBasicFlavouredApi<E>(rawApi, config, flavour) {
 
-	override suspend fun shareWith(
-		delegateId: String,
-		form: E,
-		options: FormShareOptions?,
-	): E =
-		shareWithMany(form, mapOf(delegateId to (options ?: FormShareOptions())))
-
-	override suspend fun shareWith(
-		delegate: EntityReferenceInGroup,
-		form: GroupScoped<E>,
-		options: FormShareOptions?
-	): GroupScoped<E> =
-		shareWithMany(form, mapOf(delegate to (options ?: FormShareOptions())))
-
-	override suspend fun shareWithMany(form: E, delegates: Map<String, FormShareOptions>): E =
-		doShareWithMany(groupId = null, form, delegates.keyAsLocalDataOwnerReferences())
-
-	override suspend fun shareWithMany(
-		form: GroupScoped<E>,
-		delegates: @JsMapAsObjectArray(keyEntryName = "delegate", valueEntryName = "shareOptions") Map<EntityReferenceInGroup, FormShareOptions>
-	): GroupScoped<E> =
-		GroupScoped(doShareWithMany(form.groupId, form.entity, delegates), form.groupId)
-
-	private suspend fun doShareWithMany(
+	protected suspend fun doShareWithMany(
 		groupId: String?,
 		form: E,
 		delegates: @JsMapAsObjectArray(keyEntryName = "delegate", valueEntryName = "shareOptions") Map<EntityReferenceInGroup, FormShareOptions>
@@ -290,31 +279,7 @@ private class AbstractFormFlavouredApi<E : Form>(
 			}
 		).updatedEntityOrThrow()
 
-	override suspend fun filterFormsBySorted(filter: SortableFilterOptions<Form>): PaginatedListIterator<E> =
-		filterFormsBy(filter)
-
-	override suspend fun filterFormsBy(filter: FilterOptions<Form>): PaginatedListIterator<E> =
-		doFilterFormsBy(
-			null,
-			filter
-		) { it }
-
-	override suspend fun filterFormsBySorted(
-		groupId: String,
-		filter: SortableFilterOptions<Form>
-	): PaginatedListIterator<GroupScoped<E>> =
-		filterFormsBy(groupId, filter)
-
-	override suspend fun filterFormsBy(
-		groupId: String,
-		filter: FilterOptions<Form>
-	): PaginatedListIterator<GroupScoped<E>> =
-		doFilterFormsBy(
-			groupId,
-			filter
-		) { GroupScoped(it, groupId) }
-
-	private suspend inline fun <T : Any> doFilterFormsBy(
+	protected suspend inline fun <T : Any> doFilterFormsBy(
 		groupId: String?,
 		filter: FilterOptions<Form>,
 		crossinline mapEntity: (E) -> T
@@ -330,6 +295,73 @@ private class AbstractFormFlavouredApi<E : Form>(
 		) {
 			doGetForms(groupId, it).map { form -> mapEntity(form) }
 		}
+}
+
+@InternalIcureApi
+private class FormFlavouredApiImpl<E : Form>(
+	rawApi: RawFormApi,
+	config: ApiConfiguration,
+	flavour: FlavouredApi<EncryptedForm, E>
+) : AbstractFormFlavouredApi<E>(rawApi, config, flavour),
+	FormBasicFlavouredApi<E> by FormBasicFlavouredApiImpl(rawApi, config, flavour),
+	FormFlavouredApi<E> {
+
+	override suspend fun shareWith(
+		delegateId: String,
+		form: E,
+		options: FormShareOptions?,
+	): E =
+		shareWithMany(form, mapOf(delegateId to (options ?: FormShareOptions())))
+
+	override suspend fun shareWithMany(form: E, delegates: Map<String, FormShareOptions>): E =
+		doShareWithMany(groupId = null, form, delegates.keyAsLocalDataOwnerReferences())
+
+	override suspend fun filterFormsBySorted(filter: SortableFilterOptions<Form>): PaginatedListIterator<E> =
+		filterFormsBy(filter)
+
+	override suspend fun filterFormsBy(filter: FilterOptions<Form>): PaginatedListIterator<E> =
+		doFilterFormsBy(
+			null,
+			filter
+		) { it }
+}
+
+@InternalIcureApi
+private class FormFlavouredInGroupApiImpl<E : Form>(
+	rawApi: RawFormApi,
+	config: ApiConfiguration,
+	flavour: FlavouredApi<EncryptedForm, E>
+) : AbstractFormFlavouredApi<E>(rawApi, config, flavour),
+	FormBasicFlavouredInGroupApi<E> by FormBasicFlavouredInGroupApiImpl(rawApi, config, flavour),
+	FormFlavouredInGroupApi<E> {
+
+	override suspend fun shareWith(
+		delegate: EntityReferenceInGroup,
+		form: GroupScoped<E>,
+		options: FormShareOptions?
+	): GroupScoped<E> =
+		shareWithMany(form, mapOf(delegate to (options ?: FormShareOptions())))
+
+	override suspend fun shareWithMany(
+		form: GroupScoped<E>,
+		delegates: @JsMapAsObjectArray(keyEntryName = "delegate", valueEntryName = "shareOptions") Map<EntityReferenceInGroup, FormShareOptions>
+	): GroupScoped<E> =
+		GroupScoped(doShareWithMany(form.groupId, form.entity, delegates), form.groupId)
+
+	override suspend fun filterFormsBySorted(
+		groupId: String,
+		filter: SortableFilterOptions<Form>
+	): PaginatedListIterator<GroupScoped<E>> =
+		filterFormsBy(groupId, filter)
+
+	override suspend fun filterFormsBy(
+		groupId: String,
+		filter: FilterOptions<Form>
+	): PaginatedListIterator<GroupScoped<E>> =
+		doFilterFormsBy(
+			groupId,
+			filter
+		) { GroupScoped(it, groupId) }
 }
 
 @InternalIcureApi
@@ -622,15 +654,12 @@ internal fun initFormApi(
 	val decryptedFlavour = decryptedApiFlavour(config)
 	val encryptedFlavour = encryptedApiFlavour(config)
 	val tryAndRecoverFlavour = tryAndRecoverApiFlavour(config)
-	val decryptedApi = AbstractFormFlavouredApi(rawApi, config, decryptedFlavour)
-	val encryptedApi = AbstractFormFlavouredApi(rawApi, config, encryptedFlavour)
-	val tryAndRecoverApi = AbstractFormFlavouredApi(rawApi, config, tryAndRecoverFlavour)
 	return FormApiImpl(
 		rawApi,
 		config,
-		encryptedApi,
-		decryptedApi,
-		tryAndRecoverApi
+		encryptedFlavour,
+		decryptedFlavour,
+		tryAndRecoverFlavour
 	)
 }
 
@@ -638,24 +667,24 @@ internal fun initFormApi(
 private class FormApiImpl(
 	private val rawApi: RawFormApi,
 	private val config: ApiConfiguration,
-	private val encryptedFlavour: AbstractFormFlavouredApi<EncryptedForm>,
-	private val decryptedFlavour: AbstractFormFlavouredApi<DecryptedForm>,
-	private val tryAndRecoverFlavour: AbstractFormFlavouredApi<Form>
+	private val encryptedFlavour: FlavouredApi<EncryptedForm, EncryptedForm>,
+	private val decryptedFlavour: FlavouredApi<EncryptedForm, DecryptedForm>,
+	private val tryAndRecoverFlavour: FlavouredApi<EncryptedForm, Form>
 ) : FormApi,
 	FormBasicFlavourlessApi by FormBasicFlavourlessApiImpl(rawApi),
-	FormFlavouredApi<DecryptedForm> by decryptedFlavour {
+	FormFlavouredApi<DecryptedForm> by FormFlavouredApiImpl(rawApi, config, decryptedFlavour) {
 
 	private val crypto get() = config.crypto
 
-	override val encrypted: FormFlavouredApi<EncryptedForm> = encryptedFlavour
+	override val encrypted: FormFlavouredApi<EncryptedForm> = FormFlavouredApiImpl(rawApi, config, encryptedFlavour)
 
-	override val tryAndRecover: FormFlavouredApi<Form> = tryAndRecoverFlavour
+	override val tryAndRecover: FormFlavouredApi<Form> = FormFlavouredApiImpl(rawApi, config, tryAndRecoverFlavour)
 
 	override val inGroup: FormInGroupApi = object : FormInGroupApi,
 		FormBasicFlavourlessInGroupApi by FormBasicFlavourlessInGroupApiImpl(rawApi),
-		FormFlavouredInGroupApi<DecryptedForm> by decryptedFlavour {
-		override val encrypted: FormFlavouredInGroupApi<EncryptedForm> = encryptedFlavour
-		override val tryAndRecover: FormFlavouredInGroupApi<Form> = tryAndRecoverFlavour
+		FormFlavouredInGroupApi<DecryptedForm> by FormFlavouredInGroupApiImpl(rawApi, config, decryptedFlavour) {
+		override val encrypted: FormFlavouredInGroupApi<EncryptedForm> = FormFlavouredInGroupApiImpl(rawApi, config, encryptedFlavour)
+		override val tryAndRecover: FormFlavouredInGroupApi<Form> = FormFlavouredInGroupApiImpl(rawApi, config, tryAndRecoverFlavour)
 
 		override suspend fun decrypt(forms: List<GroupScoped<EncryptedForm>>): List<GroupScoped<DecryptedForm>> =
 			forms.mapExactlyChunkedByGroup { groupId, entities ->
@@ -859,7 +888,7 @@ internal fun initFormBasicApi(
 ): FormBasicApi = FormBasicApiImpl(
 	rawApi,
 	config,
-	AbstractFormBasicFlavouredApi(rawApi, config, encryptedApiFlavour(config))
+	encryptedApiFlavour(config)
 )
 
 
@@ -867,13 +896,13 @@ internal fun initFormBasicApi(
 private class FormBasicApiImpl(
 	private val rawApi: RawFormApi,
 	private val config: BasicApiConfiguration,
-	private val encryptedFlavour: AbstractFormBasicFlavouredApi<EncryptedForm>,
+	private val encryptedFlavour: FlavouredApi<EncryptedForm, EncryptedForm>,
 ) : FormBasicApi,
-	FormBasicFlavouredApi<EncryptedForm> by encryptedFlavour,
+	FormBasicFlavouredApi<EncryptedForm> by FormBasicFlavouredApiImpl(rawApi, config, encryptedFlavour),
 	FormBasicFlavourlessApi by FormBasicFlavourlessApiImpl(rawApi) {
 	override val inGroup: FormBasicInGroupApi = object : FormBasicInGroupApi,
 		FormBasicFlavourlessInGroupApi by FormBasicFlavourlessInGroupApiImpl(rawApi),
-		FormBasicFlavouredInGroupApi<EncryptedForm> by encryptedFlavour {
+		FormBasicFlavouredInGroupApi<EncryptedForm> by FormBasicFlavouredInGroupApiImpl(rawApi, config, encryptedFlavour) {
 
 		override suspend fun matchFormsBy(
 			groupId: String,
@@ -891,7 +920,9 @@ private class FormBasicApiImpl(
 			groupId: String,
 			filter: BaseFilterOptions<Form>
 		): PaginatedListIterator<GroupScoped<EncryptedForm>> =
-			doFilterFormsBy(groupId, filter) { GroupScoped(it, groupId) }
+			IdsPageIterator(
+				doMatchFormsBy(groupId = groupId, filter),
+			) { getForms(groupId, it) }
 
 		override suspend fun filterFormsBySorted(
 			groupId: String,
@@ -907,7 +938,9 @@ private class FormBasicApiImpl(
 		matchFormsBy(filter)
 
 	override suspend fun filterFormsBy(filter: BaseFilterOptions<Form>): PaginatedListIterator<EncryptedForm> =
-		doFilterFormsBy(null, filter) { it }
+		IdsPageIterator(
+			doMatchFormsBy(groupId = null, filter),
+		) { getForms(it) }
 
 	override suspend fun filterFormsBySorted(filter: BaseSortableFilterOptions<Form>): PaginatedListIterator<EncryptedForm> =
 		filterFormsBy(filter)
@@ -932,14 +965,4 @@ private class FormBasicApiImpl(
 			).successBody()
 		}
 
-	private suspend inline fun <T : Any> doFilterFormsBy(
-		groupId: String?,
-		filter: BaseFilterOptions<Form>,
-		crossinline mapEntity: (EncryptedForm) -> T
-	): PaginatedListIterator<T> =
-		IdsPageIterator(
-			doMatchFormsBy(groupId, filter),
-		) {
-			encryptedFlavour.doGetForms(groupId, it).map { calendarItem -> mapEntity(calendarItem) }
-		}
 }

@@ -345,21 +345,13 @@ private fun tryAndRecoverApiFlavour(
 }
 
 @InternalIcureApi
-private open class AbstractContactBasicFlavouredApi<E : Contact, S : Service>(
+private abstract class AbstractContactBasicFlavouredApi<E : Contact, S : Service>(
 	protected val rawApi: RawContactApi,
 	protected open val config: BasicApiConfiguration,
 	protected val flavour: ContactExtendedFlavouredApi<E, S>
-) : ContactBasicFlavouredApi<E, S>,
-	ContactBasicFlavouredInGroupApi<E, S>,
-	ContactExtendedFlavouredApi<E, S> by flavour {
+) : ContactExtendedFlavouredApi<E, S> by flavour {
 
-	override suspend fun createContact(entity: E): E = doCreateContact(groupId = null, entity = entity)
-
-	override suspend fun createContact(entity: GroupScoped<E>): GroupScoped<E> = groupScopedWith(entity) { groupId, it ->
-		doCreateContact(groupId = groupId, entity = it)
-	}
-
-	private suspend fun doCreateContact(groupId: String?, entity: E): E {
+	protected suspend fun doCreateContact(groupId: String?, entity: E): E {
 		requireIsValidForCreation(entity)
 		val encrypted = validateAndMaybeEncrypt(groupId, entity)
 		return if (groupId == null) {
@@ -371,19 +363,7 @@ private open class AbstractContactBasicFlavouredApi<E : Contact, S : Service>(
 		}
 	}
 
-	override suspend fun createContacts(entities: List<E>): List<E> {
-		requireIsValidForCreation(entities)
-		return doCreateContacts(groupId = null, entities = entities)
-	}
-
-	override suspend fun createContacts(entities: List<GroupScoped<E>>): List<GroupScoped<E>> {
-		requireIsValidForCreationInGroup(entities)
-		return entities.mapUniqueIdentifiablesChunkedByGroup { groupId, entities ->
-			doCreateContacts(groupId = groupId, entities = entities)
-		}
-	}
-
-	private suspend fun doCreateContacts(groupId: String?, entities: List<E>): List<E> = skipRequestOnEmptyList(entities) { contacts ->
+	protected suspend fun doCreateContacts(groupId: String?, entities: List<E>): List<E> = skipRequestOnEmptyList(entities) { contacts ->
 		val encrypted = validateAndMaybeEncrypt(groupId, contacts)
 		if (groupId == null) {
 			rawApi.createContacts(encrypted)
@@ -394,29 +374,14 @@ private open class AbstractContactBasicFlavouredApi<E : Contact, S : Service>(
 		}
 	}
 
-	override suspend fun undeleteContactById(id: String, rev: String): E = doUndeleteContact(groupId = null, id = id, rev = rev)
-
-	override suspend fun undeleteContactById(entityId: GroupScoped<StoredDocumentIdentifier>): GroupScoped<E> =
-		groupScopedWith(entityId) { groupId, entity ->
-			doUndeleteContact(groupId = groupId, id = entity.id, rev = entity.rev)
-		}
-
-	private suspend fun doUndeleteContact(groupId: String?, id: String, rev: String): E =
+	protected suspend fun doUndeleteContact(groupId: String?, id: String, rev: String): E =
 		if (groupId == null) {
 			rawApi.undeleteContact(id, rev)
 		} else {
 			rawApi.undeleteContactInGroup(groupId = groupId, contactId = id, rev = rev)
 		}.successBodyOrThrowRevisionConflict().let { maybeDecrypt(groupId, it) }
 
-	override suspend fun undeleteContactsByIds(entityIds: List<StoredDocumentIdentifier>): List<E> =
-		doUndeleteContacts(groupId = null, entityIds = entityIds)
-
-	override suspend fun undeleteContactsByIds(entityIds: List<GroupScoped<StoredDocumentIdentifier>>): List<GroupScoped<E>> =
-		entityIds.mapUniqueIdentifiablesChunkedByGroup { groupId, chunk ->
-			doUndeleteContacts(groupId = groupId, entityIds = chunk)
-		}
-
-	private suspend fun doUndeleteContacts(groupId: String?, entityIds: List<StoredDocumentIdentifier>): List<E> =
+	protected suspend fun doUndeleteContacts(groupId: String?, entityIds: List<StoredDocumentIdentifier>): List<E> =
 		skipRequestOnEmptyList(entityIds) { ids ->
 			if (groupId == null) {
 				rawApi.undeleteContacts(ListOfIdsAndRev(ids))
@@ -425,13 +390,7 @@ private open class AbstractContactBasicFlavouredApi<E : Contact, S : Service>(
 			}.successBody().let { maybeDecrypt(entitiesGroupId = groupId, entities = it) }
 		}
 
-	override suspend fun modifyContact(entity: E): E = doModifyContact(groupId = null, entity = entity)
-
-	override suspend fun modifyContact(entity: GroupScoped<E>): GroupScoped<E> = groupScopedWith(entity) { groupId, it ->
-		doModifyContact(groupId = groupId, entity = it)
-	}
-
-	private suspend fun doModifyContact(groupId: String?, entity: E): E {
+	protected suspend fun doModifyContact(groupId: String?, entity: E): E {
 		requireIsValidForModification(entity)
 		val encrypted = validateAndMaybeEncrypt(groupId, entity)
 		return if (groupId == null) {
@@ -443,19 +402,7 @@ private open class AbstractContactBasicFlavouredApi<E : Contact, S : Service>(
 		}
 	}
 
-	override suspend fun modifyContacts(entities: List<E>): List<E> {
-		requireIsValidForModification(entities)
-		return doModifyContacts(groupId = null, entities = entities)
-	}
-
-	override suspend fun modifyContacts(entities: List<GroupScoped<E>>): List<GroupScoped<E>> {
-		requireIsValidForModificationInGroup(entities)
-		return entities.mapUniqueIdentifiablesChunkedByGroup { groupId, chunk ->
-			doModifyContacts(groupId = groupId, entities = chunk)
-		}
-	}
-
-	private suspend fun doModifyContacts(
+	protected suspend fun doModifyContacts(
 		groupId: String?,
 		entities: List<E>
 	): List<E> = skipRequestOnEmptyList(entities) { contacts ->
@@ -469,12 +416,6 @@ private open class AbstractContactBasicFlavouredApi<E : Contact, S : Service>(
 		}
 	}
 
-	override suspend fun getContact(entityId: String): E? = doGetContact(groupId = null, entityId = entityId)
-
-	override suspend fun getContact(groupId: String, entityId: String): GroupScoped<E>? = groupScopedIn(groupId) {
-		doGetContact(groupId = groupId, entityId = entityId)
-	}
-
 	protected suspend fun doGetContact(groupId: String?, entityId: String): E? =
 		if (groupId == null) {
 			rawApi.getContact(entityId)
@@ -484,24 +425,12 @@ private open class AbstractContactBasicFlavouredApi<E : Contact, S : Service>(
 			maybeDecrypt(groupId, it)
 		}
 
-	override suspend fun getContacts(entityIds: List<String>): List<E> = doGetContacts(groupId = null, entityIds = entityIds)
-
-	override suspend fun getContacts(groupId: String, entityIds: List<String>): List<GroupScoped<E>> = groupScopedListIn(groupId) {
-		doGetContacts(groupId = groupId, entityIds = entityIds)
-	}
-
 	suspend fun doGetContacts(groupId: String?, entityIds: List<String>): List<E> = skipRequestOnEmptyList(entityIds) { ids ->
 		if (groupId == null) {
 			rawApi.getContacts(ListOfIds(ids))
 		} else {
 			rawApi.getContactsInGroup(groupId, ListOfIds(ids))
 		}.successBody().let { maybeDecrypt(groupId, it) }
-	}
-
-	override suspend fun getService(serviceId: String): S? = doGetService(groupId = null, entityId = serviceId)
-
-	override suspend fun getService(groupId: String, serviceId: String): GroupScoped<S>? = groupScopedIn(groupId) {
-		doGetService(groupId = groupId, entityId = serviceId)
 	}
 
 	protected suspend fun doGetService(groupId: String?, entityId: String): S? =
@@ -512,13 +441,6 @@ private open class AbstractContactBasicFlavouredApi<E : Contact, S : Service>(
 		}.successBodyOrNull404()?.let {
 			maybeDecryptServices(groupId, listOf(it)).single()
 		}
-
-
-	override suspend fun getServices(entityIds: List<String>): List<S> = doGetServices(groupId = null, entityIds = entityIds)
-
-	override suspend fun getServices(groupId: String, entityIds: List<String>): List<GroupScoped<S>> = groupScopedListIn(groupId) {
-		doGetServices(groupId = groupId, entityIds = entityIds)
-	}
 
 	protected suspend fun doGetServices(groupId: String?, entityIds: List<String>): List<S> = skipRequestOnEmptyList(entityIds) { ids ->
 		if (groupId == null) {
@@ -532,39 +454,104 @@ private open class AbstractContactBasicFlavouredApi<E : Contact, S : Service>(
 }
 
 @InternalIcureApi
-private class AbstractContactFlavouredApi<E : Contact, S : Service>(
+private class ContactBasicFlavouredApiImpl<E : Contact, S : Service>(
+	rawApi: RawContactApi,
+	config: BasicApiConfiguration,
+	flavour: ContactExtendedFlavouredApi<E, S>
+) : ContactBasicFlavouredApi<E, S>, AbstractContactBasicFlavouredApi<E, S>(rawApi, config, flavour) {
+
+	override suspend fun createContact(entity: E): E = doCreateContact(groupId = null, entity = entity)
+
+	override suspend fun createContacts(entities: List<E>): List<E> {
+		requireIsValidForCreation(entities)
+		return doCreateContacts(groupId = null, entities = entities)
+	}
+
+	override suspend fun undeleteContactById(id: String, rev: String): E = doUndeleteContact(groupId = null, id = id, rev = rev)
+
+	override suspend fun undeleteContactsByIds(entityIds: List<StoredDocumentIdentifier>): List<E> =
+		doUndeleteContacts(groupId = null, entityIds = entityIds)
+
+	override suspend fun modifyContact(entity: E): E = doModifyContact(groupId = null, entity = entity)
+
+	override suspend fun modifyContacts(entities: List<E>): List<E> {
+		requireIsValidForModification(entities)
+		return doModifyContacts(groupId = null, entities = entities)
+	}
+
+	override suspend fun getContact(entityId: String): E? = doGetContact(groupId = null, entityId = entityId)
+
+	override suspend fun getContacts(entityIds: List<String>): List<E> = doGetContacts(groupId = null, entityIds = entityIds)
+
+	override suspend fun getService(serviceId: String): S? = doGetService(groupId = null, entityId = serviceId)
+
+	override suspend fun getServices(entityIds: List<String>): List<S> = doGetServices(groupId = null, entityIds = entityIds)
+}
+
+@InternalIcureApi
+private class ContactBasicFlavouredInGroupApiImpl<E : Contact, S : Service>(
+	rawApi: RawContactApi,
+	config: BasicApiConfiguration,
+	flavour: ContactExtendedFlavouredApi<E, S>
+) : ContactBasicFlavouredInGroupApi<E, S>, AbstractContactBasicFlavouredApi<E, S>(rawApi, config, flavour) {
+
+	override suspend fun createContact(entity: GroupScoped<E>): GroupScoped<E> = groupScopedWith(entity) { groupId, it ->
+		doCreateContact(groupId = groupId, entity = it)
+	}
+
+	override suspend fun createContacts(entities: List<GroupScoped<E>>): List<GroupScoped<E>> {
+		requireIsValidForCreationInGroup(entities)
+		return entities.mapUniqueIdentifiablesChunkedByGroup { groupId, entities ->
+			doCreateContacts(groupId = groupId, entities = entities)
+		}
+	}
+
+	override suspend fun undeleteContactById(entityId: GroupScoped<StoredDocumentIdentifier>): GroupScoped<E> =
+		groupScopedWith(entityId) { groupId, entity ->
+			doUndeleteContact(groupId = groupId, id = entity.id, rev = entity.rev)
+		}
+
+	override suspend fun undeleteContactsByIds(entityIds: List<GroupScoped<StoredDocumentIdentifier>>): List<GroupScoped<E>> =
+		entityIds.mapUniqueIdentifiablesChunkedByGroup { groupId, chunk ->
+			doUndeleteContacts(groupId = groupId, entityIds = chunk)
+		}
+
+	override suspend fun modifyContact(entity: GroupScoped<E>): GroupScoped<E> = groupScopedWith(entity) { groupId, it ->
+		doModifyContact(groupId = groupId, entity = it)
+	}
+
+	override suspend fun modifyContacts(entities: List<GroupScoped<E>>): List<GroupScoped<E>> {
+		requireIsValidForModificationInGroup(entities)
+		return entities.mapUniqueIdentifiablesChunkedByGroup { groupId, chunk ->
+			doModifyContacts(groupId = groupId, entities = chunk)
+		}
+	}
+
+	override suspend fun getContact(groupId: String, entityId: String): GroupScoped<E>? = groupScopedIn(groupId) {
+		doGetContact(groupId = groupId, entityId = entityId)
+	}
+
+	override suspend fun getContacts(groupId: String, entityIds: List<String>): List<GroupScoped<E>> = groupScopedListIn(groupId) {
+		doGetContacts(groupId = groupId, entityIds = entityIds)
+	}
+
+	override suspend fun getService(groupId: String, serviceId: String): GroupScoped<S>? = groupScopedIn(groupId) {
+		doGetService(groupId = groupId, entityId = serviceId)
+	}
+
+	override suspend fun getServices(groupId: String, entityIds: List<String>): List<GroupScoped<S>> = groupScopedListIn(groupId) {
+		doGetServices(groupId = groupId, entityIds = entityIds)
+	}
+}
+
+@InternalIcureApi
+private abstract class AbstractContactFlavouredApi<E : Contact, S : Service>(
 	rawApi: RawContactApi,
 	override val config: ApiConfiguration,
 	flavour: ContactExtendedFlavouredApi<E, S>
-) : AbstractContactBasicFlavouredApi<E, S>(rawApi, config, flavour),
-	ContactFlavouredApi<E, S>,
-	ContactFlavouredInGroupApi<E, S>
-{
+) : AbstractContactBasicFlavouredApi<E, S>(rawApi, config, flavour) {
 
-	override suspend fun shareWith(
-		delegateId: String,
-		contact: E,
-		options: ContactShareOptions?,
-	): E =
-		shareWithMany(contact, mapOf(delegateId to (options ?: ContactShareOptions())))
-
-	override suspend fun shareWith(
-		delegate: EntityReferenceInGroup,
-		contact: GroupScoped<E>,
-		options: ContactShareOptions?
-	): GroupScoped<E> =
-		shareWithMany(contact, mapOf(delegate to (options ?: ContactShareOptions())))
-
-	override suspend fun shareWithMany(contact: E, delegates: Map<String, ContactShareOptions>): E =
-		doShareWithMany(groupId = null, contact, delegates.keyAsLocalDataOwnerReferences())
-
-	override suspend fun shareWithMany(
-		contact: GroupScoped<E>,
-		delegates: @JsMapAsObjectArray(keyEntryName = "delegate", valueEntryName = "shareOptions") Map<EntityReferenceInGroup, ContactShareOptions>
-	): GroupScoped<E> = groupScopedWith(contact) { groupId, entity ->
-		doShareWithMany(groupId = groupId, contact = entity, delegates = delegates)
-	}
-	private suspend fun doShareWithMany(
+	protected suspend fun doShareWithMany(
 		groupId: String?,
 		contact: E,
 		delegates: @JsMapAsObjectArray(keyEntryName = "delegate", valueEntryName = "shareOptions") Map<EntityReferenceInGroup, ContactShareOptions>
@@ -587,21 +574,7 @@ private class AbstractContactFlavouredApi<E : Contact, S : Service>(
 			}
 		).updatedEntityOrThrow()
 
-	override suspend fun filterContactsBy(filter: FilterOptions<Contact>): PaginatedListIterator<E> =
-		doFilterContactsBy(groupId = null, filter = filter) { it }
-
-	override suspend fun filterContactsBySorted(filter: SortableFilterOptions<Contact>): PaginatedListIterator<E> =
-		filterContactsBy(filter)
-
-	override suspend fun filterContactsBy(groupId: String, filter: FilterOptions<Contact>): PaginatedListIterator<GroupScoped<E>> =
-		doFilterContactsBy(groupId = null, filter = filter) { GroupScoped(entity = it, groupId = groupId) }
-
-	override suspend fun filterContactsBySorted(
-		groupId: String,
-		filter: SortableFilterOptions<Contact>
-	): PaginatedListIterator<GroupScoped<E>> = filterContactsBy(groupId, filter)
-
-	private suspend inline fun <T : Any> doFilterContactsBy(
+	protected suspend inline fun <T : Any> doFilterContactsBy(
 		groupId: String?,
 		filter: FilterOptions<Contact>,
 		crossinline mapEntity: (E) -> T
@@ -617,6 +590,32 @@ private class AbstractContactFlavouredApi<E : Contact, S : Service>(
 		) {
 			doGetContacts(groupId, it).map { contact -> mapEntity(contact) }
 		}
+}
+
+@InternalIcureApi
+private  class ContactFlavouredApiImpl<E : Contact, S : Service>(
+	rawApi: RawContactApi,
+	config: ApiConfiguration,
+	flavour: ContactExtendedFlavouredApi<E, S>
+) : ContactFlavouredApi<E, S>,
+	ContactBasicFlavouredApi<E, S> by ContactBasicFlavouredApiImpl(rawApi, config, flavour),
+	AbstractContactFlavouredApi<E, S>(rawApi, config, flavour) {
+
+	override suspend fun shareWith(
+		delegateId: String,
+		contact: E,
+		options: ContactShareOptions?,
+	): E =
+		shareWithMany(contact, mapOf(delegateId to (options ?: ContactShareOptions())))
+
+	override suspend fun shareWithMany(contact: E, delegates: Map<String, ContactShareOptions>): E =
+		doShareWithMany(groupId = null, contact, delegates.keyAsLocalDataOwnerReferences())
+
+	override suspend fun filterContactsBy(filter: FilterOptions<Contact>): PaginatedListIterator<E> =
+		doFilterContactsBy(groupId = null, filter = filter) { it }
+
+	override suspend fun filterContactsBySorted(filter: SortableFilterOptions<Contact>): PaginatedListIterator<E> =
+		filterContactsBy(filter)
 
 	override suspend fun filterServicesBy(filter: FilterOptions<Service>): PaginatedListIterator<S> =
 		IdsPageIterator(
@@ -632,6 +631,38 @@ private class AbstractContactFlavouredApi<E : Contact, S : Service>(
 
 	override suspend fun filterServicesBySorted(filter: SortableFilterOptions<Service>): PaginatedListIterator<S> =
 		filterServicesBy(filter)
+}
+
+@InternalIcureApi
+private  class ContactFlavouredInGroupApiImpl<E : Contact, S : Service>(
+	rawApi: RawContactApi,
+	config: ApiConfiguration,
+	flavour: ContactExtendedFlavouredApi<E, S>
+) : ContactFlavouredInGroupApi<E, S>,
+	ContactBasicFlavouredInGroupApi<E, S> by ContactBasicFlavouredInGroupApiImpl(rawApi, config, flavour),
+	AbstractContactFlavouredApi<E, S>(rawApi, config, flavour) {
+
+	override suspend fun shareWith(
+		delegate: EntityReferenceInGroup,
+		contact: GroupScoped<E>,
+		options: ContactShareOptions?
+	): GroupScoped<E> =
+		shareWithMany(contact, mapOf(delegate to (options ?: ContactShareOptions())))
+
+	override suspend fun shareWithMany(
+		contact: GroupScoped<E>,
+		delegates: @JsMapAsObjectArray(keyEntryName = "delegate", valueEntryName = "shareOptions") Map<EntityReferenceInGroup, ContactShareOptions>
+	): GroupScoped<E> = groupScopedWith(contact) { groupId, entity ->
+		doShareWithMany(groupId = groupId, contact = entity, delegates = delegates)
+	}
+
+	override suspend fun filterContactsBy(groupId: String, filter: FilterOptions<Contact>): PaginatedListIterator<GroupScoped<E>> =
+		doFilterContactsBy(groupId = null, filter = filter) { GroupScoped(entity = it, groupId = groupId) }
+
+	override suspend fun filterContactsBySorted(
+		groupId: String,
+		filter: SortableFilterOptions<Contact>
+	): PaginatedListIterator<GroupScoped<E>> = filterContactsBy(groupId, filter)
 }
 
 @InternalIcureApi
@@ -727,15 +758,12 @@ internal fun initContactApi(
 	val decryptedFlavour = decryptedApiFlavour(config)
 	val encryptedFlavour = encryptedApiFlavour(config)
 	val tryAndRecoverFlavour = tryAndRecoverApiFlavour(config)
-	val decryptedApi = AbstractContactFlavouredApi(rawApi, config, decryptedFlavour)
-	val encryptedApi = AbstractContactFlavouredApi(rawApi, config, encryptedFlavour)
-	val tryAndRecoverApi = AbstractContactFlavouredApi(rawApi, config, tryAndRecoverFlavour)
 	return ContactApiImpl(
 		rawApi,
 		config,
-		encryptedApi,
-		decryptedApi,
-		tryAndRecoverApi
+		encryptedFlavour,
+		decryptedFlavour,
+		tryAndRecoverFlavour
 	)
 }
 
@@ -743,22 +771,24 @@ internal fun initContactApi(
 private class ContactApiImpl(
 	private val rawApi: RawContactApi,
 	private val config: ApiConfiguration,
-	private val encryptedFlavour: AbstractContactFlavouredApi<EncryptedContact, EncryptedService>,
-	private val decryptedFlavour: AbstractContactFlavouredApi<DecryptedContact, DecryptedService>,
-	private val tryAndRecoverFlavour: AbstractContactFlavouredApi<Contact, Service>
+	private val encryptedFlavour: ContactExtendedFlavouredApi<EncryptedContact, EncryptedService>,
+	private val decryptedFlavour: ContactExtendedFlavouredApi<DecryptedContact, DecryptedService>,
+	private val tryAndRecoverFlavour: ContactExtendedFlavouredApi<Contact, Service>
 ) : ContactApi,
 	ContactBasicFlavourlessApi by ContactBasicFlavourlessApiImpl(rawApi),
-	ContactFlavouredApi<DecryptedContact, DecryptedService> by decryptedFlavour {
+	ContactFlavouredApi<DecryptedContact, DecryptedService> by ContactFlavouredApiImpl(rawApi, config, decryptedFlavour) {
 	private val crypto get() = config.crypto
 
-	override val encrypted: ContactFlavouredApi<EncryptedContact, EncryptedService> = encryptedFlavour
-	override val tryAndRecover: ContactFlavouredApi<Contact, Service> = tryAndRecoverFlavour
+	override val encrypted: ContactFlavouredApi<EncryptedContact, EncryptedService> = ContactFlavouredApiImpl(rawApi, config, encryptedFlavour)
+	override val tryAndRecover: ContactFlavouredApi<Contact, Service> = ContactFlavouredApiImpl(rawApi, config, tryAndRecoverFlavour)
 
 	override val inGroup: ContactInGroupApi = object: ContactInGroupApi,
 		ContactBasicFlavourlessInGroupApi by ContactBasicFlavourlessInGroupApiImpl(rawApi),
-		ContactFlavouredInGroupApi<DecryptedContact, DecryptedService> by decryptedFlavour {
-		override val encrypted: ContactFlavouredInGroupApi<EncryptedContact, EncryptedService> = encryptedFlavour
-		override val tryAndRecover: ContactFlavouredInGroupApi<Contact, Service> = tryAndRecoverFlavour
+		ContactFlavouredInGroupApi<DecryptedContact, DecryptedService> by ContactFlavouredInGroupApiImpl(rawApi, config, decryptedFlavour) {
+		override val encrypted: ContactFlavouredInGroupApi<EncryptedContact, EncryptedService> =
+			ContactFlavouredInGroupApiImpl(rawApi, config, encryptedFlavour)
+		override val tryAndRecover: ContactFlavouredInGroupApi<Contact, Service> =
+			ContactFlavouredInGroupApiImpl(rawApi, config, tryAndRecoverFlavour)
 
 		override suspend fun decrypt(contacts: List<GroupScoped<EncryptedContact>>): List<GroupScoped<DecryptedContact>> =
 			contacts.mapExactlyChunkedByGroup { groupId, entities ->
@@ -1069,25 +1099,21 @@ internal fun initContactBasicApi(
 ): ContactBasicApi = ContactBasicApiImpl(
 	rawApi = rawApi,
 	config = config,
-	encryptedFlavour = AbstractContactBasicFlavouredApi(
-		rawApi = rawApi,
-		config = config,
-		flavour = encryptedApiFlavour(config)
-	)
+	encryptedFlavour = encryptedApiFlavour(config)
 )
 
 @InternalIcureApi
 private class ContactBasicApiImpl(
 	private val rawApi: RawContactApi,
 	private val config: BasicApiConfiguration,
-	private val encryptedFlavour: AbstractContactBasicFlavouredApi<EncryptedContact, EncryptedService>
+	private val encryptedFlavour: ContactExtendedFlavouredApi<EncryptedContact, EncryptedService>
 ) : ContactBasicApi,
-	ContactBasicFlavouredApi<EncryptedContact, EncryptedService> by encryptedFlavour,
+	ContactBasicFlavouredApi<EncryptedContact, EncryptedService> by ContactBasicFlavouredApiImpl(rawApi, config, encryptedFlavour),
 	ContactBasicFlavourlessApi by ContactBasicFlavourlessApiImpl(rawApi) {
 
 	override val inGroup: ContactBasicInGroupApi = object : ContactBasicInGroupApi,
 		ContactBasicFlavourlessInGroupApi by ContactBasicFlavourlessInGroupApiImpl(rawApi),
-		ContactBasicFlavouredInGroupApi<EncryptedContact, EncryptedService> by encryptedFlavour {
+		ContactBasicFlavouredInGroupApi<EncryptedContact, EncryptedService> by ContactBasicFlavouredInGroupApiImpl(rawApi, config, encryptedFlavour) {
 
 		override suspend fun matchContactsBy(
 			groupId: String,

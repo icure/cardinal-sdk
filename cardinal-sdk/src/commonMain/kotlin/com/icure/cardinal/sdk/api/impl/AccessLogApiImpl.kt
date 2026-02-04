@@ -84,7 +84,7 @@ private fun tryAndRecoverApiFlavour(
 )
 
 @InternalIcureApi
-private abstract class AbstractAccessLogBasicFlavoured<E : AccessLog>(
+private abstract class AbstractAccessLogBasicFlavouredApi<E : AccessLog>(
 	protected val rawApi: RawAccessLogApi,
 	protected open val config: BasicApiConfiguration,
 	protected val flavour: FlavouredApi<EncryptedAccessLog, E>
@@ -159,11 +159,11 @@ private abstract class AbstractAccessLogBasicFlavoured<E : AccessLog>(
 }
 
 @InternalIcureApi
-private open class AbstractAccessLogBasicFlavouredApi<E : AccessLog>(
+private class AccessLogBasicFlavouredApiImpl<E : AccessLog>(
 	rawApi: RawAccessLogApi,
 	config: BasicApiConfiguration,
 	flavour: FlavouredApi<EncryptedAccessLog, E>
-): AccessLogBasicFlavouredApi<E>, AbstractAccessLogBasicFlavoured<E>(rawApi, config, flavour) {
+): AccessLogBasicFlavouredApi<E>, AbstractAccessLogBasicFlavouredApi<E>(rawApi, config, flavour) {
 
 	override suspend fun createAccessLog(entity: E): E =
 		doCreateAccessLog(groupId = null, entity)
@@ -197,11 +197,11 @@ private open class AbstractAccessLogBasicFlavouredApi<E : AccessLog>(
 }
 
 @InternalIcureApi
-private open class AbstractAccessLogBasicFlavouredInGroupApi<E : AccessLog>(
+private class AccessLogBasicFlavouredInGroupApiImpl<E : AccessLog>(
 	rawApi: RawAccessLogApi,
 	config: BasicApiConfiguration,
 	flavour: FlavouredApi<EncryptedAccessLog, E>
-): AccessLogBasicFlavouredInGroupApi<E>, AbstractAccessLogBasicFlavoured<E>(rawApi, config, flavour) {
+): AccessLogBasicFlavouredInGroupApi<E>, AbstractAccessLogBasicFlavouredApi<E>(rawApi, config, flavour) {
 
 	override suspend fun createAccessLog(entity: GroupScoped<E>): GroupScoped<E> =
 		GroupScoped(doCreateAccessLog(entity.groupId, entity.entity), entity.groupId)
@@ -251,11 +251,11 @@ private open class AbstractAccessLogBasicFlavouredInGroupApi<E : AccessLog>(
 }
 
 @InternalIcureApi
-private abstract class AbstractAccessLogFlavoured<E : AccessLog>(
+private abstract class AbstractAccessLogFlavouredApi<E : AccessLog>(
 	rawApi: RawAccessLogApi,
 	override val config: ApiConfiguration,
 	flavour: FlavouredApi<EncryptedAccessLog, E>,
-) : AbstractAccessLogBasicFlavoured<E>(rawApi, config, flavour) {
+) : AbstractAccessLogBasicFlavouredApi<E>(rawApi, config, flavour) {
 
 	protected suspend fun doShareWithMany(
 		groupId: String?,
@@ -299,12 +299,12 @@ private abstract class AbstractAccessLogFlavoured<E : AccessLog>(
 }
 
 @InternalIcureApi
-private class AbstractAccessLogFlavouredApi<E : AccessLog>(
+private class AccessLogFlavouredApiImpl<E : AccessLog>(
 	rawApi: RawAccessLogApi,
 	config: ApiConfiguration,
 	flavour: FlavouredApi<EncryptedAccessLog, E>,
-) : AbstractAccessLogFlavoured<E>(rawApi, config, flavour),
-	AccessLogBasicFlavouredApi<E> by AbstractAccessLogBasicFlavouredApi(rawApi, config, flavour),
+) : AbstractAccessLogFlavouredApi<E>(rawApi, config, flavour),
+	AccessLogBasicFlavouredApi<E> by AccessLogBasicFlavouredApiImpl(rawApi, config, flavour),
 	AccessLogFlavouredApi<E> {
 
 	override suspend fun shareWith(
@@ -328,12 +328,12 @@ private class AbstractAccessLogFlavouredApi<E : AccessLog>(
 }
 
 @InternalIcureApi
-private class AbstractAccessLogFlavouredInGroupApi<E : AccessLog>(
+private class AccessLogFlavouredInGroupApiImpl<E : AccessLog>(
 	rawApi: RawAccessLogApi,
 	config: ApiConfiguration,
 	flavour: FlavouredApi<EncryptedAccessLog, E>,
-) : AbstractAccessLogFlavoured<E>(rawApi, config, flavour),
-	AccessLogBasicFlavouredInGroupApi<E> by AbstractAccessLogBasicFlavouredInGroupApi(rawApi, config, flavour),
+) : AbstractAccessLogFlavouredApi<E>(rawApi, config, flavour),
+	AccessLogBasicFlavouredInGroupApi<E> by AccessLogBasicFlavouredInGroupApiImpl(rawApi, config, flavour),
 	AccessLogFlavouredInGroupApi<E> {
 
 	override suspend fun shareWith(
@@ -464,20 +464,20 @@ private class AccessLogApiImpl(
 	private val tryAndRecoverFlavour: FlavouredApi<EncryptedAccessLog, AccessLog>
 ) : AccessLogApi,
 	AccessLogBasicFlavourlessApi by AbstractAccessLogBasicFlavourlessApi(rawApi),
-	AccessLogFlavouredApi<DecryptedAccessLog> by AbstractAccessLogFlavouredApi(rawApi, config, decryptedFlavour) {
+	AccessLogFlavouredApi<DecryptedAccessLog> by AccessLogFlavouredApiImpl(rawApi, config, decryptedFlavour) {
 
-	override val encrypted: AccessLogFlavouredApi<EncryptedAccessLog> = AbstractAccessLogFlavouredApi(rawApi, config, encryptedFlavour)
+	override val encrypted: AccessLogFlavouredApi<EncryptedAccessLog> = AccessLogFlavouredApiImpl(rawApi, config, encryptedFlavour)
 
-	override val tryAndRecover: AccessLogFlavouredApi<AccessLog> = AbstractAccessLogFlavouredApi(rawApi, config, tryAndRecoverFlavour)
+	override val tryAndRecover: AccessLogFlavouredApi<AccessLog> = AccessLogFlavouredApiImpl(rawApi, config, tryAndRecoverFlavour)
 
 	override val inGroup: AccessLogInGroupApi = object : AccessLogInGroupApi,
 		AccessLogBasicFlavourlessInGroupApi by AccessLogBasicFlavourlessInGroupApiImpl(rawApi),
-		AccessLogFlavouredInGroupApi<DecryptedAccessLog> by AbstractAccessLogFlavouredInGroupApi(rawApi, config, decryptedFlavour) {
+		AccessLogFlavouredInGroupApi<DecryptedAccessLog> by AccessLogFlavouredInGroupApiImpl(rawApi, config, decryptedFlavour) {
 		override val encrypted: AccessLogFlavouredInGroupApi<EncryptedAccessLog> =
-			AbstractAccessLogFlavouredInGroupApi(rawApi, config, encryptedFlavour)
+			AccessLogFlavouredInGroupApiImpl(rawApi, config, encryptedFlavour)
 
 		override val tryAndRecover: AccessLogFlavouredInGroupApi<AccessLog> =
-			AbstractAccessLogFlavouredInGroupApi(rawApi, config, tryAndRecoverFlavour)
+			AccessLogFlavouredInGroupApiImpl(rawApi, config, tryAndRecoverFlavour)
 
 		override suspend fun decrypt(accessLogs: List<GroupScoped<EncryptedAccessLog>>): List<GroupScoped<DecryptedAccessLog>> =
 			accessLogs.mapExactlyChunkedByGroup { groupId, entities ->
@@ -680,12 +680,12 @@ private class AccessLogBasicApiImpl(
 	private val config: BasicApiConfiguration,
 	private val encryptedFlavour: FlavouredApi<EncryptedAccessLog, EncryptedAccessLog>,
 ) : AccessLogBasicApi,
-	AccessLogBasicFlavouredApi<EncryptedAccessLog> by AbstractAccessLogBasicFlavouredApi(rawApi, config, encryptedFlavour),
+	AccessLogBasicFlavouredApi<EncryptedAccessLog> by AccessLogBasicFlavouredApiImpl(rawApi, config, encryptedFlavour),
 	AccessLogBasicFlavourlessApi by AbstractAccessLogBasicFlavourlessApi(rawApi) {
 
 	override val inGroup: AccessLogBasicInGroupApi = object : AccessLogBasicInGroupApi,
 		AccessLogBasicFlavourlessInGroupApi by AccessLogBasicFlavourlessInGroupApiImpl(rawApi),
-		AccessLogBasicFlavouredInGroupApi<EncryptedAccessLog> by AbstractAccessLogBasicFlavouredInGroupApi(rawApi, config, encryptedFlavour) {
+		AccessLogBasicFlavouredInGroupApi<EncryptedAccessLog> by AccessLogBasicFlavouredInGroupApiImpl(rawApi, config, encryptedFlavour) {
 
 		override suspend fun matchAccessLogsBy(
 			groupId: String,

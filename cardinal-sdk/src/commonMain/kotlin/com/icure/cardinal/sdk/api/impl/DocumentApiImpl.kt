@@ -86,21 +86,13 @@ private fun tryAndRecoverApiFlavour(
 )
 
 @InternalIcureApi
-private open class AbstractDocumentBasicFlavouredApi<E : Document>(
+private abstract class AbstractDocumentBasicFlavouredApi<E : Document>(
 	protected val rawApi: RawDocumentApi,
 	protected open val config: BasicApiConfiguration,
 	protected val flavour: FlavouredApi<EncryptedDocument, E>
-) : DocumentBasicFlavouredApi<E>,
-	DocumentBasicFlavouredInGroupApi<E>,
-	FlavouredApi<EncryptedDocument, E> by flavour {
+) : FlavouredApi<EncryptedDocument, E> by flavour {
 
-	override suspend fun createDocument(entity: E): E = doCreateDocument(groupId = null, entity = entity)
-
-	override suspend fun createDocument(entity: GroupScoped<E>): GroupScoped<E> = groupScopedWith(entity) { groupId, it ->
-		doCreateDocument(groupId = groupId, entity = it)
-	}
-
-	private suspend fun doCreateDocument(groupId: String?, entity: E): E {
+	protected suspend fun doCreateDocument(groupId: String?, entity: E): E {
 		requireIsValidForCreation(entity)
 		val encrypted = validateAndMaybeEncrypt(groupId, entity)
 		return if (groupId == null) {
@@ -112,19 +104,7 @@ private open class AbstractDocumentBasicFlavouredApi<E : Document>(
 		}
 	}
 
-	override suspend fun createDocuments(entities: List<E>): List<E> {
-		requireIsValidForCreation(entities)
-		return doCreateDocuments(groupId = null, entities = entities)
-	}
-
-	override suspend fun createDocuments(entities: List<GroupScoped<E>>): List<GroupScoped<E>> {
-		requireIsValidForCreationInGroup(entities)
-		return entities.mapUniqueIdentifiablesChunkedByGroup { groupId, chunk ->
-			doCreateDocuments(groupId = groupId, entities = chunk)
-		}
-	}
-
-	private suspend fun doCreateDocuments(groupId: String?, entities: List<E>): List<E> = skipRequestOnEmptyList(entities) { documents ->
+	protected suspend fun doCreateDocuments(groupId: String?, entities: List<E>): List<E> = skipRequestOnEmptyList(entities) { documents ->
 		val encrypted = validateAndMaybeEncrypt(groupId, documents)
 		if (groupId == null) {
 			rawApi.createDocuments(encrypted)
@@ -135,28 +115,14 @@ private open class AbstractDocumentBasicFlavouredApi<E : Document>(
 		}
 	}
 
-	override suspend fun undeleteDocumentById(id: String, rev: String): E = doUndeleteDocument(groupId = null, entityId = id, rev = rev)
-
-	override suspend fun undeleteDocumentById(entityId: GroupScoped<StoredDocumentIdentifier>) = groupScopedWith(entityId) { groupId, it ->
-		doUndeleteDocument(groupId = groupId, entityId = it.id, rev = it.rev)
-	}
-
-	private suspend fun doUndeleteDocument(groupId: String?, entityId: String, rev: String): E =
+	protected suspend fun doUndeleteDocument(groupId: String?, entityId: String, rev: String): E =
 		if (groupId == null) {
 			rawApi.undeleteDocument(entityId, rev)
 		} else {
 			rawApi.undeleteDocumentInGroup(groupId = groupId, documentId = entityId, rev = rev)
 		}.successBodyOrThrowRevisionConflict().let { maybeDecrypt(groupId, it) }
 
-	override suspend fun undeleteDocumentsByIds(entityIds: List<StoredDocumentIdentifier>): List<E> =
-		doUndeleteDocuments(groupId = null, entityIds = entityIds)
-
-	override suspend fun undeleteDocumentsByIds(entityIds: List<GroupScoped<StoredDocumentIdentifier>>): List<GroupScoped<E>> =
-		entityIds.mapUniqueIdentifiablesChunkedByGroup { groupId, chunk ->
-			doUndeleteDocuments(groupId = groupId, entityIds = chunk)
-		}
-
-	private suspend fun doUndeleteDocuments(groupId: String?, entityIds: List<StoredDocumentIdentifier>): List<E> =
+	protected suspend fun doUndeleteDocuments(groupId: String?, entityIds: List<StoredDocumentIdentifier>): List<E> =
 		skipRequestOnEmptyList(entityIds) { ids ->
 			if (groupId == null) {
 				rawApi.undeleteDocuments(ListOfIdsAndRev(ids))
@@ -165,13 +131,7 @@ private open class AbstractDocumentBasicFlavouredApi<E : Document>(
 			}.successBody().let { maybeDecrypt(entitiesGroupId = groupId, entities = it) }
 		}
 
-	override suspend fun modifyDocument(entity: E) = doModifyDocument(groupId = null, entity = entity)
-
-	override suspend fun modifyDocument(entity: GroupScoped<E>): GroupScoped<E> = groupScopedWith(entity) { groupId, it ->
-		doModifyDocument(groupId = groupId, entity = it)
-	}
-
-	private suspend fun doModifyDocument(groupId: String?, entity: E): E {
+	protected suspend fun doModifyDocument(groupId: String?, entity: E): E {
 		requireIsValidForModification(entity)
 		val encrypted = validateAndMaybeEncrypt(groupId, entity)
 		return if (groupId == null) {
@@ -183,19 +143,7 @@ private open class AbstractDocumentBasicFlavouredApi<E : Document>(
 		}
 	}
 
-	override suspend fun modifyDocuments(entities: List<E>): List<E> {
-		requireIsValidForModification(entities)
-		return doModifyDocuments(groupId = null, entities = entities)
-	}
-
-	override suspend fun modifyDocuments(entities: List<GroupScoped<E>>): List<GroupScoped<E>> {
-		requireIsValidForModificationInGroup(entities)
-		return entities.mapUniqueIdentifiablesChunkedByGroup { groupId, chunk ->
-			doModifyDocuments(groupId = groupId, entities = chunk)
-		}
-	}
-
-	private suspend fun doModifyDocuments(groupId: String?, entities: List<E>): List<E> = skipRequestOnEmptyList(entities) { documents ->
+	protected suspend fun doModifyDocuments(groupId: String?, entities: List<E>): List<E> = skipRequestOnEmptyList(entities) { documents ->
 		val encrypted = validateAndMaybeEncrypt(groupId, documents)
 		return if (groupId == null) {
 			rawApi.modifyDocuments(encrypted)
@@ -206,12 +154,6 @@ private open class AbstractDocumentBasicFlavouredApi<E : Document>(
 		}
 	}
 
-	override suspend fun getDocument(entityId: String) = doGetDocument(groupId = null, entityId = entityId)
-
-	override suspend fun getDocument(groupId: String, entityId: String): GroupScoped<E>? = groupScopedIn(groupId) {
-		doGetDocument(groupId = groupId, entityId = entityId)
-	}
-
 	protected suspend fun doGetDocument(groupId: String?, entityId: String): E? =
 		if (groupId == null) {
 			rawApi.getDocument(entityId)
@@ -220,12 +162,6 @@ private open class AbstractDocumentBasicFlavouredApi<E : Document>(
 		}.successBodyOrNull404()?.let {
 			maybeDecrypt(groupId, it)
 		}
-
-	override suspend fun getDocuments(entityIds: List<String>) = doGetDocuments(groupId = null, entityIds = entityIds)
-
-	override suspend fun getDocuments(groupId: String, entityIds: List<String>): List<GroupScoped<E>> = groupScopedListIn(groupId) {
-		doGetDocuments(groupId = groupId, entityIds = entityIds)
-	}
 
 	suspend fun doGetDocuments(groupId: String?, entityIds: List<String>): List<E> = skipRequestOnEmptyList(entityIds) { ids ->
 		if (groupId == null) {
@@ -238,38 +174,91 @@ private open class AbstractDocumentBasicFlavouredApi<E : Document>(
 }
 
 @InternalIcureApi
-private class AbstractDocumentFlavouredApi<E : Document>(
+private class DocumentBasicFlavouredApiImpl<E : Document>(
+	rawApi: RawDocumentApi,
+	config: BasicApiConfiguration,
+	flavour: FlavouredApi<EncryptedDocument, E>
+) : DocumentBasicFlavouredApi<E>, AbstractDocumentBasicFlavouredApi<E>(rawApi, config, flavour) {
+
+	override suspend fun createDocument(entity: E): E = doCreateDocument(groupId = null, entity = entity)
+
+	override suspend fun createDocuments(entities: List<E>): List<E> {
+		requireIsValidForCreation(entities)
+		return doCreateDocuments(groupId = null, entities = entities)
+	}
+
+	override suspend fun undeleteDocumentById(id: String, rev: String): E = doUndeleteDocument(groupId = null, entityId = id, rev = rev)
+
+	override suspend fun undeleteDocumentsByIds(entityIds: List<StoredDocumentIdentifier>): List<E> =
+		doUndeleteDocuments(groupId = null, entityIds = entityIds)
+
+	override suspend fun modifyDocument(entity: E) = doModifyDocument(groupId = null, entity = entity)
+
+	override suspend fun modifyDocuments(entities: List<E>): List<E> {
+		requireIsValidForModification(entities)
+		return doModifyDocuments(groupId = null, entities = entities)
+	}
+
+	override suspend fun getDocument(entityId: String) = doGetDocument(groupId = null, entityId = entityId)
+
+	override suspend fun getDocuments(entityIds: List<String>) = doGetDocuments(groupId = null, entityIds = entityIds)
+}
+
+@InternalIcureApi
+private class DocumentBasicFlavouredInGroupApiImpl<E : Document>(
+	rawApi: RawDocumentApi,
+	config: BasicApiConfiguration,
+	flavour: FlavouredApi<EncryptedDocument, E>
+) : DocumentBasicFlavouredInGroupApi<E>, AbstractDocumentBasicFlavouredApi<E>(rawApi, config, flavour) {
+
+	override suspend fun createDocument(entity: GroupScoped<E>): GroupScoped<E> = groupScopedWith(entity) { groupId, it ->
+		doCreateDocument(groupId = groupId, entity = it)
+	}
+
+	override suspend fun createDocuments(entities: List<GroupScoped<E>>): List<GroupScoped<E>> {
+		requireIsValidForCreationInGroup(entities)
+		return entities.mapUniqueIdentifiablesChunkedByGroup { groupId, chunk ->
+			doCreateDocuments(groupId = groupId, entities = chunk)
+		}
+	}
+
+	override suspend fun undeleteDocumentById(entityId: GroupScoped<StoredDocumentIdentifier>) = groupScopedWith(entityId) { groupId, it ->
+		doUndeleteDocument(groupId = groupId, entityId = it.id, rev = it.rev)
+	}
+
+	override suspend fun undeleteDocumentsByIds(entityIds: List<GroupScoped<StoredDocumentIdentifier>>): List<GroupScoped<E>> =
+		entityIds.mapUniqueIdentifiablesChunkedByGroup { groupId, chunk ->
+			doUndeleteDocuments(groupId = groupId, entityIds = chunk)
+		}
+
+	override suspend fun modifyDocument(entity: GroupScoped<E>): GroupScoped<E> = groupScopedWith(entity) { groupId, it ->
+		doModifyDocument(groupId = groupId, entity = it)
+	}
+
+	override suspend fun modifyDocuments(entities: List<GroupScoped<E>>): List<GroupScoped<E>> {
+		requireIsValidForModificationInGroup(entities)
+		return entities.mapUniqueIdentifiablesChunkedByGroup { groupId, chunk ->
+			doModifyDocuments(groupId = groupId, entities = chunk)
+		}
+	}
+
+	override suspend fun getDocument(groupId: String, entityId: String): GroupScoped<E>? = groupScopedIn(groupId) {
+		doGetDocument(groupId = groupId, entityId = entityId)
+	}
+
+	override suspend fun getDocuments(groupId: String, entityIds: List<String>): List<GroupScoped<E>> = groupScopedListIn(groupId) {
+		doGetDocuments(groupId = groupId, entityIds = entityIds)
+	}
+}
+
+@InternalIcureApi
+private abstract class AbstractDocumentFlavouredApi<E : Document>(
 	rawApi: RawDocumentApi,
 	override val config: ApiConfiguration,
 	flavour: FlavouredApi<EncryptedDocument, E>
-) : AbstractDocumentBasicFlavouredApi<E>(rawApi, config, flavour),
-	DocumentFlavouredApi<E>,
-	DocumentFlavouredInGroupApi<E> {
+) : AbstractDocumentBasicFlavouredApi<E>(rawApi, config, flavour) {
 
-	override suspend fun shareWith(
-		delegateId: String,
-		document: E,
-		options: DocumentShareOptions?,
-	): E =
-		shareWithMany(document, mapOf(Pair(delegateId, options ?: DocumentShareOptions())))
-
-	override suspend fun shareWith(
-		delegate: EntityReferenceInGroup,
-		document: GroupScoped<E>,
-		options: DocumentShareOptions?
-	): GroupScoped<E> = shareWithMany(document, mapOf(delegate to (options ?: DocumentShareOptions())))
-
-	override suspend fun shareWithMany(document: E, delegates: Map<String, DocumentShareOptions>): E =
-		doShareWithMany(groupId = null, document = document, delegates = delegates.keyAsLocalDataOwnerReferences())
-
-	override suspend fun shareWithMany(
-		document: GroupScoped<E>,
-		delegates: @JsMapAsObjectArray(keyEntryName = "delegate", valueEntryName = "shareOptions") Map<EntityReferenceInGroup, DocumentShareOptions>
-	): GroupScoped<E> = groupScopedWith(document) { groupId, entity ->
-		doShareWithMany(groupId = groupId, document = entity, delegates = delegates)
-	}
-
-	private suspend fun doShareWithMany(
+	protected suspend fun doShareWithMany(
 		groupId: String?,
 		document: E,
 		delegates: @JsMapAsObjectArray(keyEntryName = "delegate", valueEntryName = "shareOptions") Map<EntityReferenceInGroup, DocumentShareOptions>
@@ -292,31 +281,7 @@ private class AbstractDocumentFlavouredApi<E : Document>(
 			}
 		).updatedEntityOrThrow()
 
-	override suspend fun filterDocumentsBySorted(filter: SortableFilterOptions<Document>): PaginatedListIterator<E> =
-		filterDocumentsBy(filter)
-
-	override suspend fun filterDocumentsBy(filter: FilterOptions<Document>): PaginatedListIterator<E> =
-		doFilterDocumentsBy(
-			null,
-			filter
-		) { it }
-
-	override suspend fun filterDocumentsBySorted(
-		groupId: String,
-		filter: SortableFilterOptions<Document>
-	): PaginatedListIterator<GroupScoped<E>> =
-		filterDocumentsBy(groupId, filter)
-
-	override suspend fun filterDocumentsBy(
-		groupId: String,
-		filter: FilterOptions<Document>
-	): PaginatedListIterator<GroupScoped<E>> =
-		doFilterDocumentsBy(
-			groupId,
-			filter
-		) { GroupScoped(it, groupId) }
-
-	private suspend inline fun <T : Any> doFilterDocumentsBy(
+	protected suspend inline fun <T : Any> doFilterDocumentsBy(
 		groupId: String?,
 		filter: FilterOptions<Document>,
 		crossinline mapEntity: (E) -> T
@@ -333,6 +298,74 @@ private class AbstractDocumentFlavouredApi<E : Document>(
 			doGetDocuments(groupId, it).map { document -> mapEntity(document) }
 		}
 }
+
+@InternalIcureApi
+private class DocumentFlavouredApiImpl<E : Document>(
+	rawApi: RawDocumentApi,
+	config: ApiConfiguration,
+	flavour: FlavouredApi<EncryptedDocument, E>
+) : AbstractDocumentFlavouredApi<E>(rawApi, config, flavour),
+	DocumentBasicFlavouredApi<E> by DocumentBasicFlavouredApiImpl(rawApi, config, flavour),
+	DocumentFlavouredApi<E> {
+
+	override suspend fun shareWith(
+		delegateId: String,
+		document: E,
+		options: DocumentShareOptions?,
+	): E =
+		shareWithMany(document, mapOf(Pair(delegateId, options ?: DocumentShareOptions())))
+
+	override suspend fun shareWithMany(document: E, delegates: Map<String, DocumentShareOptions>): E =
+		doShareWithMany(groupId = null, document = document, delegates = delegates.keyAsLocalDataOwnerReferences())
+
+	override suspend fun filterDocumentsBySorted(filter: SortableFilterOptions<Document>): PaginatedListIterator<E> =
+		filterDocumentsBy(filter)
+
+	override suspend fun filterDocumentsBy(filter: FilterOptions<Document>): PaginatedListIterator<E> =
+		doFilterDocumentsBy(
+			null,
+			filter
+		) { it }
+}
+
+@InternalIcureApi
+private class DocumentFlavouredInGroupApiImpl<E : Document>(
+	rawApi: RawDocumentApi,
+	config: ApiConfiguration,
+	flavour: FlavouredApi<EncryptedDocument, E>
+) : AbstractDocumentFlavouredApi<E>(rawApi, config, flavour),
+	DocumentBasicFlavouredInGroupApi<E> by DocumentBasicFlavouredInGroupApiImpl(rawApi, config, flavour),
+	DocumentFlavouredInGroupApi<E> {
+
+	override suspend fun shareWith(
+		delegate: EntityReferenceInGroup,
+		document: GroupScoped<E>,
+		options: DocumentShareOptions?
+	): GroupScoped<E> = shareWithMany(document, mapOf(delegate to (options ?: DocumentShareOptions())))
+
+	override suspend fun shareWithMany(
+		document: GroupScoped<E>,
+		delegates: @JsMapAsObjectArray(keyEntryName = "delegate", valueEntryName = "shareOptions") Map<EntityReferenceInGroup, DocumentShareOptions>
+	): GroupScoped<E> = groupScopedWith(document) { groupId, entity ->
+		doShareWithMany(groupId = groupId, document = entity, delegates = delegates)
+	}
+
+	override suspend fun filterDocumentsBySorted(
+		groupId: String,
+		filter: SortableFilterOptions<Document>
+	): PaginatedListIterator<GroupScoped<E>> =
+		filterDocumentsBy(groupId, filter)
+
+	override suspend fun filterDocumentsBy(
+		groupId: String,
+		filter: FilterOptions<Document>
+	): PaginatedListIterator<GroupScoped<E>> =
+		doFilterDocumentsBy(
+			groupId,
+			filter
+		) { GroupScoped(it, groupId) }
+}
+
 
 @InternalIcureApi
 private abstract class AbstractDocumentBasicFlavourless(
@@ -451,15 +484,12 @@ internal fun initDocumentApi(
 	val decryptedFlavour = decryptedApiFlavour(config)
 	val encryptedFlavour = encryptedApiFlavour(config)
 	val tryAndRecoverFlavour = tryAndRecoverApiFlavour(config)
-	val decryptedApi = AbstractDocumentFlavouredApi(rawApi, config, decryptedFlavour)
-	val encryptedApi = AbstractDocumentFlavouredApi(rawApi, config, encryptedFlavour)
-	val tryAndRecoverApi = AbstractDocumentFlavouredApi(rawApi, config, tryAndRecoverFlavour)
 	return DocumentApiImpl(
 		rawApi,
 		config,
-		encryptedApi,
-		decryptedApi,
-		tryAndRecoverApi
+		encryptedFlavour,
+		decryptedFlavour,
+		tryAndRecoverFlavour
 	)
 }
 
@@ -467,23 +497,25 @@ internal fun initDocumentApi(
 private class DocumentApiImpl(
 	private val rawApi: RawDocumentApi,
 	private val config: ApiConfiguration,
-	private val encryptedFlavour: AbstractDocumentFlavouredApi<EncryptedDocument>,
-	private val decryptedFlavour: AbstractDocumentFlavouredApi<DecryptedDocument>,
-	private val tryAndRecoverFlavour: AbstractDocumentFlavouredApi<Document>
+	private val encryptedFlavour: FlavouredApi<EncryptedDocument, EncryptedDocument>,
+	private val decryptedFlavour: FlavouredApi<EncryptedDocument, DecryptedDocument>,
+	private val tryAndRecoverFlavour: FlavouredApi<EncryptedDocument, Document>
 ) : DocumentApi,
 	DocumentBasicFlavourlessApi by DocumentBasicFlavourlessApiImpl(rawApi),
-	DocumentFlavouredApi<DecryptedDocument> by decryptedFlavour {
-	override val encrypted: DocumentFlavouredApi<EncryptedDocument> = encryptedFlavour
+	DocumentFlavouredApi<DecryptedDocument> by DocumentFlavouredApiImpl(rawApi, config, decryptedFlavour) {
+	override val encrypted: DocumentFlavouredApi<EncryptedDocument> = DocumentFlavouredApiImpl(rawApi, config, encryptedFlavour)
 
-	override val tryAndRecover: DocumentFlavouredApi<Document> = tryAndRecoverFlavour
+	override val tryAndRecover: DocumentFlavouredApi<Document> = DocumentFlavouredApiImpl(rawApi, config, tryAndRecoverFlavour)
 
 	private val crypto get() = config.crypto
 
 	override val inGroup: DocumentInGroupApi = object : DocumentInGroupApi,
 		DocumentBasicFlavourlessInGroupApi by DocumentBasicFlavourlessInGroupApiImpl(rawApi),
-		DocumentFlavouredInGroupApi<DecryptedDocument> by decryptedFlavour {
-		override val encrypted: DocumentFlavouredInGroupApi<EncryptedDocument> = encryptedFlavour
-		override val tryAndRecover: DocumentFlavouredInGroupApi<Document> = tryAndRecoverFlavour
+		DocumentFlavouredInGroupApi<DecryptedDocument> by DocumentFlavouredInGroupApiImpl(rawApi, config, decryptedFlavour) {
+		override val encrypted: DocumentFlavouredInGroupApi<EncryptedDocument> =
+			DocumentFlavouredInGroupApiImpl(rawApi, config, encryptedFlavour)
+		override val tryAndRecover: DocumentFlavouredInGroupApi<Document> =
+			DocumentFlavouredInGroupApiImpl(rawApi, config, tryAndRecoverFlavour)
 
 		override suspend fun withEncryptionMetadataLinkedToMessage(
 			entityGroupId: String,
@@ -795,21 +827,21 @@ internal fun initDocumentBasicApi(
 ): DocumentBasicApi = DocumentBasicApiImpl(
 	rawApi,
 	config,
-	AbstractDocumentBasicFlavouredApi(rawApi, config, encryptedApiFlavour(config))
+	encryptedApiFlavour(config)
 )
 
 @InternalIcureApi
 private class DocumentBasicApiImpl(
 	private val rawApi: RawDocumentApi,
 	private val config: BasicApiConfiguration,
-	private val encryptedFlavour: AbstractDocumentBasicFlavouredApi<EncryptedDocument>
+	private val encryptedFlavour: FlavouredApi<EncryptedDocument, EncryptedDocument>
 ) : DocumentBasicApi,
-	DocumentBasicFlavouredApi<EncryptedDocument> by encryptedFlavour,
+	DocumentBasicFlavouredApi<EncryptedDocument> by DocumentBasicFlavouredApiImpl(rawApi, config, encryptedFlavour),
 	DocumentBasicFlavourlessApi by DocumentBasicFlavourlessApiImpl(rawApi) {
 
 	override val inGroup: DocumentBasicInGroupApi = object : DocumentBasicInGroupApi,
 		DocumentBasicFlavourlessInGroupApi by DocumentBasicFlavourlessInGroupApiImpl(rawApi),
-		DocumentBasicFlavouredInGroupApi<EncryptedDocument> by encryptedFlavour {
+		DocumentBasicFlavouredInGroupApi<EncryptedDocument> by DocumentBasicFlavouredInGroupApiImpl(rawApi, config, encryptedFlavour) {
 
 		override suspend fun matchDocumentsBy(
 			groupId: String,
@@ -826,7 +858,9 @@ private class DocumentBasicApiImpl(
 			groupId: String,
 			filter: BaseFilterOptions<Document>
 		): PaginatedListIterator<GroupScoped<EncryptedDocument>> =
-			doFilterDocumentsBy(groupId, filter) { GroupScoped(it, groupId) }
+			IdsPageIterator(
+				doMatchDocumentsBy(groupId = groupId, filter),
+			) { getDocuments(groupId, it) }
 
 		override suspend fun filterDocumentsBySorted(
 			groupId: String,
@@ -842,10 +876,12 @@ private class DocumentBasicApiImpl(
 		matchDocumentsBy(filter)
 
 	override suspend fun filterDocumentsBy(filter: BaseFilterOptions<Document>): PaginatedListIterator<EncryptedDocument> =
-		doFilterDocumentsBy(groupId = null, filter = filter) { it }
+		IdsPageIterator(
+			doMatchDocumentsBy(groupId = null, filter),
+		) { getDocuments(it) }
 
 	override suspend fun filterDocumentsBySorted(filter: BaseSortableFilterOptions<Document>): PaginatedListIterator<EncryptedDocument> =
-		doFilterDocumentsBy(groupId = null, filter = filter) { it }
+		filterDocumentsBy(filter = filter)
 
 	private suspend fun doMatchDocumentsBy(groupId: String?, filter: BaseFilterOptions<Document>): List<String> =
 		if (groupId == null) {
@@ -867,14 +903,4 @@ private class DocumentBasicApiImpl(
 			).successBody()
 		}
 
-	private suspend inline fun <T : Any> doFilterDocumentsBy(
-		groupId: String?,
-		filter: BaseFilterOptions<Document>,
-		crossinline mapEntity: (EncryptedDocument) -> T
-	): PaginatedListIterator<T> =
-		IdsPageIterator(
-			doMatchDocumentsBy(groupId, filter),
-		) {
-			encryptedFlavour.doGetDocuments(groupId, it).map { calendarItem -> mapEntity(calendarItem) }
-		}
 }
