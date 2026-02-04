@@ -78,21 +78,13 @@ private fun tryAndRecoverApiFlavour(
 )
 
 @InternalIcureApi
-private open class AbstractReceiptBasicFlavouredApi<E : Receipt>(
+private abstract class AbstractReceiptBasicFlavouredApi<E : Receipt>(
 	protected val rawApi: RawReceiptApi,
 	protected open val config: BasicApiConfiguration,
 	protected val flavour: FlavouredApi<EncryptedReceipt, E>
-) : ReceiptBasicFlavouredApi<E>,
-	ReceiptBasicFlavouredInGroupApi<E>,
-	FlavouredApi<EncryptedReceipt, E> by flavour {
+) : FlavouredApi<EncryptedReceipt, E> by flavour {
 
-	override suspend fun createReceipt(entity: E): E = doCreateReceipt(groupId = null, entity = entity)
-
-	override suspend fun createReceipt(entity: GroupScoped<E>): GroupScoped<E> = groupScopedWith(entity) { groupId, it ->
-		doCreateReceipt(groupId = groupId, entity = it)
-	}
-
-	private suspend fun doCreateReceipt(groupId: String?, entity: E): E {
+	protected suspend fun doCreateReceipt(groupId: String?, entity: E): E {
 		requireIsValidForCreation(entity)
 		val encrypted = validateAndMaybeEncrypt(groupId, entity)
 		return if (groupId == null) {
@@ -104,19 +96,7 @@ private open class AbstractReceiptBasicFlavouredApi<E : Receipt>(
 		}
 	}
 
-	override suspend fun createReceipts(entities: List<E>): List<E> {
-		requireIsValidForCreation(entities)
-		return doCreateReceipts(groupId = null, entities = entities)
-	}
-
-	override suspend fun createReceipts(entities: List<GroupScoped<E>>): List<GroupScoped<E>> {
-		requireIsValidForCreationInGroup(entities)
-		return entities.mapUniqueIdentifiablesChunkedByGroup { groupId, chunk ->
-			doCreateReceipts(groupId = groupId, entities = chunk)
-		}
-	}
-
-	private suspend fun doCreateReceipts(groupId: String?, entities: List<E>): List<E> = skipRequestOnEmptyList(entities) { receipts ->
+	protected suspend fun doCreateReceipts(groupId: String?, entities: List<E>): List<E> = skipRequestOnEmptyList(entities) { receipts ->
 		val encrypted = validateAndMaybeEncrypt(groupId, receipts)
 		return if (groupId == null) {
 			rawApi.createReceipts(encrypted)
@@ -127,29 +107,14 @@ private open class AbstractReceiptBasicFlavouredApi<E : Receipt>(
 		}
 	}
 
-	override suspend fun undeleteReceiptById(id: String, rev: String): E = doUndeleteReceipt(groupId = null, entityId = id, rev = rev)
-
-	override suspend fun undeleteReceiptById(entityId: GroupScoped<StoredDocumentIdentifier>): GroupScoped<E> =
-		groupScopedWith(entityId) { groupId, it ->
-			doUndeleteReceipt(groupId = groupId, entityId = it.id, rev = it.rev)
-		}
-
-	private suspend fun doUndeleteReceipt(groupId: String?, entityId: String, rev: String): E =
+	protected suspend fun doUndeleteReceipt(groupId: String?, entityId: String, rev: String): E =
 		if (groupId == null) {
 			rawApi.undeleteReceipt(entityId, rev)
 		} else {
 			rawApi.undeleteReceiptInGroup(groupId, entityId, rev)
 		}.successBodyOrThrowRevisionConflict().let { maybeDecrypt(groupId, it) }
 
-	override suspend fun undeleteReceiptsByIds(entityIds: List<StoredDocumentIdentifier>): List<E> =
-		doUndeleteReceipts(groupId = null, entityIds = entityIds)
-
-	override suspend fun undeleteReceiptsByIds(entityIds: List<GroupScoped<StoredDocumentIdentifier>>): List<GroupScoped<E>> =
-		entityIds.mapUniqueIdentifiablesChunkedByGroup { groupId, chunk ->
-			doUndeleteReceipts(groupId = groupId, entityIds = chunk)
-		}
-
-	private suspend fun doUndeleteReceipts(groupId: String?, entityIds: List<StoredDocumentIdentifier>): List<E> = skipRequestOnEmptyList(entityIds) { ids ->
+	protected suspend fun doUndeleteReceipts(groupId: String?, entityIds: List<StoredDocumentIdentifier>): List<E> = skipRequestOnEmptyList(entityIds) { ids ->
 		if (groupId == null) {
 			rawApi.undeleteReceipts(ListOfIdsAndRev(ids))
 		} else {
@@ -157,13 +122,7 @@ private open class AbstractReceiptBasicFlavouredApi<E : Receipt>(
 		}.successBody().let { maybeDecrypt(groupId, it) }
 	}
 
-	override suspend fun modifyReceipt(entity: E): E = doModifyReceipt(groupId = null, entity = entity)
-
-	override suspend fun modifyReceipt(entity: GroupScoped<E>): GroupScoped<E> = groupScopedWith(entity) { groupId, it ->
-		doModifyReceipt(groupId = groupId, entity = it)
-	}
-
-	private suspend fun doModifyReceipt(groupId: String?, entity: E): E {
+	protected suspend fun doModifyReceipt(groupId: String?, entity: E): E {
 		requireIsValidForModification(entity)
 		val encrypted = validateAndMaybeEncrypt(groupId, entity)
 		return if (groupId == null) {
@@ -173,19 +132,7 @@ private open class AbstractReceiptBasicFlavouredApi<E : Receipt>(
 		}.successBodyOrThrowRevisionConflict().let { maybeDecrypt(groupId, it) }
 	}
 
-	override suspend fun modifyReceipts(entities: List<E>): List<E> {
-		requireIsValidForModification(entities)
-		return doModifyReceipts(groupId = null, entities = entities)
-	}
-
-	override suspend fun modifyReceipts(entities: List<GroupScoped<E>>): List<GroupScoped<E>> {
-		requireIsValidForModificationInGroup(entities)
-		return entities.mapUniqueIdentifiablesChunkedByGroup { groupId, chunk ->
-			doModifyReceipts(groupId = groupId, entities = chunk)
-		}
-	}
-
-	private suspend fun doModifyReceipts(groupId: String?, entities: List<E>): List<E> = skipRequestOnEmptyList(entities) { receipts ->
+	protected suspend fun doModifyReceipts(groupId: String?, entities: List<E>): List<E> = skipRequestOnEmptyList(entities) { receipts ->
 		val encrypted = validateAndMaybeEncrypt(groupId, receipts)
 		return if (groupId == null) {
 			rawApi.modifyReceipts(encrypted)
@@ -196,23 +143,12 @@ private open class AbstractReceiptBasicFlavouredApi<E : Receipt>(
 		}
 	}
 
-	override suspend fun getReceipt(entityId: String): E? = doGetReceipt(groupId = null, entityId = entityId)
-
-	override suspend fun getReceipt(groupId: String, entityId: String): GroupScoped<E>? = groupScopedIn(groupId) {
-		doGetReceipt(groupId = groupId, entityId = entityId)
-	}
-
 	protected suspend fun doGetReceipt(groupId: String?, entityId: String): E? =
 		if (groupId == null) {
 			rawApi.getReceipt(entityId)
 		} else {
 			rawApi.getReceiptInGroup(groupId, entityId)
 		}.successBodyOrNull404()?.let { maybeDecrypt(groupId, it) }
-
-	override suspend fun getReceipts(entityIds: List<String>): List<E> = doGetReceipts(groupId = null, entityIds = entityIds)
-
-	override suspend fun getReceipts(groupId: String, entityIds: List<String>): List<GroupScoped<E>> =
-		doGetReceipts(groupId = groupId, entityIds = entityIds).map { GroupScoped(it, groupId) }
 
 	protected suspend fun doGetReceipts(groupId: String?, entityIds: List<String>): List<E> = skipRequestOnEmptyList(entityIds) { ids ->
 		if (groupId == null) {
@@ -221,53 +157,97 @@ private open class AbstractReceiptBasicFlavouredApi<E : Receipt>(
 			rawApi.getReceiptsInGroup(groupId, ListOfIds(ids))
 		}.successBody().let { maybeDecrypt(groupId, it) }
 	}
+}
+
+@InternalIcureApi
+private class ReceiptBasicFlavouredApiImpl<E : Receipt>(
+	rawApi: RawReceiptApi,
+	config: BasicApiConfiguration,
+	flavour: FlavouredApi<EncryptedReceipt, E>
+) : ReceiptBasicFlavouredApi<E>, AbstractReceiptBasicFlavouredApi<E>(rawApi, config, flavour) {
+
+	override suspend fun createReceipt(entity: E): E = doCreateReceipt(groupId = null, entity = entity)
+
+	override suspend fun createReceipts(entities: List<E>): List<E> {
+		requireIsValidForCreation(entities)
+		return doCreateReceipts(groupId = null, entities = entities)
+	}
+
+	override suspend fun undeleteReceiptById(id: String, rev: String): E = doUndeleteReceipt(groupId = null, entityId = id, rev = rev)
+
+	override suspend fun undeleteReceiptsByIds(entityIds: List<StoredDocumentIdentifier>): List<E> =
+		doUndeleteReceipts(groupId = null, entityIds = entityIds)
+
+	override suspend fun modifyReceipt(entity: E): E = doModifyReceipt(groupId = null, entity = entity)
+
+	override suspend fun modifyReceipts(entities: List<E>): List<E> {
+		requireIsValidForModification(entities)
+		return doModifyReceipts(groupId = null, entities = entities)
+	}
+
+	override suspend fun getReceipt(entityId: String): E? = doGetReceipt(groupId = null, entityId = entityId)
+
+	override suspend fun getReceipts(entityIds: List<String>): List<E> = doGetReceipts(groupId = null, entityIds = entityIds)
 
 	override suspend fun listByReference(reference: String): List<E> =
 		rawApi.listByReference(reference).successBody().let { maybeDecrypt(null, it) }
 }
 
 @InternalIcureApi
-private open class AbstractReceiptFlavouredApi<E : Receipt>(
+private class ReceiptBasicFlavouredInGroupApiImpl<E : Receipt>(
+	rawApi: RawReceiptApi,
+	config: BasicApiConfiguration,
+	flavour: FlavouredApi<EncryptedReceipt, E>
+) : ReceiptBasicFlavouredInGroupApi<E>, AbstractReceiptBasicFlavouredApi<E>(rawApi, config, flavour) {
+
+	override suspend fun createReceipt(entity: GroupScoped<E>): GroupScoped<E> = groupScopedWith(entity) { groupId, it ->
+		doCreateReceipt(groupId = groupId, entity = it)
+	}
+
+	override suspend fun createReceipts(entities: List<GroupScoped<E>>): List<GroupScoped<E>> {
+		requireIsValidForCreationInGroup(entities)
+		return entities.mapUniqueIdentifiablesChunkedByGroup { groupId, chunk ->
+			doCreateReceipts(groupId = groupId, entities = chunk)
+		}
+	}
+
+	override suspend fun undeleteReceiptById(entityId: GroupScoped<StoredDocumentIdentifier>): GroupScoped<E> =
+		groupScopedWith(entityId) { groupId, it ->
+			doUndeleteReceipt(groupId = groupId, entityId = it.id, rev = it.rev)
+		}
+
+	override suspend fun undeleteReceiptsByIds(entityIds: List<GroupScoped<StoredDocumentIdentifier>>): List<GroupScoped<E>> =
+		entityIds.mapUniqueIdentifiablesChunkedByGroup { groupId, chunk ->
+			doUndeleteReceipts(groupId = groupId, entityIds = chunk)
+		}
+
+	override suspend fun modifyReceipt(entity: GroupScoped<E>): GroupScoped<E> = groupScopedWith(entity) { groupId, it ->
+		doModifyReceipt(groupId = groupId, entity = it)
+	}
+
+	override suspend fun modifyReceipts(entities: List<GroupScoped<E>>): List<GroupScoped<E>> {
+		requireIsValidForModificationInGroup(entities)
+		return entities.mapUniqueIdentifiablesChunkedByGroup { groupId, chunk ->
+			doModifyReceipts(groupId = groupId, entities = chunk)
+		}
+	}
+
+	override suspend fun getReceipt(groupId: String, entityId: String): GroupScoped<E>? = groupScopedIn(groupId) {
+		doGetReceipt(groupId = groupId, entityId = entityId)
+	}
+
+	override suspend fun getReceipts(groupId: String, entityIds: List<String>): List<GroupScoped<E>> =
+		doGetReceipts(groupId = groupId, entityIds = entityIds).map { GroupScoped(it, groupId) }
+}
+
+@InternalIcureApi
+private abstract class AbstractReceiptFlavouredApi<E : Receipt>(
 	rawApi: RawReceiptApi,
 	override val config: ApiConfiguration,
 	flavour: FlavouredApi<EncryptedReceipt, E>,
-) : AbstractReceiptBasicFlavouredApi<E>(rawApi, config, flavour),
-	ReceiptFlavouredApi<E>,
-	ReceiptFlavouredInGroupApi<E> {
+) : AbstractReceiptBasicFlavouredApi<E>(rawApi, config, flavour) {
 
-	override suspend fun shareWith(
-		delegateId: String,
-		receipt: E,
-		options: ReceiptShareOptions?,
-	): E =
-		shareWithMany(receipt, mapOf(delegateId to (options ?: ReceiptShareOptions())))
-
-	override suspend fun shareWith(
-		delegate: EntityReferenceInGroup,
-		receipt: GroupScoped<E>,
-		options: ReceiptShareOptions?
-	): GroupScoped<E> = shareWithMany(receipt, mapOf(delegate to (options ?: ReceiptShareOptions())))
-
-	override suspend fun shareWithMany(receipt: E, delegates: Map<String, ReceiptShareOptions>): E =
-		doShareWithMany(
-			null,
-			receipt,
-			delegates.mapKeys { EntityReferenceInGroup(it.key, null) }
-		)
-
-	override suspend fun shareWithMany(
-		receipt: GroupScoped<E>,
-		delegates: @JsMapAsObjectArray(keyEntryName = "delegate", valueEntryName = "shareOptions") Map<EntityReferenceInGroup, ReceiptShareOptions>
-	): GroupScoped<E> = GroupScoped(
-		groupId = receipt.groupId,
-		entity = doShareWithMany(
-			receipt.groupId,
-			receipt.entity,
-			delegates
-		)
-	)
-
-	private suspend fun doShareWithMany(
+	protected suspend fun doShareWithMany(
 		entityGroupId: String?,
 		receipt: E,
 		delegates: @JsMapAsObjectArray(keyEntryName = "delegate", valueEntryName = "shareOptions") Map<EntityReferenceInGroup, ReceiptShareOptions>
@@ -288,6 +268,58 @@ private open class AbstractReceiptFlavouredApi<E : Receipt>(
 				)
 			}
 		).updatedEntityOrThrow()
+}
+
+@InternalIcureApi
+private class ReceiptFlavouredApiImpl<E : Receipt>(
+	rawApi: RawReceiptApi,
+	config: ApiConfiguration,
+	flavour: FlavouredApi<EncryptedReceipt, E>,
+) : AbstractReceiptFlavouredApi<E>(rawApi, config, flavour),
+	ReceiptBasicFlavouredApi<E> by ReceiptBasicFlavouredApiImpl(rawApi, config, flavour),
+	ReceiptFlavouredApi<E> {
+
+	override suspend fun shareWith(
+		delegateId: String,
+		receipt: E,
+		options: ReceiptShareOptions?,
+	): E =
+		shareWithMany(receipt, mapOf(delegateId to (options ?: ReceiptShareOptions())))
+
+	override suspend fun shareWithMany(receipt: E, delegates: Map<String, ReceiptShareOptions>): E =
+		doShareWithMany(
+			null,
+			receipt,
+			delegates.mapKeys { EntityReferenceInGroup(it.key, null) }
+		)
+}
+
+@InternalIcureApi
+private class ReceiptFlavouredInGroupApiImpl<E : Receipt>(
+	rawApi: RawReceiptApi,
+	config: ApiConfiguration,
+	flavour: FlavouredApi<EncryptedReceipt, E>,
+) : AbstractReceiptFlavouredApi<E>(rawApi, config, flavour),
+	ReceiptBasicFlavouredInGroupApi<E> by ReceiptBasicFlavouredInGroupApiImpl(rawApi, config, flavour),
+	ReceiptFlavouredInGroupApi<E> {
+
+	override suspend fun shareWith(
+		delegate: EntityReferenceInGroup,
+		receipt: GroupScoped<E>,
+		options: ReceiptShareOptions?
+	): GroupScoped<E> = shareWithMany(receipt, mapOf(delegate to (options ?: ReceiptShareOptions())))
+
+	override suspend fun shareWithMany(
+		receipt: GroupScoped<E>,
+		delegates: @JsMapAsObjectArray(keyEntryName = "delegate", valueEntryName = "shareOptions") Map<EntityReferenceInGroup, ReceiptShareOptions>
+	): GroupScoped<E> = GroupScoped(
+		groupId = receipt.groupId,
+		entity = doShareWithMany(
+			receipt.groupId,
+			receipt.entity,
+			delegates
+		)
+	)
 }
 
 @InternalIcureApi
@@ -382,16 +414,12 @@ internal fun initReceiptApi(
 	val decryptedFlavour = decryptedApiFlavour(config)
 	val encryptedFlavour = encryptedApiFlavour(config)
 	val tryAndRecoverFlavour = tryAndRecoverApiFlavour(config)
-	val decryptedApi = AbstractReceiptFlavouredApi(rawApi, config, decryptedFlavour)
-	val encryptedApi = AbstractReceiptFlavouredApi(rawApi, config, encryptedFlavour)
-	val tryAndRecoverApi = AbstractReceiptFlavouredApi(rawApi, config, tryAndRecoverFlavour)
-
 	return ReceiptApiImpl(
 		rawApi,
 		config,
-		encryptedApi,
-		decryptedApi,
-		tryAndRecoverApi
+		encryptedFlavour,
+		decryptedFlavour,
+		tryAndRecoverFlavour
 	)
 }
 
@@ -399,20 +427,22 @@ internal fun initReceiptApi(
 private class ReceiptApiImpl(
 	private val rawApi: RawReceiptApi,
 	private val config: ApiConfiguration,
-	private val encryptedFlavour: AbstractReceiptFlavouredApi<EncryptedReceipt>,
-	private val decryptedFlavour: AbstractReceiptFlavouredApi<DecryptedReceipt>,
-	private val tryAndRecoverFlavour: AbstractReceiptFlavouredApi<Receipt>,
+	private val encryptedFlavour: FlavouredApi<EncryptedReceipt, EncryptedReceipt>,
+	private val decryptedFlavour: FlavouredApi<EncryptedReceipt, DecryptedReceipt>,
+	private val tryAndRecoverFlavour: FlavouredApi<EncryptedReceipt, Receipt>,
 ) : ReceiptApi,
-	ReceiptFlavouredApi<DecryptedReceipt> by decryptedFlavour,
+	ReceiptFlavouredApi<DecryptedReceipt> by ReceiptFlavouredApiImpl(rawApi, config, decryptedFlavour),
 	ReceiptBasicFlavourlessApi by ReceiptBasicFlavourlessApiImpl(rawApi) {
-	override val encrypted: ReceiptFlavouredApi<EncryptedReceipt> = encryptedFlavour
-	override val tryAndRecover: ReceiptFlavouredApi<Receipt> = tryAndRecoverFlavour
+	override val encrypted: ReceiptFlavouredApi<EncryptedReceipt> = ReceiptFlavouredApiImpl(rawApi, config, encryptedFlavour)
+	override val tryAndRecover: ReceiptFlavouredApi<Receipt> = ReceiptFlavouredApiImpl(rawApi, config, tryAndRecoverFlavour)
 	override val inGroup: ReceiptInGroupApi = object : ReceiptInGroupApi,
-		ReceiptFlavouredInGroupApi<DecryptedReceipt> by decryptedFlavour,
+		ReceiptFlavouredInGroupApi<DecryptedReceipt> by ReceiptFlavouredInGroupApiImpl(rawApi, config, decryptedFlavour),
 		ReceiptBasicFlavourlessInGroupApi by ReceiptBasicFlavourlessInGroupApiImpl(rawApi) {
 
-		override val encrypted: ReceiptFlavouredInGroupApi<EncryptedReceipt> = encryptedFlavour
-		override val tryAndRecover: ReceiptFlavouredInGroupApi<Receipt> = tryAndRecoverFlavour
+		override val encrypted: ReceiptFlavouredInGroupApi<EncryptedReceipt> =
+			ReceiptFlavouredInGroupApiImpl(rawApi, config, encryptedFlavour)
+		override val tryAndRecover: ReceiptFlavouredInGroupApi<Receipt> =
+			ReceiptFlavouredInGroupApiImpl(rawApi, config, tryAndRecoverFlavour)
 
 		override suspend fun withEncryptionMetadata(
 			groupId: String,
@@ -617,18 +647,18 @@ internal fun initReceiptBasicApi(
 ): ReceiptBasicApi = ReceiptBasicApiImpl(
 	rawApi,
 	config,
-	AbstractReceiptBasicFlavouredApi(rawApi, config, encryptedApiFlavour(config))
+	encryptedApiFlavour(config)
 )
 
 @InternalIcureApi
 private class ReceiptBasicApiImpl(
 	private val rawApi: RawReceiptApi,
 	private val config: BasicApiConfiguration,
-	private val encryptedFlavour: AbstractReceiptBasicFlavouredApi<EncryptedReceipt>,
+	private val encryptedFlavour: FlavouredApi<EncryptedReceipt, EncryptedReceipt>,
 ) : ReceiptBasicApi,
-	ReceiptBasicFlavouredApi<EncryptedReceipt> by encryptedFlavour,
+	ReceiptBasicFlavouredApi<EncryptedReceipt> by ReceiptBasicFlavouredApiImpl(rawApi, config, encryptedFlavour),
 	ReceiptBasicFlavourlessApi by ReceiptBasicFlavourlessApiImpl(rawApi) {
 	override val inGroup: ReceiptBasicInGroupApi = object : ReceiptBasicInGroupApi,
-		ReceiptBasicFlavouredInGroupApi<EncryptedReceipt> by encryptedFlavour,
+		ReceiptBasicFlavouredInGroupApi<EncryptedReceipt> by ReceiptBasicFlavouredInGroupApiImpl(rawApi, config, encryptedFlavour),
 		ReceiptBasicFlavourlessInGroupApi by ReceiptBasicFlavourlessInGroupApiImpl(rawApi) {}
 }

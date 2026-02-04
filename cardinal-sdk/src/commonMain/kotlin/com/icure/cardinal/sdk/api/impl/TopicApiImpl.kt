@@ -125,21 +125,13 @@ private suspend fun RawTopicApi.doMatchTopicsBySorted(
 ): List<String> = doMatchTopicsBy(config = config, groupId = groupId, filter = filter)
 
 @InternalIcureApi
-private open class AbstractTopicBasicFlavouredApi<E : Topic>(
+private abstract class AbstractTopicBasicFlavouredApi<E : Topic>(
 	protected val rawApi: RawTopicApi,
 	protected open val config: BasicApiConfiguration,
 	protected val flavour: FlavouredApi<EncryptedTopic, E>
-) : TopicBasicFlavouredApi<E>,
-	TopicBasicFlavouredInGroupApi<E>,
-	FlavouredApi<EncryptedTopic, E> by flavour {
+) : FlavouredApi<EncryptedTopic, E> by flavour {
 
-	override suspend fun createTopic(entity: E): E = doCreateTopic(groupId = null, entity = entity)
-
-	override suspend fun createTopic(entity: GroupScoped<E>): GroupScoped<E> = groupScopedWith(entity) { groupId, it ->
-		doCreateTopic(groupId = groupId, entity = it)
-	}
-
-	private suspend fun doCreateTopic(groupId: String?, entity: E): E {
+	protected suspend fun doCreateTopic(groupId: String?, entity: E): E {
 		requireIsValidForCreation(entity)
 		val encrypted = validateAndMaybeEncrypt(groupId, entity)
 		return if (groupId == null) {
@@ -151,19 +143,7 @@ private open class AbstractTopicBasicFlavouredApi<E : Topic>(
 		}
 	}
 
-	override suspend fun createTopics(entities: List<E>): List<E> {
-		requireIsValidForCreation(entities)
-		return doCreateTopics(groupId = null, entities = entities)
-	}
-
-	override suspend fun createTopics(entities: List<GroupScoped<E>>): List<GroupScoped<E>> {
-		requireIsValidForCreationInGroup(entities)
-		return entities.mapUniqueIdentifiablesChunkedByGroup { groupId, chunk ->
-			doCreateTopics(groupId = groupId, entities = chunk)
-		}
-	}
-
-	private suspend fun doCreateTopics(groupId: String?, entities: List<E>): List<E> = skipRequestOnEmptyList(entities) { topics ->
+	protected suspend fun doCreateTopics(groupId: String?, entities: List<E>): List<E> = skipRequestOnEmptyList(entities) { topics ->
 		val encrypted = validateAndMaybeEncrypt(groupId, topics)
 		return if (groupId == null) {
 			rawApi.createTopics(encrypted)
@@ -174,29 +154,14 @@ private open class AbstractTopicBasicFlavouredApi<E : Topic>(
 		}
 	}
 
-	override suspend fun undeleteTopicById(id: String, rev: String): E = doUndeleteTopic(groupId = null, entityId = id, rev = rev)
-
-	override suspend fun undeleteTopicById(entityId: GroupScoped<StoredDocumentIdentifier>): GroupScoped<E> =
-		groupScopedWith(entityId) { groupId, it ->
-			doUndeleteTopic(groupId = groupId, entityId = it.id, rev = it.rev)
-		}
-
-	private suspend fun doUndeleteTopic(groupId: String?, entityId: String, rev: String): E =
+	protected suspend fun doUndeleteTopic(groupId: String?, entityId: String, rev: String): E =
 		if (groupId == null) {
 			rawApi.undeleteTopic(entityId, rev)
 		} else {
 			rawApi.undeleteTopicInGroup(groupId, entityId, rev)
 		}.successBodyOrThrowRevisionConflict().let { maybeDecrypt(groupId, it) }
 
-	override suspend fun undeleteTopicsByIds(entityIds: List<StoredDocumentIdentifier>): List<E> =
-		doUndeleteTopics(groupId = null, entityIds = entityIds)
-
-	override suspend fun undeleteTopicsByIds(entityIds: List<GroupScoped<StoredDocumentIdentifier>>): List<GroupScoped<E>> =
-		entityIds.mapUniqueIdentifiablesChunkedByGroup { groupId, chunk ->
-			doUndeleteTopics(groupId = groupId, entityIds = chunk)
-		}
-
-	private suspend fun doUndeleteTopics(groupId: String?, entityIds: List<StoredDocumentIdentifier>): List<E> = skipRequestOnEmptyList(entityIds) { ids ->
+	protected suspend fun doUndeleteTopics(groupId: String?, entityIds: List<StoredDocumentIdentifier>): List<E> = skipRequestOnEmptyList(entityIds) { ids ->
 		if (groupId == null) {
 			rawApi.undeleteTopics(ListOfIdsAndRev(ids))
 		} else {
@@ -204,13 +169,7 @@ private open class AbstractTopicBasicFlavouredApi<E : Topic>(
 		}.successBody().let { maybeDecrypt(groupId, it) }
 	}
 
-	override suspend fun modifyTopic(entity: E): E = doModifyTopic(groupId = null, entity = entity)
-
-	override suspend fun modifyTopic(entity: GroupScoped<E>): GroupScoped<E> = groupScopedWith(entity) { groupId, it ->
-		doModifyTopic(groupId = groupId, entity = it)
-	}
-
-	private suspend fun doModifyTopic(groupId: String?, entity: E): E {
+	protected suspend fun doModifyTopic(groupId: String?, entity: E): E {
 		requireIsValidForModification(entity)
 		val encrypted = validateAndMaybeEncrypt(groupId, entity)
 		return if (groupId == null) {
@@ -220,19 +179,7 @@ private open class AbstractTopicBasicFlavouredApi<E : Topic>(
 		}.successBodyOrThrowRevisionConflict().let { maybeDecrypt(groupId, it) }
 	}
 
-	override suspend fun modifyTopics(entities: List<E>): List<E> {
-		requireIsValidForModification(entities)
-		return doModifyTopics(groupId = null, entities = entities)
-	}
-
-	override suspend fun modifyTopics(entities: List<GroupScoped<E>>): List<GroupScoped<E>> {
-		requireIsValidForModificationInGroup(entities)
-		return entities.mapUniqueIdentifiablesChunkedByGroup { groupId, chunk ->
-			doModifyTopics(groupId = groupId, entities = chunk)
-		}
-	}
-
-	private suspend fun doModifyTopics(groupId: String?, entities: List<E>): List<E> = skipRequestOnEmptyList(entities) { topics ->
+	protected suspend fun doModifyTopics(groupId: String?, entities: List<E>): List<E> = skipRequestOnEmptyList(entities) { topics ->
 		val encrypted = validateAndMaybeEncrypt(groupId, topics)
 		return if (groupId == null) {
 			rawApi.modifyTopics(encrypted)
@@ -243,23 +190,12 @@ private open class AbstractTopicBasicFlavouredApi<E : Topic>(
 		}
 	}
 
-	override suspend fun getTopic(entityId: String): E? = doGetTopic(groupId = null, entityId = entityId)
-
-	override suspend fun getTopic(groupId: String, entityId: String): GroupScoped<E>? = groupScopedIn(groupId) {
-		doGetTopic(groupId = groupId, entityId = entityId)
-	}
-
 	protected suspend fun doGetTopic(groupId: String?, entityId: String): E? =
 		if (groupId == null) {
 			rawApi.getTopic(entityId)
 		} else {
 			rawApi.getTopicInGroup(groupId, entityId)
 		}.successBodyOrNull404()?.let { maybeDecrypt(groupId, it) }
-
-	override suspend fun getTopics(entityIds: List<String>): List<E> = doGetTopics(groupId = null, entityIds = entityIds)
-
-	override suspend fun getTopics(groupId: String, entityIds: List<String>): List<GroupScoped<E>> =
-		doGetTopics(groupId = groupId, entityIds = entityIds).map { GroupScoped(it, groupId) }
 
 	suspend fun doGetTopics(groupId: String?, entityIds: List<String>): List<E> = skipRequestOnEmptyList(entityIds) { ids ->
 		if (groupId == null) {
@@ -269,6 +205,38 @@ private open class AbstractTopicBasicFlavouredApi<E : Topic>(
 		}.successBody().let { maybeDecrypt(groupId, it) }
 	}
 
+}
+
+@InternalIcureApi
+private class TopicBasicFlavouredApiImpl<E : Topic>(
+	rawApi: RawTopicApi,
+	config: BasicApiConfiguration,
+	flavour: FlavouredApi<EncryptedTopic, E>
+) : TopicBasicFlavouredApi<E>, AbstractTopicBasicFlavouredApi<E>(rawApi, config, flavour) {
+
+	override suspend fun createTopic(entity: E): E = doCreateTopic(groupId = null, entity = entity)
+
+	override suspend fun createTopics(entities: List<E>): List<E> {
+		requireIsValidForCreation(entities)
+		return doCreateTopics(groupId = null, entities = entities)
+	}
+
+	override suspend fun undeleteTopicById(id: String, rev: String): E = doUndeleteTopic(groupId = null, entityId = id, rev = rev)
+
+	override suspend fun undeleteTopicsByIds(entityIds: List<StoredDocumentIdentifier>): List<E> =
+		doUndeleteTopics(groupId = null, entityIds = entityIds)
+
+	override suspend fun modifyTopic(entity: E): E = doModifyTopic(groupId = null, entity = entity)
+
+	override suspend fun modifyTopics(entities: List<E>): List<E> {
+		requireIsValidForModification(entities)
+		return doModifyTopics(groupId = null, entities = entities)
+	}
+
+	override suspend fun getTopic(entityId: String): E? = doGetTopic(groupId = null, entityId = entityId)
+
+	override suspend fun getTopics(entityIds: List<String>): List<E> = doGetTopics(groupId = null, entityIds = entityIds)
+
 	override suspend fun addParticipant(entityId: String, dataOwnerId: String, topicRole: TopicRole): E =
 		rawApi.addParticipant(entityId, AddParticipant(dataOwnerId, topicRole))
 			.successBody().let { maybeDecrypt(entitiesGroupId = null, entity = it) }
@@ -276,46 +244,63 @@ private open class AbstractTopicBasicFlavouredApi<E : Topic>(
 	override suspend fun removeParticipant(entityId: String, dataOwnerId: String): E =
 		rawApi.removeParticipant(entityId, RemoveParticipant(dataOwnerId))
 			.successBody().let { maybeDecrypt(entitiesGroupId = null, entity = it) }
-
 }
 
 @InternalIcureApi
-private open class AbstractTopicFlavouredApi<E : Topic>(
+private class TopicBasicFlavouredInGroupApiImpl<E : Topic>(
+	rawApi: RawTopicApi,
+	config: BasicApiConfiguration,
+	flavour: FlavouredApi<EncryptedTopic, E>
+) : TopicBasicFlavouredInGroupApi<E>, AbstractTopicBasicFlavouredApi<E>(rawApi, config, flavour) {
+
+	override suspend fun createTopic(entity: GroupScoped<E>): GroupScoped<E> = groupScopedWith(entity) { groupId, it ->
+		doCreateTopic(groupId = groupId, entity = it)
+	}
+
+	override suspend fun createTopics(entities: List<GroupScoped<E>>): List<GroupScoped<E>> {
+		requireIsValidForCreationInGroup(entities)
+		return entities.mapUniqueIdentifiablesChunkedByGroup { groupId, chunk ->
+			doCreateTopics(groupId = groupId, entities = chunk)
+		}
+	}
+
+	override suspend fun undeleteTopicById(entityId: GroupScoped<StoredDocumentIdentifier>): GroupScoped<E> =
+		groupScopedWith(entityId) { groupId, it ->
+			doUndeleteTopic(groupId = groupId, entityId = it.id, rev = it.rev)
+		}
+
+	override suspend fun undeleteTopicsByIds(entityIds: List<GroupScoped<StoredDocumentIdentifier>>): List<GroupScoped<E>> =
+		entityIds.mapUniqueIdentifiablesChunkedByGroup { groupId, chunk ->
+			doUndeleteTopics(groupId = groupId, entityIds = chunk)
+		}
+
+	override suspend fun modifyTopic(entity: GroupScoped<E>): GroupScoped<E> = groupScopedWith(entity) { groupId, it ->
+		doModifyTopic(groupId = groupId, entity = it)
+	}
+
+	override suspend fun modifyTopics(entities: List<GroupScoped<E>>): List<GroupScoped<E>> {
+		requireIsValidForModificationInGroup(entities)
+		return entities.mapUniqueIdentifiablesChunkedByGroup { groupId, chunk ->
+			doModifyTopics(groupId = groupId, entities = chunk)
+		}
+	}
+
+	override suspend fun getTopic(groupId: String, entityId: String): GroupScoped<E>? = groupScopedIn(groupId) {
+		doGetTopic(groupId = groupId, entityId = entityId)
+	}
+
+	override suspend fun getTopics(groupId: String, entityIds: List<String>): List<GroupScoped<E>> =
+		doGetTopics(groupId = groupId, entityIds = entityIds).map { GroupScoped(it, groupId) }
+}
+
+@InternalIcureApi
+private abstract class AbstractTopicFlavouredApi<E : Topic>(
 	rawApi: RawTopicApi,
 	override val config: ApiConfiguration,
 	flavour: FlavouredApi<EncryptedTopic, E>
-) : AbstractTopicBasicFlavouredApi<E>(rawApi, config, flavour),
-	TopicFlavouredApi<E>,
-	TopicFlavouredInGroupApi<E> {
+) : AbstractTopicBasicFlavouredApi<E>(rawApi, config, flavour) {
 
-	override suspend fun shareWith(
-		delegateId: String,
-		topic: E,
-		options: TopicShareOptions?,
-	): E =
-		shareWithMany(topic, mapOf(delegateId to (options ?: TopicShareOptions())))
-
-	override suspend fun shareWith(
-		delegate: EntityReferenceInGroup,
-		topic: GroupScoped<E>,
-		options: TopicShareOptions?
-	): GroupScoped<E> = shareWithMany(topic, mapOf(delegate to (options ?: TopicShareOptions())))
-
-	override suspend fun shareWithMany(topic: E, delegates: Map<String, TopicShareOptions>): E =
-		doShareWithMany(
-			null,
-			topic,
-			delegates.keyAsLocalDataOwnerReferences(),
-		)
-
-	override suspend fun shareWithMany(
-		topic: GroupScoped<E>,
-		delegates: Map<EntityReferenceInGroup, TopicShareOptions>
-	): GroupScoped<E> = groupScopedWith(topic) { groupId, entity ->
-		doShareWithMany(groupId, entity, delegates)
-	}
-
-	private suspend fun doShareWithMany(
+	protected suspend fun doShareWithMany(
 		entityGroupId: String?,
 		topic: E,
 		delegates: Map<EntityReferenceInGroup, TopicShareOptions>
@@ -337,11 +322,62 @@ private open class AbstractTopicFlavouredApi<E : Topic>(
 		}
 	).updatedEntityOrThrow()
 
+}
+
+@InternalIcureApi
+private class TopicFlavouredApiImpl<E : Topic>(
+	rawApi: RawTopicApi,
+	config: ApiConfiguration,
+	flavour: FlavouredApi<EncryptedTopic, E>
+) : AbstractTopicFlavouredApi<E>(rawApi, config, flavour),
+	TopicBasicFlavouredApi<E> by TopicBasicFlavouredApiImpl(rawApi, config, flavour),
+	TopicFlavouredApi<E> {
+
+	override suspend fun shareWith(
+		delegateId: String,
+		topic: E,
+		options: TopicShareOptions?,
+	): E =
+		shareWithMany(topic, mapOf(delegateId to (options ?: TopicShareOptions())))
+
+	override suspend fun shareWithMany(topic: E, delegates: Map<String, TopicShareOptions>): E =
+		doShareWithMany(
+			null,
+			topic,
+			delegates.keyAsLocalDataOwnerReferences(),
+		)
+
 	override suspend fun filterTopicsBy(filter: FilterOptions<Topic>): PaginatedListIterator<E> =
 		IdsPageIterator(
 			rawApi.doMatchTopicsBy(config = config, groupId = null, filter = filter),
 			this::getTopics
 		)
+
+	override suspend fun filterTopicsBySorted(filter: SortableFilterOptions<Topic>): PaginatedListIterator<E> =
+		filterTopicsBy(filter)
+}
+
+@InternalIcureApi
+private class TopicFlavouredInGroupApiImpl<E : Topic>(
+	rawApi: RawTopicApi,
+	config: ApiConfiguration,
+	flavour: FlavouredApi<EncryptedTopic, E>
+) : AbstractTopicFlavouredApi<E>(rawApi, config, flavour),
+	TopicBasicFlavouredInGroupApi<E> by TopicBasicFlavouredInGroupApiImpl(rawApi, config, flavour),
+	TopicFlavouredInGroupApi<E> {
+
+	override suspend fun shareWith(
+		delegate: EntityReferenceInGroup,
+		topic: GroupScoped<E>,
+		options: TopicShareOptions?
+	): GroupScoped<E> = shareWithMany(topic, mapOf(delegate to (options ?: TopicShareOptions())))
+
+	override suspend fun shareWithMany(
+		topic: GroupScoped<E>,
+		delegates: Map<EntityReferenceInGroup, TopicShareOptions>
+	): GroupScoped<E> = groupScopedWith(topic) { groupId, entity ->
+		doShareWithMany(groupId, entity, delegates)
+	}
 
 	override suspend fun filterTopicsBy(groupId: String, filter: FilterOptions<Topic>): PaginatedListIterator<GroupScoped<E>> =
 		IdsPageIterator(
@@ -351,9 +387,6 @@ private open class AbstractTopicFlavouredApi<E : Topic>(
 				GroupScoped(topic, groupId)
 			}
 		}
-
-	override suspend fun filterTopicsBySorted(filter: SortableFilterOptions<Topic>): PaginatedListIterator<E> =
-		filterTopicsBy(filter)
 
 	override suspend fun filterTopicsBySorted(groupId: String, filter: SortableFilterOptions<Topic>): PaginatedListIterator<GroupScoped<E>> =
 		filterTopicsBy(groupId, filter)
@@ -445,16 +478,12 @@ internal fun initTopicApi(
 	val decryptedFlavour = decryptedApiFlavour(config)
 	val encryptedFlavour = encryptedApiFlavour(config)
 	val tryAndRecoverFlavour = tryAndRecoverApiFlavour(config)
-	val decryptedApi = AbstractTopicFlavouredApi(rawApi, config, decryptedFlavour)
-	val encryptedApi = AbstractTopicFlavouredApi(rawApi, config, encryptedFlavour)
-	val tryAndRecoverApi = AbstractTopicFlavouredApi(rawApi, config, tryAndRecoverFlavour)
-
 	return TopicApiImpl(
 		rawApi,
 		config,
-		encryptedApi,
-		decryptedApi,
-		tryAndRecoverApi
+		encryptedFlavour,
+		decryptedFlavour,
+		tryAndRecoverFlavour
 	)
 }
 
@@ -462,20 +491,20 @@ internal fun initTopicApi(
 private class TopicApiImpl(
 	private val rawApi: RawTopicApi,
 	private val config: ApiConfiguration,
-	private val encryptedFlavour: AbstractTopicFlavouredApi<EncryptedTopic>,
-	private val decryptedFlavour: AbstractTopicFlavouredApi<DecryptedTopic>,
-	private val tryAndRecoverFlavour: AbstractTopicFlavouredApi<Topic>,
+	private val encryptedFlavour: FlavouredApi<EncryptedTopic, EncryptedTopic>,
+	private val decryptedFlavour: FlavouredApi<EncryptedTopic, DecryptedTopic>,
+	private val tryAndRecoverFlavour: FlavouredApi<EncryptedTopic, Topic>,
 ) : TopicApi,
-	TopicFlavouredApi<DecryptedTopic> by decryptedFlavour,
+	TopicFlavouredApi<DecryptedTopic> by TopicFlavouredApiImpl(rawApi, config, decryptedFlavour),
 	TopicBasicFlavourlessApi by TopicBasicFlavourlessApiImpl(rawApi) {
-	override val encrypted: TopicFlavouredApi<EncryptedTopic> = encryptedFlavour
-	override val tryAndRecover: TopicFlavouredApi<Topic> = tryAndRecoverFlavour
+	override val encrypted: TopicFlavouredApi<EncryptedTopic> = TopicFlavouredApiImpl(rawApi, config, encryptedFlavour)
+	override val tryAndRecover: TopicFlavouredApi<Topic> = TopicFlavouredApiImpl(rawApi, config, tryAndRecoverFlavour)
 	override val inGroup: TopicInGroupApi = object : TopicInGroupApi,
-		TopicFlavouredInGroupApi<DecryptedTopic> by decryptedFlavour,
+		TopicFlavouredInGroupApi<DecryptedTopic> by TopicFlavouredInGroupApiImpl(rawApi, config, decryptedFlavour),
 		TopicBasicFlavourlessInGroupApi by TopicBasicFlavourlessInGroupApiImpl(rawApi) {
 
-		override val encrypted: TopicFlavouredInGroupApi<EncryptedTopic> = encryptedFlavour
-		override val tryAndRecover: TopicFlavouredInGroupApi<Topic> = tryAndRecoverFlavour
+		override val encrypted: TopicFlavouredInGroupApi<EncryptedTopic> = TopicFlavouredInGroupApiImpl(rawApi, config, encryptedFlavour)
+		override val tryAndRecover: TopicFlavouredInGroupApi<Topic> = TopicFlavouredInGroupApiImpl(rawApi, config, tryAndRecoverFlavour)
 
 		override suspend fun withEncryptionMetadata(
 			groupId: String,
@@ -682,19 +711,19 @@ internal fun initTopicBasicApi(
 ): TopicBasicApi = TopicBasicApiImpl(
 	rawApi,
 	config,
-	AbstractTopicBasicFlavouredApi(rawApi, config, encryptedApiFlavour(config))
+	encryptedApiFlavour(config)
 )
 
 @InternalIcureApi
 private class TopicBasicApiImpl(
 	private val rawApi: RawTopicApi,
 	private val config: BasicApiConfiguration,
-	private val encryptedFlavour: AbstractTopicBasicFlavouredApi<EncryptedTopic>,
+	private val encryptedFlavour: FlavouredApi<EncryptedTopic, EncryptedTopic>,
 ) : TopicBasicApi,
-	TopicBasicFlavouredApi<EncryptedTopic> by encryptedFlavour,
+	TopicBasicFlavouredApi<EncryptedTopic> by TopicBasicFlavouredApiImpl(rawApi, config, encryptedFlavour),
 	TopicBasicFlavourlessApi by TopicBasicFlavourlessApiImpl(rawApi) {
 	override val inGroup: TopicBasicInGroupApi = object : TopicBasicInGroupApi,
-		TopicBasicFlavouredInGroupApi<EncryptedTopic> by encryptedFlavour,
+		TopicBasicFlavouredInGroupApi<EncryptedTopic> by TopicBasicFlavouredInGroupApiImpl(rawApi, config, encryptedFlavour),
 		TopicBasicFlavourlessInGroupApi by TopicBasicFlavourlessInGroupApiImpl(rawApi) {
 
 		override suspend fun matchTopicsBy(groupId: String, filter: BaseFilterOptions<Topic>): List<String> =
@@ -706,9 +735,7 @@ private class TopicBasicApiImpl(
 		override suspend fun filterTopicsBy(groupId: String, filter: BaseFilterOptions<Topic>): PaginatedListIterator<GroupScoped<EncryptedTopic>> =
 			IdsPageIterator(
 				matchTopicsBy(groupId, filter)
-			) { ids ->
-				encryptedFlavour.doGetTopics(groupId, ids).map { GroupScoped(it, groupId) }
-			}
+			) { ids -> getTopics(groupId, ids) }
 
 		override suspend fun filterTopicsBySorted(groupId: String, filter: BaseSortableFilterOptions<Topic>): PaginatedListIterator<GroupScoped<EncryptedTopic>> =
 			filterTopicsBy(groupId, filter)
