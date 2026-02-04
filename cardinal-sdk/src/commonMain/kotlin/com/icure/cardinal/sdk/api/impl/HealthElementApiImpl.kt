@@ -122,21 +122,13 @@ private suspend fun RawHealthElementApi.doMatchHealthElementsBySorted(
 ): List<String> = doMatchHealthElementsBy(config = config, groupId = groupId, filter = filter)
 
 @InternalIcureApi
-private open class AbstractHealthElementBasicFlavouredApi<E : HealthElement>(
+private abstract class AbstractHealthElementBasicFlavouredApi<E : HealthElement>(
 	protected val rawApi: RawHealthElementApi,
 	protected open val config: BasicApiConfiguration,
 	protected val flavour: FlavouredApi<EncryptedHealthElement, E>
-) : HealthElementBasicFlavouredApi<E>,
-	HealthElementBasicFlavouredInGroupApi<E>,
-	FlavouredApi<EncryptedHealthElement, E> by flavour {
+) : FlavouredApi<EncryptedHealthElement, E> by flavour {
 
-	override suspend fun createHealthElement(entity: E): E = doCreateHealthElement(groupId = null, entity = entity)
-
-	override suspend fun createHealthElement(entity: GroupScoped<E>): GroupScoped<E> = groupScopedWith(entity) { groupId, it ->
-		doCreateHealthElement(groupId = groupId, entity = it)
-	}
-
-	private suspend fun doCreateHealthElement(groupId: String?, entity: E): E {
+	protected suspend fun doCreateHealthElement(groupId: String?, entity: E): E {
 		requireIsValidForCreation(entity)
 		val encrypted = validateAndMaybeEncrypt(groupId, entity)
 		return if (groupId == null) {
@@ -148,19 +140,7 @@ private open class AbstractHealthElementBasicFlavouredApi<E : HealthElement>(
 		}
 	}
 
-	override suspend fun createHealthElements(entities: List<E>): List<E> {
-		requireIsValidForCreation(entities)
-		return doCreateHealthElements(groupId = null, entities = entities)
-	}
-
-	override suspend fun createHealthElements(entities: List<GroupScoped<E>>): List<GroupScoped<E>> {
-		requireIsValidForCreationInGroup(entities)
-		return entities.mapUniqueIdentifiablesChunkedByGroup { groupId, chunk ->
-			doCreateHealthElements(groupId = groupId, entities = chunk)
-		}
-	}
-
-	private suspend fun doCreateHealthElements(groupId: String?, entities: List<E>): List<E> = skipRequestOnEmptyList(entities) { healthElements ->
+	protected suspend fun doCreateHealthElements(groupId: String?, entities: List<E>): List<E> = skipRequestOnEmptyList(entities) { healthElements ->
 		val encrypted = validateAndMaybeEncrypt(groupId, healthElements)
 		return if (groupId == null) {
 			rawApi.createHealthElements(encrypted)
@@ -171,29 +151,14 @@ private open class AbstractHealthElementBasicFlavouredApi<E : HealthElement>(
 		}
 	}
 
-	override suspend fun undeleteHealthElementById(id: String, rev: String): E = doUndeleteHealthElement(groupId = null, entityId = id, rev = rev)
-
-	override suspend fun undeleteHealthElementById(entityId: GroupScoped<StoredDocumentIdentifier>): GroupScoped<E> =
-		groupScopedWith(entityId) { groupId, it ->
-			doUndeleteHealthElement(groupId = groupId, entityId = it.id, rev = it.rev)
-		}
-
-	private suspend fun doUndeleteHealthElement(groupId: String?, entityId: String, rev: String): E =
+	protected suspend fun doUndeleteHealthElement(groupId: String?, entityId: String, rev: String): E =
 		if (groupId == null) {
 			rawApi.undeleteHealthElement(entityId, rev)
 		} else {
 			rawApi.undeleteHealthElementInGroup(groupId, entityId, rev)
 		}.successBodyOrThrowRevisionConflict().let { maybeDecrypt(groupId, it) }
 
-	override suspend fun undeleteHealthElementsByIds(entityIds: List<StoredDocumentIdentifier>): List<E> =
-		doUndeleteHealthElements(groupId = null, entityIds = entityIds)
-
-	override suspend fun undeleteHealthElementsByIds(entityIds: List<GroupScoped<StoredDocumentIdentifier>>): List<GroupScoped<E>> =
-		entityIds.mapUniqueIdentifiablesChunkedByGroup { groupId, chunk ->
-			doUndeleteHealthElements(groupId = groupId, entityIds = chunk)
-		}
-
-	private suspend fun doUndeleteHealthElements(groupId: String?, entityIds: List<StoredDocumentIdentifier>): List<E> = skipRequestOnEmptyList(entityIds) { ids ->
+	protected suspend fun doUndeleteHealthElements(groupId: String?, entityIds: List<StoredDocumentIdentifier>): List<E> = skipRequestOnEmptyList(entityIds) { ids ->
 		if (groupId == null) {
 			rawApi.undeleteHealthElements(ListOfIdsAndRev(ids))
 		} else {
@@ -201,13 +166,7 @@ private open class AbstractHealthElementBasicFlavouredApi<E : HealthElement>(
 		}.successBody().let { maybeDecrypt(groupId, it) }
 	}
 
-	override suspend fun modifyHealthElement(entity: E): E = doModifyHealthElement(groupId = null, entity = entity)
-
-	override suspend fun modifyHealthElement(entity: GroupScoped<E>): GroupScoped<E> = groupScopedWith(entity) { groupId, it ->
-		doModifyHealthElement(groupId = groupId, entity = it)
-	}
-
-	private suspend fun doModifyHealthElement(groupId: String?, entity: E): E {
+	protected suspend fun doModifyHealthElement(groupId: String?, entity: E): E {
 		requireIsValidForModification(entity)
 		val encrypted = validateAndMaybeEncrypt(groupId, entity)
 		return if (groupId == null) {
@@ -217,19 +176,7 @@ private open class AbstractHealthElementBasicFlavouredApi<E : HealthElement>(
 		}.successBodyOrThrowRevisionConflict().let { maybeDecrypt(groupId, it) }
 	}
 
-	override suspend fun modifyHealthElements(entities: List<E>): List<E> {
-		requireIsValidForModification(entities)
-		return doModifyHealthElements(groupId = null, entities = entities)
-	}
-
-	override suspend fun modifyHealthElements(entities: List<GroupScoped<E>>): List<GroupScoped<E>> {
-		requireIsValidForModificationInGroup(entities)
-		return entities.mapUniqueIdentifiablesChunkedByGroup { groupId, chunk ->
-			doModifyHealthElements(groupId = groupId, entities = chunk)
-		}
-	}
-
-	private suspend fun doModifyHealthElements(groupId: String?, entities: List<E>): List<E> = skipRequestOnEmptyList(entities) { healthElements ->
+	protected suspend fun doModifyHealthElements(groupId: String?, entities: List<E>): List<E> = skipRequestOnEmptyList(entities) { healthElements ->
 		val encrypted = validateAndMaybeEncrypt(groupId, healthElements)
 		return if (groupId == null) {
 			rawApi.modifyHealthElements(encrypted)
@@ -240,24 +187,12 @@ private open class AbstractHealthElementBasicFlavouredApi<E : HealthElement>(
 		}
 	}
 
-	override suspend fun getHealthElement(entityId: String): E? = doGetHealthElement(groupId = null, entityId = entityId)
-
-	override suspend fun getHealthElement(groupId: String, entityId: String): GroupScoped<E>? = groupScopedIn(groupId) {
-		doGetHealthElement(groupId = groupId, entityId = entityId)
-	}
-
 	protected suspend fun doGetHealthElement(groupId: String?, entityId: String): E? =
 		if (groupId == null) {
 			rawApi.getHealthElement(entityId)
 		} else {
 			rawApi.getHealthElementInGroup(groupId = groupId, healthElementId = entityId)
 		}.successBodyOrNull404()?.let { maybeDecrypt(groupId, it) }
-
-	override suspend fun getHealthElements(entityIds: List<String>): List<E> = doGetHealthElements(groupId = null, entityIds)
-
-	override suspend fun getHealthElements(groupId: String, entityIds: List<String>): List<GroupScoped<E>> = groupScopedListIn(groupId) {
-		doGetHealthElements(groupId = groupId, entityIds = entityIds)
-	}
 
 	suspend fun doGetHealthElements(groupId: String?, entityIds: List<String>) = skipRequestOnEmptyList(entityIds) { ids ->
 		if (groupId == null) {
@@ -269,42 +204,92 @@ private open class AbstractHealthElementBasicFlavouredApi<E : HealthElement>(
 }
 
 @InternalIcureApi
-private class AbstractHealthElementFlavouredApi<E : HealthElement>(
+private class HealthElementBasicFlavouredApiImpl<E: HealthElement>(
+	rawApi: RawHealthElementApi,
+	config: BasicApiConfiguration,
+	flavour: FlavouredApi<EncryptedHealthElement, E>
+) : HealthElementBasicFlavouredApi<E>, AbstractHealthElementBasicFlavouredApi<E>(rawApi, config, flavour) {
+
+	override suspend fun createHealthElement(entity: E): E = doCreateHealthElement(groupId = null, entity = entity)
+
+	override suspend fun createHealthElements(entities: List<E>): List<E> {
+		requireIsValidForCreation(entities)
+		return doCreateHealthElements(groupId = null, entities = entities)
+	}
+
+	override suspend fun undeleteHealthElementById(id: String, rev: String): E = doUndeleteHealthElement(groupId = null, entityId = id, rev = rev)
+
+	override suspend fun undeleteHealthElementsByIds(entityIds: List<StoredDocumentIdentifier>): List<E> =
+		doUndeleteHealthElements(groupId = null, entityIds = entityIds)
+
+	override suspend fun modifyHealthElement(entity: E): E = doModifyHealthElement(groupId = null, entity = entity)
+
+	override suspend fun modifyHealthElements(entities: List<E>): List<E> {
+		requireIsValidForModification(entities)
+		return doModifyHealthElements(groupId = null, entities = entities)
+	}
+
+	override suspend fun getHealthElement(entityId: String): E? = doGetHealthElement(groupId = null, entityId = entityId)
+
+	override suspend fun getHealthElements(entityIds: List<String>): List<E> = doGetHealthElements(groupId = null, entityIds)
+}
+
+@InternalIcureApi
+private class HealthElementBasicFlavouredInGroupApiImpl<E: HealthElement>(
+	rawApi: RawHealthElementApi,
+	config: BasicApiConfiguration,
+	flavour: FlavouredApi<EncryptedHealthElement, E>
+) : HealthElementBasicFlavouredInGroupApi<E>, AbstractHealthElementBasicFlavouredApi<E>(rawApi, config, flavour) {
+
+	override suspend fun createHealthElement(entity: GroupScoped<E>): GroupScoped<E> = groupScopedWith(entity) { groupId, it ->
+		doCreateHealthElement(groupId = groupId, entity = it)
+	}
+
+	override suspend fun createHealthElements(entities: List<GroupScoped<E>>): List<GroupScoped<E>> {
+		requireIsValidForCreationInGroup(entities)
+		return entities.mapUniqueIdentifiablesChunkedByGroup { groupId, chunk ->
+			doCreateHealthElements(groupId = groupId, entities = chunk)
+		}
+	}
+
+	override suspend fun undeleteHealthElementById(entityId: GroupScoped<StoredDocumentIdentifier>): GroupScoped<E> =
+		groupScopedWith(entityId) { groupId, it ->
+			doUndeleteHealthElement(groupId = groupId, entityId = it.id, rev = it.rev)
+		}
+
+	override suspend fun undeleteHealthElementsByIds(entityIds: List<GroupScoped<StoredDocumentIdentifier>>): List<GroupScoped<E>> =
+		entityIds.mapUniqueIdentifiablesChunkedByGroup { groupId, chunk ->
+			doUndeleteHealthElements(groupId = groupId, entityIds = chunk)
+		}
+
+	override suspend fun modifyHealthElement(entity: GroupScoped<E>): GroupScoped<E> = groupScopedWith(entity) { groupId, it ->
+		doModifyHealthElement(groupId = groupId, entity = it)
+	}
+
+	override suspend fun modifyHealthElements(entities: List<GroupScoped<E>>): List<GroupScoped<E>> {
+		requireIsValidForModificationInGroup(entities)
+		return entities.mapUniqueIdentifiablesChunkedByGroup { groupId, chunk ->
+			doModifyHealthElements(groupId = groupId, entities = chunk)
+		}
+	}
+
+	override suspend fun getHealthElement(groupId: String, entityId: String): GroupScoped<E>? = groupScopedIn(groupId) {
+		doGetHealthElement(groupId = groupId, entityId = entityId)
+	}
+
+	override suspend fun getHealthElements(groupId: String, entityIds: List<String>): List<GroupScoped<E>> = groupScopedListIn(groupId) {
+		doGetHealthElements(groupId = groupId, entityIds = entityIds)
+	}
+}
+
+@InternalIcureApi
+private abstract class AbstractHealthElementFlavouredApi<E : HealthElement>(
 	rawApi: RawHealthElementApi,
 	override val config: ApiConfiguration,
 	flavour: FlavouredApi<EncryptedHealthElement, E>
-) : AbstractHealthElementBasicFlavouredApi<E>(rawApi, config, flavour), HealthElementFlavouredApi<E>, HealthElementFlavouredInGroupApi<E> {
-	override suspend fun shareWith(
-		delegateId: String,
-		healthElement: E,
-		options: HealthElementShareOptions?,
-	): E =
-		shareWithMany(healthElement, mapOf(delegateId to (options ?: HealthElementShareOptions())))
+) : AbstractHealthElementBasicFlavouredApi<E>(rawApi, config, flavour) {
 
-	override suspend fun shareWithMany(healthElement: E, delegates: Map<String, HealthElementShareOptions>): E =
-		doShareWithMany(null, healthElement, delegates.keyAsLocalDataOwnerReferences())
-
-	override suspend fun shareWith(
-		delegate: EntityReferenceInGroup,
-		healthElement: GroupScoped<E>,
-		options: HealthElementShareOptions?
-	): GroupScoped<E> =
-		shareWithMany(healthElement, mapOf(delegate to (options ?: HealthElementShareOptions())))
-
-	override suspend fun shareWithMany(
-		healthElement: GroupScoped<E>,
-		delegates: @JsMapAsObjectArray(keyEntryName = "delegate", valueEntryName = "shareOptions") Map<EntityReferenceInGroup, HealthElementShareOptions>
-	): GroupScoped<E> =
-		GroupScoped(
-			doShareWithMany(
-				healthElement.groupId,
-				healthElement.entity,
-				delegates
-			),
-			healthElement.groupId
-		)
-
-	private suspend fun doShareWithMany(
+	protected suspend fun doShareWithMany(
 		entityGroupId: String?,
 		healthElement: E,
 		delegates: @JsMapAsObjectArray(keyEntryName = "delegate", valueEntryName = "shareOptions") Map<EntityReferenceInGroup, HealthElementShareOptions>
@@ -326,11 +311,64 @@ private class AbstractHealthElementFlavouredApi<E : HealthElement>(
 				)
 			}
 		).updatedEntityOrThrow()
+}
+
+@InternalIcureApi
+private class HealthElementFlavouredApiImpl<E : HealthElement>(
+	rawApi: RawHealthElementApi,
+	config: ApiConfiguration,
+	flavour: FlavouredApi<EncryptedHealthElement, E>
+) : AbstractHealthElementFlavouredApi<E>(rawApi, config, flavour),
+	HealthElementBasicFlavouredApi<E> by HealthElementBasicFlavouredApiImpl(rawApi, config, flavour),
+	HealthElementFlavouredApi<E> {
+
+	override suspend fun shareWith(
+		delegateId: String,
+		healthElement: E,
+		options: HealthElementShareOptions?,
+	): E =
+		shareWithMany(healthElement, mapOf(delegateId to (options ?: HealthElementShareOptions())))
+
+	override suspend fun shareWithMany(healthElement: E, delegates: Map<String, HealthElementShareOptions>): E =
+		doShareWithMany(null, healthElement, delegates.keyAsLocalDataOwnerReferences())
 
 	override suspend fun filterHealthElementsBy(filter: FilterOptions<HealthElement>): PaginatedListIterator<E> =
 		IdsPageIterator(
 			rawApi.doMatchHealthElementsBy(config = config, groupId = null, filter = filter),
 			this::getHealthElements
+		)
+
+	override suspend fun filterHealthElementsBySorted(filter: SortableFilterOptions<HealthElement>): PaginatedListIterator<E> =
+		filterHealthElementsBy(filter)
+}
+
+@InternalIcureApi
+private class HealthElementFlavouredInGroupApiImpl<E : HealthElement>(
+	rawApi: RawHealthElementApi,
+	config: ApiConfiguration,
+	flavour: FlavouredApi<EncryptedHealthElement, E>
+) : AbstractHealthElementFlavouredApi<E>(rawApi, config, flavour),
+	HealthElementBasicFlavouredInGroupApi<E> by HealthElementBasicFlavouredInGroupApiImpl(rawApi, config, flavour),
+	HealthElementFlavouredInGroupApi<E> {
+
+	override suspend fun shareWith(
+		delegate: EntityReferenceInGroup,
+		healthElement: GroupScoped<E>,
+		options: HealthElementShareOptions?
+	): GroupScoped<E> =
+		shareWithMany(healthElement, mapOf(delegate to (options ?: HealthElementShareOptions())))
+
+	override suspend fun shareWithMany(
+		healthElement: GroupScoped<E>,
+		delegates: @JsMapAsObjectArray(keyEntryName = "delegate", valueEntryName = "shareOptions") Map<EntityReferenceInGroup, HealthElementShareOptions>
+	): GroupScoped<E> =
+		GroupScoped(
+			doShareWithMany(
+				healthElement.groupId,
+				healthElement.entity,
+				delegates
+			),
+			healthElement.groupId
 		)
 
 	override suspend fun filterHealthElementsBy(groupId: String, filter: FilterOptions<HealthElement>): PaginatedListIterator<GroupScoped<E>> =
@@ -341,9 +379,6 @@ private class AbstractHealthElementFlavouredApi<E : HealthElement>(
 				GroupScoped(healthElement, groupId)
 			}
 		}
-
-	override suspend fun filterHealthElementsBySorted(filter: SortableFilterOptions<HealthElement>): PaginatedListIterator<E> =
-		filterHealthElementsBy(filter)
 
 	override suspend fun filterHealthElementsBySorted(groupId: String, filter: SortableFilterOptions<HealthElement>): PaginatedListIterator<GroupScoped<E>> =
 		filterHealthElementsBy(groupId, filter)
@@ -435,15 +470,12 @@ internal fun initHealthElementApi(
 	val decryptedFlavour = decryptedApiFlavour(config)
 	val encryptedFlavour = encryptedApiFlavour(config)
 	val tryAndRecoverFlavour = tryAndRecoverApiFlavour(config)
-	val decryptedApi = AbstractHealthElementFlavouredApi(rawApi, config, decryptedFlavour)
-	val encryptedApi = AbstractHealthElementFlavouredApi(rawApi, config, encryptedFlavour)
-	val tryAndRecoverApi = AbstractHealthElementFlavouredApi(rawApi, config, tryAndRecoverFlavour)
 	return HealthElementApiImpl(
 		rawApi,
 		config,
-		encryptedApi,
-		decryptedApi,
-		tryAndRecoverApi
+		encryptedFlavour,
+		decryptedFlavour,
+		tryAndRecoverFlavour
 	)
 }
 
@@ -451,21 +483,23 @@ internal fun initHealthElementApi(
 private class HealthElementApiImpl(
 	private val rawApi: RawHealthElementApi,
 	private val config: ApiConfiguration,
-	private val encryptedFlavour: AbstractHealthElementFlavouredApi<EncryptedHealthElement>,
-	private val decryptedFlavour: AbstractHealthElementFlavouredApi<DecryptedHealthElement>,
-	private val tryAndRecoverFlavour: AbstractHealthElementFlavouredApi<HealthElement>,
+	private val encryptedFlavour: FlavouredApi<EncryptedHealthElement, EncryptedHealthElement>,
+	private val decryptedFlavour: FlavouredApi<EncryptedHealthElement, DecryptedHealthElement>,
+	private val tryAndRecoverFlavour: FlavouredApi<EncryptedHealthElement, HealthElement>,
 ) : HealthElementApi,
-	HealthElementFlavouredApi<DecryptedHealthElement> by decryptedFlavour,
+	HealthElementFlavouredApi<DecryptedHealthElement> by HealthElementFlavouredApiImpl(rawApi, config, decryptedFlavour),
 	HealthElementBasicFlavourlessApi by HealthElementBasicFlavourlessApiImpl(rawApi) {
 
-	override val encrypted: HealthElementFlavouredApi<EncryptedHealthElement> = encryptedFlavour
-	override val tryAndRecover: HealthElementFlavouredApi<HealthElement> = tryAndRecoverFlavour
+	override val encrypted: HealthElementFlavouredApi<EncryptedHealthElement> = HealthElementFlavouredApiImpl(rawApi, config, encryptedFlavour)
+	override val tryAndRecover: HealthElementFlavouredApi<HealthElement> = HealthElementFlavouredApiImpl(rawApi, config, tryAndRecoverFlavour)
 
 	override val inGroup: HealthElementInGroupApi = object : HealthElementInGroupApi,
-		HealthElementFlavouredInGroupApi<DecryptedHealthElement> by decryptedFlavour,
+		HealthElementFlavouredInGroupApi<DecryptedHealthElement> by HealthElementFlavouredInGroupApiImpl(rawApi, config, decryptedFlavour),
 		HealthElementBasicFlavourlessInGroupApi by HealthElementBasicFlavourlessInGroupApiImpl(rawApi) {
-		override val encrypted: HealthElementFlavouredInGroupApi<EncryptedHealthElement> = encryptedFlavour
-		override val tryAndRecover: HealthElementFlavouredInGroupApi<HealthElement> = tryAndRecoverFlavour
+		override val encrypted: HealthElementFlavouredInGroupApi<EncryptedHealthElement> =
+			HealthElementFlavouredInGroupApiImpl(rawApi, config, encryptedFlavour)
+		override val tryAndRecover: HealthElementFlavouredInGroupApi<HealthElement> =
+			HealthElementFlavouredInGroupApiImpl(rawApi, config, tryAndRecoverFlavour)
 
 		override suspend fun matchHealthElementsBy(groupId: String, filter: FilterOptions<HealthElement>): List<String> =
 			rawApi.doMatchHealthElementsBy(config = config, groupId = groupId, filter = filter)
@@ -673,19 +707,19 @@ internal fun initHealthElementBasicApi(
 ): HealthElementBasicApi = HealthElementBasicApiImpl(
 	rawApi,
 	config,
-	AbstractHealthElementBasicFlavouredApi(rawApi, config, encryptedApiFlavour(config))
+	encryptedApiFlavour(config)
 )
 
 @InternalIcureApi
 private class HealthElementBasicApiImpl(
 	private val rawApi: RawHealthElementApi,
 	private val config: BasicApiConfiguration,
-	private val encryptedFlavour: AbstractHealthElementBasicFlavouredApi<EncryptedHealthElement>,
+	private val encryptedFlavour: FlavouredApi<EncryptedHealthElement, EncryptedHealthElement>,
 ) : HealthElementBasicApi,
-	HealthElementBasicFlavouredApi<EncryptedHealthElement> by encryptedFlavour,
+	HealthElementBasicFlavouredApi<EncryptedHealthElement> by HealthElementBasicFlavouredApiImpl(rawApi, config, encryptedFlavour),
 	HealthElementBasicFlavourlessApi by HealthElementBasicFlavourlessApiImpl(rawApi) {
 	override val inGroup: HealthElementBasicInGroupApi = object : HealthElementBasicInGroupApi,
-		HealthElementBasicFlavouredInGroupApi<EncryptedHealthElement> by encryptedFlavour,
+		HealthElementBasicFlavouredInGroupApi<EncryptedHealthElement> by HealthElementBasicFlavouredInGroupApiImpl(rawApi, config, encryptedFlavour),
 		HealthElementBasicFlavourlessInGroupApi by HealthElementBasicFlavourlessInGroupApiImpl(rawApi) {
 
 		override suspend fun matchHealthElementsBy(groupId: String, filter: BaseFilterOptions<HealthElement>): List<String> =
@@ -696,7 +730,7 @@ private class HealthElementBasicApiImpl(
 
 		override suspend fun filterHealthElementsBy(groupId: String, filter: BaseFilterOptions<HealthElement>): PaginatedListIterator<GroupScoped<EncryptedHealthElement>> =
 			IdsPageIterator(matchHealthElementsBy(groupId, filter)) { ids ->
-				encryptedFlavour.doGetHealthElements(groupId, ids).map { GroupScoped(it, groupId) }
+				getHealthElements(groupId, ids)
 			}
 
 		override suspend fun filterHealthElementsBySorted(groupId: String, filter: BaseSortableFilterOptions<HealthElement>): PaginatedListIterator<GroupScoped<EncryptedHealthElement>> =
