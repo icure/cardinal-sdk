@@ -124,21 +124,13 @@ private suspend fun RawMessageApi.doMatchMessagesBySorted(
 ): List<String> = doMatchMessagesBy(config = config, groupId = groupId, filter = filter)
 
 @InternalIcureApi
-private open class AbstractMessageBasicFlavouredApi<E : Message>(
+private abstract class AbstractMessageBasicFlavouredApi<E : Message>(
 	protected val rawApi: RawMessageApi,
 	protected open val config: BasicApiConfiguration,
 	protected val flavour: FlavouredApi<EncryptedMessage, E>
-) : MessageBasicFlavouredApi<E>,
-	MessageBasicFlavouredInGroupApi<E>,
-	FlavouredApi<EncryptedMessage, E> by flavour {
+) : FlavouredApi<EncryptedMessage, E> by flavour {
 
-	override suspend fun createMessage(entity: E): E = doCreateMessage(groupId = null, entity = entity)
-
-	override suspend fun createMessage(entity: GroupScoped<E>): GroupScoped<E> = groupScopedWith(entity) { groupId, it ->
-		doCreateMessage(groupId = groupId, entity = it)
-	}
-
-	private suspend fun doCreateMessage(groupId: String?, entity: E): E {
+	protected suspend fun doCreateMessage(groupId: String?, entity: E): E {
 		requireIsValidForCreation(entity)
 		val encrypted = validateAndMaybeEncrypt(groupId, entity)
 		return if (groupId == null) {
@@ -150,19 +142,7 @@ private open class AbstractMessageBasicFlavouredApi<E : Message>(
 		}
 	}
 
-	override suspend fun createMessages(entities: List<E>): List<E> {
-		requireIsValidForCreation(entities)
-		return doCreateMessages(groupId = null, entities = entities)
-	}
-
-	override suspend fun createMessages(entities: List<GroupScoped<E>>): List<GroupScoped<E>> {
-		requireIsValidForCreationInGroup(entities)
-		return entities.mapUniqueIdentifiablesChunkedByGroup { groupId, chunk ->
-			doCreateMessages(groupId = groupId, entities = chunk)
-		}
-	}
-
-	private suspend fun doCreateMessages(groupId: String?, entities: List<E>): List<E> = skipRequestOnEmptyList(entities) { messages ->
+	protected suspend fun doCreateMessages(groupId: String?, entities: List<E>): List<E> = skipRequestOnEmptyList(entities) { messages ->
 		val encrypted = validateAndMaybeEncrypt(groupId, messages)
 		return if (groupId == null) {
 			rawApi.createMessages(encrypted)
@@ -171,6 +151,72 @@ private open class AbstractMessageBasicFlavouredApi<E : Message>(
 		}.successBody().let {
 			maybeDecrypt(groupId, it)
 		}
+	}
+
+	protected suspend fun doUndeleteMessage(groupId: String?, entityId: String, rev: String): E =
+		if (groupId == null) {
+			rawApi.undeleteMessage(entityId, rev)
+		} else {
+			rawApi.undeleteMessageInGroup(groupId, entityId, rev)
+		}.successBodyOrThrowRevisionConflict().let { maybeDecrypt(groupId, it) }
+
+	protected suspend fun doUndeleteMessages(groupId: String?, entityIds: List<StoredDocumentIdentifier>): List<E> = skipRequestOnEmptyList(entityIds) { ids ->
+		if (groupId == null) {
+			rawApi.undeleteMessages(ListOfIdsAndRev(ids))
+		} else {
+			rawApi.undeleteMessagesInGroup(groupId, ListOfIdsAndRev(ids))
+		}.successBody().let { maybeDecrypt(groupId, it) }
+	}
+
+	protected suspend fun doModifyMessage(groupId: String?, entity: E): E {
+		requireIsValidForModification(entity)
+		val encrypted = validateAndMaybeEncrypt(groupId, entity)
+		return if (groupId == null) {
+			rawApi.modifyMessage(encrypted)
+		} else {
+			rawApi.modifyMessageInGroup(groupId, encrypted)
+		}.successBodyOrThrowRevisionConflict().let { maybeDecrypt(groupId, it) }
+	}
+
+	protected suspend fun doModifyMessages(groupId: String?, entities: List<E>): List<E> = skipRequestOnEmptyList(entities) { messages ->
+		val encrypted = validateAndMaybeEncrypt(groupId, messages)
+		return if (groupId == null) {
+			rawApi.modifyMessages(encrypted)
+		} else {
+			rawApi.modifyMessagesInGroup(groupId, encrypted)
+		}.successBody().let {
+			maybeDecrypt(groupId, it)
+		}
+	}
+
+	protected suspend fun doGetMessage(groupId: String?, entityId: String): E? =
+		if (groupId == null) {
+			rawApi.getMessage(entityId)
+		} else {
+			rawApi.getMessageInGroup(groupId = groupId, messageId = entityId)
+		}.successBodyOrNull404()?.let { maybeDecrypt(groupId, it) }
+
+	suspend fun doGetMessages(groupId: String?, entityIds: List<String>) = skipRequestOnEmptyList(entityIds) { ids ->
+		if (groupId == null) {
+			rawApi.getMessages(ListOfIds(ids))
+		} else {
+			rawApi.getMessagesInGroup(groupId, ListOfIds(ids))
+		}.successBody().let { maybeDecrypt(groupId, it) }
+	}
+}
+
+@InternalIcureApi
+private class MessageBasicFlavouredApiImpl<E : Message>(
+	rawApi: RawMessageApi,
+	config: BasicApiConfiguration,
+	flavour: FlavouredApi<EncryptedMessage, E>
+) : MessageBasicFlavouredApi<E>, AbstractMessageBasicFlavouredApi<E>(rawApi, config, flavour) {
+
+	override suspend fun createMessage(entity: E): E = doCreateMessage(groupId = null, entity = entity)
+
+	override suspend fun createMessages(entities: List<E>): List<E> {
+		requireIsValidForCreation(entities)
+		return doCreateMessages(groupId = null, entities = entities)
 	}
 
 	override suspend fun createMessageInTopic(entity: E): E {
@@ -183,99 +229,19 @@ private open class AbstractMessageBasicFlavouredApi<E : Message>(
 
 	override suspend fun undeleteMessageById(id: String, rev: String): E = doUndeleteMessage(groupId = null, entityId = id, rev = rev)
 
-	override suspend fun undeleteMessageById(entityId: GroupScoped<StoredDocumentIdentifier>): GroupScoped<E> =
-		groupScopedWith(entityId) { groupId, it ->
-			doUndeleteMessage(groupId = groupId, entityId = it.id, rev = it.rev)
-		}
-
-	private suspend fun doUndeleteMessage(groupId: String?, entityId: String, rev: String): E =
-		if (groupId == null) {
-			rawApi.undeleteMessage(entityId, rev)
-		} else {
-			rawApi.undeleteMessageInGroup(groupId, entityId, rev)
-		}.successBodyOrThrowRevisionConflict().let { maybeDecrypt(groupId, it) }
-
 	override suspend fun undeleteMessagesByIds(entityIds: List<StoredDocumentIdentifier>): List<E> =
 		doUndeleteMessages(groupId = null, entityIds = entityIds)
 
-	override suspend fun undeleteMessagesByIds(entityIds: List<GroupScoped<StoredDocumentIdentifier>>): List<GroupScoped<E>> =
-		entityIds.mapUniqueIdentifiablesChunkedByGroup { groupId, chunk ->
-			doUndeleteMessages(groupId = groupId, entityIds = chunk)
-		}
-
-	private suspend fun doUndeleteMessages(groupId: String?, entityIds: List<StoredDocumentIdentifier>): List<E> = skipRequestOnEmptyList(entityIds) { ids ->
-		if (groupId == null) {
-			rawApi.undeleteMessages(ListOfIdsAndRev(ids))
-		} else {
-			rawApi.undeleteMessagesInGroup(groupId, ListOfIdsAndRev(ids))
-		}.successBody().let { maybeDecrypt(groupId, it) }
-	}
-
 	override suspend fun modifyMessage(entity: E): E = doModifyMessage(groupId = null, entity = entity)
-
-	override suspend fun modifyMessage(entity: GroupScoped<E>): GroupScoped<E> = groupScopedWith(entity) { groupId, it ->
-		doModifyMessage(groupId = groupId, entity = it)
-	}
-
-	private suspend fun doModifyMessage(groupId: String?, entity: E): E {
-		requireIsValidForModification(entity)
-		val encrypted = validateAndMaybeEncrypt(groupId, entity)
-		return if (groupId == null) {
-			rawApi.modifyMessage(encrypted)
-		} else {
-			rawApi.modifyMessageInGroup(groupId, encrypted)
-		}.successBodyOrThrowRevisionConflict().let { maybeDecrypt(groupId, it) }
-	}
 
 	override suspend fun modifyMessages(entities: List<E>): List<E> {
 		requireIsValidForModification(entities)
 		return doModifyMessages(groupId = null, entities = entities)
 	}
 
-	override suspend fun modifyMessages(entities: List<GroupScoped<E>>): List<GroupScoped<E>> {
-		requireIsValidForModificationInGroup(entities)
-		return entities.mapUniqueIdentifiablesChunkedByGroup { groupId, chunk ->
-			doModifyMessages(groupId = groupId, entities = chunk)
-		}
-	}
-
-	private suspend fun doModifyMessages(groupId: String?, entities: List<E>): List<E> = skipRequestOnEmptyList(entities) { messages ->
-		val encrypted = validateAndMaybeEncrypt(groupId, messages)
-		return if (groupId == null) {
-			rawApi.modifyMessages(encrypted)
-		} else {
-			rawApi.modifyMessagesInGroup(groupId, encrypted)
-		}.successBody().let {
-			maybeDecrypt(groupId, it)
-		}
-	}
-
 	override suspend fun getMessage(entityId: String): E? = doGetMessage(groupId = null, entityId = entityId)
 
-	override suspend fun getMessage(groupId: String, entityId: String): GroupScoped<E>? = groupScopedIn(groupId) {
-		doGetMessage(groupId = groupId, entityId = entityId)
-	}
-
-	protected suspend fun doGetMessage(groupId: String?, entityId: String): E? =
-		if (groupId == null) {
-			rawApi.getMessage(entityId)
-		} else {
-			rawApi.getMessageInGroup(groupId = groupId, messageId = entityId)
-		}.successBodyOrNull404()?.let { maybeDecrypt(groupId, it) }
-
 	override suspend fun getMessages(entityIds: List<String>): List<E> = doGetMessages(groupId = null, entityIds)
-
-	override suspend fun getMessages(groupId: String, entityIds: List<String>): List<GroupScoped<E>> = groupScopedListIn(groupId) {
-		doGetMessages(groupId = groupId, entityIds = entityIds)
-	}
-
-	suspend fun doGetMessages(groupId: String?, entityIds: List<String>) = skipRequestOnEmptyList(entityIds) { ids ->
-		if (groupId == null) {
-			rawApi.getMessages(ListOfIds(ids))
-		} else {
-			rawApi.getMessagesInGroup(groupId, ListOfIds(ids))
-		}.successBody().let { maybeDecrypt(groupId, it) }
-	}
 
 	override suspend fun setMessagesReadStatus(
 		entityIds: List<String>,
@@ -286,42 +252,62 @@ private open class AbstractMessageBasicFlavouredApi<E : Message>(
 }
 
 @InternalIcureApi
-private class AbstractMessageFlavouredApi<E : Message>(
+private class MessageBasicFlavouredInGroupApiImpl<E : Message>(
+	rawApi: RawMessageApi,
+	config: BasicApiConfiguration,
+	flavour: FlavouredApi<EncryptedMessage, E>
+) : MessageBasicFlavouredInGroupApi<E>, AbstractMessageBasicFlavouredApi<E>(rawApi, config, flavour) {
+
+	override suspend fun createMessage(entity: GroupScoped<E>): GroupScoped<E> = groupScopedWith(entity) { groupId, it ->
+		doCreateMessage(groupId = groupId, entity = it)
+	}
+
+	override suspend fun createMessages(entities: List<GroupScoped<E>>): List<GroupScoped<E>> {
+		requireIsValidForCreationInGroup(entities)
+		return entities.mapUniqueIdentifiablesChunkedByGroup { groupId, chunk ->
+			doCreateMessages(groupId = groupId, entities = chunk)
+		}
+	}
+
+	override suspend fun undeleteMessageById(entityId: GroupScoped<StoredDocumentIdentifier>): GroupScoped<E> =
+		groupScopedWith(entityId) { groupId, it ->
+			doUndeleteMessage(groupId = groupId, entityId = it.id, rev = it.rev)
+		}
+
+	override suspend fun undeleteMessagesByIds(entityIds: List<GroupScoped<StoredDocumentIdentifier>>): List<GroupScoped<E>> =
+		entityIds.mapUniqueIdentifiablesChunkedByGroup { groupId, chunk ->
+			doUndeleteMessages(groupId = groupId, entityIds = chunk)
+		}
+
+	override suspend fun modifyMessage(entity: GroupScoped<E>): GroupScoped<E> = groupScopedWith(entity) { groupId, it ->
+		doModifyMessage(groupId = groupId, entity = it)
+	}
+
+	override suspend fun modifyMessages(entities: List<GroupScoped<E>>): List<GroupScoped<E>> {
+		requireIsValidForModificationInGroup(entities)
+		return entities.mapUniqueIdentifiablesChunkedByGroup { groupId, chunk ->
+			doModifyMessages(groupId = groupId, entities = chunk)
+		}
+	}
+
+	override suspend fun getMessage(groupId: String, entityId: String): GroupScoped<E>? = groupScopedIn(groupId) {
+		doGetMessage(groupId = groupId, entityId = entityId)
+	}
+
+	override suspend fun getMessages(groupId: String, entityIds: List<String>): List<GroupScoped<E>> = groupScopedListIn(groupId) {
+		doGetMessages(groupId = groupId, entityIds = entityIds)
+	}
+
+}
+
+@InternalIcureApi
+private abstract class AbstractMessageFlavouredApi<E : Message>(
 	rawApi: RawMessageApi,
 	override val config: ApiConfiguration,
 	flavour: FlavouredApi<EncryptedMessage, E>
-) : AbstractMessageBasicFlavouredApi<E>(rawApi, config, flavour), MessageFlavouredApi<E>, MessageFlavouredInGroupApi<E> {
-	override suspend fun shareWith(
-		delegateId: String,
-		message: E,
-		options: MessageShareOptions?,
-	): E =
-		shareWithMany(message, mapOf(delegateId to (options ?: MessageShareOptions())))
+) : AbstractMessageBasicFlavouredApi<E>(rawApi, config, flavour) {
 
-	override suspend fun shareWithMany(message: E, delegates: Map<String, MessageShareOptions>): E =
-		doShareWithMany(null, message, delegates.keyAsLocalDataOwnerReferences())
-
-	override suspend fun shareWith(
-		delegate: EntityReferenceInGroup,
-		message: GroupScoped<E>,
-		options: MessageShareOptions?
-	): GroupScoped<E> =
-		shareWithMany(message, mapOf(delegate to (options ?: MessageShareOptions())))
-
-	override suspend fun shareWithMany(
-		message: GroupScoped<E>,
-		delegates: @JsMapAsObjectArray(keyEntryName = "delegate", valueEntryName = "shareOptions") Map<EntityReferenceInGroup, MessageShareOptions>
-	): GroupScoped<E> =
-		GroupScoped(
-			doShareWithMany(
-				message.groupId,
-				message.entity,
-				delegates
-			),
-			message.groupId
-		)
-
-	private suspend fun doShareWithMany(
+	protected suspend fun doShareWithMany(
 		entityGroupId: String?,
 		message: E,
 		delegates: @JsMapAsObjectArray(keyEntryName = "delegate", valueEntryName = "shareOptions") Map<EntityReferenceInGroup, MessageShareOptions>
@@ -344,10 +330,65 @@ private class AbstractMessageFlavouredApi<E : Message>(
 			}
 		).updatedEntityOrThrow()
 
+}
+
+@InternalIcureApi
+private class MessageFlavouredApiImpl<E : Message>(
+	rawApi: RawMessageApi,
+	config: ApiConfiguration,
+	flavour: FlavouredApi<EncryptedMessage, E>
+) : AbstractMessageFlavouredApi<E>(rawApi, config, flavour),
+	MessageBasicFlavouredApi<E> by MessageBasicFlavouredApiImpl(rawApi, config, flavour),
+	MessageFlavouredApi<E> {
+
+	override suspend fun shareWith(
+		delegateId: String,
+		message: E,
+		options: MessageShareOptions?,
+	): E =
+		shareWithMany(message, mapOf(delegateId to (options ?: MessageShareOptions())))
+
+	override suspend fun shareWithMany(message: E, delegates: Map<String, MessageShareOptions>): E =
+		doShareWithMany(null, message, delegates.keyAsLocalDataOwnerReferences())
+
 	override suspend fun filterMessagesBy(filter: FilterOptions<Message>): PaginatedListIterator<E> =
 		IdsPageIterator(
 			rawApi.doMatchMessagesBy(config = config, groupId = null, filter = filter),
 			this::getMessages
+		)
+
+	override suspend fun filterMessagesBySorted(filter: SortableFilterOptions<Message>): PaginatedListIterator<E> =
+		filterMessagesBy(filter)
+
+}
+
+@InternalIcureApi
+private class MessageFlavouredInGroupApiImpl<E : Message>(
+	rawApi: RawMessageApi,
+	config: ApiConfiguration,
+	flavour: FlavouredApi<EncryptedMessage, E>
+) : AbstractMessageFlavouredApi<E>(rawApi, config, flavour),
+	MessageBasicFlavouredInGroupApi<E> by MessageBasicFlavouredInGroupApiImpl(rawApi, config, flavour),
+	MessageFlavouredInGroupApi<E> {
+
+	override suspend fun shareWith(
+		delegate: EntityReferenceInGroup,
+		message: GroupScoped<E>,
+		options: MessageShareOptions?
+	): GroupScoped<E> =
+		shareWithMany(message, mapOf(delegate to (options ?: MessageShareOptions())))
+
+	override suspend fun shareWithMany(
+		message: GroupScoped<E>,
+		delegates: @JsMapAsObjectArray(keyEntryName = "delegate", valueEntryName = "shareOptions") Map<EntityReferenceInGroup, MessageShareOptions>
+	): GroupScoped<E> =
+		GroupScoped(
+			doShareWithMany(
+				message.groupId,
+				message.entity,
+				delegates
+			),
+			message.groupId
 		)
 
 	override suspend fun filterMessagesBy(groupId: String, filter: FilterOptions<Message>): PaginatedListIterator<GroupScoped<E>> =
@@ -358,9 +399,6 @@ private class AbstractMessageFlavouredApi<E : Message>(
 				GroupScoped(message, groupId)
 			}
 		}
-
-	override suspend fun filterMessagesBySorted(filter: SortableFilterOptions<Message>): PaginatedListIterator<E> =
-		filterMessagesBy(filter)
 
 	override suspend fun filterMessagesBySorted(groupId: String, filter: SortableFilterOptions<Message>): PaginatedListIterator<GroupScoped<E>> =
 		filterMessagesBy(groupId, filter)
@@ -452,15 +490,12 @@ internal fun initMessageApi(
 	val decryptedFlavour = decryptedApiFlavour(config)
 	val encryptedFlavour = encryptedApiFlavour(config)
 	val tryAndRecoverFlavour = tryAndRecoverApiFlavour(config)
-	val decryptedApi = AbstractMessageFlavouredApi(rawApi, config, decryptedFlavour)
-	val encryptedApi = AbstractMessageFlavouredApi(rawApi, config, encryptedFlavour)
-	val tryAndRecoverApi = AbstractMessageFlavouredApi(rawApi, config, tryAndRecoverFlavour)
 	return MessageApiImpl(
 		rawApi,
 		config,
-		encryptedApi,
-		decryptedApi,
-		tryAndRecoverApi
+		encryptedFlavour,
+		decryptedFlavour,
+		tryAndRecoverFlavour
 	)
 }
 
@@ -468,21 +503,23 @@ internal fun initMessageApi(
 private class MessageApiImpl(
 	private val rawApi: RawMessageApi,
 	private val config: ApiConfiguration,
-	private val encryptedFlavour: AbstractMessageFlavouredApi<EncryptedMessage>,
-	private val decryptedFlavour: AbstractMessageFlavouredApi<DecryptedMessage>,
-	private val tryAndRecoverFlavour: AbstractMessageFlavouredApi<Message>,
+	private val encryptedFlavour: FlavouredApi<EncryptedMessage, EncryptedMessage>,
+	private val decryptedFlavour: FlavouredApi<EncryptedMessage, DecryptedMessage>,
+	private val tryAndRecoverFlavour: FlavouredApi<EncryptedMessage, Message>,
 ) : MessageApi,
-	MessageFlavouredApi<DecryptedMessage> by decryptedFlavour,
+	MessageFlavouredApi<DecryptedMessage> by MessageFlavouredApiImpl(rawApi, config, decryptedFlavour),
 	MessageBasicFlavourlessApi by MessageBasicFlavourlessApiImpl(rawApi) {
 
-	override val encrypted: MessageFlavouredApi<EncryptedMessage> = encryptedFlavour
-	override val tryAndRecover: MessageFlavouredApi<Message> = tryAndRecoverFlavour
+	override val encrypted: MessageFlavouredApi<EncryptedMessage> = MessageFlavouredApiImpl(rawApi, config, encryptedFlavour)
+	override val tryAndRecover: MessageFlavouredApi<Message> = MessageFlavouredApiImpl(rawApi, config, tryAndRecoverFlavour)
 
 	override val inGroup: MessageInGroupApi = object : MessageInGroupApi,
-		MessageFlavouredInGroupApi<DecryptedMessage> by decryptedFlavour,
+		MessageFlavouredInGroupApi<DecryptedMessage> by MessageFlavouredInGroupApiImpl(rawApi, config, decryptedFlavour),
 		MessageBasicFlavourlessInGroupApi by MessageBasicFlavourlessInGroupApiImpl(rawApi) {
-		override val encrypted: MessageFlavouredInGroupApi<EncryptedMessage> = encryptedFlavour
-		override val tryAndRecover: MessageFlavouredInGroupApi<Message> = tryAndRecoverFlavour
+		override val encrypted: MessageFlavouredInGroupApi<EncryptedMessage> =
+			MessageFlavouredInGroupApiImpl(rawApi, config, encryptedFlavour)
+		override val tryAndRecover: MessageFlavouredInGroupApi<Message> =
+			MessageFlavouredInGroupApiImpl(rawApi, config, tryAndRecoverFlavour)
 
 		override suspend fun matchMessagesBy(groupId: String, filter: FilterOptions<Message>): List<String> =
 			rawApi.doMatchMessagesBy(config = config, groupId = groupId, filter = filter)
@@ -698,19 +735,19 @@ internal fun initMessageBasicApi(
 ): MessageBasicApi = MessageBasicApiImpl(
 	rawApi,
 	config,
-	AbstractMessageBasicFlavouredApi(rawApi, config, encryptedApiFlavour(config))
+	encryptedApiFlavour(config)
 )
 
 @InternalIcureApi
 private class MessageBasicApiImpl(
 	private val rawApi: RawMessageApi,
 	private val config: BasicApiConfiguration,
-	private val encryptedFlavour: AbstractMessageBasicFlavouredApi<EncryptedMessage>,
+	private val encryptedFlavour: FlavouredApi<EncryptedMessage, EncryptedMessage>,
 ) : MessageBasicApi,
-	MessageBasicFlavouredApi<EncryptedMessage> by encryptedFlavour,
+	MessageBasicFlavouredApi<EncryptedMessage> by MessageBasicFlavouredApiImpl(rawApi, config, encryptedFlavour),
 	MessageBasicFlavourlessApi by MessageBasicFlavourlessApiImpl(rawApi) {
 	override val inGroup: MessageBasicInGroupApi = object : MessageBasicInGroupApi,
-		MessageBasicFlavouredInGroupApi<EncryptedMessage> by encryptedFlavour,
+		MessageBasicFlavouredInGroupApi<EncryptedMessage> by MessageBasicFlavouredInGroupApiImpl(rawApi, config, encryptedFlavour),
 		MessageBasicFlavourlessInGroupApi by MessageBasicFlavourlessInGroupApiImpl(rawApi) {
 
 		override suspend fun matchMessagesBy(groupId: String, filter: BaseFilterOptions<Message>): List<String> =
@@ -721,7 +758,7 @@ private class MessageBasicApiImpl(
 
 		override suspend fun filterMessagesBy(groupId: String, filter: BaseFilterOptions<Message>): PaginatedListIterator<GroupScoped<EncryptedMessage>> =
 			IdsPageIterator(matchMessagesBy(groupId, filter)) { ids ->
-				encryptedFlavour.doGetMessages(groupId, ids).map { GroupScoped(it, groupId) }
+				getMessages(groupId, ids)
 			}
 
 		override suspend fun filterMessagesBySorted(groupId: String, filter: BaseSortableFilterOptions<Message>): PaginatedListIterator<GroupScoped<EncryptedMessage>> =
