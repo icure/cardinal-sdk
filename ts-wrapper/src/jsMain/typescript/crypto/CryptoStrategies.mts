@@ -150,10 +150,9 @@ export namespace CryptoStrategies {
    */
   export interface RecoveredKeyData {
     /**
-     * All keys recovered for the data owner, by public key.
-     * The sdk will automatically consider all recovered keys as verified.
-     * The public key should be in hex-encoded spki format or a fingerprint (last 32 characters of the hex-encoded spki
-     * representation)
+     * All keys recovered for the data owner, by fingerprint.
+     * Recovered keys are by default considered as verified, unless explicitly marked as unverified in
+     * `keyAuthenticity`.
      */
     readonly recoveredKeys: { [fp: KeypairFingerprintV1String | SpkiHexString]: XRsaKeypair }
     /**
