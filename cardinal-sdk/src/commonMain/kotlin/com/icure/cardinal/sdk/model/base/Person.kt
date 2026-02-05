@@ -6,9 +6,7 @@ import com.icure.cardinal.sdk.model.embed.PersonName
 import kotlin.String
 import kotlin.collections.List
 
-// WARNING: This file is auto-generated. If you change it manually, your changes will be lost.
-// If you want to change the way this class is generated, see [this repo](https://github.com/icure/sdk-codegen).
-interface Person : Identifiable<String> {
+public interface Person : Identifiable<String> {
 	public val civility: String?
 
 	public val gender: Gender?
@@ -24,7 +22,4 @@ interface Person : Identifiable<String> {
 	public val addresses: List<Address>
 
 	public val languages: List<String>
-	// region Person-Person
-
-	// endregion
 }

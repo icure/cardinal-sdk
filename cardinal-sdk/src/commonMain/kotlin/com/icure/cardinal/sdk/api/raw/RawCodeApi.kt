@@ -3,7 +3,9 @@ package com.icure.cardinal.sdk.api.raw
 import com.icure.cardinal.sdk.model.BooleanResponse
 import com.icure.cardinal.sdk.model.Code
 import com.icure.cardinal.sdk.model.ListOfIds
+import com.icure.cardinal.sdk.model.ListOfIdsAndRev
 import com.icure.cardinal.sdk.model.PaginatedList
+import com.icure.cardinal.sdk.model.couchdb.DocIdentifier
 import com.icure.cardinal.sdk.model.filter.AbstractFilter
 import com.icure.cardinal.sdk.model.filter.chain.FilterChain
 import com.icure.utils.InternalIcureApi
@@ -109,19 +111,55 @@ public interface RawCodeApi {
 	suspend fun matchCodesBy(filter: AbstractFilter<Code>): HttpResponse<List<String>>
 
 	suspend fun importCodes(codeType: String): HttpResponse<Unit>
+
+	suspend fun deleteCode(
+		codeId: String,
+		rev: String,
+	): HttpResponse<DocIdentifier>
+
+	suspend fun deleteCodes(codeIds: ListOfIdsAndRev): HttpResponse<List<DocIdentifier>>
+
+	suspend fun undeleteCode(
+		codeId: String,
+		rev: String,
+	): HttpResponse<Code>
+
+	suspend fun undeleteCodes(codeIds: ListOfIdsAndRev): HttpResponse<List<Code>>
+
+	suspend fun purgeCode(
+		codeId: String,
+		rev: String,
+	): HttpResponse<DocIdentifier>
+
+	suspend fun purgeCodes(codeIds: ListOfIdsAndRev): HttpResponse<List<DocIdentifier>>
 	// endregion
 
 	// region cloud endpoints
+
+	suspend fun createCodeInGroup(
+		groupId: String,
+		c: Code,
+	): HttpResponse<Code>
 
 	suspend fun createCodesInGroup(
 		groupId: String,
 		codeBatch: List<Code>,
 	): HttpResponse<List<Code>>
 
+	suspend fun getCodeInGroup(
+		groupId: String,
+		codeId: String,
+	): HttpResponse<Code>
+
 	suspend fun getCodesInGroup(
 		groupId: String,
 		codeIds: ListOfIds,
 	): HttpResponse<List<Code>>
+
+	suspend fun modifyCodeInGroup(
+		groupId: String,
+		code: Code,
+	): HttpResponse<Code>
 
 	suspend fun modifyCodesInGroup(
 		groupId: String,
@@ -132,5 +170,38 @@ public interface RawCodeApi {
 		groupId: String,
 		filter: AbstractFilter<Code>,
 	): HttpResponse<List<String>>
+
+	suspend fun deleteCodeInGroup(
+		groupId: String,
+		codeId: String,
+		rev: String,
+	): HttpResponse<DocIdentifier>
+
+	suspend fun deleteCodesInGroup(
+		groupId: String,
+		codeIds: ListOfIdsAndRev,
+	): HttpResponse<List<DocIdentifier>>
+
+	suspend fun undeleteCodeInGroup(
+		groupId: String,
+		codeId: String,
+		rev: String,
+	): HttpResponse<Code>
+
+	suspend fun undeleteCodesInGroup(
+		groupId: String,
+		codeIds: ListOfIdsAndRev,
+	): HttpResponse<List<Code>>
+
+	suspend fun purgeCodeInGroup(
+		groupId: String,
+		codeId: String,
+		rev: String,
+	): HttpResponse<DocIdentifier>
+
+	suspend fun purgeCodesInGroup(
+		groupId: String,
+		codeIds: ListOfIdsAndRev,
+	): HttpResponse<List<DocIdentifier>>
 	// endregion
 }
