@@ -10,12 +10,9 @@ import kotlin.Long
 import kotlin.String
 import kotlin.collections.List
 
-// WARNING: This file is auto-generated. If you change it manually, your changes will be lost.
-// If you want to change the way this class is generated, see [this repo](https://github.com/icure/sdk-codegen).
-
 @SerialName("ServiceByHcPartyTagCodeDateFilter")
 @Serializable
-data class ServiceByHcPartyTagCodeDateFilter(
+public data class ServiceByHcPartyTagCodeDateFilter(
 	override val desc: String? = null,
 	public val healthcarePartyId: String? = null,
 	public val patientSecretForeignKeys: List<String>? = null,
@@ -25,10 +22,6 @@ data class ServiceByHcPartyTagCodeDateFilter(
 	public val codeCode: String? = null,
 	public val startValueDate: Long? = null,
 	public val endValueDate: Long? = null,
-	@DefaultValue("false")
+	@param:DefaultValue("false")
 	public val descending: Boolean = false,
-) : AbstractFilter<Service> {
-	// region ServiceByHcPartyTagCodeDateFilter-ServiceByHcPartyTagCodeDateFilter
-
-	// endregion
-}
+) : AbstractFilter<Service>

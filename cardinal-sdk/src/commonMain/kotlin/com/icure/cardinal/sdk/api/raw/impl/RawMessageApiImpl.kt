@@ -64,6 +64,17 @@ class RawMessageApiImpl(
 			setBody(messageDto)
 		}.wrap()
 
+	override suspend fun createMessages(messageDtos: List<EncryptedMessage>): HttpResponse<List<EncryptedMessage>> =
+		post(authProvider) {
+			url {
+				takeFrom(apiUrl)
+				appendPathSegments("rest", "v2", "message", "batch")
+			}
+			contentType(Application.Json)
+			accept(Application.Json)
+			setBody(messageDtos)
+		}.wrap()
+
 	override suspend fun deleteMessages(messageIds: ListOfIds): HttpResponse<List<DocIdentifier>> =
 		post(authProvider) {
 			url {
@@ -113,6 +124,17 @@ class RawMessageApiImpl(
 			accept(Application.Json)
 		}.wrap()
 
+	override suspend fun undeleteMessages(messageIds: ListOfIdsAndRev): HttpResponse<List<EncryptedMessage>> =
+		post(authProvider) {
+			url {
+				takeFrom(apiUrl)
+				appendPathSegments("rest", "v2", "message", "undelete", "batch")
+			}
+			contentType(Application.Json)
+			accept(Application.Json)
+			setBody(messageIds)
+		}.wrap()
+
 	override suspend fun purgeMessage(
 		messageId: String,
 		rev: String,
@@ -124,6 +146,17 @@ class RawMessageApiImpl(
 				parameter("rev", rev)
 			}
 			accept(Application.Json)
+		}.wrap()
+
+	override suspend fun purgeMessages(messageIds: ListOfIdsAndRev): HttpResponse<List<DocIdentifier>> =
+		post(authProvider) {
+			url {
+				takeFrom(apiUrl)
+				appendPathSegments("rest", "v2", "message", "purge", "batch")
+			}
+			contentType(Application.Json)
+			accept(Application.Json)
+			setBody(messageIds)
 		}.wrap()
 
 	override suspend fun getMessage(messageId: String): HttpResponse<EncryptedMessage> =
@@ -335,6 +368,17 @@ class RawMessageApiImpl(
 			setBody(messageDto)
 		}.wrap()
 
+	override suspend fun modifyMessages(messageDtos: List<EncryptedMessage>): HttpResponse<List<EncryptedMessage>> =
+		put(authProvider) {
+			url {
+				takeFrom(apiUrl)
+				appendPathSegments("rest", "v2", "message", "batch")
+			}
+			contentType(Application.Json)
+			accept(Application.Json)
+			setBody(messageDtos)
+		}.wrap()
+
 	override suspend fun setMessagesStatusBits(
 		status: Int,
 		messageIds: ListOfIds,
@@ -403,6 +447,33 @@ class RawMessageApiImpl(
 
 	// region cloud endpoints
 
+	override suspend fun getMessageInGroup(
+		groupId: String,
+		messageId: String,
+	): HttpResponse<EncryptedMessage> =
+		get(authProvider, groupId) {
+			url {
+				takeFrom(apiUrl)
+				appendPathSegments("rest", "v2", "message", "inGroup", groupId, messageId)
+				parameter("ts", GMTDate().timestamp)
+			}
+			accept(Application.Json)
+		}.wrap()
+
+	override suspend fun getMessagesInGroup(
+		groupId: String,
+		messageIds: ListOfIds,
+	): HttpResponse<List<EncryptedMessage>> =
+		post(authProvider, groupId) {
+			url {
+				takeFrom(apiUrl)
+				appendPathSegments("rest", "v2", "message", "inGroup", groupId, "byIds")
+			}
+			contentType(Application.Json)
+			accept(Application.Json)
+			setBody(messageIds)
+		}.wrap()
+
 	override suspend fun createMessageInTopic(messageDto: EncryptedMessage): HttpResponse<EncryptedMessage> =
 		post(authProvider) {
 			url {
@@ -412,6 +483,147 @@ class RawMessageApiImpl(
 			contentType(Application.Json)
 			accept(Application.Json)
 			setBody(messageDto)
+		}.wrap()
+
+	override suspend fun createMessageInGroup(
+		groupId: String,
+		messageDto: EncryptedMessage,
+	): HttpResponse<EncryptedMessage> =
+		post(authProvider, groupId) {
+			url {
+				takeFrom(apiUrl)
+				appendPathSegments("rest", "v2", "message", "inGroup", groupId)
+			}
+			contentType(Application.Json)
+			accept(Application.Json)
+			setBody(messageDto)
+		}.wrap()
+
+	override suspend fun createMessagesInGroup(
+		groupId: String,
+		messageDtos: List<EncryptedMessage>,
+	): HttpResponse<List<EncryptedMessage>> =
+		post(authProvider, groupId) {
+			url {
+				takeFrom(apiUrl)
+				appendPathSegments("rest", "v2", "message", "inGroup", groupId, "batch")
+			}
+			contentType(Application.Json)
+			accept(Application.Json)
+			setBody(messageDtos)
+		}.wrap()
+
+	override suspend fun modifyMessageInGroup(
+		groupId: String,
+		messageDto: EncryptedMessage,
+	): HttpResponse<EncryptedMessage> =
+		put(authProvider, groupId) {
+			url {
+				takeFrom(apiUrl)
+				appendPathSegments("rest", "v2", "message", "inGroup", groupId)
+			}
+			contentType(Application.Json)
+			accept(Application.Json)
+			setBody(messageDto)
+		}.wrap()
+
+	override suspend fun modifyMessagesInGroup(
+		groupId: String,
+		messageDtos: List<EncryptedMessage>,
+	): HttpResponse<List<EncryptedMessage>> =
+		put(authProvider, groupId) {
+			url {
+				takeFrom(apiUrl)
+				appendPathSegments("rest", "v2", "message", "inGroup", groupId, "batch")
+			}
+			contentType(Application.Json)
+			accept(Application.Json)
+			setBody(messageDtos)
+		}.wrap()
+
+	override suspend fun deleteMessagesInGroup(
+		groupId: String,
+		messageIds: ListOfIdsAndRev,
+	): HttpResponse<List<DocIdentifier>> =
+		post(authProvider, groupId) {
+			url {
+				takeFrom(apiUrl)
+				appendPathSegments("rest", "v2", "message", "inGroup", groupId, "delete", "batch")
+			}
+			contentType(Application.Json)
+			accept(Application.Json)
+			setBody(messageIds)
+		}.wrap()
+
+	override suspend fun deleteMessageInGroup(
+		groupId: String,
+		messageId: String,
+		rev: String,
+	): HttpResponse<DocIdentifier> =
+		delete(authProvider, groupId) {
+			url {
+				takeFrom(apiUrl)
+				appendPathSegments("rest", "v2", "message", "inGroup", groupId, messageId)
+				parameter("rev", rev)
+			}
+			accept(Application.Json)
+		}.wrap()
+
+	override suspend fun undeleteMessageInGroup(
+		groupId: String,
+		messageId: String,
+		rev: String,
+	): HttpResponse<EncryptedMessage> =
+		post(authProvider, groupId) {
+			url {
+				takeFrom(apiUrl)
+				appendPathSegments("rest", "v2", "message", "inGroup", groupId, "undelete", messageId)
+				parameter("rev", rev)
+			}
+			contentType(Application.Json)
+			accept(Application.Json)
+		}.wrap()
+
+	override suspend fun undeleteMessagesInGroup(
+		groupId: String,
+		messageIds: ListOfIdsAndRev,
+	): HttpResponse<List<EncryptedMessage>> =
+		post(authProvider, groupId) {
+			url {
+				takeFrom(apiUrl)
+				appendPathSegments("rest", "v2", "message", "inGroup", groupId, "undelete", "batch")
+			}
+			contentType(Application.Json)
+			accept(Application.Json)
+			setBody(messageIds)
+		}.wrap()
+
+	override suspend fun purgeMessageInGroup(
+		groupId: String,
+		messageId: String,
+		rev: String,
+	): HttpResponse<DocIdentifier> =
+		delete(authProvider, groupId) {
+			url {
+				takeFrom(apiUrl)
+				appendPathSegments("rest", "v2", "message", "inGroup", groupId, "purge", messageId)
+				parameter("rev", rev)
+			}
+			accept(Application.Json)
+		}.wrap()
+
+	override suspend fun purgeMessagesInGroup(
+		groupId: String,
+		messageIds: ListOfIdsAndRev,
+	): HttpResponse<List<DocIdentifier>> =
+		post(authProvider, groupId) {
+			url {
+				takeFrom(apiUrl)
+				appendPathSegments("rest", "v2", "message", "inGroup", groupId, "purge", "batch")
+			}
+			contentType(Application.Json)
+			accept(Application.Json)
+			setBody(messageIds)
 		}.wrap()
 
 	override suspend fun matchMessagesBy(
@@ -426,6 +638,20 @@ class RawMessageApiImpl(
 			contentType(Application.Json)
 			accept(Application.Json)
 			setBodyWithSerializer(MessageAbstractFilterSerializer, filter)
+		}.wrap()
+
+	override suspend fun bulkShare(
+		request: BulkShareOrUpdateMetadataParams,
+		groupId: String,
+	): HttpResponse<List<EntityBulkShareResult<EncryptedMessage>>> =
+		put(authProvider, groupId) {
+			url {
+				takeFrom(apiUrl)
+				appendPathSegments("rest", "v2", "message", "inGroup", groupId, "bulkSharedMetadataUpdate")
+			}
+			contentType(Application.Json)
+			accept(Application.Json)
+			setBody(request)
 		}.wrap()
 
 	// endregion

@@ -10,9 +10,7 @@ import kotlin.String
 import kotlin.collections.List
 import kotlin.collections.Map
 
-// WARNING: This file is auto-generated. If you change it manually, your changes will be lost.
-// If you want to change the way this class is generated, see [this repo](https://github.com/icure/sdk-codegen).
-sealed interface Valorisation : Encryptable {
+public sealed interface Valorisation : Encryptable {
 	public val startOfValidity: Long?
 
 	public val endOfValidity: Long?
@@ -34,13 +32,10 @@ sealed interface Valorisation : Encryptable {
 	public val label: Map<String, String>?
 
 	override val encryptedSelf: Base64String?
-	// region Valorisation-Valorisation
-
-	// endregion
 }
 
 @Serializable
-data class DecryptedValorisation(
+public data class DecryptedValorisation(
 	override val startOfValidity: Long? = null,
 	override val endOfValidity: Long? = null,
 	override val predicate: String? = null,
@@ -50,17 +45,13 @@ data class DecryptedValorisation(
 	override val patientIntervention: Double? = null,
 	override val doctorSupplement: Double? = null,
 	override val vat: Double? = null,
-	@DefaultValue("emptyMap()")
+	@param:DefaultValue("emptyMap()")
 	override val label: Map<String, String>? = emptyMap(),
 	override val encryptedSelf: Base64String? = null,
-) : Valorisation {
-	// region Valorisation-DecryptedValorisation
-
-	// endregion
-}
+) : Valorisation
 
 @Serializable
-data class EncryptedValorisation(
+public data class EncryptedValorisation(
 	override val startOfValidity: Long? = null,
 	override val endOfValidity: Long? = null,
 	override val predicate: String? = null,
@@ -70,11 +61,7 @@ data class EncryptedValorisation(
 	override val patientIntervention: Double? = null,
 	override val doctorSupplement: Double? = null,
 	override val vat: Double? = null,
-	@DefaultValue("emptyMap()")
+	@param:DefaultValue("emptyMap()")
 	override val label: Map<String, String>? = emptyMap(),
 	override val encryptedSelf: Base64String? = null,
-) : Valorisation {
-	// region Valorisation-EncryptedValorisation
-
-	// endregion
-}
+) : Valorisation
