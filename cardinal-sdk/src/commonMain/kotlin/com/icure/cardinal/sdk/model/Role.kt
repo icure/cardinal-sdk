@@ -8,20 +8,13 @@ import kotlin.Long
 import kotlin.String
 import kotlin.collections.Set
 
-// WARNING: This file is auto-generated. If you change it manually, your changes will be lost.
-// If you want to change the way this class is generated, see [this repo](https://github.com/icure/sdk-codegen).
-
 @Serializable
-data class Role(
+public data class Role(
 	override val id: String,
 	override val rev: String? = null,
 	override val deletionDate: Long? = null,
 	public val name: String? = null,
 	public val inheritableUpTo: Int? = null,
-	@DefaultValue("emptySet()")
+	@param:DefaultValue("emptySet()")
 	public val permissions: Set<String> = emptySet(),
-) : StoredDocument {
-	// region Role-Role
-
-	// endregion
-}
+) : StoredDocument

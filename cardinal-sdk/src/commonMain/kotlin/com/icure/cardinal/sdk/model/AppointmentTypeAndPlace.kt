@@ -8,24 +8,17 @@ import kotlin.Int
 import kotlin.String
 import kotlin.collections.Map
 
-// WARNING: This file is auto-generated. If you change it manually, your changes will be lost.
-// If you want to change the way this class is generated, see [this repo](https://github.com/icure/sdk-codegen).
-
 @Serializable
-data class AppointmentTypeAndPlace(
+public data class AppointmentTypeAndPlace(
 	public val calendarItemTypeId: String,
 	public val name: String? = null,
 	public val color: String? = null,
-	@DefaultValue("0")
+	@param:DefaultValue("0")
 	public val duration: Int = 0,
-	@DefaultValue("emptyMap()")
+	@param:DefaultValue("emptyMap()")
 	public val subjectByLanguage: Map<String, String>? = emptyMap(),
 	public val placeId: String? = null,
 	public val address: DecryptedAddress? = null,
-	@DefaultValue("true")
+	@param:DefaultValue("true")
 	public val acceptsNewPatients: Boolean = true,
-) {
-	// region AppointmentTypeAndPlace-AppointmentTypeAndPlace
-
-	// endregion
-}
+)

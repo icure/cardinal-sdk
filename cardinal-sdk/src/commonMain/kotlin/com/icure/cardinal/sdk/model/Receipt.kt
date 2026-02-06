@@ -6,7 +6,6 @@ import com.icure.cardinal.sdk.model.base.ICureDocument
 import com.icure.cardinal.sdk.model.base.StoredDocument
 import com.icure.cardinal.sdk.model.embed.Delegation
 import com.icure.cardinal.sdk.model.embed.Encryptable
-import com.icure.cardinal.sdk.model.embed.ReceiptBlobType
 import com.icure.cardinal.sdk.model.embed.SecurityMetadata
 import com.icure.cardinal.sdk.model.specializations.Base64String
 import com.icure.cardinal.sdk.utils.DefaultValue
@@ -17,9 +16,7 @@ import kotlin.collections.List
 import kotlin.collections.Map
 import kotlin.collections.Set
 
-// WARNING: This file is auto-generated. If you change it manually, your changes will be lost.
-// If you want to change the way this class is generated, see [this repo](https://github.com/icure/sdk-codegen).
-sealed interface Receipt :
+public sealed interface Receipt :
 	StoredDocument,
 	ICureDocument<String>,
 	HasEncryptionMetadata,
@@ -36,17 +33,11 @@ sealed interface Receipt :
 
 	override val responsible: String?
 
-	override val medicalLocationId: String?
-
 	override val tags: Set<CodeStub>
 
 	override val codes: Set<CodeStub>
 
-	override val endOfLife: Long?
-
 	override val deletionDate: Long?
-
-	public val attachmentIds: Map<ReceiptBlobType, String>
 
 	public val references: List<String>
 
@@ -67,85 +58,64 @@ sealed interface Receipt :
 	override val encryptedSelf: Base64String?
 
 	override val securityMetadata: SecurityMetadata?
-	// region Receipt-Receipt
-
-	// endregion
 }
 
 @Serializable
-data class DecryptedReceipt(
+public data class DecryptedReceipt(
 	override val id: String,
 	override val rev: String? = null,
 	override val created: Long? = null,
 	override val modified: Long? = null,
 	override val author: String? = null,
 	override val responsible: String? = null,
-	override val medicalLocationId: String? = null,
-	@DefaultValue("emptySet()")
+	@param:DefaultValue("emptySet()")
 	override val tags: Set<CodeStub> = emptySet(),
-	@DefaultValue("emptySet()")
+	@param:DefaultValue("emptySet()")
 	override val codes: Set<CodeStub> = emptySet(),
-	override val endOfLife: Long? = null,
 	override val deletionDate: Long? = null,
-	@DefaultValue("emptyMap()")
-	override val attachmentIds: Map<ReceiptBlobType, String> = emptyMap(),
-	@DefaultValue("emptyList()")
+	@param:DefaultValue("emptyList()")
 	override val references: List<String> = emptyList(),
 	override val documentId: String? = null,
 	override val category: String? = null,
 	override val subCategory: String? = null,
-	@DefaultValue("emptySet()")
+	@param:DefaultValue("emptySet()")
 	override val secretForeignKeys: Set<String> = emptySet(),
-	@DefaultValue("emptyMap()")
+	@param:DefaultValue("emptyMap()")
 	override val cryptedForeignKeys: Map<String, Set<Delegation>> = emptyMap(),
-	@DefaultValue("emptyMap()")
+	@param:DefaultValue("emptyMap()")
 	override val delegations: Map<String, Set<Delegation>> = emptyMap(),
-	@DefaultValue("emptyMap()")
+	@param:DefaultValue("emptyMap()")
 	override val encryptionKeys: Map<String, Set<Delegation>> = emptyMap(),
 	override val encryptedSelf: Base64String? = null,
 	override val securityMetadata: SecurityMetadata? = null,
-) : Receipt {
-	// region Receipt-DecryptedReceipt
-override fun copyWithSecurityMetadata(securityMetadata: SecurityMetadata, secretForeignKeys: Set<String>): DecryptedReceipt =
-		copy(securityMetadata = securityMetadata, secretForeignKeys = secretForeignKeys)
-	// endregion
-}
+) : Receipt
 
 @Serializable
-data class EncryptedReceipt(
+public data class EncryptedReceipt(
 	override val id: String,
 	override val rev: String? = null,
 	override val created: Long? = null,
 	override val modified: Long? = null,
 	override val author: String? = null,
 	override val responsible: String? = null,
-	override val medicalLocationId: String? = null,
-	@DefaultValue("emptySet()")
+	@param:DefaultValue("emptySet()")
 	override val tags: Set<CodeStub> = emptySet(),
-	@DefaultValue("emptySet()")
+	@param:DefaultValue("emptySet()")
 	override val codes: Set<CodeStub> = emptySet(),
-	override val endOfLife: Long? = null,
 	override val deletionDate: Long? = null,
-	@DefaultValue("emptyMap()")
-	override val attachmentIds: Map<ReceiptBlobType, String> = emptyMap(),
-	@DefaultValue("emptyList()")
+	@param:DefaultValue("emptyList()")
 	override val references: List<String> = emptyList(),
 	override val documentId: String? = null,
 	override val category: String? = null,
 	override val subCategory: String? = null,
-	@DefaultValue("emptySet()")
+	@param:DefaultValue("emptySet()")
 	override val secretForeignKeys: Set<String> = emptySet(),
-	@DefaultValue("emptyMap()")
+	@param:DefaultValue("emptyMap()")
 	override val cryptedForeignKeys: Map<String, Set<Delegation>> = emptyMap(),
-	@DefaultValue("emptyMap()")
+	@param:DefaultValue("emptyMap()")
 	override val delegations: Map<String, Set<Delegation>> = emptyMap(),
-	@DefaultValue("emptyMap()")
+	@param:DefaultValue("emptyMap()")
 	override val encryptionKeys: Map<String, Set<Delegation>> = emptyMap(),
 	override val encryptedSelf: Base64String? = null,
 	override val securityMetadata: SecurityMetadata? = null,
-) : Receipt {
-	// region Receipt-EncryptedReceipt
-override fun copyWithSecurityMetadata(securityMetadata: SecurityMetadata, secretForeignKeys: Set<String>): EncryptedReceipt =
-		copy(securityMetadata = securityMetadata, secretForeignKeys = secretForeignKeys)
-	// endregion
-}
+) : Receipt
