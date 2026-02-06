@@ -198,6 +198,17 @@ class RawFormApiImpl(
 			accept(Application.Json)
 		}.wrap()
 
+	override suspend fun undeleteForms(formIds: ListOfIdsAndRev): HttpResponse<List<EncryptedForm>> =
+		post(authProvider) {
+			url {
+				takeFrom(apiUrl)
+				appendPathSegments("rest", "v2", "form", "undelete", "batch")
+			}
+			contentType(Application.Json)
+			accept(Application.Json)
+			setBody(formIds)
+		}.wrap()
+
 	override suspend fun purgeForm(
 		formId: String,
 		rev: String,
@@ -209,6 +220,17 @@ class RawFormApiImpl(
 				parameter("rev", rev)
 			}
 			accept(Application.Json)
+		}.wrap()
+
+	override suspend fun purgeForms(formIds: ListOfIdsAndRev): HttpResponse<List<DocIdentifier>> =
+		post(authProvider) {
+			url {
+				takeFrom(apiUrl)
+				appendPathSegments("rest", "v2", "form", "purge", "batch")
+			}
+			contentType(Application.Json)
+			accept(Application.Json)
+			setBody(formIds)
 		}.wrap()
 
 	override suspend fun modifyForms(formDtos: List<EncryptedForm>): HttpResponse<List<EncryptedForm>> =
@@ -310,6 +332,17 @@ class RawFormApiImpl(
 			accept(Application.Json)
 		}.wrap()
 
+	override suspend fun getFormTemplates(formTemplateIds: ListOfIds): HttpResponse<List<FormTemplate>> =
+		post(authProvider) {
+			url {
+				takeFrom(apiUrl)
+				appendPathSegments("rest", "v2", "form", "template", "byIds")
+			}
+			contentType(Application.Json)
+			accept(Application.Json)
+			setBody(formTemplateIds)
+		}.wrap()
+
 	override suspend fun createFormTemplate(ft: FormTemplate): HttpResponse<FormTemplate> =
 		post(authProvider) {
 			url {
@@ -321,27 +354,110 @@ class RawFormApiImpl(
 			setBody(ft)
 		}.wrap()
 
-	override suspend fun deleteFormTemplate(formTemplateId: String): HttpResponse<DocIdentifier> =
-		delete(authProvider) {
-			url {
-				takeFrom(apiUrl)
-				appendPathSegments("rest", "v2", "form", "template", formTemplateId)
-			}
-			accept(Application.Json)
-		}.wrap()
-
-	override suspend fun updateFormTemplate(
-		formTemplateId: String,
-		ft: FormTemplate,
-	): HttpResponse<FormTemplate> =
+	override suspend fun modifyFormTemplate(ft: FormTemplate): HttpResponse<FormTemplate> =
 		put(authProvider) {
 			url {
 				takeFrom(apiUrl)
-				appendPathSegments("rest", "v2", "form", "template", formTemplateId)
+				appendPathSegments("rest", "v2", "form", "template")
 			}
 			contentType(Application.Json)
 			accept(Application.Json)
 			setBody(ft)
+		}.wrap()
+
+	override suspend fun createFormTemplates(formTemplates: List<FormTemplate>): HttpResponse<List<FormTemplate>> =
+		post(authProvider) {
+			url {
+				takeFrom(apiUrl)
+				appendPathSegments("rest", "v2", "form", "template", "batch")
+			}
+			contentType(Application.Json)
+			accept(Application.Json)
+			setBody(formTemplates)
+		}.wrap()
+
+	override suspend fun modifyFormTemplates(formTemplates: List<FormTemplate>): HttpResponse<List<FormTemplate>> =
+		put(authProvider) {
+			url {
+				takeFrom(apiUrl)
+				appendPathSegments("rest", "v2", "form", "template", "batch")
+			}
+			contentType(Application.Json)
+			accept(Application.Json)
+			setBody(formTemplates)
+		}.wrap()
+
+	override suspend fun deleteFormTemplates(formTemplateIds: ListOfIdsAndRev): HttpResponse<List<DocIdentifier>> =
+		post(authProvider) {
+			url {
+				takeFrom(apiUrl)
+				appendPathSegments("rest", "v2", "form", "template", "delete", "batch", "withrev")
+			}
+			contentType(Application.Json)
+			accept(Application.Json)
+			setBody(formTemplateIds)
+		}.wrap()
+
+	override suspend fun deleteFormTemplate(
+		formTemplateId: String,
+		rev: String?,
+	): HttpResponse<DocIdentifier> =
+		delete(authProvider) {
+			url {
+				takeFrom(apiUrl)
+				appendPathSegments("rest", "v2", "form", "template", formTemplateId)
+				parameter("rev", rev)
+			}
+			accept(Application.Json)
+		}.wrap()
+
+	override suspend fun undeleteFormTemplate(
+		formTemplateId: String,
+		rev: String,
+	): HttpResponse<FormTemplate> =
+		post(authProvider) {
+			url {
+				takeFrom(apiUrl)
+				appendPathSegments("rest", "v2", "form", "template", "undelete", formTemplateId)
+				parameter("rev", rev)
+			}
+			contentType(Application.Json)
+			accept(Application.Json)
+		}.wrap()
+
+	override suspend fun undeleteFormTemplates(formTemplateIds: ListOfIdsAndRev): HttpResponse<List<FormTemplate>> =
+		post(authProvider) {
+			url {
+				takeFrom(apiUrl)
+				appendPathSegments("rest", "v2", "form", "template", "undelete", "batch")
+			}
+			contentType(Application.Json)
+			accept(Application.Json)
+			setBody(formTemplateIds)
+		}.wrap()
+
+	override suspend fun purgeFormTemplate(
+		formTemplateId: String,
+		rev: String,
+	): HttpResponse<DocIdentifier> =
+		delete(authProvider) {
+			url {
+				takeFrom(apiUrl)
+				appendPathSegments("rest", "v2", "form", "template", "purge", formTemplateId)
+				parameter("rev", rev)
+			}
+			accept(Application.Json)
+		}.wrap()
+
+	override suspend fun purgeFormTemplatesWithRev(formTemplateIds: ListOfIdsAndRev): HttpResponse<List<DocIdentifier>> =
+		post(authProvider) {
+			url {
+				takeFrom(apiUrl)
+				appendPathSegments("rest", "v2", "form", "template", "purge", "batch")
+			}
+			contentType(Application.Json)
+			accept(Application.Json)
+			setBody(formTemplateIds)
 		}.wrap()
 
 	override suspend fun setTemplateAttachment(
@@ -388,6 +504,412 @@ class RawFormApiImpl(
 			contentType(Application.Json)
 			accept(Application.Json)
 			setBodyWithSerializer(FormAbstractFilterSerializer, filter)
+		}.wrap()
+
+	// endregion
+
+	// region cloud endpoints
+
+	override suspend fun createFormInGroup(
+		groupId: String,
+		formDto: EncryptedForm,
+	): HttpResponse<EncryptedForm> =
+		post(authProvider, groupId) {
+			url {
+				takeFrom(apiUrl)
+				appendPathSegments("rest", "v2", "form", "inGroup", groupId)
+			}
+			contentType(Application.Json)
+			accept(Application.Json)
+			setBody(formDto)
+		}.wrap()
+
+	override suspend fun createFormsInGroup(
+		groupId: String,
+		formDtos: List<EncryptedForm>,
+	): HttpResponse<List<EncryptedForm>> =
+		post(authProvider, groupId) {
+			url {
+				takeFrom(apiUrl)
+				appendPathSegments("rest", "v2", "form", "inGroup", groupId, "batch")
+			}
+			contentType(Application.Json)
+			accept(Application.Json)
+			setBody(formDtos)
+		}.wrap()
+
+	override suspend fun modifyFormInGroup(
+		groupId: String,
+		formDto: EncryptedForm,
+	): HttpResponse<EncryptedForm> =
+		put(authProvider, groupId) {
+			url {
+				takeFrom(apiUrl)
+				appendPathSegments("rest", "v2", "form", "inGroup", groupId)
+			}
+			contentType(Application.Json)
+			accept(Application.Json)
+			setBody(formDto)
+		}.wrap()
+
+	override suspend fun modifyFormsInGroup(
+		groupId: String,
+		formDtos: List<EncryptedForm>,
+	): HttpResponse<List<EncryptedForm>> =
+		put(authProvider, groupId) {
+			url {
+				takeFrom(apiUrl)
+				appendPathSegments("rest", "v2", "form", "inGroup", groupId, "batch")
+			}
+			contentType(Application.Json)
+			accept(Application.Json)
+			setBody(formDtos)
+		}.wrap()
+
+	override suspend fun getFormInGroup(
+		groupId: String,
+		formId: String,
+	): HttpResponse<EncryptedForm> =
+		get(authProvider, groupId) {
+			url {
+				takeFrom(apiUrl)
+				appendPathSegments("rest", "v2", "form", "inGroup", groupId, formId)
+				parameter("ts", GMTDate().timestamp)
+			}
+			accept(Application.Json)
+		}.wrap()
+
+	override suspend fun getFormsInGroup(
+		groupId: String,
+		formIds: ListOfIds,
+	): HttpResponse<List<EncryptedForm>> =
+		post(authProvider, groupId) {
+			url {
+				takeFrom(apiUrl)
+				appendPathSegments("rest", "v2", "form", "inGroup", groupId, "byIds")
+			}
+			contentType(Application.Json)
+			accept(Application.Json)
+			setBody(formIds)
+		}.wrap()
+
+	override suspend fun deleteFormInGroup(
+		groupId: String,
+		formId: String,
+		rev: String,
+	): HttpResponse<DocIdentifier> =
+		delete(authProvider, groupId) {
+			url {
+				takeFrom(apiUrl)
+				appendPathSegments("rest", "v2", "form", "inGroup", groupId, formId)
+				parameter("rev", rev)
+			}
+			accept(Application.Json)
+		}.wrap()
+
+	override suspend fun deleteFormsInGroup(
+		groupId: String,
+		formIds: ListOfIdsAndRev,
+	): HttpResponse<List<DocIdentifier>> =
+		post(authProvider, groupId) {
+			url {
+				takeFrom(apiUrl)
+				appendPathSegments("rest", "v2", "form", "inGroup", groupId, "delete", "batch")
+			}
+			contentType(Application.Json)
+			accept(Application.Json)
+			setBody(formIds)
+		}.wrap()
+
+	override suspend fun undeleteFormInGroup(
+		groupId: String,
+		formId: String,
+		rev: String,
+	): HttpResponse<EncryptedForm> =
+		post(authProvider, groupId) {
+			url {
+				takeFrom(apiUrl)
+				appendPathSegments("rest", "v2", "form", "inGroup", groupId, "undelete", formId)
+				parameter("rev", rev)
+			}
+			contentType(Application.Json)
+			accept(Application.Json)
+		}.wrap()
+
+	override suspend fun undeleteFormsInGroup(
+		groupId: String,
+		formIds: ListOfIdsAndRev,
+	): HttpResponse<List<EncryptedForm>> =
+		post(authProvider, groupId) {
+			url {
+				takeFrom(apiUrl)
+				appendPathSegments("rest", "v2", "form", "inGroup", groupId, "undelete", "batch")
+			}
+			contentType(Application.Json)
+			accept(Application.Json)
+			setBody(formIds)
+		}.wrap()
+
+	override suspend fun purgeFormInGroup(
+		groupId: String,
+		formId: String,
+		rev: String,
+	): HttpResponse<DocIdentifier> =
+		delete(authProvider, groupId) {
+			url {
+				takeFrom(apiUrl)
+				appendPathSegments("rest", "v2", "form", "inGroup", groupId, "purge", formId)
+				parameter("rev", rev)
+			}
+			accept(Application.Json)
+		}.wrap()
+
+	override suspend fun purgeFormsInGroup(
+		groupId: String,
+		formIds: ListOfIdsAndRev,
+	): HttpResponse<List<DocIdentifier>> =
+		post(authProvider, groupId) {
+			url {
+				takeFrom(apiUrl)
+				appendPathSegments("rest", "v2", "form", "inGroup", groupId, "purge", "batch")
+			}
+			contentType(Application.Json)
+			accept(Application.Json)
+			setBody(formIds)
+		}.wrap()
+
+	override suspend fun bulkShare(
+		request: BulkShareOrUpdateMetadataParams,
+		groupId: String,
+	): HttpResponse<List<EntityBulkShareResult<EncryptedForm>>> =
+		put(authProvider, groupId) {
+			url {
+				takeFrom(apiUrl)
+				appendPathSegments("rest", "v2", "form", "inGroup", groupId, "bulkSharedMetadataUpdate")
+			}
+			contentType(Application.Json)
+			accept(Application.Json)
+			setBody(request)
+		}.wrap()
+
+	override suspend fun matchFormsInGroupBy(
+		filter: AbstractFilter<Form>,
+		groupId: String,
+	): HttpResponse<List<String>> =
+		post(authProvider, groupId) {
+			url {
+				takeFrom(apiUrl)
+				appendPathSegments("rest", "v2", "form", "inGroup", groupId, "match")
+			}
+			contentType(Application.Json)
+			accept(Application.Json)
+			setBodyWithSerializer(FormAbstractFilterSerializer, filter)
+		}.wrap()
+
+	override suspend fun getFormTemplatesByUserInGroup(
+		groupId: String,
+		userId: String,
+		loadLayout: Boolean?,
+	): HttpResponse<List<FormTemplate>> =
+		get(authProvider, groupId) {
+			url {
+				takeFrom(apiUrl)
+				appendPathSegments("rest", "v2", "form", "template", "inGroup", groupId, "byUser", userId)
+				parameter("loadLayout", loadLayout)
+				parameter("ts", GMTDate().timestamp)
+			}
+			accept(Application.Json)
+		}.wrap()
+
+	override suspend fun createFormTemplateInGroup(
+		groupId: String,
+		ft: FormTemplate,
+	): HttpResponse<FormTemplate> =
+		post(authProvider, groupId) {
+			url {
+				takeFrom(apiUrl)
+				appendPathSegments("rest", "v2", "form", "template", "inGroup", groupId)
+			}
+			contentType(Application.Json)
+			accept(Application.Json)
+			setBody(ft)
+		}.wrap()
+
+	override suspend fun deleteFormTemplateInGroup(
+		groupId: String,
+		formTemplateId: String,
+		rev: String,
+	): HttpResponse<DocIdentifier> =
+		delete(authProvider, groupId) {
+			url {
+				takeFrom(apiUrl)
+				appendPathSegments("rest", "v2", "form", "template", "inGroup", groupId, formTemplateId)
+				parameter("rev", rev)
+			}
+			accept(Application.Json)
+		}.wrap()
+
+	override suspend fun deleteFormTemplatesInGroup(
+		groupId: String,
+		formTemplateIds: ListOfIdsAndRev,
+	): HttpResponse<List<DocIdentifier>> =
+		post(authProvider, groupId) {
+			url {
+				takeFrom(apiUrl)
+				appendPathSegments("rest", "v2", "form", "template", "inGroup", groupId, "delete", "batch")
+			}
+			contentType(Application.Json)
+			accept(Application.Json)
+			setBody(formTemplateIds)
+		}.wrap()
+
+	override suspend fun undeleteFormTemplatesInGroup(
+		groupId: String,
+		formTemplateIdsAndRevs: ListOfIdsAndRev,
+	): HttpResponse<List<FormTemplate>> =
+		post(
+			authProvider,
+			groupId,
+		) {
+			url {
+				takeFrom(apiUrl)
+				appendPathSegments("rest", "v2", "form", "template", "inGroup", groupId, "undelete", "batch")
+			}
+			contentType(Application.Json)
+			accept(Application.Json)
+			setBody(formTemplateIdsAndRevs)
+		}.wrap()
+
+	override suspend fun undeleteFormTemplateInGroup(
+		groupId: String,
+		formTemplateTypeId: String,
+		rev: String,
+	): HttpResponse<FormTemplate> =
+		post(authProvider, groupId) {
+			url {
+				takeFrom(apiUrl)
+				appendPathSegments("rest", "v2", "form", "template", "inGroup", groupId, "undelete", formTemplateTypeId)
+				parameter("rev", rev)
+			}
+			contentType(Application.Json)
+			accept(Application.Json)
+		}.wrap()
+
+	override suspend fun purgeFormTemplateInGroup(
+		groupId: String,
+		formTemplateId: String,
+		rev: String,
+	): HttpResponse<DocIdentifier> =
+		delete(authProvider, groupId) {
+			url {
+				takeFrom(apiUrl)
+				appendPathSegments("rest", "v2", "form", "template", "inGroup", groupId, "purge", formTemplateId)
+				parameter("rev", rev)
+			}
+			accept(Application.Json)
+		}.wrap()
+
+	override suspend fun purgeFormTemplatesInGroup(
+		groupId: String,
+		formTemplateIds: ListOfIdsAndRev,
+	): HttpResponse<List<DocIdentifier>> =
+		post(authProvider, groupId) {
+			url {
+				takeFrom(apiUrl)
+				appendPathSegments("rest", "v2", "form", "template", "inGroup", groupId, "purge", "batch")
+			}
+			contentType(Application.Json)
+			accept(Application.Json)
+			setBody(formTemplateIds)
+		}.wrap()
+
+	override suspend fun modifyFormTemplateInGroup(
+		groupId: String,
+		ft: FormTemplate,
+	): HttpResponse<FormTemplate> =
+		put(authProvider, groupId) {
+			url {
+				takeFrom(apiUrl)
+				appendPathSegments("rest", "v2", "form", "template", "inGroup", groupId)
+			}
+			contentType(Application.Json)
+			accept(Application.Json)
+			setBody(ft)
+		}.wrap()
+
+	override suspend fun setTemplateAttachmentInGroup(
+		groupId: String,
+		formTemplateId: String,
+		payload: ByteArray,
+	): HttpResponse<String> =
+		put(authProvider, groupId) {
+			url {
+				takeFrom(apiUrl)
+				appendPathSegments("rest", "v2", "form", "template", "inGroup", groupId, formTemplateId, "attachment")
+			}
+			accept(Application.Json)
+			setBody(ByteArrayContent(payload, Application.OctetStream))
+		}.wrap()
+
+	override suspend fun createFormTemplatesInGroup(
+		groupId: String,
+		formTemplates: List<FormTemplate>,
+	): HttpResponse<List<FormTemplate>> =
+		post(
+			authProvider,
+			groupId,
+		) {
+			url {
+				takeFrom(apiUrl)
+				appendPathSegments("rest", "v2", "form", "template", "inGroup", groupId, "batch")
+			}
+			contentType(Application.Json)
+			accept(Application.Json)
+			setBody(formTemplates)
+		}.wrap()
+
+	override suspend fun modifyFormTemplatesInGroup(
+		groupId: String,
+		formTemplates: List<FormTemplate>,
+	): HttpResponse<List<FormTemplate>> =
+		put(
+			authProvider,
+			groupId,
+		) {
+			url {
+				takeFrom(apiUrl)
+				appendPathSegments("rest", "v2", "form", "template", "inGroup", groupId, "batch")
+			}
+			contentType(Application.Json)
+			accept(Application.Json)
+			setBody(formTemplates)
+		}.wrap()
+
+	override suspend fun getFormTemplatesInGroup(
+		groupId: String,
+		formTemplateIds: ListOfIds,
+	): HttpResponse<List<FormTemplate>> =
+		post(authProvider, groupId) {
+			url {
+				takeFrom(apiUrl)
+				appendPathSegments("rest", "v2", "form", "template", "inGroup", groupId, "byIds")
+			}
+			contentType(Application.Json)
+			accept(Application.Json)
+			setBody(formTemplateIds)
+		}.wrap()
+
+	override suspend fun getFormTemplateInGroup(
+		groupId: String,
+		formTemplateId: String,
+	): HttpResponse<FormTemplate> =
+		get(authProvider, groupId) {
+			url {
+				takeFrom(apiUrl)
+				appendPathSegments("rest", "v2", "form", "template", "inGroup", groupId, formTemplateId)
+				parameter("ts", GMTDate().timestamp)
+			}
+			accept(Application.Json)
 		}.wrap()
 
 	// endregion

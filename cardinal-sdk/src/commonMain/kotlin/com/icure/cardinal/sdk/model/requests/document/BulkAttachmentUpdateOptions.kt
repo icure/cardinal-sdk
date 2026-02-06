@@ -8,23 +8,17 @@ import kotlin.collections.List
 import kotlin.collections.Map
 import kotlin.collections.Set
 
-// WARNING: This file is auto-generated. If you change it manually, your changes will be lost.
-// If you want to change the way this class is generated, see [this repo](https://github.com/icure/sdk-codegen).
-
 @Serializable
-data class BulkAttachmentUpdateOptions(
-	@DefaultValue("emptyMap()")
+public data class BulkAttachmentUpdateOptions(
+	@param:DefaultValue("emptyMap()")
 	public val updateAttachmentsMetadata: Map<String, AttachmentMetadata> = emptyMap(),
-	@DefaultValue("emptySet()")
+	@param:DefaultValue("emptySet()")
 	public val deleteAttachments: Set<String> = emptySet(),
 ) {
 	@Serializable
 	public data class AttachmentMetadata(
-		@DefaultValue("emptyList()")
+		@param:DefaultValue("emptyList()")
 		public val utis: List<String> = emptyList(),
 		public val dataIsEncrypted: Boolean? = null,
 	)
-	// region BulkAttachmentUpdateOptions-BulkAttachmentUpdateOptions
-
-	// endregion
 }

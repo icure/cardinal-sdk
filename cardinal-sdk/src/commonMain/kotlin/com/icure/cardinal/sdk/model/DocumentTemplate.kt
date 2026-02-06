@@ -1,6 +1,7 @@
 package com.icure.cardinal.sdk.model
 
 import com.icure.cardinal.sdk.model.base.CodeStub
+import com.icure.cardinal.sdk.model.base.HasEndOfLife
 import com.icure.cardinal.sdk.model.base.ICureDocument
 import com.icure.cardinal.sdk.model.base.ReportVersion
 import com.icure.cardinal.sdk.model.base.StoredDocument
@@ -14,21 +15,17 @@ import kotlin.Long
 import kotlin.String
 import kotlin.collections.Set
 
-// WARNING: This file is auto-generated. If you change it manually, your changes will be lost.
-// If you want to change the way this class is generated, see [this repo](https://github.com/icure/sdk-codegen).
-
 @Serializable
-data class DocumentTemplate(
+public data class DocumentTemplate(
 	override val id: String,
 	override val rev: String? = null,
 	override val created: Long? = null,
 	override val modified: Long? = null,
 	override val author: String? = null,
 	override val responsible: String? = null,
-	override val medicalLocationId: String? = null,
-	@DefaultValue("emptySet()")
+	@param:DefaultValue("emptySet()")
 	override val tags: Set<CodeStub> = emptySet(),
-	@DefaultValue("emptySet()")
+	@param:DefaultValue("emptySet()")
 	override val codes: Set<CodeStub> = emptySet(),
 	override val endOfLife: Long? = null,
 	override val deletionDate: Long? = null,
@@ -37,7 +34,7 @@ data class DocumentTemplate(
 	public val documentType: DocumentType? = null,
 	public val mainUti: String? = null,
 	public val name: String? = null,
-	@DefaultValue("emptySet()")
+	@param:DefaultValue("emptySet()")
 	public val otherUtis: Set<String> = emptySet(),
 	public val attachmentId: String? = null,
 	public val version: ReportVersion? = null,
@@ -47,8 +44,4 @@ data class DocumentTemplate(
 	public val descr: String? = null,
 	public val disabled: String? = null,
 	public val specialty: CodeStub? = null,
-) : StoredDocument, ICureDocument<String> {
-	// region DocumentTemplate-DocumentTemplate
-
-	// endregion
-}
+) : StoredDocument, ICureDocument<String>, HasEndOfLife

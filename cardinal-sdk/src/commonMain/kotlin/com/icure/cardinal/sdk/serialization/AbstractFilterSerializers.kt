@@ -86,11 +86,15 @@ import com.icure.cardinal.sdk.model.filter.hcparty.HealthcarePartyByParentIdFilt
 import com.icure.cardinal.sdk.model.filter.hcparty.HealthcarePartyByTagCodeFilter
 import com.icure.cardinal.sdk.model.filter.hcparty.HealthcarePartyByTypeSpecialtyPostCodeFilter
 import com.icure.cardinal.sdk.model.filter.healthelement.HealthElementByDataOwnerPatientOpeningDate
+import com.icure.cardinal.sdk.model.filter.healthelement.HealthElementByHcPartyCodeFilter
 import com.icure.cardinal.sdk.model.filter.healthelement.HealthElementByHcPartyFilter
 import com.icure.cardinal.sdk.model.filter.healthelement.HealthElementByHcPartyIdentifiersFilter
+import com.icure.cardinal.sdk.model.filter.healthelement.HealthElementByHcPartyIdentifiersVersioningFilter
 import com.icure.cardinal.sdk.model.filter.healthelement.HealthElementByHcPartySecretForeignKeysFilter
 import com.icure.cardinal.sdk.model.filter.healthelement.HealthElementByHcPartyStatusFilter
+import com.icure.cardinal.sdk.model.filter.healthelement.HealthElementByHcPartyStatusVersioningFilter
 import com.icure.cardinal.sdk.model.filter.healthelement.HealthElementByHcPartyTagCodeFilter
+import com.icure.cardinal.sdk.model.filter.healthelement.HealthElementByHcPartyTagFilter
 import com.icure.cardinal.sdk.model.filter.healthelement.HealthElementByIdsFilter
 import com.icure.cardinal.sdk.model.filter.insurance.AllInsurancesFilter
 import com.icure.cardinal.sdk.model.filter.invoice.InvoiceByHcPartyCodeDateFilter
@@ -624,12 +628,18 @@ internal object HealthElementAbstractFilterSerializer :
 			"UnionFilter" -> UnionFilterSerializer(this)
 			"HealthElementByDataOwnerPatientOpeningDate" ->
 				HealthElementByDataOwnerPatientOpeningDate.serializer()
+			"HealthElementByHcPartyCodeFilter" -> HealthElementByHcPartyCodeFilter.serializer()
 			"HealthElementByHcPartyFilter" -> HealthElementByHcPartyFilter.serializer()
 			"HealthElementByHcPartyIdentifiersFilter" -> HealthElementByHcPartyIdentifiersFilter.serializer()
+			"HealthElementByHcPartyIdentifiersVersioningFilter" ->
+				HealthElementByHcPartyIdentifiersVersioningFilter.serializer()
 			"HealthElementByHcPartySecretForeignKeysFilter" ->
 				HealthElementByHcPartySecretForeignKeysFilter.serializer()
 			"HealthElementByHcPartyStatusFilter" -> HealthElementByHcPartyStatusFilter.serializer()
+			"HealthElementByHcPartyStatusVersioningFilter" ->
+				HealthElementByHcPartyStatusVersioningFilter.serializer()
 			"HealthElementByHcPartyTagCodeFilter" -> HealthElementByHcPartyTagCodeFilter.serializer()
+			"HealthElementByHcPartyTagFilter" -> HealthElementByHcPartyTagFilter.serializer()
 			"HealthElementByIdsFilter" -> HealthElementByIdsFilter.serializer()
 			else -> null
 		}
@@ -641,13 +651,19 @@ internal object HealthElementAbstractFilterSerializer :
 			UnionFilter::class -> UnionFilterSerializer(this)
 			HealthElementByDataOwnerPatientOpeningDate::class ->
 				HealthElementByDataOwnerPatientOpeningDate.serializer()
+			HealthElementByHcPartyCodeFilter::class -> HealthElementByHcPartyCodeFilter.serializer()
 			HealthElementByHcPartyFilter::class -> HealthElementByHcPartyFilter.serializer()
 			HealthElementByHcPartyIdentifiersFilter::class ->
 				HealthElementByHcPartyIdentifiersFilter.serializer()
+			HealthElementByHcPartyIdentifiersVersioningFilter::class ->
+				HealthElementByHcPartyIdentifiersVersioningFilter.serializer()
 			HealthElementByHcPartySecretForeignKeysFilter::class ->
 				HealthElementByHcPartySecretForeignKeysFilter.serializer()
 			HealthElementByHcPartyStatusFilter::class -> HealthElementByHcPartyStatusFilter.serializer()
+			HealthElementByHcPartyStatusVersioningFilter::class ->
+				HealthElementByHcPartyStatusVersioningFilter.serializer()
 			HealthElementByHcPartyTagCodeFilter::class -> HealthElementByHcPartyTagCodeFilter.serializer()
+			HealthElementByHcPartyTagFilter::class -> HealthElementByHcPartyTagFilter.serializer()
 			HealthElementByIdsFilter::class -> HealthElementByIdsFilter.serializer()
 			else -> null
 		}

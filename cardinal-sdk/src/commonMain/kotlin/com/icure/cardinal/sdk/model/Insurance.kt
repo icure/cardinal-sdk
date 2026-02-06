@@ -9,28 +9,21 @@ import kotlin.Long
 import kotlin.String
 import kotlin.collections.Map
 
-// WARNING: This file is auto-generated. If you change it manually, your changes will be lost.
-// If you want to change the way this class is generated, see [this repo](https://github.com/icure/sdk-codegen).
-
 @Serializable
-data class Insurance(
+public data class Insurance(
 	override val id: String,
 	override val rev: String? = null,
 	override val deletionDate: Long? = null,
-	@DefaultValue("emptyMap()")
+	@param:DefaultValue("emptyMap()")
 	public val name: Map<String, String> = emptyMap(),
-	@DefaultValue("false")
+	@param:DefaultValue("false")
 	public val privateInsurance: Boolean = false,
-	@DefaultValue("false")
+	@param:DefaultValue("false")
 	public val hospitalisationInsurance: Boolean = false,
-	@DefaultValue("false")
+	@param:DefaultValue("false")
 	public val ambulatoryInsurance: Boolean = false,
 	public val code: String? = null,
 	public val agreementNumber: String? = null,
 	public val parent: String? = null,
 	public val address: DecryptedAddress,
-) : StoredDocument {
-	// region Insurance-Insurance
-
-	// endregion
-}
+) : StoredDocument

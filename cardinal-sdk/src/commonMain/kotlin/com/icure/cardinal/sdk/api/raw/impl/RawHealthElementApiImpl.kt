@@ -167,6 +167,17 @@ class RawHealthElementApiImpl(
 			accept(Application.Json)
 		}.wrap()
 
+	override suspend fun undeleteHealthElements(healthElementIds: ListOfIdsAndRev): HttpResponse<List<EncryptedHealthElement>> =
+		post(authProvider) {
+			url {
+				takeFrom(apiUrl)
+				appendPathSegments("rest", "v2", "helement", "undelete", "batch")
+			}
+			contentType(Application.Json)
+			accept(Application.Json)
+			setBody(healthElementIds)
+		}.wrap()
+
 	override suspend fun purgeHealthElement(
 		healthElementId: String,
 		rev: String,
@@ -178,6 +189,17 @@ class RawHealthElementApiImpl(
 				parameter("rev", rev)
 			}
 			accept(Application.Json)
+		}.wrap()
+
+	override suspend fun purgeHealthElements(healthElementIds: ListOfIdsAndRev): HttpResponse<List<DocIdentifier>> =
+		post(authProvider) {
+			url {
+				takeFrom(apiUrl)
+				appendPathSegments("rest", "v2", "helement", "purge", "batch")
+			}
+			contentType(Application.Json)
+			accept(Application.Json)
+			setBody(healthElementIds)
 		}.wrap()
 
 	override suspend fun modifyHealthElement(healthElementDto: EncryptedHealthElement): HttpResponse<EncryptedHealthElement> =
@@ -283,6 +305,20 @@ class RawHealthElementApiImpl(
 			setBody(healthElementDto)
 		}.wrap()
 
+	override suspend fun createHealthElementsInGroup(
+		groupId: String,
+		healthElementDtos: List<EncryptedHealthElement>,
+	): HttpResponse<List<EncryptedHealthElement>> =
+		post(authProvider, groupId) {
+			url {
+				takeFrom(apiUrl)
+				appendPathSegments("rest", "v2", "helement", "inGroup", groupId, "batch")
+			}
+			contentType(Application.Json)
+			accept(Application.Json)
+			setBody(healthElementDtos)
+		}.wrap()
+
 	override suspend fun modifyHealthElementInGroup(
 		groupId: String,
 		healthElementDto: EncryptedHealthElement,
@@ -297,6 +333,20 @@ class RawHealthElementApiImpl(
 			setBody(healthElementDto)
 		}.wrap()
 
+	override suspend fun modifyHealthElementsInGroup(
+		groupId: String,
+		healthElementDtos: List<EncryptedHealthElement>,
+	): HttpResponse<List<EncryptedHealthElement>> =
+		put(authProvider, groupId) {
+			url {
+				takeFrom(apiUrl)
+				appendPathSegments("rest", "v2", "helement", "inGroup", groupId, "batch")
+			}
+			contentType(Application.Json)
+			accept(Application.Json)
+			setBody(healthElementDtos)
+		}.wrap()
+
 	override suspend fun getHealthElementInGroup(
 		groupId: String,
 		healthElementId: String,
@@ -308,6 +358,111 @@ class RawHealthElementApiImpl(
 				parameter("ts", GMTDate().timestamp)
 			}
 			accept(Application.Json)
+		}.wrap()
+
+	override suspend fun getHealthElementsInGroup(
+		groupId: String,
+		healthElementIds: ListOfIds,
+	): HttpResponse<List<EncryptedHealthElement>> =
+		post(authProvider, groupId) {
+			url {
+				takeFrom(apiUrl)
+				appendPathSegments("rest", "v2", "helement", "inGroup", groupId, "byIds")
+			}
+			contentType(Application.Json)
+			accept(Application.Json)
+			setBody(healthElementIds)
+		}.wrap()
+
+	override suspend fun deleteHealthElementInGroup(
+		groupId: String,
+		healthElementId: String,
+		rev: String,
+	): HttpResponse<DocIdentifier> =
+		delete(authProvider, groupId) {
+			url {
+				takeFrom(apiUrl)
+				appendPathSegments("rest", "v2", "helement", "inGroup", groupId, healthElementId)
+				parameter("rev", rev)
+			}
+			accept(Application.Json)
+		}.wrap()
+
+	override suspend fun deleteHealthElementsInGroup(
+		groupId: String,
+		healthElementIds: ListOfIdsAndRev,
+	): HttpResponse<List<DocIdentifier>> =
+		post(
+			authProvider,
+			groupId,
+		) {
+			url {
+				takeFrom(apiUrl)
+				appendPathSegments("rest", "v2", "helement", "inGroup", groupId, "delete", "batch")
+			}
+			contentType(Application.Json)
+			accept(Application.Json)
+			setBody(healthElementIds)
+		}.wrap()
+
+	override suspend fun undeleteHealthElementInGroup(
+		groupId: String,
+		healthElementId: String,
+		rev: String,
+	): HttpResponse<EncryptedHealthElement> =
+		post(authProvider, groupId) {
+			url {
+				takeFrom(apiUrl)
+				appendPathSegments("rest", "v2", "helement", "inGroup", groupId, "undelete", healthElementId)
+				parameter("rev", rev)
+			}
+			contentType(Application.Json)
+			accept(Application.Json)
+		}.wrap()
+
+	override suspend fun undeleteHealthElementsInGroup(
+		groupId: String,
+		healthElementIds: ListOfIdsAndRev,
+	): HttpResponse<List<EncryptedHealthElement>> =
+		post(authProvider, groupId) {
+			url {
+				takeFrom(apiUrl)
+				appendPathSegments("rest", "v2", "helement", "inGroup", groupId, "undelete", "batch")
+			}
+			contentType(Application.Json)
+			accept(Application.Json)
+			setBody(healthElementIds)
+		}.wrap()
+
+	override suspend fun purgeHealthElementInGroup(
+		groupId: String,
+		healthElementId: String,
+		rev: String,
+	): HttpResponse<DocIdentifier> =
+		delete(authProvider, groupId) {
+			url {
+				takeFrom(apiUrl)
+				appendPathSegments("rest", "v2", "helement", "inGroup", groupId, "purge", healthElementId)
+				parameter("rev", rev)
+			}
+			accept(Application.Json)
+		}.wrap()
+
+	override suspend fun purgeHealthElementsInGroup(
+		groupId: String,
+		healthElementIds: ListOfIdsAndRev,
+	): HttpResponse<List<DocIdentifier>> =
+		post(
+			authProvider,
+			groupId,
+		) {
+			url {
+				takeFrom(apiUrl)
+				appendPathSegments("rest", "v2", "helement", "inGroup", groupId, "purge", "batch")
+			}
+			contentType(Application.Json)
+			accept(Application.Json)
+			setBody(healthElementIds)
 		}.wrap()
 
 	override suspend fun bulkShare(
@@ -325,6 +480,20 @@ class RawHealthElementApiImpl(
 			contentType(Application.Json)
 			accept(Application.Json)
 			setBody(request)
+		}.wrap()
+
+	override suspend fun matchHealthElementsInGroupBy(
+		filter: AbstractFilter<HealthElement>,
+		groupId: String,
+	): HttpResponse<List<String>> =
+		post(authProvider, groupId) {
+			url {
+				takeFrom(apiUrl)
+				appendPathSegments("rest", "v2", "helement", "inGroup", groupId, "match")
+			}
+			contentType(Application.Json)
+			accept(Application.Json)
+			setBodyWithSerializer(HealthElementAbstractFilterSerializer, filter)
 		}.wrap()
 
 	// endregion

@@ -83,10 +83,14 @@ public interface RawContactApi {
 		rev: String,
 	): HttpResponse<EncryptedContact>
 
+	suspend fun undeleteContacts(contactIds: ListOfIdsAndRev): HttpResponse<List<EncryptedContact>>
+
 	suspend fun purgeContact(
 		contactId: String,
 		rev: String,
 	): HttpResponse<DocIdentifier>
+
+	suspend fun purgeContacts(contactIds: ListOfIdsAndRev): HttpResponse<List<DocIdentifier>>
 
 	suspend fun modifyContact(contactDto: EncryptedContact): HttpResponse<EncryptedContact>
 
@@ -141,5 +145,96 @@ public interface RawContactApi {
 	suspend fun bulkShare(request: BulkShareOrUpdateMetadataParams): HttpResponse<List<EntityBulkShareResult<EncryptedContact>>>
 
 	suspend fun bulkShareMinimal(request: BulkShareOrUpdateMetadataParams): HttpResponse<List<EntityBulkShareResult<Nothing>>>
+	// endregion
+
+	// region cloud endpoints
+
+	suspend fun createContactInGroup(
+		groupId: String,
+		contactDto: EncryptedContact,
+	): HttpResponse<EncryptedContact>
+
+	suspend fun createContactsInGroup(
+		groupId: String,
+		contactDtos: List<EncryptedContact>,
+	): HttpResponse<List<EncryptedContact>>
+
+	suspend fun modifyContactInGroup(
+		groupId: String,
+		contactDto: EncryptedContact,
+	): HttpResponse<EncryptedContact>
+
+	suspend fun modifyContactsInGroup(
+		groupId: String,
+		contactDtos: List<EncryptedContact>,
+	): HttpResponse<List<EncryptedContact>>
+
+	suspend fun getContactInGroup(
+		groupId: String,
+		contactId: String,
+	): HttpResponse<EncryptedContact>
+
+	suspend fun getContactsInGroup(
+		groupId: String,
+		contactIds: ListOfIds,
+	): HttpResponse<List<EncryptedContact>>
+
+	suspend fun deleteContactInGroup(
+		groupId: String,
+		contactId: String,
+		rev: String,
+	): HttpResponse<DocIdentifier>
+
+	suspend fun deleteContactsInGroup(
+		groupId: String,
+		contactIds: ListOfIdsAndRev,
+	): HttpResponse<List<DocIdentifier>>
+
+	suspend fun undeleteContactInGroup(
+		groupId: String,
+		contactId: String,
+		rev: String,
+	): HttpResponse<EncryptedContact>
+
+	suspend fun undeleteContactsInGroup(
+		groupId: String,
+		contactIds: ListOfIdsAndRev,
+	): HttpResponse<List<EncryptedContact>>
+
+	suspend fun purgeContactInGroup(
+		groupId: String,
+		contactId: String,
+		rev: String,
+	): HttpResponse<DocIdentifier>
+
+	suspend fun purgeContactsInGroup(
+		groupId: String,
+		contactIds: ListOfIdsAndRev,
+	): HttpResponse<List<DocIdentifier>>
+
+	suspend fun bulkShare(
+		request: BulkShareOrUpdateMetadataParams,
+		groupId: String,
+	): HttpResponse<List<EntityBulkShareResult<EncryptedContact>>>
+
+	suspend fun matchContactsInGroupBy(
+		filter: AbstractFilter<Contact>,
+		groupId: String,
+	): HttpResponse<List<String>>
+
+	suspend fun getServiceInGroup(
+		groupId: String,
+		serviceId: String,
+	): HttpResponse<EncryptedService>
+
+	suspend fun getServicesInGroup(
+		groupId: String,
+		ids: ListOfIds,
+	): HttpResponse<List<EncryptedService>>
+
+	suspend fun matchServicesInGroupBy(
+		groupId: String,
+		filter: AbstractFilter<Service>,
+	): HttpResponse<List<String>>
 	// endregion
 }

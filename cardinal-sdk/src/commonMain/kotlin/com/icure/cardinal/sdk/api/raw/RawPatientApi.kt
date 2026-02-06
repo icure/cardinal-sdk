@@ -145,6 +145,8 @@ public interface RawPatientApi {
 		rev: String,
 	): HttpResponse<DocIdentifier>
 
+	suspend fun purgePatients(patientIds: ListOfIdsAndRev): HttpResponse<List<DocIdentifier>>
+
 	suspend fun findDeletedPatients(
 		startDate: Long,
 		endDate: Long? = null,
@@ -284,5 +286,27 @@ public interface RawPatientApi {
 		patientId: String,
 		rev: String? = null,
 	): HttpResponse<DocIdentifier>
+
+	suspend fun undeletePatientInGroup(
+		groupId: String,
+		patientId: String,
+		rev: String,
+	): HttpResponse<EncryptedPatient>
+
+	suspend fun undeletePatientsInGroup(
+		groupId: String,
+		ids: ListOfIdsAndRev,
+	): HttpResponse<List<EncryptedPatient>>
+
+	suspend fun purgePatientInGroup(
+		groupId: String,
+		patientId: String,
+		rev: String,
+	): HttpResponse<DocIdentifier>
+
+	suspend fun purgePatientsInGroup(
+		groupId: String,
+		patientIds: ListOfIdsAndRev,
+	): HttpResponse<List<DocIdentifier>>
 	// endregion
 }

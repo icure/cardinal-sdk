@@ -10,11 +10,8 @@ import kotlin.String
 import kotlin.collections.List
 import kotlin.collections.Set
 
-// WARNING: This file is auto-generated. If you change it manually, your changes will be lost.
-// If you want to change the way this class is generated, see [this repo](https://github.com/icure/sdk-codegen).
-
 @Serializable
-data class EntityTemplate(
+public data class EntityTemplate(
 	override val id: String,
 	override val rev: String? = null,
 	override val deletionDate: Long? = null,
@@ -24,10 +21,6 @@ data class EntityTemplate(
 	public val entityType: String? = null,
 	public val subType: String? = null,
 	public val defaultTemplate: Boolean? = null,
-	@DefaultValue("emptyList()")
+	@param:DefaultValue("emptyList()")
 	public val entity: List<JsonElement> = emptyList(),
-) : StoredDocument {
-	// region EntityTemplate-EntityTemplate
-
-	// endregion
-}
+) : StoredDocument

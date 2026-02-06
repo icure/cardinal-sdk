@@ -66,6 +66,33 @@ class RawTopicApiImpl(
 			setBody(topicIds)
 		}.wrap()
 
+	override suspend fun getTopicInGroup(
+		groupId: String,
+		topicId: String,
+	): HttpResponse<EncryptedTopic> =
+		get(authProvider, groupId) {
+			url {
+				takeFrom(apiUrl)
+				appendPathSegments("rest", "v2", "topic", "inGroup", groupId, topicId)
+				parameter("ts", GMTDate().timestamp)
+			}
+			accept(Application.Json)
+		}.wrap()
+
+	override suspend fun getTopicsInGroup(
+		groupId: String,
+		topicIds: ListOfIds,
+	): HttpResponse<List<EncryptedTopic>> =
+		post(authProvider, groupId) {
+			url {
+				takeFrom(apiUrl)
+				appendPathSegments("rest", "v2", "topic", "inGroup", groupId, "byIds")
+			}
+			contentType(Application.Json)
+			accept(Application.Json)
+			setBody(topicIds)
+		}.wrap()
+
 	override suspend fun createTopic(ft: EncryptedTopic): HttpResponse<EncryptedTopic> =
 		post(authProvider) {
 			url {
@@ -77,6 +104,45 @@ class RawTopicApiImpl(
 			setBody(ft)
 		}.wrap()
 
+	override suspend fun createTopics(topicDtos: List<EncryptedTopic>): HttpResponse<List<EncryptedTopic>> =
+		post(authProvider) {
+			url {
+				takeFrom(apiUrl)
+				appendPathSegments("rest", "v2", "topic", "batch")
+			}
+			contentType(Application.Json)
+			accept(Application.Json)
+			setBody(topicDtos)
+		}.wrap()
+
+	override suspend fun createTopicInGroup(
+		groupId: String,
+		topicDto: EncryptedTopic,
+	): HttpResponse<EncryptedTopic> =
+		post(authProvider, groupId) {
+			url {
+				takeFrom(apiUrl)
+				appendPathSegments("rest", "v2", "topic", "inGroup", groupId)
+			}
+			contentType(Application.Json)
+			accept(Application.Json)
+			setBody(topicDto)
+		}.wrap()
+
+	override suspend fun createTopicsInGroup(
+		groupId: String,
+		topicDtos: List<EncryptedTopic>,
+	): HttpResponse<List<EncryptedTopic>> =
+		post(authProvider, groupId) {
+			url {
+				takeFrom(apiUrl)
+				appendPathSegments("rest", "v2", "topic", "inGroup", groupId, "batch")
+			}
+			contentType(Application.Json)
+			accept(Application.Json)
+			setBody(topicDtos)
+		}.wrap()
+
 	override suspend fun modifyTopic(topicDto: EncryptedTopic): HttpResponse<EncryptedTopic> =
 		put(authProvider) {
 			url {
@@ -86,6 +152,45 @@ class RawTopicApiImpl(
 			contentType(Application.Json)
 			accept(Application.Json)
 			setBody(topicDto)
+		}.wrap()
+
+	override suspend fun modifyTopics(topicDtos: List<EncryptedTopic>): HttpResponse<List<EncryptedTopic>> =
+		put(authProvider) {
+			url {
+				takeFrom(apiUrl)
+				appendPathSegments("rest", "v2", "topic", "batch")
+			}
+			contentType(Application.Json)
+			accept(Application.Json)
+			setBody(topicDtos)
+		}.wrap()
+
+	override suspend fun modifyTopicInGroup(
+		groupId: String,
+		topicDto: EncryptedTopic,
+	): HttpResponse<EncryptedTopic> =
+		put(authProvider, groupId) {
+			url {
+				takeFrom(apiUrl)
+				appendPathSegments("rest", "v2", "topic", "inGroup", groupId)
+			}
+			contentType(Application.Json)
+			accept(Application.Json)
+			setBody(topicDto)
+		}.wrap()
+
+	override suspend fun modifyTopicsInGroup(
+		groupId: String,
+		topicDtos: List<EncryptedTopic>,
+	): HttpResponse<List<EncryptedTopic>> =
+		put(authProvider, groupId) {
+			url {
+				takeFrom(apiUrl)
+				appendPathSegments("rest", "v2", "topic", "inGroup", groupId, "batch")
+			}
+			contentType(Application.Json)
+			accept(Application.Json)
+			setBody(topicDtos)
 		}.wrap()
 
 	override suspend fun deleteTopics(topicIds: ListOfIds): HttpResponse<List<DocIdentifier>> =
@@ -123,6 +228,34 @@ class RawTopicApiImpl(
 			accept(Application.Json)
 		}.wrap()
 
+	override suspend fun deleteTopicInGroup(
+		groupId: String,
+		topicId: String,
+		rev: String,
+	): HttpResponse<DocIdentifier> =
+		delete(authProvider, groupId) {
+			url {
+				takeFrom(apiUrl)
+				appendPathSegments("rest", "v2", "topic", "inGroup", groupId, topicId)
+				parameter("rev", rev)
+			}
+			accept(Application.Json)
+		}.wrap()
+
+	override suspend fun deleteTopicsInGroup(
+		groupId: String,
+		topicIds: ListOfIdsAndRev,
+	): HttpResponse<List<DocIdentifier>> =
+		post(authProvider, groupId) {
+			url {
+				takeFrom(apiUrl)
+				appendPathSegments("rest", "v2", "topic", "inGroup", groupId, "delete", "batch")
+			}
+			contentType(Application.Json)
+			accept(Application.Json)
+			setBody(topicIds)
+		}.wrap()
+
 	override suspend fun undeleteTopic(
 		topicId: String,
 		rev: String,
@@ -135,6 +268,46 @@ class RawTopicApiImpl(
 			}
 			contentType(Application.Json)
 			accept(Application.Json)
+		}.wrap()
+
+	override suspend fun undeleteTopics(topicIds: ListOfIdsAndRev): HttpResponse<List<EncryptedTopic>> =
+		post(authProvider) {
+			url {
+				takeFrom(apiUrl)
+				appendPathSegments("rest", "v2", "topic", "undelete", "batch")
+			}
+			contentType(Application.Json)
+			accept(Application.Json)
+			setBody(topicIds)
+		}.wrap()
+
+	override suspend fun undeleteTopicInGroup(
+		groupId: String,
+		topicId: String,
+		rev: String,
+	): HttpResponse<EncryptedTopic> =
+		post(authProvider, groupId) {
+			url {
+				takeFrom(apiUrl)
+				appendPathSegments("rest", "v2", "topic", "inGroup", groupId, "undelete", topicId)
+				parameter("rev", rev)
+			}
+			contentType(Application.Json)
+			accept(Application.Json)
+		}.wrap()
+
+	override suspend fun undeleteTopicsInGroup(
+		groupId: String,
+		topicIds: ListOfIdsAndRev,
+	): HttpResponse<List<EncryptedTopic>> =
+		post(authProvider, groupId) {
+			url {
+				takeFrom(apiUrl)
+				appendPathSegments("rest", "v2", "topic", "inGroup", groupId, "undelete", "batch")
+			}
+			contentType(Application.Json)
+			accept(Application.Json)
+			setBody(topicIds)
 		}.wrap()
 
 	override suspend fun purgeTopic(
@@ -150,11 +323,64 @@ class RawTopicApiImpl(
 			accept(Application.Json)
 		}.wrap()
 
+	override suspend fun purgeTopics(topicIds: ListOfIdsAndRev): HttpResponse<List<DocIdentifier>> =
+		post(authProvider) {
+			url {
+				takeFrom(apiUrl)
+				appendPathSegments("rest", "v2", "topic", "purge", "batch")
+			}
+			contentType(Application.Json)
+			accept(Application.Json)
+			setBody(topicIds)
+		}.wrap()
+
+	override suspend fun purgeTopicInGroup(
+		groupId: String,
+		topicId: String,
+		rev: String,
+	): HttpResponse<DocIdentifier> =
+		delete(authProvider, groupId) {
+			url {
+				takeFrom(apiUrl)
+				appendPathSegments("rest", "v2", "topic", "inGroup", groupId, "purge", topicId)
+				parameter("rev", rev)
+			}
+			accept(Application.Json)
+		}.wrap()
+
+	override suspend fun purgeTopicsInGroup(
+		groupId: String,
+		topicIds: ListOfIdsAndRev,
+	): HttpResponse<List<DocIdentifier>> =
+		post(authProvider, groupId) {
+			url {
+				takeFrom(apiUrl)
+				appendPathSegments("rest", "v2", "topic", "inGroup", groupId, "purge", "batch")
+			}
+			contentType(Application.Json)
+			accept(Application.Json)
+			setBody(topicIds)
+		}.wrap()
+
 	override suspend fun bulkShare(request: BulkShareOrUpdateMetadataParams): HttpResponse<List<EntityBulkShareResult<EncryptedTopic>>> =
 		put(authProvider) {
 			url {
 				takeFrom(apiUrl)
 				appendPathSegments("rest", "v2", "topic", "bulkSharedMetadataUpdate")
+			}
+			contentType(Application.Json)
+			accept(Application.Json)
+			setBody(request)
+		}.wrap()
+
+	override suspend fun bulkShare(
+		request: BulkShareOrUpdateMetadataParams,
+		groupId: String,
+	): HttpResponse<List<EntityBulkShareResult<EncryptedTopic>>> =
+		put(authProvider, groupId) {
+			url {
+				takeFrom(apiUrl)
+				appendPathSegments("rest", "v2", "topic", "inGroup", groupId, "bulkSharedMetadataUpdate")
 			}
 			contentType(Application.Json)
 			accept(Application.Json)

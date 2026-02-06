@@ -8,6 +8,7 @@ import com.icure.cardinal.sdk.api.raw.wrap
 import com.icure.cardinal.sdk.auth.services.AuthProvider
 import com.icure.cardinal.sdk.model.EncryptedPropertyStub
 import com.icure.cardinal.sdk.model.ListOfIds
+import com.icure.cardinal.sdk.model.ListOfIdsAndRev
 import com.icure.cardinal.sdk.model.PaginatedList
 import com.icure.cardinal.sdk.model.User
 import com.icure.cardinal.sdk.model.UserGroup
@@ -85,6 +86,17 @@ class RawUserApiImpl(
 			contentType(Application.Json)
 			accept(Application.Json)
 			setBody(userDto)
+		}.wrap()
+
+	override suspend fun createUsers(userDtos: List<User>): HttpResponse<List<User>> =
+		post(authProvider) {
+			url {
+				takeFrom(apiUrl)
+				appendPathSegments("rest", "v2", "user", "batch")
+			}
+			contentType(Application.Json)
+			accept(Application.Json)
+			setBody(userDtos)
 		}.wrap()
 
 	override suspend fun getUser(
@@ -165,6 +177,17 @@ class RawUserApiImpl(
 			accept(Application.Json)
 		}.wrap()
 
+	override suspend fun deleteUsers(userIds: ListOfIdsAndRev): HttpResponse<List<DocIdentifier>> =
+		post(authProvider) {
+			url {
+				takeFrom(apiUrl)
+				appendPathSegments("rest", "v2", "user", "delete", "batch")
+			}
+			contentType(Application.Json)
+			accept(Application.Json)
+			setBody(userIds)
+		}.wrap()
+
 	override suspend fun undeleteUser(
 		userId: String,
 		rev: String,
@@ -177,6 +200,17 @@ class RawUserApiImpl(
 			}
 			contentType(Application.Json)
 			accept(Application.Json)
+		}.wrap()
+
+	override suspend fun undeleteUsers(userIds: ListOfIdsAndRev): HttpResponse<List<User>> =
+		post(authProvider) {
+			url {
+				takeFrom(apiUrl)
+				appendPathSegments("rest", "v2", "user", "undelete", "batch")
+			}
+			contentType(Application.Json)
+			accept(Application.Json)
+			setBody(userIds)
 		}.wrap()
 
 	override suspend fun purgeUser(
@@ -192,6 +226,17 @@ class RawUserApiImpl(
 			accept(Application.Json)
 		}.wrap()
 
+	override suspend fun purgeUsers(userIds: ListOfIdsAndRev): HttpResponse<List<DocIdentifier>> =
+		post(authProvider) {
+			url {
+				takeFrom(apiUrl)
+				appendPathSegments("rest", "v2", "user", "purge", "batch")
+			}
+			contentType(Application.Json)
+			accept(Application.Json)
+			setBody(userIds)
+		}.wrap()
+
 	override suspend fun modifyUser(userDto: User): HttpResponse<User> =
 		put(authProvider) {
 			url {
@@ -201,6 +246,17 @@ class RawUserApiImpl(
 			contentType(Application.Json)
 			accept(Application.Json)
 			setBody(userDto)
+		}.wrap()
+
+	override suspend fun modifyUsers(userDtos: List<User>): HttpResponse<List<User>> =
+		put(authProvider) {
+			url {
+				takeFrom(apiUrl)
+				appendPathSegments("rest", "v2", "user", "batch")
+			}
+			contentType(Application.Json)
+			accept(Application.Json)
+			setBody(userDtos)
 		}.wrap()
 
 	override suspend fun assignHealthcareParty(
@@ -341,6 +397,20 @@ class RawUserApiImpl(
 			setBody(userDto)
 		}.wrap()
 
+	override suspend fun createUsersInGroup(
+		groupId: String,
+		userDtos: List<User>,
+	): HttpResponse<List<User>> =
+		post(authProvider) {
+			url {
+				takeFrom(apiUrl)
+				appendPathSegments("rest", "v2", "user", "inGroup", groupId, "batch")
+			}
+			contentType(Application.Json)
+			accept(Application.Json)
+			setBody(userDtos)
+		}.wrap()
+
 	override suspend fun modifyUserInGroup(
 		groupId: String,
 		userDto: User,
@@ -355,6 +425,20 @@ class RawUserApiImpl(
 			setBody(userDto)
 		}.wrap()
 
+	override suspend fun modifyUsersInGroup(
+		groupId: String,
+		userDtos: List<User>,
+	): HttpResponse<List<User>> =
+		put(authProvider) {
+			url {
+				takeFrom(apiUrl)
+				appendPathSegments("rest", "v2", "user", "inGroup", groupId, "batch")
+			}
+			contentType(Application.Json)
+			accept(Application.Json)
+			setBody(userDtos)
+		}.wrap()
+
 	override suspend fun deleteUserInGroup(
 		groupId: String,
 		userId: String,
@@ -367,6 +451,77 @@ class RawUserApiImpl(
 				parameter("rev", rev)
 			}
 			accept(Application.Json)
+		}.wrap()
+
+	override suspend fun deleteUsersInGroup(
+		groupId: String,
+		userIds: ListOfIdsAndRev,
+	): HttpResponse<List<DocIdentifier>> =
+		post(authProvider) {
+			url {
+				takeFrom(apiUrl)
+				appendPathSegments("rest", "v2", "user", "inGroup", groupId, "delete", "batch")
+			}
+			contentType(Application.Json)
+			accept(Application.Json)
+			setBody(userIds)
+		}.wrap()
+
+	override suspend fun undeleteUserInGroup(
+		groupId: String,
+		userId: String,
+		rev: String,
+	): HttpResponse<User> =
+		post(authProvider) {
+			url {
+				takeFrom(apiUrl)
+				appendPathSegments("rest", "v2", "user", "inGroup", groupId, "undelete", userId)
+				parameter("rev", rev)
+			}
+			contentType(Application.Json)
+			accept(Application.Json)
+		}.wrap()
+
+	override suspend fun undeleteUsersInGroup(
+		groupId: String,
+		userIds: ListOfIdsAndRev,
+	): HttpResponse<List<User>> =
+		post(authProvider) {
+			url {
+				takeFrom(apiUrl)
+				appendPathSegments("rest", "v2", "user", "inGroup", groupId, "undelete", "batch")
+			}
+			contentType(Application.Json)
+			accept(Application.Json)
+			setBody(userIds)
+		}.wrap()
+
+	override suspend fun purgeUserInGroup(
+		groupId: String,
+		userId: String,
+		rev: String,
+	): HttpResponse<DocIdentifier> =
+		delete(authProvider) {
+			url {
+				takeFrom(apiUrl)
+				appendPathSegments("rest", "v2", "user", "inGroup", groupId, "purge", userId)
+				parameter("rev", rev)
+			}
+			accept(Application.Json)
+		}.wrap()
+
+	override suspend fun purgeUsersInGroup(
+		groupId: String,
+		userIds: ListOfIdsAndRev,
+	): HttpResponse<List<DocIdentifier>> =
+		post(authProvider) {
+			url {
+				takeFrom(apiUrl)
+				appendPathSegments("rest", "v2", "user", "inGroup", groupId, "purge", "batch")
+			}
+			contentType(Application.Json)
+			accept(Application.Json)
+			setBody(userIds)
 		}.wrap()
 
 	override suspend fun setRolesForUser(

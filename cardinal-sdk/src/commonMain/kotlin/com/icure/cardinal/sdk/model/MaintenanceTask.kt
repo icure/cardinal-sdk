@@ -2,6 +2,7 @@ package com.icure.cardinal.sdk.model
 
 import com.icure.cardinal.sdk.model.base.CodeStub
 import com.icure.cardinal.sdk.model.base.HasEncryptionMetadata
+import com.icure.cardinal.sdk.model.base.HasEndOfLife
 import com.icure.cardinal.sdk.model.base.ICureDocument
 import com.icure.cardinal.sdk.model.base.Identifier
 import com.icure.cardinal.sdk.model.base.StoredDocument
@@ -18,13 +19,12 @@ import kotlin.collections.List
 import kotlin.collections.Map
 import kotlin.collections.Set
 
-// WARNING: This file is auto-generated. If you change it manually, your changes will be lost.
-// If you want to change the way this class is generated, see [this repo](https://github.com/icure/sdk-codegen).
-sealed interface MaintenanceTask :
+public sealed interface MaintenanceTask :
 	StoredDocument,
 	ICureDocument<String>,
 	HasEncryptionMetadata,
-	Encryptable {
+	Encryptable,
+	HasEndOfLife {
 	override val id: String
 
 	override val rev: String?
@@ -38,8 +38,6 @@ sealed interface MaintenanceTask :
 	override val author: String?
 
 	override val responsible: String?
-
-	override val medicalLocationId: String?
 
 	override val tags: Set<CodeStub>
 
@@ -66,87 +64,70 @@ sealed interface MaintenanceTask :
 	override val encryptedSelf: Base64String?
 
 	override val securityMetadata: SecurityMetadata?
-	// region MaintenanceTask-MaintenanceTask
-	companion object {
-		const val KRAKEN_QUALIFIED_NAME = "org.taktik.icure.entities.MaintenanceTask"
-	}
-	// endregion
 }
 
 @Serializable
-data class DecryptedMaintenanceTask(
+public data class DecryptedMaintenanceTask(
 	override val id: String,
 	override val rev: String? = null,
-	@DefaultValue("emptyList()")
+	@param:DefaultValue("emptyList()")
 	override val identifier: List<Identifier> = emptyList(),
 	override val created: Long? = null,
 	override val modified: Long? = null,
 	override val author: String? = null,
 	override val responsible: String? = null,
-	override val medicalLocationId: String? = null,
-	@DefaultValue("emptySet()")
+	@param:DefaultValue("emptySet()")
 	override val tags: Set<CodeStub> = emptySet(),
-	@DefaultValue("emptySet()")
+	@param:DefaultValue("emptySet()")
 	override val codes: Set<CodeStub> = emptySet(),
 	override val endOfLife: Long? = null,
 	override val deletionDate: Long? = null,
 	override val taskType: String? = null,
-	@DefaultValue("emptySet()")
+	@param:DefaultValue("emptySet()")
 	override val properties: Set<DecryptedPropertyStub> = emptySet(),
-	@DefaultValue("com.icure.cardinal.sdk.model.embed.TaskStatus.Pending")
+	@param:DefaultValue("com.icure.cardinal.sdk.model.embed.TaskStatus.Pending")
 	override val status: TaskStatus = TaskStatus.Pending,
-	@DefaultValue("emptySet()")
+	@param:DefaultValue("emptySet()")
 	override val secretForeignKeys: Set<String> = emptySet(),
-	@DefaultValue("emptyMap()")
+	@param:DefaultValue("emptyMap()")
 	override val cryptedForeignKeys: Map<String, Set<Delegation>> = emptyMap(),
-	@DefaultValue("emptyMap()")
+	@param:DefaultValue("emptyMap()")
 	override val delegations: Map<String, Set<Delegation>> = emptyMap(),
-	@DefaultValue("emptyMap()")
+	@param:DefaultValue("emptyMap()")
 	override val encryptionKeys: Map<String, Set<Delegation>> = emptyMap(),
 	override val encryptedSelf: Base64String? = null,
 	override val securityMetadata: SecurityMetadata? = null,
-) : MaintenanceTask {
-	// region MaintenanceTask-DecryptedMaintenanceTask
-override fun copyWithSecurityMetadata(securityMetadata: SecurityMetadata, secretForeignKeys: Set<String>): DecryptedMaintenanceTask =
-		copy(securityMetadata = securityMetadata, secretForeignKeys = secretForeignKeys)
-	// endregion
-}
+) : MaintenanceTask
 
 @Serializable
-data class EncryptedMaintenanceTask(
+public data class EncryptedMaintenanceTask(
 	override val id: String,
 	override val rev: String? = null,
-	@DefaultValue("emptyList()")
+	@param:DefaultValue("emptyList()")
 	override val identifier: List<Identifier> = emptyList(),
 	override val created: Long? = null,
 	override val modified: Long? = null,
 	override val author: String? = null,
 	override val responsible: String? = null,
-	override val medicalLocationId: String? = null,
-	@DefaultValue("emptySet()")
+	@param:DefaultValue("emptySet()")
 	override val tags: Set<CodeStub> = emptySet(),
-	@DefaultValue("emptySet()")
+	@param:DefaultValue("emptySet()")
 	override val codes: Set<CodeStub> = emptySet(),
 	override val endOfLife: Long? = null,
 	override val deletionDate: Long? = null,
 	override val taskType: String? = null,
-	@DefaultValue("emptySet()")
+	@param:DefaultValue("emptySet()")
 	override val properties: Set<EncryptedPropertyStub> = emptySet(),
-	@DefaultValue("com.icure.cardinal.sdk.model.embed.TaskStatus.Pending")
+	@param:DefaultValue("com.icure.cardinal.sdk.model.embed.TaskStatus.Pending")
 	override val status: TaskStatus = TaskStatus.Pending,
-	@DefaultValue("emptySet()")
+	@param:DefaultValue("emptySet()")
 	override val secretForeignKeys: Set<String> = emptySet(),
-	@DefaultValue("emptyMap()")
+	@param:DefaultValue("emptyMap()")
 	override val cryptedForeignKeys: Map<String, Set<Delegation>> = emptyMap(),
-	@DefaultValue("emptyMap()")
+	@param:DefaultValue("emptyMap()")
 	override val delegations: Map<String, Set<Delegation>> = emptyMap(),
-	@DefaultValue("emptyMap()")
+	@param:DefaultValue("emptyMap()")
 	override val encryptionKeys: Map<String, Set<Delegation>> = emptyMap(),
 	override val encryptedSelf: Base64String? = null,
 	override val securityMetadata: SecurityMetadata? = null,
-) : MaintenanceTask {
-	// region MaintenanceTask-EncryptedMaintenanceTask
-override fun copyWithSecurityMetadata(securityMetadata: SecurityMetadata, secretForeignKeys: Set<String>): EncryptedMaintenanceTask =
-		copy(securityMetadata = securityMetadata, secretForeignKeys = secretForeignKeys)
-	// endregion
-}
+) : MaintenanceTask

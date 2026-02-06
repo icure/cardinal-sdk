@@ -3,6 +3,7 @@ package com.icure.cardinal.sdk.model.embed
 import com.icure.cardinal.sdk.model.specializations.Base64String
 import com.icure.cardinal.sdk.utils.DefaultValue
 import kotlinx.serialization.Serializable
+import kotlinx.serialization.json.JsonNames
 import kotlin.Boolean
 import kotlin.Double
 import kotlin.Int
@@ -10,9 +11,7 @@ import kotlin.Long
 import kotlin.String
 import kotlin.collections.Map
 
-// WARNING: This file is auto-generated. If you change it manually, your changes will be lost.
-// If you want to change the way this class is generated, see [this repo](https://github.com/icure/sdk-codegen).
-sealed interface InvoicingCode : Encryptable {
+public sealed interface InvoicingCode : Encryptable {
 	public val id: String?
 
 	public val dateCode: Long?
@@ -27,7 +26,7 @@ sealed interface InvoicingCode : Encryptable {
 
 	public val serviceId: String?
 
-	public val tarificationId: String?
+	public val pricingId: String?
 
 	public val code: String?
 
@@ -124,13 +123,10 @@ sealed interface InvoicingCode : Encryptable {
 	public val options: Map<String, String>
 
 	override val encryptedSelf: Base64String?
-	// region InvoicingCode-InvoicingCode
-
-	// endregion
 }
 
 @Serializable
-data class DecryptedInvoicingCode(
+public data class DecryptedInvoicingCode(
 	override val id: String?,
 	override val dateCode: Long? = null,
 	override val logicalId: String? = null,
@@ -138,7 +134,8 @@ data class DecryptedInvoicingCode(
 	override val userId: String? = null,
 	override val contactId: String? = null,
 	override val serviceId: String? = null,
-	override val tarificationId: String? = null,
+	@JsonNames("tarificationId")
+	override val pricingId: String? = null,
 	override val code: String? = null,
 	override val paymentType: PaymentType? = null,
 	override val paid: Double? = null,
@@ -185,17 +182,13 @@ data class DecryptedInvoicingCode(
 	override val cancelPatientInterventionReason: Int? = null,
 	override val status: Long? = null,
 	override val codeLabel: String? = null,
-	@DefaultValue("emptyMap()")
+	@param:DefaultValue("emptyMap()")
 	override val options: Map<String, String> = emptyMap(),
 	override val encryptedSelf: Base64String? = null,
-) : InvoicingCode {
-	// region InvoicingCode-DecryptedInvoicingCode
-
-	// endregion
-}
+) : InvoicingCode
 
 @Serializable
-data class EncryptedInvoicingCode(
+public data class EncryptedInvoicingCode(
 	override val id: String?,
 	override val dateCode: Long? = null,
 	override val logicalId: String? = null,
@@ -203,7 +196,8 @@ data class EncryptedInvoicingCode(
 	override val userId: String? = null,
 	override val contactId: String? = null,
 	override val serviceId: String? = null,
-	override val tarificationId: String? = null,
+	@JsonNames("tarificationId")
+	override val pricingId: String? = null,
 	override val code: String? = null,
 	override val paymentType: PaymentType? = null,
 	override val paid: Double? = null,
@@ -250,11 +244,7 @@ data class EncryptedInvoicingCode(
 	override val cancelPatientInterventionReason: Int? = null,
 	override val status: Long? = null,
 	override val codeLabel: String? = null,
-	@DefaultValue("emptyMap()")
+	@param:DefaultValue("emptyMap()")
 	override val options: Map<String, String> = emptyMap(),
 	override val encryptedSelf: Base64String? = null,
-) : InvoicingCode {
-	// region InvoicingCode-EncryptedInvoicingCode
-
-	// endregion
-}
+) : InvoicingCode

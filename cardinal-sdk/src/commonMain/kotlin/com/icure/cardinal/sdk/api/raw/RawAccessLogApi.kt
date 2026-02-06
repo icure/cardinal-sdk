@@ -24,6 +24,8 @@ public interface RawAccessLogApi {
 
 	suspend fun createAccessLog(accessLogDto: EncryptedAccessLog): HttpResponse<EncryptedAccessLog>
 
+	suspend fun createAccessLogs(accessLogDtos: List<EncryptedAccessLog>): HttpResponse<List<EncryptedAccessLog>>
+
 	suspend fun deleteAccessLogs(accessLogIds: ListOfIds): HttpResponse<List<DocIdentifier>>
 
 	suspend fun deleteAccessLogsWithRev(accessLogIds: ListOfIdsAndRev): HttpResponse<List<DocIdentifier>>
@@ -38,10 +40,14 @@ public interface RawAccessLogApi {
 		rev: String,
 	): HttpResponse<EncryptedAccessLog>
 
+	suspend fun undeleteAccessLogs(accessLogIds: ListOfIdsAndRev): HttpResponse<List<EncryptedAccessLog>>
+
 	suspend fun purgeAccessLog(
 		accessLogId: String,
 		rev: String,
 	): HttpResponse<DocIdentifier>
+
+	suspend fun purgeAccessLogs(accessLogIds: ListOfIdsAndRev): HttpResponse<List<DocIdentifier>>
 
 	suspend fun getAccessLog(accessLogId: String): HttpResponse<EncryptedAccessLog>
 
@@ -76,6 +82,8 @@ public interface RawAccessLogApi {
 
 	suspend fun modifyAccessLog(accessLogDto: EncryptedAccessLog): HttpResponse<EncryptedAccessLog>
 
+	suspend fun modifyAccessLogs(accessLogDtos: List<EncryptedAccessLog>): HttpResponse<List<EncryptedAccessLog>>
+
 	suspend fun bulkShare(request: BulkShareOrUpdateMetadataParams): HttpResponse<List<EntityBulkShareResult<EncryptedAccessLog>>>
 
 	suspend fun matchAccessLogsBy(filter: AbstractFilter<AccessLog>): HttpResponse<List<String>>
@@ -102,10 +110,20 @@ public interface RawAccessLogApi {
 		accessLogDto: EncryptedAccessLog,
 	): HttpResponse<EncryptedAccessLog>
 
+	suspend fun createAccessLogsInGroup(
+		groupId: String,
+		accessLogsDto: List<EncryptedAccessLog>,
+	): HttpResponse<List<EncryptedAccessLog>>
+
 	suspend fun modifyAccessLogInGroup(
 		groupId: String,
 		accessLogDto: EncryptedAccessLog,
 	): HttpResponse<EncryptedAccessLog>
+
+	suspend fun modifyAccessLogsInGroup(
+		groupId: String,
+		accessLogsDto: List<EncryptedAccessLog>,
+	): HttpResponse<List<EncryptedAccessLog>>
 
 	suspend fun getAccessLogInGroup(
 		groupId: String,
@@ -123,6 +141,28 @@ public interface RawAccessLogApi {
 	): HttpResponse<List<DocIdentifier>>
 
 	suspend fun deleteAccessLogInGroup(
+		groupId: String,
+		accessLogId: String,
+		rev: String,
+	): HttpResponse<DocIdentifier>
+
+	suspend fun undeleteAccessLogsInGroup(
+		groupId: String,
+		accessLogIdsAndRevs: ListOfIdsAndRev,
+	): HttpResponse<List<EncryptedAccessLog>>
+
+	suspend fun undeleteAccessLogInGroup(
+		groupId: String,
+		accessLogId: String,
+		rev: String,
+	): HttpResponse<EncryptedAccessLog>
+
+	suspend fun purgeAccessLogsInGroup(
+		groupId: String,
+		accessLogIdsAndRevs: ListOfIdsAndRev,
+	): HttpResponse<List<DocIdentifier>>
+
+	suspend fun purgeAccessLogInGroup(
 		groupId: String,
 		accessLogId: String,
 		rev: String,

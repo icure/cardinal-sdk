@@ -11,9 +11,7 @@ import kotlin.String
 import kotlin.collections.List
 import kotlin.collections.Set
 
-// WARNING: This file is auto-generated. If you change it manually, your changes will be lost.
-// If you want to change the way this class is generated, see [this repo](https://github.com/icure/sdk-codegen).
-sealed interface Address : Encryptable, HasTags, HasCodes {
+public sealed interface Address : Encryptable, HasTags, HasCodes {
 	override val tags: Set<CodeStub>
 
 	override val codes: Set<CodeStub>
@@ -45,18 +43,15 @@ sealed interface Address : Encryptable, HasTags, HasCodes {
 	public val telecoms: List<Telecom>
 
 	override val encryptedSelf: Base64String?
-  // region Address-Address
-
-  // endregion
 }
 
 @Serializable
-data class DecryptedAddress(
-	@DefaultValue("emptySet()")
+public data class DecryptedAddress(
+	@param:DefaultValue("emptySet()")
 	override val tags: Set<CodeStub> = emptySet(),
-	@DefaultValue("emptySet()")
+	@param:DefaultValue("emptySet()")
 	override val codes: Set<CodeStub> = emptySet(),
-	@DefaultValue("emptyList()")
+	@param:DefaultValue("emptyList()")
 	override val identifier: List<Identifier> = emptyList(),
 	override val addressType: AddressType? = null,
 	override val descr: String? = null,
@@ -68,24 +63,20 @@ data class DecryptedAddress(
 	override val state: String? = null,
 	override val country: String? = null,
 	override val note: String? = null,
-	@DefaultValue("emptyList()")
+	@param:DefaultValue("emptyList()")
 	override val notes: List<Annotation> = emptyList(),
-	@DefaultValue("emptyList()")
+	@param:DefaultValue("emptyList()")
 	override val telecoms: List<DecryptedTelecom> = emptyList(),
 	override val encryptedSelf: Base64String? = null,
-) : Address {
-	// region Address-DecryptedAddress
-
-	// endregion
-}
+) : Address
 
 @Serializable
-data class EncryptedAddress(
-	@DefaultValue("emptySet()")
+public data class EncryptedAddress(
+	@param:DefaultValue("emptySet()")
 	override val tags: Set<CodeStub> = emptySet(),
-	@DefaultValue("emptySet()")
+	@param:DefaultValue("emptySet()")
 	override val codes: Set<CodeStub> = emptySet(),
-	@DefaultValue("emptyList()")
+	@param:DefaultValue("emptyList()")
 	override val identifier: List<Identifier> = emptyList(),
 	override val addressType: AddressType? = null,
 	override val descr: String? = null,
@@ -97,13 +88,9 @@ data class EncryptedAddress(
 	override val state: String? = null,
 	override val country: String? = null,
 	override val note: String? = null,
-	@DefaultValue("emptyList()")
+	@param:DefaultValue("emptyList()")
 	override val notes: List<Annotation> = emptyList(),
-	@DefaultValue("emptyList()")
+	@param:DefaultValue("emptyList()")
 	override val telecoms: List<EncryptedTelecom> = emptyList(),
 	override val encryptedSelf: Base64String? = null,
-) : Address {
-	// region Address-EncryptedAddress
-
-	// endregion
-}
+) : Address

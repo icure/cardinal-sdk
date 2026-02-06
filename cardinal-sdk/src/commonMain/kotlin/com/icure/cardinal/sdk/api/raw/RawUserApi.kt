@@ -2,6 +2,7 @@ package com.icure.cardinal.sdk.api.raw
 
 import com.icure.cardinal.sdk.model.EncryptedPropertyStub
 import com.icure.cardinal.sdk.model.ListOfIds
+import com.icure.cardinal.sdk.model.ListOfIdsAndRev
 import com.icure.cardinal.sdk.model.PaginatedList
 import com.icure.cardinal.sdk.model.User
 import com.icure.cardinal.sdk.model.UserGroup
@@ -36,6 +37,8 @@ public interface RawUserApi {
 
 	suspend fun createUser(userDto: User): HttpResponse<User>
 
+	suspend fun createUsers(userDtos: List<User>): HttpResponse<List<User>>
+
 	suspend fun getUser(
 		userId: String,
 		includeMetadataFromGlobalUser: Boolean = false,
@@ -56,17 +59,25 @@ public interface RawUserApi {
 		rev: String? = null,
 	): HttpResponse<DocIdentifier>
 
+	suspend fun deleteUsers(userIds: ListOfIdsAndRev): HttpResponse<List<DocIdentifier>>
+
 	suspend fun undeleteUser(
 		userId: String,
 		rev: String,
 	): HttpResponse<User>
+
+	suspend fun undeleteUsers(userIds: ListOfIdsAndRev): HttpResponse<List<User>>
 
 	suspend fun purgeUser(
 		userId: String,
 		rev: String,
 	): HttpResponse<DocIdentifier>
 
+	suspend fun purgeUsers(userIds: ListOfIdsAndRev): HttpResponse<List<DocIdentifier>>
+
 	suspend fun modifyUser(userDto: User): HttpResponse<User>
+
+	suspend fun modifyUsers(userDtos: List<User>): HttpResponse<List<User>>
 
 	suspend fun assignHealthcareParty(
 		healthcarePartyId: String,
@@ -117,16 +128,53 @@ public interface RawUserApi {
 		userDto: User,
 	): HttpResponse<User>
 
+	suspend fun createUsersInGroup(
+		groupId: String,
+		userDtos: List<User>,
+	): HttpResponse<List<User>>
+
 	suspend fun modifyUserInGroup(
 		groupId: String,
 		userDto: User,
 	): HttpResponse<User>
+
+	suspend fun modifyUsersInGroup(
+		groupId: String,
+		userDtos: List<User>,
+	): HttpResponse<List<User>>
 
 	suspend fun deleteUserInGroup(
 		groupId: String,
 		userId: String,
 		rev: String? = null,
 	): HttpResponse<DocIdentifier>
+
+	suspend fun deleteUsersInGroup(
+		groupId: String,
+		userIds: ListOfIdsAndRev,
+	): HttpResponse<List<DocIdentifier>>
+
+	suspend fun undeleteUserInGroup(
+		groupId: String,
+		userId: String,
+		rev: String,
+	): HttpResponse<User>
+
+	suspend fun undeleteUsersInGroup(
+		groupId: String,
+		userIds: ListOfIdsAndRev,
+	): HttpResponse<List<User>>
+
+	suspend fun purgeUserInGroup(
+		groupId: String,
+		userId: String,
+		rev: String,
+	): HttpResponse<DocIdentifier>
+
+	suspend fun purgeUsersInGroup(
+		groupId: String,
+		userIds: ListOfIdsAndRev,
+	): HttpResponse<List<DocIdentifier>>
 
 	suspend fun setRolesForUser(
 		userId: String,

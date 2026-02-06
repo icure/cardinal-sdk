@@ -63,6 +63,8 @@ public interface RawHealthcarePartyApi {
 
 	suspend fun createHealthcareParty(h: HealthcareParty): HttpResponse<HealthcareParty>
 
+	suspend fun createHealthcareParties(healthcareParties: List<HealthcareParty>): HttpResponse<List<HealthcareParty>>
+
 	suspend fun getAesExchangeKeysForDelegate(
 		healthcarePartyId: String,
 	): HttpResponse<Map<String, Map<String, Map<AesExchangeKeyEncryptionKeypairIdentifier, HexString>>>>
@@ -89,12 +91,18 @@ public interface RawHealthcarePartyApi {
 		rev: String,
 	): HttpResponse<HealthcareParty>
 
+	suspend fun undeleteHealthcareParties(healthcarePartyIds: ListOfIdsAndRev): HttpResponse<List<HealthcareParty>>
+
 	suspend fun purgeHealthcareParty(
 		healthcarePartyId: String,
 		rev: String,
 	): HttpResponse<DocIdentifier>
 
+	suspend fun purgeHealthcareParties(healthcarePartyIds: ListOfIdsAndRev): HttpResponse<List<DocIdentifier>>
+
 	suspend fun modifyHealthcareParty(healthcarePartyDto: HealthcareParty): HttpResponse<HealthcareParty>
+
+	suspend fun modifyHealthcareParties(healthcareParties: List<HealthcareParty>): HttpResponse<List<HealthcareParty>>
 
 	suspend fun matchHealthcarePartiesBy(filter: AbstractFilter<HealthcareParty>): HttpResponse<List<String>>
 
@@ -106,6 +114,11 @@ public interface RawHealthcarePartyApi {
 	// endregion
 
 	// region cloud endpoints
+
+	suspend fun getHealthcarePartyInGroup(
+		groupId: String,
+		healthcarePartyId: String,
+	): HttpResponse<HealthcareParty>
 
 	suspend fun getHealthcarePartiesInGroup(
 		groupId: String,
@@ -123,21 +136,64 @@ public interface RawHealthcarePartyApi {
 		healthcarePartyIds: ListOfIdsAndRev,
 	): HttpResponse<List<DocIdentifier>>
 
+	suspend fun deleteHealthcarePartiesInGroupWithRevNew(
+		groupId: String,
+		healthcarePartyIds: ListOfIdsAndRev,
+	): HttpResponse<List<DocIdentifier>>
+
 	suspend fun deleteHealthcarePartyInGroup(
 		healthcarePartyId: String,
 		groupId: String,
 		rev: String? = null,
 	): HttpResponse<DocIdentifier>
 
+	suspend fun deleteHealthcarePartyInGroupNew(
+		groupId: String,
+		healthcarePartyId: String,
+		rev: String? = null,
+	): HttpResponse<DocIdentifier>
+
+	suspend fun undeleteHealthcarePartyInGroup(
+		groupId: String,
+		healthcarePartyId: String,
+		rev: String,
+	): HttpResponse<HealthcareParty>
+
+	suspend fun undeleteHealthcarePartiesInGroup(
+		groupId: String,
+		healthcarePartyIds: ListOfIdsAndRev,
+	): HttpResponse<List<HealthcareParty>>
+
+	suspend fun purgeHealthcarePartyInGroup(
+		groupId: String,
+		healthcarePartyId: String,
+		rev: String,
+	): HttpResponse<DocIdentifier>
+
+	suspend fun purgeHealthcarePartiesInGroup(
+		groupId: String,
+		healthcarePartyIds: ListOfIdsAndRev,
+	): HttpResponse<List<DocIdentifier>>
+
 	suspend fun modifyHealthcarePartyInGroup(
 		groupId: String,
 		healthcarePartyDto: HealthcareParty,
 	): HttpResponse<HealthcareParty>
 
+	suspend fun modifyHealthcarePartiesInGroup(
+		groupId: String,
+		healthcareParties: List<HealthcareParty>,
+	): HttpResponse<List<HealthcareParty>>
+
 	suspend fun createHealthcarePartyInGroup(
 		groupId: String,
 		h: HealthcareParty,
 	): HttpResponse<HealthcareParty>
+
+	suspend fun createHealthcarePartiesInGroup(
+		groupId: String,
+		healthcareParties: List<HealthcareParty>,
+	): HttpResponse<List<HealthcareParty>>
 
 	suspend fun registerPatient(
 		groupId: String,

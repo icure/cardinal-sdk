@@ -408,6 +408,17 @@ class RawPatientApiImpl(
 			accept(Application.Json)
 		}.wrap()
 
+	override suspend fun purgePatients(patientIds: ListOfIdsAndRev): HttpResponse<List<DocIdentifier>> =
+		post(authProvider) {
+			url {
+				takeFrom(apiUrl)
+				appendPathSegments("rest", "v2", "patient", "purge", "batch")
+			}
+			contentType(Application.Json)
+			accept(Application.Json)
+			setBody(patientIds)
+		}.wrap()
+
 	override suspend fun findDeletedPatients(
 		startDate: Long,
 		endDate: Long?,
@@ -835,6 +846,63 @@ class RawPatientApiImpl(
 				parameter("rev", rev)
 			}
 			accept(Application.Json)
+		}.wrap()
+
+	override suspend fun undeletePatientInGroup(
+		groupId: String,
+		patientId: String,
+		rev: String,
+	): HttpResponse<EncryptedPatient> =
+		post(authProvider, groupId) {
+			url {
+				takeFrom(apiUrl)
+				appendPathSegments("rest", "v2", "patient", "inGroup", groupId, "undelete", patientId)
+				parameter("rev", rev)
+			}
+			contentType(Application.Json)
+			accept(Application.Json)
+		}.wrap()
+
+	override suspend fun undeletePatientsInGroup(
+		groupId: String,
+		ids: ListOfIdsAndRev,
+	): HttpResponse<List<EncryptedPatient>> =
+		post(authProvider, groupId) {
+			url {
+				takeFrom(apiUrl)
+				appendPathSegments("rest", "v2", "patient", "inGroup", groupId, "undelete", "batch")
+			}
+			contentType(Application.Json)
+			accept(Application.Json)
+			setBody(ids)
+		}.wrap()
+
+	override suspend fun purgePatientInGroup(
+		groupId: String,
+		patientId: String,
+		rev: String,
+	): HttpResponse<DocIdentifier> =
+		delete(authProvider, groupId) {
+			url {
+				takeFrom(apiUrl)
+				appendPathSegments("rest", "v2", "patient", "inGroup", groupId, "purge", patientId)
+				parameter("rev", rev)
+			}
+			accept(Application.Json)
+		}.wrap()
+
+	override suspend fun purgePatientsInGroup(
+		groupId: String,
+		patientIds: ListOfIdsAndRev,
+	): HttpResponse<List<DocIdentifier>> =
+		post(authProvider, groupId) {
+			url {
+				takeFrom(apiUrl)
+				appendPathSegments("rest", "v2", "patient", "inGroup", groupId, "purge", "batch")
+			}
+			contentType(Application.Json)
+			accept(Application.Json)
+			setBody(patientIds)
 		}.wrap()
 
 	// endregion

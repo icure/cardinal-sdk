@@ -17,9 +17,7 @@ import kotlin.collections.Map
 import kotlin.collections.Set
 import kotlin.time.Instant
 
-// WARNING: This file is auto-generated. If you change it manually, your changes will be lost.
-// If you want to change the way this class is generated, see [this repo](https://github.com/icure/sdk-codegen).
-sealed interface AccessLog :
+public sealed interface AccessLog :
 	StoredDocument,
 	ICureDocument<String>,
 	HasEncryptionMetadata,
@@ -36,13 +34,9 @@ sealed interface AccessLog :
 
 	override val responsible: String?
 
-	override val medicalLocationId: String?
-
 	override val tags: Set<CodeStub>
 
 	override val codes: Set<CodeStub>
-
-	override val endOfLife: Long?
 
 	override val deletionDate: Long?
 
@@ -56,8 +50,6 @@ sealed interface AccessLog :
 
 	public val date: Instant?
 
-	public val patientId: String?
-
 	override val secretForeignKeys: Set<String>
 
 	override val cryptedForeignKeys: Map<String, Set<Delegation>>
@@ -69,25 +61,20 @@ sealed interface AccessLog :
 	override val encryptedSelf: Base64String?
 
 	override val securityMetadata: SecurityMetadata?
-	// region AccessLog-AccessLog
-
-	// endregion
 }
 
 @Serializable
-data class DecryptedAccessLog(
+public data class DecryptedAccessLog(
 	override val id: String,
 	override val rev: String? = null,
 	override val created: Long? = null,
 	override val modified: Long? = null,
 	override val author: String? = null,
 	override val responsible: String? = null,
-	override val medicalLocationId: String? = null,
-	@DefaultValue("emptySet()")
+	@param:DefaultValue("emptySet()")
 	override val tags: Set<CodeStub> = emptySet(),
-	@DefaultValue("emptySet()")
+	@param:DefaultValue("emptySet()")
 	override val codes: Set<CodeStub> = emptySet(),
-	override val endOfLife: Long? = null,
 	override val deletionDate: Long? = null,
 	override val objectId: String? = null,
 	override val accessType: String? = null,
@@ -95,38 +82,30 @@ data class DecryptedAccessLog(
 	override val detail: String? = null,
 	@Serializable(with = InstantSerializer::class)
 	override val date: Instant? = null,
-	override val patientId: String? = null,
-	@DefaultValue("emptySet()")
+	@param:DefaultValue("emptySet()")
 	override val secretForeignKeys: Set<String> = emptySet(),
-	@DefaultValue("emptyMap()")
+	@param:DefaultValue("emptyMap()")
 	override val cryptedForeignKeys: Map<String, Set<Delegation>> = emptyMap(),
-	@DefaultValue("emptyMap()")
+	@param:DefaultValue("emptyMap()")
 	override val delegations: Map<String, Set<Delegation>> = emptyMap(),
-	@DefaultValue("emptyMap()")
+	@param:DefaultValue("emptyMap()")
 	override val encryptionKeys: Map<String, Set<Delegation>> = emptyMap(),
 	override val encryptedSelf: Base64String? = null,
 	override val securityMetadata: SecurityMetadata? = null,
-) : AccessLog {
-	// region AccessLog-DecryptedAccessLog
-override fun copyWithSecurityMetadata(securityMetadata: SecurityMetadata, secretForeignKeys: Set<String>): DecryptedAccessLog =
-		copy(securityMetadata = securityMetadata, secretForeignKeys = secretForeignKeys)
-	// endregion
-}
+) : AccessLog
 
 @Serializable
-data class EncryptedAccessLog(
+public data class EncryptedAccessLog(
 	override val id: String,
 	override val rev: String? = null,
 	override val created: Long? = null,
 	override val modified: Long? = null,
 	override val author: String? = null,
 	override val responsible: String? = null,
-	override val medicalLocationId: String? = null,
-	@DefaultValue("emptySet()")
+	@param:DefaultValue("emptySet()")
 	override val tags: Set<CodeStub> = emptySet(),
-	@DefaultValue("emptySet()")
+	@param:DefaultValue("emptySet()")
 	override val codes: Set<CodeStub> = emptySet(),
-	override val endOfLife: Long? = null,
 	override val deletionDate: Long? = null,
 	override val objectId: String? = null,
 	override val accessType: String? = null,
@@ -134,20 +113,14 @@ data class EncryptedAccessLog(
 	override val detail: String? = null,
 	@Serializable(with = InstantSerializer::class)
 	override val date: Instant? = null,
-	override val patientId: String? = null,
-	@DefaultValue("emptySet()")
+	@param:DefaultValue("emptySet()")
 	override val secretForeignKeys: Set<String> = emptySet(),
-	@DefaultValue("emptyMap()")
+	@param:DefaultValue("emptyMap()")
 	override val cryptedForeignKeys: Map<String, Set<Delegation>> = emptyMap(),
-	@DefaultValue("emptyMap()")
+	@param:DefaultValue("emptyMap()")
 	override val delegations: Map<String, Set<Delegation>> = emptyMap(),
-	@DefaultValue("emptyMap()")
+	@param:DefaultValue("emptyMap()")
 	override val encryptionKeys: Map<String, Set<Delegation>> = emptyMap(),
 	override val encryptedSelf: Base64String? = null,
 	override val securityMetadata: SecurityMetadata? = null,
-) : AccessLog {
-	// region AccessLog-EncryptedAccessLog
-override fun copyWithSecurityMetadata(securityMetadata: SecurityMetadata, secretForeignKeys: Set<String>): EncryptedAccessLog =
-		copy(securityMetadata = securityMetadata, secretForeignKeys = secretForeignKeys)
-	// endregion
-}
+) : AccessLog
