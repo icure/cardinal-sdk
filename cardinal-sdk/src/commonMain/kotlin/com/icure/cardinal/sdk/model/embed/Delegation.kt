@@ -14,7 +14,7 @@ data class Delegation(
 	public val owner: String? = null,
 	public val delegatedTo: String? = null,
 	public val key: HexString? = null,
-	@DefaultValue("emptyList()")
+	@param:DefaultValue("emptyList()")
 	public val tags: List<String> = emptyList(),
 ) {
   // region Delegation-Delegation

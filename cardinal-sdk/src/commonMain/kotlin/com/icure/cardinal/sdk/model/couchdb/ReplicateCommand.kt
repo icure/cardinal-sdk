@@ -14,9 +14,9 @@ import kotlin.collections.List
 data class ReplicateCommand(
 	override val id: String,
 	override val rev: String? = null,
-	@DefaultValue("false")
+	@param:DefaultValue("false")
 	public val continuous: Boolean = false,
-	@DefaultValue("false")
+	@param:DefaultValue("false")
 	public val createTarget: Boolean = false,
 	public val docIds: List<String>? = null,
 	public val cancel: Boolean? = null,

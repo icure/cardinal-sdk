@@ -10,9 +10,9 @@ import kotlin.collections.Set
 
 @Serializable
 data class Right(
-	@DefaultValue("emptySet()")
+	@param:DefaultValue("emptySet()")
 	public val names: Set<String> = emptySet(),
-	@DefaultValue("emptySet()")
+	@param:DefaultValue("emptySet()")
 	public val roles: Set<String> = emptySet(),
 ) {
 	// region Right-Right

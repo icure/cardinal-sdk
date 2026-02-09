@@ -4,6 +4,7 @@ import com.icure.cardinal.sdk.model.embed.AuthenticationClass
 import com.icure.cardinal.sdk.utils.DefaultValue
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
+import kotlinx.serialization.json.JsonNames
 import kotlin.String
 import com.icure.cardinal.sdk.model.specializations.Base64String
 
@@ -14,7 +15,7 @@ import com.icure.cardinal.sdk.model.specializations.Base64String
 data class ExternalJwtConfig(
 	public val validationMethod: ValidationMethod,
 	public val fieldSelector: FieldSelector,
-	@DefaultValue("com.icure.cardinal.sdk.model.embed.AuthenticationClass.ExternalAuthentication")
+	@param:DefaultValue("com.icure.cardinal.sdk.model.embed.AuthenticationClass.ExternalAuthentication")
 	public val authenticationClass: AuthenticationClass = AuthenticationClass.ExternalAuthentication,
 ) {
 	@Serializable
@@ -23,14 +24,17 @@ data class ExternalJwtConfig(
 		@SerialName("PublicKey")
 		public data class PublicKey(
 			public val key: String,
-			@DefaultValue("null")
+			@param:DefaultValue("null")
 			public val signatureAlgorithm: String? = null,
+			public val clientId: String? = null,
 		) : ValidationMethod
 
 		@Serializable
 		@SerialName("Oidc")
 		public data class Oidc(
-			public val issureLocation: String,
+			@JsonNames("issureLocation")
+			public val issuerLocation: String,
+			public val clientId: String? = null,
 		) : ValidationMethod
 	}
 

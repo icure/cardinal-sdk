@@ -14,13 +14,13 @@ import kotlin.collections.Set
 data class SecureDelegation(
 	public val delegator: String? = null,
 	public val `delegate`: String? = null,
-	@DefaultValue("emptySet()")
+	@param:DefaultValue("emptySet()")
 	public val secretIds: Set<Base64String> = emptySet(),
-	@DefaultValue("emptySet()")
+	@param:DefaultValue("emptySet()")
 	public val encryptionKeys: Set<Base64String> = emptySet(),
-	@DefaultValue("emptySet()")
+	@param:DefaultValue("emptySet()")
 	public val owningEntityIds: Set<Base64String> = emptySet(),
-	@DefaultValue("emptySet()")
+	@param:DefaultValue("emptySet()")
 	public val parentDelegations: Set<SecureDelegationKeyString> = emptySet(),
 	public val exchangeDataId: String? = null,
 	public val permissions: AccessLevel,

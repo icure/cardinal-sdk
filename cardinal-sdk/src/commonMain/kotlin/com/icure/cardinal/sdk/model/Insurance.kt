@@ -17,13 +17,13 @@ data class Insurance(
 	override val id: String,
 	override val rev: String? = null,
 	override val deletionDate: Long? = null,
-	@DefaultValue("emptyMap()")
+	@param:DefaultValue("emptyMap()")
 	public val name: Map<String, String> = emptyMap(),
-	@DefaultValue("false")
+	@param:DefaultValue("false")
 	public val privateInsurance: Boolean = false,
-	@DefaultValue("false")
+	@param:DefaultValue("false")
 	public val hospitalisationInsurance: Boolean = false,
-	@DefaultValue("false")
+	@param:DefaultValue("false")
 	public val ambulatoryInsurance: Boolean = false,
 	public val code: String? = null,
 	public val agreementNumber: String? = null,
