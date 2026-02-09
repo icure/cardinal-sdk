@@ -2,6 +2,7 @@ package com.icure.cardinal.sdk.crypto
 
 import com.icure.cardinal.sdk.CardinalSdk
 import com.icure.cardinal.sdk.crypto.entities.SecretIdUseOption
+import com.icure.cardinal.sdk.filters.HealthElementFilters
 import com.icure.cardinal.sdk.model.DecryptedHealthElement
 import com.icure.cardinal.sdk.model.DecryptedPatient
 import com.icure.cardinal.sdk.model.embed.AccessLevel
@@ -103,26 +104,26 @@ class HierarchicalDataOwnerEncryptionAndConfidentialityTest : StringSpec({
 		val nonConfidentialNote = "Encrypted - non confidential he"
 		val nonConfidentialHe = hcpApi.healthElement.createHealthElement(
 			hcpApi.healthElement.withEncryptionMetadata(
-                DecryptedHealthElement(
-                    id = defaultCryptoService.strongRandom.randomUUID(),
-                    note = nonConfidentialNote
-                ),
-                patient,
-                hcpApi.user.getCurrentUser(),
-                mapOf(parent.dataOwnerId to AccessLevel.Write)
+				DecryptedHealthElement(
+					id = defaultCryptoService.strongRandom.randomUUID(),
+					note = nonConfidentialNote
+				),
+				patient,
+				hcpApi.user.getCurrentUser(),
+				mapOf(parent.dataOwnerId to AccessLevel.Write)
 			)
 		).shouldNotBeNull()
 		val confidentialNote = "Encrypted - confidential he"
 		val confidentialHe = hcpApi.healthElement.createHealthElement(
 			hcpApi.healthElement.withEncryptionMetadata(
-                DecryptedHealthElement(
-                    id = defaultCryptoService.strongRandom.randomUUID(),
-                    note = confidentialNote
-                ),
-                patient,
-                hcpApi.user.getCurrentUser(),
-                mapOf(parent.dataOwnerId to AccessLevel.Write),
-                SecretIdUseOption.UseAnyConfidential
+				DecryptedHealthElement(
+					id = defaultCryptoService.strongRandom.randomUUID(),
+					note = confidentialNote
+				),
+				patient,
+				hcpApi.user.getCurrentUser(),
+				mapOf(parent.dataOwnerId to AccessLevel.Write),
+				SecretIdUseOption.UseAnyConfidential
 			)
 		).shouldNotBeNull()
 
@@ -133,7 +134,9 @@ class HierarchicalDataOwnerEncryptionAndConfidentialityTest : StringSpec({
 			val hes = mutableListOf<DecryptedHealthElement>()
 
 			hcpIds.forEach { hcpId ->
-				val iterator = api.healthElement.findHealthElementsByHcPartyPatient(hcpId, patient)
+				val iterator = api.healthElement.filterHealthElementsBy(
+					HealthElementFilters.byPatientsForDataOwner(hcpId, listOf(patient))
+				)
 				iterator.forEach { element ->
 					if (hes.all { it.id != element.id }) {
 						hes.add(element)

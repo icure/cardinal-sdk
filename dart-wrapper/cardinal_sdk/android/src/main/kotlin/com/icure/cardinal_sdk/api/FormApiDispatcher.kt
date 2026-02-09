@@ -97,6 +97,7 @@ public object FormApiDispatcher {
       parameters.getValue("user"),
       parameters.getValue("delegates"),
       parameters.getValue("secretId"),
+      parameters.getValue("alternateRootDelegateId"),
     )
   }
 

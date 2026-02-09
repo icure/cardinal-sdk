@@ -6,6 +6,7 @@ import com.icure.cardinal.sdk.filters.BaseFilterOptions
 import com.icure.cardinal.sdk.filters.BaseSortableFilterOptions
 import com.icure.cardinal.sdk.js.api.DefaultParametersSupport.convertingOptionOrDefaultNullable
 import com.icure.cardinal.sdk.js.api.TopicBasicApiJs
+import com.icure.cardinal.sdk.js.api.TopicBasicInGroupApiJs
 import com.icure.cardinal.sdk.js.filters.BaseFilterOptionsJs
 import com.icure.cardinal.sdk.js.filters.BaseSortableFilterOptionsJs
 import com.icure.cardinal.sdk.js.filters.baseFilterOptions_fromJs
@@ -15,11 +16,13 @@ import com.icure.cardinal.sdk.js.model.CheckedConverters.arrayToSet
 import com.icure.cardinal.sdk.js.model.CheckedConverters.listToArray
 import com.icure.cardinal.sdk.js.model.CheckedConverters.nullToUndefined
 import com.icure.cardinal.sdk.js.model.EncryptedTopicJs
+import com.icure.cardinal.sdk.js.model.GroupScopedJs
 import com.icure.cardinal.sdk.js.model.StoredDocumentIdentifierJs
 import com.icure.cardinal.sdk.js.model.TopicJs
-import com.icure.cardinal.sdk.js.model.couchdb.DocIdentifierJs
-import com.icure.cardinal.sdk.js.model.couchdb.docIdentifier_toJs
+import com.icure.cardinal.sdk.js.model.groupScoped_fromJs
+import com.icure.cardinal.sdk.js.model.groupScoped_toJs
 import com.icure.cardinal.sdk.js.model.storedDocumentIdentifier_fromJs
+import com.icure.cardinal.sdk.js.model.storedDocumentIdentifier_toJs
 import com.icure.cardinal.sdk.js.model.topic_fromJs
 import com.icure.cardinal.sdk.js.model.topic_toJs
 import com.icure.cardinal.sdk.js.subscription.EntitySubscriptionConfigurationJs
@@ -29,10 +32,10 @@ import com.icure.cardinal.sdk.js.subscription.entitySubscription_toJs
 import com.icure.cardinal.sdk.js.utils.pagination.PaginatedListIteratorJs
 import com.icure.cardinal.sdk.js.utils.pagination.paginatedListIterator_toJs
 import com.icure.cardinal.sdk.model.EncryptedTopic
+import com.icure.cardinal.sdk.model.GroupScoped
 import com.icure.cardinal.sdk.model.StoredDocumentIdentifier
 import com.icure.cardinal.sdk.model.Topic
 import com.icure.cardinal.sdk.model.TopicRole
-import com.icure.cardinal.sdk.model.couchdb.DocIdentifier
 import com.icure.cardinal.sdk.subscription.EntitySubscriptionConfiguration
 import com.icure.cardinal.sdk.subscription.SubscriptionEventType
 import kotlin.Array
@@ -50,6 +53,510 @@ import kotlinx.coroutines.promise
 internal class TopicBasicApiImplJs(
 	private val topicBasicApi: TopicBasicApi,
 ) : TopicBasicApiJs {
+	override val inGroup: TopicBasicInGroupApiJs = object : TopicBasicInGroupApiJs {
+		override fun matchTopicsBy(groupId: String, filter: BaseFilterOptionsJs<TopicJs>):
+				Promise<Array<String>> = GlobalScope.promise {
+			val groupIdConverted: String = groupId
+			val filterConverted: BaseFilterOptions<Topic> = baseFilterOptions_fromJs(filter)
+			val result = topicBasicApi.inGroup.matchTopicsBy(
+				groupIdConverted,
+				filterConverted,
+			)
+			listToArray(
+				result,
+				{ x1: String ->
+					x1
+				},
+			)
+		}
+
+		override fun matchTopicsBySorted(groupId: String, filter: BaseSortableFilterOptionsJs<TopicJs>):
+				Promise<Array<String>> = GlobalScope.promise {
+			val groupIdConverted: String = groupId
+			val filterConverted: BaseSortableFilterOptions<Topic> = baseSortableFilterOptions_fromJs(filter)
+			val result = topicBasicApi.inGroup.matchTopicsBySorted(
+				groupIdConverted,
+				filterConverted,
+			)
+			listToArray(
+				result,
+				{ x1: String ->
+					x1
+				},
+			)
+		}
+
+		override fun filterTopicsBy(groupId: String, filter: BaseFilterOptionsJs<TopicJs>):
+				Promise<PaginatedListIteratorJs<GroupScopedJs<EncryptedTopicJs>>> = GlobalScope.promise {
+			val groupIdConverted: String = groupId
+			val filterConverted: BaseFilterOptions<Topic> = baseFilterOptions_fromJs(filter)
+			val result = topicBasicApi.inGroup.filterTopicsBy(
+				groupIdConverted,
+				filterConverted,
+			)
+			paginatedListIterator_toJs(
+				result,
+				{ x1: GroupScoped<EncryptedTopic> ->
+					groupScoped_toJs(
+						x1,
+						{ x2: EncryptedTopic ->
+							topic_toJs(x2)
+						},
+					)
+				},
+			)
+		}
+
+		override fun filterTopicsBySorted(groupId: String, filter: BaseSortableFilterOptionsJs<TopicJs>):
+				Promise<PaginatedListIteratorJs<GroupScopedJs<EncryptedTopicJs>>> = GlobalScope.promise {
+			val groupIdConverted: String = groupId
+			val filterConverted: BaseSortableFilterOptions<Topic> = baseSortableFilterOptions_fromJs(filter)
+			val result = topicBasicApi.inGroup.filterTopicsBySorted(
+				groupIdConverted,
+				filterConverted,
+			)
+			paginatedListIterator_toJs(
+				result,
+				{ x1: GroupScoped<EncryptedTopic> ->
+					groupScoped_toJs(
+						x1,
+						{ x2: EncryptedTopic ->
+							topic_toJs(x2)
+						},
+					)
+				},
+			)
+		}
+
+		override fun deleteTopicById(entityId: GroupScopedJs<StoredDocumentIdentifierJs>):
+				Promise<GroupScopedJs<StoredDocumentIdentifierJs>> = GlobalScope.promise {
+			val entityIdConverted: GroupScoped<StoredDocumentIdentifier> = groupScoped_fromJs(
+				entityId,
+				{ x1: StoredDocumentIdentifierJs ->
+					storedDocumentIdentifier_fromJs(x1)
+				},
+			)
+			val result = topicBasicApi.inGroup.deleteTopicById(
+				entityIdConverted,
+			)
+			groupScoped_toJs(
+				result,
+				{ x1: StoredDocumentIdentifier ->
+					storedDocumentIdentifier_toJs(x1)
+				},
+			)
+		}
+
+		override fun deleteTopicsByIds(entityIds: Array<GroupScopedJs<StoredDocumentIdentifierJs>>):
+				Promise<Array<GroupScopedJs<StoredDocumentIdentifierJs>>> = GlobalScope.promise {
+			val entityIdsConverted: List<GroupScoped<StoredDocumentIdentifier>> = arrayToList(
+				entityIds,
+				"entityIds",
+				{ x1: GroupScopedJs<StoredDocumentIdentifierJs> ->
+					groupScoped_fromJs(
+						x1,
+						{ x2: StoredDocumentIdentifierJs ->
+							storedDocumentIdentifier_fromJs(x2)
+						},
+					)
+				},
+			)
+			val result = topicBasicApi.inGroup.deleteTopicsByIds(
+				entityIdsConverted,
+			)
+			listToArray(
+				result,
+				{ x1: GroupScoped<StoredDocumentIdentifier> ->
+					groupScoped_toJs(
+						x1,
+						{ x2: StoredDocumentIdentifier ->
+							storedDocumentIdentifier_toJs(x2)
+						},
+					)
+				},
+			)
+		}
+
+		override fun purgeTopicById(entityId: GroupScopedJs<StoredDocumentIdentifierJs>): Promise<Unit> =
+				GlobalScope.promise {
+			val entityIdConverted: GroupScoped<StoredDocumentIdentifier> = groupScoped_fromJs(
+				entityId,
+				{ x1: StoredDocumentIdentifierJs ->
+					storedDocumentIdentifier_fromJs(x1)
+				},
+			)
+			topicBasicApi.inGroup.purgeTopicById(
+				entityIdConverted,
+			)
+
+		}
+
+		override fun purgeTopicsByIds(entityIds: Array<GroupScopedJs<StoredDocumentIdentifierJs>>):
+				Promise<Array<GroupScopedJs<StoredDocumentIdentifierJs>>> = GlobalScope.promise {
+			val entityIdsConverted: List<GroupScoped<StoredDocumentIdentifier>> = arrayToList(
+				entityIds,
+				"entityIds",
+				{ x1: GroupScopedJs<StoredDocumentIdentifierJs> ->
+					groupScoped_fromJs(
+						x1,
+						{ x2: StoredDocumentIdentifierJs ->
+							storedDocumentIdentifier_fromJs(x2)
+						},
+					)
+				},
+			)
+			val result = topicBasicApi.inGroup.purgeTopicsByIds(
+				entityIdsConverted,
+			)
+			listToArray(
+				result,
+				{ x1: GroupScoped<StoredDocumentIdentifier> ->
+					groupScoped_toJs(
+						x1,
+						{ x2: StoredDocumentIdentifier ->
+							storedDocumentIdentifier_toJs(x2)
+						},
+					)
+				},
+			)
+		}
+
+		override fun deleteTopic(topic: GroupScopedJs<TopicJs>):
+				Promise<GroupScopedJs<StoredDocumentIdentifierJs>> = GlobalScope.promise {
+			val topicConverted: GroupScoped<Topic> = groupScoped_fromJs(
+				topic,
+				{ x1: TopicJs ->
+					topic_fromJs(x1)
+				},
+			)
+			val result = topicBasicApi.inGroup.deleteTopic(
+				topicConverted,
+			)
+			groupScoped_toJs(
+				result,
+				{ x1: StoredDocumentIdentifier ->
+					storedDocumentIdentifier_toJs(x1)
+				},
+			)
+		}
+
+		override fun deleteTopics(topics: Array<GroupScopedJs<TopicJs>>):
+				Promise<Array<GroupScopedJs<StoredDocumentIdentifierJs>>> = GlobalScope.promise {
+			val topicsConverted: List<GroupScoped<Topic>> = arrayToList(
+				topics,
+				"topics",
+				{ x1: GroupScopedJs<TopicJs> ->
+					groupScoped_fromJs(
+						x1,
+						{ x2: TopicJs ->
+							topic_fromJs(x2)
+						},
+					)
+				},
+			)
+			val result = topicBasicApi.inGroup.deleteTopics(
+				topicsConverted,
+			)
+			listToArray(
+				result,
+				{ x1: GroupScoped<StoredDocumentIdentifier> ->
+					groupScoped_toJs(
+						x1,
+						{ x2: StoredDocumentIdentifier ->
+							storedDocumentIdentifier_toJs(x2)
+						},
+					)
+				},
+			)
+		}
+
+		override fun purgeTopic(topic: GroupScopedJs<TopicJs>): Promise<Unit> = GlobalScope.promise {
+			val topicConverted: GroupScoped<Topic> = groupScoped_fromJs(
+				topic,
+				{ x1: TopicJs ->
+					topic_fromJs(x1)
+				},
+			)
+			topicBasicApi.inGroup.purgeTopic(
+				topicConverted,
+			)
+
+		}
+
+		override fun purgeTopics(topics: Array<GroupScopedJs<TopicJs>>):
+				Promise<Array<GroupScopedJs<StoredDocumentIdentifierJs>>> = GlobalScope.promise {
+			val topicsConverted: List<GroupScoped<Topic>> = arrayToList(
+				topics,
+				"topics",
+				{ x1: GroupScopedJs<TopicJs> ->
+					groupScoped_fromJs(
+						x1,
+						{ x2: TopicJs ->
+							topic_fromJs(x2)
+						},
+					)
+				},
+			)
+			val result = topicBasicApi.inGroup.purgeTopics(
+				topicsConverted,
+			)
+			listToArray(
+				result,
+				{ x1: GroupScoped<StoredDocumentIdentifier> ->
+					groupScoped_toJs(
+						x1,
+						{ x2: StoredDocumentIdentifier ->
+							storedDocumentIdentifier_toJs(x2)
+						},
+					)
+				},
+			)
+		}
+
+		override fun createTopic(entity: GroupScopedJs<EncryptedTopicJs>):
+				Promise<GroupScopedJs<EncryptedTopicJs>> = GlobalScope.promise {
+			val entityConverted: GroupScoped<EncryptedTopic> = groupScoped_fromJs(
+				entity,
+				{ x1: EncryptedTopicJs ->
+					topic_fromJs(x1)
+				},
+			)
+			val result = topicBasicApi.inGroup.createTopic(
+				entityConverted,
+			)
+			groupScoped_toJs(
+				result,
+				{ x1: EncryptedTopic ->
+					topic_toJs(x1)
+				},
+			)
+		}
+
+		override fun createTopics(entities: Array<GroupScopedJs<EncryptedTopicJs>>):
+				Promise<Array<GroupScopedJs<EncryptedTopicJs>>> = GlobalScope.promise {
+			val entitiesConverted: List<GroupScoped<EncryptedTopic>> = arrayToList(
+				entities,
+				"entities",
+				{ x1: GroupScopedJs<EncryptedTopicJs> ->
+					groupScoped_fromJs(
+						x1,
+						{ x2: EncryptedTopicJs ->
+							topic_fromJs(x2)
+						},
+					)
+				},
+			)
+			val result = topicBasicApi.inGroup.createTopics(
+				entitiesConverted,
+			)
+			listToArray(
+				result,
+				{ x1: GroupScoped<EncryptedTopic> ->
+					groupScoped_toJs(
+						x1,
+						{ x2: EncryptedTopic ->
+							topic_toJs(x2)
+						},
+					)
+				},
+			)
+		}
+
+		override fun undeleteTopicById(entityId: GroupScopedJs<StoredDocumentIdentifierJs>):
+				Promise<GroupScopedJs<EncryptedTopicJs>> = GlobalScope.promise {
+			val entityIdConverted: GroupScoped<StoredDocumentIdentifier> = groupScoped_fromJs(
+				entityId,
+				{ x1: StoredDocumentIdentifierJs ->
+					storedDocumentIdentifier_fromJs(x1)
+				},
+			)
+			val result = topicBasicApi.inGroup.undeleteTopicById(
+				entityIdConverted,
+			)
+			groupScoped_toJs(
+				result,
+				{ x1: EncryptedTopic ->
+					topic_toJs(x1)
+				},
+			)
+		}
+
+		override fun undeleteTopicsByIds(entityIds: Array<GroupScopedJs<StoredDocumentIdentifierJs>>):
+				Promise<Array<GroupScopedJs<EncryptedTopicJs>>> = GlobalScope.promise {
+			val entityIdsConverted: List<GroupScoped<StoredDocumentIdentifier>> = arrayToList(
+				entityIds,
+				"entityIds",
+				{ x1: GroupScopedJs<StoredDocumentIdentifierJs> ->
+					groupScoped_fromJs(
+						x1,
+						{ x2: StoredDocumentIdentifierJs ->
+							storedDocumentIdentifier_fromJs(x2)
+						},
+					)
+				},
+			)
+			val result = topicBasicApi.inGroup.undeleteTopicsByIds(
+				entityIdsConverted,
+			)
+			listToArray(
+				result,
+				{ x1: GroupScoped<EncryptedTopic> ->
+					groupScoped_toJs(
+						x1,
+						{ x2: EncryptedTopic ->
+							topic_toJs(x2)
+						},
+					)
+				},
+			)
+		}
+
+		override fun undeleteTopic(topic: GroupScopedJs<TopicJs>):
+				Promise<GroupScopedJs<EncryptedTopicJs>> = GlobalScope.promise {
+			val topicConverted: GroupScoped<Topic> = groupScoped_fromJs(
+				topic,
+				{ x1: TopicJs ->
+					topic_fromJs(x1)
+				},
+			)
+			val result = topicBasicApi.inGroup.undeleteTopic(
+				topicConverted,
+			)
+			groupScoped_toJs(
+				result,
+				{ x1: EncryptedTopic ->
+					topic_toJs(x1)
+				},
+			)
+		}
+
+		override fun undeleteTopics(topics: Array<GroupScopedJs<EncryptedTopicJs>>):
+				Promise<Array<GroupScopedJs<EncryptedTopicJs>>> = GlobalScope.promise {
+			val topicsConverted: List<GroupScoped<EncryptedTopic>> = arrayToList(
+				topics,
+				"topics",
+				{ x1: GroupScopedJs<EncryptedTopicJs> ->
+					groupScoped_fromJs(
+						x1,
+						{ x2: EncryptedTopicJs ->
+							topic_fromJs(x2)
+						},
+					)
+				},
+			)
+			val result = topicBasicApi.inGroup.undeleteTopics(
+				topicsConverted,
+			)
+			listToArray(
+				result,
+				{ x1: GroupScoped<EncryptedTopic> ->
+					groupScoped_toJs(
+						x1,
+						{ x2: EncryptedTopic ->
+							topic_toJs(x2)
+						},
+					)
+				},
+			)
+		}
+
+		override fun modifyTopic(entity: GroupScopedJs<EncryptedTopicJs>):
+				Promise<GroupScopedJs<EncryptedTopicJs>> = GlobalScope.promise {
+			val entityConverted: GroupScoped<EncryptedTopic> = groupScoped_fromJs(
+				entity,
+				{ x1: EncryptedTopicJs ->
+					topic_fromJs(x1)
+				},
+			)
+			val result = topicBasicApi.inGroup.modifyTopic(
+				entityConverted,
+			)
+			groupScoped_toJs(
+				result,
+				{ x1: EncryptedTopic ->
+					topic_toJs(x1)
+				},
+			)
+		}
+
+		override fun modifyTopics(entities: Array<GroupScopedJs<EncryptedTopicJs>>):
+				Promise<Array<GroupScopedJs<EncryptedTopicJs>>> = GlobalScope.promise {
+			val entitiesConverted: List<GroupScoped<EncryptedTopic>> = arrayToList(
+				entities,
+				"entities",
+				{ x1: GroupScopedJs<EncryptedTopicJs> ->
+					groupScoped_fromJs(
+						x1,
+						{ x2: EncryptedTopicJs ->
+							topic_fromJs(x2)
+						},
+					)
+				},
+			)
+			val result = topicBasicApi.inGroup.modifyTopics(
+				entitiesConverted,
+			)
+			listToArray(
+				result,
+				{ x1: GroupScoped<EncryptedTopic> ->
+					groupScoped_toJs(
+						x1,
+						{ x2: EncryptedTopic ->
+							topic_toJs(x2)
+						},
+					)
+				},
+			)
+		}
+
+		override fun getTopic(groupId: String, entityId: String):
+				Promise<GroupScopedJs<EncryptedTopicJs>?> = GlobalScope.promise {
+			val groupIdConverted: String = groupId
+			val entityIdConverted: String = entityId
+			val result = topicBasicApi.inGroup.getTopic(
+				groupIdConverted,
+				entityIdConverted,
+			)
+			nullToUndefined(
+				result?.let { nonNull1 ->
+					groupScoped_toJs(
+						nonNull1,
+						{ x1: EncryptedTopic ->
+							topic_toJs(x1)
+						},
+					)
+				}
+			)
+		}
+
+		override fun getTopics(groupId: String, entityIds: Array<String>):
+				Promise<Array<GroupScopedJs<EncryptedTopicJs>>> = GlobalScope.promise {
+			val groupIdConverted: String = groupId
+			val entityIdsConverted: List<String> = arrayToList(
+				entityIds,
+				"entityIds",
+				{ x1: String ->
+					x1
+				},
+			)
+			val result = topicBasicApi.inGroup.getTopics(
+				groupIdConverted,
+				entityIdsConverted,
+			)
+			listToArray(
+				result,
+				{ x1: GroupScoped<EncryptedTopic> ->
+					groupScoped_toJs(
+						x1,
+						{ x2: EncryptedTopic ->
+							topic_toJs(x2)
+						},
+					)
+				},
+			)
+		}
+	}
+
 	override fun matchTopicsBy(filter: BaseFilterOptionsJs<TopicJs>): Promise<Array<String>> =
 			GlobalScope.promise {
 		val filterConverted: BaseFilterOptions<Topic> = baseFilterOptions_fromJs(filter)
@@ -106,35 +613,7 @@ internal class TopicBasicApiImplJs(
 		)
 	}
 
-	override fun deleteTopicUnsafe(entityId: String): Promise<DocIdentifierJs> = GlobalScope.promise {
-		val entityIdConverted: String = entityId
-		val result = topicBasicApi.deleteTopicUnsafe(
-			entityIdConverted,
-		)
-		docIdentifier_toJs(result)
-	}
-
-	override fun deleteTopicsUnsafe(entityIds: Array<String>): Promise<Array<DocIdentifierJs>> =
-			GlobalScope.promise {
-		val entityIdsConverted: List<String> = arrayToList(
-			entityIds,
-			"entityIds",
-			{ x1: String ->
-				x1
-			},
-		)
-		val result = topicBasicApi.deleteTopicsUnsafe(
-			entityIdsConverted,
-		)
-		listToArray(
-			result,
-			{ x1: DocIdentifier ->
-				docIdentifier_toJs(x1)
-			},
-		)
-	}
-
-	override fun deleteTopicById(entityId: String, rev: String): Promise<DocIdentifierJs> =
+	override fun deleteTopicById(entityId: String, rev: String): Promise<StoredDocumentIdentifierJs> =
 			GlobalScope.promise {
 		val entityIdConverted: String = entityId
 		val revConverted: String = rev
@@ -142,11 +621,11 @@ internal class TopicBasicApiImplJs(
 			entityIdConverted,
 			revConverted,
 		)
-		docIdentifier_toJs(result)
+		storedDocumentIdentifier_toJs(result)
 	}
 
 	override fun deleteTopicsByIds(entityIds: Array<StoredDocumentIdentifierJs>):
-			Promise<Array<DocIdentifierJs>> = GlobalScope.promise {
+			Promise<Array<StoredDocumentIdentifierJs>> = GlobalScope.promise {
 		val entityIdsConverted: List<StoredDocumentIdentifier> = arrayToList(
 			entityIds,
 			"entityIds",
@@ -159,8 +638,8 @@ internal class TopicBasicApiImplJs(
 		)
 		listToArray(
 			result,
-			{ x1: DocIdentifier ->
-				docIdentifier_toJs(x1)
+			{ x1: StoredDocumentIdentifier ->
+				storedDocumentIdentifier_toJs(x1)
 			},
 		)
 	}
@@ -175,15 +654,36 @@ internal class TopicBasicApiImplJs(
 
 	}
 
-	override fun deleteTopic(topic: TopicJs): Promise<DocIdentifierJs> = GlobalScope.promise {
+	override fun purgeTopicsByIds(entityIds: Array<StoredDocumentIdentifierJs>):
+			Promise<Array<StoredDocumentIdentifierJs>> = GlobalScope.promise {
+		val entityIdsConverted: List<StoredDocumentIdentifier> = arrayToList(
+			entityIds,
+			"entityIds",
+			{ x1: StoredDocumentIdentifierJs ->
+				storedDocumentIdentifier_fromJs(x1)
+			},
+		)
+		val result = topicBasicApi.purgeTopicsByIds(
+			entityIdsConverted,
+		)
+		listToArray(
+			result,
+			{ x1: StoredDocumentIdentifier ->
+				storedDocumentIdentifier_toJs(x1)
+			},
+		)
+	}
+
+	override fun deleteTopic(topic: TopicJs): Promise<StoredDocumentIdentifierJs> =
+			GlobalScope.promise {
 		val topicConverted: Topic = topic_fromJs(topic)
 		val result = topicBasicApi.deleteTopic(
 			topicConverted,
 		)
-		docIdentifier_toJs(result)
+		storedDocumentIdentifier_toJs(result)
 	}
 
-	override fun deleteTopics(topics: Array<TopicJs>): Promise<Array<DocIdentifierJs>> =
+	override fun deleteTopics(topics: Array<TopicJs>): Promise<Array<StoredDocumentIdentifierJs>> =
 			GlobalScope.promise {
 		val topicsConverted: List<Topic> = arrayToList(
 			topics,
@@ -197,8 +697,8 @@ internal class TopicBasicApiImplJs(
 		)
 		listToArray(
 			result,
-			{ x1: DocIdentifier ->
-				docIdentifier_toJs(x1)
+			{ x1: StoredDocumentIdentifier ->
+				storedDocumentIdentifier_toJs(x1)
 			},
 		)
 	}
@@ -211,6 +711,26 @@ internal class TopicBasicApiImplJs(
 
 	}
 
+	override fun purgeTopics(topics: Array<TopicJs>): Promise<Array<StoredDocumentIdentifierJs>> =
+			GlobalScope.promise {
+		val topicsConverted: List<Topic> = arrayToList(
+			topics,
+			"topics",
+			{ x1: TopicJs ->
+				topic_fromJs(x1)
+			},
+		)
+		val result = topicBasicApi.purgeTopics(
+			topicsConverted,
+		)
+		listToArray(
+			result,
+			{ x1: StoredDocumentIdentifier ->
+				storedDocumentIdentifier_toJs(x1)
+			},
+		)
+	}
+
 	override fun createTopic(entity: EncryptedTopicJs): Promise<EncryptedTopicJs> =
 			GlobalScope.promise {
 		val entityConverted: EncryptedTopic = topic_fromJs(entity)
@@ -220,21 +740,24 @@ internal class TopicBasicApiImplJs(
 		topic_toJs(result)
 	}
 
-	override fun undeleteTopic(topic: TopicJs): Promise<TopicJs> = GlobalScope.promise {
-		val topicConverted: Topic = topic_fromJs(topic)
-		val result = topicBasicApi.undeleteTopic(
-			topicConverted,
-		)
-		topic_toJs(result)
-	}
-
-	override fun modifyTopic(entity: EncryptedTopicJs): Promise<EncryptedTopicJs> =
+	override fun createTopics(entities: Array<EncryptedTopicJs>): Promise<Array<EncryptedTopicJs>> =
 			GlobalScope.promise {
-		val entityConverted: EncryptedTopic = topic_fromJs(entity)
-		val result = topicBasicApi.modifyTopic(
-			entityConverted,
+		val entitiesConverted: List<EncryptedTopic> = arrayToList(
+			entities,
+			"entities",
+			{ x1: EncryptedTopicJs ->
+				topic_fromJs(x1)
+			},
 		)
-		topic_toJs(result)
+		val result = topicBasicApi.createTopics(
+			entitiesConverted,
+		)
+		listToArray(
+			result,
+			{ x1: EncryptedTopic ->
+				topic_toJs(x1)
+			},
+		)
 	}
 
 	override fun undeleteTopicById(id: String, rev: String): Promise<EncryptedTopicJs> =
@@ -246,6 +769,83 @@ internal class TopicBasicApiImplJs(
 			revConverted,
 		)
 		topic_toJs(result)
+	}
+
+	override fun undeleteTopicsByIds(entityIds: Array<StoredDocumentIdentifierJs>):
+			Promise<Array<EncryptedTopicJs>> = GlobalScope.promise {
+		val entityIdsConverted: List<StoredDocumentIdentifier> = arrayToList(
+			entityIds,
+			"entityIds",
+			{ x1: StoredDocumentIdentifierJs ->
+				storedDocumentIdentifier_fromJs(x1)
+			},
+		)
+		val result = topicBasicApi.undeleteTopicsByIds(
+			entityIdsConverted,
+		)
+		listToArray(
+			result,
+			{ x1: EncryptedTopic ->
+				topic_toJs(x1)
+			},
+		)
+	}
+
+	override fun undeleteTopic(topic: TopicJs): Promise<EncryptedTopicJs> = GlobalScope.promise {
+		val topicConverted: Topic = topic_fromJs(topic)
+		val result = topicBasicApi.undeleteTopic(
+			topicConverted,
+		)
+		topic_toJs(result)
+	}
+
+	override fun undeleteTopics(topics: Array<TopicJs>): Promise<Array<EncryptedTopicJs>> =
+			GlobalScope.promise {
+		val topicsConverted: List<Topic> = arrayToList(
+			topics,
+			"topics",
+			{ x1: TopicJs ->
+				topic_fromJs(x1)
+			},
+		)
+		val result = topicBasicApi.undeleteTopics(
+			topicsConverted,
+		)
+		listToArray(
+			result,
+			{ x1: EncryptedTopic ->
+				topic_toJs(x1)
+			},
+		)
+	}
+
+	override fun modifyTopic(entity: EncryptedTopicJs): Promise<EncryptedTopicJs> =
+			GlobalScope.promise {
+		val entityConverted: EncryptedTopic = topic_fromJs(entity)
+		val result = topicBasicApi.modifyTopic(
+			entityConverted,
+		)
+		topic_toJs(result)
+	}
+
+	override fun modifyTopics(entities: Array<EncryptedTopicJs>): Promise<Array<EncryptedTopicJs>> =
+			GlobalScope.promise {
+		val entitiesConverted: List<EncryptedTopic> = arrayToList(
+			entities,
+			"entities",
+			{ x1: EncryptedTopicJs ->
+				topic_fromJs(x1)
+			},
+		)
+		val result = topicBasicApi.modifyTopics(
+			entitiesConverted,
+		)
+		listToArray(
+			result,
+			{ x1: EncryptedTopic ->
+				topic_toJs(x1)
+			},
+		)
 	}
 
 	override fun getTopic(entityId: String): Promise<EncryptedTopicJs?> = GlobalScope.promise {

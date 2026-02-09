@@ -13,21 +13,21 @@ import kotlin.collections.Map
 @Serializable
 data class ImportResult(
 	public val patient: DecryptedPatient? = null,
-	@DefaultValue("emptyList()")
+	@param:DefaultValue("emptyList()")
 	public val hes: List<DecryptedHealthElement> = emptyList(),
-	@DefaultValue("emptyList()")
+	@param:DefaultValue("emptyList()")
 	public val ctcs: List<DecryptedContact> = emptyList(),
-	@DefaultValue("emptyList()")
+	@param:DefaultValue("emptyList()")
 	public val warnings: List<String> = emptyList(),
-	@DefaultValue("emptyList()")
+	@param:DefaultValue("emptyList()")
 	public val errors: List<String> = emptyList(),
-	@DefaultValue("emptyList()")
+	@param:DefaultValue("emptyList()")
 	public val forms: List<DecryptedForm> = emptyList(),
-	@DefaultValue("emptyList()")
+	@param:DefaultValue("emptyList()")
 	public val hcps: List<HealthcareParty> = emptyList(),
-	@DefaultValue("emptyList()")
+	@param:DefaultValue("emptyList()")
 	public val documents: List<DecryptedDocument> = emptyList(),
-	@DefaultValue("emptyMap()")
+	@param:DefaultValue("emptyMap()")
 	public val attachments: Map<String, MimeAttachment> = emptyMap(),
 ) {
 	// region ImportResult-ImportResult

@@ -1,18 +1,47 @@
 // auto-generated file
-import {EncryptedInvoice} from '../model/Invoice.mjs';
+import {EncryptedInvoice, Invoice} from '../model/Invoice.mjs';
 import {PaginatedList} from '../model/PaginatedList.mjs';
-import {DocIdentifier} from '../model/couchdb/DocIdentifier.mjs';
+import {StoredDocumentIdentifier} from '../model/StoredDocumentIdentifier.mjs';
 import {LabelledOccurence} from '../model/data/LabelledOccurence.mjs';
 import {InvoiceType} from '../model/embed/InvoiceType.mjs';
 import {EncryptedInvoicingCode} from '../model/embed/InvoicingCode.mjs';
 import {MediumType} from '../model/embed/MediumType.mjs';
+import {InvoiceBasicInGroupApi} from './InvoiceBasicInGroupApi.mjs';
 
 
 export interface InvoiceBasicApi {
 
-	deleteInvoice(entityId: string): Promise<DocIdentifier>;
+	inGroup: InvoiceBasicInGroupApi;
+
+	deleteInvoiceById(entityId: string, rev: string): Promise<StoredDocumentIdentifier>;
+
+	deleteInvoicesByIds(entityIds: Array<StoredDocumentIdentifier>): Promise<Array<StoredDocumentIdentifier>>;
+
+	purgeInvoiceById(id: string, rev: string): Promise<void>;
+
+	purgeInvoicesByIds(entityIds: Array<StoredDocumentIdentifier>): Promise<Array<StoredDocumentIdentifier>>;
+
+	deleteInvoice(invoice: Invoice): Promise<StoredDocumentIdentifier>;
+
+	deleteInvoices(invoices: Array<Invoice>): Promise<Array<StoredDocumentIdentifier>>;
+
+	purgeInvoice(invoice: Invoice): Promise<void>;
+
+	purgeInvoices(invoices: Array<Invoice>): Promise<Array<StoredDocumentIdentifier>>;
 
 	getTarificationsCodesOccurrences(minOccurrence: number): Promise<Array<LabelledOccurence>>;
+
+	createInvoice(entity: EncryptedInvoice): Promise<EncryptedInvoice>;
+
+	createInvoices(entities: Array<EncryptedInvoice>): Promise<Array<EncryptedInvoice>>;
+
+	undeleteInvoiceById(id: string, rev: string): Promise<EncryptedInvoice>;
+
+	undeleteInvoicesByIds(entityIds: Array<StoredDocumentIdentifier>): Promise<Array<EncryptedInvoice>>;
+
+	undeleteInvoice(invoice: Invoice): Promise<EncryptedInvoice>;
+
+	undeleteInvoices(invoices: Array<Invoice>): Promise<Array<EncryptedInvoice>>;
 
 	modifyInvoice(entity: EncryptedInvoice): Promise<EncryptedInvoice>;
 

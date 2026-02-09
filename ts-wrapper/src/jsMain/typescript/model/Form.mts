@@ -19,8 +19,6 @@ export interface Form extends StoredDocument, ICureDocument<string>, HasEncrypti
 
 	version: number | undefined;
 
-	logicalUuid: string | undefined;
-
 	descr: string | undefined;
 
 	uniqueId: string | undefined;
@@ -57,13 +55,9 @@ export class DecryptedForm {
 
 	responsible: string | undefined = undefined;
 
-	medicalLocationId: string | undefined = undefined;
-
 	tags: Array<CodeStub> = [];
 
 	codes: Array<CodeStub> = [];
-
-	endOfLife: number | undefined = undefined;
 
 	deletionDate: number | undefined = undefined;
 
@@ -72,8 +66,6 @@ export class DecryptedForm {
 	status: string | undefined = undefined;
 
 	version: number | undefined = undefined;
-
-	logicalUuid: string | undefined = undefined;
 
 	descr: string | undefined = undefined;
 
@@ -113,15 +105,12 @@ export class DecryptedForm {
 		if ('modified' in partial) this.modified = partial.modified;
 		if ('author' in partial) this.author = partial.author;
 		if ('responsible' in partial) this.responsible = partial.responsible;
-		if ('medicalLocationId' in partial) this.medicalLocationId = partial.medicalLocationId;
 		if ('tags' in partial && partial.tags !== undefined) this.tags = partial.tags;
 		if ('codes' in partial && partial.codes !== undefined) this.codes = partial.codes;
-		if ('endOfLife' in partial) this.endOfLife = partial.endOfLife;
 		if ('deletionDate' in partial) this.deletionDate = partial.deletionDate;
 		if ('openingDate' in partial) this.openingDate = partial.openingDate;
 		if ('status' in partial) this.status = partial.status;
 		if ('version' in partial) this.version = partial.version;
-		if ('logicalUuid' in partial) this.logicalUuid = partial.logicalUuid;
 		if ('descr' in partial) this.descr = partial.descr;
 		if ('uniqueId' in partial) this.uniqueId = partial.uniqueId;
 		if ('formTemplateId' in partial) this.formTemplateId = partial.formTemplateId;
@@ -146,15 +135,12 @@ export class DecryptedForm {
 		if (this.modified != undefined) res['modified'] = this.modified
 		if (this.author != undefined) res['author'] = this.author
 		if (this.responsible != undefined) res['responsible'] = this.responsible
-		if (this.medicalLocationId != undefined) res['medicalLocationId'] = this.medicalLocationId
 		res['tags'] = this.tags.map((x0) => x0.toJSON() )
 		res['codes'] = this.codes.map((x0) => x0.toJSON() )
-		if (this.endOfLife != undefined) res['endOfLife'] = this.endOfLife
 		if (this.deletionDate != undefined) res['deletionDate'] = this.deletionDate
 		if (this.openingDate != undefined) res['openingDate'] = this.openingDate
 		if (this.status != undefined) res['status'] = this.status
 		if (this.version != undefined) res['version'] = this.version
-		if (this.logicalUuid != undefined) res['logicalUuid'] = this.logicalUuid
 		if (this.descr != undefined) res['descr'] = this.descr
 		if (this.uniqueId != undefined) res['uniqueId'] = this.uniqueId
 		if (this.formTemplateId != undefined) res['formTemplateId'] = this.formTemplateId
@@ -185,15 +171,12 @@ export class DecryptedForm {
 			modified: expectNumber(extractEntry(jCpy, 'modified', false, path), true, true, [...path, ".modified"]),
 			author: expectString(extractEntry(jCpy, 'author', false, path), true, [...path, ".author"]),
 			responsible: expectString(extractEntry(jCpy, 'responsible', false, path), true, [...path, ".responsible"]),
-			medicalLocationId: expectString(extractEntry(jCpy, 'medicalLocationId', false, path), true, [...path, ".medicalLocationId"]),
 			tags: expectArray(extractEntry(jCpy, 'tags', false, path), false, [...path, ".tags"], (x0, p0) => expectObject(x0, false, ignoreUnknownKeys, p0, CodeStub.fromJSON)),
 			codes: expectArray(extractEntry(jCpy, 'codes', false, path), false, [...path, ".codes"], (x0, p0) => expectObject(x0, false, ignoreUnknownKeys, p0, CodeStub.fromJSON)),
-			endOfLife: expectNumber(extractEntry(jCpy, 'endOfLife', false, path), true, true, [...path, ".endOfLife"]),
 			deletionDate: expectNumber(extractEntry(jCpy, 'deletionDate', false, path), true, true, [...path, ".deletionDate"]),
 			openingDate: expectNumber(extractEntry(jCpy, 'openingDate', false, path), true, true, [...path, ".openingDate"]),
 			status: expectString(extractEntry(jCpy, 'status', false, path), true, [...path, ".status"]),
 			version: expectNumber(extractEntry(jCpy, 'version', false, path), true, true, [...path, ".version"]),
-			logicalUuid: expectString(extractEntry(jCpy, 'logicalUuid', false, path), true, [...path, ".logicalUuid"]),
 			descr: expectString(extractEntry(jCpy, 'descr', false, path), true, [...path, ".descr"]),
 			uniqueId: expectString(extractEntry(jCpy, 'uniqueId', false, path), true, [...path, ".uniqueId"]),
 			formTemplateId: expectString(extractEntry(jCpy, 'formTemplateId', false, path), true, [...path, ".formTemplateId"]),
@@ -249,13 +232,9 @@ export class EncryptedForm {
 
 	responsible: string | undefined = undefined;
 
-	medicalLocationId: string | undefined = undefined;
-
 	tags: Array<CodeStub> = [];
 
 	codes: Array<CodeStub> = [];
-
-	endOfLife: number | undefined = undefined;
 
 	deletionDate: number | undefined = undefined;
 
@@ -264,8 +243,6 @@ export class EncryptedForm {
 	status: string | undefined = undefined;
 
 	version: number | undefined = undefined;
-
-	logicalUuid: string | undefined = undefined;
 
 	descr: string | undefined = undefined;
 
@@ -305,15 +282,12 @@ export class EncryptedForm {
 		if ('modified' in partial) this.modified = partial.modified;
 		if ('author' in partial) this.author = partial.author;
 		if ('responsible' in partial) this.responsible = partial.responsible;
-		if ('medicalLocationId' in partial) this.medicalLocationId = partial.medicalLocationId;
 		if ('tags' in partial && partial.tags !== undefined) this.tags = partial.tags;
 		if ('codes' in partial && partial.codes !== undefined) this.codes = partial.codes;
-		if ('endOfLife' in partial) this.endOfLife = partial.endOfLife;
 		if ('deletionDate' in partial) this.deletionDate = partial.deletionDate;
 		if ('openingDate' in partial) this.openingDate = partial.openingDate;
 		if ('status' in partial) this.status = partial.status;
 		if ('version' in partial) this.version = partial.version;
-		if ('logicalUuid' in partial) this.logicalUuid = partial.logicalUuid;
 		if ('descr' in partial) this.descr = partial.descr;
 		if ('uniqueId' in partial) this.uniqueId = partial.uniqueId;
 		if ('formTemplateId' in partial) this.formTemplateId = partial.formTemplateId;
@@ -338,15 +312,12 @@ export class EncryptedForm {
 		if (this.modified != undefined) res['modified'] = this.modified
 		if (this.author != undefined) res['author'] = this.author
 		if (this.responsible != undefined) res['responsible'] = this.responsible
-		if (this.medicalLocationId != undefined) res['medicalLocationId'] = this.medicalLocationId
 		res['tags'] = this.tags.map((x0) => x0.toJSON() )
 		res['codes'] = this.codes.map((x0) => x0.toJSON() )
-		if (this.endOfLife != undefined) res['endOfLife'] = this.endOfLife
 		if (this.deletionDate != undefined) res['deletionDate'] = this.deletionDate
 		if (this.openingDate != undefined) res['openingDate'] = this.openingDate
 		if (this.status != undefined) res['status'] = this.status
 		if (this.version != undefined) res['version'] = this.version
-		if (this.logicalUuid != undefined) res['logicalUuid'] = this.logicalUuid
 		if (this.descr != undefined) res['descr'] = this.descr
 		if (this.uniqueId != undefined) res['uniqueId'] = this.uniqueId
 		if (this.formTemplateId != undefined) res['formTemplateId'] = this.formTemplateId
@@ -377,15 +348,12 @@ export class EncryptedForm {
 			modified: expectNumber(extractEntry(jCpy, 'modified', false, path), true, true, [...path, ".modified"]),
 			author: expectString(extractEntry(jCpy, 'author', false, path), true, [...path, ".author"]),
 			responsible: expectString(extractEntry(jCpy, 'responsible', false, path), true, [...path, ".responsible"]),
-			medicalLocationId: expectString(extractEntry(jCpy, 'medicalLocationId', false, path), true, [...path, ".medicalLocationId"]),
 			tags: expectArray(extractEntry(jCpy, 'tags', false, path), false, [...path, ".tags"], (x0, p0) => expectObject(x0, false, ignoreUnknownKeys, p0, CodeStub.fromJSON)),
 			codes: expectArray(extractEntry(jCpy, 'codes', false, path), false, [...path, ".codes"], (x0, p0) => expectObject(x0, false, ignoreUnknownKeys, p0, CodeStub.fromJSON)),
-			endOfLife: expectNumber(extractEntry(jCpy, 'endOfLife', false, path), true, true, [...path, ".endOfLife"]),
 			deletionDate: expectNumber(extractEntry(jCpy, 'deletionDate', false, path), true, true, [...path, ".deletionDate"]),
 			openingDate: expectNumber(extractEntry(jCpy, 'openingDate', false, path), true, true, [...path, ".openingDate"]),
 			status: expectString(extractEntry(jCpy, 'status', false, path), true, [...path, ".status"]),
 			version: expectNumber(extractEntry(jCpy, 'version', false, path), true, true, [...path, ".version"]),
-			logicalUuid: expectString(extractEntry(jCpy, 'logicalUuid', false, path), true, [...path, ".logicalUuid"]),
 			descr: expectString(extractEntry(jCpy, 'descr', false, path), true, [...path, ".descr"]),
 			uniqueId: expectString(extractEntry(jCpy, 'uniqueId', false, path), true, [...path, ".uniqueId"]),
 			formTemplateId: expectString(extractEntry(jCpy, 'formTemplateId', false, path), true, [...path, ".formTemplateId"]),

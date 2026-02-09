@@ -111,6 +111,7 @@ public object HealthElementApiDispatcher {
       parameters.getValue("user"),
       parameters.getValue("delegates"),
       parameters.getValue("secretId"),
+      parameters.getValue("alternateRootDelegateId"),
     )
   }
 
@@ -827,6 +828,7 @@ public object HealthElementApiDispatcher {
       parameters.getValue("user"),
       parameters.getValue("delegates"),
       parameters.getValue("secretId"),
+      parameters.getValue("alternateRootDelegateReference"),
     )
   }
 

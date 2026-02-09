@@ -1,9 +1,7 @@
 // auto-generated file
 import {BaseFilterOptions, BaseSortableFilterOptions, PaginatedListIterator} from '../cardinal-sdk-ts.mjs';
 import {Agenda} from '../model/Agenda.mjs';
-import {PaginatedList} from '../model/PaginatedList.mjs';
 import {StoredDocumentIdentifier} from '../model/StoredDocumentIdentifier.mjs';
-import {DocIdentifier} from '../model/couchdb/DocIdentifier.mjs';
 import {AgendaInGroupApi} from './AgendaInGroupApi.mjs';
 
 
@@ -11,38 +9,41 @@ export interface AgendaApi {
 
 	inGroup: AgendaInGroupApi;
 
-	getAllAgendas(startDocumentId: string | undefined,
-			limit: number | undefined): Promise<PaginatedList<Agenda>>;
+	createAgenda(agenda: Agenda): Promise<Agenda>;
 
-	createAgenda(agendaDto: Agenda): Promise<Agenda>;
+	createAgendas(agendas: Array<Agenda>): Promise<Array<Agenda>>;
 
-	deleteAgendaUnsafe(entityId: string): Promise<DocIdentifier>;
+	deleteAgendaById(entityId: string, rev: string): Promise<StoredDocumentIdentifier>;
 
-	deleteAgendasUnsafe(entityIds: Array<string>): Promise<Array<DocIdentifier>>;
-
-	deleteAgendaById(entityId: string, rev: string): Promise<DocIdentifier>;
-
-	deleteAgendasByIds(entityIds: Array<StoredDocumentIdentifier>): Promise<Array<DocIdentifier>>;
+	deleteAgendasByIds(entityIds: Array<StoredDocumentIdentifier>): Promise<Array<StoredDocumentIdentifier>>;
 
 	purgeAgendaById(id: string, rev: string): Promise<void>;
 
+	purgeAgendasByIds(entityIds: Array<StoredDocumentIdentifier>): Promise<Array<StoredDocumentIdentifier>>;
+
 	undeleteAgendaById(id: string, rev: string): Promise<Agenda>;
 
-	deleteAgenda(agenda: Agenda): Promise<DocIdentifier>;
+	undeleteAgendasByIds(entityIds: Array<StoredDocumentIdentifier>): Promise<Array<Agenda>>;
 
-	deleteAgendas(agendas: Array<Agenda>): Promise<Array<DocIdentifier>>;
+	deleteAgenda(agenda: Agenda): Promise<StoredDocumentIdentifier>;
+
+	deleteAgendas(agendas: Array<Agenda>): Promise<Array<StoredDocumentIdentifier>>;
 
 	purgeAgenda(agenda: Agenda): Promise<void>;
 
+	purgeAgendas(agendas: Array<Agenda>): Promise<Array<StoredDocumentIdentifier>>;
+
 	undeleteAgenda(agenda: Agenda): Promise<Agenda>;
+
+	undeleteAgendas(agendas: Array<Agenda>): Promise<Array<Agenda>>;
 
 	getAgenda(agendaId: string): Promise<Agenda | undefined>;
 
 	getAgendas(agendaIds: Array<string>): Promise<Array<Agenda>>;
 
-	getAgendasForUser(userId: string): Promise<Agenda>;
+	modifyAgenda(agenda: Agenda): Promise<Agenda>;
 
-	modifyAgenda(agendaDto: Agenda): Promise<Agenda>;
+	modifyAgendas(agendas: Array<Agenda>): Promise<Array<Agenda>>;
 
 	matchAgendasBy(filter: BaseFilterOptions<Agenda>): Promise<Array<string>>;
 

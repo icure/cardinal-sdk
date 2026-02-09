@@ -18,11 +18,11 @@ import kotlin.collections.Set
 data class HealthElementByDataOwnerPatientOpeningDate(
 	override val desc: String? = null,
 	public val healthcarePartyId: String,
-	@DefaultValue("emptySet()")
+	@param:DefaultValue("emptySet()")
 	public val patientSecretForeignKeys: Set<String> = emptySet(),
 	public val startDate: Long? = null,
 	public val endDate: Long? = null,
-	@DefaultValue("false")
+	@param:DefaultValue("false")
 	public val descending: Boolean = false,
 ) : AbstractFilter<HealthElement> {
 	// region HealthElementByDataOwnerPatientOpeningDate-HealthElementByDataOwnerPatientOpeningDate

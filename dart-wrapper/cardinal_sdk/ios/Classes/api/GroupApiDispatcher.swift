@@ -40,6 +40,10 @@ class GroupApiDispatcher {
     case "createOrUpdateExternalJwtConfig": createOrUpdateExternalJwtConfig(parameters: parameters, resultCallback: resultCallback)
     case "removeExternalJwtConfig": removeExternalJwtConfig(parameters: parameters, resultCallback: resultCallback)
     case "getOperationTokenForGroup": getOperationTokenForGroup(parameters: parameters, resultCallback: resultCallback)
+    case "setGroupProjectId": setGroupProjectId(parameters: parameters, resultCallback: resultCallback)
+    case "modifyGroupApplicationId": modifyGroupApplicationId(parameters: parameters, resultCallback: resultCallback)
+    case "addTagToGroup": addTagToGroup(parameters: parameters, resultCallback: resultCallback)
+    case "removeTagFromGroup": removeTagFromGroup(parameters: parameters, resultCallback: resultCallback)
     default: return false
     }
     return true
@@ -87,7 +91,7 @@ class GroupApiDispatcher {
     	qString: parameters["q"]!,
     	nString: parameters["n"]!,
     	superGroupString: parameters["superGroup"]!,
-    	applicationIdString: parameters["applicationId"]!,
+    	projectIdString: parameters["projectId"]!,
     	initialisationDataString: parameters["initialisationData"]!
     )
   }
@@ -410,6 +414,65 @@ class GroupApiDispatcher {
     	operationString: parameters["operation"]!,
     	durationString: parameters["duration"]!,
     	descriptionString: parameters["description"]!
+    )
+  }
+
+  private static func setGroupProjectId(parameters: [String : String], resultCallback: @escaping (
+    String?,
+    String?,
+    String?,
+    String?
+  ) -> Void) {
+    GroupApi.shared.setGroupProjectId(
+    	dartResultCallback: resultCallback,
+    	sdkId: parameters["sdkId"]!,
+    	groupIdString: parameters["groupId"]!,
+    	projectIdString: parameters["projectId"]!,
+    	applyToSubgroupsString: parameters["applyToSubgroups"]!
+    )
+  }
+
+  private static func modifyGroupApplicationId(parameters: [String : String], resultCallback: @escaping (
+    String?,
+    String?,
+    String?,
+    String?
+  ) -> Void) {
+    GroupApi.shared.modifyGroupApplicationId(
+    	dartResultCallback: resultCallback,
+    	sdkId: parameters["sdkId"]!,
+    	idString: parameters["id"]!,
+    	applicationIdString: parameters["applicationId"]!
+    )
+  }
+
+  private static func addTagToGroup(parameters: [String : String], resultCallback: @escaping (
+    String?,
+    String?,
+    String?,
+    String?
+  ) -> Void) {
+    GroupApi.shared.addTagToGroup(
+    	dartResultCallback: resultCallback,
+    	sdkId: parameters["sdkId"]!,
+    	idString: parameters["id"]!,
+    	revString: parameters["rev"]!,
+    	tagString: parameters["tag"]!
+    )
+  }
+
+  private static func removeTagFromGroup(parameters: [String : String], resultCallback: @escaping (
+    String?,
+    String?,
+    String?,
+    String?
+  ) -> Void) {
+    GroupApi.shared.removeTagFromGroup(
+    	dartResultCallback: resultCallback,
+    	sdkId: parameters["sdkId"]!,
+    	idString: parameters["id"]!,
+    	revString: parameters["rev"]!,
+    	tagIdString: parameters["tagId"]!
     )
   }
 

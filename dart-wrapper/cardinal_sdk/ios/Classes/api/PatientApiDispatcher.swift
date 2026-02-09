@@ -221,7 +221,8 @@ class PatientApiDispatcher {
     	sdkId: parameters["sdkId"]!,
     	baseString: parameters["base"]!,
     	userString: parameters["user"]!,
-    	delegatesString: parameters["delegates"]!
+    	delegatesString: parameters["delegates"]!,
+    	alternateRootDelegateIdString: parameters["alternateRootDelegateId"]!
     )
   }
 
@@ -327,7 +328,9 @@ class PatientApiDispatcher {
     PatientApi.shared.ensureEncryptionMetadataForSelfIsInitialized(
     	dartResultCallback: resultCallback,
     	sdkId: parameters["sdkId"]!,
-    	sharingWithString: parameters["sharingWith"]!
+    	sharingWithString: parameters["sharingWith"]!,
+    	ignoreIfEncryptionMetadataExistsString: parameters["ignoreIfEncryptionMetadataExists"]!,
+    	alternateRootDelegateIdString: parameters["alternateRootDelegateId"]!
     )
   }
 
@@ -1236,7 +1239,8 @@ class PatientApiDispatcher {
     	entityGroupIdString: parameters["entityGroupId"]!,
     	baseString: parameters["base"]!,
     	userString: parameters["user"]!,
-    	delegatesString: parameters["delegates"]!
+    	delegatesString: parameters["delegates"]!,
+    	alternateRootDelegateReferenceString: parameters["alternateRootDelegateReference"]!
     )
   }
 

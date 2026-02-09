@@ -18,15 +18,11 @@ public sealed external interface SubContactJs : EncryptableJs, ICureDocumentJs<S
 
 	public val protocol: String?
 
-	public val status: Double?
-
 	public val formId: String?
 
 	public val planOfActionId: String?
 
 	public val healthElementId: String?
-
-	public val classificationId: String?
 
 	public val services: Array<out ServiceLinkJs>
 
@@ -47,27 +43,19 @@ public external class DecryptedSubContactJs(
 
 	override val responsible: String?
 
-	override val medicalLocationId: String?
-
 	override val tags: Array<CodeStubJs>
 
 	override val codes: Array<CodeStubJs>
 
-	override val endOfLife: Double?
-
 	override val descr: String?
 
 	override val protocol: String?
-
-	override val status: Double?
 
 	override val formId: String?
 
 	override val planOfActionId: String?
 
 	override val healthElementId: String?
-
-	override val classificationId: String?
 
 	override val services: Array<ServiceLinkJs>
 
@@ -90,27 +78,19 @@ public external class EncryptedSubContactJs(
 
 	override val responsible: String?
 
-	override val medicalLocationId: String?
-
 	override val tags: Array<CodeStubJs>
 
 	override val codes: Array<CodeStubJs>
 
-	override val endOfLife: Double?
-
 	override val descr: String?
 
 	override val protocol: String?
-
-	override val status: Double?
 
 	override val formId: String?
 
 	override val planOfActionId: String?
 
 	override val healthElementId: String?
-
-	override val classificationId: String?
 
 	override val services: Array<ServiceLinkJs>
 

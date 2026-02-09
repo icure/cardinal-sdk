@@ -63,6 +63,39 @@ public object AccessLogApiDispatcher {
     "tryAndRecover.modifyAccessLog" -> tryAndRecover_modifyAccessLog(parameters, resultCallback)
     "tryAndRecover.getAccessLog" -> tryAndRecover_getAccessLog(parameters, resultCallback)
     "tryAndRecover.getAccessLogs" -> tryAndRecover_getAccessLogs(parameters, resultCallback)
+    "inGroup.withEncryptionMetadata" -> inGroup_withEncryptionMetadata(parameters, resultCallback)
+    "inGroup.getEncryptionKeysOf" -> inGroup_getEncryptionKeysOf(parameters, resultCallback)
+    "inGroup.hasWriteAccess" -> inGroup_hasWriteAccess(parameters, resultCallback)
+    "inGroup.decryptPatientIdOf" -> inGroup_decryptPatientIdOf(parameters, resultCallback)
+    "inGroup.createDelegationDeAnonymizationMetadata" -> inGroup_createDelegationDeAnonymizationMetadata(parameters, resultCallback)
+    "inGroup.decrypt" -> inGroup_decrypt(parameters, resultCallback)
+    "inGroup.tryDecrypt" -> inGroup_tryDecrypt(parameters, resultCallback)
+    "inGroup.matchAccessLogsBy" -> inGroup_matchAccessLogsBy(parameters, resultCallback)
+    "inGroup.matchAccessLogsBySorted" -> inGroup_matchAccessLogsBySorted(parameters, resultCallback)
+    "inGroup.deleteAccessLogById" -> inGroup_deleteAccessLogById(parameters, resultCallback)
+    "inGroup.deleteAccessLogsByIds" -> inGroup_deleteAccessLogsByIds(parameters, resultCallback)
+    "inGroup.deleteAccessLog" -> inGroup_deleteAccessLog(parameters, resultCallback)
+    "inGroup.deleteAccessLogs" -> inGroup_deleteAccessLogs(parameters, resultCallback)
+    "inGroup.createAccessLog" -> inGroup_createAccessLog(parameters, resultCallback)
+    "inGroup.modifyAccessLog" -> inGroup_modifyAccessLog(parameters, resultCallback)
+    "inGroup.getAccessLog" -> inGroup_getAccessLog(parameters, resultCallback)
+    "inGroup.getAccessLogs" -> inGroup_getAccessLogs(parameters, resultCallback)
+    "inGroup.encrypted.shareWith" -> inGroup_encrypted_shareWith(parameters, resultCallback)
+    "inGroup.encrypted.shareWithMany" -> inGroup_encrypted_shareWithMany(parameters, resultCallback)
+    "inGroup.encrypted.filterAccessLogsBy" -> inGroup_encrypted_filterAccessLogsBy(parameters, resultCallback)
+    "inGroup.encrypted.filterAccessLogsBySorted" -> inGroup_encrypted_filterAccessLogsBySorted(parameters, resultCallback)
+    "inGroup.encrypted.createAccessLog" -> inGroup_encrypted_createAccessLog(parameters, resultCallback)
+    "inGroup.encrypted.modifyAccessLog" -> inGroup_encrypted_modifyAccessLog(parameters, resultCallback)
+    "inGroup.encrypted.getAccessLog" -> inGroup_encrypted_getAccessLog(parameters, resultCallback)
+    "inGroup.encrypted.getAccessLogs" -> inGroup_encrypted_getAccessLogs(parameters, resultCallback)
+    "inGroup.tryAndRecover.shareWith" -> inGroup_tryAndRecover_shareWith(parameters, resultCallback)
+    "inGroup.tryAndRecover.shareWithMany" -> inGroup_tryAndRecover_shareWithMany(parameters, resultCallback)
+    "inGroup.tryAndRecover.filterAccessLogsBy" -> inGroup_tryAndRecover_filterAccessLogsBy(parameters, resultCallback)
+    "inGroup.tryAndRecover.filterAccessLogsBySorted" -> inGroup_tryAndRecover_filterAccessLogsBySorted(parameters, resultCallback)
+    "inGroup.tryAndRecover.createAccessLog" -> inGroup_tryAndRecover_createAccessLog(parameters, resultCallback)
+    "inGroup.tryAndRecover.modifyAccessLog" -> inGroup_tryAndRecover_modifyAccessLog(parameters, resultCallback)
+    "inGroup.tryAndRecover.getAccessLog" -> inGroup_tryAndRecover_getAccessLog(parameters, resultCallback)
+    "inGroup.tryAndRecover.getAccessLogs" -> inGroup_tryAndRecover_getAccessLogs(parameters, resultCallback)
     else -> null
   }?.let { true } ?: false
 
@@ -80,6 +113,7 @@ public object AccessLogApiDispatcher {
       parameters.getValue("user"),
       parameters.getValue("delegates"),
       parameters.getValue("secretId"),
+      parameters.getValue("alternateRootDelegateId"),
     )
   }
 
@@ -668,6 +702,467 @@ public object AccessLogApiDispatcher {
     AccessLogApi.tryAndRecover.getAccessLogs(
       resultCallback,
       parameters.getValue("sdkId"),
+      parameters.getValue("entityIds"),
+    )
+  }
+
+  private fun inGroup_withEncryptionMetadata(parameters: Map<String, String>, resultCallback: (
+    String?,
+    String?,
+    String?,
+    String?,
+  ) -> Unit) {
+    AccessLogApi.inGroup.withEncryptionMetadata(
+      resultCallback,
+      parameters.getValue("sdkId"),
+      parameters.getValue("entityGroupId"),
+      parameters.getValue("base"),
+      parameters.getValue("patient"),
+      parameters.getValue("user"),
+      parameters.getValue("delegates"),
+      parameters.getValue("secretId"),
+      parameters.getValue("alternateRootDelegateReference"),
+    )
+  }
+
+  private fun inGroup_getEncryptionKeysOf(parameters: Map<String, String>, resultCallback: (
+    String?,
+    String?,
+    String?,
+    String?,
+  ) -> Unit) {
+    AccessLogApi.inGroup.getEncryptionKeysOf(
+      resultCallback,
+      parameters.getValue("sdkId"),
+      parameters.getValue("accessLog"),
+    )
+  }
+
+  private fun inGroup_hasWriteAccess(parameters: Map<String, String>, resultCallback: (
+    String?,
+    String?,
+    String?,
+    String?,
+  ) -> Unit) {
+    AccessLogApi.inGroup.hasWriteAccess(
+      resultCallback,
+      parameters.getValue("sdkId"),
+      parameters.getValue("accessLog"),
+    )
+  }
+
+  private fun inGroup_decryptPatientIdOf(parameters: Map<String, String>, resultCallback: (
+    String?,
+    String?,
+    String?,
+    String?,
+  ) -> Unit) {
+    AccessLogApi.inGroup.decryptPatientIdOf(
+      resultCallback,
+      parameters.getValue("sdkId"),
+      parameters.getValue("accessLog"),
+    )
+  }
+
+  private fun inGroup_createDelegationDeAnonymizationMetadata(parameters: Map<String, String>,
+      resultCallback: (
+    String?,
+    String?,
+    String?,
+    String?,
+  ) -> Unit) {
+    AccessLogApi.inGroup.createDelegationDeAnonymizationMetadata(
+      resultCallback,
+      parameters.getValue("sdkId"),
+      parameters.getValue("entity"),
+      parameters.getValue("delegates"),
+    )
+  }
+
+  private fun inGroup_decrypt(parameters: Map<String, String>, resultCallback: (
+    String?,
+    String?,
+    String?,
+    String?,
+  ) -> Unit) {
+    AccessLogApi.inGroup.decrypt(
+      resultCallback,
+      parameters.getValue("sdkId"),
+      parameters.getValue("accessLogs"),
+    )
+  }
+
+  private fun inGroup_tryDecrypt(parameters: Map<String, String>, resultCallback: (
+    String?,
+    String?,
+    String?,
+    String?,
+  ) -> Unit) {
+    AccessLogApi.inGroup.tryDecrypt(
+      resultCallback,
+      parameters.getValue("sdkId"),
+      parameters.getValue("accessLogs"),
+    )
+  }
+
+  private fun inGroup_matchAccessLogsBy(parameters: Map<String, String>, resultCallback: (
+    String?,
+    String?,
+    String?,
+    String?,
+  ) -> Unit) {
+    AccessLogApi.inGroup.matchAccessLogsBy(
+      resultCallback,
+      parameters.getValue("sdkId"),
+      parameters.getValue("groupId"),
+      parameters.getValue("filter"),
+    )
+  }
+
+  private fun inGroup_matchAccessLogsBySorted(parameters: Map<String, String>, resultCallback: (
+    String?,
+    String?,
+    String?,
+    String?,
+  ) -> Unit) {
+    AccessLogApi.inGroup.matchAccessLogsBySorted(
+      resultCallback,
+      parameters.getValue("sdkId"),
+      parameters.getValue("groupId"),
+      parameters.getValue("filter"),
+    )
+  }
+
+  private fun inGroup_deleteAccessLogById(parameters: Map<String, String>, resultCallback: (
+    String?,
+    String?,
+    String?,
+    String?,
+  ) -> Unit) {
+    AccessLogApi.inGroup.deleteAccessLogById(
+      resultCallback,
+      parameters.getValue("sdkId"),
+      parameters.getValue("entityId"),
+    )
+  }
+
+  private fun inGroup_deleteAccessLogsByIds(parameters: Map<String, String>, resultCallback: (
+    String?,
+    String?,
+    String?,
+    String?,
+  ) -> Unit) {
+    AccessLogApi.inGroup.deleteAccessLogsByIds(
+      resultCallback,
+      parameters.getValue("sdkId"),
+      parameters.getValue("entityIds"),
+    )
+  }
+
+  private fun inGroup_deleteAccessLog(parameters: Map<String, String>, resultCallback: (
+    String?,
+    String?,
+    String?,
+    String?,
+  ) -> Unit) {
+    AccessLogApi.inGroup.deleteAccessLog(
+      resultCallback,
+      parameters.getValue("sdkId"),
+      parameters.getValue("accessLog"),
+    )
+  }
+
+  private fun inGroup_deleteAccessLogs(parameters: Map<String, String>, resultCallback: (
+    String?,
+    String?,
+    String?,
+    String?,
+  ) -> Unit) {
+    AccessLogApi.inGroup.deleteAccessLogs(
+      resultCallback,
+      parameters.getValue("sdkId"),
+      parameters.getValue("accessLogs"),
+    )
+  }
+
+  private fun inGroup_createAccessLog(parameters: Map<String, String>, resultCallback: (
+    String?,
+    String?,
+    String?,
+    String?,
+  ) -> Unit) {
+    AccessLogApi.inGroup.createAccessLog(
+      resultCallback,
+      parameters.getValue("sdkId"),
+      parameters.getValue("entity"),
+    )
+  }
+
+  private fun inGroup_modifyAccessLog(parameters: Map<String, String>, resultCallback: (
+    String?,
+    String?,
+    String?,
+    String?,
+  ) -> Unit) {
+    AccessLogApi.inGroup.modifyAccessLog(
+      resultCallback,
+      parameters.getValue("sdkId"),
+      parameters.getValue("entity"),
+    )
+  }
+
+  private fun inGroup_getAccessLog(parameters: Map<String, String>, resultCallback: (
+    String?,
+    String?,
+    String?,
+    String?,
+  ) -> Unit) {
+    AccessLogApi.inGroup.getAccessLog(
+      resultCallback,
+      parameters.getValue("sdkId"),
+      parameters.getValue("groupId"),
+      parameters.getValue("entityId"),
+    )
+  }
+
+  private fun inGroup_getAccessLogs(parameters: Map<String, String>, resultCallback: (
+    String?,
+    String?,
+    String?,
+    String?,
+  ) -> Unit) {
+    AccessLogApi.inGroup.getAccessLogs(
+      resultCallback,
+      parameters.getValue("sdkId"),
+      parameters.getValue("groupId"),
+      parameters.getValue("entityIds"),
+    )
+  }
+
+  private fun inGroup_encrypted_shareWith(parameters: Map<String, String>, resultCallback: (
+    String?,
+    String?,
+    String?,
+    String?,
+  ) -> Unit) {
+    AccessLogApi.inGroup.encrypted.shareWith(
+      resultCallback,
+      parameters.getValue("sdkId"),
+      parameters.getValue("delegate"),
+      parameters.getValue("accessLog"),
+      parameters.getValue("options"),
+    )
+  }
+
+  private fun inGroup_encrypted_shareWithMany(parameters: Map<String, String>, resultCallback: (
+    String?,
+    String?,
+    String?,
+    String?,
+  ) -> Unit) {
+    AccessLogApi.inGroup.encrypted.shareWithMany(
+      resultCallback,
+      parameters.getValue("sdkId"),
+      parameters.getValue("accessLog"),
+      parameters.getValue("delegates"),
+    )
+  }
+
+  private fun inGroup_encrypted_filterAccessLogsBy(parameters: Map<String, String>,
+      resultCallback: (
+    String?,
+    String?,
+    String?,
+    String?,
+  ) -> Unit) {
+    AccessLogApi.inGroup.encrypted.filterAccessLogsBy(
+      resultCallback,
+      parameters.getValue("sdkId"),
+      parameters.getValue("groupId"),
+      parameters.getValue("filter"),
+    )
+  }
+
+  private fun inGroup_encrypted_filterAccessLogsBySorted(parameters: Map<String, String>,
+      resultCallback: (
+    String?,
+    String?,
+    String?,
+    String?,
+  ) -> Unit) {
+    AccessLogApi.inGroup.encrypted.filterAccessLogsBySorted(
+      resultCallback,
+      parameters.getValue("sdkId"),
+      parameters.getValue("groupId"),
+      parameters.getValue("filter"),
+    )
+  }
+
+  private fun inGroup_encrypted_createAccessLog(parameters: Map<String, String>, resultCallback: (
+    String?,
+    String?,
+    String?,
+    String?,
+  ) -> Unit) {
+    AccessLogApi.inGroup.encrypted.createAccessLog(
+      resultCallback,
+      parameters.getValue("sdkId"),
+      parameters.getValue("entity"),
+    )
+  }
+
+  private fun inGroup_encrypted_modifyAccessLog(parameters: Map<String, String>, resultCallback: (
+    String?,
+    String?,
+    String?,
+    String?,
+  ) -> Unit) {
+    AccessLogApi.inGroup.encrypted.modifyAccessLog(
+      resultCallback,
+      parameters.getValue("sdkId"),
+      parameters.getValue("entity"),
+    )
+  }
+
+  private fun inGroup_encrypted_getAccessLog(parameters: Map<String, String>, resultCallback: (
+    String?,
+    String?,
+    String?,
+    String?,
+  ) -> Unit) {
+    AccessLogApi.inGroup.encrypted.getAccessLog(
+      resultCallback,
+      parameters.getValue("sdkId"),
+      parameters.getValue("groupId"),
+      parameters.getValue("entityId"),
+    )
+  }
+
+  private fun inGroup_encrypted_getAccessLogs(parameters: Map<String, String>, resultCallback: (
+    String?,
+    String?,
+    String?,
+    String?,
+  ) -> Unit) {
+    AccessLogApi.inGroup.encrypted.getAccessLogs(
+      resultCallback,
+      parameters.getValue("sdkId"),
+      parameters.getValue("groupId"),
+      parameters.getValue("entityIds"),
+    )
+  }
+
+  private fun inGroup_tryAndRecover_shareWith(parameters: Map<String, String>, resultCallback: (
+    String?,
+    String?,
+    String?,
+    String?,
+  ) -> Unit) {
+    AccessLogApi.inGroup.tryAndRecover.shareWith(
+      resultCallback,
+      parameters.getValue("sdkId"),
+      parameters.getValue("delegate"),
+      parameters.getValue("accessLog"),
+      parameters.getValue("options"),
+    )
+  }
+
+  private fun inGroup_tryAndRecover_shareWithMany(parameters: Map<String, String>, resultCallback: (
+    String?,
+    String?,
+    String?,
+    String?,
+  ) -> Unit) {
+    AccessLogApi.inGroup.tryAndRecover.shareWithMany(
+      resultCallback,
+      parameters.getValue("sdkId"),
+      parameters.getValue("accessLog"),
+      parameters.getValue("delegates"),
+    )
+  }
+
+  private fun inGroup_tryAndRecover_filterAccessLogsBy(parameters: Map<String, String>,
+      resultCallback: (
+    String?,
+    String?,
+    String?,
+    String?,
+  ) -> Unit) {
+    AccessLogApi.inGroup.tryAndRecover.filterAccessLogsBy(
+      resultCallback,
+      parameters.getValue("sdkId"),
+      parameters.getValue("groupId"),
+      parameters.getValue("filter"),
+    )
+  }
+
+  private fun inGroup_tryAndRecover_filterAccessLogsBySorted(parameters: Map<String, String>,
+      resultCallback: (
+    String?,
+    String?,
+    String?,
+    String?,
+  ) -> Unit) {
+    AccessLogApi.inGroup.tryAndRecover.filterAccessLogsBySorted(
+      resultCallback,
+      parameters.getValue("sdkId"),
+      parameters.getValue("groupId"),
+      parameters.getValue("filter"),
+    )
+  }
+
+  private fun inGroup_tryAndRecover_createAccessLog(parameters: Map<String, String>,
+      resultCallback: (
+    String?,
+    String?,
+    String?,
+    String?,
+  ) -> Unit) {
+    AccessLogApi.inGroup.tryAndRecover.createAccessLog(
+      resultCallback,
+      parameters.getValue("sdkId"),
+      parameters.getValue("entity"),
+    )
+  }
+
+  private fun inGroup_tryAndRecover_modifyAccessLog(parameters: Map<String, String>,
+      resultCallback: (
+    String?,
+    String?,
+    String?,
+    String?,
+  ) -> Unit) {
+    AccessLogApi.inGroup.tryAndRecover.modifyAccessLog(
+      resultCallback,
+      parameters.getValue("sdkId"),
+      parameters.getValue("entity"),
+    )
+  }
+
+  private fun inGroup_tryAndRecover_getAccessLog(parameters: Map<String, String>, resultCallback: (
+    String?,
+    String?,
+    String?,
+    String?,
+  ) -> Unit) {
+    AccessLogApi.inGroup.tryAndRecover.getAccessLog(
+      resultCallback,
+      parameters.getValue("sdkId"),
+      parameters.getValue("groupId"),
+      parameters.getValue("entityId"),
+    )
+  }
+
+  private fun inGroup_tryAndRecover_getAccessLogs(parameters: Map<String, String>, resultCallback: (
+    String?,
+    String?,
+    String?,
+    String?,
+  ) -> Unit) {
+    AccessLogApi.inGroup.tryAndRecover.getAccessLogs(
+      resultCallback,
+      parameters.getValue("sdkId"),
+      parameters.getValue("groupId"),
       parameters.getValue("entityIds"),
     )
   }

@@ -1,5 +1,5 @@
 // auto-generated file
-import {expectMap, expectString, extractEntry} from '../../internal/JsonDecodeUtils.mjs';
+import {expectString, extractEntry} from '../../internal/JsonDecodeUtils.mjs';
 import {CodeIdentification} from './CodeIdentification.mjs';
 
 
@@ -17,8 +17,6 @@ export class CodeStub implements CodeIdentification<string | undefined> {
 
 	contextLabel: string | undefined = undefined;
 
-	label: { [ key: string ]: string } | undefined = undefined;
-
 	constructor(partial: Partial<CodeStub>) {
 		if ('id' in partial) this.id = partial.id;
 		if ('context' in partial) this.context = partial.context;
@@ -26,7 +24,6 @@ export class CodeStub implements CodeIdentification<string | undefined> {
 		if ('code' in partial) this.code = partial.code;
 		if ('version' in partial) this.version = partial.version;
 		if ('contextLabel' in partial) this.contextLabel = partial.contextLabel;
-		if ('label' in partial) this.label = partial.label;
 	}
 
 	toJSON(): object {
@@ -37,7 +34,6 @@ export class CodeStub implements CodeIdentification<string | undefined> {
 		if (this.code != undefined) res['code'] = this.code
 		if (this.version != undefined) res['version'] = this.version
 		if (this.contextLabel != undefined) res['contextLabel'] = this.contextLabel
-		if (this.label != undefined) res['label'] = Object.fromEntries(Object.entries(this.label).map(([k0, v0]) => [k0, v0]))
 		return res
 	}
 
@@ -52,13 +48,6 @@ export class CodeStub implements CodeIdentification<string | undefined> {
 			code: expectString(extractEntry(jCpy, 'code', false, path), true, [...path, ".code"]),
 			version: expectString(extractEntry(jCpy, 'version', false, path), true, [...path, ".version"]),
 			contextLabel: expectString(extractEntry(jCpy, 'contextLabel', false, path), true, [...path, ".contextLabel"]),
-			label: expectMap(
-				extractEntry(jCpy, 'label', false, path),
-				true,
-				[...path, ".label"],
-				(k0, p0) => expectString(k0, false, p0),
-				(v0, p0) => expectString(v0, false, p0)
-			),
 		})
 		if (!ignoreUnknownKeys) {
 			const unused = Object.keys(jCpy)

@@ -26,6 +26,7 @@ mixin _$Measure {
   String? get comparator;
   String? get sign;
   List<ReferenceRange> get referenceRanges;
+  ValueWithPrecision? get valueWithPrecision;
 
   /// Create a copy of Measure
   /// with the given fields replaced by the non-null parameter values.
@@ -54,7 +55,9 @@ mixin _$Measure {
                 other.comparator == comparator) &&
             (identical(other.sign, sign) || other.sign == sign) &&
             const DeepCollectionEquality()
-                .equals(other.referenceRanges, referenceRanges));
+                .equals(other.referenceRanges, referenceRanges) &&
+            (identical(other.valueWithPrecision, valueWithPrecision) ||
+                other.valueWithPrecision == valueWithPrecision));
   }
 
   @override
@@ -70,11 +73,12 @@ mixin _$Measure {
       comment,
       comparator,
       sign,
-      const DeepCollectionEquality().hash(referenceRanges));
+      const DeepCollectionEquality().hash(referenceRanges),
+      valueWithPrecision);
 
   @override
   String toString() {
-    return 'Measure(value: $value, ref: $ref, severity: $severity, severityCode: $severityCode, evolution: $evolution, unit: $unit, unitCodes: $unitCodes, comment: $comment, comparator: $comparator, sign: $sign, referenceRanges: $referenceRanges)';
+    return 'Measure(value: $value, ref: $ref, severity: $severity, severityCode: $severityCode, evolution: $evolution, unit: $unit, unitCodes: $unitCodes, comment: $comment, comparator: $comparator, sign: $sign, referenceRanges: $referenceRanges, valueWithPrecision: $valueWithPrecision)';
   }
 }
 
@@ -94,7 +98,10 @@ abstract mixin class $MeasureCopyWith<$Res> {
       String? comment,
       String? comparator,
       String? sign,
-      List<ReferenceRange> referenceRanges});
+      List<ReferenceRange> referenceRanges,
+      ValueWithPrecision? valueWithPrecision});
+
+  $ValueWithPrecisionCopyWith<$Res>? get valueWithPrecision;
 }
 
 /// @nodoc
@@ -120,6 +127,7 @@ class _$MeasureCopyWithImpl<$Res> implements $MeasureCopyWith<$Res> {
     Object? comparator = freezed,
     Object? sign = freezed,
     Object? referenceRanges = null,
+    Object? valueWithPrecision = freezed,
   }) {
     return _then(_self.copyWith(
       value: freezed == value
@@ -166,7 +174,26 @@ class _$MeasureCopyWithImpl<$Res> implements $MeasureCopyWith<$Res> {
           ? _self.referenceRanges
           : referenceRanges // ignore: cast_nullable_to_non_nullable
               as List<ReferenceRange>,
+      valueWithPrecision: freezed == valueWithPrecision
+          ? _self.valueWithPrecision
+          : valueWithPrecision // ignore: cast_nullable_to_non_nullable
+              as ValueWithPrecision?,
     ));
+  }
+
+  /// Create a copy of Measure
+  /// with the given fields replaced by the non-null parameter values.
+  @override
+  @pragma('vm:prefer-inline')
+  $ValueWithPrecisionCopyWith<$Res>? get valueWithPrecision {
+    if (_self.valueWithPrecision == null) {
+      return null;
+    }
+
+    return $ValueWithPrecisionCopyWith<$Res>(_self.valueWithPrecision!,
+        (value) {
+      return _then(_self.copyWith(valueWithPrecision: value));
+    });
   }
 }
 
@@ -184,7 +211,8 @@ class _Measure implements Measure {
       this.comment = null,
       this.comparator = null,
       this.sign = null,
-      final List<ReferenceRange> referenceRanges = const []})
+      final List<ReferenceRange> referenceRanges = const [],
+      this.valueWithPrecision = null})
       : _unitCodes = unitCodes,
         _referenceRanges = referenceRanges;
 
@@ -235,6 +263,10 @@ class _Measure implements Measure {
     return EqualUnmodifiableListView(_referenceRanges);
   }
 
+  @override
+  @JsonKey()
+  final ValueWithPrecision? valueWithPrecision;
+
   /// Create a copy of Measure
   /// with the given fields replaced by the non-null parameter values.
   @override
@@ -264,7 +296,9 @@ class _Measure implements Measure {
                 other.comparator == comparator) &&
             (identical(other.sign, sign) || other.sign == sign) &&
             const DeepCollectionEquality()
-                .equals(other._referenceRanges, _referenceRanges));
+                .equals(other._referenceRanges, _referenceRanges) &&
+            (identical(other.valueWithPrecision, valueWithPrecision) ||
+                other.valueWithPrecision == valueWithPrecision));
   }
 
   @override
@@ -280,11 +314,12 @@ class _Measure implements Measure {
       comment,
       comparator,
       sign,
-      const DeepCollectionEquality().hash(_referenceRanges));
+      const DeepCollectionEquality().hash(_referenceRanges),
+      valueWithPrecision);
 
   @override
   String toString() {
-    return 'Measure(value: $value, ref: $ref, severity: $severity, severityCode: $severityCode, evolution: $evolution, unit: $unit, unitCodes: $unitCodes, comment: $comment, comparator: $comparator, sign: $sign, referenceRanges: $referenceRanges)';
+    return 'Measure(value: $value, ref: $ref, severity: $severity, severityCode: $severityCode, evolution: $evolution, unit: $unit, unitCodes: $unitCodes, comment: $comment, comparator: $comparator, sign: $sign, referenceRanges: $referenceRanges, valueWithPrecision: $valueWithPrecision)';
   }
 }
 
@@ -305,7 +340,11 @@ abstract mixin class _$MeasureCopyWith<$Res> implements $MeasureCopyWith<$Res> {
       String? comment,
       String? comparator,
       String? sign,
-      List<ReferenceRange> referenceRanges});
+      List<ReferenceRange> referenceRanges,
+      ValueWithPrecision? valueWithPrecision});
+
+  @override
+  $ValueWithPrecisionCopyWith<$Res>? get valueWithPrecision;
 }
 
 /// @nodoc
@@ -331,6 +370,7 @@ class __$MeasureCopyWithImpl<$Res> implements _$MeasureCopyWith<$Res> {
     Object? comparator = freezed,
     Object? sign = freezed,
     Object? referenceRanges = null,
+    Object? valueWithPrecision = freezed,
   }) {
     return _then(_Measure(
       value: freezed == value
@@ -377,7 +417,26 @@ class __$MeasureCopyWithImpl<$Res> implements _$MeasureCopyWith<$Res> {
           ? _self._referenceRanges
           : referenceRanges // ignore: cast_nullable_to_non_nullable
               as List<ReferenceRange>,
+      valueWithPrecision: freezed == valueWithPrecision
+          ? _self.valueWithPrecision
+          : valueWithPrecision // ignore: cast_nullable_to_non_nullable
+              as ValueWithPrecision?,
     ));
+  }
+
+  /// Create a copy of Measure
+  /// with the given fields replaced by the non-null parameter values.
+  @override
+  @pragma('vm:prefer-inline')
+  $ValueWithPrecisionCopyWith<$Res>? get valueWithPrecision {
+    if (_self.valueWithPrecision == null) {
+      return null;
+    }
+
+    return $ValueWithPrecisionCopyWith<$Res>(_self.valueWithPrecision!,
+        (value) {
+      return _then(_self.copyWith(valueWithPrecision: value));
+    });
   }
 }
 

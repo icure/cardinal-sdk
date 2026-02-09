@@ -98,6 +98,13 @@ class CalendarItemBasicApi {
 		);
 	}
 
+	Future<EncryptedCalendarItem> bookCalendarItemCheckingAvailability(EncryptedCalendarItem entity) async {
+		return await CardinalSdkPlatformInterface.instance.apis.calendarItemBasic.bookCalendarItemCheckingAvailability(
+			_sdkId,
+			entity,
+		);
+	}
+
 	Future<EncryptedCalendarItem> undeleteCalendarItemById(String id, String rev) async {
 		return await CardinalSdkPlatformInterface.instance.apis.calendarItemBasic.undeleteCalendarItemById(
 			_sdkId,

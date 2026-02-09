@@ -13,14 +13,14 @@ import kotlin.collections.Set
 
 @Serializable
 data class BulkAttachmentUpdateOptions(
-	@DefaultValue("emptyMap()")
+	@param:DefaultValue("emptyMap()")
 	public val updateAttachmentsMetadata: Map<String, AttachmentMetadata> = emptyMap(),
-	@DefaultValue("emptySet()")
+	@param:DefaultValue("emptySet()")
 	public val deleteAttachments: Set<String> = emptySet(),
 ) {
 	@Serializable
 	public data class AttachmentMetadata(
-		@DefaultValue("emptyList()")
+		@param:DefaultValue("emptyList()")
 		public val utis: List<String> = emptyList(),
 		public val dataIsEncrypted: Boolean? = null,
 	)

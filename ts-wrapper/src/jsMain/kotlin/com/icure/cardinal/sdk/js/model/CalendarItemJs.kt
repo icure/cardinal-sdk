@@ -15,7 +15,6 @@ import com.icure.cardinal.sdk.js.model.embed.DelegationJs
 import com.icure.cardinal.sdk.js.model.embed.EncryptableJs
 import com.icure.cardinal.sdk.js.model.embed.EncryptedAddressJs
 import com.icure.cardinal.sdk.js.model.embed.EncryptedCalendarItemTagJs
-import com.icure.cardinal.sdk.js.model.embed.FlowItemJs
 import com.icure.cardinal.sdk.js.model.embed.SecurityMetadataJs
 import com.icure.cardinal.sdk.js.utils.Record
 import kotlin.Array
@@ -34,13 +33,9 @@ public sealed external interface CalendarItemJs : StoredDocumentJs, ICureDocumen
 
 	public val masterCalendarItemId: String?
 
-	public val patientId: String?
-
 	public val important: Boolean?
 
 	public val homeVisit: Boolean?
-
-	public val phoneNumber: String?
 
 	public val placeId: String?
 
@@ -52,16 +47,6 @@ public sealed external interface CalendarItemJs : StoredDocumentJs, ICureDocumen
 
 	public val endTime: Double?
 
-	public val confirmationTime: Double?
-
-	public val cancellationTimestamp: Double?
-
-	public val confirmationId: String?
-
-	public val duration: Double?
-
-	public val allDay: Boolean?
-
 	public val details: String?
 
 	public val wasMigrated: Boolean?
@@ -72,13 +57,9 @@ public sealed external interface CalendarItemJs : StoredDocumentJs, ICureDocumen
 
 	public val availabilitiesAssignmentStrategy: String?
 
-	public val hcpId: String?
-
 	public val recurrenceId: String?
 
 	public val meetingTags: Array<out CalendarItemTagJs>
-
-	public val flowItem: FlowItemJs?
 
 	public val isEncrypted: Boolean
 }
@@ -99,13 +80,9 @@ public external class DecryptedCalendarItemJs(
 
 	override val responsible: String?
 
-	override val medicalLocationId: String?
-
 	override val tags: Array<CodeStubJs>
 
 	override val codes: Array<CodeStubJs>
-
-	override val endOfLife: Double?
 
 	override val deletionDate: Double?
 
@@ -115,13 +92,9 @@ public external class DecryptedCalendarItemJs(
 
 	override val masterCalendarItemId: String?
 
-	override val patientId: String?
-
 	override val important: Boolean?
 
 	override val homeVisit: Boolean?
-
-	override val phoneNumber: String?
 
 	override val placeId: String?
 
@@ -133,16 +106,6 @@ public external class DecryptedCalendarItemJs(
 
 	override val endTime: Double?
 
-	override val confirmationTime: Double?
-
-	override val cancellationTimestamp: Double?
-
-	override val confirmationId: String?
-
-	override val duration: Double?
-
-	override val allDay: Boolean?
-
 	override val details: String?
 
 	override val wasMigrated: Boolean?
@@ -153,13 +116,9 @@ public external class DecryptedCalendarItemJs(
 
 	override val availabilitiesAssignmentStrategy: String?
 
-	override val hcpId: String?
-
 	override val recurrenceId: String?
 
 	override val meetingTags: Array<DecryptedCalendarItemTagJs>
-
-	override val flowItem: FlowItemJs?
 
 	override val secretForeignKeys: Array<String>
 
@@ -192,13 +151,9 @@ public external class EncryptedCalendarItemJs(
 
 	override val responsible: String?
 
-	override val medicalLocationId: String?
-
 	override val tags: Array<CodeStubJs>
 
 	override val codes: Array<CodeStubJs>
-
-	override val endOfLife: Double?
 
 	override val deletionDate: Double?
 
@@ -208,13 +163,9 @@ public external class EncryptedCalendarItemJs(
 
 	override val masterCalendarItemId: String?
 
-	override val patientId: String?
-
 	override val important: Boolean?
 
 	override val homeVisit: Boolean?
-
-	override val phoneNumber: String?
 
 	override val placeId: String?
 
@@ -226,16 +177,6 @@ public external class EncryptedCalendarItemJs(
 
 	override val endTime: Double?
 
-	override val confirmationTime: Double?
-
-	override val cancellationTimestamp: Double?
-
-	override val confirmationId: String?
-
-	override val duration: Double?
-
-	override val allDay: Boolean?
-
 	override val details: String?
 
 	override val wasMigrated: Boolean?
@@ -246,13 +187,9 @@ public external class EncryptedCalendarItemJs(
 
 	override val availabilitiesAssignmentStrategy: String?
 
-	override val hcpId: String?
-
 	override val recurrenceId: String?
 
 	override val meetingTags: Array<EncryptedCalendarItemTagJs>
-
-	override val flowItem: FlowItemJs?
 
 	override val secretForeignKeys: Array<String>
 

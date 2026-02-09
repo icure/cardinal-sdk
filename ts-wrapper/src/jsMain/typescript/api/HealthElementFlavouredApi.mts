@@ -2,7 +2,7 @@
 import {FilterOptions, PaginatedListIterator, SortableFilterOptions} from '../cardinal-sdk-ts.mjs';
 import {HealthElementShareOptions} from '../crypto/entities/HealthElementShareOptions.mjs';
 import {HealthElement} from '../model/HealthElement.mjs';
-import {Patient} from '../model/Patient.mjs';
+import {StoredDocumentIdentifier} from '../model/StoredDocumentIdentifier.mjs';
 
 
 export interface HealthElementFlavouredApi<E extends HealthElement> {
@@ -12,9 +12,6 @@ export interface HealthElementFlavouredApi<E extends HealthElement> {
 
 	shareWithMany(healthElement: E,
 			delegates: { [ key: string ]: HealthElementShareOptions }): Promise<E>;
-
-	findHealthElementsByHcPartyPatient(hcPartyId: string, patient: Patient,
-			options?: { startDate?: number | undefined, endDate?: number | undefined, descending?: boolean | undefined }): Promise<PaginatedListIterator<E>>;
 
 	filterHealthElementsBy(filter: FilterOptions<HealthElement>): Promise<PaginatedListIterator<E>>;
 
@@ -26,7 +23,11 @@ export interface HealthElementFlavouredApi<E extends HealthElement> {
 
 	undeleteHealthElementById(id: string, rev: string): Promise<E>;
 
+	undeleteHealthElementsByIds(entityIds: Array<StoredDocumentIdentifier>): Promise<Array<E>>;
+
 	undeleteHealthElement(healthElement: HealthElement): Promise<E>;
+
+	undeleteHealthElements(healthElements: Array<HealthElement>): Promise<Array<E>>;
 
 	modifyHealthElement(entity: E): Promise<E>;
 

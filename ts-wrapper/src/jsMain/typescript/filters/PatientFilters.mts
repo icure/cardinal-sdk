@@ -69,12 +69,6 @@ interface PatientFiltersFactory {
 	byAddressForDataOwnerInGroup(dataOwner: EntityReferenceInGroup,
 			searchString: string): BaseSortableFilterOptions<Patient>;
 
-	byExternalIdForDataOwner(dataOwnerId: string,
-			externalIdPrefix: string): BaseSortableFilterOptions<Patient>;
-
-	byExternalIdForDataOwnerInGroup(dataOwner: EntityReferenceInGroup,
-			externalIdPrefix: string): BaseSortableFilterOptions<Patient>;
-
 	byIdentifiersForSelf(identifiers: Array<Identifier>): SortableFilterOptions<Patient>;
 
 	bySsinsForSelf(ssins: Array<string>): SortableFilterOptions<Patient>;
@@ -94,8 +88,6 @@ interface PatientFiltersFactory {
 			options?: { houseNumber?: string | undefined }): SortableFilterOptions<Patient>;
 
 	byAddressForSelf(searchString: string): SortableFilterOptions<Patient>;
-
-	byExternalIdForSelf(externalIdPrefix: string): SortableFilterOptions<Patient>;
 
 	byTagForSelf(tagType: string, tagCode: string | undefined): FilterOptions<Patient>;
 
@@ -130,8 +122,6 @@ export const PatientFilters: PatientFiltersFactory = {
 			byAddressPostalCodeHouseNumberForDataOwnerInGroup: (dataOwner, searchString, postalCode, options) => InternalPatientFiltersObj.getInstance().byAddressPostalCodeHouseNumberForDataOwnerInGroup(dataOwner, searchString, postalCode, options),
 			byAddressForDataOwner: (dataOwnerId, searchString) => InternalPatientFiltersObj.getInstance().byAddressForDataOwner(dataOwnerId, searchString),
 			byAddressForDataOwnerInGroup: (dataOwner, searchString) => InternalPatientFiltersObj.getInstance().byAddressForDataOwnerInGroup(dataOwner, searchString),
-			byExternalIdForDataOwner: (dataOwnerId, externalIdPrefix) => InternalPatientFiltersObj.getInstance().byExternalIdForDataOwner(dataOwnerId, externalIdPrefix),
-			byExternalIdForDataOwnerInGroup: (dataOwner, externalIdPrefix) => InternalPatientFiltersObj.getInstance().byExternalIdForDataOwnerInGroup(dataOwner, externalIdPrefix),
 			byIdentifiersForSelf: (identifiers) => InternalPatientFiltersObj.getInstance().byIdentifiersForSelf(identifiers),
 			bySsinsForSelf: (ssins) => InternalPatientFiltersObj.getInstance().bySsinsForSelf(ssins),
 			byDateOfBirthBetweenForSelf: (fromDate, toDate) => InternalPatientFiltersObj.getInstance().byDateOfBirthBetweenForSelf(fromDate, toDate),
@@ -141,7 +131,6 @@ export const PatientFilters: PatientFiltersFactory = {
 			byTelecomForSelf: (searchString) => InternalPatientFiltersObj.getInstance().byTelecomForSelf(searchString),
 			byAddressPostalCodeHouseNumberForSelf: (searchString, postalCode, options) => InternalPatientFiltersObj.getInstance().byAddressPostalCodeHouseNumberForSelf(searchString, postalCode, options),
 			byAddressForSelf: (searchString) => InternalPatientFiltersObj.getInstance().byAddressForSelf(searchString),
-			byExternalIdForSelf: (externalIdPrefix) => InternalPatientFiltersObj.getInstance().byExternalIdForSelf(externalIdPrefix),
 			byTagForSelf: (tagType, tagCode) => InternalPatientFiltersObj.getInstance().byTagForSelf(tagType, tagCode),
 			byTagForDataOwner: (dataOwnerId, tagType, tagCode) => InternalPatientFiltersObj.getInstance().byTagForDataOwner(dataOwnerId, tagType, tagCode),
 			byTagForDataOwnerInGroup: (dataOwner, tagType, tagCode) => InternalPatientFiltersObj.getInstance().byTagForDataOwnerInGroup(dataOwner, tagType, tagCode)

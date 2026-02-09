@@ -132,23 +132,4 @@ public object InternalHealthcarePartyFiltersObj {
 		)
 		return BaseFilterOptionsJsImpl(result)
 	}
-
-	public fun byTypeSpecialtyPostCode(
-		specialty: String,
-		specCode: String,
-		startPostCode: String,
-		endPostCode: String,
-	): BaseFilterOptionsJs<HealthcarePartyJs> {
-		val specialtyConverted: String = specialty
-		val specCodeConverted: String = specCode
-		val startPostCodeConverted: String = startPostCode
-		val endPostCodeConverted: String = endPostCode
-		val result = HealthcarePartyFilters.byTypeSpecialtyPostCode(
-			specialtyConverted,
-			specCodeConverted,
-			startPostCodeConverted,
-			endPostCodeConverted,
-		)
-		return BaseFilterOptionsJsImpl(result)
-	}
 }

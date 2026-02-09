@@ -14,7 +14,8 @@ enum ParticipantType {
 	participation,
 	translator,
 	emergency,
-	location;
+	location,
+	recorder;
 
 	static String encode(ParticipantType value) {
 		switch (value) {
@@ -44,6 +45,8 @@ enum ParticipantType {
 				return 'emergency';
 			case ParticipantType.location:
 				return 'location';
+			case ParticipantType.recorder:
+				return 'recorder';
 			}
 	}
 
@@ -76,6 +79,8 @@ enum ParticipantType {
 				return ParticipantType.emergency;
 			case "location":
 				return ParticipantType.location;
+			case "recorder":
+				return ParticipantType.recorder;
 			default:
 				throw ArgumentError('Invalid ParticipantType entry value $data');
 			}

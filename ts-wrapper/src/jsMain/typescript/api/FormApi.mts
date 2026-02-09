@@ -2,15 +2,16 @@
 import {FilterOptions, PaginatedListIterator, SortableFilterOptions} from '../cardinal-sdk-ts.mjs';
 import {FormShareOptions} from '../crypto/entities/FormShareOptions.mjs';
 import {SecretIdUseOption} from '../crypto/entities/SecretIdUseOption.mjs';
+import {EntityReferenceInGroup} from '../model/EntityReferenceInGroup.mjs';
 import {DecryptedForm, EncryptedForm, Form} from '../model/Form.mjs';
 import {FormTemplate} from '../model/FormTemplate.mjs';
 import {Patient} from '../model/Patient.mjs';
 import {StoredDocumentIdentifier} from '../model/StoredDocumentIdentifier.mjs';
 import {User} from '../model/User.mjs';
-import {DocIdentifier} from '../model/couchdb/DocIdentifier.mjs';
 import {AccessLevel} from '../model/embed/AccessLevel.mjs';
 import {HexString} from '../model/specializations/HexString.mjs';
 import {FormFlavouredApi} from './FormFlavouredApi.mjs';
+import {FormInGroupApi} from './FormInGroupApi.mjs';
 
 
 export interface FormApi {
@@ -19,6 +20,8 @@ export interface FormApi {
 
 	tryAndRecover: FormFlavouredApi<Form>;
 
+	inGroup: FormInGroupApi;
+
 	withEncryptionMetadata(base: DecryptedForm | undefined, patient: Patient,
 			options?: { user?: User | undefined, delegates?: { [ key: string ]: AccessLevel }, secretId?: SecretIdUseOption, alternateRootDelegateId?: string | undefined }): Promise<DecryptedForm>;
 
@@ -26,7 +29,7 @@ export interface FormApi {
 
 	hasWriteAccess(form: Form): Promise<boolean>;
 
-	decryptPatientIdOf(form: Form): Promise<Array<string>>;
+	decryptPatientIdOf(form: Form): Promise<Array<EntityReferenceInGroup>>;
 
 	createDelegationDeAnonymizationMetadata(entity: Form, delegates: Array<string>): Promise<void>;
 
@@ -38,35 +41,58 @@ export interface FormApi {
 
 	matchFormsBySorted(filter: SortableFilterOptions<Form>): Promise<Array<string>>;
 
-	deleteFormUnsafe(entityId: string): Promise<DocIdentifier>;
+	deleteFormById(entityId: string, rev: string): Promise<StoredDocumentIdentifier>;
 
-	deleteFormsUnsafe(entityIds: Array<string>): Promise<Array<DocIdentifier>>;
-
-	deleteFormById(entityId: string, rev: string): Promise<DocIdentifier>;
-
-	deleteFormsByIds(entityIds: Array<StoredDocumentIdentifier>): Promise<Array<DocIdentifier>>;
+	deleteFormsByIds(entityIds: Array<StoredDocumentIdentifier>): Promise<Array<StoredDocumentIdentifier>>;
 
 	purgeFormById(id: string, rev: string): Promise<void>;
 
-	deleteForm(form: Form): Promise<DocIdentifier>;
+	purgeFormsByIds(entityIds: Array<StoredDocumentIdentifier>): Promise<Array<StoredDocumentIdentifier>>;
 
-	deleteForms(forms: Array<Form>): Promise<Array<DocIdentifier>>;
+	deleteForm(form: Form): Promise<StoredDocumentIdentifier>;
+
+	deleteForms(forms: Array<Form>): Promise<Array<StoredDocumentIdentifier>>;
 
 	purgeForm(form: Form): Promise<void>;
+
+	purgeForms(forms: Array<Form>): Promise<Array<StoredDocumentIdentifier>>;
 
 	getFormTemplate(formTemplateId: string,
 			options?: { raw?: boolean | undefined }): Promise<FormTemplate>;
 
-	listFormTemplatesBySpeciality(specialityCode: string,
-			options?: { raw?: boolean | undefined }): Promise<Array<FormTemplate>>;
-
-	getFormTemplates(options?: { loadLayout?: boolean | undefined, raw?: boolean | undefined }): Promise<Array<FormTemplate>>;
+	getFormTemplates(formTemplateIds: Array<string>): Promise<Array<FormTemplate>>;
 
 	createFormTemplate(formTemplate: FormTemplate): Promise<FormTemplate>;
 
-	deleteFormTemplate(formTemplateId: string): Promise<DocIdentifier>;
+	createFormTemplates(formTemplates: Array<FormTemplate>): Promise<Array<FormTemplate>>;
 
-	updateFormTemplate(formTemplate: FormTemplate): Promise<FormTemplate>;
+	modifyFormTemplate(formTemplate: FormTemplate): Promise<FormTemplate>;
+
+	modifyFormTemplates(formTemplates: Array<FormTemplate>): Promise<Array<FormTemplate>>;
+
+	deleteFormTemplateById(entityId: string, rev: string): Promise<StoredDocumentIdentifier>;
+
+	deleteFormTemplatesByIds(entityIds: Array<StoredDocumentIdentifier>): Promise<Array<StoredDocumentIdentifier>>;
+
+	deleteFormTemplate(formTemplate: FormTemplate): Promise<StoredDocumentIdentifier>;
+
+	deleteFormTemplates(formTemplates: Array<FormTemplate>): Promise<Array<StoredDocumentIdentifier>>;
+
+	undeleteFormTemplateById(id: string, rev: string): Promise<FormTemplate>;
+
+	undeleteFormTemplatesByIds(entityIds: Array<StoredDocumentIdentifier>): Promise<Array<FormTemplate>>;
+
+	undeleteFormTemplate(formTemplate: FormTemplate): Promise<FormTemplate>;
+
+	undeleteFormTemplates(formTemplates: Array<FormTemplate>): Promise<Array<FormTemplate>>;
+
+	purgeFormTemplateById(id: string, rev: string): Promise<void>;
+
+	purgeFormTemplatesByIds(entityIds: Array<StoredDocumentIdentifier>): Promise<Array<StoredDocumentIdentifier>>;
+
+	purgeFormTemplate(formTemplate: FormTemplate): Promise<void>;
+
+	purgeFormTemplates(formTemplates: Array<FormTemplate>): Promise<Array<StoredDocumentIdentifier>>;
 
 	setTemplateAttachment(formTemplateId: string, payload: Int8Array): Promise<string>;
 
@@ -75,9 +101,6 @@ export interface FormApi {
 
 	shareWithMany(form: DecryptedForm,
 			delegates: { [ key: string ]: FormShareOptions }): Promise<DecryptedForm>;
-
-	findFormsByHcPartyPatient(hcPartyId: string, patient: Patient,
-			options?: { startDate?: number | undefined, endDate?: number | undefined, descending?: boolean | undefined }): Promise<PaginatedListIterator<DecryptedForm>>;
 
 	filterFormsBy(filter: FilterOptions<Form>): Promise<PaginatedListIterator<DecryptedForm>>;
 
@@ -89,24 +112,20 @@ export interface FormApi {
 
 	modifyForm(entity: DecryptedForm): Promise<DecryptedForm>;
 
+	modifyForms(entities: Array<DecryptedForm>): Promise<Array<DecryptedForm>>;
+
 	undeleteFormById(id: string, rev: string): Promise<DecryptedForm>;
+
+	undeleteFormsByIds(entityIds: Array<StoredDocumentIdentifier>): Promise<Array<DecryptedForm>>;
 
 	undeleteForm(form: Form): Promise<DecryptedForm>;
 
-	modifyForms(entities: Array<DecryptedForm>): Promise<Array<DecryptedForm>>;
+	undeleteForms(forms: Array<Form>): Promise<Array<DecryptedForm>>;
 
 	getForm(entityId: string): Promise<DecryptedForm | undefined>;
 
 	getForms(entityIds: Array<string>): Promise<Array<DecryptedForm>>;
 
-	getLatestFormByLogicalUuid(logicalUuid: string): Promise<DecryptedForm>;
-
 	getLatestFormByUniqueId(uniqueId: string): Promise<DecryptedForm>;
-
-	getFormsByLogicalUuid(logicalUuid: string): Promise<Array<DecryptedForm>>;
-
-	getFormsByUniqueId(uniqueId: string): Promise<Array<DecryptedForm>>;
-
-	getChildrenForms(hcPartyId: string, parentId: string): Promise<Array<DecryptedForm>>;
 
 }

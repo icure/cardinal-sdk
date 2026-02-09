@@ -45,6 +45,7 @@ public object MaintenanceTaskApi {
     maintenanceTaskString: String,
     userString: String,
     delegatesString: String,
+    alternateRootDelegateIdString: String,
   ) {
     val maintenanceTask = fullLanguageInteropJson.decodeFromString(
       DecryptedMaintenanceTask.serializer().nullable,
@@ -58,6 +59,10 @@ public object MaintenanceTaskApi {
       MapSerializer(String.serializer(), AccessLevel.serializer()),
       delegatesString
     )
+    val alternateRootDelegateId = fullLanguageInteropJson.decodeFromString(
+      String.serializer().nullable,
+      alternateRootDelegateIdString
+    )
     ApiScope.execute(
       dartResultCallback,
       DecryptedMaintenanceTask.serializer()) {
@@ -65,6 +70,7 @@ public object MaintenanceTaskApi {
         maintenanceTask,
         user,
         delegates,
+        alternateRootDelegateId,
       )
     }
   }

@@ -47,6 +47,7 @@ public object HealthcarePartyApiDispatcher {
     "deleteHealthcarePartyInGroup" -> deleteHealthcarePartyInGroup(parameters, resultCallback)
     "deleteHealthcarePartiesInGroup" -> deleteHealthcarePartiesInGroup(parameters, resultCallback)
     "subscribeToEvents" -> subscribeToEvents(parameters, resultCallback)
+    "inGroup.matchHealthcarePartiesBy" -> inGroup_matchHealthcarePartiesBy(parameters, resultCallback)
     else -> null
   }?.let { true } ?: false
 
@@ -440,6 +441,20 @@ public object HealthcarePartyApiDispatcher {
       parameters.getValue("events"),
       parameters.getValue("filter"),
       parameters.getValue("subscriptionConfig"),
+    )
+  }
+
+  private fun inGroup_matchHealthcarePartiesBy(parameters: Map<String, String>, resultCallback: (
+    String?,
+    String?,
+    String?,
+    String?,
+  ) -> Unit) {
+    HealthcarePartyApi.inGroup.matchHealthcarePartiesBy(
+      resultCallback,
+      parameters.getValue("sdkId"),
+      parameters.getValue("groupId"),
+      parameters.getValue("filter"),
     )
   }
 }

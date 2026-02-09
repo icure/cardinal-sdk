@@ -66,19 +66,22 @@ sealed class ExternalJwtConfigValidationMethod {
 abstract class ExternalJwtConfigValidationMethodPublicKey with _$ExternalJwtConfigValidationMethodPublicKey implements ExternalJwtConfigValidationMethod {
 	const factory ExternalJwtConfigValidationMethodPublicKey({
 		required String key,
+		@Default(null) String? signatureAlgorithm,
 	}) = _ExternalJwtConfigValidationMethodPublicKey;
 
 
 	static Map<String, dynamic> encode(ExternalJwtConfigValidationMethodPublicKey value) {
 		Map<String, dynamic> entityAsMap = {
-			"key" : value.key
+			"key" : value.key,
+			"signatureAlgorithm" : value.signatureAlgorithm
 		};
 		return entityAsMap;
 	}
 
 	static ExternalJwtConfigValidationMethodPublicKey fromJSON(Map<String, dynamic> data) {
 		return ExternalJwtConfigValidationMethodPublicKey(
-			key: (data["key"] as String)
+			key: (data["key"] as String),
+			signatureAlgorithm: (data["signatureAlgorithm"] as String?),
 		);
 	}
 }

@@ -14,8 +14,8 @@ import com.icure.cardinal.sdk.model.filter.agenda.AgendaWithPropertyFilter
 import com.icure.cardinal.sdk.model.filter.agenda.AllAgendasFilter
 import com.icure.cardinal.sdk.options.BasicApiConfiguration
 import com.icure.utils.InternalIcureApi
+import kotlinx.coroutines.currentCoroutineContext
 import kotlinx.serialization.Serializable
-import kotlin.coroutines.coroutineContext
 
 object AgendaFilters {
 	/**
@@ -204,7 +204,7 @@ internal suspend fun mapAgendaFilterOptions(
 	requestGroupId: String? = null,
 ): AbstractFilter<Agenda> = mapAgendaFilterOptions(
 	filterOptions = filterOptions,
-	boundGroup = config.getBoundGroup(coroutineContext),
+	boundGroup = config.getBoundGroup(currentCoroutineContext()),
 	requestGroupId = requestGroupId,
 )
 

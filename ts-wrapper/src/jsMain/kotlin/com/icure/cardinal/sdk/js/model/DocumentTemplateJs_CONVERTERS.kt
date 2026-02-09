@@ -37,9 +37,6 @@ public fun documentTemplate_toJs(obj: DocumentTemplate): DocumentTemplateJs {
 	val responsible = nullToUndefined(
 		obj.responsible
 	)
-	val medicalLocationId = nullToUndefined(
-		obj.medicalLocationId
-	)
 	val tags = setToArray(
 		obj.tags,
 		{ x1: CodeStub ->
@@ -115,7 +112,6 @@ public fun documentTemplate_toJs(obj: DocumentTemplate): DocumentTemplateJs {
 		"modified:modified," +
 		"author:author," +
 		"responsible:responsible," +
-		"medicalLocationId:medicalLocationId," +
 		"tags:tags," +
 		"codes:codes," +
 		"endOfLife:endOfLife," +
@@ -143,7 +139,6 @@ public fun documentTemplate_fromJs(obj: DocumentTemplateJs): DocumentTemplate {
 	val modified = numberToLong(obj.modified, "obj.modified")
 	val author = undefinedToNull(obj.author)
 	val responsible = undefinedToNull(obj.responsible)
-	val medicalLocationId = undefinedToNull(obj.medicalLocationId)
 	val tags = arrayToSet(
 		obj.tags,
 		"obj.tags",
@@ -194,7 +189,6 @@ public fun documentTemplate_fromJs(obj: DocumentTemplateJs): DocumentTemplate {
 		modified = modified,
 		author = author,
 		responsible = responsible,
-		medicalLocationId = medicalLocationId,
 		tags = tags,
 		codes = codes,
 		endOfLife = endOfLife,

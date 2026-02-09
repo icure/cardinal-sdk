@@ -37,7 +37,7 @@ mixin _$EncryptedPlanOfAction {
   int get status;
   Set<String> get documentIds;
   int? get numberOfCares;
-  List<EncryptedCareTeamMembership?> get careTeamMemberships;
+  List<EncryptedCareTeamMembership> get careTeamMemberships;
   bool get relevant;
   Base64String? get encryptedSelf;
 
@@ -162,7 +162,7 @@ abstract mixin class $EncryptedPlanOfActionCopyWith<$Res> {
       int status,
       Set<String> documentIds,
       int? numberOfCares,
-      List<EncryptedCareTeamMembership?> careTeamMemberships,
+      List<EncryptedCareTeamMembership> careTeamMemberships,
       bool relevant,
       Base64String? encryptedSelf});
 }
@@ -298,7 +298,7 @@ class _$EncryptedPlanOfActionCopyWithImpl<$Res>
       careTeamMemberships: null == careTeamMemberships
           ? _self.careTeamMemberships
           : careTeamMemberships // ignore: cast_nullable_to_non_nullable
-              as List<EncryptedCareTeamMembership?>,
+              as List<EncryptedCareTeamMembership>,
       relevant: null == relevant
           ? _self.relevant
           : relevant // ignore: cast_nullable_to_non_nullable
@@ -337,7 +337,7 @@ class _EncryptedPlanOfAction implements EncryptedPlanOfAction {
       this.status = 0,
       final Set<String> documentIds = const {},
       this.numberOfCares = null,
-      final List<EncryptedCareTeamMembership?> careTeamMemberships = const [],
+      final List<EncryptedCareTeamMembership> careTeamMemberships = const [],
       this.relevant = true,
       this.encryptedSelf = null})
       : _tags = tags,
@@ -428,10 +428,10 @@ class _EncryptedPlanOfAction implements EncryptedPlanOfAction {
   @override
   @JsonKey()
   final int? numberOfCares;
-  final List<EncryptedCareTeamMembership?> _careTeamMemberships;
+  final List<EncryptedCareTeamMembership> _careTeamMemberships;
   @override
   @JsonKey()
-  List<EncryptedCareTeamMembership?> get careTeamMemberships {
+  List<EncryptedCareTeamMembership> get careTeamMemberships {
     if (_careTeamMemberships is EqualUnmodifiableListView)
       return _careTeamMemberships;
     // ignore: implicit_dynamic_type
@@ -569,7 +569,7 @@ abstract mixin class _$EncryptedPlanOfActionCopyWith<$Res>
       int status,
       Set<String> documentIds,
       int? numberOfCares,
-      List<EncryptedCareTeamMembership?> careTeamMemberships,
+      List<EncryptedCareTeamMembership> careTeamMemberships,
       bool relevant,
       Base64String? encryptedSelf});
 }
@@ -705,7 +705,7 @@ class __$EncryptedPlanOfActionCopyWithImpl<$Res>
       careTeamMemberships: null == careTeamMemberships
           ? _self._careTeamMemberships
           : careTeamMemberships // ignore: cast_nullable_to_non_nullable
-              as List<EncryptedCareTeamMembership?>,
+              as List<EncryptedCareTeamMembership>,
       relevant: null == relevant
           ? _self.relevant
           : relevant // ignore: cast_nullable_to_non_nullable
@@ -742,7 +742,7 @@ mixin _$DecryptedPlanOfAction {
   int get status;
   Set<String> get documentIds;
   int? get numberOfCares;
-  List<DecryptedCareTeamMembership?> get careTeamMemberships;
+  List<DecryptedCareTeamMembership> get careTeamMemberships;
   bool get relevant;
   Base64String? get encryptedSelf;
 
@@ -867,7 +867,7 @@ abstract mixin class $DecryptedPlanOfActionCopyWith<$Res> {
       int status,
       Set<String> documentIds,
       int? numberOfCares,
-      List<DecryptedCareTeamMembership?> careTeamMemberships,
+      List<DecryptedCareTeamMembership> careTeamMemberships,
       bool relevant,
       Base64String? encryptedSelf});
 }
@@ -1003,7 +1003,7 @@ class _$DecryptedPlanOfActionCopyWithImpl<$Res>
       careTeamMemberships: null == careTeamMemberships
           ? _self.careTeamMemberships
           : careTeamMemberships // ignore: cast_nullable_to_non_nullable
-              as List<DecryptedCareTeamMembership?>,
+              as List<DecryptedCareTeamMembership>,
       relevant: null == relevant
           ? _self.relevant
           : relevant // ignore: cast_nullable_to_non_nullable
@@ -1042,7 +1042,7 @@ class _DecryptedPlanOfAction implements DecryptedPlanOfAction {
       this.status = 0,
       final Set<String> documentIds = const {},
       this.numberOfCares = null,
-      final List<DecryptedCareTeamMembership?> careTeamMemberships = const [],
+      final List<DecryptedCareTeamMembership> careTeamMemberships = const [],
       this.relevant = true,
       this.encryptedSelf = null})
       : _tags = tags,
@@ -1133,10 +1133,10 @@ class _DecryptedPlanOfAction implements DecryptedPlanOfAction {
   @override
   @JsonKey()
   final int? numberOfCares;
-  final List<DecryptedCareTeamMembership?> _careTeamMemberships;
+  final List<DecryptedCareTeamMembership> _careTeamMemberships;
   @override
   @JsonKey()
-  List<DecryptedCareTeamMembership?> get careTeamMemberships {
+  List<DecryptedCareTeamMembership> get careTeamMemberships {
     if (_careTeamMemberships is EqualUnmodifiableListView)
       return _careTeamMemberships;
     // ignore: implicit_dynamic_type
@@ -1274,7 +1274,7 @@ abstract mixin class _$DecryptedPlanOfActionCopyWith<$Res>
       int status,
       Set<String> documentIds,
       int? numberOfCares,
-      List<DecryptedCareTeamMembership?> careTeamMemberships,
+      List<DecryptedCareTeamMembership> careTeamMemberships,
       bool relevant,
       Base64String? encryptedSelf});
 }
@@ -1410,7 +1410,7 @@ class __$DecryptedPlanOfActionCopyWithImpl<$Res>
       careTeamMemberships: null == careTeamMemberships
           ? _self._careTeamMemberships
           : careTeamMemberships // ignore: cast_nullable_to_non_nullable
-              as List<DecryptedCareTeamMembership?>,
+              as List<DecryptedCareTeamMembership>,
       relevant: null == relevant
           ? _self.relevant
           : relevant // ignore: cast_nullable_to_non_nullable

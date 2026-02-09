@@ -36,8 +36,6 @@ public external class UserJs(
 
 	public val roles: Array<String>
 
-	public val type: String?
-
 	public val status: String?
 
 	public val login: String?
@@ -54,15 +52,11 @@ public external class UserJs(
 
 	public val autoDelegations: Record<String, Array<String>>
 
-	public val createdDate: Double?
-
 	public val termsOfUseDate: Double?
 
 	public val email: String?
 
 	public val mobilePhone: String?
-
-	public val applicationTokens: Record<String, String>
 
 	public val authenticationTokens: Record<String, AuthenticationTokenJs>
 

@@ -14,28 +14,28 @@ data class EntitySubscriptionConfiguration(
 	/**
 	 * The amount of (unconsumed) events that the subscription can buffer
 	 */
-	@DefaultValue("100")
+	@param:DefaultValue("100")
 	val channelBufferCapacity: Int = 100,
 	/**
 	 * How the subscription should behave if a new event is received but it does not fit in the buffer
 	 */
-	@DefaultValue("com.icure.cardinal.sdk.subscription.EntitySubscriptionConfiguration.FullBufferBehaviour.Close")
+	@param:DefaultValue("com.icure.cardinal.sdk.subscription.EntitySubscriptionConfiguration.FullBufferBehaviour.Close")
 	val onBufferFull: FullBufferBehaviour = FullBufferBehaviour.Close,
 	/**
 	 * If the (re)connection fails how long to wait before another attempt.
 	 */
-	@DefaultValue("2.seconds")
+	@param:DefaultValue("2.seconds")
 	@Serializable(with = DurationAsMillisecondsSerializer::class)
 	val reconnectionDelay: Duration = 2.seconds,
 	/**
 	 * Factor for increasing the delay between (re)connection attempts in case of repeated failures.
 	 */
-	@DefaultValue("2.0")
+	@param:DefaultValue("2.0")
 	val retryDelayExponentFactor: Double = 2.0,
 	/**
 	 * How many times should the subscription attempt to (re)connect before closing with a [EntitySubscription.ConnectionException]
 	 */
-	@DefaultValue("5")
+	@param:DefaultValue("5")
 	val connectionMaxRetries: Int = 5,
 ) {
 	@Serializable

@@ -10,7 +10,7 @@ import kotlin.Long
 
 @Serializable
 data class Payment(
-	@DefaultValue("0")
+	@param:DefaultValue("0")
 	public val paymentDate: Long = 0,
 	public val paymentType: PaymentType? = null,
 	public val paid: Double? = null,

@@ -69,12 +69,6 @@ public fun topic_toJs(obj: DecryptedTopic): DecryptedTopicJs {
 	val responsible = nullToUndefined(
 		obj.responsible
 	)
-	val medicalLocationId = nullToUndefined(
-		obj.medicalLocationId
-	)
-	val endOfLife = nullToUndefined(
-		longToNumber(obj.endOfLife)
-	)
 	val deletionDate = nullToUndefined(
 		longToNumber(obj.deletionDate)
 	)
@@ -169,8 +163,6 @@ public fun topic_toJs(obj: DecryptedTopic): DecryptedTopicJs {
 		"tags:tags," +
 		"author:author," +
 		"responsible:responsible," +
-		"medicalLocationId:medicalLocationId," +
-		"endOfLife:endOfLife," +
 		"deletionDate:deletionDate," +
 		"activeParticipants:activeParticipants," +
 		"securityMetadata:securityMetadata," +
@@ -208,8 +200,6 @@ public fun topic_fromJs(obj: DecryptedTopicJs): DecryptedTopic {
 	)
 	val author = undefinedToNull(obj.author)
 	val responsible = undefinedToNull(obj.responsible)
-	val medicalLocationId = undefinedToNull(obj.medicalLocationId)
-	val endOfLife = numberToLong(obj.endOfLife, "obj.endOfLife")
 	val deletionDate = numberToLong(obj.deletionDate, "obj.deletionDate")
 	val activeParticipants = objectToMap(
 		obj.activeParticipants,
@@ -308,8 +298,6 @@ public fun topic_fromJs(obj: DecryptedTopicJs): DecryptedTopic {
 		tags = tags,
 		author = author,
 		responsible = responsible,
-		medicalLocationId = medicalLocationId,
-		endOfLife = endOfLife,
 		deletionDate = deletionDate,
 		activeParticipants = activeParticipants,
 		securityMetadata = securityMetadata,
@@ -361,12 +349,6 @@ public fun topic_toJs(obj: EncryptedTopic): EncryptedTopicJs {
 	)
 	val responsible = nullToUndefined(
 		obj.responsible
-	)
-	val medicalLocationId = nullToUndefined(
-		obj.medicalLocationId
-	)
-	val endOfLife = nullToUndefined(
-		longToNumber(obj.endOfLife)
 	)
 	val deletionDate = nullToUndefined(
 		longToNumber(obj.deletionDate)
@@ -462,8 +444,6 @@ public fun topic_toJs(obj: EncryptedTopic): EncryptedTopicJs {
 		"tags:tags," +
 		"author:author," +
 		"responsible:responsible," +
-		"medicalLocationId:medicalLocationId," +
-		"endOfLife:endOfLife," +
 		"deletionDate:deletionDate," +
 		"activeParticipants:activeParticipants," +
 		"securityMetadata:securityMetadata," +
@@ -501,8 +481,6 @@ public fun topic_fromJs(obj: EncryptedTopicJs): EncryptedTopic {
 	)
 	val author = undefinedToNull(obj.author)
 	val responsible = undefinedToNull(obj.responsible)
-	val medicalLocationId = undefinedToNull(obj.medicalLocationId)
-	val endOfLife = numberToLong(obj.endOfLife, "obj.endOfLife")
 	val deletionDate = numberToLong(obj.deletionDate, "obj.deletionDate")
 	val activeParticipants = objectToMap(
 		obj.activeParticipants,
@@ -601,8 +579,6 @@ public fun topic_fromJs(obj: EncryptedTopicJs): EncryptedTopic {
 		tags = tags,
 		author = author,
 		responsible = responsible,
-		medicalLocationId = medicalLocationId,
-		endOfLife = endOfLife,
 		deletionDate = deletionDate,
 		activeParticipants = activeParticipants,
 		securityMetadata = securityMetadata,

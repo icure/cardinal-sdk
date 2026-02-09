@@ -21,20 +21,20 @@ data class CalendarItemType(
 	override val deletionDate: Long? = null,
 	public val healthcarePartyId: String? = null,
 	public val agendaId: String? = null,
-	@DefaultValue("false")
+	@param:DefaultValue("false")
 	public val defaultCalendarItemType: Boolean = false,
 	public val name: String? = null,
 	public val color: String? = null,
-	@DefaultValue("0")
+	@param:DefaultValue("0")
 	public val duration: Int = 0,
 	public val extraDurationsConfig: DurationConfig? = null,
 	public val externalRef: String? = null,
 	public val mikronoId: String? = null,
-	@DefaultValue("emptySet()")
+	@param:DefaultValue("emptySet()")
 	public val docIds: Set<String> = emptySet(),
-	@DefaultValue("emptyMap()")
+	@param:DefaultValue("emptyMap()")
 	public val otherInfos: Map<String, String> = emptyMap(),
-	@DefaultValue("emptyMap()")
+	@param:DefaultValue("emptyMap()")
 	public val subjectByLanguage: Map<String, String> = emptyMap(),
 	public val publicProperties: Set<DecryptedPropertyStub>? = null,
 ) : StoredDocument {
@@ -43,7 +43,7 @@ data class CalendarItemType(
 		@Serializable
 		@SerialName("Set")
 		public data class Set(
-			@DefaultValue("emptySet()")
+			@param:DefaultValue("emptySet()")
 			public val durations: kotlin.collections.Set<Int> = emptySet(),
 		) : DurationConfig
 

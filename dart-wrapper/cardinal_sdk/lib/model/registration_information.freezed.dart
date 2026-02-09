@@ -15,12 +15,15 @@ T _$identity<T>(T value) => value;
 
 /// @nodoc
 mixin _$RegistrationInformation {
-  String get firstName;
-  String get lastName;
+  String? get projectId;
+  String? get firstName;
+  String? get lastName;
+  String? get companyName;
   String get emailAddress;
   String? get userOptions;
   Set<String> get userRoles;
   String? get minimumKrakenVersion;
+  String? get cluster;
 
   /// Create a copy of RegistrationInformation
   /// with the given fields replaced by the non-null parameter values.
@@ -35,32 +38,40 @@ mixin _$RegistrationInformation {
     return identical(this, other) ||
         (other.runtimeType == runtimeType &&
             other is RegistrationInformation &&
+            (identical(other.projectId, projectId) ||
+                other.projectId == projectId) &&
             (identical(other.firstName, firstName) ||
                 other.firstName == firstName) &&
             (identical(other.lastName, lastName) ||
                 other.lastName == lastName) &&
+            (identical(other.companyName, companyName) ||
+                other.companyName == companyName) &&
             (identical(other.emailAddress, emailAddress) ||
                 other.emailAddress == emailAddress) &&
             (identical(other.userOptions, userOptions) ||
                 other.userOptions == userOptions) &&
             const DeepCollectionEquality().equals(other.userRoles, userRoles) &&
             (identical(other.minimumKrakenVersion, minimumKrakenVersion) ||
-                other.minimumKrakenVersion == minimumKrakenVersion));
+                other.minimumKrakenVersion == minimumKrakenVersion) &&
+            (identical(other.cluster, cluster) || other.cluster == cluster));
   }
 
   @override
   int get hashCode => Object.hash(
       runtimeType,
+      projectId,
       firstName,
       lastName,
+      companyName,
       emailAddress,
       userOptions,
       const DeepCollectionEquality().hash(userRoles),
-      minimumKrakenVersion);
+      minimumKrakenVersion,
+      cluster);
 
   @override
   String toString() {
-    return 'RegistrationInformation(firstName: $firstName, lastName: $lastName, emailAddress: $emailAddress, userOptions: $userOptions, userRoles: $userRoles, minimumKrakenVersion: $minimumKrakenVersion)';
+    return 'RegistrationInformation(projectId: $projectId, firstName: $firstName, lastName: $lastName, companyName: $companyName, emailAddress: $emailAddress, userOptions: $userOptions, userRoles: $userRoles, minimumKrakenVersion: $minimumKrakenVersion, cluster: $cluster)';
   }
 }
 
@@ -71,12 +82,15 @@ abstract mixin class $RegistrationInformationCopyWith<$Res> {
       _$RegistrationInformationCopyWithImpl;
   @useResult
   $Res call(
-      {String firstName,
-      String lastName,
+      {String? projectId,
+      String? firstName,
+      String? lastName,
+      String? companyName,
       String emailAddress,
       String? userOptions,
       Set<String> userRoles,
-      String? minimumKrakenVersion});
+      String? minimumKrakenVersion,
+      String? cluster});
 }
 
 /// @nodoc
@@ -92,22 +106,33 @@ class _$RegistrationInformationCopyWithImpl<$Res>
   @pragma('vm:prefer-inline')
   @override
   $Res call({
-    Object? firstName = null,
-    Object? lastName = null,
+    Object? projectId = freezed,
+    Object? firstName = freezed,
+    Object? lastName = freezed,
+    Object? companyName = freezed,
     Object? emailAddress = null,
     Object? userOptions = freezed,
     Object? userRoles = null,
     Object? minimumKrakenVersion = freezed,
+    Object? cluster = freezed,
   }) {
     return _then(_self.copyWith(
-      firstName: null == firstName
+      projectId: freezed == projectId
+          ? _self.projectId
+          : projectId // ignore: cast_nullable_to_non_nullable
+              as String?,
+      firstName: freezed == firstName
           ? _self.firstName
           : firstName // ignore: cast_nullable_to_non_nullable
-              as String,
-      lastName: null == lastName
+              as String?,
+      lastName: freezed == lastName
           ? _self.lastName
           : lastName // ignore: cast_nullable_to_non_nullable
-              as String,
+              as String?,
+      companyName: freezed == companyName
+          ? _self.companyName
+          : companyName // ignore: cast_nullable_to_non_nullable
+              as String?,
       emailAddress: null == emailAddress
           ? _self.emailAddress
           : emailAddress // ignore: cast_nullable_to_non_nullable
@@ -124,6 +149,10 @@ class _$RegistrationInformationCopyWithImpl<$Res>
           ? _self.minimumKrakenVersion
           : minimumKrakenVersion // ignore: cast_nullable_to_non_nullable
               as String?,
+      cluster: freezed == cluster
+          ? _self.cluster
+          : cluster // ignore: cast_nullable_to_non_nullable
+              as String?,
     ));
   }
 }
@@ -132,18 +161,29 @@ class _$RegistrationInformationCopyWithImpl<$Res>
 
 class _RegistrationInformation implements RegistrationInformation {
   const _RegistrationInformation(
-      {required this.firstName,
-      required this.lastName,
+      {this.projectId = null,
+      this.firstName = null,
+      this.lastName = null,
+      this.companyName = null,
       required this.emailAddress,
       this.userOptions = null,
       final Set<String> userRoles = const {},
-      this.minimumKrakenVersion = null})
+      this.minimumKrakenVersion = null,
+      this.cluster = null})
       : _userRoles = userRoles;
 
   @override
-  final String firstName;
+  @JsonKey()
+  final String? projectId;
   @override
-  final String lastName;
+  @JsonKey()
+  final String? firstName;
+  @override
+  @JsonKey()
+  final String? lastName;
+  @override
+  @JsonKey()
+  final String? companyName;
   @override
   final String emailAddress;
   @override
@@ -161,6 +201,9 @@ class _RegistrationInformation implements RegistrationInformation {
   @override
   @JsonKey()
   final String? minimumKrakenVersion;
+  @override
+  @JsonKey()
+  final String? cluster;
 
   /// Create a copy of RegistrationInformation
   /// with the given fields replaced by the non-null parameter values.
@@ -176,10 +219,14 @@ class _RegistrationInformation implements RegistrationInformation {
     return identical(this, other) ||
         (other.runtimeType == runtimeType &&
             other is _RegistrationInformation &&
+            (identical(other.projectId, projectId) ||
+                other.projectId == projectId) &&
             (identical(other.firstName, firstName) ||
                 other.firstName == firstName) &&
             (identical(other.lastName, lastName) ||
                 other.lastName == lastName) &&
+            (identical(other.companyName, companyName) ||
+                other.companyName == companyName) &&
             (identical(other.emailAddress, emailAddress) ||
                 other.emailAddress == emailAddress) &&
             (identical(other.userOptions, userOptions) ||
@@ -187,22 +234,26 @@ class _RegistrationInformation implements RegistrationInformation {
             const DeepCollectionEquality()
                 .equals(other._userRoles, _userRoles) &&
             (identical(other.minimumKrakenVersion, minimumKrakenVersion) ||
-                other.minimumKrakenVersion == minimumKrakenVersion));
+                other.minimumKrakenVersion == minimumKrakenVersion) &&
+            (identical(other.cluster, cluster) || other.cluster == cluster));
   }
 
   @override
   int get hashCode => Object.hash(
       runtimeType,
+      projectId,
       firstName,
       lastName,
+      companyName,
       emailAddress,
       userOptions,
       const DeepCollectionEquality().hash(_userRoles),
-      minimumKrakenVersion);
+      minimumKrakenVersion,
+      cluster);
 
   @override
   String toString() {
-    return 'RegistrationInformation(firstName: $firstName, lastName: $lastName, emailAddress: $emailAddress, userOptions: $userOptions, userRoles: $userRoles, minimumKrakenVersion: $minimumKrakenVersion)';
+    return 'RegistrationInformation(projectId: $projectId, firstName: $firstName, lastName: $lastName, companyName: $companyName, emailAddress: $emailAddress, userOptions: $userOptions, userRoles: $userRoles, minimumKrakenVersion: $minimumKrakenVersion, cluster: $cluster)';
   }
 }
 
@@ -215,12 +266,15 @@ abstract mixin class _$RegistrationInformationCopyWith<$Res>
   @override
   @useResult
   $Res call(
-      {String firstName,
-      String lastName,
+      {String? projectId,
+      String? firstName,
+      String? lastName,
+      String? companyName,
       String emailAddress,
       String? userOptions,
       Set<String> userRoles,
-      String? minimumKrakenVersion});
+      String? minimumKrakenVersion,
+      String? cluster});
 }
 
 /// @nodoc
@@ -236,22 +290,33 @@ class __$RegistrationInformationCopyWithImpl<$Res>
   @override
   @pragma('vm:prefer-inline')
   $Res call({
-    Object? firstName = null,
-    Object? lastName = null,
+    Object? projectId = freezed,
+    Object? firstName = freezed,
+    Object? lastName = freezed,
+    Object? companyName = freezed,
     Object? emailAddress = null,
     Object? userOptions = freezed,
     Object? userRoles = null,
     Object? minimumKrakenVersion = freezed,
+    Object? cluster = freezed,
   }) {
     return _then(_RegistrationInformation(
-      firstName: null == firstName
+      projectId: freezed == projectId
+          ? _self.projectId
+          : projectId // ignore: cast_nullable_to_non_nullable
+              as String?,
+      firstName: freezed == firstName
           ? _self.firstName
           : firstName // ignore: cast_nullable_to_non_nullable
-              as String,
-      lastName: null == lastName
+              as String?,
+      lastName: freezed == lastName
           ? _self.lastName
           : lastName // ignore: cast_nullable_to_non_nullable
-              as String,
+              as String?,
+      companyName: freezed == companyName
+          ? _self.companyName
+          : companyName // ignore: cast_nullable_to_non_nullable
+              as String?,
       emailAddress: null == emailAddress
           ? _self.emailAddress
           : emailAddress // ignore: cast_nullable_to_non_nullable
@@ -267,6 +332,10 @@ class __$RegistrationInformationCopyWithImpl<$Res>
       minimumKrakenVersion: freezed == minimumKrakenVersion
           ? _self.minimumKrakenVersion
           : minimumKrakenVersion // ignore: cast_nullable_to_non_nullable
+              as String?,
+      cluster: freezed == cluster
+          ? _self.cluster
+          : cluster // ignore: cast_nullable_to_non_nullable
               as String?,
     ));
   }

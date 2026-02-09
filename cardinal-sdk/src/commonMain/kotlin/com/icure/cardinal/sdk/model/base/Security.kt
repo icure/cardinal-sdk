@@ -8,9 +8,9 @@ import kotlinx.serialization.Serializable
 
 @Serializable
 data class Security(
-	@DefaultValue("Right()")
+	@param:DefaultValue("Right()")
 	public val admins: Right = Right(),
-	@DefaultValue("Right()")
+	@param:DefaultValue("Right()")
 	public val members: Right = Right(),
 ) {
 	// region Security-Security

@@ -57,7 +57,9 @@ interface CryptoStrategies {
 	 */
 	data class RecoveredKeyData(
 		/**
-		 * All keys recovered for the data owner (will be automatically considered as verified), by fingerprint.
+		 * All keys recovered for the data owner, by fingerprint.
+		 * Recovered keys are by default considered as verified, unless explicitly marked as unverified in
+		 * `keyAuthenticity`.
 		 */
 		val recoveredKeys: Map<KeypairFingerprintV1String, RsaKeypair<RsaEncryptionAlgorithm>>,
 		/**

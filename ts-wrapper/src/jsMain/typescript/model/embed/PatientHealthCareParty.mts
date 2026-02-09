@@ -1,5 +1,5 @@
 // auto-generated file
-import {expectArray, expectBoolean, expectMap, expectObject, expectString, expectStringEnum, extractEntry} from '../../internal/JsonDecodeUtils.mjs';
+import {expectArray, expectMap, expectObject, expectString, expectStringEnum, extractEntry} from '../../internal/JsonDecodeUtils.mjs';
 import {DecryptedPropertyStub, EncryptedPropertyStub, PropertyStub} from '../PropertyStub.mjs';
 import {Base64String} from '../specializations/Base64String.mjs';
 import {Encryptable} from './Encryptable.mjs';
@@ -17,8 +17,6 @@ export interface PatientHealthCareParty extends Encryptable {
 	sendFormats: { [ key in TelecomType ]?: string };
 
 	referralPeriods: Array<ReferralPeriod>;
-
-	referral: boolean;
 
 	properties: Array<PropertyStub> | undefined;
 
@@ -38,8 +36,6 @@ export class DecryptedPatientHealthCareParty {
 
 	referralPeriods: Array<ReferralPeriod> = [];
 
-	referral: boolean = false;
-
 	properties: Array<DecryptedPropertyStub> | undefined = undefined;
 
 	encryptedSelf: Base64String | undefined = undefined;
@@ -52,7 +48,6 @@ export class DecryptedPatientHealthCareParty {
 		if ('healthcarePartyId' in partial) this.healthcarePartyId = partial.healthcarePartyId;
 		if ('sendFormats' in partial && partial.sendFormats !== undefined) this.sendFormats = partial.sendFormats;
 		if ('referralPeriods' in partial && partial.referralPeriods !== undefined) this.referralPeriods = partial.referralPeriods;
-		if ('referral' in partial && partial.referral !== undefined) this.referral = partial.referral;
 		if ('properties' in partial) this.properties = partial.properties;
 		if ('encryptedSelf' in partial) this.encryptedSelf = partial.encryptedSelf;
 	}
@@ -63,7 +58,6 @@ export class DecryptedPatientHealthCareParty {
 		if (this.healthcarePartyId != undefined) res['healthcarePartyId'] = this.healthcarePartyId
 		res['sendFormats'] = Object.fromEntries(Object.entries(this.sendFormats).map(([k0, v0]) => [k0, v0]))
 		res['referralPeriods'] = this.referralPeriods.map((x0) => x0.toJSON() )
-		res['referral'] = this.referral
 		if (this.properties != undefined) res['properties'] = this.properties.map((x0) => x0.toJSON() )
 		if (this.encryptedSelf != undefined) res['encryptedSelf'] = this.encryptedSelf
 		res['isEncrypted'] = false
@@ -86,7 +80,6 @@ export class DecryptedPatientHealthCareParty {
 				(v0, p0) => expectString(v0, false, p0)
 			),
 			referralPeriods: expectArray(extractEntry(jCpy, 'referralPeriods', false, path), false, [...path, ".referralPeriods"], (x0, p0) => expectObject(x0, false, ignoreUnknownKeys, p0, ReferralPeriod.fromJSON)),
-			referral: expectBoolean(extractEntry(jCpy, 'referral', false, path), false, [...path, ".referral"]),
 			properties: expectArray(extractEntry(jCpy, 'properties', false, path), true, [...path, ".properties"], (x0, p0) => expectObject(x0, false, ignoreUnknownKeys, p0, DecryptedPropertyStub.fromJSON)),
 			encryptedSelf: expectString(extractEntry(jCpy, 'encryptedSelf', false, path), true, [...path, ".encryptedSelf"]) as Base64String,
 		})
@@ -108,8 +101,6 @@ export class EncryptedPatientHealthCareParty {
 
 	referralPeriods: Array<ReferralPeriod> = [];
 
-	referral: boolean = false;
-
 	properties: Array<EncryptedPropertyStub> | undefined = undefined;
 
 	encryptedSelf: Base64String | undefined = undefined;
@@ -122,7 +113,6 @@ export class EncryptedPatientHealthCareParty {
 		if ('healthcarePartyId' in partial) this.healthcarePartyId = partial.healthcarePartyId;
 		if ('sendFormats' in partial && partial.sendFormats !== undefined) this.sendFormats = partial.sendFormats;
 		if ('referralPeriods' in partial && partial.referralPeriods !== undefined) this.referralPeriods = partial.referralPeriods;
-		if ('referral' in partial && partial.referral !== undefined) this.referral = partial.referral;
 		if ('properties' in partial) this.properties = partial.properties;
 		if ('encryptedSelf' in partial) this.encryptedSelf = partial.encryptedSelf;
 	}
@@ -133,7 +123,6 @@ export class EncryptedPatientHealthCareParty {
 		if (this.healthcarePartyId != undefined) res['healthcarePartyId'] = this.healthcarePartyId
 		res['sendFormats'] = Object.fromEntries(Object.entries(this.sendFormats).map(([k0, v0]) => [k0, v0]))
 		res['referralPeriods'] = this.referralPeriods.map((x0) => x0.toJSON() )
-		res['referral'] = this.referral
 		if (this.properties != undefined) res['properties'] = this.properties.map((x0) => x0.toJSON() )
 		if (this.encryptedSelf != undefined) res['encryptedSelf'] = this.encryptedSelf
 		res['isEncrypted'] = true
@@ -156,7 +145,6 @@ export class EncryptedPatientHealthCareParty {
 				(v0, p0) => expectString(v0, false, p0)
 			),
 			referralPeriods: expectArray(extractEntry(jCpy, 'referralPeriods', false, path), false, [...path, ".referralPeriods"], (x0, p0) => expectObject(x0, false, ignoreUnknownKeys, p0, ReferralPeriod.fromJSON)),
-			referral: expectBoolean(extractEntry(jCpy, 'referral', false, path), false, [...path, ".referral"]),
 			properties: expectArray(extractEntry(jCpy, 'properties', false, path), true, [...path, ".properties"], (x0, p0) => expectObject(x0, false, ignoreUnknownKeys, p0, EncryptedPropertyStub.fromJSON)),
 			encryptedSelf: expectString(extractEntry(jCpy, 'encryptedSelf', false, path), true, [...path, ".encryptedSelf"]) as Base64String,
 		})

@@ -28,7 +28,7 @@ class MessageApi {
 		) : encrypted = MessageEncryptedApi(_sdkId, _dartSdk),
 		tryAndRecover = MessageTryAndRecoverApi(_sdkId, _dartSdk);
 
-	Future<DecryptedMessage> withEncryptionMetadata(DecryptedMessage? base, Patient? patient, { User? user, Map<String, AccessLevel> delegates = const {}, SecretIdUseOption secretId = SecretIdUseOption.UseAnySharedWithParent }) async {
+	Future<DecryptedMessage> withEncryptionMetadata(DecryptedMessage? base, Patient? patient, { User? user, Map<String, AccessLevel> delegates = const {}, SecretIdUseOption secretId = SecretIdUseOption.UseAnySharedWithParent, String? alternateRootDelegateId }) async {
 		return await CardinalSdkPlatformInterface.instance.apis.message.withEncryptionMetadata(
 			_sdkId,
 			base,
@@ -36,6 +36,7 @@ class MessageApi {
 			user,
 			delegates,
 			secretId,
+			alternateRootDelegateId,
 		);
 	}
 

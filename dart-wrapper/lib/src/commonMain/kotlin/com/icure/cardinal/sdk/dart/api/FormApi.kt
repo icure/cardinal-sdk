@@ -48,6 +48,7 @@ public object FormApi {
     userString: String,
     delegatesString: String,
     secretIdString: String,
+    alternateRootDelegateIdString: String,
   ) {
     val base = fullLanguageInteropJson.decodeFromString(
       DecryptedForm.serializer().nullable,
@@ -69,6 +70,10 @@ public object FormApi {
       SecretIdUseOption.serializer(),
       secretIdString
     )
+    val alternateRootDelegateId = fullLanguageInteropJson.decodeFromString(
+      String.serializer().nullable,
+      alternateRootDelegateIdString
+    )
     ApiScope.execute(
       dartResultCallback,
       DecryptedForm.serializer()) {
@@ -78,6 +83,7 @@ public object FormApi {
         user,
         delegates,
         secretId,
+        alternateRootDelegateId,
       )
     }
   }

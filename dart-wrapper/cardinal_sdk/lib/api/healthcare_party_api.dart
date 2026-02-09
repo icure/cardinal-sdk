@@ -15,10 +15,11 @@ import 'package:cardinal_sdk/subscription/entity_subscription.dart';
 class HealthcarePartyApi {
 	final String _sdkId;
 	final Object _dartSdk;
+	final HealthcarePartyInGroupApi inGroup;
 	HealthcarePartyApi(
 		this._sdkId,
 		this._dartSdk
-		);
+		) : inGroup = HealthcarePartyInGroupApi(_sdkId, _dartSdk);
 
 	Future<HealthcareParty?> getHealthcareParty(String healthcarePartyId) async {
 		return await CardinalSdkPlatformInterface.instance.apis.healthcareParty.getHealthcareParty(
@@ -236,6 +237,23 @@ class HealthcarePartyApi {
 			events,
 			filter,
 			subscriptionConfig,
+		);
+	}
+}
+
+class HealthcarePartyInGroupApi {
+	final String _sdkId;
+	final Object _dartSdk;
+	HealthcarePartyInGroupApi(
+		this._sdkId,
+		this._dartSdk
+		);
+
+	Future<List<String>> matchHealthcarePartiesBy(String groupId, BaseFilterOptions<HealthcareParty> filter) async {
+		return await CardinalSdkPlatformInterface.instance.apis.healthcareParty.inGroup.matchHealthcarePartiesBy(
+			_sdkId,
+			groupId,
+			filter,
 		);
 	}
 }

@@ -30,7 +30,7 @@ class HealthElementApi {
 		tryAndRecover = HealthElementTryAndRecoverApi(_sdkId, _dartSdk),
 		inGroup = HealthElementInGroupApi(_sdkId, _dartSdk);
 
-	Future<DecryptedHealthElement> withEncryptionMetadata(DecryptedHealthElement? base, Patient patient, { User? user, Map<String, AccessLevel> delegates = const {}, SecretIdUseOption secretId = SecretIdUseOption.UseAnySharedWithParent }) async {
+	Future<DecryptedHealthElement> withEncryptionMetadata(DecryptedHealthElement? base, Patient patient, { User? user, Map<String, AccessLevel> delegates = const {}, SecretIdUseOption secretId = SecretIdUseOption.UseAnySharedWithParent, String? alternateRootDelegateId }) async {
 		return await CardinalSdkPlatformInterface.instance.apis.healthElement.withEncryptionMetadata(
 			_sdkId,
 			base,
@@ -38,6 +38,7 @@ class HealthElementApi {
 			user,
 			delegates,
 			secretId,
+			alternateRootDelegateId,
 		);
 	}
 
@@ -452,7 +453,7 @@ class HealthElementInGroupApi {
 		) : encrypted = HealthElementInGroupEncryptedApi(_sdkId, _dartSdk),
 		tryAndRecover = HealthElementInGroupTryAndRecoverApi(_sdkId, _dartSdk);
 
-	Future<GroupScoped<DecryptedHealthElement>> withEncryptionMetadata(String entityGroupId, DecryptedHealthElement? base, GroupScoped<Patient> patient, { User? user, Map<EntityReferenceInGroup, AccessLevel> delegates = const {}, SecretIdUseOption secretId = SecretIdUseOption.UseAnySharedWithParent }) async {
+	Future<GroupScoped<DecryptedHealthElement>> withEncryptionMetadata(String entityGroupId, DecryptedHealthElement? base, GroupScoped<Patient> patient, { User? user, Map<EntityReferenceInGroup, AccessLevel> delegates = const {}, SecretIdUseOption secretId = SecretIdUseOption.UseAnySharedWithParent, EntityReferenceInGroup? alternateRootDelegateReference }) async {
 		return await CardinalSdkPlatformInterface.instance.apis.healthElement.inGroup.withEncryptionMetadata(
 			_sdkId,
 			entityGroupId,
@@ -461,6 +462,7 @@ class HealthElementInGroupApi {
 			user,
 			delegates,
 			secretId,
+			alternateRootDelegateReference,
 		);
 	}
 

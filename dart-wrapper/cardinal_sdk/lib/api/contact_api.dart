@@ -57,7 +57,7 @@ class ContactApi {
 		);
 	}
 
-	Future<DecryptedContact> withEncryptionMetadata(DecryptedContact? base, Patient patient, { User? user, Map<String, AccessLevel> delegates = const {}, SecretIdUseOption secretId = SecretIdUseOption.UseAnySharedWithParent }) async {
+	Future<DecryptedContact> withEncryptionMetadata(DecryptedContact? base, Patient patient, { User? user, Map<String, AccessLevel> delegates = const {}, SecretIdUseOption secretId = SecretIdUseOption.UseAnySharedWithParent, String? alternateRootDelegateId }) async {
 		return await CardinalSdkPlatformInterface.instance.apis.contact.withEncryptionMetadata(
 			_sdkId,
 			base,
@@ -65,6 +65,7 @@ class ContactApi {
 			user,
 			delegates,
 			secretId,
+			alternateRootDelegateId,
 		);
 	}
 

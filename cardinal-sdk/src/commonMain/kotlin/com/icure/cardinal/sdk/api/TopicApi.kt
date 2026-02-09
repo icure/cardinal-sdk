@@ -9,25 +9,24 @@ import com.icure.cardinal.sdk.filters.FilterOptions
 import com.icure.cardinal.sdk.filters.SortableFilterOptions
 import com.icure.cardinal.sdk.model.DecryptedTopic
 import com.icure.cardinal.sdk.model.EncryptedTopic
+import com.icure.cardinal.sdk.model.EntityReferenceInGroup
+import com.icure.cardinal.sdk.model.GroupScoped
+import com.icure.cardinal.sdk.model.Topic
 import com.icure.cardinal.sdk.model.Patient
 import com.icure.cardinal.sdk.model.StoredDocumentIdentifier
-import com.icure.cardinal.sdk.model.Topic
 import com.icure.cardinal.sdk.model.TopicRole
 import com.icure.cardinal.sdk.model.User
-import com.icure.cardinal.sdk.model.couchdb.DocIdentifier
 import com.icure.cardinal.sdk.model.embed.AccessLevel
 import com.icure.cardinal.sdk.model.specializations.HexString
+import com.icure.cardinal.sdk.model.toStoredDocumentIdentifier
 import com.icure.cardinal.sdk.subscription.Subscribable
 import com.icure.cardinal.sdk.utils.DefaultValue
 import com.icure.cardinal.sdk.utils.EntityEncryptionException
+import com.icure.cardinal.sdk.utils.generation.JsMapAsObjectArray
 import com.icure.cardinal.sdk.utils.pagination.PaginatedListIterator
 
 /* This interface includes the API calls that do not need encryption keys and do not return or consume encrypted/decrypted items, they are completely agnostic towards the presence of encrypted items */
 interface TopicBasicFlavourlessApi {
-	@Deprecated("Deletion without rev is unsafe")
-	suspend fun deleteTopicUnsafe(entityId: String): DocIdentifier
-	@Deprecated("Deletion without rev is unsafe")
-	suspend fun deleteTopicsUnsafe(entityIds: List<String>): List<DocIdentifier>
 
 	/**
 	 * Deletes a topic. If you don't have write access to the topic the method will fail.
@@ -36,7 +35,7 @@ interface TopicBasicFlavourlessApi {
 	 * @return the id and revision of the deleted topic.
 	 * @throws RevisionConflictException if the provided revision doesn't match the latest known revision
 	 */
-	suspend fun deleteTopicById(entityId: String, rev: String): DocIdentifier
+	suspend fun deleteTopicById(entityId: String, rev: String): StoredDocumentIdentifier
 
 	/**
 	 * Deletes many topics. Ids that do not correspond to an entity, or that correspond to an entity for which
@@ -45,7 +44,7 @@ interface TopicBasicFlavourlessApi {
 	 * @return the id and revision of the deleted topics. If some entities could not be deleted (for example
 	 * because you had no write access to them) they will not be included in this list.
 	 */
-	suspend fun deleteTopicsByIds(entityIds: List<StoredDocumentIdentifier>): List<DocIdentifier>
+	suspend fun deleteTopicsByIds(entityIds: List<StoredDocumentIdentifier>): List<StoredDocumentIdentifier>
 
 	/**
 	 * Permanently deletes a topic.
@@ -56,12 +55,20 @@ interface TopicBasicFlavourlessApi {
 	suspend fun purgeTopicById(id: String, rev: String)
 
 	/**
+	 * Permanently deletes many topics.
+	 * @param entityIds ids and revisions of the topics to delete
+	 * @return the id and revision of the deleted topics. If some entities couldn't be deleted (for example
+	 * because you had no write access to them) they will not be included in this list.
+	 */
+	suspend fun purgeTopicsByIds(entityIds: List<StoredDocumentIdentifier>): List<StoredDocumentIdentifier>
+
+	/**
 	 * Deletes a topic. If you don't have write access to the topic the method will fail.
 	 * @param topic the topic to delete
 	 * @return the id and revision of the deleted topic.
 	 * @throws RevisionConflictException if the provided topic doesn't match the latest known revision
 	 */
-	suspend fun deleteTopic(topic: Topic): DocIdentifier =
+	suspend fun deleteTopic(topic: Topic): StoredDocumentIdentifier =
 		deleteTopicById(topic.id, requireNotNull(topic.rev) { "Can't delete a topic that has no rev" })
 
 	/**
@@ -70,10 +77,8 @@ interface TopicBasicFlavourlessApi {
 	 * @return the id and revision of the deleted topics. If some entities couldn't be deleted they will not be
 	 * included in this list.
 	 */
-	suspend fun deleteTopics(topics: List<Topic>): List<DocIdentifier> =
-		deleteTopicsByIds(topics.map { topic ->
-			StoredDocumentIdentifier(topic.id, requireNotNull(topic.rev) { "Can't delete a topic that has no rev" })
-		})
+	suspend fun deleteTopics(topics: List<Topic>): List<StoredDocumentIdentifier> =
+		deleteTopicsByIds(topics.map { it.toStoredDocumentIdentifier() })
 
 	/**
 	 * Permanently deletes a topic.
@@ -83,6 +88,62 @@ interface TopicBasicFlavourlessApi {
 	suspend fun purgeTopic(topic: Topic) {
 		purgeTopicById(topic.id, requireNotNull(topic.rev) { "Can't delete a topic that has no rev" })
 	}
+
+	/**
+	 * Permanently deletes many topics.
+	 * @param topics the topics to purge.
+	 * @return the id and revision of the deleted topics. If some entities couldn't be deleted (for example
+	 * because you had no write access to them) they will not be included in this list.
+	 */
+	suspend fun purgeTopics(topics: List<Topic>): List<StoredDocumentIdentifier> =
+		purgeTopicsByIds(topics.map { it.toStoredDocumentIdentifier() })
+}
+
+interface TopicBasicFlavourlessInGroupApi {
+	/**
+	 * In-group version of [TopicBasicFlavourlessApi.deleteTopicById]
+	 */
+	suspend fun deleteTopicById(entityId: GroupScoped<StoredDocumentIdentifier>): GroupScoped<StoredDocumentIdentifier>
+
+	/**
+	 * In-group version of [TopicBasicFlavourlessApi.deleteTopicsByIds]
+	 */
+	suspend fun deleteTopicsByIds(entityIds: List<GroupScoped<StoredDocumentIdentifier>>): List<GroupScoped<StoredDocumentIdentifier>>
+
+	/**
+	 * In-group version of [TopicBasicFlavourlessApi.purgeTopicById]
+	 */
+	suspend fun purgeTopicById(entityId: GroupScoped<StoredDocumentIdentifier>)
+
+	/**
+	 * In-group version of [TopicBasicFlavourlessApi.purgeTopicsByIds]
+	 */
+	suspend fun purgeTopicsByIds(entityIds: List<GroupScoped<StoredDocumentIdentifier>>): List<GroupScoped<StoredDocumentIdentifier>>
+
+	/**
+	 * In-group version of [TopicBasicFlavourlessApi.deleteTopic]
+	 */
+	suspend fun deleteTopic(topic: GroupScoped<Topic>): GroupScoped<StoredDocumentIdentifier> =
+		deleteTopicById(topic.toStoredDocumentIdentifier())
+
+	/**
+	 * In-group version of [TopicBasicFlavourlessApi.deleteTopics]
+	 */
+	suspend fun deleteTopics(topics: List<GroupScoped<Topic>>): List<GroupScoped<StoredDocumentIdentifier>> =
+		deleteTopicsByIds(topics.toStoredDocumentIdentifier())
+
+	/**
+	 * In-group version of [TopicBasicFlavourlessApi.purgeTopic]
+	 */
+	suspend fun purgeTopic(topic: GroupScoped<Topic>) {
+		purgeTopicById(topic.toStoredDocumentIdentifier())
+	}
+
+	/**
+	 * In-group version of [TopicBasicFlavourlessApi.purgeTopics]
+	 */
+	suspend fun purgeTopics(topics: List<GroupScoped<Topic>>): List<GroupScoped<StoredDocumentIdentifier>> =
+		purgeTopicsByIds(topics.map { it.toStoredDocumentIdentifier() })
 }
 
 /* This interface includes the API calls can be used on decrypted items if encryption keys are available *or* encrypted items if no encryption keys are available */
@@ -96,13 +157,48 @@ interface TopicBasicFlavouredApi<E : Topic> {
 	suspend fun createTopic(entity: E): E
 
 	/**
+	 * Create multiple topics. All the provided topics must have the encryption metadata initialized, otherwise
+	 * this method fails without doing anything.
+	 * @param entities topics with initialized encryption metadata
+	 * @return the created topics with updated revision.
+	 * @throws IllegalArgumentException if the encryption metadata of any topic in the input was not initialized.
+	 */
+	suspend fun createTopics(entities: List<E>): List<E>
+
+	/**
+	 * Restores a topic that was marked as deleted.
+	 * @param id the id of the entity
+	 * @param rev the latest revision of the entity.
+	 * @return the restored entity.
+	 * @throws RevisionConflictException if the provided revision doesn't match the latest known revision
+	 */
+	suspend fun undeleteTopicById(id: String, rev: String): E
+
+	/**
+	 * Restores a batch of topics that were marked as deleted.
+	 * @param entityIds the ids and the revisions of the topics to restore.
+	 * @return the restored topics. If some entities couldn't be restored (because the user does not have access or the revision is not
+	 * up-to-date), then those entities will not be restored and will not appear in this list.
+	 */
+	suspend fun undeleteTopicsByIds(entityIds: List<StoredDocumentIdentifier>): List<E>
+
+	/**
 	 * Restores a topic that was marked as deleted.
 	 * @param topic the topic to undelete
 	 * @return the restored topic.
 	 * @throws RevisionConflictException if the provided topic doesn't match the latest known revision
 	 */
-	suspend fun undeleteTopic(topic: Topic): Topic =
+	suspend fun undeleteTopic(topic: Topic): E =
 		undeleteTopicById(topic.id, requireNotNull(topic.rev) { "Can't delete a topic that has no rev" })
+
+	/**
+	 * Restores a batch of topics that were marked as deleted.
+	 * @param topics the topics to restore.
+	 * @return the restored topics. If some entities couldn't be restored (because the user does not have access or the revision is not
+	 * up-to-date), then those entities will not be restored and will not appear in this list.
+	 */
+	suspend fun undeleteTopics(topics: List<Topic>): List<E> =
+		undeleteTopicsByIds(topics.map { it.toStoredDocumentIdentifier() })
 
 	/**
 	 * Modifies a topic. You need to have write access to the entity.
@@ -113,13 +209,12 @@ interface TopicBasicFlavouredApi<E : Topic> {
 	suspend fun modifyTopic(entity: E): E
 
 	/**
-	 * Restores a topic that was marked as deleted.
-	 * @param id the id of the entity
-	 * @param rev the latest revision of the entity.
-	 * @return the restored entity.
-	 * @throws RevisionConflictException if the provided revision doesn't match the latest known revision
+	 * Modifies multiple topics. Ignores all topics for which you don't have write access.
+	 * Flavoured method.
+	 * @param entities topics with update content
+	 * @return the updated topics with a new revision.
 	 */
-	suspend fun undeleteTopicById(id: String, rev: String): E
+	suspend fun modifyTopics(entities: List<E>): List<E>
 
 	/**
 	 * Get a topic by its id. You must have read access to the entity. Fails if the id does not correspond to any
@@ -160,6 +255,61 @@ interface TopicBasicFlavouredApi<E : Topic> {
 	 * @return the updated topic
 	 */
 	suspend fun removeParticipant(entityId: String, dataOwnerId: String): E
+}
+
+interface TopicBasicFlavouredInGroupApi<E : Topic> {
+	/**
+	 * In-group version of [TopicBasicFlavouredApi.createTopic]
+	 */
+	suspend fun createTopic(entity: GroupScoped<E>): GroupScoped<E>
+
+	/**
+	 * In-group version of [TopicBasicFlavouredApi.createTopics]
+	 */
+	suspend fun createTopics(entities: List<GroupScoped<E>>): List<GroupScoped<E>>
+
+	/**
+	 * In-group version of [TopicBasicFlavouredApi.undeleteTopicById]
+	 */
+	suspend fun undeleteTopicById(entityId: GroupScoped<StoredDocumentIdentifier>): GroupScoped<E>
+
+	/**
+	 * In-group version of [TopicBasicFlavouredApi.undeleteTopicsByIds]
+	 */
+	suspend fun undeleteTopicsByIds(entityIds: List<GroupScoped<StoredDocumentIdentifier>>): List<GroupScoped<E>>
+
+	/**
+	 * In-group version of [TopicBasicFlavouredApi.undeleteTopic]
+	 */
+	suspend fun undeleteTopic(topic: GroupScoped<Topic>): GroupScoped<E> =
+		undeleteTopicById(topic.toStoredDocumentIdentifier())
+
+	/**
+	 * In-group version of [TopicBasicFlavouredApi.undeleteTopics]
+	 */
+	suspend fun undeleteTopics(topics: List<GroupScoped<E>>): List<GroupScoped<E>> =
+		undeleteTopicsByIds(topics.map { it.toStoredDocumentIdentifier() })
+
+	/**
+	 * In-group version of [TopicBasicFlavouredApi.modifyTopic]
+	 */
+	suspend fun modifyTopic(entity: GroupScoped<E>): GroupScoped<E>
+
+	/**
+	 * In-group version of [TopicBasicFlavouredApi.modifyTopics]
+	 */
+	suspend fun modifyTopics(entities: List<GroupScoped<E>>): List<GroupScoped<E>>
+
+	/**
+	 * In-group version of [TopicBasicFlavouredApi.getTopic]
+	 */
+	suspend fun getTopic(groupId: String, entityId: String): GroupScoped<E>?
+
+	/**
+	 * In-group version of [TopicBasicFlavouredApi.getTopics]
+	 */
+	suspend fun getTopics(groupId: String, entityIds: List<String>): List<GroupScoped<E>>
+
 }
 
 /* The extra API calls declared in this interface are the ones that can be used on encrypted or decrypted items but only when the user is a data owner */
@@ -230,6 +380,42 @@ interface TopicFlavouredApi<E : Topic> : TopicBasicFlavouredApi<E> {
 	): PaginatedListIterator<E>
 }
 
+interface TopicFlavouredInGroupApi<E : Topic> : TopicBasicFlavouredInGroupApi<E> {
+	/**
+	 * In-group version of [TopicFlavouredApi.shareWith]
+	 */
+	suspend fun shareWith(
+		delegate: EntityReferenceInGroup,
+		topic: GroupScoped<E>,
+		@DefaultValue("null")
+		options: TopicShareOptions? = null
+	): GroupScoped<E>
+
+	/**
+	 * In-group version of [TopicFlavouredApi.shareWithMany]
+	 */
+	suspend fun shareWithMany(
+		topic: GroupScoped<E>,
+		delegates: @JsMapAsObjectArray(keyEntryName = "delegate", valueEntryName = "shareOptions") Map<EntityReferenceInGroup, TopicShareOptions>
+	): GroupScoped<E>
+
+	/**
+	 * In-group version of [TopicFlavouredApi.filterTopicsBy]
+	 */
+	suspend fun filterTopicsBy(
+		groupId: String,
+		filter: FilterOptions<Topic>
+	): PaginatedListIterator<GroupScoped<E>>
+
+	/**
+	 * In-group version of [TopicFlavouredApi.filterTopicsBySorted]
+	 */
+	suspend fun filterTopicsBySorted(
+		groupId: String,
+		filter: SortableFilterOptions<Topic>
+	): PaginatedListIterator<GroupScoped<E>>
+}
+
 /* The extra API calls declared in this interface are the ones that can only be used on decrypted items when encryption keys are available */
 interface TopicApi : TopicBasicFlavourlessApi, TopicFlavouredApi<DecryptedTopic>, Subscribable<Topic, EncryptedTopic, FilterOptions<Topic>> {
 	/**
@@ -286,7 +472,7 @@ interface TopicApi : TopicBasicFlavourlessApi, TopicFlavouredApi<DecryptedTopic>
 	 * @return the id of the patient linked to the topic, or empty if the current user can't access any patient id
 	 * of the topic.
 	 */
-	suspend fun decryptPatientIdOf(topic: Topic): Set<String>
+	suspend fun decryptPatientIdOf(topic: Topic): Set<EntityReferenceInGroup>
 
 	/**
 	 * Create metadata to allow other users to identify the anonymous delegates of a topic.
@@ -347,6 +533,12 @@ interface TopicApi : TopicBasicFlavourlessApi, TopicFlavouredApi<DecryptedTopic>
 	val tryAndRecover: TopicFlavouredApi<Topic>
 
 	/**
+	 * Gives access to methods of the api that allow to use entities or work with data owners in groups other than the
+	 * current user's group.
+	 */
+	val inGroup: TopicInGroupApi
+
+	/**
 	 * Get the ids of all topics matching the provided filter.
 	 *
 	 * This method does not guarantee that the returned data will be ordered when using sortable filter options.
@@ -371,7 +563,75 @@ interface TopicApi : TopicBasicFlavourlessApi, TopicFlavouredApi<DecryptedTopic>
 	suspend fun matchTopicsBySorted(filter: SortableFilterOptions<Topic>): List<String>
 }
 
+interface TopicInGroupApi : TopicBasicFlavourlessInGroupApi, TopicFlavouredInGroupApi<DecryptedTopic> {
+	/**
+	 * In-group version of [TopicApi.withEncryptionMetadata]
+	 */
+	suspend fun withEncryptionMetadata(
+		groupId: String,
+		base: DecryptedTopic?,
+		patient: GroupScoped<Patient>?,
+		@DefaultValue("null")
+		user: User? = null,
+		@DefaultValue("emptyMap()")
+		delegates: Map<String, AccessLevel> = emptyMap(),
+		@DefaultValue("com.icure.cardinal.sdk.crypto.entities.SecretIdUseOption.UseAnySharedWithParent")
+		secretId: SecretIdUseOption = SecretIdUseOption.UseAnySharedWithParent,
+		@DefaultValue("null")
+		alternateRootDelegateId: String? = null,
+	): GroupScoped<DecryptedTopic>
+
+	/**
+	 * In-group version of [TopicApi.getEncryptionKeysOf]
+	 */
+	suspend fun getEncryptionKeysOf(topic: GroupScoped<Topic>): Set<HexString>
+
+	/**
+	 * In-group version of [TopicApi.hasWriteAccess]
+	 */
+	suspend fun hasWriteAccess(topic: GroupScoped<Topic>): Boolean
+
+	/**
+	 * In-group version of [TopicApi.decryptPatientIdOf]
+	 */
+	suspend fun decryptPatientIdOf(topic: GroupScoped<Topic>): Set<EntityReferenceInGroup>
+
+	/**
+	 * In-group version of [TopicApi.createDelegationDeAnonymizationMetadata]
+	 */
+	suspend fun createDelegationDeAnonymizationMetadata(entity: GroupScoped<Topic>, delegates: Set<EntityReferenceInGroup>)
+
+	/**
+	 * In-group version of [TopicApi.decrypt]
+	 */
+	suspend fun decrypt(topics: List<GroupScoped<EncryptedTopic>>): List<GroupScoped<DecryptedTopic>>
+
+	/**
+	 * In-group version of [TopicApi.tryDecrypt]
+	 */
+	suspend fun tryDecrypt(topics: List<GroupScoped<EncryptedTopic>>): List<GroupScoped<Topic>>
+
+	/**
+	 * In-group version of [TopicApi.matchTopicsBy]
+	 */
+	suspend fun matchTopicsBy(groupId: String, filter: FilterOptions<Topic>): List<String>
+
+	/**
+	 * In-group version of [TopicApi.matchTopicsBySorted]
+	 */
+	suspend fun matchTopicsBySorted(groupId: String, filter: SortableFilterOptions<Topic>): List<String>
+
+	val encrypted: TopicFlavouredInGroupApi<EncryptedTopic>
+	val tryAndRecover: TopicFlavouredInGroupApi<Topic>
+}
+
 interface TopicBasicApi : TopicBasicFlavourlessApi, TopicBasicFlavouredApi<EncryptedTopic>, Subscribable<Topic, EncryptedTopic, BaseFilterOptions<Topic>> {
+	/**
+	 * Gives access to methods of the api that allow to use entities or work with data owners in groups other than the
+	 * current user's group.
+	 */
+	val inGroup: TopicBasicInGroupApi
+
 	/**
 	 * Get the ids of all topics matching the provided filter.
 	 *
@@ -426,3 +686,32 @@ interface TopicBasicApi : TopicBasicFlavourlessApi, TopicBasicFlavouredApi<Encry
 		filter: BaseSortableFilterOptions<Topic>
 	): PaginatedListIterator<EncryptedTopic>
 }
+
+interface TopicBasicInGroupApi : TopicBasicFlavourlessInGroupApi, TopicBasicFlavouredInGroupApi<EncryptedTopic> {
+	/**
+	 * In-group version of [TopicBasicApi.matchTopicsBy]
+	 */
+	suspend fun matchTopicsBy(groupId: String, filter: BaseFilterOptions<Topic>): List<String>
+
+	/**
+	 * In-group version of [TopicBasicApi.matchTopicsBySorted]
+	 */
+	suspend fun matchTopicsBySorted(groupId: String, filter: BaseSortableFilterOptions<Topic>): List<String>
+
+	/**
+	 * In-group version of [TopicBasicApi.filterTopicsBy]
+	 */
+	suspend fun filterTopicsBy(
+		groupId: String,
+		filter: BaseFilterOptions<Topic>
+	): PaginatedListIterator<GroupScoped<EncryptedTopic>>
+
+	/**
+	 * In-group version of [TopicBasicApi.filterTopicsBySorted]
+	 */
+	suspend fun filterTopicsBySorted(
+		groupId: String,
+		filter: BaseSortableFilterOptions<Topic>
+	): PaginatedListIterator<GroupScoped<EncryptedTopic>>
+}
+

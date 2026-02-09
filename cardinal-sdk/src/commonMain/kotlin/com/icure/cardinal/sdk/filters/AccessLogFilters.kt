@@ -5,9 +5,13 @@ import com.icure.cardinal.sdk.crypto.EntityEncryptionService
 import com.icure.cardinal.sdk.crypto.entities.EntityWithEncryptionMetadataStub
 import com.icure.cardinal.sdk.crypto.entities.EntityWithEncryptionMetadataTypeName
 import com.icure.cardinal.sdk.crypto.entities.SdkBoundGroup
+import com.icure.cardinal.sdk.crypto.entities.resolve
 import com.icure.cardinal.sdk.crypto.entities.toEncryptionMetadataStub
+import com.icure.cardinal.sdk.filters.DocumentFilters.byPatientsCreatedForDataOwner
+import com.icure.cardinal.sdk.filters.mapToSecretIds
 import com.icure.cardinal.sdk.model.AccessLog
 import com.icure.cardinal.sdk.model.EntityReferenceInGroup
+import com.icure.cardinal.sdk.model.GroupScoped
 import com.icure.cardinal.sdk.model.Patient
 import com.icure.cardinal.sdk.model.filter.AbstractFilter
 import com.icure.cardinal.sdk.model.filter.accesslog.AccessLogByDataOwnerPatientDateFilter
@@ -17,6 +21,7 @@ import com.icure.cardinal.sdk.options.ApiConfiguration
 import com.icure.cardinal.sdk.options.BasicApiConfiguration
 import com.icure.cardinal.sdk.utils.DefaultValue
 import com.icure.utils.InternalIcureApi
+import kotlinx.coroutines.currentCoroutineContext
 import kotlinx.serialization.Serializable
 import kotlin.coroutines.coroutineContext
 import kotlin.time.Instant
@@ -57,8 +62,29 @@ object AccessLogFilters {
 		@DefaultValue("false")
 		descending: Boolean = false
 	): SortableFilterOptions<AccessLog> = ByPatientsDateForDataOwner(
-		dataOwnerId = dataOwnerId,
-		patients = patients.map { it.toEncryptionMetadataStub() },
+		dataOwnerId = EntityReferenceInGroup(groupId = null, entityId = dataOwnerId),
+		patients = patients.map { Pair(it.toEncryptionMetadataStub(), null) },
+		from = from,
+		to = to,
+		descending = descending
+	)
+
+	/**
+	 * In group version of [byPatientsDateForDataOwner].
+	 */
+	@OptIn(InternalIcureApi::class)
+	fun byPatientsDateForDataOwnerInGroup(
+		dataOwner: EntityReferenceInGroup,
+		patients: List<GroupScoped<Patient>>,
+		@DefaultValue("null")
+		from: Instant? = null,
+		@DefaultValue("null")
+		to: Instant? = null,
+		@DefaultValue("false")
+		descending: Boolean = false
+	): SortableFilterOptions<AccessLog> = ByPatientsDateForDataOwner(
+		dataOwnerId = dataOwner,
+		patients = patients.map { Pair(it.entity.toEncryptionMetadataStub(), it.groupId) },
 		from = from,
 		to = to,
 		descending = descending
@@ -210,8 +236,8 @@ object AccessLogFilters {
 	@Serializable
 	@InternalIcureApi
 	internal class ByPatientsDateForDataOwner(
-		val dataOwnerId: String,
-		val patients: List<EntityWithEncryptionMetadataStub>,
+		val dataOwnerId: EntityReferenceInGroup,
+		val patients: List<Pair<EntityWithEncryptionMetadataStub, String?>>,
 		val from: Instant?,
 		val to: Instant?,
 		val descending: Boolean
@@ -277,7 +303,7 @@ internal suspend fun mapAccessLogFilterOptions(
 		filterOptions,
 		nonBasicConfig?.crypto?.dataOwnerApi?.getCurrentDataOwnerReference(),
 		nonBasicConfig?.crypto?.entity,
-		config.getBoundGroup(coroutineContext),
+		config.getBoundGroup(currentCoroutineContext()),
 		requestGroup
 	)
 }
@@ -295,8 +321,11 @@ internal suspend fun mapAccessLogFilterOptions(
 	is AccessLogFilters.ByPatientsDateForDataOwner -> {
 		filterOptions.ensureNonBaseEnvironment(selfDataOwner, entityEncryptionService)
 		AccessLogByDataOwnerPatientDateFilter(
-			dataOwnerId = filterOptions.dataOwnerId,
-			secretPatientIds = entityEncryptionService.secretIdsOf(null, filterOptions.patients, EntityWithEncryptionMetadataTypeName.Patient, null).values.flatten().toSet(),
+			dataOwnerId = filterOptions.dataOwnerId.asReferenceStringInGroup(requestGroup, boundGroup),
+			secretPatientIds = filterOptions.patients.mapToSecretIds(
+				entityEncryptionService,
+				EntityWithEncryptionMetadataTypeName.Patient
+			),
 			startDate = filterOptions.from,
 			endDate = filterOptions.to,
 			descending = filterOptions.descending
@@ -306,7 +335,10 @@ internal suspend fun mapAccessLogFilterOptions(
 		filterOptions.ensureNonBaseEnvironment(selfDataOwner, entityEncryptionService)
 		AccessLogByDataOwnerPatientDateFilter(
 			dataOwnerId = selfDataOwner.asReferenceStringInGroup(requestGroup, boundGroup),
-			secretPatientIds = entityEncryptionService.secretIdsOf(null, filterOptions.patients, EntityWithEncryptionMetadataTypeName.Patient, null).values.flatten().toSet(),
+			secretPatientIds = filterOptions.patients.map { Pair(it, null) }.mapToSecretIds(
+				entityEncryptionService,
+				EntityWithEncryptionMetadataTypeName.Patient
+			),
 			startDate = filterOptions.from,
 			endDate = filterOptions.to,
 			descending = filterOptions.descending

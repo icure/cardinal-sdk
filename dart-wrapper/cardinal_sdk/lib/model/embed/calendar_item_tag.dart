@@ -49,7 +49,7 @@ abstract class EncryptedCalendarItemTag with _$EncryptedCalendarItemTag implemen
 		@Default(null) int? date,
 		@Default(null) String? userId,
 		@Default(null) String? userName,
-		required Base64String? encryptedSelf,
+		@Default(null) Base64String? encryptedSelf,
 	}) = _EncryptedCalendarItemTag;
 
 
@@ -82,7 +82,7 @@ abstract class DecryptedCalendarItemTag with _$DecryptedCalendarItemTag implemen
 		@Default(null) int? date,
 		@Default(null) String? userId,
 		@Default(null) String? userName,
-		required Base64String? encryptedSelf,
+		@Default(null) Base64String? encryptedSelf,
 	}) = _DecryptedCalendarItemTag;
 
 

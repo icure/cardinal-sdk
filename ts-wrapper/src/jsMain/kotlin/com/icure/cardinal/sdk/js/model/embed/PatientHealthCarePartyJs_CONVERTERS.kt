@@ -52,7 +52,6 @@ public fun patientHealthCareParty_toJs(obj: DecryptedPatientHealthCareParty):
 			referralPeriod_toJs(x1)
 		},
 	)
-	val referral = obj.referral
 	val properties = nullToUndefined(
 		setToArray(
 			obj.properties,
@@ -71,7 +70,6 @@ public fun patientHealthCareParty_toJs(obj: DecryptedPatientHealthCareParty):
 		"healthcarePartyId:healthcarePartyId," +
 		"sendFormats:sendFormats," +
 		"referralPeriods:referralPeriods," +
-		"referral:referral," +
 		"properties:properties," +
 		"encryptedSelf:encryptedSelf" +
 	"}"))
@@ -100,7 +98,6 @@ public fun patientHealthCareParty_fromJs(obj: DecryptedPatientHealthCarePartyJs)
 			referralPeriod_fromJs(x1)
 		},
 	)
-	val referral = obj.referral
 	val properties = arrayToSet(
 		obj.properties,
 		"obj.properties",
@@ -116,7 +113,6 @@ public fun patientHealthCareParty_fromJs(obj: DecryptedPatientHealthCarePartyJs)
 		healthcarePartyId = healthcarePartyId,
 		sendFormats = sendFormats,
 		referralPeriods = referralPeriods,
-		referral = referral,
 		properties = properties,
 		encryptedSelf = encryptedSelf,
 	)
@@ -148,7 +144,6 @@ public fun patientHealthCareParty_toJs(obj: EncryptedPatientHealthCareParty):
 			referralPeriod_toJs(x1)
 		},
 	)
-	val referral = obj.referral
 	val properties = nullToUndefined(
 		setToArray(
 			obj.properties,
@@ -167,7 +162,6 @@ public fun patientHealthCareParty_toJs(obj: EncryptedPatientHealthCareParty):
 		"healthcarePartyId:healthcarePartyId," +
 		"sendFormats:sendFormats," +
 		"referralPeriods:referralPeriods," +
-		"referral:referral," +
 		"properties:properties," +
 		"encryptedSelf:encryptedSelf" +
 	"}"))
@@ -196,7 +190,6 @@ public fun patientHealthCareParty_fromJs(obj: EncryptedPatientHealthCarePartyJs)
 			referralPeriod_fromJs(x1)
 		},
 	)
-	val referral = obj.referral
 	val properties = arrayToSet(
 		obj.properties,
 		"obj.properties",
@@ -212,7 +205,6 @@ public fun patientHealthCareParty_fromJs(obj: EncryptedPatientHealthCarePartyJs)
 		healthcarePartyId = healthcarePartyId,
 		sendFormats = sendFormats,
 		referralPeriods = referralPeriods,
-		referral = referral,
 		properties = properties,
 		encryptedSelf = encryptedSelf,
 	)

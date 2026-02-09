@@ -4,6 +4,7 @@
 package com.icure.cardinal.sdk.js.model.embed
 
 import com.icure.cardinal.sdk.js.model.base.CodeStubJs
+import com.icure.cardinal.sdk.js.model.base.HasEndOfLifeJs
 import com.icure.cardinal.sdk.js.model.base.ICureDocumentJs
 import com.icure.cardinal.sdk.js.model.base.IdentifierJs
 import com.icure.cardinal.sdk.js.utils.Record
@@ -15,12 +16,11 @@ import kotlin.js.JsName
 import kotlin.js.JsQualifier
 
 @JsName("Service")
-public sealed external interface ServiceJs : EncryptableJs, ICureDocumentJs<String> {
+public sealed external interface ServiceJs : EncryptableJs, ICureDocumentJs<String>, HasEndOfLifeJs
+		{
 	public val transactionId: String?
 
 	public val identifier: Array<out IdentifierJs>
-
-	public val contactId: String?
 
 	public val subContactIds: Array<out String>?
 
@@ -44,8 +44,6 @@ public sealed external interface ServiceJs : EncryptableJs, ICureDocumentJs<Stri
 
 	public val content: Record<String, out ContentJs>
 
-	public val encryptedContent: String?
-
 	public val textIndexes: Record<String, out String>
 
 	public val valueDate: Double?
@@ -54,11 +52,7 @@ public sealed external interface ServiceJs : EncryptableJs, ICureDocumentJs<Stri
 
 	public val closingDate: Double?
 
-	public val formId: String?
-
 	public val comment: String?
-
-	public val status: Double?
 
 	public val invoicingCodes: Array<out String>
 
@@ -80,8 +74,6 @@ public external class DecryptedServiceJs(
 	override val transactionId: String?
 
 	override val identifier: Array<IdentifierJs>
-
-	override val contactId: String?
 
 	override val subContactIds: Array<String>?
 
@@ -105,8 +97,6 @@ public external class DecryptedServiceJs(
 
 	override val content: Record<String, DecryptedContentJs>
 
-	override val encryptedContent: String?
-
 	override val textIndexes: Record<String, String>
 
 	override val valueDate: Double?
@@ -114,8 +104,6 @@ public external class DecryptedServiceJs(
 	override val openingDate: Double?
 
 	override val closingDate: Double?
-
-	override val formId: String?
 
 	override val created: Double?
 
@@ -127,11 +115,7 @@ public external class DecryptedServiceJs(
 
 	override val responsible: String?
 
-	override val medicalLocationId: String?
-
 	override val comment: String?
-
-	override val status: Double?
 
 	override val invoicingCodes: Array<String>
 
@@ -160,8 +144,6 @@ public external class EncryptedServiceJs(
 
 	override val identifier: Array<IdentifierJs>
 
-	override val contactId: String?
-
 	override val subContactIds: Array<String>?
 
 	override val plansOfActionIds: Array<String>?
@@ -184,8 +166,6 @@ public external class EncryptedServiceJs(
 
 	override val content: Record<String, EncryptedContentJs>
 
-	override val encryptedContent: String?
-
 	override val textIndexes: Record<String, String>
 
 	override val valueDate: Double?
@@ -193,8 +173,6 @@ public external class EncryptedServiceJs(
 	override val openingDate: Double?
 
 	override val closingDate: Double?
-
-	override val formId: String?
 
 	override val created: Double?
 
@@ -206,11 +184,7 @@ public external class EncryptedServiceJs(
 
 	override val responsible: String?
 
-	override val medicalLocationId: String?
-
 	override val comment: String?
-
-	override val status: Double?
 
 	override val invoicingCodes: Array<String>
 

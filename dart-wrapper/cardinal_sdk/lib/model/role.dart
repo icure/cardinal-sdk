@@ -11,6 +11,7 @@ abstract class Role with _$Role implements StoredDocument {
 		@Default(null) String? rev,
 		@Default(null) int? deletionDate,
 		@Default(null) String? name,
+		@Default(null) int? inheritableUpTo,
 		@Default({}) Set<String> permissions,
 	}) = _Role;
 
@@ -21,6 +22,7 @@ abstract class Role with _$Role implements StoredDocument {
 			"rev" : value.rev,
 			"deletionDate" : value.deletionDate,
 			"name" : value.name,
+			"inheritableUpTo" : value.inheritableUpTo,
 			"permissions" : value.permissions.map((x0) => x0).toList()
 		};
 		return entityAsMap;
@@ -29,6 +31,7 @@ abstract class Role with _$Role implements StoredDocument {
 	static Role fromJSON(Map<String, dynamic> data) {
 		return Role(
 			id: (data["id"] as String),
+			inheritableUpTo: (data["inheritableUpTo"] as int?),
 			rev: (data["rev"] as String?),
 			deletionDate: (data["deletionDate"] as int?),
 			name: (data["name"] as String?),

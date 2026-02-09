@@ -29,6 +29,7 @@ public object CalendarItemBasicApiDispatcher {
     "deleteCalendarItems" -> deleteCalendarItems(parameters, resultCallback)
     "purgeCalendarItem" -> purgeCalendarItem(parameters, resultCallback)
     "createCalendarItem" -> createCalendarItem(parameters, resultCallback)
+    "bookCalendarItemCheckingAvailability" -> bookCalendarItemCheckingAvailability(parameters, resultCallback)
     "undeleteCalendarItemById" -> undeleteCalendarItemById(parameters, resultCallback)
     "undeleteCalendarItem" -> undeleteCalendarItem(parameters, resultCallback)
     "modifyCalendarItem" -> modifyCalendarItem(parameters, resultCallback)
@@ -189,6 +190,20 @@ public object CalendarItemBasicApiDispatcher {
     String?,
   ) -> Unit) {
     CalendarItemBasicApi.createCalendarItem(
+      resultCallback,
+      parameters.getValue("sdkId"),
+      parameters.getValue("entity"),
+    )
+  }
+
+  private fun bookCalendarItemCheckingAvailability(parameters: Map<String, String>,
+      resultCallback: (
+    String?,
+    String?,
+    String?,
+    String?,
+  ) -> Unit) {
+    CalendarItemBasicApi.bookCalendarItemCheckingAvailability(
       resultCallback,
       parameters.getValue("sdkId"),
       parameters.getValue("entity"),

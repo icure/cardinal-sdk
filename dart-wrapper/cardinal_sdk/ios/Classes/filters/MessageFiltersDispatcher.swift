@@ -32,6 +32,9 @@ class MessageFiltersDispatcher {
     case "latestByTransportGuidForSelf": latestByTransportGuidForSelf(parameters: parameters, resultCallback: resultCallback)
     case "byInvoiceIds": byInvoiceIds(parameters: parameters, resultCallback: resultCallback)
     case "byParentIds": byParentIds(parameters: parameters, resultCallback: resultCallback)
+    case "lifecycleBetweenForDataOwner": lifecycleBetweenForDataOwner(parameters: parameters, resultCallback: resultCallback)
+    case "lifecycleBetweenForDataOwnerInGroup": lifecycleBetweenForDataOwnerInGroup(parameters: parameters, resultCallback: resultCallback)
+    case "lifecycleBetweenForSelf": lifecycleBetweenForSelf(parameters: parameters, resultCallback: resultCallback)
     default: return false
     }
     return true
@@ -274,6 +277,50 @@ class MessageFiltersDispatcher {
     MessageFilters.shared.byParentIds(
     	dartResultCallback: resultCallback,
     	parentIdsString: parameters["parentIds"]!
+    )
+  }
+
+  private static func lifecycleBetweenForDataOwner(parameters: [String : String], resultCallback: @escaping (
+    String?,
+    String?,
+    String?,
+    String?
+  ) -> Void) {
+    MessageFilters.shared.lifecycleBetweenForDataOwner(
+    	dartResultCallback: resultCallback,
+    	dataOwnerIdString: parameters["dataOwnerId"]!,
+    	startTimestampString: parameters["startTimestamp"]!,
+    	endTimestampString: parameters["endTimestamp"]!,
+    	descendingString: parameters["descending"]!
+    )
+  }
+
+  private static func lifecycleBetweenForDataOwnerInGroup(parameters: [String : String], resultCallback: @escaping (
+    String?,
+    String?,
+    String?,
+    String?
+  ) -> Void) {
+    MessageFilters.shared.lifecycleBetweenForDataOwnerInGroup(
+    	dartResultCallback: resultCallback,
+    	dataOwnerString: parameters["dataOwner"]!,
+    	startTimestampString: parameters["startTimestamp"]!,
+    	endTimestampString: parameters["endTimestamp"]!,
+    	descendingString: parameters["descending"]!
+    )
+  }
+
+  private static func lifecycleBetweenForSelf(parameters: [String : String], resultCallback: @escaping (
+    String?,
+    String?,
+    String?,
+    String?
+  ) -> Void) {
+    MessageFilters.shared.lifecycleBetweenForSelf(
+    	dartResultCallback: resultCallback,
+    	startTimestampString: parameters["startTimestamp"]!,
+    	endTimestampString: parameters["endTimestamp"]!,
+    	descendingString: parameters["descending"]!
     )
   }
 

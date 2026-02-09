@@ -3,6 +3,7 @@ import 'package:cardinal_sdk/plugin/cardinal_sdk_platform_interface.dart';
 import 'package:cardinal_sdk/filters/filter_options.dart';
 import 'package:cardinal_sdk/model/message.dart';
 import 'package:cardinal_sdk/model/patient.dart';
+import 'package:cardinal_sdk/model/entity_reference_in_group.dart';
 
 
 abstract class MessageFilters {
@@ -96,7 +97,7 @@ abstract class MessageFilters {
 		);
 	}
 
-	static Future<BaseSortableFilterOptions<Message>> byTransportGuidSentDateForDataOwner(String dataOwnerId, String transportGuid, DateTime from, DateTime to, { bool descending = false }) async {
+	static Future<BaseSortableFilterOptions<Message>> byTransportGuidSentDateForDataOwner(String dataOwnerId, String transportGuid, DateTime? from, DateTime? to, { bool descending = false }) async {
 		return CardinalSdkPlatformInterface.instance.filters.message.byTransportGuidSentDateForDataOwner(
 			dataOwnerId,
 			transportGuid,
@@ -106,7 +107,7 @@ abstract class MessageFilters {
 		);
 	}
 
-	static Future<SortableFilterOptions<Message>> byTransportGuidSentDateForSelf(String transportGuid, DateTime from, DateTime to, { bool descending = false }) async {
+	static Future<SortableFilterOptions<Message>> byTransportGuidSentDateForSelf(String transportGuid, DateTime? from, DateTime? to, { bool descending = false }) async {
 		return CardinalSdkPlatformInterface.instance.filters.message.byTransportGuidSentDateForSelf(
 			transportGuid,
 			from,
@@ -137,6 +138,32 @@ abstract class MessageFilters {
 	static Future<BaseFilterOptions<Message>> byParentIds(List<String> parentIds) async {
 		return CardinalSdkPlatformInterface.instance.filters.message.byParentIds(
 			parentIds,
+		);
+	}
+
+	static Future<BaseFilterOptions<Message>> lifecycleBetweenForDataOwner(String dataOwnerId, int? startTimestamp, int? endTimestamp, bool descending) async {
+		return CardinalSdkPlatformInterface.instance.filters.message.lifecycleBetweenForDataOwner(
+			dataOwnerId,
+			startTimestamp,
+			endTimestamp,
+			descending,
+		);
+	}
+
+	static Future<BaseFilterOptions<Message>> lifecycleBetweenForDataOwnerInGroup(EntityReferenceInGroup dataOwner, int? startTimestamp, int? endTimestamp, bool descending) async {
+		return CardinalSdkPlatformInterface.instance.filters.message.lifecycleBetweenForDataOwnerInGroup(
+			dataOwner,
+			startTimestamp,
+			endTimestamp,
+			descending,
+		);
+	}
+
+	static Future<FilterOptions<Message>> lifecycleBetweenForSelf(int? startTimestamp, int? endTimestamp, bool descending) async {
+		return CardinalSdkPlatformInterface.instance.filters.message.lifecycleBetweenForSelf(
+			startTimestamp,
+			endTimestamp,
+			descending,
 		);
 	}
 }

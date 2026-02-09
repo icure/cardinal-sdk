@@ -24,7 +24,7 @@ data class EntityTemplate(
 	public val entityType: String? = null,
 	public val subType: String? = null,
 	public val defaultTemplate: Boolean? = null,
-	@DefaultValue("emptyList()")
+	@param:DefaultValue("emptyList()")
 	public val entity: List<JsonElement> = emptyList(),
 ) : StoredDocument {
 	// region EntityTemplate-EntityTemplate

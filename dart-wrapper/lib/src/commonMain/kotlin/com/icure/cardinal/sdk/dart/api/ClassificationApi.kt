@@ -45,6 +45,7 @@ public object ClassificationApi {
     userString: String,
     delegatesString: String,
     secretIdString: String,
+    alternateRootDelegateIdString: String,
   ) {
     val base = fullLanguageInteropJson.decodeFromString(
       DecryptedClassification.serializer().nullable,
@@ -66,6 +67,10 @@ public object ClassificationApi {
       SecretIdUseOption.serializer(),
       secretIdString
     )
+    val alternateRootDelegateId = fullLanguageInteropJson.decodeFromString(
+      String.serializer().nullable,
+      alternateRootDelegateIdString
+    )
     ApiScope.execute(
       dartResultCallback,
       DecryptedClassification.serializer()) {
@@ -75,6 +80,7 @@ public object ClassificationApi {
         user,
         delegates,
         secretId,
+        alternateRootDelegateId,
       )
     }
   }

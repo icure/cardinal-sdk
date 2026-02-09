@@ -24,38 +24,38 @@ class AbstractFilterSerializationTest: StringSpec({
 	"Should be able to serialize Filters and Subscriptions".config(enabled = DEFAULT_ENABLED) {
 		val filterSpecific: AbstractFilter<Patient> = PatientByIdsFilter(setOf("whatever"))
 		val filterJson = JsonObject(
-            mapOf(
-                "\$type" to JsonPrimitive("PatientByIdsFilter"),
-                "ids" to JsonArray(listOf(JsonPrimitive("whatever")))
-            )
-        )
+				mapOf(
+					 "\$type" to JsonPrimitive("PatientByIdsFilter"),
+					 "ids" to JsonArray(listOf(JsonPrimitive("whatever")))
+				)
+		  )
 		val unionFilterSpecific: UnionFilter<Patient> = UnionFilter(filters = listOf(filterSpecific))
 		val unionFilterJson = JsonObject(
-            mapOf(
-                "\$type" to JsonPrimitive("UnionFilter"),
-                "filters" to JsonArray(listOf(filterJson)),
-	            "desc" to JsonNull
-            )
-        )
+				mapOf(
+					 "\$type" to JsonPrimitive("UnionFilter"),
+					 "filters" to JsonArray(listOf(filterJson)),
+					"desc" to JsonNull
+				)
+		  )
 		val unionFilterNoTypeJson = JsonObject(
-            mapOf(
-                "filters" to JsonArray(listOf(filterJson)),
-	            "desc" to JsonNull
-            )
-        )
+				mapOf(
+					 "filters" to JsonArray(listOf(filterJson)),
+					"desc" to JsonNull
+				)
+		  )
 		val filterChainUnionSpecific = FilterChain(unionFilterSpecific)
 		val filterChainUnionJson = JsonObject(
-            mapOf(
-                "filter" to unionFilterJson,
+				mapOf(
+					 "filter" to unionFilterJson,
 				"predicate" to JsonNull
-            )
-        )
+				)
+		  )
 		val filterChainByIdsJson = JsonObject(
-            mapOf(
-                "filter" to filterJson,
-	            "predicate" to JsonNull
-            )
-        )
+				mapOf(
+					 "filter" to filterJson,
+					"predicate" to JsonNull
+				)
+		  )
 
 		val subscription = Subscription(
 			eventTypes = listOf(SubscriptionEventType.Create),
@@ -69,6 +69,7 @@ class AbstractFilterSerializationTest: StringSpec({
 				"entityClass" to JsonPrimitive("Patient"),
 				"filter" to filterChainByIdsJson,
 				"accessControlKeys" to JsonArray(listOf()),
+				"useCardinalModelSerialization" to JsonNull
 			)
 		)
 

@@ -100,4 +100,46 @@ class InsurancePlatformApi {
 		final parsedResJson = jsonDecode(res);
 		return Insurance.fromJSON(parsedResJson);
 	}
+
+	Future<List<Insurance>> createInsurancesInGroup(String sdkId, String groupId, List<Insurance> insuranceBatch) async {
+		final res = await _methodChannel.invokeMethod<String>(
+			'InsuranceApi.createInsurancesInGroup',
+			{
+				"sdkId": sdkId,
+				"groupId": jsonEncode(groupId),
+				"insuranceBatch": jsonEncode(insuranceBatch.map((x0) => Insurance.encode(x0)).toList()),
+			}
+		).catchError(convertPlatformException);
+		if (res == null) throw AssertionError("received null result from platform method createInsurancesInGroup");
+		final parsedResJson = jsonDecode(res);
+		return (parsedResJson as List<dynamic>).map((x1) => Insurance.fromJSON(x1) ).toList();
+	}
+
+	Future<List<Insurance>> getInsurancesInGroup(String sdkId, String groupId, List<String> insuranceIds) async {
+		final res = await _methodChannel.invokeMethod<String>(
+			'InsuranceApi.getInsurancesInGroup',
+			{
+				"sdkId": sdkId,
+				"groupId": jsonEncode(groupId),
+				"insuranceIds": jsonEncode(insuranceIds.map((x0) => x0).toList()),
+			}
+		).catchError(convertPlatformException);
+		if (res == null) throw AssertionError("received null result from platform method getInsurancesInGroup");
+		final parsedResJson = jsonDecode(res);
+		return (parsedResJson as List<dynamic>).map((x1) => Insurance.fromJSON(x1) ).toList();
+	}
+
+	Future<List<Insurance>> modifyInsurancesInGroup(String sdkId, String groupId, List<Insurance> insuranceBatch) async {
+		final res = await _methodChannel.invokeMethod<String>(
+			'InsuranceApi.modifyInsurancesInGroup',
+			{
+				"sdkId": sdkId,
+				"groupId": jsonEncode(groupId),
+				"insuranceBatch": jsonEncode(insuranceBatch.map((x0) => Insurance.encode(x0)).toList()),
+			}
+		).catchError(convertPlatformException);
+		if (res == null) throw AssertionError("received null result from platform method modifyInsurancesInGroup");
+		final parsedResJson = jsonDecode(res);
+		return (parsedResJson as List<dynamic>).map((x1) => Insurance.fromJSON(x1) ).toList();
+	}
 }

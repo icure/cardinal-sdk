@@ -23,18 +23,10 @@ public fun partnership_toJs(obj: Partnership): PartnershipJs {
 	val partnerId = nullToUndefined(
 		obj.partnerId
 	)
-	val meToOtherRelationshipDescription = nullToUndefined(
-		obj.meToOtherRelationshipDescription
-	)
-	val otherToMeRelationshipDescription = nullToUndefined(
-		obj.otherToMeRelationshipDescription
-	)
 	return PartnershipJs(js("{" +
 		"type:type," +
 		"status:status," +
-		"partnerId:partnerId," +
-		"meToOtherRelationshipDescription:meToOtherRelationshipDescription," +
-		"otherToMeRelationshipDescription:otherToMeRelationshipDescription" +
+		"partnerId:partnerId" +
 	"}"))
 }
 
@@ -46,13 +38,9 @@ public fun partnership_fromJs(obj: PartnershipJs): Partnership {
 		PartnershipStatus.valueOf(nonNull1)
 	}
 	val partnerId = undefinedToNull(obj.partnerId)
-	val meToOtherRelationshipDescription = undefinedToNull(obj.meToOtherRelationshipDescription)
-	val otherToMeRelationshipDescription = undefinedToNull(obj.otherToMeRelationshipDescription)
 	return Partnership(
 		type = type,
 		status = status,
 		partnerId = partnerId,
-		meToOtherRelationshipDescription = meToOtherRelationshipDescription,
-		otherToMeRelationshipDescription = otherToMeRelationshipDescription,
 	)
 }

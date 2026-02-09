@@ -3,11 +3,9 @@ package com.icure.cardinal.sdk.js.model.embed
 
 import com.icure.cardinal.sdk.js.model.CheckedConverters.arrayToList
 import com.icure.cardinal.sdk.js.model.CheckedConverters.arrayToSet
-import com.icure.cardinal.sdk.js.model.CheckedConverters.intToNumber
 import com.icure.cardinal.sdk.js.model.CheckedConverters.listToArray
 import com.icure.cardinal.sdk.js.model.CheckedConverters.longToNumber
 import com.icure.cardinal.sdk.js.model.CheckedConverters.nullToUndefined
-import com.icure.cardinal.sdk.js.model.CheckedConverters.numberToInt
 import com.icure.cardinal.sdk.js.model.CheckedConverters.numberToLong
 import com.icure.cardinal.sdk.js.model.CheckedConverters.setToArray
 import com.icure.cardinal.sdk.js.model.CheckedConverters.undefinedToNull
@@ -22,7 +20,6 @@ import com.icure.cardinal.sdk.model.embed.DecryptedPlanOfAction
 import com.icure.cardinal.sdk.model.embed.EncryptedCareTeamMembership
 import com.icure.cardinal.sdk.model.embed.EncryptedPlanOfAction
 import com.icure.cardinal.sdk.model.embed.PlanOfAction
-import kotlin.String
 import kotlin.Suppress
 
 @Suppress("UNUSED_VARIABLE")
@@ -39,9 +36,6 @@ public fun planOfAction_toJs(obj: DecryptedPlanOfAction): DecryptedPlanOfActionJ
 	)
 	val responsible = nullToUndefined(
 		obj.responsible
-	)
-	val medicalLocationId = nullToUndefined(
-		obj.medicalLocationId
 	)
 	val tags = setToArray(
 		obj.tags,
@@ -88,23 +82,12 @@ public fun planOfAction_toJs(obj: DecryptedPlanOfAction): DecryptedPlanOfActionJ
 	val idClosingContact = nullToUndefined(
 		obj.idClosingContact
 	)
-	val status = intToNumber(obj.status)
-	val documentIds = setToArray(
-		obj.documentIds,
-		{ x1: String ->
-			x1
-		},
-	)
-	val numberOfCares = nullToUndefined(
-		intToNumber(obj.numberOfCares)
-	)
 	val careTeamMemberships = listToArray(
 		obj.careTeamMemberships,
 		{ x1: DecryptedCareTeamMembership ->
 			careTeamMembership_toJs(x1)
 		},
 	)
-	val relevant = obj.relevant
 	val encryptedSelf = nullToUndefined(
 		obj.encryptedSelf?.let { nonNull1 ->
 			base64String_toJs(nonNull1)
@@ -116,7 +99,6 @@ public fun planOfAction_toJs(obj: DecryptedPlanOfAction): DecryptedPlanOfActionJ
 		"modified:modified," +
 		"author:author," +
 		"responsible:responsible," +
-		"medicalLocationId:medicalLocationId," +
 		"tags:tags," +
 		"codes:codes," +
 		"endOfLife:endOfLife," +
@@ -130,11 +112,7 @@ public fun planOfAction_toJs(obj: DecryptedPlanOfAction): DecryptedPlanOfActionJ
 		"note:note," +
 		"idOpeningContact:idOpeningContact," +
 		"idClosingContact:idClosingContact," +
-		"status:status," +
-		"documentIds:documentIds," +
-		"numberOfCares:numberOfCares," +
 		"careTeamMemberships:careTeamMemberships," +
-		"relevant:relevant," +
 		"encryptedSelf:encryptedSelf" +
 	"}"))
 }
@@ -145,7 +123,6 @@ public fun planOfAction_fromJs(obj: DecryptedPlanOfActionJs): DecryptedPlanOfAct
 	val modified = numberToLong(obj.modified, "obj.modified")
 	val author = undefinedToNull(obj.author)
 	val responsible = undefinedToNull(obj.responsible)
-	val medicalLocationId = undefinedToNull(obj.medicalLocationId)
 	val tags = arrayToSet(
 		obj.tags,
 		"obj.tags",
@@ -171,15 +148,6 @@ public fun planOfAction_fromJs(obj: DecryptedPlanOfActionJs): DecryptedPlanOfAct
 	val note = undefinedToNull(obj.note)
 	val idOpeningContact = undefinedToNull(obj.idOpeningContact)
 	val idClosingContact = undefinedToNull(obj.idClosingContact)
-	val status = numberToInt(obj.status, "obj.status")
-	val documentIds = arrayToSet(
-		obj.documentIds,
-		"obj.documentIds",
-		{ x1: String ->
-			x1
-		},
-	)
-	val numberOfCares = numberToInt(obj.numberOfCares, "obj.numberOfCares")
 	val careTeamMemberships = arrayToList(
 		obj.careTeamMemberships,
 		"obj.careTeamMemberships",
@@ -187,7 +155,6 @@ public fun planOfAction_fromJs(obj: DecryptedPlanOfActionJs): DecryptedPlanOfAct
 			careTeamMembership_fromJs(x1)
 		},
 	)
-	val relevant = obj.relevant
 	val encryptedSelf = obj.encryptedSelf?.let { nonNull1 ->
 		base64String_fromJs(nonNull1)
 	}
@@ -197,7 +164,6 @@ public fun planOfAction_fromJs(obj: DecryptedPlanOfActionJs): DecryptedPlanOfAct
 		modified = modified,
 		author = author,
 		responsible = responsible,
-		medicalLocationId = medicalLocationId,
 		tags = tags,
 		codes = codes,
 		endOfLife = endOfLife,
@@ -211,11 +177,7 @@ public fun planOfAction_fromJs(obj: DecryptedPlanOfActionJs): DecryptedPlanOfAct
 		note = note,
 		idOpeningContact = idOpeningContact,
 		idClosingContact = idClosingContact,
-		status = status,
-		documentIds = documentIds,
-		numberOfCares = numberOfCares,
 		careTeamMemberships = careTeamMemberships,
-		relevant = relevant,
 		encryptedSelf = encryptedSelf,
 	)
 }
@@ -235,9 +197,6 @@ public fun planOfAction_toJs(obj: EncryptedPlanOfAction): EncryptedPlanOfActionJ
 	val responsible = nullToUndefined(
 		obj.responsible
 	)
-	val medicalLocationId = nullToUndefined(
-		obj.medicalLocationId
-	)
 	val tags = setToArray(
 		obj.tags,
 		{ x1: CodeStub ->
@@ -283,23 +242,12 @@ public fun planOfAction_toJs(obj: EncryptedPlanOfAction): EncryptedPlanOfActionJ
 	val idClosingContact = nullToUndefined(
 		obj.idClosingContact
 	)
-	val status = intToNumber(obj.status)
-	val documentIds = setToArray(
-		obj.documentIds,
-		{ x1: String ->
-			x1
-		},
-	)
-	val numberOfCares = nullToUndefined(
-		intToNumber(obj.numberOfCares)
-	)
 	val careTeamMemberships = listToArray(
 		obj.careTeamMemberships,
 		{ x1: EncryptedCareTeamMembership ->
 			careTeamMembership_toJs(x1)
 		},
 	)
-	val relevant = obj.relevant
 	val encryptedSelf = nullToUndefined(
 		obj.encryptedSelf?.let { nonNull1 ->
 			base64String_toJs(nonNull1)
@@ -311,7 +259,6 @@ public fun planOfAction_toJs(obj: EncryptedPlanOfAction): EncryptedPlanOfActionJ
 		"modified:modified," +
 		"author:author," +
 		"responsible:responsible," +
-		"medicalLocationId:medicalLocationId," +
 		"tags:tags," +
 		"codes:codes," +
 		"endOfLife:endOfLife," +
@@ -325,11 +272,7 @@ public fun planOfAction_toJs(obj: EncryptedPlanOfAction): EncryptedPlanOfActionJ
 		"note:note," +
 		"idOpeningContact:idOpeningContact," +
 		"idClosingContact:idClosingContact," +
-		"status:status," +
-		"documentIds:documentIds," +
-		"numberOfCares:numberOfCares," +
 		"careTeamMemberships:careTeamMemberships," +
-		"relevant:relevant," +
 		"encryptedSelf:encryptedSelf" +
 	"}"))
 }
@@ -340,7 +283,6 @@ public fun planOfAction_fromJs(obj: EncryptedPlanOfActionJs): EncryptedPlanOfAct
 	val modified = numberToLong(obj.modified, "obj.modified")
 	val author = undefinedToNull(obj.author)
 	val responsible = undefinedToNull(obj.responsible)
-	val medicalLocationId = undefinedToNull(obj.medicalLocationId)
 	val tags = arrayToSet(
 		obj.tags,
 		"obj.tags",
@@ -366,15 +308,6 @@ public fun planOfAction_fromJs(obj: EncryptedPlanOfActionJs): EncryptedPlanOfAct
 	val note = undefinedToNull(obj.note)
 	val idOpeningContact = undefinedToNull(obj.idOpeningContact)
 	val idClosingContact = undefinedToNull(obj.idClosingContact)
-	val status = numberToInt(obj.status, "obj.status")
-	val documentIds = arrayToSet(
-		obj.documentIds,
-		"obj.documentIds",
-		{ x1: String ->
-			x1
-		},
-	)
-	val numberOfCares = numberToInt(obj.numberOfCares, "obj.numberOfCares")
 	val careTeamMemberships = arrayToList(
 		obj.careTeamMemberships,
 		"obj.careTeamMemberships",
@@ -382,7 +315,6 @@ public fun planOfAction_fromJs(obj: EncryptedPlanOfActionJs): EncryptedPlanOfAct
 			careTeamMembership_fromJs(x1)
 		},
 	)
-	val relevant = obj.relevant
 	val encryptedSelf = obj.encryptedSelf?.let { nonNull1 ->
 		base64String_fromJs(nonNull1)
 	}
@@ -392,7 +324,6 @@ public fun planOfAction_fromJs(obj: EncryptedPlanOfActionJs): EncryptedPlanOfAct
 		modified = modified,
 		author = author,
 		responsible = responsible,
-		medicalLocationId = medicalLocationId,
 		tags = tags,
 		codes = codes,
 		endOfLife = endOfLife,
@@ -406,11 +337,7 @@ public fun planOfAction_fromJs(obj: EncryptedPlanOfActionJs): EncryptedPlanOfAct
 		note = note,
 		idOpeningContact = idOpeningContact,
 		idClosingContact = idClosingContact,
-		status = status,
-		documentIds = documentIds,
-		numberOfCares = numberOfCares,
 		careTeamMemberships = careTeamMemberships,
-		relevant = relevant,
 		encryptedSelf = encryptedSelf,
 	)
 }

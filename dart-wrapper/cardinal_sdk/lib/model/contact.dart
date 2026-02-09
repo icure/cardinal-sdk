@@ -5,6 +5,7 @@ import 'package:cardinal_sdk/model/embed/address.dart';
 import 'package:cardinal_sdk/model/embed/sub_contact.dart';
 import 'package:cardinal_sdk/model/embed/service.dart';
 import 'package:cardinal_sdk/model/base/participant_type.dart';
+import 'package:cardinal_sdk/model/embed/contact_participant.dart';
 import 'package:cardinal_sdk/model/embed/delegation.dart';
 import 'package:cardinal_sdk/model/specializations/base64string.dart';
 import 'package:cardinal_sdk/model/embed/security_metadata.dart';
@@ -41,7 +42,8 @@ sealed class Contact implements StoredDocument, ICureDocument<String>, HasEncryp
 	Address? get encounterLocation;
 	Set<SubContact> get subContacts;
 	Set<Service> get services;
-	abstract final Map<ParticipantType, String> participants;
+	@Deprecated('Use participantList') abstract final Map<ParticipantType, String> participants;
+	abstract final List<ContactParticipant> participantList;
 	abstract final String? healthcarePartyId;
 	abstract final String? modifiedContactId;
 	@override abstract final Set<String> secretForeignKeys;
@@ -107,6 +109,7 @@ abstract class DecryptedContact with _$DecryptedContact implements Contact {
 		@Default({}) Set<DecryptedSubContact> subContacts,
 		@Default({}) Set<DecryptedService> services,
 		@Default({}) Map<ParticipantType, String> participants,
+		@Default([]) List<ContactParticipant> participantList,
 		@Default(null) String? healthcarePartyId,
 		@Default(null) String? modifiedContactId,
 		@Default({}) Set<String> secretForeignKeys,
@@ -144,6 +147,7 @@ abstract class DecryptedContact with _$DecryptedContact implements Contact {
 			"subContacts" : value.subContacts.map((x0) => DecryptedSubContact.encode(x0)).toList(),
 			"services" : value.services.map((x0) => DecryptedService.encode(x0)).toList(),
 			"participants" : value.participants.map((k0, v0) => MapEntry(ParticipantType.encode(k0), v0)),
+			"participantList" : value.participantList.map((x0) => ContactParticipant.encode(x0)).toList(),
 			"healthcarePartyId" : value.healthcarePartyId,
 			"modifiedContactId" : value.modifiedContactId,
 			"secretForeignKeys" : value.secretForeignKeys.map((x0) => x0).toList(),
@@ -182,6 +186,7 @@ abstract class DecryptedContact with _$DecryptedContact implements Contact {
 			subContacts: (data["subContacts"] as List<dynamic>).map((x0) => DecryptedSubContact.fromJSON(x0) ).toSet(),
 			services: (data["services"] as List<dynamic>).map((x0) => DecryptedService.fromJSON(x0) ).toSet(),
 			participants: (data["participants"] as Map<String, dynamic>).map((k0, v0) => MapEntry(ParticipantType.fromJSON(k0), (v0 as String))),
+			participantList: (data["participantList"] as List<dynamic>).map((x0) => ContactParticipant.fromJSON(x0) ).toList(),
 			healthcarePartyId: (data["healthcarePartyId"] as String?),
 			modifiedContactId: (data["modifiedContactId"] as String?),
 			secretForeignKeys: (data["secretForeignKeys"] as List<dynamic>).map((x0) => (x0 as String) ).toSet(),
@@ -221,6 +226,7 @@ abstract class EncryptedContact with _$EncryptedContact implements Contact {
 		@Default({}) Set<EncryptedSubContact> subContacts,
 		@Default({}) Set<EncryptedService> services,
 		@Default({}) Map<ParticipantType, String> participants,
+		@Default([]) List<ContactParticipant> participantList,
 		@Default(null) String? healthcarePartyId,
 		@Default(null) String? modifiedContactId,
 		@Default({}) Set<String> secretForeignKeys,
@@ -258,6 +264,7 @@ abstract class EncryptedContact with _$EncryptedContact implements Contact {
 			"subContacts" : value.subContacts.map((x0) => EncryptedSubContact.encode(x0)).toList(),
 			"services" : value.services.map((x0) => EncryptedService.encode(x0)).toList(),
 			"participants" : value.participants.map((k0, v0) => MapEntry(ParticipantType.encode(k0), v0)),
+			"participantList" : value.participantList.map((x0) => ContactParticipant.encode(x0)).toList(),
 			"healthcarePartyId" : value.healthcarePartyId,
 			"modifiedContactId" : value.modifiedContactId,
 			"secretForeignKeys" : value.secretForeignKeys.map((x0) => x0).toList(),
@@ -296,6 +303,7 @@ abstract class EncryptedContact with _$EncryptedContact implements Contact {
 			subContacts: (data["subContacts"] as List<dynamic>).map((x0) => EncryptedSubContact.fromJSON(x0) ).toSet(),
 			services: (data["services"] as List<dynamic>).map((x0) => EncryptedService.fromJSON(x0) ).toSet(),
 			participants: (data["participants"] as Map<String, dynamic>).map((k0, v0) => MapEntry(ParticipantType.fromJSON(k0), (v0 as String))),
+			participantList: (data["participantList"] as List<dynamic>).map((x0) => ContactParticipant.fromJSON(x0) ).toList(),
 			healthcarePartyId: (data["healthcarePartyId"] as String?),
 			modifiedContactId: (data["modifiedContactId"] as String?),
 			secretForeignKeys: (data["secretForeignKeys"] as List<dynamic>).map((x0) => (x0 as String) ).toSet(),

@@ -40,10 +40,20 @@ public external interface PatientFlavouredInGroupApiJs<E : PatientJs> {
 
 	public fun createPatient(patient: GroupScopedJs<E>): Promise<GroupScopedJs<E>>
 
-	public fun createPatientsMinimal(patients: Array<GroupScopedJs<E>>):
-			Promise<Array<GroupScopedJs<StoredDocumentIdentifierJs>>>
-
 	public fun createPatients(patients: Array<GroupScopedJs<E>>): Promise<Array<GroupScopedJs<E>>>
+
+	public fun undeletePatient(patient: GroupScopedJs<PatientJs>): Promise<GroupScopedJs<E>>
+
+	public fun undeletePatients(patients: Array<GroupScopedJs<PatientJs>>):
+			Promise<Array<GroupScopedJs<E>>>
+
+	public fun modifyPatient(entity: GroupScopedJs<E>): Promise<GroupScopedJs<E>>
+
+	public fun undeletePatientById(patientId: GroupScopedJs<StoredDocumentIdentifierJs>):
+			Promise<GroupScopedJs<E>>
+
+	public fun undeletePatientsByIds(patientIds: Array<GroupScopedJs<StoredDocumentIdentifierJs>>):
+			Promise<Array<GroupScopedJs<E>>>
 
 	public fun getPatient(groupId: String, entityId: String): Promise<GroupScopedJs<E>?>
 
@@ -55,9 +65,6 @@ public external interface PatientFlavouredInGroupApiJs<E : PatientJs> {
 
 	public fun getPatients(groupId: String, patientIds: Array<String>):
 			Promise<Array<GroupScopedJs<E>>>
-
-	public fun modifyPatientsMinimal(patients: Array<GroupScopedJs<E>>):
-			Promise<Array<GroupScopedJs<StoredDocumentIdentifierJs>>>
 
 	public fun modifyPatients(patients: Array<GroupScopedJs<E>>): Promise<Array<GroupScopedJs<E>>>
 }

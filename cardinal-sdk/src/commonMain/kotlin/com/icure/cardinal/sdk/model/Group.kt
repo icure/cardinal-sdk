@@ -25,25 +25,25 @@ data class Group(
 	override val id: String,
 	override val rev: String? = null,
 	override val deletionDate: Long? = null,
-	@DefaultValue("emptySet()")
+	@param:DefaultValue("emptySet()")
 	override val tags: Set<CodeStub> = emptySet(),
-	@DefaultValue("emptySet()")
+	@param:DefaultValue("emptySet()")
 	public val publicTags: Set<CodeStub> = emptySet(),
 	public val name: String? = null,
 	public val password: String? = null,
 	public val servers: List<String>? = null,
-	@DefaultValue("false")
+	@param:DefaultValue("false")
 	public val superAdmin: Boolean = false,
-	@DefaultValue("emptySet()")
+	@param:DefaultValue("emptySet()")
 	public val properties: Set<DecryptedPropertyStub> = emptySet(),
-	@DefaultValue("emptyMap()")
+	@param:DefaultValue("emptyMap()")
 	public val defaultUserRoles: Map<UserType, Set<String>> = emptyMap(),
-	@DefaultValue("emptyMap()")
+	@param:DefaultValue("emptyMap()")
 	public val operationTokens: Map<String, OperationToken> = emptyMap(),
-	@DefaultValue("emptyMap()")
+	@param:DefaultValue("emptyMap()")
 	public val sharedEntities: Map<String, String> = emptyMap(),
 	public val minimumKrakenVersion: String? = null,
-	@DefaultValue("emptyMap()")
+	@param:DefaultValue("emptyMap()")
 	public val externalJwtConfig: Map<String, ExternalJwtConfig> = emptyMap(),
 	public val minimumAuthenticationClassForElevatedPrivileges: AuthenticationClass,
 	public val superGroup: String? = null,

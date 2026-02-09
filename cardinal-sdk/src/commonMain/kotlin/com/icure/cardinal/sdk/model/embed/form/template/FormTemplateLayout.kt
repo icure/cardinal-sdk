@@ -11,9 +11,9 @@ import kotlin.collections.List
 @Serializable
 data class FormTemplateLayout(
 	public val form: String,
-	@DefaultValue("emptyList()")
+	@param:DefaultValue("emptyList()")
 	public val actions: List<Action> = emptyList(),
-	@DefaultValue("emptyList()")
+	@param:DefaultValue("emptyList()")
 	public val sections: List<Section> = emptyList(),
 	public val description: String? = null,
 	public val keywords: List<String>? = null,

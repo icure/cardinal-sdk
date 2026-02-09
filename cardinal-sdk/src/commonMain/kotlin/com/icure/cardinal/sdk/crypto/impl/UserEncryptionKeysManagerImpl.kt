@@ -264,13 +264,9 @@ private class KeyLoader(
 			// Save keys
 			recoveredData.recoveredKeys.forEach { (fp, key) ->
 				icureStorage.saveEncryptionKeypair(dataOwnerId, key, false)
-				// Validate verification information (if present) for this key
-				require (recoveredData.keyAuthenticity[fp] != false) {
-					throw IllegalArgumentException("Recovered key $fp is explicitly marked as unverified, but recovered keys must be verified")
-				}
 			}
 			// Save verification information
-			val currCombinedVerificationDetails = recoveredData.keyAuthenticity + recoveredData.recoveredKeys.keys.associateWith { true }
+			val currCombinedVerificationDetails = recoveredData.recoveredKeys.keys.associateWith { true } + recoveredData.keyAuthenticity // key authenticity can override
 			icureStorage.updateAndSaveSelfVerifiedKeys(
 				dataOwnerId,
 				currCombinedVerificationDetails
@@ -280,10 +276,11 @@ private class KeyLoader(
 		val fullyRecoveredKeyData = hierarchy.map { dataOwnerInfo ->
 			val loaded = loadedKeyInfo.first { it.first == dataOwnerInfo }.second.first
 			val recoveredByStrategies = recoveredKeyData[dataOwnerInfo.dataOwner.id]?.recoveredKeys?.mapNotNull { (_, keyPair) ->
+				val spki = cryptoService.rsa.exportSpkiHex(keyPair.public)
 				DataOwnerKeyInfo.Found(
-					cryptoService.rsa.exportSpkiHex(keyPair.public),
+					spki,
 					keyPair,
-					isVerified = true,
+					isVerified = combinedVerificationDetails.getValue(dataOwnerInfo.dataOwner.id).getValue(spki.fingerprintV1()),
 					isDevice = false
 				)
 			} ?: emptyList()

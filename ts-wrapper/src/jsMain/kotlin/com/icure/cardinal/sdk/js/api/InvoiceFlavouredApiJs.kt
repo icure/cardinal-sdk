@@ -7,6 +7,7 @@ import com.icure.cardinal.sdk.js.crypto.entities.InvoiceShareOptionsJs
 import com.icure.cardinal.sdk.js.model.InvoiceJs
 import com.icure.cardinal.sdk.js.model.PaginatedListJs
 import com.icure.cardinal.sdk.js.model.PatientJs
+import com.icure.cardinal.sdk.js.model.StoredDocumentIdentifierJs
 import com.icure.cardinal.sdk.js.model.embed.EncryptedInvoicingCodeJs
 import com.icure.cardinal.sdk.js.utils.Record
 import com.icure.cardinal.sdk.js.utils.pagination.PaginatedListIteratorJs
@@ -33,6 +34,18 @@ public external interface InvoiceFlavouredApiJs<E : InvoiceJs> {
 		patient: PatientJs,
 		options: dynamic,
 	): Promise<PaginatedListIteratorJs<E>>
+
+	public fun createInvoice(entity: E): Promise<E>
+
+	public fun createInvoices(entities: Array<E>): Promise<Array<E>>
+
+	public fun undeleteInvoiceById(id: String, rev: String): Promise<E>
+
+	public fun undeleteInvoicesByIds(entityIds: Array<StoredDocumentIdentifierJs>): Promise<Array<E>>
+
+	public fun undeleteInvoice(invoice: InvoiceJs): Promise<E>
+
+	public fun undeleteInvoices(invoices: Array<InvoiceJs>): Promise<Array<E>>
 
 	public fun modifyInvoice(entity: E): Promise<E>
 

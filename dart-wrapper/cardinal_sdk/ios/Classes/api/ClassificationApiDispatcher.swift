@@ -67,7 +67,8 @@ class ClassificationApiDispatcher {
     	patientString: parameters["patient"]!,
     	userString: parameters["user"]!,
     	delegatesString: parameters["delegates"]!,
-    	secretIdString: parameters["secretId"]!
+    	secretIdString: parameters["secretId"]!,
+    	alternateRootDelegateIdString: parameters["alternateRootDelegateId"]!
     )
   }
 

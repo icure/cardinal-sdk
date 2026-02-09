@@ -11,7 +11,7 @@ import kotlin.collections.Map
 @Serializable
 data class AnonymousMedicalLocation(
 	public val id: String,
-	@DefaultValue("emptyMap()")
+	@param:DefaultValue("emptyMap()")
 	public val publicInformations: Map<String, String> = emptyMap(),
 ) {
 	// region AnonymousMedicalLocation-AnonymousMedicalLocation

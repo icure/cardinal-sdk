@@ -7,6 +7,7 @@ import 'package:cardinal_sdk/utils/internal/platform_exception_convertion.dart';
 import 'package:cardinal_sdk/crypto/entities/recovery_result.dart';
 import 'package:cardinal_sdk/crypto/entities/cardinal_keys.dart';
 import 'package:cardinal_sdk/crypto/entities/recovery_data_use_failure_reason.dart';
+import 'package:cardinal_sdk/crypto/entities/raw_decrypted_exchange_data.dart';
 import 'package:cardinal_sdk/crypto/entities/recovery_key_size.dart';
 
 
@@ -69,7 +70,7 @@ class RecoveryPlatformApi {
 		);
 	}
 
-	Future<RecoveryDataKey> createExchangeDataRecoveryInfo(String sdkId, String delegateId, int? lifetimeSeconds, RecoveryKeyOptions? recoveryKeyOptions) async {
+	Future<RecoveryDataKey?> createExchangeDataRecoveryInfo(String sdkId, String delegateId, int? lifetimeSeconds, RecoveryKeyOptions? recoveryKeyOptions, bool includeBiDirectional, bool includeAsParent) async {
 		final res = await _methodChannel.invokeMethod<String>(
 			'RecoveryApi.createExchangeDataRecoveryInfo',
 			{
@@ -77,11 +78,13 @@ class RecoveryPlatformApi {
 				"delegateId": jsonEncode(delegateId),
 				"lifetimeSeconds": jsonEncode(lifetimeSeconds),
 				"recoveryKeyOptions": jsonEncode(recoveryKeyOptions == null ? null : RecoveryKeyOptions.encode(recoveryKeyOptions!)),
+				"includeBiDirectional": jsonEncode(includeBiDirectional),
+				"includeAsParent": jsonEncode(includeAsParent),
 			}
 		).catchError(convertPlatformException);
 		if (res == null) throw AssertionError("received null result from platform method createExchangeDataRecoveryInfo");
 		final parsedResJson = jsonDecode(res);
-		return RecoveryDataKey.fromJSON(parsedResJson);
+		return parsedResJson == null ? null : RecoveryDataKey.fromJSON(parsedResJson);
 	}
 
 	Future<RecoveryDataUseFailureReason?> recoverExchangeData(String sdkId, RecoveryDataKey recoveryKey) async {
@@ -95,6 +98,25 @@ class RecoveryPlatformApi {
 		if (res == null) throw AssertionError("received null result from platform method recoverExchangeData");
 		final parsedResJson = jsonDecode(res);
 		return parsedResJson == null ? null : RecoveryDataUseFailureReason.fromJSON(parsedResJson);
+	}
+
+	Future<RecoveryResult<List<RawDecryptedExchangeData>>> getRecoveryExchangeData(String sdkId, RecoveryDataKey recoveryKey, bool autoDelete) async {
+		final res = await _methodChannel.invokeMethod<String>(
+			'RecoveryApi.getRecoveryExchangeData',
+			{
+				"sdkId": sdkId,
+				"recoveryKey": jsonEncode(RecoveryDataKey.encode(recoveryKey)),
+				"autoDelete": jsonEncode(autoDelete),
+			}
+		).catchError(convertPlatformException);
+		if (res == null) throw AssertionError("received null result from platform method getRecoveryExchangeData");
+		final parsedResJson = jsonDecode(res);
+		return RecoveryResult.fromJSON(
+			parsedResJson,
+			(x1) {
+				return (x1 as List<dynamic>).map((x2) => RawDecryptedExchangeData.fromJSON(x2) ).toList();
+			},
+		);
 	}
 
 	Future<void> purgeRecoveryInfo(String sdkId, RecoveryDataKey recoveryKey) async {

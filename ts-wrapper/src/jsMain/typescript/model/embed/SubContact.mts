@@ -13,15 +13,11 @@ export interface SubContact extends Encryptable, ICureDocument<string | undefine
 
 	protocol: string | undefined;
 
-	status: number | undefined;
-
 	formId: string | undefined;
 
 	planOfActionId: string | undefined;
 
 	healthElementId: string | undefined;
-
-	classificationId: string | undefined;
 
 	services: Array<ServiceLink>;
 
@@ -43,27 +39,19 @@ export class DecryptedSubContact {
 
 	responsible: string | undefined = undefined;
 
-	medicalLocationId: string | undefined = undefined;
-
 	tags: Array<CodeStub> = [];
 
 	codes: Array<CodeStub> = [];
 
-	endOfLife: number | undefined = undefined;
-
 	descr: string | undefined = undefined;
 
 	protocol: string | undefined = undefined;
-
-	status: number | undefined = undefined;
 
 	formId: string | undefined = undefined;
 
 	planOfActionId: string | undefined = undefined;
 
 	healthElementId: string | undefined = undefined;
-
-	classificationId: string | undefined = undefined;
 
 	services: Array<ServiceLink> = [];
 
@@ -78,17 +66,13 @@ export class DecryptedSubContact {
 		if ('modified' in partial) this.modified = partial.modified;
 		if ('author' in partial) this.author = partial.author;
 		if ('responsible' in partial) this.responsible = partial.responsible;
-		if ('medicalLocationId' in partial) this.medicalLocationId = partial.medicalLocationId;
 		if ('tags' in partial && partial.tags !== undefined) this.tags = partial.tags;
 		if ('codes' in partial && partial.codes !== undefined) this.codes = partial.codes;
-		if ('endOfLife' in partial) this.endOfLife = partial.endOfLife;
 		if ('descr' in partial) this.descr = partial.descr;
 		if ('protocol' in partial) this.protocol = partial.protocol;
-		if ('status' in partial) this.status = partial.status;
 		if ('formId' in partial) this.formId = partial.formId;
 		if ('planOfActionId' in partial) this.planOfActionId = partial.planOfActionId;
 		if ('healthElementId' in partial) this.healthElementId = partial.healthElementId;
-		if ('classificationId' in partial) this.classificationId = partial.classificationId;
 		if ('services' in partial && partial.services !== undefined) this.services = partial.services;
 		if ('encryptedSelf' in partial) this.encryptedSelf = partial.encryptedSelf;
 	}
@@ -100,17 +84,13 @@ export class DecryptedSubContact {
 		if (this.modified != undefined) res['modified'] = this.modified
 		if (this.author != undefined) res['author'] = this.author
 		if (this.responsible != undefined) res['responsible'] = this.responsible
-		if (this.medicalLocationId != undefined) res['medicalLocationId'] = this.medicalLocationId
 		res['tags'] = this.tags.map((x0) => x0.toJSON() )
 		res['codes'] = this.codes.map((x0) => x0.toJSON() )
-		if (this.endOfLife != undefined) res['endOfLife'] = this.endOfLife
 		if (this.descr != undefined) res['descr'] = this.descr
 		if (this.protocol != undefined) res['protocol'] = this.protocol
-		if (this.status != undefined) res['status'] = this.status
 		if (this.formId != undefined) res['formId'] = this.formId
 		if (this.planOfActionId != undefined) res['planOfActionId'] = this.planOfActionId
 		if (this.healthElementId != undefined) res['healthElementId'] = this.healthElementId
-		if (this.classificationId != undefined) res['classificationId'] = this.classificationId
 		res['services'] = this.services.map((x0) => x0.toJSON() )
 		if (this.encryptedSelf != undefined) res['encryptedSelf'] = this.encryptedSelf
 		res['isEncrypted'] = false
@@ -128,17 +108,13 @@ export class DecryptedSubContact {
 			modified: expectNumber(extractEntry(jCpy, 'modified', false, path), true, true, [...path, ".modified"]),
 			author: expectString(extractEntry(jCpy, 'author', false, path), true, [...path, ".author"]),
 			responsible: expectString(extractEntry(jCpy, 'responsible', false, path), true, [...path, ".responsible"]),
-			medicalLocationId: expectString(extractEntry(jCpy, 'medicalLocationId', false, path), true, [...path, ".medicalLocationId"]),
 			tags: expectArray(extractEntry(jCpy, 'tags', false, path), false, [...path, ".tags"], (x0, p0) => expectObject(x0, false, ignoreUnknownKeys, p0, CodeStub.fromJSON)),
 			codes: expectArray(extractEntry(jCpy, 'codes', false, path), false, [...path, ".codes"], (x0, p0) => expectObject(x0, false, ignoreUnknownKeys, p0, CodeStub.fromJSON)),
-			endOfLife: expectNumber(extractEntry(jCpy, 'endOfLife', false, path), true, true, [...path, ".endOfLife"]),
 			descr: expectString(extractEntry(jCpy, 'descr', false, path), true, [...path, ".descr"]),
 			protocol: expectString(extractEntry(jCpy, 'protocol', false, path), true, [...path, ".protocol"]),
-			status: expectNumber(extractEntry(jCpy, 'status', false, path), true, true, [...path, ".status"]),
 			formId: expectString(extractEntry(jCpy, 'formId', false, path), true, [...path, ".formId"]),
 			planOfActionId: expectString(extractEntry(jCpy, 'planOfActionId', false, path), true, [...path, ".planOfActionId"]),
 			healthElementId: expectString(extractEntry(jCpy, 'healthElementId', false, path), true, [...path, ".healthElementId"]),
-			classificationId: expectString(extractEntry(jCpy, 'classificationId', false, path), true, [...path, ".classificationId"]),
 			services: expectArray(extractEntry(jCpy, 'services', false, path), false, [...path, ".services"], (x0, p0) => expectObject(x0, false, ignoreUnknownKeys, p0, ServiceLink.fromJSON)),
 			encryptedSelf: expectString(extractEntry(jCpy, 'encryptedSelf', false, path), true, [...path, ".encryptedSelf"]) as Base64String,
 		})
@@ -162,27 +138,19 @@ export class EncryptedSubContact {
 
 	responsible: string | undefined = undefined;
 
-	medicalLocationId: string | undefined = undefined;
-
 	tags: Array<CodeStub> = [];
 
 	codes: Array<CodeStub> = [];
 
-	endOfLife: number | undefined = undefined;
-
 	descr: string | undefined = undefined;
 
 	protocol: string | undefined = undefined;
-
-	status: number | undefined = undefined;
 
 	formId: string | undefined = undefined;
 
 	planOfActionId: string | undefined = undefined;
 
 	healthElementId: string | undefined = undefined;
-
-	classificationId: string | undefined = undefined;
 
 	services: Array<ServiceLink> = [];
 
@@ -197,17 +165,13 @@ export class EncryptedSubContact {
 		if ('modified' in partial) this.modified = partial.modified;
 		if ('author' in partial) this.author = partial.author;
 		if ('responsible' in partial) this.responsible = partial.responsible;
-		if ('medicalLocationId' in partial) this.medicalLocationId = partial.medicalLocationId;
 		if ('tags' in partial && partial.tags !== undefined) this.tags = partial.tags;
 		if ('codes' in partial && partial.codes !== undefined) this.codes = partial.codes;
-		if ('endOfLife' in partial) this.endOfLife = partial.endOfLife;
 		if ('descr' in partial) this.descr = partial.descr;
 		if ('protocol' in partial) this.protocol = partial.protocol;
-		if ('status' in partial) this.status = partial.status;
 		if ('formId' in partial) this.formId = partial.formId;
 		if ('planOfActionId' in partial) this.planOfActionId = partial.planOfActionId;
 		if ('healthElementId' in partial) this.healthElementId = partial.healthElementId;
-		if ('classificationId' in partial) this.classificationId = partial.classificationId;
 		if ('services' in partial && partial.services !== undefined) this.services = partial.services;
 		if ('encryptedSelf' in partial) this.encryptedSelf = partial.encryptedSelf;
 	}
@@ -219,17 +183,13 @@ export class EncryptedSubContact {
 		if (this.modified != undefined) res['modified'] = this.modified
 		if (this.author != undefined) res['author'] = this.author
 		if (this.responsible != undefined) res['responsible'] = this.responsible
-		if (this.medicalLocationId != undefined) res['medicalLocationId'] = this.medicalLocationId
 		res['tags'] = this.tags.map((x0) => x0.toJSON() )
 		res['codes'] = this.codes.map((x0) => x0.toJSON() )
-		if (this.endOfLife != undefined) res['endOfLife'] = this.endOfLife
 		if (this.descr != undefined) res['descr'] = this.descr
 		if (this.protocol != undefined) res['protocol'] = this.protocol
-		if (this.status != undefined) res['status'] = this.status
 		if (this.formId != undefined) res['formId'] = this.formId
 		if (this.planOfActionId != undefined) res['planOfActionId'] = this.planOfActionId
 		if (this.healthElementId != undefined) res['healthElementId'] = this.healthElementId
-		if (this.classificationId != undefined) res['classificationId'] = this.classificationId
 		res['services'] = this.services.map((x0) => x0.toJSON() )
 		if (this.encryptedSelf != undefined) res['encryptedSelf'] = this.encryptedSelf
 		res['isEncrypted'] = true
@@ -247,17 +207,13 @@ export class EncryptedSubContact {
 			modified: expectNumber(extractEntry(jCpy, 'modified', false, path), true, true, [...path, ".modified"]),
 			author: expectString(extractEntry(jCpy, 'author', false, path), true, [...path, ".author"]),
 			responsible: expectString(extractEntry(jCpy, 'responsible', false, path), true, [...path, ".responsible"]),
-			medicalLocationId: expectString(extractEntry(jCpy, 'medicalLocationId', false, path), true, [...path, ".medicalLocationId"]),
 			tags: expectArray(extractEntry(jCpy, 'tags', false, path), false, [...path, ".tags"], (x0, p0) => expectObject(x0, false, ignoreUnknownKeys, p0, CodeStub.fromJSON)),
 			codes: expectArray(extractEntry(jCpy, 'codes', false, path), false, [...path, ".codes"], (x0, p0) => expectObject(x0, false, ignoreUnknownKeys, p0, CodeStub.fromJSON)),
-			endOfLife: expectNumber(extractEntry(jCpy, 'endOfLife', false, path), true, true, [...path, ".endOfLife"]),
 			descr: expectString(extractEntry(jCpy, 'descr', false, path), true, [...path, ".descr"]),
 			protocol: expectString(extractEntry(jCpy, 'protocol', false, path), true, [...path, ".protocol"]),
-			status: expectNumber(extractEntry(jCpy, 'status', false, path), true, true, [...path, ".status"]),
 			formId: expectString(extractEntry(jCpy, 'formId', false, path), true, [...path, ".formId"]),
 			planOfActionId: expectString(extractEntry(jCpy, 'planOfActionId', false, path), true, [...path, ".planOfActionId"]),
 			healthElementId: expectString(extractEntry(jCpy, 'healthElementId', false, path), true, [...path, ".healthElementId"]),
-			classificationId: expectString(extractEntry(jCpy, 'classificationId', false, path), true, [...path, ".classificationId"]),
 			services: expectArray(extractEntry(jCpy, 'services', false, path), false, [...path, ".services"], (x0, p0) => expectObject(x0, false, ignoreUnknownKeys, p0, ServiceLink.fromJSON)),
 			encryptedSelf: expectString(extractEntry(jCpy, 'encryptedSelf', false, path), true, [...path, ".encryptedSelf"]) as Base64String,
 		})

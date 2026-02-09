@@ -152,7 +152,7 @@ class _DecryptedEmploymentInfo implements DecryptedEmploymentInfo {
       this.endDate = null,
       this.professionType = null,
       this.employer = null,
-      required this.encryptedSelf});
+      this.encryptedSelf = null});
 
   @override
   @JsonKey()
@@ -167,6 +167,7 @@ class _DecryptedEmploymentInfo implements DecryptedEmploymentInfo {
   @JsonKey()
   final Employer? employer;
   @override
+  @JsonKey()
   final Base64String? encryptedSelf;
 
   /// Create a copy of DecryptedEmploymentInfo
@@ -436,7 +437,7 @@ class _EncryptedEmploymentInfo implements EncryptedEmploymentInfo {
       this.endDate = null,
       this.professionType = null,
       this.employer = null,
-      required this.encryptedSelf});
+      this.encryptedSelf = null});
 
   @override
   @JsonKey()
@@ -451,6 +452,7 @@ class _EncryptedEmploymentInfo implements EncryptedEmploymentInfo {
   @JsonKey()
   final Employer? employer;
   @override
+  @JsonKey()
   final Base64String? encryptedSelf;
 
   /// Create a copy of EncryptedEmploymentInfo

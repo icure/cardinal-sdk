@@ -158,6 +158,19 @@ class CalendarItemBasicPlatformApi {
 		return EncryptedCalendarItem.fromJSON(parsedResJson);
 	}
 
+	Future<EncryptedCalendarItem> bookCalendarItemCheckingAvailability(String sdkId, EncryptedCalendarItem entity) async {
+		final res = await _methodChannel.invokeMethod<String>(
+			'CalendarItemBasicApi.bookCalendarItemCheckingAvailability',
+			{
+				"sdkId": sdkId,
+				"entity": jsonEncode(EncryptedCalendarItem.encode(entity)),
+			}
+		).catchError(convertPlatformException);
+		if (res == null) throw AssertionError("received null result from platform method bookCalendarItemCheckingAvailability");
+		final parsedResJson = jsonDecode(res);
+		return EncryptedCalendarItem.fromJSON(parsedResJson);
+	}
+
 	Future<EncryptedCalendarItem> undeleteCalendarItemById(String sdkId, String id, String rev) async {
 		final res = await _methodChannel.invokeMethod<String>(
 			'CalendarItemBasicApi.undeleteCalendarItemById',

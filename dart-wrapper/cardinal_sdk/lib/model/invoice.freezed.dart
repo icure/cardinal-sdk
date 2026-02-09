@@ -17,6 +17,7 @@ T _$identity<T>(T value) => value;
 mixin _$DecryptedInvoice {
   String get id;
   String? get rev;
+  List<Identifier> get identifier;
   int? get created;
   int? get modified;
   String? get author;
@@ -103,6 +104,8 @@ mixin _$DecryptedInvoice {
             other is DecryptedInvoice &&
             (identical(other.id, id) || other.id == id) &&
             (identical(other.rev, rev) || other.rev == rev) &&
+            const DeepCollectionEquality()
+                .equals(other.identifier, identifier) &&
             (identical(other.created, created) || other.created == created) &&
             (identical(other.modified, modified) ||
                 other.modified == modified) &&
@@ -177,8 +180,7 @@ mixin _$DecryptedInvoice {
                 other.internshipFirstName == internshipFirstName) &&
             (identical(other.internshipCdHcParty, internshipCdHcParty) ||
                 other.internshipCdHcParty == internshipCdHcParty) &&
-            (identical(other.internshipCbe, internshipCbe) ||
-                other.internshipCbe == internshipCbe) &&
+            (identical(other.internshipCbe, internshipCbe) || other.internshipCbe == internshipCbe) &&
             (identical(other.supervisorNihii, supervisorNihii) || other.supervisorNihii == supervisorNihii) &&
             (identical(other.supervisorSsin, supervisorSsin) || other.supervisorSsin == supervisorSsin) &&
             (identical(other.supervisorLastName, supervisorLastName) || other.supervisorLastName == supervisorLastName) &&
@@ -214,6 +216,7 @@ mixin _$DecryptedInvoice {
         runtimeType,
         id,
         rev,
+        const DeepCollectionEquality().hash(identifier),
         created,
         modified,
         author,
@@ -288,7 +291,7 @@ mixin _$DecryptedInvoice {
 
   @override
   String toString() {
-    return 'DecryptedInvoice(id: $id, rev: $rev, created: $created, modified: $modified, author: $author, responsible: $responsible, medicalLocationId: $medicalLocationId, tags: $tags, codes: $codes, endOfLife: $endOfLife, deletionDate: $deletionDate, invoiceDate: $invoiceDate, sentDate: $sentDate, printedDate: $printedDate, invoicingCodes: $invoicingCodes, receipts: $receipts, recipientType: $recipientType, recipientId: $recipientId, invoiceReference: $invoiceReference, decisionReference: $decisionReference, thirdPartyReference: $thirdPartyReference, thirdPartyPaymentJustification: $thirdPartyPaymentJustification, thirdPartyPaymentReason: $thirdPartyPaymentReason, reason: $reason, invoiceType: $invoiceType, sentMediumType: $sentMediumType, interventionType: $interventionType, groupId: $groupId, paymentType: $paymentType, paid: $paid, payments: $payments, gnotionNihii: $gnotionNihii, gnotionSsin: $gnotionSsin, gnotionLastName: $gnotionLastName, gnotionFirstName: $gnotionFirstName, gnotionCdHcParty: $gnotionCdHcParty, invoicePeriod: $invoicePeriod, careProviderType: $careProviderType, internshipNihii: $internshipNihii, internshipSsin: $internshipSsin, internshipLastName: $internshipLastName, internshipFirstName: $internshipFirstName, internshipCdHcParty: $internshipCdHcParty, internshipCbe: $internshipCbe, supervisorNihii: $supervisorNihii, supervisorSsin: $supervisorSsin, supervisorLastName: $supervisorLastName, supervisorFirstName: $supervisorFirstName, supervisorCdHcParty: $supervisorCdHcParty, supervisorCbe: $supervisorCbe, error: $error, encounterLocationName: $encounterLocationName, encounterLocationNihii: $encounterLocationNihii, encounterLocationNorm: $encounterLocationNorm, longDelayJustification: $longDelayJustification, correctiveInvoiceId: $correctiveInvoiceId, correctedInvoiceId: $correctedInvoiceId, creditNote: $creditNote, creditNoteRelatedInvoiceId: $creditNoteRelatedInvoiceId, idDocument: $idDocument, admissionDate: $admissionDate, locationNihii: $locationNihii, locationService: $locationService, cancelReason: $cancelReason, cancelDate: $cancelDate, options: $options, secretForeignKeys: $secretForeignKeys, cryptedForeignKeys: $cryptedForeignKeys, delegations: $delegations, encryptionKeys: $encryptionKeys, encryptedSelf: $encryptedSelf, securityMetadata: $securityMetadata)';
+    return 'DecryptedInvoice(id: $id, rev: $rev, identifier: $identifier, created: $created, modified: $modified, author: $author, responsible: $responsible, medicalLocationId: $medicalLocationId, tags: $tags, codes: $codes, endOfLife: $endOfLife, deletionDate: $deletionDate, invoiceDate: $invoiceDate, sentDate: $sentDate, printedDate: $printedDate, invoicingCodes: $invoicingCodes, receipts: $receipts, recipientType: $recipientType, recipientId: $recipientId, invoiceReference: $invoiceReference, decisionReference: $decisionReference, thirdPartyReference: $thirdPartyReference, thirdPartyPaymentJustification: $thirdPartyPaymentJustification, thirdPartyPaymentReason: $thirdPartyPaymentReason, reason: $reason, invoiceType: $invoiceType, sentMediumType: $sentMediumType, interventionType: $interventionType, groupId: $groupId, paymentType: $paymentType, paid: $paid, payments: $payments, gnotionNihii: $gnotionNihii, gnotionSsin: $gnotionSsin, gnotionLastName: $gnotionLastName, gnotionFirstName: $gnotionFirstName, gnotionCdHcParty: $gnotionCdHcParty, invoicePeriod: $invoicePeriod, careProviderType: $careProviderType, internshipNihii: $internshipNihii, internshipSsin: $internshipSsin, internshipLastName: $internshipLastName, internshipFirstName: $internshipFirstName, internshipCdHcParty: $internshipCdHcParty, internshipCbe: $internshipCbe, supervisorNihii: $supervisorNihii, supervisorSsin: $supervisorSsin, supervisorLastName: $supervisorLastName, supervisorFirstName: $supervisorFirstName, supervisorCdHcParty: $supervisorCdHcParty, supervisorCbe: $supervisorCbe, error: $error, encounterLocationName: $encounterLocationName, encounterLocationNihii: $encounterLocationNihii, encounterLocationNorm: $encounterLocationNorm, longDelayJustification: $longDelayJustification, correctiveInvoiceId: $correctiveInvoiceId, correctedInvoiceId: $correctedInvoiceId, creditNote: $creditNote, creditNoteRelatedInvoiceId: $creditNoteRelatedInvoiceId, idDocument: $idDocument, admissionDate: $admissionDate, locationNihii: $locationNihii, locationService: $locationService, cancelReason: $cancelReason, cancelDate: $cancelDate, options: $options, secretForeignKeys: $secretForeignKeys, cryptedForeignKeys: $cryptedForeignKeys, delegations: $delegations, encryptionKeys: $encryptionKeys, encryptedSelf: $encryptedSelf, securityMetadata: $securityMetadata)';
   }
 }
 
@@ -301,6 +304,7 @@ abstract mixin class $DecryptedInvoiceCopyWith<$Res> {
   $Res call(
       {String id,
       String? rev,
+      List<Identifier> identifier,
       int? created,
       int? modified,
       String? author,
@@ -391,6 +395,7 @@ class _$DecryptedInvoiceCopyWithImpl<$Res>
   $Res call({
     Object? id = null,
     Object? rev = freezed,
+    Object? identifier = null,
     Object? created = freezed,
     Object? modified = freezed,
     Object? author = freezed,
@@ -471,6 +476,10 @@ class _$DecryptedInvoiceCopyWithImpl<$Res>
           ? _self.rev
           : rev // ignore: cast_nullable_to_non_nullable
               as String?,
+      identifier: null == identifier
+          ? _self.identifier
+          : identifier // ignore: cast_nullable_to_non_nullable
+              as List<Identifier>,
       created: freezed == created
           ? _self.created
           : created // ignore: cast_nullable_to_non_nullable
@@ -789,6 +798,7 @@ class _DecryptedInvoice implements DecryptedInvoice {
   const _DecryptedInvoice(
       {required this.id,
       this.rev = null,
+      final List<Identifier> identifier = const [],
       this.created = null,
       this.modified = null,
       this.author = null,
@@ -859,7 +869,8 @@ class _DecryptedInvoice implements DecryptedInvoice {
       final Map<String, Set<Delegation>> encryptionKeys = const {},
       this.encryptedSelf = null,
       this.securityMetadata = null})
-      : _tags = tags,
+      : _identifier = identifier,
+        _tags = tags,
         _codes = codes,
         _invoicingCodes = invoicingCodes,
         _receipts = receipts,
@@ -875,6 +886,15 @@ class _DecryptedInvoice implements DecryptedInvoice {
   @override
   @JsonKey()
   final String? rev;
+  final List<Identifier> _identifier;
+  @override
+  @JsonKey()
+  List<Identifier> get identifier {
+    if (_identifier is EqualUnmodifiableListView) return _identifier;
+    // ignore: implicit_dynamic_type
+    return EqualUnmodifiableListView(_identifier);
+  }
+
   @override
   @JsonKey()
   final int? created;
@@ -1165,6 +1185,8 @@ class _DecryptedInvoice implements DecryptedInvoice {
             other is _DecryptedInvoice &&
             (identical(other.id, id) || other.id == id) &&
             (identical(other.rev, rev) || other.rev == rev) &&
+            const DeepCollectionEquality()
+                .equals(other._identifier, _identifier) &&
             (identical(other.created, created) || other.created == created) &&
             (identical(other.modified, modified) ||
                 other.modified == modified) &&
@@ -1239,8 +1261,7 @@ class _DecryptedInvoice implements DecryptedInvoice {
                 other.internshipFirstName == internshipFirstName) &&
             (identical(other.internshipCdHcParty, internshipCdHcParty) ||
                 other.internshipCdHcParty == internshipCdHcParty) &&
-            (identical(other.internshipCbe, internshipCbe) ||
-                other.internshipCbe == internshipCbe) &&
+            (identical(other.internshipCbe, internshipCbe) || other.internshipCbe == internshipCbe) &&
             (identical(other.supervisorNihii, supervisorNihii) || other.supervisorNihii == supervisorNihii) &&
             (identical(other.supervisorSsin, supervisorSsin) || other.supervisorSsin == supervisorSsin) &&
             (identical(other.supervisorLastName, supervisorLastName) || other.supervisorLastName == supervisorLastName) &&
@@ -1276,6 +1297,7 @@ class _DecryptedInvoice implements DecryptedInvoice {
         runtimeType,
         id,
         rev,
+        const DeepCollectionEquality().hash(_identifier),
         created,
         modified,
         author,
@@ -1350,7 +1372,7 @@ class _DecryptedInvoice implements DecryptedInvoice {
 
   @override
   String toString() {
-    return 'DecryptedInvoice(id: $id, rev: $rev, created: $created, modified: $modified, author: $author, responsible: $responsible, medicalLocationId: $medicalLocationId, tags: $tags, codes: $codes, endOfLife: $endOfLife, deletionDate: $deletionDate, invoiceDate: $invoiceDate, sentDate: $sentDate, printedDate: $printedDate, invoicingCodes: $invoicingCodes, receipts: $receipts, recipientType: $recipientType, recipientId: $recipientId, invoiceReference: $invoiceReference, decisionReference: $decisionReference, thirdPartyReference: $thirdPartyReference, thirdPartyPaymentJustification: $thirdPartyPaymentJustification, thirdPartyPaymentReason: $thirdPartyPaymentReason, reason: $reason, invoiceType: $invoiceType, sentMediumType: $sentMediumType, interventionType: $interventionType, groupId: $groupId, paymentType: $paymentType, paid: $paid, payments: $payments, gnotionNihii: $gnotionNihii, gnotionSsin: $gnotionSsin, gnotionLastName: $gnotionLastName, gnotionFirstName: $gnotionFirstName, gnotionCdHcParty: $gnotionCdHcParty, invoicePeriod: $invoicePeriod, careProviderType: $careProviderType, internshipNihii: $internshipNihii, internshipSsin: $internshipSsin, internshipLastName: $internshipLastName, internshipFirstName: $internshipFirstName, internshipCdHcParty: $internshipCdHcParty, internshipCbe: $internshipCbe, supervisorNihii: $supervisorNihii, supervisorSsin: $supervisorSsin, supervisorLastName: $supervisorLastName, supervisorFirstName: $supervisorFirstName, supervisorCdHcParty: $supervisorCdHcParty, supervisorCbe: $supervisorCbe, error: $error, encounterLocationName: $encounterLocationName, encounterLocationNihii: $encounterLocationNihii, encounterLocationNorm: $encounterLocationNorm, longDelayJustification: $longDelayJustification, correctiveInvoiceId: $correctiveInvoiceId, correctedInvoiceId: $correctedInvoiceId, creditNote: $creditNote, creditNoteRelatedInvoiceId: $creditNoteRelatedInvoiceId, idDocument: $idDocument, admissionDate: $admissionDate, locationNihii: $locationNihii, locationService: $locationService, cancelReason: $cancelReason, cancelDate: $cancelDate, options: $options, secretForeignKeys: $secretForeignKeys, cryptedForeignKeys: $cryptedForeignKeys, delegations: $delegations, encryptionKeys: $encryptionKeys, encryptedSelf: $encryptedSelf, securityMetadata: $securityMetadata)';
+    return 'DecryptedInvoice(id: $id, rev: $rev, identifier: $identifier, created: $created, modified: $modified, author: $author, responsible: $responsible, medicalLocationId: $medicalLocationId, tags: $tags, codes: $codes, endOfLife: $endOfLife, deletionDate: $deletionDate, invoiceDate: $invoiceDate, sentDate: $sentDate, printedDate: $printedDate, invoicingCodes: $invoicingCodes, receipts: $receipts, recipientType: $recipientType, recipientId: $recipientId, invoiceReference: $invoiceReference, decisionReference: $decisionReference, thirdPartyReference: $thirdPartyReference, thirdPartyPaymentJustification: $thirdPartyPaymentJustification, thirdPartyPaymentReason: $thirdPartyPaymentReason, reason: $reason, invoiceType: $invoiceType, sentMediumType: $sentMediumType, interventionType: $interventionType, groupId: $groupId, paymentType: $paymentType, paid: $paid, payments: $payments, gnotionNihii: $gnotionNihii, gnotionSsin: $gnotionSsin, gnotionLastName: $gnotionLastName, gnotionFirstName: $gnotionFirstName, gnotionCdHcParty: $gnotionCdHcParty, invoicePeriod: $invoicePeriod, careProviderType: $careProviderType, internshipNihii: $internshipNihii, internshipSsin: $internshipSsin, internshipLastName: $internshipLastName, internshipFirstName: $internshipFirstName, internshipCdHcParty: $internshipCdHcParty, internshipCbe: $internshipCbe, supervisorNihii: $supervisorNihii, supervisorSsin: $supervisorSsin, supervisorLastName: $supervisorLastName, supervisorFirstName: $supervisorFirstName, supervisorCdHcParty: $supervisorCdHcParty, supervisorCbe: $supervisorCbe, error: $error, encounterLocationName: $encounterLocationName, encounterLocationNihii: $encounterLocationNihii, encounterLocationNorm: $encounterLocationNorm, longDelayJustification: $longDelayJustification, correctiveInvoiceId: $correctiveInvoiceId, correctedInvoiceId: $correctedInvoiceId, creditNote: $creditNote, creditNoteRelatedInvoiceId: $creditNoteRelatedInvoiceId, idDocument: $idDocument, admissionDate: $admissionDate, locationNihii: $locationNihii, locationService: $locationService, cancelReason: $cancelReason, cancelDate: $cancelDate, options: $options, secretForeignKeys: $secretForeignKeys, cryptedForeignKeys: $cryptedForeignKeys, delegations: $delegations, encryptionKeys: $encryptionKeys, encryptedSelf: $encryptedSelf, securityMetadata: $securityMetadata)';
   }
 }
 
@@ -1365,6 +1387,7 @@ abstract mixin class _$DecryptedInvoiceCopyWith<$Res>
   $Res call(
       {String id,
       String? rev,
+      List<Identifier> identifier,
       int? created,
       int? modified,
       String? author,
@@ -1457,6 +1480,7 @@ class __$DecryptedInvoiceCopyWithImpl<$Res>
   $Res call({
     Object? id = null,
     Object? rev = freezed,
+    Object? identifier = null,
     Object? created = freezed,
     Object? modified = freezed,
     Object? author = freezed,
@@ -1537,6 +1561,10 @@ class __$DecryptedInvoiceCopyWithImpl<$Res>
           ? _self.rev
           : rev // ignore: cast_nullable_to_non_nullable
               as String?,
+      identifier: null == identifier
+          ? _self._identifier
+          : identifier // ignore: cast_nullable_to_non_nullable
+              as List<Identifier>,
       created: freezed == created
           ? _self.created
           : created // ignore: cast_nullable_to_non_nullable
@@ -1853,6 +1881,7 @@ class __$DecryptedInvoiceCopyWithImpl<$Res>
 mixin _$EncryptedInvoice {
   String get id;
   String? get rev;
+  List<Identifier> get identifier;
   int? get created;
   int? get modified;
   String? get author;
@@ -1939,6 +1968,8 @@ mixin _$EncryptedInvoice {
             other is EncryptedInvoice &&
             (identical(other.id, id) || other.id == id) &&
             (identical(other.rev, rev) || other.rev == rev) &&
+            const DeepCollectionEquality()
+                .equals(other.identifier, identifier) &&
             (identical(other.created, created) || other.created == created) &&
             (identical(other.modified, modified) ||
                 other.modified == modified) &&
@@ -2013,8 +2044,7 @@ mixin _$EncryptedInvoice {
                 other.internshipFirstName == internshipFirstName) &&
             (identical(other.internshipCdHcParty, internshipCdHcParty) ||
                 other.internshipCdHcParty == internshipCdHcParty) &&
-            (identical(other.internshipCbe, internshipCbe) ||
-                other.internshipCbe == internshipCbe) &&
+            (identical(other.internshipCbe, internshipCbe) || other.internshipCbe == internshipCbe) &&
             (identical(other.supervisorNihii, supervisorNihii) || other.supervisorNihii == supervisorNihii) &&
             (identical(other.supervisorSsin, supervisorSsin) || other.supervisorSsin == supervisorSsin) &&
             (identical(other.supervisorLastName, supervisorLastName) || other.supervisorLastName == supervisorLastName) &&
@@ -2050,6 +2080,7 @@ mixin _$EncryptedInvoice {
         runtimeType,
         id,
         rev,
+        const DeepCollectionEquality().hash(identifier),
         created,
         modified,
         author,
@@ -2124,7 +2155,7 @@ mixin _$EncryptedInvoice {
 
   @override
   String toString() {
-    return 'EncryptedInvoice(id: $id, rev: $rev, created: $created, modified: $modified, author: $author, responsible: $responsible, medicalLocationId: $medicalLocationId, tags: $tags, codes: $codes, endOfLife: $endOfLife, deletionDate: $deletionDate, invoiceDate: $invoiceDate, sentDate: $sentDate, printedDate: $printedDate, invoicingCodes: $invoicingCodes, receipts: $receipts, recipientType: $recipientType, recipientId: $recipientId, invoiceReference: $invoiceReference, decisionReference: $decisionReference, thirdPartyReference: $thirdPartyReference, thirdPartyPaymentJustification: $thirdPartyPaymentJustification, thirdPartyPaymentReason: $thirdPartyPaymentReason, reason: $reason, invoiceType: $invoiceType, sentMediumType: $sentMediumType, interventionType: $interventionType, groupId: $groupId, paymentType: $paymentType, paid: $paid, payments: $payments, gnotionNihii: $gnotionNihii, gnotionSsin: $gnotionSsin, gnotionLastName: $gnotionLastName, gnotionFirstName: $gnotionFirstName, gnotionCdHcParty: $gnotionCdHcParty, invoicePeriod: $invoicePeriod, careProviderType: $careProviderType, internshipNihii: $internshipNihii, internshipSsin: $internshipSsin, internshipLastName: $internshipLastName, internshipFirstName: $internshipFirstName, internshipCdHcParty: $internshipCdHcParty, internshipCbe: $internshipCbe, supervisorNihii: $supervisorNihii, supervisorSsin: $supervisorSsin, supervisorLastName: $supervisorLastName, supervisorFirstName: $supervisorFirstName, supervisorCdHcParty: $supervisorCdHcParty, supervisorCbe: $supervisorCbe, error: $error, encounterLocationName: $encounterLocationName, encounterLocationNihii: $encounterLocationNihii, encounterLocationNorm: $encounterLocationNorm, longDelayJustification: $longDelayJustification, correctiveInvoiceId: $correctiveInvoiceId, correctedInvoiceId: $correctedInvoiceId, creditNote: $creditNote, creditNoteRelatedInvoiceId: $creditNoteRelatedInvoiceId, idDocument: $idDocument, admissionDate: $admissionDate, locationNihii: $locationNihii, locationService: $locationService, cancelReason: $cancelReason, cancelDate: $cancelDate, options: $options, secretForeignKeys: $secretForeignKeys, cryptedForeignKeys: $cryptedForeignKeys, delegations: $delegations, encryptionKeys: $encryptionKeys, encryptedSelf: $encryptedSelf, securityMetadata: $securityMetadata)';
+    return 'EncryptedInvoice(id: $id, rev: $rev, identifier: $identifier, created: $created, modified: $modified, author: $author, responsible: $responsible, medicalLocationId: $medicalLocationId, tags: $tags, codes: $codes, endOfLife: $endOfLife, deletionDate: $deletionDate, invoiceDate: $invoiceDate, sentDate: $sentDate, printedDate: $printedDate, invoicingCodes: $invoicingCodes, receipts: $receipts, recipientType: $recipientType, recipientId: $recipientId, invoiceReference: $invoiceReference, decisionReference: $decisionReference, thirdPartyReference: $thirdPartyReference, thirdPartyPaymentJustification: $thirdPartyPaymentJustification, thirdPartyPaymentReason: $thirdPartyPaymentReason, reason: $reason, invoiceType: $invoiceType, sentMediumType: $sentMediumType, interventionType: $interventionType, groupId: $groupId, paymentType: $paymentType, paid: $paid, payments: $payments, gnotionNihii: $gnotionNihii, gnotionSsin: $gnotionSsin, gnotionLastName: $gnotionLastName, gnotionFirstName: $gnotionFirstName, gnotionCdHcParty: $gnotionCdHcParty, invoicePeriod: $invoicePeriod, careProviderType: $careProviderType, internshipNihii: $internshipNihii, internshipSsin: $internshipSsin, internshipLastName: $internshipLastName, internshipFirstName: $internshipFirstName, internshipCdHcParty: $internshipCdHcParty, internshipCbe: $internshipCbe, supervisorNihii: $supervisorNihii, supervisorSsin: $supervisorSsin, supervisorLastName: $supervisorLastName, supervisorFirstName: $supervisorFirstName, supervisorCdHcParty: $supervisorCdHcParty, supervisorCbe: $supervisorCbe, error: $error, encounterLocationName: $encounterLocationName, encounterLocationNihii: $encounterLocationNihii, encounterLocationNorm: $encounterLocationNorm, longDelayJustification: $longDelayJustification, correctiveInvoiceId: $correctiveInvoiceId, correctedInvoiceId: $correctedInvoiceId, creditNote: $creditNote, creditNoteRelatedInvoiceId: $creditNoteRelatedInvoiceId, idDocument: $idDocument, admissionDate: $admissionDate, locationNihii: $locationNihii, locationService: $locationService, cancelReason: $cancelReason, cancelDate: $cancelDate, options: $options, secretForeignKeys: $secretForeignKeys, cryptedForeignKeys: $cryptedForeignKeys, delegations: $delegations, encryptionKeys: $encryptionKeys, encryptedSelf: $encryptedSelf, securityMetadata: $securityMetadata)';
   }
 }
 
@@ -2137,6 +2168,7 @@ abstract mixin class $EncryptedInvoiceCopyWith<$Res> {
   $Res call(
       {String id,
       String? rev,
+      List<Identifier> identifier,
       int? created,
       int? modified,
       String? author,
@@ -2227,6 +2259,7 @@ class _$EncryptedInvoiceCopyWithImpl<$Res>
   $Res call({
     Object? id = null,
     Object? rev = freezed,
+    Object? identifier = null,
     Object? created = freezed,
     Object? modified = freezed,
     Object? author = freezed,
@@ -2307,6 +2340,10 @@ class _$EncryptedInvoiceCopyWithImpl<$Res>
           ? _self.rev
           : rev // ignore: cast_nullable_to_non_nullable
               as String?,
+      identifier: null == identifier
+          ? _self.identifier
+          : identifier // ignore: cast_nullable_to_non_nullable
+              as List<Identifier>,
       created: freezed == created
           ? _self.created
           : created // ignore: cast_nullable_to_non_nullable
@@ -2625,6 +2662,7 @@ class _EncryptedInvoice implements EncryptedInvoice {
   const _EncryptedInvoice(
       {required this.id,
       this.rev = null,
+      final List<Identifier> identifier = const [],
       this.created = null,
       this.modified = null,
       this.author = null,
@@ -2695,7 +2733,8 @@ class _EncryptedInvoice implements EncryptedInvoice {
       final Map<String, Set<Delegation>> encryptionKeys = const {},
       this.encryptedSelf = null,
       this.securityMetadata = null})
-      : _tags = tags,
+      : _identifier = identifier,
+        _tags = tags,
         _codes = codes,
         _invoicingCodes = invoicingCodes,
         _receipts = receipts,
@@ -2711,6 +2750,15 @@ class _EncryptedInvoice implements EncryptedInvoice {
   @override
   @JsonKey()
   final String? rev;
+  final List<Identifier> _identifier;
+  @override
+  @JsonKey()
+  List<Identifier> get identifier {
+    if (_identifier is EqualUnmodifiableListView) return _identifier;
+    // ignore: implicit_dynamic_type
+    return EqualUnmodifiableListView(_identifier);
+  }
+
   @override
   @JsonKey()
   final int? created;
@@ -3001,6 +3049,8 @@ class _EncryptedInvoice implements EncryptedInvoice {
             other is _EncryptedInvoice &&
             (identical(other.id, id) || other.id == id) &&
             (identical(other.rev, rev) || other.rev == rev) &&
+            const DeepCollectionEquality()
+                .equals(other._identifier, _identifier) &&
             (identical(other.created, created) || other.created == created) &&
             (identical(other.modified, modified) ||
                 other.modified == modified) &&
@@ -3075,8 +3125,7 @@ class _EncryptedInvoice implements EncryptedInvoice {
                 other.internshipFirstName == internshipFirstName) &&
             (identical(other.internshipCdHcParty, internshipCdHcParty) ||
                 other.internshipCdHcParty == internshipCdHcParty) &&
-            (identical(other.internshipCbe, internshipCbe) ||
-                other.internshipCbe == internshipCbe) &&
+            (identical(other.internshipCbe, internshipCbe) || other.internshipCbe == internshipCbe) &&
             (identical(other.supervisorNihii, supervisorNihii) || other.supervisorNihii == supervisorNihii) &&
             (identical(other.supervisorSsin, supervisorSsin) || other.supervisorSsin == supervisorSsin) &&
             (identical(other.supervisorLastName, supervisorLastName) || other.supervisorLastName == supervisorLastName) &&
@@ -3112,6 +3161,7 @@ class _EncryptedInvoice implements EncryptedInvoice {
         runtimeType,
         id,
         rev,
+        const DeepCollectionEquality().hash(_identifier),
         created,
         modified,
         author,
@@ -3186,7 +3236,7 @@ class _EncryptedInvoice implements EncryptedInvoice {
 
   @override
   String toString() {
-    return 'EncryptedInvoice(id: $id, rev: $rev, created: $created, modified: $modified, author: $author, responsible: $responsible, medicalLocationId: $medicalLocationId, tags: $tags, codes: $codes, endOfLife: $endOfLife, deletionDate: $deletionDate, invoiceDate: $invoiceDate, sentDate: $sentDate, printedDate: $printedDate, invoicingCodes: $invoicingCodes, receipts: $receipts, recipientType: $recipientType, recipientId: $recipientId, invoiceReference: $invoiceReference, decisionReference: $decisionReference, thirdPartyReference: $thirdPartyReference, thirdPartyPaymentJustification: $thirdPartyPaymentJustification, thirdPartyPaymentReason: $thirdPartyPaymentReason, reason: $reason, invoiceType: $invoiceType, sentMediumType: $sentMediumType, interventionType: $interventionType, groupId: $groupId, paymentType: $paymentType, paid: $paid, payments: $payments, gnotionNihii: $gnotionNihii, gnotionSsin: $gnotionSsin, gnotionLastName: $gnotionLastName, gnotionFirstName: $gnotionFirstName, gnotionCdHcParty: $gnotionCdHcParty, invoicePeriod: $invoicePeriod, careProviderType: $careProviderType, internshipNihii: $internshipNihii, internshipSsin: $internshipSsin, internshipLastName: $internshipLastName, internshipFirstName: $internshipFirstName, internshipCdHcParty: $internshipCdHcParty, internshipCbe: $internshipCbe, supervisorNihii: $supervisorNihii, supervisorSsin: $supervisorSsin, supervisorLastName: $supervisorLastName, supervisorFirstName: $supervisorFirstName, supervisorCdHcParty: $supervisorCdHcParty, supervisorCbe: $supervisorCbe, error: $error, encounterLocationName: $encounterLocationName, encounterLocationNihii: $encounterLocationNihii, encounterLocationNorm: $encounterLocationNorm, longDelayJustification: $longDelayJustification, correctiveInvoiceId: $correctiveInvoiceId, correctedInvoiceId: $correctedInvoiceId, creditNote: $creditNote, creditNoteRelatedInvoiceId: $creditNoteRelatedInvoiceId, idDocument: $idDocument, admissionDate: $admissionDate, locationNihii: $locationNihii, locationService: $locationService, cancelReason: $cancelReason, cancelDate: $cancelDate, options: $options, secretForeignKeys: $secretForeignKeys, cryptedForeignKeys: $cryptedForeignKeys, delegations: $delegations, encryptionKeys: $encryptionKeys, encryptedSelf: $encryptedSelf, securityMetadata: $securityMetadata)';
+    return 'EncryptedInvoice(id: $id, rev: $rev, identifier: $identifier, created: $created, modified: $modified, author: $author, responsible: $responsible, medicalLocationId: $medicalLocationId, tags: $tags, codes: $codes, endOfLife: $endOfLife, deletionDate: $deletionDate, invoiceDate: $invoiceDate, sentDate: $sentDate, printedDate: $printedDate, invoicingCodes: $invoicingCodes, receipts: $receipts, recipientType: $recipientType, recipientId: $recipientId, invoiceReference: $invoiceReference, decisionReference: $decisionReference, thirdPartyReference: $thirdPartyReference, thirdPartyPaymentJustification: $thirdPartyPaymentJustification, thirdPartyPaymentReason: $thirdPartyPaymentReason, reason: $reason, invoiceType: $invoiceType, sentMediumType: $sentMediumType, interventionType: $interventionType, groupId: $groupId, paymentType: $paymentType, paid: $paid, payments: $payments, gnotionNihii: $gnotionNihii, gnotionSsin: $gnotionSsin, gnotionLastName: $gnotionLastName, gnotionFirstName: $gnotionFirstName, gnotionCdHcParty: $gnotionCdHcParty, invoicePeriod: $invoicePeriod, careProviderType: $careProviderType, internshipNihii: $internshipNihii, internshipSsin: $internshipSsin, internshipLastName: $internshipLastName, internshipFirstName: $internshipFirstName, internshipCdHcParty: $internshipCdHcParty, internshipCbe: $internshipCbe, supervisorNihii: $supervisorNihii, supervisorSsin: $supervisorSsin, supervisorLastName: $supervisorLastName, supervisorFirstName: $supervisorFirstName, supervisorCdHcParty: $supervisorCdHcParty, supervisorCbe: $supervisorCbe, error: $error, encounterLocationName: $encounterLocationName, encounterLocationNihii: $encounterLocationNihii, encounterLocationNorm: $encounterLocationNorm, longDelayJustification: $longDelayJustification, correctiveInvoiceId: $correctiveInvoiceId, correctedInvoiceId: $correctedInvoiceId, creditNote: $creditNote, creditNoteRelatedInvoiceId: $creditNoteRelatedInvoiceId, idDocument: $idDocument, admissionDate: $admissionDate, locationNihii: $locationNihii, locationService: $locationService, cancelReason: $cancelReason, cancelDate: $cancelDate, options: $options, secretForeignKeys: $secretForeignKeys, cryptedForeignKeys: $cryptedForeignKeys, delegations: $delegations, encryptionKeys: $encryptionKeys, encryptedSelf: $encryptedSelf, securityMetadata: $securityMetadata)';
   }
 }
 
@@ -3201,6 +3251,7 @@ abstract mixin class _$EncryptedInvoiceCopyWith<$Res>
   $Res call(
       {String id,
       String? rev,
+      List<Identifier> identifier,
       int? created,
       int? modified,
       String? author,
@@ -3293,6 +3344,7 @@ class __$EncryptedInvoiceCopyWithImpl<$Res>
   $Res call({
     Object? id = null,
     Object? rev = freezed,
+    Object? identifier = null,
     Object? created = freezed,
     Object? modified = freezed,
     Object? author = freezed,
@@ -3373,6 +3425,10 @@ class __$EncryptedInvoiceCopyWithImpl<$Res>
           ? _self.rev
           : rev // ignore: cast_nullable_to_non_nullable
               as String?,
+      identifier: null == identifier
+          ? _self._identifier
+          : identifier // ignore: cast_nullable_to_non_nullable
+              as List<Identifier>,
       created: freezed == created
           ? _self.created
           : created // ignore: cast_nullable_to_non_nullable

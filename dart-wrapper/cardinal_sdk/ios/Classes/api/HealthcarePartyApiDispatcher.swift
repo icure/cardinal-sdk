@@ -43,6 +43,7 @@ class HealthcarePartyApiDispatcher {
     case "deleteHealthcarePartyInGroup": deleteHealthcarePartyInGroup(parameters: parameters, resultCallback: resultCallback)
     case "deleteHealthcarePartiesInGroup": deleteHealthcarePartiesInGroup(parameters: parameters, resultCallback: resultCallback)
     case "subscribeToEvents": subscribeToEvents(parameters: parameters, resultCallback: resultCallback)
+    case "inGroup.matchHealthcarePartiesBy": inGroup_matchHealthcarePartiesBy(parameters: parameters, resultCallback: resultCallback)
     default: return false
     }
     return true
@@ -438,6 +439,20 @@ class HealthcarePartyApiDispatcher {
     	eventsString: parameters["events"]!,
     	filterString: parameters["filter"]!,
     	subscriptionConfigString: parameters["subscriptionConfig"]!
+    )
+  }
+
+  private static func inGroup_matchHealthcarePartiesBy(parameters: [String : String], resultCallback: @escaping (
+    String?,
+    String?,
+    String?,
+    String?
+  ) -> Void) {
+    HealthcarePartyApi.inGroup.shared.matchHealthcarePartiesBy(
+    	dartResultCallback: resultCallback,
+    	sdkId: parameters["sdkId"]!,
+    	groupIdString: parameters["groupId"]!,
+    	filterString: parameters["filter"]!
     )
   }
 

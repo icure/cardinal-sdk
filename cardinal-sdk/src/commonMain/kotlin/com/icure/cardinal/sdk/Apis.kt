@@ -5,14 +5,11 @@ import com.icure.cardinal.sdk.api.AccessLogBasicApi
 import com.icure.cardinal.sdk.api.AgendaApi
 import com.icure.cardinal.sdk.api.AnonymousAgendaApi
 import com.icure.cardinal.sdk.api.AnonymousHealthcarePartyApi
-import com.icure.cardinal.sdk.api.ApplicationSettingsApi
 import com.icure.cardinal.sdk.api.AuthApi
 import com.icure.cardinal.sdk.api.CalendarItemApi
 import com.icure.cardinal.sdk.api.CalendarItemBasicApi
 import com.icure.cardinal.sdk.api.CalendarItemTypeApi
 import com.icure.cardinal.sdk.api.CardinalMaintenanceTaskApi
-import com.icure.cardinal.sdk.api.ClassificationApi
-import com.icure.cardinal.sdk.api.ClassificationBasicApi
 import com.icure.cardinal.sdk.api.CodeApi
 import com.icure.cardinal.sdk.api.ContactApi
 import com.icure.cardinal.sdk.api.ContactBasicApi
@@ -21,9 +18,6 @@ import com.icure.cardinal.sdk.api.DataOwnerApi
 import com.icure.cardinal.sdk.api.DeviceApi
 import com.icure.cardinal.sdk.api.DocumentApi
 import com.icure.cardinal.sdk.api.DocumentBasicApi
-import com.icure.cardinal.sdk.api.DocumentTemplateApi
-import com.icure.cardinal.sdk.api.EntityReferenceApi
-import com.icure.cardinal.sdk.api.EntityTemplateApi
 import com.icure.cardinal.sdk.api.FormApi
 import com.icure.cardinal.sdk.api.FormBasicApi
 import com.icure.cardinal.sdk.api.FrontEndMigrationApi
@@ -34,23 +28,18 @@ import com.icure.cardinal.sdk.api.HealthcarePartyApi
 import com.icure.cardinal.sdk.api.InsuranceApi
 import com.icure.cardinal.sdk.api.InvoiceApi
 import com.icure.cardinal.sdk.api.InvoiceBasicApi
-import com.icure.cardinal.sdk.api.KeywordApi
 import com.icure.cardinal.sdk.api.MaintenanceTaskApi
 import com.icure.cardinal.sdk.api.MaintenanceTaskBasicApi
-import com.icure.cardinal.sdk.api.MedicalLocationApi
 import com.icure.cardinal.sdk.api.MessageApi
 import com.icure.cardinal.sdk.api.MessageBasicApi
 import com.icure.cardinal.sdk.api.PatientApi
 import com.icure.cardinal.sdk.api.PatientBasicApi
-import com.icure.cardinal.sdk.api.PermissionApi
 import com.icure.cardinal.sdk.api.PlaceApi
 import com.icure.cardinal.sdk.api.ReceiptApi
 import com.icure.cardinal.sdk.api.ReceiptBasicApi
 import com.icure.cardinal.sdk.api.RecoveryApi
 import com.icure.cardinal.sdk.api.RoleApi
 import com.icure.cardinal.sdk.api.SystemApi
-import com.icure.cardinal.sdk.api.TarificationApi
-import com.icure.cardinal.sdk.api.TimeTableApi
 import com.icure.cardinal.sdk.api.TopicApi
 import com.icure.cardinal.sdk.api.TopicBasicApi
 import com.icure.cardinal.sdk.api.UserApi
@@ -60,25 +49,17 @@ import com.icure.cardinal.sdk.api.UserApi
  */
 interface CardinalNonCryptoApis {
 	// api root
-	val applicationSettings: ApplicationSettingsApi
 	val code: CodeApi
 	val calendarItemType: CalendarItemTypeApi
 	val device: DeviceApi
-	val documentTemplate: DocumentTemplateApi
-	val entityReference: EntityReferenceApi
-	val entityTemplate: EntityTemplateApi
 	val frontEndMigration: FrontEndMigrationApi
 	val group: GroupApi
 	val healthcareParty: HealthcarePartyApi
 	val system: SystemApi
 	val insurance: InsuranceApi
-	val keyword: KeywordApi
-	val permission: PermissionApi
 	val place: PlaceApi
 	val role: RoleApi
-	val tarification: TarificationApi
 	val user: UserApi
-	val medicalLocation: MedicalLocationApi
 	val auth: AuthApi
 	val agenda: AgendaApi
 }
@@ -91,7 +72,6 @@ interface CardinalApis : CardinalNonCryptoApis {
 	// flavoured
 	val accessLog: AccessLogApi
 	val calendarItem: CalendarItemApi
-	val classification: ClassificationApi
 	val contact: ContactApi
 	val document: DocumentApi
 	val form: FormApi
@@ -103,7 +83,6 @@ interface CardinalApis : CardinalNonCryptoApis {
 	val patient: PatientApi
 	@Deprecated("The receipt API and model are highly specialised for the belgian market. They will be provided as a separate package in future")
 	val receipt: ReceiptApi
-	val timeTable: TimeTableApi
 	val topic: TopicApi
 	// api root
 	val crypto: CryptoApi
@@ -122,7 +101,6 @@ interface CardinalApis : CardinalNonCryptoApis {
 interface CardinalBaseApis : CardinalNonCryptoApis {
 	val accessLog: AccessLogBasicApi
 	val calendarItem: CalendarItemBasicApi
-	val classification: ClassificationBasicApi
 	val contact: ContactBasicApi
 	val document: DocumentBasicApi
 	val form: FormBasicApi
@@ -134,7 +112,6 @@ interface CardinalBaseApis : CardinalNonCryptoApis {
 	val patient: PatientBasicApi
 	@Deprecated("The receipt API and model are highly specialised for the belgian market. They will be provided as a separate package in future")
 	val receipt: ReceiptBasicApi
-	val timeTable: TimeTableApi
 	val topic: TopicBasicApi
 }
 

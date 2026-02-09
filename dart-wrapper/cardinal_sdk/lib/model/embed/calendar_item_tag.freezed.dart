@@ -119,7 +119,7 @@ class _EncryptedCalendarItemTag implements EncryptedCalendarItemTag {
       this.date = null,
       this.userId = null,
       this.userName = null,
-      required this.encryptedSelf});
+      this.encryptedSelf = null});
 
   @override
   @JsonKey()
@@ -134,6 +134,7 @@ class _EncryptedCalendarItemTag implements EncryptedCalendarItemTag {
   @JsonKey()
   final String? userName;
   @override
+  @JsonKey()
   final Base64String? encryptedSelf;
 
   /// Create a copy of EncryptedCalendarItemTag
@@ -335,7 +336,7 @@ class _DecryptedCalendarItemTag implements DecryptedCalendarItemTag {
       this.date = null,
       this.userId = null,
       this.userName = null,
-      required this.encryptedSelf});
+      this.encryptedSelf = null});
 
   @override
   @JsonKey()
@@ -350,6 +351,7 @@ class _DecryptedCalendarItemTag implements DecryptedCalendarItemTag {
   @JsonKey()
   final String? userName;
   @override
+  @JsonKey()
   final Base64String? encryptedSelf;
 
   /// Create a copy of DecryptedCalendarItemTag

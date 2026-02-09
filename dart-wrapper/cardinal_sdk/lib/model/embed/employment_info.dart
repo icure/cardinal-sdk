@@ -51,7 +51,7 @@ abstract class DecryptedEmploymentInfo with _$DecryptedEmploymentInfo implements
 		@Default(null) int? endDate,
 		@Default(null) CodeStub? professionType,
 		@Default(null) Employer? employer,
-		required Base64String? encryptedSelf,
+		@Default(null) Base64String? encryptedSelf,
 	}) = _DecryptedEmploymentInfo;
 
 
@@ -84,7 +84,7 @@ abstract class EncryptedEmploymentInfo with _$EncryptedEmploymentInfo implements
 		@Default(null) int? endDate,
 		@Default(null) CodeStub? professionType,
 		@Default(null) Employer? employer,
-		required Base64String? encryptedSelf,
+		@Default(null) Base64String? encryptedSelf,
 	}) = _EncryptedEmploymentInfo;
 
 

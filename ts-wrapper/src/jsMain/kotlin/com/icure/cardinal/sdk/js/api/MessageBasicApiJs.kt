@@ -7,9 +7,7 @@ import com.icure.cardinal.sdk.js.filters.BaseFilterOptionsJs
 import com.icure.cardinal.sdk.js.filters.BaseSortableFilterOptionsJs
 import com.icure.cardinal.sdk.js.model.EncryptedMessageJs
 import com.icure.cardinal.sdk.js.model.MessageJs
-import com.icure.cardinal.sdk.js.model.PaginatedListJs
 import com.icure.cardinal.sdk.js.model.StoredDocumentIdentifierJs
-import com.icure.cardinal.sdk.js.model.couchdb.DocIdentifierJs
 import com.icure.cardinal.sdk.js.subscription.EntitySubscriptionJs
 import com.icure.cardinal.sdk.js.utils.pagination.PaginatedListIteratorJs
 import kotlin.Array
@@ -23,6 +21,8 @@ import kotlin.js.Promise
 
 @JsName("MessageBasicApi")
 public external interface MessageBasicApiJs {
+	public val inGroup: MessageBasicInGroupApiJs
+
 	public fun matchMessagesBy(filter: BaseFilterOptionsJs<MessageJs>): Promise<Array<String>>
 
 	public fun matchMessagesBySorted(filter: BaseSortableFilterOptionsJs<MessageJs>):
@@ -34,78 +34,46 @@ public external interface MessageBasicApiJs {
 	public fun filterMessagesBySorted(filter: BaseSortableFilterOptionsJs<MessageJs>):
 			Promise<PaginatedListIteratorJs<EncryptedMessageJs>>
 
-	public fun deleteMessageUnsafe(entityId: String): Promise<DocIdentifierJs>
-
-	public fun deleteMessagesUnsafe(entityIds: Array<String>): Promise<Array<DocIdentifierJs>>
-
-	public fun deleteMessageById(entityId: String, rev: String): Promise<DocIdentifierJs>
+	public fun deleteMessageById(entityId: String, rev: String): Promise<StoredDocumentIdentifierJs>
 
 	public fun deleteMessagesByIds(entityIds: Array<StoredDocumentIdentifierJs>):
-			Promise<Array<DocIdentifierJs>>
+			Promise<Array<StoredDocumentIdentifierJs>>
 
 	public fun purgeMessageById(id: String, rev: String): Promise<Unit>
 
-	public fun deleteMessage(message: MessageJs): Promise<DocIdentifierJs>
+	public fun purgeMessagesByIds(entityIds: Array<StoredDocumentIdentifierJs>):
+			Promise<Array<StoredDocumentIdentifierJs>>
 
-	public fun deleteMessages(messages: Array<MessageJs>): Promise<Array<DocIdentifierJs>>
+	public fun deleteMessage(message: MessageJs): Promise<StoredDocumentIdentifierJs>
+
+	public fun deleteMessages(messages: Array<MessageJs>): Promise<Array<StoredDocumentIdentifierJs>>
 
 	public fun purgeMessage(message: MessageJs): Promise<Unit>
 
+	public fun purgeMessages(messages: Array<MessageJs>): Promise<Array<StoredDocumentIdentifierJs>>
+
 	public fun createMessage(entity: EncryptedMessageJs): Promise<EncryptedMessageJs>
+
+	public fun createMessages(entities: Array<EncryptedMessageJs>): Promise<Array<EncryptedMessageJs>>
 
 	public fun createMessageInTopic(entity: EncryptedMessageJs): Promise<EncryptedMessageJs>
 
-	public fun undeleteMessage(message: MessageJs): Promise<MessageJs>
+	public fun undeleteMessageById(id: String, rev: String): Promise<EncryptedMessageJs>
+
+	public fun undeleteMessagesByIds(entityIds: Array<StoredDocumentIdentifierJs>):
+			Promise<Array<EncryptedMessageJs>>
+
+	public fun undeleteMessage(message: MessageJs): Promise<EncryptedMessageJs>
+
+	public fun undeleteMessages(messages: Array<MessageJs>): Promise<Array<EncryptedMessageJs>>
 
 	public fun modifyMessage(entity: EncryptedMessageJs): Promise<EncryptedMessageJs>
 
-	public fun undeleteMessageById(id: String, rev: String): Promise<EncryptedMessageJs>
+	public fun modifyMessages(entities: Array<EncryptedMessageJs>): Promise<Array<EncryptedMessageJs>>
 
 	public fun getMessage(entityId: String): Promise<EncryptedMessageJs?>
 
 	public fun getMessages(entityIds: Array<String>): Promise<Array<EncryptedMessageJs>>
-
-	public fun listMessagesByTransportGuids(hcPartyId: String, transportGuids: Array<String>):
-			Promise<Array<EncryptedMessageJs>>
-
-	public fun findMessages(
-		startKey: dynamic,
-		startDocumentId: String?,
-		limit: Double?,
-	): Promise<PaginatedListJs<EncryptedMessageJs>>
-
-	public fun getChildrenMessages(messageId: String): Promise<Array<EncryptedMessageJs>>
-
-	public fun getMessagesChildren(messageIds: Array<String>): Promise<Array<EncryptedMessageJs>>
-
-	public fun listMessagesByInvoices(invoiceIds: Array<String>): Promise<Array<EncryptedMessageJs>>
-
-	public fun findMessagesByTransportGuid(transportGuid: String):
-			Promise<PaginatedListJs<EncryptedMessageJs>>
-
-	public fun findMessagesByTransportGuidSentDate(
-		transportGuid: String,
-		from: Double,
-		to: Double,
-		options: dynamic,
-	): Promise<PaginatedListJs<EncryptedMessageJs>>
-
-	public fun findMessagesByToAddress(
-		toAddress: String,
-		startKey: dynamic,
-		startDocumentId: String?,
-		limit: Double?,
-	): Promise<PaginatedListJs<EncryptedMessageJs>>
-
-	public fun findMessagesByFromAddress(
-		fromAddress: String,
-		startKey: dynamic,
-		startDocumentId: String?,
-		limit: Double?,
-	): Promise<PaginatedListJs<EncryptedMessageJs>>
-
-	public fun setMessagesStatusBits(entityIds: Array<String>, statusBits: Double):
-			Promise<Array<EncryptedMessageJs>>
 
 	public fun setMessagesReadStatus(
 		entityIds: Array<String>,

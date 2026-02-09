@@ -22,7 +22,7 @@ class ReceiptApi {
 		) : encrypted = ReceiptEncryptedApi(_sdkId, _dartSdk),
 		tryAndRecover = ReceiptTryAndRecoverApi(_sdkId, _dartSdk);
 
-	Future<DecryptedReceipt> withEncryptionMetadata(DecryptedReceipt? base, Patient? patient, { User? user, Map<String, AccessLevel> delegates = const {}, SecretIdUseOption secretId = SecretIdUseOption.UseAnySharedWithParent }) async {
+	Future<DecryptedReceipt> withEncryptionMetadata(DecryptedReceipt? base, Patient? patient, { User? user, Map<String, AccessLevel> delegates = const {}, SecretIdUseOption secretId = SecretIdUseOption.UseAnySharedWithParent, String? alternateRootDelegateId }) async {
 		return await CardinalSdkPlatformInterface.instance.apis.receipt.withEncryptionMetadata(
 			_sdkId,
 			base,
@@ -30,6 +30,7 @@ class ReceiptApi {
 			user,
 			delegates,
 			secretId,
+			alternateRootDelegateId,
 		);
 	}
 

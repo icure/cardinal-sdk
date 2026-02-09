@@ -10,7 +10,6 @@ import com.icure.cardinal.sdk.js.model.CalendarItemJs
 import com.icure.cardinal.sdk.js.model.DecryptedCalendarItemJs
 import com.icure.cardinal.sdk.js.model.EncryptedCalendarItemJs
 import com.icure.cardinal.sdk.js.model.EntityReferenceInGroupJs
-import com.icure.cardinal.sdk.js.model.PaginatedListJs
 import com.icure.cardinal.sdk.js.model.PatientJs
 import com.icure.cardinal.sdk.js.model.StoredDocumentIdentifierJs
 import com.icure.cardinal.sdk.js.subscription.EntitySubscriptionJs
@@ -18,7 +17,6 @@ import com.icure.cardinal.sdk.js.utils.Record
 import com.icure.cardinal.sdk.js.utils.pagination.PaginatedListIteratorJs
 import kotlin.Array
 import kotlin.Boolean
-import kotlin.Double
 import kotlin.String
 import kotlin.Unit
 import kotlin.js.JsName
@@ -63,11 +61,6 @@ public external interface CalendarItemApiJs {
 	public fun matchCalendarItemsBySorted(filter: SortableFilterOptionsJs<CalendarItemJs>):
 			Promise<Array<String>>
 
-	public fun deleteCalendarItemUnsafe(entityId: String): Promise<StoredDocumentIdentifierJs>
-
-	public fun deleteCalendarItemsUnsafe(entityIds: Array<String>):
-			Promise<Array<StoredDocumentIdentifierJs>>
-
 	public fun deleteCalendarItemById(entityId: String, rev: String):
 			Promise<StoredDocumentIdentifierJs>
 
@@ -76,12 +69,18 @@ public external interface CalendarItemApiJs {
 
 	public fun purgeCalendarItemById(id: String, rev: String): Promise<Unit>
 
+	public fun purgeCalendarItemsByIds(entityIds: Array<StoredDocumentIdentifierJs>):
+			Promise<Array<StoredDocumentIdentifierJs>>
+
 	public fun deleteCalendarItem(calendarItem: CalendarItemJs): Promise<StoredDocumentIdentifierJs>
 
 	public fun deleteCalendarItems(calendarItems: Array<CalendarItemJs>):
 			Promise<Array<StoredDocumentIdentifierJs>>
 
 	public fun purgeCalendarItem(calendarItem: CalendarItemJs): Promise<Unit>
+
+	public fun purgeCalendarItems(calendarItems: Array<CalendarItemJs>):
+			Promise<Array<StoredDocumentIdentifierJs>>
 
 	public fun shareWith(
 		delegateId: String,
@@ -91,12 +90,6 @@ public external interface CalendarItemApiJs {
 
 	public fun shareWithMany(calendarItem: DecryptedCalendarItemJs,
 			delegates: Record<String, CalendarItemShareOptionsJs>): Promise<DecryptedCalendarItemJs>
-
-	public fun findCalendarItemsByHcPartyPatient(
-		hcPartyId: String,
-		patient: PatientJs,
-		options: dynamic,
-	): Promise<PaginatedListIteratorJs<DecryptedCalendarItemJs>>
 
 	public fun linkToPatient(
 		calendarItem: CalendarItemJs,
@@ -112,37 +105,30 @@ public external interface CalendarItemApiJs {
 
 	public fun createCalendarItem(entity: DecryptedCalendarItemJs): Promise<DecryptedCalendarItemJs>
 
+	public fun createCalendarItems(entities: Array<DecryptedCalendarItemJs>):
+			Promise<Array<DecryptedCalendarItemJs>>
+
 	public fun bookCalendarItemCheckingAvailability(entity: DecryptedCalendarItemJs):
 			Promise<DecryptedCalendarItemJs>
 
 	public fun undeleteCalendarItemById(id: String, rev: String): Promise<DecryptedCalendarItemJs>
 
+	public fun undeleteCalendarItemsByIds(entityIds: Array<StoredDocumentIdentifierJs>):
+			Promise<Array<DecryptedCalendarItemJs>>
+
 	public fun undeleteCalendarItem(calendarItem: CalendarItemJs): Promise<DecryptedCalendarItemJs>
 
+	public fun undeleteCalendarItems(calendarItems: Array<CalendarItemJs>):
+			Promise<Array<DecryptedCalendarItemJs>>
+
 	public fun modifyCalendarItem(entity: DecryptedCalendarItemJs): Promise<DecryptedCalendarItemJs>
+
+	public fun modifyCalendarItems(entities: Array<DecryptedCalendarItemJs>):
+			Promise<Array<DecryptedCalendarItemJs>>
 
 	public fun getCalendarItem(entityId: String): Promise<DecryptedCalendarItemJs?>
 
 	public fun getCalendarItems(entityIds: Array<String>): Promise<Array<DecryptedCalendarItemJs>>
-
-	public fun getCalendarItemsByPeriodAndHcPartyId(
-		startDate: Double,
-		endDate: Double,
-		hcPartyId: String,
-	): Promise<Array<DecryptedCalendarItemJs>>
-
-	public fun getCalendarsByPeriodAndAgendaId(
-		startDate: Double,
-		endDate: Double,
-		agendaId: String,
-	): Promise<Array<DecryptedCalendarItemJs>>
-
-	public fun findCalendarItemsByRecurrenceId(
-		recurrenceId: String,
-		startKey: String?,
-		startDocumentId: String?,
-		limit: Double,
-	): Promise<PaginatedListJs<DecryptedCalendarItemJs>>
 
 	public fun subscribeToEvents(
 		events: Array<String>,

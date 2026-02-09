@@ -34,7 +34,7 @@ import kotlinx.serialization.Serializable
 @RequireHashable
 data class EntityReferenceInGroup(
 	val entityId: String,
-	@DefaultValue("null")
+	@param:DefaultValue("null")
 	val groupId: String? = null
 ) {
 	/**
@@ -55,7 +55,7 @@ data class EntityReferenceInGroup(
 	@InternalIcureApi
 	internal fun normalized(sdkGroupId: SdkBoundGroup?): EntityReferenceInGroup {
 		if (sdkGroupId == null) require(groupId == null) { "Can't use in-group references on kraken-lite" }
-		return if (groupId != null && groupId == sdkGroupId?.groupId) com.icure.cardinal.sdk.model.EntityReferenceInGroup(
+		return if (groupId != null && groupId == sdkGroupId?.groupId) EntityReferenceInGroup(
 			entityId,
 			null
 		) else this
@@ -75,24 +75,24 @@ data class EntityReferenceInGroup(
 			}
 			return if (resolvedEntityGroup != null) {
 				when {
-					splitReference.size == 1 -> com.icure.cardinal.sdk.model.EntityReferenceInGroup(
+					splitReference.size == 1 -> EntityReferenceInGroup(
 						entityId = splitReference[0],
 						groupId = resolvedEntityGroup
 					)
-					splitReference[0] == sdkGroupId?.groupId -> com.icure.cardinal.sdk.model.EntityReferenceInGroup(
+					splitReference[0] == sdkGroupId.groupId -> EntityReferenceInGroup(
 						entityId = splitReference[1],
 						groupId = null
 					)
-					else -> com.icure.cardinal.sdk.model.EntityReferenceInGroup(
+					else -> EntityReferenceInGroup(
 						entityId = splitReference[1],
 						groupId = splitReference[0]
 					)
 				}
 			} else {
 				if (splitReference.size == 1)
-					com.icure.cardinal.sdk.model.EntityReferenceInGroup(entityId = splitReference[0])
+					EntityReferenceInGroup(entityId = splitReference[0])
 				else
-					com.icure.cardinal.sdk.model.EntityReferenceInGroup(
+					EntityReferenceInGroup(
 						entityId = splitReference[1],
 						groupId = splitReference[0]
 					)

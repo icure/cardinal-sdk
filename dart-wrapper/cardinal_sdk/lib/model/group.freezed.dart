@@ -19,6 +19,7 @@ mixin _$Group {
   String? get rev;
   int? get deletionDate;
   Set<CodeStub> get tags;
+  Set<CodeStub> get publicTags;
   String? get name;
   String? get password;
   List<String>? get servers;
@@ -31,7 +32,7 @@ mixin _$Group {
   Map<String, ExternalJwtConfig> get externalJwtConfig;
   AuthenticationClass get minimumAuthenticationClassForElevatedPrivileges;
   String? get superGroup;
-  String? get applicationId;
+  String? get projectId;
 
   /// Create a copy of Group
   /// with the given fields replaced by the non-null parameter values.
@@ -50,6 +51,8 @@ mixin _$Group {
             (identical(other.deletionDate, deletionDate) ||
                 other.deletionDate == deletionDate) &&
             const DeepCollectionEquality().equals(other.tags, tags) &&
+            const DeepCollectionEquality()
+                .equals(other.publicTags, publicTags) &&
             (identical(other.name, name) || other.name == name) &&
             (identical(other.password, password) ||
                 other.password == password) &&
@@ -74,8 +77,8 @@ mixin _$Group {
                     minimumAuthenticationClassForElevatedPrivileges) &&
             (identical(other.superGroup, superGroup) ||
                 other.superGroup == superGroup) &&
-            (identical(other.applicationId, applicationId) ||
-                other.applicationId == applicationId));
+            (identical(other.projectId, projectId) ||
+                other.projectId == projectId));
   }
 
   @override
@@ -85,6 +88,7 @@ mixin _$Group {
       rev,
       deletionDate,
       const DeepCollectionEquality().hash(tags),
+      const DeepCollectionEquality().hash(publicTags),
       name,
       password,
       const DeepCollectionEquality().hash(servers),
@@ -97,11 +101,11 @@ mixin _$Group {
       const DeepCollectionEquality().hash(externalJwtConfig),
       minimumAuthenticationClassForElevatedPrivileges,
       superGroup,
-      applicationId);
+      projectId);
 
   @override
   String toString() {
-    return 'Group(id: $id, rev: $rev, deletionDate: $deletionDate, tags: $tags, name: $name, password: $password, servers: $servers, superAdmin: $superAdmin, properties: $properties, defaultUserRoles: $defaultUserRoles, operationTokens: $operationTokens, sharedEntities: $sharedEntities, minimumKrakenVersion: $minimumKrakenVersion, externalJwtConfig: $externalJwtConfig, minimumAuthenticationClassForElevatedPrivileges: $minimumAuthenticationClassForElevatedPrivileges, superGroup: $superGroup, applicationId: $applicationId)';
+    return 'Group(id: $id, rev: $rev, deletionDate: $deletionDate, tags: $tags, publicTags: $publicTags, name: $name, password: $password, servers: $servers, superAdmin: $superAdmin, properties: $properties, defaultUserRoles: $defaultUserRoles, operationTokens: $operationTokens, sharedEntities: $sharedEntities, minimumKrakenVersion: $minimumKrakenVersion, externalJwtConfig: $externalJwtConfig, minimumAuthenticationClassForElevatedPrivileges: $minimumAuthenticationClassForElevatedPrivileges, superGroup: $superGroup, projectId: $projectId)';
   }
 }
 
@@ -115,6 +119,7 @@ abstract mixin class $GroupCopyWith<$Res> {
       String? rev,
       int? deletionDate,
       Set<CodeStub> tags,
+      Set<CodeStub> publicTags,
       String? name,
       String? password,
       List<String>? servers,
@@ -127,7 +132,7 @@ abstract mixin class $GroupCopyWith<$Res> {
       Map<String, ExternalJwtConfig> externalJwtConfig,
       AuthenticationClass minimumAuthenticationClassForElevatedPrivileges,
       String? superGroup,
-      String? applicationId});
+      String? projectId});
 }
 
 /// @nodoc
@@ -146,6 +151,7 @@ class _$GroupCopyWithImpl<$Res> implements $GroupCopyWith<$Res> {
     Object? rev = freezed,
     Object? deletionDate = freezed,
     Object? tags = null,
+    Object? publicTags = null,
     Object? name = freezed,
     Object? password = freezed,
     Object? servers = freezed,
@@ -158,7 +164,7 @@ class _$GroupCopyWithImpl<$Res> implements $GroupCopyWith<$Res> {
     Object? externalJwtConfig = null,
     Object? minimumAuthenticationClassForElevatedPrivileges = null,
     Object? superGroup = freezed,
-    Object? applicationId = freezed,
+    Object? projectId = freezed,
   }) {
     return _then(_self.copyWith(
       id: null == id
@@ -176,6 +182,10 @@ class _$GroupCopyWithImpl<$Res> implements $GroupCopyWith<$Res> {
       tags: null == tags
           ? _self.tags
           : tags // ignore: cast_nullable_to_non_nullable
+              as Set<CodeStub>,
+      publicTags: null == publicTags
+          ? _self.publicTags
+          : publicTags // ignore: cast_nullable_to_non_nullable
               as Set<CodeStub>,
       name: freezed == name
           ? _self.name
@@ -226,9 +236,9 @@ class _$GroupCopyWithImpl<$Res> implements $GroupCopyWith<$Res> {
           ? _self.superGroup
           : superGroup // ignore: cast_nullable_to_non_nullable
               as String?,
-      applicationId: freezed == applicationId
-          ? _self.applicationId
-          : applicationId // ignore: cast_nullable_to_non_nullable
+      projectId: freezed == projectId
+          ? _self.projectId
+          : projectId // ignore: cast_nullable_to_non_nullable
               as String?,
     ));
   }
@@ -242,6 +252,7 @@ class _Group implements Group {
       this.rev = null,
       this.deletionDate = null,
       final Set<CodeStub> tags = const {},
+      final Set<CodeStub> publicTags = const {},
       this.name = null,
       this.password = null,
       final List<String>? servers = null,
@@ -254,8 +265,9 @@ class _Group implements Group {
       final Map<String, ExternalJwtConfig> externalJwtConfig = const {},
       required this.minimumAuthenticationClassForElevatedPrivileges,
       this.superGroup = null,
-      this.applicationId = null})
+      this.projectId = null})
       : _tags = tags,
+        _publicTags = publicTags,
         _servers = servers,
         _properties = properties,
         _defaultUserRoles = defaultUserRoles,
@@ -278,6 +290,15 @@ class _Group implements Group {
     if (_tags is EqualUnmodifiableSetView) return _tags;
     // ignore: implicit_dynamic_type
     return EqualUnmodifiableSetView(_tags);
+  }
+
+  final Set<CodeStub> _publicTags;
+  @override
+  @JsonKey()
+  Set<CodeStub> get publicTags {
+    if (_publicTags is EqualUnmodifiableSetView) return _publicTags;
+    // ignore: implicit_dynamic_type
+    return EqualUnmodifiableSetView(_publicTags);
   }
 
   @override
@@ -356,7 +377,7 @@ class _Group implements Group {
   final String? superGroup;
   @override
   @JsonKey()
-  final String? applicationId;
+  final String? projectId;
 
   /// Create a copy of Group
   /// with the given fields replaced by the non-null parameter values.
@@ -376,6 +397,8 @@ class _Group implements Group {
             (identical(other.deletionDate, deletionDate) ||
                 other.deletionDate == deletionDate) &&
             const DeepCollectionEquality().equals(other._tags, _tags) &&
+            const DeepCollectionEquality()
+                .equals(other._publicTags, _publicTags) &&
             (identical(other.name, name) || other.name == name) &&
             (identical(other.password, password) ||
                 other.password == password) &&
@@ -400,8 +423,8 @@ class _Group implements Group {
                     minimumAuthenticationClassForElevatedPrivileges) &&
             (identical(other.superGroup, superGroup) ||
                 other.superGroup == superGroup) &&
-            (identical(other.applicationId, applicationId) ||
-                other.applicationId == applicationId));
+            (identical(other.projectId, projectId) ||
+                other.projectId == projectId));
   }
 
   @override
@@ -411,6 +434,7 @@ class _Group implements Group {
       rev,
       deletionDate,
       const DeepCollectionEquality().hash(_tags),
+      const DeepCollectionEquality().hash(_publicTags),
       name,
       password,
       const DeepCollectionEquality().hash(_servers),
@@ -423,11 +447,11 @@ class _Group implements Group {
       const DeepCollectionEquality().hash(_externalJwtConfig),
       minimumAuthenticationClassForElevatedPrivileges,
       superGroup,
-      applicationId);
+      projectId);
 
   @override
   String toString() {
-    return 'Group(id: $id, rev: $rev, deletionDate: $deletionDate, tags: $tags, name: $name, password: $password, servers: $servers, superAdmin: $superAdmin, properties: $properties, defaultUserRoles: $defaultUserRoles, operationTokens: $operationTokens, sharedEntities: $sharedEntities, minimumKrakenVersion: $minimumKrakenVersion, externalJwtConfig: $externalJwtConfig, minimumAuthenticationClassForElevatedPrivileges: $minimumAuthenticationClassForElevatedPrivileges, superGroup: $superGroup, applicationId: $applicationId)';
+    return 'Group(id: $id, rev: $rev, deletionDate: $deletionDate, tags: $tags, publicTags: $publicTags, name: $name, password: $password, servers: $servers, superAdmin: $superAdmin, properties: $properties, defaultUserRoles: $defaultUserRoles, operationTokens: $operationTokens, sharedEntities: $sharedEntities, minimumKrakenVersion: $minimumKrakenVersion, externalJwtConfig: $externalJwtConfig, minimumAuthenticationClassForElevatedPrivileges: $minimumAuthenticationClassForElevatedPrivileges, superGroup: $superGroup, projectId: $projectId)';
   }
 }
 
@@ -442,6 +466,7 @@ abstract mixin class _$GroupCopyWith<$Res> implements $GroupCopyWith<$Res> {
       String? rev,
       int? deletionDate,
       Set<CodeStub> tags,
+      Set<CodeStub> publicTags,
       String? name,
       String? password,
       List<String>? servers,
@@ -454,7 +479,7 @@ abstract mixin class _$GroupCopyWith<$Res> implements $GroupCopyWith<$Res> {
       Map<String, ExternalJwtConfig> externalJwtConfig,
       AuthenticationClass minimumAuthenticationClassForElevatedPrivileges,
       String? superGroup,
-      String? applicationId});
+      String? projectId});
 }
 
 /// @nodoc
@@ -473,6 +498,7 @@ class __$GroupCopyWithImpl<$Res> implements _$GroupCopyWith<$Res> {
     Object? rev = freezed,
     Object? deletionDate = freezed,
     Object? tags = null,
+    Object? publicTags = null,
     Object? name = freezed,
     Object? password = freezed,
     Object? servers = freezed,
@@ -485,7 +511,7 @@ class __$GroupCopyWithImpl<$Res> implements _$GroupCopyWith<$Res> {
     Object? externalJwtConfig = null,
     Object? minimumAuthenticationClassForElevatedPrivileges = null,
     Object? superGroup = freezed,
-    Object? applicationId = freezed,
+    Object? projectId = freezed,
   }) {
     return _then(_Group(
       id: null == id
@@ -503,6 +529,10 @@ class __$GroupCopyWithImpl<$Res> implements _$GroupCopyWith<$Res> {
       tags: null == tags
           ? _self._tags
           : tags // ignore: cast_nullable_to_non_nullable
+              as Set<CodeStub>,
+      publicTags: null == publicTags
+          ? _self._publicTags
+          : publicTags // ignore: cast_nullable_to_non_nullable
               as Set<CodeStub>,
       name: freezed == name
           ? _self.name
@@ -553,9 +583,9 @@ class __$GroupCopyWithImpl<$Res> implements _$GroupCopyWith<$Res> {
           ? _self.superGroup
           : superGroup // ignore: cast_nullable_to_non_nullable
               as String?,
-      applicationId: freezed == applicationId
-          ? _self.applicationId
-          : applicationId // ignore: cast_nullable_to_non_nullable
+      projectId: freezed == projectId
+          ? _self.projectId
+          : projectId // ignore: cast_nullable_to_non_nullable
               as String?,
     ));
   }

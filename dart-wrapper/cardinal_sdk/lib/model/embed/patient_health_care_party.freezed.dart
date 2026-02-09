@@ -20,6 +20,7 @@ mixin _$EncryptedPatientHealthCareParty {
   Map<TelecomType, String> get sendFormats;
   List<ReferralPeriod> get referralPeriods;
   bool get referral;
+  Set<EncryptedPropertyStub>? get properties;
   Base64String? get encryptedSelf;
 
   /// Create a copy of EncryptedPatientHealthCareParty
@@ -45,6 +46,8 @@ mixin _$EncryptedPatientHealthCareParty {
                 .equals(other.referralPeriods, referralPeriods) &&
             (identical(other.referral, referral) ||
                 other.referral == referral) &&
+            const DeepCollectionEquality()
+                .equals(other.properties, properties) &&
             (identical(other.encryptedSelf, encryptedSelf) ||
                 other.encryptedSelf == encryptedSelf));
   }
@@ -57,11 +60,12 @@ mixin _$EncryptedPatientHealthCareParty {
       const DeepCollectionEquality().hash(sendFormats),
       const DeepCollectionEquality().hash(referralPeriods),
       referral,
+      const DeepCollectionEquality().hash(properties),
       encryptedSelf);
 
   @override
   String toString() {
-    return 'EncryptedPatientHealthCareParty(type: $type, healthcarePartyId: $healthcarePartyId, sendFormats: $sendFormats, referralPeriods: $referralPeriods, referral: $referral, encryptedSelf: $encryptedSelf)';
+    return 'EncryptedPatientHealthCareParty(type: $type, healthcarePartyId: $healthcarePartyId, sendFormats: $sendFormats, referralPeriods: $referralPeriods, referral: $referral, properties: $properties, encryptedSelf: $encryptedSelf)';
   }
 }
 
@@ -78,6 +82,7 @@ abstract mixin class $EncryptedPatientHealthCarePartyCopyWith<$Res> {
       Map<TelecomType, String> sendFormats,
       List<ReferralPeriod> referralPeriods,
       bool referral,
+      Set<EncryptedPropertyStub>? properties,
       Base64String? encryptedSelf});
 }
 
@@ -99,6 +104,7 @@ class _$EncryptedPatientHealthCarePartyCopyWithImpl<$Res>
     Object? sendFormats = null,
     Object? referralPeriods = null,
     Object? referral = null,
+    Object? properties = freezed,
     Object? encryptedSelf = freezed,
   }) {
     return _then(_self.copyWith(
@@ -122,6 +128,10 @@ class _$EncryptedPatientHealthCarePartyCopyWithImpl<$Res>
           ? _self.referral
           : referral // ignore: cast_nullable_to_non_nullable
               as bool,
+      properties: freezed == properties
+          ? _self.properties
+          : properties // ignore: cast_nullable_to_non_nullable
+              as Set<EncryptedPropertyStub>?,
       encryptedSelf: freezed == encryptedSelf
           ? _self.encryptedSelf
           : encryptedSelf // ignore: cast_nullable_to_non_nullable
@@ -140,9 +150,11 @@ class _EncryptedPatientHealthCareParty
       final Map<TelecomType, String> sendFormats = const {},
       final List<ReferralPeriod> referralPeriods = const [],
       this.referral = false,
+      final Set<EncryptedPropertyStub>? properties = null,
       this.encryptedSelf = null})
       : _sendFormats = sendFormats,
-        _referralPeriods = referralPeriods;
+        _referralPeriods = referralPeriods,
+        _properties = properties;
 
   @override
   @JsonKey()
@@ -171,6 +183,17 @@ class _EncryptedPatientHealthCareParty
   @override
   @JsonKey()
   final bool referral;
+  final Set<EncryptedPropertyStub>? _properties;
+  @override
+  @JsonKey()
+  Set<EncryptedPropertyStub>? get properties {
+    final value = _properties;
+    if (value == null) return null;
+    if (_properties is EqualUnmodifiableSetView) return _properties;
+    // ignore: implicit_dynamic_type
+    return EqualUnmodifiableSetView(value);
+  }
+
   @override
   @JsonKey()
   final Base64String? encryptedSelf;
@@ -198,6 +221,8 @@ class _EncryptedPatientHealthCareParty
                 .equals(other._referralPeriods, _referralPeriods) &&
             (identical(other.referral, referral) ||
                 other.referral == referral) &&
+            const DeepCollectionEquality()
+                .equals(other._properties, _properties) &&
             (identical(other.encryptedSelf, encryptedSelf) ||
                 other.encryptedSelf == encryptedSelf));
   }
@@ -210,11 +235,12 @@ class _EncryptedPatientHealthCareParty
       const DeepCollectionEquality().hash(_sendFormats),
       const DeepCollectionEquality().hash(_referralPeriods),
       referral,
+      const DeepCollectionEquality().hash(_properties),
       encryptedSelf);
 
   @override
   String toString() {
-    return 'EncryptedPatientHealthCareParty(type: $type, healthcarePartyId: $healthcarePartyId, sendFormats: $sendFormats, referralPeriods: $referralPeriods, referral: $referral, encryptedSelf: $encryptedSelf)';
+    return 'EncryptedPatientHealthCareParty(type: $type, healthcarePartyId: $healthcarePartyId, sendFormats: $sendFormats, referralPeriods: $referralPeriods, referral: $referral, properties: $properties, encryptedSelf: $encryptedSelf)';
   }
 }
 
@@ -233,6 +259,7 @@ abstract mixin class _$EncryptedPatientHealthCarePartyCopyWith<$Res>
       Map<TelecomType, String> sendFormats,
       List<ReferralPeriod> referralPeriods,
       bool referral,
+      Set<EncryptedPropertyStub>? properties,
       Base64String? encryptedSelf});
 }
 
@@ -254,6 +281,7 @@ class __$EncryptedPatientHealthCarePartyCopyWithImpl<$Res>
     Object? sendFormats = null,
     Object? referralPeriods = null,
     Object? referral = null,
+    Object? properties = freezed,
     Object? encryptedSelf = freezed,
   }) {
     return _then(_EncryptedPatientHealthCareParty(
@@ -277,6 +305,10 @@ class __$EncryptedPatientHealthCarePartyCopyWithImpl<$Res>
           ? _self.referral
           : referral // ignore: cast_nullable_to_non_nullable
               as bool,
+      properties: freezed == properties
+          ? _self._properties
+          : properties // ignore: cast_nullable_to_non_nullable
+              as Set<EncryptedPropertyStub>?,
       encryptedSelf: freezed == encryptedSelf
           ? _self.encryptedSelf
           : encryptedSelf // ignore: cast_nullable_to_non_nullable
@@ -292,6 +324,7 @@ mixin _$DecryptedPatientHealthCareParty {
   Map<TelecomType, String> get sendFormats;
   List<ReferralPeriod> get referralPeriods;
   bool get referral;
+  Set<DecryptedPropertyStub>? get properties;
   Base64String? get encryptedSelf;
 
   /// Create a copy of DecryptedPatientHealthCareParty
@@ -317,6 +350,8 @@ mixin _$DecryptedPatientHealthCareParty {
                 .equals(other.referralPeriods, referralPeriods) &&
             (identical(other.referral, referral) ||
                 other.referral == referral) &&
+            const DeepCollectionEquality()
+                .equals(other.properties, properties) &&
             (identical(other.encryptedSelf, encryptedSelf) ||
                 other.encryptedSelf == encryptedSelf));
   }
@@ -329,11 +364,12 @@ mixin _$DecryptedPatientHealthCareParty {
       const DeepCollectionEquality().hash(sendFormats),
       const DeepCollectionEquality().hash(referralPeriods),
       referral,
+      const DeepCollectionEquality().hash(properties),
       encryptedSelf);
 
   @override
   String toString() {
-    return 'DecryptedPatientHealthCareParty(type: $type, healthcarePartyId: $healthcarePartyId, sendFormats: $sendFormats, referralPeriods: $referralPeriods, referral: $referral, encryptedSelf: $encryptedSelf)';
+    return 'DecryptedPatientHealthCareParty(type: $type, healthcarePartyId: $healthcarePartyId, sendFormats: $sendFormats, referralPeriods: $referralPeriods, referral: $referral, properties: $properties, encryptedSelf: $encryptedSelf)';
   }
 }
 
@@ -350,6 +386,7 @@ abstract mixin class $DecryptedPatientHealthCarePartyCopyWith<$Res> {
       Map<TelecomType, String> sendFormats,
       List<ReferralPeriod> referralPeriods,
       bool referral,
+      Set<DecryptedPropertyStub>? properties,
       Base64String? encryptedSelf});
 }
 
@@ -371,6 +408,7 @@ class _$DecryptedPatientHealthCarePartyCopyWithImpl<$Res>
     Object? sendFormats = null,
     Object? referralPeriods = null,
     Object? referral = null,
+    Object? properties = freezed,
     Object? encryptedSelf = freezed,
   }) {
     return _then(_self.copyWith(
@@ -394,6 +432,10 @@ class _$DecryptedPatientHealthCarePartyCopyWithImpl<$Res>
           ? _self.referral
           : referral // ignore: cast_nullable_to_non_nullable
               as bool,
+      properties: freezed == properties
+          ? _self.properties
+          : properties // ignore: cast_nullable_to_non_nullable
+              as Set<DecryptedPropertyStub>?,
       encryptedSelf: freezed == encryptedSelf
           ? _self.encryptedSelf
           : encryptedSelf // ignore: cast_nullable_to_non_nullable
@@ -412,9 +454,11 @@ class _DecryptedPatientHealthCareParty
       final Map<TelecomType, String> sendFormats = const {},
       final List<ReferralPeriod> referralPeriods = const [],
       this.referral = false,
+      final Set<DecryptedPropertyStub>? properties = null,
       this.encryptedSelf = null})
       : _sendFormats = sendFormats,
-        _referralPeriods = referralPeriods;
+        _referralPeriods = referralPeriods,
+        _properties = properties;
 
   @override
   @JsonKey()
@@ -443,6 +487,17 @@ class _DecryptedPatientHealthCareParty
   @override
   @JsonKey()
   final bool referral;
+  final Set<DecryptedPropertyStub>? _properties;
+  @override
+  @JsonKey()
+  Set<DecryptedPropertyStub>? get properties {
+    final value = _properties;
+    if (value == null) return null;
+    if (_properties is EqualUnmodifiableSetView) return _properties;
+    // ignore: implicit_dynamic_type
+    return EqualUnmodifiableSetView(value);
+  }
+
   @override
   @JsonKey()
   final Base64String? encryptedSelf;
@@ -470,6 +525,8 @@ class _DecryptedPatientHealthCareParty
                 .equals(other._referralPeriods, _referralPeriods) &&
             (identical(other.referral, referral) ||
                 other.referral == referral) &&
+            const DeepCollectionEquality()
+                .equals(other._properties, _properties) &&
             (identical(other.encryptedSelf, encryptedSelf) ||
                 other.encryptedSelf == encryptedSelf));
   }
@@ -482,11 +539,12 @@ class _DecryptedPatientHealthCareParty
       const DeepCollectionEquality().hash(_sendFormats),
       const DeepCollectionEquality().hash(_referralPeriods),
       referral,
+      const DeepCollectionEquality().hash(_properties),
       encryptedSelf);
 
   @override
   String toString() {
-    return 'DecryptedPatientHealthCareParty(type: $type, healthcarePartyId: $healthcarePartyId, sendFormats: $sendFormats, referralPeriods: $referralPeriods, referral: $referral, encryptedSelf: $encryptedSelf)';
+    return 'DecryptedPatientHealthCareParty(type: $type, healthcarePartyId: $healthcarePartyId, sendFormats: $sendFormats, referralPeriods: $referralPeriods, referral: $referral, properties: $properties, encryptedSelf: $encryptedSelf)';
   }
 }
 
@@ -505,6 +563,7 @@ abstract mixin class _$DecryptedPatientHealthCarePartyCopyWith<$Res>
       Map<TelecomType, String> sendFormats,
       List<ReferralPeriod> referralPeriods,
       bool referral,
+      Set<DecryptedPropertyStub>? properties,
       Base64String? encryptedSelf});
 }
 
@@ -526,6 +585,7 @@ class __$DecryptedPatientHealthCarePartyCopyWithImpl<$Res>
     Object? sendFormats = null,
     Object? referralPeriods = null,
     Object? referral = null,
+    Object? properties = freezed,
     Object? encryptedSelf = freezed,
   }) {
     return _then(_DecryptedPatientHealthCareParty(
@@ -549,6 +609,10 @@ class __$DecryptedPatientHealthCarePartyCopyWithImpl<$Res>
           ? _self.referral
           : referral // ignore: cast_nullable_to_non_nullable
               as bool,
+      properties: freezed == properties
+          ? _self._properties
+          : properties // ignore: cast_nullable_to_non_nullable
+              as Set<DecryptedPropertyStub>?,
       encryptedSelf: freezed == encryptedSelf
           ? _self.encryptedSelf
           : encryptedSelf // ignore: cast_nullable_to_non_nullable

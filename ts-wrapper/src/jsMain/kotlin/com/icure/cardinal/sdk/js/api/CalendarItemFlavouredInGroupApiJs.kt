@@ -8,6 +8,7 @@ import com.icure.cardinal.sdk.js.filters.SortableFilterOptionsJs
 import com.icure.cardinal.sdk.js.model.CalendarItemJs
 import com.icure.cardinal.sdk.js.model.EntityReferenceInGroupJs
 import com.icure.cardinal.sdk.js.model.GroupScopedJs
+import com.icure.cardinal.sdk.js.model.StoredDocumentIdentifierJs
 import com.icure.cardinal.sdk.js.synthetic.mapasobjectarray.EntityReferenceInGroupToCalendarItemShareOptionsMapObject_delegate_shareOptions
 import com.icure.cardinal.sdk.js.utils.pagination.PaginatedListIteratorJs
 import kotlin.Array
@@ -37,7 +38,23 @@ public external interface CalendarItemFlavouredInGroupApiJs<E : CalendarItemJs> 
 
 	public fun createCalendarItem(entity: GroupScopedJs<E>): Promise<GroupScopedJs<E>>
 
+	public fun createCalendarItems(entities: Array<GroupScopedJs<E>>): Promise<Array<GroupScopedJs<E>>>
+
+	public fun undeleteCalendarItemById(entityId: GroupScopedJs<StoredDocumentIdentifierJs>):
+			Promise<GroupScopedJs<E>>
+
+	public fun undeleteCalendarItemsByIds(entityIds: Array<GroupScopedJs<StoredDocumentIdentifierJs>>):
+			Promise<Array<GroupScopedJs<E>>>
+
+	public fun undeleteCalendarItem(calendarItem: GroupScopedJs<CalendarItemJs>):
+			Promise<GroupScopedJs<E>>
+
+	public fun undeleteCalendarItems(calendarItems: Array<GroupScopedJs<E>>):
+			Promise<Array<GroupScopedJs<E>>>
+
 	public fun modifyCalendarItem(entity: GroupScopedJs<E>): Promise<GroupScopedJs<E>>
+
+	public fun modifyCalendarItems(entities: Array<GroupScopedJs<E>>): Promise<Array<GroupScopedJs<E>>>
 
 	public fun getCalendarItem(groupId: String, entityId: String): Promise<GroupScopedJs<E>?>
 

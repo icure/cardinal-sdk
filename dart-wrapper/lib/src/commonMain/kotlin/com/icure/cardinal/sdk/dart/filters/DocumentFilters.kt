@@ -6,6 +6,7 @@ import com.icure.cardinal.sdk.filters.BaseSortableFilterOptions
 import com.icure.cardinal.sdk.filters.FilterOptions
 import com.icure.cardinal.sdk.filters.SortableFilterOptions
 import com.icure.cardinal.sdk.model.Document
+import com.icure.cardinal.sdk.model.Message
 import com.icure.cardinal.sdk.model.Patient
 import com.icure.cardinal.sdk.model.embed.DocumentType
 import com.icure.cardinal.sdk.utils.Serialization.fullLanguageInteropJson
@@ -69,6 +70,53 @@ public object DocumentFilters {
     }
   }
 
+  public fun byMessagesCreatedForDataOwner(
+    dartResultCallback: (
+      String?,
+      String?,
+      String?,
+      String?,
+    ) -> Unit,
+    dataOwnerIdString: String,
+    messagesString: String,
+    fromString: String,
+    toString: String,
+    descendingString: String,
+  ) {
+    val dataOwnerId = fullLanguageInteropJson.decodeFromString(
+      String.serializer(),
+      dataOwnerIdString
+    )
+    val messages = fullLanguageInteropJson.decodeFromString(
+      ListSerializer(PolymorphicSerializer(Message::class)),
+      messagesString
+    )
+    val from = fullLanguageInteropJson.decodeFromString(
+      Instant.serializer().nullable,
+      fromString
+    )
+    val to = fullLanguageInteropJson.decodeFromString(
+      Instant.serializer().nullable,
+      toString
+    )
+    val descending = fullLanguageInteropJson.decodeFromString(
+      Boolean.serializer(),
+      descendingString
+    )
+    DartResult.resolve(
+      dartResultCallback,
+      SortableFilterOptions.serializer(PolymorphicSerializer(Document::class))
+    ) {
+      com.icure.cardinal.sdk.filters.DocumentFilters.byMessagesCreatedForDataOwner(
+        dataOwnerId,
+        messages,
+        from,
+        to,
+        descending,
+      )
+    }
+  }
+
   public fun byPatientsCreatedForSelf(
     dartResultCallback: (
       String?,
@@ -110,7 +158,48 @@ public object DocumentFilters {
     }
   }
 
-  public fun byPatientSecretIdsCreatedForDataOwner(
+  public fun byMessagesCreatedForSelf(
+    dartResultCallback: (
+      String?,
+      String?,
+      String?,
+      String?,
+    ) -> Unit,
+    messagesString: String,
+    fromString: String,
+    toString: String,
+    descendingString: String,
+  ) {
+    val messages = fullLanguageInteropJson.decodeFromString(
+      ListSerializer(PolymorphicSerializer(Message::class)),
+      messagesString
+    )
+    val from = fullLanguageInteropJson.decodeFromString(
+      Instant.serializer().nullable,
+      fromString
+    )
+    val to = fullLanguageInteropJson.decodeFromString(
+      Instant.serializer().nullable,
+      toString
+    )
+    val descending = fullLanguageInteropJson.decodeFromString(
+      Boolean.serializer(),
+      descendingString
+    )
+    DartResult.resolve(
+      dartResultCallback,
+      SortableFilterOptions.serializer(PolymorphicSerializer(Document::class))
+    ) {
+      com.icure.cardinal.sdk.filters.DocumentFilters.byMessagesCreatedForSelf(
+        messages,
+        from,
+        to,
+        descending,
+      )
+    }
+  }
+
+  public fun byOwningEntitySecretIdsCreatedForDataOwner(
     dartResultCallback: (
       String?,
       String?,
@@ -147,7 +236,7 @@ public object DocumentFilters {
       dartResultCallback,
       BaseSortableFilterOptions.serializer(PolymorphicSerializer(Document::class))
     ) {
-      com.icure.cardinal.sdk.filters.DocumentFilters.byPatientSecretIdsCreatedForDataOwner(
+      com.icure.cardinal.sdk.filters.DocumentFilters.byOwningEntitySecretIdsCreatedForDataOwner(
         dataOwnerId,
         secretIds,
         from,
@@ -157,7 +246,7 @@ public object DocumentFilters {
     }
   }
 
-  public fun byPatientSecretIdsCreatedForSelf(
+  public fun byOwningEntitySecretIdsCreatedForSelf(
     dartResultCallback: (
       String?,
       String?,
@@ -189,7 +278,7 @@ public object DocumentFilters {
       dartResultCallback,
       SortableFilterOptions.serializer(PolymorphicSerializer(Document::class))
     ) {
-      com.icure.cardinal.sdk.filters.DocumentFilters.byPatientSecretIdsCreatedForSelf(
+      com.icure.cardinal.sdk.filters.DocumentFilters.byOwningEntitySecretIdsCreatedForSelf(
         secretIds,
         from,
         to,
@@ -233,6 +322,41 @@ public object DocumentFilters {
     }
   }
 
+  public fun byMessagesAndTypeForDataOwner(
+    dartResultCallback: (
+      String?,
+      String?,
+      String?,
+      String?,
+    ) -> Unit,
+    dataOwnerIdString: String,
+    documentTypeString: String,
+    messagesString: String,
+  ) {
+    val dataOwnerId = fullLanguageInteropJson.decodeFromString(
+      String.serializer(),
+      dataOwnerIdString
+    )
+    val documentType = fullLanguageInteropJson.decodeFromString(
+      DocumentType.serializer(),
+      documentTypeString
+    )
+    val messages = fullLanguageInteropJson.decodeFromString(
+      ListSerializer(PolymorphicSerializer(Message::class)),
+      messagesString
+    )
+    DartResult.resolve(
+      dartResultCallback,
+      FilterOptions.serializer(PolymorphicSerializer(Document::class))
+    ) {
+      com.icure.cardinal.sdk.filters.DocumentFilters.byMessagesAndTypeForDataOwner(
+        dataOwnerId,
+        documentType,
+        messages,
+      )
+    }
+  }
+
   public fun byPatientsAndTypeForSelf(
     dartResultCallback: (
       String?,
@@ -262,7 +386,36 @@ public object DocumentFilters {
     }
   }
 
-  public fun byPatientSecretIdsAndTypeForDataOwner(
+  public fun byMessagesAndTypeForSelf(
+    dartResultCallback: (
+      String?,
+      String?,
+      String?,
+      String?,
+    ) -> Unit,
+    documentTypeString: String,
+    messagesString: String,
+  ) {
+    val documentType = fullLanguageInteropJson.decodeFromString(
+      DocumentType.serializer(),
+      documentTypeString
+    )
+    val messages = fullLanguageInteropJson.decodeFromString(
+      ListSerializer(PolymorphicSerializer(Message::class)),
+      messagesString
+    )
+    DartResult.resolve(
+      dartResultCallback,
+      FilterOptions.serializer(PolymorphicSerializer(Document::class))
+    ) {
+      com.icure.cardinal.sdk.filters.DocumentFilters.byMessagesAndTypeForSelf(
+        documentType,
+        messages,
+      )
+    }
+  }
+
+  public fun byOwningEntitySecretIdsAndTypeForDataOwner(
     dartResultCallback: (
       String?,
       String?,
@@ -289,7 +442,7 @@ public object DocumentFilters {
       dartResultCallback,
       FilterOptions.serializer(PolymorphicSerializer(Document::class))
     ) {
-      com.icure.cardinal.sdk.filters.DocumentFilters.byPatientSecretIdsAndTypeForDataOwner(
+      com.icure.cardinal.sdk.filters.DocumentFilters.byOwningEntitySecretIdsAndTypeForDataOwner(
         dataOwnerId,
         documentType,
         secretIds,
@@ -297,7 +450,7 @@ public object DocumentFilters {
     }
   }
 
-  public fun byPatientSecretIdsAndTypeForSelf(
+  public fun byOwningEntitySecretIdsAndTypeForSelf(
     dartResultCallback: (
       String?,
       String?,
@@ -319,7 +472,7 @@ public object DocumentFilters {
       dartResultCallback,
       FilterOptions.serializer(PolymorphicSerializer(Document::class))
     ) {
-      com.icure.cardinal.sdk.filters.DocumentFilters.byPatientSecretIdsAndTypeForSelf(
+      com.icure.cardinal.sdk.filters.DocumentFilters.byOwningEntitySecretIdsAndTypeForSelf(
         documentType,
         secretIds,
       )

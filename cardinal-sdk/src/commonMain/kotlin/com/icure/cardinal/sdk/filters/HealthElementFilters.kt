@@ -4,7 +4,10 @@ import com.icure.cardinal.sdk.CardinalBaseApis
 import com.icure.cardinal.sdk.crypto.EntityEncryptionService
 import com.icure.cardinal.sdk.crypto.entities.EntityWithEncryptionMetadataStub
 import com.icure.cardinal.sdk.crypto.entities.EntityWithEncryptionMetadataTypeName
+import com.icure.cardinal.sdk.crypto.entities.SdkBoundGroup
 import com.icure.cardinal.sdk.crypto.entities.toEncryptionMetadataStub
+import com.icure.cardinal.sdk.model.EntityReferenceInGroup
+import com.icure.cardinal.sdk.model.GroupScoped
 import com.icure.cardinal.sdk.model.HealthElement
 import com.icure.cardinal.sdk.model.Patient
 import com.icure.cardinal.sdk.model.base.Identifier
@@ -12,12 +15,14 @@ import com.icure.cardinal.sdk.model.filter.AbstractFilter
 import com.icure.cardinal.sdk.model.filter.healthelement.HealthElementByDataOwnerPatientOpeningDate
 import com.icure.cardinal.sdk.model.filter.healthelement.HealthElementByHcPartyFilter
 import com.icure.cardinal.sdk.model.filter.healthelement.HealthElementByHcPartyIdentifiersFilter
-import com.icure.cardinal.sdk.model.filter.healthelement.HealthElementByHcPartyStatusFilter
 import com.icure.cardinal.sdk.model.filter.healthelement.HealthElementByHcPartyTagCodeFilter
 import com.icure.cardinal.sdk.model.filter.healthelement.HealthElementByIdsFilter
+import com.icure.cardinal.sdk.options.ApiConfiguration
+import com.icure.cardinal.sdk.options.BasicApiConfiguration
 import com.icure.cardinal.sdk.utils.DefaultValue
 import com.icure.cardinal.sdk.utils.requireUniqueElements
 import com.icure.utils.InternalIcureApi
+import kotlinx.coroutines.currentCoroutineContext
 import kotlinx.serialization.Serializable
 
 object HealthElementFilters {
@@ -30,7 +35,14 @@ object HealthElementFilters {
 	fun allHealthElementsForDataOwner(
 		dataOwnerId: String
 	): BaseFilterOptions<HealthElement> =
-		AllForDataOwner(dataOwnerId)
+		AllForDataOwner(EntityReferenceInGroup(groupId = null, entityId = dataOwnerId))
+
+	/**
+	 * In group version of [allHealthElementsForDataOwner].
+	 */
+	fun allHealthElementsForDataOwnerInGroup(
+		dataOwner: EntityReferenceInGroup,
+	): BaseFilterOptions<HealthElement> = AllForDataOwner(dataOwner)
 
 	/**
 	 * Create options for health element filtering that will match all health element shared directly (i.e. ignoring hierarchies) with the current data owner.
@@ -57,7 +69,16 @@ object HealthElementFilters {
 		dataOwnerId: String,
 		identifiers: List<Identifier>
 	): BaseSortableFilterOptions<HealthElement> =
-		ByIdentifiersForDataOwner(identifiers, dataOwnerId)
+		ByIdentifiersForDataOwner(identifiers, EntityReferenceInGroup(entityId = dataOwnerId, groupId = null))
+
+	/**
+	 * In group version of [byIdentifiersForDataOwner].
+	 */
+	fun byIdentifiersForDataOwnerInGroup(
+		dataOwner: EntityReferenceInGroup,
+		identifiers: List<Identifier>
+	): BaseSortableFilterOptions<HealthElement> =
+		ByIdentifiersForDataOwner(identifiers, dataOwner)
 
 	/**
 	 * Options for health element filtering which match all the health elements shared directly (i.e. ignoring hierarchies) with the current data owner that have at least
@@ -95,7 +116,21 @@ object HealthElementFilters {
 	): BaseSortableFilterOptions<HealthElement> = ByCodeForDataOwner(
 		codeType = codeType,
 		codeCode = codeCode,
-		dataOwnerId = dataOwnerId
+		dataOwnerId = EntityReferenceInGroup(groupId = null, entityId = dataOwnerId)
+	)
+
+	/**
+	 * In group version of [byCodeForDataOwner].
+	 */
+	fun byCodeForDataOwnerInGroup(
+		dataOwner: EntityReferenceInGroup,
+		codeType: String,
+		@DefaultValue("null")
+		codeCode: String? = null
+	): BaseSortableFilterOptions<HealthElement> = ByCodeForDataOwner(
+		codeType = codeType,
+		codeCode = codeCode,
+		dataOwnerId = dataOwner
 	)
 
 	/**
@@ -136,7 +171,21 @@ object HealthElementFilters {
 	): BaseSortableFilterOptions<HealthElement> = ByTagForDataOwner(
 		tagType = tagType,
 		tagCode = tagCode,
-		dataOwnerId = dataOwnerId
+		dataOwnerId = EntityReferenceInGroup(groupId = null, entityId = dataOwnerId)
+	)
+
+	/**
+	 * In group version of [byTagForDataOwner].
+	 */
+	fun byTagForDataOwnerInGroup(
+		dataOwner: EntityReferenceInGroup,
+		tagType: String,
+		@DefaultValue("null")
+		tagCode: String? = null
+	): BaseSortableFilterOptions<HealthElement> = ByTagForDataOwner(
+		tagType = tagType,
+		tagCode = tagCode,
+		dataOwnerId = dataOwner
 	)
 
 	/**
@@ -180,8 +229,20 @@ object HealthElementFilters {
 		dataOwnerId: String,
 		patients: List<Patient>
 	): SortableFilterOptions<HealthElement> = ByPatientsForDataOwner(
-		patients = patients.map { it.toEncryptionMetadataStub() },
-		dataOwnerId = dataOwnerId
+		patients = patients.map { Pair(it.toEncryptionMetadataStub(), null) },
+		dataOwnerId = EntityReferenceInGroup(groupId = null, entityId = dataOwnerId)
+	)
+
+	/**
+	 * In group version of [byPatientsForDataOwner].
+	 */
+	@OptIn(InternalIcureApi::class)
+	fun byPatientsForDataOwnerInGroup(
+		dataOwner: EntityReferenceInGroup,
+		patients: List<GroupScoped<Patient>>
+	): SortableFilterOptions<HealthElement> = ByPatientsForDataOwner(
+		patients = patients.map { Pair(it.entity.toEncryptionMetadataStub(), it.groupId) },
+		dataOwnerId = dataOwner
 	)
 
 	/**
@@ -221,7 +282,18 @@ object HealthElementFilters {
 		secretIds: List<String>
 	): BaseSortableFilterOptions<HealthElement> = ByPatientsSecretIdsForDataOwner(
 		secretIds = secretIds,
-		dataOwnerId = dataOwnerId
+		dataOwnerId = EntityReferenceInGroup(groupId = null, entityId = dataOwnerId)
+	)
+
+	/**
+	 * In group version of [byPatientsSecretIdsForDataOwner].
+	 */
+	fun byPatientsSecretIdsForDataOwnerInGroup(
+		dataOwner: EntityReferenceInGroup,
+		secretIds: List<String>
+	): BaseSortableFilterOptions<HealthElement> = ByPatientsSecretIdsForDataOwner(
+		secretIds = secretIds,
+		dataOwnerId = dataOwner
 	)
 
 	/**
@@ -280,8 +352,29 @@ object HealthElementFilters {
 		@DefaultValue("false")
 		descending: Boolean = false
 	) : SortableFilterOptions<HealthElement> = ByPatientsOpeningDateForDataOwner(
-		dataOwnerId = dataOwnerId,
-		patients = patients.map { it.toEncryptionMetadataStub() },
+		dataOwnerId = EntityReferenceInGroup(groupId = null, entityId = dataOwnerId),
+		patients = patients.map { Pair(it.toEncryptionMetadataStub(), null) },
+		from = from,
+		to = to,
+		descending = descending
+	)
+
+	/**
+	 * In group version of [byPatientsOpeningDateForDataOwner].
+	 */
+	@OptIn(InternalIcureApi::class)
+	fun byPatientsOpeningDateForDataOwnerInGroup(
+		dataOwner: EntityReferenceInGroup,
+		patients: List<GroupScoped<Patient>>,
+		@DefaultValue("null")
+		from: Long? = null,
+		@DefaultValue("null")
+		to: Long? = null,
+		@DefaultValue("false")
+		descending: Boolean = false
+	) : SortableFilterOptions<HealthElement> = ByPatientsOpeningDateForDataOwner(
+		dataOwnerId = dataOwner,
+		patients = patients.map { Pair(it.entity.toEncryptionMetadataStub(), it.groupId) },
 		from = from,
 		to = to,
 		descending = descending
@@ -353,7 +446,33 @@ object HealthElementFilters {
 		to: Long? = null,
 		@DefaultValue("false")
 		descending: Boolean = false
-	) : BaseSortableFilterOptions<HealthElement> = ByPatientSecretIdsOpeningDateForDataOwner(dataOwnerId, secretIds, from, to, descending)
+	) : BaseSortableFilterOptions<HealthElement> = ByPatientSecretIdsOpeningDateForDataOwner(
+		dataOwnerId = EntityReferenceInGroup(groupId = null, entityId = dataOwnerId),
+		secretIds = secretIds,
+		from = from,
+		to = to,
+		descending = descending
+	)
+
+	/**
+	 * In group version of [byPatientSecretIdsOpeningDateForDataOwner].
+	 */
+	fun byPatientSecretIdsOpeningDateForDataOwnerInGroup(
+		dataOwner: EntityReferenceInGroup,
+		secretIds: List<String>,
+		@DefaultValue("null")
+		from: Long? = null,
+		@DefaultValue("null")
+		to: Long? = null,
+		@DefaultValue("false")
+		descending: Boolean = false
+	) : BaseSortableFilterOptions<HealthElement> = ByPatientSecretIdsOpeningDateForDataOwner(
+		dataOwnerId = dataOwner,
+		secretIds = secretIds,
+		from = from,
+		to = to,
+		descending = descending
+	)
 
 	/**
 	 * Options for health element filtering which match all health elements shared directly (i.e. ignoring hierarchies) with the current data owner
@@ -384,33 +503,9 @@ object HealthElementFilters {
 		descending: Boolean = false
 	) : SortableFilterOptions<HealthElement> = ByPatientSecretIdsOpeningDateForSelf(secretIds, from, to, descending)
 
-	/**
-	 * Options for health element filtering which match all health elements shared directly (i.e. ignoring hierarchies) with a specific data owner
-	 * where [HealthElement.status] is equal to status.
-	 *
-	 * @param dataOwnerId the id of a data owner.
-	 * @param status the status to use in the filter.
-	 */
-	fun byStatusForDataOwner(
-		dataOwnerId: String,
-		status: Int
-	) : BaseFilterOptions<HealthElement> = ByStatusForDataOwner(dataOwnerId, status)
-
-	/**
-	 * Options for health element filtering which match all health elements shared directly (i.e. ignoring hierarchies) with the current data owner
-	 * where [HealthElement.status] is equal to status.
-	 *
-	 * Note that these may not be used in methods of apis from [CardinalBaseApis].
-	 *
-	 * @param status the status to use in the filter.
-	 */
-	fun byStatusForSelf(
-		status: Int
-	) : FilterOptions<HealthElement> = ByStatusForSelf(status)
-
 	@Serializable
 	internal class AllForDataOwner(
-		val dataOwnerId: String
+		val dataOwnerId: EntityReferenceInGroup
 	): BaseFilterOptions<HealthElement>
 
 	@Serializable
@@ -419,7 +514,7 @@ object HealthElementFilters {
 	@Serializable
 	internal class ByIdentifiersForDataOwner(
 		val identifiers: List<Identifier>,
-		val dataOwnerId: String
+		val dataOwnerId: EntityReferenceInGroup
 	): BaseSortableFilterOptions<HealthElement>
 
 	@Serializable
@@ -431,7 +526,7 @@ object HealthElementFilters {
 	internal class ByCodeForDataOwner(
 		val codeType: String,
 		val codeCode: String?,
-		val dataOwnerId: String
+		val dataOwnerId: EntityReferenceInGroup
 	): BaseSortableFilterOptions<HealthElement>
 
 	@Serializable
@@ -444,7 +539,7 @@ object HealthElementFilters {
 	internal class ByTagForDataOwner(
 		val tagType: String,
 		val tagCode: String?,
-		val dataOwnerId: String
+		val dataOwnerId: EntityReferenceInGroup
 	): BaseSortableFilterOptions<HealthElement>
 
 	@Serializable
@@ -456,8 +551,8 @@ object HealthElementFilters {
 	@Serializable
 	@InternalIcureApi
 	internal class ByPatientsForDataOwner(
-		val patients: List<EntityWithEncryptionMetadataStub>,
-		val dataOwnerId: String
+		val patients: List<Pair<EntityWithEncryptionMetadataStub, String?>>,
+		val dataOwnerId: EntityReferenceInGroup
 	) : SortableFilterOptions<HealthElement>
 
 	@Serializable
@@ -469,7 +564,7 @@ object HealthElementFilters {
 	@Serializable
 	internal class ByPatientsSecretIdsForDataOwner(
 		val secretIds: List<String>,
-		val dataOwnerId: String
+		val dataOwnerId: EntityReferenceInGroup
 	): BaseSortableFilterOptions<HealthElement>
 
 	@Serializable
@@ -489,8 +584,8 @@ object HealthElementFilters {
 	@Serializable
 	@InternalIcureApi
 	internal class ByPatientsOpeningDateForDataOwner(
-		val dataOwnerId: String,
-		val patients: List<EntityWithEncryptionMetadataStub>,
+		val dataOwnerId: EntityReferenceInGroup,
+		val patients: List<Pair<EntityWithEncryptionMetadataStub, String?>>,
 		val from: Long?,
 		val to: Long?,
 		val descending: Boolean
@@ -507,7 +602,7 @@ object HealthElementFilters {
 
 	@Serializable
 	internal class ByPatientSecretIdsOpeningDateForDataOwner(
-		val dataOwnerId: String,
+		val dataOwnerId: EntityReferenceInGroup,
 		val secretIds: List<String>,
 		val from: Long?,
 		val to: Long?,
@@ -521,33 +616,40 @@ object HealthElementFilters {
 		val to: Long?,
 		val descending: Boolean
 	) : SortableFilterOptions<HealthElement>
-
-	@Serializable
-	internal class ByStatusForDataOwner(
-		val dataOwnerId: String,
-		val status: Int
-	) : BaseFilterOptions<HealthElement>
-
-	@Serializable
-	internal class ByStatusForSelf(
-		val status: Int
-	) : FilterOptions<HealthElement>
 }
 
 @InternalIcureApi
 internal suspend fun mapHealthElementFilterOptions(
 	filterOptions: FilterOptions<HealthElement>,
-	selfDataOwnerId: String?,
-	entityEncryptionService: EntityEncryptionService?
+	config: BasicApiConfiguration,
+	requestGroup: String?
+): AbstractFilter<HealthElement> {
+	val nonBasicConfig = config as? ApiConfiguration
+	return mapHealthElementFilterOptions(
+		filterOptions,
+		nonBasicConfig?.crypto?.dataOwnerApi?.getCurrentDataOwnerReference(),
+		nonBasicConfig?.crypto?.entity,
+		config.getBoundGroup(currentCoroutineContext()),
+		requestGroup
+	)
+}
+
+@InternalIcureApi
+private suspend fun mapHealthElementFilterOptions(
+	filterOptions: FilterOptions<HealthElement>,
+	selfDataOwner: EntityReferenceInGroup?,
+	entityEncryptionService: EntityEncryptionService?,
+	boundGroup: SdkBoundGroup?,
+	requestGroup: String?
 ): AbstractFilter<HealthElement> = mapIfMetaFilterOptions(filterOptions) {
-	mapHealthElementFilterOptions(it, selfDataOwnerId, entityEncryptionService)
+	mapHealthElementFilterOptions(it, selfDataOwner, entityEncryptionService, boundGroup, requestGroup)
 } ?: when (filterOptions) {
 	is HealthElementFilters.AllForDataOwner -> {
-		HealthElementByHcPartyFilter(hcpId = filterOptions.dataOwnerId)
+		HealthElementByHcPartyFilter(hcpId = filterOptions.dataOwnerId.asReferenceStringInGroup(requestGroup, boundGroup))
 	}
 	is HealthElementFilters.AllForSelf -> {
-		filterOptions.ensureNonBaseEnvironment(selfDataOwnerId, entityEncryptionService)
-		HealthElementByHcPartyFilter(hcpId = selfDataOwnerId)
+		filterOptions.ensureNonBaseEnvironment(selfDataOwner, entityEncryptionService)
+		HealthElementByHcPartyFilter(hcpId = selfDataOwner.asReferenceStringInGroup(requestGroup, boundGroup))
 	}
 	is HealthElementFilters.ByIds -> {
 		HealthElementByIdsFilter(ids = filterOptions.ids.toSet())
@@ -558,31 +660,29 @@ internal suspend fun mapHealthElementFilterOptions(
 			tagCode = null,
 			codeType = filterOptions.codeType,
 			codeCode = filterOptions.codeCode,
-			healthcarePartyId = filterOptions.dataOwnerId
+			healthcarePartyId = filterOptions.dataOwnerId.asReferenceStringInGroup(requestGroup, boundGroup),
 		)
 	}
 	is HealthElementFilters.ByIdentifiersForDataOwner -> {
 		HealthElementByHcPartyIdentifiersFilter(
 			identifiers = filterOptions.identifiers,
-			hcPartyId = filterOptions.dataOwnerId
+			hcPartyId = filterOptions.dataOwnerId.asReferenceStringInGroup(requestGroup, boundGroup),
 		)
 	}
 	is HealthElementFilters.ByPatientsForDataOwner -> {
-		filterOptions.ensureNonBaseEnvironment(selfDataOwnerId, entityEncryptionService)
+		filterOptions.ensureNonBaseEnvironment(selfDataOwner, entityEncryptionService)
 		HealthElementByDataOwnerPatientOpeningDate(
-			patientSecretForeignKeys = entityEncryptionService.secretIdsOf(
-				null,
-				filterOptions.patients,
-				EntityWithEncryptionMetadataTypeName.Patient,
-				null
-			).values.flatten().toSet(),
-			healthcarePartyId = filterOptions.dataOwnerId
+			patientSecretForeignKeys = filterOptions.patients.mapToSecretIds(
+				entityEncryptionService,
+				EntityWithEncryptionMetadataTypeName.Patient
+			),
+			healthcarePartyId = filterOptions.dataOwnerId.asReferenceStringInGroup(requestGroup, boundGroup),
 		)
 	}
 	is HealthElementFilters.ByPatientsSecretIdsForDataOwner -> {
 		HealthElementByDataOwnerPatientOpeningDate(
 			patientSecretForeignKeys = filterOptions.secretIds.toSet(),
-			healthcarePartyId = filterOptions.dataOwnerId
+			healthcarePartyId = filterOptions.dataOwnerId.asReferenceStringInGroup(requestGroup, boundGroup),
 		)
 	}
 	is HealthElementFilters.ByTagForDataOwner -> {
@@ -591,112 +691,95 @@ internal suspend fun mapHealthElementFilterOptions(
 			tagCode = filterOptions.tagCode,
 			codeType = null,
 			codeCode = null,
-			healthcarePartyId = filterOptions.dataOwnerId
+			healthcarePartyId = filterOptions.dataOwnerId.asReferenceStringInGroup(requestGroup, boundGroup),
 		)
 	}
 
 	is HealthElementFilters.ByCodeForSelf -> {
-		filterOptions.ensureNonBaseEnvironment(selfDataOwnerId, entityEncryptionService)
+		filterOptions.ensureNonBaseEnvironment(selfDataOwner, entityEncryptionService)
 		HealthElementByHcPartyTagCodeFilter(
 			tagType = null,
 			tagCode = null,
 			codeType = filterOptions.codeType,
 			codeCode = filterOptions.codeCode,
-			healthcarePartyId = selfDataOwnerId
+			healthcarePartyId = selfDataOwner.asReferenceStringInGroup(requestGroup, boundGroup),
 		)
 	}
 	is HealthElementFilters.ByIdentifiersForSelf -> {
-		filterOptions.ensureNonBaseEnvironment(selfDataOwnerId, entityEncryptionService)
+		filterOptions.ensureNonBaseEnvironment(selfDataOwner, entityEncryptionService)
 		HealthElementByHcPartyIdentifiersFilter(
 			identifiers = filterOptions.identifiers,
-			hcPartyId = selfDataOwnerId
+			hcPartyId = selfDataOwner.asReferenceStringInGroup(requestGroup, boundGroup),
 		)
 	}
 	is HealthElementFilters.ByPatientsForSelf -> {
-		filterOptions.ensureNonBaseEnvironment(selfDataOwnerId, entityEncryptionService)
+		filterOptions.ensureNonBaseEnvironment(selfDataOwner, entityEncryptionService)
 		HealthElementByDataOwnerPatientOpeningDate(
-			patientSecretForeignKeys = entityEncryptionService.secretIdsOf(
-				null,
-				filterOptions.patients,
-				EntityWithEncryptionMetadataTypeName.Patient,
-				null
-			).values.flatten().toSet(),
-			healthcarePartyId = selfDataOwnerId
+			patientSecretForeignKeys = filterOptions.patients.map { Pair(it, null) }.mapToSecretIds(
+				entityEncryptionService,
+				EntityWithEncryptionMetadataTypeName.Patient
+			),
+			healthcarePartyId = selfDataOwner.asReferenceStringInGroup(requestGroup, boundGroup),
 		)
 	}
 	is HealthElementFilters.ByPatientsSecretIdsForSelf -> {
-		filterOptions.ensureNonBaseEnvironment(selfDataOwnerId, entityEncryptionService)
+		filterOptions.ensureNonBaseEnvironment(selfDataOwner, entityEncryptionService)
 		HealthElementByDataOwnerPatientOpeningDate(
 			patientSecretForeignKeys = filterOptions.secretIds.toSet(),
-			healthcarePartyId = selfDataOwnerId
+			healthcarePartyId = selfDataOwner.asReferenceStringInGroup(requestGroup, boundGroup),
 		)
 	}
 	is HealthElementFilters.ByTagForSelf -> {
-		filterOptions.ensureNonBaseEnvironment(selfDataOwnerId, entityEncryptionService)
+		filterOptions.ensureNonBaseEnvironment(selfDataOwner, entityEncryptionService)
 		HealthElementByHcPartyTagCodeFilter(
 			tagType = filterOptions.tagType,
 			tagCode = filterOptions.tagCode,
 			codeType = null,
 			codeCode = null,
-			healthcarePartyId = selfDataOwnerId
+			healthcarePartyId = selfDataOwner.asReferenceStringInGroup(requestGroup, boundGroup),
 		)
 	}
 	is HealthElementFilters.ByPatientsOpeningDateForDataOwner -> {
-		filterOptions.ensureNonBaseEnvironment(selfDataOwnerId, entityEncryptionService)
+		filterOptions.ensureNonBaseEnvironment(selfDataOwner, entityEncryptionService)
 		HealthElementByDataOwnerPatientOpeningDate(
-			healthcarePartyId = filterOptions.dataOwnerId,
-			patientSecretForeignKeys = entityEncryptionService.secretIdsOf(
-				null,
-				filterOptions.patients,
-				EntityWithEncryptionMetadataTypeName.Patient,
-				null
-			).values.flatten().toSet(),
+			healthcarePartyId = filterOptions.dataOwnerId.asReferenceStringInGroup(requestGroup, boundGroup),
+			patientSecretForeignKeys = filterOptions.patients.mapToSecretIds(
+				entityEncryptionService,
+				EntityWithEncryptionMetadataTypeName.Patient
+			),
 			startDate = filterOptions.from,
 			endDate = filterOptions.to,
 			descending = filterOptions.descending
 		)
 	}
 	is HealthElementFilters.ByPatientsOpeningDateForSelf -> {
-		filterOptions.ensureNonBaseEnvironment(selfDataOwnerId, entityEncryptionService)
+		filterOptions.ensureNonBaseEnvironment(selfDataOwner, entityEncryptionService)
 		HealthElementByDataOwnerPatientOpeningDate(
-			healthcarePartyId = selfDataOwnerId,
-			patientSecretForeignKeys = entityEncryptionService.secretIdsOf(
-				null,
-				filterOptions.patients,
-				EntityWithEncryptionMetadataTypeName.Patient,
-				null
-			).values.flatten().toSet(),
+			healthcarePartyId = selfDataOwner.asReferenceStringInGroup(requestGroup, boundGroup),
+			patientSecretForeignKeys = filterOptions.patients.map { Pair(it, null) }.mapToSecretIds(
+				entityEncryptionService,
+				EntityWithEncryptionMetadataTypeName.Patient
+			),
 			startDate = filterOptions.from,
 			endDate = filterOptions.to,
 			descending = filterOptions.descending
 		)
 	}
 	is HealthElementFilters.ByPatientSecretIdsOpeningDateForDataOwner -> HealthElementByDataOwnerPatientOpeningDate(
-		healthcarePartyId = filterOptions.dataOwnerId,
+		healthcarePartyId = filterOptions.dataOwnerId.asReferenceStringInGroup(requestGroup, boundGroup),
 		patientSecretForeignKeys = filterOptions.secretIds.toSet(),
 		startDate = filterOptions.from,
 		endDate = filterOptions.to,
 		descending = filterOptions.descending
 	)
 	is HealthElementFilters.ByPatientSecretIdsOpeningDateForSelf -> {
-		filterOptions.ensureNonBaseEnvironment(selfDataOwnerId, entityEncryptionService)
+		filterOptions.ensureNonBaseEnvironment(selfDataOwner, entityEncryptionService)
 		HealthElementByDataOwnerPatientOpeningDate(
-			healthcarePartyId = selfDataOwnerId,
+			healthcarePartyId = selfDataOwner.asReferenceStringInGroup(requestGroup, boundGroup),
 			patientSecretForeignKeys = filterOptions.secretIds.toSet(),
 			startDate = filterOptions.from,
 			endDate = filterOptions.to,
 			descending = filterOptions.descending
-		)
-	}
-	is HealthElementFilters.ByStatusForDataOwner -> HealthElementByHcPartyStatusFilter(
-		hcPartyId = filterOptions.dataOwnerId,
-		status = filterOptions.status
-	)
-	is HealthElementFilters.ByStatusForSelf -> {
-		filterOptions.ensureNonBaseEnvironment(selfDataOwnerId, entityEncryptionService)
-		HealthElementByHcPartyStatusFilter(
-			hcPartyId = selfDataOwnerId,
-			status = filterOptions.status
 		)
 	}
 	else -> {

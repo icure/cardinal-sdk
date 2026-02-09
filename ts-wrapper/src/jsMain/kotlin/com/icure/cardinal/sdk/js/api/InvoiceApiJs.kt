@@ -6,11 +6,12 @@ package com.icure.cardinal.sdk.js.api
 import com.icure.cardinal.sdk.js.crypto.entities.InvoiceShareOptionsJs
 import com.icure.cardinal.sdk.js.model.DecryptedInvoiceJs
 import com.icure.cardinal.sdk.js.model.EncryptedInvoiceJs
+import com.icure.cardinal.sdk.js.model.EntityReferenceInGroupJs
 import com.icure.cardinal.sdk.js.model.InvoiceJs
 import com.icure.cardinal.sdk.js.model.PaginatedListJs
 import com.icure.cardinal.sdk.js.model.PatientJs
+import com.icure.cardinal.sdk.js.model.StoredDocumentIdentifierJs
 import com.icure.cardinal.sdk.js.model.`data`.LabelledOccurenceJs
-import com.icure.cardinal.sdk.js.model.couchdb.DocIdentifierJs
 import com.icure.cardinal.sdk.js.model.embed.EncryptedInvoicingCodeJs
 import com.icure.cardinal.sdk.js.utils.Record
 import com.icure.cardinal.sdk.js.utils.pagination.PaginatedListIteratorJs
@@ -29,9 +30,7 @@ public external interface InvoiceApiJs {
 
 	public val tryAndRecover: InvoiceFlavouredApiJs<InvoiceJs>
 
-	public fun createInvoice(entity: DecryptedInvoiceJs, prefix: String?): Promise<DecryptedInvoiceJs>
-
-	public fun createInvoices(entities: Array<DecryptedInvoiceJs>): Promise<Array<DecryptedInvoiceJs>>
+	public val inGroup: InvoiceInGroupApiJs
 
 	public fun withEncryptionMetadata(
 		base: DecryptedInvoiceJs?,
@@ -43,7 +42,7 @@ public external interface InvoiceApiJs {
 
 	public fun hasWriteAccess(invoice: InvoiceJs): Promise<Boolean>
 
-	public fun decryptPatientIdOf(invoice: InvoiceJs): Promise<Array<String>>
+	public fun decryptPatientIdOf(invoice: InvoiceJs): Promise<Array<EntityReferenceInGroupJs>>
 
 	public fun createDelegationDeAnonymizationMetadata(entity: InvoiceJs, delegates: Array<String>):
 			Promise<Unit>
@@ -52,7 +51,23 @@ public external interface InvoiceApiJs {
 
 	public fun tryDecrypt(invoice: EncryptedInvoiceJs): Promise<InvoiceJs>
 
-	public fun deleteInvoice(entityId: String): Promise<DocIdentifierJs>
+	public fun deleteInvoiceById(entityId: String, rev: String): Promise<StoredDocumentIdentifierJs>
+
+	public fun deleteInvoicesByIds(entityIds: Array<StoredDocumentIdentifierJs>):
+			Promise<Array<StoredDocumentIdentifierJs>>
+
+	public fun purgeInvoiceById(id: String, rev: String): Promise<Unit>
+
+	public fun purgeInvoicesByIds(entityIds: Array<StoredDocumentIdentifierJs>):
+			Promise<Array<StoredDocumentIdentifierJs>>
+
+	public fun deleteInvoice(invoice: InvoiceJs): Promise<StoredDocumentIdentifierJs>
+
+	public fun deleteInvoices(invoices: Array<InvoiceJs>): Promise<Array<StoredDocumentIdentifierJs>>
+
+	public fun purgeInvoice(invoice: InvoiceJs): Promise<Unit>
+
+	public fun purgeInvoices(invoices: Array<InvoiceJs>): Promise<Array<StoredDocumentIdentifierJs>>
 
 	public fun getTarificationsCodesOccurrences(minOccurrence: Double):
 			Promise<Array<LabelledOccurenceJs>>
@@ -71,6 +86,19 @@ public external interface InvoiceApiJs {
 		patient: PatientJs,
 		options: dynamic,
 	): Promise<PaginatedListIteratorJs<DecryptedInvoiceJs>>
+
+	public fun createInvoice(entity: DecryptedInvoiceJs): Promise<DecryptedInvoiceJs>
+
+	public fun createInvoices(entities: Array<DecryptedInvoiceJs>): Promise<Array<DecryptedInvoiceJs>>
+
+	public fun undeleteInvoiceById(id: String, rev: String): Promise<DecryptedInvoiceJs>
+
+	public fun undeleteInvoicesByIds(entityIds: Array<StoredDocumentIdentifierJs>):
+			Promise<Array<DecryptedInvoiceJs>>
+
+	public fun undeleteInvoice(invoice: InvoiceJs): Promise<DecryptedInvoiceJs>
+
+	public fun undeleteInvoices(invoices: Array<InvoiceJs>): Promise<Array<DecryptedInvoiceJs>>
 
 	public fun modifyInvoice(entity: DecryptedInvoiceJs): Promise<DecryptedInvoiceJs>
 

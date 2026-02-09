@@ -22,7 +22,7 @@ class ReceiptPlatformApi {
 		) : encrypted = ReceiptEncryptedPlatformApi(_methodChannel),
 		tryAndRecover = ReceiptTryAndRecoverPlatformApi(_methodChannel);
 
-	Future<DecryptedReceipt> withEncryptionMetadata(String sdkId, DecryptedReceipt? base, Patient? patient, User? user, Map<String, AccessLevel> delegates, SecretIdUseOption secretId) async {
+	Future<DecryptedReceipt> withEncryptionMetadata(String sdkId, DecryptedReceipt? base, Patient? patient, User? user, Map<String, AccessLevel> delegates, SecretIdUseOption secretId, String? alternateRootDelegateId) async {
 		final res = await _methodChannel.invokeMethod<String>(
 			'ReceiptApi.withEncryptionMetadata',
 			{
@@ -32,6 +32,7 @@ class ReceiptPlatformApi {
 				"user": jsonEncode(user == null ? null : User.encode(user!)),
 				"delegates": jsonEncode(delegates.map((k0, v0) => MapEntry(k0, AccessLevel.encode(v0)))),
 				"secretId": jsonEncode(SecretIdUseOption.encode(secretId)),
+				"alternateRootDelegateId": jsonEncode(alternateRootDelegateId),
 			}
 		).catchError(convertPlatformException);
 		if (res == null) throw AssertionError("received null result from platform method withEncryptionMetadata");

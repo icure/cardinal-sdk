@@ -5,6 +5,7 @@ package com.icure.cardinal.sdk.js.model
 
 import com.icure.cardinal.sdk.js.model.base.CodeStubJs
 import com.icure.cardinal.sdk.js.model.base.HasEncryptionMetadataJs
+import com.icure.cardinal.sdk.js.model.base.HasEndOfLifeJs
 import com.icure.cardinal.sdk.js.model.base.ICureDocumentJs
 import com.icure.cardinal.sdk.js.model.base.IdentifierJs
 import com.icure.cardinal.sdk.js.model.base.StoredDocumentJs
@@ -31,10 +32,8 @@ import kotlin.js.JsQualifier
 
 @JsName("HealthElement")
 public sealed external interface HealthElementJs : StoredDocumentJs, ICureDocumentJs<String>,
-		HasEncryptionMetadataJs, EncryptableJs {
+		HasEncryptionMetadataJs, EncryptableJs, HasEndOfLifeJs {
 	public val identifiers: Array<out IdentifierJs>
-
-	public val healthElementId: String?
 
 	public val valueDate: Double?
 
@@ -55,8 +54,6 @@ public sealed external interface HealthElementJs : StoredDocumentJs, ICureDocume
 	public val idClosingContact: String?
 
 	public val idService: String?
-
-	public val status: Double
 
 	public val laterality: String?
 
@@ -87,8 +84,6 @@ public external class DecryptedHealthElementJs(
 
 	override val responsible: String?
 
-	override val medicalLocationId: String?
-
 	override val tags: Array<CodeStubJs>
 
 	override val codes: Array<CodeStubJs>
@@ -96,8 +91,6 @@ public external class DecryptedHealthElementJs(
 	override val endOfLife: Double?
 
 	override val deletionDate: Double?
-
-	override val healthElementId: String?
 
 	override val valueDate: Double?
 
@@ -118,8 +111,6 @@ public external class DecryptedHealthElementJs(
 	override val idClosingContact: String?
 
 	override val idService: String?
-
-	override val status: Double
 
 	override val laterality: String?
 
@@ -162,8 +153,6 @@ public external class EncryptedHealthElementJs(
 
 	override val responsible: String?
 
-	override val medicalLocationId: String?
-
 	override val tags: Array<CodeStubJs>
 
 	override val codes: Array<CodeStubJs>
@@ -171,8 +160,6 @@ public external class EncryptedHealthElementJs(
 	override val endOfLife: Double?
 
 	override val deletionDate: Double?
-
-	override val healthElementId: String?
 
 	override val valueDate: Double?
 
@@ -193,8 +180,6 @@ public external class EncryptedHealthElementJs(
 	override val idClosingContact: String?
 
 	override val idService: String?
-
-	override val status: Double
 
 	override val laterality: String?
 

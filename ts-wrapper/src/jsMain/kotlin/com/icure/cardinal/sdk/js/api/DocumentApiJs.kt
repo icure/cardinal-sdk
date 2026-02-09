@@ -9,16 +9,15 @@ import com.icure.cardinal.sdk.js.filters.SortableFilterOptionsJs
 import com.icure.cardinal.sdk.js.model.DecryptedDocumentJs
 import com.icure.cardinal.sdk.js.model.DocumentJs
 import com.icure.cardinal.sdk.js.model.EncryptedDocumentJs
+import com.icure.cardinal.sdk.js.model.EntityReferenceInGroupJs
 import com.icure.cardinal.sdk.js.model.MessageJs
 import com.icure.cardinal.sdk.js.model.PatientJs
 import com.icure.cardinal.sdk.js.model.StoredDocumentIdentifierJs
-import com.icure.cardinal.sdk.js.model.couchdb.DocIdentifierJs
 import com.icure.cardinal.sdk.js.utils.Record
 import com.icure.cardinal.sdk.js.utils.pagination.PaginatedListIteratorJs
 import kotlin.Array
 import kotlin.Boolean
 import kotlin.ByteArray
-import kotlin.Double
 import kotlin.String
 import kotlin.Unit
 import kotlin.js.JsName
@@ -30,6 +29,8 @@ public external interface DocumentApiJs {
 	public val encrypted: DocumentFlavouredApiJs<EncryptedDocumentJs>
 
 	public val tryAndRecover: DocumentFlavouredApiJs<DocumentJs>
+
+	public val inGroup: DocumentInGroupApiJs
 
 	public fun withEncryptionMetadataLinkedToMessage(
 		base: DecryptedDocumentJs?,
@@ -48,12 +49,6 @@ public external interface DocumentApiJs {
 
 	public fun getAndTryDecryptMainAttachment(document: DocumentJs, options: dynamic):
 			Promise<ByteArray?>
-
-	public fun getAndTryDecryptMainAttachmentAsPlainText(document: DocumentJs, options: dynamic):
-			Promise<String?>
-
-	public fun getAndTryDecryptMainAttachmentAsJson(document: DocumentJs, options: dynamic):
-			Promise<dynamic>
 
 	public fun getAndDecryptMainAttachment(document: DocumentJs, options: dynamic): Promise<ByteArray>
 
@@ -80,7 +75,7 @@ public external interface DocumentApiJs {
 
 	public fun hasWriteAccess(document: DocumentJs): Promise<Boolean>
 
-	public fun decryptOwningEntityIdsOf(document: DocumentJs): Promise<Array<String>>
+	public fun decryptOwningEntityIdsOf(document: DocumentJs): Promise<Array<EntityReferenceInGroupJs>>
 
 	public fun createDelegationDeAnonymizationMetadata(entity: DocumentJs, delegates: Array<String>):
 			Promise<Unit>
@@ -100,28 +95,26 @@ public external interface DocumentApiJs {
 	public fun matchDocumentsBySorted(filter: SortableFilterOptionsJs<DocumentJs>):
 			Promise<Array<String>>
 
-	public fun deleteDocumentUnsafe(entityId: String): Promise<DocIdentifierJs>
-
-	public fun deleteDocumentsUnsafe(entityIds: Array<String>): Promise<Array<DocIdentifierJs>>
-
-	public fun deleteDocumentById(entityId: String, rev: String): Promise<DocIdentifierJs>
+	public fun deleteDocumentById(entityId: String, rev: String): Promise<StoredDocumentIdentifierJs>
 
 	public fun deleteDocumentsByIds(entityIds: Array<StoredDocumentIdentifierJs>):
-			Promise<Array<DocIdentifierJs>>
+			Promise<Array<StoredDocumentIdentifierJs>>
 
 	public fun purgeDocumentById(id: String, rev: String): Promise<Unit>
 
-	public fun deleteDocument(document: DocumentJs): Promise<DocIdentifierJs>
+	public fun purgeDocumentsByIds(entityIds: Array<StoredDocumentIdentifierJs>):
+			Promise<Array<StoredDocumentIdentifierJs>>
 
-	public fun deleteDocuments(documents: Array<DocumentJs>): Promise<Array<DocIdentifierJs>>
+	public fun deleteDocument(document: DocumentJs): Promise<StoredDocumentIdentifierJs>
+
+	public fun deleteDocuments(documents: Array<DocumentJs>):
+			Promise<Array<StoredDocumentIdentifierJs>>
 
 	public fun purgeDocument(document: DocumentJs): Promise<Unit>
 
+	public fun purgeDocuments(documents: Array<DocumentJs>): Promise<Array<StoredDocumentIdentifierJs>>
+
 	public fun getRawMainAttachment(documentId: String): Promise<ByteArray>
-
-	public fun getMainAttachmentAsPlainText(documentId: String): Promise<String>
-
-	public fun getMainAttachmentAsJson(documentId: String): Promise<dynamic>
 
 	public fun getRawSecondaryAttachment(documentId: String, key: String): Promise<ByteArray>
 
@@ -159,12 +152,6 @@ public external interface DocumentApiJs {
 	public fun shareWithMany(document: DecryptedDocumentJs,
 			delegates: Record<String, DocumentShareOptionsJs>): Promise<DecryptedDocumentJs>
 
-	public fun findDocumentsByHcPartyPatient(
-		hcPartyId: String,
-		patient: PatientJs,
-		options: dynamic,
-	): Promise<PaginatedListIteratorJs<DecryptedDocumentJs>>
-
 	public fun filterDocumentsBy(filter: FilterOptionsJs<DocumentJs>):
 			Promise<PaginatedListIteratorJs<DecryptedDocumentJs>>
 
@@ -173,22 +160,25 @@ public external interface DocumentApiJs {
 
 	public fun createDocument(entity: DecryptedDocumentJs): Promise<DecryptedDocumentJs>
 
+	public fun createDocuments(entities: Array<DecryptedDocumentJs>):
+			Promise<Array<DecryptedDocumentJs>>
+
 	public fun undeleteDocumentById(id: String, rev: String): Promise<DecryptedDocumentJs>
+
+	public fun undeleteDocumentsByIds(entityIds: Array<StoredDocumentIdentifierJs>):
+			Promise<Array<DecryptedDocumentJs>>
 
 	public fun undeleteDocument(document: DocumentJs): Promise<DecryptedDocumentJs>
 
+	public fun undeleteDocuments(documents: Array<DecryptedDocumentJs>):
+			Promise<Array<DecryptedDocumentJs>>
+
 	public fun modifyDocument(entity: DecryptedDocumentJs): Promise<DecryptedDocumentJs>
-
-	public fun getDocument(entityId: String): Promise<DecryptedDocumentJs?>
-
-	public fun getDocumentByExternalUuid(externalUuid: String): Promise<DecryptedDocumentJs>
-
-	public fun getDocumentsByExternalUuid(externalUuid: String): Promise<Array<DecryptedDocumentJs>>
-
-	public fun getDocuments(entityIds: Array<String>): Promise<Array<DecryptedDocumentJs>>
 
 	public fun modifyDocuments(entities: Array<DecryptedDocumentJs>):
 			Promise<Array<DecryptedDocumentJs>>
 
-	public fun findWithoutDelegation(limit: Double?): Promise<Array<DecryptedDocumentJs>>
+	public fun getDocument(entityId: String): Promise<DecryptedDocumentJs?>
+
+	public fun getDocuments(entityIds: Array<String>): Promise<Array<DecryptedDocumentJs>>
 }

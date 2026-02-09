@@ -2,8 +2,7 @@
 import {FilterOptions, PaginatedListIterator, SortableFilterOptions} from '../cardinal-sdk-ts.mjs';
 import {MessageShareOptions} from '../crypto/entities/MessageShareOptions.mjs';
 import {Message} from '../model/Message.mjs';
-import {PaginatedList} from '../model/PaginatedList.mjs';
-import {Patient} from '../model/Patient.mjs';
+import {StoredDocumentIdentifier} from '../model/StoredDocumentIdentifier.mjs';
 
 
 export interface MessageFlavouredApi<E extends Message> {
@@ -13,50 +12,31 @@ export interface MessageFlavouredApi<E extends Message> {
 
 	shareWithMany(message: E, delegates: { [ key: string ]: MessageShareOptions }): Promise<E>;
 
-	findMessagesByHcPartyPatient(hcPartyId: string, patient: Patient,
-			options?: { startDate?: number | undefined, endDate?: number | undefined, descending?: boolean | undefined }): Promise<PaginatedListIterator<E>>;
-
 	filterMessagesBy(filter: FilterOptions<Message>): Promise<PaginatedListIterator<E>>;
 
 	filterMessagesBySorted(filter: SortableFilterOptions<Message>): Promise<PaginatedListIterator<E>>;
 
 	createMessage(entity: E): Promise<E>;
 
+	createMessages(entities: Array<E>): Promise<Array<E>>;
+
 	createMessageInTopic(entity: E): Promise<E>;
 
-	undeleteMessage(message: Message): Promise<Message>;
+	undeleteMessageById(id: string, rev: string): Promise<E>;
+
+	undeleteMessagesByIds(entityIds: Array<StoredDocumentIdentifier>): Promise<Array<E>>;
+
+	undeleteMessage(message: Message): Promise<E>;
+
+	undeleteMessages(messages: Array<Message>): Promise<Array<E>>;
 
 	modifyMessage(entity: E): Promise<E>;
 
-	undeleteMessageById(id: string, rev: string): Promise<E>;
+	modifyMessages(entities: Array<E>): Promise<Array<E>>;
 
 	getMessage(entityId: string): Promise<E | undefined>;
 
 	getMessages(entityIds: Array<string>): Promise<Array<E>>;
-
-	listMessagesByTransportGuids(hcPartyId: string, transportGuids: Array<string>): Promise<Array<E>>;
-
-	findMessages(startKey: any | undefined, startDocumentId: string | undefined,
-			limit: number | undefined): Promise<PaginatedList<E>>;
-
-	getChildrenMessages(messageId: string): Promise<Array<E>>;
-
-	getMessagesChildren(messageIds: Array<string>): Promise<Array<E>>;
-
-	listMessagesByInvoices(invoiceIds: Array<string>): Promise<Array<E>>;
-
-	findMessagesByTransportGuid(transportGuid: string): Promise<PaginatedList<E>>;
-
-	findMessagesByTransportGuidSentDate(transportGuid: string, from: number, to: number,
-			options?: { startKey?: any | undefined, startDocumentId?: string | undefined, limit?: number | undefined, hcpId?: string | undefined }): Promise<PaginatedList<E>>;
-
-	findMessagesByToAddress(toAddress: string, startKey: any | undefined,
-			startDocumentId: string | undefined, limit: number | undefined): Promise<PaginatedList<E>>;
-
-	findMessagesByFromAddress(fromAddress: string, startKey: any | undefined,
-			startDocumentId: string | undefined, limit: number | undefined): Promise<PaginatedList<E>>;
-
-	setMessagesStatusBits(entityIds: Array<string>, statusBits: number): Promise<Array<E>>;
 
 	setMessagesReadStatus(entityIds: Array<string>, time: number | undefined, readStatus: boolean,
 			userId: string | undefined): Promise<Array<E>>;

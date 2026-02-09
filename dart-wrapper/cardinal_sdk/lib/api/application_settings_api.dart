@@ -11,20 +11,20 @@ class ApplicationSettingsApi {
 		this._dartSdk
 		);
 
-	Future<List<ApplicationSettings>> getApplicationSettings() async {
+	Future<List<EncryptedApplicationSettings>> getApplicationSettings() async {
 		return await CardinalSdkPlatformInterface.instance.apis.applicationSettings.getApplicationSettings(
 			_sdkId,
 		);
 	}
 
-	Future<ApplicationSettings> createApplicationSettings(ApplicationSettings applicationSettings) async {
+	Future<EncryptedApplicationSettings> createApplicationSettings(EncryptedApplicationSettings applicationSettings) async {
 		return await CardinalSdkPlatformInterface.instance.apis.applicationSettings.createApplicationSettings(
 			_sdkId,
 			applicationSettings,
 		);
 	}
 
-	Future<ApplicationSettings> updateApplicationSettings(ApplicationSettings applicationSettings) async {
+	Future<EncryptedApplicationSettings> updateApplicationSettings(EncryptedApplicationSettings applicationSettings) async {
 		return await CardinalSdkPlatformInterface.instance.apis.applicationSettings.updateApplicationSettings(
 			_sdkId,
 			applicationSettings,

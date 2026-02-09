@@ -2,8 +2,8 @@
 import {FilterOptions, PaginatedListIterator, SortableFilterOptions} from '../cardinal-sdk-ts.mjs';
 import {CalendarItemShareOptions} from '../crypto/entities/CalendarItemShareOptions.mjs';
 import {CalendarItem} from '../model/CalendarItem.mjs';
-import {PaginatedList} from '../model/PaginatedList.mjs';
 import {Patient} from '../model/Patient.mjs';
+import {StoredDocumentIdentifier} from '../model/StoredDocumentIdentifier.mjs';
 
 
 export interface CalendarItemFlavouredApi<E extends CalendarItem> {
@@ -14,9 +14,6 @@ export interface CalendarItemFlavouredApi<E extends CalendarItem> {
 	shareWithMany(calendarItem: E,
 			delegates: { [ key: string ]: CalendarItemShareOptions }): Promise<E>;
 
-	findCalendarItemsByHcPartyPatient(hcPartyId: string, patient: Patient,
-			options?: { startDate?: number | undefined, endDate?: number | undefined, descending?: boolean | undefined }): Promise<PaginatedListIterator<E>>;
-
 	linkToPatient(calendarItem: CalendarItem, patient: Patient,
 			shareLinkWithDelegates: Array<string>): Promise<E>;
 
@@ -26,25 +23,24 @@ export interface CalendarItemFlavouredApi<E extends CalendarItem> {
 
 	createCalendarItem(entity: E): Promise<E>;
 
+	createCalendarItems(entities: Array<E>): Promise<Array<E>>;
+
 	bookCalendarItemCheckingAvailability(entity: E): Promise<E>;
 
 	undeleteCalendarItemById(id: string, rev: string): Promise<E>;
 
+	undeleteCalendarItemsByIds(entityIds: Array<StoredDocumentIdentifier>): Promise<Array<E>>;
+
 	undeleteCalendarItem(calendarItem: CalendarItem): Promise<E>;
 
+	undeleteCalendarItems(calendarItems: Array<CalendarItem>): Promise<Array<E>>;
+
 	modifyCalendarItem(entity: E): Promise<E>;
+
+	modifyCalendarItems(entities: Array<E>): Promise<Array<E>>;
 
 	getCalendarItem(entityId: string): Promise<E | undefined>;
 
 	getCalendarItems(entityIds: Array<string>): Promise<Array<E>>;
-
-	getCalendarItemsByPeriodAndHcPartyId(startDate: number, endDate: number,
-			hcPartyId: string): Promise<Array<E>>;
-
-	getCalendarsByPeriodAndAgendaId(startDate: number, endDate: number,
-			agendaId: string): Promise<Array<E>>;
-
-	findCalendarItemsByRecurrenceId(recurrenceId: string, startKey: string | undefined,
-			startDocumentId: string | undefined, limit: number): Promise<PaginatedList<E>>;
 
 }

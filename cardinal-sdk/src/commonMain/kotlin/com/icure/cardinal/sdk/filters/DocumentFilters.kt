@@ -4,16 +4,22 @@ import com.icure.cardinal.sdk.CardinalBaseApis
 import com.icure.cardinal.sdk.crypto.EntityEncryptionService
 import com.icure.cardinal.sdk.crypto.entities.EntityWithEncryptionMetadataStub
 import com.icure.cardinal.sdk.crypto.entities.EntityWithEncryptionMetadataTypeName
+import com.icure.cardinal.sdk.crypto.entities.SdkBoundGroup
 import com.icure.cardinal.sdk.crypto.entities.toEncryptionMetadataStub
 import com.icure.cardinal.sdk.model.Document
+import com.icure.cardinal.sdk.model.EntityReferenceInGroup
+import com.icure.cardinal.sdk.model.GroupScoped
 import com.icure.cardinal.sdk.model.Message
 import com.icure.cardinal.sdk.model.Patient
 import com.icure.cardinal.sdk.model.embed.DocumentType
 import com.icure.cardinal.sdk.model.filter.AbstractFilter
 import com.icure.cardinal.sdk.model.filter.document.DocumentByDataOwnerPatientDateFilter
 import com.icure.cardinal.sdk.model.filter.document.DocumentByTypeDataOwnerPatientFilter
+import com.icure.cardinal.sdk.options.ApiConfiguration
+import com.icure.cardinal.sdk.options.BasicApiConfiguration
 import com.icure.cardinal.sdk.utils.DefaultValue
 import com.icure.utils.InternalIcureApi
+import kotlinx.coroutines.currentCoroutineContext
 import kotlin.time.Instant
 import kotlinx.serialization.Serializable
 
@@ -53,8 +59,29 @@ object DocumentFilters {
 		@DefaultValue("false")
 		descending: Boolean = false
 	): SortableFilterOptions<Document> = ByPatientsCreatedForDataOwner(
-		dataOwnerId = dataOwnerId,
-		patients = patients.map { it.toEncryptionMetadataStub() },
+		dataOwnerId = EntityReferenceInGroup(groupId = null, entityId = dataOwnerId),
+		patients = patients.map { Pair(it.toEncryptionMetadataStub(), null) },
+		from = from,
+		to = to,
+		descending = descending
+	)
+
+	/**
+	 * In group version of [byPatientsCreatedForDataOwner].
+	 */
+	@OptIn(InternalIcureApi::class)
+	fun byPatientsCreatedForDataOwnerInGroup(
+		dataOwner: EntityReferenceInGroup,
+		patients: List<GroupScoped<Patient>>,
+		@DefaultValue("null")
+		from: Instant? = null,
+		@DefaultValue("null")
+		to: Instant? = null,
+		@DefaultValue("false")
+		descending: Boolean = false
+	): SortableFilterOptions<Document> = ByPatientsCreatedForDataOwner(
+		dataOwnerId = dataOwner,
+		patients = patients.map { Pair(it.entity.toEncryptionMetadataStub(), it.groupId) },
 		from = from,
 		to = to,
 		descending = descending
@@ -94,8 +121,29 @@ object DocumentFilters {
 		@DefaultValue("false")
 		descending: Boolean = false
 	): SortableFilterOptions<Document> = ByMessagesCreatedForDataOwner(
-		dataOwnerId = dataOwnerId,
-		messages = messages.map { it.toEncryptionMetadataStub() },
+		dataOwnerId = EntityReferenceInGroup(groupId = null, entityId = dataOwnerId),
+		messages = messages.map { Pair(it.toEncryptionMetadataStub(), null) },
+		from = from,
+		to = to,
+		descending = descending
+	)
+
+	/**
+	 * In group version of [byMessagesCreatedForDataOwner].
+	 */
+	@OptIn(InternalIcureApi::class)
+	fun byMessagesCreatedForDataOwnerInGroup(
+		dataOwner: EntityReferenceInGroup,
+		messages: List<GroupScoped<Message>>,
+		@DefaultValue("null")
+		from: Instant? = null,
+		@DefaultValue("null")
+		to: Instant? = null,
+		@DefaultValue("false")
+		descending: Boolean = false
+	): SortableFilterOptions<Document> = ByMessagesCreatedForDataOwner(
+		dataOwnerId = dataOwner,
+		messages = messages.map { Pair(it.entity.toEncryptionMetadataStub(), it.groupId) },
 		from = from,
 		to = to,
 		descending = descending
@@ -206,7 +254,24 @@ object DocumentFilters {
 		@DefaultValue("false")
 		descending: Boolean = false
 	): BaseSortableFilterOptions<Document> = ByOwningEntitySecretIdsCreatedForDataOwner(
-		dataOwnerId = dataOwnerId,
+		dataOwnerId = EntityReferenceInGroup(groupId = null, entityId = dataOwnerId),
+		secretIds = secretIds,
+		from = from,
+		to = to,
+		descending = descending
+	)
+
+	fun byOwningEntitySecretIdsCreatedForDataOwnerInGroup(
+		dataOwner: EntityReferenceInGroup,
+		secretIds: List<String>,
+		@DefaultValue("null")
+		from: Instant? = null,
+		@DefaultValue("null")
+		to: Instant? = null,
+		@DefaultValue("false")
+		descending: Boolean = false
+	): BaseSortableFilterOptions<Document> = ByOwningEntitySecretIdsCreatedForDataOwner(
+		dataOwnerId = dataOwner,
 		secretIds = secretIds,
 		from = from,
 		to = to,
@@ -268,8 +333,22 @@ object DocumentFilters {
 		documentType: DocumentType,
 		patients: List<Patient>
 	): FilterOptions<Document> = ByPatientsTypeForDataOwner(
-		dataOwnerId = dataOwnerId,
-		patients = patients.map { it.toEncryptionMetadataStub() },
+		dataOwnerId = EntityReferenceInGroup(groupId = null, entityId = dataOwnerId),
+		patients = patients.map { Pair(it.toEncryptionMetadataStub(), null) },
+		type = documentType
+	)
+
+	/**
+	 * In group version of [byPatientsAndTypeForDataOwner].
+	 */
+	@OptIn(InternalIcureApi::class)
+	fun byPatientsAndTypeForDataOwnerInGroup(
+		dataOwner: EntityReferenceInGroup,
+		documentType: DocumentType,
+		patients: List<GroupScoped<Patient>>
+	): FilterOptions<Document> = ByPatientsTypeForDataOwner(
+		dataOwnerId = dataOwner,
+		patients = patients.map { Pair(it.entity.toEncryptionMetadataStub(), it.groupId) },
 		type = documentType
 	)
 
@@ -294,8 +373,22 @@ object DocumentFilters {
 		documentType: DocumentType,
 		messages: List<Message>
 	): FilterOptions<Document> = ByMessagesTypeForDataOwner(
-		dataOwnerId = dataOwnerId,
-		messages = messages.map { it.toEncryptionMetadataStub() },
+		dataOwnerId = EntityReferenceInGroup(groupId = null, entityId = dataOwnerId),
+		messages = messages.map { Pair(it.toEncryptionMetadataStub(), null) },
+		type = documentType
+	)
+
+	/**
+	 * In group version of [byMessagesAndTypeForDataOwner].
+	 */
+	@OptIn(InternalIcureApi::class)
+	fun byMessagesAndTypeForDataOwnerInGroup(
+		dataOwner: EntityReferenceInGroup,
+		documentType: DocumentType,
+		messages: List<GroupScoped<Message>>
+	): FilterOptions<Document> = ByMessagesTypeForDataOwner(
+		dataOwnerId = dataOwner,
+		messages = messages.map { Pair(it.entity.toEncryptionMetadataStub(), it.groupId) },
 		type = documentType
 	)
 
@@ -334,7 +427,7 @@ object DocumentFilters {
 	 * Note that these may not be used in methods of apis from [CardinalBaseApis].
 	 *
 	 * @param documentType the document type to search.
-	 * @param patients a list of patients.
+	 * @param messages a list of messages.
 	 */
 	@OptIn(InternalIcureApi::class)
 	fun byMessagesAndTypeForSelf(
@@ -362,7 +455,20 @@ object DocumentFilters {
 		documentType: DocumentType,
 		secretIds: List<String>
 	): FilterOptions<Document> = ByOwningEntitySecretIdsTypeForDataOwner(
-		dataOwnerId = dataOwnerId,
+		dataOwnerId = EntityReferenceInGroup(groupId = null, entityId = dataOwnerId),
+		secretIds = secretIds,
+		type = documentType
+	)
+
+	/**
+	 * In group version of [byOwningEntitySecretIdsAndTypeForDataOwner].
+	 */
+	fun byOwningEntitySecretIdsAndTypeForDataOwnerInGroup(
+		dataOwner: EntityReferenceInGroup,
+		documentType: DocumentType,
+		secretIds: List<String>
+	): FilterOptions<Document> = ByOwningEntitySecretIdsTypeForDataOwner(
+		dataOwnerId = dataOwner,
 		secretIds = secretIds,
 		type = documentType
 	)
@@ -391,8 +497,8 @@ object DocumentFilters {
 	@Serializable
 	@InternalIcureApi
 	internal class ByPatientsCreatedForDataOwner(
-		val dataOwnerId: String,
-		val patients: List<EntityWithEncryptionMetadataStub>,
+		val dataOwnerId: EntityReferenceInGroup,
+		val patients: List<Pair<EntityWithEncryptionMetadataStub, String?>>,
 		val from: Instant?,
 		val to: Instant?,
 		val descending: Boolean
@@ -401,8 +507,8 @@ object DocumentFilters {
 	@Serializable
 	@InternalIcureApi
 	internal class ByMessagesCreatedForDataOwner(
-		val dataOwnerId: String,
-		val messages: List<EntityWithEncryptionMetadataStub>,
+		val dataOwnerId: EntityReferenceInGroup,
+		val messages: List<Pair<EntityWithEncryptionMetadataStub, String?>>,
 		val from: Instant?,
 		val to: Instant?,
 		val descending: Boolean
@@ -428,7 +534,7 @@ object DocumentFilters {
 
 	@Serializable
 	internal class ByOwningEntitySecretIdsCreatedForDataOwner(
-		val dataOwnerId: String,
+		val dataOwnerId: EntityReferenceInGroup,
 		val secretIds: List<String>,
 		val from: Instant?,
 		val to: Instant?,
@@ -446,16 +552,16 @@ object DocumentFilters {
 	@Serializable
 	@InternalIcureApi
 	internal class ByPatientsTypeForDataOwner(
-		val dataOwnerId: String,
-		val patients: List<EntityWithEncryptionMetadataStub>,
+		val dataOwnerId: EntityReferenceInGroup,
+		val patients: List<Pair<EntityWithEncryptionMetadataStub, String?>>,
 		val type: DocumentType
 	): FilterOptions<Document>
 
 	@Serializable
 	@InternalIcureApi
 	internal class ByMessagesTypeForDataOwner(
-		val dataOwnerId: String,
-		val messages: List<EntityWithEncryptionMetadataStub>,
+		val dataOwnerId: EntityReferenceInGroup,
+		val messages: List<Pair<EntityWithEncryptionMetadataStub, String?>>,
 		val type: DocumentType
 	): FilterOptions<Document>
 
@@ -475,7 +581,7 @@ object DocumentFilters {
 
 	@Serializable
 	internal class ByOwningEntitySecretIdsTypeForDataOwner(
-		val dataOwnerId: String,
+		val dataOwnerId: EntityReferenceInGroup,
 		val secretIds: List<String>,
 		val type: DocumentType
 	): BaseFilterOptions<Document>
@@ -490,55 +596,85 @@ object DocumentFilters {
 @InternalIcureApi
 internal suspend fun mapDocumentFilterOptions(
 	filterOptions: FilterOptions<Document>,
-	selfDataOwnerId: String?,
-	entityEncryptionService: EntityEncryptionService?
+	config: BasicApiConfiguration,
+	requestGroup: String?
+): AbstractFilter<Document> {
+	val nonBasicConfig = config as? ApiConfiguration
+	return mapDocumentFilterOptions(
+		filterOptions,
+		nonBasicConfig?.crypto?.dataOwnerApi?.getCurrentDataOwnerReference(),
+		nonBasicConfig?.crypto?.entity,
+		config.getBoundGroup(currentCoroutineContext()),
+		requestGroup
+	)
+}
+
+@InternalIcureApi
+private suspend fun mapDocumentFilterOptions(
+	filterOptions: FilterOptions<Document>,
+	selfDataOwner: EntityReferenceInGroup?,
+	entityEncryptionService: EntityEncryptionService?,
+	boundGroup: SdkBoundGroup?,
+	requestGroup: String?
 ): AbstractFilter<Document> = mapIfMetaFilterOptions(filterOptions) {
-	mapDocumentFilterOptions(it, selfDataOwnerId, entityEncryptionService)
+	mapDocumentFilterOptions(it, selfDataOwner, entityEncryptionService, boundGroup, requestGroup)
 } ?: when (filterOptions) {
 	is DocumentFilters.ByPatientsCreatedForDataOwner -> {
-		filterOptions.ensureNonBaseEnvironment(selfDataOwnerId, entityEncryptionService)
+		filterOptions.ensureNonBaseEnvironment(selfDataOwner, entityEncryptionService)
 		DocumentByDataOwnerPatientDateFilter(
-			dataOwnerId = filterOptions.dataOwnerId,
-			secretPatientKeys = entityEncryptionService.secretIdsOf(null, filterOptions.patients, EntityWithEncryptionMetadataTypeName.Patient, null).values.flatten().toSet(),
+			dataOwnerId = filterOptions.dataOwnerId.asReferenceStringInGroup(requestGroup, boundGroup),
+			secretPatientKeys = filterOptions.patients.mapToSecretIds(
+				entityEncryptionService,
+				EntityWithEncryptionMetadataTypeName.Patient
+			),
 			startDate = filterOptions.to,
 			endDate = filterOptions.from,
 			descending = filterOptions.descending
 		)
 	}
 	is DocumentFilters.ByMessagesCreatedForDataOwner -> {
-		filterOptions.ensureNonBaseEnvironment(selfDataOwnerId, entityEncryptionService)
+		filterOptions.ensureNonBaseEnvironment(selfDataOwner, entityEncryptionService)
 		DocumentByDataOwnerPatientDateFilter(
-			dataOwnerId = filterOptions.dataOwnerId,
-			secretPatientKeys = entityEncryptionService.secretIdsOf(null, filterOptions.messages, EntityWithEncryptionMetadataTypeName.Message, null).values.flatten().toSet(),
+			dataOwnerId = filterOptions.dataOwnerId.asReferenceStringInGroup(requestGroup, boundGroup),
+			secretPatientKeys = filterOptions.messages.mapToSecretIds(
+				entityEncryptionService,
+				EntityWithEncryptionMetadataTypeName.Patient
+			),
 			startDate = filterOptions.to,
 			endDate = filterOptions.from,
 			descending = filterOptions.descending
 		)
 	}
 	is DocumentFilters.ByPatientsCreatedForSelf -> {
-		filterOptions.ensureNonBaseEnvironment(selfDataOwnerId, entityEncryptionService)
+		filterOptions.ensureNonBaseEnvironment(selfDataOwner, entityEncryptionService)
 		DocumentByDataOwnerPatientDateFilter(
-			dataOwnerId = selfDataOwnerId,
-			secretPatientKeys = entityEncryptionService.secretIdsOf(null, filterOptions.patients, EntityWithEncryptionMetadataTypeName.Patient, null).values.flatten().toSet(),
+			dataOwnerId = selfDataOwner.asReferenceStringInGroup(requestGroup, boundGroup),
+			secretPatientKeys = filterOptions.patients.map { Pair(it, null) }.mapToSecretIds(
+				entityEncryptionService,
+				EntityWithEncryptionMetadataTypeName.Patient
+			),
 			startDate = filterOptions.to,
 			endDate = filterOptions.from,
 			descending = filterOptions.descending
 		)
 	}
 	is DocumentFilters.ByMessagesCreatedForSelf -> {
-		filterOptions.ensureNonBaseEnvironment(selfDataOwnerId, entityEncryptionService)
+		filterOptions.ensureNonBaseEnvironment(selfDataOwner, entityEncryptionService)
 		DocumentByDataOwnerPatientDateFilter(
-			dataOwnerId = selfDataOwnerId,
-			secretPatientKeys = entityEncryptionService.secretIdsOf(null, filterOptions.messages, EntityWithEncryptionMetadataTypeName.Message, null).values.flatten().toSet(),
+			dataOwnerId = selfDataOwner.asReferenceStringInGroup(requestGroup, boundGroup),
+			secretPatientKeys = filterOptions.messages.map { Pair(it, null) }.mapToSecretIds(
+				entityEncryptionService,
+				EntityWithEncryptionMetadataTypeName.Patient
+			),
 			startDate = filterOptions.to,
 			endDate = filterOptions.from,
 			descending = filterOptions.descending
 		)
 	}
 	is DocumentFilters.ByOwningEntitySecretIdsCreatedForSelf -> {
-		filterOptions.ensureNonBaseEnvironment(selfDataOwnerId, entityEncryptionService)
+		filterOptions.ensureNonBaseEnvironment(selfDataOwner, entityEncryptionService)
 		DocumentByDataOwnerPatientDateFilter(
-			dataOwnerId = selfDataOwnerId,
+			dataOwnerId = selfDataOwner.asReferenceStringInGroup(requestGroup, boundGroup),
 			secretPatientKeys = filterOptions.secretIds.toSet(),
 			startDate = filterOptions.to,
 			endDate = filterOptions.from,
@@ -546,53 +682,65 @@ internal suspend fun mapDocumentFilterOptions(
 		)
 	}
 	is DocumentFilters.ByOwningEntitySecretIdsCreatedForDataOwner -> DocumentByDataOwnerPatientDateFilter(
-		dataOwnerId = filterOptions.dataOwnerId,
+		dataOwnerId = filterOptions.dataOwnerId.asReferenceStringInGroup(requestGroup, boundGroup),
 		secretPatientKeys = filterOptions.secretIds.toSet(),
 		startDate = filterOptions.to,
 		endDate = filterOptions.from,
 		descending = filterOptions.descending
 	)
 	is DocumentFilters.ByPatientsTypeForDataOwner -> {
-		filterOptions.ensureNonBaseEnvironment(selfDataOwnerId, entityEncryptionService)
+		filterOptions.ensureNonBaseEnvironment(selfDataOwner, entityEncryptionService)
 		DocumentByTypeDataOwnerPatientFilter(
-			dataOwnerId = filterOptions.dataOwnerId,
-			secretPatientKeys = entityEncryptionService.secretIdsOf(null, filterOptions.patients, EntityWithEncryptionMetadataTypeName.Patient, null).values.flatten().toSet(),
+			dataOwnerId = filterOptions.dataOwnerId.asReferenceStringInGroup(requestGroup, boundGroup),
+			secretPatientKeys = filterOptions.patients.mapToSecretIds(
+				entityEncryptionService,
+				EntityWithEncryptionMetadataTypeName.Patient
+			),
 			documentType = filterOptions.type
 		)
 	}
 	is DocumentFilters.ByMessagesTypeForDataOwner -> {
-		filterOptions.ensureNonBaseEnvironment(selfDataOwnerId, entityEncryptionService)
+		filterOptions.ensureNonBaseEnvironment(selfDataOwner, entityEncryptionService)
 		DocumentByTypeDataOwnerPatientFilter(
-			dataOwnerId = filterOptions.dataOwnerId,
-			secretPatientKeys = entityEncryptionService.secretIdsOf(null, filterOptions.messages, EntityWithEncryptionMetadataTypeName.Message, null).values.flatten().toSet(),
+			dataOwnerId = filterOptions.dataOwnerId.asReferenceStringInGroup(requestGroup, boundGroup),
+			secretPatientKeys = filterOptions.messages.mapToSecretIds(
+				entityEncryptionService,
+				EntityWithEncryptionMetadataTypeName.Patient
+			),
 			documentType = filterOptions.type
 		)
 	}
 	is DocumentFilters.ByPatientsTypeForSelf -> {
-		filterOptions.ensureNonBaseEnvironment(selfDataOwnerId, entityEncryptionService)
+		filterOptions.ensureNonBaseEnvironment(selfDataOwner, entityEncryptionService)
 		DocumentByTypeDataOwnerPatientFilter(
-			dataOwnerId = selfDataOwnerId,
-			secretPatientKeys = entityEncryptionService.secretIdsOf(null, filterOptions.patients, EntityWithEncryptionMetadataTypeName.Patient, null).values.flatten().toSet(),
+			dataOwnerId = selfDataOwner.asReferenceStringInGroup(requestGroup, boundGroup),
+			secretPatientKeys = filterOptions.patients.map { Pair(it, null) }.mapToSecretIds(
+				entityEncryptionService,
+				EntityWithEncryptionMetadataTypeName.Patient
+			),
 			documentType = filterOptions.type
 		)
 	}
 	is DocumentFilters.ByMessagesTypeForSelf -> {
-		filterOptions.ensureNonBaseEnvironment(selfDataOwnerId, entityEncryptionService)
+		filterOptions.ensureNonBaseEnvironment(selfDataOwner, entityEncryptionService)
 		DocumentByTypeDataOwnerPatientFilter(
-			dataOwnerId = selfDataOwnerId,
-			secretPatientKeys = entityEncryptionService.secretIdsOf(null, filterOptions.messages, EntityWithEncryptionMetadataTypeName.Message, null).values.flatten().toSet(),
+			dataOwnerId = selfDataOwner.asReferenceStringInGroup(requestGroup, boundGroup),
+			secretPatientKeys = filterOptions.messages.map { Pair(it, null) }.mapToSecretIds(
+				entityEncryptionService,
+				EntityWithEncryptionMetadataTypeName.Patient
+			),
 			documentType = filterOptions.type
 		)
 	}
 	is DocumentFilters.ByOwningEntitySecretIdsTypeForDataOwner -> DocumentByTypeDataOwnerPatientFilter(
-		dataOwnerId = filterOptions.dataOwnerId,
+		dataOwnerId = filterOptions.dataOwnerId.asReferenceStringInGroup(requestGroup, boundGroup),
 		secretPatientKeys = filterOptions.secretIds.toSet(),
 		documentType = filterOptions.type
 	)
 	is DocumentFilters.ByOwningEntitySecretIdsTypeForSelf -> {
-		filterOptions.ensureNonBaseEnvironment(selfDataOwnerId, entityEncryptionService)
+		filterOptions.ensureNonBaseEnvironment(selfDataOwner, entityEncryptionService)
 		DocumentByTypeDataOwnerPatientFilter(
-			dataOwnerId = selfDataOwnerId,
+			dataOwnerId = selfDataOwner.asReferenceStringInGroup(requestGroup, boundGroup),
 			secretPatientKeys = filterOptions.secretIds.toSet(),
 			documentType = filterOptions.type
 		)

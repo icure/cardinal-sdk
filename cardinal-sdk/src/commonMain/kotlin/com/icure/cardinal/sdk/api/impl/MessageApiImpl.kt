@@ -3,8 +3,13 @@ package com.icure.cardinal.sdk.api.impl
 import com.icure.cardinal.sdk.api.MessageApi
 import com.icure.cardinal.sdk.api.MessageBasicApi
 import com.icure.cardinal.sdk.api.MessageBasicFlavouredApi
+import com.icure.cardinal.sdk.api.MessageBasicFlavouredInGroupApi
 import com.icure.cardinal.sdk.api.MessageBasicFlavourlessApi
+import com.icure.cardinal.sdk.api.MessageBasicFlavourlessInGroupApi
+import com.icure.cardinal.sdk.api.MessageBasicInGroupApi
 import com.icure.cardinal.sdk.api.MessageFlavouredApi
+import com.icure.cardinal.sdk.api.MessageFlavouredInGroupApi
+import com.icure.cardinal.sdk.api.MessageInGroupApi
 import com.icure.cardinal.sdk.api.raw.RawMessageApi
 import com.icure.cardinal.sdk.api.raw.successBodyOrNull404
 import com.icure.cardinal.sdk.api.raw.successBodyOrThrowRevisionConflict
@@ -21,6 +26,7 @@ import com.icure.cardinal.sdk.filters.mapMessageFilterOptions
 import com.icure.cardinal.sdk.model.DecryptedMessage
 import com.icure.cardinal.sdk.model.EncryptedMessage
 import com.icure.cardinal.sdk.model.EntityReferenceInGroup
+import com.icure.cardinal.sdk.model.GroupScoped
 import com.icure.cardinal.sdk.model.ListOfIds
 import com.icure.cardinal.sdk.model.ListOfIdsAndRev
 import com.icure.cardinal.sdk.model.Message
@@ -28,14 +34,16 @@ import com.icure.cardinal.sdk.model.MessagesReadStatusUpdate
 import com.icure.cardinal.sdk.model.Patient
 import com.icure.cardinal.sdk.model.StoredDocumentIdentifier
 import com.icure.cardinal.sdk.model.User
-import com.icure.cardinal.sdk.model.couchdb.DocIdentifier
 import com.icure.cardinal.sdk.model.embed.AccessLevel
 import com.icure.cardinal.sdk.model.embed.DelegationTag
 import com.icure.cardinal.sdk.model.extensions.autoDelegationsFor
 import com.icure.cardinal.sdk.model.extensions.dataOwnerId
 import com.icure.cardinal.sdk.model.specializations.HexString
+import com.icure.cardinal.sdk.model.toStoredDocumentIdentifier
 import com.icure.cardinal.sdk.options.ApiConfiguration
 import com.icure.cardinal.sdk.options.BasicApiConfiguration
+import com.icure.cardinal.sdk.options.EntitiesEncryptedFieldsManifests
+import com.icure.cardinal.sdk.options.JsonPatcher
 import com.icure.cardinal.sdk.serialization.MessageAbstractFilterSerializer
 import com.icure.cardinal.sdk.serialization.SubscriptionSerializer
 import com.icure.cardinal.sdk.subscription.EntitySubscription
@@ -45,117 +53,293 @@ import com.icure.cardinal.sdk.subscription.WebSocketSubscription
 import com.icure.cardinal.sdk.utils.Serialization
 import com.icure.cardinal.sdk.utils.currentEpochMs
 import com.icure.cardinal.sdk.utils.ensureNonNull
+import com.icure.cardinal.sdk.utils.generation.JsMapAsObjectArray
 import com.icure.cardinal.sdk.utils.pagination.IdsPageIterator
 import com.icure.cardinal.sdk.utils.pagination.PaginatedListIterator
-import com.icure.cardinal.sdk.utils.pagination.encodeStartKey
 import com.icure.utils.InternalIcureApi
-import kotlinx.serialization.json.JsonElement
-import kotlinx.serialization.json.decodeFromJsonElement
+
+@InternalIcureApi
+private fun encryptedApiFlavour(
+	config: BasicApiConfiguration
+): FlavouredApi<EncryptedMessage, EncryptedMessage> = FlavouredApi.encrypted(
+	config = config,
+	encryptedSerializer = EncryptedMessage.serializer(),
+	type = EntityWithEncryptionMetadataTypeName.Message,
+	manifest = EntitiesEncryptedFieldsManifests::message
+)
+
+@InternalIcureApi
+private fun decryptedApiFlavour(
+	config: ApiConfiguration
+): FlavouredApi<EncryptedMessage, DecryptedMessage> = FlavouredApi.decrypted(
+	config = config,
+	encryptedSerializer = EncryptedMessage.serializer(),
+	decryptedSerializer = DecryptedMessage.serializer(),
+	type = EntityWithEncryptionMetadataTypeName.Message,
+	manifest = EntitiesEncryptedFieldsManifests::message,
+	patchJson = JsonPatcher::patchMessage
+)
+
+@InternalIcureApi
+private fun tryAndRecoverApiFlavour(
+	config: ApiConfiguration
+): FlavouredApi<EncryptedMessage, Message> = FlavouredApi.tryAndRecover(
+	config = config,
+	encryptedSerializer = EncryptedMessage.serializer(),
+	decryptedSerializer = DecryptedMessage.serializer(),
+	type = EntityWithEncryptionMetadataTypeName.Message,
+	manifest = EntitiesEncryptedFieldsManifests::message,
+	patchJson = JsonPatcher::patchMessage
+)
+
+@OptIn(InternalIcureApi::class)
+private suspend fun RawMessageApi.doMatchMessagesBy(
+	config: BasicApiConfiguration,
+	groupId: String?,
+	filter: FilterOptions<Message>
+): List<String> =
+	if (groupId == null) {
+		matchMessagesBy(
+			mapMessageFilterOptions(
+				filter,
+				config,
+				requestGroup = null
+			)
+		)
+	} else {
+		matchMessagesBy(
+			mapMessageFilterOptions(
+				filter,
+				config,
+				requestGroup = null
+			)
+		)
+	}.successBody()
+
+@OptIn(InternalIcureApi::class)
+private suspend fun RawMessageApi.doMatchMessagesBySorted(
+	config: BasicApiConfiguration,
+	groupId: String?,
+	filter: SortableFilterOptions<Message>
+): List<String> = doMatchMessagesBy(config = config, groupId = groupId, filter = filter)
 
 @InternalIcureApi
 private abstract class AbstractMessageBasicFlavouredApi<E : Message>(
 	protected val rawApi: RawMessageApi,
-	private val config: BasicApiConfiguration,
-) : MessageBasicFlavouredApi<E>, FlavouredApi<EncryptedMessage, E> {
-	override suspend fun createMessage(entity: E): E {
-		require(entity.securityMetadata != null) { "Entity must have security metadata initialized. Make sure to use the `withEncryptionMetadata` method." }
-		return rawApi.createMessage(
-			validateAndMaybeEncrypt(null, entity)
-		).successBody().let { maybeDecrypt(null, it) }
+	protected open val config: BasicApiConfiguration,
+	protected val flavour: FlavouredApi<EncryptedMessage, E>
+) : FlavouredApi<EncryptedMessage, E> by flavour {
+
+	protected suspend fun doCreateMessage(groupId: String?, entity: E): E {
+		requireIsValidForCreation(entity)
+		val encrypted = validateAndMaybeEncrypt(groupId, entity)
+		return if (groupId == null) {
+			rawApi.createMessage(encrypted)
+		} else {
+			rawApi.createMessageInGroup(groupId, encrypted)
+		}.successBody().let {
+			maybeDecrypt(groupId, it)
+		}
 	}
 
-	override suspend fun createMessageInTopic(entity: E): E =
-		rawApi.createMessageInTopic(
-			validateAndMaybeEncrypt(null, entity)
-		).successBody().let { maybeDecrypt(null, it) }
+	protected suspend fun doCreateMessages(groupId: String?, entities: List<E>): List<E> = skipRequestOnEmptyList(entities) { messages ->
+		val encrypted = validateAndMaybeEncrypt(groupId, messages)
+		return if (groupId == null) {
+			rawApi.createMessages(encrypted)
+		} else {
+			rawApi.createMessagesInGroup(groupId, encrypted)
+		}.successBody().let {
+			maybeDecrypt(groupId, it)
+		}
+	}
 
-	override suspend fun undeleteMessageById(id: String, rev: String): E =
-		rawApi.undeleteMessage(id, rev).successBodyOrThrowRevisionConflict().let { maybeDecrypt(null, it) }
+	protected suspend fun doUndeleteMessage(groupId: String?, entityId: String, rev: String): E =
+		if (groupId == null) {
+			rawApi.undeleteMessage(entityId, rev)
+		} else {
+			rawApi.undeleteMessageInGroup(groupId, entityId, rev)
+		}.successBodyOrThrowRevisionConflict().let { maybeDecrypt(groupId, it) }
 
-	override suspend fun modifyMessage(entity: E): E =
-		rawApi.modifyMessage(validateAndMaybeEncrypt(null, entity)).successBodyOrThrowRevisionConflict().let { maybeDecrypt(null, it) }
+	protected suspend fun doUndeleteMessages(groupId: String?, entityIds: List<StoredDocumentIdentifier>): List<E> = skipRequestOnEmptyList(entityIds) { ids ->
+		if (groupId == null) {
+			rawApi.undeleteMessages(ListOfIdsAndRev(ids))
+		} else {
+			rawApi.undeleteMessagesInGroup(groupId, ListOfIdsAndRev(ids))
+		}.successBody().let { maybeDecrypt(groupId, it) }
+	}
 
-	override suspend fun getMessage(entityId: String): E? =
-		rawApi.getMessage(entityId).successBodyOrNull404()?.let { maybeDecrypt(null, it) }
+	protected suspend fun doModifyMessage(groupId: String?, entity: E): E {
+		requireIsValidForModification(entity)
+		val encrypted = validateAndMaybeEncrypt(groupId, entity)
+		return if (groupId == null) {
+			rawApi.modifyMessage(encrypted)
+		} else {
+			rawApi.modifyMessageInGroup(groupId, encrypted)
+		}.successBodyOrThrowRevisionConflict().let { maybeDecrypt(groupId, it) }
+	}
 
-	override suspend fun getMessages(entityIds: List<String>): List<E> =
-		rawApi.getMessages(ListOfIds(entityIds)).successBody().let { maybeDecrypt(it) }
+	protected suspend fun doModifyMessages(groupId: String?, entities: List<E>): List<E> = skipRequestOnEmptyList(entities) { messages ->
+		val encrypted = validateAndMaybeEncrypt(groupId, messages)
+		return if (groupId == null) {
+			rawApi.modifyMessages(encrypted)
+		} else {
+			rawApi.modifyMessagesInGroup(groupId, encrypted)
+		}.successBody().let {
+			maybeDecrypt(groupId, it)
+		}
+	}
 
-	@Deprecated("Use filter instead")
-	override suspend fun listMessagesByTransportGuids(hcPartyId: String, transportGuids: List<String>) =
-		rawApi.listMessagesByTransportGuids(hcPartyId, ListOfIds(transportGuids)).successBody().let { maybeDecrypt(it) }
+	protected suspend fun doGetMessage(groupId: String?, entityId: String): E? =
+		if (groupId == null) {
+			rawApi.getMessage(entityId)
+		} else {
+			rawApi.getMessageInGroup(groupId = groupId, messageId = entityId)
+		}.successBodyOrNull404()?.let { maybeDecrypt(groupId, it) }
 
-	@Deprecated("Use filter instead")
-	override suspend fun findMessages(
-		startKey: JsonElement?,
-		startDocumentId: String?,
-		limit: Int?,
-	) = rawApi.findMessages(startKey.encodeStartKey(), startDocumentId, limit).successBody().let { maybeDecrypt(it) }
+	suspend fun doGetMessages(groupId: String?, entityIds: List<String>) = skipRequestOnEmptyList(entityIds) { ids ->
+		if (groupId == null) {
+			rawApi.getMessages(ListOfIds(ids))
+		} else {
+			rawApi.getMessagesInGroup(groupId, ListOfIds(ids))
+		}.successBody().let { maybeDecrypt(groupId, it) }
+	}
+}
 
-	@Deprecated("Use filter instead")
-	override suspend fun getChildrenMessages(
-		messageId: String,
-	) = rawApi.getChildrenMessages(messageId).successBody().let { maybeDecrypt(it) }
+@InternalIcureApi
+private class MessageBasicFlavouredApiImpl<E : Message>(
+	rawApi: RawMessageApi,
+	config: BasicApiConfiguration,
+	flavour: FlavouredApi<EncryptedMessage, E>
+) : MessageBasicFlavouredApi<E>, AbstractMessageBasicFlavouredApi<E>(rawApi, config, flavour) {
 
-	@Deprecated("Use filter instead")
-	override suspend fun getMessagesChildren(messageIds: List<String>) =
-		rawApi.getMessagesChildren(ListOfIds(messageIds)).successBody().let { maybeDecrypt(it) }
+	override suspend fun createMessage(entity: E): E = doCreateMessage(groupId = null, entity = entity)
 
-	@Deprecated("Use filter instead")
-	override suspend fun listMessagesByInvoices(invoiceIds: List<String>) =
-		rawApi.listMessagesByInvoices(ListOfIds(invoiceIds)).successBody().let { maybeDecrypt(it) }
+	override suspend fun createMessages(entities: List<E>): List<E> {
+		requireIsValidForCreation(entities)
+		return doCreateMessages(groupId = null, entities = entities)
+	}
 
-	@Deprecated("Use filter instead")
-	override suspend fun findMessagesByTransportGuid(transportGuid: String) =
-		rawApi.findMessagesByTransportGuid(transportGuid).successBody().let { maybeDecrypt(it) }
+	override suspend fun createMessageInTopic(entity: E): E {
+		requireIsValidForCreation(entity)
+		val encrypted = validateAndMaybeEncrypt(null, entity)
+		return rawApi.createMessageInTopic(encrypted).successBody().let {
+			maybeDecrypt(null, it)
+		}
+	}
 
-	@Deprecated("Find methods are deprecated", replaceWith = ReplaceWith("filterMessagesBy()"))
-	override suspend fun findMessagesByTransportGuidSentDate(
-		transportGuid: String,
-		from: Long,
-		to: Long,
-		startKey: JsonElement?,
-		startDocumentId: String?,
-		limit: Int?,
-		hcpId: String?,
-	) = rawApi.findMessagesByTransportGuidSentDate(transportGuid, from, to, startKey.encodeStartKey(), startDocumentId, limit, hcpId).successBody()
-		.let { maybeDecrypt(it) }
+	override suspend fun undeleteMessageById(id: String, rev: String): E = doUndeleteMessage(groupId = null, entityId = id, rev = rev)
 
-	@Deprecated("Find methods are deprecated", replaceWith = ReplaceWith("filterMessagesBy()"))
-	override suspend fun findMessagesByToAddress(
-		toAddress: String,
-		startKey: JsonElement?,
-		startDocumentId: String?,
-		limit: Int?,
-	) = rawApi.findMessagesByToAddress(toAddress, startKey.encodeStartKey(), startDocumentId, limit).successBody().let { maybeDecrypt(it) }
+	override suspend fun undeleteMessagesByIds(entityIds: List<StoredDocumentIdentifier>): List<E> =
+		doUndeleteMessages(groupId = null, entityIds = entityIds)
 
-	@Deprecated("Find methods are deprecated", replaceWith = ReplaceWith("filterMessagesBy()"))
-	override suspend fun findMessagesByFromAddress(
-		fromAddress: String,
-		startKey: JsonElement?,
-		startDocumentId: String?,
-		limit: Int?,
-	) = rawApi.findMessagesByFromAddress(fromAddress, startKey.encodeStartKey(), startDocumentId, limit).successBody().let { maybeDecrypt(it) }
+	override suspend fun modifyMessage(entity: E): E = doModifyMessage(groupId = null, entity = entity)
 
-	@Deprecated("Status bits have unclear meaning, use read status instead")
-	override suspend fun setMessagesStatusBits(
-		entityIds: List<String>,
-		statusBits: Int,
-	) = rawApi.setMessagesStatusBits(statusBits, ListOfIds(entityIds)).successBody().let { maybeDecrypt(it) }
+	override suspend fun modifyMessages(entities: List<E>): List<E> {
+		requireIsValidForModification(entities)
+		return doModifyMessages(groupId = null, entities = entities)
+	}
+
+	override suspend fun getMessage(entityId: String): E? = doGetMessage(groupId = null, entityId = entityId)
+
+	override suspend fun getMessages(entityIds: List<String>): List<E> = doGetMessages(groupId = null, entityIds)
 
 	override suspend fun setMessagesReadStatus(
 		entityIds: List<String>,
 		time: Long?,
 		readStatus: Boolean,
 		userId: String?,
-	) = rawApi.setMessagesReadStatus(MessagesReadStatusUpdate(entityIds, time, readStatus, userId)).successBody().let { maybeDecrypt(it) }
+	) = rawApi.setMessagesReadStatus(MessagesReadStatusUpdate(entityIds, time, readStatus, userId)).successBody().let { maybeDecrypt(null, it) }
+}
+
+@InternalIcureApi
+private class MessageBasicFlavouredInGroupApiImpl<E : Message>(
+	rawApi: RawMessageApi,
+	config: BasicApiConfiguration,
+	flavour: FlavouredApi<EncryptedMessage, E>
+) : MessageBasicFlavouredInGroupApi<E>, AbstractMessageBasicFlavouredApi<E>(rawApi, config, flavour) {
+
+	override suspend fun createMessage(entity: GroupScoped<E>): GroupScoped<E> = groupScopedWith(entity) { groupId, it ->
+		doCreateMessage(groupId = groupId, entity = it)
+	}
+
+	override suspend fun createMessages(entities: List<GroupScoped<E>>): List<GroupScoped<E>> {
+		requireIsValidForCreationInGroup(entities)
+		return entities.mapUniqueIdentifiablesChunkedByGroup { groupId, chunk ->
+			doCreateMessages(groupId = groupId, entities = chunk)
+		}
+	}
+
+	override suspend fun undeleteMessageById(entityId: GroupScoped<StoredDocumentIdentifier>): GroupScoped<E> =
+		groupScopedWith(entityId) { groupId, it ->
+			doUndeleteMessage(groupId = groupId, entityId = it.id, rev = it.rev)
+		}
+
+	override suspend fun undeleteMessagesByIds(entityIds: List<GroupScoped<StoredDocumentIdentifier>>): List<GroupScoped<E>> =
+		entityIds.mapUniqueIdentifiablesChunkedByGroup { groupId, chunk ->
+			doUndeleteMessages(groupId = groupId, entityIds = chunk)
+		}
+
+	override suspend fun modifyMessage(entity: GroupScoped<E>): GroupScoped<E> = groupScopedWith(entity) { groupId, it ->
+		doModifyMessage(groupId = groupId, entity = it)
+	}
+
+	override suspend fun modifyMessages(entities: List<GroupScoped<E>>): List<GroupScoped<E>> {
+		requireIsValidForModificationInGroup(entities)
+		return entities.mapUniqueIdentifiablesChunkedByGroup { groupId, chunk ->
+			doModifyMessages(groupId = groupId, entities = chunk)
+		}
+	}
+
+	override suspend fun getMessage(groupId: String, entityId: String): GroupScoped<E>? = groupScopedIn(groupId) {
+		doGetMessage(groupId = groupId, entityId = entityId)
+	}
+
+	override suspend fun getMessages(groupId: String, entityIds: List<String>): List<GroupScoped<E>> = groupScopedListIn(groupId) {
+		doGetMessages(groupId = groupId, entityIds = entityIds)
+	}
+
 }
 
 @InternalIcureApi
 private abstract class AbstractMessageFlavouredApi<E : Message>(
 	rawApi: RawMessageApi,
-	protected val config: ApiConfiguration
-) : AbstractMessageBasicFlavouredApi<E>(rawApi, config), MessageFlavouredApi<E> {
+	override val config: ApiConfiguration,
+	flavour: FlavouredApi<EncryptedMessage, E>
+) : AbstractMessageBasicFlavouredApi<E>(rawApi, config, flavour) {
+
+	protected suspend fun doShareWithMany(
+		entityGroupId: String?,
+		message: E,
+		delegates: @JsMapAsObjectArray(keyEntryName = "delegate", valueEntryName = "shareOptions") Map<EntityReferenceInGroup, MessageShareOptions>
+	): E =
+		config.crypto.entity.simpleShareOrUpdateEncryptedEntityMetadata(
+			entityGroupId,
+			message,
+			EntityWithEncryptionMetadataTypeName.Message,
+			delegates,
+			true,
+			{ doGetMessage(entityGroupId, it) ?: throw NotFoundException("Message $it not found") },
+			{
+				maybeDecrypt(
+					entityGroupId,
+					if (entityGroupId == null)
+						rawApi.bulkShare(it).successBody()
+					else
+						rawApi.bulkShare(it, entityGroupId).successBody()
+				)
+			}
+		).updatedEntityOrThrow()
+
+}
+
+@InternalIcureApi
+private class MessageFlavouredApiImpl<E : Message>(
+	rawApi: RawMessageApi,
+	config: ApiConfiguration,
+	flavour: FlavouredApi<EncryptedMessage, E>
+) : AbstractMessageFlavouredApi<E>(rawApi, config, flavour),
+	MessageBasicFlavouredApi<E> by MessageBasicFlavouredApiImpl(rawApi, config, flavour),
+	MessageFlavouredApi<E> {
 
 	override suspend fun shareWith(
 		delegateId: String,
@@ -165,153 +349,234 @@ private abstract class AbstractMessageFlavouredApi<E : Message>(
 		shareWithMany(message, mapOf(delegateId to (options ?: MessageShareOptions())))
 
 	override suspend fun shareWithMany(message: E, delegates: Map<String, MessageShareOptions>): E =
-		config.crypto.entity.simpleShareOrUpdateEncryptedEntityMetadata(
-			null,
-			message,
-			EntityWithEncryptionMetadataTypeName.Message,
-			delegates.keyAsLocalDataOwnerReferences(),
-			true,
-			{ getMessage(it) ?: throw NotFoundException("Message $it not found") },
-			{ maybeDecrypt(null, rawApi.bulkShare(it).successBody()) }
-		).updatedEntityOrThrow()
-
-	@Deprecated("Use filter instead")
-	override suspend fun findMessagesByHcPartyPatient(
-		hcPartyId: String,
-		patient: Patient,
-		startDate: Long?,
-		endDate: Long?,
-		descending: Boolean?
-	): PaginatedListIterator<E> = IdsPageIterator(
-		rawApi.listMessageIdsByDataOwnerPatientSentDate(
-			dataOwnerId = hcPartyId,
-			startDate = startDate,
-			endDate = endDate,
-			descending = descending,
-			secretPatientKeys = ListOfIds(
-				config.crypto.entity.secretIdsOf(
-					null,
-					patient,
-					EntityWithEncryptionMetadataTypeName.Patient,
-					null
-				).toList())
-		).successBody()
-	) { ids ->
-		maybeDecrypt(rawApi.getMessages(ListOfIds(ids)).successBody())
-	}
+		doShareWithMany(null, message, delegates.keyAsLocalDataOwnerReferences())
 
 	override suspend fun filterMessagesBy(filter: FilterOptions<Message>): PaginatedListIterator<E> =
-		IdsPageIterator(rawApi.matchMessagesBy(
-			mapMessageFilterOptions(
-				filterOptions = filter,
-				config = config,
-				requestGroup = null
-			)
-		).successBody(), this::getMessages)
+		IdsPageIterator(
+			rawApi.doMatchMessagesBy(config = config, groupId = null, filter = filter),
+			this::getMessages
+		)
 
 	override suspend fun filterMessagesBySorted(filter: SortableFilterOptions<Message>): PaginatedListIterator<E> =
 		filterMessagesBy(filter)
+
 }
 
 @InternalIcureApi
-private class AbstractMessageBasicFlavourlessApi(val rawApi: RawMessageApi, private val config: BasicApiConfiguration) :
-	MessageBasicFlavourlessApi {
+private class MessageFlavouredInGroupApiImpl<E : Message>(
+	rawApi: RawMessageApi,
+	config: ApiConfiguration,
+	flavour: FlavouredApi<EncryptedMessage, E>
+) : AbstractMessageFlavouredApi<E>(rawApi, config, flavour),
+	MessageBasicFlavouredInGroupApi<E> by MessageBasicFlavouredInGroupApiImpl(rawApi, config, flavour),
+	MessageFlavouredInGroupApi<E> {
 
-	@Deprecated("Deletion without rev is unsafe")
-	override suspend fun deleteMessageUnsafe(entityId: String): DocIdentifier =
-		rawApi.deleteMessage(entityId).successBodyOrThrowRevisionConflict()
+	override suspend fun shareWith(
+		delegate: EntityReferenceInGroup,
+		message: GroupScoped<E>,
+		options: MessageShareOptions?
+	): GroupScoped<E> =
+		shareWithMany(message, mapOf(delegate to (options ?: MessageShareOptions())))
 
-	@Deprecated("Deletion without rev is unsafe")
-	override suspend fun deleteMessagesUnsafe(entityIds: List<String>): List<DocIdentifier> =
-		rawApi.deleteMessages(ListOfIds(entityIds)).successBody()
+	override suspend fun shareWithMany(
+		message: GroupScoped<E>,
+		delegates: @JsMapAsObjectArray(keyEntryName = "delegate", valueEntryName = "shareOptions") Map<EntityReferenceInGroup, MessageShareOptions>
+	): GroupScoped<E> =
+		GroupScoped(
+			doShareWithMany(
+				message.groupId,
+				message.entity,
+				delegates
+			),
+			message.groupId
+		)
 
-	override suspend fun deleteMessageById(entityId: String, rev: String): DocIdentifier =
-		rawApi.deleteMessage(entityId, rev).successBodyOrThrowRevisionConflict()
+	override suspend fun filterMessagesBy(groupId: String, filter: FilterOptions<Message>): PaginatedListIterator<GroupScoped<E>> =
+		IdsPageIterator(
+			rawApi.doMatchMessagesBy(config = config, groupId = groupId, filter = filter)
+		) { ids ->
+			doGetMessages(groupId, ids).map { message ->
+				GroupScoped(message, groupId)
+			}
+		}
 
-	override suspend fun deleteMessagesByIds(entityIds: List<StoredDocumentIdentifier>): List<DocIdentifier> =
-		rawApi.deleteMessagesWithRev(ListOfIdsAndRev(entityIds)).successBody()
+	override suspend fun filterMessagesBySorted(groupId: String, filter: SortableFilterOptions<Message>): PaginatedListIterator<GroupScoped<E>> =
+		filterMessagesBy(groupId, filter)
+}
+
+@InternalIcureApi
+private abstract class AbstractMessageBasicFlavourless(
+	protected val rawApi: RawMessageApi
+) {
+
+	protected suspend fun doDeleteMessage(groupId: String?, entityId: String, rev: String): StoredDocumentIdentifier =
+		if (groupId == null) {
+			rawApi.deleteMessage(entityId, rev)
+		} else {
+			rawApi.deleteMessageInGroup(groupId, entityId, rev)
+		}.successBodyOrThrowRevisionConflict().toStoredDocumentIdentifier()
+
+	protected suspend fun doDeleteMessages(groupId: String?, entityIds: List<StoredDocumentIdentifier>): List<StoredDocumentIdentifier> =
+		skipRequestOnEmptyList(entityIds) { ids ->
+			if (groupId == null) {
+				rawApi.deleteMessagesWithRev(ListOfIdsAndRev(ids))
+			} else {
+				rawApi.deleteMessagesInGroup(groupId, ListOfIdsAndRev(ids))
+			}.successBody().toStoredDocumentIdentifier()
+		}
+
+	protected suspend fun doPurgeMessage(groupId: String?, entityId: String, rev: String) {
+		if (groupId == null) {
+			rawApi.purgeMessage(entityId, rev)
+		} else {
+			rawApi.purgeMessageInGroup(groupId, entityId, rev)
+		}.successBodyOrThrowRevisionConflict()
+	}
+
+	protected suspend fun doPurgeMessages(groupId: String?, entityIds: List<StoredDocumentIdentifier>): List<StoredDocumentIdentifier> =
+		skipRequestOnEmptyList(entityIds) { ids ->
+			if (groupId == null) {
+				rawApi.purgeMessages(ListOfIdsAndRev(ids))
+			} else {
+				rawApi.purgeMessagesInGroup(groupId, ListOfIdsAndRev(ids))
+			}.successBody().toStoredDocumentIdentifier()
+		}
+}
+
+@InternalIcureApi
+private class MessageBasicFlavourlessApiImpl(rawApi: RawMessageApi) : AbstractMessageBasicFlavourless(rawApi), MessageBasicFlavourlessApi {
+
+	override suspend fun deleteMessageById(entityId: String, rev: String): StoredDocumentIdentifier =
+		doDeleteMessage(groupId = null, entityId, rev)
+
+	override suspend fun deleteMessagesByIds(entityIds: List<StoredDocumentIdentifier>): List<StoredDocumentIdentifier> =
+		doDeleteMessages(groupId = null, entityIds)
 
 	override suspend fun purgeMessageById(id: String, rev: String) {
-		rawApi.purgeMessage(id, rev).successBodyOrThrowRevisionConflict()
+		doPurgeMessage(groupId = null, entityId = id, rev = rev)
 	}
+
+	override suspend fun purgeMessagesByIds(entityIds: List<StoredDocumentIdentifier>): List<StoredDocumentIdentifier> =
+		doPurgeMessages(groupId = null, entityIds = entityIds)
 }
 
 @InternalIcureApi
-internal class MessageApiImpl(
+private class MessageBasicFlavourlessInGroupApiImpl(rawApi: RawMessageApi) : AbstractMessageBasicFlavourless(rawApi), MessageBasicFlavourlessInGroupApi {
+	override suspend fun deleteMessageById(entityId: GroupScoped<StoredDocumentIdentifier>): GroupScoped<StoredDocumentIdentifier> =
+		groupScopedWith(entityId) { groupId, it ->
+			doDeleteMessage(groupId, it.id, it.rev)
+		}
+
+	override suspend fun deleteMessagesByIds(entityIds: List<GroupScoped<StoredDocumentIdentifier>>): List<GroupScoped<StoredDocumentIdentifier>> =
+		entityIds.mapUniqueIdentifiablesChunkedByGroup { groupId, entities ->
+			doDeleteMessages(groupId, entities)
+		}
+
+	override suspend fun purgeMessageById(entityId: GroupScoped<StoredDocumentIdentifier>) {
+		doPurgeMessage(groupId = entityId.groupId, entityId = entityId.entity.id, rev = entityId.entity.rev)
+	}
+
+	override suspend fun purgeMessagesByIds(entityIds: List<GroupScoped<StoredDocumentIdentifier>>): List<GroupScoped<StoredDocumentIdentifier>> =
+		entityIds.mapUniqueIdentifiablesChunkedByGroup { groupId, batch ->
+			doPurgeMessages(groupId, batch)
+		}
+}
+
+@InternalIcureApi
+internal fun initMessageApi(
+	rawApi: RawMessageApi,
+	config: ApiConfiguration
+): MessageApi {
+	val decryptedFlavour = decryptedApiFlavour(config)
+	val encryptedFlavour = encryptedApiFlavour(config)
+	val tryAndRecoverFlavour = tryAndRecoverApiFlavour(config)
+	return MessageApiImpl(
+		rawApi,
+		config,
+		encryptedFlavour,
+		decryptedFlavour,
+		tryAndRecoverFlavour
+	)
+}
+
+@InternalIcureApi
+private class MessageApiImpl(
 	private val rawApi: RawMessageApi,
 	private val config: ApiConfiguration,
-) : MessageApi, MessageFlavouredApi<DecryptedMessage> by object :
-	AbstractMessageFlavouredApi<DecryptedMessage>(rawApi, config) {
-	override suspend fun validateAndMaybeEncrypt(
-		entitiesGroupId: String?,
-		entities: List<DecryptedMessage>
-	): List<EncryptedMessage> =
-		this.config.crypto.entity.encryptEntities(
-			entitiesGroupId,
-			entities,
-			EntityWithEncryptionMetadataTypeName.Message,
-			DecryptedMessage.serializer(),
-			this.config.encryption.message,
-		) { Serialization.json.decodeFromJsonElement<EncryptedMessage>(it) }
+	private val encryptedFlavour: FlavouredApi<EncryptedMessage, EncryptedMessage>,
+	private val decryptedFlavour: FlavouredApi<EncryptedMessage, DecryptedMessage>,
+	private val tryAndRecoverFlavour: FlavouredApi<EncryptedMessage, Message>,
+) : MessageApi,
+	MessageFlavouredApi<DecryptedMessage> by MessageFlavouredApiImpl(rawApi, config, decryptedFlavour),
+	MessageBasicFlavourlessApi by MessageBasicFlavourlessApiImpl(rawApi) {
 
-	override suspend fun maybeDecrypt(
-		entitiesGroupId: String?,
-		entities: List<EncryptedMessage>
-	): List<DecryptedMessage> =
-		this.config.crypto.entity.decryptEntities(
-			entitiesGroupId,
-			entities,
-			EntityWithEncryptionMetadataTypeName.Message,
-			EncryptedMessage.serializer(),
-		) { Serialization.json.decodeFromJsonElement<DecryptedMessage>(config.jsonPatcher.patchMessage(it)) }
-}, MessageBasicFlavourlessApi by AbstractMessageBasicFlavourlessApi(rawApi, config) {
-	override val encrypted: MessageFlavouredApi<EncryptedMessage> =
-		object : AbstractMessageFlavouredApi<EncryptedMessage>(rawApi, config) {
-			override suspend fun validateAndMaybeEncrypt(
-				entitiesGroupId: String?,
-				entities: List<EncryptedMessage>
-			): List<EncryptedMessage> =
-				config.crypto.entity.validateEncryptedEntities(
-					entities,
-					EntityWithEncryptionMetadataTypeName.Message,
-					EncryptedMessage.serializer(),
-					config.encryption.message
-				)
+	override val encrypted: MessageFlavouredApi<EncryptedMessage> = MessageFlavouredApiImpl(rawApi, config, encryptedFlavour)
+	override val tryAndRecover: MessageFlavouredApi<Message> = MessageFlavouredApiImpl(rawApi, config, tryAndRecoverFlavour)
 
-			override suspend fun maybeDecrypt(
-				entitiesGroupId: String?,
-				entities: List<EncryptedMessage>
-			): List<EncryptedMessage> =
-				entities
-		}
+	override val inGroup: MessageInGroupApi = object : MessageInGroupApi,
+		MessageFlavouredInGroupApi<DecryptedMessage> by MessageFlavouredInGroupApiImpl(rawApi, config, decryptedFlavour),
+		MessageBasicFlavourlessInGroupApi by MessageBasicFlavourlessInGroupApiImpl(rawApi) {
+		override val encrypted: MessageFlavouredInGroupApi<EncryptedMessage> =
+			MessageFlavouredInGroupApiImpl(rawApi, config, encryptedFlavour)
+		override val tryAndRecover: MessageFlavouredInGroupApi<Message> =
+			MessageFlavouredInGroupApiImpl(rawApi, config, tryAndRecoverFlavour)
 
-	override val tryAndRecover: MessageFlavouredApi<Message> =
-		object : AbstractMessageFlavouredApi<Message>(rawApi, config) {
+		override suspend fun matchMessagesBy(groupId: String, filter: FilterOptions<Message>): List<String> =
+			rawApi.doMatchMessagesBy(config = config, groupId = groupId, filter = filter)
 
-			override suspend fun validateAndMaybeEncrypt(
-				entitiesGroupId: String?,
-				entities: List<Message>
-			): List<EncryptedMessage> =
-				config.crypto.entity.validateOrEncryptEntities(
-					entitiesGroupId,
-					entities,
-					EntityWithEncryptionMetadataTypeName.Message,
-					EncryptedMessage.serializer(),
-					DecryptedMessage.serializer(),
-					config.encryption.message
-				)
+		override suspend fun matchMessagesBySorted(groupId: String, filter: SortableFilterOptions<Message>): List<String> =
+			rawApi.doMatchMessagesBySorted(config = config, groupId = groupId, filter = filter)
 
-			override suspend fun maybeDecrypt(
-				entitiesGroupId: String?,
-				entities: List<EncryptedMessage>
-			): List<Message> =
-				config.crypto.entity.tryDecryptEntities(
-					entitiesGroupId,
-					entities,
-					EntityWithEncryptionMetadataTypeName.Message,
-					EncryptedMessage.serializer(),
-				) { Serialization.json.decodeFromJsonElement<DecryptedMessage>(config.jsonPatcher.patchMessage(it)) }
-		}
+		override suspend fun decrypt(messages: List<GroupScoped<EncryptedMessage>>): List<GroupScoped<DecryptedMessage>> =
+			messages.mapExactlyChunkedByGroup { groupId, entities ->
+				decryptedFlavour.maybeDecrypt(groupId, entities)
+			}
+
+		override suspend fun tryDecrypt(messages: List<GroupScoped<EncryptedMessage>>): List<GroupScoped<Message>> =
+			messages.mapExactlyChunkedByGroup { groupId, entities ->
+				tryAndRecoverFlavour.maybeDecrypt(groupId, entities)
+			}
+
+		override suspend fun withEncryptionMetadata(
+			entityGroupId: String,
+			base: DecryptedMessage?,
+			patient: GroupScoped<Patient>?,
+			user: User?,
+			delegates: @JsMapAsObjectArray(
+				keyEntryName = "delegate",
+				valueEntryName = "accessLevel"
+			) Map<EntityReferenceInGroup, AccessLevel>,
+			secretId: SecretIdUseOption,
+			alternateRootDelegateReference: EntityReferenceInGroup?
+		): GroupScoped<DecryptedMessage> =
+			GroupScoped(
+				doWithEncryptionMetadata(
+					entityGroupId,
+					base,
+					patient?.let { it.entity to it.groupId },
+					user,
+					delegates,
+					secretId,
+					alternateRootDelegateReference
+				),
+				entityGroupId
+			)
+
+		override suspend fun getEncryptionKeysOf(message: GroupScoped<Message>): Set<HexString> =
+			doGetEncryptionKeysOf(message.groupId, message.entity)
+
+		override suspend fun hasWriteAccess(message: GroupScoped<Message>): Boolean =
+			doHasWriteAccess(message.groupId, message.entity)
+
+		override suspend fun decryptPatientIdOf(message: GroupScoped<Message>): Set<EntityReferenceInGroup> =
+			doDecryptPatientIdOf(message.groupId, message.entity).mapNullGroupTo(message.groupId)
+
+		override suspend fun createDelegationDeAnonymizationMetadata(
+			entity: GroupScoped<Message>,
+			delegates: Set<EntityReferenceInGroup>
+		) =
+			doCreateDelegationDeAnonymizationMetadata(entity.groupId, entity.entity, delegates)
+	}
 
 	override suspend fun withEncryptionMetadata(
 		base: DecryptedMessage?,
@@ -319,76 +584,99 @@ internal class MessageApiImpl(
 		user: User?,
 		delegates: Map<String, AccessLevel>,
 		secretId: SecretIdUseOption,
-		alternateRootDelegateId: String?,
+		alternateRootDelegateId: String?
+	): DecryptedMessage =
+		doWithEncryptionMetadata(
+			null,
+			base,
+			patient?.let { it to null },
+			user,
+			delegates.keyAsLocalDataOwnerReferences(),
+			secretId,
+			alternateRootDelegateId?.let { EntityReferenceInGroup(it, null) }
+		)
+
+	private suspend fun doWithEncryptionMetadata(
+		entityGroupId: String?,
+		base: DecryptedMessage?,
+		patient: Pair<Patient, String?>?,
+		user: User?,
+		delegates: @JsMapAsObjectArray(keyEntryName = "delegate", valueEntryName = "accessLevel") Map<EntityReferenceInGroup, AccessLevel>,
+		secretId: SecretIdUseOption,
+		alternateRootDataOwnerReference: EntityReferenceInGroup?,
 	): DecryptedMessage =
 		config.crypto.entity.entityWithInitializedEncryptedMetadata(
-            null,
-            (base ?: DecryptedMessage(config.crypto.primitives.strongRandom.randomUUID())).copy(
-                created = base?.created ?: currentEpochMs(),
-                modified = base?.modified ?: currentEpochMs(),
-                responsible = base?.responsible ?: user?.takeIf { config.autofillAuthor }?.dataOwnerId,
-                author = base?.author ?: user?.id?.takeIf { config.autofillAuthor },
-            ),
-            EntityWithEncryptionMetadataTypeName.Message,
-            patient?.let {
-                OwningEntityDetails(
-                    null,
-                    it.id,
-                    config.crypto.entity.resolveSecretIdOption(
-                        null,
-                        it,
-                        EntityWithEncryptionMetadataTypeName.Patient,
-                        secretId
-                    )
-                )
-            },
-            initializeEncryptionKey = true,
-            autoDelegations = (delegates + user?.autoDelegationsFor(DelegationTag.MedicalInformation)
-                .orEmpty()).keyAsLocalDataOwnerReferences(),
-			alternateRootDataOwnerReference = alternateRootDelegateId?.let { EntityReferenceInGroup(it, null) },
+			entityGroupId,
+			(base ?: DecryptedMessage(config.crypto.primitives.strongRandom.randomUUID())).copy(
+				created = base?.created ?: currentEpochMs(),
+				modified = base?.modified ?: currentEpochMs(),
+				responsible = base?.responsible ?: user?.takeIf { config.autofillAuthor }?.dataOwnerId,
+				author = base?.author ?: user?.id?.takeIf { config.autofillAuthor },
+			),
+			EntityWithEncryptionMetadataTypeName.Message,
+			owningEntityDetails = patient?.let { (patient, patientGroup) ->
+				OwningEntityDetails(
+					patientGroup,
+					patient.id,
+					config.crypto.entity.resolveSecretIdOption(
+						entityGroupId,
+						patient,
+						EntityWithEncryptionMetadataTypeName.Patient,
+						secretId
+					)
+				)
+			},
+			initializeEncryptionKey = true,
+			autoDelegations = delegates + user?.autoDelegationsFor(DelegationTag.MedicalInformation)
+				.orEmpty().keyAsLocalDataOwnerReferences(),
+			alternateRootDataOwnerReference = alternateRootDataOwnerReference,
 		).updatedEntity
 
 	override suspend fun getEncryptionKeysOf(message: Message): Set<HexString> =
-		config.crypto.entity.encryptionKeysOf(null, message, EntityWithEncryptionMetadataTypeName.Message, null)
+		doGetEncryptionKeysOf(null, message)
+
+	private suspend fun doGetEncryptionKeysOf(groupId: String?, message: Message): Set<HexString> =
+		config.crypto.entity.encryptionKeysOf(
+			groupId,
+			message,
+			EntityWithEncryptionMetadataTypeName.Message,
+			null
+		)
 
 	override suspend fun hasWriteAccess(message: Message): Boolean =
-		config.crypto.entity.hasWriteAccess(null, message, EntityWithEncryptionMetadataTypeName.Message)
+		doHasWriteAccess(null, message)
 
-	override suspend fun decryptPatientIdOf(message: Message): Set<String> =
-		config.crypto.entity.owningEntityIdsOf(null, message, EntityWithEncryptionMetadataTypeName.Message, null)
+	private suspend fun doHasWriteAccess(groupId: String?, message: Message): Boolean =
+		config.crypto.entity.hasWriteAccess(groupId, message, EntityWithEncryptionMetadataTypeName.Message)
 
-	override suspend fun createDelegationDeAnonymizationMetadata(entity: Message, delegates: Set<String>) {
+	override suspend fun decryptPatientIdOf(message: Message): Set<EntityReferenceInGroup> =
+		doDecryptPatientIdOf(null, message)
+
+	private suspend fun doDecryptPatientIdOf(groupId: String?, message: Message): Set<EntityReferenceInGroup> =
+		config.crypto.entity.owningEntityIdsOf(
+			groupId,
+			message,
+			EntityWithEncryptionMetadataTypeName.Message,
+			null
+		).mapTo(mutableSetOf()) { config.crypto.entity.parseReference(groupId, it) }
+
+	override suspend fun createDelegationDeAnonymizationMetadata(entity: Message, delegates: Set<String>) =
+		doCreateDelegationDeAnonymizationMetadata(groupId = null, entity, delegates.asLocalDataOwnerReferences())
+
+	private suspend fun doCreateDelegationDeAnonymizationMetadata(groupId: String?, entity: Message, delegates: Set<EntityReferenceInGroup>) {
 		config.crypto.delegationsDeAnonymization.createOrUpdateDeAnonymizationInfo(
-			null,
+			groupId,
 			entity,
 			EntityWithEncryptionMetadataTypeName.Message,
-			delegates.asLocalDataOwnerReferences()
+			delegates
 		)
 	}
 
-	override suspend fun decrypt(message: EncryptedMessage): DecryptedMessage =
-		config.crypto.entity.decryptEntities(
-			null,
-			listOf(message),
-			EntityWithEncryptionMetadataTypeName.Message,
-			EncryptedMessage.serializer(),
-		) { Serialization.json.decodeFromJsonElement<DecryptedMessage>(config.jsonPatcher.patchMessage(it)) }.single()
+	override suspend fun matchMessagesBy(filter: FilterOptions<Message>) =
+		rawApi.doMatchMessagesBy(config = config, groupId = null, filter = filter)
 
-	override suspend fun tryDecrypt(message: EncryptedMessage): Message =
-		config.crypto.entity.tryDecryptEntities(
-			null,
-			listOf(message),
-			EntityWithEncryptionMetadataTypeName.Message,
-			EncryptedMessage.serializer(),
-		) { Serialization.json.decodeFromJsonElement<DecryptedMessage>(config.jsonPatcher.patchMessage(it)) }.single()
-
-	override suspend fun getSecretIdsOf(message: Message): Map<String, Set<EntityReferenceInGroup>> =
-		doGetSecretIdsOf(null, message)
-
-	private suspend fun doGetSecretIdsOf(groupId: String?, message: Message): Map<String, Set<EntityReferenceInGroup>> =
-		ensureNonNull(config.crypto.entity.secretIdsWithDataOwnersInfo(groupId, listOf(message), EntityWithEncryptionMetadataTypeName.Patient).values.singleOrNull()) {
-			"Method secretIdsWithDataOwnersInfo should have returned single item for single message"
-		}
+	override suspend fun matchMessagesBySorted(filter: SortableFilterOptions<Message>): List<String> =
+		rawApi.doMatchMessagesBySorted(config = config, groupId = null, filter = filter)
 
 	override suspend fun subscribeToEvents(
 		events: Set<SubscriptionEventType>,
@@ -403,8 +691,8 @@ internal class MessageApiImpl(
 			entitySerializer = EncryptedMessage.serializer(),
 			events = events,
 			filter = mapMessageFilterOptions(
-				filterOptions = filter,
-				config = config,
+				filter,
+				config,
 				requestGroup = null
 			),
 			qualifiedName = Message.KRAKEN_QUALIFIED_NAME,
@@ -416,46 +704,66 @@ internal class MessageApiImpl(
 		)
 	}
 
-	override suspend fun matchMessagesBy(filter: FilterOptions<Message>): List<String> =
-		rawApi.matchMessagesBy(mapMessageFilterOptions(
-			filterOptions = filter,
-			config = config,
-			requestGroup = null
-		)).successBody()
+	override suspend fun decrypt(message: EncryptedMessage): DecryptedMessage =
+		decryptedFlavour.maybeDecrypt(null, listOf(message)).single()
 
-	override suspend fun matchMessagesBySorted(filter: SortableFilterOptions<Message>): List<String> =
-		matchMessagesBy(filter)
+	override suspend fun tryDecrypt(message: EncryptedMessage): Message =
+		tryAndRecoverFlavour.maybeDecrypt(null, listOf(message)).single()
+
+	override suspend fun encryptOrValidate(messages: List<Message>): List<EncryptedMessage> =
+		tryAndRecoverFlavour.validateAndMaybeEncrypt(null, messages)
+
+	override suspend fun getSecretIdsOf(message: Message): Map<String, Set<EntityReferenceInGroup>> =
+		doGetSecretIdsOf(null, message)
+
+	private suspend fun doGetSecretIdsOf(groupId: String?, message: Message): Map<String, Set<EntityReferenceInGroup>> =
+		ensureNonNull(config.crypto.entity.secretIdsWithDataOwnersInfo(groupId, listOf(message), EntityWithEncryptionMetadataTypeName.Patient).values.singleOrNull()) {
+			"Method secretIdsWithDataOwnersInfo should have returned single item for single message"
+		}
 }
 
 @InternalIcureApi
-internal class MessageBasicApiImpl(
-	private val rawApi: RawMessageApi,
-	private val config: BasicApiConfiguration
-) : MessageBasicApi, MessageBasicFlavouredApi<EncryptedMessage> by object :
-	AbstractMessageBasicFlavouredApi<EncryptedMessage>(rawApi, config) {
-	override suspend fun validateAndMaybeEncrypt(
-		entitiesGroupId: String?,
-		entities: List<EncryptedMessage>
-	): List<EncryptedMessage> =
-		config.crypto.validationService.validateEncryptedEntities(entities, EntityWithEncryptionMetadataTypeName.Message, EncryptedMessage.serializer(), config.encryption.message)
+internal fun initMessageBasicApi(
+	rawApi: RawMessageApi,
+	config: BasicApiConfiguration
+): MessageBasicApi = MessageBasicApiImpl(
+	rawApi,
+	config,
+	encryptedApiFlavour(config)
+)
 
-	override suspend fun maybeDecrypt(
-		entitiesGroupId: String?,
-		entities: List<EncryptedMessage>
-	): List<EncryptedMessage> =
-		entities
-}, MessageBasicFlavourlessApi by AbstractMessageBasicFlavourlessApi(rawApi, config) {
+@InternalIcureApi
+private class MessageBasicApiImpl(
+	private val rawApi: RawMessageApi,
+	private val config: BasicApiConfiguration,
+	private val encryptedFlavour: FlavouredApi<EncryptedMessage, EncryptedMessage>,
+) : MessageBasicApi,
+	MessageBasicFlavouredApi<EncryptedMessage> by MessageBasicFlavouredApiImpl(rawApi, config, encryptedFlavour),
+	MessageBasicFlavourlessApi by MessageBasicFlavourlessApiImpl(rawApi) {
+	override val inGroup: MessageBasicInGroupApi = object : MessageBasicInGroupApi,
+		MessageBasicFlavouredInGroupApi<EncryptedMessage> by MessageBasicFlavouredInGroupApiImpl(rawApi, config, encryptedFlavour),
+		MessageBasicFlavourlessInGroupApi by MessageBasicFlavourlessInGroupApiImpl(rawApi) {
+
+		override suspend fun matchMessagesBy(groupId: String, filter: BaseFilterOptions<Message>): List<String> =
+			rawApi.doMatchMessagesBy(config = config, groupId = groupId, filter = filter)
+
+		override suspend fun matchMessagesBySorted(groupId: String, filter: BaseSortableFilterOptions<Message>): List<String> =
+			rawApi.doMatchMessagesBySorted(config = config, groupId = groupId, filter = filter)
+
+		override suspend fun filterMessagesBy(groupId: String, filter: BaseFilterOptions<Message>): PaginatedListIterator<GroupScoped<EncryptedMessage>> =
+			IdsPageIterator(matchMessagesBy(groupId, filter)) { ids ->
+				getMessages(groupId, ids)
+			}
+
+		override suspend fun filterMessagesBySorted(groupId: String, filter: BaseSortableFilterOptions<Message>): PaginatedListIterator<GroupScoped<EncryptedMessage>> =
+			filterMessagesBy(groupId, filter)
+	}
+
 	override suspend fun matchMessagesBy(filter: BaseFilterOptions<Message>): List<String> =
-		rawApi.matchMessagesBy(
-			mapMessageFilterOptions(
-				filterOptions = filter,
-				config = config,
-				requestGroup = null
-			)
-		).successBody()
+		rawApi.doMatchMessagesBy(config = config, groupId = null, filter = filter)
 
 	override suspend fun matchMessagesBySorted(filter: BaseSortableFilterOptions<Message>): List<String> =
-		matchMessagesBy(filter)
+		rawApi.doMatchMessagesBy(config = config, groupId = null, filter = filter)
 
 	override suspend fun filterMessagesBy(filter: BaseFilterOptions<Message>): PaginatedListIterator<EncryptedMessage> =
 		IdsPageIterator(matchMessagesBy(filter), this::getMessages)
@@ -475,11 +783,7 @@ internal class MessageBasicApiImpl(
 			clientJson = config.rawApiConfig.json,
 			entitySerializer = EncryptedMessage.serializer(),
 			events = events,
-			filter = mapMessageFilterOptions(
-				filterOptions = filter,
-				config = config,
-				requestGroup = null
-			),
+			filter = mapMessageFilterOptions(filter, config, null),
 			qualifiedName = Message.KRAKEN_QUALIFIED_NAME,
 			subscriptionRequestSerializer = {
 				Serialization.json.encodeToString(SubscriptionSerializer(MessageAbstractFilterSerializer), it)

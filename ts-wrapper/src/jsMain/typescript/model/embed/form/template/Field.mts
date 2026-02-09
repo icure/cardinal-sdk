@@ -11,4 +11,4 @@ import {TextField} from './TextField.mjs';
 import {TimePicker} from './TimePicker.mjs';
 
 
-export type Field = DropdownField | RadioButton | DatePicker | TimePicker | DateTimePicker | NumberField | TextField | CheckBox | MultipleChoice | MeasureField;
+export type Field = MeasureField | DatePicker | TimePicker | DropdownField | RadioButton | DateTimePicker | TextField | CheckBox | MultipleChoice | NumberField;

@@ -11,19 +11,19 @@ import kotlin.collections.List
 
 @Serializable
 data class TimeSeries(
-	@DefaultValue("emptyList()")
+	@param:DefaultValue("emptyList()")
 	public val fields: List<String> = emptyList(),
-	@DefaultValue("emptyList()")
+	@param:DefaultValue("emptyList()")
 	public val samples: List<List<Double>> = emptyList(),
-	@DefaultValue("emptyList()")
+	@param:DefaultValue("emptyList()")
 	public val min: List<Double> = emptyList(),
-	@DefaultValue("emptyList()")
+	@param:DefaultValue("emptyList()")
 	public val max: List<Double> = emptyList(),
-	@DefaultValue("emptyList()")
+	@param:DefaultValue("emptyList()")
 	public val mean: List<Double> = emptyList(),
-	@DefaultValue("emptyList()")
+	@param:DefaultValue("emptyList()")
 	public val median: List<Double> = emptyList(),
-	@DefaultValue("emptyList()")
+	@param:DefaultValue("emptyList()")
 	public val variance: List<Double> = emptyList(),
 ) {
 	// region TimeSeries-TimeSeries

@@ -20,8 +20,8 @@ import com.icure.cardinal.sdk.options.ApiConfiguration
 import com.icure.cardinal.sdk.options.BasicApiConfiguration
 import com.icure.cardinal.sdk.utils.DefaultValue
 import com.icure.utils.InternalIcureApi
+import kotlinx.coroutines.currentCoroutineContext
 import kotlinx.serialization.Serializable
-import kotlin.coroutines.coroutineContext
 
 object CalendarItemFilters {
 
@@ -421,7 +421,7 @@ internal suspend fun mapCalendarItemFilterOptions(
 		filterOptions,
 		nonBasicConfig?.crypto?.dataOwnerApi?.getCurrentDataOwnerReference(),
 		nonBasicConfig?.crypto?.entity,
-		config.getBoundGroup(coroutineContext),
+		config.getBoundGroup(currentCoroutineContext()),
 		requestGroup
 	)
 }

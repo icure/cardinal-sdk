@@ -3,11 +3,10 @@ import {FilterOptions, PaginatedListIterator, SortableFilterOptions} from '../ca
 import {ContactShareOptions} from '../crypto/entities/ContactShareOptions.mjs';
 import {SecretIdUseOption} from '../crypto/entities/SecretIdUseOption.mjs';
 import {Contact, DecryptedContact, EncryptedContact} from '../model/Contact.mjs';
-import {PaginatedList} from '../model/PaginatedList.mjs';
+import {EntityReferenceInGroup} from '../model/EntityReferenceInGroup.mjs';
 import {Patient} from '../model/Patient.mjs';
 import {StoredDocumentIdentifier} from '../model/StoredDocumentIdentifier.mjs';
 import {User} from '../model/User.mjs';
-import {DocIdentifier} from '../model/couchdb/DocIdentifier.mjs';
 import {LabelledOccurence} from '../model/data/LabelledOccurence.mjs';
 import {AccessLevel} from '../model/embed/AccessLevel.mjs';
 import {DecryptedService, EncryptedService, Service} from '../model/embed/Service.mjs';
@@ -16,6 +15,7 @@ import {EntitySubscription} from '../subscription/EntitySubscription.mjs';
 import {EntitySubscriptionConfiguration} from '../subscription/EntitySubscriptionConfiguration.mjs';
 import {SubscriptionEventType} from '../subscription/SubscriptionEventType.mjs';
 import {ContactFlavouredApi} from './ContactFlavouredApi.mjs';
+import {ContactInGroupApi} from './ContactInGroupApi.mjs';
 
 
 export interface ContactApi {
@@ -23,6 +23,8 @@ export interface ContactApi {
 	encrypted: ContactFlavouredApi<EncryptedContact, EncryptedService>;
 
 	tryAndRecover: ContactFlavouredApi<Contact, Service>;
+
+	inGroup: ContactInGroupApi;
 
 	matchContactsBy(filter: FilterOptions<Contact>): Promise<Array<string>>;
 
@@ -39,7 +41,7 @@ export interface ContactApi {
 
 	hasWriteAccess(contact: Contact): Promise<boolean>;
 
-	decryptPatientIdOf(contact: Contact): Promise<Array<string>>;
+	decryptPatientIdOf(contact: Contact): Promise<Array<EntityReferenceInGroup>>;
 
 	createDelegationDeAnonymizationMetadata(entity: Contact, delegates: Array<string>): Promise<void>;
 
@@ -54,21 +56,21 @@ export interface ContactApi {
 	subscribeToServiceCreateOrUpdateEvents(filter: FilterOptions<Service>,
 			options?: { subscriptionConfig?: EntitySubscriptionConfiguration | undefined }): Promise<EntitySubscription<EncryptedService>>;
 
-	deleteContactUnsafe(entityId: string): Promise<DocIdentifier>;
+	deleteContactById(entityId: string, rev: string): Promise<StoredDocumentIdentifier>;
 
-	deleteContactsUnsafe(entityIds: Array<string>): Promise<Array<DocIdentifier>>;
-
-	deleteContactById(entityId: string, rev: string): Promise<DocIdentifier>;
-
-	deleteContactsByIds(entityIds: Array<StoredDocumentIdentifier>): Promise<Array<DocIdentifier>>;
+	deleteContactsByIds(entityIds: Array<StoredDocumentIdentifier>): Promise<Array<StoredDocumentIdentifier>>;
 
 	purgeContactById(id: string, rev: string): Promise<void>;
 
-	deleteContact(contact: Contact): Promise<DocIdentifier>;
+	purgeContactsByIds(entityIds: Array<StoredDocumentIdentifier>): Promise<Array<StoredDocumentIdentifier>>;
 
-	deleteContacts(contacts: Array<Contact>): Promise<Array<DocIdentifier>>;
+	deleteContact(contact: Contact): Promise<StoredDocumentIdentifier>;
+
+	deleteContacts(contacts: Array<Contact>): Promise<Array<StoredDocumentIdentifier>>;
 
 	purgeContact(contact: Contact): Promise<void>;
+
+	purgeContacts(contacts: Array<Contact>): Promise<Array<StoredDocumentIdentifier>>;
 
 	getServiceCodesOccurrences(codeType: string,
 			minOccurrences: number): Promise<Array<LabelledOccurence>>;
@@ -78,9 +80,6 @@ export interface ContactApi {
 
 	shareWithMany(contact: DecryptedContact,
 			delegates: { [ key: string ]: ContactShareOptions }): Promise<DecryptedContact>;
-
-	findContactsByHcPartyPatient(hcPartyId: string, patient: Patient,
-			options?: { startDate?: number | undefined, endDate?: number | undefined, descending?: boolean | undefined }): Promise<PaginatedListIterator<DecryptedContact>>;
 
 	filterContactsBy(filter: FilterOptions<Contact>): Promise<PaginatedListIterator<DecryptedContact>>;
 
@@ -96,7 +95,11 @@ export interface ContactApi {
 
 	undeleteContactById(id: string, rev: string): Promise<DecryptedContact>;
 
+	undeleteContactsByIds(entityIds: Array<StoredDocumentIdentifier>): Promise<Array<DecryptedContact>>;
+
 	undeleteContact(contact: Contact): Promise<DecryptedContact>;
+
+	undeleteContacts(contacts: Array<Contact>): Promise<Array<DecryptedContact>>;
 
 	modifyContact(entity: DecryptedContact): Promise<DecryptedContact>;
 
@@ -106,30 +109,9 @@ export interface ContactApi {
 
 	getContacts(entityIds: Array<string>): Promise<Array<DecryptedContact>>;
 
-	listContactByHCPartyServiceId(hcPartyId: string,
-			serviceId: string): Promise<Array<DecryptedContact>>;
-
-	listContactsByExternalId(externalId: string): Promise<Array<DecryptedContact>>;
-
-	listContactsByHCPartyAndFormId(hcPartyId: string,
-			formId: string): Promise<Array<DecryptedContact>>;
-
-	listContactsByHCPartyAndFormIds(hcPartyId: string,
-			formIds: Array<string>): Promise<Array<DecryptedContact>>;
-
-	getService(serviceId: string): Promise<DecryptedService>;
+	getService(serviceId: string): Promise<DecryptedService | undefined>;
 
 	getServices(entityIds: Array<string>): Promise<Array<DecryptedService>>;
-
-	getServicesLinkedTo(linkType: string, ids: Array<string>): Promise<Array<DecryptedService>>;
-
-	listServicesByAssociationId(associationId: string): Promise<Array<DecryptedService>>;
-
-	listServicesByHealthElementId(hcPartyId: string,
-			healthElementId: string): Promise<Array<DecryptedService>>;
-
-	findContactsByOpeningDate(startDate: number, endDate: number, hcPartyId: string,
-			options?: { startKey?: any | undefined, startDocumentId?: string | undefined, limit?: number | undefined }): Promise<PaginatedList<DecryptedContact>>;
 
 	subscribeToEvents(events: Array<SubscriptionEventType>, filter: FilterOptions<Contact>,
 			options?: { subscriptionConfig?: EntitySubscriptionConfiguration | undefined }): Promise<EntitySubscription<EncryptedContact>>;

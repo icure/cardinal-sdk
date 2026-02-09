@@ -3,13 +3,15 @@ import {BaseFilterOptions, BaseSortableFilterOptions, PaginatedListIterator} fro
 import {StoredDocumentIdentifier} from '../model/StoredDocumentIdentifier.mjs';
 import {EncryptedTopic, Topic} from '../model/Topic.mjs';
 import {TopicRole} from '../model/TopicRole.mjs';
-import {DocIdentifier} from '../model/couchdb/DocIdentifier.mjs';
 import {EntitySubscription} from '../subscription/EntitySubscription.mjs';
 import {EntitySubscriptionConfiguration} from '../subscription/EntitySubscriptionConfiguration.mjs';
 import {SubscriptionEventType} from '../subscription/SubscriptionEventType.mjs';
+import {TopicBasicInGroupApi} from './TopicBasicInGroupApi.mjs';
 
 
 export interface TopicBasicApi {
+
+	inGroup: TopicBasicInGroupApi;
 
 	matchTopicsBy(filter: BaseFilterOptions<Topic>): Promise<Array<string>>;
 
@@ -19,29 +21,37 @@ export interface TopicBasicApi {
 
 	filterTopicsBySorted(filter: BaseSortableFilterOptions<Topic>): Promise<PaginatedListIterator<EncryptedTopic>>;
 
-	deleteTopicUnsafe(entityId: string): Promise<DocIdentifier>;
+	deleteTopicById(entityId: string, rev: string): Promise<StoredDocumentIdentifier>;
 
-	deleteTopicsUnsafe(entityIds: Array<string>): Promise<Array<DocIdentifier>>;
-
-	deleteTopicById(entityId: string, rev: string): Promise<DocIdentifier>;
-
-	deleteTopicsByIds(entityIds: Array<StoredDocumentIdentifier>): Promise<Array<DocIdentifier>>;
+	deleteTopicsByIds(entityIds: Array<StoredDocumentIdentifier>): Promise<Array<StoredDocumentIdentifier>>;
 
 	purgeTopicById(id: string, rev: string): Promise<void>;
 
-	deleteTopic(topic: Topic): Promise<DocIdentifier>;
+	purgeTopicsByIds(entityIds: Array<StoredDocumentIdentifier>): Promise<Array<StoredDocumentIdentifier>>;
 
-	deleteTopics(topics: Array<Topic>): Promise<Array<DocIdentifier>>;
+	deleteTopic(topic: Topic): Promise<StoredDocumentIdentifier>;
+
+	deleteTopics(topics: Array<Topic>): Promise<Array<StoredDocumentIdentifier>>;
 
 	purgeTopic(topic: Topic): Promise<void>;
 
+	purgeTopics(topics: Array<Topic>): Promise<Array<StoredDocumentIdentifier>>;
+
 	createTopic(entity: EncryptedTopic): Promise<EncryptedTopic>;
 
-	undeleteTopic(topic: Topic): Promise<Topic>;
+	createTopics(entities: Array<EncryptedTopic>): Promise<Array<EncryptedTopic>>;
+
+	undeleteTopicById(id: string, rev: string): Promise<EncryptedTopic>;
+
+	undeleteTopicsByIds(entityIds: Array<StoredDocumentIdentifier>): Promise<Array<EncryptedTopic>>;
+
+	undeleteTopic(topic: Topic): Promise<EncryptedTopic>;
+
+	undeleteTopics(topics: Array<Topic>): Promise<Array<EncryptedTopic>>;
 
 	modifyTopic(entity: EncryptedTopic): Promise<EncryptedTopic>;
 
-	undeleteTopicById(id: string, rev: string): Promise<EncryptedTopic>;
+	modifyTopics(entities: Array<EncryptedTopic>): Promise<Array<EncryptedTopic>>;
 
 	getTopic(entityId: string): Promise<EncryptedTopic | undefined>;
 

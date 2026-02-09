@@ -15,6 +15,8 @@ public external class ExternalJwtConfigJs_ValidationMethodJs_PublicKeyJs(
 
 	public val signatureAlgorithm: String?
 
+	public val clientId: String?
+
 	override val ktClass: String
 }
 
@@ -22,7 +24,9 @@ public external class ExternalJwtConfigJs_ValidationMethodJs_PublicKeyJs(
 public external class ExternalJwtConfigJs_ValidationMethodJs_OidcJs(
 	partial: dynamic,
 ) : ExternalJwtConfigJs_ValidationMethodJs {
-	public val issureLocation: String
+	public val issuerLocation: String
+
+	public val clientId: String?
 
 	override val ktClass: String
 }

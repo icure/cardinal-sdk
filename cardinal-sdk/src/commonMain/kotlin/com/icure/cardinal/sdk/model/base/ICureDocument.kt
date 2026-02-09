@@ -13,10 +13,6 @@ interface ICureDocument<T> : Identifiable<T>, HasTags, HasCodes {
 	public val author: String?
 
 	public val responsible: String?
-
-	public val medicalLocationId: String?
-
-	public val endOfLife: Long?
 	// region ICureDocument-ICureDocument
 
 	// endregion

@@ -30,7 +30,7 @@ class CalendarItemApi {
 		tryAndRecover = CalendarItemTryAndRecoverApi(_sdkId, _dartSdk),
 		inGroup = CalendarItemInGroupApi(_sdkId, _dartSdk);
 
-	Future<DecryptedCalendarItem> withEncryptionMetadata(DecryptedCalendarItem? base, Patient? patient, { User? user, Map<String, AccessLevel> delegates = const {}, SecretIdUseOption secretId = SecretIdUseOption.UseAnySharedWithParent }) async {
+	Future<DecryptedCalendarItem> withEncryptionMetadata(DecryptedCalendarItem? base, Patient? patient, { User? user, Map<String, AccessLevel> delegates = const {}, SecretIdUseOption secretId = SecretIdUseOption.UseAnySharedWithParent, String? alternateRootDelegateId }) async {
 		return await CardinalSdkPlatformInterface.instance.apis.calendarItem.withEncryptionMetadata(
 			_sdkId,
 			base,
@@ -38,6 +38,7 @@ class CalendarItemApi {
 			user,
 			delegates,
 			secretId,
+			alternateRootDelegateId,
 		);
 	}
 
@@ -196,6 +197,13 @@ class CalendarItemApi {
 		);
 	}
 
+	Future<DecryptedCalendarItem> bookCalendarItemCheckingAvailability(DecryptedCalendarItem entity) async {
+		return await CardinalSdkPlatformInterface.instance.apis.calendarItem.bookCalendarItemCheckingAvailability(
+			_sdkId,
+			entity,
+		);
+	}
+
 	Future<DecryptedCalendarItem> undeleteCalendarItemById(String id, String rev) async {
 		return await CardinalSdkPlatformInterface.instance.apis.calendarItem.undeleteCalendarItemById(
 			_sdkId,
@@ -297,6 +305,13 @@ class CalendarItemTryAndRecoverApi {
 		);
 	}
 
+	Future<CalendarItem> bookCalendarItemCheckingAvailability(CalendarItem entity) async {
+		return await CardinalSdkPlatformInterface.instance.apis.calendarItem.tryAndRecover.bookCalendarItemCheckingAvailability(
+			_sdkId,
+			entity,
+		);
+	}
+
 	Future<CalendarItem> undeleteCalendarItemById(String id, String rev) async {
 		return await CardinalSdkPlatformInterface.instance.apis.calendarItem.tryAndRecover.undeleteCalendarItemById(
 			_sdkId,
@@ -389,6 +404,13 @@ class CalendarItemEncryptedApi {
 		);
 	}
 
+	Future<EncryptedCalendarItem> bookCalendarItemCheckingAvailability(EncryptedCalendarItem entity) async {
+		return await CardinalSdkPlatformInterface.instance.apis.calendarItem.encrypted.bookCalendarItemCheckingAvailability(
+			_sdkId,
+			entity,
+		);
+	}
+
 	Future<EncryptedCalendarItem> undeleteCalendarItemById(String id, String rev) async {
 		return await CardinalSdkPlatformInterface.instance.apis.calendarItem.encrypted.undeleteCalendarItemById(
 			_sdkId,
@@ -437,7 +459,7 @@ class CalendarItemInGroupApi {
 		) : encrypted = CalendarItemInGroupEncryptedApi(_sdkId, _dartSdk),
 		tryAndRecover = CalendarItemInGroupTryAndRecoverApi(_sdkId, _dartSdk);
 
-	Future<GroupScoped<DecryptedCalendarItem>> withEncryptionMetadata(String entityGroupId, DecryptedCalendarItem? base, GroupScoped<Patient>? patient, { User? user, Map<EntityReferenceInGroup, AccessLevel> delegates = const {}, SecretIdUseOption secretId = SecretIdUseOption.UseAnySharedWithParent }) async {
+	Future<GroupScoped<DecryptedCalendarItem>> withEncryptionMetadata(String entityGroupId, DecryptedCalendarItem? base, GroupScoped<Patient>? patient, { User? user, Map<EntityReferenceInGroup, AccessLevel> delegates = const {}, SecretIdUseOption secretId = SecretIdUseOption.UseAnySharedWithParent, EntityReferenceInGroup? alternateRootDelegateReference }) async {
 		return await CardinalSdkPlatformInterface.instance.apis.calendarItem.inGroup.withEncryptionMetadata(
 			_sdkId,
 			entityGroupId,
@@ -446,6 +468,7 @@ class CalendarItemInGroupApi {
 			user,
 			delegates,
 			secretId,
+			alternateRootDelegateReference,
 		);
 	}
 

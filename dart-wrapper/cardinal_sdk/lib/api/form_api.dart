@@ -26,7 +26,7 @@ class FormApi {
 		) : encrypted = FormEncryptedApi(_sdkId, _dartSdk),
 		tryAndRecover = FormTryAndRecoverApi(_sdkId, _dartSdk);
 
-	Future<DecryptedForm> withEncryptionMetadata(DecryptedForm? base, Patient patient, { User? user, Map<String, AccessLevel> delegates = const {}, SecretIdUseOption secretId = SecretIdUseOption.UseAnySharedWithParent }) async {
+	Future<DecryptedForm> withEncryptionMetadata(DecryptedForm? base, Patient patient, { User? user, Map<String, AccessLevel> delegates = const {}, SecretIdUseOption secretId = SecretIdUseOption.UseAnySharedWithParent, String? alternateRootDelegateId }) async {
 		return await CardinalSdkPlatformInterface.instance.apis.form.withEncryptionMetadata(
 			_sdkId,
 			base,
@@ -34,6 +34,7 @@ class FormApi {
 			user,
 			delegates,
 			secretId,
+			alternateRootDelegateId,
 		);
 	}
 

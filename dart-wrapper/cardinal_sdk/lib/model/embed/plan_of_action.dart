@@ -34,7 +34,7 @@ sealed class PlanOfAction implements Encryptable, ICureDocument<String>, Named {
 	@actualInt32 abstract final int status;
 	abstract final Set<String> documentIds;
 	@actualInt32 abstract final int? numberOfCares;
-	List<CareTeamMembership?> get careTeamMemberships;
+	List<CareTeamMembership> get careTeamMemberships;
 	abstract final bool relevant;
 	@override abstract final Base64String? encryptedSelf;
 
@@ -92,7 +92,7 @@ abstract class EncryptedPlanOfAction with _$EncryptedPlanOfAction implements Pla
 		@Default(0) int status,
 		@Default({}) Set<String> documentIds,
 		@Default(null) int? numberOfCares,
-		@Default([]) List<EncryptedCareTeamMembership?> careTeamMemberships,
+		@Default([]) List<EncryptedCareTeamMembership> careTeamMemberships,
 		@Default(true) bool relevant,
 		@Default(null) Base64String? encryptedSelf,
 	}) = _EncryptedPlanOfAction;
@@ -122,7 +122,7 @@ abstract class EncryptedPlanOfAction with _$EncryptedPlanOfAction implements Pla
 			"status" : value.status,
 			"documentIds" : value.documentIds.map((x0) => x0).toList(),
 			"numberOfCares" : value.numberOfCares,
-			"careTeamMemberships" : value.careTeamMemberships.map((x0) => x0 == null ? null : EncryptedCareTeamMembership.encode(x0!)).toList(),
+			"careTeamMemberships" : value.careTeamMemberships.map((x0) => EncryptedCareTeamMembership.encode(x0)).toList(),
 			"relevant" : value.relevant,
 			"encryptedSelf" : value.encryptedSelf
 		};
@@ -153,7 +153,7 @@ abstract class EncryptedPlanOfAction with _$EncryptedPlanOfAction implements Pla
 			idOpeningContact: (data["idOpeningContact"] as String?),
 			idClosingContact: (data["idClosingContact"] as String?),
 			documentIds: (data["documentIds"] as List<dynamic>).map((x0) => (x0 as String) ).toSet(),
-			careTeamMemberships: (data["careTeamMemberships"] as List<dynamic>).map((x0) => x0 == null ? null : EncryptedCareTeamMembership.fromJSON(x0) ).toList(),
+			careTeamMemberships: (data["careTeamMemberships"] as List<dynamic>).map((x0) => EncryptedCareTeamMembership.fromJSON(x0) ).toList(),
 			relevant: (data["relevant"] as bool),
 			encryptedSelf: (data["encryptedSelf"] as Base64String?),
 		);
@@ -185,7 +185,7 @@ abstract class DecryptedPlanOfAction with _$DecryptedPlanOfAction implements Pla
 		@Default(0) int status,
 		@Default({}) Set<String> documentIds,
 		@Default(null) int? numberOfCares,
-		@Default([]) List<DecryptedCareTeamMembership?> careTeamMemberships,
+		@Default([]) List<DecryptedCareTeamMembership> careTeamMemberships,
 		@Default(true) bool relevant,
 		@Default(null) Base64String? encryptedSelf,
 	}) = _DecryptedPlanOfAction;
@@ -215,7 +215,7 @@ abstract class DecryptedPlanOfAction with _$DecryptedPlanOfAction implements Pla
 			"status" : value.status,
 			"documentIds" : value.documentIds.map((x0) => x0).toList(),
 			"numberOfCares" : value.numberOfCares,
-			"careTeamMemberships" : value.careTeamMemberships.map((x0) => x0 == null ? null : DecryptedCareTeamMembership.encode(x0!)).toList(),
+			"careTeamMemberships" : value.careTeamMemberships.map((x0) => DecryptedCareTeamMembership.encode(x0)).toList(),
 			"relevant" : value.relevant,
 			"encryptedSelf" : value.encryptedSelf
 		};
@@ -246,7 +246,7 @@ abstract class DecryptedPlanOfAction with _$DecryptedPlanOfAction implements Pla
 			idOpeningContact: (data["idOpeningContact"] as String?),
 			idClosingContact: (data["idClosingContact"] as String?),
 			documentIds: (data["documentIds"] as List<dynamic>).map((x0) => (x0 as String) ).toSet(),
-			careTeamMemberships: (data["careTeamMemberships"] as List<dynamic>).map((x0) => x0 == null ? null : DecryptedCareTeamMembership.fromJSON(x0) ).toList(),
+			careTeamMemberships: (data["careTeamMemberships"] as List<dynamic>).map((x0) => DecryptedCareTeamMembership.fromJSON(x0) ).toList(),
 			relevant: (data["relevant"] as bool),
 			encryptedSelf: (data["encryptedSelf"] as Base64String?),
 		);

@@ -7,6 +7,7 @@ import com.icure.cardinal.sdk.filters.BaseSortableFilterOptions
 import com.icure.cardinal.sdk.filters.FilterOptions
 import com.icure.cardinal.sdk.js.api.DefaultParametersSupport.convertingOptionOrDefaultNullable
 import com.icure.cardinal.sdk.js.api.UserApiJs
+import com.icure.cardinal.sdk.js.api.UserInGroupApiJs
 import com.icure.cardinal.sdk.js.filters.BaseFilterOptionsJs
 import com.icure.cardinal.sdk.js.filters.BaseSortableFilterOptionsJs
 import com.icure.cardinal.sdk.js.filters.FilterOptionsJs
@@ -17,18 +18,15 @@ import com.icure.cardinal.sdk.js.model.CheckedConverters.arrayToList
 import com.icure.cardinal.sdk.js.model.CheckedConverters.arrayToSet
 import com.icure.cardinal.sdk.js.model.CheckedConverters.listToArray
 import com.icure.cardinal.sdk.js.model.CheckedConverters.nullToUndefined
-import com.icure.cardinal.sdk.js.model.CheckedConverters.numberToInt
 import com.icure.cardinal.sdk.js.model.CheckedConverters.numberToLong
 import com.icure.cardinal.sdk.js.model.CheckedConverters.undefinedToNull
 import com.icure.cardinal.sdk.js.model.EncryptedPropertyStubJs
-import com.icure.cardinal.sdk.js.model.ListOfIdsJs
-import com.icure.cardinal.sdk.js.model.PaginatedListJs
+import com.icure.cardinal.sdk.js.model.GroupScopedJs
+import com.icure.cardinal.sdk.js.model.StoredDocumentIdentifierJs
 import com.icure.cardinal.sdk.js.model.UserGroupJs
 import com.icure.cardinal.sdk.js.model.UserJs
-import com.icure.cardinal.sdk.js.model.couchdb.DocIdentifierJs
-import com.icure.cardinal.sdk.js.model.couchdb.docIdentifier_toJs
-import com.icure.cardinal.sdk.js.model.listOfIds_fromJs
-import com.icure.cardinal.sdk.js.model.paginatedList_toJs
+import com.icure.cardinal.sdk.js.model.groupScoped_fromJs
+import com.icure.cardinal.sdk.js.model.groupScoped_toJs
 import com.icure.cardinal.sdk.js.model.propertyStub_fromJs
 import com.icure.cardinal.sdk.js.model.security.Enable2faRequestJs
 import com.icure.cardinal.sdk.js.model.security.LoginIdentifierJs
@@ -36,6 +34,8 @@ import com.icure.cardinal.sdk.js.model.security.TokenWithGroupJs
 import com.icure.cardinal.sdk.js.model.security.enable2faRequest_fromJs
 import com.icure.cardinal.sdk.js.model.security.loginIdentifier_fromJs
 import com.icure.cardinal.sdk.js.model.security.tokenWithGroup_toJs
+import com.icure.cardinal.sdk.js.model.storedDocumentIdentifier_fromJs
+import com.icure.cardinal.sdk.js.model.storedDocumentIdentifier_toJs
 import com.icure.cardinal.sdk.js.model.userGroup_toJs
 import com.icure.cardinal.sdk.js.model.user_fromJs
 import com.icure.cardinal.sdk.js.model.user_toJs
@@ -46,7 +46,8 @@ import com.icure.cardinal.sdk.js.subscription.entitySubscription_toJs
 import com.icure.cardinal.sdk.js.utils.pagination.PaginatedListIteratorJs
 import com.icure.cardinal.sdk.js.utils.pagination.paginatedListIterator_toJs
 import com.icure.cardinal.sdk.model.EncryptedPropertyStub
-import com.icure.cardinal.sdk.model.ListOfIds
+import com.icure.cardinal.sdk.model.GroupScoped
+import com.icure.cardinal.sdk.model.StoredDocumentIdentifier
 import com.icure.cardinal.sdk.model.User
 import com.icure.cardinal.sdk.model.UserGroup
 import com.icure.cardinal.sdk.model.security.Enable2faRequest
@@ -57,7 +58,6 @@ import com.icure.cardinal.sdk.subscription.SubscriptionEventType
 import kotlin.Array
 import kotlin.Boolean
 import kotlin.Double
-import kotlin.Int
 import kotlin.Long
 import kotlin.OptIn
 import kotlin.String
@@ -73,12 +73,713 @@ import kotlinx.coroutines.promise
 internal class UserApiImplJs(
 	private val userApi: UserApi,
 ) : UserApiJs {
-	override fun deleteUserUnsafe(entityId: String): Promise<DocIdentifierJs> = GlobalScope.promise {
-		val entityIdConverted: String = entityId
-		val result = userApi.deleteUserUnsafe(
-			entityIdConverted,
-		)
-		docIdentifier_toJs(result)
+	override val inGroup: UserInGroupApiJs = object : UserInGroupApiJs {
+		override fun createUser(user: GroupScopedJs<UserJs>): Promise<GroupScopedJs<UserJs>> =
+				GlobalScope.promise {
+			val userConverted: GroupScoped<User> = groupScoped_fromJs(
+				user,
+				{ x1: UserJs ->
+					user_fromJs(x1)
+				},
+			)
+			val result = userApi.inGroup.createUser(
+				userConverted,
+			)
+			groupScoped_toJs(
+				result,
+				{ x1: User ->
+					user_toJs(x1)
+				},
+			)
+		}
+
+		override fun createUsers(users: Array<GroupScopedJs<UserJs>>):
+				Promise<Array<GroupScopedJs<UserJs>>> = GlobalScope.promise {
+			val usersConverted: List<GroupScoped<User>> = arrayToList(
+				users,
+				"users",
+				{ x1: GroupScopedJs<UserJs> ->
+					groupScoped_fromJs(
+						x1,
+						{ x2: UserJs ->
+							user_fromJs(x2)
+						},
+					)
+				},
+			)
+			val result = userApi.inGroup.createUsers(
+				usersConverted,
+			)
+			listToArray(
+				result,
+				{ x1: GroupScoped<User> ->
+					groupScoped_toJs(
+						x1,
+						{ x2: User ->
+							user_toJs(x2)
+						},
+					)
+				},
+			)
+		}
+
+		override fun getUser(groupId: String, userId: String): Promise<GroupScopedJs<UserJs>?> =
+				GlobalScope.promise {
+			val groupIdConverted: String = groupId
+			val userIdConverted: String = userId
+			val result = userApi.inGroup.getUser(
+				groupIdConverted,
+				userIdConverted,
+			)
+			nullToUndefined(
+				result?.let { nonNull1 ->
+					groupScoped_toJs(
+						nonNull1,
+						{ x1: User ->
+							user_toJs(x1)
+						},
+					)
+				}
+			)
+		}
+
+		override fun getUsers(groupId: String, userIds: Array<String>):
+				Promise<Array<GroupScopedJs<UserJs>>> = GlobalScope.promise {
+			val groupIdConverted: String = groupId
+			val userIdsConverted: List<String> = arrayToList(
+				userIds,
+				"userIds",
+				{ x1: String ->
+					x1
+				},
+			)
+			val result = userApi.inGroup.getUsers(
+				groupIdConverted,
+				userIdsConverted,
+			)
+			listToArray(
+				result,
+				{ x1: GroupScoped<User> ->
+					groupScoped_toJs(
+						x1,
+						{ x2: User ->
+							user_toJs(x2)
+						},
+					)
+				},
+			)
+		}
+
+		override fun modifyUser(user: GroupScopedJs<UserJs>): Promise<GroupScopedJs<UserJs>> =
+				GlobalScope.promise {
+			val userConverted: GroupScoped<User> = groupScoped_fromJs(
+				user,
+				{ x1: UserJs ->
+					user_fromJs(x1)
+				},
+			)
+			val result = userApi.inGroup.modifyUser(
+				userConverted,
+			)
+			groupScoped_toJs(
+				result,
+				{ x1: User ->
+					user_toJs(x1)
+				},
+			)
+		}
+
+		override fun modifyUsers(users: Array<GroupScopedJs<UserJs>>):
+				Promise<Array<GroupScopedJs<UserJs>>> = GlobalScope.promise {
+			val usersConverted: List<GroupScoped<User>> = arrayToList(
+				users,
+				"users",
+				{ x1: GroupScopedJs<UserJs> ->
+					groupScoped_fromJs(
+						x1,
+						{ x2: UserJs ->
+							user_fromJs(x2)
+						},
+					)
+				},
+			)
+			val result = userApi.inGroup.modifyUsers(
+				usersConverted,
+			)
+			listToArray(
+				result,
+				{ x1: GroupScoped<User> ->
+					groupScoped_toJs(
+						x1,
+						{ x2: User ->
+							user_toJs(x2)
+						},
+					)
+				},
+			)
+		}
+
+		override fun deleteUserById(userId: GroupScopedJs<StoredDocumentIdentifierJs>):
+				Promise<GroupScopedJs<StoredDocumentIdentifierJs>> = GlobalScope.promise {
+			val userIdConverted: GroupScoped<StoredDocumentIdentifier> = groupScoped_fromJs(
+				userId,
+				{ x1: StoredDocumentIdentifierJs ->
+					storedDocumentIdentifier_fromJs(x1)
+				},
+			)
+			val result = userApi.inGroup.deleteUserById(
+				userIdConverted,
+			)
+			groupScoped_toJs(
+				result,
+				{ x1: StoredDocumentIdentifier ->
+					storedDocumentIdentifier_toJs(x1)
+				},
+			)
+		}
+
+		override fun deleteUsersByIds(userIds: Array<GroupScopedJs<StoredDocumentIdentifierJs>>):
+				Promise<Array<GroupScopedJs<StoredDocumentIdentifierJs>>> = GlobalScope.promise {
+			val userIdsConverted: List<GroupScoped<StoredDocumentIdentifier>> = arrayToList(
+				userIds,
+				"userIds",
+				{ x1: GroupScopedJs<StoredDocumentIdentifierJs> ->
+					groupScoped_fromJs(
+						x1,
+						{ x2: StoredDocumentIdentifierJs ->
+							storedDocumentIdentifier_fromJs(x2)
+						},
+					)
+				},
+			)
+			val result = userApi.inGroup.deleteUsersByIds(
+				userIdsConverted,
+			)
+			listToArray(
+				result,
+				{ x1: GroupScoped<StoredDocumentIdentifier> ->
+					groupScoped_toJs(
+						x1,
+						{ x2: StoredDocumentIdentifier ->
+							storedDocumentIdentifier_toJs(x2)
+						},
+					)
+				},
+			)
+		}
+
+		override fun deleteUser(user: GroupScopedJs<UserJs>):
+				Promise<GroupScopedJs<StoredDocumentIdentifierJs>> = GlobalScope.promise {
+			val userConverted: GroupScoped<User> = groupScoped_fromJs(
+				user,
+				{ x1: UserJs ->
+					user_fromJs(x1)
+				},
+			)
+			val result = userApi.inGroup.deleteUser(
+				userConverted,
+			)
+			groupScoped_toJs(
+				result,
+				{ x1: StoredDocumentIdentifier ->
+					storedDocumentIdentifier_toJs(x1)
+				},
+			)
+		}
+
+		override fun deleteUsers(users: Array<GroupScopedJs<UserJs>>):
+				Promise<Array<GroupScopedJs<StoredDocumentIdentifierJs>>> = GlobalScope.promise {
+			val usersConverted: List<GroupScoped<User>> = arrayToList(
+				users,
+				"users",
+				{ x1: GroupScopedJs<UserJs> ->
+					groupScoped_fromJs(
+						x1,
+						{ x2: UserJs ->
+							user_fromJs(x2)
+						},
+					)
+				},
+			)
+			val result = userApi.inGroup.deleteUsers(
+				usersConverted,
+			)
+			listToArray(
+				result,
+				{ x1: GroupScoped<StoredDocumentIdentifier> ->
+					groupScoped_toJs(
+						x1,
+						{ x2: StoredDocumentIdentifier ->
+							storedDocumentIdentifier_toJs(x2)
+						},
+					)
+				},
+			)
+		}
+
+		override fun purgeUserById(userId: GroupScopedJs<StoredDocumentIdentifierJs>): Promise<Unit> =
+				GlobalScope.promise {
+			val userIdConverted: GroupScoped<StoredDocumentIdentifier> = groupScoped_fromJs(
+				userId,
+				{ x1: StoredDocumentIdentifierJs ->
+					storedDocumentIdentifier_fromJs(x1)
+				},
+			)
+			userApi.inGroup.purgeUserById(
+				userIdConverted,
+			)
+
+		}
+
+		override fun purgeUsersByIds(userIds: Array<GroupScopedJs<StoredDocumentIdentifierJs>>):
+				Promise<Array<GroupScopedJs<StoredDocumentIdentifierJs>>> = GlobalScope.promise {
+			val userIdsConverted: List<GroupScoped<StoredDocumentIdentifier>> = arrayToList(
+				userIds,
+				"userIds",
+				{ x1: GroupScopedJs<StoredDocumentIdentifierJs> ->
+					groupScoped_fromJs(
+						x1,
+						{ x2: StoredDocumentIdentifierJs ->
+							storedDocumentIdentifier_fromJs(x2)
+						},
+					)
+				},
+			)
+			val result = userApi.inGroup.purgeUsersByIds(
+				userIdsConverted,
+			)
+			listToArray(
+				result,
+				{ x1: GroupScoped<StoredDocumentIdentifier> ->
+					groupScoped_toJs(
+						x1,
+						{ x2: StoredDocumentIdentifier ->
+							storedDocumentIdentifier_toJs(x2)
+						},
+					)
+				},
+			)
+		}
+
+		override fun purgeUser(user: GroupScopedJs<UserJs>): Promise<Unit> = GlobalScope.promise {
+			val userConverted: GroupScoped<User> = groupScoped_fromJs(
+				user,
+				{ x1: UserJs ->
+					user_fromJs(x1)
+				},
+			)
+			userApi.inGroup.purgeUser(
+				userConverted,
+			)
+
+		}
+
+		override fun purgeUsers(userIds: Array<GroupScopedJs<UserJs>>):
+				Promise<Array<GroupScopedJs<StoredDocumentIdentifierJs>>> = GlobalScope.promise {
+			val userIdsConverted: List<GroupScoped<User>> = arrayToList(
+				userIds,
+				"userIds",
+				{ x1: GroupScopedJs<UserJs> ->
+					groupScoped_fromJs(
+						x1,
+						{ x2: UserJs ->
+							user_fromJs(x2)
+						},
+					)
+				},
+			)
+			val result = userApi.inGroup.purgeUsers(
+				userIdsConverted,
+			)
+			listToArray(
+				result,
+				{ x1: GroupScoped<StoredDocumentIdentifier> ->
+					groupScoped_toJs(
+						x1,
+						{ x2: StoredDocumentIdentifier ->
+							storedDocumentIdentifier_toJs(x2)
+						},
+					)
+				},
+			)
+		}
+
+		override fun undeleteUserById(userId: GroupScopedJs<StoredDocumentIdentifierJs>):
+				Promise<GroupScopedJs<UserJs>> = GlobalScope.promise {
+			val userIdConverted: GroupScoped<StoredDocumentIdentifier> = groupScoped_fromJs(
+				userId,
+				{ x1: StoredDocumentIdentifierJs ->
+					storedDocumentIdentifier_fromJs(x1)
+				},
+			)
+			val result = userApi.inGroup.undeleteUserById(
+				userIdConverted,
+			)
+			groupScoped_toJs(
+				result,
+				{ x1: User ->
+					user_toJs(x1)
+				},
+			)
+		}
+
+		override fun undeleteUsersByIds(userIds: Array<GroupScopedJs<StoredDocumentIdentifierJs>>):
+				Promise<Array<GroupScopedJs<UserJs>>> = GlobalScope.promise {
+			val userIdsConverted: List<GroupScoped<StoredDocumentIdentifier>> = arrayToList(
+				userIds,
+				"userIds",
+				{ x1: GroupScopedJs<StoredDocumentIdentifierJs> ->
+					groupScoped_fromJs(
+						x1,
+						{ x2: StoredDocumentIdentifierJs ->
+							storedDocumentIdentifier_fromJs(x2)
+						},
+					)
+				},
+			)
+			val result = userApi.inGroup.undeleteUsersByIds(
+				userIdsConverted,
+			)
+			listToArray(
+				result,
+				{ x1: GroupScoped<User> ->
+					groupScoped_toJs(
+						x1,
+						{ x2: User ->
+							user_toJs(x2)
+						},
+					)
+				},
+			)
+		}
+
+		override fun undeleteUser(user: GroupScopedJs<UserJs>): Promise<GroupScopedJs<UserJs>> =
+				GlobalScope.promise {
+			val userConverted: GroupScoped<User> = groupScoped_fromJs(
+				user,
+				{ x1: UserJs ->
+					user_fromJs(x1)
+				},
+			)
+			val result = userApi.inGroup.undeleteUser(
+				userConverted,
+			)
+			groupScoped_toJs(
+				result,
+				{ x1: User ->
+					user_toJs(x1)
+				},
+			)
+		}
+
+		override fun undeleteUsers(users: Array<GroupScopedJs<UserJs>>):
+				Promise<Array<GroupScopedJs<UserJs>>> = GlobalScope.promise {
+			val usersConverted: List<GroupScoped<User>> = arrayToList(
+				users,
+				"users",
+				{ x1: GroupScopedJs<UserJs> ->
+					groupScoped_fromJs(
+						x1,
+						{ x2: UserJs ->
+							user_fromJs(x2)
+						},
+					)
+				},
+			)
+			val result = userApi.inGroup.undeleteUsers(
+				usersConverted,
+			)
+			listToArray(
+				result,
+				{ x1: GroupScoped<User> ->
+					groupScoped_toJs(
+						x1,
+						{ x2: User ->
+							user_toJs(x2)
+						},
+					)
+				},
+			)
+		}
+
+		override fun filterUsersBy(groupId: String, filter: BaseFilterOptionsJs<UserJs>):
+				Promise<PaginatedListIteratorJs<GroupScopedJs<UserJs>>> = GlobalScope.promise {
+			val groupIdConverted: String = groupId
+			val filterConverted: BaseFilterOptions<User> = baseFilterOptions_fromJs(filter)
+			val result = userApi.inGroup.filterUsersBy(
+				groupIdConverted,
+				filterConverted,
+			)
+			paginatedListIterator_toJs(
+				result,
+				{ x1: GroupScoped<User> ->
+					groupScoped_toJs(
+						x1,
+						{ x2: User ->
+							user_toJs(x2)
+						},
+					)
+				},
+			)
+		}
+
+		override fun matchUsersBy(groupId: String, filter: BaseFilterOptionsJs<UserJs>):
+				Promise<Array<String>> = GlobalScope.promise {
+			val groupIdConverted: String = groupId
+			val filterConverted: BaseFilterOptions<User> = baseFilterOptions_fromJs(filter)
+			val result = userApi.inGroup.matchUsersBy(
+				groupIdConverted,
+				filterConverted,
+			)
+			listToArray(
+				result,
+				{ x1: String ->
+					x1
+				},
+			)
+		}
+
+		override fun filterUsersBySorted(groupId: String, filter: BaseSortableFilterOptionsJs<UserJs>):
+				Promise<PaginatedListIteratorJs<GroupScopedJs<UserJs>>> = GlobalScope.promise {
+			val groupIdConverted: String = groupId
+			val filterConverted: BaseSortableFilterOptions<User> = baseSortableFilterOptions_fromJs(filter)
+			val result = userApi.inGroup.filterUsersBySorted(
+				groupIdConverted,
+				filterConverted,
+			)
+			paginatedListIterator_toJs(
+				result,
+				{ x1: GroupScoped<User> ->
+					groupScoped_toJs(
+						x1,
+						{ x2: User ->
+							user_toJs(x2)
+						},
+					)
+				},
+			)
+		}
+
+		override fun matchUsersBySorted(groupId: String, filter: BaseSortableFilterOptionsJs<UserJs>):
+				Promise<Array<String>> = GlobalScope.promise {
+			val groupIdConverted: String = groupId
+			val filterConverted: BaseSortableFilterOptions<User> = baseSortableFilterOptions_fromJs(filter)
+			val result = userApi.inGroup.matchUsersBySorted(
+				groupIdConverted,
+				filterConverted,
+			)
+			listToArray(
+				result,
+				{ x1: String ->
+					x1
+				},
+			)
+		}
+
+		override fun setUserRoles(user: GroupScopedJs<UserJs>, rolesIds: Array<String>):
+				Promise<GroupScopedJs<UserJs>> = GlobalScope.promise {
+			val userConverted: GroupScoped<User> = groupScoped_fromJs(
+				user,
+				{ x1: UserJs ->
+					user_fromJs(x1)
+				},
+			)
+			val rolesIdsConverted: List<String> = arrayToList(
+				rolesIds,
+				"rolesIds",
+				{ x1: String ->
+					x1
+				},
+			)
+			val result = userApi.inGroup.setUserRoles(
+				userConverted,
+				rolesIdsConverted,
+			)
+			groupScoped_toJs(
+				result,
+				{ x1: User ->
+					user_toJs(x1)
+				},
+			)
+		}
+
+		override fun resetUserRoles(user: GroupScopedJs<UserJs>): Promise<GroupScopedJs<UserJs>> =
+				GlobalScope.promise {
+			val userConverted: GroupScoped<User> = groupScoped_fromJs(
+				user,
+				{ x1: UserJs ->
+					user_fromJs(x1)
+				},
+			)
+			val result = userApi.inGroup.resetUserRoles(
+				userConverted,
+			)
+			groupScoped_toJs(
+				result,
+				{ x1: User ->
+					user_toJs(x1)
+				},
+			)
+		}
+
+		override fun getToken(
+			userIdentifier: String,
+			groupId: String,
+			key: String,
+			options: dynamic,
+		): Promise<String> {
+			val _options = options ?: js("{}")
+			return GlobalScope.promise {
+				val userIdentifierConverted: String = userIdentifier
+				val groupIdConverted: String = groupId
+				val keyConverted: String = key
+				val tokenConverted: String? = convertingOptionOrDefaultNullable(
+					_options,
+					"token",
+					null
+				) { token: String? ->
+					undefinedToNull(token)
+				}
+				val tokenValidityConverted: Long? = convertingOptionOrDefaultNullable(
+					_options,
+					"tokenValidity",
+					null
+				) { tokenValidity: Double? ->
+					numberToLong(tokenValidity, "tokenValidity")
+				}
+				val result = userApi.inGroup.getToken(
+					userIdentifierConverted,
+					groupIdConverted,
+					keyConverted,
+					tokenConverted,
+					tokenValidityConverted,
+				)
+				result
+			}
+		}
+
+		override fun getTokenInAllGroups(
+			userIdentifier: String,
+			key: String,
+			options: dynamic,
+		): Promise<Array<TokenWithGroupJs>> {
+			val _options = options ?: js("{}")
+			return GlobalScope.promise {
+				val userIdentifierConverted: String = userIdentifier
+				val keyConverted: String = key
+				val tokenConverted: String? = convertingOptionOrDefaultNullable(
+					_options,
+					"token",
+					null
+				) { token: String? ->
+					undefinedToNull(token)
+				}
+				val tokenValidityConverted: Long? = convertingOptionOrDefaultNullable(
+					_options,
+					"tokenValidity",
+					null
+				) { tokenValidity: Double? ->
+					numberToLong(tokenValidity, "tokenValidity")
+				}
+				val result = userApi.inGroup.getTokenInAllGroups(
+					userIdentifierConverted,
+					keyConverted,
+					tokenConverted,
+					tokenValidityConverted,
+				)
+				listToArray(
+					result,
+					{ x1: TokenWithGroup ->
+						tokenWithGroup_toJs(x1)
+					},
+				)
+			}
+		}
+
+		override fun enable2faForUser(user: GroupScopedJs<UserJs>, request: Enable2faRequestJs):
+				Promise<Unit> = GlobalScope.promise {
+			val userConverted: GroupScoped<User> = groupScoped_fromJs(
+				user,
+				{ x1: UserJs ->
+					user_fromJs(x1)
+				},
+			)
+			val requestConverted: Enable2faRequest = enable2faRequest_fromJs(request)
+			userApi.inGroup.enable2faForUser(
+				userConverted,
+				requestConverted,
+			)
+
+		}
+
+		override fun disable2faForUser(user: GroupScopedJs<UserJs>): Promise<Unit> = GlobalScope.promise {
+			val userConverted: GroupScoped<User> = groupScoped_fromJs(
+				user,
+				{ x1: UserJs ->
+					user_fromJs(x1)
+				},
+			)
+			userApi.inGroup.disable2faForUser(
+				userConverted,
+			)
+
+		}
+
+		override fun createAdminUser(user: GroupScopedJs<UserJs>): Promise<GroupScopedJs<UserJs>> =
+				GlobalScope.promise {
+			val userConverted: GroupScoped<User> = groupScoped_fromJs(
+				user,
+				{ x1: UserJs ->
+					user_fromJs(x1)
+				},
+			)
+			val result = userApi.inGroup.createAdminUser(
+				userConverted,
+			)
+			groupScoped_toJs(
+				result,
+				{ x1: User ->
+					user_toJs(x1)
+				},
+			)
+		}
+
+		override fun setUserInheritsPermissions(user: GroupScopedJs<UserJs>, `value`: Boolean):
+				Promise<Unit> = GlobalScope.promise {
+			val userConverted: GroupScoped<User> = groupScoped_fromJs(
+				user,
+				{ x1: UserJs ->
+					user_fromJs(x1)
+				},
+			)
+			val valueConverted: Boolean = value
+			userApi.inGroup.setUserInheritsPermissions(
+				userConverted,
+				valueConverted,
+			)
+
+		}
+
+		override fun setLoginIdentifiers(
+			user: GroupScopedJs<UserJs>,
+			identifier: LoginIdentifierJs,
+			replaceExisting: Boolean,
+		): Promise<Boolean> = GlobalScope.promise {
+			val userConverted: GroupScoped<User> = groupScoped_fromJs(
+				user,
+				{ x1: UserJs ->
+					user_fromJs(x1)
+				},
+			)
+			val identifierConverted: LoginIdentifier = loginIdentifier_fromJs(identifier)
+			val replaceExistingConverted: Boolean = replaceExisting
+			val result = userApi.inGroup.setLoginIdentifiers(
+				userConverted,
+				identifierConverted,
+				replaceExistingConverted,
+			)
+			result
+		}
 	}
 
 	override fun getCurrentUser(): Promise<UserJs> = GlobalScope.promise {
@@ -87,58 +788,31 @@ internal class UserApiImplJs(
 		user_toJs(result)
 	}
 
-	override fun listUsersBy(options: dynamic): Promise<PaginatedListJs<UserJs>> {
-		val _options = options ?: js("{}")
-		return GlobalScope.promise {
-			val startKeyConverted: String? = convertingOptionOrDefaultNullable(
-				_options,
-				"startKey",
-				null
-			) { startKey: String? ->
-				undefinedToNull(startKey)
-			}
-			val startDocumentIdConverted: String? = convertingOptionOrDefaultNullable(
-				_options,
-				"startDocumentId",
-				null
-			) { startDocumentId: String? ->
-				undefinedToNull(startDocumentId)
-			}
-			val limitConverted: Int? = convertingOptionOrDefaultNullable(
-				_options,
-				"limit",
-				null
-			) { limit: Double? ->
-				numberToInt(limit, "limit")
-			}
-			val skipPatientsConverted: Boolean? = convertingOptionOrDefaultNullable(
-				_options,
-				"skipPatients",
-				null
-			) { skipPatients: Boolean? ->
-				undefinedToNull(skipPatients)
-			}
-			val result = userApi.listUsersBy(
-				startKeyConverted,
-				startDocumentIdConverted,
-				limitConverted,
-				skipPatientsConverted,
-			)
-			paginatedList_toJs(
-				result,
-				{ x1: User ->
-					user_toJs(x1)
-				},
-			)
-		}
-	}
-
 	override fun createUser(user: UserJs): Promise<UserJs> = GlobalScope.promise {
 		val userConverted: User = user_fromJs(user)
 		val result = userApi.createUser(
 			userConverted,
 		)
 		user_toJs(result)
+	}
+
+	override fun createUsers(users: Array<UserJs>): Promise<Array<UserJs>> = GlobalScope.promise {
+		val usersConverted: List<User> = arrayToList(
+			users,
+			"users",
+			{ x1: UserJs ->
+				user_fromJs(x1)
+			},
+		)
+		val result = userApi.createUsers(
+			usersConverted,
+		)
+		listToArray(
+			result,
+			{ x1: User ->
+				user_toJs(x1)
+			},
+		)
 	}
 
 	override fun getUser(userId: String): Promise<UserJs?> = GlobalScope.promise {
@@ -163,6 +837,33 @@ internal class UserApiImplJs(
 		)
 		val result = userApi.getUsers(
 			userIdsConverted,
+		)
+		listToArray(
+			result,
+			{ x1: User ->
+				user_toJs(x1)
+			},
+		)
+	}
+
+	override fun modifyUser(user: UserJs): Promise<UserJs> = GlobalScope.promise {
+		val userConverted: User = user_fromJs(user)
+		val result = userApi.modifyUser(
+			userConverted,
+		)
+		user_toJs(result)
+	}
+
+	override fun modifyUsers(users: Array<UserJs>): Promise<Array<UserJs>> = GlobalScope.promise {
+		val usersConverted: List<User> = arrayToList(
+			users,
+			"users",
+			{ x1: UserJs ->
+				user_fromJs(x1)
+			},
+		)
+		val result = userApi.modifyUsers(
+			usersConverted,
 		)
 		listToArray(
 			result,
@@ -220,14 +921,6 @@ internal class UserApiImplJs(
 				x1
 			},
 		)
-	}
-
-	override fun modifyUser(user: UserJs): Promise<UserJs> = GlobalScope.promise {
-		val userConverted: User = user_fromJs(user)
-		val result = userApi.modifyUser(
-			userConverted,
-		)
-		user_toJs(result)
 	}
 
 	override fun assignHealthcareParty(healthcarePartyId: String): Promise<UserJs> =
@@ -356,114 +1049,19 @@ internal class UserApiImplJs(
 		)
 	}
 
-	override fun getUsersInGroup(groupId: String, userIds: Array<String>): Promise<Array<UserJs>> =
+	override fun setUserRoles(userId: String, rolesIds: Array<String>): Promise<UserJs> =
 			GlobalScope.promise {
-		val groupIdConverted: String = groupId
-		val userIdsConverted: List<String> = arrayToList(
-			userIds,
-			"userIds",
+		val userIdConverted: String = userId
+		val rolesIdsConverted: List<String> = arrayToList(
+			rolesIds,
+			"rolesIds",
 			{ x1: String ->
 				x1
 			},
 		)
-		val result = userApi.getUsersInGroup(
-			groupIdConverted,
-			userIdsConverted,
-		)
-		listToArray(
-			result,
-			{ x1: User ->
-				user_toJs(x1)
-			},
-		)
-	}
-
-	override fun listUsersInGroup(groupId: String, options: dynamic):
-			Promise<PaginatedListJs<UserJs>> {
-		val _options = options ?: js("{}")
-		return GlobalScope.promise {
-			val groupIdConverted: String = groupId
-			val startKeyConverted: String? = convertingOptionOrDefaultNullable(
-				_options,
-				"startKey",
-				null
-			) { startKey: String? ->
-				undefinedToNull(startKey)
-			}
-			val startDocumentIdConverted: String? = convertingOptionOrDefaultNullable(
-				_options,
-				"startDocumentId",
-				null
-			) { startDocumentId: String? ->
-				undefinedToNull(startDocumentId)
-			}
-			val limitConverted: Int? = convertingOptionOrDefaultNullable(
-				_options,
-				"limit",
-				null
-			) { limit: Double? ->
-				numberToInt(limit, "limit")
-			}
-			val result = userApi.listUsersInGroup(
-				groupIdConverted,
-				startKeyConverted,
-				startDocumentIdConverted,
-				limitConverted,
-			)
-			paginatedList_toJs(
-				result,
-				{ x1: User ->
-					user_toJs(x1)
-				},
-			)
-		}
-	}
-
-	override fun createUserInGroup(groupId: String, user: UserJs): Promise<UserJs> =
-			GlobalScope.promise {
-		val groupIdConverted: String = groupId
-		val userConverted: User = user_fromJs(user)
-		val result = userApi.createUserInGroup(
-			groupIdConverted,
-			userConverted,
-		)
-		user_toJs(result)
-	}
-
-	override fun modifyUserInGroup(groupId: String, user: UserJs): Promise<UserJs> =
-			GlobalScope.promise {
-		val groupIdConverted: String = groupId
-		val userConverted: User = user_fromJs(user)
-		val result = userApi.modifyUserInGroup(
-			groupIdConverted,
-			userConverted,
-		)
-		user_toJs(result)
-	}
-
-	override fun setUserRoles(userId: String, rolesId: ListOfIdsJs): Promise<UserJs> =
-			GlobalScope.promise {
-		val userIdConverted: String = userId
-		val rolesIdConverted: ListOfIds = listOfIds_fromJs(rolesId)
 		val result = userApi.setUserRoles(
 			userIdConverted,
-			rolesIdConverted,
-		)
-		user_toJs(result)
-	}
-
-	override fun setUserRolesInGroup(
-		userId: String,
-		groupId: String,
-		rolesId: ListOfIdsJs,
-	): Promise<UserJs> = GlobalScope.promise {
-		val userIdConverted: String = userId
-		val groupIdConverted: String = groupId
-		val rolesIdConverted: ListOfIds = listOfIds_fromJs(rolesId)
-		val result = userApi.setUserRolesInGroup(
-			userIdConverted,
-			groupIdConverted,
-			rolesIdConverted,
+			rolesIdsConverted,
 		)
 		user_toJs(result)
 	}
@@ -476,172 +1074,6 @@ internal class UserApiImplJs(
 		user_toJs(result)
 	}
 
-	override fun resetUserRolesInGroup(userId: String, groupId: String): Promise<UserJs> =
-			GlobalScope.promise {
-		val userIdConverted: String = userId
-		val groupIdConverted: String = groupId
-		val result = userApi.resetUserRolesInGroup(
-			userIdConverted,
-			groupIdConverted,
-		)
-		user_toJs(result)
-	}
-
-	override fun getTokenInGroup(
-		groupId: String,
-		userId: String,
-		key: String,
-		options: dynamic,
-	): Promise<String> {
-		val _options = options ?: js("{}")
-		return GlobalScope.promise {
-			val groupIdConverted: String = groupId
-			val userIdConverted: String = userId
-			val keyConverted: String = key
-			val tokenConverted: String? = convertingOptionOrDefaultNullable(
-				_options,
-				"token",
-				null
-			) { token: String? ->
-				undefinedToNull(token)
-			}
-			val tokenValidityConverted: Long? = convertingOptionOrDefaultNullable(
-				_options,
-				"tokenValidity",
-				null
-			) { tokenValidity: Double? ->
-				numberToLong(tokenValidity, "tokenValidity")
-			}
-			val result = userApi.getTokenInGroup(
-				groupIdConverted,
-				userIdConverted,
-				keyConverted,
-				tokenConverted,
-				tokenValidityConverted,
-			)
-			result
-		}
-	}
-
-	override fun getTokenInAllGroups(
-		userIdentifier: String,
-		key: String,
-		options: dynamic,
-	): Promise<Array<TokenWithGroupJs>> {
-		val _options = options ?: js("{}")
-		return GlobalScope.promise {
-			val userIdentifierConverted: String = userIdentifier
-			val keyConverted: String = key
-			val tokenConverted: String? = convertingOptionOrDefaultNullable(
-				_options,
-				"token",
-				null
-			) { token: String? ->
-				undefinedToNull(token)
-			}
-			val tokenValidityConverted: Long? = convertingOptionOrDefaultNullable(
-				_options,
-				"tokenValidity",
-				null
-			) { tokenValidity: Double? ->
-				numberToLong(tokenValidity, "tokenValidity")
-			}
-			val result = userApi.getTokenInAllGroups(
-				userIdentifierConverted,
-				keyConverted,
-				tokenConverted,
-				tokenValidityConverted,
-			)
-			listToArray(
-				result,
-				{ x1: TokenWithGroup ->
-					tokenWithGroup_toJs(x1)
-				},
-			)
-		}
-	}
-
-	override fun filterUsersInGroupBy(groupId: String, filter: BaseFilterOptionsJs<UserJs>):
-			Promise<PaginatedListIteratorJs<UserJs>> = GlobalScope.promise {
-		val groupIdConverted: String = groupId
-		val filterConverted: BaseFilterOptions<User> = baseFilterOptions_fromJs(filter)
-		val result = userApi.filterUsersInGroupBy(
-			groupIdConverted,
-			filterConverted,
-		)
-		paginatedListIterator_toJs(
-			result,
-			{ x1: User ->
-				user_toJs(x1)
-			},
-		)
-	}
-
-	override fun matchUsersInGroupBy(groupId: String, filter: BaseFilterOptionsJs<UserJs>):
-			Promise<Array<String>> = GlobalScope.promise {
-		val groupIdConverted: String = groupId
-		val filterConverted: BaseFilterOptions<User> = baseFilterOptions_fromJs(filter)
-		val result = userApi.matchUsersInGroupBy(
-			groupIdConverted,
-			filterConverted,
-		)
-		listToArray(
-			result,
-			{ x1: String ->
-				x1
-			},
-		)
-	}
-
-	override fun filterUsersInGroupBySorted(groupId: String,
-			filter: BaseSortableFilterOptionsJs<UserJs>): Promise<PaginatedListIteratorJs<UserJs>> =
-			GlobalScope.promise {
-		val groupIdConverted: String = groupId
-		val filterConverted: BaseSortableFilterOptions<User> = baseSortableFilterOptions_fromJs(filter)
-		val result = userApi.filterUsersInGroupBySorted(
-			groupIdConverted,
-			filterConverted,
-		)
-		paginatedListIterator_toJs(
-			result,
-			{ x1: User ->
-				user_toJs(x1)
-			},
-		)
-	}
-
-	override fun matchUsersInGroupBySorted(groupId: String,
-			filter: BaseSortableFilterOptionsJs<UserJs>): Promise<Array<String>> = GlobalScope.promise {
-		val groupIdConverted: String = groupId
-		val filterConverted: BaseSortableFilterOptions<User> = baseSortableFilterOptions_fromJs(filter)
-		val result = userApi.matchUsersInGroupBySorted(
-			groupIdConverted,
-			filterConverted,
-		)
-		listToArray(
-			result,
-			{ x1: String ->
-				x1
-			},
-		)
-	}
-
-	override fun enable2faForUser(
-		userId: String,
-		groupId: String,
-		request: Enable2faRequestJs,
-	): Promise<Unit> = GlobalScope.promise {
-		val userIdConverted: String = userId
-		val groupIdConverted: String = groupId
-		val requestConverted: Enable2faRequest = enable2faRequest_fromJs(request)
-		userApi.enable2faForUser(
-			userIdConverted,
-			groupIdConverted,
-			requestConverted,
-		)
-
-	}
-
 	override fun enable2faForUser(userId: String, request: Enable2faRequestJs): Promise<Unit> =
 			GlobalScope.promise {
 		val userIdConverted: String = userId
@@ -649,17 +1081,6 @@ internal class UserApiImplJs(
 		userApi.enable2faForUser(
 			userIdConverted,
 			requestConverted,
-		)
-
-	}
-
-	override fun disable2faForUser(userId: String, groupId: String): Promise<Unit> =
-			GlobalScope.promise {
-		val userIdConverted: String = userId
-		val groupIdConverted: String = groupId
-		userApi.disable2faForUser(
-			userIdConverted,
-			groupIdConverted,
 		)
 
 	}
@@ -680,18 +1101,7 @@ internal class UserApiImplJs(
 		user_toJs(result)
 	}
 
-	override fun createAdminUserInGroup(groupId: String, user: UserJs): Promise<UserJs> =
-			GlobalScope.promise {
-		val groupIdConverted: String = groupId
-		val userConverted: User = user_fromJs(user)
-		val result = userApi.createAdminUserInGroup(
-			groupIdConverted,
-			userConverted,
-		)
-		user_toJs(result)
-	}
-
-	override fun deleteUserById(entityId: String, rev: String): Promise<DocIdentifierJs> =
+	override fun deleteUserById(entityId: String, rev: String): Promise<StoredDocumentIdentifierJs> =
 			GlobalScope.promise {
 		val entityIdConverted: String = entityId
 		val revConverted: String = rev
@@ -699,23 +1109,27 @@ internal class UserApiImplJs(
 			entityIdConverted,
 			revConverted,
 		)
-		docIdentifier_toJs(result)
+		storedDocumentIdentifier_toJs(result)
 	}
 
-	override fun deleteUserInGroupById(
-		groupId: String,
-		entityId: String,
-		rev: String,
-	): Promise<DocIdentifierJs> = GlobalScope.promise {
-		val groupIdConverted: String = groupId
-		val entityIdConverted: String = entityId
-		val revConverted: String = rev
-		val result = userApi.deleteUserInGroupById(
-			groupIdConverted,
-			entityIdConverted,
-			revConverted,
+	override fun deleteUsersByIds(userIds: Array<StoredDocumentIdentifierJs>):
+			Promise<Array<StoredDocumentIdentifierJs>> = GlobalScope.promise {
+		val userIdsConverted: List<StoredDocumentIdentifier> = arrayToList(
+			userIds,
+			"userIds",
+			{ x1: StoredDocumentIdentifierJs ->
+				storedDocumentIdentifier_fromJs(x1)
+			},
 		)
-		docIdentifier_toJs(result)
+		val result = userApi.deleteUsersByIds(
+			userIdsConverted,
+		)
+		listToArray(
+			result,
+			{ x1: StoredDocumentIdentifier ->
+				storedDocumentIdentifier_toJs(x1)
+			},
+		)
 	}
 
 	override fun purgeUserById(id: String, rev: String): Promise<Unit> = GlobalScope.promise {
@@ -728,6 +1142,26 @@ internal class UserApiImplJs(
 
 	}
 
+	override fun purgeUsersByIds(userIds: Array<StoredDocumentIdentifierJs>):
+			Promise<Array<StoredDocumentIdentifierJs>> = GlobalScope.promise {
+		val userIdsConverted: List<StoredDocumentIdentifier> = arrayToList(
+			userIds,
+			"userIds",
+			{ x1: StoredDocumentIdentifierJs ->
+				storedDocumentIdentifier_fromJs(x1)
+			},
+		)
+		val result = userApi.purgeUsersByIds(
+			userIdsConverted,
+		)
+		listToArray(
+			result,
+			{ x1: StoredDocumentIdentifier ->
+				storedDocumentIdentifier_toJs(x1)
+			},
+		)
+	}
+
 	override fun undeleteUserById(id: String, rev: String): Promise<UserJs> = GlobalScope.promise {
 		val idConverted: String = id
 		val revConverted: String = rev
@@ -738,23 +1172,52 @@ internal class UserApiImplJs(
 		user_toJs(result)
 	}
 
-	override fun deleteUser(user: UserJs): Promise<DocIdentifierJs> = GlobalScope.promise {
+	override fun undeleteUsersByIds(userIds: Array<StoredDocumentIdentifierJs>): Promise<Array<UserJs>>
+			= GlobalScope.promise {
+		val userIdsConverted: List<StoredDocumentIdentifier> = arrayToList(
+			userIds,
+			"userIds",
+			{ x1: StoredDocumentIdentifierJs ->
+				storedDocumentIdentifier_fromJs(x1)
+			},
+		)
+		val result = userApi.undeleteUsersByIds(
+			userIdsConverted,
+		)
+		listToArray(
+			result,
+			{ x1: User ->
+				user_toJs(x1)
+			},
+		)
+	}
+
+	override fun deleteUser(user: UserJs): Promise<StoredDocumentIdentifierJs> = GlobalScope.promise {
 		val userConverted: User = user_fromJs(user)
 		val result = userApi.deleteUser(
 			userConverted,
 		)
-		docIdentifier_toJs(result)
+		storedDocumentIdentifier_toJs(result)
 	}
 
-	override fun deleteUserInGroup(groupId: String, user: UserJs): Promise<DocIdentifierJs> =
+	override fun deleteUsers(users: Array<UserJs>): Promise<Array<StoredDocumentIdentifierJs>> =
 			GlobalScope.promise {
-		val groupIdConverted: String = groupId
-		val userConverted: User = user_fromJs(user)
-		val result = userApi.deleteUserInGroup(
-			groupIdConverted,
-			userConverted,
+		val usersConverted: List<User> = arrayToList(
+			users,
+			"users",
+			{ x1: UserJs ->
+				user_fromJs(x1)
+			},
 		)
-		docIdentifier_toJs(result)
+		val result = userApi.deleteUsers(
+			usersConverted,
+		)
+		listToArray(
+			result,
+			{ x1: StoredDocumentIdentifier ->
+				storedDocumentIdentifier_toJs(x1)
+			},
+		)
 	}
 
 	override fun purgeUser(user: UserJs): Promise<Unit> = GlobalScope.promise {
@@ -765,6 +1228,26 @@ internal class UserApiImplJs(
 
 	}
 
+	override fun purgeUsers(users: Array<UserJs>): Promise<Array<StoredDocumentIdentifierJs>> =
+			GlobalScope.promise {
+		val usersConverted: List<User> = arrayToList(
+			users,
+			"users",
+			{ x1: UserJs ->
+				user_fromJs(x1)
+			},
+		)
+		val result = userApi.purgeUsers(
+			usersConverted,
+		)
+		listToArray(
+			result,
+			{ x1: StoredDocumentIdentifier ->
+				storedDocumentIdentifier_toJs(x1)
+			},
+		)
+	}
+
 	override fun undeleteUser(user: UserJs): Promise<UserJs> = GlobalScope.promise {
 		val userConverted: User = user_fromJs(user)
 		val result = userApi.undeleteUser(
@@ -773,39 +1256,23 @@ internal class UserApiImplJs(
 		user_toJs(result)
 	}
 
-	override fun setUserInheritsPermissions(
-		userId: String,
-		groupId: String,
-		`value`: Boolean,
-	): Promise<String> = GlobalScope.promise {
-		val userIdConverted: String = userId
-		val groupIdConverted: String = groupId
-		val valueConverted: Boolean = value
-		val result = userApi.setUserInheritsPermissions(
-			userIdConverted,
-			groupIdConverted,
-			valueConverted,
+	override fun undeleteUsers(users: Array<UserJs>): Promise<Array<UserJs>> = GlobalScope.promise {
+		val usersConverted: List<User> = arrayToList(
+			users,
+			"users",
+			{ x1: UserJs ->
+				user_fromJs(x1)
+			},
 		)
-		result
-	}
-
-	override fun setLoginIdentifiers(
-		userId: String,
-		groupId: String,
-		identifier: LoginIdentifierJs,
-		replaceExisting: Boolean,
-	): Promise<Boolean> = GlobalScope.promise {
-		val userIdConverted: String = userId
-		val groupIdConverted: String = groupId
-		val identifierConverted: LoginIdentifier = loginIdentifier_fromJs(identifier)
-		val replaceExistingConverted: Boolean = replaceExisting
-		val result = userApi.setLoginIdentifiers(
-			userIdConverted,
-			groupIdConverted,
-			identifierConverted,
-			replaceExistingConverted,
+		val result = userApi.undeleteUsers(
+			usersConverted,
 		)
-		result
+		listToArray(
+			result,
+			{ x1: User ->
+				user_toJs(x1)
+			},
+		)
 	}
 
 	override fun setExternalJwtAuthByIdentifiersForCurrentUser(externalJwtConfigId: String,

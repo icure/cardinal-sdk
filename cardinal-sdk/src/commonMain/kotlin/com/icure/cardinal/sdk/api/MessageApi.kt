@@ -10,28 +10,23 @@ import com.icure.cardinal.sdk.filters.SortableFilterOptions
 import com.icure.cardinal.sdk.model.DecryptedMessage
 import com.icure.cardinal.sdk.model.EncryptedMessage
 import com.icure.cardinal.sdk.model.EntityReferenceInGroup
+import com.icure.cardinal.sdk.model.GroupScoped
 import com.icure.cardinal.sdk.model.Message
-import com.icure.cardinal.sdk.model.PaginatedList
 import com.icure.cardinal.sdk.model.Patient
 import com.icure.cardinal.sdk.model.StoredDocumentIdentifier
 import com.icure.cardinal.sdk.model.User
-import com.icure.cardinal.sdk.model.couchdb.DocIdentifier
 import com.icure.cardinal.sdk.model.embed.AccessLevel
 import com.icure.cardinal.sdk.model.embed.MessageReadStatus
 import com.icure.cardinal.sdk.model.specializations.HexString
+import com.icure.cardinal.sdk.model.toStoredDocumentIdentifier
 import com.icure.cardinal.sdk.subscription.Subscribable
 import com.icure.cardinal.sdk.utils.DefaultValue
 import com.icure.cardinal.sdk.utils.EntityEncryptionException
+import com.icure.cardinal.sdk.utils.generation.JsMapAsObjectArray
 import com.icure.cardinal.sdk.utils.pagination.PaginatedListIterator
-import kotlinx.serialization.json.JsonElement
 
 /* This interface includes the API calls that do not need encryption keys and do not return or consume encrypted/decrypted items, they are completely agnostic towards the presence of encrypted items */
 interface MessageBasicFlavourlessApi {
-	@Deprecated("Deletion without rev is unsafe")
-	suspend fun deleteMessageUnsafe(entityId: String): DocIdentifier
-	@Deprecated("Deletion without rev is unsafe")
-	suspend fun deleteMessagesUnsafe(entityIds: List<String>): List<DocIdentifier>
-
 	/**
 	 * Deletes a message. If you don't have write access to the message the method will fail.
 	 * @param entityId id of the message.
@@ -39,7 +34,7 @@ interface MessageBasicFlavourlessApi {
 	 * @return the id and revision of the deleted message.
 	 * @throws RevisionConflictException if the provided revision doesn't match the latest known revision
 	 */
-	suspend fun deleteMessageById(entityId: String, rev: String): DocIdentifier
+	suspend fun deleteMessageById(entityId: String, rev: String): StoredDocumentIdentifier
 
 	/**
 	 * Deletes many messages. Ids that do not correspond to an entity, or that correspond to an entity for which
@@ -48,7 +43,7 @@ interface MessageBasicFlavourlessApi {
 	 * @return the id and revision of the deleted messages. If some entities could not be deleted (for example
 	 * because you had no write access to them) they will not be included in this list.
 	 */
-	suspend fun deleteMessagesByIds(entityIds: List<StoredDocumentIdentifier>): List<DocIdentifier>
+	suspend fun deleteMessagesByIds(entityIds: List<StoredDocumentIdentifier>): List<StoredDocumentIdentifier>
 
 	/**
 	 * Permanently deletes a message.
@@ -59,12 +54,20 @@ interface MessageBasicFlavourlessApi {
 	suspend fun purgeMessageById(id: String, rev: String)
 
 	/**
+	 * Permanently deletes many messages.
+	 * @param entityIds ids and revisions of the messages to delete
+	 * @return the id and revision of the deleted messages. If some entities couldn't be deleted (for example
+	 * because you had no write access to them) they will not be included in this list.
+	 */
+	suspend fun purgeMessagesByIds(entityIds: List<StoredDocumentIdentifier>): List<StoredDocumentIdentifier>
+
+	/**
 	 * Deletes a message. If you don't have write access to the message the method will fail.
 	 * @param message the message to delete
 	 * @return the id and revision of the deleted message.
 	 * @throws RevisionConflictException if the provided message doesn't match the latest known revision
 	 */
-	suspend fun deleteMessage(message: Message): DocIdentifier =
+	suspend fun deleteMessage(message: Message): StoredDocumentIdentifier =
 		deleteMessageById(message.id, requireNotNull(message.rev) { "Can't delete a message that has no rev" })
 
 	/**
@@ -73,9 +76,9 @@ interface MessageBasicFlavourlessApi {
 	 * @return the id and revision of the deleted messages. If some entities couldn't be deleted they will not be
 	 * included in this list.
 	 */
-	suspend fun deleteMessages(messages: List<Message>): List<DocIdentifier> =
+	suspend fun deleteMessages(messages: List<Message>): List<StoredDocumentIdentifier> =
 		deleteMessagesByIds(messages.map { message ->
-			StoredDocumentIdentifier(message.id, requireNotNull(message.rev) { "Can't delete a message that has no rev" })
+			message.toStoredDocumentIdentifier()
 		})
 
 	/**
@@ -86,6 +89,62 @@ interface MessageBasicFlavourlessApi {
 	suspend fun purgeMessage(message: Message) {
 		purgeMessageById(message.id, requireNotNull(message.rev) { "Can't delete a message that has no rev" })
 	}
+
+	/**
+	 * Permanently deletes many messages.
+	 * @param messages the messages to purge.
+	 * @return the id and revision of the deleted messages. If some entities couldn't be deleted (for example
+	 * because you had no write access to them) they will not be included in this list.
+	 */
+	suspend fun purgeMessages(messages: List<Message>): List<StoredDocumentIdentifier> =
+		purgeMessagesByIds(messages.map { it.toStoredDocumentIdentifier() })
+}
+
+interface MessageBasicFlavourlessInGroupApi  {
+	/**
+	 * In-group version of [MessageBasicFlavourlessApi.deleteMessageById]
+	 */
+	suspend fun deleteMessageById(entityId: GroupScoped<StoredDocumentIdentifier>): GroupScoped<StoredDocumentIdentifier>
+
+	/**
+	 * In-group version of [MessageBasicFlavourlessApi.deleteMessagesByIds]
+	 */
+	suspend fun deleteMessagesByIds(entityIds: List<GroupScoped<StoredDocumentIdentifier>>): List<GroupScoped<StoredDocumentIdentifier>>
+
+	/**
+	 * In-group version of [MessageBasicFlavourlessApi.purgeMessageById]
+	 */
+	suspend fun purgeMessageById(entityId: GroupScoped<StoredDocumentIdentifier>)
+
+	/**
+	 * In-group version of [MessageBasicFlavourlessApi.purgeMessagesByIds]
+	 */
+	suspend fun purgeMessagesByIds(entityIds: List<GroupScoped<StoredDocumentIdentifier>>): List<GroupScoped<StoredDocumentIdentifier>>
+
+	/**
+	 * In-group version of [MessageBasicFlavourlessApi.deleteMessage]
+	 */
+	suspend fun deleteMessage(message: GroupScoped<Message>): GroupScoped<StoredDocumentIdentifier> =
+		deleteMessageById(message.toStoredDocumentIdentifier())
+
+	/**
+	 * In-group version of [MessageBasicFlavourlessApi.deleteMessages]
+	 */
+	suspend fun deleteMessages(messages: List<GroupScoped<Message>>): List<GroupScoped<StoredDocumentIdentifier>> =
+		deleteMessagesByIds(messages.toStoredDocumentIdentifier())
+
+	/**
+	 * In-group version of [MessageBasicFlavourlessApi.purgeMessage]
+	 */
+	suspend fun purgeMessage(message: GroupScoped<Message>) {
+		purgeMessageById(message.toStoredDocumentIdentifier())
+	}
+
+	/**
+	 * In-group version of [MessageBasicFlavourlessApi.purgeMessages]
+	 */
+	suspend fun purgeMessages(messages: List<GroupScoped<Message>>): List<GroupScoped<StoredDocumentIdentifier>> =
+		purgeMessagesByIds(messages.map { it.toStoredDocumentIdentifier() })
 }
 
 /* This interface includes the API calls can be used on decrypted items if encryption keys are available *or* encrypted items if no encryption keys are available */
@@ -101,6 +160,15 @@ interface MessageBasicFlavouredApi<E : Message> {
 	suspend fun createMessage(entity: E): E
 
 	/**
+	 * Create multiple messages. All the provided messages must have the encryption metadata initialized, otherwise
+	 * this method fails without doing anything. This method requires the permission to create messages outside of topics.
+	 * @param entities messages with initialized encryption metadata
+	 * @return the created messages with updated revision.
+	 * @throws IllegalArgumentException if the encryption metadata of any message in the input was not initialized.
+	 */
+	suspend fun createMessages(entities: List<E>): List<E>
+
+	/**
 	 * Create a new Message. The provided Message must have the encryption metadata initialized, and the id of the topic
 	 * set in [Message.transportGuid] (note that your configuration must not encrypt the transport guid). The user needs
 	 * to be a participant in that topic for this method to succeed.
@@ -112,12 +180,38 @@ interface MessageBasicFlavouredApi<E : Message> {
 
 	/**
 	 * Restores a message that was marked as deleted.
+	 * @param id the id of the entity
+	 * @param rev the latest revision of the entity.
+	 * @return the restored entity.
+	 * @throws RevisionConflictException if the provided revision doesn't match the latest known revision
+	 */
+	suspend fun undeleteMessageById(id: String, rev: String): E
+
+	/**
+	 * Restores a batch of messages that were marked as deleted.
+	 * @param entityIds the ids and the revisions of the messages to restore.
+	 * @return the restored messages. If some entities couldn't be restored (because the user does not have access or the revision is not
+	 * up-to-date), then those entities will not be restored and will not appear in this list.
+	 */
+	suspend fun undeleteMessagesByIds(entityIds: List<StoredDocumentIdentifier>): List<E>
+
+	/**
+	 * Restores a message that was marked as deleted.
 	 * @param message the message to undelete
 	 * @return the restored message.
 	 * @throws RevisionConflictException if the provided message doesn't match the latest known revision
 	 */
-	suspend fun undeleteMessage(message: Message): Message =
+	suspend fun undeleteMessage(message: Message): E =
 		undeleteMessageById(message.id, requireNotNull(message.rev) { "Can't delete a message that has no rev" })
+
+	/**
+	 * Restores a batch of messages that were marked as deleted.
+	 * @param messages the messages to restore.
+	 * @return the restored messages. If some entities couldn't be restored (because the user does not have access or the revision is not
+	 * up-to-date), then those entities will not be restored and will not appear in this list.
+	 */
+	suspend fun undeleteMessages(messages: List<Message>): List<E> =
+		undeleteMessagesByIds(messages.map { it.toStoredDocumentIdentifier() })
 
 	/**
 	 * Modifies a message. You need to have write access to the entity.
@@ -128,13 +222,12 @@ interface MessageBasicFlavouredApi<E : Message> {
 	suspend fun modifyMessage(entity: E): E
 
 	/**
-	 * Restores a message that was marked as deleted.
-	 * @param id the id of the entity
-	 * @param rev the latest revision of the entity.
-	 * @return the restored entity.
-	 * @throws RevisionConflictException if the provided revision doesn't match the latest known revision
+	 * Modifies multiple messages. Ignores all messages for which you don't have write access.
+	 * Flavoured method.
+	 * @param entities messages with update content
+	 * @return the updated messages with a new revision.
 	 */
-	suspend fun undeleteMessageById(id: String, rev: String): E
+	suspend fun modifyMessages(entities: List<E>): List<E>
 
 	/**
 	 * Get a message by its id. You must have read access to the entity. Fails if the id does not correspond to any
@@ -154,56 +247,6 @@ interface MessageBasicFlavouredApi<E : Message> {
 	 * @return all messages that you can access with one of the provided ids.
 	 */
 	suspend fun getMessages(entityIds: List<String>): List<E>
-
-	@Deprecated("Use filter instead")
-	suspend fun listMessagesByTransportGuids(hcPartyId: String, transportGuids: List<String>): List<E>
-
-	@Deprecated("Use filter instead")
-	suspend fun findMessages(startKey: JsonElement?, startDocumentId: String?, limit: Int?): PaginatedList<E>
-
-	@Deprecated("Use filter instead")
-	suspend fun getChildrenMessages(messageId: String): List<E>
-
-	@Deprecated("Use filter instead")
-	suspend fun getMessagesChildren(messageIds: List<String>): List<E>
-
-	@Deprecated("Use filter instead")
-	suspend fun listMessagesByInvoices(invoiceIds: List<String>): List<E>
-
-	@Deprecated("Use filter instead")
-	suspend fun findMessagesByTransportGuid(transportGuid: String): PaginatedList<E>
-
-	// TODO: Implement filter for this method
-	@Deprecated("Find methods are deprecated", ReplaceWith("filterMessagesBy()"))
-	suspend fun findMessagesByTransportGuidSentDate(
-		transportGuid: String,
-		from: Long,
-		to: Long,
-		@DefaultValue("null")
-		startKey: JsonElement? = null,
-		@DefaultValue("null")
-		startDocumentId: String? = null,
-		@DefaultValue("null")
-		limit: Int? = null,
-		@DefaultValue("null")
-		hcpId: String? = null,
-	): PaginatedList<E>
-
-	// TODO: Implement filter for this method
-	@Deprecated("Find methods are deprecated", ReplaceWith("filterMessagesBy()"))
-	suspend fun findMessagesByToAddress(toAddress: String, startKey: JsonElement?, startDocumentId: String?, limit: Int?): PaginatedList<E>
-
-	// TODO: Implement filter for this method
-	@Deprecated("Find methods are deprecated", ReplaceWith("filterMessagesBy()"))
-	suspend fun findMessagesByFromAddress(
-		fromAddress: String,
-		startKey: JsonElement?,
-		startDocumentId: String?,
-		limit: Int?,
-    ): PaginatedList<E>
-
-	@Deprecated("Status bits have unclear meaning, use read status instead")
-	suspend fun setMessagesStatusBits(entityIds: List<String>, statusBits: Int): List<E>
 
 	/**
 	 * Updates the [Message.readStatus] of messages with the provided ids. You can use this method even if you don't
@@ -236,6 +279,60 @@ interface MessageBasicFlavouredApi<E : Message> {
 	 * @return the updated messages.
 	 */
 	suspend fun setMessagesReadStatus(entityIds: List<String>, time: Long?, readStatus: Boolean, userId: String?): List<E>
+}
+
+interface MessageBasicFlavouredInGroupApi<E : Message> {
+	/**
+	 * In-group version of [MessageApi.createMessage]
+	 */
+	suspend fun createMessage(entity: GroupScoped<E>): GroupScoped<E>
+
+	/**
+	 * In-group version of [MessageApi.createMessages]
+	 */
+	suspend fun createMessages(entities: List<GroupScoped<E>>): List<GroupScoped<E>>
+
+	/**
+	 * In-group version of [MessageBasicFlavouredApi.undeleteMessageById]
+	 */
+	suspend fun undeleteMessageById(entityId: GroupScoped<StoredDocumentIdentifier>): GroupScoped<E>
+
+	/**
+	 * In-group version of [MessageBasicFlavouredApi.undeleteMessagesByIds]
+	 */
+	suspend fun undeleteMessagesByIds(entityIds: List<GroupScoped<StoredDocumentIdentifier>>): List<GroupScoped<E>>
+
+	/**
+	 * In-group version of [MessageBasicFlavouredApi.undeleteMessage]
+	 */
+	suspend fun undeleteMessage(message: GroupScoped<Message>): GroupScoped<E> =
+		undeleteMessageById(message.toStoredDocumentIdentifier())
+
+	/**
+	 * In-group version of [MessageBasicFlavouredApi.undeleteMessages]
+	 */
+	suspend fun undeleteMessages(messages: List<GroupScoped<E>>): List<GroupScoped<E>> =
+		undeleteMessagesByIds(messages.map { it.toStoredDocumentIdentifier() })
+
+	/**
+	 * In-group version of [MessageBasicFlavouredApi.modifyMessage]
+	 */
+	suspend fun modifyMessage(entity: GroupScoped<E>): GroupScoped<E>
+
+	/**
+	 * In-group version of [MessageBasicFlavouredApi.modifyMessages]
+	 */
+	suspend fun modifyMessages(entities: List<GroupScoped<E>>): List<GroupScoped<E>>
+
+	/**
+	 * In-group version of [MessageBasicFlavouredApi.getMessage]
+	 */
+	suspend fun getMessage(groupId: String, entityId: String): GroupScoped<E>?
+
+	/**
+	 * In-group version of [MessageBasicFlavouredApi.getMessages]
+	 */
+	suspend fun getMessages(groupId: String, entityIds: List<String>): List<GroupScoped<E>>
 }
 
 /* The extra API calls declared in this interface are the ones that can be used on encrypted or decrypted items but only when the user is a data owner */
@@ -274,18 +371,6 @@ interface MessageFlavouredApi<E : Message> : MessageBasicFlavouredApi<E> {
 		delegates: Map<String, MessageShareOptions>
 	): E
 
-	@Deprecated("Use filter instead")
-	suspend fun findMessagesByHcPartyPatient(
-		hcPartyId: String,
-		patient: Patient,
-		@DefaultValue("null")
-		startDate: Long? = null,
-		@DefaultValue("null")
-		endDate: Long? = null,
-		@DefaultValue("null")
-		descending: Boolean? = null,
-	): PaginatedListIterator<E>
-
 	/**
 	 * Get an iterator that iterates through all messages matching the provided filter, executing multiple requests to
 	 * the api if needed.
@@ -317,8 +402,55 @@ interface MessageFlavouredApi<E : Message> : MessageBasicFlavouredApi<E> {
 	): PaginatedListIterator<E>
 }
 
+interface MessageFlavouredInGroupApi<E : Message> : MessageBasicFlavouredInGroupApi<E> {
+	/**
+	 * In-group version of [MessageFlavouredApi.shareWith]
+	 */
+	suspend fun shareWith(
+		delegate: EntityReferenceInGroup,
+		message: GroupScoped<E>,
+		@DefaultValue("null")
+		options: MessageShareOptions? = null
+	): GroupScoped<E>
+
+	/**
+	 * In-group version of [MessageFlavouredApi.shareWithMany]
+	 */
+	suspend fun shareWithMany(
+		message: GroupScoped<E>,
+		delegates: @JsMapAsObjectArray(keyEntryName = "delegate", valueEntryName = "shareOptions") Map<EntityReferenceInGroup, MessageShareOptions>
+	): GroupScoped<E>
+
+	/**
+	 * In-group version of [MessageFlavouredApi.filterMessagesBy]
+	 */
+	suspend fun filterMessagesBy(groupId: String, filter: FilterOptions<Message>): PaginatedListIterator<GroupScoped<E>>
+
+	/**
+	 * In-group version of [MessageFlavouredApi.filterMessagesBySorted]
+	 */
+	suspend fun filterMessagesBySorted(groupId: String, filter: SortableFilterOptions<Message>): PaginatedListIterator<GroupScoped<E>>
+}
+
 /* The extra API calls declared in this interface are the ones that can only be used on decrypted items when encryption keys are available */
 interface MessageApi : MessageBasicFlavourlessApi, MessageFlavouredApi<DecryptedMessage>, Subscribable<Message, EncryptedMessage, FilterOptions<Message>> {
+	/**
+	 * Give access to the encrypted flavour of the api
+	 */
+	val encrypted: MessageFlavouredApi<EncryptedMessage>
+
+	/**
+	 * Gives access to the polymorphic flavour of the api
+	 */
+	val tryAndRecover: MessageFlavouredApi<Message>
+
+	/**
+	 * Gives access to methods of the api that allow to use entities or work with data owners in groups other than the
+	 * current user's group.
+	 * These methods aren't available when connected to a kraken-lite instance.
+	 */
+	val inGroup: MessageInGroupApi
+
 	/**
 	 * Creates a new Message with initialized encryption metadata
 	 * @param base a message with initialized content and uninitialized encryption metadata. The result of this
@@ -373,7 +505,7 @@ interface MessageApi : MessageBasicFlavourlessApi, MessageFlavouredApi<Decrypted
 	 * @return the id of the patient linked to the Message, or empty if the current user can't access any patient id
 	 * of the Message.
 	 */
-	suspend fun decryptPatientIdOf(message: Message): Set<String>
+	suspend fun decryptPatientIdOf(message: Message): Set<EntityReferenceInGroup>
 
 	/**
 	 * Create metadata to allow other users to identify the anonymous delegates of a message.
@@ -424,22 +556,22 @@ interface MessageApi : MessageBasicFlavourlessApi, MessageFlavouredApi<Decrypted
 	suspend fun tryDecrypt(message: EncryptedMessage): Message
 
 	/**
+	 * Encrypts provided decrypted Messages, and validates already encrypted Messages.
+	 * @param messages Messages to encrypt and/or validate
+	 * @return the encrypted and validates Messages
+	 * @throws EntityEncryptionException if any of the provided decrypted Messages couldn't be encrypted (the current
+	 * user can't access its encryption key or no key was initialized) or if the already encrypted Messages don't
+	 * respect the manifest.
+	 */
+	suspend fun encryptOrValidate(messages: List<Message>): List<EncryptedMessage>
+
+	/**
 	 * Get all the secret ids that the current data owner can access from the provided message.
 	 * @param message a message
 	 * @return a map where the keys are the secret ids of the patient and the value is a set of references
 	 * ([EntityReferenceInGroup]) to the data owners that the current user knows have access to that secret id.
 	 */
 	suspend fun getSecretIdsOf(message: Message): Map<String, Set<EntityReferenceInGroup>>
-
-	/**
-	 * Give access to the encrypted flavour of the api
-	 */
-	val encrypted: MessageFlavouredApi<EncryptedMessage>
-
-	/**
-	 * Gives access to the polymorphic flavour of the api
-	 */
-	val tryAndRecover: MessageFlavouredApi<Message>
 
 	/**
 	 * Get the ids of all messages matching the provided filter.
@@ -466,7 +598,82 @@ interface MessageApi : MessageBasicFlavourlessApi, MessageFlavouredApi<Decrypted
 	suspend fun matchMessagesBySorted(filter: SortableFilterOptions<Message>): List<String>
 }
 
+interface MessageInGroupApi : MessageBasicFlavourlessInGroupApi, MessageFlavouredInGroupApi<DecryptedMessage> { // TODO subscribable
+	/**
+	 * Give access to the encrypted flavour of the api
+	 */
+	val encrypted: MessageFlavouredInGroupApi<EncryptedMessage>
+
+	/**
+	 * Gives access to the polymorphic flavour of the api
+	 */
+	val tryAndRecover: MessageFlavouredInGroupApi<Message>
+
+	/**
+	 * In-group version of [MessageApi.withEncryptionMetadata]
+	 */
+	suspend fun withEncryptionMetadata(
+		entityGroupId: String,
+		base: DecryptedMessage?,
+		patient: GroupScoped<Patient>?,
+		@DefaultValue("null")
+		user: User? = null,
+		@DefaultValue("emptyMap()")
+		delegates: @JsMapAsObjectArray(keyEntryName = "delegate", valueEntryName = "accessLevel") Map<EntityReferenceInGroup, AccessLevel> = emptyMap(),
+		@DefaultValue("com.icure.cardinal.sdk.crypto.entities.SecretIdUseOption.UseAnySharedWithParent")
+		secretId: SecretIdUseOption = SecretIdUseOption.UseAnySharedWithParent,
+		@DefaultValue("null")
+		alternateRootDelegateReference: EntityReferenceInGroup? = null,
+	): GroupScoped<DecryptedMessage>
+
+	/**
+	 * In-group version of [MessageApi.getEncryptionKeysOf]
+	 */
+	suspend fun getEncryptionKeysOf(message: GroupScoped<Message>): Set<HexString>
+
+	/**
+	 * In-group version of [MessageApi.hasWriteAccess]
+	 */
+	suspend fun hasWriteAccess(message: GroupScoped<Message>): Boolean
+
+	/**
+	 * In-group version of [MessageApi.decryptPatientIdOf]
+	 */
+	suspend fun decryptPatientIdOf(message: GroupScoped<Message>): Set<EntityReferenceInGroup>
+
+	/**
+	 * In-group version of [MessageApi.createDelegationDeAnonymizationMetadata]
+	 */
+	suspend fun createDelegationDeAnonymizationMetadata(entity: GroupScoped<Message>, delegates: Set<EntityReferenceInGroup>)
+
+	/**
+	 * In-group version of [MessageApi.decrypt]
+	 */
+	suspend fun decrypt(messages: List<GroupScoped<EncryptedMessage>>): List<GroupScoped<DecryptedMessage>>
+
+	/**
+	 * In-group version of [MessageApi.tryDecrypt]
+	 */
+	suspend fun tryDecrypt(messages: List<GroupScoped<EncryptedMessage>>): List<GroupScoped<Message>>
+
+	/**
+	 * In-group version of [MessageApi.matchMessagesBy]
+	 */
+	suspend fun matchMessagesBy(groupId: String, filter: FilterOptions<Message>): List<String>
+
+	/**
+	 * In-group version of [MessageApi.matchMessagesBySorted]
+	 */
+	suspend fun matchMessagesBySorted(groupId: String, filter: SortableFilterOptions<Message>): List<String>
+}
+
 interface MessageBasicApi : MessageBasicFlavourlessApi, MessageBasicFlavouredApi<EncryptedMessage>, Subscribable<Message, EncryptedMessage, BaseFilterOptions<Message>> {
+	/**
+	 * Gives access to methods of the api that allow to use entities or work with data owners in groups other than the
+	 * current user's group.
+	 * These methods aren't available when connected to a kraken-lite instance.
+	 */
+	val inGroup: MessageBasicInGroupApi
 	/**
 	 * Get the ids of all messages matching the provided filter.
 	 *
@@ -522,3 +729,24 @@ interface MessageBasicApi : MessageBasicFlavourlessApi, MessageBasicFlavouredApi
 	): PaginatedListIterator<EncryptedMessage>
 }
 
+interface MessageBasicInGroupApi : MessageBasicFlavourlessInGroupApi, MessageBasicFlavouredInGroupApi<EncryptedMessage> { // TODO subscribable
+	/**
+	 * In-group version of [MessageApi.matchMessagesBy]
+	 */
+	suspend fun matchMessagesBy(groupId: String, filter: BaseFilterOptions<Message>): List<String>
+
+	/**
+	 * In-group version of [MessageApi.matchMessagesBySorted]
+	 */
+	suspend fun matchMessagesBySorted(groupId: String, filter: BaseSortableFilterOptions<Message>): List<String>
+
+	/**
+	 * In-group version of [MessageApi.filterMessagesBy]
+	 */
+	suspend fun filterMessagesBy(groupId: String, filter: BaseFilterOptions<Message>): PaginatedListIterator<GroupScoped<EncryptedMessage>>
+
+	/**
+	 * In-group version of [MessageApi.filterMessagesBySorted]
+	 */
+	suspend fun filterMessagesBySorted(groupId: String, filter: BaseSortableFilterOptions<Message>): PaginatedListIterator<GroupScoped<EncryptedMessage>>
+}

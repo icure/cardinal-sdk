@@ -60,4 +60,28 @@ class InsuranceApi {
 			insurance,
 		);
 	}
+
+	Future<List<Insurance>> createInsurancesInGroup(String groupId, List<Insurance> insuranceBatch) async {
+		return await CardinalSdkPlatformInterface.instance.apis.insurance.createInsurancesInGroup(
+			_sdkId,
+			groupId,
+			insuranceBatch,
+		);
+	}
+
+	Future<List<Insurance>> getInsurancesInGroup(String groupId, List<String> insuranceIds) async {
+		return await CardinalSdkPlatformInterface.instance.apis.insurance.getInsurancesInGroup(
+			_sdkId,
+			groupId,
+			insuranceIds,
+		);
+	}
+
+	Future<List<Insurance>> modifyInsurancesInGroup(String groupId, List<Insurance> insuranceBatch) async {
+		return await CardinalSdkPlatformInterface.instance.apis.insurance.modifyInsurancesInGroup(
+			_sdkId,
+			groupId,
+			insuranceBatch,
+		);
+	}
 }

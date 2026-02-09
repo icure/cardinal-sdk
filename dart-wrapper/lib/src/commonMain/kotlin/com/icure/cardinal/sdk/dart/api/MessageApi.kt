@@ -51,6 +51,7 @@ public object MessageApi {
     userString: String,
     delegatesString: String,
     secretIdString: String,
+    alternateRootDelegateIdString: String,
   ) {
     val base = fullLanguageInteropJson.decodeFromString(
       DecryptedMessage.serializer().nullable,
@@ -72,6 +73,10 @@ public object MessageApi {
       SecretIdUseOption.serializer(),
       secretIdString
     )
+    val alternateRootDelegateId = fullLanguageInteropJson.decodeFromString(
+      String.serializer().nullable,
+      alternateRootDelegateIdString
+    )
     ApiScope.execute(
       dartResultCallback,
       DecryptedMessage.serializer()) {
@@ -81,6 +86,7 @@ public object MessageApi {
         user,
         delegates,
         secretId,
+        alternateRootDelegateId,
       )
     }
   }

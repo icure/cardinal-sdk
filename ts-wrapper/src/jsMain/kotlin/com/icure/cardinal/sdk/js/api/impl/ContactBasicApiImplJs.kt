@@ -5,6 +5,7 @@ import com.icure.cardinal.sdk.api.ContactBasicApi
 import com.icure.cardinal.sdk.filters.BaseFilterOptions
 import com.icure.cardinal.sdk.filters.BaseSortableFilterOptions
 import com.icure.cardinal.sdk.js.api.ContactBasicApiJs
+import com.icure.cardinal.sdk.js.api.ContactBasicInGroupApiJs
 import com.icure.cardinal.sdk.js.api.DefaultParametersSupport.convertingOptionOrDefaultNullable
 import com.icure.cardinal.sdk.js.filters.BaseFilterOptionsJs
 import com.icure.cardinal.sdk.js.filters.BaseSortableFilterOptionsJs
@@ -12,27 +13,24 @@ import com.icure.cardinal.sdk.js.filters.baseFilterOptions_fromJs
 import com.icure.cardinal.sdk.js.filters.baseSortableFilterOptions_fromJs
 import com.icure.cardinal.sdk.js.model.CheckedConverters.arrayToList
 import com.icure.cardinal.sdk.js.model.CheckedConverters.arrayToSet
-import com.icure.cardinal.sdk.js.model.CheckedConverters.dynamicToJsonNullsafe
 import com.icure.cardinal.sdk.js.model.CheckedConverters.listToArray
 import com.icure.cardinal.sdk.js.model.CheckedConverters.nullToUndefined
-import com.icure.cardinal.sdk.js.model.CheckedConverters.numberToInt
 import com.icure.cardinal.sdk.js.model.CheckedConverters.numberToLong
-import com.icure.cardinal.sdk.js.model.CheckedConverters.undefinedToNull
 import com.icure.cardinal.sdk.js.model.ContactJs
 import com.icure.cardinal.sdk.js.model.EncryptedContactJs
-import com.icure.cardinal.sdk.js.model.PaginatedListJs
+import com.icure.cardinal.sdk.js.model.GroupScopedJs
 import com.icure.cardinal.sdk.js.model.StoredDocumentIdentifierJs
 import com.icure.cardinal.sdk.js.model.`data`.LabelledOccurenceJs
 import com.icure.cardinal.sdk.js.model.`data`.labelledOccurence_toJs
 import com.icure.cardinal.sdk.js.model.contact_fromJs
 import com.icure.cardinal.sdk.js.model.contact_toJs
-import com.icure.cardinal.sdk.js.model.couchdb.DocIdentifierJs
-import com.icure.cardinal.sdk.js.model.couchdb.docIdentifier_toJs
 import com.icure.cardinal.sdk.js.model.embed.EncryptedServiceJs
 import com.icure.cardinal.sdk.js.model.embed.ServiceJs
 import com.icure.cardinal.sdk.js.model.embed.service_toJs
-import com.icure.cardinal.sdk.js.model.paginatedList_toJs
+import com.icure.cardinal.sdk.js.model.groupScoped_fromJs
+import com.icure.cardinal.sdk.js.model.groupScoped_toJs
 import com.icure.cardinal.sdk.js.model.storedDocumentIdentifier_fromJs
+import com.icure.cardinal.sdk.js.model.storedDocumentIdentifier_toJs
 import com.icure.cardinal.sdk.js.subscription.EntitySubscriptionConfigurationJs
 import com.icure.cardinal.sdk.js.subscription.EntitySubscriptionJs
 import com.icure.cardinal.sdk.js.subscription.entitySubscriptionConfiguration_fromJs
@@ -41,16 +39,15 @@ import com.icure.cardinal.sdk.js.utils.pagination.PaginatedListIteratorJs
 import com.icure.cardinal.sdk.js.utils.pagination.paginatedListIterator_toJs
 import com.icure.cardinal.sdk.model.Contact
 import com.icure.cardinal.sdk.model.EncryptedContact
+import com.icure.cardinal.sdk.model.GroupScoped
 import com.icure.cardinal.sdk.model.StoredDocumentIdentifier
 import com.icure.cardinal.sdk.model.`data`.LabelledOccurence
-import com.icure.cardinal.sdk.model.couchdb.DocIdentifier
 import com.icure.cardinal.sdk.model.embed.EncryptedService
 import com.icure.cardinal.sdk.model.embed.Service
 import com.icure.cardinal.sdk.subscription.EntitySubscriptionConfiguration
 import com.icure.cardinal.sdk.subscription.SubscriptionEventType
 import kotlin.Array
 import kotlin.Double
-import kotlin.Int
 import kotlin.Long
 import kotlin.OptIn
 import kotlin.String
@@ -61,12 +58,643 @@ import kotlin.js.Promise
 import kotlinx.coroutines.DelicateCoroutinesApi
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.promise
-import kotlinx.serialization.json.JsonElement
 
 @OptIn(DelicateCoroutinesApi::class)
 internal class ContactBasicApiImplJs(
 	private val contactBasicApi: ContactBasicApi,
 ) : ContactBasicApiJs {
+	override val inGroup: ContactBasicInGroupApiJs = object : ContactBasicInGroupApiJs {
+		override fun matchContactsBy(groupId: String, filter: BaseFilterOptionsJs<ContactJs>):
+				Promise<Array<String>> = GlobalScope.promise {
+			val groupIdConverted: String = groupId
+			val filterConverted: BaseFilterOptions<Contact> = baseFilterOptions_fromJs(filter)
+			val result = contactBasicApi.inGroup.matchContactsBy(
+				groupIdConverted,
+				filterConverted,
+			)
+			listToArray(
+				result,
+				{ x1: String ->
+					x1
+				},
+			)
+		}
+
+		override fun matchContactsBySorted(groupId: String,
+				filter: BaseSortableFilterOptionsJs<ContactJs>): Promise<Array<String>> = GlobalScope.promise {
+			val groupIdConverted: String = groupId
+			val filterConverted: BaseSortableFilterOptions<Contact> =
+					baseSortableFilterOptions_fromJs(filter)
+			val result = contactBasicApi.inGroup.matchContactsBySorted(
+				groupIdConverted,
+				filterConverted,
+			)
+			listToArray(
+				result,
+				{ x1: String ->
+					x1
+				},
+			)
+		}
+
+		override fun matchServicesBy(groupId: String, filter: BaseFilterOptionsJs<ServiceJs>):
+				Promise<Array<String>> = GlobalScope.promise {
+			val groupIdConverted: String = groupId
+			val filterConverted: BaseFilterOptions<Service> = baseFilterOptions_fromJs(filter)
+			val result = contactBasicApi.inGroup.matchServicesBy(
+				groupIdConverted,
+				filterConverted,
+			)
+			listToArray(
+				result,
+				{ x1: String ->
+					x1
+				},
+			)
+		}
+
+		override fun matchServicesBySorted(groupId: String,
+				filter: BaseSortableFilterOptionsJs<ServiceJs>): Promise<Array<String>> = GlobalScope.promise {
+			val groupIdConverted: String = groupId
+			val filterConverted: BaseSortableFilterOptions<Service> =
+					baseSortableFilterOptions_fromJs(filter)
+			val result = contactBasicApi.inGroup.matchServicesBySorted(
+				groupIdConverted,
+				filterConverted,
+			)
+			listToArray(
+				result,
+				{ x1: String ->
+					x1
+				},
+			)
+		}
+
+		override fun filterContactsBy(groupId: String, filter: BaseFilterOptionsJs<ContactJs>):
+				Promise<PaginatedListIteratorJs<GroupScopedJs<EncryptedContactJs>>> = GlobalScope.promise {
+			val groupIdConverted: String = groupId
+			val filterConverted: BaseFilterOptions<Contact> = baseFilterOptions_fromJs(filter)
+			val result = contactBasicApi.inGroup.filterContactsBy(
+				groupIdConverted,
+				filterConverted,
+			)
+			paginatedListIterator_toJs(
+				result,
+				{ x1: GroupScoped<EncryptedContact> ->
+					groupScoped_toJs(
+						x1,
+						{ x2: EncryptedContact ->
+							contact_toJs(x2)
+						},
+					)
+				},
+			)
+		}
+
+		override fun filterContactsBySorted(groupId: String,
+				filter: BaseSortableFilterOptionsJs<ContactJs>):
+				Promise<PaginatedListIteratorJs<GroupScopedJs<EncryptedContactJs>>> = GlobalScope.promise {
+			val groupIdConverted: String = groupId
+			val filterConverted: BaseSortableFilterOptions<Contact> =
+					baseSortableFilterOptions_fromJs(filter)
+			val result = contactBasicApi.inGroup.filterContactsBySorted(
+				groupIdConverted,
+				filterConverted,
+			)
+			paginatedListIterator_toJs(
+				result,
+				{ x1: GroupScoped<EncryptedContact> ->
+					groupScoped_toJs(
+						x1,
+						{ x2: EncryptedContact ->
+							contact_toJs(x2)
+						},
+					)
+				},
+			)
+		}
+
+		override fun filterServicesBy(groupId: String, filter: BaseFilterOptionsJs<ServiceJs>):
+				Promise<PaginatedListIteratorJs<GroupScopedJs<EncryptedServiceJs>>> = GlobalScope.promise {
+			val groupIdConverted: String = groupId
+			val filterConverted: BaseFilterOptions<Service> = baseFilterOptions_fromJs(filter)
+			val result = contactBasicApi.inGroup.filterServicesBy(
+				groupIdConverted,
+				filterConverted,
+			)
+			paginatedListIterator_toJs(
+				result,
+				{ x1: GroupScoped<EncryptedService> ->
+					groupScoped_toJs(
+						x1,
+						{ x2: EncryptedService ->
+							service_toJs(x2)
+						},
+					)
+				},
+			)
+		}
+
+		override fun filterServicesBySorted(groupId: String,
+				filter: BaseSortableFilterOptionsJs<ServiceJs>):
+				Promise<PaginatedListIteratorJs<GroupScopedJs<EncryptedServiceJs>>> = GlobalScope.promise {
+			val groupIdConverted: String = groupId
+			val filterConverted: BaseSortableFilterOptions<Service> =
+					baseSortableFilterOptions_fromJs(filter)
+			val result = contactBasicApi.inGroup.filterServicesBySorted(
+				groupIdConverted,
+				filterConverted,
+			)
+			paginatedListIterator_toJs(
+				result,
+				{ x1: GroupScoped<EncryptedService> ->
+					groupScoped_toJs(
+						x1,
+						{ x2: EncryptedService ->
+							service_toJs(x2)
+						},
+					)
+				},
+			)
+		}
+
+		override fun deleteContactById(entityId: GroupScopedJs<StoredDocumentIdentifierJs>):
+				Promise<GroupScopedJs<StoredDocumentIdentifierJs>> = GlobalScope.promise {
+			val entityIdConverted: GroupScoped<StoredDocumentIdentifier> = groupScoped_fromJs(
+				entityId,
+				{ x1: StoredDocumentIdentifierJs ->
+					storedDocumentIdentifier_fromJs(x1)
+				},
+			)
+			val result = contactBasicApi.inGroup.deleteContactById(
+				entityIdConverted,
+			)
+			groupScoped_toJs(
+				result,
+				{ x1: StoredDocumentIdentifier ->
+					storedDocumentIdentifier_toJs(x1)
+				},
+			)
+		}
+
+		override fun deleteContactsByIds(entityIds: Array<GroupScopedJs<StoredDocumentIdentifierJs>>):
+				Promise<Array<GroupScopedJs<StoredDocumentIdentifierJs>>> = GlobalScope.promise {
+			val entityIdsConverted: List<GroupScoped<StoredDocumentIdentifier>> = arrayToList(
+				entityIds,
+				"entityIds",
+				{ x1: GroupScopedJs<StoredDocumentIdentifierJs> ->
+					groupScoped_fromJs(
+						x1,
+						{ x2: StoredDocumentIdentifierJs ->
+							storedDocumentIdentifier_fromJs(x2)
+						},
+					)
+				},
+			)
+			val result = contactBasicApi.inGroup.deleteContactsByIds(
+				entityIdsConverted,
+			)
+			listToArray(
+				result,
+				{ x1: GroupScoped<StoredDocumentIdentifier> ->
+					groupScoped_toJs(
+						x1,
+						{ x2: StoredDocumentIdentifier ->
+							storedDocumentIdentifier_toJs(x2)
+						},
+					)
+				},
+			)
+		}
+
+		override fun purgeContactById(entityId: GroupScopedJs<StoredDocumentIdentifierJs>): Promise<Unit>
+				= GlobalScope.promise {
+			val entityIdConverted: GroupScoped<StoredDocumentIdentifier> = groupScoped_fromJs(
+				entityId,
+				{ x1: StoredDocumentIdentifierJs ->
+					storedDocumentIdentifier_fromJs(x1)
+				},
+			)
+			contactBasicApi.inGroup.purgeContactById(
+				entityIdConverted,
+			)
+
+		}
+
+		override fun purgeContactsByIds(entityIds: Array<GroupScopedJs<StoredDocumentIdentifierJs>>):
+				Promise<Array<GroupScopedJs<StoredDocumentIdentifierJs>>> = GlobalScope.promise {
+			val entityIdsConverted: List<GroupScoped<StoredDocumentIdentifier>> = arrayToList(
+				entityIds,
+				"entityIds",
+				{ x1: GroupScopedJs<StoredDocumentIdentifierJs> ->
+					groupScoped_fromJs(
+						x1,
+						{ x2: StoredDocumentIdentifierJs ->
+							storedDocumentIdentifier_fromJs(x2)
+						},
+					)
+				},
+			)
+			val result = contactBasicApi.inGroup.purgeContactsByIds(
+				entityIdsConverted,
+			)
+			listToArray(
+				result,
+				{ x1: GroupScoped<StoredDocumentIdentifier> ->
+					groupScoped_toJs(
+						x1,
+						{ x2: StoredDocumentIdentifier ->
+							storedDocumentIdentifier_toJs(x2)
+						},
+					)
+				},
+			)
+		}
+
+		override fun deleteContact(contact: GroupScopedJs<ContactJs>):
+				Promise<GroupScopedJs<StoredDocumentIdentifierJs>> = GlobalScope.promise {
+			val contactConverted: GroupScoped<Contact> = groupScoped_fromJs(
+				contact,
+				{ x1: ContactJs ->
+					contact_fromJs(x1)
+				},
+			)
+			val result = contactBasicApi.inGroup.deleteContact(
+				contactConverted,
+			)
+			groupScoped_toJs(
+				result,
+				{ x1: StoredDocumentIdentifier ->
+					storedDocumentIdentifier_toJs(x1)
+				},
+			)
+		}
+
+		override fun deleteContacts(contacts: Array<GroupScopedJs<ContactJs>>):
+				Promise<Array<GroupScopedJs<StoredDocumentIdentifierJs>>> = GlobalScope.promise {
+			val contactsConverted: List<GroupScoped<Contact>> = arrayToList(
+				contacts,
+				"contacts",
+				{ x1: GroupScopedJs<ContactJs> ->
+					groupScoped_fromJs(
+						x1,
+						{ x2: ContactJs ->
+							contact_fromJs(x2)
+						},
+					)
+				},
+			)
+			val result = contactBasicApi.inGroup.deleteContacts(
+				contactsConverted,
+			)
+			listToArray(
+				result,
+				{ x1: GroupScoped<StoredDocumentIdentifier> ->
+					groupScoped_toJs(
+						x1,
+						{ x2: StoredDocumentIdentifier ->
+							storedDocumentIdentifier_toJs(x2)
+						},
+					)
+				},
+			)
+		}
+
+		override fun purgeContact(contact: GroupScopedJs<ContactJs>): Promise<Unit> =
+				GlobalScope.promise {
+			val contactConverted: GroupScoped<Contact> = groupScoped_fromJs(
+				contact,
+				{ x1: ContactJs ->
+					contact_fromJs(x1)
+				},
+			)
+			contactBasicApi.inGroup.purgeContact(
+				contactConverted,
+			)
+
+		}
+
+		override fun purgeContacts(contacts: Array<GroupScopedJs<ContactJs>>):
+				Promise<Array<GroupScopedJs<StoredDocumentIdentifierJs>>> = GlobalScope.promise {
+			val contactsConverted: List<GroupScoped<Contact>> = arrayToList(
+				contacts,
+				"contacts",
+				{ x1: GroupScopedJs<ContactJs> ->
+					groupScoped_fromJs(
+						x1,
+						{ x2: ContactJs ->
+							contact_fromJs(x2)
+						},
+					)
+				},
+			)
+			val result = contactBasicApi.inGroup.purgeContacts(
+				contactsConverted,
+			)
+			listToArray(
+				result,
+				{ x1: GroupScoped<StoredDocumentIdentifier> ->
+					groupScoped_toJs(
+						x1,
+						{ x2: StoredDocumentIdentifier ->
+							storedDocumentIdentifier_toJs(x2)
+						},
+					)
+				},
+			)
+		}
+
+		override fun createContact(entity: GroupScopedJs<EncryptedContactJs>):
+				Promise<GroupScopedJs<EncryptedContactJs>> = GlobalScope.promise {
+			val entityConverted: GroupScoped<EncryptedContact> = groupScoped_fromJs(
+				entity,
+				{ x1: EncryptedContactJs ->
+					contact_fromJs(x1)
+				},
+			)
+			val result = contactBasicApi.inGroup.createContact(
+				entityConverted,
+			)
+			groupScoped_toJs(
+				result,
+				{ x1: EncryptedContact ->
+					contact_toJs(x1)
+				},
+			)
+		}
+
+		override fun createContacts(entities: Array<GroupScopedJs<EncryptedContactJs>>):
+				Promise<Array<GroupScopedJs<EncryptedContactJs>>> = GlobalScope.promise {
+			val entitiesConverted: List<GroupScoped<EncryptedContact>> = arrayToList(
+				entities,
+				"entities",
+				{ x1: GroupScopedJs<EncryptedContactJs> ->
+					groupScoped_fromJs(
+						x1,
+						{ x2: EncryptedContactJs ->
+							contact_fromJs(x2)
+						},
+					)
+				},
+			)
+			val result = contactBasicApi.inGroup.createContacts(
+				entitiesConverted,
+			)
+			listToArray(
+				result,
+				{ x1: GroupScoped<EncryptedContact> ->
+					groupScoped_toJs(
+						x1,
+						{ x2: EncryptedContact ->
+							contact_toJs(x2)
+						},
+					)
+				},
+			)
+		}
+
+		override fun undeleteContactById(entityId: GroupScopedJs<StoredDocumentIdentifierJs>):
+				Promise<GroupScopedJs<EncryptedContactJs>> = GlobalScope.promise {
+			val entityIdConverted: GroupScoped<StoredDocumentIdentifier> = groupScoped_fromJs(
+				entityId,
+				{ x1: StoredDocumentIdentifierJs ->
+					storedDocumentIdentifier_fromJs(x1)
+				},
+			)
+			val result = contactBasicApi.inGroup.undeleteContactById(
+				entityIdConverted,
+			)
+			groupScoped_toJs(
+				result,
+				{ x1: EncryptedContact ->
+					contact_toJs(x1)
+				},
+			)
+		}
+
+		override fun undeleteContactsByIds(entityIds: Array<GroupScopedJs<StoredDocumentIdentifierJs>>):
+				Promise<Array<GroupScopedJs<EncryptedContactJs>>> = GlobalScope.promise {
+			val entityIdsConverted: List<GroupScoped<StoredDocumentIdentifier>> = arrayToList(
+				entityIds,
+				"entityIds",
+				{ x1: GroupScopedJs<StoredDocumentIdentifierJs> ->
+					groupScoped_fromJs(
+						x1,
+						{ x2: StoredDocumentIdentifierJs ->
+							storedDocumentIdentifier_fromJs(x2)
+						},
+					)
+				},
+			)
+			val result = contactBasicApi.inGroup.undeleteContactsByIds(
+				entityIdsConverted,
+			)
+			listToArray(
+				result,
+				{ x1: GroupScoped<EncryptedContact> ->
+					groupScoped_toJs(
+						x1,
+						{ x2: EncryptedContact ->
+							contact_toJs(x2)
+						},
+					)
+				},
+			)
+		}
+
+		override fun undeleteContact(contact: GroupScopedJs<ContactJs>):
+				Promise<GroupScopedJs<EncryptedContactJs>> = GlobalScope.promise {
+			val contactConverted: GroupScoped<Contact> = groupScoped_fromJs(
+				contact,
+				{ x1: ContactJs ->
+					contact_fromJs(x1)
+				},
+			)
+			val result = contactBasicApi.inGroup.undeleteContact(
+				contactConverted,
+			)
+			groupScoped_toJs(
+				result,
+				{ x1: EncryptedContact ->
+					contact_toJs(x1)
+				},
+			)
+		}
+
+		override fun undeleteContacts(contacts: Array<GroupScopedJs<EncryptedContactJs>>):
+				Promise<Array<GroupScopedJs<EncryptedContactJs>>> = GlobalScope.promise {
+			val contactsConverted: List<GroupScoped<EncryptedContact>> = arrayToList(
+				contacts,
+				"contacts",
+				{ x1: GroupScopedJs<EncryptedContactJs> ->
+					groupScoped_fromJs(
+						x1,
+						{ x2: EncryptedContactJs ->
+							contact_fromJs(x2)
+						},
+					)
+				},
+			)
+			val result = contactBasicApi.inGroup.undeleteContacts(
+				contactsConverted,
+			)
+			listToArray(
+				result,
+				{ x1: GroupScoped<EncryptedContact> ->
+					groupScoped_toJs(
+						x1,
+						{ x2: EncryptedContact ->
+							contact_toJs(x2)
+						},
+					)
+				},
+			)
+		}
+
+		override fun modifyContact(entity: GroupScopedJs<EncryptedContactJs>):
+				Promise<GroupScopedJs<EncryptedContactJs>> = GlobalScope.promise {
+			val entityConverted: GroupScoped<EncryptedContact> = groupScoped_fromJs(
+				entity,
+				{ x1: EncryptedContactJs ->
+					contact_fromJs(x1)
+				},
+			)
+			val result = contactBasicApi.inGroup.modifyContact(
+				entityConverted,
+			)
+			groupScoped_toJs(
+				result,
+				{ x1: EncryptedContact ->
+					contact_toJs(x1)
+				},
+			)
+		}
+
+		override fun modifyContacts(entities: Array<GroupScopedJs<EncryptedContactJs>>):
+				Promise<Array<GroupScopedJs<EncryptedContactJs>>> = GlobalScope.promise {
+			val entitiesConverted: List<GroupScoped<EncryptedContact>> = arrayToList(
+				entities,
+				"entities",
+				{ x1: GroupScopedJs<EncryptedContactJs> ->
+					groupScoped_fromJs(
+						x1,
+						{ x2: EncryptedContactJs ->
+							contact_fromJs(x2)
+						},
+					)
+				},
+			)
+			val result = contactBasicApi.inGroup.modifyContacts(
+				entitiesConverted,
+			)
+			listToArray(
+				result,
+				{ x1: GroupScoped<EncryptedContact> ->
+					groupScoped_toJs(
+						x1,
+						{ x2: EncryptedContact ->
+							contact_toJs(x2)
+						},
+					)
+				},
+			)
+		}
+
+		override fun getContact(groupId: String, entityId: String):
+				Promise<GroupScopedJs<EncryptedContactJs>?> = GlobalScope.promise {
+			val groupIdConverted: String = groupId
+			val entityIdConverted: String = entityId
+			val result = contactBasicApi.inGroup.getContact(
+				groupIdConverted,
+				entityIdConverted,
+			)
+			nullToUndefined(
+				result?.let { nonNull1 ->
+					groupScoped_toJs(
+						nonNull1,
+						{ x1: EncryptedContact ->
+							contact_toJs(x1)
+						},
+					)
+				}
+			)
+		}
+
+		override fun getContacts(groupId: String, entityIds: Array<String>):
+				Promise<Array<GroupScopedJs<EncryptedContactJs>>> = GlobalScope.promise {
+			val groupIdConverted: String = groupId
+			val entityIdsConverted: List<String> = arrayToList(
+				entityIds,
+				"entityIds",
+				{ x1: String ->
+					x1
+				},
+			)
+			val result = contactBasicApi.inGroup.getContacts(
+				groupIdConverted,
+				entityIdsConverted,
+			)
+			listToArray(
+				result,
+				{ x1: GroupScoped<EncryptedContact> ->
+					groupScoped_toJs(
+						x1,
+						{ x2: EncryptedContact ->
+							contact_toJs(x2)
+						},
+					)
+				},
+			)
+		}
+
+		override fun getService(groupId: String, serviceId: String):
+				Promise<GroupScopedJs<EncryptedServiceJs>?> = GlobalScope.promise {
+			val groupIdConverted: String = groupId
+			val serviceIdConverted: String = serviceId
+			val result = contactBasicApi.inGroup.getService(
+				groupIdConverted,
+				serviceIdConverted,
+			)
+			nullToUndefined(
+				result?.let { nonNull1 ->
+					groupScoped_toJs(
+						nonNull1,
+						{ x1: EncryptedService ->
+							service_toJs(x1)
+						},
+					)
+				}
+			)
+		}
+
+		override fun getServices(groupId: String, entityIds: Array<String>):
+				Promise<Array<GroupScopedJs<EncryptedServiceJs>>> = GlobalScope.promise {
+			val groupIdConverted: String = groupId
+			val entityIdsConverted: List<String> = arrayToList(
+				entityIds,
+				"entityIds",
+				{ x1: String ->
+					x1
+				},
+			)
+			val result = contactBasicApi.inGroup.getServices(
+				groupIdConverted,
+				entityIdsConverted,
+			)
+			listToArray(
+				result,
+				{ x1: GroupScoped<EncryptedService> ->
+					groupScoped_toJs(
+						x1,
+						{ x2: EncryptedService ->
+							service_toJs(x2)
+						},
+					)
+				},
+			)
+		}
+	}
+
 	override fun matchContactsBy(filter: BaseFilterOptionsJs<ContactJs>): Promise<Array<String>> =
 			GlobalScope.promise {
 		val filterConverted: BaseFilterOptions<Contact> = baseFilterOptions_fromJs(filter)
@@ -207,48 +835,19 @@ internal class ContactBasicApiImplJs(
 		}
 	}
 
-	override fun deleteContactUnsafe(entityId: String): Promise<DocIdentifierJs> =
-			GlobalScope.promise {
-		val entityIdConverted: String = entityId
-		val result = contactBasicApi.deleteContactUnsafe(
-			entityIdConverted,
-		)
-		docIdentifier_toJs(result)
-	}
-
-	override fun deleteContactsUnsafe(entityIds: Array<String>): Promise<Array<DocIdentifierJs>> =
-			GlobalScope.promise {
-		val entityIdsConverted: List<String> = arrayToList(
-			entityIds,
-			"entityIds",
-			{ x1: String ->
-				x1
-			},
-		)
-		val result = contactBasicApi.deleteContactsUnsafe(
-			entityIdsConverted,
-		)
-		listToArray(
-			result,
-			{ x1: DocIdentifier ->
-				docIdentifier_toJs(x1)
-			},
-		)
-	}
-
-	override fun deleteContactById(entityId: String, rev: String): Promise<DocIdentifierJs> =
-			GlobalScope.promise {
+	override fun deleteContactById(entityId: String, rev: String): Promise<StoredDocumentIdentifierJs>
+			= GlobalScope.promise {
 		val entityIdConverted: String = entityId
 		val revConverted: String = rev
 		val result = contactBasicApi.deleteContactById(
 			entityIdConverted,
 			revConverted,
 		)
-		docIdentifier_toJs(result)
+		storedDocumentIdentifier_toJs(result)
 	}
 
 	override fun deleteContactsByIds(entityIds: Array<StoredDocumentIdentifierJs>):
-			Promise<Array<DocIdentifierJs>> = GlobalScope.promise {
+			Promise<Array<StoredDocumentIdentifierJs>> = GlobalScope.promise {
 		val entityIdsConverted: List<StoredDocumentIdentifier> = arrayToList(
 			entityIds,
 			"entityIds",
@@ -261,8 +860,8 @@ internal class ContactBasicApiImplJs(
 		)
 		listToArray(
 			result,
-			{ x1: DocIdentifier ->
-				docIdentifier_toJs(x1)
+			{ x1: StoredDocumentIdentifier ->
+				storedDocumentIdentifier_toJs(x1)
 			},
 		)
 	}
@@ -277,16 +876,37 @@ internal class ContactBasicApiImplJs(
 
 	}
 
-	override fun deleteContact(contact: ContactJs): Promise<DocIdentifierJs> = GlobalScope.promise {
+	override fun purgeContactsByIds(entityIds: Array<StoredDocumentIdentifierJs>):
+			Promise<Array<StoredDocumentIdentifierJs>> = GlobalScope.promise {
+		val entityIdsConverted: List<StoredDocumentIdentifier> = arrayToList(
+			entityIds,
+			"entityIds",
+			{ x1: StoredDocumentIdentifierJs ->
+				storedDocumentIdentifier_fromJs(x1)
+			},
+		)
+		val result = contactBasicApi.purgeContactsByIds(
+			entityIdsConverted,
+		)
+		listToArray(
+			result,
+			{ x1: StoredDocumentIdentifier ->
+				storedDocumentIdentifier_toJs(x1)
+			},
+		)
+	}
+
+	override fun deleteContact(contact: ContactJs): Promise<StoredDocumentIdentifierJs> =
+			GlobalScope.promise {
 		val contactConverted: Contact = contact_fromJs(contact)
 		val result = contactBasicApi.deleteContact(
 			contactConverted,
 		)
-		docIdentifier_toJs(result)
+		storedDocumentIdentifier_toJs(result)
 	}
 
-	override fun deleteContacts(contacts: Array<ContactJs>): Promise<Array<DocIdentifierJs>> =
-			GlobalScope.promise {
+	override fun deleteContacts(contacts: Array<ContactJs>): Promise<Array<StoredDocumentIdentifierJs>>
+			= GlobalScope.promise {
 		val contactsConverted: List<Contact> = arrayToList(
 			contacts,
 			"contacts",
@@ -299,8 +919,8 @@ internal class ContactBasicApiImplJs(
 		)
 		listToArray(
 			result,
-			{ x1: DocIdentifier ->
-				docIdentifier_toJs(x1)
+			{ x1: StoredDocumentIdentifier ->
+				storedDocumentIdentifier_toJs(x1)
 			},
 		)
 	}
@@ -311,6 +931,26 @@ internal class ContactBasicApiImplJs(
 			contactConverted,
 		)
 
+	}
+
+	override fun purgeContacts(contacts: Array<ContactJs>): Promise<Array<StoredDocumentIdentifierJs>>
+			= GlobalScope.promise {
+		val contactsConverted: List<Contact> = arrayToList(
+			contacts,
+			"contacts",
+			{ x1: ContactJs ->
+				contact_fromJs(x1)
+			},
+		)
+		val result = contactBasicApi.purgeContacts(
+			contactsConverted,
+		)
+		listToArray(
+			result,
+			{ x1: StoredDocumentIdentifier ->
+				storedDocumentIdentifier_toJs(x1)
+			},
+		)
 	}
 
 	override fun getServiceCodesOccurrences(codeType: String, minOccurrences: Double):
@@ -369,6 +1009,26 @@ internal class ContactBasicApiImplJs(
 		contact_toJs(result)
 	}
 
+	override fun undeleteContactsByIds(entityIds: Array<StoredDocumentIdentifierJs>):
+			Promise<Array<EncryptedContactJs>> = GlobalScope.promise {
+		val entityIdsConverted: List<StoredDocumentIdentifier> = arrayToList(
+			entityIds,
+			"entityIds",
+			{ x1: StoredDocumentIdentifierJs ->
+				storedDocumentIdentifier_fromJs(x1)
+			},
+		)
+		val result = contactBasicApi.undeleteContactsByIds(
+			entityIdsConverted,
+		)
+		listToArray(
+			result,
+			{ x1: EncryptedContact ->
+				contact_toJs(x1)
+			},
+		)
+	}
+
 	override fun undeleteContact(contact: ContactJs): Promise<EncryptedContactJs> =
 			GlobalScope.promise {
 		val contactConverted: Contact = contact_fromJs(contact)
@@ -376,6 +1036,26 @@ internal class ContactBasicApiImplJs(
 			contactConverted,
 		)
 		contact_toJs(result)
+	}
+
+	override fun undeleteContacts(contacts: Array<ContactJs>): Promise<Array<EncryptedContactJs>> =
+			GlobalScope.promise {
+		val contactsConverted: List<Contact> = arrayToList(
+			contacts,
+			"contacts",
+			{ x1: ContactJs ->
+				contact_fromJs(x1)
+			},
+		)
+		val result = contactBasicApi.undeleteContacts(
+			contactsConverted,
+		)
+		listToArray(
+			result,
+			{ x1: EncryptedContact ->
+				contact_toJs(x1)
+			},
+		)
 	}
 
 	override fun modifyContact(entity: EncryptedContactJs): Promise<EncryptedContactJs> =
@@ -439,80 +1119,16 @@ internal class ContactBasicApiImplJs(
 		)
 	}
 
-	override fun listContactByHCPartyServiceId(hcPartyId: String, serviceId: String):
-			Promise<Array<EncryptedContactJs>> = GlobalScope.promise {
-		val hcPartyIdConverted: String = hcPartyId
-		val serviceIdConverted: String = serviceId
-		val result = contactBasicApi.listContactByHCPartyServiceId(
-			hcPartyIdConverted,
-			serviceIdConverted,
-		)
-		listToArray(
-			result,
-			{ x1: EncryptedContact ->
-				contact_toJs(x1)
-			},
-		)
-	}
-
-	override fun listContactsByExternalId(externalId: String): Promise<Array<EncryptedContactJs>> =
-			GlobalScope.promise {
-		val externalIdConverted: String = externalId
-		val result = contactBasicApi.listContactsByExternalId(
-			externalIdConverted,
-		)
-		listToArray(
-			result,
-			{ x1: EncryptedContact ->
-				contact_toJs(x1)
-			},
-		)
-	}
-
-	override fun listContactsByHCPartyAndFormId(hcPartyId: String, formId: String):
-			Promise<Array<EncryptedContactJs>> = GlobalScope.promise {
-		val hcPartyIdConverted: String = hcPartyId
-		val formIdConverted: String = formId
-		val result = contactBasicApi.listContactsByHCPartyAndFormId(
-			hcPartyIdConverted,
-			formIdConverted,
-		)
-		listToArray(
-			result,
-			{ x1: EncryptedContact ->
-				contact_toJs(x1)
-			},
-		)
-	}
-
-	override fun listContactsByHCPartyAndFormIds(hcPartyId: String, formIds: Array<String>):
-			Promise<Array<EncryptedContactJs>> = GlobalScope.promise {
-		val hcPartyIdConverted: String = hcPartyId
-		val formIdsConverted: List<String> = arrayToList(
-			formIds,
-			"formIds",
-			{ x1: String ->
-				x1
-			},
-		)
-		val result = contactBasicApi.listContactsByHCPartyAndFormIds(
-			hcPartyIdConverted,
-			formIdsConverted,
-		)
-		listToArray(
-			result,
-			{ x1: EncryptedContact ->
-				contact_toJs(x1)
-			},
-		)
-	}
-
-	override fun getService(serviceId: String): Promise<EncryptedServiceJs> = GlobalScope.promise {
+	override fun getService(serviceId: String): Promise<EncryptedServiceJs?> = GlobalScope.promise {
 		val serviceIdConverted: String = serviceId
 		val result = contactBasicApi.getService(
 			serviceIdConverted,
 		)
-		service_toJs(result)
+		nullToUndefined(
+			result?.let { nonNull1 ->
+				service_toJs(nonNull1)
+			}
+		)
 	}
 
 	override fun getServices(entityIds: Array<String>): Promise<Array<EncryptedServiceJs>> =
@@ -533,107 +1149,6 @@ internal class ContactBasicApiImplJs(
 				service_toJs(x1)
 			},
 		)
-	}
-
-	override fun getServicesLinkedTo(linkType: String, ids: Array<String>):
-			Promise<Array<EncryptedServiceJs>> = GlobalScope.promise {
-		val linkTypeConverted: String = linkType
-		val idsConverted: List<String> = arrayToList(
-			ids,
-			"ids",
-			{ x1: String ->
-				x1
-			},
-		)
-		val result = contactBasicApi.getServicesLinkedTo(
-			linkTypeConverted,
-			idsConverted,
-		)
-		listToArray(
-			result,
-			{ x1: EncryptedService ->
-				service_toJs(x1)
-			},
-		)
-	}
-
-	override fun listServicesByAssociationId(associationId: String): Promise<Array<EncryptedServiceJs>>
-			= GlobalScope.promise {
-		val associationIdConverted: String = associationId
-		val result = contactBasicApi.listServicesByAssociationId(
-			associationIdConverted,
-		)
-		listToArray(
-			result,
-			{ x1: EncryptedService ->
-				service_toJs(x1)
-			},
-		)
-	}
-
-	override fun listServicesByHealthElementId(hcPartyId: String, healthElementId: String):
-			Promise<Array<EncryptedServiceJs>> = GlobalScope.promise {
-		val hcPartyIdConverted: String = hcPartyId
-		val healthElementIdConverted: String = healthElementId
-		val result = contactBasicApi.listServicesByHealthElementId(
-			hcPartyIdConverted,
-			healthElementIdConverted,
-		)
-		listToArray(
-			result,
-			{ x1: EncryptedService ->
-				service_toJs(x1)
-			},
-		)
-	}
-
-	override fun findContactsByOpeningDate(
-		startDate: Double,
-		endDate: Double,
-		hcPartyId: String,
-		options: dynamic,
-	): Promise<PaginatedListJs<EncryptedContactJs>> {
-		val _options = options ?: js("{}")
-		return GlobalScope.promise {
-			val startDateConverted: Long = numberToLong(startDate, "startDate")
-			val endDateConverted: Long = numberToLong(endDate, "endDate")
-			val hcPartyIdConverted: String = hcPartyId
-			val startKeyConverted: JsonElement? = convertingOptionOrDefaultNullable(
-				_options,
-				"startKey",
-				null
-			) { startKey: dynamic ->
-				dynamicToJsonNullsafe(startKey, "startKey")
-			}
-			val startDocumentIdConverted: String? = convertingOptionOrDefaultNullable(
-				_options,
-				"startDocumentId",
-				null
-			) { startDocumentId: String? ->
-				undefinedToNull(startDocumentId)
-			}
-			val limitConverted: Int? = convertingOptionOrDefaultNullable(
-				_options,
-				"limit",
-				null
-			) { limit: Double? ->
-				numberToInt(limit, "limit")
-			}
-			val result = contactBasicApi.findContactsByOpeningDate(
-				startDateConverted,
-				endDateConverted,
-				hcPartyIdConverted,
-				startKeyConverted,
-				startDocumentIdConverted,
-				limitConverted,
-			)
-			paginatedList_toJs(
-				result,
-				{ x1: EncryptedContact ->
-					contact_toJs(x1)
-				},
-			)
-		}
 	}
 
 	override fun subscribeToEvents(

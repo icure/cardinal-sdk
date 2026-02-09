@@ -4,6 +4,7 @@
 package com.icure.cardinal.sdk.js.model
 
 import com.icure.cardinal.sdk.js.model.base.CodeStubJs
+import com.icure.cardinal.sdk.js.model.base.HasEndOfLifeJs
 import com.icure.cardinal.sdk.js.model.base.ICureDocumentJs
 import com.icure.cardinal.sdk.js.model.base.StoredDocumentJs
 import com.icure.cardinal.sdk.js.model.embed.DocumentGroupJs
@@ -17,7 +18,7 @@ import kotlin.js.JsQualifier
 @JsName("DocumentTemplate")
 public external class DocumentTemplateJs(
 	partial: dynamic,
-) : StoredDocumentJs, ICureDocumentJs<String> {
+) : StoredDocumentJs, ICureDocumentJs<String>, HasEndOfLifeJs {
 	override val id: String
 
 	override val rev: String?
@@ -29,8 +30,6 @@ public external class DocumentTemplateJs(
 	override val author: String?
 
 	override val responsible: String?
-
-	override val medicalLocationId: String?
 
 	override val tags: Array<CodeStubJs>
 

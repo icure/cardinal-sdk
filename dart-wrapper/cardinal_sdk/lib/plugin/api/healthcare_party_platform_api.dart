@@ -16,7 +16,10 @@ import 'package:cardinal_sdk/subscription/entity_subscription.dart';
 
 class HealthcarePartyPlatformApi {
 	MethodChannel _methodChannel;
-	HealthcarePartyPlatformApi(this._methodChannel);
+	HealthcarePartyInGroupPlatformApi inGroup;
+	HealthcarePartyPlatformApi(
+		this._methodChannel
+		) : inGroup = HealthcarePartyInGroupPlatformApi(_methodChannel);
 
 	Future<HealthcareParty?> getHealthcareParty(String sdkId, String healthcarePartyId) async {
 		final res = await _methodChannel.invokeMethod<String>(
@@ -403,5 +406,24 @@ class HealthcarePartyPlatformApi {
 		if (res == null) throw AssertionError("received null result from platform method subscribeToEvents");
 		final parsedResJson = jsonDecode(res);
 		return EntitySubscription(parsedResJson, (x0) => HealthcareParty.fromJSON(x0));
+	}
+}
+
+class HealthcarePartyInGroupPlatformApi {
+	MethodChannel _methodChannel;
+	HealthcarePartyInGroupPlatformApi(this._methodChannel);
+
+	Future<List<String>> matchHealthcarePartiesBy(String sdkId, String groupId, BaseFilterOptions<HealthcareParty> filter) async {
+		final res = await _methodChannel.invokeMethod<String>(
+			'HealthcarePartyApi.inGroup.matchHealthcarePartiesBy',
+			{
+				"sdkId": sdkId,
+				"groupId": jsonEncode(groupId),
+				"filter": jsonEncode(BaseFilterOptions.encode(filter)),
+			}
+		).catchError(convertPlatformException);
+		if (res == null) throw AssertionError("received null result from platform method matchHealthcarePartiesBy");
+		final parsedResJson = jsonDecode(res);
+		return (parsedResJson as List<dynamic>).map((x1) => (x1 as String) ).toList();
 	}
 }

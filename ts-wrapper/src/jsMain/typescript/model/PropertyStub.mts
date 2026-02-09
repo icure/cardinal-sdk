@@ -1,5 +1,5 @@
 // auto-generated file
-import {expectNumber, expectObject, expectString, extractEntry} from '../internal/JsonDecodeUtils.mjs';
+import {expectObject, expectString, extractEntry} from '../internal/JsonDecodeUtils.mjs';
 import {PropertyTypeStub} from './PropertyTypeStub.mjs';
 import {Encryptable} from './embed/Encryptable.mjs';
 import {DecryptedTypedValue, EncryptedTypedValue, TypedValue} from './embed/TypedValue.mjs';
@@ -13,8 +13,6 @@ export interface PropertyStub extends Encryptable {
 	type: PropertyTypeStub | undefined;
 
 	typedValue: TypedValue | undefined;
-
-	deletionDate: number | undefined;
 
 	readonly isEncrypted: boolean;
 
@@ -30,8 +28,6 @@ export class DecryptedPropertyStub {
 
 	typedValue: DecryptedTypedValue | undefined = undefined;
 
-	deletionDate: number | undefined = undefined;
-
 	encryptedSelf: Base64String | undefined = undefined;
 
 	readonly isEncrypted: false = false;
@@ -41,7 +37,6 @@ export class DecryptedPropertyStub {
 		if ('id' in partial) this.id = partial.id;
 		if ('type' in partial) this.type = partial.type;
 		if ('typedValue' in partial) this.typedValue = partial.typedValue;
-		if ('deletionDate' in partial) this.deletionDate = partial.deletionDate;
 		if ('encryptedSelf' in partial) this.encryptedSelf = partial.encryptedSelf;
 	}
 
@@ -50,7 +45,6 @@ export class DecryptedPropertyStub {
 		if (this.id != undefined) res['id'] = this.id
 		if (this.type != undefined) res['type'] = this.type.toJSON()
 		if (this.typedValue != undefined) res['typedValue'] = this.typedValue.toJSON()
-		if (this.deletionDate != undefined) res['deletionDate'] = this.deletionDate
 		if (this.encryptedSelf != undefined) res['encryptedSelf'] = this.encryptedSelf
 		res['isEncrypted'] = false
 		return res
@@ -65,7 +59,6 @@ export class DecryptedPropertyStub {
 			id: expectString(extractEntry(jCpy, 'id', false, path), true, [...path, ".id"]),
 			type: expectObject(extractEntry(jCpy, 'type', false, path), true, ignoreUnknownKeys, [...path, ".type"], PropertyTypeStub.fromJSON),
 			typedValue: expectObject(extractEntry(jCpy, 'typedValue', false, path), true, ignoreUnknownKeys, [...path, ".typedValue"], DecryptedTypedValue.fromJSON),
-			deletionDate: expectNumber(extractEntry(jCpy, 'deletionDate', false, path), true, true, [...path, ".deletionDate"]),
 			encryptedSelf: expectString(extractEntry(jCpy, 'encryptedSelf', false, path), true, [...path, ".encryptedSelf"]) as Base64String,
 		})
 		if (!ignoreUnknownKeys) {
@@ -84,8 +77,6 @@ export class EncryptedPropertyStub {
 
 	typedValue: EncryptedTypedValue | undefined = undefined;
 
-	deletionDate: number | undefined = undefined;
-
 	encryptedSelf: Base64String | undefined = undefined;
 
 	readonly isEncrypted: true = true;
@@ -95,7 +86,6 @@ export class EncryptedPropertyStub {
 		if ('id' in partial) this.id = partial.id;
 		if ('type' in partial) this.type = partial.type;
 		if ('typedValue' in partial) this.typedValue = partial.typedValue;
-		if ('deletionDate' in partial) this.deletionDate = partial.deletionDate;
 		if ('encryptedSelf' in partial) this.encryptedSelf = partial.encryptedSelf;
 	}
 
@@ -104,7 +94,6 @@ export class EncryptedPropertyStub {
 		if (this.id != undefined) res['id'] = this.id
 		if (this.type != undefined) res['type'] = this.type.toJSON()
 		if (this.typedValue != undefined) res['typedValue'] = this.typedValue.toJSON()
-		if (this.deletionDate != undefined) res['deletionDate'] = this.deletionDate
 		if (this.encryptedSelf != undefined) res['encryptedSelf'] = this.encryptedSelf
 		res['isEncrypted'] = true
 		return res
@@ -119,7 +108,6 @@ export class EncryptedPropertyStub {
 			id: expectString(extractEntry(jCpy, 'id', false, path), true, [...path, ".id"]),
 			type: expectObject(extractEntry(jCpy, 'type', false, path), true, ignoreUnknownKeys, [...path, ".type"], PropertyTypeStub.fromJSON),
 			typedValue: expectObject(extractEntry(jCpy, 'typedValue', false, path), true, ignoreUnknownKeys, [...path, ".typedValue"], EncryptedTypedValue.fromJSON),
-			deletionDate: expectNumber(extractEntry(jCpy, 'deletionDate', false, path), true, true, [...path, ".deletionDate"]),
 			encryptedSelf: expectString(extractEntry(jCpy, 'encryptedSelf', false, path), true, [...path, ".encryptedSelf"]) as Base64String,
 		})
 		if (!ignoreUnknownKeys) {

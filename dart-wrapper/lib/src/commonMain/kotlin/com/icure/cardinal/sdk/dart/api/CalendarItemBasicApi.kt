@@ -303,6 +303,29 @@ public object CalendarItemBasicApi {
     }
   }
 
+  public fun bookCalendarItemCheckingAvailability(
+    dartResultCallback: (
+      String?,
+      String?,
+      String?,
+      String?,
+    ) -> Unit,
+    sdkId: String,
+    entityString: String,
+  ) {
+    val entity = fullLanguageInteropJson.decodeFromString(
+      EncryptedCalendarItem.serializer(),
+      entityString
+    )
+    ApiScope.execute(
+      dartResultCallback,
+      EncryptedCalendarItem.serializer()) {
+      NativeReferences.get<CardinalBaseApis>(sdkId).calendarItem.bookCalendarItemCheckingAvailability(
+        entity,
+      )
+    }
+  }
+
   public fun undeleteCalendarItemById(
     dartResultCallback: (
       String?,

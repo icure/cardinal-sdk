@@ -21,6 +21,9 @@ class InsuranceApiDispatcher {
     case "listInsurancesByCode": listInsurancesByCode(parameters: parameters, resultCallback: resultCallback)
     case "listInsurancesByName": listInsurancesByName(parameters: parameters, resultCallback: resultCallback)
     case "modifyInsurance": modifyInsurance(parameters: parameters, resultCallback: resultCallback)
+    case "createInsurancesInGroup": createInsurancesInGroup(parameters: parameters, resultCallback: resultCallback)
+    case "getInsurancesInGroup": getInsurancesInGroup(parameters: parameters, resultCallback: resultCallback)
+    case "modifyInsurancesInGroup": modifyInsurancesInGroup(parameters: parameters, resultCallback: resultCallback)
     default: return false
     }
     return true
@@ -114,6 +117,48 @@ class InsuranceApiDispatcher {
     	dartResultCallback: resultCallback,
     	sdkId: parameters["sdkId"]!,
     	insuranceString: parameters["insurance"]!
+    )
+  }
+
+  private static func createInsurancesInGroup(parameters: [String : String], resultCallback: @escaping (
+    String?,
+    String?,
+    String?,
+    String?
+  ) -> Void) {
+    InsuranceApi.shared.createInsurancesInGroup(
+    	dartResultCallback: resultCallback,
+    	sdkId: parameters["sdkId"]!,
+    	groupIdString: parameters["groupId"]!,
+    	insuranceBatchString: parameters["insuranceBatch"]!
+    )
+  }
+
+  private static func getInsurancesInGroup(parameters: [String : String], resultCallback: @escaping (
+    String?,
+    String?,
+    String?,
+    String?
+  ) -> Void) {
+    InsuranceApi.shared.getInsurancesInGroup(
+    	dartResultCallback: resultCallback,
+    	sdkId: parameters["sdkId"]!,
+    	groupIdString: parameters["groupId"]!,
+    	insuranceIdsString: parameters["insuranceIds"]!
+    )
+  }
+
+  private static func modifyInsurancesInGroup(parameters: [String : String], resultCallback: @escaping (
+    String?,
+    String?,
+    String?,
+    String?
+  ) -> Void) {
+    InsuranceApi.shared.modifyInsurancesInGroup(
+    	dartResultCallback: resultCallback,
+    	sdkId: parameters["sdkId"]!,
+    	groupIdString: parameters["groupId"]!,
+    	insuranceBatchString: parameters["insuranceBatch"]!
     )
   }
 

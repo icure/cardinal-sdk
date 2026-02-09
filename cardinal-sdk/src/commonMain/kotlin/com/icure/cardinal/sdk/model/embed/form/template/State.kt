@@ -12,7 +12,7 @@ import kotlin.String
 class State(
 	public val name: String,
 	public val stateToUpdate: StateToUpdate,
-	@DefaultValue("false")
+	@param:DefaultValue("false")
 	public val canLaunchLauncher: Boolean = false,
 ) {
 	// region State-State

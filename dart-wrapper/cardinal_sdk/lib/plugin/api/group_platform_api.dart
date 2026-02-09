@@ -19,6 +19,7 @@ import 'package:cardinal_sdk/model/couchdb/group_databases_info.dart';
 import 'package:cardinal_sdk/model/replication_info.dart';
 import 'package:cardinal_sdk/model/couchdb/doc_identifier.dart';
 import 'package:cardinal_sdk/model/security/external_jwt_config.dart';
+import 'package:cardinal_sdk/model/base/code_stub.dart';
 
 
 class GroupPlatformApi {
@@ -50,7 +51,7 @@ class GroupPlatformApi {
 		return Group.fromJSON(parsedResJson);
 	}
 
-	Future<Group> createGroup(String sdkId, String id, String name, GroupType? type, String password, String? server, int? q, int? n, String? superGroup, String? applicationId, DatabaseInitialisation initialisationData) async {
+	Future<Group> createGroup(String sdkId, String id, String name, GroupType? type, String password, String? server, int? q, int? n, String? superGroup, String? projectId, DatabaseInitialisation initialisationData) async {
 		final res = await _methodChannel.invokeMethod<String>(
 			'GroupApi.createGroup',
 			{
@@ -63,7 +64,7 @@ class GroupPlatformApi {
 				"q": jsonEncode(q),
 				"n": jsonEncode(n),
 				"superGroup": jsonEncode(superGroup),
-				"applicationId": jsonEncode(applicationId),
+				"projectId": jsonEncode(projectId),
 				"initialisationData": jsonEncode(DatabaseInitialisation.encode(initialisationData)),
 			}
 		).catchError(convertPlatformException);
@@ -385,5 +386,61 @@ class GroupPlatformApi {
 		if (res == null) throw AssertionError("received null result from platform method getOperationTokenForGroup");
 		final parsedResJson = jsonDecode(res);
 		return (parsedResJson as String);
+	}
+
+	Future<void> setGroupProjectId(String sdkId, String groupId, String? projectId, bool applyToSubgroups) async {
+		final res = await _methodChannel.invokeMethod<String>(
+			'GroupApi.setGroupProjectId',
+			{
+				"sdkId": sdkId,
+				"groupId": jsonEncode(groupId),
+				"projectId": jsonEncode(projectId),
+				"applyToSubgroups": jsonEncode(applyToSubgroups),
+			}
+		).catchError(convertPlatformException);
+	}
+
+	Future<Group> modifyGroupApplicationId(String sdkId, String id, String applicationId) async {
+		final res = await _methodChannel.invokeMethod<String>(
+			'GroupApi.modifyGroupApplicationId',
+			{
+				"sdkId": sdkId,
+				"id": jsonEncode(id),
+				"applicationId": jsonEncode(applicationId),
+			}
+		).catchError(convertPlatformException);
+		if (res == null) throw AssertionError("received null result from platform method modifyGroupApplicationId");
+		final parsedResJson = jsonDecode(res);
+		return Group.fromJSON(parsedResJson);
+	}
+
+	Future<Group> addTagToGroup(String sdkId, String id, String rev, CodeStub tag) async {
+		final res = await _methodChannel.invokeMethod<String>(
+			'GroupApi.addTagToGroup',
+			{
+				"sdkId": sdkId,
+				"id": jsonEncode(id),
+				"rev": jsonEncode(rev),
+				"tag": jsonEncode(CodeStub.encode(tag)),
+			}
+		).catchError(convertPlatformException);
+		if (res == null) throw AssertionError("received null result from platform method addTagToGroup");
+		final parsedResJson = jsonDecode(res);
+		return Group.fromJSON(parsedResJson);
+	}
+
+	Future<Group> removeTagFromGroup(String sdkId, String id, String rev, String tagId) async {
+		final res = await _methodChannel.invokeMethod<String>(
+			'GroupApi.removeTagFromGroup',
+			{
+				"sdkId": sdkId,
+				"id": jsonEncode(id),
+				"rev": jsonEncode(rev),
+				"tagId": jsonEncode(tagId),
+			}
+		).catchError(convertPlatformException);
+		if (res == null) throw AssertionError("received null result from platform method removeTagFromGroup");
+		final parsedResJson = jsonDecode(res);
+		return Group.fromJSON(parsedResJson);
 	}
 }

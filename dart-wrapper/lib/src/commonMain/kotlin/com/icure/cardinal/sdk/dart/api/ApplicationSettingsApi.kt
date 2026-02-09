@@ -4,7 +4,7 @@ package com.icure.cardinal.sdk.dart.api
 import com.icure.cardinal.sdk.CardinalNonCryptoApis
 import com.icure.cardinal.sdk.dart.utils.ApiScope
 import com.icure.cardinal.sdk.dart.utils.NativeReferences
-import com.icure.cardinal.sdk.model.ApplicationSettings
+import com.icure.cardinal.sdk.model.EncryptedApplicationSettings
 import com.icure.cardinal.sdk.utils.Serialization.fullLanguageInteropJson
 import com.icure.utils.InternalIcureApi
 import kotlin.OptIn
@@ -22,7 +22,7 @@ public object ApplicationSettingsApi {
   ) -> Unit, sdkId: String) {
     ApiScope.execute(
       dartResultCallback,
-      ListSerializer(ApplicationSettings.serializer())) {
+      ListSerializer(EncryptedApplicationSettings.serializer())) {
       NativeReferences.get<CardinalNonCryptoApis>(sdkId).applicationSettings.getApplicationSettings()
     }
   }
@@ -38,12 +38,12 @@ public object ApplicationSettingsApi {
     applicationSettingsString: String,
   ) {
     val applicationSettings = fullLanguageInteropJson.decodeFromString(
-      ApplicationSettings.serializer(),
+      EncryptedApplicationSettings.serializer(),
       applicationSettingsString
     )
     ApiScope.execute(
       dartResultCallback,
-      ApplicationSettings.serializer()) {
+      EncryptedApplicationSettings.serializer()) {
       NativeReferences.get<CardinalNonCryptoApis>(sdkId).applicationSettings.createApplicationSettings(
         applicationSettings,
       )
@@ -61,12 +61,12 @@ public object ApplicationSettingsApi {
     applicationSettingsString: String,
   ) {
     val applicationSettings = fullLanguageInteropJson.decodeFromString(
-      ApplicationSettings.serializer(),
+      EncryptedApplicationSettings.serializer(),
       applicationSettingsString
     )
     ApiScope.execute(
       dartResultCallback,
-      ApplicationSettings.serializer()) {
+      EncryptedApplicationSettings.serializer()) {
       NativeReferences.get<CardinalNonCryptoApis>(sdkId).applicationSettings.updateApplicationSettings(
         applicationSettings,
       )

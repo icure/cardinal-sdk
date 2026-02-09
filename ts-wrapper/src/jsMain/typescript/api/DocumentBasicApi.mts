@@ -2,10 +2,12 @@
 import {BaseFilterOptions, BaseSortableFilterOptions, PaginatedListIterator} from '../cardinal-sdk-ts.mjs';
 import {Document, EncryptedDocument} from '../model/Document.mjs';
 import {StoredDocumentIdentifier} from '../model/StoredDocumentIdentifier.mjs';
-import {DocIdentifier} from '../model/couchdb/DocIdentifier.mjs';
+import {DocumentBasicInGroupApi} from './DocumentBasicInGroupApi.mjs';
 
 
 export interface DocumentBasicApi {
+
+	inGroup: DocumentBasicInGroupApi;
 
 	matchDocumentsBy(filter: BaseFilterOptions<Document>): Promise<Array<string>>;
 
@@ -15,27 +17,23 @@ export interface DocumentBasicApi {
 
 	filterDocumentsBySorted(filter: BaseSortableFilterOptions<Document>): Promise<PaginatedListIterator<EncryptedDocument>>;
 
-	deleteDocumentUnsafe(entityId: string): Promise<DocIdentifier>;
+	deleteDocumentById(entityId: string, rev: string): Promise<StoredDocumentIdentifier>;
 
-	deleteDocumentsUnsafe(entityIds: Array<string>): Promise<Array<DocIdentifier>>;
-
-	deleteDocumentById(entityId: string, rev: string): Promise<DocIdentifier>;
-
-	deleteDocumentsByIds(entityIds: Array<StoredDocumentIdentifier>): Promise<Array<DocIdentifier>>;
+	deleteDocumentsByIds(entityIds: Array<StoredDocumentIdentifier>): Promise<Array<StoredDocumentIdentifier>>;
 
 	purgeDocumentById(id: string, rev: string): Promise<void>;
 
-	deleteDocument(document: Document): Promise<DocIdentifier>;
+	purgeDocumentsByIds(entityIds: Array<StoredDocumentIdentifier>): Promise<Array<StoredDocumentIdentifier>>;
 
-	deleteDocuments(documents: Array<Document>): Promise<Array<DocIdentifier>>;
+	deleteDocument(document: Document): Promise<StoredDocumentIdentifier>;
+
+	deleteDocuments(documents: Array<Document>): Promise<Array<StoredDocumentIdentifier>>;
 
 	purgeDocument(document: Document): Promise<void>;
 
+	purgeDocuments(documents: Array<Document>): Promise<Array<StoredDocumentIdentifier>>;
+
 	getRawMainAttachment(documentId: string): Promise<Int8Array>;
-
-	getMainAttachmentAsPlainText(documentId: string): Promise<string>;
-
-	getMainAttachmentAsJson(documentId: string): Promise<any>;
 
 	getRawSecondaryAttachment(documentId: string, key: string): Promise<Int8Array>;
 
@@ -63,22 +61,22 @@ export interface DocumentBasicApi {
 
 	createDocument(entity: EncryptedDocument): Promise<EncryptedDocument>;
 
+	createDocuments(entities: Array<EncryptedDocument>): Promise<Array<EncryptedDocument>>;
+
 	undeleteDocumentById(id: string, rev: string): Promise<EncryptedDocument>;
+
+	undeleteDocumentsByIds(entityIds: Array<StoredDocumentIdentifier>): Promise<Array<EncryptedDocument>>;
 
 	undeleteDocument(document: Document): Promise<EncryptedDocument>;
 
+	undeleteDocuments(documents: Array<EncryptedDocument>): Promise<Array<EncryptedDocument>>;
+
 	modifyDocument(entity: EncryptedDocument): Promise<EncryptedDocument>;
-
-	getDocument(entityId: string): Promise<EncryptedDocument | undefined>;
-
-	getDocumentByExternalUuid(externalUuid: string): Promise<EncryptedDocument>;
-
-	getDocumentsByExternalUuid(externalUuid: string): Promise<Array<EncryptedDocument>>;
-
-	getDocuments(entityIds: Array<string>): Promise<Array<EncryptedDocument>>;
 
 	modifyDocuments(entities: Array<EncryptedDocument>): Promise<Array<EncryptedDocument>>;
 
-	findWithoutDelegation(limit: number | undefined): Promise<Array<EncryptedDocument>>;
+	getDocument(entityId: string): Promise<EncryptedDocument | undefined>;
+
+	getDocuments(entityIds: Array<string>): Promise<Array<EncryptedDocument>>;
 
 }

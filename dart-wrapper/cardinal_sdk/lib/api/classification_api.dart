@@ -23,7 +23,7 @@ class ClassificationApi {
 		) : encrypted = ClassificationEncryptedApi(_sdkId, _dartSdk),
 		tryAndRecover = ClassificationTryAndRecoverApi(_sdkId, _dartSdk);
 
-	Future<DecryptedClassification> withEncryptionMetadata(DecryptedClassification? base, Patient patient, { User? user, Map<String, AccessLevel> delegates = const {}, SecretIdUseOption secretId = SecretIdUseOption.UseAnySharedWithParent }) async {
+	Future<DecryptedClassification> withEncryptionMetadata(DecryptedClassification? base, Patient patient, { User? user, Map<String, AccessLevel> delegates = const {}, SecretIdUseOption secretId = SecretIdUseOption.UseAnySharedWithParent, String? alternateRootDelegateId }) async {
 		return await CardinalSdkPlatformInterface.instance.apis.classification.withEncryptionMetadata(
 			_sdkId,
 			base,
@@ -31,6 +31,7 @@ class ClassificationApi {
 			user,
 			delegates,
 			secretId,
+			alternateRootDelegateId,
 		);
 	}
 

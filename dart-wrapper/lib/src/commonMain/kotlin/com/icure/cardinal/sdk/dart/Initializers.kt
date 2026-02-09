@@ -27,15 +27,15 @@ object Initializers {
 			String?,
 			String?,
 		) -> Unit,
-		applicationIdString: String,
+		projectIdString: String,
 		baseUrlString: String,
 		authenticationMethodString: String,
 		storageFacade: StorageFacade,
 		optionsString: String
 	) {
-		val applicationId = fullLanguageInteropJson.decodeFromString(
+		val projectId = fullLanguageInteropJson.decodeFromString(
 			String.serializer().nullable,
-			applicationIdString,
+			projectIdString,
 		)
 		val baseUrl = fullLanguageInteropJson.decodeFromString(
 			String.serializer(),
@@ -55,7 +55,7 @@ object Initializers {
 		) {
 			val sdk = kotlin.runCatching {
 				CardinalSdk.initialize(
-					applicationId,
+					projectId,
 					baseUrl,
 					authenticationMethod.toMultiplatform(),
 					storageFacade,
@@ -130,14 +130,14 @@ object Initializers {
 			String?,
 			String?,
 		) -> Unit,
-		applicationIdString: String,
+		projectIdString: String,
 		baseUrlString: String,
 		authenticationMethodString: String,
 		optionsString: String
 	) {
-		val applicationId = fullLanguageInteropJson.decodeFromString(
+		val projectId = fullLanguageInteropJson.decodeFromString(
 			String.serializer().nullable,
-			applicationIdString,
+			projectIdString,
 		)
 		val baseUrl = fullLanguageInteropJson.decodeFromString(
 			String.serializer(),
@@ -157,7 +157,7 @@ object Initializers {
 		) {
 			val sdk = kotlin.runCatching {
 				CardinalBaseSdk.initialize(
-					applicationId,
+					projectId,
 					baseUrl,
 					authenticationMethod.toMultiplatform(),
 					options.toMultiplatform()
@@ -179,7 +179,7 @@ object Initializers {
 			String?,
 			String?,
 		) -> Unit,
-		applicationIdString: String,
+		projectIdString: String,
 		baseUrlString: String,
 		messageGatewayUrlString: String,
 		externalServicesSpecIdString: String,
@@ -191,9 +191,9 @@ object Initializers {
 		authenticationProcessTemplateParametersString: String,
 		optionsString: String
 	) {
-		val applicationId = fullLanguageInteropJson.decodeFromString(
+		val projectId = fullLanguageInteropJson.decodeFromString(
 			String.serializer().nullable,
-			applicationIdString,
+			projectIdString,
 		)
 		val baseUrl = fullLanguageInteropJson.decodeFromString(
 			String.serializer(),
@@ -237,7 +237,7 @@ object Initializers {
 		) {
 			val authStep = kotlin.runCatching {
 				CardinalSdk.initializeWithProcess(
-					applicationId,
+					projectId,
 					baseUrl,
 					messageGatewayUrl,
 					externalServicesSpecId,

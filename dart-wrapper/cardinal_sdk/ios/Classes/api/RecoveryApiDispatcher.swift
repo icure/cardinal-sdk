@@ -19,6 +19,7 @@ class RecoveryApiDispatcher {
     case "recoverKeyPairsWaitingForCreation": recoverKeyPairsWaitingForCreation(parameters: parameters, resultCallback: resultCallback)
     case "createExchangeDataRecoveryInfo": createExchangeDataRecoveryInfo(parameters: parameters, resultCallback: resultCallback)
     case "recoverExchangeData": recoverExchangeData(parameters: parameters, resultCallback: resultCallback)
+    case "getRecoveryExchangeData": getRecoveryExchangeData(parameters: parameters, resultCallback: resultCallback)
     case "purgeRecoveryInfo": purgeRecoveryInfo(parameters: parameters, resultCallback: resultCallback)
     case "purgeAllRecoveryInfoFor": purgeAllRecoveryInfoFor(parameters: parameters, resultCallback: resultCallback)
     case "purgeAllKeyPairRecoveryInfoFor": purgeAllKeyPairRecoveryInfoFor(parameters: parameters, resultCallback: resultCallback)
@@ -85,7 +86,9 @@ class RecoveryApiDispatcher {
     	sdkId: parameters["sdkId"]!,
     	delegateIdString: parameters["delegateId"]!,
     	lifetimeSecondsString: parameters["lifetimeSeconds"]!,
-    	recoveryKeyOptionsString: parameters["recoveryKeyOptions"]!
+    	recoveryKeyOptionsString: parameters["recoveryKeyOptions"]!,
+    	includeBiDirectionalString: parameters["includeBiDirectional"]!,
+    	includeAsParentString: parameters["includeAsParent"]!
     )
   }
 
@@ -99,6 +102,20 @@ class RecoveryApiDispatcher {
     	dartResultCallback: resultCallback,
     	sdkId: parameters["sdkId"]!,
     	recoveryKeyString: parameters["recoveryKey"]!
+    )
+  }
+
+  private static func getRecoveryExchangeData(parameters: [String : String], resultCallback: @escaping (
+    String?,
+    String?,
+    String?,
+    String?
+  ) -> Void) {
+    RecoveryApi.shared.getRecoveryExchangeData(
+    	dartResultCallback: resultCallback,
+    	sdkId: parameters["sdkId"]!,
+    	recoveryKeyString: parameters["recoveryKey"]!,
+    	autoDeleteString: parameters["autoDelete"]!
     )
   }
 

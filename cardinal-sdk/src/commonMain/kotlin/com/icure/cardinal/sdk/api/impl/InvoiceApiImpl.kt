@@ -3,11 +3,14 @@ package com.icure.cardinal.sdk.api.impl
 import com.icure.cardinal.sdk.api.InvoiceApi
 import com.icure.cardinal.sdk.api.InvoiceBasicApi
 import com.icure.cardinal.sdk.api.InvoiceBasicFlavouredApi
+import com.icure.cardinal.sdk.api.InvoiceBasicFlavouredInGroupApi
 import com.icure.cardinal.sdk.api.InvoiceBasicFlavourlessApi
+import com.icure.cardinal.sdk.api.InvoiceBasicFlavourlessInGroupApi
+import com.icure.cardinal.sdk.api.InvoiceBasicInGroupApi
 import com.icure.cardinal.sdk.api.InvoiceFlavouredApi
-import com.icure.cardinal.sdk.api.raw.RawEntityReferenceApi
+import com.icure.cardinal.sdk.api.InvoiceFlavouredInGroupApi
+import com.icure.cardinal.sdk.api.InvoiceInGroupApi
 import com.icure.cardinal.sdk.api.raw.RawInvoiceApi
-import com.icure.cardinal.sdk.api.raw.successBodyOrNull
 import com.icure.cardinal.sdk.api.raw.successBodyOrNull404
 import com.icure.cardinal.sdk.api.raw.successBodyOrThrowRevisionConflict
 import com.icure.cardinal.sdk.crypto.entities.EntityWithEncryptionMetadataTypeName
@@ -17,11 +20,13 @@ import com.icure.cardinal.sdk.crypto.entities.SecretIdUseOption
 import com.icure.cardinal.sdk.exceptions.NotFoundException
 import com.icure.cardinal.sdk.model.DecryptedInvoice
 import com.icure.cardinal.sdk.model.EncryptedInvoice
-import com.icure.cardinal.sdk.model.EntityReference
 import com.icure.cardinal.sdk.model.EntityReferenceInGroup
+import com.icure.cardinal.sdk.model.GroupScoped
 import com.icure.cardinal.sdk.model.Invoice
 import com.icure.cardinal.sdk.model.ListOfIds
+import com.icure.cardinal.sdk.model.ListOfIdsAndRev
 import com.icure.cardinal.sdk.model.Patient
+import com.icure.cardinal.sdk.model.StoredDocumentIdentifier
 import com.icure.cardinal.sdk.model.User
 import com.icure.cardinal.sdk.model.embed.AccessLevel
 import com.icure.cardinal.sdk.model.embed.DelegationTag
@@ -31,11 +36,15 @@ import com.icure.cardinal.sdk.model.embed.MediumType
 import com.icure.cardinal.sdk.model.extensions.autoDelegationsFor
 import com.icure.cardinal.sdk.model.extensions.dataOwnerId
 import com.icure.cardinal.sdk.model.specializations.HexString
+import com.icure.cardinal.sdk.model.toStoredDocumentIdentifier
 import com.icure.cardinal.sdk.options.ApiConfiguration
 import com.icure.cardinal.sdk.options.BasicApiConfiguration
+import com.icure.cardinal.sdk.options.EntitiesEncryptedFieldsManifests
+import com.icure.cardinal.sdk.options.JsonPatcher
 import com.icure.cardinal.sdk.utils.Serialization
 import com.icure.cardinal.sdk.utils.currentEpochMs
 import com.icure.cardinal.sdk.utils.currentFuzzyDateTime
+import com.icure.cardinal.sdk.utils.generation.JsMapAsObjectArray
 import com.icure.cardinal.sdk.utils.pagination.IdsPageIterator
 import com.icure.cardinal.sdk.utils.pagination.PaginatedListIterator
 import com.icure.cardinal.sdk.utils.pagination.encodeStartKey
@@ -45,20 +54,200 @@ import kotlinx.serialization.json.JsonElement
 import kotlinx.serialization.json.decodeFromJsonElement
 
 @InternalIcureApi
+private fun encryptedApiFlavour(
+	config: BasicApiConfiguration
+): FlavouredApi<EncryptedInvoice, EncryptedInvoice> = FlavouredApi.encrypted(
+	config = config,
+	encryptedSerializer = EncryptedInvoice.serializer(),
+	type = EntityWithEncryptionMetadataTypeName.Invoice,
+	manifest = EntitiesEncryptedFieldsManifests::invoice
+)
+
+@InternalIcureApi
+private fun decryptedApiFlavour(
+	config: ApiConfiguration
+): FlavouredApi<EncryptedInvoice, DecryptedInvoice> = FlavouredApi.decrypted(
+	config = config,
+	encryptedSerializer = EncryptedInvoice.serializer(),
+	decryptedSerializer = DecryptedInvoice.serializer(),
+	type = EntityWithEncryptionMetadataTypeName.Invoice,
+	manifest = EntitiesEncryptedFieldsManifests::invoice,
+	patchJson = JsonPatcher::patchInvoice
+)
+
+@InternalIcureApi
+private fun tryAndRecoverApiFlavour(
+	config: ApiConfiguration
+): FlavouredApi<EncryptedInvoice, Invoice> = FlavouredApi.tryAndRecover(
+	config = config,
+	encryptedSerializer = EncryptedInvoice.serializer(),
+	decryptedSerializer = DecryptedInvoice.serializer(),
+	type = EntityWithEncryptionMetadataTypeName.Invoice,
+	manifest = EntitiesEncryptedFieldsManifests::invoice,
+	patchJson = JsonPatcher::patchInvoice
+)
+
+@InternalIcureApi
 private abstract class AbstractInvoiceBasicFlavouredApi<E : Invoice>(
-	protected val rawApi: RawInvoiceApi
-) : InvoiceBasicFlavouredApi<E>, FlavouredApi<EncryptedInvoice, E> {
-	override suspend fun modifyInvoice(entity: E): E =
-		rawApi.modifyInvoice(validateAndMaybeEncrypt(null, entity)).successBodyOrThrowRevisionConflict().let { maybeDecrypt(null, it) }
+	protected val rawApi: RawInvoiceApi,
+	protected open val config: BasicApiConfiguration,
+	protected val flavour: FlavouredApi<EncryptedInvoice, E>,
+) : FlavouredApi<EncryptedInvoice, E> by flavour {
 
-	override suspend fun modifyInvoices(entities: List<E>): List<E> =
-		rawApi.modifyInvoices(validateAndMaybeEncrypt(entities)).successBody().let { maybeDecrypt(it) }
+	protected suspend fun doCreateInvoice(groupId: String?, entity: E): E {
+		requireIsValidForCreation(entity)
+		val encrypted = validateAndMaybeEncrypt(groupId, entity)
+		return if (groupId == null) {
+			rawApi.createInvoice(encrypted)
+		} else {
+			rawApi.createInvoiceInGroup(groupId, encrypted)
+		}.successBody().let {
+			maybeDecrypt(groupId, it)
+		}
+	}
 
-	override suspend fun getInvoice(entityId: String): E? =
-		rawApi.getInvoice(entityId).successBodyOrNull404()?.let { maybeDecrypt(null, it) }
+	protected suspend fun doCreateInvoices(groupId: String?, entities: List<E>): List<E> = skipRequestOnEmptyList(entities) { invoices ->
+		val encrypted = validateAndMaybeEncrypt(groupId, invoices)
+		return if (groupId == null) {
+			rawApi.createInvoices(encrypted)
+		} else {
+			rawApi.createInvoicesInGroup(groupId, encrypted)
+		}.successBody().let {
+			maybeDecrypt(groupId, it)
+		}
+	}
 
-	override suspend fun getInvoices(entityIds: List<String>): List<E> =
-		rawApi.getInvoices(ListOfIds(entityIds)).successBody().let { maybeDecrypt(it) }
+	protected suspend fun doUndeleteInvoice(groupId: String?, entityId: String, rev: String): E =
+		if (groupId == null) {
+			rawApi.undeleteInvoice(entityId, rev)
+		} else {
+			rawApi.undeleteInvoiceInGroup(groupId, entityId, rev)
+		}.successBodyOrThrowRevisionConflict().let { maybeDecrypt(groupId, it) }
+
+	protected suspend fun doUndeleteInvoices(groupId: String?, entityIds: List<StoredDocumentIdentifier>): List<E> = skipRequestOnEmptyList(entityIds) { ids ->
+		if (groupId == null) {
+			rawApi.undeleteInvoices(ListOfIdsAndRev(ids))
+		} else {
+			rawApi.undeleteInvoicesInGroup(groupId, ListOfIdsAndRev(ids))
+		}.successBody().let { maybeDecrypt(groupId, it) }
+	}
+
+	protected suspend fun doModifyInvoice(groupId: String?, entity: E): E {
+		requireIsValidForModification(entity)
+		val encrypted = validateAndMaybeEncrypt(groupId, entity)
+		return if (groupId == null) {
+			rawApi.modifyInvoice(encrypted)
+		} else {
+			rawApi.modifyInvoiceInGroup(groupId, encrypted)
+		}.successBodyOrThrowRevisionConflict().let { maybeDecrypt(groupId, it) }
+	}
+
+	protected suspend fun doModifyInvoices(groupId: String?, entities: List<E>): List<E> = skipRequestOnEmptyList(entities) { invoices ->
+		val encrypted = validateAndMaybeEncrypt(groupId, invoices)
+		return if (groupId == null) {
+			rawApi.modifyInvoices(encrypted)
+		} else {
+			rawApi.modifyInvoicesInGroup(groupId, encrypted)
+		}.successBody().let {
+			maybeDecrypt(groupId, it)
+		}
+	}
+
+	protected suspend fun doGetInvoice(groupId: String?, entityId: String): E? =
+		if (groupId == null) {
+			rawApi.getInvoice(entityId)
+		} else {
+			rawApi.getInvoiceInGroup(groupId = groupId, invoiceId = entityId)
+		}.successBodyOrNull404()?.let { maybeDecrypt(groupId, it) }
+
+	suspend fun doGetInvoices(groupId: String?, entityIds: List<String>) = skipRequestOnEmptyList(entityIds) { ids ->
+		if (groupId == null) {
+			rawApi.getInvoices(ListOfIds(ids))
+		} else {
+			rawApi.getInvoicesInGroup(groupId, ListOfIds(ids))
+		}.successBody().let { maybeDecrypt(groupId, it) }
+	}
+
+}
+
+@InternalIcureApi
+private class InvoiceBasicFlavouredInGroupApiImpl<E : Invoice>(
+	rawApi: RawInvoiceApi,
+	config: BasicApiConfiguration,
+	flavour: FlavouredApi<EncryptedInvoice, E>
+) : InvoiceBasicFlavouredInGroupApi<E>, AbstractInvoiceBasicFlavouredApi<E>(rawApi, config, flavour) {
+
+	override suspend fun createInvoice(entity: GroupScoped<E>): GroupScoped<E> = groupScopedWith(entity) { groupId, it ->
+		doCreateInvoice(groupId = groupId, entity = it)
+	}
+
+	override suspend fun createInvoices(entities: List<GroupScoped<E>>): List<GroupScoped<E>> {
+		requireIsValidForCreationInGroup(entities)
+		return entities.mapUniqueIdentifiablesChunkedByGroup { groupId, chunk ->
+			doCreateInvoices(groupId = groupId, entities = chunk)
+		}
+	}
+	override suspend fun undeleteInvoiceById(entityId: GroupScoped<StoredDocumentIdentifier>): GroupScoped<E> =
+		groupScopedWith(entityId) { groupId, it ->
+			doUndeleteInvoice(groupId = groupId, entityId = it.id, rev = it.rev)
+		}
+
+	override suspend fun undeleteInvoicesByIds(entityIds: List<GroupScoped<StoredDocumentIdentifier>>): List<GroupScoped<E>> =
+		entityIds.mapUniqueIdentifiablesChunkedByGroup { groupId, chunk ->
+			doUndeleteInvoices(groupId = groupId, entityIds = chunk)
+		}
+
+	override suspend fun modifyInvoice(entity: GroupScoped<E>): GroupScoped<E> = groupScopedWith(entity) { groupId, it ->
+		doModifyInvoice(groupId = groupId, entity = it)
+	}
+
+	override suspend fun modifyInvoices(entities: List<GroupScoped<E>>): List<GroupScoped<E>> {
+		requireIsValidForModificationInGroup(entities)
+		return entities.mapUniqueIdentifiablesChunkedByGroup { groupId, chunk ->
+			doModifyInvoices(groupId = groupId, entities = chunk)
+		}
+	}
+
+	override suspend fun getInvoice(groupId: String, entityId: String): GroupScoped<E>? = groupScopedIn(groupId) {
+		doGetInvoice(groupId = groupId, entityId = entityId)
+	}
+
+	override suspend fun getInvoices(groupId: String, entityIds: List<String>): List<GroupScoped<E>> = groupScopedListIn(groupId) {
+		doGetInvoices(groupId = groupId, entityIds = entityIds)
+	}
+
+}
+
+
+@InternalIcureApi
+private class InvoiceBasicFlavouredApiImpl<E : Invoice>(
+	rawApi: RawInvoiceApi,
+	config: BasicApiConfiguration,
+	flavour: FlavouredApi<EncryptedInvoice, E>
+) : InvoiceBasicFlavouredApi<E>, AbstractInvoiceBasicFlavouredApi<E>(rawApi, config, flavour) {
+
+	override suspend fun createInvoice(entity: E): E = doCreateInvoice(groupId = null, entity = entity)
+
+	override suspend fun createInvoices(entities: List<E>): List<E> {
+		requireIsValidForCreation(entities)
+		return doCreateInvoices(groupId = null, entities = entities)
+	}
+
+	override suspend fun undeleteInvoiceById(id: String, rev: String): E = doUndeleteInvoice(groupId = null, entityId = id, rev = rev)
+
+	override suspend fun undeleteInvoicesByIds(entityIds: List<StoredDocumentIdentifier>): List<E> =
+		doUndeleteInvoices(groupId = null, entityIds = entityIds)
+
+	override suspend fun modifyInvoice(entity: E): E = doModifyInvoice(groupId = null, entity = entity)
+
+	override suspend fun modifyInvoices(entities: List<E>): List<E> {
+		requireIsValidForModification(entities)
+		return doModifyInvoices(groupId = null, entities = entities)
+	}
+
+	override suspend fun getInvoice(entityId: String): E? = doGetInvoice(groupId = null, entityId = entityId)
+
+	override suspend fun getInvoices(entityIds: List<String>): List<E> = doGetInvoices(groupId = null, entityIds)
 
 	override suspend fun reassignInvoice(invoice: E): E =
 		rawApi.reassignInvoice(validateAndMaybeEncrypt(null, invoice)).successBody().let { maybeDecrypt(null, it) }
@@ -66,13 +255,13 @@ private abstract class AbstractInvoiceBasicFlavouredApi<E : Invoice>(
 	override suspend fun mergeTo(
 		invoiceId: String,
 		ids: List<String>,
-		) = rawApi.mergeTo(invoiceId, ListOfIds(ids)).successBody().let { maybeDecrypt(null, it) }
+	) = rawApi.mergeTo(invoiceId, ListOfIds(ids)).successBody().let { maybeDecrypt(null, it) }
 
 	override suspend fun validate(
 		invoiceId: String,
 		scheme: String,
 		forcedValue: String,
-		): E = rawApi.validate(invoiceId, scheme, forcedValue).successBody().let { maybeDecrypt(null, it) }
+	): E = rawApi.validate(invoiceId, scheme, forcedValue).successBody().let { maybeDecrypt(null, it) }
 
 	//TODO: Maybe manage a separate manifest for InvoicingCode and encrypt automatically
 	override suspend fun appendCodes(
@@ -84,7 +273,7 @@ private abstract class AbstractInvoiceBasicFlavouredApi<E : Invoice>(
 		invoiceId: String?,
 		gracePeriod: Int?,
 		invoicingCodes: List<EncryptedInvoicingCode>,
-		): List<E> =
+	): List<E> =
 		rawApi.appendCodes(userId, type, sentMediumType, secretFKeys, insuranceId, invoiceId, gracePeriod, invoicingCodes).successBody().let { maybeDecrypt(it) }
 
 	override suspend fun removeCodes(
@@ -92,7 +281,7 @@ private abstract class AbstractInvoiceBasicFlavouredApi<E : Invoice>(
 		serviceId: String,
 		secretFKeys: String,
 		tarificationIds: List<String>,
-		): List<E> =
+	): List<E> =
 		rawApi.removeCodes(userId, serviceId, secretFKeys, tarificationIds).successBody().let { maybeDecrypt(it) }
 
 	@Deprecated("Find methods are deprecated", replaceWith = ReplaceWith("filterInvoicesBy()"))
@@ -103,7 +292,7 @@ private abstract class AbstractInvoiceBasicFlavouredApi<E : Invoice>(
 		startKey: JsonElement?,
 		startDocumentId: String?,
 		limit: Int?,
-		) = rawApi.findInvoicesByAuthor(hcPartyId, fromDate, toDate, startKey.encodeStartKey(), startDocumentId, limit).successBody().let { maybeDecrypt(it) }
+	) = rawApi.findInvoicesByAuthor(hcPartyId, fromDate, toDate, startKey.encodeStartKey(), startDocumentId, limit).successBody().let { maybeDecrypt(it) }
 
 	@Deprecated("Use filter instead")
 	override suspend fun listInvoicesByHcPartyAndGroupId(hcPartyId: String, groupId: String): List<E> =
@@ -166,34 +355,60 @@ private abstract class AbstractInvoiceBasicFlavouredApi<E : Invoice>(
 		from: Long?,
 		to: Long?,
 		hcpIds: List<String>,
-		): List<E> =
+	): List<E> =
 		rawApi.listAllHcpsByStatus(status, from, to, ListOfIds(hcpIds)).successBody().let { maybeDecrypt(it) }
 }
 
 @InternalIcureApi
 private abstract class AbstractInvoiceFlavouredApi<E : Invoice>(
 	rawApi: RawInvoiceApi,
-	protected val config: ApiConfiguration
-) : AbstractInvoiceBasicFlavouredApi<E>(rawApi), InvoiceFlavouredApi<E> {
+	override val config: ApiConfiguration,
+	flavour: FlavouredApi<EncryptedInvoice, E>,
+) : AbstractInvoiceBasicFlavouredApi<E>(rawApi, config, flavour) {
+
+	protected suspend fun doShareWithMany(
+		entityGroupId: String?,
+		invoice: E,
+		delegates: @JsMapAsObjectArray(keyEntryName = "delegate", valueEntryName = "shareOptions") Map<EntityReferenceInGroup, InvoiceShareOptions>
+	): E =
+		config.crypto.entity.simpleShareOrUpdateEncryptedEntityMetadata(
+			entityGroupId,
+			invoice,
+			EntityWithEncryptionMetadataTypeName.Invoice,
+			delegates,
+			true,
+			{ doGetInvoice(entityGroupId, it) ?: throw NotFoundException("Invoice $it not found") },
+			{
+				maybeDecrypt(
+					entityGroupId,
+					if (entityGroupId == null)
+						rawApi.bulkShare(it).successBody()
+					else
+						rawApi.bulkShare(it, entityGroupId).successBody()
+				)
+			}
+		).updatedEntityOrThrow()
+}
+
+@InternalIcureApi
+private class InvoiceFlavouredApiImpl<E : Invoice>(
+	rawApi: RawInvoiceApi,
+	config: ApiConfiguration,
+	flavour: FlavouredApi<EncryptedInvoice, E>,
+) : AbstractInvoiceFlavouredApi<E>(rawApi, config, flavour),
+	InvoiceBasicFlavouredApi<E> by InvoiceBasicFlavouredApiImpl(rawApi, config, flavour),
+	InvoiceFlavouredApi<E> {
 
 	override suspend fun shareWith(
 		delegateId: String,
 		invoice: E,
 		options: InvoiceShareOptions?,
-	): E =
-		shareWithMany(invoice, mapOf(delegateId to (options ?: InvoiceShareOptions())))
+	): E = shareWithMany(invoice, mapOf(delegateId to (options ?: InvoiceShareOptions())))
 
-	override suspend fun shareWithMany(invoice: E, delegates: Map<String, InvoiceShareOptions>): E =
-		config.crypto.entity.simpleShareOrUpdateEncryptedEntityMetadata(
-			null,
-			invoice,
-			EntityWithEncryptionMetadataTypeName.Invoice,
-			delegates.keyAsLocalDataOwnerReferences(),
-			true,
-			{ getInvoice(it) ?: throw NotFoundException("invoice $it not found") },
-			{ maybeDecrypt(null, rawApi.bulkShare(it).successBody()) }
-		).updatedEntityOrThrow()
-
+	override suspend fun shareWithMany(
+		invoice: E,
+		delegates: Map<String, InvoiceShareOptions>
+	): E = doShareWithMany(entityGroupId = null, invoice = invoice, delegates = delegates.keyAsLocalDataOwnerReferences())
 
 	@Deprecated("Use filter instead")
 	override suspend fun findInvoicesByHcPartyPatient(
@@ -219,168 +434,241 @@ private abstract class AbstractInvoiceFlavouredApi<E : Invoice>(
 	) { ids ->
 		rawApi.getInvoices(ListOfIds(ids)).successBody().let { maybeDecrypt(it) }
 	}
+}
+
+@InternalIcureApi
+private class InvoiceFlavouredInGroupApiImpl<E : Invoice>(
+	rawApi: RawInvoiceApi,
+	config: ApiConfiguration,
+	flavour: FlavouredApi<EncryptedInvoice, E>,
+) : AbstractInvoiceFlavouredApi<E>(rawApi, config, flavour),
+	InvoiceBasicFlavouredInGroupApi<E> by InvoiceBasicFlavouredInGroupApiImpl(rawApi, config, flavour),
+	InvoiceFlavouredInGroupApi<E> {
+
+	override suspend fun shareWith(
+		delegate: EntityReferenceInGroup,
+		invoice: GroupScoped<E>,
+		options: InvoiceShareOptions?,
+	): GroupScoped<E> = shareWithMany(invoice, mapOf(delegate to (options ?: InvoiceShareOptions())))
+
+	override suspend fun shareWithMany(
+		invoice: GroupScoped<E>,
+		delegates: @JsMapAsObjectArray(
+			keyEntryName = "delegate",
+			valueEntryName = "shareOptions"
+		) Map<EntityReferenceInGroup, InvoiceShareOptions>
+	): GroupScoped<E> = GroupScoped(
+		entity = doShareWithMany(
+			entityGroupId = invoice.groupId,
+			invoice = invoice.entity,
+			delegates = delegates
+		),
+		groupId = invoice.groupId,
+	)
+}
+
+@InternalIcureApi
+private abstract class AbstractInvoiceBasicFlavourless(
+	protected val rawApi: RawInvoiceApi
+) {
+
+	protected suspend fun doDeleteInvoice(groupId: String?, entityId: String, rev: String): StoredDocumentIdentifier =
+		if (groupId == null) {
+			rawApi.deleteInvoice(entityId, rev)
+		} else {
+			rawApi.deleteInvoiceInGroup(groupId, entityId, rev)
+		}.successBodyOrThrowRevisionConflict().toStoredDocumentIdentifier()
+
+	protected suspend fun doDeleteInvoices(groupId: String?, entityIds: List<StoredDocumentIdentifier>): List<StoredDocumentIdentifier> =
+		skipRequestOnEmptyList(entityIds) { ids ->
+			if (groupId == null) {
+				rawApi.deleteInvoicesWithRev(ListOfIdsAndRev(ids))
+			} else {
+				rawApi.deleteInvoicesInGroup(groupId, ListOfIdsAndRev(ids))
+			}.successBody().toStoredDocumentIdentifier()
+		}
+
+	protected suspend fun doPurgeInvoice(groupId: String?, entityId: String, rev: String) {
+		if (groupId == null) {
+			rawApi.purgeInvoice(entityId, rev)
+		} else {
+			rawApi.purgeInvoiceInGroup(groupId, entityId, rev)
+		}.successBodyOrThrowRevisionConflict()
+	}
+
+	protected suspend fun doPurgeInvoices(groupId: String?, entityIds: List<StoredDocumentIdentifier>): List<StoredDocumentIdentifier> =
+		skipRequestOnEmptyList(entityIds) { ids ->
+			if (groupId == null) {
+				rawApi.purgeInvoices(ListOfIdsAndRev(ids))
+			} else {
+				rawApi.purgeInvoicesInGroup(groupId, ListOfIdsAndRev(ids))
+			}.successBody().toStoredDocumentIdentifier()
+		}
 
 }
 
 @InternalIcureApi
-private class AbstractInvoiceBasicFlavourlessApi(
-	private val rawApi: RawInvoiceApi
-) : InvoiceBasicFlavourlessApi {
-	override suspend fun deleteInvoice(entityId: String) = rawApi.deleteInvoice(entityId).successBody()
-	@Deprecated("Use filter instead")
+private class InvoiceBasicFlavourlessApiImpl(rawApi: RawInvoiceApi) : AbstractInvoiceBasicFlavourless(rawApi), InvoiceBasicFlavourlessApi {
 
+	override suspend fun deleteInvoiceById(entityId: String, rev: String): StoredDocumentIdentifier =
+		doDeleteInvoice(groupId = null, entityId, rev)
+
+	override suspend fun deleteInvoicesByIds(entityIds: List<StoredDocumentIdentifier>): List<StoredDocumentIdentifier> =
+		doDeleteInvoices(groupId = null, entityIds)
+
+	override suspend fun purgeInvoiceById(id: String, rev: String) {
+		doPurgeInvoice(groupId = null, entityId = id, rev = rev)
+	}
+
+	override suspend fun purgeInvoicesByIds(entityIds: List<StoredDocumentIdentifier>): List<StoredDocumentIdentifier> =
+		doPurgeInvoices(groupId = null, entityIds = entityIds)
+
+	@Deprecated("Use filter instead")
 	override suspend fun getTarificationsCodesOccurrences(
 		minOccurrence: Int,
 	) = rawApi.getTarificationsCodesOccurrences(minOccurrence.toLong()).successBody()
-
 }
 
 @InternalIcureApi
-internal class InvoiceApiImpl(
+private class InvoiceBasicFlavourlessInGroupApiImpl(
+	rawApi: RawInvoiceApi
+) : AbstractInvoiceBasicFlavourless(rawApi), InvoiceBasicFlavourlessInGroupApi {
+	override suspend fun deleteInvoiceById(entityId: GroupScoped<StoredDocumentIdentifier>): GroupScoped<StoredDocumentIdentifier> =
+		groupScopedWith(entityId) { groupId, it ->
+			doDeleteInvoice(groupId, it.id, it.rev)
+		}
+
+	override suspend fun deleteInvoicesByIds(entityIds: List<GroupScoped<StoredDocumentIdentifier>>): List<GroupScoped<StoredDocumentIdentifier>> =
+		entityIds.mapUniqueIdentifiablesChunkedByGroup { groupId, entities ->
+			doDeleteInvoices(groupId, entities)
+		}
+
+	override suspend fun purgeInvoiceById(entityId: GroupScoped<StoredDocumentIdentifier>) {
+		doPurgeInvoice(groupId = entityId.groupId, entityId = entityId.entity.id, rev = entityId.entity.rev)
+	}
+
+	override suspend fun purgeInvoicesByIds(entityIds: List<GroupScoped<StoredDocumentIdentifier>>): List<GroupScoped<StoredDocumentIdentifier>> =
+		entityIds.mapUniqueIdentifiablesChunkedByGroup { groupId, batch ->
+			doPurgeInvoices(groupId, batch)
+		}
+}
+
+@InternalIcureApi
+internal fun initInvoiceApi(
+	rawApi: RawInvoiceApi,
+	config: ApiConfiguration
+): InvoiceApi {
+	val decryptedFlavour = decryptedApiFlavour(config)
+	val encryptedFlavour = encryptedApiFlavour(config)
+	val tryAndRecoverFlavour = tryAndRecoverApiFlavour(config)
+	return InvoiceApiImpl(
+		rawApi,
+		config,
+		encryptedFlavour,
+		decryptedFlavour,
+		tryAndRecoverFlavour
+	)
+}
+
+@InternalIcureApi
+private class InvoiceApiImpl(
 	private val rawApi: RawInvoiceApi,
-	private val rawEntityReferenceApi: RawEntityReferenceApi,
 	private val config: ApiConfiguration,
-) : InvoiceApi, InvoiceFlavouredApi<DecryptedInvoice> by object :
-	AbstractInvoiceFlavouredApi<DecryptedInvoice>(rawApi, config) {
-	override suspend fun validateAndMaybeEncrypt(
-		entitiesGroupId: String?,
-		entities: List<DecryptedInvoice>
-	): List<EncryptedInvoice> =
-		this.config.crypto.entity.encryptEntities(
-			entitiesGroupId,
-			entities,
-			EntityWithEncryptionMetadataTypeName.Invoice,
-			DecryptedInvoice.serializer(),
-			this.config.encryption.invoice,
-		) { Serialization.json.decodeFromJsonElement<EncryptedInvoice>(it) }
+	private val encryptedFlavour: FlavouredApi<EncryptedInvoice, EncryptedInvoice>,
+	private val decryptedFlavour: FlavouredApi<EncryptedInvoice, DecryptedInvoice>,
+	private val tryAndRecoverFlavour: FlavouredApi<EncryptedInvoice, Invoice>,
+) : InvoiceApi,
+	InvoiceFlavouredApi<DecryptedInvoice> by InvoiceFlavouredApiImpl(rawApi, config, decryptedFlavour),
+	InvoiceBasicFlavourlessApi by InvoiceBasicFlavourlessApiImpl(rawApi) {
 
-	override suspend fun maybeDecrypt(
-		entitiesGroupId: String?,
-		entities: List<EncryptedInvoice>
-	): List<DecryptedInvoice> =
-		this.config.crypto.entity.decryptEntities(
-			entitiesGroupId,
-			entities,
-			EntityWithEncryptionMetadataTypeName.Invoice,
-			EncryptedInvoice.serializer(),
-		) { Serialization.json.decodeFromJsonElement<DecryptedInvoice>(config.jsonPatcher.patchInvoice(it)) }
-}, InvoiceBasicFlavourlessApi by AbstractInvoiceBasicFlavourlessApi(rawApi) {
-	override val encrypted: InvoiceFlavouredApi<EncryptedInvoice> =
-		object : AbstractInvoiceFlavouredApi<EncryptedInvoice>(rawApi, config) {
-			override suspend fun validateAndMaybeEncrypt(
-				entitiesGroupId: String?,
-				entities: List<EncryptedInvoice>
-			): List<EncryptedInvoice> =
-				config.crypto.entity.validateEncryptedEntities(
-					entities,
-					EntityWithEncryptionMetadataTypeName.Invoice,
-					EncryptedInvoice.serializer(),
-					config.encryption.invoice
-				)
+	override val encrypted: InvoiceFlavouredApi<EncryptedInvoice> = InvoiceFlavouredApiImpl(rawApi, config, encryptedFlavour)
+	override val tryAndRecover: InvoiceFlavouredApi<Invoice> = InvoiceFlavouredApiImpl(rawApi, config, tryAndRecoverFlavour)
 
-			override suspend fun maybeDecrypt(
-				entitiesGroupId: String?,
-				entities: List<EncryptedInvoice>
-			): List<EncryptedInvoice> =
-				entities
-		}
+	override val inGroup: InvoiceInGroupApi = object : InvoiceInGroupApi,
+		InvoiceFlavouredInGroupApi<DecryptedInvoice> by InvoiceFlavouredInGroupApiImpl(rawApi, config, decryptedFlavour),
+		InvoiceBasicFlavourlessInGroupApi by InvoiceBasicFlavourlessInGroupApiImpl(rawApi) {
 
-	override val tryAndRecover: InvoiceFlavouredApi<Invoice> =
-		object : AbstractInvoiceFlavouredApi<Invoice>(rawApi, config) {
+		override val encrypted: InvoiceFlavouredInGroupApi<EncryptedInvoice> =
+			InvoiceFlavouredInGroupApiImpl(rawApi, config, encryptedFlavour)
+		override val tryAndRecover: InvoiceFlavouredInGroupApi<Invoice> =
+			InvoiceFlavouredInGroupApiImpl(rawApi, config, tryAndRecoverFlavour)
 
-			override suspend fun validateAndMaybeEncrypt(
-				entitiesGroupId: String?,
-				entities: List<Invoice>
-			): List<EncryptedInvoice> =
-				config.crypto.entity.validateOrEncryptEntities(
-					entitiesGroupId = entitiesGroupId,
-					entities = entities,
-					entitiesType = EntityWithEncryptionMetadataTypeName.Invoice,
-					encryptedSerializer = EncryptedInvoice.serializer(),
-					decryptedSerializer = DecryptedInvoice.serializer(),
-					fieldsToEncrypt = config.encryption.invoice
-				)
+		override suspend fun decrypt(invoices: List<GroupScoped<EncryptedInvoice>>): List<GroupScoped<DecryptedInvoice>> =
+			invoices.mapExactlyChunkedByGroup { groupId, entities ->
+				decryptedFlavour.maybeDecrypt(groupId, entities)
+			}
 
-			override suspend fun maybeDecrypt(
-				entitiesGroupId: String?,
-				entities: List<EncryptedInvoice>
-			): List<Invoice> =
-				config.crypto.entity.decryptEntities(
-					entitiesGroupId,
-					entities,
-					EntityWithEncryptionMetadataTypeName.Invoice,
-					EncryptedInvoice.serializer(),
-				) { Serialization.json.decodeFromJsonElement<DecryptedInvoice>(config.jsonPatcher.patchInvoice(it)) }
-		}
+		override suspend fun tryDecrypt(invoices: List<GroupScoped<EncryptedInvoice>>): List<GroupScoped<Invoice>> =
+			invoices.mapExactlyChunkedByGroup { groupId, entities ->
+				tryAndRecoverFlavour.maybeDecrypt(groupId, entities)
+			}
 
-	private suspend fun createInvoice(entity: DecryptedInvoice): DecryptedInvoice {
-		require(entity.securityMetadata != null) { "Entity must have security metadata initialized. Make sure to use the `withEncryptionMetadata` method." }
-		return rawApi.createInvoice(
-			config.crypto.entity.encryptEntities(
-				null,
-				listOf(entity),
-				EntityWithEncryptionMetadataTypeName.Invoice,
-				DecryptedInvoice.serializer(),
-				config.encryption.invoice,
-			) { Serialization.json.decodeFromJsonElement<EncryptedInvoice>(it) }.single(),
-		).successBody().let {
-			decrypt(it)
-		}
-	}
+		override suspend fun withEncryptionMetadata(
+			entityGroupId: String,
+			base: DecryptedInvoice?,
+			patient: GroupScoped<Patient>?,
+			user: User?,
+			delegates: @JsMapAsObjectArray(
+				keyEntryName = "delegate",
+				valueEntryName = "accessLevel"
+			) Map<EntityReferenceInGroup, AccessLevel>,
+			secretId: SecretIdUseOption,
+			alternateRootDelegateReference: EntityReferenceInGroup?
+		): GroupScoped<DecryptedInvoice> =
+			GroupScoped(
+				doWithEncryptionMetadata(
+					entityGroupId,
+					base,
+					patient?.let { it.entity to it.groupId },
+					user,
+					delegates,
+					secretId,
+					alternateRootDelegateReference
+				),
+				entityGroupId
+			)
 
-	private suspend fun getNextInvoiceReference(prefix: String): Int =
-		rawEntityReferenceApi.getLatest(prefix).successBodyOrNull()
-			?.takeIf { it.id.startsWith(prefix) }
-			?.id?.split(":")?.last()
-			?.toIntOrNull()?.plus(1) ?: 1
+		override suspend fun getEncryptionKeysOf(invoice: GroupScoped<Invoice>): Set<HexString> =
+			doGetEncryptionKeysOf(invoice.groupId, invoice.entity)
 
-	private suspend fun createInvoiceReference(nextReference: Int, invoiceId: String, prefix: String): EntityReference = rawEntityReferenceApi.createEntityReference(
-		EntityReference(
-			id = buildString {
-				append(prefix)
-				if (!prefix.endsWith(":")) {
-					append(":")
-				}
-				append("$nextReference".padStart(6, '0'))
-			},
-			docId = invoiceId
-		)
-	).successBody()
+		override suspend fun hasWriteAccess(invoice: GroupScoped<Invoice>): Boolean =
+			doHasWriteAccess(invoice.groupId, invoice.entity)
 
-	override suspend fun createInvoice(entity: DecryptedInvoice, prefix: String?): DecryptedInvoice = if(prefix != null) {
-		val invoiceReference = createInvoiceReference(getNextInvoiceReference(prefix), entity.id, prefix)
-		if(entity.internshipNihii != null) {
-			entity.copy(invoiceReference = invoiceReference.id.split(":", limit = 2).last().replace("0", "1"))
-		} else {
-			entity.copy(invoiceReference = invoiceReference.id.split(":", limit = 2).last())
-		}.let { createInvoice(it) }
-	} else {
-		createInvoice(entity)
-	}
+		override suspend fun decryptPatientIdOf(invoice: GroupScoped<Invoice>): Set<EntityReferenceInGroup> =
+			doDecryptPatientIdOf(invoice.groupId, invoice.entity).mapNullGroupTo(invoice.groupId)
 
-	override suspend fun createInvoices(entities: List<DecryptedInvoice>): List<DecryptedInvoice> {
-		require(entities.all { it.securityMetadata != null }) { "All entities must have security metadata initialized. Make sure to use the `withEncryptionMetadata` method." }
-		return rawApi.createInvoices(
-			config.crypto.entity.encryptEntities(
-				null,
-				entities,
-				EntityWithEncryptionMetadataTypeName.Invoice,
-				DecryptedInvoice.serializer(),
-				config.encryption.invoice,
-			) { Serialization.json.decodeFromJsonElement<EncryptedInvoice>(it) },
-		).successBody().map {
-			decrypt(it)
-		}
+		override suspend fun createDelegationDeAnonymizationMetadata(
+			entity: GroupScoped<Invoice>,
+			delegates: Set<EntityReferenceInGroup>
+		) = doCreateDelegationDeAnonymizationMetadata(entity.groupId, entity.entity, delegates)
 	}
 
 	override suspend fun getEncryptionKeysOf(invoice: Invoice): Set<HexString> =
-		config.crypto.entity.encryptionKeysOf(null, invoice, EntityWithEncryptionMetadataTypeName.Invoice, null)
+		doGetEncryptionKeysOf(groupId = null, invoice = invoice)
 
-	override suspend fun hasWriteAccess(invoice: Invoice): Boolean =
-		config.crypto.entity.hasWriteAccess(null, invoice, EntityWithEncryptionMetadataTypeName.Invoice)
+	private suspend fun doGetEncryptionKeysOf(groupId: String?, invoice: Invoice): Set<HexString> =
+		config.crypto.entity.encryptionKeysOf(
+			entityGroupId = groupId,
+			entity = invoice,
+			entityType = EntityWithEncryptionMetadataTypeName.Invoice,
+			dataOwnerId = null
+		)
 
-	override suspend fun decryptPatientIdOf(invoice: Invoice): Set<String> =
-		config.crypto.entity.owningEntityIdsOf(null, invoice, EntityWithEncryptionMetadataTypeName.Invoice, null)
+	override suspend fun hasWriteAccess(invoice: Invoice): Boolean = doHasWriteAccess(groupId = null, invoice = invoice)
+
+	private suspend fun doHasWriteAccess(groupId: String?, invoice: Invoice): Boolean =
+		config.crypto.entity.hasWriteAccess(entityGroupId = groupId, entity = invoice, entityType = EntityWithEncryptionMetadataTypeName.Invoice)
+
+	override suspend fun decryptPatientIdOf(invoice: Invoice): Set<EntityReferenceInGroup> =
+		doDecryptPatientIdOf(groupId = null, invoice = invoice)
+
+	private suspend fun doDecryptPatientIdOf(groupId: String?, invoice: Invoice): Set<EntityReferenceInGroup> =
+		config.crypto.entity.owningEntityIdsOf(
+			entityGroupId = groupId,
+			entity = invoice,
+			entityType = EntityWithEncryptionMetadataTypeName.Invoice,
+			dataOwnerId = null
+		).mapTo(mutableSetOf()) { config.crypto.entity.parseReference(groupId, it) }
 
 	override suspend fun createDelegationDeAnonymizationMetadata(entity: Invoice, delegates: Set<String>) {
 		config.crypto.delegationsDeAnonymization.createOrUpdateDeAnonymizationInfo(
@@ -391,6 +679,16 @@ internal class InvoiceApiImpl(
 		)
 	}
 
+	private suspend fun doCreateDelegationDeAnonymizationMetadata(groupId: String?, entity: Invoice, delegates: Set<EntityReferenceInGroup>) {
+		config.crypto.delegationsDeAnonymization.createOrUpdateDeAnonymizationInfo(
+			entityGroupId = groupId,
+			entity,
+			EntityWithEncryptionMetadataTypeName.Invoice,
+			delegates
+		)
+	}
+
+
 	override suspend fun withEncryptionMetadata(
 		base: DecryptedInvoice?,
 		patient: Patient?,
@@ -398,10 +696,30 @@ internal class InvoiceApiImpl(
 		delegates: Map<String, AccessLevel>,
 		secretId: SecretIdUseOption,
 		alternateRootDelegateId: String?
+	): DecryptedInvoice = doWithEncryptionMetadata(
+		entityGroupId = null,
+		base = base,
+		patient = patient?.let { it to null },
+		user = user,
+		delegates = delegates.keyAsLocalDataOwnerReferences(),
+		secretId = secretId,
+		alternateRootDelegateReference = alternateRootDelegateId?.let {
+			EntityReferenceInGroup(groupId = null, entityId = it)
+		}
+	)
+
+	private suspend fun doWithEncryptionMetadata(
+		entityGroupId: String?,
+		base: DecryptedInvoice?,
+		patient: Pair<Patient, String?>?,
+		user: User?,
+		delegates: @JsMapAsObjectArray(keyEntryName = "delegate", valueEntryName = "accessLevel") Map<EntityReferenceInGroup, AccessLevel>,
+		secretId: SecretIdUseOption,
+		alternateRootDelegateReference: EntityReferenceInGroup?,
 	): DecryptedInvoice =
 		config.crypto.entity.entityWithInitializedEncryptedMetadata(
-			null,
-			(base ?: DecryptedInvoice(config.crypto.primitives.strongRandom.randomUUID())).copy(
+			entityGroupId = entityGroupId,
+			entity = (base ?: DecryptedInvoice(config.crypto.primitives.strongRandom.randomUUID())).copy(
 				created = base?.created ?: currentEpochMs(),
 				modified = base?.modified ?: currentEpochMs(),
 				responsible = base?.responsible ?: user?.takeIf { config.autofillAuthor }?.dataOwnerId,
@@ -409,23 +727,23 @@ internal class InvoiceApiImpl(
 				groupId = base?.groupId ?: base?.id,
 				invoiceDate = base?.invoiceDate ?: currentFuzzyDateTime(TimeZone.currentSystemDefault()),
 			),
-			EntityWithEncryptionMetadataTypeName.Invoice,
-			patient?.let {
+			entityType = EntityWithEncryptionMetadataTypeName.Invoice,
+			owningEntityDetails = patient?.let { (patient, patientGroup) ->
 				OwningEntityDetails(
-					null,
-					it.id,
-					config.crypto.entity.resolveSecretIdOption(
-						null,
-						it,
+					groupId = patientGroup,
+					id = patient.id,
+					secretIds = config.crypto.entity.resolveSecretIdOption(
+						entityGroupId,
+						patient,
 						EntityWithEncryptionMetadataTypeName.Patient,
 						secretId
 					)
 				)
 			},
 			initializeEncryptionKey = true,
-			autoDelegations = (delegates + user?.autoDelegationsFor(DelegationTag.AdministrativeData)
-				.orEmpty()).keyAsLocalDataOwnerReferences(),
-			alternateRootDataOwnerReference = alternateRootDelegateId?.let { EntityReferenceInGroup(it, null) },
+			autoDelegations = delegates + user?.autoDelegationsFor(DelegationTag.AdministrativeData)
+				.orEmpty().keyAsLocalDataOwnerReferences(),
+			alternateRootDataOwnerReference = alternateRootDelegateReference,
 		).updatedEntity
 
 	override suspend fun decrypt(invoice: EncryptedInvoice): DecryptedInvoice =
@@ -446,20 +764,25 @@ internal class InvoiceApiImpl(
 }
 
 @InternalIcureApi
-internal class InvoiceBasicApiImpl(
+internal fun initInvoiceBasicApi(
 	rawApi: RawInvoiceApi,
-	private val config: BasicApiConfiguration
-) : InvoiceBasicApi, InvoiceBasicFlavouredApi<EncryptedInvoice> by object :
-	AbstractInvoiceBasicFlavouredApi<EncryptedInvoice>(rawApi) {
-	override suspend fun validateAndMaybeEncrypt(
-		entitiesGroupId: String?,
-		entities: List<EncryptedInvoice>
-	): List<EncryptedInvoice> =
-		config.crypto.validationService.validateEncryptedEntities(entities, EntityWithEncryptionMetadataTypeName.Invoice, EncryptedInvoice.serializer(), config.encryption.invoice)
+	config: BasicApiConfiguration
+): InvoiceBasicApi = InvoiceBasicApiImpl(
+	rawApi,
+	config,
+	encryptedApiFlavour(config)
+)
 
-	override suspend fun maybeDecrypt(
-		entitiesGroupId: String?,
-		entities: List<EncryptedInvoice>
-	): List<EncryptedInvoice> =
-		entities
-}, InvoiceBasicFlavourlessApi by AbstractInvoiceBasicFlavourlessApi(rawApi)
+@InternalIcureApi
+private class InvoiceBasicApiImpl(
+	rawApi: RawInvoiceApi,
+	private val config: BasicApiConfiguration,
+	private val encryptedFlavour: FlavouredApi<EncryptedInvoice, EncryptedInvoice>,
+) : InvoiceBasicApi,
+	InvoiceBasicFlavouredApi<EncryptedInvoice> by InvoiceBasicFlavouredApiImpl(rawApi, config, encryptedFlavour),
+	InvoiceBasicFlavourlessApi by InvoiceBasicFlavourlessApiImpl(rawApi) {
+
+	override val inGroup: InvoiceBasicInGroupApi = object : InvoiceBasicInGroupApi,
+		InvoiceBasicFlavouredInGroupApi<EncryptedInvoice> by InvoiceBasicFlavouredInGroupApiImpl(rawApi, config, encryptedFlavour),
+		InvoiceBasicFlavourlessInGroupApi by InvoiceBasicFlavourlessInGroupApiImpl(rawApi) {}
+}

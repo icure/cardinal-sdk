@@ -23,6 +23,7 @@ public object RecoveryApiDispatcher {
     "recoverKeyPairsWaitingForCreation" -> recoverKeyPairsWaitingForCreation(parameters, resultCallback)
     "createExchangeDataRecoveryInfo" -> createExchangeDataRecoveryInfo(parameters, resultCallback)
     "recoverExchangeData" -> recoverExchangeData(parameters, resultCallback)
+    "getRecoveryExchangeData" -> getRecoveryExchangeData(parameters, resultCallback)
     "purgeRecoveryInfo" -> purgeRecoveryInfo(parameters, resultCallback)
     "purgeAllRecoveryInfoFor" -> purgeAllRecoveryInfoFor(parameters, resultCallback)
     "purgeAllKeyPairRecoveryInfoFor" -> purgeAllKeyPairRecoveryInfoFor(parameters, resultCallback)
@@ -89,6 +90,8 @@ public object RecoveryApiDispatcher {
       parameters.getValue("delegateId"),
       parameters.getValue("lifetimeSeconds"),
       parameters.getValue("recoveryKeyOptions"),
+      parameters.getValue("includeBiDirectional"),
+      parameters.getValue("includeAsParent"),
     )
   }
 
@@ -102,6 +105,20 @@ public object RecoveryApiDispatcher {
       resultCallback,
       parameters.getValue("sdkId"),
       parameters.getValue("recoveryKey"),
+    )
+  }
+
+  private fun getRecoveryExchangeData(parameters: Map<String, String>, resultCallback: (
+    String?,
+    String?,
+    String?,
+    String?,
+  ) -> Unit) {
+    RecoveryApi.getRecoveryExchangeData(
+      resultCallback,
+      parameters.getValue("sdkId"),
+      parameters.getValue("recoveryKey"),
+      parameters.getValue("autoDelete"),
     )
   }
 

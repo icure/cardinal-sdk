@@ -6,11 +6,13 @@ import com.icure.cardinal.sdk.filters.BaseFilterOptions
 import com.icure.cardinal.sdk.filters.BaseSortableFilterOptions
 import com.icure.cardinal.sdk.filters.FilterOptions
 import com.icure.cardinal.sdk.filters.SortableFilterOptions
+import com.icure.cardinal.sdk.model.EntityReferenceInGroup
 import com.icure.cardinal.sdk.model.Message
 import com.icure.cardinal.sdk.model.Patient
 import com.icure.cardinal.sdk.utils.Serialization.fullLanguageInteropJson
 import com.icure.utils.InternalIcureApi
 import kotlin.Boolean
+import kotlin.Long
 import kotlin.OptIn
 import kotlin.String
 import kotlin.Unit
@@ -403,11 +405,11 @@ public object MessageFilters {
       transportGuidString
     )
     val from = fullLanguageInteropJson.decodeFromString(
-      Instant.serializer(),
+      Instant.serializer().nullable,
       fromString
     )
     val to = fullLanguageInteropJson.decodeFromString(
-      Instant.serializer(),
+      Instant.serializer().nullable,
       toString
     )
     val descending = fullLanguageInteropJson.decodeFromString(
@@ -445,11 +447,11 @@ public object MessageFilters {
       transportGuidString
     )
     val from = fullLanguageInteropJson.decodeFromString(
-      Instant.serializer(),
+      Instant.serializer().nullable,
       fromString
     )
     val to = fullLanguageInteropJson.decodeFromString(
-      Instant.serializer(),
+      Instant.serializer().nullable,
       toString
     )
     val descending = fullLanguageInteropJson.decodeFromString(
@@ -554,6 +556,123 @@ public object MessageFilters {
     ) {
       com.icure.cardinal.sdk.filters.MessageFilters.byParentIds(
         parentIds,
+      )
+    }
+  }
+
+  public fun lifecycleBetweenForDataOwner(
+    dartResultCallback: (
+      String?,
+      String?,
+      String?,
+      String?,
+    ) -> Unit,
+    dataOwnerIdString: String,
+    startTimestampString: String,
+    endTimestampString: String,
+    descendingString: String,
+  ) {
+    val dataOwnerId = fullLanguageInteropJson.decodeFromString(
+      String.serializer(),
+      dataOwnerIdString
+    )
+    val startTimestamp = fullLanguageInteropJson.decodeFromString(
+      Long.serializer().nullable,
+      startTimestampString
+    )
+    val endTimestamp = fullLanguageInteropJson.decodeFromString(
+      Long.serializer().nullable,
+      endTimestampString
+    )
+    val descending = fullLanguageInteropJson.decodeFromString(
+      Boolean.serializer(),
+      descendingString
+    )
+    DartResult.resolve(
+      dartResultCallback,
+      BaseFilterOptions.serializer(PolymorphicSerializer(Message::class))
+    ) {
+      com.icure.cardinal.sdk.filters.MessageFilters.lifecycleBetweenForDataOwner(
+        dataOwnerId,
+        startTimestamp,
+        endTimestamp,
+        descending,
+      )
+    }
+  }
+
+  public fun lifecycleBetweenForDataOwnerInGroup(
+    dartResultCallback: (
+      String?,
+      String?,
+      String?,
+      String?,
+    ) -> Unit,
+    dataOwnerString: String,
+    startTimestampString: String,
+    endTimestampString: String,
+    descendingString: String,
+  ) {
+    val dataOwner = fullLanguageInteropJson.decodeFromString(
+      EntityReferenceInGroup.serializer(),
+      dataOwnerString
+    )
+    val startTimestamp = fullLanguageInteropJson.decodeFromString(
+      Long.serializer().nullable,
+      startTimestampString
+    )
+    val endTimestamp = fullLanguageInteropJson.decodeFromString(
+      Long.serializer().nullable,
+      endTimestampString
+    )
+    val descending = fullLanguageInteropJson.decodeFromString(
+      Boolean.serializer(),
+      descendingString
+    )
+    DartResult.resolve(
+      dartResultCallback,
+      BaseFilterOptions.serializer(PolymorphicSerializer(Message::class))
+    ) {
+      com.icure.cardinal.sdk.filters.MessageFilters.lifecycleBetweenForDataOwnerInGroup(
+        dataOwner,
+        startTimestamp,
+        endTimestamp,
+        descending,
+      )
+    }
+  }
+
+  public fun lifecycleBetweenForSelf(
+    dartResultCallback: (
+      String?,
+      String?,
+      String?,
+      String?,
+    ) -> Unit,
+    startTimestampString: String,
+    endTimestampString: String,
+    descendingString: String,
+  ) {
+    val startTimestamp = fullLanguageInteropJson.decodeFromString(
+      Long.serializer().nullable,
+      startTimestampString
+    )
+    val endTimestamp = fullLanguageInteropJson.decodeFromString(
+      Long.serializer().nullable,
+      endTimestampString
+    )
+    val descending = fullLanguageInteropJson.decodeFromString(
+      Boolean.serializer(),
+      descendingString
+    )
+    DartResult.resolve(
+      dartResultCallback,
+      FilterOptions.serializer(PolymorphicSerializer(Message::class))
+    ) {
+      com.icure.cardinal.sdk.filters.MessageFilters.lifecycleBetweenForSelf(
+        startTimestamp,
+        endTimestamp,
+        descending,
       )
     }
   }

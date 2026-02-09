@@ -100,6 +100,7 @@ public object InvoiceApi {
     userString: String,
     delegatesString: String,
     secretIdString: String,
+    alternateRootDelegateIdString: String,
   ) {
     val base = fullLanguageInteropJson.decodeFromString(
       DecryptedInvoice.serializer().nullable,
@@ -121,6 +122,10 @@ public object InvoiceApi {
       SecretIdUseOption.serializer(),
       secretIdString
     )
+    val alternateRootDelegateId = fullLanguageInteropJson.decodeFromString(
+      String.serializer().nullable,
+      alternateRootDelegateIdString
+    )
     ApiScope.execute(
       dartResultCallback,
       DecryptedInvoice.serializer()) {
@@ -130,6 +135,7 @@ public object InvoiceApi {
         user,
         delegates,
         secretId,
+        alternateRootDelegateId,
       )
     }
   }

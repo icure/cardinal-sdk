@@ -3,14 +3,15 @@ import {FilterOptions, PaginatedListIterator, SortableFilterOptions} from '../ca
 import {DocumentShareOptions} from '../crypto/entities/DocumentShareOptions.mjs';
 import {SecretIdUseOption} from '../crypto/entities/SecretIdUseOption.mjs';
 import {DecryptedDocument, Document, EncryptedDocument} from '../model/Document.mjs';
+import {EntityReferenceInGroup} from '../model/EntityReferenceInGroup.mjs';
 import {Message} from '../model/Message.mjs';
 import {Patient} from '../model/Patient.mjs';
 import {StoredDocumentIdentifier} from '../model/StoredDocumentIdentifier.mjs';
 import {User} from '../model/User.mjs';
-import {DocIdentifier} from '../model/couchdb/DocIdentifier.mjs';
 import {AccessLevel} from '../model/embed/AccessLevel.mjs';
 import {HexString} from '../model/specializations/HexString.mjs';
 import {DocumentFlavouredApi} from './DocumentFlavouredApi.mjs';
+import {DocumentInGroupApi} from './DocumentInGroupApi.mjs';
 
 
 export interface DocumentApi {
@@ -18,6 +19,8 @@ export interface DocumentApi {
 	encrypted: DocumentFlavouredApi<EncryptedDocument>;
 
 	tryAndRecover: DocumentFlavouredApi<Document>;
+
+	inGroup: DocumentInGroupApi;
 
 	withEncryptionMetadataLinkedToMessage(base: DecryptedDocument | undefined, message: Message,
 			options?: { user?: User | undefined, delegates?: { [ key: string ]: AccessLevel }, secretId?: SecretIdUseOption, alternateRootDelegateId?: string | undefined }): Promise<DecryptedDocument>;
@@ -30,12 +33,6 @@ export interface DocumentApi {
 
 	getAndTryDecryptMainAttachment(document: Document,
 			options?: { decryptedAttachmentValidator?: (x1: Int8Array) => Promise<boolean> }): Promise<Int8Array | undefined>;
-
-	getAndTryDecryptMainAttachmentAsPlainText(document: Document,
-			options?: { decryptedAttachmentValidator?: (x1: Int8Array) => Promise<boolean> }): Promise<string | undefined>;
-
-	getAndTryDecryptMainAttachmentAsJson(document: Document,
-			options?: { decryptedAttachmentValidator?: (x1: Int8Array) => Promise<boolean> }): Promise<any | undefined>;
 
 	getAndDecryptMainAttachment(document: Document,
 			options?: { decryptedAttachmentValidator?: (x1: Int8Array) => Promise<boolean> }): Promise<Int8Array>;
@@ -53,7 +50,7 @@ export interface DocumentApi {
 
 	hasWriteAccess(document: Document): Promise<boolean>;
 
-	decryptOwningEntityIdsOf(document: Document): Promise<Array<string>>;
+	decryptOwningEntityIdsOf(document: Document): Promise<Array<EntityReferenceInGroup>>;
 
 	createDelegationDeAnonymizationMetadata(entity: Document, delegates: Array<string>): Promise<void>;
 
@@ -68,27 +65,23 @@ export interface DocumentApi {
 
 	matchDocumentsBySorted(filter: SortableFilterOptions<Document>): Promise<Array<string>>;
 
-	deleteDocumentUnsafe(entityId: string): Promise<DocIdentifier>;
+	deleteDocumentById(entityId: string, rev: string): Promise<StoredDocumentIdentifier>;
 
-	deleteDocumentsUnsafe(entityIds: Array<string>): Promise<Array<DocIdentifier>>;
-
-	deleteDocumentById(entityId: string, rev: string): Promise<DocIdentifier>;
-
-	deleteDocumentsByIds(entityIds: Array<StoredDocumentIdentifier>): Promise<Array<DocIdentifier>>;
+	deleteDocumentsByIds(entityIds: Array<StoredDocumentIdentifier>): Promise<Array<StoredDocumentIdentifier>>;
 
 	purgeDocumentById(id: string, rev: string): Promise<void>;
 
-	deleteDocument(document: Document): Promise<DocIdentifier>;
+	purgeDocumentsByIds(entityIds: Array<StoredDocumentIdentifier>): Promise<Array<StoredDocumentIdentifier>>;
 
-	deleteDocuments(documents: Array<Document>): Promise<Array<DocIdentifier>>;
+	deleteDocument(document: Document): Promise<StoredDocumentIdentifier>;
+
+	deleteDocuments(documents: Array<Document>): Promise<Array<StoredDocumentIdentifier>>;
 
 	purgeDocument(document: Document): Promise<void>;
 
+	purgeDocuments(documents: Array<Document>): Promise<Array<StoredDocumentIdentifier>>;
+
 	getRawMainAttachment(documentId: string): Promise<Int8Array>;
-
-	getMainAttachmentAsPlainText(documentId: string): Promise<string>;
-
-	getMainAttachmentAsJson(documentId: string): Promise<any>;
 
 	getRawSecondaryAttachment(documentId: string, key: string): Promise<Int8Array>;
 
@@ -120,31 +113,28 @@ export interface DocumentApi {
 	shareWithMany(document: DecryptedDocument,
 			delegates: { [ key: string ]: DocumentShareOptions }): Promise<DecryptedDocument>;
 
-	findDocumentsByHcPartyPatient(hcPartyId: string, patient: Patient,
-			options?: { startDate?: number | undefined, endDate?: number | undefined, descending?: boolean | undefined }): Promise<PaginatedListIterator<DecryptedDocument>>;
-
 	filterDocumentsBy(filter: FilterOptions<Document>): Promise<PaginatedListIterator<DecryptedDocument>>;
 
 	filterDocumentsBySorted(filter: SortableFilterOptions<Document>): Promise<PaginatedListIterator<DecryptedDocument>>;
 
 	createDocument(entity: DecryptedDocument): Promise<DecryptedDocument>;
 
+	createDocuments(entities: Array<DecryptedDocument>): Promise<Array<DecryptedDocument>>;
+
 	undeleteDocumentById(id: string, rev: string): Promise<DecryptedDocument>;
+
+	undeleteDocumentsByIds(entityIds: Array<StoredDocumentIdentifier>): Promise<Array<DecryptedDocument>>;
 
 	undeleteDocument(document: Document): Promise<DecryptedDocument>;
 
+	undeleteDocuments(documents: Array<DecryptedDocument>): Promise<Array<DecryptedDocument>>;
+
 	modifyDocument(entity: DecryptedDocument): Promise<DecryptedDocument>;
-
-	getDocument(entityId: string): Promise<DecryptedDocument | undefined>;
-
-	getDocumentByExternalUuid(externalUuid: string): Promise<DecryptedDocument>;
-
-	getDocumentsByExternalUuid(externalUuid: string): Promise<Array<DecryptedDocument>>;
-
-	getDocuments(entityIds: Array<string>): Promise<Array<DecryptedDocument>>;
 
 	modifyDocuments(entities: Array<DecryptedDocument>): Promise<Array<DecryptedDocument>>;
 
-	findWithoutDelegation(limit: number | undefined): Promise<Array<DecryptedDocument>>;
+	getDocument(entityId: string): Promise<DecryptedDocument | undefined>;
+
+	getDocuments(entityIds: Array<string>): Promise<Array<DecryptedDocument>>;
 
 }

@@ -7,7 +7,6 @@ import {ICureDocument} from './base/ICureDocument.mjs';
 import {StoredDocument} from './base/StoredDocument.mjs';
 import {Delegation} from './embed/Delegation.mjs';
 import {Encryptable} from './embed/Encryptable.mjs';
-import {MessageAttachment} from './embed/MessageAttachment.mjs';
 import {MessageReadStatus} from './embed/MessageReadStatus.mjs';
 import {SecurityMetadata} from './embed/SecurityMetadata.mjs';
 import {Base64String} from './specializations/Base64String.mjs';
@@ -18,12 +17,6 @@ export interface Message extends StoredDocument, ICureDocument<string>, HasEncry
 	fromAddress: string | undefined;
 
 	fromHealthcarePartyId: string | undefined;
-
-	formId: string | undefined;
-
-	status: number | undefined;
-
-	recipientsType: string | undefined;
 
 	recipients: Array<string>;
 
@@ -37,8 +30,6 @@ export interface Message extends StoredDocument, ICureDocument<string>, HasEncry
 
 	readStatus: { [ key: string ]: MessageReadStatus };
 
-	messageAttachments: Array<MessageAttachment>;
-
 	transportGuid: string | undefined;
 
 	remark: string | undefined;
@@ -50,14 +41,6 @@ export interface Message extends StoredDocument, ICureDocument<string>, HasEncry
 	invoiceIds: Array<string>;
 
 	parentId: string | undefined;
-
-	externalRef: string | undefined;
-
-	unassignedResults: Array<string>;
-
-	assignedResults: { [ key: string ]: string };
-
-	senderReferences: { [ key: string ]: string };
 
 	readonly isEncrypted: boolean;
 
@@ -79,25 +62,15 @@ export class DecryptedMessage {
 
 	responsible: string | undefined = undefined;
 
-	medicalLocationId: string | undefined = undefined;
-
 	tags: Array<CodeStub> = [];
 
 	codes: Array<CodeStub> = [];
-
-	endOfLife: number | undefined = undefined;
 
 	deletionDate: number | undefined = undefined;
 
 	fromAddress: string | undefined = undefined;
 
 	fromHealthcarePartyId: string | undefined = undefined;
-
-	formId: string | undefined = undefined;
-
-	status: number | undefined = undefined;
-
-	recipientsType: string | undefined = undefined;
 
 	recipients: Array<string> = [];
 
@@ -111,8 +84,6 @@ export class DecryptedMessage {
 
 	readStatus: { [ key: string ]: MessageReadStatus } = {};
 
-	messageAttachments: Array<MessageAttachment> = [];
-
 	transportGuid: string | undefined = undefined;
 
 	remark: string | undefined = undefined;
@@ -124,14 +95,6 @@ export class DecryptedMessage {
 	invoiceIds: Array<string> = [];
 
 	parentId: string | undefined = undefined;
-
-	externalRef: string | undefined = undefined;
-
-	unassignedResults: Array<string> = [];
-
-	assignedResults: { [ key: string ]: string } = {};
-
-	senderReferences: { [ key: string ]: string } = {};
 
 	secretForeignKeys: Array<string> = [];
 
@@ -155,33 +118,23 @@ export class DecryptedMessage {
 		if ('modified' in partial) this.modified = partial.modified;
 		if ('author' in partial) this.author = partial.author;
 		if ('responsible' in partial) this.responsible = partial.responsible;
-		if ('medicalLocationId' in partial) this.medicalLocationId = partial.medicalLocationId;
 		if ('tags' in partial && partial.tags !== undefined) this.tags = partial.tags;
 		if ('codes' in partial && partial.codes !== undefined) this.codes = partial.codes;
-		if ('endOfLife' in partial) this.endOfLife = partial.endOfLife;
 		if ('deletionDate' in partial) this.deletionDate = partial.deletionDate;
 		if ('fromAddress' in partial) this.fromAddress = partial.fromAddress;
 		if ('fromHealthcarePartyId' in partial) this.fromHealthcarePartyId = partial.fromHealthcarePartyId;
-		if ('formId' in partial) this.formId = partial.formId;
-		if ('status' in partial) this.status = partial.status;
-		if ('recipientsType' in partial) this.recipientsType = partial.recipientsType;
 		if ('recipients' in partial && partial.recipients !== undefined) this.recipients = partial.recipients;
 		if ('toAddresses' in partial && partial.toAddresses !== undefined) this.toAddresses = partial.toAddresses;
 		if ('received' in partial) this.received = partial.received;
 		if ('sent' in partial) this.sent = partial.sent;
 		if ('metas' in partial && partial.metas !== undefined) this.metas = partial.metas;
 		if ('readStatus' in partial && partial.readStatus !== undefined) this.readStatus = partial.readStatus;
-		if ('messageAttachments' in partial && partial.messageAttachments !== undefined) this.messageAttachments = partial.messageAttachments;
 		if ('transportGuid' in partial) this.transportGuid = partial.transportGuid;
 		if ('remark' in partial) this.remark = partial.remark;
 		if ('conversationGuid' in partial) this.conversationGuid = partial.conversationGuid;
 		if ('subject' in partial) this.subject = partial.subject;
 		if ('invoiceIds' in partial && partial.invoiceIds !== undefined) this.invoiceIds = partial.invoiceIds;
 		if ('parentId' in partial) this.parentId = partial.parentId;
-		if ('externalRef' in partial) this.externalRef = partial.externalRef;
-		if ('unassignedResults' in partial && partial.unassignedResults !== undefined) this.unassignedResults = partial.unassignedResults;
-		if ('assignedResults' in partial && partial.assignedResults !== undefined) this.assignedResults = partial.assignedResults;
-		if ('senderReferences' in partial && partial.senderReferences !== undefined) this.senderReferences = partial.senderReferences;
 		if ('secretForeignKeys' in partial && partial.secretForeignKeys !== undefined) this.secretForeignKeys = partial.secretForeignKeys;
 		if ('cryptedForeignKeys' in partial && partial.cryptedForeignKeys !== undefined) this.cryptedForeignKeys = partial.cryptedForeignKeys;
 		if ('delegations' in partial && partial.delegations !== undefined) this.delegations = partial.delegations;
@@ -198,33 +151,23 @@ export class DecryptedMessage {
 		if (this.modified != undefined) res['modified'] = this.modified
 		if (this.author != undefined) res['author'] = this.author
 		if (this.responsible != undefined) res['responsible'] = this.responsible
-		if (this.medicalLocationId != undefined) res['medicalLocationId'] = this.medicalLocationId
 		res['tags'] = this.tags.map((x0) => x0.toJSON() )
 		res['codes'] = this.codes.map((x0) => x0.toJSON() )
-		if (this.endOfLife != undefined) res['endOfLife'] = this.endOfLife
 		if (this.deletionDate != undefined) res['deletionDate'] = this.deletionDate
 		if (this.fromAddress != undefined) res['fromAddress'] = this.fromAddress
 		if (this.fromHealthcarePartyId != undefined) res['fromHealthcarePartyId'] = this.fromHealthcarePartyId
-		if (this.formId != undefined) res['formId'] = this.formId
-		if (this.status != undefined) res['status'] = this.status
-		if (this.recipientsType != undefined) res['recipientsType'] = this.recipientsType
 		res['recipients'] = this.recipients.map((x0) => x0 )
 		res['toAddresses'] = this.toAddresses.map((x0) => x0 )
 		if (this.received != undefined) res['received'] = this.received
 		if (this.sent != undefined) res['sent'] = this.sent
 		res['metas'] = Object.fromEntries(Object.entries(this.metas).map(([k0, v0]) => [k0, v0]))
 		res['readStatus'] = Object.fromEntries(Object.entries(this.readStatus).map(([k0, v0]) => [k0, v0.toJSON()]))
-		res['messageAttachments'] = this.messageAttachments.map((x0) => x0.toJSON() )
 		if (this.transportGuid != undefined) res['transportGuid'] = this.transportGuid
 		if (this.remark != undefined) res['remark'] = this.remark
 		if (this.conversationGuid != undefined) res['conversationGuid'] = this.conversationGuid
 		if (this.subject != undefined) res['subject'] = this.subject
 		res['invoiceIds'] = this.invoiceIds.map((x0) => x0 )
 		if (this.parentId != undefined) res['parentId'] = this.parentId
-		if (this.externalRef != undefined) res['externalRef'] = this.externalRef
-		res['unassignedResults'] = this.unassignedResults.map((x0) => x0 )
-		res['assignedResults'] = Object.fromEntries(Object.entries(this.assignedResults).map(([k0, v0]) => [k0, v0]))
-		res['senderReferences'] = Object.fromEntries(Object.entries(this.senderReferences).map(([k0, v0]) => [k0, v0]))
 		res['secretForeignKeys'] = this.secretForeignKeys.map((x0) => x0 )
 		res['cryptedForeignKeys'] = Object.fromEntries(Object.entries(this.cryptedForeignKeys).map(([k0, v0]) => [k0, v0.map((x1) => x1.toJSON() )]))
 		res['delegations'] = Object.fromEntries(Object.entries(this.delegations).map(([k0, v0]) => [k0, v0.map((x1) => x1.toJSON() )]))
@@ -247,16 +190,11 @@ export class DecryptedMessage {
 			modified: expectNumber(extractEntry(jCpy, 'modified', false, path), true, true, [...path, ".modified"]),
 			author: expectString(extractEntry(jCpy, 'author', false, path), true, [...path, ".author"]),
 			responsible: expectString(extractEntry(jCpy, 'responsible', false, path), true, [...path, ".responsible"]),
-			medicalLocationId: expectString(extractEntry(jCpy, 'medicalLocationId', false, path), true, [...path, ".medicalLocationId"]),
 			tags: expectArray(extractEntry(jCpy, 'tags', false, path), false, [...path, ".tags"], (x0, p0) => expectObject(x0, false, ignoreUnknownKeys, p0, CodeStub.fromJSON)),
 			codes: expectArray(extractEntry(jCpy, 'codes', false, path), false, [...path, ".codes"], (x0, p0) => expectObject(x0, false, ignoreUnknownKeys, p0, CodeStub.fromJSON)),
-			endOfLife: expectNumber(extractEntry(jCpy, 'endOfLife', false, path), true, true, [...path, ".endOfLife"]),
 			deletionDate: expectNumber(extractEntry(jCpy, 'deletionDate', false, path), true, true, [...path, ".deletionDate"]),
 			fromAddress: expectString(extractEntry(jCpy, 'fromAddress', false, path), true, [...path, ".fromAddress"]),
 			fromHealthcarePartyId: expectString(extractEntry(jCpy, 'fromHealthcarePartyId', false, path), true, [...path, ".fromHealthcarePartyId"]),
-			formId: expectString(extractEntry(jCpy, 'formId', false, path), true, [...path, ".formId"]),
-			status: expectNumber(extractEntry(jCpy, 'status', false, path), true, true, [...path, ".status"]),
-			recipientsType: expectString(extractEntry(jCpy, 'recipientsType', false, path), true, [...path, ".recipientsType"]),
 			recipients: expectArray(extractEntry(jCpy, 'recipients', false, path), false, [...path, ".recipients"], (x0, p0) => expectString(x0, false, p0)),
 			toAddresses: expectArray(extractEntry(jCpy, 'toAddresses', false, path), false, [...path, ".toAddresses"], (x0, p0) => expectString(x0, false, p0)),
 			received: expectNumber(extractEntry(jCpy, 'received', false, path), true, true, [...path, ".received"]),
@@ -275,29 +213,12 @@ export class DecryptedMessage {
 				(k0, p0) => expectString(k0, false, p0),
 				(v0, p0) => expectObject(v0, false, ignoreUnknownKeys, p0, MessageReadStatus.fromJSON)
 			),
-			messageAttachments: expectArray(extractEntry(jCpy, 'messageAttachments', false, path), false, [...path, ".messageAttachments"], (x0, p0) => expectObject(x0, false, ignoreUnknownKeys, p0, MessageAttachment.fromJSON)),
 			transportGuid: expectString(extractEntry(jCpy, 'transportGuid', false, path), true, [...path, ".transportGuid"]),
 			remark: expectString(extractEntry(jCpy, 'remark', false, path), true, [...path, ".remark"]),
 			conversationGuid: expectString(extractEntry(jCpy, 'conversationGuid', false, path), true, [...path, ".conversationGuid"]),
 			subject: expectString(extractEntry(jCpy, 'subject', false, path), true, [...path, ".subject"]),
 			invoiceIds: expectArray(extractEntry(jCpy, 'invoiceIds', false, path), false, [...path, ".invoiceIds"], (x0, p0) => expectString(x0, false, p0)),
 			parentId: expectString(extractEntry(jCpy, 'parentId', false, path), true, [...path, ".parentId"]),
-			externalRef: expectString(extractEntry(jCpy, 'externalRef', false, path), true, [...path, ".externalRef"]),
-			unassignedResults: expectArray(extractEntry(jCpy, 'unassignedResults', false, path), false, [...path, ".unassignedResults"], (x0, p0) => expectString(x0, false, p0)),
-			assignedResults: expectMap(
-				extractEntry(jCpy, 'assignedResults', false, path),
-				false,
-				[...path, ".assignedResults"],
-				(k0, p0) => expectString(k0, false, p0),
-				(v0, p0) => expectString(v0, false, p0)
-			),
-			senderReferences: expectMap(
-				extractEntry(jCpy, 'senderReferences', false, path),
-				false,
-				[...path, ".senderReferences"],
-				(k0, p0) => expectString(k0, false, p0),
-				(v0, p0) => expectString(v0, false, p0)
-			),
 			secretForeignKeys: expectArray(extractEntry(jCpy, 'secretForeignKeys', false, path), false, [...path, ".secretForeignKeys"], (x0, p0) => expectString(x0, false, p0)),
 			cryptedForeignKeys: expectMap(
 				extractEntry(jCpy, 'cryptedForeignKeys', false, path),
@@ -345,25 +266,15 @@ export class EncryptedMessage {
 
 	responsible: string | undefined = undefined;
 
-	medicalLocationId: string | undefined = undefined;
-
 	tags: Array<CodeStub> = [];
 
 	codes: Array<CodeStub> = [];
-
-	endOfLife: number | undefined = undefined;
 
 	deletionDate: number | undefined = undefined;
 
 	fromAddress: string | undefined = undefined;
 
 	fromHealthcarePartyId: string | undefined = undefined;
-
-	formId: string | undefined = undefined;
-
-	status: number | undefined = undefined;
-
-	recipientsType: string | undefined = undefined;
 
 	recipients: Array<string> = [];
 
@@ -377,8 +288,6 @@ export class EncryptedMessage {
 
 	readStatus: { [ key: string ]: MessageReadStatus } = {};
 
-	messageAttachments: Array<MessageAttachment> = [];
-
 	transportGuid: string | undefined = undefined;
 
 	remark: string | undefined = undefined;
@@ -390,14 +299,6 @@ export class EncryptedMessage {
 	invoiceIds: Array<string> = [];
 
 	parentId: string | undefined = undefined;
-
-	externalRef: string | undefined = undefined;
-
-	unassignedResults: Array<string> = [];
-
-	assignedResults: { [ key: string ]: string } = {};
-
-	senderReferences: { [ key: string ]: string } = {};
 
 	secretForeignKeys: Array<string> = [];
 
@@ -421,33 +322,23 @@ export class EncryptedMessage {
 		if ('modified' in partial) this.modified = partial.modified;
 		if ('author' in partial) this.author = partial.author;
 		if ('responsible' in partial) this.responsible = partial.responsible;
-		if ('medicalLocationId' in partial) this.medicalLocationId = partial.medicalLocationId;
 		if ('tags' in partial && partial.tags !== undefined) this.tags = partial.tags;
 		if ('codes' in partial && partial.codes !== undefined) this.codes = partial.codes;
-		if ('endOfLife' in partial) this.endOfLife = partial.endOfLife;
 		if ('deletionDate' in partial) this.deletionDate = partial.deletionDate;
 		if ('fromAddress' in partial) this.fromAddress = partial.fromAddress;
 		if ('fromHealthcarePartyId' in partial) this.fromHealthcarePartyId = partial.fromHealthcarePartyId;
-		if ('formId' in partial) this.formId = partial.formId;
-		if ('status' in partial) this.status = partial.status;
-		if ('recipientsType' in partial) this.recipientsType = partial.recipientsType;
 		if ('recipients' in partial && partial.recipients !== undefined) this.recipients = partial.recipients;
 		if ('toAddresses' in partial && partial.toAddresses !== undefined) this.toAddresses = partial.toAddresses;
 		if ('received' in partial) this.received = partial.received;
 		if ('sent' in partial) this.sent = partial.sent;
 		if ('metas' in partial && partial.metas !== undefined) this.metas = partial.metas;
 		if ('readStatus' in partial && partial.readStatus !== undefined) this.readStatus = partial.readStatus;
-		if ('messageAttachments' in partial && partial.messageAttachments !== undefined) this.messageAttachments = partial.messageAttachments;
 		if ('transportGuid' in partial) this.transportGuid = partial.transportGuid;
 		if ('remark' in partial) this.remark = partial.remark;
 		if ('conversationGuid' in partial) this.conversationGuid = partial.conversationGuid;
 		if ('subject' in partial) this.subject = partial.subject;
 		if ('invoiceIds' in partial && partial.invoiceIds !== undefined) this.invoiceIds = partial.invoiceIds;
 		if ('parentId' in partial) this.parentId = partial.parentId;
-		if ('externalRef' in partial) this.externalRef = partial.externalRef;
-		if ('unassignedResults' in partial && partial.unassignedResults !== undefined) this.unassignedResults = partial.unassignedResults;
-		if ('assignedResults' in partial && partial.assignedResults !== undefined) this.assignedResults = partial.assignedResults;
-		if ('senderReferences' in partial && partial.senderReferences !== undefined) this.senderReferences = partial.senderReferences;
 		if ('secretForeignKeys' in partial && partial.secretForeignKeys !== undefined) this.secretForeignKeys = partial.secretForeignKeys;
 		if ('cryptedForeignKeys' in partial && partial.cryptedForeignKeys !== undefined) this.cryptedForeignKeys = partial.cryptedForeignKeys;
 		if ('delegations' in partial && partial.delegations !== undefined) this.delegations = partial.delegations;
@@ -464,33 +355,23 @@ export class EncryptedMessage {
 		if (this.modified != undefined) res['modified'] = this.modified
 		if (this.author != undefined) res['author'] = this.author
 		if (this.responsible != undefined) res['responsible'] = this.responsible
-		if (this.medicalLocationId != undefined) res['medicalLocationId'] = this.medicalLocationId
 		res['tags'] = this.tags.map((x0) => x0.toJSON() )
 		res['codes'] = this.codes.map((x0) => x0.toJSON() )
-		if (this.endOfLife != undefined) res['endOfLife'] = this.endOfLife
 		if (this.deletionDate != undefined) res['deletionDate'] = this.deletionDate
 		if (this.fromAddress != undefined) res['fromAddress'] = this.fromAddress
 		if (this.fromHealthcarePartyId != undefined) res['fromHealthcarePartyId'] = this.fromHealthcarePartyId
-		if (this.formId != undefined) res['formId'] = this.formId
-		if (this.status != undefined) res['status'] = this.status
-		if (this.recipientsType != undefined) res['recipientsType'] = this.recipientsType
 		res['recipients'] = this.recipients.map((x0) => x0 )
 		res['toAddresses'] = this.toAddresses.map((x0) => x0 )
 		if (this.received != undefined) res['received'] = this.received
 		if (this.sent != undefined) res['sent'] = this.sent
 		res['metas'] = Object.fromEntries(Object.entries(this.metas).map(([k0, v0]) => [k0, v0]))
 		res['readStatus'] = Object.fromEntries(Object.entries(this.readStatus).map(([k0, v0]) => [k0, v0.toJSON()]))
-		res['messageAttachments'] = this.messageAttachments.map((x0) => x0.toJSON() )
 		if (this.transportGuid != undefined) res['transportGuid'] = this.transportGuid
 		if (this.remark != undefined) res['remark'] = this.remark
 		if (this.conversationGuid != undefined) res['conversationGuid'] = this.conversationGuid
 		if (this.subject != undefined) res['subject'] = this.subject
 		res['invoiceIds'] = this.invoiceIds.map((x0) => x0 )
 		if (this.parentId != undefined) res['parentId'] = this.parentId
-		if (this.externalRef != undefined) res['externalRef'] = this.externalRef
-		res['unassignedResults'] = this.unassignedResults.map((x0) => x0 )
-		res['assignedResults'] = Object.fromEntries(Object.entries(this.assignedResults).map(([k0, v0]) => [k0, v0]))
-		res['senderReferences'] = Object.fromEntries(Object.entries(this.senderReferences).map(([k0, v0]) => [k0, v0]))
 		res['secretForeignKeys'] = this.secretForeignKeys.map((x0) => x0 )
 		res['cryptedForeignKeys'] = Object.fromEntries(Object.entries(this.cryptedForeignKeys).map(([k0, v0]) => [k0, v0.map((x1) => x1.toJSON() )]))
 		res['delegations'] = Object.fromEntries(Object.entries(this.delegations).map(([k0, v0]) => [k0, v0.map((x1) => x1.toJSON() )]))
@@ -513,16 +394,11 @@ export class EncryptedMessage {
 			modified: expectNumber(extractEntry(jCpy, 'modified', false, path), true, true, [...path, ".modified"]),
 			author: expectString(extractEntry(jCpy, 'author', false, path), true, [...path, ".author"]),
 			responsible: expectString(extractEntry(jCpy, 'responsible', false, path), true, [...path, ".responsible"]),
-			medicalLocationId: expectString(extractEntry(jCpy, 'medicalLocationId', false, path), true, [...path, ".medicalLocationId"]),
 			tags: expectArray(extractEntry(jCpy, 'tags', false, path), false, [...path, ".tags"], (x0, p0) => expectObject(x0, false, ignoreUnknownKeys, p0, CodeStub.fromJSON)),
 			codes: expectArray(extractEntry(jCpy, 'codes', false, path), false, [...path, ".codes"], (x0, p0) => expectObject(x0, false, ignoreUnknownKeys, p0, CodeStub.fromJSON)),
-			endOfLife: expectNumber(extractEntry(jCpy, 'endOfLife', false, path), true, true, [...path, ".endOfLife"]),
 			deletionDate: expectNumber(extractEntry(jCpy, 'deletionDate', false, path), true, true, [...path, ".deletionDate"]),
 			fromAddress: expectString(extractEntry(jCpy, 'fromAddress', false, path), true, [...path, ".fromAddress"]),
 			fromHealthcarePartyId: expectString(extractEntry(jCpy, 'fromHealthcarePartyId', false, path), true, [...path, ".fromHealthcarePartyId"]),
-			formId: expectString(extractEntry(jCpy, 'formId', false, path), true, [...path, ".formId"]),
-			status: expectNumber(extractEntry(jCpy, 'status', false, path), true, true, [...path, ".status"]),
-			recipientsType: expectString(extractEntry(jCpy, 'recipientsType', false, path), true, [...path, ".recipientsType"]),
 			recipients: expectArray(extractEntry(jCpy, 'recipients', false, path), false, [...path, ".recipients"], (x0, p0) => expectString(x0, false, p0)),
 			toAddresses: expectArray(extractEntry(jCpy, 'toAddresses', false, path), false, [...path, ".toAddresses"], (x0, p0) => expectString(x0, false, p0)),
 			received: expectNumber(extractEntry(jCpy, 'received', false, path), true, true, [...path, ".received"]),
@@ -541,29 +417,12 @@ export class EncryptedMessage {
 				(k0, p0) => expectString(k0, false, p0),
 				(v0, p0) => expectObject(v0, false, ignoreUnknownKeys, p0, MessageReadStatus.fromJSON)
 			),
-			messageAttachments: expectArray(extractEntry(jCpy, 'messageAttachments', false, path), false, [...path, ".messageAttachments"], (x0, p0) => expectObject(x0, false, ignoreUnknownKeys, p0, MessageAttachment.fromJSON)),
 			transportGuid: expectString(extractEntry(jCpy, 'transportGuid', false, path), true, [...path, ".transportGuid"]),
 			remark: expectString(extractEntry(jCpy, 'remark', false, path), true, [...path, ".remark"]),
 			conversationGuid: expectString(extractEntry(jCpy, 'conversationGuid', false, path), true, [...path, ".conversationGuid"]),
 			subject: expectString(extractEntry(jCpy, 'subject', false, path), true, [...path, ".subject"]),
 			invoiceIds: expectArray(extractEntry(jCpy, 'invoiceIds', false, path), false, [...path, ".invoiceIds"], (x0, p0) => expectString(x0, false, p0)),
 			parentId: expectString(extractEntry(jCpy, 'parentId', false, path), true, [...path, ".parentId"]),
-			externalRef: expectString(extractEntry(jCpy, 'externalRef', false, path), true, [...path, ".externalRef"]),
-			unassignedResults: expectArray(extractEntry(jCpy, 'unassignedResults', false, path), false, [...path, ".unassignedResults"], (x0, p0) => expectString(x0, false, p0)),
-			assignedResults: expectMap(
-				extractEntry(jCpy, 'assignedResults', false, path),
-				false,
-				[...path, ".assignedResults"],
-				(k0, p0) => expectString(k0, false, p0),
-				(v0, p0) => expectString(v0, false, p0)
-			),
-			senderReferences: expectMap(
-				extractEntry(jCpy, 'senderReferences', false, path),
-				false,
-				[...path, ".senderReferences"],
-				(k0, p0) => expectString(k0, false, p0),
-				(v0, p0) => expectString(v0, false, p0)
-			),
 			secretForeignKeys: expectArray(extractEntry(jCpy, 'secretForeignKeys', false, path), false, [...path, ".secretForeignKeys"], (x0, p0) => expectString(x0, false, p0)),
 			cryptedForeignKeys: expectMap(
 				extractEntry(jCpy, 'cryptedForeignKeys', false, path),

@@ -2,60 +2,33 @@
 import {BaseFilterOptions, BaseSortableFilterOptions, FilterOptions, PaginatedListIterator} from '../cardinal-sdk-ts.mjs';
 import {DataOwnerRegistrationSuccess} from '../model/DataOwnerRegistrationSuccess.mjs';
 import {HealthcareParty} from '../model/HealthcareParty.mjs';
-import {PaginatedList} from '../model/PaginatedList.mjs';
 import {PublicKey} from '../model/PublicKey.mjs';
 import {StoredDocumentIdentifier} from '../model/StoredDocumentIdentifier.mjs';
-import {DocIdentifier} from '../model/couchdb/DocIdentifier.mjs';
 import {EntitySubscription} from '../subscription/EntitySubscription.mjs';
 import {EntitySubscriptionConfiguration} from '../subscription/EntitySubscriptionConfiguration.mjs';
 import {SubscriptionEventType} from '../subscription/SubscriptionEventType.mjs';
-import {HealthcarePartyApiInGroup} from './HealthcarePartyApiInGroup.mjs';
+import {HealthcarePartyInGroupApi} from './HealthcarePartyInGroupApi.mjs';
 
 
 export interface HealthcarePartyApi {
 
-	inGroup: HealthcarePartyApiInGroup;
-
-	deleteHealthcarePartyUnsafe(entityId: string): Promise<DocIdentifier>;
-
-	deleteHealthcarePartiesUnsafe(entityIds: Array<string>): Promise<Array<DocIdentifier>>;
+	inGroup: HealthcarePartyInGroupApi;
 
 	getHealthcareParty(healthcarePartyId: string): Promise<HealthcareParty | undefined>;
 
-	createHealthcareParty(p: HealthcareParty): Promise<HealthcareParty>;
+	getHealthcareParties(healthcarePartyIds: Array<string>): Promise<Array<HealthcareParty>>;
 
-	modifyHealthcarePartyInGroup(groupId: string,
-			healthcareParty: HealthcareParty): Promise<HealthcareParty>;
+	createHealthcareParty(healthcareParty: HealthcareParty): Promise<HealthcareParty>;
 
-	createHealthcarePartyInGroup(groupId: string,
-			healthcareParty: HealthcareParty): Promise<HealthcareParty>;
+	createHealthcareParties(healthcareParties: Array<HealthcareParty>): Promise<Array<HealthcareParty>>;
+
+	modifyHealthcareParty(healthcareParty: HealthcareParty): Promise<HealthcareParty>;
+
+	modifyHealthcareParties(healthcareParties: Array<HealthcareParty>): Promise<Array<HealthcareParty>>;
 
 	getCurrentHealthcareParty(): Promise<HealthcareParty>;
 
-	findHealthcarePartiesBy(options?: { startKey?: string | undefined, startDocumentId?: string | undefined, limit?: number | undefined, desc?: boolean | undefined }): Promise<PaginatedList<HealthcareParty>>;
-
-	findHealthcarePartiesByName(options?: { name?: string | undefined, startKey?: string | undefined, startDocumentId?: string | undefined, limit?: number | undefined, desc?: boolean | undefined }): Promise<PaginatedList<HealthcareParty>>;
-
-	findHealthcarePartiesBySsinOrNihii(searchValue: string,
-			options?: { startKey?: string | undefined, startDocumentId?: string | undefined, limit?: number | undefined, desc?: boolean }): Promise<PaginatedList<HealthcareParty>>;
-
-	listHealthcarePartiesByName(name: string): Promise<Array<HealthcareParty>>;
-
-	findHealthcarePartiesBySpecialityAndPostCode(
-			type: string,
-			spec: string,
-			firstCode: string,
-			lastCode: string,
-			options?: { startKey?: string | undefined, startDocumentId?: string | undefined, limit?: number | undefined }
-	): Promise<PaginatedList<HealthcareParty>>;
-
-	getHealthcareParties(healthcarePartyIds: Array<string>): Promise<Array<HealthcareParty>>;
-
-	listHealthcarePartiesByParentId(parentId: string): Promise<Array<HealthcareParty>>;
-
 	getPublicKey(healthcarePartyId: string): Promise<PublicKey>;
-
-	modifyHealthcareParty(healthcareParty: HealthcareParty): Promise<HealthcareParty>;
 
 	matchHealthcarePartiesBy(filter: BaseFilterOptions<HealthcareParty>): Promise<Array<string>>;
 
@@ -65,38 +38,32 @@ export interface HealthcarePartyApi {
 
 	filterHealthPartiesBySorted(filter: BaseSortableFilterOptions<HealthcareParty>): Promise<PaginatedListIterator<HealthcareParty>>;
 
-	getHealthcarePartiesInGroup(groupId: string,
-			options?: { healthcarePartyIds?: Array<string> | undefined }): Promise<Array<HealthcareParty>>;
-
 	registerPatient(groupId: string, hcp: HealthcareParty,
 			options?: { parentHcPartyId?: string | undefined, token?: string | undefined, useShortToken?: boolean | undefined }): Promise<DataOwnerRegistrationSuccess>;
 
-	deleteHealthcarePartyById(entityId: string, rev: string): Promise<DocIdentifier>;
+	deleteHealthcarePartyById(entityId: string, rev: string): Promise<StoredDocumentIdentifier>;
 
-	deleteHealthcarePartiesByIds(entityIds: Array<StoredDocumentIdentifier>): Promise<Array<DocIdentifier>>;
-
-	deleteHealthcarePartyInGroupById(groupId: string, entityId: string,
-			rev: string): Promise<DocIdentifier>;
-
-	deleteHealthcarePartiesInGroupByIds(groupId: string,
-			entityIds: Array<StoredDocumentIdentifier>): Promise<Array<DocIdentifier>>;
+	deleteHealthcarePartiesByIds(entityIds: Array<StoredDocumentIdentifier>): Promise<Array<StoredDocumentIdentifier>>;
 
 	purgeHealthcarePartyById(id: string, rev: string): Promise<void>;
 
+	purgeHealthcarePartiesByIds(entityIds: Array<StoredDocumentIdentifier>): Promise<Array<StoredDocumentIdentifier>>;
+
 	undeleteHealthcarePartyById(id: string, rev: string): Promise<HealthcareParty>;
 
-	deleteHealthcareParty(healthcareParty: HealthcareParty): Promise<DocIdentifier>;
+	undeleteHealthcarePartiesByIds(entityIds: Array<StoredDocumentIdentifier>): Promise<Array<HealthcareParty>>;
 
-	deleteHealthcareParties(healthcareParties: Array<HealthcareParty>): Promise<Array<DocIdentifier>>;
+	deleteHealthcareParty(healthcareParty: HealthcareParty): Promise<StoredDocumentIdentifier>;
+
+	deleteHealthcareParties(healthcareParties: Array<HealthcareParty>): Promise<Array<StoredDocumentIdentifier>>;
 
 	purgeHealthcareParty(healthcareParty: HealthcareParty): Promise<void>;
 
+	purgeHealthcareParties(healthcareParties: Array<HealthcareParty>): Promise<Array<StoredDocumentIdentifier>>;
+
 	undeleteHealthcareParty(healthcareParty: HealthcareParty): Promise<HealthcareParty>;
 
-	deleteHealthcarePartyInGroup(groupId: string, hcp: HealthcareParty): Promise<DocIdentifier>;
-
-	deleteHealthcarePartiesInGroup(groupId: string,
-			healthcareParties: Array<HealthcareParty>): Promise<Array<DocIdentifier>>;
+	undeleteHealthcareParties(healthcareParties: Array<HealthcareParty>): Promise<Array<HealthcareParty>>;
 
 	subscribeToEvents(events: Array<SubscriptionEventType>, filter: FilterOptions<HealthcareParty>,
 			options?: { subscriptionConfig?: EntitySubscriptionConfiguration | undefined }): Promise<EntitySubscription<HealthcareParty>>;

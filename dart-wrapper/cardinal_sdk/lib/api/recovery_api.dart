@@ -7,6 +7,7 @@ import 'package:cardinal_sdk/crypto/entities/cardinal_keys.dart';
 import 'package:cardinal_sdk/utils/internal/cancellation_token_provider.dart';
 import 'package:cardinal_sdk/utils/cancellable_future.dart';
 import 'package:cardinal_sdk/crypto/entities/recovery_data_use_failure_reason.dart';
+import 'package:cardinal_sdk/crypto/entities/raw_decrypted_exchange_data.dart';
 import 'package:cardinal_sdk/crypto/entities/recovery_key_size.dart';
 
 
@@ -49,12 +50,14 @@ class RecoveryApi {
 		);
 	}
 
-	Future<RecoveryDataKey> createExchangeDataRecoveryInfo(String delegateId, { int? lifetimeSeconds, RecoveryKeyOptions? recoveryKeyOptions }) async {
+	Future<RecoveryDataKey?> createExchangeDataRecoveryInfo(String delegateId, { int? lifetimeSeconds, RecoveryKeyOptions? recoveryKeyOptions, bool includeBiDirectional = false, bool includeAsParent = false }) async {
 		return await CardinalSdkPlatformInterface.instance.apis.recovery.createExchangeDataRecoveryInfo(
 			_sdkId,
 			delegateId,
 			lifetimeSeconds,
 			recoveryKeyOptions,
+			includeBiDirectional,
+			includeAsParent,
 		);
 	}
 
@@ -62,6 +65,14 @@ class RecoveryApi {
 		return await CardinalSdkPlatformInterface.instance.apis.recovery.recoverExchangeData(
 			_sdkId,
 			recoveryKey,
+		);
+	}
+
+	Future<RecoveryResult<List<RawDecryptedExchangeData>>> getRecoveryExchangeData(RecoveryDataKey recoveryKey, bool autoDelete) async {
+		return await CardinalSdkPlatformInterface.instance.apis.recovery.getRecoveryExchangeData(
+			_sdkId,
+			recoveryKey,
+			autoDelete,
 		);
 	}
 

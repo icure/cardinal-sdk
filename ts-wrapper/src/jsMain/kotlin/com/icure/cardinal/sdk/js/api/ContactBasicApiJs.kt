@@ -7,10 +7,8 @@ import com.icure.cardinal.sdk.js.filters.BaseFilterOptionsJs
 import com.icure.cardinal.sdk.js.filters.BaseSortableFilterOptionsJs
 import com.icure.cardinal.sdk.js.model.ContactJs
 import com.icure.cardinal.sdk.js.model.EncryptedContactJs
-import com.icure.cardinal.sdk.js.model.PaginatedListJs
 import com.icure.cardinal.sdk.js.model.StoredDocumentIdentifierJs
 import com.icure.cardinal.sdk.js.model.`data`.LabelledOccurenceJs
-import com.icure.cardinal.sdk.js.model.couchdb.DocIdentifierJs
 import com.icure.cardinal.sdk.js.model.embed.EncryptedServiceJs
 import com.icure.cardinal.sdk.js.model.embed.ServiceJs
 import com.icure.cardinal.sdk.js.subscription.EntitySubscriptionJs
@@ -25,6 +23,8 @@ import kotlin.js.Promise
 
 @JsName("ContactBasicApi")
 public external interface ContactBasicApiJs {
+	public val inGroup: ContactBasicInGroupApiJs
+
 	public fun matchContactsBy(filter: BaseFilterOptionsJs<ContactJs>): Promise<Array<String>>
 
 	public fun matchServicesBy(filter: BaseFilterOptionsJs<ServiceJs>): Promise<Array<String>>
@@ -50,22 +50,23 @@ public external interface ContactBasicApiJs {
 	public fun subscribeToServiceCreateOrUpdateEvents(filter: BaseFilterOptionsJs<ServiceJs>,
 			options: dynamic): Promise<EntitySubscriptionJs<EncryptedServiceJs>>
 
-	public fun deleteContactUnsafe(entityId: String): Promise<DocIdentifierJs>
-
-	public fun deleteContactsUnsafe(entityIds: Array<String>): Promise<Array<DocIdentifierJs>>
-
-	public fun deleteContactById(entityId: String, rev: String): Promise<DocIdentifierJs>
+	public fun deleteContactById(entityId: String, rev: String): Promise<StoredDocumentIdentifierJs>
 
 	public fun deleteContactsByIds(entityIds: Array<StoredDocumentIdentifierJs>):
-			Promise<Array<DocIdentifierJs>>
+			Promise<Array<StoredDocumentIdentifierJs>>
 
 	public fun purgeContactById(id: String, rev: String): Promise<Unit>
 
-	public fun deleteContact(contact: ContactJs): Promise<DocIdentifierJs>
+	public fun purgeContactsByIds(entityIds: Array<StoredDocumentIdentifierJs>):
+			Promise<Array<StoredDocumentIdentifierJs>>
 
-	public fun deleteContacts(contacts: Array<ContactJs>): Promise<Array<DocIdentifierJs>>
+	public fun deleteContact(contact: ContactJs): Promise<StoredDocumentIdentifierJs>
+
+	public fun deleteContacts(contacts: Array<ContactJs>): Promise<Array<StoredDocumentIdentifierJs>>
 
 	public fun purgeContact(contact: ContactJs): Promise<Unit>
+
+	public fun purgeContacts(contacts: Array<ContactJs>): Promise<Array<StoredDocumentIdentifierJs>>
 
 	public fun getServiceCodesOccurrences(codeType: String, minOccurrences: Double):
 			Promise<Array<LabelledOccurenceJs>>
@@ -76,7 +77,12 @@ public external interface ContactBasicApiJs {
 
 	public fun undeleteContactById(id: String, rev: String): Promise<EncryptedContactJs>
 
+	public fun undeleteContactsByIds(entityIds: Array<StoredDocumentIdentifierJs>):
+			Promise<Array<EncryptedContactJs>>
+
 	public fun undeleteContact(contact: ContactJs): Promise<EncryptedContactJs>
+
+	public fun undeleteContacts(contacts: Array<ContactJs>): Promise<Array<EncryptedContactJs>>
 
 	public fun modifyContact(entity: EncryptedContactJs): Promise<EncryptedContactJs>
 
@@ -86,35 +92,9 @@ public external interface ContactBasicApiJs {
 
 	public fun getContacts(entityIds: Array<String>): Promise<Array<EncryptedContactJs>>
 
-	public fun listContactByHCPartyServiceId(hcPartyId: String, serviceId: String):
-			Promise<Array<EncryptedContactJs>>
-
-	public fun listContactsByExternalId(externalId: String): Promise<Array<EncryptedContactJs>>
-
-	public fun listContactsByHCPartyAndFormId(hcPartyId: String, formId: String):
-			Promise<Array<EncryptedContactJs>>
-
-	public fun listContactsByHCPartyAndFormIds(hcPartyId: String, formIds: Array<String>):
-			Promise<Array<EncryptedContactJs>>
-
-	public fun getService(serviceId: String): Promise<EncryptedServiceJs>
+	public fun getService(serviceId: String): Promise<EncryptedServiceJs?>
 
 	public fun getServices(entityIds: Array<String>): Promise<Array<EncryptedServiceJs>>
-
-	public fun getServicesLinkedTo(linkType: String, ids: Array<String>):
-			Promise<Array<EncryptedServiceJs>>
-
-	public fun listServicesByAssociationId(associationId: String): Promise<Array<EncryptedServiceJs>>
-
-	public fun listServicesByHealthElementId(hcPartyId: String, healthElementId: String):
-			Promise<Array<EncryptedServiceJs>>
-
-	public fun findContactsByOpeningDate(
-		startDate: Double,
-		endDate: Double,
-		hcPartyId: String,
-		options: dynamic,
-	): Promise<PaginatedListJs<EncryptedContactJs>>
 
 	public fun subscribeToEvents(
 		events: Array<String>,

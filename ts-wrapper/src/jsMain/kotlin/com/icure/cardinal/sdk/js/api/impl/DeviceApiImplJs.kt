@@ -7,6 +7,7 @@ import com.icure.cardinal.sdk.filters.BaseSortableFilterOptions
 import com.icure.cardinal.sdk.filters.FilterOptions
 import com.icure.cardinal.sdk.js.api.DefaultParametersSupport.convertingOptionOrDefaultNullable
 import com.icure.cardinal.sdk.js.api.DeviceApiJs
+import com.icure.cardinal.sdk.js.api.DeviceInGroupApiJs
 import com.icure.cardinal.sdk.js.filters.BaseFilterOptionsJs
 import com.icure.cardinal.sdk.js.filters.BaseSortableFilterOptionsJs
 import com.icure.cardinal.sdk.js.filters.FilterOptionsJs
@@ -18,15 +19,14 @@ import com.icure.cardinal.sdk.js.model.CheckedConverters.arrayToSet
 import com.icure.cardinal.sdk.js.model.CheckedConverters.listToArray
 import com.icure.cardinal.sdk.js.model.CheckedConverters.nullToUndefined
 import com.icure.cardinal.sdk.js.model.DeviceJs
-import com.icure.cardinal.sdk.js.model.IdWithRevJs
+import com.icure.cardinal.sdk.js.model.GroupScopedJs
 import com.icure.cardinal.sdk.js.model.StoredDocumentIdentifierJs
-import com.icure.cardinal.sdk.js.model.couchdb.DocIdentifierJs
-import com.icure.cardinal.sdk.js.model.couchdb.docIdentifier_toJs
 import com.icure.cardinal.sdk.js.model.device_fromJs
 import com.icure.cardinal.sdk.js.model.device_toJs
-import com.icure.cardinal.sdk.js.model.idWithRev_fromJs
-import com.icure.cardinal.sdk.js.model.idWithRev_toJs
+import com.icure.cardinal.sdk.js.model.groupScoped_fromJs
+import com.icure.cardinal.sdk.js.model.groupScoped_toJs
 import com.icure.cardinal.sdk.js.model.storedDocumentIdentifier_fromJs
+import com.icure.cardinal.sdk.js.model.storedDocumentIdentifier_toJs
 import com.icure.cardinal.sdk.js.subscription.EntitySubscriptionConfigurationJs
 import com.icure.cardinal.sdk.js.subscription.EntitySubscriptionJs
 import com.icure.cardinal.sdk.js.subscription.entitySubscriptionConfiguration_fromJs
@@ -34,9 +34,8 @@ import com.icure.cardinal.sdk.js.subscription.entitySubscription_toJs
 import com.icure.cardinal.sdk.js.utils.pagination.PaginatedListIteratorJs
 import com.icure.cardinal.sdk.js.utils.pagination.paginatedListIterator_toJs
 import com.icure.cardinal.sdk.model.Device
-import com.icure.cardinal.sdk.model.IdWithRev
+import com.icure.cardinal.sdk.model.GroupScoped
 import com.icure.cardinal.sdk.model.StoredDocumentIdentifier
-import com.icure.cardinal.sdk.model.couchdb.DocIdentifier
 import com.icure.cardinal.sdk.subscription.EntitySubscriptionConfiguration
 import com.icure.cardinal.sdk.subscription.SubscriptionEventType
 import kotlin.Array
@@ -54,32 +53,509 @@ import kotlinx.coroutines.promise
 internal class DeviceApiImplJs(
 	private val deviceApi: DeviceApi,
 ) : DeviceApiJs {
-	override fun deleteDeviceUnsafe(entityId: String): Promise<DocIdentifierJs> = GlobalScope.promise {
-		val entityIdConverted: String = entityId
-		val result = deviceApi.deleteDeviceUnsafe(
-			entityIdConverted,
-		)
-		docIdentifier_toJs(result)
-	}
+	override val inGroup: DeviceInGroupApiJs = object : DeviceInGroupApiJs {
+		override fun createDevice(device: GroupScopedJs<DeviceJs>): Promise<GroupScopedJs<DeviceJs>> =
+				GlobalScope.promise {
+			val deviceConverted: GroupScoped<Device> = groupScoped_fromJs(
+				device,
+				{ x1: DeviceJs ->
+					device_fromJs(x1)
+				},
+			)
+			val result = deviceApi.inGroup.createDevice(
+				deviceConverted,
+			)
+			groupScoped_toJs(
+				result,
+				{ x1: Device ->
+					device_toJs(x1)
+				},
+			)
+		}
 
-	override fun deleteDevicesUnsafe(entityIds: Array<String>): Promise<Array<DocIdentifierJs>> =
-			GlobalScope.promise {
-		val entityIdsConverted: List<String> = arrayToList(
-			entityIds,
-			"entityIds",
-			{ x1: String ->
-				x1
-			},
-		)
-		val result = deviceApi.deleteDevicesUnsafe(
-			entityIdsConverted,
-		)
-		listToArray(
-			result,
-			{ x1: DocIdentifier ->
-				docIdentifier_toJs(x1)
-			},
-		)
+		override fun createDevices(devices: Array<GroupScopedJs<DeviceJs>>):
+				Promise<Array<GroupScopedJs<DeviceJs>>> = GlobalScope.promise {
+			val devicesConverted: List<GroupScoped<Device>> = arrayToList(
+				devices,
+				"devices",
+				{ x1: GroupScopedJs<DeviceJs> ->
+					groupScoped_fromJs(
+						x1,
+						{ x2: DeviceJs ->
+							device_fromJs(x2)
+						},
+					)
+				},
+			)
+			val result = deviceApi.inGroup.createDevices(
+				devicesConverted,
+			)
+			listToArray(
+				result,
+				{ x1: GroupScoped<Device> ->
+					groupScoped_toJs(
+						x1,
+						{ x2: Device ->
+							device_toJs(x2)
+						},
+					)
+				},
+			)
+		}
+
+		override fun getDevice(groupId: String, deviceId: String): Promise<GroupScopedJs<DeviceJs>?> =
+				GlobalScope.promise {
+			val groupIdConverted: String = groupId
+			val deviceIdConverted: String = deviceId
+			val result = deviceApi.inGroup.getDevice(
+				groupIdConverted,
+				deviceIdConverted,
+			)
+			nullToUndefined(
+				result?.let { nonNull1 ->
+					groupScoped_toJs(
+						nonNull1,
+						{ x1: Device ->
+							device_toJs(x1)
+						},
+					)
+				}
+			)
+		}
+
+		override fun getDevices(groupId: String, devicesIds: Array<String>):
+				Promise<Array<GroupScopedJs<DeviceJs>>> = GlobalScope.promise {
+			val groupIdConverted: String = groupId
+			val devicesIdsConverted: List<String> = arrayToList(
+				devicesIds,
+				"devicesIds",
+				{ x1: String ->
+					x1
+				},
+			)
+			val result = deviceApi.inGroup.getDevices(
+				groupIdConverted,
+				devicesIdsConverted,
+			)
+			listToArray(
+				result,
+				{ x1: GroupScoped<Device> ->
+					groupScoped_toJs(
+						x1,
+						{ x2: Device ->
+							device_toJs(x2)
+						},
+					)
+				},
+			)
+		}
+
+		override fun modifyDevice(device: GroupScopedJs<DeviceJs>): Promise<GroupScopedJs<DeviceJs>> =
+				GlobalScope.promise {
+			val deviceConverted: GroupScoped<Device> = groupScoped_fromJs(
+				device,
+				{ x1: DeviceJs ->
+					device_fromJs(x1)
+				},
+			)
+			val result = deviceApi.inGroup.modifyDevice(
+				deviceConverted,
+			)
+			groupScoped_toJs(
+				result,
+				{ x1: Device ->
+					device_toJs(x1)
+				},
+			)
+		}
+
+		override fun modifyDevices(devices: Array<GroupScopedJs<DeviceJs>>):
+				Promise<Array<GroupScopedJs<DeviceJs>>> = GlobalScope.promise {
+			val devicesConverted: List<GroupScoped<Device>> = arrayToList(
+				devices,
+				"devices",
+				{ x1: GroupScopedJs<DeviceJs> ->
+					groupScoped_fromJs(
+						x1,
+						{ x2: DeviceJs ->
+							device_fromJs(x2)
+						},
+					)
+				},
+			)
+			val result = deviceApi.inGroup.modifyDevices(
+				devicesConverted,
+			)
+			listToArray(
+				result,
+				{ x1: GroupScoped<Device> ->
+					groupScoped_toJs(
+						x1,
+						{ x2: Device ->
+							device_toJs(x2)
+						},
+					)
+				},
+			)
+		}
+
+		override fun deleteDeviceById(entityId: GroupScopedJs<StoredDocumentIdentifierJs>):
+				Promise<GroupScopedJs<StoredDocumentIdentifierJs>> = GlobalScope.promise {
+			val entityIdConverted: GroupScoped<StoredDocumentIdentifier> = groupScoped_fromJs(
+				entityId,
+				{ x1: StoredDocumentIdentifierJs ->
+					storedDocumentIdentifier_fromJs(x1)
+				},
+			)
+			val result = deviceApi.inGroup.deleteDeviceById(
+				entityIdConverted,
+			)
+			groupScoped_toJs(
+				result,
+				{ x1: StoredDocumentIdentifier ->
+					storedDocumentIdentifier_toJs(x1)
+				},
+			)
+		}
+
+		override fun deleteDeviceByIds(entityIds: Array<GroupScopedJs<StoredDocumentIdentifierJs>>):
+				Promise<Array<GroupScopedJs<StoredDocumentIdentifierJs>>> = GlobalScope.promise {
+			val entityIdsConverted: List<GroupScoped<StoredDocumentIdentifier>> = arrayToList(
+				entityIds,
+				"entityIds",
+				{ x1: GroupScopedJs<StoredDocumentIdentifierJs> ->
+					groupScoped_fromJs(
+						x1,
+						{ x2: StoredDocumentIdentifierJs ->
+							storedDocumentIdentifier_fromJs(x2)
+						},
+					)
+				},
+			)
+			val result = deviceApi.inGroup.deleteDeviceByIds(
+				entityIdsConverted,
+			)
+			listToArray(
+				result,
+				{ x1: GroupScoped<StoredDocumentIdentifier> ->
+					groupScoped_toJs(
+						x1,
+						{ x2: StoredDocumentIdentifier ->
+							storedDocumentIdentifier_toJs(x2)
+						},
+					)
+				},
+			)
+		}
+
+		override fun deleteDevice(device: GroupScopedJs<DeviceJs>):
+				Promise<GroupScopedJs<StoredDocumentIdentifierJs>> = GlobalScope.promise {
+			val deviceConverted: GroupScoped<Device> = groupScoped_fromJs(
+				device,
+				{ x1: DeviceJs ->
+					device_fromJs(x1)
+				},
+			)
+			val result = deviceApi.inGroup.deleteDevice(
+				deviceConverted,
+			)
+			groupScoped_toJs(
+				result,
+				{ x1: StoredDocumentIdentifier ->
+					storedDocumentIdentifier_toJs(x1)
+				},
+			)
+		}
+
+		override fun deleteDevices(devices: Array<GroupScopedJs<DeviceJs>>):
+				Promise<Array<GroupScopedJs<StoredDocumentIdentifierJs>>> = GlobalScope.promise {
+			val devicesConverted: List<GroupScoped<Device>> = arrayToList(
+				devices,
+				"devices",
+				{ x1: GroupScopedJs<DeviceJs> ->
+					groupScoped_fromJs(
+						x1,
+						{ x2: DeviceJs ->
+							device_fromJs(x2)
+						},
+					)
+				},
+			)
+			val result = deviceApi.inGroup.deleteDevices(
+				devicesConverted,
+			)
+			listToArray(
+				result,
+				{ x1: GroupScoped<StoredDocumentIdentifier> ->
+					groupScoped_toJs(
+						x1,
+						{ x2: StoredDocumentIdentifier ->
+							storedDocumentIdentifier_toJs(x2)
+						},
+					)
+				},
+			)
+		}
+
+		override fun undeleteDeviceById(entityId: GroupScopedJs<StoredDocumentIdentifierJs>):
+				Promise<GroupScopedJs<DeviceJs>> = GlobalScope.promise {
+			val entityIdConverted: GroupScoped<StoredDocumentIdentifier> = groupScoped_fromJs(
+				entityId,
+				{ x1: StoredDocumentIdentifierJs ->
+					storedDocumentIdentifier_fromJs(x1)
+				},
+			)
+			val result = deviceApi.inGroup.undeleteDeviceById(
+				entityIdConverted,
+			)
+			groupScoped_toJs(
+				result,
+				{ x1: Device ->
+					device_toJs(x1)
+				},
+			)
+		}
+
+		override fun undeleteDeviceByIds(entityIds: Array<GroupScopedJs<StoredDocumentIdentifierJs>>):
+				Promise<Array<GroupScopedJs<DeviceJs>>> = GlobalScope.promise {
+			val entityIdsConverted: List<GroupScoped<StoredDocumentIdentifier>> = arrayToList(
+				entityIds,
+				"entityIds",
+				{ x1: GroupScopedJs<StoredDocumentIdentifierJs> ->
+					groupScoped_fromJs(
+						x1,
+						{ x2: StoredDocumentIdentifierJs ->
+							storedDocumentIdentifier_fromJs(x2)
+						},
+					)
+				},
+			)
+			val result = deviceApi.inGroup.undeleteDeviceByIds(
+				entityIdsConverted,
+			)
+			listToArray(
+				result,
+				{ x1: GroupScoped<Device> ->
+					groupScoped_toJs(
+						x1,
+						{ x2: Device ->
+							device_toJs(x2)
+						},
+					)
+				},
+			)
+		}
+
+		override fun undeleteDevice(device: GroupScopedJs<DeviceJs>): Promise<GroupScopedJs<DeviceJs>> =
+				GlobalScope.promise {
+			val deviceConverted: GroupScoped<Device> = groupScoped_fromJs(
+				device,
+				{ x1: DeviceJs ->
+					device_fromJs(x1)
+				},
+			)
+			val result = deviceApi.inGroup.undeleteDevice(
+				deviceConverted,
+			)
+			groupScoped_toJs(
+				result,
+				{ x1: Device ->
+					device_toJs(x1)
+				},
+			)
+		}
+
+		override fun undeleteDevices(devices: Array<GroupScopedJs<DeviceJs>>):
+				Promise<Array<GroupScopedJs<DeviceJs>>> = GlobalScope.promise {
+			val devicesConverted: List<GroupScoped<Device>> = arrayToList(
+				devices,
+				"devices",
+				{ x1: GroupScopedJs<DeviceJs> ->
+					groupScoped_fromJs(
+						x1,
+						{ x2: DeviceJs ->
+							device_fromJs(x2)
+						},
+					)
+				},
+			)
+			val result = deviceApi.inGroup.undeleteDevices(
+				devicesConverted,
+			)
+			listToArray(
+				result,
+				{ x1: GroupScoped<Device> ->
+					groupScoped_toJs(
+						x1,
+						{ x2: Device ->
+							device_toJs(x2)
+						},
+					)
+				},
+			)
+		}
+
+		override fun purgeDeviceById(entityId: GroupScopedJs<StoredDocumentIdentifierJs>): Promise<Unit> =
+				GlobalScope.promise {
+			val entityIdConverted: GroupScoped<StoredDocumentIdentifier> = groupScoped_fromJs(
+				entityId,
+				{ x1: StoredDocumentIdentifierJs ->
+					storedDocumentIdentifier_fromJs(x1)
+				},
+			)
+			deviceApi.inGroup.purgeDeviceById(
+				entityIdConverted,
+			)
+
+		}
+
+		override fun purgeDeviceByIds(entityIds: Array<GroupScopedJs<StoredDocumentIdentifierJs>>):
+				Promise<Array<GroupScopedJs<StoredDocumentIdentifierJs>>> = GlobalScope.promise {
+			val entityIdsConverted: List<GroupScoped<StoredDocumentIdentifier>> = arrayToList(
+				entityIds,
+				"entityIds",
+				{ x1: GroupScopedJs<StoredDocumentIdentifierJs> ->
+					groupScoped_fromJs(
+						x1,
+						{ x2: StoredDocumentIdentifierJs ->
+							storedDocumentIdentifier_fromJs(x2)
+						},
+					)
+				},
+			)
+			val result = deviceApi.inGroup.purgeDeviceByIds(
+				entityIdsConverted,
+			)
+			listToArray(
+				result,
+				{ x1: GroupScoped<StoredDocumentIdentifier> ->
+					groupScoped_toJs(
+						x1,
+						{ x2: StoredDocumentIdentifier ->
+							storedDocumentIdentifier_toJs(x2)
+						},
+					)
+				},
+			)
+		}
+
+		override fun purgeDevice(device: GroupScopedJs<DeviceJs>): Promise<Unit> = GlobalScope.promise {
+			val deviceConverted: GroupScoped<Device> = groupScoped_fromJs(
+				device,
+				{ x1: DeviceJs ->
+					device_fromJs(x1)
+				},
+			)
+			deviceApi.inGroup.purgeDevice(
+				deviceConverted,
+			)
+
+		}
+
+		override fun purgeDevices(devices: Array<GroupScopedJs<DeviceJs>>):
+				Promise<Array<GroupScopedJs<StoredDocumentIdentifierJs>>> = GlobalScope.promise {
+			val devicesConverted: List<GroupScoped<Device>> = arrayToList(
+				devices,
+				"devices",
+				{ x1: GroupScopedJs<DeviceJs> ->
+					groupScoped_fromJs(
+						x1,
+						{ x2: DeviceJs ->
+							device_fromJs(x2)
+						},
+					)
+				},
+			)
+			val result = deviceApi.inGroup.purgeDevices(
+				devicesConverted,
+			)
+			listToArray(
+				result,
+				{ x1: GroupScoped<StoredDocumentIdentifier> ->
+					groupScoped_toJs(
+						x1,
+						{ x2: StoredDocumentIdentifier ->
+							storedDocumentIdentifier_toJs(x2)
+						},
+					)
+				},
+			)
+		}
+
+		override fun filterDevicesBy(groupId: String, filter: BaseFilterOptionsJs<DeviceJs>):
+				Promise<PaginatedListIteratorJs<GroupScopedJs<DeviceJs>>> = GlobalScope.promise {
+			val groupIdConverted: String = groupId
+			val filterConverted: BaseFilterOptions<Device> = baseFilterOptions_fromJs(filter)
+			val result = deviceApi.inGroup.filterDevicesBy(
+				groupIdConverted,
+				filterConverted,
+			)
+			paginatedListIterator_toJs(
+				result,
+				{ x1: GroupScoped<Device> ->
+					groupScoped_toJs(
+						x1,
+						{ x2: Device ->
+							device_toJs(x2)
+						},
+					)
+				},
+			)
+		}
+
+		override fun filterDevicesBySorted(groupId: String,
+				filter: BaseSortableFilterOptionsJs<DeviceJs>):
+				Promise<PaginatedListIteratorJs<GroupScopedJs<DeviceJs>>> = GlobalScope.promise {
+			val groupIdConverted: String = groupId
+			val filterConverted: BaseSortableFilterOptions<Device> = baseSortableFilterOptions_fromJs(filter)
+			val result = deviceApi.inGroup.filterDevicesBySorted(
+				groupIdConverted,
+				filterConverted,
+			)
+			paginatedListIterator_toJs(
+				result,
+				{ x1: GroupScoped<Device> ->
+					groupScoped_toJs(
+						x1,
+						{ x2: Device ->
+							device_toJs(x2)
+						},
+					)
+				},
+			)
+		}
+
+		override fun matchDevicesBy(groupId: String, filter: BaseFilterOptionsJs<DeviceJs>):
+				Promise<Array<String>> = GlobalScope.promise {
+			val groupIdConverted: String = groupId
+			val filterConverted: BaseFilterOptions<Device> = baseFilterOptions_fromJs(filter)
+			val result = deviceApi.inGroup.matchDevicesBy(
+				groupIdConverted,
+				filterConverted,
+			)
+			listToArray(
+				result,
+				{ x1: String ->
+					x1
+				},
+			)
+		}
+
+		override fun matchDevicesBySorted(groupId: String, filter: BaseSortableFilterOptionsJs<DeviceJs>):
+				Promise<Array<String>> = GlobalScope.promise {
+			val groupIdConverted: String = groupId
+			val filterConverted: BaseSortableFilterOptions<Device> = baseSortableFilterOptions_fromJs(filter)
+			val result = deviceApi.inGroup.matchDevicesBySorted(
+				groupIdConverted,
+				filterConverted,
+			)
+			listToArray(
+				result,
+				{ x1: String ->
+					x1
+				},
+			)
+		}
 	}
 
 	override fun getDevice(deviceId: String): Promise<DeviceJs?> = GlobalScope.promise {
@@ -113,23 +589,15 @@ internal class DeviceApiImplJs(
 		)
 	}
 
-	override fun createDevice(p: DeviceJs): Promise<DeviceJs> = GlobalScope.promise {
-		val pConverted: Device = device_fromJs(p)
-		val result = deviceApi.createDevice(
-			pConverted,
-		)
-		device_toJs(result)
-	}
-
-	override fun modifyDevice(device: DeviceJs): Promise<DeviceJs> = GlobalScope.promise {
+	override fun createDevice(device: DeviceJs): Promise<DeviceJs> = GlobalScope.promise {
 		val deviceConverted: Device = device_fromJs(device)
-		val result = deviceApi.modifyDevice(
+		val result = deviceApi.createDevice(
 			deviceConverted,
 		)
 		device_toJs(result)
 	}
 
-	override fun createDevices(devices: Array<DeviceJs>): Promise<Array<IdWithRevJs>> =
+	override fun createDevices(devices: Array<DeviceJs>): Promise<Array<DeviceJs>> =
 			GlobalScope.promise {
 		val devicesConverted: List<Device> = arrayToList(
 			devices,
@@ -143,13 +611,21 @@ internal class DeviceApiImplJs(
 		)
 		listToArray(
 			result,
-			{ x1: IdWithRev ->
-				idWithRev_toJs(x1)
+			{ x1: Device ->
+				device_toJs(x1)
 			},
 		)
 	}
 
-	override fun modifyDevices(devices: Array<DeviceJs>): Promise<Array<IdWithRevJs>> =
+	override fun modifyDevice(device: DeviceJs): Promise<DeviceJs> = GlobalScope.promise {
+		val deviceConverted: Device = device_fromJs(device)
+		val result = deviceApi.modifyDevice(
+			deviceConverted,
+		)
+		device_toJs(result)
+	}
+
+	override fun modifyDevices(devices: Array<DeviceJs>): Promise<Array<DeviceJs>> =
 			GlobalScope.promise {
 		val devicesConverted: List<Device> = arrayToList(
 			devices,
@@ -163,8 +639,184 @@ internal class DeviceApiImplJs(
 		)
 		listToArray(
 			result,
-			{ x1: IdWithRev ->
-				idWithRev_toJs(x1)
+			{ x1: Device ->
+				device_toJs(x1)
+			},
+		)
+	}
+
+	override fun deleteDeviceById(entityId: String, rev: String): Promise<StoredDocumentIdentifierJs> =
+			GlobalScope.promise {
+		val entityIdConverted: String = entityId
+		val revConverted: String = rev
+		val result = deviceApi.deleteDeviceById(
+			entityIdConverted,
+			revConverted,
+		)
+		storedDocumentIdentifier_toJs(result)
+	}
+
+	override fun deleteDevicesByIds(entityIds: Array<StoredDocumentIdentifierJs>):
+			Promise<Array<StoredDocumentIdentifierJs>> = GlobalScope.promise {
+		val entityIdsConverted: List<StoredDocumentIdentifier> = arrayToList(
+			entityIds,
+			"entityIds",
+			{ x1: StoredDocumentIdentifierJs ->
+				storedDocumentIdentifier_fromJs(x1)
+			},
+		)
+		val result = deviceApi.deleteDevicesByIds(
+			entityIdsConverted,
+		)
+		listToArray(
+			result,
+			{ x1: StoredDocumentIdentifier ->
+				storedDocumentIdentifier_toJs(x1)
+			},
+		)
+	}
+
+	override fun deleteDevice(device: DeviceJs): Promise<StoredDocumentIdentifierJs> =
+			GlobalScope.promise {
+		val deviceConverted: Device = device_fromJs(device)
+		val result = deviceApi.deleteDevice(
+			deviceConverted,
+		)
+		storedDocumentIdentifier_toJs(result)
+	}
+
+	override fun deleteDevices(devices: Array<DeviceJs>): Promise<Array<StoredDocumentIdentifierJs>> =
+			GlobalScope.promise {
+		val devicesConverted: List<Device> = arrayToList(
+			devices,
+			"devices",
+			{ x1: DeviceJs ->
+				device_fromJs(x1)
+			},
+		)
+		val result = deviceApi.deleteDevices(
+			devicesConverted,
+		)
+		listToArray(
+			result,
+			{ x1: StoredDocumentIdentifier ->
+				storedDocumentIdentifier_toJs(x1)
+			},
+		)
+	}
+
+	override fun undeleteDeviceById(id: String, rev: String): Promise<DeviceJs> = GlobalScope.promise {
+		val idConverted: String = id
+		val revConverted: String = rev
+		val result = deviceApi.undeleteDeviceById(
+			idConverted,
+			revConverted,
+		)
+		device_toJs(result)
+	}
+
+	override fun undeleteDevicesByIds(entityIds: Array<StoredDocumentIdentifierJs>):
+			Promise<Array<DeviceJs>> = GlobalScope.promise {
+		val entityIdsConverted: List<StoredDocumentIdentifier> = arrayToList(
+			entityIds,
+			"entityIds",
+			{ x1: StoredDocumentIdentifierJs ->
+				storedDocumentIdentifier_fromJs(x1)
+			},
+		)
+		val result = deviceApi.undeleteDevicesByIds(
+			entityIdsConverted,
+		)
+		listToArray(
+			result,
+			{ x1: Device ->
+				device_toJs(x1)
+			},
+		)
+	}
+
+	override fun undeleteDevice(device: DeviceJs): Promise<DeviceJs> = GlobalScope.promise {
+		val deviceConverted: Device = device_fromJs(device)
+		val result = deviceApi.undeleteDevice(
+			deviceConverted,
+		)
+		device_toJs(result)
+	}
+
+	override fun undeleteDevices(devices: Array<DeviceJs>): Promise<Array<DeviceJs>> =
+			GlobalScope.promise {
+		val devicesConverted: List<Device> = arrayToList(
+			devices,
+			"devices",
+			{ x1: DeviceJs ->
+				device_fromJs(x1)
+			},
+		)
+		val result = deviceApi.undeleteDevices(
+			devicesConverted,
+		)
+		listToArray(
+			result,
+			{ x1: Device ->
+				device_toJs(x1)
+			},
+		)
+	}
+
+	override fun purgeDeviceById(id: String, rev: String): Promise<Unit> = GlobalScope.promise {
+		val idConverted: String = id
+		val revConverted: String = rev
+		deviceApi.purgeDeviceById(
+			idConverted,
+			revConverted,
+		)
+
+	}
+
+	override fun purgeDevicesByIds(entityIds: Array<StoredDocumentIdentifierJs>):
+			Promise<Array<StoredDocumentIdentifierJs>> = GlobalScope.promise {
+		val entityIdsConverted: List<StoredDocumentIdentifier> = arrayToList(
+			entityIds,
+			"entityIds",
+			{ x1: StoredDocumentIdentifierJs ->
+				storedDocumentIdentifier_fromJs(x1)
+			},
+		)
+		val result = deviceApi.purgeDevicesByIds(
+			entityIdsConverted,
+		)
+		listToArray(
+			result,
+			{ x1: StoredDocumentIdentifier ->
+				storedDocumentIdentifier_toJs(x1)
+			},
+		)
+	}
+
+	override fun purgeDevice(device: DeviceJs): Promise<Unit> = GlobalScope.promise {
+		val deviceConverted: Device = device_fromJs(device)
+		deviceApi.purgeDevice(
+			deviceConverted,
+		)
+
+	}
+
+	override fun purgeDevices(devices: Array<DeviceJs>): Promise<Array<StoredDocumentIdentifierJs>> =
+			GlobalScope.promise {
+		val devicesConverted: List<Device> = arrayToList(
+			devices,
+			"devices",
+			{ x1: DeviceJs ->
+				device_fromJs(x1)
+			},
+		)
+		val result = deviceApi.purgeDevices(
+			devicesConverted,
+		)
+		listToArray(
+			result,
+			{ x1: StoredDocumentIdentifier ->
+				storedDocumentIdentifier_toJs(x1)
 			},
 		)
 	}
@@ -221,175 +873,6 @@ internal class DeviceApiImplJs(
 			result,
 			{ x1: String ->
 				x1
-			},
-		)
-	}
-
-	override fun deleteDeviceById(entityId: String, rev: String): Promise<DocIdentifierJs> =
-			GlobalScope.promise {
-		val entityIdConverted: String = entityId
-		val revConverted: String = rev
-		val result = deviceApi.deleteDeviceById(
-			entityIdConverted,
-			revConverted,
-		)
-		docIdentifier_toJs(result)
-	}
-
-	override fun deleteDevicesByIds(entityIds: Array<StoredDocumentIdentifierJs>):
-			Promise<Array<DocIdentifierJs>> = GlobalScope.promise {
-		val entityIdsConverted: List<StoredDocumentIdentifier> = arrayToList(
-			entityIds,
-			"entityIds",
-			{ x1: StoredDocumentIdentifierJs ->
-				storedDocumentIdentifier_fromJs(x1)
-			},
-		)
-		val result = deviceApi.deleteDevicesByIds(
-			entityIdsConverted,
-		)
-		listToArray(
-			result,
-			{ x1: DocIdentifier ->
-				docIdentifier_toJs(x1)
-			},
-		)
-	}
-
-	override fun purgeDeviceById(id: String, rev: String): Promise<Unit> = GlobalScope.promise {
-		val idConverted: String = id
-		val revConverted: String = rev
-		deviceApi.purgeDeviceById(
-			idConverted,
-			revConverted,
-		)
-
-	}
-
-	override fun undeleteDeviceById(id: String, rev: String): Promise<DeviceJs> = GlobalScope.promise {
-		val idConverted: String = id
-		val revConverted: String = rev
-		val result = deviceApi.undeleteDeviceById(
-			idConverted,
-			revConverted,
-		)
-		device_toJs(result)
-	}
-
-	override fun deleteDevice(device: DeviceJs): Promise<DocIdentifierJs> = GlobalScope.promise {
-		val deviceConverted: Device = device_fromJs(device)
-		val result = deviceApi.deleteDevice(
-			deviceConverted,
-		)
-		docIdentifier_toJs(result)
-	}
-
-	override fun deleteDevices(devices: Array<DeviceJs>): Promise<Array<DocIdentifierJs>> =
-			GlobalScope.promise {
-		val devicesConverted: List<Device> = arrayToList(
-			devices,
-			"devices",
-			{ x1: DeviceJs ->
-				device_fromJs(x1)
-			},
-		)
-		val result = deviceApi.deleteDevices(
-			devicesConverted,
-		)
-		listToArray(
-			result,
-			{ x1: DocIdentifier ->
-				docIdentifier_toJs(x1)
-			},
-		)
-	}
-
-	override fun purgeDevice(device: DeviceJs): Promise<Unit> = GlobalScope.promise {
-		val deviceConverted: Device = device_fromJs(device)
-		deviceApi.purgeDevice(
-			deviceConverted,
-		)
-
-	}
-
-	override fun undeleteDevice(device: DeviceJs): Promise<DeviceJs> = GlobalScope.promise {
-		val deviceConverted: Device = device_fromJs(device)
-		val result = deviceApi.undeleteDevice(
-			deviceConverted,
-		)
-		device_toJs(result)
-	}
-
-	override fun getDevicesInGroup(groupId: String, options: dynamic): Promise<Array<DeviceJs>> {
-		val _options = options ?: js("{}")
-		return GlobalScope.promise {
-			val groupIdConverted: String = groupId
-			val deviceIdsConverted: List<String>? = convertingOptionOrDefaultNullable(
-				_options,
-				"deviceIds",
-				null
-			) { deviceIds: Array<String>? ->
-				arrayToList(
-					deviceIds,
-					"deviceIds",
-					{ x1: String ->
-						x1
-					},
-				)
-			}
-			val result = deviceApi.getDevicesInGroup(
-				groupIdConverted,
-				deviceIdsConverted,
-			)
-			listToArray(
-				result,
-				{ x1: Device ->
-					device_toJs(x1)
-				},
-			)
-		}
-	}
-
-	override fun modifyDeviceInGroup(groupId: String, device: DeviceJs): Promise<DeviceJs> =
-			GlobalScope.promise {
-		val groupIdConverted: String = groupId
-		val deviceConverted: Device = device_fromJs(device)
-		val result = deviceApi.modifyDeviceInGroup(
-			groupIdConverted,
-			deviceConverted,
-		)
-		device_toJs(result)
-	}
-
-	override fun createDeviceInGroup(groupId: String, device: DeviceJs): Promise<DeviceJs> =
-			GlobalScope.promise {
-		val groupIdConverted: String = groupId
-		val deviceConverted: Device = device_fromJs(device)
-		val result = deviceApi.createDeviceInGroup(
-			groupIdConverted,
-			deviceConverted,
-		)
-		device_toJs(result)
-	}
-
-	override fun deleteDevicesInGroup(groupId: String, deviceIds: Array<IdWithRevJs>):
-			Promise<Array<DocIdentifierJs>> = GlobalScope.promise {
-		val groupIdConverted: String = groupId
-		val deviceIdsConverted: List<IdWithRev> = arrayToList(
-			deviceIds,
-			"deviceIds",
-			{ x1: IdWithRevJs ->
-				idWithRev_fromJs(x1)
-			},
-		)
-		val result = deviceApi.deleteDevicesInGroup(
-			groupIdConverted,
-			deviceIdsConverted,
-		)
-		listToArray(
-			result,
-			{ x1: DocIdentifier ->
-				docIdentifier_toJs(x1)
 			},
 		)
 	}

@@ -12,7 +12,9 @@ import com.icure.cardinal.sdk.filters.SortableFilterOptions
 import com.icure.cardinal.sdk.model.DecryptedPatient
 import com.icure.cardinal.sdk.model.EncryptedPatient
 import com.icure.cardinal.sdk.model.EntityReferenceInGroup
+import com.icure.cardinal.sdk.model.Group
 import com.icure.cardinal.sdk.model.GroupScoped
+import com.icure.cardinal.sdk.model.HealthElement
 import com.icure.cardinal.sdk.model.PaginatedList
 import com.icure.cardinal.sdk.model.Patient
 import com.icure.cardinal.sdk.model.StoredDocumentIdentifier
@@ -20,6 +22,7 @@ import com.icure.cardinal.sdk.model.User
 import com.icure.cardinal.sdk.model.couchdb.SortDirection
 import com.icure.cardinal.sdk.model.embed.AccessLevel
 import com.icure.cardinal.sdk.model.specializations.HexString
+import com.icure.cardinal.sdk.model.toStoredDocumentIdentifier
 import com.icure.cardinal.sdk.subscription.Subscribable
 import com.icure.cardinal.sdk.utils.DefaultValue
 import com.icure.cardinal.sdk.utils.EntityEncryptionException
@@ -28,11 +31,6 @@ import com.icure.cardinal.sdk.utils.pagination.PaginatedListIterator
 
 /* This interface includes the API calls that do not need encryption keys and do not return or consume encrypted/decrypted items, they are completely agnostic towards the presence of encrypted items */
 interface PatientBasicFlavourlessApi {
-	@Deprecated("Deletion without rev is unsafe")
-	suspend fun deletePatientUnsafe(entityId: String): StoredDocumentIdentifier
-	@Deprecated("Deletion without rev is unsafe")
-	suspend fun deletePatientsUnsafe(entityIds: List<String>): List<StoredDocumentIdentifier>
-
 	/**
 	 * Deletes a patient. If you don't have write access to the patient the method will fail.
 	 * @param entityId id of the patient.
@@ -60,6 +58,14 @@ interface PatientBasicFlavourlessApi {
 	suspend fun purgePatientById(id: String, rev: String)
 
 	/**
+	 * Permanently deletes many patients.
+	 * @param entityIds ids and revisions of the patients to delete
+	 * @return the id and revision of the deleted patients. If some entities couldn't be deleted (for example
+	 * because you had no write access to them) they will not be included in this list.
+	 */
+	suspend fun purgePatientsByIds(entityIds: List<StoredDocumentIdentifier>): List<StoredDocumentIdentifier>
+
+	/**
 	 * Deletes a patient. If you don't have write access to the patient the method will fail.
 	 * @param patient the patient to delete
 	 * @return the id and revision of the deleted patient.
@@ -76,7 +82,7 @@ interface PatientBasicFlavourlessApi {
 	 */
 	suspend fun deletePatients(patients: List<Patient>): List<StoredDocumentIdentifier> =
 		deletePatientsByIds(patients.map { patient ->
-			StoredDocumentIdentifier(patient.id, requireNotNull(patient.rev) { "Can't delete a patient that has no rev" })
+			patient.toStoredDocumentIdentifier()
 		})
 
 	/**
@@ -89,46 +95,62 @@ interface PatientBasicFlavourlessApi {
 	}
 
 	/**
+	 * Permanently deletes many patients.
+	 * @param patients the patients to purge.
+	 * @return the id and revision of the deleted patients. If some entities couldn't be deleted (for example
+	 * because you had no write access to them) they will not be included in this list.
+	 */
+	suspend fun purgePatients(patients: List<Patient>): List<StoredDocumentIdentifier> =
+		purgePatientsByIds(patients.map { it.toStoredDocumentIdentifier() })
+
+	/**
 	 * Get all data owners with access to the provided patient, attempting to identify any unknown anonymous data owners
 	 * using delegations de-anonymization metadata.
 	 * @param patient a patient
 	 * @return information on users with access to the provided patient
 	 */
 	suspend fun getDataOwnersWithAccessTo(patient: Patient): EntityAccessInformation
-
-	@Deprecated("This method gives inaccurate results outside of the simples scenarios, use match instead")
-	suspend fun countOfPatients(hcPartyId: String): Int
 }
 
 interface PatientBasicFlavourlessInGroupApi {
 	/**
 	 * In-group version of [PatientBasicFlavourlessApi.deletePatientById]
 	 */
-	// TODO suspend fun deletePatientById(groupId: String, entityId: String, rev: String): GroupScoped<StoredDocumentIdentifier>
+	suspend fun deletePatientById(entityId: GroupScoped<StoredDocumentIdentifier>): GroupScoped<StoredDocumentIdentifier>
 
 	/**
 	 * In-group version of [PatientBasicFlavourlessApi.deletePatientsByIds]
 	 */
-	// TODO? suspend fun deletePatientsByIds(entityIds: List<GroupScoped<IdWithMandatoryRev>>): List<GroupScoped<StoredDocumentIdentifier>> // would need to make GroupScoped constructor public, provide a method for converting GroupScoped<Revisionable> to GroupScoped<IdWithMandatoryRev>>, or similar...
+	suspend fun deletePatientsByIds(entityIds: List<GroupScoped<StoredDocumentIdentifier>>): List<GroupScoped<StoredDocumentIdentifier>>
+
 	/**
 	 * In-group version of [PatientBasicFlavourlessApi.purgePatientById]
 	 */
-	// TODO suspend fun purgePatientById(groupId: String, entityId: String, rev: String)
+	suspend fun purgePatientById(entityId: GroupScoped<StoredDocumentIdentifier>)
+
+	/**
+	 * In-group version of [PatientBasicFlavourlessApi.purgePatientsByIds]
+	 */
+	suspend fun purgePatientsByIds(entityIds: List<GroupScoped<StoredDocumentIdentifier>>): List<GroupScoped<StoredDocumentIdentifier>>
 
 	/**
 	 * In-group version of [PatientBasicFlavourlessApi.deletePatient]
 	 */
-	// TODO suspend fun deletePatient(patient: GroupScoped<Patient>): GroupScoped<StoredDocumentIdentifier>
+	suspend fun deletePatient(patient: GroupScoped<Patient>): GroupScoped<StoredDocumentIdentifier> =
+		deletePatientById(patient.toStoredDocumentIdentifier())
 
 	/**
 	 * In-group version of [PatientBasicFlavourlessApi.deletePatients]
 	 */
-	// TODO suspend fun deletePatients(patients: List<GroupScoped<Patient>>): List<GroupScoped<StoredDocumentIdentifier>>
+	suspend fun deletePatients(patients: List<GroupScoped<Patient>>): List<GroupScoped<StoredDocumentIdentifier>> =
+		deletePatientsByIds(patients.map { it.toStoredDocumentIdentifier() })
 
 	/**
 	 * In-group version of [PatientBasicFlavourlessApi.purgePatient]
 	 */
-	// TODO suspend fun purgePatient(patient: GroupScoped<Patient>)
+	suspend fun purgePatient(patient: GroupScoped<Patient>) {
+		purgePatientById(patient.toStoredDocumentIdentifier())
+	}
 
 	/**
 	 * In-group version of [PatientBasicFlavourlessApi.getDataOwnersWithAccessTo].
@@ -147,13 +169,6 @@ interface PatientBasicFlavouredApi<E : Patient> {
 	suspend fun createPatient(patient: E): E
 
 	/**
-	 * Similar to [createPatients] but returns only the id and revision of the successfully created patients.
-	 * Note that while most of the created patient entity will be the same as the input, some fields (such as
-	 * [Patient.created]) are automatically filled in if left empty.
-	 */
-	suspend fun createPatientsMinimal(patients: List<E>): List<StoredDocumentIdentifier>
-
-	/**
 	 * Bulk version of [createPatient], returns all the successfully created patients.
 	 * If a patient couldn't be created (for example because there is already a patient with the same id) it will be
 	 * excluded from the result.
@@ -168,6 +183,15 @@ interface PatientBasicFlavouredApi<E : Patient> {
 	 */
 	suspend fun undeletePatient(patient: Patient): Patient =
 		undeletePatientById(patient.id, requireNotNull(patient.rev) { "Can't delete a patient that has no rev" })
+
+	/**
+	 * Restores a batch of patients that were marked as deleted.
+	 * @param patients the patients to restore.
+	 * @return the restored patients. If some entities couldn't be restored (because the user does not have access or the revision is not
+	 * up-to-date), then those entities will not be restored and will not appear in this list.
+	 */
+	suspend fun undeletePatients(patients: List<Patient>): List<E> =
+		undeletePatientsByIds(patients.map { it.toStoredDocumentIdentifier() })
 
 	/**
 	 * Modifies a patient. You need to have write access to the entity.
@@ -193,7 +217,7 @@ interface PatientBasicFlavouredApi<E : Patient> {
 	 * @param ids the ids and revisions of the patients to restore
 	 * @return the restored entities.
 	 */
-	suspend fun undeletePatients(ids: List<StoredDocumentIdentifier>): List<E>
+	suspend fun undeletePatientsByIds(ids: List<StoredDocumentIdentifier>): List<E>
 
 	/**
 	 * Get a patient by its id. You must have read access to the entity. Fails if the id does not correspond to any
@@ -220,133 +244,6 @@ interface PatientBasicFlavouredApi<E : Patient> {
 	 */
 	suspend fun getPatientResolvingMerges(patientId: String, maxMergeDepth: Int? = null): E
 
-	// TODO: Implement filter for this method
-	@Deprecated("Find methods are deprecated", ReplaceWith("filterPatientsBy()"))
-	suspend fun findPatientsByNameBirthSsinAuto(
-		@DefaultValue("null")
-		healthcarePartyId: String? = null,
-		filterValue: String,
-		@DefaultValue("null")
-		startKey: String? = null,
-		@DefaultValue("null")
-		startDocumentId: String? = null,
-		@DefaultValue("null")
-		limit: Int? = null,
-		@DefaultValue("com.icure.cardinal.sdk.model.couchdb.SortDirection.Asc")
-		sortDirection: SortDirection = SortDirection.Asc,
-	): PaginatedList<E>
-
-	// TODO: Implement filter for this method
-	@Deprecated("List methods are deprecated", ReplaceWith("filterPatientsBy()"))
-	suspend fun listPatientsOfHcParty(
-		hcPartyId: String,
-		@DefaultValue("\"name\"")
-		sortField: String = "name",
-		@DefaultValue("null")
-		startKey: String? = null,
-		@DefaultValue("null")
-		startDocumentId: String? = null,
-		@DefaultValue("null")
-		limit: Int? = null,
-		@DefaultValue("com.icure.cardinal.sdk.model.couchdb.SortDirection.Asc")
-		sortDirection: SortDirection = SortDirection.Asc,
-	): PaginatedList<E>
-
-	@Deprecated("Use filter instead")
-	suspend fun listOfMergesAfter(date: Long): List<E>
-
-	// TODO: Implement filter for this method
-	@Deprecated("List methods are deprecated", ReplaceWith("filterPatientsBy()"))
-	suspend fun findPatientsModifiedAfter(
-		date: Long,
-		@DefaultValue("null")
-		startKey: Long? = null,
-		@DefaultValue("null")
-		startDocumentId: String? = null,
-		@DefaultValue("null")
-		limit: Int? = null,
-	): PaginatedList<E>
-
-	// TODO: Implement filter for this method
-	@Deprecated("List methods are deprecated", ReplaceWith("filterPatientsBy()"))
-	suspend fun listPatientsByHcParty(
-		hcPartyId: String,
-		@DefaultValue("\"name\"")
-		sortField: String = "name",
-		@DefaultValue("null")
-		startKey: String? = null,
-		@DefaultValue("null")
-		startDocumentId: String? = null,
-		@DefaultValue("null")
-		limit: Int? = null,
-		@DefaultValue("com.icure.cardinal.sdk.model.couchdb.SortDirection.Asc")
-		sortDirection: SortDirection = SortDirection.Asc,
-	): PaginatedList<E>
-
-	// TODO: Implement filter for this method
-	@Deprecated("List methods are deprecated", ReplaceWith("filterPatientsBy()"))
-	suspend fun findPatientsByHealthcareParty(
-		@DefaultValue("null")
-		hcPartyId: String? = null,
-		@DefaultValue("\"name\"")
-		sortField: String = "name",
-		@DefaultValue("null")
-		startKey: String? = null,
-		@DefaultValue("null")
-		startDocumentId: String? = null,
-		@DefaultValue("null")
-		limit: Int? = null,
-		@DefaultValue("com.icure.cardinal.sdk.model.couchdb.SortDirection.Asc")
-		sortDirection: SortDirection = SortDirection.Asc,
-	): PaginatedList<E>
-
-	// TODO: Implement filter for this method
-	@Deprecated("List methods are deprecated", ReplaceWith("filterPatientsBy()"))
-	suspend fun findPatientsIdsByHealthcareParty(
-		hcPartyId: String,
-		@DefaultValue("null")
-		startKey: String? = null,
-		@DefaultValue("null")
-		startDocumentId: String? = null,
-		@DefaultValue("null")
-		limit: Int? = null,
-	): PaginatedList<String>
-
-	@Deprecated("This method has undefined behaviour in case multiple patients have the same external id. You should use the corresponding filter instead.")
-	suspend fun getPatientByExternalId(externalId: String): E
-
-	@Deprecated("Use filter instead")
-	suspend fun fuzzySearch(
-		firstName: String,
-		lastName: String,
-		@DefaultValue("null")
-		dateOfBirth: Int? = null,
-	): List<E>
-
-	// TODO: Implement filter for this method
-	@Deprecated("List methods are deprecated", ReplaceWith("filterPatientsBy()"))
-	suspend fun findDeletedPatients(
-		startDate: Long,
-		@DefaultValue("null")
-		endDate: Long? = null,
-		@DefaultValue("null")
-		desc: Boolean? = null,
-		@DefaultValue("null")
-		startKey: Long? = null,
-		@DefaultValue("null")
-		startDocumentId: String? = null,
-		@DefaultValue("null")
-		limit: Int? = null,
-	): PaginatedList<E>
-
-	@Deprecated("Use filter instead")
-	suspend fun listDeletedPatientsByName(
-		@DefaultValue("null")
-		firstName: String? = null,
-		@DefaultValue("null")
-		lastName: String? = null,
-	): List<E>
-
 	/**
 	 * Get multiple patients by their ids. Ignores all ids that do not correspond to an entity, correspond to
 	 * an entity that is not a patient, or correspond to an entity for which you don't have read access.
@@ -356,52 +253,12 @@ interface PatientBasicFlavouredApi<E : Patient> {
 	 */
 	suspend fun getPatients(patientIds: List<String>): List<E>
 
-	@Deprecated("Use filter instead")
-	suspend fun getPatientByHealthcarePartyAndIdentifier(
-		hcPartyId: String,
-		id: String,
-		@DefaultValue("null")
-		system: String? = null,
-	): E
-
-
-	/**
-	 * Similar to [modifyPatients] but returns only the id and revision of the successfully updated patients.
-	 * Note that while most of the created patient entity will be the same as the input, some fields (such as
-	 * [Patient.modified]) are automatically filled in if left empty.
-	 */
-	suspend fun modifyPatientsMinimal(patients: List<E>): List<StoredDocumentIdentifier>
-
 	/**
 	 * Bulk version of [modifyPatient], returns all the successfully updated patients.
 	 * If a patient couldn't be updated (for example because of a revision mismatch) it will be excluded from the
 	 * result.
 	 */
 	suspend fun modifyPatients(patients: List<E>): List<E>
-
-	// TODO: Implement filter for this method
-	@Deprecated("List methods are deprecated", ReplaceWith("filterPatientsBy()"))
-	suspend fun findDuplicatesBySsin(
-		hcPartyId: String,
-		@DefaultValue("null")
-		startKey: String? = null,
-		@DefaultValue("null")
-		startDocumentId: String? = null,
-		@DefaultValue("null")
-		limit: Int? = null,
-	): PaginatedList<E>
-
-	// TODO: Implement filter for this method
-	@Deprecated("List methods are deprecated", ReplaceWith("filterPatientsBy()"))
-	suspend fun findDuplicatesByName(
-		hcPartyId: String,
-		@DefaultValue("null")
-		startKey: String? = null,
-		@DefaultValue("null")
-		startDocumentId: String? = null,
-		@DefaultValue("null")
-		limit: Int? = null,
-	): PaginatedList<E>
 
 	/**
 	 * Merge two patients into one. This method performs the following operations:
@@ -452,11 +309,6 @@ interface PatientBasicFlavouredInGroupApi<E : Patient> {
 	suspend fun createPatient(patient: GroupScoped<E>): GroupScoped<E>
 
 	/**
-	 * In-group version of [PatientBasicFlavouredApi.createPatientsMinimal]
-	 */
-	suspend fun createPatientsMinimal(patients: List<GroupScoped<E>>): List<GroupScoped<StoredDocumentIdentifier>>
-
-	/**
 	 * In-group version of [PatientBasicFlavouredApi.createPatients]
 	 */
 	suspend fun createPatients(patients: List<GroupScoped<E>>): List<GroupScoped<E>>
@@ -464,22 +316,29 @@ interface PatientBasicFlavouredInGroupApi<E : Patient> {
 	/**
 	 * In-group version of [PatientBasicFlavouredApi.undeletePatient]
 	 */
-	// TODO suspend fun undeletePatient(patient: GroupScoped<Patient>): GroupScoped<E>
-
-	/**
-	 * In-group version of [PatientBasicFlavouredApi.modifyPatient]
-	 */
-	// TODO suspend fun modifyPatient(entity: GroupScoped<E>): GroupScoped<E>
-
-	/**
-	 * In-group version of [PatientBasicFlavouredApi.undeletePatientById]
-	 */
-	// TODO suspend fun undeletePatientById(groupId: String, id: String, rev: String): GroupScoped<E>
+	suspend fun undeletePatient(patient: GroupScoped<Patient>): GroupScoped<E> =
+		undeletePatientById(patient.toStoredDocumentIdentifier())
 
 	/**
 	 * In-group version of [PatientBasicFlavouredApi.undeletePatients]
 	 */
-	// TODO? suspend fun undeletePatients(ids: List<GroupScoped<IdWithMandatoryRev>>): List<GroupScoped<E>> // would need to make GroupScoped constructor public, provide a method for converting GroupScoped<Revisionable> to GroupScoped<IdWithMandatoryRev>>, or similar...
+	suspend fun undeletePatients(patients: List<GroupScoped<Patient>>): List<GroupScoped<E>> =
+		undeletePatientsByIds(patients.map { it.toStoredDocumentIdentifier() })
+
+	/**
+	 * In-group version of [PatientBasicFlavouredApi.modifyPatient]
+	 */
+	suspend fun modifyPatient(entity: GroupScoped<E>): GroupScoped<E>
+
+	/**
+	 * In-group version of [PatientBasicFlavouredApi.undeletePatientById]
+	 */
+	suspend fun undeletePatientById(patientId: GroupScoped<StoredDocumentIdentifier>): GroupScoped<E>
+
+	/**
+	 * In-group version of [PatientBasicFlavouredApi.undeletePatientsByIds]
+	 */
+	suspend fun undeletePatientsByIds(patientIds: List<GroupScoped<StoredDocumentIdentifier>>): List<GroupScoped<E>>
 
 	/**
 	 * In-group version of [PatientBasicFlavouredApi.getPatient]
@@ -495,11 +354,6 @@ interface PatientBasicFlavouredInGroupApi<E : Patient> {
 	 * In-group version of [PatientBasicFlavouredApi.getPatients]
 	 */
 	suspend fun getPatients(groupId: String, patientIds: List<String>): List<GroupScoped<E>>
-
-	/**
-	 * In-group version of [PatientBasicFlavouredApi.modifyPatientsMinimal]
-	 */
-	suspend fun modifyPatientsMinimal(patients: List<GroupScoped<E>>): List<GroupScoped<StoredDocumentIdentifier>>
 
 	/**
 	 * In-group version of [PatientBasicFlavouredApi.modifyPatients]
@@ -773,9 +627,6 @@ interface PatientApi : PatientBasicFlavourlessApi, PatientFlavouredApi<Decrypted
 		patientId: String,
 		delegatesWithShareType: Map<String, Set<ShareAllPatientDataOptions.Tag>>
 	): ShareAllPatientDataOptions.Result
-
-	@Deprecated("This method combines the getPatientId of a child document (contact, health element, ...) with the getPatientResolvingMerges method. Use the methods individually instead.")
-	suspend fun getPatientIdOfChildDocumentForHcpAndHcpParents(childDocument: EntityWithTypeInfo<*>): String
 
 	/**
 	 * Get all confidential secret ids of a patient

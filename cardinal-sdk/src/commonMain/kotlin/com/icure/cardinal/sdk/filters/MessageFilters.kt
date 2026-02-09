@@ -7,6 +7,7 @@ import com.icure.cardinal.sdk.crypto.entities.EntityWithEncryptionMetadataTypeNa
 import com.icure.cardinal.sdk.crypto.entities.SdkBoundGroup
 import com.icure.cardinal.sdk.crypto.entities.toEncryptionMetadataStub
 import com.icure.cardinal.sdk.model.EntityReferenceInGroup
+import com.icure.cardinal.sdk.model.GroupScoped
 import com.icure.cardinal.sdk.model.Message
 import com.icure.cardinal.sdk.model.Patient
 import com.icure.cardinal.sdk.model.filter.AbstractFilter
@@ -24,6 +25,7 @@ import com.icure.cardinal.sdk.options.ApiConfiguration
 import com.icure.cardinal.sdk.options.BasicApiConfiguration
 import com.icure.cardinal.sdk.utils.DefaultValue
 import com.icure.utils.InternalIcureApi
+import kotlinx.coroutines.currentCoroutineContext
 import kotlin.time.Instant
 import kotlinx.serialization.Serializable
 import kotlin.coroutines.coroutineContext
@@ -56,7 +58,21 @@ object MessageFilters {
 	fun byTransportGuidForDataOwner(
 		dataOwnerId: String,
 		transportGuid: String
-	): BaseSortableFilterOptions<Message> = ByTransportGuidForDataOwner(transportGuid, dataOwnerId)
+	): BaseSortableFilterOptions<Message> = ByTransportGuidForDataOwner(
+		transportGuid = transportGuid,
+		dataOwnerId = EntityReferenceInGroup(groupId = null, entityId = dataOwnerId)
+	)
+
+	/**
+	 * In group version of [byTransportGuidForDataOwner].
+	 */
+	fun byTransportGuidForDataOwnerInGroup(
+		dataOwner: EntityReferenceInGroup,
+		transportGuid: String
+	): BaseSortableFilterOptions<Message> = ByTransportGuidForDataOwner(
+		transportGuid = transportGuid,
+		dataOwnerId = dataOwner
+	)
 
 	/**
 	 * Creates options for message filtering that will match all messages shared directly (i.e. ignoring hierarchies) with the current data owner that have the
@@ -80,7 +96,21 @@ object MessageFilters {
 	fun fromAddressForDataOwner(
 		dataOwnerId: String,
 		address: String
-	): BaseFilterOptions<Message> = FromAddressForDataOwner(dataOwnerId, address)
+	): BaseFilterOptions<Message> = FromAddressForDataOwner(
+		dataOwnerId = EntityReferenceInGroup(groupId = null, entityId = dataOwnerId),
+		fromAddress = address
+	)
+
+	/**
+	 * In group version of [fromAddressForDataOwner].
+	 */
+	fun fromAddressForDataOwnerInGroup(
+		dataOwner: EntityReferenceInGroup,
+		address: String
+	): BaseFilterOptions<Message> = FromAddressForDataOwner(
+		dataOwnerId = dataOwner,
+		fromAddress = address
+	)
 
 	/**
 	 * Filter options for message filtering that will match all messages shared directly (i.e. ignoring hierarchies) with the current data owner
@@ -126,8 +156,29 @@ object MessageFilters {
 		@DefaultValue("false")
 		descending: Boolean = false
 	): SortableFilterOptions<Message> = ByPatientsSentDateForDataOwner(
-		dataOwnerId = dataOwnerId,
-		patients = patients.map { it.toEncryptionMetadataStub() },
+		dataOwnerId = EntityReferenceInGroup(groupId = null, entityId = dataOwnerId),
+		patients = patients.map { Pair(it.toEncryptionMetadataStub(), null) },
+		from = from,
+		to = to,
+		descending = descending
+	)
+
+	/**
+	 * In-group version of [byPatientsSentDateForDataOwner].
+	 */
+	@OptIn(InternalIcureApi::class)
+	fun byPatientsSentDateForDataOwnerInGroup(
+		dataOwner: EntityReferenceInGroup,
+		patients: List<GroupScoped<Patient>>,
+		@DefaultValue("null")
+		from: Instant? = null,
+		@DefaultValue("null")
+		to: Instant? = null,
+		@DefaultValue("false")
+		descending: Boolean = false
+	): SortableFilterOptions<Message> = ByPatientsSentDateForDataOwner(
+		dataOwnerId = dataOwner,
+		patients = patients.map { Pair(it.entity.toEncryptionMetadataStub(), it.groupId) },
 		from = from,
 		to = to,
 		descending = descending
@@ -199,8 +250,33 @@ object MessageFilters {
 		to: Instant? = null,
 		@DefaultValue("false")
 		descending: Boolean = false
-	): BaseSortableFilterOptions<Message> = ByPatientSecretIdsSentDateForDataOwner(dataOwnerId, secretIds, from, to, descending)
+	): BaseSortableFilterOptions<Message> = ByPatientSecretIdsSentDateForDataOwner(
+		dataOwnerId = EntityReferenceInGroup(groupId = null, entityId = dataOwnerId),
+		secretIds = secretIds,
+		from = from,
+		to = to,
+		descending = descending
+	)
 
+	/**
+	 * In group version of [byPatientSecretIdsSentDateForDataOwner].
+	 */
+	fun byPatientSecretIdsSentDateForDataOwnerInGroup(
+		dataOwner: EntityReferenceInGroup,
+		secretIds: List<String>,
+		@DefaultValue("null")
+		from: Instant? = null,
+		@DefaultValue("null")
+		to: Instant? = null,
+		@DefaultValue("false")
+		descending: Boolean = false
+	): BaseSortableFilterOptions<Message> = ByPatientSecretIdsSentDateForDataOwner(
+		dataOwnerId = dataOwner,
+		secretIds = secretIds,
+		from = from,
+		to = to,
+		descending = descending
+	)
 
 	/**
 	 * Options for message filtering which match all messages shared directly (i.e. ignoring hierarchies) with the current data owner
@@ -241,7 +317,21 @@ object MessageFilters {
 	fun toAddressForDataOwner(
 		dataOwnerId: String,
 		address: String
-	): BaseFilterOptions<Message> = ToAddressForDataOwner(dataOwnerId, address)
+	): BaseFilterOptions<Message> = ToAddressForDataOwner(
+		dataOwnerId = EntityReferenceInGroup(groupId = null, entityId = dataOwnerId),
+		address = address
+	)
+
+	/**
+	 * In-group version of [toAddressForDataOwner].
+	 */
+	fun toAddressForDataOwnerInGroup(
+		dataOwner: EntityReferenceInGroup,
+		address: String
+	): BaseFilterOptions<Message> = ToAddressForDataOwner(
+		dataOwnerId = dataOwner,
+		address = address
+	)
 
 	/**
 	 * Filter options for message filtering that will match all messages shared directly (i.e. ignoring hierarchies) with the current data owner
@@ -273,7 +363,31 @@ object MessageFilters {
 		to: Instant?,
 		@DefaultValue("false")
 		descending: Boolean = false
-	): BaseSortableFilterOptions<Message> = ByTransportGuidSentDateForDataOwner(dataOwnerId, transportGuid, from, to, descending)
+	): BaseSortableFilterOptions<Message> = ByTransportGuidSentDateForDataOwner(
+		dataOwnerId = EntityReferenceInGroup(groupId = null, entityId = dataOwnerId),
+		transportGuid = transportGuid,
+		from = from,
+		to = to,
+		descending = descending
+	)
+
+	/**
+	 * In group version of [byTransportGuidSentDateForDataOwner].
+	 */
+	fun byTransportGuidSentDateForDataOwnerInGroup(
+		dataOwner: EntityReferenceInGroup,
+		transportGuid: String,
+		from: Instant?,
+		to: Instant?,
+		@DefaultValue("false")
+		descending: Boolean = false
+	): BaseSortableFilterOptions<Message> = ByTransportGuidSentDateForDataOwner(
+		dataOwnerId = dataOwner,
+		transportGuid = transportGuid,
+		from = from,
+		to = to,
+		descending = descending
+	)
 
 	/**
 	 * Filter options for message filtering that will match all messages shared directly (i.e. ignoring hierarchies) with the current data owner
@@ -307,7 +421,21 @@ object MessageFilters {
 	fun latestByTransportGuidForDataOwner(
 		dataOwnerId: String,
 		transportGuid: String
-	): BaseFilterOptions<Message> = LatestByTransportGuidForDataOwner(dataOwnerId, transportGuid)
+	): BaseFilterOptions<Message> = LatestByTransportGuidForDataOwner(
+		dataOwnerId = EntityReferenceInGroup(groupId = null, entityId = dataOwnerId),
+		transportGuid = transportGuid
+	)
+
+	/**
+	 * In group version of [latestByTransportGuidForDataOwner].
+	 */
+	fun latestByTransportGuidForDataOwnerInGroup(
+		dataOwner: EntityReferenceInGroup,
+		transportGuid: String
+	): BaseFilterOptions<Message> = LatestByTransportGuidForDataOwner(
+		dataOwnerId = dataOwner,
+		transportGuid = transportGuid
+	)
 
 	/**
 	 * Filter options for message filtering that will match all messages shared directly (i.e. ignoring hierarchies) with the current data owner
@@ -366,7 +494,7 @@ object MessageFilters {
 	 * In-group version of [lifecycleBetweenForDataOwner].
 	 * The data owner can be from a different group than the group of the user executing the query.
 	 */
-	fun lifecycleBetweenForDataOwnerInGroup(
+	fun lifecycleBetweenForDataOwnerInGroupInGroup(
 		dataOwner: EntityReferenceInGroup,
 		startTimestamp: Long?,
 		endTimestamp: Long?,
@@ -404,7 +532,7 @@ object MessageFilters {
 	@Serializable
 	internal class ByTransportGuidForDataOwner(
 		val transportGuid: String,
-		val dataOwnerId: String
+		val dataOwnerId: EntityReferenceInGroup
 	) : BaseSortableFilterOptions<Message>
 
 	@Serializable
@@ -414,7 +542,7 @@ object MessageFilters {
 
 	@Serializable
 	internal class FromAddressForDataOwner(
-		val dataOwnerId: String,
+		val dataOwnerId: EntityReferenceInGroup,
 		val fromAddress: String,
 	) : BaseFilterOptions<Message>
 
@@ -426,8 +554,8 @@ object MessageFilters {
 	@Serializable
 	@InternalIcureApi
 	internal class ByPatientsSentDateForDataOwner(
-		val dataOwnerId: String,
-		val patients: List<EntityWithEncryptionMetadataStub>,
+		val dataOwnerId: EntityReferenceInGroup,
+		val patients: List<Pair<EntityWithEncryptionMetadataStub, String?>>,
 		val from: Instant?,
 		val to: Instant?,
 		val descending: Boolean
@@ -444,7 +572,7 @@ object MessageFilters {
 
 	@Serializable
 	internal class ByPatientSecretIdsSentDateForDataOwner(
-		val dataOwnerId: String,
+		val dataOwnerId: EntityReferenceInGroup,
 		val secretIds: List<String>,
 		val from: Instant?,
 		val to: Instant?,
@@ -461,7 +589,7 @@ object MessageFilters {
 
 	@Serializable
 	internal class ToAddressForDataOwner(
-		val dataOwnerId: String,
+		val dataOwnerId: EntityReferenceInGroup,
 		val address: String
 	): BaseFilterOptions<Message>
 
@@ -472,7 +600,7 @@ object MessageFilters {
 
 	@Serializable
 	internal class ByTransportGuidSentDateForDataOwner(
-		val dataOwnerId: String,
+		val dataOwnerId: EntityReferenceInGroup,
 		val transportGuid: String,
 		val from: Instant?,
 		val to: Instant?,
@@ -489,7 +617,7 @@ object MessageFilters {
 
 	@Serializable
 	internal class LatestByTransportGuidForDataOwner(
-		val dataOwnerId: String,
+		val dataOwnerId: EntityReferenceInGroup,
 		val transportGuid: String
 	): BaseFilterOptions<Message>
 
@@ -535,7 +663,7 @@ internal suspend fun mapMessageFilterOptions(
 		filterOptions,
 		nonBasicConfig?.crypto?.dataOwnerApi?.getCurrentDataOwnerReference(),
 		nonBasicConfig?.crypto?.entity,
-		config.getBoundGroup(coroutineContext),
+		config.getBoundGroup(currentCoroutineContext()),
 		requestGroup
 	)
 }
@@ -562,7 +690,7 @@ private suspend fun mapMessageFilterOptions(
 	is MessageFilters.ByTransportGuidForDataOwner -> {
 		MessageByHcPartyTransportGuidReceivedFilter(
 			transportGuid = filterOptions.transportGuid,
-			healthcarePartyId = filterOptions.dataOwnerId
+			healthcarePartyId = filterOptions.dataOwnerId.asReferenceStringInGroup(requestGroup, boundGroup)
 		)
 	}
 	is MessageFilters.ByTransportGuidForSelf -> {
@@ -573,7 +701,7 @@ private suspend fun mapMessageFilterOptions(
 		)
 	}
 	is MessageFilters.FromAddressForDataOwner -> MessageByDataOwnerFromAddressFilter(
-		dataOwnerId = filterOptions.dataOwnerId,
+		dataOwnerId = filterOptions.dataOwnerId.asReferenceStringInGroup(requestGroup, boundGroup),
 		fromAddress = filterOptions.fromAddress
 	)
 	is MessageFilters.FromAddressForSelf -> {
@@ -586,8 +714,11 @@ private suspend fun mapMessageFilterOptions(
 	is MessageFilters.ByPatientsSentDateForDataOwner -> {
 		filterOptions.ensureNonBaseEnvironment(selfDataOwner, entityEncryptionService)
 		MessageByDataOwnerPatientSentDateFilter(
-			dataOwnerId = filterOptions.dataOwnerId,
-			secretPatientKeys = entityEncryptionService.secretIdsOf(null, filterOptions.patients, EntityWithEncryptionMetadataTypeName.Patient, null).values.flatten().toSet(),
+			dataOwnerId = filterOptions.dataOwnerId.asReferenceStringInGroup(requestGroup, boundGroup),
+			secretPatientKeys = filterOptions.patients.mapToSecretIds(
+				entityEncryptionService,
+				EntityWithEncryptionMetadataTypeName.Patient
+			),
 			startDate = filterOptions.from,
 			endDate = filterOptions.to,
 			descending = filterOptions.descending
@@ -597,14 +728,17 @@ private suspend fun mapMessageFilterOptions(
 		filterOptions.ensureNonBaseEnvironment(selfDataOwner, entityEncryptionService)
 		MessageByDataOwnerPatientSentDateFilter(
 			dataOwnerId = selfDataOwner.asReferenceStringInGroup(requestGroup, boundGroup),
-			secretPatientKeys = entityEncryptionService.secretIdsOf(null, filterOptions.patients, EntityWithEncryptionMetadataTypeName.Patient, null).values.flatten().toSet(),
+			secretPatientKeys = filterOptions.patients.map { Pair(it, null) }.mapToSecretIds(
+				entityEncryptionService,
+				EntityWithEncryptionMetadataTypeName.Patient
+			),
 			startDate = filterOptions.from,
 			endDate = filterOptions.to,
 			descending = filterOptions.descending
 		)
 	}
 	is MessageFilters.ByPatientSecretIdsSentDateForDataOwner -> MessageByDataOwnerPatientSentDateFilter(
-		dataOwnerId = filterOptions.dataOwnerId,
+		dataOwnerId = filterOptions.dataOwnerId.asReferenceStringInGroup(requestGroup, boundGroup),
 		secretPatientKeys = filterOptions.secretIds.toSet(),
 		startDate = filterOptions.from,
 		endDate = filterOptions.to,
@@ -621,7 +755,7 @@ private suspend fun mapMessageFilterOptions(
 		)
 	}
 	is MessageFilters.ToAddressForDataOwner -> MessageByDataOwnerToAddressFilter(
-		dataOwnerId = filterOptions.dataOwnerId,
+		dataOwnerId = filterOptions.dataOwnerId.asReferenceStringInGroup(requestGroup, boundGroup),
 		toAddress = filterOptions.address
 	)
 	is MessageFilters.ToAddressForSelf -> {
@@ -632,7 +766,7 @@ private suspend fun mapMessageFilterOptions(
 		)
 	}
 	is MessageFilters.ByTransportGuidSentDateForDataOwner -> MessageByDataOwnerTransportGuidSentDateFilter(
-		dataOwnerId = filterOptions.dataOwnerId,
+		dataOwnerId = filterOptions.dataOwnerId.asReferenceStringInGroup(requestGroup, boundGroup),
 		transportGuid = filterOptions.transportGuid,
 		fromDate = filterOptions.from,
 		toDate = filterOptions.to,
@@ -649,7 +783,7 @@ private suspend fun mapMessageFilterOptions(
 		)
 	}
 	is MessageFilters.LatestByTransportGuidForDataOwner -> LatestMessageByHcPartyTransportGuidFilter(
-		healthcarePartyId = filterOptions.dataOwnerId,
+		healthcarePartyId = filterOptions.dataOwnerId.asReferenceStringInGroup(requestGroup, boundGroup),
 		transportGuid = filterOptions.transportGuid
 	)
 	is MessageFilters.LatestByTransportGuidForSelf -> {

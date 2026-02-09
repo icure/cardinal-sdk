@@ -52,11 +52,11 @@ sealed interface Address : Encryptable, HasTags, HasCodes {
 
 @Serializable
 data class DecryptedAddress(
-	@DefaultValue("emptySet()")
+	@param:DefaultValue("emptySet()")
 	override val tags: Set<CodeStub> = emptySet(),
-	@DefaultValue("emptySet()")
+	@param:DefaultValue("emptySet()")
 	override val codes: Set<CodeStub> = emptySet(),
-	@DefaultValue("emptyList()")
+	@param:DefaultValue("emptyList()")
 	override val identifier: List<Identifier> = emptyList(),
 	override val addressType: AddressType? = null,
 	override val descr: String? = null,
@@ -68,9 +68,9 @@ data class DecryptedAddress(
 	override val state: String? = null,
 	override val country: String? = null,
 	override val note: String? = null,
-	@DefaultValue("emptyList()")
+	@param:DefaultValue("emptyList()")
 	override val notes: List<Annotation> = emptyList(),
-	@DefaultValue("emptyList()")
+	@param:DefaultValue("emptyList()")
 	override val telecoms: List<DecryptedTelecom> = emptyList(),
 	override val encryptedSelf: Base64String? = null,
 ) : Address {
@@ -81,11 +81,11 @@ data class DecryptedAddress(
 
 @Serializable
 data class EncryptedAddress(
-	@DefaultValue("emptySet()")
+	@param:DefaultValue("emptySet()")
 	override val tags: Set<CodeStub> = emptySet(),
-	@DefaultValue("emptySet()")
+	@param:DefaultValue("emptySet()")
 	override val codes: Set<CodeStub> = emptySet(),
-	@DefaultValue("emptyList()")
+	@param:DefaultValue("emptyList()")
 	override val identifier: List<Identifier> = emptyList(),
 	override val addressType: AddressType? = null,
 	override val descr: String? = null,
@@ -97,9 +97,9 @@ data class EncryptedAddress(
 	override val state: String? = null,
 	override val country: String? = null,
 	override val note: String? = null,
-	@DefaultValue("emptyList()")
+	@param:DefaultValue("emptyList()")
 	override val notes: List<Annotation> = emptyList(),
-	@DefaultValue("emptyList()")
+	@param:DefaultValue("emptyList()")
 	override val telecoms: List<EncryptedTelecom> = emptyList(),
 	override val encryptedSelf: Base64String? = null,
 ) : Address {

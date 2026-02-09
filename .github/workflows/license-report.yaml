@@ -7,7 +7,6 @@ on:
             - closed
         branches:
             - 'main'
-            - 'develop'
 
 jobs:
     licenses_report:

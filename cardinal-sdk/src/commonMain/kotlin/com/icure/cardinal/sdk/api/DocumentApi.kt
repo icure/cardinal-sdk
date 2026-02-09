@@ -7,27 +7,25 @@ import com.icure.cardinal.sdk.filters.BaseFilterOptions
 import com.icure.cardinal.sdk.filters.BaseSortableFilterOptions
 import com.icure.cardinal.sdk.filters.FilterOptions
 import com.icure.cardinal.sdk.filters.SortableFilterOptions
-import com.icure.cardinal.sdk.model.DecryptedDocument
 import com.icure.cardinal.sdk.model.Document
+import com.icure.cardinal.sdk.model.DecryptedDocument
 import com.icure.cardinal.sdk.model.EncryptedDocument
+import com.icure.cardinal.sdk.model.EntityReferenceInGroup
+import com.icure.cardinal.sdk.model.GroupScoped
 import com.icure.cardinal.sdk.model.Message
 import com.icure.cardinal.sdk.model.Patient
 import com.icure.cardinal.sdk.model.StoredDocumentIdentifier
 import com.icure.cardinal.sdk.model.User
-import com.icure.cardinal.sdk.model.couchdb.DocIdentifier
 import com.icure.cardinal.sdk.model.embed.AccessLevel
 import com.icure.cardinal.sdk.model.specializations.HexString
+import com.icure.cardinal.sdk.model.toStoredDocumentIdentifier
 import com.icure.cardinal.sdk.utils.DefaultValue
 import com.icure.cardinal.sdk.utils.EntityEncryptionException
+import com.icure.cardinal.sdk.utils.generation.JsMapAsObjectArray
 import com.icure.cardinal.sdk.utils.pagination.PaginatedListIterator
-import kotlinx.serialization.json.JsonElement
 
 /* This interface includes the API calls that do not need encryption keys and do not return or consume encrypted/decrypted items, they are completely agnostic towards the presence of encrypted items */
 interface DocumentBasicFlavourlessApi {
-	@Deprecated("Deletion without rev is unsafe")
-	suspend fun deleteDocumentUnsafe(entityId: String): DocIdentifier
-	@Deprecated("Deletion without rev is unsafe")
-	suspend fun deleteDocumentsUnsafe(entityIds: List<String>): List<DocIdentifier>
 
 	/**
 	 * Deletes a document. If you don't have write access to the document the method will fail.
@@ -36,7 +34,7 @@ interface DocumentBasicFlavourlessApi {
 	 * @return the id and revision of the deleted document.
 	 * @throws RevisionConflictException if the provided revision doesn't match the latest known revision
 	 */
-	suspend fun deleteDocumentById(entityId: String, rev: String): DocIdentifier
+	suspend fun deleteDocumentById(entityId: String, rev: String): StoredDocumentIdentifier
 
 	/**
 	 * Deletes many documents. Ids that don't correspond to an entity, or that correspond to an entity for which
@@ -45,7 +43,7 @@ interface DocumentBasicFlavourlessApi {
 	 * @return the id and revision of the deleted documents. If some entities couldn't be deleted (for example
 	 * because you had no write access to them) they will not be included in this list.
 	 */
-	suspend fun deleteDocumentsByIds(entityIds: List<StoredDocumentIdentifier>): List<DocIdentifier>
+	suspend fun deleteDocumentsByIds(entityIds: List<StoredDocumentIdentifier>): List<StoredDocumentIdentifier>
 
 	/**
 	 * Permanently deletes a document.
@@ -56,12 +54,20 @@ interface DocumentBasicFlavourlessApi {
 	suspend fun purgeDocumentById(id: String, rev: String)
 
 	/**
+	 * Permanently deletes many documents.
+	 * @param entityIds ids and revisions of the documents to delete
+	 * @return the id and revision of the deleted documents. If some entities couldn't be deleted (for example
+	 * because you had no write access to them) they will not be included in this list.
+	 */
+	suspend fun purgeDocumentsByIds(entityIds: List<StoredDocumentIdentifier>): List<StoredDocumentIdentifier>
+
+	/**
 	 * Deletes a document. If you don't have write access to the document the method will fail.
 	 * @param document the document to delete
 	 * @return the id and revision of the deleted document.
 	 * @throws RevisionConflictException if the provided document doesn't match the latest known revision
 	 */
-	suspend fun deleteDocument(document: Document): DocIdentifier =
+	suspend fun deleteDocument(document: Document): StoredDocumentIdentifier =
 		deleteDocumentById(document.id, requireNotNull(document.rev) { "Can't delete a document that has no rev" })
 
 	/**
@@ -70,7 +76,7 @@ interface DocumentBasicFlavourlessApi {
 	 * @return the id and revision of the deleted documents. If some entities couldn't be deleted they will not be
 	 * included in this list.
 	 */
-	suspend fun deleteDocuments(documents: List<Document>): List<DocIdentifier> =
+	suspend fun deleteDocuments(documents: List<Document>): List<StoredDocumentIdentifier> =
 		deleteDocumentsByIds(documents.map { document ->
 			StoredDocumentIdentifier(document.id, requireNotNull(document.rev) { "Can't delete a document that has no rev" })
 		})
@@ -85,36 +91,21 @@ interface DocumentBasicFlavourlessApi {
 	}
 
 	/**
+	 * Permanently deletes many documents.
+	 * @param documents the documents to purge.
+	 * @return the id and revision of the deleted documents. If some entities couldn't be deleted (for example
+	 * because you had no write access to them) they will not be included in this list.
+	 */
+	suspend fun purgeDocuments(documents: List<Document>): List<StoredDocumentIdentifier> =
+		purgeDocumentsByIds(documents.map { it.toStoredDocumentIdentifier() })
+
+	/**
 	 * Get the main attachment from the document with the provided id as raw bytes. This method will not
 	 * perform any transformation on the attachment, and if the attachment was encrypted the returned data is encrypted.
 	 * @param documentId a document id
 	 * @return the main attachment of the document with id [documentId], as stored in the backend.
 	 */
 	suspend fun getRawMainAttachment(documentId: String): ByteArray
-
-	/**
-	 * Get the raw main attachment of the document with the provided id and interpret it as plain text. This method does
-	 * not decrypt the attachment, therefore it should be used only with documents where the main attachment is not
-	 * encrypted: if the attachment was encrypted the resulting string will be garbage.
-	 * @param documentId a document id
-	 * @return the main attachment of the document with id [documentId], as stored in the backend and interpreted as
-	 * a string.
-	 */
-	@Deprecated("You should just use getRawMainAttachment and decode the string yourself")
-	suspend fun getMainAttachmentAsPlainText(documentId: String): String
-
-	/**
-	 * Get the raw main attachment of the document with the provided id and interpret it as json. This method does not
-	 * decrypt the attachment, therefore it should be used only with documents where the main attachment is not
-	 * encrypted. If the raw attachment does not represent a valid json string this method will fail.
-	 * @param documentId a document id
-	 * @return the main attachment of the document with id [documentId], as stored in the backend and interpreted as
-	 * a json.
-	 * @throws kotlinx.serialization.SerializationException if the raw attachment does not represent a valid json
-	 * string.
-	 */
-	@Deprecated("You should just use getRawMainAttachment and parse the json yourself")
-	suspend fun getMainAttachmentAsJson(documentId: String): JsonElement
 
 	/**
 	 * Get the secondary attachment at [key] from the document with the provided id as raw bytes. This method will not
@@ -193,6 +184,53 @@ interface DocumentBasicFlavourlessApi {
 	suspend fun deleteSecondaryAttachment(documentId: String, key: String, rev: String): EncryptedDocument
 }
 
+interface DocumentBasicFlavourlessInGroupApi {
+	/**
+	 * In-group version of [DocumentBasicFlavourlessApi.deleteDocumentById]
+	 */
+	suspend fun deleteDocumentById(entityId: GroupScoped<StoredDocumentIdentifier>): GroupScoped<StoredDocumentIdentifier>
+
+	/**
+	 * In-group version of [DocumentBasicFlavourlessApi.deleteDocumentsByIds]
+	 */
+	suspend fun deleteDocumentsByIds(entityIds: List<GroupScoped<StoredDocumentIdentifier>>): List<GroupScoped<StoredDocumentIdentifier>>
+
+	/**
+	 * In-group version of [DocumentBasicFlavourlessApi.purgeDocumentById]
+	 */
+	suspend fun purgeDocumentById(entityId: GroupScoped<StoredDocumentIdentifier>)
+
+	/**
+	 * In-group version of [DocumentBasicFlavourlessApi.purgeDocumentsByIds]
+	 */
+	suspend fun purgeDocumentsByIds(entityIds: List<GroupScoped<StoredDocumentIdentifier>>): List<GroupScoped<StoredDocumentIdentifier>>
+
+	/**
+	 * In-group version of [DocumentBasicFlavourlessApi.deleteDocument]
+	 */
+	suspend fun deleteDocument(document: GroupScoped<Document>): GroupScoped<StoredDocumentIdentifier> =
+		deleteDocumentById(document.toStoredDocumentIdentifier())
+
+	/**
+	 * In-group version of [DocumentBasicFlavourlessApi.deleteDocuments]
+	 */
+	suspend fun deleteDocuments(documents: List<GroupScoped<Document>>): List<GroupScoped<StoredDocumentIdentifier>> =
+		deleteDocumentsByIds(documents.toStoredDocumentIdentifier())
+
+	/**
+	 * In-group version of [DocumentBasicFlavourlessApi.purgeDocument]
+	 */
+	suspend fun purgeDocument(document: GroupScoped<Document>) {
+		purgeDocumentById(document.toStoredDocumentIdentifier())
+	}
+
+	/**
+	 * In-group version of [DocumentBasicFlavourlessApi.purgeDocuments]
+	 */
+	suspend fun purgeDocuments(documents: List<GroupScoped<Document>>): List<GroupScoped<StoredDocumentIdentifier>> =
+		purgeDocumentsByIds(documents.map { it.toStoredDocumentIdentifier() })
+}
+
 /* This interface includes the API calls can be used on decrypted items if encryption keys are available *or* encrypted items if no encryption keys are available */
 interface DocumentBasicFlavouredApi<E : Document> {
 	/**
@@ -204,6 +242,14 @@ interface DocumentBasicFlavouredApi<E : Document> {
 	suspend fun createDocument(entity: E): E
 
 	/**
+	 * Create a batch of new documents. All the provided documents must have the encryption metadata initialized.
+	 * @param entities the documents with initialized encryption metadata
+	 * @return the created documents with updated revision.
+	 * @throws IllegalArgumentException if the encryption metadata was not initialized in any of the entities.
+	 */
+	suspend fun createDocuments(entities: List<E>): List<E>
+
+	/**
 	 * Restores a document that was marked as deleted.
 	 * @param id the id of the entity
 	 * @param rev the latest revision of the entity.
@@ -213,6 +259,14 @@ interface DocumentBasicFlavouredApi<E : Document> {
 	suspend fun undeleteDocumentById(id: String, rev: String): E
 
 	/**
+	 * Restores a batch of documents that were marked as deleted.
+	 * @param entityIds the ids and the revisions of the documents to restore.
+	 * @return the restored documents. If some entities couldn't be restored (because the user does not have access or the revision is not
+	 * up-to-date), then those entities will not be restored and will not appear in this list.
+	 */
+	suspend fun undeleteDocumentsByIds(entityIds: List<StoredDocumentIdentifier>): List<E>
+
+	/**
 	 * Restores a document that was marked as deleted.
 	 * @param document the document to undelete
 	 * @return the restored document.
@@ -220,6 +274,15 @@ interface DocumentBasicFlavouredApi<E : Document> {
 	 */
 	suspend fun undeleteDocument(document: Document): E =
 		undeleteDocumentById(document.id, requireNotNull(document.rev) { "Can't delete a document that has no rev" })
+
+	/**
+	 * Restores a batch of documents that were marked as deleted.
+	 * @param documents the documents to restore.
+	 * @return the restored documents. If some entities couldn't be restored (because the user does not have access or the revision is not
+	 * up-to-date), then those entities will not be restored and will not appear in this list.
+	 */
+	suspend fun undeleteDocuments(documents: List<E>): List<E> =
+		undeleteDocumentsByIds(documents.map { it.toStoredDocumentIdentifier() })
 
 	/**
 	 * Modifies a document. You need to have write access to the entity. Note that you can't use this method to
@@ -232,6 +295,16 @@ interface DocumentBasicFlavouredApi<E : Document> {
 	suspend fun modifyDocument(entity: E): E
 
 	/**
+	 * Modifies multiple documents. Ignores all documents for which you don't have write access.
+	 * Flavoured method.
+	 * @param entities documents with update content
+	 * @return the updated documents with a new revision. If some entities couldn't be updated (because the user does not have access or the revision is not
+	 * up-to-date), then those entities will not be updated and will not appear in this list.
+	 */
+	suspend fun modifyDocuments(entities: List<E>): List<E>
+
+
+	/**
 	 * Get a document by its id. You must have read access to the entity. Fails if the id does not correspond to any
 	 * entity, corresponds to an entity that is not a document, or corresponds to an entity for which you don't have
 	 * read access.
@@ -240,14 +313,6 @@ interface DocumentBasicFlavouredApi<E : Document> {
 	 * @return the document with id [entityId].
 	 */
 	suspend fun getDocument(entityId: String): E?
-
-	@Deprecated("Use filter instead (then you can get the first result in case of multiple matches)")
-	// Note: if multiple documents have the same uuid there is no discriminant field used to chose which one to return.
-	// We need to either define a proper discriminant or remove this method.
-	suspend fun getDocumentByExternalUuid(externalUuid: String): E
-
-	@Deprecated("Use filter instead")
-	suspend fun getDocumentsByExternalUuid(externalUuid: String): List<E>
 
 	/**
 	 * Get multiple documents by their ids. Ignores all ids that do not correspond to an entity, correspond to
@@ -258,16 +323,60 @@ interface DocumentBasicFlavouredApi<E : Document> {
 	 */
 	suspend fun getDocuments(entityIds: List<String>): List<E>
 
-	/**
-	 * Modifies multiple documents. Ignores all documents for which you don't have write access.
-	 * Flavoured method.
-	 * @param entities documents with update content
-	 * @return the updated documents with a new revision.
-	 */
-	suspend fun modifyDocuments(entities: List<E>): List<E>
+}
 
-	@Deprecated("Use filter instead")
-	suspend fun findWithoutDelegation(limit: Int?): List<E>
+interface DocumentBasicFlavouredInGroupApi<E : Document> {
+	/**
+	 * In-group version of [DocumentBasicFlavouredApi.createDocument].
+	 */
+	suspend fun createDocument(entity: GroupScoped<E>): GroupScoped<E>
+
+	/**
+	 * In-group version of [DocumentBasicFlavouredApi.createDocuments].
+	 */
+	suspend fun createDocuments(entities: List<GroupScoped<E>>): List<GroupScoped<E>>
+
+	/**
+	 * In-group version of [DocumentBasicFlavouredApi.undeleteDocumentById]
+	 */
+	suspend fun undeleteDocumentById(entityId: GroupScoped<StoredDocumentIdentifier>): GroupScoped<E>
+
+	/**
+	 * In-group version of [DocumentBasicFlavouredApi.undeleteDocumentsByIds]
+	 */
+	suspend fun undeleteDocumentsByIds(entityIds: List<GroupScoped<StoredDocumentIdentifier>>): List<GroupScoped<E>>
+
+	/**
+	 * In-group version of [DocumentBasicFlavouredApi.undeleteDocument]
+	 */
+	suspend fun undeleteDocument(document: GroupScoped<Document>): GroupScoped<E> =
+		undeleteDocumentById(document.toStoredDocumentIdentifier())
+
+	/**
+	 * In-group version of [DocumentBasicFlavouredApi.undeleteDocuments]
+	 */
+	suspend fun undeleteDocuments(documents: List<GroupScoped<E>>): List<GroupScoped<E>> =
+		undeleteDocumentsByIds(documents.map { it.toStoredDocumentIdentifier() })
+
+	/**
+	 * In-group version of [DocumentBasicFlavouredApi.modifyDocument]
+	 */
+	suspend fun modifyDocument(entity: GroupScoped<E>): GroupScoped<E>
+
+	/**
+	 * In-group version of [DocumentBasicFlavouredApi.modifyDocuments]
+	 */
+	suspend fun modifyDocuments(entities: List<GroupScoped<E>>): List<GroupScoped<E>>
+
+	/**
+	 * In-group version of [DocumentBasicFlavouredApi.getDocument]
+	 */
+	suspend fun getDocument(groupId: String, entityId: String): GroupScoped<E>?
+
+	/**
+	 * In-group version of [DocumentBasicFlavouredApi.getDocuments]
+	 */
+	suspend fun getDocuments(groupId: String, entityIds: List<String>): List<GroupScoped<E>>
 }
 
 /* The extra API calls declared in this interface are the ones that can be used on encrypted or decrypted items but only when the user is a data owner */
@@ -307,19 +416,6 @@ interface DocumentFlavouredApi<E : Document> : DocumentBasicFlavouredApi<E> {
 		delegates: Map<String, DocumentShareOptions>
 	): E
 
-	@Deprecated("Use filter instead")
-	suspend fun findDocumentsByHcPartyPatient(
-		hcPartyId: String,
-		patient: Patient,
-		@DefaultValue("null")
-		startDate: Long? = null,
-		@DefaultValue("null")
-		endDate: Long? = null,
-		@DefaultValue("null")
-		descending: Boolean? = null,
-	): PaginatedListIterator<E>
-
-
 	/**
 	 * Get an iterator that iterates through all documents matching the provided filter, executing multiple requests to
 	 * the api if needed.
@@ -349,6 +445,36 @@ interface DocumentFlavouredApi<E : Document> : DocumentBasicFlavouredApi<E> {
 	suspend fun filterDocumentsBySorted(
 		filter: SortableFilterOptions<Document>
 	): PaginatedListIterator<E>
+}
+
+interface DocumentFlavouredInGroupApi<E : Document> : DocumentBasicFlavouredInGroupApi<E> {
+	/**
+	 * In-group version of [DocumentFlavouredApi.shareWith]
+	 */
+	suspend fun shareWith(
+		delegate: EntityReferenceInGroup,
+		document: GroupScoped<E>,
+		@DefaultValue("null")
+		options: DocumentShareOptions? = null
+	): GroupScoped<E>
+
+	/**
+	 * In-group version of [DocumentFlavouredApi.shareWithMany]
+	 */
+	suspend fun shareWithMany(
+		document: GroupScoped<E>,
+		delegates: @JsMapAsObjectArray(keyEntryName = "delegate", valueEntryName = "shareOptions") Map<EntityReferenceInGroup, DocumentShareOptions>
+	): GroupScoped<E>
+
+	/**
+	 * In-group version of [DocumentFlavouredApi.filterDocumentsBy]
+	 */
+	suspend fun filterDocumentsBy(groupId: String, filter: FilterOptions<Document>): PaginatedListIterator<GroupScoped<E>>
+
+	/**
+	 * In-group version of [DocumentFlavouredApi.filterDocumentsBySorted]
+	 */
+	suspend fun filterDocumentsBySorted(groupId: String, filter: SortableFilterOptions<Document>): PaginatedListIterator<GroupScoped<E>>
 }
 
 /* The extra API calls declared in this interface are the ones that can only be used on decrypted items when encryption keys are available */
@@ -387,7 +513,7 @@ interface DocumentApi : DocumentBasicFlavourlessApi, DocumentFlavouredApi<Decryp
 	 * @param user the current user, will be used for the auto-delegations if provided.
 	 * @param delegates additional data owners that will have access to the newly created entity. You may choose the
 	 * permissions that the delegates will have on the entity, but they will have access to all encryption metadata.
-	 * @param secretId specifies which secret id of [message] to use for the new document
+	 * @param secretId specifies which secret id of [Message] to use for the new document
 	 * @return a document with initialized encryption metadata.
 	 * @throws IllegalArgumentException if base is not null and has a revision or has encryption metadata.
 	 */
@@ -446,20 +572,6 @@ interface DocumentApi : DocumentBasicFlavourlessApi, DocumentFlavouredApi<Decryp
 		@DefaultValue("null")
 		decryptedAttachmentValidator: (suspend (document: ByteArray) -> Boolean)? = null
 	): ByteArray?
-
-	@Deprecated("You should just use getAndTryDecryptMainAttachment and decode the string yourself")
-	suspend fun getAndTryDecryptMainAttachmentAsPlainText(
-		document: Document,
-		@DefaultValue("null")
-		decryptedAttachmentValidator: (suspend (document: ByteArray) -> Boolean)? = null
-	): String?
-
-	@Deprecated("You should just use getAndTryDecryptMainAttachment and parse the json yourself")
-	suspend fun getAndTryDecryptMainAttachmentAsJson(
-		document: Document,
-		@DefaultValue("null")
-		decryptedAttachmentValidator: (suspend (document: ByteArray) -> Boolean)? = null
-	): JsonElement?
 
 	/**
 	 * Similar to [getAndTryDecryptMainAttachment] but throws an exception instead of returning null if the attachment
@@ -557,7 +669,7 @@ interface DocumentApi : DocumentBasicFlavourlessApi, DocumentFlavouredApi<Decryp
 	 * @return the id of the patient linked to the document, or empty if the current user can't access any patient id
 	 * of the document.
 	 */
-	suspend fun decryptOwningEntityIdsOf(document: Document): Set<String>
+	suspend fun decryptOwningEntityIdsOf(document: Document): Set<EntityReferenceInGroup>
 
 	/**
 	 * Create metadata to allow other users to identify the anonymous delegates of a document.
@@ -640,6 +752,13 @@ interface DocumentApi : DocumentBasicFlavourlessApi, DocumentFlavouredApi<Decryp
 	 * Gives access to the polymorphic flavour of the api
 	 */
 	val tryAndRecover: DocumentFlavouredApi<Document>
+
+	/**
+	 * Gives access to methods of the api that allow to use entities or work with data owners in groups other than the
+	 * current user's group.
+	 * These methods aren't available when connected to a kraken-lite instance.
+	 */
+	val inGroup: DocumentInGroupApi
 	/**
 	 * Get the ids of all documents matching the provided filter.
 	 *
@@ -665,7 +784,115 @@ interface DocumentApi : DocumentBasicFlavourlessApi, DocumentFlavouredApi<Decryp
 	suspend fun matchDocumentsBySorted(filter: SortableFilterOptions<Document>): List<String>
 }
 
+interface DocumentInGroupApi : DocumentBasicFlavourlessInGroupApi, DocumentFlavouredInGroupApi<DecryptedDocument> { // TODO subscribable?
+	/**
+	 * Give access to the encrypted flavour of the api
+	 */
+	val encrypted: DocumentFlavouredInGroupApi<EncryptedDocument>
+
+	/**
+	 * Gives access to the polymorphic flavour of the api
+	 */
+	val tryAndRecover: DocumentFlavouredInGroupApi<Document>
+
+	/**
+	 * In-group version of [DocumentApi.withEncryptionMetadataLinkedToMessage]
+	 */
+	suspend fun withEncryptionMetadataLinkedToMessage(
+		entityGroupId: String,
+		base: DecryptedDocument?,
+		message: GroupScoped<Message>,
+		@DefaultValue("null")
+		user: User? = null,
+		@DefaultValue("emptyMap()")
+		delegates: Map<String, AccessLevel> = emptyMap(),
+		@DefaultValue("com.icure.cardinal.sdk.crypto.entities.SecretIdUseOption.UseAnySharedWithParent")
+		secretId: SecretIdUseOption = SecretIdUseOption.UseAnySharedWithParent,
+		@DefaultValue("null")
+		alternateRootDelegateId: String? = null,
+	): GroupScoped<DecryptedDocument>
+
+	/**
+	 * In-group version of [DocumentApi.withEncryptionMetadataLinkedToPatient]
+	 */
+	suspend fun withEncryptionMetadataLinkedToPatient(
+		entityGroupId: String,
+		base: DecryptedDocument?,
+		patient: GroupScoped<Patient>,
+		@DefaultValue("null")
+		user: User? = null,
+		@DefaultValue("emptyMap()")
+		delegates: Map<String, AccessLevel> = emptyMap(),
+		@DefaultValue("com.icure.cardinal.sdk.crypto.entities.SecretIdUseOption.UseAnySharedWithParent")
+		secretId: SecretIdUseOption = SecretIdUseOption.UseAnySharedWithParent,
+		@DefaultValue("null")
+		alternateRootDelegateId: String? = null,
+	): GroupScoped<DecryptedDocument>
+
+	/**
+	 * In-group version of [DocumentApi.withEncryptionMetadataUnlinked]
+	 */
+	suspend fun withEncryptionMetadataUnlinked(
+		entityGroupId: String,
+		base: DecryptedDocument?,
+		@DefaultValue("null")
+		user: User? = null,
+		@DefaultValue("emptyMap()")
+		delegates: Map<String, AccessLevel> = emptyMap(),
+		@DefaultValue("null")
+		alternateRootDelegateId: String? = null,
+	): GroupScoped<DecryptedDocument>
+
+	/**
+	 * In-group version of [DocumentApi.getEncryptionKeysOf]
+	 */
+	suspend fun getEncryptionKeysOf(document: GroupScoped<Document>): Set<HexString>
+
+	/**
+	 * In-group version of [DocumentApi.hasWriteAccess]
+	 */
+	suspend fun hasWriteAccess(document: GroupScoped<Document>): Boolean
+
+	/**
+	 * In-group version of [DocumentApi.decryptOwningEntityIdsOf]
+	 */
+	suspend fun decryptOwningEntityIdsOf(document: GroupScoped<Document>): Set<EntityReferenceInGroup>
+
+	/**
+	 * In-group version of [DocumentApi.createDelegationDeAnonymizationMetadata]
+	 */
+	suspend fun createDelegationDeAnonymizationMetadata(entity: GroupScoped<Document>, delegates: Set<EntityReferenceInGroup>)
+
+	/**
+	 * In-group version of [DocumentApi.decrypt]
+	 */
+	suspend fun decrypt(documents: List<GroupScoped<EncryptedDocument>>): List<GroupScoped<DecryptedDocument>>
+
+	/**
+	 * In-group version of [DocumentApi.tryDecrypt]
+	 */
+	suspend fun tryDecrypt(documents: List<GroupScoped<EncryptedDocument>>): List<GroupScoped<Document>>
+
+	/**
+	 * In-group version of [DocumentApi.matchDocumentsBy]
+	 */
+	suspend fun matchDocumentsBy(groupId: String, filter: FilterOptions<Document>): List<String>
+
+	/**
+	 * In-group version of [DocumentApi.matchDocumentsBySorted]
+	 */
+	suspend fun matchDocumentsBySorted(groupId: String, filter: SortableFilterOptions<Document>): List<String>
+}
+
 interface DocumentBasicApi : DocumentBasicFlavourlessApi, DocumentBasicFlavouredApi<EncryptedDocument> {
+
+	/**
+	 * Gives access to methods of the api that allow to use entities or work with data owners in groups other than the
+	 * current user's group.
+	 * These methods aren't available when connected to a kraken-lite instance.
+	 */
+	val inGroup: DocumentBasicInGroupApi
+
 	/**
 	 * Get the ids of all documents matching the provided filter.
 	 *
@@ -721,3 +948,24 @@ interface DocumentBasicApi : DocumentBasicFlavourlessApi, DocumentBasicFlavoured
 	): PaginatedListIterator<EncryptedDocument>
 }
 
+interface DocumentBasicInGroupApi : DocumentBasicFlavourlessInGroupApi, DocumentBasicFlavouredInGroupApi<EncryptedDocument> { // TODO subscribable
+	/**
+	 * In-group version of [DocumentBasicApi.matchDocumentsBy]
+	 */
+	suspend fun matchDocumentsBy(groupId: String, filter: BaseFilterOptions<Document>): List<String>
+
+	/**
+	 * In-group version of [DocumentBasicApi.matchDocumentsBySorted]
+	 */
+	suspend fun matchDocumentsBySorted(groupId: String, filter: BaseSortableFilterOptions<Document>): List<String>
+
+	/**
+	 * In-group version of [DocumentBasicApi.filterDocumentsBy]
+	 */
+	suspend fun filterDocumentsBy(groupId: String, filter: BaseFilterOptions<Document>): PaginatedListIterator<GroupScoped<EncryptedDocument>>
+
+	/**
+	 * In-group version of [DocumentBasicApi.filterDocumentsBySorted]
+	 */
+	suspend fun filterDocumentsBySorted(groupId: String, filter: BaseSortableFilterOptions<Document>): PaginatedListIterator<GroupScoped<EncryptedDocument>>
+}

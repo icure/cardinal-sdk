@@ -18,7 +18,9 @@ public object DocumentApiDispatcher {
       String?,
     ) -> Unit,
   ): Boolean = when(methodName) {
-    "withEncryptionMetadata" -> withEncryptionMetadata(parameters, resultCallback)
+    "withEncryptionMetadataLinkedToMessage" -> withEncryptionMetadataLinkedToMessage(parameters, resultCallback)
+    "withEncryptionMetadataLinkedToPatient" -> withEncryptionMetadataLinkedToPatient(parameters, resultCallback)
+    "withEncryptionMetadataUnlinked" -> withEncryptionMetadataUnlinked(parameters, resultCallback)
     "getAndTryDecryptMainAttachment" -> getAndTryDecryptMainAttachment(parameters, resultCallback)
     "getAndDecryptMainAttachment" -> getAndDecryptMainAttachment(parameters, resultCallback)
     "encryptAndSetMainAttachment" -> encryptAndSetMainAttachment(parameters, resultCallback)
@@ -26,7 +28,7 @@ public object DocumentApiDispatcher {
     "encryptAndSetSecondaryAttachment" -> encryptAndSetSecondaryAttachment(parameters, resultCallback)
     "getEncryptionKeysOf" -> getEncryptionKeysOf(parameters, resultCallback)
     "hasWriteAccess" -> hasWriteAccess(parameters, resultCallback)
-    "decryptPatientIdOf" -> decryptPatientIdOf(parameters, resultCallback)
+    "decryptOwningEntityIdsOf" -> decryptOwningEntityIdsOf(parameters, resultCallback)
     "createDelegationDeAnonymizationMetadata" -> createDelegationDeAnonymizationMetadata(parameters, resultCallback)
     "decrypt" -> decrypt(parameters, resultCallback)
     "tryDecrypt" -> tryDecrypt(parameters, resultCallback)
@@ -81,13 +83,14 @@ public object DocumentApiDispatcher {
     else -> null
   }?.let { true } ?: false
 
-  private fun withEncryptionMetadata(parameters: Map<String, String>, resultCallback: (
+  private fun withEncryptionMetadataLinkedToMessage(parameters: Map<String, String>,
+      resultCallback: (
     String?,
     String?,
     String?,
     String?,
   ) -> Unit) {
-    DocumentApi.withEncryptionMetadata(
+    DocumentApi.withEncryptionMetadataLinkedToMessage(
       resultCallback,
       parameters.getValue("sdkId"),
       parameters.getValue("base"),
@@ -95,6 +98,42 @@ public object DocumentApiDispatcher {
       parameters.getValue("user"),
       parameters.getValue("delegates"),
       parameters.getValue("secretId"),
+      parameters.getValue("alternateRootDelegateId"),
+    )
+  }
+
+  private fun withEncryptionMetadataLinkedToPatient(parameters: Map<String, String>,
+      resultCallback: (
+    String?,
+    String?,
+    String?,
+    String?,
+  ) -> Unit) {
+    DocumentApi.withEncryptionMetadataLinkedToPatient(
+      resultCallback,
+      parameters.getValue("sdkId"),
+      parameters.getValue("base"),
+      parameters.getValue("patient"),
+      parameters.getValue("user"),
+      parameters.getValue("delegates"),
+      parameters.getValue("secretId"),
+      parameters.getValue("alternateRootDelegateId"),
+    )
+  }
+
+  private fun withEncryptionMetadataUnlinked(parameters: Map<String, String>, resultCallback: (
+    String?,
+    String?,
+    String?,
+    String?,
+  ) -> Unit) {
+    DocumentApi.withEncryptionMetadataUnlinked(
+      resultCallback,
+      parameters.getValue("sdkId"),
+      parameters.getValue("base"),
+      parameters.getValue("user"),
+      parameters.getValue("delegates"),
+      parameters.getValue("alternateRootDelegateId"),
     )
   }
 
@@ -198,13 +237,13 @@ public object DocumentApiDispatcher {
     )
   }
 
-  private fun decryptPatientIdOf(parameters: Map<String, String>, resultCallback: (
+  private fun decryptOwningEntityIdsOf(parameters: Map<String, String>, resultCallback: (
     String?,
     String?,
     String?,
     String?,
   ) -> Unit) {
-    DocumentApi.decryptPatientIdOf(
+    DocumentApi.decryptOwningEntityIdsOf(
       resultCallback,
       parameters.getValue("sdkId"),
       parameters.getValue("document"),

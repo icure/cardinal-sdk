@@ -1,4 +1,5 @@
 // auto-generated file
+import 'package:cardinal_sdk/model/base/identifier.dart';
 import 'package:cardinal_sdk/model/base/code_stub.dart';
 import 'package:cardinal_sdk/model/embed/invoicing_code.dart';
 import 'package:cardinal_sdk/model/embed/invoice_type.dart';
@@ -23,6 +24,7 @@ part "invoice.freezed.dart";
 sealed class Invoice implements StoredDocument, ICureDocument<String>, HasEncryptionMetadata, Encryptable {
 	@override abstract final String id;
 	@override abstract final String? rev;
+	abstract final List<Identifier> identifier;
 	@override abstract final int? created;
 	@override abstract final int? modified;
 	@override abstract final String? author;
@@ -128,6 +130,7 @@ abstract class DecryptedInvoice with _$DecryptedInvoice implements Invoice {
 	const factory DecryptedInvoice({
 		required String id,
 		@Default(null) String? rev,
+		@Default([]) List<Identifier> identifier,
 		@Default(null) int? created,
 		@Default(null) int? modified,
 		@Default(null) String? author,
@@ -205,6 +208,7 @@ abstract class DecryptedInvoice with _$DecryptedInvoice implements Invoice {
 		Map<String, dynamic> entityAsMap = {
 			"id" : value.id,
 			"rev" : value.rev,
+			"identifier" : value.identifier.map((x0) => Identifier.encode(x0)).toList(),
 			"created" : value.created,
 			"modified" : value.modified,
 			"author" : value.author,
@@ -287,6 +291,7 @@ abstract class DecryptedInvoice with _$DecryptedInvoice implements Invoice {
 			longDelayJustification: (data["longDelayJustification"] as int?),
 			locationService: (data["locationService"] as int?),
 			rev: (data["rev"] as String?),
+			identifier: (data["identifier"] as List<dynamic>).map((x0) => Identifier.fromJSON(x0) ).toList(),
 			created: (data["created"] as int?),
 			modified: (data["modified"] as int?),
 			author: (data["author"] as String?),
@@ -362,6 +367,7 @@ abstract class EncryptedInvoice with _$EncryptedInvoice implements Invoice {
 	const factory EncryptedInvoice({
 		required String id,
 		@Default(null) String? rev,
+		@Default([]) List<Identifier> identifier,
 		@Default(null) int? created,
 		@Default(null) int? modified,
 		@Default(null) String? author,
@@ -439,6 +445,7 @@ abstract class EncryptedInvoice with _$EncryptedInvoice implements Invoice {
 		Map<String, dynamic> entityAsMap = {
 			"id" : value.id,
 			"rev" : value.rev,
+			"identifier" : value.identifier.map((x0) => Identifier.encode(x0)).toList(),
 			"created" : value.created,
 			"modified" : value.modified,
 			"author" : value.author,
@@ -521,6 +528,7 @@ abstract class EncryptedInvoice with _$EncryptedInvoice implements Invoice {
 			longDelayJustification: (data["longDelayJustification"] as int?),
 			locationService: (data["locationService"] as int?),
 			rev: (data["rev"] as String?),
+			identifier: (data["identifier"] as List<dynamic>).map((x0) => Identifier.fromJSON(x0) ).toList(),
 			created: (data["created"] as int?),
 			modified: (data["modified"] as int?),
 			author: (data["author"] as String?),

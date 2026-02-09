@@ -65,12 +65,13 @@ class PatientApi {
 		);
 	}
 
-	Future<DecryptedPatient> withEncryptionMetadata(DecryptedPatient? base, { User? user, Map<String, AccessLevel> delegates = const {} }) async {
+	Future<DecryptedPatient> withEncryptionMetadata(DecryptedPatient? base, { User? user, Map<String, AccessLevel> delegates = const {}, String? alternateRootDelegateId }) async {
 		return await CardinalSdkPlatformInterface.instance.apis.patient.withEncryptionMetadata(
 			_sdkId,
 			base,
 			user,
 			delegates,
+			alternateRootDelegateId,
 		);
 	}
 
@@ -125,10 +126,12 @@ class PatientApi {
 		);
 	}
 
-	Future<EncryptedPatient> ensureEncryptionMetadataForSelfIsInitialized({ Map<String, AccessLevel> sharingWith = const {} }) async {
+	Future<EncryptedPatient> ensureEncryptionMetadataForSelfIsInitialized({ Map<String, AccessLevel> sharingWith = const {}, bool ignoreIfEncryptionMetadataExists = false, String? alternateRootDelegateId }) async {
 		return await CardinalSdkPlatformInterface.instance.apis.patient.ensureEncryptionMetadataForSelfIsInitialized(
 			_sdkId,
 			sharingWith,
+			ignoreIfEncryptionMetadataExists,
+			alternateRootDelegateId,
 		);
 	}
 
@@ -653,13 +656,14 @@ class PatientInGroupApi {
 		);
 	}
 
-	Future<GroupScoped<DecryptedPatient>> withEncryptionMetadata(String entityGroupId, DecryptedPatient? base, { User? user, Map<EntityReferenceInGroup, AccessLevel> delegates = const {} }) async {
+	Future<GroupScoped<DecryptedPatient>> withEncryptionMetadata(String entityGroupId, DecryptedPatient? base, { User? user, Map<EntityReferenceInGroup, AccessLevel> delegates = const {}, EntityReferenceInGroup? alternateRootDelegateReference }) async {
 		return await CardinalSdkPlatformInterface.instance.apis.patient.inGroup.withEncryptionMetadata(
 			_sdkId,
 			entityGroupId,
 			base,
 			user,
 			delegates,
+			alternateRootDelegateReference,
 		);
 	}
 
