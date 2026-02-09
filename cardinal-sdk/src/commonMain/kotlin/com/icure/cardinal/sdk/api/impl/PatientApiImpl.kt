@@ -74,6 +74,7 @@ import com.icure.cardinal.sdk.subscription.WebSocketSubscription
 import com.icure.cardinal.sdk.utils.Serialization
 import com.icure.cardinal.sdk.utils.currentEpochMs
 import com.icure.cardinal.sdk.utils.ensureNonNull
+import com.icure.cardinal.sdk.utils.generation.JsMapAsObjectArray
 import com.icure.cardinal.sdk.utils.pagination.IdsPageIterator
 import com.icure.cardinal.sdk.utils.pagination.PaginatedListIterator
 import com.icure.utils.InternalIcureApi
@@ -371,7 +372,7 @@ private abstract class AbstractPatientFlavouredApi<E : Patient>(
 	protected suspend fun doShareWithMany(
 		groupId: String?,
 		patient: E,
-		delegates: Map<EntityReferenceInGroup, PatientShareOptions>
+		delegates: @JsMapAsObjectArray(keyEntryName = "delegate", valueEntryName = "shareOptions") Map<EntityReferenceInGroup, PatientShareOptions>
 	): E =
 		config.crypto.entity.simpleShareOrUpdateEncryptedEntityMetadata(
 			groupId,
@@ -456,7 +457,7 @@ private class PatientFlavouredInGroupApiImpl<E : Patient>(
 
 	override suspend fun shareWithMany(
 		patient: GroupScoped<E>,
-		delegates: Map<EntityReferenceInGroup, PatientShareOptions>
+		delegates: @JsMapAsObjectArray(keyEntryName = "delegate", valueEntryName = "shareOptions") Map<EntityReferenceInGroup, PatientShareOptions>
 	): GroupScoped<E> =
 		GroupScoped(doShareWithMany(patient.groupId, patient.entity, delegates), patient.groupId)
 
@@ -663,7 +664,7 @@ private class PatientApiImpl(
 			entityGroupId: String,
 			base: DecryptedPatient?,
 			user: User?,
-			delegates: Map<EntityReferenceInGroup, AccessLevel>,
+			delegates: @JsMapAsObjectArray(keyEntryName = "delegate", valueEntryName = "shareOptions") Map<EntityReferenceInGroup, AccessLevel>,
 			alternateRootDelegateReference: EntityReferenceInGroup?,
 		): GroupScoped<DecryptedPatient> =
 			GroupScoped(
@@ -939,7 +940,7 @@ private class PatientApiImpl(
 		entityGroupId: String?,
 		base: DecryptedPatient?,
 		user: User?,
-		delegates: Map<EntityReferenceInGroup, AccessLevel>,
+		delegates: @JsMapAsObjectArray(keyEntryName = "delegate", valueEntryName = "shareOptions") Map<EntityReferenceInGroup, AccessLevel>,
 		alternateRootDataOwnerReference: EntityReferenceInGroup?,
 	): DecryptedPatient =
 		config.crypto.entity.entityWithInitializedEncryptedMetadata(

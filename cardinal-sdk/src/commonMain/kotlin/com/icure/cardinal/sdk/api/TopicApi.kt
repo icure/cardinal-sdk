@@ -22,6 +22,7 @@ import com.icure.cardinal.sdk.model.toStoredDocumentIdentifier
 import com.icure.cardinal.sdk.subscription.Subscribable
 import com.icure.cardinal.sdk.utils.DefaultValue
 import com.icure.cardinal.sdk.utils.EntityEncryptionException
+import com.icure.cardinal.sdk.utils.generation.JsMapAsObjectArray
 import com.icure.cardinal.sdk.utils.pagination.PaginatedListIterator
 
 /* This interface includes the API calls that do not need encryption keys and do not return or consume encrypted/decrypted items, they are completely agnostic towards the presence of encrypted items */
@@ -395,7 +396,7 @@ interface TopicFlavouredInGroupApi<E : Topic> : TopicBasicFlavouredInGroupApi<E>
 	 */
 	suspend fun shareWithMany(
 		topic: GroupScoped<E>,
-		delegates: Map<EntityReferenceInGroup, TopicShareOptions>
+		delegates: @JsMapAsObjectArray(keyEntryName = "delegate", valueEntryName = "shareOptions") Map<EntityReferenceInGroup, TopicShareOptions>
 	): GroupScoped<E>
 
 	/**
