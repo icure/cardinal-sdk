@@ -12,6 +12,7 @@ import io.ktor.client.HttpClient
 import io.ktor.client.plugins.timeout
 import io.ktor.client.request.HttpRequestBuilder
 import io.ktor.client.request.header
+import io.ktor.client.request.headers
 import io.ktor.client.request.request
 import io.ktor.client.request.setBody
 import io.ktor.client.statement.HttpResponse
@@ -20,7 +21,6 @@ import io.ktor.http.ContentType
 import io.ktor.http.HttpMethod
 import io.ktor.http.HttpStatusCode
 import io.ktor.http.content.TextContent
-import io.ktor.http.headers
 import kotlinx.coroutines.delay
 import kotlinx.serialization.json.Json
 import kotlin.time.Duration
@@ -161,7 +161,7 @@ abstract class BaseRawApi(
 				),
 				requiredAuthClass
 			)
-			return request(method, authService, requiredAuthClass, accessControlKeysGroupId, block)
+			request(method, authService, requiredAuthClass, accessControlKeysGroupId, block)
 		} else {
 			responseResult
 		}
@@ -181,6 +181,7 @@ abstract class BaseRawApi(
 				config.additionalHeaders.forEach { (header, headerValue) ->
 					set(header, headerValue)
 				}
+				set("Cardinal-Model-Standard", "true")
 			}
 			config.requestTimeout?.also {
 				timeout {

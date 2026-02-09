@@ -15,8 +15,6 @@ interface CodeIdentification<K> {
 	public val type: String?
 
 	public val version: String?
-
-	public val label: Map<String, String>?
 	// region CodeIdentification-CodeIdentification
 
 	// endregion

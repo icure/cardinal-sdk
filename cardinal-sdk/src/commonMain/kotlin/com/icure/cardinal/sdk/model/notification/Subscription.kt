@@ -13,6 +13,7 @@ data class Subscription<O : Identifiable<String>>(
 	public val entityClass: String,
 	public val filter: FilterChain<O>?,
 	public val accessControlKeys: List<AccessControlKeyHexString>?,
+	public val useCardinalModelSerialization: Boolean? = null
 ) {
   // region Subscription-Subscription
 

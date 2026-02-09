@@ -12,7 +12,6 @@ import com.icure.cardinal.sdk.model.DecryptedCalendarItem
 import com.icure.cardinal.sdk.model.EncryptedCalendarItem
 import com.icure.cardinal.sdk.model.EntityReferenceInGroup
 import com.icure.cardinal.sdk.model.GroupScoped
-import com.icure.cardinal.sdk.model.PaginatedList
 import com.icure.cardinal.sdk.model.Patient
 import com.icure.cardinal.sdk.model.StoredDocumentIdentifier
 import com.icure.cardinal.sdk.model.User
@@ -27,11 +26,6 @@ import com.icure.cardinal.sdk.utils.pagination.PaginatedListIterator
 
 /* This interface includes the API calls that do not need encryption keys and do not return or consume encrypted/decrypted items, they are completely agnostic towards the presence of encrypted items */
 interface CalendarItemBasicFlavourlessApi {
-	@Deprecated("Deletion without rev is unsafe")
-	suspend fun deleteCalendarItemUnsafe(entityId: String): StoredDocumentIdentifier
-	@Deprecated("Deletion without rev is unsafe")
-	suspend fun deleteCalendarItemsUnsafe(entityIds: List<String>): List<StoredDocumentIdentifier>
-
 	/**
 	 * Deletes a calendarItem. If you don't have write access to the calendarItem the method will fail.
 	 * @param entityId id of the calendarItem.
@@ -59,6 +53,14 @@ interface CalendarItemBasicFlavourlessApi {
 	suspend fun purgeCalendarItemById(id: String, rev: String)
 
 	/**
+	 * Permanently deletes many calendarItems.
+	 * @param entityIds ids and revisions of the calendarItems to delete
+	 * @return the id and revision of the deleted calendarItems. If some entities couldn't be deleted (for example
+	 * because you had no write access to them) they will not be included in this list.
+	 */
+	suspend fun purgeCalendarItemsByIds(entityIds: List<StoredDocumentIdentifier>): List<StoredDocumentIdentifier>
+
+	/**
 	 * Deletes a calendarItem. If you don't have write access to the calendarItem the method will fail.
 	 * @param calendarItem the calendarItem to delete
 	 * @return the id and revision of the deleted calendarItem.
@@ -75,7 +77,7 @@ interface CalendarItemBasicFlavourlessApi {
 	 */
 	suspend fun deleteCalendarItems(calendarItems: List<CalendarItem>): List<StoredDocumentIdentifier> =
 		deleteCalendarItemsByIds(calendarItems.map { calendarItem ->
-			StoredDocumentIdentifier(calendarItem.id, requireNotNull(calendarItem.rev) { "Can't delete a calendarItem that has no rev" })
+			calendarItem.toStoredDocumentIdentifier()
 		})
 
 	/**
@@ -86,6 +88,17 @@ interface CalendarItemBasicFlavourlessApi {
 	suspend fun purgeCalendarItem(calendarItem: CalendarItem) {
 		purgeCalendarItemById(calendarItem.id, requireNotNull(calendarItem.rev) { "Can't delete a calendarItem that has no rev" })
 	}
+
+	/**
+	 * Permanently deletes many calendarItems.
+	 * @param calendarItems the calendarItems to purge.
+	 * @return the id and revision of the deleted calendarItems. If some entities couldn't be deleted (for example
+	 * because you had no write access to them) they will not be included in this list.
+	 */
+	suspend fun purgeCalendarItems(calendarItems: List<CalendarItem>): List<StoredDocumentIdentifier> =
+		purgeCalendarItemsByIds(calendarItems.map { calendarItem ->
+			calendarItem.toStoredDocumentIdentifier()
+		})
 }
 
 interface CalendarItemBasicFlavourlessInGroupApi {
@@ -102,7 +115,12 @@ interface CalendarItemBasicFlavourlessInGroupApi {
 	/**
 	 * In-group version of [CalendarItemBasicFlavourlessApi.purgeCalendarItemById]
 	 */
-	// TODO suspend fun purgeCalendarItemById(entityId: GroupScoped<StoredDocumentIdentifier>)
+	suspend fun purgeCalendarItemById(entityId: GroupScoped<StoredDocumentIdentifier>)
+
+	/**
+	 * In-group version of [CalendarItemBasicFlavourlessApi.purgeCalendarItemsByIds]
+	 */
+	suspend fun purgeCalendarItemsByIds(entityIds: List<GroupScoped<StoredDocumentIdentifier>>): List<GroupScoped<StoredDocumentIdentifier>>
 
 	/**
 	 * In-group version of [CalendarItemBasicFlavourlessApi.deleteCalendarItem]
@@ -119,7 +137,15 @@ interface CalendarItemBasicFlavourlessInGroupApi {
 	/**
 	 * In-group version of [CalendarItemBasicFlavourlessApi.purgeCalendarItem]
 	 */
-	// TODO suspend fun purgeCalendarItem(calendarItem: GroupScoped<CalendarItem>)
+	suspend fun purgeCalendarItem(calendarItem: GroupScoped<CalendarItem>) {
+		purgeCalendarItemById(calendarItem.toStoredDocumentIdentifier())
+	}
+
+	/**
+	 * In-group version of [CalendarItemBasicFlavourlessApi.purgeCalendarItems]
+	 */
+	suspend fun purgeCalendarItems(calendarItems: List<GroupScoped<CalendarItem>>): List<GroupScoped<StoredDocumentIdentifier>> =
+		purgeCalendarItemsByIds(calendarItems.map { it.toStoredDocumentIdentifier() })
 }
 
 /* This interface includes the API calls can be used on decrypted items if encryption keys are available *or* encrypted items if no encryption keys are available */
@@ -131,6 +157,14 @@ interface CalendarItemBasicFlavouredApi<E : CalendarItem> {
 	 * @throws IllegalArgumentException if the encryption metadata of the input was not initialized.
 	 */
 	suspend fun createCalendarItem(entity: E): E
+
+	/**
+	 * Create a batch of new calendarItems. All the provided calendarItems must have the encryption metadata initialized.
+	 * @param entities the calendarItems with initialized encryption metadata
+	 * @return the created calendarItems with updated revision.
+	 * @throws IllegalArgumentException if the encryption metadata was not initialized in any of the entities.
+	 */
+	suspend fun createCalendarItems(entities: List<E>): List<E>
 
 	/**
 	 * Book a calendar item while checking that there is availability for it in its agenda.
@@ -158,6 +192,14 @@ interface CalendarItemBasicFlavouredApi<E : CalendarItem> {
 	suspend fun undeleteCalendarItemById(id: String, rev: String): E
 
 	/**
+	 * Restores a batch of calendarItems that were marked as deleted.
+	 * @param entityIds the ids and the revisions of the calendarItems to restore.
+	 * @return the restored calendarItems. If some entities couldn't be restored (because the user does not have access or the revision is not
+	 * up-to-date), then those entities will not be restored and will not appear in this list.
+	 */
+	suspend fun undeleteCalendarItemsByIds(entityIds: List<StoredDocumentIdentifier>): List<E>
+
+	/**
 	 * Restores a calendarItem that was marked as deleted.
 	 * @param calendarItem the calendarItem to undelete
 	 * @return the restored calendarItem.
@@ -167,12 +209,30 @@ interface CalendarItemBasicFlavouredApi<E : CalendarItem> {
 		undeleteCalendarItemById(calendarItem.id, requireNotNull(calendarItem.rev) { "Can't delete a calendarItem that has no rev" })
 
 	/**
+	 * Restores a batch of calendarItems that were marked as deleted.
+	 * @param calendarItems the calendarItems to restore.
+	 * @return the restored calendarItems. If some entities couldn't be restored (because the user does not have access or the revision is not
+	 * up-to-date), then those entities will not be restored and will not appear in this list.
+	 */
+	suspend fun undeleteCalendarItems(calendarItems: List<CalendarItem>): List<E> =
+		undeleteCalendarItemsByIds(calendarItems.map { it.toStoredDocumentIdentifier() })
+
+	/**
 	 * Modifies a calendar item. You need to have write access to the entity.
 	 * Flavoured method.
 	 * @param entity a calendar item with update content
 	 * @return the calendar item updated with the provided content and a new revision.
 	 */
 	suspend fun modifyCalendarItem(entity: E): E
+
+	/**
+	 * Modifies a batch of calendarItems.
+	 * Flavoured method-
+	 * @param entities the updated calendarItems.
+	 * @return the updated calendarItems with their new revisions. If some entities couldn't be updated (because the user does not have access or the revision is not
+	 * up-to-date), then those entities will not be updated and will not appear in this list.
+	 */
+	suspend fun modifyCalendarItems(entities: List<E>): List<E>
 
 	/**
 	 * Get a calendar item by its id. You must have read access to the entity. Fails if the id does not correspond to any
@@ -194,19 +254,6 @@ interface CalendarItemBasicFlavouredApi<E : CalendarItem> {
 	 */
 	suspend fun getCalendarItems(entityIds: List<String>): List<E>
 
-	@Deprecated("Use filter instead")
-	suspend fun getCalendarItemsByPeriodAndHcPartyId(startDate: Long, endDate: Long, hcPartyId: String): List<E>
-
-	@Deprecated("Use filter instead")
-	suspend fun getCalendarsByPeriodAndAgendaId(startDate: Long, endDate: Long, agendaId: String): List<E>
-
-	@Deprecated("Use filter instead")
-	suspend fun findCalendarItemsByRecurrenceId(
-		recurrenceId: String,
-		startKey: String?,
-		startDocumentId: String?,
-		limit: Int
-	): PaginatedList<E>
 }
 
 interface CalendarItemBasicFlavouredInGroupApi<E : CalendarItem> {
@@ -216,19 +263,41 @@ interface CalendarItemBasicFlavouredInGroupApi<E : CalendarItem> {
 	suspend fun createCalendarItem(entity: GroupScoped<E>): GroupScoped<E>
 
 	/**
+	 * In-group version of [CalendarItemBasicFlavouredApi.createCalendarItems].
+	 */
+	suspend fun createCalendarItems(entities: List<GroupScoped<E>>): List<GroupScoped<E>>
+
+	/**
 	 * In-group version of [CalendarItemBasicFlavouredApi.undeleteCalendarItemById]
 	 */
-	// TODO suspend fun undeleteCalendarItemById(entityId: GroupScoped<StoredDocumentIdentifier>): GroupScoped<E>
+	suspend fun undeleteCalendarItemById(entityId: GroupScoped<StoredDocumentIdentifier>): GroupScoped<E>
+
+	/**
+	 * In-group version of [CalendarItemBasicFlavouredApi.undeleteCalendarItemsByIds]
+	 */
+	suspend fun undeleteCalendarItemsByIds(entityIds: List<GroupScoped<StoredDocumentIdentifier>>): List<GroupScoped<E>>
 
 	/**
 	 * In-group version of [CalendarItemBasicFlavouredApi.undeleteCalendarItem]
 	 */
-	// TODO suspend fun undeleteCalendarItem(calendarItem: GroupScoped<CalendarItem>): GroupScoped<E>
+	suspend fun undeleteCalendarItem(calendarItem: GroupScoped<CalendarItem>): GroupScoped<E> =
+		undeleteCalendarItemById(calendarItem.toStoredDocumentIdentifier())
+
+	/**
+	 * In-group version of [CalendarItemBasicFlavouredApi.undeleteCalendarItems]
+	 */
+	suspend fun undeleteCalendarItems(calendarItems: List<GroupScoped<E>>): List<GroupScoped<E>> =
+		undeleteCalendarItemsByIds(calendarItems.map { it.toStoredDocumentIdentifier() })
 
 	/**
 	 * In-group version of [CalendarItemBasicFlavouredApi.modifyCalendarItem]
 	 */
 	suspend fun modifyCalendarItem(entity: GroupScoped<E>): GroupScoped<E>
+
+	/**
+	 * In-group version of [CalendarItemBasicFlavouredApi.modifyCalendarItems]
+	 */
+	suspend fun modifyCalendarItems(entities: List<GroupScoped<E>>): List<GroupScoped<E>>
 
 	/**
 	 * In-group version of [CalendarItemBasicFlavouredApi.getCalendarItem]
@@ -277,18 +346,6 @@ interface CalendarItemFlavouredApi<E : CalendarItem> : CalendarItemBasicFlavoure
 		calendarItem: E,
 		delegates: Map<String, CalendarItemShareOptions>
 	): E
-
-	@Deprecated("Use filter instead")
-	suspend fun findCalendarItemsByHcPartyPatient(
-		hcPartyId: String,
-		patient: Patient,
-		@DefaultValue("null")
-		startDate: Long? = null,
-		@DefaultValue("null")
-		endDate: Long? = null,
-		@DefaultValue("null")
-		descending: Boolean? = null,
-	): PaginatedListIterator<E>
 
 	/**
 	 * Links a calendar item with a patient. Note that this operation is not reversible: it is not possible to change the patient linked to a calendar

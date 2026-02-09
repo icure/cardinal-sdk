@@ -17,6 +17,7 @@ import com.icure.cardinal.sdk.model.StoredDocumentIdentifier
 import com.icure.cardinal.sdk.model.User
 import com.icure.cardinal.sdk.model.embed.AccessLevel
 import com.icure.cardinal.sdk.model.specializations.HexString
+import com.icure.cardinal.sdk.model.toStoredDocumentIdentifier
 import com.icure.cardinal.sdk.subscription.Subscribable
 import com.icure.cardinal.sdk.utils.DefaultValue
 import com.icure.cardinal.sdk.utils.EntityEncryptionException
@@ -25,10 +26,6 @@ import com.icure.cardinal.sdk.utils.pagination.PaginatedListIterator
 
 /* This interface includes the API calls that do not need encryption keys and do not return or consume encrypted/decrypted items, they are completely agnostic towards the presence of encrypted items */
 interface HealthElementBasicFlavourlessApi  {
-	@Deprecated("Deletion without rev is unsafe")
-	suspend fun deleteHealthElementUnsafe(entityId: String): StoredDocumentIdentifier
-	@Deprecated("Deletion without rev is unsafe")
-	suspend fun deleteHealthElementsUnsafe(entityIds: List<String>): List<StoredDocumentIdentifier>
 
 	/**
 	 * Deletes a healthElement. If you don't have write access to the healthElement the method will fail.
@@ -57,6 +54,14 @@ interface HealthElementBasicFlavourlessApi  {
 	suspend fun purgeHealthElementById(id: String, rev: String)
 
 	/**
+	 * Permanently deletes many healthElements.
+	 * @param entityIds ids and revisions of the healthElements to delete
+	 * @return the id and revision of the deleted healthElements. If some entities couldn't be deleted (for example
+	 * because you had no write access to them) they will not be included in this list.
+	 */
+	suspend fun purgeHealthElementsByIds(entityIds: List<StoredDocumentIdentifier>): List<StoredDocumentIdentifier>
+
+	/**
 	 * Deletes a healthElement. If you don't have write access to the healthElement the method will fail.
 	 * @param healthElement the healthElement to delete
 	 * @return the id and revision of the deleted healthElement.
@@ -73,7 +78,7 @@ interface HealthElementBasicFlavourlessApi  {
 	 */
 	suspend fun deleteHealthElements(healthElements: List<HealthElement>): List<StoredDocumentIdentifier> =
 		deleteHealthElementsByIds(healthElements.map { healthElement ->
-			StoredDocumentIdentifier(healthElement.id, requireNotNull(healthElement.rev) { "Can't delete an healthElement that has no rev" })
+			healthElement.toStoredDocumentIdentifier()
 		})
 
 	/**
@@ -84,38 +89,62 @@ interface HealthElementBasicFlavourlessApi  {
 	suspend fun purgeHealthElement(healthElement: HealthElement) {
 		purgeHealthElementById(healthElement.id, requireNotNull(healthElement.rev) { "Can't delete an healthElement that has no rev" })
 	}
+
+	/**
+	 * Permanently deletes many healthElements.
+	 * @param healthElements the healthElements to purge.
+	 * @return the id and revision of the deleted healthElements. If some entities couldn't be deleted (for example
+	 * because you had no write access to them) they will not be included in this list.
+	 */
+	suspend fun purgeHealthElements(healthElements: List<HealthElement>): List<StoredDocumentIdentifier> =
+		purgeHealthElementsByIds(healthElements.map { it.toStoredDocumentIdentifier() })
 }
 
 interface HealthElementBasicFlavourlessInGroupApi  {
 	/**
 	 * In-group version of [HealthElementBasicFlavourlessApi.deleteHealthElementById]
 	 */
-	// TODO suspend fun deleteHealthElementById(entityId: GroupScoped<StoredDocumentIdentifier>): GroupScoped<StoredDocumentIdentifier>
+	suspend fun deleteHealthElementById(entityId: GroupScoped<StoredDocumentIdentifier>): GroupScoped<StoredDocumentIdentifier>
 
 	/**
 	 * In-group version of [HealthElementBasicFlavourlessApi.deleteHealthElementsByIds]
 	 */
-	// TODO suspend fun deleteHealthElementsByIds(entityIds: List<GroupScoped<StoredDocumentIdentifier>>): List<GroupScoped<StoredDocumentIdentifier>>
+	suspend fun deleteHealthElementsByIds(entityIds: List<GroupScoped<StoredDocumentIdentifier>>): List<GroupScoped<StoredDocumentIdentifier>>
 
 	/**
 	 * In-group version of [HealthElementBasicFlavourlessApi.purgeHealthElementById]
 	 */
-	// TODO suspend fun purgeHealthElementById(entityId: GroupScoped<StoredDocumentIdentifier>)
+	suspend fun purgeHealthElementById(entityId: GroupScoped<StoredDocumentIdentifier>)
+
+	/**
+	 * In-group version of [HealthElementBasicFlavourlessApi.purgeHealthElementsByIds]
+	 */
+	suspend fun purgeHealthElementsByIds(entityIds: List<GroupScoped<StoredDocumentIdentifier>>): List<GroupScoped<StoredDocumentIdentifier>>
 
 	/**
 	 * In-group version of [HealthElementBasicFlavourlessApi.deleteHealthElement]
 	 */
-	// TODO suspend fun deleteHealthElement(healthElement: GroupScoped<HealthElement>): GroupScoped<StoredDocumentIdentifier> = deleteHealthElementById(healthElement.toStoredDocumentIdentifier())
+	suspend fun deleteHealthElement(healthElement: GroupScoped<HealthElement>): GroupScoped<StoredDocumentIdentifier> =
+		deleteHealthElementById(healthElement.toStoredDocumentIdentifier())
 
 	/**
 	 * In-group version of [HealthElementBasicFlavourlessApi.deleteHealthElements]
 	 */
-	// TODO suspend fun deleteHealthElements(healthElements: List<GroupScoped<HealthElement>>): List<GroupScoped<StoredDocumentIdentifier>> = deleteHealthElementsByIds(healthElements.toStoredDocumentIdentifier())
+	suspend fun deleteHealthElements(healthElements: List<GroupScoped<HealthElement>>): List<GroupScoped<StoredDocumentIdentifier>> =
+		deleteHealthElementsByIds(healthElements.toStoredDocumentIdentifier())
 
 	/**
 	 * In-group version of [HealthElementBasicFlavourlessApi.purgeHealthElement]
 	 */
-	// TODO suspend fun purgeHealthElement(healthElement: GroupScoped<HealthElement>)
+	suspend fun purgeHealthElement(healthElement: GroupScoped<HealthElement>) {
+		purgeHealthElementById(healthElement.toStoredDocumentIdentifier())
+	}
+
+	/**
+	 * In-group version of [HealthElementBasicFlavourlessApi.purgeHealthElements]
+	 */
+	suspend fun purgeHealthElements(healthElements: List<GroupScoped<HealthElement>>): List<GroupScoped<StoredDocumentIdentifier>> =
+		purgeHealthElementsByIds(healthElements.map { it.toStoredDocumentIdentifier() })
 }
 
 /* This interface includes the API calls can be used on decrypted items if encryption keys are available *or* encrypted items if no encryption keys are available */
@@ -147,6 +176,14 @@ interface HealthElementBasicFlavouredApi<E : HealthElement> {
 	suspend fun undeleteHealthElementById(id: String, rev: String): E
 
 	/**
+	 * Restores a batch of healthElementIds that were marked as deleted.
+	 * @param entityIds the ids and the revisions of the healthElementIds to restore.
+	 * @return the restored healthElementIds. If some entities couldn't be restored (because the user does not have access or the revision is not
+	 * up-to-date), then those entities will not be restored and will not appear in this list.
+	 */
+	suspend fun undeleteHealthElementsByIds(entityIds: List<StoredDocumentIdentifier>): List<E>
+
+	/**
 	 * Restores a healthElement that was marked as deleted.
 	 * @param healthElement the healthElement to undelete
 	 * @return the restored healthElement.
@@ -154,6 +191,15 @@ interface HealthElementBasicFlavouredApi<E : HealthElement> {
 	 */
 	suspend fun undeleteHealthElement(healthElement: HealthElement): E =
 		undeleteHealthElementById(healthElement.id, requireNotNull(healthElement.rev) { "Can't delete an healthElement that has no rev" })
+
+	/**
+	 * Restores a batch of healthElements that were marked as deleted.
+	 * @param healthElements the healthElements to restore.
+	 * @return the restored healthElements. If some entities couldn't be restored (because the user does not have access or the revision is not
+	 * up-to-date), then those entities will not be restored and will not appear in this list.
+	 */
+	suspend fun undeleteHealthElements(healthElements: List<HealthElement>): List<E> =
+		undeleteHealthElementsByIds(healthElements.map { it.toStoredDocumentIdentifier() })
 
 	/**
 	 * Modifies a health element. You need to have write access to the entity.
@@ -200,17 +246,29 @@ interface HealthElementBasicFlavouredInGroupApi<E : HealthElement> {
 	/**
 	 * In-group version of [HealthElementApi.createHealthElements]
 	 */
-	// TODO suspend fun createHealthElements(entities: List<GroupScoped<E>>): List<GroupScoped<E>>
+	suspend fun createHealthElements(entities: List<GroupScoped<E>>): List<GroupScoped<E>>
 
 	/**
 	 * In-group version of [HealthElementBasicFlavouredApi.undeleteHealthElementById]
 	 */
-	// TODO suspend fun undeleteHealthElementById(id: String, rev: String): E
+	suspend fun undeleteHealthElementById(entityId: GroupScoped<StoredDocumentIdentifier>): GroupScoped<E>
+
+	/**
+	 * In-group version of [HealthElementBasicFlavouredApi.undeleteHealthElementsByIds]
+	 */
+	suspend fun undeleteHealthElementsByIds(entityIds: List<GroupScoped<StoredDocumentIdentifier>>): List<GroupScoped<E>>
 
 	/**
 	 * In-group version of [HealthElementBasicFlavouredApi.undeleteHealthElement]
 	 */
-	// TODO suspend fun undeleteHealthElement(healthElement: HealthElement): E
+	suspend fun undeleteHealthElement(healthElement: GroupScoped<HealthElement>): GroupScoped<E> =
+		undeleteHealthElementById(healthElement.toStoredDocumentIdentifier())
+
+	/**
+	 * In-group version of [HealthElementBasicFlavouredApi.undeleteHealthElements]
+	 */
+	suspend fun undeleteHealthElements(healthElements: List<GroupScoped<E>>): List<GroupScoped<E>> =
+		undeleteHealthElementsByIds(healthElements.map { it.toStoredDocumentIdentifier() })
 
 	/**
 	 * In-group version of [HealthElementBasicFlavouredApi.modifyHealthElement]
@@ -220,7 +278,7 @@ interface HealthElementBasicFlavouredInGroupApi<E : HealthElement> {
 	/**
 	 * In-group version of [HealthElementBasicFlavouredApi.modifyHealthElements]
 	 */
-	// TODO suspend fun modifyHealthElements(entities: List<GroupScoped<E>>): List<GroupScoped<E>>
+	suspend fun modifyHealthElements(entities: List<GroupScoped<E>>): List<GroupScoped<E>>
 
 	/**
 	 * In-group version of [HealthElementBasicFlavouredApi.getHealthElement]
@@ -230,7 +288,7 @@ interface HealthElementBasicFlavouredInGroupApi<E : HealthElement> {
 	/**
 	 * In-group version of [HealthElementBasicFlavouredApi.getHealthElements]
 	 */
-	// TODO suspend fun getHealthElements(groupId: String, entityIds: List<String>): List<GroupScoped<E>>
+	suspend fun getHealthElements(groupId: String, entityIds: List<String>): List<GroupScoped<E>>
 }
 
 /* The extra API calls declared in this interface are the ones that can be used on encrypted or decrypted items but only when the user is a data owner */
@@ -269,18 +327,6 @@ interface HealthElementFlavouredApi<E : HealthElement> : HealthElementBasicFlavo
 		healthElement: E,
 		delegates: Map<String, HealthElementShareOptions>
 	): E
-
-	@Deprecated("Use filter instead")
-	suspend fun findHealthElementsByHcPartyPatient(
-		hcPartyId: String,
-		patient: Patient,
-		@DefaultValue("null")
-		startDate: Long? = null,
-		@DefaultValue("null")
-		endDate: Long? = null,
-		@DefaultValue("null")
-		descending: Boolean? = null,
-	): PaginatedListIterator<E>
 
 	/**
 	 * Get an iterator that iterates through all health elements matching the provided filter, executing multiple requests to
@@ -335,12 +381,12 @@ interface HealthElementFlavouredInGroupApi<E : HealthElement> : HealthElementBas
 	/**
 	 * In-group version of [HealthElementFlavouredApi.filterHealthElementsBy]
 	 */
-	// TODO suspend fun filterHealthElementsBy(filter: FilterOptions<HealthElement>): PaginatedListIterator<E>
+	suspend fun filterHealthElementsBy(groupId: String, filter: FilterOptions<HealthElement>): PaginatedListIterator<GroupScoped<E>>
 
 	/**
 	 * In-group version of [HealthElementFlavouredApi.filterHealthElementsBySorted]
 	 */
-	// TODO suspend fun filterHealthElementsBySorted(filter: SortableFilterOptions<HealthElement>): PaginatedListIterator<E>
+	suspend fun filterHealthElementsBySorted(groupId: String, filter: SortableFilterOptions<HealthElement>): PaginatedListIterator<GroupScoped<E>>
 }
 
 /* The extra API calls declared in this interface are the ones that can only be used on decrypted items when encryption keys are available */
@@ -450,7 +496,6 @@ interface HealthElementApi : HealthElementBasicFlavourlessApi, HealthElementFlav
 	 * @param delegates a set of data owner ids
 	 */
 	suspend fun createDelegationDeAnonymizationMetadata(entity: HealthElement, delegates: Set<String>)
-
 	/**
 	 * Decrypts HealthElements, throwing an exception if it is not possible.
 	 * @param healthElements encrypted HealthElements
@@ -567,12 +612,12 @@ interface HealthElementInGroupApi : HealthElementBasicFlavourlessInGroupApi, Hea
 	/**
 	 * In-group version of [HealthElementApi.matchHealthElementsBy]
 	 */
-	// TODO suspend fun matchHealthElementsBy(filter: FilterOptions<HealthElement>): List<String>
+	suspend fun matchHealthElementsBy(groupId: String, filter: FilterOptions<HealthElement>): List<String>
 
 	/**
 	 * In-group version of [HealthElementApi.matchHealthElementsBySorted]
 	 */
-	// TODO suspend fun matchHealthElementsBySorted(filter: SortableFilterOptions<HealthElement>): List<String>
+	suspend fun matchHealthElementsBySorted(groupId: String, filter: SortableFilterOptions<HealthElement>): List<String>
 }
 
 interface HealthElementBasicApi : HealthElementBasicFlavourlessApi, HealthElementBasicFlavouredApi<EncryptedHealthElement>, Subscribable<HealthElement, EncryptedHealthElement, BaseFilterOptions<HealthElement>> {
@@ -642,20 +687,20 @@ interface HealthElementBasicInGroupApi : HealthElementBasicFlavourlessInGroupApi
 	/**
 	 * In-group version of [HealthElementApi.matchHealthElementsBy]
 	 */
-	// TODO suspend fun matchHealthElementsBy(filter: BaseFilterOptions<HealthElement>): List<String>
+	suspend fun matchHealthElementsBy(groupId: String, filter: BaseFilterOptions<HealthElement>): List<String>
 
 	/**
 	 * In-group version of [HealthElementApi.matchHealthElementsBySorted]
 	 */
-	// TODO suspend fun matchHealthElementsBySorted(filter: BaseSortableFilterOptions<HealthElement>): List<String>
+	suspend fun matchHealthElementsBySorted(groupId: String, filter: BaseSortableFilterOptions<HealthElement>): List<String>
 
 	/**
 	 * In-group version of [HealthElementApi.filterHealthElementsBy]
 	 */
-	// TODO suspend fun filterHealthElementsBy(filter: BaseFilterOptions<HealthElement>): PaginatedListIterator<EncryptedHealthElement>
+	suspend fun filterHealthElementsBy(groupId: String, filter: BaseFilterOptions<HealthElement>): PaginatedListIterator<GroupScoped<EncryptedHealthElement>>
 
 	/**
 	 * In-group version of [HealthElementApi.filterHealthElementsBySorted]
 	 */
-	// TODO suspend fun filterHealthElementsBySorted(filter: BaseSortableFilterOptions<HealthElement>): PaginatedListIterator<EncryptedHealthElement>
+	suspend fun filterHealthElementsBySorted(groupId: String, filter: BaseSortableFilterOptions<HealthElement>): PaginatedListIterator<GroupScoped<EncryptedHealthElement>>
 }

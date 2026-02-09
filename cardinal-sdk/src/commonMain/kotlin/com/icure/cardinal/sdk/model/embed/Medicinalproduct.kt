@@ -11,9 +11,9 @@ import kotlin.collections.List
 
 @Serializable
 data class Medicinalproduct(
-	@DefaultValue("emptyList()")
+	@param:DefaultValue("emptyList()")
 	public val intendedcds: List<CodeStub> = emptyList(),
-	@DefaultValue("emptyList()")
+	@param:DefaultValue("emptyList()")
 	public val deliveredcds: List<CodeStub> = emptyList(),
 	public val intendedname: String? = null,
 	public val deliveredname: String? = null,

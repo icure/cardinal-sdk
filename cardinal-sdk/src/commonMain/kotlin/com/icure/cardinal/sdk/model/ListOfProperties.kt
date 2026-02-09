@@ -9,7 +9,7 @@ import kotlin.collections.Set
 
 @Serializable
 data class ListOfProperties(
-	@DefaultValue("emptySet()")
+	@param:DefaultValue("emptySet()")
 	public val properties: Set<DecryptedPropertyStub> = emptySet(),
 ) {
 	// region ListOfProperties-ListOfProperties

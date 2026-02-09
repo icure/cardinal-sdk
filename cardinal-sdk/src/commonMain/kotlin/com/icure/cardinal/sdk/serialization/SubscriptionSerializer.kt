@@ -9,6 +9,7 @@ import com.icure.cardinal.sdk.model.specializations.AccessControlKeyHexString
 import kotlinx.serialization.ExperimentalSerializationApi
 import kotlinx.serialization.KSerializer
 import kotlinx.serialization.builtins.ListSerializer
+import kotlinx.serialization.builtins.serializer
 import kotlinx.serialization.descriptors.SerialDescriptor
 import kotlinx.serialization.descriptors.buildClassSerialDescriptor
 import kotlinx.serialization.descriptors.element
@@ -30,6 +31,7 @@ class SubscriptionSerializer<O : Identifiable<String>>(
 		element<String>("entityClass")
 		element("filter", filterChainSerializer.descriptor)
 		element<List<AccessControlKeyHexString>?>("accessControlKeys")
+		element<Boolean?>("useCardinalModelSerialization")
 	}
 
 	override fun deserialize(decoder: Decoder): Subscription<O> =
@@ -38,12 +40,14 @@ class SubscriptionSerializer<O : Identifiable<String>>(
 			var entityClass: String? = null
 			var filter: FilterChain<O>? = null
 			var accessControlKeys: List<AccessControlKeyHexString>? = null
+			var useCardinalModelSerialization: Boolean? = null
 			while (true) {
 				when (val index = decodeElementIndex(descriptor)) {
 					0 -> eventTypes = decodeSerializableElement(descriptor, 0, ListSerializer(SubscriptionEventType.serializer()))
 					1 -> entityClass = decodeStringElement(descriptor, 1)
 					2 -> filter = decodeNullableSerializableElement(descriptor, 2, filterChainSerializer)
 					3 -> accessControlKeys = decodeNullableSerializableElement(descriptor, 3, ListSerializer(AccessControlKeyHexString.serializer()))
+					4 -> useCardinalModelSerialization = decodeNullableSerializableElement(descriptor, 4, Boolean.serializer())
 					CompositeDecoder.DECODE_DONE -> break
 					else -> error("Unexpected index: $index")
 				}
@@ -52,7 +56,8 @@ class SubscriptionSerializer<O : Identifiable<String>>(
 				eventTypes = checkNotNull(eventTypes) { "Cannot deserialize a Subscription with a null eventTypes" },
 				entityClass = checkNotNull(entityClass) { "Cannot deserialize a Subscription with a null entityClass" },
 				filter = filter,
-				accessControlKeys = accessControlKeys
+				accessControlKeys = accessControlKeys,
+				useCardinalModelSerialization = useCardinalModelSerialization,
 			)
 		}
 
@@ -61,5 +66,6 @@ class SubscriptionSerializer<O : Identifiable<String>>(
 		encodeStringElement(descriptor, 1, value.entityClass)
 		encodeNullableSerializableElement(descriptor, 2, filterChainSerializer, value.filter)
 		encodeNullableSerializableElement(descriptor, 3, ListSerializer(AccessControlKeyHexString.serializer()), value.accessControlKeys)
+		encodeNullableSerializableElement(descriptor, 4, Boolean.serializer(), value.useCardinalModelSerialization)
 	}
 }

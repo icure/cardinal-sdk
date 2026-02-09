@@ -50,7 +50,7 @@ data class DecryptedValorisation(
 	override val patientIntervention: Double? = null,
 	override val doctorSupplement: Double? = null,
 	override val vat: Double? = null,
-	@DefaultValue("emptyMap()")
+	@param:DefaultValue("emptyMap()")
 	override val label: Map<String, String>? = emptyMap(),
 	override val encryptedSelf: Base64String? = null,
 ) : Valorisation {
@@ -70,7 +70,7 @@ data class EncryptedValorisation(
 	override val patientIntervention: Double? = null,
 	override val doctorSupplement: Double? = null,
 	override val vat: Double? = null,
-	@DefaultValue("emptyMap()")
+	@param:DefaultValue("emptyMap()")
 	override val label: Map<String, String>? = emptyMap(),
 	override val encryptedSelf: Base64String? = null,
 ) : Valorisation {

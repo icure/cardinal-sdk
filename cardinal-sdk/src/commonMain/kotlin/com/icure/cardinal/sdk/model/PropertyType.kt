@@ -20,10 +20,10 @@ data class PropertyType(
 	public val identifier: String,
 	public val type: TypedValuesType? = null,
 	public val scope: PropertyTypeScope? = null,
-	@DefaultValue("false")
+	@param:DefaultValue("false")
 	public val unique: Boolean = false,
 	public val editor: String? = null,
-	@DefaultValue("false")
+	@param:DefaultValue("false")
 	public val localized: Boolean = false,
 ) : StoredDocument {
 	// region PropertyType-PropertyType

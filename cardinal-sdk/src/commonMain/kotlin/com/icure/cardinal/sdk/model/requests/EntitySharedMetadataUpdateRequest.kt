@@ -13,11 +13,11 @@ import com.icure.utils.InternalIcureApi
 @Serializable
 data class EntitySharedMetadataUpdateRequest(
 	public val metadataAccessControlHash: SecureDelegationKeyString,
-	@DefaultValue("emptyMap()")
+	@param:DefaultValue("emptyMap()")
 	public val secretIds: Map<Base64String, EntryUpdateType> = emptyMap(),
-	@DefaultValue("emptyMap()")
+	@param:DefaultValue("emptyMap()")
 	public val encryptionKeys: Map<Base64String, EntryUpdateType> = emptyMap(),
-	@DefaultValue("emptyMap()")
+	@param:DefaultValue("emptyMap()")
 	public val owningEntityIds: Map<Base64String, EntryUpdateType> = emptyMap(),
 ) {
 	// region EntitySharedMetadataUpdateRequest-EntitySharedMetadataUpdateRequest

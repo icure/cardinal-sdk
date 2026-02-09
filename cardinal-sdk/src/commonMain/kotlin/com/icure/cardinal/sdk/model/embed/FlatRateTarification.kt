@@ -29,7 +29,7 @@ data class DecryptedFlatRateTarification(
 	override val code: String? = null,
 	override val flatRateType: FlatRateType? = null,
 	override val label: Map<String, String>? = null,
-	@DefaultValue("emptyList()")
+	@param:DefaultValue("emptyList()")
 	override val valorisations: List<DecryptedValorisation> = emptyList(),
 	override val encryptedSelf: Base64String? = null,
 ) : FlatRateTarification {
@@ -43,7 +43,7 @@ data class EncryptedFlatRateTarification(
 	override val code: String? = null,
 	override val flatRateType: FlatRateType? = null,
 	override val label: Map<String, String>? = null,
-	@DefaultValue("emptyList()")
+	@param:DefaultValue("emptyList()")
 	override val valorisations: List<EncryptedValorisation> = emptyList(),
 	override val encryptedSelf: Base64String? = null,
 ) : FlatRateTarification {

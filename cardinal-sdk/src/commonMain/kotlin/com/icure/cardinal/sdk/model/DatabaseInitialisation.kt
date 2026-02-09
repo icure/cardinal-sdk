@@ -10,9 +10,9 @@ import kotlin.collections.List
 
 @Serializable
 data class DatabaseInitialisation(
-	@DefaultValue("emptyList()")
+	@param:DefaultValue("emptyList()")
 	public val users: List<User>? = emptyList(),
-	@DefaultValue("emptyList()")
+	@param:DefaultValue("emptyList()")
 	public val healthcareParties: List<HealthcareParty>? = emptyList(),
 	public val replication: Replication? = null,
 	public val minimumKrakenVersion: String? = null,

@@ -12,11 +12,9 @@ import com.icure.cardinal.sdk.model.DecryptedAccessLog
 import com.icure.cardinal.sdk.model.EncryptedAccessLog
 import com.icure.cardinal.sdk.model.EntityReferenceInGroup
 import com.icure.cardinal.sdk.model.GroupScoped
-import com.icure.cardinal.sdk.model.PaginatedList
 import com.icure.cardinal.sdk.model.Patient
 import com.icure.cardinal.sdk.model.StoredDocumentIdentifier
 import com.icure.cardinal.sdk.model.User
-import com.icure.cardinal.sdk.model.couchdb.DocIdentifier
 import com.icure.cardinal.sdk.model.embed.AccessLevel
 import com.icure.cardinal.sdk.model.specializations.HexString
 import com.icure.cardinal.sdk.model.toStoredDocumentIdentifier
@@ -27,11 +25,6 @@ import com.icure.cardinal.sdk.utils.pagination.PaginatedListIterator
 
 /* This interface includes the API calls that do not need encryption keys and do not return or consume encrypted/decrypted items, they are completely agnostic towards the presence of encrypted items */
 interface AccessLogBasicFlavourlessApi {
-	@Deprecated("Deletion without rev is unsafe")
-	suspend fun deleteAccessLogUnsafe(entityId: String): DocIdentifier
-	@Deprecated("Deletion without rev is unsafe")
-	suspend fun deleteAccessLogsUnsafe(entityIds: List<String>): List<DocIdentifier>
-
 	/**
 	 * Deletes a accessLog. If you don't have write access to the accessLog the method will fail.
 	 * @param entityId id of the accessLog.
@@ -59,6 +52,14 @@ interface AccessLogBasicFlavourlessApi {
 	suspend fun purgeAccessLogById(id: String, rev: String)
 
 	/**
+	 * Permanently deletes many accessLogs.
+	 * @param entityIds ids and revisions of the accessLogs to delete
+	 * @return the id and revision of the deleted accessLogs. If some entities couldn't be deleted (for example
+	 * because you had no write access to them) they will not be included in this list.
+	 */
+	suspend fun purgeAccessLogsByIds(entityIds: List<StoredDocumentIdentifier>): List<StoredDocumentIdentifier>
+
+	/**
 	 * Deletes a accessLog. If you don't have write access to the accessLog the method will fail.
 	 * @param accessLog the accessLog to delete
 	 * @return the id and revision of the deleted accessLog.
@@ -75,7 +76,7 @@ interface AccessLogBasicFlavourlessApi {
 	 */
 	suspend fun deleteAccessLogs(accessLogs: List<AccessLog>): List<StoredDocumentIdentifier> =
 		deleteAccessLogsByIds(accessLogs.map { accessLog ->
-			StoredDocumentIdentifier(accessLog.id, requireNotNull(accessLog.rev) { "Can't delete an accessLog that has no rev" })
+			accessLog.toStoredDocumentIdentifier()
 		})
 
 	/**
@@ -84,8 +85,19 @@ interface AccessLogBasicFlavourlessApi {
 	 * @throws RevisionConflictException if the provided accessLog doesn't match the latest known revision
 	 */
 	suspend fun purgeAccessLog(accessLog: AccessLog) {
-		purgeAccessLogById(accessLog.id, requireNotNull(accessLog.rev) { "Can't delete an accessLog that has no rev" })
+		purgeAccessLogById(accessLog.id, requireNotNull(accessLog.rev) { "Can't purge an accessLog that has no rev" })
 	}
+
+	/**
+	 * Permanently deletes many accessLogs.
+	 * @param accessLogs the accessLogs to purge.
+	 * @return the id and revision of the deleted accessLogs. If some entities couldn't be deleted (for example
+	 * because you had no write access to them) they will not be included in this list.
+	 */
+	suspend fun purgeAccessLogs(accessLogs: List<AccessLog>): List<StoredDocumentIdentifier> =
+		purgeAccessLogsByIds(accessLogs.map { accessLog ->
+			accessLog.toStoredDocumentIdentifier()
+		})
 }
 
 interface AccessLogBasicFlavourlessInGroupApi {
@@ -102,7 +114,12 @@ interface AccessLogBasicFlavourlessInGroupApi {
 	/**
 	 * In-group version of [AccessLogBasicFlavourlessApi.purgeAccessLogById]
 	 */
-	// TODO suspend fun purgeAccessLogById(entityId: GroupScoped<StoredDocumentIdentifier>)
+	suspend fun purgeAccessLogById(entityId: GroupScoped<StoredDocumentIdentifier>)
+
+	/**
+	 * In-group version of [AccessLogBasicFlavourlessApi.purgeAccessLogsByIds]
+	 */
+	suspend fun purgeAccessLogsByIds(entityIds: List<GroupScoped<StoredDocumentIdentifier>>): List<GroupScoped<StoredDocumentIdentifier>>
 
 	/**
 	 * In-group version of [AccessLogBasicFlavourlessApi.deleteAccessLog]
@@ -119,7 +136,14 @@ interface AccessLogBasicFlavourlessInGroupApi {
 	/**
 	 * In-group version of [AccessLogBasicFlavourlessApi.purgeAccessLog]
 	 */
-	// TODO suspend fun purgeAccessLog(accessLog: GroupScoped<AccessLog>)
+	suspend fun purgeAccessLog(accessLog: GroupScoped<AccessLog>) {
+		purgeAccessLogById(accessLog.toStoredDocumentIdentifier())
+	}
+
+	suspend fun purgeAccessLogs(accessLogs: List<GroupScoped<AccessLog>>): List<GroupScoped<StoredDocumentIdentifier>> =
+		purgeAccessLogsByIds(accessLogs.map { accessLog ->
+			accessLog.toStoredDocumentIdentifier()
+		})
 }
 
 /* This interface includes the API calls can be used on decrypted items if encryption keys are available *or* encrypted items if no encryption keys are available */
@@ -133,6 +157,14 @@ interface AccessLogBasicFlavouredApi<E : AccessLog> {
 	suspend fun createAccessLog(entity: E): E
 
 	/**
+	 * Create a batch of new access logs. All the provided access log must have the encryption metadata initialized.
+	 * @param entities the accessLogs with initialized encryption metadata
+	 * @return the created access logs with updated revision.
+	 * @throws IllegalArgumentException if the encryption metadata was not initialized in any of the entities.
+	 */
+	suspend fun createAccessLogs(entities: List<E>): List<E>
+
+	/**
 	 * Restores a accessLog that was marked as deleted.
 	 * @param id the id of the entity
 	 * @param rev the latest revision of the entity.
@@ -140,6 +172,14 @@ interface AccessLogBasicFlavouredApi<E : AccessLog> {
 	 * @throws RevisionConflictException if the provided revision doesn't match the latest known revision
 	 */
 	suspend fun undeleteAccessLogById(id: String, rev: String): E
+
+	/**
+	 * Restores a batch of accessLogs that were marked as deleted.
+	 * @param entityIds the ids and the revisions of the accessLogs to restore.
+	 * @return the restored accessLogs. If some entities couldn't be restored (because the user does not have access or the revision is not
+	 * up-to-date), then those entities will not be restored and will not appear in this list.
+	 */
+	suspend fun undeleteAccessLogsByIds(entityIds: List<StoredDocumentIdentifier>): List<E>
 
 	/**
 	 * Restores a accessLog that was marked as deleted.
@@ -151,12 +191,30 @@ interface AccessLogBasicFlavouredApi<E : AccessLog> {
 		undeleteAccessLogById(accessLog.id, requireNotNull(accessLog.rev) { "Can't delete an accessLog that has no rev" })
 
 	/**
+	 * Restores a batch of accessLogs that were marked as deleted.
+	 * @param accessLogs the accessLogs to restore.
+	 * @return the restored accessLogs. If some entities couldn't be restored (because the user does not have access or the revision is not
+	 * up-to-date), then those entities will not be restored and will not appear in this list.
+	 */
+	suspend fun undeleteAccessLogs(accessLogs: List<AccessLog>): List<E> =
+		undeleteAccessLogsByIds(accessLogs.map { it.toStoredDocumentIdentifier() })
+
+	/**
 	 * Modifies an access log. You need to have write access to the entity.
 	 * Flavoured method.
 	 * @param entity an access log with update content
 	 * @return the updated access log with a new revision.
 	 */
 	suspend fun modifyAccessLog(entity: E): E
+
+	/**
+	 * Modifies a batch of accessLogs.
+	 * Flavoured method-
+	 * @param entities the updated accessLogs.
+	 * @return the updated accessLogs with their new revisions. If some entities couldn't be updated (because the user does not have access or the revision is not
+	 * up-to-date), then those entities will not be updated and will not appear in this list.
+	 */
+	suspend fun modifyAccessLogs(entities: List<E>): List<E>
 
 	/**
 	 * Get an access log by its id. You must have read access to the access log. Fails if the access log does not exist
@@ -175,46 +233,6 @@ interface AccessLogBasicFlavouredApi<E : AccessLog> {
 	 */
 	suspend fun getAccessLogs(entityIds: List<String>): List<E>
 
-	@Deprecated("Replaced with filter")
-	suspend fun findAccessLogsBy(
-		fromEpoch: Long?,
-		toEpoch: Long?,
-		startKey: Long?,
-		startDocumentId: String?,
-		limit: Int?,
-	): PaginatedList<E>
-
-	@Deprecated("Use filter instead")
-	suspend fun findAccessLogsByUserAfterDate(
-		userId: String,
-		@DefaultValue("null")
-		accessType: String? = null,
-		@DefaultValue("null")
-		startDate: Long? = null,
-		@DefaultValue("null")
-		startKey: String? = null,
-		@DefaultValue("null")
-		startDocumentId: String? = null,
-		@DefaultValue("null")
-		limit: Int? = null,
-		@DefaultValue("null")
-		descending: Boolean? = null,
-	): PaginatedList<E>
-
-	@Deprecated("Use filter instead")
-	suspend fun findAccessLogsInGroup(
-		groupId: String,
-		@DefaultValue("null")
-		fromEpoch: Long? = null,
-		@DefaultValue("null")
-		toEpoch: Long? = null,
-		@DefaultValue("null")
-		startKey: Long? = null,
-		@DefaultValue("null")
-		startDocumentId: String? = null,
-		@DefaultValue("null")
-		limit: Int? = null,
-	): PaginatedList<E>
 }
 
 interface AccessLogBasicFlavouredInGroupApi<E : AccessLog> {
@@ -224,19 +242,41 @@ interface AccessLogBasicFlavouredInGroupApi<E : AccessLog> {
 	suspend fun createAccessLog(entity: GroupScoped<E>): GroupScoped<E>
 
 	/**
+	 * In-group version of [AccessLogBasicFlavouredApi.createAccessLogs].
+	 */
+	suspend fun createAccessLogs(entities: List<GroupScoped<E>>): List<GroupScoped<E>>
+
+	/**
 	 * In-group version of [AccessLogBasicFlavouredApi.undeleteAccessLogById]
 	 */
-	// TODO suspend fun undeleteAccessLogById(entityId: GroupScoped<StoredDocumentIdentifier>): GroupScoped<E>
+	suspend fun undeleteAccessLogById(entityId: GroupScoped<StoredDocumentIdentifier>): GroupScoped<E>
+
+	/**
+	 * In-group version of [AccessLogBasicFlavouredApi.undeleteAccessLogsByIds]
+	 */
+	suspend fun undeleteAccessLogsByIds(entityIds: List<GroupScoped<StoredDocumentIdentifier>>): List<GroupScoped<E>>
 
 	/**
 	 * In-group version of [AccessLogBasicFlavouredApi.undeleteAccessLog]
 	 */
-	// TODO suspend fun undeleteAccessLog(accessLog: GroupScoped<AccessLog>): GroupScoped<E>
+	suspend fun undeleteAccessLog(accessLog: GroupScoped<AccessLog>): GroupScoped<E> =
+		undeleteAccessLogById(accessLog.toStoredDocumentIdentifier())
+
+	/**
+	 * In-group version of [AccessLogBasicFlavouredApi.undeleteAccessLogs]
+	 */
+	suspend fun undeleteAccessLogs(accessLogs: List<GroupScoped<AccessLog>>): List<GroupScoped<E>> =
+		undeleteAccessLogsByIds(accessLogs.map { it.toStoredDocumentIdentifier() })
 
 	/**
 	 * In-group version of [AccessLogBasicFlavouredApi.modifyAccessLog]
 	 */
 	suspend fun modifyAccessLog(entity: GroupScoped<E>): GroupScoped<E>
+
+	/**
+	 * In-group version of [AccessLogBasicFlavouredApi.modifyAccessLogs]
+	 */
+	suspend fun modifyAccessLogs(entities: List<GroupScoped<E>>): List<GroupScoped<E>>
 
 	/**
 	 * In-group version of [AccessLogBasicFlavouredApi.getAccessLog]
@@ -277,18 +317,6 @@ interface AccessLogFlavouredApi<E : AccessLog> : AccessLogBasicFlavouredApi<E> {
 		accessLog: E,
 		delegates: Map<String, AccessLogShareOptions>
 	): E
-
-	@Deprecated("Use filter instead")
-	suspend fun findAccessLogsByHcPartyPatient(
-		hcPartyId: String,
-		patient: Patient,
-		@DefaultValue("null")
-		startDate: Long? = null,
-		@DefaultValue("null")
-		endDate: Long? = null,
-		@DefaultValue("null")
-		descending: Boolean? = null,
-	): PaginatedListIterator<E>
 
 	/**
 	 * Get an iterator that iterates through all access logs matching the provided filter, executing multiple requests to

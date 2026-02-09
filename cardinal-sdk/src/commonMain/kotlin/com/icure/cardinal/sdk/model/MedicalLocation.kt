@@ -29,11 +29,11 @@ data class MedicalLocation(
 	public val nihii: String? = null,
 	public val ssin: String? = null,
 	public val address: DecryptedAddress? = null,
-	@DefaultValue("emptySet()")
+	@param:DefaultValue("emptySet()")
 	public val agendaIds: Set<String> = emptySet(),
-	@DefaultValue("emptyMap()")
+	@param:DefaultValue("emptyMap()")
 	public val options: Map<String, String> = emptyMap(),
-	@DefaultValue("emptyMap()")
+	@param:DefaultValue("emptyMap()")
 	public val publicInformations: Map<String, String> = emptyMap(),
 ) : StoredDocument, Named {
 	// region MedicalLocation-MedicalLocation

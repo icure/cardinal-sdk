@@ -235,7 +235,7 @@ private suspend fun AuthProvider.changeScope(scope: String?) =
 	}
 
 @InternalIcureApi
-private suspend fun smartAuthWithConstantSecret(
+private suspend fun  smartAuthWithConstantSecret(
 	authApi: RawAnonymousAuthApi,
 	cryptoService: CryptoService,
 	authSecretDetails: AuthSecretDetails,

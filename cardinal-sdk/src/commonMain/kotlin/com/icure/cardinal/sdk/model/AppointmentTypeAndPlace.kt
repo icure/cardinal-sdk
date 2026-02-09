@@ -16,13 +16,13 @@ data class AppointmentTypeAndPlace(
 	public val calendarItemTypeId: String,
 	public val name: String? = null,
 	public val color: String? = null,
-	@DefaultValue("0")
+	@param:DefaultValue("0")
 	public val duration: Int = 0,
-	@DefaultValue("emptyMap()")
+	@param:DefaultValue("emptyMap()")
 	public val subjectByLanguage: Map<String, String>? = emptyMap(),
 	public val placeId: String? = null,
 	public val address: DecryptedAddress? = null,
-	@DefaultValue("true")
+	@param:DefaultValue("true")
 	public val acceptsNewPatients: Boolean = true,
 ) {
 	// region AppointmentTypeAndPlace-AppointmentTypeAndPlace

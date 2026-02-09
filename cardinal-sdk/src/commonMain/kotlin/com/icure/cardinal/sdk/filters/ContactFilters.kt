@@ -4,8 +4,11 @@ import com.icure.cardinal.sdk.CardinalBaseApis
 import com.icure.cardinal.sdk.crypto.EntityEncryptionService
 import com.icure.cardinal.sdk.crypto.entities.EntityWithEncryptionMetadataStub
 import com.icure.cardinal.sdk.crypto.entities.EntityWithEncryptionMetadataTypeName
+import com.icure.cardinal.sdk.crypto.entities.SdkBoundGroup
 import com.icure.cardinal.sdk.crypto.entities.toEncryptionMetadataStub
 import com.icure.cardinal.sdk.model.Contact
+import com.icure.cardinal.sdk.model.EntityReferenceInGroup
+import com.icure.cardinal.sdk.model.GroupScoped
 import com.icure.cardinal.sdk.model.Patient
 import com.icure.cardinal.sdk.model.base.Identifier
 import com.icure.cardinal.sdk.model.embed.Service
@@ -16,14 +19,16 @@ import com.icure.cardinal.sdk.model.filter.contact.ContactByDataOwnerOpeningDate
 import com.icure.cardinal.sdk.model.filter.contact.ContactByDataOwnerPatientOpeningDateFilter
 import com.icure.cardinal.sdk.model.filter.contact.ContactByDataOwnerServiceCodeFilter
 import com.icure.cardinal.sdk.model.filter.contact.ContactByDataOwnerServiceTagFilter
-import com.icure.cardinal.sdk.model.filter.contact.ContactByExternalIdFilter
 import com.icure.cardinal.sdk.model.filter.contact.ContactByHcPartyFilter
 import com.icure.cardinal.sdk.model.filter.contact.ContactByHcPartyIdentifiersFilter
 import com.icure.cardinal.sdk.model.filter.contact.ContactByHcPartyPatientTagCodeDateFilter
 import com.icure.cardinal.sdk.model.filter.contact.ContactByHcPartyTagCodeDateFilter
 import com.icure.cardinal.sdk.model.filter.contact.ContactByServiceIdsFilter
+import com.icure.cardinal.sdk.options.ApiConfiguration
+import com.icure.cardinal.sdk.options.BasicApiConfiguration
 import com.icure.cardinal.sdk.utils.DefaultValue
 import com.icure.utils.InternalIcureApi
+import kotlinx.coroutines.currentCoroutineContext
 import kotlinx.serialization.Serializable
 
 object ContactFilters {
@@ -33,7 +38,14 @@ object ContactFilters {
 	 */
 	fun allContactsForDataOwner(
 		dataOwnerId: String
-	): BaseFilterOptions<Contact> = AllByDataOwner(dataOwnerId)
+	): BaseFilterOptions<Contact> = AllByDataOwner(EntityReferenceInGroup(entityId = dataOwnerId, groupId = null))
+
+	/**
+	 * A version of [allContactsForDataOwner] for a data owner in a group.
+	 */
+	fun allContactsForDataOwner(
+		dataOwner: EntityReferenceInGroup
+	): BaseFilterOptions<Contact> = AllByDataOwner(dataOwner)
 
 	/**
 	 * Create options for contact filtering that will match all contacts shared directly (i.e. ignoring hierarchies) with the current data owner.
@@ -51,7 +63,19 @@ object ContactFilters {
 	fun byFormIdsForDataOwner(
 		dataOwnerId: String,
 		formIds: Set<String>
-	): BaseFilterOptions<Contact> = ByFormIdsForDataOwner(dataOwnerId, formIds)
+	): BaseFilterOptions<Contact> = ByFormIdsForDataOwner(
+		EntityReferenceInGroup(entityId = dataOwnerId, groupId = null),
+		formIds
+	)
+
+	/**
+	 * A version of [byFormIdsForDataOwner] for a data owner in a group.
+	 */
+	fun byFormIdsForDataOwner(
+		dataOwner: EntityReferenceInGroup,
+		formIds: Set<String>
+	): BaseFilterOptions<Contact> = ByFormIdsForDataOwner(dataOwner, formIds)
+
 
 	/**
 	 * Options for contact filtering which match all the contacts shared directly (i.e. ignoring hierarchies) with the current data owner where
@@ -90,6 +114,27 @@ object ContactFilters {
 	@OptIn(InternalIcureApi::class)
 	fun byPatientsOpeningDateForDataOwner(
 		dataOwnerId: String,
+		patients: List<GroupScoped<Patient>>,
+		@DefaultValue("null")
+		from: Long? = null,
+		@DefaultValue("null")
+		to: Long? = null,
+		@DefaultValue("false")
+		descending: Boolean = false
+	) : SortableFilterOptions<Contact> = ByPatientsOpeningDateForDataOwner(
+		dataOwnerId = EntityReferenceInGroup(entityId = dataOwnerId, groupId = null),
+		patients = patients.map { Pair(it.entity.toEncryptionMetadataStub(), it.groupId) },
+		from = from,
+		to = to,
+		descending = descending
+	)
+
+	/**
+	 * A version of [byPatientsOpeningDateForDataOwner] for a data owner in a group.
+	 */
+	@OptIn(InternalIcureApi::class)
+	fun byPatientsOpeningDateForDataOwner(
+		dataOwner: EntityReferenceInGroup,
 		patients: List<Patient>,
 		@DefaultValue("null")
 		from: Long? = null,
@@ -98,8 +143,8 @@ object ContactFilters {
 		@DefaultValue("false")
 		descending: Boolean = false
 	) : SortableFilterOptions<Contact> = ByPatientsOpeningDateForDataOwner(
-		dataOwnerId = dataOwnerId,
-		patients = patients.map { it.toEncryptionMetadataStub() },
+		dataOwnerId = dataOwner,
+		patients = patients.map { Pair(it.toEncryptionMetadataStub(), null) },
 		from = from,
 		to = to,
 		descending = descending
@@ -171,7 +216,33 @@ object ContactFilters {
 		to: Long? = null,
 		@DefaultValue("false")
 		descending: Boolean = false
-	) : BaseSortableFilterOptions<Contact> = ByPatientSecretIdsOpeningDateForDataOwner(dataOwnerId, secretIds, from, to, descending)
+	) : BaseSortableFilterOptions<Contact> = ByPatientSecretIdsOpeningDateForDataOwner(
+		dataOwnerId = EntityReferenceInGroup(entityId = dataOwnerId, groupId = null),
+		secretIds = secretIds,
+		from = from,
+		to = to,
+		descending = descending
+	)
+
+	/**
+	 * In group version of [byPatientSecretIdsOpeningDateForDataOwner].
+	 */
+	fun byPatientSecretIdsOpeningDateForDataOwner(
+		dataOwner: EntityReferenceInGroup,
+		secretIds: List<String>,
+		@DefaultValue("null")
+		from: Long? = null,
+		@DefaultValue("null")
+		to: Long? = null,
+		@DefaultValue("false")
+		descending: Boolean = false
+	) : BaseSortableFilterOptions<Contact> = ByPatientSecretIdsOpeningDateForDataOwner(
+		dataOwnerId = dataOwner,
+		secretIds = secretIds,
+		from = from,
+		to = to,
+		descending = descending
+	)
 
 	/**
 	 * Options for contact filtering which match all contacts shared directly (i.e. ignoring hierarchies) with the current data owner
@@ -203,15 +274,6 @@ object ContactFilters {
 	) : SortableFilterOptions<Contact> = ByPatientSecretIdsOpeningDateForSelf(secretIds, from, to, descending)
 
 	/**
-	 * Options for contact filtering which match all the contacts where [Contact.externalId] is equal to [externalId].
-	 *
-	 * @param externalId the external id to search.
-	 */
-	fun byExternalId(
-		externalId: String
-	) : BaseFilterOptions<Contact> = ByExternalId(externalId)
-
-	/**
 	 * Options for contact filtering which match all the contacts shared directly (i.e. ignoring hierarchies) with the current data owner that
 	 * have at least an identifier that has the same exact [Identifier.system] and [Identifier.value] as one of the provided
 	 * [identifiers]. Other properties of the provided identifiers are ignored.
@@ -240,7 +302,21 @@ object ContactFilters {
 	fun byIdentifiersForDataOwner(
 		dataOwnerId: String,
 		identifiers: List<Identifier>
-	): BaseSortableFilterOptions<Contact> = ByIdentifiersForDataOwner(identifiers, dataOwnerId)
+	): BaseSortableFilterOptions<Contact> = ByIdentifiersForDataOwner(
+		identifiers = identifiers,
+		dataOwnerId = EntityReferenceInGroup(entityId = dataOwnerId, groupId = null)
+	)
+
+	/**
+	 * In group version of [byIdentifiersForDataOwner].
+	 */
+	fun byIdentifiersForDataOwner(
+		dataOwner: EntityReferenceInGroup,
+		identifiers: List<Identifier>
+	): BaseSortableFilterOptions<Contact> = ByIdentifiersForDataOwner(
+		identifiers = identifiers,
+		dataOwnerId = dataOwner
+	)
 
 	/**
 	 * Options for contact filtering which match all contacts shared directly (i.e. ignoring hierarchies) with a specific
@@ -277,7 +353,27 @@ object ContactFilters {
 		codeCode = codeCode,
 		startOfContactOpeningDate = startOfContactOpeningDate,
 		endOfContactOpeningDate = endOfContactOpeningDate,
-		dataOwnerId = dataOwnerId
+		dataOwnerId = EntityReferenceInGroup(entityId = dataOwnerId, groupId = null),
+	)
+
+	/**
+	 * In group version of [byCodeAndOpeningDateForDataOwner].
+	 */
+	fun byCodeAndOpeningDateForDataOwner(
+		dataOwner: EntityReferenceInGroup,
+		codeType: String,
+		@DefaultValue("null")
+		codeCode: String? = null,
+		@DefaultValue("null")
+		startOfContactOpeningDate: Long? = null,
+		@DefaultValue("null")
+		endOfContactOpeningDate: Long? = null,
+	): BaseSortableFilterOptions<Contact> = ByCodeAndOpeningDateForDataOwner(
+		codeType = codeType,
+		codeCode = codeCode,
+		startOfContactOpeningDate = startOfContactOpeningDate,
+		endOfContactOpeningDate = endOfContactOpeningDate,
+		dataOwnerId = dataOwner
 	)
 
 	/**
@@ -348,7 +444,27 @@ object ContactFilters {
 		tagCode = tagCode,
 		startOfContactOpeningDate = startOfContactOpeningDate,
 		endOfContactOpeningDate = endOfContactOpeningDate,
-		dataOwnerId = dataOwnerId
+		dataOwnerId = EntityReferenceInGroup(entityId = dataOwnerId, groupId = null),
+	)
+
+	/**
+	 * In group version of [byTagAndOpeningDateForDataOwner].
+	 */
+	fun byTagAndOpeningDateForDataOwner(
+		dataOwner: EntityReferenceInGroup,
+		tagType: String,
+		@DefaultValue("null")
+		tagCode: String? = null,
+		@DefaultValue("null")
+		startOfContactOpeningDate: Long? = null,
+		@DefaultValue("null")
+		endOfContactOpeningDate: Long? = null
+	): BaseSortableFilterOptions<Contact> = ByTagAndOpeningDateForDataOwner(
+		tagType = tagType,
+		tagCode = tagCode,
+		startOfContactOpeningDate = startOfContactOpeningDate,
+		endOfContactOpeningDate = endOfContactOpeningDate,
+		dataOwnerId = dataOwner,
 	)
 
 	/**
@@ -376,7 +492,25 @@ object ContactFilters {
 		@DefaultValue("false")
 		descending: Boolean = false
 	): BaseSortableFilterOptions<Contact> = ByOpeningDateForDataOwner(
-		dataOwnerId = dataOwnerId,
+		dataOwnerId = EntityReferenceInGroup(entityId = dataOwnerId, groupId = null),
+		startDate = startDate,
+		endDate = endDate,
+		descending = descending
+	)
+
+	/**
+	 * In group version of [byOpeningDateForDataOwner].
+	 */
+	fun byOpeningDateForDataOwner(
+		dataOwner: EntityReferenceInGroup,
+		@DefaultValue("null")
+		startDate: Long? = null,
+		@DefaultValue("null")
+		endDate: Long? = null,
+		@DefaultValue("false")
+		descending: Boolean = false
+	): BaseSortableFilterOptions<Contact> = ByOpeningDateForDataOwner(
+		dataOwnerId = dataOwner,
 		startDate = startDate,
 		endDate = endDate,
 		descending = descending
@@ -443,7 +577,21 @@ object ContactFilters {
 		@DefaultValue("null")
 		tagCode: String? = null,
 	): BaseFilterOptions<Contact> = ByServiceTagForDataOwner(
-		dataOwnerId = dataOwnerId,
+		dataOwnerId = EntityReferenceInGroup(entityId = dataOwnerId, groupId = null),
+		tagType = tagType,
+		tagCode = tagCode,
+	)
+
+	/**
+	 * In group version of [byServiceTagForDataOwner].
+	 */
+	fun byServiceTagForDataOwner(
+		dataOwner: EntityReferenceInGroup,
+		tagType: String,
+		@DefaultValue("null")
+		tagCode: String? = null,
+	): BaseFilterOptions<Contact> = ByServiceTagForDataOwner(
+		dataOwnerId = dataOwner,
 		tagType = tagType,
 		tagCode = tagCode,
 	)
@@ -481,7 +629,21 @@ object ContactFilters {
 		@DefaultValue("null")
 		codeCode: String? = null,
 	): BaseFilterOptions<Contact> = ByServiceCodeForDataOwner(
-		dataOwnerId = dataOwnerId,
+		dataOwnerId = EntityReferenceInGroup(entityId = dataOwnerId, groupId = null),
+		codeType = codeType,
+		codeCode = codeCode,
+	)
+
+	/**
+	 * In group version of [byServiceCodeForDataOwner].
+	 */
+	fun byServiceCodeForDataOwner(
+		dataOwner: EntityReferenceInGroup,
+		codeType: String,
+		@DefaultValue("null")
+		codeCode: String? = null,
+	): BaseFilterOptions<Contact> = ByServiceCodeForDataOwner(
+		dataOwnerId = dataOwner,
 		codeType = codeType,
 		codeCode = codeCode,
 	)
@@ -542,8 +704,20 @@ object ContactFilters {
 		dataOwnerId: String,
 		patients: List<Patient>
 	): SortableFilterOptions<Contact> = ByPatientsForDataOwner(
-		patients = patients.map { it.toEncryptionMetadataStub() },
-		dataOwnerId = dataOwnerId
+		patients = patients.map { Pair(it.toEncryptionMetadataStub(), null) },
+		dataOwnerId = EntityReferenceInGroup(entityId = dataOwnerId, groupId = null),
+	)
+
+	/**
+	 * In group version of [byPatientsForDataOwner].
+	 */
+	@OptIn(InternalIcureApi::class)
+	fun byPatientsForDataOwner(
+		dataOwner: EntityReferenceInGroup,
+		patients: List<GroupScoped<Patient>>
+	): SortableFilterOptions<Contact> = ByPatientsForDataOwner(
+		patients = patients.map { Pair(it.entity.toEncryptionMetadataStub(), it.groupId) },
+		dataOwnerId = dataOwner
 	)
 
 	/**
@@ -583,7 +757,18 @@ object ContactFilters {
 		secretIds: List<String>
 	): BaseSortableFilterOptions<Contact> = ByPatientsSecretIdsForDataOwner(
 		secretIds = secretIds,
-		dataOwnerId = dataOwnerId
+		dataOwnerId = EntityReferenceInGroup(entityId = dataOwnerId, groupId = null),
+	)
+
+	/**
+	 * In group version of [byPatientsSecretIdsForDataOwner].
+	 */
+	fun byPatientsSecretIdsForDataOwner(
+		dataOwner: EntityReferenceInGroup,
+		secretIds: List<String>
+	): BaseSortableFilterOptions<Contact> = ByPatientsSecretIdsForDataOwner(
+		secretIds = secretIds,
+		dataOwnerId = dataOwner
 	)
 
 	/**
@@ -616,7 +801,7 @@ object ContactFilters {
 
 	@Serializable
 	internal class AllByDataOwner(
-		val dataOwnerId: String
+		val dataOwnerId: EntityReferenceInGroup
 	) : BaseFilterOptions<Contact>
 
 	@Serializable
@@ -624,7 +809,7 @@ object ContactFilters {
 
 	@Serializable
 	internal class ByFormIdsForDataOwner(
-		val dataOwnerId: String,
+		val dataOwnerId: EntityReferenceInGroup,
 		val formIds: Set<String>
 	) : BaseFilterOptions<Contact>
 
@@ -636,8 +821,8 @@ object ContactFilters {
 	@Serializable
 	@InternalIcureApi
 	internal class ByPatientsOpeningDateForDataOwner(
-		val dataOwnerId: String,
-		val patients: List<EntityWithEncryptionMetadataStub>,
+		val dataOwnerId: EntityReferenceInGroup,
+		val patients: List<Pair<EntityWithEncryptionMetadataStub, String?>>,
 		val from: Long?,
 		val to: Long?,
 		val descending: Boolean
@@ -654,7 +839,7 @@ object ContactFilters {
 
 	@Serializable
 	internal class ByPatientSecretIdsOpeningDateForDataOwner(
-		val dataOwnerId: String,
+		val dataOwnerId: EntityReferenceInGroup,
 		val secretIds: List<String>,
 		val from: Long?,
 		val to: Long?,
@@ -670,14 +855,9 @@ object ContactFilters {
 	) : SortableFilterOptions<Contact>
 
 	@Serializable
-	internal class ByExternalId(
-		val externalId: String
-	) : BaseFilterOptions<Contact>
-
-	@Serializable
 	internal class ByIdentifiersForDataOwner(
 		val identifiers: List<Identifier>,
-		val dataOwnerId: String
+		val dataOwnerId: EntityReferenceInGroup
 	) : BaseSortableFilterOptions<Contact>
 
 	@Serializable
@@ -691,7 +871,7 @@ object ContactFilters {
 		val codeCode: String?,
 		val startOfContactOpeningDate: Long?,
 		val endOfContactOpeningDate: Long?,
-		val dataOwnerId: String
+		val dataOwnerId: EntityReferenceInGroup
 	): BaseSortableFilterOptions<Contact> {
 		init {
 			require (codeCode != null || (startOfContactOpeningDate == null && endOfContactOpeningDate == null)) {
@@ -720,7 +900,7 @@ object ContactFilters {
 		val tagCode: String?,
 		val startOfContactOpeningDate: Long?,
 		val endOfContactOpeningDate: Long?,
-		val dataOwnerId: String
+		val dataOwnerId: EntityReferenceInGroup
 	): BaseSortableFilterOptions<Contact> {
 		init {
 			require (tagCode != null || (startOfContactOpeningDate == null && endOfContactOpeningDate == null)) {
@@ -747,7 +927,7 @@ object ContactFilters {
 	internal class ByOpeningDateForDataOwner(
 		val startDate: Long?,
 		val endDate: Long?,
-		val dataOwnerId: String,
+		val dataOwnerId: EntityReferenceInGroup,
 		val descending: Boolean
 	): BaseSortableFilterOptions<Contact>
 
@@ -762,7 +942,7 @@ object ContactFilters {
 	internal class ByServiceTagForDataOwner(
 		val tagType: String,
 		val tagCode: String?,
-		val dataOwnerId: String
+		val dataOwnerId: EntityReferenceInGroup,
 	): BaseFilterOptions<Contact>
 
 	@Serializable
@@ -775,7 +955,7 @@ object ContactFilters {
 	internal class ByServiceCodeForDataOwner(
 		val codeType: String,
 		val codeCode: String?,
-		val dataOwnerId: String
+		val dataOwnerId: EntityReferenceInGroup,
 	): BaseFilterOptions<Contact>
 
 	@Serializable
@@ -787,8 +967,8 @@ object ContactFilters {
 	@Serializable
 	@InternalIcureApi
 	internal class ByPatientsForDataOwner(
-		val patients: List<EntityWithEncryptionMetadataStub>,
-		val dataOwnerId: String
+		val patients: List<Pair<EntityWithEncryptionMetadataStub, String?>>,
+		val dataOwnerId: EntityReferenceInGroup
 	): BaseSortableFilterOptions<Contact>
 
 	@Serializable
@@ -800,7 +980,7 @@ object ContactFilters {
 	@Serializable
 	internal class ByPatientsSecretIdsForDataOwner(
 		val secretIds: List<String>,
-		val dataOwnerId: String
+		val dataOwnerId: EntityReferenceInGroup
 	): BaseSortableFilterOptions<Contact>
 
 	@Serializable
@@ -817,59 +997,90 @@ object ContactFilters {
 @InternalIcureApi
 internal suspend fun mapContactFilterOptions(
 	filterOptions: FilterOptions<Contact>,
-	selfDataOwnerId: String?,
-	entityEncryptionService: EntityEncryptionService?
+	config: BasicApiConfiguration,
+	requestGroup: String?
+): AbstractFilter<Contact> {
+	val nonBasicConfig = config as? ApiConfiguration
+	return mapContactFilterOptions(
+		filterOptions,
+		nonBasicConfig?.crypto?.dataOwnerApi?.getCurrentDataOwnerReference(),
+		nonBasicConfig?.crypto?.entity,
+		config.getBoundGroup(currentCoroutineContext()),
+		requestGroup
+	)
+}
+
+@InternalIcureApi
+private suspend fun mapContactFilterOptions(
+	filterOptions: FilterOptions<Contact>,
+	selfDataOwner: EntityReferenceInGroup?,
+	entityEncryptionService: EntityEncryptionService?,
+	boundGroup: SdkBoundGroup?,
+	requestGroup: String?
 ): AbstractFilter<Contact> = mapIfMetaFilterOptions(filterOptions) {
-	mapContactFilterOptions(it, selfDataOwnerId, entityEncryptionService)
+	mapContactFilterOptions(it, selfDataOwner, entityEncryptionService, boundGroup, requestGroup)
 } ?: when (filterOptions) {
-	is ContactFilters.AllByDataOwner -> ContactByHcPartyFilter(hcpId = filterOptions.dataOwnerId)
+	is ContactFilters.AllByDataOwner -> ContactByHcPartyFilter(
+		hcpId = filterOptions.dataOwnerId.asReferenceStringInGroup(requestGroup, boundGroup)
+	)
 	is ContactFilters.AllForSelf -> {
-		filterOptions.ensureNonBaseEnvironment(selfDataOwnerId, entityEncryptionService)
-		ContactByHcPartyFilter(hcpId = selfDataOwnerId)
+		filterOptions.ensureNonBaseEnvironment(selfDataOwner, entityEncryptionService)
+		ContactByHcPartyFilter(hcpId = selfDataOwner.asReferenceStringInGroup(requestGroup, boundGroup))
 	}
-	is ContactFilters.ByFormIdsForDataOwner -> ContactByDataOwnerFormIdsFilter(dataOwnerId = filterOptions.dataOwnerId, formIds = filterOptions.formIds)
+	is ContactFilters.ByFormIdsForDataOwner -> ContactByDataOwnerFormIdsFilter(
+		dataOwnerId = filterOptions.dataOwnerId.asReferenceStringInGroup(requestGroup, boundGroup),
+		formIds = filterOptions.formIds
+	)
 	is ContactFilters.ByFormIdsForSelf -> {
-		filterOptions.ensureNonBaseEnvironment(selfDataOwnerId, entityEncryptionService)
-		ContactByDataOwnerFormIdsFilter(dataOwnerId = selfDataOwnerId, formIds = filterOptions.formIds)
+		filterOptions.ensureNonBaseEnvironment(selfDataOwner, entityEncryptionService)
+		ContactByDataOwnerFormIdsFilter(
+			dataOwnerId = selfDataOwner.asReferenceStringInGroup(requestGroup, boundGroup),
+			formIds = filterOptions.formIds
+		)
 	}
 	is ContactFilters.ByPatientsOpeningDateForDataOwner -> {
-		filterOptions.ensureNonBaseEnvironment(selfDataOwnerId, entityEncryptionService)
+		filterOptions.ensureNonBaseEnvironment(selfDataOwner, entityEncryptionService)
 		ContactByDataOwnerPatientOpeningDateFilter(
-			dataOwnerId = filterOptions.dataOwnerId,
-			secretForeignKeys = entityEncryptionService.secretIdsOf(null, filterOptions.patients, EntityWithEncryptionMetadataTypeName.Patient, null).values.flatten().toSet(),
+			dataOwnerId = filterOptions.dataOwnerId.asReferenceStringInGroup(requestGroup, boundGroup),
+			secretForeignKeys = filterOptions.patients.mapToSecretIds(
+				entityEncryptionService,
+				EntityWithEncryptionMetadataTypeName.Patient
+			),
 			startDate = filterOptions.to,
 			endDate = filterOptions.from,
 			descending = filterOptions.descending
 		)
 	}
 	is ContactFilters.ByPatientsOpeningDateForSelf -> {
-		filterOptions.ensureNonBaseEnvironment(selfDataOwnerId, entityEncryptionService)
+		filterOptions.ensureNonBaseEnvironment(selfDataOwner, entityEncryptionService)
 		ContactByDataOwnerPatientOpeningDateFilter(
-			dataOwnerId = selfDataOwnerId,
-			secretForeignKeys = entityEncryptionService.secretIdsOf(null, filterOptions.patients, EntityWithEncryptionMetadataTypeName.Patient, null).values.flatten().toSet(),
+			dataOwnerId = selfDataOwner.asReferenceStringInGroup(requestGroup, boundGroup),
+			secretForeignKeys = filterOptions.patients.map { Pair(it, null) }.mapToSecretIds(
+				entityEncryptionService,
+				EntityWithEncryptionMetadataTypeName.Patient
+			),
 			startDate = filterOptions.to,
 			endDate = filterOptions.from,
 			descending = filterOptions.descending
 		)
 	}
 	is ContactFilters.ByPatientSecretIdsOpeningDateForDataOwner -> ContactByDataOwnerPatientOpeningDateFilter(
-		dataOwnerId = filterOptions.dataOwnerId,
+		dataOwnerId = filterOptions.dataOwnerId.asReferenceStringInGroup(requestGroup, boundGroup),
 		secretForeignKeys = filterOptions.secretIds.toSet(),
 		startDate = filterOptions.to,
 		endDate = filterOptions.from,
 		descending = filterOptions.descending
 	)
 	is ContactFilters.ByPatientSecretIdsOpeningDateForSelf -> {
-		filterOptions.ensureNonBaseEnvironment(selfDataOwnerId, entityEncryptionService)
+		filterOptions.ensureNonBaseEnvironment(selfDataOwner, entityEncryptionService)
 		ContactByDataOwnerPatientOpeningDateFilter(
-			dataOwnerId = selfDataOwnerId,
+			dataOwnerId = selfDataOwner.asReferenceStringInGroup(requestGroup, boundGroup),
 			secretForeignKeys = filterOptions.secretIds.toSet(),
 			startDate = filterOptions.to,
 			endDate = filterOptions.from,
 			descending = filterOptions.descending
 		)
 	}
-	is ContactFilters.ByExternalId -> ContactByExternalIdFilter(filterOptions.externalId)
 	is ContactFilters.ByCodeAndOpeningDateForDataOwner -> {
 		ContactByHcPartyTagCodeDateFilter(
 			tagType = null,
@@ -878,11 +1089,11 @@ internal suspend fun mapContactFilterOptions(
 			codeCode = filterOptions.codeCode,
 			startOfContactOpeningDate = filterOptions.startOfContactOpeningDate,
 			endOfContactOpeningDate = filterOptions.endOfContactOpeningDate,
-			healthcarePartyId = filterOptions.dataOwnerId
+			healthcarePartyId = filterOptions.dataOwnerId.asReferenceStringInGroup(requestGroup, boundGroup)
 		)
 	}
 	is ContactFilters.ByCodeAndOpeningDateForSelf -> {
-		filterOptions.ensureNonBaseEnvironment(selfDataOwnerId, entityEncryptionService)
+		filterOptions.ensureNonBaseEnvironment(selfDataOwner, entityEncryptionService)
 		ContactByHcPartyTagCodeDateFilter(
 			tagType = null,
 			tagCode = null,
@@ -890,45 +1101,51 @@ internal suspend fun mapContactFilterOptions(
 			codeCode = filterOptions.codeCode,
 			startOfContactOpeningDate = filterOptions.startOfContactOpeningDate,
 			endOfContactOpeningDate = filterOptions.endOfContactOpeningDate,
-			healthcarePartyId = selfDataOwnerId
+			healthcarePartyId = selfDataOwner.asReferenceStringInGroup(requestGroup, boundGroup)
 		)
 	}
 	is ContactFilters.ByIdentifiersForDataOwner -> ContactByHcPartyIdentifiersFilter(
 		identifiers = filterOptions.identifiers,
-		healthcarePartyId = filterOptions.dataOwnerId
+		healthcarePartyId = filterOptions.dataOwnerId.asReferenceStringInGroup(requestGroup, boundGroup)
 	)
 	is ContactFilters.ByIdentifiersForSelf -> {
-		filterOptions.ensureNonBaseEnvironment(selfDataOwnerId, entityEncryptionService)
+		filterOptions.ensureNonBaseEnvironment(selfDataOwner, entityEncryptionService)
 		ContactByHcPartyIdentifiersFilter(
 			identifiers = filterOptions.identifiers,
-			healthcarePartyId = selfDataOwnerId
+			healthcarePartyId = selfDataOwner.asReferenceStringInGroup(requestGroup, boundGroup)
 		)
 	}
 	is ContactFilters.ByPatientsForDataOwner -> {
-		filterOptions.ensureNonBaseEnvironment(selfDataOwnerId, entityEncryptionService)
+		filterOptions.ensureNonBaseEnvironment(selfDataOwner, entityEncryptionService)
 		ContactByHcPartyPatientTagCodeDateFilter(
-			patientSecretForeignKeys = entityEncryptionService.secretIdsOf(null, filterOptions.patients, EntityWithEncryptionMetadataTypeName.Patient, null).values.flatten().distinct(),
-			healthcarePartyId = filterOptions.dataOwnerId
+			patientSecretForeignKeys = filterOptions.patients.mapToSecretIds(
+				entityEncryptionService,
+				EntityWithEncryptionMetadataTypeName.Patient
+			).toList(),
+			healthcarePartyId = filterOptions.dataOwnerId.asReferenceStringInGroup(requestGroup, boundGroup)
 		)
 	}
 	is ContactFilters.ByPatientsForSelf -> {
-		filterOptions.ensureNonBaseEnvironment(selfDataOwnerId, entityEncryptionService)
+		filterOptions.ensureNonBaseEnvironment(selfDataOwner, entityEncryptionService)
 		ContactByHcPartyPatientTagCodeDateFilter(
-			patientSecretForeignKeys = entityEncryptionService.secretIdsOf(null, filterOptions.patients, EntityWithEncryptionMetadataTypeName.Patient, null).values.flatten().distinct(),
-			healthcarePartyId = selfDataOwnerId
+			patientSecretForeignKeys = filterOptions.patients.map { Pair(it, null) }.mapToSecretIds(
+				entityEncryptionService,
+				EntityWithEncryptionMetadataTypeName.Patient
+			).toList(),
+			healthcarePartyId = selfDataOwner.asReferenceStringInGroup(requestGroup, boundGroup)
 		)
 	}
 	is ContactFilters.ByPatientsSecretIdsForDataOwner -> {
 		ContactByHcPartyPatientTagCodeDateFilter(
 			patientSecretForeignKeys = filterOptions.secretIds,
-			healthcarePartyId = filterOptions.dataOwnerId
+			healthcarePartyId = filterOptions.dataOwnerId.asReferenceStringInGroup(requestGroup, boundGroup)
 		)
 	}
 	is ContactFilters.ByPatientsSecretIdsForSelf -> {
-		filterOptions.ensureNonBaseEnvironment(selfDataOwnerId, entityEncryptionService)
+		filterOptions.ensureNonBaseEnvironment(selfDataOwner, entityEncryptionService)
 		ContactByHcPartyPatientTagCodeDateFilter(
 			patientSecretForeignKeys = filterOptions.secretIds,
-			healthcarePartyId = selfDataOwnerId
+			healthcarePartyId = selfDataOwner.asReferenceStringInGroup(requestGroup, boundGroup)
 		)
 	}
 	is ContactFilters.ByServiceIds -> {
@@ -944,11 +1161,11 @@ internal suspend fun mapContactFilterOptions(
 			codeCode = null,
 			startOfContactOpeningDate = filterOptions.startOfContactOpeningDate,
 			endOfContactOpeningDate = filterOptions.endOfContactOpeningDate,
-			healthcarePartyId = filterOptions.dataOwnerId
+			healthcarePartyId = filterOptions.dataOwnerId.asReferenceStringInGroup(requestGroup, boundGroup)
 		)
 	}
 	is ContactFilters.ByTagAndOpeningDateForSelf -> {
-		filterOptions.ensureNonBaseEnvironment(selfDataOwnerId, entityEncryptionService)
+		filterOptions.ensureNonBaseEnvironment(selfDataOwner, entityEncryptionService)
 		ContactByHcPartyTagCodeDateFilter(
 			tagType = filterOptions.tagType,
 			tagCode = filterOptions.tagCode,
@@ -956,46 +1173,46 @@ internal suspend fun mapContactFilterOptions(
 			codeCode = null,
 			startOfContactOpeningDate = filterOptions.startOfContactOpeningDate,
 			endOfContactOpeningDate = filterOptions.endOfContactOpeningDate,
-			healthcarePartyId = selfDataOwnerId
+			healthcarePartyId = selfDataOwner.asReferenceStringInGroup(requestGroup, boundGroup)
 		)
 	}
 	is ContactFilters.ByOpeningDateForDataOwner -> ContactByDataOwnerOpeningDateFilter(
-		dataOwnerId = filterOptions.dataOwnerId,
+		dataOwnerId = filterOptions.dataOwnerId.asReferenceStringInGroup(requestGroup, boundGroup),
 		startDate = filterOptions.startDate,
 		endDate = filterOptions.endDate,
 		descending = filterOptions.descending
 	)
 	is ContactFilters.ByOpeningDateForSelf -> {
-		filterOptions.ensureNonBaseEnvironment(selfDataOwnerId, entityEncryptionService)
+		filterOptions.ensureNonBaseEnvironment(selfDataOwner, entityEncryptionService)
 		ContactByDataOwnerOpeningDateFilter(
-			dataOwnerId = selfDataOwnerId,
+			dataOwnerId = selfDataOwner.asReferenceStringInGroup(requestGroup, boundGroup),
 			startDate = filterOptions.startDate,
 			endDate = filterOptions.endDate,
 			descending = filterOptions.descending
 		)
 	}
 	is ContactFilters.ByServiceTagForDataOwner -> ContactByDataOwnerServiceTagFilter(
-		dataOwnerId = filterOptions.dataOwnerId,
+		dataOwnerId = filterOptions.dataOwnerId.asReferenceStringInGroup(requestGroup, boundGroup),
 		tagType = filterOptions.tagType,
 		tagCode = filterOptions.tagCode,
 	)
 	is ContactFilters.ByServiceTagForSelf -> {
-		filterOptions.ensureNonBaseEnvironment(selfDataOwnerId, entityEncryptionService)
+		filterOptions.ensureNonBaseEnvironment(selfDataOwner, entityEncryptionService)
 		ContactByDataOwnerServiceTagFilter(
-			dataOwnerId = selfDataOwnerId,
+			dataOwnerId = selfDataOwner.asReferenceStringInGroup(requestGroup, boundGroup),
 			tagType = filterOptions.tagType,
 			tagCode = filterOptions.tagCode,
 		)
 	}
 	is ContactFilters.ByServiceCodeForDataOwner -> ContactByDataOwnerServiceCodeFilter(
-		dataOwnerId = filterOptions.dataOwnerId,
+		dataOwnerId = filterOptions.dataOwnerId.asReferenceStringInGroup(requestGroup, boundGroup),
 		codeType = filterOptions.codeType,
 		codeCode = filterOptions.codeCode,
 	)
 	is ContactFilters.ByServiceCodeForSelf -> {
-		filterOptions.ensureNonBaseEnvironment(selfDataOwnerId, entityEncryptionService)
+		filterOptions.ensureNonBaseEnvironment(selfDataOwner, entityEncryptionService)
 		ContactByDataOwnerServiceCodeFilter(
-			dataOwnerId = selfDataOwnerId,
+			dataOwnerId = selfDataOwner.asReferenceStringInGroup(requestGroup, boundGroup),
 			codeType = filterOptions.codeType,
 			codeCode = filterOptions.codeCode,
 		)
