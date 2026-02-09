@@ -24,15 +24,15 @@ suspend fun initializeTestEnvironment() {
 	} else  {
 		println("Creating group - $testGroupId")
 		if (
-		groupApi.createGroup(
-			testGroupId,
-			testGroupName,
-			password = uuid(),
-			initialisationData = DatabaseInitialisation(
-				users = emptyList(),
-				healthcareParties = emptyList(),
-			)
-		).status.isSuccess()
+			groupApi.createGroup(
+				testGroupId,
+				testGroupName,
+				password = uuid(),
+				initialisationData = DatabaseInitialisation(
+					users = emptyList(),
+					healthcareParties = emptyList(),
+				)
+			).status.isSuccess()
 		) {
 			println("Group created successfully")
 		} else {

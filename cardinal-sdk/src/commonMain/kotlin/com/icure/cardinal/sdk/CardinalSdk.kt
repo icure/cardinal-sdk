@@ -158,9 +158,12 @@ import com.icure.kryptom.crypto.RsaAlgorithm
 import com.icure.kryptom.crypto.RsaKeypair
 import com.icure.utils.InternalIcureApi
 import io.ktor.client.HttpClient
+import io.ktor.client.plugins.HttpSend
 import io.ktor.client.plugins.HttpTimeout
 import io.ktor.client.plugins.contentnegotiation.ContentNegotiation
+import io.ktor.client.plugins.plugin
 import io.ktor.client.plugins.websocket.WebSockets
+import io.ktor.http.Headers
 import io.ktor.serialization.kotlinx.json.json
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -809,7 +812,7 @@ internal class CardinalSdkImpl(
 		)
 	}
 
-	private val maintenanceTask: MaintenanceTaskApi by lazy {
+	override val maintenanceTask: MaintenanceTaskApi by lazy {
 		MaintenanceTaskApiImpl(
 			rawMaintenanceTaskApi,
 			config

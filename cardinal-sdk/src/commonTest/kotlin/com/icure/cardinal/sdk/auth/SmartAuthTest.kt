@@ -200,7 +200,7 @@ class SmartAuthTest : StringSpec({
 			)
 		).getCurrentUser().successBody()
 		retrievedWithNewPwd shouldBe userWithNewPwd
-		shouldThrow<RequestStatusException> {
+		shouldThrow<IllegalArgumentException> {
 			getUserApiWithProvider(
 				AuthenticationMethod.UsingCredentials(UsernamePassword(hcpDetails.username, userPwd)).getAuthProvider(
 					authApi,
@@ -211,7 +211,7 @@ class SmartAuthTest : StringSpec({
 					krakenUrl = baseUrl
 				)
 			).getCurrentUser()
-		}.statusCode shouldBe 401
+		}.message shouldBe "Could not get a token with the provided initial secret of type ${AuthSecretDetails.PasswordDetails::class.simpleName}."
 	}
 
 	"Should automatically ask for TOTP after password if user has 2fa enabled".config(enabled = DEFAULT_ENABLED) {
@@ -479,7 +479,7 @@ class SmartAuthTest : StringSpec({
 			)
 		).getCurrentUser().successBody()
 		retrievedWithNewPwd shouldBe updatedUser
-		shouldThrow<RequestStatusException> {
+		shouldThrow<IllegalArgumentException> {
 			getUserApiWithProvider(
 				AuthenticationMethod.UsingCredentials(UsernamePassword(hcpDetails.username, userPwd)).getAuthProvider(
 					authApi,
@@ -490,7 +490,7 @@ class SmartAuthTest : StringSpec({
 					krakenUrl = baseUrl
 				)
 			).getCurrentUser()
-		}.statusCode shouldBe 401
+		}.message shouldBe "Could not get a token with the provided initial secret of type ${AuthSecretDetails.PasswordDetails::class.simpleName}."
 	}
 
 	"Switched provider should keep cached secrets and should be able to have elevated security context".config(enabled = DEFAULT_ENABLED) {

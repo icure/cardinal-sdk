@@ -14,13 +14,14 @@ services:
       - ERL_MAX_PORT=16384
 
   kraken-1:
-    image: docker.taktik.be/icure/icure-kraken:26.1.15-gf9d74149c3
+    image: docker.taktik.be/icure/icure-kraken:26.1.24-g7b937bcd97
     container_name: kraken-1
     ports:
       - "5005:5005"
       - "8000:8000"
       - "16044:16043"
     environment:
+      - ICURE_GROUPS_ADMINGROUP=xx
       - ICURE_COUCHDB_PREFIX=icure-__
       - ICURE_COUCHDB_URL=http://couchdb-test:5984
       - ICURE_COUCHDB_USERNAME=${COUCHDB_USER}

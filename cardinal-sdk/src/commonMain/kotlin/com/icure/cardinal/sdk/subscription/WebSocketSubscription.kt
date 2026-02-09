@@ -101,6 +101,7 @@ internal class WebSocketSubscription<E : Identifiable<String>> private construct
 					),
 					entityClass = qualifiedName,
 					accessControlKeys = null,
+					useCardinalModelSerialization = true
 				),
 			)
 			val subscription = WebSocketSubscription(
@@ -210,7 +211,7 @@ internal class WebSocketSubscription<E : Identifiable<String>> private construct
 					} else {
 						sendEvent(try {
 							EntitySubscriptionEvent.EntityNotification(clientJson.decodeFromString(entitySerializer, content))
-						} catch (e: SerializationException) {
+						} catch (_: SerializationException) {
 							EntitySubscriptionEvent.EntityError.DeserializationError
 						})
 					}

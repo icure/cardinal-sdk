@@ -40,6 +40,7 @@ import io.kotest.core.spec.style.stringSpec
 import io.kotest.matchers.should
 import io.kotest.matchers.shouldBe
 import io.kotest.matchers.types.shouldBeInstanceOf
+import kotlinx.coroutines.async
 import kotlinx.coroutines.withTimeoutOrNull
 import kotlin.time.Duration.Companion.seconds
 
@@ -64,15 +65,14 @@ fun <BaseType : Identifiable<String>, MaybeDecryptedType : BaseType> subscribabl
 
 				withTimeoutOrNull(5.seconds) {
 					subscription.eventChannel.receive() shouldBe EntitySubscriptionEvent.Connected
-				} ?: fail("Didn't received OPEN event within 5 seconds")
+				} ?: fail("Didn't receive OPEN event within 5 seconds")
 
 				val created = createEntity()
 
 				withTimeoutOrNull(5.seconds) {
-					subscription.eventChannel.receive()
-						.shouldBeInstanceOf<EntitySubscriptionEvent.EntityNotification<*>>()
+					subscription.eventChannel.receive().shouldBeInstanceOf<EntitySubscriptionEvent.EntityNotification<*>>()
 						.entity.id shouldBe created.id
-				} ?: fail("Didn't received ENTITY event within 5 seconds")
+				} ?: fail("Didn't receive ENTITY event within 5 seconds")
 			}
 		}
 	}

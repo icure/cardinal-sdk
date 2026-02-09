@@ -19,6 +19,7 @@ import com.icure.cardinal.sdk.api.impl.FrontEndMigrationApiImpl
 import com.icure.cardinal.sdk.api.impl.GroupApiImpl
 import com.icure.cardinal.sdk.api.impl.HealthcarePartyApiImpl
 import com.icure.cardinal.sdk.api.impl.InsuranceApiImpl
+import com.icure.cardinal.sdk.api.impl.MaintenanceTaskBasicApiImpl
 import com.icure.cardinal.sdk.api.impl.PlaceApiImpl
 import com.icure.cardinal.sdk.api.impl.RoleApiImpl
 import com.icure.cardinal.sdk.api.impl.SystemApiImpl
@@ -54,9 +55,9 @@ import com.icure.cardinal.sdk.api.raw.impl.RawHealthcarePartyApiImpl
 import com.icure.cardinal.sdk.api.raw.impl.RawICureApiImpl
 import com.icure.cardinal.sdk.api.raw.impl.RawInsuranceApiImpl
 import com.icure.cardinal.sdk.api.raw.impl.RawInvoiceApiImpl
+import com.icure.cardinal.sdk.api.raw.impl.RawMaintenanceTaskApiImpl
 import com.icure.cardinal.sdk.api.raw.impl.RawMessageApiImpl
 import com.icure.cardinal.sdk.api.raw.impl.RawPatientApiImpl
-import com.icure.cardinal.sdk.api.raw.impl.RawPermissionApiImpl
 import com.icure.cardinal.sdk.api.raw.impl.RawPlaceApiImpl
 import com.icure.cardinal.sdk.api.raw.impl.RawReceiptApiImpl
 import com.icure.cardinal.sdk.api.raw.impl.RawRoleApiImpl
@@ -158,7 +159,7 @@ interface CardinalUnboundBaseSdk : CardinalBaseApis {
 					validationService = EntityValidationServiceImpl(jsonEncryptionService),
 					entityAccessInformationProvider = BasicEntityAccessInformationProvider(boundGroupProvider)
 				),
-				encryption =manifests,
+				encryption = manifests,
 				rawApiConfig = rawApiConfig,
 				boundGroupProvider = boundGroupProvider
 			)
@@ -499,6 +500,17 @@ private class CardinalBaseApisImpl(
 				config.rawApiConfig
 			),
 			config = config
+		)
+	}
+
+	override val maintenanceTask by lazy {
+		MaintenanceTaskBasicApiImpl(
+			RawMaintenanceTaskApiImpl(
+				apiUrl,
+				authProvider,
+				NoAccessControlKeysHeadersProvider,
+				config.rawApiConfig
+			), config
 		)
 	}
 

@@ -28,11 +28,12 @@ import com.icure.cardinal.sdk.api.HealthcarePartyApi
 import com.icure.cardinal.sdk.api.InsuranceApi
 import com.icure.cardinal.sdk.api.InvoiceApi
 import com.icure.cardinal.sdk.api.InvoiceBasicApi
+import com.icure.cardinal.sdk.api.MaintenanceTaskApi
+import com.icure.cardinal.sdk.api.MaintenanceTaskBasicApi
 import com.icure.cardinal.sdk.api.MessageApi
 import com.icure.cardinal.sdk.api.MessageBasicApi
 import com.icure.cardinal.sdk.api.PatientApi
 import com.icure.cardinal.sdk.api.PatientBasicApi
-import com.icure.cardinal.sdk.api.PermissionApi
 import com.icure.cardinal.sdk.api.PlaceApi
 import com.icure.cardinal.sdk.api.ReceiptApi
 import com.icure.cardinal.sdk.api.ReceiptBasicApi
@@ -77,6 +78,7 @@ interface CardinalApis : CardinalNonCryptoApis {
 	val healthElement: HealthElementApi
 	@Deprecated("The invoice API and model are highly specialised for the belgian market. They will be provided as a separate package in future")
 	val invoice: InvoiceApi
+	val maintenanceTask: MaintenanceTaskApi
 	val message: MessageApi
 	val patient: PatientApi
 	@Deprecated("The receipt API and model are highly specialised for the belgian market. They will be provided as a separate package in future")
@@ -105,6 +107,7 @@ interface CardinalBaseApis : CardinalNonCryptoApis {
 	val healthElement: HealthElementBasicApi
 	@Deprecated("The invoice API and model are highly specialised for the belgian market. They will be provided as a separate package in future")
 	val invoice: InvoiceBasicApi
+	val maintenanceTask: MaintenanceTaskBasicApi
 	val message: MessageBasicApi
 	val patient: PatientBasicApi
 	@Deprecated("The receipt API and model are highly specialised for the belgian market. They will be provided as a separate package in future")

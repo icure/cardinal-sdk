@@ -3,8 +3,13 @@ package tasks
 import io.ktor.client.HttpClient
 import io.ktor.client.engine.cio.CIO
 import io.ktor.client.plugins.contentnegotiation.ContentNegotiation
+import io.ktor.client.plugins.expectSuccess
 import io.ktor.client.request.basicAuth
 import io.ktor.client.request.get
+import io.ktor.client.request.post
+import io.ktor.client.request.setBody
+import io.ktor.http.ContentType
+import io.ktor.http.contentType
 import io.ktor.http.isSuccess
 import io.ktor.serialization.kotlinx.json.json
 import kotlinx.coroutines.delay
@@ -36,15 +41,18 @@ abstract class InitializeTestEnvironment : DefaultTask() {
 			?: throw IllegalStateException("Cannot find base compose dir")
 		val composeFile = File("$baseDir/buildSrc/src/main/resources/scratch/$composeFileName")
 		if(!composeFile.exists()) throw IllegalStateException("Cannot find compose file")
-		startKrakenEnvironment(composeFile, listOf("mock"))
+		startKrakenEnvironment(baseDir, composeFile, listOf("mock"))
 	}
 
-	private suspend fun startKrakenEnvironment(composeFile: File, profiles: List<String> = emptyList()) {
+	private suspend fun startKrakenEnvironment(baseDir: String, composeFile: File, profiles: List<String> = emptyList()) {
+		val couchDBPort = "15984"
+		val couchDbUser = "icure"
+		val couchDbPassword = "icure"
 		val envVars = mapOf(
-			"COUCHDB_PORT" to "15984",
+			"COUCHDB_PORT" to couchDBPort,
 			"AS_PORT" to "16044",
-			"COUCHDB_USER" to "icure",
-			"COUCHDB_PASSWORD" to "icure",
+			"COUCHDB_USER" to couchDbUser,
+			"COUCHDB_PASSWORD" to couchDbPassword,
 			"MOCK_ICURE_URL" to "http://kraken-1:16043/rest/v1",
 			"ICURE_MOCK_LOGIN" to "john",
 			"ICURE_MOCK_PWD" to "LetMeIn", //pragma: allowlist secret
@@ -81,6 +89,8 @@ abstract class InitializeTestEnvironment : DefaultTask() {
 			rootUserRoles = defaultRoles,
 			defaultQuotas = listOf(1000, 10, 5)
 		)
+
+		loadRolesInConfig(baseDir, couchDBPort, couchDbUser, couchDbPassword)
 	}
 
 	/**
@@ -135,6 +145,16 @@ abstract class InitializeTestEnvironment : DefaultTask() {
 		else {
 			delay(5000)
 			isBaseDbCreated(couchDbUrl, couchDbUser, couchDbPassword, retry - 1)
+		}
+	}
+
+	private suspend fun loadRolesInConfig(baseDir: String, couchDBPort: String, username: String, password: String) {
+		val payload = File("$baseDir/buildSrc/src/main/resources/roles.json").readText()
+		httpClient.post("http://localhost:$couchDBPort/icure-__-config/_bulk_docs") {
+			basicAuth(username, password)
+			contentType(ContentType.Application.Json)
+			setBody(payload)
+			expectSuccess = true
 		}
 	}
 }
