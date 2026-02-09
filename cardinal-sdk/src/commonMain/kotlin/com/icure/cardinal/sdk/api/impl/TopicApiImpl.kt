@@ -54,6 +54,7 @@ import com.icure.cardinal.sdk.subscription.SubscriptionEventType
 import com.icure.cardinal.sdk.subscription.WebSocketSubscription
 import com.icure.cardinal.sdk.utils.Serialization
 import com.icure.cardinal.sdk.utils.currentEpochMs
+import com.icure.cardinal.sdk.utils.generation.JsMapAsObjectArray
 import com.icure.cardinal.sdk.utils.pagination.IdsPageIterator
 import com.icure.cardinal.sdk.utils.pagination.PaginatedListIterator
 import com.icure.utils.InternalIcureApi
@@ -303,7 +304,7 @@ private abstract class AbstractTopicFlavouredApi<E : Topic>(
 	protected suspend fun doShareWithMany(
 		entityGroupId: String?,
 		topic: E,
-		delegates: Map<EntityReferenceInGroup, TopicShareOptions>
+		delegates: @JsMapAsObjectArray(keyEntryName = "delegate", valueEntryName = "shareOptions") Map<EntityReferenceInGroup, TopicShareOptions>
 	): E  = config.crypto.entity.simpleShareOrUpdateEncryptedEntityMetadata(
 		entityGroupId = entityGroupId,
 		entity = topic,
@@ -374,7 +375,7 @@ private class TopicFlavouredInGroupApiImpl<E : Topic>(
 
 	override suspend fun shareWithMany(
 		topic: GroupScoped<E>,
-		delegates: Map<EntityReferenceInGroup, TopicShareOptions>
+		delegates: @JsMapAsObjectArray(keyEntryName = "delegate", valueEntryName = "shareOptions") Map<EntityReferenceInGroup, TopicShareOptions>
 	): GroupScoped<E> = groupScopedWith(topic) { groupId, entity ->
 		doShareWithMany(groupId, entity, delegates)
 	}

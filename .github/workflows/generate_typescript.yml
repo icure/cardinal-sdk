@@ -13,7 +13,7 @@ jobs:
         runs-on: ubuntu-latest
         name: Setup environment & generating typescript sdk
         env:
-            SDK_CODEGEN_VERSION: 1.5.0
+            SDK_CODEGEN_VERSION: 1.5.12
             ORG_GRADLE_PROJECT_repoUsername: ${{ secrets.REPO_USERNAME }}
             ORG_GRADLE_PROJECT_repoPassword: ${{ secrets.REPO_PASSWORD }}
             ORG_GRADLE_PROJECT_mavenRepository: ${{ secrets.MAVEN_REPOSITORY }}
