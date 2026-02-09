@@ -14,8 +14,4 @@ export interface ICureDocument<T> extends Identifiable<T>, HasTags, HasCodes {
 
 	responsible: string | undefined;
 
-	medicalLocationId: string | undefined;
-
-	endOfLife: number | undefined;
-
 }

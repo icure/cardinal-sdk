@@ -5,20 +5,24 @@ import com.icure.cardinal.sdk.filters.HealthElementFilters
 import com.icure.cardinal.sdk.js.api.DefaultParametersSupport.convertingOptionOrDefaultNonNull
 import com.icure.cardinal.sdk.js.api.DefaultParametersSupport.convertingOptionOrDefaultNullable
 import com.icure.cardinal.sdk.js.model.CheckedConverters.arrayToList
-import com.icure.cardinal.sdk.js.model.CheckedConverters.numberToInt
 import com.icure.cardinal.sdk.js.model.CheckedConverters.numberToLong
 import com.icure.cardinal.sdk.js.model.CheckedConverters.undefinedToNull
+import com.icure.cardinal.sdk.js.model.EntityReferenceInGroupJs
+import com.icure.cardinal.sdk.js.model.GroupScopedJs
 import com.icure.cardinal.sdk.js.model.HealthElementJs
 import com.icure.cardinal.sdk.js.model.PatientJs
 import com.icure.cardinal.sdk.js.model.base.IdentifierJs
 import com.icure.cardinal.sdk.js.model.base.identifier_fromJs
+import com.icure.cardinal.sdk.js.model.entityReferenceInGroup_fromJs
+import com.icure.cardinal.sdk.js.model.groupScoped_fromJs
 import com.icure.cardinal.sdk.js.model.patient_fromJs
+import com.icure.cardinal.sdk.model.EntityReferenceInGroup
+import com.icure.cardinal.sdk.model.GroupScoped
 import com.icure.cardinal.sdk.model.Patient
 import com.icure.cardinal.sdk.model.base.Identifier
 import kotlin.Array
 import kotlin.Boolean
 import kotlin.Double
-import kotlin.Int
 import kotlin.Long
 import kotlin.String
 import kotlin.collections.List
@@ -31,6 +35,15 @@ public object InternalHealthElementFiltersObj {
 		val dataOwnerIdConverted: String = dataOwnerId
 		val result = HealthElementFilters.allHealthElementsForDataOwner(
 			dataOwnerIdConverted,
+		)
+		return BaseFilterOptionsJsImpl(result)
+	}
+
+	public fun allHealthElementsForDataOwnerInGroup(dataOwner: EntityReferenceInGroupJs):
+			BaseFilterOptionsJs<HealthElementJs> {
+		val dataOwnerConverted: EntityReferenceInGroup = entityReferenceInGroup_fromJs(dataOwner)
+		val result = HealthElementFilters.allHealthElementsForDataOwnerInGroup(
+			dataOwnerConverted,
 		)
 		return BaseFilterOptionsJsImpl(result)
 	}
@@ -53,6 +66,23 @@ public object InternalHealthElementFiltersObj {
 		)
 		val result = HealthElementFilters.byIdentifiersForDataOwner(
 			dataOwnerIdConverted,
+			identifiersConverted,
+		)
+		return BaseSortableFilterOptionsJsImpl(result)
+	}
+
+	public fun byIdentifiersForDataOwnerInGroup(dataOwner: EntityReferenceInGroupJs,
+			identifiers: Array<IdentifierJs>): BaseSortableFilterOptionsJs<HealthElementJs> {
+		val dataOwnerConverted: EntityReferenceInGroup = entityReferenceInGroup_fromJs(dataOwner)
+		val identifiersConverted: List<Identifier> = arrayToList(
+			identifiers,
+			"identifiers",
+			{ x1: IdentifierJs ->
+				identifier_fromJs(x1)
+			},
+		)
+		val result = HealthElementFilters.byIdentifiersForDataOwnerInGroup(
+			dataOwnerConverted,
 			identifiersConverted,
 		)
 		return BaseSortableFilterOptionsJsImpl(result)
@@ -90,6 +120,29 @@ public object InternalHealthElementFiltersObj {
 		}
 		val result = HealthElementFilters.byCodeForDataOwner(
 			dataOwnerIdConverted,
+			codeTypeConverted,
+			codeCodeConverted,
+		)
+		return BaseSortableFilterOptionsJsImpl(result)
+	}
+
+	public fun byCodeForDataOwnerInGroup(
+		dataOwner: EntityReferenceInGroupJs,
+		codeType: String,
+		options: dynamic,
+	): BaseSortableFilterOptionsJs<HealthElementJs> {
+		val _options = options ?: js("{}")
+		val dataOwnerConverted: EntityReferenceInGroup = entityReferenceInGroup_fromJs(dataOwner)
+		val codeTypeConverted: String = codeType
+		val codeCodeConverted: String? = convertingOptionOrDefaultNullable(
+			_options,
+			"codeCode",
+			null
+		) { codeCode: String? ->
+			undefinedToNull(codeCode)
+		}
+		val result = HealthElementFilters.byCodeForDataOwnerInGroup(
+			dataOwnerConverted,
 			codeTypeConverted,
 			codeCodeConverted,
 		)
@@ -137,6 +190,29 @@ public object InternalHealthElementFiltersObj {
 		return BaseSortableFilterOptionsJsImpl(result)
 	}
 
+	public fun byTagForDataOwnerInGroup(
+		dataOwner: EntityReferenceInGroupJs,
+		tagType: String,
+		options: dynamic,
+	): BaseSortableFilterOptionsJs<HealthElementJs> {
+		val _options = options ?: js("{}")
+		val dataOwnerConverted: EntityReferenceInGroup = entityReferenceInGroup_fromJs(dataOwner)
+		val tagTypeConverted: String = tagType
+		val tagCodeConverted: String? = convertingOptionOrDefaultNullable(
+			_options,
+			"tagCode",
+			null
+		) { tagCode: String? ->
+			undefinedToNull(tagCode)
+		}
+		val result = HealthElementFilters.byTagForDataOwnerInGroup(
+			dataOwnerConverted,
+			tagTypeConverted,
+			tagCodeConverted,
+		)
+		return BaseSortableFilterOptionsJsImpl(result)
+	}
+
 	public fun byTagForSelf(tagType: String, options: dynamic):
 			SortableFilterOptionsJs<HealthElementJs> {
 		val _options = options ?: js("{}")
@@ -172,6 +248,28 @@ public object InternalHealthElementFiltersObj {
 		return SortableFilterOptionsJsImpl(result)
 	}
 
+	public fun byPatientsForDataOwnerInGroup(dataOwner: EntityReferenceInGroupJs,
+			patients: Array<GroupScopedJs<PatientJs>>): SortableFilterOptionsJs<HealthElementJs> {
+		val dataOwnerConverted: EntityReferenceInGroup = entityReferenceInGroup_fromJs(dataOwner)
+		val patientsConverted: List<GroupScoped<Patient>> = arrayToList(
+			patients,
+			"patients",
+			{ x1: GroupScopedJs<PatientJs> ->
+				groupScoped_fromJs(
+					x1,
+					{ x2: PatientJs ->
+						patient_fromJs(x2)
+					},
+				)
+			},
+		)
+		val result = HealthElementFilters.byPatientsForDataOwnerInGroup(
+			dataOwnerConverted,
+			patientsConverted,
+		)
+		return SortableFilterOptionsJsImpl(result)
+	}
+
 	public fun byPatientsForSelf(patients: Array<PatientJs>):
 			SortableFilterOptionsJs<HealthElementJs> {
 		val patientsConverted: List<Patient> = arrayToList(
@@ -199,6 +297,23 @@ public object InternalHealthElementFiltersObj {
 		)
 		val result = HealthElementFilters.byPatientsSecretIdsForDataOwner(
 			dataOwnerIdConverted,
+			secretIdsConverted,
+		)
+		return BaseSortableFilterOptionsJsImpl(result)
+	}
+
+	public fun byPatientsSecretIdsForDataOwnerInGroup(dataOwner: EntityReferenceInGroupJs,
+			secretIds: Array<String>): BaseSortableFilterOptionsJs<HealthElementJs> {
+		val dataOwnerConverted: EntityReferenceInGroup = entityReferenceInGroup_fromJs(dataOwner)
+		val secretIdsConverted: List<String> = arrayToList(
+			secretIds,
+			"secretIds",
+			{ x1: String ->
+				x1
+			},
+		)
+		val result = HealthElementFilters.byPatientsSecretIdsForDataOwnerInGroup(
+			dataOwnerConverted,
 			secretIdsConverted,
 		)
 		return BaseSortableFilterOptionsJsImpl(result)
@@ -270,6 +385,56 @@ public object InternalHealthElementFiltersObj {
 		}
 		val result = HealthElementFilters.byPatientsOpeningDateForDataOwner(
 			dataOwnerIdConverted,
+			patientsConverted,
+			fromConverted,
+			toConverted,
+			descendingConverted,
+		)
+		return SortableFilterOptionsJsImpl(result)
+	}
+
+	public fun byPatientsOpeningDateForDataOwnerInGroup(
+		dataOwner: EntityReferenceInGroupJs,
+		patients: Array<GroupScopedJs<PatientJs>>,
+		options: dynamic,
+	): SortableFilterOptionsJs<HealthElementJs> {
+		val _options = options ?: js("{}")
+		val dataOwnerConverted: EntityReferenceInGroup = entityReferenceInGroup_fromJs(dataOwner)
+		val patientsConverted: List<GroupScoped<Patient>> = arrayToList(
+			patients,
+			"patients",
+			{ x1: GroupScopedJs<PatientJs> ->
+				groupScoped_fromJs(
+					x1,
+					{ x2: PatientJs ->
+						patient_fromJs(x2)
+					},
+				)
+			},
+		)
+		val fromConverted: Long? = convertingOptionOrDefaultNullable(
+			_options,
+			"from",
+			null
+		) { from: Double? ->
+			numberToLong(from, "from")
+		}
+		val toConverted: Long? = convertingOptionOrDefaultNullable(
+			_options,
+			"to",
+			null
+		) { to: Double? ->
+			numberToLong(to, "to")
+		}
+		val descendingConverted: Boolean = convertingOptionOrDefaultNonNull(
+			_options,
+			"descending",
+			false
+		) { descending: Boolean ->
+			descending
+		}
+		val result = HealthElementFilters.byPatientsOpeningDateForDataOwnerInGroup(
+			dataOwnerConverted,
 			patientsConverted,
 			fromConverted,
 			toConverted,
@@ -363,6 +528,51 @@ public object InternalHealthElementFiltersObj {
 		return BaseSortableFilterOptionsJsImpl(result)
 	}
 
+	public fun byPatientSecretIdsOpeningDateForDataOwnerInGroup(
+		dataOwner: EntityReferenceInGroupJs,
+		secretIds: Array<String>,
+		options: dynamic,
+	): BaseSortableFilterOptionsJs<HealthElementJs> {
+		val _options = options ?: js("{}")
+		val dataOwnerConverted: EntityReferenceInGroup = entityReferenceInGroup_fromJs(dataOwner)
+		val secretIdsConverted: List<String> = arrayToList(
+			secretIds,
+			"secretIds",
+			{ x1: String ->
+				x1
+			},
+		)
+		val fromConverted: Long? = convertingOptionOrDefaultNullable(
+			_options,
+			"from",
+			null
+		) { from: Double? ->
+			numberToLong(from, "from")
+		}
+		val toConverted: Long? = convertingOptionOrDefaultNullable(
+			_options,
+			"to",
+			null
+		) { to: Double? ->
+			numberToLong(to, "to")
+		}
+		val descendingConverted: Boolean = convertingOptionOrDefaultNonNull(
+			_options,
+			"descending",
+			false
+		) { descending: Boolean ->
+			descending
+		}
+		val result = HealthElementFilters.byPatientSecretIdsOpeningDateForDataOwnerInGroup(
+			dataOwnerConverted,
+			secretIdsConverted,
+			fromConverted,
+			toConverted,
+			descendingConverted,
+		)
+		return BaseSortableFilterOptionsJsImpl(result)
+	}
+
 	public fun byPatientSecretIdsOpeningDateForSelf(secretIds: Array<String>, options: dynamic):
 			SortableFilterOptionsJs<HealthElementJs> {
 		val _options = options ?: js("{}")
@@ -401,24 +611,5 @@ public object InternalHealthElementFiltersObj {
 			descendingConverted,
 		)
 		return SortableFilterOptionsJsImpl(result)
-	}
-
-	public fun byStatusForDataOwner(dataOwnerId: String, status: Double):
-			BaseFilterOptionsJs<HealthElementJs> {
-		val dataOwnerIdConverted: String = dataOwnerId
-		val statusConverted: Int = numberToInt(status, "status")
-		val result = HealthElementFilters.byStatusForDataOwner(
-			dataOwnerIdConverted,
-			statusConverted,
-		)
-		return BaseFilterOptionsJsImpl(result)
-	}
-
-	public fun byStatusForSelf(status: Double): FilterOptionsJs<HealthElementJs> {
-		val statusConverted: Int = numberToInt(status, "status")
-		val result = HealthElementFilters.byStatusForSelf(
-			statusConverted,
-		)
-		return FilterOptionsJsImpl(result)
 	}
 }

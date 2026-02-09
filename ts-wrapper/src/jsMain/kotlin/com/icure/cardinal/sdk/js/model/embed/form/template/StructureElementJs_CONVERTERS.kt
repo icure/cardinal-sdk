@@ -17,38 +17,41 @@ import kotlin.Suppress
 
 @Suppress("UNUSED_VARIABLE")
 public fun structureElement_toJs(obj: StructureElement): StructureElementJs = when (obj) {
-	is DropdownField -> dropdownField_toJs(obj)
-	is RadioButton -> radioButton_toJs(obj)
+	is FieldsGroup -> fieldsGroup_toJs(obj)
+	is MeasureField -> measureField_toJs(obj)
 	is DatePicker -> datePicker_toJs(obj)
 	is TimePicker -> timePicker_toJs(obj)
+	is DropdownField -> dropdownField_toJs(obj)
+	is RadioButton -> radioButton_toJs(obj)
 	is DateTimePicker -> dateTimePicker_toJs(obj)
-	is NumberField -> numberField_toJs(obj)
 	is TextField -> textField_toJs(obj)
 	is CheckBox -> checkBox_toJs(obj)
 	is MultipleChoice -> multipleChoice_toJs(obj)
-	is MeasureField -> measureField_toJs(obj)
-	is FieldsGroup -> fieldsGroup_toJs(obj)
+	is NumberField -> numberField_toJs(obj)
 }
 
 public fun structureElement_fromJs(obj: StructureElementJs): StructureElement = when {
-	obj is DropdownFieldJs || obj.ktClass ==
-			"com.icure.cardinal.sdk.model.embed.form.template.DropdownField" ->dropdownField_fromJs(obj as
-			com.icure.cardinal.sdk.js.model.embed.form.template.DropdownFieldJs)
-	obj is RadioButtonJs || obj.ktClass ==
-			"com.icure.cardinal.sdk.model.embed.form.template.RadioButton" ->radioButton_fromJs(obj as
-			com.icure.cardinal.sdk.js.model.embed.form.template.RadioButtonJs)
+	obj is FieldsGroupJs || obj.ktClass ==
+			"com.icure.cardinal.sdk.model.embed.form.template.FieldsGroup" ->fieldsGroup_fromJs(obj as
+			com.icure.cardinal.sdk.js.model.embed.form.template.FieldsGroupJs)
+	obj is MeasureFieldJs || obj.ktClass ==
+			"com.icure.cardinal.sdk.model.embed.form.template.MeasureField" ->measureField_fromJs(obj as
+			com.icure.cardinal.sdk.js.model.embed.form.template.MeasureFieldJs)
 	obj is DatePickerJs || obj.ktClass ==
 			"com.icure.cardinal.sdk.model.embed.form.template.DatePicker" ->datePicker_fromJs(obj as
 			com.icure.cardinal.sdk.js.model.embed.form.template.DatePickerJs)
 	obj is TimePickerJs || obj.ktClass ==
 			"com.icure.cardinal.sdk.model.embed.form.template.TimePicker" ->timePicker_fromJs(obj as
 			com.icure.cardinal.sdk.js.model.embed.form.template.TimePickerJs)
+	obj is DropdownFieldJs || obj.ktClass ==
+			"com.icure.cardinal.sdk.model.embed.form.template.DropdownField" ->dropdownField_fromJs(obj as
+			com.icure.cardinal.sdk.js.model.embed.form.template.DropdownFieldJs)
+	obj is RadioButtonJs || obj.ktClass ==
+			"com.icure.cardinal.sdk.model.embed.form.template.RadioButton" ->radioButton_fromJs(obj as
+			com.icure.cardinal.sdk.js.model.embed.form.template.RadioButtonJs)
 	obj is DateTimePickerJs || obj.ktClass ==
 			"com.icure.cardinal.sdk.model.embed.form.template.DateTimePicker" ->dateTimePicker_fromJs(obj as
 			com.icure.cardinal.sdk.js.model.embed.form.template.DateTimePickerJs)
-	obj is NumberFieldJs || obj.ktClass ==
-			"com.icure.cardinal.sdk.model.embed.form.template.NumberField" ->numberField_fromJs(obj as
-			com.icure.cardinal.sdk.js.model.embed.form.template.NumberFieldJs)
 	obj is TextFieldJs || obj.ktClass ==
 			"com.icure.cardinal.sdk.model.embed.form.template.TextField" ->textField_fromJs(obj as
 			com.icure.cardinal.sdk.js.model.embed.form.template.TextFieldJs)
@@ -58,12 +61,9 @@ public fun structureElement_fromJs(obj: StructureElementJs): StructureElement = 
 	obj is MultipleChoiceJs || obj.ktClass ==
 			"com.icure.cardinal.sdk.model.embed.form.template.MultipleChoice" ->multipleChoice_fromJs(obj as
 			com.icure.cardinal.sdk.js.model.embed.form.template.MultipleChoiceJs)
-	obj is MeasureFieldJs || obj.ktClass ==
-			"com.icure.cardinal.sdk.model.embed.form.template.MeasureField" ->measureField_fromJs(obj as
-			com.icure.cardinal.sdk.js.model.embed.form.template.MeasureFieldJs)
-	obj is FieldsGroupJs || obj.ktClass ==
-			"com.icure.cardinal.sdk.model.embed.form.template.FieldsGroup" ->fieldsGroup_fromJs(obj as
-			com.icure.cardinal.sdk.js.model.embed.form.template.FieldsGroupJs)
+	obj is NumberFieldJs || obj.ktClass ==
+			"com.icure.cardinal.sdk.model.embed.form.template.NumberField" ->numberField_fromJs(obj as
+			com.icure.cardinal.sdk.js.model.embed.form.template.NumberFieldJs)
 	else -> throw
 			IllegalArgumentException("""Unknown concrete implementation for com.icure.cardinal.sdk.model.embed.form.template.StructureElement: $obj""")
 }

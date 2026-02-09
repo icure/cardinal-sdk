@@ -26,9 +26,17 @@ export interface PatientFlavouredInGroupApi<E extends Patient> {
 
 	createPatient(patient: GroupScoped<E>): Promise<GroupScoped<E>>;
 
-	createPatientsMinimal(patients: Array<GroupScoped<E>>): Promise<Array<GroupScoped<StoredDocumentIdentifier>>>;
-
 	createPatients(patients: Array<GroupScoped<E>>): Promise<Array<GroupScoped<E>>>;
+
+	undeletePatient(patient: GroupScoped<Patient>): Promise<GroupScoped<E>>;
+
+	undeletePatients(patients: Array<GroupScoped<Patient>>): Promise<Array<GroupScoped<E>>>;
+
+	modifyPatient(entity: GroupScoped<E>): Promise<GroupScoped<E>>;
+
+	undeletePatientById(patientId: GroupScoped<StoredDocumentIdentifier>): Promise<GroupScoped<E>>;
+
+	undeletePatientsByIds(patientIds: Array<GroupScoped<StoredDocumentIdentifier>>): Promise<Array<GroupScoped<E>>>;
 
 	getPatient(groupId: string, entityId: string): Promise<GroupScoped<E> | undefined>;
 
@@ -36,8 +44,6 @@ export interface PatientFlavouredInGroupApi<E extends Patient> {
 			maxMergeDepth: number | undefined): Promise<GroupScoped<E>>;
 
 	getPatients(groupId: string, patientIds: Array<string>): Promise<Array<GroupScoped<E>>>;
-
-	modifyPatientsMinimal(patients: Array<GroupScoped<E>>): Promise<Array<GroupScoped<StoredDocumentIdentifier>>>;
 
 	modifyPatients(patients: Array<GroupScoped<E>>): Promise<Array<GroupScoped<E>>>;
 

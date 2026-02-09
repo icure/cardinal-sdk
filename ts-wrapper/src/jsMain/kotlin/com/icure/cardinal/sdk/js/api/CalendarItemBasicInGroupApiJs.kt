@@ -12,6 +12,7 @@ import com.icure.cardinal.sdk.js.model.StoredDocumentIdentifierJs
 import com.icure.cardinal.sdk.js.utils.pagination.PaginatedListIteratorJs
 import kotlin.Array
 import kotlin.String
+import kotlin.Unit
 import kotlin.js.JsName
 import kotlin.js.JsQualifier
 import kotlin.js.Promise
@@ -37,17 +38,46 @@ public external interface CalendarItemBasicInGroupApiJs {
 	public fun deleteCalendarItemsByIds(entityIds: Array<GroupScopedJs<StoredDocumentIdentifierJs>>):
 			Promise<Array<GroupScopedJs<StoredDocumentIdentifierJs>>>
 
+	public fun purgeCalendarItemById(entityId: GroupScopedJs<StoredDocumentIdentifierJs>):
+			Promise<Unit>
+
+	public fun purgeCalendarItemsByIds(entityIds: Array<GroupScopedJs<StoredDocumentIdentifierJs>>):
+			Promise<Array<GroupScopedJs<StoredDocumentIdentifierJs>>>
+
 	public fun deleteCalendarItem(calendarItem: GroupScopedJs<CalendarItemJs>):
 			Promise<GroupScopedJs<StoredDocumentIdentifierJs>>
 
 	public fun deleteCalendarItems(calendarItems: Array<GroupScopedJs<CalendarItemJs>>):
 			Promise<Array<GroupScopedJs<StoredDocumentIdentifierJs>>>
 
+	public fun purgeCalendarItem(calendarItem: GroupScopedJs<CalendarItemJs>): Promise<Unit>
+
+	public fun purgeCalendarItems(calendarItems: Array<GroupScopedJs<CalendarItemJs>>):
+			Promise<Array<GroupScopedJs<StoredDocumentIdentifierJs>>>
+
 	public fun createCalendarItem(entity: GroupScopedJs<EncryptedCalendarItemJs>):
 			Promise<GroupScopedJs<EncryptedCalendarItemJs>>
 
+	public fun createCalendarItems(entities: Array<GroupScopedJs<EncryptedCalendarItemJs>>):
+			Promise<Array<GroupScopedJs<EncryptedCalendarItemJs>>>
+
+	public fun undeleteCalendarItemById(entityId: GroupScopedJs<StoredDocumentIdentifierJs>):
+			Promise<GroupScopedJs<EncryptedCalendarItemJs>>
+
+	public fun undeleteCalendarItemsByIds(entityIds: Array<GroupScopedJs<StoredDocumentIdentifierJs>>):
+			Promise<Array<GroupScopedJs<EncryptedCalendarItemJs>>>
+
+	public fun undeleteCalendarItem(calendarItem: GroupScopedJs<CalendarItemJs>):
+			Promise<GroupScopedJs<EncryptedCalendarItemJs>>
+
+	public fun undeleteCalendarItems(calendarItems: Array<GroupScopedJs<EncryptedCalendarItemJs>>):
+			Promise<Array<GroupScopedJs<EncryptedCalendarItemJs>>>
+
 	public fun modifyCalendarItem(entity: GroupScopedJs<EncryptedCalendarItemJs>):
 			Promise<GroupScopedJs<EncryptedCalendarItemJs>>
+
+	public fun modifyCalendarItems(entities: Array<GroupScopedJs<EncryptedCalendarItemJs>>):
+			Promise<Array<GroupScopedJs<EncryptedCalendarItemJs>>>
 
 	public fun getCalendarItem(groupId: String, entityId: String):
 			Promise<GroupScopedJs<EncryptedCalendarItemJs>?>

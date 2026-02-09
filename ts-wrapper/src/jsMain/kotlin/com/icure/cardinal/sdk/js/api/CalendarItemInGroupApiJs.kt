@@ -66,10 +66,21 @@ public external interface CalendarItemInGroupApiJs {
 	public fun deleteCalendarItemsByIds(entityIds: Array<GroupScopedJs<StoredDocumentIdentifierJs>>):
 			Promise<Array<GroupScopedJs<StoredDocumentIdentifierJs>>>
 
+	public fun purgeCalendarItemById(entityId: GroupScopedJs<StoredDocumentIdentifierJs>):
+			Promise<Unit>
+
+	public fun purgeCalendarItemsByIds(entityIds: Array<GroupScopedJs<StoredDocumentIdentifierJs>>):
+			Promise<Array<GroupScopedJs<StoredDocumentIdentifierJs>>>
+
 	public fun deleteCalendarItem(calendarItem: GroupScopedJs<CalendarItemJs>):
 			Promise<GroupScopedJs<StoredDocumentIdentifierJs>>
 
 	public fun deleteCalendarItems(calendarItems: Array<GroupScopedJs<CalendarItemJs>>):
+			Promise<Array<GroupScopedJs<StoredDocumentIdentifierJs>>>
+
+	public fun purgeCalendarItem(calendarItem: GroupScopedJs<CalendarItemJs>): Promise<Unit>
+
+	public fun purgeCalendarItems(calendarItems: Array<GroupScopedJs<CalendarItemJs>>):
 			Promise<Array<GroupScopedJs<StoredDocumentIdentifierJs>>>
 
 	public fun shareWith(
@@ -92,8 +103,26 @@ public external interface CalendarItemInGroupApiJs {
 	public fun createCalendarItem(entity: GroupScopedJs<DecryptedCalendarItemJs>):
 			Promise<GroupScopedJs<DecryptedCalendarItemJs>>
 
+	public fun createCalendarItems(entities: Array<GroupScopedJs<DecryptedCalendarItemJs>>):
+			Promise<Array<GroupScopedJs<DecryptedCalendarItemJs>>>
+
+	public fun undeleteCalendarItemById(entityId: GroupScopedJs<StoredDocumentIdentifierJs>):
+			Promise<GroupScopedJs<DecryptedCalendarItemJs>>
+
+	public fun undeleteCalendarItemsByIds(entityIds: Array<GroupScopedJs<StoredDocumentIdentifierJs>>):
+			Promise<Array<GroupScopedJs<DecryptedCalendarItemJs>>>
+
+	public fun undeleteCalendarItem(calendarItem: GroupScopedJs<CalendarItemJs>):
+			Promise<GroupScopedJs<DecryptedCalendarItemJs>>
+
+	public fun undeleteCalendarItems(calendarItems: Array<GroupScopedJs<DecryptedCalendarItemJs>>):
+			Promise<Array<GroupScopedJs<DecryptedCalendarItemJs>>>
+
 	public fun modifyCalendarItem(entity: GroupScopedJs<DecryptedCalendarItemJs>):
 			Promise<GroupScopedJs<DecryptedCalendarItemJs>>
+
+	public fun modifyCalendarItems(entities: Array<GroupScopedJs<DecryptedCalendarItemJs>>):
+			Promise<Array<GroupScopedJs<DecryptedCalendarItemJs>>>
 
 	public fun getCalendarItem(groupId: String, entityId: String):
 			Promise<GroupScopedJs<DecryptedCalendarItemJs>?>

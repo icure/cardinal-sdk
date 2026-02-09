@@ -2,7 +2,7 @@
 import {FilterOptions, PaginatedListIterator, SortableFilterOptions} from '../cardinal-sdk-ts.mjs';
 import {FormShareOptions} from '../crypto/entities/FormShareOptions.mjs';
 import {Form} from '../model/Form.mjs';
-import {Patient} from '../model/Patient.mjs';
+import {StoredDocumentIdentifier} from '../model/StoredDocumentIdentifier.mjs';
 
 
 export interface FormFlavouredApi<E extends Form> {
@@ -11,9 +11,6 @@ export interface FormFlavouredApi<E extends Form> {
 			options?: { options?: FormShareOptions | undefined }): Promise<E>;
 
 	shareWithMany(form: E, delegates: { [ key: string ]: FormShareOptions }): Promise<E>;
-
-	findFormsByHcPartyPatient(hcPartyId: string, patient: Patient,
-			options?: { startDate?: number | undefined, endDate?: number | undefined, descending?: boolean | undefined }): Promise<PaginatedListIterator<E>>;
 
 	filterFormsBy(filter: FilterOptions<Form>): Promise<PaginatedListIterator<E>>;
 
@@ -25,24 +22,20 @@ export interface FormFlavouredApi<E extends Form> {
 
 	modifyForm(entity: E): Promise<E>;
 
+	modifyForms(entities: Array<E>): Promise<Array<E>>;
+
 	undeleteFormById(id: string, rev: string): Promise<E>;
+
+	undeleteFormsByIds(entityIds: Array<StoredDocumentIdentifier>): Promise<Array<E>>;
 
 	undeleteForm(form: Form): Promise<E>;
 
-	modifyForms(entities: Array<E>): Promise<Array<E>>;
+	undeleteForms(forms: Array<Form>): Promise<Array<E>>;
 
 	getForm(entityId: string): Promise<E | undefined>;
 
 	getForms(entityIds: Array<string>): Promise<Array<E>>;
 
-	getLatestFormByLogicalUuid(logicalUuid: string): Promise<E>;
-
 	getLatestFormByUniqueId(uniqueId: string): Promise<E>;
-
-	getFormsByLogicalUuid(logicalUuid: string): Promise<Array<E>>;
-
-	getFormsByUniqueId(uniqueId: string): Promise<Array<E>>;
-
-	getChildrenForms(hcPartyId: string, parentId: string): Promise<Array<E>>;
 
 }

@@ -12,34 +12,27 @@ import com.icure.cardinal.sdk.js.model.base.PersonJs
 import com.icure.cardinal.sdk.js.model.base.StoredDocumentJs
 import com.icure.cardinal.sdk.js.model.embed.AnnotationJs
 import com.icure.cardinal.sdk.js.model.embed.DecryptedAddressJs
-import com.icure.cardinal.sdk.js.model.embed.DecryptedEmploymentInfoJs
 import com.icure.cardinal.sdk.js.model.embed.DecryptedFinancialInstitutionInformationJs
 import com.icure.cardinal.sdk.js.model.embed.DecryptedInsurabilityJs
 import com.icure.cardinal.sdk.js.model.embed.DecryptedMedicalHouseContractJs
 import com.icure.cardinal.sdk.js.model.embed.DecryptedPatientHealthCarePartyJs
-import com.icure.cardinal.sdk.js.model.embed.DecryptedSchoolingInfoJs
 import com.icure.cardinal.sdk.js.model.embed.DelegationJs
-import com.icure.cardinal.sdk.js.model.embed.EmploymentInfoJs
 import com.icure.cardinal.sdk.js.model.embed.EncryptableJs
 import com.icure.cardinal.sdk.js.model.embed.EncryptedAddressJs
-import com.icure.cardinal.sdk.js.model.embed.EncryptedEmploymentInfoJs
 import com.icure.cardinal.sdk.js.model.embed.EncryptedFinancialInstitutionInformationJs
 import com.icure.cardinal.sdk.js.model.embed.EncryptedInsurabilityJs
 import com.icure.cardinal.sdk.js.model.embed.EncryptedMedicalHouseContractJs
 import com.icure.cardinal.sdk.js.model.embed.EncryptedPatientHealthCarePartyJs
-import com.icure.cardinal.sdk.js.model.embed.EncryptedSchoolingInfoJs
 import com.icure.cardinal.sdk.js.model.embed.FinancialInstitutionInformationJs
 import com.icure.cardinal.sdk.js.model.embed.InsurabilityJs
 import com.icure.cardinal.sdk.js.model.embed.MedicalHouseContractJs
 import com.icure.cardinal.sdk.js.model.embed.PartnershipJs
 import com.icure.cardinal.sdk.js.model.embed.PatientHealthCarePartyJs
 import com.icure.cardinal.sdk.js.model.embed.PersonNameJs
-import com.icure.cardinal.sdk.js.model.embed.SchoolingInfoJs
 import com.icure.cardinal.sdk.js.model.embed.SecurityMetadataJs
 import com.icure.cardinal.sdk.js.utils.Record
 import kotlin.Array
 import kotlin.Boolean
-import kotlin.ByteArray
 import kotlin.Double
 import kotlin.Nothing
 import kotlin.String
@@ -105,10 +98,6 @@ public sealed external interface PatientJs : StoredDocumentJs, ICureDocumentJs<S
 
 	public val preferredUserId: String?
 
-	public val picture: ByteArray?
-
-	public val externalId: String?
-
 	public val insurabilities: Array<out InsurabilityJs>
 
 	public val partnerships: Array<out PartnershipJs>
@@ -124,28 +113,6 @@ public sealed external interface PatientJs : StoredDocumentJs, ICureDocumentJs<S
 	public val parameters: Record<String, out Array<out String>>
 
 	public val properties: Array<out PropertyStubJs>
-
-	public val nonDuplicateIds: Array<out String>
-
-	public val encryptedAdministrativesDocuments: Array<out String>
-
-	public val comment: String?
-
-	public val warning: String?
-
-	public val fatherBirthCountry: CodeStubJs?
-
-	public val birthCountry: CodeStubJs?
-
-	public val nativeCountry: CodeStubJs?
-
-	public val socialStatus: CodeStubJs?
-
-	public val mainSourceOfIncome: CodeStubJs?
-
-	public val schoolingInfos: Array<out SchoolingInfoJs>
-
-	public val employementInfos: Array<out EmploymentInfoJs>
 
 	public val isEncrypted: Boolean
 }
@@ -171,8 +138,6 @@ public external class DecryptedPatientJs(
 	override val tags: Array<CodeStubJs>
 
 	override val codes: Array<CodeStubJs>
-
-	override val endOfLife: Double?
 
 	override val deletionDate: Double?
 
@@ -246,10 +211,6 @@ public external class DecryptedPatientJs(
 
 	override val preferredUserId: String?
 
-	override val picture: ByteArray?
-
-	override val externalId: String?
-
 	override val insurabilities: Array<DecryptedInsurabilityJs>
 
 	override val partnerships: Array<PartnershipJs>
@@ -292,30 +253,6 @@ public external class DecryptedPatientJs(
 
 	override val cryptoActorProperties: Array<DecryptedPropertyStubJs>?
 
-	override val medicalLocationId: String?
-
-	override val nonDuplicateIds: Array<String>
-
-	override val encryptedAdministrativesDocuments: Array<String>
-
-	override val comment: String?
-
-	override val warning: String?
-
-	override val fatherBirthCountry: CodeStubJs?
-
-	override val birthCountry: CodeStubJs?
-
-	override val nativeCountry: CodeStubJs?
-
-	override val socialStatus: CodeStubJs?
-
-	override val mainSourceOfIncome: CodeStubJs?
-
-	override val schoolingInfos: Array<DecryptedSchoolingInfoJs>
-
-	override val employementInfos: Array<DecryptedEmploymentInfoJs>
-
 	override val parentId: Nothing?
 
 	override val isEncrypted: Boolean
@@ -344,8 +281,6 @@ public external class EncryptedPatientJs(
 	override val tags: Array<CodeStubJs>
 
 	override val codes: Array<CodeStubJs>
-
-	override val endOfLife: Double?
 
 	override val deletionDate: Double?
 
@@ -419,10 +354,6 @@ public external class EncryptedPatientJs(
 
 	override val preferredUserId: String?
 
-	override val picture: ByteArray?
-
-	override val externalId: String?
-
 	override val insurabilities: Array<EncryptedInsurabilityJs>
 
 	override val partnerships: Array<PartnershipJs>
@@ -464,30 +395,6 @@ public external class EncryptedPatientJs(
 	override val securityMetadata: SecurityMetadataJs?
 
 	override val cryptoActorProperties: Array<DecryptedPropertyStubJs>?
-
-	override val medicalLocationId: String?
-
-	override val nonDuplicateIds: Array<String>
-
-	override val encryptedAdministrativesDocuments: Array<String>
-
-	override val comment: String?
-
-	override val warning: String?
-
-	override val fatherBirthCountry: CodeStubJs?
-
-	override val birthCountry: CodeStubJs?
-
-	override val nativeCountry: CodeStubJs?
-
-	override val socialStatus: CodeStubJs?
-
-	override val mainSourceOfIncome: CodeStubJs?
-
-	override val schoolingInfos: Array<EncryptedSchoolingInfoJs>
-
-	override val employementInfos: Array<EncryptedEmploymentInfoJs>
 
 	override val parentId: Nothing?
 

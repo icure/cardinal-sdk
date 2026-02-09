@@ -5,6 +5,7 @@ package com.icure.cardinal.sdk.js.model
 
 import com.icure.cardinal.sdk.js.model.base.CodeStubJs
 import com.icure.cardinal.sdk.js.model.base.HasEncryptionMetadataJs
+import com.icure.cardinal.sdk.js.model.base.HasEndOfLifeJs
 import com.icure.cardinal.sdk.js.model.base.ICureDocumentJs
 import com.icure.cardinal.sdk.js.model.base.StoredDocumentJs
 import com.icure.cardinal.sdk.js.model.embed.DelegationJs
@@ -20,7 +21,7 @@ import kotlin.js.JsQualifier
 
 @JsName("ApplicationSettings")
 public sealed external interface ApplicationSettingsJs : StoredDocumentJs, ICureDocumentJs<String>,
-		HasEncryptionMetadataJs, EncryptableJs {
+		HasEncryptionMetadataJs, EncryptableJs, HasEndOfLifeJs {
 	public val settings: Record<String, out String>
 
 	public val encryptedSettings: Record<String, out String>
@@ -43,8 +44,6 @@ public external class DecryptedApplicationSettingsJs(
 	override val author: String?
 
 	override val responsible: String?
-
-	override val medicalLocationId: String?
 
 	override val tags: Array<CodeStubJs>
 
@@ -88,8 +87,6 @@ public external class EncryptedApplicationSettingsJs(
 	override val author: String?
 
 	override val responsible: String?
-
-	override val medicalLocationId: String?
 
 	override val tags: Array<CodeStubJs>
 

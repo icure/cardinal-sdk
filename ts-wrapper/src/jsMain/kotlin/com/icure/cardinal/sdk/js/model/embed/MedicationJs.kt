@@ -4,7 +4,6 @@
 package com.icure.cardinal.sdk.js.model.embed
 
 import com.icure.cardinal.sdk.js.model.base.CodeStubJs
-import com.icure.cardinal.sdk.js.utils.Record
 import kotlin.Array
 import kotlin.Boolean
 import kotlin.Double
@@ -61,44 +60,6 @@ public external class MedicationJs(
 	public val regimen: Array<RegimenItemJs>?
 
 	public val posology: String?
-
-	public val agreements: Record<String, ParagraphAgreementJs>?
-
-	public val medicationSchemeIdOnSafe: String?
-
-	public val medicationSchemeSafeVersion: Double?
-
-	public val medicationSchemeTimeStampOnSafe: Double?
-
-	public val medicationSchemeDocumentId: String?
-
-	public val safeIdName: String?
-
-	public val idOnSafes: String?
-
-	public val timestampOnSafe: Double?
-
-	public val changeValidated: Boolean?
-
-	public val newSafeMedication: Boolean?
-
-	public val medicationUse: String?
-
-	public val beginCondition: String?
-
-	public val endCondition: String?
-
-	public val origin: String?
-
-	public val medicationChanged: Boolean?
-
-	public val posologyChanged: Boolean?
-
-	public val suspension: Array<SuspensionJs>?
-
-	public val prescriptionRID: String?
-
-	public val status: Double?
 
 	public val stockLocation: DecryptedAddressJs?
 }

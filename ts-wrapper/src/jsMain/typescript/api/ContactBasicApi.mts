@@ -1,17 +1,18 @@
 // auto-generated file
 import {BaseFilterOptions, BaseSortableFilterOptions, PaginatedListIterator} from '../cardinal-sdk-ts.mjs';
 import {Contact, EncryptedContact} from '../model/Contact.mjs';
-import {PaginatedList} from '../model/PaginatedList.mjs';
 import {StoredDocumentIdentifier} from '../model/StoredDocumentIdentifier.mjs';
-import {DocIdentifier} from '../model/couchdb/DocIdentifier.mjs';
 import {LabelledOccurence} from '../model/data/LabelledOccurence.mjs';
 import {EncryptedService, Service} from '../model/embed/Service.mjs';
 import {EntitySubscription} from '../subscription/EntitySubscription.mjs';
 import {EntitySubscriptionConfiguration} from '../subscription/EntitySubscriptionConfiguration.mjs';
 import {SubscriptionEventType} from '../subscription/SubscriptionEventType.mjs';
+import {ContactBasicInGroupApi} from './ContactBasicInGroupApi.mjs';
 
 
 export interface ContactBasicApi {
+
+	inGroup: ContactBasicInGroupApi;
 
 	matchContactsBy(filter: BaseFilterOptions<Contact>): Promise<Array<string>>;
 
@@ -32,21 +33,21 @@ export interface ContactBasicApi {
 	subscribeToServiceCreateOrUpdateEvents(filter: BaseFilterOptions<Service>,
 			options?: { subscriptionConfig?: EntitySubscriptionConfiguration | undefined }): Promise<EntitySubscription<EncryptedService>>;
 
-	deleteContactUnsafe(entityId: string): Promise<DocIdentifier>;
+	deleteContactById(entityId: string, rev: string): Promise<StoredDocumentIdentifier>;
 
-	deleteContactsUnsafe(entityIds: Array<string>): Promise<Array<DocIdentifier>>;
-
-	deleteContactById(entityId: string, rev: string): Promise<DocIdentifier>;
-
-	deleteContactsByIds(entityIds: Array<StoredDocumentIdentifier>): Promise<Array<DocIdentifier>>;
+	deleteContactsByIds(entityIds: Array<StoredDocumentIdentifier>): Promise<Array<StoredDocumentIdentifier>>;
 
 	purgeContactById(id: string, rev: string): Promise<void>;
 
-	deleteContact(contact: Contact): Promise<DocIdentifier>;
+	purgeContactsByIds(entityIds: Array<StoredDocumentIdentifier>): Promise<Array<StoredDocumentIdentifier>>;
 
-	deleteContacts(contacts: Array<Contact>): Promise<Array<DocIdentifier>>;
+	deleteContact(contact: Contact): Promise<StoredDocumentIdentifier>;
+
+	deleteContacts(contacts: Array<Contact>): Promise<Array<StoredDocumentIdentifier>>;
 
 	purgeContact(contact: Contact): Promise<void>;
+
+	purgeContacts(contacts: Array<Contact>): Promise<Array<StoredDocumentIdentifier>>;
 
 	getServiceCodesOccurrences(codeType: string,
 			minOccurrences: number): Promise<Array<LabelledOccurence>>;
@@ -57,7 +58,11 @@ export interface ContactBasicApi {
 
 	undeleteContactById(id: string, rev: string): Promise<EncryptedContact>;
 
+	undeleteContactsByIds(entityIds: Array<StoredDocumentIdentifier>): Promise<Array<EncryptedContact>>;
+
 	undeleteContact(contact: Contact): Promise<EncryptedContact>;
+
+	undeleteContacts(contacts: Array<Contact>): Promise<Array<EncryptedContact>>;
 
 	modifyContact(entity: EncryptedContact): Promise<EncryptedContact>;
 
@@ -67,30 +72,9 @@ export interface ContactBasicApi {
 
 	getContacts(entityIds: Array<string>): Promise<Array<EncryptedContact>>;
 
-	listContactByHCPartyServiceId(hcPartyId: string,
-			serviceId: string): Promise<Array<EncryptedContact>>;
-
-	listContactsByExternalId(externalId: string): Promise<Array<EncryptedContact>>;
-
-	listContactsByHCPartyAndFormId(hcPartyId: string,
-			formId: string): Promise<Array<EncryptedContact>>;
-
-	listContactsByHCPartyAndFormIds(hcPartyId: string,
-			formIds: Array<string>): Promise<Array<EncryptedContact>>;
-
-	getService(serviceId: string): Promise<EncryptedService>;
+	getService(serviceId: string): Promise<EncryptedService | undefined>;
 
 	getServices(entityIds: Array<string>): Promise<Array<EncryptedService>>;
-
-	getServicesLinkedTo(linkType: string, ids: Array<string>): Promise<Array<EncryptedService>>;
-
-	listServicesByAssociationId(associationId: string): Promise<Array<EncryptedService>>;
-
-	listServicesByHealthElementId(hcPartyId: string,
-			healthElementId: string): Promise<Array<EncryptedService>>;
-
-	findContactsByOpeningDate(startDate: number, endDate: number, hcPartyId: string,
-			options?: { startKey?: any | undefined, startDocumentId?: string | undefined, limit?: number | undefined }): Promise<PaginatedList<EncryptedContact>>;
 
 	subscribeToEvents(events: Array<SubscriptionEventType>, filter: BaseFilterOptions<Contact>,
 			options?: { subscriptionConfig?: EntitySubscriptionConfiguration | undefined }): Promise<EntitySubscription<EncryptedContact>>;

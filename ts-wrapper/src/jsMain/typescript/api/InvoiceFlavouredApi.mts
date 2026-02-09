@@ -4,6 +4,7 @@ import {InvoiceShareOptions} from '../crypto/entities/InvoiceShareOptions.mjs';
 import {Invoice} from '../model/Invoice.mjs';
 import {PaginatedList} from '../model/PaginatedList.mjs';
 import {Patient} from '../model/Patient.mjs';
+import {StoredDocumentIdentifier} from '../model/StoredDocumentIdentifier.mjs';
 import {InvoiceType} from '../model/embed/InvoiceType.mjs';
 import {EncryptedInvoicingCode} from '../model/embed/InvoicingCode.mjs';
 import {MediumType} from '../model/embed/MediumType.mjs';
@@ -18,6 +19,18 @@ export interface InvoiceFlavouredApi<E extends Invoice> {
 
 	findInvoicesByHcPartyPatient(hcPartyId: string, patient: Patient,
 			options?: { startDate?: number | undefined, endDate?: number | undefined, descending?: boolean | undefined }): Promise<PaginatedListIterator<E>>;
+
+	createInvoice(entity: E): Promise<E>;
+
+	createInvoices(entities: Array<E>): Promise<Array<E>>;
+
+	undeleteInvoiceById(id: string, rev: string): Promise<E>;
+
+	undeleteInvoicesByIds(entityIds: Array<StoredDocumentIdentifier>): Promise<Array<E>>;
+
+	undeleteInvoice(invoice: Invoice): Promise<E>;
+
+	undeleteInvoices(invoices: Array<Invoice>): Promise<Array<E>>;
 
 	modifyInvoice(entity: E): Promise<E>;
 

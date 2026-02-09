@@ -17,18 +17,14 @@ import com.icure.cardinal.sdk.js.model.base.CodeStubJs
 import com.icure.cardinal.sdk.js.model.base.codeStub_fromJs
 import com.icure.cardinal.sdk.js.model.base.codeStub_toJs
 import com.icure.cardinal.sdk.js.model.embed.ResourceGroupAllocationScheduleJs
-import com.icure.cardinal.sdk.js.model.embed.RightJs
 import com.icure.cardinal.sdk.js.model.embed.agendaSlottingAlgorithm_fromJs
 import com.icure.cardinal.sdk.js.model.embed.agendaSlottingAlgorithm_toJs
 import com.icure.cardinal.sdk.js.model.embed.resourceGroupAllocationSchedule_fromJs
 import com.icure.cardinal.sdk.js.model.embed.resourceGroupAllocationSchedule_toJs
-import com.icure.cardinal.sdk.js.model.embed.right_fromJs
-import com.icure.cardinal.sdk.js.model.embed.right_toJs
 import com.icure.cardinal.sdk.model.Agenda
 import com.icure.cardinal.sdk.model.DecryptedPropertyStub
 import com.icure.cardinal.sdk.model.base.CodeStub
 import com.icure.cardinal.sdk.model.embed.ResourceGroupAllocationSchedule
-import com.icure.cardinal.sdk.model.embed.Right
 import com.icure.cardinal.sdk.model.embed.UserAccessLevel
 import kotlin.String
 import kotlin.Suppress
@@ -50,9 +46,6 @@ public fun agenda_toJs(obj: Agenda): AgendaJs {
 	)
 	val responsible = nullToUndefined(
 		obj.responsible
-	)
-	val medicalLocationId = nullToUndefined(
-		obj.medicalLocationId
 	)
 	val tags = setToArray(
 		obj.tags,
@@ -84,12 +77,6 @@ public fun agenda_toJs(obj: Agenda): AgendaJs {
 	)
 	val zoneId = nullToUndefined(
 		obj.zoneId
-	)
-	val rights = listToArray(
-		obj.rights,
-		{ x1: Right ->
-			right_toJs(x1)
-		},
 	)
 	val userRights = mapToObject(
 		obj.userRights,
@@ -127,7 +114,6 @@ public fun agenda_toJs(obj: Agenda): AgendaJs {
 		"modified:modified," +
 		"author:author," +
 		"responsible:responsible," +
-		"medicalLocationId:medicalLocationId," +
 		"tags:tags," +
 		"codes:codes," +
 		"endOfLife:endOfLife," +
@@ -137,7 +123,6 @@ public fun agenda_toJs(obj: Agenda): AgendaJs {
 		"name:name," +
 		"userId:userId," +
 		"zoneId:zoneId," +
-		"rights:rights," +
 		"userRights:userRights," +
 		"slottingAlgorithm:slottingAlgorithm," +
 		"publicBookingQuota:publicBookingQuota," +
@@ -153,7 +138,6 @@ public fun agenda_fromJs(obj: AgendaJs): Agenda {
 	val modified = numberToLong(obj.modified, "obj.modified")
 	val author = undefinedToNull(obj.author)
 	val responsible = undefinedToNull(obj.responsible)
-	val medicalLocationId = undefinedToNull(obj.medicalLocationId)
 	val tags = arrayToSet(
 		obj.tags,
 		"obj.tags",
@@ -175,13 +159,6 @@ public fun agenda_fromJs(obj: AgendaJs): Agenda {
 	val name = undefinedToNull(obj.name)
 	val userId = undefinedToNull(obj.userId)
 	val zoneId = undefinedToNull(obj.zoneId)
-	val rights = arrayToList(
-		obj.rights,
-		"obj.rights",
-		{ x1: RightJs ->
-			right_fromJs(x1)
-		},
-	)
 	val userRights = objectToMap(
 		obj.userRights,
 		"obj.userRights",
@@ -217,7 +194,6 @@ public fun agenda_fromJs(obj: AgendaJs): Agenda {
 		modified = modified,
 		author = author,
 		responsible = responsible,
-		medicalLocationId = medicalLocationId,
 		tags = tags,
 		codes = codes,
 		endOfLife = endOfLife,
@@ -227,7 +203,6 @@ public fun agenda_fromJs(obj: AgendaJs): Agenda {
 		name = name,
 		userId = userId,
 		zoneId = zoneId,
-		rights = rights,
 		userRights = userRights,
 		slottingAlgorithm = slottingAlgorithm,
 		publicBookingQuota = publicBookingQuota,

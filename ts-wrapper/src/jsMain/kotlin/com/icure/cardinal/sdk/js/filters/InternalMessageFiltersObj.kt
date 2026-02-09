@@ -9,11 +9,14 @@ import com.icure.cardinal.sdk.js.model.CheckedConverters.arrayToSet
 import com.icure.cardinal.sdk.js.model.CheckedConverters.numberToInstant
 import com.icure.cardinal.sdk.js.model.CheckedConverters.numberToLong
 import com.icure.cardinal.sdk.js.model.EntityReferenceInGroupJs
+import com.icure.cardinal.sdk.js.model.GroupScopedJs
 import com.icure.cardinal.sdk.js.model.MessageJs
 import com.icure.cardinal.sdk.js.model.PatientJs
 import com.icure.cardinal.sdk.js.model.entityReferenceInGroup_fromJs
+import com.icure.cardinal.sdk.js.model.groupScoped_fromJs
 import com.icure.cardinal.sdk.js.model.patient_fromJs
 import com.icure.cardinal.sdk.model.EntityReferenceInGroup
+import com.icure.cardinal.sdk.model.GroupScoped
 import com.icure.cardinal.sdk.model.Patient
 import kotlin.Array
 import kotlin.Boolean
@@ -52,6 +55,17 @@ public object InternalMessageFiltersObj {
 		return BaseSortableFilterOptionsJsImpl(result)
 	}
 
+	public fun byTransportGuidForDataOwnerInGroup(dataOwner: EntityReferenceInGroupJs,
+			transportGuid: String): BaseSortableFilterOptionsJs<MessageJs> {
+		val dataOwnerConverted: EntityReferenceInGroup = entityReferenceInGroup_fromJs(dataOwner)
+		val transportGuidConverted: String = transportGuid
+		val result = MessageFilters.byTransportGuidForDataOwnerInGroup(
+			dataOwnerConverted,
+			transportGuidConverted,
+		)
+		return BaseSortableFilterOptionsJsImpl(result)
+	}
+
 	public fun byTransportGuidForSelf(transportGuid: String): SortableFilterOptionsJs<MessageJs> {
 		val transportGuidConverted: String = transportGuid
 		val result = MessageFilters.byTransportGuidForSelf(
@@ -66,6 +80,17 @@ public object InternalMessageFiltersObj {
 		val addressConverted: String = address
 		val result = MessageFilters.fromAddressForDataOwner(
 			dataOwnerIdConverted,
+			addressConverted,
+		)
+		return BaseFilterOptionsJsImpl(result)
+	}
+
+	public fun fromAddressForDataOwnerInGroup(dataOwner: EntityReferenceInGroupJs, address: String):
+			BaseFilterOptionsJs<MessageJs> {
+		val dataOwnerConverted: EntityReferenceInGroup = entityReferenceInGroup_fromJs(dataOwner)
+		val addressConverted: String = address
+		val result = MessageFilters.fromAddressForDataOwnerInGroup(
+			dataOwnerConverted,
 			addressConverted,
 		)
 		return BaseFilterOptionsJsImpl(result)
@@ -116,6 +141,56 @@ public object InternalMessageFiltersObj {
 		}
 		val result = MessageFilters.byPatientsSentDateForDataOwner(
 			dataOwnerIdConverted,
+			patientsConverted,
+			fromConverted,
+			toConverted,
+			descendingConverted,
+		)
+		return SortableFilterOptionsJsImpl(result)
+	}
+
+	public fun byPatientsSentDateForDataOwnerInGroup(
+		dataOwner: EntityReferenceInGroupJs,
+		patients: Array<GroupScopedJs<PatientJs>>,
+		options: dynamic,
+	): SortableFilterOptionsJs<MessageJs> {
+		val _options = options ?: js("{}")
+		val dataOwnerConverted: EntityReferenceInGroup = entityReferenceInGroup_fromJs(dataOwner)
+		val patientsConverted: List<GroupScoped<Patient>> = arrayToList(
+			patients,
+			"patients",
+			{ x1: GroupScopedJs<PatientJs> ->
+				groupScoped_fromJs(
+					x1,
+					{ x2: PatientJs ->
+						patient_fromJs(x2)
+					},
+				)
+			},
+		)
+		val fromConverted: Instant? = convertingOptionOrDefaultNullable(
+			_options,
+			"from",
+			null
+		) { from: Double? ->
+			numberToInstant(from, "from")
+		}
+		val toConverted: Instant? = convertingOptionOrDefaultNullable(
+			_options,
+			"to",
+			null
+		) { to: Double? ->
+			numberToInstant(to, "to")
+		}
+		val descendingConverted: Boolean = convertingOptionOrDefaultNonNull(
+			_options,
+			"descending",
+			false
+		) { descending: Boolean ->
+			descending
+		}
+		val result = MessageFilters.byPatientsSentDateForDataOwnerInGroup(
+			dataOwnerConverted,
 			patientsConverted,
 			fromConverted,
 			toConverted,
@@ -209,6 +284,51 @@ public object InternalMessageFiltersObj {
 		return BaseSortableFilterOptionsJsImpl(result)
 	}
 
+	public fun byPatientSecretIdsSentDateForDataOwnerInGroup(
+		dataOwner: EntityReferenceInGroupJs,
+		secretIds: Array<String>,
+		options: dynamic,
+	): BaseSortableFilterOptionsJs<MessageJs> {
+		val _options = options ?: js("{}")
+		val dataOwnerConverted: EntityReferenceInGroup = entityReferenceInGroup_fromJs(dataOwner)
+		val secretIdsConverted: List<String> = arrayToList(
+			secretIds,
+			"secretIds",
+			{ x1: String ->
+				x1
+			},
+		)
+		val fromConverted: Instant? = convertingOptionOrDefaultNullable(
+			_options,
+			"from",
+			null
+		) { from: Double? ->
+			numberToInstant(from, "from")
+		}
+		val toConverted: Instant? = convertingOptionOrDefaultNullable(
+			_options,
+			"to",
+			null
+		) { to: Double? ->
+			numberToInstant(to, "to")
+		}
+		val descendingConverted: Boolean = convertingOptionOrDefaultNonNull(
+			_options,
+			"descending",
+			false
+		) { descending: Boolean ->
+			descending
+		}
+		val result = MessageFilters.byPatientSecretIdsSentDateForDataOwnerInGroup(
+			dataOwnerConverted,
+			secretIdsConverted,
+			fromConverted,
+			toConverted,
+			descendingConverted,
+		)
+		return BaseSortableFilterOptionsJsImpl(result)
+	}
+
 	public fun byPatientSecretIdsSentDateForSelf(secretIds: Array<String>, options: dynamic):
 			SortableFilterOptionsJs<MessageJs> {
 		val _options = options ?: js("{}")
@@ -260,6 +380,17 @@ public object InternalMessageFiltersObj {
 		return BaseFilterOptionsJsImpl(result)
 	}
 
+	public fun toAddressForDataOwnerInGroup(dataOwner: EntityReferenceInGroupJs, address: String):
+			BaseFilterOptionsJs<MessageJs> {
+		val dataOwnerConverted: EntityReferenceInGroup = entityReferenceInGroup_fromJs(dataOwner)
+		val addressConverted: String = address
+		val result = MessageFilters.toAddressForDataOwnerInGroup(
+			dataOwnerConverted,
+			addressConverted,
+		)
+		return BaseFilterOptionsJsImpl(result)
+	}
+
 	public fun toAddressForSelf(address: String): FilterOptionsJs<MessageJs> {
 		val addressConverted: String = address
 		val result = MessageFilters.toAddressForSelf(
@@ -289,6 +420,35 @@ public object InternalMessageFiltersObj {
 		}
 		val result = MessageFilters.byTransportGuidSentDateForDataOwner(
 			dataOwnerIdConverted,
+			transportGuidConverted,
+			fromConverted,
+			toConverted,
+			descendingConverted,
+		)
+		return BaseSortableFilterOptionsJsImpl(result)
+	}
+
+	public fun byTransportGuidSentDateForDataOwnerInGroup(
+		dataOwner: EntityReferenceInGroupJs,
+		transportGuid: String,
+		from: Double?,
+		to: Double?,
+		options: dynamic,
+	): BaseSortableFilterOptionsJs<MessageJs> {
+		val _options = options ?: js("{}")
+		val dataOwnerConverted: EntityReferenceInGroup = entityReferenceInGroup_fromJs(dataOwner)
+		val transportGuidConverted: String = transportGuid
+		val fromConverted: Instant? = numberToInstant(from, "from")
+		val toConverted: Instant? = numberToInstant(to, "to")
+		val descendingConverted: Boolean = convertingOptionOrDefaultNonNull(
+			_options,
+			"descending",
+			false
+		) { descending: Boolean ->
+			descending
+		}
+		val result = MessageFilters.byTransportGuidSentDateForDataOwnerInGroup(
+			dataOwnerConverted,
 			transportGuidConverted,
 			fromConverted,
 			toConverted,
@@ -329,6 +489,17 @@ public object InternalMessageFiltersObj {
 		val transportGuidConverted: String = transportGuid
 		val result = MessageFilters.latestByTransportGuidForDataOwner(
 			dataOwnerIdConverted,
+			transportGuidConverted,
+		)
+		return BaseFilterOptionsJsImpl(result)
+	}
+
+	public fun latestByTransportGuidForDataOwnerInGroup(dataOwner: EntityReferenceInGroupJs,
+			transportGuid: String): BaseFilterOptionsJs<MessageJs> {
+		val dataOwnerConverted: EntityReferenceInGroup = entityReferenceInGroup_fromJs(dataOwner)
+		val transportGuidConverted: String = transportGuid
+		val result = MessageFilters.latestByTransportGuidForDataOwnerInGroup(
+			dataOwnerConverted,
 			transportGuidConverted,
 		)
 		return BaseFilterOptionsJsImpl(result)
@@ -389,7 +560,7 @@ public object InternalMessageFiltersObj {
 		return BaseFilterOptionsJsImpl(result)
 	}
 
-	public fun lifecycleBetweenForDataOwnerInGroup(
+	public fun lifecycleBetweenForDataOwnerInGroupInGroup(
 		dataOwner: EntityReferenceInGroupJs,
 		startTimestamp: Double?,
 		endTimestamp: Double?,
@@ -399,7 +570,7 @@ public object InternalMessageFiltersObj {
 		val startTimestampConverted: Long? = numberToLong(startTimestamp, "startTimestamp")
 		val endTimestampConverted: Long? = numberToLong(endTimestamp, "endTimestamp")
 		val descendingConverted: Boolean = descending
-		val result = MessageFilters.lifecycleBetweenForDataOwnerInGroup(
+		val result = MessageFilters.lifecycleBetweenForDataOwnerInGroupInGroup(
 			dataOwnerConverted,
 			startTimestampConverted,
 			endTimestampConverted,

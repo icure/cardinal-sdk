@@ -363,28 +363,6 @@ public object InternalPatientFiltersObj {
 		return BaseSortableFilterOptionsJsImpl(result)
 	}
 
-	public fun byExternalIdForDataOwner(dataOwnerId: String, externalIdPrefix: String):
-			BaseSortableFilterOptionsJs<PatientJs> {
-		val dataOwnerIdConverted: String = dataOwnerId
-		val externalIdPrefixConverted: String = externalIdPrefix
-		val result = PatientFilters.byExternalIdForDataOwner(
-			dataOwnerIdConverted,
-			externalIdPrefixConverted,
-		)
-		return BaseSortableFilterOptionsJsImpl(result)
-	}
-
-	public fun byExternalIdForDataOwnerInGroup(dataOwner: EntityReferenceInGroupJs,
-			externalIdPrefix: String): BaseSortableFilterOptionsJs<PatientJs> {
-		val dataOwnerConverted: EntityReferenceInGroup = entityReferenceInGroup_fromJs(dataOwner)
-		val externalIdPrefixConverted: String = externalIdPrefix
-		val result = PatientFilters.byExternalIdForDataOwnerInGroup(
-			dataOwnerConverted,
-			externalIdPrefixConverted,
-		)
-		return BaseSortableFilterOptionsJsImpl(result)
-	}
-
 	public fun byIdentifiersForSelf(identifiers: Array<IdentifierJs>):
 			SortableFilterOptionsJs<PatientJs> {
 		val identifiersConverted: List<Identifier> = arrayToList(
@@ -502,14 +480,6 @@ public object InternalPatientFiltersObj {
 		val searchStringConverted: String = searchString
 		val result = PatientFilters.byAddressForSelf(
 			searchStringConverted,
-		)
-		return SortableFilterOptionsJsImpl(result)
-	}
-
-	public fun byExternalIdForSelf(externalIdPrefix: String): SortableFilterOptionsJs<PatientJs> {
-		val externalIdPrefixConverted: String = externalIdPrefix
-		val result = PatientFilters.byExternalIdForSelf(
-			externalIdPrefixConverted,
 		)
 		return SortableFilterOptionsJsImpl(result)
 	}

@@ -49,9 +49,6 @@ public fun form_toJs(obj: DecryptedForm): DecryptedFormJs {
 	val responsible = nullToUndefined(
 		obj.responsible
 	)
-	val medicalLocationId = nullToUndefined(
-		obj.medicalLocationId
-	)
 	val tags = setToArray(
 		obj.tags,
 		{ x1: CodeStub ->
@@ -64,9 +61,6 @@ public fun form_toJs(obj: DecryptedForm): DecryptedFormJs {
 			codeStub_toJs(x1)
 		},
 	)
-	val endOfLife = nullToUndefined(
-		longToNumber(obj.endOfLife)
-	)
 	val deletionDate = nullToUndefined(
 		longToNumber(obj.deletionDate)
 	)
@@ -78,9 +72,6 @@ public fun form_toJs(obj: DecryptedForm): DecryptedFormJs {
 	)
 	val version = nullToUndefined(
 		intToNumber(obj.version)
-	)
-	val logicalUuid = nullToUndefined(
-		obj.logicalUuid
 	)
 	val descr = nullToUndefined(
 		obj.descr
@@ -171,15 +162,12 @@ public fun form_toJs(obj: DecryptedForm): DecryptedFormJs {
 		"modified:modified," +
 		"author:author," +
 		"responsible:responsible," +
-		"medicalLocationId:medicalLocationId," +
 		"tags:tags," +
 		"codes:codes," +
-		"endOfLife:endOfLife," +
 		"deletionDate:deletionDate," +
 		"openingDate:openingDate," +
 		"status:status," +
 		"version:version," +
-		"logicalUuid:logicalUuid," +
 		"descr:descr," +
 		"uniqueId:uniqueId," +
 		"formTemplateId:formTemplateId," +
@@ -204,7 +192,6 @@ public fun form_fromJs(obj: DecryptedFormJs): DecryptedForm {
 	val modified = numberToLong(obj.modified, "obj.modified")
 	val author = undefinedToNull(obj.author)
 	val responsible = undefinedToNull(obj.responsible)
-	val medicalLocationId = undefinedToNull(obj.medicalLocationId)
 	val tags = arrayToSet(
 		obj.tags,
 		"obj.tags",
@@ -219,12 +206,10 @@ public fun form_fromJs(obj: DecryptedFormJs): DecryptedForm {
 			codeStub_fromJs(x1)
 		},
 	)
-	val endOfLife = numberToLong(obj.endOfLife, "obj.endOfLife")
 	val deletionDate = numberToLong(obj.deletionDate, "obj.deletionDate")
 	val openingDate = numberToLong(obj.openingDate, "obj.openingDate")
 	val status = undefinedToNull(obj.status)
 	val version = numberToInt(obj.version, "obj.version")
-	val logicalUuid = undefinedToNull(obj.logicalUuid)
 	val descr = undefinedToNull(obj.descr)
 	val uniqueId = undefinedToNull(obj.uniqueId)
 	val formTemplateId = undefinedToNull(obj.formTemplateId)
@@ -301,15 +286,12 @@ public fun form_fromJs(obj: DecryptedFormJs): DecryptedForm {
 		modified = modified,
 		author = author,
 		responsible = responsible,
-		medicalLocationId = medicalLocationId,
 		tags = tags,
 		codes = codes,
-		endOfLife = endOfLife,
 		deletionDate = deletionDate,
 		openingDate = openingDate,
 		status = status,
 		version = version,
-		logicalUuid = logicalUuid,
 		descr = descr,
 		uniqueId = uniqueId,
 		formTemplateId = formTemplateId,
@@ -345,9 +327,6 @@ public fun form_toJs(obj: EncryptedForm): EncryptedFormJs {
 	val responsible = nullToUndefined(
 		obj.responsible
 	)
-	val medicalLocationId = nullToUndefined(
-		obj.medicalLocationId
-	)
 	val tags = setToArray(
 		obj.tags,
 		{ x1: CodeStub ->
@@ -360,9 +339,6 @@ public fun form_toJs(obj: EncryptedForm): EncryptedFormJs {
 			codeStub_toJs(x1)
 		},
 	)
-	val endOfLife = nullToUndefined(
-		longToNumber(obj.endOfLife)
-	)
 	val deletionDate = nullToUndefined(
 		longToNumber(obj.deletionDate)
 	)
@@ -374,9 +350,6 @@ public fun form_toJs(obj: EncryptedForm): EncryptedFormJs {
 	)
 	val version = nullToUndefined(
 		intToNumber(obj.version)
-	)
-	val logicalUuid = nullToUndefined(
-		obj.logicalUuid
 	)
 	val descr = nullToUndefined(
 		obj.descr
@@ -467,15 +440,12 @@ public fun form_toJs(obj: EncryptedForm): EncryptedFormJs {
 		"modified:modified," +
 		"author:author," +
 		"responsible:responsible," +
-		"medicalLocationId:medicalLocationId," +
 		"tags:tags," +
 		"codes:codes," +
-		"endOfLife:endOfLife," +
 		"deletionDate:deletionDate," +
 		"openingDate:openingDate," +
 		"status:status," +
 		"version:version," +
-		"logicalUuid:logicalUuid," +
 		"descr:descr," +
 		"uniqueId:uniqueId," +
 		"formTemplateId:formTemplateId," +
@@ -500,7 +470,6 @@ public fun form_fromJs(obj: EncryptedFormJs): EncryptedForm {
 	val modified = numberToLong(obj.modified, "obj.modified")
 	val author = undefinedToNull(obj.author)
 	val responsible = undefinedToNull(obj.responsible)
-	val medicalLocationId = undefinedToNull(obj.medicalLocationId)
 	val tags = arrayToSet(
 		obj.tags,
 		"obj.tags",
@@ -515,12 +484,10 @@ public fun form_fromJs(obj: EncryptedFormJs): EncryptedForm {
 			codeStub_fromJs(x1)
 		},
 	)
-	val endOfLife = numberToLong(obj.endOfLife, "obj.endOfLife")
 	val deletionDate = numberToLong(obj.deletionDate, "obj.deletionDate")
 	val openingDate = numberToLong(obj.openingDate, "obj.openingDate")
 	val status = undefinedToNull(obj.status)
 	val version = numberToInt(obj.version, "obj.version")
-	val logicalUuid = undefinedToNull(obj.logicalUuid)
 	val descr = undefinedToNull(obj.descr)
 	val uniqueId = undefinedToNull(obj.uniqueId)
 	val formTemplateId = undefinedToNull(obj.formTemplateId)
@@ -597,15 +564,12 @@ public fun form_fromJs(obj: EncryptedFormJs): EncryptedForm {
 		modified = modified,
 		author = author,
 		responsible = responsible,
-		medicalLocationId = medicalLocationId,
 		tags = tags,
 		codes = codes,
-		endOfLife = endOfLife,
 		deletionDate = deletionDate,
 		openingDate = openingDate,
 		status = status,
 		version = version,
-		logicalUuid = logicalUuid,
 		descr = descr,
 		uniqueId = uniqueId,
 		formTemplateId = formTemplateId,

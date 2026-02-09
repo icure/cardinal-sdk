@@ -15,10 +15,6 @@ export class TimeTableItem {
 
 	zoneId: string | undefined = undefined;
 
-	days: Array<string> = [];
-
-	recurrenceTypes: Array<string> = [];
-
 	hours: Array<TimeTableHour> = [];
 
 	calendarItemTypeId: string | undefined = undefined;
@@ -41,8 +37,6 @@ export class TimeTableItem {
 		if ('notBeforeInMinutes' in partial) this.notBeforeInMinutes = partial.notBeforeInMinutes;
 		if ('notAfterInMinutes' in partial) this.notAfterInMinutes = partial.notAfterInMinutes;
 		if ('zoneId' in partial) this.zoneId = partial.zoneId;
-		if ('days' in partial && partial.days !== undefined) this.days = partial.days;
-		if ('recurrenceTypes' in partial && partial.recurrenceTypes !== undefined) this.recurrenceTypes = partial.recurrenceTypes;
 		if ('hours' in partial && partial.hours !== undefined) this.hours = partial.hours;
 		if ('calendarItemTypeId' in partial) this.calendarItemTypeId = partial.calendarItemTypeId;
 		if ('homeVisit' in partial && partial.homeVisit !== undefined) this.homeVisit = partial.homeVisit;
@@ -60,8 +54,6 @@ export class TimeTableItem {
 		if (this.notBeforeInMinutes != undefined) res['notBeforeInMinutes'] = this.notBeforeInMinutes
 		if (this.notAfterInMinutes != undefined) res['notAfterInMinutes'] = this.notAfterInMinutes
 		if (this.zoneId != undefined) res['zoneId'] = this.zoneId
-		res['days'] = this.days.map((x0) => x0 )
-		res['recurrenceTypes'] = this.recurrenceTypes.map((x0) => x0 )
 		res['hours'] = this.hours.map((x0) => x0.toJSON() )
 		if (this.calendarItemTypeId != undefined) res['calendarItemTypeId'] = this.calendarItemTypeId
 		res['homeVisit'] = this.homeVisit
@@ -83,8 +75,6 @@ export class TimeTableItem {
 			notBeforeInMinutes: expectNumber(extractEntry(jCpy, 'notBeforeInMinutes', false, path), true, true, [...path, ".notBeforeInMinutes"]),
 			notAfterInMinutes: expectNumber(extractEntry(jCpy, 'notAfterInMinutes', false, path), true, true, [...path, ".notAfterInMinutes"]),
 			zoneId: expectString(extractEntry(jCpy, 'zoneId', false, path), true, [...path, ".zoneId"]),
-			days: expectArray(extractEntry(jCpy, 'days', false, path), false, [...path, ".days"], (x0, p0) => expectString(x0, false, p0)),
-			recurrenceTypes: expectArray(extractEntry(jCpy, 'recurrenceTypes', false, path), false, [...path, ".recurrenceTypes"], (x0, p0) => expectString(x0, false, p0)),
 			hours: expectArray(extractEntry(jCpy, 'hours', false, path), false, [...path, ".hours"], (x0, p0) => expectObject(x0, false, ignoreUnknownKeys, p0, TimeTableHour.fromJSON)),
 			calendarItemTypeId: expectString(extractEntry(jCpy, 'calendarItemTypeId', false, path), true, [...path, ".calendarItemTypeId"]),
 			homeVisit: expectBoolean(extractEntry(jCpy, 'homeVisit', false, path), false, [...path, ".homeVisit"]),

@@ -48,9 +48,17 @@ export interface CalendarItemInGroupApi {
 
 	deleteCalendarItemsByIds(entityIds: Array<GroupScoped<StoredDocumentIdentifier>>): Promise<Array<GroupScoped<StoredDocumentIdentifier>>>;
 
+	purgeCalendarItemById(entityId: GroupScoped<StoredDocumentIdentifier>): Promise<void>;
+
+	purgeCalendarItemsByIds(entityIds: Array<GroupScoped<StoredDocumentIdentifier>>): Promise<Array<GroupScoped<StoredDocumentIdentifier>>>;
+
 	deleteCalendarItem(calendarItem: GroupScoped<CalendarItem>): Promise<GroupScoped<StoredDocumentIdentifier>>;
 
 	deleteCalendarItems(calendarItems: Array<GroupScoped<CalendarItem>>): Promise<Array<GroupScoped<StoredDocumentIdentifier>>>;
+
+	purgeCalendarItem(calendarItem: GroupScoped<CalendarItem>): Promise<void>;
+
+	purgeCalendarItems(calendarItems: Array<GroupScoped<CalendarItem>>): Promise<Array<GroupScoped<StoredDocumentIdentifier>>>;
 
 	shareWith(delegate: EntityReferenceInGroup, calendarItem: GroupScoped<DecryptedCalendarItem>,
 			options?: { options?: CalendarItemShareOptions | undefined }): Promise<GroupScoped<DecryptedCalendarItem>>;
@@ -66,7 +74,19 @@ export interface CalendarItemInGroupApi {
 
 	createCalendarItem(entity: GroupScoped<DecryptedCalendarItem>): Promise<GroupScoped<DecryptedCalendarItem>>;
 
+	createCalendarItems(entities: Array<GroupScoped<DecryptedCalendarItem>>): Promise<Array<GroupScoped<DecryptedCalendarItem>>>;
+
+	undeleteCalendarItemById(entityId: GroupScoped<StoredDocumentIdentifier>): Promise<GroupScoped<DecryptedCalendarItem>>;
+
+	undeleteCalendarItemsByIds(entityIds: Array<GroupScoped<StoredDocumentIdentifier>>): Promise<Array<GroupScoped<DecryptedCalendarItem>>>;
+
+	undeleteCalendarItem(calendarItem: GroupScoped<CalendarItem>): Promise<GroupScoped<DecryptedCalendarItem>>;
+
+	undeleteCalendarItems(calendarItems: Array<GroupScoped<DecryptedCalendarItem>>): Promise<Array<GroupScoped<DecryptedCalendarItem>>>;
+
 	modifyCalendarItem(entity: GroupScoped<DecryptedCalendarItem>): Promise<GroupScoped<DecryptedCalendarItem>>;
+
+	modifyCalendarItems(entities: Array<GroupScoped<DecryptedCalendarItem>>): Promise<Array<GroupScoped<DecryptedCalendarItem>>>;
 
 	getCalendarItem(groupId: string,
 			entityId: string): Promise<GroupScoped<DecryptedCalendarItem> | undefined>;

@@ -23,8 +23,6 @@ public sealed external interface PatientHealthCarePartyJs : EncryptableJs {
 
 	public val referralPeriods: Array<out ReferralPeriodJs>
 
-	public val referral: Boolean
-
 	public val properties: Array<out PropertyStubJs>?
 
 	public val isEncrypted: Boolean
@@ -41,8 +39,6 @@ public external class DecryptedPatientHealthCarePartyJs(
 	override val sendFormats: Record<String, String>
 
 	override val referralPeriods: Array<ReferralPeriodJs>
-
-	override val referral: Boolean
 
 	override val properties: Array<DecryptedPropertyStubJs>?
 
@@ -62,8 +58,6 @@ public external class EncryptedPatientHealthCarePartyJs(
 	override val sendFormats: Record<String, String>
 
 	override val referralPeriods: Array<ReferralPeriodJs>
-
-	override val referral: Boolean
 
 	override val properties: Array<EncryptedPropertyStubJs>?
 

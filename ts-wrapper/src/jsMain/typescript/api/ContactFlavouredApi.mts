@@ -2,8 +2,7 @@
 import {FilterOptions, PaginatedListIterator, SortableFilterOptions} from '../cardinal-sdk-ts.mjs';
 import {ContactShareOptions} from '../crypto/entities/ContactShareOptions.mjs';
 import {Contact} from '../model/Contact.mjs';
-import {PaginatedList} from '../model/PaginatedList.mjs';
-import {Patient} from '../model/Patient.mjs';
+import {StoredDocumentIdentifier} from '../model/StoredDocumentIdentifier.mjs';
 import {Service} from '../model/embed/Service.mjs';
 
 
@@ -13,9 +12,6 @@ export interface ContactFlavouredApi<E extends Contact, S extends Service> {
 			options?: { options?: ContactShareOptions | undefined }): Promise<E>;
 
 	shareWithMany(contact: E, delegates: { [ key: string ]: ContactShareOptions }): Promise<E>;
-
-	findContactsByHcPartyPatient(hcPartyId: string, patient: Patient,
-			options?: { startDate?: number | undefined, endDate?: number | undefined, descending?: boolean | undefined }): Promise<PaginatedListIterator<E>>;
 
 	filterContactsBy(filter: FilterOptions<Contact>): Promise<PaginatedListIterator<E>>;
 
@@ -31,7 +27,11 @@ export interface ContactFlavouredApi<E extends Contact, S extends Service> {
 
 	undeleteContactById(id: string, rev: string): Promise<E>;
 
+	undeleteContactsByIds(entityIds: Array<StoredDocumentIdentifier>): Promise<Array<E>>;
+
 	undeleteContact(contact: Contact): Promise<E>;
+
+	undeleteContacts(contacts: Array<Contact>): Promise<Array<E>>;
 
 	modifyContact(entity: E): Promise<E>;
 
@@ -41,25 +41,8 @@ export interface ContactFlavouredApi<E extends Contact, S extends Service> {
 
 	getContacts(entityIds: Array<string>): Promise<Array<E>>;
 
-	listContactByHCPartyServiceId(hcPartyId: string, serviceId: string): Promise<Array<E>>;
-
-	listContactsByExternalId(externalId: string): Promise<Array<E>>;
-
-	listContactsByHCPartyAndFormId(hcPartyId: string, formId: string): Promise<Array<E>>;
-
-	listContactsByHCPartyAndFormIds(hcPartyId: string, formIds: Array<string>): Promise<Array<E>>;
-
-	getService(serviceId: string): Promise<S>;
+	getService(serviceId: string): Promise<S | undefined>;
 
 	getServices(entityIds: Array<string>): Promise<Array<S>>;
-
-	getServicesLinkedTo(linkType: string, ids: Array<string>): Promise<Array<S>>;
-
-	listServicesByAssociationId(associationId: string): Promise<Array<S>>;
-
-	listServicesByHealthElementId(hcPartyId: string, healthElementId: string): Promise<Array<S>>;
-
-	findContactsByOpeningDate(startDate: number, endDate: number, hcPartyId: string,
-			options?: { startKey?: any | undefined, startDocumentId?: string | undefined, limit?: number | undefined }): Promise<PaginatedList<E>>;
 
 }

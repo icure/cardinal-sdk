@@ -12,6 +12,4 @@ export interface CodeIdentification<K> {
 
 	version: string | undefined;
 
-	label: { [ key: string ]: string } | undefined;
-
 }

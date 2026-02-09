@@ -4,6 +4,7 @@ import {CalendarItemShareOptions} from '../crypto/entities/CalendarItemShareOpti
 import {CalendarItem} from '../model/CalendarItem.mjs';
 import {EntityReferenceInGroup} from '../model/EntityReferenceInGroup.mjs';
 import {GroupScoped} from '../model/GroupScoped.mjs';
+import {StoredDocumentIdentifier} from '../model/StoredDocumentIdentifier.mjs';
 import {ArrayWithUniqueKeys} from '../utils/ArrayWithUniqueKeys.mjs';
 
 
@@ -23,7 +24,19 @@ export interface CalendarItemFlavouredInGroupApi<E extends CalendarItem> {
 
 	createCalendarItem(entity: GroupScoped<E>): Promise<GroupScoped<E>>;
 
+	createCalendarItems(entities: Array<GroupScoped<E>>): Promise<Array<GroupScoped<E>>>;
+
+	undeleteCalendarItemById(entityId: GroupScoped<StoredDocumentIdentifier>): Promise<GroupScoped<E>>;
+
+	undeleteCalendarItemsByIds(entityIds: Array<GroupScoped<StoredDocumentIdentifier>>): Promise<Array<GroupScoped<E>>>;
+
+	undeleteCalendarItem(calendarItem: GroupScoped<CalendarItem>): Promise<GroupScoped<E>>;
+
+	undeleteCalendarItems(calendarItems: Array<GroupScoped<E>>): Promise<Array<GroupScoped<E>>>;
+
 	modifyCalendarItem(entity: GroupScoped<E>): Promise<GroupScoped<E>>;
+
+	modifyCalendarItems(entities: Array<GroupScoped<E>>): Promise<Array<GroupScoped<E>>>;
 
 	getCalendarItem(groupId: string, entityId: string): Promise<GroupScoped<E> | undefined>;
 

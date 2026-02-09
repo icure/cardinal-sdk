@@ -1,32 +1,33 @@
 // auto-generated file
 import {BaseFilterOptions, BaseSortableFilterOptions, FilterOptions, PaginatedListIterator} from '../cardinal-sdk-ts.mjs';
-import {ListOfIds} from '../model/ListOfIds.mjs';
-import {PaginatedList} from '../model/PaginatedList.mjs';
 import {EncryptedPropertyStub} from '../model/PropertyStub.mjs';
+import {StoredDocumentIdentifier} from '../model/StoredDocumentIdentifier.mjs';
 import {User} from '../model/User.mjs';
 import {UserGroup} from '../model/UserGroup.mjs';
-import {DocIdentifier} from '../model/couchdb/DocIdentifier.mjs';
 import {Enable2faRequest} from '../model/security/Enable2faRequest.mjs';
-import {LoginIdentifier} from '../model/security/LoginIdentifier.mjs';
-import {TokenWithGroup} from '../model/security/TokenWithGroup.mjs';
 import {EntitySubscription} from '../subscription/EntitySubscription.mjs';
 import {EntitySubscriptionConfiguration} from '../subscription/EntitySubscriptionConfiguration.mjs';
 import {SubscriptionEventType} from '../subscription/SubscriptionEventType.mjs';
+import {UserInGroupApi} from './UserInGroupApi.mjs';
 
 
 export interface UserApi {
 
-	deleteUserUnsafe(entityId: string): Promise<DocIdentifier>;
+	inGroup: UserInGroupApi;
 
 	getCurrentUser(): Promise<User>;
 
-	listUsersBy(options?: { startKey?: string | undefined, startDocumentId?: string | undefined, limit?: number | undefined, skipPatients?: boolean | undefined }): Promise<PaginatedList<User>>;
-
 	createUser(user: User): Promise<User>;
+
+	createUsers(users: Array<User>): Promise<Array<User>>;
 
 	getUser(userId: string): Promise<User | undefined>;
 
 	getUsers(userIds: Array<string>): Promise<Array<User>>;
+
+	modifyUser(user: User): Promise<User>;
+
+	modifyUsers(users: Array<User>): Promise<Array<User>>;
 
 	getUserByEmail(email: string): Promise<User | undefined>;
 
@@ -35,8 +36,6 @@ export interface UserApi {
 	findByHcpartyId(id: string): Promise<Array<string>>;
 
 	findByPatientId(id: string): Promise<Array<string>>;
-
-	modifyUser(user: User): Promise<User>;
 
 	assignHealthcareParty(healthcarePartyId: string): Promise<User>;
 
@@ -56,72 +55,39 @@ export interface UserApi {
 
 	getMatchingUsers(): Promise<Array<UserGroup>>;
 
-	getUsersInGroup(groupId: string, userIds: Array<string>): Promise<Array<User>>;
-
-	listUsersInGroup(groupId: string,
-			options?: { startKey?: string | undefined, startDocumentId?: string | undefined, limit?: number | undefined }): Promise<PaginatedList<User>>;
-
-	createUserInGroup(groupId: string, user: User): Promise<User>;
-
-	modifyUserInGroup(groupId: string, user: User): Promise<User>;
-
-	setUserRoles(userId: string, rolesId: ListOfIds): Promise<User>;
-
-	setUserRolesInGroup(userId: string, groupId: string, rolesId: ListOfIds): Promise<User>;
+	setUserRoles(userId: string, rolesIds: Array<string>): Promise<User>;
 
 	resetUserRoles(userId: string): Promise<User>;
 
-	resetUserRolesInGroup(userId: string, groupId: string): Promise<User>;
-
-	getTokenInGroup(groupId: string, userId: string, key: string,
-			options?: { token?: string | undefined, tokenValidity?: number | undefined }): Promise<string>;
-
-	getTokenInAllGroups(userIdentifier: string, key: string,
-			options?: { token?: string | undefined, tokenValidity?: number | undefined }): Promise<Array<TokenWithGroup>>;
-
-	filterUsersInGroupBy(groupId: string,
-			filter: BaseFilterOptions<User>): Promise<PaginatedListIterator<User>>;
-
-	matchUsersInGroupBy(groupId: string, filter: BaseFilterOptions<User>): Promise<Array<string>>;
-
-	filterUsersInGroupBySorted(groupId: string,
-			filter: BaseSortableFilterOptions<User>): Promise<PaginatedListIterator<User>>;
-
-	matchUsersInGroupBySorted(groupId: string,
-			filter: BaseSortableFilterOptions<User>): Promise<Array<string>>;
-
-	enable2faForUser(userId: string, groupId: string, request: Enable2faRequest): Promise<void>;
-
 	enable2faForUser(userId: string, request: Enable2faRequest): Promise<void>;
-
-	disable2faForUser(userId: string, groupId: string): Promise<void>;
 
 	disable2faForUser(userId: string): Promise<void>;
 
 	createAdminUser(user: User): Promise<User>;
 
-	createAdminUserInGroup(groupId: string, user: User): Promise<User>;
+	deleteUserById(entityId: string, rev: string): Promise<StoredDocumentIdentifier>;
 
-	deleteUserById(entityId: string, rev: string): Promise<DocIdentifier>;
-
-	deleteUserInGroupById(groupId: string, entityId: string, rev: string): Promise<DocIdentifier>;
+	deleteUsersByIds(userIds: Array<StoredDocumentIdentifier>): Promise<Array<StoredDocumentIdentifier>>;
 
 	purgeUserById(id: string, rev: string): Promise<void>;
 
+	purgeUsersByIds(userIds: Array<StoredDocumentIdentifier>): Promise<Array<StoredDocumentIdentifier>>;
+
 	undeleteUserById(id: string, rev: string): Promise<User>;
 
-	deleteUser(user: User): Promise<DocIdentifier>;
+	undeleteUsersByIds(userIds: Array<StoredDocumentIdentifier>): Promise<Array<User>>;
 
-	deleteUserInGroup(groupId: string, user: User): Promise<DocIdentifier>;
+	deleteUser(user: User): Promise<StoredDocumentIdentifier>;
+
+	deleteUsers(users: Array<User>): Promise<Array<StoredDocumentIdentifier>>;
 
 	purgeUser(user: User): Promise<void>;
 
+	purgeUsers(users: Array<User>): Promise<Array<StoredDocumentIdentifier>>;
+
 	undeleteUser(user: User): Promise<User>;
 
-	setUserInheritsPermissions(userId: string, groupId: string, value: boolean): Promise<string>;
-
-	setLoginIdentifiers(userId: string, groupId: string, identifier: LoginIdentifier,
-			replaceExisting: boolean): Promise<boolean>;
+	undeleteUsers(users: Array<User>): Promise<Array<User>>;
 
 	setExternalJwtAuthByIdentifiersForCurrentUser(externalJwtConfigId: string,
 			externalAuthenticationToken: string): Promise<boolean>;

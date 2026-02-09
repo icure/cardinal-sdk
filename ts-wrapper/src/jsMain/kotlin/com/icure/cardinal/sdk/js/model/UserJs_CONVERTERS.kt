@@ -30,7 +30,6 @@ import com.icure.cardinal.sdk.model.User
 import com.icure.cardinal.sdk.model.base.Identifier
 import com.icure.cardinal.sdk.model.embed.DelegationTag
 import com.icure.cardinal.sdk.model.enums.UsersStatus
-import com.icure.cardinal.sdk.model.enums.UsersType
 import com.icure.cardinal.sdk.model.security.AuthenticationToken
 import com.icure.cardinal.sdk.model.security.LoginIdentifier
 import com.icure.cardinal.sdk.model.security.Permission
@@ -78,11 +77,6 @@ public fun user_toJs(obj: User): UserJs {
 			x1
 		},
 	)
-	val type = nullToUndefined(
-		obj.type?.let { nonNull1 ->
-			nonNull1.name
-		}
-	)
 	val status = nullToUndefined(
 		obj.status?.let { nonNull1 ->
 			nonNull1.name
@@ -120,9 +114,6 @@ public fun user_toJs(obj: User): UserJs {
 			)
 		},
 	)
-	val createdDate = nullToUndefined(
-		instantToNumber(obj.createdDate)
-	)
 	val termsOfUseDate = nullToUndefined(
 		instantToNumber(obj.termsOfUseDate)
 	)
@@ -131,15 +122,6 @@ public fun user_toJs(obj: User): UserJs {
 	)
 	val mobilePhone = nullToUndefined(
 		obj.mobilePhone
-	)
-	val applicationTokens = mapToObject(
-		obj.applicationTokens,
-		{ x1: String ->
-			x1
-		},
-		{ x1: String ->
-			x1
-		},
 	)
 	val authenticationTokens = mapToObject(
 		obj.authenticationTokens,
@@ -165,7 +147,6 @@ public fun user_toJs(obj: User): UserJs {
 		"properties:properties," +
 		"permissions:permissions," +
 		"roles:roles," +
-		"type:type," +
 		"status:status," +
 		"login:login," +
 		"passwordHash:passwordHash," +
@@ -174,11 +155,9 @@ public fun user_toJs(obj: User): UserJs {
 		"patientId:patientId," +
 		"deviceId:deviceId," +
 		"autoDelegations:autoDelegations," +
-		"createdDate:createdDate," +
 		"termsOfUseDate:termsOfUseDate," +
 		"email:email," +
 		"mobilePhone:mobilePhone," +
-		"applicationTokens:applicationTokens," +
 		"authenticationTokens:authenticationTokens," +
 		"systemMetadata:systemMetadata" +
 	"}"))
@@ -218,9 +197,6 @@ public fun user_fromJs(obj: UserJs): User {
 			x1
 		},
 	)
-	val type = obj.type?.let { nonNull1 ->
-		UsersType.valueOf(nonNull1)
-	}
 	val status = obj.status?.let { nonNull1 ->
 		UsersStatus.valueOf(nonNull1)
 	}
@@ -246,20 +222,9 @@ public fun user_fromJs(obj: UserJs): User {
 			)
 		},
 	)
-	val createdDate = numberToInstant(obj.createdDate, "obj.createdDate")
 	val termsOfUseDate = numberToInstant(obj.termsOfUseDate, "obj.termsOfUseDate")
 	val email = undefinedToNull(obj.email)
 	val mobilePhone = undefinedToNull(obj.mobilePhone)
-	val applicationTokens = objectToMap(
-		obj.applicationTokens,
-		"obj.applicationTokens",
-		{ x1: String ->
-			x1
-		},
-		{ x1: String ->
-			x1
-		},
-	)
 	val authenticationTokens = objectToMap(
 		obj.authenticationTokens,
 		"obj.authenticationTokens",
@@ -283,7 +248,6 @@ public fun user_fromJs(obj: UserJs): User {
 		properties = properties,
 		permissions = permissions,
 		roles = roles,
-		type = type,
 		status = status,
 		login = login,
 		passwordHash = passwordHash,
@@ -292,11 +256,9 @@ public fun user_fromJs(obj: UserJs): User {
 		patientId = patientId,
 		deviceId = deviceId,
 		autoDelegations = autoDelegations,
-		createdDate = createdDate,
 		termsOfUseDate = termsOfUseDate,
 		email = email,
 		mobilePhone = mobilePhone,
-		applicationTokens = applicationTokens,
 		authenticationTokens = authenticationTokens,
 		systemMetadata = systemMetadata,
 	)

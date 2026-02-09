@@ -4,24 +4,57 @@
 package com.icure.cardinal.sdk.js.api
 
 import com.icure.cardinal.sdk.js.model.EncryptedInvoiceJs
+import com.icure.cardinal.sdk.js.model.InvoiceJs
 import com.icure.cardinal.sdk.js.model.PaginatedListJs
+import com.icure.cardinal.sdk.js.model.StoredDocumentIdentifierJs
 import com.icure.cardinal.sdk.js.model.`data`.LabelledOccurenceJs
-import com.icure.cardinal.sdk.js.model.couchdb.DocIdentifierJs
 import com.icure.cardinal.sdk.js.model.embed.EncryptedInvoicingCodeJs
 import kotlin.Array
 import kotlin.Boolean
 import kotlin.Double
 import kotlin.String
+import kotlin.Unit
 import kotlin.js.JsName
 import kotlin.js.JsQualifier
 import kotlin.js.Promise
 
 @JsName("InvoiceBasicApi")
 public external interface InvoiceBasicApiJs {
-	public fun deleteInvoice(entityId: String): Promise<DocIdentifierJs>
+	public val inGroup: InvoiceBasicInGroupApiJs
+
+	public fun deleteInvoiceById(entityId: String, rev: String): Promise<StoredDocumentIdentifierJs>
+
+	public fun deleteInvoicesByIds(entityIds: Array<StoredDocumentIdentifierJs>):
+			Promise<Array<StoredDocumentIdentifierJs>>
+
+	public fun purgeInvoiceById(id: String, rev: String): Promise<Unit>
+
+	public fun purgeInvoicesByIds(entityIds: Array<StoredDocumentIdentifierJs>):
+			Promise<Array<StoredDocumentIdentifierJs>>
+
+	public fun deleteInvoice(invoice: InvoiceJs): Promise<StoredDocumentIdentifierJs>
+
+	public fun deleteInvoices(invoices: Array<InvoiceJs>): Promise<Array<StoredDocumentIdentifierJs>>
+
+	public fun purgeInvoice(invoice: InvoiceJs): Promise<Unit>
+
+	public fun purgeInvoices(invoices: Array<InvoiceJs>): Promise<Array<StoredDocumentIdentifierJs>>
 
 	public fun getTarificationsCodesOccurrences(minOccurrence: Double):
 			Promise<Array<LabelledOccurenceJs>>
+
+	public fun createInvoice(entity: EncryptedInvoiceJs): Promise<EncryptedInvoiceJs>
+
+	public fun createInvoices(entities: Array<EncryptedInvoiceJs>): Promise<Array<EncryptedInvoiceJs>>
+
+	public fun undeleteInvoiceById(id: String, rev: String): Promise<EncryptedInvoiceJs>
+
+	public fun undeleteInvoicesByIds(entityIds: Array<StoredDocumentIdentifierJs>):
+			Promise<Array<EncryptedInvoiceJs>>
+
+	public fun undeleteInvoice(invoice: InvoiceJs): Promise<EncryptedInvoiceJs>
+
+	public fun undeleteInvoices(invoices: Array<InvoiceJs>): Promise<Array<EncryptedInvoiceJs>>
 
 	public fun modifyInvoice(entity: EncryptedInvoiceJs): Promise<EncryptedInvoiceJs>
 

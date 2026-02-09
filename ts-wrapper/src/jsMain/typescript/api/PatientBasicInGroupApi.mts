@@ -19,13 +19,35 @@ export interface PatientBasicInGroupApi {
 	filterPatientsBySorted(groupId: string,
 			filter: BaseSortableFilterOptions<Patient>): Promise<PaginatedListIterator<GroupScoped<EncryptedPatient>>>;
 
+	deletePatientById(entityId: GroupScoped<StoredDocumentIdentifier>): Promise<GroupScoped<StoredDocumentIdentifier>>;
+
+	deletePatientsByIds(entityIds: Array<GroupScoped<StoredDocumentIdentifier>>): Promise<Array<GroupScoped<StoredDocumentIdentifier>>>;
+
+	purgePatientById(entityId: GroupScoped<StoredDocumentIdentifier>): Promise<void>;
+
+	purgePatientsByIds(entityIds: Array<GroupScoped<StoredDocumentIdentifier>>): Promise<Array<GroupScoped<StoredDocumentIdentifier>>>;
+
+	deletePatient(patient: GroupScoped<Patient>): Promise<GroupScoped<StoredDocumentIdentifier>>;
+
+	deletePatients(patients: Array<GroupScoped<Patient>>): Promise<Array<GroupScoped<StoredDocumentIdentifier>>>;
+
+	purgePatient(patient: GroupScoped<Patient>): Promise<void>;
+
 	getDataOwnersWithAccessTo(patient: GroupScoped<Patient>): Promise<EntityAccessInformation>;
 
 	createPatient(patient: GroupScoped<EncryptedPatient>): Promise<GroupScoped<EncryptedPatient>>;
 
-	createPatientsMinimal(patients: Array<GroupScoped<EncryptedPatient>>): Promise<Array<GroupScoped<StoredDocumentIdentifier>>>;
-
 	createPatients(patients: Array<GroupScoped<EncryptedPatient>>): Promise<Array<GroupScoped<EncryptedPatient>>>;
+
+	undeletePatient(patient: GroupScoped<Patient>): Promise<GroupScoped<EncryptedPatient>>;
+
+	undeletePatients(patients: Array<GroupScoped<Patient>>): Promise<Array<GroupScoped<EncryptedPatient>>>;
+
+	modifyPatient(entity: GroupScoped<EncryptedPatient>): Promise<GroupScoped<EncryptedPatient>>;
+
+	undeletePatientById(patientId: GroupScoped<StoredDocumentIdentifier>): Promise<GroupScoped<EncryptedPatient>>;
+
+	undeletePatientsByIds(patientIds: Array<GroupScoped<StoredDocumentIdentifier>>): Promise<Array<GroupScoped<EncryptedPatient>>>;
 
 	getPatient(groupId: string, entityId: string): Promise<GroupScoped<EncryptedPatient> | undefined>;
 
@@ -34,8 +56,6 @@ export interface PatientBasicInGroupApi {
 
 	getPatients(groupId: string,
 			patientIds: Array<string>): Promise<Array<GroupScoped<EncryptedPatient>>>;
-
-	modifyPatientsMinimal(patients: Array<GroupScoped<EncryptedPatient>>): Promise<Array<GroupScoped<StoredDocumentIdentifier>>>;
 
 	modifyPatients(patients: Array<GroupScoped<EncryptedPatient>>): Promise<Array<GroupScoped<EncryptedPatient>>>;
 

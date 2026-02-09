@@ -22,13 +22,33 @@ export interface AccessLogBasicInGroupApi {
 
 	deleteAccessLogsByIds(entityIds: Array<GroupScoped<StoredDocumentIdentifier>>): Promise<Array<GroupScoped<StoredDocumentIdentifier>>>;
 
+	purgeAccessLogById(entityId: GroupScoped<StoredDocumentIdentifier>): Promise<void>;
+
+	purgeAccessLogsByIds(entityIds: Array<GroupScoped<StoredDocumentIdentifier>>): Promise<Array<GroupScoped<StoredDocumentIdentifier>>>;
+
 	deleteAccessLog(accessLog: GroupScoped<AccessLog>): Promise<GroupScoped<StoredDocumentIdentifier>>;
 
 	deleteAccessLogs(accessLogs: Array<GroupScoped<AccessLog>>): Promise<Array<GroupScoped<StoredDocumentIdentifier>>>;
 
+	purgeAccessLog(accessLog: GroupScoped<AccessLog>): Promise<void>;
+
+	purgeAccessLogs(accessLogs: Array<GroupScoped<AccessLog>>): Promise<Array<GroupScoped<StoredDocumentIdentifier>>>;
+
 	createAccessLog(entity: GroupScoped<EncryptedAccessLog>): Promise<GroupScoped<EncryptedAccessLog>>;
 
+	createAccessLogs(entities: Array<GroupScoped<EncryptedAccessLog>>): Promise<Array<GroupScoped<EncryptedAccessLog>>>;
+
+	undeleteAccessLogById(entityId: GroupScoped<StoredDocumentIdentifier>): Promise<GroupScoped<EncryptedAccessLog>>;
+
+	undeleteAccessLogsByIds(entityIds: Array<GroupScoped<StoredDocumentIdentifier>>): Promise<Array<GroupScoped<EncryptedAccessLog>>>;
+
+	undeleteAccessLog(accessLog: GroupScoped<AccessLog>): Promise<GroupScoped<EncryptedAccessLog>>;
+
+	undeleteAccessLogs(accessLogs: Array<GroupScoped<AccessLog>>): Promise<Array<GroupScoped<EncryptedAccessLog>>>;
+
 	modifyAccessLog(entity: GroupScoped<EncryptedAccessLog>): Promise<GroupScoped<EncryptedAccessLog>>;
+
+	modifyAccessLogs(entities: Array<GroupScoped<EncryptedAccessLog>>): Promise<Array<GroupScoped<EncryptedAccessLog>>>;
 
 	getAccessLog(groupId: string,
 			entityId: string): Promise<GroupScoped<EncryptedAccessLog> | undefined>;

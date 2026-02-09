@@ -31,8 +31,6 @@ public sealed external interface AccessLogJs : StoredDocumentJs, ICureDocumentJs
 
 	public val date: Double?
 
-	public val patientId: String?
-
 	public val isEncrypted: Boolean
 }
 
@@ -52,13 +50,9 @@ public external class DecryptedAccessLogJs(
 
 	override val responsible: String?
 
-	override val medicalLocationId: String?
-
 	override val tags: Array<CodeStubJs>
 
 	override val codes: Array<CodeStubJs>
-
-	override val endOfLife: Double?
 
 	override val deletionDate: Double?
 
@@ -71,8 +65,6 @@ public external class DecryptedAccessLogJs(
 	override val detail: String?
 
 	override val date: Double?
-
-	override val patientId: String?
 
 	override val secretForeignKeys: Array<String>
 
@@ -105,13 +97,9 @@ public external class EncryptedAccessLogJs(
 
 	override val responsible: String?
 
-	override val medicalLocationId: String?
-
 	override val tags: Array<CodeStubJs>
 
 	override val codes: Array<CodeStubJs>
-
-	override val endOfLife: Double?
 
 	override val deletionDate: Double?
 
@@ -124,8 +112,6 @@ public external class EncryptedAccessLogJs(
 	override val detail: String?
 
 	override val date: Double?
-
-	override val patientId: String?
 
 	override val secretForeignKeys: Array<String>
 

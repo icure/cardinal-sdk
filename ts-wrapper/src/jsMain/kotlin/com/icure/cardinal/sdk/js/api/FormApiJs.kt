@@ -8,11 +8,11 @@ import com.icure.cardinal.sdk.js.filters.FilterOptionsJs
 import com.icure.cardinal.sdk.js.filters.SortableFilterOptionsJs
 import com.icure.cardinal.sdk.js.model.DecryptedFormJs
 import com.icure.cardinal.sdk.js.model.EncryptedFormJs
+import com.icure.cardinal.sdk.js.model.EntityReferenceInGroupJs
 import com.icure.cardinal.sdk.js.model.FormJs
 import com.icure.cardinal.sdk.js.model.FormTemplateJs
 import com.icure.cardinal.sdk.js.model.PatientJs
 import com.icure.cardinal.sdk.js.model.StoredDocumentIdentifierJs
-import com.icure.cardinal.sdk.js.model.couchdb.DocIdentifierJs
 import com.icure.cardinal.sdk.js.utils.Record
 import com.icure.cardinal.sdk.js.utils.pagination.PaginatedListIteratorJs
 import kotlin.Array
@@ -30,6 +30,8 @@ public external interface FormApiJs {
 
 	public val tryAndRecover: FormFlavouredApiJs<FormJs>
 
+	public val inGroup: FormInGroupApiJs
+
 	public fun withEncryptionMetadata(
 		base: DecryptedFormJs?,
 		patient: PatientJs,
@@ -40,7 +42,7 @@ public external interface FormApiJs {
 
 	public fun hasWriteAccess(form: FormJs): Promise<Boolean>
 
-	public fun decryptPatientIdOf(form: FormJs): Promise<Array<String>>
+	public fun decryptPatientIdOf(form: FormJs): Promise<Array<EntityReferenceInGroupJs>>
 
 	public fun createDelegationDeAnonymizationMetadata(entity: FormJs, delegates: Array<String>):
 			Promise<Unit>
@@ -53,35 +55,68 @@ public external interface FormApiJs {
 
 	public fun matchFormsBySorted(filter: SortableFilterOptionsJs<FormJs>): Promise<Array<String>>
 
-	public fun deleteFormUnsafe(entityId: String): Promise<DocIdentifierJs>
-
-	public fun deleteFormsUnsafe(entityIds: Array<String>): Promise<Array<DocIdentifierJs>>
-
-	public fun deleteFormById(entityId: String, rev: String): Promise<DocIdentifierJs>
+	public fun deleteFormById(entityId: String, rev: String): Promise<StoredDocumentIdentifierJs>
 
 	public fun deleteFormsByIds(entityIds: Array<StoredDocumentIdentifierJs>):
-			Promise<Array<DocIdentifierJs>>
+			Promise<Array<StoredDocumentIdentifierJs>>
 
 	public fun purgeFormById(id: String, rev: String): Promise<Unit>
 
-	public fun deleteForm(form: FormJs): Promise<DocIdentifierJs>
+	public fun purgeFormsByIds(entityIds: Array<StoredDocumentIdentifierJs>):
+			Promise<Array<StoredDocumentIdentifierJs>>
 
-	public fun deleteForms(forms: Array<FormJs>): Promise<Array<DocIdentifierJs>>
+	public fun deleteForm(form: FormJs): Promise<StoredDocumentIdentifierJs>
+
+	public fun deleteForms(forms: Array<FormJs>): Promise<Array<StoredDocumentIdentifierJs>>
 
 	public fun purgeForm(form: FormJs): Promise<Unit>
 
+	public fun purgeForms(forms: Array<FormJs>): Promise<Array<StoredDocumentIdentifierJs>>
+
 	public fun getFormTemplate(formTemplateId: String, options: dynamic): Promise<FormTemplateJs>
 
-	public fun listFormTemplatesBySpeciality(specialityCode: String, options: dynamic):
-			Promise<Array<FormTemplateJs>>
-
-	public fun getFormTemplates(options: dynamic): Promise<Array<FormTemplateJs>>
+	public fun getFormTemplates(formTemplateIds: Array<String>): Promise<Array<FormTemplateJs>>
 
 	public fun createFormTemplate(formTemplate: FormTemplateJs): Promise<FormTemplateJs>
 
-	public fun deleteFormTemplate(formTemplateId: String): Promise<DocIdentifierJs>
+	public fun createFormTemplates(formTemplates: Array<FormTemplateJs>):
+			Promise<Array<FormTemplateJs>>
 
-	public fun updateFormTemplate(formTemplate: FormTemplateJs): Promise<FormTemplateJs>
+	public fun modifyFormTemplate(formTemplate: FormTemplateJs): Promise<FormTemplateJs>
+
+	public fun modifyFormTemplates(formTemplates: Array<FormTemplateJs>):
+			Promise<Array<FormTemplateJs>>
+
+	public fun deleteFormTemplateById(entityId: String, rev: String):
+			Promise<StoredDocumentIdentifierJs>
+
+	public fun deleteFormTemplatesByIds(entityIds: Array<StoredDocumentIdentifierJs>):
+			Promise<Array<StoredDocumentIdentifierJs>>
+
+	public fun deleteFormTemplate(formTemplate: FormTemplateJs): Promise<StoredDocumentIdentifierJs>
+
+	public fun deleteFormTemplates(formTemplates: Array<FormTemplateJs>):
+			Promise<Array<StoredDocumentIdentifierJs>>
+
+	public fun undeleteFormTemplateById(id: String, rev: String): Promise<FormTemplateJs>
+
+	public fun undeleteFormTemplatesByIds(entityIds: Array<StoredDocumentIdentifierJs>):
+			Promise<Array<FormTemplateJs>>
+
+	public fun undeleteFormTemplate(formTemplate: FormTemplateJs): Promise<FormTemplateJs>
+
+	public fun undeleteFormTemplates(formTemplates: Array<FormTemplateJs>):
+			Promise<Array<FormTemplateJs>>
+
+	public fun purgeFormTemplateById(id: String, rev: String): Promise<Unit>
+
+	public fun purgeFormTemplatesByIds(entityIds: Array<StoredDocumentIdentifierJs>):
+			Promise<Array<StoredDocumentIdentifierJs>>
+
+	public fun purgeFormTemplate(formTemplate: FormTemplateJs): Promise<Unit>
+
+	public fun purgeFormTemplates(formTemplates: Array<FormTemplateJs>):
+			Promise<Array<StoredDocumentIdentifierJs>>
 
 	public fun setTemplateAttachment(formTemplateId: String, payload: ByteArray): Promise<String>
 
@@ -93,12 +128,6 @@ public external interface FormApiJs {
 
 	public fun shareWithMany(form: DecryptedFormJs, delegates: Record<String, FormShareOptionsJs>):
 			Promise<DecryptedFormJs>
-
-	public fun findFormsByHcPartyPatient(
-		hcPartyId: String,
-		patient: PatientJs,
-		options: dynamic,
-	): Promise<PaginatedListIteratorJs<DecryptedFormJs>>
 
 	public fun filterFormsBy(filter: FilterOptionsJs<FormJs>):
 			Promise<PaginatedListIteratorJs<DecryptedFormJs>>
@@ -112,23 +141,20 @@ public external interface FormApiJs {
 
 	public fun modifyForm(entity: DecryptedFormJs): Promise<DecryptedFormJs>
 
+	public fun modifyForms(entities: Array<DecryptedFormJs>): Promise<Array<DecryptedFormJs>>
+
 	public fun undeleteFormById(id: String, rev: String): Promise<DecryptedFormJs>
+
+	public fun undeleteFormsByIds(entityIds: Array<StoredDocumentIdentifierJs>):
+			Promise<Array<DecryptedFormJs>>
 
 	public fun undeleteForm(form: FormJs): Promise<DecryptedFormJs>
 
-	public fun modifyForms(entities: Array<DecryptedFormJs>): Promise<Array<DecryptedFormJs>>
+	public fun undeleteForms(forms: Array<FormJs>): Promise<Array<DecryptedFormJs>>
 
 	public fun getForm(entityId: String): Promise<DecryptedFormJs?>
 
 	public fun getForms(entityIds: Array<String>): Promise<Array<DecryptedFormJs>>
 
-	public fun getLatestFormByLogicalUuid(logicalUuid: String): Promise<DecryptedFormJs>
-
 	public fun getLatestFormByUniqueId(uniqueId: String): Promise<DecryptedFormJs>
-
-	public fun getFormsByLogicalUuid(logicalUuid: String): Promise<Array<DecryptedFormJs>>
-
-	public fun getFormsByUniqueId(uniqueId: String): Promise<Array<DecryptedFormJs>>
-
-	public fun getChildrenForms(hcPartyId: String, parentId: String): Promise<Array<DecryptedFormJs>>
 }

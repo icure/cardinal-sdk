@@ -12,16 +12,10 @@ export class Partnership {
 
 	partnerId: string | undefined = undefined;
 
-	meToOtherRelationshipDescription: string | undefined = undefined;
-
-	otherToMeRelationshipDescription: string | undefined = undefined;
-
 	constructor(partial: Partial<Partnership>) {
 		if ('type' in partial) this.type = partial.type;
 		if ('status' in partial) this.status = partial.status;
 		if ('partnerId' in partial) this.partnerId = partial.partnerId;
-		if ('meToOtherRelationshipDescription' in partial) this.meToOtherRelationshipDescription = partial.meToOtherRelationshipDescription;
-		if ('otherToMeRelationshipDescription' in partial) this.otherToMeRelationshipDescription = partial.otherToMeRelationshipDescription;
 	}
 
 	toJSON(): object {
@@ -29,8 +23,6 @@ export class Partnership {
 		if (this.type != undefined) res['type'] = this.type
 		if (this.status != undefined) res['status'] = this.status
 		if (this.partnerId != undefined) res['partnerId'] = this.partnerId
-		if (this.meToOtherRelationshipDescription != undefined) res['meToOtherRelationshipDescription'] = this.meToOtherRelationshipDescription
-		if (this.otherToMeRelationshipDescription != undefined) res['otherToMeRelationshipDescription'] = this.otherToMeRelationshipDescription
 		return res
 	}
 
@@ -42,8 +34,6 @@ export class Partnership {
 			type: expectStringEnum(extractEntry(jCpy, 'type', false, path), true, [...path, ".type"], PartnershipType, 'PartnershipType'),
 			status: expectStringEnum(extractEntry(jCpy, 'status', false, path), true, [...path, ".status"], PartnershipStatus, 'PartnershipStatus'),
 			partnerId: expectString(extractEntry(jCpy, 'partnerId', false, path), true, [...path, ".partnerId"]),
-			meToOtherRelationshipDescription: expectString(extractEntry(jCpy, 'meToOtherRelationshipDescription', false, path), true, [...path, ".meToOtherRelationshipDescription"]),
-			otherToMeRelationshipDescription: expectString(extractEntry(jCpy, 'otherToMeRelationshipDescription', false, path), true, [...path, ".otherToMeRelationshipDescription"]),
 		})
 		if (!ignoreUnknownKeys) {
 			const unused = Object.keys(jCpy)

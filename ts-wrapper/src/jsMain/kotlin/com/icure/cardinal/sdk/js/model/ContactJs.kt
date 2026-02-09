@@ -5,6 +5,7 @@ package com.icure.cardinal.sdk.js.model
 
 import com.icure.cardinal.sdk.js.model.base.CodeStubJs
 import com.icure.cardinal.sdk.js.model.base.HasEncryptionMetadataJs
+import com.icure.cardinal.sdk.js.model.base.HasEndOfLifeJs
 import com.icure.cardinal.sdk.js.model.base.ICureDocumentJs
 import com.icure.cardinal.sdk.js.model.base.IdentifierJs
 import com.icure.cardinal.sdk.js.model.base.StoredDocumentJs
@@ -32,7 +33,7 @@ import kotlin.js.JsQualifier
 
 @JsName("Contact")
 public sealed external interface ContactJs : StoredDocumentJs, ICureDocumentJs<String>,
-		HasEncryptionMetadataJs, EncryptableJs {
+		HasEncryptionMetadataJs, EncryptableJs, HasEndOfLifeJs {
 	public val identifier: Array<out IdentifierJs>
 
 	public val groupId: String?
@@ -45,8 +46,6 @@ public sealed external interface ContactJs : StoredDocumentJs, ICureDocumentJs<S
 
 	public val location: String?
 
-	public val externalId: String?
-
 	public val encounterType: CodeStubJs?
 
 	public val encounterLocation: AddressJs?
@@ -55,13 +54,7 @@ public sealed external interface ContactJs : StoredDocumentJs, ICureDocumentJs<S
 
 	public val services: Array<out ServiceJs>
 
-	public val participants: Record<String, out String>
-
 	public val participantList: Array<out ContactParticipantJs>
-
-	public val healthcarePartyId: String?
-
-	public val modifiedContactId: String?
 
 	public val notes: Array<out AnnotationJs>
 
@@ -84,8 +77,6 @@ public external class DecryptedContactJs(
 
 	override val responsible: String?
 
-	override val medicalLocationId: String?
-
 	override val tags: Array<CodeStubJs>
 
 	override val codes: Array<CodeStubJs>
@@ -106,8 +97,6 @@ public external class DecryptedContactJs(
 
 	override val location: String?
 
-	override val externalId: String?
-
 	override val encounterType: CodeStubJs?
 
 	override val encounterLocation: DecryptedAddressJs?
@@ -116,13 +105,7 @@ public external class DecryptedContactJs(
 
 	override val services: Array<DecryptedServiceJs>
 
-	override val participants: Record<String, String>
-
 	override val participantList: Array<ContactParticipantJs>
-
-	override val healthcarePartyId: String?
-
-	override val modifiedContactId: String?
 
 	override val secretForeignKeys: Array<String>
 
@@ -157,8 +140,6 @@ public external class EncryptedContactJs(
 
 	override val responsible: String?
 
-	override val medicalLocationId: String?
-
 	override val tags: Array<CodeStubJs>
 
 	override val codes: Array<CodeStubJs>
@@ -179,8 +160,6 @@ public external class EncryptedContactJs(
 
 	override val location: String?
 
-	override val externalId: String?
-
 	override val encounterType: CodeStubJs?
 
 	override val encounterLocation: EncryptedAddressJs?
@@ -189,13 +168,7 @@ public external class EncryptedContactJs(
 
 	override val services: Array<EncryptedServiceJs>
 
-	override val participants: Record<String, String>
-
 	override val participantList: Array<ContactParticipantJs>
-
-	override val healthcarePartyId: String?
-
-	override val modifiedContactId: String?
 
 	override val secretForeignKeys: Array<String>
 

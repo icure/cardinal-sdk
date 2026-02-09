@@ -6,6 +6,7 @@ package com.icure.cardinal.sdk.js.api
 import com.icure.cardinal.sdk.js.crypto.entities.TopicShareOptionsJs
 import com.icure.cardinal.sdk.js.filters.FilterOptionsJs
 import com.icure.cardinal.sdk.js.filters.SortableFilterOptionsJs
+import com.icure.cardinal.sdk.js.model.StoredDocumentIdentifierJs
 import com.icure.cardinal.sdk.js.model.TopicJs
 import com.icure.cardinal.sdk.js.utils.Record
 import com.icure.cardinal.sdk.js.utils.pagination.PaginatedListIteratorJs
@@ -32,11 +33,19 @@ public external interface TopicFlavouredApiJs<E : TopicJs> {
 
 	public fun createTopic(entity: E): Promise<E>
 
-	public fun undeleteTopic(topic: TopicJs): Promise<TopicJs>
+	public fun createTopics(entities: Array<E>): Promise<Array<E>>
+
+	public fun undeleteTopicById(id: String, rev: String): Promise<E>
+
+	public fun undeleteTopicsByIds(entityIds: Array<StoredDocumentIdentifierJs>): Promise<Array<E>>
+
+	public fun undeleteTopic(topic: TopicJs): Promise<E>
+
+	public fun undeleteTopics(topics: Array<TopicJs>): Promise<Array<E>>
 
 	public fun modifyTopic(entity: E): Promise<E>
 
-	public fun undeleteTopicById(id: String, rev: String): Promise<E>
+	public fun modifyTopics(entities: Array<E>): Promise<Array<E>>
 
 	public fun getTopic(entityId: String): Promise<E?>
 

@@ -39,8 +39,6 @@ public sealed external interface InvoiceJs : StoredDocumentJs, ICureDocumentJs<S
 
 	public val receipts: Record<String, out String>
 
-	public val recipientType: String?
-
 	public val recipientId: String?
 
 	public val invoiceReference: String?
@@ -55,12 +53,6 @@ public sealed external interface InvoiceJs : StoredDocumentJs, ICureDocumentJs<S
 
 	public val reason: String?
 
-	public val invoiceType: String?
-
-	public val sentMediumType: String?
-
-	public val interventionType: String?
-
 	public val groupId: String?
 
 	public val paymentType: String?
@@ -68,8 +60,6 @@ public sealed external interface InvoiceJs : StoredDocumentJs, ICureDocumentJs<S
 	public val paid: Double?
 
 	public val payments: Array<out PaymentJs>?
-
-	public val gnotionNihii: String?
 
 	public val gnotionSsin: String?
 
@@ -83,8 +73,6 @@ public sealed external interface InvoiceJs : StoredDocumentJs, ICureDocumentJs<S
 
 	public val careProviderType: String?
 
-	public val internshipNihii: String?
-
 	public val internshipSsin: String?
 
 	public val internshipLastName: String?
@@ -94,8 +82,6 @@ public sealed external interface InvoiceJs : StoredDocumentJs, ICureDocumentJs<S
 	public val internshipCdHcParty: String?
 
 	public val internshipCbe: String?
-
-	public val supervisorNihii: String?
 
 	public val supervisorSsin: String?
 
@@ -110,8 +96,6 @@ public sealed external interface InvoiceJs : StoredDocumentJs, ICureDocumentJs<S
 	public val error: String?
 
 	public val encounterLocationName: String?
-
-	public val encounterLocationNihii: String?
 
 	public val encounterLocationNorm: Double?
 
@@ -128,8 +112,6 @@ public sealed external interface InvoiceJs : StoredDocumentJs, ICureDocumentJs<S
 	public val idDocument: IdentityDocumentReaderJs?
 
 	public val admissionDate: Double?
-
-	public val locationNihii: String?
 
 	public val locationService: Double?
 
@@ -160,13 +142,9 @@ public external class DecryptedInvoiceJs(
 
 	override val responsible: String?
 
-	override val medicalLocationId: String?
-
 	override val tags: Array<CodeStubJs>
 
 	override val codes: Array<CodeStubJs>
-
-	override val endOfLife: Double?
 
 	override val deletionDate: Double?
 
@@ -179,8 +157,6 @@ public external class DecryptedInvoiceJs(
 	override val invoicingCodes: Array<DecryptedInvoicingCodeJs>
 
 	override val receipts: Record<String, String>
-
-	override val recipientType: String?
 
 	override val recipientId: String?
 
@@ -196,12 +172,6 @@ public external class DecryptedInvoiceJs(
 
 	override val reason: String?
 
-	override val invoiceType: String?
-
-	override val sentMediumType: String?
-
-	override val interventionType: String?
-
 	override val groupId: String?
 
 	override val paymentType: String?
@@ -209,8 +179,6 @@ public external class DecryptedInvoiceJs(
 	override val paid: Double?
 
 	override val payments: Array<PaymentJs>?
-
-	override val gnotionNihii: String?
 
 	override val gnotionSsin: String?
 
@@ -224,8 +192,6 @@ public external class DecryptedInvoiceJs(
 
 	override val careProviderType: String?
 
-	override val internshipNihii: String?
-
 	override val internshipSsin: String?
 
 	override val internshipLastName: String?
@@ -235,8 +201,6 @@ public external class DecryptedInvoiceJs(
 	override val internshipCdHcParty: String?
 
 	override val internshipCbe: String?
-
-	override val supervisorNihii: String?
 
 	override val supervisorSsin: String?
 
@@ -251,8 +215,6 @@ public external class DecryptedInvoiceJs(
 	override val error: String?
 
 	override val encounterLocationName: String?
-
-	override val encounterLocationNihii: String?
 
 	override val encounterLocationNorm: Double?
 
@@ -269,8 +231,6 @@ public external class DecryptedInvoiceJs(
 	override val idDocument: IdentityDocumentReaderJs?
 
 	override val admissionDate: Double?
-
-	override val locationNihii: String?
 
 	override val locationService: Double?
 
@@ -313,13 +273,9 @@ public external class EncryptedInvoiceJs(
 
 	override val responsible: String?
 
-	override val medicalLocationId: String?
-
 	override val tags: Array<CodeStubJs>
 
 	override val codes: Array<CodeStubJs>
-
-	override val endOfLife: Double?
 
 	override val deletionDate: Double?
 
@@ -332,8 +288,6 @@ public external class EncryptedInvoiceJs(
 	override val invoicingCodes: Array<EncryptedInvoicingCodeJs>
 
 	override val receipts: Record<String, String>
-
-	override val recipientType: String?
 
 	override val recipientId: String?
 
@@ -349,12 +303,6 @@ public external class EncryptedInvoiceJs(
 
 	override val reason: String?
 
-	override val invoiceType: String?
-
-	override val sentMediumType: String?
-
-	override val interventionType: String?
-
 	override val groupId: String?
 
 	override val paymentType: String?
@@ -362,8 +310,6 @@ public external class EncryptedInvoiceJs(
 	override val paid: Double?
 
 	override val payments: Array<PaymentJs>?
-
-	override val gnotionNihii: String?
 
 	override val gnotionSsin: String?
 
@@ -377,8 +323,6 @@ public external class EncryptedInvoiceJs(
 
 	override val careProviderType: String?
 
-	override val internshipNihii: String?
-
 	override val internshipSsin: String?
 
 	override val internshipLastName: String?
@@ -388,8 +332,6 @@ public external class EncryptedInvoiceJs(
 	override val internshipCdHcParty: String?
 
 	override val internshipCbe: String?
-
-	override val supervisorNihii: String?
 
 	override val supervisorSsin: String?
 
@@ -404,8 +346,6 @@ public external class EncryptedInvoiceJs(
 	override val error: String?
 
 	override val encounterLocationName: String?
-
-	override val encounterLocationNihii: String?
 
 	override val encounterLocationNorm: Double?
 
@@ -422,8 +362,6 @@ public external class EncryptedInvoiceJs(
 	override val idDocument: IdentityDocumentReaderJs?
 
 	override val admissionDate: Double?
-
-	override val locationNihii: String?
 
 	override val locationService: Double?
 

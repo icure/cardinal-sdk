@@ -62,10 +62,6 @@ public external class DecryptedTopicJs(
 
 	override val responsible: String?
 
-	override val medicalLocationId: String?
-
-	override val endOfLife: Double?
-
 	override val deletionDate: Double?
 
 	override val activeParticipants: Record<String, String>
@@ -114,10 +110,6 @@ public external class EncryptedTopicJs(
 	override val author: String?
 
 	override val responsible: String?
-
-	override val medicalLocationId: String?
-
-	override val endOfLife: Double?
 
 	override val deletionDate: Double?
 

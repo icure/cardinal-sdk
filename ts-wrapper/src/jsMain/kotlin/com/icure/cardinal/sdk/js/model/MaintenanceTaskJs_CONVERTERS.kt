@@ -62,9 +62,6 @@ public fun maintenanceTask_toJs(obj: DecryptedMaintenanceTask): DecryptedMainten
 	val responsible = nullToUndefined(
 		obj.responsible
 	)
-	val medicalLocationId = nullToUndefined(
-		obj.medicalLocationId
-	)
 	val tags = setToArray(
 		obj.tags,
 		{ x1: CodeStub ->
@@ -159,7 +156,6 @@ public fun maintenanceTask_toJs(obj: DecryptedMaintenanceTask): DecryptedMainten
 		"modified:modified," +
 		"author:author," +
 		"responsible:responsible," +
-		"medicalLocationId:medicalLocationId," +
 		"tags:tags," +
 		"codes:codes," +
 		"endOfLife:endOfLife," +
@@ -190,7 +186,6 @@ public fun maintenanceTask_fromJs(obj: DecryptedMaintenanceTaskJs): DecryptedMai
 	val modified = numberToLong(obj.modified, "obj.modified")
 	val author = undefinedToNull(obj.author)
 	val responsible = undefinedToNull(obj.responsible)
-	val medicalLocationId = undefinedToNull(obj.medicalLocationId)
 	val tags = arrayToSet(
 		obj.tags,
 		"obj.tags",
@@ -285,7 +280,6 @@ public fun maintenanceTask_fromJs(obj: DecryptedMaintenanceTaskJs): DecryptedMai
 		modified = modified,
 		author = author,
 		responsible = responsible,
-		medicalLocationId = medicalLocationId,
 		tags = tags,
 		codes = codes,
 		endOfLife = endOfLife,
@@ -325,9 +319,6 @@ public fun maintenanceTask_toJs(obj: EncryptedMaintenanceTask): EncryptedMainten
 	)
 	val responsible = nullToUndefined(
 		obj.responsible
-	)
-	val medicalLocationId = nullToUndefined(
-		obj.medicalLocationId
 	)
 	val tags = setToArray(
 		obj.tags,
@@ -423,7 +414,6 @@ public fun maintenanceTask_toJs(obj: EncryptedMaintenanceTask): EncryptedMainten
 		"modified:modified," +
 		"author:author," +
 		"responsible:responsible," +
-		"medicalLocationId:medicalLocationId," +
 		"tags:tags," +
 		"codes:codes," +
 		"endOfLife:endOfLife," +
@@ -454,7 +444,6 @@ public fun maintenanceTask_fromJs(obj: EncryptedMaintenanceTaskJs): EncryptedMai
 	val modified = numberToLong(obj.modified, "obj.modified")
 	val author = undefinedToNull(obj.author)
 	val responsible = undefinedToNull(obj.responsible)
-	val medicalLocationId = undefinedToNull(obj.medicalLocationId)
 	val tags = arrayToSet(
 		obj.tags,
 		"obj.tags",
@@ -549,7 +538,6 @@ public fun maintenanceTask_fromJs(obj: EncryptedMaintenanceTaskJs): EncryptedMai
 		modified = modified,
 		author = author,
 		responsible = responsible,
-		medicalLocationId = medicalLocationId,
 		tags = tags,
 		codes = codes,
 		endOfLife = endOfLife,

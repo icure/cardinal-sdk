@@ -7,12 +7,11 @@ import com.icure.cardinal.sdk.js.crypto.entities.CalendarItemShareOptionsJs
 import com.icure.cardinal.sdk.js.filters.FilterOptionsJs
 import com.icure.cardinal.sdk.js.filters.SortableFilterOptionsJs
 import com.icure.cardinal.sdk.js.model.CalendarItemJs
-import com.icure.cardinal.sdk.js.model.PaginatedListJs
 import com.icure.cardinal.sdk.js.model.PatientJs
+import com.icure.cardinal.sdk.js.model.StoredDocumentIdentifierJs
 import com.icure.cardinal.sdk.js.utils.Record
 import com.icure.cardinal.sdk.js.utils.pagination.PaginatedListIteratorJs
 import kotlin.Array
-import kotlin.Double
 import kotlin.String
 import kotlin.js.JsName
 import kotlin.js.JsQualifier
@@ -29,12 +28,6 @@ public external interface CalendarItemFlavouredApiJs<E : CalendarItemJs> {
 	public fun shareWithMany(calendarItem: E, delegates: Record<String, CalendarItemShareOptionsJs>):
 			Promise<E>
 
-	public fun findCalendarItemsByHcPartyPatient(
-		hcPartyId: String,
-		patient: PatientJs,
-		options: dynamic,
-	): Promise<PaginatedListIteratorJs<E>>
-
 	public fun linkToPatient(
 		calendarItem: CalendarItemJs,
 		patient: PatientJs,
@@ -49,34 +42,24 @@ public external interface CalendarItemFlavouredApiJs<E : CalendarItemJs> {
 
 	public fun createCalendarItem(entity: E): Promise<E>
 
+	public fun createCalendarItems(entities: Array<E>): Promise<Array<E>>
+
 	public fun bookCalendarItemCheckingAvailability(entity: E): Promise<E>
 
 	public fun undeleteCalendarItemById(id: String, rev: String): Promise<E>
 
+	public fun undeleteCalendarItemsByIds(entityIds: Array<StoredDocumentIdentifierJs>):
+			Promise<Array<E>>
+
 	public fun undeleteCalendarItem(calendarItem: CalendarItemJs): Promise<E>
 
+	public fun undeleteCalendarItems(calendarItems: Array<CalendarItemJs>): Promise<Array<E>>
+
 	public fun modifyCalendarItem(entity: E): Promise<E>
+
+	public fun modifyCalendarItems(entities: Array<E>): Promise<Array<E>>
 
 	public fun getCalendarItem(entityId: String): Promise<E?>
 
 	public fun getCalendarItems(entityIds: Array<String>): Promise<Array<E>>
-
-	public fun getCalendarItemsByPeriodAndHcPartyId(
-		startDate: Double,
-		endDate: Double,
-		hcPartyId: String,
-	): Promise<Array<E>>
-
-	public fun getCalendarsByPeriodAndAgendaId(
-		startDate: Double,
-		endDate: Double,
-		agendaId: String,
-	): Promise<Array<E>>
-
-	public fun findCalendarItemsByRecurrenceId(
-		recurrenceId: String,
-		startKey: String?,
-		startDocumentId: String?,
-		limit: Double,
-	): Promise<PaginatedListJs<E>>
 }

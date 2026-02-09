@@ -23,13 +23,33 @@ export interface CalendarItemBasicInGroupApi {
 
 	deleteCalendarItemsByIds(entityIds: Array<GroupScoped<StoredDocumentIdentifier>>): Promise<Array<GroupScoped<StoredDocumentIdentifier>>>;
 
+	purgeCalendarItemById(entityId: GroupScoped<StoredDocumentIdentifier>): Promise<void>;
+
+	purgeCalendarItemsByIds(entityIds: Array<GroupScoped<StoredDocumentIdentifier>>): Promise<Array<GroupScoped<StoredDocumentIdentifier>>>;
+
 	deleteCalendarItem(calendarItem: GroupScoped<CalendarItem>): Promise<GroupScoped<StoredDocumentIdentifier>>;
 
 	deleteCalendarItems(calendarItems: Array<GroupScoped<CalendarItem>>): Promise<Array<GroupScoped<StoredDocumentIdentifier>>>;
 
+	purgeCalendarItem(calendarItem: GroupScoped<CalendarItem>): Promise<void>;
+
+	purgeCalendarItems(calendarItems: Array<GroupScoped<CalendarItem>>): Promise<Array<GroupScoped<StoredDocumentIdentifier>>>;
+
 	createCalendarItem(entity: GroupScoped<EncryptedCalendarItem>): Promise<GroupScoped<EncryptedCalendarItem>>;
 
+	createCalendarItems(entities: Array<GroupScoped<EncryptedCalendarItem>>): Promise<Array<GroupScoped<EncryptedCalendarItem>>>;
+
+	undeleteCalendarItemById(entityId: GroupScoped<StoredDocumentIdentifier>): Promise<GroupScoped<EncryptedCalendarItem>>;
+
+	undeleteCalendarItemsByIds(entityIds: Array<GroupScoped<StoredDocumentIdentifier>>): Promise<Array<GroupScoped<EncryptedCalendarItem>>>;
+
+	undeleteCalendarItem(calendarItem: GroupScoped<CalendarItem>): Promise<GroupScoped<EncryptedCalendarItem>>;
+
+	undeleteCalendarItems(calendarItems: Array<GroupScoped<EncryptedCalendarItem>>): Promise<Array<GroupScoped<EncryptedCalendarItem>>>;
+
 	modifyCalendarItem(entity: GroupScoped<EncryptedCalendarItem>): Promise<GroupScoped<EncryptedCalendarItem>>;
+
+	modifyCalendarItems(entities: Array<GroupScoped<EncryptedCalendarItem>>): Promise<Array<GroupScoped<EncryptedCalendarItem>>>;
 
 	getCalendarItem(groupId: string,
 			entityId: string): Promise<GroupScoped<EncryptedCalendarItem> | undefined>;
