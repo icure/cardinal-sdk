@@ -66,7 +66,7 @@ object MessageFilters {
 	/**
 	 * In group version of [byTransportGuidForDataOwner].
 	 */
-	fun byTransportGuidForDataOwner(
+	fun byTransportGuidForDataOwnerInGroup(
 		dataOwner: EntityReferenceInGroup,
 		transportGuid: String
 	): BaseSortableFilterOptions<Message> = ByTransportGuidForDataOwner(
@@ -104,7 +104,7 @@ object MessageFilters {
 	/**
 	 * In group version of [fromAddressForDataOwner].
 	 */
-	fun fromAddressForDataOwner(
+	fun fromAddressForDataOwnerInGroup(
 		dataOwner: EntityReferenceInGroup,
 		address: String
 	): BaseFilterOptions<Message> = FromAddressForDataOwner(
@@ -163,8 +163,11 @@ object MessageFilters {
 		descending = descending
 	)
 
+	/**
+	 * In-group version of [byPatientsSentDateForDataOwner].
+	 */
 	@OptIn(InternalIcureApi::class)
-	fun byPatientsSentDateForDataOwner(
+	fun byPatientsSentDateForDataOwnerInGroup(
 		dataOwner: EntityReferenceInGroup,
 		patients: List<GroupScoped<Patient>>,
 		@DefaultValue("null")
@@ -258,7 +261,7 @@ object MessageFilters {
 	/**
 	 * In group version of [byPatientSecretIdsSentDateForDataOwner].
 	 */
-	fun byPatientSecretIdsSentDateForDataOwner(
+	fun byPatientSecretIdsSentDateForDataOwnerInGroup(
 		dataOwner: EntityReferenceInGroup,
 		secretIds: List<String>,
 		@DefaultValue("null")
@@ -274,7 +277,6 @@ object MessageFilters {
 		to = to,
 		descending = descending
 	)
-
 
 	/**
 	 * Options for message filtering which match all messages shared directly (i.e. ignoring hierarchies) with the current data owner
@@ -321,9 +323,9 @@ object MessageFilters {
 	)
 
 	/**
-	 * Im group version of [toAddressForDataOwner].
+	 * In-group version of [toAddressForDataOwner].
 	 */
-	fun toAddressForDataOwner(
+	fun toAddressForDataOwnerInGroup(
 		dataOwner: EntityReferenceInGroup,
 		address: String
 	): BaseFilterOptions<Message> = ToAddressForDataOwner(
@@ -372,7 +374,7 @@ object MessageFilters {
 	/**
 	 * In group version of [byTransportGuidSentDateForDataOwner].
 	 */
-	fun byTransportGuidSentDateForDataOwner(
+	fun byTransportGuidSentDateForDataOwnerInGroup(
 		dataOwner: EntityReferenceInGroup,
 		transportGuid: String,
 		from: Instant?,
@@ -427,7 +429,7 @@ object MessageFilters {
 	/**
 	 * In group version of [latestByTransportGuidForDataOwner].
 	 */
-	fun latestByTransportGuidForDataOwner(
+	fun latestByTransportGuidForDataOwnerInGroup(
 		dataOwner: EntityReferenceInGroup,
 		transportGuid: String
 	): BaseFilterOptions<Message> = LatestByTransportGuidForDataOwner(
@@ -492,7 +494,7 @@ object MessageFilters {
 	 * In-group version of [lifecycleBetweenForDataOwner].
 	 * The data owner can be from a different group than the group of the user executing the query.
 	 */
-	fun lifecycleBetweenForDataOwnerInGroup(
+	fun lifecycleBetweenForDataOwnerInGroupInGroup(
 		dataOwner: EntityReferenceInGroup,
 		startTimestamp: Long?,
 		endTimestamp: Long?,

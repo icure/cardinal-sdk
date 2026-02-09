@@ -41,7 +41,7 @@ object FormFilters {
 	/**
 	 * In group version of [byParentIdForDataOwner].
 	 */
-	fun byParentIdForDataOwner(
+	fun byParentIdForDataOwnerInGroup(
 		dataOwner: EntityReferenceInGroup,
 		parentId: String,
 	): BaseFilterOptions<Form> = ByParentIdForDataOwner(dataOwner, parentId)
@@ -99,7 +99,7 @@ object FormFilters {
 	)
 
 	@OptIn(InternalIcureApi::class)
-	fun byPatientsOpeningDateForDataOwner(
+	fun byPatientsOpeningDateForDataOwnerInGroup(
 		dataOwner: EntityReferenceInGroup,
 		patients: List<GroupScoped<Patient>>,
 		@DefaultValue("null")
@@ -193,7 +193,7 @@ object FormFilters {
 	/**
 	 * In group version of [byPatientSecretIdsOpeningDateForDataOwner].
 	 */
-	fun byPatientSecretIdsOpeningDateForDataOwner(
+	fun byPatientSecretIdsOpeningDateForDataOwnerInGroup(
 		dataOwner: EntityReferenceInGroup,
 		secretIds: List<String>,
 		@DefaultValue("null")

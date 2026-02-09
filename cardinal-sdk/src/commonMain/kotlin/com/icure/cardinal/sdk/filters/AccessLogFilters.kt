@@ -73,7 +73,7 @@ object AccessLogFilters {
 	 * In group version of [byPatientsDateForDataOwner].
 	 */
 	@OptIn(InternalIcureApi::class)
-	fun byPatientsDateForDataOwner(
+	fun byPatientsDateForDataOwnerInGroup(
 		dataOwner: EntityReferenceInGroup,
 		patients: List<GroupScoped<Patient>>,
 		@DefaultValue("null")

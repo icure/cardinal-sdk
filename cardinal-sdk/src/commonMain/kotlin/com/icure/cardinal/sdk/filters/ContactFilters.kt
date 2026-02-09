@@ -43,7 +43,7 @@ object ContactFilters {
 	/**
 	 * A version of [allContactsForDataOwner] for a data owner in a group.
 	 */
-	fun allContactsForDataOwner(
+	fun allContactsForDataOwnerInGroup(
 		dataOwner: EntityReferenceInGroup
 	): BaseFilterOptions<Contact> = AllByDataOwner(dataOwner)
 
@@ -71,7 +71,7 @@ object ContactFilters {
 	/**
 	 * A version of [byFormIdsForDataOwner] for a data owner in a group.
 	 */
-	fun byFormIdsForDataOwner(
+	fun byFormIdsForDataOwnerInGroup(
 		dataOwner: EntityReferenceInGroup,
 		formIds: Set<String>
 	): BaseFilterOptions<Contact> = ByFormIdsForDataOwner(dataOwner, formIds)
@@ -114,7 +114,7 @@ object ContactFilters {
 	@OptIn(InternalIcureApi::class)
 	fun byPatientsOpeningDateForDataOwner(
 		dataOwnerId: String,
-		patients: List<GroupScoped<Patient>>,
+		patients: List<Patient>,
 		@DefaultValue("null")
 		from: Long? = null,
 		@DefaultValue("null")
@@ -123,7 +123,7 @@ object ContactFilters {
 		descending: Boolean = false
 	) : SortableFilterOptions<Contact> = ByPatientsOpeningDateForDataOwner(
 		dataOwnerId = EntityReferenceInGroup(entityId = dataOwnerId, groupId = null),
-		patients = patients.map { Pair(it.entity.toEncryptionMetadataStub(), it.groupId) },
+		patients = patients.map { Pair(it.toEncryptionMetadataStub(), null) },
 		from = from,
 		to = to,
 		descending = descending
@@ -133,9 +133,9 @@ object ContactFilters {
 	 * A version of [byPatientsOpeningDateForDataOwner] for a data owner in a group.
 	 */
 	@OptIn(InternalIcureApi::class)
-	fun byPatientsOpeningDateForDataOwner(
+	fun byPatientsOpeningDateForDataOwnerInGroup(
 		dataOwner: EntityReferenceInGroup,
-		patients: List<Patient>,
+		patients: List<GroupScoped<Patient>>,
 		@DefaultValue("null")
 		from: Long? = null,
 		@DefaultValue("null")
@@ -144,7 +144,7 @@ object ContactFilters {
 		descending: Boolean = false
 	) : SortableFilterOptions<Contact> = ByPatientsOpeningDateForDataOwner(
 		dataOwnerId = dataOwner,
-		patients = patients.map { Pair(it.toEncryptionMetadataStub(), null) },
+		patients = patients.map { Pair(it.entity.toEncryptionMetadataStub(), it.groupId) },
 		from = from,
 		to = to,
 		descending = descending
@@ -227,7 +227,7 @@ object ContactFilters {
 	/**
 	 * In group version of [byPatientSecretIdsOpeningDateForDataOwner].
 	 */
-	fun byPatientSecretIdsOpeningDateForDataOwner(
+	fun byPatientSecretIdsOpeningDateForDataOwnerInGroup(
 		dataOwner: EntityReferenceInGroup,
 		secretIds: List<String>,
 		@DefaultValue("null")
@@ -310,7 +310,7 @@ object ContactFilters {
 	/**
 	 * In group version of [byIdentifiersForDataOwner].
 	 */
-	fun byIdentifiersForDataOwner(
+	fun byIdentifiersForDataOwnerInGroup(
 		dataOwner: EntityReferenceInGroup,
 		identifiers: List<Identifier>
 	): BaseSortableFilterOptions<Contact> = ByIdentifiersForDataOwner(
@@ -359,7 +359,7 @@ object ContactFilters {
 	/**
 	 * In group version of [byCodeAndOpeningDateForDataOwner].
 	 */
-	fun byCodeAndOpeningDateForDataOwner(
+	fun byCodeAndOpeningDateForDataOwnerInGroup(
 		dataOwner: EntityReferenceInGroup,
 		codeType: String,
 		@DefaultValue("null")
@@ -450,7 +450,7 @@ object ContactFilters {
 	/**
 	 * In group version of [byTagAndOpeningDateForDataOwner].
 	 */
-	fun byTagAndOpeningDateForDataOwner(
+	fun byTagAndOpeningDateForDataOwnerInGroup(
 		dataOwner: EntityReferenceInGroup,
 		tagType: String,
 		@DefaultValue("null")
@@ -501,7 +501,7 @@ object ContactFilters {
 	/**
 	 * In group version of [byOpeningDateForDataOwner].
 	 */
-	fun byOpeningDateForDataOwner(
+	fun byOpeningDateForDataOwnerInGroup(
 		dataOwner: EntityReferenceInGroup,
 		@DefaultValue("null")
 		startDate: Long? = null,
@@ -585,7 +585,7 @@ object ContactFilters {
 	/**
 	 * In group version of [byServiceTagForDataOwner].
 	 */
-	fun byServiceTagForDataOwner(
+	fun byServiceTagForDataOwnerInGroup(
 		dataOwner: EntityReferenceInGroup,
 		tagType: String,
 		@DefaultValue("null")
@@ -637,7 +637,7 @@ object ContactFilters {
 	/**
 	 * In group version of [byServiceCodeForDataOwner].
 	 */
-	fun byServiceCodeForDataOwner(
+	fun byServiceCodeForDataOwnerInGroup(
 		dataOwner: EntityReferenceInGroup,
 		codeType: String,
 		@DefaultValue("null")
@@ -763,7 +763,7 @@ object ContactFilters {
 	/**
 	 * In group version of [byPatientsSecretIdsForDataOwner].
 	 */
-	fun byPatientsSecretIdsForDataOwner(
+	fun byPatientsSecretIdsForDataOwnerInGroup(
 		dataOwner: EntityReferenceInGroup,
 		secretIds: List<String>
 	): BaseSortableFilterOptions<Contact> = ByPatientsSecretIdsForDataOwner(

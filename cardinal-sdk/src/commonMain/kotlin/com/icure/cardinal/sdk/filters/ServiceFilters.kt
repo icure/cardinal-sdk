@@ -46,7 +46,7 @@ object ServiceFilters {
 	/**
 	 * In group version of [allServicesForDataOwner].
 	 */
-	fun allServicesForDataOwner(
+	fun allServicesForDataOwnerInGroup(
 		dataOwner: EntityReferenceInGroup
 	): BaseFilterOptions<Service> = AllForDataOwner(
 		dataOwnerId = dataOwner
@@ -83,7 +83,7 @@ object ServiceFilters {
 	/**
 	 * In group version of [byIdentifiersForDataOwner].
 	 */
-	fun byIdentifiersForDataOwner(
+	fun byIdentifiersForDataOwnerInGroup(
 		dataOwner: EntityReferenceInGroup,
 		identifiers: List<Identifier>,
 	): BaseSortableFilterOptions<Service> = ByIdentifiersForDataOwner(
@@ -131,7 +131,7 @@ object ServiceFilters {
 	/**
 	 * In group version of [byCodeAndValueDateForDataOwner].
 	 */
-	fun byCodeAndValueDateForDataOwner(
+	fun byCodeAndValueDateForDataOwnerInGroup(
 		dataOwner: EntityReferenceInGroup,
 		codeType: String,
 		@DefaultValue("null")
@@ -188,7 +188,7 @@ object ServiceFilters {
 	/**
 	 * In group version of [byTagAndValueDateForDataOwner].
 	 */
-	fun byTagAndValueDateForDataOwner(
+	fun byTagAndValueDateForDataOwnerInGroup(
 		dataOwner: EntityReferenceInGroup,
 		tagType: String,
 		@DefaultValue("null")
@@ -234,7 +234,7 @@ object ServiceFilters {
 	 * In group version of [byPatientsForDataOwner].
 	 */
 	@OptIn(InternalIcureApi::class)
-	fun byPatientsForDataOwner(
+	fun byPatientsForDataOwnerInGroup(
 		dataOwner: EntityReferenceInGroup,
 		patients: List<Patient>,
 	): SortableFilterOptions<Service> = ByPatientsForDataOwner(
@@ -261,7 +261,7 @@ object ServiceFilters {
 	/**
 	 * In group version of [byPatientsSecretIdsForDataOwner].
 	 */
-	fun byPatientsSecretIdsForDataOwner(
+	fun byPatientsSecretIdsForDataOwnerInGroup(
 		dataOwner: EntityReferenceInGroup,
 		secretIds: List<String>,
 	): BaseSortableFilterOptions<Service> = ByPatientsSecretIdsForDataOwner(
@@ -292,7 +292,7 @@ object ServiceFilters {
 	/**
 	 * In group version of [byHealthElementIdFromSubContactForDataOwner].
 	 */
-	fun byHealthElementIdFromSubContactForDataOwner(
+	fun byHealthElementIdFromSubContactForDataOwnerInGroup(
 		dataOwner: EntityReferenceInGroup,
 		healthElementIds: List<String>,
 	): BaseSortableFilterOptions<Service> = ByHealthElementIdFromSubcontactForDataOwner(
@@ -522,7 +522,7 @@ object ServiceFilters {
 	 * In group version of [byPatientsDateForDataOwner].
 	 */
 	@OptIn(InternalIcureApi::class)
-	fun byPatientsDateForDataOwner(
+	fun byPatientsDateForDataOwnerInGroup(
 		dataOwner: EntityReferenceInGroup,
 		patients: List<Patient>,
 		@DefaultValue("null")
@@ -615,7 +615,7 @@ object ServiceFilters {
 		descending = descending
 	)
 
-	fun byPatientSecretIdsDateForDataOwner(
+	fun byPatientSecretIdsDateForDataOwnerInGroup(
 		dataOwner: EntityReferenceInGroup,
 		secretIds: List<String>,
 		@DefaultValue("null")

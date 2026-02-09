@@ -26,7 +26,7 @@ object TopicFilters {
 	/**
 	 * In-group version of [allTopicsForDataOwner].
 	 */
-	fun allTopicsForDataOwner(
+	fun allTopicsForDataOwnerInGroup(
 		dataOwner: EntityReferenceInGroup,
 	): BaseFilterOptions<Topic> = AllForDataOwner(dataOwner)
 
@@ -50,7 +50,7 @@ object TopicFilters {
 	/**
 	 * In-group version of [byParticipant].
 	 */
-	fun byParticipant(
+	fun byParticipantInGroup(
 		participant: EntityReferenceInGroup,
 	): FilterOptions<Topic> = ByParticipant(participant)
 

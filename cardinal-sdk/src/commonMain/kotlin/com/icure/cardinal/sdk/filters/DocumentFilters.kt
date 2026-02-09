@@ -70,7 +70,7 @@ object DocumentFilters {
 	 * In group version of [byPatientsCreatedForDataOwner].
 	 */
 	@OptIn(InternalIcureApi::class)
-	fun byPatientsCreatedForDataOwner(
+	fun byPatientsCreatedForDataOwnerInGroup(
 		dataOwner: EntityReferenceInGroup,
 		patients: List<GroupScoped<Patient>>,
 		@DefaultValue("null")
@@ -132,7 +132,7 @@ object DocumentFilters {
 	 * In group version of [byMessagesCreatedForDataOwner].
 	 */
 	@OptIn(InternalIcureApi::class)
-	fun byMessagesCreatedForDataOwner(
+	fun byMessagesCreatedForDataOwnerInGroup(
 		dataOwner: EntityReferenceInGroup,
 		messages: List<GroupScoped<Message>>,
 		@DefaultValue("null")
@@ -261,7 +261,7 @@ object DocumentFilters {
 		descending = descending
 	)
 
-	fun byOwningEntitySecretIdsCreatedForDataOwner(
+	fun byOwningEntitySecretIdsCreatedForDataOwnerInGroup(
 		dataOwner: EntityReferenceInGroup,
 		secretIds: List<String>,
 		@DefaultValue("null")
@@ -342,7 +342,7 @@ object DocumentFilters {
 	 * In group version of [byPatientsAndTypeForDataOwner].
 	 */
 	@OptIn(InternalIcureApi::class)
-	fun byPatientsAndTypeForDataOwner(
+	fun byPatientsAndTypeForDataOwnerInGroup(
 		dataOwner: EntityReferenceInGroup,
 		documentType: DocumentType,
 		patients: List<GroupScoped<Patient>>
@@ -382,7 +382,7 @@ object DocumentFilters {
 	 * In group version of [byMessagesAndTypeForDataOwner].
 	 */
 	@OptIn(InternalIcureApi::class)
-	fun byMessagesAndTypeForDataOwner(
+	fun byMessagesAndTypeForDataOwnerInGroup(
 		dataOwner: EntityReferenceInGroup,
 		documentType: DocumentType,
 		messages: List<GroupScoped<Message>>
@@ -463,7 +463,7 @@ object DocumentFilters {
 	/**
 	 * In group version of [byOwningEntitySecretIdsAndTypeForDataOwner].
 	 */
-	fun byOwningEntitySecretIdsAndTypeForDataOwner(
+	fun byOwningEntitySecretIdsAndTypeForDataOwnerInGroup(
 		dataOwner: EntityReferenceInGroup,
 		documentType: DocumentType,
 		secretIds: List<String>

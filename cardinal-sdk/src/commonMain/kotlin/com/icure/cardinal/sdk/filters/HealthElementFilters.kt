@@ -40,7 +40,7 @@ object HealthElementFilters {
 	/**
 	 * In group version of [allHealthElementsForDataOwner].
 	 */
-	fun allHealthElementsForDataOwner(
+	fun allHealthElementsForDataOwnerInGroup(
 		dataOwner: EntityReferenceInGroup,
 	): BaseFilterOptions<HealthElement> = AllForDataOwner(dataOwner)
 
@@ -74,7 +74,7 @@ object HealthElementFilters {
 	/**
 	 * In group version of [byIdentifiersForDataOwner].
 	 */
-	fun byIdentifiersForDataOwner(
+	fun byIdentifiersForDataOwnerInGroup(
 		dataOwner: EntityReferenceInGroup,
 		identifiers: List<Identifier>
 	): BaseSortableFilterOptions<HealthElement> =
@@ -122,7 +122,7 @@ object HealthElementFilters {
 	/**
 	 * In group version of [byCodeForDataOwner].
 	 */
-	fun byCodeForDataOwner(
+	fun byCodeForDataOwnerInGroup(
 		dataOwner: EntityReferenceInGroup,
 		codeType: String,
 		@DefaultValue("null")
@@ -177,7 +177,7 @@ object HealthElementFilters {
 	/**
 	 * In group version of [byTagForDataOwner].
 	 */
-	fun byTagForDataOwner(
+	fun byTagForDataOwnerInGroup(
 		dataOwner: EntityReferenceInGroup,
 		tagType: String,
 		@DefaultValue("null")
@@ -237,7 +237,7 @@ object HealthElementFilters {
 	 * In group version of [byPatientsForDataOwner].
 	 */
 	@OptIn(InternalIcureApi::class)
-	fun byPatientsForDataOwner(
+	fun byPatientsForDataOwnerInGroup(
 		dataOwner: EntityReferenceInGroup,
 		patients: List<GroupScoped<Patient>>
 	): SortableFilterOptions<HealthElement> = ByPatientsForDataOwner(
@@ -288,7 +288,7 @@ object HealthElementFilters {
 	/**
 	 * In group version of [byPatientsSecretIdsForDataOwner].
 	 */
-	fun byPatientsSecretIdsForDataOwner(
+	fun byPatientsSecretIdsForDataOwnerInGroup(
 		dataOwner: EntityReferenceInGroup,
 		secretIds: List<String>
 	): BaseSortableFilterOptions<HealthElement> = ByPatientsSecretIdsForDataOwner(
@@ -363,7 +363,7 @@ object HealthElementFilters {
 	 * In group version of [byPatientsOpeningDateForDataOwner].
 	 */
 	@OptIn(InternalIcureApi::class)
-	fun byPatientsOpeningDateForDataOwner(
+	fun byPatientsOpeningDateForDataOwnerInGroup(
 		dataOwner: EntityReferenceInGroup,
 		patients: List<GroupScoped<Patient>>,
 		@DefaultValue("null")
@@ -457,7 +457,7 @@ object HealthElementFilters {
 	/**
 	 * In group version of [byPatientSecretIdsOpeningDateForDataOwner].
 	 */
-	fun byPatientSecretIdsOpeningDateForDataOwner(
+	fun byPatientSecretIdsOpeningDateForDataOwnerInGroup(
 		dataOwner: EntityReferenceInGroup,
 		secretIds: List<String>,
 		@DefaultValue("null")

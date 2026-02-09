@@ -29,7 +29,7 @@ object DeviceFilters {
 		EntityReferenceInGroup(entityId = responsibleId, groupId = null)
 	)
 
-	fun byResponsible(responsible: EntityReferenceInGroup): BaseFilterOptions<Device> = ByResponsible(responsible)
+	fun byResponsibleInGroup(responsible: EntityReferenceInGroup): BaseFilterOptions<Device> = ByResponsible(responsible)
 
 	/**
 	 * Filter options that match all devices with one of the provided ids.
