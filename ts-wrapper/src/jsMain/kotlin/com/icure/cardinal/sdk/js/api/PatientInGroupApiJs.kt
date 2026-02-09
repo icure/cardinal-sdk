@@ -61,6 +61,25 @@ public external interface PatientInGroupApiJs {
 	public fun matchPatientsBySorted(groupId: String, filter: SortableFilterOptionsJs<PatientJs>):
 			Promise<Array<String>>
 
+	public fun deletePatientById(entityId: GroupScopedJs<StoredDocumentIdentifierJs>):
+			Promise<GroupScopedJs<StoredDocumentIdentifierJs>>
+
+	public fun deletePatientsByIds(entityIds: Array<GroupScopedJs<StoredDocumentIdentifierJs>>):
+			Promise<Array<GroupScopedJs<StoredDocumentIdentifierJs>>>
+
+	public fun purgePatientById(entityId: GroupScopedJs<StoredDocumentIdentifierJs>): Promise<Unit>
+
+	public fun purgePatientsByIds(entityIds: Array<GroupScopedJs<StoredDocumentIdentifierJs>>):
+			Promise<Array<GroupScopedJs<StoredDocumentIdentifierJs>>>
+
+	public fun deletePatient(patient: GroupScopedJs<PatientJs>):
+			Promise<GroupScopedJs<StoredDocumentIdentifierJs>>
+
+	public fun deletePatients(patients: Array<GroupScopedJs<PatientJs>>):
+			Promise<Array<GroupScopedJs<StoredDocumentIdentifierJs>>>
+
+	public fun purgePatient(patient: GroupScopedJs<PatientJs>): Promise<Unit>
+
 	public fun getDataOwnersWithAccessTo(patient: GroupScopedJs<PatientJs>):
 			Promise<EntityAccessInformationJs>
 
@@ -86,10 +105,22 @@ public external interface PatientInGroupApiJs {
 	public fun createPatient(patient: GroupScopedJs<DecryptedPatientJs>):
 			Promise<GroupScopedJs<DecryptedPatientJs>>
 
-	public fun createPatientsMinimal(patients: Array<GroupScopedJs<DecryptedPatientJs>>):
-			Promise<Array<GroupScopedJs<StoredDocumentIdentifierJs>>>
-
 	public fun createPatients(patients: Array<GroupScopedJs<DecryptedPatientJs>>):
+			Promise<Array<GroupScopedJs<DecryptedPatientJs>>>
+
+	public fun undeletePatient(patient: GroupScopedJs<PatientJs>):
+			Promise<GroupScopedJs<DecryptedPatientJs>>
+
+	public fun undeletePatients(patients: Array<GroupScopedJs<PatientJs>>):
+			Promise<Array<GroupScopedJs<DecryptedPatientJs>>>
+
+	public fun modifyPatient(entity: GroupScopedJs<DecryptedPatientJs>):
+			Promise<GroupScopedJs<DecryptedPatientJs>>
+
+	public fun undeletePatientById(patientId: GroupScopedJs<StoredDocumentIdentifierJs>):
+			Promise<GroupScopedJs<DecryptedPatientJs>>
+
+	public fun undeletePatientsByIds(patientIds: Array<GroupScopedJs<StoredDocumentIdentifierJs>>):
 			Promise<Array<GroupScopedJs<DecryptedPatientJs>>>
 
 	public fun getPatient(groupId: String, entityId: String):
@@ -103,9 +134,6 @@ public external interface PatientInGroupApiJs {
 
 	public fun getPatients(groupId: String, patientIds: Array<String>):
 			Promise<Array<GroupScopedJs<DecryptedPatientJs>>>
-
-	public fun modifyPatientsMinimal(patients: Array<GroupScopedJs<DecryptedPatientJs>>):
-			Promise<Array<GroupScopedJs<StoredDocumentIdentifierJs>>>
 
 	public fun modifyPatients(patients: Array<GroupScopedJs<DecryptedPatientJs>>):
 			Promise<Array<GroupScopedJs<DecryptedPatientJs>>>

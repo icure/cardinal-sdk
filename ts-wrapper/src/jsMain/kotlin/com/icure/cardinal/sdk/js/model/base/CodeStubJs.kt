@@ -3,7 +3,6 @@
 
 package com.icure.cardinal.sdk.js.model.base
 
-import com.icure.cardinal.sdk.js.utils.Record
 import kotlin.String
 import kotlin.js.JsName
 import kotlin.js.JsQualifier
@@ -23,6 +22,4 @@ public external class CodeStubJs(
 	override val version: String?
 
 	public val contextLabel: String?
-
-	override val label: Record<String, String>?
 }

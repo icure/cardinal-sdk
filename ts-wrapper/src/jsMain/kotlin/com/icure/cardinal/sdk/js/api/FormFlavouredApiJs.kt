@@ -7,7 +7,7 @@ import com.icure.cardinal.sdk.js.crypto.entities.FormShareOptionsJs
 import com.icure.cardinal.sdk.js.filters.FilterOptionsJs
 import com.icure.cardinal.sdk.js.filters.SortableFilterOptionsJs
 import com.icure.cardinal.sdk.js.model.FormJs
-import com.icure.cardinal.sdk.js.model.PatientJs
+import com.icure.cardinal.sdk.js.model.StoredDocumentIdentifierJs
 import com.icure.cardinal.sdk.js.utils.Record
 import com.icure.cardinal.sdk.js.utils.pagination.PaginatedListIteratorJs
 import kotlin.Array
@@ -26,12 +26,6 @@ public external interface FormFlavouredApiJs<E : FormJs> {
 
 	public fun shareWithMany(form: E, delegates: Record<String, FormShareOptionsJs>): Promise<E>
 
-	public fun findFormsByHcPartyPatient(
-		hcPartyId: String,
-		patient: PatientJs,
-		options: dynamic,
-	): Promise<PaginatedListIteratorJs<E>>
-
 	public fun filterFormsBy(filter: FilterOptionsJs<FormJs>): Promise<PaginatedListIteratorJs<E>>
 
 	public fun filterFormsBySorted(filter: SortableFilterOptionsJs<FormJs>):
@@ -43,23 +37,19 @@ public external interface FormFlavouredApiJs<E : FormJs> {
 
 	public fun modifyForm(entity: E): Promise<E>
 
+	public fun modifyForms(entities: Array<E>): Promise<Array<E>>
+
 	public fun undeleteFormById(id: String, rev: String): Promise<E>
+
+	public fun undeleteFormsByIds(entityIds: Array<StoredDocumentIdentifierJs>): Promise<Array<E>>
 
 	public fun undeleteForm(form: FormJs): Promise<E>
 
-	public fun modifyForms(entities: Array<E>): Promise<Array<E>>
+	public fun undeleteForms(forms: Array<FormJs>): Promise<Array<E>>
 
 	public fun getForm(entityId: String): Promise<E?>
 
 	public fun getForms(entityIds: Array<String>): Promise<Array<E>>
 
-	public fun getLatestFormByLogicalUuid(logicalUuid: String): Promise<E>
-
 	public fun getLatestFormByUniqueId(uniqueId: String): Promise<E>
-
-	public fun getFormsByLogicalUuid(logicalUuid: String): Promise<Array<E>>
-
-	public fun getFormsByUniqueId(uniqueId: String): Promise<Array<E>>
-
-	public fun getChildrenForms(hcPartyId: String, parentId: String): Promise<Array<E>>
 }

@@ -21,20 +21,16 @@ import com.icure.cardinal.sdk.js.model.base.identifier_fromJs
 import com.icure.cardinal.sdk.js.model.base.identifier_toJs
 import com.icure.cardinal.sdk.js.model.embed.AnnotationJs
 import com.icure.cardinal.sdk.js.model.embed.DecryptedAddressJs
-import com.icure.cardinal.sdk.js.model.embed.DecryptedEmploymentInfoJs
 import com.icure.cardinal.sdk.js.model.embed.DecryptedFinancialInstitutionInformationJs
 import com.icure.cardinal.sdk.js.model.embed.DecryptedInsurabilityJs
 import com.icure.cardinal.sdk.js.model.embed.DecryptedMedicalHouseContractJs
 import com.icure.cardinal.sdk.js.model.embed.DecryptedPatientHealthCarePartyJs
-import com.icure.cardinal.sdk.js.model.embed.DecryptedSchoolingInfoJs
 import com.icure.cardinal.sdk.js.model.embed.DelegationJs
 import com.icure.cardinal.sdk.js.model.embed.EncryptedAddressJs
-import com.icure.cardinal.sdk.js.model.embed.EncryptedEmploymentInfoJs
 import com.icure.cardinal.sdk.js.model.embed.EncryptedFinancialInstitutionInformationJs
 import com.icure.cardinal.sdk.js.model.embed.EncryptedInsurabilityJs
 import com.icure.cardinal.sdk.js.model.embed.EncryptedMedicalHouseContractJs
 import com.icure.cardinal.sdk.js.model.embed.EncryptedPatientHealthCarePartyJs
-import com.icure.cardinal.sdk.js.model.embed.EncryptedSchoolingInfoJs
 import com.icure.cardinal.sdk.js.model.embed.PartnershipJs
 import com.icure.cardinal.sdk.js.model.embed.PersonNameJs
 import com.icure.cardinal.sdk.js.model.embed.address_fromJs
@@ -43,8 +39,6 @@ import com.icure.cardinal.sdk.js.model.embed.annotation_fromJs
 import com.icure.cardinal.sdk.js.model.embed.annotation_toJs
 import com.icure.cardinal.sdk.js.model.embed.delegation_fromJs
 import com.icure.cardinal.sdk.js.model.embed.delegation_toJs
-import com.icure.cardinal.sdk.js.model.embed.employmentInfo_fromJs
-import com.icure.cardinal.sdk.js.model.embed.employmentInfo_toJs
 import com.icure.cardinal.sdk.js.model.embed.financialInstitutionInformation_fromJs
 import com.icure.cardinal.sdk.js.model.embed.financialInstitutionInformation_toJs
 import com.icure.cardinal.sdk.js.model.embed.insurability_fromJs
@@ -57,8 +51,6 @@ import com.icure.cardinal.sdk.js.model.embed.patientHealthCareParty_fromJs
 import com.icure.cardinal.sdk.js.model.embed.patientHealthCareParty_toJs
 import com.icure.cardinal.sdk.js.model.embed.personName_fromJs
 import com.icure.cardinal.sdk.js.model.embed.personName_toJs
-import com.icure.cardinal.sdk.js.model.embed.schoolingInfo_fromJs
-import com.icure.cardinal.sdk.js.model.embed.schoolingInfo_toJs
 import com.icure.cardinal.sdk.js.model.embed.securityMetadata_fromJs
 import com.icure.cardinal.sdk.js.model.embed.securityMetadata_toJs
 import com.icure.cardinal.sdk.js.model.specializations.aesExchangeKeyEncryptionKeypairIdentifier_fromJs
@@ -81,20 +73,16 @@ import com.icure.cardinal.sdk.model.base.CodeStub
 import com.icure.cardinal.sdk.model.base.Identifier
 import com.icure.cardinal.sdk.model.embed.Annotation
 import com.icure.cardinal.sdk.model.embed.DecryptedAddress
-import com.icure.cardinal.sdk.model.embed.DecryptedEmploymentInfo
 import com.icure.cardinal.sdk.model.embed.DecryptedFinancialInstitutionInformation
 import com.icure.cardinal.sdk.model.embed.DecryptedInsurability
 import com.icure.cardinal.sdk.model.embed.DecryptedMedicalHouseContract
 import com.icure.cardinal.sdk.model.embed.DecryptedPatientHealthCareParty
-import com.icure.cardinal.sdk.model.embed.DecryptedSchoolingInfo
 import com.icure.cardinal.sdk.model.embed.Delegation
 import com.icure.cardinal.sdk.model.embed.EncryptedAddress
-import com.icure.cardinal.sdk.model.embed.EncryptedEmploymentInfo
 import com.icure.cardinal.sdk.model.embed.EncryptedFinancialInstitutionInformation
 import com.icure.cardinal.sdk.model.embed.EncryptedInsurability
 import com.icure.cardinal.sdk.model.embed.EncryptedMedicalHouseContract
 import com.icure.cardinal.sdk.model.embed.EncryptedPatientHealthCareParty
-import com.icure.cardinal.sdk.model.embed.EncryptedSchoolingInfo
 import com.icure.cardinal.sdk.model.embed.Gender
 import com.icure.cardinal.sdk.model.embed.Partnership
 import com.icure.cardinal.sdk.model.embed.PersonName
@@ -145,9 +133,6 @@ public fun patient_toJs(obj: DecryptedPatient): DecryptedPatientJs {
 		{ x1: CodeStub ->
 			codeStub_toJs(x1)
 		},
-	)
-	val endOfLife = nullToUndefined(
-		longToNumber(obj.endOfLife)
 	)
 	val deletionDate = nullToUndefined(
 		longToNumber(obj.deletionDate)
@@ -273,12 +258,6 @@ public fun patient_toJs(obj: DecryptedPatient): DecryptedPatientJs {
 	)
 	val preferredUserId = nullToUndefined(
 		obj.preferredUserId
-	)
-	val picture = nullToUndefined(
-		obj.picture
-	)
-	val externalId = nullToUndefined(
-		obj.externalId
 	)
 	val insurabilities = listToArray(
 		obj.insurabilities,
@@ -478,64 +457,6 @@ public fun patient_toJs(obj: DecryptedPatient): DecryptedPatientJs {
 			},
 		)
 	)
-	val medicalLocationId = nullToUndefined(
-		obj.medicalLocationId
-	)
-	val nonDuplicateIds = setToArray(
-		obj.nonDuplicateIds,
-		{ x1: String ->
-			x1
-		},
-	)
-	val encryptedAdministrativesDocuments = setToArray(
-		obj.encryptedAdministrativesDocuments,
-		{ x1: String ->
-			x1
-		},
-	)
-	val comment = nullToUndefined(
-		obj.comment
-	)
-	val warning = nullToUndefined(
-		obj.warning
-	)
-	val fatherBirthCountry = nullToUndefined(
-		obj.fatherBirthCountry?.let { nonNull1 ->
-			codeStub_toJs(nonNull1)
-		}
-	)
-	val birthCountry = nullToUndefined(
-		obj.birthCountry?.let { nonNull1 ->
-			codeStub_toJs(nonNull1)
-		}
-	)
-	val nativeCountry = nullToUndefined(
-		obj.nativeCountry?.let { nonNull1 ->
-			codeStub_toJs(nonNull1)
-		}
-	)
-	val socialStatus = nullToUndefined(
-		obj.socialStatus?.let { nonNull1 ->
-			codeStub_toJs(nonNull1)
-		}
-	)
-	val mainSourceOfIncome = nullToUndefined(
-		obj.mainSourceOfIncome?.let { nonNull1 ->
-			codeStub_toJs(nonNull1)
-		}
-	)
-	val schoolingInfos = listToArray(
-		obj.schoolingInfos,
-		{ x1: DecryptedSchoolingInfo ->
-			schoolingInfo_toJs(x1)
-		},
-	)
-	val employementInfos = listToArray(
-		obj.employementInfos,
-		{ x1: DecryptedEmploymentInfo ->
-			employmentInfo_toJs(x1)
-		},
-	)
 	val parentId = nullToUndefined(
 		obj.parentId
 	)
@@ -549,7 +470,6 @@ public fun patient_toJs(obj: DecryptedPatient): DecryptedPatientJs {
 		"responsible:responsible," +
 		"tags:tags," +
 		"codes:codes," +
-		"endOfLife:endOfLife," +
 		"deletionDate:deletionDate," +
 		"firstName:firstName," +
 		"lastName:lastName," +
@@ -586,8 +506,6 @@ public fun patient_toJs(obj: DecryptedPatient): DecryptedPatientJs {
 		"race:race," +
 		"ethnicity:ethnicity," +
 		"preferredUserId:preferredUserId," +
-		"picture:picture," +
-		"externalId:externalId," +
 		"insurabilities:insurabilities," +
 		"partnerships:partnerships," +
 		"patientHealthCareParties:patientHealthCareParties," +
@@ -609,18 +527,6 @@ public fun patient_toJs(obj: DecryptedPatient): DecryptedPatientJs {
 		"encryptedSelf:encryptedSelf," +
 		"securityMetadata:securityMetadata," +
 		"cryptoActorProperties:cryptoActorProperties," +
-		"medicalLocationId:medicalLocationId," +
-		"nonDuplicateIds:nonDuplicateIds," +
-		"encryptedAdministrativesDocuments:encryptedAdministrativesDocuments," +
-		"comment:comment," +
-		"warning:warning," +
-		"fatherBirthCountry:fatherBirthCountry," +
-		"birthCountry:birthCountry," +
-		"nativeCountry:nativeCountry," +
-		"socialStatus:socialStatus," +
-		"mainSourceOfIncome:mainSourceOfIncome," +
-		"schoolingInfos:schoolingInfos," +
-		"employementInfos:employementInfos," +
 		"parentId:parentId" +
 	"}"))
 }
@@ -653,7 +559,6 @@ public fun patient_fromJs(obj: DecryptedPatientJs): DecryptedPatient {
 			codeStub_fromJs(x1)
 		},
 	)
-	val endOfLife = numberToLong(obj.endOfLife, "obj.endOfLife")
 	val deletionDate = numberToLong(obj.deletionDate, "obj.deletionDate")
 	val firstName = undefinedToNull(obj.firstName)
 	val lastName = undefinedToNull(obj.lastName)
@@ -727,8 +632,6 @@ public fun patient_fromJs(obj: DecryptedPatientJs): DecryptedPatient {
 	val race = undefinedToNull(obj.race)
 	val ethnicity = undefinedToNull(obj.ethnicity)
 	val preferredUserId = undefinedToNull(obj.preferredUserId)
-	val picture = undefinedToNull(obj.picture)
-	val externalId = undefinedToNull(obj.externalId)
 	val insurabilities = arrayToList(
 		obj.insurabilities,
 		"obj.insurabilities",
@@ -945,52 +848,6 @@ public fun patient_fromJs(obj: DecryptedPatientJs): DecryptedPatient {
 			propertyStub_fromJs(x1)
 		},
 	)
-	val medicalLocationId = undefinedToNull(obj.medicalLocationId)
-	val nonDuplicateIds = arrayToSet(
-		obj.nonDuplicateIds,
-		"obj.nonDuplicateIds",
-		{ x1: String ->
-			x1
-		},
-	)
-	val encryptedAdministrativesDocuments = arrayToSet(
-		obj.encryptedAdministrativesDocuments,
-		"obj.encryptedAdministrativesDocuments",
-		{ x1: String ->
-			x1
-		},
-	)
-	val comment = undefinedToNull(obj.comment)
-	val warning = undefinedToNull(obj.warning)
-	val fatherBirthCountry = obj.fatherBirthCountry?.let { nonNull1 ->
-		codeStub_fromJs(nonNull1)
-	}
-	val birthCountry = obj.birthCountry?.let { nonNull1 ->
-		codeStub_fromJs(nonNull1)
-	}
-	val nativeCountry = obj.nativeCountry?.let { nonNull1 ->
-		codeStub_fromJs(nonNull1)
-	}
-	val socialStatus = obj.socialStatus?.let { nonNull1 ->
-		codeStub_fromJs(nonNull1)
-	}
-	val mainSourceOfIncome = obj.mainSourceOfIncome?.let { nonNull1 ->
-		codeStub_fromJs(nonNull1)
-	}
-	val schoolingInfos = arrayToList(
-		obj.schoolingInfos,
-		"obj.schoolingInfos",
-		{ x1: DecryptedSchoolingInfoJs ->
-			schoolingInfo_fromJs(x1)
-		},
-	)
-	val employementInfos = arrayToList(
-		obj.employementInfos,
-		"obj.employementInfos",
-		{ x1: DecryptedEmploymentInfoJs ->
-			employmentInfo_fromJs(x1)
-		},
-	)
 	val parentId = obj.parentId
 	return DecryptedPatient(
 		id = id,
@@ -1002,7 +859,6 @@ public fun patient_fromJs(obj: DecryptedPatientJs): DecryptedPatient {
 		responsible = responsible,
 		tags = tags,
 		codes = codes,
-		endOfLife = endOfLife,
 		deletionDate = deletionDate,
 		firstName = firstName,
 		lastName = lastName,
@@ -1039,8 +895,6 @@ public fun patient_fromJs(obj: DecryptedPatientJs): DecryptedPatient {
 		race = race,
 		ethnicity = ethnicity,
 		preferredUserId = preferredUserId,
-		picture = picture,
-		externalId = externalId,
 		insurabilities = insurabilities,
 		partnerships = partnerships,
 		patientHealthCareParties = patientHealthCareParties,
@@ -1062,18 +916,6 @@ public fun patient_fromJs(obj: DecryptedPatientJs): DecryptedPatient {
 		encryptedSelf = encryptedSelf,
 		securityMetadata = securityMetadata,
 		cryptoActorProperties = cryptoActorProperties,
-		medicalLocationId = medicalLocationId,
-		nonDuplicateIds = nonDuplicateIds,
-		encryptedAdministrativesDocuments = encryptedAdministrativesDocuments,
-		comment = comment,
-		warning = warning,
-		fatherBirthCountry = fatherBirthCountry,
-		birthCountry = birthCountry,
-		nativeCountry = nativeCountry,
-		socialStatus = socialStatus,
-		mainSourceOfIncome = mainSourceOfIncome,
-		schoolingInfos = schoolingInfos,
-		employementInfos = employementInfos,
 		parentId = parentId,
 	)
 }
@@ -1113,9 +955,6 @@ public fun patient_toJs(obj: EncryptedPatient): EncryptedPatientJs {
 		{ x1: CodeStub ->
 			codeStub_toJs(x1)
 		},
-	)
-	val endOfLife = nullToUndefined(
-		longToNumber(obj.endOfLife)
 	)
 	val deletionDate = nullToUndefined(
 		longToNumber(obj.deletionDate)
@@ -1241,12 +1080,6 @@ public fun patient_toJs(obj: EncryptedPatient): EncryptedPatientJs {
 	)
 	val preferredUserId = nullToUndefined(
 		obj.preferredUserId
-	)
-	val picture = nullToUndefined(
-		obj.picture
-	)
-	val externalId = nullToUndefined(
-		obj.externalId
 	)
 	val insurabilities = listToArray(
 		obj.insurabilities,
@@ -1446,64 +1279,6 @@ public fun patient_toJs(obj: EncryptedPatient): EncryptedPatientJs {
 			},
 		)
 	)
-	val medicalLocationId = nullToUndefined(
-		obj.medicalLocationId
-	)
-	val nonDuplicateIds = setToArray(
-		obj.nonDuplicateIds,
-		{ x1: String ->
-			x1
-		},
-	)
-	val encryptedAdministrativesDocuments = setToArray(
-		obj.encryptedAdministrativesDocuments,
-		{ x1: String ->
-			x1
-		},
-	)
-	val comment = nullToUndefined(
-		obj.comment
-	)
-	val warning = nullToUndefined(
-		obj.warning
-	)
-	val fatherBirthCountry = nullToUndefined(
-		obj.fatherBirthCountry?.let { nonNull1 ->
-			codeStub_toJs(nonNull1)
-		}
-	)
-	val birthCountry = nullToUndefined(
-		obj.birthCountry?.let { nonNull1 ->
-			codeStub_toJs(nonNull1)
-		}
-	)
-	val nativeCountry = nullToUndefined(
-		obj.nativeCountry?.let { nonNull1 ->
-			codeStub_toJs(nonNull1)
-		}
-	)
-	val socialStatus = nullToUndefined(
-		obj.socialStatus?.let { nonNull1 ->
-			codeStub_toJs(nonNull1)
-		}
-	)
-	val mainSourceOfIncome = nullToUndefined(
-		obj.mainSourceOfIncome?.let { nonNull1 ->
-			codeStub_toJs(nonNull1)
-		}
-	)
-	val schoolingInfos = listToArray(
-		obj.schoolingInfos,
-		{ x1: EncryptedSchoolingInfo ->
-			schoolingInfo_toJs(x1)
-		},
-	)
-	val employementInfos = listToArray(
-		obj.employementInfos,
-		{ x1: EncryptedEmploymentInfo ->
-			employmentInfo_toJs(x1)
-		},
-	)
 	val parentId = nullToUndefined(
 		obj.parentId
 	)
@@ -1517,7 +1292,6 @@ public fun patient_toJs(obj: EncryptedPatient): EncryptedPatientJs {
 		"responsible:responsible," +
 		"tags:tags," +
 		"codes:codes," +
-		"endOfLife:endOfLife," +
 		"deletionDate:deletionDate," +
 		"firstName:firstName," +
 		"lastName:lastName," +
@@ -1554,8 +1328,6 @@ public fun patient_toJs(obj: EncryptedPatient): EncryptedPatientJs {
 		"race:race," +
 		"ethnicity:ethnicity," +
 		"preferredUserId:preferredUserId," +
-		"picture:picture," +
-		"externalId:externalId," +
 		"insurabilities:insurabilities," +
 		"partnerships:partnerships," +
 		"patientHealthCareParties:patientHealthCareParties," +
@@ -1577,18 +1349,6 @@ public fun patient_toJs(obj: EncryptedPatient): EncryptedPatientJs {
 		"encryptedSelf:encryptedSelf," +
 		"securityMetadata:securityMetadata," +
 		"cryptoActorProperties:cryptoActorProperties," +
-		"medicalLocationId:medicalLocationId," +
-		"nonDuplicateIds:nonDuplicateIds," +
-		"encryptedAdministrativesDocuments:encryptedAdministrativesDocuments," +
-		"comment:comment," +
-		"warning:warning," +
-		"fatherBirthCountry:fatherBirthCountry," +
-		"birthCountry:birthCountry," +
-		"nativeCountry:nativeCountry," +
-		"socialStatus:socialStatus," +
-		"mainSourceOfIncome:mainSourceOfIncome," +
-		"schoolingInfos:schoolingInfos," +
-		"employementInfos:employementInfos," +
 		"parentId:parentId" +
 	"}"))
 }
@@ -1621,7 +1381,6 @@ public fun patient_fromJs(obj: EncryptedPatientJs): EncryptedPatient {
 			codeStub_fromJs(x1)
 		},
 	)
-	val endOfLife = numberToLong(obj.endOfLife, "obj.endOfLife")
 	val deletionDate = numberToLong(obj.deletionDate, "obj.deletionDate")
 	val firstName = undefinedToNull(obj.firstName)
 	val lastName = undefinedToNull(obj.lastName)
@@ -1695,8 +1454,6 @@ public fun patient_fromJs(obj: EncryptedPatientJs): EncryptedPatient {
 	val race = undefinedToNull(obj.race)
 	val ethnicity = undefinedToNull(obj.ethnicity)
 	val preferredUserId = undefinedToNull(obj.preferredUserId)
-	val picture = undefinedToNull(obj.picture)
-	val externalId = undefinedToNull(obj.externalId)
 	val insurabilities = arrayToList(
 		obj.insurabilities,
 		"obj.insurabilities",
@@ -1913,52 +1670,6 @@ public fun patient_fromJs(obj: EncryptedPatientJs): EncryptedPatient {
 			propertyStub_fromJs(x1)
 		},
 	)
-	val medicalLocationId = undefinedToNull(obj.medicalLocationId)
-	val nonDuplicateIds = arrayToSet(
-		obj.nonDuplicateIds,
-		"obj.nonDuplicateIds",
-		{ x1: String ->
-			x1
-		},
-	)
-	val encryptedAdministrativesDocuments = arrayToSet(
-		obj.encryptedAdministrativesDocuments,
-		"obj.encryptedAdministrativesDocuments",
-		{ x1: String ->
-			x1
-		},
-	)
-	val comment = undefinedToNull(obj.comment)
-	val warning = undefinedToNull(obj.warning)
-	val fatherBirthCountry = obj.fatherBirthCountry?.let { nonNull1 ->
-		codeStub_fromJs(nonNull1)
-	}
-	val birthCountry = obj.birthCountry?.let { nonNull1 ->
-		codeStub_fromJs(nonNull1)
-	}
-	val nativeCountry = obj.nativeCountry?.let { nonNull1 ->
-		codeStub_fromJs(nonNull1)
-	}
-	val socialStatus = obj.socialStatus?.let { nonNull1 ->
-		codeStub_fromJs(nonNull1)
-	}
-	val mainSourceOfIncome = obj.mainSourceOfIncome?.let { nonNull1 ->
-		codeStub_fromJs(nonNull1)
-	}
-	val schoolingInfos = arrayToList(
-		obj.schoolingInfos,
-		"obj.schoolingInfos",
-		{ x1: EncryptedSchoolingInfoJs ->
-			schoolingInfo_fromJs(x1)
-		},
-	)
-	val employementInfos = arrayToList(
-		obj.employementInfos,
-		"obj.employementInfos",
-		{ x1: EncryptedEmploymentInfoJs ->
-			employmentInfo_fromJs(x1)
-		},
-	)
 	val parentId = obj.parentId
 	return EncryptedPatient(
 		id = id,
@@ -1970,7 +1681,6 @@ public fun patient_fromJs(obj: EncryptedPatientJs): EncryptedPatient {
 		responsible = responsible,
 		tags = tags,
 		codes = codes,
-		endOfLife = endOfLife,
 		deletionDate = deletionDate,
 		firstName = firstName,
 		lastName = lastName,
@@ -2007,8 +1717,6 @@ public fun patient_fromJs(obj: EncryptedPatientJs): EncryptedPatient {
 		race = race,
 		ethnicity = ethnicity,
 		preferredUserId = preferredUserId,
-		picture = picture,
-		externalId = externalId,
 		insurabilities = insurabilities,
 		partnerships = partnerships,
 		patientHealthCareParties = patientHealthCareParties,
@@ -2030,18 +1738,6 @@ public fun patient_fromJs(obj: EncryptedPatientJs): EncryptedPatient {
 		encryptedSelf = encryptedSelf,
 		securityMetadata = securityMetadata,
 		cryptoActorProperties = cryptoActorProperties,
-		medicalLocationId = medicalLocationId,
-		nonDuplicateIds = nonDuplicateIds,
-		encryptedAdministrativesDocuments = encryptedAdministrativesDocuments,
-		comment = comment,
-		warning = warning,
-		fatherBirthCountry = fatherBirthCountry,
-		birthCountry = birthCountry,
-		nativeCountry = nativeCountry,
-		socialStatus = socialStatus,
-		mainSourceOfIncome = mainSourceOfIncome,
-		schoolingInfos = schoolingInfos,
-		employementInfos = employementInfos,
 		parentId = parentId,
 	)
 }

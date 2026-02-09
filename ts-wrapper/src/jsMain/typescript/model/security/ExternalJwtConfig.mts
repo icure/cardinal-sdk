@@ -52,17 +52,21 @@ export namespace ExternalJwtConfig {
 
 			signatureAlgorithm: string | undefined = undefined;
 
+			clientId: string | undefined = undefined;
+
 			readonly $ktClass: 'com.icure.cardinal.sdk.model.security.ExternalJwtConfig.ValidationMethod.PublicKey' = 'com.icure.cardinal.sdk.model.security.ExternalJwtConfig.ValidationMethod.PublicKey';
 
 			constructor(partial: Partial<PublicKey> & Pick<PublicKey, "key">) {
 				this.key = partial.key;
 				if ('signatureAlgorithm' in partial) this.signatureAlgorithm = partial.signatureAlgorithm;
+				if ('clientId' in partial) this.clientId = partial.clientId;
 			}
 
 			toJSON(): object {
 				const res: { [k: string]: any } = {}
 				res['key'] = this.key
 				if (this.signatureAlgorithm != undefined) res['signatureAlgorithm'] = this.signatureAlgorithm
+				if (this.clientId != undefined) res['clientId'] = this.clientId
 				res['$ktClass'] = 'com.icure.cardinal.sdk.model.security.ExternalJwtConfig.ValidationMethod.PublicKey'
 				return res
 			}
@@ -75,6 +79,7 @@ export namespace ExternalJwtConfig {
 				const res = new PublicKey({
 					key: expectString(extractEntry(jCpy, 'key', true, path), false, [...path, ".key"]),
 					signatureAlgorithm: expectString(extractEntry(jCpy, 'signatureAlgorithm', false, path), true, [...path, ".signatureAlgorithm"]),
+					clientId: expectString(extractEntry(jCpy, 'clientId', false, path), true, [...path, ".clientId"]),
 				})
 				if (!ignoreUnknownKeys) {
 					const unused = Object.keys(jCpy)
@@ -86,17 +91,21 @@ export namespace ExternalJwtConfig {
 
 		export class Oidc {
 
-			issureLocation: string;
+			issuerLocation: string;
+
+			clientId: string | undefined = undefined;
 
 			readonly $ktClass: 'com.icure.cardinal.sdk.model.security.ExternalJwtConfig.ValidationMethod.Oidc' = 'com.icure.cardinal.sdk.model.security.ExternalJwtConfig.ValidationMethod.Oidc';
 
-			constructor(partial: Partial<Oidc> & Pick<Oidc, "issureLocation">) {
-				this.issureLocation = partial.issureLocation;
+			constructor(partial: Partial<Oidc> & Pick<Oidc, "issuerLocation">) {
+				this.issuerLocation = partial.issuerLocation;
+				if ('clientId' in partial) this.clientId = partial.clientId;
 			}
 
 			toJSON(): object {
 				const res: { [k: string]: any } = {}
-				res['issureLocation'] = this.issureLocation
+				res['issuerLocation'] = this.issuerLocation
+				if (this.clientId != undefined) res['clientId'] = this.clientId
 				res['$ktClass'] = 'com.icure.cardinal.sdk.model.security.ExternalJwtConfig.ValidationMethod.Oidc'
 				return res
 			}
@@ -107,7 +116,8 @@ export namespace ExternalJwtConfig {
 				const jCpy = { ...json }
 				if (extractEntry(jCpy, '\$ktClass', true, path) !== 'com.icure.cardinal.sdk.model.security.ExternalJwtConfig.ValidationMethod.Oidc') throw new Error(`Unexpected value for ${path.join("")} class marker, should be "com.icure.cardinal.sdk.model.security.ExternalJwtConfig.ValidationMethod.Oidc". The provided json doesn't represent a Oidc`)
 				const res = new Oidc({
-					issureLocation: expectString(extractEntry(jCpy, 'issureLocation', true, path), false, [...path, ".issureLocation"]),
+					issuerLocation: expectString(extractEntry(jCpy, 'issuerLocation', true, path), false, [...path, ".issuerLocation"]),
+					clientId: expectString(extractEntry(jCpy, 'clientId', false, path), true, [...path, ".clientId"]),
 				})
 				if (!ignoreUnknownKeys) {
 					const unused = Object.keys(jCpy)

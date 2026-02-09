@@ -3,12 +3,10 @@ package com.icure.cardinal.sdk.js.model
 
 import com.icure.cardinal.sdk.js.model.CheckedConverters.arrayToList
 import com.icure.cardinal.sdk.js.model.CheckedConverters.arrayToSet
-import com.icure.cardinal.sdk.js.model.CheckedConverters.intToNumber
 import com.icure.cardinal.sdk.js.model.CheckedConverters.listToArray
 import com.icure.cardinal.sdk.js.model.CheckedConverters.longToNumber
 import com.icure.cardinal.sdk.js.model.CheckedConverters.mapToObject
 import com.icure.cardinal.sdk.js.model.CheckedConverters.nullToUndefined
-import com.icure.cardinal.sdk.js.model.CheckedConverters.numberToInt
 import com.icure.cardinal.sdk.js.model.CheckedConverters.numberToLong
 import com.icure.cardinal.sdk.js.model.CheckedConverters.objectToMap
 import com.icure.cardinal.sdk.js.model.CheckedConverters.setToArray
@@ -84,9 +82,6 @@ public fun healthElement_toJs(obj: DecryptedHealthElement): DecryptedHealthEleme
 	val responsible = nullToUndefined(
 		obj.responsible
 	)
-	val medicalLocationId = nullToUndefined(
-		obj.medicalLocationId
-	)
 	val tags = setToArray(
 		obj.tags,
 		{ x1: CodeStub ->
@@ -104,9 +99,6 @@ public fun healthElement_toJs(obj: DecryptedHealthElement): DecryptedHealthEleme
 	)
 	val deletionDate = nullToUndefined(
 		longToNumber(obj.deletionDate)
-	)
-	val healthElementId = nullToUndefined(
-		obj.healthElementId
 	)
 	val valueDate = nullToUndefined(
 		longToNumber(obj.valueDate)
@@ -139,7 +131,6 @@ public fun healthElement_toJs(obj: DecryptedHealthElement): DecryptedHealthEleme
 	val idService = nullToUndefined(
 		obj.idService
 	)
-	val status = intToNumber(obj.status)
 	val laterality = nullToUndefined(
 		obj.laterality?.let { nonNull1 ->
 			nonNull1.name
@@ -229,12 +220,10 @@ public fun healthElement_toJs(obj: DecryptedHealthElement): DecryptedHealthEleme
 		"modified:modified," +
 		"author:author," +
 		"responsible:responsible," +
-		"medicalLocationId:medicalLocationId," +
 		"tags:tags," +
 		"codes:codes," +
 		"endOfLife:endOfLife," +
 		"deletionDate:deletionDate," +
-		"healthElementId:healthElementId," +
 		"valueDate:valueDate," +
 		"openingDate:openingDate," +
 		"closingDate:closingDate," +
@@ -245,7 +234,6 @@ public fun healthElement_toJs(obj: DecryptedHealthElement): DecryptedHealthEleme
 		"idOpeningContact:idOpeningContact," +
 		"idClosingContact:idClosingContact," +
 		"idService:idService," +
-		"status:status," +
 		"laterality:laterality," +
 		"plansOfAction:plansOfAction," +
 		"episodes:episodes," +
@@ -273,7 +261,6 @@ public fun healthElement_fromJs(obj: DecryptedHealthElementJs): DecryptedHealthE
 	val modified = numberToLong(obj.modified, "obj.modified")
 	val author = undefinedToNull(obj.author)
 	val responsible = undefinedToNull(obj.responsible)
-	val medicalLocationId = undefinedToNull(obj.medicalLocationId)
 	val tags = arrayToSet(
 		obj.tags,
 		"obj.tags",
@@ -290,7 +277,6 @@ public fun healthElement_fromJs(obj: DecryptedHealthElementJs): DecryptedHealthE
 	)
 	val endOfLife = numberToLong(obj.endOfLife, "obj.endOfLife")
 	val deletionDate = numberToLong(obj.deletionDate, "obj.deletionDate")
-	val healthElementId = undefinedToNull(obj.healthElementId)
 	val valueDate = numberToLong(obj.valueDate, "obj.valueDate")
 	val openingDate = numberToLong(obj.openingDate, "obj.openingDate")
 	val closingDate = numberToLong(obj.closingDate, "obj.closingDate")
@@ -307,7 +293,6 @@ public fun healthElement_fromJs(obj: DecryptedHealthElementJs): DecryptedHealthE
 	val idOpeningContact = undefinedToNull(obj.idOpeningContact)
 	val idClosingContact = undefinedToNull(obj.idClosingContact)
 	val idService = undefinedToNull(obj.idService)
-	val status = numberToInt(obj.status, "obj.status")
 	val laterality = obj.laterality?.let { nonNull1 ->
 		Laterality.valueOf(nonNull1)
 	}
@@ -401,12 +386,10 @@ public fun healthElement_fromJs(obj: DecryptedHealthElementJs): DecryptedHealthE
 		modified = modified,
 		author = author,
 		responsible = responsible,
-		medicalLocationId = medicalLocationId,
 		tags = tags,
 		codes = codes,
 		endOfLife = endOfLife,
 		deletionDate = deletionDate,
-		healthElementId = healthElementId,
 		valueDate = valueDate,
 		openingDate = openingDate,
 		closingDate = closingDate,
@@ -417,7 +400,6 @@ public fun healthElement_fromJs(obj: DecryptedHealthElementJs): DecryptedHealthE
 		idOpeningContact = idOpeningContact,
 		idClosingContact = idClosingContact,
 		idService = idService,
-		status = status,
 		laterality = laterality,
 		plansOfAction = plansOfAction,
 		episodes = episodes,
@@ -455,9 +437,6 @@ public fun healthElement_toJs(obj: EncryptedHealthElement): EncryptedHealthEleme
 	val responsible = nullToUndefined(
 		obj.responsible
 	)
-	val medicalLocationId = nullToUndefined(
-		obj.medicalLocationId
-	)
 	val tags = setToArray(
 		obj.tags,
 		{ x1: CodeStub ->
@@ -475,9 +454,6 @@ public fun healthElement_toJs(obj: EncryptedHealthElement): EncryptedHealthEleme
 	)
 	val deletionDate = nullToUndefined(
 		longToNumber(obj.deletionDate)
-	)
-	val healthElementId = nullToUndefined(
-		obj.healthElementId
 	)
 	val valueDate = nullToUndefined(
 		longToNumber(obj.valueDate)
@@ -510,7 +486,6 @@ public fun healthElement_toJs(obj: EncryptedHealthElement): EncryptedHealthEleme
 	val idService = nullToUndefined(
 		obj.idService
 	)
-	val status = intToNumber(obj.status)
 	val laterality = nullToUndefined(
 		obj.laterality?.let { nonNull1 ->
 			nonNull1.name
@@ -600,12 +575,10 @@ public fun healthElement_toJs(obj: EncryptedHealthElement): EncryptedHealthEleme
 		"modified:modified," +
 		"author:author," +
 		"responsible:responsible," +
-		"medicalLocationId:medicalLocationId," +
 		"tags:tags," +
 		"codes:codes," +
 		"endOfLife:endOfLife," +
 		"deletionDate:deletionDate," +
-		"healthElementId:healthElementId," +
 		"valueDate:valueDate," +
 		"openingDate:openingDate," +
 		"closingDate:closingDate," +
@@ -616,7 +589,6 @@ public fun healthElement_toJs(obj: EncryptedHealthElement): EncryptedHealthEleme
 		"idOpeningContact:idOpeningContact," +
 		"idClosingContact:idClosingContact," +
 		"idService:idService," +
-		"status:status," +
 		"laterality:laterality," +
 		"plansOfAction:plansOfAction," +
 		"episodes:episodes," +
@@ -644,7 +616,6 @@ public fun healthElement_fromJs(obj: EncryptedHealthElementJs): EncryptedHealthE
 	val modified = numberToLong(obj.modified, "obj.modified")
 	val author = undefinedToNull(obj.author)
 	val responsible = undefinedToNull(obj.responsible)
-	val medicalLocationId = undefinedToNull(obj.medicalLocationId)
 	val tags = arrayToSet(
 		obj.tags,
 		"obj.tags",
@@ -661,7 +632,6 @@ public fun healthElement_fromJs(obj: EncryptedHealthElementJs): EncryptedHealthE
 	)
 	val endOfLife = numberToLong(obj.endOfLife, "obj.endOfLife")
 	val deletionDate = numberToLong(obj.deletionDate, "obj.deletionDate")
-	val healthElementId = undefinedToNull(obj.healthElementId)
 	val valueDate = numberToLong(obj.valueDate, "obj.valueDate")
 	val openingDate = numberToLong(obj.openingDate, "obj.openingDate")
 	val closingDate = numberToLong(obj.closingDate, "obj.closingDate")
@@ -678,7 +648,6 @@ public fun healthElement_fromJs(obj: EncryptedHealthElementJs): EncryptedHealthE
 	val idOpeningContact = undefinedToNull(obj.idOpeningContact)
 	val idClosingContact = undefinedToNull(obj.idClosingContact)
 	val idService = undefinedToNull(obj.idService)
-	val status = numberToInt(obj.status, "obj.status")
 	val laterality = obj.laterality?.let { nonNull1 ->
 		Laterality.valueOf(nonNull1)
 	}
@@ -772,12 +741,10 @@ public fun healthElement_fromJs(obj: EncryptedHealthElementJs): EncryptedHealthE
 		modified = modified,
 		author = author,
 		responsible = responsible,
-		medicalLocationId = medicalLocationId,
 		tags = tags,
 		codes = codes,
 		endOfLife = endOfLife,
 		deletionDate = deletionDate,
-		healthElementId = healthElementId,
 		valueDate = valueDate,
 		openingDate = openingDate,
 		closingDate = closingDate,
@@ -788,7 +755,6 @@ public fun healthElement_fromJs(obj: EncryptedHealthElementJs): EncryptedHealthE
 		idOpeningContact = idOpeningContact,
 		idClosingContact = idClosingContact,
 		idService = idService,
-		status = status,
 		laterality = laterality,
 		plansOfAction = plansOfAction,
 		episodes = episodes,

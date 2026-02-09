@@ -27,8 +27,6 @@ public sealed external interface FormJs : StoredDocumentJs, ICureDocumentJs<Stri
 
 	public val version: Double?
 
-	public val logicalUuid: String?
-
 	public val descr: String?
 
 	public val uniqueId: String?
@@ -64,13 +62,9 @@ public external class DecryptedFormJs(
 
 	override val responsible: String?
 
-	override val medicalLocationId: String?
-
 	override val tags: Array<CodeStubJs>
 
 	override val codes: Array<CodeStubJs>
-
-	override val endOfLife: Double?
 
 	override val deletionDate: Double?
 
@@ -79,8 +73,6 @@ public external class DecryptedFormJs(
 	override val status: String?
 
 	override val version: Double?
-
-	override val logicalUuid: String?
 
 	override val descr: String?
 
@@ -129,13 +121,9 @@ public external class EncryptedFormJs(
 
 	override val responsible: String?
 
-	override val medicalLocationId: String?
-
 	override val tags: Array<CodeStubJs>
 
 	override val codes: Array<CodeStubJs>
-
-	override val endOfLife: Double?
 
 	override val deletionDate: Double?
 
@@ -144,8 +132,6 @@ public external class EncryptedFormJs(
 	override val status: String?
 
 	override val version: Double?
-
-	override val logicalUuid: String?
 
 	override val descr: String?
 

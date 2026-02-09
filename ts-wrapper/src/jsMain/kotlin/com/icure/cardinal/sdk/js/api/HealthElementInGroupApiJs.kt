@@ -3,13 +3,17 @@
 
 package com.icure.cardinal.sdk.js.api
 
+import com.icure.cardinal.sdk.js.filters.FilterOptionsJs
+import com.icure.cardinal.sdk.js.filters.SortableFilterOptionsJs
 import com.icure.cardinal.sdk.js.model.DecryptedHealthElementJs
 import com.icure.cardinal.sdk.js.model.EncryptedHealthElementJs
 import com.icure.cardinal.sdk.js.model.EntityReferenceInGroupJs
 import com.icure.cardinal.sdk.js.model.GroupScopedJs
 import com.icure.cardinal.sdk.js.model.HealthElementJs
 import com.icure.cardinal.sdk.js.model.PatientJs
+import com.icure.cardinal.sdk.js.model.StoredDocumentIdentifierJs
 import com.icure.cardinal.sdk.js.synthetic.mapasobjectarray.EntityReferenceInGroupToHealthElementShareOptionsMapObject_delegate_shareOptions
+import com.icure.cardinal.sdk.js.utils.pagination.PaginatedListIteratorJs
 import kotlin.Array
 import kotlin.Boolean
 import kotlin.String
@@ -51,6 +55,35 @@ public external interface HealthElementInGroupApiJs {
 	public fun encryptOrValidate(healthElements: Array<GroupScopedJs<HealthElementJs>>):
 			Promise<Array<GroupScopedJs<EncryptedHealthElementJs>>>
 
+	public fun matchHealthElementsBy(groupId: String, filter: FilterOptionsJs<HealthElementJs>):
+			Promise<Array<String>>
+
+	public fun matchHealthElementsBySorted(groupId: String,
+			filter: SortableFilterOptionsJs<HealthElementJs>): Promise<Array<String>>
+
+	public fun deleteHealthElementById(entityId: GroupScopedJs<StoredDocumentIdentifierJs>):
+			Promise<GroupScopedJs<StoredDocumentIdentifierJs>>
+
+	public fun deleteHealthElementsByIds(entityIds: Array<GroupScopedJs<StoredDocumentIdentifierJs>>):
+			Promise<Array<GroupScopedJs<StoredDocumentIdentifierJs>>>
+
+	public fun purgeHealthElementById(entityId: GroupScopedJs<StoredDocumentIdentifierJs>):
+			Promise<Unit>
+
+	public fun purgeHealthElementsByIds(entityIds: Array<GroupScopedJs<StoredDocumentIdentifierJs>>):
+			Promise<Array<GroupScopedJs<StoredDocumentIdentifierJs>>>
+
+	public fun deleteHealthElement(healthElement: GroupScopedJs<HealthElementJs>):
+			Promise<GroupScopedJs<StoredDocumentIdentifierJs>>
+
+	public fun deleteHealthElements(healthElements: Array<GroupScopedJs<HealthElementJs>>):
+			Promise<Array<GroupScopedJs<StoredDocumentIdentifierJs>>>
+
+	public fun purgeHealthElement(healthElement: GroupScopedJs<HealthElementJs>): Promise<Unit>
+
+	public fun purgeHealthElements(healthElements: Array<GroupScopedJs<HealthElementJs>>):
+			Promise<Array<GroupScopedJs<StoredDocumentIdentifierJs>>>
+
 	public fun shareWith(
 		`delegate`: EntityReferenceInGroupJs,
 		healthElement: GroupScopedJs<DecryptedHealthElementJs>,
@@ -61,12 +94,41 @@ public external interface HealthElementInGroupApiJs {
 			delegates: Array<EntityReferenceInGroupToHealthElementShareOptionsMapObject_delegate_shareOptions>):
 			Promise<GroupScopedJs<DecryptedHealthElementJs>>
 
+	public fun filterHealthElementsBy(groupId: String, filter: FilterOptionsJs<HealthElementJs>):
+			Promise<PaginatedListIteratorJs<GroupScopedJs<DecryptedHealthElementJs>>>
+
+	public fun filterHealthElementsBySorted(groupId: String,
+			filter: SortableFilterOptionsJs<HealthElementJs>):
+			Promise<PaginatedListIteratorJs<GroupScopedJs<DecryptedHealthElementJs>>>
+
 	public fun createHealthElement(entity: GroupScopedJs<DecryptedHealthElementJs>):
 			Promise<GroupScopedJs<DecryptedHealthElementJs>>
+
+	public fun createHealthElements(entities: Array<GroupScopedJs<DecryptedHealthElementJs>>):
+			Promise<Array<GroupScopedJs<DecryptedHealthElementJs>>>
+
+	public fun undeleteHealthElementById(entityId: GroupScopedJs<StoredDocumentIdentifierJs>):
+			Promise<GroupScopedJs<DecryptedHealthElementJs>>
+
+	public
+			fun undeleteHealthElementsByIds(entityIds: Array<GroupScopedJs<StoredDocumentIdentifierJs>>):
+			Promise<Array<GroupScopedJs<DecryptedHealthElementJs>>>
+
+	public fun undeleteHealthElement(healthElement: GroupScopedJs<HealthElementJs>):
+			Promise<GroupScopedJs<DecryptedHealthElementJs>>
+
+	public fun undeleteHealthElements(healthElements: Array<GroupScopedJs<DecryptedHealthElementJs>>):
+			Promise<Array<GroupScopedJs<DecryptedHealthElementJs>>>
 
 	public fun modifyHealthElement(entity: GroupScopedJs<DecryptedHealthElementJs>):
 			Promise<GroupScopedJs<DecryptedHealthElementJs>>
 
+	public fun modifyHealthElements(entities: Array<GroupScopedJs<DecryptedHealthElementJs>>):
+			Promise<Array<GroupScopedJs<DecryptedHealthElementJs>>>
+
 	public fun getHealthElement(groupId: String, entityId: String):
 			Promise<GroupScopedJs<DecryptedHealthElementJs>?>
+
+	public fun getHealthElements(groupId: String, entityIds: Array<String>):
+			Promise<Array<GroupScopedJs<DecryptedHealthElementJs>>>
 }

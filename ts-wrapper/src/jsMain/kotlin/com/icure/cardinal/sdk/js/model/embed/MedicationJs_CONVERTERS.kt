@@ -5,19 +5,14 @@ import com.icure.cardinal.sdk.js.model.CheckedConverters.arrayToList
 import com.icure.cardinal.sdk.js.model.CheckedConverters.intToNumber
 import com.icure.cardinal.sdk.js.model.CheckedConverters.listToArray
 import com.icure.cardinal.sdk.js.model.CheckedConverters.longToNumber
-import com.icure.cardinal.sdk.js.model.CheckedConverters.mapToObject
 import com.icure.cardinal.sdk.js.model.CheckedConverters.nullToUndefined
 import com.icure.cardinal.sdk.js.model.CheckedConverters.numberToInt
 import com.icure.cardinal.sdk.js.model.CheckedConverters.numberToLong
-import com.icure.cardinal.sdk.js.model.CheckedConverters.objectToMapNullsafe
 import com.icure.cardinal.sdk.js.model.CheckedConverters.undefinedToNull
 import com.icure.cardinal.sdk.js.model.base.codeStub_fromJs
 import com.icure.cardinal.sdk.js.model.base.codeStub_toJs
 import com.icure.cardinal.sdk.model.embed.Medication
-import com.icure.cardinal.sdk.model.embed.ParagraphAgreement
 import com.icure.cardinal.sdk.model.embed.RegimenItem
-import com.icure.cardinal.sdk.model.embed.Suspension
-import kotlin.String
 import kotlin.Suppress
 
 @Suppress("UNUSED_VARIABLE")
@@ -108,76 +103,6 @@ public fun medication_toJs(obj: Medication): MedicationJs {
 	val posology = nullToUndefined(
 		obj.posology
 	)
-	val agreements = nullToUndefined(
-		mapToObject(
-			obj.agreements,
-			{ x1: String ->
-				x1
-			},
-			{ x1: ParagraphAgreement ->
-				paragraphAgreement_toJs(x1)
-			},
-		)
-	)
-	val medicationSchemeIdOnSafe = nullToUndefined(
-		obj.medicationSchemeIdOnSafe
-	)
-	val medicationSchemeSafeVersion = nullToUndefined(
-		intToNumber(obj.medicationSchemeSafeVersion)
-	)
-	val medicationSchemeTimeStampOnSafe = nullToUndefined(
-		longToNumber(obj.medicationSchemeTimeStampOnSafe)
-	)
-	val medicationSchemeDocumentId = nullToUndefined(
-		obj.medicationSchemeDocumentId
-	)
-	val safeIdName = nullToUndefined(
-		obj.safeIdName
-	)
-	val idOnSafes = nullToUndefined(
-		obj.idOnSafes
-	)
-	val timestampOnSafe = nullToUndefined(
-		longToNumber(obj.timestampOnSafe)
-	)
-	val changeValidated = nullToUndefined(
-		obj.changeValidated
-	)
-	val newSafeMedication = nullToUndefined(
-		obj.newSafeMedication
-	)
-	val medicationUse = nullToUndefined(
-		obj.medicationUse
-	)
-	val beginCondition = nullToUndefined(
-		obj.beginCondition
-	)
-	val endCondition = nullToUndefined(
-		obj.endCondition
-	)
-	val origin = nullToUndefined(
-		obj.origin
-	)
-	val medicationChanged = nullToUndefined(
-		obj.medicationChanged
-	)
-	val posologyChanged = nullToUndefined(
-		obj.posologyChanged
-	)
-	val suspension = nullToUndefined(
-		listToArray(
-			obj.suspension,
-			{ x1: Suspension ->
-				suspension_toJs(x1)
-			},
-		)
-	)
-	val prescriptionRID = nullToUndefined(
-		obj.prescriptionRID
-	)
-	val status = nullToUndefined(
-		intToNumber(obj.status)
-	)
 	val stockLocation = nullToUndefined(
 		obj.stockLocation?.let { nonNull1 ->
 			address_toJs(nonNull1)
@@ -207,25 +132,6 @@ public fun medication_toJs(obj: Medication): MedicationJs {
 		"knownUsage:knownUsage," +
 		"regimen:regimen," +
 		"posology:posology," +
-		"agreements:agreements," +
-		"medicationSchemeIdOnSafe:medicationSchemeIdOnSafe," +
-		"medicationSchemeSafeVersion:medicationSchemeSafeVersion," +
-		"medicationSchemeTimeStampOnSafe:medicationSchemeTimeStampOnSafe," +
-		"medicationSchemeDocumentId:medicationSchemeDocumentId," +
-		"safeIdName:safeIdName," +
-		"idOnSafes:idOnSafes," +
-		"timestampOnSafe:timestampOnSafe," +
-		"changeValidated:changeValidated," +
-		"newSafeMedication:newSafeMedication," +
-		"medicationUse:medicationUse," +
-		"beginCondition:beginCondition," +
-		"endCondition:endCondition," +
-		"origin:origin," +
-		"medicationChanged:medicationChanged," +
-		"posologyChanged:posologyChanged," +
-		"suspension:suspension," +
-		"prescriptionRID:prescriptionRID," +
-		"status:status," +
 		"stockLocation:stockLocation" +
 	"}"))
 }
@@ -272,42 +178,6 @@ public fun medication_fromJs(obj: MedicationJs): Medication {
 		},
 	)
 	val posology = undefinedToNull(obj.posology)
-	val agreements = objectToMapNullsafe(
-		obj.agreements,
-		"obj.agreements",
-		{ x1: String ->
-			x1
-		},
-		{ x1: ParagraphAgreementJs ->
-			paragraphAgreement_fromJs(x1)
-		},
-	)
-	val medicationSchemeIdOnSafe = undefinedToNull(obj.medicationSchemeIdOnSafe)
-	val medicationSchemeSafeVersion = numberToInt(obj.medicationSchemeSafeVersion,
-			"obj.medicationSchemeSafeVersion")
-	val medicationSchemeTimeStampOnSafe = numberToLong(obj.medicationSchemeTimeStampOnSafe,
-			"obj.medicationSchemeTimeStampOnSafe")
-	val medicationSchemeDocumentId = undefinedToNull(obj.medicationSchemeDocumentId)
-	val safeIdName = undefinedToNull(obj.safeIdName)
-	val idOnSafes = undefinedToNull(obj.idOnSafes)
-	val timestampOnSafe = numberToLong(obj.timestampOnSafe, "obj.timestampOnSafe")
-	val changeValidated = undefinedToNull(obj.changeValidated)
-	val newSafeMedication = undefinedToNull(obj.newSafeMedication)
-	val medicationUse = undefinedToNull(obj.medicationUse)
-	val beginCondition = undefinedToNull(obj.beginCondition)
-	val endCondition = undefinedToNull(obj.endCondition)
-	val origin = undefinedToNull(obj.origin)
-	val medicationChanged = undefinedToNull(obj.medicationChanged)
-	val posologyChanged = undefinedToNull(obj.posologyChanged)
-	val suspension = arrayToList(
-		obj.suspension,
-		"obj.suspension",
-		{ x1: SuspensionJs ->
-			suspension_fromJs(x1)
-		},
-	)
-	val prescriptionRID = undefinedToNull(obj.prescriptionRID)
-	val status = numberToInt(obj.status, "obj.status")
 	val stockLocation = obj.stockLocation?.let { nonNull1 ->
 		address_fromJs(nonNull1)
 	}
@@ -335,25 +205,6 @@ public fun medication_fromJs(obj: MedicationJs): Medication {
 		knownUsage = knownUsage,
 		regimen = regimen,
 		posology = posology,
-		agreements = agreements,
-		medicationSchemeIdOnSafe = medicationSchemeIdOnSafe,
-		medicationSchemeSafeVersion = medicationSchemeSafeVersion,
-		medicationSchemeTimeStampOnSafe = medicationSchemeTimeStampOnSafe,
-		medicationSchemeDocumentId = medicationSchemeDocumentId,
-		safeIdName = safeIdName,
-		idOnSafes = idOnSafes,
-		timestampOnSafe = timestampOnSafe,
-		changeValidated = changeValidated,
-		newSafeMedication = newSafeMedication,
-		medicationUse = medicationUse,
-		beginCondition = beginCondition,
-		endCondition = endCondition,
-		origin = origin,
-		medicationChanged = medicationChanged,
-		posologyChanged = posologyChanged,
-		suspension = suspension,
-		prescriptionRID = prescriptionRID,
-		status = status,
 		stockLocation = stockLocation,
 	)
 }

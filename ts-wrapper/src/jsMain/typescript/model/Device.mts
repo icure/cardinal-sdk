@@ -1,5 +1,4 @@
 // auto-generated file
-import {decodeBase64, encodeBase64} from '../internal/BytesEncoding.mjs';
 import {expectArray, expectMap, expectNumber, expectObject, expectString, extractEntry} from '../internal/JsonDecodeUtils.mjs';
 import {randomUuid} from '../utils/Id.mjs';
 import {DecryptedPropertyStub} from './PropertyStub.mjs';
@@ -38,12 +37,6 @@ export class Device implements StoredDocument, ICureDocument<string>, Named, Cry
 
 	codes: Array<CodeStub> = [];
 
-	endOfLife: number | undefined = undefined;
-
-	medicalLocationId: string | undefined = undefined;
-
-	externalId: string | undefined = undefined;
-
 	name: string | undefined = undefined;
 
 	type: string | undefined = undefined;
@@ -55,8 +48,6 @@ export class Device implements StoredDocument, ICureDocument<string>, Named, Cry
 	serialNumber: string | undefined = undefined;
 
 	parentId: string | undefined = undefined;
-
-	picture: Int8Array | undefined = undefined;
 
 	properties: Array<DecryptedPropertyStub> = [];
 
@@ -87,16 +78,12 @@ export class Device implements StoredDocument, ICureDocument<string>, Named, Cry
 		if ('responsible' in partial) this.responsible = partial.responsible;
 		if ('tags' in partial && partial.tags !== undefined) this.tags = partial.tags;
 		if ('codes' in partial && partial.codes !== undefined) this.codes = partial.codes;
-		if ('endOfLife' in partial) this.endOfLife = partial.endOfLife;
-		if ('medicalLocationId' in partial) this.medicalLocationId = partial.medicalLocationId;
-		if ('externalId' in partial) this.externalId = partial.externalId;
 		if ('name' in partial) this.name = partial.name;
 		if ('type' in partial) this.type = partial.type;
 		if ('brand' in partial) this.brand = partial.brand;
 		if ('model' in partial) this.model = partial.model;
 		if ('serialNumber' in partial) this.serialNumber = partial.serialNumber;
 		if ('parentId' in partial) this.parentId = partial.parentId;
-		if ('picture' in partial) this.picture = partial.picture;
 		if ('properties' in partial && partial.properties !== undefined) this.properties = partial.properties;
 		if ('hcPartyKeys' in partial && partial.hcPartyKeys !== undefined) this.hcPartyKeys = partial.hcPartyKeys;
 		if ('aesExchangeKeys' in partial && partial.aesExchangeKeys !== undefined) this.aesExchangeKeys = partial.aesExchangeKeys;
@@ -119,16 +106,12 @@ export class Device implements StoredDocument, ICureDocument<string>, Named, Cry
 		if (this.responsible != undefined) res['responsible'] = this.responsible
 		res['tags'] = this.tags.map((x0) => x0.toJSON() )
 		res['codes'] = this.codes.map((x0) => x0.toJSON() )
-		if (this.endOfLife != undefined) res['endOfLife'] = this.endOfLife
-		if (this.medicalLocationId != undefined) res['medicalLocationId'] = this.medicalLocationId
-		if (this.externalId != undefined) res['externalId'] = this.externalId
 		if (this.name != undefined) res['name'] = this.name
 		if (this.type != undefined) res['type'] = this.type
 		if (this.brand != undefined) res['brand'] = this.brand
 		if (this.model != undefined) res['model'] = this.model
 		if (this.serialNumber != undefined) res['serialNumber'] = this.serialNumber
 		if (this.parentId != undefined) res['parentId'] = this.parentId
-		if (this.picture != undefined) res['picture'] = encodeBase64(this.picture)
 		res['properties'] = this.properties.map((x0) => x0.toJSON() )
 		res['hcPartyKeys'] = Object.fromEntries(Object.entries(this.hcPartyKeys).map(([k0, v0]) => [k0, v0.map((x1) => x1 )]))
 		res['aesExchangeKeys'] = Object.fromEntries(Object.entries(this.aesExchangeKeys).map(([k0, v0]) => [k0, Object.fromEntries(Object.entries(v0).map(([k1, v1]) => [k1, Object.fromEntries(Object.entries(v1).map(([k2, v2]) => [k2, v2]))]))]))
@@ -157,16 +140,12 @@ export class Device implements StoredDocument, ICureDocument<string>, Named, Cry
 			responsible: expectString(extractEntry(jCpy, 'responsible', false, path), true, [...path, ".responsible"]),
 			tags: expectArray(extractEntry(jCpy, 'tags', false, path), false, [...path, ".tags"], (x0, p0) => expectObject(x0, false, ignoreUnknownKeys, p0, CodeStub.fromJSON)),
 			codes: expectArray(extractEntry(jCpy, 'codes', false, path), false, [...path, ".codes"], (x0, p0) => expectObject(x0, false, ignoreUnknownKeys, p0, CodeStub.fromJSON)),
-			endOfLife: expectNumber(extractEntry(jCpy, 'endOfLife', false, path), true, true, [...path, ".endOfLife"]),
-			medicalLocationId: expectString(extractEntry(jCpy, 'medicalLocationId', false, path), true, [...path, ".medicalLocationId"]),
-			externalId: expectString(extractEntry(jCpy, 'externalId', false, path), true, [...path, ".externalId"]),
 			name: expectString(extractEntry(jCpy, 'name', false, path), true, [...path, ".name"]),
 			type: expectString(extractEntry(jCpy, 'type', false, path), true, [...path, ".type"]),
 			brand: expectString(extractEntry(jCpy, 'brand', false, path), true, [...path, ".brand"]),
 			model: expectString(extractEntry(jCpy, 'model', false, path), true, [...path, ".model"]),
 			serialNumber: expectString(extractEntry(jCpy, 'serialNumber', false, path), true, [...path, ".serialNumber"]),
 			parentId: expectString(extractEntry(jCpy, 'parentId', false, path), true, [...path, ".parentId"]),
-			picture: decodeBase64(expectString(extractEntry(jCpy, 'picture', false, path), true, [...path, ".picture"]), [...path, ".picture"]),
 			properties: expectArray(extractEntry(jCpy, 'properties', false, path), false, [...path, ".properties"], (x0, p0) => expectObject(x0, false, ignoreUnknownKeys, p0, DecryptedPropertyStub.fromJSON)),
 			hcPartyKeys: expectMap(
 				extractEntry(jCpy, 'hcPartyKeys', false, path),

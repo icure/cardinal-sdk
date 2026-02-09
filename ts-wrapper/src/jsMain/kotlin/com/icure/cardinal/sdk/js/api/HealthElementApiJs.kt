@@ -61,11 +61,6 @@ public external interface HealthElementApiJs {
 	public fun matchHealthElementsBySorted(filter: SortableFilterOptionsJs<HealthElementJs>):
 			Promise<Array<String>>
 
-	public fun deleteHealthElementUnsafe(entityId: String): Promise<StoredDocumentIdentifierJs>
-
-	public fun deleteHealthElementsUnsafe(entityIds: Array<String>):
-			Promise<Array<StoredDocumentIdentifierJs>>
-
 	public fun deleteHealthElementById(entityId: String, rev: String):
 			Promise<StoredDocumentIdentifierJs>
 
@@ -74,12 +69,18 @@ public external interface HealthElementApiJs {
 
 	public fun purgeHealthElementById(id: String, rev: String): Promise<Unit>
 
+	public fun purgeHealthElementsByIds(entityIds: Array<StoredDocumentIdentifierJs>):
+			Promise<Array<StoredDocumentIdentifierJs>>
+
 	public fun deleteHealthElement(healthElement: HealthElementJs): Promise<StoredDocumentIdentifierJs>
 
 	public fun deleteHealthElements(healthElements: Array<HealthElementJs>):
 			Promise<Array<StoredDocumentIdentifierJs>>
 
 	public fun purgeHealthElement(healthElement: HealthElementJs): Promise<Unit>
+
+	public fun purgeHealthElements(healthElements: Array<HealthElementJs>):
+			Promise<Array<StoredDocumentIdentifierJs>>
 
 	public fun shareWith(
 		delegateId: String,
@@ -89,12 +90,6 @@ public external interface HealthElementApiJs {
 
 	public fun shareWithMany(healthElement: DecryptedHealthElementJs,
 			delegates: Record<String, HealthElementShareOptionsJs>): Promise<DecryptedHealthElementJs>
-
-	public fun findHealthElementsByHcPartyPatient(
-		hcPartyId: String,
-		patient: PatientJs,
-		options: dynamic,
-	): Promise<PaginatedListIteratorJs<DecryptedHealthElementJs>>
 
 	public fun filterHealthElementsBy(filter: FilterOptionsJs<HealthElementJs>):
 			Promise<PaginatedListIteratorJs<DecryptedHealthElementJs>>
@@ -109,7 +104,13 @@ public external interface HealthElementApiJs {
 
 	public fun undeleteHealthElementById(id: String, rev: String): Promise<DecryptedHealthElementJs>
 
+	public fun undeleteHealthElementsByIds(entityIds: Array<StoredDocumentIdentifierJs>):
+			Promise<Array<DecryptedHealthElementJs>>
+
 	public fun undeleteHealthElement(healthElement: HealthElementJs): Promise<DecryptedHealthElementJs>
+
+	public fun undeleteHealthElements(healthElements: Array<HealthElementJs>):
+			Promise<Array<DecryptedHealthElementJs>>
 
 	public fun modifyHealthElement(entity: DecryptedHealthElementJs): Promise<DecryptedHealthElementJs>
 

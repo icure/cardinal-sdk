@@ -46,15 +46,13 @@ export interface HealthElementApi {
 
 	matchHealthElementsBySorted(filter: SortableFilterOptions<HealthElement>): Promise<Array<string>>;
 
-	deleteHealthElementUnsafe(entityId: string): Promise<StoredDocumentIdentifier>;
-
-	deleteHealthElementsUnsafe(entityIds: Array<string>): Promise<Array<StoredDocumentIdentifier>>;
-
 	deleteHealthElementById(entityId: string, rev: string): Promise<StoredDocumentIdentifier>;
 
 	deleteHealthElementsByIds(entityIds: Array<StoredDocumentIdentifier>): Promise<Array<StoredDocumentIdentifier>>;
 
 	purgeHealthElementById(id: string, rev: string): Promise<void>;
+
+	purgeHealthElementsByIds(entityIds: Array<StoredDocumentIdentifier>): Promise<Array<StoredDocumentIdentifier>>;
 
 	deleteHealthElement(healthElement: HealthElement): Promise<StoredDocumentIdentifier>;
 
@@ -62,14 +60,13 @@ export interface HealthElementApi {
 
 	purgeHealthElement(healthElement: HealthElement): Promise<void>;
 
+	purgeHealthElements(healthElements: Array<HealthElement>): Promise<Array<StoredDocumentIdentifier>>;
+
 	shareWith(delegateId: string, healthElement: DecryptedHealthElement,
 			options?: { options?: HealthElementShareOptions | undefined }): Promise<DecryptedHealthElement>;
 
 	shareWithMany(healthElement: DecryptedHealthElement,
 			delegates: { [ key: string ]: HealthElementShareOptions }): Promise<DecryptedHealthElement>;
-
-	findHealthElementsByHcPartyPatient(hcPartyId: string, patient: Patient,
-			options?: { startDate?: number | undefined, endDate?: number | undefined, descending?: boolean | undefined }): Promise<PaginatedListIterator<DecryptedHealthElement>>;
 
 	filterHealthElementsBy(filter: FilterOptions<HealthElement>): Promise<PaginatedListIterator<DecryptedHealthElement>>;
 
@@ -81,7 +78,11 @@ export interface HealthElementApi {
 
 	undeleteHealthElementById(id: string, rev: string): Promise<DecryptedHealthElement>;
 
+	undeleteHealthElementsByIds(entityIds: Array<StoredDocumentIdentifier>): Promise<Array<DecryptedHealthElement>>;
+
 	undeleteHealthElement(healthElement: HealthElement): Promise<DecryptedHealthElement>;
+
+	undeleteHealthElements(healthElements: Array<HealthElement>): Promise<Array<DecryptedHealthElement>>;
 
 	modifyHealthElement(entity: DecryptedHealthElement): Promise<DecryptedHealthElement>;
 

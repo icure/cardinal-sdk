@@ -4,6 +4,7 @@
 package com.icure.cardinal.sdk.js.model
 
 import com.icure.cardinal.sdk.js.model.base.CodeStubJs
+import com.icure.cardinal.sdk.js.model.base.HasEndOfLifeJs
 import com.icure.cardinal.sdk.js.model.base.ICureDocumentJs
 import com.icure.cardinal.sdk.js.model.base.StoredDocumentJs
 import com.icure.cardinal.sdk.js.model.embed.TimeTableItemJs
@@ -16,7 +17,7 @@ import kotlin.js.JsQualifier
 @JsName("TimeTable")
 public external class TimeTableJs(
 	partial: dynamic,
-) : StoredDocumentJs, ICureDocumentJs<String> {
+) : StoredDocumentJs, ICureDocumentJs<String>, HasEndOfLifeJs {
 	override val id: String
 
 	override val rev: String?
@@ -28,8 +29,6 @@ public external class TimeTableJs(
 	override val author: String?
 
 	override val responsible: String?
-
-	override val medicalLocationId: String?
 
 	override val tags: Array<CodeStubJs>
 

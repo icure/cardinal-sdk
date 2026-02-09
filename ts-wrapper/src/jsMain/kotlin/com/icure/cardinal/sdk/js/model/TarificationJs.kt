@@ -26,7 +26,7 @@ public external class TarificationJs(
 
 	override val deletionDate: Double?
 
-	override val label: Record<String, String>?
+	public val label: Record<String, String>?
 
 	override val context: String?
 

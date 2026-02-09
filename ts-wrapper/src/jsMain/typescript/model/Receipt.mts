@@ -1,5 +1,5 @@
 // auto-generated file
-import {expectArray, expectMap, expectNumber, expectObject, expectString, expectStringEnum, extractEntry} from '../internal/JsonDecodeUtils.mjs';
+import {expectArray, expectMap, expectNumber, expectObject, expectString, extractEntry} from '../internal/JsonDecodeUtils.mjs';
 import {randomUuid} from '../utils/Id.mjs';
 import {CodeStub} from './base/CodeStub.mjs';
 import {HasEncryptionMetadata} from './base/HasEncryptionMetadata.mjs';
@@ -7,14 +7,11 @@ import {ICureDocument} from './base/ICureDocument.mjs';
 import {StoredDocument} from './base/StoredDocument.mjs';
 import {Delegation} from './embed/Delegation.mjs';
 import {Encryptable} from './embed/Encryptable.mjs';
-import {ReceiptBlobType} from './embed/ReceiptBlobType.mjs';
 import {SecurityMetadata} from './embed/SecurityMetadata.mjs';
 import {Base64String} from './specializations/Base64String.mjs';
 
 
 export interface Receipt extends StoredDocument, ICureDocument<string>, HasEncryptionMetadata, Encryptable {
-
-	attachmentIds: { [ key in ReceiptBlobType ]?: string };
 
 	references: Array<string>;
 
@@ -44,17 +41,11 @@ export class DecryptedReceipt {
 
 	responsible: string | undefined = undefined;
 
-	medicalLocationId: string | undefined = undefined;
-
 	tags: Array<CodeStub> = [];
 
 	codes: Array<CodeStub> = [];
 
-	endOfLife: number | undefined = undefined;
-
 	deletionDate: number | undefined = undefined;
-
-	attachmentIds: { [ key in ReceiptBlobType ]?: string } = {};
 
 	references: Array<string> = [];
 
@@ -86,12 +77,9 @@ export class DecryptedReceipt {
 		if ('modified' in partial) this.modified = partial.modified;
 		if ('author' in partial) this.author = partial.author;
 		if ('responsible' in partial) this.responsible = partial.responsible;
-		if ('medicalLocationId' in partial) this.medicalLocationId = partial.medicalLocationId;
 		if ('tags' in partial && partial.tags !== undefined) this.tags = partial.tags;
 		if ('codes' in partial && partial.codes !== undefined) this.codes = partial.codes;
-		if ('endOfLife' in partial) this.endOfLife = partial.endOfLife;
 		if ('deletionDate' in partial) this.deletionDate = partial.deletionDate;
-		if ('attachmentIds' in partial && partial.attachmentIds !== undefined) this.attachmentIds = partial.attachmentIds;
 		if ('references' in partial && partial.references !== undefined) this.references = partial.references;
 		if ('documentId' in partial) this.documentId = partial.documentId;
 		if ('category' in partial) this.category = partial.category;
@@ -112,12 +100,9 @@ export class DecryptedReceipt {
 		if (this.modified != undefined) res['modified'] = this.modified
 		if (this.author != undefined) res['author'] = this.author
 		if (this.responsible != undefined) res['responsible'] = this.responsible
-		if (this.medicalLocationId != undefined) res['medicalLocationId'] = this.medicalLocationId
 		res['tags'] = this.tags.map((x0) => x0.toJSON() )
 		res['codes'] = this.codes.map((x0) => x0.toJSON() )
-		if (this.endOfLife != undefined) res['endOfLife'] = this.endOfLife
 		if (this.deletionDate != undefined) res['deletionDate'] = this.deletionDate
-		res['attachmentIds'] = Object.fromEntries(Object.entries(this.attachmentIds).map(([k0, v0]) => [k0, v0]))
 		res['references'] = this.references.map((x0) => x0 )
 		if (this.documentId != undefined) res['documentId'] = this.documentId
 		if (this.category != undefined) res['category'] = this.category
@@ -144,18 +129,9 @@ export class DecryptedReceipt {
 			modified: expectNumber(extractEntry(jCpy, 'modified', false, path), true, true, [...path, ".modified"]),
 			author: expectString(extractEntry(jCpy, 'author', false, path), true, [...path, ".author"]),
 			responsible: expectString(extractEntry(jCpy, 'responsible', false, path), true, [...path, ".responsible"]),
-			medicalLocationId: expectString(extractEntry(jCpy, 'medicalLocationId', false, path), true, [...path, ".medicalLocationId"]),
 			tags: expectArray(extractEntry(jCpy, 'tags', false, path), false, [...path, ".tags"], (x0, p0) => expectObject(x0, false, ignoreUnknownKeys, p0, CodeStub.fromJSON)),
 			codes: expectArray(extractEntry(jCpy, 'codes', false, path), false, [...path, ".codes"], (x0, p0) => expectObject(x0, false, ignoreUnknownKeys, p0, CodeStub.fromJSON)),
-			endOfLife: expectNumber(extractEntry(jCpy, 'endOfLife', false, path), true, true, [...path, ".endOfLife"]),
 			deletionDate: expectNumber(extractEntry(jCpy, 'deletionDate', false, path), true, true, [...path, ".deletionDate"]),
-			attachmentIds: expectMap(
-				extractEntry(jCpy, 'attachmentIds', false, path),
-				false,
-				[...path, ".attachmentIds"],
-				(k0, p0) => expectStringEnum(k0, false, p0, ReceiptBlobType, 'ReceiptBlobType'),
-				(v0, p0) => expectString(v0, false, p0)
-			),
 			references: expectArray(extractEntry(jCpy, 'references', false, path), false, [...path, ".references"], (x0, p0) => expectString(x0, false, p0)),
 			documentId: expectString(extractEntry(jCpy, 'documentId', false, path), true, [...path, ".documentId"]),
 			category: expectString(extractEntry(jCpy, 'category', false, path), true, [...path, ".category"]),
@@ -207,17 +183,11 @@ export class EncryptedReceipt {
 
 	responsible: string | undefined = undefined;
 
-	medicalLocationId: string | undefined = undefined;
-
 	tags: Array<CodeStub> = [];
 
 	codes: Array<CodeStub> = [];
 
-	endOfLife: number | undefined = undefined;
-
 	deletionDate: number | undefined = undefined;
-
-	attachmentIds: { [ key in ReceiptBlobType ]?: string } = {};
 
 	references: Array<string> = [];
 
@@ -249,12 +219,9 @@ export class EncryptedReceipt {
 		if ('modified' in partial) this.modified = partial.modified;
 		if ('author' in partial) this.author = partial.author;
 		if ('responsible' in partial) this.responsible = partial.responsible;
-		if ('medicalLocationId' in partial) this.medicalLocationId = partial.medicalLocationId;
 		if ('tags' in partial && partial.tags !== undefined) this.tags = partial.tags;
 		if ('codes' in partial && partial.codes !== undefined) this.codes = partial.codes;
-		if ('endOfLife' in partial) this.endOfLife = partial.endOfLife;
 		if ('deletionDate' in partial) this.deletionDate = partial.deletionDate;
-		if ('attachmentIds' in partial && partial.attachmentIds !== undefined) this.attachmentIds = partial.attachmentIds;
 		if ('references' in partial && partial.references !== undefined) this.references = partial.references;
 		if ('documentId' in partial) this.documentId = partial.documentId;
 		if ('category' in partial) this.category = partial.category;
@@ -275,12 +242,9 @@ export class EncryptedReceipt {
 		if (this.modified != undefined) res['modified'] = this.modified
 		if (this.author != undefined) res['author'] = this.author
 		if (this.responsible != undefined) res['responsible'] = this.responsible
-		if (this.medicalLocationId != undefined) res['medicalLocationId'] = this.medicalLocationId
 		res['tags'] = this.tags.map((x0) => x0.toJSON() )
 		res['codes'] = this.codes.map((x0) => x0.toJSON() )
-		if (this.endOfLife != undefined) res['endOfLife'] = this.endOfLife
 		if (this.deletionDate != undefined) res['deletionDate'] = this.deletionDate
-		res['attachmentIds'] = Object.fromEntries(Object.entries(this.attachmentIds).map(([k0, v0]) => [k0, v0]))
 		res['references'] = this.references.map((x0) => x0 )
 		if (this.documentId != undefined) res['documentId'] = this.documentId
 		if (this.category != undefined) res['category'] = this.category
@@ -307,18 +271,9 @@ export class EncryptedReceipt {
 			modified: expectNumber(extractEntry(jCpy, 'modified', false, path), true, true, [...path, ".modified"]),
 			author: expectString(extractEntry(jCpy, 'author', false, path), true, [...path, ".author"]),
 			responsible: expectString(extractEntry(jCpy, 'responsible', false, path), true, [...path, ".responsible"]),
-			medicalLocationId: expectString(extractEntry(jCpy, 'medicalLocationId', false, path), true, [...path, ".medicalLocationId"]),
 			tags: expectArray(extractEntry(jCpy, 'tags', false, path), false, [...path, ".tags"], (x0, p0) => expectObject(x0, false, ignoreUnknownKeys, p0, CodeStub.fromJSON)),
 			codes: expectArray(extractEntry(jCpy, 'codes', false, path), false, [...path, ".codes"], (x0, p0) => expectObject(x0, false, ignoreUnknownKeys, p0, CodeStub.fromJSON)),
-			endOfLife: expectNumber(extractEntry(jCpy, 'endOfLife', false, path), true, true, [...path, ".endOfLife"]),
 			deletionDate: expectNumber(extractEntry(jCpy, 'deletionDate', false, path), true, true, [...path, ".deletionDate"]),
-			attachmentIds: expectMap(
-				extractEntry(jCpy, 'attachmentIds', false, path),
-				false,
-				[...path, ".attachmentIds"],
-				(k0, p0) => expectStringEnum(k0, false, p0, ReceiptBlobType, 'ReceiptBlobType'),
-				(v0, p0) => expectString(v0, false, p0)
-			),
 			references: expectArray(extractEntry(jCpy, 'references', false, path), false, [...path, ".references"], (x0, p0) => expectString(x0, false, p0)),
 			documentId: expectString(extractEntry(jCpy, 'documentId', false, path), true, [...path, ".documentId"]),
 			category: expectString(extractEntry(jCpy, 'category', false, path), true, [...path, ".category"]),

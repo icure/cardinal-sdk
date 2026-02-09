@@ -21,8 +21,6 @@ import com.icure.cardinal.sdk.js.model.embed.calendarItemTag_fromJs
 import com.icure.cardinal.sdk.js.model.embed.calendarItemTag_toJs
 import com.icure.cardinal.sdk.js.model.embed.delegation_fromJs
 import com.icure.cardinal.sdk.js.model.embed.delegation_toJs
-import com.icure.cardinal.sdk.js.model.embed.flowItem_fromJs
-import com.icure.cardinal.sdk.js.model.embed.flowItem_toJs
 import com.icure.cardinal.sdk.js.model.embed.securityMetadata_fromJs
 import com.icure.cardinal.sdk.js.model.embed.securityMetadata_toJs
 import com.icure.cardinal.sdk.js.model.specializations.base64String_fromJs
@@ -57,9 +55,6 @@ public fun calendarItem_toJs(obj: DecryptedCalendarItem): DecryptedCalendarItemJ
 	val responsible = nullToUndefined(
 		obj.responsible
 	)
-	val medicalLocationId = nullToUndefined(
-		obj.medicalLocationId
-	)
 	val tags = setToArray(
 		obj.tags,
 		{ x1: CodeStub ->
@@ -71,9 +66,6 @@ public fun calendarItem_toJs(obj: DecryptedCalendarItem): DecryptedCalendarItemJ
 		{ x1: CodeStub ->
 			codeStub_toJs(x1)
 		},
-	)
-	val endOfLife = nullToUndefined(
-		longToNumber(obj.endOfLife)
 	)
 	val deletionDate = nullToUndefined(
 		longToNumber(obj.deletionDate)
@@ -87,17 +79,11 @@ public fun calendarItem_toJs(obj: DecryptedCalendarItem): DecryptedCalendarItemJ
 	val masterCalendarItemId = nullToUndefined(
 		obj.masterCalendarItemId
 	)
-	val patientId = nullToUndefined(
-		obj.patientId
-	)
 	val important = nullToUndefined(
 		obj.important
 	)
 	val homeVisit = nullToUndefined(
 		obj.homeVisit
-	)
-	val phoneNumber = nullToUndefined(
-		obj.phoneNumber
 	)
 	val placeId = nullToUndefined(
 		obj.placeId
@@ -115,21 +101,6 @@ public fun calendarItem_toJs(obj: DecryptedCalendarItem): DecryptedCalendarItemJ
 	)
 	val endTime = nullToUndefined(
 		longToNumber(obj.endTime)
-	)
-	val confirmationTime = nullToUndefined(
-		longToNumber(obj.confirmationTime)
-	)
-	val cancellationTimestamp = nullToUndefined(
-		longToNumber(obj.cancellationTimestamp)
-	)
-	val confirmationId = nullToUndefined(
-		obj.confirmationId
-	)
-	val duration = nullToUndefined(
-		longToNumber(obj.duration)
-	)
-	val allDay = nullToUndefined(
-		obj.allDay
 	)
 	val details = nullToUndefined(
 		obj.details
@@ -150,9 +121,6 @@ public fun calendarItem_toJs(obj: DecryptedCalendarItem): DecryptedCalendarItemJ
 			nonNull1.name
 		}
 	)
-	val hcpId = nullToUndefined(
-		obj.hcpId
-	)
 	val recurrenceId = nullToUndefined(
 		obj.recurrenceId
 	)
@@ -161,11 +129,6 @@ public fun calendarItem_toJs(obj: DecryptedCalendarItem): DecryptedCalendarItemJ
 		{ x1: DecryptedCalendarItemTag ->
 			calendarItemTag_toJs(x1)
 		},
-	)
-	val flowItem = nullToUndefined(
-		obj.flowItem?.let { nonNull1 ->
-			flowItem_toJs(nonNull1)
-		}
 	)
 	val secretForeignKeys = setToArray(
 		obj.secretForeignKeys,
@@ -232,37 +195,26 @@ public fun calendarItem_toJs(obj: DecryptedCalendarItem): DecryptedCalendarItemJ
 		"modified:modified," +
 		"author:author," +
 		"responsible:responsible," +
-		"medicalLocationId:medicalLocationId," +
 		"tags:tags," +
 		"codes:codes," +
-		"endOfLife:endOfLife," +
 		"deletionDate:deletionDate," +
 		"title:title," +
 		"calendarItemTypeId:calendarItemTypeId," +
 		"masterCalendarItemId:masterCalendarItemId," +
-		"patientId:patientId," +
 		"important:important," +
 		"homeVisit:homeVisit," +
-		"phoneNumber:phoneNumber," +
 		"placeId:placeId," +
 		"address:address," +
 		"addressText:addressText," +
 		"startTime:startTime," +
 		"endTime:endTime," +
-		"confirmationTime:confirmationTime," +
-		"cancellationTimestamp:cancellationTimestamp," +
-		"confirmationId:confirmationId," +
-		"duration:duration," +
-		"allDay:allDay," +
 		"details:details," +
 		"wasMigrated:wasMigrated," +
 		"agendaId:agendaId," +
 		"resourceGroup:resourceGroup," +
 		"availabilitiesAssignmentStrategy:availabilitiesAssignmentStrategy," +
-		"hcpId:hcpId," +
 		"recurrenceId:recurrenceId," +
 		"meetingTags:meetingTags," +
-		"flowItem:flowItem," +
 		"secretForeignKeys:secretForeignKeys," +
 		"cryptedForeignKeys:cryptedForeignKeys," +
 		"delegations:delegations," +
@@ -279,7 +231,6 @@ public fun calendarItem_fromJs(obj: DecryptedCalendarItemJs): DecryptedCalendarI
 	val modified = numberToLong(obj.modified, "obj.modified")
 	val author = undefinedToNull(obj.author)
 	val responsible = undefinedToNull(obj.responsible)
-	val medicalLocationId = undefinedToNull(obj.medicalLocationId)
 	val tags = arrayToSet(
 		obj.tags,
 		"obj.tags",
@@ -294,15 +245,12 @@ public fun calendarItem_fromJs(obj: DecryptedCalendarItemJs): DecryptedCalendarI
 			codeStub_fromJs(x1)
 		},
 	)
-	val endOfLife = numberToLong(obj.endOfLife, "obj.endOfLife")
 	val deletionDate = numberToLong(obj.deletionDate, "obj.deletionDate")
 	val title = undefinedToNull(obj.title)
 	val calendarItemTypeId = undefinedToNull(obj.calendarItemTypeId)
 	val masterCalendarItemId = undefinedToNull(obj.masterCalendarItemId)
-	val patientId = undefinedToNull(obj.patientId)
 	val important = undefinedToNull(obj.important)
 	val homeVisit = undefinedToNull(obj.homeVisit)
-	val phoneNumber = undefinedToNull(obj.phoneNumber)
 	val placeId = undefinedToNull(obj.placeId)
 	val address = obj.address?.let { nonNull1 ->
 		address_fromJs(nonNull1)
@@ -310,11 +258,6 @@ public fun calendarItem_fromJs(obj: DecryptedCalendarItemJs): DecryptedCalendarI
 	val addressText = undefinedToNull(obj.addressText)
 	val startTime = numberToLong(obj.startTime, "obj.startTime")
 	val endTime = numberToLong(obj.endTime, "obj.endTime")
-	val confirmationTime = numberToLong(obj.confirmationTime, "obj.confirmationTime")
-	val cancellationTimestamp = numberToLong(obj.cancellationTimestamp, "obj.cancellationTimestamp")
-	val confirmationId = undefinedToNull(obj.confirmationId)
-	val duration = numberToLong(obj.duration, "obj.duration")
-	val allDay = undefinedToNull(obj.allDay)
 	val details = undefinedToNull(obj.details)
 	val wasMigrated = undefinedToNull(obj.wasMigrated)
 	val agendaId = undefinedToNull(obj.agendaId)
@@ -324,7 +267,6 @@ public fun calendarItem_fromJs(obj: DecryptedCalendarItemJs): DecryptedCalendarI
 	val availabilitiesAssignmentStrategy = obj.availabilitiesAssignmentStrategy?.let { nonNull1 ->
 		CalendarItem.AvailabilitiesAssignmentStrategy.valueOf(nonNull1)
 	}
-	val hcpId = undefinedToNull(obj.hcpId)
 	val recurrenceId = undefinedToNull(obj.recurrenceId)
 	val meetingTags = arrayToSet(
 		obj.meetingTags,
@@ -333,9 +275,6 @@ public fun calendarItem_fromJs(obj: DecryptedCalendarItemJs): DecryptedCalendarI
 			calendarItemTag_fromJs(x1)
 		},
 	)
-	val flowItem = obj.flowItem?.let { nonNull1 ->
-		flowItem_fromJs(nonNull1)
-	}
 	val secretForeignKeys = arrayToSet(
 		obj.secretForeignKeys,
 		"obj.secretForeignKeys",
@@ -404,37 +343,26 @@ public fun calendarItem_fromJs(obj: DecryptedCalendarItemJs): DecryptedCalendarI
 		modified = modified,
 		author = author,
 		responsible = responsible,
-		medicalLocationId = medicalLocationId,
 		tags = tags,
 		codes = codes,
-		endOfLife = endOfLife,
 		deletionDate = deletionDate,
 		title = title,
 		calendarItemTypeId = calendarItemTypeId,
 		masterCalendarItemId = masterCalendarItemId,
-		patientId = patientId,
 		important = important,
 		homeVisit = homeVisit,
-		phoneNumber = phoneNumber,
 		placeId = placeId,
 		address = address,
 		addressText = addressText,
 		startTime = startTime,
 		endTime = endTime,
-		confirmationTime = confirmationTime,
-		cancellationTimestamp = cancellationTimestamp,
-		confirmationId = confirmationId,
-		duration = duration,
-		allDay = allDay,
 		details = details,
 		wasMigrated = wasMigrated,
 		agendaId = agendaId,
 		resourceGroup = resourceGroup,
 		availabilitiesAssignmentStrategy = availabilitiesAssignmentStrategy,
-		hcpId = hcpId,
 		recurrenceId = recurrenceId,
 		meetingTags = meetingTags,
-		flowItem = flowItem,
 		secretForeignKeys = secretForeignKeys,
 		cryptedForeignKeys = cryptedForeignKeys,
 		delegations = delegations,
@@ -462,9 +390,6 @@ public fun calendarItem_toJs(obj: EncryptedCalendarItem): EncryptedCalendarItemJ
 	val responsible = nullToUndefined(
 		obj.responsible
 	)
-	val medicalLocationId = nullToUndefined(
-		obj.medicalLocationId
-	)
 	val tags = setToArray(
 		obj.tags,
 		{ x1: CodeStub ->
@@ -476,9 +401,6 @@ public fun calendarItem_toJs(obj: EncryptedCalendarItem): EncryptedCalendarItemJ
 		{ x1: CodeStub ->
 			codeStub_toJs(x1)
 		},
-	)
-	val endOfLife = nullToUndefined(
-		longToNumber(obj.endOfLife)
 	)
 	val deletionDate = nullToUndefined(
 		longToNumber(obj.deletionDate)
@@ -492,17 +414,11 @@ public fun calendarItem_toJs(obj: EncryptedCalendarItem): EncryptedCalendarItemJ
 	val masterCalendarItemId = nullToUndefined(
 		obj.masterCalendarItemId
 	)
-	val patientId = nullToUndefined(
-		obj.patientId
-	)
 	val important = nullToUndefined(
 		obj.important
 	)
 	val homeVisit = nullToUndefined(
 		obj.homeVisit
-	)
-	val phoneNumber = nullToUndefined(
-		obj.phoneNumber
 	)
 	val placeId = nullToUndefined(
 		obj.placeId
@@ -520,21 +436,6 @@ public fun calendarItem_toJs(obj: EncryptedCalendarItem): EncryptedCalendarItemJ
 	)
 	val endTime = nullToUndefined(
 		longToNumber(obj.endTime)
-	)
-	val confirmationTime = nullToUndefined(
-		longToNumber(obj.confirmationTime)
-	)
-	val cancellationTimestamp = nullToUndefined(
-		longToNumber(obj.cancellationTimestamp)
-	)
-	val confirmationId = nullToUndefined(
-		obj.confirmationId
-	)
-	val duration = nullToUndefined(
-		longToNumber(obj.duration)
-	)
-	val allDay = nullToUndefined(
-		obj.allDay
 	)
 	val details = nullToUndefined(
 		obj.details
@@ -555,9 +456,6 @@ public fun calendarItem_toJs(obj: EncryptedCalendarItem): EncryptedCalendarItemJ
 			nonNull1.name
 		}
 	)
-	val hcpId = nullToUndefined(
-		obj.hcpId
-	)
 	val recurrenceId = nullToUndefined(
 		obj.recurrenceId
 	)
@@ -566,11 +464,6 @@ public fun calendarItem_toJs(obj: EncryptedCalendarItem): EncryptedCalendarItemJ
 		{ x1: EncryptedCalendarItemTag ->
 			calendarItemTag_toJs(x1)
 		},
-	)
-	val flowItem = nullToUndefined(
-		obj.flowItem?.let { nonNull1 ->
-			flowItem_toJs(nonNull1)
-		}
 	)
 	val secretForeignKeys = setToArray(
 		obj.secretForeignKeys,
@@ -637,37 +530,26 @@ public fun calendarItem_toJs(obj: EncryptedCalendarItem): EncryptedCalendarItemJ
 		"modified:modified," +
 		"author:author," +
 		"responsible:responsible," +
-		"medicalLocationId:medicalLocationId," +
 		"tags:tags," +
 		"codes:codes," +
-		"endOfLife:endOfLife," +
 		"deletionDate:deletionDate," +
 		"title:title," +
 		"calendarItemTypeId:calendarItemTypeId," +
 		"masterCalendarItemId:masterCalendarItemId," +
-		"patientId:patientId," +
 		"important:important," +
 		"homeVisit:homeVisit," +
-		"phoneNumber:phoneNumber," +
 		"placeId:placeId," +
 		"address:address," +
 		"addressText:addressText," +
 		"startTime:startTime," +
 		"endTime:endTime," +
-		"confirmationTime:confirmationTime," +
-		"cancellationTimestamp:cancellationTimestamp," +
-		"confirmationId:confirmationId," +
-		"duration:duration," +
-		"allDay:allDay," +
 		"details:details," +
 		"wasMigrated:wasMigrated," +
 		"agendaId:agendaId," +
 		"resourceGroup:resourceGroup," +
 		"availabilitiesAssignmentStrategy:availabilitiesAssignmentStrategy," +
-		"hcpId:hcpId," +
 		"recurrenceId:recurrenceId," +
 		"meetingTags:meetingTags," +
-		"flowItem:flowItem," +
 		"secretForeignKeys:secretForeignKeys," +
 		"cryptedForeignKeys:cryptedForeignKeys," +
 		"delegations:delegations," +
@@ -684,7 +566,6 @@ public fun calendarItem_fromJs(obj: EncryptedCalendarItemJs): EncryptedCalendarI
 	val modified = numberToLong(obj.modified, "obj.modified")
 	val author = undefinedToNull(obj.author)
 	val responsible = undefinedToNull(obj.responsible)
-	val medicalLocationId = undefinedToNull(obj.medicalLocationId)
 	val tags = arrayToSet(
 		obj.tags,
 		"obj.tags",
@@ -699,15 +580,12 @@ public fun calendarItem_fromJs(obj: EncryptedCalendarItemJs): EncryptedCalendarI
 			codeStub_fromJs(x1)
 		},
 	)
-	val endOfLife = numberToLong(obj.endOfLife, "obj.endOfLife")
 	val deletionDate = numberToLong(obj.deletionDate, "obj.deletionDate")
 	val title = undefinedToNull(obj.title)
 	val calendarItemTypeId = undefinedToNull(obj.calendarItemTypeId)
 	val masterCalendarItemId = undefinedToNull(obj.masterCalendarItemId)
-	val patientId = undefinedToNull(obj.patientId)
 	val important = undefinedToNull(obj.important)
 	val homeVisit = undefinedToNull(obj.homeVisit)
-	val phoneNumber = undefinedToNull(obj.phoneNumber)
 	val placeId = undefinedToNull(obj.placeId)
 	val address = obj.address?.let { nonNull1 ->
 		address_fromJs(nonNull1)
@@ -715,11 +593,6 @@ public fun calendarItem_fromJs(obj: EncryptedCalendarItemJs): EncryptedCalendarI
 	val addressText = undefinedToNull(obj.addressText)
 	val startTime = numberToLong(obj.startTime, "obj.startTime")
 	val endTime = numberToLong(obj.endTime, "obj.endTime")
-	val confirmationTime = numberToLong(obj.confirmationTime, "obj.confirmationTime")
-	val cancellationTimestamp = numberToLong(obj.cancellationTimestamp, "obj.cancellationTimestamp")
-	val confirmationId = undefinedToNull(obj.confirmationId)
-	val duration = numberToLong(obj.duration, "obj.duration")
-	val allDay = undefinedToNull(obj.allDay)
 	val details = undefinedToNull(obj.details)
 	val wasMigrated = undefinedToNull(obj.wasMigrated)
 	val agendaId = undefinedToNull(obj.agendaId)
@@ -729,7 +602,6 @@ public fun calendarItem_fromJs(obj: EncryptedCalendarItemJs): EncryptedCalendarI
 	val availabilitiesAssignmentStrategy = obj.availabilitiesAssignmentStrategy?.let { nonNull1 ->
 		CalendarItem.AvailabilitiesAssignmentStrategy.valueOf(nonNull1)
 	}
-	val hcpId = undefinedToNull(obj.hcpId)
 	val recurrenceId = undefinedToNull(obj.recurrenceId)
 	val meetingTags = arrayToSet(
 		obj.meetingTags,
@@ -738,9 +610,6 @@ public fun calendarItem_fromJs(obj: EncryptedCalendarItemJs): EncryptedCalendarI
 			calendarItemTag_fromJs(x1)
 		},
 	)
-	val flowItem = obj.flowItem?.let { nonNull1 ->
-		flowItem_fromJs(nonNull1)
-	}
 	val secretForeignKeys = arrayToSet(
 		obj.secretForeignKeys,
 		"obj.secretForeignKeys",
@@ -809,37 +678,26 @@ public fun calendarItem_fromJs(obj: EncryptedCalendarItemJs): EncryptedCalendarI
 		modified = modified,
 		author = author,
 		responsible = responsible,
-		medicalLocationId = medicalLocationId,
 		tags = tags,
 		codes = codes,
-		endOfLife = endOfLife,
 		deletionDate = deletionDate,
 		title = title,
 		calendarItemTypeId = calendarItemTypeId,
 		masterCalendarItemId = masterCalendarItemId,
-		patientId = patientId,
 		important = important,
 		homeVisit = homeVisit,
-		phoneNumber = phoneNumber,
 		placeId = placeId,
 		address = address,
 		addressText = addressText,
 		startTime = startTime,
 		endTime = endTime,
-		confirmationTime = confirmationTime,
-		cancellationTimestamp = cancellationTimestamp,
-		confirmationId = confirmationId,
-		duration = duration,
-		allDay = allDay,
 		details = details,
 		wasMigrated = wasMigrated,
 		agendaId = agendaId,
 		resourceGroup = resourceGroup,
 		availabilitiesAssignmentStrategy = availabilitiesAssignmentStrategy,
-		hcpId = hcpId,
 		recurrenceId = recurrenceId,
 		meetingTags = meetingTags,
-		flowItem = flowItem,
 		secretForeignKeys = secretForeignKeys,
 		cryptedForeignKeys = cryptedForeignKeys,
 		delegations = delegations,

@@ -20,15 +20,13 @@ export interface HealthElementBasicApi {
 
 	filterHealthElementsBySorted(filter: BaseSortableFilterOptions<HealthElement>): Promise<PaginatedListIterator<EncryptedHealthElement>>;
 
-	deleteHealthElementUnsafe(entityId: string): Promise<StoredDocumentIdentifier>;
-
-	deleteHealthElementsUnsafe(entityIds: Array<string>): Promise<Array<StoredDocumentIdentifier>>;
-
 	deleteHealthElementById(entityId: string, rev: string): Promise<StoredDocumentIdentifier>;
 
 	deleteHealthElementsByIds(entityIds: Array<StoredDocumentIdentifier>): Promise<Array<StoredDocumentIdentifier>>;
 
 	purgeHealthElementById(id: string, rev: string): Promise<void>;
+
+	purgeHealthElementsByIds(entityIds: Array<StoredDocumentIdentifier>): Promise<Array<StoredDocumentIdentifier>>;
 
 	deleteHealthElement(healthElement: HealthElement): Promise<StoredDocumentIdentifier>;
 
@@ -36,13 +34,19 @@ export interface HealthElementBasicApi {
 
 	purgeHealthElement(healthElement: HealthElement): Promise<void>;
 
+	purgeHealthElements(healthElements: Array<HealthElement>): Promise<Array<StoredDocumentIdentifier>>;
+
 	createHealthElement(entity: EncryptedHealthElement): Promise<EncryptedHealthElement>;
 
 	createHealthElements(entities: Array<EncryptedHealthElement>): Promise<Array<EncryptedHealthElement>>;
 
 	undeleteHealthElementById(id: string, rev: string): Promise<EncryptedHealthElement>;
 
+	undeleteHealthElementsByIds(entityIds: Array<StoredDocumentIdentifier>): Promise<Array<EncryptedHealthElement>>;
+
 	undeleteHealthElement(healthElement: HealthElement): Promise<EncryptedHealthElement>;
+
+	undeleteHealthElements(healthElements: Array<HealthElement>): Promise<Array<EncryptedHealthElement>>;
 
 	modifyHealthElement(entity: EncryptedHealthElement): Promise<EncryptedHealthElement>;
 

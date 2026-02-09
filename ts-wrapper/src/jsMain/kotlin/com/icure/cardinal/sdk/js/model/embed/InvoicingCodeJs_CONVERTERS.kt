@@ -41,8 +41,8 @@ public fun invoicingCode_toJs(obj: DecryptedInvoicingCode): DecryptedInvoicingCo
 	val serviceId = nullToUndefined(
 		obj.serviceId
 	)
-	val tarificationId = nullToUndefined(
-		obj.tarificationId
+	val pricingId = nullToUndefined(
+		obj.pricingId
 	)
 	val code = nullToUndefined(
 		obj.code
@@ -206,7 +206,7 @@ public fun invoicingCode_toJs(obj: DecryptedInvoicingCode): DecryptedInvoicingCo
 		"userId:userId," +
 		"contactId:contactId," +
 		"serviceId:serviceId," +
-		"tarificationId:tarificationId," +
+		"pricingId:pricingId," +
 		"code:code," +
 		"paymentType:paymentType," +
 		"paid:paid," +
@@ -266,7 +266,7 @@ public fun invoicingCode_fromJs(obj: DecryptedInvoicingCodeJs): DecryptedInvoici
 	val userId = undefinedToNull(obj.userId)
 	val contactId = undefinedToNull(obj.contactId)
 	val serviceId = undefinedToNull(obj.serviceId)
-	val tarificationId = undefinedToNull(obj.tarificationId)
+	val pricingId = undefinedToNull(obj.pricingId)
 	val code = undefinedToNull(obj.code)
 	val paymentType = obj.paymentType?.let { nonNull1 ->
 		PaymentType.valueOf(nonNull1)
@@ -337,7 +337,7 @@ public fun invoicingCode_fromJs(obj: DecryptedInvoicingCodeJs): DecryptedInvoici
 		userId = userId,
 		contactId = contactId,
 		serviceId = serviceId,
-		tarificationId = tarificationId,
+		pricingId = pricingId,
 		code = code,
 		paymentType = paymentType,
 		paid = paid,
@@ -412,8 +412,8 @@ public fun invoicingCode_toJs(obj: EncryptedInvoicingCode): EncryptedInvoicingCo
 	val serviceId = nullToUndefined(
 		obj.serviceId
 	)
-	val tarificationId = nullToUndefined(
-		obj.tarificationId
+	val pricingId = nullToUndefined(
+		obj.pricingId
 	)
 	val code = nullToUndefined(
 		obj.code
@@ -577,7 +577,7 @@ public fun invoicingCode_toJs(obj: EncryptedInvoicingCode): EncryptedInvoicingCo
 		"userId:userId," +
 		"contactId:contactId," +
 		"serviceId:serviceId," +
-		"tarificationId:tarificationId," +
+		"pricingId:pricingId," +
 		"code:code," +
 		"paymentType:paymentType," +
 		"paid:paid," +
@@ -637,7 +637,7 @@ public fun invoicingCode_fromJs(obj: EncryptedInvoicingCodeJs): EncryptedInvoici
 	val userId = undefinedToNull(obj.userId)
 	val contactId = undefinedToNull(obj.contactId)
 	val serviceId = undefinedToNull(obj.serviceId)
-	val tarificationId = undefinedToNull(obj.tarificationId)
+	val pricingId = undefinedToNull(obj.pricingId)
 	val code = undefinedToNull(obj.code)
 	val paymentType = obj.paymentType?.let { nonNull1 ->
 		PaymentType.valueOf(nonNull1)
@@ -708,7 +708,7 @@ public fun invoicingCode_fromJs(obj: EncryptedInvoicingCodeJs): EncryptedInvoici
 		userId = userId,
 		contactId = contactId,
 		serviceId = serviceId,
-		tarificationId = tarificationId,
+		pricingId = pricingId,
 		code = code,
 		paymentType = paymentType,
 		paid = paid,

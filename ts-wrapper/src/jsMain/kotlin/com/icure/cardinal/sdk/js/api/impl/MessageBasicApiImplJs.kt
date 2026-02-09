@@ -6,28 +6,27 @@ import com.icure.cardinal.sdk.filters.BaseFilterOptions
 import com.icure.cardinal.sdk.filters.BaseSortableFilterOptions
 import com.icure.cardinal.sdk.js.api.DefaultParametersSupport.convertingOptionOrDefaultNullable
 import com.icure.cardinal.sdk.js.api.MessageBasicApiJs
+import com.icure.cardinal.sdk.js.api.MessageBasicInGroupApiJs
 import com.icure.cardinal.sdk.js.filters.BaseFilterOptionsJs
 import com.icure.cardinal.sdk.js.filters.BaseSortableFilterOptionsJs
 import com.icure.cardinal.sdk.js.filters.baseFilterOptions_fromJs
 import com.icure.cardinal.sdk.js.filters.baseSortableFilterOptions_fromJs
 import com.icure.cardinal.sdk.js.model.CheckedConverters.arrayToList
 import com.icure.cardinal.sdk.js.model.CheckedConverters.arrayToSet
-import com.icure.cardinal.sdk.js.model.CheckedConverters.dynamicToJsonNullsafe
 import com.icure.cardinal.sdk.js.model.CheckedConverters.listToArray
 import com.icure.cardinal.sdk.js.model.CheckedConverters.nullToUndefined
-import com.icure.cardinal.sdk.js.model.CheckedConverters.numberToInt
 import com.icure.cardinal.sdk.js.model.CheckedConverters.numberToLong
 import com.icure.cardinal.sdk.js.model.CheckedConverters.undefinedToNull
 import com.icure.cardinal.sdk.js.model.EncryptedMessageJs
+import com.icure.cardinal.sdk.js.model.GroupScopedJs
 import com.icure.cardinal.sdk.js.model.MessageJs
-import com.icure.cardinal.sdk.js.model.PaginatedListJs
 import com.icure.cardinal.sdk.js.model.StoredDocumentIdentifierJs
-import com.icure.cardinal.sdk.js.model.couchdb.DocIdentifierJs
-import com.icure.cardinal.sdk.js.model.couchdb.docIdentifier_toJs
+import com.icure.cardinal.sdk.js.model.groupScoped_fromJs
+import com.icure.cardinal.sdk.js.model.groupScoped_toJs
 import com.icure.cardinal.sdk.js.model.message_fromJs
 import com.icure.cardinal.sdk.js.model.message_toJs
-import com.icure.cardinal.sdk.js.model.paginatedList_toJs
 import com.icure.cardinal.sdk.js.model.storedDocumentIdentifier_fromJs
+import com.icure.cardinal.sdk.js.model.storedDocumentIdentifier_toJs
 import com.icure.cardinal.sdk.js.subscription.EntitySubscriptionConfigurationJs
 import com.icure.cardinal.sdk.js.subscription.EntitySubscriptionJs
 import com.icure.cardinal.sdk.js.subscription.entitySubscriptionConfiguration_fromJs
@@ -35,15 +34,14 @@ import com.icure.cardinal.sdk.js.subscription.entitySubscription_toJs
 import com.icure.cardinal.sdk.js.utils.pagination.PaginatedListIteratorJs
 import com.icure.cardinal.sdk.js.utils.pagination.paginatedListIterator_toJs
 import com.icure.cardinal.sdk.model.EncryptedMessage
+import com.icure.cardinal.sdk.model.GroupScoped
 import com.icure.cardinal.sdk.model.Message
 import com.icure.cardinal.sdk.model.StoredDocumentIdentifier
-import com.icure.cardinal.sdk.model.couchdb.DocIdentifier
 import com.icure.cardinal.sdk.subscription.EntitySubscriptionConfiguration
 import com.icure.cardinal.sdk.subscription.SubscriptionEventType
 import kotlin.Array
 import kotlin.Boolean
 import kotlin.Double
-import kotlin.Int
 import kotlin.Long
 import kotlin.OptIn
 import kotlin.String
@@ -54,12 +52,519 @@ import kotlin.js.Promise
 import kotlinx.coroutines.DelicateCoroutinesApi
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.promise
-import kotlinx.serialization.json.JsonElement
 
 @OptIn(DelicateCoroutinesApi::class)
 internal class MessageBasicApiImplJs(
 	private val messageBasicApi: MessageBasicApi,
 ) : MessageBasicApiJs {
+	override val inGroup: MessageBasicInGroupApiJs = object : MessageBasicInGroupApiJs {
+		override fun matchMessagesBy(groupId: String, filter: BaseFilterOptionsJs<MessageJs>):
+				Promise<Array<String>> = GlobalScope.promise {
+			val groupIdConverted: String = groupId
+			val filterConverted: BaseFilterOptions<Message> = baseFilterOptions_fromJs(filter)
+			val result = messageBasicApi.inGroup.matchMessagesBy(
+				groupIdConverted,
+				filterConverted,
+			)
+			listToArray(
+				result,
+				{ x1: String ->
+					x1
+				},
+			)
+		}
+
+		override fun matchMessagesBySorted(groupId: String,
+				filter: BaseSortableFilterOptionsJs<MessageJs>): Promise<Array<String>> = GlobalScope.promise {
+			val groupIdConverted: String = groupId
+			val filterConverted: BaseSortableFilterOptions<Message> =
+					baseSortableFilterOptions_fromJs(filter)
+			val result = messageBasicApi.inGroup.matchMessagesBySorted(
+				groupIdConverted,
+				filterConverted,
+			)
+			listToArray(
+				result,
+				{ x1: String ->
+					x1
+				},
+			)
+		}
+
+		override fun filterMessagesBy(groupId: String, filter: BaseFilterOptionsJs<MessageJs>):
+				Promise<PaginatedListIteratorJs<GroupScopedJs<EncryptedMessageJs>>> = GlobalScope.promise {
+			val groupIdConverted: String = groupId
+			val filterConverted: BaseFilterOptions<Message> = baseFilterOptions_fromJs(filter)
+			val result = messageBasicApi.inGroup.filterMessagesBy(
+				groupIdConverted,
+				filterConverted,
+			)
+			paginatedListIterator_toJs(
+				result,
+				{ x1: GroupScoped<EncryptedMessage> ->
+					groupScoped_toJs(
+						x1,
+						{ x2: EncryptedMessage ->
+							message_toJs(x2)
+						},
+					)
+				},
+			)
+		}
+
+		override fun filterMessagesBySorted(groupId: String,
+				filter: BaseSortableFilterOptionsJs<MessageJs>):
+				Promise<PaginatedListIteratorJs<GroupScopedJs<EncryptedMessageJs>>> = GlobalScope.promise {
+			val groupIdConverted: String = groupId
+			val filterConverted: BaseSortableFilterOptions<Message> =
+					baseSortableFilterOptions_fromJs(filter)
+			val result = messageBasicApi.inGroup.filterMessagesBySorted(
+				groupIdConverted,
+				filterConverted,
+			)
+			paginatedListIterator_toJs(
+				result,
+				{ x1: GroupScoped<EncryptedMessage> ->
+					groupScoped_toJs(
+						x1,
+						{ x2: EncryptedMessage ->
+							message_toJs(x2)
+						},
+					)
+				},
+			)
+		}
+
+		override fun deleteMessageById(entityId: GroupScopedJs<StoredDocumentIdentifierJs>):
+				Promise<GroupScopedJs<StoredDocumentIdentifierJs>> = GlobalScope.promise {
+			val entityIdConverted: GroupScoped<StoredDocumentIdentifier> = groupScoped_fromJs(
+				entityId,
+				{ x1: StoredDocumentIdentifierJs ->
+					storedDocumentIdentifier_fromJs(x1)
+				},
+			)
+			val result = messageBasicApi.inGroup.deleteMessageById(
+				entityIdConverted,
+			)
+			groupScoped_toJs(
+				result,
+				{ x1: StoredDocumentIdentifier ->
+					storedDocumentIdentifier_toJs(x1)
+				},
+			)
+		}
+
+		override fun deleteMessagesByIds(entityIds: Array<GroupScopedJs<StoredDocumentIdentifierJs>>):
+				Promise<Array<GroupScopedJs<StoredDocumentIdentifierJs>>> = GlobalScope.promise {
+			val entityIdsConverted: List<GroupScoped<StoredDocumentIdentifier>> = arrayToList(
+				entityIds,
+				"entityIds",
+				{ x1: GroupScopedJs<StoredDocumentIdentifierJs> ->
+					groupScoped_fromJs(
+						x1,
+						{ x2: StoredDocumentIdentifierJs ->
+							storedDocumentIdentifier_fromJs(x2)
+						},
+					)
+				},
+			)
+			val result = messageBasicApi.inGroup.deleteMessagesByIds(
+				entityIdsConverted,
+			)
+			listToArray(
+				result,
+				{ x1: GroupScoped<StoredDocumentIdentifier> ->
+					groupScoped_toJs(
+						x1,
+						{ x2: StoredDocumentIdentifier ->
+							storedDocumentIdentifier_toJs(x2)
+						},
+					)
+				},
+			)
+		}
+
+		override fun purgeMessageById(entityId: GroupScopedJs<StoredDocumentIdentifierJs>): Promise<Unit>
+				= GlobalScope.promise {
+			val entityIdConverted: GroupScoped<StoredDocumentIdentifier> = groupScoped_fromJs(
+				entityId,
+				{ x1: StoredDocumentIdentifierJs ->
+					storedDocumentIdentifier_fromJs(x1)
+				},
+			)
+			messageBasicApi.inGroup.purgeMessageById(
+				entityIdConverted,
+			)
+
+		}
+
+		override fun purgeMessagesByIds(entityIds: Array<GroupScopedJs<StoredDocumentIdentifierJs>>):
+				Promise<Array<GroupScopedJs<StoredDocumentIdentifierJs>>> = GlobalScope.promise {
+			val entityIdsConverted: List<GroupScoped<StoredDocumentIdentifier>> = arrayToList(
+				entityIds,
+				"entityIds",
+				{ x1: GroupScopedJs<StoredDocumentIdentifierJs> ->
+					groupScoped_fromJs(
+						x1,
+						{ x2: StoredDocumentIdentifierJs ->
+							storedDocumentIdentifier_fromJs(x2)
+						},
+					)
+				},
+			)
+			val result = messageBasicApi.inGroup.purgeMessagesByIds(
+				entityIdsConverted,
+			)
+			listToArray(
+				result,
+				{ x1: GroupScoped<StoredDocumentIdentifier> ->
+					groupScoped_toJs(
+						x1,
+						{ x2: StoredDocumentIdentifier ->
+							storedDocumentIdentifier_toJs(x2)
+						},
+					)
+				},
+			)
+		}
+
+		override fun deleteMessage(message: GroupScopedJs<MessageJs>):
+				Promise<GroupScopedJs<StoredDocumentIdentifierJs>> = GlobalScope.promise {
+			val messageConverted: GroupScoped<Message> = groupScoped_fromJs(
+				message,
+				{ x1: MessageJs ->
+					message_fromJs(x1)
+				},
+			)
+			val result = messageBasicApi.inGroup.deleteMessage(
+				messageConverted,
+			)
+			groupScoped_toJs(
+				result,
+				{ x1: StoredDocumentIdentifier ->
+					storedDocumentIdentifier_toJs(x1)
+				},
+			)
+		}
+
+		override fun deleteMessages(messages: Array<GroupScopedJs<MessageJs>>):
+				Promise<Array<GroupScopedJs<StoredDocumentIdentifierJs>>> = GlobalScope.promise {
+			val messagesConverted: List<GroupScoped<Message>> = arrayToList(
+				messages,
+				"messages",
+				{ x1: GroupScopedJs<MessageJs> ->
+					groupScoped_fromJs(
+						x1,
+						{ x2: MessageJs ->
+							message_fromJs(x2)
+						},
+					)
+				},
+			)
+			val result = messageBasicApi.inGroup.deleteMessages(
+				messagesConverted,
+			)
+			listToArray(
+				result,
+				{ x1: GroupScoped<StoredDocumentIdentifier> ->
+					groupScoped_toJs(
+						x1,
+						{ x2: StoredDocumentIdentifier ->
+							storedDocumentIdentifier_toJs(x2)
+						},
+					)
+				},
+			)
+		}
+
+		override fun purgeMessage(message: GroupScopedJs<MessageJs>): Promise<Unit> =
+				GlobalScope.promise {
+			val messageConverted: GroupScoped<Message> = groupScoped_fromJs(
+				message,
+				{ x1: MessageJs ->
+					message_fromJs(x1)
+				},
+			)
+			messageBasicApi.inGroup.purgeMessage(
+				messageConverted,
+			)
+
+		}
+
+		override fun purgeMessages(messages: Array<GroupScopedJs<MessageJs>>):
+				Promise<Array<GroupScopedJs<StoredDocumentIdentifierJs>>> = GlobalScope.promise {
+			val messagesConverted: List<GroupScoped<Message>> = arrayToList(
+				messages,
+				"messages",
+				{ x1: GroupScopedJs<MessageJs> ->
+					groupScoped_fromJs(
+						x1,
+						{ x2: MessageJs ->
+							message_fromJs(x2)
+						},
+					)
+				},
+			)
+			val result = messageBasicApi.inGroup.purgeMessages(
+				messagesConverted,
+			)
+			listToArray(
+				result,
+				{ x1: GroupScoped<StoredDocumentIdentifier> ->
+					groupScoped_toJs(
+						x1,
+						{ x2: StoredDocumentIdentifier ->
+							storedDocumentIdentifier_toJs(x2)
+						},
+					)
+				},
+			)
+		}
+
+		override fun createMessage(entity: GroupScopedJs<EncryptedMessageJs>):
+				Promise<GroupScopedJs<EncryptedMessageJs>> = GlobalScope.promise {
+			val entityConverted: GroupScoped<EncryptedMessage> = groupScoped_fromJs(
+				entity,
+				{ x1: EncryptedMessageJs ->
+					message_fromJs(x1)
+				},
+			)
+			val result = messageBasicApi.inGroup.createMessage(
+				entityConverted,
+			)
+			groupScoped_toJs(
+				result,
+				{ x1: EncryptedMessage ->
+					message_toJs(x1)
+				},
+			)
+		}
+
+		override fun createMessages(entities: Array<GroupScopedJs<EncryptedMessageJs>>):
+				Promise<Array<GroupScopedJs<EncryptedMessageJs>>> = GlobalScope.promise {
+			val entitiesConverted: List<GroupScoped<EncryptedMessage>> = arrayToList(
+				entities,
+				"entities",
+				{ x1: GroupScopedJs<EncryptedMessageJs> ->
+					groupScoped_fromJs(
+						x1,
+						{ x2: EncryptedMessageJs ->
+							message_fromJs(x2)
+						},
+					)
+				},
+			)
+			val result = messageBasicApi.inGroup.createMessages(
+				entitiesConverted,
+			)
+			listToArray(
+				result,
+				{ x1: GroupScoped<EncryptedMessage> ->
+					groupScoped_toJs(
+						x1,
+						{ x2: EncryptedMessage ->
+							message_toJs(x2)
+						},
+					)
+				},
+			)
+		}
+
+		override fun undeleteMessageById(entityId: GroupScopedJs<StoredDocumentIdentifierJs>):
+				Promise<GroupScopedJs<EncryptedMessageJs>> = GlobalScope.promise {
+			val entityIdConverted: GroupScoped<StoredDocumentIdentifier> = groupScoped_fromJs(
+				entityId,
+				{ x1: StoredDocumentIdentifierJs ->
+					storedDocumentIdentifier_fromJs(x1)
+				},
+			)
+			val result = messageBasicApi.inGroup.undeleteMessageById(
+				entityIdConverted,
+			)
+			groupScoped_toJs(
+				result,
+				{ x1: EncryptedMessage ->
+					message_toJs(x1)
+				},
+			)
+		}
+
+		override fun undeleteMessagesByIds(entityIds: Array<GroupScopedJs<StoredDocumentIdentifierJs>>):
+				Promise<Array<GroupScopedJs<EncryptedMessageJs>>> = GlobalScope.promise {
+			val entityIdsConverted: List<GroupScoped<StoredDocumentIdentifier>> = arrayToList(
+				entityIds,
+				"entityIds",
+				{ x1: GroupScopedJs<StoredDocumentIdentifierJs> ->
+					groupScoped_fromJs(
+						x1,
+						{ x2: StoredDocumentIdentifierJs ->
+							storedDocumentIdentifier_fromJs(x2)
+						},
+					)
+				},
+			)
+			val result = messageBasicApi.inGroup.undeleteMessagesByIds(
+				entityIdsConverted,
+			)
+			listToArray(
+				result,
+				{ x1: GroupScoped<EncryptedMessage> ->
+					groupScoped_toJs(
+						x1,
+						{ x2: EncryptedMessage ->
+							message_toJs(x2)
+						},
+					)
+				},
+			)
+		}
+
+		override fun undeleteMessage(message: GroupScopedJs<MessageJs>):
+				Promise<GroupScopedJs<EncryptedMessageJs>> = GlobalScope.promise {
+			val messageConverted: GroupScoped<Message> = groupScoped_fromJs(
+				message,
+				{ x1: MessageJs ->
+					message_fromJs(x1)
+				},
+			)
+			val result = messageBasicApi.inGroup.undeleteMessage(
+				messageConverted,
+			)
+			groupScoped_toJs(
+				result,
+				{ x1: EncryptedMessage ->
+					message_toJs(x1)
+				},
+			)
+		}
+
+		override fun undeleteMessages(messages: Array<GroupScopedJs<EncryptedMessageJs>>):
+				Promise<Array<GroupScopedJs<EncryptedMessageJs>>> = GlobalScope.promise {
+			val messagesConverted: List<GroupScoped<EncryptedMessage>> = arrayToList(
+				messages,
+				"messages",
+				{ x1: GroupScopedJs<EncryptedMessageJs> ->
+					groupScoped_fromJs(
+						x1,
+						{ x2: EncryptedMessageJs ->
+							message_fromJs(x2)
+						},
+					)
+				},
+			)
+			val result = messageBasicApi.inGroup.undeleteMessages(
+				messagesConverted,
+			)
+			listToArray(
+				result,
+				{ x1: GroupScoped<EncryptedMessage> ->
+					groupScoped_toJs(
+						x1,
+						{ x2: EncryptedMessage ->
+							message_toJs(x2)
+						},
+					)
+				},
+			)
+		}
+
+		override fun modifyMessage(entity: GroupScopedJs<EncryptedMessageJs>):
+				Promise<GroupScopedJs<EncryptedMessageJs>> = GlobalScope.promise {
+			val entityConverted: GroupScoped<EncryptedMessage> = groupScoped_fromJs(
+				entity,
+				{ x1: EncryptedMessageJs ->
+					message_fromJs(x1)
+				},
+			)
+			val result = messageBasicApi.inGroup.modifyMessage(
+				entityConverted,
+			)
+			groupScoped_toJs(
+				result,
+				{ x1: EncryptedMessage ->
+					message_toJs(x1)
+				},
+			)
+		}
+
+		override fun modifyMessages(entities: Array<GroupScopedJs<EncryptedMessageJs>>):
+				Promise<Array<GroupScopedJs<EncryptedMessageJs>>> = GlobalScope.promise {
+			val entitiesConverted: List<GroupScoped<EncryptedMessage>> = arrayToList(
+				entities,
+				"entities",
+				{ x1: GroupScopedJs<EncryptedMessageJs> ->
+					groupScoped_fromJs(
+						x1,
+						{ x2: EncryptedMessageJs ->
+							message_fromJs(x2)
+						},
+					)
+				},
+			)
+			val result = messageBasicApi.inGroup.modifyMessages(
+				entitiesConverted,
+			)
+			listToArray(
+				result,
+				{ x1: GroupScoped<EncryptedMessage> ->
+					groupScoped_toJs(
+						x1,
+						{ x2: EncryptedMessage ->
+							message_toJs(x2)
+						},
+					)
+				},
+			)
+		}
+
+		override fun getMessage(groupId: String, entityId: String):
+				Promise<GroupScopedJs<EncryptedMessageJs>?> = GlobalScope.promise {
+			val groupIdConverted: String = groupId
+			val entityIdConverted: String = entityId
+			val result = messageBasicApi.inGroup.getMessage(
+				groupIdConverted,
+				entityIdConverted,
+			)
+			nullToUndefined(
+				result?.let { nonNull1 ->
+					groupScoped_toJs(
+						nonNull1,
+						{ x1: EncryptedMessage ->
+							message_toJs(x1)
+						},
+					)
+				}
+			)
+		}
+
+		override fun getMessages(groupId: String, entityIds: Array<String>):
+				Promise<Array<GroupScopedJs<EncryptedMessageJs>>> = GlobalScope.promise {
+			val groupIdConverted: String = groupId
+			val entityIdsConverted: List<String> = arrayToList(
+				entityIds,
+				"entityIds",
+				{ x1: String ->
+					x1
+				},
+			)
+			val result = messageBasicApi.inGroup.getMessages(
+				groupIdConverted,
+				entityIdsConverted,
+			)
+			listToArray(
+				result,
+				{ x1: GroupScoped<EncryptedMessage> ->
+					groupScoped_toJs(
+						x1,
+						{ x2: EncryptedMessage ->
+							message_toJs(x2)
+						},
+					)
+				},
+			)
+		}
+	}
+
 	override fun matchMessagesBy(filter: BaseFilterOptionsJs<MessageJs>): Promise<Array<String>> =
 			GlobalScope.promise {
 		val filterConverted: BaseFilterOptions<Message> = baseFilterOptions_fromJs(filter)
@@ -116,48 +621,19 @@ internal class MessageBasicApiImplJs(
 		)
 	}
 
-	override fun deleteMessageUnsafe(entityId: String): Promise<DocIdentifierJs> =
-			GlobalScope.promise {
-		val entityIdConverted: String = entityId
-		val result = messageBasicApi.deleteMessageUnsafe(
-			entityIdConverted,
-		)
-		docIdentifier_toJs(result)
-	}
-
-	override fun deleteMessagesUnsafe(entityIds: Array<String>): Promise<Array<DocIdentifierJs>> =
-			GlobalScope.promise {
-		val entityIdsConverted: List<String> = arrayToList(
-			entityIds,
-			"entityIds",
-			{ x1: String ->
-				x1
-			},
-		)
-		val result = messageBasicApi.deleteMessagesUnsafe(
-			entityIdsConverted,
-		)
-		listToArray(
-			result,
-			{ x1: DocIdentifier ->
-				docIdentifier_toJs(x1)
-			},
-		)
-	}
-
-	override fun deleteMessageById(entityId: String, rev: String): Promise<DocIdentifierJs> =
-			GlobalScope.promise {
+	override fun deleteMessageById(entityId: String, rev: String): Promise<StoredDocumentIdentifierJs>
+			= GlobalScope.promise {
 		val entityIdConverted: String = entityId
 		val revConverted: String = rev
 		val result = messageBasicApi.deleteMessageById(
 			entityIdConverted,
 			revConverted,
 		)
-		docIdentifier_toJs(result)
+		storedDocumentIdentifier_toJs(result)
 	}
 
 	override fun deleteMessagesByIds(entityIds: Array<StoredDocumentIdentifierJs>):
-			Promise<Array<DocIdentifierJs>> = GlobalScope.promise {
+			Promise<Array<StoredDocumentIdentifierJs>> = GlobalScope.promise {
 		val entityIdsConverted: List<StoredDocumentIdentifier> = arrayToList(
 			entityIds,
 			"entityIds",
@@ -170,8 +646,8 @@ internal class MessageBasicApiImplJs(
 		)
 		listToArray(
 			result,
-			{ x1: DocIdentifier ->
-				docIdentifier_toJs(x1)
+			{ x1: StoredDocumentIdentifier ->
+				storedDocumentIdentifier_toJs(x1)
 			},
 		)
 	}
@@ -186,16 +662,37 @@ internal class MessageBasicApiImplJs(
 
 	}
 
-	override fun deleteMessage(message: MessageJs): Promise<DocIdentifierJs> = GlobalScope.promise {
+	override fun purgeMessagesByIds(entityIds: Array<StoredDocumentIdentifierJs>):
+			Promise<Array<StoredDocumentIdentifierJs>> = GlobalScope.promise {
+		val entityIdsConverted: List<StoredDocumentIdentifier> = arrayToList(
+			entityIds,
+			"entityIds",
+			{ x1: StoredDocumentIdentifierJs ->
+				storedDocumentIdentifier_fromJs(x1)
+			},
+		)
+		val result = messageBasicApi.purgeMessagesByIds(
+			entityIdsConverted,
+		)
+		listToArray(
+			result,
+			{ x1: StoredDocumentIdentifier ->
+				storedDocumentIdentifier_toJs(x1)
+			},
+		)
+	}
+
+	override fun deleteMessage(message: MessageJs): Promise<StoredDocumentIdentifierJs> =
+			GlobalScope.promise {
 		val messageConverted: Message = message_fromJs(message)
 		val result = messageBasicApi.deleteMessage(
 			messageConverted,
 		)
-		docIdentifier_toJs(result)
+		storedDocumentIdentifier_toJs(result)
 	}
 
-	override fun deleteMessages(messages: Array<MessageJs>): Promise<Array<DocIdentifierJs>> =
-			GlobalScope.promise {
+	override fun deleteMessages(messages: Array<MessageJs>): Promise<Array<StoredDocumentIdentifierJs>>
+			= GlobalScope.promise {
 		val messagesConverted: List<Message> = arrayToList(
 			messages,
 			"messages",
@@ -208,8 +705,8 @@ internal class MessageBasicApiImplJs(
 		)
 		listToArray(
 			result,
-			{ x1: DocIdentifier ->
-				docIdentifier_toJs(x1)
+			{ x1: StoredDocumentIdentifier ->
+				storedDocumentIdentifier_toJs(x1)
 			},
 		)
 	}
@@ -222,6 +719,26 @@ internal class MessageBasicApiImplJs(
 
 	}
 
+	override fun purgeMessages(messages: Array<MessageJs>): Promise<Array<StoredDocumentIdentifierJs>>
+			= GlobalScope.promise {
+		val messagesConverted: List<Message> = arrayToList(
+			messages,
+			"messages",
+			{ x1: MessageJs ->
+				message_fromJs(x1)
+			},
+		)
+		val result = messageBasicApi.purgeMessages(
+			messagesConverted,
+		)
+		listToArray(
+			result,
+			{ x1: StoredDocumentIdentifier ->
+				storedDocumentIdentifier_toJs(x1)
+			},
+		)
+	}
+
 	override fun createMessage(entity: EncryptedMessageJs): Promise<EncryptedMessageJs> =
 			GlobalScope.promise {
 		val entityConverted: EncryptedMessage = message_fromJs(entity)
@@ -231,27 +748,30 @@ internal class MessageBasicApiImplJs(
 		message_toJs(result)
 	}
 
+	override fun createMessages(entities: Array<EncryptedMessageJs>):
+			Promise<Array<EncryptedMessageJs>> = GlobalScope.promise {
+		val entitiesConverted: List<EncryptedMessage> = arrayToList(
+			entities,
+			"entities",
+			{ x1: EncryptedMessageJs ->
+				message_fromJs(x1)
+			},
+		)
+		val result = messageBasicApi.createMessages(
+			entitiesConverted,
+		)
+		listToArray(
+			result,
+			{ x1: EncryptedMessage ->
+				message_toJs(x1)
+			},
+		)
+	}
+
 	override fun createMessageInTopic(entity: EncryptedMessageJs): Promise<EncryptedMessageJs> =
 			GlobalScope.promise {
 		val entityConverted: EncryptedMessage = message_fromJs(entity)
 		val result = messageBasicApi.createMessageInTopic(
-			entityConverted,
-		)
-		message_toJs(result)
-	}
-
-	override fun undeleteMessage(message: MessageJs): Promise<MessageJs> = GlobalScope.promise {
-		val messageConverted: Message = message_fromJs(message)
-		val result = messageBasicApi.undeleteMessage(
-			messageConverted,
-		)
-		message_toJs(result)
-	}
-
-	override fun modifyMessage(entity: EncryptedMessageJs): Promise<EncryptedMessageJs> =
-			GlobalScope.promise {
-		val entityConverted: EncryptedMessage = message_fromJs(entity)
-		val result = messageBasicApi.modifyMessage(
 			entityConverted,
 		)
 		message_toJs(result)
@@ -266,6 +786,84 @@ internal class MessageBasicApiImplJs(
 			revConverted,
 		)
 		message_toJs(result)
+	}
+
+	override fun undeleteMessagesByIds(entityIds: Array<StoredDocumentIdentifierJs>):
+			Promise<Array<EncryptedMessageJs>> = GlobalScope.promise {
+		val entityIdsConverted: List<StoredDocumentIdentifier> = arrayToList(
+			entityIds,
+			"entityIds",
+			{ x1: StoredDocumentIdentifierJs ->
+				storedDocumentIdentifier_fromJs(x1)
+			},
+		)
+		val result = messageBasicApi.undeleteMessagesByIds(
+			entityIdsConverted,
+		)
+		listToArray(
+			result,
+			{ x1: EncryptedMessage ->
+				message_toJs(x1)
+			},
+		)
+	}
+
+	override fun undeleteMessage(message: MessageJs): Promise<EncryptedMessageJs> =
+			GlobalScope.promise {
+		val messageConverted: Message = message_fromJs(message)
+		val result = messageBasicApi.undeleteMessage(
+			messageConverted,
+		)
+		message_toJs(result)
+	}
+
+	override fun undeleteMessages(messages: Array<MessageJs>): Promise<Array<EncryptedMessageJs>> =
+			GlobalScope.promise {
+		val messagesConverted: List<Message> = arrayToList(
+			messages,
+			"messages",
+			{ x1: MessageJs ->
+				message_fromJs(x1)
+			},
+		)
+		val result = messageBasicApi.undeleteMessages(
+			messagesConverted,
+		)
+		listToArray(
+			result,
+			{ x1: EncryptedMessage ->
+				message_toJs(x1)
+			},
+		)
+	}
+
+	override fun modifyMessage(entity: EncryptedMessageJs): Promise<EncryptedMessageJs> =
+			GlobalScope.promise {
+		val entityConverted: EncryptedMessage = message_fromJs(entity)
+		val result = messageBasicApi.modifyMessage(
+			entityConverted,
+		)
+		message_toJs(result)
+	}
+
+	override fun modifyMessages(entities: Array<EncryptedMessageJs>):
+			Promise<Array<EncryptedMessageJs>> = GlobalScope.promise {
+		val entitiesConverted: List<EncryptedMessage> = arrayToList(
+			entities,
+			"entities",
+			{ x1: EncryptedMessageJs ->
+				message_fromJs(x1)
+			},
+		)
+		val result = messageBasicApi.modifyMessages(
+			entitiesConverted,
+		)
+		listToArray(
+			result,
+			{ x1: EncryptedMessage ->
+				message_toJs(x1)
+			},
+		)
 	}
 
 	override fun getMessage(entityId: String): Promise<EncryptedMessageJs?> = GlobalScope.promise {
@@ -291,244 +889,6 @@ internal class MessageBasicApiImplJs(
 		)
 		val result = messageBasicApi.getMessages(
 			entityIdsConverted,
-		)
-		listToArray(
-			result,
-			{ x1: EncryptedMessage ->
-				message_toJs(x1)
-			},
-		)
-	}
-
-	override fun listMessagesByTransportGuids(hcPartyId: String, transportGuids: Array<String>):
-			Promise<Array<EncryptedMessageJs>> = GlobalScope.promise {
-		val hcPartyIdConverted: String = hcPartyId
-		val transportGuidsConverted: List<String> = arrayToList(
-			transportGuids,
-			"transportGuids",
-			{ x1: String ->
-				x1
-			},
-		)
-		val result = messageBasicApi.listMessagesByTransportGuids(
-			hcPartyIdConverted,
-			transportGuidsConverted,
-		)
-		listToArray(
-			result,
-			{ x1: EncryptedMessage ->
-				message_toJs(x1)
-			},
-		)
-	}
-
-	override fun findMessages(
-		startKey: dynamic,
-		startDocumentId: String?,
-		limit: Double?,
-	): Promise<PaginatedListJs<EncryptedMessageJs>> = GlobalScope.promise {
-		val startKeyConverted: JsonElement? = dynamicToJsonNullsafe(startKey, "startKey")
-		val startDocumentIdConverted: String? = undefinedToNull(startDocumentId)
-		val limitConverted: Int? = numberToInt(limit, "limit")
-		val result = messageBasicApi.findMessages(
-			startKeyConverted,
-			startDocumentIdConverted,
-			limitConverted,
-		)
-		paginatedList_toJs(
-			result,
-			{ x1: EncryptedMessage ->
-				message_toJs(x1)
-			},
-		)
-	}
-
-	override fun getChildrenMessages(messageId: String): Promise<Array<EncryptedMessageJs>> =
-			GlobalScope.promise {
-		val messageIdConverted: String = messageId
-		val result = messageBasicApi.getChildrenMessages(
-			messageIdConverted,
-		)
-		listToArray(
-			result,
-			{ x1: EncryptedMessage ->
-				message_toJs(x1)
-			},
-		)
-	}
-
-	override fun getMessagesChildren(messageIds: Array<String>): Promise<Array<EncryptedMessageJs>> =
-			GlobalScope.promise {
-		val messageIdsConverted: List<String> = arrayToList(
-			messageIds,
-			"messageIds",
-			{ x1: String ->
-				x1
-			},
-		)
-		val result = messageBasicApi.getMessagesChildren(
-			messageIdsConverted,
-		)
-		listToArray(
-			result,
-			{ x1: EncryptedMessage ->
-				message_toJs(x1)
-			},
-		)
-	}
-
-	override fun listMessagesByInvoices(invoiceIds: Array<String>): Promise<Array<EncryptedMessageJs>>
-			= GlobalScope.promise {
-		val invoiceIdsConverted: List<String> = arrayToList(
-			invoiceIds,
-			"invoiceIds",
-			{ x1: String ->
-				x1
-			},
-		)
-		val result = messageBasicApi.listMessagesByInvoices(
-			invoiceIdsConverted,
-		)
-		listToArray(
-			result,
-			{ x1: EncryptedMessage ->
-				message_toJs(x1)
-			},
-		)
-	}
-
-	override fun findMessagesByTransportGuid(transportGuid: String):
-			Promise<PaginatedListJs<EncryptedMessageJs>> = GlobalScope.promise {
-		val transportGuidConverted: String = transportGuid
-		val result = messageBasicApi.findMessagesByTransportGuid(
-			transportGuidConverted,
-		)
-		paginatedList_toJs(
-			result,
-			{ x1: EncryptedMessage ->
-				message_toJs(x1)
-			},
-		)
-	}
-
-	override fun findMessagesByTransportGuidSentDate(
-		transportGuid: String,
-		from: Double,
-		to: Double,
-		options: dynamic,
-	): Promise<PaginatedListJs<EncryptedMessageJs>> {
-		val _options = options ?: js("{}")
-		return GlobalScope.promise {
-			val transportGuidConverted: String = transportGuid
-			val fromConverted: Long = numberToLong(from, "from")
-			val toConverted: Long = numberToLong(to, "to")
-			val startKeyConverted: JsonElement? = convertingOptionOrDefaultNullable(
-				_options,
-				"startKey",
-				null
-			) { startKey: dynamic ->
-				dynamicToJsonNullsafe(startKey, "startKey")
-			}
-			val startDocumentIdConverted: String? = convertingOptionOrDefaultNullable(
-				_options,
-				"startDocumentId",
-				null
-			) { startDocumentId: String? ->
-				undefinedToNull(startDocumentId)
-			}
-			val limitConverted: Int? = convertingOptionOrDefaultNullable(
-				_options,
-				"limit",
-				null
-			) { limit: Double? ->
-				numberToInt(limit, "limit")
-			}
-			val hcpIdConverted: String? = convertingOptionOrDefaultNullable(
-				_options,
-				"hcpId",
-				null
-			) { hcpId: String? ->
-				undefinedToNull(hcpId)
-			}
-			val result = messageBasicApi.findMessagesByTransportGuidSentDate(
-				transportGuidConverted,
-				fromConverted,
-				toConverted,
-				startKeyConverted,
-				startDocumentIdConverted,
-				limitConverted,
-				hcpIdConverted,
-			)
-			paginatedList_toJs(
-				result,
-				{ x1: EncryptedMessage ->
-					message_toJs(x1)
-				},
-			)
-		}
-	}
-
-	override fun findMessagesByToAddress(
-		toAddress: String,
-		startKey: dynamic,
-		startDocumentId: String?,
-		limit: Double?,
-	): Promise<PaginatedListJs<EncryptedMessageJs>> = GlobalScope.promise {
-		val toAddressConverted: String = toAddress
-		val startKeyConverted: JsonElement? = dynamicToJsonNullsafe(startKey, "startKey")
-		val startDocumentIdConverted: String? = undefinedToNull(startDocumentId)
-		val limitConverted: Int? = numberToInt(limit, "limit")
-		val result = messageBasicApi.findMessagesByToAddress(
-			toAddressConverted,
-			startKeyConverted,
-			startDocumentIdConverted,
-			limitConverted,
-		)
-		paginatedList_toJs(
-			result,
-			{ x1: EncryptedMessage ->
-				message_toJs(x1)
-			},
-		)
-	}
-
-	override fun findMessagesByFromAddress(
-		fromAddress: String,
-		startKey: dynamic,
-		startDocumentId: String?,
-		limit: Double?,
-	): Promise<PaginatedListJs<EncryptedMessageJs>> = GlobalScope.promise {
-		val fromAddressConverted: String = fromAddress
-		val startKeyConverted: JsonElement? = dynamicToJsonNullsafe(startKey, "startKey")
-		val startDocumentIdConverted: String? = undefinedToNull(startDocumentId)
-		val limitConverted: Int? = numberToInt(limit, "limit")
-		val result = messageBasicApi.findMessagesByFromAddress(
-			fromAddressConverted,
-			startKeyConverted,
-			startDocumentIdConverted,
-			limitConverted,
-		)
-		paginatedList_toJs(
-			result,
-			{ x1: EncryptedMessage ->
-				message_toJs(x1)
-			},
-		)
-	}
-
-	override fun setMessagesStatusBits(entityIds: Array<String>, statusBits: Double):
-			Promise<Array<EncryptedMessageJs>> = GlobalScope.promise {
-		val entityIdsConverted: List<String> = arrayToList(
-			entityIds,
-			"entityIds",
-			{ x1: String ->
-				x1
-			},
-		)
-		val statusBitsConverted: Int = numberToInt(statusBits, "statusBits")
-		val result = messageBasicApi.setMessagesStatusBits(
-			entityIdsConverted,
-			statusBitsConverted,
 		)
 		listToArray(
 			result,

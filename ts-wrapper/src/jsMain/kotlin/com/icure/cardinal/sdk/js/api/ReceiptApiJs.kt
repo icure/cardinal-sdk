@@ -6,10 +6,11 @@ package com.icure.cardinal.sdk.js.api
 import com.icure.cardinal.sdk.js.crypto.entities.ReceiptShareOptionsJs
 import com.icure.cardinal.sdk.js.model.DecryptedReceiptJs
 import com.icure.cardinal.sdk.js.model.EncryptedReceiptJs
+import com.icure.cardinal.sdk.js.model.EntityReferenceInGroupJs
 import com.icure.cardinal.sdk.js.model.PatientJs
 import com.icure.cardinal.sdk.js.model.ReceiptJs
+import com.icure.cardinal.sdk.js.model.StoredDocumentIdentifierJs
 import com.icure.cardinal.sdk.js.model.UserJs
-import com.icure.cardinal.sdk.js.model.couchdb.DocIdentifierJs
 import com.icure.cardinal.sdk.js.utils.Record
 import kotlin.Array
 import kotlin.Boolean
@@ -25,6 +26,8 @@ public external interface ReceiptApiJs {
 	public val encrypted: ReceiptFlavouredApiJs<EncryptedReceiptJs>
 
 	public val tryAndRecover: ReceiptFlavouredApiJs<ReceiptJs>
+
+	public val inGroup: ReceiptInGroupApiJs
 
 	public fun withEncryptionMetadata(
 		base: DecryptedReceiptJs?,
@@ -45,7 +48,7 @@ public external interface ReceiptApiJs {
 
 	public fun hasWriteAccess(receipt: ReceiptJs): Promise<Boolean>
 
-	public fun decryptPatientIdOf(receipt: ReceiptJs): Promise<Array<String>>
+	public fun decryptPatientIdOf(receipt: ReceiptJs): Promise<Array<EntityReferenceInGroupJs>>
 
 	public fun createDelegationDeAnonymizationMetadata(entity: ReceiptJs, delegates: Array<String>):
 			Promise<Unit>
@@ -62,9 +65,23 @@ public external interface ReceiptApiJs {
 
 	public fun tryDecrypt(receipt: EncryptedReceiptJs): Promise<ReceiptJs>
 
-	public fun deleteReceipt(entityId: String): Promise<DocIdentifierJs>
+	public fun deleteReceiptById(entityId: String, rev: String): Promise<StoredDocumentIdentifierJs>
 
-	public fun deleteReceipts(entityIds: Array<String>): Promise<Array<DocIdentifierJs>>
+	public fun deleteReceiptsByIds(entityIds: Array<StoredDocumentIdentifierJs>):
+			Promise<Array<StoredDocumentIdentifierJs>>
+
+	public fun purgeReceiptById(id: String, rev: String): Promise<Unit>
+
+	public fun purgeReceiptsByIds(entityIds: Array<StoredDocumentIdentifierJs>):
+			Promise<Array<StoredDocumentIdentifierJs>>
+
+	public fun deleteReceipt(receipt: ReceiptJs): Promise<StoredDocumentIdentifierJs>
+
+	public fun deleteReceipts(receipts: Array<ReceiptJs>): Promise<Array<StoredDocumentIdentifierJs>>
+
+	public fun purgeReceipt(receipt: ReceiptJs): Promise<Unit>
+
+	public fun purgeReceipts(receipts: Array<ReceiptJs>): Promise<Array<StoredDocumentIdentifierJs>>
 
 	public fun getRawReceiptAttachment(receiptId: String, attachmentId: String): Promise<ByteArray>
 
@@ -86,9 +103,24 @@ public external interface ReceiptApiJs {
 
 	public fun createReceipt(entity: DecryptedReceiptJs): Promise<DecryptedReceiptJs>
 
+	public fun createReceipts(entities: Array<DecryptedReceiptJs>): Promise<Array<DecryptedReceiptJs>>
+
+	public fun undeleteReceiptById(id: String, rev: String): Promise<DecryptedReceiptJs>
+
+	public fun undeleteReceiptsByIds(entityIds: Array<StoredDocumentIdentifierJs>):
+			Promise<Array<DecryptedReceiptJs>>
+
+	public fun undeleteReceipt(receipt: ReceiptJs): Promise<DecryptedReceiptJs>
+
+	public fun undeleteReceipts(receipts: Array<ReceiptJs>): Promise<Array<DecryptedReceiptJs>>
+
 	public fun modifyReceipt(entity: DecryptedReceiptJs): Promise<DecryptedReceiptJs>
 
+	public fun modifyReceipts(entities: Array<DecryptedReceiptJs>): Promise<Array<DecryptedReceiptJs>>
+
 	public fun getReceipt(entityId: String): Promise<DecryptedReceiptJs?>
+
+	public fun getReceipts(entityIds: Array<String>): Promise<Array<DecryptedReceiptJs>>
 
 	public fun listByReference(reference: String): Promise<Array<DecryptedReceiptJs>>
 }

@@ -15,7 +15,6 @@ import com.icure.cardinal.sdk.js.model.embed.SecurityMetadataJs
 import com.icure.cardinal.sdk.js.utils.Record
 import kotlin.Array
 import kotlin.Boolean
-import kotlin.ByteArray
 import kotlin.Double
 import kotlin.String
 import kotlin.js.JsName
@@ -24,8 +23,6 @@ import kotlin.js.JsQualifier
 @JsName("Document")
 public sealed external interface DocumentJs : StoredDocumentJs, ICureDocumentJs<String>,
 		HasEncryptionMetadataJs, EncryptableJs {
-	public val documentLocation: String?
-
 	public val documentType: String?
 
 	public val documentStatus: String?
@@ -35,10 +32,6 @@ public sealed external interface DocumentJs : StoredDocumentJs, ICureDocumentJs<
 	public val name: String?
 
 	public val version: String?
-
-	public val storedICureDocumentId: String?
-
-	public val externalUuid: String?
 
 	public val size: Double?
 
@@ -57,10 +50,6 @@ public sealed external interface DocumentJs : StoredDocumentJs, ICureDocumentJs<
 	public val secondaryAttachments: Record<String, out DataAttachmentJs>
 
 	public val deletedAttachments: Array<out DeletedAttachmentJs>
-
-	public val encryptedAttachment: ByteArray?
-
-	public val decryptedAttachment: ByteArray?
 
 	public val isEncrypted: Boolean
 }
@@ -81,17 +70,11 @@ public external class DecryptedDocumentJs(
 
 	override val responsible: String?
 
-	override val medicalLocationId: String?
-
 	override val tags: Array<CodeStubJs>
 
 	override val codes: Array<CodeStubJs>
 
-	override val endOfLife: Double?
-
 	override val deletionDate: Double?
-
-	override val documentLocation: String?
 
 	override val documentType: String?
 
@@ -102,10 +85,6 @@ public external class DecryptedDocumentJs(
 	override val name: String?
 
 	override val version: String?
-
-	override val storedICureDocumentId: String?
-
-	override val externalUuid: String?
 
 	override val size: Double?
 
@@ -124,10 +103,6 @@ public external class DecryptedDocumentJs(
 	override val secondaryAttachments: Record<String, DataAttachmentJs>
 
 	override val deletedAttachments: Array<DeletedAttachmentJs>
-
-	override val encryptedAttachment: ByteArray?
-
-	override val decryptedAttachment: ByteArray?
 
 	override val secretForeignKeys: Array<String>
 
@@ -160,17 +135,11 @@ public external class EncryptedDocumentJs(
 
 	override val responsible: String?
 
-	override val medicalLocationId: String?
-
 	override val tags: Array<CodeStubJs>
 
 	override val codes: Array<CodeStubJs>
 
-	override val endOfLife: Double?
-
 	override val deletionDate: Double?
-
-	override val documentLocation: String?
 
 	override val documentType: String?
 
@@ -181,10 +150,6 @@ public external class EncryptedDocumentJs(
 	override val name: String?
 
 	override val version: String?
-
-	override val storedICureDocumentId: String?
-
-	override val externalUuid: String?
 
 	override val size: Double?
 
@@ -203,10 +168,6 @@ public external class EncryptedDocumentJs(
 	override val secondaryAttachments: Record<String, DataAttachmentJs>
 
 	override val deletedAttachments: Array<DeletedAttachmentJs>
-
-	override val encryptedAttachment: ByteArray?
-
-	override val decryptedAttachment: ByteArray?
 
 	override val secretForeignKeys: Array<String>
 

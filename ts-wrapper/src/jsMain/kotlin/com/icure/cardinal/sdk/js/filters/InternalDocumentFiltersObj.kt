@@ -7,10 +7,16 @@ import com.icure.cardinal.sdk.js.api.DefaultParametersSupport.convertingOptionOr
 import com.icure.cardinal.sdk.js.model.CheckedConverters.arrayToList
 import com.icure.cardinal.sdk.js.model.CheckedConverters.numberToInstant
 import com.icure.cardinal.sdk.js.model.DocumentJs
+import com.icure.cardinal.sdk.js.model.EntityReferenceInGroupJs
+import com.icure.cardinal.sdk.js.model.GroupScopedJs
 import com.icure.cardinal.sdk.js.model.MessageJs
 import com.icure.cardinal.sdk.js.model.PatientJs
+import com.icure.cardinal.sdk.js.model.entityReferenceInGroup_fromJs
+import com.icure.cardinal.sdk.js.model.groupScoped_fromJs
 import com.icure.cardinal.sdk.js.model.message_fromJs
 import com.icure.cardinal.sdk.js.model.patient_fromJs
+import com.icure.cardinal.sdk.model.EntityReferenceInGroup
+import com.icure.cardinal.sdk.model.GroupScoped
 import com.icure.cardinal.sdk.model.Message
 import com.icure.cardinal.sdk.model.Patient
 import com.icure.cardinal.sdk.model.embed.DocumentType
@@ -69,6 +75,56 @@ public object InternalDocumentFiltersObj {
 		return SortableFilterOptionsJsImpl(result)
 	}
 
+	public fun byPatientsCreatedForDataOwnerInGroup(
+		dataOwner: EntityReferenceInGroupJs,
+		patients: Array<GroupScopedJs<PatientJs>>,
+		options: dynamic,
+	): SortableFilterOptionsJs<DocumentJs> {
+		val _options = options ?: js("{}")
+		val dataOwnerConverted: EntityReferenceInGroup = entityReferenceInGroup_fromJs(dataOwner)
+		val patientsConverted: List<GroupScoped<Patient>> = arrayToList(
+			patients,
+			"patients",
+			{ x1: GroupScopedJs<PatientJs> ->
+				groupScoped_fromJs(
+					x1,
+					{ x2: PatientJs ->
+						patient_fromJs(x2)
+					},
+				)
+			},
+		)
+		val fromConverted: Instant? = convertingOptionOrDefaultNullable(
+			_options,
+			"from",
+			null
+		) { from: Double? ->
+			numberToInstant(from, "from")
+		}
+		val toConverted: Instant? = convertingOptionOrDefaultNullable(
+			_options,
+			"to",
+			null
+		) { to: Double? ->
+			numberToInstant(to, "to")
+		}
+		val descendingConverted: Boolean = convertingOptionOrDefaultNonNull(
+			_options,
+			"descending",
+			false
+		) { descending: Boolean ->
+			descending
+		}
+		val result = DocumentFilters.byPatientsCreatedForDataOwnerInGroup(
+			dataOwnerConverted,
+			patientsConverted,
+			fromConverted,
+			toConverted,
+			descendingConverted,
+		)
+		return SortableFilterOptionsJsImpl(result)
+	}
+
 	public fun byMessagesCreatedForDataOwner(
 		dataOwnerId: String,
 		messages: Array<MessageJs>,
@@ -106,6 +162,56 @@ public object InternalDocumentFiltersObj {
 		}
 		val result = DocumentFilters.byMessagesCreatedForDataOwner(
 			dataOwnerIdConverted,
+			messagesConverted,
+			fromConverted,
+			toConverted,
+			descendingConverted,
+		)
+		return SortableFilterOptionsJsImpl(result)
+	}
+
+	public fun byMessagesCreatedForDataOwnerInGroup(
+		dataOwner: EntityReferenceInGroupJs,
+		messages: Array<GroupScopedJs<MessageJs>>,
+		options: dynamic,
+	): SortableFilterOptionsJs<DocumentJs> {
+		val _options = options ?: js("{}")
+		val dataOwnerConverted: EntityReferenceInGroup = entityReferenceInGroup_fromJs(dataOwner)
+		val messagesConverted: List<GroupScoped<Message>> = arrayToList(
+			messages,
+			"messages",
+			{ x1: GroupScopedJs<MessageJs> ->
+				groupScoped_fromJs(
+					x1,
+					{ x2: MessageJs ->
+						message_fromJs(x2)
+					},
+				)
+			},
+		)
+		val fromConverted: Instant? = convertingOptionOrDefaultNullable(
+			_options,
+			"from",
+			null
+		) { from: Double? ->
+			numberToInstant(from, "from")
+		}
+		val toConverted: Instant? = convertingOptionOrDefaultNullable(
+			_options,
+			"to",
+			null
+		) { to: Double? ->
+			numberToInstant(to, "to")
+		}
+		val descendingConverted: Boolean = convertingOptionOrDefaultNonNull(
+			_options,
+			"descending",
+			false
+		) { descending: Boolean ->
+			descending
+		}
+		val result = DocumentFilters.byMessagesCreatedForDataOwnerInGroup(
+			dataOwnerConverted,
 			messagesConverted,
 			fromConverted,
 			toConverted,
@@ -239,6 +345,51 @@ public object InternalDocumentFiltersObj {
 		return BaseSortableFilterOptionsJsImpl(result)
 	}
 
+	public fun byOwningEntitySecretIdsCreatedForDataOwnerInGroup(
+		dataOwner: EntityReferenceInGroupJs,
+		secretIds: Array<String>,
+		options: dynamic,
+	): BaseSortableFilterOptionsJs<DocumentJs> {
+		val _options = options ?: js("{}")
+		val dataOwnerConverted: EntityReferenceInGroup = entityReferenceInGroup_fromJs(dataOwner)
+		val secretIdsConverted: List<String> = arrayToList(
+			secretIds,
+			"secretIds",
+			{ x1: String ->
+				x1
+			},
+		)
+		val fromConverted: Instant? = convertingOptionOrDefaultNullable(
+			_options,
+			"from",
+			null
+		) { from: Double? ->
+			numberToInstant(from, "from")
+		}
+		val toConverted: Instant? = convertingOptionOrDefaultNullable(
+			_options,
+			"to",
+			null
+		) { to: Double? ->
+			numberToInstant(to, "to")
+		}
+		val descendingConverted: Boolean = convertingOptionOrDefaultNonNull(
+			_options,
+			"descending",
+			false
+		) { descending: Boolean ->
+			descending
+		}
+		val result = DocumentFilters.byOwningEntitySecretIdsCreatedForDataOwnerInGroup(
+			dataOwnerConverted,
+			secretIdsConverted,
+			fromConverted,
+			toConverted,
+			descendingConverted,
+		)
+		return BaseSortableFilterOptionsJsImpl(result)
+	}
+
 	public fun byOwningEntitySecretIdsCreatedForSelf(secretIds: Array<String>, options: dynamic):
 			SortableFilterOptionsJs<DocumentJs> {
 		val _options = options ?: js("{}")
@@ -301,6 +452,33 @@ public object InternalDocumentFiltersObj {
 		return FilterOptionsJsImpl(result)
 	}
 
+	public fun byPatientsAndTypeForDataOwnerInGroup(
+		dataOwner: EntityReferenceInGroupJs,
+		documentType: String,
+		patients: Array<GroupScopedJs<PatientJs>>,
+	): FilterOptionsJs<DocumentJs> {
+		val dataOwnerConverted: EntityReferenceInGroup = entityReferenceInGroup_fromJs(dataOwner)
+		val documentTypeConverted: DocumentType = DocumentType.valueOf(documentType)
+		val patientsConverted: List<GroupScoped<Patient>> = arrayToList(
+			patients,
+			"patients",
+			{ x1: GroupScopedJs<PatientJs> ->
+				groupScoped_fromJs(
+					x1,
+					{ x2: PatientJs ->
+						patient_fromJs(x2)
+					},
+				)
+			},
+		)
+		val result = DocumentFilters.byPatientsAndTypeForDataOwnerInGroup(
+			dataOwnerConverted,
+			documentTypeConverted,
+			patientsConverted,
+		)
+		return FilterOptionsJsImpl(result)
+	}
+
 	public fun byMessagesAndTypeForDataOwner(
 		dataOwnerId: String,
 		documentType: String,
@@ -317,6 +495,33 @@ public object InternalDocumentFiltersObj {
 		)
 		val result = DocumentFilters.byMessagesAndTypeForDataOwner(
 			dataOwnerIdConverted,
+			documentTypeConverted,
+			messagesConverted,
+		)
+		return FilterOptionsJsImpl(result)
+	}
+
+	public fun byMessagesAndTypeForDataOwnerInGroup(
+		dataOwner: EntityReferenceInGroupJs,
+		documentType: String,
+		messages: Array<GroupScopedJs<MessageJs>>,
+	): FilterOptionsJs<DocumentJs> {
+		val dataOwnerConverted: EntityReferenceInGroup = entityReferenceInGroup_fromJs(dataOwner)
+		val documentTypeConverted: DocumentType = DocumentType.valueOf(documentType)
+		val messagesConverted: List<GroupScoped<Message>> = arrayToList(
+			messages,
+			"messages",
+			{ x1: GroupScopedJs<MessageJs> ->
+				groupScoped_fromJs(
+					x1,
+					{ x2: MessageJs ->
+						message_fromJs(x2)
+					},
+				)
+			},
+		)
+		val result = DocumentFilters.byMessagesAndTypeForDataOwnerInGroup(
+			dataOwnerConverted,
 			documentTypeConverted,
 			messagesConverted,
 		)
@@ -373,6 +578,28 @@ public object InternalDocumentFiltersObj {
 		)
 		val result = DocumentFilters.byOwningEntitySecretIdsAndTypeForDataOwner(
 			dataOwnerIdConverted,
+			documentTypeConverted,
+			secretIdsConverted,
+		)
+		return FilterOptionsJsImpl(result)
+	}
+
+	public fun byOwningEntitySecretIdsAndTypeForDataOwnerInGroup(
+		dataOwner: EntityReferenceInGroupJs,
+		documentType: String,
+		secretIds: Array<String>,
+	): FilterOptionsJs<DocumentJs> {
+		val dataOwnerConverted: EntityReferenceInGroup = entityReferenceInGroup_fromJs(dataOwner)
+		val documentTypeConverted: DocumentType = DocumentType.valueOf(documentType)
+		val secretIdsConverted: List<String> = arrayToList(
+			secretIds,
+			"secretIds",
+			{ x1: String ->
+				x1
+			},
+		)
+		val result = DocumentFilters.byOwningEntitySecretIdsAndTypeForDataOwnerInGroup(
+			dataOwnerConverted,
 			documentTypeConverted,
 			secretIdsConverted,
 		)

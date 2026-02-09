@@ -6,7 +6,6 @@ import {Identifier} from './base/Identifier.mjs';
 import {StoredDocument} from './base/StoredDocument.mjs';
 import {DelegationTag} from './embed/DelegationTag.mjs';
 import {UsersStatus} from './enums/UsersStatus.mjs';
-import {UsersType} from './enums/UsersType.mjs';
 import {AuthenticationToken} from './security/AuthenticationToken.mjs';
 import {LoginIdentifier} from './security/LoginIdentifier.mjs';
 import {Permission} from './security/Permission.mjs';
@@ -32,8 +31,6 @@ export class User implements StoredDocument {
 
 	roles: Array<string> = [];
 
-	type: UsersType | undefined = undefined;
-
 	status: UsersStatus | undefined = undefined;
 
 	login: string | undefined = undefined;
@@ -50,15 +47,11 @@ export class User implements StoredDocument {
 
 	autoDelegations: { [ key in DelegationTag ]?: Array<string> } = {};
 
-	createdDate: number | undefined = undefined;
-
 	termsOfUseDate: number | undefined = undefined;
 
 	email: string | undefined = undefined;
 
 	mobilePhone: string | undefined = undefined;
-
-	applicationTokens: { [ key: string ]: string } = {};
 
 	authenticationTokens: { [ key: string ]: AuthenticationToken } = {};
 
@@ -74,7 +67,6 @@ export class User implements StoredDocument {
 		if ('properties' in partial && partial.properties !== undefined) this.properties = partial.properties;
 		if ('permissions' in partial && partial.permissions !== undefined) this.permissions = partial.permissions;
 		if ('roles' in partial && partial.roles !== undefined) this.roles = partial.roles;
-		if ('type' in partial) this.type = partial.type;
 		if ('status' in partial) this.status = partial.status;
 		if ('login' in partial) this.login = partial.login;
 		if ('passwordHash' in partial) this.passwordHash = partial.passwordHash;
@@ -83,11 +75,9 @@ export class User implements StoredDocument {
 		if ('patientId' in partial) this.patientId = partial.patientId;
 		if ('deviceId' in partial) this.deviceId = partial.deviceId;
 		if ('autoDelegations' in partial && partial.autoDelegations !== undefined) this.autoDelegations = partial.autoDelegations;
-		if ('createdDate' in partial) this.createdDate = partial.createdDate;
 		if ('termsOfUseDate' in partial) this.termsOfUseDate = partial.termsOfUseDate;
 		if ('email' in partial) this.email = partial.email;
 		if ('mobilePhone' in partial) this.mobilePhone = partial.mobilePhone;
-		if ('applicationTokens' in partial && partial.applicationTokens !== undefined) this.applicationTokens = partial.applicationTokens;
 		if ('authenticationTokens' in partial && partial.authenticationTokens !== undefined) this.authenticationTokens = partial.authenticationTokens;
 		if ('systemMetadata' in partial) this.systemMetadata = partial.systemMetadata;
 	}
@@ -103,7 +93,6 @@ export class User implements StoredDocument {
 		res['properties'] = this.properties.map((x0) => x0.toJSON() )
 		res['permissions'] = this.permissions.map((x0) => x0.toJSON() )
 		res['roles'] = this.roles.map((x0) => x0 )
-		if (this.type != undefined) res['type'] = this.type
 		if (this.status != undefined) res['status'] = this.status
 		if (this.login != undefined) res['login'] = this.login
 		if (this.passwordHash != undefined) res['passwordHash'] = this.passwordHash
@@ -112,11 +101,9 @@ export class User implements StoredDocument {
 		if (this.patientId != undefined) res['patientId'] = this.patientId
 		if (this.deviceId != undefined) res['deviceId'] = this.deviceId
 		res['autoDelegations'] = Object.fromEntries(Object.entries(this.autoDelegations).map(([k0, v0]) => [k0, v0.map((x1) => x1 )]))
-		if (this.createdDate != undefined) res['createdDate'] = this.createdDate
 		if (this.termsOfUseDate != undefined) res['termsOfUseDate'] = this.termsOfUseDate
 		if (this.email != undefined) res['email'] = this.email
 		if (this.mobilePhone != undefined) res['mobilePhone'] = this.mobilePhone
-		res['applicationTokens'] = Object.fromEntries(Object.entries(this.applicationTokens).map(([k0, v0]) => [k0, v0]))
 		res['authenticationTokens'] = Object.fromEntries(Object.entries(this.authenticationTokens).map(([k0, v0]) => [k0, v0.toJSON()]))
 		if (this.systemMetadata != undefined) res['systemMetadata'] = this.systemMetadata.toJSON()
 		return res
@@ -136,7 +123,6 @@ export class User implements StoredDocument {
 			properties: expectArray(extractEntry(jCpy, 'properties', false, path), false, [...path, ".properties"], (x0, p0) => expectObject(x0, false, ignoreUnknownKeys, p0, DecryptedPropertyStub.fromJSON)),
 			permissions: expectArray(extractEntry(jCpy, 'permissions', false, path), false, [...path, ".permissions"], (x0, p0) => expectObject(x0, false, ignoreUnknownKeys, p0, Permission.fromJSON)),
 			roles: expectArray(extractEntry(jCpy, 'roles', false, path), false, [...path, ".roles"], (x0, p0) => expectString(x0, false, p0)),
-			type: expectStringEnum(extractEntry(jCpy, 'type', false, path), true, [...path, ".type"], UsersType, 'UsersType'),
 			status: expectStringEnum(extractEntry(jCpy, 'status', false, path), true, [...path, ".status"], UsersStatus, 'UsersStatus'),
 			login: expectString(extractEntry(jCpy, 'login', false, path), true, [...path, ".login"]),
 			passwordHash: expectString(extractEntry(jCpy, 'passwordHash', false, path), true, [...path, ".passwordHash"]),
@@ -151,17 +137,9 @@ export class User implements StoredDocument {
 				(k0, p0) => expectStringEnum(k0, false, p0, DelegationTag, 'DelegationTag'),
 				(v0, p0) => expectArray(v0, false, p0, (x1, p1) => expectString(x1, false, p1))
 			),
-			createdDate: expectNumber(extractEntry(jCpy, 'createdDate', false, path), true, true, [...path, ".createdDate"]),
 			termsOfUseDate: expectNumber(extractEntry(jCpy, 'termsOfUseDate', false, path), true, true, [...path, ".termsOfUseDate"]),
 			email: expectString(extractEntry(jCpy, 'email', false, path), true, [...path, ".email"]),
 			mobilePhone: expectString(extractEntry(jCpy, 'mobilePhone', false, path), true, [...path, ".mobilePhone"]),
-			applicationTokens: expectMap(
-				extractEntry(jCpy, 'applicationTokens', false, path),
-				false,
-				[...path, ".applicationTokens"],
-				(k0, p0) => expectString(k0, false, p0),
-				(v0, p0) => expectString(v0, false, p0)
-			),
 			authenticationTokens: expectMap(
 				extractEntry(jCpy, 'authenticationTokens', false, path),
 				false,

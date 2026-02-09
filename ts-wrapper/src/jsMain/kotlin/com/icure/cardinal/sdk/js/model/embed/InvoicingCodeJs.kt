@@ -26,7 +26,7 @@ public sealed external interface InvoicingCodeJs : EncryptableJs {
 
 	public val serviceId: String?
 
-	public val tarificationId: String?
+	public val pricingId: String?
 
 	public val code: String?
 
@@ -143,7 +143,7 @@ public external class DecryptedInvoicingCodeJs(
 
 	override val serviceId: String?
 
-	override val tarificationId: String?
+	override val pricingId: String?
 
 	override val code: String?
 
@@ -262,7 +262,7 @@ public external class EncryptedInvoicingCodeJs(
 
 	override val serviceId: String?
 
-	override val tarificationId: String?
+	override val pricingId: String?
 
 	override val code: String?
 

@@ -3,12 +3,10 @@ package com.icure.cardinal.sdk.js.model
 
 import com.icure.cardinal.sdk.js.model.CheckedConverters.arrayToList
 import com.icure.cardinal.sdk.js.model.CheckedConverters.arrayToSet
-import com.icure.cardinal.sdk.js.model.CheckedConverters.intToNumber
 import com.icure.cardinal.sdk.js.model.CheckedConverters.listToArray
 import com.icure.cardinal.sdk.js.model.CheckedConverters.longToNumber
 import com.icure.cardinal.sdk.js.model.CheckedConverters.mapToObject
 import com.icure.cardinal.sdk.js.model.CheckedConverters.nullToUndefined
-import com.icure.cardinal.sdk.js.model.CheckedConverters.numberToInt
 import com.icure.cardinal.sdk.js.model.CheckedConverters.numberToLong
 import com.icure.cardinal.sdk.js.model.CheckedConverters.objectToMap
 import com.icure.cardinal.sdk.js.model.CheckedConverters.objectToMapNullsafe
@@ -22,17 +20,11 @@ import com.icure.cardinal.sdk.js.model.base.identifier_fromJs
 import com.icure.cardinal.sdk.js.model.base.identifier_toJs
 import com.icure.cardinal.sdk.js.model.embed.DecryptedAddressJs
 import com.icure.cardinal.sdk.js.model.embed.DecryptedFinancialInstitutionInformationJs
-import com.icure.cardinal.sdk.js.model.embed.DecryptedFlatRateTarificationJs
-import com.icure.cardinal.sdk.js.model.embed.HealthcarePartyHistoryStatusJs
 import com.icure.cardinal.sdk.js.model.embed.PersonNameJs
 import com.icure.cardinal.sdk.js.model.embed.address_fromJs
 import com.icure.cardinal.sdk.js.model.embed.address_toJs
 import com.icure.cardinal.sdk.js.model.embed.financialInstitutionInformation_fromJs
 import com.icure.cardinal.sdk.js.model.embed.financialInstitutionInformation_toJs
-import com.icure.cardinal.sdk.js.model.embed.flatRateTarification_fromJs
-import com.icure.cardinal.sdk.js.model.embed.flatRateTarification_toJs
-import com.icure.cardinal.sdk.js.model.embed.healthcarePartyHistoryStatus_fromJs
-import com.icure.cardinal.sdk.js.model.embed.healthcarePartyHistoryStatus_toJs
 import com.icure.cardinal.sdk.js.model.embed.personName_fromJs
 import com.icure.cardinal.sdk.js.model.embed.personName_toJs
 import com.icure.cardinal.sdk.js.model.specializations.aesExchangeKeyEncryptionKeypairIdentifier_fromJs
@@ -50,12 +42,8 @@ import com.icure.cardinal.sdk.model.base.CodeStub
 import com.icure.cardinal.sdk.model.base.Identifier
 import com.icure.cardinal.sdk.model.embed.DecryptedAddress
 import com.icure.cardinal.sdk.model.embed.DecryptedFinancialInstitutionInformation
-import com.icure.cardinal.sdk.model.embed.DecryptedFlatRateTarification
 import com.icure.cardinal.sdk.model.embed.Gender
-import com.icure.cardinal.sdk.model.embed.HealthcarePartyHistoryStatus
-import com.icure.cardinal.sdk.model.embed.HealthcarePartyStatus
 import com.icure.cardinal.sdk.model.embed.PersonName
-import com.icure.cardinal.sdk.model.embed.TelecomType
 import com.icure.cardinal.sdk.model.specializations.AesExchangeKeyEncryptionKeypairIdentifier
 import com.icure.cardinal.sdk.model.specializations.AesExchangeKeyEntryKeyString
 import com.icure.cardinal.sdk.model.specializations.HexString
@@ -143,26 +131,8 @@ public fun healthcareParty_toJs(obj: HealthcareParty): HealthcarePartyJs {
 	val invoiceHeader = nullToUndefined(
 		obj.invoiceHeader
 	)
-	val cbe = nullToUndefined(
-		obj.cbe
-	)
-	val ehp = nullToUndefined(
-		obj.ehp
-	)
-	val userId = nullToUndefined(
-		obj.userId
-	)
 	val parentId = nullToUndefined(
 		obj.parentId
-	)
-	val convention = nullToUndefined(
-		intToNumber(obj.convention)
-	)
-	val nihii = nullToUndefined(
-		obj.nihii
-	)
-	val nihiiSpecCode = nullToUndefined(
-		obj.nihiiSpecCode
 	)
 	val ssin = nullToUndefined(
 		obj.ssin
@@ -179,34 +149,10 @@ public fun healthcareParty_toJs(obj: HealthcareParty): HealthcarePartyJs {
 			x1
 		},
 	)
-	val picture = nullToUndefined(
-		obj.picture
-	)
-	val statuses = setToArray(
-		obj.statuses,
-		{ x1: HealthcarePartyStatus ->
-			x1.name
-		},
-	)
-	val statusHistory = listToArray(
-		obj.statusHistory,
-		{ x1: HealthcarePartyHistoryStatus ->
-			healthcarePartyHistoryStatus_toJs(x1)
-		},
-	)
 	val specialityCodes = setToArray(
 		obj.specialityCodes,
 		{ x1: CodeStub ->
 			codeStub_toJs(x1)
-		},
-	)
-	val sendFormats = mapToObject(
-		obj.sendFormats,
-		{ x1: TelecomType ->
-			x1.name
-		},
-		{ x1: String ->
-			x1
 		},
 	)
 	val notes = nullToUndefined(
@@ -228,45 +174,6 @@ public fun healthcareParty_toJs(obj: HealthcareParty): HealthcarePartyJs {
 				x1
 			},
 		)
-	)
-	val billingType = nullToUndefined(
-		obj.billingType
-	)
-	val type = nullToUndefined(
-		obj.type
-	)
-	val contactPerson = nullToUndefined(
-		obj.contactPerson
-	)
-	val contactPersonHcpId = nullToUndefined(
-		obj.contactPersonHcpId
-	)
-	val supervisorId = nullToUndefined(
-		obj.supervisorId
-	)
-	val flatRateTarifications = listToArray(
-		obj.flatRateTarifications,
-		{ x1: DecryptedFlatRateTarification ->
-			flatRateTarification_toJs(x1)
-		},
-	)
-	val importedData = mapToObject(
-		obj.importedData,
-		{ x1: String ->
-			x1
-		},
-		{ x1: String ->
-			x1
-		},
-	)
-	val options = mapToObject(
-		obj.options,
-		{ x1: String ->
-			x1
-		},
-		{ x1: String ->
-			x1
-		},
 	)
 	val properties = setToArray(
 		obj.properties,
@@ -389,32 +296,14 @@ public fun healthcareParty_toJs(obj: HealthcareParty): HealthcarePartyJs {
 		"proxyBankAccount:proxyBankAccount," +
 		"proxyBic:proxyBic," +
 		"invoiceHeader:invoiceHeader," +
-		"cbe:cbe," +
-		"ehp:ehp," +
-		"userId:userId," +
 		"parentId:parentId," +
-		"convention:convention," +
-		"nihii:nihii," +
-		"nihiiSpecCode:nihiiSpecCode," +
 		"ssin:ssin," +
 		"addresses:addresses," +
 		"languages:languages," +
-		"picture:picture," +
-		"statuses:statuses," +
-		"statusHistory:statusHistory," +
 		"specialityCodes:specialityCodes," +
-		"sendFormats:sendFormats," +
 		"notes:notes," +
 		"financialInstitutionInformation:financialInstitutionInformation," +
 		"descr:descr," +
-		"billingType:billingType," +
-		"type:type," +
-		"contactPerson:contactPerson," +
-		"contactPersonHcpId:contactPersonHcpId," +
-		"supervisorId:supervisorId," +
-		"flatRateTarifications:flatRateTarifications," +
-		"importedData:importedData," +
-		"options:options," +
 		"properties:properties," +
 		"public:public," +
 		"publicProperties:publicProperties," +
@@ -476,13 +365,7 @@ public fun healthcareParty_fromJs(obj: HealthcarePartyJs): HealthcareParty {
 	val proxyBankAccount = undefinedToNull(obj.proxyBankAccount)
 	val proxyBic = undefinedToNull(obj.proxyBic)
 	val invoiceHeader = undefinedToNull(obj.invoiceHeader)
-	val cbe = undefinedToNull(obj.cbe)
-	val ehp = undefinedToNull(obj.ehp)
-	val userId = undefinedToNull(obj.userId)
 	val parentId = undefinedToNull(obj.parentId)
-	val convention = numberToInt(obj.convention, "obj.convention")
-	val nihii = undefinedToNull(obj.nihii)
-	val nihiiSpecCode = undefinedToNull(obj.nihiiSpecCode)
 	val ssin = undefinedToNull(obj.ssin)
 	val addresses = arrayToList(
 		obj.addresses,
@@ -498,36 +381,11 @@ public fun healthcareParty_fromJs(obj: HealthcarePartyJs): HealthcareParty {
 			x1
 		},
 	)
-	val picture = undefinedToNull(obj.picture)
-	val statuses = arrayToSet(
-		obj.statuses,
-		"obj.statuses",
-		{ x1: String ->
-			HealthcarePartyStatus.valueOf(x1)
-		},
-	)
-	val statusHistory = arrayToList(
-		obj.statusHistory,
-		"obj.statusHistory",
-		{ x1: HealthcarePartyHistoryStatusJs ->
-			healthcarePartyHistoryStatus_fromJs(x1)
-		},
-	)
 	val specialityCodes = arrayToSet(
 		obj.specialityCodes,
 		"obj.specialityCodes",
 		{ x1: CodeStubJs ->
 			codeStub_fromJs(x1)
-		},
-	)
-	val sendFormats = objectToMap(
-		obj.sendFormats,
-		"obj.sendFormats",
-		{ x1: String ->
-			TelecomType.valueOf(x1)
-		},
-		{ x1: String ->
-			x1
 		},
 	)
 	val notes = undefinedToNull(obj.notes)
@@ -541,38 +399,6 @@ public fun healthcareParty_fromJs(obj: HealthcarePartyJs): HealthcareParty {
 	val descr = objectToMapNullsafe(
 		obj.descr,
 		"obj.descr",
-		{ x1: String ->
-			x1
-		},
-		{ x1: String ->
-			x1
-		},
-	)
-	val billingType = undefinedToNull(obj.billingType)
-	val type = undefinedToNull(obj.type)
-	val contactPerson = undefinedToNull(obj.contactPerson)
-	val contactPersonHcpId = undefinedToNull(obj.contactPersonHcpId)
-	val supervisorId = undefinedToNull(obj.supervisorId)
-	val flatRateTarifications = arrayToList(
-		obj.flatRateTarifications,
-		"obj.flatRateTarifications",
-		{ x1: DecryptedFlatRateTarificationJs ->
-			flatRateTarification_fromJs(x1)
-		},
-	)
-	val importedData = objectToMap(
-		obj.importedData,
-		"obj.importedData",
-		{ x1: String ->
-			x1
-		},
-		{ x1: String ->
-			x1
-		},
-	)
-	val options = objectToMap(
-		obj.options,
-		"obj.options",
 		{ x1: String ->
 			x1
 		},
@@ -707,32 +533,14 @@ public fun healthcareParty_fromJs(obj: HealthcarePartyJs): HealthcareParty {
 		proxyBankAccount = proxyBankAccount,
 		proxyBic = proxyBic,
 		invoiceHeader = invoiceHeader,
-		cbe = cbe,
-		ehp = ehp,
-		userId = userId,
 		parentId = parentId,
-		convention = convention,
-		nihii = nihii,
-		nihiiSpecCode = nihiiSpecCode,
 		ssin = ssin,
 		addresses = addresses,
 		languages = languages,
-		picture = picture,
-		statuses = statuses,
-		statusHistory = statusHistory,
 		specialityCodes = specialityCodes,
-		sendFormats = sendFormats,
 		notes = notes,
 		financialInstitutionInformation = financialInstitutionInformation,
 		descr = descr,
-		billingType = billingType,
-		type = type,
-		contactPerson = contactPerson,
-		contactPersonHcpId = contactPersonHcpId,
-		supervisorId = supervisorId,
-		flatRateTarifications = flatRateTarifications,
-		importedData = importedData,
-		options = options,
 		properties = properties,
 		public = public,
 		publicProperties = publicProperties,

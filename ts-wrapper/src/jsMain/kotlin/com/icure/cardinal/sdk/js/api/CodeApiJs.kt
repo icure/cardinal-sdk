@@ -7,7 +7,7 @@ import com.icure.cardinal.sdk.js.filters.BaseFilterOptionsJs
 import com.icure.cardinal.sdk.js.filters.BaseSortableFilterOptionsJs
 import com.icure.cardinal.sdk.js.model.BooleanResponseJs
 import com.icure.cardinal.sdk.js.model.CodeJs
-import com.icure.cardinal.sdk.js.model.PaginatedListJs
+import com.icure.cardinal.sdk.js.model.StoredDocumentIdentifierJs
 import com.icure.cardinal.sdk.js.utils.pagination.PaginatedListIteratorJs
 import kotlin.Array
 import kotlin.String
@@ -18,31 +18,49 @@ import kotlin.js.Promise
 
 @JsName("CodeApi")
 public external interface CodeApiJs {
-	public fun findCodesByLabel(
-		region: String?,
-		types: String,
-		language: String,
-		label: String,
-		options: dynamic,
-	): Promise<PaginatedListJs<CodeJs>>
+	public val inGroup: CodeInGroupApiJs
 
-	public fun findCodesByType(region: String, options: dynamic): Promise<PaginatedListJs<CodeJs>>
+	public fun createCode(code: CodeJs): Promise<CodeJs>
 
-	public fun findCodesByLink(linkType: String, options: dynamic): Promise<PaginatedListJs<CodeJs>>
+	public fun createCodes(codes: Array<CodeJs>): Promise<Array<CodeJs>>
 
-	public fun listCodesByRegionTypeCodeVersion(region: String, options: dynamic):
-			Promise<Array<CodeJs>>
+	public fun getCode(codeId: String): Promise<CodeJs?>
+
+	public fun getCodes(codeIds: Array<String>): Promise<Array<CodeJs>>
+
+	public fun modifyCode(code: CodeJs): Promise<CodeJs>
+
+	public fun modifyCodes(codes: Array<CodeJs>): Promise<Array<CodeJs>>
+
+	public fun deleteCodeById(entityId: String, rev: String): Promise<StoredDocumentIdentifierJs>
+
+	public fun deleteCodeByIds(entityIds: Array<StoredDocumentIdentifierJs>):
+			Promise<Array<StoredDocumentIdentifierJs>>
+
+	public fun deleteCode(code: CodeJs): Promise<StoredDocumentIdentifierJs>
+
+	public fun deleteCodes(codes: Array<CodeJs>): Promise<Array<StoredDocumentIdentifierJs>>
+
+	public fun undeleteCodeById(entityId: String, rev: String): Promise<CodeJs>
+
+	public fun undeleteCodeByIds(entityIds: Array<StoredDocumentIdentifierJs>): Promise<Array<CodeJs>>
+
+	public fun undeleteCode(code: CodeJs): Promise<CodeJs>
+
+	public fun undeleteCodes(codes: Array<CodeJs>): Promise<Array<CodeJs>>
+
+	public fun purgeCodeById(entityId: String, rev: String): Promise<Unit>
+
+	public fun purgeCodeByIds(entityIds: Array<StoredDocumentIdentifierJs>):
+			Promise<Array<StoredDocumentIdentifierJs>>
+
+	public fun purgeCode(code: CodeJs): Promise<Unit>
+
+	public fun purgeCodes(codes: Array<CodeJs>): Promise<Array<StoredDocumentIdentifierJs>>
 
 	public fun listCodeTypesBy(options: dynamic): Promise<Array<String>>
 
 	public fun listTagTypesBy(options: dynamic): Promise<Array<String>>
-
-	public fun createCode(c: CodeJs): Promise<CodeJs>
-
-	public fun createCodes(codeBatch: Array<CodeJs>): Promise<Array<CodeJs>>
-
-	@JsName("createCodesInGroup")
-	public fun createCodes(groupId: String, codeBatch: Array<CodeJs>): Promise<Array<CodeJs>>
 
 	public fun isCodeValid(
 		type: String,
@@ -57,25 +75,11 @@ public external interface CodeApiJs {
 		languages: String?,
 	): Promise<CodeJs?>
 
-	public fun getCodes(codeIds: Array<String>): Promise<Array<CodeJs>>
-
-	@JsName("getCodesInGroup")
-	public fun getCodes(groupId: String, codeIds: Array<String>): Promise<Array<CodeJs>>
-
-	public fun getCode(codeId: String): Promise<CodeJs?>
-
 	public fun getCodeWithParts(
 		type: String,
 		code: String,
 		version: String,
 	): Promise<CodeJs?>
-
-	public fun modifyCode(codeDto: CodeJs): Promise<CodeJs>
-
-	public fun modifyCodes(codeBatch: Array<CodeJs>): Promise<Array<CodeJs>>
-
-	@JsName("modifyCodesInGroup")
-	public fun modifyCodes(groupId: String, codeBatch: Array<CodeJs>): Promise<Array<CodeJs>>
 
 	public fun filterCodesBy(filter: BaseFilterOptionsJs<CodeJs>):
 			Promise<PaginatedListIteratorJs<CodeJs>>
@@ -86,6 +90,4 @@ public external interface CodeApiJs {
 	public fun matchCodesBy(filter: BaseFilterOptionsJs<CodeJs>): Promise<Array<String>>
 
 	public fun matchCodesBySorted(filter: BaseSortableFilterOptionsJs<CodeJs>): Promise<Array<String>>
-
-	public fun importCodes(codeType: String): Promise<Unit>
 }

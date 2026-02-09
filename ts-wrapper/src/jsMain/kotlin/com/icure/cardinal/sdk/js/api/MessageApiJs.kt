@@ -10,10 +10,8 @@ import com.icure.cardinal.sdk.js.model.DecryptedMessageJs
 import com.icure.cardinal.sdk.js.model.EncryptedMessageJs
 import com.icure.cardinal.sdk.js.model.EntityReferenceInGroupJs
 import com.icure.cardinal.sdk.js.model.MessageJs
-import com.icure.cardinal.sdk.js.model.PaginatedListJs
 import com.icure.cardinal.sdk.js.model.PatientJs
 import com.icure.cardinal.sdk.js.model.StoredDocumentIdentifierJs
-import com.icure.cardinal.sdk.js.model.couchdb.DocIdentifierJs
 import com.icure.cardinal.sdk.js.subscription.EntitySubscriptionJs
 import com.icure.cardinal.sdk.js.utils.Record
 import com.icure.cardinal.sdk.js.utils.pagination.PaginatedListIteratorJs
@@ -32,6 +30,8 @@ public external interface MessageApiJs {
 
 	public val tryAndRecover: MessageFlavouredApiJs<MessageJs>
 
+	public val inGroup: MessageInGroupApiJs
+
 	public fun withEncryptionMetadata(
 		base: DecryptedMessageJs?,
 		patient: PatientJs?,
@@ -42,7 +42,7 @@ public external interface MessageApiJs {
 
 	public fun hasWriteAccess(message: MessageJs): Promise<Boolean>
 
-	public fun decryptPatientIdOf(message: MessageJs): Promise<Array<String>>
+	public fun decryptPatientIdOf(message: MessageJs): Promise<Array<EntityReferenceInGroupJs>>
 
 	public fun createDelegationDeAnonymizationMetadata(entity: MessageJs, delegates: Array<String>):
 			Promise<Unit>
@@ -50,6 +50,8 @@ public external interface MessageApiJs {
 	public fun decrypt(message: EncryptedMessageJs): Promise<DecryptedMessageJs>
 
 	public fun tryDecrypt(message: EncryptedMessageJs): Promise<MessageJs>
+
+	public fun encryptOrValidate(messages: Array<MessageJs>): Promise<Array<EncryptedMessageJs>>
 
 	public fun getSecretIdsOf(message: MessageJs):
 			Promise<Record<String, Array<EntityReferenceInGroupJs>>>
@@ -59,22 +61,23 @@ public external interface MessageApiJs {
 	public fun matchMessagesBySorted(filter: SortableFilterOptionsJs<MessageJs>):
 			Promise<Array<String>>
 
-	public fun deleteMessageUnsafe(entityId: String): Promise<DocIdentifierJs>
-
-	public fun deleteMessagesUnsafe(entityIds: Array<String>): Promise<Array<DocIdentifierJs>>
-
-	public fun deleteMessageById(entityId: String, rev: String): Promise<DocIdentifierJs>
+	public fun deleteMessageById(entityId: String, rev: String): Promise<StoredDocumentIdentifierJs>
 
 	public fun deleteMessagesByIds(entityIds: Array<StoredDocumentIdentifierJs>):
-			Promise<Array<DocIdentifierJs>>
+			Promise<Array<StoredDocumentIdentifierJs>>
 
 	public fun purgeMessageById(id: String, rev: String): Promise<Unit>
 
-	public fun deleteMessage(message: MessageJs): Promise<DocIdentifierJs>
+	public fun purgeMessagesByIds(entityIds: Array<StoredDocumentIdentifierJs>):
+			Promise<Array<StoredDocumentIdentifierJs>>
 
-	public fun deleteMessages(messages: Array<MessageJs>): Promise<Array<DocIdentifierJs>>
+	public fun deleteMessage(message: MessageJs): Promise<StoredDocumentIdentifierJs>
+
+	public fun deleteMessages(messages: Array<MessageJs>): Promise<Array<StoredDocumentIdentifierJs>>
 
 	public fun purgeMessage(message: MessageJs): Promise<Unit>
+
+	public fun purgeMessages(messages: Array<MessageJs>): Promise<Array<StoredDocumentIdentifierJs>>
 
 	public fun shareWith(
 		delegateId: String,
@@ -85,12 +88,6 @@ public external interface MessageApiJs {
 	public fun shareWithMany(message: DecryptedMessageJs,
 			delegates: Record<String, MessageShareOptionsJs>): Promise<DecryptedMessageJs>
 
-	public fun findMessagesByHcPartyPatient(
-		hcPartyId: String,
-		patient: PatientJs,
-		options: dynamic,
-	): Promise<PaginatedListIteratorJs<DecryptedMessageJs>>
-
 	public fun filterMessagesBy(filter: FilterOptionsJs<MessageJs>):
 			Promise<PaginatedListIteratorJs<DecryptedMessageJs>>
 
@@ -99,59 +96,26 @@ public external interface MessageApiJs {
 
 	public fun createMessage(entity: DecryptedMessageJs): Promise<DecryptedMessageJs>
 
+	public fun createMessages(entities: Array<DecryptedMessageJs>): Promise<Array<DecryptedMessageJs>>
+
 	public fun createMessageInTopic(entity: DecryptedMessageJs): Promise<DecryptedMessageJs>
 
-	public fun undeleteMessage(message: MessageJs): Promise<MessageJs>
+	public fun undeleteMessageById(id: String, rev: String): Promise<DecryptedMessageJs>
+
+	public fun undeleteMessagesByIds(entityIds: Array<StoredDocumentIdentifierJs>):
+			Promise<Array<DecryptedMessageJs>>
+
+	public fun undeleteMessage(message: MessageJs): Promise<DecryptedMessageJs>
+
+	public fun undeleteMessages(messages: Array<MessageJs>): Promise<Array<DecryptedMessageJs>>
 
 	public fun modifyMessage(entity: DecryptedMessageJs): Promise<DecryptedMessageJs>
 
-	public fun undeleteMessageById(id: String, rev: String): Promise<DecryptedMessageJs>
+	public fun modifyMessages(entities: Array<DecryptedMessageJs>): Promise<Array<DecryptedMessageJs>>
 
 	public fun getMessage(entityId: String): Promise<DecryptedMessageJs?>
 
 	public fun getMessages(entityIds: Array<String>): Promise<Array<DecryptedMessageJs>>
-
-	public fun listMessagesByTransportGuids(hcPartyId: String, transportGuids: Array<String>):
-			Promise<Array<DecryptedMessageJs>>
-
-	public fun findMessages(
-		startKey: dynamic,
-		startDocumentId: String?,
-		limit: Double?,
-	): Promise<PaginatedListJs<DecryptedMessageJs>>
-
-	public fun getChildrenMessages(messageId: String): Promise<Array<DecryptedMessageJs>>
-
-	public fun getMessagesChildren(messageIds: Array<String>): Promise<Array<DecryptedMessageJs>>
-
-	public fun listMessagesByInvoices(invoiceIds: Array<String>): Promise<Array<DecryptedMessageJs>>
-
-	public fun findMessagesByTransportGuid(transportGuid: String):
-			Promise<PaginatedListJs<DecryptedMessageJs>>
-
-	public fun findMessagesByTransportGuidSentDate(
-		transportGuid: String,
-		from: Double,
-		to: Double,
-		options: dynamic,
-	): Promise<PaginatedListJs<DecryptedMessageJs>>
-
-	public fun findMessagesByToAddress(
-		toAddress: String,
-		startKey: dynamic,
-		startDocumentId: String?,
-		limit: Double?,
-	): Promise<PaginatedListJs<DecryptedMessageJs>>
-
-	public fun findMessagesByFromAddress(
-		fromAddress: String,
-		startKey: dynamic,
-		startDocumentId: String?,
-		limit: Double?,
-	): Promise<PaginatedListJs<DecryptedMessageJs>>
-
-	public fun setMessagesStatusBits(entityIds: Array<String>, statusBits: Double):
-			Promise<Array<DecryptedMessageJs>>
 
 	public fun setMessagesReadStatus(
 		entityIds: Array<String>,

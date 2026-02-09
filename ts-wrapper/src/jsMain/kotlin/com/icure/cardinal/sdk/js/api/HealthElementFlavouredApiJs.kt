@@ -7,7 +7,7 @@ import com.icure.cardinal.sdk.js.crypto.entities.HealthElementShareOptionsJs
 import com.icure.cardinal.sdk.js.filters.FilterOptionsJs
 import com.icure.cardinal.sdk.js.filters.SortableFilterOptionsJs
 import com.icure.cardinal.sdk.js.model.HealthElementJs
-import com.icure.cardinal.sdk.js.model.PatientJs
+import com.icure.cardinal.sdk.js.model.StoredDocumentIdentifierJs
 import com.icure.cardinal.sdk.js.utils.Record
 import com.icure.cardinal.sdk.js.utils.pagination.PaginatedListIteratorJs
 import kotlin.Array
@@ -27,12 +27,6 @@ public external interface HealthElementFlavouredApiJs<E : HealthElementJs> {
 	public fun shareWithMany(healthElement: E, delegates: Record<String, HealthElementShareOptionsJs>):
 			Promise<E>
 
-	public fun findHealthElementsByHcPartyPatient(
-		hcPartyId: String,
-		patient: PatientJs,
-		options: dynamic,
-	): Promise<PaginatedListIteratorJs<E>>
-
 	public fun filterHealthElementsBy(filter: FilterOptionsJs<HealthElementJs>):
 			Promise<PaginatedListIteratorJs<E>>
 
@@ -45,7 +39,12 @@ public external interface HealthElementFlavouredApiJs<E : HealthElementJs> {
 
 	public fun undeleteHealthElementById(id: String, rev: String): Promise<E>
 
+	public fun undeleteHealthElementsByIds(entityIds: Array<StoredDocumentIdentifierJs>):
+			Promise<Array<E>>
+
 	public fun undeleteHealthElement(healthElement: HealthElementJs): Promise<E>
+
+	public fun undeleteHealthElements(healthElements: Array<HealthElementJs>): Promise<Array<E>>
 
 	public fun modifyHealthElement(entity: E): Promise<E>
 

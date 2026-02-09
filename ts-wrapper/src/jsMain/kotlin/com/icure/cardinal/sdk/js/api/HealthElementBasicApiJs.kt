@@ -33,11 +33,6 @@ public external interface HealthElementBasicApiJs {
 	public fun filterHealthElementsBySorted(filter: BaseSortableFilterOptionsJs<HealthElementJs>):
 			Promise<PaginatedListIteratorJs<EncryptedHealthElementJs>>
 
-	public fun deleteHealthElementUnsafe(entityId: String): Promise<StoredDocumentIdentifierJs>
-
-	public fun deleteHealthElementsUnsafe(entityIds: Array<String>):
-			Promise<Array<StoredDocumentIdentifierJs>>
-
 	public fun deleteHealthElementById(entityId: String, rev: String):
 			Promise<StoredDocumentIdentifierJs>
 
@@ -46,12 +41,18 @@ public external interface HealthElementBasicApiJs {
 
 	public fun purgeHealthElementById(id: String, rev: String): Promise<Unit>
 
+	public fun purgeHealthElementsByIds(entityIds: Array<StoredDocumentIdentifierJs>):
+			Promise<Array<StoredDocumentIdentifierJs>>
+
 	public fun deleteHealthElement(healthElement: HealthElementJs): Promise<StoredDocumentIdentifierJs>
 
 	public fun deleteHealthElements(healthElements: Array<HealthElementJs>):
 			Promise<Array<StoredDocumentIdentifierJs>>
 
 	public fun purgeHealthElement(healthElement: HealthElementJs): Promise<Unit>
+
+	public fun purgeHealthElements(healthElements: Array<HealthElementJs>):
+			Promise<Array<StoredDocumentIdentifierJs>>
 
 	public fun createHealthElement(entity: EncryptedHealthElementJs): Promise<EncryptedHealthElementJs>
 
@@ -60,7 +61,13 @@ public external interface HealthElementBasicApiJs {
 
 	public fun undeleteHealthElementById(id: String, rev: String): Promise<EncryptedHealthElementJs>
 
+	public fun undeleteHealthElementsByIds(entityIds: Array<StoredDocumentIdentifierJs>):
+			Promise<Array<EncryptedHealthElementJs>>
+
 	public fun undeleteHealthElement(healthElement: HealthElementJs): Promise<EncryptedHealthElementJs>
+
+	public fun undeleteHealthElements(healthElements: Array<HealthElementJs>):
+			Promise<Array<EncryptedHealthElementJs>>
 
 	public fun modifyHealthElement(entity: EncryptedHealthElementJs): Promise<EncryptedHealthElementJs>
 

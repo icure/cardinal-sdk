@@ -24,10 +24,6 @@ public external class TimeTableItemJs(
 
 	public val zoneId: String?
 
-	public val days: Array<String>
-
-	public val recurrenceTypes: Array<String>
-
 	public val hours: Array<TimeTableHourJs>
 
 	public val calendarItemTypeId: String?

@@ -10,15 +10,12 @@ import com.icure.cardinal.sdk.js.model.AccessLogJs
 import com.icure.cardinal.sdk.js.model.DecryptedAccessLogJs
 import com.icure.cardinal.sdk.js.model.EncryptedAccessLogJs
 import com.icure.cardinal.sdk.js.model.EntityReferenceInGroupJs
-import com.icure.cardinal.sdk.js.model.PaginatedListJs
 import com.icure.cardinal.sdk.js.model.PatientJs
 import com.icure.cardinal.sdk.js.model.StoredDocumentIdentifierJs
-import com.icure.cardinal.sdk.js.model.couchdb.DocIdentifierJs
 import com.icure.cardinal.sdk.js.utils.Record
 import com.icure.cardinal.sdk.js.utils.pagination.PaginatedListIteratorJs
 import kotlin.Array
 import kotlin.Boolean
-import kotlin.Double
 import kotlin.String
 import kotlin.Unit
 import kotlin.js.JsName
@@ -57,10 +54,6 @@ public external interface AccessLogApiJs {
 	public fun matchAccessLogsBySorted(filter: SortableFilterOptionsJs<AccessLogJs>):
 			Promise<Array<String>>
 
-	public fun deleteAccessLogUnsafe(entityId: String): Promise<DocIdentifierJs>
-
-	public fun deleteAccessLogsUnsafe(entityIds: Array<String>): Promise<Array<DocIdentifierJs>>
-
 	public fun deleteAccessLogById(entityId: String, rev: String): Promise<StoredDocumentIdentifierJs>
 
 	public fun deleteAccessLogsByIds(entityIds: Array<StoredDocumentIdentifierJs>):
@@ -68,12 +61,18 @@ public external interface AccessLogApiJs {
 
 	public fun purgeAccessLogById(id: String, rev: String): Promise<Unit>
 
+	public fun purgeAccessLogsByIds(entityIds: Array<StoredDocumentIdentifierJs>):
+			Promise<Array<StoredDocumentIdentifierJs>>
+
 	public fun deleteAccessLog(accessLog: AccessLogJs): Promise<StoredDocumentIdentifierJs>
 
 	public fun deleteAccessLogs(accessLogs: Array<AccessLogJs>):
 			Promise<Array<StoredDocumentIdentifierJs>>
 
 	public fun purgeAccessLog(accessLog: AccessLogJs): Promise<Unit>
+
+	public fun purgeAccessLogs(accessLogs: Array<AccessLogJs>):
+			Promise<Array<StoredDocumentIdentifierJs>>
 
 	public fun shareWith(
 		delegateId: String,
@@ -84,12 +83,6 @@ public external interface AccessLogApiJs {
 	public fun shareWithMany(accessLog: DecryptedAccessLogJs,
 			delegates: Record<String, AccessLogShareOptionsJs>): Promise<DecryptedAccessLogJs>
 
-	public fun findAccessLogsByHcPartyPatient(
-		hcPartyId: String,
-		patient: PatientJs,
-		options: dynamic,
-	): Promise<PaginatedListIteratorJs<DecryptedAccessLogJs>>
-
 	public fun filterAccessLogsBy(filter: FilterOptionsJs<AccessLogJs>):
 			Promise<PaginatedListIteratorJs<DecryptedAccessLogJs>>
 
@@ -98,27 +91,24 @@ public external interface AccessLogApiJs {
 
 	public fun createAccessLog(entity: DecryptedAccessLogJs): Promise<DecryptedAccessLogJs>
 
+	public fun createAccessLogs(entities: Array<DecryptedAccessLogJs>):
+			Promise<Array<DecryptedAccessLogJs>>
+
 	public fun undeleteAccessLogById(id: String, rev: String): Promise<DecryptedAccessLogJs>
+
+	public fun undeleteAccessLogsByIds(entityIds: Array<StoredDocumentIdentifierJs>):
+			Promise<Array<DecryptedAccessLogJs>>
 
 	public fun undeleteAccessLog(accessLog: AccessLogJs): Promise<DecryptedAccessLogJs>
 
+	public fun undeleteAccessLogs(accessLogs: Array<AccessLogJs>): Promise<Array<DecryptedAccessLogJs>>
+
 	public fun modifyAccessLog(entity: DecryptedAccessLogJs): Promise<DecryptedAccessLogJs>
+
+	public fun modifyAccessLogs(entities: Array<DecryptedAccessLogJs>):
+			Promise<Array<DecryptedAccessLogJs>>
 
 	public fun getAccessLog(entityId: String): Promise<DecryptedAccessLogJs?>
 
 	public fun getAccessLogs(entityIds: Array<String>): Promise<Array<DecryptedAccessLogJs>>
-
-	public fun findAccessLogsBy(
-		fromEpoch: Double?,
-		toEpoch: Double?,
-		startKey: Double?,
-		startDocumentId: String?,
-		limit: Double?,
-	): Promise<PaginatedListJs<DecryptedAccessLogJs>>
-
-	public fun findAccessLogsByUserAfterDate(userId: String, options: dynamic):
-			Promise<PaginatedListJs<DecryptedAccessLogJs>>
-
-	public fun findAccessLogsInGroup(groupId: String, options: dynamic):
-			Promise<PaginatedListJs<DecryptedAccessLogJs>>
 }

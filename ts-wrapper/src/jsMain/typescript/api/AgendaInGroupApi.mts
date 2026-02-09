@@ -13,15 +13,35 @@ export interface AgendaInGroupApi {
 
 	createAgenda(entity: GroupScoped<Agenda>): Promise<GroupScoped<Agenda>>;
 
+	createAgendas(entities: Array<GroupScoped<Agenda>>): Promise<Array<GroupScoped<Agenda>>>;
+
 	modifyAgenda(entity: GroupScoped<Agenda>): Promise<GroupScoped<Agenda>>;
+
+	modifyAgendas(entities: Array<GroupScoped<Agenda>>): Promise<Array<GroupScoped<Agenda>>>;
+
+	deleteAgendasByIds(entityIds: Array<GroupScoped<StoredDocumentIdentifier>>): Promise<Array<GroupScoped<StoredDocumentIdentifier>>>;
+
+	deleteAgendaById(entityId: GroupScoped<StoredDocumentIdentifier>): Promise<GroupScoped<StoredDocumentIdentifier>>;
 
 	deleteAgendas(agendas: Array<GroupScoped<Agenda>>): Promise<Array<GroupScoped<StoredDocumentIdentifier>>>;
 
 	deleteAgenda(agenda: GroupScoped<Agenda>): Promise<GroupScoped<StoredDocumentIdentifier>>;
 
-	deleteAgendasByIds(entityIds: Array<GroupScoped<StoredDocumentIdentifier>>): Promise<Array<GroupScoped<StoredDocumentIdentifier>>>;
+	undeleteAgendasByIds(entityIds: Array<GroupScoped<StoredDocumentIdentifier>>): Promise<Array<GroupScoped<Agenda>>>;
 
-	deleteAgendaById(entityId: GroupScoped<StoredDocumentIdentifier>): Promise<GroupScoped<StoredDocumentIdentifier>>;
+	undeleteAgendaById(entityId: GroupScoped<StoredDocumentIdentifier>): Promise<GroupScoped<Agenda>>;
+
+	undeleteAgendas(agendas: Array<GroupScoped<Agenda>>): Promise<Array<GroupScoped<Agenda>>>;
+
+	undeleteAgenda(agenda: GroupScoped<Agenda>): Promise<GroupScoped<Agenda>>;
+
+	purgeAgendasByIds(entityIds: Array<GroupScoped<StoredDocumentIdentifier>>): Promise<Array<GroupScoped<StoredDocumentIdentifier>>>;
+
+	purgeAgendaById(entityId: GroupScoped<StoredDocumentIdentifier>): Promise<void>;
+
+	purgeAgendas(agendas: Array<GroupScoped<Agenda>>): Promise<Array<GroupScoped<StoredDocumentIdentifier>>>;
+
+	purgeAgenda(agenda: GroupScoped<Agenda>): Promise<void>;
 
 	matchAgendasBy(groupId: string, filter: BaseFilterOptions<Agenda>): Promise<Array<string>>;
 

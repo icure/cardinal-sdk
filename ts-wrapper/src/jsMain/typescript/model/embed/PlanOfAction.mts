@@ -1,7 +1,8 @@
 // auto-generated file
-import {expectArray, expectBoolean, expectNumber, expectObject, expectString, extractEntry} from '../../internal/JsonDecodeUtils.mjs';
+import {expectArray, expectNumber, expectObject, expectString, extractEntry} from '../../internal/JsonDecodeUtils.mjs';
 import {randomUuid} from '../../utils/Id.mjs';
 import {CodeStub} from '../base/CodeStub.mjs';
+import {HasEndOfLife} from '../base/HasEndOfLife.mjs';
 import {ICureDocument} from '../base/ICureDocument.mjs';
 import {Named} from '../base/Named.mjs';
 import {Base64String} from '../specializations/Base64String.mjs';
@@ -9,7 +10,7 @@ import {CareTeamMembership, DecryptedCareTeamMembership, EncryptedCareTeamMember
 import {Encryptable} from './Encryptable.mjs';
 
 
-export interface PlanOfAction extends Encryptable, ICureDocument<string>, Named {
+export interface PlanOfAction extends Encryptable, ICureDocument<string>, Named, HasEndOfLife {
 
 	prescriberId: string | undefined;
 
@@ -29,15 +30,7 @@ export interface PlanOfAction extends Encryptable, ICureDocument<string>, Named 
 
 	idClosingContact: string | undefined;
 
-	status: number;
-
-	documentIds: Array<string>;
-
-	numberOfCares: number | undefined;
-
 	careTeamMemberships: Array<CareTeamMembership>;
-
-	relevant: boolean;
 
 	readonly isEncrypted: boolean;
 
@@ -56,8 +49,6 @@ export class DecryptedPlanOfAction {
 	author: string | undefined = undefined;
 
 	responsible: string | undefined = undefined;
-
-	medicalLocationId: string | undefined = undefined;
 
 	tags: Array<CodeStub> = [];
 
@@ -85,15 +76,7 @@ export class DecryptedPlanOfAction {
 
 	idClosingContact: string | undefined = undefined;
 
-	status: number = 0;
-
-	documentIds: Array<string> = [];
-
-	numberOfCares: number | undefined = undefined;
-
 	careTeamMemberships: Array<DecryptedCareTeamMembership> = [];
-
-	relevant: boolean = true;
 
 	encryptedSelf: Base64String | undefined = undefined;
 
@@ -106,7 +89,6 @@ export class DecryptedPlanOfAction {
 		if ('modified' in partial) this.modified = partial.modified;
 		if ('author' in partial) this.author = partial.author;
 		if ('responsible' in partial) this.responsible = partial.responsible;
-		if ('medicalLocationId' in partial) this.medicalLocationId = partial.medicalLocationId;
 		if ('tags' in partial && partial.tags !== undefined) this.tags = partial.tags;
 		if ('codes' in partial && partial.codes !== undefined) this.codes = partial.codes;
 		if ('endOfLife' in partial) this.endOfLife = partial.endOfLife;
@@ -120,11 +102,7 @@ export class DecryptedPlanOfAction {
 		if ('note' in partial) this.note = partial.note;
 		if ('idOpeningContact' in partial) this.idOpeningContact = partial.idOpeningContact;
 		if ('idClosingContact' in partial) this.idClosingContact = partial.idClosingContact;
-		if ('status' in partial && partial.status !== undefined) this.status = partial.status;
-		if ('documentIds' in partial && partial.documentIds !== undefined) this.documentIds = partial.documentIds;
-		if ('numberOfCares' in partial) this.numberOfCares = partial.numberOfCares;
 		if ('careTeamMemberships' in partial && partial.careTeamMemberships !== undefined) this.careTeamMemberships = partial.careTeamMemberships;
-		if ('relevant' in partial && partial.relevant !== undefined) this.relevant = partial.relevant;
 		if ('encryptedSelf' in partial) this.encryptedSelf = partial.encryptedSelf;
 	}
 
@@ -135,7 +113,6 @@ export class DecryptedPlanOfAction {
 		if (this.modified != undefined) res['modified'] = this.modified
 		if (this.author != undefined) res['author'] = this.author
 		if (this.responsible != undefined) res['responsible'] = this.responsible
-		if (this.medicalLocationId != undefined) res['medicalLocationId'] = this.medicalLocationId
 		res['tags'] = this.tags.map((x0) => x0.toJSON() )
 		res['codes'] = this.codes.map((x0) => x0.toJSON() )
 		if (this.endOfLife != undefined) res['endOfLife'] = this.endOfLife
@@ -149,11 +126,7 @@ export class DecryptedPlanOfAction {
 		if (this.note != undefined) res['note'] = this.note
 		if (this.idOpeningContact != undefined) res['idOpeningContact'] = this.idOpeningContact
 		if (this.idClosingContact != undefined) res['idClosingContact'] = this.idClosingContact
-		res['status'] = this.status
-		res['documentIds'] = this.documentIds.map((x0) => x0 )
-		if (this.numberOfCares != undefined) res['numberOfCares'] = this.numberOfCares
 		res['careTeamMemberships'] = this.careTeamMemberships.map((x0) => x0.toJSON() )
-		res['relevant'] = this.relevant
 		if (this.encryptedSelf != undefined) res['encryptedSelf'] = this.encryptedSelf
 		res['isEncrypted'] = false
 		return res
@@ -170,7 +143,6 @@ export class DecryptedPlanOfAction {
 			modified: expectNumber(extractEntry(jCpy, 'modified', false, path), true, true, [...path, ".modified"]),
 			author: expectString(extractEntry(jCpy, 'author', false, path), true, [...path, ".author"]),
 			responsible: expectString(extractEntry(jCpy, 'responsible', false, path), true, [...path, ".responsible"]),
-			medicalLocationId: expectString(extractEntry(jCpy, 'medicalLocationId', false, path), true, [...path, ".medicalLocationId"]),
 			tags: expectArray(extractEntry(jCpy, 'tags', false, path), false, [...path, ".tags"], (x0, p0) => expectObject(x0, false, ignoreUnknownKeys, p0, CodeStub.fromJSON)),
 			codes: expectArray(extractEntry(jCpy, 'codes', false, path), false, [...path, ".codes"], (x0, p0) => expectObject(x0, false, ignoreUnknownKeys, p0, CodeStub.fromJSON)),
 			endOfLife: expectNumber(extractEntry(jCpy, 'endOfLife', false, path), true, true, [...path, ".endOfLife"]),
@@ -184,11 +156,7 @@ export class DecryptedPlanOfAction {
 			note: expectString(extractEntry(jCpy, 'note', false, path), true, [...path, ".note"]),
 			idOpeningContact: expectString(extractEntry(jCpy, 'idOpeningContact', false, path), true, [...path, ".idOpeningContact"]),
 			idClosingContact: expectString(extractEntry(jCpy, 'idClosingContact', false, path), true, [...path, ".idClosingContact"]),
-			status: expectNumber(extractEntry(jCpy, 'status', false, path), false, true, [...path, ".status"]),
-			documentIds: expectArray(extractEntry(jCpy, 'documentIds', false, path), false, [...path, ".documentIds"], (x0, p0) => expectString(x0, false, p0)),
-			numberOfCares: expectNumber(extractEntry(jCpy, 'numberOfCares', false, path), true, true, [...path, ".numberOfCares"]),
 			careTeamMemberships: expectArray(extractEntry(jCpy, 'careTeamMemberships', false, path), false, [...path, ".careTeamMemberships"], (x0, p0) => expectObject(x0, false, ignoreUnknownKeys, p0, DecryptedCareTeamMembership.fromJSON)),
-			relevant: expectBoolean(extractEntry(jCpy, 'relevant', false, path), false, [...path, ".relevant"]),
 			encryptedSelf: expectString(extractEntry(jCpy, 'encryptedSelf', false, path), true, [...path, ".encryptedSelf"]) as Base64String,
 		})
 		if (!ignoreUnknownKeys) {
@@ -211,8 +179,6 @@ export class EncryptedPlanOfAction {
 
 	responsible: string | undefined = undefined;
 
-	medicalLocationId: string | undefined = undefined;
-
 	tags: Array<CodeStub> = [];
 
 	codes: Array<CodeStub> = [];
@@ -239,15 +205,7 @@ export class EncryptedPlanOfAction {
 
 	idClosingContact: string | undefined = undefined;
 
-	status: number = 0;
-
-	documentIds: Array<string> = [];
-
-	numberOfCares: number | undefined = undefined;
-
 	careTeamMemberships: Array<EncryptedCareTeamMembership> = [];
-
-	relevant: boolean = true;
 
 	encryptedSelf: Base64String | undefined = undefined;
 
@@ -260,7 +218,6 @@ export class EncryptedPlanOfAction {
 		if ('modified' in partial) this.modified = partial.modified;
 		if ('author' in partial) this.author = partial.author;
 		if ('responsible' in partial) this.responsible = partial.responsible;
-		if ('medicalLocationId' in partial) this.medicalLocationId = partial.medicalLocationId;
 		if ('tags' in partial && partial.tags !== undefined) this.tags = partial.tags;
 		if ('codes' in partial && partial.codes !== undefined) this.codes = partial.codes;
 		if ('endOfLife' in partial) this.endOfLife = partial.endOfLife;
@@ -274,11 +231,7 @@ export class EncryptedPlanOfAction {
 		if ('note' in partial) this.note = partial.note;
 		if ('idOpeningContact' in partial) this.idOpeningContact = partial.idOpeningContact;
 		if ('idClosingContact' in partial) this.idClosingContact = partial.idClosingContact;
-		if ('status' in partial && partial.status !== undefined) this.status = partial.status;
-		if ('documentIds' in partial && partial.documentIds !== undefined) this.documentIds = partial.documentIds;
-		if ('numberOfCares' in partial) this.numberOfCares = partial.numberOfCares;
 		if ('careTeamMemberships' in partial && partial.careTeamMemberships !== undefined) this.careTeamMemberships = partial.careTeamMemberships;
-		if ('relevant' in partial && partial.relevant !== undefined) this.relevant = partial.relevant;
 		if ('encryptedSelf' in partial) this.encryptedSelf = partial.encryptedSelf;
 	}
 
@@ -289,7 +242,6 @@ export class EncryptedPlanOfAction {
 		if (this.modified != undefined) res['modified'] = this.modified
 		if (this.author != undefined) res['author'] = this.author
 		if (this.responsible != undefined) res['responsible'] = this.responsible
-		if (this.medicalLocationId != undefined) res['medicalLocationId'] = this.medicalLocationId
 		res['tags'] = this.tags.map((x0) => x0.toJSON() )
 		res['codes'] = this.codes.map((x0) => x0.toJSON() )
 		if (this.endOfLife != undefined) res['endOfLife'] = this.endOfLife
@@ -303,11 +255,7 @@ export class EncryptedPlanOfAction {
 		if (this.note != undefined) res['note'] = this.note
 		if (this.idOpeningContact != undefined) res['idOpeningContact'] = this.idOpeningContact
 		if (this.idClosingContact != undefined) res['idClosingContact'] = this.idClosingContact
-		res['status'] = this.status
-		res['documentIds'] = this.documentIds.map((x0) => x0 )
-		if (this.numberOfCares != undefined) res['numberOfCares'] = this.numberOfCares
 		res['careTeamMemberships'] = this.careTeamMemberships.map((x0) => x0.toJSON() )
-		res['relevant'] = this.relevant
 		if (this.encryptedSelf != undefined) res['encryptedSelf'] = this.encryptedSelf
 		res['isEncrypted'] = true
 		return res
@@ -324,7 +272,6 @@ export class EncryptedPlanOfAction {
 			modified: expectNumber(extractEntry(jCpy, 'modified', false, path), true, true, [...path, ".modified"]),
 			author: expectString(extractEntry(jCpy, 'author', false, path), true, [...path, ".author"]),
 			responsible: expectString(extractEntry(jCpy, 'responsible', false, path), true, [...path, ".responsible"]),
-			medicalLocationId: expectString(extractEntry(jCpy, 'medicalLocationId', false, path), true, [...path, ".medicalLocationId"]),
 			tags: expectArray(extractEntry(jCpy, 'tags', false, path), false, [...path, ".tags"], (x0, p0) => expectObject(x0, false, ignoreUnknownKeys, p0, CodeStub.fromJSON)),
 			codes: expectArray(extractEntry(jCpy, 'codes', false, path), false, [...path, ".codes"], (x0, p0) => expectObject(x0, false, ignoreUnknownKeys, p0, CodeStub.fromJSON)),
 			endOfLife: expectNumber(extractEntry(jCpy, 'endOfLife', false, path), true, true, [...path, ".endOfLife"]),
@@ -338,11 +285,7 @@ export class EncryptedPlanOfAction {
 			note: expectString(extractEntry(jCpy, 'note', false, path), true, [...path, ".note"]),
 			idOpeningContact: expectString(extractEntry(jCpy, 'idOpeningContact', false, path), true, [...path, ".idOpeningContact"]),
 			idClosingContact: expectString(extractEntry(jCpy, 'idClosingContact', false, path), true, [...path, ".idClosingContact"]),
-			status: expectNumber(extractEntry(jCpy, 'status', false, path), false, true, [...path, ".status"]),
-			documentIds: expectArray(extractEntry(jCpy, 'documentIds', false, path), false, [...path, ".documentIds"], (x0, p0) => expectString(x0, false, p0)),
-			numberOfCares: expectNumber(extractEntry(jCpy, 'numberOfCares', false, path), true, true, [...path, ".numberOfCares"]),
 			careTeamMemberships: expectArray(extractEntry(jCpy, 'careTeamMemberships', false, path), false, [...path, ".careTeamMemberships"], (x0, p0) => expectObject(x0, false, ignoreUnknownKeys, p0, EncryptedCareTeamMembership.fromJSON)),
-			relevant: expectBoolean(extractEntry(jCpy, 'relevant', false, path), false, [...path, ".relevant"]),
 			encryptedSelf: expectString(extractEntry(jCpy, 'encryptedSelf', false, path), true, [...path, ".encryptedSelf"]) as Base64String,
 		})
 		if (!ignoreUnknownKeys) {

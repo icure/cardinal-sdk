@@ -17,8 +17,4 @@ public external interface ICureDocumentJs<T> : IdentifiableJs<T>, HasTagsJs, Has
 	public val author: String?
 
 	public val responsible: String?
-
-	public val medicalLocationId: String?
-
-	public val endOfLife: Double?
 }

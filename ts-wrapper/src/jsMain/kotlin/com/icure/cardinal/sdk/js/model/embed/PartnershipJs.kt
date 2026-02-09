@@ -16,8 +16,4 @@ public external class PartnershipJs(
 	public val status: String?
 
 	public val partnerId: String?
-
-	public val meToOtherRelationshipDescription: String?
-
-	public val otherToMeRelationshipDescription: String?
 }

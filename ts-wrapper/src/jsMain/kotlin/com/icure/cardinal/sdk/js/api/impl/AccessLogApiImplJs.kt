@@ -25,8 +25,6 @@ import com.icure.cardinal.sdk.js.model.CheckedConverters.arrayToList
 import com.icure.cardinal.sdk.js.model.CheckedConverters.arrayToSet
 import com.icure.cardinal.sdk.js.model.CheckedConverters.listToArray
 import com.icure.cardinal.sdk.js.model.CheckedConverters.nullToUndefined
-import com.icure.cardinal.sdk.js.model.CheckedConverters.numberToInt
-import com.icure.cardinal.sdk.js.model.CheckedConverters.numberToLong
 import com.icure.cardinal.sdk.js.model.CheckedConverters.objectToMap
 import com.icure.cardinal.sdk.js.model.CheckedConverters.setToArray
 import com.icure.cardinal.sdk.js.model.CheckedConverters.undefinedToNull
@@ -34,19 +32,15 @@ import com.icure.cardinal.sdk.js.model.DecryptedAccessLogJs
 import com.icure.cardinal.sdk.js.model.EncryptedAccessLogJs
 import com.icure.cardinal.sdk.js.model.EntityReferenceInGroupJs
 import com.icure.cardinal.sdk.js.model.GroupScopedJs
-import com.icure.cardinal.sdk.js.model.PaginatedListJs
 import com.icure.cardinal.sdk.js.model.PatientJs
 import com.icure.cardinal.sdk.js.model.StoredDocumentIdentifierJs
 import com.icure.cardinal.sdk.js.model.UserJs
 import com.icure.cardinal.sdk.js.model.accessLog_fromJs
 import com.icure.cardinal.sdk.js.model.accessLog_toJs
-import com.icure.cardinal.sdk.js.model.couchdb.DocIdentifierJs
-import com.icure.cardinal.sdk.js.model.couchdb.docIdentifier_toJs
 import com.icure.cardinal.sdk.js.model.entityReferenceInGroup_fromJs
 import com.icure.cardinal.sdk.js.model.entityReferenceInGroup_toJs
 import com.icure.cardinal.sdk.js.model.groupScoped_fromJs
 import com.icure.cardinal.sdk.js.model.groupScoped_toJs
-import com.icure.cardinal.sdk.js.model.paginatedList_toJs
 import com.icure.cardinal.sdk.js.model.patient_fromJs
 import com.icure.cardinal.sdk.js.model.specializations.hexString_toJs
 import com.icure.cardinal.sdk.js.model.storedDocumentIdentifier_fromJs
@@ -67,14 +61,10 @@ import com.icure.cardinal.sdk.model.GroupScoped
 import com.icure.cardinal.sdk.model.Patient
 import com.icure.cardinal.sdk.model.StoredDocumentIdentifier
 import com.icure.cardinal.sdk.model.User
-import com.icure.cardinal.sdk.model.couchdb.DocIdentifier
 import com.icure.cardinal.sdk.model.embed.AccessLevel
 import com.icure.cardinal.sdk.model.specializations.HexString
 import kotlin.Array
 import kotlin.Boolean
-import kotlin.Double
-import kotlin.Int
-import kotlin.Long
 import kotlin.OptIn
 import kotlin.String
 import kotlin.Unit
@@ -140,52 +130,6 @@ internal class AccessLogApiImplJs(
 			accessLog_toJs(result)
 		}
 
-		override fun findAccessLogsByHcPartyPatient(
-			hcPartyId: String,
-			patient: PatientJs,
-			options: dynamic,
-		): Promise<PaginatedListIteratorJs<EncryptedAccessLogJs>> {
-			val _options = options ?: js("{}")
-			return GlobalScope.promise {
-				val hcPartyIdConverted: String = hcPartyId
-				val patientConverted: Patient = patient_fromJs(patient)
-				val startDateConverted: Long? = convertingOptionOrDefaultNullable(
-					_options,
-					"startDate",
-					null
-				) { startDate: Double? ->
-					numberToLong(startDate, "startDate")
-				}
-				val endDateConverted: Long? = convertingOptionOrDefaultNullable(
-					_options,
-					"endDate",
-					null
-				) { endDate: Double? ->
-					numberToLong(endDate, "endDate")
-				}
-				val descendingConverted: Boolean? = convertingOptionOrDefaultNullable(
-					_options,
-					"descending",
-					null
-				) { descending: Boolean? ->
-					undefinedToNull(descending)
-				}
-				val result = accessLogApi.encrypted.findAccessLogsByHcPartyPatient(
-					hcPartyIdConverted,
-					patientConverted,
-					startDateConverted,
-					endDateConverted,
-					descendingConverted,
-				)
-				paginatedListIterator_toJs(
-					result,
-					{ x1: EncryptedAccessLog ->
-						accessLog_toJs(x1)
-					},
-				)
-			}
-		}
-
 		override fun filterAccessLogsBy(filter: FilterOptionsJs<AccessLogJs>):
 				Promise<PaginatedListIteratorJs<EncryptedAccessLogJs>> = GlobalScope.promise {
 			val filterConverted: FilterOptions<AccessLog> = filterOptions_fromJs(filter)
@@ -223,6 +167,26 @@ internal class AccessLogApiImplJs(
 			accessLog_toJs(result)
 		}
 
+		override fun createAccessLogs(entities: Array<EncryptedAccessLogJs>):
+				Promise<Array<EncryptedAccessLogJs>> = GlobalScope.promise {
+			val entitiesConverted: List<EncryptedAccessLog> = arrayToList(
+				entities,
+				"entities",
+				{ x1: EncryptedAccessLogJs ->
+					accessLog_fromJs(x1)
+				},
+			)
+			val result = accessLogApi.encrypted.createAccessLogs(
+				entitiesConverted,
+			)
+			listToArray(
+				result,
+				{ x1: EncryptedAccessLog ->
+					accessLog_toJs(x1)
+				},
+			)
+		}
+
 		override fun undeleteAccessLogById(id: String, rev: String): Promise<EncryptedAccessLogJs> =
 				GlobalScope.promise {
 			val idConverted: String = id
@@ -234,6 +198,26 @@ internal class AccessLogApiImplJs(
 			accessLog_toJs(result)
 		}
 
+		override fun undeleteAccessLogsByIds(entityIds: Array<StoredDocumentIdentifierJs>):
+				Promise<Array<EncryptedAccessLogJs>> = GlobalScope.promise {
+			val entityIdsConverted: List<StoredDocumentIdentifier> = arrayToList(
+				entityIds,
+				"entityIds",
+				{ x1: StoredDocumentIdentifierJs ->
+					storedDocumentIdentifier_fromJs(x1)
+				},
+			)
+			val result = accessLogApi.encrypted.undeleteAccessLogsByIds(
+				entityIdsConverted,
+			)
+			listToArray(
+				result,
+				{ x1: EncryptedAccessLog ->
+					accessLog_toJs(x1)
+				},
+			)
+		}
+
 		override fun undeleteAccessLog(accessLog: AccessLogJs): Promise<EncryptedAccessLogJs> =
 				GlobalScope.promise {
 			val accessLogConverted: AccessLog = accessLog_fromJs(accessLog)
@@ -243,6 +227,26 @@ internal class AccessLogApiImplJs(
 			accessLog_toJs(result)
 		}
 
+		override fun undeleteAccessLogs(accessLogs: Array<AccessLogJs>):
+				Promise<Array<EncryptedAccessLogJs>> = GlobalScope.promise {
+			val accessLogsConverted: List<AccessLog> = arrayToList(
+				accessLogs,
+				"accessLogs",
+				{ x1: AccessLogJs ->
+					accessLog_fromJs(x1)
+				},
+			)
+			val result = accessLogApi.encrypted.undeleteAccessLogs(
+				accessLogsConverted,
+			)
+			listToArray(
+				result,
+				{ x1: EncryptedAccessLog ->
+					accessLog_toJs(x1)
+				},
+			)
+		}
+
 		override fun modifyAccessLog(entity: EncryptedAccessLogJs): Promise<EncryptedAccessLogJs> =
 				GlobalScope.promise {
 			val entityConverted: EncryptedAccessLog = accessLog_fromJs(entity)
@@ -250,6 +254,26 @@ internal class AccessLogApiImplJs(
 				entityConverted,
 			)
 			accessLog_toJs(result)
+		}
+
+		override fun modifyAccessLogs(entities: Array<EncryptedAccessLogJs>):
+				Promise<Array<EncryptedAccessLogJs>> = GlobalScope.promise {
+			val entitiesConverted: List<EncryptedAccessLog> = arrayToList(
+				entities,
+				"entities",
+				{ x1: EncryptedAccessLogJs ->
+					accessLog_fromJs(x1)
+				},
+			)
+			val result = accessLogApi.encrypted.modifyAccessLogs(
+				entitiesConverted,
+			)
+			listToArray(
+				result,
+				{ x1: EncryptedAccessLog ->
+					accessLog_toJs(x1)
+				},
+			)
 		}
 
 		override fun getAccessLog(entityId: String): Promise<EncryptedAccessLogJs?> =
@@ -283,155 +307,6 @@ internal class AccessLogApiImplJs(
 					accessLog_toJs(x1)
 				},
 			)
-		}
-
-		override fun findAccessLogsBy(
-			fromEpoch: Double?,
-			toEpoch: Double?,
-			startKey: Double?,
-			startDocumentId: String?,
-			limit: Double?,
-		): Promise<PaginatedListJs<EncryptedAccessLogJs>> = GlobalScope.promise {
-			val fromEpochConverted: Long? = numberToLong(fromEpoch, "fromEpoch")
-			val toEpochConverted: Long? = numberToLong(toEpoch, "toEpoch")
-			val startKeyConverted: Long? = numberToLong(startKey, "startKey")
-			val startDocumentIdConverted: String? = undefinedToNull(startDocumentId)
-			val limitConverted: Int? = numberToInt(limit, "limit")
-			val result = accessLogApi.encrypted.findAccessLogsBy(
-				fromEpochConverted,
-				toEpochConverted,
-				startKeyConverted,
-				startDocumentIdConverted,
-				limitConverted,
-			)
-			paginatedList_toJs(
-				result,
-				{ x1: EncryptedAccessLog ->
-					accessLog_toJs(x1)
-				},
-			)
-		}
-
-		override fun findAccessLogsByUserAfterDate(userId: String, options: dynamic):
-				Promise<PaginatedListJs<EncryptedAccessLogJs>> {
-			val _options = options ?: js("{}")
-			return GlobalScope.promise {
-				val userIdConverted: String = userId
-				val accessTypeConverted: String? = convertingOptionOrDefaultNullable(
-					_options,
-					"accessType",
-					null
-				) { accessType: String? ->
-					undefinedToNull(accessType)
-				}
-				val startDateConverted: Long? = convertingOptionOrDefaultNullable(
-					_options,
-					"startDate",
-					null
-				) { startDate: Double? ->
-					numberToLong(startDate, "startDate")
-				}
-				val startKeyConverted: String? = convertingOptionOrDefaultNullable(
-					_options,
-					"startKey",
-					null
-				) { startKey: String? ->
-					undefinedToNull(startKey)
-				}
-				val startDocumentIdConverted: String? = convertingOptionOrDefaultNullable(
-					_options,
-					"startDocumentId",
-					null
-				) { startDocumentId: String? ->
-					undefinedToNull(startDocumentId)
-				}
-				val limitConverted: Int? = convertingOptionOrDefaultNullable(
-					_options,
-					"limit",
-					null
-				) { limit: Double? ->
-					numberToInt(limit, "limit")
-				}
-				val descendingConverted: Boolean? = convertingOptionOrDefaultNullable(
-					_options,
-					"descending",
-					null
-				) { descending: Boolean? ->
-					undefinedToNull(descending)
-				}
-				val result = accessLogApi.encrypted.findAccessLogsByUserAfterDate(
-					userIdConverted,
-					accessTypeConverted,
-					startDateConverted,
-					startKeyConverted,
-					startDocumentIdConverted,
-					limitConverted,
-					descendingConverted,
-				)
-				paginatedList_toJs(
-					result,
-					{ x1: EncryptedAccessLog ->
-						accessLog_toJs(x1)
-					},
-				)
-			}
-		}
-
-		override fun findAccessLogsInGroup(groupId: String, options: dynamic):
-				Promise<PaginatedListJs<EncryptedAccessLogJs>> {
-			val _options = options ?: js("{}")
-			return GlobalScope.promise {
-				val groupIdConverted: String = groupId
-				val fromEpochConverted: Long? = convertingOptionOrDefaultNullable(
-					_options,
-					"fromEpoch",
-					null
-				) { fromEpoch: Double? ->
-					numberToLong(fromEpoch, "fromEpoch")
-				}
-				val toEpochConverted: Long? = convertingOptionOrDefaultNullable(
-					_options,
-					"toEpoch",
-					null
-				) { toEpoch: Double? ->
-					numberToLong(toEpoch, "toEpoch")
-				}
-				val startKeyConverted: Long? = convertingOptionOrDefaultNullable(
-					_options,
-					"startKey",
-					null
-				) { startKey: Double? ->
-					numberToLong(startKey, "startKey")
-				}
-				val startDocumentIdConverted: String? = convertingOptionOrDefaultNullable(
-					_options,
-					"startDocumentId",
-					null
-				) { startDocumentId: String? ->
-					undefinedToNull(startDocumentId)
-				}
-				val limitConverted: Int? = convertingOptionOrDefaultNullable(
-					_options,
-					"limit",
-					null
-				) { limit: Double? ->
-					numberToInt(limit, "limit")
-				}
-				val result = accessLogApi.encrypted.findAccessLogsInGroup(
-					groupIdConverted,
-					fromEpochConverted,
-					toEpochConverted,
-					startKeyConverted,
-					startDocumentIdConverted,
-					limitConverted,
-				)
-				paginatedList_toJs(
-					result,
-					{ x1: EncryptedAccessLog ->
-						accessLog_toJs(x1)
-					},
-				)
-			}
 		}
 	}
 
@@ -485,52 +360,6 @@ internal class AccessLogApiImplJs(
 			accessLog_toJs(result)
 		}
 
-		override fun findAccessLogsByHcPartyPatient(
-			hcPartyId: String,
-			patient: PatientJs,
-			options: dynamic,
-		): Promise<PaginatedListIteratorJs<AccessLogJs>> {
-			val _options = options ?: js("{}")
-			return GlobalScope.promise {
-				val hcPartyIdConverted: String = hcPartyId
-				val patientConverted: Patient = patient_fromJs(patient)
-				val startDateConverted: Long? = convertingOptionOrDefaultNullable(
-					_options,
-					"startDate",
-					null
-				) { startDate: Double? ->
-					numberToLong(startDate, "startDate")
-				}
-				val endDateConverted: Long? = convertingOptionOrDefaultNullable(
-					_options,
-					"endDate",
-					null
-				) { endDate: Double? ->
-					numberToLong(endDate, "endDate")
-				}
-				val descendingConverted: Boolean? = convertingOptionOrDefaultNullable(
-					_options,
-					"descending",
-					null
-				) { descending: Boolean? ->
-					undefinedToNull(descending)
-				}
-				val result = accessLogApi.tryAndRecover.findAccessLogsByHcPartyPatient(
-					hcPartyIdConverted,
-					patientConverted,
-					startDateConverted,
-					endDateConverted,
-					descendingConverted,
-				)
-				paginatedListIterator_toJs(
-					result,
-					{ x1: AccessLog ->
-						accessLog_toJs(x1)
-					},
-				)
-			}
-		}
-
 		override fun filterAccessLogsBy(filter: FilterOptionsJs<AccessLogJs>):
 				Promise<PaginatedListIteratorJs<AccessLogJs>> = GlobalScope.promise {
 			val filterConverted: FilterOptions<AccessLog> = filterOptions_fromJs(filter)
@@ -567,6 +396,26 @@ internal class AccessLogApiImplJs(
 			accessLog_toJs(result)
 		}
 
+		override fun createAccessLogs(entities: Array<AccessLogJs>): Promise<Array<AccessLogJs>> =
+				GlobalScope.promise {
+			val entitiesConverted: List<AccessLog> = arrayToList(
+				entities,
+				"entities",
+				{ x1: AccessLogJs ->
+					accessLog_fromJs(x1)
+				},
+			)
+			val result = accessLogApi.tryAndRecover.createAccessLogs(
+				entitiesConverted,
+			)
+			listToArray(
+				result,
+				{ x1: AccessLog ->
+					accessLog_toJs(x1)
+				},
+			)
+		}
+
 		override fun undeleteAccessLogById(id: String, rev: String): Promise<AccessLogJs> =
 				GlobalScope.promise {
 			val idConverted: String = id
@@ -578,6 +427,26 @@ internal class AccessLogApiImplJs(
 			accessLog_toJs(result)
 		}
 
+		override fun undeleteAccessLogsByIds(entityIds: Array<StoredDocumentIdentifierJs>):
+				Promise<Array<AccessLogJs>> = GlobalScope.promise {
+			val entityIdsConverted: List<StoredDocumentIdentifier> = arrayToList(
+				entityIds,
+				"entityIds",
+				{ x1: StoredDocumentIdentifierJs ->
+					storedDocumentIdentifier_fromJs(x1)
+				},
+			)
+			val result = accessLogApi.tryAndRecover.undeleteAccessLogsByIds(
+				entityIdsConverted,
+			)
+			listToArray(
+				result,
+				{ x1: AccessLog ->
+					accessLog_toJs(x1)
+				},
+			)
+		}
+
 		override fun undeleteAccessLog(accessLog: AccessLogJs): Promise<AccessLogJs> =
 				GlobalScope.promise {
 			val accessLogConverted: AccessLog = accessLog_fromJs(accessLog)
@@ -587,12 +456,52 @@ internal class AccessLogApiImplJs(
 			accessLog_toJs(result)
 		}
 
+		override fun undeleteAccessLogs(accessLogs: Array<AccessLogJs>): Promise<Array<AccessLogJs>> =
+				GlobalScope.promise {
+			val accessLogsConverted: List<AccessLog> = arrayToList(
+				accessLogs,
+				"accessLogs",
+				{ x1: AccessLogJs ->
+					accessLog_fromJs(x1)
+				},
+			)
+			val result = accessLogApi.tryAndRecover.undeleteAccessLogs(
+				accessLogsConverted,
+			)
+			listToArray(
+				result,
+				{ x1: AccessLog ->
+					accessLog_toJs(x1)
+				},
+			)
+		}
+
 		override fun modifyAccessLog(entity: AccessLogJs): Promise<AccessLogJs> = GlobalScope.promise {
 			val entityConverted: AccessLog = accessLog_fromJs(entity)
 			val result = accessLogApi.tryAndRecover.modifyAccessLog(
 				entityConverted,
 			)
 			accessLog_toJs(result)
+		}
+
+		override fun modifyAccessLogs(entities: Array<AccessLogJs>): Promise<Array<AccessLogJs>> =
+				GlobalScope.promise {
+			val entitiesConverted: List<AccessLog> = arrayToList(
+				entities,
+				"entities",
+				{ x1: AccessLogJs ->
+					accessLog_fromJs(x1)
+				},
+			)
+			val result = accessLogApi.tryAndRecover.modifyAccessLogs(
+				entitiesConverted,
+			)
+			listToArray(
+				result,
+				{ x1: AccessLog ->
+					accessLog_toJs(x1)
+				},
+			)
 		}
 
 		override fun getAccessLog(entityId: String): Promise<AccessLogJs?> = GlobalScope.promise {
@@ -625,155 +534,6 @@ internal class AccessLogApiImplJs(
 					accessLog_toJs(x1)
 				},
 			)
-		}
-
-		override fun findAccessLogsBy(
-			fromEpoch: Double?,
-			toEpoch: Double?,
-			startKey: Double?,
-			startDocumentId: String?,
-			limit: Double?,
-		): Promise<PaginatedListJs<AccessLogJs>> = GlobalScope.promise {
-			val fromEpochConverted: Long? = numberToLong(fromEpoch, "fromEpoch")
-			val toEpochConverted: Long? = numberToLong(toEpoch, "toEpoch")
-			val startKeyConverted: Long? = numberToLong(startKey, "startKey")
-			val startDocumentIdConverted: String? = undefinedToNull(startDocumentId)
-			val limitConverted: Int? = numberToInt(limit, "limit")
-			val result = accessLogApi.tryAndRecover.findAccessLogsBy(
-				fromEpochConverted,
-				toEpochConverted,
-				startKeyConverted,
-				startDocumentIdConverted,
-				limitConverted,
-			)
-			paginatedList_toJs(
-				result,
-				{ x1: AccessLog ->
-					accessLog_toJs(x1)
-				},
-			)
-		}
-
-		override fun findAccessLogsByUserAfterDate(userId: String, options: dynamic):
-				Promise<PaginatedListJs<AccessLogJs>> {
-			val _options = options ?: js("{}")
-			return GlobalScope.promise {
-				val userIdConverted: String = userId
-				val accessTypeConverted: String? = convertingOptionOrDefaultNullable(
-					_options,
-					"accessType",
-					null
-				) { accessType: String? ->
-					undefinedToNull(accessType)
-				}
-				val startDateConverted: Long? = convertingOptionOrDefaultNullable(
-					_options,
-					"startDate",
-					null
-				) { startDate: Double? ->
-					numberToLong(startDate, "startDate")
-				}
-				val startKeyConverted: String? = convertingOptionOrDefaultNullable(
-					_options,
-					"startKey",
-					null
-				) { startKey: String? ->
-					undefinedToNull(startKey)
-				}
-				val startDocumentIdConverted: String? = convertingOptionOrDefaultNullable(
-					_options,
-					"startDocumentId",
-					null
-				) { startDocumentId: String? ->
-					undefinedToNull(startDocumentId)
-				}
-				val limitConverted: Int? = convertingOptionOrDefaultNullable(
-					_options,
-					"limit",
-					null
-				) { limit: Double? ->
-					numberToInt(limit, "limit")
-				}
-				val descendingConverted: Boolean? = convertingOptionOrDefaultNullable(
-					_options,
-					"descending",
-					null
-				) { descending: Boolean? ->
-					undefinedToNull(descending)
-				}
-				val result = accessLogApi.tryAndRecover.findAccessLogsByUserAfterDate(
-					userIdConverted,
-					accessTypeConverted,
-					startDateConverted,
-					startKeyConverted,
-					startDocumentIdConverted,
-					limitConverted,
-					descendingConverted,
-				)
-				paginatedList_toJs(
-					result,
-					{ x1: AccessLog ->
-						accessLog_toJs(x1)
-					},
-				)
-			}
-		}
-
-		override fun findAccessLogsInGroup(groupId: String, options: dynamic):
-				Promise<PaginatedListJs<AccessLogJs>> {
-			val _options = options ?: js("{}")
-			return GlobalScope.promise {
-				val groupIdConverted: String = groupId
-				val fromEpochConverted: Long? = convertingOptionOrDefaultNullable(
-					_options,
-					"fromEpoch",
-					null
-				) { fromEpoch: Double? ->
-					numberToLong(fromEpoch, "fromEpoch")
-				}
-				val toEpochConverted: Long? = convertingOptionOrDefaultNullable(
-					_options,
-					"toEpoch",
-					null
-				) { toEpoch: Double? ->
-					numberToLong(toEpoch, "toEpoch")
-				}
-				val startKeyConverted: Long? = convertingOptionOrDefaultNullable(
-					_options,
-					"startKey",
-					null
-				) { startKey: Double? ->
-					numberToLong(startKey, "startKey")
-				}
-				val startDocumentIdConverted: String? = convertingOptionOrDefaultNullable(
-					_options,
-					"startDocumentId",
-					null
-				) { startDocumentId: String? ->
-					undefinedToNull(startDocumentId)
-				}
-				val limitConverted: Int? = convertingOptionOrDefaultNullable(
-					_options,
-					"limit",
-					null
-				) { limit: Double? ->
-					numberToInt(limit, "limit")
-				}
-				val result = accessLogApi.tryAndRecover.findAccessLogsInGroup(
-					groupIdConverted,
-					fromEpochConverted,
-					toEpochConverted,
-					startKeyConverted,
-					startDocumentIdConverted,
-					limitConverted,
-				)
-				paginatedList_toJs(
-					result,
-					{ x1: AccessLog ->
-						accessLog_toJs(x1)
-					},
-				)
-			}
 		}
 	}
 
@@ -902,6 +662,135 @@ internal class AccessLogApiImplJs(
 				)
 			}
 
+			override fun createAccessLogs(entities: Array<GroupScopedJs<EncryptedAccessLogJs>>):
+					Promise<Array<GroupScopedJs<EncryptedAccessLogJs>>> = GlobalScope.promise {
+				val entitiesConverted: List<GroupScoped<EncryptedAccessLog>> = arrayToList(
+					entities,
+					"entities",
+					{ x1: GroupScopedJs<EncryptedAccessLogJs> ->
+						groupScoped_fromJs(
+							x1,
+							{ x2: EncryptedAccessLogJs ->
+								accessLog_fromJs(x2)
+							},
+						)
+					},
+				)
+				val result = accessLogApi.inGroup.encrypted.createAccessLogs(
+					entitiesConverted,
+				)
+				listToArray(
+					result,
+					{ x1: GroupScoped<EncryptedAccessLog> ->
+						groupScoped_toJs(
+							x1,
+							{ x2: EncryptedAccessLog ->
+								accessLog_toJs(x2)
+							},
+						)
+					},
+				)
+			}
+
+			override fun undeleteAccessLogById(entityId: GroupScopedJs<StoredDocumentIdentifierJs>):
+					Promise<GroupScopedJs<EncryptedAccessLogJs>> = GlobalScope.promise {
+				val entityIdConverted: GroupScoped<StoredDocumentIdentifier> = groupScoped_fromJs(
+					entityId,
+					{ x1: StoredDocumentIdentifierJs ->
+						storedDocumentIdentifier_fromJs(x1)
+					},
+				)
+				val result = accessLogApi.inGroup.encrypted.undeleteAccessLogById(
+					entityIdConverted,
+				)
+				groupScoped_toJs(
+					result,
+					{ x1: EncryptedAccessLog ->
+						accessLog_toJs(x1)
+					},
+				)
+			}
+
+			override
+					fun undeleteAccessLogsByIds(entityIds: Array<GroupScopedJs<StoredDocumentIdentifierJs>>):
+					Promise<Array<GroupScopedJs<EncryptedAccessLogJs>>> = GlobalScope.promise {
+				val entityIdsConverted: List<GroupScoped<StoredDocumentIdentifier>> = arrayToList(
+					entityIds,
+					"entityIds",
+					{ x1: GroupScopedJs<StoredDocumentIdentifierJs> ->
+						groupScoped_fromJs(
+							x1,
+							{ x2: StoredDocumentIdentifierJs ->
+								storedDocumentIdentifier_fromJs(x2)
+							},
+						)
+					},
+				)
+				val result = accessLogApi.inGroup.encrypted.undeleteAccessLogsByIds(
+					entityIdsConverted,
+				)
+				listToArray(
+					result,
+					{ x1: GroupScoped<EncryptedAccessLog> ->
+						groupScoped_toJs(
+							x1,
+							{ x2: EncryptedAccessLog ->
+								accessLog_toJs(x2)
+							},
+						)
+					},
+				)
+			}
+
+			override fun undeleteAccessLog(accessLog: GroupScopedJs<AccessLogJs>):
+					Promise<GroupScopedJs<EncryptedAccessLogJs>> = GlobalScope.promise {
+				val accessLogConverted: GroupScoped<AccessLog> = groupScoped_fromJs(
+					accessLog,
+					{ x1: AccessLogJs ->
+						accessLog_fromJs(x1)
+					},
+				)
+				val result = accessLogApi.inGroup.encrypted.undeleteAccessLog(
+					accessLogConverted,
+				)
+				groupScoped_toJs(
+					result,
+					{ x1: EncryptedAccessLog ->
+						accessLog_toJs(x1)
+					},
+				)
+			}
+
+			override fun undeleteAccessLogs(accessLogs: Array<GroupScopedJs<AccessLogJs>>):
+					Promise<Array<GroupScopedJs<EncryptedAccessLogJs>>> = GlobalScope.promise {
+				val accessLogsConverted: List<GroupScoped<AccessLog>> = arrayToList(
+					accessLogs,
+					"accessLogs",
+					{ x1: GroupScopedJs<AccessLogJs> ->
+						groupScoped_fromJs(
+							x1,
+							{ x2: AccessLogJs ->
+								accessLog_fromJs(x2)
+							},
+						)
+					},
+				)
+				val result = accessLogApi.inGroup.encrypted.undeleteAccessLogs(
+					accessLogsConverted,
+				)
+				listToArray(
+					result,
+					{ x1: GroupScoped<EncryptedAccessLog> ->
+						groupScoped_toJs(
+							x1,
+							{ x2: EncryptedAccessLog ->
+								accessLog_toJs(x2)
+							},
+						)
+					},
+				)
+			}
+
 			override fun modifyAccessLog(entity: GroupScopedJs<EncryptedAccessLogJs>):
 					Promise<GroupScopedJs<EncryptedAccessLogJs>> = GlobalScope.promise {
 				val entityConverted: GroupScoped<EncryptedAccessLog> = groupScoped_fromJs(
@@ -917,6 +806,36 @@ internal class AccessLogApiImplJs(
 					result,
 					{ x1: EncryptedAccessLog ->
 						accessLog_toJs(x1)
+					},
+				)
+			}
+
+			override fun modifyAccessLogs(entities: Array<GroupScopedJs<EncryptedAccessLogJs>>):
+					Promise<Array<GroupScopedJs<EncryptedAccessLogJs>>> = GlobalScope.promise {
+				val entitiesConverted: List<GroupScoped<EncryptedAccessLog>> = arrayToList(
+					entities,
+					"entities",
+					{ x1: GroupScopedJs<EncryptedAccessLogJs> ->
+						groupScoped_fromJs(
+							x1,
+							{ x2: EncryptedAccessLogJs ->
+								accessLog_fromJs(x2)
+							},
+						)
+					},
+				)
+				val result = accessLogApi.inGroup.encrypted.modifyAccessLogs(
+					entitiesConverted,
+				)
+				listToArray(
+					result,
+					{ x1: GroupScoped<EncryptedAccessLog> ->
+						groupScoped_toJs(
+							x1,
+							{ x2: EncryptedAccessLog ->
+								accessLog_toJs(x2)
+							},
+						)
 					},
 				)
 			}
@@ -1093,6 +1012,135 @@ internal class AccessLogApiImplJs(
 				)
 			}
 
+			override fun createAccessLogs(entities: Array<GroupScopedJs<AccessLogJs>>):
+					Promise<Array<GroupScopedJs<AccessLogJs>>> = GlobalScope.promise {
+				val entitiesConverted: List<GroupScoped<AccessLog>> = arrayToList(
+					entities,
+					"entities",
+					{ x1: GroupScopedJs<AccessLogJs> ->
+						groupScoped_fromJs(
+							x1,
+							{ x2: AccessLogJs ->
+								accessLog_fromJs(x2)
+							},
+						)
+					},
+				)
+				val result = accessLogApi.inGroup.tryAndRecover.createAccessLogs(
+					entitiesConverted,
+				)
+				listToArray(
+					result,
+					{ x1: GroupScoped<AccessLog> ->
+						groupScoped_toJs(
+							x1,
+							{ x2: AccessLog ->
+								accessLog_toJs(x2)
+							},
+						)
+					},
+				)
+			}
+
+			override fun undeleteAccessLogById(entityId: GroupScopedJs<StoredDocumentIdentifierJs>):
+					Promise<GroupScopedJs<AccessLogJs>> = GlobalScope.promise {
+				val entityIdConverted: GroupScoped<StoredDocumentIdentifier> = groupScoped_fromJs(
+					entityId,
+					{ x1: StoredDocumentIdentifierJs ->
+						storedDocumentIdentifier_fromJs(x1)
+					},
+				)
+				val result = accessLogApi.inGroup.tryAndRecover.undeleteAccessLogById(
+					entityIdConverted,
+				)
+				groupScoped_toJs(
+					result,
+					{ x1: AccessLog ->
+						accessLog_toJs(x1)
+					},
+				)
+			}
+
+			override
+					fun undeleteAccessLogsByIds(entityIds: Array<GroupScopedJs<StoredDocumentIdentifierJs>>):
+					Promise<Array<GroupScopedJs<AccessLogJs>>> = GlobalScope.promise {
+				val entityIdsConverted: List<GroupScoped<StoredDocumentIdentifier>> = arrayToList(
+					entityIds,
+					"entityIds",
+					{ x1: GroupScopedJs<StoredDocumentIdentifierJs> ->
+						groupScoped_fromJs(
+							x1,
+							{ x2: StoredDocumentIdentifierJs ->
+								storedDocumentIdentifier_fromJs(x2)
+							},
+						)
+					},
+				)
+				val result = accessLogApi.inGroup.tryAndRecover.undeleteAccessLogsByIds(
+					entityIdsConverted,
+				)
+				listToArray(
+					result,
+					{ x1: GroupScoped<AccessLog> ->
+						groupScoped_toJs(
+							x1,
+							{ x2: AccessLog ->
+								accessLog_toJs(x2)
+							},
+						)
+					},
+				)
+			}
+
+			override fun undeleteAccessLog(accessLog: GroupScopedJs<AccessLogJs>):
+					Promise<GroupScopedJs<AccessLogJs>> = GlobalScope.promise {
+				val accessLogConverted: GroupScoped<AccessLog> = groupScoped_fromJs(
+					accessLog,
+					{ x1: AccessLogJs ->
+						accessLog_fromJs(x1)
+					},
+				)
+				val result = accessLogApi.inGroup.tryAndRecover.undeleteAccessLog(
+					accessLogConverted,
+				)
+				groupScoped_toJs(
+					result,
+					{ x1: AccessLog ->
+						accessLog_toJs(x1)
+					},
+				)
+			}
+
+			override fun undeleteAccessLogs(accessLogs: Array<GroupScopedJs<AccessLogJs>>):
+					Promise<Array<GroupScopedJs<AccessLogJs>>> = GlobalScope.promise {
+				val accessLogsConverted: List<GroupScoped<AccessLog>> = arrayToList(
+					accessLogs,
+					"accessLogs",
+					{ x1: GroupScopedJs<AccessLogJs> ->
+						groupScoped_fromJs(
+							x1,
+							{ x2: AccessLogJs ->
+								accessLog_fromJs(x2)
+							},
+						)
+					},
+				)
+				val result = accessLogApi.inGroup.tryAndRecover.undeleteAccessLogs(
+					accessLogsConverted,
+				)
+				listToArray(
+					result,
+					{ x1: GroupScoped<AccessLog> ->
+						groupScoped_toJs(
+							x1,
+							{ x2: AccessLog ->
+								accessLog_toJs(x2)
+							},
+						)
+					},
+				)
+			}
+
 			override fun modifyAccessLog(entity: GroupScopedJs<AccessLogJs>):
 					Promise<GroupScopedJs<AccessLogJs>> = GlobalScope.promise {
 				val entityConverted: GroupScoped<AccessLog> = groupScoped_fromJs(
@@ -1108,6 +1156,36 @@ internal class AccessLogApiImplJs(
 					result,
 					{ x1: AccessLog ->
 						accessLog_toJs(x1)
+					},
+				)
+			}
+
+			override fun modifyAccessLogs(entities: Array<GroupScopedJs<AccessLogJs>>):
+					Promise<Array<GroupScopedJs<AccessLogJs>>> = GlobalScope.promise {
+				val entitiesConverted: List<GroupScoped<AccessLog>> = arrayToList(
+					entities,
+					"entities",
+					{ x1: GroupScopedJs<AccessLogJs> ->
+						groupScoped_fromJs(
+							x1,
+							{ x2: AccessLogJs ->
+								accessLog_fromJs(x2)
+							},
+						)
+					},
+				)
+				val result = accessLogApi.inGroup.tryAndRecover.modifyAccessLogs(
+					entitiesConverted,
+				)
+				listToArray(
+					result,
+					{ x1: GroupScoped<AccessLog> ->
+						groupScoped_toJs(
+							x1,
+							{ x2: AccessLog ->
+								accessLog_toJs(x2)
+							},
+						)
 					},
 				)
 			}
@@ -1445,6 +1523,50 @@ internal class AccessLogApiImplJs(
 			)
 		}
 
+		override fun purgeAccessLogById(entityId: GroupScopedJs<StoredDocumentIdentifierJs>):
+				Promise<Unit> = GlobalScope.promise {
+			val entityIdConverted: GroupScoped<StoredDocumentIdentifier> = groupScoped_fromJs(
+				entityId,
+				{ x1: StoredDocumentIdentifierJs ->
+					storedDocumentIdentifier_fromJs(x1)
+				},
+			)
+			accessLogApi.inGroup.purgeAccessLogById(
+				entityIdConverted,
+			)
+
+		}
+
+		override fun purgeAccessLogsByIds(entityIds: Array<GroupScopedJs<StoredDocumentIdentifierJs>>):
+				Promise<Array<GroupScopedJs<StoredDocumentIdentifierJs>>> = GlobalScope.promise {
+			val entityIdsConverted: List<GroupScoped<StoredDocumentIdentifier>> = arrayToList(
+				entityIds,
+				"entityIds",
+				{ x1: GroupScopedJs<StoredDocumentIdentifierJs> ->
+					groupScoped_fromJs(
+						x1,
+						{ x2: StoredDocumentIdentifierJs ->
+							storedDocumentIdentifier_fromJs(x2)
+						},
+					)
+				},
+			)
+			val result = accessLogApi.inGroup.purgeAccessLogsByIds(
+				entityIdsConverted,
+			)
+			listToArray(
+				result,
+				{ x1: GroupScoped<StoredDocumentIdentifier> ->
+					groupScoped_toJs(
+						x1,
+						{ x2: StoredDocumentIdentifier ->
+							storedDocumentIdentifier_toJs(x2)
+						},
+					)
+				},
+			)
+		}
+
 		override fun deleteAccessLog(accessLog: GroupScopedJs<AccessLogJs>):
 				Promise<GroupScopedJs<StoredDocumentIdentifierJs>> = GlobalScope.promise {
 			val accessLogConverted: GroupScoped<AccessLog> = groupScoped_fromJs(
@@ -1494,6 +1616,50 @@ internal class AccessLogApiImplJs(
 			)
 		}
 
+		override fun purgeAccessLog(accessLog: GroupScopedJs<AccessLogJs>): Promise<Unit> =
+				GlobalScope.promise {
+			val accessLogConverted: GroupScoped<AccessLog> = groupScoped_fromJs(
+				accessLog,
+				{ x1: AccessLogJs ->
+					accessLog_fromJs(x1)
+				},
+			)
+			accessLogApi.inGroup.purgeAccessLog(
+				accessLogConverted,
+			)
+
+		}
+
+		override fun purgeAccessLogs(accessLogs: Array<GroupScopedJs<AccessLogJs>>):
+				Promise<Array<GroupScopedJs<StoredDocumentIdentifierJs>>> = GlobalScope.promise {
+			val accessLogsConverted: List<GroupScoped<AccessLog>> = arrayToList(
+				accessLogs,
+				"accessLogs",
+				{ x1: GroupScopedJs<AccessLogJs> ->
+					groupScoped_fromJs(
+						x1,
+						{ x2: AccessLogJs ->
+							accessLog_fromJs(x2)
+						},
+					)
+				},
+			)
+			val result = accessLogApi.inGroup.purgeAccessLogs(
+				accessLogsConverted,
+			)
+			listToArray(
+				result,
+				{ x1: GroupScoped<StoredDocumentIdentifier> ->
+					groupScoped_toJs(
+						x1,
+						{ x2: StoredDocumentIdentifier ->
+							storedDocumentIdentifier_toJs(x2)
+						},
+					)
+				},
+			)
+		}
+
 		override fun createAccessLog(entity: GroupScopedJs<DecryptedAccessLogJs>):
 				Promise<GroupScopedJs<DecryptedAccessLogJs>> = GlobalScope.promise {
 			val entityConverted: GroupScoped<DecryptedAccessLog> = groupScoped_fromJs(
@@ -1513,6 +1679,134 @@ internal class AccessLogApiImplJs(
 			)
 		}
 
+		override fun createAccessLogs(entities: Array<GroupScopedJs<DecryptedAccessLogJs>>):
+				Promise<Array<GroupScopedJs<DecryptedAccessLogJs>>> = GlobalScope.promise {
+			val entitiesConverted: List<GroupScoped<DecryptedAccessLog>> = arrayToList(
+				entities,
+				"entities",
+				{ x1: GroupScopedJs<DecryptedAccessLogJs> ->
+					groupScoped_fromJs(
+						x1,
+						{ x2: DecryptedAccessLogJs ->
+							accessLog_fromJs(x2)
+						},
+					)
+				},
+			)
+			val result = accessLogApi.inGroup.createAccessLogs(
+				entitiesConverted,
+			)
+			listToArray(
+				result,
+				{ x1: GroupScoped<DecryptedAccessLog> ->
+					groupScoped_toJs(
+						x1,
+						{ x2: DecryptedAccessLog ->
+							accessLog_toJs(x2)
+						},
+					)
+				},
+			)
+		}
+
+		override fun undeleteAccessLogById(entityId: GroupScopedJs<StoredDocumentIdentifierJs>):
+				Promise<GroupScopedJs<DecryptedAccessLogJs>> = GlobalScope.promise {
+			val entityIdConverted: GroupScoped<StoredDocumentIdentifier> = groupScoped_fromJs(
+				entityId,
+				{ x1: StoredDocumentIdentifierJs ->
+					storedDocumentIdentifier_fromJs(x1)
+				},
+			)
+			val result = accessLogApi.inGroup.undeleteAccessLogById(
+				entityIdConverted,
+			)
+			groupScoped_toJs(
+				result,
+				{ x1: DecryptedAccessLog ->
+					accessLog_toJs(x1)
+				},
+			)
+		}
+
+		override fun undeleteAccessLogsByIds(entityIds: Array<GroupScopedJs<StoredDocumentIdentifierJs>>):
+				Promise<Array<GroupScopedJs<DecryptedAccessLogJs>>> = GlobalScope.promise {
+			val entityIdsConverted: List<GroupScoped<StoredDocumentIdentifier>> = arrayToList(
+				entityIds,
+				"entityIds",
+				{ x1: GroupScopedJs<StoredDocumentIdentifierJs> ->
+					groupScoped_fromJs(
+						x1,
+						{ x2: StoredDocumentIdentifierJs ->
+							storedDocumentIdentifier_fromJs(x2)
+						},
+					)
+				},
+			)
+			val result = accessLogApi.inGroup.undeleteAccessLogsByIds(
+				entityIdsConverted,
+			)
+			listToArray(
+				result,
+				{ x1: GroupScoped<DecryptedAccessLog> ->
+					groupScoped_toJs(
+						x1,
+						{ x2: DecryptedAccessLog ->
+							accessLog_toJs(x2)
+						},
+					)
+				},
+			)
+		}
+
+		override fun undeleteAccessLog(accessLog: GroupScopedJs<AccessLogJs>):
+				Promise<GroupScopedJs<DecryptedAccessLogJs>> = GlobalScope.promise {
+			val accessLogConverted: GroupScoped<AccessLog> = groupScoped_fromJs(
+				accessLog,
+				{ x1: AccessLogJs ->
+					accessLog_fromJs(x1)
+				},
+			)
+			val result = accessLogApi.inGroup.undeleteAccessLog(
+				accessLogConverted,
+			)
+			groupScoped_toJs(
+				result,
+				{ x1: DecryptedAccessLog ->
+					accessLog_toJs(x1)
+				},
+			)
+		}
+
+		override fun undeleteAccessLogs(accessLogs: Array<GroupScopedJs<AccessLogJs>>):
+				Promise<Array<GroupScopedJs<DecryptedAccessLogJs>>> = GlobalScope.promise {
+			val accessLogsConverted: List<GroupScoped<AccessLog>> = arrayToList(
+				accessLogs,
+				"accessLogs",
+				{ x1: GroupScopedJs<AccessLogJs> ->
+					groupScoped_fromJs(
+						x1,
+						{ x2: AccessLogJs ->
+							accessLog_fromJs(x2)
+						},
+					)
+				},
+			)
+			val result = accessLogApi.inGroup.undeleteAccessLogs(
+				accessLogsConverted,
+			)
+			listToArray(
+				result,
+				{ x1: GroupScoped<DecryptedAccessLog> ->
+					groupScoped_toJs(
+						x1,
+						{ x2: DecryptedAccessLog ->
+							accessLog_toJs(x2)
+						},
+					)
+				},
+			)
+		}
+
 		override fun modifyAccessLog(entity: GroupScopedJs<DecryptedAccessLogJs>):
 				Promise<GroupScopedJs<DecryptedAccessLogJs>> = GlobalScope.promise {
 			val entityConverted: GroupScoped<DecryptedAccessLog> = groupScoped_fromJs(
@@ -1528,6 +1822,36 @@ internal class AccessLogApiImplJs(
 				result,
 				{ x1: DecryptedAccessLog ->
 					accessLog_toJs(x1)
+				},
+			)
+		}
+
+		override fun modifyAccessLogs(entities: Array<GroupScopedJs<DecryptedAccessLogJs>>):
+				Promise<Array<GroupScopedJs<DecryptedAccessLogJs>>> = GlobalScope.promise {
+			val entitiesConverted: List<GroupScoped<DecryptedAccessLog>> = arrayToList(
+				entities,
+				"entities",
+				{ x1: GroupScopedJs<DecryptedAccessLogJs> ->
+					groupScoped_fromJs(
+						x1,
+						{ x2: DecryptedAccessLogJs ->
+							accessLog_fromJs(x2)
+						},
+					)
+				},
+			)
+			val result = accessLogApi.inGroup.modifyAccessLogs(
+				entitiesConverted,
+			)
+			listToArray(
+				result,
+				{ x1: GroupScoped<DecryptedAccessLog> ->
+					groupScoped_toJs(
+						x1,
+						{ x2: DecryptedAccessLog ->
+							accessLog_toJs(x2)
+						},
+					)
 				},
 			)
 		}
@@ -1741,35 +2065,6 @@ internal class AccessLogApiImplJs(
 		)
 	}
 
-	override fun deleteAccessLogUnsafe(entityId: String): Promise<DocIdentifierJs> =
-			GlobalScope.promise {
-		val entityIdConverted: String = entityId
-		val result = accessLogApi.deleteAccessLogUnsafe(
-			entityIdConverted,
-		)
-		docIdentifier_toJs(result)
-	}
-
-	override fun deleteAccessLogsUnsafe(entityIds: Array<String>): Promise<Array<DocIdentifierJs>> =
-			GlobalScope.promise {
-		val entityIdsConverted: List<String> = arrayToList(
-			entityIds,
-			"entityIds",
-			{ x1: String ->
-				x1
-			},
-		)
-		val result = accessLogApi.deleteAccessLogsUnsafe(
-			entityIdsConverted,
-		)
-		listToArray(
-			result,
-			{ x1: DocIdentifier ->
-				docIdentifier_toJs(x1)
-			},
-		)
-	}
-
 	override fun deleteAccessLogById(entityId: String, rev: String):
 			Promise<StoredDocumentIdentifierJs> = GlobalScope.promise {
 		val entityIdConverted: String = entityId
@@ -1811,6 +2106,26 @@ internal class AccessLogApiImplJs(
 
 	}
 
+	override fun purgeAccessLogsByIds(entityIds: Array<StoredDocumentIdentifierJs>):
+			Promise<Array<StoredDocumentIdentifierJs>> = GlobalScope.promise {
+		val entityIdsConverted: List<StoredDocumentIdentifier> = arrayToList(
+			entityIds,
+			"entityIds",
+			{ x1: StoredDocumentIdentifierJs ->
+				storedDocumentIdentifier_fromJs(x1)
+			},
+		)
+		val result = accessLogApi.purgeAccessLogsByIds(
+			entityIdsConverted,
+		)
+		listToArray(
+			result,
+			{ x1: StoredDocumentIdentifier ->
+				storedDocumentIdentifier_toJs(x1)
+			},
+		)
+	}
+
 	override fun deleteAccessLog(accessLog: AccessLogJs): Promise<StoredDocumentIdentifierJs> =
 			GlobalScope.promise {
 		val accessLogConverted: AccessLog = accessLog_fromJs(accessLog)
@@ -1846,6 +2161,26 @@ internal class AccessLogApiImplJs(
 			accessLogConverted,
 		)
 
+	}
+
+	override fun purgeAccessLogs(accessLogs: Array<AccessLogJs>):
+			Promise<Array<StoredDocumentIdentifierJs>> = GlobalScope.promise {
+		val accessLogsConverted: List<AccessLog> = arrayToList(
+			accessLogs,
+			"accessLogs",
+			{ x1: AccessLogJs ->
+				accessLog_fromJs(x1)
+			},
+		)
+		val result = accessLogApi.purgeAccessLogs(
+			accessLogsConverted,
+		)
+		listToArray(
+			result,
+			{ x1: StoredDocumentIdentifier ->
+				storedDocumentIdentifier_toJs(x1)
+			},
+		)
 	}
 
 	override fun shareWith(
@@ -1896,52 +2231,6 @@ internal class AccessLogApiImplJs(
 		accessLog_toJs(result)
 	}
 
-	override fun findAccessLogsByHcPartyPatient(
-		hcPartyId: String,
-		patient: PatientJs,
-		options: dynamic,
-	): Promise<PaginatedListIteratorJs<DecryptedAccessLogJs>> {
-		val _options = options ?: js("{}")
-		return GlobalScope.promise {
-			val hcPartyIdConverted: String = hcPartyId
-			val patientConverted: Patient = patient_fromJs(patient)
-			val startDateConverted: Long? = convertingOptionOrDefaultNullable(
-				_options,
-				"startDate",
-				null
-			) { startDate: Double? ->
-				numberToLong(startDate, "startDate")
-			}
-			val endDateConverted: Long? = convertingOptionOrDefaultNullable(
-				_options,
-				"endDate",
-				null
-			) { endDate: Double? ->
-				numberToLong(endDate, "endDate")
-			}
-			val descendingConverted: Boolean? = convertingOptionOrDefaultNullable(
-				_options,
-				"descending",
-				null
-			) { descending: Boolean? ->
-				undefinedToNull(descending)
-			}
-			val result = accessLogApi.findAccessLogsByHcPartyPatient(
-				hcPartyIdConverted,
-				patientConverted,
-				startDateConverted,
-				endDateConverted,
-				descendingConverted,
-			)
-			paginatedListIterator_toJs(
-				result,
-				{ x1: DecryptedAccessLog ->
-					accessLog_toJs(x1)
-				},
-			)
-		}
-	}
-
 	override fun filterAccessLogsBy(filter: FilterOptionsJs<AccessLogJs>):
 			Promise<PaginatedListIteratorJs<DecryptedAccessLogJs>> = GlobalScope.promise {
 		val filterConverted: FilterOptions<AccessLog> = filterOptions_fromJs(filter)
@@ -1979,6 +2268,26 @@ internal class AccessLogApiImplJs(
 		accessLog_toJs(result)
 	}
 
+	override fun createAccessLogs(entities: Array<DecryptedAccessLogJs>):
+			Promise<Array<DecryptedAccessLogJs>> = GlobalScope.promise {
+		val entitiesConverted: List<DecryptedAccessLog> = arrayToList(
+			entities,
+			"entities",
+			{ x1: DecryptedAccessLogJs ->
+				accessLog_fromJs(x1)
+			},
+		)
+		val result = accessLogApi.createAccessLogs(
+			entitiesConverted,
+		)
+		listToArray(
+			result,
+			{ x1: DecryptedAccessLog ->
+				accessLog_toJs(x1)
+			},
+		)
+	}
+
 	override fun undeleteAccessLogById(id: String, rev: String): Promise<DecryptedAccessLogJs> =
 			GlobalScope.promise {
 		val idConverted: String = id
@@ -1990,6 +2299,26 @@ internal class AccessLogApiImplJs(
 		accessLog_toJs(result)
 	}
 
+	override fun undeleteAccessLogsByIds(entityIds: Array<StoredDocumentIdentifierJs>):
+			Promise<Array<DecryptedAccessLogJs>> = GlobalScope.promise {
+		val entityIdsConverted: List<StoredDocumentIdentifier> = arrayToList(
+			entityIds,
+			"entityIds",
+			{ x1: StoredDocumentIdentifierJs ->
+				storedDocumentIdentifier_fromJs(x1)
+			},
+		)
+		val result = accessLogApi.undeleteAccessLogsByIds(
+			entityIdsConverted,
+		)
+		listToArray(
+			result,
+			{ x1: DecryptedAccessLog ->
+				accessLog_toJs(x1)
+			},
+		)
+	}
+
 	override fun undeleteAccessLog(accessLog: AccessLogJs): Promise<DecryptedAccessLogJs> =
 			GlobalScope.promise {
 		val accessLogConverted: AccessLog = accessLog_fromJs(accessLog)
@@ -1999,6 +2328,26 @@ internal class AccessLogApiImplJs(
 		accessLog_toJs(result)
 	}
 
+	override fun undeleteAccessLogs(accessLogs: Array<AccessLogJs>):
+			Promise<Array<DecryptedAccessLogJs>> = GlobalScope.promise {
+		val accessLogsConverted: List<AccessLog> = arrayToList(
+			accessLogs,
+			"accessLogs",
+			{ x1: AccessLogJs ->
+				accessLog_fromJs(x1)
+			},
+		)
+		val result = accessLogApi.undeleteAccessLogs(
+			accessLogsConverted,
+		)
+		listToArray(
+			result,
+			{ x1: DecryptedAccessLog ->
+				accessLog_toJs(x1)
+			},
+		)
+	}
+
 	override fun modifyAccessLog(entity: DecryptedAccessLogJs): Promise<DecryptedAccessLogJs> =
 			GlobalScope.promise {
 		val entityConverted: DecryptedAccessLog = accessLog_fromJs(entity)
@@ -2006,6 +2355,26 @@ internal class AccessLogApiImplJs(
 			entityConverted,
 		)
 		accessLog_toJs(result)
+	}
+
+	override fun modifyAccessLogs(entities: Array<DecryptedAccessLogJs>):
+			Promise<Array<DecryptedAccessLogJs>> = GlobalScope.promise {
+		val entitiesConverted: List<DecryptedAccessLog> = arrayToList(
+			entities,
+			"entities",
+			{ x1: DecryptedAccessLogJs ->
+				accessLog_fromJs(x1)
+			},
+		)
+		val result = accessLogApi.modifyAccessLogs(
+			entitiesConverted,
+		)
+		listToArray(
+			result,
+			{ x1: DecryptedAccessLog ->
+				accessLog_toJs(x1)
+			},
+		)
 	}
 
 	override fun getAccessLog(entityId: String): Promise<DecryptedAccessLogJs?> = GlobalScope.promise {
@@ -2038,154 +2407,5 @@ internal class AccessLogApiImplJs(
 				accessLog_toJs(x1)
 			},
 		)
-	}
-
-	override fun findAccessLogsBy(
-		fromEpoch: Double?,
-		toEpoch: Double?,
-		startKey: Double?,
-		startDocumentId: String?,
-		limit: Double?,
-	): Promise<PaginatedListJs<DecryptedAccessLogJs>> = GlobalScope.promise {
-		val fromEpochConverted: Long? = numberToLong(fromEpoch, "fromEpoch")
-		val toEpochConverted: Long? = numberToLong(toEpoch, "toEpoch")
-		val startKeyConverted: Long? = numberToLong(startKey, "startKey")
-		val startDocumentIdConverted: String? = undefinedToNull(startDocumentId)
-		val limitConverted: Int? = numberToInt(limit, "limit")
-		val result = accessLogApi.findAccessLogsBy(
-			fromEpochConverted,
-			toEpochConverted,
-			startKeyConverted,
-			startDocumentIdConverted,
-			limitConverted,
-		)
-		paginatedList_toJs(
-			result,
-			{ x1: DecryptedAccessLog ->
-				accessLog_toJs(x1)
-			},
-		)
-	}
-
-	override fun findAccessLogsByUserAfterDate(userId: String, options: dynamic):
-			Promise<PaginatedListJs<DecryptedAccessLogJs>> {
-		val _options = options ?: js("{}")
-		return GlobalScope.promise {
-			val userIdConverted: String = userId
-			val accessTypeConverted: String? = convertingOptionOrDefaultNullable(
-				_options,
-				"accessType",
-				null
-			) { accessType: String? ->
-				undefinedToNull(accessType)
-			}
-			val startDateConverted: Long? = convertingOptionOrDefaultNullable(
-				_options,
-				"startDate",
-				null
-			) { startDate: Double? ->
-				numberToLong(startDate, "startDate")
-			}
-			val startKeyConverted: String? = convertingOptionOrDefaultNullable(
-				_options,
-				"startKey",
-				null
-			) { startKey: String? ->
-				undefinedToNull(startKey)
-			}
-			val startDocumentIdConverted: String? = convertingOptionOrDefaultNullable(
-				_options,
-				"startDocumentId",
-				null
-			) { startDocumentId: String? ->
-				undefinedToNull(startDocumentId)
-			}
-			val limitConverted: Int? = convertingOptionOrDefaultNullable(
-				_options,
-				"limit",
-				null
-			) { limit: Double? ->
-				numberToInt(limit, "limit")
-			}
-			val descendingConverted: Boolean? = convertingOptionOrDefaultNullable(
-				_options,
-				"descending",
-				null
-			) { descending: Boolean? ->
-				undefinedToNull(descending)
-			}
-			val result = accessLogApi.findAccessLogsByUserAfterDate(
-				userIdConverted,
-				accessTypeConverted,
-				startDateConverted,
-				startKeyConverted,
-				startDocumentIdConverted,
-				limitConverted,
-				descendingConverted,
-			)
-			paginatedList_toJs(
-				result,
-				{ x1: DecryptedAccessLog ->
-					accessLog_toJs(x1)
-				},
-			)
-		}
-	}
-
-	override fun findAccessLogsInGroup(groupId: String, options: dynamic):
-			Promise<PaginatedListJs<DecryptedAccessLogJs>> {
-		val _options = options ?: js("{}")
-		return GlobalScope.promise {
-			val groupIdConverted: String = groupId
-			val fromEpochConverted: Long? = convertingOptionOrDefaultNullable(
-				_options,
-				"fromEpoch",
-				null
-			) { fromEpoch: Double? ->
-				numberToLong(fromEpoch, "fromEpoch")
-			}
-			val toEpochConverted: Long? = convertingOptionOrDefaultNullable(
-				_options,
-				"toEpoch",
-				null
-			) { toEpoch: Double? ->
-				numberToLong(toEpoch, "toEpoch")
-			}
-			val startKeyConverted: Long? = convertingOptionOrDefaultNullable(
-				_options,
-				"startKey",
-				null
-			) { startKey: Double? ->
-				numberToLong(startKey, "startKey")
-			}
-			val startDocumentIdConverted: String? = convertingOptionOrDefaultNullable(
-				_options,
-				"startDocumentId",
-				null
-			) { startDocumentId: String? ->
-				undefinedToNull(startDocumentId)
-			}
-			val limitConverted: Int? = convertingOptionOrDefaultNullable(
-				_options,
-				"limit",
-				null
-			) { limit: Double? ->
-				numberToInt(limit, "limit")
-			}
-			val result = accessLogApi.findAccessLogsInGroup(
-				groupIdConverted,
-				fromEpochConverted,
-				toEpochConverted,
-				startKeyConverted,
-				startDocumentIdConverted,
-				limitConverted,
-			)
-			paginatedList_toJs(
-				result,
-				{ x1: DecryptedAccessLog ->
-					accessLog_toJs(x1)
-				},
-			)
-		}
 	}
 }

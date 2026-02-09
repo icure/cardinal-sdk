@@ -9,7 +9,6 @@ import com.icure.cardinal.sdk.js.model.base.ICureDocumentJs
 import com.icure.cardinal.sdk.js.model.base.StoredDocumentJs
 import com.icure.cardinal.sdk.js.model.embed.DelegationJs
 import com.icure.cardinal.sdk.js.model.embed.EncryptableJs
-import com.icure.cardinal.sdk.js.model.embed.MessageAttachmentJs
 import com.icure.cardinal.sdk.js.model.embed.MessageReadStatusJs
 import com.icure.cardinal.sdk.js.model.embed.SecurityMetadataJs
 import com.icure.cardinal.sdk.js.utils.Record
@@ -27,12 +26,6 @@ public sealed external interface MessageJs : StoredDocumentJs, ICureDocumentJs<S
 
 	public val fromHealthcarePartyId: String?
 
-	public val formId: String?
-
-	public val status: Double?
-
-	public val recipientsType: String?
-
 	public val recipients: Array<out String>
 
 	public val toAddresses: Array<out String>
@@ -45,8 +38,6 @@ public sealed external interface MessageJs : StoredDocumentJs, ICureDocumentJs<S
 
 	public val readStatus: Record<String, out MessageReadStatusJs>
 
-	public val messageAttachments: Array<out MessageAttachmentJs>
-
 	public val transportGuid: String?
 
 	public val remark: String?
@@ -58,14 +49,6 @@ public sealed external interface MessageJs : StoredDocumentJs, ICureDocumentJs<S
 	public val invoiceIds: Array<out String>
 
 	public val parentId: String?
-
-	public val externalRef: String?
-
-	public val unassignedResults: Array<out String>
-
-	public val assignedResults: Record<String, out String>
-
-	public val senderReferences: Record<String, out String>
 
 	public val isEncrypted: Boolean
 }
@@ -86,25 +69,15 @@ public external class DecryptedMessageJs(
 
 	override val responsible: String?
 
-	override val medicalLocationId: String?
-
 	override val tags: Array<CodeStubJs>
 
 	override val codes: Array<CodeStubJs>
-
-	override val endOfLife: Double?
 
 	override val deletionDate: Double?
 
 	override val fromAddress: String?
 
 	override val fromHealthcarePartyId: String?
-
-	override val formId: String?
-
-	override val status: Double?
-
-	override val recipientsType: String?
 
 	override val recipients: Array<String>
 
@@ -118,8 +91,6 @@ public external class DecryptedMessageJs(
 
 	override val readStatus: Record<String, MessageReadStatusJs>
 
-	override val messageAttachments: Array<MessageAttachmentJs>
-
 	override val transportGuid: String?
 
 	override val remark: String?
@@ -131,14 +102,6 @@ public external class DecryptedMessageJs(
 	override val invoiceIds: Array<String>
 
 	override val parentId: String?
-
-	override val externalRef: String?
-
-	override val unassignedResults: Array<String>
-
-	override val assignedResults: Record<String, String>
-
-	override val senderReferences: Record<String, String>
 
 	override val secretForeignKeys: Array<String>
 
@@ -171,25 +134,15 @@ public external class EncryptedMessageJs(
 
 	override val responsible: String?
 
-	override val medicalLocationId: String?
-
 	override val tags: Array<CodeStubJs>
 
 	override val codes: Array<CodeStubJs>
-
-	override val endOfLife: Double?
 
 	override val deletionDate: Double?
 
 	override val fromAddress: String?
 
 	override val fromHealthcarePartyId: String?
-
-	override val formId: String?
-
-	override val status: Double?
-
-	override val recipientsType: String?
 
 	override val recipients: Array<String>
 
@@ -203,8 +156,6 @@ public external class EncryptedMessageJs(
 
 	override val readStatus: Record<String, MessageReadStatusJs>
 
-	override val messageAttachments: Array<MessageAttachmentJs>
-
 	override val transportGuid: String?
 
 	override val remark: String?
@@ -216,14 +167,6 @@ public external class EncryptedMessageJs(
 	override val invoiceIds: Array<String>
 
 	override val parentId: String?
-
-	override val externalRef: String?
-
-	override val unassignedResults: Array<String>
-
-	override val assignedResults: Record<String, String>
-
-	override val senderReferences: Record<String, String>
 
 	override val secretForeignKeys: Array<String>
 

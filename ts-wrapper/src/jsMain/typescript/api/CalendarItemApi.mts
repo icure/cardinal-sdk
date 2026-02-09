@@ -4,7 +4,6 @@ import {CalendarItemShareOptions} from '../crypto/entities/CalendarItemShareOpti
 import {SecretIdUseOption} from '../crypto/entities/SecretIdUseOption.mjs';
 import {CalendarItem, DecryptedCalendarItem, EncryptedCalendarItem} from '../model/CalendarItem.mjs';
 import {EntityReferenceInGroup} from '../model/EntityReferenceInGroup.mjs';
-import {PaginatedList} from '../model/PaginatedList.mjs';
 import {Patient} from '../model/Patient.mjs';
 import {StoredDocumentIdentifier} from '../model/StoredDocumentIdentifier.mjs';
 import {User} from '../model/User.mjs';
@@ -47,15 +46,13 @@ export interface CalendarItemApi {
 
 	matchCalendarItemsBySorted(filter: SortableFilterOptions<CalendarItem>): Promise<Array<string>>;
 
-	deleteCalendarItemUnsafe(entityId: string): Promise<StoredDocumentIdentifier>;
-
-	deleteCalendarItemsUnsafe(entityIds: Array<string>): Promise<Array<StoredDocumentIdentifier>>;
-
 	deleteCalendarItemById(entityId: string, rev: string): Promise<StoredDocumentIdentifier>;
 
 	deleteCalendarItemsByIds(entityIds: Array<StoredDocumentIdentifier>): Promise<Array<StoredDocumentIdentifier>>;
 
 	purgeCalendarItemById(id: string, rev: string): Promise<void>;
+
+	purgeCalendarItemsByIds(entityIds: Array<StoredDocumentIdentifier>): Promise<Array<StoredDocumentIdentifier>>;
 
 	deleteCalendarItem(calendarItem: CalendarItem): Promise<StoredDocumentIdentifier>;
 
@@ -63,14 +60,13 @@ export interface CalendarItemApi {
 
 	purgeCalendarItem(calendarItem: CalendarItem): Promise<void>;
 
+	purgeCalendarItems(calendarItems: Array<CalendarItem>): Promise<Array<StoredDocumentIdentifier>>;
+
 	shareWith(delegateId: string, calendarItem: DecryptedCalendarItem,
 			options?: { options?: CalendarItemShareOptions | undefined }): Promise<DecryptedCalendarItem>;
 
 	shareWithMany(calendarItem: DecryptedCalendarItem,
 			delegates: { [ key: string ]: CalendarItemShareOptions }): Promise<DecryptedCalendarItem>;
-
-	findCalendarItemsByHcPartyPatient(hcPartyId: string, patient: Patient,
-			options?: { startDate?: number | undefined, endDate?: number | undefined, descending?: boolean | undefined }): Promise<PaginatedListIterator<DecryptedCalendarItem>>;
 
 	linkToPatient(calendarItem: CalendarItem, patient: Patient,
 			shareLinkWithDelegates: Array<string>): Promise<DecryptedCalendarItem>;
@@ -81,27 +77,25 @@ export interface CalendarItemApi {
 
 	createCalendarItem(entity: DecryptedCalendarItem): Promise<DecryptedCalendarItem>;
 
+	createCalendarItems(entities: Array<DecryptedCalendarItem>): Promise<Array<DecryptedCalendarItem>>;
+
 	bookCalendarItemCheckingAvailability(entity: DecryptedCalendarItem): Promise<DecryptedCalendarItem>;
 
 	undeleteCalendarItemById(id: string, rev: string): Promise<DecryptedCalendarItem>;
 
+	undeleteCalendarItemsByIds(entityIds: Array<StoredDocumentIdentifier>): Promise<Array<DecryptedCalendarItem>>;
+
 	undeleteCalendarItem(calendarItem: CalendarItem): Promise<DecryptedCalendarItem>;
 
+	undeleteCalendarItems(calendarItems: Array<CalendarItem>): Promise<Array<DecryptedCalendarItem>>;
+
 	modifyCalendarItem(entity: DecryptedCalendarItem): Promise<DecryptedCalendarItem>;
+
+	modifyCalendarItems(entities: Array<DecryptedCalendarItem>): Promise<Array<DecryptedCalendarItem>>;
 
 	getCalendarItem(entityId: string): Promise<DecryptedCalendarItem | undefined>;
 
 	getCalendarItems(entityIds: Array<string>): Promise<Array<DecryptedCalendarItem>>;
-
-	getCalendarItemsByPeriodAndHcPartyId(startDate: number, endDate: number,
-			hcPartyId: string): Promise<Array<DecryptedCalendarItem>>;
-
-	getCalendarsByPeriodAndAgendaId(startDate: number, endDate: number,
-			agendaId: string): Promise<Array<DecryptedCalendarItem>>;
-
-	findCalendarItemsByRecurrenceId(recurrenceId: string, startKey: string | undefined,
-			startDocumentId: string | undefined,
-			limit: number): Promise<PaginatedList<DecryptedCalendarItem>>;
 
 	subscribeToEvents(events: Array<SubscriptionEventType>, filter: FilterOptions<CalendarItem>,
 			options?: { subscriptionConfig?: EntitySubscriptionConfiguration | undefined }): Promise<EntitySubscription<EncryptedCalendarItem>>;

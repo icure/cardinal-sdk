@@ -91,9 +91,13 @@ public
 	val signatureAlgorithm = nullToUndefined(
 		obj.signatureAlgorithm
 	)
+	val clientId = nullToUndefined(
+		obj.clientId
+	)
 	return ExternalJwtConfigJs_ValidationMethodJs_PublicKeyJs(js("{" +
 		"key:key," +
-		"signatureAlgorithm:signatureAlgorithm" +
+		"signatureAlgorithm:signatureAlgorithm," +
+		"clientId:clientId" +
 	"}"))
 }
 
@@ -102,9 +106,11 @@ public
 		ExternalJwtConfig.ValidationMethod.PublicKey {
 	val key = obj.key
 	val signatureAlgorithm = undefinedToNull(obj.signatureAlgorithm)
+	val clientId = undefinedToNull(obj.clientId)
 	return ExternalJwtConfig.ValidationMethod.PublicKey(
 		key = key,
 		signatureAlgorithm = signatureAlgorithm,
+		clientId = clientId,
 	)
 }
 
@@ -112,18 +118,24 @@ public
 public
 		fun externalJwtConfig_ValidationMethod_Oidc_toJs(obj: ExternalJwtConfig.ValidationMethod.Oidc):
 		ExternalJwtConfigJs_ValidationMethodJs_OidcJs {
-	val issureLocation = obj.issureLocation
+	val issuerLocation = obj.issuerLocation
+	val clientId = nullToUndefined(
+		obj.clientId
+	)
 	return ExternalJwtConfigJs_ValidationMethodJs_OidcJs(js("{" +
-		"issureLocation:issureLocation" +
+		"issuerLocation:issuerLocation," +
+		"clientId:clientId" +
 	"}"))
 }
 
 public
 		fun externalJwtConfig_ValidationMethod_Oidc_fromJs(obj: ExternalJwtConfigJs_ValidationMethodJs_OidcJs):
 		ExternalJwtConfig.ValidationMethod.Oidc {
-	val issureLocation = obj.issureLocation
+	val issuerLocation = obj.issuerLocation
+	val clientId = undefinedToNull(obj.clientId)
 	return ExternalJwtConfig.ValidationMethod.Oidc(
-		issureLocation = issureLocation,
+		issuerLocation = issuerLocation,
+		clientId = clientId,
 	)
 }
 

@@ -8,10 +8,10 @@ import com.icure.cardinal.sdk.js.filters.FilterOptionsJs
 import com.icure.cardinal.sdk.js.filters.SortableFilterOptionsJs
 import com.icure.cardinal.sdk.js.model.DecryptedTopicJs
 import com.icure.cardinal.sdk.js.model.EncryptedTopicJs
+import com.icure.cardinal.sdk.js.model.EntityReferenceInGroupJs
 import com.icure.cardinal.sdk.js.model.PatientJs
 import com.icure.cardinal.sdk.js.model.StoredDocumentIdentifierJs
 import com.icure.cardinal.sdk.js.model.TopicJs
-import com.icure.cardinal.sdk.js.model.couchdb.DocIdentifierJs
 import com.icure.cardinal.sdk.js.subscription.EntitySubscriptionJs
 import com.icure.cardinal.sdk.js.utils.Record
 import com.icure.cardinal.sdk.js.utils.pagination.PaginatedListIteratorJs
@@ -29,6 +29,8 @@ public external interface TopicApiJs {
 
 	public val tryAndRecover: TopicFlavouredApiJs<TopicJs>
 
+	public val inGroup: TopicInGroupApiJs
+
 	public fun withEncryptionMetadata(
 		base: DecryptedTopicJs?,
 		patient: PatientJs?,
@@ -39,7 +41,7 @@ public external interface TopicApiJs {
 
 	public fun hasWriteAccess(topic: TopicJs): Promise<Boolean>
 
-	public fun decryptPatientIdOf(topic: TopicJs): Promise<Array<String>>
+	public fun decryptPatientIdOf(topic: TopicJs): Promise<Array<EntityReferenceInGroupJs>>
 
 	public fun createDelegationDeAnonymizationMetadata(entity: TopicJs, delegates: Array<String>):
 			Promise<Unit>
@@ -52,22 +54,23 @@ public external interface TopicApiJs {
 
 	public fun matchTopicsBySorted(filter: SortableFilterOptionsJs<TopicJs>): Promise<Array<String>>
 
-	public fun deleteTopicUnsafe(entityId: String): Promise<DocIdentifierJs>
-
-	public fun deleteTopicsUnsafe(entityIds: Array<String>): Promise<Array<DocIdentifierJs>>
-
-	public fun deleteTopicById(entityId: String, rev: String): Promise<DocIdentifierJs>
+	public fun deleteTopicById(entityId: String, rev: String): Promise<StoredDocumentIdentifierJs>
 
 	public fun deleteTopicsByIds(entityIds: Array<StoredDocumentIdentifierJs>):
-			Promise<Array<DocIdentifierJs>>
+			Promise<Array<StoredDocumentIdentifierJs>>
 
 	public fun purgeTopicById(id: String, rev: String): Promise<Unit>
 
-	public fun deleteTopic(topic: TopicJs): Promise<DocIdentifierJs>
+	public fun purgeTopicsByIds(entityIds: Array<StoredDocumentIdentifierJs>):
+			Promise<Array<StoredDocumentIdentifierJs>>
 
-	public fun deleteTopics(topics: Array<TopicJs>): Promise<Array<DocIdentifierJs>>
+	public fun deleteTopic(topic: TopicJs): Promise<StoredDocumentIdentifierJs>
+
+	public fun deleteTopics(topics: Array<TopicJs>): Promise<Array<StoredDocumentIdentifierJs>>
 
 	public fun purgeTopic(topic: TopicJs): Promise<Unit>
+
+	public fun purgeTopics(topics: Array<TopicJs>): Promise<Array<StoredDocumentIdentifierJs>>
 
 	public fun shareWith(
 		delegateId: String,
@@ -86,11 +89,20 @@ public external interface TopicApiJs {
 
 	public fun createTopic(entity: DecryptedTopicJs): Promise<DecryptedTopicJs>
 
-	public fun undeleteTopic(topic: TopicJs): Promise<TopicJs>
+	public fun createTopics(entities: Array<DecryptedTopicJs>): Promise<Array<DecryptedTopicJs>>
+
+	public fun undeleteTopicById(id: String, rev: String): Promise<DecryptedTopicJs>
+
+	public fun undeleteTopicsByIds(entityIds: Array<StoredDocumentIdentifierJs>):
+			Promise<Array<DecryptedTopicJs>>
+
+	public fun undeleteTopic(topic: TopicJs): Promise<DecryptedTopicJs>
+
+	public fun undeleteTopics(topics: Array<TopicJs>): Promise<Array<DecryptedTopicJs>>
 
 	public fun modifyTopic(entity: DecryptedTopicJs): Promise<DecryptedTopicJs>
 
-	public fun undeleteTopicById(id: String, rev: String): Promise<DecryptedTopicJs>
+	public fun modifyTopics(entities: Array<DecryptedTopicJs>): Promise<Array<DecryptedTopicJs>>
 
 	public fun getTopic(entityId: String): Promise<DecryptedTopicJs?>
 

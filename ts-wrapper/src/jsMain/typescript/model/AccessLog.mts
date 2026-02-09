@@ -23,8 +23,6 @@ export interface AccessLog extends StoredDocument, ICureDocument<string>, HasEnc
 
 	date: number | undefined;
 
-	patientId: string | undefined;
-
 	readonly isEncrypted: boolean;
 
 	toJSON(): object;
@@ -45,13 +43,9 @@ export class DecryptedAccessLog {
 
 	responsible: string | undefined = undefined;
 
-	medicalLocationId: string | undefined = undefined;
-
 	tags: Array<CodeStub> = [];
 
 	codes: Array<CodeStub> = [];
-
-	endOfLife: number | undefined = undefined;
 
 	deletionDate: number | undefined = undefined;
 
@@ -64,8 +58,6 @@ export class DecryptedAccessLog {
 	detail: string | undefined = undefined;
 
 	date: number | undefined = undefined;
-
-	patientId: string | undefined = undefined;
 
 	secretForeignKeys: Array<string> = [];
 
@@ -89,17 +81,14 @@ export class DecryptedAccessLog {
 		if ('modified' in partial) this.modified = partial.modified;
 		if ('author' in partial) this.author = partial.author;
 		if ('responsible' in partial) this.responsible = partial.responsible;
-		if ('medicalLocationId' in partial) this.medicalLocationId = partial.medicalLocationId;
 		if ('tags' in partial && partial.tags !== undefined) this.tags = partial.tags;
 		if ('codes' in partial && partial.codes !== undefined) this.codes = partial.codes;
-		if ('endOfLife' in partial) this.endOfLife = partial.endOfLife;
 		if ('deletionDate' in partial) this.deletionDate = partial.deletionDate;
 		if ('objectId' in partial) this.objectId = partial.objectId;
 		if ('accessType' in partial) this.accessType = partial.accessType;
 		if ('user' in partial) this.user = partial.user;
 		if ('detail' in partial) this.detail = partial.detail;
 		if ('date' in partial) this.date = partial.date;
-		if ('patientId' in partial) this.patientId = partial.patientId;
 		if ('secretForeignKeys' in partial && partial.secretForeignKeys !== undefined) this.secretForeignKeys = partial.secretForeignKeys;
 		if ('cryptedForeignKeys' in partial && partial.cryptedForeignKeys !== undefined) this.cryptedForeignKeys = partial.cryptedForeignKeys;
 		if ('delegations' in partial && partial.delegations !== undefined) this.delegations = partial.delegations;
@@ -116,17 +105,14 @@ export class DecryptedAccessLog {
 		if (this.modified != undefined) res['modified'] = this.modified
 		if (this.author != undefined) res['author'] = this.author
 		if (this.responsible != undefined) res['responsible'] = this.responsible
-		if (this.medicalLocationId != undefined) res['medicalLocationId'] = this.medicalLocationId
 		res['tags'] = this.tags.map((x0) => x0.toJSON() )
 		res['codes'] = this.codes.map((x0) => x0.toJSON() )
-		if (this.endOfLife != undefined) res['endOfLife'] = this.endOfLife
 		if (this.deletionDate != undefined) res['deletionDate'] = this.deletionDate
 		if (this.objectId != undefined) res['objectId'] = this.objectId
 		if (this.accessType != undefined) res['accessType'] = this.accessType
 		if (this.user != undefined) res['user'] = this.user
 		if (this.detail != undefined) res['detail'] = this.detail
 		if (this.date != undefined) res['date'] = this.date
-		if (this.patientId != undefined) res['patientId'] = this.patientId
 		res['secretForeignKeys'] = this.secretForeignKeys.map((x0) => x0 )
 		res['cryptedForeignKeys'] = Object.fromEntries(Object.entries(this.cryptedForeignKeys).map(([k0, v0]) => [k0, v0.map((x1) => x1.toJSON() )]))
 		res['delegations'] = Object.fromEntries(Object.entries(this.delegations).map(([k0, v0]) => [k0, v0.map((x1) => x1.toJSON() )]))
@@ -149,17 +135,14 @@ export class DecryptedAccessLog {
 			modified: expectNumber(extractEntry(jCpy, 'modified', false, path), true, true, [...path, ".modified"]),
 			author: expectString(extractEntry(jCpy, 'author', false, path), true, [...path, ".author"]),
 			responsible: expectString(extractEntry(jCpy, 'responsible', false, path), true, [...path, ".responsible"]),
-			medicalLocationId: expectString(extractEntry(jCpy, 'medicalLocationId', false, path), true, [...path, ".medicalLocationId"]),
 			tags: expectArray(extractEntry(jCpy, 'tags', false, path), false, [...path, ".tags"], (x0, p0) => expectObject(x0, false, ignoreUnknownKeys, p0, CodeStub.fromJSON)),
 			codes: expectArray(extractEntry(jCpy, 'codes', false, path), false, [...path, ".codes"], (x0, p0) => expectObject(x0, false, ignoreUnknownKeys, p0, CodeStub.fromJSON)),
-			endOfLife: expectNumber(extractEntry(jCpy, 'endOfLife', false, path), true, true, [...path, ".endOfLife"]),
 			deletionDate: expectNumber(extractEntry(jCpy, 'deletionDate', false, path), true, true, [...path, ".deletionDate"]),
 			objectId: expectString(extractEntry(jCpy, 'objectId', false, path), true, [...path, ".objectId"]),
 			accessType: expectString(extractEntry(jCpy, 'accessType', false, path), true, [...path, ".accessType"]),
 			user: expectString(extractEntry(jCpy, 'user', false, path), true, [...path, ".user"]),
 			detail: expectString(extractEntry(jCpy, 'detail', false, path), true, [...path, ".detail"]),
 			date: expectNumber(extractEntry(jCpy, 'date', false, path), true, true, [...path, ".date"]),
-			patientId: expectString(extractEntry(jCpy, 'patientId', false, path), true, [...path, ".patientId"]),
 			secretForeignKeys: expectArray(extractEntry(jCpy, 'secretForeignKeys', false, path), false, [...path, ".secretForeignKeys"], (x0, p0) => expectString(x0, false, p0)),
 			cryptedForeignKeys: expectMap(
 				extractEntry(jCpy, 'cryptedForeignKeys', false, path),
@@ -207,13 +190,9 @@ export class EncryptedAccessLog {
 
 	responsible: string | undefined = undefined;
 
-	medicalLocationId: string | undefined = undefined;
-
 	tags: Array<CodeStub> = [];
 
 	codes: Array<CodeStub> = [];
-
-	endOfLife: number | undefined = undefined;
 
 	deletionDate: number | undefined = undefined;
 
@@ -226,8 +205,6 @@ export class EncryptedAccessLog {
 	detail: string | undefined = undefined;
 
 	date: number | undefined = undefined;
-
-	patientId: string | undefined = undefined;
 
 	secretForeignKeys: Array<string> = [];
 
@@ -251,17 +228,14 @@ export class EncryptedAccessLog {
 		if ('modified' in partial) this.modified = partial.modified;
 		if ('author' in partial) this.author = partial.author;
 		if ('responsible' in partial) this.responsible = partial.responsible;
-		if ('medicalLocationId' in partial) this.medicalLocationId = partial.medicalLocationId;
 		if ('tags' in partial && partial.tags !== undefined) this.tags = partial.tags;
 		if ('codes' in partial && partial.codes !== undefined) this.codes = partial.codes;
-		if ('endOfLife' in partial) this.endOfLife = partial.endOfLife;
 		if ('deletionDate' in partial) this.deletionDate = partial.deletionDate;
 		if ('objectId' in partial) this.objectId = partial.objectId;
 		if ('accessType' in partial) this.accessType = partial.accessType;
 		if ('user' in partial) this.user = partial.user;
 		if ('detail' in partial) this.detail = partial.detail;
 		if ('date' in partial) this.date = partial.date;
-		if ('patientId' in partial) this.patientId = partial.patientId;
 		if ('secretForeignKeys' in partial && partial.secretForeignKeys !== undefined) this.secretForeignKeys = partial.secretForeignKeys;
 		if ('cryptedForeignKeys' in partial && partial.cryptedForeignKeys !== undefined) this.cryptedForeignKeys = partial.cryptedForeignKeys;
 		if ('delegations' in partial && partial.delegations !== undefined) this.delegations = partial.delegations;
@@ -278,17 +252,14 @@ export class EncryptedAccessLog {
 		if (this.modified != undefined) res['modified'] = this.modified
 		if (this.author != undefined) res['author'] = this.author
 		if (this.responsible != undefined) res['responsible'] = this.responsible
-		if (this.medicalLocationId != undefined) res['medicalLocationId'] = this.medicalLocationId
 		res['tags'] = this.tags.map((x0) => x0.toJSON() )
 		res['codes'] = this.codes.map((x0) => x0.toJSON() )
-		if (this.endOfLife != undefined) res['endOfLife'] = this.endOfLife
 		if (this.deletionDate != undefined) res['deletionDate'] = this.deletionDate
 		if (this.objectId != undefined) res['objectId'] = this.objectId
 		if (this.accessType != undefined) res['accessType'] = this.accessType
 		if (this.user != undefined) res['user'] = this.user
 		if (this.detail != undefined) res['detail'] = this.detail
 		if (this.date != undefined) res['date'] = this.date
-		if (this.patientId != undefined) res['patientId'] = this.patientId
 		res['secretForeignKeys'] = this.secretForeignKeys.map((x0) => x0 )
 		res['cryptedForeignKeys'] = Object.fromEntries(Object.entries(this.cryptedForeignKeys).map(([k0, v0]) => [k0, v0.map((x1) => x1.toJSON() )]))
 		res['delegations'] = Object.fromEntries(Object.entries(this.delegations).map(([k0, v0]) => [k0, v0.map((x1) => x1.toJSON() )]))
@@ -311,17 +282,14 @@ export class EncryptedAccessLog {
 			modified: expectNumber(extractEntry(jCpy, 'modified', false, path), true, true, [...path, ".modified"]),
 			author: expectString(extractEntry(jCpy, 'author', false, path), true, [...path, ".author"]),
 			responsible: expectString(extractEntry(jCpy, 'responsible', false, path), true, [...path, ".responsible"]),
-			medicalLocationId: expectString(extractEntry(jCpy, 'medicalLocationId', false, path), true, [...path, ".medicalLocationId"]),
 			tags: expectArray(extractEntry(jCpy, 'tags', false, path), false, [...path, ".tags"], (x0, p0) => expectObject(x0, false, ignoreUnknownKeys, p0, CodeStub.fromJSON)),
 			codes: expectArray(extractEntry(jCpy, 'codes', false, path), false, [...path, ".codes"], (x0, p0) => expectObject(x0, false, ignoreUnknownKeys, p0, CodeStub.fromJSON)),
-			endOfLife: expectNumber(extractEntry(jCpy, 'endOfLife', false, path), true, true, [...path, ".endOfLife"]),
 			deletionDate: expectNumber(extractEntry(jCpy, 'deletionDate', false, path), true, true, [...path, ".deletionDate"]),
 			objectId: expectString(extractEntry(jCpy, 'objectId', false, path), true, [...path, ".objectId"]),
 			accessType: expectString(extractEntry(jCpy, 'accessType', false, path), true, [...path, ".accessType"]),
 			user: expectString(extractEntry(jCpy, 'user', false, path), true, [...path, ".user"]),
 			detail: expectString(extractEntry(jCpy, 'detail', false, path), true, [...path, ".detail"]),
 			date: expectNumber(extractEntry(jCpy, 'date', false, path), true, true, [...path, ".date"]),
-			patientId: expectString(extractEntry(jCpy, 'patientId', false, path), true, [...path, ".patientId"]),
 			secretForeignKeys: expectArray(extractEntry(jCpy, 'secretForeignKeys', false, path), false, [...path, ".secretForeignKeys"], (x0, p0) => expectString(x0, false, p0)),
 			cryptedForeignKeys: expectMap(
 				extractEntry(jCpy, 'cryptedForeignKeys', false, path),

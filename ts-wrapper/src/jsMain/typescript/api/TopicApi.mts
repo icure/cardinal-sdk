@@ -2,18 +2,19 @@
 import {FilterOptions, PaginatedListIterator, SortableFilterOptions} from '../cardinal-sdk-ts.mjs';
 import {SecretIdUseOption} from '../crypto/entities/SecretIdUseOption.mjs';
 import {TopicShareOptions} from '../crypto/entities/TopicShareOptions.mjs';
+import {EntityReferenceInGroup} from '../model/EntityReferenceInGroup.mjs';
 import {Patient} from '../model/Patient.mjs';
 import {StoredDocumentIdentifier} from '../model/StoredDocumentIdentifier.mjs';
 import {DecryptedTopic, EncryptedTopic, Topic} from '../model/Topic.mjs';
 import {TopicRole} from '../model/TopicRole.mjs';
 import {User} from '../model/User.mjs';
-import {DocIdentifier} from '../model/couchdb/DocIdentifier.mjs';
 import {AccessLevel} from '../model/embed/AccessLevel.mjs';
 import {HexString} from '../model/specializations/HexString.mjs';
 import {EntitySubscription} from '../subscription/EntitySubscription.mjs';
 import {EntitySubscriptionConfiguration} from '../subscription/EntitySubscriptionConfiguration.mjs';
 import {SubscriptionEventType} from '../subscription/SubscriptionEventType.mjs';
 import {TopicFlavouredApi} from './TopicFlavouredApi.mjs';
+import {TopicInGroupApi} from './TopicInGroupApi.mjs';
 
 
 export interface TopicApi {
@@ -22,6 +23,8 @@ export interface TopicApi {
 
 	tryAndRecover: TopicFlavouredApi<Topic>;
 
+	inGroup: TopicInGroupApi;
+
 	withEncryptionMetadata(base: DecryptedTopic | undefined, patient: Patient | undefined,
 			options?: { user?: User | undefined, delegates?: { [ key: string ]: AccessLevel }, secretId?: SecretIdUseOption, alternateRootDelegateId?: string | undefined }): Promise<DecryptedTopic>;
 
@@ -29,7 +32,7 @@ export interface TopicApi {
 
 	hasWriteAccess(topic: Topic): Promise<boolean>;
 
-	decryptPatientIdOf(topic: Topic): Promise<Array<string>>;
+	decryptPatientIdOf(topic: Topic): Promise<Array<EntityReferenceInGroup>>;
 
 	createDelegationDeAnonymizationMetadata(entity: Topic, delegates: Array<string>): Promise<void>;
 
@@ -41,21 +44,21 @@ export interface TopicApi {
 
 	matchTopicsBySorted(filter: SortableFilterOptions<Topic>): Promise<Array<string>>;
 
-	deleteTopicUnsafe(entityId: string): Promise<DocIdentifier>;
+	deleteTopicById(entityId: string, rev: string): Promise<StoredDocumentIdentifier>;
 
-	deleteTopicsUnsafe(entityIds: Array<string>): Promise<Array<DocIdentifier>>;
-
-	deleteTopicById(entityId: string, rev: string): Promise<DocIdentifier>;
-
-	deleteTopicsByIds(entityIds: Array<StoredDocumentIdentifier>): Promise<Array<DocIdentifier>>;
+	deleteTopicsByIds(entityIds: Array<StoredDocumentIdentifier>): Promise<Array<StoredDocumentIdentifier>>;
 
 	purgeTopicById(id: string, rev: string): Promise<void>;
 
-	deleteTopic(topic: Topic): Promise<DocIdentifier>;
+	purgeTopicsByIds(entityIds: Array<StoredDocumentIdentifier>): Promise<Array<StoredDocumentIdentifier>>;
 
-	deleteTopics(topics: Array<Topic>): Promise<Array<DocIdentifier>>;
+	deleteTopic(topic: Topic): Promise<StoredDocumentIdentifier>;
+
+	deleteTopics(topics: Array<Topic>): Promise<Array<StoredDocumentIdentifier>>;
 
 	purgeTopic(topic: Topic): Promise<void>;
+
+	purgeTopics(topics: Array<Topic>): Promise<Array<StoredDocumentIdentifier>>;
 
 	shareWith(delegateId: string, topic: DecryptedTopic,
 			options?: { options?: TopicShareOptions | undefined }): Promise<DecryptedTopic>;
@@ -69,11 +72,19 @@ export interface TopicApi {
 
 	createTopic(entity: DecryptedTopic): Promise<DecryptedTopic>;
 
-	undeleteTopic(topic: Topic): Promise<Topic>;
+	createTopics(entities: Array<DecryptedTopic>): Promise<Array<DecryptedTopic>>;
+
+	undeleteTopicById(id: string, rev: string): Promise<DecryptedTopic>;
+
+	undeleteTopicsByIds(entityIds: Array<StoredDocumentIdentifier>): Promise<Array<DecryptedTopic>>;
+
+	undeleteTopic(topic: Topic): Promise<DecryptedTopic>;
+
+	undeleteTopics(topics: Array<Topic>): Promise<Array<DecryptedTopic>>;
 
 	modifyTopic(entity: DecryptedTopic): Promise<DecryptedTopic>;
 
-	undeleteTopicById(id: string, rev: string): Promise<DecryptedTopic>;
+	modifyTopics(entities: Array<DecryptedTopic>): Promise<Array<DecryptedTopic>>;
 
 	getTopic(entityId: string): Promise<DecryptedTopic | undefined>;
 

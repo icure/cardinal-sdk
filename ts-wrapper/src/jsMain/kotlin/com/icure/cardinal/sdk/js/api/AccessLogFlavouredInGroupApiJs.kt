@@ -8,6 +8,7 @@ import com.icure.cardinal.sdk.js.filters.SortableFilterOptionsJs
 import com.icure.cardinal.sdk.js.model.AccessLogJs
 import com.icure.cardinal.sdk.js.model.EntityReferenceInGroupJs
 import com.icure.cardinal.sdk.js.model.GroupScopedJs
+import com.icure.cardinal.sdk.js.model.StoredDocumentIdentifierJs
 import com.icure.cardinal.sdk.js.synthetic.mapasobjectarray.EntityReferenceInGroupToAccessLogShareOptionsMapObject_delegate_shareOptions
 import com.icure.cardinal.sdk.js.utils.pagination.PaginatedListIteratorJs
 import kotlin.Array
@@ -36,7 +37,22 @@ public external interface AccessLogFlavouredInGroupApiJs<E : AccessLogJs> {
 
 	public fun createAccessLog(entity: GroupScopedJs<E>): Promise<GroupScopedJs<E>>
 
+	public fun createAccessLogs(entities: Array<GroupScopedJs<E>>): Promise<Array<GroupScopedJs<E>>>
+
+	public fun undeleteAccessLogById(entityId: GroupScopedJs<StoredDocumentIdentifierJs>):
+			Promise<GroupScopedJs<E>>
+
+	public fun undeleteAccessLogsByIds(entityIds: Array<GroupScopedJs<StoredDocumentIdentifierJs>>):
+			Promise<Array<GroupScopedJs<E>>>
+
+	public fun undeleteAccessLog(accessLog: GroupScopedJs<AccessLogJs>): Promise<GroupScopedJs<E>>
+
+	public fun undeleteAccessLogs(accessLogs: Array<GroupScopedJs<AccessLogJs>>):
+			Promise<Array<GroupScopedJs<E>>>
+
 	public fun modifyAccessLog(entity: GroupScopedJs<E>): Promise<GroupScopedJs<E>>
+
+	public fun modifyAccessLogs(entities: Array<GroupScopedJs<E>>): Promise<Array<GroupScopedJs<E>>>
 
 	public fun getAccessLog(groupId: String, entityId: String): Promise<GroupScopedJs<E>?>
 

@@ -33,18 +33,6 @@ public fun timeTableItem_toJs(obj: TimeTableItem): TimeTableItemJs {
 	val zoneId = nullToUndefined(
 		obj.zoneId
 	)
-	val days = listToArray(
-		obj.days,
-		{ x1: String ->
-			x1
-		},
-	)
-	val recurrenceTypes = listToArray(
-		obj.recurrenceTypes,
-		{ x1: String ->
-			x1
-		},
-	)
 	val hours = listToArray(
 		obj.hours,
 		{ x1: TimeTableHour ->
@@ -73,8 +61,6 @@ public fun timeTableItem_toJs(obj: TimeTableItem): TimeTableItemJs {
 		"notBeforeInMinutes:notBeforeInMinutes," +
 		"notAfterInMinutes:notAfterInMinutes," +
 		"zoneId:zoneId," +
-		"days:days," +
-		"recurrenceTypes:recurrenceTypes," +
 		"hours:hours," +
 		"calendarItemTypeId:calendarItemTypeId," +
 		"homeVisit:homeVisit," +
@@ -92,20 +78,6 @@ public fun timeTableItem_fromJs(obj: TimeTableItemJs): TimeTableItem {
 	val notBeforeInMinutes = numberToInt(obj.notBeforeInMinutes, "obj.notBeforeInMinutes")
 	val notAfterInMinutes = numberToInt(obj.notAfterInMinutes, "obj.notAfterInMinutes")
 	val zoneId = undefinedToNull(obj.zoneId)
-	val days = arrayToList(
-		obj.days,
-		"obj.days",
-		{ x1: String ->
-			x1
-		},
-	)
-	val recurrenceTypes = arrayToList(
-		obj.recurrenceTypes,
-		"obj.recurrenceTypes",
-		{ x1: String ->
-			x1
-		},
-	)
 	val hours = arrayToList(
 		obj.hours,
 		"obj.hours",
@@ -132,8 +104,6 @@ public fun timeTableItem_fromJs(obj: TimeTableItemJs): TimeTableItem {
 		notBeforeInMinutes = notBeforeInMinutes,
 		notAfterInMinutes = notAfterInMinutes,
 		zoneId = zoneId,
-		days = days,
-		recurrenceTypes = recurrenceTypes,
 		hours = hours,
 		calendarItemTypeId = calendarItemTypeId,
 		homeVisit = homeVisit,

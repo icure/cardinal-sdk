@@ -7,14 +7,10 @@ import com.icure.cardinal.sdk.js.filters.BaseFilterOptionsJs
 import com.icure.cardinal.sdk.js.filters.BaseSortableFilterOptionsJs
 import com.icure.cardinal.sdk.js.filters.FilterOptionsJs
 import com.icure.cardinal.sdk.js.model.EncryptedPropertyStubJs
-import com.icure.cardinal.sdk.js.model.ListOfIdsJs
-import com.icure.cardinal.sdk.js.model.PaginatedListJs
+import com.icure.cardinal.sdk.js.model.StoredDocumentIdentifierJs
 import com.icure.cardinal.sdk.js.model.UserGroupJs
 import com.icure.cardinal.sdk.js.model.UserJs
-import com.icure.cardinal.sdk.js.model.couchdb.DocIdentifierJs
 import com.icure.cardinal.sdk.js.model.security.Enable2faRequestJs
-import com.icure.cardinal.sdk.js.model.security.LoginIdentifierJs
-import com.icure.cardinal.sdk.js.model.security.TokenWithGroupJs
 import com.icure.cardinal.sdk.js.subscription.EntitySubscriptionJs
 import com.icure.cardinal.sdk.js.utils.pagination.PaginatedListIteratorJs
 import kotlin.Array
@@ -27,17 +23,21 @@ import kotlin.js.Promise
 
 @JsName("UserApi")
 public external interface UserApiJs {
-	public fun deleteUserUnsafe(entityId: String): Promise<DocIdentifierJs>
+	public val inGroup: UserInGroupApiJs
 
 	public fun getCurrentUser(): Promise<UserJs>
 
-	public fun listUsersBy(options: dynamic): Promise<PaginatedListJs<UserJs>>
-
 	public fun createUser(user: UserJs): Promise<UserJs>
+
+	public fun createUsers(users: Array<UserJs>): Promise<Array<UserJs>>
 
 	public fun getUser(userId: String): Promise<UserJs?>
 
 	public fun getUsers(userIds: Array<String>): Promise<Array<UserJs>>
+
+	public fun modifyUser(user: UserJs): Promise<UserJs>
+
+	public fun modifyUsers(users: Array<UserJs>): Promise<Array<UserJs>>
 
 	public fun getUserByEmail(email: String): Promise<UserJs?>
 
@@ -46,8 +46,6 @@ public external interface UserApiJs {
 	public fun findByHcpartyId(id: String): Promise<Array<String>>
 
 	public fun findByPatientId(id: String): Promise<Array<String>>
-
-	public fun modifyUser(user: UserJs): Promise<UserJs>
 
 	public fun assignHealthcareParty(healthcarePartyId: String): Promise<UserJs>
 
@@ -72,101 +70,41 @@ public external interface UserApiJs {
 
 	public fun getMatchingUsers(): Promise<Array<UserGroupJs>>
 
-	public fun getUsersInGroup(groupId: String, userIds: Array<String>): Promise<Array<UserJs>>
-
-	public fun listUsersInGroup(groupId: String, options: dynamic): Promise<PaginatedListJs<UserJs>>
-
-	public fun createUserInGroup(groupId: String, user: UserJs): Promise<UserJs>
-
-	public fun modifyUserInGroup(groupId: String, user: UserJs): Promise<UserJs>
-
-	public fun setUserRoles(userId: String, rolesId: ListOfIdsJs): Promise<UserJs>
-
-	public fun setUserRolesInGroup(
-		userId: String,
-		groupId: String,
-		rolesId: ListOfIdsJs,
-	): Promise<UserJs>
+	public fun setUserRoles(userId: String, rolesIds: Array<String>): Promise<UserJs>
 
 	public fun resetUserRoles(userId: String): Promise<UserJs>
 
-	public fun resetUserRolesInGroup(userId: String, groupId: String): Promise<UserJs>
-
-	public fun getTokenInGroup(
-		groupId: String,
-		userId: String,
-		key: String,
-		options: dynamic,
-	): Promise<String>
-
-	public fun getTokenInAllGroups(
-		userIdentifier: String,
-		key: String,
-		options: dynamic,
-	): Promise<Array<TokenWithGroupJs>>
-
-	public fun filterUsersInGroupBy(groupId: String, filter: BaseFilterOptionsJs<UserJs>):
-			Promise<PaginatedListIteratorJs<UserJs>>
-
-	public fun matchUsersInGroupBy(groupId: String, filter: BaseFilterOptionsJs<UserJs>):
-			Promise<Array<String>>
-
-	public fun filterUsersInGroupBySorted(groupId: String,
-			filter: BaseSortableFilterOptionsJs<UserJs>): Promise<PaginatedListIteratorJs<UserJs>>
-
-	public fun matchUsersInGroupBySorted(groupId: String, filter: BaseSortableFilterOptionsJs<UserJs>):
-			Promise<Array<String>>
-
-	@JsName("enable2faForUserWithGroup")
-	public fun enable2faForUser(
-		userId: String,
-		groupId: String,
-		request: Enable2faRequestJs,
-	): Promise<Unit>
-
 	public fun enable2faForUser(userId: String, request: Enable2faRequestJs): Promise<Unit>
-
-	@JsName("disable2faForUserWithGroup")
-	public fun disable2faForUser(userId: String, groupId: String): Promise<Unit>
 
 	public fun disable2faForUser(userId: String): Promise<Unit>
 
 	public fun createAdminUser(user: UserJs): Promise<UserJs>
 
-	public fun createAdminUserInGroup(groupId: String, user: UserJs): Promise<UserJs>
+	public fun deleteUserById(entityId: String, rev: String): Promise<StoredDocumentIdentifierJs>
 
-	public fun deleteUserById(entityId: String, rev: String): Promise<DocIdentifierJs>
-
-	public fun deleteUserInGroupById(
-		groupId: String,
-		entityId: String,
-		rev: String,
-	): Promise<DocIdentifierJs>
+	public fun deleteUsersByIds(userIds: Array<StoredDocumentIdentifierJs>):
+			Promise<Array<StoredDocumentIdentifierJs>>
 
 	public fun purgeUserById(id: String, rev: String): Promise<Unit>
 
+	public fun purgeUsersByIds(userIds: Array<StoredDocumentIdentifierJs>):
+			Promise<Array<StoredDocumentIdentifierJs>>
+
 	public fun undeleteUserById(id: String, rev: String): Promise<UserJs>
 
-	public fun deleteUser(user: UserJs): Promise<DocIdentifierJs>
+	public fun undeleteUsersByIds(userIds: Array<StoredDocumentIdentifierJs>): Promise<Array<UserJs>>
 
-	public fun deleteUserInGroup(groupId: String, user: UserJs): Promise<DocIdentifierJs>
+	public fun deleteUser(user: UserJs): Promise<StoredDocumentIdentifierJs>
+
+	public fun deleteUsers(users: Array<UserJs>): Promise<Array<StoredDocumentIdentifierJs>>
 
 	public fun purgeUser(user: UserJs): Promise<Unit>
 
+	public fun purgeUsers(users: Array<UserJs>): Promise<Array<StoredDocumentIdentifierJs>>
+
 	public fun undeleteUser(user: UserJs): Promise<UserJs>
 
-	public fun setUserInheritsPermissions(
-		userId: String,
-		groupId: String,
-		`value`: Boolean,
-	): Promise<String>
-
-	public fun setLoginIdentifiers(
-		userId: String,
-		groupId: String,
-		identifier: LoginIdentifierJs,
-		replaceExisting: Boolean,
-	): Promise<Boolean>
+	public fun undeleteUsers(users: Array<UserJs>): Promise<Array<UserJs>>
 
 	public fun setExternalJwtAuthByIdentifiersForCurrentUser(externalJwtConfigId: String,
 			externalAuthenticationToken: String): Promise<Boolean>

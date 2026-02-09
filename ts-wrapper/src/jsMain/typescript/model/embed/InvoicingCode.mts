@@ -21,7 +21,7 @@ export interface InvoicingCode extends Encryptable {
 
 	serviceId: string | undefined;
 
-	tarificationId: string | undefined;
+	pricingId: string | undefined;
 
 	code: string | undefined;
 
@@ -139,7 +139,7 @@ export class DecryptedInvoicingCode {
 
 	serviceId: string | undefined = undefined;
 
-	tarificationId: string | undefined = undefined;
+	pricingId: string | undefined = undefined;
 
 	code: string | undefined = undefined;
 
@@ -248,7 +248,7 @@ export class DecryptedInvoicingCode {
 		if ('userId' in partial) this.userId = partial.userId;
 		if ('contactId' in partial) this.contactId = partial.contactId;
 		if ('serviceId' in partial) this.serviceId = partial.serviceId;
-		if ('tarificationId' in partial) this.tarificationId = partial.tarificationId;
+		if ('pricingId' in partial) this.pricingId = partial.pricingId;
 		if ('code' in partial) this.code = partial.code;
 		if ('paymentType' in partial) this.paymentType = partial.paymentType;
 		if ('paid' in partial) this.paid = partial.paid;
@@ -308,7 +308,7 @@ export class DecryptedInvoicingCode {
 		if (this.userId != undefined) res['userId'] = this.userId
 		if (this.contactId != undefined) res['contactId'] = this.contactId
 		if (this.serviceId != undefined) res['serviceId'] = this.serviceId
-		if (this.tarificationId != undefined) res['tarificationId'] = this.tarificationId
+		if (this.pricingId != undefined) res['pricingId'] = this.pricingId
 		if (this.code != undefined) res['code'] = this.code
 		if (this.paymentType != undefined) res['paymentType'] = this.paymentType
 		if (this.paid != undefined) res['paid'] = this.paid
@@ -374,7 +374,7 @@ export class DecryptedInvoicingCode {
 			userId: expectString(extractEntry(jCpy, 'userId', false, path), true, [...path, ".userId"]),
 			contactId: expectString(extractEntry(jCpy, 'contactId', false, path), true, [...path, ".contactId"]),
 			serviceId: expectString(extractEntry(jCpy, 'serviceId', false, path), true, [...path, ".serviceId"]),
-			tarificationId: expectString(extractEntry(jCpy, 'tarificationId', false, path), true, [...path, ".tarificationId"]),
+			pricingId: expectString(extractEntry(jCpy, 'pricingId', false, path), true, [...path, ".pricingId"]),
 			code: expectString(extractEntry(jCpy, 'code', false, path), true, [...path, ".code"]),
 			paymentType: expectStringEnum(extractEntry(jCpy, 'paymentType', false, path), true, [...path, ".paymentType"], PaymentType, 'PaymentType'),
 			paid: expectNumber(extractEntry(jCpy, 'paid', false, path), true, false, [...path, ".paid"]),
@@ -454,7 +454,7 @@ export class EncryptedInvoicingCode {
 
 	serviceId: string | undefined = undefined;
 
-	tarificationId: string | undefined = undefined;
+	pricingId: string | undefined = undefined;
 
 	code: string | undefined = undefined;
 
@@ -563,7 +563,7 @@ export class EncryptedInvoicingCode {
 		if ('userId' in partial) this.userId = partial.userId;
 		if ('contactId' in partial) this.contactId = partial.contactId;
 		if ('serviceId' in partial) this.serviceId = partial.serviceId;
-		if ('tarificationId' in partial) this.tarificationId = partial.tarificationId;
+		if ('pricingId' in partial) this.pricingId = partial.pricingId;
 		if ('code' in partial) this.code = partial.code;
 		if ('paymentType' in partial) this.paymentType = partial.paymentType;
 		if ('paid' in partial) this.paid = partial.paid;
@@ -623,7 +623,7 @@ export class EncryptedInvoicingCode {
 		if (this.userId != undefined) res['userId'] = this.userId
 		if (this.contactId != undefined) res['contactId'] = this.contactId
 		if (this.serviceId != undefined) res['serviceId'] = this.serviceId
-		if (this.tarificationId != undefined) res['tarificationId'] = this.tarificationId
+		if (this.pricingId != undefined) res['pricingId'] = this.pricingId
 		if (this.code != undefined) res['code'] = this.code
 		if (this.paymentType != undefined) res['paymentType'] = this.paymentType
 		if (this.paid != undefined) res['paid'] = this.paid
@@ -689,7 +689,7 @@ export class EncryptedInvoicingCode {
 			userId: expectString(extractEntry(jCpy, 'userId', false, path), true, [...path, ".userId"]),
 			contactId: expectString(extractEntry(jCpy, 'contactId', false, path), true, [...path, ".contactId"]),
 			serviceId: expectString(extractEntry(jCpy, 'serviceId', false, path), true, [...path, ".serviceId"]),
-			tarificationId: expectString(extractEntry(jCpy, 'tarificationId', false, path), true, [...path, ".tarificationId"]),
+			pricingId: expectString(extractEntry(jCpy, 'pricingId', false, path), true, [...path, ".pricingId"]),
 			code: expectString(extractEntry(jCpy, 'code', false, path), true, [...path, ".code"]),
 			paymentType: expectStringEnum(extractEntry(jCpy, 'paymentType', false, path), true, [...path, ".paymentType"], PaymentType, 'PaymentType'),
 			paid: expectNumber(extractEntry(jCpy, 'paid', false, path), true, false, [...path, ".paid"]),

@@ -24,7 +24,6 @@ import com.icure.cardinal.sdk.js.model.CheckedConverters.arrayToList
 import com.icure.cardinal.sdk.js.model.CheckedConverters.arrayToSet
 import com.icure.cardinal.sdk.js.model.CheckedConverters.listToArray
 import com.icure.cardinal.sdk.js.model.CheckedConverters.nullToUndefined
-import com.icure.cardinal.sdk.js.model.CheckedConverters.numberToLong
 import com.icure.cardinal.sdk.js.model.CheckedConverters.objectToMap
 import com.icure.cardinal.sdk.js.model.CheckedConverters.setToArray
 import com.icure.cardinal.sdk.js.model.CheckedConverters.undefinedToNull
@@ -72,8 +71,6 @@ import com.icure.cardinal.sdk.subscription.EntitySubscriptionConfiguration
 import com.icure.cardinal.sdk.subscription.SubscriptionEventType
 import kotlin.Array
 import kotlin.Boolean
-import kotlin.Double
-import kotlin.Long
 import kotlin.OptIn
 import kotlin.String
 import kotlin.Unit
@@ -137,52 +134,6 @@ internal class HealthElementApiImplJs(
 				delegatesConverted,
 			)
 			healthElement_toJs(result)
-		}
-
-		override fun findHealthElementsByHcPartyPatient(
-			hcPartyId: String,
-			patient: PatientJs,
-			options: dynamic,
-		): Promise<PaginatedListIteratorJs<EncryptedHealthElementJs>> {
-			val _options = options ?: js("{}")
-			return GlobalScope.promise {
-				val hcPartyIdConverted: String = hcPartyId
-				val patientConverted: Patient = patient_fromJs(patient)
-				val startDateConverted: Long? = convertingOptionOrDefaultNullable(
-					_options,
-					"startDate",
-					null
-				) { startDate: Double? ->
-					numberToLong(startDate, "startDate")
-				}
-				val endDateConverted: Long? = convertingOptionOrDefaultNullable(
-					_options,
-					"endDate",
-					null
-				) { endDate: Double? ->
-					numberToLong(endDate, "endDate")
-				}
-				val descendingConverted: Boolean? = convertingOptionOrDefaultNullable(
-					_options,
-					"descending",
-					null
-				) { descending: Boolean? ->
-					undefinedToNull(descending)
-				}
-				val result = healthElementApi.encrypted.findHealthElementsByHcPartyPatient(
-					hcPartyIdConverted,
-					patientConverted,
-					startDateConverted,
-					endDateConverted,
-					descendingConverted,
-				)
-				paginatedListIterator_toJs(
-					result,
-					{ x1: EncryptedHealthElement ->
-						healthElement_toJs(x1)
-					},
-				)
-			}
 		}
 
 		override fun filterHealthElementsBy(filter: FilterOptionsJs<HealthElementJs>):
@@ -253,6 +204,26 @@ internal class HealthElementApiImplJs(
 			healthElement_toJs(result)
 		}
 
+		override fun undeleteHealthElementsByIds(entityIds: Array<StoredDocumentIdentifierJs>):
+				Promise<Array<EncryptedHealthElementJs>> = GlobalScope.promise {
+			val entityIdsConverted: List<StoredDocumentIdentifier> = arrayToList(
+				entityIds,
+				"entityIds",
+				{ x1: StoredDocumentIdentifierJs ->
+					storedDocumentIdentifier_fromJs(x1)
+				},
+			)
+			val result = healthElementApi.encrypted.undeleteHealthElementsByIds(
+				entityIdsConverted,
+			)
+			listToArray(
+				result,
+				{ x1: EncryptedHealthElement ->
+					healthElement_toJs(x1)
+				},
+			)
+		}
+
 		override fun undeleteHealthElement(healthElement: HealthElementJs):
 				Promise<EncryptedHealthElementJs> = GlobalScope.promise {
 			val healthElementConverted: HealthElement = healthElement_fromJs(healthElement)
@@ -260,6 +231,26 @@ internal class HealthElementApiImplJs(
 				healthElementConverted,
 			)
 			healthElement_toJs(result)
+		}
+
+		override fun undeleteHealthElements(healthElements: Array<HealthElementJs>):
+				Promise<Array<EncryptedHealthElementJs>> = GlobalScope.promise {
+			val healthElementsConverted: List<HealthElement> = arrayToList(
+				healthElements,
+				"healthElements",
+				{ x1: HealthElementJs ->
+					healthElement_fromJs(x1)
+				},
+			)
+			val result = healthElementApi.encrypted.undeleteHealthElements(
+				healthElementsConverted,
+			)
+			listToArray(
+				result,
+				{ x1: EncryptedHealthElement ->
+					healthElement_toJs(x1)
+				},
+			)
 		}
 
 		override fun modifyHealthElement(entity: EncryptedHealthElementJs):
@@ -375,52 +366,6 @@ internal class HealthElementApiImplJs(
 			healthElement_toJs(result)
 		}
 
-		override fun findHealthElementsByHcPartyPatient(
-			hcPartyId: String,
-			patient: PatientJs,
-			options: dynamic,
-		): Promise<PaginatedListIteratorJs<HealthElementJs>> {
-			val _options = options ?: js("{}")
-			return GlobalScope.promise {
-				val hcPartyIdConverted: String = hcPartyId
-				val patientConverted: Patient = patient_fromJs(patient)
-				val startDateConverted: Long? = convertingOptionOrDefaultNullable(
-					_options,
-					"startDate",
-					null
-				) { startDate: Double? ->
-					numberToLong(startDate, "startDate")
-				}
-				val endDateConverted: Long? = convertingOptionOrDefaultNullable(
-					_options,
-					"endDate",
-					null
-				) { endDate: Double? ->
-					numberToLong(endDate, "endDate")
-				}
-				val descendingConverted: Boolean? = convertingOptionOrDefaultNullable(
-					_options,
-					"descending",
-					null
-				) { descending: Boolean? ->
-					undefinedToNull(descending)
-				}
-				val result = healthElementApi.tryAndRecover.findHealthElementsByHcPartyPatient(
-					hcPartyIdConverted,
-					patientConverted,
-					startDateConverted,
-					endDateConverted,
-					descendingConverted,
-				)
-				paginatedListIterator_toJs(
-					result,
-					{ x1: HealthElement ->
-						healthElement_toJs(x1)
-					},
-				)
-			}
-		}
-
 		override fun filterHealthElementsBy(filter: FilterOptionsJs<HealthElementJs>):
 				Promise<PaginatedListIteratorJs<HealthElementJs>> = GlobalScope.promise {
 			val filterConverted: FilterOptions<HealthElement> = filterOptions_fromJs(filter)
@@ -489,6 +434,26 @@ internal class HealthElementApiImplJs(
 			healthElement_toJs(result)
 		}
 
+		override fun undeleteHealthElementsByIds(entityIds: Array<StoredDocumentIdentifierJs>):
+				Promise<Array<HealthElementJs>> = GlobalScope.promise {
+			val entityIdsConverted: List<StoredDocumentIdentifier> = arrayToList(
+				entityIds,
+				"entityIds",
+				{ x1: StoredDocumentIdentifierJs ->
+					storedDocumentIdentifier_fromJs(x1)
+				},
+			)
+			val result = healthElementApi.tryAndRecover.undeleteHealthElementsByIds(
+				entityIdsConverted,
+			)
+			listToArray(
+				result,
+				{ x1: HealthElement ->
+					healthElement_toJs(x1)
+				},
+			)
+		}
+
 		override fun undeleteHealthElement(healthElement: HealthElementJs): Promise<HealthElementJs> =
 				GlobalScope.promise {
 			val healthElementConverted: HealthElement = healthElement_fromJs(healthElement)
@@ -496,6 +461,26 @@ internal class HealthElementApiImplJs(
 				healthElementConverted,
 			)
 			healthElement_toJs(result)
+		}
+
+		override fun undeleteHealthElements(healthElements: Array<HealthElementJs>):
+				Promise<Array<HealthElementJs>> = GlobalScope.promise {
+			val healthElementsConverted: List<HealthElement> = arrayToList(
+				healthElements,
+				"healthElements",
+				{ x1: HealthElementJs ->
+					healthElement_fromJs(x1)
+				},
+			)
+			val result = healthElementApi.tryAndRecover.undeleteHealthElements(
+				healthElementsConverted,
+			)
+			listToArray(
+				result,
+				{ x1: HealthElement ->
+					healthElement_toJs(x1)
+				},
+			)
 		}
 
 		override fun modifyHealthElement(entity: HealthElementJs): Promise<HealthElementJs> =
@@ -623,6 +608,51 @@ internal class HealthElementApiImplJs(
 				)
 			}
 
+			override fun filterHealthElementsBy(groupId: String, filter: FilterOptionsJs<HealthElementJs>):
+					Promise<PaginatedListIteratorJs<GroupScopedJs<EncryptedHealthElementJs>>> =
+					GlobalScope.promise {
+				val groupIdConverted: String = groupId
+				val filterConverted: FilterOptions<HealthElement> = filterOptions_fromJs(filter)
+				val result = healthElementApi.inGroup.encrypted.filterHealthElementsBy(
+					groupIdConverted,
+					filterConverted,
+				)
+				paginatedListIterator_toJs(
+					result,
+					{ x1: GroupScoped<EncryptedHealthElement> ->
+						groupScoped_toJs(
+							x1,
+							{ x2: EncryptedHealthElement ->
+								healthElement_toJs(x2)
+							},
+						)
+					},
+				)
+			}
+
+			override fun filterHealthElementsBySorted(groupId: String,
+					filter: SortableFilterOptionsJs<HealthElementJs>):
+					Promise<PaginatedListIteratorJs<GroupScopedJs<EncryptedHealthElementJs>>> =
+					GlobalScope.promise {
+				val groupIdConverted: String = groupId
+				val filterConverted: SortableFilterOptions<HealthElement> = sortableFilterOptions_fromJs(filter)
+				val result = healthElementApi.inGroup.encrypted.filterHealthElementsBySorted(
+					groupIdConverted,
+					filterConverted,
+				)
+				paginatedListIterator_toJs(
+					result,
+					{ x1: GroupScoped<EncryptedHealthElement> ->
+						groupScoped_toJs(
+							x1,
+							{ x2: EncryptedHealthElement ->
+								healthElement_toJs(x2)
+							},
+						)
+					},
+				)
+			}
+
 			override fun createHealthElement(entity: GroupScopedJs<EncryptedHealthElementJs>):
 					Promise<GroupScopedJs<EncryptedHealthElementJs>> = GlobalScope.promise {
 				val entityConverted: GroupScoped<EncryptedHealthElement> = groupScoped_fromJs(
@@ -638,6 +668,136 @@ internal class HealthElementApiImplJs(
 					result,
 					{ x1: EncryptedHealthElement ->
 						healthElement_toJs(x1)
+					},
+				)
+			}
+
+			override fun createHealthElements(entities: Array<GroupScopedJs<EncryptedHealthElementJs>>):
+					Promise<Array<GroupScopedJs<EncryptedHealthElementJs>>> = GlobalScope.promise {
+				val entitiesConverted: List<GroupScoped<EncryptedHealthElement>> = arrayToList(
+					entities,
+					"entities",
+					{ x1: GroupScopedJs<EncryptedHealthElementJs> ->
+						groupScoped_fromJs(
+							x1,
+							{ x2: EncryptedHealthElementJs ->
+								healthElement_fromJs(x2)
+							},
+						)
+					},
+				)
+				val result = healthElementApi.inGroup.encrypted.createHealthElements(
+					entitiesConverted,
+				)
+				listToArray(
+					result,
+					{ x1: GroupScoped<EncryptedHealthElement> ->
+						groupScoped_toJs(
+							x1,
+							{ x2: EncryptedHealthElement ->
+								healthElement_toJs(x2)
+							},
+						)
+					},
+				)
+			}
+
+			override fun undeleteHealthElementById(entityId: GroupScopedJs<StoredDocumentIdentifierJs>):
+					Promise<GroupScopedJs<EncryptedHealthElementJs>> = GlobalScope.promise {
+				val entityIdConverted: GroupScoped<StoredDocumentIdentifier> = groupScoped_fromJs(
+					entityId,
+					{ x1: StoredDocumentIdentifierJs ->
+						storedDocumentIdentifier_fromJs(x1)
+					},
+				)
+				val result = healthElementApi.inGroup.encrypted.undeleteHealthElementById(
+					entityIdConverted,
+				)
+				groupScoped_toJs(
+					result,
+					{ x1: EncryptedHealthElement ->
+						healthElement_toJs(x1)
+					},
+				)
+			}
+
+			override
+					fun undeleteHealthElementsByIds(entityIds: Array<GroupScopedJs<StoredDocumentIdentifierJs>>):
+					Promise<Array<GroupScopedJs<EncryptedHealthElementJs>>> = GlobalScope.promise {
+				val entityIdsConverted: List<GroupScoped<StoredDocumentIdentifier>> = arrayToList(
+					entityIds,
+					"entityIds",
+					{ x1: GroupScopedJs<StoredDocumentIdentifierJs> ->
+						groupScoped_fromJs(
+							x1,
+							{ x2: StoredDocumentIdentifierJs ->
+								storedDocumentIdentifier_fromJs(x2)
+							},
+						)
+					},
+				)
+				val result = healthElementApi.inGroup.encrypted.undeleteHealthElementsByIds(
+					entityIdsConverted,
+				)
+				listToArray(
+					result,
+					{ x1: GroupScoped<EncryptedHealthElement> ->
+						groupScoped_toJs(
+							x1,
+							{ x2: EncryptedHealthElement ->
+								healthElement_toJs(x2)
+							},
+						)
+					},
+				)
+			}
+
+			override fun undeleteHealthElement(healthElement: GroupScopedJs<HealthElementJs>):
+					Promise<GroupScopedJs<EncryptedHealthElementJs>> = GlobalScope.promise {
+				val healthElementConverted: GroupScoped<HealthElement> = groupScoped_fromJs(
+					healthElement,
+					{ x1: HealthElementJs ->
+						healthElement_fromJs(x1)
+					},
+				)
+				val result = healthElementApi.inGroup.encrypted.undeleteHealthElement(
+					healthElementConverted,
+				)
+				groupScoped_toJs(
+					result,
+					{ x1: EncryptedHealthElement ->
+						healthElement_toJs(x1)
+					},
+				)
+			}
+
+			override
+					fun undeleteHealthElements(healthElements: Array<GroupScopedJs<EncryptedHealthElementJs>>):
+					Promise<Array<GroupScopedJs<EncryptedHealthElementJs>>> = GlobalScope.promise {
+				val healthElementsConverted: List<GroupScoped<EncryptedHealthElement>> = arrayToList(
+					healthElements,
+					"healthElements",
+					{ x1: GroupScopedJs<EncryptedHealthElementJs> ->
+						groupScoped_fromJs(
+							x1,
+							{ x2: EncryptedHealthElementJs ->
+								healthElement_fromJs(x2)
+							},
+						)
+					},
+				)
+				val result = healthElementApi.inGroup.encrypted.undeleteHealthElements(
+					healthElementsConverted,
+				)
+				listToArray(
+					result,
+					{ x1: GroupScoped<EncryptedHealthElement> ->
+						groupScoped_toJs(
+							x1,
+							{ x2: EncryptedHealthElement ->
+								healthElement_toJs(x2)
+							},
+						)
 					},
 				)
 			}
@@ -661,6 +821,36 @@ internal class HealthElementApiImplJs(
 				)
 			}
 
+			override fun modifyHealthElements(entities: Array<GroupScopedJs<EncryptedHealthElementJs>>):
+					Promise<Array<GroupScopedJs<EncryptedHealthElementJs>>> = GlobalScope.promise {
+				val entitiesConverted: List<GroupScoped<EncryptedHealthElement>> = arrayToList(
+					entities,
+					"entities",
+					{ x1: GroupScopedJs<EncryptedHealthElementJs> ->
+						groupScoped_fromJs(
+							x1,
+							{ x2: EncryptedHealthElementJs ->
+								healthElement_fromJs(x2)
+							},
+						)
+					},
+				)
+				val result = healthElementApi.inGroup.encrypted.modifyHealthElements(
+					entitiesConverted,
+				)
+				listToArray(
+					result,
+					{ x1: GroupScoped<EncryptedHealthElement> ->
+						groupScoped_toJs(
+							x1,
+							{ x2: EncryptedHealthElement ->
+								healthElement_toJs(x2)
+							},
+						)
+					},
+				)
+			}
+
 			override fun getHealthElement(groupId: String, entityId: String):
 					Promise<GroupScopedJs<EncryptedHealthElementJs>?> = GlobalScope.promise {
 				val groupIdConverted: String = groupId
@@ -678,6 +868,33 @@ internal class HealthElementApiImplJs(
 							},
 						)
 					}
+				)
+			}
+
+			override fun getHealthElements(groupId: String, entityIds: Array<String>):
+					Promise<Array<GroupScopedJs<EncryptedHealthElementJs>>> = GlobalScope.promise {
+				val groupIdConverted: String = groupId
+				val entityIdsConverted: List<String> = arrayToList(
+					entityIds,
+					"entityIds",
+					{ x1: String ->
+						x1
+					},
+				)
+				val result = healthElementApi.inGroup.encrypted.getHealthElements(
+					groupIdConverted,
+					entityIdsConverted,
+				)
+				listToArray(
+					result,
+					{ x1: GroupScoped<EncryptedHealthElement> ->
+						groupScoped_toJs(
+							x1,
+							{ x2: EncryptedHealthElement ->
+								healthElement_toJs(x2)
+							},
+						)
+					},
 				)
 			}
 		}
@@ -744,6 +961,49 @@ internal class HealthElementApiImplJs(
 				)
 			}
 
+			override fun filterHealthElementsBy(groupId: String, filter: FilterOptionsJs<HealthElementJs>):
+					Promise<PaginatedListIteratorJs<GroupScopedJs<HealthElementJs>>> = GlobalScope.promise {
+				val groupIdConverted: String = groupId
+				val filterConverted: FilterOptions<HealthElement> = filterOptions_fromJs(filter)
+				val result = healthElementApi.inGroup.tryAndRecover.filterHealthElementsBy(
+					groupIdConverted,
+					filterConverted,
+				)
+				paginatedListIterator_toJs(
+					result,
+					{ x1: GroupScoped<HealthElement> ->
+						groupScoped_toJs(
+							x1,
+							{ x2: HealthElement ->
+								healthElement_toJs(x2)
+							},
+						)
+					},
+				)
+			}
+
+			override fun filterHealthElementsBySorted(groupId: String,
+					filter: SortableFilterOptionsJs<HealthElementJs>):
+					Promise<PaginatedListIteratorJs<GroupScopedJs<HealthElementJs>>> = GlobalScope.promise {
+				val groupIdConverted: String = groupId
+				val filterConverted: SortableFilterOptions<HealthElement> = sortableFilterOptions_fromJs(filter)
+				val result = healthElementApi.inGroup.tryAndRecover.filterHealthElementsBySorted(
+					groupIdConverted,
+					filterConverted,
+				)
+				paginatedListIterator_toJs(
+					result,
+					{ x1: GroupScoped<HealthElement> ->
+						groupScoped_toJs(
+							x1,
+							{ x2: HealthElement ->
+								healthElement_toJs(x2)
+							},
+						)
+					},
+				)
+			}
+
 			override fun createHealthElement(entity: GroupScopedJs<HealthElementJs>):
 					Promise<GroupScopedJs<HealthElementJs>> = GlobalScope.promise {
 				val entityConverted: GroupScoped<HealthElement> = groupScoped_fromJs(
@@ -759,6 +1019,135 @@ internal class HealthElementApiImplJs(
 					result,
 					{ x1: HealthElement ->
 						healthElement_toJs(x1)
+					},
+				)
+			}
+
+			override fun createHealthElements(entities: Array<GroupScopedJs<HealthElementJs>>):
+					Promise<Array<GroupScopedJs<HealthElementJs>>> = GlobalScope.promise {
+				val entitiesConverted: List<GroupScoped<HealthElement>> = arrayToList(
+					entities,
+					"entities",
+					{ x1: GroupScopedJs<HealthElementJs> ->
+						groupScoped_fromJs(
+							x1,
+							{ x2: HealthElementJs ->
+								healthElement_fromJs(x2)
+							},
+						)
+					},
+				)
+				val result = healthElementApi.inGroup.tryAndRecover.createHealthElements(
+					entitiesConverted,
+				)
+				listToArray(
+					result,
+					{ x1: GroupScoped<HealthElement> ->
+						groupScoped_toJs(
+							x1,
+							{ x2: HealthElement ->
+								healthElement_toJs(x2)
+							},
+						)
+					},
+				)
+			}
+
+			override fun undeleteHealthElementById(entityId: GroupScopedJs<StoredDocumentIdentifierJs>):
+					Promise<GroupScopedJs<HealthElementJs>> = GlobalScope.promise {
+				val entityIdConverted: GroupScoped<StoredDocumentIdentifier> = groupScoped_fromJs(
+					entityId,
+					{ x1: StoredDocumentIdentifierJs ->
+						storedDocumentIdentifier_fromJs(x1)
+					},
+				)
+				val result = healthElementApi.inGroup.tryAndRecover.undeleteHealthElementById(
+					entityIdConverted,
+				)
+				groupScoped_toJs(
+					result,
+					{ x1: HealthElement ->
+						healthElement_toJs(x1)
+					},
+				)
+			}
+
+			override
+					fun undeleteHealthElementsByIds(entityIds: Array<GroupScopedJs<StoredDocumentIdentifierJs>>):
+					Promise<Array<GroupScopedJs<HealthElementJs>>> = GlobalScope.promise {
+				val entityIdsConverted: List<GroupScoped<StoredDocumentIdentifier>> = arrayToList(
+					entityIds,
+					"entityIds",
+					{ x1: GroupScopedJs<StoredDocumentIdentifierJs> ->
+						groupScoped_fromJs(
+							x1,
+							{ x2: StoredDocumentIdentifierJs ->
+								storedDocumentIdentifier_fromJs(x2)
+							},
+						)
+					},
+				)
+				val result = healthElementApi.inGroup.tryAndRecover.undeleteHealthElementsByIds(
+					entityIdsConverted,
+				)
+				listToArray(
+					result,
+					{ x1: GroupScoped<HealthElement> ->
+						groupScoped_toJs(
+							x1,
+							{ x2: HealthElement ->
+								healthElement_toJs(x2)
+							},
+						)
+					},
+				)
+			}
+
+			override fun undeleteHealthElement(healthElement: GroupScopedJs<HealthElementJs>):
+					Promise<GroupScopedJs<HealthElementJs>> = GlobalScope.promise {
+				val healthElementConverted: GroupScoped<HealthElement> = groupScoped_fromJs(
+					healthElement,
+					{ x1: HealthElementJs ->
+						healthElement_fromJs(x1)
+					},
+				)
+				val result = healthElementApi.inGroup.tryAndRecover.undeleteHealthElement(
+					healthElementConverted,
+				)
+				groupScoped_toJs(
+					result,
+					{ x1: HealthElement ->
+						healthElement_toJs(x1)
+					},
+				)
+			}
+
+			override fun undeleteHealthElements(healthElements: Array<GroupScopedJs<HealthElementJs>>):
+					Promise<Array<GroupScopedJs<HealthElementJs>>> = GlobalScope.promise {
+				val healthElementsConverted: List<GroupScoped<HealthElement>> = arrayToList(
+					healthElements,
+					"healthElements",
+					{ x1: GroupScopedJs<HealthElementJs> ->
+						groupScoped_fromJs(
+							x1,
+							{ x2: HealthElementJs ->
+								healthElement_fromJs(x2)
+							},
+						)
+					},
+				)
+				val result = healthElementApi.inGroup.tryAndRecover.undeleteHealthElements(
+					healthElementsConverted,
+				)
+				listToArray(
+					result,
+					{ x1: GroupScoped<HealthElement> ->
+						groupScoped_toJs(
+							x1,
+							{ x2: HealthElement ->
+								healthElement_toJs(x2)
+							},
+						)
 					},
 				)
 			}
@@ -782,6 +1171,36 @@ internal class HealthElementApiImplJs(
 				)
 			}
 
+			override fun modifyHealthElements(entities: Array<GroupScopedJs<HealthElementJs>>):
+					Promise<Array<GroupScopedJs<HealthElementJs>>> = GlobalScope.promise {
+				val entitiesConverted: List<GroupScoped<HealthElement>> = arrayToList(
+					entities,
+					"entities",
+					{ x1: GroupScopedJs<HealthElementJs> ->
+						groupScoped_fromJs(
+							x1,
+							{ x2: HealthElementJs ->
+								healthElement_fromJs(x2)
+							},
+						)
+					},
+				)
+				val result = healthElementApi.inGroup.tryAndRecover.modifyHealthElements(
+					entitiesConverted,
+				)
+				listToArray(
+					result,
+					{ x1: GroupScoped<HealthElement> ->
+						groupScoped_toJs(
+							x1,
+							{ x2: HealthElement ->
+								healthElement_toJs(x2)
+							},
+						)
+					},
+				)
+			}
+
 			override fun getHealthElement(groupId: String, entityId: String):
 					Promise<GroupScopedJs<HealthElementJs>?> = GlobalScope.promise {
 				val groupIdConverted: String = groupId
@@ -799,6 +1218,33 @@ internal class HealthElementApiImplJs(
 							},
 						)
 					}
+				)
+			}
+
+			override fun getHealthElements(groupId: String, entityIds: Array<String>):
+					Promise<Array<GroupScopedJs<HealthElementJs>>> = GlobalScope.promise {
+				val groupIdConverted: String = groupId
+				val entityIdsConverted: List<String> = arrayToList(
+					entityIds,
+					"entityIds",
+					{ x1: String ->
+						x1
+					},
+				)
+				val result = healthElementApi.inGroup.tryAndRecover.getHealthElements(
+					groupIdConverted,
+					entityIdsConverted,
+				)
+				listToArray(
+					result,
+					{ x1: GroupScoped<HealthElement> ->
+						groupScoped_toJs(
+							x1,
+							{ x2: HealthElement ->
+								healthElement_toJs(x2)
+							},
+						)
+					},
 				)
 			}
 		}
@@ -1037,6 +1483,227 @@ internal class HealthElementApiImplJs(
 			)
 		}
 
+		override fun matchHealthElementsBy(groupId: String, filter: FilterOptionsJs<HealthElementJs>):
+				Promise<Array<String>> = GlobalScope.promise {
+			val groupIdConverted: String = groupId
+			val filterConverted: FilterOptions<HealthElement> = filterOptions_fromJs(filter)
+			val result = healthElementApi.inGroup.matchHealthElementsBy(
+				groupIdConverted,
+				filterConverted,
+			)
+			listToArray(
+				result,
+				{ x1: String ->
+					x1
+				},
+			)
+		}
+
+		override fun matchHealthElementsBySorted(groupId: String,
+				filter: SortableFilterOptionsJs<HealthElementJs>): Promise<Array<String>> =
+				GlobalScope.promise {
+			val groupIdConverted: String = groupId
+			val filterConverted: SortableFilterOptions<HealthElement> = sortableFilterOptions_fromJs(filter)
+			val result = healthElementApi.inGroup.matchHealthElementsBySorted(
+				groupIdConverted,
+				filterConverted,
+			)
+			listToArray(
+				result,
+				{ x1: String ->
+					x1
+				},
+			)
+		}
+
+		override fun deleteHealthElementById(entityId: GroupScopedJs<StoredDocumentIdentifierJs>):
+				Promise<GroupScopedJs<StoredDocumentIdentifierJs>> = GlobalScope.promise {
+			val entityIdConverted: GroupScoped<StoredDocumentIdentifier> = groupScoped_fromJs(
+				entityId,
+				{ x1: StoredDocumentIdentifierJs ->
+					storedDocumentIdentifier_fromJs(x1)
+				},
+			)
+			val result = healthElementApi.inGroup.deleteHealthElementById(
+				entityIdConverted,
+			)
+			groupScoped_toJs(
+				result,
+				{ x1: StoredDocumentIdentifier ->
+					storedDocumentIdentifier_toJs(x1)
+				},
+			)
+		}
+
+		override
+				fun deleteHealthElementsByIds(entityIds: Array<GroupScopedJs<StoredDocumentIdentifierJs>>):
+				Promise<Array<GroupScopedJs<StoredDocumentIdentifierJs>>> = GlobalScope.promise {
+			val entityIdsConverted: List<GroupScoped<StoredDocumentIdentifier>> = arrayToList(
+				entityIds,
+				"entityIds",
+				{ x1: GroupScopedJs<StoredDocumentIdentifierJs> ->
+					groupScoped_fromJs(
+						x1,
+						{ x2: StoredDocumentIdentifierJs ->
+							storedDocumentIdentifier_fromJs(x2)
+						},
+					)
+				},
+			)
+			val result = healthElementApi.inGroup.deleteHealthElementsByIds(
+				entityIdsConverted,
+			)
+			listToArray(
+				result,
+				{ x1: GroupScoped<StoredDocumentIdentifier> ->
+					groupScoped_toJs(
+						x1,
+						{ x2: StoredDocumentIdentifier ->
+							storedDocumentIdentifier_toJs(x2)
+						},
+					)
+				},
+			)
+		}
+
+		override fun purgeHealthElementById(entityId: GroupScopedJs<StoredDocumentIdentifierJs>):
+				Promise<Unit> = GlobalScope.promise {
+			val entityIdConverted: GroupScoped<StoredDocumentIdentifier> = groupScoped_fromJs(
+				entityId,
+				{ x1: StoredDocumentIdentifierJs ->
+					storedDocumentIdentifier_fromJs(x1)
+				},
+			)
+			healthElementApi.inGroup.purgeHealthElementById(
+				entityIdConverted,
+			)
+
+		}
+
+		override
+				fun purgeHealthElementsByIds(entityIds: Array<GroupScopedJs<StoredDocumentIdentifierJs>>):
+				Promise<Array<GroupScopedJs<StoredDocumentIdentifierJs>>> = GlobalScope.promise {
+			val entityIdsConverted: List<GroupScoped<StoredDocumentIdentifier>> = arrayToList(
+				entityIds,
+				"entityIds",
+				{ x1: GroupScopedJs<StoredDocumentIdentifierJs> ->
+					groupScoped_fromJs(
+						x1,
+						{ x2: StoredDocumentIdentifierJs ->
+							storedDocumentIdentifier_fromJs(x2)
+						},
+					)
+				},
+			)
+			val result = healthElementApi.inGroup.purgeHealthElementsByIds(
+				entityIdsConverted,
+			)
+			listToArray(
+				result,
+				{ x1: GroupScoped<StoredDocumentIdentifier> ->
+					groupScoped_toJs(
+						x1,
+						{ x2: StoredDocumentIdentifier ->
+							storedDocumentIdentifier_toJs(x2)
+						},
+					)
+				},
+			)
+		}
+
+		override fun deleteHealthElement(healthElement: GroupScopedJs<HealthElementJs>):
+				Promise<GroupScopedJs<StoredDocumentIdentifierJs>> = GlobalScope.promise {
+			val healthElementConverted: GroupScoped<HealthElement> = groupScoped_fromJs(
+				healthElement,
+				{ x1: HealthElementJs ->
+					healthElement_fromJs(x1)
+				},
+			)
+			val result = healthElementApi.inGroup.deleteHealthElement(
+				healthElementConverted,
+			)
+			groupScoped_toJs(
+				result,
+				{ x1: StoredDocumentIdentifier ->
+					storedDocumentIdentifier_toJs(x1)
+				},
+			)
+		}
+
+		override fun deleteHealthElements(healthElements: Array<GroupScopedJs<HealthElementJs>>):
+				Promise<Array<GroupScopedJs<StoredDocumentIdentifierJs>>> = GlobalScope.promise {
+			val healthElementsConverted: List<GroupScoped<HealthElement>> = arrayToList(
+				healthElements,
+				"healthElements",
+				{ x1: GroupScopedJs<HealthElementJs> ->
+					groupScoped_fromJs(
+						x1,
+						{ x2: HealthElementJs ->
+							healthElement_fromJs(x2)
+						},
+					)
+				},
+			)
+			val result = healthElementApi.inGroup.deleteHealthElements(
+				healthElementsConverted,
+			)
+			listToArray(
+				result,
+				{ x1: GroupScoped<StoredDocumentIdentifier> ->
+					groupScoped_toJs(
+						x1,
+						{ x2: StoredDocumentIdentifier ->
+							storedDocumentIdentifier_toJs(x2)
+						},
+					)
+				},
+			)
+		}
+
+		override fun purgeHealthElement(healthElement: GroupScopedJs<HealthElementJs>): Promise<Unit> =
+				GlobalScope.promise {
+			val healthElementConverted: GroupScoped<HealthElement> = groupScoped_fromJs(
+				healthElement,
+				{ x1: HealthElementJs ->
+					healthElement_fromJs(x1)
+				},
+			)
+			healthElementApi.inGroup.purgeHealthElement(
+				healthElementConverted,
+			)
+
+		}
+
+		override fun purgeHealthElements(healthElements: Array<GroupScopedJs<HealthElementJs>>):
+				Promise<Array<GroupScopedJs<StoredDocumentIdentifierJs>>> = GlobalScope.promise {
+			val healthElementsConverted: List<GroupScoped<HealthElement>> = arrayToList(
+				healthElements,
+				"healthElements",
+				{ x1: GroupScopedJs<HealthElementJs> ->
+					groupScoped_fromJs(
+						x1,
+						{ x2: HealthElementJs ->
+							healthElement_fromJs(x2)
+						},
+					)
+				},
+			)
+			val result = healthElementApi.inGroup.purgeHealthElements(
+				healthElementsConverted,
+			)
+			listToArray(
+				result,
+				{ x1: GroupScoped<StoredDocumentIdentifier> ->
+					groupScoped_toJs(
+						x1,
+						{ x2: StoredDocumentIdentifier ->
+							storedDocumentIdentifier_toJs(x2)
+						},
+					)
+				},
+			)
+		}
+
 		override fun shareWith(
 			`delegate`: EntityReferenceInGroupJs,
 			healthElement: GroupScopedJs<DecryptedHealthElementJs>,
@@ -1097,6 +1764,51 @@ internal class HealthElementApiImplJs(
 			)
 		}
 
+		override fun filterHealthElementsBy(groupId: String, filter: FilterOptionsJs<HealthElementJs>):
+				Promise<PaginatedListIteratorJs<GroupScopedJs<DecryptedHealthElementJs>>> =
+				GlobalScope.promise {
+			val groupIdConverted: String = groupId
+			val filterConverted: FilterOptions<HealthElement> = filterOptions_fromJs(filter)
+			val result = healthElementApi.inGroup.filterHealthElementsBy(
+				groupIdConverted,
+				filterConverted,
+			)
+			paginatedListIterator_toJs(
+				result,
+				{ x1: GroupScoped<DecryptedHealthElement> ->
+					groupScoped_toJs(
+						x1,
+						{ x2: DecryptedHealthElement ->
+							healthElement_toJs(x2)
+						},
+					)
+				},
+			)
+		}
+
+		override fun filterHealthElementsBySorted(groupId: String,
+				filter: SortableFilterOptionsJs<HealthElementJs>):
+				Promise<PaginatedListIteratorJs<GroupScopedJs<DecryptedHealthElementJs>>> =
+				GlobalScope.promise {
+			val groupIdConverted: String = groupId
+			val filterConverted: SortableFilterOptions<HealthElement> = sortableFilterOptions_fromJs(filter)
+			val result = healthElementApi.inGroup.filterHealthElementsBySorted(
+				groupIdConverted,
+				filterConverted,
+			)
+			paginatedListIterator_toJs(
+				result,
+				{ x1: GroupScoped<DecryptedHealthElement> ->
+					groupScoped_toJs(
+						x1,
+						{ x2: DecryptedHealthElement ->
+							healthElement_toJs(x2)
+						},
+					)
+				},
+			)
+		}
+
 		override fun createHealthElement(entity: GroupScopedJs<DecryptedHealthElementJs>):
 				Promise<GroupScopedJs<DecryptedHealthElementJs>> = GlobalScope.promise {
 			val entityConverted: GroupScoped<DecryptedHealthElement> = groupScoped_fromJs(
@@ -1112,6 +1824,136 @@ internal class HealthElementApiImplJs(
 				result,
 				{ x1: DecryptedHealthElement ->
 					healthElement_toJs(x1)
+				},
+			)
+		}
+
+		override fun createHealthElements(entities: Array<GroupScopedJs<DecryptedHealthElementJs>>):
+				Promise<Array<GroupScopedJs<DecryptedHealthElementJs>>> = GlobalScope.promise {
+			val entitiesConverted: List<GroupScoped<DecryptedHealthElement>> = arrayToList(
+				entities,
+				"entities",
+				{ x1: GroupScopedJs<DecryptedHealthElementJs> ->
+					groupScoped_fromJs(
+						x1,
+						{ x2: DecryptedHealthElementJs ->
+							healthElement_fromJs(x2)
+						},
+					)
+				},
+			)
+			val result = healthElementApi.inGroup.createHealthElements(
+				entitiesConverted,
+			)
+			listToArray(
+				result,
+				{ x1: GroupScoped<DecryptedHealthElement> ->
+					groupScoped_toJs(
+						x1,
+						{ x2: DecryptedHealthElement ->
+							healthElement_toJs(x2)
+						},
+					)
+				},
+			)
+		}
+
+		override fun undeleteHealthElementById(entityId: GroupScopedJs<StoredDocumentIdentifierJs>):
+				Promise<GroupScopedJs<DecryptedHealthElementJs>> = GlobalScope.promise {
+			val entityIdConverted: GroupScoped<StoredDocumentIdentifier> = groupScoped_fromJs(
+				entityId,
+				{ x1: StoredDocumentIdentifierJs ->
+					storedDocumentIdentifier_fromJs(x1)
+				},
+			)
+			val result = healthElementApi.inGroup.undeleteHealthElementById(
+				entityIdConverted,
+			)
+			groupScoped_toJs(
+				result,
+				{ x1: DecryptedHealthElement ->
+					healthElement_toJs(x1)
+				},
+			)
+		}
+
+		override
+				fun undeleteHealthElementsByIds(entityIds: Array<GroupScopedJs<StoredDocumentIdentifierJs>>):
+				Promise<Array<GroupScopedJs<DecryptedHealthElementJs>>> = GlobalScope.promise {
+			val entityIdsConverted: List<GroupScoped<StoredDocumentIdentifier>> = arrayToList(
+				entityIds,
+				"entityIds",
+				{ x1: GroupScopedJs<StoredDocumentIdentifierJs> ->
+					groupScoped_fromJs(
+						x1,
+						{ x2: StoredDocumentIdentifierJs ->
+							storedDocumentIdentifier_fromJs(x2)
+						},
+					)
+				},
+			)
+			val result = healthElementApi.inGroup.undeleteHealthElementsByIds(
+				entityIdsConverted,
+			)
+			listToArray(
+				result,
+				{ x1: GroupScoped<DecryptedHealthElement> ->
+					groupScoped_toJs(
+						x1,
+						{ x2: DecryptedHealthElement ->
+							healthElement_toJs(x2)
+						},
+					)
+				},
+			)
+		}
+
+		override fun undeleteHealthElement(healthElement: GroupScopedJs<HealthElementJs>):
+				Promise<GroupScopedJs<DecryptedHealthElementJs>> = GlobalScope.promise {
+			val healthElementConverted: GroupScoped<HealthElement> = groupScoped_fromJs(
+				healthElement,
+				{ x1: HealthElementJs ->
+					healthElement_fromJs(x1)
+				},
+			)
+			val result = healthElementApi.inGroup.undeleteHealthElement(
+				healthElementConverted,
+			)
+			groupScoped_toJs(
+				result,
+				{ x1: DecryptedHealthElement ->
+					healthElement_toJs(x1)
+				},
+			)
+		}
+
+		override
+				fun undeleteHealthElements(healthElements: Array<GroupScopedJs<DecryptedHealthElementJs>>):
+				Promise<Array<GroupScopedJs<DecryptedHealthElementJs>>> = GlobalScope.promise {
+			val healthElementsConverted: List<GroupScoped<DecryptedHealthElement>> = arrayToList(
+				healthElements,
+				"healthElements",
+				{ x1: GroupScopedJs<DecryptedHealthElementJs> ->
+					groupScoped_fromJs(
+						x1,
+						{ x2: DecryptedHealthElementJs ->
+							healthElement_fromJs(x2)
+						},
+					)
+				},
+			)
+			val result = healthElementApi.inGroup.undeleteHealthElements(
+				healthElementsConverted,
+			)
+			listToArray(
+				result,
+				{ x1: GroupScoped<DecryptedHealthElement> ->
+					groupScoped_toJs(
+						x1,
+						{ x2: DecryptedHealthElement ->
+							healthElement_toJs(x2)
+						},
+					)
 				},
 			)
 		}
@@ -1135,6 +1977,36 @@ internal class HealthElementApiImplJs(
 			)
 		}
 
+		override fun modifyHealthElements(entities: Array<GroupScopedJs<DecryptedHealthElementJs>>):
+				Promise<Array<GroupScopedJs<DecryptedHealthElementJs>>> = GlobalScope.promise {
+			val entitiesConverted: List<GroupScoped<DecryptedHealthElement>> = arrayToList(
+				entities,
+				"entities",
+				{ x1: GroupScopedJs<DecryptedHealthElementJs> ->
+					groupScoped_fromJs(
+						x1,
+						{ x2: DecryptedHealthElementJs ->
+							healthElement_fromJs(x2)
+						},
+					)
+				},
+			)
+			val result = healthElementApi.inGroup.modifyHealthElements(
+				entitiesConverted,
+			)
+			listToArray(
+				result,
+				{ x1: GroupScoped<DecryptedHealthElement> ->
+					groupScoped_toJs(
+						x1,
+						{ x2: DecryptedHealthElement ->
+							healthElement_toJs(x2)
+						},
+					)
+				},
+			)
+		}
+
 		override fun getHealthElement(groupId: String, entityId: String):
 				Promise<GroupScopedJs<DecryptedHealthElementJs>?> = GlobalScope.promise {
 			val groupIdConverted: String = groupId
@@ -1152,6 +2024,33 @@ internal class HealthElementApiImplJs(
 						},
 					)
 				}
+			)
+		}
+
+		override fun getHealthElements(groupId: String, entityIds: Array<String>):
+				Promise<Array<GroupScopedJs<DecryptedHealthElementJs>>> = GlobalScope.promise {
+			val groupIdConverted: String = groupId
+			val entityIdsConverted: List<String> = arrayToList(
+				entityIds,
+				"entityIds",
+				{ x1: String ->
+					x1
+				},
+			)
+			val result = healthElementApi.inGroup.getHealthElements(
+				groupIdConverted,
+				entityIdsConverted,
+			)
+			listToArray(
+				result,
+				{ x1: GroupScoped<DecryptedHealthElement> ->
+					groupScoped_toJs(
+						x1,
+						{ x2: DecryptedHealthElement ->
+							healthElement_toJs(x2)
+						},
+					)
+				},
 			)
 		}
 	}
@@ -1360,35 +2259,6 @@ internal class HealthElementApiImplJs(
 		)
 	}
 
-	override fun deleteHealthElementUnsafe(entityId: String): Promise<StoredDocumentIdentifierJs> =
-			GlobalScope.promise {
-		val entityIdConverted: String = entityId
-		val result = healthElementApi.deleteHealthElementUnsafe(
-			entityIdConverted,
-		)
-		storedDocumentIdentifier_toJs(result)
-	}
-
-	override fun deleteHealthElementsUnsafe(entityIds: Array<String>):
-			Promise<Array<StoredDocumentIdentifierJs>> = GlobalScope.promise {
-		val entityIdsConverted: List<String> = arrayToList(
-			entityIds,
-			"entityIds",
-			{ x1: String ->
-				x1
-			},
-		)
-		val result = healthElementApi.deleteHealthElementsUnsafe(
-			entityIdsConverted,
-		)
-		listToArray(
-			result,
-			{ x1: StoredDocumentIdentifier ->
-				storedDocumentIdentifier_toJs(x1)
-			},
-		)
-	}
-
 	override fun deleteHealthElementById(entityId: String, rev: String):
 			Promise<StoredDocumentIdentifierJs> = GlobalScope.promise {
 		val entityIdConverted: String = entityId
@@ -1430,6 +2300,26 @@ internal class HealthElementApiImplJs(
 
 	}
 
+	override fun purgeHealthElementsByIds(entityIds: Array<StoredDocumentIdentifierJs>):
+			Promise<Array<StoredDocumentIdentifierJs>> = GlobalScope.promise {
+		val entityIdsConverted: List<StoredDocumentIdentifier> = arrayToList(
+			entityIds,
+			"entityIds",
+			{ x1: StoredDocumentIdentifierJs ->
+				storedDocumentIdentifier_fromJs(x1)
+			},
+		)
+		val result = healthElementApi.purgeHealthElementsByIds(
+			entityIdsConverted,
+		)
+		listToArray(
+			result,
+			{ x1: StoredDocumentIdentifier ->
+				storedDocumentIdentifier_toJs(x1)
+			},
+		)
+	}
+
 	override fun deleteHealthElement(healthElement: HealthElementJs):
 			Promise<StoredDocumentIdentifierJs> = GlobalScope.promise {
 		val healthElementConverted: HealthElement = healthElement_fromJs(healthElement)
@@ -1466,6 +2356,26 @@ internal class HealthElementApiImplJs(
 			healthElementConverted,
 		)
 
+	}
+
+	override fun purgeHealthElements(healthElements: Array<HealthElementJs>):
+			Promise<Array<StoredDocumentIdentifierJs>> = GlobalScope.promise {
+		val healthElementsConverted: List<HealthElement> = arrayToList(
+			healthElements,
+			"healthElements",
+			{ x1: HealthElementJs ->
+				healthElement_fromJs(x1)
+			},
+		)
+		val result = healthElementApi.purgeHealthElements(
+			healthElementsConverted,
+		)
+		listToArray(
+			result,
+			{ x1: StoredDocumentIdentifier ->
+				storedDocumentIdentifier_toJs(x1)
+			},
+		)
 	}
 
 	override fun shareWith(
@@ -1514,52 +2424,6 @@ internal class HealthElementApiImplJs(
 			delegatesConverted,
 		)
 		healthElement_toJs(result)
-	}
-
-	override fun findHealthElementsByHcPartyPatient(
-		hcPartyId: String,
-		patient: PatientJs,
-		options: dynamic,
-	): Promise<PaginatedListIteratorJs<DecryptedHealthElementJs>> {
-		val _options = options ?: js("{}")
-		return GlobalScope.promise {
-			val hcPartyIdConverted: String = hcPartyId
-			val patientConverted: Patient = patient_fromJs(patient)
-			val startDateConverted: Long? = convertingOptionOrDefaultNullable(
-				_options,
-				"startDate",
-				null
-			) { startDate: Double? ->
-				numberToLong(startDate, "startDate")
-			}
-			val endDateConverted: Long? = convertingOptionOrDefaultNullable(
-				_options,
-				"endDate",
-				null
-			) { endDate: Double? ->
-				numberToLong(endDate, "endDate")
-			}
-			val descendingConverted: Boolean? = convertingOptionOrDefaultNullable(
-				_options,
-				"descending",
-				null
-			) { descending: Boolean? ->
-				undefinedToNull(descending)
-			}
-			val result = healthElementApi.findHealthElementsByHcPartyPatient(
-				hcPartyIdConverted,
-				patientConverted,
-				startDateConverted,
-				endDateConverted,
-				descendingConverted,
-			)
-			paginatedListIterator_toJs(
-				result,
-				{ x1: DecryptedHealthElement ->
-					healthElement_toJs(x1)
-				},
-			)
-		}
 	}
 
 	override fun filterHealthElementsBy(filter: FilterOptionsJs<HealthElementJs>):
@@ -1630,6 +2494,26 @@ internal class HealthElementApiImplJs(
 		healthElement_toJs(result)
 	}
 
+	override fun undeleteHealthElementsByIds(entityIds: Array<StoredDocumentIdentifierJs>):
+			Promise<Array<DecryptedHealthElementJs>> = GlobalScope.promise {
+		val entityIdsConverted: List<StoredDocumentIdentifier> = arrayToList(
+			entityIds,
+			"entityIds",
+			{ x1: StoredDocumentIdentifierJs ->
+				storedDocumentIdentifier_fromJs(x1)
+			},
+		)
+		val result = healthElementApi.undeleteHealthElementsByIds(
+			entityIdsConverted,
+		)
+		listToArray(
+			result,
+			{ x1: DecryptedHealthElement ->
+				healthElement_toJs(x1)
+			},
+		)
+	}
+
 	override fun undeleteHealthElement(healthElement: HealthElementJs):
 			Promise<DecryptedHealthElementJs> = GlobalScope.promise {
 		val healthElementConverted: HealthElement = healthElement_fromJs(healthElement)
@@ -1637,6 +2521,26 @@ internal class HealthElementApiImplJs(
 			healthElementConverted,
 		)
 		healthElement_toJs(result)
+	}
+
+	override fun undeleteHealthElements(healthElements: Array<HealthElementJs>):
+			Promise<Array<DecryptedHealthElementJs>> = GlobalScope.promise {
+		val healthElementsConverted: List<HealthElement> = arrayToList(
+			healthElements,
+			"healthElements",
+			{ x1: HealthElementJs ->
+				healthElement_fromJs(x1)
+			},
+		)
+		val result = healthElementApi.undeleteHealthElements(
+			healthElementsConverted,
+		)
+		listToArray(
+			result,
+			{ x1: DecryptedHealthElement ->
+				healthElement_toJs(x1)
+			},
+		)
 	}
 
 	override fun modifyHealthElement(entity: DecryptedHealthElementJs):

@@ -2,11 +2,12 @@
 import {PaginatedListIterator} from '../cardinal-sdk-ts.mjs';
 import {InvoiceShareOptions} from '../crypto/entities/InvoiceShareOptions.mjs';
 import {SecretIdUseOption} from '../crypto/entities/SecretIdUseOption.mjs';
+import {EntityReferenceInGroup} from '../model/EntityReferenceInGroup.mjs';
 import {DecryptedInvoice, EncryptedInvoice, Invoice} from '../model/Invoice.mjs';
 import {PaginatedList} from '../model/PaginatedList.mjs';
 import {Patient} from '../model/Patient.mjs';
+import {StoredDocumentIdentifier} from '../model/StoredDocumentIdentifier.mjs';
 import {User} from '../model/User.mjs';
-import {DocIdentifier} from '../model/couchdb/DocIdentifier.mjs';
 import {LabelledOccurence} from '../model/data/LabelledOccurence.mjs';
 import {AccessLevel} from '../model/embed/AccessLevel.mjs';
 import {InvoiceType} from '../model/embed/InvoiceType.mjs';
@@ -14,6 +15,7 @@ import {EncryptedInvoicingCode} from '../model/embed/InvoicingCode.mjs';
 import {MediumType} from '../model/embed/MediumType.mjs';
 import {HexString} from '../model/specializations/HexString.mjs';
 import {InvoiceFlavouredApi} from './InvoiceFlavouredApi.mjs';
+import {InvoiceInGroupApi} from './InvoiceInGroupApi.mjs';
 
 
 export interface InvoiceApi {
@@ -22,9 +24,7 @@ export interface InvoiceApi {
 
 	tryAndRecover: InvoiceFlavouredApi<Invoice>;
 
-	createInvoice(entity: DecryptedInvoice, prefix: string | undefined): Promise<DecryptedInvoice>;
-
-	createInvoices(entities: Array<DecryptedInvoice>): Promise<Array<DecryptedInvoice>>;
+	inGroup: InvoiceInGroupApi;
 
 	withEncryptionMetadata(base: DecryptedInvoice | undefined, patient: Patient | undefined,
 			options?: { user?: User | undefined, delegates?: { [ key: string ]: AccessLevel }, secretId?: SecretIdUseOption, alternateRootDelegateId?: string | undefined }): Promise<DecryptedInvoice>;
@@ -33,7 +33,7 @@ export interface InvoiceApi {
 
 	hasWriteAccess(invoice: Invoice): Promise<boolean>;
 
-	decryptPatientIdOf(invoice: Invoice): Promise<Array<string>>;
+	decryptPatientIdOf(invoice: Invoice): Promise<Array<EntityReferenceInGroup>>;
 
 	createDelegationDeAnonymizationMetadata(entity: Invoice, delegates: Array<string>): Promise<void>;
 
@@ -41,7 +41,21 @@ export interface InvoiceApi {
 
 	tryDecrypt(invoice: EncryptedInvoice): Promise<Invoice>;
 
-	deleteInvoice(entityId: string): Promise<DocIdentifier>;
+	deleteInvoiceById(entityId: string, rev: string): Promise<StoredDocumentIdentifier>;
+
+	deleteInvoicesByIds(entityIds: Array<StoredDocumentIdentifier>): Promise<Array<StoredDocumentIdentifier>>;
+
+	purgeInvoiceById(id: string, rev: string): Promise<void>;
+
+	purgeInvoicesByIds(entityIds: Array<StoredDocumentIdentifier>): Promise<Array<StoredDocumentIdentifier>>;
+
+	deleteInvoice(invoice: Invoice): Promise<StoredDocumentIdentifier>;
+
+	deleteInvoices(invoices: Array<Invoice>): Promise<Array<StoredDocumentIdentifier>>;
+
+	purgeInvoice(invoice: Invoice): Promise<void>;
+
+	purgeInvoices(invoices: Array<Invoice>): Promise<Array<StoredDocumentIdentifier>>;
 
 	getTarificationsCodesOccurrences(minOccurrence: number): Promise<Array<LabelledOccurence>>;
 
@@ -53,6 +67,18 @@ export interface InvoiceApi {
 
 	findInvoicesByHcPartyPatient(hcPartyId: string, patient: Patient,
 			options?: { startDate?: number | undefined, endDate?: number | undefined, descending?: boolean | undefined }): Promise<PaginatedListIterator<DecryptedInvoice>>;
+
+	createInvoice(entity: DecryptedInvoice): Promise<DecryptedInvoice>;
+
+	createInvoices(entities: Array<DecryptedInvoice>): Promise<Array<DecryptedInvoice>>;
+
+	undeleteInvoiceById(id: string, rev: string): Promise<DecryptedInvoice>;
+
+	undeleteInvoicesByIds(entityIds: Array<StoredDocumentIdentifier>): Promise<Array<DecryptedInvoice>>;
+
+	undeleteInvoice(invoice: Invoice): Promise<DecryptedInvoice>;
+
+	undeleteInvoices(invoices: Array<Invoice>): Promise<Array<DecryptedInvoice>>;
 
 	modifyInvoice(entity: DecryptedInvoice): Promise<DecryptedInvoice>;
 
