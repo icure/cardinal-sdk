@@ -47,7 +47,7 @@ jobs:
 
             -   name: Generate JSON representation
                 run: |
-                    ./gradlew :cardinal-sdk:kspKotlin
+                    ./gradlew :cardinal-sdk:kspKotlinJvm
 
             -   name: Delete auto-generated files
                 run: |
