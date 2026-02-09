@@ -704,17 +704,11 @@ private class MessageApiImpl(
 		)
 	}
 
-	override suspend fun decrypt(messages: List<EncryptedMessage>): List<DecryptedMessage> =
-		decryptedFlavour.maybeDecrypt(null, messages)
-
 	override suspend fun decrypt(message: EncryptedMessage): DecryptedMessage =
-		decrypt(listOf(message)).single()
-
-	override suspend fun tryDecrypt(messages: List<EncryptedMessage>): List<Message> =
-		tryAndRecoverFlavour.maybeDecrypt(null, messages)
+		decryptedFlavour.maybeDecrypt(null, listOf(message)).single()
 
 	override suspend fun tryDecrypt(message: EncryptedMessage): Message =
-		tryDecrypt(listOf(message)).single()
+		tryAndRecoverFlavour.maybeDecrypt(null, listOf(message)).single()
 
 	override suspend fun encryptOrValidate(messages: List<Message>): List<EncryptedMessage> =
 		tryAndRecoverFlavour.validateAndMaybeEncrypt(null, messages)

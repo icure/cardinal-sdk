@@ -549,26 +549,11 @@ interface MessageApi : MessageBasicFlavourlessApi, MessageFlavouredApi<Decrypted
 	suspend fun decrypt(message: EncryptedMessage): DecryptedMessage
 
 	/**
-	 * Decrypts Messages, throwing an exception if it is not possible.
-	 * @param messages encrypted Messages
-	 * @return the decrypted Messages
-	 * @throws EntityEncryptionException if any of the provided Messages couldn't be decrypted
-	 */
-	suspend fun decrypt(messages: List<EncryptedMessage>): List<DecryptedMessage>
-
-	/**
 	 * Tries to decrypt a message, returns the input if it is not possible.
 	 * @param message an encrypted Message
 	 * @return the decrypted Message if the decryption was successful or the input if it was not.
 	 */
 	suspend fun tryDecrypt(message: EncryptedMessage): Message
-
-	/**
-	 * Tries to decrypt Messages, returns the input if it is not possible.
-	 * @param messages encrypted Messages
-	 * @return all the provided Messages, each of them decrypted if possible or unchanged (still encrypted)
-	 */
-	suspend fun tryDecrypt(messages: List<EncryptedMessage>): List<Message>
 
 	/**
 	 * Encrypts provided decrypted Messages, and validates already encrypted Messages.

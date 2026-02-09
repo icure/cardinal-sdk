@@ -712,7 +712,7 @@ object ContactFilters {
 	 * In group version of [byPatientsForDataOwner].
 	 */
 	@OptIn(InternalIcureApi::class)
-	fun byPatientsForDataOwner(
+	fun byPatientsForDataOwnerInGroup(
 		dataOwner: EntityReferenceInGroup,
 		patients: List<GroupScoped<Patient>>
 	): SortableFilterOptions<Contact> = ByPatientsForDataOwner(
