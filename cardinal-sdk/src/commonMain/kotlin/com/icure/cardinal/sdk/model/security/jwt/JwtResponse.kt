@@ -12,7 +12,7 @@ import kotlin.String
 data class JwtResponse(
 	public val token: String? = null,
 	public val refreshToken: String? = null,
-	@DefaultValue("false")
+	@param:DefaultValue("false")
 	public val successful: Boolean = false,
 ) {
 	// region JwtResponse-JwtResponse

@@ -11,7 +11,7 @@ import kotlin.Long
 @Serializable
 data class MessageReadStatus(
 	public val time: Long? = null,
-	@DefaultValue("false")
+	@param:DefaultValue("false")
 	public val read: Boolean = false,
 ) {
 	// region MessageReadStatus-MessageReadStatus

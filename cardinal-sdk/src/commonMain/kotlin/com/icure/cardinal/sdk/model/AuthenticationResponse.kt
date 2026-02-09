@@ -12,7 +12,7 @@ import kotlin.String
 class AuthenticationResponse(
 	public val healthcarePartyId: String? = null,
 	public val reason: String? = null,
-	@DefaultValue("false")
+	@param:DefaultValue("false")
 	public val successful: Boolean = false,
 	public val username: String? = null,
 ) {

@@ -3,6 +3,7 @@ package com.icure.cardinal.sdk.model.notification
 import com.icure.cardinal.sdk.model.base.Identifiable
 import com.icure.cardinal.sdk.model.filter.chain.FilterChain
 import com.icure.cardinal.sdk.model.specializations.AccessControlKeyHexString
+import kotlin.Boolean
 import kotlin.String
 import kotlin.collections.List
 
@@ -13,6 +14,7 @@ data class Subscription<O : Identifiable<String>>(
 	public val entityClass: String,
 	public val filter: FilterChain<O>?,
 	public val accessControlKeys: List<AccessControlKeyHexString>?,
+	public val useCardinalModelSerialization: Boolean? = null,
 ) {
   // region Subscription-Subscription
 

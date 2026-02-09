@@ -18,7 +18,7 @@ data class Role(
 	override val deletionDate: Long? = null,
 	public val name: String? = null,
 	public val inheritableUpTo: Int? = null,
-	@DefaultValue("emptySet()")
+	@param:DefaultValue("emptySet()")
 	public val permissions: Set<String> = emptySet(),
 ) : StoredDocument {
 	// region Role-Role
