@@ -7,5 +7,6 @@ import kotlin.Long
 interface HasEndOfLife {
 	public val endOfLife: Long?
 	// region HasEndOfLife-HasEndOfLife
+
 	// endregion
 }

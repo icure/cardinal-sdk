@@ -23,5 +23,6 @@ data class HealthElementByHcPartyTagFilter(
 	public val versionFiltering: VersionFiltering? = null,
 ) : AbstractFilter<HealthElement> {
 	// region HealthElementByHcPartyTagFilter-HealthElementByHcPartyTagFilter
+
 	// endregion
 }

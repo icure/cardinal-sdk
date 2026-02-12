@@ -105,9 +105,11 @@ import com.icure.cardinal.sdk.model.filter.maintenancetask.MaintenanceTaskByIdsF
 import com.icure.cardinal.sdk.model.filter.medicallocation.AllMedicalLocationsFilter
 import com.icure.cardinal.sdk.model.filter.medicallocation.MedicalLocationByPostCodeFilter
 import com.icure.cardinal.sdk.model.filter.message.LatestMessageByHcPartyTransportGuidFilter
+import com.icure.cardinal.sdk.model.filter.message.MessageByDataOwnerCodeFilter
 import com.icure.cardinal.sdk.model.filter.message.MessageByDataOwnerFromAddressFilter
 import com.icure.cardinal.sdk.model.filter.message.MessageByDataOwnerLifecycleBetween
 import com.icure.cardinal.sdk.model.filter.message.MessageByDataOwnerPatientSentDateFilter
+import com.icure.cardinal.sdk.model.filter.message.MessageByDataOwnerTagFilter
 import com.icure.cardinal.sdk.model.filter.message.MessageByDataOwnerToAddressFilter
 import com.icure.cardinal.sdk.model.filter.message.MessageByDataOwnerTransportGuidSentDateFilter
 import com.icure.cardinal.sdk.model.filter.message.MessageByHcPartyFilter
@@ -829,9 +831,11 @@ internal object MessageAbstractFilterSerializer :
 			"UnionFilter" -> UnionFilterSerializer(this)
 			"LatestMessageByHcPartyTransportGuidFilter" ->
 				LatestMessageByHcPartyTransportGuidFilter.serializer()
+			"MessageByDataOwnerCodeFilter" -> MessageByDataOwnerCodeFilter.serializer()
 			"MessageByDataOwnerFromAddressFilter" -> MessageByDataOwnerFromAddressFilter.serializer()
 			"MessageByDataOwnerLifecycleBetween" -> MessageByDataOwnerLifecycleBetween.serializer()
 			"MessageByDataOwnerPatientSentDateFilter" -> MessageByDataOwnerPatientSentDateFilter.serializer()
+			"MessageByDataOwnerTagFilter" -> MessageByDataOwnerTagFilter.serializer()
 			"MessageByDataOwnerToAddressFilter" -> MessageByDataOwnerToAddressFilter.serializer()
 			"MessageByDataOwnerTransportGuidSentDateFilter" ->
 				MessageByDataOwnerTransportGuidSentDateFilter.serializer()
@@ -850,10 +854,12 @@ internal object MessageAbstractFilterSerializer :
 			UnionFilter::class -> UnionFilterSerializer(this)
 			LatestMessageByHcPartyTransportGuidFilter::class ->
 				LatestMessageByHcPartyTransportGuidFilter.serializer()
+			MessageByDataOwnerCodeFilter::class -> MessageByDataOwnerCodeFilter.serializer()
 			MessageByDataOwnerFromAddressFilter::class -> MessageByDataOwnerFromAddressFilter.serializer()
 			MessageByDataOwnerLifecycleBetween::class -> MessageByDataOwnerLifecycleBetween.serializer()
 			MessageByDataOwnerPatientSentDateFilter::class ->
 				MessageByDataOwnerPatientSentDateFilter.serializer()
+			MessageByDataOwnerTagFilter::class -> MessageByDataOwnerTagFilter.serializer()
 			MessageByDataOwnerToAddressFilter::class -> MessageByDataOwnerToAddressFilter.serializer()
 			MessageByDataOwnerTransportGuidSentDateFilter::class ->
 				MessageByDataOwnerTransportGuidSentDateFilter.serializer()
