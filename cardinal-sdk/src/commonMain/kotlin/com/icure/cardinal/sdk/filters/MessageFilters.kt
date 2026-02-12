@@ -12,9 +12,11 @@ import com.icure.cardinal.sdk.model.Message
 import com.icure.cardinal.sdk.model.Patient
 import com.icure.cardinal.sdk.model.filter.AbstractFilter
 import com.icure.cardinal.sdk.model.filter.message.LatestMessageByHcPartyTransportGuidFilter
+import com.icure.cardinal.sdk.model.filter.message.MessageByDataOwnerCodeFilter
 import com.icure.cardinal.sdk.model.filter.message.MessageByDataOwnerFromAddressFilter
 import com.icure.cardinal.sdk.model.filter.message.MessageByDataOwnerLifecycleBetween
 import com.icure.cardinal.sdk.model.filter.message.MessageByDataOwnerPatientSentDateFilter
+import com.icure.cardinal.sdk.model.filter.message.MessageByDataOwnerTagFilter
 import com.icure.cardinal.sdk.model.filter.message.MessageByDataOwnerToAddressFilter
 import com.icure.cardinal.sdk.model.filter.message.MessageByDataOwnerTransportGuidSentDateFilter
 import com.icure.cardinal.sdk.model.filter.message.MessageByHcPartyFilter
@@ -521,6 +523,116 @@ object MessageFilters {
 		descending: Boolean = false
 	): FilterOptions<Message> = LifecycleBetweenForSelf(startTimestamp, endTimestamp, descending)
 
+	/**
+	 * Options for message filtering which match all messages shared directly (i.e. ignoring hierarchies) with a specific data owner that have a certain code.
+	 * If you specify only the [codeType] you will get all entities that have at least a code of that type.
+	 *
+	 * These options are sortable. When sorting using these options the messages will be sorted by [codeCode].
+	 *
+	 * @param dataOwnerId a data owner id
+	 * @param codeType a code type
+	 * @param codeCode a code for the provided code type, or null if you want the filter to accept any entity
+	 * with a code of the provided type.
+	 */
+	fun byCodeForDataOwner(
+		dataOwnerId: String,
+		codeType: String,
+		@DefaultValue("null")
+		codeCode: String? = null
+	): BaseSortableFilterOptions<Message> = ByCodeForDataOwner(
+		codeType = codeType,
+		codeCode = codeCode,
+		dataOwnerId = EntityReferenceInGroup(groupId = null, entityId = dataOwnerId)
+	)
+
+	/**
+	 * In group version of [byCodeForDataOwner].
+	 */
+	fun byCodeForDataOwnerInGroup(
+		dataOwner: EntityReferenceInGroup,
+		codeType: String,
+		@DefaultValue("null")
+		codeCode: String? = null
+	): BaseSortableFilterOptions<Message> = ByCodeForDataOwner(
+		codeType = codeType,
+		codeCode = codeCode,
+		dataOwnerId = dataOwner
+	)
+
+	/**
+	 * Options for message filtering which match all messages shared directly (i.e. ignoring hierarchies) with the current data owner that have a certain code.
+	 * If you specify only the [codeType] you will get all entities that have at least a code of that type.
+	 *
+	 * These options are sortable. When sorting using these options the messages will be sorted by [codeCode].
+	 *
+	 * @param codeType a code type
+	 * @param codeCode a code for the provided code type, or null if you want the filter to accept any entity
+	 * with a code of the provided type.
+	 */
+	fun byCodeForSelf(
+		codeType: String,
+		@DefaultValue("null")
+		codeCode: String? = null
+	): SortableFilterOptions<Message> = ByCodeForSelf(
+		codeType = codeType,
+		codeCode = codeCode
+	)
+
+	/**
+	 * Options for message filtering which match all messages shared directly (i.e. ignoring hierarchies) with a specific data owner that have a certain tag.
+	 * If you specify only the [tagType] you will get all entities that have at least a tag of that type.
+	 *
+	 * These options are sortable. When sorting using these options the messages will be sorted by [tagCode].
+	 *
+	 * @param dataOwnerId a data owner id
+	 * @param tagType a tag type
+	 * @param tagCode a code for the provided tag type, or null if you want the filter to accept any entity
+	 * with a tag of the provided type.
+	 */
+	fun byTagForDataOwner(
+		dataOwnerId: String,
+		tagType: String,
+		@DefaultValue("null")
+		tagCode: String? = null
+	): BaseSortableFilterOptions<Message> = ByTagForDataOwner(
+		tagType = tagType,
+		tagCode = tagCode,
+		dataOwnerId = EntityReferenceInGroup(groupId = null, entityId = dataOwnerId)
+	)
+
+	/**
+	 * In group version of [byTagForDataOwner].
+	 */
+	fun byTagForDataOwnerInGroup(
+		dataOwner: EntityReferenceInGroup,
+		tagType: String,
+		@DefaultValue("null")
+		tagCode: String? = null
+	): BaseSortableFilterOptions<Message> = ByTagForDataOwner(
+		tagType = tagType,
+		tagCode = tagCode,
+		dataOwnerId = dataOwner
+	)
+
+	/**
+	 * Options for message filtering which match all messages shared directly (i.e. ignoring hierarchies) with the current data owner that have a certain tag.
+	 * If you specify only the [tagType] you will get all entities that have at least a tag of that type.
+	 *
+	 * These options are sortable. When sorting using these options the messages will be sorted by [tagCode].
+	 *
+	 * @param tagType a tag type
+	 * @param tagCode a code for the provided tag type, or null if you want the filter to accept any entity
+	 * with a tag of the provided type.
+	 */
+	fun byTagForSelf(
+		tagType: String,
+		@DefaultValue("null")
+		tagCode: String? = null
+	): SortableFilterOptions<Message> = ByTagForSelf(
+		tagType = tagType,
+		tagCode = tagCode
+	)
+
 	@Serializable
 	internal class AllForDataOwner(
 		val dataOwnerId: String
@@ -650,6 +762,32 @@ object MessageFilters {
 		val endTimestamp: Long?,
 		val descending: Boolean
 	): FilterOptions<Message>
+
+	@Serializable
+	internal class ByCodeForDataOwner(
+		val codeType: String,
+		val codeCode: String?,
+		val dataOwnerId: EntityReferenceInGroup
+	): BaseSortableFilterOptions<Message>
+
+	@Serializable
+	internal class ByCodeForSelf(
+		val codeType: String,
+		val codeCode: String?,
+	): SortableFilterOptions<Message>
+
+	@Serializable
+	internal class ByTagForDataOwner(
+		val tagType: String,
+		val tagCode: String?,
+		val dataOwnerId: EntityReferenceInGroup
+	): BaseSortableFilterOptions<Message>
+
+	@Serializable
+	internal class ByTagForSelf(
+		val tagType: String,
+		val tagCode: String?,
+	): SortableFilterOptions<Message>
 }
 
 @InternalIcureApi
@@ -806,6 +944,36 @@ private suspend fun mapMessageFilterOptions(
 			startTimestamp = filterOptions.startTimestamp,
 			endTimestamp = filterOptions.endTimestamp,
 			descending = filterOptions.descending
+		)
+	}
+	is MessageFilters.ByTagForDataOwner -> {
+		MessageByDataOwnerTagFilter(
+			dataOwnerId = filterOptions.dataOwnerId.asReferenceStringInGroup(requestGroup, boundGroup),
+			tagType = filterOptions.tagType,
+			tagCode = filterOptions.tagCode,
+		)
+	}
+	is MessageFilters.ByTagForSelf -> {
+		filterOptions.ensureNonBaseEnvironment(selfDataOwner, entityEncryptionService)
+		MessageByDataOwnerTagFilter(
+			dataOwnerId = selfDataOwner.asReferenceStringInGroup(requestGroup, boundGroup),
+			tagType = filterOptions.tagType,
+			tagCode = filterOptions.tagCode,
+		)
+	}
+	is MessageFilters.ByCodeForDataOwner -> {
+		MessageByDataOwnerCodeFilter(
+			dataOwnerId = filterOptions.dataOwnerId.asReferenceStringInGroup(requestGroup, boundGroup),
+			codeType = filterOptions.codeType,
+			codeCode = filterOptions.codeCode,
+		)
+	}
+	is MessageFilters.ByCodeForSelf -> {
+		filterOptions.ensureNonBaseEnvironment(selfDataOwner, entityEncryptionService)
+		MessageByDataOwnerCodeFilter(
+			dataOwnerId = selfDataOwner.asReferenceStringInGroup(requestGroup, boundGroup),
+			codeType = filterOptions.codeType,
+			codeCode = filterOptions.codeCode,
 		)
 	}
 	is MessageFilters.ByInvoiceIds -> MessageByInvoiceIdsFilter(invoiceIds = filterOptions.invoiceIds)
