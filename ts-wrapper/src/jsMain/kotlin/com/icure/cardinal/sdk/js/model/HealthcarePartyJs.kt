@@ -83,7 +83,7 @@ public external class HealthcarePartyJs(
 
 	public val financialInstitutionInformation: Array<DecryptedFinancialInstitutionInformationJs>
 
-	public val descr: Record<String, String>?
+	public val descr: Record<String, String>
 
 	override val properties: Array<DecryptedPropertyStubJs>
 
@@ -91,7 +91,7 @@ public external class HealthcarePartyJs(
 
 	public val publicProperties: Array<DecryptedPropertyStubJs>?
 
-	override val cryptoActorProperties: Array<DecryptedPropertyStubJs>?
+	override val cryptoActorProperties: Array<DecryptedPropertyStubJs>
 
 	override val hcPartyKeys: Record<String, Array<String>>
 

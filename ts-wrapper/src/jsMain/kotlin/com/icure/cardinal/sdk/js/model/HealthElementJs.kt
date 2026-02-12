@@ -35,6 +35,8 @@ public sealed external interface HealthElementJs : StoredDocumentJs, ICureDocume
 		HasEncryptionMetadataJs, EncryptableJs, HasEndOfLifeJs {
 	public val identifiers: Array<out IdentifierJs>
 
+	public val healthElementId: String?
+
 	public val valueDate: Double?
 
 	public val openingDate: Double?
@@ -91,6 +93,8 @@ public external class DecryptedHealthElementJs(
 	override val endOfLife: Double?
 
 	override val deletionDate: Double?
+
+	override val healthElementId: String?
 
 	override val valueDate: Double?
 
@@ -160,6 +164,8 @@ public external class EncryptedHealthElementJs(
 	override val endOfLife: Double?
 
 	override val deletionDate: Double?
+
+	override val healthElementId: String?
 
 	override val valueDate: Double?
 

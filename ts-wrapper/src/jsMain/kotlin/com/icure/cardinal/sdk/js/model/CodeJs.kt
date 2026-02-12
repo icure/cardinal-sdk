@@ -31,7 +31,7 @@ public external class CodeJs(
 
 	override val version: String?
 
-	public val label: Record<String, String>?
+	public val label: Record<String, String>
 
 	public val author: String?
 

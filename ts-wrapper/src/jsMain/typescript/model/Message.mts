@@ -1,6 +1,7 @@
 // auto-generated file
 import {expectArray, expectMap, expectNumber, expectObject, expectString, extractEntry} from '../internal/JsonDecodeUtils.mjs';
 import {randomUuid} from '../utils/Id.mjs';
+import {DecryptedPropertyStub, EncryptedPropertyStub, PropertyStub} from './PropertyStub.mjs';
 import {CodeStub} from './base/CodeStub.mjs';
 import {HasEncryptionMetadata} from './base/HasEncryptionMetadata.mjs';
 import {ICureDocument} from './base/ICureDocument.mjs';
@@ -41,6 +42,8 @@ export interface Message extends StoredDocument, ICureDocument<string>, HasEncry
 	invoiceIds: Array<string>;
 
 	parentId: string | undefined;
+
+	properties: Array<PropertyStub>;
 
 	readonly isEncrypted: boolean;
 
@@ -96,6 +99,8 @@ export class DecryptedMessage {
 
 	parentId: string | undefined = undefined;
 
+	properties: Array<DecryptedPropertyStub> = [];
+
 	secretForeignKeys: Array<string> = [];
 
 	cryptedForeignKeys: { [ key: string ]: Array<Delegation> } = {};
@@ -135,6 +140,7 @@ export class DecryptedMessage {
 		if ('subject' in partial) this.subject = partial.subject;
 		if ('invoiceIds' in partial && partial.invoiceIds !== undefined) this.invoiceIds = partial.invoiceIds;
 		if ('parentId' in partial) this.parentId = partial.parentId;
+		if ('properties' in partial && partial.properties !== undefined) this.properties = partial.properties;
 		if ('secretForeignKeys' in partial && partial.secretForeignKeys !== undefined) this.secretForeignKeys = partial.secretForeignKeys;
 		if ('cryptedForeignKeys' in partial && partial.cryptedForeignKeys !== undefined) this.cryptedForeignKeys = partial.cryptedForeignKeys;
 		if ('delegations' in partial && partial.delegations !== undefined) this.delegations = partial.delegations;
@@ -168,6 +174,7 @@ export class DecryptedMessage {
 		if (this.subject != undefined) res['subject'] = this.subject
 		res['invoiceIds'] = this.invoiceIds.map((x0) => x0 )
 		if (this.parentId != undefined) res['parentId'] = this.parentId
+		res['properties'] = this.properties.map((x0) => x0.toJSON() )
 		res['secretForeignKeys'] = this.secretForeignKeys.map((x0) => x0 )
 		res['cryptedForeignKeys'] = Object.fromEntries(Object.entries(this.cryptedForeignKeys).map(([k0, v0]) => [k0, v0.map((x1) => x1.toJSON() )]))
 		res['delegations'] = Object.fromEntries(Object.entries(this.delegations).map(([k0, v0]) => [k0, v0.map((x1) => x1.toJSON() )]))
@@ -219,6 +226,7 @@ export class DecryptedMessage {
 			subject: expectString(extractEntry(jCpy, 'subject', false, path), true, [...path, ".subject"]),
 			invoiceIds: expectArray(extractEntry(jCpy, 'invoiceIds', false, path), false, [...path, ".invoiceIds"], (x0, p0) => expectString(x0, false, p0)),
 			parentId: expectString(extractEntry(jCpy, 'parentId', false, path), true, [...path, ".parentId"]),
+			properties: expectArray(extractEntry(jCpy, 'properties', false, path), false, [...path, ".properties"], (x0, p0) => expectObject(x0, false, ignoreUnknownKeys, p0, DecryptedPropertyStub.fromJSON)),
 			secretForeignKeys: expectArray(extractEntry(jCpy, 'secretForeignKeys', false, path), false, [...path, ".secretForeignKeys"], (x0, p0) => expectString(x0, false, p0)),
 			cryptedForeignKeys: expectMap(
 				extractEntry(jCpy, 'cryptedForeignKeys', false, path),
@@ -300,6 +308,8 @@ export class EncryptedMessage {
 
 	parentId: string | undefined = undefined;
 
+	properties: Array<EncryptedPropertyStub> = [];
+
 	secretForeignKeys: Array<string> = [];
 
 	cryptedForeignKeys: { [ key: string ]: Array<Delegation> } = {};
@@ -339,6 +349,7 @@ export class EncryptedMessage {
 		if ('subject' in partial) this.subject = partial.subject;
 		if ('invoiceIds' in partial && partial.invoiceIds !== undefined) this.invoiceIds = partial.invoiceIds;
 		if ('parentId' in partial) this.parentId = partial.parentId;
+		if ('properties' in partial && partial.properties !== undefined) this.properties = partial.properties;
 		if ('secretForeignKeys' in partial && partial.secretForeignKeys !== undefined) this.secretForeignKeys = partial.secretForeignKeys;
 		if ('cryptedForeignKeys' in partial && partial.cryptedForeignKeys !== undefined) this.cryptedForeignKeys = partial.cryptedForeignKeys;
 		if ('delegations' in partial && partial.delegations !== undefined) this.delegations = partial.delegations;
@@ -372,6 +383,7 @@ export class EncryptedMessage {
 		if (this.subject != undefined) res['subject'] = this.subject
 		res['invoiceIds'] = this.invoiceIds.map((x0) => x0 )
 		if (this.parentId != undefined) res['parentId'] = this.parentId
+		res['properties'] = this.properties.map((x0) => x0.toJSON() )
 		res['secretForeignKeys'] = this.secretForeignKeys.map((x0) => x0 )
 		res['cryptedForeignKeys'] = Object.fromEntries(Object.entries(this.cryptedForeignKeys).map(([k0, v0]) => [k0, v0.map((x1) => x1.toJSON() )]))
 		res['delegations'] = Object.fromEntries(Object.entries(this.delegations).map(([k0, v0]) => [k0, v0.map((x1) => x1.toJSON() )]))
@@ -423,6 +435,7 @@ export class EncryptedMessage {
 			subject: expectString(extractEntry(jCpy, 'subject', false, path), true, [...path, ".subject"]),
 			invoiceIds: expectArray(extractEntry(jCpy, 'invoiceIds', false, path), false, [...path, ".invoiceIds"], (x0, p0) => expectString(x0, false, p0)),
 			parentId: expectString(extractEntry(jCpy, 'parentId', false, path), true, [...path, ".parentId"]),
+			properties: expectArray(extractEntry(jCpy, 'properties', false, path), false, [...path, ".properties"], (x0, p0) => expectObject(x0, false, ignoreUnknownKeys, p0, EncryptedPropertyStub.fromJSON)),
 			secretForeignKeys: expectArray(extractEntry(jCpy, 'secretForeignKeys', false, path), false, [...path, ".secretForeignKeys"], (x0, p0) => expectString(x0, false, p0)),
 			cryptedForeignKeys: expectMap(
 				extractEntry(jCpy, 'cryptedForeignKeys', false, path),
