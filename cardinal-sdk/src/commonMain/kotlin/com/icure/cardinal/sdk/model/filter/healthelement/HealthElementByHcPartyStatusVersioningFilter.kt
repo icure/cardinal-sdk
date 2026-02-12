@@ -20,5 +20,6 @@ data class HealthElementByHcPartyStatusVersioningFilter(
 	public val versionFiltering: VersionFiltering? = null,
 ) : AbstractFilter<HealthElement> {
 	// region HealthElementByHcPartyStatusVersioningFilter-HealthElementByHcPartyStatusVersioningFilter
+
 	// endregion
 }

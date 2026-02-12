@@ -60,7 +60,7 @@ data class Device(
 	override val publicKey: SpkiHexString? = null,
 	@param:DefaultValue("emptySet()")
 	override val publicKeysForOaepWithSha256: Set<SpkiHexString> = emptySet(),
-	override val cryptoActorProperties: Set<DecryptedPropertyStub>? = null,
+	override val cryptoActorProperties: Set<DecryptedPropertyStub> = emptySet(),
 ) : StoredDocument, ICureDocument<String>, Named, CryptoActor, DataOwner {
 	// region Device-Device
 	companion object {
