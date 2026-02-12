@@ -11,12 +11,8 @@ import kotlin.Long
 import kotlin.String
 import kotlin.collections.List
 import kotlin.collections.Set
-import kotlin.Boolean
-import kotlin.Int
 
-// WARNING: This file is auto-generated. If you change it manually, your changes will be lost.
-// If you want to change the way this class is generated, see [this repo](https://github.com/icure/sdk-codegen).
-sealed interface PlanOfAction : Encryptable, ICureDocument<String>, Named, HasEndOfLife {
+public sealed interface PlanOfAction : Encryptable, ICureDocument<String>, Named, HasEndOfLife {
 	override val id: String
 
 	override val created: Long?
@@ -56,13 +52,10 @@ sealed interface PlanOfAction : Encryptable, ICureDocument<String>, Named, HasEn
 	public val careTeamMemberships: List<CareTeamMembership>
 
 	override val encryptedSelf: Base64String?
-	// region PlanOfAction-PlanOfAction
-
-	// endregion
 }
 
 @Serializable
-data class DecryptedPlanOfAction(
+public data class DecryptedPlanOfAction(
 	override val id: String,
 	override val created: Long? = null,
 	override val modified: Long? = null,
@@ -86,14 +79,10 @@ data class DecryptedPlanOfAction(
 	@param:DefaultValue("emptyList()")
 	override val careTeamMemberships: List<DecryptedCareTeamMembership> = emptyList(),
 	override val encryptedSelf: Base64String? = null,
-) : PlanOfAction {
-	// region PlanOfAction-DecryptedPlanOfAction
-
-	// endregion
-}
+) : PlanOfAction
 
 @Serializable
-data class EncryptedPlanOfAction(
+public data class EncryptedPlanOfAction(
 	override val id: String,
 	override val created: Long? = null,
 	override val modified: Long? = null,
@@ -117,8 +106,4 @@ data class EncryptedPlanOfAction(
 	@param:DefaultValue("emptyList()")
 	override val careTeamMemberships: List<EncryptedCareTeamMembership> = emptyList(),
 	override val encryptedSelf: Base64String? = null,
-) : PlanOfAction {
-	// region PlanOfAction-EncryptedPlanOfAction
-
-	// endregion
-}
+) : PlanOfAction
