@@ -37,6 +37,8 @@ public sealed external interface CalendarItemJs : StoredDocumentJs, ICureDocumen
 
 	public val homeVisit: Boolean?
 
+	public val phoneNumber: String?
+
 	public val placeId: String?
 
 	public val address: AddressJs?
@@ -46,6 +48,16 @@ public sealed external interface CalendarItemJs : StoredDocumentJs, ICureDocumen
 	public val startTime: Double?
 
 	public val endTime: Double?
+
+	public val confirmationTime: Double?
+
+	public val cancellationTimestamp: Double?
+
+	public val confirmationId: String?
+
+	public val duration: Double?
+
+	public val allDay: Boolean?
 
 	public val details: String?
 
@@ -60,6 +72,8 @@ public sealed external interface CalendarItemJs : StoredDocumentJs, ICureDocumen
 	public val recurrenceId: String?
 
 	public val meetingTags: Array<out CalendarItemTagJs>
+
+	public val properties: Array<out PropertyStubJs>
 
 	public val isEncrypted: Boolean
 }
@@ -96,6 +110,8 @@ public external class DecryptedCalendarItemJs(
 
 	override val homeVisit: Boolean?
 
+	override val phoneNumber: String?
+
 	override val placeId: String?
 
 	override val address: DecryptedAddressJs?
@@ -105,6 +121,16 @@ public external class DecryptedCalendarItemJs(
 	override val startTime: Double?
 
 	override val endTime: Double?
+
+	override val confirmationTime: Double?
+
+	override val cancellationTimestamp: Double?
+
+	override val confirmationId: String?
+
+	override val duration: Double?
+
+	override val allDay: Boolean?
 
 	override val details: String?
 
@@ -119,6 +145,8 @@ public external class DecryptedCalendarItemJs(
 	override val recurrenceId: String?
 
 	override val meetingTags: Array<DecryptedCalendarItemTagJs>
+
+	override val properties: Array<DecryptedPropertyStubJs>
 
 	override val secretForeignKeys: Array<String>
 
@@ -167,6 +195,8 @@ public external class EncryptedCalendarItemJs(
 
 	override val homeVisit: Boolean?
 
+	override val phoneNumber: String?
+
 	override val placeId: String?
 
 	override val address: EncryptedAddressJs?
@@ -176,6 +206,16 @@ public external class EncryptedCalendarItemJs(
 	override val startTime: Double?
 
 	override val endTime: Double?
+
+	override val confirmationTime: Double?
+
+	override val cancellationTimestamp: Double?
+
+	override val confirmationId: String?
+
+	override val duration: Double?
+
+	override val allDay: Boolean?
 
 	override val details: String?
 
@@ -190,6 +230,8 @@ public external class EncryptedCalendarItemJs(
 	override val recurrenceId: String?
 
 	override val meetingTags: Array<EncryptedCalendarItemTagJs>
+
+	override val properties: Array<EncryptedPropertyStubJs>
 
 	override val secretForeignKeys: Array<String>
 

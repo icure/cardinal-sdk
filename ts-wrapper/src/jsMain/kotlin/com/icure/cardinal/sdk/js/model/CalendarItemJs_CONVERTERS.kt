@@ -27,7 +27,9 @@ import com.icure.cardinal.sdk.js.model.specializations.base64String_fromJs
 import com.icure.cardinal.sdk.js.model.specializations.base64String_toJs
 import com.icure.cardinal.sdk.model.CalendarItem
 import com.icure.cardinal.sdk.model.DecryptedCalendarItem
+import com.icure.cardinal.sdk.model.DecryptedPropertyStub
 import com.icure.cardinal.sdk.model.EncryptedCalendarItem
+import com.icure.cardinal.sdk.model.EncryptedPropertyStub
 import com.icure.cardinal.sdk.model.base.CodeStub
 import com.icure.cardinal.sdk.model.embed.DecryptedCalendarItemTag
 import com.icure.cardinal.sdk.model.embed.Delegation
@@ -85,6 +87,9 @@ public fun calendarItem_toJs(obj: DecryptedCalendarItem): DecryptedCalendarItemJ
 	val homeVisit = nullToUndefined(
 		obj.homeVisit
 	)
+	val phoneNumber = nullToUndefined(
+		obj.phoneNumber
+	)
 	val placeId = nullToUndefined(
 		obj.placeId
 	)
@@ -101,6 +106,21 @@ public fun calendarItem_toJs(obj: DecryptedCalendarItem): DecryptedCalendarItemJ
 	)
 	val endTime = nullToUndefined(
 		longToNumber(obj.endTime)
+	)
+	val confirmationTime = nullToUndefined(
+		longToNumber(obj.confirmationTime)
+	)
+	val cancellationTimestamp = nullToUndefined(
+		longToNumber(obj.cancellationTimestamp)
+	)
+	val confirmationId = nullToUndefined(
+		obj.confirmationId
+	)
+	val duration = nullToUndefined(
+		longToNumber(obj.duration)
+	)
+	val allDay = nullToUndefined(
+		obj.allDay
 	)
 	val details = nullToUndefined(
 		obj.details
@@ -128,6 +148,12 @@ public fun calendarItem_toJs(obj: DecryptedCalendarItem): DecryptedCalendarItemJ
 		obj.meetingTags,
 		{ x1: DecryptedCalendarItemTag ->
 			calendarItemTag_toJs(x1)
+		},
+	)
+	val properties = setToArray(
+		obj.properties,
+		{ x1: DecryptedPropertyStub ->
+			propertyStub_toJs(x1)
 		},
 	)
 	val secretForeignKeys = setToArray(
@@ -203,11 +229,17 @@ public fun calendarItem_toJs(obj: DecryptedCalendarItem): DecryptedCalendarItemJ
 		"masterCalendarItemId:masterCalendarItemId," +
 		"important:important," +
 		"homeVisit:homeVisit," +
+		"phoneNumber:phoneNumber," +
 		"placeId:placeId," +
 		"address:address," +
 		"addressText:addressText," +
 		"startTime:startTime," +
 		"endTime:endTime," +
+		"confirmationTime:confirmationTime," +
+		"cancellationTimestamp:cancellationTimestamp," +
+		"confirmationId:confirmationId," +
+		"duration:duration," +
+		"allDay:allDay," +
 		"details:details," +
 		"wasMigrated:wasMigrated," +
 		"agendaId:agendaId," +
@@ -215,6 +247,7 @@ public fun calendarItem_toJs(obj: DecryptedCalendarItem): DecryptedCalendarItemJ
 		"availabilitiesAssignmentStrategy:availabilitiesAssignmentStrategy," +
 		"recurrenceId:recurrenceId," +
 		"meetingTags:meetingTags," +
+		"properties:properties," +
 		"secretForeignKeys:secretForeignKeys," +
 		"cryptedForeignKeys:cryptedForeignKeys," +
 		"delegations:delegations," +
@@ -251,6 +284,7 @@ public fun calendarItem_fromJs(obj: DecryptedCalendarItemJs): DecryptedCalendarI
 	val masterCalendarItemId = undefinedToNull(obj.masterCalendarItemId)
 	val important = undefinedToNull(obj.important)
 	val homeVisit = undefinedToNull(obj.homeVisit)
+	val phoneNumber = undefinedToNull(obj.phoneNumber)
 	val placeId = undefinedToNull(obj.placeId)
 	val address = obj.address?.let { nonNull1 ->
 		address_fromJs(nonNull1)
@@ -258,6 +292,11 @@ public fun calendarItem_fromJs(obj: DecryptedCalendarItemJs): DecryptedCalendarI
 	val addressText = undefinedToNull(obj.addressText)
 	val startTime = numberToLong(obj.startTime, "obj.startTime")
 	val endTime = numberToLong(obj.endTime, "obj.endTime")
+	val confirmationTime = numberToLong(obj.confirmationTime, "obj.confirmationTime")
+	val cancellationTimestamp = numberToLong(obj.cancellationTimestamp, "obj.cancellationTimestamp")
+	val confirmationId = undefinedToNull(obj.confirmationId)
+	val duration = numberToLong(obj.duration, "obj.duration")
+	val allDay = undefinedToNull(obj.allDay)
 	val details = undefinedToNull(obj.details)
 	val wasMigrated = undefinedToNull(obj.wasMigrated)
 	val agendaId = undefinedToNull(obj.agendaId)
@@ -273,6 +312,13 @@ public fun calendarItem_fromJs(obj: DecryptedCalendarItemJs): DecryptedCalendarI
 		"obj.meetingTags",
 		{ x1: DecryptedCalendarItemTagJs ->
 			calendarItemTag_fromJs(x1)
+		},
+	)
+	val properties = arrayToSet(
+		obj.properties,
+		"obj.properties",
+		{ x1: DecryptedPropertyStubJs ->
+			propertyStub_fromJs(x1)
 		},
 	)
 	val secretForeignKeys = arrayToSet(
@@ -351,11 +397,17 @@ public fun calendarItem_fromJs(obj: DecryptedCalendarItemJs): DecryptedCalendarI
 		masterCalendarItemId = masterCalendarItemId,
 		important = important,
 		homeVisit = homeVisit,
+		phoneNumber = phoneNumber,
 		placeId = placeId,
 		address = address,
 		addressText = addressText,
 		startTime = startTime,
 		endTime = endTime,
+		confirmationTime = confirmationTime,
+		cancellationTimestamp = cancellationTimestamp,
+		confirmationId = confirmationId,
+		duration = duration,
+		allDay = allDay,
 		details = details,
 		wasMigrated = wasMigrated,
 		agendaId = agendaId,
@@ -363,6 +415,7 @@ public fun calendarItem_fromJs(obj: DecryptedCalendarItemJs): DecryptedCalendarI
 		availabilitiesAssignmentStrategy = availabilitiesAssignmentStrategy,
 		recurrenceId = recurrenceId,
 		meetingTags = meetingTags,
+		properties = properties,
 		secretForeignKeys = secretForeignKeys,
 		cryptedForeignKeys = cryptedForeignKeys,
 		delegations = delegations,
@@ -420,6 +473,9 @@ public fun calendarItem_toJs(obj: EncryptedCalendarItem): EncryptedCalendarItemJ
 	val homeVisit = nullToUndefined(
 		obj.homeVisit
 	)
+	val phoneNumber = nullToUndefined(
+		obj.phoneNumber
+	)
 	val placeId = nullToUndefined(
 		obj.placeId
 	)
@@ -436,6 +492,21 @@ public fun calendarItem_toJs(obj: EncryptedCalendarItem): EncryptedCalendarItemJ
 	)
 	val endTime = nullToUndefined(
 		longToNumber(obj.endTime)
+	)
+	val confirmationTime = nullToUndefined(
+		longToNumber(obj.confirmationTime)
+	)
+	val cancellationTimestamp = nullToUndefined(
+		longToNumber(obj.cancellationTimestamp)
+	)
+	val confirmationId = nullToUndefined(
+		obj.confirmationId
+	)
+	val duration = nullToUndefined(
+		longToNumber(obj.duration)
+	)
+	val allDay = nullToUndefined(
+		obj.allDay
 	)
 	val details = nullToUndefined(
 		obj.details
@@ -463,6 +534,12 @@ public fun calendarItem_toJs(obj: EncryptedCalendarItem): EncryptedCalendarItemJ
 		obj.meetingTags,
 		{ x1: EncryptedCalendarItemTag ->
 			calendarItemTag_toJs(x1)
+		},
+	)
+	val properties = setToArray(
+		obj.properties,
+		{ x1: EncryptedPropertyStub ->
+			propertyStub_toJs(x1)
 		},
 	)
 	val secretForeignKeys = setToArray(
@@ -538,11 +615,17 @@ public fun calendarItem_toJs(obj: EncryptedCalendarItem): EncryptedCalendarItemJ
 		"masterCalendarItemId:masterCalendarItemId," +
 		"important:important," +
 		"homeVisit:homeVisit," +
+		"phoneNumber:phoneNumber," +
 		"placeId:placeId," +
 		"address:address," +
 		"addressText:addressText," +
 		"startTime:startTime," +
 		"endTime:endTime," +
+		"confirmationTime:confirmationTime," +
+		"cancellationTimestamp:cancellationTimestamp," +
+		"confirmationId:confirmationId," +
+		"duration:duration," +
+		"allDay:allDay," +
 		"details:details," +
 		"wasMigrated:wasMigrated," +
 		"agendaId:agendaId," +
@@ -550,6 +633,7 @@ public fun calendarItem_toJs(obj: EncryptedCalendarItem): EncryptedCalendarItemJ
 		"availabilitiesAssignmentStrategy:availabilitiesAssignmentStrategy," +
 		"recurrenceId:recurrenceId," +
 		"meetingTags:meetingTags," +
+		"properties:properties," +
 		"secretForeignKeys:secretForeignKeys," +
 		"cryptedForeignKeys:cryptedForeignKeys," +
 		"delegations:delegations," +
@@ -586,6 +670,7 @@ public fun calendarItem_fromJs(obj: EncryptedCalendarItemJs): EncryptedCalendarI
 	val masterCalendarItemId = undefinedToNull(obj.masterCalendarItemId)
 	val important = undefinedToNull(obj.important)
 	val homeVisit = undefinedToNull(obj.homeVisit)
+	val phoneNumber = undefinedToNull(obj.phoneNumber)
 	val placeId = undefinedToNull(obj.placeId)
 	val address = obj.address?.let { nonNull1 ->
 		address_fromJs(nonNull1)
@@ -593,6 +678,11 @@ public fun calendarItem_fromJs(obj: EncryptedCalendarItemJs): EncryptedCalendarI
 	val addressText = undefinedToNull(obj.addressText)
 	val startTime = numberToLong(obj.startTime, "obj.startTime")
 	val endTime = numberToLong(obj.endTime, "obj.endTime")
+	val confirmationTime = numberToLong(obj.confirmationTime, "obj.confirmationTime")
+	val cancellationTimestamp = numberToLong(obj.cancellationTimestamp, "obj.cancellationTimestamp")
+	val confirmationId = undefinedToNull(obj.confirmationId)
+	val duration = numberToLong(obj.duration, "obj.duration")
+	val allDay = undefinedToNull(obj.allDay)
 	val details = undefinedToNull(obj.details)
 	val wasMigrated = undefinedToNull(obj.wasMigrated)
 	val agendaId = undefinedToNull(obj.agendaId)
@@ -608,6 +698,13 @@ public fun calendarItem_fromJs(obj: EncryptedCalendarItemJs): EncryptedCalendarI
 		"obj.meetingTags",
 		{ x1: EncryptedCalendarItemTagJs ->
 			calendarItemTag_fromJs(x1)
+		},
+	)
+	val properties = arrayToSet(
+		obj.properties,
+		"obj.properties",
+		{ x1: EncryptedPropertyStubJs ->
+			propertyStub_fromJs(x1)
 		},
 	)
 	val secretForeignKeys = arrayToSet(
@@ -686,11 +783,17 @@ public fun calendarItem_fromJs(obj: EncryptedCalendarItemJs): EncryptedCalendarI
 		masterCalendarItemId = masterCalendarItemId,
 		important = important,
 		homeVisit = homeVisit,
+		phoneNumber = phoneNumber,
 		placeId = placeId,
 		address = address,
 		addressText = addressText,
 		startTime = startTime,
 		endTime = endTime,
+		confirmationTime = confirmationTime,
+		cancellationTimestamp = cancellationTimestamp,
+		confirmationId = confirmationId,
+		duration = duration,
+		allDay = allDay,
 		details = details,
 		wasMigrated = wasMigrated,
 		agendaId = agendaId,
@@ -698,6 +801,7 @@ public fun calendarItem_fromJs(obj: EncryptedCalendarItemJs): EncryptedCalendarI
 		availabilitiesAssignmentStrategy = availabilitiesAssignmentStrategy,
 		recurrenceId = recurrenceId,
 		meetingTags = meetingTags,
+		properties = properties,
 		secretForeignKeys = secretForeignKeys,
 		cryptedForeignKeys = cryptedForeignKeys,
 		delegations = delegations,

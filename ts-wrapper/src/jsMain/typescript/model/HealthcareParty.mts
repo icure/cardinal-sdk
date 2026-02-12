@@ -79,7 +79,7 @@ export class HealthcareParty implements StoredDocument, Named, Person, CryptoAct
 
 	financialInstitutionInformation: Array<DecryptedFinancialInstitutionInformation> = [];
 
-	descr: { [ key: string ]: string } | undefined = {};
+	descr: { [ key: string ]: string } = {};
 
 	properties: Array<DecryptedPropertyStub> = [];
 
@@ -87,7 +87,7 @@ export class HealthcareParty implements StoredDocument, Named, Person, CryptoAct
 
 	publicProperties: Array<DecryptedPropertyStub> | undefined = undefined;
 
-	cryptoActorProperties: Array<DecryptedPropertyStub> | undefined = undefined;
+	cryptoActorProperties: Array<DecryptedPropertyStub> = [];
 
 	hcPartyKeys: { [ key: string ]: Array<HexString> } = {};
 
@@ -132,11 +132,11 @@ export class HealthcareParty implements StoredDocument, Named, Person, CryptoAct
 		if ('specialityCodes' in partial && partial.specialityCodes !== undefined) this.specialityCodes = partial.specialityCodes;
 		if ('notes' in partial) this.notes = partial.notes;
 		if ('financialInstitutionInformation' in partial && partial.financialInstitutionInformation !== undefined) this.financialInstitutionInformation = partial.financialInstitutionInformation;
-		if ('descr' in partial) this.descr = partial.descr;
+		if ('descr' in partial && partial.descr !== undefined) this.descr = partial.descr;
 		if ('properties' in partial && partial.properties !== undefined) this.properties = partial.properties;
 		if ('public' in partial && partial.public !== undefined) this.public = partial.public;
 		if ('publicProperties' in partial) this.publicProperties = partial.publicProperties;
-		if ('cryptoActorProperties' in partial) this.cryptoActorProperties = partial.cryptoActorProperties;
+		if ('cryptoActorProperties' in partial && partial.cryptoActorProperties !== undefined) this.cryptoActorProperties = partial.cryptoActorProperties;
 		if ('hcPartyKeys' in partial && partial.hcPartyKeys !== undefined) this.hcPartyKeys = partial.hcPartyKeys;
 		if ('aesExchangeKeys' in partial && partial.aesExchangeKeys !== undefined) this.aesExchangeKeys = partial.aesExchangeKeys;
 		if ('transferKeys' in partial && partial.transferKeys !== undefined) this.transferKeys = partial.transferKeys;
@@ -175,11 +175,11 @@ export class HealthcareParty implements StoredDocument, Named, Person, CryptoAct
 		res['specialityCodes'] = this.specialityCodes.map((x0) => x0.toJSON() )
 		if (this.notes != undefined) res['notes'] = this.notes
 		res['financialInstitutionInformation'] = this.financialInstitutionInformation.map((x0) => x0.toJSON() )
-		if (this.descr != undefined) res['descr'] = Object.fromEntries(Object.entries(this.descr).map(([k0, v0]) => [k0, v0]))
+		res['descr'] = Object.fromEntries(Object.entries(this.descr).map(([k0, v0]) => [k0, v0]))
 		res['properties'] = this.properties.map((x0) => x0.toJSON() )
 		res['public'] = this.public
 		if (this.publicProperties != undefined) res['publicProperties'] = this.publicProperties.map((x0) => x0.toJSON() )
-		if (this.cryptoActorProperties != undefined) res['cryptoActorProperties'] = this.cryptoActorProperties.map((x0) => x0.toJSON() )
+		res['cryptoActorProperties'] = this.cryptoActorProperties.map((x0) => x0.toJSON() )
 		res['hcPartyKeys'] = Object.fromEntries(Object.entries(this.hcPartyKeys).map(([k0, v0]) => [k0, v0.map((x1) => x1 )]))
 		res['aesExchangeKeys'] = Object.fromEntries(Object.entries(this.aesExchangeKeys).map(([k0, v0]) => [k0, Object.fromEntries(Object.entries(v0).map(([k1, v1]) => [k1, Object.fromEntries(Object.entries(v1).map(([k2, v2]) => [k2, v2]))]))]))
 		res['transferKeys'] = Object.fromEntries(Object.entries(this.transferKeys).map(([k0, v0]) => [k0, Object.fromEntries(Object.entries(v0).map(([k1, v1]) => [k1, v1]))]))
@@ -226,7 +226,7 @@ export class HealthcareParty implements StoredDocument, Named, Person, CryptoAct
 			financialInstitutionInformation: expectArray(extractEntry(jCpy, 'financialInstitutionInformation', false, path), false, [...path, ".financialInstitutionInformation"], (x0, p0) => expectObject(x0, false, ignoreUnknownKeys, p0, DecryptedFinancialInstitutionInformation.fromJSON)),
 			descr: expectMap(
 				extractEntry(jCpy, 'descr', false, path),
-				true,
+				false,
 				[...path, ".descr"],
 				(k0, p0) => expectString(k0, false, p0),
 				(v0, p0) => expectString(v0, false, p0)
@@ -234,7 +234,7 @@ export class HealthcareParty implements StoredDocument, Named, Person, CryptoAct
 			properties: expectArray(extractEntry(jCpy, 'properties', false, path), false, [...path, ".properties"], (x0, p0) => expectObject(x0, false, ignoreUnknownKeys, p0, DecryptedPropertyStub.fromJSON)),
 			public: expectBoolean(extractEntry(jCpy, 'public', false, path), false, [...path, ".public"]),
 			publicProperties: expectArray(extractEntry(jCpy, 'publicProperties', false, path), true, [...path, ".publicProperties"], (x0, p0) => expectObject(x0, false, ignoreUnknownKeys, p0, DecryptedPropertyStub.fromJSON)),
-			cryptoActorProperties: expectArray(extractEntry(jCpy, 'cryptoActorProperties', false, path), true, [...path, ".cryptoActorProperties"], (x0, p0) => expectObject(x0, false, ignoreUnknownKeys, p0, DecryptedPropertyStub.fromJSON)),
+			cryptoActorProperties: expectArray(extractEntry(jCpy, 'cryptoActorProperties', false, path), false, [...path, ".cryptoActorProperties"], (x0, p0) => expectObject(x0, false, ignoreUnknownKeys, p0, DecryptedPropertyStub.fromJSON)),
 			hcPartyKeys: expectMap(
 				extractEntry(jCpy, 'hcPartyKeys', false, path),
 				false,

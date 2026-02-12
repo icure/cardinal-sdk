@@ -63,7 +63,7 @@ export class Device implements StoredDocument, ICureDocument<string>, Named, Cry
 
 	publicKeysForOaepWithSha256: Array<SpkiHexString> = [];
 
-	cryptoActorProperties: Array<DecryptedPropertyStub> | undefined = undefined;
+	cryptoActorProperties: Array<DecryptedPropertyStub> = [];
 
 	readonly $ktClass: 'com.icure.cardinal.sdk.model.Device' = 'com.icure.cardinal.sdk.model.Device';
 
@@ -91,7 +91,7 @@ export class Device implements StoredDocument, ICureDocument<string>, Named, Cry
 		if ('privateKeyShamirPartitions' in partial && partial.privateKeyShamirPartitions !== undefined) this.privateKeyShamirPartitions = partial.privateKeyShamirPartitions;
 		if ('publicKey' in partial) this.publicKey = partial.publicKey;
 		if ('publicKeysForOaepWithSha256' in partial && partial.publicKeysForOaepWithSha256 !== undefined) this.publicKeysForOaepWithSha256 = partial.publicKeysForOaepWithSha256;
-		if ('cryptoActorProperties' in partial) this.cryptoActorProperties = partial.cryptoActorProperties;
+		if ('cryptoActorProperties' in partial && partial.cryptoActorProperties !== undefined) this.cryptoActorProperties = partial.cryptoActorProperties;
 	}
 
 	toJSON(): object {
@@ -119,7 +119,7 @@ export class Device implements StoredDocument, ICureDocument<string>, Named, Cry
 		res['privateKeyShamirPartitions'] = Object.fromEntries(Object.entries(this.privateKeyShamirPartitions).map(([k0, v0]) => [k0, v0]))
 		if (this.publicKey != undefined) res['publicKey'] = this.publicKey
 		res['publicKeysForOaepWithSha256'] = this.publicKeysForOaepWithSha256.map((x0) => x0 )
-		if (this.cryptoActorProperties != undefined) res['cryptoActorProperties'] = this.cryptoActorProperties.map((x0) => x0.toJSON() )
+		res['cryptoActorProperties'] = this.cryptoActorProperties.map((x0) => x0.toJSON() )
 		res['$ktClass'] = 'com.icure.cardinal.sdk.model.Device'
 		return res
 	}
@@ -195,7 +195,7 @@ export class Device implements StoredDocument, ICureDocument<string>, Named, Cry
 			),
 			publicKey: expectString(extractEntry(jCpy, 'publicKey', false, path), true, [...path, ".publicKey"]) as SpkiHexString,
 			publicKeysForOaepWithSha256: expectArray(extractEntry(jCpy, 'publicKeysForOaepWithSha256', false, path), false, [...path, ".publicKeysForOaepWithSha256"], (x0, p0) => expectString(x0, false, p0) as SpkiHexString),
-			cryptoActorProperties: expectArray(extractEntry(jCpy, 'cryptoActorProperties', false, path), true, [...path, ".cryptoActorProperties"], (x0, p0) => expectObject(x0, false, ignoreUnknownKeys, p0, DecryptedPropertyStub.fromJSON)),
+			cryptoActorProperties: expectArray(extractEntry(jCpy, 'cryptoActorProperties', false, path), false, [...path, ".cryptoActorProperties"], (x0, p0) => expectObject(x0, false, ignoreUnknownKeys, p0, DecryptedPropertyStub.fromJSON)),
 		})
 		if (!ignoreUnknownKeys) {
 			const unused = Object.keys(jCpy)

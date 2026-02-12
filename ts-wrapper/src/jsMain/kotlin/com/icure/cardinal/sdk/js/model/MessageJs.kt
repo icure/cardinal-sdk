@@ -50,6 +50,8 @@ public sealed external interface MessageJs : StoredDocumentJs, ICureDocumentJs<S
 
 	public val parentId: String?
 
+	public val properties: Array<out PropertyStubJs>
+
 	public val isEncrypted: Boolean
 }
 
@@ -102,6 +104,8 @@ public external class DecryptedMessageJs(
 	override val invoiceIds: Array<String>
 
 	override val parentId: String?
+
+	override val properties: Array<DecryptedPropertyStubJs>
 
 	override val secretForeignKeys: Array<String>
 
@@ -167,6 +171,8 @@ public external class EncryptedMessageJs(
 	override val invoiceIds: Array<String>
 
 	override val parentId: String?
+
+	override val properties: Array<EncryptedPropertyStubJs>
 
 	override val secretForeignKeys: Array<String>
 

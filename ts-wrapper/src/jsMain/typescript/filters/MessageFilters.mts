@@ -95,6 +95,24 @@ interface MessageFiltersFactory {
 	lifecycleBetweenForSelf(startTimestamp: number | undefined, endTimestamp: number | undefined,
 			descending: boolean): FilterOptions<Message>;
 
+	byCodeForDataOwner(dataOwnerId: string, codeType: string,
+			options?: { codeCode?: string | undefined }): BaseSortableFilterOptions<Message>;
+
+	byCodeForDataOwnerInGroup(dataOwner: EntityReferenceInGroup, codeType: string,
+			options?: { codeCode?: string | undefined }): BaseSortableFilterOptions<Message>;
+
+	byCodeForSelf(codeType: string,
+			options?: { codeCode?: string | undefined }): SortableFilterOptions<Message>;
+
+	byTagForDataOwner(dataOwnerId: string, tagType: string,
+			options?: { tagCode?: string | undefined }): BaseSortableFilterOptions<Message>;
+
+	byTagForDataOwnerInGroup(dataOwner: EntityReferenceInGroup, tagType: string,
+			options?: { tagCode?: string | undefined }): BaseSortableFilterOptions<Message>;
+
+	byTagForSelf(tagType: string,
+			options?: { tagCode?: string | undefined }): SortableFilterOptions<Message>;
+
 }
 
 export const MessageFilters: MessageFiltersFactory = {
@@ -125,5 +143,11 @@ export const MessageFilters: MessageFiltersFactory = {
 			byParentIds: (parentIds) => InternalMessageFiltersObj.getInstance().byParentIds(parentIds),
 			lifecycleBetweenForDataOwner: (dataOwnerId, startTimestamp, endTimestamp, descending) => InternalMessageFiltersObj.getInstance().lifecycleBetweenForDataOwner(dataOwnerId, startTimestamp, endTimestamp, descending),
 			lifecycleBetweenForDataOwnerInGroupInGroup: (dataOwner, startTimestamp, endTimestamp, descending) => InternalMessageFiltersObj.getInstance().lifecycleBetweenForDataOwnerInGroupInGroup(dataOwner, startTimestamp, endTimestamp, descending),
-			lifecycleBetweenForSelf: (startTimestamp, endTimestamp, descending) => InternalMessageFiltersObj.getInstance().lifecycleBetweenForSelf(startTimestamp, endTimestamp, descending)
+			lifecycleBetweenForSelf: (startTimestamp, endTimestamp, descending) => InternalMessageFiltersObj.getInstance().lifecycleBetweenForSelf(startTimestamp, endTimestamp, descending),
+			byCodeForDataOwner: (dataOwnerId, codeType, options) => InternalMessageFiltersObj.getInstance().byCodeForDataOwner(dataOwnerId, codeType, options),
+			byCodeForDataOwnerInGroup: (dataOwner, codeType, options) => InternalMessageFiltersObj.getInstance().byCodeForDataOwnerInGroup(dataOwner, codeType, options),
+			byCodeForSelf: (codeType, options) => InternalMessageFiltersObj.getInstance().byCodeForSelf(codeType, options),
+			byTagForDataOwner: (dataOwnerId, tagType, options) => InternalMessageFiltersObj.getInstance().byTagForDataOwner(dataOwnerId, tagType, options),
+			byTagForDataOwnerInGroup: (dataOwner, tagType, options) => InternalMessageFiltersObj.getInstance().byTagForDataOwnerInGroup(dataOwner, tagType, options),
+			byTagForSelf: (tagType, options) => InternalMessageFiltersObj.getInstance().byTagForSelf(tagType, options)
 		};

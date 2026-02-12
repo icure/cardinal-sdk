@@ -9,7 +9,6 @@ import com.icure.cardinal.sdk.js.model.CheckedConverters.mapToObject
 import com.icure.cardinal.sdk.js.model.CheckedConverters.nullToUndefined
 import com.icure.cardinal.sdk.js.model.CheckedConverters.numberToLong
 import com.icure.cardinal.sdk.js.model.CheckedConverters.objectToMap
-import com.icure.cardinal.sdk.js.model.CheckedConverters.objectToMapNullsafe
 import com.icure.cardinal.sdk.js.model.CheckedConverters.setToArray
 import com.icure.cardinal.sdk.js.model.CheckedConverters.undefinedToNull
 import com.icure.cardinal.sdk.js.model.base.CodeStubJs
@@ -164,16 +163,14 @@ public fun healthcareParty_toJs(obj: HealthcareParty): HealthcarePartyJs {
 			financialInstitutionInformation_toJs(x1)
 		},
 	)
-	val descr = nullToUndefined(
-		mapToObject(
-			obj.descr,
-			{ x1: String ->
-				x1
-			},
-			{ x1: String ->
-				x1
-			},
-		)
+	val descr = mapToObject(
+		obj.descr,
+		{ x1: String ->
+			x1
+		},
+		{ x1: String ->
+			x1
+		},
 	)
 	val properties = setToArray(
 		obj.properties,
@@ -190,13 +187,11 @@ public fun healthcareParty_toJs(obj: HealthcareParty): HealthcarePartyJs {
 			},
 		)
 	)
-	val cryptoActorProperties = nullToUndefined(
-		setToArray(
-			obj.cryptoActorProperties,
-			{ x1: DecryptedPropertyStub ->
-				propertyStub_toJs(x1)
-			},
-		)
+	val cryptoActorProperties = setToArray(
+		obj.cryptoActorProperties,
+		{ x1: DecryptedPropertyStub ->
+			propertyStub_toJs(x1)
+		},
 	)
 	val hcPartyKeys = mapToObject(
 		obj.hcPartyKeys,
@@ -396,7 +391,7 @@ public fun healthcareParty_fromJs(obj: HealthcarePartyJs): HealthcareParty {
 			financialInstitutionInformation_fromJs(x1)
 		},
 	)
-	val descr = objectToMapNullsafe(
+	val descr = objectToMap(
 		obj.descr,
 		"obj.descr",
 		{ x1: String ->

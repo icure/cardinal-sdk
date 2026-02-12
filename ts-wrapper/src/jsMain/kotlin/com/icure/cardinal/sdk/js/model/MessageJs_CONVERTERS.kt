@@ -23,7 +23,9 @@ import com.icure.cardinal.sdk.js.model.embed.securityMetadata_toJs
 import com.icure.cardinal.sdk.js.model.specializations.base64String_fromJs
 import com.icure.cardinal.sdk.js.model.specializations.base64String_toJs
 import com.icure.cardinal.sdk.model.DecryptedMessage
+import com.icure.cardinal.sdk.model.DecryptedPropertyStub
 import com.icure.cardinal.sdk.model.EncryptedMessage
+import com.icure.cardinal.sdk.model.EncryptedPropertyStub
 import com.icure.cardinal.sdk.model.Message
 import com.icure.cardinal.sdk.model.base.CodeStub
 import com.icure.cardinal.sdk.model.embed.Delegation
@@ -129,6 +131,12 @@ public fun message_toJs(obj: DecryptedMessage): DecryptedMessageJs {
 	val parentId = nullToUndefined(
 		obj.parentId
 	)
+	val properties = setToArray(
+		obj.properties,
+		{ x1: DecryptedPropertyStub ->
+			propertyStub_toJs(x1)
+		},
+	)
 	val secretForeignKeys = setToArray(
 		obj.secretForeignKeys,
 		{ x1: String ->
@@ -211,6 +219,7 @@ public fun message_toJs(obj: DecryptedMessage): DecryptedMessageJs {
 		"subject:subject," +
 		"invoiceIds:invoiceIds," +
 		"parentId:parentId," +
+		"properties:properties," +
 		"secretForeignKeys:secretForeignKeys," +
 		"cryptedForeignKeys:cryptedForeignKeys," +
 		"delegations:delegations," +
@@ -292,6 +301,13 @@ public fun message_fromJs(obj: DecryptedMessageJs): DecryptedMessage {
 		},
 	)
 	val parentId = undefinedToNull(obj.parentId)
+	val properties = arrayToSet(
+		obj.properties,
+		"obj.properties",
+		{ x1: DecryptedPropertyStubJs ->
+			propertyStub_fromJs(x1)
+		},
+	)
 	val secretForeignKeys = arrayToSet(
 		obj.secretForeignKeys,
 		"obj.secretForeignKeys",
@@ -377,6 +393,7 @@ public fun message_fromJs(obj: DecryptedMessageJs): DecryptedMessage {
 		subject = subject,
 		invoiceIds = invoiceIds,
 		parentId = parentId,
+		properties = properties,
 		secretForeignKeys = secretForeignKeys,
 		cryptedForeignKeys = cryptedForeignKeys,
 		delegations = delegations,
@@ -482,6 +499,12 @@ public fun message_toJs(obj: EncryptedMessage): EncryptedMessageJs {
 	val parentId = nullToUndefined(
 		obj.parentId
 	)
+	val properties = setToArray(
+		obj.properties,
+		{ x1: EncryptedPropertyStub ->
+			propertyStub_toJs(x1)
+		},
+	)
 	val secretForeignKeys = setToArray(
 		obj.secretForeignKeys,
 		{ x1: String ->
@@ -564,6 +587,7 @@ public fun message_toJs(obj: EncryptedMessage): EncryptedMessageJs {
 		"subject:subject," +
 		"invoiceIds:invoiceIds," +
 		"parentId:parentId," +
+		"properties:properties," +
 		"secretForeignKeys:secretForeignKeys," +
 		"cryptedForeignKeys:cryptedForeignKeys," +
 		"delegations:delegations," +
@@ -645,6 +669,13 @@ public fun message_fromJs(obj: EncryptedMessageJs): EncryptedMessage {
 		},
 	)
 	val parentId = undefinedToNull(obj.parentId)
+	val properties = arrayToSet(
+		obj.properties,
+		"obj.properties",
+		{ x1: EncryptedPropertyStubJs ->
+			propertyStub_fromJs(x1)
+		},
+	)
 	val secretForeignKeys = arrayToSet(
 		obj.secretForeignKeys,
 		"obj.secretForeignKeys",
@@ -730,6 +761,7 @@ public fun message_fromJs(obj: EncryptedMessageJs): EncryptedMessage {
 		subject = subject,
 		invoiceIds = invoiceIds,
 		parentId = parentId,
+		properties = properties,
 		secretForeignKeys = secretForeignKeys,
 		cryptedForeignKeys = cryptedForeignKeys,
 		delegations = delegations,

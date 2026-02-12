@@ -103,6 +103,8 @@ export interface Patient extends StoredDocument, ICureDocument<string>, Person, 
 
 	properties: Array<PropertyStub>;
 
+	cryptoActorProperties: Array<DecryptedPropertyStub>;
+
 	parentId: undefined;
 
 	readonly isEncrypted: boolean;
@@ -243,7 +245,7 @@ export class DecryptedPatient {
 
 	securityMetadata: SecurityMetadata | undefined = undefined;
 
-	cryptoActorProperties: Array<DecryptedPropertyStub> | undefined = undefined;
+	cryptoActorProperties: Array<DecryptedPropertyStub> = [];
 
 	parentId: undefined = undefined;
 
@@ -318,7 +320,7 @@ export class DecryptedPatient {
 		if ('encryptionKeys' in partial && partial.encryptionKeys !== undefined) this.encryptionKeys = partial.encryptionKeys;
 		if ('encryptedSelf' in partial) this.encryptedSelf = partial.encryptedSelf;
 		if ('securityMetadata' in partial) this.securityMetadata = partial.securityMetadata;
-		if ('cryptoActorProperties' in partial) this.cryptoActorProperties = partial.cryptoActorProperties;
+		if ('cryptoActorProperties' in partial && partial.cryptoActorProperties !== undefined) this.cryptoActorProperties = partial.cryptoActorProperties;
 		if ('parentId' in partial) this.parentId = partial.parentId;
 	}
 
@@ -389,7 +391,7 @@ export class DecryptedPatient {
 		res['encryptionKeys'] = Object.fromEntries(Object.entries(this.encryptionKeys).map(([k0, v0]) => [k0, v0.map((x1) => x1.toJSON() )]))
 		if (this.encryptedSelf != undefined) res['encryptedSelf'] = this.encryptedSelf
 		if (this.securityMetadata != undefined) res['securityMetadata'] = this.securityMetadata.toJSON()
-		if (this.cryptoActorProperties != undefined) res['cryptoActorProperties'] = this.cryptoActorProperties.map((x0) => x0.toJSON() )
+		res['cryptoActorProperties'] = this.cryptoActorProperties.map((x0) => x0.toJSON() )
 		if (this.parentId != undefined) throw new Error('Unexpected nullish value for parentId')
 		res['isEncrypted'] = false
 		res['$ktClass'] = 'com.icure.cardinal.sdk.model.DecryptedPatient'
@@ -534,7 +536,7 @@ export class DecryptedPatient {
 			),
 			encryptedSelf: expectString(extractEntry(jCpy, 'encryptedSelf', false, path), true, [...path, ".encryptedSelf"]) as Base64String,
 			securityMetadata: expectObject(extractEntry(jCpy, 'securityMetadata', false, path), true, ignoreUnknownKeys, [...path, ".securityMetadata"], SecurityMetadata.fromJSON),
-			cryptoActorProperties: expectArray(extractEntry(jCpy, 'cryptoActorProperties', false, path), true, [...path, ".cryptoActorProperties"], (x0, p0) => expectObject(x0, false, ignoreUnknownKeys, p0, DecryptedPropertyStub.fromJSON)),
+			cryptoActorProperties: expectArray(extractEntry(jCpy, 'cryptoActorProperties', false, path), false, [...path, ".cryptoActorProperties"], (x0, p0) => expectObject(x0, false, ignoreUnknownKeys, p0, DecryptedPropertyStub.fromJSON)),
 			parentId: expectNullish(extractEntry(jCpy, 'parentId', false, path), [...path, ".parentId"]),
 		})
 		if (!ignoreUnknownKeys) {
@@ -677,7 +679,7 @@ export class EncryptedPatient {
 
 	securityMetadata: SecurityMetadata | undefined = undefined;
 
-	cryptoActorProperties: Array<DecryptedPropertyStub> | undefined = undefined;
+	cryptoActorProperties: Array<DecryptedPropertyStub> = [];
 
 	parentId: undefined = undefined;
 
@@ -752,7 +754,7 @@ export class EncryptedPatient {
 		if ('encryptionKeys' in partial && partial.encryptionKeys !== undefined) this.encryptionKeys = partial.encryptionKeys;
 		if ('encryptedSelf' in partial) this.encryptedSelf = partial.encryptedSelf;
 		if ('securityMetadata' in partial) this.securityMetadata = partial.securityMetadata;
-		if ('cryptoActorProperties' in partial) this.cryptoActorProperties = partial.cryptoActorProperties;
+		if ('cryptoActorProperties' in partial && partial.cryptoActorProperties !== undefined) this.cryptoActorProperties = partial.cryptoActorProperties;
 		if ('parentId' in partial) this.parentId = partial.parentId;
 	}
 
@@ -823,7 +825,7 @@ export class EncryptedPatient {
 		res['encryptionKeys'] = Object.fromEntries(Object.entries(this.encryptionKeys).map(([k0, v0]) => [k0, v0.map((x1) => x1.toJSON() )]))
 		if (this.encryptedSelf != undefined) res['encryptedSelf'] = this.encryptedSelf
 		if (this.securityMetadata != undefined) res['securityMetadata'] = this.securityMetadata.toJSON()
-		if (this.cryptoActorProperties != undefined) res['cryptoActorProperties'] = this.cryptoActorProperties.map((x0) => x0.toJSON() )
+		res['cryptoActorProperties'] = this.cryptoActorProperties.map((x0) => x0.toJSON() )
 		if (this.parentId != undefined) throw new Error('Unexpected nullish value for parentId')
 		res['isEncrypted'] = true
 		res['$ktClass'] = 'com.icure.cardinal.sdk.model.EncryptedPatient'
@@ -968,7 +970,7 @@ export class EncryptedPatient {
 			),
 			encryptedSelf: expectString(extractEntry(jCpy, 'encryptedSelf', false, path), true, [...path, ".encryptedSelf"]) as Base64String,
 			securityMetadata: expectObject(extractEntry(jCpy, 'securityMetadata', false, path), true, ignoreUnknownKeys, [...path, ".securityMetadata"], SecurityMetadata.fromJSON),
-			cryptoActorProperties: expectArray(extractEntry(jCpy, 'cryptoActorProperties', false, path), true, [...path, ".cryptoActorProperties"], (x0, p0) => expectObject(x0, false, ignoreUnknownKeys, p0, DecryptedPropertyStub.fromJSON)),
+			cryptoActorProperties: expectArray(extractEntry(jCpy, 'cryptoActorProperties', false, path), false, [...path, ".cryptoActorProperties"], (x0, p0) => expectObject(x0, false, ignoreUnknownKeys, p0, DecryptedPropertyStub.fromJSON)),
 			parentId: expectNullish(extractEntry(jCpy, 'parentId', false, path), [...path, ".parentId"]),
 		})
 		if (!ignoreUnknownKeys) {

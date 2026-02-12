@@ -21,7 +21,7 @@ export class Code implements StoredDocument, CodeIdentification<string> {
 
 	version: string | undefined = undefined;
 
-	label: { [ key: string ]: string } | undefined = undefined;
+	label: { [ key: string ]: string } = {};
 
 	author: string | undefined = undefined;
 
@@ -43,7 +43,7 @@ export class Code implements StoredDocument, CodeIdentification<string> {
 		if ('type' in partial) this.type = partial.type;
 		if ('code' in partial) this.code = partial.code;
 		if ('version' in partial) this.version = partial.version;
-		if ('label' in partial) this.label = partial.label;
+		if ('label' in partial && partial.label !== undefined) this.label = partial.label;
 		if ('author' in partial) this.author = partial.author;
 		if ('regions' in partial && partial.regions !== undefined) this.regions = partial.regions;
 		if ('links' in partial && partial.links !== undefined) this.links = partial.links;
@@ -61,7 +61,7 @@ export class Code implements StoredDocument, CodeIdentification<string> {
 		if (this.type != undefined) res['type'] = this.type
 		if (this.code != undefined) res['code'] = this.code
 		if (this.version != undefined) res['version'] = this.version
-		if (this.label != undefined) res['label'] = Object.fromEntries(Object.entries(this.label).map(([k0, v0]) => [k0, v0]))
+		res['label'] = Object.fromEntries(Object.entries(this.label).map(([k0, v0]) => [k0, v0]))
 		if (this.author != undefined) res['author'] = this.author
 		res['regions'] = this.regions.map((x0) => x0 )
 		res['links'] = this.links.map((x0) => x0 )
@@ -85,7 +85,7 @@ export class Code implements StoredDocument, CodeIdentification<string> {
 			version: expectString(extractEntry(jCpy, 'version', false, path), true, [...path, ".version"]),
 			label: expectMap(
 				extractEntry(jCpy, 'label', false, path),
-				true,
+				false,
 				[...path, ".label"],
 				(k0, p0) => expectString(k0, false, p0),
 				(v0, p0) => expectString(v0, false, p0)
