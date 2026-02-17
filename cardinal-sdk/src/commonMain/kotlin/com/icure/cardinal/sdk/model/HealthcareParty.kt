@@ -25,20 +25,9 @@ import kotlin.String
 import kotlin.collections.List
 import kotlin.collections.Map
 import kotlin.collections.Set
-import com.icure.cardinal.sdk.model.embed.DecryptedFlatRateTarification
-import com.icure.cardinal.sdk.model.embed.HealthcarePartyHistoryStatus
-import com.icure.cardinal.sdk.model.embed.HealthcarePartyStatus
-import com.icure.cardinal.sdk.model.embed.TelecomType
-import com.icure.cardinal.sdk.serialization.ByteArraySerializer
-import kotlin.ByteArray
-import kotlin.Deprecated
-import kotlin.Int
-
-// WARNING: This file is auto-generated. If you change it manually, your changes will be lost.
-// If you want to change the way this class is generated, see [this repo](https://github.com/icure/sdk-codegen).
 
 @Serializable
-data class HealthcareParty(
+public data class HealthcareParty(
 	override val id: String,
 	override val rev: String? = null,
 	public val created: Long? = null,
@@ -97,10 +86,4 @@ data class HealthcareParty(
 	override val publicKey: SpkiHexString? = null,
 	@param:DefaultValue("emptySet()")
 	override val publicKeysForOaepWithSha256: Set<SpkiHexString> = emptySet(),
-) : StoredDocument, Named, Person, CryptoActor, DataOwner, HasCodes, HasTags {
-	// region HealthcareParty-HealthcareParty
-	companion object {
-		const val KRAKEN_QUALIFIED_NAME = "org.taktik.icure.entities.HealthcareParty"
-	}
-	// endregion
-}
+) : StoredDocument, Named, Person, CryptoActor, DataOwner, HasCodes, HasTags

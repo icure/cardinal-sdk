@@ -7,13 +7,9 @@ import kotlin.Int
 import kotlin.Long
 import kotlin.String
 import kotlin.collections.List
-import kotlin.collections.Map
-
-// WARNING: This file is auto-generated. If you change it manually, your changes will be lost.
-// If you want to change the way this class is generated, see [this repo](https://github.com/icure/sdk-codegen).
 
 @Serializable
-data class Medication(
+public data class Medication(
 	public val compoundPrescription: String? = null,
 	public val substanceProduct: Substanceproduct? = null,
 	public val medicinalProduct: Medicinalproduct? = null,
@@ -38,8 +34,4 @@ data class Medication(
 	public val regimen: List<RegimenItem>? = null,
 	public val posology: String? = null,
 	public val stockLocation: DecryptedAddress? = null,
-) {
-	// region Medication-Medication
-
-	// endregion
-}
+)

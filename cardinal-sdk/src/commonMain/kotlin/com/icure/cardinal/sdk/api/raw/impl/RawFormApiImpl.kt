@@ -721,6 +721,21 @@ class RawFormApiImpl(
 			accept(Application.Json)
 		}.wrap()
 
+	override suspend fun getFormTemplatesBySpecialtyInGroup(
+		groupId: String,
+		specialityCode: String,
+		loadLayout: Boolean?,
+	): HttpResponse<List<FormTemplate>> =
+		get(authProvider, groupId) {
+			url {
+				takeFrom(apiUrl)
+				appendPathSegments("rest", "v2", "form", "template", "inGroup", groupId, "bySpecialty", specialityCode)
+				parameter("loadLayout", loadLayout)
+				parameter("ts", GMTDate().timestamp)
+			}
+			accept(Application.Json)
+		}.wrap()
+
 	override suspend fun createFormTemplateInGroup(
 		groupId: String,
 		ft: FormTemplate,

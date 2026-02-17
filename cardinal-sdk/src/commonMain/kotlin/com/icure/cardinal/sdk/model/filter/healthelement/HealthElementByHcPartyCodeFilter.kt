@@ -8,12 +8,9 @@ import kotlinx.serialization.Serializable
 import kotlin.Long
 import kotlin.String
 
-// WARNING: This file is auto-generated. If you change it manually, your changes will be lost.
-// If you want to change the way this class is generated, see [this repo](https://github.com/icure/sdk-codegen).
-
 @SerialName("HealthElementByHcPartyCodeFilter")
 @Serializable
-data class HealthElementByHcPartyCodeFilter(
+public data class HealthElementByHcPartyCodeFilter(
 	override val desc: String? = null,
 	public val healthcarePartyId: String,
 	public val codeType: String,
@@ -21,8 +18,4 @@ data class HealthElementByHcPartyCodeFilter(
 	public val startOfHealthElementDate: Long? = null,
 	public val endOfHealthElementDate: Long? = null,
 	public val versionFiltering: VersionFiltering? = null,
-) : AbstractFilter<HealthElement> {
-	// region HealthElementByHcPartyCodeFilter-HealthElementByHcPartyCodeFilter
-
-	// endregion
-}
+) : AbstractFilter<HealthElement>
