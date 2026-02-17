@@ -222,6 +222,12 @@ public interface RawFormApi {
 		loadLayout: Boolean? = null,
 	): HttpResponse<List<FormTemplate>>
 
+	suspend fun getFormTemplatesBySpecialtyInGroup(
+		groupId: String,
+		specialityCode: String,
+		loadLayout: Boolean? = null,
+	): HttpResponse<List<FormTemplate>>
+
 	suspend fun createFormTemplateInGroup(
 		groupId: String,
 		ft: FormTemplate,
