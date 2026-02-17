@@ -18,5 +18,6 @@ data class MessageByDataOwnerCodeFilter(
 	override val desc: String? = null,
 ) : AbstractFilter<Message> {
 	// region MessageByDataOwnerCodeFilter-MessageByDataOwnerCodeFilter
+
 	// endregion
 }
