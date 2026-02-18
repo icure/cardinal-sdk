@@ -13,10 +13,10 @@ import 'package:cardinal_sdk/plugin/filters/topic_platform_filters.dart';
 import 'package:cardinal_sdk/plugin/filters/healthcare_party_platform_filters.dart';
 import 'package:cardinal_sdk/plugin/filters/calendar_item_platform_filters.dart';
 import 'package:cardinal_sdk/plugin/filters/document_platform_filters.dart';
-import 'package:cardinal_sdk/plugin/filters/time_table_platform_filters.dart';
+
 import 'package:cardinal_sdk/plugin/filters/maintenance_task_platform_filters.dart';
 import 'package:cardinal_sdk/plugin/filters/service_platform_filters.dart';
-import 'package:cardinal_sdk/plugin/filters/medical_location_platform_filters.dart';
+
 import 'package:cardinal_sdk/plugin/filters/message_platform_filters.dart';
 import 'package:cardinal_sdk/plugin/filters/agenda_platform_filters.dart';
 import 'package:cardinal_sdk/plugin/filters/health_element_platform_filters.dart';
@@ -52,14 +52,10 @@ class CardinalSdkMethodChannelFilters extends CardinalSdkPlatformFiltersPlugin {
 	@override CalendarItemPlatformFilters get calendarItem => _calendarItem;
 	DocumentPlatformFilters _document = DocumentPlatformFilters(_methodChannel);
 	@override DocumentPlatformFilters get document => _document;
-	TimeTablePlatformFilters _timeTable = TimeTablePlatformFilters(_methodChannel);
-	@override TimeTablePlatformFilters get timeTable => _timeTable;
 	MaintenanceTaskPlatformFilters _maintenanceTask = MaintenanceTaskPlatformFilters(_methodChannel);
 	@override MaintenanceTaskPlatformFilters get maintenanceTask => _maintenanceTask;
 	ServicePlatformFilters _service = ServicePlatformFilters(_methodChannel);
 	@override ServicePlatformFilters get service => _service;
-	MedicalLocationPlatformFilters _medicalLocation = MedicalLocationPlatformFilters(_methodChannel);
-	@override MedicalLocationPlatformFilters get medicalLocation => _medicalLocation;
 	MessagePlatformFilters _message = MessagePlatformFilters(_methodChannel);
 	@override MessagePlatformFilters get message => _message;
 	AgendaPlatformFilters _agenda = AgendaPlatformFilters(_methodChannel);

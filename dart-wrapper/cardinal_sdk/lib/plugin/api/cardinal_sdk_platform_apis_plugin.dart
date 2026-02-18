@@ -1,10 +1,9 @@
 // auto-generated file
-import 'package:cardinal_sdk/plugin/api/keyword_platform_api.dart';
+
 import 'package:cardinal_sdk/plugin/api/device_platform_api.dart';
 import 'package:cardinal_sdk/plugin/api/access_log_basic_platform_api.dart';
 import 'package:cardinal_sdk/plugin/api/place_platform_api.dart';
-import 'package:cardinal_sdk/plugin/api/medical_location_platform_api.dart';
-import 'package:cardinal_sdk/plugin/api/time_table_platform_api.dart';
+
 import 'package:cardinal_sdk/plugin/api/document_basic_platform_api.dart';
 import 'package:cardinal_sdk/plugin/api/patient_basic_platform_api.dart';
 import 'package:cardinal_sdk/plugin/api/classification_platform_api.dart';
@@ -14,7 +13,7 @@ import 'package:cardinal_sdk/plugin/api/form_basic_platform_api.dart';
 import 'package:cardinal_sdk/plugin/api/recovery_platform_api.dart';
 import 'package:cardinal_sdk/plugin/api/patient_platform_api.dart';
 import 'package:cardinal_sdk/plugin/api/maintenance_task_basic_platform_api.dart';
-import 'package:cardinal_sdk/plugin/api/tarification_platform_api.dart';
+
 import 'package:cardinal_sdk/plugin/api/contact_platform_api.dart';
 import 'package:cardinal_sdk/plugin/api/receipt_platform_api.dart';
 import 'package:cardinal_sdk/plugin/api/anonymous_agenda_platform_api.dart';
@@ -24,19 +23,19 @@ import 'package:cardinal_sdk/plugin/api/permission_platform_api.dart';
 import 'package:cardinal_sdk/plugin/api/code_platform_api.dart';
 import 'package:cardinal_sdk/plugin/api/front_end_migration_platform_api.dart';
 import 'package:cardinal_sdk/plugin/api/topic_platform_api.dart';
-import 'package:cardinal_sdk/plugin/api/document_template_platform_api.dart';
+
 import 'package:cardinal_sdk/plugin/api/health_element_basic_platform_api.dart';
 import 'package:cardinal_sdk/plugin/api/system_platform_api.dart';
 import 'package:cardinal_sdk/plugin/api/contact_basic_platform_api.dart';
 import 'package:cardinal_sdk/plugin/api/calendar_item_platform_api.dart';
-import 'package:cardinal_sdk/plugin/api/application_settings_platform_api.dart';
+
 import 'package:cardinal_sdk/plugin/api/crypto_platform_api.dart';
 import 'package:cardinal_sdk/plugin/api/receipt_basic_platform_api.dart';
-import 'package:cardinal_sdk/plugin/api/entity_reference_platform_api.dart';
+
 import 'package:cardinal_sdk/plugin/api/classification_basic_platform_api.dart';
 import 'package:cardinal_sdk/plugin/api/shamir_keys_manager_platform_api.dart';
 import 'package:cardinal_sdk/plugin/api/document_platform_api.dart';
-import 'package:cardinal_sdk/plugin/api/entity_template_platform_api.dart';
+
 import 'package:cardinal_sdk/plugin/api/auth_platform_api.dart';
 import 'package:cardinal_sdk/plugin/api/data_owner_platform_api.dart';
 import 'package:cardinal_sdk/plugin/api/user_platform_api.dart';
@@ -58,17 +57,11 @@ import 'package:cardinal_sdk/plugin/api/group_platform_api.dart';
 
 abstract class CardinalSdkPlatformApisPlugin {
 
-	KeywordPlatformApi get keyword;
-
 	DevicePlatformApi get device;
 
 	AccessLogBasicPlatformApi get accessLogBasic;
 
 	PlacePlatformApi get place;
-
-	MedicalLocationPlatformApi get medicalLocation;
-
-	TimeTablePlatformApi get timeTable;
 
 	DocumentBasicPlatformApi get documentBasic;
 
@@ -88,8 +81,6 @@ abstract class CardinalSdkPlatformApisPlugin {
 
 	MaintenanceTaskBasicPlatformApi get maintenanceTaskBasic;
 
-	TarificationPlatformApi get tarification;
-
 	ContactPlatformApi get contact;
 
 	ReceiptPlatformApi get receipt;
@@ -108,8 +99,6 @@ abstract class CardinalSdkPlatformApisPlugin {
 
 	TopicPlatformApi get topic;
 
-	DocumentTemplatePlatformApi get documentTemplate;
-
 	HealthElementBasicPlatformApi get healthElementBasic;
 
 	SystemPlatformApi get system;
@@ -118,21 +107,15 @@ abstract class CardinalSdkPlatformApisPlugin {
 
 	CalendarItemPlatformApi get calendarItem;
 
-	ApplicationSettingsPlatformApi get applicationSettings;
-
 	CryptoPlatformApi get crypto;
 
 	ReceiptBasicPlatformApi get receiptBasic;
-
-	EntityReferencePlatformApi get entityReference;
 
 	ClassificationBasicPlatformApi get classificationBasic;
 
 	ShamirKeysManagerPlatformApi get shamirKeysManager;
 
 	DocumentPlatformApi get document;
-
-	EntityTemplatePlatformApi get entityTemplate;
 
 	AuthPlatformApi get auth;
 

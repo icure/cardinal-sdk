@@ -9,9 +9,9 @@ from cardinal_sdk.options.SdkOptions import SdkOptions, _serialize_encrypted_fie
 from cardinal_sdk.options.JsonPatcher import _JsonPatcherBridge
 from cardinal_sdk.api import DataOwnerApi, AccessLogApi, CalendarItemApi, ClassificationApi, ContactApi, \
     DocumentApi, FormApi, HealthElementApi, InvoiceApi, MaintenanceTaskApi, MessageApi, PatientApi, ReceiptApi, \
-    TimeTableApi, TopicApi, ApplicationSettingsApi, CodeApi, CryptoApi, DeviceApi, DocumentTemplateApi, \
-    EntityReferenceApi, EntityTemplateApi, FrontEndMigrationApi, GroupApi, HealthcarePartyApi, SystemApi, InsuranceApi, \
-    KeywordApi, PermissionApi, PlaceApi, RecoveryApi, RoleApi, TarificationApi, UserApi
+    TopicApi, CodeApi, CryptoApi, DeviceApi, \
+    FrontEndMigrationApi, GroupApi, HealthcarePartyApi, SystemApi, InsuranceApi, \
+    PermissionApi, PlaceApi, RecoveryApi, RoleApi, UserApi
 from cardinal_sdk.CryptoStrategies import _CryptoStrategiesBridge
 
 class CardinalSdk:
@@ -28,26 +28,19 @@ class CardinalSdk:
     __message: Optional[MessageApi] = None
     __patient: Optional[PatientApi] = None
     __receipt: Optional[ReceiptApi] = None
-    __timeTable: Optional[TimeTableApi] = None
     __topic: Optional[TopicApi] = None
-    __applicationSettings: Optional[ApplicationSettingsApi] = None
     __code: Optional[CodeApi] = None
     __crypto: Optional[CryptoApi] = None
     __device: Optional[DeviceApi] = None
-    __documentTemplate: Optional[DocumentTemplateApi] = None
-    __entityReference: Optional[EntityReferenceApi] = None
-    __entityTemplate: Optional[EntityTemplateApi] = None
     __frontEndMigration: Optional[FrontEndMigrationApi] = None
     __group: Optional[GroupApi] = None
     __healthcareParty: Optional[HealthcarePartyApi] = None
     __system: Optional[SystemApi] = None
     __insurance: Optional[InsuranceApi] = None
-    __keyword: Optional[KeywordApi] = None
     __permission: Optional[PermissionApi] = None
     __place: Optional[PlaceApi] = None
     __recovery: Optional[RecoveryApi] = None
     __role: Optional[RoleApi] = None
-    __tarification: Optional[TarificationApi] = None
     __user: Optional[UserApi] = None
 
     def __init__(
@@ -188,22 +181,10 @@ class CardinalSdk:
         return self.__receipt
 
     @property
-    def time_table(self):
-        if self.__timeTable is None:
-            self.__timeTable = TimeTableApi(self)
-        return self.__timeTable
-
-    @property
     def topic(self):
         if self.__topic is None:
             self.__topic = TopicApi(self)
         return self.__topic
-
-    @property
-    def application_settings(self):
-        if self.__applicationSettings is None:
-            self.__applicationSettings = ApplicationSettingsApi(self)
-        return self.__applicationSettings
 
     @property
     def code(self):
@@ -222,24 +203,6 @@ class CardinalSdk:
         if self.__device is None:
             self.__device = DeviceApi(self)
         return self.__device
-
-    @property
-    def document_template(self):
-        if self.__documentTemplate is None:
-            self.__documentTemplate = DocumentTemplateApi(self)
-        return self.__documentTemplate
-
-    @property
-    def entity_reference(self):
-        if self.__entityReference is None:
-            self.__entityReference = EntityReferenceApi(self)
-        return self.__entityReference
-
-    @property
-    def entity_template(self):
-        if self.__entityTemplate is None:
-            self.__entityTemplate = EntityTemplateApi(self)
-        return self.__entityTemplate
 
     @property
     def front_end_migration(self):
@@ -272,12 +235,6 @@ class CardinalSdk:
         return self.__insurance
 
     @property
-    def keyword(self):
-        if self.__keyword is None:
-            self.__keyword = KeywordApi(self)
-        return self.__keyword
-
-    @property
     def permission(self):
         if self.__permission is None:
             self.__permission = PermissionApi(self)
@@ -300,12 +257,6 @@ class CardinalSdk:
         if self.__role is None:
             self.__role = RoleApi(self)
         return self.__role
-
-    @property
-    def tarification(self):
-        if self.__tarification is None:
-            self.__tarification = TarificationApi(self)
-        return self.__tarification
 
     @property
     def user(self):

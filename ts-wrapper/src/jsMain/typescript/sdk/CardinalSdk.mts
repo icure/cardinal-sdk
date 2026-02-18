@@ -12,7 +12,6 @@ import {MessageApi} from "../api/MessageApi.mjs";
 import {PatientApi} from "../api/PatientApi.mjs";
 import {PermissionApi} from "../api/PermissionApi.mjs";
 import {ReceiptApi} from "../api/ReceiptApi.mjs";
-import {TimeTableApi} from "../api/TimeTableApi.mjs";
 import {TopicApi} from "../api/TopicApi.mjs";
 import {CryptoApi} from "../api/CryptoApi.mjs";
 import {DataOwnerApi} from "../api/DataOwnerApi.mjs";
@@ -27,20 +26,14 @@ import {
 import {StorageFacade} from "../storage/StorageFacade.mjs";
 import {CardinalStorageOptions, InternalSdkInitializers} from "../cardinal-sdk-ts.mjs";
 import {SdkOptions, BasicSdkOptions, AnonymousSdkOptions, BasicToFullSdkOptions} from "../options/SdkOptions.mjs";
-import {ApplicationSettingsApi} from "../api/ApplicationSettingsApi.mjs";
 import {CodeApi} from "../api/CodeApi.mjs";
-import {DocumentTemplateApi} from "../api/DocumentTemplateApi.mjs";
-import {EntityReferenceApi} from "../api/EntityReferenceApi.mjs";
-import {EntityTemplateApi} from "../api/EntityTemplateApi.mjs";
 import {FrontEndMigrationApi} from "../api/FrontEndMigrationApi.mjs";
 import {GroupApi} from "../api/GroupApi.mjs";
 import {HealthcarePartyApi} from "../api/HealthcarePartyApi.mjs";
 import {SystemApi} from "../api/SystemApi.mjs";
 import {InsuranceApi} from "../api/InsuranceApi.mjs";
-import {KeywordApi} from "../api/KeywordApi.mjs";
 import {PlaceApi} from "../api/PlaceApi.mjs";
 import {RoleApi} from "../api/RoleApi.mjs";
-import {TarificationApi} from "../api/TarificationApi.mjs";
 import {AccessLogBasicApi} from "../api/AccessLogBasicApi.mjs";
 import {CalendarItemBasicApi} from "../api/CalendarItemBasicApi.mjs";
 import {ClassificationBasicApi} from "../api/ClassificationBasicApi.mjs";
@@ -55,7 +48,6 @@ import {PatientBasicApi} from "../api/PatientBasicApi.mjs";
 import {ReceiptBasicApi} from "../api/ReceiptBasicApi.mjs";
 import {TopicBasicApi} from "../api/TopicBasicApi.mjs";
 import {AgendaApi} from "../api/AgendaApi.mjs";
-import {MedicalLocationApi} from "../api/MedicalLocationApi.mjs";
 import {CaptchaOptions} from "../auth/CaptchaOptions.mjs";
 import {AuthApi} from "../api/AuthApi.mjs";
 import {CalendarItemTypeApi} from "../api/CalendarItemTypeApi.mjs";
@@ -64,24 +56,17 @@ import {AnonymousAgendaApi} from "../api/AnonymousAgendaApi.mjs";
 
 export interface CardinalApis {
   readonly auth: AuthApi
-  readonly applicationSettings: ApplicationSettingsApi
   readonly code: CodeApi
   readonly device: DeviceApi
-  readonly documentTemplate: DocumentTemplateApi
-  readonly entityReference: EntityReferenceApi
-  readonly entityTemplate: EntityTemplateApi
   readonly frontEndMigration: FrontEndMigrationApi
   readonly group: GroupApi
   readonly healthcareParty: HealthcarePartyApi
   readonly system: SystemApi
   readonly insurance: InsuranceApi
-  readonly keyword: KeywordApi
   readonly permission: PermissionApi
   readonly place: PlaceApi
   readonly role: RoleApi
-  readonly tarification: TarificationApi
   readonly user: UserApi
-  readonly medicalLocation: MedicalLocationApi
   readonly agenda: AgendaApi
   readonly accessLog: AccessLogApi
   readonly calendarItem: CalendarItemApi
@@ -95,7 +80,6 @@ export interface CardinalApis {
   readonly message: MessageApi
   readonly patient: PatientApi
   readonly receipt: ReceiptApi
-  readonly timeTable: TimeTableApi
   readonly topic: TopicApi
   readonly crypto: CryptoApi
   readonly recovery: RecoveryApi
@@ -144,24 +128,17 @@ export interface CardinalSdk extends CardinalApis {
 
 export interface CardinalBaseApis {
   readonly auth: AuthApi
-  readonly applicationSettings: ApplicationSettingsApi
   readonly code: CodeApi
   readonly device: DeviceApi
-  readonly documentTemplate: DocumentTemplateApi
-  readonly entityReference: EntityReferenceApi
-  readonly entityTemplate: EntityTemplateApi
   readonly frontEndMigration: FrontEndMigrationApi
   readonly group: GroupApi
   readonly healthcareParty: HealthcarePartyApi
   readonly system: SystemApi
   readonly insurance: InsuranceApi
-  readonly keyword: KeywordApi
   readonly permission: PermissionApi
   readonly place: PlaceApi
   readonly role: RoleApi
-  readonly tarification: TarificationApi
   readonly user: UserApi
-  readonly medicalLocation: MedicalLocationApi
   readonly agenda: AgendaApi
   readonly accessLog: AccessLogBasicApi
   readonly calendarItem: CalendarItemBasicApi
@@ -175,7 +152,6 @@ export interface CardinalBaseApis {
   readonly message: MessageBasicApi
   readonly patient: PatientBasicApi
   readonly receipt: ReceiptBasicApi
-  readonly timeTable: TimeTableApi
   readonly topic: TopicBasicApi
   readonly calendarItemType: CalendarItemTypeApi
 }

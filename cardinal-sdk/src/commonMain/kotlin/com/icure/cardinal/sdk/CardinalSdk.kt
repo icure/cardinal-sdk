@@ -74,7 +74,6 @@ import com.icure.cardinal.sdk.api.raw.impl.RawContactApiImpl
 import com.icure.cardinal.sdk.api.raw.impl.RawDataOwnerApiImpl
 import com.icure.cardinal.sdk.api.raw.impl.RawDeviceApiImpl
 import com.icure.cardinal.sdk.api.raw.impl.RawDocumentApiImpl
-import com.icure.cardinal.sdk.api.raw.impl.RawEntityReferenceApiImpl
 import com.icure.cardinal.sdk.api.raw.impl.RawExchangeDataApiImpl
 import com.icure.cardinal.sdk.api.raw.impl.RawExchangeDataMapApiImpl
 import com.icure.cardinal.sdk.api.raw.impl.RawFormApiImpl
@@ -93,7 +92,6 @@ import com.icure.cardinal.sdk.api.raw.impl.RawReceiptApiImpl
 import com.icure.cardinal.sdk.api.raw.impl.RawRecoveryDataApiImpl
 import com.icure.cardinal.sdk.api.raw.impl.RawRoleApiImpl
 import com.icure.cardinal.sdk.api.raw.impl.RawSecureDelegationKeyMapApiImpl
-import com.icure.cardinal.sdk.api.raw.impl.RawTimeTableApiImpl
 import com.icure.cardinal.sdk.api.raw.impl.RawTopicApiImpl
 import com.icure.cardinal.sdk.api.raw.impl.RawUserApiImpl
 import com.icure.cardinal.sdk.auth.AuthenticationProcessTelecomType
@@ -894,14 +892,6 @@ internal class CardinalSdkImpl(
 		)
 	}
 
-	private val rawTimeTableApi by lazy {
-		RawTimeTableApiImpl(
-			apiUrl,
-			authProvider,
-			config.rawApiConfig,
-		)
-	}
-
 	private val rawClassificationApi by lazy {
 		RawClassificationApiImpl(
 			apiUrl,
@@ -932,14 +922,6 @@ internal class CardinalSdkImpl(
 			apiUrl,
 			authProvider,
 			config.crypto.headersProvider,
-			config.rawApiConfig,
-		)
-	}
-
-	private val rawEntityReferenceApi by lazy {
-		RawEntityReferenceApiImpl(
-			apiUrl,
-			authProvider,
 			config.rawApiConfig,
 		)
 	}

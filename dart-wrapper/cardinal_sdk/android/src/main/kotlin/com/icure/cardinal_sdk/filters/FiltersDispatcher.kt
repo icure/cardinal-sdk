@@ -30,10 +30,10 @@ public fun dispatchFilter(
   "HealthcarePartyFilters" -> HealthcarePartyFiltersDispatcher.dispatch(methodName, parameters, resultCallback)
   "CalendarItemFilters" -> CalendarItemFiltersDispatcher.dispatch(methodName, parameters, resultCallback)
   "DocumentFilters" -> DocumentFiltersDispatcher.dispatch(methodName, parameters, resultCallback)
-  "TimeTableFilters" -> TimeTableFiltersDispatcher.dispatch(methodName, parameters, resultCallback)
+
   "MaintenanceTaskFilters" -> MaintenanceTaskFiltersDispatcher.dispatch(methodName, parameters, resultCallback)
   "ServiceFilters" -> ServiceFiltersDispatcher.dispatch(methodName, parameters, resultCallback)
-  "MedicalLocationFilters" -> MedicalLocationFiltersDispatcher.dispatch(methodName, parameters, resultCallback)
+
   "MessageFilters" -> MessageFiltersDispatcher.dispatch(methodName, parameters, resultCallback)
   "AgendaFilters" -> AgendaFiltersDispatcher.dispatch(methodName, parameters, resultCallback)
   "HealthElementFilters" -> HealthElementFiltersDispatcher.dispatch(methodName, parameters, resultCallback)

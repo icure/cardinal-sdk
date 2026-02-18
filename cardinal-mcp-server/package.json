@@ -1,0 +1,45 @@
+{
+  "name": "@icure/cardinal-mcp-server",
+  "version": "1.1.0",
+  "description": "MCP server exposing Cardinal SDK documentation and operational tools",
+  "type": "module",
+  "main": "dist/index.js",
+  "bin": {
+    "cardinal-mcp-server": "dist/index.js"
+  },
+  "files": [
+    "dist",
+    "generated"
+  ],
+  "scripts": {
+    "build": "tsc",
+    "generate": "tsx scripts/extract-docs.ts && tsx scripts/generate-registry.ts",
+    "prepublishOnly": "npm run generate && npm run build",
+    "publish:npm": "npm publish --access public",
+    "start": "node dist/index.js",
+    "dev": "tsx src/index.ts"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/icure/cardinal-sdk.git",
+    "directory": "cardinal-mcp-server"
+  },
+  "keywords": [
+    "mcp",
+    "cardinal-sdk",
+    "icure",
+    "healthcare",
+    "model-context-protocol"
+  ],
+  "license": "MIT",
+  "dependencies": {
+    "@icure/cardinal-sdk": "^2.0.0",
+    "@modelcontextprotocol/sdk": "^1.26.0",
+    "zod": "^3.25.0"
+  },
+  "devDependencies": {
+    "@types/node": "^22.0.0",
+    "tsx": "^4.0.0",
+    "typescript": "^5.7.0"
+  }
+}

@@ -1,0 +1,211 @@
+/**
+ * Generates method-registry.ts from TypeScript API declaration files.
+ * The registry maps API name -> method list with parameter info, used by dispatch at runtime.
+ *
+ * Output: generated/method-registry.ts
+ */
+import * as fs from "node:fs";
+import * as path from "node:path";
+
+const NPM_SDK = path.resolve(import.meta.dirname!, "..", "node_modules", "@icure", "cardinal-sdk");
+const OUT_FILE = path.resolve(import.meta.dirname!, "..", "generated", "method-registry.ts");
+
+interface ParamInfo {
+	name: string;
+	type: string;
+	optional: boolean;
+}
+
+interface MethodInfo {
+	name: string;
+	params: ParamInfo[];
+	returnType: string;
+}
+
+interface ApiInfo {
+	apiName: string;
+	propertyName: string; // Property name on CardinalSdk (e.g., "patient", "calendarItem")
+	isEncryptable: boolean;
+	methods: MethodInfo[];
+}
+
+const ENCRYPTABLE_ENTITIES = new Set([
+	"AccessLog", "CalendarItem", "Classification", "Contact", "Document",
+	"Form", "HealthElement", "Invoice", "MaintenanceTask", "Message",
+	"Patient", "Receipt", "Topic",
+]);
+
+// Map from API name prefix to SDK property name
+function toPropertyName(entityName: string): string {
+	// Most are just camelCase of the entity name
+	const map: Record<string, string> = {
+		"AccessLog": "accessLog",
+		"CalendarItem": "calendarItem",
+		"CalendarItemType": "calendarItemType",
+		"CardinalMaintenanceTask": "cardinalMaintenanceTask",
+		"Classification": "classification",
+		"Code": "code",
+		"Contact": "contact",
+		"Crypto": "crypto",
+		"DataOwner": "dataOwner",
+		"Device": "device",
+		"Document": "document",
+		"Form": "form",
+		"FrontEndMigration": "frontEndMigration",
+		"Group": "group",
+		"HealthElement": "healthElement",
+		"HealthcareParty": "healthcareParty",
+		"Insurance": "insurance",
+		"Invoice": "invoice",
+		"MaintenanceTask": "maintenanceTask",
+		"Message": "message",
+		"Patient": "patient",
+		"Permission": "permission",
+		"Place": "place",
+		"Receipt": "receipt",
+		"Recovery": "recovery",
+		"Role": "role",
+		"System": "system",
+		"Topic": "topic",
+		"User": "user",
+		"Auth": "auth",
+		"Agenda": "agenda",
+		"ShamirKeysManager": "shamirKeysManager",
+		"FormTemplate": "formTemplate",
+	};
+	return map[entityName] || entityName.charAt(0).toLowerCase() + entityName.slice(1);
+}
+
+function splitTopLevel(str: string, sep: string): string[] {
+	const parts: string[] = [];
+	let depth = 0;
+	let current = "";
+
+	for (const ch of str) {
+		if (ch === "(" || ch === "{" || ch === "[" || ch === "<") depth++;
+		else if (ch === ")" || ch === "}" || ch === "]" || ch === ">") depth--;
+
+		if (depth === 0 && ch === sep) {
+			parts.push(current);
+			current = "";
+		} else {
+			current += ch;
+		}
+	}
+	if (current.trim()) parts.push(current);
+	return parts;
+}
+
+function parseMethodSignatures(dtsContent: string): MethodInfo[] {
+	const methods: MethodInfo[] = [];
+
+	// Match method signatures - handle multiline by first collapsing
+	const lines = dtsContent.split("\n");
+	let buffer = "";
+
+	for (const line of lines) {
+		buffer += " " + line.trim();
+		if (line.includes(";") || line.trim() === "}") {
+			// Try to match a method signature
+			const methodMatch = buffer.match(/(\w+)\(([^)]*)\):\s*(.+?)\s*;/);
+			if (methodMatch) {
+				const [, name, rawParams, returnType] = methodMatch;
+				if (name !== "constructor" && !name.startsWith("readonly")) {
+					const params = parseParams(rawParams);
+					methods.push({ name, params, returnType: returnType.trim() });
+				}
+			}
+			buffer = "";
+		}
+	}
+
+	return methods;
+}
+
+function parseParams(rawParams: string): ParamInfo[] {
+	if (!rawParams.trim()) return [];
+
+	const params: ParamInfo[] = [];
+	const parts = splitTopLevel(rawParams, ",");
+
+	for (const part of parts) {
+		const trimmed = part.trim();
+		if (!trimmed) continue;
+
+		const paramMatch = trimmed.match(/^(\w+)(\?)?:\s*(.+)$/);
+		if (paramMatch) {
+			params.push({
+				name: paramMatch[1],
+				type: paramMatch[3].trim(),
+				optional: !!paramMatch[2],
+			});
+		}
+	}
+
+	return params;
+}
+
+function main() {
+	console.log("Generating method registry...");
+
+	const apiDir = path.join(NPM_SDK, "api");
+	if (!fs.existsSync(apiDir)) {
+		console.error("API directory not found:", apiDir);
+		process.exit(1);
+	}
+
+	const registry: Record<string, ApiInfo> = {};
+
+	const mainApiPattern = /^(\w+)Api\.d\.mts$/;
+	const skipPatterns = [/Basic/, /Flavoured/, /InGroup/, /Anonymous/];
+
+	for (const file of fs.readdirSync(apiDir).sort()) {
+		const match = file.match(mainApiPattern);
+		if (!match) continue;
+		if (skipPatterns.some(p => p.test(file))) continue;
+
+		const entityName = match[1];
+		const dtsContent = fs.readFileSync(path.join(apiDir, file), "utf-8");
+		const methods = parseMethodSignatures(dtsContent);
+		const propertyName = toPropertyName(entityName);
+		const isEncryptable = ENCRYPTABLE_ENTITIES.has(entityName);
+
+		registry[entityName] = {
+			apiName: entityName + "Api",
+			propertyName,
+			isEncryptable,
+			methods,
+		};
+	}
+
+	// Generate TypeScript output
+	const output = `// AUTO-GENERATED by scripts/generate-registry.ts — do not edit
+export interface ParamInfo {
+	name: string;
+	type: string;
+	optional: boolean;
+}
+
+export interface MethodInfo {
+	name: string;
+	params: ParamInfo[];
+	returnType: string;
+}
+
+export interface ApiInfo {
+	apiName: string;
+	propertyName: string;
+	isEncryptable: boolean;
+	methods: MethodInfo[];
+}
+
+export const METHOD_REGISTRY: Record<string, ApiInfo> = ${JSON.stringify(registry, null, "\t")};
+`;
+
+	fs.mkdirSync(path.dirname(OUT_FILE), { recursive: true });
+	fs.writeFileSync(OUT_FILE, output);
+	console.log(`  Generated registry with ${Object.keys(registry).length} APIs`);
+	console.log("  Written to:", OUT_FILE);
+}
+
+main();
