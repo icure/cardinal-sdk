@@ -87,12 +87,6 @@ public interface RawFormApi {
 		raw: Boolean? = null,
 	): HttpResponse<FormTemplate>
 
-	suspend fun listFormTemplatesBySpeciality(
-		specialityCode: String,
-		loadLayout: Boolean? = null,
-		raw: Boolean? = null,
-	): HttpResponse<List<FormTemplate>>
-
 	suspend fun getFormTemplates(
 		loadLayout: Boolean? = null,
 		raw: Boolean? = null,
@@ -139,6 +133,8 @@ public interface RawFormApi {
 	suspend fun bulkShareMinimal(request: BulkShareOrUpdateMetadataParams): HttpResponse<List<EntityBulkShareResult<Nothing>>>
 
 	suspend fun matchFormsBy(filter: AbstractFilter<Form>): HttpResponse<List<String>>
+
+	suspend fun matchFormTemplatesBy(filter: AbstractFilter<FormTemplate>): HttpResponse<List<String>>
 	// endregion
 
 	// region cloud endpoints
@@ -222,12 +218,6 @@ public interface RawFormApi {
 		loadLayout: Boolean? = null,
 	): HttpResponse<List<FormTemplate>>
 
-	suspend fun getFormTemplatesBySpecialtyInGroup(
-		groupId: String,
-		specialityCode: String,
-		loadLayout: Boolean? = null,
-	): HttpResponse<List<FormTemplate>>
-
 	suspend fun createFormTemplateInGroup(
 		groupId: String,
 		ft: FormTemplate,
@@ -296,5 +286,10 @@ public interface RawFormApi {
 		groupId: String,
 		formTemplateId: String,
 	): HttpResponse<FormTemplate>
+
+	suspend fun matchFormTemplatesInGroupBy(
+		filter: AbstractFilter<FormTemplate>,
+		groupId: String,
+	): HttpResponse<List<String>>
 	// endregion
 }
