@@ -4,6 +4,7 @@ package com.icure.cardinal.sdk.js.api.`impl`
 import com.icure.cardinal.sdk.api.FormApi
 import com.icure.cardinal.sdk.crypto.entities.FormShareOptions
 import com.icure.cardinal.sdk.crypto.entities.SecretIdUseOption
+import com.icure.cardinal.sdk.filters.BaseFilterOptions
 import com.icure.cardinal.sdk.filters.FilterOptions
 import com.icure.cardinal.sdk.filters.SortableFilterOptions
 import com.icure.cardinal.sdk.js.api.DefaultParametersSupport.convertingOptionOrDefaultNonNull
@@ -16,8 +17,10 @@ import com.icure.cardinal.sdk.js.crypto.entities.FormShareOptionsJs
 import com.icure.cardinal.sdk.js.crypto.entities.SecretIdUseOptionJs
 import com.icure.cardinal.sdk.js.crypto.entities.formShareOptions_fromJs
 import com.icure.cardinal.sdk.js.crypto.entities.secretIdUseOption_fromJs
+import com.icure.cardinal.sdk.js.filters.BaseFilterOptionsJs
 import com.icure.cardinal.sdk.js.filters.FilterOptionsJs
 import com.icure.cardinal.sdk.js.filters.SortableFilterOptionsJs
+import com.icure.cardinal.sdk.js.filters.baseFilterOptions_fromJs
 import com.icure.cardinal.sdk.js.filters.filterOptions_fromJs
 import com.icure.cardinal.sdk.js.filters.sortableFilterOptions_fromJs
 import com.icure.cardinal.sdk.js.model.CheckedConverters.arrayToList
@@ -2095,6 +2098,22 @@ internal class FormApiImplJs(
 			)
 		}
 
+		override fun matchFormTemplateBy(groupId: String, filter: BaseFilterOptionsJs<FormTemplateJs>):
+				Promise<Array<String>> = GlobalScope.promise {
+			val groupIdConverted: String = groupId
+			val filterConverted: BaseFilterOptions<FormTemplate> = baseFilterOptions_fromJs(filter)
+			val result = formApi.inGroup.matchFormTemplateBy(
+				groupIdConverted,
+				filterConverted,
+			)
+			listToArray(
+				result,
+				{ x1: String ->
+					x1
+				},
+			)
+		}
+
 		override fun shareWith(
 			`delegate`: EntityReferenceInGroupJs,
 			form: GroupScopedJs<DecryptedFormJs>,
@@ -3000,6 +3019,20 @@ internal class FormApiImplJs(
 			payloadConverted,
 		)
 		result
+	}
+
+	override fun matchFormTemplateBy(filter: BaseFilterOptionsJs<FormTemplateJs>):
+			Promise<Array<String>> = GlobalScope.promise {
+		val filterConverted: BaseFilterOptions<FormTemplate> = baseFilterOptions_fromJs(filter)
+		val result = formApi.matchFormTemplateBy(
+			filterConverted,
+		)
+		listToArray(
+			result,
+			{ x1: String ->
+				x1
+			},
+		)
 	}
 
 	override fun shareWith(

@@ -741,6 +741,22 @@ internal class FormBasicApiImplJs(
 			)
 		}
 
+		override fun matchFormTemplateBy(groupId: String, filter: BaseFilterOptionsJs<FormTemplateJs>):
+				Promise<Array<String>> = GlobalScope.promise {
+			val groupIdConverted: String = groupId
+			val filterConverted: BaseFilterOptions<FormTemplate> = baseFilterOptions_fromJs(filter)
+			val result = formBasicApi.inGroup.matchFormTemplateBy(
+				groupIdConverted,
+				filterConverted,
+			)
+			listToArray(
+				result,
+				{ x1: String ->
+					x1
+				},
+			)
+		}
+
 		override fun createForm(entity: GroupScopedJs<EncryptedFormJs>):
 				Promise<GroupScopedJs<EncryptedFormJs>> = GlobalScope.promise {
 			val entityConverted: GroupScoped<EncryptedForm> = groupScoped_fromJs(
@@ -1442,6 +1458,20 @@ internal class FormBasicApiImplJs(
 			payloadConverted,
 		)
 		result
+	}
+
+	override fun matchFormTemplateBy(filter: BaseFilterOptionsJs<FormTemplateJs>):
+			Promise<Array<String>> = GlobalScope.promise {
+		val filterConverted: BaseFilterOptions<FormTemplate> = baseFilterOptions_fromJs(filter)
+		val result = formBasicApi.matchFormTemplateBy(
+			filterConverted,
+		)
+		listToArray(
+			result,
+			{ x1: String ->
+				x1
+			},
+		)
 	}
 
 	override fun createForm(entity: EncryptedFormJs): Promise<EncryptedFormJs> = GlobalScope.promise {

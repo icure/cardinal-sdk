@@ -1,5 +1,5 @@
 // auto-generated file
-import {FilterOptions, PaginatedListIterator, SortableFilterOptions} from '../cardinal-sdk-ts.mjs';
+import {BaseFilterOptions, FilterOptions, PaginatedListIterator, SortableFilterOptions} from '../cardinal-sdk-ts.mjs';
 import {FormShareOptions} from '../crypto/entities/FormShareOptions.mjs';
 import {SecretIdUseOption} from '../crypto/entities/SecretIdUseOption.mjs';
 import {EntityReferenceInGroup} from '../model/EntityReferenceInGroup.mjs';
@@ -95,6 +95,8 @@ export interface FormApi {
 	purgeFormTemplates(formTemplates: Array<FormTemplate>): Promise<Array<StoredDocumentIdentifier>>;
 
 	setTemplateAttachment(formTemplateId: string, payload: Int8Array): Promise<string>;
+
+	matchFormTemplateBy(filter: BaseFilterOptions<FormTemplate>): Promise<Array<string>>;
 
 	shareWith(delegateId: string, form: DecryptedForm,
 			options?: { options?: FormShareOptions | undefined }): Promise<DecryptedForm>;

@@ -2,8 +2,11 @@
 package com.icure.cardinal.sdk.js.api.`impl`
 
 import com.icure.cardinal.sdk.api.FormTemplateApi
+import com.icure.cardinal.sdk.filters.BaseFilterOptions
 import com.icure.cardinal.sdk.js.api.DefaultParametersSupport.convertingOptionOrDefaultNullable
 import com.icure.cardinal.sdk.js.api.FormTemplateApiJs
+import com.icure.cardinal.sdk.js.filters.BaseFilterOptionsJs
+import com.icure.cardinal.sdk.js.filters.baseFilterOptions_fromJs
 import com.icure.cardinal.sdk.js.model.CheckedConverters.arrayToList
 import com.icure.cardinal.sdk.js.model.CheckedConverters.listToArray
 import com.icure.cardinal.sdk.js.model.CheckedConverters.undefinedToNull
@@ -315,5 +318,19 @@ internal class FormTemplateApiImplJs(
 			payloadConverted,
 		)
 		result
+	}
+
+	override fun matchFormTemplateBy(filter: BaseFilterOptionsJs<FormTemplateJs>):
+			Promise<Array<String>> = GlobalScope.promise {
+		val filterConverted: BaseFilterOptions<FormTemplate> = baseFilterOptions_fromJs(filter)
+		val result = formTemplateApi.matchFormTemplateBy(
+			filterConverted,
+		)
+		listToArray(
+			result,
+			{ x1: String ->
+				x1
+			},
+		)
 	}
 }

@@ -4,6 +4,7 @@
 package com.icure.cardinal.sdk.js.api
 
 import com.icure.cardinal.sdk.js.crypto.entities.FormShareOptionsJs
+import com.icure.cardinal.sdk.js.filters.BaseFilterOptionsJs
 import com.icure.cardinal.sdk.js.filters.FilterOptionsJs
 import com.icure.cardinal.sdk.js.filters.SortableFilterOptionsJs
 import com.icure.cardinal.sdk.js.model.DecryptedFormJs
@@ -119,6 +120,8 @@ public external interface FormApiJs {
 			Promise<Array<StoredDocumentIdentifierJs>>
 
 	public fun setTemplateAttachment(formTemplateId: String, payload: ByteArray): Promise<String>
+
+	public fun matchFormTemplateBy(filter: BaseFilterOptionsJs<FormTemplateJs>): Promise<Array<String>>
 
 	public fun shareWith(
 		delegateId: String,
