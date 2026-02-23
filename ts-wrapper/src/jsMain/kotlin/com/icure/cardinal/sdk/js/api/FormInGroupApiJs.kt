@@ -3,6 +3,7 @@
 
 package com.icure.cardinal.sdk.js.api
 
+import com.icure.cardinal.sdk.js.filters.BaseFilterOptionsJs
 import com.icure.cardinal.sdk.js.filters.FilterOptionsJs
 import com.icure.cardinal.sdk.js.filters.SortableFilterOptionsJs
 import com.icure.cardinal.sdk.js.model.DecryptedFormJs
@@ -131,6 +132,9 @@ public external interface FormInGroupApiJs {
 
 	public fun purgeFormTemplates(formTemplates: Array<GroupScopedJs<FormTemplateJs>>):
 			Promise<Array<GroupScopedJs<StoredDocumentIdentifierJs>>>
+
+	public fun matchFormTemplateBy(groupId: String, filter: BaseFilterOptionsJs<FormTemplateJs>):
+			Promise<Array<String>>
 
 	public fun shareWith(
 		`delegate`: EntityReferenceInGroupJs,

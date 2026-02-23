@@ -3,6 +3,7 @@
 
 package com.icure.cardinal.sdk.js.api
 
+import com.icure.cardinal.sdk.js.filters.BaseFilterOptionsJs
 import com.icure.cardinal.sdk.js.model.FormTemplateJs
 import com.icure.cardinal.sdk.js.model.StoredDocumentIdentifierJs
 import kotlin.Array
@@ -61,4 +62,6 @@ public external interface FormTemplateApiJs {
 			Promise<Array<StoredDocumentIdentifierJs>>
 
 	public fun setTemplateAttachment(formTemplateId: String, payload: ByteArray): Promise<String>
+
+	public fun matchFormTemplateBy(filter: BaseFilterOptionsJs<FormTemplateJs>): Promise<Array<String>>
 }

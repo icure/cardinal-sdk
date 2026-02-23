@@ -107,6 +107,9 @@ public external interface FormBasicInGroupApiJs {
 	public fun purgeFormTemplates(formTemplates: Array<GroupScopedJs<FormTemplateJs>>):
 			Promise<Array<GroupScopedJs<StoredDocumentIdentifierJs>>>
 
+	public fun matchFormTemplateBy(groupId: String, filter: BaseFilterOptionsJs<FormTemplateJs>):
+			Promise<Array<String>>
+
 	public fun createForm(entity: GroupScopedJs<EncryptedFormJs>):
 			Promise<GroupScopedJs<EncryptedFormJs>>
 

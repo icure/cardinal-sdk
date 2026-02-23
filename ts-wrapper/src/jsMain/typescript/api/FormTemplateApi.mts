@@ -1,4 +1,5 @@
 // auto-generated file
+import {BaseFilterOptions} from '../cardinal-sdk-ts.mjs';
 import {FormTemplate} from '../model/FormTemplate.mjs';
 import {StoredDocumentIdentifier} from '../model/StoredDocumentIdentifier.mjs';
 
@@ -43,5 +44,7 @@ export interface FormTemplateApi {
 	purgeFormTemplates(formTemplates: Array<FormTemplate>): Promise<Array<StoredDocumentIdentifier>>;
 
 	setTemplateAttachment(formTemplateId: string, payload: Int8Array): Promise<string>;
+
+	matchFormTemplateBy(filter: BaseFilterOptions<FormTemplate>): Promise<Array<string>>;
 
 }
