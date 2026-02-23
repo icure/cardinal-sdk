@@ -9,7 +9,52 @@ env:
     REPO_PATH: cardinal-sdk
 
 jobs:
+    check-label:
+        runs-on: ubuntu-latest
+        name: Check if PR has ts-generation label
+        outputs:
+            should-skip: ${{ steps.check_label.outputs.skip }}
+        steps:
+            -   name: Check out code
+                uses: actions/checkout@v4
+                with:
+                    submodules: 'recursive'
+                    token: ${{secrets.GH_PERSONAL_ACCESS_TOKEN}}
+
+            -   name: Check if PR had ts-generation label
+                id: check_label
+                run: |
+                    # Get the commit message
+                    COMMIT_MSG=$(git log -1 --pretty=%B)
+                    echo "Commit message: $COMMIT_MSG"
+                    
+                    # Extract PR number from commit message if it's a merge commit
+                    PR_NUMBER=$(echo "$COMMIT_MSG" | grep -oP 'Merge pull request #\K\d+' || echo "")
+                    
+                    if [ -n "$PR_NUMBER" ]; then
+                      echo "Found PR number: $PR_NUMBER"
+                      # Check if the PR has the ts-generation label
+                      LABELS=$(curl -s -H "Authorization: token ${{ secrets.GH_PERSONAL_ACCESS_TOKEN }}" \
+                        "https://api.github.com/repos/${{ github.repository }}/pulls/$PR_NUMBER" | \
+                        jq -r '.labels[].name')
+                      
+                      echo "PR Labels: $LABELS"
+                      
+                      if echo "$LABELS" | grep -q "ts-generation"; then
+                        echo "PR has ts-generation label, skipping workflow"
+                        echo "skip=true" >> $GITHUB_OUTPUT
+                      else
+                        echo "PR does not have ts-generation label, continuing"
+                        echo "skip=false" >> $GITHUB_OUTPUT
+                      fi
+                    else
+                      echo "Not a PR merge commit, continuing"
+                      echo "skip=false" >> $GITHUB_OUTPUT
+                    fi
+
     setup:
+        needs: check-label
+        if: needs.check-label.outputs.should-skip != 'true'
         runs-on: ubuntu-latest
         name: Setup environment & generating typescript sdk
         env:
@@ -97,4 +142,4 @@ jobs:
                     author: ${{ steps.bot-details.outputs.name-email }}
                     committer: ${{ steps.bot-details.outputs.name-email }}
                     team-reviewers: 'icure/dev'
-                    labels: 'automation'
+                    labels: 'automation,ts-generation'

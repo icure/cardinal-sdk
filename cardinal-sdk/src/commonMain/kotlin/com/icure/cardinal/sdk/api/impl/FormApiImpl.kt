@@ -23,6 +23,7 @@ import com.icure.cardinal.sdk.filters.BaseSortableFilterOptions
 import com.icure.cardinal.sdk.filters.FilterOptions
 import com.icure.cardinal.sdk.filters.SortableFilterOptions
 import com.icure.cardinal.sdk.filters.mapFormFilterOptions
+import com.icure.cardinal.sdk.filters.mapFormTemplateFilterOptions
 import com.icure.cardinal.sdk.model.Form
 import com.icure.cardinal.sdk.model.DecryptedForm
 import com.icure.cardinal.sdk.model.EncryptedForm
@@ -366,7 +367,8 @@ private class FormFlavouredInGroupApiImpl<E : Form>(
 
 @InternalIcureApi
 private abstract class AbstractFormBasicFlavourless(
-	protected val rawApi: RawFormApi
+	protected val rawApi: RawFormApi,
+	protected val config: BasicApiConfiguration,
 ) {
 
 	protected suspend fun doDeleteForm(groupId: String?, entityId: String, rev: String): StoredDocumentIdentifier =
@@ -494,10 +496,20 @@ private abstract class AbstractFormBasicFlavourless(
 				rawApi.purgeFormTemplatesInGroup(groupId, ListOfIdsAndRev(ids))
 			}.successBody().toStoredDocumentIdentifier()
 		}
+
+	protected suspend fun doMatchFormTemplatesBy(groupId: String?, filter: BaseFilterOptions<FormTemplate>): List<String> =
+		if (groupId == null) {
+			rawApi.matchFormTemplatesBy(mapFormTemplateFilterOptions(filter, config))
+		} else {
+			rawApi.matchFormTemplatesInGroupBy(groupId = groupId, filter = mapFormTemplateFilterOptions(filter, config, groupId))
+		}.successBody()
 }
 
 @InternalIcureApi
-private class FormBasicFlavourlessApiImpl(rawApi: RawFormApi) : AbstractFormBasicFlavourless(rawApi), FormBasicFlavourlessApi {
+private class FormBasicFlavourlessApiImpl(
+	rawApi: RawFormApi,
+	config: BasicApiConfiguration
+) : AbstractFormBasicFlavourless(rawApi, config), FormBasicFlavourlessApi {
 
 	override suspend fun deleteFormById(entityId: String, rev: String): StoredDocumentIdentifier =
 		doDeleteForm(groupId = null, entityId, rev)
@@ -560,12 +572,16 @@ private class FormBasicFlavourlessApiImpl(rawApi: RawFormApi) : AbstractFormBasi
 		payload: ByteArray,
 	) = rawApi.setTemplateAttachment(formTemplateId, payload).successBody()
 
+	override suspend fun matchFormTemplateBy(filter: BaseFilterOptions<FormTemplate>): List<String> =
+		doMatchFormTemplatesBy(groupId = null, filter = filter)
+
 }
 
 @InternalIcureApi
 private class FormBasicFlavourlessInGroupApiImpl(
-	rawApi: RawFormApi
-) : AbstractFormBasicFlavourless(rawApi), FormBasicFlavourlessInGroupApi {
+	rawApi: RawFormApi,
+	config: BasicApiConfiguration
+) : AbstractFormBasicFlavourless(rawApi, config), FormBasicFlavourlessInGroupApi {
 	override suspend fun deleteFormById(entityId: GroupScoped<StoredDocumentIdentifier>): GroupScoped<StoredDocumentIdentifier> =
 		GroupScoped(doDeleteForm(entityId.groupId, entityId.entity.id, entityId.entity.rev), entityId.groupId)
 
@@ -644,6 +660,9 @@ private class FormBasicFlavourlessInGroupApiImpl(
 		entityIds.mapUniqueIdentifiablesChunkedByGroup { groupId, chunk ->
 			doPurgeFormTemplates(groupId = groupId, entityIds = chunk)
 		}
+
+	override suspend fun matchFormTemplateBy(groupId: String, filter: BaseFilterOptions<FormTemplate>): List<String> =
+		doMatchFormTemplatesBy(groupId, filter)
 }
 
 @InternalIcureApi
@@ -671,7 +690,7 @@ private class FormApiImpl(
 	private val decryptedFlavour: FlavouredApi<EncryptedForm, DecryptedForm>,
 	private val tryAndRecoverFlavour: FlavouredApi<EncryptedForm, Form>
 ) : FormApi,
-	FormBasicFlavourlessApi by FormBasicFlavourlessApiImpl(rawApi),
+	FormBasicFlavourlessApi by FormBasicFlavourlessApiImpl(rawApi, config),
 	FormFlavouredApi<DecryptedForm> by FormFlavouredApiImpl(rawApi, config, decryptedFlavour) {
 
 	private val crypto get() = config.crypto
@@ -681,7 +700,7 @@ private class FormApiImpl(
 	override val tryAndRecover: FormFlavouredApi<Form> = FormFlavouredApiImpl(rawApi, config, tryAndRecoverFlavour)
 
 	override val inGroup: FormInGroupApi = object : FormInGroupApi,
-		FormBasicFlavourlessInGroupApi by FormBasicFlavourlessInGroupApiImpl(rawApi),
+		FormBasicFlavourlessInGroupApi by FormBasicFlavourlessInGroupApiImpl(rawApi, config),
 		FormFlavouredInGroupApi<DecryptedForm> by FormFlavouredInGroupApiImpl(rawApi, config, decryptedFlavour) {
 		override val encrypted: FormFlavouredInGroupApi<EncryptedForm> = FormFlavouredInGroupApiImpl(rawApi, config, encryptedFlavour)
 		override val tryAndRecover: FormFlavouredInGroupApi<Form> = FormFlavouredInGroupApiImpl(rawApi, config, tryAndRecoverFlavour)
@@ -899,9 +918,9 @@ private class FormBasicApiImpl(
 	private val encryptedFlavour: FlavouredApi<EncryptedForm, EncryptedForm>,
 ) : FormBasicApi,
 	FormBasicFlavouredApi<EncryptedForm> by FormBasicFlavouredApiImpl(rawApi, config, encryptedFlavour),
-	FormBasicFlavourlessApi by FormBasicFlavourlessApiImpl(rawApi) {
+	FormBasicFlavourlessApi by FormBasicFlavourlessApiImpl(rawApi, config) {
 	override val inGroup: FormBasicInGroupApi = object : FormBasicInGroupApi,
-		FormBasicFlavourlessInGroupApi by FormBasicFlavourlessInGroupApiImpl(rawApi),
+		FormBasicFlavourlessInGroupApi by FormBasicFlavourlessInGroupApiImpl(rawApi, config),
 		FormBasicFlavouredInGroupApi<EncryptedForm> by FormBasicFlavouredInGroupApiImpl(rawApi, config, encryptedFlavour) {
 
 		override suspend fun matchFormsBy(
