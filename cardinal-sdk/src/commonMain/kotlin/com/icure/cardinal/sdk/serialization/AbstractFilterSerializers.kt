@@ -10,6 +10,7 @@ import com.icure.cardinal.sdk.model.Contact
 import com.icure.cardinal.sdk.model.Device
 import com.icure.cardinal.sdk.model.Document
 import com.icure.cardinal.sdk.model.Form
+import com.icure.cardinal.sdk.model.FormTemplate
 import com.icure.cardinal.sdk.model.Group
 import com.icure.cardinal.sdk.model.HealthElement
 import com.icure.cardinal.sdk.model.HealthcareParty
@@ -74,6 +75,7 @@ import com.icure.cardinal.sdk.model.filter.form.FormByDataOwnerParentIdFilter
 import com.icure.cardinal.sdk.model.filter.form.FormByDataOwnerPatientOpeningDateFilter
 import com.icure.cardinal.sdk.model.filter.form.FormByLogicalUuidFilter
 import com.icure.cardinal.sdk.model.filter.form.FormByUniqueUuidFilter
+import com.icure.cardinal.sdk.model.filter.formtemplate.FormTemplateBySpecialtyFilter
 import com.icure.cardinal.sdk.model.filter.group.AllGroupsFilter
 import com.icure.cardinal.sdk.model.filter.group.GroupBySuperGroupFilter
 import com.icure.cardinal.sdk.model.filter.group.GroupWithContentFilter
@@ -188,6 +190,7 @@ internal object AnyAbstractFilterSerializer :
 					?: DeviceAbstractFilterSerializer.getSerializerBySerialName(serialName)
 					?: DocumentAbstractFilterSerializer.getSerializerBySerialName(serialName)
 					?: FormAbstractFilterSerializer.getSerializerBySerialName(serialName)
+					?: FormTemplateAbstractFilterSerializer.getSerializerBySerialName(serialName)
 					?: GroupAbstractFilterSerializer.getSerializerBySerialName(serialName)
 					?: HealthElementAbstractFilterSerializer.getSerializerBySerialName(serialName)
 					?: HealthcarePartyAbstractFilterSerializer.getSerializerBySerialName(serialName)
@@ -249,6 +252,10 @@ internal object AnyAbstractFilterSerializer :
 							KClass<out AbstractFilter<Document>>,
 					)
 					?: FormAbstractFilterSerializer.getSerializerByClass(kclass as KClass<out AbstractFilter<Form>>)
+					?: FormTemplateAbstractFilterSerializer.getSerializerByClass(
+						kclass as
+							KClass<out AbstractFilter<FormTemplate>>,
+					)
 					?: GroupAbstractFilterSerializer.getSerializerByClass(
 						kclass as
 							KClass<out AbstractFilter<Group>>,
@@ -589,6 +596,30 @@ internal object FormAbstractFilterSerializer :
 				FormByDataOwnerPatientOpeningDateFilter.serializer()
 			FormByLogicalUuidFilter::class -> FormByLogicalUuidFilter.serializer()
 			FormByUniqueUuidFilter::class -> FormByUniqueUuidFilter.serializer()
+			else -> null
+		}
+}
+
+internal object FormTemplateAbstractFilterSerializer :
+	CustomJsonPolymorphicSerializer<AbstractFilter<FormTemplate>>(
+		"${'$'}type",
+		"AbstractFilter<FormTemplate>",
+	) {
+	override fun getSerializerBySerialName(serialName: String): KSerializer<out AbstractFilter<FormTemplate>>? =
+		when (serialName) {
+			"ComplementFilter" -> ComplementFilterSerializer(this)
+			"IntersectionFilter" -> IntersectionFilterSerializer(this)
+			"UnionFilter" -> UnionFilterSerializer(this)
+			"FormTemplateBySpecialtyFilter" -> FormTemplateBySpecialtyFilter.serializer()
+			else -> null
+		}
+
+	override fun getSerializerByClass(kclass: KClass<out AbstractFilter<FormTemplate>>): KSerializer<out AbstractFilter<FormTemplate>>? =
+		when (kclass) {
+			ComplementFilter::class -> ComplementFilterSerializer(this)
+			IntersectionFilter::class -> IntersectionFilterSerializer(this)
+			UnionFilter::class -> UnionFilterSerializer(this)
+			FormTemplateBySpecialtyFilter::class -> FormTemplateBySpecialtyFilter.serializer()
 			else -> null
 		}
 }
