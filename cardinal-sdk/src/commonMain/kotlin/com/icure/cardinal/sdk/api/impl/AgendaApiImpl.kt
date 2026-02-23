@@ -109,7 +109,7 @@ internal abstract class AbstractAgendaApi(
 		}.successBodyOrNull404()
 
 	protected suspend fun doModifyAgenda(groupId: String?, agenda: Agenda): Agenda {
-		basicRequireIsValidForCreation(agenda)
+		requireIsValidForModification(agenda)
 		return if (groupId == null) {
 			rawApi.modifyAgenda(agenda)
 		} else {
@@ -118,7 +118,7 @@ internal abstract class AbstractAgendaApi(
 	}
 
 	protected suspend fun doModifyAgendas(groupId: String?, agendas: List<Agenda>): List<Agenda> = skipRequestOnEmptyList(agendas) { entities ->
-		basicRequireIsValidForCreation(entities)
+		requireIsValidForModification(entities)
 		return if (groupId == null) {
 			rawApi.modifyAgendas(entities)
 		} else {
