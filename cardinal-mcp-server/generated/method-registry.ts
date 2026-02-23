@@ -8403,7 +8403,7 @@ export const METHOD_REGISTRY: Record<string, ApiInfo> = {
 	"TimeTable": {
 		"apiName": "TimeTableApi",
 		"propertyName": "timeTable",
-		"isEncryptable": true,
+		"isEncryptable": false,
 		"methods": [
 			{
 				"name": "deleteTimeTableUnsafe",
