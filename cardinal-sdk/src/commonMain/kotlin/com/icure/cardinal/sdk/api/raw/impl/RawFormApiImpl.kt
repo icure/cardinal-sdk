@@ -19,6 +19,7 @@ import com.icure.cardinal.sdk.model.filter.AbstractFilter
 import com.icure.cardinal.sdk.model.requests.BulkShareOrUpdateMetadataParams
 import com.icure.cardinal.sdk.model.requests.EntityBulkShareResult
 import com.icure.cardinal.sdk.serialization.FormAbstractFilterSerializer
+import com.icure.cardinal.sdk.serialization.FormTemplateAbstractFilterSerializer
 import com.icure.utils.InternalIcureApi
 import io.ktor.client.request.accept
 import io.ktor.client.request.parameter
@@ -301,22 +302,6 @@ class RawFormApiImpl(
 			accept(Application.Json)
 		}.wrap()
 
-	override suspend fun listFormTemplatesBySpeciality(
-		specialityCode: String,
-		loadLayout: Boolean?,
-		raw: Boolean?,
-	): HttpResponse<List<FormTemplate>> =
-		get(authProvider) {
-			url {
-				takeFrom(apiUrl)
-				appendPathSegments("rest", "v2", "form", "template", "bySpecialty", specialityCode)
-				parameter("loadLayout", loadLayout)
-				parameter("raw", raw)
-				parameter("ts", GMTDate().timestamp)
-			}
-			accept(Application.Json)
-		}.wrap()
-
 	override suspend fun getFormTemplates(
 		loadLayout: Boolean?,
 		raw: Boolean?,
@@ -504,6 +489,17 @@ class RawFormApiImpl(
 			contentType(Application.Json)
 			accept(Application.Json)
 			setBodyWithSerializer(FormAbstractFilterSerializer, filter)
+		}.wrap()
+
+	override suspend fun matchFormTemplatesBy(filter: AbstractFilter<FormTemplate>): HttpResponse<List<String>> =
+		post(authProvider) {
+			url {
+				takeFrom(apiUrl)
+				appendPathSegments("rest", "v2", "form", "template", "match")
+			}
+			contentType(Application.Json)
+			accept(Application.Json)
+			setBodyWithSerializer(FormTemplateAbstractFilterSerializer, filter)
 		}.wrap()
 
 	// endregion
@@ -721,21 +717,6 @@ class RawFormApiImpl(
 			accept(Application.Json)
 		}.wrap()
 
-	override suspend fun getFormTemplatesBySpecialtyInGroup(
-		groupId: String,
-		specialityCode: String,
-		loadLayout: Boolean?,
-	): HttpResponse<List<FormTemplate>> =
-		get(authProvider, groupId) {
-			url {
-				takeFrom(apiUrl)
-				appendPathSegments("rest", "v2", "form", "template", "inGroup", groupId, "bySpecialty", specialityCode)
-				parameter("loadLayout", loadLayout)
-				parameter("ts", GMTDate().timestamp)
-			}
-			accept(Application.Json)
-		}.wrap()
-
 	override suspend fun createFormTemplateInGroup(
 		groupId: String,
 		ft: FormTemplate,
@@ -925,6 +906,20 @@ class RawFormApiImpl(
 				parameter("ts", GMTDate().timestamp)
 			}
 			accept(Application.Json)
+		}.wrap()
+
+	override suspend fun matchFormTemplatesInGroupBy(
+		filter: AbstractFilter<FormTemplate>,
+		groupId: String,
+	): HttpResponse<List<String>> =
+		post(authProvider, groupId) {
+			url {
+				takeFrom(apiUrl)
+				appendPathSegments("rest", "v2", "form", "template", "inGroup", groupId, "match")
+			}
+			contentType(Application.Json)
+			accept(Application.Json)
+			setBodyWithSerializer(FormTemplateAbstractFilterSerializer, filter)
 		}.wrap()
 
 	// endregion

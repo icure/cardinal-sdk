@@ -19,13 +19,8 @@ import kotlin.String
 import kotlin.collections.List
 import kotlin.collections.Map
 import kotlin.collections.Set
-import com.icure.cardinal.sdk.model.embed.DocumentLocation
-import com.icure.cardinal.sdk.serialization.ByteArraySerializer
-import kotlin.ByteArray
 
-// WARNING: This file is auto-generated. If you change it manually, your changes will be lost.
-// If you want to change the way this class is generated, see [this repo](https://github.com/icure/sdk-codegen).
-sealed interface Document :
+public sealed interface Document :
 	StoredDocument,
 	ICureDocument<String>,
 	HasEncryptionMetadata,
@@ -87,13 +82,10 @@ sealed interface Document :
 	override val encryptedSelf: Base64String?
 
 	override val securityMetadata: SecurityMetadata?
-	// region Document-Document
-
-	// endregion
 }
 
 @Serializable
-data class DecryptedDocument(
+public data class DecryptedDocument(
 	override val id: String,
 	override val rev: String? = null,
 	override val created: Long? = null,
@@ -132,15 +124,10 @@ data class DecryptedDocument(
 	override val encryptionKeys: Map<String, Set<Delegation>> = emptyMap(),
 	override val encryptedSelf: Base64String? = null,
 	override val securityMetadata: SecurityMetadata? = null,
-) : Document {
-	// region Document-DecryptedDocument
-override fun copyWithSecurityMetadata(securityMetadata: SecurityMetadata, secretForeignKeys: Set<String>): DecryptedDocument =
-		copy(securityMetadata = securityMetadata, secretForeignKeys = secretForeignKeys)
-	// endregion
-}
+) : Document
 
 @Serializable
-data class EncryptedDocument(
+public data class EncryptedDocument(
 	override val id: String,
 	override val rev: String? = null,
 	override val created: Long? = null,
@@ -179,9 +166,4 @@ data class EncryptedDocument(
 	override val encryptionKeys: Map<String, Set<Delegation>> = emptyMap(),
 	override val encryptedSelf: Base64String? = null,
 	override val securityMetadata: SecurityMetadata? = null,
-) : Document {
-	// region Document-EncryptedDocument
-override fun copyWithSecurityMetadata(securityMetadata: SecurityMetadata, secretForeignKeys: Set<String>): EncryptedDocument =
-		copy(securityMetadata = securityMetadata, secretForeignKeys = secretForeignKeys)
-	// endregion
-}
+) : Document
