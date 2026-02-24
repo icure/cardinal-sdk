@@ -11,11 +11,10 @@ import kotlin.String
 
 @SerialName("FormTemplateBySpecialtyFilter")
 @Serializable
-public data class FormTemplateBySpecialtyFilter(
+data class FormTemplateBySpecialtyFilter(
 	public val specialtyCode: String,
 	override val desc: String? = null,
 ) : AbstractFilter<FormTemplate> {
-	// region FormByDataOwnerParentIdFilter-FormByDataOwnerParentIdFilter
-
+	// region FormTemplateBySpecialtyFilter-FormTemplateBySpecialtyFilter
 	// endregion
 }
