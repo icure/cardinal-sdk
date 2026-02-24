@@ -12,10 +12,8 @@ from cardinal_sdk.filters.TopicFilters import TopicFilters
 from cardinal_sdk.filters.HealthcarePartyFilters import HealthcarePartyFilters
 from cardinal_sdk.filters.CalendarItemFilters import CalendarItemFilters
 from cardinal_sdk.filters.DocumentFilters import DocumentFilters
-from cardinal_sdk.filters.TimeTableFilters import TimeTableFilters
 from cardinal_sdk.filters.MaintenanceTaskFilters import MaintenanceTaskFilters
 from cardinal_sdk.filters.ServiceFilters import ServiceFilters
-from cardinal_sdk.filters.MedicalLocationFilters import MedicalLocationFilters
 from cardinal_sdk.filters.MessageFilters import MessageFilters
 from cardinal_sdk.filters.AgendaFilters import AgendaFilters
 from cardinal_sdk.filters.HealthElementFilters import HealthElementFilters

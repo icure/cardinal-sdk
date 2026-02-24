@@ -17,12 +17,12 @@ public fun dispatchApi(
     String?,
   ) -> Unit,
 ): Boolean = when (apiName) {
-  "KeywordApi" -> KeywordApiDispatcher.dispatch(methodName, parameters, resultCallback)
+
   "DeviceApi" -> DeviceApiDispatcher.dispatch(methodName, parameters, resultCallback)
   "AccessLogBasicApi" -> AccessLogBasicApiDispatcher.dispatch(methodName, parameters, resultCallback)
   "PlaceApi" -> PlaceApiDispatcher.dispatch(methodName, parameters, resultCallback)
-  "MedicalLocationApi" -> MedicalLocationApiDispatcher.dispatch(methodName, parameters, resultCallback)
-  "TimeTableApi" -> TimeTableApiDispatcher.dispatch(methodName, parameters, resultCallback)
+
+
   "DocumentBasicApi" -> DocumentBasicApiDispatcher.dispatch(methodName, parameters, resultCallback)
   "PatientBasicApi" -> PatientBasicApiDispatcher.dispatch(methodName, parameters, resultCallback)
   "ClassificationApi" -> ClassificationApiDispatcher.dispatch(methodName, parameters, resultCallback)
@@ -32,7 +32,7 @@ public fun dispatchApi(
   "RecoveryApi" -> RecoveryApiDispatcher.dispatch(methodName, parameters, resultCallback)
   "PatientApi" -> PatientApiDispatcher.dispatch(methodName, parameters, resultCallback)
   "MaintenanceTaskBasicApi" -> MaintenanceTaskBasicApiDispatcher.dispatch(methodName, parameters, resultCallback)
-  "TarificationApi" -> TarificationApiDispatcher.dispatch(methodName, parameters, resultCallback)
+
   "ContactApi" -> ContactApiDispatcher.dispatch(methodName, parameters, resultCallback)
   "ReceiptApi" -> ReceiptApiDispatcher.dispatch(methodName, parameters, resultCallback)
   "AnonymousAgendaApi" -> AnonymousAgendaApiDispatcher.dispatch(methodName, parameters, resultCallback)
@@ -42,19 +42,19 @@ public fun dispatchApi(
   "CodeApi" -> CodeApiDispatcher.dispatch(methodName, parameters, resultCallback)
   "FrontEndMigrationApi" -> FrontEndMigrationApiDispatcher.dispatch(methodName, parameters, resultCallback)
   "TopicApi" -> TopicApiDispatcher.dispatch(methodName, parameters, resultCallback)
-  "DocumentTemplateApi" -> DocumentTemplateApiDispatcher.dispatch(methodName, parameters, resultCallback)
+
   "HealthElementBasicApi" -> HealthElementBasicApiDispatcher.dispatch(methodName, parameters, resultCallback)
   "SystemApi" -> SystemApiDispatcher.dispatch(methodName, parameters, resultCallback)
   "ContactBasicApi" -> ContactBasicApiDispatcher.dispatch(methodName, parameters, resultCallback)
   "CalendarItemApi" -> CalendarItemApiDispatcher.dispatch(methodName, parameters, resultCallback)
-  "ApplicationSettingsApi" -> ApplicationSettingsApiDispatcher.dispatch(methodName, parameters, resultCallback)
+
   "CryptoApi" -> CryptoApiDispatcher.dispatch(methodName, parameters, resultCallback)
   "ReceiptBasicApi" -> ReceiptBasicApiDispatcher.dispatch(methodName, parameters, resultCallback)
-  "EntityReferenceApi" -> EntityReferenceApiDispatcher.dispatch(methodName, parameters, resultCallback)
+
   "ClassificationBasicApi" -> ClassificationBasicApiDispatcher.dispatch(methodName, parameters, resultCallback)
   "ShamirKeysManagerApi" -> ShamirKeysManagerApiDispatcher.dispatch(methodName, parameters, resultCallback)
   "DocumentApi" -> DocumentApiDispatcher.dispatch(methodName, parameters, resultCallback)
-  "EntityTemplateApi" -> EntityTemplateApiDispatcher.dispatch(methodName, parameters, resultCallback)
+
   "AuthApi" -> AuthApiDispatcher.dispatch(methodName, parameters, resultCallback)
   "DataOwnerApi" -> DataOwnerApiDispatcher.dispatch(methodName, parameters, resultCallback)
   "UserApi" -> UserApiDispatcher.dispatch(methodName, parameters, resultCallback)

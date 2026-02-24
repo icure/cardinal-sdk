@@ -3,7 +3,7 @@ import 'dart:convert';
 import 'package:cardinal_sdk/api/access_log_api.dart';
 import 'package:cardinal_sdk/api/access_log_basic_api.dart';
 import 'package:cardinal_sdk/api/agenda_api.dart';
-import 'package:cardinal_sdk/api/application_settings_api.dart';
+
 import 'package:cardinal_sdk/api/calendar_item_api.dart';
 import 'package:cardinal_sdk/api/calendar_item_basic_api.dart';
 import 'package:cardinal_sdk/api/cardinal_maintenance_task_api.dart';
@@ -17,9 +17,8 @@ import 'package:cardinal_sdk/api/data_owner_api.dart';
 import 'package:cardinal_sdk/api/device_api.dart';
 import 'package:cardinal_sdk/api/document_api.dart';
 import 'package:cardinal_sdk/api/document_basic_api.dart';
-import 'package:cardinal_sdk/api/document_template_api.dart';
-import 'package:cardinal_sdk/api/entity_reference_api.dart';
-import 'package:cardinal_sdk/api/entity_template_api.dart';
+
+
 import 'package:cardinal_sdk/api/form_api.dart';
 import 'package:cardinal_sdk/api/form_basic_api.dart';
 import 'package:cardinal_sdk/api/front_end_migration_api.dart';
@@ -28,10 +27,10 @@ import 'package:cardinal_sdk/api/health_element_api.dart';
 import 'package:cardinal_sdk/api/health_element_basic_api.dart';
 import 'package:cardinal_sdk/api/healthcare_party_api.dart';
 import 'package:cardinal_sdk/api/insurance_api.dart';
-import 'package:cardinal_sdk/api/keyword_api.dart';
+
 import 'package:cardinal_sdk/api/maintenance_task_api.dart';
 import 'package:cardinal_sdk/api/maintenance_task_basic_api.dart';
-import 'package:cardinal_sdk/api/medical_location_api.dart';
+
 import 'package:cardinal_sdk/api/message_api.dart';
 import 'package:cardinal_sdk/api/message_basic_api.dart';
 import 'package:cardinal_sdk/api/patient_api.dart';
@@ -41,8 +40,7 @@ import 'package:cardinal_sdk/api/place_api.dart';
 import 'package:cardinal_sdk/api/recovery_api.dart';
 import 'package:cardinal_sdk/api/role_api.dart';
 import 'package:cardinal_sdk/api/system_api.dart';
-import 'package:cardinal_sdk/api/tarification_api.dart';
-import 'package:cardinal_sdk/api/time_table_api.dart';
+
 import 'package:cardinal_sdk/api/topic_api.dart';
 import 'package:cardinal_sdk/api/topic_basic_api.dart';
 import 'package:cardinal_sdk/api/user_api.dart';
@@ -77,24 +75,17 @@ class AuthenticationWithProcessStep {
 }
 
 abstract interface class CardinalApis {
-  ApplicationSettingsApi get applicationSettings;
   CodeApi get code;
   DeviceApi get device;
-  DocumentTemplateApi get documentTemplate;
-  EntityReferenceApi get entityReference;
-  EntityTemplateApi get entityTemplate;
   FrontEndMigrationApi get frontEndMigration;
   GroupApi get group;
   HealthcarePartyApi get healthcareParty;
   SystemApi get system;
   InsuranceApi get insurance;
-  KeywordApi get keyword;
   PermissionApi get permission;
   PlaceApi get place;
   RoleApi get role;
-  TarificationApi get tarification;
   UserApi get user;
-  MedicalLocationApi get medicalLocation;
   AgendaApi get agenda;
   AccessLogApi get accessLog;
   CalendarItemApi get calendarItem;
@@ -106,7 +97,6 @@ abstract interface class CardinalApis {
   MaintenanceTaskApi get maintenanceTask;
   MessageApi get message;
   PatientApi get patient;
-  TimeTableApi get timeTable;
   TopicApi get topic;
   CryptoApi get crypto;
   RecoveryApi get recovery;
@@ -122,7 +112,6 @@ class CardinalSdk extends CardinalApis {
   final String _sdkId;
   late final AccessLogApi _accessLog;
   late final AgendaApi _agenda;
-  late final ApplicationSettingsApi _applicationSettings;
   late final CalendarItemApi _calendarItem;
   late final CardinalMaintenanceTaskApi _cardinalMaintenanceTask;
   late final ClassificationApi _classification;
@@ -132,26 +121,19 @@ class CardinalSdk extends CardinalApis {
   late final DataOwnerApi _dataOwner;
   late final DeviceApi _device;
   late final DocumentApi _document;
-  late final DocumentTemplateApi _documentTemplate;
-  late final EntityReferenceApi _entityReference;
-  late final EntityTemplateApi _entityTemplate;
   late final FormApi _form;
   late final FrontEndMigrationApi _frontEndMigration;
   late final GroupApi _group;
   late final HealthElementApi _healthElement;
   late final HealthcarePartyApi _healthcareParty;
   late final InsuranceApi _insurance;
-  late final KeywordApi _keyword;
   late final MaintenanceTaskApi _maintenanceTask;
-  late final MedicalLocationApi _medicalLocation;
   late final MessageApi _message;
   late final PatientApi _patient;
   late final PermissionApi _permission;
   late final PlaceApi _place;
   late final RoleApi _role;
   late final SystemApi _system;
-  late final TarificationApi _tarification;
-  late final TimeTableApi _timeTable;
   late final TopicApi _topic;
   late final UserApi _user;
   late final RecoveryApi _recovery;
@@ -161,7 +143,6 @@ class CardinalSdk extends CardinalApis {
   ) : super() {
     _accessLog = AccessLogApi(_sdkId, this);
     _agenda = AgendaApi(_sdkId, this);
-    _applicationSettings = ApplicationSettingsApi(_sdkId, this);
     _calendarItem = CalendarItemApi(_sdkId, this);
     _cardinalMaintenanceTask = CardinalMaintenanceTaskApi(_sdkId, this);
     _classification = ClassificationApi(_sdkId, this);
@@ -171,26 +152,19 @@ class CardinalSdk extends CardinalApis {
     _dataOwner = DataOwnerApi(_sdkId, this);
     _device = DeviceApi(_sdkId, this);
     _document = DocumentApi(_sdkId, this);
-    _documentTemplate = DocumentTemplateApi(_sdkId, this);
-    _entityReference = EntityReferenceApi(_sdkId, this);
-    _entityTemplate = EntityTemplateApi(_sdkId, this);
     _form = FormApi(_sdkId, this);
     _frontEndMigration = FrontEndMigrationApi(_sdkId, this);
     _group = GroupApi(_sdkId, this);
     _healthElement = HealthElementApi(_sdkId, this);
     _healthcareParty = HealthcarePartyApi(_sdkId, this);
     _insurance = InsuranceApi(_sdkId, this);
-    _keyword = KeywordApi(_sdkId, this);
     _maintenanceTask = MaintenanceTaskApi(_sdkId, this);
-    _medicalLocation = MedicalLocationApi(_sdkId, this);
     _message = MessageApi(_sdkId, this);
     _patient = PatientApi(_sdkId, this);
     _permission = PermissionApi(_sdkId, this);
     _place = PlaceApi(_sdkId, this);
     _role = RoleApi(_sdkId, this);
     _system = SystemApi(_sdkId, this);
-    _tarification = TarificationApi(_sdkId, this);
-    _timeTable = TimeTableApi(_sdkId, this);
     _topic = TopicApi(_sdkId, this);
     _user = UserApi(_sdkId, this);
     _recovery = RecoveryApi(_sdkId, this);
@@ -253,8 +227,6 @@ class CardinalSdk extends CardinalApis {
   @override
   AgendaApi get agenda => _agenda;
   @override
-  ApplicationSettingsApi get applicationSettings => _applicationSettings;
-  @override
   CalendarItemApi get calendarItem => _calendarItem;
   @override
   CardinalMaintenanceTaskApi get cardinalMaintenanceTask => _cardinalMaintenanceTask;
@@ -273,12 +245,6 @@ class CardinalSdk extends CardinalApis {
   @override
   DocumentApi get document => _document;
   @override
-  DocumentTemplateApi get documentTemplate => _documentTemplate;
-  @override
-  EntityReferenceApi get entityReference => _entityReference;
-  @override
-  EntityTemplateApi get entityTemplate => _entityTemplate;
-  @override
   FormApi get form => _form;
   @override
   FrontEndMigrationApi get frontEndMigration => _frontEndMigration;
@@ -291,11 +257,7 @@ class CardinalSdk extends CardinalApis {
   @override
   InsuranceApi get insurance => _insurance;
   @override
-  KeywordApi get keyword => _keyword;
-  @override
   MaintenanceTaskApi get maintenanceTask => _maintenanceTask;
-  @override
-  MedicalLocationApi get medicalLocation => _medicalLocation;
   @override
   MessageApi get message => _message;
   @override
@@ -309,10 +271,6 @@ class CardinalSdk extends CardinalApis {
   @override
   SystemApi get system => _system;
   @override
-  TarificationApi get tarification => _tarification;
-  @override
-  TimeTableApi get timeTable => _timeTable;
-  @override
   TopicApi get topic => _topic;
   @override
   UserApi get user => _user;
@@ -325,24 +283,17 @@ class CardinalSdk extends CardinalApis {
 }
 
 abstract interface class CardinalBaseApis {
-  ApplicationSettingsApi get applicationSettings;
   CodeApi get code;
   DeviceApi get device;
-  DocumentTemplateApi get documentTemplate;
-  EntityReferenceApi get entityReference;
-  EntityTemplateApi get entityTemplate;
   FrontEndMigrationApi get frontEndMigration;
   GroupApi get group;
   HealthcarePartyApi get healthcareParty;
   SystemApi get system;
   InsuranceApi get insurance;
-  KeywordApi get keyword;
   PermissionApi get permission;
   PlaceApi get place;
   RoleApi get role;
-  TarificationApi get tarification;
   UserApi get user;
-  MedicalLocationApi get medicalLocation;
   AgendaApi get agenda;
   AccessLogBasicApi get accessLog;
   CalendarItemBasicApi get calendarItem;
@@ -354,7 +305,6 @@ abstract interface class CardinalBaseApis {
   MaintenanceTaskBasicApi get maintenanceTask;
   MessageBasicApi get message;
   PatientBasicApi get patient;
-  TimeTableApi get timeTable;
   TopicBasicApi get topic;
 }
 
@@ -364,24 +314,17 @@ class CardinalBaseSdk extends CardinalBaseApis {
   );
 
   final String _sdkId;
-  late final ApplicationSettingsApi _applicationSettings;
   late final CodeApi _code;
   late final DeviceApi _device;
-  late final DocumentTemplateApi _documentTemplate;
-  late final EntityReferenceApi _entityReference;
-  late final EntityTemplateApi _entityTemplate;
   late final FrontEndMigrationApi _frontEndMigration;
   late final GroupApi _group;
   late final HealthcarePartyApi _healthcareParty;
   late final SystemApi _system;
   late final InsuranceApi _insurance;
-  late final KeywordApi _keyword;
   late final PermissionApi _permission;
   late final PlaceApi _place;
   late final RoleApi _role;
-  late final TarificationApi _tarification;
   late final UserApi _user;
-  late final MedicalLocationApi _medicalLocation;
   late final AgendaApi _agenda;
   late final AccessLogBasicApi _accessLog;
   late final CalendarItemBasicApi _calendarItem;
@@ -393,30 +336,22 @@ class CardinalBaseSdk extends CardinalBaseApis {
   late final MaintenanceTaskBasicApi _maintenanceTask;
   late final MessageBasicApi _message;
   late final PatientBasicApi _patient;
-  late final TimeTableApi _timeTable;
   late final TopicBasicApi _topic;
 
   CardinalBaseSdk._(
     this._sdkId
   ) {
-    _applicationSettings = ApplicationSettingsApi(_sdkId, this);
     _code = CodeApi(_sdkId, this);
     _device = DeviceApi(_sdkId, this);
-    _documentTemplate = DocumentTemplateApi(_sdkId, this);
-    _entityReference = EntityReferenceApi(_sdkId, this);
-    _entityTemplate = EntityTemplateApi(_sdkId, this);
     _frontEndMigration = FrontEndMigrationApi(_sdkId, this);
     _group = GroupApi(_sdkId, this);
     _healthcareParty = HealthcarePartyApi(_sdkId, this);
     _system = SystemApi(_sdkId, this);
     _insurance = InsuranceApi(_sdkId, this);
-    _keyword = KeywordApi(_sdkId, this);
     _permission = PermissionApi(_sdkId, this);
     _place = PlaceApi(_sdkId, this);
     _role = RoleApi(_sdkId, this);
-    _tarification = TarificationApi(_sdkId, this);
     _user = UserApi(_sdkId, this);
-    _medicalLocation = MedicalLocationApi(_sdkId, this);
     _agenda = AgendaApi(_sdkId, this);
     _accessLog = AccessLogBasicApi(_sdkId, this);
     _calendarItem = CalendarItemBasicApi(_sdkId, this);
@@ -428,7 +363,6 @@ class CardinalBaseSdk extends CardinalBaseApis {
     _maintenanceTask = MaintenanceTaskBasicApi(_sdkId, this);
     _message = MessageBasicApi(_sdkId, this);
     _patient = PatientBasicApi(_sdkId, this);
-    _timeTable = TimeTableApi(_sdkId, this);
     _topic = TopicBasicApi(_sdkId, this);
   }
 
@@ -453,17 +387,9 @@ class CardinalBaseSdk extends CardinalBaseApis {
   }
 
   @override
-  ApplicationSettingsApi get applicationSettings => _applicationSettings;
-  @override
   CodeApi get code => _code;
   @override
   DeviceApi get device => _device;
-  @override
-  DocumentTemplateApi get documentTemplate => _documentTemplate;
-  @override
-  EntityReferenceApi get entityReference => _entityReference;
-  @override
-  EntityTemplateApi get entityTemplate => _entityTemplate;
   @override
   FrontEndMigrationApi get frontEndMigration => _frontEndMigration;
   @override
@@ -475,19 +401,13 @@ class CardinalBaseSdk extends CardinalBaseApis {
   @override
   InsuranceApi get insurance => _insurance;
   @override
-  KeywordApi get keyword => _keyword;
-  @override
   PermissionApi get permission => _permission;
   @override
   PlaceApi get place => _place;
   @override
   RoleApi get role => _role;
   @override
-  TarificationApi get tarification => _tarification;
-  @override
   UserApi get user => _user;
-  @override
-  MedicalLocationApi get medicalLocation => _medicalLocation;
   @override
   AgendaApi get agenda => _agenda;
   @override
@@ -510,8 +430,6 @@ class CardinalBaseSdk extends CardinalBaseApis {
   MessageBasicApi get message => _message;
   @override
   PatientBasicApi get patient => _patient;
-  @override
-  TimeTableApi get timeTable => _timeTable;
   @override
   TopicBasicApi get topic => _topic;
 

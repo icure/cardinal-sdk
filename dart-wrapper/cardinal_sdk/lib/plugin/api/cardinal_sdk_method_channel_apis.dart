@@ -1,11 +1,10 @@
 // auto-generated file
 import 'package:flutter/services.dart';
-import 'package:cardinal_sdk/plugin/api/keyword_platform_api.dart';
+
 import 'package:cardinal_sdk/plugin/api/device_platform_api.dart';
 import 'package:cardinal_sdk/plugin/api/access_log_basic_platform_api.dart';
 import 'package:cardinal_sdk/plugin/api/place_platform_api.dart';
-import 'package:cardinal_sdk/plugin/api/medical_location_platform_api.dart';
-import 'package:cardinal_sdk/plugin/api/time_table_platform_api.dart';
+
 import 'package:cardinal_sdk/plugin/api/document_basic_platform_api.dart';
 import 'package:cardinal_sdk/plugin/api/patient_basic_platform_api.dart';
 import 'package:cardinal_sdk/plugin/api/classification_platform_api.dart';
@@ -15,7 +14,7 @@ import 'package:cardinal_sdk/plugin/api/form_basic_platform_api.dart';
 import 'package:cardinal_sdk/plugin/api/recovery_platform_api.dart';
 import 'package:cardinal_sdk/plugin/api/patient_platform_api.dart';
 import 'package:cardinal_sdk/plugin/api/maintenance_task_basic_platform_api.dart';
-import 'package:cardinal_sdk/plugin/api/tarification_platform_api.dart';
+
 import 'package:cardinal_sdk/plugin/api/contact_platform_api.dart';
 import 'package:cardinal_sdk/plugin/api/receipt_platform_api.dart';
 import 'package:cardinal_sdk/plugin/api/anonymous_agenda_platform_api.dart';
@@ -25,19 +24,19 @@ import 'package:cardinal_sdk/plugin/api/permission_platform_api.dart';
 import 'package:cardinal_sdk/plugin/api/code_platform_api.dart';
 import 'package:cardinal_sdk/plugin/api/front_end_migration_platform_api.dart';
 import 'package:cardinal_sdk/plugin/api/topic_platform_api.dart';
-import 'package:cardinal_sdk/plugin/api/document_template_platform_api.dart';
+
 import 'package:cardinal_sdk/plugin/api/health_element_basic_platform_api.dart';
 import 'package:cardinal_sdk/plugin/api/system_platform_api.dart';
 import 'package:cardinal_sdk/plugin/api/contact_basic_platform_api.dart';
 import 'package:cardinal_sdk/plugin/api/calendar_item_platform_api.dart';
-import 'package:cardinal_sdk/plugin/api/application_settings_platform_api.dart';
+
 import 'package:cardinal_sdk/plugin/api/crypto_platform_api.dart';
 import 'package:cardinal_sdk/plugin/api/receipt_basic_platform_api.dart';
-import 'package:cardinal_sdk/plugin/api/entity_reference_platform_api.dart';
+
 import 'package:cardinal_sdk/plugin/api/classification_basic_platform_api.dart';
 import 'package:cardinal_sdk/plugin/api/shamir_keys_manager_platform_api.dart';
 import 'package:cardinal_sdk/plugin/api/document_platform_api.dart';
-import 'package:cardinal_sdk/plugin/api/entity_template_platform_api.dart';
+
 import 'package:cardinal_sdk/plugin/api/auth_platform_api.dart';
 import 'package:cardinal_sdk/plugin/api/data_owner_platform_api.dart';
 import 'package:cardinal_sdk/plugin/api/user_platform_api.dart';
@@ -60,18 +59,12 @@ import 'package:cardinal_sdk/plugin/api/cardinal_sdk_platform_apis_plugin.dart';
 
 class CardinalSdkMethodChannelApis extends CardinalSdkPlatformApisPlugin {
 	static const MethodChannel _methodChannel = const MethodChannel("com.icure.cardinal.sdk/api");
-	KeywordPlatformApi _keyword = KeywordPlatformApi(_methodChannel);
-	@override KeywordPlatformApi get keyword => _keyword;
 	DevicePlatformApi _device = DevicePlatformApi(_methodChannel);
 	@override DevicePlatformApi get device => _device;
 	AccessLogBasicPlatformApi _accessLogBasic = AccessLogBasicPlatformApi(_methodChannel);
 	@override AccessLogBasicPlatformApi get accessLogBasic => _accessLogBasic;
 	PlacePlatformApi _place = PlacePlatformApi(_methodChannel);
 	@override PlacePlatformApi get place => _place;
-	MedicalLocationPlatformApi _medicalLocation = MedicalLocationPlatformApi(_methodChannel);
-	@override MedicalLocationPlatformApi get medicalLocation => _medicalLocation;
-	TimeTablePlatformApi _timeTable = TimeTablePlatformApi(_methodChannel);
-	@override TimeTablePlatformApi get timeTable => _timeTable;
 	DocumentBasicPlatformApi _documentBasic = DocumentBasicPlatformApi(_methodChannel);
 	@override DocumentBasicPlatformApi get documentBasic => _documentBasic;
 	PatientBasicPlatformApi _patientBasic = PatientBasicPlatformApi(_methodChannel);
@@ -90,8 +83,6 @@ class CardinalSdkMethodChannelApis extends CardinalSdkPlatformApisPlugin {
 	@override PatientPlatformApi get patient => _patient;
 	MaintenanceTaskBasicPlatformApi _maintenanceTaskBasic = MaintenanceTaskBasicPlatformApi(_methodChannel);
 	@override MaintenanceTaskBasicPlatformApi get maintenanceTaskBasic => _maintenanceTaskBasic;
-	TarificationPlatformApi _tarification = TarificationPlatformApi(_methodChannel);
-	@override TarificationPlatformApi get tarification => _tarification;
 	ContactPlatformApi _contact = ContactPlatformApi(_methodChannel);
 	@override ContactPlatformApi get contact => _contact;
 	ReceiptPlatformApi _receipt = ReceiptPlatformApi(_methodChannel);
@@ -110,8 +101,6 @@ class CardinalSdkMethodChannelApis extends CardinalSdkPlatformApisPlugin {
 	@override FrontEndMigrationPlatformApi get frontEndMigration => _frontEndMigration;
 	TopicPlatformApi _topic = TopicPlatformApi(_methodChannel);
 	@override TopicPlatformApi get topic => _topic;
-	DocumentTemplatePlatformApi _documentTemplate = DocumentTemplatePlatformApi(_methodChannel);
-	@override DocumentTemplatePlatformApi get documentTemplate => _documentTemplate;
 	HealthElementBasicPlatformApi _healthElementBasic = HealthElementBasicPlatformApi(_methodChannel);
 	@override HealthElementBasicPlatformApi get healthElementBasic => _healthElementBasic;
 	SystemPlatformApi _system = SystemPlatformApi(_methodChannel);
@@ -120,22 +109,16 @@ class CardinalSdkMethodChannelApis extends CardinalSdkPlatformApisPlugin {
 	@override ContactBasicPlatformApi get contactBasic => _contactBasic;
 	CalendarItemPlatformApi _calendarItem = CalendarItemPlatformApi(_methodChannel);
 	@override CalendarItemPlatformApi get calendarItem => _calendarItem;
-	ApplicationSettingsPlatformApi _applicationSettings = ApplicationSettingsPlatformApi(_methodChannel);
-	@override ApplicationSettingsPlatformApi get applicationSettings => _applicationSettings;
 	CryptoPlatformApi _crypto = CryptoPlatformApi(_methodChannel);
 	@override CryptoPlatformApi get crypto => _crypto;
 	ReceiptBasicPlatformApi _receiptBasic = ReceiptBasicPlatformApi(_methodChannel);
 	@override ReceiptBasicPlatformApi get receiptBasic => _receiptBasic;
-	EntityReferencePlatformApi _entityReference = EntityReferencePlatformApi(_methodChannel);
-	@override EntityReferencePlatformApi get entityReference => _entityReference;
 	ClassificationBasicPlatformApi _classificationBasic = ClassificationBasicPlatformApi(_methodChannel);
 	@override ClassificationBasicPlatformApi get classificationBasic => _classificationBasic;
 	ShamirKeysManagerPlatformApi _shamirKeysManager = ShamirKeysManagerPlatformApi(_methodChannel);
 	@override ShamirKeysManagerPlatformApi get shamirKeysManager => _shamirKeysManager;
 	DocumentPlatformApi _document = DocumentPlatformApi(_methodChannel);
 	@override DocumentPlatformApi get document => _document;
-	EntityTemplatePlatformApi _entityTemplate = EntityTemplatePlatformApi(_methodChannel);
-	@override EntityTemplatePlatformApi get entityTemplate => _entityTemplate;
 	AuthPlatformApi _auth = AuthPlatformApi(_methodChannel);
 	@override AuthPlatformApi get auth => _auth;
 	DataOwnerPlatformApi _dataOwner = DataOwnerPlatformApi(_methodChannel);
