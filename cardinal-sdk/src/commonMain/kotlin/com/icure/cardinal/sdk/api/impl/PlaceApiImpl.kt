@@ -19,7 +19,7 @@ internal abstract class AbstractPlaceApi(
 ) {
 
 	protected suspend fun doCreatePlace(groupId: String?, entity: Place): Place {
-		basicRequireIsValidForCreation(entity)
+		requireIsValidForCreation(entity)
 		return if (groupId == null) {
 			rawApi.createPlace(entity)
 		} else {
@@ -131,7 +131,7 @@ internal class PlaceApiImpl(
 		doCreatePlace(groupId = null, place)
 
 	override suspend fun createPlaces(places: List<Place>): List<Place> {
-		basicRequireIsValidForCreation(places)
+		requireIsValidForCreation(places)
 		return doCreatePlaces(groupId = null, places)
 	}
 
@@ -179,7 +179,7 @@ internal class PlaceInGroupApiImpl(
 		groupScopedWith(place) { groupId, entity -> doCreatePlace(groupId, entity) }
 
 	override suspend fun createPlaces(places: List<GroupScoped<Place>>): List<GroupScoped<Place>> {
-		basicRequireIsValidForCreationInGroup(places)
+		requireIsValidForCreationInGroup(places)
 		return places.mapUniqueIdentifiablesChunkedByGroup { groupId, chunk ->
 			doCreatePlaces(groupId, chunk)
 		}

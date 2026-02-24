@@ -413,7 +413,7 @@ private abstract class AbstractFormBasicFlavourless(
 	}
 
 	protected suspend fun doCreateFormTemplate(groupId: String?, entity: FormTemplate): FormTemplate {
-		basicRequireIsValidForCreation(entity)
+		requireIsValidForCreation(entity)
 		return if (groupId == null) {
 			rawApi.createFormTemplate(entity)
 		} else {
@@ -536,7 +536,7 @@ private class FormBasicFlavourlessApiImpl(
 		doCreateFormTemplate(groupId = null, entity = formTemplate)
 
 	override suspend fun createFormTemplates(formTemplates: List<FormTemplate>): List<FormTemplate> {
-		basicRequireIsValidForCreation(formTemplates)
+		requireIsValidForCreation(formTemplates)
 		return doCreateFormTemplates(groupId = null, entities = formTemplates)
 	}
 
@@ -614,7 +614,7 @@ private class FormBasicFlavourlessInGroupApiImpl(
 		}
 
 	override suspend fun createFormTemplates(formTemplates: List<GroupScoped<FormTemplate>>): List<GroupScoped<FormTemplate>> {
-		basicRequireIsValidForCreationInGroup(formTemplates)
+		requireIsValidForCreationInGroup(formTemplates)
 		return formTemplates.mapUniqueIdentifiablesChunkedByGroup { groupId, chunk ->
 			doCreateFormTemplates(groupId = groupId, entities = chunk)
 		}

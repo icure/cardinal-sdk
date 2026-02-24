@@ -33,7 +33,7 @@ internal abstract class AbstractDeviceApi(
 ) {
 
 	protected suspend fun doCreateDevice(groupId: String?, entity: Device): Device {
-		basicRequireIsValidForCreation(entity)
+		requireIsValidForCreation(entity)
 		return if (groupId == null) {
 			rawApi.createDevice(entity)
 		} else {
@@ -156,7 +156,7 @@ internal class DeviceApiImpl(
 	override suspend fun createDevice(device: Device) = doCreateDevice(groupId = null, entity = device)
 
 	override suspend fun createDevices(devices: List<Device>): List<Device> {
-		basicRequireIsValidForCreation(devices)
+		requireIsValidForCreation(devices)
 		return doCreateDevices(groupId = null, entities = devices)
 	}
 
@@ -236,7 +236,7 @@ internal class DeviceApiInGroupImpl(
 	}
 
 	override suspend fun createDevices(devices: List<GroupScoped<Device>>): List<GroupScoped<Device>> {
-		basicRequireIsValidForCreationInGroup(devices)
+		requireIsValidForCreationInGroup(devices)
 		return devices.mapUniqueIdentifiablesChunkedByGroup { groupId, chunk ->
 			doCreateDevices(groupId = groupId, entities = chunk)
 		}

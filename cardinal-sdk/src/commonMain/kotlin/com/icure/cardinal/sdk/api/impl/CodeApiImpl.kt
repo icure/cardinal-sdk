@@ -27,7 +27,7 @@ internal abstract class AbstractCodeApi(
 ) {
 
 	protected suspend fun doCreateCode(groupId: String?, entity: Code): Code {
-		basicRequireIsValidForCreation(entity)
+		requireIsValidForCreation(entity)
 		return if (groupId == null) {
 			rawApi.createCode(entity)
 		} else {
@@ -170,7 +170,7 @@ internal class CodeApiImpl(
 	override suspend fun createCode(code: Code): Code = doCreateCode(groupId = null, code)
 
 	override suspend fun createCodes(codes: List<Code>): List<Code> {
-		basicRequireIsValidForCreation(codes)
+		requireIsValidForCreation(codes)
 		return doCreateCodes(groupId = null, codes)
 	}
 
@@ -230,7 +230,7 @@ internal class CodeInGroupApiImpl(
 		groupScopedWith(code) { groupId, entity -> doCreateCode(groupId, entity) }
 
 	override suspend fun createCodes(codes: List<GroupScoped<Code>>): List<GroupScoped<Code>> {
-		basicRequireIsValidForCreationInGroup(codes)
+		requireIsValidForCreationInGroup(codes)
 		return codes.mapUniqueIdentifiablesChunkedByGroup { groupId, chunk ->
 			doCreateCodes(groupId, chunk)
 		}

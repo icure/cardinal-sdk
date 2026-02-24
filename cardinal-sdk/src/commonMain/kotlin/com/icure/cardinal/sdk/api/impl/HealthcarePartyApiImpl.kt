@@ -34,7 +34,7 @@ internal abstract class AbstractHealthcarePartyApi(
 ) {
 
 	protected suspend fun doCreateHealthcareParty(groupId: String?, entity: HealthcareParty): HealthcareParty {
-		basicRequireIsValidForCreation(entity)
+		requireIsValidForCreation(entity)
 		return if (groupId == null) {
 			rawApi.createHealthcareParty(entity)
 		} else {
@@ -165,7 +165,7 @@ internal class HealthcarePartyApiImpl(
 		doCreateHealthcareParty(groupId = null, entity = healthcareParty)
 
 	override suspend fun createHealthcareParties(healthcareParties: List<HealthcareParty>): List<HealthcareParty> {
-		basicRequireIsValidForCreation(healthcareParties)
+		requireIsValidForCreation(healthcareParties)
 		return doCreateHealthcareParties(groupId = null, entities = healthcareParties)
 	}
 
@@ -251,7 +251,7 @@ internal class HealthcarePartyInGroupApiImpl(
 		groupScopedWith(healthcareParty) { groupId, entity -> doCreateHealthcareParty(groupId, entity) }
 
 	override suspend fun createHealthcareParties(healthcareParties: List<GroupScoped<HealthcareParty>>): List<GroupScoped<HealthcareParty>> {
-		basicRequireIsValidForCreationInGroup(healthcareParties)
+		requireIsValidForCreationInGroup(healthcareParties)
 		return healthcareParties.mapUniqueIdentifiablesChunkedByGroup { groupId, chunk ->
 			doCreateHealthcareParties(groupId, chunk)
 		}

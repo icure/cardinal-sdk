@@ -141,6 +141,11 @@ private suspend fun encryptContacts(
 	entitiesGroupId: String?,
 	contacts: List<DecryptedContact>
 ): List<EncryptedContact> {
+	contacts.forEach {
+		require(it.securityMetadata != null) {
+			"Contact must have security metadata initialized. Make sure to use the `withEncryptionMetadata` method before creating a new contact."
+		}
+	}
 	val keysById = config.crypto.entity.tryDecryptAndImportAnyEncryptionKey(
 		entitiesGroupId,
 		contacts,

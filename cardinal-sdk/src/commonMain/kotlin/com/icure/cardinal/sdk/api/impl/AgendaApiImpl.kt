@@ -26,7 +26,7 @@ internal abstract class AbstractAgendaApi(
 ) {
 
 	protected suspend fun doCreateAgenda(groupId: String?, agenda: Agenda): Agenda {
-		basicRequireIsValidForCreation(agenda)
+		requireIsValidForCreation(agenda)
 		return if (groupId == null) {
 			rawApi.createAgenda(agenda)
 		} else {
@@ -35,7 +35,7 @@ internal abstract class AbstractAgendaApi(
 	}
 
 	protected suspend fun doCreateAgendas(groupId: String?, entities: List<Agenda>): List<Agenda> = skipRequestOnEmptyList(entities) { agendas ->
-		basicRequireIsValidForCreation(agendas)
+		requireIsValidForCreation(agendas)
 		return if (groupId == null) {
 			rawApi.createAgendas(entities)
 		} else {
@@ -206,7 +206,7 @@ internal class AgendaGroupApiImpl (
 		GroupScoped(entity = doCreateAgenda(entity.groupId, entity.entity), groupId = entity.groupId)
 
 	override suspend fun createAgendas(entities: List<GroupScoped<Agenda>>): List<GroupScoped<Agenda>> {
-		basicRequireIsValidForCreationInGroup(entities)
+		requireIsValidForCreationInGroup(entities)
 		return entities.mapUniqueIdentifiablesChunkedByGroup { groupId, batch ->
 			doCreateAgendas(groupId, batch)
 		}
