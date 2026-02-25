@@ -18,14 +18,32 @@ val mavenReleasesRepository: String by project
 
 group = "com.icure"
 
-val version = "2.0.0"
+val version = "2.0.0-LOCAL-2"
 project.version = version
+
+val generateSdkVersion by tasks.registering {
+	val outputDir = layout.buildDirectory.dir("generated/sdkVersion/kotlin")
+	outputs.dir(outputDir)
+	inputs.property("sdkVersion", version)
+	doLast {
+		val dir = outputDir.get().asFile.resolve("com/icure/cardinal/sdk/utils")
+		dir.mkdirs()
+		dir.resolve("SdkVersion.kt").writeText(
+			"""
+			|package com.icure.cardinal.sdk.utils
+			|
+			|internal const val SDK_VERSION: String = "$version"
+			|""".trimMargin()
+		)
+	}
+}
 
 kotlin {
 	configureMultiplatform(this)
 
 	sourceSets {
 		val commonMain by getting {
+			kotlin.srcDir(generateSdkVersion)
 			dependencies {
 				api(libs.ktorClientCore)
 				implementation(libs.ktorContentNegotiation)

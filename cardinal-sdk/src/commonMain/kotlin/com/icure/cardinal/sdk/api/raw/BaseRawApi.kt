@@ -1,5 +1,6 @@
 package com.icure.cardinal.sdk.api.raw
 
+import com.icure.cardinal.sdk.utils.SDK_VERSION
 import com.icure.cardinal.sdk.auth.minAuthClassForLevel
 import com.icure.cardinal.sdk.auth.services.AuthProvider
 import com.icure.cardinal.sdk.auth.services.AuthService
@@ -181,7 +182,7 @@ abstract class BaseRawApi(
 				config.additionalHeaders.forEach { (header, headerValue) ->
 					set(header, headerValue)
 				}
-				set("Cardinal-Model-Standard", "true")
+				set("Icure-SDK-Version", SDK_VERSION)
 			}
 			config.requestTimeout?.also {
 				timeout {
