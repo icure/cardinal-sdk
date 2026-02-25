@@ -24,10 +24,10 @@ func dispatchFilters(
   case "HealthcarePartyFilters": return HealthcarePartyFiltersDispatcher.dispatch(methodName: methodName, parameters: parameters, resultCallback: resultCallback)
   case "CalendarItemFilters": return CalendarItemFiltersDispatcher.dispatch(methodName: methodName, parameters: parameters, resultCallback: resultCallback)
   case "DocumentFilters": return DocumentFiltersDispatcher.dispatch(methodName: methodName, parameters: parameters, resultCallback: resultCallback)
-  case "TimeTableFilters": return TimeTableFiltersDispatcher.dispatch(methodName: methodName, parameters: parameters, resultCallback: resultCallback)
+
   case "MaintenanceTaskFilters": return MaintenanceTaskFiltersDispatcher.dispatch(methodName: methodName, parameters: parameters, resultCallback: resultCallback)
   case "ServiceFilters": return ServiceFiltersDispatcher.dispatch(methodName: methodName, parameters: parameters, resultCallback: resultCallback)
-  case "MedicalLocationFilters": return MedicalLocationFiltersDispatcher.dispatch(methodName: methodName, parameters: parameters, resultCallback: resultCallback)
+
   case "MessageFilters": return MessageFiltersDispatcher.dispatch(methodName: methodName, parameters: parameters, resultCallback: resultCallback)
   case "AgendaFilters": return AgendaFiltersDispatcher.dispatch(methodName: methodName, parameters: parameters, resultCallback: resultCallback)
   case "HealthElementFilters": return HealthElementFiltersDispatcher.dispatch(methodName: methodName, parameters: parameters, resultCallback: resultCallback)

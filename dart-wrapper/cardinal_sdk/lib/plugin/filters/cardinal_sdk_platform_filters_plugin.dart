@@ -12,10 +12,10 @@ import 'package:cardinal_sdk/plugin/filters/topic_platform_filters.dart';
 import 'package:cardinal_sdk/plugin/filters/healthcare_party_platform_filters.dart';
 import 'package:cardinal_sdk/plugin/filters/calendar_item_platform_filters.dart';
 import 'package:cardinal_sdk/plugin/filters/document_platform_filters.dart';
-import 'package:cardinal_sdk/plugin/filters/time_table_platform_filters.dart';
+
 import 'package:cardinal_sdk/plugin/filters/maintenance_task_platform_filters.dart';
 import 'package:cardinal_sdk/plugin/filters/service_platform_filters.dart';
-import 'package:cardinal_sdk/plugin/filters/medical_location_platform_filters.dart';
+
 import 'package:cardinal_sdk/plugin/filters/message_platform_filters.dart';
 import 'package:cardinal_sdk/plugin/filters/agenda_platform_filters.dart';
 import 'package:cardinal_sdk/plugin/filters/health_element_platform_filters.dart';
@@ -50,13 +50,9 @@ abstract class CardinalSdkPlatformFiltersPlugin {
 
 	DocumentPlatformFilters get document;
 
-	TimeTablePlatformFilters get timeTable;
-
 	MaintenanceTaskPlatformFilters get maintenanceTask;
 
 	ServicePlatformFilters get service;
-
-	MedicalLocationPlatformFilters get medicalLocation;
 
 	MessagePlatformFilters get message;
 

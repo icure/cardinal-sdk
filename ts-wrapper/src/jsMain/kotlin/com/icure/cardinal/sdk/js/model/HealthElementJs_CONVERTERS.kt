@@ -100,9 +100,6 @@ public fun healthElement_toJs(obj: DecryptedHealthElement): DecryptedHealthEleme
 	val deletionDate = nullToUndefined(
 		longToNumber(obj.deletionDate)
 	)
-	val healthElementId = nullToUndefined(
-		obj.healthElementId
-	)
 	val valueDate = nullToUndefined(
 		longToNumber(obj.valueDate)
 	)
@@ -227,7 +224,6 @@ public fun healthElement_toJs(obj: DecryptedHealthElement): DecryptedHealthEleme
 		"codes:codes," +
 		"endOfLife:endOfLife," +
 		"deletionDate:deletionDate," +
-		"healthElementId:healthElementId," +
 		"valueDate:valueDate," +
 		"openingDate:openingDate," +
 		"closingDate:closingDate," +
@@ -281,7 +277,6 @@ public fun healthElement_fromJs(obj: DecryptedHealthElementJs): DecryptedHealthE
 	)
 	val endOfLife = numberToLong(obj.endOfLife, "obj.endOfLife")
 	val deletionDate = numberToLong(obj.deletionDate, "obj.deletionDate")
-	val healthElementId = undefinedToNull(obj.healthElementId)
 	val valueDate = numberToLong(obj.valueDate, "obj.valueDate")
 	val openingDate = numberToLong(obj.openingDate, "obj.openingDate")
 	val closingDate = numberToLong(obj.closingDate, "obj.closingDate")
@@ -395,7 +390,6 @@ public fun healthElement_fromJs(obj: DecryptedHealthElementJs): DecryptedHealthE
 		codes = codes,
 		endOfLife = endOfLife,
 		deletionDate = deletionDate,
-		healthElementId = healthElementId,
 		valueDate = valueDate,
 		openingDate = openingDate,
 		closingDate = closingDate,
@@ -460,9 +454,6 @@ public fun healthElement_toJs(obj: EncryptedHealthElement): EncryptedHealthEleme
 	)
 	val deletionDate = nullToUndefined(
 		longToNumber(obj.deletionDate)
-	)
-	val healthElementId = nullToUndefined(
-		obj.healthElementId
 	)
 	val valueDate = nullToUndefined(
 		longToNumber(obj.valueDate)
@@ -588,7 +579,6 @@ public fun healthElement_toJs(obj: EncryptedHealthElement): EncryptedHealthEleme
 		"codes:codes," +
 		"endOfLife:endOfLife," +
 		"deletionDate:deletionDate," +
-		"healthElementId:healthElementId," +
 		"valueDate:valueDate," +
 		"openingDate:openingDate," +
 		"closingDate:closingDate," +
@@ -642,7 +632,6 @@ public fun healthElement_fromJs(obj: EncryptedHealthElementJs): EncryptedHealthE
 	)
 	val endOfLife = numberToLong(obj.endOfLife, "obj.endOfLife")
 	val deletionDate = numberToLong(obj.deletionDate, "obj.deletionDate")
-	val healthElementId = undefinedToNull(obj.healthElementId)
 	val valueDate = numberToLong(obj.valueDate, "obj.valueDate")
 	val openingDate = numberToLong(obj.openingDate, "obj.openingDate")
 	val closingDate = numberToLong(obj.closingDate, "obj.closingDate")
@@ -756,7 +745,6 @@ public fun healthElement_fromJs(obj: EncryptedHealthElementJs): EncryptedHealthE
 		codes = codes,
 		endOfLife = endOfLife,
 		deletionDate = deletionDate,
-		healthElementId = healthElementId,
 		valueDate = valueDate,
 		openingDate = openingDate,
 		closingDate = closingDate,

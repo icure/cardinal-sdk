@@ -305,17 +305,6 @@ class AgendaApi(Structure):
 	]
 
 
-class ApplicationSettingsApi(Structure):
-	_fields_ = [
-		("createApplicationSettingsAsync", CFUNCTYPE(None, AnyKtRef, c_char_p, DATA_RESULT_CALLBACK_FUNC)),
-		("createApplicationSettingsBlocking", CFUNCTYPE(c_void_p, AnyKtRef, c_char_p)),
-		("getApplicationSettingsAsync", CFUNCTYPE(None, AnyKtRef, DATA_RESULT_CALLBACK_FUNC)),
-		("getApplicationSettingsBlocking", CFUNCTYPE(c_void_p, AnyKtRef)),
-		("updateApplicationSettingsAsync", CFUNCTYPE(None, AnyKtRef, c_char_p, DATA_RESULT_CALLBACK_FUNC)),
-		("updateApplicationSettingsBlocking", CFUNCTYPE(c_void_p, AnyKtRef, c_char_p)),
-	]
-
-
 class AuthApi(Structure):
 	_fields_ = [
 		("getBearerTokenAsync", CFUNCTYPE(None, AnyKtRef, DATA_RESULT_CALLBACK_FUNC)),
@@ -1490,72 +1479,6 @@ class DocumentBasicApi(Structure):
 	]
 
 
-class DocumentTemplateApi(Structure):
-	_fields_ = [
-		("createDocumentTemplateAsync", CFUNCTYPE(None, AnyKtRef, c_char_p, DATA_RESULT_CALLBACK_FUNC)),
-		("createDocumentTemplateBlocking", CFUNCTYPE(c_void_p, AnyKtRef, c_char_p)),
-		("deleteDocumentTemplatesAsync", CFUNCTYPE(None, AnyKtRef, c_char_p, DATA_RESULT_CALLBACK_FUNC)),
-		("deleteDocumentTemplatesBlocking", CFUNCTYPE(c_void_p, AnyKtRef, c_char_p)),
-		("findAllDocumentTemplatesAsync", CFUNCTYPE(None, AnyKtRef, c_char_p, DATA_RESULT_CALLBACK_FUNC)),
-		("findAllDocumentTemplatesBlocking", CFUNCTYPE(c_void_p, AnyKtRef, c_char_p)),
-		("getAttachmentTextAsync", CFUNCTYPE(None, AnyKtRef, c_char_p, DATA_RESULT_CALLBACK_FUNC)),
-		("getAttachmentTextBlocking", CFUNCTYPE(c_void_p, AnyKtRef, c_char_p)),
-		("getAttachmentUrl", CFUNCTYPE(c_void_p, AnyKtRef, c_char_p)),
-		("getDocumentTemplateAsync", CFUNCTYPE(None, AnyKtRef, c_char_p, DATA_RESULT_CALLBACK_FUNC)),
-		("getDocumentTemplateAttachmentAsync", CFUNCTYPE(None, AnyKtRef, c_char_p, DATA_RESULT_CALLBACK_FUNC)),
-		("getDocumentTemplateAttachmentBlocking", CFUNCTYPE(c_void_p, AnyKtRef, c_char_p)),
-		("getDocumentTemplateBlocking", CFUNCTYPE(c_void_p, AnyKtRef, c_char_p)),
-		("listDocumentTemplatesAsync", CFUNCTYPE(None, AnyKtRef, DATA_RESULT_CALLBACK_FUNC)),
-		("listDocumentTemplatesBlocking", CFUNCTYPE(c_void_p, AnyKtRef)),
-		("listDocumentTemplatesByDocumentTypeAsync", CFUNCTYPE(None, AnyKtRef, c_char_p, DATA_RESULT_CALLBACK_FUNC)),
-		("listDocumentTemplatesByDocumentTypeBlocking", CFUNCTYPE(c_void_p, AnyKtRef, c_char_p)),
-		("listDocumentTemplatesByDocumentTypeForCurrentUserAsync", CFUNCTYPE(None, AnyKtRef, c_char_p, DATA_RESULT_CALLBACK_FUNC)),
-		("listDocumentTemplatesByDocumentTypeForCurrentUserBlocking", CFUNCTYPE(c_void_p, AnyKtRef, c_char_p)),
-		("listDocumentTemplatesBySpecialityAsync", CFUNCTYPE(None, AnyKtRef, c_char_p, DATA_RESULT_CALLBACK_FUNC)),
-		("listDocumentTemplatesBySpecialityBlocking", CFUNCTYPE(c_void_p, AnyKtRef, c_char_p)),
-		("modifyDocumentTemplateAsync", CFUNCTYPE(None, AnyKtRef, c_char_p, DATA_RESULT_CALLBACK_FUNC)),
-		("modifyDocumentTemplateBlocking", CFUNCTYPE(c_void_p, AnyKtRef, c_char_p)),
-		("setDocumentTemplateAttachmentAsync", CFUNCTYPE(None, AnyKtRef, c_char_p, DATA_RESULT_CALLBACK_FUNC)),
-		("setDocumentTemplateAttachmentBlocking", CFUNCTYPE(c_void_p, AnyKtRef, c_char_p)),
-	]
-
-
-class EntityReferenceApi(Structure):
-	_fields_ = [
-		("createEntityReferenceAsync", CFUNCTYPE(None, AnyKtRef, c_char_p, DATA_RESULT_CALLBACK_FUNC)),
-		("createEntityReferenceBlocking", CFUNCTYPE(c_void_p, AnyKtRef, c_char_p)),
-		("getLatestAsync", CFUNCTYPE(None, AnyKtRef, c_char_p, DATA_RESULT_CALLBACK_FUNC)),
-		("getLatestBlocking", CFUNCTYPE(c_void_p, AnyKtRef, c_char_p)),
-	]
-
-
-class EntityTemplateApi(Structure):
-	_fields_ = [
-		("createEntityTemplateAsync", CFUNCTYPE(None, AnyKtRef, c_char_p, DATA_RESULT_CALLBACK_FUNC)),
-		("createEntityTemplateBlocking", CFUNCTYPE(c_void_p, AnyKtRef, c_char_p)),
-		("createEntityTemplatesAsync", CFUNCTYPE(None, AnyKtRef, c_char_p, DATA_RESULT_CALLBACK_FUNC)),
-		("createEntityTemplatesBlocking", CFUNCTYPE(c_void_p, AnyKtRef, c_char_p)),
-		("deleteEntityTemplatesAsync", CFUNCTYPE(None, AnyKtRef, c_char_p, DATA_RESULT_CALLBACK_FUNC)),
-		("deleteEntityTemplatesBlocking", CFUNCTYPE(c_void_p, AnyKtRef, c_char_p)),
-		("findAllEntityTemplatesByKeywordAsync", CFUNCTYPE(None, AnyKtRef, c_char_p, DATA_RESULT_CALLBACK_FUNC)),
-		("findAllEntityTemplatesByKeywordBlocking", CFUNCTYPE(c_void_p, AnyKtRef, c_char_p)),
-		("getEntityTemplateAsync", CFUNCTYPE(None, AnyKtRef, c_char_p, DATA_RESULT_CALLBACK_FUNC)),
-		("getEntityTemplateBlocking", CFUNCTYPE(c_void_p, AnyKtRef, c_char_p)),
-		("getEntityTemplatesAsync", CFUNCTYPE(None, AnyKtRef, c_char_p, DATA_RESULT_CALLBACK_FUNC)),
-		("getEntityTemplatesBlocking", CFUNCTYPE(c_void_p, AnyKtRef, c_char_p)),
-		("listAllEntityTemplatesByAsync", CFUNCTYPE(None, AnyKtRef, c_char_p, DATA_RESULT_CALLBACK_FUNC)),
-		("listAllEntityTemplatesByBlocking", CFUNCTYPE(c_void_p, AnyKtRef, c_char_p)),
-		("listEntityTemplatesByAsync", CFUNCTYPE(None, AnyKtRef, c_char_p, DATA_RESULT_CALLBACK_FUNC)),
-		("listEntityTemplatesByBlocking", CFUNCTYPE(c_void_p, AnyKtRef, c_char_p)),
-		("listEntityTemplatesByKeywordAsync", CFUNCTYPE(None, AnyKtRef, c_char_p, DATA_RESULT_CALLBACK_FUNC)),
-		("listEntityTemplatesByKeywordBlocking", CFUNCTYPE(c_void_p, AnyKtRef, c_char_p)),
-		("modifyEntityTemplateAsync", CFUNCTYPE(None, AnyKtRef, c_char_p, DATA_RESULT_CALLBACK_FUNC)),
-		("modifyEntityTemplateBlocking", CFUNCTYPE(c_void_p, AnyKtRef, c_char_p)),
-		("modifyEntityTemplatesAsync", CFUNCTYPE(None, AnyKtRef, c_char_p, DATA_RESULT_CALLBACK_FUNC)),
-		("modifyEntityTemplatesBlocking", CFUNCTYPE(c_void_p, AnyKtRef, c_char_p)),
-	]
-
-
 class FormApi_encrypted(Structure):
 	_fields_ = [
 		("createFormAsync", CFUNCTYPE(None, AnyKtRef, c_char_p, DATA_RESULT_CALLBACK_FUNC)),
@@ -2484,21 +2407,6 @@ class InvoiceBasicApi(Structure):
 	]
 
 
-class KeywordApi(Structure):
-	_fields_ = [
-		("createKeywordAsync", CFUNCTYPE(None, AnyKtRef, c_char_p, DATA_RESULT_CALLBACK_FUNC)),
-		("createKeywordBlocking", CFUNCTYPE(c_void_p, AnyKtRef, c_char_p)),
-		("deleteKeywordsAsync", CFUNCTYPE(None, AnyKtRef, c_char_p, DATA_RESULT_CALLBACK_FUNC)),
-		("deleteKeywordsBlocking", CFUNCTYPE(c_void_p, AnyKtRef, c_char_p)),
-		("getKeywordAsync", CFUNCTYPE(None, AnyKtRef, c_char_p, DATA_RESULT_CALLBACK_FUNC)),
-		("getKeywordBlocking", CFUNCTYPE(c_void_p, AnyKtRef, c_char_p)),
-		("getKeywordsAsync", CFUNCTYPE(None, AnyKtRef, c_char_p, DATA_RESULT_CALLBACK_FUNC)),
-		("getKeywordsBlocking", CFUNCTYPE(c_void_p, AnyKtRef, c_char_p)),
-		("getKeywordsByUserAsync", CFUNCTYPE(None, AnyKtRef, c_char_p, DATA_RESULT_CALLBACK_FUNC)),
-		("getKeywordsByUserBlocking", CFUNCTYPE(c_void_p, AnyKtRef, c_char_p)),
-		("modifyKeywordAsync", CFUNCTYPE(None, AnyKtRef, c_char_p, DATA_RESULT_CALLBACK_FUNC)),
-		("modifyKeywordBlocking", CFUNCTYPE(c_void_p, AnyKtRef, c_char_p)),
-	]
 
 
 class MaintenanceTaskApi_encrypted(Structure):
@@ -2654,31 +2562,6 @@ class MaintenanceTaskBasicApi(Structure):
 		("undeleteMaintenanceTaskBlocking", CFUNCTYPE(c_void_p, AnyKtRef, c_char_p)),
 		("undeleteMaintenanceTaskByIdAsync", CFUNCTYPE(None, AnyKtRef, c_char_p, DATA_RESULT_CALLBACK_FUNC)),
 		("undeleteMaintenanceTaskByIdBlocking", CFUNCTYPE(c_void_p, AnyKtRef, c_char_p)),
-	]
-
-
-class MedicalLocationApi(Structure):
-	_fields_ = [
-		("createMedicalLocationAsync", CFUNCTYPE(None, AnyKtRef, c_char_p, DATA_RESULT_CALLBACK_FUNC)),
-		("createMedicalLocationBlocking", CFUNCTYPE(c_void_p, AnyKtRef, c_char_p)),
-		("deleteMedicalLocationsAsync", CFUNCTYPE(None, AnyKtRef, c_char_p, DATA_RESULT_CALLBACK_FUNC)),
-		("deleteMedicalLocationsBlocking", CFUNCTYPE(c_void_p, AnyKtRef, c_char_p)),
-		("filterMedicalLocationsByAsync", CFUNCTYPE(None, AnyKtRef, c_char_p, PTR_RESULT_CALLBACK_FUNC)),
-		("filterMedicalLocationsByBlocking", CFUNCTYPE(AnyKtRef, AnyKtRef, c_char_p)),
-		("filterMedicalLocationsBySortedAsync", CFUNCTYPE(None, AnyKtRef, c_char_p, PTR_RESULT_CALLBACK_FUNC)),
-		("filterMedicalLocationsBySortedBlocking", CFUNCTYPE(AnyKtRef, AnyKtRef, c_char_p)),
-		("getAllMedicalLocationsAsync", CFUNCTYPE(None, AnyKtRef, c_char_p, DATA_RESULT_CALLBACK_FUNC)),
-		("getAllMedicalLocationsBlocking", CFUNCTYPE(c_void_p, AnyKtRef, c_char_p)),
-		("getMedicalLocationAsync", CFUNCTYPE(None, AnyKtRef, c_char_p, DATA_RESULT_CALLBACK_FUNC)),
-		("getMedicalLocationBlocking", CFUNCTYPE(c_void_p, AnyKtRef, c_char_p)),
-		("getMedicalLocationsAsync", CFUNCTYPE(None, AnyKtRef, c_char_p, DATA_RESULT_CALLBACK_FUNC)),
-		("getMedicalLocationsBlocking", CFUNCTYPE(c_void_p, AnyKtRef, c_char_p)),
-		("matchMedicalLocationsByAsync", CFUNCTYPE(None, AnyKtRef, c_char_p, DATA_RESULT_CALLBACK_FUNC)),
-		("matchMedicalLocationsByBlocking", CFUNCTYPE(c_void_p, AnyKtRef, c_char_p)),
-		("matchMedicalLocationsBySortedAsync", CFUNCTYPE(None, AnyKtRef, c_char_p, DATA_RESULT_CALLBACK_FUNC)),
-		("matchMedicalLocationsBySortedBlocking", CFUNCTYPE(c_void_p, AnyKtRef, c_char_p)),
-		("modifyMedicalLocationAsync", CFUNCTYPE(None, AnyKtRef, c_char_p, DATA_RESULT_CALLBACK_FUNC)),
-		("modifyMedicalLocationBlocking", CFUNCTYPE(c_void_p, AnyKtRef, c_char_p)),
 	]
 
 
@@ -3625,70 +3508,6 @@ class SystemApi(Structure):
 	]
 
 
-class TarificationApi(Structure):
-	_fields_ = [
-		("createTarificationAsync", CFUNCTYPE(None, AnyKtRef, c_char_p, DATA_RESULT_CALLBACK_FUNC)),
-		("createTarificationBlocking", CFUNCTYPE(c_void_p, AnyKtRef, c_char_p)),
-		("findTarificationsByAsync", CFUNCTYPE(None, AnyKtRef, c_char_p, DATA_RESULT_CALLBACK_FUNC)),
-		("findTarificationsByBlocking", CFUNCTYPE(c_void_p, AnyKtRef, c_char_p)),
-		("findTarificationsByLabelAsync", CFUNCTYPE(None, AnyKtRef, c_char_p, DATA_RESULT_CALLBACK_FUNC)),
-		("findTarificationsByLabelBlocking", CFUNCTYPE(c_void_p, AnyKtRef, c_char_p)),
-		("getTarificationAsync", CFUNCTYPE(None, AnyKtRef, c_char_p, DATA_RESULT_CALLBACK_FUNC)),
-		("getTarificationBlocking", CFUNCTYPE(c_void_p, AnyKtRef, c_char_p)),
-		("getTarificationWithPartsAsync", CFUNCTYPE(None, AnyKtRef, c_char_p, DATA_RESULT_CALLBACK_FUNC)),
-		("getTarificationWithPartsBlocking", CFUNCTYPE(c_void_p, AnyKtRef, c_char_p)),
-		("getTarificationsAsync", CFUNCTYPE(None, AnyKtRef, c_char_p, DATA_RESULT_CALLBACK_FUNC)),
-		("getTarificationsBlocking", CFUNCTYPE(c_void_p, AnyKtRef, c_char_p)),
-		("modifyTarificationAsync", CFUNCTYPE(None, AnyKtRef, c_char_p, DATA_RESULT_CALLBACK_FUNC)),
-		("modifyTarificationBlocking", CFUNCTYPE(c_void_p, AnyKtRef, c_char_p)),
-	]
-
-
-class TimeTableApi(Structure):
-	_fields_ = [
-		("createTimeTableAsync", CFUNCTYPE(None, AnyKtRef, c_char_p, DATA_RESULT_CALLBACK_FUNC)),
-		("createTimeTableBlocking", CFUNCTYPE(c_void_p, AnyKtRef, c_char_p)),
-		("deleteTimeTableAsync", CFUNCTYPE(None, AnyKtRef, c_char_p, DATA_RESULT_CALLBACK_FUNC)),
-		("deleteTimeTableBlocking", CFUNCTYPE(c_void_p, AnyKtRef, c_char_p)),
-		("deleteTimeTableByIdAsync", CFUNCTYPE(None, AnyKtRef, c_char_p, DATA_RESULT_CALLBACK_FUNC)),
-		("deleteTimeTableByIdBlocking", CFUNCTYPE(c_void_p, AnyKtRef, c_char_p)),
-		("deleteTimeTableUnsafeAsync", CFUNCTYPE(None, AnyKtRef, c_char_p, DATA_RESULT_CALLBACK_FUNC)),
-		("deleteTimeTableUnsafeBlocking", CFUNCTYPE(c_void_p, AnyKtRef, c_char_p)),
-		("deleteTimeTablesAsync", CFUNCTYPE(None, AnyKtRef, c_char_p, DATA_RESULT_CALLBACK_FUNC)),
-		("deleteTimeTablesBlocking", CFUNCTYPE(c_void_p, AnyKtRef, c_char_p)),
-		("deleteTimeTablesByIdsAsync", CFUNCTYPE(None, AnyKtRef, c_char_p, DATA_RESULT_CALLBACK_FUNC)),
-		("deleteTimeTablesByIdsBlocking", CFUNCTYPE(c_void_p, AnyKtRef, c_char_p)),
-		("deleteTimeTablesUnsafeAsync", CFUNCTYPE(None, AnyKtRef, c_char_p, DATA_RESULT_CALLBACK_FUNC)),
-		("deleteTimeTablesUnsafeBlocking", CFUNCTYPE(c_void_p, AnyKtRef, c_char_p)),
-		("filterTimeTablesByAsync", CFUNCTYPE(None, AnyKtRef, c_char_p, PTR_RESULT_CALLBACK_FUNC)),
-		("filterTimeTablesByBlocking", CFUNCTYPE(AnyKtRef, AnyKtRef, c_char_p)),
-		("filterTimeTablesBySortedAsync", CFUNCTYPE(None, AnyKtRef, c_char_p, PTR_RESULT_CALLBACK_FUNC)),
-		("filterTimeTablesBySortedBlocking", CFUNCTYPE(AnyKtRef, AnyKtRef, c_char_p)),
-		("getTimeTableAsync", CFUNCTYPE(None, AnyKtRef, c_char_p, DATA_RESULT_CALLBACK_FUNC)),
-		("getTimeTableBlocking", CFUNCTYPE(c_void_p, AnyKtRef, c_char_p)),
-		("getTimeTablesAsync", CFUNCTYPE(None, AnyKtRef, c_char_p, DATA_RESULT_CALLBACK_FUNC)),
-		("getTimeTablesBlocking", CFUNCTYPE(c_void_p, AnyKtRef, c_char_p)),
-		("getTimeTablesByAgendaIdAsync", CFUNCTYPE(None, AnyKtRef, c_char_p, DATA_RESULT_CALLBACK_FUNC)),
-		("getTimeTablesByAgendaIdBlocking", CFUNCTYPE(c_void_p, AnyKtRef, c_char_p)),
-		("getTimeTablesByPeriodAndAgendaIdAsync", CFUNCTYPE(None, AnyKtRef, c_char_p, DATA_RESULT_CALLBACK_FUNC)),
-		("getTimeTablesByPeriodAndAgendaIdBlocking", CFUNCTYPE(c_void_p, AnyKtRef, c_char_p)),
-		("matchTimeTablesByAsync", CFUNCTYPE(None, AnyKtRef, c_char_p, DATA_RESULT_CALLBACK_FUNC)),
-		("matchTimeTablesByBlocking", CFUNCTYPE(c_void_p, AnyKtRef, c_char_p)),
-		("matchTimeTablesBySortedAsync", CFUNCTYPE(None, AnyKtRef, c_char_p, DATA_RESULT_CALLBACK_FUNC)),
-		("matchTimeTablesBySortedBlocking", CFUNCTYPE(c_void_p, AnyKtRef, c_char_p)),
-		("modifyTimeTableAsync", CFUNCTYPE(None, AnyKtRef, c_char_p, DATA_RESULT_CALLBACK_FUNC)),
-		("modifyTimeTableBlocking", CFUNCTYPE(c_void_p, AnyKtRef, c_char_p)),
-		("purgeTimeTableAsync", CFUNCTYPE(None, AnyKtRef, c_char_p, DATA_RESULT_CALLBACK_FUNC)),
-		("purgeTimeTableBlocking", CFUNCTYPE(c_void_p, AnyKtRef, c_char_p)),
-		("purgeTimeTableByIdAsync", CFUNCTYPE(None, AnyKtRef, c_char_p, DATA_RESULT_CALLBACK_FUNC)),
-		("purgeTimeTableByIdBlocking", CFUNCTYPE(c_void_p, AnyKtRef, c_char_p)),
-		("undeleteTimeTableAsync", CFUNCTYPE(None, AnyKtRef, c_char_p, DATA_RESULT_CALLBACK_FUNC)),
-		("undeleteTimeTableBlocking", CFUNCTYPE(c_void_p, AnyKtRef, c_char_p)),
-		("undeleteTimeTableByIdAsync", CFUNCTYPE(None, AnyKtRef, c_char_p, DATA_RESULT_CALLBACK_FUNC)),
-		("undeleteTimeTableByIdBlocking", CFUNCTYPE(c_void_p, AnyKtRef, c_char_p)),
-	]
-
-
 class TopicApi_encrypted(Structure):
 	_fields_ = [
 		("addParticipantAsync", CFUNCTYPE(None, AnyKtRef, c_char_p, DATA_RESULT_CALLBACK_FUNC)),
@@ -3973,7 +3792,6 @@ class api(Structure):
 		("AccessLogApi", AccessLogApi),
 		("AccessLogBasicApi", AccessLogBasicApi),
 		("AgendaApi", AgendaApi),
-		("ApplicationSettingsApi", ApplicationSettingsApi),
 		("AuthApi", AuthApi),
 		("CalendarItemApi", CalendarItemApi),
 		("CalendarItemBasicApi", CalendarItemBasicApi),
@@ -3988,9 +3806,6 @@ class api(Structure):
 		("DeviceApi", DeviceApi),
 		("DocumentApi", DocumentApi),
 		("DocumentBasicApi", DocumentBasicApi),
-		("DocumentTemplateApi", DocumentTemplateApi),
-		("EntityReferenceApi", EntityReferenceApi),
-		("EntityTemplateApi", EntityTemplateApi),
 		("FormApi", FormApi),
 		("FormBasicApi", FormBasicApi),
 		("FrontEndMigrationApi", FrontEndMigrationApi),
@@ -4001,10 +3816,8 @@ class api(Structure):
 		("InsuranceApi", InsuranceApi),
 		("InvoiceApi", InvoiceApi),
 		("InvoiceBasicApi", InvoiceBasicApi),
-		("KeywordApi", KeywordApi),
 		("MaintenanceTaskApi", MaintenanceTaskApi),
 		("MaintenanceTaskBasicApi", MaintenanceTaskBasicApi),
-		("MedicalLocationApi", MedicalLocationApi),
 		("MessageApi", MessageApi),
 		("MessageBasicApi", MessageBasicApi),
 		("PatientApi", PatientApi),
@@ -4016,8 +3829,6 @@ class api(Structure):
 		("RecoveryApi", RecoveryApi),
 		("RoleApi", RoleApi),
 		("SystemApi", SystemApi),
-		("TarificationApi", TarificationApi),
-		("TimeTableApi", TimeTableApi),
 		("TopicApi", TopicApi),
 		("TopicBasicApi", TopicBasicApi),
 		("UserApi", UserApi),
@@ -4218,13 +4029,6 @@ class MaintenanceTaskFilters(Structure):
 	]
 
 
-class MedicalLocationFilters(Structure):
-	_fields_ = [
-		("all", CFUNCTYPE(c_void_p)),
-		("byPostCode", CFUNCTYPE(c_void_p, c_char_p)),
-	]
-
-
 class MessageFilters(Structure):
 	_fields_ = [
 		("allMessagesForDataOwner", CFUNCTYPE(c_void_p, c_char_p)),
@@ -4327,13 +4131,6 @@ class ServiceFilters(Structure):
 	]
 
 
-class TimeTableFilters(Structure):
-	_fields_ = [
-		("byAgendaId", CFUNCTYPE(c_void_p, c_char_p)),
-		("byPeriodAndAgendaId", CFUNCTYPE(c_void_p, c_char_p)),
-	]
-
-
 class TopicFilters(Structure):
 	_fields_ = [
 		("allTopicsForDataOwner", CFUNCTYPE(c_void_p, c_char_p)),
@@ -4367,12 +4164,10 @@ class filters(Structure):
 		("HealthElementFilters", HealthElementFilters),
 		("HealthcarePartyFilters", HealthcarePartyFilters),
 		("MaintenanceTaskFilters", MaintenanceTaskFilters),
-		("MedicalLocationFilters", MedicalLocationFilters),
 		("MessageFilters", MessageFilters),
 		("MetaFilters", MetaFilters),
 		("PatientFilters", PatientFilters),
 		("ServiceFilters", ServiceFilters),
-		("TimeTableFilters", TimeTableFilters),
 		("TopicFilters", TopicFilters),
 		("UserFilters", UserFilters),
 	]
