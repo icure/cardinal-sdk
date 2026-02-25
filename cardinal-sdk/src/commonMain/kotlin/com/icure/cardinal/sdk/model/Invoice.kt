@@ -25,13 +25,8 @@ import kotlin.String
 import kotlin.collections.List
 import kotlin.collections.Map
 import kotlin.collections.Set
-import com.icure.cardinal.sdk.model.embed.InvoiceInterventionType
-import com.icure.cardinal.sdk.model.embed.InvoiceType
-import com.icure.cardinal.sdk.model.embed.MediumType
 
-// WARNING: This file is auto-generated. If you change it manually, your changes will be lost.
-// If you want to change the way this class is generated, see [this repo](https://github.com/icure/sdk-codegen).
-sealed interface Invoice :
+public sealed interface Invoice :
 	StoredDocument,
 	ICureDocument<String>,
 	HasEncryptionMetadata,
@@ -159,13 +154,10 @@ sealed interface Invoice :
 	override val encryptedSelf: Base64String?
 
 	override val securityMetadata: SecurityMetadata?
-	// region Invoice-Invoice
-
-	// endregion
 }
 
 @Serializable
-data class DecryptedInvoice(
+public data class DecryptedInvoice(
 	override val id: String,
 	override val rev: String? = null,
 	@param:DefaultValue("emptyList()")
@@ -238,15 +230,10 @@ data class DecryptedInvoice(
 	override val encryptionKeys: Map<String, Set<Delegation>> = emptyMap(),
 	override val encryptedSelf: Base64String? = null,
 	override val securityMetadata: SecurityMetadata? = null,
-) : Invoice {
-	// region Invoice-DecryptedInvoice
-override fun copyWithSecurityMetadata(securityMetadata: SecurityMetadata, secretForeignKeys: Set<String>): DecryptedInvoice =
-		copy(securityMetadata = securityMetadata, secretForeignKeys = secretForeignKeys)
-	// endregion
-}
+) : Invoice
 
 @Serializable
-data class EncryptedInvoice(
+public data class EncryptedInvoice(
 	override val id: String,
 	override val rev: String? = null,
 	@param:DefaultValue("emptyList()")
@@ -319,9 +306,4 @@ data class EncryptedInvoice(
 	override val encryptionKeys: Map<String, Set<Delegation>> = emptyMap(),
 	override val encryptedSelf: Base64String? = null,
 	override val securityMetadata: SecurityMetadata? = null,
-) : Invoice {
-	// region Invoice-EncryptedInvoice
-override fun copyWithSecurityMetadata(securityMetadata: SecurityMetadata, secretForeignKeys: Set<String>): EncryptedInvoice =
-		copy(securityMetadata = securityMetadata, secretForeignKeys = secretForeignKeys)
-	// endregion
-}
+) : Invoice

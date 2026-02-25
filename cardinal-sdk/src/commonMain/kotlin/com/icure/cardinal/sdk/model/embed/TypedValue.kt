@@ -9,9 +9,7 @@ import kotlin.Long
 import kotlin.String
 import kotlin.time.Instant
 
-// WARNING: This file is auto-generated. If you change it manually, your changes will be lost.
-// If you want to change the way this class is generated, see [this repo](https://github.com/icure/sdk-codegen).
-sealed interface TypedValue : Encryptable {
+public sealed interface TypedValue : Encryptable {
 	public val type: TypedValuesType?
 
 	public val booleanValue: Boolean?
@@ -25,13 +23,10 @@ sealed interface TypedValue : Encryptable {
 	public val dateValue: Instant?
 
 	override val encryptedSelf: Base64String?
-	// region TypedValue-TypedValue
-
-	// endregion
 }
 
 @Serializable
-data class DecryptedTypedValue(
+public data class DecryptedTypedValue(
 	override val type: TypedValuesType? = null,
 	override val booleanValue: Boolean? = null,
 	override val integerValue: Long? = null,
@@ -40,14 +35,10 @@ data class DecryptedTypedValue(
 	@Serializable(with = InstantSerializer::class)
 	override val dateValue: Instant? = null,
 	override val encryptedSelf: Base64String? = null,
-) : TypedValue {
-	// region TypedValue-DecryptedTypedValue
-
-	// endregion
-}
+) : TypedValue
 
 @Serializable
-data class EncryptedTypedValue(
+public data class EncryptedTypedValue(
 	override val type: TypedValuesType? = null,
 	override val booleanValue: Boolean? = null,
 	override val integerValue: Long? = null,
@@ -56,8 +47,4 @@ data class EncryptedTypedValue(
 	@Serializable(with = InstantSerializer::class)
 	override val dateValue: Instant? = null,
 	override val encryptedSelf: Base64String? = null,
-) : TypedValue {
-	// region TypedValue-EncryptedTypedValue
-
-	// endregion
-}
+) : TypedValue

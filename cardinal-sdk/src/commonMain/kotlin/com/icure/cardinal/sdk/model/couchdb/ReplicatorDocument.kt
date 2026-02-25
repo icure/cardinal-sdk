@@ -10,11 +10,8 @@ import kotlin.String
 import kotlin.collections.List
 import kotlin.collections.Map
 
-// WARNING: This file is auto-generated. If you change it manually, your changes will be lost.
-// If you want to change the way this class is generated, see [this repo](https://github.com/icure/sdk-codegen).
-
 @Serializable
-data class ReplicatorDocument(
+public data class ReplicatorDocument(
 	override val id: String,
 	override val rev: String? = null,
 	public val source: Remote? = null,
@@ -30,8 +27,4 @@ data class ReplicatorDocument(
 	public val errorCount: Int? = null,
 	public val revsInfo: List<Map<String, String>>? = null,
 	public val revHistory: Map<String, String>? = null,
-) : Versionable<String> {
-	// region ReplicatorDocument-ReplicatorDocument
-
-	// endregion
-}
+) : Versionable<String>

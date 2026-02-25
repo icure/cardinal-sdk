@@ -15,11 +15,8 @@ import kotlin.String
 import kotlin.collections.List
 import kotlin.collections.Map
 import kotlin.collections.Set
-import com.icure.cardinal.sdk.model.embed.ReceiptBlobType
 
-// WARNING: This file is auto-generated. If you change it manually, your changes will be lost.
-// If you want to change the way this class is generated, see [this repo](https://github.com/icure/sdk-codegen).
-sealed interface Receipt :
+public sealed interface Receipt :
 	StoredDocument,
 	ICureDocument<String>,
 	HasEncryptionMetadata,
@@ -61,13 +58,10 @@ sealed interface Receipt :
 	override val encryptedSelf: Base64String?
 
 	override val securityMetadata: SecurityMetadata?
-	// region Receipt-Receipt
-
-	// endregion
 }
 
 @Serializable
-data class DecryptedReceipt(
+public data class DecryptedReceipt(
 	override val id: String,
 	override val rev: String? = null,
 	override val created: Long? = null,
@@ -94,15 +88,10 @@ data class DecryptedReceipt(
 	override val encryptionKeys: Map<String, Set<Delegation>> = emptyMap(),
 	override val encryptedSelf: Base64String? = null,
 	override val securityMetadata: SecurityMetadata? = null,
-) : Receipt {
-	// region Receipt-DecryptedReceipt
-override fun copyWithSecurityMetadata(securityMetadata: SecurityMetadata, secretForeignKeys: Set<String>): DecryptedReceipt =
-		copy(securityMetadata = securityMetadata, secretForeignKeys = secretForeignKeys)
-	// endregion
-}
+) : Receipt
 
 @Serializable
-data class EncryptedReceipt(
+public data class EncryptedReceipt(
 	override val id: String,
 	override val rev: String? = null,
 	override val created: Long? = null,
@@ -129,9 +118,4 @@ data class EncryptedReceipt(
 	override val encryptionKeys: Map<String, Set<Delegation>> = emptyMap(),
 	override val encryptedSelf: Base64String? = null,
 	override val securityMetadata: SecurityMetadata? = null,
-) : Receipt {
-	// region Receipt-EncryptedReceipt
-override fun copyWithSecurityMetadata(securityMetadata: SecurityMetadata, secretForeignKeys: Set<String>): EncryptedReceipt =
-		copy(securityMetadata = securityMetadata, secretForeignKeys = secretForeignKeys)
-	// endregion
-}
+) : Receipt
