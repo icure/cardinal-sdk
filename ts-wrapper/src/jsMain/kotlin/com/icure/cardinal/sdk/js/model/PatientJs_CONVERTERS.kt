@@ -449,13 +449,11 @@ public fun patient_toJs(obj: DecryptedPatient): DecryptedPatientJs {
 			securityMetadata_toJs(nonNull1)
 		}
 	)
-	val cryptoActorProperties = nullToUndefined(
-		setToArray(
-			obj.cryptoActorProperties,
-			{ x1: DecryptedPropertyStub ->
-				propertyStub_toJs(x1)
-			},
-		)
+	val cryptoActorProperties = setToArray(
+		obj.cryptoActorProperties,
+		{ x1: DecryptedPropertyStub ->
+			propertyStub_toJs(x1)
+		},
 	)
 	val parentId = nullToUndefined(
 		obj.parentId
@@ -1271,13 +1269,11 @@ public fun patient_toJs(obj: EncryptedPatient): EncryptedPatientJs {
 			securityMetadata_toJs(nonNull1)
 		}
 	)
-	val cryptoActorProperties = nullToUndefined(
-		setToArray(
-			obj.cryptoActorProperties,
-			{ x1: DecryptedPropertyStub ->
-				propertyStub_toJs(x1)
-			},
-		)
+	val cryptoActorProperties = setToArray(
+		obj.cryptoActorProperties,
+		{ x1: DecryptedPropertyStub ->
+			propertyStub_toJs(x1)
+		},
 	)
 	val parentId = nullToUndefined(
 		obj.parentId

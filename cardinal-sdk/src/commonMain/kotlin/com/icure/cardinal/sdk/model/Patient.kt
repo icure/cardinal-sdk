@@ -196,7 +196,7 @@ sealed interface Patient :
 
 	override val securityMetadata: SecurityMetadata?
 
-	override val cryptoActorProperties: Set<DecryptedPropertyStub>?
+	override val cryptoActorProperties: Set<DecryptedPropertyStub>
 
 	override val parentId: Nothing?
 	// region Patient-Patient
@@ -306,7 +306,7 @@ data class DecryptedPatient(
 	override val encryptionKeys: Map<String, Set<Delegation>> = emptyMap(),
 	override val encryptedSelf: Base64String? = null,
 	override val securityMetadata: SecurityMetadata? = null,
-	override val cryptoActorProperties: Set<DecryptedPropertyStub>? = null,
+	override val cryptoActorProperties: Set<DecryptedPropertyStub> = emptySet(),
 	override val parentId: Nothing? = null,
 ) : Patient {
 	// region Patient-DecryptedPatient
@@ -415,7 +415,7 @@ data class EncryptedPatient(
 	override val encryptionKeys: Map<String, Set<Delegation>> = emptyMap(),
 	override val encryptedSelf: Base64String? = null,
 	override val securityMetadata: SecurityMetadata? = null,
-	override val cryptoActorProperties: Set<DecryptedPropertyStub>? = null,
+	override val cryptoActorProperties: Set<DecryptedPropertyStub> = emptySet(),
 	override val parentId: Nothing? = null,
 ) : Patient {
 	// region Patient-EncryptedPatient

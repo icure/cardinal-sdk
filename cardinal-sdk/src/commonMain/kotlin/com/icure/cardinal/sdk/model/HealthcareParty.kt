@@ -77,13 +77,13 @@ data class HealthcareParty(
 	public val financialInstitutionInformation: List<DecryptedFinancialInstitutionInformation> =
 		emptyList(),
 	@param:DefaultValue("emptyMap()")
-	public val descr: Map<String, String>? = emptyMap(),
+	public val descr: Map<String, String> = emptyMap(),
 	@param:DefaultValue("emptySet()")
 	override val properties: Set<DecryptedPropertyStub> = emptySet(),
 	@param:DefaultValue("false")
 	public val `public`: Boolean = false,
 	public val publicProperties: Set<DecryptedPropertyStub>? = null,
-	override val cryptoActorProperties: Set<DecryptedPropertyStub>? = null,
+	override val cryptoActorProperties: Set<DecryptedPropertyStub> = emptySet(),
 	@param:DefaultValue("emptyMap()")
 	override val hcPartyKeys: Map<String, List<HexString>> = emptyMap(),
 	@param:DefaultValue("emptyMap()")

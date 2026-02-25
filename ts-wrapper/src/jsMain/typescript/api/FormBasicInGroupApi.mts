@@ -73,6 +73,9 @@ export interface FormBasicInGroupApi {
 
 	purgeFormTemplates(formTemplates: Array<GroupScoped<FormTemplate>>): Promise<Array<GroupScoped<StoredDocumentIdentifier>>>;
 
+	matchFormTemplateBy(groupId: string,
+			filter: BaseFilterOptions<FormTemplate>): Promise<Array<string>>;
+
 	createForm(entity: GroupScoped<EncryptedForm>): Promise<GroupScoped<EncryptedForm>>;
 
 	createForms(entities: Array<GroupScoped<EncryptedForm>>): Promise<Array<GroupScoped<EncryptedForm>>>;

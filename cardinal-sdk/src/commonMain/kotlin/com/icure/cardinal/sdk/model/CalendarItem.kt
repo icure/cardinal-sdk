@@ -18,12 +18,12 @@ import com.icure.cardinal.sdk.utils.DefaultValue
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 import kotlin.Boolean
+import kotlin.Deprecated
 import kotlin.Long
 import kotlin.String
 import kotlin.collections.Map
 import kotlin.collections.Set
 import com.icure.cardinal.sdk.model.embed.FlowItem
-import kotlin.Deprecated
 
 // WARNING: This file is auto-generated. If you change it manually, your changes will be lost.
 // If you want to change the way this class is generated, see [this repo](https://github.com/icure/sdk-codegen).
@@ -60,6 +60,8 @@ sealed interface CalendarItem :
 
 	public val homeVisit: Boolean?
 
+	public val phoneNumber: String?
+
 	public val placeId: String?
 
 	public val address: Address?
@@ -69,6 +71,21 @@ sealed interface CalendarItem :
 	public val startTime: Long?
 
 	public val endTime: Long?
+
+	@Deprecated("Ignored by availabilities algorithm, will be replaced by another more descriptive field")
+	public val confirmationTime: Long?
+
+	@Deprecated("Ignored by availabilities algorithm, will be replaced by another more descriptive field")
+	public val cancellationTimestamp: Long?
+
+	@Deprecated("Ignored by availabilities algorithm, will be replaced by another more descriptive field")
+	public val confirmationId: String?
+
+	@Deprecated("Ignored by availabilities algorithm, use appropriate startTime and endTime")
+	public val duration: Long?
+
+	@Deprecated("Ignored by availabilities algorithm, use appropriate startTime and endTime")
+	public val allDay: Boolean?
 
 	public val details: String?
 
@@ -83,6 +100,8 @@ sealed interface CalendarItem :
 	public val recurrenceId: String?
 
 	public val meetingTags: Set<CalendarItemTag>
+
+	public val properties: Set<PropertyStub>
 
 	override val secretForeignKeys: Set<String>
 
@@ -132,11 +151,22 @@ data class DecryptedCalendarItem(
 	override val masterCalendarItemId: String? = null,
 	override val important: Boolean? = null,
 	override val homeVisit: Boolean? = null,
+	override val phoneNumber: String? = null,
 	override val placeId: String? = null,
 	override val address: DecryptedAddress? = null,
 	override val addressText: String? = null,
 	override val startTime: Long? = null,
 	override val endTime: Long? = null,
+	@Deprecated("Ignored by availabilities algorithm, will be replaced by another more descriptive field")
+	override val confirmationTime: Long? = null,
+	@Deprecated("Ignored by availabilities algorithm, will be replaced by another more descriptive field")
+	override val cancellationTimestamp: Long? = null,
+	@Deprecated("Ignored by availabilities algorithm, will be replaced by another more descriptive field")
+	override val confirmationId: String? = null,
+	@Deprecated("Ignored by availabilities algorithm, use appropriate startTime and endTime")
+	override val duration: Long? = null,
+	@Deprecated("Ignored by availabilities algorithm, use appropriate startTime and endTime")
+	override val allDay: Boolean? = null,
 	override val details: String? = null,
 	override val wasMigrated: Boolean? = null,
 	override val agendaId: String? = null,
@@ -146,6 +176,8 @@ data class DecryptedCalendarItem(
 	override val recurrenceId: String? = null,
 	@param:DefaultValue("emptySet()")
 	override val meetingTags: Set<DecryptedCalendarItemTag> = emptySet(),
+	@param:DefaultValue("emptySet()")
+	override val properties: Set<DecryptedPropertyStub> = emptySet(),
 	@param:DefaultValue("emptySet()")
 	override val secretForeignKeys: Set<String> = emptySet(),
 	@param:DefaultValue("emptyMap()")
@@ -195,11 +227,22 @@ data class EncryptedCalendarItem(
 	override val masterCalendarItemId: String? = null,
 	override val important: Boolean? = null,
 	override val homeVisit: Boolean? = null,
+	override val phoneNumber: String? = null,
 	override val placeId: String? = null,
 	override val address: EncryptedAddress? = null,
 	override val addressText: String? = null,
 	override val startTime: Long? = null,
 	override val endTime: Long? = null,
+	@Deprecated("Ignored by availabilities algorithm, will be replaced by another more descriptive field")
+	override val confirmationTime: Long? = null,
+	@Deprecated("Ignored by availabilities algorithm, will be replaced by another more descriptive field")
+	override val cancellationTimestamp: Long? = null,
+	@Deprecated("Ignored by availabilities algorithm, will be replaced by another more descriptive field")
+	override val confirmationId: String? = null,
+	@Deprecated("Ignored by availabilities algorithm, use appropriate startTime and endTime")
+	override val duration: Long? = null,
+	@Deprecated("Ignored by availabilities algorithm, use appropriate startTime and endTime")
+	override val allDay: Boolean? = null,
 	override val details: String? = null,
 	override val wasMigrated: Boolean? = null,
 	override val agendaId: String? = null,
@@ -209,6 +252,8 @@ data class EncryptedCalendarItem(
 	override val recurrenceId: String? = null,
 	@param:DefaultValue("emptySet()")
 	override val meetingTags: Set<EncryptedCalendarItemTag> = emptySet(),
+	@param:DefaultValue("emptySet()")
+	override val properties: Set<EncryptedPropertyStub> = emptySet(),
 	@param:DefaultValue("emptySet()")
 	override val secretForeignKeys: Set<String> = emptySet(),
 	@param:DefaultValue("emptyMap()")

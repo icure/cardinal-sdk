@@ -95,29 +95,16 @@ internal inline fun <T, U> skipRequestOnEmptyList(input: List<T>, block: (List<T
 	if (input.isNotEmpty()) block(input)
 	else emptyList()
 
-internal fun <E : Versionable<String>> basicRequireIsValidForCreation(entity: E) {
+internal fun <E : Versionable<String>> requireIsValidForCreation(entity: E) {
 	require(entity.rev == null) {
 		"Entity ${entity.id} must have a null rev for creation."
 	}
 }
 
-internal fun <E : HasEncryptionMetadata> requireIsValidForCreation(entity: E) {
-	basicRequireIsValidForCreation(entity)
-	require(entity.securityMetadata != null) {
-		"Entity must have security metadata initialized. Make sure to use the `withEncryptionMetadata` method."
-	}
-}
-
-internal fun <E : Versionable<String>> basicRequireIsValidForCreation(entities: List<E>) =
-	entities.forEach { basicRequireIsValidForCreation(it) }
-
-internal fun <E : Versionable<String>> basicRequireIsValidForCreationInGroup(entities: List<GroupScoped<E>>) =
-	entities.forEach { basicRequireIsValidForCreation(it.entity) }
-
-internal fun <E : HasEncryptionMetadata> requireIsValidForCreation(entities: List<E>) =
+internal fun <E : Versionable<String>> requireIsValidForCreation(entities: List<E>) =
 	entities.forEach { requireIsValidForCreation(it) }
 
-internal fun <E : HasEncryptionMetadata> requireIsValidForCreationInGroup(entities: List<GroupScoped<E>>) =
+internal fun <E : Versionable<String>> requireIsValidForCreationInGroup(entities: List<GroupScoped<E>>) =
 	entities.forEach { requireIsValidForCreation(it.entity) }
 
 internal fun <E : Versionable<String>> requireIsValidForModification(entity: E) {

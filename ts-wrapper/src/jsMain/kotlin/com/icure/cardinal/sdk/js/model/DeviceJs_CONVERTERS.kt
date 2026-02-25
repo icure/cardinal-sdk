@@ -179,13 +179,11 @@ public fun device_toJs(obj: Device): DeviceJs {
 			spkiHexString_toJs(x1)
 		},
 	)
-	val cryptoActorProperties = nullToUndefined(
-		setToArray(
-			obj.cryptoActorProperties,
-			{ x1: DecryptedPropertyStub ->
-				propertyStub_toJs(x1)
-			},
-		)
+	val cryptoActorProperties = setToArray(
+		obj.cryptoActorProperties,
+		{ x1: DecryptedPropertyStub ->
+			propertyStub_toJs(x1)
+		},
 	)
 	return DeviceJs(js("{" +
 		"id:id," +

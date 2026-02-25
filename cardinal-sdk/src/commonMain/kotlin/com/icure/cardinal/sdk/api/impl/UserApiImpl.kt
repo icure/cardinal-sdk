@@ -35,7 +35,7 @@ internal abstract class AbstractUserApi(
 ) {
 
 	protected suspend fun doCreateUser(groupId: String?, entity: User): User {
-		basicRequireIsValidForCreation(entity)
+		requireIsValidForCreation(entity)
 		return if (groupId == null) {
 			rawApi.createUser(entity)
 		} else {
@@ -160,7 +160,7 @@ internal class UserApiImpl(
 	override suspend fun createUser(user: User) = doCreateUser(groupId = null, entity = user)
 
 	override suspend fun createUsers(users: List<User>): List<User> {
-		basicRequireIsValidForCreation(users)
+		requireIsValidForCreation(users)
 		return doCreateUsers(groupId = null, entities = users)
 	}
 
@@ -288,7 +288,7 @@ internal class UserInGroupApiImpl(
 	}
 
 	override suspend fun createUsers(users: List<GroupScoped<User>>): List<GroupScoped<User>> {
-		basicRequireIsValidForCreationInGroup(users)
+		requireIsValidForCreationInGroup(users)
 		return users.mapUniqueIdentifiablesChunkedByGroup { groupId, chunk ->
 			doCreateUsers(groupId = groupId, entities = chunk)
 		}

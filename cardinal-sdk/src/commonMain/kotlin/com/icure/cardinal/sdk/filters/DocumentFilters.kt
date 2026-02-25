@@ -13,7 +13,9 @@ import com.icure.cardinal.sdk.model.Message
 import com.icure.cardinal.sdk.model.Patient
 import com.icure.cardinal.sdk.model.embed.DocumentType
 import com.icure.cardinal.sdk.model.filter.AbstractFilter
+import com.icure.cardinal.sdk.model.filter.document.DocumentByDataOwnerCodeFilter
 import com.icure.cardinal.sdk.model.filter.document.DocumentByDataOwnerPatientDateFilter
+import com.icure.cardinal.sdk.model.filter.document.DocumentByDataOwnerTagFilter
 import com.icure.cardinal.sdk.model.filter.document.DocumentByTypeDataOwnerPatientFilter
 import com.icure.cardinal.sdk.options.ApiConfiguration
 import com.icure.cardinal.sdk.options.BasicApiConfiguration
@@ -493,6 +495,116 @@ object DocumentFilters {
 		type = documentType,
 	)
 
+	/**
+	 * Options for document filtering which match all documents shared directly (i.e. ignoring hierarchies) with a specific data owner that have a certain code.
+	 * If you specify only the [codeType] you will get all entities that have at least a code of that type.
+	 *
+	 * These options are sortable. When sorting using these options the documents will be sorted by [codeCode].
+	 *
+	 * @param dataOwnerId a data owner id
+	 * @param codeType a code type
+	 * @param codeCode a code for the provided code type, or null if you want the filter to accept any entity
+	 * with a code of the provided type.
+	 */
+	fun byCodeForDataOwner(
+		dataOwnerId: String,
+		codeType: String,
+		@DefaultValue("null")
+		codeCode: String? = null
+	): BaseSortableFilterOptions<Document> = ByCodeForDataOwner(
+		codeType = codeType,
+		codeCode = codeCode,
+		dataOwnerId = EntityReferenceInGroup(groupId = null, entityId = dataOwnerId)
+	)
+
+	/**
+	 * In group version of [byCodeForDataOwner].
+	 */
+	fun byCodeForDataOwnerInGroup(
+		dataOwner: EntityReferenceInGroup,
+		codeType: String,
+		@DefaultValue("null")
+		codeCode: String? = null
+	): BaseSortableFilterOptions<Document> = ByCodeForDataOwner(
+		codeType = codeType,
+		codeCode = codeCode,
+		dataOwnerId = dataOwner
+	)
+
+	/**
+	 * Options for document filtering which match all documents shared directly (i.e. ignoring hierarchies) with the current data owner that have a certain code.
+	 * If you specify only the [codeType] you will get all entities that have at least a code of that type.
+	 *
+	 * These options are sortable. When sorting using these options the documents will be sorted by [codeCode].
+	 *
+	 * @param codeType a code type
+	 * @param codeCode a code for the provided code type, or null if you want the filter to accept any entity
+	 * with a code of the provided type.
+	 */
+	fun byCodeForSelf(
+		codeType: String,
+		@DefaultValue("null")
+		codeCode: String? = null
+	): SortableFilterOptions<Document> = ByCodeForSelf(
+		codeType = codeType,
+		codeCode = codeCode
+	)
+
+	/**
+	 * Options for document filtering which match all documents shared directly (i.e. ignoring hierarchies) with a specific data owner that have a certain tag.
+	 * If you specify only the [tagType] you will get all entities that have at least a tag of that type.
+	 *
+	 * These options are sortable. When sorting using these options the documents will be sorted by [tagCode].
+	 *
+	 * @param dataOwnerId a data owner id
+	 * @param tagType a tag type
+	 * @param tagCode a code for the provided tag type, or null if you want the filter to accept any entity
+	 * with a tag of the provided type.
+	 */
+	fun byTagForDataOwner(
+		dataOwnerId: String,
+		tagType: String,
+		@DefaultValue("null")
+		tagCode: String? = null
+	): BaseSortableFilterOptions<Document> = ByTagForDataOwner(
+		tagType = tagType,
+		tagCode = tagCode,
+		dataOwnerId = EntityReferenceInGroup(groupId = null, entityId = dataOwnerId)
+	)
+
+	/**
+	 * In group version of [byTagForDataOwner].
+	 */
+	fun byTagForDataOwnerInGroup(
+		dataOwner: EntityReferenceInGroup,
+		tagType: String,
+		@DefaultValue("null")
+		tagCode: String? = null
+	): BaseSortableFilterOptions<Document> = ByTagForDataOwner(
+		tagType = tagType,
+		tagCode = tagCode,
+		dataOwnerId = dataOwner
+	)
+
+	/**
+	 * Options for document filtering which match all documents shared directly (i.e. ignoring hierarchies) with the current data owner that have a certain tag.
+	 * If you specify only the [tagType] you will get all entities that have at least a tag of that type.
+	 *
+	 * These options are sortable. When sorting using these options the documents will be sorted by [tagCode].
+	 *
+	 * @param tagType a tag type
+	 * @param tagCode a code for the provided tag type, or null if you want the filter to accept any entity
+	 * with a tag of the provided type.
+	 */
+	fun byTagForSelf(
+		tagType: String,
+		@DefaultValue("null")
+		tagCode: String? = null
+	): SortableFilterOptions<Document> = ByTagForSelf(
+		tagType = tagType,
+		tagCode = tagCode
+	)
+
 
 	@Serializable
 	@InternalIcureApi
@@ -591,6 +703,32 @@ object DocumentFilters {
 		val secretIds: List<String>,
 		val type: DocumentType
 	): FilterOptions<Document>
+
+	@Serializable
+	internal class ByCodeForDataOwner(
+		val codeType: String,
+		val codeCode: String?,
+		val dataOwnerId: EntityReferenceInGroup
+	): BaseSortableFilterOptions<Document>
+
+	@Serializable
+	internal class ByCodeForSelf(
+		val codeType: String,
+		val codeCode: String?,
+	): SortableFilterOptions<Document>
+
+	@Serializable
+	internal class ByTagForDataOwner(
+		val tagType: String,
+		val tagCode: String?,
+		val dataOwnerId: EntityReferenceInGroup
+	): BaseSortableFilterOptions<Document>
+
+	@Serializable
+	internal class ByTagForSelf(
+		val tagType: String,
+		val tagCode: String?,
+	): SortableFilterOptions<Document>
 }
 
 @InternalIcureApi
@@ -743,6 +881,36 @@ private suspend fun mapDocumentFilterOptions(
 			dataOwnerId = selfDataOwner.asReferenceStringInGroup(requestGroup, boundGroup),
 			secretPatientKeys = filterOptions.secretIds.toSet(),
 			documentType = filterOptions.type
+		)
+	}
+	is DocumentFilters.ByTagForDataOwner -> {
+		DocumentByDataOwnerTagFilter(
+			dataOwnerId = filterOptions.dataOwnerId.asReferenceStringInGroup(requestGroup, boundGroup),
+			tagType = filterOptions.tagType,
+			tagCode = filterOptions.tagCode,
+		)
+	}
+	is DocumentFilters.ByTagForSelf -> {
+		filterOptions.ensureNonBaseEnvironment(selfDataOwner, entityEncryptionService)
+		DocumentByDataOwnerTagFilter(
+			dataOwnerId = selfDataOwner.asReferenceStringInGroup(requestGroup, boundGroup),
+			tagType = filterOptions.tagType,
+			tagCode = filterOptions.tagCode,
+		)
+	}
+	is DocumentFilters.ByCodeForDataOwner -> {
+		DocumentByDataOwnerCodeFilter(
+			dataOwnerId = filterOptions.dataOwnerId.asReferenceStringInGroup(requestGroup, boundGroup),
+			codeType = filterOptions.codeType,
+			codeCode = filterOptions.codeCode,
+		)
+	}
+	is DocumentFilters.ByCodeForSelf -> {
+		filterOptions.ensureNonBaseEnvironment(selfDataOwner, entityEncryptionService)
+		DocumentByDataOwnerCodeFilter(
+			dataOwnerId = selfDataOwner.asReferenceStringInGroup(requestGroup, boundGroup),
+			codeType = filterOptions.codeType,
+			codeCode = filterOptions.codeCode,
 		)
 	}
 	else -> throw IllegalArgumentException("Filter options ${filterOptions::class.simpleName} are not valid for filtering Documents")

@@ -251,7 +251,7 @@ public external class DecryptedPatientJs(
 
 	override val securityMetadata: SecurityMetadataJs?
 
-	override val cryptoActorProperties: Array<DecryptedPropertyStubJs>?
+	override val cryptoActorProperties: Array<DecryptedPropertyStubJs>
 
 	override val parentId: Nothing?
 
@@ -394,7 +394,7 @@ public external class EncryptedPatientJs(
 
 	override val securityMetadata: SecurityMetadataJs?
 
-	override val cryptoActorProperties: Array<DecryptedPropertyStubJs>?
+	override val cryptoActorProperties: Array<DecryptedPropertyStubJs>
 
 	override val parentId: Nothing?
 

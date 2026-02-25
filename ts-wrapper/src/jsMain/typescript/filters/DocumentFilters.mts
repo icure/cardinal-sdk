@@ -67,6 +67,24 @@ interface DocumentFiltersFactory {
 	byOwningEntitySecretIdsAndTypeForSelf(documentType: DocumentType,
 			secretIds: Array<string>): FilterOptions<Document>;
 
+	byCodeForDataOwner(dataOwnerId: string, codeType: string,
+			options?: { codeCode?: string | undefined }): BaseSortableFilterOptions<Document>;
+
+	byCodeForDataOwnerInGroup(dataOwner: EntityReferenceInGroup, codeType: string,
+			options?: { codeCode?: string | undefined }): BaseSortableFilterOptions<Document>;
+
+	byCodeForSelf(codeType: string,
+			options?: { codeCode?: string | undefined }): SortableFilterOptions<Document>;
+
+	byTagForDataOwner(dataOwnerId: string, tagType: string,
+			options?: { tagCode?: string | undefined }): BaseSortableFilterOptions<Document>;
+
+	byTagForDataOwnerInGroup(dataOwner: EntityReferenceInGroup, tagType: string,
+			options?: { tagCode?: string | undefined }): BaseSortableFilterOptions<Document>;
+
+	byTagForSelf(tagType: string,
+			options?: { tagCode?: string | undefined }): SortableFilterOptions<Document>;
+
 }
 
 export const DocumentFilters: DocumentFiltersFactory = {
@@ -87,5 +105,11 @@ export const DocumentFilters: DocumentFiltersFactory = {
 			byMessagesAndTypeForSelf: (documentType, messages) => InternalDocumentFiltersObj.getInstance().byMessagesAndTypeForSelf(documentType, messages),
 			byOwningEntitySecretIdsAndTypeForDataOwner: (dataOwnerId, documentType, secretIds) => InternalDocumentFiltersObj.getInstance().byOwningEntitySecretIdsAndTypeForDataOwner(dataOwnerId, documentType, secretIds),
 			byOwningEntitySecretIdsAndTypeForDataOwnerInGroup: (dataOwner, documentType, secretIds) => InternalDocumentFiltersObj.getInstance().byOwningEntitySecretIdsAndTypeForDataOwnerInGroup(dataOwner, documentType, secretIds),
-			byOwningEntitySecretIdsAndTypeForSelf: (documentType, secretIds) => InternalDocumentFiltersObj.getInstance().byOwningEntitySecretIdsAndTypeForSelf(documentType, secretIds)
+			byOwningEntitySecretIdsAndTypeForSelf: (documentType, secretIds) => InternalDocumentFiltersObj.getInstance().byOwningEntitySecretIdsAndTypeForSelf(documentType, secretIds),
+			byCodeForDataOwner: (dataOwnerId, codeType, options) => InternalDocumentFiltersObj.getInstance().byCodeForDataOwner(dataOwnerId, codeType, options),
+			byCodeForDataOwnerInGroup: (dataOwner, codeType, options) => InternalDocumentFiltersObj.getInstance().byCodeForDataOwnerInGroup(dataOwner, codeType, options),
+			byCodeForSelf: (codeType, options) => InternalDocumentFiltersObj.getInstance().byCodeForSelf(codeType, options),
+			byTagForDataOwner: (dataOwnerId, tagType, options) => InternalDocumentFiltersObj.getInstance().byTagForDataOwner(dataOwnerId, tagType, options),
+			byTagForDataOwnerInGroup: (dataOwner, tagType, options) => InternalDocumentFiltersObj.getInstance().byTagForDataOwnerInGroup(dataOwner, tagType, options),
+			byTagForSelf: (tagType, options) => InternalDocumentFiltersObj.getInstance().byTagForSelf(tagType, options)
 		};

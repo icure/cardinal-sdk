@@ -746,6 +746,8 @@ interface FormTemplateApi {
 	 * Sets the attachment to the form template.
 	 */
 	suspend fun setTemplateAttachment(formTemplateId: String, payload: ByteArray): String
+
+	suspend fun matchFormTemplateBy(filter: BaseFilterOptions<FormTemplate>): List<String>
 }
 
 interface FormTemplateInGroupApi {
@@ -783,5 +785,7 @@ interface FormTemplateInGroupApi {
 	}
 	suspend fun purgeFormTemplates(formTemplates: List<GroupScoped<FormTemplate>>): List<GroupScoped<StoredDocumentIdentifier>> =
 		purgeFormTemplateByIds(formTemplates.map { it.toStoredDocumentIdentifier() })
+
+	suspend fun matchFormTemplateBy(groupId: String, filter: BaseFilterOptions<FormTemplate>): List<String>
 
 }

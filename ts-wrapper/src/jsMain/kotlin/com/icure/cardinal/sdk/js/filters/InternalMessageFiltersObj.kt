@@ -8,6 +8,7 @@ import com.icure.cardinal.sdk.js.model.CheckedConverters.arrayToList
 import com.icure.cardinal.sdk.js.model.CheckedConverters.arrayToSet
 import com.icure.cardinal.sdk.js.model.CheckedConverters.numberToInstant
 import com.icure.cardinal.sdk.js.model.CheckedConverters.numberToLong
+import com.icure.cardinal.sdk.js.model.CheckedConverters.undefinedToNull
 import com.icure.cardinal.sdk.js.model.EntityReferenceInGroupJs
 import com.icure.cardinal.sdk.js.model.GroupScopedJs
 import com.icure.cardinal.sdk.js.model.MessageJs
@@ -593,5 +594,131 @@ public object InternalMessageFiltersObj {
 			descendingConverted,
 		)
 		return FilterOptionsJsImpl(result)
+	}
+
+	public fun byCodeForDataOwner(
+		dataOwnerId: String,
+		codeType: String,
+		options: dynamic,
+	): BaseSortableFilterOptionsJs<MessageJs> {
+		val _options = options ?: js("{}")
+		val dataOwnerIdConverted: String = dataOwnerId
+		val codeTypeConverted: String = codeType
+		val codeCodeConverted: String? = convertingOptionOrDefaultNullable(
+			_options,
+			"codeCode",
+			null
+		) { codeCode: String? ->
+			undefinedToNull(codeCode)
+		}
+		val result = MessageFilters.byCodeForDataOwner(
+			dataOwnerIdConverted,
+			codeTypeConverted,
+			codeCodeConverted,
+		)
+		return BaseSortableFilterOptionsJsImpl(result)
+	}
+
+	public fun byCodeForDataOwnerInGroup(
+		dataOwner: EntityReferenceInGroupJs,
+		codeType: String,
+		options: dynamic,
+	): BaseSortableFilterOptionsJs<MessageJs> {
+		val _options = options ?: js("{}")
+		val dataOwnerConverted: EntityReferenceInGroup = entityReferenceInGroup_fromJs(dataOwner)
+		val codeTypeConverted: String = codeType
+		val codeCodeConverted: String? = convertingOptionOrDefaultNullable(
+			_options,
+			"codeCode",
+			null
+		) { codeCode: String? ->
+			undefinedToNull(codeCode)
+		}
+		val result = MessageFilters.byCodeForDataOwnerInGroup(
+			dataOwnerConverted,
+			codeTypeConverted,
+			codeCodeConverted,
+		)
+		return BaseSortableFilterOptionsJsImpl(result)
+	}
+
+	public fun byCodeForSelf(codeType: String, options: dynamic): SortableFilterOptionsJs<MessageJs> {
+		val _options = options ?: js("{}")
+		val codeTypeConverted: String = codeType
+		val codeCodeConverted: String? = convertingOptionOrDefaultNullable(
+			_options,
+			"codeCode",
+			null
+		) { codeCode: String? ->
+			undefinedToNull(codeCode)
+		}
+		val result = MessageFilters.byCodeForSelf(
+			codeTypeConverted,
+			codeCodeConverted,
+		)
+		return SortableFilterOptionsJsImpl(result)
+	}
+
+	public fun byTagForDataOwner(
+		dataOwnerId: String,
+		tagType: String,
+		options: dynamic,
+	): BaseSortableFilterOptionsJs<MessageJs> {
+		val _options = options ?: js("{}")
+		val dataOwnerIdConverted: String = dataOwnerId
+		val tagTypeConverted: String = tagType
+		val tagCodeConverted: String? = convertingOptionOrDefaultNullable(
+			_options,
+			"tagCode",
+			null
+		) { tagCode: String? ->
+			undefinedToNull(tagCode)
+		}
+		val result = MessageFilters.byTagForDataOwner(
+			dataOwnerIdConverted,
+			tagTypeConverted,
+			tagCodeConverted,
+		)
+		return BaseSortableFilterOptionsJsImpl(result)
+	}
+
+	public fun byTagForDataOwnerInGroup(
+		dataOwner: EntityReferenceInGroupJs,
+		tagType: String,
+		options: dynamic,
+	): BaseSortableFilterOptionsJs<MessageJs> {
+		val _options = options ?: js("{}")
+		val dataOwnerConverted: EntityReferenceInGroup = entityReferenceInGroup_fromJs(dataOwner)
+		val tagTypeConverted: String = tagType
+		val tagCodeConverted: String? = convertingOptionOrDefaultNullable(
+			_options,
+			"tagCode",
+			null
+		) { tagCode: String? ->
+			undefinedToNull(tagCode)
+		}
+		val result = MessageFilters.byTagForDataOwnerInGroup(
+			dataOwnerConverted,
+			tagTypeConverted,
+			tagCodeConverted,
+		)
+		return BaseSortableFilterOptionsJsImpl(result)
+	}
+
+	public fun byTagForSelf(tagType: String, options: dynamic): SortableFilterOptionsJs<MessageJs> {
+		val _options = options ?: js("{}")
+		val tagTypeConverted: String = tagType
+		val tagCodeConverted: String? = convertingOptionOrDefaultNullable(
+			_options,
+			"tagCode",
+			null
+		) { tagCode: String? ->
+			undefinedToNull(tagCode)
+		}
+		val result = MessageFilters.byTagForSelf(
+			tagTypeConverted,
+			tagCodeConverted,
+		)
+		return SortableFilterOptionsJsImpl(result)
 	}
 }

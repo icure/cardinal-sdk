@@ -36,14 +36,20 @@ internal interface FlavouredApi<EncryptedEntity : HasEncryptionMetadata, Flavour
 			override suspend fun validateAndMaybeEncrypt(
 				entitiesGroupId: String?,
 				entities: List<DecryptedEntity>
-			): List<EncryptedEntity> =
-				config.crypto.entity.encryptEntities(
+			): List<EncryptedEntity> {
+				entities.forEach {
+					require(it.securityMetadata != null) {
+						"Entity must have security metadata initialized. Make sure to use the `withEncryptionMetadata` method before creating new entities."
+					}
+				}
+				return config.crypto.entity.encryptEntities(
 					entitiesGroupId,
 					entities,
 					type,
 					decryptedSerializer,
 					config.encryption.manifest(),
 				) { Serialization.json.decodeFromJsonElement(encryptedSerializer, it) }
+			}
 
 			override suspend fun maybeDecrypt(
 				entitiesGroupId: String?,
@@ -148,6 +154,11 @@ internal suspend inline fun <Base, reified EncryptedEntity : Base, reified Decry
 	validateOrEncryptEntities<Base, EncryptedEntity, DecryptedEntity>(
 		entities = entities,
 		doEncrypt = { decryptedEntities ->
+			decryptedEntities.forEach {
+				require(it.securityMetadata != null) {
+					"Entity must have security metadata initialized. Make sure to use the `withEncryptionMetadata` method before creating new entities."
+				}
+			}
 			encryptEntities(
 				entitiesGroupId,
 				decryptedEntities,

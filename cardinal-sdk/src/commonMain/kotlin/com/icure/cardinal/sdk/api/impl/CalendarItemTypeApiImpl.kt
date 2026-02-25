@@ -19,7 +19,7 @@ internal abstract class AbstractCalendarItemTypeApi(
 ) {
 
 	protected suspend fun doCreateCalendarItemType(groupId: String?, entity: CalendarItemType): CalendarItemType {
-		basicRequireIsValidForCreation(entity)
+		requireIsValidForCreation(entity)
 		return if (groupId == null) {
 			rawApi.createCalendarItemType(entity)
 		} else {
@@ -131,7 +131,7 @@ internal class CalendarItemTypeApiImpl(
 		doCreateCalendarItemType(groupId = null, calendarItemType)
 
 	override suspend fun createCalendarItemTypes(calendarItemTypes: List<CalendarItemType>): List<CalendarItemType> {
-		basicRequireIsValidForCreation(calendarItemTypes)
+		requireIsValidForCreation(calendarItemTypes)
 		return doCreateCalendarItemTypes(groupId = null, calendarItemTypes)
 	}
 
@@ -181,7 +181,7 @@ internal class CalendarItemTypeInGroupApiImpl(
 		groupScopedWith(calendarItemType) { groupId, entity -> doCreateCalendarItemType(groupId, entity) }
 
 	override suspend fun createCalendarItemTypes(calendarItemTypes: List<GroupScoped<CalendarItemType>>): List<GroupScoped<CalendarItemType>> {
-		basicRequireIsValidForCreationInGroup(calendarItemTypes)
+		requireIsValidForCreationInGroup(calendarItemTypes)
 		return calendarItemTypes.mapUniqueIdentifiablesChunkedByGroup { groupId, chunk ->
 			doCreateCalendarItemTypes(groupId, chunk)
 		}

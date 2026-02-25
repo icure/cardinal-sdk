@@ -10,6 +10,7 @@ import com.icure.cardinal.sdk.model.Contact
 import com.icure.cardinal.sdk.model.Device
 import com.icure.cardinal.sdk.model.Document
 import com.icure.cardinal.sdk.model.Form
+import com.icure.cardinal.sdk.model.FormTemplate
 import com.icure.cardinal.sdk.model.Group
 import com.icure.cardinal.sdk.model.HealthElement
 import com.icure.cardinal.sdk.model.HealthcareParty
@@ -74,6 +75,7 @@ import com.icure.cardinal.sdk.model.filter.form.FormByDataOwnerParentIdFilter
 import com.icure.cardinal.sdk.model.filter.form.FormByDataOwnerPatientOpeningDateFilter
 import com.icure.cardinal.sdk.model.filter.form.FormByLogicalUuidFilter
 import com.icure.cardinal.sdk.model.filter.form.FormByUniqueUuidFilter
+import com.icure.cardinal.sdk.model.filter.formtemplate.FormTemplateBySpecialtyFilter
 import com.icure.cardinal.sdk.model.filter.group.AllGroupsFilter
 import com.icure.cardinal.sdk.model.filter.group.GroupBySuperGroupFilter
 import com.icure.cardinal.sdk.model.filter.group.GroupWithContentFilter
@@ -105,9 +107,11 @@ import com.icure.cardinal.sdk.model.filter.maintenancetask.MaintenanceTaskByIdsF
 import com.icure.cardinal.sdk.model.filter.medicallocation.AllMedicalLocationsFilter
 import com.icure.cardinal.sdk.model.filter.medicallocation.MedicalLocationByPostCodeFilter
 import com.icure.cardinal.sdk.model.filter.message.LatestMessageByHcPartyTransportGuidFilter
+import com.icure.cardinal.sdk.model.filter.message.MessageByDataOwnerCodeFilter
 import com.icure.cardinal.sdk.model.filter.message.MessageByDataOwnerFromAddressFilter
 import com.icure.cardinal.sdk.model.filter.message.MessageByDataOwnerLifecycleBetween
 import com.icure.cardinal.sdk.model.filter.message.MessageByDataOwnerPatientSentDateFilter
+import com.icure.cardinal.sdk.model.filter.message.MessageByDataOwnerTagFilter
 import com.icure.cardinal.sdk.model.filter.message.MessageByDataOwnerToAddressFilter
 import com.icure.cardinal.sdk.model.filter.message.MessageByDataOwnerTransportGuidSentDateFilter
 import com.icure.cardinal.sdk.model.filter.message.MessageByHcPartyFilter
@@ -186,6 +190,7 @@ internal object AnyAbstractFilterSerializer :
 					?: DeviceAbstractFilterSerializer.getSerializerBySerialName(serialName)
 					?: DocumentAbstractFilterSerializer.getSerializerBySerialName(serialName)
 					?: FormAbstractFilterSerializer.getSerializerBySerialName(serialName)
+					?: FormTemplateAbstractFilterSerializer.getSerializerBySerialName(serialName)
 					?: GroupAbstractFilterSerializer.getSerializerBySerialName(serialName)
 					?: HealthElementAbstractFilterSerializer.getSerializerBySerialName(serialName)
 					?: HealthcarePartyAbstractFilterSerializer.getSerializerBySerialName(serialName)
@@ -247,6 +252,10 @@ internal object AnyAbstractFilterSerializer :
 							KClass<out AbstractFilter<Document>>,
 					)
 					?: FormAbstractFilterSerializer.getSerializerByClass(kclass as KClass<out AbstractFilter<Form>>)
+					?: FormTemplateAbstractFilterSerializer.getSerializerByClass(
+						kclass as
+							KClass<out AbstractFilter<FormTemplate>>,
+					)
 					?: GroupAbstractFilterSerializer.getSerializerByClass(
 						kclass as
 							KClass<out AbstractFilter<Group>>,
@@ -591,6 +600,30 @@ internal object FormAbstractFilterSerializer :
 		}
 }
 
+internal object FormTemplateAbstractFilterSerializer :
+	CustomJsonPolymorphicSerializer<AbstractFilter<FormTemplate>>(
+		"${'$'}type",
+		"AbstractFilter<FormTemplate>",
+	) {
+	override fun getSerializerBySerialName(serialName: String): KSerializer<out AbstractFilter<FormTemplate>>? =
+		when (serialName) {
+			"ComplementFilter" -> ComplementFilterSerializer(this)
+			"IntersectionFilter" -> IntersectionFilterSerializer(this)
+			"UnionFilter" -> UnionFilterSerializer(this)
+			"FormTemplateBySpecialtyFilter" -> FormTemplateBySpecialtyFilter.serializer()
+			else -> null
+		}
+
+	override fun getSerializerByClass(kclass: KClass<out AbstractFilter<FormTemplate>>): KSerializer<out AbstractFilter<FormTemplate>>? =
+		when (kclass) {
+			ComplementFilter::class -> ComplementFilterSerializer(this)
+			IntersectionFilter::class -> IntersectionFilterSerializer(this)
+			UnionFilter::class -> UnionFilterSerializer(this)
+			FormTemplateBySpecialtyFilter::class -> FormTemplateBySpecialtyFilter.serializer()
+			else -> null
+		}
+}
+
 internal object GroupAbstractFilterSerializer :
 	CustomJsonPolymorphicSerializer<AbstractFilter<Group>>("${'$'}type", "AbstractFilter<Group>") {
 	override fun getSerializerBySerialName(serialName: String): KSerializer<out AbstractFilter<Group>>? =
@@ -829,9 +862,11 @@ internal object MessageAbstractFilterSerializer :
 			"UnionFilter" -> UnionFilterSerializer(this)
 			"LatestMessageByHcPartyTransportGuidFilter" ->
 				LatestMessageByHcPartyTransportGuidFilter.serializer()
+			"MessageByDataOwnerCodeFilter" -> MessageByDataOwnerCodeFilter.serializer()
 			"MessageByDataOwnerFromAddressFilter" -> MessageByDataOwnerFromAddressFilter.serializer()
 			"MessageByDataOwnerLifecycleBetween" -> MessageByDataOwnerLifecycleBetween.serializer()
 			"MessageByDataOwnerPatientSentDateFilter" -> MessageByDataOwnerPatientSentDateFilter.serializer()
+			"MessageByDataOwnerTagFilter" -> MessageByDataOwnerTagFilter.serializer()
 			"MessageByDataOwnerToAddressFilter" -> MessageByDataOwnerToAddressFilter.serializer()
 			"MessageByDataOwnerTransportGuidSentDateFilter" ->
 				MessageByDataOwnerTransportGuidSentDateFilter.serializer()
@@ -850,10 +885,12 @@ internal object MessageAbstractFilterSerializer :
 			UnionFilter::class -> UnionFilterSerializer(this)
 			LatestMessageByHcPartyTransportGuidFilter::class ->
 				LatestMessageByHcPartyTransportGuidFilter.serializer()
+			MessageByDataOwnerCodeFilter::class -> MessageByDataOwnerCodeFilter.serializer()
 			MessageByDataOwnerFromAddressFilter::class -> MessageByDataOwnerFromAddressFilter.serializer()
 			MessageByDataOwnerLifecycleBetween::class -> MessageByDataOwnerLifecycleBetween.serializer()
 			MessageByDataOwnerPatientSentDateFilter::class ->
 				MessageByDataOwnerPatientSentDateFilter.serializer()
+			MessageByDataOwnerTagFilter::class -> MessageByDataOwnerTagFilter.serializer()
 			MessageByDataOwnerToAddressFilter::class -> MessageByDataOwnerToAddressFilter.serializer()
 			MessageByDataOwnerTransportGuidSentDateFilter::class ->
 				MessageByDataOwnerTransportGuidSentDateFilter.serializer()

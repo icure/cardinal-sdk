@@ -19,7 +19,7 @@ internal abstract class AbstractInsuranceApi(
 ) {
 
 	protected suspend fun doCreateInsurance(groupId: String?, entity: Insurance): Insurance {
-		basicRequireIsValidForCreation(entity)
+		requireIsValidForCreation(entity)
 		return if (groupId == null) {
 			rawApi.createInsurance(entity)
 		} else {
@@ -134,7 +134,7 @@ internal class InsuranceApiImpl(
 
 	override suspend fun createInsurance(insurance: Insurance) = doCreateInsurance(groupId = null, entity = insurance)
 	override suspend fun createInsurances(insurances: List<Insurance>): List<Insurance> {
-		basicRequireIsValidForCreation(insurances)
+		requireIsValidForCreation(insurances)
 		return doCreateInsurances(groupId = null, entities = insurances)
 	}
 
@@ -182,7 +182,7 @@ internal class InsuranceInGroupApiImpl(
 		groupScopedWith(insurance) { groupId, entity -> doCreateInsurance(groupId, entity) }
 
 	override suspend fun createInsurances(insurances: List<GroupScoped<Insurance>>): List<GroupScoped<Insurance>> {
-		basicRequireIsValidForCreationInGroup(insurances)
+		requireIsValidForCreationInGroup(insurances)
 		return insurances.mapUniqueIdentifiablesChunkedByGroup { groupId, chunk ->
 			doCreateInsurances(groupId, chunk)
 		}

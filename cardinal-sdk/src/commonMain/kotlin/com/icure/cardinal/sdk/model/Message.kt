@@ -72,6 +72,8 @@ sealed interface Message :
 
 	public val parentId: String?
 
+	public val properties: Set<PropertyStub>
+
 	override val secretForeignKeys: Set<String>
 
 	override val cryptedForeignKeys: Map<String, Set<Delegation>>
@@ -123,6 +125,8 @@ data class DecryptedMessage(
 	override val invoiceIds: Set<String> = emptySet(),
 	override val parentId: String? = null,
 	@param:DefaultValue("emptySet()")
+	override val properties: Set<DecryptedPropertyStub> = emptySet(),
+	@param:DefaultValue("emptySet()")
 	override val secretForeignKeys: Set<String> = emptySet(),
 	@param:DefaultValue("emptyMap()")
 	override val cryptedForeignKeys: Map<String, Set<Delegation>> = emptyMap(),
@@ -171,6 +175,8 @@ data class EncryptedMessage(
 	@param:DefaultValue("emptySet()")
 	override val invoiceIds: Set<String> = emptySet(),
 	override val parentId: String? = null,
+	@param:DefaultValue("emptySet()")
+	override val properties: Set<EncryptedPropertyStub> = emptySet(),
 	@param:DefaultValue("emptySet()")
 	override val secretForeignKeys: Set<String> = emptySet(),
 	@param:DefaultValue("emptyMap()")

@@ -1,5 +1,5 @@
 // auto-generated file
-import {FilterOptions, PaginatedListIterator, SortableFilterOptions} from '../cardinal-sdk-ts.mjs';
+import {BaseFilterOptions, FilterOptions, PaginatedListIterator, SortableFilterOptions} from '../cardinal-sdk-ts.mjs';
 import {FormShareOptions} from '../crypto/entities/FormShareOptions.mjs';
 import {SecretIdUseOption} from '../crypto/entities/SecretIdUseOption.mjs';
 import {EntityReferenceInGroup} from '../model/EntityReferenceInGroup.mjs';
@@ -95,6 +95,9 @@ export interface FormInGroupApi {
 	purgeFormTemplate(formTemplate: GroupScoped<FormTemplate>): Promise<void>;
 
 	purgeFormTemplates(formTemplates: Array<GroupScoped<FormTemplate>>): Promise<Array<GroupScoped<StoredDocumentIdentifier>>>;
+
+	matchFormTemplateBy(groupId: string,
+			filter: BaseFilterOptions<FormTemplate>): Promise<Array<string>>;
 
 	shareWith(delegate: EntityReferenceInGroup, form: GroupScoped<DecryptedForm>,
 			options?: { options?: FormShareOptions | undefined }): Promise<GroupScoped<DecryptedForm>>;

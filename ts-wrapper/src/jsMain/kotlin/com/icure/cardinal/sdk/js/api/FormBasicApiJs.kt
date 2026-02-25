@@ -97,6 +97,8 @@ public external interface FormBasicApiJs {
 
 	public fun setTemplateAttachment(formTemplateId: String, payload: ByteArray): Promise<String>
 
+	public fun matchFormTemplateBy(filter: BaseFilterOptionsJs<FormTemplateJs>): Promise<Array<String>>
+
 	public fun createForm(entity: EncryptedFormJs): Promise<EncryptedFormJs>
 
 	public fun createForms(entities: Array<EncryptedFormJs>): Promise<Array<EncryptedFormJs>>

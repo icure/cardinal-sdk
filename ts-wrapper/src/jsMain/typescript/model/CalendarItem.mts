@@ -2,6 +2,7 @@
 import {expectArray, expectBoolean, expectMap, expectNumber, expectObject, expectString, expectStringEnum, extractEntry} from '../internal/JsonDecodeUtils.mjs';
 import {randomUuid} from '../utils/Id.mjs';
 import {CalendarItem as CalendarItem_} from './CalendarItem.mjs';
+import {DecryptedPropertyStub, EncryptedPropertyStub, PropertyStub} from './PropertyStub.mjs';
 import {CodeStub} from './base/CodeStub.mjs';
 import {HasEncryptionMetadata} from './base/HasEncryptionMetadata.mjs';
 import {ICureDocument} from './base/ICureDocument.mjs';
@@ -26,6 +27,8 @@ export interface CalendarItem extends StoredDocument, ICureDocument<string>, Has
 
 	homeVisit: boolean | undefined;
 
+	phoneNumber: string | undefined;
+
 	placeId: string | undefined;
 
 	address: Address | undefined;
@@ -35,6 +38,16 @@ export interface CalendarItem extends StoredDocument, ICureDocument<string>, Has
 	startTime: number | undefined;
 
 	endTime: number | undefined;
+
+	confirmationTime: number | undefined;
+
+	cancellationTimestamp: number | undefined;
+
+	confirmationId: string | undefined;
+
+	duration: number | undefined;
+
+	allDay: boolean | undefined;
 
 	details: string | undefined;
 
@@ -49,6 +62,8 @@ export interface CalendarItem extends StoredDocument, ICureDocument<string>, Has
 	recurrenceId: string | undefined;
 
 	meetingTags: Array<CalendarItemTag>;
+
+	properties: Array<PropertyStub>;
 
 	readonly isEncrypted: boolean;
 
@@ -86,6 +101,8 @@ export class DecryptedCalendarItem {
 
 	homeVisit: boolean | undefined = undefined;
 
+	phoneNumber: string | undefined = undefined;
+
 	placeId: string | undefined = undefined;
 
 	address: DecryptedAddress | undefined = undefined;
@@ -95,6 +112,16 @@ export class DecryptedCalendarItem {
 	startTime: number | undefined = undefined;
 
 	endTime: number | undefined = undefined;
+
+	confirmationTime: number | undefined = undefined;
+
+	cancellationTimestamp: number | undefined = undefined;
+
+	confirmationId: string | undefined = undefined;
+
+	duration: number | undefined = undefined;
+
+	allDay: boolean | undefined = undefined;
 
 	details: string | undefined = undefined;
 
@@ -109,6 +136,8 @@ export class DecryptedCalendarItem {
 	recurrenceId: string | undefined = undefined;
 
 	meetingTags: Array<DecryptedCalendarItemTag> = [];
+
+	properties: Array<DecryptedPropertyStub> = [];
 
 	secretForeignKeys: Array<string> = [];
 
@@ -140,11 +169,17 @@ export class DecryptedCalendarItem {
 		if ('masterCalendarItemId' in partial) this.masterCalendarItemId = partial.masterCalendarItemId;
 		if ('important' in partial) this.important = partial.important;
 		if ('homeVisit' in partial) this.homeVisit = partial.homeVisit;
+		if ('phoneNumber' in partial) this.phoneNumber = partial.phoneNumber;
 		if ('placeId' in partial) this.placeId = partial.placeId;
 		if ('address' in partial) this.address = partial.address;
 		if ('addressText' in partial) this.addressText = partial.addressText;
 		if ('startTime' in partial) this.startTime = partial.startTime;
 		if ('endTime' in partial) this.endTime = partial.endTime;
+		if ('confirmationTime' in partial) this.confirmationTime = partial.confirmationTime;
+		if ('cancellationTimestamp' in partial) this.cancellationTimestamp = partial.cancellationTimestamp;
+		if ('confirmationId' in partial) this.confirmationId = partial.confirmationId;
+		if ('duration' in partial) this.duration = partial.duration;
+		if ('allDay' in partial) this.allDay = partial.allDay;
 		if ('details' in partial) this.details = partial.details;
 		if ('wasMigrated' in partial) this.wasMigrated = partial.wasMigrated;
 		if ('agendaId' in partial) this.agendaId = partial.agendaId;
@@ -152,6 +187,7 @@ export class DecryptedCalendarItem {
 		if ('availabilitiesAssignmentStrategy' in partial) this.availabilitiesAssignmentStrategy = partial.availabilitiesAssignmentStrategy;
 		if ('recurrenceId' in partial) this.recurrenceId = partial.recurrenceId;
 		if ('meetingTags' in partial && partial.meetingTags !== undefined) this.meetingTags = partial.meetingTags;
+		if ('properties' in partial && partial.properties !== undefined) this.properties = partial.properties;
 		if ('secretForeignKeys' in partial && partial.secretForeignKeys !== undefined) this.secretForeignKeys = partial.secretForeignKeys;
 		if ('cryptedForeignKeys' in partial && partial.cryptedForeignKeys !== undefined) this.cryptedForeignKeys = partial.cryptedForeignKeys;
 		if ('delegations' in partial && partial.delegations !== undefined) this.delegations = partial.delegations;
@@ -176,11 +212,17 @@ export class DecryptedCalendarItem {
 		if (this.masterCalendarItemId != undefined) res['masterCalendarItemId'] = this.masterCalendarItemId
 		if (this.important != undefined) res['important'] = this.important
 		if (this.homeVisit != undefined) res['homeVisit'] = this.homeVisit
+		if (this.phoneNumber != undefined) res['phoneNumber'] = this.phoneNumber
 		if (this.placeId != undefined) res['placeId'] = this.placeId
 		if (this.address != undefined) res['address'] = this.address.toJSON()
 		if (this.addressText != undefined) res['addressText'] = this.addressText
 		if (this.startTime != undefined) res['startTime'] = this.startTime
 		if (this.endTime != undefined) res['endTime'] = this.endTime
+		if (this.confirmationTime != undefined) res['confirmationTime'] = this.confirmationTime
+		if (this.cancellationTimestamp != undefined) res['cancellationTimestamp'] = this.cancellationTimestamp
+		if (this.confirmationId != undefined) res['confirmationId'] = this.confirmationId
+		if (this.duration != undefined) res['duration'] = this.duration
+		if (this.allDay != undefined) res['allDay'] = this.allDay
 		if (this.details != undefined) res['details'] = this.details
 		if (this.wasMigrated != undefined) res['wasMigrated'] = this.wasMigrated
 		if (this.agendaId != undefined) res['agendaId'] = this.agendaId
@@ -188,6 +230,7 @@ export class DecryptedCalendarItem {
 		if (this.availabilitiesAssignmentStrategy != undefined) res['availabilitiesAssignmentStrategy'] = this.availabilitiesAssignmentStrategy
 		if (this.recurrenceId != undefined) res['recurrenceId'] = this.recurrenceId
 		res['meetingTags'] = this.meetingTags.map((x0) => x0.toJSON() )
+		res['properties'] = this.properties.map((x0) => x0.toJSON() )
 		res['secretForeignKeys'] = this.secretForeignKeys.map((x0) => x0 )
 		res['cryptedForeignKeys'] = Object.fromEntries(Object.entries(this.cryptedForeignKeys).map(([k0, v0]) => [k0, v0.map((x1) => x1.toJSON() )]))
 		res['delegations'] = Object.fromEntries(Object.entries(this.delegations).map(([k0, v0]) => [k0, v0.map((x1) => x1.toJSON() )]))
@@ -218,11 +261,17 @@ export class DecryptedCalendarItem {
 			masterCalendarItemId: expectString(extractEntry(jCpy, 'masterCalendarItemId', false, path), true, [...path, ".masterCalendarItemId"]),
 			important: expectBoolean(extractEntry(jCpy, 'important', false, path), true, [...path, ".important"]),
 			homeVisit: expectBoolean(extractEntry(jCpy, 'homeVisit', false, path), true, [...path, ".homeVisit"]),
+			phoneNumber: expectString(extractEntry(jCpy, 'phoneNumber', false, path), true, [...path, ".phoneNumber"]),
 			placeId: expectString(extractEntry(jCpy, 'placeId', false, path), true, [...path, ".placeId"]),
 			address: expectObject(extractEntry(jCpy, 'address', false, path), true, ignoreUnknownKeys, [...path, ".address"], DecryptedAddress.fromJSON),
 			addressText: expectString(extractEntry(jCpy, 'addressText', false, path), true, [...path, ".addressText"]),
 			startTime: expectNumber(extractEntry(jCpy, 'startTime', false, path), true, true, [...path, ".startTime"]),
 			endTime: expectNumber(extractEntry(jCpy, 'endTime', false, path), true, true, [...path, ".endTime"]),
+			confirmationTime: expectNumber(extractEntry(jCpy, 'confirmationTime', false, path), true, true, [...path, ".confirmationTime"]),
+			cancellationTimestamp: expectNumber(extractEntry(jCpy, 'cancellationTimestamp', false, path), true, true, [...path, ".cancellationTimestamp"]),
+			confirmationId: expectString(extractEntry(jCpy, 'confirmationId', false, path), true, [...path, ".confirmationId"]),
+			duration: expectNumber(extractEntry(jCpy, 'duration', false, path), true, true, [...path, ".duration"]),
+			allDay: expectBoolean(extractEntry(jCpy, 'allDay', false, path), true, [...path, ".allDay"]),
 			details: expectString(extractEntry(jCpy, 'details', false, path), true, [...path, ".details"]),
 			wasMigrated: expectBoolean(extractEntry(jCpy, 'wasMigrated', false, path), true, [...path, ".wasMigrated"]),
 			agendaId: expectString(extractEntry(jCpy, 'agendaId', false, path), true, [...path, ".agendaId"]),
@@ -230,6 +279,7 @@ export class DecryptedCalendarItem {
 			availabilitiesAssignmentStrategy: expectStringEnum(extractEntry(jCpy, 'availabilitiesAssignmentStrategy', false, path), true, [...path, ".availabilitiesAssignmentStrategy"], CalendarItem_.AvailabilitiesAssignmentStrategy, 'CalendarItem.AvailabilitiesAssignmentStrategy'),
 			recurrenceId: expectString(extractEntry(jCpy, 'recurrenceId', false, path), true, [...path, ".recurrenceId"]),
 			meetingTags: expectArray(extractEntry(jCpy, 'meetingTags', false, path), false, [...path, ".meetingTags"], (x0, p0) => expectObject(x0, false, ignoreUnknownKeys, p0, DecryptedCalendarItemTag.fromJSON)),
+			properties: expectArray(extractEntry(jCpy, 'properties', false, path), false, [...path, ".properties"], (x0, p0) => expectObject(x0, false, ignoreUnknownKeys, p0, DecryptedPropertyStub.fromJSON)),
 			secretForeignKeys: expectArray(extractEntry(jCpy, 'secretForeignKeys', false, path), false, [...path, ".secretForeignKeys"], (x0, p0) => expectString(x0, false, p0)),
 			cryptedForeignKeys: expectMap(
 				extractEntry(jCpy, 'cryptedForeignKeys', false, path),
@@ -293,6 +343,8 @@ export class EncryptedCalendarItem {
 
 	homeVisit: boolean | undefined = undefined;
 
+	phoneNumber: string | undefined = undefined;
+
 	placeId: string | undefined = undefined;
 
 	address: EncryptedAddress | undefined = undefined;
@@ -302,6 +354,16 @@ export class EncryptedCalendarItem {
 	startTime: number | undefined = undefined;
 
 	endTime: number | undefined = undefined;
+
+	confirmationTime: number | undefined = undefined;
+
+	cancellationTimestamp: number | undefined = undefined;
+
+	confirmationId: string | undefined = undefined;
+
+	duration: number | undefined = undefined;
+
+	allDay: boolean | undefined = undefined;
 
 	details: string | undefined = undefined;
 
@@ -316,6 +378,8 @@ export class EncryptedCalendarItem {
 	recurrenceId: string | undefined = undefined;
 
 	meetingTags: Array<EncryptedCalendarItemTag> = [];
+
+	properties: Array<EncryptedPropertyStub> = [];
 
 	secretForeignKeys: Array<string> = [];
 
@@ -347,11 +411,17 @@ export class EncryptedCalendarItem {
 		if ('masterCalendarItemId' in partial) this.masterCalendarItemId = partial.masterCalendarItemId;
 		if ('important' in partial) this.important = partial.important;
 		if ('homeVisit' in partial) this.homeVisit = partial.homeVisit;
+		if ('phoneNumber' in partial) this.phoneNumber = partial.phoneNumber;
 		if ('placeId' in partial) this.placeId = partial.placeId;
 		if ('address' in partial) this.address = partial.address;
 		if ('addressText' in partial) this.addressText = partial.addressText;
 		if ('startTime' in partial) this.startTime = partial.startTime;
 		if ('endTime' in partial) this.endTime = partial.endTime;
+		if ('confirmationTime' in partial) this.confirmationTime = partial.confirmationTime;
+		if ('cancellationTimestamp' in partial) this.cancellationTimestamp = partial.cancellationTimestamp;
+		if ('confirmationId' in partial) this.confirmationId = partial.confirmationId;
+		if ('duration' in partial) this.duration = partial.duration;
+		if ('allDay' in partial) this.allDay = partial.allDay;
 		if ('details' in partial) this.details = partial.details;
 		if ('wasMigrated' in partial) this.wasMigrated = partial.wasMigrated;
 		if ('agendaId' in partial) this.agendaId = partial.agendaId;
@@ -359,6 +429,7 @@ export class EncryptedCalendarItem {
 		if ('availabilitiesAssignmentStrategy' in partial) this.availabilitiesAssignmentStrategy = partial.availabilitiesAssignmentStrategy;
 		if ('recurrenceId' in partial) this.recurrenceId = partial.recurrenceId;
 		if ('meetingTags' in partial && partial.meetingTags !== undefined) this.meetingTags = partial.meetingTags;
+		if ('properties' in partial && partial.properties !== undefined) this.properties = partial.properties;
 		if ('secretForeignKeys' in partial && partial.secretForeignKeys !== undefined) this.secretForeignKeys = partial.secretForeignKeys;
 		if ('cryptedForeignKeys' in partial && partial.cryptedForeignKeys !== undefined) this.cryptedForeignKeys = partial.cryptedForeignKeys;
 		if ('delegations' in partial && partial.delegations !== undefined) this.delegations = partial.delegations;
@@ -383,11 +454,17 @@ export class EncryptedCalendarItem {
 		if (this.masterCalendarItemId != undefined) res['masterCalendarItemId'] = this.masterCalendarItemId
 		if (this.important != undefined) res['important'] = this.important
 		if (this.homeVisit != undefined) res['homeVisit'] = this.homeVisit
+		if (this.phoneNumber != undefined) res['phoneNumber'] = this.phoneNumber
 		if (this.placeId != undefined) res['placeId'] = this.placeId
 		if (this.address != undefined) res['address'] = this.address.toJSON()
 		if (this.addressText != undefined) res['addressText'] = this.addressText
 		if (this.startTime != undefined) res['startTime'] = this.startTime
 		if (this.endTime != undefined) res['endTime'] = this.endTime
+		if (this.confirmationTime != undefined) res['confirmationTime'] = this.confirmationTime
+		if (this.cancellationTimestamp != undefined) res['cancellationTimestamp'] = this.cancellationTimestamp
+		if (this.confirmationId != undefined) res['confirmationId'] = this.confirmationId
+		if (this.duration != undefined) res['duration'] = this.duration
+		if (this.allDay != undefined) res['allDay'] = this.allDay
 		if (this.details != undefined) res['details'] = this.details
 		if (this.wasMigrated != undefined) res['wasMigrated'] = this.wasMigrated
 		if (this.agendaId != undefined) res['agendaId'] = this.agendaId
@@ -395,6 +472,7 @@ export class EncryptedCalendarItem {
 		if (this.availabilitiesAssignmentStrategy != undefined) res['availabilitiesAssignmentStrategy'] = this.availabilitiesAssignmentStrategy
 		if (this.recurrenceId != undefined) res['recurrenceId'] = this.recurrenceId
 		res['meetingTags'] = this.meetingTags.map((x0) => x0.toJSON() )
+		res['properties'] = this.properties.map((x0) => x0.toJSON() )
 		res['secretForeignKeys'] = this.secretForeignKeys.map((x0) => x0 )
 		res['cryptedForeignKeys'] = Object.fromEntries(Object.entries(this.cryptedForeignKeys).map(([k0, v0]) => [k0, v0.map((x1) => x1.toJSON() )]))
 		res['delegations'] = Object.fromEntries(Object.entries(this.delegations).map(([k0, v0]) => [k0, v0.map((x1) => x1.toJSON() )]))
@@ -425,11 +503,17 @@ export class EncryptedCalendarItem {
 			masterCalendarItemId: expectString(extractEntry(jCpy, 'masterCalendarItemId', false, path), true, [...path, ".masterCalendarItemId"]),
 			important: expectBoolean(extractEntry(jCpy, 'important', false, path), true, [...path, ".important"]),
 			homeVisit: expectBoolean(extractEntry(jCpy, 'homeVisit', false, path), true, [...path, ".homeVisit"]),
+			phoneNumber: expectString(extractEntry(jCpy, 'phoneNumber', false, path), true, [...path, ".phoneNumber"]),
 			placeId: expectString(extractEntry(jCpy, 'placeId', false, path), true, [...path, ".placeId"]),
 			address: expectObject(extractEntry(jCpy, 'address', false, path), true, ignoreUnknownKeys, [...path, ".address"], EncryptedAddress.fromJSON),
 			addressText: expectString(extractEntry(jCpy, 'addressText', false, path), true, [...path, ".addressText"]),
 			startTime: expectNumber(extractEntry(jCpy, 'startTime', false, path), true, true, [...path, ".startTime"]),
 			endTime: expectNumber(extractEntry(jCpy, 'endTime', false, path), true, true, [...path, ".endTime"]),
+			confirmationTime: expectNumber(extractEntry(jCpy, 'confirmationTime', false, path), true, true, [...path, ".confirmationTime"]),
+			cancellationTimestamp: expectNumber(extractEntry(jCpy, 'cancellationTimestamp', false, path), true, true, [...path, ".cancellationTimestamp"]),
+			confirmationId: expectString(extractEntry(jCpy, 'confirmationId', false, path), true, [...path, ".confirmationId"]),
+			duration: expectNumber(extractEntry(jCpy, 'duration', false, path), true, true, [...path, ".duration"]),
+			allDay: expectBoolean(extractEntry(jCpy, 'allDay', false, path), true, [...path, ".allDay"]),
 			details: expectString(extractEntry(jCpy, 'details', false, path), true, [...path, ".details"]),
 			wasMigrated: expectBoolean(extractEntry(jCpy, 'wasMigrated', false, path), true, [...path, ".wasMigrated"]),
 			agendaId: expectString(extractEntry(jCpy, 'agendaId', false, path), true, [...path, ".agendaId"]),
@@ -437,6 +521,7 @@ export class EncryptedCalendarItem {
 			availabilitiesAssignmentStrategy: expectStringEnum(extractEntry(jCpy, 'availabilitiesAssignmentStrategy', false, path), true, [...path, ".availabilitiesAssignmentStrategy"], CalendarItem_.AvailabilitiesAssignmentStrategy, 'CalendarItem.AvailabilitiesAssignmentStrategy'),
 			recurrenceId: expectString(extractEntry(jCpy, 'recurrenceId', false, path), true, [...path, ".recurrenceId"]),
 			meetingTags: expectArray(extractEntry(jCpy, 'meetingTags', false, path), false, [...path, ".meetingTags"], (x0, p0) => expectObject(x0, false, ignoreUnknownKeys, p0, EncryptedCalendarItemTag.fromJSON)),
+			properties: expectArray(extractEntry(jCpy, 'properties', false, path), false, [...path, ".properties"], (x0, p0) => expectObject(x0, false, ignoreUnknownKeys, p0, EncryptedPropertyStub.fromJSON)),
 			secretForeignKeys: expectArray(extractEntry(jCpy, 'secretForeignKeys', false, path), false, [...path, ".secretForeignKeys"], (x0, p0) => expectString(x0, false, p0)),
 			cryptedForeignKeys: expectMap(
 				extractEntry(jCpy, 'cryptedForeignKeys', false, path),

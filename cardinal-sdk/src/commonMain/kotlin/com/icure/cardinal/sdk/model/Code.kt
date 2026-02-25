@@ -27,7 +27,7 @@ data class Code(
 	override val type: String? = null,
 	override val code: String? = null,
 	override val version: String? = null,
-	public val label: Map<String, String>? = null,
+	public val label: Map<String, String> = emptyMap(),
 	public val author: String? = null,
 	@param:DefaultValue("emptySet()")
 	public val regions: Set<String> = emptySet(),

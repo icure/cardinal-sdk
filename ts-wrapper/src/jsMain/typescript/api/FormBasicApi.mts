@@ -73,6 +73,8 @@ export interface FormBasicApi {
 
 	setTemplateAttachment(formTemplateId: string, payload: Int8Array): Promise<string>;
 
+	matchFormTemplateBy(filter: BaseFilterOptions<FormTemplate>): Promise<Array<string>>;
+
 	createForm(entity: EncryptedForm): Promise<EncryptedForm>;
 
 	createForms(entities: Array<EncryptedForm>): Promise<Array<EncryptedForm>>;
