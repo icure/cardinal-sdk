@@ -182,6 +182,7 @@ abstract class BaseRawApi(
 				config.additionalHeaders.forEach { (header, headerValue) ->
 					set(header, headerValue)
 				}
+				set("Cardinal-Model-Standard", "true")
 				set("Cardinal-SDK-Version", SDK_VERSION)
 			}
 			config.requestTimeout?.also {
