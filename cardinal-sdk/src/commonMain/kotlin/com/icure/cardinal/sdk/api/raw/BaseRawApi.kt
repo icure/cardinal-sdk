@@ -182,7 +182,7 @@ abstract class BaseRawApi(
 				config.additionalHeaders.forEach { (header, headerValue) ->
 					set(header, headerValue)
 				}
-				set("Icure-SDK-Version", SDK_VERSION)
+				set("Cardinal-SDK-Version", SDK_VERSION)
 			}
 			config.requestTimeout?.also {
 				timeout {
