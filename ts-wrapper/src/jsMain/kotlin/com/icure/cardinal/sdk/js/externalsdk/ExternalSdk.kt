@@ -11,7 +11,6 @@ import com.icure.cardinal.sdk.js.api.CalendarItemApiJs
 import com.icure.cardinal.sdk.js.api.CalendarItemBasicApiJs
 import com.icure.cardinal.sdk.js.api.CalendarItemTypeApiJs
 import com.icure.cardinal.sdk.js.api.CardinalMaintenanceTaskApiJs
-import com.icure.cardinal.sdk.js.api.ClassificationApiJs
 import com.icure.cardinal.sdk.js.api.CodeApiJs
 import com.icure.cardinal.sdk.js.api.ContactApiJs
 import com.icure.cardinal.sdk.js.api.ContactBasicApiJs
@@ -30,14 +29,12 @@ import com.icure.cardinal.sdk.js.api.HealthcarePartyApiJs
 import com.icure.cardinal.sdk.js.api.InsuranceApiJs
 import com.icure.cardinal.sdk.js.api.InvoiceApiJs
 import com.icure.cardinal.sdk.js.api.InvoiceBasicApiJs
-import com.icure.cardinal.sdk.js.api.KeywordApiJs
 import com.icure.cardinal.sdk.js.api.MaintenanceTaskApiJs
 import com.icure.cardinal.sdk.js.api.MaintenanceTaskBasicApiJs
 import com.icure.cardinal.sdk.js.api.MessageApiJs
 import com.icure.cardinal.sdk.js.api.MessageBasicApiJs
 import com.icure.cardinal.sdk.js.api.PatientApiJs
 import com.icure.cardinal.sdk.js.api.PatientBasicApiJs
-import com.icure.cardinal.sdk.js.api.PermissionApiJs
 import com.icure.cardinal.sdk.js.api.PlaceApiJs
 import com.icure.cardinal.sdk.js.api.ReceiptApiJs
 import com.icure.cardinal.sdk.js.api.ReceiptBasicApiJs
