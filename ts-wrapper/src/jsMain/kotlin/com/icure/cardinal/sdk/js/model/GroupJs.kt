@@ -55,4 +55,6 @@ public external class GroupJs(
 	public val superGroup: String?
 
 	public val projectId: String?
+
+	public val templates: GroupJs_TemplatesConfigurationJs?
 }

@@ -21,4 +21,8 @@ public external class UserJs_SystemMetadataJs(
 	public val inheritsRoles: Boolean
 
 	public val loginIdentifiers: Array<LoginIdentifierJs>
+
+	public val verifiedEmail: Boolean?
+
+	public val verifiedMobilePhone: Boolean?
 }
