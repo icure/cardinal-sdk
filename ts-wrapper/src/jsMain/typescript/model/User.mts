@@ -169,11 +169,17 @@ export namespace User {
 
 		loginIdentifiers: Array<LoginIdentifier> = [];
 
+		verifiedEmail: boolean | undefined = undefined;
+
+		verifiedMobilePhone: boolean | undefined = undefined;
+
 		constructor(partial: Partial<SystemMetadata> & Pick<SystemMetadata, "roles" | "isAdmin" | "inheritsRoles">) {
 			this.roles = partial.roles;
 			this.isAdmin = partial.isAdmin;
 			this.inheritsRoles = partial.inheritsRoles;
 			if ('loginIdentifiers' in partial && partial.loginIdentifiers !== undefined) this.loginIdentifiers = partial.loginIdentifiers;
+			if ('verifiedEmail' in partial) this.verifiedEmail = partial.verifiedEmail;
+			if ('verifiedMobilePhone' in partial) this.verifiedMobilePhone = partial.verifiedMobilePhone;
 		}
 
 		toJSON(): object {
@@ -182,6 +188,8 @@ export namespace User {
 			res['isAdmin'] = this.isAdmin
 			res['inheritsRoles'] = this.inheritsRoles
 			res['loginIdentifiers'] = this.loginIdentifiers.map((x0) => x0.toJSON() )
+			if (this.verifiedEmail != undefined) res['verifiedEmail'] = this.verifiedEmail
+			if (this.verifiedMobilePhone != undefined) res['verifiedMobilePhone'] = this.verifiedMobilePhone
 			return res
 		}
 
@@ -194,6 +202,8 @@ export namespace User {
 				isAdmin: expectBoolean(extractEntry(jCpy, 'isAdmin', true, path), false, [...path, ".isAdmin"]),
 				inheritsRoles: expectBoolean(extractEntry(jCpy, 'inheritsRoles', true, path), false, [...path, ".inheritsRoles"]),
 				loginIdentifiers: expectArray(extractEntry(jCpy, 'loginIdentifiers', false, path), false, [...path, ".loginIdentifiers"], (x0, p0) => expectObject(x0, false, ignoreUnknownKeys, p0, LoginIdentifier.fromJSON)),
+				verifiedEmail: expectBoolean(extractEntry(jCpy, 'verifiedEmail', false, path), true, [...path, ".verifiedEmail"]),
+				verifiedMobilePhone: expectBoolean(extractEntry(jCpy, 'verifiedMobilePhone', false, path), true, [...path, ".verifiedMobilePhone"]),
 			})
 			if (!ignoreUnknownKeys) {
 				const unused = Object.keys(jCpy)

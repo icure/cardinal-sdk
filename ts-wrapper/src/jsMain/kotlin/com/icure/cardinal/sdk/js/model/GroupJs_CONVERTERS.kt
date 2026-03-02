@@ -126,6 +126,11 @@ public fun group_toJs(obj: Group): GroupJs {
 	val projectId = nullToUndefined(
 		obj.projectId
 	)
+	val templates = nullToUndefined(
+		obj.templates?.let { nonNull1 ->
+			group_TemplatesConfiguration_toJs(nonNull1)
+		}
+	)
 	return GroupJs(js("{" +
 		"id:id," +
 		"rev:rev," +
@@ -144,7 +149,8 @@ public fun group_toJs(obj: Group): GroupJs {
 		"externalJwtConfig:externalJwtConfig," +
 		"minimumAuthenticationClassForElevatedPrivileges:minimumAuthenticationClassForElevatedPrivileges," +
 		"superGroup:superGroup," +
-		"projectId:projectId" +
+		"projectId:projectId," +
+		"templates:templates" +
 	"}"))
 }
 
@@ -234,6 +240,9 @@ public fun group_fromJs(obj: GroupJs): Group {
 			AuthenticationClass.valueOf(obj.minimumAuthenticationClassForElevatedPrivileges)
 	val superGroup = undefinedToNull(obj.superGroup)
 	val projectId = undefinedToNull(obj.projectId)
+	val templates = obj.templates?.let { nonNull1 ->
+		group_TemplatesConfiguration_fromJs(nonNull1)
+	}
 	return Group(
 		id = id,
 		rev = rev,
@@ -253,5 +262,60 @@ public fun group_fromJs(obj: GroupJs): Group {
 		minimumAuthenticationClassForElevatedPrivileges = minimumAuthenticationClassForElevatedPrivileges,
 		superGroup = superGroup,
 		projectId = projectId,
+		templates = templates,
+	)
+}
+
+@Suppress("UNUSED_VARIABLE")
+public fun group_TemplatesConfiguration_toJs(obj: Group.TemplatesConfiguration):
+		GroupJs_TemplatesConfigurationJs {
+	val specId = obj.specId
+	val emailSender = nullToUndefined(
+		obj.emailSender
+	)
+	val smsSender = nullToUndefined(
+		obj.smsSender
+	)
+	val emailVerificationTemplateId = nullToUndefined(
+		obj.emailVerificationTemplateId
+	)
+	val mobilePhoneVerificationTemplateId = nullToUndefined(
+		obj.mobilePhoneVerificationTemplateId
+	)
+	val existingEmailNotificationTemplateId = nullToUndefined(
+		obj.existingEmailNotificationTemplateId
+	)
+	val existingMobilePhoneNotificationTemplateId = nullToUndefined(
+		obj.existingMobilePhoneNotificationTemplateId
+	)
+	return GroupJs_TemplatesConfigurationJs(js("{" +
+		"specId:specId," +
+		"emailSender:emailSender," +
+		"smsSender:smsSender," +
+		"emailVerificationTemplateId:emailVerificationTemplateId," +
+		"mobilePhoneVerificationTemplateId:mobilePhoneVerificationTemplateId," +
+		"existingEmailNotificationTemplateId:existingEmailNotificationTemplateId," +
+		"existingMobilePhoneNotificationTemplateId:existingMobilePhoneNotificationTemplateId" +
+	"}"))
+}
+
+public fun group_TemplatesConfiguration_fromJs(obj: GroupJs_TemplatesConfigurationJs):
+		Group.TemplatesConfiguration {
+	val specId = obj.specId
+	val emailSender = undefinedToNull(obj.emailSender)
+	val smsSender = undefinedToNull(obj.smsSender)
+	val emailVerificationTemplateId = undefinedToNull(obj.emailVerificationTemplateId)
+	val mobilePhoneVerificationTemplateId = undefinedToNull(obj.mobilePhoneVerificationTemplateId)
+	val existingEmailNotificationTemplateId = undefinedToNull(obj.existingEmailNotificationTemplateId)
+	val existingMobilePhoneNotificationTemplateId =
+			undefinedToNull(obj.existingMobilePhoneNotificationTemplateId)
+	return Group.TemplatesConfiguration(
+		specId = specId,
+		emailSender = emailSender,
+		smsSender = smsSender,
+		emailVerificationTemplateId = emailVerificationTemplateId,
+		mobilePhoneVerificationTemplateId = mobilePhoneVerificationTemplateId,
+		existingEmailNotificationTemplateId = existingEmailNotificationTemplateId,
+		existingMobilePhoneNotificationTemplateId = existingMobilePhoneNotificationTemplateId,
 	)
 }
