@@ -16,5 +16,6 @@ data class FormTemplateBySpecialtyFilter(
 	override val desc: String? = null,
 ) : AbstractFilter<FormTemplate> {
 	// region FormTemplateBySpecialtyFilter-FormTemplateBySpecialtyFilter
+
 	// endregion
 }
