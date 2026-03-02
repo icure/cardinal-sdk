@@ -49,7 +49,18 @@ data class Group(
 	public val superGroup: String? = null,
 	@JsonNames("applicationId")
 	public val projectId: String? = null,
+	public val templates: TemplatesConfiguration? = null,
 ) : StoredDocument, HasTags {
+	@Serializable
+	public data class TemplatesConfiguration(
+		public val specId: String,
+		public val emailSender: String? = null,
+		public val smsSender: String? = null,
+		public val emailVerificationTemplateId: String? = null,
+		public val mobilePhoneVerificationTemplateId: String? = null,
+		public val existingEmailNotificationTemplateId: String? = null,
+		public val existingMobilePhoneNotificationTemplateId: String? = null,
+	)
 	// region Group-Group
 
 	// endregion
