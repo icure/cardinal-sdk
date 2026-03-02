@@ -61,6 +61,8 @@ sealed interface HealthElement :
 
 	override val deletionDate: Long?
 
+	public val healthElementId: String?
+
 	public val valueDate: Long?
 
 	public val openingDate: Long?
@@ -124,6 +126,7 @@ data class DecryptedHealthElement(
 	override val codes: Set<CodeStub> = emptySet(),
 	override val endOfLife: Long? = null,
 	override val deletionDate: Long? = null,
+	override val healthElementId: String? = null,
 	override val valueDate: Long? = null,
 	override val openingDate: Long? = null,
 	override val closingDate: Long? = null,
@@ -176,6 +179,7 @@ data class EncryptedHealthElement(
 	override val codes: Set<CodeStub> = emptySet(),
 	override val endOfLife: Long? = null,
 	override val deletionDate: Long? = null,
+	override val healthElementId: String? = null,
 	override val valueDate: Long? = null,
 	override val openingDate: Long? = null,
 	override val closingDate: Long? = null,

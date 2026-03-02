@@ -61,6 +61,8 @@ data class User(
 		public val inheritsRoles: Boolean,
 		@param:DefaultValue("emptyList()")
 		public val loginIdentifiers: List<LoginIdentifier> = emptyList(),
+		public val verifiedEmail: Boolean? = null,
+		public val verifiedMobilePhone: Boolean? = null,
 	)
 	// region User-User
 
