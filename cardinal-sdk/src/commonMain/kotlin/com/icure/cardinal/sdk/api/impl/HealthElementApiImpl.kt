@@ -109,7 +109,7 @@ private suspend fun RawHealthElementApi.doMatchHealthElementsBy(
 			mapHealthElementFilterOptions(
 				filter,
 				config,
-				requestGroup = null
+				requestGroup = groupId
 			)
 		)
 	}.successBody()

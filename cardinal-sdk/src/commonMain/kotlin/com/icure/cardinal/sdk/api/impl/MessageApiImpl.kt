@@ -111,7 +111,7 @@ private suspend fun RawMessageApi.doMatchMessagesBy(
 			mapMessageFilterOptions(
 				filter,
 				config,
-				requestGroup = null
+				requestGroup = groupId
 			)
 		)
 	}.successBody()
