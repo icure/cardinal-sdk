@@ -97,7 +97,7 @@ class SecureStorageCryptoException(message: String, cause: Throwable? = null) : 
  *   the device hardware. For example, requesting biometric on a device that has no biometric
  *   sensor, or requesting a combination of access levels that the Secure Enclave does not support.
  * - **Android**: The `KeyGenParameterSpec` specifies authentication parameters that the device
- *   cannot satisfy (less common — Android typically throws at key-use time, not at config time).
+ *   cannot satisfy.
  *
  * **Recovery**: Change the access level set passed to the secure storage factory function to
  * match the device's capabilities. For example, fall back to device passcode if biometric is
