@@ -1,5 +1,6 @@
 package com.icure.cardinal.sdk.storage
 
+import com.icure.cardinal.sdk.exceptions.SecureStorageException
 import com.icure.cardinal.sdk.storage.EncryptedStorageFacade.Companion.SECRET_KEY
 import com.icure.kryptom.apple.toByteArray
 import com.icure.kryptom.apple.toNSData
@@ -83,13 +84,13 @@ private suspend fun getSecretKey(key: String): AesKey<CbcWithPkcs7Padding>? {
 
 			when (SecItemCopyMatching(query, item.ptr.reinterpret())) {
 				errSecSuccess -> {
-					val data = item.value ?: throw IllegalStateException("Failed to get key data from CFDataRefVar")
+					val data = item.value ?: throw SecureStorageException("Failed to get key data from CFDataRefVar")
 					val bytes = data.toByteArray()
 					defaultCryptoService.aes.loadKey(CbcWithPkcs7Padding, bytes)
 				}
 
 				errSecItemNotFound -> null
-				else -> throw IllegalStateException("Failed to get key data")
+				else -> throw SecureStorageException("Failed to get key data")
 			}
 		}
 	} finally {
@@ -114,7 +115,7 @@ private suspend fun createSecretKey(accessLevel: Set<SecureKeyAccessLevel>, key:
 		protection = kSecAttrAccessibleWhenUnlocked,
 		flags = accessControlFlags,
 		error = null,
-	) ?: throw IllegalStateException("Failed to create access control")
+	) ?: throw SecureStorageException("Failed to create access control")
 
 	try {
 		val query = CFDictionaryCreateMutable(
@@ -132,7 +133,7 @@ private suspend fun createSecretKey(accessLevel: Set<SecureKeyAccessLevel>, key:
 
 			return when (SecItemAdd(query, null)) {
 				errSecSuccess -> aesKey
-				else -> throw IllegalStateException("Failed to generate key data")
+				else -> throw SecureStorageException("Failed to generate key data")
 			}
 		} finally {
 			CFRelease(query)

@@ -4,6 +4,7 @@ import android.os.Build
 import android.security.keystore.KeyGenParameterSpec
 import android.security.keystore.KeyProperties
 import androidx.annotation.RequiresApi
+import com.icure.cardinal.sdk.exceptions.SecureStorageException
 import com.icure.cardinal.sdk.storage.EncryptedStorageFacade.Companion.SECRET_KEY
 import com.icure.kryptom.crypto.AesAlgorithm.CbcWithPkcs7Padding
 import com.icure.kryptom.crypto.AesKey
@@ -61,8 +62,8 @@ private suspend fun getSecretKey(key: String, storage: StorageFacade): AesKey<Cb
 	val cipherBytes = storage.getItem("$key.cipher")?.let { base64Decode(it) }
 
 	if (iv == null && cipherBytes == null && !keyStore.containsAlias(key)) return null
-	if (iv == null || cipherBytes == null) throw IllegalStateException("Missing IV or cipher bytes")
-	if (!keyStore.containsAlias(key)) throw IllegalStateException("Key not found in keystore")
+	if (iv == null || cipherBytes == null) throw SecureStorageException("Missing IV or cipher bytes")
+	if (!keyStore.containsAlias(key)) throw SecureStorageException("Key not found in keystore")
 
 	val keyStoreKey = (keyStore.getEntry(key, null) as KeyStore.SecretKeyEntry).secretKey
 	return decryptKey(cipherBytes, iv, keyStoreKey)
@@ -106,7 +107,7 @@ private suspend fun encryptKey(aesKey: AesKey<CbcWithPkcs7Padding>, secretKey: S
 		val cipherBytes = cipher.doFinal(defaultCryptoService.aes.exportKey(aesKey))
 		Pair(iv, cipherBytes)
 	} catch (e: Exception) {
-		throw IllegalStateException("Failed to encrypt key", e)
+		throw SecureStorageException("Failed to encrypt key", e)
 	}
 }
 
@@ -119,7 +120,7 @@ private suspend fun decryptKey(cipherBytes: ByteArray, iv: ByteArray, secretKey:
 		val aesKeyBytes = cipher.doFinal(cipherBytes)
 		defaultCryptoService.aes.loadKey(CbcWithPkcs7Padding, aesKeyBytes)
 	} catch (e: Exception) {
-		throw IllegalStateException("Failed to decrypt key", e)
+		throw SecureStorageException("Failed to decrypt key", e)
 	}
 }
 
