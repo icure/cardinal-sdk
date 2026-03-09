@@ -11,5 +11,6 @@ data class ChangeUserPasswordRequest(
 	public val newPassword: String,
 ) {
 	// region ChangeUserPasswordRequest-ChangeUserPasswordRequest
+
 	// endregion
 }

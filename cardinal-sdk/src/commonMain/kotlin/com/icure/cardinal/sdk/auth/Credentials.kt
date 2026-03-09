@@ -42,7 +42,7 @@ data class ExternalAuthenticationToken(
 	 * The id of the configuration that specifies how the token should be validated and how it should be used to find
 	 * the corresponding user in iCure.
 	 *
-	 * Note you can only use external authentication if the sdk instance was initialized with an application id.
+	 * Note you can only use external authentication if the sdk instance was initialized with a project id.
 	 */
 	val configId: String,
 	/**
@@ -52,7 +52,12 @@ data class ExternalAuthenticationToken(
 	/**
 	 * During login consider only configurations that can provide at least this authentication class
 	 */
-	val minimumAuthenticationClass: AuthenticationClass = AuthenticationClass.ExternalAuthentication
+	val minimumAuthenticationClass: AuthenticationClass = AuthenticationClass.ExternalAuthentication,
+	/**
+	 * If set to true, the project id specified in the initialize method will be used to find the external configuration for the external
+	 * token but not to restrict the group where to log in.
+	 */
+	val doNotUseProjectIdForGroupSelection: Boolean = false
 ) : Credentials
 
 @InternalIcureApi
