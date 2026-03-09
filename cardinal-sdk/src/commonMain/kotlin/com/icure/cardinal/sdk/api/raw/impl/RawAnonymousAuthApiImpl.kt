@@ -18,6 +18,7 @@ import io.ktor.http.appendPathSegments
 import io.ktor.http.contentType
 import io.ktor.http.takeFrom
 import io.ktor.util.date.GMTDate
+import kotlin.Boolean
 import kotlin.Long
 import kotlin.String
 import kotlin.Unit
@@ -146,6 +147,7 @@ class RawAnonymousAuthApiImpl(
 		groupId: String?,
 		minimumAuthenticationClass: String?,
 		scopeDataOwner: String?,
+		doNotUseApplicationIdForGroupSelection: Boolean?,
 	): HttpResponse<JwtResponse> =
 		post {
 			url {
@@ -155,6 +157,7 @@ class RawAnonymousAuthApiImpl(
 				parameter("groupId", groupId)
 				parameter("minimumAuthenticationClass", minimumAuthenticationClass)
 				parameter("scopeDataOwner", scopeDataOwner)
+				parameter("doNotUseApplicationIdForGroupSelection", doNotUseApplicationIdForGroupSelection)
 			}
 			contentType(Application.Json)
 			accept(Application.Json)

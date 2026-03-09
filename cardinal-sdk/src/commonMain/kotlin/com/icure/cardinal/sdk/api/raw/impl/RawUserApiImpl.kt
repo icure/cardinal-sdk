@@ -15,6 +15,7 @@ import com.icure.cardinal.sdk.model.UserGroup
 import com.icure.cardinal.sdk.model.couchdb.DocIdentifier
 import com.icure.cardinal.sdk.model.filter.AbstractFilter
 import com.icure.cardinal.sdk.model.filter.chain.FilterChain
+import com.icure.cardinal.sdk.model.security.ChangeUserPasswordRequest
 import com.icure.cardinal.sdk.model.security.Enable2faRequest
 import com.icure.cardinal.sdk.model.security.LoginIdentifier
 import com.icure.cardinal.sdk.model.security.TokenWithGroup
@@ -330,6 +331,52 @@ class RawUserApiImpl(
 			contentType(Application.Json)
 			accept(Application.Json)
 			setBodyWithSerializer(UserAbstractFilterSerializer, filter)
+		}.wrap()
+
+	override suspend fun changeUserEmail(
+		userId: String,
+		newEmail: String,
+		previousEmail: String,
+	): HttpResponse<User> =
+		put(authProvider) {
+			url {
+				takeFrom(apiUrl)
+				appendPathSegments("rest", "v2", "user", userId, "email")
+				parameter("newEmail", newEmail)
+				parameter("previousEmail", previousEmail)
+			}
+			contentType(Application.Json)
+			accept(Application.Json)
+		}.wrap()
+
+	override suspend fun changeUserMobilePhone(
+		userId: String,
+		newMobilePhone: String,
+		previousMobilePhone: String,
+	): HttpResponse<User> =
+		put(authProvider) {
+			url {
+				takeFrom(apiUrl)
+				appendPathSegments("rest", "v2", "user", userId, "mobilePhone")
+				parameter("newMobilePhone", newMobilePhone)
+				parameter("previousMobilePhone", previousMobilePhone)
+			}
+			contentType(Application.Json)
+			accept(Application.Json)
+		}.wrap()
+
+	override suspend fun changeUserPassword(
+		userId: String,
+		request: ChangeUserPasswordRequest,
+	): HttpResponse<User> =
+		put(authProvider) {
+			url {
+				takeFrom(apiUrl)
+				appendPathSegments("rest", "v2", "user", userId, "password")
+			}
+			contentType(Application.Json)
+			accept(Application.Json)
+			setBody(request)
 		}.wrap()
 
 	// endregion
@@ -852,6 +899,99 @@ class RawUserApiImpl(
 			}
 			contentType(Application.Json)
 			accept(Application.Json)
+		}.wrap()
+
+	override suspend fun startEmailVerificationForCurrentUser(expectedEmail: String): HttpResponse<Unit> =
+		put(authProvider) {
+			url {
+				takeFrom(apiUrl)
+				appendPathSegments("rest", "v2", "user", "current", "verify", "email", "start")
+				parameter("expectedEmail", expectedEmail)
+			}
+			contentType(Application.Json)
+			accept(Application.Json)
+		}.wrap()
+
+	override suspend fun completeEmailVerificationForCurrentUser(token: String): HttpResponse<Unit> =
+		put(authProvider) {
+			url {
+				takeFrom(apiUrl)
+				appendPathSegments("rest", "v2", "user", "current", "verify", "email", "complete")
+				parameter("token", token)
+			}
+			contentType(Application.Json)
+			accept(Application.Json)
+		}.wrap()
+
+	override suspend fun startPhoneVerificationForCurrentUser(expectedPhone: String): HttpResponse<Unit> =
+		put(authProvider) {
+			url {
+				takeFrom(apiUrl)
+				appendPathSegments("rest", "v2", "user", "current", "verify", "phone", "start")
+				parameter("expectedPhone", expectedPhone)
+			}
+			contentType(Application.Json)
+			accept(Application.Json)
+		}.wrap()
+
+	override suspend fun completePhoneVerificationForCurrentUser(token: String): HttpResponse<Unit> =
+		put(authProvider) {
+			url {
+				takeFrom(apiUrl)
+				appendPathSegments("rest", "v2", "user", "current", "verify", "phone", "complete")
+				parameter("token", token)
+			}
+			contentType(Application.Json)
+			accept(Application.Json)
+		}.wrap()
+
+	override suspend fun changeUserEmailInGroup(
+		userId: String,
+		groupId: String,
+		newEmail: String,
+		previousEmail: String,
+	): HttpResponse<User> =
+		put(authProvider) {
+			url {
+				takeFrom(apiUrl)
+				appendPathSegments("rest", "v2", "user", userId, "inGroup", groupId, "email")
+				parameter("newEmail", newEmail)
+				parameter("previousEmail", previousEmail)
+			}
+			contentType(Application.Json)
+			accept(Application.Json)
+		}.wrap()
+
+	override suspend fun changeUserMobilePhoneInGroup(
+		userId: String,
+		groupId: String,
+		newMobilePhone: String,
+		previousMobilePhone: String,
+	): HttpResponse<User> =
+		put(authProvider) {
+			url {
+				takeFrom(apiUrl)
+				appendPathSegments("rest", "v2", "user", userId, "inGroup", groupId, "mobilePhone")
+				parameter("newMobilePhone", newMobilePhone)
+				parameter("previousMobilePhone", previousMobilePhone)
+			}
+			contentType(Application.Json)
+			accept(Application.Json)
+		}.wrap()
+
+	override suspend fun changeUserPasswordInGroup(
+		userId: String,
+		groupId: String,
+		request: ChangeUserPasswordRequest,
+	): HttpResponse<User> =
+		put(authProvider) {
+			url {
+				takeFrom(apiUrl)
+				appendPathSegments("rest", "v2", "user", userId, "inGroup", groupId, "password")
+			}
+			contentType(Application.Json)
+			accept(Application.Json)
+			setBody(request)
 		}.wrap()
 
 	// endregion

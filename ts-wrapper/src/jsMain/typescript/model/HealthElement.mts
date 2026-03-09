@@ -22,6 +22,8 @@ export interface HealthElement extends StoredDocument, ICureDocument<string>, Ha
 
 	identifiers: Array<Identifier>;
 
+	healthElementId: string | undefined;
+
 	valueDate: number | undefined;
 
 	openingDate: number | undefined;
@@ -80,6 +82,8 @@ export class DecryptedHealthElement {
 
 	deletionDate: number | undefined = undefined;
 
+	healthElementId: string | undefined = undefined;
+
 	valueDate: number | undefined = undefined;
 
 	openingDate: number | undefined = undefined;
@@ -135,6 +139,7 @@ export class DecryptedHealthElement {
 		if ('codes' in partial && partial.codes !== undefined) this.codes = partial.codes;
 		if ('endOfLife' in partial) this.endOfLife = partial.endOfLife;
 		if ('deletionDate' in partial) this.deletionDate = partial.deletionDate;
+		if ('healthElementId' in partial) this.healthElementId = partial.healthElementId;
 		if ('valueDate' in partial) this.valueDate = partial.valueDate;
 		if ('openingDate' in partial) this.openingDate = partial.openingDate;
 		if ('closingDate' in partial) this.closingDate = partial.closingDate;
@@ -170,6 +175,7 @@ export class DecryptedHealthElement {
 		res['codes'] = this.codes.map((x0) => x0.toJSON() )
 		if (this.endOfLife != undefined) res['endOfLife'] = this.endOfLife
 		if (this.deletionDate != undefined) res['deletionDate'] = this.deletionDate
+		if (this.healthElementId != undefined) res['healthElementId'] = this.healthElementId
 		if (this.valueDate != undefined) res['valueDate'] = this.valueDate
 		if (this.openingDate != undefined) res['openingDate'] = this.openingDate
 		if (this.closingDate != undefined) res['closingDate'] = this.closingDate
@@ -211,6 +217,7 @@ export class DecryptedHealthElement {
 			codes: expectArray(extractEntry(jCpy, 'codes', false, path), false, [...path, ".codes"], (x0, p0) => expectObject(x0, false, ignoreUnknownKeys, p0, CodeStub.fromJSON)),
 			endOfLife: expectNumber(extractEntry(jCpy, 'endOfLife', false, path), true, true, [...path, ".endOfLife"]),
 			deletionDate: expectNumber(extractEntry(jCpy, 'deletionDate', false, path), true, true, [...path, ".deletionDate"]),
+			healthElementId: expectString(extractEntry(jCpy, 'healthElementId', false, path), true, [...path, ".healthElementId"]),
 			valueDate: expectNumber(extractEntry(jCpy, 'valueDate', false, path), true, true, [...path, ".valueDate"]),
 			openingDate: expectNumber(extractEntry(jCpy, 'openingDate', false, path), true, true, [...path, ".openingDate"]),
 			closingDate: expectNumber(extractEntry(jCpy, 'closingDate', false, path), true, true, [...path, ".closingDate"]),
@@ -282,6 +289,8 @@ export class EncryptedHealthElement {
 
 	deletionDate: number | undefined = undefined;
 
+	healthElementId: string | undefined = undefined;
+
 	valueDate: number | undefined = undefined;
 
 	openingDate: number | undefined = undefined;
@@ -337,6 +346,7 @@ export class EncryptedHealthElement {
 		if ('codes' in partial && partial.codes !== undefined) this.codes = partial.codes;
 		if ('endOfLife' in partial) this.endOfLife = partial.endOfLife;
 		if ('deletionDate' in partial) this.deletionDate = partial.deletionDate;
+		if ('healthElementId' in partial) this.healthElementId = partial.healthElementId;
 		if ('valueDate' in partial) this.valueDate = partial.valueDate;
 		if ('openingDate' in partial) this.openingDate = partial.openingDate;
 		if ('closingDate' in partial) this.closingDate = partial.closingDate;
@@ -372,6 +382,7 @@ export class EncryptedHealthElement {
 		res['codes'] = this.codes.map((x0) => x0.toJSON() )
 		if (this.endOfLife != undefined) res['endOfLife'] = this.endOfLife
 		if (this.deletionDate != undefined) res['deletionDate'] = this.deletionDate
+		if (this.healthElementId != undefined) res['healthElementId'] = this.healthElementId
 		if (this.valueDate != undefined) res['valueDate'] = this.valueDate
 		if (this.openingDate != undefined) res['openingDate'] = this.openingDate
 		if (this.closingDate != undefined) res['closingDate'] = this.closingDate
@@ -413,6 +424,7 @@ export class EncryptedHealthElement {
 			codes: expectArray(extractEntry(jCpy, 'codes', false, path), false, [...path, ".codes"], (x0, p0) => expectObject(x0, false, ignoreUnknownKeys, p0, CodeStub.fromJSON)),
 			endOfLife: expectNumber(extractEntry(jCpy, 'endOfLife', false, path), true, true, [...path, ".endOfLife"]),
 			deletionDate: expectNumber(extractEntry(jCpy, 'deletionDate', false, path), true, true, [...path, ".deletionDate"]),
+			healthElementId: expectString(extractEntry(jCpy, 'healthElementId', false, path), true, [...path, ".healthElementId"]),
 			valueDate: expectNumber(extractEntry(jCpy, 'valueDate', false, path), true, true, [...path, ".valueDate"]),
 			openingDate: expectNumber(extractEntry(jCpy, 'openingDate', false, path), true, true, [...path, ".openingDate"]),
 			closingDate: expectNumber(extractEntry(jCpy, 'closingDate', false, path), true, true, [...path, ".closingDate"]),

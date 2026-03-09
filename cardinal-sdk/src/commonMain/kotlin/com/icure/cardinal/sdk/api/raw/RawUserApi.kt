@@ -9,6 +9,7 @@ import com.icure.cardinal.sdk.model.UserGroup
 import com.icure.cardinal.sdk.model.couchdb.DocIdentifier
 import com.icure.cardinal.sdk.model.filter.AbstractFilter
 import com.icure.cardinal.sdk.model.filter.chain.FilterChain
+import com.icure.cardinal.sdk.model.security.ChangeUserPasswordRequest
 import com.icure.cardinal.sdk.model.security.Enable2faRequest
 import com.icure.cardinal.sdk.model.security.LoginIdentifier
 import com.icure.cardinal.sdk.model.security.TokenWithGroup
@@ -103,6 +104,23 @@ public interface RawUserApi {
 	): HttpResponse<PaginatedList<User>>
 
 	suspend fun matchUsersBy(filter: AbstractFilter<User>): HttpResponse<List<String>>
+
+	suspend fun changeUserEmail(
+		userId: String,
+		newEmail: String,
+		previousEmail: String,
+	): HttpResponse<User>
+
+	suspend fun changeUserMobilePhone(
+		userId: String,
+		newMobilePhone: String,
+		previousMobilePhone: String,
+	): HttpResponse<User>
+
+	suspend fun changeUserPassword(
+		userId: String,
+		request: ChangeUserPasswordRequest,
+	): HttpResponse<User>
 	// endregion
 
 	// region cloud endpoints
@@ -294,5 +312,33 @@ public interface RawUserApi {
 		groupId: String,
 		`value`: Boolean,
 	): HttpResponse<String>
+
+	suspend fun startEmailVerificationForCurrentUser(expectedEmail: String): HttpResponse<Unit>
+
+	suspend fun completeEmailVerificationForCurrentUser(token: String): HttpResponse<Unit>
+
+	suspend fun startPhoneVerificationForCurrentUser(expectedPhone: String): HttpResponse<Unit>
+
+	suspend fun completePhoneVerificationForCurrentUser(token: String): HttpResponse<Unit>
+
+	suspend fun changeUserEmailInGroup(
+		userId: String,
+		groupId: String,
+		newEmail: String,
+		previousEmail: String,
+	): HttpResponse<User>
+
+	suspend fun changeUserMobilePhoneInGroup(
+		userId: String,
+		groupId: String,
+		newMobilePhone: String,
+		previousMobilePhone: String,
+	): HttpResponse<User>
+
+	suspend fun changeUserPasswordInGroup(
+		userId: String,
+		groupId: String,
+		request: ChangeUserPasswordRequest,
+	): HttpResponse<User>
 	// endregion
 }

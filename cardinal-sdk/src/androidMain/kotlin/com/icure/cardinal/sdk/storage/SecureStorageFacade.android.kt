@@ -4,6 +4,11 @@ import android.os.Build
 import android.security.keystore.KeyGenParameterSpec
 import android.security.keystore.KeyProperties
 import androidx.annotation.RequiresApi
+import android.security.keystore.KeyPermanentlyInvalidatedException
+import android.security.keystore.UserNotAuthenticatedException
+import com.icure.cardinal.sdk.exceptions.SecureStorageCorruptedException
+import com.icure.cardinal.sdk.exceptions.SecureStorageCryptoException
+import com.icure.cardinal.sdk.exceptions.SecureStorageKeyInvalidatedException
 import com.icure.cardinal.sdk.storage.EncryptedStorageFacade.Companion.SECRET_KEY
 import com.icure.kryptom.crypto.AesAlgorithm.CbcWithPkcs7Padding
 import com.icure.kryptom.crypto.AesKey
@@ -61,8 +66,8 @@ private suspend fun getSecretKey(key: String, storage: StorageFacade): AesKey<Cb
 	val cipherBytes = storage.getItem("$key.cipher")?.let { base64Decode(it) }
 
 	if (iv == null && cipherBytes == null && !keyStore.containsAlias(key)) return null
-	if (iv == null || cipherBytes == null) throw IllegalStateException("Missing IV or cipher bytes")
-	if (!keyStore.containsAlias(key)) throw IllegalStateException("Key not found in keystore")
+	if (iv == null || cipherBytes == null) throw SecureStorageCorruptedException("Missing IV or cipher bytes")
+	if (!keyStore.containsAlias(key)) throw SecureStorageCorruptedException("Key not found in keystore")
 
 	val keyStoreKey = (keyStore.getEntry(key, null) as KeyStore.SecretKeyEntry).secretKey
 	return decryptKey(cipherBytes, iv, keyStoreKey)
@@ -105,8 +110,12 @@ private suspend fun encryptKey(aesKey: AesKey<CbcWithPkcs7Padding>, secretKey: S
 		val iv = cipher.iv
 		val cipherBytes = cipher.doFinal(defaultCryptoService.aes.exportKey(aesKey))
 		Pair(iv, cipherBytes)
+	} catch (e: UserNotAuthenticatedException) {
+		throw SecureStorageCryptoException("User authentication required to encrypt key", e)
+	} catch (e: KeyPermanentlyInvalidatedException) {
+		throw SecureStorageKeyInvalidatedException("Encryption key has been permanently invalidated", e)
 	} catch (e: Exception) {
-		throw IllegalStateException("Failed to encrypt key", e)
+		throw IllegalStateException("Unexpected error during key encryption", e)
 	}
 }
 
@@ -118,8 +127,12 @@ private suspend fun decryptKey(cipherBytes: ByteArray, iv: ByteArray, secretKey:
 
 		val aesKeyBytes = cipher.doFinal(cipherBytes)
 		defaultCryptoService.aes.loadKey(CbcWithPkcs7Padding, aesKeyBytes)
+	} catch (e: UserNotAuthenticatedException) {
+		throw SecureStorageCryptoException("User authentication required to decrypt key", e)
+	} catch (e: KeyPermanentlyInvalidatedException) {
+		throw SecureStorageKeyInvalidatedException("Decryption key has been permanently invalidated", e)
 	} catch (e: Exception) {
-		throw IllegalStateException("Failed to decrypt key", e)
+		throw IllegalStateException("Unexpected error during key decryption", e)
 	}
 }
 

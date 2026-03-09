@@ -104,10 +104,7 @@ public interface RawContactApi {
 		filterChain: FilterChain<Contact>,
 	): HttpResponse<PaginatedList<EncryptedContact>>
 
-	suspend fun matchContactsBy(
-		filter: AbstractFilter<Contact>,
-		deduplicate: Boolean? = null,
-	): HttpResponse<List<String>>
+	suspend fun matchContactsBy(filter: AbstractFilter<Contact>): HttpResponse<List<String>>
 
 	suspend fun getService(serviceId: String): HttpResponse<EncryptedService>
 

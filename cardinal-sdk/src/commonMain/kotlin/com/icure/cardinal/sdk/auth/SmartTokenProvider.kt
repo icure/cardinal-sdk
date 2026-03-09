@@ -165,7 +165,11 @@ internal class SmartTokenProvider private constructor (
 	suspend fun getCachedTokensOrLoad(): JwtBearerAndRefresh = tokenCacheMutex.withLock {
 		val bearer = this.cachedToken
 		val refresh = this.cachedRefreshToken
-		return if (bearer != null && refresh != null) {
+		return if (bearer != null
+			&& refresh != null
+			&& !isJwtExpiredOrInvalid(bearer)
+			&& !isJwtExpiredOrInvalid(refresh)
+		) {
 			JwtBearerAndRefresh(JwtBearer(bearer), JwtRefresh(refresh))
 		} else getAndCacheNewTokens(null)
 	}
@@ -348,6 +352,7 @@ internal class SmartTokenProvider private constructor (
 					},
 					minimumAuthenticationClass = secret.minimumAuthenticationClass.dtoSerialName,
 					scopeDataOwner = scopeDataOwnerId,
+					doNotUseApplicationIdForGroupSelection = secret.doNotUseProjectIdForGroupSelection,
 				)
 			}
 			secret is AuthSecretDetails.ShortLivedTokenDetails -> {

@@ -49,6 +49,8 @@ export class Group implements StoredDocument, HasTags {
 
 	projectId: string | undefined = undefined;
 
+	templates: Group.TemplatesConfiguration | undefined = undefined;
+
 	constructor(partial: Partial<Group> & Pick<Group, "minimumAuthenticationClassForElevatedPrivileges">) {
 		this.id = partial.id ?? randomUuid();
 		if ('rev' in partial) this.rev = partial.rev;
@@ -68,6 +70,7 @@ export class Group implements StoredDocument, HasTags {
 		this.minimumAuthenticationClassForElevatedPrivileges = partial.minimumAuthenticationClassForElevatedPrivileges;
 		if ('superGroup' in partial) this.superGroup = partial.superGroup;
 		if ('projectId' in partial) this.projectId = partial.projectId;
+		if ('templates' in partial) this.templates = partial.templates;
 	}
 
 	toJSON(): object {
@@ -90,6 +93,7 @@ export class Group implements StoredDocument, HasTags {
 		res['minimumAuthenticationClassForElevatedPrivileges'] = this.minimumAuthenticationClassForElevatedPrivileges
 		if (this.superGroup != undefined) res['superGroup'] = this.superGroup
 		if (this.projectId != undefined) res['projectId'] = this.projectId
+		if (this.templates != undefined) res['templates'] = this.templates.toJSON()
 		return res
 	}
 
@@ -140,11 +144,75 @@ export class Group implements StoredDocument, HasTags {
 			minimumAuthenticationClassForElevatedPrivileges: expectStringEnum(extractEntry(jCpy, 'minimumAuthenticationClassForElevatedPrivileges', true, path), false, [...path, ".minimumAuthenticationClassForElevatedPrivileges"], AuthenticationClass, 'AuthenticationClass'),
 			superGroup: expectString(extractEntry(jCpy, 'superGroup', false, path), true, [...path, ".superGroup"]),
 			projectId: expectString(extractEntry(jCpy, 'projectId', false, path), true, [...path, ".projectId"]),
+			templates: expectObject(extractEntry(jCpy, 'templates', false, path), true, ignoreUnknownKeys, [...path, ".templates"], Group.TemplatesConfiguration.fromJSON),
 		})
 		if (!ignoreUnknownKeys) {
 			const unused = Object.keys(jCpy)
 			if (unused.length > 0) throw new Error(`Unexpected key(s) for json object Group at path ${path.join("")}: ${unused}`)}
 		return res
+	}
+
+}
+
+export namespace Group {
+
+	export class TemplatesConfiguration {
+
+		specId: string;
+
+		emailSender: string | undefined = undefined;
+
+		smsSender: string | undefined = undefined;
+
+		emailVerificationTemplateId: string | undefined = undefined;
+
+		mobilePhoneVerificationTemplateId: string | undefined = undefined;
+
+		existingEmailNotificationTemplateId: string | undefined = undefined;
+
+		existingMobilePhoneNotificationTemplateId: string | undefined = undefined;
+
+		constructor(partial: Partial<TemplatesConfiguration> & Pick<TemplatesConfiguration, "specId">) {
+			this.specId = partial.specId;
+			if ('emailSender' in partial) this.emailSender = partial.emailSender;
+			if ('smsSender' in partial) this.smsSender = partial.smsSender;
+			if ('emailVerificationTemplateId' in partial) this.emailVerificationTemplateId = partial.emailVerificationTemplateId;
+			if ('mobilePhoneVerificationTemplateId' in partial) this.mobilePhoneVerificationTemplateId = partial.mobilePhoneVerificationTemplateId;
+			if ('existingEmailNotificationTemplateId' in partial) this.existingEmailNotificationTemplateId = partial.existingEmailNotificationTemplateId;
+			if ('existingMobilePhoneNotificationTemplateId' in partial) this.existingMobilePhoneNotificationTemplateId = partial.existingMobilePhoneNotificationTemplateId;
+		}
+
+		toJSON(): object {
+			const res: { [k: string]: any } = {}
+			res['specId'] = this.specId
+			if (this.emailSender != undefined) res['emailSender'] = this.emailSender
+			if (this.smsSender != undefined) res['smsSender'] = this.smsSender
+			if (this.emailVerificationTemplateId != undefined) res['emailVerificationTemplateId'] = this.emailVerificationTemplateId
+			if (this.mobilePhoneVerificationTemplateId != undefined) res['mobilePhoneVerificationTemplateId'] = this.mobilePhoneVerificationTemplateId
+			if (this.existingEmailNotificationTemplateId != undefined) res['existingEmailNotificationTemplateId'] = this.existingEmailNotificationTemplateId
+			if (this.existingMobilePhoneNotificationTemplateId != undefined) res['existingMobilePhoneNotificationTemplateId'] = this.existingMobilePhoneNotificationTemplateId
+			return res
+		}
+
+		static fromJSON(json: any, ignoreUnknownKeys: boolean = false,
+				path: Array<string> = ['TemplatesConfiguration']): TemplatesConfiguration {
+			if (typeof json != 'object') throw new Error(`Expected json object at path ${path.join("")}`)
+			const jCpy = { ...json }
+			const res = new TemplatesConfiguration({
+				specId: expectString(extractEntry(jCpy, 'specId', true, path), false, [...path, ".specId"]),
+				emailSender: expectString(extractEntry(jCpy, 'emailSender', false, path), true, [...path, ".emailSender"]),
+				smsSender: expectString(extractEntry(jCpy, 'smsSender', false, path), true, [...path, ".smsSender"]),
+				emailVerificationTemplateId: expectString(extractEntry(jCpy, 'emailVerificationTemplateId', false, path), true, [...path, ".emailVerificationTemplateId"]),
+				mobilePhoneVerificationTemplateId: expectString(extractEntry(jCpy, 'mobilePhoneVerificationTemplateId', false, path), true, [...path, ".mobilePhoneVerificationTemplateId"]),
+				existingEmailNotificationTemplateId: expectString(extractEntry(jCpy, 'existingEmailNotificationTemplateId', false, path), true, [...path, ".existingEmailNotificationTemplateId"]),
+				existingMobilePhoneNotificationTemplateId: expectString(extractEntry(jCpy, 'existingMobilePhoneNotificationTemplateId', false, path), true, [...path, ".existingMobilePhoneNotificationTemplateId"]),
+			})
+			if (!ignoreUnknownKeys) {
+				const unused = Object.keys(jCpy)
+				if (unused.length > 0) throw new Error(`Unexpected key(s) for json object TemplatesConfiguration at path ${path.join("")}: ${unused}`)}
+			return res
+		}
+
 	}
 
 }

@@ -132,7 +132,7 @@ private suspend fun RawPatientApi.doMatchPatientsBy(
 			mapPatientFilterOptions(
 				filter,
 				config,
-				requestGroup = null
+				requestGroup = groupId
 			)
 		)
 	}.successBody()

@@ -336,15 +336,11 @@ class RawContactApiImpl(
 			setBodyWithSerializer(FilterChainSerializer(ContactAbstractFilterSerializer), filterChain)
 		}.wrap()
 
-	override suspend fun matchContactsBy(
-		filter: AbstractFilter<Contact>,
-		deduplicate: Boolean?,
-	): HttpResponse<List<String>> =
+	override suspend fun matchContactsBy(filter: AbstractFilter<Contact>): HttpResponse<List<String>> =
 		post(authProvider) {
 			url {
 				takeFrom(apiUrl)
 				appendPathSegments("rest", "v2", "contact", "match")
-				parameter("deduplicate", deduplicate)
 			}
 			contentType(Application.Json)
 			accept(Application.Json)
