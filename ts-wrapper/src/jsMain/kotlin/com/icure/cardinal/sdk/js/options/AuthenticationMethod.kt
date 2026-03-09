@@ -59,7 +59,8 @@ internal fun AuthenticationMethodJs.toKt() = when (this) {
 		AuthenticationMethod.UsingCredentials(ExternalAuthenticationToken(
 			token = token,
 			configId = configId,
-			minimumAuthenticationClass = minimumAuthenticationClass?.let { AuthenticationClass.valueOf(it) } ?: AuthenticationClass.ExternalAuthentication
+			minimumAuthenticationClass = minimumAuthenticationClass?.let { AuthenticationClass.valueOf(it) } ?: AuthenticationClass.ExternalAuthentication,
+			doNotUseProjectIdForGroupSelection = doNotUseProjectIdForGroupSelection ?: false,
 		))
 	is AuthenticationMethodUsingCredentialsJwtCredentialsJs ->
 		AuthenticationMethod.UsingCredentials(JwtCredentials(

@@ -15,6 +15,7 @@ external class AuthenticationMethodUsingCredentialsExternalAuthenticationTokenJs
 	val configId: String
 	val token: String
 	val minimumAuthenticationClass: String?
+	val doNotUseProjectIdForGroupSelection: Boolean?
 }
 @JsName("JwtCredentials")
 external class AuthenticationMethodUsingCredentialsJwtCredentialsJs : AuthenticationMethodJs {

@@ -352,6 +352,7 @@ internal class SmartTokenProvider private constructor (
 					},
 					minimumAuthenticationClass = secret.minimumAuthenticationClass.dtoSerialName,
 					scopeDataOwner = scopeDataOwnerId,
+					doNotUseApplicationIdForGroupSelection = secret.doNotUseProjectIdForGroupSelection,
 				)
 			}
 			secret is AuthSecretDetails.ShortLivedTokenDetails -> {
