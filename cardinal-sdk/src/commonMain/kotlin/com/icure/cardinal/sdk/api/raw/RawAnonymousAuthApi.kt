@@ -3,6 +3,7 @@ package com.icure.cardinal.sdk.api.raw
 import com.icure.cardinal.sdk.model.LoginCredentials
 import com.icure.cardinal.sdk.model.security.jwt.JwtResponse
 import com.icure.utils.InternalIcureApi
+import kotlin.Boolean
 import kotlin.Long
 import kotlin.String
 import kotlin.Unit
@@ -57,6 +58,7 @@ public interface RawAnonymousAuthApi {
 		groupId: String? = null,
 		minimumAuthenticationClass: String? = null,
 		scopeDataOwner: String? = null,
+		doNotUseApplicationIdForGroupSelection: Boolean? = null,
 	): HttpResponse<JwtResponse>
 
 	suspend fun loginFas(
