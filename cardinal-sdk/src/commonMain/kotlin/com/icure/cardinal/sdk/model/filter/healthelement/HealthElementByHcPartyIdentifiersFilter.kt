@@ -9,18 +9,24 @@ import kotlinx.serialization.Serializable
 import kotlin.String
 import kotlin.collections.List
 
-// WARNING: This file is auto-generated. If you change it manually, your changes will be lost.
-// If you want to change the way this class is generated, see [this repo](https://github.com/icure/sdk-codegen).
-
+/**
+ * Filter that matches health elements by healthcare party and a list of identifiers.
+ * /
+ */
 @SerialName("HealthElementByHcPartyIdentifiersFilter")
 @Serializable
-data class HealthElementByHcPartyIdentifiersFilter(
+public data class HealthElementByHcPartyIdentifiersFilter(
+	/**
+	 * Optional description of this filter.
+	 */
 	override val desc: String? = null,
+	/**
+	 * The identifier of the healthcare party.
+	 */
 	public val hcPartyId: String,
+	/**
+	 * The list of identifiers to match.
+	 */
 	@param:DefaultValue("emptyList()")
 	public val identifiers: List<Identifier> = emptyList(),
-) : AbstractFilter<HealthElement> {
-	// region HealthElementByHcPartyIdentifiersFilter-HealthElementByHcPartyIdentifiersFilter
-
-	// endregion
-}
+) : AbstractFilter<HealthElement>

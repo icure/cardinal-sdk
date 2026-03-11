@@ -4,16 +4,13 @@ import kotlinx.serialization.Serializable
 import kotlin.String
 import kotlin.collections.Map
 
-// WARNING: This file is auto-generated. If you change it manually, your changes will be lost.
-// If you want to change the way this class is generated, see [this repo](https://github.com/icure/sdk-codegen).
-
+/**
+ *
+ *  @author Bernard Paulus on 23/05/17.
+ */
 @Serializable
-class WsException(
+public class WsException(
 	public val level: String,
 	public val error: String,
 	public val translations: Map<String, String>,
-) {
-	// region WsException-WsException
-
-	// endregion
-}
+)

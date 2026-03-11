@@ -7,17 +7,23 @@ import kotlinx.serialization.Serializable
 import kotlin.Boolean
 import kotlin.String
 
-// WARNING: This file is auto-generated. If you change it manually, your changes will be lost.
-// If you want to change the way this class is generated, see [this repo](https://github.com/icure/sdk-codegen).
-
+/**
+ * Filter that matches forms by their logical UUID.
+ * /
+ */
 @SerialName("FormByLogicalUuidFilter")
 @Serializable
-data class FormByLogicalUuidFilter(
+public data class FormByLogicalUuidFilter(
+	/**
+	 * The logical UUID to match.
+	 */
 	public val logicalUuid: String,
+	/**
+	 * Whether to return results in descending order.
+	 */
 	public val descending: Boolean? = null,
+	/**
+	 * Optional description of this filter.
+	 */
 	override val desc: String? = null,
-) : AbstractFilter<Form> {
-	// region FormByLogicalUuidFilter-FormByLogicalUuidFilter
-
-	// endregion
-}
+) : AbstractFilter<Form>

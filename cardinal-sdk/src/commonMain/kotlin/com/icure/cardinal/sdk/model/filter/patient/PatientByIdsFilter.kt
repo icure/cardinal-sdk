@@ -8,16 +8,19 @@ import kotlinx.serialization.Serializable
 import kotlin.String
 import kotlin.collections.Set
 
-// WARNING: This file is auto-generated. If you change it manually, your changes will be lost.
-// If you want to change the way this class is generated, see [this repo](https://github.com/icure/sdk-codegen).
-
+/**
+ * Filter that matches patients by their unique identifiers.
+ * /
+ */
 @SerialName("PatientByIdsFilter")
 @Serializable
-data class PatientByIdsFilter(
+public data class PatientByIdsFilter(
+	/**
+	 * The set of patient identifiers to match.
+	 */
 	override val ids: Set<String>,
+	/**
+	 * Optional description of this filter.
+	 */
 	override val desc: String? = null,
-) : AbstractFilter<Patient>, Filter.IdsFilter<String, Patient> {
-	// region PatientByIdsFilter-PatientByIdsFilter
-
-	// endregion
-}
+) : AbstractFilter<Patient>, Filter.IdsFilter<String, Patient>

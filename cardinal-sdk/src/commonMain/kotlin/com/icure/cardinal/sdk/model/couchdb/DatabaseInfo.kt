@@ -5,23 +5,51 @@ import kotlin.Int
 import kotlin.Long
 import kotlin.String
 
-// WARNING: This file is auto-generated. If you change it manually, your changes will be lost.
-// If you want to change the way this class is generated, see [this repo](https://github.com/icure/sdk-codegen).
-
+/**
+ * Data transfer object containing information about a CouchDB database, including size metrics and
+ * cluster configuration.
+ * /
+ */
 @Serializable
-data class DatabaseInfo(
+public data class DatabaseInfo(
+	/**
+	 * The database identifier.
+	 */
 	public val id: String,
+	/**
+	 * The current update sequence for the database.
+	 */
 	public val updateSeq: String? = null,
+	/**
+	 * The size of the database file on disk in bytes.
+	 */
 	public val fileSize: Long? = null,
+	/**
+	 * The uncompressed size of the database contents in bytes.
+	 */
 	public val externalSize: Long? = null,
+	/**
+	 * The size of live data in the database in bytes.
+	 */
 	public val activeSize: Long? = null,
+	/**
+	 * The number of documents in the database.
+	 */
 	public val docs: Long? = null,
+	/**
+	 * The number of shards for the database.
+	 */
 	public val q: Int? = null,
+	/**
+	 * The number of replicas of each shard.
+	 */
 	public val n: Int? = null,
+	/**
+	 * The number of copies that must be written before a write is considered successful.
+	 */
 	public val w: Int? = null,
+	/**
+	 * The number of copies that must be read before a read is considered successful.
+	 */
 	public val r: Int? = null,
-) {
-	// region DatabaseInfo-DatabaseInfo
-
-	// endregion
-}
+)

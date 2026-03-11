@@ -7,17 +7,23 @@ import kotlinx.serialization.Serializable
 import kotlin.Int
 import kotlin.String
 
-// WARNING: This file is auto-generated. If you change it manually, your changes will be lost.
-// If you want to change the way this class is generated, see [this repo](https://github.com/icure/sdk-codegen).
-
+/**
+ * Filter that matches patients by healthcare party and exact date of birth.
+ * /
+ */
 @SerialName("PatientByHcPartyDateOfBirthFilter")
 @Serializable
-data class PatientByHcPartyDateOfBirthFilter(
+public data class PatientByHcPartyDateOfBirthFilter(
+	/**
+	 * Optional description of this filter.
+	 */
 	override val desc: String? = null,
+	/**
+	 * The date of birth to match (in YYYYMMDD format).
+	 */
 	public val dateOfBirth: Int,
+	/**
+	 * The identifier of the healthcare party.
+	 */
 	public val healthcarePartyId: String? = null,
-) : AbstractFilter<Patient> {
-	// region PatientByHcPartyDateOfBirthFilter-PatientByHcPartyDateOfBirthFilter
-
-	// endregion
-}
+) : AbstractFilter<Patient>

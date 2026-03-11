@@ -4,11 +4,14 @@ import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 import kotlin.String
 
-// WARNING: This file is auto-generated. If you change it manually, your changes will be lost.
-// If you want to change the way this class is generated, see [this repo](https://github.com/icure/sdk-codegen).
-
+/**
+ *
+ *  Enum class representing the participant types for an encounter/contact
+ *
+ *  Mostly based on HL7 FHIR R4
+ */
 @Serializable
-enum class ParticipantType(
+public enum class ParticipantType(
 	internal val dtoSerialName: String,
 ) {
 	@SerialName("admitter")
