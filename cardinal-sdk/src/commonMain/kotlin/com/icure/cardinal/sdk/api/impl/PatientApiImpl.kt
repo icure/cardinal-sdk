@@ -128,8 +128,9 @@ private suspend fun RawPatientApi.doMatchPatientsBy(
 			)
 		)
 	} else {
-		matchPatientsBy(
-			mapPatientFilterOptions(
+		matchPatientsInGroupBy(
+			groupId = groupId,
+			filter = mapPatientFilterOptions(
 				filter,
 				config,
 				requestGroup = groupId
