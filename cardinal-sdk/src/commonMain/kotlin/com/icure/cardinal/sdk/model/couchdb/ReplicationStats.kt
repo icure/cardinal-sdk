@@ -1,3 +1,5 @@
+// WARNING: This file is auto-generated. If you change it manually, your changes will be lost.
+// If you want to change the way this class is generated, see [this repo](https://github.com/icure/sdk-codegen).
 package com.icure.cardinal.sdk.model.couchdb
 
 import com.icure.cardinal.sdk.serialization.ZonedDateTimeSerializer
@@ -6,20 +8,48 @@ import kotlinx.serialization.Serializable
 import kotlin.Int
 import kotlin.String
 
-// WARNING: This file is auto-generated. If you change it manually, your changes will be lost.
-// If you want to change the way this class is generated, see [this repo](https://github.com/icure/sdk-codegen).
-
+/**
+ * Data transfer object containing statistics about a CouchDB replication process.
+ * /
+ */
 @Serializable
 data class ReplicationStats(
+	/**
+	 * The number of revisions checked during replication.
+	 */
 	public val revisionsChecked: Int? = null,
+	/**
+	 * The number of missing revisions found on the target.
+	 */
 	public val missingRevisionsFound: Int? = null,
+	/**
+	 * The number of documents read from the source.
+	 */
 	public val docsRead: Int? = null,
+	/**
+	 * The number of documents written to the target.
+	 */
 	public val docsWritten: Int? = null,
+	/**
+	 * The number of changes still pending replication.
+	 */
 	public val changesPending: Int? = null,
+	/**
+	 * The number of document write failures on the target.
+	 */
 	public val docWriteFailures: Int? = null,
+	/**
+	 * The last checkpointed source sequence identifier.
+	 */
 	public val checkpointedSourceSeq: String? = null,
+	/**
+	 * The time when the replication started.
+	 */
 	@Serializable(with = ZonedDateTimeSerializer::class)
 	public val startTime: ZonedDateTime? = null,
+	/**
+	 * An error message if the replication encountered an error.
+	 */
 	public val error: String? = null,
 ) {
 	// region ReplicationStats-ReplicationStats

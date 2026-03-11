@@ -1,3 +1,5 @@
+// WARNING: This file is auto-generated. If you change it manually, your changes will be lost.
+// If you want to change the way this class is generated, see [this repo](https://github.com/icure/sdk-codegen).
 package com.icure.cardinal.sdk.model.filter.group
 
 import com.icure.cardinal.sdk.model.Group
@@ -6,13 +8,20 @@ import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 import kotlin.String
 
-// WARNING: This file is auto-generated. If you change it manually, your changes will be lost.
-// If you want to change the way this class is generated, see [this repo](https://github.com/icure/sdk-codegen).
-
+/**
+ *
+ *  Filter that matches groups belonging to a specific super group.
+ */
 @SerialName("GroupBySuperGroupFilter")
 @Serializable
 class GroupBySuperGroupFilter(
+	/**
+	 * The identifier of the super group.
+	 */
 	public val superGroupId: String,
+	/**
+	 * Optional description of this filter.
+	 */
 	override val desc: String? = null,
 ) : AbstractFilter<Group> {
 	// region GroupBySuperGroupFilter-GroupBySuperGroupFilter

@@ -1,3 +1,5 @@
+// WARNING: This file is auto-generated. If you change it manually, your changes will be lost.
+// If you want to change the way this class is generated, see [this repo](https://github.com/icure/sdk-codegen).
 package com.icure.cardinal.sdk.model.embed
 
 import com.icure.cardinal.sdk.model.DecryptedPropertyStub
@@ -12,8 +14,11 @@ import kotlin.collections.Map
 import kotlin.collections.Set
 import kotlin.Boolean
 
-// WARNING: This file is auto-generated. If you change it manually, your changes will be lost.
-// If you want to change the way this class is generated, see [this repo](https://github.com/icure/sdk-codegen).
+/**
+ *
+ *  Created by aduchate on 02/07/13, 11:59
+ */
+
 sealed interface PatientHealthCareParty : Encryptable {
 	public val type: PatientHealthCarePartyType?
 
@@ -31,6 +36,10 @@ sealed interface PatientHealthCareParty : Encryptable {
 	// endregion
 }
 
+/**
+ *
+ *  Created by aduchate on 02/07/13, 11:59
+ */
 @Serializable
 data class DecryptedPatientHealthCareParty(
 	override val type: PatientHealthCarePartyType? = null,
@@ -47,6 +56,10 @@ data class DecryptedPatientHealthCareParty(
 	// endregion
 }
 
+/**
+ *
+ *  Created by aduchate on 02/07/13, 11:59
+ */
 @Serializable
 data class EncryptedPatientHealthCareParty(
 	override val type: PatientHealthCarePartyType? = null,

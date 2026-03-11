@@ -1,3 +1,5 @@
+// WARNING: This file is auto-generated. If you change it manually, your changes will be lost.
+// If you want to change the way this class is generated, see [this repo](https://github.com/icure/sdk-codegen).
 package com.icure.cardinal.sdk.model.embed
 
 import com.icure.cardinal.sdk.model.base.CodeStub
@@ -9,9 +11,6 @@ import kotlin.String
 import kotlin.collections.List
 import kotlin.collections.Map
 
-// WARNING: This file is auto-generated. If you change it manually, your changes will be lost.
-// If you want to change the way this class is generated, see [this repo](https://github.com/icure/sdk-codegen).
-
 @Serializable
 data class Medication(
 	public val compoundPrescription: String? = null,
@@ -19,6 +18,10 @@ data class Medication(
 	public val medicinalProduct: Medicinalproduct? = null,
 	public val numberOfPackages: Int? = null,
 	public val batch: String? = null,
+	/**
+	 *
+	 *  The expiration date of the medication. Format: yyyyMMdd
+	 */
 	public val expirationDate: Long? = null,
 	public val instructionForPatient: String? = null,
 	public val instructionForReimbursement: String? = null,

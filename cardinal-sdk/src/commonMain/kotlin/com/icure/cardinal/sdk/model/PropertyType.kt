@@ -1,3 +1,5 @@
+// WARNING: This file is auto-generated. If you change it manually, your changes will be lost.
+// If you want to change the way this class is generated, see [this repo](https://github.com/icure/sdk-codegen).
 package com.icure.cardinal.sdk.model
 
 import com.icure.cardinal.sdk.model.base.StoredDocument
@@ -9,20 +11,49 @@ import kotlin.Boolean
 import kotlin.Long
 import kotlin.String
 
-// WARNING: This file is auto-generated. If you change it manually, your changes will be lost.
-// If you want to change the way this class is generated, see [this repo](https://github.com/icure/sdk-codegen).
-
+/**
+ * DTO representing the definition of a property type, including its value type, scope, and
+ * uniqueness constraints.
+ * /
+ */
 @Serializable
 data class PropertyType(
+	/**
+	 * The unique identifier of the property type.
+	 */
 	override val id: String,
+	/**
+	 * The revision identifier for optimistic locking.
+	 */
 	override val rev: String? = null,
+	/**
+	 * The soft-delete timestamp in epoch milliseconds.
+	 */
 	override val deletionDate: Long? = null,
+	/**
+	 * The human-readable identifier of this property type.
+	 */
 	public val identifier: String,
+	/**
+	 * The value type of this property type.
+	 */
 	public val type: TypedValuesType? = null,
+	/**
+	 * The scope in which this property type is applicable.
+	 */
 	public val scope: PropertyTypeScope? = null,
+	/**
+	 * Whether values of this property type must be unique.
+	 */
 	@param:DefaultValue("false")
 	public val unique: Boolean = false,
+	/**
+	 * The identifier of the editor component used to edit this property type.
+	 */
 	public val editor: String? = null,
+	/**
+	 * Whether this property type supports localized values.
+	 */
 	@param:DefaultValue("false")
 	public val localized: Boolean = false,
 ) : StoredDocument {

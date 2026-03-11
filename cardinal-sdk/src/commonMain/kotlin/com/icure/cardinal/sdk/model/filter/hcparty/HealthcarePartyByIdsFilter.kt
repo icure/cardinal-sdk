@@ -1,3 +1,5 @@
+// WARNING: This file is auto-generated. If you change it manually, your changes will be lost.
+// If you want to change the way this class is generated, see [this repo](https://github.com/icure/sdk-codegen).
 package com.icure.cardinal.sdk.model.filter.hcparty
 
 import com.icure.cardinal.sdk.model.HealthcareParty
@@ -8,13 +10,20 @@ import kotlinx.serialization.Serializable
 import kotlin.String
 import kotlin.collections.Set
 
-// WARNING: This file is auto-generated. If you change it manually, your changes will be lost.
-// If you want to change the way this class is generated, see [this repo](https://github.com/icure/sdk-codegen).
-
+/**
+ * Filter that matches healthcare parties by their unique identifiers.
+ * /
+ */
 @SerialName("HealthcarePartyByIdsFilter")
 @Serializable
 data class HealthcarePartyByIdsFilter(
+	/**
+	 * The set of healthcare party identifiers to match.
+	 */
 	override val ids: Set<String>,
+	/**
+	 * Optional description of this filter.
+	 */
 	override val desc: String? = null,
 ) : AbstractFilter<HealthcareParty>, Filter.IdsFilter<String, HealthcareParty> {
 	// region HealthcarePartyByIdsFilter-HealthcarePartyByIdsFilter

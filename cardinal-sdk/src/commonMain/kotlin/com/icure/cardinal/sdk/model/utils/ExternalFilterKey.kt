@@ -1,3 +1,5 @@
+// WARNING: This file is auto-generated. If you change it manually, your changes will be lost.
+// If you want to change the way this class is generated, see [this repo](https://github.com/icure/sdk-codegen).
 package com.icure.cardinal.sdk.model.utils
 
 import kotlinx.serialization.SerialName
@@ -7,28 +9,51 @@ import kotlin.Any
 import kotlin.Long
 import kotlin.String
 
-// WARNING: This file is auto-generated. If you change it manually, your changes will be lost.
-// If you want to change the way this class is generated, see [this repo](https://github.com/icure/sdk-codegen).
-
+/**
+ * Sealed interface representing a typed filter key used when constructing external filter queries.
+ * Implementations cover string, long, and complex (JSON node) key types.
+ * /
+ */
 @Serializable
 sealed interface ExternalFilterKey {
 	public val key: Any
 
+	/**
+	 *
+	 *  A filter key backed by a string value.
+	 */
 	@Serializable
 	@SerialName("string")
 	public data class ExternalFilterStringKey(
+		/**
+		 * The string key value.
+		 */
 		override val key: String,
 	) : ExternalFilterKey
 
+	/**
+	 *
+	 *  A filter key backed by a long integer value.
+	 */
 	@Serializable
 	@SerialName("long")
 	public data class ExternalFilterLongKey(
+		/**
+		 * The long key value.
+		 */
 		override val key: Long,
 	) : ExternalFilterKey
 
+	/**
+	 *
+	 *  A filter key backed by an arbitrary JSON node, suitable for composite or structured keys.
+	 */
 	@Serializable
 	@SerialName("complexKey")
 	public data class ExternalFilterComplexKey(
+		/**
+		 * The JSON node representing the complex key value.
+		 */
 		override val key: JsonElement,
 	) : ExternalFilterKey
 	// region ExternalFilterKey-ExternalFilterKey
