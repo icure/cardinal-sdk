@@ -7,19 +7,31 @@ import kotlinx.serialization.Serializable
 import kotlin.String
 import kotlin.collections.List
 
-// WARNING: This file is auto-generated. If you change it manually, your changes will be lost.
-// If you want to change the way this class is generated, see [this repo](https://github.com/icure/sdk-codegen).
-
+/**
+ * Filter that matches pricing entries by region, types, language, and label.
+ * /
+ */
 @SerialName("PricingByRegionTypesLanguageLabelFilter")
 @Serializable
-data class PricingByRegionTypesLanguageLabelFilter(
+public data class PricingByRegionTypesLanguageLabelFilter(
+	/**
+	 * The region to filter pricing entries by.
+	 */
 	public val region: String? = null,
+	/**
+	 * The list of pricing types to match.
+	 */
 	public val types: List<String>,
+	/**
+	 * The language of the label to match.
+	 */
 	public val language: String,
+	/**
+	 * The label text to match.
+	 */
 	public val label: String,
+	/**
+	 * Optional description of this filter.
+	 */
 	override val desc: String? = null,
-) : AbstractFilter<Tarification> {
-	// region PricingByRegionTypesLanguageLabelFilter-PricingByRegionTypesLanguageLabelFilter
-
-	// endregion
-}
+) : AbstractFilter<Tarification>

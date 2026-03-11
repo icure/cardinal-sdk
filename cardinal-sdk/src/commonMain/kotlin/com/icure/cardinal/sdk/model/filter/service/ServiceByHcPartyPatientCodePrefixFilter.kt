@@ -8,21 +8,39 @@ import kotlin.Long
 import kotlin.String
 import kotlin.collections.Set
 
-// WARNING: This file is auto-generated. If you change it manually, your changes will be lost.
-// If you want to change the way this class is generated, see [this repo](https://github.com/icure/sdk-codegen).
-
+/**
+ * Filter that matches services by healthcare party, patient, code prefix, and value date range.
+ * /
+ */
 @SerialName("ServiceByHcPartyPatientCodePrefixFilter")
 @Serializable
-data class ServiceByHcPartyPatientCodePrefixFilter(
+public data class ServiceByHcPartyPatientCodePrefixFilter(
+	/**
+	 * The identifier of the healthcare party.
+	 */
 	public val healthcarePartyId: String,
+	/**
+	 * The set of secret foreign keys for patient matching.
+	 */
 	public val patientSecretForeignKeys: Set<String>,
+	/**
+	 * The type of the code to match.
+	 */
 	public val codeType: String,
+	/**
+	 * The code prefix to match.
+	 */
 	public val codeCodePrefix: String,
+	/**
+	 * The start of the value date range.
+	 */
 	public val startValueDate: Long? = null,
+	/**
+	 * The end of the value date range.
+	 */
 	public val endValueDate: Long? = null,
+	/**
+	 * Optional description of this filter.
+	 */
 	override val desc: String? = null,
-) : AbstractFilter<Service> {
-	// region ServiceByHcPartyPatientCodePrefixFilter-ServiceByHcPartyPatientCodePrefixFilter
-
-	// endregion
-}
+) : AbstractFilter<Service>

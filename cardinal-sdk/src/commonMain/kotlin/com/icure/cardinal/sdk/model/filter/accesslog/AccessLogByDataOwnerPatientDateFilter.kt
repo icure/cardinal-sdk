@@ -10,22 +10,37 @@ import kotlin.String
 import kotlin.collections.Set
 import kotlin.time.Instant
 
-// WARNING: This file is auto-generated. If you change it manually, your changes will be lost.
-// If you want to change the way this class is generated, see [this repo](https://github.com/icure/sdk-codegen).
-
+/**
+ * Filter that matches access logs by data owner, patient, and date range.
+ * /
+ */
 @SerialName("AccessLogByDataOwnerPatientDateFilter")
 @Serializable
-data class AccessLogByDataOwnerPatientDateFilter(
+public data class AccessLogByDataOwnerPatientDateFilter(
+	/**
+	 * The identifier of the data owner.
+	 */
 	public val dataOwnerId: String,
+	/**
+	 * The start of the date range (inclusive).
+	 */
 	@Serializable(with = InstantSerializer::class)
 	public val startDate: Instant?,
+	/**
+	 * The end of the date range (inclusive).
+	 */
 	@Serializable(with = InstantSerializer::class)
 	public val endDate: Instant?,
+	/**
+	 * The set of secret patient identifiers used for secure delegation matching.
+	 */
 	public val secretPatientIds: Set<String>,
+	/**
+	 * Whether to return results in descending order.
+	 */
 	public val descending: Boolean?,
+	/**
+	 * Optional description of this filter.
+	 */
 	override val desc: String? = null,
-) : AbstractFilter<AccessLog> {
-	// region AccessLogByDataOwnerPatientDateFilter-AccessLogByDataOwnerPatientDateFilter
-
-	// endregion
-}
+) : AbstractFilter<AccessLog>

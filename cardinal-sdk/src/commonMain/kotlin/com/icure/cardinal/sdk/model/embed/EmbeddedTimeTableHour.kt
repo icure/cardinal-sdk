@@ -3,15 +3,18 @@ package com.icure.cardinal.sdk.model.embed
 import kotlinx.serialization.Serializable
 import kotlin.Int
 
-// WARNING: This file is auto-generated. If you change it manually, your changes will be lost.
-// If you want to change the way this class is generated, see [this repo](https://github.com/icure/sdk-codegen).
-
+/**
+ * Represents a time range within a time table, defined by a start and end hour.
+ * /
+ */
 @Serializable
-data class EmbeddedTimeTableHour(
+public data class EmbeddedTimeTableHour(
+	/**
+	 * The start hour encoded as an integer.
+	 */
 	public val startHour: Int,
+	/**
+	 * The end hour encoded as an integer.
+	 */
 	public val endHour: Int,
-) {
-	// region EmbeddedTimeTableHour-EmbeddedTimeTableHour
-
-	// endregion
-}
+)

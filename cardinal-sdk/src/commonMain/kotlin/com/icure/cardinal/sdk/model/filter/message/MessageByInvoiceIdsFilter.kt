@@ -7,16 +7,19 @@ import kotlinx.serialization.Serializable
 import kotlin.String
 import kotlin.collections.Set
 
-// WARNING: This file is auto-generated. If you change it manually, your changes will be lost.
-// If you want to change the way this class is generated, see [this repo](https://github.com/icure/sdk-codegen).
-
+/**
+ * Filter that matches messages associated with specific invoice identifiers.
+ * /
+ */
 @SerialName("MessageByInvoiceIdsFilter")
 @Serializable
-data class MessageByInvoiceIdsFilter(
+public data class MessageByInvoiceIdsFilter(
+	/**
+	 * The set of invoice identifiers to match.
+	 */
 	public val invoiceIds: Set<String>,
+	/**
+	 * Optional description of this filter.
+	 */
 	override val desc: String? = null,
-) : AbstractFilter<Message> {
-	// region MessageByInvoiceIdsFilter-MessageByInvoiceIdsFilter
-
-	// endregion
-}
+) : AbstractFilter<Message>

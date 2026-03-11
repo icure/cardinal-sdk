@@ -4,11 +4,13 @@ import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 import kotlin.String
 
-// WARNING: This file is auto-generated. If you change it manually, your changes will be lost.
-// If you want to change the way this class is generated, see [this repo](https://github.com/icure/sdk-codegen).
-
+/**
+ *
+ *  Enumerates the parameters that can be associated with an insurance record, such as status codes
+ * and approval information.
+ */
 @Serializable
-enum class InsuranceParameter(
+public enum class InsuranceParameter(
 	internal val dtoSerialName: String,
 ) {
 	@SerialName("status")

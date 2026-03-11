@@ -6,16 +6,19 @@ import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 import kotlin.String
 
-// WARNING: This file is auto-generated. If you change it manually, your changes will be lost.
-// If you want to change the way this class is generated, see [this repo](https://github.com/icure/sdk-codegen).
-
+/**
+ * Filter that matches calendar items by their recurrence identifier.
+ * /
+ */
 @SerialName("CalendarItemByRecurrenceIdFilter")
 @Serializable
-data class CalendarItemByRecurrenceIdFilter(
+public data class CalendarItemByRecurrenceIdFilter(
+	/**
+	 * The recurrence identifier to match.
+	 */
 	public val recurrenceId: String,
+	/**
+	 * Optional description of this filter.
+	 */
 	override val desc: String? = null,
-) : AbstractFilter<CalendarItem> {
-	// region CalendarItemByRecurrenceIdFilter-CalendarItemByRecurrenceIdFilter
-
-	// endregion
-}
+) : AbstractFilter<CalendarItem>

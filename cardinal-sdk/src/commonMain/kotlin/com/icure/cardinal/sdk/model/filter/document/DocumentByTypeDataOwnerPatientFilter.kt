@@ -8,18 +8,27 @@ import kotlinx.serialization.Serializable
 import kotlin.String
 import kotlin.collections.Set
 
-// WARNING: This file is auto-generated. If you change it manually, your changes will be lost.
-// If you want to change the way this class is generated, see [this repo](https://github.com/icure/sdk-codegen).
-
+/**
+ * Filter that matches documents by document type, data owner, and patient.
+ * /
+ */
 @SerialName("DocumentByTypeDataOwnerPatientFilter")
 @Serializable
-data class DocumentByTypeDataOwnerPatientFilter(
+public data class DocumentByTypeDataOwnerPatientFilter(
+	/**
+	 * The identifier of the data owner.
+	 */
 	public val dataOwnerId: String,
+	/**
+	 * The type of document to match.
+	 */
 	public val documentType: DocumentType,
+	/**
+	 * The set of secret patient keys used for secure delegation matching.
+	 */
 	public val secretPatientKeys: Set<String>,
+	/**
+	 * Optional description of this filter.
+	 */
 	override val desc: String? = null,
-) : AbstractFilter<Document> {
-	// region DocumentByTypeDataOwnerPatientFilter-DocumentByTypeDataOwnerPatientFilter
-
-	// endregion
-}
+) : AbstractFilter<Document>

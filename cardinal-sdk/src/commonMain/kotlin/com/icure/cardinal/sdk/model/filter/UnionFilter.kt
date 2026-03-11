@@ -7,17 +7,20 @@ import kotlinx.serialization.Serializable
 import kotlin.String
 import kotlin.collections.List
 
-// WARNING: This file is auto-generated. If you change it manually, your changes will be lost.
-// If you want to change the way this class is generated, see [this repo](https://github.com/icure/sdk-codegen).
-
+/**
+ * Filter that returns elements matching any of the provided sub-filters (logical OR).
+ * /
+ */
 @SerialName("UnionFilter")
 @Serializable
-data class UnionFilter<O : Identifiable<String>>(
+public data class UnionFilter<O : Identifiable<String>>(
+	/**
+	 * Optional description of this filter.
+	 */
 	override val desc: String? = null,
+	/**
+	 * The list of filters whose results are combined.
+	 */
 	@param:DefaultValue("emptyList()")
 	override val filters: List<AbstractFilter<O>> = emptyList(),
-) : AbstractFilter<O>, Filter.UnionFilter<O> {
-	// region UnionFilter-UnionFilter
-
-	// endregion
-}
+) : AbstractFilter<O>, Filter.UnionFilter<O>

@@ -7,16 +7,19 @@ import kotlinx.serialization.Serializable
 import kotlin.String
 import kotlin.collections.List
 
-// WARNING: This file is auto-generated. If you change it manually, your changes will be lost.
-// If you want to change the way this class is generated, see [this repo](https://github.com/icure/sdk-codegen).
-
+/**
+ * Filter that matches messages by their parent message identifiers.
+ * /
+ */
 @SerialName("MessageByParentIdsFilter")
 @Serializable
-data class MessageByParentIdsFilter(
+public data class MessageByParentIdsFilter(
+	/**
+	 * The list of parent message identifiers to match.
+	 */
 	public val parentIds: List<String>,
+	/**
+	 * Optional description of this filter.
+	 */
 	override val desc: String? = null,
-) : AbstractFilter<Message> {
-	// region MessageByParentIdsFilter-MessageByParentIdsFilter
-
-	// endregion
-}
+) : AbstractFilter<Message>

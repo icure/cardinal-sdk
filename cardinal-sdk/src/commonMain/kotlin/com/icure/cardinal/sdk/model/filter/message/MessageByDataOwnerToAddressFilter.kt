@@ -6,17 +6,23 @@ import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 import kotlin.String
 
-// WARNING: This file is auto-generated. If you change it manually, your changes will be lost.
-// If you want to change the way this class is generated, see [this repo](https://github.com/icure/sdk-codegen).
-
+/**
+ * Filter that matches messages by data owner and recipient address.
+ * /
+ */
 @SerialName("MessageByDataOwnerToAddressFilter")
 @Serializable
-data class MessageByDataOwnerToAddressFilter(
+public data class MessageByDataOwnerToAddressFilter(
+	/**
+	 * The identifier of the data owner.
+	 */
 	public val dataOwnerId: String,
+	/**
+	 * The recipient address to match.
+	 */
 	public val toAddress: String,
+	/**
+	 * Optional description of this filter.
+	 */
 	override val desc: String? = null,
-) : AbstractFilter<Message> {
-	// region MessageByDataOwnerToAddressFilter-MessageByDataOwnerToAddressFilter
-
-	// endregion
-}
+) : AbstractFilter<Message>

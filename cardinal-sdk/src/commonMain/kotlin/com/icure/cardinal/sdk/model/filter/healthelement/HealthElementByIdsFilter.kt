@@ -8,16 +8,19 @@ import kotlinx.serialization.Serializable
 import kotlin.String
 import kotlin.collections.Set
 
-// WARNING: This file is auto-generated. If you change it manually, your changes will be lost.
-// If you want to change the way this class is generated, see [this repo](https://github.com/icure/sdk-codegen).
-
+/**
+ * Filter that matches health elements by their unique identifiers.
+ * /
+ */
 @SerialName("HealthElementByIdsFilter")
 @Serializable
-data class HealthElementByIdsFilter(
+public data class HealthElementByIdsFilter(
+	/**
+	 * The set of health element identifiers to match.
+	 */
 	override val ids: Set<String>,
+	/**
+	 * Optional description of this filter.
+	 */
 	override val desc: String? = null,
-) : AbstractFilter<HealthElement>, Filter.IdsFilter<String, HealthElement> {
-	// region HealthElementByIdsFilter-HealthElementByIdsFilter
-
-	// endregion
-}
+) : AbstractFilter<HealthElement>, Filter.IdsFilter<String, HealthElement>

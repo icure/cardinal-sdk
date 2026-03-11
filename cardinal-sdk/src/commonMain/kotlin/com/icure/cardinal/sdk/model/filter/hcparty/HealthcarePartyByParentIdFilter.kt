@@ -6,16 +6,19 @@ import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 import kotlin.String
 
-// WARNING: This file is auto-generated. If you change it manually, your changes will be lost.
-// If you want to change the way this class is generated, see [this repo](https://github.com/icure/sdk-codegen).
-
+/**
+ * Filter that matches healthcare parties by their parent identifier.
+ * /
+ */
 @SerialName("HealthcarePartyByParentIdFilter")
 @Serializable
-data class HealthcarePartyByParentIdFilter(
+public data class HealthcarePartyByParentIdFilter(
+	/**
+	 * The identifier of the parent healthcare party.
+	 */
 	public val parentId: String,
+	/**
+	 * Optional description of this filter.
+	 */
 	override val desc: String? = null,
-) : AbstractFilter<HealthcareParty> {
-	// region HealthcarePartyByParentIdFilter-HealthcarePartyByParentIdFilter
-
-	// endregion
-}
+) : AbstractFilter<HealthcareParty>

@@ -3,14 +3,14 @@ package com.icure.cardinal.sdk.model
 import kotlinx.serialization.Serializable
 import kotlin.Boolean
 
-// WARNING: This file is auto-generated. If you change it manually, your changes will be lost.
-// If you want to change the way this class is generated, see [this repo](https://github.com/icure/sdk-codegen).
-
+/**
+ *
+ *  Simple wrapper DTO containing a single boolean response value.
+ */
 @Serializable
-data class BooleanResponse(
+public data class BooleanResponse(
+	/**
+	 * The boolean result of the operation.
+	 */
 	public val response: Boolean,
-) {
-	// region BooleanResponse-BooleanResponse
-
-	// endregion
-}
+)

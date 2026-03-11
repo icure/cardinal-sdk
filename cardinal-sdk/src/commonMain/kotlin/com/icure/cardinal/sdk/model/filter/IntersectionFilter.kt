@@ -7,17 +7,20 @@ import kotlinx.serialization.Serializable
 import kotlin.String
 import kotlin.collections.List
 
-// WARNING: This file is auto-generated. If you change it manually, your changes will be lost.
-// If you want to change the way this class is generated, see [this repo](https://github.com/icure/sdk-codegen).
-
+/**
+ * Filter that returns only elements that match all of the provided sub-filters (logical AND).
+ * /
+ */
 @SerialName("IntersectionFilter")
 @Serializable
-data class IntersectionFilter<O : Identifiable<String>>(
+public data class IntersectionFilter<O : Identifiable<String>>(
+	/**
+	 * Optional description of this filter.
+	 */
 	override val desc: String? = null,
+	/**
+	 * The list of filters whose results are intersected.
+	 */
 	@param:DefaultValue("emptyList()")
 	override val filters: List<AbstractFilter<O>> = emptyList(),
-) : AbstractFilter<O>, Filter.IntersectionFilter<O> {
-	// region IntersectionFilter-IntersectionFilter
-
-	// endregion
-}
+) : AbstractFilter<O>, Filter.IntersectionFilter<O>

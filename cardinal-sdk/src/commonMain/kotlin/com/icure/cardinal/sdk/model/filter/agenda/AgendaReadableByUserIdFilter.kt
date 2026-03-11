@@ -6,16 +6,19 @@ import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 import kotlin.String
 
-// WARNING: This file is auto-generated. If you change it manually, your changes will be lost.
-// If you want to change the way this class is generated, see [this repo](https://github.com/icure/sdk-codegen).
-
+/**
+ * Filter that matches agendas readable by a specific user.
+ * /
+ */
 @SerialName("AgendaReadableByUserIdFilter")
 @Serializable
-data class AgendaReadableByUserIdFilter(
+public data class AgendaReadableByUserIdFilter(
+	/**
+	 * The identifier of the user who has read access to the agendas.
+	 */
 	public val userId: String,
+	/**
+	 * Optional description of this filter.
+	 */
 	override val desc: String?,
-) : AbstractFilter<Agenda> {
-	// region AgendaReadableByUserIdFilter-AgendaReadableByUserIdFilter
-
-	// endregion
-}
+) : AbstractFilter<Agenda>

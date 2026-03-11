@@ -9,20 +9,35 @@ import kotlin.Long
 import kotlin.String
 import kotlin.collections.Set
 
-// WARNING: This file is auto-generated. If you change it manually, your changes will be lost.
-// If you want to change the way this class is generated, see [this repo](https://github.com/icure/sdk-codegen).
-
+/**
+ * Filter that matches classifications by data owner, patient, and creation date range.
+ * /
+ */
 @SerialName("ClassificationByDataOwnerPatientCreatedDateFilter")
 @Serializable
-data class ClassificationByDataOwnerPatientCreatedDateFilter(
+public data class ClassificationByDataOwnerPatientCreatedDateFilter(
+	/**
+	 * The identifier of the data owner.
+	 */
 	public val dataOwnerId: String,
+	/**
+	 * The start of the creation date range (inclusive).
+	 */
 	public val startDate: Long?,
+	/**
+	 * The end of the creation date range (inclusive).
+	 */
 	public val endDate: Long?,
+	/**
+	 * The set of secret foreign keys used for secure delegation matching.
+	 */
 	public val secretForeignKeys: Set<String>,
+	/**
+	 * Whether to return results in descending order.
+	 */
 	public val descending: Boolean?,
+	/**
+	 * Optional description of this filter.
+	 */
 	override val desc: String? = null,
-) : AbstractFilter<Classification> {
-	// region ClassificationByDataOwnerPatientCreatedDateFilter-ClassificationByDataOwnerPatientCreatedDateFilter
-
-	// endregion
-}
+) : AbstractFilter<Classification>

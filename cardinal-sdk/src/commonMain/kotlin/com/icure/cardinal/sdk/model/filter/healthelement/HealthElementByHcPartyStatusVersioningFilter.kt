@@ -8,18 +8,27 @@ import kotlinx.serialization.Serializable
 import kotlin.Int
 import kotlin.String
 
-// WARNING: This file is auto-generated. If you change it manually, your changes will be lost.
-// If you want to change the way this class is generated, see [this repo](https://github.com/icure/sdk-codegen).
-
+/**
+ * Filter that matches health elements by healthcare party, status, and version filtering.
+ * /
+ */
 @SerialName("HealthElementByHcPartyStatusVersioningFilter")
 @Serializable
-data class HealthElementByHcPartyStatusVersioningFilter(
+public data class HealthElementByHcPartyStatusVersioningFilter(
+	/**
+	 * Optional description of this filter.
+	 */
 	override val desc: String? = null,
+	/**
+	 * The identifier of the healthcare party.
+	 */
 	public val hcPartyId: String,
+	/**
+	 * The status value to match.
+	 */
 	public val status: Int,
+	/**
+	 * Optional version filtering criteria.
+	 */
 	public val versionFiltering: VersionFiltering? = null,
-) : AbstractFilter<HealthElement> {
-	// region HealthElementByHcPartyStatusVersioningFilter-HealthElementByHcPartyStatusVersioningFilter
-
-	// endregion
-}
+) : AbstractFilter<HealthElement>

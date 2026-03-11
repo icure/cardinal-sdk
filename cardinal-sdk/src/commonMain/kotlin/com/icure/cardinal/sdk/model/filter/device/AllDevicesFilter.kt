@@ -7,15 +7,15 @@ import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 import kotlin.String
 
-// WARNING: This file is auto-generated. If you change it manually, your changes will be lost.
-// If you want to change the way this class is generated, see [this repo](https://github.com/icure/sdk-codegen).
-
+/**
+ * Filter that matches all devices without any filtering criteria.
+ * /
+ */
 @SerialName("AllDevicesFilter")
 @Serializable
-data class AllDevicesFilter(
+public data class AllDevicesFilter(
+	/**
+	 * Optional description of this filter.
+	 */
 	override val desc: String? = null,
-) : AbstractFilter<Device>, Filter.AllFilter<Device> {
-	// region AllDevicesFilter-AllDevicesFilter
-
-	// endregion
-}
+) : AbstractFilter<Device>, Filter.AllFilter<Device>
