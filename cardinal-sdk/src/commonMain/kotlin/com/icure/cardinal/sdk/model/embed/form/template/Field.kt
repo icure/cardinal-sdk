@@ -1,3 +1,5 @@
+// WARNING: This file is auto-generated. If you change it manually, your changes will be lost.
+// If you want to change the way this class is generated, see [this repo](https://github.com/icure/sdk-codegen).
 package com.icure.cardinal.sdk.model.embed.form.template
 
 import kotlinx.serialization.Serializable
@@ -7,9 +9,14 @@ import kotlin.String
 import kotlin.collections.List
 import kotlin.collections.Map
 
-// WARNING: This file is auto-generated. If you change it manually, your changes will be lost.
-// If you want to change the way this class is generated, see [this repo](https://github.com/icure/sdk-codegen).
-
+/**
+ * Sealed interface representing a form field within a form template. Concrete implementations
+ * define
+ * specific field types (text, number, date picker, etc.). Each field has a name, display
+ * configuration,
+ * validation rules, and optional codification and tagging.
+ * /
+ */
 @Serializable
 sealed interface Field : StructureElement {
 	public val `field`: String

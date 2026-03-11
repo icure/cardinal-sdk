@@ -1,3 +1,5 @@
+// WARNING: This file is auto-generated. If you change it manually, your changes will be lost.
+// If you want to change the way this class is generated, see [this repo](https://github.com/icure/sdk-codegen).
 package com.icure.cardinal.sdk.model.filter.accesslog
 
 import com.icure.cardinal.sdk.model.AccessLog
@@ -9,17 +11,33 @@ import kotlin.Boolean
 import kotlin.String
 import kotlin.time.Instant
 
-// WARNING: This file is auto-generated. If you change it manually, your changes will be lost.
-// If you want to change the way this class is generated, see [this repo](https://github.com/icure/sdk-codegen).
-
+/**
+ * Filter that matches access logs by user identifier, access type, and start date.
+ * /
+ */
 @SerialName("AccessLogByUserIdUserTypeDateFilter")
 @Serializable
 data class AccessLogByUserIdUserTypeDateFilter(
+	/**
+	 * The identifier of the user who created the access log.
+	 */
 	public val userId: String,
+	/**
+	 * The type of access to filter on.
+	 */
 	public val accessType: String?,
+	/**
+	 * The start date from which to retrieve access logs.
+	 */
 	@Serializable(with = InstantSerializer::class)
 	public val startDate: Instant?,
+	/**
+	 * Whether to return results in descending order.
+	 */
 	public val descending: Boolean?,
+	/**
+	 * Optional description of this filter.
+	 */
 	override val desc: String? = null,
 ) : AbstractFilter<AccessLog> {
 	// region AccessLogByUserIdUserTypeDateFilter-AccessLogByUserIdUserTypeDateFilter
