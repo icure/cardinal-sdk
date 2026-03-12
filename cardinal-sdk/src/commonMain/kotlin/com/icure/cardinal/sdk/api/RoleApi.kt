@@ -4,6 +4,12 @@ import com.icure.cardinal.sdk.model.Role
 import com.icure.cardinal.sdk.utils.DefaultValue
 
 interface RoleApi {
+
+	/**
+	 * @return a list containing all the permissions that can be used in roles.
+	 */
+	suspend fun getPermissions(): List<String>
+
 	/**
 	 * Retrieves all roles accessible in the current group, including the one that can be inherited from the parent groups.ù
 	 * @return the available roles.

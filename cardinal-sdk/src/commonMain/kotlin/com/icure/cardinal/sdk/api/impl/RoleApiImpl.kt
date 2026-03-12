@@ -1,6 +1,7 @@
 package com.icure.cardinal.sdk.api.impl
 
 import com.icure.cardinal.sdk.api.RoleApi
+import com.icure.cardinal.sdk.api.raw.RawAnonymousApi
 import com.icure.cardinal.sdk.api.raw.RawRoleApi
 import com.icure.cardinal.sdk.api.raw.successBodyOrNull404
 import com.icure.cardinal.sdk.api.raw.successBodyOrThrowRevisionConflict
@@ -11,7 +12,10 @@ import com.icure.utils.InternalIcureApi
 @InternalIcureApi
 internal class RoleApiImpl(
 	private val rawApi: RawRoleApi,
+	private val rawAnonymousApi: RawAnonymousApi,
 ) : RoleApi {
+	override suspend fun getPermissions(): List<String> = rawAnonymousApi.getPermissions().successBody()
+
 	override suspend fun getAllRoles() = rawApi.getRoles().successBody()
 
 	override suspend fun getAllRolesInGroup(groupId: String): List<Role> = rawApi.getRolesInGroup(groupId).successBody()
