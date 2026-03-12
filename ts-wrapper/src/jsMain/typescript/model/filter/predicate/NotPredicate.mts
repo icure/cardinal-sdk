@@ -3,8 +3,17 @@ import {expectObject, extractEntry} from '../../../internal/JsonDecodeUtils.mjs'
 import {Predicate} from './Predicate.mjs';
 
 
+/**
+ *
+ *  Predicate that negates another predicate (logical NOT).
+ *  /
+ */
 export class NotPredicate {
 
+	/**
+	 *
+	 *  The predicate to negate.
+	 */
 	predicate: Predicate;
 
 	readonly $ktClass: 'com.icure.cardinal.sdk.model.filter.predicate.NotPredicate' = 'com.icure.cardinal.sdk.model.filter.predicate.NotPredicate';

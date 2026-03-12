@@ -2,10 +2,24 @@
 import {expectString, extractEntry} from '../internal/JsonDecodeUtils.mjs';
 
 
+/**
+ *
+ *  DTO representing a key-document ID pair used for cursor-based pagination in CouchDB views.
+ *  /
+ */
 export class PaginatedDocumentKeyIdPair {
 
+	/**
+	 *
+	 *  The view key to start the next page from.
+	 */
 	startKey: any | undefined = undefined;
 
+	/**
+	 *
+	 *  The document identifier to start the next page from, used to disambiguate when multiple
+	 *  documents share the same key.
+	 */
 	startKeyDocId: string | undefined = undefined;
 
 	constructor(partial: Partial<PaginatedDocumentKeyIdPair>) {

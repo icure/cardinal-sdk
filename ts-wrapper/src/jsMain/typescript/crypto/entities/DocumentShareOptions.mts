@@ -10,6 +10,10 @@ export class DocumentShareOptions {
 
 	shareEncryptionKey: ShareMetadataBehaviour = ShareMetadataBehaviour.IfAvailable;
 
+	/**
+	 *
+	 *  Specifies if the id of the message linked to the document (if any) should be shared with the delegate
+	 */
 	shareMessageId: ShareMetadataBehaviour = ShareMetadataBehaviour.IfAvailable;
 
 	shareSecretIds: SecretIdShareOptions = new SecretIdShareOptions.AllAvailable({});

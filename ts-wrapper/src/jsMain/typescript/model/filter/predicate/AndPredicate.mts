@@ -3,8 +3,17 @@ import {expectArray, expectObject, extractEntry} from '../../../internal/JsonDec
 import {Predicate} from './Predicate.mjs';
 
 
+/**
+ *
+ *  Predicate that evaluates to true only when all sub-predicates evaluate to true (logical AND).
+ *  /
+ */
 export class AndPredicate {
 
+	/**
+	 *
+	 *  The list of predicates that must all be satisfied.
+	 */
 	predicates: Array<Predicate> = [];
 
 	readonly $ktClass: 'com.icure.cardinal.sdk.model.filter.predicate.AndPredicate' = 'com.icure.cardinal.sdk.model.filter.predicate.AndPredicate';

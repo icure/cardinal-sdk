@@ -3,12 +3,29 @@ import {expectString, extractEntry} from '../internal/JsonDecodeUtils.mjs';
 import {randomUuid} from '../utils/Id.mjs';
 
 
+/**
+ *
+ *
+ *   DTO representing a report generated after a group deletion operation.
+ */
 export class GroupDeletionReport {
 
+	/**
+	 *
+	 *  The type of the deleted resource.
+	 */
 	type: string;
 
+	/**
+	 *
+	 *  The unique identifier of the deleted group.
+	 */
 	id: string;
 
+	/**
+	 *
+	 *  The server on which the group was deleted.
+	 */
 	server: string;
 
 	constructor(partial: Partial<GroupDeletionReport> & Pick<GroupDeletionReport, "type" | "server">) {

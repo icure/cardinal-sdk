@@ -11,14 +11,39 @@ import {SecurityMetadata} from './embed/SecurityMetadata.mjs';
 import {Base64String} from './specializations/Base64String.mjs';
 
 
+/**
+ *
+ *  Represents a receipt for a healthcare transaction. Receipts are used to store acknowledgements
+ *  and responses
+ *  from external systems such as eFact, eAttest, or other healthcare messaging platforms. They can
+ *  be linked
+ *  to invoices or other documents.
+ *  /
+ */
 export interface Receipt extends StoredDocument, ICureDocument<string>, HasEncryptionMetadata, Encryptable {
 
+	/**
+	 *
+	 *  List of references (e.g., nipReference, errorCode, errorPath, tarification, invoice UUID).
+	 */
 	references: Array<string>;
 
+	/**
+	 *
+	 *  The id of the document (InvoiceDto, ContactDto, ...) this receipt is linked to.
+	 */
 	documentId: string | undefined;
 
+	/**
+	 *
+	 *  The category of the receipt.
+	 */
 	category: string | undefined;
 
+	/**
+	 *
+	 *  The sub-category of the receipt.
+	 */
 	subCategory: string | undefined;
 
 	readonly isEncrypted: boolean;
@@ -27,44 +52,129 @@ export interface Receipt extends StoredDocument, ICureDocument<string>, HasEncry
 
 }
 
+/**
+ *
+ *  Represents a receipt for a healthcare transaction. Receipts are used to store acknowledgements
+ *  and responses
+ *  from external systems such as eFact, eAttest, or other healthcare messaging platforms. They can
+ *  be linked
+ *  to invoices or other documents.
+ *  /
+ */
 export class DecryptedReceipt {
 
+	/**
+	 *
+	 *  The unique identifier of the receipt.
+	 */
 	id: string;
 
+	/**
+	 *
+	 *  The revision of the receipt in the database, used for conflict management / optimistic locking.
+	 */
 	rev: string | undefined = undefined;
 
+	/**
+	 *
+	 *  The timestamp (unix epoch in ms) of creation.
+	 */
 	created: number | undefined = undefined;
 
+	/**
+	 *
+	 *  The timestamp (unix epoch in ms) of the latest modification.
+	 */
 	modified: number | undefined = undefined;
 
+	/**
+	 *
+	 *  The id of the User that created this receipt.
+	 */
 	author: string | undefined = undefined;
 
+	/**
+	 *
+	 *  The id of the HealthcareParty that is responsible for this receipt.
+	 */
 	responsible: string | undefined = undefined;
 
+	/**
+	 *
+	 *  Tags that qualify the receipt as being member of a certain class.
+	 */
 	tags: Array<CodeStub> = [];
 
+	/**
+	 *
+	 *  Codes that identify or qualify this particular receipt.
+	 */
 	codes: Array<CodeStub> = [];
 
+	/**
+	 *
+	 *  Hard delete (unix epoch in ms) timestamp of the object.
+	 */
 	deletionDate: number | undefined = undefined;
 
+	/**
+	 *
+	 *  List of references (e.g., nipReference, errorCode, errorPath, tarification, invoice UUID).
+	 */
 	references: Array<string> = [];
 
+	/**
+	 *
+	 *  The id of the document (InvoiceDto, ContactDto, ...) this receipt is linked to.
+	 */
 	documentId: string | undefined = undefined;
 
+	/**
+	 *
+	 *  The category of the receipt.
+	 */
 	category: string | undefined = undefined;
 
+	/**
+	 *
+	 *  The sub-category of the receipt.
+	 */
 	subCategory: string | undefined = undefined;
 
+	/**
+	 *
+	 *  The secret patient key, encrypted in the patient's own AES key.
+	 */
 	secretForeignKeys: Array<string> = [];
 
+	/**
+	 *
+	 *  The patient id encrypted in the delegates' AES keys.
+	 */
 	cryptedForeignKeys: { [ key: string ]: Array<Delegation> } = {};
 
+	/**
+	 *
+	 *  The delegations giving access to connected healthcare information.
+	 */
 	delegations: { [ key: string ]: Array<Delegation> } = {};
 
+	/**
+	 *
+	 *  The keys used to encrypt this entity when stored encrypted.
+	 */
 	encryptionKeys: { [ key: string ]: Array<Delegation> } = {};
 
+	/**
+	 *
+	 *  The base64-encoded encrypted fields of this entity.
+	 */
 	encryptedSelf: Base64String | undefined = undefined;
 
+	/**
+	 *
+	 *  The security metadata of the entity.
+	 */
 	securityMetadata: SecurityMetadata | undefined = undefined;
 
 	readonly isEncrypted: false = false;
@@ -169,44 +279,129 @@ export class DecryptedReceipt {
 
 }
 
+/**
+ *
+ *  Represents a receipt for a healthcare transaction. Receipts are used to store acknowledgements
+ *  and responses
+ *  from external systems such as eFact, eAttest, or other healthcare messaging platforms. They can
+ *  be linked
+ *  to invoices or other documents.
+ *  /
+ */
 export class EncryptedReceipt {
 
+	/**
+	 *
+	 *  The unique identifier of the receipt.
+	 */
 	id: string;
 
+	/**
+	 *
+	 *  The revision of the receipt in the database, used for conflict management / optimistic locking.
+	 */
 	rev: string | undefined = undefined;
 
+	/**
+	 *
+	 *  The timestamp (unix epoch in ms) of creation.
+	 */
 	created: number | undefined = undefined;
 
+	/**
+	 *
+	 *  The timestamp (unix epoch in ms) of the latest modification.
+	 */
 	modified: number | undefined = undefined;
 
+	/**
+	 *
+	 *  The id of the User that created this receipt.
+	 */
 	author: string | undefined = undefined;
 
+	/**
+	 *
+	 *  The id of the HealthcareParty that is responsible for this receipt.
+	 */
 	responsible: string | undefined = undefined;
 
+	/**
+	 *
+	 *  Tags that qualify the receipt as being member of a certain class.
+	 */
 	tags: Array<CodeStub> = [];
 
+	/**
+	 *
+	 *  Codes that identify or qualify this particular receipt.
+	 */
 	codes: Array<CodeStub> = [];
 
+	/**
+	 *
+	 *  Hard delete (unix epoch in ms) timestamp of the object.
+	 */
 	deletionDate: number | undefined = undefined;
 
+	/**
+	 *
+	 *  List of references (e.g., nipReference, errorCode, errorPath, tarification, invoice UUID).
+	 */
 	references: Array<string> = [];
 
+	/**
+	 *
+	 *  The id of the document (InvoiceDto, ContactDto, ...) this receipt is linked to.
+	 */
 	documentId: string | undefined = undefined;
 
+	/**
+	 *
+	 *  The category of the receipt.
+	 */
 	category: string | undefined = undefined;
 
+	/**
+	 *
+	 *  The sub-category of the receipt.
+	 */
 	subCategory: string | undefined = undefined;
 
+	/**
+	 *
+	 *  The secret patient key, encrypted in the patient's own AES key.
+	 */
 	secretForeignKeys: Array<string> = [];
 
+	/**
+	 *
+	 *  The patient id encrypted in the delegates' AES keys.
+	 */
 	cryptedForeignKeys: { [ key: string ]: Array<Delegation> } = {};
 
+	/**
+	 *
+	 *  The delegations giving access to connected healthcare information.
+	 */
 	delegations: { [ key: string ]: Array<Delegation> } = {};
 
+	/**
+	 *
+	 *  The keys used to encrypt this entity when stored encrypted.
+	 */
 	encryptionKeys: { [ key: string ]: Array<Delegation> } = {};
 
+	/**
+	 *
+	 *  The base64-encoded encrypted fields of this entity.
+	 */
 	encryptedSelf: Base64String | undefined = undefined;
 
+	/**
+	 *
+	 *  The security metadata of the entity.
+	 */
 	securityMetadata: SecurityMetadata | undefined = undefined;
 
 	readonly isEncrypted: true = true;

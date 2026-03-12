@@ -2,10 +2,23 @@
 import {expectString, extractEntry} from '../../internal/JsonDecodeUtils.mjs';
 
 
+/**
+ *
+ *
+ *   Data transfer object representing a CouchDB view definition within a design document.
+ */
 export class View {
 
+	/**
+	 *
+	 *  The map function source code for this view.
+	 */
 	map: string;
 
+	/**
+	 *
+	 *  The optional reduce function source code for this view.
+	 */
 	reduce: string | undefined = undefined;
 
 	constructor(partial: Partial<View> & Pick<View, "map">) {

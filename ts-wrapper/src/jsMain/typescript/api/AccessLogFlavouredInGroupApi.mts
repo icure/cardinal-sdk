@@ -10,36 +10,92 @@ import {ArrayWithUniqueKeys} from '../utils/ArrayWithUniqueKeys.mjs';
 
 export interface AccessLogFlavouredInGroupApi<E extends AccessLog> {
 
+	/**
+	 *
+	 *  In-group version of [AccessLogFlavouredApi.shareWith]
+	 */
 	shareWith(delegate: EntityReferenceInGroup, accessLog: GroupScoped<E>,
 			options?: { options?: AccessLogShareOptions | undefined }): Promise<GroupScoped<E>>;
 
+	/**
+	 *
+	 *  In-group version of [AccessLogFlavouredApi.shareWithMany]
+	 */
 	shareWithMany(accessLog: GroupScoped<E>,
 			delegates: ArrayWithUniqueKeys<{ delegate: EntityReferenceInGroup, shareOptions: AccessLogShareOptions }, 'delegate'>): Promise<GroupScoped<E>>;
 
+	/**
+	 *
+	 *  In-group version of [AccessLogFlavouredApi.filterAccessLogsBy]
+	 */
 	filterAccessLogsBy(groupId: string,
 			filter: FilterOptions<AccessLog>): Promise<PaginatedListIterator<GroupScoped<E>>>;
 
+	/**
+	 *
+	 *  In-group version of [AccessLogFlavouredApi.filterAccessLogsBySorted]
+	 */
 	filterAccessLogsBySorted(groupId: string,
 			filter: SortableFilterOptions<AccessLog>): Promise<PaginatedListIterator<GroupScoped<E>>>;
 
+	/**
+	 *
+	 *  In-group version of [AccessLogBasicFlavouredApi.createAccessLog].
+	 */
 	createAccessLog(entity: GroupScoped<E>): Promise<GroupScoped<E>>;
 
+	/**
+	 *
+	 *  In-group version of [AccessLogBasicFlavouredApi.createAccessLogs].
+	 */
 	createAccessLogs(entities: Array<GroupScoped<E>>): Promise<Array<GroupScoped<E>>>;
 
+	/**
+	 *
+	 *  In-group version of [AccessLogBasicFlavouredApi.undeleteAccessLogById]
+	 */
 	undeleteAccessLogById(entityId: GroupScoped<StoredDocumentIdentifier>): Promise<GroupScoped<E>>;
 
+	/**
+	 *
+	 *  In-group version of [AccessLogBasicFlavouredApi.undeleteAccessLogsByIds]
+	 */
 	undeleteAccessLogsByIds(entityIds: Array<GroupScoped<StoredDocumentIdentifier>>): Promise<Array<GroupScoped<E>>>;
 
+	/**
+	 *
+	 *  In-group version of [AccessLogBasicFlavouredApi.undeleteAccessLog]
+	 */
 	undeleteAccessLog(accessLog: GroupScoped<AccessLog>): Promise<GroupScoped<E>>;
 
+	/**
+	 *
+	 *  In-group version of [AccessLogBasicFlavouredApi.undeleteAccessLogs]
+	 */
 	undeleteAccessLogs(accessLogs: Array<GroupScoped<AccessLog>>): Promise<Array<GroupScoped<E>>>;
 
+	/**
+	 *
+	 *  In-group version of [AccessLogBasicFlavouredApi.modifyAccessLog]
+	 */
 	modifyAccessLog(entity: GroupScoped<E>): Promise<GroupScoped<E>>;
 
+	/**
+	 *
+	 *  In-group version of [AccessLogBasicFlavouredApi.modifyAccessLogs]
+	 */
 	modifyAccessLogs(entities: Array<GroupScoped<E>>): Promise<Array<GroupScoped<E>>>;
 
+	/**
+	 *
+	 *  In-group version of [AccessLogBasicFlavouredApi.getAccessLog]
+	 */
 	getAccessLog(groupId: string, entityId: string): Promise<GroupScoped<E> | undefined>;
 
+	/**
+	 *
+	 *  In-group version of [AccessLogBasicFlavouredApi.getAccessLogs]
+	 */
 	getAccessLogs(groupId: string, entityIds: Array<string>): Promise<Array<GroupScoped<E>>>;
 
 }

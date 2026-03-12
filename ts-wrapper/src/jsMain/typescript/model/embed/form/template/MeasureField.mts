@@ -2,6 +2,11 @@
 import {expectArray, expectBoolean, expectMap, expectNumber, expectString, extractEntry} from '../../../../internal/JsonDecodeUtils.mjs';
 
 
+/**
+ *
+ *  A measurement input field in a form template, used for capturing numeric values with units.
+ *  /
+ */
 export class MeasureField {
 
 	field: string;

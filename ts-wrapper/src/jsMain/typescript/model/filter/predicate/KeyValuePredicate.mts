@@ -3,12 +3,29 @@ import {expectString, expectStringEnum, extractEntry} from '../../../internal/Js
 import {Operator} from './Operator.mjs';
 
 
+/**
+ *
+ *  Predicate that evaluates a comparison between an entity property and a value using an operator.
+ *  /
+ */
 export class KeyValuePredicate {
 
+	/**
+	 *
+	 *  The property key to compare.
+	 */
 	key: string | undefined = undefined;
 
+	/**
+	 *
+	 *  The comparison operator.
+	 */
 	operator: Operator | undefined = undefined;
 
+	/**
+	 *
+	 *  The value to compare against.
+	 */
 	value: any | undefined = undefined;
 
 	readonly $ktClass: 'com.icure.cardinal.sdk.model.filter.predicate.KeyValuePredicate' = 'com.icure.cardinal.sdk.model.filter.predicate.KeyValuePredicate';

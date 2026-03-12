@@ -6,34 +6,96 @@ import {Remote} from './Remote.mjs';
 import {ReplicationStats} from './ReplicationStats.mjs';
 
 
+/**
+ *
+ *  Data transfer object representing a CouchDB replicator document that tracks the state of a
+ *  replication task.
+ *  /
+ */
 export class ReplicatorDocument implements Versionable<string> {
 
+	/**
+	 *
+	 *  The unique identifier of this replicator document.
+	 */
 	id: string;
 
+	/**
+	 *
+	 *  The current revision of this document.
+	 */
 	rev: string | undefined = undefined;
 
+	/**
+	 *
+	 *  The source remote endpoint for the replication.
+	 */
 	source: Remote | undefined = undefined;
 
+	/**
+	 *
+	 *  The target remote endpoint for the replication.
+	 */
 	target: Remote | undefined = undefined;
 
+	/**
+	 *
+	 *  The owner of this replication task.
+	 */
 	owner: string | undefined = undefined;
 
+	/**
+	 *
+	 *  Whether to create the target database if it does not exist.
+	 */
 	create_target: boolean | undefined = undefined;
 
+	/**
+	 *
+	 *  Whether the replication runs continuously.
+	 */
 	continuous: boolean | undefined = undefined;
 
+	/**
+	 *
+	 *  An optional list of document ids to replicate.
+	 */
 	doc_ids: Array<string> | undefined = undefined;
 
+	/**
+	 *
+	 *  The current state of the replication (e.g. triggered, completed, error).
+	 */
 	replicationState: string | undefined = undefined;
 
+	/**
+	 *
+	 *  The time when the replication state was last updated.
+	 */
 	replicationStateTime: string | undefined = undefined;
 
+	/**
+	 *
+	 *  Statistics about the replication process.
+	 */
 	replicationStats: ReplicationStats | undefined = undefined;
 
+	/**
+	 *
+	 *  The number of errors encountered during replication.
+	 */
 	errorCount: number | undefined = undefined;
 
+	/**
+	 *
+	 *  Information about the document revisions.
+	 */
 	revsInfo: Array<{ [ key: string ]: string }> | undefined = undefined;
 
+	/**
+	 *
+	 *  A map of the document revision history.
+	 */
 	revHistory: { [ key: string ]: string } | undefined = undefined;
 
 	constructor(partial: Partial<ReplicatorDocument>) {

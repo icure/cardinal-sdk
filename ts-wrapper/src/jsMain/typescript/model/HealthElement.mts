@@ -18,38 +18,113 @@ import {SecurityMetadata} from './embed/SecurityMetadata.mjs';
 import {Base64String} from './specializations/Base64String.mjs';
 
 
+/**
+ *
+ *  Represents a healthcare element. A healthcare element is a patient-centric representation of a
+ *  healthcare problem
+ *  that evolves over time in its name/label and characteristics. It is a central element in the
+ *  organisation of the
+ *  electronic health record, used to filter and link medical data in a meaningful way.
+ *  /
+ */
 export interface HealthElement extends StoredDocument, ICureDocument<string>, HasEncryptionMetadata, Encryptable, HasEndOfLife {
 
+	/**
+	 *
+	 *  The identifiers of the healthcare element.
+	 */
 	identifiers: Array<Identifier>;
 
+	/**
+	 *
+	 *  The logical id of the healthcare element, used to link together different versions of the same
+	 *  healthcare element.
+	 */
 	healthElementId: string | undefined;
 
+	/**
+	 *
+	 *  The date (unix epoch in ms) when the healthcare element is noted to have started and also closes
+	 *  on the same date.
+	 */
 	valueDate: number | undefined;
 
+	/**
+	 *
+	 *  The date (unix epoch in ms) of the start of the healthcare element.
+	 */
 	openingDate: number | undefined;
 
+	/**
+	 *
+	 *  The date (unix epoch in ms) marking the end of the healthcare element.
+	 */
 	closingDate: number | undefined;
 
+	/**
+	 *
+	 *  Description of the healthcare element.
+	 */
 	descr: string | undefined;
 
+	/**
+	 *
+	 *  A text note (can be confidential, encrypted by default).
+	 */
 	note: string | undefined;
 
+	/**
+	 *
+	 *  Localized text annotations for the healthcare element.
+	 */
 	notes: Array<Annotation>;
 
+	/**
+	 *
+	 *  Whether the healthcare element is relevant or not.
+	 */
 	relevant: boolean;
 
+	/**
+	 *
+	 *  Id of the opening contact when the healthcare element was created.
+	 */
 	idOpeningContact: string | undefined;
 
+	/**
+	 *
+	 *  Id of the closing contact for the healthcare element.
+	 */
 	idClosingContact: string | undefined;
 
+	/**
+	 *
+	 *  Id of the service when a service is used to create a healthcare element.
+	 */
 	idService: string | undefined;
 
+	/**
+	 *
+	 *  Left or right dominance/preference.
+	 */
 	laterality: Laterality | undefined;
 
+	/**
+	 *
+	 *  List of healthcare approaches.
+	 */
 	plansOfAction: Array<PlanOfAction>;
 
+	/**
+	 *
+	 *  List of episodes of occurrences of the healthcare element.
+	 */
 	episodes: Array<Episode>;
 
+	/**
+	 *
+	 *  List of care team members assigned for the healthcare element.
+	 */
 	careTeam: Array<CareTeamMember>;
 
 	readonly isEncrypted: boolean;
@@ -58,70 +133,210 @@ export interface HealthElement extends StoredDocument, ICureDocument<string>, Ha
 
 }
 
+/**
+ *
+ *  Represents a healthcare element. A healthcare element is a patient-centric representation of a
+ *  healthcare problem
+ *  that evolves over time in its name/label and characteristics. It is a central element in the
+ *  organisation of the
+ *  electronic health record, used to filter and link medical data in a meaningful way.
+ *  /
+ */
 export class DecryptedHealthElement {
 
+	/**
+	 *
+	 *  The Id of the healthcare element. We encourage using either a v4 UUID or a HL7 Id.
+	 */
 	id: string;
 
+	/**
+	 *
+	 *  The identifiers of the healthcare element.
+	 */
 	identifiers: Array<Identifier> = [];
 
+	/**
+	 *
+	 *  The revision of the healthcare element in the database, used for conflict management /
+	 *  optimistic locking.
+	 */
 	rev: string | undefined = undefined;
 
+	/**
+	 *
+	 *  The timestamp (unix epoch in ms) of creation.
+	 */
 	created: number | undefined = undefined;
 
+	/**
+	 *
+	 *  The timestamp (unix epoch in ms) of the latest modification.
+	 */
 	modified: number | undefined = undefined;
 
+	/**
+	 *
+	 *  The id of the User that created this healthcare element.
+	 */
 	author: string | undefined = undefined;
 
+	/**
+	 *
+	 *  The id of the HealthcareParty that is responsible for this healthcare element.
+	 */
 	responsible: string | undefined = undefined;
 
+	/**
+	 *
+	 *  Tags that qualify the healthcare element as being member of a certain class.
+	 */
 	tags: Array<CodeStub> = [];
 
+	/**
+	 *
+	 *  Codes that identify or qualify this particular healthcare element.
+	 */
 	codes: Array<CodeStub> = [];
 
+	/**
+	 *
+	 *  Soft delete (unix epoch in ms) timestamp of the object.
+	 */
 	endOfLife: number | undefined = undefined;
 
+	/**
+	 *
+	 *  Hard delete (unix epoch in ms) timestamp of the object.
+	 */
 	deletionDate: number | undefined = undefined;
 
+	/**
+	 *
+	 *  The logical id of the healthcare element, used to link together different versions of the same
+	 *  healthcare element.
+	 */
 	healthElementId: string | undefined = undefined;
 
+	/**
+	 *
+	 *  The date (unix epoch in ms) when the healthcare element is noted to have started and also closes
+	 *  on the same date.
+	 */
 	valueDate: number | undefined = undefined;
 
+	/**
+	 *
+	 *  The date (unix epoch in ms) of the start of the healthcare element.
+	 */
 	openingDate: number | undefined = undefined;
 
+	/**
+	 *
+	 *  The date (unix epoch in ms) marking the end of the healthcare element.
+	 */
 	closingDate: number | undefined = undefined;
 
+	/**
+	 *
+	 *  Description of the healthcare element.
+	 */
 	descr: string | undefined = undefined;
 
+	/**
+	 *
+	 *  A text note (can be confidential, encrypted by default).
+	 */
 	note: string | undefined = undefined;
 
+	/**
+	 *
+	 *  Localized text annotations for the healthcare element.
+	 */
 	notes: Array<Annotation> = [];
 
+	/**
+	 *
+	 *  Whether the healthcare element is relevant or not.
+	 */
 	relevant: boolean = true;
 
+	/**
+	 *
+	 *  Id of the opening contact when the healthcare element was created.
+	 */
 	idOpeningContact: string | undefined = undefined;
 
+	/**
+	 *
+	 *  Id of the closing contact for the healthcare element.
+	 */
 	idClosingContact: string | undefined = undefined;
 
+	/**
+	 *
+	 *  Id of the service when a service is used to create a healthcare element.
+	 */
 	idService: string | undefined = undefined;
 
+	/**
+	 *
+	 *  Left or right dominance/preference.
+	 */
 	laterality: Laterality | undefined = undefined;
 
+	/**
+	 *
+	 *  List of healthcare approaches.
+	 */
 	plansOfAction: Array<DecryptedPlanOfAction> = [];
 
+	/**
+	 *
+	 *  List of episodes of occurrences of the healthcare element.
+	 */
 	episodes: Array<DecryptedEpisode> = [];
 
+	/**
+	 *
+	 *  List of care team members assigned for the healthcare element.
+	 */
 	careTeam: Array<DecryptedCareTeamMember> = [];
 
+	/**
+	 *
+	 *  The secret patient key, encrypted in the patient's own AES key.
+	 */
 	secretForeignKeys: Array<string> = [];
 
+	/**
+	 *
+	 *  The patient id encrypted in the delegates' AES keys.
+	 */
 	cryptedForeignKeys: { [ key: string ]: Array<Delegation> } = {};
 
+	/**
+	 *
+	 *  The delegations giving access to connected healthcare information.
+	 */
 	delegations: { [ key: string ]: Array<Delegation> } = {};
 
+	/**
+	 *
+	 *  The keys used to encrypt this entity when the entity is stored encrypted.
+	 */
 	encryptionKeys: { [ key: string ]: Array<Delegation> } = {};
 
+	/**
+	 *
+	 *  The base64-encoded encrypted fields of this entity.
+	 */
 	encryptedSelf: Base64String | undefined = undefined;
 
+	/**
+	 *
+	 *  The security metadata of the entity.
+	 */
 	securityMetadata: SecurityMetadata | undefined = undefined;
 
 	readonly isEncrypted: false = false;
@@ -265,70 +480,210 @@ export class DecryptedHealthElement {
 
 }
 
+/**
+ *
+ *  Represents a healthcare element. A healthcare element is a patient-centric representation of a
+ *  healthcare problem
+ *  that evolves over time in its name/label and characteristics. It is a central element in the
+ *  organisation of the
+ *  electronic health record, used to filter and link medical data in a meaningful way.
+ *  /
+ */
 export class EncryptedHealthElement {
 
+	/**
+	 *
+	 *  The Id of the healthcare element. We encourage using either a v4 UUID or a HL7 Id.
+	 */
 	id: string;
 
+	/**
+	 *
+	 *  The identifiers of the healthcare element.
+	 */
 	identifiers: Array<Identifier> = [];
 
+	/**
+	 *
+	 *  The revision of the healthcare element in the database, used for conflict management /
+	 *  optimistic locking.
+	 */
 	rev: string | undefined = undefined;
 
+	/**
+	 *
+	 *  The timestamp (unix epoch in ms) of creation.
+	 */
 	created: number | undefined = undefined;
 
+	/**
+	 *
+	 *  The timestamp (unix epoch in ms) of the latest modification.
+	 */
 	modified: number | undefined = undefined;
 
+	/**
+	 *
+	 *  The id of the User that created this healthcare element.
+	 */
 	author: string | undefined = undefined;
 
+	/**
+	 *
+	 *  The id of the HealthcareParty that is responsible for this healthcare element.
+	 */
 	responsible: string | undefined = undefined;
 
+	/**
+	 *
+	 *  Tags that qualify the healthcare element as being member of a certain class.
+	 */
 	tags: Array<CodeStub> = [];
 
+	/**
+	 *
+	 *  Codes that identify or qualify this particular healthcare element.
+	 */
 	codes: Array<CodeStub> = [];
 
+	/**
+	 *
+	 *  Soft delete (unix epoch in ms) timestamp of the object.
+	 */
 	endOfLife: number | undefined = undefined;
 
+	/**
+	 *
+	 *  Hard delete (unix epoch in ms) timestamp of the object.
+	 */
 	deletionDate: number | undefined = undefined;
 
+	/**
+	 *
+	 *  The logical id of the healthcare element, used to link together different versions of the same
+	 *  healthcare element.
+	 */
 	healthElementId: string | undefined = undefined;
 
+	/**
+	 *
+	 *  The date (unix epoch in ms) when the healthcare element is noted to have started and also closes
+	 *  on the same date.
+	 */
 	valueDate: number | undefined = undefined;
 
+	/**
+	 *
+	 *  The date (unix epoch in ms) of the start of the healthcare element.
+	 */
 	openingDate: number | undefined = undefined;
 
+	/**
+	 *
+	 *  The date (unix epoch in ms) marking the end of the healthcare element.
+	 */
 	closingDate: number | undefined = undefined;
 
+	/**
+	 *
+	 *  Description of the healthcare element.
+	 */
 	descr: string | undefined = undefined;
 
+	/**
+	 *
+	 *  A text note (can be confidential, encrypted by default).
+	 */
 	note: string | undefined = undefined;
 
+	/**
+	 *
+	 *  Localized text annotations for the healthcare element.
+	 */
 	notes: Array<Annotation> = [];
 
+	/**
+	 *
+	 *  Whether the healthcare element is relevant or not.
+	 */
 	relevant: boolean = true;
 
+	/**
+	 *
+	 *  Id of the opening contact when the healthcare element was created.
+	 */
 	idOpeningContact: string | undefined = undefined;
 
+	/**
+	 *
+	 *  Id of the closing contact for the healthcare element.
+	 */
 	idClosingContact: string | undefined = undefined;
 
+	/**
+	 *
+	 *  Id of the service when a service is used to create a healthcare element.
+	 */
 	idService: string | undefined = undefined;
 
+	/**
+	 *
+	 *  Left or right dominance/preference.
+	 */
 	laterality: Laterality | undefined = undefined;
 
+	/**
+	 *
+	 *  List of healthcare approaches.
+	 */
 	plansOfAction: Array<EncryptedPlanOfAction> = [];
 
+	/**
+	 *
+	 *  List of episodes of occurrences of the healthcare element.
+	 */
 	episodes: Array<EncryptedEpisode> = [];
 
+	/**
+	 *
+	 *  List of care team members assigned for the healthcare element.
+	 */
 	careTeam: Array<EncryptedCareTeamMember> = [];
 
+	/**
+	 *
+	 *  The secret patient key, encrypted in the patient's own AES key.
+	 */
 	secretForeignKeys: Array<string> = [];
 
+	/**
+	 *
+	 *  The patient id encrypted in the delegates' AES keys.
+	 */
 	cryptedForeignKeys: { [ key: string ]: Array<Delegation> } = {};
 
+	/**
+	 *
+	 *  The delegations giving access to connected healthcare information.
+	 */
 	delegations: { [ key: string ]: Array<Delegation> } = {};
 
+	/**
+	 *
+	 *  The keys used to encrypt this entity when the entity is stored encrypted.
+	 */
 	encryptionKeys: { [ key: string ]: Array<Delegation> } = {};
 
+	/**
+	 *
+	 *  The base64-encoded encrypted fields of this entity.
+	 */
 	encryptedSelf: Base64String | undefined = undefined;
 
+	/**
+	 *
+	 *  The security metadata of the entity.
+	 */
 	securityMetadata: SecurityMetadata | undefined = undefined;
 
 	readonly isEncrypted: true = true;

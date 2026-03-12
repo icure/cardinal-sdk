@@ -18,30 +18,102 @@ import {DecryptedSubContact, EncryptedSubContact, SubContact} from './embed/SubC
 import {Base64String} from './specializations/Base64String.mjs';
 
 
+/**
+ *
+ *  This entity is a root-level object. It represents a contact. It is serialized in JSON and saved
+ *  in the underlying
+ *  icure-contact CouchDB database.
+ *
+ *  A contact is an entry in the day-to-day journal of the medical file of a patient. A contact
+ *  happens between one
+ *  patient, one or several healthcare parties (with one healthcare party promoted as the responsible
+ *  of the contact),
+ *  at one place during one (fairly short) period of time.
+ *  A contact contains a series of services (acts, observations, exchanges) performed on the patient.
+ *  These services
+ *  can be linked to healthcare elements.
+ *
+ *  A contact can occur with or without direct interaction between the patient and the healthcare
+ *  party. For example,
+ *  when a healthcare party encodes data received from laboratory's test result, this is done in the
+ *  absence of a patient.
+ *  /
+ */
 export interface Contact extends StoredDocument, ICureDocument<string>, HasEncryptionMetadata, Encryptable, HasEndOfLife {
 
+	/**
+	 *
+	 *  The identifiers of the Contact.
+	 */
 	identifier: Array<Identifier>;
 
+	/**
+	 *
+	 *  Separate contacts can be merged in one logical contact if they share the same groupId. When a
+	 *  contact must be split to selectively assign rights to healthcare parties, the split contacts all
+	 *  share the same groupId.
+	 */
 	groupId: string | undefined;
 
+	/**
+	 *
+	 *  The date (YYYYMMDDhhmmss) of the start of the contact.
+	 */
 	openingDate: number | undefined;
 
+	/**
+	 *
+	 *  The date (YYYYMMDDhhmmss) marking the end of the contact.
+	 */
 	closingDate: number | undefined;
 
+	/**
+	 *
+	 *  Description of the contact.
+	 */
 	descr: string | undefined;
 
+	/**
+	 *
+	 *  Location where the contact was recorded.
+	 */
 	location: string | undefined;
 
+	/**
+	 *
+	 *  The type of encounter made for the contact.
+	 */
 	encounterType: CodeStub | undefined;
 
+	/**
+	 *
+	 *  The location where the encounter took place.
+	 */
 	encounterLocation: Address | undefined;
 
+	/**
+	 *
+	 *  Set of all sub-contacts recorded during the given contact. Sub-contacts are used to link
+	 *  services embedded inside this contact to healthcare elements, healthcare approaches and/or forms.
+	 */
 	subContacts: Array<SubContact>;
 
+	/**
+	 *
+	 *  Set of all services provided to the patient during the contact.
+	 */
 	services: Array<Service>;
 
+	/**
+	 *
+	 *  The list of participants to the contact, with their type and data owner id.
+	 */
 	participantList: Array<ContactParticipant>;
 
+	/**
+	 *
+	 *  Comments and notes recorded by a healthcare party about this contact.
+	 */
 	notes: Array<Annotation>;
 
 	readonly isEncrypted: boolean;
@@ -50,62 +122,203 @@ export interface Contact extends StoredDocument, ICureDocument<string>, HasEncry
 
 }
 
+/**
+ *
+ *  This entity is a root-level object. It represents a contact. It is serialized in JSON and saved
+ *  in the underlying
+ *  icure-contact CouchDB database.
+ *
+ *  A contact is an entry in the day-to-day journal of the medical file of a patient. A contact
+ *  happens between one
+ *  patient, one or several healthcare parties (with one healthcare party promoted as the responsible
+ *  of the contact),
+ *  at one place during one (fairly short) period of time.
+ *  A contact contains a series of services (acts, observations, exchanges) performed on the patient.
+ *  These services
+ *  can be linked to healthcare elements.
+ *
+ *  A contact can occur with or without direct interaction between the patient and the healthcare
+ *  party. For example,
+ *  when a healthcare party encodes data received from laboratory's test result, this is done in the
+ *  absence of a patient.
+ *  /
+ */
 export class DecryptedContact {
 
+	/**
+	 *
+	 *  The Id of the contact. We encourage using either a v4 UUID or a HL7 Id.
+	 */
 	id: string;
 
+	/**
+	 *
+	 *  The revision of the contact in the database, used for conflict management / optimistic locking.
+	 */
 	rev: string | undefined = undefined;
 
+	/**
+	 *
+	 *  The timestamp (unix epoch in ms) of creation of the contact, will be filled automatically if
+	 *  missing. Not enforced by the application server.
+	 */
 	created: number | undefined = undefined;
 
+	/**
+	 *
+	 *  The date (unix epoch in ms) of the latest modification of the contact, will be filled
+	 *  automatically if missing. Not enforced by the application server.
+	 */
 	modified: number | undefined = undefined;
 
+	/**
+	 *
+	 *  The id of the User that has created this contact, will be filled automatically if missing. Not
+	 *  enforced by the application server.
+	 */
 	author: string | undefined = undefined;
 
+	/**
+	 *
+	 *  The id of the HealthcareParty that is responsible for this contact, will be filled automatically
+	 *  if missing. Not enforced by the application server.
+	 */
 	responsible: string | undefined = undefined;
 
+	/**
+	 *
+	 *  Tags that qualify the contact as being member of a certain class.
+	 */
 	tags: Array<CodeStub> = [];
 
+	/**
+	 *
+	 *  Codes that identify or qualify this particular contact.
+	 */
 	codes: Array<CodeStub> = [];
 
+	/**
+	 *
+	 *  The identifiers of the Contact.
+	 */
 	identifier: Array<Identifier> = [];
 
+	/**
+	 *
+	 *  Soft delete (unix epoch in ms) timestamp of the object.
+	 */
 	endOfLife: number | undefined = undefined;
 
+	/**
+	 *
+	 *  Hard delete (unix epoch in ms) timestamp of the object.
+	 */
 	deletionDate: number | undefined = undefined;
 
+	/**
+	 *
+	 *  Separate contacts can be merged in one logical contact if they share the same groupId. When a
+	 *  contact must be split to selectively assign rights to healthcare parties, the split contacts all
+	 *  share the same groupId.
+	 */
 	groupId: string | undefined = undefined;
 
+	/**
+	 *
+	 *  The date (YYYYMMDDhhmmss) of the start of the contact.
+	 */
 	openingDate: number | undefined = undefined;
 
+	/**
+	 *
+	 *  The date (YYYYMMDDhhmmss) marking the end of the contact.
+	 */
 	closingDate: number | undefined = undefined;
 
+	/**
+	 *
+	 *  Description of the contact.
+	 */
 	descr: string | undefined = undefined;
 
+	/**
+	 *
+	 *  Location where the contact was recorded.
+	 */
 	location: string | undefined = undefined;
 
+	/**
+	 *
+	 *  The type of encounter made for the contact.
+	 */
 	encounterType: CodeStub | undefined = undefined;
 
+	/**
+	 *
+	 *  The location where the encounter took place.
+	 */
 	encounterLocation: DecryptedAddress | undefined = undefined;
 
+	/**
+	 *
+	 *  Set of all sub-contacts recorded during the given contact. Sub-contacts are used to link
+	 *  services embedded inside this contact to healthcare elements, healthcare approaches and/or forms.
+	 */
 	subContacts: Array<DecryptedSubContact> = [];
 
+	/**
+	 *
+	 *  Set of all services provided to the patient during the contact.
+	 */
 	services: Array<DecryptedService> = [];
 
+	/**
+	 *
+	 *  The list of participants to the contact, with their type and data owner id.
+	 */
 	participantList: Array<ContactParticipant> = [];
 
+	/**
+	 *
+	 *  The secret patient key, encrypted in the patient document, in clear here.
+	 */
 	secretForeignKeys: Array<string> = [];
 
+	/**
+	 *
+	 *  The public patient key, encrypted here for separate Crypto Actors.
+	 */
 	cryptedForeignKeys: { [ key: string ]: Array<Delegation> } = {};
 
+	/**
+	 *
+	 *  The delegations giving access to connected healthcare information.
+	 */
 	delegations: { [ key: string ]: Array<Delegation> } = {};
 
+	/**
+	 *
+	 *  The contact secret encryption key used to encrypt the secured properties (like services for
+	 *  example), encrypted for separate Crypto Actors.
+	 */
 	encryptionKeys: { [ key: string ]: Array<Delegation> } = {};
 
+	/**
+	 *
+	 *  The encrypted fields of this contact.
+	 */
 	encryptedSelf: Base64String | undefined = undefined;
 
+	/**
+	 *
+	 *  The security metadata of this contact, tracking access control information.
+	 */
 	securityMetadata: SecurityMetadata | undefined = undefined;
 
+	/**
+	 *
+	 *  Comments and notes recorded by a healthcare party about this contact.
+	 */
 	notes: Array<Annotation> = [];
 
 	readonly isEncrypted: false = false;
@@ -237,62 +450,203 @@ export class DecryptedContact {
 
 }
 
+/**
+ *
+ *  This entity is a root-level object. It represents a contact. It is serialized in JSON and saved
+ *  in the underlying
+ *  icure-contact CouchDB database.
+ *
+ *  A contact is an entry in the day-to-day journal of the medical file of a patient. A contact
+ *  happens between one
+ *  patient, one or several healthcare parties (with one healthcare party promoted as the responsible
+ *  of the contact),
+ *  at one place during one (fairly short) period of time.
+ *  A contact contains a series of services (acts, observations, exchanges) performed on the patient.
+ *  These services
+ *  can be linked to healthcare elements.
+ *
+ *  A contact can occur with or without direct interaction between the patient and the healthcare
+ *  party. For example,
+ *  when a healthcare party encodes data received from laboratory's test result, this is done in the
+ *  absence of a patient.
+ *  /
+ */
 export class EncryptedContact {
 
+	/**
+	 *
+	 *  The Id of the contact. We encourage using either a v4 UUID or a HL7 Id.
+	 */
 	id: string;
 
+	/**
+	 *
+	 *  The revision of the contact in the database, used for conflict management / optimistic locking.
+	 */
 	rev: string | undefined = undefined;
 
+	/**
+	 *
+	 *  The timestamp (unix epoch in ms) of creation of the contact, will be filled automatically if
+	 *  missing. Not enforced by the application server.
+	 */
 	created: number | undefined = undefined;
 
+	/**
+	 *
+	 *  The date (unix epoch in ms) of the latest modification of the contact, will be filled
+	 *  automatically if missing. Not enforced by the application server.
+	 */
 	modified: number | undefined = undefined;
 
+	/**
+	 *
+	 *  The id of the User that has created this contact, will be filled automatically if missing. Not
+	 *  enforced by the application server.
+	 */
 	author: string | undefined = undefined;
 
+	/**
+	 *
+	 *  The id of the HealthcareParty that is responsible for this contact, will be filled automatically
+	 *  if missing. Not enforced by the application server.
+	 */
 	responsible: string | undefined = undefined;
 
+	/**
+	 *
+	 *  Tags that qualify the contact as being member of a certain class.
+	 */
 	tags: Array<CodeStub> = [];
 
+	/**
+	 *
+	 *  Codes that identify or qualify this particular contact.
+	 */
 	codes: Array<CodeStub> = [];
 
+	/**
+	 *
+	 *  The identifiers of the Contact.
+	 */
 	identifier: Array<Identifier> = [];
 
+	/**
+	 *
+	 *  Soft delete (unix epoch in ms) timestamp of the object.
+	 */
 	endOfLife: number | undefined = undefined;
 
+	/**
+	 *
+	 *  Hard delete (unix epoch in ms) timestamp of the object.
+	 */
 	deletionDate: number | undefined = undefined;
 
+	/**
+	 *
+	 *  Separate contacts can be merged in one logical contact if they share the same groupId. When a
+	 *  contact must be split to selectively assign rights to healthcare parties, the split contacts all
+	 *  share the same groupId.
+	 */
 	groupId: string | undefined = undefined;
 
+	/**
+	 *
+	 *  The date (YYYYMMDDhhmmss) of the start of the contact.
+	 */
 	openingDate: number | undefined = undefined;
 
+	/**
+	 *
+	 *  The date (YYYYMMDDhhmmss) marking the end of the contact.
+	 */
 	closingDate: number | undefined = undefined;
 
+	/**
+	 *
+	 *  Description of the contact.
+	 */
 	descr: string | undefined = undefined;
 
+	/**
+	 *
+	 *  Location where the contact was recorded.
+	 */
 	location: string | undefined = undefined;
 
+	/**
+	 *
+	 *  The type of encounter made for the contact.
+	 */
 	encounterType: CodeStub | undefined = undefined;
 
+	/**
+	 *
+	 *  The location where the encounter took place.
+	 */
 	encounterLocation: EncryptedAddress | undefined = undefined;
 
+	/**
+	 *
+	 *  Set of all sub-contacts recorded during the given contact. Sub-contacts are used to link
+	 *  services embedded inside this contact to healthcare elements, healthcare approaches and/or forms.
+	 */
 	subContacts: Array<EncryptedSubContact> = [];
 
+	/**
+	 *
+	 *  Set of all services provided to the patient during the contact.
+	 */
 	services: Array<EncryptedService> = [];
 
+	/**
+	 *
+	 *  The list of participants to the contact, with their type and data owner id.
+	 */
 	participantList: Array<ContactParticipant> = [];
 
+	/**
+	 *
+	 *  The secret patient key, encrypted in the patient document, in clear here.
+	 */
 	secretForeignKeys: Array<string> = [];
 
+	/**
+	 *
+	 *  The public patient key, encrypted here for separate Crypto Actors.
+	 */
 	cryptedForeignKeys: { [ key: string ]: Array<Delegation> } = {};
 
+	/**
+	 *
+	 *  The delegations giving access to connected healthcare information.
+	 */
 	delegations: { [ key: string ]: Array<Delegation> } = {};
 
+	/**
+	 *
+	 *  The contact secret encryption key used to encrypt the secured properties (like services for
+	 *  example), encrypted for separate Crypto Actors.
+	 */
 	encryptionKeys: { [ key: string ]: Array<Delegation> } = {};
 
+	/**
+	 *
+	 *  The encrypted fields of this contact.
+	 */
 	encryptedSelf: Base64String | undefined = undefined;
 
+	/**
+	 *
+	 *  The security metadata of this contact, tracking access control information.
+	 */
 	securityMetadata: SecurityMetadata | undefined = undefined;
 
+	/**
+	 *
+	 *  Comments and notes recorded by a healthcare party about this contact.
+	 */
 	notes: Array<Annotation> = [];
 
 	readonly isEncrypted: true = true;

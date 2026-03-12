@@ -13,6 +13,12 @@ import {TextField} from './TextField.mjs';
 import {TimePicker} from './TimePicker.mjs';
 
 
+/**
+ *
+ *  Marker interface for elements that can appear in a form template structure, including fields and
+ *  groups.
+ *  /
+ */
 export type StructureElement = FieldsGroup | Field;
 
 export namespace StructureElement {

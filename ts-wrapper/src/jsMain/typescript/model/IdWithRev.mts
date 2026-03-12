@@ -3,10 +3,24 @@ import {expectString, extractEntry} from '../internal/JsonDecodeUtils.mjs';
 import {randomUuid} from '../utils/Id.mjs';
 
 
+/**
+ *
+ *
+ *   DTO representing an entity identifier paired with its optional revision. Commonly used in
+ *   bulk operations and responses to identify stored documents.
+ */
 export class IdWithRev {
 
+	/**
+	 *
+	 *  The unique identifier of the entity.
+	 */
 	id: string;
 
+	/**
+	 *
+	 *  The revision of the entity, used for optimistic locking.
+	 */
 	rev: string | undefined = undefined;
 
 	constructor(partial: Partial<IdWithRev>) {

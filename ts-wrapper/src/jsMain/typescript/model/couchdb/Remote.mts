@@ -3,10 +3,24 @@ import {expectObject, expectString, extractEntry} from '../../internal/JsonDecod
 import {RemoteAuthentication} from './RemoteAuthentication.mjs';
 
 
+/**
+ *
+ *  Data transfer object representing a remote CouchDB endpoint with its URL and optional
+ *  authentication.
+ *  /
+ */
 export class Remote {
 
+	/**
+	 *
+	 *  The URL of the remote CouchDB instance.
+	 */
 	url: string;
 
+	/**
+	 *
+	 *  The authentication configuration for connecting to the remote instance.
+	 */
 	auth: RemoteAuthentication | undefined = undefined;
 
 	constructor(partial: Partial<Remote> & Pick<Remote, "url">) {

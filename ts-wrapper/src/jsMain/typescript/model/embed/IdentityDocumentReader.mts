@@ -2,18 +2,48 @@
 import {expectNumber, expectString, extractEntry} from '../../internal/JsonDecodeUtils.mjs';
 
 
+/**
+ *
+ *  Represents information about how an identity document (such as a Belgian eID) was read,
+ *  including the document number, support serial number, and encoding details.
+ *  /
+ */
 export class IdentityDocumentReader {
 
+	/**
+	 *
+	 *  The justification document number.
+	 */
 	justificatifDocumentNumber: string | undefined = undefined;
 
+	/**
+	 *
+	 *  The serial number of the support used to read the document.
+	 */
 	supportSerialNumber: string | undefined = undefined;
 
+	/**
+	 *
+	 *  The timestamp (unix epoch in ms) when the eID document was read.
+	 */
 	timeReadingEIdDocument: number | undefined = undefined;
 
+	/**
+	 *
+	 *  The type of eID document support used.
+	 */
 	eidDocumentSupportType: number = 0;
 
+	/**
+	 *
+	 *  The reason code for manual encoding, if applicable.
+	 */
 	reasonManualEncoding: number = 0;
 
+	/**
+	 *
+	 *  The reason code for using a vignette, if applicable.
+	 */
 	reasonUsingVignette: number = 0;
 
 	constructor(partial: Partial<IdentityDocumentReader>) {

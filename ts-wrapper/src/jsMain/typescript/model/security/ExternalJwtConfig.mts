@@ -3,12 +3,30 @@ import {expectObject, expectString, expectStringEnum, extractEntry} from '../../
 import {AuthenticationClass} from '../embed/AuthenticationClass.mjs';
 
 
+/**
+ *
+ *  Configuration for authenticating users via an externally-issued JWT. Specifies how the token
+ *  should be validated and which JWT field is used to locate the matching iCure user.
+ *  /
+ */
 export class ExternalJwtConfig {
 
+	/**
+	 *
+	 *  The method used to verify the external JWT signature (public-key or OIDC discovery).
+	 */
 	validationMethod: ExternalJwtConfig.ValidationMethod;
 
+	/**
+	 *
+	 *  The JWT field selector that identifies which user field to match against.
+	 */
 	fieldSelector: ExternalJwtConfig.FieldSelector;
 
+	/**
+	 *
+	 *  The authentication class assigned to sessions created through this configuration.
+	 */
 	authenticationClass: AuthenticationClass = AuthenticationClass.ExternalAuthentication;
 
 	constructor(partial: Partial<ExternalJwtConfig> & Pick<ExternalJwtConfig, "validationMethod" | "fieldSelector">) {
@@ -46,12 +64,30 @@ export namespace ExternalJwtConfig {
 
 	export namespace ValidationMethod {
 
+		/**
+		 *
+		 *  Validates the JWT using a static public key.
+		 *  /
+		 */
 		export class PublicKey {
 
+			/**
+			 *
+			 *  The PEM-encoded or Base64-encoded public key material.
+			 */
 			key: string;
 
+			/**
+			 *
+			 *  The signature algorithm to use; defaults to the algorithm declared in the JWT header when
+			 *  null.
+			 */
 			signatureAlgorithm: string | undefined = undefined;
 
+			/**
+			 *
+			 *  An optional client identifier to verify against the JWT audience claim.
+			 */
 			clientId: string | undefined = undefined;
 
 			readonly $ktClass: 'com.icure.cardinal.sdk.model.security.ExternalJwtConfig.ValidationMethod.PublicKey' = 'com.icure.cardinal.sdk.model.security.ExternalJwtConfig.ValidationMethod.PublicKey';
@@ -89,10 +125,23 @@ export namespace ExternalJwtConfig {
 
 		}
 
+		/**
+		 *
+		 *
+		 *   Validates the JWT using OIDC discovery from the specified issuer location.
+		 */
 		export class Oidc {
 
+			/**
+			 *
+			 *  The OIDC issuer URL used to retrieve the JWKS for signature verification.
+			 */
 			issuerLocation: string;
 
+			/**
+			 *
+			 *  An optional client identifier to verify against the JWT audience claim.
+			 */
 			clientId: string | undefined = undefined;
 
 			readonly $ktClass: 'com.icure.cardinal.sdk.model.security.ExternalJwtConfig.ValidationMethod.Oidc' = 'com.icure.cardinal.sdk.model.security.ExternalJwtConfig.ValidationMethod.Oidc';
@@ -138,12 +187,26 @@ export namespace ExternalJwtConfig {
 
 	}
 
+	/**
+	 *
+	 *  Sealed interface representing the strategy used to validate the external JWT signature.
+	 *  /
+	 */
 	export type ValidationMethod = ValidationMethod.PublicKey | ValidationMethod.Oidc;
 
 	export namespace FieldSelector {
 
+		/**
+		 *
+		 *
+		 *   Selects users by matching a JWT field against the user's local identifier.
+		 */
 		export class LocalId {
 
+			/**
+			 *
+			 *  The name of the JWT claim containing the local identifier value.
+			 */
 			fieldName: string;
 
 			readonly $ktClass: 'com.icure.cardinal.sdk.model.security.ExternalJwtConfig.FieldSelector.LocalId' = 'com.icure.cardinal.sdk.model.security.ExternalJwtConfig.FieldSelector.LocalId';
@@ -175,8 +238,17 @@ export namespace ExternalJwtConfig {
 
 		}
 
+		/**
+		 *
+		 *
+		 *   Selects users by matching a JWT field against the user's email address.
+		 */
 		export class Email {
 
+			/**
+			 *
+			 *  The name of the JWT claim containing the email value.
+			 */
 			fieldName: string;
 
 			readonly $ktClass: 'com.icure.cardinal.sdk.model.security.ExternalJwtConfig.FieldSelector.Email' = 'com.icure.cardinal.sdk.model.security.ExternalJwtConfig.FieldSelector.Email';
@@ -208,8 +280,17 @@ export namespace ExternalJwtConfig {
 
 		}
 
+		/**
+		 *
+		 *
+		 *   Selects users by matching a JWT field against the user's mobile phone number.
+		 */
 		export class MobilePhone {
 
+			/**
+			 *
+			 *  The name of the JWT claim containing the mobile phone value.
+			 */
 			fieldName: string;
 
 			readonly $ktClass: 'com.icure.cardinal.sdk.model.security.ExternalJwtConfig.FieldSelector.MobilePhone' = 'com.icure.cardinal.sdk.model.security.ExternalJwtConfig.FieldSelector.MobilePhone';
@@ -241,8 +322,17 @@ export namespace ExternalJwtConfig {
 
 		}
 
+		/**
+		 *
+		 *
+		 *   Selects users by matching a JWT field against the user's username.
+		 */
 		export class Username {
 
+			/**
+			 *
+			 *  The name of the JWT claim containing the username value.
+			 */
 			fieldName: string;
 
 			readonly $ktClass: 'com.icure.cardinal.sdk.model.security.ExternalJwtConfig.FieldSelector.Username' = 'com.icure.cardinal.sdk.model.security.ExternalJwtConfig.FieldSelector.Username';
@@ -274,10 +364,24 @@ export namespace ExternalJwtConfig {
 
 		}
 
+		/**
+		 *
+		 *
+		 *   Selects users by matching a JWT field against a structured identifier with a specific
+		 *  assigner.
+		 */
 		export class Identifier {
 
+			/**
+			 *
+			 *  The assigner system for the identifier to match against.
+			 */
 			identifierAssigner: string;
 
+			/**
+			 *
+			 *  The name of the JWT claim containing the identifier value.
+			 */
 			fieldName: string;
 
 			readonly $ktClass: 'com.icure.cardinal.sdk.model.security.ExternalJwtConfig.FieldSelector.Identifier' = 'com.icure.cardinal.sdk.model.security.ExternalJwtConfig.FieldSelector.Identifier';
@@ -326,6 +430,12 @@ export namespace ExternalJwtConfig {
 
 	}
 
+	/**
+	 *
+	 *  Sealed interface representing the strategy used to extract the user-matching value from the
+	 *  external JWT claims.
+	 *  /
+	 */
 	export type FieldSelector = FieldSelector.LocalId | FieldSelector.Email | FieldSelector.MobilePhone | FieldSelector.Username | FieldSelector.Identifier;
 
 }

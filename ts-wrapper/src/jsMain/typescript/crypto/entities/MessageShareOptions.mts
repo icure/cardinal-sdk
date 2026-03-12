@@ -10,6 +10,10 @@ export class MessageShareOptions {
 
 	shareEncryptionKey: ShareMetadataBehaviour = ShareMetadataBehaviour.IfAvailable;
 
+	/**
+	 *
+	 *  Specifies if the id of the patient linked to the message should be shared with the delegate
+	 */
 	sharePatientId: ShareMetadataBehaviour = ShareMetadataBehaviour.IfAvailable;
 
 	shareSecretIds: SecretIdShareOptions = new SecretIdShareOptions.AllAvailable({});

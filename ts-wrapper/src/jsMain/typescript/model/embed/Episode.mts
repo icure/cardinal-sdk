@@ -7,12 +7,30 @@ import {Base64String} from '../specializations/Base64String.mjs';
 import {Encryptable} from './Encryptable.mjs';
 
 
+/**
+ *
+ *  Represents a medical episode, which is a time-bounded grouping of healthcare elements related to
+ *  a specific concern.
+ *  /
+ */
 export interface Episode extends Encryptable, Identifiable<string>, Named {
 
+	/**
+	 *
+	 *  A comment associated with the episode.
+	 */
 	comment: string | undefined;
 
+	/**
+	 *
+	 *  The start date in YYYYMMDDHHMMSS format. Unknown components are set to 00.
+	 */
 	startDate: number | undefined;
 
+	/**
+	 *
+	 *  The end date in YYYYMMDDHHMMSS format. Unknown components are set to 00.
+	 */
 	endDate: number | undefined;
 
 	readonly isEncrypted: boolean;
@@ -21,18 +39,48 @@ export interface Episode extends Encryptable, Identifiable<string>, Named {
 
 }
 
+/**
+ *
+ *  Represents a medical episode, which is a time-bounded grouping of healthcare elements related to
+ *  a specific concern.
+ *  /
+ */
 export class DecryptedEpisode {
 
+	/**
+	 *
+	 *  The unique identifier of this episode.
+	 */
 	id: string;
 
+	/**
+	 *
+	 *  The name of the episode.
+	 */
 	name: string | undefined = undefined;
 
+	/**
+	 *
+	 *  A comment associated with the episode.
+	 */
 	comment: string | undefined = undefined;
 
+	/**
+	 *
+	 *  The start date in YYYYMMDDHHMMSS format. Unknown components are set to 00.
+	 */
 	startDate: number | undefined = undefined;
 
+	/**
+	 *
+	 *  The end date in YYYYMMDDHHMMSS format. Unknown components are set to 00.
+	 */
 	endDate: number | undefined = undefined;
 
+	/**
+	 *
+	 *  The base64-encoded encrypted content of this episode.
+	 */
 	encryptedSelf: Base64String | undefined = undefined;
 
 	readonly isEncrypted: false = false;
@@ -80,18 +128,48 @@ export class DecryptedEpisode {
 
 }
 
+/**
+ *
+ *  Represents a medical episode, which is a time-bounded grouping of healthcare elements related to
+ *  a specific concern.
+ *  /
+ */
 export class EncryptedEpisode {
 
+	/**
+	 *
+	 *  The unique identifier of this episode.
+	 */
 	id: string;
 
+	/**
+	 *
+	 *  The name of the episode.
+	 */
 	name: string | undefined = undefined;
 
+	/**
+	 *
+	 *  A comment associated with the episode.
+	 */
 	comment: string | undefined = undefined;
 
+	/**
+	 *
+	 *  The start date in YYYYMMDDHHMMSS format. Unknown components are set to 00.
+	 */
 	startDate: number | undefined = undefined;
 
+	/**
+	 *
+	 *  The end date in YYYYMMDDHHMMSS format. Unknown components are set to 00.
+	 */
 	endDate: number | undefined = undefined;
 
+	/**
+	 *
+	 *  The base64-encoded encrypted content of this episode.
+	 */
 	encryptedSelf: Base64String | undefined = undefined;
 
 	readonly isEncrypted: true = true;

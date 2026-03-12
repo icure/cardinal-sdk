@@ -2,10 +2,23 @@
 import {expectNumber, extractEntry} from '../../internal/JsonDecodeUtils.mjs';
 
 
+/**
+ *
+ *
+ *   Represents a numeric range defined by a low and high bound.
+ */
 export class Range {
 
+	/**
+	 *
+	 *  The lower bound of the range.
+	 */
 	low: number | undefined = undefined;
 
+	/**
+	 *
+	 *  The upper bound of the range.
+	 */
 	high: number | undefined = undefined;
 
 	constructor(partial: Partial<Range>) {

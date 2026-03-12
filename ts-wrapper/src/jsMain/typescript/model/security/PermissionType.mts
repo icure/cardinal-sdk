@@ -1,5 +1,11 @@
 // auto-generated file
 
+/**
+ *
+ *
+ *   Enumerates the categories of operations or data access that can be granted or revoked as
+ *  permissions in iCure.
+ */
 export enum PermissionType {
 	Authenticate = "Authenticate",
 	Hcp = "Hcp",

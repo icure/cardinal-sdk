@@ -3,10 +3,24 @@ import {expectArray, expectObject, extractEntry} from '../../internal/JsonDecode
 import {PermissionItem} from './PermissionItem.mjs';
 
 
+/**
+ *
+ *  Represents the combined set of granted and revoked permissions for a user or role.
+ *  Revocations take precedence over grants when both apply to the same permission type.
+ *  /
+ */
 export class Permission {
 
+	/**
+	 *
+	 *  The set of permission items that are explicitly granted.
+	 */
 	grants: Array<PermissionItem> = [];
 
+	/**
+	 *
+	 *  The set of permission items that are explicitly revoked.
+	 */
 	revokes: Array<PermissionItem> = [];
 
 	constructor(partial: Partial<Permission>) {

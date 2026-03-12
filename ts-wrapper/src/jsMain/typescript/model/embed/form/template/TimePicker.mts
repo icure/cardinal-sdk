@@ -2,6 +2,11 @@
 import {expectArray, expectBoolean, expectMap, expectNumber, expectString, extractEntry} from '../../../../internal/JsonDecodeUtils.mjs';
 
 
+/**
+ *
+ *  A time picker field in a form template.
+ *  /
+ */
 export class TimePicker {
 
 	field: string;

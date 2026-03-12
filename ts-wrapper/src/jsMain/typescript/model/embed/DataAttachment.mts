@@ -2,12 +2,30 @@
 import {expectArray, expectString, extractEntry} from '../../internal/JsonDecodeUtils.mjs';
 
 
+/**
+ *
+ *  Represents a data attachment that can be stored either as a CouchDB attachment or via object
+ *  storage.
+ *  /
+ */
 export class DataAttachment {
 
+	/**
+	 *
+	 *  The identifier of the attachment if stored as a CouchDB attachment.
+	 */
 	couchDbAttachmentId: string | undefined = undefined;
 
+	/**
+	 *
+	 *  The identifier of the attachment if stored using the object storage service.
+	 */
 	objectStoreAttachmentId: string | undefined = undefined;
 
+	/**
+	 *
+	 *  The Uniform Type Identifiers of the attachment, ordered by priority.
+	 */
 	utis: Array<string> = [];
 
 	constructor(partial: Partial<DataAttachment>) {

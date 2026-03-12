@@ -7,32 +7,91 @@ import {DecryptedService, EncryptedService, Service} from './Service.mjs';
 import {TimeSeries} from './TimeSeries.mjs';
 
 
+/**
+ *
+ *  Represents the value content of a medical service. A content can hold different types of values
+ *  such as strings, numbers, dates, measurements, medications, time series, or compound
+ *  sub-services.
+ *  /
+ */
 export interface Content {
 
+	/**
+	 *
+	 *  A string value.
+	 */
 	stringValue: string | undefined;
 
+	/**
+	 *
+	 *  A numeric value.
+	 */
 	numberValue: number | undefined;
 
+	/**
+	 *
+	 *  A boolean value.
+	 */
 	booleanValue: boolean | undefined;
 
+	/**
+	 *
+	 *  An instant value.
+	 */
 	instantValue: number | undefined;
 
+	/**
+	 *
+	 *  Value as a fuzzy date, which may contain day, month, and/or year components.
+	 */
 	fuzzyDateValue: number | undefined;
 
+	/**
+	 *
+	 *  A binary value encoded as a byte array.
+	 */
 	binaryValue: Int8Array | undefined;
 
+	/**
+	 *
+	 *  The identifier of a linked document.
+	 */
 	documentId: string | undefined;
 
+	/**
+	 *
+	 *  Values of measurements recorded, including value, range, severity, and unit.
+	 */
 	measureValue: Measure | undefined;
 
+	/**
+	 *
+	 *  The details of prescribed or suggested medication.
+	 */
 	medicationValue: Medication | undefined;
 
+	/**
+	 *
+	 *  A high frequency time-series containing timestamps in ms and their values.
+	 */
 	timeSeries: TimeSeries | undefined;
 
+	/**
+	 *
+	 *  A list of sub-services forming a compound value.
+	 */
 	compoundValue: Array<Service> | undefined;
 
+	/**
+	 *
+	 *  A list of measures representing a ratio.
+	 */
 	ratio: Array<Measure> | undefined;
 
+	/**
+	 *
+	 *  A list of measures representing a range.
+	 */
 	range: Array<Measure> | undefined;
 
 	readonly isEncrypted: boolean;
@@ -41,32 +100,91 @@ export interface Content {
 
 }
 
+/**
+ *
+ *  Represents the value content of a medical service. A content can hold different types of values
+ *  such as strings, numbers, dates, measurements, medications, time series, or compound
+ *  sub-services.
+ *  /
+ */
 export class DecryptedContent {
 
+	/**
+	 *
+	 *  A string value.
+	 */
 	stringValue: string | undefined = undefined;
 
+	/**
+	 *
+	 *  A numeric value.
+	 */
 	numberValue: number | undefined = undefined;
 
+	/**
+	 *
+	 *  A boolean value.
+	 */
 	booleanValue: boolean | undefined = undefined;
 
+	/**
+	 *
+	 *  An instant value.
+	 */
 	instantValue: number | undefined = undefined;
 
+	/**
+	 *
+	 *  Value as a fuzzy date, which may contain day, month, and/or year components.
+	 */
 	fuzzyDateValue: number | undefined = undefined;
 
+	/**
+	 *
+	 *  A binary value encoded as a byte array.
+	 */
 	binaryValue: Int8Array | undefined = undefined;
 
+	/**
+	 *
+	 *  The identifier of a linked document.
+	 */
 	documentId: string | undefined = undefined;
 
+	/**
+	 *
+	 *  Values of measurements recorded, including value, range, severity, and unit.
+	 */
 	measureValue: Measure | undefined = undefined;
 
+	/**
+	 *
+	 *  The details of prescribed or suggested medication.
+	 */
 	medicationValue: Medication | undefined = undefined;
 
+	/**
+	 *
+	 *  A high frequency time-series containing timestamps in ms and their values.
+	 */
 	timeSeries: TimeSeries | undefined = undefined;
 
+	/**
+	 *
+	 *  A list of sub-services forming a compound value.
+	 */
 	compoundValue: Array<DecryptedService> | undefined = undefined;
 
+	/**
+	 *
+	 *  A list of measures representing a ratio.
+	 */
 	ratio: Array<Measure> | undefined = undefined;
 
+	/**
+	 *
+	 *  A list of measures representing a range.
+	 */
 	range: Array<Measure> | undefined = undefined;
 
 	readonly isEncrypted: false = false;
@@ -135,32 +253,91 @@ export class DecryptedContent {
 
 }
 
+/**
+ *
+ *  Represents the value content of a medical service. A content can hold different types of values
+ *  such as strings, numbers, dates, measurements, medications, time series, or compound
+ *  sub-services.
+ *  /
+ */
 export class EncryptedContent {
 
+	/**
+	 *
+	 *  A string value.
+	 */
 	stringValue: string | undefined = undefined;
 
+	/**
+	 *
+	 *  A numeric value.
+	 */
 	numberValue: number | undefined = undefined;
 
+	/**
+	 *
+	 *  A boolean value.
+	 */
 	booleanValue: boolean | undefined = undefined;
 
+	/**
+	 *
+	 *  An instant value.
+	 */
 	instantValue: number | undefined = undefined;
 
+	/**
+	 *
+	 *  Value as a fuzzy date, which may contain day, month, and/or year components.
+	 */
 	fuzzyDateValue: number | undefined = undefined;
 
+	/**
+	 *
+	 *  A binary value encoded as a byte array.
+	 */
 	binaryValue: Int8Array | undefined = undefined;
 
+	/**
+	 *
+	 *  The identifier of a linked document.
+	 */
 	documentId: string | undefined = undefined;
 
+	/**
+	 *
+	 *  Values of measurements recorded, including value, range, severity, and unit.
+	 */
 	measureValue: Measure | undefined = undefined;
 
+	/**
+	 *
+	 *  The details of prescribed or suggested medication.
+	 */
 	medicationValue: Medication | undefined = undefined;
 
+	/**
+	 *
+	 *  A high frequency time-series containing timestamps in ms and their values.
+	 */
 	timeSeries: TimeSeries | undefined = undefined;
 
+	/**
+	 *
+	 *  A list of sub-services forming a compound value.
+	 */
 	compoundValue: Array<EncryptedService> | undefined = undefined;
 
+	/**
+	 *
+	 *  A list of measures representing a ratio.
+	 */
 	ratio: Array<Measure> | undefined = undefined;
 
+	/**
+	 *
+	 *  A list of measures representing a range.
+	 */
 	range: Array<Measure> | undefined = undefined;
 
 	readonly isEncrypted: true = true;

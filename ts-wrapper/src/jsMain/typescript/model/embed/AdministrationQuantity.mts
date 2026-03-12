@@ -3,12 +3,30 @@ import {expectNumber, expectObject, expectString, extractEntry} from '../../inte
 import {CodeStub} from '../base/CodeStub.mjs';
 
 
+/**
+ *
+ *  Represents a quantity for medication administration, including the numeric amount and the unit of
+ *  administration.
+ *  /
+ */
 export class AdministrationQuantity {
 
+	/**
+	 *
+	 *  The numeric quantity to administer.
+	 */
 	quantity: number | undefined = undefined;
 
+	/**
+	 *
+	 *  The coded unit of administration (CD-ADMINISTRATIONUNIT).
+	 */
 	administrationUnit: CodeStub | undefined = undefined;
 
+	/**
+	 *
+	 *  A textual representation of the unit.
+	 */
 	unit: string | undefined = undefined;
 
 	constructor(partial: Partial<AdministrationQuantity>) {

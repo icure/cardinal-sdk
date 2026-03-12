@@ -8,12 +8,30 @@ import {CareTeamMemberType} from './CareTeamMemberType.mjs';
 import {Encryptable} from './Encryptable.mjs';
 
 
+/**
+ *
+ *  Represents a member of a care team involved in a patient's care, linking a healthcare party with
+ *  their role.
+ *  /
+ */
 export interface CareTeamMember extends Encryptable, Identifiable<string> {
 
+	/**
+	 *
+	 *  The type of care team member (physician, specialist, or other).
+	 */
 	careTeamMemberType: CareTeamMemberType | undefined;
 
+	/**
+	 *
+	 *  The identifier of the associated healthcare party.
+	 */
 	healthcarePartyId: string | undefined;
 
+	/**
+	 *
+	 *  A code describing the quality or qualification of this care team member.
+	 */
 	quality: CodeStub | undefined;
 
 	readonly isEncrypted: boolean;
@@ -22,16 +40,42 @@ export interface CareTeamMember extends Encryptable, Identifiable<string> {
 
 }
 
+/**
+ *
+ *  Represents a member of a care team involved in a patient's care, linking a healthcare party with
+ *  their role.
+ *  /
+ */
 export class DecryptedCareTeamMember {
 
+	/**
+	 *
+	 *  The unique identifier of this care team member.
+	 */
 	id: string;
 
+	/**
+	 *
+	 *  The type of care team member (physician, specialist, or other).
+	 */
 	careTeamMemberType: CareTeamMemberType | undefined = undefined;
 
+	/**
+	 *
+	 *  The identifier of the associated healthcare party.
+	 */
 	healthcarePartyId: string | undefined = undefined;
 
+	/**
+	 *
+	 *  A code describing the quality or qualification of this care team member.
+	 */
 	quality: CodeStub | undefined = undefined;
 
+	/**
+	 *
+	 *  The base64-encoded encrypted content of this care team member.
+	 */
 	encryptedSelf: Base64String | undefined = undefined;
 
 	readonly isEncrypted: false = false;
@@ -76,16 +120,42 @@ export class DecryptedCareTeamMember {
 
 }
 
+/**
+ *
+ *  Represents a member of a care team involved in a patient's care, linking a healthcare party with
+ *  their role.
+ *  /
+ */
 export class EncryptedCareTeamMember {
 
+	/**
+	 *
+	 *  The unique identifier of this care team member.
+	 */
 	id: string;
 
+	/**
+	 *
+	 *  The type of care team member (physician, specialist, or other).
+	 */
 	careTeamMemberType: CareTeamMemberType | undefined = undefined;
 
+	/**
+	 *
+	 *  The identifier of the associated healthcare party.
+	 */
 	healthcarePartyId: string | undefined = undefined;
 
+	/**
+	 *
+	 *  A code describing the quality or qualification of this care team member.
+	 */
 	quality: CodeStub | undefined = undefined;
 
+	/**
+	 *
+	 *  The base64-encoded encrypted content of this care team member.
+	 */
 	encryptedSelf: Base64String | undefined = undefined;
 
 	readonly isEncrypted: true = true;

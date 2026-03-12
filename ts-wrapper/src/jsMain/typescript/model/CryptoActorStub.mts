@@ -10,6 +10,12 @@ import {HexString} from './specializations/HexString.mjs';
 import {SpkiHexString} from './specializations/SpkiHexString.mjs';
 
 
+/**
+ *
+ *
+ *   Holds only data specific for crypto actors without any additional information (from patient,
+ *  hcparty, device).
+ */
 export class CryptoActorStub implements Versionable<string>, CryptoActor {
 
 	id: string;

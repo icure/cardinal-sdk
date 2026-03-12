@@ -2,6 +2,11 @@
 import {expectArray, expectBoolean, expectMap, expectNumber, expectString, extractEntry} from '../../../../internal/JsonDecodeUtils.mjs';
 
 
+/**
+ *
+ *  A checkbox field in a form template.
+ *  /
+ */
 export class CheckBox {
 
 	field: string;

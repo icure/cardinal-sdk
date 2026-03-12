@@ -3,22 +3,61 @@ import {expectArray, expectNumber, expectString, expectStringEnum, extractEntry}
 import {PersonNameUse} from './PersonNameUse.mjs';
 
 
+/**
+ *
+ *  Represents name information for a person, following FHIR HumanName conventions. Includes family
+ *  name,
+ *  given names, prefixes, suffixes, and a validity period.
+ *  /
+ */
 export class PersonName {
 
+	/**
+	 *
+	 *  Family name (often called 'Surname').
+	 */
 	lastName: string | undefined = undefined;
 
+	/**
+	 *
+	 *  Given names (not always 'first'), including middle names, in the correct order for presentation.
+	 */
 	firstNames: Array<string> = [];
 
+	/**
+	 *
+	 *  Starting date of the period when the name is valid (fuzzy date, YYYYMMDD).
+	 */
 	start: number | undefined = undefined;
 
+	/**
+	 *
+	 *  Ending date of the period when the name is valid (fuzzy date, YYYYMMDD).
+	 */
 	end: number | undefined = undefined;
 
+	/**
+	 *
+	 *  Parts that come before the name, in the correct order for presentation.
+	 */
 	prefix: Array<string> = [];
 
+	/**
+	 *
+	 *  Parts that come after the name, in the correct order for presentation.
+	 */
 	suffix: Array<string> = [];
 
+	/**
+	 *
+	 *  Text representation of the full name.
+	 */
 	text: string | undefined = undefined;
 
+	/**
+	 *
+	 *  The use of this name (usual, official, temp, etc.).
+	 */
 	use: PersonNameUse | undefined = undefined;
 
 	constructor(partial: Partial<PersonName>) {

@@ -2,24 +2,65 @@
 import {expectArray, expectString, extractEntry} from '../internal/JsonDecodeUtils.mjs';
 
 
+/**
+ *
+ *  DTO containing the information required to register a new user and group in the iCure platform.
+ *  /
+ */
 export class RegistrationInformation {
 
+	/**
+	 *
+	 *  The identifier of the application or project for this registration.
+	 */
 	projectId: string | undefined = undefined;
 
+	/**
+	 *
+	 *  The first name of the person registering.
+	 */
 	firstName: string | undefined = undefined;
 
+	/**
+	 *
+	 *  The last name of the person registering.
+	 */
 	lastName: string | undefined = undefined;
 
+	/**
+	 *
+	 *  The name of the company or organization.
+	 */
 	companyName: string | undefined = undefined;
 
+	/**
+	 *
+	 *  The email address of the person registering.
+	 */
 	emailAddress: string;
 
+	/**
+	 *
+	 *  Additional user options serialized as a string.
+	 */
 	userOptions: string | undefined = undefined;
 
+	/**
+	 *
+	 *  The set of roles to assign to the newly created user.
+	 */
 	userRoles: Array<string> = [];
 
+	/**
+	 *
+	 *  The minimum required Kraken version for this registration.
+	 */
 	minimumKrakenVersion: string | undefined = undefined;
 
+	/**
+	 *
+	 *  The target cluster for the registration.
+	 */
 	cluster: string | undefined = undefined;
 
 	constructor(partial: Partial<RegistrationInformation> & Pick<RegistrationInformation, "emailAddress">) {

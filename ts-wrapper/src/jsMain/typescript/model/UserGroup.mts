@@ -3,30 +3,84 @@ import {expectArray, expectObject, expectString, extractEntry} from '../internal
 import {Group} from './Group.mjs';
 
 
+/**
+ *
+ *
+ *   DTO representing a user within the context of a specific group, including the group hierarchy
+ *   and the user's associated data owner identifiers.
+ */
 export class UserGroup {
 
+	/**
+	 *
+	 *  The identifier of the group this user belongs to.
+	 */
 	groupId: string | undefined = undefined;
 
+	/**
+	 *
+	 *  The name of the group this user belongs to.
+	 */
 	groupName: string | undefined = undefined;
 
+	/**
+	 *
+	 *  The list of groups forming the hierarchy from the topmost group down to this group.
+	 */
 	groupsHierarchy: Array<Group> = [];
 
+	/**
+	 *
+	 *  The identifier of the user.
+	 */
 	userId: string | undefined = undefined;
 
+	/**
+	 *
+	 *  The login identifier of the user.
+	 */
 	login: string | undefined = undefined;
 
+	/**
+	 *
+	 *  The display name of the user.
+	 */
 	name: string | undefined = undefined;
 
+	/**
+	 *
+	 *  The email address of the user.
+	 */
 	email: string | undefined = undefined;
 
+	/**
+	 *
+	 *  The phone number of the user.
+	 */
 	phone: string | undefined = undefined;
 
+	/**
+	 *
+	 *  The identifier of the patient linked to this user, if any.
+	 */
 	patientId: string | undefined = undefined;
 
+	/**
+	 *
+	 *  The identifier of the healthcare party linked to this user, if any.
+	 */
 	healthcarePartyId: string | undefined = undefined;
 
+	/**
+	 *
+	 *  The identifier of the device linked to this user, if any.
+	 */
 	deviceId: string | undefined = undefined;
 
+	/**
+	 *
+	 *  The name of the parent group of the topmost group in the hierarchy.
+	 */
 	nameOfParentOfTopmostGroupInHierarchy: string | undefined = undefined;
 
 	constructor(partial: Partial<UserGroup>) {

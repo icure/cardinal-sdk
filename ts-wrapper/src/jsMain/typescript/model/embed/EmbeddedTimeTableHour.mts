@@ -2,10 +2,23 @@
 import {expectNumber, extractEntry} from '../../internal/JsonDecodeUtils.mjs';
 
 
+/**
+ *
+ *  Represents a time range within a time table, defined by a start and end hour.
+ *  /
+ */
 export class EmbeddedTimeTableHour {
 
+	/**
+	 *
+	 *  The start hour encoded as an integer.
+	 */
 	startHour: number;
 
+	/**
+	 *
+	 *  The end hour encoded as an integer.
+	 */
 	endHour: number;
 
 	constructor(partial: Partial<EmbeddedTimeTableHour> & Pick<EmbeddedTimeTableHour, "startHour" | "endHour">) {

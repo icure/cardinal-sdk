@@ -16,100 +16,295 @@ import {SecurityMetadata} from './embed/SecurityMetadata.mjs';
 import {Base64String} from './specializations/Base64String.mjs';
 
 
+/**
+ *
+ *  Represents an invoice. An invoice is used to bill patients, mutual funds, or paying agencies for
+ *  healthcare
+ *  services rendered. It is serialized in JSON and saved in the underlying iCure CouchDB database.
+ *  /
+ */
 export interface Invoice extends StoredDocument, ICureDocument<string>, HasEncryptionMetadata, Encryptable {
 
+	/**
+	 *
+	 *  The identifiers of the invoice.
+	 */
 	identifier: Array<Identifier>;
 
+	/**
+	 *
+	 *  The timestamp (unix epoch in ms) when the invoice was drafted.
+	 */
 	invoiceDate: number | undefined;
 
+	/**
+	 *
+	 *  The timestamp (unix epoch in ms) when the invoice was sent.
+	 */
 	sentDate: number | undefined;
 
+	/**
+	 *
+	 *  The timestamp (unix epoch in ms) when the invoice was printed.
+	 */
 	printedDate: number | undefined;
 
+	/**
+	 *
+	 *  The list of invoicing codes associated with this invoice.
+	 */
 	invoicingCodes: Array<InvoicingCode>;
 
+	/**
+	 *
+	 *  Map of receipt references.
+	 */
 	receipts: { [ key: string ]: string };
 
+	/**
+	 *
+	 *  Id of the recipient of the invoice.
+	 */
 	recipientId: string | undefined;
 
+	/**
+	 *
+	 *  The invoice reference number.
+	 */
 	invoiceReference: string | undefined;
 
+	/**
+	 *
+	 *  The decision reference number.
+	 */
 	decisionReference: string | undefined;
 
+	/**
+	 *
+	 *  The third party reference.
+	 */
 	thirdPartyReference: string | undefined;
 
+	/**
+	 *
+	 *  Justification for third party payment.
+	 */
 	thirdPartyPaymentJustification: string | undefined;
 
+	/**
+	 *
+	 *  Reason for third party payment.
+	 */
 	thirdPartyPaymentReason: string | undefined;
 
+	/**
+	 *
+	 *  The reason for the invoice.
+	 */
 	reason: string | undefined;
 
+	/**
+	 *
+	 *  The group id for grouping related invoices.
+	 */
 	groupId: string | undefined;
 
+	/**
+	 *
+	 *  Type of payment (cash, wired, insurance, debit card, etc.).
+	 */
 	paymentType: PaymentType | undefined;
 
+	/**
+	 *
+	 *  The amount paid.
+	 */
 	paid: number | undefined;
 
+	/**
+	 *
+	 *  List of payments made for this invoice.
+	 */
 	payments: Array<Payment> | undefined;
 
+	/**
+	 *
+	 *  SSIN of the gnotion.
+	 */
 	gnotionSsin: string | undefined;
 
+	/**
+	 *
+	 *  Last name of the gnotion.
+	 */
 	gnotionLastName: string | undefined;
 
+	/**
+	 *
+	 *  First name of the gnotion.
+	 */
 	gnotionFirstName: string | undefined;
 
+	/**
+	 *
+	 *  CD-HCPARTY code of the gnotion.
+	 */
 	gnotionCdHcParty: string | undefined;
 
+	/**
+	 *
+	 *  The invoicing period.
+	 */
 	invoicePeriod: number | undefined;
 
+	/**
+	 *
+	 *  The type of care provider.
+	 */
 	careProviderType: string | undefined;
 
+	/**
+	 *
+	 *  SSIN of the internship.
+	 */
 	internshipSsin: string | undefined;
 
+	/**
+	 *
+	 *  Last name of the internship supervisor.
+	 */
 	internshipLastName: string | undefined;
 
+	/**
+	 *
+	 *  First name of the internship supervisor.
+	 */
 	internshipFirstName: string | undefined;
 
+	/**
+	 *
+	 *  CD-HCPARTY code of the internship.
+	 */
 	internshipCdHcParty: string | undefined;
 
+	/**
+	 *
+	 *  CBE number of the internship.
+	 */
 	internshipCbe: string | undefined;
 
+	/**
+	 *
+	 *  SSIN of the supervisor.
+	 */
 	supervisorSsin: string | undefined;
 
+	/**
+	 *
+	 *  Last name of the supervisor.
+	 */
 	supervisorLastName: string | undefined;
 
+	/**
+	 *
+	 *  First name of the supervisor.
+	 */
 	supervisorFirstName: string | undefined;
 
+	/**
+	 *
+	 *  CD-HCPARTY code of the supervisor.
+	 */
 	supervisorCdHcParty: string | undefined;
 
+	/**
+	 *
+	 *  CBE number of the supervisor.
+	 */
 	supervisorCbe: string | undefined;
 
+	/**
+	 *
+	 *  Error message if any.
+	 */
 	error: string | undefined;
 
+	/**
+	 *
+	 *  Name of the encounter location.
+	 */
 	encounterLocationName: string | undefined;
 
+	/**
+	 *
+	 *  Norm of the encounter location.
+	 */
 	encounterLocationNorm: number | undefined;
 
+	/**
+	 *
+	 *  Justification for long delay.
+	 */
 	longDelayJustification: number | undefined;
 
+	/**
+	 *
+	 *  Id of the corrective invoice.
+	 */
 	correctiveInvoiceId: string | undefined;
 
+	/**
+	 *
+	 *  Id of the corrected invoice.
+	 */
 	correctedInvoiceId: string | undefined;
 
+	/**
+	 *
+	 *  Whether this invoice is a credit note.
+	 */
 	creditNote: boolean | undefined;
 
+	/**
+	 *
+	 *  Id of the related invoice for the credit note.
+	 */
 	creditNoteRelatedInvoiceId: string | undefined;
 
+	/**
+	 *
+	 *  Identity document reader information.
+	 */
 	idDocument: IdentityDocumentReader | undefined;
 
+	/**
+	 *
+	 *  The admission date for hospitalization invoices.
+	 */
 	admissionDate: number | undefined;
 
+	/**
+	 *
+	 *  Service code of the location.
+	 */
 	locationService: number | undefined;
 
+	/**
+	 *
+	 *  The reason for cancellation.
+	 */
 	cancelReason: string | undefined;
 
+	/**
+	 *
+	 *  The date of cancellation.
+	 */
 	cancelDate: number | undefined;
 
+	/**
+	 *
+	 *  Extra options for the invoice.
+	 */
 	options: { [ key: string ]: string };
 
 	readonly isEncrypted: boolean;
@@ -118,130 +313,385 @@ export interface Invoice extends StoredDocument, ICureDocument<string>, HasEncry
 
 }
 
+/**
+ *
+ *  Represents an invoice. An invoice is used to bill patients, mutual funds, or paying agencies for
+ *  healthcare
+ *  services rendered. It is serialized in JSON and saved in the underlying iCure CouchDB database.
+ *  /
+ */
 export class DecryptedInvoice {
 
+	/**
+	 *
+	 *  The Id of the Invoice. We encourage using either a v4 UUID or a HL7 Id.
+	 */
 	id: string;
 
+	/**
+	 *
+	 *  The revision of the invoice in the database, used for conflict management / optimistic locking.
+	 */
 	rev: string | undefined = undefined;
 
+	/**
+	 *
+	 *  The identifiers of the invoice.
+	 */
 	identifier: Array<Identifier> = [];
 
+	/**
+	 *
+	 *  The timestamp (unix epoch in ms) of creation.
+	 */
 	created: number | undefined = undefined;
 
+	/**
+	 *
+	 *  The timestamp (unix epoch in ms) of the latest modification.
+	 */
 	modified: number | undefined = undefined;
 
+	/**
+	 *
+	 *  The id of the User that created this invoice.
+	 */
 	author: string | undefined = undefined;
 
+	/**
+	 *
+	 *  The id of the HealthcareParty that is responsible for this invoice.
+	 */
 	responsible: string | undefined = undefined;
 
+	/**
+	 *
+	 *  Tags that qualify the invoice as being member of a certain class.
+	 */
 	tags: Array<CodeStub> = [];
 
+	/**
+	 *
+	 *  Codes that identify or qualify this particular invoice.
+	 */
 	codes: Array<CodeStub> = [];
 
+	/**
+	 *
+	 *  Hard delete (unix epoch in ms) timestamp of the object.
+	 */
 	deletionDate: number | undefined = undefined;
 
+	/**
+	 *
+	 *  The timestamp (unix epoch in ms) when the invoice was drafted.
+	 */
 	invoiceDate: number | undefined = undefined;
 
+	/**
+	 *
+	 *  The timestamp (unix epoch in ms) when the invoice was sent.
+	 */
 	sentDate: number | undefined = undefined;
 
+	/**
+	 *
+	 *  The timestamp (unix epoch in ms) when the invoice was printed.
+	 */
 	printedDate: number | undefined = undefined;
 
+	/**
+	 *
+	 *  The list of invoicing codes associated with this invoice.
+	 */
 	invoicingCodes: Array<DecryptedInvoicingCode> = [];
 
+	/**
+	 *
+	 *  Map of receipt references.
+	 */
 	receipts: { [ key: string ]: string } = {};
 
+	/**
+	 *
+	 *  Id of the recipient of the invoice.
+	 */
 	recipientId: string | undefined = undefined;
 
+	/**
+	 *
+	 *  The invoice reference number.
+	 */
 	invoiceReference: string | undefined = undefined;
 
+	/**
+	 *
+	 *  The decision reference number.
+	 */
 	decisionReference: string | undefined = undefined;
 
+	/**
+	 *
+	 *  The third party reference.
+	 */
 	thirdPartyReference: string | undefined = undefined;
 
+	/**
+	 *
+	 *  Justification for third party payment.
+	 */
 	thirdPartyPaymentJustification: string | undefined = undefined;
 
+	/**
+	 *
+	 *  Reason for third party payment.
+	 */
 	thirdPartyPaymentReason: string | undefined = undefined;
 
+	/**
+	 *
+	 *  The reason for the invoice.
+	 */
 	reason: string | undefined = undefined;
 
+	/**
+	 *
+	 *  The group id for grouping related invoices.
+	 */
 	groupId: string | undefined = undefined;
 
+	/**
+	 *
+	 *  Type of payment (cash, wired, insurance, debit card, etc.).
+	 */
 	paymentType: PaymentType | undefined = undefined;
 
+	/**
+	 *
+	 *  The amount paid.
+	 */
 	paid: number | undefined = undefined;
 
+	/**
+	 *
+	 *  List of payments made for this invoice.
+	 */
 	payments: Array<Payment> | undefined = undefined;
 
+	/**
+	 *
+	 *  SSIN of the gnotion.
+	 */
 	gnotionSsin: string | undefined = undefined;
 
+	/**
+	 *
+	 *  Last name of the gnotion.
+	 */
 	gnotionLastName: string | undefined = undefined;
 
+	/**
+	 *
+	 *  First name of the gnotion.
+	 */
 	gnotionFirstName: string | undefined = undefined;
 
+	/**
+	 *
+	 *  CD-HCPARTY code of the gnotion.
+	 */
 	gnotionCdHcParty: string | undefined = undefined;
 
+	/**
+	 *
+	 *  The invoicing period.
+	 */
 	invoicePeriod: number | undefined = undefined;
 
+	/**
+	 *
+	 *  The type of care provider.
+	 */
 	careProviderType: string | undefined = undefined;
 
+	/**
+	 *
+	 *  SSIN of the internship.
+	 */
 	internshipSsin: string | undefined = undefined;
 
+	/**
+	 *
+	 *  Last name of the internship supervisor.
+	 */
 	internshipLastName: string | undefined = undefined;
 
+	/**
+	 *
+	 *  First name of the internship supervisor.
+	 */
 	internshipFirstName: string | undefined = undefined;
 
+	/**
+	 *
+	 *  CD-HCPARTY code of the internship.
+	 */
 	internshipCdHcParty: string | undefined = undefined;
 
+	/**
+	 *
+	 *  CBE number of the internship.
+	 */
 	internshipCbe: string | undefined = undefined;
 
+	/**
+	 *
+	 *  SSIN of the supervisor.
+	 */
 	supervisorSsin: string | undefined = undefined;
 
+	/**
+	 *
+	 *  Last name of the supervisor.
+	 */
 	supervisorLastName: string | undefined = undefined;
 
+	/**
+	 *
+	 *  First name of the supervisor.
+	 */
 	supervisorFirstName: string | undefined = undefined;
 
+	/**
+	 *
+	 *  CD-HCPARTY code of the supervisor.
+	 */
 	supervisorCdHcParty: string | undefined = undefined;
 
+	/**
+	 *
+	 *  CBE number of the supervisor.
+	 */
 	supervisorCbe: string | undefined = undefined;
 
+	/**
+	 *
+	 *  Error message if any.
+	 */
 	error: string | undefined = undefined;
 
+	/**
+	 *
+	 *  Name of the encounter location.
+	 */
 	encounterLocationName: string | undefined = undefined;
 
+	/**
+	 *
+	 *  Norm of the encounter location.
+	 */
 	encounterLocationNorm: number | undefined = undefined;
 
+	/**
+	 *
+	 *  Justification for long delay.
+	 */
 	longDelayJustification: number | undefined = undefined;
 
+	/**
+	 *
+	 *  Id of the corrective invoice.
+	 */
 	correctiveInvoiceId: string | undefined = undefined;
 
+	/**
+	 *
+	 *  Id of the corrected invoice.
+	 */
 	correctedInvoiceId: string | undefined = undefined;
 
+	/**
+	 *
+	 *  Whether this invoice is a credit note.
+	 */
 	creditNote: boolean | undefined = undefined;
 
+	/**
+	 *
+	 *  Id of the related invoice for the credit note.
+	 */
 	creditNoteRelatedInvoiceId: string | undefined = undefined;
 
+	/**
+	 *
+	 *  Identity document reader information.
+	 */
 	idDocument: IdentityDocumentReader | undefined = undefined;
 
+	/**
+	 *
+	 *  The admission date for hospitalization invoices.
+	 */
 	admissionDate: number | undefined = undefined;
 
+	/**
+	 *
+	 *  Service code of the location.
+	 */
 	locationService: number | undefined = undefined;
 
+	/**
+	 *
+	 *  The reason for cancellation.
+	 */
 	cancelReason: string | undefined = undefined;
 
+	/**
+	 *
+	 *  The date of cancellation.
+	 */
 	cancelDate: number | undefined = undefined;
 
+	/**
+	 *
+	 *  Extra options for the invoice.
+	 */
 	options: { [ key: string ]: string } = {};
 
+	/**
+	 *
+	 *  The secret patient key, encrypted in the patient's own AES key.
+	 */
 	secretForeignKeys: Array<string> = [];
 
+	/**
+	 *
+	 *  The patient id encrypted in the delegates' AES keys.
+	 */
 	cryptedForeignKeys: { [ key: string ]: Array<Delegation> } = {};
 
+	/**
+	 *
+	 *  The delegations giving access to connected healthcare information.
+	 */
 	delegations: { [ key: string ]: Array<Delegation> } = {};
 
+	/**
+	 *
+	 *  The keys used to encrypt this entity when stored encrypted.
+	 */
 	encryptionKeys: { [ key: string ]: Array<Delegation> } = {};
 
+	/**
+	 *
+	 *  The base64-encoded encrypted fields of this entity.
+	 */
 	encryptedSelf: Base64String | undefined = undefined;
 
+	/**
+	 *
+	 *  The security metadata of the entity.
+	 */
 	securityMetadata: SecurityMetadata | undefined = undefined;
 
 	readonly isEncrypted: false = false;
@@ -487,130 +937,385 @@ export class DecryptedInvoice {
 
 }
 
+/**
+ *
+ *  Represents an invoice. An invoice is used to bill patients, mutual funds, or paying agencies for
+ *  healthcare
+ *  services rendered. It is serialized in JSON and saved in the underlying iCure CouchDB database.
+ *  /
+ */
 export class EncryptedInvoice {
 
+	/**
+	 *
+	 *  The Id of the Invoice. We encourage using either a v4 UUID or a HL7 Id.
+	 */
 	id: string;
 
+	/**
+	 *
+	 *  The revision of the invoice in the database, used for conflict management / optimistic locking.
+	 */
 	rev: string | undefined = undefined;
 
+	/**
+	 *
+	 *  The identifiers of the invoice.
+	 */
 	identifier: Array<Identifier> = [];
 
+	/**
+	 *
+	 *  The timestamp (unix epoch in ms) of creation.
+	 */
 	created: number | undefined = undefined;
 
+	/**
+	 *
+	 *  The timestamp (unix epoch in ms) of the latest modification.
+	 */
 	modified: number | undefined = undefined;
 
+	/**
+	 *
+	 *  The id of the User that created this invoice.
+	 */
 	author: string | undefined = undefined;
 
+	/**
+	 *
+	 *  The id of the HealthcareParty that is responsible for this invoice.
+	 */
 	responsible: string | undefined = undefined;
 
+	/**
+	 *
+	 *  Tags that qualify the invoice as being member of a certain class.
+	 */
 	tags: Array<CodeStub> = [];
 
+	/**
+	 *
+	 *  Codes that identify or qualify this particular invoice.
+	 */
 	codes: Array<CodeStub> = [];
 
+	/**
+	 *
+	 *  Hard delete (unix epoch in ms) timestamp of the object.
+	 */
 	deletionDate: number | undefined = undefined;
 
+	/**
+	 *
+	 *  The timestamp (unix epoch in ms) when the invoice was drafted.
+	 */
 	invoiceDate: number | undefined = undefined;
 
+	/**
+	 *
+	 *  The timestamp (unix epoch in ms) when the invoice was sent.
+	 */
 	sentDate: number | undefined = undefined;
 
+	/**
+	 *
+	 *  The timestamp (unix epoch in ms) when the invoice was printed.
+	 */
 	printedDate: number | undefined = undefined;
 
+	/**
+	 *
+	 *  The list of invoicing codes associated with this invoice.
+	 */
 	invoicingCodes: Array<EncryptedInvoicingCode> = [];
 
+	/**
+	 *
+	 *  Map of receipt references.
+	 */
 	receipts: { [ key: string ]: string } = {};
 
+	/**
+	 *
+	 *  Id of the recipient of the invoice.
+	 */
 	recipientId: string | undefined = undefined;
 
+	/**
+	 *
+	 *  The invoice reference number.
+	 */
 	invoiceReference: string | undefined = undefined;
 
+	/**
+	 *
+	 *  The decision reference number.
+	 */
 	decisionReference: string | undefined = undefined;
 
+	/**
+	 *
+	 *  The third party reference.
+	 */
 	thirdPartyReference: string | undefined = undefined;
 
+	/**
+	 *
+	 *  Justification for third party payment.
+	 */
 	thirdPartyPaymentJustification: string | undefined = undefined;
 
+	/**
+	 *
+	 *  Reason for third party payment.
+	 */
 	thirdPartyPaymentReason: string | undefined = undefined;
 
+	/**
+	 *
+	 *  The reason for the invoice.
+	 */
 	reason: string | undefined = undefined;
 
+	/**
+	 *
+	 *  The group id for grouping related invoices.
+	 */
 	groupId: string | undefined = undefined;
 
+	/**
+	 *
+	 *  Type of payment (cash, wired, insurance, debit card, etc.).
+	 */
 	paymentType: PaymentType | undefined = undefined;
 
+	/**
+	 *
+	 *  The amount paid.
+	 */
 	paid: number | undefined = undefined;
 
+	/**
+	 *
+	 *  List of payments made for this invoice.
+	 */
 	payments: Array<Payment> | undefined = undefined;
 
+	/**
+	 *
+	 *  SSIN of the gnotion.
+	 */
 	gnotionSsin: string | undefined = undefined;
 
+	/**
+	 *
+	 *  Last name of the gnotion.
+	 */
 	gnotionLastName: string | undefined = undefined;
 
+	/**
+	 *
+	 *  First name of the gnotion.
+	 */
 	gnotionFirstName: string | undefined = undefined;
 
+	/**
+	 *
+	 *  CD-HCPARTY code of the gnotion.
+	 */
 	gnotionCdHcParty: string | undefined = undefined;
 
+	/**
+	 *
+	 *  The invoicing period.
+	 */
 	invoicePeriod: number | undefined = undefined;
 
+	/**
+	 *
+	 *  The type of care provider.
+	 */
 	careProviderType: string | undefined = undefined;
 
+	/**
+	 *
+	 *  SSIN of the internship.
+	 */
 	internshipSsin: string | undefined = undefined;
 
+	/**
+	 *
+	 *  Last name of the internship supervisor.
+	 */
 	internshipLastName: string | undefined = undefined;
 
+	/**
+	 *
+	 *  First name of the internship supervisor.
+	 */
 	internshipFirstName: string | undefined = undefined;
 
+	/**
+	 *
+	 *  CD-HCPARTY code of the internship.
+	 */
 	internshipCdHcParty: string | undefined = undefined;
 
+	/**
+	 *
+	 *  CBE number of the internship.
+	 */
 	internshipCbe: string | undefined = undefined;
 
+	/**
+	 *
+	 *  SSIN of the supervisor.
+	 */
 	supervisorSsin: string | undefined = undefined;
 
+	/**
+	 *
+	 *  Last name of the supervisor.
+	 */
 	supervisorLastName: string | undefined = undefined;
 
+	/**
+	 *
+	 *  First name of the supervisor.
+	 */
 	supervisorFirstName: string | undefined = undefined;
 
+	/**
+	 *
+	 *  CD-HCPARTY code of the supervisor.
+	 */
 	supervisorCdHcParty: string | undefined = undefined;
 
+	/**
+	 *
+	 *  CBE number of the supervisor.
+	 */
 	supervisorCbe: string | undefined = undefined;
 
+	/**
+	 *
+	 *  Error message if any.
+	 */
 	error: string | undefined = undefined;
 
+	/**
+	 *
+	 *  Name of the encounter location.
+	 */
 	encounterLocationName: string | undefined = undefined;
 
+	/**
+	 *
+	 *  Norm of the encounter location.
+	 */
 	encounterLocationNorm: number | undefined = undefined;
 
+	/**
+	 *
+	 *  Justification for long delay.
+	 */
 	longDelayJustification: number | undefined = undefined;
 
+	/**
+	 *
+	 *  Id of the corrective invoice.
+	 */
 	correctiveInvoiceId: string | undefined = undefined;
 
+	/**
+	 *
+	 *  Id of the corrected invoice.
+	 */
 	correctedInvoiceId: string | undefined = undefined;
 
+	/**
+	 *
+	 *  Whether this invoice is a credit note.
+	 */
 	creditNote: boolean | undefined = undefined;
 
+	/**
+	 *
+	 *  Id of the related invoice for the credit note.
+	 */
 	creditNoteRelatedInvoiceId: string | undefined = undefined;
 
+	/**
+	 *
+	 *  Identity document reader information.
+	 */
 	idDocument: IdentityDocumentReader | undefined = undefined;
 
+	/**
+	 *
+	 *  The admission date for hospitalization invoices.
+	 */
 	admissionDate: number | undefined = undefined;
 
+	/**
+	 *
+	 *  Service code of the location.
+	 */
 	locationService: number | undefined = undefined;
 
+	/**
+	 *
+	 *  The reason for cancellation.
+	 */
 	cancelReason: string | undefined = undefined;
 
+	/**
+	 *
+	 *  The date of cancellation.
+	 */
 	cancelDate: number | undefined = undefined;
 
+	/**
+	 *
+	 *  Extra options for the invoice.
+	 */
 	options: { [ key: string ]: string } = {};
 
+	/**
+	 *
+	 *  The secret patient key, encrypted in the patient's own AES key.
+	 */
 	secretForeignKeys: Array<string> = [];
 
+	/**
+	 *
+	 *  The patient id encrypted in the delegates' AES keys.
+	 */
 	cryptedForeignKeys: { [ key: string ]: Array<Delegation> } = {};
 
+	/**
+	 *
+	 *  The delegations giving access to connected healthcare information.
+	 */
 	delegations: { [ key: string ]: Array<Delegation> } = {};
 
+	/**
+	 *
+	 *  The keys used to encrypt this entity when stored encrypted.
+	 */
 	encryptionKeys: { [ key: string ]: Array<Delegation> } = {};
 
+	/**
+	 *
+	 *  The base64-encoded encrypted fields of this entity.
+	 */
 	encryptedSelf: Base64String | undefined = undefined;
 
+	/**
+	 *
+	 *  The security metadata of the entity.
+	 */
 	securityMetadata: SecurityMetadata | undefined = undefined;
 
 	readonly isEncrypted: true = true;

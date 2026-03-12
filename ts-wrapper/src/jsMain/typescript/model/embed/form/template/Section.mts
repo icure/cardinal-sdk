@@ -3,14 +3,36 @@ import {expectArray, expectObject, expectString, extractEntry} from '../../../..
 import {StructureElement} from './StructureElement.mjs';
 
 
+/**
+ *
+ *  Represents a section within a form template layout, containing a set of structure elements
+ *  (fields and groups).
+ *  /
+ */
 export class Section {
 
+	/**
+	 *
+	 *  The name or identifier of this section.
+	 */
 	section: string;
 
+	/**
+	 *
+	 *  The list of structure elements in this section.
+	 */
 	fields: Array<StructureElement>;
 
+	/**
+	 *
+	 *  A description of this section.
+	 */
 	description: string | undefined = undefined;
 
+	/**
+	 *
+	 *  Keywords associated with this section for search purposes.
+	 */
 	keywords: Array<string> | undefined = undefined;
 
 	constructor(partial: Partial<Section> & Pick<Section, "section" | "fields">) {

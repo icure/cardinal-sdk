@@ -4,24 +4,67 @@ import {randomUuid} from '../../utils/Id.mjs';
 import {View} from './View.mjs';
 
 
+/**
+ *
+ *
+ *   Data transfer object representing a CouchDB design document, which contains views, lists, shows,
+ *  filters,
+ *   and update handlers used for querying and transforming data.
+ */
 export class DesignDocument {
 
+	/**
+	 *
+	 *  The identifier of the design document.
+	 */
 	id: string;
 
+	/**
+	 *
+	 *  The current revision of the design document.
+	 */
 	rev: string | undefined = undefined;
 
+	/**
+	 *
+	 *  A map of revision history entries.
+	 */
 	revHistory: { [ key: string ]: string } = {};
 
+	/**
+	 *
+	 *  The programming language used for the design document functions.
+	 */
 	language: string | undefined = undefined;
 
+	/**
+	 *
+	 *  A map of view names to their definitions.
+	 */
 	views: { [ key: string ]: View } = {};
 
+	/**
+	 *
+	 *  A map of list function names to their source code.
+	 */
 	lists: { [ key: string ]: string } = {};
 
+	/**
+	 *
+	 *  A map of show function names to their source code.
+	 */
 	shows: { [ key: string ]: string } = {};
 
+	/**
+	 *
+	 *  A map of update handler names to their source code.
+	 */
 	updateHandlers: { [ key: string ]: string } | undefined = undefined;
 
+	/**
+	 *
+	 *  A map of filter function names to their source code.
+	 */
 	filters: { [ key: string ]: string } = {};
 
 	constructor(partial: Partial<DesignDocument>) {

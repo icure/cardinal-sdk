@@ -2,20 +2,54 @@
 import {expectArray, expectNumber, expectString, extractEntry} from '../../internal/JsonDecodeUtils.mjs';
 
 
+/**
+ *
+ *
+ *   Represents a high-frequency time series with named fields, sample data, and statistical
+ *  summaries.
+ */
 export class TimeSeries {
 
+	/**
+	 *
+	 *  The names of the fields (columns) in the time series.
+	 */
 	fields: Array<string> = [];
 
+	/**
+	 *
+	 *  The sample data, where each inner list represents one sample across all fields.
+	 */
 	samples: Array<Array<number>> = [];
 
+	/**
+	 *
+	 *  The minimum values for each field.
+	 */
 	min: Array<number> = [];
 
+	/**
+	 *
+	 *  The maximum values for each field.
+	 */
 	max: Array<number> = [];
 
+	/**
+	 *
+	 *  The mean values for each field.
+	 */
 	mean: Array<number> = [];
 
+	/**
+	 *
+	 *  The median values for each field.
+	 */
 	median: Array<number> = [];
 
+	/**
+	 *
+	 *  The variance values for each field.
+	 */
 	variance: Array<number> = [];
 
 	constructor(partial: Partial<TimeSeries>) {

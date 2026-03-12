@@ -3,8 +3,17 @@ import {expectArray, expectObject, extractEntry} from '../../../internal/JsonDec
 import {Predicate} from './Predicate.mjs';
 
 
+/**
+ *
+ *  Predicate that evaluates to true when any sub-predicate evaluates to true (logical OR).
+ *  /
+ */
 export class OrPredicate {
 
+	/**
+	 *
+	 *  The list of predicates where at least one must be satisfied.
+	 */
 	predicates: Array<Predicate> = [];
 
 	readonly $ktClass: 'com.icure.cardinal.sdk.model.filter.predicate.OrPredicate' = 'com.icure.cardinal.sdk.model.filter.predicate.OrPredicate';

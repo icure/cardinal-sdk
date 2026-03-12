@@ -2,8 +2,17 @@
 import {expectBoolean, extractEntry} from '../internal/JsonDecodeUtils.mjs';
 
 
+/**
+ *
+ *
+ *   Simple wrapper DTO containing a single boolean response value.
+ */
 export class BooleanResponse {
 
+	/**
+	 *
+	 *  The boolean result of the operation.
+	 */
 	response: boolean;
 
 	constructor(partial: Partial<BooleanResponse> & Pick<BooleanResponse, "response">) {

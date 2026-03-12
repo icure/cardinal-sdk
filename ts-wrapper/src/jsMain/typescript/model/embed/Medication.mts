@@ -21,6 +21,11 @@ export class Medication {
 
 	batch: string | undefined = undefined;
 
+	/**
+	 *
+	 *
+	 *   The expiration date of the medication. Format: yyyyMMdd
+	 */
 	expirationDate: number | undefined = undefined;
 
 	instructionForPatient: string | undefined = undefined;

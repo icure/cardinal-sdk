@@ -5,26 +5,74 @@ import {CodeStub} from '../base/CodeStub.mjs';
 import {Identifiable} from '../base/Identifiable.mjs';
 
 
+/**
+ *
+ *  Text node with attribution that can be attached to a medical record. Used by healthcare parties
+ *  to add side notes,
+ *  for example to flag a faulty thermometer after taking a temperature.
+ *  /
+ */
 export class Annotation implements Identifiable<string> {
 
+	/**
+	 *
+	 *  The Id of the Annotation. We encourage using either a v4 UUID or a HL7 Id.
+	 */
 	id: string;
 
+	/**
+	 *
+	 *  The identifier of the author of this annotation.
+	 */
 	author: string | undefined = undefined;
 
+	/**
+	 *
+	 *  The timestamp (unix epoch in ms) of creation of this note, filled automatically if missing.
+	 */
 	created: number | undefined = undefined;
 
+	/**
+	 *
+	 *  The timestamp (unix epoch in ms) of the latest modification of this note, filled automatically
+	 *  if missing.
+	 */
 	modified: number | undefined = undefined;
 
+	/**
+	 *
+	 *  Text contained in the note, written as markdown. Deprecated in favor of [markdown].
+	 */
 	text: string | undefined = undefined;
 
+	/**
+	 *
+	 *  Localized text contained in the note, written as markdown. Keys should respect ISO 639-1.
+	 */
 	markdown: { [ key: string ]: string } = {};
 
+	/**
+	 *
+	 *  Defines to which part of the corresponding information the note is related to.
+	 */
 	location: string | undefined = undefined;
 
+	/**
+	 *
+	 *  Whether this annotation is confidential.
+	 */
 	confidential: boolean | undefined = undefined;
 
+	/**
+	 *
+	 *  Tags associated with this annotation.
+	 */
 	tags: Array<CodeStub> = [];
 
+	/**
+	 *
+	 *  The encrypted content of this annotation.
+	 */
 	encryptedSelf: string | undefined = undefined;
 
 	constructor(partial: Partial<Annotation>) {

@@ -3,10 +3,23 @@ import {expectString, expectStringEnum, extractEntry} from '../../internal/JsonD
 import {ParticipantType} from '../base/ParticipantType.mjs';
 
 
+/**
+ *
+ *  Represents a healthcare party participating in a contact, along with their participation type.
+ *  /
+ */
 export class ContactParticipant {
 
+	/**
+	 *
+	 *  The type of participation in the contact.
+	 */
 	type: ParticipantType;
 
+	/**
+	 *
+	 *  The identifier of the participating healthcare party.
+	 */
 	hcpId: string;
 
 	constructor(partial: Partial<ContactParticipant> & Pick<ContactParticipant, "type" | "hcpId">) {

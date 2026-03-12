@@ -1,5 +1,10 @@
 // auto-generated file
 
+/**
+ *
+ *
+ *   Enumerates the medium types through which invoices or documents can be transmitted.
+ */
 export enum MediumType {
 	Cdrom = "Cdrom",
 	Eattest = "Eattest",

@@ -6,16 +6,41 @@ import {StoredDocument} from './base/StoredDocument.mjs';
 import {DecryptedAddress} from './embed/Address.mjs';
 
 
+/**
+ *
+ *  DTO representing a physical place or location, such as a clinic or office.
+ *  /
+ */
 export class Place implements StoredDocument, Named {
 
+	/**
+	 *
+	 *  The unique identifier of the place.
+	 */
 	id: string;
 
+	/**
+	 *
+	 *  The revision identifier for optimistic locking.
+	 */
 	rev: string | undefined = undefined;
 
+	/**
+	 *
+	 *  The soft-delete timestamp in epoch milliseconds.
+	 */
 	deletionDate: number | undefined = undefined;
 
+	/**
+	 *
+	 *  The display name of the place.
+	 */
 	name: string | undefined = undefined;
 
+	/**
+	 *
+	 *  The address of the place.
+	 */
 	address: DecryptedAddress | undefined = undefined;
 
 	constructor(partial: Partial<Place>) {

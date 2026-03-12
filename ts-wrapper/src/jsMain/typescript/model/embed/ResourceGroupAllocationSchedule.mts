@@ -4,20 +4,54 @@ import {CodeStub} from '../base/CodeStub.mjs';
 import {EmbeddedTimeTableItem} from './EmbeddedTimeTableItem.mjs';
 
 
+/**
+ *
+ *  Represents an allocation schedule for a resource group, defining time table items within a date
+ *  range.
+ *  /
+ */
 export class ResourceGroupAllocationSchedule {
 
+	/**
+	 *
+	 *  The code identifying the resource group.
+	 */
 	resourceGroup: CodeStub | undefined = undefined;
 
+	/**
+	 *
+	 *  Tags associated with this schedule.
+	 */
 	tags: Array<CodeStub> = [];
 
+	/**
+	 *
+	 *  Codes associated with this schedule.
+	 */
 	codes: Array<CodeStub> = [];
 
+	/**
+	 *
+	 *  The name of this allocation schedule.
+	 */
 	name: string | undefined = undefined;
 
+	/**
+	 *
+	 *  The start date-time in YYYYMMDDHHMMSS format.
+	 */
 	startDateTime: number | undefined = undefined;
 
+	/**
+	 *
+	 *  The end date-time in YYYYMMDDHHMMSS format.
+	 */
 	endDateTime: number | undefined = undefined;
 
+	/**
+	 *
+	 *  The list of time table items in this schedule.
+	 */
 	items: Array<EmbeddedTimeTableItem> = [];
 
 	constructor(partial: Partial<ResourceGroupAllocationSchedule>) {

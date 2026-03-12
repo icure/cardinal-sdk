@@ -15,54 +15,157 @@ import {HexString} from './specializations/HexString.mjs';
 import {SpkiHexString} from './specializations/SpkiHexString.mjs';
 
 
+/**
+ *
+ *  Represents a device that sends medical data. This is a root-level entity stored in the
+ *  icure-device CouchDB database.
+ *  A device can act as a data owner and crypto actor for secure data exchange.
+ *  /
+ */
 export class Device implements StoredDocument, ICureDocument<string>, Named, CryptoActor, DataOwner {
 
+	/**
+	 *
+	 *  The Id of the device. We encourage using either a v4 UUID or a HL7 Id.
+	 */
 	id: string;
 
+	/**
+	 *
+	 *  The revision of the device in the database, used for conflict management / optimistic locking.
+	 */
 	rev: string | undefined = undefined;
 
+	/**
+	 *
+	 *  Hard delete (unix epoch in ms) timestamp of the object.
+	 */
 	deletionDate: number | undefined = undefined;
 
+	/**
+	 *
+	 *  The device's identifiers used for client-side identification.
+	 */
 	identifiers: Array<Identifier> = [];
 
+	/**
+	 *
+	 *  The timestamp (unix epoch in ms) of creation of this entity.
+	 */
 	created: number | undefined = undefined;
 
+	/**
+	 *
+	 *  The timestamp (unix epoch in ms) of the latest modification of this entity.
+	 */
 	modified: number | undefined = undefined;
 
+	/**
+	 *
+	 *  The id of the User that created this device.
+	 */
 	author: string | undefined = undefined;
 
+	/**
+	 *
+	 *  The id of the data owner that is responsible for this device.
+	 */
 	responsible: string | undefined = undefined;
 
+	/**
+	 *
+	 *  Tags that qualify the device as being member of a certain class.
+	 */
 	tags: Array<CodeStub> = [];
 
+	/**
+	 *
+	 *  Codes that identify or qualify this particular device.
+	 */
 	codes: Array<CodeStub> = [];
 
+	/**
+	 *
+	 *  The name of the device.
+	 */
 	name: string | undefined = undefined;
 
+	/**
+	 *
+	 *  The type of the device (e.g., smartphone, medical device sort).
+	 */
 	type: string | undefined = undefined;
 
+	/**
+	 *
+	 *  The brand of the device (e.g., Samsung, Apple, Philips).
+	 */
 	brand: string | undefined = undefined;
 
+	/**
+	 *
+	 *  The model of the device (e.g., Galaxy S10).
+	 */
 	model: string | undefined = undefined;
 
+	/**
+	 *
+	 *  The serial number of the device.
+	 */
 	serialNumber: string | undefined = undefined;
 
+	/**
+	 *
+	 *  The id of the parent of the user representing the device.
+	 */
 	parentId: string | undefined = undefined;
 
+	/**
+	 *
+	 *  Typed properties related to the device (e.g., version, specific device information).
+	 */
 	properties: Array<DecryptedPropertyStub> = [];
 
+	/**
+	 *
+	 *  The exchange keys with other healthcare parties, encrypted using public keys.
+	 */
 	hcPartyKeys: { [ key: string ]: Array<HexString> } = {};
 
+	/**
+	 *
+	 *  Extra AES exchange keys, usually keys that were lost access to at some point.
+	 */
 	aesExchangeKeys: { [ key: string ]: { [ key: string ]: { [ key: string ]: HexString } } } = {};
 
+	/**
+	 *
+	 *  Private keys encrypted with public keys for key transfer.
+	 */
 	transferKeys: { [ key: string ]: { [ key: string ]: HexString } } = {};
 
+	/**
+	 *
+	 *  Shamir partitions of this device's RSA private keys, encrypted with notary public keys.
+	 */
 	privateKeyShamirPartitions: { [ key: string ]: HexString } = {};
 
+	/**
+	 *
+	 *  The public RSA key of this device.
+	 */
 	publicKey: SpkiHexString | undefined = undefined;
 
+	/**
+	 *
+	 *  The public keys of this device generated using OAEP with SHA-256.
+	 */
 	publicKeysForOaepWithSha256: Array<SpkiHexString> = [];
 
+	/**
+	 *
+	 *  Properties specific to the crypto actor role of this device.
+	 */
 	cryptoActorProperties: Array<DecryptedPropertyStub> = [];
 
 	readonly $ktClass: 'com.icure.cardinal.sdk.model.Device' = 'com.icure.cardinal.sdk.model.Device';

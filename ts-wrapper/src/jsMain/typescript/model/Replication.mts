@@ -7,18 +7,48 @@ import {StoredDocument} from './base/StoredDocument.mjs';
 import {DatabaseSynchronization} from './embed/DatabaseSynchronization.mjs';
 
 
+/**
+ *
+ *  DTO representing a replication configuration, defining how databases are synchronized between
+ *  CouchDB instances.
+ *  /
+ */
 export class Replication implements StoredDocument, Identifiable<string>, Named {
 
+	/**
+	 *
+	 *  The unique identifier of the replication.
+	 */
 	id: string;
 
+	/**
+	 *
+	 *  The revision identifier for optimistic locking.
+	 */
 	rev: string | undefined = undefined;
 
+	/**
+	 *
+	 *  The soft-delete timestamp in epoch milliseconds.
+	 */
 	deletionDate: number | undefined = undefined;
 
+	/**
+	 *
+	 *  The display name of this replication configuration.
+	 */
 	name: string | undefined = undefined;
 
+	/**
+	 *
+	 *  The context or environment for this replication.
+	 */
 	context: string | undefined = undefined;
 
+	/**
+	 *
+	 *  The list of database synchronization rules defined in this replication.
+	 */
 	databaseSynchronizations: Array<DatabaseSynchronization> = [];
 
 	constructor(partial: Partial<Replication>) {

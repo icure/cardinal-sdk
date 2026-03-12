@@ -2,14 +2,36 @@
 import {expectString, expectStringEnum, extractEntry} from '../../internal/JsonDecodeUtils.mjs';
 
 
+/**
+ *
+ *  Represents a database synchronization configuration between a source and a target, with optional
+ *  filtering.
+ *  /
+ */
 export class DatabaseSynchronization {
 
+	/**
+	 *
+	 *  The source database URL or identifier.
+	 */
 	source: string | undefined = undefined;
 
+	/**
+	 *
+	 *  The target database URL or identifier.
+	 */
 	target: string | undefined = undefined;
 
+	/**
+	 *
+	 *  A filter expression to apply during synchronization.
+	 */
 	filter: string | undefined = undefined;
 
+	/**
+	 *
+	 *  The local target type for the synchronization (base, healthdata, or patient).
+	 */
 	localTarget: DatabaseSynchronization.Target | undefined = undefined;
 
 	constructor(partial: Partial<DatabaseSynchronization>) {

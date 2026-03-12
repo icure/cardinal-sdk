@@ -9,6 +9,13 @@ import {SpkiHexString} from '../specializations/SpkiHexString.mjs';
 import {Versionable} from './Versionable.mjs';
 
 
+/**
+ *
+ *
+ *   Interface for entities that participate in the iCure end-to-end encryption system.
+ *   A CryptoActor holds the cryptographic keys and key exchange material needed for secure data
+ *  sharing.
+ */
 export interface CryptoActor extends Versionable<string> {
 
 	hcPartyKeys: { [ key: string ]: Array<HexString> };

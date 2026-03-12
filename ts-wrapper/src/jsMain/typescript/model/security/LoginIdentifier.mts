@@ -2,10 +2,24 @@
 import {expectString, extractEntry} from '../../internal/JsonDecodeUtils.mjs';
 
 
+/**
+ *
+ *  A structured identifier used to match a user during login, composed of an assigner system and a
+ *  value within that system.
+ *  /
+ */
 export class LoginIdentifier {
 
+	/**
+	 *
+	 *  The system or authority that issued or manages this identifier.
+	 */
 	assigner: string;
 
+	/**
+	 *
+	 *  The identifier value within the assigner's namespace.
+	 */
 	value: string;
 
 	constructor(partial: Partial<LoginIdentifier> & Pick<LoginIdentifier, "assigner" | "value">) {

@@ -3,16 +3,43 @@ import {expectNumber, expectString, expectStringEnum, extractEntry} from '../../
 import {Operation} from './Operation.mjs';
 
 
+/**
+ *
+ *  Represents a short-lived token that authorizes a single privileged operation (e.g. group
+ *  transfer).
+ *  The token is stored as a hash rather than in plain text.
+ *  /
+ */
 export class OperationToken {
 
+	/**
+	 *
+	 *  The hash of the operation token.
+	 */
 	tokenHash: string;
 
+	/**
+	 *
+	 *  The epoch-millisecond timestamp at which the token was created.
+	 */
 	creationTime: number;
 
+	/**
+	 *
+	 *  The duration in seconds for which the token remains valid after creation.
+	 */
 	validity: number;
 
+	/**
+	 *
+	 *  The specific operation this token is intended to authorize.
+	 */
 	operation: Operation;
 
+	/**
+	 *
+	 *  An optional human-readable description of the token's purpose.
+	 */
 	description: string | undefined = undefined;
 
 	constructor(partial: Partial<OperationToken> & Pick<OperationToken, "tokenHash" | "creationTime" | "validity" | "operation">) {

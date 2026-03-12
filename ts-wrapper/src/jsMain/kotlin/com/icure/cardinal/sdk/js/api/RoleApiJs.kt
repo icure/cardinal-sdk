@@ -13,6 +13,8 @@ import kotlin.js.Promise
 
 @JsName("RoleApi")
 public external interface RoleApiJs {
+	public fun getPermissions(): Promise<Array<String>>
+
 	public fun getAllRoles(): Promise<Array<RoleJs>>
 
 	public fun getAllRolesInGroup(groupId: String): Promise<Array<RoleJs>>

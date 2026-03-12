@@ -2,24 +2,65 @@
 import {expectNumber, expectString, extractEntry} from '../../internal/JsonDecodeUtils.mjs';
 
 
+/**
+ *
+ *  Data transfer object containing statistics about a CouchDB replication process.
+ *  /
+ */
 export class ReplicationStats {
 
+	/**
+	 *
+	 *  The number of revisions checked during replication.
+	 */
 	revisionsChecked: number | undefined = undefined;
 
+	/**
+	 *
+	 *  The number of missing revisions found on the target.
+	 */
 	missingRevisionsFound: number | undefined = undefined;
 
+	/**
+	 *
+	 *  The number of documents read from the source.
+	 */
 	docsRead: number | undefined = undefined;
 
+	/**
+	 *
+	 *  The number of documents written to the target.
+	 */
 	docsWritten: number | undefined = undefined;
 
+	/**
+	 *
+	 *  The number of changes still pending replication.
+	 */
 	changesPending: number | undefined = undefined;
 
+	/**
+	 *
+	 *  The number of document write failures on the target.
+	 */
 	docWriteFailures: number | undefined = undefined;
 
+	/**
+	 *
+	 *  The last checkpointed source sequence identifier.
+	 */
 	checkpointedSourceSeq: string | undefined = undefined;
 
+	/**
+	 *
+	 *  The time when the replication started.
+	 */
 	startTime: string | undefined = undefined;
 
+	/**
+	 *
+	 *  An error message if the replication encountered an error.
+	 */
 	error: string | undefined = undefined;
 
 	constructor(partial: Partial<ReplicationStats>) {

@@ -3,16 +3,41 @@ import {expectArray, expectObject, expectString, extractEntry} from '../../inter
 import {CodeStub} from '../base/CodeStub.mjs';
 
 
+/**
+ *
+ *  Represents a substance product with its intended and actually delivered codes and names.
+ *  /
+ */
 export class Substanceproduct {
 
+	/**
+	 *
+	 *  The list of coded identifiers for the intended substance product.
+	 */
 	intendedcds: Array<CodeStub> = [];
 
+	/**
+	 *
+	 *  The list of coded identifiers for the actually delivered substance product.
+	 */
 	deliveredcds: Array<CodeStub> = [];
 
+	/**
+	 *
+	 *  The name of the intended substance product.
+	 */
 	intendedname: string | undefined = undefined;
 
+	/**
+	 *
+	 *  The name of the actually delivered substance product.
+	 */
 	deliveredname: string | undefined = undefined;
 
+	/**
+	 *
+	 *  The product identifier.
+	 */
 	productId: string | undefined = undefined;
 
 	constructor(partial: Partial<Substanceproduct>) {

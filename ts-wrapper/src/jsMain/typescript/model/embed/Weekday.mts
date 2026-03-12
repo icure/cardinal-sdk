@@ -3,10 +3,23 @@ import {expectNumber, expectObject, extractEntry} from '../../internal/JsonDecod
 import {CodeStub} from '../base/CodeStub.mjs';
 
 
+/**
+ *
+ *  Represents a weekday reference used in medication regimens, optionally specifying a week number.
+ *  /
+ */
 export class Weekday {
 
+	/**
+	 *
+	 *  The coded weekday (CD-WEEKDAY).
+	 */
 	weekday: CodeStub | undefined = undefined;
 
+	/**
+	 *
+	 *  The week number within a cycle, or null if not applicable.
+	 */
 	weekNumber: number | undefined = undefined;
 
 	constructor(partial: Partial<Weekday>) {

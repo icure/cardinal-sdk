@@ -5,14 +5,36 @@ import {Encryptable} from './Encryptable.mjs';
 import {MembershipType} from './MembershipType.mjs';
 
 
+/**
+ *
+ *  Represents a time-bounded membership of a care team member, specifying the period and type of
+ *  involvement.
+ *  /
+ */
 export interface CareTeamMembership extends Encryptable {
 
+	/**
+	 *
+	 *  The start date (unix epoch in ms) of this membership.
+	 */
 	startDate: number | undefined;
 
+	/**
+	 *
+	 *  The end date (unix epoch in ms) of this membership.
+	 */
 	endDate: number | undefined;
 
+	/**
+	 *
+	 *  The identifier of the care team member.
+	 */
 	careTeamMemberId: string | undefined;
 
+	/**
+	 *
+	 *  The type of membership.
+	 */
 	membershipType: MembershipType | undefined;
 
 	readonly isEncrypted: boolean;
@@ -21,16 +43,42 @@ export interface CareTeamMembership extends Encryptable {
 
 }
 
+/**
+ *
+ *  Represents a time-bounded membership of a care team member, specifying the period and type of
+ *  involvement.
+ *  /
+ */
 export class DecryptedCareTeamMembership {
 
+	/**
+	 *
+	 *  The start date (unix epoch in ms) of this membership.
+	 */
 	startDate: number | undefined = undefined;
 
+	/**
+	 *
+	 *  The end date (unix epoch in ms) of this membership.
+	 */
 	endDate: number | undefined = undefined;
 
+	/**
+	 *
+	 *  The identifier of the care team member.
+	 */
 	careTeamMemberId: string | undefined = undefined;
 
+	/**
+	 *
+	 *  The type of membership.
+	 */
 	membershipType: MembershipType | undefined = undefined;
 
+	/**
+	 *
+	 *  The base64-encoded encrypted content of this membership.
+	 */
 	encryptedSelf: Base64String | undefined = undefined;
 
 	readonly isEncrypted: false = false;
@@ -75,16 +123,42 @@ export class DecryptedCareTeamMembership {
 
 }
 
+/**
+ *
+ *  Represents a time-bounded membership of a care team member, specifying the period and type of
+ *  involvement.
+ *  /
+ */
 export class EncryptedCareTeamMembership {
 
+	/**
+	 *
+	 *  The start date (unix epoch in ms) of this membership.
+	 */
 	startDate: number | undefined = undefined;
 
+	/**
+	 *
+	 *  The end date (unix epoch in ms) of this membership.
+	 */
 	endDate: number | undefined = undefined;
 
+	/**
+	 *
+	 *  The identifier of the care team member.
+	 */
 	careTeamMemberId: string | undefined = undefined;
 
+	/**
+	 *
+	 *  The type of membership.
+	 */
 	membershipType: MembershipType | undefined = undefined;
 
+	/**
+	 *
+	 *  The base64-encoded encrypted content of this membership.
+	 */
 	encryptedSelf: Base64String | undefined = undefined;
 
 	readonly isEncrypted: true = true;

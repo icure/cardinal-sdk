@@ -4,6 +4,10 @@ import {randomUuid} from '../utils/Id.mjs';
 import {Identifiable} from './base/Identifiable.mjs';
 
 
+/**
+ *
+ *  Identifier for a document stored in iCure, includes revision.
+ */
 export class StoredDocumentIdentifier implements Identifiable<string> {
 
 	id: string;

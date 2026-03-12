@@ -1,5 +1,10 @@
 // auto-generated file
 
+/**
+ *
+ *
+ *   Enumerates the types of medical and administrative documents that can be managed in the system.
+ */
 export enum DocumentType {
 	Admission = "Admission",
 	Alert = "Alert",
