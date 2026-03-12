@@ -1,5 +1,3 @@
-// WARNING: This file is auto-generated. If you change it manually, your changes will be lost.
-// If you want to change the way this class is generated, see [this repo](https://github.com/icure/sdk-codegen).
 package com.icure.cardinal.sdk.model.filter.code
 
 import com.icure.cardinal.sdk.model.Code
@@ -15,7 +13,7 @@ import kotlin.String
  */
 @SerialName("CodeIdsByTypeCodeVersionIntervalFilter")
 @Serializable
-data class CodeIdsByTypeCodeVersionIntervalFilter(
+public data class CodeIdsByTypeCodeVersionIntervalFilter(
 	/**
 	 * Optional description of this filter.
 	 */
@@ -44,8 +42,4 @@ data class CodeIdsByTypeCodeVersionIntervalFilter(
 	 * The version at the end of the interval.
 	 */
 	public val endVersion: String? = null,
-) : AbstractFilter<Code> {
-	// region CodeIdsByTypeCodeVersionIntervalFilter-CodeIdsByTypeCodeVersionIntervalFilter
-
-	// endregion
-}
+) : AbstractFilter<Code>

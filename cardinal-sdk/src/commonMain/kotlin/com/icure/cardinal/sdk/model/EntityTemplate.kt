@@ -1,5 +1,3 @@
-// WARNING: This file is auto-generated. If you change it manually, your changes will be lost.
-// If you want to change the way this class is generated, see [this repo](https://github.com/icure/sdk-codegen).
 package com.icure.cardinal.sdk.model
 
 import com.icure.cardinal.sdk.model.base.StoredDocument
@@ -19,7 +17,7 @@ import kotlin.collections.Set
  * /
  */
 @Serializable
-data class EntityTemplate(
+public data class EntityTemplate(
 	/**
 	 * The Id of the entity template.
 	 */
@@ -62,8 +60,4 @@ data class EntityTemplate(
 	 */
 	@param:DefaultValue("emptyList()")
 	public val entity: List<JsonElement> = emptyList(),
-) : StoredDocument {
-	// region EntityTemplate-EntityTemplate
-
-	// endregion
-}
+) : StoredDocument

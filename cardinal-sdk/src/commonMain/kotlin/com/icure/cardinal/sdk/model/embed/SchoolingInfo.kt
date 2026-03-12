@@ -1,5 +1,3 @@
-// WARNING: This file is auto-generated. If you change it manually, your changes will be lost.
-// If you want to change the way this class is generated, see [this repo](https://github.com/icure/sdk-codegen).
 package com.icure.cardinal.sdk.model.embed
 
 import com.icure.cardinal.sdk.model.base.CodeStub
@@ -13,8 +11,7 @@ import kotlin.String
  * education.
  * /
  */
-
-sealed interface SchoolingInfo : Encryptable {
+public sealed interface SchoolingInfo : Encryptable {
 	/**
 	 * The start date (unix epoch in ms) of the schooling period.
 	 */
@@ -39,9 +36,6 @@ sealed interface SchoolingInfo : Encryptable {
 	 * The base64-encoded encrypted content of this schooling info.
 	 */
 	override val encryptedSelf: Base64String?
-	// region SchoolingInfo-SchoolingInfo
-
-	// endregion
 }
 
 /**
@@ -50,7 +44,7 @@ sealed interface SchoolingInfo : Encryptable {
  * /
  */
 @Serializable
-data class DecryptedSchoolingInfo(
+public data class DecryptedSchoolingInfo(
 	/**
 	 * The start date (unix epoch in ms) of the schooling period.
 	 */
@@ -71,11 +65,7 @@ data class DecryptedSchoolingInfo(
 	 * The base64-encoded encrypted content of this schooling info.
 	 */
 	override val encryptedSelf: Base64String? = null,
-) : SchoolingInfo {
-	// region SchoolingInfo-DecryptedSchoolingInfo
-
-	// endregion
-}
+) : SchoolingInfo
 
 /**
  * Represents schooling information for a patient, including the period, school name, and type of
@@ -83,7 +73,7 @@ data class DecryptedSchoolingInfo(
  * /
  */
 @Serializable
-data class EncryptedSchoolingInfo(
+public data class EncryptedSchoolingInfo(
 	/**
 	 * The start date (unix epoch in ms) of the schooling period.
 	 */
@@ -104,8 +94,4 @@ data class EncryptedSchoolingInfo(
 	 * The base64-encoded encrypted content of this schooling info.
 	 */
 	override val encryptedSelf: Base64String? = null,
-) : SchoolingInfo {
-	// region SchoolingInfo-EncryptedSchoolingInfo
-
-	// endregion
-}
+) : SchoolingInfo

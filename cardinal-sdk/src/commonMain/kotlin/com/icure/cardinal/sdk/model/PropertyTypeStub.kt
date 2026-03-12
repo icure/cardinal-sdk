@@ -1,5 +1,3 @@
-// WARNING: This file is auto-generated. If you change it manually, your changes will be lost.
-// If you want to change the way this class is generated, see [this repo](https://github.com/icure/sdk-codegen).
 package com.icure.cardinal.sdk.model
 
 import com.icure.cardinal.sdk.model.embed.TypedValuesType
@@ -12,7 +10,7 @@ import kotlin.String
  * /
  */
 @Serializable
-data class PropertyTypeStub(
+public data class PropertyTypeStub(
 	/**
 	 * The human-readable identifier of this property type.
 	 */
@@ -21,8 +19,4 @@ data class PropertyTypeStub(
 	 * The value type of this property type.
 	 */
 	public val type: TypedValuesType? = null,
-) {
-	// region PropertyTypeStub-PropertyTypeStub
-
-	// endregion
-}
+)

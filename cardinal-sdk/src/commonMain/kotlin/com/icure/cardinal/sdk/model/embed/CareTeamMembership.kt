@@ -1,5 +1,3 @@
-// WARNING: This file is auto-generated. If you change it manually, your changes will be lost.
-// If you want to change the way this class is generated, see [this repo](https://github.com/icure/sdk-codegen).
 package com.icure.cardinal.sdk.model.embed
 
 import com.icure.cardinal.sdk.model.specializations.Base64String
@@ -12,8 +10,7 @@ import kotlin.String
  * involvement.
  * /
  */
-
-sealed interface CareTeamMembership : Encryptable {
+public sealed interface CareTeamMembership : Encryptable {
 	/**
 	 * The start date (unix epoch in ms) of this membership.
 	 */
@@ -38,9 +35,6 @@ sealed interface CareTeamMembership : Encryptable {
 	 * The base64-encoded encrypted content of this membership.
 	 */
 	override val encryptedSelf: Base64String?
-	// region CareTeamMembership-CareTeamMembership
-
-	// endregion
 }
 
 /**
@@ -49,7 +43,7 @@ sealed interface CareTeamMembership : Encryptable {
  * /
  */
 @Serializable
-data class DecryptedCareTeamMembership(
+public data class DecryptedCareTeamMembership(
 	/**
 	 * The start date (unix epoch in ms) of this membership.
 	 */
@@ -70,11 +64,7 @@ data class DecryptedCareTeamMembership(
 	 * The base64-encoded encrypted content of this membership.
 	 */
 	override val encryptedSelf: Base64String? = null,
-) : CareTeamMembership {
-	// region CareTeamMembership-DecryptedCareTeamMembership
-
-	// endregion
-}
+) : CareTeamMembership
 
 /**
  * Represents a time-bounded membership of a care team member, specifying the period and type of
@@ -82,7 +72,7 @@ data class DecryptedCareTeamMembership(
  * /
  */
 @Serializable
-data class EncryptedCareTeamMembership(
+public data class EncryptedCareTeamMembership(
 	/**
 	 * The start date (unix epoch in ms) of this membership.
 	 */
@@ -103,8 +93,4 @@ data class EncryptedCareTeamMembership(
 	 * The base64-encoded encrypted content of this membership.
 	 */
 	override val encryptedSelf: Base64String? = null,
-) : CareTeamMembership {
-	// region CareTeamMembership-EncryptedCareTeamMembership
-
-	// endregion
-}
+) : CareTeamMembership

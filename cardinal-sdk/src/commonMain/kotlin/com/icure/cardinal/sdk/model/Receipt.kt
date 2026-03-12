@@ -1,5 +1,3 @@
-// WARNING: This file is auto-generated. If you change it manually, your changes will be lost.
-// If you want to change the way this class is generated, see [this repo](https://github.com/icure/sdk-codegen).
 package com.icure.cardinal.sdk.model
 
 import com.icure.cardinal.sdk.model.base.CodeStub
@@ -17,7 +15,6 @@ import kotlin.String
 import kotlin.collections.List
 import kotlin.collections.Map
 import kotlin.collections.Set
-import com.icure.cardinal.sdk.model.embed.ReceiptBlobType
 
 /**
  * Represents a receipt for a healthcare transaction. Receipts are used to store acknowledgements
@@ -27,8 +24,7 @@ import com.icure.cardinal.sdk.model.embed.ReceiptBlobType
  * to invoices or other documents.
  * /
  */
-
-sealed interface Receipt :
+public sealed interface Receipt :
 	StoredDocument,
 	ICureDocument<String>,
 	HasEncryptionMetadata,
@@ -127,9 +123,6 @@ sealed interface Receipt :
 	 * The security metadata of the entity.
 	 */
 	override val securityMetadata: SecurityMetadata?
-	// region Receipt-Receipt
-
-	// endregion
 }
 
 /**
@@ -141,7 +134,7 @@ sealed interface Receipt :
  * /
  */
 @Serializable
-data class DecryptedReceipt(
+public data class DecryptedReceipt(
 	/**
 	 * The unique identifier of the receipt.
 	 */
@@ -225,12 +218,7 @@ data class DecryptedReceipt(
 	 * The security metadata of the entity.
 	 */
 	override val securityMetadata: SecurityMetadata? = null,
-) : Receipt {
-	// region Receipt-DecryptedReceipt
-override fun copyWithSecurityMetadata(securityMetadata: SecurityMetadata, secretForeignKeys: Set<String>): DecryptedReceipt =
-		copy(securityMetadata = securityMetadata, secretForeignKeys = secretForeignKeys)
-	// endregion
-}
+) : Receipt
 
 /**
  * Represents a receipt for a healthcare transaction. Receipts are used to store acknowledgements
@@ -241,7 +229,7 @@ override fun copyWithSecurityMetadata(securityMetadata: SecurityMetadata, secret
  * /
  */
 @Serializable
-data class EncryptedReceipt(
+public data class EncryptedReceipt(
 	/**
 	 * The unique identifier of the receipt.
 	 */
@@ -325,9 +313,4 @@ data class EncryptedReceipt(
 	 * The security metadata of the entity.
 	 */
 	override val securityMetadata: SecurityMetadata? = null,
-) : Receipt {
-	// region Receipt-EncryptedReceipt
-override fun copyWithSecurityMetadata(securityMetadata: SecurityMetadata, secretForeignKeys: Set<String>): EncryptedReceipt =
-		copy(securityMetadata = securityMetadata, secretForeignKeys = secretForeignKeys)
-	// endregion
-}
+) : Receipt

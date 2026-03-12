@@ -1,5 +1,3 @@
-// WARNING: This file is auto-generated. If you change it manually, your changes will be lost.
-// If you want to change the way this class is generated, see [this repo](https://github.com/icure/sdk-codegen).
 package com.icure.cardinal.sdk.model.filter.agenda
 
 import com.icure.cardinal.sdk.model.Agenda
@@ -14,7 +12,7 @@ import kotlin.String
  */
 @SerialName("AgendaReadableByUserRightsFilter")
 @Serializable
-data class AgendaReadableByUserRightsFilter(
+public data class AgendaReadableByUserRightsFilter(
 	/**
 	 * The identifier of the user whose rights determine readable agendas.
 	 */
@@ -23,8 +21,4 @@ data class AgendaReadableByUserRightsFilter(
 	 * Optional description of this filter.
 	 */
 	override val desc: String?,
-) : AbstractFilter<Agenda> {
-	// region AgendaReadableByUserRightsFilter-AgendaReadableByUserRightsFilter
-
-	// endregion
-}
+) : AbstractFilter<Agenda>

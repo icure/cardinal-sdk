@@ -1,5 +1,3 @@
-// WARNING: This file is auto-generated. If you change it manually, your changes will be lost.
-// If you want to change the way this class is generated, see [this repo](https://github.com/icure/sdk-codegen).
 package com.icure.cardinal.sdk.model.requests
 
 import com.icure.cardinal.sdk.model.specializations.SecureDelegationKeyString
@@ -9,7 +7,7 @@ import kotlin.collections.Map
 import kotlin.collections.Set
 
 @Serializable
-data class BulkShareOrUpdateMetadataParams(
+public data class BulkShareOrUpdateMetadataParams(
 	public val requestsByEntityId: Map<String, EntityRequestInformation>,
 ) {
 	@Serializable
@@ -23,7 +21,4 @@ data class BulkShareOrUpdateMetadataParams(
 		 */
 		public val potentialParentDelegations: Set<SecureDelegationKeyString>,
 	)
-  // region BulkShareOrUpdateMetadataParams-BulkShareOrUpdateMetadataParams
-
-  // endregion
 }

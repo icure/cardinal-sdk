@@ -1,5 +1,3 @@
-// WARNING: This file is auto-generated. If you change it manually, your changes will be lost.
-// If you want to change the way this class is generated, see [this repo](https://github.com/icure/sdk-codegen).
 package com.icure.cardinal.sdk.model.base
 
 import kotlinx.serialization.Serializable
@@ -13,7 +11,7 @@ import kotlin.String
  *  business identifiers.
  */
 @Serializable
-data class Identifier(
+public data class Identifier(
 	/**
 	 *
 	 *  Unique id for inter-element referencing
@@ -50,8 +48,4 @@ data class Identifier(
 	 *  The value that is unique
 	 */
 	public val `value`: String? = null,
-) {
-	// region Identifier-Identifier
-
-	// endregion
-}
+)

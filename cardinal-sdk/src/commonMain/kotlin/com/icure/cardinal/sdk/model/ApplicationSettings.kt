@@ -1,5 +1,3 @@
-// WARNING: This file is auto-generated. If you change it manually, your changes will be lost.
-// If you want to change the way this class is generated, see [this repo](https://github.com/icure/sdk-codegen).
 package com.icure.cardinal.sdk.model
 
 import com.icure.cardinal.sdk.model.base.CodeStub
@@ -23,8 +21,7 @@ import kotlin.collections.Set
  * plaintext or encrypted form.
  * /
  */
-
-sealed interface ApplicationSettings :
+public sealed interface ApplicationSettings :
 	StoredDocument,
 	ICureDocument<String>,
 	HasEncryptionMetadata,
@@ -120,9 +117,6 @@ sealed interface ApplicationSettings :
 	 * The base64-encoded encrypted fields of this entity.
 	 */
 	override val encryptedSelf: Base64String?
-	// region ApplicationSettings-ApplicationSettings
-
-	// endregion
 }
 
 /**
@@ -131,7 +125,7 @@ sealed interface ApplicationSettings :
  * /
  */
 @Serializable
-data class DecryptedApplicationSettings(
+public data class DecryptedApplicationSettings(
 	/**
 	 * The Id of the application settings.
 	 */
@@ -213,12 +207,7 @@ data class DecryptedApplicationSettings(
 	 * The base64-encoded encrypted fields of this entity.
 	 */
 	override val encryptedSelf: Base64String? = null,
-) : ApplicationSettings {
-	// region ApplicationSettings-DecryptedApplicationSettings
-	override fun copyWithSecurityMetadata(securityMetadata: SecurityMetadata, secretForeignKeys: Set<String>): DecryptedApplicationSettings =
-		copy(securityMetadata = securityMetadata, secretForeignKeys = secretForeignKeys)
-	// endregion
-}
+) : ApplicationSettings
 
 /**
  * Represents application-level settings stored as key-value pairs. Settings can be stored in
@@ -226,7 +215,7 @@ data class DecryptedApplicationSettings(
  * /
  */
 @Serializable
-data class EncryptedApplicationSettings(
+public data class EncryptedApplicationSettings(
 	/**
 	 * The Id of the application settings.
 	 */
@@ -308,9 +297,4 @@ data class EncryptedApplicationSettings(
 	 * The base64-encoded encrypted fields of this entity.
 	 */
 	override val encryptedSelf: Base64String? = null,
-) : ApplicationSettings {
-	// region ApplicationSettings-EncryptedApplicationSettings
-	override fun copyWithSecurityMetadata(securityMetadata: SecurityMetadata, secretForeignKeys: Set<String>): EncryptedApplicationSettings =
-		copy(securityMetadata = securityMetadata, secretForeignKeys = secretForeignKeys)
-	// endregion
-}
+) : ApplicationSettings

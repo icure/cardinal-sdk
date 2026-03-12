@@ -1,5 +1,3 @@
-// WARNING: This file is auto-generated. If you change it manually, your changes will be lost.
-// If you want to change the way this class is generated, see [this repo](https://github.com/icure/sdk-codegen).
 package com.icure.cardinal.sdk.model.embed.form.template
 
 import kotlinx.serialization.Serializable
@@ -12,7 +10,7 @@ import kotlin.collections.List
  * /
  */
 @Serializable
-data class FieldsGroup(
+public data class FieldsGroup(
 	/**
 	 * The name or identifier of this group.
 	 */
@@ -21,8 +19,4 @@ data class FieldsGroup(
 	 * The list of structure elements (fields or nested groups) in this group.
 	 */
 	public val fields: List<StructureElement>? = null,
-) : StructureElement {
-	// region FieldsGroup-FieldsGroup
-
-	// endregion
-}
+) : StructureElement

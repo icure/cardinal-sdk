@@ -1,5 +1,3 @@
-// WARNING: This file is auto-generated. If you change it manually, your changes will be lost.
-// If you want to change the way this class is generated, see [this repo](https://github.com/icure/sdk-codegen).
 package com.icure.cardinal.sdk.model.filter.message
 
 import com.icure.cardinal.sdk.model.Message
@@ -14,7 +12,7 @@ import kotlin.String
  */
 @SerialName("MessageByDataOwnerCodeFilter")
 @Serializable
-data class MessageByDataOwnerCodeFilter(
+public data class MessageByDataOwnerCodeFilter(
 	/**
 	 * The identifier of the data owner.
 	 */
@@ -31,8 +29,4 @@ data class MessageByDataOwnerCodeFilter(
 	 * Optional description of this filter.
 	 */
 	override val desc: String? = null,
-) : AbstractFilter<Message> {
-	// region MessageByDataOwnerCodeFilter-MessageByDataOwnerCodeFilter
-
-	// endregion
-}
+) : AbstractFilter<Message>

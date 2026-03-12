@@ -1,5 +1,3 @@
-// WARNING: This file is auto-generated. If you change it manually, your changes will be lost.
-// If you want to change the way this class is generated, see [this repo](https://github.com/icure/sdk-codegen).
 package com.icure.cardinal.sdk.model.embed
 
 import com.icure.cardinal.sdk.model.base.CodeStub
@@ -17,7 +15,7 @@ import kotlin.collections.Set
  * /
  */
 @Serializable
-data class Measure(
+public data class Measure(
 	/**
 	 * The measured numeric value.
 	 */
@@ -67,8 +65,4 @@ data class Measure(
 	 * The value with its precision information.
 	 */
 	public val valueWithPrecision: ValueWithPrecision? = null,
-) {
-	// region Measure-Measure
-
-	// endregion
-}
+)

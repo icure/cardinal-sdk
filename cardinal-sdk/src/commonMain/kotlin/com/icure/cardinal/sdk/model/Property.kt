@@ -1,5 +1,3 @@
-// WARNING: This file is auto-generated. If you change it manually, your changes will be lost.
-// If you want to change the way this class is generated, see [this repo](https://github.com/icure/sdk-codegen).
 package com.icure.cardinal.sdk.model
 
 import com.icure.cardinal.sdk.model.base.StoredDocument
@@ -17,8 +15,7 @@ import kotlin.String
  * attach configurable key-value data to entities.
  * /
  */
-
-sealed interface Property : StoredDocument, Encryptable {
+public sealed interface Property : StoredDocument, Encryptable {
 	/**
 	 * The unique identifier of the property.
 	 */
@@ -48,9 +45,6 @@ sealed interface Property : StoredDocument, Encryptable {
 	 * The encrypted content of this property, encoded as a Base64 string.
 	 */
 	override val encryptedSelf: Base64String?
-	// region Property-Property
-
-	// endregion
 }
 
 /**
@@ -59,7 +53,7 @@ sealed interface Property : StoredDocument, Encryptable {
  * /
  */
 @Serializable
-data class DecryptedProperty(
+public data class DecryptedProperty(
 	/**
 	 * The unique identifier of the property.
 	 */
@@ -84,11 +78,7 @@ data class DecryptedProperty(
 	 * The encrypted content of this property, encoded as a Base64 string.
 	 */
 	override val encryptedSelf: Base64String? = null,
-) : Property {
-	// region Property-DecryptedProperty
-
-	// endregion
-}
+) : Property
 
 /**
  * DTO representing a stored property with a type and typed value. Properties are used to
@@ -96,7 +86,7 @@ data class DecryptedProperty(
  * /
  */
 @Serializable
-data class EncryptedProperty(
+public data class EncryptedProperty(
 	/**
 	 * The unique identifier of the property.
 	 */
@@ -121,8 +111,4 @@ data class EncryptedProperty(
 	 * The encrypted content of this property, encoded as a Base64 string.
 	 */
 	override val encryptedSelf: Base64String? = null,
-) : Property {
-	// region Property-EncryptedProperty
-
-	// endregion
-}
+) : Property

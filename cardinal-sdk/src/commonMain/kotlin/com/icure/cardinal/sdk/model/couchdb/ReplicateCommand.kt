@@ -1,5 +1,3 @@
-// WARNING: This file is auto-generated. If you change it manually, your changes will be lost.
-// If you want to change the way this class is generated, see [this repo](https://github.com/icure/sdk-codegen).
 package com.icure.cardinal.sdk.model.couchdb
 
 import com.icure.cardinal.sdk.model.base.Versionable
@@ -15,7 +13,7 @@ import kotlin.collections.List
  * /
  */
 @Serializable
-data class ReplicateCommand(
+public data class ReplicateCommand(
 	/**
 	 * The unique identifier of this replication command.
 	 */
@@ -58,8 +56,4 @@ data class ReplicateCommand(
 	 * The target remote endpoint for the replication.
 	 */
 	public val target: Remote,
-) : Versionable<String> {
-	// region ReplicateCommand-ReplicateCommand
-
-	// endregion
-}
+) : Versionable<String>

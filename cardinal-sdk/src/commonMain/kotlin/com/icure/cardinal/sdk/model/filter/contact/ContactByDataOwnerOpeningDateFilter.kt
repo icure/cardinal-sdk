@@ -1,5 +1,3 @@
-// WARNING: This file is auto-generated. If you change it manually, your changes will be lost.
-// If you want to change the way this class is generated, see [this repo](https://github.com/icure/sdk-codegen).
 package com.icure.cardinal.sdk.model.filter.contact
 
 import com.icure.cardinal.sdk.model.Contact
@@ -16,7 +14,7 @@ import kotlin.String
  */
 @SerialName("ContactByDataOwnerOpeningDateFilter")
 @Serializable
-data class ContactByDataOwnerOpeningDateFilter(
+public data class ContactByDataOwnerOpeningDateFilter(
 	/**
 	 * The identifier of the data owner.
 	 */
@@ -37,8 +35,4 @@ data class ContactByDataOwnerOpeningDateFilter(
 	 * Optional description of this filter.
 	 */
 	override val desc: String? = null,
-) : AbstractFilter<Contact> {
-	// region ContactByDataOwnerOpeningDateFilter-ContactByDataOwnerOpeningDateFilter
-
-	// endregion
-}
+) : AbstractFilter<Contact>

@@ -1,5 +1,3 @@
-// WARNING: This file is auto-generated. If you change it manually, your changes will be lost.
-// If you want to change the way this class is generated, see [this repo](https://github.com/icure/sdk-codegen).
 package com.icure.cardinal.sdk.model
 
 import com.icure.cardinal.sdk.model.base.CodeStub
@@ -21,9 +19,6 @@ import kotlin.String
 import kotlin.collections.List
 import kotlin.collections.Map
 import kotlin.collections.Set
-import com.icure.cardinal.sdk.model.embed.DocumentLocation
-import com.icure.cardinal.sdk.serialization.ByteArraySerializer
-import kotlin.ByteArray
 
 /**
  * Represents a document entity stored in CouchDB. Documents can have main and secondary data
@@ -31,8 +26,7 @@ import kotlin.ByteArray
  * and support various storage backends (CouchDB attachments, object storage).
  * /
  */
-
-sealed interface Document :
+public sealed interface Document :
 	StoredDocument,
 	ICureDocument<String>,
 	HasEncryptionMetadata,
@@ -181,9 +175,6 @@ sealed interface Document :
 	 * The security metadata of this entity, for access control.
 	 */
 	override val securityMetadata: SecurityMetadata?
-	// region Document-Document
-
-	// endregion
 }
 
 /**
@@ -193,7 +184,7 @@ sealed interface Document :
  * /
  */
 @Serializable
-data class DecryptedDocument(
+public data class DecryptedDocument(
 	/**
 	 * The Id of the document. We encourage using either a v4 UUID or a HL7 Id.
 	 */
@@ -319,12 +310,7 @@ data class DecryptedDocument(
 	 * The security metadata of this entity, for access control.
 	 */
 	override val securityMetadata: SecurityMetadata? = null,
-) : Document {
-	// region Document-DecryptedDocument
-override fun copyWithSecurityMetadata(securityMetadata: SecurityMetadata, secretForeignKeys: Set<String>): DecryptedDocument =
-		copy(securityMetadata = securityMetadata, secretForeignKeys = secretForeignKeys)
-	// endregion
-}
+) : Document
 
 /**
  * Represents a document entity stored in CouchDB. Documents can have main and secondary data
@@ -333,7 +319,7 @@ override fun copyWithSecurityMetadata(securityMetadata: SecurityMetadata, secret
  * /
  */
 @Serializable
-data class EncryptedDocument(
+public data class EncryptedDocument(
 	/**
 	 * The Id of the document. We encourage using either a v4 UUID or a HL7 Id.
 	 */
@@ -459,9 +445,4 @@ data class EncryptedDocument(
 	 * The security metadata of this entity, for access control.
 	 */
 	override val securityMetadata: SecurityMetadata? = null,
-) : Document {
-	// region Document-EncryptedDocument
-override fun copyWithSecurityMetadata(securityMetadata: SecurityMetadata, secretForeignKeys: Set<String>): EncryptedDocument =
-		copy(securityMetadata = securityMetadata, secretForeignKeys = secretForeignKeys)
-	// endregion
-}
+) : Document

@@ -1,5 +1,3 @@
-// WARNING: This file is auto-generated. If you change it manually, your changes will be lost.
-// If you want to change the way this class is generated, see [this repo](https://github.com/icure/sdk-codegen).
 package com.icure.cardinal.sdk.model.objectstorage
 
 import kotlinx.serialization.SerialName
@@ -8,7 +6,7 @@ import kotlin.Long
 import kotlin.String
 
 @Serializable
-sealed interface StoredObjectInformation {
+public sealed interface StoredObjectInformation {
 	/**
 	 *
 	 *  The object is fully stored and available.
@@ -37,7 +35,4 @@ sealed interface StoredObjectInformation {
 	@Serializable
 	@SerialName("NotStored")
 	public data object NotStored : StoredObjectInformation
-	// region StoredObjectInformation-StoredObjectInformation
-
-	// endregion
 }

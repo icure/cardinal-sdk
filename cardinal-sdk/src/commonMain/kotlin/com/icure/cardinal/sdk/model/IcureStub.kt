@@ -1,5 +1,3 @@
-// WARNING: This file is auto-generated. If you change it manually, your changes will be lost.
-// If you want to change the way this class is generated, see [this repo](https://github.com/icure/sdk-codegen).
 package com.icure.cardinal.sdk.model
 
 import com.icure.cardinal.sdk.model.base.CodeStub
@@ -23,7 +21,7 @@ import kotlin.collections.Set
  * /
  */
 @Serializable
-data class IcureStub(
+public data class IcureStub(
 	/**
 	 * The unique identifier of the entity.
 	 */
@@ -86,9 +84,4 @@ data class IcureStub(
 	 * The security metadata containing secure delegation information.
 	 */
 	override val securityMetadata: SecurityMetadata? = null,
-) : ICureDocument<String>, Versionable<String>, HasEncryptionMetadata, HasEndOfLife {
-	// region IcureStub-IcureStub
-override fun copyWithSecurityMetadata(securityMetadata: SecurityMetadata, secretForeignKeys: Set<String>): IcureStub =
-		copy(securityMetadata = securityMetadata, secretForeignKeys = secretForeignKeys)
-	// endregion
-}
+) : ICureDocument<String>, Versionable<String>, HasEncryptionMetadata, HasEndOfLife

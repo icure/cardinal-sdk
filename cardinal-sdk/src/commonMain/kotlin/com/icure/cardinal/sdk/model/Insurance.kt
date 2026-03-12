@@ -1,5 +1,3 @@
-// WARNING: This file is auto-generated. If you change it manually, your changes will be lost.
-// If you want to change the way this class is generated, see [this repo](https://github.com/icure/sdk-codegen).
 package com.icure.cardinal.sdk.model
 
 import com.icure.cardinal.sdk.model.base.StoredDocument
@@ -17,7 +15,7 @@ import kotlin.collections.Map
  * /
  */
 @Serializable
-data class Insurance(
+public data class Insurance(
 	/**
 	 * The unique identifier of the insurance.
 	 */
@@ -67,8 +65,4 @@ data class Insurance(
 	 * The address of the insurance company.
 	 */
 	public val address: DecryptedAddress,
-) : StoredDocument {
-	// region Insurance-Insurance
-
-	// endregion
-}
+) : StoredDocument

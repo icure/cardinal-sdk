@@ -1,5 +1,3 @@
-// WARNING: This file is auto-generated. If you change it manually, your changes will be lost.
-// If you want to change the way this class is generated, see [this repo](https://github.com/icure/sdk-codegen).
 package com.icure.cardinal.sdk.model.filter.predicate
 
 import com.icure.cardinal.sdk.model.specializations.AnyPrimitive
@@ -12,7 +10,7 @@ import kotlin.String
  * /
  */
 @Serializable
-data class KeyValuePredicate(
+public data class KeyValuePredicate(
 	/**
 	 * The property key to compare.
 	 */
@@ -26,8 +24,4 @@ data class KeyValuePredicate(
 	 */
 	@Serializable(with = AnyPrimitiveSerializer::class)
 	public val `value`: AnyPrimitive? = null,
-) : Predicate {
-	// region KeyValuePredicate-KeyValuePredicate
-
-	// endregion
-}
+) : Predicate

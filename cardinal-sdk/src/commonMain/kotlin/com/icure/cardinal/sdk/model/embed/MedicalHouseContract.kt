@@ -1,5 +1,3 @@
-// WARNING: This file is auto-generated. If you change it manually, your changes will be lost.
-// If you want to change the way this class is generated, see [this repo](https://github.com/icure/sdk-codegen).
 package com.icure.cardinal.sdk.model.embed
 
 import com.icure.cardinal.sdk.model.specializations.Base64String
@@ -17,8 +15,7 @@ import kotlin.collections.Map
  * suspension periods, and signature information.
  * /
  */
-
-sealed interface MedicalHouseContract : Encryptable {
+public sealed interface MedicalHouseContract : Encryptable {
 	/**
 	 * The identifier of the contract.
 	 */
@@ -183,9 +180,6 @@ sealed interface MedicalHouseContract : Encryptable {
 	 * The base64-encoded encrypted content.
 	 */
 	override val encryptedSelf: Base64String?
-	// region MedicalHouseContract-MedicalHouseContract
-
-	// endregion
 }
 
 /**
@@ -195,7 +189,7 @@ sealed interface MedicalHouseContract : Encryptable {
  * /
  */
 @Serializable
-data class DecryptedMedicalHouseContract(
+public data class DecryptedMedicalHouseContract(
 	/**
 	 * The identifier of the contract.
 	 */
@@ -338,11 +332,7 @@ data class DecryptedMedicalHouseContract(
 	 * The base64-encoded encrypted content.
 	 */
 	override val encryptedSelf: Base64String? = null,
-) : MedicalHouseContract {
-	// region MedicalHouseContract-DecryptedMedicalHouseContract
-
-	// endregion
-}
+) : MedicalHouseContract
 
 /**
  * Represents a medical house contract (inscription period) for a patient, including coverage
@@ -351,7 +341,7 @@ data class DecryptedMedicalHouseContract(
  * /
  */
 @Serializable
-data class EncryptedMedicalHouseContract(
+public data class EncryptedMedicalHouseContract(
 	/**
 	 * The identifier of the contract.
 	 */
@@ -494,8 +484,4 @@ data class EncryptedMedicalHouseContract(
 	 * The base64-encoded encrypted content.
 	 */
 	override val encryptedSelf: Base64String? = null,
-) : MedicalHouseContract {
-	// region MedicalHouseContract-EncryptedMedicalHouseContract
-
-	// endregion
-}
+) : MedicalHouseContract

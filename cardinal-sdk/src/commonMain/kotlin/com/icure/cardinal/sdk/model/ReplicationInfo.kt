@@ -1,5 +1,3 @@
-// WARNING: This file is auto-generated. If you change it manually, your changes will be lost.
-// If you want to change the way this class is generated, see [this repo](https://github.com/icure/sdk-codegen).
 package com.icure.cardinal.sdk.model
 
 import com.icure.cardinal.sdk.utils.DefaultValue
@@ -12,7 +10,7 @@ import kotlin.Int
  * /
  */
 @Serializable
-data class ReplicationInfo(
+public data class ReplicationInfo(
 	/**
 	 * Whether the replication is currently active.
 	 */
@@ -31,8 +29,4 @@ data class ReplicationInfo(
 	 * The number of pending changes to replicate to the target.
 	 */
 	public val pendingTo: Int? = null,
-) {
-	// region ReplicationInfo-ReplicationInfo
-
-	// endregion
-}
+)

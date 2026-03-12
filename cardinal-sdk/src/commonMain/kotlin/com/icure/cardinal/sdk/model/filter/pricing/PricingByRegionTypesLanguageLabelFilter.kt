@@ -1,5 +1,3 @@
-// WARNING: This file is auto-generated. If you change it manually, your changes will be lost.
-// If you want to change the way this class is generated, see [this repo](https://github.com/icure/sdk-codegen).
 package com.icure.cardinal.sdk.model.filter.pricing
 
 import com.icure.cardinal.sdk.model.Tarification
@@ -15,7 +13,7 @@ import kotlin.collections.List
  */
 @SerialName("PricingByRegionTypesLanguageLabelFilter")
 @Serializable
-data class PricingByRegionTypesLanguageLabelFilter(
+public data class PricingByRegionTypesLanguageLabelFilter(
 	/**
 	 * The region to filter pricing entries by.
 	 */
@@ -36,8 +34,4 @@ data class PricingByRegionTypesLanguageLabelFilter(
 	 * Optional description of this filter.
 	 */
 	override val desc: String? = null,
-) : AbstractFilter<Tarification> {
-	// region PricingByRegionTypesLanguageLabelFilter-PricingByRegionTypesLanguageLabelFilter
-
-	// endregion
-}
+) : AbstractFilter<Tarification>

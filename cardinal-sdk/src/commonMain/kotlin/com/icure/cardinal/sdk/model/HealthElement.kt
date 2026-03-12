@@ -1,5 +1,3 @@
-// WARNING: This file is auto-generated. If you change it manually, your changes will be lost.
-// If you want to change the way this class is generated, see [this repo](https://github.com/icure/sdk-codegen).
 package com.icure.cardinal.sdk.model
 
 import com.icure.cardinal.sdk.model.base.CodeStub
@@ -31,7 +29,6 @@ import kotlin.String
 import kotlin.collections.List
 import kotlin.collections.Map
 import kotlin.collections.Set
-import kotlin.Int
 
 /**
  * Represents a healthcare element. A healthcare element is a patient-centric representation of a
@@ -41,8 +38,7 @@ import kotlin.Int
  * electronic health record, used to filter and link medical data in a meaningful way.
  * /
  */
-
-sealed interface HealthElement :
+public sealed interface HealthElement :
 	StoredDocument,
 	ICureDocument<String>,
 	HasEncryptionMetadata,
@@ -210,12 +206,6 @@ sealed interface HealthElement :
 	 * The security metadata of the entity.
 	 */
 	override val securityMetadata: SecurityMetadata?
-	// region HealthElement-HealthElement
-
-	companion object {
-		const val KRAKEN_QUALIFIED_NAME = "org.taktik.icure.entities.HealthElement"
-	}
-	// endregion
 }
 
 /**
@@ -227,7 +217,7 @@ sealed interface HealthElement :
  * /
  */
 @Serializable
-data class DecryptedHealthElement(
+public data class DecryptedHealthElement(
 	/**
 	 * The Id of the healthcare element. We encourage using either a v4 UUID or a HL7 Id.
 	 */
@@ -371,12 +361,7 @@ data class DecryptedHealthElement(
 	 * The security metadata of the entity.
 	 */
 	override val securityMetadata: SecurityMetadata? = null,
-) : HealthElement {
-	// region HealthElement-DecryptedHealthElement
-override fun copyWithSecurityMetadata(securityMetadata: SecurityMetadata, secretForeignKeys: Set<String>): DecryptedHealthElement =
-		copy(securityMetadata = securityMetadata, secretForeignKeys = secretForeignKeys)
-	// endregion
-}
+) : HealthElement
 
 /**
  * Represents a healthcare element. A healthcare element is a patient-centric representation of a
@@ -387,7 +372,7 @@ override fun copyWithSecurityMetadata(securityMetadata: SecurityMetadata, secret
  * /
  */
 @Serializable
-data class EncryptedHealthElement(
+public data class EncryptedHealthElement(
 	/**
 	 * The Id of the healthcare element. We encourage using either a v4 UUID or a HL7 Id.
 	 */
@@ -531,9 +516,4 @@ data class EncryptedHealthElement(
 	 * The security metadata of the entity.
 	 */
 	override val securityMetadata: SecurityMetadata? = null,
-) : HealthElement {
-	// region HealthElement-EncryptedHealthElement
-override fun copyWithSecurityMetadata(securityMetadata: SecurityMetadata, secretForeignKeys: Set<String>): EncryptedHealthElement =
-		copy(securityMetadata = securityMetadata, secretForeignKeys = secretForeignKeys)
-	// endregion
-}
+) : HealthElement

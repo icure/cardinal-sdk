@@ -1,5 +1,3 @@
-// WARNING: This file is auto-generated. If you change it manually, your changes will be lost.
-// If you want to change the way this class is generated, see [this repo](https://github.com/icure/sdk-codegen).
 package com.icure.cardinal.sdk.model.embed
 
 import kotlinx.serialization.Serializable
@@ -10,7 +8,7 @@ import kotlin.String
  * /
  */
 @Serializable
-data class DocumentGroup(
+public data class DocumentGroup(
 	/**
 	 * The globally unique identifier for this document group.
 	 */
@@ -19,8 +17,4 @@ data class DocumentGroup(
 	 * The human-readable name of the document group.
 	 */
 	public val name: String? = null,
-) {
-	// region DocumentGroup-DocumentGroup
-
-	// endregion
-}
+)

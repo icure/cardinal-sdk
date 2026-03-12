@@ -1,5 +1,3 @@
-// WARNING: This file is auto-generated. If you change it manually, your changes will be lost.
-// If you want to change the way this class is generated, see [this repo](https://github.com/icure/sdk-codegen).
 package com.icure.cardinal.sdk.model.filter.message
 
 import com.icure.cardinal.sdk.model.Message
@@ -15,7 +13,7 @@ import kotlin.collections.List
  */
 @SerialName("MessageByParentIdsFilter")
 @Serializable
-data class MessageByParentIdsFilter(
+public data class MessageByParentIdsFilter(
 	/**
 	 * The list of parent message identifiers to match.
 	 */
@@ -24,8 +22,4 @@ data class MessageByParentIdsFilter(
 	 * Optional description of this filter.
 	 */
 	override val desc: String? = null,
-) : AbstractFilter<Message> {
-	// region MessageByParentIdsFilter-MessageByParentIdsFilter
-
-	// endregion
-}
+) : AbstractFilter<Message>

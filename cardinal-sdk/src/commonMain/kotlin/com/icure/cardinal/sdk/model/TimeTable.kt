@@ -1,5 +1,3 @@
-// WARNING: This file is auto-generated. If you change it manually, your changes will be lost.
-// If you want to change the way this class is generated, see [this repo](https://github.com/icure/sdk-codegen).
 package com.icure.cardinal.sdk.model
 
 import com.icure.cardinal.sdk.model.base.CodeStub
@@ -13,12 +11,6 @@ import kotlin.Long
 import kotlin.String
 import kotlin.collections.List
 import kotlin.collections.Set
-import com.icure.cardinal.sdk.model.base.HasEncryptionMetadata
-import com.icure.cardinal.sdk.model.embed.Delegation
-import com.icure.cardinal.sdk.model.embed.Encryptable
-import com.icure.cardinal.sdk.model.embed.SecurityMetadata
-import com.icure.cardinal.sdk.model.specializations.Base64String
-import kotlin.collections.Map
 
 /**
  * Represents a timetable for scheduling appointments and availability. A timetable is linked to an
@@ -27,7 +19,7 @@ import kotlin.collections.Map
  * /
  */
 @Serializable
-data class TimeTable(
+public data class TimeTable(
 	/**
 	 * The unique identifier of the timetable.
 	 */
@@ -92,8 +84,4 @@ data class TimeTable(
 	 */
 	@param:DefaultValue("emptyList()")
 	public val items: List<TimeTableItem> = emptyList(),
-) : StoredDocument, ICureDocument<String>, HasEndOfLife {
-	// region TimeTable-TimeTable
-
-	// endregion
-}
+) : StoredDocument, ICureDocument<String>, HasEndOfLife

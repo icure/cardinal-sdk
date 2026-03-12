@@ -1,5 +1,3 @@
-// WARNING: This file is auto-generated. If you change it manually, your changes will be lost.
-// If you want to change the way this class is generated, see [this repo](https://github.com/icure/sdk-codegen).
 package com.icure.cardinal.sdk.model.embed
 
 import com.icure.cardinal.sdk.model.specializations.Base64String
@@ -17,8 +15,7 @@ import kotlin.time.Instant
  * The actual value is stored in the corresponding typed field based on the [type].
  * /
  */
-
-sealed interface TypedValue : Encryptable {
+public sealed interface TypedValue : Encryptable {
 	/**
 	 * The type of the value stored.
 	 */
@@ -53,9 +50,6 @@ sealed interface TypedValue : Encryptable {
 	 * The base64-encoded encrypted content.
 	 */
 	override val encryptedSelf: Base64String?
-	// region TypedValue-TypedValue
-
-	// endregion
 }
 
 /**
@@ -65,7 +59,7 @@ sealed interface TypedValue : Encryptable {
  * /
  */
 @Serializable
-data class DecryptedTypedValue(
+public data class DecryptedTypedValue(
 	/**
 	 * The type of the value stored.
 	 */
@@ -95,11 +89,7 @@ data class DecryptedTypedValue(
 	 * The base64-encoded encrypted content.
 	 */
 	override val encryptedSelf: Base64String? = null,
-) : TypedValue {
-	// region TypedValue-DecryptedTypedValue
-
-	// endregion
-}
+) : TypedValue
 
 /**
  * Represents a typed value that can hold one of several primitive types (boolean, integer, double,
@@ -108,7 +98,7 @@ data class DecryptedTypedValue(
  * /
  */
 @Serializable
-data class EncryptedTypedValue(
+public data class EncryptedTypedValue(
 	/**
 	 * The type of the value stored.
 	 */
@@ -138,8 +128,4 @@ data class EncryptedTypedValue(
 	 * The base64-encoded encrypted content.
 	 */
 	override val encryptedSelf: Base64String? = null,
-) : TypedValue {
-	// region TypedValue-EncryptedTypedValue
-
-	// endregion
-}
+) : TypedValue

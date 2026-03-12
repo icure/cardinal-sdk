@@ -1,5 +1,3 @@
-// WARNING: This file is auto-generated. If you change it manually, your changes will be lost.
-// If you want to change the way this class is generated, see [this repo](https://github.com/icure/sdk-codegen).
 package com.icure.cardinal.sdk.model.filter.user
 
 import com.icure.cardinal.sdk.model.User
@@ -14,7 +12,7 @@ import kotlin.String
  */
 @SerialName("UsersByPatientIdFilter")
 @Serializable
-data class UsersByPatientIdFilter(
+public data class UsersByPatientIdFilter(
 	/**
 	 * The identifier of the patient whose associated users should be returned.
 	 */
@@ -23,8 +21,4 @@ data class UsersByPatientIdFilter(
 	 * Optional human-readable description of this filter instance.
 	 */
 	override val desc: String? = null,
-) : AbstractFilter<User> {
-	// region UsersByPatientIdFilter-UsersByPatientIdFilter
-
-	// endregion
-}
+) : AbstractFilter<User>

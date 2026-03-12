@@ -1,5 +1,3 @@
-// WARNING: This file is auto-generated. If you change it manually, your changes will be lost.
-// If you want to change the way this class is generated, see [this repo](https://github.com/icure/sdk-codegen).
 package com.icure.cardinal.sdk.model.embed.form.template
 
 import kotlinx.serialization.Serializable
@@ -12,7 +10,7 @@ import kotlin.collections.List
  * /
  */
 @Serializable
-data class Section(
+public data class Section(
 	/**
 	 * The name or identifier of this section.
 	 */
@@ -29,8 +27,4 @@ data class Section(
 	 * Keywords associated with this section for search purposes.
 	 */
 	public val keywords: List<String>? = null,
-) {
-	// region Section-Section
-
-	// endregion
-}
+)

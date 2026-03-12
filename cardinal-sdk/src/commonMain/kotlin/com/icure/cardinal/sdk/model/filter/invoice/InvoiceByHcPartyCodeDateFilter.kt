@@ -1,5 +1,3 @@
-// WARNING: This file is auto-generated. If you change it manually, your changes will be lost.
-// If you want to change the way this class is generated, see [this repo](https://github.com/icure/sdk-codegen).
 package com.icure.cardinal.sdk.model.filter.invoice
 
 import com.icure.cardinal.sdk.model.Invoice
@@ -15,7 +13,7 @@ import kotlin.String
  */
 @SerialName("InvoiceByHcPartyCodeDateFilter")
 @Serializable
-data class InvoiceByHcPartyCodeDateFilter(
+public data class InvoiceByHcPartyCodeDateFilter(
 	/**
 	 * Optional description of this filter.
 	 */
@@ -36,8 +34,4 @@ data class InvoiceByHcPartyCodeDateFilter(
 	 * The end of the invoice date range.
 	 */
 	public val endInvoiceDate: Long? = null,
-) : AbstractFilter<Invoice> {
-	// region InvoiceByHcPartyCodeDateFilter-InvoiceByHcPartyCodeDateFilter
-
-	// endregion
-}
+) : AbstractFilter<Invoice>

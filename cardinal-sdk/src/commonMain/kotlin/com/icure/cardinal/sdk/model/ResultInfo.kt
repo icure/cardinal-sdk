@@ -1,5 +1,3 @@
-// WARNING: This file is auto-generated. If you change it manually, your changes will be lost.
-// If you want to change the way this class is generated, see [this repo](https://github.com/icure/sdk-codegen).
 package com.icure.cardinal.sdk.model
 
 import com.icure.cardinal.sdk.model.base.CodeStub
@@ -18,7 +16,7 @@ import kotlin.collections.Set
  *  identification, protocol data, and associated services.
  */
 @Serializable
-class ResultInfo(
+public class ResultInfo(
 	/**
 	 * The social security identification number of the patient.
 	 */
@@ -72,8 +70,4 @@ class ResultInfo(
 	 * The list of services contained in this result.
 	 */
 	public val services: List<DecryptedService>? = null,
-) {
-	// region ResultInfo-ResultInfo
-
-	// endregion
-}
+)

@@ -1,5 +1,3 @@
-// WARNING: This file is auto-generated. If you change it manually, your changes will be lost.
-// If you want to change the way this class is generated, see [this repo](https://github.com/icure/sdk-codegen).
 package com.icure.cardinal.sdk.model.couchdb
 
 import kotlinx.serialization.Serializable
@@ -9,13 +7,9 @@ import kotlinx.serialization.Serializable
  * /
  */
 @Serializable
-data class RemoteAuthentication(
+public data class RemoteAuthentication(
 	/**
 	 * The basic authentication credentials, if applicable.
 	 */
 	public val basic: Basic? = null,
-) {
-	// region RemoteAuthentication-RemoteAuthentication
-
-	// endregion
-}
+)

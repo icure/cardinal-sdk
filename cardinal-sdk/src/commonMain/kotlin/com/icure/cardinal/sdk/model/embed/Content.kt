@@ -1,5 +1,3 @@
-// WARNING: This file is auto-generated. If you change it manually, your changes will be lost.
-// If you want to change the way this class is generated, see [this repo](https://github.com/icure/sdk-codegen).
 package com.icure.cardinal.sdk.model.embed
 
 import com.icure.cardinal.sdk.serialization.ByteArraySerializer
@@ -19,8 +17,7 @@ import kotlin.time.Instant
  * sub-services.
  * /
  */
-
-sealed interface Content {
+public sealed interface Content {
 	/**
 	 * A string value.
 	 */
@@ -85,23 +82,6 @@ sealed interface Content {
 	 * A list of measures representing a range.
 	 */
 	public val range: List<Measure>?
-	// region Content-Content
-	// Update when new fields are added
-	fun isCompound() =
-		stringValue == null &&
-			numberValue == null &&
-			booleanValue == null &&
-			instantValue == null &&
-			fuzzyDateValue == null &&
-			binaryValue == null &&
-			documentId == null &&
-			measureValue == null &&
-			medicationValue == null &&
-			timeSeries == null &&
-			ratio.isNullOrEmpty() &&
-			range.isNullOrEmpty() &&
-			!compoundValue.isNullOrEmpty()
-	// endregion
 }
 
 /**
@@ -111,7 +91,7 @@ sealed interface Content {
  * /
  */
 @Serializable
-data class DecryptedContent(
+public data class DecryptedContent(
 	/**
 	 * A string value.
 	 */
@@ -166,11 +146,7 @@ data class DecryptedContent(
 	 * A list of measures representing a range.
 	 */
 	override val range: List<Measure>? = null,
-) : Content {
-	// region Content-DecryptedContent
-
-	// endregion
-}
+) : Content
 
 /**
  * Represents the value content of a medical service. A content can hold different types of values
@@ -179,7 +155,7 @@ data class DecryptedContent(
  * /
  */
 @Serializable
-data class EncryptedContent(
+public data class EncryptedContent(
 	/**
 	 * A string value.
 	 */
@@ -234,8 +210,4 @@ data class EncryptedContent(
 	 * A list of measures representing a range.
 	 */
 	override val range: List<Measure>? = null,
-) : Content {
-	// region Content-EncryptedContent
-
-	// endregion
-}
+) : Content

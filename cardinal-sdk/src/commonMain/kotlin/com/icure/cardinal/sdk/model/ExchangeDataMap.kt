@@ -1,5 +1,3 @@
-// WARNING: This file is auto-generated. If you change it manually, your changes will be lost.
-// If you want to change the way this class is generated, see [this repo](https://github.com/icure/sdk-codegen).
 package com.icure.cardinal.sdk.model
 
 import com.icure.cardinal.sdk.model.base.StoredDocument
@@ -18,7 +16,7 @@ import kotlin.collections.Map
  * /
  */
 @Serializable
-data class ExchangeDataMap(
+public data class ExchangeDataMap(
 	/**
 	 * The id of this entity, which is the Secure Delegation Key.
 	 */
@@ -38,8 +36,4 @@ data class ExchangeDataMap(
 	 * Hard delete (unix epoch in ms) timestamp of the object.
 	 */
 	override val deletionDate: Long? = null,
-) : StoredDocument {
-	// region ExchangeDataMap-ExchangeDataMap
-
-	// endregion
-}
+) : StoredDocument

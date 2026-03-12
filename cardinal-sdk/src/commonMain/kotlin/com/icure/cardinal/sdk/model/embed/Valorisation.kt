@@ -1,5 +1,3 @@
-// WARNING: This file is auto-generated. If you change it manually, your changes will be lost.
-// If you want to change the way this class is generated, see [this repo](https://github.com/icure/sdk-codegen).
 package com.icure.cardinal.sdk.model.embed
 
 import com.icure.cardinal.sdk.model.specializations.Base64String
@@ -17,8 +15,7 @@ import kotlin.collections.Map
  * amount breakdown.
  * /
  */
-
-sealed interface Valorisation : Encryptable {
+public sealed interface Valorisation : Encryptable {
 	/**
 	 * The start of the validity period (yyyyMMdd).
 	 */
@@ -73,9 +70,6 @@ sealed interface Valorisation : Encryptable {
 	 * The base64-encoded encrypted content.
 	 */
 	override val encryptedSelf: Base64String?
-	// region Valorisation-Valorisation
-
-	// endregion
 }
 
 /**
@@ -84,7 +78,7 @@ sealed interface Valorisation : Encryptable {
  * /
  */
 @Serializable
-data class DecryptedValorisation(
+public data class DecryptedValorisation(
 	/**
 	 * The start of the validity period (yyyyMMdd).
 	 */
@@ -130,11 +124,7 @@ data class DecryptedValorisation(
 	 * The base64-encoded encrypted content.
 	 */
 	override val encryptedSelf: Base64String? = null,
-) : Valorisation {
-	// region Valorisation-DecryptedValorisation
-
-	// endregion
-}
+) : Valorisation
 
 /**
  * Represents the financial valorisation of a flat rate tarification, including validity period and
@@ -142,7 +132,7 @@ data class DecryptedValorisation(
  * /
  */
 @Serializable
-data class EncryptedValorisation(
+public data class EncryptedValorisation(
 	/**
 	 * The start of the validity period (yyyyMMdd).
 	 */
@@ -188,8 +178,4 @@ data class EncryptedValorisation(
 	 * The base64-encoded encrypted content.
 	 */
 	override val encryptedSelf: Base64String? = null,
-) : Valorisation {
-	// region Valorisation-EncryptedValorisation
-
-	// endregion
-}
+) : Valorisation

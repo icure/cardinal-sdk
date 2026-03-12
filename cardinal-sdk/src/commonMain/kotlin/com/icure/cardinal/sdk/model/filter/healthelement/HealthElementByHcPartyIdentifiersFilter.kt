@@ -1,5 +1,3 @@
-// WARNING: This file is auto-generated. If you change it manually, your changes will be lost.
-// If you want to change the way this class is generated, see [this repo](https://github.com/icure/sdk-codegen).
 package com.icure.cardinal.sdk.model.filter.healthelement
 
 import com.icure.cardinal.sdk.model.HealthElement
@@ -17,7 +15,7 @@ import kotlin.collections.List
  */
 @SerialName("HealthElementByHcPartyIdentifiersFilter")
 @Serializable
-data class HealthElementByHcPartyIdentifiersFilter(
+public data class HealthElementByHcPartyIdentifiersFilter(
 	/**
 	 * Optional description of this filter.
 	 */
@@ -31,8 +29,4 @@ data class HealthElementByHcPartyIdentifiersFilter(
 	 */
 	@param:DefaultValue("emptyList()")
 	public val identifiers: List<Identifier> = emptyList(),
-) : AbstractFilter<HealthElement> {
-	// region HealthElementByHcPartyIdentifiersFilter-HealthElementByHcPartyIdentifiersFilter
-
-	// endregion
-}
+) : AbstractFilter<HealthElement>

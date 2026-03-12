@@ -1,5 +1,3 @@
-// WARNING: This file is auto-generated. If you change it manually, your changes will be lost.
-// If you want to change the way this class is generated, see [this repo](https://github.com/icure/sdk-codegen).
 package com.icure.cardinal.sdk.model.filter.document
 
 import com.icure.cardinal.sdk.model.Document
@@ -14,7 +12,7 @@ import kotlin.String
  */
 @SerialName("DocumentByDataOwnerTagFilter")
 @Serializable
-data class DocumentByDataOwnerTagFilter(
+public data class DocumentByDataOwnerTagFilter(
 	/**
 	 * The identifier of the data owner.
 	 */
@@ -31,8 +29,4 @@ data class DocumentByDataOwnerTagFilter(
 	 * Optional description of this filter.
 	 */
 	override val desc: String? = null,
-) : AbstractFilter<Document> {
-	// region DocumentByDataOwnerTagFilter-DocumentByDataOwnerTagFilter
-
-	// endregion
-}
+) : AbstractFilter<Document>

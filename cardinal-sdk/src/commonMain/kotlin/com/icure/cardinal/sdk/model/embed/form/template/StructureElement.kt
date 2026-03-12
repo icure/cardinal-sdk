@@ -1,5 +1,3 @@
-// WARNING: This file is auto-generated. If you change it manually, your changes will be lost.
-// If you want to change the way this class is generated, see [this repo](https://github.com/icure/sdk-codegen).
 package com.icure.cardinal.sdk.model.embed.form.template
 
 import kotlinx.serialization.Serializable
@@ -10,8 +8,4 @@ import kotlinx.serialization.Serializable
  * /
  */
 @Serializable
-sealed interface StructureElement {
-	// region StructureElement-StructureElement
-
-	// endregion
-}
+public sealed interface StructureElement

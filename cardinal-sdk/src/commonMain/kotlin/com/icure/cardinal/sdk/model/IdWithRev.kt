@@ -1,5 +1,3 @@
-// WARNING: This file is auto-generated. If you change it manually, your changes will be lost.
-// If you want to change the way this class is generated, see [this repo](https://github.com/icure/sdk-codegen).
 package com.icure.cardinal.sdk.model
 
 import kotlinx.serialization.Serializable
@@ -11,7 +9,7 @@ import kotlin.String
  *  bulk operations and responses to identify stored documents.
  */
 @Serializable
-data class IdWithRev(
+public data class IdWithRev(
 	/**
 	 * The unique identifier of the entity.
 	 */
@@ -20,8 +18,4 @@ data class IdWithRev(
 	 * The revision of the entity, used for optimistic locking.
 	 */
 	public val rev: String? = null,
-) {
-	// region IdWithRev-IdWithRev
-
-	// endregion
-}
+)
