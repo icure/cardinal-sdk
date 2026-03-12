@@ -32,6 +32,7 @@ import com.icure.cardinal.sdk.api.UserApi
 import com.icure.cardinal.sdk.api.impl.AgendaApiImpl
 import com.icure.cardinal.sdk.api.impl.AuthApiImpl
 import com.icure.cardinal.sdk.api.impl.CalendarItemTypeApiImpl
+import com.icure.cardinal.sdk.api.impl.CardinalAnonymousSdkImpl
 import com.icure.cardinal.sdk.api.impl.CardinalMaintenanceTaskApiImpl
 import com.icure.cardinal.sdk.api.impl.CodeApiImpl
 import com.icure.cardinal.sdk.api.impl.CryptoApiImpl
@@ -42,13 +43,11 @@ import com.icure.cardinal.sdk.api.impl.GroupApiImpl
 import com.icure.cardinal.sdk.api.impl.HealthcarePartyApiImpl
 import com.icure.cardinal.sdk.api.impl.InsuranceApiImpl
 import com.icure.cardinal.sdk.api.impl.MaintenanceTaskApiImpl
-import com.icure.cardinal.sdk.api.impl.PermissionApiImpl
 import com.icure.cardinal.sdk.api.impl.PlaceApiImpl
 import com.icure.cardinal.sdk.api.impl.RecoveryApiImpl
 import com.icure.cardinal.sdk.api.impl.RoleApiImpl
 import com.icure.cardinal.sdk.api.impl.ShamirKeysManagerApiImpl
 import com.icure.cardinal.sdk.api.impl.SystemApiImpl
-import com.icure.cardinal.sdk.api.impl.initTopicApi
 import com.icure.cardinal.sdk.api.impl.UserApiImpl
 import com.icure.cardinal.sdk.api.impl.initAccessLogApi
 import com.icure.cardinal.sdk.api.impl.initCalendarItemApi
@@ -60,11 +59,14 @@ import com.icure.cardinal.sdk.api.impl.initInvoiceApi
 import com.icure.cardinal.sdk.api.impl.initMessageApi
 import com.icure.cardinal.sdk.api.impl.initPatientApi
 import com.icure.cardinal.sdk.api.impl.initReceiptApi
+import com.icure.cardinal.sdk.api.impl.initTopicApi
+import com.icure.cardinal.sdk.api.raw.RawAnonymousApi
 import com.icure.cardinal.sdk.api.raw.RawAnonymousAuthApi
 import com.icure.cardinal.sdk.api.raw.RawApiConfig
 import com.icure.cardinal.sdk.api.raw.RawMessageGatewayApi
 import com.icure.cardinal.sdk.api.raw.impl.RawAccessLogApiImpl
 import com.icure.cardinal.sdk.api.raw.impl.RawAgendaApiImpl
+import com.icure.cardinal.sdk.api.raw.impl.RawAnonymousApiImpl
 import com.icure.cardinal.sdk.api.raw.impl.RawAnonymousAuthApiImpl
 import com.icure.cardinal.sdk.api.raw.impl.RawCalendarItemApiImpl
 import com.icure.cardinal.sdk.api.raw.impl.RawCalendarItemTypeApiImpl
@@ -74,7 +76,6 @@ import com.icure.cardinal.sdk.api.raw.impl.RawContactApiImpl
 import com.icure.cardinal.sdk.api.raw.impl.RawDataOwnerApiImpl
 import com.icure.cardinal.sdk.api.raw.impl.RawDeviceApiImpl
 import com.icure.cardinal.sdk.api.raw.impl.RawDocumentApiImpl
-import com.icure.cardinal.sdk.api.raw.impl.RawEntityReferenceApiImpl
 import com.icure.cardinal.sdk.api.raw.impl.RawExchangeDataApiImpl
 import com.icure.cardinal.sdk.api.raw.impl.RawExchangeDataMapApiImpl
 import com.icure.cardinal.sdk.api.raw.impl.RawFormApiImpl
@@ -93,7 +94,6 @@ import com.icure.cardinal.sdk.api.raw.impl.RawReceiptApiImpl
 import com.icure.cardinal.sdk.api.raw.impl.RawRecoveryDataApiImpl
 import com.icure.cardinal.sdk.api.raw.impl.RawRoleApiImpl
 import com.icure.cardinal.sdk.api.raw.impl.RawSecureDelegationKeyMapApiImpl
-import com.icure.cardinal.sdk.api.raw.impl.RawTimeTableApiImpl
 import com.icure.cardinal.sdk.api.raw.impl.RawTopicApiImpl
 import com.icure.cardinal.sdk.api.raw.impl.RawUserApiImpl
 import com.icure.cardinal.sdk.auth.AuthenticationProcessTelecomType
@@ -158,12 +158,9 @@ import com.icure.kryptom.crypto.RsaAlgorithm
 import com.icure.kryptom.crypto.RsaKeypair
 import com.icure.utils.InternalIcureApi
 import io.ktor.client.HttpClient
-import io.ktor.client.plugins.HttpSend
 import io.ktor.client.plugins.HttpTimeout
 import io.ktor.client.plugins.contentnegotiation.ContentNegotiation
-import io.ktor.client.plugins.plugin
 import io.ktor.client.plugins.websocket.WebSockets
-import io.ktor.http.Headers
 import io.ktor.serialization.kotlinx.json.json
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -690,6 +687,19 @@ internal class CardinalSdkImpl(
 ): CardinalSdk {
 	private val apiUrl get() = config.apiUrl
 
+	private val rawAnonymousApi: RawAnonymousApi by lazy {
+		RawAnonymousApiImpl(
+			apiUrl = config.apiUrl,
+			rawApiConfig = config.rawApiConfig,
+		)
+	}
+
+	override val anonymous: CardinalAnonymousApis by lazy {
+		CardinalAnonymousSdkImpl(
+			rawAnonymousApi = rawAnonymousApi
+		)
+	}
+
 	private val rawDataOwnerApi by lazy {
 		RawDataOwnerApiImpl(
 			apiUrl,
@@ -894,14 +904,6 @@ internal class CardinalSdkImpl(
 		)
 	}
 
-	private val rawTimeTableApi by lazy {
-		RawTimeTableApiImpl(
-			apiUrl,
-			authProvider,
-			config.rawApiConfig,
-		)
-	}
-
 	private val rawClassificationApi by lazy {
 		RawClassificationApiImpl(
 			apiUrl,
@@ -932,14 +934,6 @@ internal class CardinalSdkImpl(
 			apiUrl,
 			authProvider,
 			config.crypto.headersProvider,
-			config.rawApiConfig,
-		)
-	}
-
-	private val rawEntityReferenceApi by lazy {
-		RawEntityReferenceApiImpl(
-			apiUrl,
-			authProvider,
 			config.rawApiConfig,
 		)
 	}
@@ -1005,7 +999,10 @@ internal class CardinalSdkImpl(
 		PlaceApiImpl(RawPlaceApiImpl(apiUrl, authProvider, config.rawApiConfig))
 	}
 	override val role: RoleApi by lazy {
-		RoleApiImpl(RawRoleApiImpl(apiUrl, authProvider, config.rawApiConfig))
+		RoleApiImpl(
+			rawApi = RawRoleApiImpl(apiUrl, authProvider, config.rawApiConfig),
+			rawAnonymousApi = rawAnonymousApi,
+		)
 	}
 	override val auth: AuthApi by lazy {
 		AuthApiImpl(authProvider)

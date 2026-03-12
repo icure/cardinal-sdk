@@ -5,6 +5,7 @@ import com.icure.cardinal.sdk.api.AccessLogBasicApi
 import com.icure.cardinal.sdk.api.AgendaApi
 import com.icure.cardinal.sdk.api.AnonymousAgendaApi
 import com.icure.cardinal.sdk.api.AnonymousHealthcarePartyApi
+import com.icure.cardinal.sdk.api.AnonymousRoleApi
 import com.icure.cardinal.sdk.api.AuthApi
 import com.icure.cardinal.sdk.api.CalendarItemApi
 import com.icure.cardinal.sdk.api.CalendarItemBasicApi
@@ -49,6 +50,7 @@ import com.icure.cardinal.sdk.api.UserApi
  */
 interface CardinalNonCryptoApis {
 	// api root
+	val anonymous: CardinalAnonymousApis
 	val code: CodeApi
 	val calendarItemType: CalendarItemTypeApi
 	val device: DeviceApi
@@ -118,4 +120,5 @@ interface CardinalBaseApis : CardinalNonCryptoApis {
 interface CardinalAnonymousApis {
 	val agenda: AnonymousAgendaApi
 	val healthcareParty: AnonymousHealthcarePartyApi
+	val role: AnonymousRoleApi
 }
