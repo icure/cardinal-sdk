@@ -1,5 +1,3 @@
-// WARNING: This file is auto-generated. If you change it manually, your changes will be lost.
-// If you want to change the way this class is generated, see [this repo](https://github.com/icure/sdk-codegen).
 package com.icure.cardinal.sdk.model.filter.code
 
 import com.icure.cardinal.sdk.model.Code
@@ -16,7 +14,7 @@ import kotlin.collections.Set
  */
 @SerialName("CodeByIdsFilter")
 @Serializable
-data class CodeByIdsFilter(
+public data class CodeByIdsFilter(
 	/**
 	 * The set of code identifiers to match.
 	 */
@@ -25,8 +23,4 @@ data class CodeByIdsFilter(
 	 * Optional description of this filter.
 	 */
 	override val desc: String? = null,
-) : AbstractFilter<Code>, Filter.IdsFilter<String, Code> {
-	// region CodeByIdsFilter-CodeByIdsFilter
-
-	// endregion
-}
+) : AbstractFilter<Code>, Filter.IdsFilter<String, Code>

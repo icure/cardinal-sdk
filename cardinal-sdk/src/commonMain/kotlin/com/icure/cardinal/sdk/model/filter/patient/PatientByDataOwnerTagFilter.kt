@@ -1,5 +1,3 @@
-// WARNING: This file is auto-generated. If you change it manually, your changes will be lost.
-// If you want to change the way this class is generated, see [this repo](https://github.com/icure/sdk-codegen).
 package com.icure.cardinal.sdk.model.filter.patient
 
 import com.icure.cardinal.sdk.model.Patient
@@ -14,7 +12,7 @@ import kotlin.String
  */
 @SerialName("PatientByDataOwnerTagFilter")
 @Serializable
-data class PatientByDataOwnerTagFilter(
+public data class PatientByDataOwnerTagFilter(
 	/**
 	 * Optional description of this filter.
 	 */
@@ -31,8 +29,4 @@ data class PatientByDataOwnerTagFilter(
 	 * The tag code value to match.
 	 */
 	public val tagCode: String? = null,
-) : AbstractFilter<Patient> {
-	// region PatientByDataOwnerTagFilter-PatientByDataOwnerTagFilter
-
-	// endregion
-}
+) : AbstractFilter<Patient>

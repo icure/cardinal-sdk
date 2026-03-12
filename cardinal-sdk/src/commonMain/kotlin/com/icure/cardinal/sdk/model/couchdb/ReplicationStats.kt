@@ -1,5 +1,3 @@
-// WARNING: This file is auto-generated. If you change it manually, your changes will be lost.
-// If you want to change the way this class is generated, see [this repo](https://github.com/icure/sdk-codegen).
 package com.icure.cardinal.sdk.model.couchdb
 
 import com.icure.cardinal.sdk.serialization.ZonedDateTimeSerializer
@@ -13,7 +11,7 @@ import kotlin.String
  * /
  */
 @Serializable
-data class ReplicationStats(
+public data class ReplicationStats(
 	/**
 	 * The number of revisions checked during replication.
 	 */
@@ -51,8 +49,4 @@ data class ReplicationStats(
 	 * An error message if the replication encountered an error.
 	 */
 	public val error: String? = null,
-) {
-	// region ReplicationStats-ReplicationStats
-
-	// endregion
-}
+)

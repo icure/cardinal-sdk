@@ -1,5 +1,3 @@
-// WARNING: This file is auto-generated. If you change it manually, your changes will be lost.
-// If you want to change the way this class is generated, see [this repo](https://github.com/icure/sdk-codegen).
 package com.icure.cardinal.sdk.model
 
 import com.icure.cardinal.sdk.model.base.CodeStub
@@ -24,8 +22,7 @@ import kotlin.time.Instant
  * system.
  * /
  */
-
-sealed interface AccessLog :
+public sealed interface AccessLog :
 	StoredDocument,
 	ICureDocument<String>,
 	HasEncryptionMetadata,
@@ -131,9 +128,6 @@ sealed interface AccessLog :
 	 * The security metadata of this entity, for access control.
 	 */
 	override val securityMetadata: SecurityMetadata?
-	// region AccessLog-AccessLog
-
-	// endregion
 }
 
 /**
@@ -142,7 +136,7 @@ sealed interface AccessLog :
  * /
  */
 @Serializable
-data class DecryptedAccessLog(
+public data class DecryptedAccessLog(
 	/**
 	 * The Id of the access log. We encourage using either a v4 UUID or a HL7 Id.
 	 */
@@ -232,12 +226,7 @@ data class DecryptedAccessLog(
 	 * The security metadata of this entity, for access control.
 	 */
 	override val securityMetadata: SecurityMetadata? = null,
-) : AccessLog {
-	// region AccessLog-DecryptedAccessLog
-override fun copyWithSecurityMetadata(securityMetadata: SecurityMetadata, secretForeignKeys: Set<String>): DecryptedAccessLog =
-		copy(securityMetadata = securityMetadata, secretForeignKeys = secretForeignKeys)
-	// endregion
-}
+) : AccessLog
 
 /**
  * Represents an access log entry that records access to medical data or resources within the
@@ -245,7 +234,7 @@ override fun copyWithSecurityMetadata(securityMetadata: SecurityMetadata, secret
  * /
  */
 @Serializable
-data class EncryptedAccessLog(
+public data class EncryptedAccessLog(
 	/**
 	 * The Id of the access log. We encourage using either a v4 UUID or a HL7 Id.
 	 */
@@ -335,9 +324,4 @@ data class EncryptedAccessLog(
 	 * The security metadata of this entity, for access control.
 	 */
 	override val securityMetadata: SecurityMetadata? = null,
-) : AccessLog {
-	// region AccessLog-EncryptedAccessLog
-override fun copyWithSecurityMetadata(securityMetadata: SecurityMetadata, secretForeignKeys: Set<String>): EncryptedAccessLog =
-		copy(securityMetadata = securityMetadata, secretForeignKeys = secretForeignKeys)
-	// endregion
-}
+) : AccessLog

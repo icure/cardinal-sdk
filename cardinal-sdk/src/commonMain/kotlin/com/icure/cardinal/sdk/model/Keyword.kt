@@ -1,5 +1,3 @@
-// WARNING: This file is auto-generated. If you change it manually, your changes will be lost.
-// If you want to change the way this class is generated, see [this repo](https://github.com/icure/sdk-codegen).
 package com.icure.cardinal.sdk.model
 
 import com.icure.cardinal.sdk.model.base.CodeStub
@@ -19,7 +17,7 @@ import kotlin.collections.Set
  * /
  */
 @Serializable
-data class Keyword(
+public data class Keyword(
 	/**
 	 * The unique identifier of the keyword.
 	 */
@@ -75,8 +73,4 @@ data class Keyword(
 	 * The id of the user who owns this keyword.
 	 */
 	public val userId: String? = null,
-) : StoredDocument, ICureDocument<String>, HasEndOfLife {
-	// region Keyword-Keyword
-
-	// endregion
-}
+) : StoredDocument, ICureDocument<String>, HasEndOfLife

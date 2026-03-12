@@ -1,5 +1,3 @@
-// WARNING: This file is auto-generated. If you change it manually, your changes will be lost.
-// If you want to change the way this class is generated, see [this repo](https://github.com/icure/sdk-codegen).
 package com.icure.cardinal.sdk.model.security
 
 import kotlinx.serialization.Serializable
@@ -13,7 +11,7 @@ import kotlin.String
  * /
  */
 @Serializable
-data class AuthenticationToken(
+public data class AuthenticationToken(
 	/**
 	 * The encrypted token string.
 	 */
@@ -30,8 +28,4 @@ data class AuthenticationToken(
 	 * The epoch-millisecond timestamp of a hard deletion, if the token has been marked for deletion.
 	 */
 	public val deletionDate: Long? = null,
-) {
-	// region AuthenticationToken-AuthenticationToken
-
-	// endregion
-}
+)

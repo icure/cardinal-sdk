@@ -1,5 +1,3 @@
-// WARNING: This file is auto-generated. If you change it manually, your changes will be lost.
-// If you want to change the way this class is generated, see [this repo](https://github.com/icure/sdk-codegen).
 package com.icure.cardinal.sdk.model.base
 
 import com.icure.cardinal.sdk.serialization.InstantSerializer
@@ -13,7 +11,7 @@ import kotlin.time.Instant
  * /
  */
 @Serializable
-data class NotificationEvent(
+public data class NotificationEvent(
 	/**
 	 * The instant when the notification event occurred.
 	 */
@@ -37,7 +35,4 @@ data class NotificationEvent(
 		@SerialName("ERROR")
 		Error("ERROR"),
 	}
-  // region NotificationEvent-NotificationEvent
-
-  // endregion
 }

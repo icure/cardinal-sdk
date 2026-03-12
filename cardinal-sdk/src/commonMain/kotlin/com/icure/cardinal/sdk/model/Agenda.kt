@@ -1,5 +1,3 @@
-// WARNING: This file is auto-generated. If you change it manually, your changes will be lost.
-// If you want to change the way this class is generated, see [this repo](https://github.com/icure/sdk-codegen).
 package com.icure.cardinal.sdk.model
 
 import com.icure.cardinal.sdk.model.base.CodeStub
@@ -18,8 +16,6 @@ import kotlin.String
 import kotlin.collections.List
 import kotlin.collections.Map
 import kotlin.collections.Set
-import com.icure.cardinal.sdk.model.embed.Right
-import kotlin.Deprecated
 
 /**
  * Represents an agenda that keeps track of appointments (calendar items) for a resource or group of
@@ -29,7 +25,7 @@ import kotlin.Deprecated
  * /
  */
 @Serializable
-data class Agenda(
+public data class Agenda(
 	/**
 	 * The Id of the agenda. We encourage using either a v4 UUID or a HL7 Id.
 	 */
@@ -117,8 +113,4 @@ data class Agenda(
 	 */
 	@param:DefaultValue("emptyList()")
 	public val schedules: List<ResourceGroupAllocationSchedule> = emptyList(),
-) : StoredDocument, ICureDocument<String>, HasEndOfLife {
-	// region Agenda-Agenda
-
-	// endregion
-}
+) : StoredDocument, ICureDocument<String>, HasEndOfLife

@@ -1,5 +1,3 @@
-// WARNING: This file is auto-generated. If you change it manually, your changes will be lost.
-// If you want to change the way this class is generated, see [this repo](https://github.com/icure/sdk-codegen).
 package com.icure.cardinal.sdk.model
 
 import com.icure.cardinal.sdk.model.base.StoredDocument
@@ -14,7 +12,7 @@ import kotlin.String
  * /
  */
 @Serializable
-data class EntityReference(
+public data class EntityReference(
 	/**
 	 * The Id of the entity reference.
 	 */
@@ -32,8 +30,4 @@ data class EntityReference(
 	 * The id of the referenced document.
 	 */
 	public val docId: String? = null,
-) : StoredDocument {
-	// region EntityReference-EntityReference
-
-	// endregion
-}
+) : StoredDocument

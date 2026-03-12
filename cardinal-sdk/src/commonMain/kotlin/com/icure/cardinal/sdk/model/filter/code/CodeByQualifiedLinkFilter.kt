@@ -1,5 +1,3 @@
-// WARNING: This file is auto-generated. If you change it manually, your changes will be lost.
-// If you want to change the way this class is generated, see [this repo](https://github.com/icure/sdk-codegen).
 package com.icure.cardinal.sdk.model.filter.code
 
 import com.icure.cardinal.sdk.model.Code
@@ -15,7 +13,7 @@ import kotlin.String
  */
 @SerialName("CodeByQualifiedLinkFilter")
 @Serializable
-data class CodeByQualifiedLinkFilter(
+public data class CodeByQualifiedLinkFilter(
 	/**
 	 * The type of qualified link to match.
 	 */
@@ -28,8 +26,4 @@ data class CodeByQualifiedLinkFilter(
 	 * Optional description of this filter.
 	 */
 	override val desc: String? = null,
-) : AbstractFilter<Code> {
-	// region CodeByQualifiedLinkFilter-CodeByQualifiedLinkFilter
-
-	// endregion
-}
+) : AbstractFilter<Code>

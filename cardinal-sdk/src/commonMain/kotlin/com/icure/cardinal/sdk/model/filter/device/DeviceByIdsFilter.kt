@@ -1,5 +1,3 @@
-// WARNING: This file is auto-generated. If you change it manually, your changes will be lost.
-// If you want to change the way this class is generated, see [this repo](https://github.com/icure/sdk-codegen).
 package com.icure.cardinal.sdk.model.filter.device
 
 import com.icure.cardinal.sdk.model.Device
@@ -16,7 +14,7 @@ import kotlin.collections.Set
  */
 @SerialName("DeviceByIdsFilter")
 @Serializable
-data class DeviceByIdsFilter(
+public data class DeviceByIdsFilter(
 	/**
 	 * The set of device identifiers to match.
 	 */
@@ -25,8 +23,4 @@ data class DeviceByIdsFilter(
 	 * Optional description of this filter.
 	 */
 	override val desc: String? = null,
-) : AbstractFilter<Device>, Filter.IdsFilter<String, Device> {
-	// region DeviceByIdsFilter-DeviceByIdsFilter
-
-	// endregion
-}
+) : AbstractFilter<Device>, Filter.IdsFilter<String, Device>

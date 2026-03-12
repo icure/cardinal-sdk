@@ -1,5 +1,3 @@
-// WARNING: This file is auto-generated. If you change it manually, your changes will be lost.
-// If you want to change the way this class is generated, see [this repo](https://github.com/icure/sdk-codegen).
 package com.icure.cardinal.sdk.model.embed.form.template
 
 import com.icure.cardinal.sdk.utils.DefaultValue
@@ -13,7 +11,7 @@ import kotlin.String
  * event.
  */
 @Serializable
-class Launcher(
+public class Launcher(
 	/**
 	 * The name of the launcher.
 	 */
@@ -27,8 +25,4 @@ class Launcher(
 	 */
 	@param:DefaultValue("false")
 	public val shouldPassValue: Boolean = false,
-) {
-	// region Launcher-Launcher
-
-	// endregion
-}
+)

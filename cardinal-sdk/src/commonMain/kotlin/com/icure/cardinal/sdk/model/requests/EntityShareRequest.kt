@@ -1,5 +1,3 @@
-// WARNING: This file is auto-generated. If you change it manually, your changes will be lost.
-// If you want to change the way this class is generated, see [this repo](https://github.com/icure/sdk-codegen).
 package com.icure.cardinal.sdk.model.requests
 
 import com.icure.cardinal.sdk.model.specializations.AccessControlKeyHexString
@@ -10,14 +8,13 @@ import kotlinx.serialization.Serializable
 import kotlin.String
 import kotlin.collections.Map
 import kotlin.collections.Set
-import com.icure.utils.InternalIcureApi
 
 /**
  *
  *  Holds parameters necessary to share an entity.
  */
 @Serializable
-data class EntityShareRequest(
+public data class EntityShareRequest(
 	/**
 	 *
 	 *  Id of the data owner which is sharing the entity (delegator), if it should be explicitly
@@ -77,9 +74,4 @@ data class EntityShareRequest(
 	 *  Permissions for the delegate.
 	 */
 	public val requestedPermissions: RequestedPermission,
-) {
-	// region EntityShareRequest-EntityShareRequest
-	@InternalIcureApi
-	fun wrap() = EntityShareOrMetadataUpdateRequest(share = this)
-	// endregion
-}
+)

@@ -1,5 +1,3 @@
-// WARNING: This file is auto-generated. If you change it manually, your changes will be lost.
-// If you want to change the way this class is generated, see [this repo](https://github.com/icure/sdk-codegen).
 package com.icure.cardinal.sdk.model.constants
 
 import kotlinx.serialization.SerialName
@@ -12,7 +10,7 @@ import kotlin.String
  *  Scopes range from system-wide settings to per-user or per-event configurations.
  */
 @Serializable
-enum class PropertyTypeScope(
+public enum class PropertyTypeScope(
 	internal val dtoSerialName: String,
 ) {
 	@SerialName("SYSTEM")

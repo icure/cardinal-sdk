@@ -1,5 +1,3 @@
-// WARNING: This file is auto-generated. If you change it manually, your changes will be lost.
-// If you want to change the way this class is generated, see [this repo](https://github.com/icure/sdk-codegen).
 package com.icure.cardinal.sdk.model.filter.group
 
 import com.icure.cardinal.sdk.model.Group
@@ -14,7 +12,7 @@ import kotlin.String
  */
 @SerialName("GroupBySuperGroupFilter")
 @Serializable
-class GroupBySuperGroupFilter(
+public class GroupBySuperGroupFilter(
 	/**
 	 * The identifier of the super group.
 	 */
@@ -23,8 +21,4 @@ class GroupBySuperGroupFilter(
 	 * Optional description of this filter.
 	 */
 	override val desc: String? = null,
-) : AbstractFilter<Group> {
-	// region GroupBySuperGroupFilter-GroupBySuperGroupFilter
-
-	// endregion
-}
+) : AbstractFilter<Group>

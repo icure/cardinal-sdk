@@ -1,20 +1,16 @@
-// WARNING: This file is auto-generated. If you change it manually, your changes will be lost.
-// If you want to change the way this class is generated, see [this repo](https://github.com/icure/sdk-codegen).
 package com.icure.cardinal.sdk.model.embed
 
 import com.icure.cardinal.sdk.model.base.CodeStub
 import com.icure.cardinal.sdk.model.specializations.Base64String
 import kotlinx.serialization.Serializable
 import kotlin.Long
-import kotlin.String
 
 /**
  * Represents employment information for a patient, including the period, profession type, and
  * employer details.
  * /
  */
-
-sealed interface EmploymentInfo : Encryptable {
+public sealed interface EmploymentInfo : Encryptable {
 	/**
 	 * The start date (unix epoch in ms) of the employment.
 	 */
@@ -39,9 +35,6 @@ sealed interface EmploymentInfo : Encryptable {
 	 * The base64-encoded encrypted content of this employment info.
 	 */
 	override val encryptedSelf: Base64String?
-	// region EmploymentInfo-EmploymentInfo
-
-	// endregion
 }
 
 /**
@@ -50,7 +43,7 @@ sealed interface EmploymentInfo : Encryptable {
  * /
  */
 @Serializable
-data class DecryptedEmploymentInfo(
+public data class DecryptedEmploymentInfo(
 	/**
 	 * The start date (unix epoch in ms) of the employment.
 	 */
@@ -71,11 +64,7 @@ data class DecryptedEmploymentInfo(
 	 * The base64-encoded encrypted content of this employment info.
 	 */
 	override val encryptedSelf: Base64String? = null,
-) : EmploymentInfo {
-	// region EmploymentInfo-DecryptedEmploymentInfo
-
-	// endregion
-}
+) : EmploymentInfo
 
 /**
  * Represents employment information for a patient, including the period, profession type, and
@@ -83,7 +72,7 @@ data class DecryptedEmploymentInfo(
  * /
  */
 @Serializable
-data class EncryptedEmploymentInfo(
+public data class EncryptedEmploymentInfo(
 	/**
 	 * The start date (unix epoch in ms) of the employment.
 	 */
@@ -104,8 +93,4 @@ data class EncryptedEmploymentInfo(
 	 * The base64-encoded encrypted content of this employment info.
 	 */
 	override val encryptedSelf: Base64String? = null,
-) : EmploymentInfo {
-	// region EmploymentInfo-EncryptedEmploymentInfo
-
-	// endregion
-}
+) : EmploymentInfo

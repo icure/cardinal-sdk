@@ -1,5 +1,3 @@
-// WARNING: This file is auto-generated. If you change it manually, your changes will be lost.
-// If you want to change the way this class is generated, see [this repo](https://github.com/icure/sdk-codegen).
 package com.icure.cardinal.sdk.model.couchdb
 
 import kotlinx.serialization.Serializable
@@ -11,7 +9,7 @@ import kotlin.String
  * /
  */
 @Serializable
-data class Basic(
+public data class Basic(
 	/**
 	 * The username for authentication.
 	 */
@@ -20,8 +18,4 @@ data class Basic(
 	 * The password for authentication.
 	 */
 	public val password: String,
-) {
-	// region Basic-Basic
-
-	// endregion
-}
+)

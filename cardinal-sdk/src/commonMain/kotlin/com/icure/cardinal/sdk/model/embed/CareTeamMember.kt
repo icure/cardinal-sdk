@@ -1,5 +1,3 @@
-// WARNING: This file is auto-generated. If you change it manually, your changes will be lost.
-// If you want to change the way this class is generated, see [this repo](https://github.com/icure/sdk-codegen).
 package com.icure.cardinal.sdk.model.embed
 
 import com.icure.cardinal.sdk.model.base.CodeStub
@@ -13,8 +11,7 @@ import kotlin.String
  * their role.
  * /
  */
-
-sealed interface CareTeamMember : Encryptable, Identifiable<String> {
+public sealed interface CareTeamMember : Encryptable, Identifiable<String> {
 	/**
 	 * The unique identifier of this care team member.
 	 */
@@ -39,9 +36,6 @@ sealed interface CareTeamMember : Encryptable, Identifiable<String> {
 	 * The base64-encoded encrypted content of this care team member.
 	 */
 	override val encryptedSelf: Base64String?
-	// region CareTeamMember-CareTeamMember
-
-	// endregion
 }
 
 /**
@@ -50,7 +44,7 @@ sealed interface CareTeamMember : Encryptable, Identifiable<String> {
  * /
  */
 @Serializable
-data class DecryptedCareTeamMember(
+public data class DecryptedCareTeamMember(
 	/**
 	 * The unique identifier of this care team member.
 	 */
@@ -71,11 +65,7 @@ data class DecryptedCareTeamMember(
 	 * The base64-encoded encrypted content of this care team member.
 	 */
 	override val encryptedSelf: Base64String? = null,
-) : CareTeamMember {
-	// region CareTeamMember-DecryptedCareTeamMember
-
-	// endregion
-}
+) : CareTeamMember
 
 /**
  * Represents a member of a care team involved in a patient's care, linking a healthcare party with
@@ -83,7 +73,7 @@ data class DecryptedCareTeamMember(
  * /
  */
 @Serializable
-data class EncryptedCareTeamMember(
+public data class EncryptedCareTeamMember(
 	/**
 	 * The unique identifier of this care team member.
 	 */
@@ -104,8 +94,4 @@ data class EncryptedCareTeamMember(
 	 * The base64-encoded encrypted content of this care team member.
 	 */
 	override val encryptedSelf: Base64String? = null,
-) : CareTeamMember {
-	// region CareTeamMember-EncryptedCareTeamMember
-
-	// endregion
-}
+) : CareTeamMember

@@ -1,5 +1,3 @@
-// WARNING: This file is auto-generated. If you change it manually, your changes will be lost.
-// If you want to change the way this class is generated, see [this repo](https://github.com/icure/sdk-codegen).
 package com.icure.cardinal.sdk.model.security.jwt
 
 import com.icure.cardinal.sdk.utils.DefaultValue
@@ -13,7 +11,7 @@ import kotlin.String
  * successful login.
  */
 @Serializable
-data class JwtResponse(
+public data class JwtResponse(
 	/**
 	 * The short-lived JWT access token, or null if authentication was not successful.
 	 */
@@ -27,8 +25,4 @@ data class JwtResponse(
 	 */
 	@param:DefaultValue("false")
 	public val successful: Boolean = false,
-) {
-	// region JwtResponse-JwtResponse
-
-	// endregion
-}
+)

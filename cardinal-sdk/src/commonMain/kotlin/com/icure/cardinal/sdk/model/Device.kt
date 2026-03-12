@@ -1,5 +1,3 @@
-// WARNING: This file is auto-generated. If you change it manually, your changes will be lost.
-// If you want to change the way this class is generated, see [this repo](https://github.com/icure/sdk-codegen).
 package com.icure.cardinal.sdk.model
 
 import com.icure.cardinal.sdk.model.base.CodeStub
@@ -20,8 +18,6 @@ import kotlin.String
 import kotlin.collections.List
 import kotlin.collections.Map
 import kotlin.collections.Set
-import com.icure.cardinal.sdk.serialization.ByteArraySerializer
-import kotlin.ByteArray
 
 /**
  * Represents a device that sends medical data. This is a root-level entity stored in the
@@ -30,7 +26,7 @@ import kotlin.ByteArray
  * /
  */
 @Serializable
-data class Device(
+public data class Device(
 	/**
 	 * The Id of the device. We encourage using either a v4 UUID or a HL7 Id.
 	 */
@@ -138,10 +134,4 @@ data class Device(
 	 * Properties specific to the crypto actor role of this device.
 	 */
 	override val cryptoActorProperties: Set<DecryptedPropertyStub> = emptySet(),
-) : StoredDocument, ICureDocument<String>, Named, CryptoActor, DataOwner {
-	// region Device-Device
-	companion object {
-		const val KRAKEN_QUALIFIED_NAME = "org.taktik.icure.entities.Device"
-	}
-	// endregion
-}
+) : StoredDocument, ICureDocument<String>, Named, CryptoActor, DataOwner

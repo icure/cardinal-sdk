@@ -1,5 +1,3 @@
-// WARNING: This file is auto-generated. If you change it manually, your changes will be lost.
-// If you want to change the way this class is generated, see [this repo](https://github.com/icure/sdk-codegen).
 package com.icure.cardinal.sdk.model.embed
 
 import com.icure.cardinal.sdk.model.specializations.Base64String
@@ -19,8 +17,7 @@ import kotlin.collections.Map
  * and lifecycle status flags. Each invoicing code corresponds to a billable medical act or service.
  * /
  */
-
-sealed interface InvoicingCode : Encryptable {
+public sealed interface InvoicingCode : Encryptable {
 	/**
 	 * The unique identifier of this invoicing code.
 	 */
@@ -300,9 +297,6 @@ sealed interface InvoicingCode : Encryptable {
 	 * The base64-encoded encrypted content.
 	 */
 	override val encryptedSelf: Base64String?
-	// region InvoicingCode-InvoicingCode
-
-	// endregion
 }
 
 /**
@@ -312,7 +306,7 @@ sealed interface InvoicingCode : Encryptable {
  * /
  */
 @Serializable
-data class DecryptedInvoicingCode(
+public data class DecryptedInvoicingCode(
 	/**
 	 * The unique identifier of this invoicing code.
 	 */
@@ -539,11 +533,7 @@ data class DecryptedInvoicingCode(
 	 * The base64-encoded encrypted content.
 	 */
 	override val encryptedSelf: Base64String? = null,
-) : InvoicingCode {
-	// region InvoicingCode-DecryptedInvoicingCode
-
-	// endregion
-}
+) : InvoicingCode
 
 /**
  * Represents an invoicing code within an invoice, containing tarification details, amounts,
@@ -552,7 +542,7 @@ data class DecryptedInvoicingCode(
  * /
  */
 @Serializable
-data class EncryptedInvoicingCode(
+public data class EncryptedInvoicingCode(
 	/**
 	 * The unique identifier of this invoicing code.
 	 */
@@ -779,8 +769,4 @@ data class EncryptedInvoicingCode(
 	 * The base64-encoded encrypted content.
 	 */
 	override val encryptedSelf: Base64String? = null,
-) : InvoicingCode {
-	// region InvoicingCode-EncryptedInvoicingCode
-
-	// endregion
-}
+) : InvoicingCode

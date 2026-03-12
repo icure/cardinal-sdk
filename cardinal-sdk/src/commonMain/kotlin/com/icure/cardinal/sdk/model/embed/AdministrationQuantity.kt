@@ -1,5 +1,3 @@
-// WARNING: This file is auto-generated. If you change it manually, your changes will be lost.
-// If you want to change the way this class is generated, see [this repo](https://github.com/icure/sdk-codegen).
 package com.icure.cardinal.sdk.model.embed
 
 import com.icure.cardinal.sdk.model.base.CodeStub
@@ -13,7 +11,7 @@ import kotlin.String
  * /
  */
 @Serializable
-data class AdministrationQuantity(
+public data class AdministrationQuantity(
 	/**
 	 * The numeric quantity to administer.
 	 */
@@ -26,8 +24,4 @@ data class AdministrationQuantity(
 	 * A textual representation of the unit.
 	 */
 	public val unit: String? = null,
-) {
-	// region AdministrationQuantity-AdministrationQuantity
-
-	// endregion
-}
+)

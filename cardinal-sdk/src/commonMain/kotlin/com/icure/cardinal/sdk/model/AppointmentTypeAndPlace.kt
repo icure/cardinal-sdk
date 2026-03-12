@@ -1,5 +1,3 @@
-// WARNING: This file is auto-generated. If you change it manually, your changes will be lost.
-// If you want to change the way this class is generated, see [this repo](https://github.com/icure/sdk-codegen).
 package com.icure.cardinal.sdk.model
 
 import com.icure.cardinal.sdk.model.embed.DecryptedAddress
@@ -15,7 +13,7 @@ import kotlin.collections.Map
  *  DTO representing an appointment type along with its associated place information.
  */
 @Serializable
-data class AppointmentTypeAndPlace(
+public data class AppointmentTypeAndPlace(
 	/**
 	 * The unique identifier of the calendar item type for this appointment.
 	 */
@@ -51,8 +49,4 @@ data class AppointmentTypeAndPlace(
 	 */
 	@param:DefaultValue("true")
 	public val acceptsNewPatients: Boolean = true,
-) {
-	// region AppointmentTypeAndPlace-AppointmentTypeAndPlace
-
-	// endregion
-}
+)

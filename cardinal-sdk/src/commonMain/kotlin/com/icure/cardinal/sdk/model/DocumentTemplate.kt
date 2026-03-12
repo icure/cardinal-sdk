@@ -1,5 +1,3 @@
-// WARNING: This file is auto-generated. If you change it manually, your changes will be lost.
-// If you want to change the way this class is generated, see [this repo](https://github.com/icure/sdk-codegen).
 package com.icure.cardinal.sdk.model
 
 import com.icure.cardinal.sdk.model.base.CodeStub
@@ -24,7 +22,7 @@ import kotlin.collections.Set
  * /
  */
 @Serializable
-data class DocumentTemplate(
+public data class DocumentTemplate(
 	/**
 	 * The Id of the document template.
 	 */
@@ -122,8 +120,4 @@ data class DocumentTemplate(
 	 * The medical specialty associated with this template.
 	 */
 	public val specialty: CodeStub? = null,
-) : StoredDocument, ICureDocument<String>, HasEndOfLife {
-	// region DocumentTemplate-DocumentTemplate
-
-	// endregion
-}
+) : StoredDocument, ICureDocument<String>, HasEndOfLife

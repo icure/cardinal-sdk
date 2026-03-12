@@ -1,5 +1,3 @@
-// WARNING: This file is auto-generated. If you change it manually, your changes will be lost.
-// If you want to change the way this class is generated, see [this repo](https://github.com/icure/sdk-codegen).
 package com.icure.cardinal.sdk.model.filter.hcparty
 
 import com.icure.cardinal.sdk.model.HealthcareParty
@@ -14,7 +12,7 @@ import kotlin.String
  */
 @SerialName("HealthcarePartyByTypeSpecialtyPostCodeFilter")
 @Serializable
-data class HealthcarePartyByTypeSpecialtyPostCodeFilter(
+public data class HealthcarePartyByTypeSpecialtyPostCodeFilter(
 	/**
 	 * The specialty category to match.
 	 */
@@ -35,8 +33,4 @@ data class HealthcarePartyByTypeSpecialtyPostCodeFilter(
 	 * Optional description of this filter.
 	 */
 	override val desc: String? = null,
-) : AbstractFilter<HealthcareParty> {
-	// region HealthcarePartyByTypeSpecialtyPostCodeFilter-HealthcarePartyByTypeSpecialtyPostCodeFilter
-
-	// endregion
-}
+) : AbstractFilter<HealthcareParty>

@@ -1,5 +1,3 @@
-// WARNING: This file is auto-generated. If you change it manually, your changes will be lost.
-// If you want to change the way this class is generated, see [this repo](https://github.com/icure/sdk-codegen).
 package com.icure.cardinal.sdk.model
 
 import kotlinx.serialization.SerialName
@@ -12,7 +10,7 @@ import kotlin.String
  * /
  */
 @Serializable
-data class ReplicateCommand(
+public data class ReplicateCommand(
 	/**
 	 * The URL of the source CouchDB database.
 	 */
@@ -47,8 +45,4 @@ data class ReplicateCommand(
 	 * The optional identifier of this replication command.
 	 */
 	public val id: String? = null,
-) {
-	// region ReplicateCommand-ReplicateCommand
-
-	// endregion
-}
+)
