@@ -11,46 +11,135 @@ import {ResourceGroupAllocationSchedule} from './embed/ResourceGroupAllocationSc
 import {UserAccessLevel} from './embed/UserAccessLevel.mjs';
 
 
+/**
+ *
+ *  Represents an agenda that keeps track of appointments (calendar items) for a resource or group of
+ *  resources.
+ *  An agenda can specify a schedule for its resources and allows managing availabilities for
+ *  booking.
+ *  /
+ */
 export class Agenda implements StoredDocument, ICureDocument<string>, HasEndOfLife {
 
+	/**
+	 *
+	 *  The Id of the agenda. We encourage using either a v4 UUID or a HL7 Id.
+	 */
 	id: string;
 
+	/**
+	 *
+	 *  The revision of the agenda in the database, used for conflict management / optimistic locking.
+	 */
 	rev: string | undefined = undefined;
 
+	/**
+	 *
+	 *  The timestamp (unix epoch in ms) of creation of this entity.
+	 */
 	created: number | undefined = undefined;
 
+	/**
+	 *
+	 *  The timestamp (unix epoch in ms) of the latest modification of this entity.
+	 */
 	modified: number | undefined = undefined;
 
+	/**
+	 *
+	 *  The id of the User that created this agenda.
+	 */
 	author: string | undefined = undefined;
 
+	/**
+	 *
+	 *  The id of the data owner that is responsible for this agenda.
+	 */
 	responsible: string | undefined = undefined;
 
+	/**
+	 *
+	 *  Tags that qualify the agenda as being member of a certain class.
+	 */
 	tags: Array<CodeStub> = [];
 
+	/**
+	 *
+	 *  Codes that identify or qualify this particular agenda.
+	 */
 	codes: Array<CodeStub> = [];
 
+	/**
+	 *
+	 *  Soft delete (unix epoch in ms) timestamp of the object.
+	 */
 	endOfLife: number | undefined = undefined;
 
+	/**
+	 *
+	 *  Hard delete (unix epoch in ms) timestamp of the object.
+	 */
 	deletionDate: number | undefined = undefined;
 
+	/**
+	 *
+	 *  A fuzzy time in HHMMSS format used to split working hours into blocks for availabilities
+	 *  computation.
+	 */
 	daySplitHour: number | undefined = undefined;
 
+	/**
+	 *
+	 *  If true the agenda is not available for availabilities and safe booking requests.
+	 */
 	unpublished: boolean = false;
 
+	/**
+	 *
+	 *  The name of the agenda.
+	 */
 	name: string | undefined = undefined;
 
+	/**
+	 *
+	 *  The id of the user associated with this agenda.
+	 */
 	userId: string | undefined = undefined;
 
+	/**
+	 *
+	 *  An identifier for the time zone of the agenda, must be an id accepted by java's ZoneId.
+	 */
 	zoneId: string | undefined = undefined;
 
+	/**
+	 *
+	 *  Associates a user id to the permission that user has on the entity.
+	 */
 	userRights: { [ key: string ]: UserAccessLevel } = {};
 
+	/**
+	 *
+	 *  The algorithm to use for computing time slots in the agenda.
+	 */
 	slottingAlgorithm: AgendaSlottingAlgorithm | undefined = undefined;
 
+	/**
+	 *
+	 *  If not null, limits the amount of monthly appointments per unprivileged user for this agenda.
+	 */
 	publicBookingQuota: number | undefined = undefined;
 
+	/**
+	 *
+	 *  Custom properties of the agenda.
+	 */
 	properties: Array<DecryptedPropertyStub> = [];
 
+	/**
+	 *
+	 *  The resource group allocation schedules defining availability rules for this agenda.
+	 */
 	schedules: Array<ResourceGroupAllocationSchedule> = [];
 
 	constructor(partial: Partial<Agenda>) {

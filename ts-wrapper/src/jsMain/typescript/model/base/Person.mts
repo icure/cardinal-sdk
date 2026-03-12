@@ -5,6 +5,11 @@ import {PersonName} from '../embed/PersonName.mjs';
 import {Identifiable} from './Identifiable.mjs';
 
 
+/**
+ *
+ *
+ *   Interface for entities that represent a person with personal details and contact information.
+ */
 export interface Person extends Identifiable<string> {
 
 	civility: string | undefined;

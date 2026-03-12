@@ -5,14 +5,36 @@ import {Replication} from './Replication.mjs';
 import {User} from './User.mjs';
 
 
+/**
+ *
+ *  DTO containing the initial data required to set up a new database environment, including
+ *  seed users, healthcare parties, and replication configuration.
+ *  /
+ */
 export class DatabaseInitialisation {
 
+	/**
+	 *
+	 *  The list of initial users to create during database initialisation.
+	 */
 	users: Array<User> | undefined = [];
 
+	/**
+	 *
+	 *  The list of initial healthcare parties to create during database initialisation.
+	 */
 	healthcareParties: Array<HealthcareParty> | undefined = [];
 
+	/**
+	 *
+	 *  The replication configuration to apply during database initialisation.
+	 */
 	replication: Replication | undefined = undefined;
 
+	/**
+	 *
+	 *  The minimum required Kraken version for this database configuration.
+	 */
 	minimumKrakenVersion: string | undefined = undefined;
 
 	constructor(partial: Partial<DatabaseInitialisation>) {

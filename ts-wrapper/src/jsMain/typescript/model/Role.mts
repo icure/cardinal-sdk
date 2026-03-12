@@ -4,18 +4,51 @@ import {randomUuid} from '../utils/Id.mjs';
 import {StoredDocument} from './base/StoredDocument.mjs';
 
 
+/**
+ *
+ *  The RoleDto class represents a role in the system, which can have permissions and can be
+ *  inheritable up to a certain level by users in child Groups.$
+ *  down the group hierarchy this role can be inherited by users in child groups. A value of 0 means
+ *  it cannot be inherited, while a value of -1 means it can be inherited indefinitely.
+ *  /
+ */
 export class Role implements StoredDocument {
 
+	/**
+	 *
+	 *  The unique identifier of the role.
+	 */
 	id: string;
 
+	/**
+	 *
+	 *  The revision identifier of the role, used for optimistic locking.
+	 */
 	rev: string | undefined = undefined;
 
+	/**
+	 *
+	 *  The timestamp of when the role was deleted, if applicable.
+	 */
 	deletionDate: number | undefined = undefined;
 
+	/**
+	 *
+	 *  The name of the role.
+	 */
 	name: string | undefined = undefined;
 
+	/**
+	 *
+	 *  The maximum level of inheritance for this role, indicating how far
+	 */
 	inheritableUpTo: number | undefined = undefined;
 
+	/**
+	 *
+	 *  A set of permissions associated with this role, defining what actions users with this role can
+	 *  perform.
+	 */
 	permissions: Array<string> = [];
 
 	constructor(partial: Partial<Role>) {

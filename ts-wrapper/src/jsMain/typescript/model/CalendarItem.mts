@@ -15,54 +15,157 @@ import {SecurityMetadata} from './embed/SecurityMetadata.mjs';
 import {Base64String} from './specializations/Base64String.mjs';
 
 
+/**
+ *
+ *  Represents an appointment or event in a calendar. Calendar items are linked to an agenda and can
+ *  block
+ *  availabilities for scheduling purposes.
+ *  /
+ */
 export interface CalendarItem extends StoredDocument, ICureDocument<string>, HasEncryptionMetadata, Encryptable {
 
+	/**
+	 *
+	 *  The title of the calendar item.
+	 */
 	title: string | undefined;
 
+	/**
+	 *
+	 *  The id of the calendar item type associated with this item.
+	 */
 	calendarItemTypeId: string | undefined;
 
+	/**
+	 *
+	 *  The id of the master calendar item if this is a recurring instance.
+	 */
 	masterCalendarItemId: string | undefined;
 
+	/**
+	 *
+	 *  Whether this calendar item is marked as important.
+	 */
 	important: boolean | undefined;
 
+	/**
+	 *
+	 *  Whether this calendar item represents a home visit.
+	 */
 	homeVisit: boolean | undefined;
 
+	/**
+	 *
+	 *  A phone number associated with this calendar item.
+	 */
 	phoneNumber: string | undefined;
 
+	/**
+	 *
+	 *  The id of the place where the appointment takes place.
+	 */
 	placeId: string | undefined;
 
+	/**
+	 *
+	 *  The address where the appointment takes place.
+	 */
 	address: Address | undefined;
 
+	/**
+	 *
+	 *  The textual representation of the address.
+	 */
 	addressText: string | undefined;
 
+	/**
+	 *
+	 *  The start time of the calendar item in YYYYMMDDHHMMSS format.
+	 */
 	startTime: number | undefined;
 
+	/**
+	 *
+	 *  The end time of the calendar item in YYYYMMDDHHMMSS format.
+	 */
 	endTime: number | undefined;
 
+	/**
+	 *
+	 *  The time of confirmation in YYYYMMDDHHMMSS format.
+	 */
 	confirmationTime: number | undefined;
 
+	/**
+	 *
+	 *  The timestamp of cancellation.
+	 */
 	cancellationTimestamp: number | undefined;
 
+	/**
+	 *
+	 *  An id associated with the confirmation.
+	 */
 	confirmationId: string | undefined;
 
+	/**
+	 *
+	 *  The duration of the appointment.
+	 */
 	duration: number | undefined;
 
+	/**
+	 *
+	 *  Whether this calendar item spans the entire day.
+	 */
 	allDay: boolean | undefined;
 
+	/**
+	 *
+	 *  Additional details about the calendar item.
+	 */
 	details: string | undefined;
 
+	/**
+	 *
+	 *  Whether this calendar item was migrated from another system.
+	 */
 	wasMigrated: boolean | undefined;
 
+	/**
+	 *
+	 *  The id of the agenda linked to this calendar item.
+	 */
 	agendaId: string | undefined;
 
+	/**
+	 *
+	 *  The resource group of the agenda that will handle this calendar item.
+	 */
 	resourceGroup: CodeStub | undefined;
 
+	/**
+	 *
+	 *  How this calendar item is considered by the availabilities algorithm.
+	 */
 	availabilitiesAssignmentStrategy: CalendarItem.AvailabilitiesAssignmentStrategy | undefined;
 
+	/**
+	 *
+	 *  An id for linking recurring calendar items.
+	 */
 	recurrenceId: string | undefined;
 
+	/**
+	 *
+	 *  Tags for the meeting associated with this calendar item.
+	 */
 	meetingTags: Array<CalendarItemTag>;
 
+	/**
+	 *
+	 *  Custom properties of this calendar item.
+	 */
 	properties: Array<PropertyStub>;
 
 	readonly isEncrypted: boolean;
@@ -71,84 +174,248 @@ export interface CalendarItem extends StoredDocument, ICureDocument<string>, Has
 
 }
 
+/**
+ *
+ *  Represents an appointment or event in a calendar. Calendar items are linked to an agenda and can
+ *  block
+ *  availabilities for scheduling purposes.
+ *  /
+ */
 export class DecryptedCalendarItem {
 
+	/**
+	 *
+	 *  The Id of the calendar item. We encourage using either a v4 UUID or a HL7 Id.
+	 */
 	id: string;
 
+	/**
+	 *
+	 *  The revision of the calendar item in the database, used for conflict management / optimistic
+	 *  locking.
+	 */
 	rev: string | undefined = undefined;
 
+	/**
+	 *
+	 *  The timestamp (unix epoch in ms) of creation of this entity.
+	 */
 	created: number | undefined = undefined;
 
+	/**
+	 *
+	 *  The timestamp (unix epoch in ms) of the latest modification of this entity.
+	 */
 	modified: number | undefined = undefined;
 
+	/**
+	 *
+	 *  The id of the User that created this calendar item.
+	 */
 	author: string | undefined = undefined;
 
+	/**
+	 *
+	 *  The id of the data owner that is responsible for this calendar item.
+	 */
 	responsible: string | undefined = undefined;
 
+	/**
+	 *
+	 *  Tags that qualify the calendar item as being member of a certain class.
+	 */
 	tags: Array<CodeStub> = [];
 
+	/**
+	 *
+	 *  Codes that identify or qualify this particular calendar item.
+	 */
 	codes: Array<CodeStub> = [];
 
+	/**
+	 *
+	 *  Hard delete (unix epoch in ms) timestamp of the object.
+	 */
 	deletionDate: number | undefined = undefined;
 
+	/**
+	 *
+	 *  The title of the calendar item.
+	 */
 	title: string | undefined = undefined;
 
+	/**
+	 *
+	 *  The id of the calendar item type associated with this item.
+	 */
 	calendarItemTypeId: string | undefined = undefined;
 
+	/**
+	 *
+	 *  The id of the master calendar item if this is a recurring instance.
+	 */
 	masterCalendarItemId: string | undefined = undefined;
 
+	/**
+	 *
+	 *  Whether this calendar item is marked as important.
+	 */
 	important: boolean | undefined = undefined;
 
+	/**
+	 *
+	 *  Whether this calendar item represents a home visit.
+	 */
 	homeVisit: boolean | undefined = undefined;
 
+	/**
+	 *
+	 *  A phone number associated with this calendar item.
+	 */
 	phoneNumber: string | undefined = undefined;
 
+	/**
+	 *
+	 *  The id of the place where the appointment takes place.
+	 */
 	placeId: string | undefined = undefined;
 
+	/**
+	 *
+	 *  The address where the appointment takes place.
+	 */
 	address: DecryptedAddress | undefined = undefined;
 
+	/**
+	 *
+	 *  The textual representation of the address.
+	 */
 	addressText: string | undefined = undefined;
 
+	/**
+	 *
+	 *  The start time of the calendar item in YYYYMMDDHHMMSS format.
+	 */
 	startTime: number | undefined = undefined;
 
+	/**
+	 *
+	 *  The end time of the calendar item in YYYYMMDDHHMMSS format.
+	 */
 	endTime: number | undefined = undefined;
 
+	/**
+	 *
+	 *  The time of confirmation in YYYYMMDDHHMMSS format.
+	 */
 	confirmationTime: number | undefined = undefined;
 
+	/**
+	 *
+	 *  The timestamp of cancellation.
+	 */
 	cancellationTimestamp: number | undefined = undefined;
 
+	/**
+	 *
+	 *  An id associated with the confirmation.
+	 */
 	confirmationId: string | undefined = undefined;
 
+	/**
+	 *
+	 *  The duration of the appointment.
+	 */
 	duration: number | undefined = undefined;
 
+	/**
+	 *
+	 *  Whether this calendar item spans the entire day.
+	 */
 	allDay: boolean | undefined = undefined;
 
+	/**
+	 *
+	 *  Additional details about the calendar item.
+	 */
 	details: string | undefined = undefined;
 
+	/**
+	 *
+	 *  Whether this calendar item was migrated from another system.
+	 */
 	wasMigrated: boolean | undefined = undefined;
 
+	/**
+	 *
+	 *  The id of the agenda linked to this calendar item.
+	 */
 	agendaId: string | undefined = undefined;
 
+	/**
+	 *
+	 *  The resource group of the agenda that will handle this calendar item.
+	 */
 	resourceGroup: CodeStub | undefined = undefined;
 
+	/**
+	 *
+	 *  How this calendar item is considered by the availabilities algorithm.
+	 */
 	availabilitiesAssignmentStrategy: CalendarItem_.AvailabilitiesAssignmentStrategy | undefined = undefined;
 
+	/**
+	 *
+	 *  An id for linking recurring calendar items.
+	 */
 	recurrenceId: string | undefined = undefined;
 
+	/**
+	 *
+	 *  Tags for the meeting associated with this calendar item.
+	 */
 	meetingTags: Array<DecryptedCalendarItemTag> = [];
 
+	/**
+	 *
+	 *  Custom properties of this calendar item.
+	 */
 	properties: Array<DecryptedPropertyStub> = [];
 
+	/**
+	 *
+	 *  The secret foreign keys, used for secure linking to patients.
+	 */
 	secretForeignKeys: Array<string> = [];
 
+	/**
+	 *
+	 *  The encrypted foreign keys.
+	 */
 	cryptedForeignKeys: { [ key: string ]: Array<Delegation> } = {};
 
+	/**
+	 *
+	 *  The delegations giving access to connected healthcare information.
+	 */
 	delegations: { [ key: string ]: Array<Delegation> } = {};
 
+	/**
+	 *
+	 *  The encryption keys used to encrypt secured properties, encrypted for separate Crypto Actors.
+	 */
 	encryptionKeys: { [ key: string ]: Array<Delegation> } = {};
 
+	/**
+	 *
+	 *  The base64-encoded encrypted fields of this calendar item.
+	 */
 	encryptedSelf: Base64String | undefined = undefined;
 
+	/**
+	 *
+	 *  The security metadata of this entity, for access control.
+	 */
 	securityMetadata: SecurityMetadata | undefined = undefined;
 
 	readonly isEncrypted: false = false;
@@ -313,84 +580,248 @@ export class DecryptedCalendarItem {
 
 }
 
+/**
+ *
+ *  Represents an appointment or event in a calendar. Calendar items are linked to an agenda and can
+ *  block
+ *  availabilities for scheduling purposes.
+ *  /
+ */
 export class EncryptedCalendarItem {
 
+	/**
+	 *
+	 *  The Id of the calendar item. We encourage using either a v4 UUID or a HL7 Id.
+	 */
 	id: string;
 
+	/**
+	 *
+	 *  The revision of the calendar item in the database, used for conflict management / optimistic
+	 *  locking.
+	 */
 	rev: string | undefined = undefined;
 
+	/**
+	 *
+	 *  The timestamp (unix epoch in ms) of creation of this entity.
+	 */
 	created: number | undefined = undefined;
 
+	/**
+	 *
+	 *  The timestamp (unix epoch in ms) of the latest modification of this entity.
+	 */
 	modified: number | undefined = undefined;
 
+	/**
+	 *
+	 *  The id of the User that created this calendar item.
+	 */
 	author: string | undefined = undefined;
 
+	/**
+	 *
+	 *  The id of the data owner that is responsible for this calendar item.
+	 */
 	responsible: string | undefined = undefined;
 
+	/**
+	 *
+	 *  Tags that qualify the calendar item as being member of a certain class.
+	 */
 	tags: Array<CodeStub> = [];
 
+	/**
+	 *
+	 *  Codes that identify or qualify this particular calendar item.
+	 */
 	codes: Array<CodeStub> = [];
 
+	/**
+	 *
+	 *  Hard delete (unix epoch in ms) timestamp of the object.
+	 */
 	deletionDate: number | undefined = undefined;
 
+	/**
+	 *
+	 *  The title of the calendar item.
+	 */
 	title: string | undefined = undefined;
 
+	/**
+	 *
+	 *  The id of the calendar item type associated with this item.
+	 */
 	calendarItemTypeId: string | undefined = undefined;
 
+	/**
+	 *
+	 *  The id of the master calendar item if this is a recurring instance.
+	 */
 	masterCalendarItemId: string | undefined = undefined;
 
+	/**
+	 *
+	 *  Whether this calendar item is marked as important.
+	 */
 	important: boolean | undefined = undefined;
 
+	/**
+	 *
+	 *  Whether this calendar item represents a home visit.
+	 */
 	homeVisit: boolean | undefined = undefined;
 
+	/**
+	 *
+	 *  A phone number associated with this calendar item.
+	 */
 	phoneNumber: string | undefined = undefined;
 
+	/**
+	 *
+	 *  The id of the place where the appointment takes place.
+	 */
 	placeId: string | undefined = undefined;
 
+	/**
+	 *
+	 *  The address where the appointment takes place.
+	 */
 	address: EncryptedAddress | undefined = undefined;
 
+	/**
+	 *
+	 *  The textual representation of the address.
+	 */
 	addressText: string | undefined = undefined;
 
+	/**
+	 *
+	 *  The start time of the calendar item in YYYYMMDDHHMMSS format.
+	 */
 	startTime: number | undefined = undefined;
 
+	/**
+	 *
+	 *  The end time of the calendar item in YYYYMMDDHHMMSS format.
+	 */
 	endTime: number | undefined = undefined;
 
+	/**
+	 *
+	 *  The time of confirmation in YYYYMMDDHHMMSS format.
+	 */
 	confirmationTime: number | undefined = undefined;
 
+	/**
+	 *
+	 *  The timestamp of cancellation.
+	 */
 	cancellationTimestamp: number | undefined = undefined;
 
+	/**
+	 *
+	 *  An id associated with the confirmation.
+	 */
 	confirmationId: string | undefined = undefined;
 
+	/**
+	 *
+	 *  The duration of the appointment.
+	 */
 	duration: number | undefined = undefined;
 
+	/**
+	 *
+	 *  Whether this calendar item spans the entire day.
+	 */
 	allDay: boolean | undefined = undefined;
 
+	/**
+	 *
+	 *  Additional details about the calendar item.
+	 */
 	details: string | undefined = undefined;
 
+	/**
+	 *
+	 *  Whether this calendar item was migrated from another system.
+	 */
 	wasMigrated: boolean | undefined = undefined;
 
+	/**
+	 *
+	 *  The id of the agenda linked to this calendar item.
+	 */
 	agendaId: string | undefined = undefined;
 
+	/**
+	 *
+	 *  The resource group of the agenda that will handle this calendar item.
+	 */
 	resourceGroup: CodeStub | undefined = undefined;
 
+	/**
+	 *
+	 *  How this calendar item is considered by the availabilities algorithm.
+	 */
 	availabilitiesAssignmentStrategy: CalendarItem_.AvailabilitiesAssignmentStrategy | undefined = undefined;
 
+	/**
+	 *
+	 *  An id for linking recurring calendar items.
+	 */
 	recurrenceId: string | undefined = undefined;
 
+	/**
+	 *
+	 *  Tags for the meeting associated with this calendar item.
+	 */
 	meetingTags: Array<EncryptedCalendarItemTag> = [];
 
+	/**
+	 *
+	 *  Custom properties of this calendar item.
+	 */
 	properties: Array<EncryptedPropertyStub> = [];
 
+	/**
+	 *
+	 *  The secret foreign keys, used for secure linking to patients.
+	 */
 	secretForeignKeys: Array<string> = [];
 
+	/**
+	 *
+	 *  The encrypted foreign keys.
+	 */
 	cryptedForeignKeys: { [ key: string ]: Array<Delegation> } = {};
 
+	/**
+	 *
+	 *  The delegations giving access to connected healthcare information.
+	 */
 	delegations: { [ key: string ]: Array<Delegation> } = {};
 
+	/**
+	 *
+	 *  The encryption keys used to encrypt secured properties, encrypted for separate Crypto Actors.
+	 */
 	encryptionKeys: { [ key: string ]: Array<Delegation> } = {};
 
+	/**
+	 *
+	 *  The base64-encoded encrypted fields of this calendar item.
+	 */
 	encryptedSelf: Base64String | undefined = undefined;
 
+	/**
+	 *
+	 *  The security metadata of this entity, for access control.
+	 */
 	securityMetadata: SecurityMetadata | undefined = undefined;
 
 	readonly isEncrypted: true = true;

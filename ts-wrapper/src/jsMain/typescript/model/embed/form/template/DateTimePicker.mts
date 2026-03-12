@@ -2,6 +2,11 @@
 import {expectArray, expectBoolean, expectMap, expectNumber, expectString, extractEntry} from '../../../../internal/JsonDecodeUtils.mjs';
 
 
+/**
+ *
+ *  A date-time picker field in a form template, combining date and time selection.
+ *  /
+ */
 export class DateTimePicker {
 
 	field: string;

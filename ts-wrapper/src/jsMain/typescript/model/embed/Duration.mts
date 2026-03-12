@@ -3,10 +3,23 @@ import {expectNumber, expectObject, extractEntry} from '../../internal/JsonDecod
 import {CodeStub} from '../base/CodeStub.mjs';
 
 
+/**
+ *
+ *  Represents a duration with a numeric value and a time unit code.
+ *  /
+ */
 export class Duration {
 
+	/**
+	 *
+	 *  The numeric value of the duration.
+	 */
 	value: number | undefined = undefined;
 
+	/**
+	 *
+	 *  The coded time unit (CD-TIMEUNIT) for this duration.
+	 */
 	unit: CodeStub | undefined = undefined;
 
 	constructor(partial: Partial<Duration>) {

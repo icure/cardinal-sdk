@@ -2,10 +2,23 @@
 import {expectString, extractEntry} from '../internal/JsonDecodeUtils.mjs';
 
 
+/**
+ *
+ *  DTO representing the public key of a healthcare party, used for end-to-end encryption.
+ *  /
+ */
 export class PublicKey {
 
+	/**
+	 *
+	 *  The identifier of the healthcare party that owns this public key.
+	 */
 	hcPartyId: string | undefined = undefined;
 
+	/**
+	 *
+	 *  The public key encoded as a hexadecimal string.
+	 */
 	hexString: string | undefined = undefined;
 
 	constructor(partial: Partial<PublicKey>) {

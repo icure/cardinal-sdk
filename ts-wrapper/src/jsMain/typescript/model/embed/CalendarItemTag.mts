@@ -4,14 +4,35 @@ import {Base64String} from '../specializations/Base64String.mjs';
 import {Encryptable} from './Encryptable.mjs';
 
 
+/**
+ *
+ *  Represents a tag associated with a calendar item, carrying metadata about who tagged it and when.
+ *  /
+ */
 export interface CalendarItemTag extends Encryptable {
 
+	/**
+	 *
+	 *  The code identifying this tag.
+	 */
 	code: string | undefined;
 
+	/**
+	 *
+	 *  The timestamp (unix epoch in ms) when the tag was applied.
+	 */
 	date: number | undefined;
 
+	/**
+	 *
+	 *  The identifier of the user who applied the tag.
+	 */
 	userId: string | undefined;
 
+	/**
+	 *
+	 *  The display name of the user who applied the tag.
+	 */
 	userName: string | undefined;
 
 	readonly isEncrypted: boolean;
@@ -20,16 +41,41 @@ export interface CalendarItemTag extends Encryptable {
 
 }
 
+/**
+ *
+ *  Represents a tag associated with a calendar item, carrying metadata about who tagged it and when.
+ *  /
+ */
 export class DecryptedCalendarItemTag {
 
+	/**
+	 *
+	 *  The code identifying this tag.
+	 */
 	code: string | undefined = undefined;
 
+	/**
+	 *
+	 *  The timestamp (unix epoch in ms) when the tag was applied.
+	 */
 	date: number | undefined = undefined;
 
+	/**
+	 *
+	 *  The identifier of the user who applied the tag.
+	 */
 	userId: string | undefined = undefined;
 
+	/**
+	 *
+	 *  The display name of the user who applied the tag.
+	 */
 	userName: string | undefined = undefined;
 
+	/**
+	 *
+	 *  The base64-encoded encrypted content of this tag.
+	 */
 	encryptedSelf: Base64String | undefined = undefined;
 
 	readonly isEncrypted: false = false;
@@ -74,16 +120,41 @@ export class DecryptedCalendarItemTag {
 
 }
 
+/**
+ *
+ *  Represents a tag associated with a calendar item, carrying metadata about who tagged it and when.
+ *  /
+ */
 export class EncryptedCalendarItemTag {
 
+	/**
+	 *
+	 *  The code identifying this tag.
+	 */
 	code: string | undefined = undefined;
 
+	/**
+	 *
+	 *  The timestamp (unix epoch in ms) when the tag was applied.
+	 */
 	date: number | undefined = undefined;
 
+	/**
+	 *
+	 *  The identifier of the user who applied the tag.
+	 */
 	userId: string | undefined = undefined;
 
+	/**
+	 *
+	 *  The display name of the user who applied the tag.
+	 */
 	userName: string | undefined = undefined;
 
+	/**
+	 *
+	 *  The base64-encoded encrypted content of this tag.
+	 */
 	encryptedSelf: Base64String | undefined = undefined;
 
 	readonly isEncrypted: true = true;

@@ -29,82 +29,243 @@ import {HexString} from './specializations/HexString.mjs';
 import {SpkiHexString} from './specializations/SpkiHexString.mjs';
 
 
+/**
+ *
+ *  Represents a patient in the iCure platform. A patient is a person who receives healthcare
+ *  services.
+ *  This entity stores personal, administrative, and medical information about the patient, and
+ *  supports
+ *  end-to-end encryption of sensitive data.
+ *  /
+ */
 export interface Patient extends StoredDocument, ICureDocument<string>, Person, HasEncryptionMetadata, Encryptable, CryptoActor {
 
+	/**
+	 *
+	 *  The patient's identifiers, used by the client to uniquely identify the patient.
+	 */
 	identifier: Array<Identifier>;
 
+	/**
+	 *
+	 *  The birth sex of the patient.
+	 */
 	birthSex: Gender | undefined;
 
+	/**
+	 *
+	 *  The id of the patient this patient has been merged with.
+	 */
 	mergeToPatientId: string | undefined;
 
+	/**
+	 *
+	 *  The ids of the patients that have been merged inside this patient.
+	 */
 	mergedIds: Array<string>;
 
+	/**
+	 *
+	 *  An alias of the person, nickname, ...
+	 */
 	alias: string | undefined;
 
+	/**
+	 *
+	 *  Whether the patient is active.
+	 */
 	active: boolean;
 
+	/**
+	 *
+	 *  When not active, the reason for deactivation.
+	 */
 	deactivationReason: string;
 
+	/**
+	 *
+	 *  Deactivation date of the patient.
+	 */
 	deactivationDate: number | undefined;
 
+	/**
+	 *
+	 *  Social security inscription number.
+	 */
 	ssin: string | undefined;
 
+	/**
+	 *
+	 *  Lastname at birth (can be different from the current name).
+	 */
 	maidenName: string | undefined;
 
+	/**
+	 *
+	 *  Lastname of the spouse for a married woman.
+	 */
 	spouseName: string | undefined;
 
+	/**
+	 *
+	 *  Lastname of the partner.
+	 */
 	partnerName: string | undefined;
 
+	/**
+	 *
+	 *  The personal/marital status of the patient.
+	 */
 	personalStatus: PersonalStatus | undefined;
 
+	/**
+	 *
+	 *  The birthdate encoded as a fuzzy date on 8 positions (YYYYMMDD).
+	 */
 	dateOfBirth: number | undefined;
 
+	/**
+	 *
+	 *  The date of death encoded as a fuzzy date on 8 positions (YYYYMMDD).
+	 */
 	dateOfDeath: number | undefined;
 
+	/**
+	 *
+	 *  Timestamp of the latest validation of the eID of the person.
+	 */
 	timestampOfLatestEidReading: number | undefined;
 
+	/**
+	 *
+	 *  The place of birth.
+	 */
 	placeOfBirth: string | undefined;
 
+	/**
+	 *
+	 *  The place of death.
+	 */
 	placeOfDeath: string | undefined;
 
+	/**
+	 *
+	 *  Whether the patient is deceased.
+	 */
 	deceased: boolean | undefined;
 
+	/**
+	 *
+	 *  The level of education (college degree, undergraduate, phd).
+	 */
 	education: string | undefined;
 
+	/**
+	 *
+	 *  The current professional activity.
+	 */
 	profession: string | undefined;
 
+	/**
+	 *
+	 *  Localized text notes (can be confidential).
+	 */
 	notes: Array<Annotation>;
 
+	/**
+	 *
+	 *  A text note (can be confidential, encrypted by default).
+	 */
 	note: string | undefined;
 
+	/**
+	 *
+	 *  An administrative note, not confidential.
+	 */
 	administrativeNote: string | undefined;
 
+	/**
+	 *
+	 *  The nationality of the patient.
+	 */
 	nationality: string | undefined;
 
+	/**
+	 *
+	 *  The race of the patient.
+	 */
 	race: string | undefined;
 
+	/**
+	 *
+	 *  The ethnicity of the patient.
+	 */
 	ethnicity: string | undefined;
 
+	/**
+	 *
+	 *  The id of the user that usually handles this patient.
+	 */
 	preferredUserId: string | undefined;
 
+	/**
+	 *
+	 *  List of insurance coverages.
+	 */
 	insurabilities: Array<Insurability>;
 
+	/**
+	 *
+	 *  List of partners, or persons of contact.
+	 */
 	partnerships: Array<Partnership>;
 
+	/**
+	 *
+	 *  Links between this patient and healthcare parties.
+	 */
 	patientHealthCareParties: Array<PatientHealthCareParty>;
 
+	/**
+	 *
+	 *  Financial information used to reimburse the patient.
+	 */
 	financialInstitutionInformation: Array<FinancialInstitutionInformation>;
 
+	/**
+	 *
+	 *  Contracts between the patient and the healthcare entity.
+	 */
 	medicalHouseContracts: Array<MedicalHouseContract>;
 
+	/**
+	 *
+	 *  Codified list of professions exercised by this patient.
+	 */
 	patientProfessions: Array<CodeStub>;
 
+	/**
+	 *
+	 *  Extra parameters.
+	 */
 	parameters: { [ key: string ]: Array<string> };
 
+	/**
+	 *
+	 *  Extra properties.
+	 */
 	properties: Array<PropertyStub>;
 
+	/**
+	 *
+	 *  Properties related to crypto actor functionality.
+	 */
 	cryptoActorProperties: Array<DecryptedPropertyStub>;
 
+	/**
+	 *
+	 *  Always null for patients.
+	 */
 	parentId: undefined;
 
 	readonly isEncrypted: boolean;
@@ -113,140 +274,417 @@ export interface Patient extends StoredDocument, ICureDocument<string>, Person, 
 
 }
 
+/**
+ *
+ *  Represents a patient in the iCure platform. A patient is a person who receives healthcare
+ *  services.
+ *  This entity stores personal, administrative, and medical information about the patient, and
+ *  supports
+ *  end-to-end encryption of sensitive data.
+ *  /
+ */
 export class DecryptedPatient {
 
+	/**
+	 *
+	 *  The Id of the patient. We encourage using either a v4 UUID or a HL7 Id.
+	 */
 	id: string;
 
+	/**
+	 *
+	 *  The patient's identifiers, used by the client to uniquely identify the patient.
+	 */
 	identifier: Array<Identifier> = [];
 
+	/**
+	 *
+	 *  The revision of the patient in the database, used for conflict management / optimistic locking.
+	 */
 	rev: string | undefined = undefined;
 
+	/**
+	 *
+	 *  The timestamp (unix epoch in ms) of creation.
+	 */
 	created: number | undefined = undefined;
 
+	/**
+	 *
+	 *  The timestamp (unix epoch in ms) of the latest modification.
+	 */
 	modified: number | undefined = undefined;
 
+	/**
+	 *
+	 *  The id of the User that created this patient.
+	 */
 	author: string | undefined = undefined;
 
+	/**
+	 *
+	 *  The id of the HealthcareParty that is responsible for this patient.
+	 */
 	responsible: string | undefined = undefined;
 
+	/**
+	 *
+	 *  Tags that qualify the patient as being member of a certain class.
+	 */
 	tags: Array<CodeStub> = [];
 
+	/**
+	 *
+	 *  Codes that identify or qualify this particular patient.
+	 */
 	codes: Array<CodeStub> = [];
 
+	/**
+	 *
+	 *  Hard delete (unix epoch in ms) timestamp of the object.
+	 */
 	deletionDate: number | undefined = undefined;
 
+	/**
+	 *
+	 *  The firstname (name) of the patient.
+	 */
 	firstName: string | undefined = undefined;
 
+	/**
+	 *
+	 *  The lastname (surname) of the patient.
+	 */
 	lastName: string | undefined = undefined;
 
+	/**
+	 *
+	 *  The list of all names of the patient, ordered by preference of use.
+	 */
 	names: Array<PersonName> = [];
 
+	/**
+	 *
+	 *  The name of the company this patient is member of.
+	 */
 	companyName: string | undefined = undefined;
 
+	/**
+	 *
+	 *  The list of languages spoken by the patient ordered by fluency (alpha-2 code).
+	 */
 	languages: Array<string> = [];
 
+	/**
+	 *
+	 *  The list of addresses (with address type).
+	 */
 	addresses: Array<DecryptedAddress> = [];
 
+	/**
+	 *
+	 *  Mr., Ms., Pr., Dr. ...
+	 */
 	civility: string | undefined = undefined;
 
+	/**
+	 *
+	 *  The gender of the patient.
+	 */
 	gender: Gender | undefined = Gender.Unknown;
 
+	/**
+	 *
+	 *  The birth sex of the patient.
+	 */
 	birthSex: Gender | undefined = Gender.Unknown;
 
+	/**
+	 *
+	 *  The id of the patient this patient has been merged with.
+	 */
 	mergeToPatientId: string | undefined = undefined;
 
+	/**
+	 *
+	 *  The ids of the patients that have been merged inside this patient.
+	 */
 	mergedIds: Array<string> = [];
 
+	/**
+	 *
+	 *  An alias of the person, nickname, ...
+	 */
 	alias: string | undefined = undefined;
 
+	/**
+	 *
+	 *  Whether the patient is active.
+	 */
 	active: boolean = true;
 
+	/**
+	 *
+	 *  When not active, the reason for deactivation.
+	 */
 	deactivationReason: string = "none";
 
+	/**
+	 *
+	 *  Deactivation date of the patient.
+	 */
 	deactivationDate: number | undefined = undefined;
 
+	/**
+	 *
+	 *  Social security inscription number.
+	 */
 	ssin: string | undefined = undefined;
 
+	/**
+	 *
+	 *  Lastname at birth (can be different from the current name).
+	 */
 	maidenName: string | undefined = undefined;
 
+	/**
+	 *
+	 *  Lastname of the spouse for a married woman.
+	 */
 	spouseName: string | undefined = undefined;
 
+	/**
+	 *
+	 *  Lastname of the partner.
+	 */
 	partnerName: string | undefined = undefined;
 
+	/**
+	 *
+	 *  The personal/marital status of the patient.
+	 */
 	personalStatus: PersonalStatus | undefined = PersonalStatus.Unknown;
 
+	/**
+	 *
+	 *  The birthdate encoded as a fuzzy date on 8 positions (YYYYMMDD).
+	 */
 	dateOfBirth: number | undefined = undefined;
 
+	/**
+	 *
+	 *  The date of death encoded as a fuzzy date on 8 positions (YYYYMMDD).
+	 */
 	dateOfDeath: number | undefined = undefined;
 
+	/**
+	 *
+	 *  Timestamp of the latest validation of the eID of the person.
+	 */
 	timestampOfLatestEidReading: number | undefined = undefined;
 
+	/**
+	 *
+	 *  The place of birth.
+	 */
 	placeOfBirth: string | undefined = undefined;
 
+	/**
+	 *
+	 *  The place of death.
+	 */
 	placeOfDeath: string | undefined = undefined;
 
+	/**
+	 *
+	 *  Whether the patient is deceased.
+	 */
 	deceased: boolean | undefined = undefined;
 
+	/**
+	 *
+	 *  The level of education (college degree, undergraduate, phd).
+	 */
 	education: string | undefined = undefined;
 
+	/**
+	 *
+	 *  The current professional activity.
+	 */
 	profession: string | undefined = undefined;
 
+	/**
+	 *
+	 *  Localized text notes (can be confidential).
+	 */
 	notes: Array<Annotation> = [];
 
+	/**
+	 *
+	 *  A text note (can be confidential, encrypted by default).
+	 */
 	note: string | undefined = undefined;
 
+	/**
+	 *
+	 *  An administrative note, not confidential.
+	 */
 	administrativeNote: string | undefined = undefined;
 
+	/**
+	 *
+	 *  The nationality of the patient.
+	 */
 	nationality: string | undefined = undefined;
 
+	/**
+	 *
+	 *  The race of the patient.
+	 */
 	race: string | undefined = undefined;
 
+	/**
+	 *
+	 *  The ethnicity of the patient.
+	 */
 	ethnicity: string | undefined = undefined;
 
+	/**
+	 *
+	 *  The id of the user that usually handles this patient.
+	 */
 	preferredUserId: string | undefined = undefined;
 
+	/**
+	 *
+	 *  List of insurance coverages.
+	 */
 	insurabilities: Array<DecryptedInsurability> = [];
 
+	/**
+	 *
+	 *  List of partners, or persons of contact.
+	 */
 	partnerships: Array<Partnership> = [];
 
+	/**
+	 *
+	 *  Links between this patient and healthcare parties.
+	 */
 	patientHealthCareParties: Array<DecryptedPatientHealthCareParty> = [];
 
+	/**
+	 *
+	 *  Financial information used to reimburse the patient.
+	 */
 	financialInstitutionInformation: Array<DecryptedFinancialInstitutionInformation> = [];
 
+	/**
+	 *
+	 *  Contracts between the patient and the healthcare entity.
+	 */
 	medicalHouseContracts: Array<DecryptedMedicalHouseContract> = [];
 
+	/**
+	 *
+	 *  Codified list of professions exercised by this patient.
+	 */
 	patientProfessions: Array<CodeStub> = [];
 
+	/**
+	 *
+	 *  Extra parameters.
+	 */
 	parameters: { [ key: string ]: Array<string> } = {};
 
+	/**
+	 *
+	 *  Extra properties.
+	 */
 	properties: Array<DecryptedPropertyStub> = [];
 
+	/**
+	 *
+	 *  For each couple of HcParties, the AES exchange key.
+	 */
 	hcPartyKeys: { [ key: string ]: Array<HexString> } = {};
 
+	/**
+	 *
+	 *  Extra AES exchange keys, indexed by the owner of the pair and target data owner id.
+	 */
 	aesExchangeKeys: { [ key: string ]: { [ key: string ]: { [ key: string ]: HexString } } } = {};
 
+	/**
+	 *
+	 *  Keys used to transfer ownership of encrypted data between key pairs.
+	 */
 	transferKeys: { [ key: string ]: { [ key: string ]: HexString } } = {};
 
+	/**
+	 *
+	 *  Shamir partitions of the private key.
+	 */
 	privateKeyShamirPartitions: { [ key: string ]: HexString } = {};
 
+	/**
+	 *
+	 *  The public key of this patient, used to encrypt data for this patient.
+	 */
 	publicKey: SpkiHexString | undefined = undefined;
 
+	/**
+	 *
+	 *  Public keys for OAEP with SHA-256 encryption.
+	 */
 	publicKeysForOaepWithSha256: Array<SpkiHexString> = [];
 
+	/**
+	 *
+	 *  The secret patient key, encrypted in the patient's own AES key.
+	 */
 	secretForeignKeys: Array<string> = [];
 
+	/**
+	 *
+	 *  The patient id encrypted in the delegates' AES keys.
+	 */
 	cryptedForeignKeys: { [ key: string ]: Array<Delegation> } = {};
 
+	/**
+	 *
+	 *  The delegations giving access to connected healthcare information.
+	 */
 	delegations: { [ key: string ]: Array<Delegation> } = {};
 
+	/**
+	 *
+	 *  The keys used to encrypt this entity when stored encrypted.
+	 */
 	encryptionKeys: { [ key: string ]: Array<Delegation> } = {};
 
+	/**
+	 *
+	 *  The base64-encoded encrypted fields of this entity.
+	 */
 	encryptedSelf: Base64String | undefined = undefined;
 
+	/**
+	 *
+	 *  The security metadata of the entity.
+	 */
 	securityMetadata: SecurityMetadata | undefined = undefined;
 
+	/**
+	 *
+	 *  Properties related to crypto actor functionality.
+	 */
 	cryptoActorProperties: Array<DecryptedPropertyStub> = [];
 
+	/**
+	 *
+	 *  Always null for patients.
+	 */
 	parentId: undefined = undefined;
 
 	readonly isEncrypted: false = false;
@@ -547,140 +985,417 @@ export class DecryptedPatient {
 
 }
 
+/**
+ *
+ *  Represents a patient in the iCure platform. A patient is a person who receives healthcare
+ *  services.
+ *  This entity stores personal, administrative, and medical information about the patient, and
+ *  supports
+ *  end-to-end encryption of sensitive data.
+ *  /
+ */
 export class EncryptedPatient {
 
+	/**
+	 *
+	 *  The Id of the patient. We encourage using either a v4 UUID or a HL7 Id.
+	 */
 	id: string;
 
+	/**
+	 *
+	 *  The patient's identifiers, used by the client to uniquely identify the patient.
+	 */
 	identifier: Array<Identifier> = [];
 
+	/**
+	 *
+	 *  The revision of the patient in the database, used for conflict management / optimistic locking.
+	 */
 	rev: string | undefined = undefined;
 
+	/**
+	 *
+	 *  The timestamp (unix epoch in ms) of creation.
+	 */
 	created: number | undefined = undefined;
 
+	/**
+	 *
+	 *  The timestamp (unix epoch in ms) of the latest modification.
+	 */
 	modified: number | undefined = undefined;
 
+	/**
+	 *
+	 *  The id of the User that created this patient.
+	 */
 	author: string | undefined = undefined;
 
+	/**
+	 *
+	 *  The id of the HealthcareParty that is responsible for this patient.
+	 */
 	responsible: string | undefined = undefined;
 
+	/**
+	 *
+	 *  Tags that qualify the patient as being member of a certain class.
+	 */
 	tags: Array<CodeStub> = [];
 
+	/**
+	 *
+	 *  Codes that identify or qualify this particular patient.
+	 */
 	codes: Array<CodeStub> = [];
 
+	/**
+	 *
+	 *  Hard delete (unix epoch in ms) timestamp of the object.
+	 */
 	deletionDate: number | undefined = undefined;
 
+	/**
+	 *
+	 *  The firstname (name) of the patient.
+	 */
 	firstName: string | undefined = undefined;
 
+	/**
+	 *
+	 *  The lastname (surname) of the patient.
+	 */
 	lastName: string | undefined = undefined;
 
+	/**
+	 *
+	 *  The list of all names of the patient, ordered by preference of use.
+	 */
 	names: Array<PersonName> = [];
 
+	/**
+	 *
+	 *  The name of the company this patient is member of.
+	 */
 	companyName: string | undefined = undefined;
 
+	/**
+	 *
+	 *  The list of languages spoken by the patient ordered by fluency (alpha-2 code).
+	 */
 	languages: Array<string> = [];
 
+	/**
+	 *
+	 *  The list of addresses (with address type).
+	 */
 	addresses: Array<EncryptedAddress> = [];
 
+	/**
+	 *
+	 *  Mr., Ms., Pr., Dr. ...
+	 */
 	civility: string | undefined = undefined;
 
+	/**
+	 *
+	 *  The gender of the patient.
+	 */
 	gender: Gender | undefined = Gender.Unknown;
 
+	/**
+	 *
+	 *  The birth sex of the patient.
+	 */
 	birthSex: Gender | undefined = Gender.Unknown;
 
+	/**
+	 *
+	 *  The id of the patient this patient has been merged with.
+	 */
 	mergeToPatientId: string | undefined = undefined;
 
+	/**
+	 *
+	 *  The ids of the patients that have been merged inside this patient.
+	 */
 	mergedIds: Array<string> = [];
 
+	/**
+	 *
+	 *  An alias of the person, nickname, ...
+	 */
 	alias: string | undefined = undefined;
 
+	/**
+	 *
+	 *  Whether the patient is active.
+	 */
 	active: boolean = true;
 
+	/**
+	 *
+	 *  When not active, the reason for deactivation.
+	 */
 	deactivationReason: string = "none";
 
+	/**
+	 *
+	 *  Deactivation date of the patient.
+	 */
 	deactivationDate: number | undefined = undefined;
 
+	/**
+	 *
+	 *  Social security inscription number.
+	 */
 	ssin: string | undefined = undefined;
 
+	/**
+	 *
+	 *  Lastname at birth (can be different from the current name).
+	 */
 	maidenName: string | undefined = undefined;
 
+	/**
+	 *
+	 *  Lastname of the spouse for a married woman.
+	 */
 	spouseName: string | undefined = undefined;
 
+	/**
+	 *
+	 *  Lastname of the partner.
+	 */
 	partnerName: string | undefined = undefined;
 
+	/**
+	 *
+	 *  The personal/marital status of the patient.
+	 */
 	personalStatus: PersonalStatus | undefined = PersonalStatus.Unknown;
 
+	/**
+	 *
+	 *  The birthdate encoded as a fuzzy date on 8 positions (YYYYMMDD).
+	 */
 	dateOfBirth: number | undefined = undefined;
 
+	/**
+	 *
+	 *  The date of death encoded as a fuzzy date on 8 positions (YYYYMMDD).
+	 */
 	dateOfDeath: number | undefined = undefined;
 
+	/**
+	 *
+	 *  Timestamp of the latest validation of the eID of the person.
+	 */
 	timestampOfLatestEidReading: number | undefined = undefined;
 
+	/**
+	 *
+	 *  The place of birth.
+	 */
 	placeOfBirth: string | undefined = undefined;
 
+	/**
+	 *
+	 *  The place of death.
+	 */
 	placeOfDeath: string | undefined = undefined;
 
+	/**
+	 *
+	 *  Whether the patient is deceased.
+	 */
 	deceased: boolean | undefined = undefined;
 
+	/**
+	 *
+	 *  The level of education (college degree, undergraduate, phd).
+	 */
 	education: string | undefined = undefined;
 
+	/**
+	 *
+	 *  The current professional activity.
+	 */
 	profession: string | undefined = undefined;
 
+	/**
+	 *
+	 *  Localized text notes (can be confidential).
+	 */
 	notes: Array<Annotation> = [];
 
+	/**
+	 *
+	 *  A text note (can be confidential, encrypted by default).
+	 */
 	note: string | undefined = undefined;
 
+	/**
+	 *
+	 *  An administrative note, not confidential.
+	 */
 	administrativeNote: string | undefined = undefined;
 
+	/**
+	 *
+	 *  The nationality of the patient.
+	 */
 	nationality: string | undefined = undefined;
 
+	/**
+	 *
+	 *  The race of the patient.
+	 */
 	race: string | undefined = undefined;
 
+	/**
+	 *
+	 *  The ethnicity of the patient.
+	 */
 	ethnicity: string | undefined = undefined;
 
+	/**
+	 *
+	 *  The id of the user that usually handles this patient.
+	 */
 	preferredUserId: string | undefined = undefined;
 
+	/**
+	 *
+	 *  List of insurance coverages.
+	 */
 	insurabilities: Array<EncryptedInsurability> = [];
 
+	/**
+	 *
+	 *  List of partners, or persons of contact.
+	 */
 	partnerships: Array<Partnership> = [];
 
+	/**
+	 *
+	 *  Links between this patient and healthcare parties.
+	 */
 	patientHealthCareParties: Array<EncryptedPatientHealthCareParty> = [];
 
+	/**
+	 *
+	 *  Financial information used to reimburse the patient.
+	 */
 	financialInstitutionInformation: Array<EncryptedFinancialInstitutionInformation> = [];
 
+	/**
+	 *
+	 *  Contracts between the patient and the healthcare entity.
+	 */
 	medicalHouseContracts: Array<EncryptedMedicalHouseContract> = [];
 
+	/**
+	 *
+	 *  Codified list of professions exercised by this patient.
+	 */
 	patientProfessions: Array<CodeStub> = [];
 
+	/**
+	 *
+	 *  Extra parameters.
+	 */
 	parameters: { [ key: string ]: Array<string> } = {};
 
+	/**
+	 *
+	 *  Extra properties.
+	 */
 	properties: Array<EncryptedPropertyStub> = [];
 
+	/**
+	 *
+	 *  For each couple of HcParties, the AES exchange key.
+	 */
 	hcPartyKeys: { [ key: string ]: Array<HexString> } = {};
 
+	/**
+	 *
+	 *  Extra AES exchange keys, indexed by the owner of the pair and target data owner id.
+	 */
 	aesExchangeKeys: { [ key: string ]: { [ key: string ]: { [ key: string ]: HexString } } } = {};
 
+	/**
+	 *
+	 *  Keys used to transfer ownership of encrypted data between key pairs.
+	 */
 	transferKeys: { [ key: string ]: { [ key: string ]: HexString } } = {};
 
+	/**
+	 *
+	 *  Shamir partitions of the private key.
+	 */
 	privateKeyShamirPartitions: { [ key: string ]: HexString } = {};
 
+	/**
+	 *
+	 *  The public key of this patient, used to encrypt data for this patient.
+	 */
 	publicKey: SpkiHexString | undefined = undefined;
 
+	/**
+	 *
+	 *  Public keys for OAEP with SHA-256 encryption.
+	 */
 	publicKeysForOaepWithSha256: Array<SpkiHexString> = [];
 
+	/**
+	 *
+	 *  The secret patient key, encrypted in the patient's own AES key.
+	 */
 	secretForeignKeys: Array<string> = [];
 
+	/**
+	 *
+	 *  The patient id encrypted in the delegates' AES keys.
+	 */
 	cryptedForeignKeys: { [ key: string ]: Array<Delegation> } = {};
 
+	/**
+	 *
+	 *  The delegations giving access to connected healthcare information.
+	 */
 	delegations: { [ key: string ]: Array<Delegation> } = {};
 
+	/**
+	 *
+	 *  The keys used to encrypt this entity when stored encrypted.
+	 */
 	encryptionKeys: { [ key: string ]: Array<Delegation> } = {};
 
+	/**
+	 *
+	 *  The base64-encoded encrypted fields of this entity.
+	 */
 	encryptedSelf: Base64String | undefined = undefined;
 
+	/**
+	 *
+	 *  The security metadata of the entity.
+	 */
 	securityMetadata: SecurityMetadata | undefined = undefined;
 
+	/**
+	 *
+	 *  Properties related to crypto actor functionality.
+	 */
 	cryptoActorProperties: Array<DecryptedPropertyStub> = [];
 
+	/**
+	 *
+	 *  Always null for patients.
+	 */
 	parentId: undefined = undefined;
 
 	readonly isEncrypted: true = true;

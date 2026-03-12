@@ -3,12 +3,31 @@ import {expectArray, expectNumber, expectObject, expectString, extractEntry} fro
 import {DatabaseInfo} from './DatabaseInfo.mjs';
 
 
+/**
+ *
+ *  Data transfer object aggregating database information for all databases belonging to a specific
+ *  group,
+ *  including their storage sizes and GCP storage usage.
+ *  /
+ */
 export class GroupDatabasesInfo {
 
+	/**
+	 *
+	 *  The identifier of the group.
+	 */
 	groupId: string;
 
+	/**
+	 *
+	 *  The list of database information entries for this group.
+	 */
 	databasesInfo: Array<DatabaseInfo>;
 
+	/**
+	 *
+	 *  The total GCP storage size in bytes used by this group.
+	 */
 	gcpStorageSize: number;
 
 	constructor(partial: Partial<GroupDatabasesInfo> & Pick<GroupDatabasesInfo, "groupId" | "databasesInfo" | "gcpStorageSize">) {

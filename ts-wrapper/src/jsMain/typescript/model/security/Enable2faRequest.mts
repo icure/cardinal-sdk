@@ -2,10 +2,23 @@
 import {expectNumber, expectString, extractEntry} from '../../internal/JsonDecodeUtils.mjs';
 
 
+/**
+ *
+ *
+ *   Request payload for enabling two-factor authentication (2FA) for a user account.
+ */
 export class Enable2faRequest {
 
+	/**
+	 *
+	 *  The shared TOTP secret used to generate one-time passwords.
+	 */
 	secret: string;
 
+	/**
+	 *
+	 *  The number of digits in each generated one-time password.
+	 */
 	otpLength: number;
 
 	constructor(partial: Partial<Enable2faRequest> & Pick<Enable2faRequest, "secret" | "otpLength">) {

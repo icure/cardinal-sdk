@@ -93,6 +93,13 @@ export interface GroupApi {
 	getOperationTokenForGroup(groupId: string, operation: Operation, duration: number | undefined,
 			description: string | undefined): Promise<string>;
 
+	/**
+	 *
+	 *  Sets the projectId of a group and optionally applies the change to all its subgroups (direct and indirect child groups).
+	 *  @param groupId the id of the group to update.
+	 *  @param projectId the new projectId to set. If null, any existing projectId will be removed.
+	 *  @param applyToSubgroups if true, the change will be applied
+	 */
 	setGroupProjectId(groupId: string, projectId: string | undefined,
 			applyToSubgroups: boolean): Promise<void>;
 

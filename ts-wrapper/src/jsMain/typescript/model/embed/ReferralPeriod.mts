@@ -2,12 +2,29 @@
 import {expectNumber, expectString, extractEntry} from '../../internal/JsonDecodeUtils.mjs';
 
 
+/**
+ *
+ *  Represents a time-bounded referral period between a patient and a healthcare party.
+ *  /
+ */
 export class ReferralPeriod {
 
+	/**
+	 *
+	 *  The date when the referral period started.
+	 */
 	startDate: number | undefined = undefined;
 
+	/**
+	 *
+	 *  The date when the referral period ended.
+	 */
 	endDate: number | undefined = undefined;
 
+	/**
+	 *
+	 *  Comments made during the referral.
+	 */
 	comment: string | undefined = undefined;
 
 	constructor(partial: Partial<ReferralPeriod>) {

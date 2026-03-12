@@ -2,10 +2,24 @@
 import {expectNumber, expectString, extractEntry} from '../../internal/JsonDecodeUtils.mjs';
 
 
+/**
+ *
+ *  Data transfer object representing a labelled occurrence count, typically used for aggregation
+ *  results.
+ *  /
+ */
 export class LabelledOccurence {
 
+	/**
+	 *
+	 *  The label identifying what is being counted.
+	 */
 	label: string;
 
+	/**
+	 *
+	 *  The number of occurrences for this label.
+	 */
 	occurence: number;
 
 	constructor(partial: Partial<LabelledOccurence> & Pick<LabelledOccurence, "label" | "occurence">) {

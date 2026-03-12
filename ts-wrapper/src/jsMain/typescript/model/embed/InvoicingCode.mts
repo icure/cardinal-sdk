@@ -5,116 +5,343 @@ import {Encryptable} from './Encryptable.mjs';
 import {PaymentType} from './PaymentType.mjs';
 
 
+/**
+ *
+ *  Represents an invoicing code within an invoice, containing tarification details, amounts,
+ *  prescriber information,
+ *  and lifecycle status flags. Each invoicing code corresponds to a billable medical act or service.
+ *  /
+ */
 export interface InvoicingCode extends Encryptable {
 
+	/**
+	 *
+	 *  The unique identifier of this invoicing code.
+	 */
 	id: string | undefined;
 
+	/**
+	 *
+	 *  The date of the invoicing code as a long (yyyyMMdd format).
+	 */
 	dateCode: number | undefined;
 
+	/**
+	 *
+	 *  A logical identifier that remains stable when a code is resent to the insuring organization.
+	 */
 	logicalId: string | undefined;
 
+	/**
+	 *
+	 *  The label of the invoicing code.
+	 */
 	label: string | undefined;
 
+	/**
+	 *
+	 *  The identifier of the user who created this invoicing code.
+	 */
 	userId: string | undefined;
 
+	/**
+	 *
+	 *  The identifier of the associated contact.
+	 */
 	contactId: string | undefined;
 
+	/**
+	 *
+	 *  The identifier of the associated service.
+	 */
 	serviceId: string | undefined;
 
+	/**
+	 *
+	 *  The identifier of the associated tarification.
+	 */
 	pricingId: string | undefined;
 
+	/**
+	 *
+	 *  The code value, for obsolete codes or codes not linked to a tarification.
+	 */
 	code: string | undefined;
 
+	/**
+	 *
+	 *  The type of payment.
+	 */
 	paymentType: PaymentType | undefined;
 
+	/**
+	 *
+	 *  The amount already paid.
+	 */
 	paid: number | undefined;
 
+	/**
+	 *
+	 *  The total amount (reimbursement + doctor supplement + intervention).
+	 */
 	totalAmount: number | undefined;
 
+	/**
+	 *
+	 *  The reimbursement amount.
+	 */
 	reimbursement: number | undefined;
 
+	/**
+	 *
+	 *  The patient intervention amount.
+	 */
 	patientIntervention: number | undefined;
 
+	/**
+	 *
+	 *  The AMI (insurance) intervention amount.
+	 */
 	amiIntervention: number | undefined;
 
+	/**
+	 *
+	 *  The doctor supplement amount.
+	 */
 	doctorSupplement: number | undefined;
 
+	/**
+	 *
+	 *  The convention amount (reimbursement + intervention).
+	 */
 	conventionAmount: number | undefined;
 
+	/**
+	 *
+	 *  The VAT amount.
+	 */
 	vat: number | undefined;
 
+	/**
+	 *
+	 *  The error message from eTarif, if any.
+	 */
 	error: string | undefined;
 
+	/**
+	 *
+	 *  The contract identifier.
+	 */
 	contract: string | undefined;
 
+	/**
+	 *
+	 *  The contract date.
+	 */
 	contractDate: number | undefined;
 
+	/**
+	 *
+	 *  The number of units.
+	 */
 	units: number | undefined;
 
+	/**
+	 *
+	 *  The side indicator.
+	 */
 	side: number | undefined;
 
+	/**
+	 *
+	 *  The time of day.
+	 */
 	timeOfDay: number | undefined;
 
+	/**
+	 *
+	 *  The hour when the eID was read.
+	 */
 	eidReadingHour: number | undefined;
 
+	/**
+	 *
+	 *  The value read from the eID.
+	 */
 	eidReadingValue: string | undefined;
 
+	/**
+	 *
+	 *  The override code for third-party payer.
+	 */
 	override3rdPayerCode: number | undefined;
 
+	/**
+	 *
+	 *  The reason for overriding the third-party payer.
+	 */
 	override3rdPayerReason: string | undefined;
 
+	/**
+	 *
+	 *  The transplantation code.
+	 */
 	transplantationCode: number | undefined;
 
+	/**
+	 *
+	 *  The prescriber norm code.
+	 */
 	prescriberNorm: number | undefined;
 
+	/**
+	 *
+	 *  The label of the product.
+	 */
 	productLabel: string | undefined;
 
+	/**
+	 *
+	 *  The percent norm.
+	 */
 	percentNorm: number | undefined;
 
+	/**
+	 *
+	 *  The NIHII number of the prescriber.
+	 */
 	prescriberNihii: string | undefined;
 
+	/**
+	 *
+	 *  A related code.
+	 */
 	relatedCode: string | undefined;
 
+	/**
+	 *
+	 *  The prescription date (yyyyMMdd).
+	 */
 	prescriptionDate: number | undefined;
 
+	/**
+	 *
+	 *  The maximum derogation number.
+	 */
 	derogationMaxNumber: number | undefined;
 
+	/**
+	 *
+	 *  The SSIN of the prescriber.
+	 */
 	prescriberSsin: string | undefined;
 
+	/**
+	 *
+	 *  The last name of the prescriber.
+	 */
 	prescriberLastName: string | undefined;
 
+	/**
+	 *
+	 *  The first name of the prescriber.
+	 */
 	prescriberFirstName: string | undefined;
 
+	/**
+	 *
+	 *  The CD-HCPARTY code of the prescriber.
+	 */
 	prescriberCdHcParty: string | undefined;
 
+	/**
+	 *
+	 *  The NIHII number of the location.
+	 */
 	locationNihii: string | undefined;
 
+	/**
+	 *
+	 *  The CD-HCPARTY code of the location.
+	 */
 	locationCdHcParty: string | undefined;
 
+	/**
+	 *
+	 *  The service code of the location.
+	 */
 	locationService: number | undefined;
 
+	/**
+	 *
+	 *  The admission date.
+	 */
 	admissionDate: number | undefined;
 
+	/**
+	 *
+	 *  Whether this code has been canceled.
+	 */
 	canceled: boolean | undefined;
 
+	/**
+	 *
+	 *  Whether this code has been accepted.
+	 */
 	accepted: boolean | undefined;
 
+	/**
+	 *
+	 *  Whether this code is pending.
+	 */
 	pending: boolean | undefined;
 
+	/**
+	 *
+	 *  Whether this code has been resent.
+	 */
 	resent: boolean | undefined;
 
+	/**
+	 *
+	 *  Whether this code has been archived.
+	 */
 	archived: boolean | undefined;
 
+	/**
+	 *
+	 *  Whether this code has been lost.
+	 */
 	lost: boolean | undefined;
 
+	/**
+	 *
+	 *  The insurance justification code.
+	 */
 	insuranceJustification: number | undefined;
 
+	/**
+	 *
+	 *  The reason for canceling patient intervention.
+	 */
 	cancelPatientInterventionReason: number | undefined;
 
+	/**
+	 *
+	 *  The status bitmask of this invoicing code.
+	 */
 	status: number | undefined;
 
+	/**
+	 *
+	 *  The label of the code.
+	 */
 	codeLabel: string | undefined;
 
+	/**
+	 *
+	 *  Additional options as key-value pairs.
+	 */
 	options: { [ key: string ]: string };
 
 	readonly isEncrypted: boolean;
@@ -123,118 +350,349 @@ export interface InvoicingCode extends Encryptable {
 
 }
 
+/**
+ *
+ *  Represents an invoicing code within an invoice, containing tarification details, amounts,
+ *  prescriber information,
+ *  and lifecycle status flags. Each invoicing code corresponds to a billable medical act or service.
+ *  /
+ */
 export class DecryptedInvoicingCode {
 
+	/**
+	 *
+	 *  The unique identifier of this invoicing code.
+	 */
 	id: string | undefined;
 
+	/**
+	 *
+	 *  The date of the invoicing code as a long (yyyyMMdd format).
+	 */
 	dateCode: number | undefined = undefined;
 
+	/**
+	 *
+	 *  A logical identifier that remains stable when a code is resent to the insuring organization.
+	 */
 	logicalId: string | undefined = undefined;
 
+	/**
+	 *
+	 *  The label of the invoicing code.
+	 */
 	label: string | undefined = undefined;
 
+	/**
+	 *
+	 *  The identifier of the user who created this invoicing code.
+	 */
 	userId: string | undefined = undefined;
 
+	/**
+	 *
+	 *  The identifier of the associated contact.
+	 */
 	contactId: string | undefined = undefined;
 
+	/**
+	 *
+	 *  The identifier of the associated service.
+	 */
 	serviceId: string | undefined = undefined;
 
+	/**
+	 *
+	 *  The identifier of the associated tarification.
+	 */
 	pricingId: string | undefined = undefined;
 
+	/**
+	 *
+	 *  The code value, for obsolete codes or codes not linked to a tarification.
+	 */
 	code: string | undefined = undefined;
 
+	/**
+	 *
+	 *  The type of payment.
+	 */
 	paymentType: PaymentType | undefined = undefined;
 
+	/**
+	 *
+	 *  The amount already paid.
+	 */
 	paid: number | undefined = undefined;
 
+	/**
+	 *
+	 *  The total amount (reimbursement + doctor supplement + intervention).
+	 */
 	totalAmount: number | undefined = undefined;
 
+	/**
+	 *
+	 *  The reimbursement amount.
+	 */
 	reimbursement: number | undefined = undefined;
 
+	/**
+	 *
+	 *  The patient intervention amount.
+	 */
 	patientIntervention: number | undefined = undefined;
 
+	/**
+	 *
+	 *  The AMI (insurance) intervention amount.
+	 */
 	amiIntervention: number | undefined = undefined;
 
+	/**
+	 *
+	 *  The doctor supplement amount.
+	 */
 	doctorSupplement: number | undefined = undefined;
 
+	/**
+	 *
+	 *  The convention amount (reimbursement + intervention).
+	 */
 	conventionAmount: number | undefined = undefined;
 
+	/**
+	 *
+	 *  The VAT amount.
+	 */
 	vat: number | undefined = undefined;
 
+	/**
+	 *
+	 *  The error message from eTarif, if any.
+	 */
 	error: string | undefined = undefined;
 
+	/**
+	 *
+	 *  The contract identifier.
+	 */
 	contract: string | undefined = undefined;
 
+	/**
+	 *
+	 *  The contract date.
+	 */
 	contractDate: number | undefined = undefined;
 
+	/**
+	 *
+	 *  The number of units.
+	 */
 	units: number | undefined = undefined;
 
+	/**
+	 *
+	 *  The side indicator.
+	 */
 	side: number | undefined = undefined;
 
+	/**
+	 *
+	 *  The time of day.
+	 */
 	timeOfDay: number | undefined = undefined;
 
+	/**
+	 *
+	 *  The hour when the eID was read.
+	 */
 	eidReadingHour: number | undefined = undefined;
 
+	/**
+	 *
+	 *  The value read from the eID.
+	 */
 	eidReadingValue: string | undefined = undefined;
 
+	/**
+	 *
+	 *  The override code for third-party payer.
+	 */
 	override3rdPayerCode: number | undefined = undefined;
 
+	/**
+	 *
+	 *  The reason for overriding the third-party payer.
+	 */
 	override3rdPayerReason: string | undefined = undefined;
 
+	/**
+	 *
+	 *  The transplantation code.
+	 */
 	transplantationCode: number | undefined = undefined;
 
+	/**
+	 *
+	 *  The prescriber norm code.
+	 */
 	prescriberNorm: number | undefined = undefined;
 
+	/**
+	 *
+	 *  The label of the product.
+	 */
 	productLabel: string | undefined = undefined;
 
+	/**
+	 *
+	 *  The percent norm.
+	 */
 	percentNorm: number | undefined = undefined;
 
+	/**
+	 *
+	 *  The NIHII number of the prescriber.
+	 */
 	prescriberNihii: string | undefined = undefined;
 
+	/**
+	 *
+	 *  A related code.
+	 */
 	relatedCode: string | undefined = undefined;
 
+	/**
+	 *
+	 *  The prescription date (yyyyMMdd).
+	 */
 	prescriptionDate: number | undefined = undefined;
 
+	/**
+	 *
+	 *  The maximum derogation number.
+	 */
 	derogationMaxNumber: number | undefined = undefined;
 
+	/**
+	 *
+	 *  The SSIN of the prescriber.
+	 */
 	prescriberSsin: string | undefined = undefined;
 
+	/**
+	 *
+	 *  The last name of the prescriber.
+	 */
 	prescriberLastName: string | undefined = undefined;
 
+	/**
+	 *
+	 *  The first name of the prescriber.
+	 */
 	prescriberFirstName: string | undefined = undefined;
 
+	/**
+	 *
+	 *  The CD-HCPARTY code of the prescriber.
+	 */
 	prescriberCdHcParty: string | undefined = undefined;
 
+	/**
+	 *
+	 *  The NIHII number of the location.
+	 */
 	locationNihii: string | undefined = undefined;
 
+	/**
+	 *
+	 *  The CD-HCPARTY code of the location.
+	 */
 	locationCdHcParty: string | undefined = undefined;
 
+	/**
+	 *
+	 *  The service code of the location.
+	 */
 	locationService: number | undefined = undefined;
 
+	/**
+	 *
+	 *  The admission date.
+	 */
 	admissionDate: number | undefined = undefined;
 
+	/**
+	 *
+	 *  Whether this code has been canceled.
+	 */
 	canceled: boolean | undefined = undefined;
 
+	/**
+	 *
+	 *  Whether this code has been accepted.
+	 */
 	accepted: boolean | undefined = undefined;
 
+	/**
+	 *
+	 *  Whether this code is pending.
+	 */
 	pending: boolean | undefined = undefined;
 
+	/**
+	 *
+	 *  Whether this code has been resent.
+	 */
 	resent: boolean | undefined = undefined;
 
+	/**
+	 *
+	 *  Whether this code has been archived.
+	 */
 	archived: boolean | undefined = undefined;
 
+	/**
+	 *
+	 *  Whether this code has been lost.
+	 */
 	lost: boolean | undefined = undefined;
 
+	/**
+	 *
+	 *  The insurance justification code.
+	 */
 	insuranceJustification: number | undefined = undefined;
 
+	/**
+	 *
+	 *  The reason for canceling patient intervention.
+	 */
 	cancelPatientInterventionReason: number | undefined = undefined;
 
+	/**
+	 *
+	 *  The status bitmask of this invoicing code.
+	 */
 	status: number | undefined = undefined;
 
+	/**
+	 *
+	 *  The label of the code.
+	 */
 	codeLabel: string | undefined = undefined;
 
+	/**
+	 *
+	 *  Additional options as key-value pairs.
+	 */
 	options: { [ key: string ]: string } = {};
 
+	/**
+	 *
+	 *  The base64-encoded encrypted content.
+	 */
 	encryptedSelf: Base64String | undefined = undefined;
 
 	readonly isEncrypted: false = false;
@@ -438,118 +896,349 @@ export class DecryptedInvoicingCode {
 
 }
 
+/**
+ *
+ *  Represents an invoicing code within an invoice, containing tarification details, amounts,
+ *  prescriber information,
+ *  and lifecycle status flags. Each invoicing code corresponds to a billable medical act or service.
+ *  /
+ */
 export class EncryptedInvoicingCode {
 
+	/**
+	 *
+	 *  The unique identifier of this invoicing code.
+	 */
 	id: string | undefined;
 
+	/**
+	 *
+	 *  The date of the invoicing code as a long (yyyyMMdd format).
+	 */
 	dateCode: number | undefined = undefined;
 
+	/**
+	 *
+	 *  A logical identifier that remains stable when a code is resent to the insuring organization.
+	 */
 	logicalId: string | undefined = undefined;
 
+	/**
+	 *
+	 *  The label of the invoicing code.
+	 */
 	label: string | undefined = undefined;
 
+	/**
+	 *
+	 *  The identifier of the user who created this invoicing code.
+	 */
 	userId: string | undefined = undefined;
 
+	/**
+	 *
+	 *  The identifier of the associated contact.
+	 */
 	contactId: string | undefined = undefined;
 
+	/**
+	 *
+	 *  The identifier of the associated service.
+	 */
 	serviceId: string | undefined = undefined;
 
+	/**
+	 *
+	 *  The identifier of the associated tarification.
+	 */
 	pricingId: string | undefined = undefined;
 
+	/**
+	 *
+	 *  The code value, for obsolete codes or codes not linked to a tarification.
+	 */
 	code: string | undefined = undefined;
 
+	/**
+	 *
+	 *  The type of payment.
+	 */
 	paymentType: PaymentType | undefined = undefined;
 
+	/**
+	 *
+	 *  The amount already paid.
+	 */
 	paid: number | undefined = undefined;
 
+	/**
+	 *
+	 *  The total amount (reimbursement + doctor supplement + intervention).
+	 */
 	totalAmount: number | undefined = undefined;
 
+	/**
+	 *
+	 *  The reimbursement amount.
+	 */
 	reimbursement: number | undefined = undefined;
 
+	/**
+	 *
+	 *  The patient intervention amount.
+	 */
 	patientIntervention: number | undefined = undefined;
 
+	/**
+	 *
+	 *  The AMI (insurance) intervention amount.
+	 */
 	amiIntervention: number | undefined = undefined;
 
+	/**
+	 *
+	 *  The doctor supplement amount.
+	 */
 	doctorSupplement: number | undefined = undefined;
 
+	/**
+	 *
+	 *  The convention amount (reimbursement + intervention).
+	 */
 	conventionAmount: number | undefined = undefined;
 
+	/**
+	 *
+	 *  The VAT amount.
+	 */
 	vat: number | undefined = undefined;
 
+	/**
+	 *
+	 *  The error message from eTarif, if any.
+	 */
 	error: string | undefined = undefined;
 
+	/**
+	 *
+	 *  The contract identifier.
+	 */
 	contract: string | undefined = undefined;
 
+	/**
+	 *
+	 *  The contract date.
+	 */
 	contractDate: number | undefined = undefined;
 
+	/**
+	 *
+	 *  The number of units.
+	 */
 	units: number | undefined = undefined;
 
+	/**
+	 *
+	 *  The side indicator.
+	 */
 	side: number | undefined = undefined;
 
+	/**
+	 *
+	 *  The time of day.
+	 */
 	timeOfDay: number | undefined = undefined;
 
+	/**
+	 *
+	 *  The hour when the eID was read.
+	 */
 	eidReadingHour: number | undefined = undefined;
 
+	/**
+	 *
+	 *  The value read from the eID.
+	 */
 	eidReadingValue: string | undefined = undefined;
 
+	/**
+	 *
+	 *  The override code for third-party payer.
+	 */
 	override3rdPayerCode: number | undefined = undefined;
 
+	/**
+	 *
+	 *  The reason for overriding the third-party payer.
+	 */
 	override3rdPayerReason: string | undefined = undefined;
 
+	/**
+	 *
+	 *  The transplantation code.
+	 */
 	transplantationCode: number | undefined = undefined;
 
+	/**
+	 *
+	 *  The prescriber norm code.
+	 */
 	prescriberNorm: number | undefined = undefined;
 
+	/**
+	 *
+	 *  The label of the product.
+	 */
 	productLabel: string | undefined = undefined;
 
+	/**
+	 *
+	 *  The percent norm.
+	 */
 	percentNorm: number | undefined = undefined;
 
+	/**
+	 *
+	 *  The NIHII number of the prescriber.
+	 */
 	prescriberNihii: string | undefined = undefined;
 
+	/**
+	 *
+	 *  A related code.
+	 */
 	relatedCode: string | undefined = undefined;
 
+	/**
+	 *
+	 *  The prescription date (yyyyMMdd).
+	 */
 	prescriptionDate: number | undefined = undefined;
 
+	/**
+	 *
+	 *  The maximum derogation number.
+	 */
 	derogationMaxNumber: number | undefined = undefined;
 
+	/**
+	 *
+	 *  The SSIN of the prescriber.
+	 */
 	prescriberSsin: string | undefined = undefined;
 
+	/**
+	 *
+	 *  The last name of the prescriber.
+	 */
 	prescriberLastName: string | undefined = undefined;
 
+	/**
+	 *
+	 *  The first name of the prescriber.
+	 */
 	prescriberFirstName: string | undefined = undefined;
 
+	/**
+	 *
+	 *  The CD-HCPARTY code of the prescriber.
+	 */
 	prescriberCdHcParty: string | undefined = undefined;
 
+	/**
+	 *
+	 *  The NIHII number of the location.
+	 */
 	locationNihii: string | undefined = undefined;
 
+	/**
+	 *
+	 *  The CD-HCPARTY code of the location.
+	 */
 	locationCdHcParty: string | undefined = undefined;
 
+	/**
+	 *
+	 *  The service code of the location.
+	 */
 	locationService: number | undefined = undefined;
 
+	/**
+	 *
+	 *  The admission date.
+	 */
 	admissionDate: number | undefined = undefined;
 
+	/**
+	 *
+	 *  Whether this code has been canceled.
+	 */
 	canceled: boolean | undefined = undefined;
 
+	/**
+	 *
+	 *  Whether this code has been accepted.
+	 */
 	accepted: boolean | undefined = undefined;
 
+	/**
+	 *
+	 *  Whether this code is pending.
+	 */
 	pending: boolean | undefined = undefined;
 
+	/**
+	 *
+	 *  Whether this code has been resent.
+	 */
 	resent: boolean | undefined = undefined;
 
+	/**
+	 *
+	 *  Whether this code has been archived.
+	 */
 	archived: boolean | undefined = undefined;
 
+	/**
+	 *
+	 *  Whether this code has been lost.
+	 */
 	lost: boolean | undefined = undefined;
 
+	/**
+	 *
+	 *  The insurance justification code.
+	 */
 	insuranceJustification: number | undefined = undefined;
 
+	/**
+	 *
+	 *  The reason for canceling patient intervention.
+	 */
 	cancelPatientInterventionReason: number | undefined = undefined;
 
+	/**
+	 *
+	 *  The status bitmask of this invoicing code.
+	 */
 	status: number | undefined = undefined;
 
+	/**
+	 *
+	 *  The label of the code.
+	 */
 	codeLabel: string | undefined = undefined;
 
+	/**
+	 *
+	 *  Additional options as key-value pairs.
+	 */
 	options: { [ key: string ]: string } = {};
 
+	/**
+	 *
+	 *  The base64-encoded encrypted content.
+	 */
 	encryptedSelf: Base64String | undefined = undefined;
 
 	readonly isEncrypted: true = true;

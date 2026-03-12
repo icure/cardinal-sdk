@@ -11,16 +11,42 @@ import {SecurityMetadata} from './embed/SecurityMetadata.mjs';
 import {Base64String} from './specializations/Base64String.mjs';
 
 
+/**
+ *
+ *  Represents an access log entry that records access to medical data or resources within the
+ *  system.
+ *  /
+ */
 export interface AccessLog extends StoredDocument, ICureDocument<string>, HasEncryptionMetadata, Encryptable {
 
+	/**
+	 *
+	 *  Id of the object that is being requested.
+	 */
 	objectId: string | undefined;
 
+	/**
+	 *
+	 *  The type of access.
+	 */
 	accessType: string | undefined;
 
+	/**
+	 *
+	 *  Id of the user making the requests.
+	 */
 	user: string | undefined;
 
+	/**
+	 *
+	 *  Further details about the access.
+	 */
 	detail: string | undefined;
 
+	/**
+	 *
+	 *  The date of logging, filled instantaneously.
+	 */
 	date: number | undefined;
 
 	readonly isEncrypted: boolean;
@@ -29,46 +55,134 @@ export interface AccessLog extends StoredDocument, ICureDocument<string>, HasEnc
 
 }
 
+/**
+ *
+ *  Represents an access log entry that records access to medical data or resources within the
+ *  system.
+ *  /
+ */
 export class DecryptedAccessLog {
 
+	/**
+	 *
+	 *  The Id of the access log. We encourage using either a v4 UUID or a HL7 Id.
+	 */
 	id: string;
 
+	/**
+	 *
+	 *  The revision of the access log in the database, used for conflict management / optimistic
+	 *  locking.
+	 */
 	rev: string | undefined = undefined;
 
+	/**
+	 *
+	 *  The timestamp (unix epoch in ms) of creation of this entity.
+	 */
 	created: number | undefined = undefined;
 
+	/**
+	 *
+	 *  The timestamp (unix epoch in ms) of the latest modification of this entity.
+	 */
 	modified: number | undefined = undefined;
 
+	/**
+	 *
+	 *  The id of the User that created this access log.
+	 */
 	author: string | undefined = undefined;
 
+	/**
+	 *
+	 *  The id of the data owner that is responsible for this access log.
+	 */
 	responsible: string | undefined = undefined;
 
+	/**
+	 *
+	 *  Tags that qualify the access log as being member of a certain class.
+	 */
 	tags: Array<CodeStub> = [];
 
+	/**
+	 *
+	 *  Codes that identify or qualify this particular access log.
+	 */
 	codes: Array<CodeStub> = [];
 
+	/**
+	 *
+	 *  Hard delete (unix epoch in ms) timestamp of the object.
+	 */
 	deletionDate: number | undefined = undefined;
 
+	/**
+	 *
+	 *  Id of the object that is being requested.
+	 */
 	objectId: string | undefined = undefined;
 
+	/**
+	 *
+	 *  The type of access.
+	 */
 	accessType: string | undefined = undefined;
 
+	/**
+	 *
+	 *  Id of the user making the requests.
+	 */
 	user: string | undefined = undefined;
 
+	/**
+	 *
+	 *  Further details about the access.
+	 */
 	detail: string | undefined = undefined;
 
+	/**
+	 *
+	 *  The date of logging, filled instantaneously.
+	 */
 	date: number | undefined = undefined;
 
+	/**
+	 *
+	 *  The secret foreign keys of the access log, used for secure linking to patients.
+	 */
 	secretForeignKeys: Array<string> = [];
 
+	/**
+	 *
+	 *  The encrypted foreign keys, mapping owner data owner id to encrypted patient ids.
+	 */
 	cryptedForeignKeys: { [ key: string ]: Array<Delegation> } = {};
 
+	/**
+	 *
+	 *  The delegations giving access to all connected healthcare information.
+	 */
 	delegations: { [ key: string ]: Array<Delegation> } = {};
 
+	/**
+	 *
+	 *  The encryption keys used to encrypt the secured properties, encrypted for separate Crypto
+	 *  Actors.
+	 */
 	encryptionKeys: { [ key: string ]: Array<Delegation> } = {};
 
+	/**
+	 *
+	 *  The base64-encoded encrypted fields of this access log.
+	 */
 	encryptedSelf: Base64String | undefined = undefined;
 
+	/**
+	 *
+	 *  The security metadata of this entity, for access control.
+	 */
 	securityMetadata: SecurityMetadata | undefined = undefined;
 
 	readonly isEncrypted: false = false;
@@ -176,46 +290,134 @@ export class DecryptedAccessLog {
 
 }
 
+/**
+ *
+ *  Represents an access log entry that records access to medical data or resources within the
+ *  system.
+ *  /
+ */
 export class EncryptedAccessLog {
 
+	/**
+	 *
+	 *  The Id of the access log. We encourage using either a v4 UUID or a HL7 Id.
+	 */
 	id: string;
 
+	/**
+	 *
+	 *  The revision of the access log in the database, used for conflict management / optimistic
+	 *  locking.
+	 */
 	rev: string | undefined = undefined;
 
+	/**
+	 *
+	 *  The timestamp (unix epoch in ms) of creation of this entity.
+	 */
 	created: number | undefined = undefined;
 
+	/**
+	 *
+	 *  The timestamp (unix epoch in ms) of the latest modification of this entity.
+	 */
 	modified: number | undefined = undefined;
 
+	/**
+	 *
+	 *  The id of the User that created this access log.
+	 */
 	author: string | undefined = undefined;
 
+	/**
+	 *
+	 *  The id of the data owner that is responsible for this access log.
+	 */
 	responsible: string | undefined = undefined;
 
+	/**
+	 *
+	 *  Tags that qualify the access log as being member of a certain class.
+	 */
 	tags: Array<CodeStub> = [];
 
+	/**
+	 *
+	 *  Codes that identify or qualify this particular access log.
+	 */
 	codes: Array<CodeStub> = [];
 
+	/**
+	 *
+	 *  Hard delete (unix epoch in ms) timestamp of the object.
+	 */
 	deletionDate: number | undefined = undefined;
 
+	/**
+	 *
+	 *  Id of the object that is being requested.
+	 */
 	objectId: string | undefined = undefined;
 
+	/**
+	 *
+	 *  The type of access.
+	 */
 	accessType: string | undefined = undefined;
 
+	/**
+	 *
+	 *  Id of the user making the requests.
+	 */
 	user: string | undefined = undefined;
 
+	/**
+	 *
+	 *  Further details about the access.
+	 */
 	detail: string | undefined = undefined;
 
+	/**
+	 *
+	 *  The date of logging, filled instantaneously.
+	 */
 	date: number | undefined = undefined;
 
+	/**
+	 *
+	 *  The secret foreign keys of the access log, used for secure linking to patients.
+	 */
 	secretForeignKeys: Array<string> = [];
 
+	/**
+	 *
+	 *  The encrypted foreign keys, mapping owner data owner id to encrypted patient ids.
+	 */
 	cryptedForeignKeys: { [ key: string ]: Array<Delegation> } = {};
 
+	/**
+	 *
+	 *  The delegations giving access to all connected healthcare information.
+	 */
 	delegations: { [ key: string ]: Array<Delegation> } = {};
 
+	/**
+	 *
+	 *  The encryption keys used to encrypt the secured properties, encrypted for separate Crypto
+	 *  Actors.
+	 */
 	encryptionKeys: { [ key: string ]: Array<Delegation> } = {};
 
+	/**
+	 *
+	 *  The base64-encoded encrypted fields of this access log.
+	 */
 	encryptedSelf: Base64String | undefined = undefined;
 
+	/**
+	 *
+	 *  The security metadata of this entity, for access control.
+	 */
 	securityMetadata: SecurityMetadata | undefined = undefined;
 
 	readonly isEncrypted: true = true;

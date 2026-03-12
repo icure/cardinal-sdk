@@ -2,6 +2,11 @@
 import {expectArray, expectBoolean, expectMap, expectNumber, expectString, extractEntry} from '../../../../internal/JsonDecodeUtils.mjs';
 
 
+/**
+ *
+ *  A dropdown selection field in a form template.
+ *  /
+ */
 export class DropdownField {
 
 	field: string;

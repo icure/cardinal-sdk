@@ -15,34 +15,97 @@ import {SecurityMetadata} from './embed/SecurityMetadata.mjs';
 import {Base64String} from './specializations/Base64String.mjs';
 
 
+/**
+ *
+ *  Represents a document entity stored in CouchDB. Documents can have main and secondary data
+ *  attachments,
+ *  and support various storage backends (CouchDB attachments, object storage).
+ *  /
+ */
 export interface Document extends StoredDocument, ICureDocument<string>, HasEncryptionMetadata, Encryptable {
 
+	/**
+	 *
+	 *  The type of document (e.g., admission, clinical path, document report, invoice).
+	 */
 	documentType: DocumentType | undefined;
 
+	/**
+	 *
+	 *  The status of the document development (e.g., Draft, finalized, reviewed, signed).
+	 */
 	documentStatus: DocumentStatus | undefined;
 
+	/**
+	 *
+	 *  When the document is stored externally, the URI of the document in that repository.
+	 */
 	externalUri: string | undefined;
 
+	/**
+	 *
+	 *  The name of the document.
+	 */
 	name: string | undefined;
 
+	/**
+	 *
+	 *  The document version.
+	 */
 	version: string | undefined;
 
+	/**
+	 *
+	 *  The size of the document file.
+	 */
 	size: number | undefined;
 
+	/**
+	 *
+	 *  The hashed version of the document.
+	 */
 	hash: string | undefined;
 
+	/**
+	 *
+	 *  The id of the contact during which the document was created.
+	 */
 	openingContactId: string | undefined;
 
+	/**
+	 *
+	 *  The id of the main attachment stored as a CouchDB attachment.
+	 */
 	attachmentId: string | undefined;
 
+	/**
+	 *
+	 *  The id of the main attachment in the object storage service.
+	 */
 	objectStoreReference: string | undefined;
 
+	/**
+	 *
+	 *  The main Uniform Type Identifier of the main attachment.
+	 */
 	mainUti: string | undefined;
 
+	/**
+	 *
+	 *  Extra Uniform Type Identifiers for the main attachment.
+	 */
 	otherUtis: Array<string>;
 
+	/**
+	 *
+	 *  Secondary attachments for this document.
+	 */
 	secondaryAttachments: { [ key: string ]: DataAttachment };
 
+	/**
+	 *
+	 *  Information on past attachments for this document.
+	 */
 	deletedAttachments: Array<DeletedAttachment>;
 
 	readonly isEncrypted: boolean;
@@ -51,64 +114,187 @@ export interface Document extends StoredDocument, ICureDocument<string>, HasEncr
 
 }
 
+/**
+ *
+ *  Represents a document entity stored in CouchDB. Documents can have main and secondary data
+ *  attachments,
+ *  and support various storage backends (CouchDB attachments, object storage).
+ *  /
+ */
 export class DecryptedDocument {
 
+	/**
+	 *
+	 *  The Id of the document. We encourage using either a v4 UUID or a HL7 Id.
+	 */
 	id: string;
 
+	/**
+	 *
+	 *  The revision of the document in the database, used for conflict management / optimistic locking.
+	 */
 	rev: string | undefined = undefined;
 
+	/**
+	 *
+	 *  The timestamp (unix epoch in ms) of creation of this entity.
+	 */
 	created: number | undefined = undefined;
 
+	/**
+	 *
+	 *  The timestamp (unix epoch in ms) of the latest modification of this entity.
+	 */
 	modified: number | undefined = undefined;
 
+	/**
+	 *
+	 *  The id of the User that created this document.
+	 */
 	author: string | undefined = undefined;
 
+	/**
+	 *
+	 *  The id of the data owner that is responsible for this document.
+	 */
 	responsible: string | undefined = undefined;
 
+	/**
+	 *
+	 *  Tags that qualify the document as being member of a certain class.
+	 */
 	tags: Array<CodeStub> = [];
 
+	/**
+	 *
+	 *  Codes that identify or qualify this particular document.
+	 */
 	codes: Array<CodeStub> = [];
 
+	/**
+	 *
+	 *  Hard delete (unix epoch in ms) timestamp of the object.
+	 */
 	deletionDate: number | undefined = undefined;
 
+	/**
+	 *
+	 *  The type of document (e.g., admission, clinical path, document report, invoice).
+	 */
 	documentType: DocumentType | undefined = undefined;
 
+	/**
+	 *
+	 *  The status of the document development (e.g., Draft, finalized, reviewed, signed).
+	 */
 	documentStatus: DocumentStatus | undefined = undefined;
 
+	/**
+	 *
+	 *  When the document is stored externally, the URI of the document in that repository.
+	 */
 	externalUri: string | undefined = undefined;
 
+	/**
+	 *
+	 *  The name of the document.
+	 */
 	name: string | undefined = undefined;
 
+	/**
+	 *
+	 *  The document version.
+	 */
 	version: string | undefined = undefined;
 
+	/**
+	 *
+	 *  The size of the document file.
+	 */
 	size: number | undefined = undefined;
 
+	/**
+	 *
+	 *  The hashed version of the document.
+	 */
 	hash: string | undefined = undefined;
 
+	/**
+	 *
+	 *  The id of the contact during which the document was created.
+	 */
 	openingContactId: string | undefined = undefined;
 
+	/**
+	 *
+	 *  The id of the main attachment stored as a CouchDB attachment.
+	 */
 	attachmentId: string | undefined = undefined;
 
+	/**
+	 *
+	 *  The id of the main attachment in the object storage service.
+	 */
 	objectStoreReference: string | undefined = undefined;
 
+	/**
+	 *
+	 *  The main Uniform Type Identifier of the main attachment.
+	 */
 	mainUti: string | undefined = undefined;
 
+	/**
+	 *
+	 *  Extra Uniform Type Identifiers for the main attachment.
+	 */
 	otherUtis: Array<string> = [];
 
+	/**
+	 *
+	 *  Secondary attachments for this document.
+	 */
 	secondaryAttachments: { [ key: string ]: DataAttachment } = {};
 
+	/**
+	 *
+	 *  Information on past attachments for this document.
+	 */
 	deletedAttachments: Array<DeletedAttachment> = [];
 
+	/**
+	 *
+	 *  The secret foreign keys, used for secure linking to patients.
+	 */
 	secretForeignKeys: Array<string> = [];
 
+	/**
+	 *
+	 *  The encrypted foreign keys.
+	 */
 	cryptedForeignKeys: { [ key: string ]: Array<Delegation> } = {};
 
+	/**
+	 *
+	 *  The delegations giving access to connected healthcare information.
+	 */
 	delegations: { [ key: string ]: Array<Delegation> } = {};
 
+	/**
+	 *
+	 *  The encryption keys used to encrypt secured properties, encrypted for separate Crypto Actors.
+	 */
 	encryptionKeys: { [ key: string ]: Array<Delegation> } = {};
 
+	/**
+	 *
+	 *  The base64-encoded encrypted fields of this document.
+	 */
 	encryptedSelf: Base64String | undefined = undefined;
 
+	/**
+	 *
+	 *  The security metadata of this entity, for access control.
+	 */
 	securityMetadata: SecurityMetadata | undefined = undefined;
 
 	readonly isEncrypted: false = false;
@@ -249,64 +435,187 @@ export class DecryptedDocument {
 
 }
 
+/**
+ *
+ *  Represents a document entity stored in CouchDB. Documents can have main and secondary data
+ *  attachments,
+ *  and support various storage backends (CouchDB attachments, object storage).
+ *  /
+ */
 export class EncryptedDocument {
 
+	/**
+	 *
+	 *  The Id of the document. We encourage using either a v4 UUID or a HL7 Id.
+	 */
 	id: string;
 
+	/**
+	 *
+	 *  The revision of the document in the database, used for conflict management / optimistic locking.
+	 */
 	rev: string | undefined = undefined;
 
+	/**
+	 *
+	 *  The timestamp (unix epoch in ms) of creation of this entity.
+	 */
 	created: number | undefined = undefined;
 
+	/**
+	 *
+	 *  The timestamp (unix epoch in ms) of the latest modification of this entity.
+	 */
 	modified: number | undefined = undefined;
 
+	/**
+	 *
+	 *  The id of the User that created this document.
+	 */
 	author: string | undefined = undefined;
 
+	/**
+	 *
+	 *  The id of the data owner that is responsible for this document.
+	 */
 	responsible: string | undefined = undefined;
 
+	/**
+	 *
+	 *  Tags that qualify the document as being member of a certain class.
+	 */
 	tags: Array<CodeStub> = [];
 
+	/**
+	 *
+	 *  Codes that identify or qualify this particular document.
+	 */
 	codes: Array<CodeStub> = [];
 
+	/**
+	 *
+	 *  Hard delete (unix epoch in ms) timestamp of the object.
+	 */
 	deletionDate: number | undefined = undefined;
 
+	/**
+	 *
+	 *  The type of document (e.g., admission, clinical path, document report, invoice).
+	 */
 	documentType: DocumentType | undefined = undefined;
 
+	/**
+	 *
+	 *  The status of the document development (e.g., Draft, finalized, reviewed, signed).
+	 */
 	documentStatus: DocumentStatus | undefined = undefined;
 
+	/**
+	 *
+	 *  When the document is stored externally, the URI of the document in that repository.
+	 */
 	externalUri: string | undefined = undefined;
 
+	/**
+	 *
+	 *  The name of the document.
+	 */
 	name: string | undefined = undefined;
 
+	/**
+	 *
+	 *  The document version.
+	 */
 	version: string | undefined = undefined;
 
+	/**
+	 *
+	 *  The size of the document file.
+	 */
 	size: number | undefined = undefined;
 
+	/**
+	 *
+	 *  The hashed version of the document.
+	 */
 	hash: string | undefined = undefined;
 
+	/**
+	 *
+	 *  The id of the contact during which the document was created.
+	 */
 	openingContactId: string | undefined = undefined;
 
+	/**
+	 *
+	 *  The id of the main attachment stored as a CouchDB attachment.
+	 */
 	attachmentId: string | undefined = undefined;
 
+	/**
+	 *
+	 *  The id of the main attachment in the object storage service.
+	 */
 	objectStoreReference: string | undefined = undefined;
 
+	/**
+	 *
+	 *  The main Uniform Type Identifier of the main attachment.
+	 */
 	mainUti: string | undefined = undefined;
 
+	/**
+	 *
+	 *  Extra Uniform Type Identifiers for the main attachment.
+	 */
 	otherUtis: Array<string> = [];
 
+	/**
+	 *
+	 *  Secondary attachments for this document.
+	 */
 	secondaryAttachments: { [ key: string ]: DataAttachment } = {};
 
+	/**
+	 *
+	 *  Information on past attachments for this document.
+	 */
 	deletedAttachments: Array<DeletedAttachment> = [];
 
+	/**
+	 *
+	 *  The secret foreign keys, used for secure linking to patients.
+	 */
 	secretForeignKeys: Array<string> = [];
 
+	/**
+	 *
+	 *  The encrypted foreign keys.
+	 */
 	cryptedForeignKeys: { [ key: string ]: Array<Delegation> } = {};
 
+	/**
+	 *
+	 *  The delegations giving access to connected healthcare information.
+	 */
 	delegations: { [ key: string ]: Array<Delegation> } = {};
 
+	/**
+	 *
+	 *  The encryption keys used to encrypt secured properties, encrypted for separate Crypto Actors.
+	 */
 	encryptionKeys: { [ key: string ]: Array<Delegation> } = {};
 
+	/**
+	 *
+	 *  The base64-encoded encrypted fields of this document.
+	 */
 	encryptedSelf: Base64String | undefined = undefined;
 
+	/**
+	 *
+	 *  The security metadata of this entity, for access control.
+	 */
 	securityMetadata: SecurityMetadata | undefined = undefined;
 
 	readonly isEncrypted: true = true;

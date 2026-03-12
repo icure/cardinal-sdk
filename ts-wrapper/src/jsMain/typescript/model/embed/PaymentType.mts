@@ -1,5 +1,10 @@
 // auto-generated file
 
+/**
+ *
+ *
+ *   Enumerates the possible payment methods.
+ */
 export enum PaymentType {
 	Cash = "Cash",
 	Wired = "Wired",

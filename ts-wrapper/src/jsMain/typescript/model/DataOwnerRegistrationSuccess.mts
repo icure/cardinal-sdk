@@ -2,12 +2,30 @@
 import {expectString, extractEntry} from '../internal/JsonDecodeUtils.mjs';
 
 
+/**
+ *
+ *  DTO returned upon successful registration of a data owner, containing the credentials needed for
+ *  initial login.
+ *  /
+ */
 export class DataOwnerRegistrationSuccess {
 
+	/**
+	 *
+	 *  The login identifier of the newly registered user.
+	 */
 	userLogin: string;
 
+	/**
+	 *
+	 *  The unique identifier of the newly created user.
+	 */
 	userId: string;
 
+	/**
+	 *
+	 *  The authentication token for the newly registered user.
+	 */
 	token: string;
 
 	constructor(partial: Partial<DataOwnerRegistrationSuccess> & Pick<DataOwnerRegistrationSuccess, "userLogin" | "userId" | "token">) {

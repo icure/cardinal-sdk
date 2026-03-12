@@ -2,6 +2,10 @@
 import {Identifiable} from '../model/base/Identifiable.mjs';
 
 
+/**
+ *
+ *  Events that a subscription observes.
+ */
 export type EntitySubscriptionEvent<E extends Identifiable<string>> = typeof EntitySubscriptionEvent.Connected | typeof EntitySubscriptionEvent.Reconnected | typeof EntitySubscriptionEvent.ClosedByClient | EntitySubscriptionEvent.UnexpectedError | EntitySubscriptionEvent.ConnectionError | EntitySubscriptionEvent.EntityNotification<E> | EntitySubscriptionEvent.EntityError;
 
 export namespace EntitySubscriptionEvent {
@@ -24,6 +28,10 @@ export namespace EntitySubscriptionEvent {
 		$ktClass: 'com.icure.cardinal.sdk.subscription.EntitySubscriptionEvent.ClosedByClient'
 	}
 
+	/**
+	 *
+	 *  A general unexpected error.
+	 */
 	export class UnexpectedError {
 
 		message: string;
@@ -58,8 +66,17 @@ export namespace EntitySubscriptionEvent {
 
 	}
 
+	/**
+	 *
+	 *  There was an error in the connection with the backend.
+	 */
 	export type ConnectionError = typeof ConnectionError.MissedPing | typeof ConnectionError.ClosedByServer | typeof ConnectionError.ConnectionLost;
 
+	/**
+	 *
+	 *  A change has been made to an entity that matches the configured filters.
+	 *  @param entity the updated entity.
+	 */
 	export class EntityNotification<E extends Identifiable<string>> {
 
 		entity: E;
@@ -82,6 +99,10 @@ export namespace EntitySubscriptionEvent {
 
 	}
 
+	/**
+	 *
+	 *  The backend has notified the subscription of a change to an entity, but the entity can't be used by the client.
+	 */
 	export type EntityError = typeof EntityError.DeserializationError;
 
 }

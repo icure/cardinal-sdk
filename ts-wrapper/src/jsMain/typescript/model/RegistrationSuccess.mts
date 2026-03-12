@@ -2,12 +2,30 @@
 import {expectString, extractEntry} from '../internal/JsonDecodeUtils.mjs';
 
 
+/**
+ *
+ *  DTO returned upon successful user and group registration, containing the identifiers and
+ *  initial authentication token needed to access the newly created environment.
+ *  /
+ */
 export class RegistrationSuccess {
 
+	/**
+	 *
+	 *  The identifier of the newly created group.
+	 */
 	groupId: string;
 
+	/**
+	 *
+	 *  The identifier of the newly created user.
+	 */
 	userId: string;
 
+	/**
+	 *
+	 *  The initial authentication token for the newly registered user.
+	 */
 	token: string;
 
 	constructor(partial: Partial<RegistrationSuccess> & Pick<RegistrationSuccess, "groupId" | "userId" | "token">) {

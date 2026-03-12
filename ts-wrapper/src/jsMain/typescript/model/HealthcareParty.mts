@@ -21,84 +21,252 @@ import {HexString} from './specializations/HexString.mjs';
 import {SpkiHexString} from './specializations/SpkiHexString.mjs';
 
 
+/**
+ *
+ *  Represents a healthcare party. A healthcare party is a person or organization that provides
+ *  healthcare services,
+ *  such as a physician, nurse, hospital, or medical practice. It is serialized in JSON and saved in
+ *  the underlying
+ *  icure-healthdata CouchDB database.
+ *  /
+ */
 export class HealthcareParty implements StoredDocument, Named, Person, CryptoActor, DataOwner, HasCodes, HasTags {
 
+	/**
+	 *
+	 *  The Id of the healthcare party. We encourage using either a v4 UUID or a HL7 Id.
+	 */
 	id: string;
 
+	/**
+	 *
+	 *  The revision of the healthcare party in the database, used for conflict management / optimistic
+	 *  locking.
+	 */
 	rev: string | undefined = undefined;
 
+	/**
+	 *
+	 *  Creation timestamp (unix epoch in ms) of the object.
+	 */
 	created: number | undefined = undefined;
 
+	/**
+	 *
+	 *  Last modification timestamp (unix epoch in ms) of the object.
+	 */
 	modified: number | undefined = undefined;
 
+	/**
+	 *
+	 *  Hard delete (unix epoch in ms) timestamp of the object.
+	 */
 	deletionDate: number | undefined = undefined;
 
+	/**
+	 *
+	 *  The healthcare party's identifiers, used by the client to identify uniquely and unambiguously
+	 *  the HCP.
+	 */
 	identifier: Array<Identifier> = [];
 
+	/**
+	 *
+	 *  Tags that qualify the healthcare party as being member of a certain class.
+	 */
 	tags: Array<CodeStub> = [];
 
+	/**
+	 *
+	 *  Codes that identify or qualify this particular healthcare party.
+	 */
 	codes: Array<CodeStub> = [];
 
+	/**
+	 *
+	 *  The full name of the healthcare party, used mainly when the healthcare party is an organization.
+	 *
+	 */
 	name: string | undefined = undefined;
 
+	/**
+	 *
+	 *  The lastname (surname) of the healthcare party.
+	 */
 	lastName: string | undefined = undefined;
 
+	/**
+	 *
+	 *  The firstname (name) of the healthcare party.
+	 */
 	firstName: string | undefined = undefined;
 
+	/**
+	 *
+	 *  The list of all names of the healthcare party, ordered by preference of use.
+	 */
 	names: Array<PersonName> = [];
 
+	/**
+	 *
+	 *  The gender of the healthcare party.
+	 */
 	gender: Gender | undefined = undefined;
 
+	/**
+	 *
+	 *  Mr., Ms., Pr., Dr. ...
+	 */
 	civility: string | undefined = undefined;
 
+	/**
+	 *
+	 *  The name of the company this healthcare party is member of.
+	 */
 	companyName: string | undefined = undefined;
 
+	/**
+	 *
+	 *  Medical specialty of the healthcare party.
+	 */
 	speciality: string | undefined = undefined;
 
+	/**
+	 *
+	 *  Bank Account identifier of the healthcare party (IBAN).
+	 */
 	bankAccount: string | undefined = undefined;
 
+	/**
+	 *
+	 *  Bank Identifier Code (SWIFT Address) assigned to the bank.
+	 */
 	bic: string | undefined = undefined;
 
+	/**
+	 *
+	 *  Proxy bank account number.
+	 */
 	proxyBankAccount: string | undefined = undefined;
 
+	/**
+	 *
+	 *  Proxy bank identifier code.
+	 */
 	proxyBic: string | undefined = undefined;
 
+	/**
+	 *
+	 *  All details included in the invoice header.
+	 */
 	invoiceHeader: string | undefined = undefined;
 
+	/**
+	 *
+	 *  The id of the parent healthcare party.
+	 */
 	parentId: string | undefined = undefined;
 
+	/**
+	 *
+	 *  Social security inscription number.
+	 */
 	ssin: string | undefined = undefined;
 
+	/**
+	 *
+	 *  The list of addresses (with address type).
+	 */
 	addresses: Array<DecryptedAddress> = [];
 
+	/**
+	 *
+	 *  The list of languages spoken by the healthcare party ordered by fluency (alpha-2 code).
+	 */
 	languages: Array<string> = [];
 
+	/**
+	 *
+	 *  Medical specialty of the healthcare party codified using FHIR or Kmehr codification scheme.
+	 */
 	specialityCodes: Array<CodeStub> = [];
 
+	/**
+	 *
+	 *  Text notes.
+	 */
 	notes: string | undefined = undefined;
 
+	/**
+	 *
+	 *  List of financial information (Bank, bank account).
+	 */
 	financialInstitutionInformation: Array<DecryptedFinancialInstitutionInformation> = [];
 
+	/**
+	 *
+	 *  A description of the HCP, meant for the public and in multiple languages.
+	 */
 	descr: { [ key: string ]: string } = {};
 
+	/**
+	 *
+	 *  Extra properties for the healthcare party.
+	 */
 	properties: Array<DecryptedPropertyStub> = [];
 
+	/**
+	 *
+	 *  Whether the healthcare party profile is publicly visible.
+	 */
 	public: boolean = false;
 
+	/**
+	 *
+	 *  Properties that are publicly visible.
+	 */
 	publicProperties: Array<DecryptedPropertyStub> | undefined = undefined;
 
+	/**
+	 *
+	 *  Properties related to crypto actor functionality.
+	 */
 	cryptoActorProperties: Array<DecryptedPropertyStub> = [];
 
+	/**
+	 *
+	 *  For each couple of HcParties (delegate and owner), this map contains the AES exchange key.
+	 */
 	hcPartyKeys: { [ key: string ]: Array<HexString> } = {};
 
+	/**
+	 *
+	 *  Extra AES exchange keys, indexed by the owner of the pair and target data owner id.
+	 */
 	aesExchangeKeys: { [ key: string ]: { [ key: string ]: { [ key: string ]: HexString } } } = {};
 
+	/**
+	 *
+	 *  Keys used to transfer ownership of encrypted data between key pairs.
+	 */
 	transferKeys: { [ key: string ]: { [ key: string ]: HexString } } = {};
 
+	/**
+	 *
+	 *  Shamir partitions of the private key.
+	 */
 	privateKeyShamirPartitions: { [ key: string ]: HexString } = {};
 
+	/**
+	 *
+	 *  The public key of this HCP, used to encrypt data for this HCP.
+	 */
 	publicKey: SpkiHexString | undefined = undefined;
 
+	/**
+	 *
+	 *  Public keys for OAEP with SHA-256 encryption.
+	 */
 	publicKeysForOaepWithSha256: Array<SpkiHexString> = [];
 
 	readonly $ktClass: 'com.icure.cardinal.sdk.model.HealthcareParty' = 'com.icure.cardinal.sdk.model.HealthcareParty';

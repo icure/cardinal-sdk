@@ -12,18 +12,49 @@ import {SecurityMetadata} from './embed/SecurityMetadata.mjs';
 import {Base64String} from './specializations/Base64String.mjs';
 
 
+/**
+ *
+ *  Represents a topic for secure messaging between healthcare parties. A topic groups messages in a
+ *  conversation
+ *  and can be linked to health elements and services for medical context.
+ *  /
+ */
 export interface Topic extends StoredDocument, ICureDocument<string>, HasEncryptionMetadata, Encryptable {
 
+	/**
+	 *
+	 *  The id of the health element linked to this topic.
+	 */
 	healthElementId: string | undefined;
 
+	/**
+	 *
+	 *  The id of the contact linked to this topic.
+	 */
 	contactId: string | undefined;
 
+	/**
+	 *
+	 *  A description of the topic.
+	 */
 	description: string | undefined;
 
+	/**
+	 *
+	 *  Map of active participants with their roles (participant, admin, or owner).
+	 */
 	activeParticipants: { [ key: string ]: TopicRole };
 
+	/**
+	 *
+	 *  Set of ids of health elements linked to this topic.
+	 */
 	linkedHealthElements: Array<string>;
 
+	/**
+	 *
+	 *  Set of ids of services linked to this topic.
+	 */
 	linkedServices: Array<string>;
 
 	readonly isEncrypted: boolean;
@@ -32,48 +63,139 @@ export interface Topic extends StoredDocument, ICureDocument<string>, HasEncrypt
 
 }
 
+/**
+ *
+ *  Represents a topic for secure messaging between healthcare parties. A topic groups messages in a
+ *  conversation
+ *  and can be linked to health elements and services for medical context.
+ *  /
+ */
 export class DecryptedTopic {
 
+	/**
+	 *
+	 *  The unique identifier of the topic.
+	 */
 	id: string;
 
+	/**
+	 *
+	 *  The revision of the topic in the database, used for conflict management / optimistic locking.
+	 */
 	rev: string | undefined = undefined;
 
+	/**
+	 *
+	 *  The timestamp (unix epoch in ms) of creation.
+	 */
 	created: number | undefined = undefined;
 
+	/**
+	 *
+	 *  The timestamp (unix epoch in ms) of the latest modification.
+	 */
 	modified: number | undefined = undefined;
 
+	/**
+	 *
+	 *  The id of the health element linked to this topic.
+	 */
 	healthElementId: string | undefined = undefined;
 
+	/**
+	 *
+	 *  The id of the contact linked to this topic.
+	 */
 	contactId: string | undefined = undefined;
 
+	/**
+	 *
+	 *  A description of the topic.
+	 */
 	description: string | undefined = undefined;
 
+	/**
+	 *
+	 *  Codes that identify or qualify this particular topic.
+	 */
 	codes: Array<CodeStub> = [];
 
+	/**
+	 *
+	 *  Tags that qualify the topic as being member of a certain class.
+	 */
 	tags: Array<CodeStub> = [];
 
+	/**
+	 *
+	 *  The id of the User that created this topic.
+	 */
 	author: string | undefined = undefined;
 
+	/**
+	 *
+	 *  The id of the HealthcareParty that is responsible for this topic.
+	 */
 	responsible: string | undefined = undefined;
 
+	/**
+	 *
+	 *  Hard delete (unix epoch in ms) timestamp of the object.
+	 */
 	deletionDate: number | undefined = undefined;
 
+	/**
+	 *
+	 *  Map of active participants with their roles (participant, admin, or owner).
+	 */
 	activeParticipants: { [ key: string ]: TopicRole } = {};
 
+	/**
+	 *
+	 *  The security metadata of the entity.
+	 */
 	securityMetadata: SecurityMetadata | undefined = undefined;
 
+	/**
+	 *
+	 *  The secret patient key, encrypted in the patient's own AES key.
+	 */
 	secretForeignKeys: Array<string> = [];
 
+	/**
+	 *
+	 *  The patient id encrypted in the delegates' AES keys.
+	 */
 	cryptedForeignKeys: { [ key: string ]: Array<Delegation> } = {};
 
+	/**
+	 *
+	 *  The delegations giving access to connected healthcare information.
+	 */
 	delegations: { [ key: string ]: Array<Delegation> } = {};
 
+	/**
+	 *
+	 *  The keys used to encrypt this entity when stored encrypted.
+	 */
 	encryptionKeys: { [ key: string ]: Array<Delegation> } = {};
 
+	/**
+	 *
+	 *  The base64-encoded encrypted fields of this entity.
+	 */
 	encryptedSelf: Base64String | undefined = undefined;
 
+	/**
+	 *
+	 *  Set of ids of health elements linked to this topic.
+	 */
 	linkedHealthElements: Array<string> = [];
 
+	/**
+	 *
+	 *  Set of ids of services linked to this topic.
+	 */
 	linkedServices: Array<string> = [];
 
 	readonly isEncrypted: false = false;
@@ -190,48 +312,139 @@ export class DecryptedTopic {
 
 }
 
+/**
+ *
+ *  Represents a topic for secure messaging between healthcare parties. A topic groups messages in a
+ *  conversation
+ *  and can be linked to health elements and services for medical context.
+ *  /
+ */
 export class EncryptedTopic {
 
+	/**
+	 *
+	 *  The unique identifier of the topic.
+	 */
 	id: string;
 
+	/**
+	 *
+	 *  The revision of the topic in the database, used for conflict management / optimistic locking.
+	 */
 	rev: string | undefined = undefined;
 
+	/**
+	 *
+	 *  The timestamp (unix epoch in ms) of creation.
+	 */
 	created: number | undefined = undefined;
 
+	/**
+	 *
+	 *  The timestamp (unix epoch in ms) of the latest modification.
+	 */
 	modified: number | undefined = undefined;
 
+	/**
+	 *
+	 *  The id of the health element linked to this topic.
+	 */
 	healthElementId: string | undefined = undefined;
 
+	/**
+	 *
+	 *  The id of the contact linked to this topic.
+	 */
 	contactId: string | undefined = undefined;
 
+	/**
+	 *
+	 *  A description of the topic.
+	 */
 	description: string | undefined = undefined;
 
+	/**
+	 *
+	 *  Codes that identify or qualify this particular topic.
+	 */
 	codes: Array<CodeStub> = [];
 
+	/**
+	 *
+	 *  Tags that qualify the topic as being member of a certain class.
+	 */
 	tags: Array<CodeStub> = [];
 
+	/**
+	 *
+	 *  The id of the User that created this topic.
+	 */
 	author: string | undefined = undefined;
 
+	/**
+	 *
+	 *  The id of the HealthcareParty that is responsible for this topic.
+	 */
 	responsible: string | undefined = undefined;
 
+	/**
+	 *
+	 *  Hard delete (unix epoch in ms) timestamp of the object.
+	 */
 	deletionDate: number | undefined = undefined;
 
+	/**
+	 *
+	 *  Map of active participants with their roles (participant, admin, or owner).
+	 */
 	activeParticipants: { [ key: string ]: TopicRole } = {};
 
+	/**
+	 *
+	 *  The security metadata of the entity.
+	 */
 	securityMetadata: SecurityMetadata | undefined = undefined;
 
+	/**
+	 *
+	 *  The secret patient key, encrypted in the patient's own AES key.
+	 */
 	secretForeignKeys: Array<string> = [];
 
+	/**
+	 *
+	 *  The patient id encrypted in the delegates' AES keys.
+	 */
 	cryptedForeignKeys: { [ key: string ]: Array<Delegation> } = {};
 
+	/**
+	 *
+	 *  The delegations giving access to connected healthcare information.
+	 */
 	delegations: { [ key: string ]: Array<Delegation> } = {};
 
+	/**
+	 *
+	 *  The keys used to encrypt this entity when stored encrypted.
+	 */
 	encryptionKeys: { [ key: string ]: Array<Delegation> } = {};
 
+	/**
+	 *
+	 *  The base64-encoded encrypted fields of this entity.
+	 */
 	encryptedSelf: Base64String | undefined = undefined;
 
+	/**
+	 *
+	 *  Set of ids of health elements linked to this topic.
+	 */
 	linkedHealthElements: Array<string> = [];
 
+	/**
+	 *
+	 *  Set of ids of services linked to this topic.
+	 */
 	linkedServices: Array<string> = [];
 
 	readonly isEncrypted: true = true;

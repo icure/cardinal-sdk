@@ -5,34 +5,97 @@ import {CodeIdentification} from './base/CodeIdentification.mjs';
 import {StoredDocument} from './base/StoredDocument.mjs';
 
 
+/**
+ *
+ *  Represents a medical code from a terminology system (e.g., ICD, SNOMED). The code id is composed
+ *  of
+ *  type|code|version and must be unique.
+ *  /
+ */
 export class Code implements StoredDocument, CodeIdentification<string> {
 
+	/**
+	 *
+	 *  The Id of the code, formatted as type|code|version. Must be unique.
+	 */
 	id: string;
 
+	/**
+	 *
+	 *  The revision of the code in the database, used for conflict management / optimistic locking.
+	 */
 	rev: string | undefined = undefined;
 
+	/**
+	 *
+	 *  Hard delete (unix epoch in ms) timestamp of the object.
+	 */
 	deletionDate: number | undefined = undefined;
 
+	/**
+	 *
+	 *  The context in which this code is used when embedded.
+	 */
 	context: string | undefined = undefined;
 
+	/**
+	 *
+	 *  The code type (e.g., ICD). The type + version + code combination must be unique.
+	 */
 	type: string | undefined = undefined;
 
+	/**
+	 *
+	 *  The code value (e.g., I06.2). Local codes are encoded as LOCAL:SLLOCALFROMMYSOFT.
+	 */
 	code: string | undefined = undefined;
 
+	/**
+	 *
+	 *  The version of the code (e.g., 10). Must be lexicographically searchable.
+	 */
 	version: string | undefined = undefined;
 
+	/**
+	 *
+	 *  The human-readable label for the code, mapped by language (e.g., {en: "...", fr: "..."}).
+	 */
 	label: { [ key: string ]: string } = {};
 
+	/**
+	 *
+	 *  The id of the author of this code.
+	 */
 	author: string | undefined = undefined;
 
+	/**
+	 *
+	 *  The geographic regions where this code is applicable (e.g., be, fr).
+	 */
 	regions: Array<string> = [];
 
+	/**
+	 *
+	 *  Links towards related codes (corresponds to approximate links in qualifiedLinks).
+	 */
 	links: Array<string> = [];
 
+	/**
+	 *
+	 *  Qualified links towards related codes.
+	 */
 	qualifiedLinks: { [ key: string ]: Array<string> } = {};
 
+	/**
+	 *
+	 *  Extra search terms indexed by language.
+	 */
 	searchTerms: { [ key: string ]: Array<string> } = {};
 
+	/**
+	 *
+	 *  Whether this code is disabled.
+	 */
 	disabled: boolean = false;
 
 	constructor(partial: Partial<Code>) {

@@ -6,6 +6,10 @@ import {ShareAllPatientDataOptions as ShareAllPatientDataOptions_} from './Share
 
 export namespace ShareAllPatientDataOptions {
 
+	/**
+	 *
+	 *  Specifies which entities related to a Patient will be shared by [PatientApi.shareAllDataOfPatient].
+	 */
 	export enum Tag {
 		All = "All",
 		MedicalInformation = "MedicalInformation",

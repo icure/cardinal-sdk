@@ -2,14 +2,35 @@
 import {expectBoolean, expectNumber, extractEntry} from '../internal/JsonDecodeUtils.mjs';
 
 
+/**
+ *
+ *  DTO providing status information about an ongoing or configured database replication.
+ *  /
+ */
 export class ReplicationInfo {
 
+	/**
+	 *
+	 *  Whether the replication is currently active.
+	 */
 	active: boolean = false;
 
+	/**
+	 *
+	 *  Whether the replication process is currently running.
+	 */
 	running: boolean = false;
 
+	/**
+	 *
+	 *  The number of pending changes to replicate from the source.
+	 */
 	pendingFrom: number | undefined = undefined;
 
+	/**
+	 *
+	 *  The number of pending changes to replicate to the target.
+	 */
 	pendingTo: number | undefined = undefined;
 
 	constructor(partial: Partial<ReplicationInfo>) {

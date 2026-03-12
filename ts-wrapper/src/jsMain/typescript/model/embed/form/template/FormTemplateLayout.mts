@@ -4,16 +4,42 @@ import {Action} from './Action.mjs';
 import {Section} from './Section.mjs';
 
 
+/**
+ *
+ *  Represents the layout of a form template, defining the form name, its actions, sections, and
+ *  metadata.
+ *  /
+ */
 export class FormTemplateLayout {
 
+	/**
+	 *
+	 *  The name or identifier of the form.
+	 */
 	form: string;
 
+	/**
+	 *
+	 *  The list of actions available in this form template.
+	 */
 	actions: Array<Action> = [];
 
+	/**
+	 *
+	 *  The list of sections composing this form template.
+	 */
 	sections: Array<Section> = [];
 
+	/**
+	 *
+	 *  A description of the form template.
+	 */
 	description: string | undefined = undefined;
 
+	/**
+	 *
+	 *  Keywords associated with the form template for search purposes.
+	 */
 	keywords: Array<string> | undefined = undefined;
 
 	constructor(partial: Partial<FormTemplateLayout> & Pick<FormTemplateLayout, "form">) {

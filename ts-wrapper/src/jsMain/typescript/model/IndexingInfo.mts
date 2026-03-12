@@ -2,8 +2,18 @@
 import {expectMap, expectNumber, expectString, extractEntry} from '../internal/JsonDecodeUtils.mjs';
 
 
+/**
+ *
+ *
+ *   DTO providing information about the current indexing status of the database views.
+ */
 export class IndexingInfo {
 
+	/**
+	 *
+	 *  A map of indexing statuses, keyed by view name, where the value represents the indexing progress
+	 *  percentage.
+	 */
 	statuses: { [ key: string ]: number } | undefined = undefined;
 
 	constructor(partial: Partial<IndexingInfo>) {

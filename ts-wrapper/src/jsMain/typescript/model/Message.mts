@@ -13,36 +13,103 @@ import {SecurityMetadata} from './embed/SecurityMetadata.mjs';
 import {Base64String} from './specializations/Base64String.mjs';
 
 
+/**
+ *
+ *  Represents a message exchanged between healthcare parties. Messages can be used for internal
+ *  communication,
+ *  eHealth box messages, eFact batches, and other types of healthcare-related communications.
+ *  /
+ */
 export interface Message extends StoredDocument, ICureDocument<string>, HasEncryptionMetadata, Encryptable {
 
+	/**
+	 *
+	 *  Address of the sender of the message.
+	 */
 	fromAddress: string | undefined;
 
+	/**
+	 *
+	 *  ID of the healthcare party sending the message.
+	 */
 	fromHealthcarePartyId: string | undefined;
 
+	/**
+	 *
+	 *  List of IDs of healthcare parties to whom the message is addressed.
+	 */
 	recipients: Array<string>;
 
+	/**
+	 *
+	 *  The addresses of the recipients of the message.
+	 */
 	toAddresses: Array<string>;
 
+	/**
+	 *
+	 *  The timestamp (unix epoch in ms) when the message was received.
+	 */
 	received: number | undefined;
 
+	/**
+	 *
+	 *  The timestamp (unix epoch in ms) when the message was sent.
+	 */
 	sent: number | undefined;
 
+	/**
+	 *
+	 *  Additional metadata for the message.
+	 */
 	metas: { [ key: string ]: string };
 
+	/**
+	 *
+	 *  Status showing whether the message is read or not and the time of reading.
+	 */
 	readStatus: { [ key: string ]: MessageReadStatus };
 
+	/**
+	 *
+	 *  Transport-level identifier for the message, format depends on the transport type.
+	 */
 	transportGuid: string | undefined;
 
+	/**
+	 *
+	 *  An additional remark on the message.
+	 */
 	remark: string | undefined;
 
+	/**
+	 *
+	 *  The guid of the conversation this message belongs to.
+	 */
 	conversationGuid: string | undefined;
 
+	/**
+	 *
+	 *  Subject for the message.
+	 */
 	subject: string | undefined;
 
+	/**
+	 *
+	 *  Set of IDs for invoices in the message.
+	 */
 	invoiceIds: Array<string>;
 
+	/**
+	 *
+	 *  ID of a parent in a message conversation.
+	 */
 	parentId: string | undefined;
 
+	/**
+	 *
+	 *  Extra properties for the message.
+	 */
 	properties: Array<PropertyStub>;
 
 	readonly isEncrypted: boolean;
@@ -51,66 +118,193 @@ export interface Message extends StoredDocument, ICureDocument<string>, HasEncry
 
 }
 
+/**
+ *
+ *  Represents a message exchanged between healthcare parties. Messages can be used for internal
+ *  communication,
+ *  eHealth box messages, eFact batches, and other types of healthcare-related communications.
+ *  /
+ */
 export class DecryptedMessage {
 
+	/**
+	 *
+	 *  The ID of the message. We encourage using either a v4 UUID or a HL7 Id.
+	 */
 	id: string;
 
+	/**
+	 *
+	 *  The revision of the message in the database, used for conflict management / optimistic locking.
+	 */
 	rev: string | undefined = undefined;
 
+	/**
+	 *
+	 *  The timestamp (unix epoch in ms) of creation.
+	 */
 	created: number | undefined = undefined;
 
+	/**
+	 *
+	 *  The timestamp (unix epoch in ms) of the latest modification.
+	 */
 	modified: number | undefined = undefined;
 
+	/**
+	 *
+	 *  The id of the User that created this message.
+	 */
 	author: string | undefined = undefined;
 
+	/**
+	 *
+	 *  The id of the HealthcareParty that is responsible for this message.
+	 */
 	responsible: string | undefined = undefined;
 
+	/**
+	 *
+	 *  Tags that qualify the message as being member of a certain class.
+	 */
 	tags: Array<CodeStub> = [];
 
+	/**
+	 *
+	 *  Codes that identify or qualify this particular message.
+	 */
 	codes: Array<CodeStub> = [];
 
+	/**
+	 *
+	 *  Hard delete (unix epoch in ms) timestamp of the object.
+	 */
 	deletionDate: number | undefined = undefined;
 
+	/**
+	 *
+	 *  Address of the sender of the message.
+	 */
 	fromAddress: string | undefined = undefined;
 
+	/**
+	 *
+	 *  ID of the healthcare party sending the message.
+	 */
 	fromHealthcarePartyId: string | undefined = undefined;
 
+	/**
+	 *
+	 *  List of IDs of healthcare parties to whom the message is addressed.
+	 */
 	recipients: Array<string> = [];
 
+	/**
+	 *
+	 *  The addresses of the recipients of the message.
+	 */
 	toAddresses: Array<string> = [];
 
+	/**
+	 *
+	 *  The timestamp (unix epoch in ms) when the message was received.
+	 */
 	received: number | undefined = undefined;
 
+	/**
+	 *
+	 *  The timestamp (unix epoch in ms) when the message was sent.
+	 */
 	sent: number | undefined = undefined;
 
+	/**
+	 *
+	 *  Additional metadata for the message.
+	 */
 	metas: { [ key: string ]: string } = {};
 
+	/**
+	 *
+	 *  Status showing whether the message is read or not and the time of reading.
+	 */
 	readStatus: { [ key: string ]: MessageReadStatus } = {};
 
+	/**
+	 *
+	 *  Transport-level identifier for the message, format depends on the transport type.
+	 */
 	transportGuid: string | undefined = undefined;
 
+	/**
+	 *
+	 *  An additional remark on the message.
+	 */
 	remark: string | undefined = undefined;
 
+	/**
+	 *
+	 *  The guid of the conversation this message belongs to.
+	 */
 	conversationGuid: string | undefined = undefined;
 
+	/**
+	 *
+	 *  Subject for the message.
+	 */
 	subject: string | undefined = undefined;
 
+	/**
+	 *
+	 *  Set of IDs for invoices in the message.
+	 */
 	invoiceIds: Array<string> = [];
 
+	/**
+	 *
+	 *  ID of a parent in a message conversation.
+	 */
 	parentId: string | undefined = undefined;
 
+	/**
+	 *
+	 *  Extra properties for the message.
+	 */
 	properties: Array<DecryptedPropertyStub> = [];
 
+	/**
+	 *
+	 *  The secret patient key, encrypted in the patient's own AES key.
+	 */
 	secretForeignKeys: Array<string> = [];
 
+	/**
+	 *
+	 *  The patient id encrypted in the delegates' AES keys.
+	 */
 	cryptedForeignKeys: { [ key: string ]: Array<Delegation> } = {};
 
+	/**
+	 *
+	 *  The delegations giving access to connected healthcare information.
+	 */
 	delegations: { [ key: string ]: Array<Delegation> } = {};
 
+	/**
+	 *
+	 *  The keys used to encrypt this entity when stored encrypted.
+	 */
 	encryptionKeys: { [ key: string ]: Array<Delegation> } = {};
 
+	/**
+	 *
+	 *  The base64-encoded encrypted fields of this entity.
+	 */
 	encryptedSelf: Base64String | undefined = undefined;
 
+	/**
+	 *
+	 *  The security metadata of the entity.
+	 */
 	securityMetadata: SecurityMetadata | undefined = undefined;
 
 	readonly isEncrypted: false = false;
@@ -260,66 +454,193 @@ export class DecryptedMessage {
 
 }
 
+/**
+ *
+ *  Represents a message exchanged between healthcare parties. Messages can be used for internal
+ *  communication,
+ *  eHealth box messages, eFact batches, and other types of healthcare-related communications.
+ *  /
+ */
 export class EncryptedMessage {
 
+	/**
+	 *
+	 *  The ID of the message. We encourage using either a v4 UUID or a HL7 Id.
+	 */
 	id: string;
 
+	/**
+	 *
+	 *  The revision of the message in the database, used for conflict management / optimistic locking.
+	 */
 	rev: string | undefined = undefined;
 
+	/**
+	 *
+	 *  The timestamp (unix epoch in ms) of creation.
+	 */
 	created: number | undefined = undefined;
 
+	/**
+	 *
+	 *  The timestamp (unix epoch in ms) of the latest modification.
+	 */
 	modified: number | undefined = undefined;
 
+	/**
+	 *
+	 *  The id of the User that created this message.
+	 */
 	author: string | undefined = undefined;
 
+	/**
+	 *
+	 *  The id of the HealthcareParty that is responsible for this message.
+	 */
 	responsible: string | undefined = undefined;
 
+	/**
+	 *
+	 *  Tags that qualify the message as being member of a certain class.
+	 */
 	tags: Array<CodeStub> = [];
 
+	/**
+	 *
+	 *  Codes that identify or qualify this particular message.
+	 */
 	codes: Array<CodeStub> = [];
 
+	/**
+	 *
+	 *  Hard delete (unix epoch in ms) timestamp of the object.
+	 */
 	deletionDate: number | undefined = undefined;
 
+	/**
+	 *
+	 *  Address of the sender of the message.
+	 */
 	fromAddress: string | undefined = undefined;
 
+	/**
+	 *
+	 *  ID of the healthcare party sending the message.
+	 */
 	fromHealthcarePartyId: string | undefined = undefined;
 
+	/**
+	 *
+	 *  List of IDs of healthcare parties to whom the message is addressed.
+	 */
 	recipients: Array<string> = [];
 
+	/**
+	 *
+	 *  The addresses of the recipients of the message.
+	 */
 	toAddresses: Array<string> = [];
 
+	/**
+	 *
+	 *  The timestamp (unix epoch in ms) when the message was received.
+	 */
 	received: number | undefined = undefined;
 
+	/**
+	 *
+	 *  The timestamp (unix epoch in ms) when the message was sent.
+	 */
 	sent: number | undefined = undefined;
 
+	/**
+	 *
+	 *  Additional metadata for the message.
+	 */
 	metas: { [ key: string ]: string } = {};
 
+	/**
+	 *
+	 *  Status showing whether the message is read or not and the time of reading.
+	 */
 	readStatus: { [ key: string ]: MessageReadStatus } = {};
 
+	/**
+	 *
+	 *  Transport-level identifier for the message, format depends on the transport type.
+	 */
 	transportGuid: string | undefined = undefined;
 
+	/**
+	 *
+	 *  An additional remark on the message.
+	 */
 	remark: string | undefined = undefined;
 
+	/**
+	 *
+	 *  The guid of the conversation this message belongs to.
+	 */
 	conversationGuid: string | undefined = undefined;
 
+	/**
+	 *
+	 *  Subject for the message.
+	 */
 	subject: string | undefined = undefined;
 
+	/**
+	 *
+	 *  Set of IDs for invoices in the message.
+	 */
 	invoiceIds: Array<string> = [];
 
+	/**
+	 *
+	 *  ID of a parent in a message conversation.
+	 */
 	parentId: string | undefined = undefined;
 
+	/**
+	 *
+	 *  Extra properties for the message.
+	 */
 	properties: Array<EncryptedPropertyStub> = [];
 
+	/**
+	 *
+	 *  The secret patient key, encrypted in the patient's own AES key.
+	 */
 	secretForeignKeys: Array<string> = [];
 
+	/**
+	 *
+	 *  The patient id encrypted in the delegates' AES keys.
+	 */
 	cryptedForeignKeys: { [ key: string ]: Array<Delegation> } = {};
 
+	/**
+	 *
+	 *  The delegations giving access to connected healthcare information.
+	 */
 	delegations: { [ key: string ]: Array<Delegation> } = {};
 
+	/**
+	 *
+	 *  The keys used to encrypt this entity when stored encrypted.
+	 */
 	encryptionKeys: { [ key: string ]: Array<Delegation> } = {};
 
+	/**
+	 *
+	 *  The base64-encoded encrypted fields of this entity.
+	 */
 	encryptedSelf: Base64String | undefined = undefined;
 
+	/**
+	 *
+	 *  The security metadata of the entity.
+	 */
 	securityMetadata: SecurityMetadata | undefined = undefined;
 
 	readonly isEncrypted: true = true;

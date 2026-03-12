@@ -5,38 +5,110 @@ import {DecryptedPropertyStub} from './PropertyStub.mjs';
 import {StoredDocument} from './base/StoredDocument.mjs';
 
 
+/**
+ *
+ *  Represents a type of calendar item, defining properties like duration, color, and name for
+ *  appointments.
+ *  Calendar item types are used to categorize calendar items within an agenda.
+ *  /
+ */
 export class CalendarItemType implements StoredDocument {
 
+	/**
+	 *
+	 *  The Id of the calendar item type.
+	 */
 	id: string;
 
+	/**
+	 *
+	 *  The revision of the calendar item type in the database, used for conflict management /
+	 *  optimistic locking.
+	 */
 	rev: string | undefined = undefined;
 
+	/**
+	 *
+	 *  Hard delete (unix epoch in ms) timestamp of the object.
+	 */
 	deletionDate: number | undefined = undefined;
 
+	/**
+	 *
+	 *  The id of the healthcare party associated with this type.
+	 */
 	healthcarePartyId: string | undefined = undefined;
 
+	/**
+	 *
+	 *  The id of the agenda this type belongs to.
+	 */
 	agendaId: string | undefined = undefined;
 
+	/**
+	 *
+	 *  Whether this is the default calendar item type for its agenda.
+	 */
 	defaultCalendarItemType: boolean = false;
 
+	/**
+	 *
+	 *  The display name of this calendar item type.
+	 */
 	name: string | undefined = undefined;
 
+	/**
+	 *
+	 *  The color associated with this type, in hex format (e.g. "#123456").
+	 */
 	color: string | undefined = undefined;
 
+	/**
+	 *
+	 *  The default duration in minutes for calendar items of this type.
+	 */
 	duration: number = 0;
 
+	/**
+	 *
+	 *  Optional configuration for additional allowed durations.
+	 */
 	extraDurationsConfig: CalendarItemType.DurationConfig | undefined = undefined;
 
+	/**
+	 *
+	 *  An external reference identifier.
+	 */
 	externalRef: string | undefined = undefined;
 
+	/**
+	 *
+	 *  An external Mikrono identifier.
+	 */
 	mikronoId: string | undefined = undefined;
 
+	/**
+	 *
+	 *  A set of document ids associated with this type.
+	 */
 	docIds: Array<string> = [];
 
+	/**
+	 *
+	 *  Additional information stored as key-value pairs.
+	 */
 	otherInfos: { [ key: string ]: string } = {};
 
+	/**
+	 *
+	 *  Subject text for this calendar item type, by language.
+	 */
 	subjectByLanguage: { [ key: string ]: string } = {};
 
+	/**
+	 *
+	 *  Public properties exposed to anonymous endpoints for public calendar items.
+	 */
 	publicProperties: Array<DecryptedPropertyStub> | undefined = undefined;
 
 	constructor(partial: Partial<CalendarItemType>) {

@@ -5,6 +5,12 @@ import {HealthcareParty} from './HealthcareParty.mjs';
 import {EncryptedPatient} from './Patient.mjs';
 
 
+/**
+ *
+ *  Sealed interface representing a data owner paired with its type. Each subtype wraps a specific
+ *  kind of data owner (healthcare party, patient, or device) as a polymorphic type.
+ *  /
+ */
 export type DataOwnerWithType = DataOwnerWithType.HcpDataOwner | DataOwnerWithType.PatientDataOwner | DataOwnerWithType.DeviceDataOwner;
 
 export namespace DataOwnerWithType {

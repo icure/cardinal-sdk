@@ -2,10 +2,24 @@
 import {expectBoolean, expectNumber, extractEntry} from '../../internal/JsonDecodeUtils.mjs';
 
 
+/**
+ *
+ *  Represents the read status of a message for a specific user, tracking whether it has been read
+ *  and when.
+ *  /
+ */
 export class MessageReadStatus {
 
+	/**
+	 *
+	 *  The timestamp (unix epoch in ms) when the message was read.
+	 */
 	time: number | undefined = undefined;
 
+	/**
+	 *
+	 *  Whether the message has been read.
+	 */
 	read: boolean = false;
 
 	constructor(partial: Partial<MessageReadStatus>) {

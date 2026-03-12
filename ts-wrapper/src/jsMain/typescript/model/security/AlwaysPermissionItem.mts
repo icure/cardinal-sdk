@@ -3,8 +3,18 @@ import {expectStringEnum, extractEntry} from '../../internal/JsonDecodeUtils.mjs
 import {PermissionType} from './PermissionType.mjs';
 
 
+/**
+ *
+ *  A permission item whose predicate always evaluates to true, unconditionally granting or revoking
+ *  the specified permission type.
+ *  /
+ */
 export class AlwaysPermissionItem {
 
+	/**
+	 *
+	 *  The permission type that is always granted or revoked by this item.
+	 */
 	type: PermissionType;
 
 	readonly $ktClass: 'com.icure.cardinal.sdk.model.security.AlwaysPermissionItem' = 'com.icure.cardinal.sdk.model.security.AlwaysPermissionItem';

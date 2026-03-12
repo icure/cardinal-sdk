@@ -1,5 +1,11 @@
 // auto-generated file
 
+/**
+ *
+ *
+ *   Enumerates the types of partnerships (relationships) between persons, based on CD-CONTACT-PERSON
+ *  and FHIR codes.
+ */
 export enum PartnershipType {
 	PrimaryContact = "PrimaryContact",
 	PrimaryContactFor = "PrimaryContactFor",

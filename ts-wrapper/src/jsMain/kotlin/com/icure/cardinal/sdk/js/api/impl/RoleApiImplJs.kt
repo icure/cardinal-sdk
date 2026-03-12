@@ -29,6 +29,17 @@ import kotlinx.coroutines.promise
 internal class RoleApiImplJs(
 	private val roleApi: RoleApi,
 ) : RoleApiJs {
+	override fun getPermissions(): Promise<Array<String>> = GlobalScope.promise {
+		val result = roleApi.getPermissions(
+		)
+		listToArray(
+			result,
+			{ x1: String ->
+				x1
+			},
+		)
+	}
+
 	override fun getAllRoles(): Promise<Array<RoleJs>> = GlobalScope.promise {
 		val result = roleApi.getAllRoles(
 		)

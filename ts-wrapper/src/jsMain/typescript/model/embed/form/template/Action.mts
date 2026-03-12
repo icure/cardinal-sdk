@@ -4,12 +4,30 @@ import {Launcher} from './Launcher.mjs';
 import {State} from './State.mjs';
 
 
+/**
+ *
+ *  Represents an action in a form template, combining launchers, a conditional expression, and
+ *  target states.
+ *  /
+ */
 export class Action {
 
+	/**
+	 *
+	 *  The list of launchers that can trigger this action.
+	 */
 	launchers: Array<Launcher> | undefined = [];
 
+	/**
+	 *
+	 *  A conditional expression that determines when this action is executed.
+	 */
 	expression: string | undefined = undefined;
 
+	/**
+	 *
+	 *  The list of states to apply when this action is triggered.
+	 */
 	states: Array<State> | undefined = [];
 
 	constructor(partial: Partial<Action>) {

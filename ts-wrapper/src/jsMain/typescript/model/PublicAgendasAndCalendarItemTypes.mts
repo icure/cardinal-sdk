@@ -4,10 +4,24 @@ import {Agenda} from './Agenda.mjs';
 import {CalendarItemType} from './CalendarItemType.mjs';
 
 
+/**
+ *
+ *
+ *   DTO containing publicly accessible agendas and their associated calendar item types,
+ *   used for public appointment booking.
+ */
 export class PublicAgendasAndCalendarItemTypes {
 
+	/**
+	 *
+	 *  The list of publicly available agendas.
+	 */
 	agendas: Array<Agenda> = [];
 
+	/**
+	 *
+	 *  The list of calendar item types associated with the public agendas.
+	 */
 	calendarItemTypes: Array<CalendarItemType> = [];
 
 	constructor(partial: Partial<PublicAgendasAndCalendarItemTypes>) {

@@ -1,5 +1,10 @@
 // auto-generated file
 
+/**
+ *
+ *
+ *   Comparison operators for use in key-value predicates.
+ */
 export enum Operator {
 	Equal = "Equal",
 	Notequal = "Notequal",

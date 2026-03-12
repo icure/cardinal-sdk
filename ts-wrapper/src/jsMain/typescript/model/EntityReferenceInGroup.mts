@@ -2,6 +2,29 @@
 import {expectString, extractEntry} from '../internal/JsonDecodeUtils.mjs';
 
 
+/**
+ *
+ *  A reference to an entity in a group.
+ *
+ *  The entity group id can be null, which means the entity is in the same group as the user currently logged in to the
+ *  SDK.
+ *
+ *  When providing input to any SDK method you can use references with the group of the logged user or null
+ *  interchangeably.
+ *
+ *  However, some SDK methods that return [EntityReferenceInGroup] consistently fill the [groupId] of the logged user
+ *  while others consistently leave it null.
+ *  The general rule is that the methods from `inGroup` apis always fill all [groupId] values, even when the group
+ *  matches the current user's group. Methods that always act on the logged user's group instead always leave null
+ *  [groupId] when it would match the logged user's group.
+ *
+ *  Note that `equals` methods can't take in consideration the group of the current user, therefore
+ *  `EntityReferenceInGroup(x, userGroup) != EntityReferenceInGroup(x, null)`, even though the SDK for a user in
+ *  userGroup treats them the same.
+ *
+ *  @param entityId the id of the entity
+ *  @param groupId the id of the entity's group. If null it should be interpreted as the same group of the logged user.
+ */
 export class EntityReferenceInGroup {
 
 	entityId: string;

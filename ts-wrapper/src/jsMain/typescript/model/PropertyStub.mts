@@ -6,12 +6,29 @@ import {DecryptedTypedValue, EncryptedTypedValue, TypedValue} from './embed/Type
 import {Base64String} from './specializations/Base64String.mjs';
 
 
+/**
+ *
+ *  Lightweight stub representation of a property, used when the full stored property is not needed.
+ *  /
+ */
 export interface PropertyStub extends Encryptable {
 
+	/**
+	 *
+	 *  The unique identifier of the property stub.
+	 */
 	id: string | undefined;
 
+	/**
+	 *
+	 *  The type stub definition of this property.
+	 */
 	type: PropertyTypeStub | undefined;
 
+	/**
+	 *
+	 *  The typed value held by this property.
+	 */
 	typedValue: TypedValue | undefined;
 
 	readonly isEncrypted: boolean;
@@ -20,14 +37,35 @@ export interface PropertyStub extends Encryptable {
 
 }
 
+/**
+ *
+ *  Lightweight stub representation of a property, used when the full stored property is not needed.
+ *  /
+ */
 export class DecryptedPropertyStub {
 
+	/**
+	 *
+	 *  The unique identifier of the property stub.
+	 */
 	id: string | undefined = undefined;
 
+	/**
+	 *
+	 *  The type stub definition of this property.
+	 */
 	type: PropertyTypeStub | undefined = undefined;
 
+	/**
+	 *
+	 *  The typed value held by this property.
+	 */
 	typedValue: DecryptedTypedValue | undefined = undefined;
 
+	/**
+	 *
+	 *  The encrypted content of this property, encoded as a Base64 string.
+	 */
 	encryptedSelf: Base64String | undefined = undefined;
 
 	readonly isEncrypted: false = false;
@@ -69,14 +107,35 @@ export class DecryptedPropertyStub {
 
 }
 
+/**
+ *
+ *  Lightweight stub representation of a property, used when the full stored property is not needed.
+ *  /
+ */
 export class EncryptedPropertyStub {
 
+	/**
+	 *
+	 *  The unique identifier of the property stub.
+	 */
 	id: string | undefined = undefined;
 
+	/**
+	 *
+	 *  The type stub definition of this property.
+	 */
 	type: PropertyTypeStub | undefined = undefined;
 
+	/**
+	 *
+	 *  The typed value held by this property.
+	 */
 	typedValue: EncryptedTypedValue | undefined = undefined;
 
+	/**
+	 *
+	 *  The encrypted content of this property, encoded as a Base64 string.
+	 */
 	encryptedSelf: Base64String | undefined = undefined;
 
 	readonly isEncrypted: true = true;

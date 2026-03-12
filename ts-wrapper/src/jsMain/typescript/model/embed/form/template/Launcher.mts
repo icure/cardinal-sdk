@@ -3,12 +3,30 @@ import {expectBoolean, expectString, expectStringEnum, extractEntry} from '../..
 import {Trigger} from './Trigger.mjs';
 
 
+/**
+ *
+ *
+ *   Represents a launcher that triggers an action in a form template based on a specific trigger
+ *  event.
+ */
 export class Launcher {
 
+	/**
+	 *
+	 *  The name of the launcher.
+	 */
 	name: string;
 
+	/**
+	 *
+	 *  The trigger event that activates this launcher.
+	 */
 	triggerer: Trigger;
 
+	/**
+	 *
+	 *  Whether the current field value should be passed when the launcher is triggered.
+	 */
 	shouldPassValue: boolean = false;
 
 	constructor(partial: Partial<Launcher> & Pick<Launcher, "name" | "triggerer">) {

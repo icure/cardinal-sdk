@@ -1,5 +1,9 @@
 // auto-generated file
 
+/**
+ *
+ *  Data class representing the details required to inject exchange data.
+ */
 export class ExchangeDataInjectionDetails {
 
 	exchangeDataId: string;

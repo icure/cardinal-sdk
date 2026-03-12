@@ -3,18 +3,49 @@ import {expectString, extractEntry} from '../../internal/JsonDecodeUtils.mjs';
 import {CodeIdentification} from './CodeIdentification.mjs';
 
 
+/**
+ *
+ *  A lightweight reference to a code from a codification system, used as a stub in entities that
+ *  reference codes
+ *  without embedding the full code definition. The id is typically formatted as type|code|version.
+ *  /
+ */
 export class CodeStub implements CodeIdentification<string | undefined> {
 
+	/**
+	 *
+	 *  The unique identifier, formatted as type|code|version.
+	 */
 	id: string | undefined = undefined;
 
+	/**
+	 *
+	 *  The context where this code is used when embedded in another entity.
+	 */
 	context: string | undefined = undefined;
 
+	/**
+	 *
+	 *  The codification system type (e.g. ICD, ICPC-2).
+	 */
 	type: string | undefined = undefined;
 
+	/**
+	 *
+	 *  The code value within the codification system.
+	 */
 	code: string | undefined = undefined;
 
+	/**
+	 *
+	 *  The version of the codification system.
+	 */
 	version: string | undefined = undefined;
 
+	/**
+	 *
+	 *  A human-readable label for the context.
+	 */
 	contextLabel: string | undefined = undefined;
 
 	constructor(partial: Partial<CodeStub>) {

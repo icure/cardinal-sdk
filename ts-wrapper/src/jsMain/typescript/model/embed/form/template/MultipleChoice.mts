@@ -2,6 +2,11 @@
 import {expectArray, expectBoolean, expectMap, expectNumber, expectString, extractEntry} from '../../../../internal/JsonDecodeUtils.mjs';
 
 
+/**
+ *
+ *  A multiple choice field in a form template, allowing selection of multiple options.
+ *  /
+ */
 export class MultipleChoice {
 
 	field: string;
