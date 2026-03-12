@@ -23,5 +23,6 @@ data class LabelledOccurence(
 	public val occurence: Long,
 ) {
 	// region LabelledOccurence-LabelledOccurence
+
 	// endregion
 }
