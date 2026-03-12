@@ -1,17 +1,33 @@
+// WARNING: This file is auto-generated. If you change it manually, your changes will be lost.
+// If you want to change the way this class is generated, see [this repo](https://github.com/icure/sdk-codegen).
 package com.icure.cardinal.sdk.model.embed.form.template
 
 import kotlinx.serialization.Serializable
 import kotlin.String
 import kotlin.collections.List
 
-// WARNING: This file is auto-generated. If you change it manually, your changes will be lost.
-// If you want to change the way this class is generated, see [this repo](https://github.com/icure/sdk-codegen).
-
+/**
+ * Represents a section within a form template layout, containing a set of structure elements
+ * (fields and groups).
+ * /
+ */
 @Serializable
 data class Section(
+	/**
+	 * The name or identifier of this section.
+	 */
 	public val section: String,
+	/**
+	 * The list of structure elements in this section.
+	 */
 	public val fields: List<StructureElement>,
+	/**
+	 * A description of this section.
+	 */
 	public val description: String? = null,
+	/**
+	 * Keywords associated with this section for search purposes.
+	 */
 	public val keywords: List<String>? = null,
 ) {
 	// region Section-Section

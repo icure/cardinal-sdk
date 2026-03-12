@@ -3,10 +3,24 @@ import {expectArray, expectObject, expectString, extractEntry} from '../../../..
 import {StructureElement} from './StructureElement.mjs';
 
 
+/**
+ *
+ *  Represents a group of structure elements within a form template section, used to organize fields
+ *  logically.
+ *  /
+ */
 export class FieldsGroup {
 
+	/**
+	 *
+	 *  The name or identifier of this group.
+	 */
 	group: string;
 
+	/**
+	 *
+	 *  The list of structure elements (fields or nested groups) in this group.
+	 */
 	fields: Array<StructureElement> | undefined = undefined;
 
 	readonly $ktClass: 'com.icure.cardinal.sdk.model.embed.form.template.FieldsGroup' = 'com.icure.cardinal.sdk.model.embed.form.template.FieldsGroup';

@@ -8,6 +8,11 @@ import {ReferralPeriod} from './ReferralPeriod.mjs';
 import {TelecomType} from './TelecomType.mjs';
 
 
+/**
+ *
+ *
+ *   Created by aduchate on 02/07/13, 11:59
+ */
 export interface PatientHealthCareParty extends Encryptable {
 
 	type: PatientHealthCarePartyType | undefined;
@@ -26,6 +31,11 @@ export interface PatientHealthCareParty extends Encryptable {
 
 }
 
+/**
+ *
+ *
+ *   Created by aduchate on 02/07/13, 11:59
+ */
 export class DecryptedPatientHealthCareParty {
 
 	type: PatientHealthCarePartyType | undefined = undefined;
@@ -91,6 +101,11 @@ export class DecryptedPatientHealthCareParty {
 
 }
 
+/**
+ *
+ *
+ *   Created by aduchate on 02/07/13, 11:59
+ */
 export class EncryptedPatientHealthCareParty {
 
 	type: PatientHealthCarePartyType | undefined = undefined;

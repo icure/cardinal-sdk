@@ -110,7 +110,8 @@ private suspend fun RawTopicApi.doMatchTopicsBy(
 		)
 	} else {
 		matchTopicsBy(
-			mapTopicFilterOptions(
+			groupId = groupId,
+			filter = mapTopicFilterOptions(
 				filter,
 				config,
 				requestGroup = groupId

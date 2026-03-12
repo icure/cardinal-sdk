@@ -5,20 +5,54 @@ import {Annotation} from './Annotation.mjs';
 import {Range} from './Range.mjs';
 
 
+/**
+ *
+ *
+ *   Represents a reference range for a measurement, including bounds, applicable age range, tags,
+ *  codes, and notes.
+ */
 export class ReferenceRange {
 
+	/**
+	 *
+	 *  The lower bound of the reference range.
+	 */
 	low: number | undefined = undefined;
 
+	/**
+	 *
+	 *  The upper bound of the reference range.
+	 */
 	high: number | undefined = undefined;
 
+	/**
+	 *
+	 *  A string representation of the reference range.
+	 */
 	stringValue: string | undefined = undefined;
 
+	/**
+	 *
+	 *  Tags associated with this reference range.
+	 */
 	tags: Array<CodeStub> = [];
 
+	/**
+	 *
+	 *  Codes associated with this reference range.
+	 */
 	codes: Array<CodeStub> = [];
 
+	/**
+	 *
+	 *  Annotations providing additional context.
+	 */
 	notes: Array<Annotation> = [];
 
+	/**
+	 *
+	 *  The age range to which this reference range applies.
+	 */
 	age: Range | undefined = undefined;
 
 	constructor(partial: Partial<ReferenceRange>) {

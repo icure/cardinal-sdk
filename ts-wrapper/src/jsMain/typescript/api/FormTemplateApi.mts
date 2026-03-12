@@ -43,6 +43,10 @@ export interface FormTemplateApi {
 
 	purgeFormTemplates(formTemplates: Array<FormTemplate>): Promise<Array<StoredDocumentIdentifier>>;
 
+	/**
+	 *
+	 *  Sets the attachment to the form template.
+	 */
 	setTemplateAttachment(formTemplateId: string, payload: Int8Array): Promise<string>;
 
 	matchFormTemplateBy(filter: BaseFilterOptions<FormTemplate>): Promise<Array<string>>;

@@ -11,50 +11,146 @@ import {LoginIdentifier} from './security/LoginIdentifier.mjs';
 import {Permission} from './security/Permission.mjs';
 
 
+/**
+ *
+ *  Represents a user that can log in to the iCure platform. A user can be linked to a healthcare
+ *  party,
+ *  a patient, or a device, and holds authentication credentials, roles, and permissions.
+ *  /
+ */
 export class User implements StoredDocument {
 
+	/**
+	 *
+	 *  The Id of the user. We encourage using either a v4 UUID or a HL7 Id.
+	 */
 	id: string;
 
+	/**
+	 *
+	 *  The revision of the user in the database, used for conflict management / optimistic locking.
+	 */
 	rev: string | undefined = undefined;
 
+	/**
+	 *
+	 *  Hard delete (unix epoch in ms) timestamp of the object.
+	 */
 	deletionDate: number | undefined = undefined;
 
+	/**
+	 *
+	 *  The timestamp (unix epoch in ms) of creation.
+	 */
 	created: number | undefined = undefined;
 
+	/**
+	 *
+	 *  The identifiers of the user.
+	 */
 	identifier: Array<Identifier> = [];
 
+	/**
+	 *
+	 *  Last name of the user.
+	 */
 	name: string | undefined = undefined;
 
+	/**
+	 *
+	 *  Extra properties for the user. Those properties are typed (see class Property).
+	 */
 	properties: Array<DecryptedPropertyStub> = [];
 
+	/**
+	 *
+	 *  Local permissions specified for the user.
+	 */
 	permissions: Array<Permission> = [];
 
+	/**
+	 *
+	 *  Local roles specified for the user.
+	 */
 	roles: Array<string> = [];
 
+	/**
+	 *
+	 *  State of user's activeness: 'Active', 'Disabled' or 'Registering'.
+	 */
 	status: UsersStatus | undefined = undefined;
 
+	/**
+	 *
+	 *  Username for this user. We encourage using an email address.
+	 */
 	login: string | undefined = undefined;
 
+	/**
+	 *
+	 *  Hashed version of the password (BCrypt is used for hashing).
+	 */
 	passwordHash: string | undefined = undefined;
 
+	/**
+	 *
+	 *  The id of the group (practice/hospital) the user is member of.
+	 */
 	groupId: string | undefined = undefined;
 
+	/**
+	 *
+	 *  Id of the healthcare party if the user is a healthcare party.
+	 */
 	healthcarePartyId: string | undefined = undefined;
 
+	/**
+	 *
+	 *  Id of the patient if the user is a patient.
+	 */
 	patientId: string | undefined = undefined;
 
+	/**
+	 *
+	 *  Id of the device if the user is a device.
+	 */
 	deviceId: string | undefined = undefined;
 
+	/**
+	 *
+	 *  Delegations that are automatically generated client side when a new database object is created
+	 *  by this user.
+	 */
 	autoDelegations: { [ key in DelegationTag ]?: Array<string> } = {};
 
+	/**
+	 *
+	 *  The timestamp (unix epoch in ms) of the latest validation of the terms of use.
+	 */
 	termsOfUseDate: number | undefined = undefined;
 
+	/**
+	 *
+	 *  Email address of the user (used for token exchange or password recovery).
+	 */
 	email: string | undefined = undefined;
 
+	/**
+	 *
+	 *  Mobile phone of the user (used for token exchange or password recovery).
+	 */
 	mobilePhone: string | undefined = undefined;
 
+	/**
+	 *
+	 *  Encrypted and time-limited authentication tokens used for inter-applications authentication.
+	 */
 	authenticationTokens: { [ key: string ]: AuthenticationToken } = {};
 
+	/**
+	 *
+	 *  Metadata used to enrich the user with information from the cloud environment.
+	 */
 	systemMetadata: User.SystemMetadata | undefined = undefined;
 
 	constructor(partial: Partial<User>) {

@@ -2,6 +2,11 @@
 import {expectArray, expectBoolean, expectMap, expectNumber, expectString, extractEntry} from '../../../../internal/JsonDecodeUtils.mjs';
 
 
+/**
+ *
+ *  A radio button field in a form template, allowing selection of a single option.
+ *  /
+ */
 export class RadioButton {
 
 	field: string;

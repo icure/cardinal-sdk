@@ -108,7 +108,8 @@ private suspend fun RawMessageApi.doMatchMessagesBy(
 		)
 	} else {
 		matchMessagesBy(
-			mapMessageFilterOptions(
+			groupId = groupId,
+			filter = mapMessageFilterOptions(
 				filter,
 				config,
 				requestGroup = groupId

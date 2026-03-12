@@ -2,14 +2,37 @@
 import {expectNumber, expectString, extractEntry} from '../../internal/JsonDecodeUtils.mjs';
 
 
+/**
+ *
+ *  Represents metadata about an attachment that has been deleted, preserving its former storage
+ *  identifiers and deletion time.
+ *  /
+ */
 export class DeletedAttachment {
 
+	/**
+	 *
+	 *  The former CouchDB attachment identifier, if the attachment was stored as a CouchDB attachment.
+	 */
 	couchDbAttachmentId: string | undefined = undefined;
 
+	/**
+	 *
+	 *  The former object storage identifier, if the attachment was stored using the object storage
+	 *  service.
+	 */
 	objectStoreAttachmentId: string | undefined = undefined;
 
+	/**
+	 *
+	 *  The key the attachment was associated to, or null for main attachments.
+	 */
 	key: string | undefined = undefined;
 
+	/**
+	 *
+	 *  The timestamp (unix epoch in ms) when the attachment was deleted.
+	 */
 	deletionTime: number | undefined = undefined;
 
 	constructor(partial: Partial<DeletedAttachment>) {

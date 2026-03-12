@@ -5,28 +5,79 @@ import {StoredDocument} from './base/StoredDocument.mjs';
 import {DecryptedAddress} from './embed/Address.mjs';
 
 
+/**
+ *
+ *  Represents an insurance entity. An insurance can be a mutual fund, a private insurance company,
+ *  or any other type of insurance organization that covers healthcare costs.
+ *  /
+ */
 export class Insurance implements StoredDocument {
 
+	/**
+	 *
+	 *  The unique identifier of the insurance.
+	 */
 	id: string;
 
+	/**
+	 *
+	 *  The revision of the insurance in the database, used for conflict management / optimistic
+	 *  locking.
+	 */
 	rev: string | undefined = undefined;
 
+	/**
+	 *
+	 *  Hard delete (unix epoch in ms) timestamp of the object.
+	 */
 	deletionDate: number | undefined = undefined;
 
+	/**
+	 *
+	 *  The name of the insurance in different languages.
+	 */
 	name: { [ key: string ]: string } = {};
 
+	/**
+	 *
+	 *  Whether this is a private insurance.
+	 */
 	privateInsurance: boolean = false;
 
+	/**
+	 *
+	 *  Whether this insurance covers hospitalisation.
+	 */
 	hospitalisationInsurance: boolean = false;
 
+	/**
+	 *
+	 *  Whether this insurance covers ambulatory care.
+	 */
 	ambulatoryInsurance: boolean = false;
 
+	/**
+	 *
+	 *  The insurance code.
+	 */
 	code: string | undefined = undefined;
 
+	/**
+	 *
+	 *  The agreement number for the insurance.
+	 */
 	agreementNumber: string | undefined = undefined;
 
+	/**
+	 *
+	 *  The id of the parent insurance entity.
+	 */
 	parent: string | undefined = undefined;
 
+	/**
+	 *
+	 *  The address of the insurance company.
+	 */
 	address: DecryptedAddress;
 
 	constructor(partial: Partial<Insurance> & Pick<Insurance, "address">) {

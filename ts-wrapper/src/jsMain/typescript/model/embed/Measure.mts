@@ -5,30 +5,84 @@ import {ReferenceRange} from './ReferenceRange.mjs';
 import {ValueWithPrecision} from './ValueWithPrecision.mjs';
 
 
+/**
+ *
+ *  Represents a measured value with its unit, reference value, severity, evolution, and reference
+ *  ranges.
+ *  /
+ */
 export class Measure {
 
+	/**
+	 *
+	 *  The measured numeric value.
+	 */
 	value: number | undefined = undefined;
 
+	/**
+	 *
+	 *  The reference value for comparison.
+	 */
 	ref: number | undefined = undefined;
 
+	/**
+	 *
+	 *  The severity level as an integer.
+	 */
 	severity: number | undefined = undefined;
 
+	/**
+	 *
+	 *  The severity code as a string.
+	 */
 	severityCode: string | undefined = undefined;
 
+	/**
+	 *
+	 *  The evolution indicator as an integer.
+	 */
 	evolution: number | undefined = undefined;
 
+	/**
+	 *
+	 *  The unit of measurement as a string.
+	 */
 	unit: string | undefined = undefined;
 
+	/**
+	 *
+	 *  The coded units of measurement.
+	 */
 	unitCodes: Array<CodeStub> | undefined = undefined;
 
+	/**
+	 *
+	 *  A comment about the measurement.
+	 */
 	comment: string | undefined = undefined;
 
+	/**
+	 *
+	 *  A comparator string (e.g., "<", ">", "<=").
+	 */
 	comparator: string | undefined = undefined;
 
+	/**
+	 *
+	 *  The sign of the value.
+	 */
 	sign: string | undefined = undefined;
 
+	/**
+	 *
+	 *  The list of reference ranges for this measurement.
+	 */
 	referenceRanges: Array<ReferenceRange> = [];
 
+	/**
+	 *
+	 *  The value with its precision information.
+	 */
 	valueWithPrecision: ValueWithPrecision | undefined = undefined;
 
 	constructor(partial: Partial<Measure>) {

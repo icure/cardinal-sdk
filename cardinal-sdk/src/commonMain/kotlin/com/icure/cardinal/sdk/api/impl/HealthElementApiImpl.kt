@@ -105,8 +105,9 @@ private suspend fun RawHealthElementApi.doMatchHealthElementsBy(
 			)
 		)
 	} else {
-		matchHealthElementsBy(
-			mapHealthElementFilterOptions(
+		matchHealthElementsInGroupBy(
+			groupId = groupId,
+			filter = mapHealthElementFilterOptions(
 				filter,
 				config,
 				requestGroup = groupId

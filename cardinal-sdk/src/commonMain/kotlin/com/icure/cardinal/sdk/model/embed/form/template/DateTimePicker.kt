@@ -1,3 +1,5 @@
+// WARNING: This file is auto-generated. If you change it manually, your changes will be lost.
+// If you want to change the way this class is generated, see [this repo](https://github.com/icure/sdk-codegen).
 package com.icure.cardinal.sdk.model.embed.form.template
 
 import kotlinx.serialization.SerialName
@@ -8,9 +10,10 @@ import kotlin.String
 import kotlin.collections.List
 import kotlin.collections.Map
 
-// WARNING: This file is auto-generated. If you change it manually, your changes will be lost.
-// If you want to change the way this class is generated, see [this repo](https://github.com/icure/sdk-codegen).
-
+/**
+ * A date-time picker field in a form template, combining date and time selection.
+ * /
+ */
 @SerialName("date-time-picker")
 @Serializable
 data class DateTimePicker(

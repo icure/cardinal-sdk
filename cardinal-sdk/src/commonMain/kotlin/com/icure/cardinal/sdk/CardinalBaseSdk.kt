@@ -13,6 +13,7 @@ import com.icure.cardinal.sdk.api.UserApi
 import com.icure.cardinal.sdk.api.impl.AgendaApiImpl
 import com.icure.cardinal.sdk.api.impl.AuthApiImpl
 import com.icure.cardinal.sdk.api.impl.CalendarItemTypeApiImpl
+import com.icure.cardinal.sdk.api.impl.CardinalAnonymousSdkImpl
 import com.icure.cardinal.sdk.api.impl.CodeApiImpl
 import com.icure.cardinal.sdk.api.impl.DeviceApiImpl
 import com.icure.cardinal.sdk.api.impl.FrontEndMigrationApiImpl
@@ -35,11 +36,13 @@ import com.icure.cardinal.sdk.api.impl.initInvoiceBasicApi
 import com.icure.cardinal.sdk.api.impl.initMessageBasicApi
 import com.icure.cardinal.sdk.api.impl.initPatientBasicApi
 import com.icure.cardinal.sdk.api.impl.initReceiptBasicApi
+import com.icure.cardinal.sdk.api.raw.RawAnonymousApi
 import com.icure.cardinal.sdk.api.raw.RawAnonymousAuthApi
 import com.icure.cardinal.sdk.api.raw.RawApiConfig
 import com.icure.cardinal.sdk.api.raw.RawMessageGatewayApi
 import com.icure.cardinal.sdk.api.raw.impl.RawAccessLogApiImpl
 import com.icure.cardinal.sdk.api.raw.impl.RawAgendaApiImpl
+import com.icure.cardinal.sdk.api.raw.impl.RawAnonymousApiImpl
 import com.icure.cardinal.sdk.api.raw.impl.RawAnonymousAuthApiImpl
 import com.icure.cardinal.sdk.api.raw.impl.RawCalendarItemApiImpl
 import com.icure.cardinal.sdk.api.raw.impl.RawCalendarItemTypeApiImpl
@@ -396,6 +399,19 @@ private class CardinalBaseApisImpl(
 ) : CardinalBaseApis {
 	private val apiUrl get() = config.apiUrl
 
+	private val rawAnonymousApi: RawAnonymousApi by lazy {
+		RawAnonymousApiImpl(
+			apiUrl = config.apiUrl,
+			rawApiConfig = config.rawApiConfig,
+		)
+	}
+
+	override val anonymous: CardinalAnonymousApis by lazy {
+		CardinalAnonymousSdkImpl(
+			rawAnonymousApi = rawAnonymousApi
+		)
+	}
+
 	override val auth: AuthApi by lazy {
 		AuthApiImpl(
 			authProvider = authProvider,
@@ -576,7 +592,10 @@ private class CardinalBaseApisImpl(
 		PlaceApiImpl(RawPlaceApiImpl(apiUrl, authProvider, config.rawApiConfig))
 	}
 	override val role: RoleApi by lazy {
-		RoleApiImpl(RawRoleApiImpl(apiUrl, authProvider, config.rawApiConfig))
+		RoleApiImpl(
+			rawApi = RawRoleApiImpl(apiUrl, authProvider, config.rawApiConfig),
+			rawAnonymousApi = rawAnonymousApi
+		)
 	}
 	override val agenda: AgendaApi by lazy {
 		AgendaApiImpl(RawAgendaApiImpl(apiUrl, authProvider, config.rawApiConfig), config)

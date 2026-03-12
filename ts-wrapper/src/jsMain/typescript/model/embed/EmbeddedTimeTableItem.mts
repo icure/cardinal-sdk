@@ -3,24 +3,66 @@ import {expectArray, expectBoolean, expectNumber, expectObject, expectString, ex
 import {EmbeddedTimeTableHour} from './EmbeddedTimeTableHour.mjs';
 
 
+/**
+ *
+ *  Represents a recurring time table item with scheduling rules, availability slots, and access
+ *  control.
+ *  /
+ */
 export class EmbeddedTimeTableItem {
 
+	/**
+	 *
+	 *  The recurrence rule (RFC 5545 RRULE format) defining the schedule pattern.
+	 */
 	rrule: string;
 
+	/**
+	 *
+	 *  The start date of the recurrence rule as an integer (YYYYMMDD).
+	 */
 	rruleStartDate: number | undefined = undefined;
 
+	/**
+	 *
+	 *  Minimum number of minutes before the slot that booking is allowed.
+	 */
 	notBeforeInMinutes: number | undefined = undefined;
 
+	/**
+	 *
+	 *  Maximum number of minutes after the slot start that booking is allowed.
+	 */
 	notAfterInMinutes: number | undefined = undefined;
 
+	/**
+	 *
+	 *  The list of hour ranges within this time table item.
+	 */
 	hours: Array<EmbeddedTimeTableHour>;
 
+	/**
+	 *
+	 *  The set of calendar item type identifiers associated with this item.
+	 */
 	calendarItemTypesIds: Array<string>;
 
+	/**
+	 *
+	 *  The number of available slots for this time table item.
+	 */
 	availabilities: number = 1;
 
+	/**
+	 *
+	 *  The set of identifiers for parties allowed to reserve slots.
+	 */
 	reservingRights: Array<string> = [];
 
+	/**
+	 *
+	 *  Whether this time table item is publicly visible.
+	 */
 	public: boolean = false;
 
 	constructor(partial: Partial<EmbeddedTimeTableItem> & Pick<EmbeddedTimeTableItem, "rrule" | "hours" | "calendarItemTypesIds">) {

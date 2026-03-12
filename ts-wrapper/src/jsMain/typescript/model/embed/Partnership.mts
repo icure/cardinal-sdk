@@ -4,12 +4,30 @@ import {PartnershipStatus} from './PartnershipStatus.mjs';
 import {PartnershipType} from './PartnershipType.mjs';
 
 
+/**
+ *
+ *  Represents a relationship between a patient and another person (contact person or another
+ *  patient).
+ *  /
+ */
 export class Partnership {
 
+	/**
+	 *
+	 *  The type of relationship (from CD-CONTACT-PERSON codes).
+	 */
 	type: PartnershipType | undefined = undefined;
 
+	/**
+	 *
+	 *  The status of the relationship.
+	 */
 	status: PartnershipStatus | undefined = undefined;
 
+	/**
+	 *
+	 *  The UUID of the contact person or patient in this relationship.
+	 */
 	partnerId: string | undefined = undefined;
 
 	constructor(partial: Partial<Partnership>) {

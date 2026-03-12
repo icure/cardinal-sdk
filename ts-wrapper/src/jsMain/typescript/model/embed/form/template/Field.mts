@@ -11,4 +11,13 @@ import {TextField} from './TextField.mjs';
 import {TimePicker} from './TimePicker.mjs';
 
 
+/**
+ *
+ *  Sealed interface representing a form field within a form template. Concrete implementations
+ *  define
+ *  specific field types (text, number, date picker, etc.). Each field has a name, display
+ *  configuration,
+ *  validation rules, and optional codification and tagging.
+ *  /
+ */
 export type Field = RadioButton | MeasureField | TimePicker | NumberField | TextField | DateTimePicker | CheckBox | DatePicker | DropdownField | MultipleChoice;

@@ -1,5 +1,10 @@
 // auto-generated file
 
+/**
+ *
+ *  Configuration for which secret id to use for linking to a owning entity (e.g. which secret id of patient to use
+ *  when linking a contact to the patient)
+ */
 export type SecretIdUseOption = typeof SecretIdUseOption.UseAnyConfidential | typeof SecretIdUseOption.UseAllConfidential | typeof SecretIdUseOption.UseAnySharedWithParent | typeof SecretIdUseOption.UseAllSharedWithParent | SecretIdUseOption.Use | typeof SecretIdUseOption.UseNone;
 
 export namespace SecretIdUseOption {
@@ -28,6 +33,12 @@ export namespace SecretIdUseOption {
 		$ktClass: 'com.icure.cardinal.sdk.crypto.entities.SecretIdUseOption.UseAllSharedWithParent'
 	}
 
+	/**
+	 *
+	 *  Specify explicitly which secret ids to use. The secretIds can also be empty, in which case the value is
+	 *  equivalent to [UseNone].
+	 *  Note that the SDK will not check that the secret id you used is actually a secret id of the owning entity.
+	 */
 	export class Use {
 
 		secretIds: Array<string>;

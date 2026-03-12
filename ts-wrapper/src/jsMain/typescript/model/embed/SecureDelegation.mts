@@ -5,22 +5,63 @@ import {SecureDelegationKeyString} from '../specializations/SecureDelegationKeyS
 import {AccessLevel} from './AccessLevel.mjs';
 
 
+/**
+ *
+ *  Represents a delegation which allows a data owner to access the encrypted data of an entity and
+ *  specifies
+ *  the access control level. Created by a delegator data owner and usable by a delegate data owner,
+ *  using
+ *  exchange data for encryption and access control.
+ *  /
+ */
 export class SecureDelegation {
 
+	/**
+	 *
+	 *  Optionally the id of the delegator data owner. May be null to prevent data leakages.
+	 */
 	delegator: string | undefined = undefined;
 
+	/**
+	 *
+	 *  Optionally the id of the delegate data owner. May be null to prevent data leakages.
+	 */
 	delegate: string | undefined = undefined;
 
+	/**
+	 *
+	 *  Encrypted secret ids of the entity holding this delegation.
+	 */
 	secretIds: Array<Base64String> = [];
 
+	/**
+	 *
+	 *  Encrypted AES keys used for the encryption of the entity's data.
+	 */
 	encryptionKeys: Array<Base64String> = [];
 
+	/**
+	 *
+	 *  Encrypted ids of the owning entity (e.g., patient id for a contact).
+	 */
 	owningEntityIds: Array<Base64String> = [];
 
+	/**
+	 *
+	 *  Keys of parent delegations in the security metadata.
+	 */
 	parentDelegations: Array<SecureDelegationKeyString> = [];
 
+	/**
+	 *
+	 *  The id of the exchange data used for encryption, if both delegator and delegate are explicit.
+	 */
 	exchangeDataId: string | undefined = undefined;
 
+	/**
+	 *
+	 *  The access level permissions for users with access to this delegation.
+	 */
 	permissions: AccessLevel;
 
 	constructor(partial: Partial<SecureDelegation> & Pick<SecureDelegation, "permissions">) {

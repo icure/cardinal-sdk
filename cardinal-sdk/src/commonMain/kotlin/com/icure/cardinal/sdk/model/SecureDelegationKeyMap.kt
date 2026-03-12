@@ -1,3 +1,5 @@
+// WARNING: This file is auto-generated. If you change it manually, your changes will be lost.
+// If you want to change the way this class is generated, see [this repo](https://github.com/icure/sdk-codegen).
 package com.icure.cardinal.sdk.model
 
 import com.icure.cardinal.sdk.model.base.HasEncryptionMetadata
@@ -13,17 +15,33 @@ import kotlin.String
 import kotlin.collections.Map
 import kotlin.collections.Set
 
-// WARNING: This file is auto-generated. If you change it manually, your changes will be lost.
-// If you want to change the way this class is generated, see [this repo](https://github.com/icure/sdk-codegen).
 sealed interface SecureDelegationKeyMap : StoredDocument, HasEncryptionMetadata, Encryptable {
 	override val id: String
 
 	override val rev: String?
 
+	/**
+	 *
+	 *  The secure delegation key this map refers to.
+	 */
 	public val delegationKey: String
 
+	/**
+	 *
+	 *  The delegator of the secure delegation key this map refers to, if the delegator is anonymous in
+	 * the delegation,
+	 *  and if not encrypted.
+	 *  On the server side this value should always be encrypted.
+	 */
 	public val delegator: String?
 
+	/**
+	 *
+	 *  The delegate of the secure delegation key this map refers to, if the delegate is anonymous in
+	 * the delegation,
+	 *  and if not encrypted.
+	 *  On the server side this value should always be encrypted.
+	 */
 	public val `delegate`: String?
 
 	override val secretForeignKeys: Set<String>
@@ -48,8 +66,26 @@ sealed interface SecureDelegationKeyMap : StoredDocument, HasEncryptionMetadata,
 data class DecryptedSecureDelegationKeyMap(
 	override val id: String,
 	override val rev: String? = null,
+	/**
+	 *
+	 *  The secure delegation key this map refers to.
+	 */
 	override val delegationKey: String,
+	/**
+	 *
+	 *  The delegator of the secure delegation key this map refers to, if the delegator is anonymous in
+	 * the delegation,
+	 *  and if not encrypted.
+	 *  On the server side this value should always be encrypted.
+	 */
 	override val delegator: String? = null,
+	/**
+	 *
+	 *  The delegate of the secure delegation key this map refers to, if the delegate is anonymous in
+	 * the delegation,
+	 *  and if not encrypted.
+	 *  On the server side this value should always be encrypted.
+	 */
 	override val `delegate`: String? = null,
 	@param:DefaultValue("emptySet()")
 	override val secretForeignKeys: Set<String> = emptySet(),
@@ -73,8 +109,26 @@ override fun copyWithSecurityMetadata(securityMetadata: SecurityMetadata, secret
 data class EncryptedSecureDelegationKeyMap(
 	override val id: String,
 	override val rev: String? = null,
+	/**
+	 *
+	 *  The secure delegation key this map refers to.
+	 */
 	override val delegationKey: String,
+	/**
+	 *
+	 *  The delegator of the secure delegation key this map refers to, if the delegator is anonymous in
+	 * the delegation,
+	 *  and if not encrypted.
+	 *  On the server side this value should always be encrypted.
+	 */
 	override val delegator: String? = null,
+	/**
+	 *
+	 *  The delegate of the secure delegation key this map refers to, if the delegate is anonymous in
+	 * the delegation,
+	 *  and if not encrypted.
+	 *  On the server side this value should always be encrypted.
+	 */
 	override val `delegate`: String? = null,
 	@param:DefaultValue("emptySet()")
 	override val secretForeignKeys: Set<String> = emptySet(),

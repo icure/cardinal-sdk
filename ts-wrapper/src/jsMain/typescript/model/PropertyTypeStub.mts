@@ -3,10 +3,24 @@ import {expectString, expectStringEnum, extractEntry} from '../internal/JsonDeco
 import {TypedValuesType} from './embed/TypedValuesType.mjs';
 
 
+/**
+ *
+ *  Lightweight stub representation of a property type, containing only the identifier and value
+ *  type.
+ *  /
+ */
 export class PropertyTypeStub {
 
+	/**
+	 *
+	 *  The human-readable identifier of this property type.
+	 */
 	identifier: string | undefined = undefined;
 
+	/**
+	 *
+	 *  The value type of this property type.
+	 */
 	type: TypedValuesType | undefined = undefined;
 
 	constructor(partial: Partial<PropertyTypeStub>) {

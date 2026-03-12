@@ -3,8 +3,17 @@ import {expectArray, expectObject, extractEntry} from '../internal/JsonDecodeUti
 import {DecryptedPropertyStub} from './PropertyStub.mjs';
 
 
+/**
+ *
+ *
+ *   DTO wrapping a set of property stubs, used for bulk property operations.
+ */
 export class ListOfProperties {
 
+	/**
+	 *
+	 *  The set of property stubs.
+	 */
 	properties: Array<DecryptedPropertyStub> = [];
 
 	constructor(partial: Partial<ListOfProperties>) {

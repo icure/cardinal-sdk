@@ -3,22 +3,65 @@ import {expectObject, expectString, extractEntry} from '../../internal/JsonDecod
 import {CodeStub} from './CodeStub.mjs';
 
 
+/**
+ *
+ *
+ *   An identifier intended for computation
+ *
+ *   An identifier - identifies some entity uniquely and unambiguously. Typically this is used for
+ *   business identifiers.
+ */
 export class Identifier {
 
+	/**
+	 *
+	 *
+	 *   Unique id for inter-element referencing
+	 */
 	id: string | undefined = undefined;
 
+	/**
+	 *
+	 *
+	 *   Organization that issued id (may be just text)
+	 */
 	assigner: string | undefined = undefined;
 
+	/**
+	 *
+	 *
+	 *   Time period when id is/was valid for use
+	 */
 	start: string | undefined = undefined;
 
 	end: string | undefined = undefined;
 
+	/**
+	 *
+	 *
+	 *   The namespace for the identifier value
+	 */
 	system: string | undefined = undefined;
 
+	/**
+	 *
+	 *
+	 *   Description of identifier
+	 */
 	type: CodeStub | undefined = undefined;
 
+	/**
+	 *
+	 *
+	 *   usual | official | temp | secondary | old (If known)
+	 */
 	use: string | undefined = undefined;
 
+	/**
+	 *
+	 *
+	 *   The value that is unique
+	 */
 	value: string | undefined = undefined;
 
 	constructor(partial: Partial<Identifier>) {

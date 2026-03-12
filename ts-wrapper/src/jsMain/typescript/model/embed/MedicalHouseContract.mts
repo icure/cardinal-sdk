@@ -7,70 +7,205 @@ import {MhcSignatureType} from './MhcSignatureType.mjs';
 import {SuspensionReason} from './SuspensionReason.mjs';
 
 
+/**
+ *
+ *  Represents a medical house contract (inscription period) for a patient, including coverage
+ *  details,
+ *  suspension periods, and signature information.
+ *  /
+ */
 export interface MedicalHouseContract extends Encryptable {
 
+	/**
+	 *
+	 *  The identifier of the contract.
+	 */
 	contractId: string | undefined;
 
+	/**
+	 *
+	 *  The start of the contract period (yyyyMMdd).
+	 */
 	validFrom: number | undefined;
 
+	/**
+	 *
+	 *  The end of the contract period (yyyyMMdd).
+	 */
 	validTo: number | undefined;
 
+	/**
+	 *
+	 *  The NIHII number of the medical house.
+	 */
 	mmNihii: string | undefined;
 
+	/**
+	 *
+	 *  The identifier of the healthcare party.
+	 */
 	hcpId: string | undefined;
 
+	/**
+	 *
+	 *  The type of contract change (inscription, coverageChange, suspension).
+	 */
 	changeType: ContractChangeType | undefined;
 
+	/**
+	 *
+	 *  The identifier of the parent contract.
+	 */
 	parentContractId: string | undefined;
 
+	/**
+	 *
+	 *  Who changed the contract (user or mcn).
+	 */
 	changedBy: string | undefined;
 
+	/**
+	 *
+	 *  The contract signature date (yyyyMMdd).
+	 */
 	startOfContract: number | undefined;
 
+	/**
+	 *
+	 *  The start of coverage date (yyyyMMdd).
+	 */
 	startOfCoverage: number | undefined;
 
+	/**
+	 *
+	 *  The contract end signature date (yyyyMMdd).
+	 */
 	endOfContract: number | undefined;
 
+	/**
+	 *
+	 *  The end of coverage date (yyyyMMdd).
+	 */
 	endOfCoverage: number | undefined;
 
+	/**
+	 *
+	 *  Whether kinesitherapy is covered.
+	 */
 	kine: boolean;
 
+	/**
+	 *
+	 *  Whether general practitioner care is covered.
+	 */
 	gp: boolean;
 
+	/**
+	 *
+	 *  Whether PTD is covered.
+	 */
 	ptd: boolean;
 
+	/**
+	 *
+	 *  Whether nursing care is covered.
+	 */
 	nurse: boolean;
 
+	/**
+	 *
+	 *  Whether kinesitherapy is excluded.
+	 */
 	noKine: boolean;
 
+	/**
+	 *
+	 *  Whether general practitioner care is excluded.
+	 */
 	noGp: boolean;
 
+	/**
+	 *
+	 *  Whether nursing care is excluded.
+	 */
 	noNurse: boolean;
 
+	/**
+	 *
+	 *  The reason identifier for unsubscription.
+	 */
 	unsubscriptionReasonId: number | undefined;
 
+	/**
+	 *
+	 *  The start date of PTD coverage.
+	 */
 	ptdStart: number | undefined;
 
+	/**
+	 *
+	 *  The end date of PTD coverage.
+	 */
 	ptdEnd: number | undefined;
 
+	/**
+	 *
+	 *  The date PTD was last invoiced.
+	 */
 	ptdLastInvoiced: number | undefined;
 
+	/**
+	 *
+	 *  The start of suspension date (yyyyMMdd).
+	 */
 	startOfSuspension: number | undefined;
 
+	/**
+	 *
+	 *  The end of suspension date (yyyyMMdd).
+	 */
 	endOfSuspension: number | undefined;
 
+	/**
+	 *
+	 *  The reason for suspension.
+	 */
 	suspensionReason: SuspensionReason | undefined;
 
+	/**
+	 *
+	 *  The source of the suspension.
+	 */
 	suspensionSource: string | undefined;
 
+	/**
+	 *
+	 *  Whether the suspension is forced (no automatic unsuspension).
+	 */
 	forcedSuspension: boolean;
 
+	/**
+	 *
+	 *  The type of signature used for the contract.
+	 */
 	signatureType: MhcSignatureType | undefined;
 
+	/**
+	 *
+	 *  The contract status.
+	 */
 	status: number | undefined;
 
+	/**
+	 *
+	 *  Additional options as key-value pairs.
+	 */
 	options: { [ key: string ]: string };
 
+	/**
+	 *
+	 *  Receipt identifiers as key-value pairs.
+	 */
 	receipts: { [ key: string ]: string };
 
 	readonly isEncrypted: boolean;
@@ -79,72 +214,211 @@ export interface MedicalHouseContract extends Encryptable {
 
 }
 
+/**
+ *
+ *  Represents a medical house contract (inscription period) for a patient, including coverage
+ *  details,
+ *  suspension periods, and signature information.
+ *  /
+ */
 export class DecryptedMedicalHouseContract {
 
+	/**
+	 *
+	 *  The identifier of the contract.
+	 */
 	contractId: string | undefined = undefined;
 
+	/**
+	 *
+	 *  The start of the contract period (yyyyMMdd).
+	 */
 	validFrom: number | undefined = undefined;
 
+	/**
+	 *
+	 *  The end of the contract period (yyyyMMdd).
+	 */
 	validTo: number | undefined = undefined;
 
+	/**
+	 *
+	 *  The NIHII number of the medical house.
+	 */
 	mmNihii: string | undefined = undefined;
 
+	/**
+	 *
+	 *  The identifier of the healthcare party.
+	 */
 	hcpId: string | undefined = undefined;
 
+	/**
+	 *
+	 *  The type of contract change (inscription, coverageChange, suspension).
+	 */
 	changeType: ContractChangeType | undefined = undefined;
 
+	/**
+	 *
+	 *  The identifier of the parent contract.
+	 */
 	parentContractId: string | undefined = undefined;
 
+	/**
+	 *
+	 *  Who changed the contract (user or mcn).
+	 */
 	changedBy: string | undefined = undefined;
 
+	/**
+	 *
+	 *  The contract signature date (yyyyMMdd).
+	 */
 	startOfContract: number | undefined = undefined;
 
+	/**
+	 *
+	 *  The start of coverage date (yyyyMMdd).
+	 */
 	startOfCoverage: number | undefined = undefined;
 
+	/**
+	 *
+	 *  The contract end signature date (yyyyMMdd).
+	 */
 	endOfContract: number | undefined = undefined;
 
+	/**
+	 *
+	 *  The end of coverage date (yyyyMMdd).
+	 */
 	endOfCoverage: number | undefined = undefined;
 
+	/**
+	 *
+	 *  Whether kinesitherapy is covered.
+	 */
 	kine: boolean = false;
 
+	/**
+	 *
+	 *  Whether general practitioner care is covered.
+	 */
 	gp: boolean = false;
 
+	/**
+	 *
+	 *  Whether PTD is covered.
+	 */
 	ptd: boolean = false;
 
+	/**
+	 *
+	 *  Whether nursing care is covered.
+	 */
 	nurse: boolean = false;
 
+	/**
+	 *
+	 *  Whether kinesitherapy is excluded.
+	 */
 	noKine: boolean = false;
 
+	/**
+	 *
+	 *  Whether general practitioner care is excluded.
+	 */
 	noGp: boolean = false;
 
+	/**
+	 *
+	 *  Whether nursing care is excluded.
+	 */
 	noNurse: boolean = false;
 
+	/**
+	 *
+	 *  The reason identifier for unsubscription.
+	 */
 	unsubscriptionReasonId: number | undefined = undefined;
 
+	/**
+	 *
+	 *  The start date of PTD coverage.
+	 */
 	ptdStart: number | undefined = undefined;
 
+	/**
+	 *
+	 *  The end date of PTD coverage.
+	 */
 	ptdEnd: number | undefined = undefined;
 
+	/**
+	 *
+	 *  The date PTD was last invoiced.
+	 */
 	ptdLastInvoiced: number | undefined = undefined;
 
+	/**
+	 *
+	 *  The start of suspension date (yyyyMMdd).
+	 */
 	startOfSuspension: number | undefined = undefined;
 
+	/**
+	 *
+	 *  The end of suspension date (yyyyMMdd).
+	 */
 	endOfSuspension: number | undefined = undefined;
 
+	/**
+	 *
+	 *  The reason for suspension.
+	 */
 	suspensionReason: SuspensionReason | undefined = undefined;
 
+	/**
+	 *
+	 *  The source of the suspension.
+	 */
 	suspensionSource: string | undefined = undefined;
 
+	/**
+	 *
+	 *  Whether the suspension is forced (no automatic unsuspension).
+	 */
 	forcedSuspension: boolean = false;
 
+	/**
+	 *
+	 *  The type of signature used for the contract.
+	 */
 	signatureType: MhcSignatureType | undefined = undefined;
 
+	/**
+	 *
+	 *  The contract status.
+	 */
 	status: number | undefined = undefined;
 
+	/**
+	 *
+	 *  Additional options as key-value pairs.
+	 */
 	options: { [ key: string ]: string } = {};
 
+	/**
+	 *
+	 *  Receipt identifiers as key-value pairs.
+	 */
 	receipts: { [ key: string ]: string } = {};
 
+	/**
+	 *
+	 *  The base64-encoded encrypted content.
+	 */
 	encryptedSelf: Base64String | undefined = undefined;
 
 	readonly isEncrypted: false = false;
@@ -285,72 +559,211 @@ export class DecryptedMedicalHouseContract {
 
 }
 
+/**
+ *
+ *  Represents a medical house contract (inscription period) for a patient, including coverage
+ *  details,
+ *  suspension periods, and signature information.
+ *  /
+ */
 export class EncryptedMedicalHouseContract {
 
+	/**
+	 *
+	 *  The identifier of the contract.
+	 */
 	contractId: string | undefined = undefined;
 
+	/**
+	 *
+	 *  The start of the contract period (yyyyMMdd).
+	 */
 	validFrom: number | undefined = undefined;
 
+	/**
+	 *
+	 *  The end of the contract period (yyyyMMdd).
+	 */
 	validTo: number | undefined = undefined;
 
+	/**
+	 *
+	 *  The NIHII number of the medical house.
+	 */
 	mmNihii: string | undefined = undefined;
 
+	/**
+	 *
+	 *  The identifier of the healthcare party.
+	 */
 	hcpId: string | undefined = undefined;
 
+	/**
+	 *
+	 *  The type of contract change (inscription, coverageChange, suspension).
+	 */
 	changeType: ContractChangeType | undefined = undefined;
 
+	/**
+	 *
+	 *  The identifier of the parent contract.
+	 */
 	parentContractId: string | undefined = undefined;
 
+	/**
+	 *
+	 *  Who changed the contract (user or mcn).
+	 */
 	changedBy: string | undefined = undefined;
 
+	/**
+	 *
+	 *  The contract signature date (yyyyMMdd).
+	 */
 	startOfContract: number | undefined = undefined;
 
+	/**
+	 *
+	 *  The start of coverage date (yyyyMMdd).
+	 */
 	startOfCoverage: number | undefined = undefined;
 
+	/**
+	 *
+	 *  The contract end signature date (yyyyMMdd).
+	 */
 	endOfContract: number | undefined = undefined;
 
+	/**
+	 *
+	 *  The end of coverage date (yyyyMMdd).
+	 */
 	endOfCoverage: number | undefined = undefined;
 
+	/**
+	 *
+	 *  Whether kinesitherapy is covered.
+	 */
 	kine: boolean = false;
 
+	/**
+	 *
+	 *  Whether general practitioner care is covered.
+	 */
 	gp: boolean = false;
 
+	/**
+	 *
+	 *  Whether PTD is covered.
+	 */
 	ptd: boolean = false;
 
+	/**
+	 *
+	 *  Whether nursing care is covered.
+	 */
 	nurse: boolean = false;
 
+	/**
+	 *
+	 *  Whether kinesitherapy is excluded.
+	 */
 	noKine: boolean = false;
 
+	/**
+	 *
+	 *  Whether general practitioner care is excluded.
+	 */
 	noGp: boolean = false;
 
+	/**
+	 *
+	 *  Whether nursing care is excluded.
+	 */
 	noNurse: boolean = false;
 
+	/**
+	 *
+	 *  The reason identifier for unsubscription.
+	 */
 	unsubscriptionReasonId: number | undefined = undefined;
 
+	/**
+	 *
+	 *  The start date of PTD coverage.
+	 */
 	ptdStart: number | undefined = undefined;
 
+	/**
+	 *
+	 *  The end date of PTD coverage.
+	 */
 	ptdEnd: number | undefined = undefined;
 
+	/**
+	 *
+	 *  The date PTD was last invoiced.
+	 */
 	ptdLastInvoiced: number | undefined = undefined;
 
+	/**
+	 *
+	 *  The start of suspension date (yyyyMMdd).
+	 */
 	startOfSuspension: number | undefined = undefined;
 
+	/**
+	 *
+	 *  The end of suspension date (yyyyMMdd).
+	 */
 	endOfSuspension: number | undefined = undefined;
 
+	/**
+	 *
+	 *  The reason for suspension.
+	 */
 	suspensionReason: SuspensionReason | undefined = undefined;
 
+	/**
+	 *
+	 *  The source of the suspension.
+	 */
 	suspensionSource: string | undefined = undefined;
 
+	/**
+	 *
+	 *  Whether the suspension is forced (no automatic unsuspension).
+	 */
 	forcedSuspension: boolean = false;
 
+	/**
+	 *
+	 *  The type of signature used for the contract.
+	 */
 	signatureType: MhcSignatureType | undefined = undefined;
 
+	/**
+	 *
+	 *  The contract status.
+	 */
 	status: number | undefined = undefined;
 
+	/**
+	 *
+	 *  Additional options as key-value pairs.
+	 */
 	options: { [ key: string ]: string } = {};
 
+	/**
+	 *
+	 *  Receipt identifiers as key-value pairs.
+	 */
 	receipts: { [ key: string ]: string } = {};
 
+	/**
+	 *
+	 *  The base64-encoded encrypted content.
+	 */
 	encryptedSelf: Base64String | undefined = undefined;
 
 	readonly isEncrypted: true = true;

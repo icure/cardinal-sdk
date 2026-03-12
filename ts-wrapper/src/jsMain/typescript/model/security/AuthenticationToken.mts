@@ -2,14 +2,37 @@
 import {expectNumber, expectString, extractEntry} from '../../internal/JsonDecodeUtils.mjs';
 
 
+/**
+ *
+ *  Represents an authentication token associated with a user, including its creation time and
+ *  validity period.
+ *  The token value is stored in encrypted form.
+ *  /
+ */
 export class AuthenticationToken {
 
+	/**
+	 *
+	 *  The encrypted token string.
+	 */
 	token: string | undefined = undefined;
 
+	/**
+	 *
+	 *  The epoch-millisecond timestamp at which the token became valid.
+	 */
 	creationTime: number;
 
+	/**
+	 *
+	 *  The duration in seconds for which the token remains valid after creation.
+	 */
 	validity: number;
 
+	/**
+	 *
+	 *  The epoch-millisecond timestamp of a hard deletion, if the token has been marked for deletion.
+	 */
 	deletionDate: number | undefined = undefined;
 
 	constructor(partial: Partial<AuthenticationToken> & Pick<AuthenticationToken, "creationTime" | "validity">) {

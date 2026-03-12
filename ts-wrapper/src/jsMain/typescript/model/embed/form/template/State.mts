@@ -3,12 +3,29 @@ import {expectBoolean, expectString, expectStringEnum, extractEntry} from '../..
 import {StateToUpdate} from './StateToUpdate.mjs';
 
 
+/**
+ *
+ *
+ *   Represents a state change applied to a form field when an action is triggered.
+ */
 export class State {
 
+	/**
+	 *
+	 *  The name of the target field.
+	 */
 	name: string;
 
+	/**
+	 *
+	 *  The aspect of the field state to update (value, visibility, readonly, etc.).
+	 */
 	stateToUpdate: StateToUpdate;
 
+	/**
+	 *
+	 *  Whether this state change can trigger additional launchers.
+	 */
 	canLaunchLauncher: boolean = false;
 
 	constructor(partial: Partial<State> & Pick<State, "name" | "stateToUpdate">) {

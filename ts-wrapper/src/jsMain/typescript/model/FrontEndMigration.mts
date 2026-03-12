@@ -6,32 +6,92 @@ import {StoredDocument} from './base/StoredDocument.mjs';
 import {FrontEndMigrationStatus} from './embed/FrontEndMigrationStatus.mjs';
 
 
+/**
+ *
+ *  Represents a front-end migration task. A front-end migration tracks the progress of data
+ *  migration operations
+ *  initiated from the front-end application.
+ *  /
+ */
 export class FrontEndMigration implements StoredDocument {
 
+	/**
+	 *
+	 *  The unique identifier of the front-end migration.
+	 */
 	id: string;
 
+	/**
+	 *
+	 *  The revision of the front-end migration in the database, used for conflict management /
+	 *  optimistic locking.
+	 */
 	rev: string | undefined = undefined;
 
+	/**
+	 *
+	 *  Hard delete (unix epoch in ms) timestamp of the object.
+	 */
 	deletionDate: number | undefined = undefined;
 
+	/**
+	 *
+	 *  The name of the migration.
+	 */
 	name: string | undefined = undefined;
 
+	/**
+	 *
+	 *  The start date (unix epoch in ms) of the migration.
+	 */
 	startDate: number | undefined = undefined;
 
+	/**
+	 *
+	 *  The end date (unix epoch in ms) of the migration.
+	 */
 	endDate: number | undefined = undefined;
 
+	/**
+	 *
+	 *  The current status of the migration.
+	 */
 	status: FrontEndMigrationStatus | undefined = undefined;
 
+	/**
+	 *
+	 *  Logs produced during the migration process.
+	 */
 	logs: string | undefined = undefined;
 
+	/**
+	 *
+	 *  The id of the user that initiated the migration.
+	 */
 	userId: string | undefined = undefined;
 
+	/**
+	 *
+	 *  The start key used for pagination during migration.
+	 */
 	startKey: string | undefined = undefined;
 
+	/**
+	 *
+	 *  The start key document id used for pagination during migration.
+	 */
 	startKeyDocId: string | undefined = undefined;
 
+	/**
+	 *
+	 *  The number of items processed during the migration.
+	 */
 	processCount: number | undefined = undefined;
 
+	/**
+	 *
+	 *  Extra properties for the front-end migration. Those properties are typed (see class Property).
+	 */
 	properties: Array<DecryptedPropertyStub> = [];
 
 	constructor(partial: Partial<FrontEndMigration>) {

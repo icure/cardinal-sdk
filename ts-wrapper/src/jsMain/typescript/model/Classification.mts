@@ -12,12 +12,31 @@ import {SecurityMetadata} from './embed/SecurityMetadata.mjs';
 import {Base64String} from './specializations/Base64String.mjs';
 
 
+/**
+ *
+ *  Represents a classification used to organize and categorize medical data. Classifications can be
+ *  nested
+ *  through parent-child relationships and linked to classification templates.
+ *  /
+ */
 export interface Classification extends StoredDocument, ICureDocument<string>, HasEncryptionMetadata, Encryptable, HasEndOfLife {
 
+	/**
+	 *
+	 *  The id of the parent classification, for nesting.
+	 */
 	parentId: string | undefined;
 
+	/**
+	 *
+	 *  A human-readable label for this classification.
+	 */
 	label: string;
 
+	/**
+	 *
+	 *  The id of the classification template this classification is based on.
+	 */
 	templateId: string | undefined;
 
 	readonly isEncrypted: boolean;
@@ -26,44 +45,128 @@ export interface Classification extends StoredDocument, ICureDocument<string>, H
 
 }
 
+/**
+ *
+ *  Represents a classification used to organize and categorize medical data. Classifications can be
+ *  nested
+ *  through parent-child relationships and linked to classification templates.
+ *  /
+ */
 export class DecryptedClassification {
 
+	/**
+	 *
+	 *  The Id of the classification. We encourage using either a v4 UUID or a HL7 Id.
+	 */
 	id: string;
 
+	/**
+	 *
+	 *  The revision of the classification in the database, used for conflict management / optimistic
+	 *  locking.
+	 */
 	rev: string | undefined = undefined;
 
+	/**
+	 *
+	 *  The timestamp (unix epoch in ms) of creation of this entity.
+	 */
 	created: number | undefined = undefined;
 
+	/**
+	 *
+	 *  The timestamp (unix epoch in ms) of the latest modification of this entity.
+	 */
 	modified: number | undefined = undefined;
 
+	/**
+	 *
+	 *  The id of the User that created this classification.
+	 */
 	author: string | undefined = undefined;
 
+	/**
+	 *
+	 *  The id of the data owner that is responsible for this classification.
+	 */
 	responsible: string | undefined = undefined;
 
+	/**
+	 *
+	 *  Tags that qualify the classification as being member of a certain class.
+	 */
 	tags: Array<CodeStub> = [];
 
+	/**
+	 *
+	 *  Codes that identify or qualify this particular classification.
+	 */
 	codes: Array<CodeStub> = [];
 
+	/**
+	 *
+	 *  Soft delete (unix epoch in ms) timestamp of the object.
+	 */
 	endOfLife: number | undefined = undefined;
 
+	/**
+	 *
+	 *  Hard delete (unix epoch in ms) timestamp of the object.
+	 */
 	deletionDate: number | undefined = undefined;
 
+	/**
+	 *
+	 *  The id of the parent classification, for nesting.
+	 */
 	parentId: string | undefined = undefined;
 
+	/**
+	 *
+	 *  A human-readable label for this classification.
+	 */
 	label: string = "";
 
+	/**
+	 *
+	 *  The id of the classification template this classification is based on.
+	 */
 	templateId: string | undefined = undefined;
 
+	/**
+	 *
+	 *  The secret foreign keys, used for secure linking to patients.
+	 */
 	secretForeignKeys: Array<string> = [];
 
+	/**
+	 *
+	 *  The encrypted foreign keys.
+	 */
 	cryptedForeignKeys: { [ key: string ]: Array<Delegation> } = {};
 
+	/**
+	 *
+	 *  The delegations giving access to connected healthcare information.
+	 */
 	delegations: { [ key: string ]: Array<Delegation> } = {};
 
+	/**
+	 *
+	 *  The encryption keys used to encrypt secured properties, encrypted for separate Crypto Actors.
+	 */
 	encryptionKeys: { [ key: string ]: Array<Delegation> } = {};
 
+	/**
+	 *
+	 *  The base64-encoded encrypted fields of this classification.
+	 */
 	encryptedSelf: Base64String | undefined = undefined;
 
+	/**
+	 *
+	 *  The security metadata of this entity, for access control.
+	 */
 	securityMetadata: SecurityMetadata | undefined = undefined;
 
 	readonly isEncrypted: false = false;
@@ -168,44 +271,128 @@ export class DecryptedClassification {
 
 }
 
+/**
+ *
+ *  Represents a classification used to organize and categorize medical data. Classifications can be
+ *  nested
+ *  through parent-child relationships and linked to classification templates.
+ *  /
+ */
 export class EncryptedClassification {
 
+	/**
+	 *
+	 *  The Id of the classification. We encourage using either a v4 UUID or a HL7 Id.
+	 */
 	id: string;
 
+	/**
+	 *
+	 *  The revision of the classification in the database, used for conflict management / optimistic
+	 *  locking.
+	 */
 	rev: string | undefined = undefined;
 
+	/**
+	 *
+	 *  The timestamp (unix epoch in ms) of creation of this entity.
+	 */
 	created: number | undefined = undefined;
 
+	/**
+	 *
+	 *  The timestamp (unix epoch in ms) of the latest modification of this entity.
+	 */
 	modified: number | undefined = undefined;
 
+	/**
+	 *
+	 *  The id of the User that created this classification.
+	 */
 	author: string | undefined = undefined;
 
+	/**
+	 *
+	 *  The id of the data owner that is responsible for this classification.
+	 */
 	responsible: string | undefined = undefined;
 
+	/**
+	 *
+	 *  Tags that qualify the classification as being member of a certain class.
+	 */
 	tags: Array<CodeStub> = [];
 
+	/**
+	 *
+	 *  Codes that identify or qualify this particular classification.
+	 */
 	codes: Array<CodeStub> = [];
 
+	/**
+	 *
+	 *  Soft delete (unix epoch in ms) timestamp of the object.
+	 */
 	endOfLife: number | undefined = undefined;
 
+	/**
+	 *
+	 *  Hard delete (unix epoch in ms) timestamp of the object.
+	 */
 	deletionDate: number | undefined = undefined;
 
+	/**
+	 *
+	 *  The id of the parent classification, for nesting.
+	 */
 	parentId: string | undefined = undefined;
 
+	/**
+	 *
+	 *  A human-readable label for this classification.
+	 */
 	label: string = "";
 
+	/**
+	 *
+	 *  The id of the classification template this classification is based on.
+	 */
 	templateId: string | undefined = undefined;
 
+	/**
+	 *
+	 *  The secret foreign keys, used for secure linking to patients.
+	 */
 	secretForeignKeys: Array<string> = [];
 
+	/**
+	 *
+	 *  The encrypted foreign keys.
+	 */
 	cryptedForeignKeys: { [ key: string ]: Array<Delegation> } = {};
 
+	/**
+	 *
+	 *  The delegations giving access to connected healthcare information.
+	 */
 	delegations: { [ key: string ]: Array<Delegation> } = {};
 
+	/**
+	 *
+	 *  The encryption keys used to encrypt secured properties, encrypted for separate Crypto Actors.
+	 */
 	encryptionKeys: { [ key: string ]: Array<Delegation> } = {};
 
+	/**
+	 *
+	 *  The base64-encoded encrypted fields of this classification.
+	 */
 	encryptedSelf: Base64String | undefined = undefined;
 
+	/**
+	 *
+	 *  The security metadata of this entity, for access control.
+	 */
 	securityMetadata: SecurityMetadata | undefined = undefined;
 
 	readonly isEncrypted: true = true;

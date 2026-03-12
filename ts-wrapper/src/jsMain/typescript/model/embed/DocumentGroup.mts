@@ -2,10 +2,23 @@
 import {expectString, extractEntry} from '../../internal/JsonDecodeUtils.mjs';
 
 
+/**
+ *
+ *  Represents a grouping of documents, identified by a GUID and a human-readable name.
+ *  /
+ */
 export class DocumentGroup {
 
+	/**
+	 *
+	 *  The globally unique identifier for this document group.
+	 */
 	guid: string | undefined = undefined;
 
+	/**
+	 *
+	 *  The human-readable name of the document group.
+	 */
 	name: string | undefined = undefined;
 
 	constructor(partial: Partial<DocumentGroup>) {

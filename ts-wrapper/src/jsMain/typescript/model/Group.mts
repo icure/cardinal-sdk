@@ -11,42 +11,121 @@ import {ExternalJwtConfig} from './security/ExternalJwtConfig.mjs';
 import {OperationToken} from './security/OperationToken.mjs';
 
 
+/**
+ *
+ *  Represents a group in the iCure platform. A group corresponds to a practice, hospital, or
+ *  organization
+ *  that contains its own set of databases and users.
+ *  /
+ */
 export class Group implements StoredDocument, HasTags {
 
+	/**
+	 *
+	 *  The id of the group. We encourage using either a v4 UUID or a HL7 Id.
+	 */
 	id: string;
 
+	/**
+	 *
+	 *  The revision of the group in the database, used for conflict management / optimistic locking.
+	 */
 	rev: string | undefined = undefined;
 
+	/**
+	 *
+	 *  Hard delete (unix epoch in ms) timestamp of the object.
+	 */
 	deletionDate: number | undefined = undefined;
 
+	/**
+	 *
+	 *  Tags that qualify the group as being member of a certain class.
+	 */
 	tags: Array<CodeStub> = [];
 
+	/**
+	 *
+	 *  Tags that are publicly visible for the group.
+	 */
 	publicTags: Array<CodeStub> = [];
 
+	/**
+	 *
+	 *  Username for the group.
+	 */
 	name: string | undefined = undefined;
 
+	/**
+	 *
+	 *  Password for the group access.
+	 */
 	password: string | undefined = undefined;
 
+	/**
+	 *
+	 *  List of servers accessible to the group.
+	 */
 	servers: Array<string> | undefined = undefined;
 
+	/**
+	 *
+	 *  Whether the group has a super admin permission.
+	 */
 	superAdmin: boolean = false;
 
+	/**
+	 *
+	 *  Extra properties for the group. Those properties are typed (see class Property).
+	 */
 	properties: Array<DecryptedPropertyStub> = [];
 
+	/**
+	 *
+	 *  The default roles for each user type, if not otherwise specified on the user.
+	 */
 	defaultUserRoles: { [ key in UserType ]?: Array<string> } = {};
 
+	/**
+	 *
+	 *  Single-used token to perform specific operations.
+	 */
 	operationTokens: { [ key: string ]: OperationToken } = {};
 
+	/**
+	 *
+	 *  List of entities that have to be collected from a shared database.
+	 */
 	sharedEntities: { [ key: string ]: string } = {};
 
+	/**
+	 *
+	 *  Minimum version of Kraken required to access API.
+	 */
 	minimumKrakenVersion: string | undefined = undefined;
 
+	/**
+	 *
+	 *  Verified public keys that can be used to allow log in with external JWTs.
+	 */
 	externalJwtConfig: { [ key: string ]: ExternalJwtConfig } = {};
 
+	/**
+	 *
+	 *  The minimum authentication class required for elevated privileges.
+	 */
 	minimumAuthenticationClassForElevatedPrivileges: AuthenticationClass;
 
+	/**
+	 *
+	 *  The id of the parent super group, if any.
+	 */
 	superGroup: string | undefined = undefined;
 
+	/**
+	 *
+	 *  A user-chosen identifier for the applications for which this group holds data.
+	 */
 	projectId: string | undefined = undefined;
 
 	templates: Group.TemplatesConfiguration | undefined = undefined;

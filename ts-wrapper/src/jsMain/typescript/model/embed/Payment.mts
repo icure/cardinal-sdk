@@ -3,12 +3,29 @@ import {expectNumber, expectStringEnum, extractEntry} from '../../internal/JsonD
 import {PaymentType} from './PaymentType.mjs';
 
 
+/**
+ *
+ *  Represents a payment record with date, type, and amount.
+ *  /
+ */
 export class Payment {
 
+	/**
+	 *
+	 *  The date of the payment (unix epoch in ms).
+	 */
 	paymentDate: number = 0;
 
+	/**
+	 *
+	 *  The type of payment method used.
+	 */
 	paymentType: PaymentType | undefined = undefined;
 
+	/**
+	 *
+	 *  The amount paid.
+	 */
 	paid: number | undefined = undefined;
 
 	constructor(partial: Partial<Payment>) {

@@ -15,14 +15,38 @@ import {TaskStatus} from './embed/TaskStatus.mjs';
 import {Base64String} from './specializations/Base64String.mjs';
 
 
+/**
+ *
+ *  Represents a maintenance task in the iCure system. Maintenance tasks are used to track background
+ *  operations
+ *  such as key exchange requests, data migrations, or other administrative operations that require
+ *  asynchronous processing.
+ *  /
+ */
 export interface MaintenanceTask extends StoredDocument, ICureDocument<string>, HasEncryptionMetadata, Encryptable, HasEndOfLife {
 
+	/**
+	 *
+	 *  The identifiers of the maintenance task.
+	 */
 	identifier: Array<Identifier>;
 
+	/**
+	 *
+	 *  The type of the maintenance task.
+	 */
 	taskType: string | undefined;
 
+	/**
+	 *
+	 *  Extra properties for the maintenance task.
+	 */
 	properties: Array<PropertyStub>;
 
+	/**
+	 *
+	 *  The current status of the maintenance task (pending, ongoing, cancelled, completed).
+	 */
 	status: TaskStatus;
 
 	readonly isEncrypted: boolean;
@@ -31,46 +55,135 @@ export interface MaintenanceTask extends StoredDocument, ICureDocument<string>, 
 
 }
 
+/**
+ *
+ *  Represents a maintenance task in the iCure system. Maintenance tasks are used to track background
+ *  operations
+ *  such as key exchange requests, data migrations, or other administrative operations that require
+ *  asynchronous processing.
+ *  /
+ */
 export class DecryptedMaintenanceTask {
 
+	/**
+	 *
+	 *  The unique identifier of the maintenance task.
+	 */
 	id: string;
 
+	/**
+	 *
+	 *  The revision of the maintenance task in the database, used for conflict management / optimistic
+	 *  locking.
+	 */
 	rev: string | undefined = undefined;
 
+	/**
+	 *
+	 *  The identifiers of the maintenance task.
+	 */
 	identifier: Array<Identifier> = [];
 
+	/**
+	 *
+	 *  The timestamp (unix epoch in ms) of creation.
+	 */
 	created: number | undefined = undefined;
 
+	/**
+	 *
+	 *  The timestamp (unix epoch in ms) of the latest modification.
+	 */
 	modified: number | undefined = undefined;
 
+	/**
+	 *
+	 *  The id of the User that created this maintenance task.
+	 */
 	author: string | undefined = undefined;
 
+	/**
+	 *
+	 *  The id of the HealthcareParty that is responsible for this maintenance task.
+	 */
 	responsible: string | undefined = undefined;
 
+	/**
+	 *
+	 *  Tags that qualify the maintenance task as being member of a certain class.
+	 */
 	tags: Array<CodeStub> = [];
 
+	/**
+	 *
+	 *  Codes that identify or qualify this particular maintenance task.
+	 */
 	codes: Array<CodeStub> = [];
 
+	/**
+	 *
+	 *  Soft delete (unix epoch in ms) timestamp of the object.
+	 */
 	endOfLife: number | undefined = undefined;
 
+	/**
+	 *
+	 *  Hard delete (unix epoch in ms) timestamp of the object.
+	 */
 	deletionDate: number | undefined = undefined;
 
+	/**
+	 *
+	 *  The type of the maintenance task.
+	 */
 	taskType: string | undefined = undefined;
 
+	/**
+	 *
+	 *  Extra properties for the maintenance task.
+	 */
 	properties: Array<DecryptedPropertyStub> = [];
 
+	/**
+	 *
+	 *  The current status of the maintenance task (pending, ongoing, cancelled, completed).
+	 */
 	status: TaskStatus = TaskStatus.Pending;
 
+	/**
+	 *
+	 *  The secret patient key, encrypted in the patient's own AES key.
+	 */
 	secretForeignKeys: Array<string> = [];
 
+	/**
+	 *
+	 *  The patient id encrypted in the delegates' AES keys.
+	 */
 	cryptedForeignKeys: { [ key: string ]: Array<Delegation> } = {};
 
+	/**
+	 *
+	 *  The delegations giving access to connected healthcare information.
+	 */
 	delegations: { [ key: string ]: Array<Delegation> } = {};
 
+	/**
+	 *
+	 *  The keys used to encrypt this entity when stored encrypted.
+	 */
 	encryptionKeys: { [ key: string ]: Array<Delegation> } = {};
 
+	/**
+	 *
+	 *  The base64-encoded encrypted fields of this entity.
+	 */
 	encryptedSelf: Base64String | undefined = undefined;
 
+	/**
+	 *
+	 *  The security metadata of the entity.
+	 */
 	securityMetadata: SecurityMetadata | undefined = undefined;
 
 	readonly isEncrypted: false = false;
@@ -178,46 +291,135 @@ export class DecryptedMaintenanceTask {
 
 }
 
+/**
+ *
+ *  Represents a maintenance task in the iCure system. Maintenance tasks are used to track background
+ *  operations
+ *  such as key exchange requests, data migrations, or other administrative operations that require
+ *  asynchronous processing.
+ *  /
+ */
 export class EncryptedMaintenanceTask {
 
+	/**
+	 *
+	 *  The unique identifier of the maintenance task.
+	 */
 	id: string;
 
+	/**
+	 *
+	 *  The revision of the maintenance task in the database, used for conflict management / optimistic
+	 *  locking.
+	 */
 	rev: string | undefined = undefined;
 
+	/**
+	 *
+	 *  The identifiers of the maintenance task.
+	 */
 	identifier: Array<Identifier> = [];
 
+	/**
+	 *
+	 *  The timestamp (unix epoch in ms) of creation.
+	 */
 	created: number | undefined = undefined;
 
+	/**
+	 *
+	 *  The timestamp (unix epoch in ms) of the latest modification.
+	 */
 	modified: number | undefined = undefined;
 
+	/**
+	 *
+	 *  The id of the User that created this maintenance task.
+	 */
 	author: string | undefined = undefined;
 
+	/**
+	 *
+	 *  The id of the HealthcareParty that is responsible for this maintenance task.
+	 */
 	responsible: string | undefined = undefined;
 
+	/**
+	 *
+	 *  Tags that qualify the maintenance task as being member of a certain class.
+	 */
 	tags: Array<CodeStub> = [];
 
+	/**
+	 *
+	 *  Codes that identify or qualify this particular maintenance task.
+	 */
 	codes: Array<CodeStub> = [];
 
+	/**
+	 *
+	 *  Soft delete (unix epoch in ms) timestamp of the object.
+	 */
 	endOfLife: number | undefined = undefined;
 
+	/**
+	 *
+	 *  Hard delete (unix epoch in ms) timestamp of the object.
+	 */
 	deletionDate: number | undefined = undefined;
 
+	/**
+	 *
+	 *  The type of the maintenance task.
+	 */
 	taskType: string | undefined = undefined;
 
+	/**
+	 *
+	 *  Extra properties for the maintenance task.
+	 */
 	properties: Array<EncryptedPropertyStub> = [];
 
+	/**
+	 *
+	 *  The current status of the maintenance task (pending, ongoing, cancelled, completed).
+	 */
 	status: TaskStatus = TaskStatus.Pending;
 
+	/**
+	 *
+	 *  The secret patient key, encrypted in the patient's own AES key.
+	 */
 	secretForeignKeys: Array<string> = [];
 
+	/**
+	 *
+	 *  The patient id encrypted in the delegates' AES keys.
+	 */
 	cryptedForeignKeys: { [ key: string ]: Array<Delegation> } = {};
 
+	/**
+	 *
+	 *  The delegations giving access to connected healthcare information.
+	 */
 	delegations: { [ key: string ]: Array<Delegation> } = {};
 
+	/**
+	 *
+	 *  The keys used to encrypt this entity when stored encrypted.
+	 */
 	encryptionKeys: { [ key: string ]: Array<Delegation> } = {};
 
+	/**
+	 *
+	 *  The base64-encoded encrypted fields of this entity.
+	 */
 	encryptedSelf: Base64String | undefined = undefined;
 
+	/**
+	 *
+	 *  The security metadata of the entity.
+	 */
 	securityMetadata: SecurityMetadata | undefined = undefined;
 
 	readonly isEncrypted: true = true;

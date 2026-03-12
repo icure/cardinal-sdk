@@ -2,10 +2,23 @@
 import {expectNumber, extractEntry} from '../../internal/JsonDecodeUtils.mjs';
 
 
+/**
+ *
+ *  Represents a numeric value paired with its precision (number of significant digits).
+ *  /
+ */
 export class ValueWithPrecision {
 
+	/**
+	 *
+	 *  The numeric value.
+	 */
 	value: number;
 
+	/**
+	 *
+	 *  The number of significant digits.
+	 */
 	precision: number;
 
 	constructor(partial: Partial<ValueWithPrecision> & Pick<ValueWithPrecision, "value" | "precision">) {

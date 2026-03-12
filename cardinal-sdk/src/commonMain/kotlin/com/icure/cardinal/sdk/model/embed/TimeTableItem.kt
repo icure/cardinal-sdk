@@ -1,3 +1,5 @@
+// WARNING: This file is auto-generated. If you change it manually, your changes will be lost.
+// If you want to change the way this class is generated, see [this repo](https://github.com/icure/sdk-codegen).
 package com.icure.cardinal.sdk.model.embed
 
 import com.icure.cardinal.sdk.utils.DefaultValue
@@ -10,12 +12,19 @@ import kotlin.collections.List
 import kotlin.collections.Set
 import kotlin.Deprecated
 
-// WARNING: This file is auto-generated. If you change it manually, your changes will be lost.
-// If you want to change the way this class is generated, see [this repo](https://github.com/icure/sdk-codegen).
-
+/**
+ *
+ *  Note: The RFC-5545 rrule is used only to manage the days of the occurrences. The hours and
+ * durations of the appointments are specified in the property .hours.
+ */
 @Serializable
 data class TimeTableItem(
 	public val rruleStartDate: Long? = null,
+	/**
+	 * a RFC-5545 recurrence rule specifying the days and recurrence type of the timetable item.
+	 * ("RRULE:FREQ=WEEKLY;UNTIL=20220930T150400Z;COUNT=30;INTERVAL=2;WKST=MO;BYDAY=TH" = every 2 weeks on
+	 * Thursday until 30 September 2022.)
+	 */
 	public val rrule: String? = null,
 	public val notBeforeInMinutes: Int? = null,
 	public val notAfterInMinutes: Int? = null,

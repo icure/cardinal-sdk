@@ -2,6 +2,11 @@
 import {extractEntry} from '../../../internal/JsonDecodeUtils.mjs';
 
 
+/**
+ *
+ *
+ *   Predicate that always evaluates to true, matching all elements.
+ */
 export class AlwaysPredicate {
 
 	readonly $ktClass: 'com.icure.cardinal.sdk.model.filter.predicate.AlwaysPredicate' = 'com.icure.cardinal.sdk.model.filter.predicate.AlwaysPredicate';

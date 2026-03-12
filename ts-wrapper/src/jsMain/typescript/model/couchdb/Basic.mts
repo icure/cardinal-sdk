@@ -2,10 +2,24 @@
 import {expectString, extractEntry} from '../../internal/JsonDecodeUtils.mjs';
 
 
+/**
+ *
+ *  Data transfer object representing basic authentication credentials for a CouchDB remote
+ *  connection.
+ *  /
+ */
 export class Basic {
 
+	/**
+	 *
+	 *  The username for authentication.
+	 */
 	username: string;
 
+	/**
+	 *
+	 *  The password for authentication.
+	 */
 	password: string;
 
 	constructor(partial: Partial<Basic> & Pick<Basic, "username" | "password">) {

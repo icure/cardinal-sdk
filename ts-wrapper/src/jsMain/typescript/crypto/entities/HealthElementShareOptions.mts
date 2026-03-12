@@ -10,6 +10,10 @@ export class HealthElementShareOptions {
 
 	shareEncryptionKey: ShareMetadataBehaviour = ShareMetadataBehaviour.IfAvailable;
 
+	/**
+	 *
+	 *  Specifies if the id of the patient linked to the health element should be shared with the delegate
+	 */
 	sharePatientId: ShareMetadataBehaviour = ShareMetadataBehaviour.IfAvailable;
 
 	shareSecretIds: SecretIdShareOptions = new SecretIdShareOptions.AllAvailable({});

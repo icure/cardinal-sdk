@@ -65,26 +65,69 @@ export interface UserApi {
 
 	createAdminUser(user: User): Promise<User>;
 
+	/**
+	 *
+	 *  Deletes a user. If you don't have write access to the user the method will fail.
+	 *  @param entityId id of the user.
+	 *  @param rev the latest known rev of the user to delete
+	 *  @return the id and revision of the deleted user.
+	 *  @throws RevisionConflictException if the provided revision doesn't match the latest known revision
+	 */
 	deleteUserById(entityId: string, rev: string): Promise<StoredDocumentIdentifier>;
 
 	deleteUsersByIds(userIds: Array<StoredDocumentIdentifier>): Promise<Array<StoredDocumentIdentifier>>;
 
+	/**
+	 *
+	 *  Permanently deletes a user.
+	 *  @param id id of the user to purge
+	 *  @param rev latest revision of the user
+	 *  @throws RevisionConflictException if the provided revision doesn't match the latest known revision
+	 */
 	purgeUserById(id: string, rev: string): Promise<void>;
 
 	purgeUsersByIds(userIds: Array<StoredDocumentIdentifier>): Promise<Array<StoredDocumentIdentifier>>;
 
+	/**
+	 *
+	 *  Restores a user that was marked as deleted.
+	 *  @param id the id of the entity
+	 *  @param rev the latest revision of the entity.
+	 *  @return the restored entity.
+	 *  @throws RevisionConflictException if the provided revision doesn't match the latest known revision
+	 */
 	undeleteUserById(id: string, rev: string): Promise<User>;
 
 	undeleteUsersByIds(userIds: Array<StoredDocumentIdentifier>): Promise<Array<User>>;
 
+	/**
+	 *
+	 *  Deletes a user. If you don't have write access to the user the method will fail.
+	 *  @param user the user to delete
+	 *  @return the id and revision of the deleted user.
+	 *  @throws RevisionConflictException if the provided user doesn't match the latest known revision
+	 */
 	deleteUser(user: User): Promise<StoredDocumentIdentifier>;
 
 	deleteUsers(users: Array<User>): Promise<Array<StoredDocumentIdentifier>>;
 
+	/**
+	 *
+	 *  Permanently deletes a user.
+	 *  @param user the user to purge.
+	 *  @throws RevisionConflictException if the provided user doesn't match the latest known revision
+	 */
 	purgeUser(user: User): Promise<void>;
 
 	purgeUsers(users: Array<User>): Promise<Array<StoredDocumentIdentifier>>;
 
+	/**
+	 *
+	 *  Restores a user that was marked as deleted.
+	 *  @param user the user to undelete
+	 *  @return the restored user.
+	 *  @throws RevisionConflictException if the provided user doesn't match the latest known revision
+	 */
 	undeleteUser(user: User): Promise<User>;
 
 	undeleteUsers(users: Array<User>): Promise<Array<User>>;
@@ -92,6 +135,15 @@ export interface UserApi {
 	setExternalJwtAuthByIdentifiersForCurrentUser(externalJwtConfigId: string,
 			externalAuthenticationToken: string): Promise<boolean>;
 
+	/**
+	 *
+	 *  Subscribe to receive real-time notifications when an entity is updated.
+	 *  @param events the type of events that will be notified to the subscription
+	 *  @param filter the subscription will receive notifications only for entities matching this filter, you should
+	 *  make the filter as restrictive as possible.
+	 *  @param subscriptionConfig customize the configuration for the subscription
+	 *  @return a subscription that receives notifications for the configured events.
+	 */
 	subscribeToEvents(events: Array<SubscriptionEventType>, filter: FilterOptions<User>,
 			options?: { subscriptionConfig?: EntitySubscriptionConfiguration | undefined }): Promise<EntitySubscription<User>>;
 

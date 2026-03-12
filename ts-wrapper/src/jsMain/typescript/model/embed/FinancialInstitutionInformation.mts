@@ -4,20 +4,54 @@ import {Base64String} from '../specializations/Base64String.mjs';
 import {Encryptable} from './Encryptable.mjs';
 
 
+/**
+ *
+ *  Represents information about a financial institution, including bank account details and proxy
+ *  account configuration.
+ *  /
+ */
 export interface FinancialInstitutionInformation extends Encryptable {
 
+	/**
+	 *
+	 *  The name of the financial institution.
+	 */
 	name: string | undefined;
 
+	/**
+	 *
+	 *  The key identifying this financial institution information entry.
+	 */
 	key: string | undefined;
 
+	/**
+	 *
+	 *  The bank account number (e.g., IBAN).
+	 */
 	bankAccount: string | undefined;
 
+	/**
+	 *
+	 *  The BIC/SWIFT code of the bank.
+	 */
 	bic: string | undefined;
 
+	/**
+	 *
+	 *  The proxy bank account number.
+	 */
 	proxyBankAccount: string | undefined;
 
+	/**
+	 *
+	 *  The BIC/SWIFT code for the proxy bank.
+	 */
 	proxyBic: string | undefined;
 
+	/**
+	 *
+	 *  Set of insurance or healthcare party identifiers that prefer this financial institution.
+	 */
 	preferredFiiForPartners: Array<string>;
 
 	readonly isEncrypted: boolean;
@@ -26,22 +60,60 @@ export interface FinancialInstitutionInformation extends Encryptable {
 
 }
 
+/**
+ *
+ *  Represents information about a financial institution, including bank account details and proxy
+ *  account configuration.
+ *  /
+ */
 export class DecryptedFinancialInstitutionInformation {
 
+	/**
+	 *
+	 *  The name of the financial institution.
+	 */
 	name: string | undefined = undefined;
 
+	/**
+	 *
+	 *  The key identifying this financial institution information entry.
+	 */
 	key: string | undefined = undefined;
 
+	/**
+	 *
+	 *  The bank account number (e.g., IBAN).
+	 */
 	bankAccount: string | undefined = undefined;
 
+	/**
+	 *
+	 *  The BIC/SWIFT code of the bank.
+	 */
 	bic: string | undefined = undefined;
 
+	/**
+	 *
+	 *  The proxy bank account number.
+	 */
 	proxyBankAccount: string | undefined = undefined;
 
+	/**
+	 *
+	 *  The BIC/SWIFT code for the proxy bank.
+	 */
 	proxyBic: string | undefined = undefined;
 
+	/**
+	 *
+	 *  Set of insurance or healthcare party identifiers that prefer this financial institution.
+	 */
 	preferredFiiForPartners: Array<string> = [];
 
+	/**
+	 *
+	 *  The base64-encoded encrypted content.
+	 */
 	encryptedSelf: Base64String | undefined = undefined;
 
 	readonly isEncrypted: false = false;
@@ -95,22 +167,60 @@ export class DecryptedFinancialInstitutionInformation {
 
 }
 
+/**
+ *
+ *  Represents information about a financial institution, including bank account details and proxy
+ *  account configuration.
+ *  /
+ */
 export class EncryptedFinancialInstitutionInformation {
 
+	/**
+	 *
+	 *  The name of the financial institution.
+	 */
 	name: string | undefined = undefined;
 
+	/**
+	 *
+	 *  The key identifying this financial institution information entry.
+	 */
 	key: string | undefined = undefined;
 
+	/**
+	 *
+	 *  The bank account number (e.g., IBAN).
+	 */
 	bankAccount: string | undefined = undefined;
 
+	/**
+	 *
+	 *  The BIC/SWIFT code of the bank.
+	 */
 	bic: string | undefined = undefined;
 
+	/**
+	 *
+	 *  The proxy bank account number.
+	 */
 	proxyBankAccount: string | undefined = undefined;
 
+	/**
+	 *
+	 *  The BIC/SWIFT code for the proxy bank.
+	 */
 	proxyBic: string | undefined = undefined;
 
+	/**
+	 *
+	 *  Set of insurance or healthcare party identifiers that prefer this financial institution.
+	 */
 	preferredFiiForPartners: Array<string> = [];
 
+	/**
+	 *
+	 *  The base64-encoded encrypted content.
+	 */
 	encryptedSelf: Base64String | undefined = undefined;
 
 	readonly isEncrypted: true = true;

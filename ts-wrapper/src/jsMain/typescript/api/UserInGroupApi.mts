@@ -73,6 +73,12 @@ export interface UserInGroupApi {
 
 	createAdminUser(user: GroupScoped<User>): Promise<GroupScoped<User>>;
 
+	/**
+	 *
+	 *  Defines if a user inherits the permission they have in their group in all the groups that are children of their group.
+	 *
+	 *  @param user the user to update
+	 */
 	setUserInheritsPermissions(user: GroupScoped<User>, value: boolean): Promise<void>;
 
 	setLoginIdentifiers(user: GroupScoped<User>, identifier: LoginIdentifier,

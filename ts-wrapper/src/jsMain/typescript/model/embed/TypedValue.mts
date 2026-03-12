@@ -5,18 +5,49 @@ import {Encryptable} from './Encryptable.mjs';
 import {TypedValuesType} from './TypedValuesType.mjs';
 
 
+/**
+ *
+ *  Represents a typed value that can hold one of several primitive types (boolean, integer, double,
+ *  string, or date).
+ *  The actual value is stored in the corresponding typed field based on the [type].
+ *  /
+ */
 export interface TypedValue extends Encryptable {
 
+	/**
+	 *
+	 *  The type of the value stored.
+	 */
 	type: TypedValuesType | undefined;
 
+	/**
+	 *
+	 *  The boolean value, if type is BOOLEAN.
+	 */
 	booleanValue: boolean | undefined;
 
+	/**
+	 *
+	 *  The integer value, if type is INTEGER.
+	 */
 	integerValue: number | undefined;
 
+	/**
+	 *
+	 *  The double value, if type is DOUBLE.
+	 */
 	doubleValue: number | undefined;
 
+	/**
+	 *
+	 *  The string value, if type is STRING, JSON, or CLOB.
+	 */
 	stringValue: string | undefined;
 
+	/**
+	 *
+	 *  The date value as an Instant, if type is DATE.
+	 */
 	dateValue: number | undefined;
 
 	readonly isEncrypted: boolean;
@@ -25,20 +56,55 @@ export interface TypedValue extends Encryptable {
 
 }
 
+/**
+ *
+ *  Represents a typed value that can hold one of several primitive types (boolean, integer, double,
+ *  string, or date).
+ *  The actual value is stored in the corresponding typed field based on the [type].
+ *  /
+ */
 export class DecryptedTypedValue {
 
+	/**
+	 *
+	 *  The type of the value stored.
+	 */
 	type: TypedValuesType | undefined = undefined;
 
+	/**
+	 *
+	 *  The boolean value, if type is BOOLEAN.
+	 */
 	booleanValue: boolean | undefined = undefined;
 
+	/**
+	 *
+	 *  The integer value, if type is INTEGER.
+	 */
 	integerValue: number | undefined = undefined;
 
+	/**
+	 *
+	 *  The double value, if type is DOUBLE.
+	 */
 	doubleValue: number | undefined = undefined;
 
+	/**
+	 *
+	 *  The string value, if type is STRING, JSON, or CLOB.
+	 */
 	stringValue: string | undefined = undefined;
 
+	/**
+	 *
+	 *  The date value as an Instant, if type is DATE.
+	 */
 	dateValue: number | undefined = undefined;
 
+	/**
+	 *
+	 *  The base64-encoded encrypted content.
+	 */
 	encryptedSelf: Base64String | undefined = undefined;
 
 	readonly isEncrypted: false = false;
@@ -89,20 +155,55 @@ export class DecryptedTypedValue {
 
 }
 
+/**
+ *
+ *  Represents a typed value that can hold one of several primitive types (boolean, integer, double,
+ *  string, or date).
+ *  The actual value is stored in the corresponding typed field based on the [type].
+ *  /
+ */
 export class EncryptedTypedValue {
 
+	/**
+	 *
+	 *  The type of the value stored.
+	 */
 	type: TypedValuesType | undefined = undefined;
 
+	/**
+	 *
+	 *  The boolean value, if type is BOOLEAN.
+	 */
 	booleanValue: boolean | undefined = undefined;
 
+	/**
+	 *
+	 *  The integer value, if type is INTEGER.
+	 */
 	integerValue: number | undefined = undefined;
 
+	/**
+	 *
+	 *  The double value, if type is DOUBLE.
+	 */
 	doubleValue: number | undefined = undefined;
 
+	/**
+	 *
+	 *  The string value, if type is STRING, JSON, or CLOB.
+	 */
 	stringValue: string | undefined = undefined;
 
+	/**
+	 *
+	 *  The date value as an Instant, if type is DATE.
+	 */
 	dateValue: number | undefined = undefined;
 
+	/**
+	 *
+	 *  The base64-encoded encrypted content.
+	 */
 	encryptedSelf: Base64String | undefined = undefined;
 
 	readonly isEncrypted: true = true;

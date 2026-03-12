@@ -1,5 +1,10 @@
 // auto-generated file
 
+/**
+ *
+ *
+ *   Enumerates the possible personal (marital/civil) statuses of a patient.
+ */
 export enum PersonalStatus {
 	Single = "Single",
 	InCouple = "InCouple",

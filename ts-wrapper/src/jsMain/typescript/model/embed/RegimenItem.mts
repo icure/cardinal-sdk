@@ -5,18 +5,50 @@ import {AdministrationQuantity} from './AdministrationQuantity.mjs';
 import {Weekday} from './Weekday.mjs';
 
 
+/**
+ *
+ *  Represents a single item in a medication regimen, defining when and how much medication should be
+ *  administered.
+ *  The day can be specified as a specific date, day number in treatment, or weekday. The time can be
+ *  a day period or exact time.
+ *  /
+ */
 export class RegimenItem {
 
+	/**
+	 *
+	 *  A specific date (yyyyMMdd) for this regimen item.
+	 */
 	date: number | undefined = undefined;
 
+	/**
+	 *
+	 *  The day number in the treatment (1-based).
+	 */
 	dayNumber: number | undefined = undefined;
 
+	/**
+	 *
+	 *  The weekday for this regimen item.
+	 */
 	weekday: Weekday | undefined = undefined;
 
+	/**
+	 *
+	 *  The period of the day (CD-DAYPERIOD) for administration.
+	 */
 	dayPeriod: CodeStub | undefined = undefined;
 
+	/**
+	 *
+	 *  The time of day (hhmmss) for administration.
+	 */
 	timeOfDay: number | undefined = undefined;
 
+	/**
+	 *
+	 *  The quantity to administer.
+	 */
 	administratedQuantity: AdministrationQuantity | undefined = undefined;
 
 	constructor(partial: Partial<RegimenItem>) {

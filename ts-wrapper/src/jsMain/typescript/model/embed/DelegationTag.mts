@@ -1,5 +1,11 @@
 // auto-generated file
 
+/**
+ *
+ *
+ *   Enumerates the categories of medical data that can be used to tag delegations,
+ *   controlling access to specific types of information.
+ */
 export enum DelegationTag {
 	All = "All",
 	AdministrativeData = "AdministrativeData",

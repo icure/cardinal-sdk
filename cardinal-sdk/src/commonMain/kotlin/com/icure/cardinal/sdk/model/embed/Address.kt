@@ -1,3 +1,5 @@
+// WARNING: This file is auto-generated. If you change it manually, your changes will be lost.
+// If you want to change the way this class is generated, see [this repo](https://github.com/icure/sdk-codegen).
 package com.icure.cardinal.sdk.model.embed
 
 import com.icure.cardinal.sdk.model.base.CodeStub
@@ -11,8 +13,6 @@ import kotlin.String
 import kotlin.collections.List
 import kotlin.collections.Set
 
-// WARNING: This file is auto-generated. If you change it manually, your changes will be lost.
-// If you want to change the way this class is generated, see [this repo](https://github.com/icure/sdk-codegen).
 sealed interface Address : Encryptable, HasTags, HasCodes {
 	override val tags: Set<CodeStub>
 

@@ -8,31 +8,79 @@ import {StoredDocumentIdentifier} from '../model/StoredDocumentIdentifier.mjs';
 
 export interface FormBasicInGroupApi {
 
+	/**
+	 *
+	 *  In-group version of [FormBasicApi.matchFormsBy]
+	 */
 	matchFormsBy(groupId: string, filter: BaseFilterOptions<Form>): Promise<Array<string>>;
 
+	/**
+	 *
+	 *  In-group version of [FormBasicApi.matchFormsBySorted]
+	 */
 	matchFormsBySorted(groupId: string,
 			filter: BaseSortableFilterOptions<Form>): Promise<Array<string>>;
 
+	/**
+	 *
+	 *  In-group version of [FormBasicApi.filterFormsBy]
+	 */
 	filterFormsBy(groupId: string,
 			filter: BaseFilterOptions<Form>): Promise<PaginatedListIterator<GroupScoped<EncryptedForm>>>;
 
+	/**
+	 *
+	 *  In-group version of [FormBasicApi.filterFormsBySorted]
+	 */
 	filterFormsBySorted(groupId: string,
 			filter: BaseSortableFilterOptions<Form>): Promise<PaginatedListIterator<GroupScoped<EncryptedForm>>>;
 
+	/**
+	 *
+	 *  In-group version of [FormBasicFlavourlessApi.deleteFormById]
+	 */
 	deleteFormById(entityId: GroupScoped<StoredDocumentIdentifier>): Promise<GroupScoped<StoredDocumentIdentifier>>;
 
+	/**
+	 *
+	 *  In-group version of [FormBasicFlavourlessApi.deleteFormsByIds]
+	 */
 	deleteFormsByIds(entityIds: Array<GroupScoped<StoredDocumentIdentifier>>): Promise<Array<GroupScoped<StoredDocumentIdentifier>>>;
 
+	/**
+	 *
+	 *  In-group version of [FormBasicFlavourlessApi.purgeFormById]
+	 */
 	purgeFormById(entityId: GroupScoped<StoredDocumentIdentifier>): Promise<void>;
 
+	/**
+	 *
+	 *  In-group version of [FormBasicFlavourlessApi.purgeFormsByIds]
+	 */
 	purgeFormsByIds(entityIds: Array<GroupScoped<StoredDocumentIdentifier>>): Promise<Array<GroupScoped<StoredDocumentIdentifier>>>;
 
+	/**
+	 *
+	 *  In-group version of [FormBasicFlavourlessApi.deleteForm]
+	 */
 	deleteForm(form: GroupScoped<Form>): Promise<GroupScoped<StoredDocumentIdentifier>>;
 
+	/**
+	 *
+	 *  In-group version of [FormBasicFlavourlessApi.deleteForms]
+	 */
 	deleteForms(forms: Array<GroupScoped<Form>>): Promise<Array<GroupScoped<StoredDocumentIdentifier>>>;
 
+	/**
+	 *
+	 *  In-group version of [FormBasicFlavourlessApi.purgeForm]
+	 */
 	purgeForm(form: GroupScoped<Form>): Promise<void>;
 
+	/**
+	 *
+	 *  In-group version of [FormBasicFlavourlessApi.purgeForms]
+	 */
 	purgeForms(forms: Array<GroupScoped<Form>>): Promise<Array<GroupScoped<StoredDocumentIdentifier>>>;
 
 	createFormTemplate(formTemplate: GroupScoped<FormTemplate>): Promise<GroupScoped<FormTemplate>>;
@@ -76,24 +124,64 @@ export interface FormBasicInGroupApi {
 	matchFormTemplateBy(groupId: string,
 			filter: BaseFilterOptions<FormTemplate>): Promise<Array<string>>;
 
+	/**
+	 *
+	 *  In-group version of [FormBasicFlavouredApi.createForm].
+	 */
 	createForm(entity: GroupScoped<EncryptedForm>): Promise<GroupScoped<EncryptedForm>>;
 
+	/**
+	 *
+	 *  In-group version of [FormBasicFlavouredApi.createForms].
+	 */
 	createForms(entities: Array<GroupScoped<EncryptedForm>>): Promise<Array<GroupScoped<EncryptedForm>>>;
 
+	/**
+	 *
+	 *  In-group version of [FormBasicFlavouredApi.undeleteFormById]
+	 */
 	undeleteFormById(entityId: GroupScoped<StoredDocumentIdentifier>): Promise<GroupScoped<EncryptedForm>>;
 
+	/**
+	 *
+	 *  In-group version of [FormBasicFlavouredApi.undeleteFormsByIds]
+	 */
 	undeleteFormsByIds(entityIds: Array<GroupScoped<StoredDocumentIdentifier>>): Promise<Array<GroupScoped<EncryptedForm>>>;
 
+	/**
+	 *
+	 *  In-group version of [FormBasicFlavouredApi.undeleteForm]
+	 */
 	undeleteForm(form: GroupScoped<Form>): Promise<GroupScoped<EncryptedForm>>;
 
+	/**
+	 *
+	 *  In-group version of [FormBasicFlavouredApi.undeleteForms]
+	 */
 	undeleteForms(forms: Array<GroupScoped<EncryptedForm>>): Promise<Array<GroupScoped<EncryptedForm>>>;
 
+	/**
+	 *
+	 *  In-group version of [FormBasicFlavouredApi.modifyForm]
+	 */
 	modifyForm(entity: GroupScoped<EncryptedForm>): Promise<GroupScoped<EncryptedForm>>;
 
+	/**
+	 *
+	 *  In-group version of [FormBasicFlavouredApi.modifyForms]
+	 */
 	modifyForms(entities: Array<GroupScoped<EncryptedForm>>): Promise<Array<GroupScoped<EncryptedForm>>>;
 
+	/**
+	 *
+	 *  In-group version of [FormBasicFlavouredApi.getForm]
+	 */
 	getForm(groupId: string, entityId: string): Promise<GroupScoped<EncryptedForm> | undefined>;
 
+	/**
+	 *
+	 *  In-group version of [FormBasicFlavouredApi.getForms]
+	 */
 	getForms(groupId: string, entityIds: Array<string>): Promise<Array<GroupScoped<EncryptedForm>>>;
 
 }

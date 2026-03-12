@@ -2,10 +2,23 @@
 import {expectString, extractEntry} from '../../internal/JsonDecodeUtils.mjs';
 
 
+/**
+ *
+ *
+ *   Data transfer object that uniquely identifies a CouchDB document by its id and revision.
+ */
 export class DocIdentifier {
 
+	/**
+	 *
+	 *  The document identifier.
+	 */
 	id: string | undefined = undefined;
 
+	/**
+	 *
+	 *  The document revision.
+	 */
 	rev: string | undefined = undefined;
 
 	constructor(partial: Partial<DocIdentifier>) {

@@ -2,12 +2,29 @@
 import {expectString, extractEntry} from '../../internal/JsonDecodeUtils.mjs';
 
 
+/**
+ *
+ *
+ *   Associates a JWT or authentication token with the group context in which it is valid.
+ */
 export class TokenWithGroup {
 
+	/**
+	 *
+	 *  The authentication token string.
+	 */
 	token: string;
 
+	/**
+	 *
+	 *  The identifier of the group this token is scoped to.
+	 */
 	groupId: string;
 
+	/**
+	 *
+	 *  The human-readable name of the group, if available.
+	 */
 	groupName: string | undefined = undefined;
 
 	constructor(partial: Partial<TokenWithGroup> & Pick<TokenWithGroup, "token" | "groupId">) {

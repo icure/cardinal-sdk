@@ -2,40 +2,113 @@
 import {expectArray, expectBoolean, expectMap, expectNumber, expectString, extractEntry} from '../../../../internal/JsonDecodeUtils.mjs';
 
 
+/**
+ *
+ *  A text input field in a form template.
+ *  /
+ */
 export class TextField {
 
+	/**
+	 *
+	 *  The field identifier.
+	 */
 	field: string;
 
+	/**
+	 *
+	 *  A short label for the field.
+	 */
 	shortLabel: string | undefined = undefined;
 
+	/**
+	 *
+	 *  The number of rows for display.
+	 */
 	rows: number | undefined = undefined;
 
+	/**
+	 *
+	 *  The number of columns for display.
+	 */
 	columns: number | undefined = undefined;
 
+	/**
+	 *
+	 *  Whether the field grows dynamically.
+	 */
 	grows: boolean | undefined = undefined;
 
+	/**
+	 *
+	 *  Whether the field supports multiline input.
+	 */
 	multiline: boolean | undefined = undefined;
 
+	/**
+	 *
+	 *  The schema reference for validation.
+	 */
 	schema: string | undefined = undefined;
 
+	/**
+	 *
+	 *  Tags associated with this field.
+	 */
 	tags: Array<string> | undefined = undefined;
 
+	/**
+	 *
+	 *  Codification references for this field.
+	 */
 	codifications: Array<string> | undefined = undefined;
 
+	/**
+	 *
+	 *  Additional options as key-value pairs.
+	 */
 	options: { [ key: string ]: string } | undefined = undefined;
 
+	/**
+	 *
+	 *  Localized labels keyed by language code.
+	 */
 	labels: { [ key: string ]: string } | undefined = undefined;
 
+	/**
+	 *
+	 *  The default value.
+	 */
 	value: string | undefined = undefined;
 
+	/**
+	 *
+	 *  The unit of measurement.
+	 */
 	unit: string | undefined = undefined;
 
+	/**
+	 *
+	 *  Whether the field is required.
+	 */
 	required: boolean | undefined = undefined;
 
+	/**
+	 *
+	 *  A condition expression for hiding the field.
+	 */
 	hideCondition: string | undefined = undefined;
 
+	/**
+	 *
+	 *  Whether to default to the current date/time.
+	 */
 	now: boolean | undefined = undefined;
 
+	/**
+	 *
+	 *  Whether the field value should be translated.
+	 */
 	translate: boolean | undefined = undefined;
 
 	readonly $ktClass: 'com.icure.cardinal.sdk.model.embed.form.template.TextField' = 'com.icure.cardinal.sdk.model.embed.form.template.TextField';

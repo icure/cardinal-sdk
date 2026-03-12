@@ -3,26 +3,72 @@ import {expectNumber, expectString, extractEntry} from '../../internal/JsonDecod
 import {randomUuid} from '../../utils/Id.mjs';
 
 
+/**
+ *
+ *  Data transfer object containing information about a CouchDB database, including size metrics and
+ *  cluster configuration.
+ *  /
+ */
 export class DatabaseInfo {
 
+	/**
+	 *
+	 *  The database identifier.
+	 */
 	id: string;
 
+	/**
+	 *
+	 *  The current update sequence for the database.
+	 */
 	updateSeq: string | undefined = undefined;
 
+	/**
+	 *
+	 *  The size of the database file on disk in bytes.
+	 */
 	fileSize: number | undefined = undefined;
 
+	/**
+	 *
+	 *  The uncompressed size of the database contents in bytes.
+	 */
 	externalSize: number | undefined = undefined;
 
+	/**
+	 *
+	 *  The size of live data in the database in bytes.
+	 */
 	activeSize: number | undefined = undefined;
 
+	/**
+	 *
+	 *  The number of documents in the database.
+	 */
 	docs: number | undefined = undefined;
 
+	/**
+	 *
+	 *  The number of shards for the database.
+	 */
 	q: number | undefined = undefined;
 
+	/**
+	 *
+	 *  The number of replicas of each shard.
+	 */
 	n: number | undefined = undefined;
 
+	/**
+	 *
+	 *  The number of copies that must be written before a write is considered successful.
+	 */
 	w: number | undefined = undefined;
 
+	/**
+	 *
+	 *  The number of copies that must be read before a read is considered successful.
+	 */
 	r: number | undefined = undefined;
 
 	constructor(partial: Partial<DatabaseInfo>) {

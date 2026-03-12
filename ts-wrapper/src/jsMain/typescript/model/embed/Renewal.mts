@@ -3,10 +3,24 @@ import {expectNumber, expectObject, extractEntry} from '../../internal/JsonDecod
 import {Duration} from './Duration.mjs';
 
 
+/**
+ *
+ *  Represents the renewal information for a medication prescription, including the number of
+ *  renewals and their duration.
+ *  /
+ */
 export class Renewal {
 
+	/**
+	 *
+	 *  The number of authorized renewals.
+	 */
 	decimal: number | undefined = undefined;
 
+	/**
+	 *
+	 *  The duration of each renewal period.
+	 */
 	duration: Duration | undefined = undefined;
 
 	constructor(partial: Partial<Renewal>) {

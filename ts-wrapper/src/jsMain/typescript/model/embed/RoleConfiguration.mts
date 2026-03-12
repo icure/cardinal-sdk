@@ -2,10 +2,24 @@
 import {expectArray, expectString, expectStringEnum, extractEntry} from '../../internal/JsonDecodeUtils.mjs';
 
 
+/**
+ *
+ *
+ *   Represents the role configuration for a user, specifying the source of the roles and the set of
+ *  assigned roles.
+ */
 export class RoleConfiguration {
 
+	/**
+	 *
+	 *  The source from which the roles are derived (configuration, inherited, or default).
+	 */
 	source: RoleConfiguration.Source;
 
+	/**
+	 *
+	 *  The set of role identifiers assigned.
+	 */
 	roles: Array<string> = [];
 
 	constructor(partial: Partial<RoleConfiguration> & Pick<RoleConfiguration, "source">) {

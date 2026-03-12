@@ -6,6 +6,12 @@ import {NotPredicate} from './NotPredicate.mjs';
 import {OrPredicate} from './OrPredicate.mjs';
 
 
+/**
+ *
+ *  Sealed interface for filter predicates that can be used to post-filter results from a filter
+ *  chain.
+ *  /
+ */
 export type Predicate = AndPredicate | NotPredicate | OrPredicate | AlwaysPredicate | KeyValuePredicate;
 
 export namespace Predicate {

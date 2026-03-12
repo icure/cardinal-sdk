@@ -24,9 +24,9 @@ class DocumentTest : StringSpec({
 		val api = createHcpUser().api(specJob)
 		val doc = api.document.createDocument(
 			api.document.withEncryptionMetadataUnlinked(
-                base = DecryptedDocument(
-                    id = defaultCryptoService.strongRandom.randomUUID()
-                ),
+				base = DecryptedDocument(
+					id = defaultCryptoService.strongRandom.randomUUID()
+				),
 			)
 		)
 		val mainUti = "public.plain-text"
@@ -48,9 +48,9 @@ class DocumentTest : StringSpec({
 		val api = createHcpUser().api(specJob)
 		val doc = api.document.createDocument(
 			api.document.withEncryptionMetadataUnlinked(
-                base = DecryptedDocument(
-                    id = defaultCryptoService.strongRandom.randomUUID()
-                ),
+				base = DecryptedDocument(
+					id = defaultCryptoService.strongRandom.randomUUID()
+				),
 			)
 		)
 		val textAttachment = Random.Default.nextBytes(32).toHexString()
