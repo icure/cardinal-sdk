@@ -18,5 +18,6 @@ data class ByteArray(
 	public val `data`: kotlin.ByteArray,
 ) {
 	// region ByteArray-ByteArray
+
 	// endregion
 }
