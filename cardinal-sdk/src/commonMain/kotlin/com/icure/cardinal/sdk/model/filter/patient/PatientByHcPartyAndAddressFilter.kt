@@ -1,5 +1,3 @@
-// WARNING: This file is auto-generated. If you change it manually, your changes will be lost.
-// If you want to change the way this class is generated, see [this repo](https://github.com/icure/sdk-codegen).
 package com.icure.cardinal.sdk.model.filter.patient
 
 import com.icure.cardinal.sdk.model.Patient
@@ -14,7 +12,7 @@ import kotlin.String
  */
 @SerialName("PatientByHcPartyAndAddressFilter")
 @Serializable
-data class PatientByHcPartyAndAddressFilter(
+public data class PatientByHcPartyAndAddressFilter(
 	/**
 	 * Optional description of this filter.
 	 */
@@ -35,8 +33,4 @@ data class PatientByHcPartyAndAddressFilter(
 	 * The house number to match.
 	 */
 	public val houseNumber: String? = null,
-) : AbstractFilter<Patient> {
-	// region PatientByHcPartyAndAddressFilter-PatientByHcPartyAndAddressFilter
-
-	// endregion
-}
+) : AbstractFilter<Patient>

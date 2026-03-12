@@ -1,5 +1,3 @@
-// WARNING: This file is auto-generated. If you change it manually, your changes will be lost.
-// If you want to change the way this class is generated, see [this repo](https://github.com/icure/sdk-codegen).
 package com.icure.cardinal.sdk.model.embed
 
 import com.icure.cardinal.sdk.utils.DefaultValue
@@ -10,7 +8,6 @@ import kotlin.Long
 import kotlin.String
 import kotlin.collections.List
 import kotlin.collections.Set
-import kotlin.Deprecated
 
 /**
  *
@@ -18,7 +15,7 @@ import kotlin.Deprecated
  * durations of the appointments are specified in the property .hours.
  */
 @Serializable
-data class TimeTableItem(
+public data class TimeTableItem(
 	public val rruleStartDate: Long? = null,
 	/**
 	 * a RFC-5545 recurrence rule specifying the days and recurrence type of the timetable item.
@@ -43,8 +40,4 @@ data class TimeTableItem(
 	public val unavailable: Boolean = false,
 	@param:DefaultValue("emptySet()")
 	public val reservingRights: Set<String> = emptySet(),
-) {
-	// region TimeTableItem-TimeTableItem
-
-	// endregion
-}
+)

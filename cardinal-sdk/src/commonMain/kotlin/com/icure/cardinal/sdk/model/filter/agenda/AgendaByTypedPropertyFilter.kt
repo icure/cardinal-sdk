@@ -1,5 +1,3 @@
-// WARNING: This file is auto-generated. If you change it manually, your changes will be lost.
-// If you want to change the way this class is generated, see [this repo](https://github.com/icure/sdk-codegen).
 package com.icure.cardinal.sdk.model.filter.agenda
 
 import com.icure.cardinal.sdk.model.Agenda
@@ -15,7 +13,7 @@ import kotlin.String
  */
 @SerialName("AgendaByTypedPropertyFilter")
 @Serializable
-data class AgendaByTypedPropertyFilter(
+public data class AgendaByTypedPropertyFilter(
 	/**
 	 * The property stub to match against agenda properties.
 	 */
@@ -24,8 +22,4 @@ data class AgendaByTypedPropertyFilter(
 	 * Optional description of this filter.
 	 */
 	override val desc: String?,
-) : AbstractFilter<Agenda> {
-	// region AgendaByTypedPropertyFilter-AgendaByTypedPropertyFilter
-
-	// endregion
-}
+) : AbstractFilter<Agenda>

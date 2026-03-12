@@ -1,5 +1,3 @@
-// WARNING: This file is auto-generated. If you change it manually, your changes will be lost.
-// If you want to change the way this class is generated, see [this repo](https://github.com/icure/sdk-codegen).
 package com.icure.cardinal.sdk.model.requests.document
 
 import com.icure.cardinal.sdk.utils.DefaultValue
@@ -16,7 +14,7 @@ import kotlin.collections.Set
  *  Allows specifying metadata for new or updated attachments and keys of attachments to delete.
  */
 @Serializable
-data class BulkAttachmentUpdateOptions(
+public data class BulkAttachmentUpdateOptions(
 	/**
 	 * Metadata for attachments to add or update, keyed by attachment key (the document id for the main
 	 * attachment).
@@ -45,7 +43,4 @@ data class BulkAttachmentUpdateOptions(
 		 */
 		public val dataIsEncrypted: Boolean? = null,
 	)
-	// region BulkAttachmentUpdateOptions-BulkAttachmentUpdateOptions
-
-	// endregion
 }

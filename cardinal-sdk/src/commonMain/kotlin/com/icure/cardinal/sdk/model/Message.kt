@@ -1,5 +1,3 @@
-// WARNING: This file is auto-generated. If you change it manually, your changes will be lost.
-// If you want to change the way this class is generated, see [this repo](https://github.com/icure/sdk-codegen).
 package com.icure.cardinal.sdk.model
 
 import com.icure.cardinal.sdk.model.base.CodeStub
@@ -17,9 +15,6 @@ import kotlin.Long
 import kotlin.String
 import kotlin.collections.Map
 import kotlin.collections.Set
-import com.icure.cardinal.sdk.model.embed.MessageAttachment
-import kotlin.Int
-import kotlin.collections.List
 
 /**
  * Represents a message exchanged between healthcare parties. Messages can be used for internal
@@ -27,8 +22,7 @@ import kotlin.collections.List
  * eHealth box messages, eFact batches, and other types of healthcare-related communications.
  * /
  */
-
-sealed interface Message :
+public sealed interface Message :
 	StoredDocument,
 	ICureDocument<String>,
 	HasEncryptionMetadata,
@@ -182,11 +176,6 @@ sealed interface Message :
 	 * The security metadata of the entity.
 	 */
 	override val securityMetadata: SecurityMetadata?
-	// region Message-Message
-	companion object{
-		const val KRAKEN_QUALIFIED_NAME = "org.taktik.icure.entities.Message"
-	}
-	// endregion
 }
 
 /**
@@ -196,7 +185,7 @@ sealed interface Message :
  * /
  */
 @Serializable
-data class DecryptedMessage(
+public data class DecryptedMessage(
 	/**
 	 * The ID of the message. We encourage using either a v4 UUID or a HL7 Id.
 	 */
@@ -329,12 +318,7 @@ data class DecryptedMessage(
 	 * The security metadata of the entity.
 	 */
 	override val securityMetadata: SecurityMetadata? = null,
-) : Message {
-	// region Message-DecryptedMessage
-override fun copyWithSecurityMetadata(securityMetadata: SecurityMetadata, secretForeignKeys: Set<String>): DecryptedMessage =
-		copy(securityMetadata = securityMetadata, secretForeignKeys = secretForeignKeys)
-	// endregion
-}
+) : Message
 
 /**
  * Represents a message exchanged between healthcare parties. Messages can be used for internal
@@ -343,7 +327,7 @@ override fun copyWithSecurityMetadata(securityMetadata: SecurityMetadata, secret
  * /
  */
 @Serializable
-data class EncryptedMessage(
+public data class EncryptedMessage(
 	/**
 	 * The ID of the message. We encourage using either a v4 UUID or a HL7 Id.
 	 */
@@ -476,9 +460,4 @@ data class EncryptedMessage(
 	 * The security metadata of the entity.
 	 */
 	override val securityMetadata: SecurityMetadata? = null,
-) : Message {
-	// region Message-EncryptedMessage
-override fun copyWithSecurityMetadata(securityMetadata: SecurityMetadata, secretForeignKeys: Set<String>): EncryptedMessage =
-		copy(securityMetadata = securityMetadata, secretForeignKeys = secretForeignKeys)
-	// endregion
-}
+) : Message

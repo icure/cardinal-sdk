@@ -1,5 +1,3 @@
-// WARNING: This file is auto-generated. If you change it manually, your changes will be lost.
-// If you want to change the way this class is generated, see [this repo](https://github.com/icure/sdk-codegen).
 package com.icure.cardinal.sdk.model
 
 import com.icure.cardinal.sdk.model.base.CodeStub
@@ -23,8 +21,7 @@ import kotlin.collections.Set
  * and can be linked to health elements and services for medical context.
  * /
  */
-
-sealed interface Topic :
+public sealed interface Topic :
 	StoredDocument,
 	ICureDocument<String>,
 	HasEncryptionMetadata,
@@ -133,11 +130,6 @@ sealed interface Topic :
 	 * Set of ids of services linked to this topic.
 	 */
 	public val linkedServices: Set<String>
-	// region Topic-Topic
-	companion object {
-		const val KRAKEN_QUALIFIED_NAME = "org.taktik.icure.entities.Topic"
-	}
-	// endregion
 }
 
 /**
@@ -147,7 +139,7 @@ sealed interface Topic :
  * /
  */
 @Serializable
-data class DecryptedTopic(
+public data class DecryptedTopic(
 	/**
 	 * The unique identifier of the topic.
 	 */
@@ -241,12 +233,7 @@ data class DecryptedTopic(
 	 */
 	@param:DefaultValue("emptySet()")
 	override val linkedServices: Set<String> = emptySet(),
-) : Topic {
-	// region Topic-DecryptedTopic
-override fun copyWithSecurityMetadata(securityMetadata: SecurityMetadata, secretForeignKeys: Set<String>): DecryptedTopic =
-		copy(securityMetadata = securityMetadata, secretForeignKeys = secretForeignKeys)
-	// endregion
-}
+) : Topic
 
 /**
  * Represents a topic for secure messaging between healthcare parties. A topic groups messages in a
@@ -255,7 +242,7 @@ override fun copyWithSecurityMetadata(securityMetadata: SecurityMetadata, secret
  * /
  */
 @Serializable
-data class EncryptedTopic(
+public data class EncryptedTopic(
 	/**
 	 * The unique identifier of the topic.
 	 */
@@ -349,9 +336,4 @@ data class EncryptedTopic(
 	 */
 	@param:DefaultValue("emptySet()")
 	override val linkedServices: Set<String> = emptySet(),
-) : Topic {
-	// region Topic-EncryptedTopic
-override fun copyWithSecurityMetadata(securityMetadata: SecurityMetadata, secretForeignKeys: Set<String>): EncryptedTopic =
-		copy(securityMetadata = securityMetadata, secretForeignKeys = secretForeignKeys)
-	// endregion
-}
+) : Topic

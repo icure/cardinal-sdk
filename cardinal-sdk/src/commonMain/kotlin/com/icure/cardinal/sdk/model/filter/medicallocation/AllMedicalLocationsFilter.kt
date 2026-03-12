@@ -1,5 +1,3 @@
-// WARNING: This file is auto-generated. If you change it manually, your changes will be lost.
-// If you want to change the way this class is generated, see [this repo](https://github.com/icure/sdk-codegen).
 package com.icure.cardinal.sdk.model.filter.medicallocation
 
 import com.icure.cardinal.sdk.model.MedicalLocation
@@ -14,13 +12,9 @@ import kotlin.String
  */
 @SerialName("AllMedicalLocationsFilter")
 @Serializable
-data class AllMedicalLocationsFilter(
+public data class AllMedicalLocationsFilter(
 	/**
 	 * Optional description of this filter.
 	 */
 	override val desc: String? = null,
-) : AbstractFilter<MedicalLocation> {
-	// region AllMedicalLocationsFilter-AllMedicalLocationsFilter
-
-	// endregion
-}
+) : AbstractFilter<MedicalLocation>

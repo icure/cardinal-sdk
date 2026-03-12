@@ -1,5 +1,3 @@
-// WARNING: This file is auto-generated. If you change it manually, your changes will be lost.
-// If you want to change the way this class is generated, see [this repo](https://github.com/icure/sdk-codegen).
 package com.icure.cardinal.sdk.model.embed
 
 import com.icure.cardinal.sdk.model.specializations.Base64String
@@ -10,7 +8,7 @@ import kotlin.Long
 import kotlin.String
 import kotlin.collections.Map
 
-sealed interface Insurability : Encryptable {
+public sealed interface Insurability : Encryptable {
 	public val parameters: Map<String, String>
 
 	public val hospitalisation: Boolean?
@@ -30,13 +28,10 @@ sealed interface Insurability : Encryptable {
 	public val titularyId: String?
 
 	override val encryptedSelf: Base64String?
-	// region Insurability-Insurability
-
-	// endregion
 }
 
 @Serializable
-data class DecryptedInsurability(
+public data class DecryptedInsurability(
 	@param:DefaultValue("emptyMap()")
 	override val parameters: Map<String, String> = emptyMap(),
 	override val hospitalisation: Boolean? = null,
@@ -48,14 +43,10 @@ data class DecryptedInsurability(
 	override val endDate: Long? = null,
 	override val titularyId: String? = null,
 	override val encryptedSelf: Base64String? = null,
-) : Insurability {
-	// region Insurability-DecryptedInsurability
-
-	// endregion
-}
+) : Insurability
 
 @Serializable
-data class EncryptedInsurability(
+public data class EncryptedInsurability(
 	@param:DefaultValue("emptyMap()")
 	override val parameters: Map<String, String> = emptyMap(),
 	override val hospitalisation: Boolean? = null,
@@ -67,8 +58,4 @@ data class EncryptedInsurability(
 	override val endDate: Long? = null,
 	override val titularyId: String? = null,
 	override val encryptedSelf: Base64String? = null,
-) : Insurability {
-	// region Insurability-EncryptedInsurability
-
-	// endregion
-}
+) : Insurability

@@ -1,5 +1,3 @@
-// WARNING: This file is auto-generated. If you change it manually, your changes will be lost.
-// If you want to change the way this class is generated, see [this repo](https://github.com/icure/sdk-codegen).
 package com.icure.cardinal.sdk.model.embed
 
 import com.icure.cardinal.sdk.model.specializations.Base64String
@@ -14,8 +12,7 @@ import kotlin.collections.Map
  * valorisations.
  * /
  */
-
-sealed interface FlatRateTarification : Encryptable {
+public sealed interface FlatRateTarification : Encryptable {
 	/**
 	 * The tarification code.
 	 */
@@ -40,9 +37,6 @@ sealed interface FlatRateTarification : Encryptable {
 	 * The base64-encoded encrypted content.
 	 */
 	override val encryptedSelf: Base64String?
-	// region FlatRateTarification-FlatRateTarification
-
-	// endregion
 }
 
 /**
@@ -51,7 +45,7 @@ sealed interface FlatRateTarification : Encryptable {
  * /
  */
 @Serializable
-data class DecryptedFlatRateTarification(
+public data class DecryptedFlatRateTarification(
 	/**
 	 * The tarification code.
 	 */
@@ -73,11 +67,7 @@ data class DecryptedFlatRateTarification(
 	 * The base64-encoded encrypted content.
 	 */
 	override val encryptedSelf: Base64String? = null,
-) : FlatRateTarification {
-	// region FlatRateTarification-DecryptedFlatRateTarification
-
-	// endregion
-}
+) : FlatRateTarification
 
 /**
  * Represents a flat rate tarification used in medical house contracts, linking a code to its
@@ -85,7 +75,7 @@ data class DecryptedFlatRateTarification(
  * /
  */
 @Serializable
-data class EncryptedFlatRateTarification(
+public data class EncryptedFlatRateTarification(
 	/**
 	 * The tarification code.
 	 */
@@ -107,8 +97,4 @@ data class EncryptedFlatRateTarification(
 	 * The base64-encoded encrypted content.
 	 */
 	override val encryptedSelf: Base64String? = null,
-) : FlatRateTarification {
-	// region FlatRateTarification-EncryptedFlatRateTarification
-
-	// endregion
-}
+) : FlatRateTarification

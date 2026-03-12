@@ -1,5 +1,3 @@
-// WARNING: This file is auto-generated. If you change it manually, your changes will be lost.
-// If you want to change the way this class is generated, see [this repo](https://github.com/icure/sdk-codegen).
 package com.icure.cardinal.sdk.model.filter.healthelement
 
 import com.icure.cardinal.sdk.model.HealthElement
@@ -16,7 +14,7 @@ import kotlin.collections.Set
  */
 @SerialName("HealthElementByIdsFilter")
 @Serializable
-data class HealthElementByIdsFilter(
+public data class HealthElementByIdsFilter(
 	/**
 	 * The set of health element identifiers to match.
 	 */
@@ -25,8 +23,4 @@ data class HealthElementByIdsFilter(
 	 * Optional description of this filter.
 	 */
 	override val desc: String? = null,
-) : AbstractFilter<HealthElement>, Filter.IdsFilter<String, HealthElement> {
-	// region HealthElementByIdsFilter-HealthElementByIdsFilter
-
-	// endregion
-}
+) : AbstractFilter<HealthElement>, Filter.IdsFilter<String, HealthElement>

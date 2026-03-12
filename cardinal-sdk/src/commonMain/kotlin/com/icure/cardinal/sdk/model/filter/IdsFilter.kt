@@ -1,5 +1,3 @@
-// WARNING: This file is auto-generated. If you change it manually, your changes will be lost.
-// If you want to change the way this class is generated, see [this repo](https://github.com/icure/sdk-codegen).
 package com.icure.cardinal.sdk.model.filter
 
 import com.icure.cardinal.sdk.model.base.Identifiable
@@ -14,7 +12,7 @@ import kotlin.collections.Set
  */
 @SerialName("IdsFilter")
 @Serializable
-data class IdsFilter<O : Identifiable<String>>(
+public data class IdsFilter<O : Identifiable<String>>(
 	/**
 	 * Optional description of this filter.
 	 */
@@ -23,8 +21,4 @@ data class IdsFilter<O : Identifiable<String>>(
 	 * The set of entity identifiers to match.
 	 */
 	override val ids: Set<String>,
-) : AbstractFilter<O>, Filter.IdsFilter<String, O> {
-	// region IdsFilter-IdsFilter
-
-	// endregion
-}
+) : AbstractFilter<O>, Filter.IdsFilter<String, O>

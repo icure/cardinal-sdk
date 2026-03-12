@@ -1,5 +1,3 @@
-// WARNING: This file is auto-generated. If you change it manually, your changes will be lost.
-// If you want to change the way this class is generated, see [this repo](https://github.com/icure/sdk-codegen).
 package com.icure.cardinal.sdk.model.filter.calendarItem
 
 import com.icure.cardinal.sdk.model.CalendarItem
@@ -15,7 +13,7 @@ import kotlin.String
  */
 @SerialName("CalendarItemByPeriodAndDataOwnerIdFilter")
 @Serializable
-data class CalendarItemByPeriodAndDataOwnerIdFilter(
+public data class CalendarItemByPeriodAndDataOwnerIdFilter(
 	/**
 	 * The identifier of the data owner.
 	 */
@@ -32,8 +30,4 @@ data class CalendarItemByPeriodAndDataOwnerIdFilter(
 	 * Optional description of this filter.
 	 */
 	override val desc: String? = null,
-) : AbstractFilter<CalendarItem> {
-	// region CalendarItemByPeriodAndDataOwnerIdFilter-CalendarItemByPeriodAndDataOwnerIdFilter
-
-	// endregion
-}
+) : AbstractFilter<CalendarItem>

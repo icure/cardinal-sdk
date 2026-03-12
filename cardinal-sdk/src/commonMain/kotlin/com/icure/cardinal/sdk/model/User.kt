@@ -1,5 +1,3 @@
-// WARNING: This file is auto-generated. If you change it manually, your changes will be lost.
-// If you want to change the way this class is generated, see [this repo](https://github.com/icure/sdk-codegen).
 package com.icure.cardinal.sdk.model
 
 import com.icure.cardinal.sdk.model.base.Identifier
@@ -19,7 +17,6 @@ import kotlin.collections.List
 import kotlin.collections.Map
 import kotlin.collections.Set
 import kotlin.time.Instant
-import com.icure.cardinal.sdk.model.enums.UsersType
 
 /**
  * Represents a user that can log in to the iCure platform. A user can be linked to a healthcare
@@ -28,7 +25,7 @@ import com.icure.cardinal.sdk.model.enums.UsersType
  * /
  */
 @Serializable
-data class User(
+public data class User(
 	/**
 	 * The Id of the user. We encourage using either a v4 UUID or a HL7 Id.
 	 */
@@ -136,10 +133,4 @@ data class User(
 		public val verifiedEmail: Boolean? = null,
 		public val verifiedMobilePhone: Boolean? = null,
 	)
-	// region User-User
-
-	companion object {
-		const val KRAKEN_QUALIFIED_NAME = "org.taktik.icure.entities.User"
-	}
-	// endregion
 }

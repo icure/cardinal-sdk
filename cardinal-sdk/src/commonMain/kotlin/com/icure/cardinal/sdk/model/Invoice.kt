@@ -1,5 +1,3 @@
-// WARNING: This file is auto-generated. If you change it manually, your changes will be lost.
-// If you want to change the way this class is generated, see [this repo](https://github.com/icure/sdk-codegen).
 package com.icure.cardinal.sdk.model
 
 import com.icure.cardinal.sdk.model.base.CodeStub
@@ -27,9 +25,6 @@ import kotlin.String
 import kotlin.collections.List
 import kotlin.collections.Map
 import kotlin.collections.Set
-import com.icure.cardinal.sdk.model.embed.InvoiceInterventionType
-import com.icure.cardinal.sdk.model.embed.InvoiceType
-import com.icure.cardinal.sdk.model.embed.MediumType
 
 /**
  * Represents an invoice. An invoice is used to bill patients, mutual funds, or paying agencies for
@@ -37,8 +32,7 @@ import com.icure.cardinal.sdk.model.embed.MediumType
  * services rendered. It is serialized in JSON and saved in the underlying iCure CouchDB database.
  * /
  */
-
-sealed interface Invoice :
+public sealed interface Invoice :
 	StoredDocument,
 	ICureDocument<String>,
 	HasEncryptionMetadata,
@@ -352,9 +346,6 @@ sealed interface Invoice :
 	 * The security metadata of the entity.
 	 */
 	override val securityMetadata: SecurityMetadata?
-	// region Invoice-Invoice
-
-	// endregion
 }
 
 /**
@@ -364,7 +355,7 @@ sealed interface Invoice :
  * /
  */
 @Serializable
-data class DecryptedInvoice(
+public data class DecryptedInvoice(
 	/**
 	 * The Id of the Invoice. We encourage using either a v4 UUID or a HL7 Id.
 	 */
@@ -623,12 +614,7 @@ data class DecryptedInvoice(
 	 * The security metadata of the entity.
 	 */
 	override val securityMetadata: SecurityMetadata? = null,
-) : Invoice {
-	// region Invoice-DecryptedInvoice
-override fun copyWithSecurityMetadata(securityMetadata: SecurityMetadata, secretForeignKeys: Set<String>): DecryptedInvoice =
-		copy(securityMetadata = securityMetadata, secretForeignKeys = secretForeignKeys)
-	// endregion
-}
+) : Invoice
 
 /**
  * Represents an invoice. An invoice is used to bill patients, mutual funds, or paying agencies for
@@ -637,7 +623,7 @@ override fun copyWithSecurityMetadata(securityMetadata: SecurityMetadata, secret
  * /
  */
 @Serializable
-data class EncryptedInvoice(
+public data class EncryptedInvoice(
 	/**
 	 * The Id of the Invoice. We encourage using either a v4 UUID or a HL7 Id.
 	 */
@@ -896,9 +882,4 @@ data class EncryptedInvoice(
 	 * The security metadata of the entity.
 	 */
 	override val securityMetadata: SecurityMetadata? = null,
-) : Invoice {
-	// region Invoice-EncryptedInvoice
-override fun copyWithSecurityMetadata(securityMetadata: SecurityMetadata, secretForeignKeys: Set<String>): EncryptedInvoice =
-		copy(securityMetadata = securityMetadata, secretForeignKeys = secretForeignKeys)
-	// endregion
-}
+) : Invoice

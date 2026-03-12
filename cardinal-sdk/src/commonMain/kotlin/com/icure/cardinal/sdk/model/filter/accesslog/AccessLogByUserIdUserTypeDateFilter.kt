@@ -1,5 +1,3 @@
-// WARNING: This file is auto-generated. If you change it manually, your changes will be lost.
-// If you want to change the way this class is generated, see [this repo](https://github.com/icure/sdk-codegen).
 package com.icure.cardinal.sdk.model.filter.accesslog
 
 import com.icure.cardinal.sdk.model.AccessLog
@@ -17,7 +15,7 @@ import kotlin.time.Instant
  */
 @SerialName("AccessLogByUserIdUserTypeDateFilter")
 @Serializable
-data class AccessLogByUserIdUserTypeDateFilter(
+public data class AccessLogByUserIdUserTypeDateFilter(
 	/**
 	 * The identifier of the user who created the access log.
 	 */
@@ -39,8 +37,4 @@ data class AccessLogByUserIdUserTypeDateFilter(
 	 * Optional description of this filter.
 	 */
 	override val desc: String? = null,
-) : AbstractFilter<AccessLog> {
-	// region AccessLogByUserIdUserTypeDateFilter-AccessLogByUserIdUserTypeDateFilter
-
-	// endregion
-}
+) : AbstractFilter<AccessLog>

@@ -1,5 +1,3 @@
-// WARNING: This file is auto-generated. If you change it manually, your changes will be lost.
-// If you want to change the way this class is generated, see [this repo](https://github.com/icure/sdk-codegen).
 package com.icure.cardinal.sdk.model
 
 import com.icure.cardinal.sdk.model.base.CodeStub
@@ -24,8 +22,7 @@ import kotlin.collections.Set
  * through parent-child relationships and linked to classification templates.
  * /
  */
-
-sealed interface Classification :
+public sealed interface Classification :
 	StoredDocument,
 	ICureDocument<String>,
 	HasEncryptionMetadata,
@@ -126,9 +123,6 @@ sealed interface Classification :
 	 * The security metadata of this entity, for access control.
 	 */
 	override val securityMetadata: SecurityMetadata?
-	// region Classification-Classification
-
-	// endregion
 }
 
 /**
@@ -138,7 +132,7 @@ sealed interface Classification :
  * /
  */
 @Serializable
-data class DecryptedClassification(
+public data class DecryptedClassification(
 	/**
 	 * The Id of the classification. We encourage using either a v4 UUID or a HL7 Id.
 	 */
@@ -223,12 +217,7 @@ data class DecryptedClassification(
 	 * The security metadata of this entity, for access control.
 	 */
 	override val securityMetadata: SecurityMetadata? = null,
-) : Classification {
-	// region Classification-DecryptedClassification
-override fun copyWithSecurityMetadata(securityMetadata: SecurityMetadata, secretForeignKeys: Set<String>): DecryptedClassification =
-		copy(securityMetadata = securityMetadata, secretForeignKeys = secretForeignKeys)
-	// endregion
-}
+) : Classification
 
 /**
  * Represents a classification used to organize and categorize medical data. Classifications can be
@@ -237,7 +226,7 @@ override fun copyWithSecurityMetadata(securityMetadata: SecurityMetadata, secret
  * /
  */
 @Serializable
-data class EncryptedClassification(
+public data class EncryptedClassification(
 	/**
 	 * The Id of the classification. We encourage using either a v4 UUID or a HL7 Id.
 	 */
@@ -322,9 +311,4 @@ data class EncryptedClassification(
 	 * The security metadata of this entity, for access control.
 	 */
 	override val securityMetadata: SecurityMetadata? = null,
-) : Classification {
-	// region Classification-EncryptedClassification
-override fun copyWithSecurityMetadata(securityMetadata: SecurityMetadata, secretForeignKeys: Set<String>): EncryptedClassification =
-		copy(securityMetadata = securityMetadata, secretForeignKeys = secretForeignKeys)
-	// endregion
-}
+) : Classification

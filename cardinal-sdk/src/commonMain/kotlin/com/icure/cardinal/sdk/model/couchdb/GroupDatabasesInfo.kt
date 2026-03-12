@@ -1,5 +1,3 @@
-// WARNING: This file is auto-generated. If you change it manually, your changes will be lost.
-// If you want to change the way this class is generated, see [this repo](https://github.com/icure/sdk-codegen).
 package com.icure.cardinal.sdk.model.couchdb
 
 import kotlinx.serialization.Serializable
@@ -14,7 +12,7 @@ import kotlin.collections.List
  * /
  */
 @Serializable
-data class GroupDatabasesInfo(
+public data class GroupDatabasesInfo(
 	/**
 	 * The identifier of the group.
 	 */
@@ -27,8 +25,4 @@ data class GroupDatabasesInfo(
 	 * The total GCP storage size in bytes used by this group.
 	 */
 	public val gcpStorageSize: Long,
-) {
-	// region GroupDatabasesInfo-GroupDatabasesInfo
-
-	// endregion
-}
+)

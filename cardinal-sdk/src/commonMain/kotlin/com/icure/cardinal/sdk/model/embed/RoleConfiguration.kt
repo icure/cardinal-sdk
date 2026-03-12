@@ -1,5 +1,3 @@
-// WARNING: This file is auto-generated. If you change it manually, your changes will be lost.
-// If you want to change the way this class is generated, see [this repo](https://github.com/icure/sdk-codegen).
 package com.icure.cardinal.sdk.model.embed
 
 import com.icure.cardinal.sdk.utils.DefaultValue
@@ -14,7 +12,7 @@ import kotlin.collections.Set
  * assigned roles.
  */
 @Serializable
-data class RoleConfiguration(
+public data class RoleConfiguration(
 	/**
 	 * The source from which the roles are derived (configuration, inherited, or default).
 	 */
@@ -38,7 +36,4 @@ data class RoleConfiguration(
 		@SerialName("DEFAULT")
 		Default("DEFAULT"),
 	}
-  // region RoleConfiguration-RoleConfiguration
-
-  // endregion
 }

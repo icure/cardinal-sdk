@@ -1,5 +1,3 @@
-// WARNING: This file is auto-generated. If you change it manually, your changes will be lost.
-// If you want to change the way this class is generated, see [this repo](https://github.com/icure/sdk-codegen).
 package com.icure.cardinal.sdk.model.embed
 
 import com.icure.cardinal.sdk.model.specializations.Base64String
@@ -13,8 +11,7 @@ import kotlin.collections.Set
  * account configuration.
  * /
  */
-
-sealed interface FinancialInstitutionInformation : Encryptable {
+public sealed interface FinancialInstitutionInformation : Encryptable {
 	/**
 	 * The name of the financial institution.
 	 */
@@ -54,9 +51,6 @@ sealed interface FinancialInstitutionInformation : Encryptable {
 	 * The base64-encoded encrypted content.
 	 */
 	override val encryptedSelf: Base64String?
-	// region FinancialInstitutionInformation-FinancialInstitutionInformation
-
-	// endregion
 }
 
 /**
@@ -65,7 +59,7 @@ sealed interface FinancialInstitutionInformation : Encryptable {
  * /
  */
 @Serializable
-data class DecryptedFinancialInstitutionInformation(
+public data class DecryptedFinancialInstitutionInformation(
 	/**
 	 * The name of the financial institution.
 	 */
@@ -99,11 +93,7 @@ data class DecryptedFinancialInstitutionInformation(
 	 * The base64-encoded encrypted content.
 	 */
 	override val encryptedSelf: Base64String? = null,
-) : FinancialInstitutionInformation {
-	// region FinancialInstitutionInformation-DecryptedFinancialInstitutionInformation
-
-	// endregion
-}
+) : FinancialInstitutionInformation
 
 /**
  * Represents information about a financial institution, including bank account details and proxy
@@ -111,7 +101,7 @@ data class DecryptedFinancialInstitutionInformation(
  * /
  */
 @Serializable
-data class EncryptedFinancialInstitutionInformation(
+public data class EncryptedFinancialInstitutionInformation(
 	/**
 	 * The name of the financial institution.
 	 */
@@ -145,8 +135,4 @@ data class EncryptedFinancialInstitutionInformation(
 	 * The base64-encoded encrypted content.
 	 */
 	override val encryptedSelf: Base64String? = null,
-) : FinancialInstitutionInformation {
-	// region FinancialInstitutionInformation-EncryptedFinancialInstitutionInformation
-
-	// endregion
-}
+) : FinancialInstitutionInformation

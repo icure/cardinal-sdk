@@ -1,5 +1,3 @@
-// WARNING: This file is auto-generated. If you change it manually, your changes will be lost.
-// If you want to change the way this class is generated, see [this repo](https://github.com/icure/sdk-codegen).
 package com.icure.cardinal.sdk.model.filter.maintenancetask
 
 import com.icure.cardinal.sdk.model.MaintenanceTask
@@ -14,7 +12,7 @@ import kotlin.String
  */
 @SerialName("MaintenanceTaskByHcPartyAndTypeFilter")
 @Serializable
-data class MaintenanceTaskByHcPartyAndTypeFilter(
+public data class MaintenanceTaskByHcPartyAndTypeFilter(
 	/**
 	 * Optional description of this filter.
 	 */
@@ -27,8 +25,4 @@ data class MaintenanceTaskByHcPartyAndTypeFilter(
 	 * The identifier of the healthcare party.
 	 */
 	public val healthcarePartyId: String? = null,
-) : AbstractFilter<MaintenanceTask> {
-	// region MaintenanceTaskByHcPartyAndTypeFilter-MaintenanceTaskByHcPartyAndTypeFilter
-
-	// endregion
-}
+) : AbstractFilter<MaintenanceTask>

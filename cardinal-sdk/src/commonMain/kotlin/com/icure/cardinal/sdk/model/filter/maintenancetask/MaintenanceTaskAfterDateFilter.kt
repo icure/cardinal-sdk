@@ -1,5 +1,3 @@
-// WARNING: This file is auto-generated. If you change it manually, your changes will be lost.
-// If you want to change the way this class is generated, see [this repo](https://github.com/icure/sdk-codegen).
 package com.icure.cardinal.sdk.model.filter.maintenancetask
 
 import com.icure.cardinal.sdk.model.MaintenanceTask
@@ -15,7 +13,7 @@ import kotlin.String
  */
 @SerialName("MaintenanceTaskAfterDateFilter")
 @Serializable
-data class MaintenanceTaskAfterDateFilter(
+public data class MaintenanceTaskAfterDateFilter(
 	/**
 	 * Optional description of this filter.
 	 */
@@ -28,8 +26,4 @@ data class MaintenanceTaskAfterDateFilter(
 	 * The date threshold; only tasks after this date are matched.
 	 */
 	public val date: Long,
-) : AbstractFilter<MaintenanceTask> {
-	// region MaintenanceTaskAfterDateFilter-MaintenanceTaskAfterDateFilter
-
-	// endregion
-}
+) : AbstractFilter<MaintenanceTask>

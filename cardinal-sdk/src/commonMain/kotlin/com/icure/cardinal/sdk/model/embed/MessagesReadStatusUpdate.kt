@@ -1,5 +1,3 @@
-// WARNING: This file is auto-generated. If you change it manually, your changes will be lost.
-// If you want to change the way this class is generated, see [this repo](https://github.com/icure/sdk-codegen).
 package com.icure.cardinal.sdk.model.embed
 
 import kotlinx.serialization.Serializable
@@ -13,7 +11,7 @@ import kotlin.collections.List
  * /
  */
 @Serializable
-data class MessagesReadStatusUpdate(
+public data class MessagesReadStatusUpdate(
 	/**
 	 * The list of message identifiers to update.
 	 */
@@ -30,8 +28,4 @@ data class MessagesReadStatusUpdate(
 	 * The new read status (true for read, false for unread).
 	 */
 	public val status: Boolean? = null,
-) {
-	// region MessagesReadStatusUpdate-MessagesReadStatusUpdate
-
-	// endregion
-}
+)
