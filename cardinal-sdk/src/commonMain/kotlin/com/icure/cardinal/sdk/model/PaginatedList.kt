@@ -1,5 +1,3 @@
-// WARNING: This file is auto-generated. If you change it manually, your changes will be lost.
-// If you want to change the way this class is generated, see [this repo](https://github.com/icure/sdk-codegen).
 package com.icure.cardinal.sdk.model
 
 import com.icure.cardinal.sdk.utils.DefaultValue
@@ -14,7 +12,7 @@ import kotlin.collections.List
  * /
  */
 @Serializable
-data class PaginatedList<T>(
+public data class PaginatedList<T>(
 	/**
 	 * The list of results for the current page.
 	 */
@@ -25,11 +23,4 @@ data class PaginatedList<T>(
 	 * last page.
 	 */
 	public val nextKeyPair: PaginatedDocumentKeyIdPair? = null,
-) {
-	// region PaginatedList-PaginatedList
-inline fun <Q> map(mapper: (T) -> Q): PaginatedList<Q> = PaginatedList(
-		rows = rows.map { mapper(it) },
-		nextKeyPair = nextKeyPair
-	)
-	// endregion
-}
+)

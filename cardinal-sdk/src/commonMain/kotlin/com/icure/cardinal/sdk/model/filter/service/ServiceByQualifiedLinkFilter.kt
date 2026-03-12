@@ -1,5 +1,3 @@
-// WARNING: This file is auto-generated. If you change it manually, your changes will be lost.
-// If you want to change the way this class is generated, see [this repo](https://github.com/icure/sdk-codegen).
 package com.icure.cardinal.sdk.model.filter.service
 
 import com.icure.cardinal.sdk.model.base.LinkQualification
@@ -16,7 +14,7 @@ import kotlin.collections.List
  */
 @SerialName("ServiceByQualifiedLinkFilter")
 @Serializable
-data class ServiceByQualifiedLinkFilter(
+public data class ServiceByQualifiedLinkFilter(
 	/**
 	 * The list of link values to match.
 	 */
@@ -29,8 +27,4 @@ data class ServiceByQualifiedLinkFilter(
 	 * Optional description of this filter.
 	 */
 	override val desc: String? = null,
-) : AbstractFilter<Service> {
-	// region ServiceByQualifiedLinkFilter-ServiceByQualifiedLinkFilter
-
-	// endregion
-}
+) : AbstractFilter<Service>

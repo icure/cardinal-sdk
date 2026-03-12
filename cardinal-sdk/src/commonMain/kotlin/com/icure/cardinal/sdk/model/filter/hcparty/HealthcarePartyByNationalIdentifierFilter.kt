@@ -1,5 +1,3 @@
-// WARNING: This file is auto-generated. If you change it manually, your changes will be lost.
-// If you want to change the way this class is generated, see [this repo](https://github.com/icure/sdk-codegen).
 package com.icure.cardinal.sdk.model.filter.hcparty
 
 import com.icure.cardinal.sdk.model.HealthcareParty
@@ -15,7 +13,7 @@ import kotlin.String
  */
 @SerialName("HealthcarePartyByNationalIdentifierFilter")
 @Serializable
-data class HealthcarePartyByNationalIdentifierFilter(
+public data class HealthcarePartyByNationalIdentifierFilter(
 	/**
 	 * The national identifier value to search for.
 	 */
@@ -28,8 +26,4 @@ data class HealthcarePartyByNationalIdentifierFilter(
 	 * Optional description of this filter.
 	 */
 	override val desc: String? = null,
-) : AbstractFilter<HealthcareParty> {
-	// region HealthcarePartyByNationalIdentifierFilter-HealthcarePartyByNationalIdentifierFilter
-
-	// endregion
-}
+) : AbstractFilter<HealthcareParty>

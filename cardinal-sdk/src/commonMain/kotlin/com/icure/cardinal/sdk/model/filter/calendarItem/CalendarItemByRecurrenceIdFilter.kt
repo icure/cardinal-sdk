@@ -1,5 +1,3 @@
-// WARNING: This file is auto-generated. If you change it manually, your changes will be lost.
-// If you want to change the way this class is generated, see [this repo](https://github.com/icure/sdk-codegen).
 package com.icure.cardinal.sdk.model.filter.calendarItem
 
 import com.icure.cardinal.sdk.model.CalendarItem
@@ -14,7 +12,7 @@ import kotlin.String
  */
 @SerialName("CalendarItemByRecurrenceIdFilter")
 @Serializable
-data class CalendarItemByRecurrenceIdFilter(
+public data class CalendarItemByRecurrenceIdFilter(
 	/**
 	 * The recurrence identifier to match.
 	 */
@@ -23,8 +21,4 @@ data class CalendarItemByRecurrenceIdFilter(
 	 * Optional description of this filter.
 	 */
 	override val desc: String? = null,
-) : AbstractFilter<CalendarItem> {
-	// region CalendarItemByRecurrenceIdFilter-CalendarItemByRecurrenceIdFilter
-
-	// endregion
-}
+) : AbstractFilter<CalendarItem>

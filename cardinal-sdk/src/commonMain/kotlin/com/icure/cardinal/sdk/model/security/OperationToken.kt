@@ -1,5 +1,3 @@
-// WARNING: This file is auto-generated. If you change it manually, your changes will be lost.
-// If you want to change the way this class is generated, see [this repo](https://github.com/icure/sdk-codegen).
 package com.icure.cardinal.sdk.model.security
 
 import kotlinx.serialization.Serializable
@@ -13,7 +11,7 @@ import kotlin.String
  * /
  */
 @Serializable
-data class OperationToken(
+public data class OperationToken(
 	/**
 	 * The hash of the operation token.
 	 */
@@ -34,8 +32,4 @@ data class OperationToken(
 	 * An optional human-readable description of the token's purpose.
 	 */
 	public val description: String? = null,
-) {
-	// region OperationToken-OperationToken
-
-	// endregion
-}
+)

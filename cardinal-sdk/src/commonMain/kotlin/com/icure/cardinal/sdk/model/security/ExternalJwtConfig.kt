@@ -1,5 +1,3 @@
-// WARNING: This file is auto-generated. If you change it manually, your changes will be lost.
-// If you want to change the way this class is generated, see [this repo](https://github.com/icure/sdk-codegen).
 package com.icure.cardinal.sdk.model.security
 
 import com.icure.cardinal.sdk.model.embed.AuthenticationClass
@@ -8,7 +6,6 @@ import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.json.JsonNames
 import kotlin.String
-import com.icure.cardinal.sdk.model.specializations.Base64String
 
 /**
  * Configuration for authenticating users via an externally-issued JWT. Specifies how the token
@@ -16,7 +13,7 @@ import com.icure.cardinal.sdk.model.specializations.Base64String
  * /
  */
 @Serializable
-data class ExternalJwtConfig(
+public data class ExternalJwtConfig(
 	/**
 	 * The method used to verify the external JWT signature (public-key or OIDC discovery).
 	 */
@@ -156,7 +153,4 @@ data class ExternalJwtConfig(
 			public val fieldName: String,
 		) : FieldSelector
 	}
-	// region ExternalJwtConfig-ExternalJwtConfig
-
-	// endregion
 }

@@ -1,5 +1,3 @@
-// WARNING: This file is auto-generated. If you change it manually, your changes will be lost.
-// If you want to change the way this class is generated, see [this repo](https://github.com/icure/sdk-codegen).
 package com.icure.cardinal.sdk.model
 
 import com.icure.cardinal.sdk.model.base.CodeStub
@@ -27,14 +25,6 @@ import kotlin.String
 import kotlin.collections.List
 import kotlin.collections.Map
 import kotlin.collections.Set
-import com.icure.cardinal.sdk.model.embed.DecryptedFlatRateTarification
-import com.icure.cardinal.sdk.model.embed.HealthcarePartyHistoryStatus
-import com.icure.cardinal.sdk.model.embed.HealthcarePartyStatus
-import com.icure.cardinal.sdk.model.embed.TelecomType
-import com.icure.cardinal.sdk.serialization.ByteArraySerializer
-import kotlin.ByteArray
-import kotlin.Deprecated
-import kotlin.Int
 
 /**
  * Represents a healthcare party. A healthcare party is a person or organization that provides
@@ -45,7 +35,7 @@ import kotlin.Int
  * /
  */
 @Serializable
-data class HealthcareParty(
+public data class HealthcareParty(
 	/**
 	 * The Id of the healthcare party. We encourage using either a v4 UUID or a HL7 Id.
 	 */
@@ -224,10 +214,4 @@ data class HealthcareParty(
 	 */
 	@param:DefaultValue("emptySet()")
 	override val publicKeysForOaepWithSha256: Set<SpkiHexString> = emptySet(),
-) : StoredDocument, Named, Person, CryptoActor, DataOwner, HasCodes, HasTags {
-	// region HealthcareParty-HealthcareParty
-	companion object {
-		const val KRAKEN_QUALIFIED_NAME = "org.taktik.icure.entities.HealthcareParty"
-	}
-	// endregion
-}
+) : StoredDocument, Named, Person, CryptoActor, DataOwner, HasCodes, HasTags

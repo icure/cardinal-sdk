@@ -1,5 +1,3 @@
-// WARNING: This file is auto-generated. If you change it manually, your changes will be lost.
-// If you want to change the way this class is generated, see [this repo](https://github.com/icure/sdk-codegen).
 package com.icure.cardinal.sdk.model.embed
 
 import com.icure.cardinal.sdk.utils.DefaultValue
@@ -14,7 +12,7 @@ import kotlin.collections.List
  * summaries.
  */
 @Serializable
-data class TimeSeries(
+public data class TimeSeries(
 	/**
 	 * The names of the fields (columns) in the time series.
 	 */
@@ -50,8 +48,4 @@ data class TimeSeries(
 	 */
 	@param:DefaultValue("emptyList()")
 	public val variance: List<Double> = emptyList(),
-) {
-	// region TimeSeries-TimeSeries
-
-	// endregion
-}
+)

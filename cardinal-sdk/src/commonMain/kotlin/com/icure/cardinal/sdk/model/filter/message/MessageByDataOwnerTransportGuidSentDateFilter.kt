@@ -1,5 +1,3 @@
-// WARNING: This file is auto-generated. If you change it manually, your changes will be lost.
-// If you want to change the way this class is generated, see [this repo](https://github.com/icure/sdk-codegen).
 package com.icure.cardinal.sdk.model.filter.message
 
 import com.icure.cardinal.sdk.model.Message
@@ -17,7 +15,7 @@ import kotlin.time.Instant
  */
 @SerialName("MessageByDataOwnerTransportGuidSentDateFilter")
 @Serializable
-data class MessageByDataOwnerTransportGuidSentDateFilter(
+public data class MessageByDataOwnerTransportGuidSentDateFilter(
 	/**
 	 * The identifier of the data owner.
 	 */
@@ -44,8 +42,4 @@ data class MessageByDataOwnerTransportGuidSentDateFilter(
 	 * Optional description of this filter.
 	 */
 	override val desc: String? = null,
-) : AbstractFilter<Message> {
-	// region MessageByDataOwnerTransportGuidSentDateFilter-MessageByDataOwnerTransportGuidSentDateFilter
-
-	// endregion
-}
+) : AbstractFilter<Message>

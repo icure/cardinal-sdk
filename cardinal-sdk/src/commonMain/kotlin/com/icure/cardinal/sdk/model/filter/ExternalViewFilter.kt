@@ -1,5 +1,3 @@
-// WARNING: This file is auto-generated. If you change it manually, your changes will be lost.
-// If you want to change the way this class is generated, see [this repo](https://github.com/icure/sdk-codegen).
 package com.icure.cardinal.sdk.model.filter
 
 import com.icure.cardinal.sdk.model.base.Identifiable
@@ -14,7 +12,7 @@ import kotlin.String
  */
 @SerialName("ExternalViewFilter")
 @Serializable
-data class ExternalViewFilter(
+public data class ExternalViewFilter(
 	/**
 	 * Optional description of this filter.
 	 */
@@ -39,8 +37,4 @@ data class ExternalViewFilter(
 	 * The end key for the view query range.
 	 */
 	public val endKey: ExternalFilterKey?,
-) : AbstractFilter<Identifiable<String>> {
-	// region ExternalViewFilter-ExternalViewFilter
-
-	// endregion
-}
+) : AbstractFilter<Identifiable<String>>

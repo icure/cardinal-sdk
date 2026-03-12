@@ -1,5 +1,3 @@
-// WARNING: This file is auto-generated. If you change it manually, your changes will be lost.
-// If you want to change the way this class is generated, see [this repo](https://github.com/icure/sdk-codegen).
 package com.icure.cardinal.sdk.model.base
 
 import com.icure.cardinal.sdk.utils.DefaultValue
@@ -11,7 +9,7 @@ import kotlinx.serialization.Serializable
  * /
  */
 @Serializable
-data class Security(
+public data class Security(
 	/**
 	 * The access rights for database administrators.
 	 */
@@ -22,8 +20,4 @@ data class Security(
 	 */
 	@param:DefaultValue("Right()")
 	public val members: Right = Right(),
-) {
-	// region Security-Security
-
-	// endregion
-}
+)

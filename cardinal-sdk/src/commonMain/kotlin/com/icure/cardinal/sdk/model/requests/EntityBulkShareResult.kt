@@ -1,5 +1,3 @@
-// WARNING: This file is auto-generated. If you change it manually, your changes will be lost.
-// If you want to change the way this class is generated, see [this repo](https://github.com/icure/sdk-codegen).
 package com.icure.cardinal.sdk.model.requests
 
 import com.icure.cardinal.sdk.utils.DefaultValue
@@ -14,7 +12,7 @@ import kotlin.collections.Map
  *  Result of a bulk share operation.
  */
 @Serializable
-data class EntityBulkShareResult<T>(
+public data class EntityBulkShareResult<T>(
 	/**
 	 *
 	 *  The updated entity. Non-null if at least one of the requests succeeded.
@@ -71,12 +69,4 @@ data class EntityBulkShareResult<T>(
 		 */
 		public val reason: String,
 	)
-	// region EntityBulkShareResult-EntityBulkShareResult
-inline fun <O>map(mapper: (T) -> O): EntityBulkShareResult<O> = EntityBulkShareResult(
-		updatedEntity = updatedEntity?.let { mapper(it) },
-		entityId = entityId,
-		entityRev = entityRev,
-		rejectedRequests = rejectedRequests
-	)
-	// endregion
 }

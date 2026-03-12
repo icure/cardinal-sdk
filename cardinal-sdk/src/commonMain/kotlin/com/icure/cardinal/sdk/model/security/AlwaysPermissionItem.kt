@@ -1,5 +1,3 @@
-// WARNING: This file is auto-generated. If you change it manually, your changes will be lost.
-// If you want to change the way this class is generated, see [this repo](https://github.com/icure/sdk-codegen).
 package com.icure.cardinal.sdk.model.security
 
 import com.icure.cardinal.sdk.model.filter.predicate.AlwaysPredicate
@@ -14,7 +12,7 @@ import kotlinx.serialization.Serializable
  */
 @SerialName("AlwaysPermissionItemDto")
 @Serializable
-data class AlwaysPermissionItem(
+public data class AlwaysPermissionItem(
 	/**
 	 * The permission type that is always granted or revoked by this item.
 	 */
@@ -22,7 +20,4 @@ data class AlwaysPermissionItem(
 ) : PermissionItem {
 	@DefaultValue("AlwaysPredicate()")
 	override val predicate: AlwaysPredicate = AlwaysPredicate()
-	// region AlwaysPermissionItem-AlwaysPermissionItem
-
-	// endregion
 }

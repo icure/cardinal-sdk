@@ -1,5 +1,3 @@
-// WARNING: This file is auto-generated. If you change it manually, your changes will be lost.
-// If you want to change the way this class is generated, see [this repo](https://github.com/icure/sdk-codegen).
 package com.icure.cardinal.sdk.model
 
 import com.icure.cardinal.sdk.model.base.CodeStub
@@ -28,8 +26,7 @@ import kotlin.collections.Set
  * asynchronous processing.
  * /
  */
-
-sealed interface MaintenanceTask :
+public sealed interface MaintenanceTask :
 	StoredDocument,
 	ICureDocument<String>,
 	HasEncryptionMetadata,
@@ -135,11 +132,6 @@ sealed interface MaintenanceTask :
 	 * The security metadata of the entity.
 	 */
 	override val securityMetadata: SecurityMetadata?
-	// region MaintenanceTask-MaintenanceTask
-	companion object {
-		const val KRAKEN_QUALIFIED_NAME = "org.taktik.icure.entities.MaintenanceTask"
-	}
-	// endregion
 }
 
 /**
@@ -150,7 +142,7 @@ sealed interface MaintenanceTask :
  * /
  */
 @Serializable
-data class DecryptedMaintenanceTask(
+public data class DecryptedMaintenanceTask(
 	/**
 	 * The unique identifier of the maintenance task.
 	 */
@@ -241,12 +233,7 @@ data class DecryptedMaintenanceTask(
 	 * The security metadata of the entity.
 	 */
 	override val securityMetadata: SecurityMetadata? = null,
-) : MaintenanceTask {
-	// region MaintenanceTask-DecryptedMaintenanceTask
-override fun copyWithSecurityMetadata(securityMetadata: SecurityMetadata, secretForeignKeys: Set<String>): DecryptedMaintenanceTask =
-		copy(securityMetadata = securityMetadata, secretForeignKeys = secretForeignKeys)
-	// endregion
-}
+) : MaintenanceTask
 
 /**
  * Represents a maintenance task in the iCure system. Maintenance tasks are used to track background
@@ -256,7 +243,7 @@ override fun copyWithSecurityMetadata(securityMetadata: SecurityMetadata, secret
  * /
  */
 @Serializable
-data class EncryptedMaintenanceTask(
+public data class EncryptedMaintenanceTask(
 	/**
 	 * The unique identifier of the maintenance task.
 	 */
@@ -347,9 +334,4 @@ data class EncryptedMaintenanceTask(
 	 * The security metadata of the entity.
 	 */
 	override val securityMetadata: SecurityMetadata? = null,
-) : MaintenanceTask {
-	// region MaintenanceTask-EncryptedMaintenanceTask
-override fun copyWithSecurityMetadata(securityMetadata: SecurityMetadata, secretForeignKeys: Set<String>): EncryptedMaintenanceTask =
-		copy(securityMetadata = securityMetadata, secretForeignKeys = secretForeignKeys)
-	// endregion
-}
+) : MaintenanceTask

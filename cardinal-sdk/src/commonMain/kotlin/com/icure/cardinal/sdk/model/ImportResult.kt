@@ -1,5 +1,3 @@
-// WARNING: This file is auto-generated. If you change it manually, your changes will be lost.
-// If you want to change the way this class is generated, see [this repo](https://github.com/icure/sdk-codegen).
 package com.icure.cardinal.sdk.model
 
 import com.icure.cardinal.sdk.model.base.MimeAttachment
@@ -15,7 +13,7 @@ import kotlin.collections.Map
  * /
  */
 @Serializable
-data class ImportResult(
+public data class ImportResult(
 	/**
 	 * The patient that was imported or matched during the import.
 	 */
@@ -60,8 +58,4 @@ data class ImportResult(
 	 */
 	@param:DefaultValue("emptyMap()")
 	public val attachments: Map<String, MimeAttachment> = emptyMap(),
-) {
-	// region ImportResult-ImportResult
-
-	// endregion
-}
+)

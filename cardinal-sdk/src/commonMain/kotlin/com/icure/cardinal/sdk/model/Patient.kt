@@ -1,5 +1,3 @@
-// WARNING: This file is auto-generated. If you change it manually, your changes will be lost.
-// If you want to change the way this class is generated, see [this repo](https://github.com/icure/sdk-codegen).
 package com.icure.cardinal.sdk.model
 
 import com.icure.cardinal.sdk.model.base.CodeStub
@@ -47,15 +45,6 @@ import kotlin.String
 import kotlin.collections.List
 import kotlin.collections.Map
 import kotlin.collections.Set
-import com.icure.cardinal.sdk.model.embed.DecryptedEmploymentInfo
-import com.icure.cardinal.sdk.model.embed.DecryptedSchoolingInfo
-import com.icure.cardinal.sdk.model.embed.EmploymentInfo
-import com.icure.cardinal.sdk.model.embed.EncryptedEmploymentInfo
-import com.icure.cardinal.sdk.model.embed.EncryptedSchoolingInfo
-import com.icure.cardinal.sdk.model.embed.SchoolingInfo
-import com.icure.cardinal.sdk.serialization.ByteArraySerializer
-import kotlin.ByteArray
-import com.icure.cardinal.sdk.model.embed.DeactivationReason
 
 /**
  * Represents a patient in the iCure platform. A patient is a person who receives healthcare
@@ -65,8 +54,7 @@ import com.icure.cardinal.sdk.model.embed.DeactivationReason
  * end-to-end encryption of sensitive data.
  * /
  */
-
-sealed interface Patient :
+public sealed interface Patient :
 	StoredDocument,
 	ICureDocument<String>,
 	Person,
@@ -409,11 +397,6 @@ sealed interface Patient :
 	 * Always null for patients.
 	 */
 	override val parentId: Nothing?
-	// region Patient-Patient
-	companion object {
-		const val KRAKEN_QUALIFIED_NAME = "org.taktik.icure.entities.Patient"
-	}
-	// endregion
 }
 
 /**
@@ -425,7 +408,7 @@ sealed interface Patient :
  * /
  */
 @Serializable
-data class DecryptedPatient(
+public data class DecryptedPatient(
 	/**
 	 * The Id of the patient. We encourage using either a v4 UUID or a HL7 Id.
 	 */
@@ -727,12 +710,7 @@ data class DecryptedPatient(
 	 * Always null for patients.
 	 */
 	override val parentId: Nothing? = null,
-) : Patient {
-	// region Patient-DecryptedPatient
-override fun copyWithSecurityMetadata(securityMetadata: SecurityMetadata, secretForeignKeys: Set<String>): DecryptedPatient =
-		copy(securityMetadata = securityMetadata, secretForeignKeys = secretForeignKeys)
-	// endregion
-}
+) : Patient
 
 /**
  * Represents a patient in the iCure platform. A patient is a person who receives healthcare
@@ -743,7 +721,7 @@ override fun copyWithSecurityMetadata(securityMetadata: SecurityMetadata, secret
  * /
  */
 @Serializable
-data class EncryptedPatient(
+public data class EncryptedPatient(
 	/**
 	 * The Id of the patient. We encourage using either a v4 UUID or a HL7 Id.
 	 */
@@ -1045,9 +1023,4 @@ data class EncryptedPatient(
 	 * Always null for patients.
 	 */
 	override val parentId: Nothing? = null,
-) : Patient {
-	// region Patient-EncryptedPatient
-override fun copyWithSecurityMetadata(securityMetadata: SecurityMetadata, secretForeignKeys: Set<String>): EncryptedPatient =
-		copy(securityMetadata = securityMetadata, secretForeignKeys = secretForeignKeys)
-	// endregion
-}
+) : Patient

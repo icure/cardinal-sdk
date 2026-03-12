@@ -1,5 +1,3 @@
-// WARNING: This file is auto-generated. If you change it manually, your changes will be lost.
-// If you want to change the way this class is generated, see [this repo](https://github.com/icure/sdk-codegen).
 package com.icure.cardinal.sdk.model.couchdb
 
 import com.icure.cardinal.sdk.utils.DefaultValue
@@ -14,7 +12,7 @@ import kotlin.collections.Map
  *  and update handlers used for querying and transforming data.
  */
 @Serializable
-data class DesignDocument(
+public data class DesignDocument(
 	/**
 	 * The identifier of the design document.
 	 */
@@ -56,8 +54,4 @@ data class DesignDocument(
 	 */
 	@param:DefaultValue("emptyMap()")
 	public val filters: Map<String, String> = emptyMap(),
-) {
-	// region DesignDocument-DesignDocument
-
-	// endregion
-}
+)

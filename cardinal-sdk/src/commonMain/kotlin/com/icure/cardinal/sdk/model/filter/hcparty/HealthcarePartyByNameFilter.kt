@@ -1,5 +1,3 @@
-// WARNING: This file is auto-generated. If you change it manually, your changes will be lost.
-// If you want to change the way this class is generated, see [this repo](https://github.com/icure/sdk-codegen).
 package com.icure.cardinal.sdk.model.filter.hcparty
 
 import com.icure.cardinal.sdk.model.HealthcareParty
@@ -15,7 +13,7 @@ import kotlin.String
  */
 @SerialName("HealthcarePartyByNameFilter")
 @Serializable
-data class HealthcarePartyByNameFilter(
+public data class HealthcarePartyByNameFilter(
 	/**
 	 * Optional description of this filter.
 	 */
@@ -28,8 +26,4 @@ data class HealthcarePartyByNameFilter(
 	 * Whether to return results in descending order.
 	 */
 	public val descending: Boolean? = null,
-) : AbstractFilter<HealthcareParty> {
-	// region HealthcarePartyByNameFilter-HealthcarePartyByNameFilter
-
-	// endregion
-}
+) : AbstractFilter<HealthcareParty>

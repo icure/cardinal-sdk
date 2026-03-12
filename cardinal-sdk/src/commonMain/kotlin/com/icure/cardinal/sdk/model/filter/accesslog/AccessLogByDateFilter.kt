@@ -1,5 +1,3 @@
-// WARNING: This file is auto-generated. If you change it manually, your changes will be lost.
-// If you want to change the way this class is generated, see [this repo](https://github.com/icure/sdk-codegen).
 package com.icure.cardinal.sdk.model.filter.accesslog
 
 import com.icure.cardinal.sdk.model.AccessLog
@@ -17,7 +15,7 @@ import kotlin.time.Instant
  */
 @SerialName("AccessLogByDateFilter")
 @Serializable
-data class AccessLogByDateFilter(
+public data class AccessLogByDateFilter(
 	/**
 	 * Optional description of this filter.
 	 */
@@ -36,8 +34,4 @@ data class AccessLogByDateFilter(
 	 * Whether to return results in descending order.
 	 */
 	public val descending: Boolean?,
-) : AbstractFilter<AccessLog> {
-	// region AccessLogByDateFilter-AccessLogByDateFilter
-
-	// endregion
-}
+) : AbstractFilter<AccessLog>

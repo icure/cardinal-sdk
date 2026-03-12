@@ -1,5 +1,3 @@
-// WARNING: This file is auto-generated. If you change it manually, your changes will be lost.
-// If you want to change the way this class is generated, see [this repo](https://github.com/icure/sdk-codegen).
 package com.icure.cardinal.sdk.model.filter.code
 
 import com.icure.cardinal.sdk.model.Code
@@ -15,7 +13,7 @@ import kotlin.collections.List
  */
 @SerialName("CodeByRegionTypesLanguageLabelVersionFilters")
 @Serializable
-data class CodeByRegionTypesLanguageLabelVersionFilters(
+public data class CodeByRegionTypesLanguageLabelVersionFilters(
 	/**
 	 * The region to filter codes by.
 	 */
@@ -40,8 +38,4 @@ data class CodeByRegionTypesLanguageLabelVersionFilters(
 	 * Optional description of this filter.
 	 */
 	override val desc: String? = null,
-) : AbstractFilter<Code> {
-	// region CodeByRegionTypesLanguageLabelVersionFilters-CodeByRegionTypesLanguageLabelVersionFilters
-
-	// endregion
-}
+) : AbstractFilter<Code>

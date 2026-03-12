@@ -1,5 +1,3 @@
-// WARNING: This file is auto-generated. If you change it manually, your changes will be lost.
-// If you want to change the way this class is generated, see [this repo](https://github.com/icure/sdk-codegen).
 package com.icure.cardinal.sdk.model.embed
 
 import com.icure.cardinal.sdk.utils.DefaultValue
@@ -13,7 +11,7 @@ import kotlin.collections.List
  * /
  */
 @Serializable
-data class MessageAttachment(
+public data class MessageAttachment(
 	/**
 	 * The location type of the attachment (annex or body).
 	 */
@@ -23,8 +21,4 @@ data class MessageAttachment(
 	 */
 	@param:DefaultValue("emptyList()")
 	public val ids: List<String> = emptyList(),
-) {
-	// region MessageAttachment-MessageAttachment
-
-	// endregion
-}
+)

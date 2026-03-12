@@ -1,5 +1,3 @@
-// WARNING: This file is auto-generated. If you change it manually, your changes will be lost.
-// If you want to change the way this class is generated, see [this repo](https://github.com/icure/sdk-codegen).
 package com.icure.cardinal.sdk.model.embed
 
 import kotlinx.serialization.Serializable
@@ -17,7 +15,7 @@ import kotlin.collections.Set
  * /
  */
 @Serializable
-data class ParagraphAgreement(
+public data class ParagraphAgreement(
 	/**
 	 * The timestamp (unix epoch in ms) of the agreement.
 	 */
@@ -106,8 +104,4 @@ data class ParagraphAgreement(
 	 * The identifier of the associated document.
 	 */
 	public val documentId: String? = null,
-) {
-	// region ParagraphAgreement-ParagraphAgreement
-
-	// endregion
-}
+)

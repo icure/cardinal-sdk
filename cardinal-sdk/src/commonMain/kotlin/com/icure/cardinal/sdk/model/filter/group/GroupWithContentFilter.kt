@@ -1,5 +1,3 @@
-// WARNING: This file is auto-generated. If you change it manually, your changes will be lost.
-// If you want to change the way this class is generated, see [this repo](https://github.com/icure/sdk-codegen).
 package com.icure.cardinal.sdk.model.filter.group
 
 import com.icure.cardinal.sdk.model.Group
@@ -14,7 +12,7 @@ import kotlin.String
  */
 @SerialName("GroupWithContentFilter")
 @Serializable
-data class GroupWithContentFilter(
+public data class GroupWithContentFilter(
 	/**
 	 * The identifier of the super group to search within.
 	 */
@@ -27,8 +25,4 @@ data class GroupWithContentFilter(
 	 * Optional description of this filter.
 	 */
 	override val desc: String? = null,
-) : AbstractFilter<Group> {
-	// region GroupWithContentFilter-GroupWithContentFilter
-
-	// endregion
-}
+) : AbstractFilter<Group>

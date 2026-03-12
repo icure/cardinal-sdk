@@ -1,5 +1,3 @@
-// WARNING: This file is auto-generated. If you change it manually, your changes will be lost.
-// If you want to change the way this class is generated, see [this repo](https://github.com/icure/sdk-codegen).
 package com.icure.cardinal.sdk.model.embed
 
 import com.icure.cardinal.sdk.model.specializations.Base64String
@@ -11,8 +9,7 @@ import kotlin.String
  * Represents a tag associated with a calendar item, carrying metadata about who tagged it and when.
  * /
  */
-
-sealed interface CalendarItemTag : Encryptable {
+public sealed interface CalendarItemTag : Encryptable {
 	/**
 	 * The code identifying this tag.
 	 */
@@ -37,9 +34,6 @@ sealed interface CalendarItemTag : Encryptable {
 	 * The base64-encoded encrypted content of this tag.
 	 */
 	override val encryptedSelf: Base64String?
-	// region CalendarItemTag-CalendarItemTag
-
-	// endregion
 }
 
 /**
@@ -47,7 +41,7 @@ sealed interface CalendarItemTag : Encryptable {
  * /
  */
 @Serializable
-data class DecryptedCalendarItemTag(
+public data class DecryptedCalendarItemTag(
 	/**
 	 * The code identifying this tag.
 	 */
@@ -68,18 +62,14 @@ data class DecryptedCalendarItemTag(
 	 * The base64-encoded encrypted content of this tag.
 	 */
 	override val encryptedSelf: Base64String? = null,
-) : CalendarItemTag {
-	// region CalendarItemTag-DecryptedCalendarItemTag
-
-	// endregion
-}
+) : CalendarItemTag
 
 /**
  * Represents a tag associated with a calendar item, carrying metadata about who tagged it and when.
  * /
  */
 @Serializable
-data class EncryptedCalendarItemTag(
+public data class EncryptedCalendarItemTag(
 	/**
 	 * The code identifying this tag.
 	 */
@@ -100,8 +90,4 @@ data class EncryptedCalendarItemTag(
 	 * The base64-encoded encrypted content of this tag.
 	 */
 	override val encryptedSelf: Base64String? = null,
-) : CalendarItemTag {
-	// region CalendarItemTag-EncryptedCalendarItemTag
-
-	// endregion
-}
+) : CalendarItemTag

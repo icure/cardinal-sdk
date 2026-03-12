@@ -1,5 +1,3 @@
-// WARNING: This file is auto-generated. If you change it manually, your changes will be lost.
-// If you want to change the way this class is generated, see [this repo](https://github.com/icure/sdk-codegen).
 package com.icure.cardinal.sdk.model.embed
 
 import com.icure.cardinal.sdk.model.base.Identifiable
@@ -14,8 +12,7 @@ import kotlin.String
  * a specific concern.
  * /
  */
-
-sealed interface Episode : Encryptable, Identifiable<String>, Named {
+public sealed interface Episode : Encryptable, Identifiable<String>, Named {
 	/**
 	 * The unique identifier of this episode.
 	 */
@@ -45,9 +42,6 @@ sealed interface Episode : Encryptable, Identifiable<String>, Named {
 	 * The base64-encoded encrypted content of this episode.
 	 */
 	override val encryptedSelf: Base64String?
-	// region Episode-Episode
-
-	// endregion
 }
 
 /**
@@ -56,7 +50,7 @@ sealed interface Episode : Encryptable, Identifiable<String>, Named {
  * /
  */
 @Serializable
-data class DecryptedEpisode(
+public data class DecryptedEpisode(
 	/**
 	 * The unique identifier of this episode.
 	 */
@@ -81,11 +75,7 @@ data class DecryptedEpisode(
 	 * The base64-encoded encrypted content of this episode.
 	 */
 	override val encryptedSelf: Base64String? = null,
-) : Episode {
-	// region Episode-DecryptedEpisode
-
-	// endregion
-}
+) : Episode
 
 /**
  * Represents a medical episode, which is a time-bounded grouping of healthcare elements related to
@@ -93,7 +83,7 @@ data class DecryptedEpisode(
  * /
  */
 @Serializable
-data class EncryptedEpisode(
+public data class EncryptedEpisode(
 	/**
 	 * The unique identifier of this episode.
 	 */
@@ -118,8 +108,4 @@ data class EncryptedEpisode(
 	 * The base64-encoded encrypted content of this episode.
 	 */
 	override val encryptedSelf: Base64String? = null,
-) : Episode {
-	// region Episode-EncryptedEpisode
-
-	// endregion
-}
+) : Episode

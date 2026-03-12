@@ -1,5 +1,3 @@
-// WARNING: This file is auto-generated. If you change it manually, your changes will be lost.
-// If you want to change the way this class is generated, see [this repo](https://github.com/icure/sdk-codegen).
 package com.icure.cardinal.sdk.model.embed
 
 import com.icure.cardinal.sdk.utils.DefaultValue
@@ -16,7 +14,7 @@ import kotlin.collections.Set
  * /
  */
 @Serializable
-data class EmbeddedTimeTableItem(
+public data class EmbeddedTimeTableItem(
 	/**
 	 * The recurrence rule (RFC 5545 RRULE format) defining the schedule pattern.
 	 */
@@ -56,8 +54,4 @@ data class EmbeddedTimeTableItem(
 	 */
 	@param:DefaultValue("false")
 	public val `public`: Boolean = false,
-) {
-	// region EmbeddedTimeTableItem-EmbeddedTimeTableItem
-
-	// endregion
-}
+)

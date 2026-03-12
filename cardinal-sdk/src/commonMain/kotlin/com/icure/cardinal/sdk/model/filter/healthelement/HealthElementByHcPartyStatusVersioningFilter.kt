@@ -1,5 +1,3 @@
-// WARNING: This file is auto-generated. If you change it manually, your changes will be lost.
-// If you want to change the way this class is generated, see [this repo](https://github.com/icure/sdk-codegen).
 package com.icure.cardinal.sdk.model.filter.healthelement
 
 import com.icure.cardinal.sdk.model.HealthElement
@@ -16,7 +14,7 @@ import kotlin.String
  */
 @SerialName("HealthElementByHcPartyStatusVersioningFilter")
 @Serializable
-data class HealthElementByHcPartyStatusVersioningFilter(
+public data class HealthElementByHcPartyStatusVersioningFilter(
 	/**
 	 * Optional description of this filter.
 	 */
@@ -33,8 +31,4 @@ data class HealthElementByHcPartyStatusVersioningFilter(
 	 * Optional version filtering criteria.
 	 */
 	public val versionFiltering: VersionFiltering? = null,
-) : AbstractFilter<HealthElement> {
-	// region HealthElementByHcPartyStatusVersioningFilter-HealthElementByHcPartyStatusVersioningFilter
-
-	// endregion
-}
+) : AbstractFilter<HealthElement>

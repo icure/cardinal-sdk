@@ -1,5 +1,3 @@
-// WARNING: This file is auto-generated. If you change it manually, your changes will be lost.
-// If you want to change the way this class is generated, see [this repo](https://github.com/icure/sdk-codegen).
 package com.icure.cardinal.sdk.model.notification
 
 import com.icure.cardinal.sdk.model.base.Identifiable
@@ -14,8 +12,7 @@ import kotlin.collections.List
  * declare which event types and optional filter criteria they want to be notified about.
  * /
  */
-
-data class Subscription<O : Identifiable<String>>(
+public data class Subscription<O : Identifiable<String>>(
 	/**
 	 * The list of event types (CREATE, UPDATE, DELETE) to subscribe to.
 	 */
@@ -36,8 +33,4 @@ data class Subscription<O : Identifiable<String>>(
 	 * When true, uses Cardinal model serialization for the entity payloads.
 	 */
 	public val useCardinalModelSerialization: Boolean? = null,
-) {
-  // region Subscription-Subscription
-
-  // endregion
-}
+)

@@ -1,5 +1,3 @@
-// WARNING: This file is auto-generated. If you change it manually, your changes will be lost.
-// If you want to change the way this class is generated, see [this repo](https://github.com/icure/sdk-codegen).
 package com.icure.cardinal.sdk.model
 
 import com.icure.cardinal.sdk.model.base.CodeIdentification
@@ -12,10 +10,6 @@ import kotlin.String
 import kotlin.collections.List
 import kotlin.collections.Map
 import kotlin.collections.Set
-import com.icure.cardinal.sdk.model.base.AppendixType
-import com.icure.cardinal.sdk.model.base.CodeFlag
-import com.icure.cardinal.sdk.model.embed.Periodicity
-import kotlin.Int
 
 /**
  * Represents a medical code from a terminology system (e.g., ICD, SNOMED). The code id is composed
@@ -24,7 +18,7 @@ import kotlin.Int
  * /
  */
 @Serializable
-data class Code(
+public data class Code(
 	/**
 	 * The Id of the code, formatted as type|code|version. Must be unique.
 	 */
@@ -86,8 +80,4 @@ data class Code(
 	 */
 	@param:DefaultValue("false")
 	public val disabled: Boolean = false,
-) : StoredDocument, CodeIdentification<String> {
-	// region Code-Code
-
-	// endregion
-}
+) : StoredDocument, CodeIdentification<String>

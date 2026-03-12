@@ -1,5 +1,3 @@
-// WARNING: This file is auto-generated. If you change it manually, your changes will be lost.
-// If you want to change the way this class is generated, see [this repo](https://github.com/icure/sdk-codegen).
 package com.icure.cardinal.sdk.model.embed
 
 import kotlinx.serialization.SerialName
@@ -7,7 +5,7 @@ import kotlinx.serialization.Serializable
 import kotlin.Int
 
 @Serializable
-sealed interface AgendaSlottingAlgorithm {
+public sealed interface AgendaSlottingAlgorithm {
 	/**
 	 *
 	 *  The appointments can be taken at fixed intervals of [intervalMinutes] starting from the
@@ -25,7 +23,4 @@ sealed interface AgendaSlottingAlgorithm {
 	public data class FixedIntervals(
 		public val intervalMinutes: Int,
 	) : AgendaSlottingAlgorithm
-	// region AgendaSlottingAlgorithm-AgendaSlottingAlgorithm
-
-	// endregion
 }

@@ -1,5 +1,3 @@
-// WARNING: This file is auto-generated. If you change it manually, your changes will be lost.
-// If you want to change the way this class is generated, see [this repo](https://github.com/icure/sdk-codegen).
 package com.icure.cardinal.sdk.model.requests
 
 import com.icure.cardinal.sdk.model.specializations.Base64String
@@ -7,7 +5,6 @@ import com.icure.cardinal.sdk.model.specializations.SecureDelegationKeyString
 import com.icure.cardinal.sdk.utils.DefaultValue
 import kotlinx.serialization.Serializable
 import kotlin.collections.Map
-import com.icure.utils.InternalIcureApi
 
 /**
  *
@@ -18,7 +15,7 @@ import com.icure.utils.InternalIcureApi
  *  shared metadata.
  */
 @Serializable
-data class EntitySharedMetadataUpdateRequest(
+public data class EntitySharedMetadataUpdateRequest(
 	/**
 	 *
 	 *  Access control hash of the metadata to update.
@@ -48,9 +45,4 @@ data class EntitySharedMetadataUpdateRequest(
 	 */
 	@param:DefaultValue("emptyMap()")
 	public val owningEntityIds: Map<Base64String, EntryUpdateType> = emptyMap(),
-) {
-	// region EntitySharedMetadataUpdateRequest-EntitySharedMetadataUpdateRequest
-	@InternalIcureApi
-	fun wrap() = EntityShareOrMetadataUpdateRequest(update = this)
-	// endregion
-}
+)

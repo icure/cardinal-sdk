@@ -1,5 +1,3 @@
-// WARNING: This file is auto-generated. If you change it manually, your changes will be lost.
-// If you want to change the way this class is generated, see [this repo](https://github.com/icure/sdk-codegen).
 package com.icure.cardinal.sdk.model
 
 import com.icure.cardinal.sdk.utils.DefaultValue
@@ -13,7 +11,7 @@ import kotlin.collections.List
  * /
  */
 @Serializable
-data class DatabaseInitialisation(
+public data class DatabaseInitialisation(
 	/**
 	 * The list of initial users to create during database initialisation.
 	 */
@@ -32,8 +30,4 @@ data class DatabaseInitialisation(
 	 * The minimum required Kraken version for this database configuration.
 	 */
 	public val minimumKrakenVersion: String? = null,
-) {
-	// region DatabaseInitialisation-DatabaseInitialisation
-
-	// endregion
-}
+)

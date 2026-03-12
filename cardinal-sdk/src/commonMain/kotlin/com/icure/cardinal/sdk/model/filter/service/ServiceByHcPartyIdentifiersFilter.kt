@@ -1,5 +1,3 @@
-// WARNING: This file is auto-generated. If you change it manually, your changes will be lost.
-// If you want to change the way this class is generated, see [this repo](https://github.com/icure/sdk-codegen).
 package com.icure.cardinal.sdk.model.filter.service
 
 import com.icure.cardinal.sdk.model.base.Identifier
@@ -17,7 +15,7 @@ import kotlin.collections.List
  */
 @SerialName("ServiceByHcPartyIdentifiersFilter")
 @Serializable
-data class ServiceByHcPartyIdentifiersFilter(
+public data class ServiceByHcPartyIdentifiersFilter(
 	/**
 	 * The identifier of the healthcare party.
 	 */
@@ -31,8 +29,4 @@ data class ServiceByHcPartyIdentifiersFilter(
 	 * Optional description of this filter.
 	 */
 	override val desc: String? = null,
-) : AbstractFilter<Service> {
-	// region ServiceByHcPartyIdentifiersFilter-ServiceByHcPartyIdentifiersFilter
-
-	// endregion
-}
+) : AbstractFilter<Service>

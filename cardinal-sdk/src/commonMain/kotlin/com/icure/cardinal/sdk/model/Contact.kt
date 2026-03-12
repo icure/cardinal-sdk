@@ -1,5 +1,3 @@
-// WARNING: This file is auto-generated. If you change it manually, your changes will be lost.
-// If you want to change the way this class is generated, see [this repo](https://github.com/icure/sdk-codegen).
 package com.icure.cardinal.sdk.model
 
 import com.icure.cardinal.sdk.model.base.CodeStub
@@ -30,8 +28,6 @@ import kotlin.String
 import kotlin.collections.List
 import kotlin.collections.Map
 import kotlin.collections.Set
-import com.icure.cardinal.sdk.model.base.ParticipantType
-import kotlin.Deprecated
 
 /**
  * This entity is a root-level object. It represents a contact. It is serialized in JSON and saved
@@ -53,8 +49,7 @@ import kotlin.Deprecated
  * absence of a patient.
  * /
  */
-
-sealed interface Contact :
+public sealed interface Contact :
 	StoredDocument,
 	ICureDocument<String>,
 	HasEncryptionMetadata,
@@ -207,11 +202,6 @@ sealed interface Contact :
 	 * Comments and notes recorded by a healthcare party about this contact.
 	 */
 	public val notes: List<Annotation>
-	// region Contact-Contact
-	companion object {
-		const val KRAKEN_QUALIFIED_NAME = "org.taktik.icure.entities.Contact"
-	}
-	// endregion
 }
 
 /**
@@ -235,7 +225,7 @@ sealed interface Contact :
  * /
  */
 @Serializable
-data class DecryptedContact(
+public data class DecryptedContact(
 	/**
 	 * The Id of the contact. We encourage using either a v4 UUID or a HL7 Id.
 	 */
@@ -367,12 +357,7 @@ data class DecryptedContact(
 	 */
 	@param:DefaultValue("emptyList()")
 	override val notes: List<Annotation> = emptyList(),
-) : Contact {
-	// region Contact-DecryptedContact
-override fun copyWithSecurityMetadata(securityMetadata: SecurityMetadata, secretForeignKeys: Set<String>): DecryptedContact =
-		copy(securityMetadata = securityMetadata, secretForeignKeys = secretForeignKeys)
-	// endregion
-}
+) : Contact
 
 /**
  * This entity is a root-level object. It represents a contact. It is serialized in JSON and saved
@@ -395,7 +380,7 @@ override fun copyWithSecurityMetadata(securityMetadata: SecurityMetadata, secret
  * /
  */
 @Serializable
-data class EncryptedContact(
+public data class EncryptedContact(
 	/**
 	 * The Id of the contact. We encourage using either a v4 UUID or a HL7 Id.
 	 */
@@ -527,9 +512,4 @@ data class EncryptedContact(
 	 */
 	@param:DefaultValue("emptyList()")
 	override val notes: List<Annotation> = emptyList(),
-) : Contact {
-	// region Contact-EncryptedContact
-override fun copyWithSecurityMetadata(securityMetadata: SecurityMetadata, secretForeignKeys: Set<String>): EncryptedContact =
-		copy(securityMetadata = securityMetadata, secretForeignKeys = secretForeignKeys)
-	// endregion
-}
+) : Contact

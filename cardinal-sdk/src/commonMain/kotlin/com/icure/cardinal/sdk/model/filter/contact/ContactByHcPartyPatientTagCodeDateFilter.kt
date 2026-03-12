@@ -1,5 +1,3 @@
-// WARNING: This file is auto-generated. If you change it manually, your changes will be lost.
-// If you want to change the way this class is generated, see [this repo](https://github.com/icure/sdk-codegen).
 package com.icure.cardinal.sdk.model.filter.contact
 
 import com.icure.cardinal.sdk.model.Contact
@@ -17,7 +15,7 @@ import kotlin.collections.List
  */
 @SerialName("ContactByHcPartyPatientTagCodeDateFilter")
 @Serializable
-data class ContactByHcPartyPatientTagCodeDateFilter(
+public data class ContactByHcPartyPatientTagCodeDateFilter(
 	/**
 	 * Optional description of this filter.
 	 */
@@ -54,8 +52,4 @@ data class ContactByHcPartyPatientTagCodeDateFilter(
 	 * The end of the contact opening date range.
 	 */
 	public val endOfContactOpeningDate: Long? = null,
-) : AbstractFilter<Contact> {
-	// region ContactByHcPartyPatientTagCodeDateFilter-ContactByHcPartyPatientTagCodeDateFilter
-
-	// endregion
-}
+) : AbstractFilter<Contact>

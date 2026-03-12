@@ -1,5 +1,3 @@
-// WARNING: This file is auto-generated. If you change it manually, your changes will be lost.
-// If you want to change the way this class is generated, see [this repo](https://github.com/icure/sdk-codegen).
 package com.icure.cardinal.sdk.model.base
 
 import com.icure.cardinal.sdk.model.DecryptedPropertyStub
@@ -18,8 +16,7 @@ import kotlin.collections.Set
  *  A CryptoActor holds the cryptographic keys and key exchange material needed for secure data
  * sharing.
  */
-
-interface CryptoActor : Versionable<String> {
+public interface CryptoActor : Versionable<String> {
 	public val hcPartyKeys: Map<String, List<HexString>>
 
 	public val aesExchangeKeys:
@@ -37,7 +34,4 @@ interface CryptoActor : Versionable<String> {
 	public val parentId: String?
 
 	public val cryptoActorProperties: Set<DecryptedPropertyStub>?
-	// region CryptoActor-CryptoActor
-
-	// endregion
 }

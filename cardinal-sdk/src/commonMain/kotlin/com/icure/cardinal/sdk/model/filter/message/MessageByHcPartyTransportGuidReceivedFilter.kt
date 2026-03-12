@@ -1,5 +1,3 @@
-// WARNING: This file is auto-generated. If you change it manually, your changes will be lost.
-// If you want to change the way this class is generated, see [this repo](https://github.com/icure/sdk-codegen).
 package com.icure.cardinal.sdk.model.filter.message
 
 import com.icure.cardinal.sdk.model.Message
@@ -15,7 +13,7 @@ import kotlin.String
  */
 @SerialName("MessageByHcPartyTransportGuidReceivedFilter")
 @Serializable
-data class MessageByHcPartyTransportGuidReceivedFilter(
+public data class MessageByHcPartyTransportGuidReceivedFilter(
 	/**
 	 * The identifier of the healthcare party.
 	 */
@@ -32,8 +30,4 @@ data class MessageByHcPartyTransportGuidReceivedFilter(
 	 * Optional description of this filter.
 	 */
 	override val desc: String? = null,
-) : AbstractFilter<Message> {
-	// region MessageByHcPartyTransportGuidReceivedFilter-MessageByHcPartyTransportGuidReceivedFilter
-
-	// endregion
-}
+) : AbstractFilter<Message>

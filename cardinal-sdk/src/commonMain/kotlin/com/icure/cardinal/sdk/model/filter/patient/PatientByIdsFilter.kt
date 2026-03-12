@@ -1,5 +1,3 @@
-// WARNING: This file is auto-generated. If you change it manually, your changes will be lost.
-// If you want to change the way this class is generated, see [this repo](https://github.com/icure/sdk-codegen).
 package com.icure.cardinal.sdk.model.filter.patient
 
 import com.icure.cardinal.sdk.model.Patient
@@ -16,7 +14,7 @@ import kotlin.collections.Set
  */
 @SerialName("PatientByIdsFilter")
 @Serializable
-data class PatientByIdsFilter(
+public data class PatientByIdsFilter(
 	/**
 	 * The set of patient identifiers to match.
 	 */
@@ -25,8 +23,4 @@ data class PatientByIdsFilter(
 	 * Optional description of this filter.
 	 */
 	override val desc: String? = null,
-) : AbstractFilter<Patient>, Filter.IdsFilter<String, Patient> {
-	// region PatientByIdsFilter-PatientByIdsFilter
-
-	// endregion
-}
+) : AbstractFilter<Patient>, Filter.IdsFilter<String, Patient>
