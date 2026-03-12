@@ -10,6 +10,7 @@ import com.icure.cardinal.sdk.model.base.StoredDocument
 import com.icure.cardinal.sdk.model.embed.DecryptedValorisation
 import com.icure.cardinal.sdk.model.embed.LetterValue
 import com.icure.cardinal.sdk.model.embed.Periodicity
+import com.icure.cardinal.sdk.model.embed.PricingDomain
 import com.icure.cardinal.sdk.utils.DefaultValue
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
@@ -63,6 +64,10 @@ data class Tarification(
 	 * The version of the tarification. Must be lexicographically searchable.
 	 */
 	override val version: String? = null,
+	/**
+	 * The pricing domain for this tarification (ambulatory, hospital, or both).
+	 */
+	public val domain: PricingDomain? = null,
 	/**
 	 * The author of the tarification.
 	 */
