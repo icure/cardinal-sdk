@@ -706,12 +706,14 @@ class RawFormApiImpl(
 		groupId: String,
 		userId: String,
 		loadLayout: Boolean?,
+		raw: Boolean?,
 	): HttpResponse<List<FormTemplate>> =
 		get(authProvider, groupId) {
 			url {
 				takeFrom(apiUrl)
 				appendPathSegments("rest", "v2", "form", "template", "inGroup", groupId, "byUser", userId)
 				parameter("loadLayout", loadLayout)
+				parameter("raw", raw)
 				parameter("ts", GMTDate().timestamp)
 			}
 			accept(Application.Json)
@@ -884,11 +886,13 @@ class RawFormApiImpl(
 	override suspend fun getFormTemplatesInGroup(
 		groupId: String,
 		formTemplateIds: ListOfIds,
+		raw: Boolean?,
 	): HttpResponse<List<FormTemplate>> =
 		post(authProvider, groupId) {
 			url {
 				takeFrom(apiUrl)
 				appendPathSegments("rest", "v2", "form", "template", "inGroup", groupId, "byIds")
+				parameter("raw", raw)
 			}
 			contentType(Application.Json)
 			accept(Application.Json)
@@ -898,11 +902,13 @@ class RawFormApiImpl(
 	override suspend fun getFormTemplateInGroup(
 		groupId: String,
 		formTemplateId: String,
+		raw: Boolean?,
 	): HttpResponse<FormTemplate> =
 		get(authProvider, groupId) {
 			url {
 				takeFrom(apiUrl)
 				appendPathSegments("rest", "v2", "form", "template", "inGroup", groupId, formTemplateId)
+				parameter("raw", raw)
 				parameter("ts", GMTDate().timestamp)
 			}
 			accept(Application.Json)

@@ -216,6 +216,7 @@ public interface RawFormApi {
 		groupId: String,
 		userId: String,
 		loadLayout: Boolean? = null,
+		raw: Boolean? = null,
 	): HttpResponse<List<FormTemplate>>
 
 	suspend fun createFormTemplateInGroup(
@@ -280,11 +281,13 @@ public interface RawFormApi {
 	suspend fun getFormTemplatesInGroup(
 		groupId: String,
 		formTemplateIds: ListOfIds,
+		raw: Boolean? = null,
 	): HttpResponse<List<FormTemplate>>
 
 	suspend fun getFormTemplateInGroup(
 		groupId: String,
 		formTemplateId: String,
+		raw: Boolean? = null,
 	): HttpResponse<FormTemplate>
 
 	suspend fun matchFormTemplatesInGroupBy(
