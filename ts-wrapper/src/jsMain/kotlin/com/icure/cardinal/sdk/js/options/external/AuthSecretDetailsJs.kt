@@ -36,8 +36,10 @@ external class ConfiguredExternalAuthenticationDetailsJs(
 	configId: String,
 	secret: String,
 	minimumAuthenticationClass: String?,
+	doNotUseProjectIdForGroupSelection: Boolean?,
 ) : AuthSecretDetailsJs {
 	val configId: String
 	val secret: String
 	val minimumAuthenticationClass: String?
+	val doNotUseProjectIdForGroupSelection: Boolean?
 }

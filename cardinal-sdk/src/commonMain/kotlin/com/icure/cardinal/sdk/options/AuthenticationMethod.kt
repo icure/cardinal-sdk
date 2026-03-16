@@ -119,7 +119,7 @@ sealed interface AuthenticationMethod {
 			@Serializable
 			data class LongLivedToken(val token: String) : InitialSecret
 			@Serializable
-			data class ExternalAuthenticationToken(val token: String, val configId: String) : InitialSecret
+			data class ExternalAuthenticationToken(val token: String, val configId: String, val doNotUseProjectIdForGroupSelection: Boolean?) : InitialSecret
 		}
 	}
 }
@@ -176,7 +176,7 @@ suspend fun AuthenticationMethod.getAuthProvider(
 			is AuthenticationMethod.UsingSecretProvider.InitialSecret.LongLivedToken ->
 				AuthSecretDetails.LongLivedTokenDetails(initialSecret.token)
 			is AuthenticationMethod.UsingSecretProvider.InitialSecret.ExternalAuthenticationToken ->
-				AuthSecretDetails.ConfiguredExternalAuthenticationDetails(initialSecret.configId, initialSecret.token)
+				AuthSecretDetails.ConfiguredExternalAuthenticationDetails(initialSecret.configId, initialSecret.token, AuthenticationClass.ExternalAuthentication, initialSecret.doNotUseProjectIdForGroupSelection ?: false)
 			is AuthenticationMethod.UsingSecretProvider.InitialSecret.Password ->
 				AuthSecretDetails.PasswordDetails(initialSecret.password)
 			null -> null

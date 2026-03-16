@@ -85,7 +85,8 @@ private fun InitialSecretJs.toKt(): AuthenticationMethod.UsingSecretProvider.Ini
 	is ExternalAuthenticationTokenJs ->
 		AuthenticationMethod.UsingSecretProvider.InitialSecret.ExternalAuthenticationToken(
 			token = token,
-			configId = configId
+			configId = configId,
+			doNotUseProjectIdForGroupSelection = doNotUseProjectIdForGroupSelection
 		)
 	is InitialSecretLongLivedTokenJs ->
 		AuthenticationMethod.UsingSecretProvider.InitialSecret.LongLivedToken(token)
@@ -129,7 +130,8 @@ private fun AuthSecretDetails.toJs(): AuthSecretDetailsJs = when (this) {
 		ConfiguredExternalAuthenticationDetailsJs(
 			secret = secret,
 			configId = configId,
-			minimumAuthenticationClass = minimumAuthenticationClass.name
+			minimumAuthenticationClass = minimumAuthenticationClass.name,
+			doNotUseProjectIdForGroupSelection = doNotUseProjectIdForGroupSelection,
 		)
 	is AuthSecretDetails.LongLivedTokenDetails ->
 		LongLivedTokenDetailsJs(secret = secret)

@@ -53,8 +53,8 @@ sealed interface AuthSecretDetails {
 	 * @param secret the token or another secret that will be used for authentication.
 	 * @param minimumAuthenticationClass only consider configurations that can provide at least this authentication class. The actual
 	 * authentication class obtained for the token may be higher.
-	 * @param doNotUseProjectIdForGroupSelection only use the project id specified in the initialize method to choose the configuration of
-	 * the external token, but not the group where to log in.
+	 * @param doNotUseProjectIdForGroupSelection (INTERNAL USE ONLY) only use the project id specified in the initialize method to choose the configuration of
+	 * the external token, but not the group where to log in. This is probably not the option you are looking for.
 	 */
 	data class ConfiguredExternalAuthenticationDetails(
 		val configId: String,

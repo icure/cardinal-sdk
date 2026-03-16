@@ -113,6 +113,8 @@ Many files are auto-generated (marked with `// WARNING: This file is auto-genera
 - Filter classes in `filters/`
 - Wrapper code in `ts-wrapper/`, `python-wrapper/`, `dart-wrapper/`
 
+The code generation is a two steps process: JSON files that describe the syntax and semantics of the entities and APIs are maintained in `build/generated/ksp/jvm/jvmMain/resources/.../Class.json` and then the `sdk-codegen` tool generates the actual Kotlin/JS/Python/Dart code.
+
 **Do not manually edit auto-generated files.** Generation is done by the external `sdk-codegen` tool.
 
 ### Key Annotations
