@@ -35,8 +35,9 @@ external class LongLivedTokenDetailsJs(
 external class ConfiguredExternalAuthenticationDetailsJs(
 	configId: String,
 	secret: String,
-	minimumAuthenticationClass: String?,
-	doNotUseProjectIdForGroupSelection: Boolean?,
+	// minimumAuthenticationClass: String?,
+	// doNotUseProjectIdForGroupSelection: Boolean?,
+	props: dynamic
 ) : AuthSecretDetailsJs {
 	val configId: String
 	val secret: String

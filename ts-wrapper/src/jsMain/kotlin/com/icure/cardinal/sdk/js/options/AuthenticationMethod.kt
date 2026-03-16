@@ -41,6 +41,7 @@ import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.await
 import kotlinx.coroutines.promise
 import kotlin.js.Promise
+import kotlin.js.json
 
 
 @OptIn(InternalIcureApi::class)
@@ -126,21 +127,28 @@ private fun AuthSecretDetailsJs.toKt(): AuthSecretDetails = when (this) {
 	else -> throw IllegalArgumentException("Unrecognised auth secret details: ${this::class.simpleName}")
 }
 private fun AuthSecretDetails.toJs(): AuthSecretDetailsJs = when (this) {
-	is AuthSecretDetails.ConfiguredExternalAuthenticationDetails ->
+	is AuthSecretDetails.ConfiguredExternalAuthenticationDetails -> {
 		ConfiguredExternalAuthenticationDetailsJs(
 			secret = secret,
 			configId = configId,
-			minimumAuthenticationClass = minimumAuthenticationClass.name,
-			doNotUseProjectIdForGroupSelection = doNotUseProjectIdForGroupSelection,
+			props = json(
+				"minimumAuthenticationClass" to minimumAuthenticationClass.name,
+				"doNotUseProjectIdForGroupSelection" to doNotUseProjectIdForGroupSelection
+			)
 		)
-	is AuthSecretDetails.LongLivedTokenDetails ->
+	}
+	is AuthSecretDetails.LongLivedTokenDetails -> {
 		LongLivedTokenDetailsJs(secret = secret)
-	is AuthSecretDetails.PasswordDetails ->
+	}
+	is AuthSecretDetails.PasswordDetails -> {
 		PasswordDetailsJs(secret = secret)
-	is AuthSecretDetails.ShortLivedTokenDetails ->
+	}
+	is AuthSecretDetails.ShortLivedTokenDetails -> {
 		ShortLivedTokenDetailsJs(secret = secret, authenticationProcessInfo = authenticationProcessInfo.toJs())
-	is AuthSecretDetails.TwoFactorAuthTokenDetails ->
+	}
+	is AuthSecretDetails.TwoFactorAuthTokenDetails -> {
 		TwoFactorAuthTokenDetailsJs(secret = secret)
+	}
 }
 @OptIn(InternalIcureApi::class)
 private fun AuthenticationProcessRequest.toJs(): AuthenticationProcessRequestJs = AuthenticationProcessRequestJs(
