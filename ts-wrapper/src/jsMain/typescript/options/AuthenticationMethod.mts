@@ -57,8 +57,8 @@ export namespace AuthenticationMethod {
        */
       readonly minimumAuthenticationClass: AuthenticationClass | undefined
       /**
-       * Only use the project id specified in the initialize method to choose the configuration of
-       * the external token, but not the group where to log in.
+       * (INTERNAL USE ONLY) only use the project id specified in the initialize method to choose the configuration of
+       * the external token, but not the group where to log in. This is probably not the option you are looking for.
        */
       readonly doNotUseProjectIdForGroupSelection: boolean | undefined
 
