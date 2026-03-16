@@ -51,6 +51,17 @@ export namespace AuthenticationMethod {
     }
 
     export class ExternalAuthenticationToken {
+
+      /**
+       * During login consider only configurations that can provide at least this authentication class
+       */
+      readonly minimumAuthenticationClass: AuthenticationClass | undefined
+      /**
+       * (INTERNAL USE ONLY) only use the project id specified in the initialize method to choose the configuration of
+       * the external token, but not the group where to log in. This is probably not the option you are looking for.
+       */
+      readonly doNotUseProjectIdForGroupSelection: boolean | undefined
+
       constructor(
         /**
          * The id of the configuration that specifies how the token should be validated and how it should be used to find
@@ -63,11 +74,14 @@ export namespace AuthenticationMethod {
          * A token used to perform the external authentication
          */
         readonly token: string,
-        /**
-         * During login consider only configurations that can provide at least this authentication class
-         */
-        readonly minimumAuthenticationClass?: AuthenticationClass,
-      ) {}
+        props: {
+          minimumAuthenticationClass?: AuthenticationClass,
+          doNotUseProjectIdForGroupSelection?: boolean
+        } = {},
+      ) {
+        this.minimumAuthenticationClass = props.minimumAuthenticationClass
+        this.doNotUseProjectIdForGroupSelection = props.doNotUseProjectIdForGroupSelection
+      }
     }
 
     export class JwtCredentials {
@@ -154,7 +168,13 @@ export namespace SecretProviderAuthenticationOptions {
   export namespace InitialSecret {
     export class Password { constructor(readonly password: string) {} }
     export class LongLivedToken { constructor(readonly token: string) {} }
-    export class ExternalAuthenticationToken { constructor(readonly token: string, readonly configId: string) {} }
+    export class ExternalAuthenticationToken {
+      readonly doNotUseProjectIdForGroupSelection: boolean | undefined
+
+      constructor(readonly token: string, readonly configId: string, props: { doNotUseProjectIdForGroupSelection?: boolean } = {}) {
+        this.doNotUseProjectIdForGroupSelection = props.doNotUseProjectIdForGroupSelection
+      }
+    }
   }
 
   export type InitialSecret = InitialSecret.Password | InitialSecret.LongLivedToken | InitialSecret.ExternalAuthenticationToken
@@ -212,7 +232,7 @@ export namespace AuthSecretDetails {
      */
     constructor (readonly secret: String) {}
   }
-  
+
   export class TwoFactorAuthTokenDetails {
     /**
      * @param secret the current two-factor authentication token of the user.
@@ -227,15 +247,17 @@ export namespace AuthSecretDetails {
      */
     constructor(readonly secret: String, readonly authenticationProcessInfo: AuthenticationProcessRequest) {}
   }
-  
+
   export class LongLivedTokenDetails {
     /**
      * @param secret a long-lived token of the user.
      */
     constructor (readonly secret: String) {}
   }
-  
+
   export class ConfiguredExternalAuthenticationDetails {
+    readonly minimumAuthenticationClass: AuthenticationClass | undefined
+    readonly doNotUseProjectIdForGroupSelection: boolean | undefined
     /**
      * Login using a token or other secret provided by another authentication service configured for your project.
      *
@@ -245,10 +267,16 @@ export namespace AuthSecretDetails {
      *
      * @param configId id of the configuration to use for authentication.
      * @param secret the token or another secret that will be used for authentication.
-     * @param minimumAuthenticationClass only consider configurations that can provide at least this authentication class. The actual
+     * @param props
+     *  - minimumAuthenticationClass only consider configurations that can provide at least this authentication class. The actual
      * authentication class obtained for the token may be higher.
+     *  - doNotUseProjectIdForGroupSelection (INTERNAL USE ONLY) only use the project id specified in the initialize method to choose the configuration of
+     *     the external token, but not the group where to log in. This is probably not the option you are looking for.
      */
-    constructor (readonly configId: string, readonly secret: string, readonly minimumAuthenticationClass?: AuthenticationClass) {}
+    constructor (readonly configId: string, readonly secret: string, props: { minimumAuthenticationClass?: AuthenticationClass, doNotUseProjectIdForGroupSelection?: boolean } = {}) {
+      this.minimumAuthenticationClass = props.minimumAuthenticationClass
+      this.doNotUseProjectIdForGroupSelection = props.doNotUseProjectIdForGroupSelection
+    }
   }
 }
 export type AuthSecretDetails =
