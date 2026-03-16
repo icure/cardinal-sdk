@@ -51,6 +51,17 @@ export namespace AuthenticationMethod {
     }
 
     export class ExternalAuthenticationToken {
+
+      /**
+       * During login consider only configurations that can provide at least this authentication class
+       */
+      readonly minimumAuthenticationClass: AuthenticationClass | undefined
+      /**
+       * Only use the project id specified in the initialize method to choose the configuration of
+       * the external token, but not the group where to log in.
+       */
+      readonly doNotUseProjectIdForGroupSelection: boolean | undefined
+
       constructor(
         /**
          * The id of the configuration that specifies how the token should be validated and how it should be used to find
@@ -63,16 +74,14 @@ export namespace AuthenticationMethod {
          * A token used to perform the external authentication
          */
         readonly token: string,
-        /**
-         * During login consider only configurations that can provide at least this authentication class
-         */
-        readonly minimumAuthenticationClass?: AuthenticationClass,
-        /**
-         * Only use the project id specified in the initialize method to choose the configuration of
-         * the external token, but not the group where to log in.
-         */
-        readonly doNotUseProjectIdForGroupSelection?: boolean,
-      ) {}
+        props: {
+          minimumAuthenticationClass?: AuthenticationClass,
+          doNotUseProjectIdForGroupSelection?: boolean
+        } = {},
+      ) {
+        this.minimumAuthenticationClass = props.minimumAuthenticationClass
+        this.doNotUseProjectIdForGroupSelection = props.doNotUseProjectIdForGroupSelection
+      }
     }
 
     export class JwtCredentials {
