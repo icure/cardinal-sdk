@@ -15,4 +15,5 @@ external class InitialSecretLongLivedTokenJs : InitialSecretJs {
 external class ExternalAuthenticationTokenJs : InitialSecretJs {
 	val token: String
 	val configId: String
+	val doNotUseProjectIdForGroupSelection: Boolean?
 }

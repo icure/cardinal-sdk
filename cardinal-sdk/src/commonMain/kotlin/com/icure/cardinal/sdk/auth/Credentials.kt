@@ -54,8 +54,8 @@ data class ExternalAuthenticationToken(
 	 */
 	val minimumAuthenticationClass: AuthenticationClass = AuthenticationClass.ExternalAuthentication,
 	/**
-	 * If set to true, the project id specified in the initialize method will be used to find the external configuration for the external
-	 * token but not to restrict the group where to log in.
+	 * (INTERNAL USE ONLY) only use the project id specified in the initialize method to choose the configuration of
+	 * the external token, but not the group where to log in. This is probably not the option you are looking for.
 	 */
 	val doNotUseProjectIdForGroupSelection: Boolean = false
 ) : Credentials
