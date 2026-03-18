@@ -108,13 +108,13 @@ public interface RawUserApi {
 	suspend fun changeUserEmail(
 		userId: String,
 		newEmail: String,
-		previousEmail: String,
+		previousEmail: String? = null,
 	): HttpResponse<User>
 
 	suspend fun changeUserMobilePhone(
 		userId: String,
 		newMobilePhone: String,
-		previousMobilePhone: String,
+		previousMobilePhone: String? = null,
 	): HttpResponse<User>
 
 	suspend fun changeUserPassword(
@@ -325,14 +325,14 @@ public interface RawUserApi {
 		userId: String,
 		groupId: String,
 		newEmail: String,
-		previousEmail: String,
+		previousEmail: String? = null,
 	): HttpResponse<User>
 
 	suspend fun changeUserMobilePhoneInGroup(
 		userId: String,
 		groupId: String,
 		newMobilePhone: String,
-		previousMobilePhone: String,
+		previousMobilePhone: String? = null,
 	): HttpResponse<User>
 
 	suspend fun changeUserPasswordInGroup(

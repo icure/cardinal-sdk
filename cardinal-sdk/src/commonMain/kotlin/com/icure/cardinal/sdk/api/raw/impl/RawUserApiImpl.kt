@@ -336,7 +336,7 @@ class RawUserApiImpl(
 	override suspend fun changeUserEmail(
 		userId: String,
 		newEmail: String,
-		previousEmail: String,
+		previousEmail: String?,
 	): HttpResponse<User> =
 		put(authProvider) {
 			url {
@@ -352,7 +352,7 @@ class RawUserApiImpl(
 	override suspend fun changeUserMobilePhone(
 		userId: String,
 		newMobilePhone: String,
-		previousMobilePhone: String,
+		previousMobilePhone: String?,
 	): HttpResponse<User> =
 		put(authProvider) {
 			url {
@@ -949,7 +949,7 @@ class RawUserApiImpl(
 		userId: String,
 		groupId: String,
 		newEmail: String,
-		previousEmail: String,
+		previousEmail: String?,
 	): HttpResponse<User> =
 		put(authProvider) {
 			url {
@@ -966,7 +966,7 @@ class RawUserApiImpl(
 		userId: String,
 		groupId: String,
 		newMobilePhone: String,
-		previousMobilePhone: String,
+		previousMobilePhone: String?,
 	): HttpResponse<User> =
 		put(authProvider) {
 			url {
