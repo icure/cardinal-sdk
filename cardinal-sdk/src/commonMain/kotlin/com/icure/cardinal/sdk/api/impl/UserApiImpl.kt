@@ -14,6 +14,7 @@ import com.icure.cardinal.sdk.model.ListOfIds
 import com.icure.cardinal.sdk.model.ListOfIdsAndRev
 import com.icure.cardinal.sdk.model.StoredDocumentIdentifier
 import com.icure.cardinal.sdk.model.User
+import com.icure.cardinal.sdk.model.security.ChangeUserPasswordRequest
 import com.icure.cardinal.sdk.model.security.Enable2faRequest
 import com.icure.cardinal.sdk.model.security.LoginIdentifier
 import com.icure.cardinal.sdk.model.toStoredDocumentIdentifier
@@ -255,6 +256,26 @@ internal class UserApiImpl(
 
 	override suspend fun createAdminUser(user: User) = rawApi.createAdminUser(user).successBody()
 
+	override suspend fun modifyUserPassword(
+		userId: String,
+		newPassword: String,
+	): User =
+		rawApi.changeUserPassword(userId, ChangeUserPasswordRequest(newPassword)).successBody()
+
+	override suspend fun modifyUserEmail(
+		userId: String,
+		newEmail: String,
+		previousEmail: String?,
+	): User =
+		rawApi.changeUserEmail(userId, newEmail, previousEmail).successBody()
+
+	override suspend fun modifyUserMobilePhone(
+		userId: String,
+		newMobilePhone: String,
+		previousMobilePhone: String?,
+	): User =
+		rawApi.changeUserMobilePhone(userId, newMobilePhone, previousMobilePhone).successBody()
+
 	override suspend fun subscribeToEvents(
 		events: Set<SubscriptionEventType>,
 		filter: FilterOptions<User>,
@@ -449,4 +470,50 @@ internal class UserInGroupApiImpl(
 	) = groupScopedWith(user) { groupId, entity ->
 		rawApi.createAdminUserInGroup(groupId, entity).successBody()
 	}
+
+	override suspend fun modifyUserPassword(
+		groupId: String,
+		userId: String,
+		newPassword: String
+	): GroupScoped<User> =
+		GroupScoped(
+			entity = rawApi.changeUserPasswordInGroup(
+				userId = userId,
+				groupId = groupId,
+				request = ChangeUserPasswordRequest(newPassword)
+			).successBody(),
+			groupId = groupId,
+		)
+
+	override suspend fun modifyUserEmail(
+		groupId: String,
+		userId: String,
+		newEmail: String,
+		previousEmail: String?
+	): GroupScoped<User> =
+		GroupScoped(
+			entity = rawApi.changeUserEmailInGroup(
+				userId = userId,
+				groupId = groupId,
+				newEmail = newEmail,
+				previousEmail = previousEmail
+			).successBody(),
+			groupId = groupId,
+		)
+
+	override suspend fun modifyUserMobilePhone(
+		groupId: String,
+		userId: String,
+		newMobilePhone: String,
+		previousMobilePhone: String?
+	): GroupScoped<User> =
+		GroupScoped(
+			entity = rawApi.changeUserMobilePhoneInGroup(
+				userId = userId,
+				groupId = groupId,
+				newMobilePhone = newMobilePhone,
+				previousMobilePhone = previousMobilePhone
+			).successBody(),
+			groupId = groupId,
+		)
 }

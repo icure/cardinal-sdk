@@ -58,8 +58,21 @@ interface UserApi: Subscribable<User, User, FilterOptions<User>> {
 
 	suspend fun getMatchingUsers(): List<UserGroup>
 
+	/**
+	 * Configures the roles of a user, replacing the previous ones.
+	 *
+	 * By passing an empty list, the user will have no roles, and therefore no permissions. If you intend to change a
+	 * user roles so that it inherits the default roles of its group, you should use [resetUserRoles] instead.
+	 */
 	suspend fun setUserRoles(userId: String, rolesIds: List<String>): User
 
+	/**
+	 * If the user has any roles directly assigned to them, they will be removed, and the user will have the
+	 * default roles for its category as configured in its group.
+	 *
+	 * This could increase or decrease the permissions of the user depending on the previous roles and the group
+	 * configuration.
+	 */
 	suspend fun resetUserRoles(userId: String): User
 
 	suspend fun enable2faForUser(userId: String, request: Enable2faRequest)
@@ -67,6 +80,38 @@ interface UserApi: Subscribable<User, User, FilterOptions<User>> {
 	suspend fun disable2faForUser(userId: String)
 
 	suspend fun createAdminUser(user: User): User
+
+	/**
+	 * Modify a user password. This method does not require knowing the previous user password so that it can be used
+	 * even as a "forgot password" flow, but is protected by the "elevated security" mechanism, so it should only be
+	 * used with a [com.icure.cardinal.sdk.auth.services.SmartAuthProvider] that can provide the required elevated
+	 * security token if needed.
+	 *
+	 * This method should be favored over a simple [modifyUser] when changing the Password as it does not require knowing
+	 * the revision of the user directly, and can work even if there is a [com.icure.cardinal.sdk.auth.services.SmartAuthProvider]
+	 * that is modifying the user tokens when performing the request.
+	 */
+	suspend fun modifyUserPassword(userId: String, newPassword: String): User
+
+	/**
+	 * Modify a user email given its previous value, throwing a [RevisionConflictException] if the provided
+	 * [previousEmail] does not match the stored value.
+	 *
+	 * This method should be favored over a simple [modifyUser] when changing the Email as it does not require knowing
+	 * the revision of the user directly, and can work even if there is a [com.icure.cardinal.sdk.auth.services.SmartAuthProvider]
+	 * that is modifying the user tokens when performing the request.
+	 */
+	suspend fun modifyUserEmail(userId: String, newEmail: String, previousEmail: String?): User
+
+	/**
+	 * Modify a user mobile phone given its previous value, throwing a [RevisionConflictException] if the provided
+	 * [previousMobilePhone] does not match the stored value.
+	 *
+	 * This method should be favored over a simple [modifyUser] when changing the MobilePhone as it does not require knowing
+	 * the revision of the user directly, and can work even if there is a [com.icure.cardinal.sdk.auth.services.SmartAuthProvider]
+	 * that is modifying the user tokens when performing the request.
+	 */
+	suspend fun modifyUserMobilePhone(userId: String, newMobilePhone: String, previousMobilePhone: String?): User
 
 	/**
 	 * Deletes a user. If you don't have write access to the user the method will fail.
@@ -184,7 +229,14 @@ interface UserInGroupApi {
 
 	suspend fun matchUsersBySorted(groupId: String, filter: BaseSortableFilterOptions<User>): List<String>
 
+	/**
+	 * In group equivalent of [UserApi.setUserRoles]
+	 */
 	suspend fun setUserRoles(user: GroupScoped<User>, rolesIds: List<String>):  GroupScoped<User>
+
+	/**
+	 * In group equivalent of [UserApi.resetUserRoles]
+	 */
 	suspend fun resetUserRoles(user: GroupScoped<User>): GroupScoped<User>
 
 	suspend fun getToken(
@@ -210,6 +262,35 @@ interface UserInGroupApi {
 	suspend fun disable2faForUser(user:GroupScoped<User>)
 
 	suspend fun createAdminUser(user: GroupScoped<User>): GroupScoped<User>
+
+	/**
+	 * In group equivalent of [UserApi.modifyUserPassword]
+	 */
+	suspend fun modifyUserPassword(
+		groupId: String,
+		userId: String,
+		newPassword: String
+	): GroupScoped<User>
+
+	/**
+	 * In group equivalent of [UserApi.modifyUserEmail]
+	 */
+	suspend fun modifyUserEmail(
+		groupId: String,
+		userId: String,
+		newEmail: String,
+		previousEmail: String?
+	): GroupScoped<User>
+
+	/**
+	 * In group equivalent of [UserApi.modifyUserMobilePhone]
+	 */
+	suspend fun modifyUserMobilePhone(
+		groupId: String,
+		userId: String,
+		newMobilePhone: String,
+		previousMobilePhone: String?
+	): GroupScoped<User>
 
 	/**
 	 * Defines if a user inherits the permission they have in their group in all the groups that are children of their group.
