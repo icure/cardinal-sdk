@@ -104,6 +104,26 @@ public external interface UserInGroupApiJs {
 
 	public fun createAdminUser(user: GroupScopedJs<UserJs>): Promise<GroupScopedJs<UserJs>>
 
+	public fun modifyUserPassword(
+		groupId: String,
+		userId: String,
+		newPassword: String,
+	): Promise<GroupScopedJs<UserJs>>
+
+	public fun modifyUserEmail(
+		groupId: String,
+		userId: String,
+		newEmail: String,
+		previousEmail: String?,
+	): Promise<GroupScopedJs<UserJs>>
+
+	public fun modifyUserMobilePhone(
+		groupId: String,
+		userId: String,
+		newMobilePhone: String,
+		previousMobilePhone: String?,
+	): Promise<GroupScopedJs<UserJs>>
+
 	public fun setUserInheritsPermissions(user: GroupScopedJs<UserJs>, `value`: Boolean): Promise<Unit>
 
 	public fun setLoginIdentifiers(

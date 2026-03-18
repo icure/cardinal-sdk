@@ -744,6 +744,75 @@ internal class UserApiImplJs(
 			)
 		}
 
+		override fun modifyUserPassword(
+			groupId: String,
+			userId: String,
+			newPassword: String,
+		): Promise<GroupScopedJs<UserJs>> = GlobalScope.promise {
+			val groupIdConverted: String = groupId
+			val userIdConverted: String = userId
+			val newPasswordConverted: String = newPassword
+			val result = userApi.inGroup.modifyUserPassword(
+				groupIdConverted,
+				userIdConverted,
+				newPasswordConverted,
+			)
+			groupScoped_toJs(
+				result,
+				{ x1: User ->
+					user_toJs(x1)
+				},
+			)
+		}
+
+		override fun modifyUserEmail(
+			groupId: String,
+			userId: String,
+			newEmail: String,
+			previousEmail: String?,
+		): Promise<GroupScopedJs<UserJs>> = GlobalScope.promise {
+			val groupIdConverted: String = groupId
+			val userIdConverted: String = userId
+			val newEmailConverted: String = newEmail
+			val previousEmailConverted: String? = undefinedToNull(previousEmail)
+			val result = userApi.inGroup.modifyUserEmail(
+				groupIdConverted,
+				userIdConverted,
+				newEmailConverted,
+				previousEmailConverted,
+			)
+			groupScoped_toJs(
+				result,
+				{ x1: User ->
+					user_toJs(x1)
+				},
+			)
+		}
+
+		override fun modifyUserMobilePhone(
+			groupId: String,
+			userId: String,
+			newMobilePhone: String,
+			previousMobilePhone: String?,
+		): Promise<GroupScopedJs<UserJs>> = GlobalScope.promise {
+			val groupIdConverted: String = groupId
+			val userIdConverted: String = userId
+			val newMobilePhoneConverted: String = newMobilePhone
+			val previousMobilePhoneConverted: String? = undefinedToNull(previousMobilePhone)
+			val result = userApi.inGroup.modifyUserMobilePhone(
+				groupIdConverted,
+				userIdConverted,
+				newMobilePhoneConverted,
+				previousMobilePhoneConverted,
+			)
+			groupScoped_toJs(
+				result,
+				{ x1: User ->
+					user_toJs(x1)
+				},
+			)
+		}
+
 		override fun setUserInheritsPermissions(user: GroupScopedJs<UserJs>, `value`: Boolean):
 				Promise<Unit> = GlobalScope.promise {
 			val userConverted: GroupScoped<User> = groupScoped_fromJs(
@@ -1097,6 +1166,49 @@ internal class UserApiImplJs(
 		val userConverted: User = user_fromJs(user)
 		val result = userApi.createAdminUser(
 			userConverted,
+		)
+		user_toJs(result)
+	}
+
+	override fun modifyUserPassword(userId: String, newPassword: String): Promise<UserJs> =
+			GlobalScope.promise {
+		val userIdConverted: String = userId
+		val newPasswordConverted: String = newPassword
+		val result = userApi.modifyUserPassword(
+			userIdConverted,
+			newPasswordConverted,
+		)
+		user_toJs(result)
+	}
+
+	override fun modifyUserEmail(
+		userId: String,
+		newEmail: String,
+		previousEmail: String?,
+	): Promise<UserJs> = GlobalScope.promise {
+		val userIdConverted: String = userId
+		val newEmailConverted: String = newEmail
+		val previousEmailConverted: String? = undefinedToNull(previousEmail)
+		val result = userApi.modifyUserEmail(
+			userIdConverted,
+			newEmailConverted,
+			previousEmailConverted,
+		)
+		user_toJs(result)
+	}
+
+	override fun modifyUserMobilePhone(
+		userId: String,
+		newMobilePhone: String,
+		previousMobilePhone: String?,
+	): Promise<UserJs> = GlobalScope.promise {
+		val userIdConverted: String = userId
+		val newMobilePhoneConverted: String = newMobilePhone
+		val previousMobilePhoneConverted: String? = undefinedToNull(previousMobilePhone)
+		val result = userApi.modifyUserMobilePhone(
+			userIdConverted,
+			newMobilePhoneConverted,
+			previousMobilePhoneConverted,
 		)
 		user_toJs(result)
 	}
