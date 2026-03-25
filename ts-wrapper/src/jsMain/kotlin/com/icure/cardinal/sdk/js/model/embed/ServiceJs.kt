@@ -22,6 +22,8 @@ public sealed external interface ServiceJs : EncryptableJs, ICureDocumentJs<Stri
 
 	public val identifier: Array<out IdentifierJs>
 
+	public val contactId: String?
+
 	public val subContactIds: Array<out String>?
 
 	public val plansOfActionIds: Array<out String>?
@@ -74,6 +76,8 @@ public external class DecryptedServiceJs(
 	override val transactionId: String?
 
 	override val identifier: Array<IdentifierJs>
+
+	override val contactId: String?
 
 	override val subContactIds: Array<String>?
 
@@ -143,6 +147,8 @@ public external class EncryptedServiceJs(
 	override val transactionId: String?
 
 	override val identifier: Array<IdentifierJs>
+
+	override val contactId: String?
 
 	override val subContactIds: Array<String>?
 
