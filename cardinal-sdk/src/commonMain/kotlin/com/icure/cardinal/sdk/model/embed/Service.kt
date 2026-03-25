@@ -24,6 +24,8 @@ sealed interface Service : Encryptable, ICureDocument<String>, HasEndOfLife {
 
 	public val identifier: List<Identifier>
 
+	public val contactId: String?
+
 	public val subContactIds: Set<String>?
 
 	public val plansOfActionIds: Set<String>?
@@ -92,6 +94,7 @@ data class DecryptedService(
 	override val transactionId: String? = null,
 	@param:DefaultValue("emptyList()")
 	override val identifier: List<Identifier> = emptyList(),
+	override val contactId: String? = null,
 	override val subContactIds: Set<String>? = null,
 	override val plansOfActionIds: Set<String>? = null,
 	override val healthElementsIds: Set<String>? = null,
@@ -143,6 +146,7 @@ data class EncryptedService(
 	override val transactionId: String? = null,
 	@param:DefaultValue("emptyList()")
 	override val identifier: List<Identifier> = emptyList(),
+	override val contactId: String? = null,
 	override val subContactIds: Set<String>? = null,
 	override val plansOfActionIds: Set<String>? = null,
 	override val healthElementsIds: Set<String>? = null,
