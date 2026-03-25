@@ -48,6 +48,9 @@ public fun service_toJs(obj: DecryptedService): DecryptedServiceJs {
 			identifier_toJs(x1)
 		},
 	)
+	val contactId = nullToUndefined(
+		obj.contactId
+	)
 	val subContactIds = nullToUndefined(
 		setToArray(
 			obj.subContactIds,
@@ -236,6 +239,7 @@ public fun service_toJs(obj: DecryptedService): DecryptedServiceJs {
 		"id:id," +
 		"transactionId:transactionId," +
 		"identifier:identifier," +
+		"contactId:contactId," +
 		"subContactIds:subContactIds," +
 		"plansOfActionIds:plansOfActionIds," +
 		"healthElementsIds:healthElementsIds," +
@@ -277,6 +281,7 @@ public fun service_fromJs(obj: DecryptedServiceJs): DecryptedService {
 			identifier_fromJs(x1)
 		},
 	)
+	val contactId = undefinedToNull(obj.contactId)
 	val subContactIds = arrayToSet(
 		obj.subContactIds,
 		"obj.subContactIds",
@@ -448,6 +453,7 @@ public fun service_fromJs(obj: DecryptedServiceJs): DecryptedService {
 		id = id,
 		transactionId = transactionId,
 		identifier = identifier,
+		contactId = contactId,
 		subContactIds = subContactIds,
 		plansOfActionIds = plansOfActionIds,
 		healthElementsIds = healthElementsIds,
@@ -490,6 +496,9 @@ public fun service_toJs(obj: EncryptedService): EncryptedServiceJs {
 		{ x1: Identifier ->
 			identifier_toJs(x1)
 		},
+	)
+	val contactId = nullToUndefined(
+		obj.contactId
 	)
 	val subContactIds = nullToUndefined(
 		setToArray(
@@ -679,6 +688,7 @@ public fun service_toJs(obj: EncryptedService): EncryptedServiceJs {
 		"id:id," +
 		"transactionId:transactionId," +
 		"identifier:identifier," +
+		"contactId:contactId," +
 		"subContactIds:subContactIds," +
 		"plansOfActionIds:plansOfActionIds," +
 		"healthElementsIds:healthElementsIds," +
@@ -720,6 +730,7 @@ public fun service_fromJs(obj: EncryptedServiceJs): EncryptedService {
 			identifier_fromJs(x1)
 		},
 	)
+	val contactId = undefinedToNull(obj.contactId)
 	val subContactIds = arrayToSet(
 		obj.subContactIds,
 		"obj.subContactIds",
@@ -891,6 +902,7 @@ public fun service_fromJs(obj: EncryptedServiceJs): EncryptedService {
 		id = id,
 		transactionId = transactionId,
 		identifier = identifier,
+		contactId = contactId,
 		subContactIds = subContactIds,
 		plansOfActionIds = plansOfActionIds,
 		healthElementsIds = healthElementsIds,
