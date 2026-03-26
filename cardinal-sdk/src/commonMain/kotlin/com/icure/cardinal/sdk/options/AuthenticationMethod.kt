@@ -138,7 +138,8 @@ suspend fun AuthenticationMethod.getAuthProvider(
 		is ExternalAuthenticationToken -> smartAuthWithConstantSecret(
 			authApi = authApi,
 			cryptoService = cryptoService,
-			authSecretDetails = AuthSecretDetails.ConfiguredExternalAuthenticationDetails(this.credentials.configId, this.credentials.token),
+			authSecretDetails = AuthSecretDetails.ConfiguredExternalAuthenticationDetails(this.credentials.configId, this.credentials.token,
+				AuthenticationClass.ExternalAuthentication, this.credentials.doNotUseProjectIdForGroupSelection),
 			login = null,
 			messageGatewayApi = messageGatewayApi,
 			projectId = projectId,
