@@ -20,6 +20,8 @@ export interface Service extends Encryptable, ICureDocument<string>, HasEndOfLif
 
 	identifier: Array<Identifier>;
 
+	contactId: string | undefined;
+
 	subContactIds: Array<string> | undefined;
 
 	plansOfActionIds: Array<string> | undefined;
@@ -73,6 +75,8 @@ export class DecryptedService {
 	transactionId: string | undefined = undefined;
 
 	identifier: Array<Identifier> = [];
+
+	contactId: string | undefined = undefined;
 
 	subContactIds: Array<string> | undefined = undefined;
 
@@ -137,6 +141,7 @@ export class DecryptedService {
 		this.id = partial.id ?? randomUuid();
 		if ('transactionId' in partial) this.transactionId = partial.transactionId;
 		if ('identifier' in partial && partial.identifier !== undefined) this.identifier = partial.identifier;
+		if ('contactId' in partial) this.contactId = partial.contactId;
 		if ('subContactIds' in partial) this.subContactIds = partial.subContactIds;
 		if ('plansOfActionIds' in partial) this.plansOfActionIds = partial.plansOfActionIds;
 		if ('healthElementsIds' in partial) this.healthElementsIds = partial.healthElementsIds;
@@ -172,6 +177,7 @@ export class DecryptedService {
 		res['id'] = this.id
 		if (this.transactionId != undefined) res['transactionId'] = this.transactionId
 		res['identifier'] = this.identifier.map((x0) => x0.toJSON() )
+		if (this.contactId != undefined) res['contactId'] = this.contactId
 		if (this.subContactIds != undefined) res['subContactIds'] = this.subContactIds.map((x0) => x0 )
 		if (this.plansOfActionIds != undefined) res['plansOfActionIds'] = this.plansOfActionIds.map((x0) => x0 )
 		if (this.healthElementsIds != undefined) res['healthElementsIds'] = this.healthElementsIds.map((x0) => x0 )
@@ -213,6 +219,7 @@ export class DecryptedService {
 			id: expectString(extractEntry(jCpy, 'id', true, path), false, [...path, ".id"]),
 			transactionId: expectString(extractEntry(jCpy, 'transactionId', false, path), true, [...path, ".transactionId"]),
 			identifier: expectArray(extractEntry(jCpy, 'identifier', false, path), false, [...path, ".identifier"], (x0, p0) => expectObject(x0, false, ignoreUnknownKeys, p0, Identifier.fromJSON)),
+			contactId: expectString(extractEntry(jCpy, 'contactId', false, path), true, [...path, ".contactId"]),
 			subContactIds: expectArray(extractEntry(jCpy, 'subContactIds', false, path), true, [...path, ".subContactIds"], (x0, p0) => expectString(x0, false, p0)),
 			plansOfActionIds: expectArray(extractEntry(jCpy, 'plansOfActionIds', false, path), true, [...path, ".plansOfActionIds"], (x0, p0) => expectString(x0, false, p0)),
 			healthElementsIds: expectArray(extractEntry(jCpy, 'healthElementsIds', false, path), true, [...path, ".healthElementsIds"], (x0, p0) => expectString(x0, false, p0)),
@@ -300,6 +307,8 @@ export class EncryptedService {
 
 	identifier: Array<Identifier> = [];
 
+	contactId: string | undefined = undefined;
+
 	subContactIds: Array<string> | undefined = undefined;
 
 	plansOfActionIds: Array<string> | undefined = undefined;
@@ -363,6 +372,7 @@ export class EncryptedService {
 		this.id = partial.id ?? randomUuid();
 		if ('transactionId' in partial) this.transactionId = partial.transactionId;
 		if ('identifier' in partial && partial.identifier !== undefined) this.identifier = partial.identifier;
+		if ('contactId' in partial) this.contactId = partial.contactId;
 		if ('subContactIds' in partial) this.subContactIds = partial.subContactIds;
 		if ('plansOfActionIds' in partial) this.plansOfActionIds = partial.plansOfActionIds;
 		if ('healthElementsIds' in partial) this.healthElementsIds = partial.healthElementsIds;
@@ -398,6 +408,7 @@ export class EncryptedService {
 		res['id'] = this.id
 		if (this.transactionId != undefined) res['transactionId'] = this.transactionId
 		res['identifier'] = this.identifier.map((x0) => x0.toJSON() )
+		if (this.contactId != undefined) res['contactId'] = this.contactId
 		if (this.subContactIds != undefined) res['subContactIds'] = this.subContactIds.map((x0) => x0 )
 		if (this.plansOfActionIds != undefined) res['plansOfActionIds'] = this.plansOfActionIds.map((x0) => x0 )
 		if (this.healthElementsIds != undefined) res['healthElementsIds'] = this.healthElementsIds.map((x0) => x0 )
@@ -439,6 +450,7 @@ export class EncryptedService {
 			id: expectString(extractEntry(jCpy, 'id', true, path), false, [...path, ".id"]),
 			transactionId: expectString(extractEntry(jCpy, 'transactionId', false, path), true, [...path, ".transactionId"]),
 			identifier: expectArray(extractEntry(jCpy, 'identifier', false, path), false, [...path, ".identifier"], (x0, p0) => expectObject(x0, false, ignoreUnknownKeys, p0, Identifier.fromJSON)),
+			contactId: expectString(extractEntry(jCpy, 'contactId', false, path), true, [...path, ".contactId"]),
 			subContactIds: expectArray(extractEntry(jCpy, 'subContactIds', false, path), true, [...path, ".subContactIds"], (x0, p0) => expectString(x0, false, p0)),
 			plansOfActionIds: expectArray(extractEntry(jCpy, 'plansOfActionIds', false, path), true, [...path, ".plansOfActionIds"], (x0, p0) => expectString(x0, false, p0)),
 			healthElementsIds: expectArray(extractEntry(jCpy, 'healthElementsIds', false, path), true, [...path, ".healthElementsIds"], (x0, p0) => expectString(x0, false, p0)),

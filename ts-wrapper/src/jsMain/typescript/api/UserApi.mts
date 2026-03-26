@@ -55,8 +55,23 @@ export interface UserApi {
 
 	getMatchingUsers(): Promise<Array<UserGroup>>;
 
+	/**
+	 *
+	 *  Configures the roles of a user, replacing the previous ones.
+	 *
+	 *  By passing an empty list, the user will have no roles, and therefore no permissions. If you intend to change a
+	 *  user roles so that it inherits the default roles of its group, you should use [resetUserRoles] instead.
+	 */
 	setUserRoles(userId: string, rolesIds: Array<string>): Promise<User>;
 
+	/**
+	 *
+	 *  If the user has any roles directly assigned to them, they will be removed, and the user will have the
+	 *  default roles for its category as configured in its group.
+	 *
+	 *  This could increase or decrease the permissions of the user depending on the previous roles and the group
+	 *  configuration.
+	 */
 	resetUserRoles(userId: string): Promise<User>;
 
 	enable2faForUser(userId: string, request: Enable2faRequest): Promise<void>;
@@ -64,6 +79,43 @@ export interface UserApi {
 	disable2faForUser(userId: string): Promise<void>;
 
 	createAdminUser(user: User): Promise<User>;
+
+	/**
+	 *
+	 *  Modify a user password. This method does not require knowing the previous user password so that it can be used
+	 *  even as a "forgot password" flow, but is protected by the "elevated security" mechanism, so it should only be
+	 *  used with a [com.icure.cardinal.sdk.auth.services.SmartAuthProvider] that can provide the required elevated
+	 *  security token if needed.
+	 *
+	 *  This method should be favored over a simple [modifyUser] when changing the Password as it does not require knowing
+	 *  the revision of the user directly, and can work even if there is a [com.icure.cardinal.sdk.auth.services.SmartAuthProvider]
+	 *  that is modifying the user tokens when performing the request.
+	 */
+	modifyUserPassword(userId: string, newPassword: string): Promise<User>;
+
+	/**
+	 *
+	 *  Modify a user email given its previous value, throwing a [RevisionConflictException] if the provided
+	 *  [previousEmail] does not match the stored value.
+	 *
+	 *  This method should be favored over a simple [modifyUser] when changing the Email as it does not require knowing
+	 *  the revision of the user directly, and can work even if there is a [com.icure.cardinal.sdk.auth.services.SmartAuthProvider]
+	 *  that is modifying the user tokens when performing the request.
+	 */
+	modifyUserEmail(userId: string, newEmail: string,
+			previousEmail: string | undefined): Promise<User>;
+
+	/**
+	 *
+	 *  Modify a user mobile phone given its previous value, throwing a [RevisionConflictException] if the provided
+	 *  [previousMobilePhone] does not match the stored value.
+	 *
+	 *  This method should be favored over a simple [modifyUser] when changing the MobilePhone as it does not require knowing
+	 *  the revision of the user directly, and can work even if there is a [com.icure.cardinal.sdk.auth.services.SmartAuthProvider]
+	 *  that is modifying the user tokens when performing the request.
+	 */
+	modifyUserMobilePhone(userId: string, newMobilePhone: string,
+			previousMobilePhone: string | undefined): Promise<User>;
 
 	/**
 	 *

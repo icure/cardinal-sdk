@@ -57,8 +57,16 @@ export interface UserInGroupApi {
 	matchUsersBySorted(groupId: string,
 			filter: BaseSortableFilterOptions<User>): Promise<Array<string>>;
 
+	/**
+	 *
+	 *  In group equivalent of [UserApi.setUserRoles]
+	 */
 	setUserRoles(user: GroupScoped<User>, rolesIds: Array<string>): Promise<GroupScoped<User>>;
 
+	/**
+	 *
+	 *  In group equivalent of [UserApi.resetUserRoles]
+	 */
 	resetUserRoles(user: GroupScoped<User>): Promise<GroupScoped<User>>;
 
 	getToken(userIdentifier: string, groupId: string, key: string,
@@ -72,6 +80,27 @@ export interface UserInGroupApi {
 	disable2faForUser(user: GroupScoped<User>): Promise<void>;
 
 	createAdminUser(user: GroupScoped<User>): Promise<GroupScoped<User>>;
+
+	/**
+	 *
+	 *  In group equivalent of [UserApi.modifyUserPassword]
+	 */
+	modifyUserPassword(groupId: string, userId: string,
+			newPassword: string): Promise<GroupScoped<User>>;
+
+	/**
+	 *
+	 *  In group equivalent of [UserApi.modifyUserEmail]
+	 */
+	modifyUserEmail(groupId: string, userId: string, newEmail: string,
+			previousEmail: string | undefined): Promise<GroupScoped<User>>;
+
+	/**
+	 *
+	 *  In group equivalent of [UserApi.modifyUserMobilePhone]
+	 */
+	modifyUserMobilePhone(groupId: string, userId: string, newMobilePhone: string,
+			previousMobilePhone: string | undefined): Promise<GroupScoped<User>>;
 
 	/**
 	 *

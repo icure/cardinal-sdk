@@ -80,6 +80,20 @@ public external interface UserApiJs {
 
 	public fun createAdminUser(user: UserJs): Promise<UserJs>
 
+	public fun modifyUserPassword(userId: String, newPassword: String): Promise<UserJs>
+
+	public fun modifyUserEmail(
+		userId: String,
+		newEmail: String,
+		previousEmail: String?,
+	): Promise<UserJs>
+
+	public fun modifyUserMobilePhone(
+		userId: String,
+		newMobilePhone: String,
+		previousMobilePhone: String?,
+	): Promise<UserJs>
+
 	public fun deleteUserById(entityId: String, rev: String): Promise<StoredDocumentIdentifierJs>
 
 	public fun deleteUsersByIds(userIds: Array<StoredDocumentIdentifierJs>):
