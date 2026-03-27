@@ -22,6 +22,9 @@ import kotlin.js.Promise
 public external interface RecoveryApiJs {
 	public fun createRecoveryInfoForAvailableKeyPairs(options: dynamic): Promise<RecoveryDataKeyJs>
 
+	public fun createRecoveryInfoForAvailableParentKeyPairs(parentId: String, options: dynamic):
+			Promise<RecoveryDataKeyJs>
+
 	public fun recoverKeyPairs(recoveryKey: RecoveryDataKeyJs, autoDelete: Boolean):
 			Promise<RecoveryResultJs<Record<String, Record<String, XRsaKeypair>>>>
 
