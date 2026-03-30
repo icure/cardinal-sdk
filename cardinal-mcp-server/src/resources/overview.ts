@@ -16,11 +16,17 @@ export function registerOverview(server: McpServer) {
 			const encryptable = apiNames.filter(n => manifest.apis[n].isEncryptable);
 			const nonEncryptable = apiNames.filter(n => !manifest.apis[n].isEncryptable);
 
+			const guidesByCategory = new Map<string, number>();
+			for (const guide of manifest.guides) {
+				guidesByCategory.set(guide.category, (guidesByCategory.get(guide.category) || 0) + 1);
+			}
+			const guideSummary = [...guidesByCategory.entries()].map(([cat, count]) => `${count} ${cat}`).join(", ");
+
 			const content = `# Cardinal SDK Overview
 
 ## What is Cardinal SDK?
-Cardinal SDK is a healthcare platform SDK with built-in end-to-end encryption.
-It provides APIs for managing healthcare data including patients, appointments, documents, and more.
+Cardinal SDK is a multi-language healthcare platform SDK with built-in end-to-end encryption.
+It provides CRUD operations, filtering/querying, real-time event subscriptions, and cryptographic key management for medical data entities like Patients, Contacts, Services, HealthElements, Documents, and more.
 
 ## Initialization
 \`\`\`typescript
@@ -53,13 +59,15 @@ ${nonEncryptable.map(n => `- **${n}Api** — ${manifest.apis[n].description}`).j
 - **cardinal_data_owner** — Healthcare entity CRUD, filtering, sharing
 - **cardinal_crypto** — Cryptography, key recovery, data owner management
 - **cardinal_continue_iteration** — Fetch next page from paginated queries
-- **search_documentation** — Search API methods, models, and filters
+- **search_documentation** — Search API methods, models, filters, and guides
 
 ## MCP Resources
+- \`cardinal://docs/overview\` — This overview
 - \`cardinal://docs/api/{apiName}\` — API reference for each API
 - \`cardinal://docs/model/{modelName}\` — Model field documentation
 - \`cardinal://docs/filter/{entityName}\` — Filter factory methods
-- \`cardinal://docs/tutorial/{slug}\` — Tutorial sections
+- \`cardinal://docs/tutorial/{slug}\` — Tutorial sections (${manifest.tutorials.length} tutorials)
+- \`cardinal://docs/guide/{slug}\` — How-to guides, encryption docs, quickstart, troubleshooting (${manifest.guides.length} guides: ${guideSummary})
 
 ## Encryptable Entity Pattern
 Healthcare entities with sensitive data use sealed types:

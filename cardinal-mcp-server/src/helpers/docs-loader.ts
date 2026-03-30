@@ -35,6 +35,7 @@ export interface ModelField {
 
 export interface ModelDoc {
 	name: string;
+	description?: string;
 	variants?: string[];
 	implements?: string[];
 	fields: ModelField[];
@@ -44,10 +45,14 @@ export interface FilterMethodDoc {
 	name: string;
 	description: string;
 	params: Array<{ name: string; type: string }>;
+	returnType?: string;
+	sortable?: boolean;
+	sortOrder?: string;
 }
 
 export interface FilterDoc {
 	entityName: string;
+	description?: string;
 	methods: FilterMethodDoc[];
 }
 
@@ -57,11 +62,20 @@ export interface TutorialDoc {
 	content: string;
 }
 
+export interface GuideDoc {
+	slug: string;
+	title: string;
+	content: string;
+	category: "how-to" | "quickstart" | "encryption" | "troubleshooting";
+}
+
 export interface DocsManifest {
 	apis: Record<string, ApiDoc>;
 	models: Record<string, ModelDoc>;
 	filters: Record<string, FilterDoc>;
 	tutorials: TutorialDoc[];
+	guides: GuideDoc[];
+	filterReference: string;
 }
 
 let cachedManifest: DocsManifest | null = null;

@@ -10,6 +10,7 @@ import { registerModelDocs } from "./resources/model-docs.js";
 import { registerFilterDocs } from "./resources/filter-docs.js";
 import { registerTutorialDocs } from "./resources/tutorial-docs.js";
 import { registerOverview } from "./resources/overview.js";
+import { registerGuideDocs } from "./resources/guide-docs.js";
 
 export function createServer(): McpServer {
 	const server = new McpServer(
@@ -39,6 +40,7 @@ export function createServer(): McpServer {
 	registerModelDocs(server);
 	registerFilterDocs(server);
 	registerTutorialDocs(server);
+	registerGuideDocs(server);
 
 	return server;
 }

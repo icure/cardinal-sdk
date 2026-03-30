@@ -18,7 +18,7 @@ export function registerTutorialDocs(server: McpServer) {
 		}),
 		{
 			title: "Tutorial Documentation",
-			description: "Step-by-step tutorial sections from DOCUMENTATION.md",
+			description: "Step-by-step tutorial sections from SDK.md",
 			mimeType: "text/markdown",
 		},
 		async (uri, variables) => {

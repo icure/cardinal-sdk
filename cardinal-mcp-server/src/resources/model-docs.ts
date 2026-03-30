@@ -41,6 +41,10 @@ export function registerModelDocs(server: McpServer) {
 
 			let md = `# ${model.name}\n\n`;
 
+			if (model.description) {
+				md += `${model.description}\n\n`;
+			}
+
 			if (model.variants) {
 				md += `**Encryptable entity** with variants: ${model.variants.map(v => `\`${v}\``).join(", ")}\n\n`;
 			}
