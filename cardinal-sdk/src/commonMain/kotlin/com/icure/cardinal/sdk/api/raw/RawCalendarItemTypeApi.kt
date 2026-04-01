@@ -4,6 +4,9 @@ import com.icure.cardinal.sdk.model.CalendarItemType
 import com.icure.cardinal.sdk.model.ListOfIds
 import com.icure.cardinal.sdk.model.ListOfIdsAndRev
 import com.icure.cardinal.sdk.model.PaginatedList
+import com.icure.cardinal.sdk.model.conflicts.ConflictResolutionRequest
+import com.icure.cardinal.sdk.model.conflicts.ConflictResolutionResult
+import com.icure.cardinal.sdk.model.conflicts.MergeResult
 import com.icure.cardinal.sdk.model.couchdb.DocIdentifier
 import com.icure.utils.InternalIcureApi
 import kotlin.Int
@@ -63,6 +66,16 @@ public interface RawCalendarItemTypeApi {
 	suspend fun modifyCalendarItemType(calendarItemTypeDto: CalendarItemType): HttpResponse<CalendarItemType>
 
 	suspend fun modifyCalendarItemTypes(calendarItemTypeDtos: List<CalendarItemType>): HttpResponse<List<CalendarItemType>>
+
+	suspend fun getConflictingEntitiesIds(): HttpResponse<List<String>>
+
+	suspend fun getConflictsForEntity(entityId: String): HttpResponse<List<CalendarItemType>>
+
+	suspend fun declareConflictWinner(
+		request: ConflictResolutionRequest<CalendarItemType>,
+	): HttpResponse<ConflictResolutionResult<CalendarItemType>>
+
+	suspend fun autoSolveConflicts(entityIds: List<String>): HttpResponse<List<MergeResult>>
 	// endregion
 
 	// region cloud endpoints
@@ -129,5 +142,22 @@ public interface RawCalendarItemTypeApi {
 		calendarItemTypeId: String,
 		rev: String,
 	): HttpResponse<DocIdentifier>
+
+	suspend fun getConflictingEntitiesIdsInGroup(groupId: String): HttpResponse<List<String>>
+
+	suspend fun getConflictsForEntityInGroup(
+		groupId: String,
+		entityId: String,
+	): HttpResponse<List<CalendarItemType>>
+
+	suspend fun declareConflictWinnerInGroup(
+		groupId: String,
+		request: ConflictResolutionRequest<CalendarItemType>,
+	): HttpResponse<ConflictResolutionResult<CalendarItemType>>
+
+	suspend fun autoSolveConflictsInGroup(
+		groupId: String,
+		entityIds: List<String>,
+	): HttpResponse<List<MergeResult>>
 	// endregion
 }

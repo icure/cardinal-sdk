@@ -4,6 +4,9 @@ import com.icure.cardinal.sdk.model.Device
 import com.icure.cardinal.sdk.model.ListOfIds
 import com.icure.cardinal.sdk.model.ListOfIdsAndRev
 import com.icure.cardinal.sdk.model.PaginatedList
+import com.icure.cardinal.sdk.model.conflicts.ConflictResolutionRequest
+import com.icure.cardinal.sdk.model.conflicts.ConflictResolutionResult
+import com.icure.cardinal.sdk.model.conflicts.MergeResult
 import com.icure.cardinal.sdk.model.couchdb.DocIdentifier
 import com.icure.cardinal.sdk.model.filter.AbstractFilter
 import com.icure.cardinal.sdk.model.filter.chain.FilterChain
@@ -67,6 +70,14 @@ public interface RawDeviceApi {
 	): HttpResponse<DocIdentifier>
 
 	suspend fun purgeDevices(deviceIds: ListOfIdsAndRev): HttpResponse<List<DocIdentifier>>
+
+	suspend fun getConflictingEntitiesIds(): HttpResponse<List<String>>
+
+	suspend fun getConflictsForEntity(entityId: String): HttpResponse<List<Device>>
+
+	suspend fun declareConflictWinner(request: ConflictResolutionRequest<Device>): HttpResponse<ConflictResolutionResult<Device>>
+
+	suspend fun autoSolveConflicts(entityIds: List<String>): HttpResponse<List<MergeResult>>
 	// endregion
 
 	// region cloud endpoints
@@ -138,5 +149,22 @@ public interface RawDeviceApi {
 		groupId: String,
 		filter: AbstractFilter<Device>,
 	): HttpResponse<List<String>>
+
+	suspend fun getConflictingEntitiesIdsInGroup(groupId: String): HttpResponse<List<String>>
+
+	suspend fun getConflictsForEntityInGroup(
+		groupId: String,
+		entityId: String,
+	): HttpResponse<List<Device>>
+
+	suspend fun declareConflictWinnerInGroup(
+		groupId: String,
+		request: ConflictResolutionRequest<Device>,
+	): HttpResponse<ConflictResolutionResult<Device>>
+
+	suspend fun autoSolveConflictsInGroup(
+		groupId: String,
+		entityIds: List<String>,
+	): HttpResponse<List<MergeResult>>
 	// endregion
 }

@@ -6,10 +6,6 @@ import kotlinx.serialization.Serializable
 import kotlin.String
 import kotlin.collections.Map
 
-/**
- *
- *  @author Bernard Paulus on 23/05/17.
- */
 @Serializable
 class WsException(
 	public val level: String,

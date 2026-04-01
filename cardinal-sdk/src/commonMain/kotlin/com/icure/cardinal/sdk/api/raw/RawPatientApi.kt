@@ -7,6 +7,9 @@ import com.icure.cardinal.sdk.model.ListOfIds
 import com.icure.cardinal.sdk.model.ListOfIdsAndRev
 import com.icure.cardinal.sdk.model.PaginatedList
 import com.icure.cardinal.sdk.model.Patient
+import com.icure.cardinal.sdk.model.conflicts.ConflictResolutionRequest
+import com.icure.cardinal.sdk.model.conflicts.ConflictResolutionResult
+import com.icure.cardinal.sdk.model.conflicts.MergeResult
 import com.icure.cardinal.sdk.model.couchdb.DocIdentifier
 import com.icure.cardinal.sdk.model.couchdb.SortDirection
 import com.icure.cardinal.sdk.model.embed.EncryptedContent
@@ -213,6 +216,16 @@ public interface RawPatientApi {
 		updatedInto: EncryptedPatient,
 		omitEncryptionKeysOfFrom: Boolean? = null,
 	): HttpResponse<EncryptedPatient>
+
+	suspend fun getConflictingEntitiesIds(): HttpResponse<List<String>>
+
+	suspend fun getConflictsForEntity(entityId: String): HttpResponse<List<EncryptedPatient>>
+
+	suspend fun declareConflictWinner(
+		request: ConflictResolutionRequest<EncryptedPatient>,
+	): HttpResponse<ConflictResolutionResult<EncryptedPatient>>
+
+	suspend fun autoSolveConflicts(entityIds: List<String>): HttpResponse<List<MergeResult>>
 	// endregion
 
 	// region cloud endpoints
@@ -308,5 +321,22 @@ public interface RawPatientApi {
 		groupId: String,
 		patientIds: ListOfIdsAndRev,
 	): HttpResponse<List<DocIdentifier>>
+
+	suspend fun getConflictingEntitiesIdsInGroup(groupId: String): HttpResponse<List<String>>
+
+	suspend fun getConflictsForEntityInGroup(
+		groupId: String,
+		entityId: String,
+	): HttpResponse<List<EncryptedPatient>>
+
+	suspend fun declareConflictWinnerInGroup(
+		groupId: String,
+		request: ConflictResolutionRequest<EncryptedPatient>,
+	): HttpResponse<ConflictResolutionResult<EncryptedPatient>>
+
+	suspend fun autoSolveConflictsInGroup(
+		groupId: String,
+		entityIds: List<String>,
+	): HttpResponse<List<MergeResult>>
 	// endregion
 }

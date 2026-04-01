@@ -20,7 +20,6 @@ import com.icure.cardinal.sdk.model.embed.UserType
 import com.icure.cardinal.sdk.model.filter.AbstractFilter
 import com.icure.cardinal.sdk.model.security.ExternalJwtConfig
 import com.icure.cardinal.sdk.model.security.Operation
-import com.icure.cardinal.sdk.model.security.PermissionType
 import com.icure.utils.InternalIcureApi
 import kotlin.Boolean
 import kotlin.Int
@@ -51,7 +50,6 @@ public interface RawGroupApi {
 
 	suspend fun registerNewGroupAdministrator(
 		type: GroupType? = null,
-		role: PermissionType? = null,
 		registrationInformation: RegistrationInformation,
 	): HttpResponse<RegistrationSuccess>
 
