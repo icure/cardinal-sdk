@@ -22,7 +22,6 @@ import com.icure.cardinal.sdk.model.embed.RoleConfiguration
 import com.icure.cardinal.sdk.model.embed.UserType
 import com.icure.cardinal.sdk.model.security.ExternalJwtConfig
 import com.icure.cardinal.sdk.model.security.Operation
-import com.icure.cardinal.sdk.model.security.PermissionType
 import com.icure.utils.InternalIcureApi
 import kotlinx.serialization.json.JsonElement
 
@@ -57,10 +56,9 @@ internal class GroupApiImpl(
     ).successBody()
 
     override suspend fun registerNewGroupAdministrator(
-	    type: GroupType?,
-	    role: PermissionType?,
+		type: GroupType?,
 	    registrationInformation: RegistrationInformation,
-    ): RegistrationSuccess = rawApi.registerNewGroupAdministrator(type, role, registrationInformation).successBody()
+    ): RegistrationSuccess = rawApi.registerNewGroupAdministrator(type, registrationInformation).successBody()
 
     override suspend fun listApps(): List<Group> = rawApi.listApps().successBody()
 
