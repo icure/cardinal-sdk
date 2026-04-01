@@ -4,6 +4,9 @@ import com.icure.cardinal.sdk.model.ListOfIds
 import com.icure.cardinal.sdk.model.ListOfIdsAndRev
 import com.icure.cardinal.sdk.model.PaginatedList
 import com.icure.cardinal.sdk.model.Place
+import com.icure.cardinal.sdk.model.conflicts.ConflictResolutionRequest
+import com.icure.cardinal.sdk.model.conflicts.ConflictResolutionResult
+import com.icure.cardinal.sdk.model.conflicts.MergeResult
 import com.icure.cardinal.sdk.model.couchdb.DocIdentifier
 import com.icure.utils.InternalIcureApi
 import kotlin.Int
@@ -55,6 +58,14 @@ public interface RawPlaceApi {
 	suspend fun modifyPlace(placeDto: Place): HttpResponse<Place>
 
 	suspend fun modifyPlaces(placeDtos: List<Place>): HttpResponse<List<Place>>
+
+	suspend fun getConflictingEntitiesIds(): HttpResponse<List<String>>
+
+	suspend fun getConflictsForEntity(entityId: String): HttpResponse<List<Place>>
+
+	suspend fun declareConflictWinner(request: ConflictResolutionRequest<Place>): HttpResponse<ConflictResolutionResult<Place>>
+
+	suspend fun autoSolveConflicts(entityIds: List<String>): HttpResponse<List<MergeResult>>
 	// endregion
 
 	// region cloud endpoints
@@ -121,5 +132,22 @@ public interface RawPlaceApi {
 		groupId: String,
 		placeIds: ListOfIdsAndRev,
 	): HttpResponse<List<DocIdentifier>>
+
+	suspend fun getConflictingEntitiesIdsInGroup(groupId: String): HttpResponse<List<String>>
+
+	suspend fun getConflictsForEntityInGroup(
+		groupId: String,
+		entityId: String,
+	): HttpResponse<List<Place>>
+
+	suspend fun declareConflictWinnerInGroup(
+		groupId: String,
+		request: ConflictResolutionRequest<Place>,
+	): HttpResponse<ConflictResolutionResult<Place>>
+
+	suspend fun autoSolveConflictsInGroup(
+		groupId: String,
+		entityIds: List<String>,
+	): HttpResponse<List<MergeResult>>
 	// endregion
 }

@@ -6,6 +6,9 @@ import com.icure.cardinal.sdk.model.ListOfIdsAndRev
 import com.icure.cardinal.sdk.model.PaginatedList
 import com.icure.cardinal.sdk.model.User
 import com.icure.cardinal.sdk.model.UserGroup
+import com.icure.cardinal.sdk.model.conflicts.ConflictResolutionRequest
+import com.icure.cardinal.sdk.model.conflicts.ConflictResolutionResult
+import com.icure.cardinal.sdk.model.conflicts.MergeResult
 import com.icure.cardinal.sdk.model.couchdb.DocIdentifier
 import com.icure.cardinal.sdk.model.filter.AbstractFilter
 import com.icure.cardinal.sdk.model.filter.chain.FilterChain
@@ -121,6 +124,14 @@ public interface RawUserApi {
 		userId: String,
 		request: ChangeUserPasswordRequest,
 	): HttpResponse<User>
+
+	suspend fun getConflictingEntitiesIds(): HttpResponse<List<String>>
+
+	suspend fun getConflictsForEntity(entityId: String): HttpResponse<List<User>>
+
+	suspend fun declareConflictWinner(request: ConflictResolutionRequest<User>): HttpResponse<ConflictResolutionResult<User>>
+
+	suspend fun autoSolveConflicts(entityIds: List<String>): HttpResponse<List<MergeResult>>
 	// endregion
 
 	// region cloud endpoints
@@ -340,5 +351,22 @@ public interface RawUserApi {
 		groupId: String,
 		request: ChangeUserPasswordRequest,
 	): HttpResponse<User>
+
+	suspend fun getConflictingEntitiesIdsInGroup(groupId: String): HttpResponse<List<String>>
+
+	suspend fun getConflictsForEntityInGroup(
+		groupId: String,
+		entityId: String,
+	): HttpResponse<List<User>>
+
+	suspend fun declareConflictWinnerInGroup(
+		groupId: String,
+		request: ConflictResolutionRequest<User>,
+	): HttpResponse<ConflictResolutionResult<User>>
+
+	suspend fun autoSolveConflictsInGroup(
+		groupId: String,
+		entityIds: List<String>,
+	): HttpResponse<List<MergeResult>>
 	// endregion
 }

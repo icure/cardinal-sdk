@@ -14,11 +14,6 @@ import kotlin.collections.Map
 import kotlin.collections.Set
 import kotlin.Boolean
 
-/**
- *
- *  Created by aduchate on 02/07/13, 11:59
- */
-
 sealed interface PatientHealthCareParty : Encryptable {
 	public val type: PatientHealthCarePartyType?
 
@@ -36,10 +31,6 @@ sealed interface PatientHealthCareParty : Encryptable {
 	// endregion
 }
 
-/**
- *
- *  Created by aduchate on 02/07/13, 11:59
- */
 @Serializable
 data class DecryptedPatientHealthCareParty(
 	override val type: PatientHealthCarePartyType? = null,
@@ -56,10 +47,6 @@ data class DecryptedPatientHealthCareParty(
 	// endregion
 }
 
-/**
- *
- *  Created by aduchate on 02/07/13, 11:59
- */
 @Serializable
 data class EncryptedPatientHealthCareParty(
 	override val type: PatientHealthCarePartyType? = null,

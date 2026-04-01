@@ -26,7 +26,6 @@ import com.icure.cardinal.sdk.model.embed.UserType
 import com.icure.cardinal.sdk.model.filter.AbstractFilter
 import com.icure.cardinal.sdk.model.security.ExternalJwtConfig
 import com.icure.cardinal.sdk.model.security.Operation
-import com.icure.cardinal.sdk.model.security.PermissionType
 import com.icure.cardinal.sdk.serialization.GroupAbstractFilterSerializer
 import com.icure.utils.InternalIcureApi
 import io.ktor.client.request.accept
@@ -88,7 +87,6 @@ class RawGroupApiImpl(
 
 	override suspend fun registerNewGroupAdministrator(
 		type: GroupType?,
-		role: PermissionType?,
 		registrationInformation: RegistrationInformation,
 	): HttpResponse<RegistrationSuccess> =
 		post(authProvider) {
@@ -96,7 +94,6 @@ class RawGroupApiImpl(
 				takeFrom(apiUrl)
 				appendPathSegments("rest", "v2", "group", "register", "trial")
 				parameter("type", type?.dtoSerialName)
-				parameter("role", role?.dtoSerialName)
 			}
 			contentType(Application.Json)
 			accept(Application.Json)

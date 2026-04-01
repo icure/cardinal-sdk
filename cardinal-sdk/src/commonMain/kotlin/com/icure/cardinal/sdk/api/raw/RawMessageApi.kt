@@ -6,6 +6,9 @@ import com.icure.cardinal.sdk.model.ListOfIdsAndRev
 import com.icure.cardinal.sdk.model.Message
 import com.icure.cardinal.sdk.model.MessagesReadStatusUpdate
 import com.icure.cardinal.sdk.model.PaginatedList
+import com.icure.cardinal.sdk.model.conflicts.ConflictResolutionRequest
+import com.icure.cardinal.sdk.model.conflicts.ConflictResolutionResult
+import com.icure.cardinal.sdk.model.conflicts.MergeResult
 import com.icure.cardinal.sdk.model.couchdb.DocIdentifier
 import com.icure.cardinal.sdk.model.filter.AbstractFilter
 import com.icure.cardinal.sdk.model.filter.chain.FilterChain
@@ -136,6 +139,16 @@ public interface RawMessageApi {
 	): HttpResponse<PaginatedList<EncryptedMessage>>
 
 	suspend fun matchMessagesBy(filter: AbstractFilter<Message>): HttpResponse<List<String>>
+
+	suspend fun getConflictingEntitiesIds(): HttpResponse<List<String>>
+
+	suspend fun getConflictsForEntity(entityId: String): HttpResponse<List<EncryptedMessage>>
+
+	suspend fun declareConflictWinner(
+		request: ConflictResolutionRequest<EncryptedMessage>,
+	): HttpResponse<ConflictResolutionResult<EncryptedMessage>>
+
+	suspend fun autoSolveConflicts(entityIds: List<String>): HttpResponse<List<MergeResult>>
 	// endregion
 
 	// region cloud endpoints
@@ -214,5 +227,22 @@ public interface RawMessageApi {
 		request: BulkShareOrUpdateMetadataParams,
 		groupId: String,
 	): HttpResponse<List<EntityBulkShareResult<EncryptedMessage>>>
+
+	suspend fun getConflictingEntitiesIdsInGroup(groupId: String): HttpResponse<List<String>>
+
+	suspend fun getConflictsForEntityInGroup(
+		groupId: String,
+		entityId: String,
+	): HttpResponse<List<EncryptedMessage>>
+
+	suspend fun declareConflictWinnerInGroup(
+		groupId: String,
+		request: ConflictResolutionRequest<EncryptedMessage>,
+	): HttpResponse<ConflictResolutionResult<EncryptedMessage>>
+
+	suspend fun autoSolveConflictsInGroup(
+		groupId: String,
+		entityIds: List<String>,
+	): HttpResponse<List<MergeResult>>
 	// endregion
 }

@@ -6,10 +6,6 @@ import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 import kotlin.String
 
-/**
- *
- *  Created by aduchate on 21/01/13, 14:53
- */
 @Serializable
 enum class AddressType(
 	internal val dtoSerialName: String,
