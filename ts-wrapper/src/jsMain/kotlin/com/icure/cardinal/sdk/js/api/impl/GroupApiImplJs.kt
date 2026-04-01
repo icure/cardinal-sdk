@@ -57,7 +57,6 @@ import com.icure.cardinal.sdk.model.embed.RoleConfiguration
 import com.icure.cardinal.sdk.model.embed.UserType
 import com.icure.cardinal.sdk.model.security.ExternalJwtConfig
 import com.icure.cardinal.sdk.model.security.Operation
-import com.icure.cardinal.sdk.model.security.PermissionType
 import kotlin.Array
 import kotlin.Boolean
 import kotlin.Double
@@ -183,20 +182,10 @@ internal class GroupApiImplJs(
 					GroupType.valueOf(nonNull1)
 				}
 			}
-			val roleConverted: PermissionType? = convertingOptionOrDefaultNullable(
-				_options,
-				"role",
-				null
-			) { role: String? ->
-				role?.let { nonNull1 ->
-					PermissionType.valueOf(nonNull1)
-				}
-			}
 			val registrationInformationConverted: RegistrationInformation =
 					registrationInformation_fromJs(registrationInformation)
 			val result = groupApi.registerNewGroupAdministrator(
 				typeConverted,
-				roleConverted,
 				registrationInformationConverted,
 			)
 			registrationSuccess_toJs(result)
