@@ -17,7 +17,6 @@ import {RoleConfiguration} from '../model/embed/RoleConfiguration.mjs';
 import {UserType} from '../model/embed/UserType.mjs';
 import {ExternalJwtConfig} from '../model/security/ExternalJwtConfig.mjs';
 import {Operation} from '../model/security/Operation.mjs';
-import {PermissionType} from '../model/security/PermissionType.mjs';
 
 
 export interface GroupApi {
@@ -35,7 +34,7 @@ export interface GroupApi {
 	): Promise<Group>;
 
 	registerNewGroupAdministrator(registrationInformation: RegistrationInformation,
-			options?: { type?: GroupType | undefined, role?: PermissionType | undefined }): Promise<RegistrationSuccess>;
+			options?: { type?: GroupType | undefined }): Promise<RegistrationSuccess>;
 
 	listApps(): Promise<Array<Group>>;
 
