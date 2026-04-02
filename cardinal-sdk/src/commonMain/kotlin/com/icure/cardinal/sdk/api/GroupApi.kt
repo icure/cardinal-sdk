@@ -18,7 +18,6 @@ import com.icure.cardinal.sdk.model.embed.RoleConfiguration
 import com.icure.cardinal.sdk.model.embed.UserType
 import com.icure.cardinal.sdk.model.security.ExternalJwtConfig
 import com.icure.cardinal.sdk.model.security.Operation
-import com.icure.cardinal.sdk.model.security.PermissionType
 import com.icure.cardinal.sdk.utils.DefaultValue
 import kotlinx.serialization.json.JsonElement
 
@@ -47,8 +46,6 @@ interface GroupApi {
 	suspend fun registerNewGroupAdministrator(
 		@DefaultValue("null")
 		type: GroupType? = null,
-		@DefaultValue("null")
-		role: PermissionType? = null,
 		registrationInformation: RegistrationInformation,
 	): RegistrationSuccess
 

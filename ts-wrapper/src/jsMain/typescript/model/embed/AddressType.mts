@@ -1,10 +1,5 @@
 // auto-generated file
 
-/**
- *
- *
- *   Created by aduchate on 21/01/13, 14:53
- */
 export enum AddressType {
 	Home = "Home",
 	Work = "Work",

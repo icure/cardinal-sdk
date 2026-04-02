@@ -3,6 +3,7 @@ package com.icure.cardinal.sdk.api.impl
 import com.icure.cardinal.sdk.api.RecoveryApi
 import com.icure.cardinal.sdk.api.raw.HttpResponse
 import com.icure.cardinal.sdk.crypto.InternalCryptoServices
+import com.icure.cardinal.sdk.crypto.entities.DataOwnerKeyInfo
 import com.icure.cardinal.sdk.model.EntityReferenceInGroup
 import com.icure.cardinal.sdk.crypto.entities.ExchangeDataRecoveryDetails
 import com.icure.cardinal.sdk.crypto.entities.RawDecryptedExchangeData
@@ -47,18 +48,55 @@ internal class RecoveryApiImpl(
 		} else {
 			listOf(allAvailableKeys.self)
 		}
-		val keyPairsToSave = dataOwnersToInclude.associate { dataOwnerKeyInfo ->
+		return createRecoveryDataWithVerifiedKeysFrom(
+			keys = dataOwnersToInclude,
+			recoveryDataRecipientId = selfId,
+			lifetimeSeconds = lifetimeSeconds,
+			recoveryKeyOptions = recoveryKeyOptions
+		)
+	}
+
+	override suspend fun createRecoveryInfoForAvailableParentKeyPairs(
+		parentId: String,
+		includeAncestorKeys: Boolean,
+		lifetimeSeconds: Int?,
+		recoveryKeyOptions: RecoveryKeyOptions?
+	): RecoveryDataKey {
+		val allAvailableKeypairs = crypto.userEncryptionKeysManager.getCurrentUserHierarchyAvailableKeypairs()
+		require (allAvailableKeypairs.parents.any { it.dataOwnerId == parentId }) {
+			"Data owner $parentId is not part of the current data owner hierarchy, or its keys are not available to the current SDK instance"
+		}
+		val dataOwnersToInclude = if (includeAncestorKeys) {
+			allAvailableKeypairs.parents.reversed().dropWhile { it.dataOwnerId != parentId }
+		} else {
+			listOf(allAvailableKeypairs.parents.first { it.dataOwnerId == parentId })
+		}
+		return createRecoveryDataWithVerifiedKeysFrom(
+			keys = dataOwnersToInclude,
+			recoveryDataRecipientId = parentId,
+			lifetimeSeconds = lifetimeSeconds,
+			recoveryKeyOptions = recoveryKeyOptions
+		)
+	}
+
+	private suspend fun createRecoveryDataWithVerifiedKeysFrom(
+		keys: Collection<DataOwnerKeyInfo>,
+		recoveryDataRecipientId: String,
+		lifetimeSeconds: Int?,
+		recoveryKeyOptions: RecoveryKeyOptions?
+	): RecoveryDataKey {
+		val keyPairsToSave = keys.associate { dataOwnerKeyInfo ->
 			dataOwnerKeyInfo.dataOwnerId to dataOwnerKeyInfo.keys.mapNotNull {
 				if (it.isVerified || it.isDevice) {
 					it.keyPair.key
 				} else null
 			}
 		}
-		check (keyPairsToSave.isNotEmpty()) {
+		check (keyPairsToSave.isNotEmpty() && keyPairsToSave.any { it.value.isNotEmpty() }) {
 			"There are no available key pairs to create recovery info for.\n" +
-			"In keyless or parent-delegator there are no keys available for the current data owner."
+				"In keyless or parent-delegator there are no keys available for the current data owner."
 		}
-		return crypto.recoveryDataEncryption.createAndSaveKeyPairsRecoveryDataFor(selfId, keyPairsToSave, lifetimeSeconds, recoveryKeyOptions)
+		return crypto.recoveryDataEncryption.createAndSaveKeyPairsRecoveryDataFor(recoveryDataRecipientId, keyPairsToSave, lifetimeSeconds, recoveryKeyOptions)
 	}
 
 	override suspend fun recoverKeyPairs(

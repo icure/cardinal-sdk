@@ -85,6 +85,44 @@ internal class RecoveryApiImplJs(
 		}
 	}
 
+	override fun createRecoveryInfoForAvailableParentKeyPairs(parentId: String, options: dynamic):
+			Promise<RecoveryDataKeyJs> {
+		val _options = options ?: js("{}")
+		return GlobalScope.promise {
+			val parentIdConverted: String = parentId
+			val includeAncestorKeysConverted: Boolean = convertingOptionOrDefaultNonNull(
+				_options,
+				"includeAncestorKeys",
+				false
+			) { includeAncestorKeys: Boolean ->
+				includeAncestorKeys
+			}
+			val lifetimeSecondsConverted: Int? = convertingOptionOrDefaultNullable(
+				_options,
+				"lifetimeSeconds",
+				null
+			) { lifetimeSeconds: Double? ->
+				numberToInt(lifetimeSeconds, "lifetimeSeconds")
+			}
+			val recoveryKeyOptionsConverted: RecoveryKeyOptions? = convertingOptionOrDefaultNullable(
+				_options,
+				"recoveryKeyOptions",
+				null
+			) { recoveryKeyOptions: RecoveryKeyOptionsJs? ->
+				recoveryKeyOptions?.let { nonNull1 ->
+					recoveryKeyOptions_fromJs(nonNull1)
+				}
+			}
+			val result = recoveryApi.createRecoveryInfoForAvailableParentKeyPairs(
+				parentIdConverted,
+				includeAncestorKeysConverted,
+				lifetimeSecondsConverted,
+				recoveryKeyOptionsConverted,
+			)
+			recoveryDataKey_toJs(result)
+		}
+	}
+
 	override fun recoverKeyPairs(recoveryKey: RecoveryDataKeyJs, autoDelete: Boolean):
 			Promise<RecoveryResultJs<Record<String, Record<String, XRsaKeypair>>>> = GlobalScope.promise {
 		val recoveryKeyConverted: RecoveryDataKey = recoveryDataKey_fromJs(recoveryKey)

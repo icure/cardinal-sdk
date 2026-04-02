@@ -32,21 +32,56 @@ interface RecoveryApi {
 	 *
 	 * # Important
 	 *
-	 * The recovery key must be kept secret can give access to the private key of the user, therefore it must be kept
-	 * private.
+	 * The recovery key can give access to the private key of the user, therefore it must be kept private.
 	 *
-	 * @param includeParentsKeys if true, the recovery data will also contain any available keypairs for parents data
-	 * owners.
+	 * @param includeParentsKeys if true, the recovery data will also contain any available keypairs for parents (direct
+	 * or indirect) data owners.
 	 * @param lifetimeSeconds the amount of seconds the recovery data will be available. If not provided, the recovery
 	 * data will be available until it is explicitly deleted.
 	 * @param recoveryKeyOptions specifies the size of the recovery key to generate, or if it should use a precomputed
 	 * key.
-	 * @return an hexadecimal string that is the `recoveryKey` which will allow the user to recover his keypair later or
-	 * from another device. This value must be kept secret from other users. You can use this value with {@link recoverKeyPairs}
+	 * @return a recovery key for the available keypairs
 	 */
 	suspend fun createRecoveryInfoForAvailableKeyPairs(
 		@DefaultValue("false")
 		includeParentsKeys: Boolean = false,
+		@DefaultValue("null")
+		lifetimeSeconds: Int? = null,
+		@DefaultValue("null")
+		recoveryKeyOptions: RecoveryKeyOptions? = null,
+	): RecoveryDataKey
+
+	/**
+	 * Create recovery data containing available keypairs for a parent hcp of the logged user and stores it encrypted
+	 * on the iCure server, similarly to [createRecoveryInfoForAvailableKeyPairs].
+	 *
+	 * Requires that the current user has the "RecoveryDataManagement.ExtendedCreate.ForParent" permission (or stronger),
+	 * and that the user for which the data is intended has the "RecoveryDataManagement.ExtendedRead.ForParent"
+	 *
+	 * This can be used to let another user that is a child of the same [parentId] to initialize or recover the
+	 * existing keypairs of the parent data owner.
+	 *
+	 * # Important
+	 *
+	 *  The recovery key can give access to the private key of the parent, therefore it must be kept private or shared
+	 *  only with other users that have the same parent.
+	 *
+	 * @param parentId the id of a parent of the current user's data owner
+	 * @param includeAncestorKeys if true, the recovery data will also contain any available keypairs for parents
+	 * (direct or indirect) of the [parentId] data owners.
+	 * @param lifetimeSeconds the amount of seconds the recovery data will be available. If not provided, the recovery
+	 * data will be available until it is explicitly deleted.
+	 * @param recoveryKeyOptions specifies the size of the recovery key to generate, or if it should use a precomputed
+	 * key.
+	 * @return a recovery key for the available parent keypairs.
+	 * @throws IllegalArgumentException if the provided [parentId] is not a parent of the current user's data owner, or
+	 * if the current data owner has no access to any of the parent keys (the sdk was not initialized in hierarchical
+	 * mode)
+	 */
+	suspend fun createRecoveryInfoForAvailableParentKeyPairs(
+		parentId: String,
+		@DefaultValue("false")
+		includeAncestorKeys: Boolean = false,
 		@DefaultValue("null")
 		lifetimeSeconds: Int? = null,
 		@DefaultValue("null")

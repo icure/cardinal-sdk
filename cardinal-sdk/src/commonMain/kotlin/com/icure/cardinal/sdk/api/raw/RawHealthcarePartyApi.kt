@@ -6,6 +6,9 @@ import com.icure.cardinal.sdk.model.ListOfIds
 import com.icure.cardinal.sdk.model.ListOfIdsAndRev
 import com.icure.cardinal.sdk.model.PaginatedList
 import com.icure.cardinal.sdk.model.PublicKey
+import com.icure.cardinal.sdk.model.conflicts.ConflictResolutionRequest
+import com.icure.cardinal.sdk.model.conflicts.ConflictResolutionResult
+import com.icure.cardinal.sdk.model.conflicts.MergeResult
 import com.icure.cardinal.sdk.model.couchdb.DocIdentifier
 import com.icure.cardinal.sdk.model.filter.AbstractFilter
 import com.icure.cardinal.sdk.model.filter.chain.FilterChain
@@ -111,6 +114,16 @@ public interface RawHealthcarePartyApi {
 		limit: Int? = null,
 		filterChain: FilterChain<HealthcareParty>,
 	): HttpResponse<PaginatedList<HealthcareParty>>
+
+	suspend fun getConflictingEntitiesIds(): HttpResponse<List<String>>
+
+	suspend fun getConflictsForEntity(entityId: String): HttpResponse<List<HealthcareParty>>
+
+	suspend fun declareConflictWinner(
+		request: ConflictResolutionRequest<HealthcareParty>,
+	): HttpResponse<ConflictResolutionResult<HealthcareParty>>
+
+	suspend fun autoSolveConflicts(entityIds: List<String>): HttpResponse<List<MergeResult>>
 	// endregion
 
 	// region cloud endpoints
@@ -207,5 +220,22 @@ public interface RawHealthcarePartyApi {
 		groupId: String,
 		filter: AbstractFilter<HealthcareParty>,
 	): HttpResponse<List<String>>
+
+	suspend fun getConflictingEntitiesIdsInGroup(groupId: String): HttpResponse<List<String>>
+
+	suspend fun getConflictsForEntityInGroup(
+		groupId: String,
+		entityId: String,
+	): HttpResponse<List<HealthcareParty>>
+
+	suspend fun declareConflictWinnerInGroup(
+		groupId: String,
+		request: ConflictResolutionRequest<HealthcareParty>,
+	): HttpResponse<ConflictResolutionResult<HealthcareParty>>
+
+	suspend fun autoSolveConflictsInGroup(
+		groupId: String,
+		entityIds: List<String>,
+	): HttpResponse<List<MergeResult>>
 	// endregion
 }

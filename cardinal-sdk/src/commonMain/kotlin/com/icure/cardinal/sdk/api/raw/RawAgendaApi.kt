@@ -4,6 +4,9 @@ import com.icure.cardinal.sdk.model.Agenda
 import com.icure.cardinal.sdk.model.ListOfIds
 import com.icure.cardinal.sdk.model.ListOfIdsAndRev
 import com.icure.cardinal.sdk.model.PaginatedList
+import com.icure.cardinal.sdk.model.conflicts.ConflictResolutionRequest
+import com.icure.cardinal.sdk.model.conflicts.ConflictResolutionResult
+import com.icure.cardinal.sdk.model.conflicts.MergeResult
 import com.icure.cardinal.sdk.model.couchdb.DocIdentifier
 import com.icure.cardinal.sdk.model.filter.AbstractFilter
 import com.icure.utils.InternalIcureApi
@@ -60,6 +63,14 @@ public interface RawAgendaApi {
 	suspend fun matchAgendasBy(filter: AbstractFilter<Agenda>): HttpResponse<List<String>>
 
 	suspend fun getAgendasByIds(agendaIds: ListOfIds): HttpResponse<List<Agenda>>
+
+	suspend fun getConflictingEntitiesIds(): HttpResponse<List<String>>
+
+	suspend fun getConflictsForEntity(entityId: String): HttpResponse<List<Agenda>>
+
+	suspend fun declareConflictWinner(request: ConflictResolutionRequest<Agenda>): HttpResponse<ConflictResolutionResult<Agenda>>
+
+	suspend fun autoSolveConflicts(entityIds: List<String>): HttpResponse<List<MergeResult>>
 	// endregion
 
 	// region cloud endpoints
@@ -131,5 +142,22 @@ public interface RawAgendaApi {
 		filter: AbstractFilter<Agenda>,
 		groupId: String,
 	): HttpResponse<List<String>>
+
+	suspend fun getConflictingEntitiesIdsInGroup(groupId: String): HttpResponse<List<String>>
+
+	suspend fun getConflictsForEntityInGroup(
+		groupId: String,
+		entityId: String,
+	): HttpResponse<List<Agenda>>
+
+	suspend fun declareConflictWinnerInGroup(
+		groupId: String,
+		request: ConflictResolutionRequest<Agenda>,
+	): HttpResponse<ConflictResolutionResult<Agenda>>
+
+	suspend fun autoSolveConflictsInGroup(
+		groupId: String,
+		entityIds: List<String>,
+	): HttpResponse<List<MergeResult>>
 	// endregion
 }

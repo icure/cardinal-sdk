@@ -12,6 +12,9 @@ import com.icure.cardinal.sdk.model.ListOfIds
 import com.icure.cardinal.sdk.model.ListOfIdsAndRev
 import com.icure.cardinal.sdk.model.PaginatedList
 import com.icure.cardinal.sdk.model.PublicKey
+import com.icure.cardinal.sdk.model.conflicts.ConflictResolutionRequest
+import com.icure.cardinal.sdk.model.conflicts.ConflictResolutionResult
+import com.icure.cardinal.sdk.model.conflicts.MergeResult
 import com.icure.cardinal.sdk.model.couchdb.DocIdentifier
 import com.icure.cardinal.sdk.model.filter.AbstractFilter
 import com.icure.cardinal.sdk.model.filter.chain.FilterChain
@@ -357,6 +360,50 @@ class RawHealthcarePartyApiImpl(
 			)
 		}.wrap()
 
+	override suspend fun getConflictingEntitiesIds(): HttpResponse<List<String>> =
+		get(authProvider) {
+			url {
+				takeFrom(apiUrl)
+				appendPathSegments("rest", "v2", "hcparty", "conflicts")
+				parameter("ts", GMTDate().timestamp)
+			}
+			accept(Application.Json)
+		}.wrap()
+
+	override suspend fun getConflictsForEntity(entityId: String): HttpResponse<List<HealthcareParty>> =
+		get(authProvider) {
+			url {
+				takeFrom(apiUrl)
+				appendPathSegments("rest", "v2", "hcparty", "conflicts", entityId)
+				parameter("ts", GMTDate().timestamp)
+			}
+			accept(Application.Json)
+		}.wrap()
+
+	override suspend fun declareConflictWinner(
+		request: ConflictResolutionRequest<HealthcareParty>,
+	): HttpResponse<ConflictResolutionResult<HealthcareParty>> =
+		post(authProvider) {
+			url {
+				takeFrom(apiUrl)
+				appendPathSegments("rest", "v2", "hcparty", "conflicts", "winner")
+			}
+			contentType(Application.Json)
+			accept(Application.Json)
+			setBody(request)
+		}.wrap()
+
+	override suspend fun autoSolveConflicts(entityIds: List<String>): HttpResponse<List<MergeResult>> =
+		post(authProvider) {
+			url {
+				takeFrom(apiUrl)
+				appendPathSegments("rest", "v2", "hcparty", "conflicts", "solve")
+			}
+			contentType(Application.Json)
+			accept(Application.Json)
+			setBody(entityIds)
+		}.wrap()
+
 	// endregion
 
 	// region cloud endpoints
@@ -603,6 +650,57 @@ class RawHealthcarePartyApiImpl(
 			contentType(Application.Json)
 			accept(Application.Json)
 			setBodyWithSerializer(HealthcarePartyAbstractFilterSerializer, filter)
+		}.wrap()
+
+	override suspend fun getConflictingEntitiesIdsInGroup(groupId: String): HttpResponse<List<String>> =
+		get(authProvider) {
+			url {
+				takeFrom(apiUrl)
+				appendPathSegments("rest", "v2", "hcparty", "inGroup", groupId, "conflicts")
+				parameter("ts", GMTDate().timestamp)
+			}
+			accept(Application.Json)
+		}.wrap()
+
+	override suspend fun getConflictsForEntityInGroup(
+		groupId: String,
+		entityId: String,
+	): HttpResponse<List<HealthcareParty>> =
+		get(authProvider) {
+			url {
+				takeFrom(apiUrl)
+				appendPathSegments("rest", "v2", "hcparty", "inGroup", groupId, "conflicts", entityId)
+				parameter("ts", GMTDate().timestamp)
+			}
+			accept(Application.Json)
+		}.wrap()
+
+	override suspend fun declareConflictWinnerInGroup(
+		groupId: String,
+		request: ConflictResolutionRequest<HealthcareParty>,
+	): HttpResponse<ConflictResolutionResult<HealthcareParty>> =
+		post(authProvider) {
+			url {
+				takeFrom(apiUrl)
+				appendPathSegments("rest", "v2", "hcparty", "inGroup", groupId, "conflicts", "winner")
+			}
+			contentType(Application.Json)
+			accept(Application.Json)
+			setBody(request)
+		}.wrap()
+
+	override suspend fun autoSolveConflictsInGroup(
+		groupId: String,
+		entityIds: List<String>,
+	): HttpResponse<List<MergeResult>> =
+		post(authProvider) {
+			url {
+				takeFrom(apiUrl)
+				appendPathSegments("rest", "v2", "hcparty", "inGroup", groupId, "conflicts", "solve")
+			}
+			contentType(Application.Json)
+			accept(Application.Json)
+			setBody(entityIds)
 		}.wrap()
 
 	// endregion

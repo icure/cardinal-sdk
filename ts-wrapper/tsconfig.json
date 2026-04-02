@@ -1,8 +1,8 @@
 {
   "compilerOptions": {
     "target": "es6",
-    "module": "es6",
-    "moduleResolution": "node",
+    "module": "node16",
+    "moduleResolution": "node16",
     "experimentalDecorators": true,
     "emitDecoratorMetadata": true,
     "strict": true,
@@ -19,7 +19,7 @@
     "sourceMap": false,
     "declaration": true,
     "outDir": "./build/tsCompiledSources",
-    "baseUrl": "./"
+    "rootDir": "./build/tsSourcesProject"
   },
   "include": [
     "build/tsSourcesProject/**/*.mts",

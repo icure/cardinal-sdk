@@ -3,6 +3,9 @@ package com.icure.cardinal.sdk.api.raw
 import com.icure.cardinal.sdk.model.EncryptedReceipt
 import com.icure.cardinal.sdk.model.ListOfIds
 import com.icure.cardinal.sdk.model.ListOfIdsAndRev
+import com.icure.cardinal.sdk.model.conflicts.ConflictResolutionRequest
+import com.icure.cardinal.sdk.model.conflicts.ConflictResolutionResult
+import com.icure.cardinal.sdk.model.conflicts.MergeResult
 import com.icure.cardinal.sdk.model.couchdb.DocIdentifier
 import com.icure.cardinal.sdk.model.requests.BulkShareOrUpdateMetadataParams
 import com.icure.cardinal.sdk.model.requests.EntityBulkShareResult
@@ -67,6 +70,16 @@ public interface RawReceiptApi {
 	suspend fun modifyReceipts(receiptDtos: List<EncryptedReceipt>): HttpResponse<List<EncryptedReceipt>>
 
 	suspend fun bulkShare(request: BulkShareOrUpdateMetadataParams): HttpResponse<List<EntityBulkShareResult<EncryptedReceipt>>>
+
+	suspend fun getConflictingEntitiesIds(): HttpResponse<List<String>>
+
+	suspend fun getConflictsForEntity(entityId: String): HttpResponse<List<EncryptedReceipt>>
+
+	suspend fun declareConflictWinner(
+		request: ConflictResolutionRequest<EncryptedReceipt>,
+	): HttpResponse<ConflictResolutionResult<EncryptedReceipt>>
+
+	suspend fun autoSolveConflicts(entityIds: List<String>): HttpResponse<List<MergeResult>>
 	// endregion
 
 	// region cloud endpoints
@@ -138,5 +151,22 @@ public interface RawReceiptApi {
 		request: BulkShareOrUpdateMetadataParams,
 		groupId: String,
 	): HttpResponse<List<EntityBulkShareResult<EncryptedReceipt>>>
+
+	suspend fun getConflictingEntitiesIdsInGroup(groupId: String): HttpResponse<List<String>>
+
+	suspend fun getConflictsForEntityInGroup(
+		groupId: String,
+		entityId: String,
+	): HttpResponse<List<EncryptedReceipt>>
+
+	suspend fun declareConflictWinnerInGroup(
+		groupId: String,
+		request: ConflictResolutionRequest<EncryptedReceipt>,
+	): HttpResponse<ConflictResolutionResult<EncryptedReceipt>>
+
+	suspend fun autoSolveConflictsInGroup(
+		groupId: String,
+		entityIds: List<String>,
+	): HttpResponse<List<MergeResult>>
 	// endregion
 }

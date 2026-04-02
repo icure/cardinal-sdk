@@ -12,6 +12,9 @@ import com.icure.cardinal.sdk.model.ListOfIdsAndRev
 import com.icure.cardinal.sdk.model.PaginatedList
 import com.icure.cardinal.sdk.model.User
 import com.icure.cardinal.sdk.model.UserGroup
+import com.icure.cardinal.sdk.model.conflicts.ConflictResolutionRequest
+import com.icure.cardinal.sdk.model.conflicts.ConflictResolutionResult
+import com.icure.cardinal.sdk.model.conflicts.MergeResult
 import com.icure.cardinal.sdk.model.couchdb.DocIdentifier
 import com.icure.cardinal.sdk.model.filter.AbstractFilter
 import com.icure.cardinal.sdk.model.filter.chain.FilterChain
@@ -377,6 +380,48 @@ class RawUserApiImpl(
 			contentType(Application.Json)
 			accept(Application.Json)
 			setBody(request)
+		}.wrap()
+
+	override suspend fun getConflictingEntitiesIds(): HttpResponse<List<String>> =
+		get(authProvider) {
+			url {
+				takeFrom(apiUrl)
+				appendPathSegments("rest", "v2", "user", "conflicts")
+				parameter("ts", GMTDate().timestamp)
+			}
+			accept(Application.Json)
+		}.wrap()
+
+	override suspend fun getConflictsForEntity(entityId: String): HttpResponse<List<User>> =
+		get(authProvider) {
+			url {
+				takeFrom(apiUrl)
+				appendPathSegments("rest", "v2", "user", "conflicts", entityId)
+				parameter("ts", GMTDate().timestamp)
+			}
+			accept(Application.Json)
+		}.wrap()
+
+	override suspend fun declareConflictWinner(request: ConflictResolutionRequest<User>): HttpResponse<ConflictResolutionResult<User>> =
+		post(authProvider) {
+			url {
+				takeFrom(apiUrl)
+				appendPathSegments("rest", "v2", "user", "conflicts", "winner")
+			}
+			contentType(Application.Json)
+			accept(Application.Json)
+			setBody(request)
+		}.wrap()
+
+	override suspend fun autoSolveConflicts(entityIds: List<String>): HttpResponse<List<MergeResult>> =
+		post(authProvider) {
+			url {
+				takeFrom(apiUrl)
+				appendPathSegments("rest", "v2", "user", "conflicts", "solve")
+			}
+			contentType(Application.Json)
+			accept(Application.Json)
+			setBody(entityIds)
 		}.wrap()
 
 	// endregion
@@ -992,6 +1037,57 @@ class RawUserApiImpl(
 			contentType(Application.Json)
 			accept(Application.Json)
 			setBody(request)
+		}.wrap()
+
+	override suspend fun getConflictingEntitiesIdsInGroup(groupId: String): HttpResponse<List<String>> =
+		get(authProvider) {
+			url {
+				takeFrom(apiUrl)
+				appendPathSegments("rest", "v2", "user", "inGroup", groupId, "conflicts")
+				parameter("ts", GMTDate().timestamp)
+			}
+			accept(Application.Json)
+		}.wrap()
+
+	override suspend fun getConflictsForEntityInGroup(
+		groupId: String,
+		entityId: String,
+	): HttpResponse<List<User>> =
+		get(authProvider) {
+			url {
+				takeFrom(apiUrl)
+				appendPathSegments("rest", "v2", "user", "inGroup", groupId, "conflicts", entityId)
+				parameter("ts", GMTDate().timestamp)
+			}
+			accept(Application.Json)
+		}.wrap()
+
+	override suspend fun declareConflictWinnerInGroup(
+		groupId: String,
+		request: ConflictResolutionRequest<User>,
+	): HttpResponse<ConflictResolutionResult<User>> =
+		post(authProvider) {
+			url {
+				takeFrom(apiUrl)
+				appendPathSegments("rest", "v2", "user", "inGroup", groupId, "conflicts", "winner")
+			}
+			contentType(Application.Json)
+			accept(Application.Json)
+			setBody(request)
+		}.wrap()
+
+	override suspend fun autoSolveConflictsInGroup(
+		groupId: String,
+		entityIds: List<String>,
+	): HttpResponse<List<MergeResult>> =
+		post(authProvider) {
+			url {
+				takeFrom(apiUrl)
+				appendPathSegments("rest", "v2", "user", "inGroup", groupId, "conflicts", "solve")
+			}
+			contentType(Application.Json)
+			accept(Application.Json)
+			setBody(entityIds)
 		}.wrap()
 
 	// endregion
