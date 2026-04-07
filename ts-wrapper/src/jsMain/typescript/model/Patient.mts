@@ -204,12 +204,6 @@ export interface Patient extends StoredDocument, ICureDocument<string>, Person, 
 
 	/**
 	 *
-	 *  The id of the user that usually handles this patient.
-	 */
-	preferredUserId: string | undefined;
-
-	/**
-	 *
 	 *  List of insurance coverages.
 	 */
 	insurabilities: Array<Insurability>;
@@ -551,12 +545,6 @@ export class DecryptedPatient {
 
 	/**
 	 *
-	 *  The id of the user that usually handles this patient.
-	 */
-	preferredUserId: string | undefined = undefined;
-
-	/**
-	 *
 	 *  List of insurance coverages.
 	 */
 	insurabilities: Array<DecryptedInsurability> = [];
@@ -737,7 +725,6 @@ export class DecryptedPatient {
 		if ('nationality' in partial) this.nationality = partial.nationality;
 		if ('race' in partial) this.race = partial.race;
 		if ('ethnicity' in partial) this.ethnicity = partial.ethnicity;
-		if ('preferredUserId' in partial) this.preferredUserId = partial.preferredUserId;
 		if ('insurabilities' in partial && partial.insurabilities !== undefined) this.insurabilities = partial.insurabilities;
 		if ('partnerships' in partial && partial.partnerships !== undefined) this.partnerships = partial.partnerships;
 		if ('patientHealthCareParties' in partial && partial.patientHealthCareParties !== undefined) this.patientHealthCareParties = partial.patientHealthCareParties;
@@ -808,7 +795,6 @@ export class DecryptedPatient {
 		if (this.nationality != undefined) res['nationality'] = this.nationality
 		if (this.race != undefined) res['race'] = this.race
 		if (this.ethnicity != undefined) res['ethnicity'] = this.ethnicity
-		if (this.preferredUserId != undefined) res['preferredUserId'] = this.preferredUserId
 		res['insurabilities'] = this.insurabilities.map((x0) => x0.toJSON() )
 		res['partnerships'] = this.partnerships.map((x0) => x0.toJSON() )
 		res['patientHealthCareParties'] = this.patientHealthCareParties.map((x0) => x0.toJSON() )
@@ -887,7 +873,6 @@ export class DecryptedPatient {
 			nationality: expectString(extractEntry(jCpy, 'nationality', false, path), true, [...path, ".nationality"]),
 			race: expectString(extractEntry(jCpy, 'race', false, path), true, [...path, ".race"]),
 			ethnicity: expectString(extractEntry(jCpy, 'ethnicity', false, path), true, [...path, ".ethnicity"]),
-			preferredUserId: expectString(extractEntry(jCpy, 'preferredUserId', false, path), true, [...path, ".preferredUserId"]),
 			insurabilities: expectArray(extractEntry(jCpy, 'insurabilities', false, path), false, [...path, ".insurabilities"], (x0, p0) => expectObject(x0, false, ignoreUnknownKeys, p0, DecryptedInsurability.fromJSON)),
 			partnerships: expectArray(extractEntry(jCpy, 'partnerships', false, path), false, [...path, ".partnerships"], (x0, p0) => expectObject(x0, false, ignoreUnknownKeys, p0, Partnership.fromJSON)),
 			patientHealthCareParties: expectArray(extractEntry(jCpy, 'patientHealthCareParties', false, path), false, [...path, ".patientHealthCareParties"], (x0, p0) => expectObject(x0, false, ignoreUnknownKeys, p0, DecryptedPatientHealthCareParty.fromJSON)),
@@ -1262,12 +1247,6 @@ export class EncryptedPatient {
 
 	/**
 	 *
-	 *  The id of the user that usually handles this patient.
-	 */
-	preferredUserId: string | undefined = undefined;
-
-	/**
-	 *
 	 *  List of insurance coverages.
 	 */
 	insurabilities: Array<EncryptedInsurability> = [];
@@ -1448,7 +1427,6 @@ export class EncryptedPatient {
 		if ('nationality' in partial) this.nationality = partial.nationality;
 		if ('race' in partial) this.race = partial.race;
 		if ('ethnicity' in partial) this.ethnicity = partial.ethnicity;
-		if ('preferredUserId' in partial) this.preferredUserId = partial.preferredUserId;
 		if ('insurabilities' in partial && partial.insurabilities !== undefined) this.insurabilities = partial.insurabilities;
 		if ('partnerships' in partial && partial.partnerships !== undefined) this.partnerships = partial.partnerships;
 		if ('patientHealthCareParties' in partial && partial.patientHealthCareParties !== undefined) this.patientHealthCareParties = partial.patientHealthCareParties;
@@ -1519,7 +1497,6 @@ export class EncryptedPatient {
 		if (this.nationality != undefined) res['nationality'] = this.nationality
 		if (this.race != undefined) res['race'] = this.race
 		if (this.ethnicity != undefined) res['ethnicity'] = this.ethnicity
-		if (this.preferredUserId != undefined) res['preferredUserId'] = this.preferredUserId
 		res['insurabilities'] = this.insurabilities.map((x0) => x0.toJSON() )
 		res['partnerships'] = this.partnerships.map((x0) => x0.toJSON() )
 		res['patientHealthCareParties'] = this.patientHealthCareParties.map((x0) => x0.toJSON() )
@@ -1598,7 +1575,6 @@ export class EncryptedPatient {
 			nationality: expectString(extractEntry(jCpy, 'nationality', false, path), true, [...path, ".nationality"]),
 			race: expectString(extractEntry(jCpy, 'race', false, path), true, [...path, ".race"]),
 			ethnicity: expectString(extractEntry(jCpy, 'ethnicity', false, path), true, [...path, ".ethnicity"]),
-			preferredUserId: expectString(extractEntry(jCpy, 'preferredUserId', false, path), true, [...path, ".preferredUserId"]),
 			insurabilities: expectArray(extractEntry(jCpy, 'insurabilities', false, path), false, [...path, ".insurabilities"], (x0, p0) => expectObject(x0, false, ignoreUnknownKeys, p0, EncryptedInsurability.fromJSON)),
 			partnerships: expectArray(extractEntry(jCpy, 'partnerships', false, path), false, [...path, ".partnerships"], (x0, p0) => expectObject(x0, false, ignoreUnknownKeys, p0, Partnership.fromJSON)),
 			patientHealthCareParties: expectArray(extractEntry(jCpy, 'patientHealthCareParties', false, path), false, [...path, ".patientHealthCareParties"], (x0, p0) => expectObject(x0, false, ignoreUnknownKeys, p0, EncryptedPatientHealthCareParty.fromJSON)),
