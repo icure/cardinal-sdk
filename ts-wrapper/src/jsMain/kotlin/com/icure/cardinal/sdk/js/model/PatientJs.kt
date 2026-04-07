@@ -96,8 +96,6 @@ public sealed external interface PatientJs : StoredDocumentJs, ICureDocumentJs<S
 
 	public val ethnicity: String?
 
-	public val preferredUserId: String?
-
 	public val insurabilities: Array<out InsurabilityJs>
 
 	public val partnerships: Array<out PartnershipJs>
@@ -208,8 +206,6 @@ public external class DecryptedPatientJs(
 	override val race: String?
 
 	override val ethnicity: String?
-
-	override val preferredUserId: String?
 
 	override val insurabilities: Array<DecryptedInsurabilityJs>
 
@@ -351,8 +347,6 @@ public external class EncryptedPatientJs(
 	override val race: String?
 
 	override val ethnicity: String?
-
-	override val preferredUserId: String?
 
 	override val insurabilities: Array<EncryptedInsurabilityJs>
 
