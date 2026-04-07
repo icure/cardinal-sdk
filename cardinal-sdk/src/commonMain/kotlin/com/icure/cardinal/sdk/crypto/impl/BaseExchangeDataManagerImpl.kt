@@ -34,6 +34,8 @@ import com.icure.kryptom.utils.toHexString
 import com.icure.utils.InternalIcureApi
 import io.ktor.utils.io.charsets.Charsets
 import io.ktor.utils.io.core.toByteArray
+import kotlinx.coroutines.currentCoroutineContext
+import kotlinx.coroutines.ensureActive
 import kotlinx.coroutines.flow.toList
 import kotlinx.serialization.json.JsonPrimitive
 import kotlin.reflect.KProperty1
@@ -363,7 +365,7 @@ class BaseExchangeDataManagerImpl(
 							delegate = it.delegate,
 							decryptedAccessControlSecret = unencryptedExchangeDataContent.accessControlSecret,
 							decryptedExchangeKey = unencryptedExchangeDataContent.exchangeKey,
-							publicKeysFingerprints = it.exchangeKey.keys
+							publicKeysFingerprints = (it.exchangeKey.keys + it.accessControlSecret.keys + it.sharedSignatureKey.keys)
 						),
 						unencryptedExchangeDataContent.sharedSignatureKey
 					).base64Encode()
@@ -409,6 +411,7 @@ class BaseExchangeDataManagerImpl(
 		val successfulDecryptions = mutableListOf<T>()
 		val failedDecryptions = mutableListOf<ExchangeData>()
 		exchangeData.forEach { data ->
+			currentCoroutineContext().ensureActive()
 			kotlin.runCatching {
 				tryDecrypt(encryptedData.get(data), decryptionKeys)?.let { unmarshalDecrypted(it) }
 			}.getOrNull()?.let {

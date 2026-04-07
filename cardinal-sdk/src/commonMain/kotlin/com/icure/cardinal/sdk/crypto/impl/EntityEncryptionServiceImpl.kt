@@ -43,13 +43,14 @@ import com.icure.cardinal.sdk.model.specializations.SecureDelegationKeyString
 import com.icure.cardinal.sdk.utils.EntityEncryptionException
 import com.icure.cardinal.sdk.utils.IllegalEntityException
 import com.icure.cardinal.sdk.utils.Serialization
-import com.icure.cardinal.sdk.utils.ensure
 import com.icure.cardinal.sdk.utils.generation.JsMapAsObjectArray
 import com.icure.cardinal.sdk.utils.getLogger
 import com.icure.kryptom.crypto.AesAlgorithm
 import com.icure.kryptom.crypto.CryptoService
 import com.icure.kryptom.utils.toHexString
 import com.icure.utils.InternalIcureApi
+import kotlinx.coroutines.currentCoroutineContext
+import kotlinx.coroutines.ensureActive
 import kotlinx.serialization.SerializationStrategy
 import kotlinx.serialization.json.JsonElement
 import kotlinx.serialization.json.jsonObject
@@ -307,6 +308,7 @@ class EntityEncryptionServiceImpl(
 			encryptedEntities,
 			entityType
 		) { entity, _, keys ->
+			currentCoroutineContext().ensureActive()
 			kotlin.runCatching {
 				val encryptedJson = Serialization.json.encodeToJsonElement(encryptedEntitySerializer, entity).jsonObject
 				val decrypted = jsonEncryptionService.decrypt(
@@ -378,6 +380,7 @@ class EntityEncryptionServiceImpl(
 			entityType
 		) { _, _, keys ->
 			keys.firstNotNullOfOrNull { key ->
+				currentCoroutineContext().ensureActive()
 				kotlin.runCatching {
 					cryptoService.aes.decrypt(content, key.key).takeIf { validator == null || validator(it) }
 				}.getOrNull()
@@ -1040,7 +1043,7 @@ class EntityEncryptionServiceImpl(
 	private fun <T : Any> Iterable<DecryptedMetadataDetails<T>>.valuesAvailableToDataOwners(dataOwners: Set<EntityReferenceInGroup>): Set<T> =
 		mapNotNullTo(mutableSetOf()) { decryptedDataDetails -> if (dataOwners.any { it in decryptedDataDetails.dataOwnersWithAccess }) decryptedDataDetails.value else null }
 
-	private suspend fun SecretIdShareOptions.resolve(
+	private fun SecretIdShareOptions.resolve(
 		entitySecretIds: Set<String>,
 		entity: HasEncryptionMetadata,
 		entityType: EntityWithEncryptionMetadataTypeName

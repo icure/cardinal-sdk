@@ -214,7 +214,7 @@ class DelegationsDeAnonymizationImpl(
 						entityType
 					).first { it.id == id }
 				},
-				if (resolvedGroup != null){
+				if (resolvedGroup != null) {
 					{
 						delegationKeyMapsApi.bulkShare(
 							request = it,

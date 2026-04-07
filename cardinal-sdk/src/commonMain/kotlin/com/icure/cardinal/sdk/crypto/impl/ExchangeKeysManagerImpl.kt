@@ -30,9 +30,10 @@ class ExchangeKeysManagerImpl(
 ) : ExchangeKeysManager {
 	// Could switch to atomic reference once not experimental
 	@Volatile // delegator -> delegate -> lazy key decryption job
-	private var cache: Deferred<Map<String, Map<String, Deferred<List<AesKey<AesAlgorithm.CbcWithPkcs7Padding>>>>>> = sdkScope.async {
-		doLoadCache()
-	}
+	private var cache: Deferred<Map<String, Map<String, Deferred<List<AesKey<AesAlgorithm.CbcWithPkcs7Padding>>>>>> =
+		sdkScope.async {
+			doLoadCache()
+		}
 	private val errorReloadMutex = Mutex() // Used to prevent multiple reload triggered at the same time if the last cache deferred failed
 
 
@@ -46,9 +47,10 @@ class ExchangeKeysManagerImpl(
 			if (currCache.getCompletionExceptionOrNull() != null) {
 				errorReloadMutex.withLock {
 					if (cache === currCache) { // only start job if no one else started it yet.
-						sdkScope.async { doLoadCache() }.also { cache = it }
-					} else cache // Else wait on the job the others have just started. Ok to fail if that fails.
-				}.await() // Important to await outside the lock
+						cache = sdkScope.async(start = CoroutineStart.LAZY) { doLoadCache() }
+					}
+				}
+				cache.await() // Important to await outside the lock. In case someone concurrently updated the cache we are going to use the deferred they created, to minimize proliferation
 			} else currCache.getCompleted()
 		} else currCache.await()
 	}
@@ -57,14 +59,18 @@ class ExchangeKeysManagerImpl(
 		// No need to do this in mutex
 		// The mutex is only used to prevent parallel request to trigger too many reloads, but in this case we're
 		// forcing reload
-		cache = sdkScope.async {
+		// By making this lazy if it is called multiple times in a short period, and there is no request that would use
+		// the cache we will not start too many requests in parallel, and at the same time we will not cancel any
+		// loading of caches that are already in use.
+		cache = sdkScope.async(start = CoroutineStart.LAZY) {
 			doLoadCache()
 		}
 	}
 
 	private suspend fun doLoadCache(): Map<String, Map<String, Deferred<List<AesKey<AesAlgorithm.CbcWithPkcs7Padding>>>>> = coroutineScope {
+		val dataOwnerTypes = DataOwnerType.entries.toSet()
 		val encryptedKeysDataByHierarchyMember = userKeysManager.delegatorActorHierarchy().map {
-			async { base.getAllExchangeKeysWith(it, DataOwnerType.entries.toSet()) }
+			async { base.getAllExchangeKeysWith(it, dataOwnerTypes) }
 		}.awaitAll()
 		val encryptedData = mutableMapOf<String, MutableMap<String, MutableList<Map<AesExchangeKeyEncryptionKeypairIdentifier, HexString>>>>()
 		encryptedKeysDataByHierarchyMember.forEach { info ->
@@ -84,6 +90,11 @@ class ExchangeKeysManagerImpl(
 		val keys = userKeysManager.getAllDecryptionKeys()
 		encryptedData.mapValues { (_, keysByDelegate) ->
 			keysByDelegate.mapValues { (_, encryptedKeys) ->
+				// Note: if this fails the deferred will always stay failed unless a reload is requested, but this can
+				// only fail if canceled (any web requests are already done, this is only doing decryption and bad
+				// decryptions are mapped in the result rather than throwing exceptions.
+				// The contract of the SDK specifies that if the SDK scope is canceled then it can't be used anymore, so
+				// it is ok.
 				sdkScope.async(start = CoroutineStart.LAZY) {
 					base.tryDecryptExchangeKeys(
 						encryptedKeys,

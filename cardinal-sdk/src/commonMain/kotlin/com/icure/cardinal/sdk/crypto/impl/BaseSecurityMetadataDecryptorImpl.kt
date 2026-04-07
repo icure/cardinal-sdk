@@ -14,6 +14,7 @@ import com.icure.cardinal.sdk.crypto.entities.SdkBoundGroup
 import com.icure.cardinal.sdk.crypto.entities.SecureDelegationMembersDetails
 import com.icure.cardinal.sdk.crypto.entities.SecurityMetadataType
 import com.icure.cardinal.sdk.crypto.entities.resolve
+import com.icure.cardinal.sdk.crypto.entities.selfIdsAsReferenceStringsForEntityGroup
 import com.icure.cardinal.sdk.model.EntityReferenceInGroup
 import com.icure.cardinal.sdk.model.base.HasEncryptionMetadata
 import com.icure.cardinal.sdk.model.embed.AccessLevel
@@ -22,6 +23,8 @@ import com.icure.cardinal.sdk.model.embed.SecureDelegation
 import com.icure.cardinal.sdk.model.specializations.SecureDelegationKeyString
 import com.icure.kryptom.crypto.CryptoService
 import com.icure.utils.InternalIcureApi
+import kotlinx.coroutines.currentCoroutineContext
+import kotlinx.coroutines.ensureActive
 
 @InternalIcureApi
 internal class BaseSecurityMetadataDecryptorImpl(
@@ -108,6 +111,7 @@ internal class BaseSecurityMetadataDecryptorImpl(
 			delegateId = delegation.delegatedTo,
 		)
 		return exchangeKeys.firstNotNullOfOrNull {
+			currentCoroutineContext().ensureActive()
 			kotlin.runCatching {
 				// Format of encrypted key for any delegation should be entityId:key, but with the merging of entities the entityId might not match the
 				// current id. As a checksum we are only verifying that the decrypted bytes can be represented as a string with exactly one ':'.
@@ -448,9 +452,7 @@ internal class BaseSecurityMetadataDecryptorImpl(
 	private fun selfHierarchyIdsAsReferenceStrings(
 		dataOwnerHierarchyIds: Set<String>,
 		entityGroupId: String?
-	) = boundGroup.resolve(entityGroupId)?.let {
-		dataOwnerHierarchyIds.mapTo(mutableSetOf()) { "${boundGroup!!.groupId}/$it"}
-	} ?: dataOwnerHierarchyIds
+	) = boundGroup.selfIdsAsReferenceStringsForEntityGroup(entityGroupId, dataOwnerHierarchyIds)
 
 	private suspend fun getExchangeDataMapsAndDecrypt(
 		entitiesGroupId: String?,

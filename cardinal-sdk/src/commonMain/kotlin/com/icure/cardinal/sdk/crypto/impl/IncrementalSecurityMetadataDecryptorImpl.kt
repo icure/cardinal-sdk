@@ -54,6 +54,8 @@ class IncrementalSecurityMetadataDecryptorImpl(
 			newKeys: Map<String, Set<HexString>>,
 			forceUpdateOnEntitiesWithNewExtractedKeys: Boolean
 		) {
+			// The base decrypt methods only return entries for entity IDs that were passed to them
+			// (remainingEntitiesById.values), so getValue on the maps initialised from `entities` is safe.
 			newKeys.forEach { (entityId, keys) ->
 				val newlyExtractedSet = newlyExtractedKeysForEntities.getValue(entityId)
 				val alreadyExtractedSet = allExtractedKeysForEntities.getValue(entityId)
@@ -61,6 +63,11 @@ class IncrementalSecurityMetadataDecryptorImpl(
 					if (k !in alreadyExtractedSet) {
 						newlyExtractedSet.add(k)
 						if (k !in importedKeysByRaw) {
+							// loadKey cannot fail for non-cancellation reasons: legacy delegation keys are
+							// validated to be exactly AES-128 or AES-256 length by
+							// SecurityMetadataType.EncryptionKey.validateLegacyDecrypted before reaching here,
+							// and secure delegation keys are structurally guaranteed to be valid AES keys
+							// since they were originally encrypted as such.
 							importedKeysByRaw[k] = cryptoService.aes.loadKey(AesAlgorithm.CbcWithPkcs7Padding, k.decodedBytes())
 						}
 					}

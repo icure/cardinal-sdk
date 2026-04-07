@@ -32,3 +32,19 @@ fun SdkBoundGroup?.resolve(groupId: String?): String? {
 			groupId
 	}
 }
+
+/**
+ * Converts a set of data owner IDs belonging to this SDK's bound group into the reference strings
+ * as they appear inside entities that live in [entityGroupId].
+ *
+ * When [entityGroupId] is the same group as this bound group (or there is no bound group), the IDs
+ * are returned as-is. When the entities live in a different group, each ID is prefixed with this
+ * SDK's own group ID (e.g. "myGroupId/dataOwnerId"), because that is how the current user's
+ * delegator/delegate references are stored in foreign entities.
+ */
+@InternalIcureApi
+fun SdkBoundGroup?.selfIdsAsReferenceStringsForEntityGroup(entityGroupId: String?, selfIds: Set<String>): Set<String> =
+	if (resolve(entityGroupId) != null)
+		selfIds.mapTo(mutableSetOf()) { "$groupId/$it" } // safe: contract on resolve guarantees this != null
+	else
+		selfIds

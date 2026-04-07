@@ -25,6 +25,7 @@ import com.icure.kryptom.crypto.PublicRsaKey
 import com.icure.kryptom.crypto.RsaAlgorithm
 import com.icure.kryptom.utils.toHexString
 import com.icure.utils.InternalIcureApi
+import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.async
 import kotlinx.coroutines.awaitAll
 import kotlinx.coroutines.coroutineScope
@@ -127,8 +128,9 @@ class BaseExchangeKeysManagerImpl(
 				val keyHex = cryptoService.aes.exportKey(decryptedKey).toHexString()
 				if (!foundRawKeysHex.add(keyHex)) log.d {
 					"Duplicate key decrypted: $keyHex"
+				} else {
+					successful.add(decryptedKey)
 				}
-				successful.add(decryptedKey)
 			} ?: failed.add(it)
 		}
 		return DecryptionResult(failed, successful)
@@ -159,6 +161,7 @@ class BaseExchangeKeysManagerImpl(
 			val decrypted = cryptoService.rsa.decrypt(encryptedValue.decodedBytes(), privateKey)
 			this.cryptoService.aes.loadKey(AesAlgorithm.CbcWithPkcs7Padding, decrypted)
 		} catch (e: Exception) {
+			if (e is CancellationException) throw e
 			if (fp != null) log.w(e) {
 				"Failed to decrypt exchange key for fingerprint $fp."
 			}
@@ -177,7 +180,7 @@ class BaseExchangeKeysManagerImpl(
 			val updatedAesExchangeKeys = combineDataOwnerAesExchangeKeysWithHcpartyKeys(delegator, listOf(delegate)).mapValues { (_, keysByDelegate) ->
 				keysByDelegate.mapValues { (_, encryptedXKey) ->
 					val encryptedXKeyByFingerprint = encryptedXKey.mapKeys { (k, _) -> k.toFingerprintV1OrNull() }
-					if (!encryptedXKeyByFingerprint.containsKey(newPublicKeyFp)) {
+					if (encryptedXKeyByFingerprint.containsKey(newPublicKeyFp)) {
 						encryptedXKey
 					} else {
 						tryDecryptExchangeKey(encryptedXKey, decryptionKeyPairsByFingerprint)?.let { decrypted ->
