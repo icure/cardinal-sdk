@@ -843,6 +843,9 @@ private class ContactApiImpl(
 		override suspend fun decryptPatientIdOf(contact: GroupScoped<Contact>): Set<EntityReferenceInGroup> =
 			doDecryptPatientIdOf(contact.groupId, contact.entity).mapNullGroupTo(contact.groupId)
 
+		override suspend fun decryptPatientIdOfService(service: GroupScoped<Service>): Set<EntityReferenceInGroup> =
+			doDecryptPatientIdOfService(service.groupId, service.entity).mapNullGroupTo(service.groupId)
+
 		override suspend fun createDelegationDeAnonymizationMetadata(
 			entity: GroupScoped<Contact>,
 			delegates: Set<EntityReferenceInGroup>
@@ -951,10 +954,23 @@ private class ContactApiImpl(
 	override suspend fun decryptPatientIdOf(contact: Contact): Set<EntityReferenceInGroup> =
 		doDecryptPatientIdOf(groupId = null, contact = contact)
 
+	override suspend fun decryptPatientIdOfService(service: Service): Set<EntityReferenceInGroup> =
+		doDecryptPatientIdOfService(groupId = null, service = service)
+
 	private suspend fun doDecryptPatientIdOf(groupId: String?, contact: Contact): Set<EntityReferenceInGroup> =
 		crypto.entity.owningEntityIdsOf(
 			entityGroupId = groupId,
 			entity = contact,
+			entityType = EntityWithEncryptionMetadataTypeName.Contact,
+			dataOwnerId = null
+		).mapTo(mutableSetOf()) {
+			crypto.entity.parseReference(groupId, it)
+		}
+
+	private suspend fun doDecryptPatientIdOfService(groupId: String?, service: Service): Set<EntityReferenceInGroup> =
+		crypto.entity.owningEntityIdsOf(
+			entityGroupId = groupId,
+			entity = service.asIcureStub(),
 			entityType = EntityWithEncryptionMetadataTypeName.Contact,
 			dataOwnerId = null
 		).mapTo(mutableSetOf()) {
