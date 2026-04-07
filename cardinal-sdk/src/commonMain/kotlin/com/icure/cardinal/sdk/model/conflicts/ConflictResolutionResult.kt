@@ -15,5 +15,6 @@ data class ConflictResolutionResult<E : StoredDocument>(
 	public val remainingConflicts: List<String> = emptyList(),
 ) {
 	// region ConflictResolutionResult-ConflictResolutionResult
+
 	// endregion
 }
