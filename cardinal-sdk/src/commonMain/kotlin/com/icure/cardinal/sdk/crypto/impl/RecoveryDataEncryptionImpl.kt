@@ -16,6 +16,7 @@ import com.icure.cardinal.sdk.utils.LongPollingUtils
 import com.icure.cardinal.sdk.utils.base64Encode
 import com.icure.cardinal.sdk.utils.currentEpochMs
 import com.icure.cardinal.sdk.utils.decode
+import com.icure.cardinal.sdk.utils.getLogger
 import com.icure.kryptom.crypto.AesAlgorithm
 import com.icure.kryptom.crypto.AesService
 import com.icure.kryptom.crypto.CryptoService
@@ -23,6 +24,7 @@ import com.icure.kryptom.crypto.RsaAlgorithm
 import com.icure.kryptom.crypto.RsaKeypair
 import com.icure.kryptom.utils.toHexString
 import com.icure.utils.InternalIcureApi
+import io.ktor.utils.io.CancellationException
 import io.ktor.utils.io.charsets.Charsets
 import io.ktor.utils.io.core.toByteArray
 import kotlinx.serialization.SerialName
@@ -56,12 +58,15 @@ private data class DelegateKeyPairInfo(
 	}
 }
 
+private val log = getLogger("RecoveryDataEncryption")
+
 @OptIn(InternalIcureApi::class)
 class RecoveryDataEncryptionImpl(
 	private val primitives: CryptoService,
 	defaultRawApiConfig: RawApiConfig,
 	createRawApi: (RawApiConfig) -> RawRecoveryDataApi
 ) : RecoveryDataEncryption {
+
 	override val raw = createRawApi(defaultRawApiConfig)
 	private val rawForLongPolling = if (defaultRawApiConfig.requestTimeout?.let { it.inWholeSeconds >= MAX_WAIT_DURATION_S + REQUEST_TIMEOUT_MARGIN_S } != false) {
 		raw
@@ -130,7 +135,11 @@ class RecoveryDataEncryptionImpl(
 			}.toMap()
 		}
 	}.also {
-		if (autoDelete && it.isSuccess) raw.deleteRecoveryData(recoveryKeyToId(recoveryKey))
+		if (autoDelete && it.isSuccess) kotlin.runCatching {
+			raw.deleteRecoveryData(recoveryKeyToId(recoveryKey))
+		}.onFailure { e ->
+			if (e !is CancellationException) log.w { "Failed to auto-delete recovery data after successful recovery, id=${recoveryKeyToId(recoveryKey)}" }
+		}
 	}
 
 	override suspend fun createAndSaveExchangeDataRecoveryData(
@@ -181,7 +190,7 @@ class RecoveryDataEncryptionImpl(
 				content.toString().toByteArray(Charsets.UTF_8),
 				recoveryKeyAes
 			).base64Encode()
-		val expirationInstant = lifetimeSeconds?.let { currentEpochMs() + it * 1000 }
+		val expirationInstant = lifetimeSeconds?.let { currentEpochMs() + it * 1000L }
 		val data = RecoveryData(
 			id = id,
 			encryptedSelf = encryptedSelf,
@@ -220,6 +229,9 @@ class RecoveryDataEncryptionImpl(
 				if (it.type != expectedType) {
 					RecoveryResult.Failure(RecoveryDataUseFailureReason.InvalidType)
 				} else {
+					// Can fail with exception isntead of "RecoveryResult.Failure" if the recovery key does not match
+					// what was used to encrypt the content but is accceptable since the recovery data id is obtained
+					// from the encryption key that should have been used
 					val decrypted =
 						primitives.aes.decrypt(it.encryptedSelf.decode(), recoveryKey.loadAesKey(primitives))
 					val decryptedUtf8 = decrypted.decodeToString()

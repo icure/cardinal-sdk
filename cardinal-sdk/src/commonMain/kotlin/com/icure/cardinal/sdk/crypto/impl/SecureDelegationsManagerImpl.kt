@@ -282,9 +282,9 @@ class SecureDelegationsManagerImpl (
 		} else {
 			makeExchangeDataIdInfoForDelegate(entityGroupId, delegatorReference, delegate, exchangeDataInfo)
 		}
-		val encryptedSecretIds = secureDelegationsEncryption.encryptSecretIds(shareSecretIds.toSet(), exchangeDataInfo.unencryptedContent.exchangeKey)
-		val encryptedEncryptionKeys = secureDelegationsEncryption.encryptEncryptionKeys(shareEncryptionKeys.toSet(), exchangeDataInfo.unencryptedContent.exchangeKey)
-		val encryptedOwningEntityIds = secureDelegationsEncryption.encryptOwningEntityIds(shareOwningEntityIds.toSet(), exchangeDataInfo.unencryptedContent.exchangeKey)
+		val encryptedSecretIds = secureDelegationsEncryption.encryptSecretIds(shareSecretIds, exchangeDataInfo.unencryptedContent.exchangeKey)
+		val encryptedEncryptionKeys = secureDelegationsEncryption.encryptEncryptionKeys(shareEncryptionKeys, exchangeDataInfo.unencryptedContent.exchangeKey)
+		val encryptedOwningEntityIds = secureDelegationsEncryption.encryptOwningEntityIds(shareOwningEntityIds, exchangeDataInfo.unencryptedContent.exchangeKey)
 		return EncryptedExchangeDataInfo(
 			secretIds = encryptedSecretIds,
 			encryptionKeys = encryptedEncryptionKeys,
@@ -316,19 +316,28 @@ class SecureDelegationsManagerImpl (
 		verifiedExchangeData: ExchangeDataWithUnencryptedContent
 	): EncryptedExchangeDataIdInfo {
 		val delegatorActorIsAnonymous = userKeys.delegatorActorIsAnonymous()
+		// TODO parallel requests sharing for the same delegate could trigger parallel requests to the api, minor performance concern, not a correctness issue
 		val (delegateIsAnonymous, verifiedDelegateKeys) = dataOwnerAnonymityCache.get(delegateReference) ?: dataOwnerApi.getCryptoActorStubInGroup(delegateReference).let { delegate ->
 			val delegateIsAnonymous = cryptoStrategies.dataOwnerRequiresAnonymousDelegation(
 				dataOwner = delegate,
 				groupId = delegateReference.normalized(boundGroup).groupId
 			)
-			if (delegatorActorIsAnonymous && !delegateIsAnonymous) {
-				// Important: this requires that the exchange data signature also validates the authenticity of the public keys included in there.
-				val allDelegateKeys = cryptoService.loadEncryptionKeysForDataOwner(delegate.stub)
-				val verifiedExchangeDataFingerprints = verifiedExchangeData.exchangeData.exchangeKey.keys
-				val verifiedDelegateKeys = allDelegateKeys.filter { it.pubSpkiHexString.fingerprintV2() in verifiedExchangeDataFingerprints }
-				Pair(delegateIsAnonymous, verifiedDelegateKeys).also { dataOwnerAnonymityCache.set(delegateReference, it) }
-			} else Pair(delegateIsAnonymous, null)
+			(
+				if (delegatorActorIsAnonymous && !delegateIsAnonymous) {
+					// Important: this requires that the exchange data signature also validates the authenticity of the public keys included in there.
+					val allDelegateKeys = cryptoService.loadEncryptionKeysForDataOwner(delegate.stub)
+					val verifiedExchangeDataFingerprints = verifiedExchangeData.exchangeData.exchangeKey.keys
+					val verifiedDelegateKeys = allDelegateKeys.filter { it.pubSpkiHexString.fingerprintV2() in verifiedExchangeDataFingerprints }
+					Pair(delegateIsAnonymous, verifiedDelegateKeys)
+				} else {
+					// If both are explicit, both are implicit, or delegator is explicit and delegate is anonymous, we
+					// don't need to use the delegate keys to create the exchange data info for the secure delegation,
+					// can leave null
+					Pair(delegateIsAnonymous, null)
+				}
+			).also { dataOwnerAnonymityCache.set(delegateReference, it) }
 		}
+
 		return when {
 			!delegateIsAnonymous && !delegatorActorIsAnonymous ->
 				EncryptedExchangeDataIdInfo(
