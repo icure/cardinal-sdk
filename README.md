@@ -1,4 +1,6 @@
 ## Using the project
+## Using the project
+## Using the project
 
 You need to create a local properties file in the root of the project with the following properties:
 
