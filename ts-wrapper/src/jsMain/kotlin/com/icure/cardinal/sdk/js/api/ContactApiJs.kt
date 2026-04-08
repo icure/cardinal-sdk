@@ -58,6 +58,8 @@ public external interface ContactApiJs {
 
 	public fun decryptPatientIdOf(contact: ContactJs): Promise<Array<EntityReferenceInGroupJs>>
 
+	public fun decryptPatientIdOfService(service: ServiceJs): Promise<Array<EntityReferenceInGroupJs>>
+
 	public fun createDelegationDeAnonymizationMetadata(entity: ContactJs, delegates: Array<String>):
 			Promise<Unit>
 

@@ -256,9 +256,6 @@ public fun patient_toJs(obj: DecryptedPatient): DecryptedPatientJs {
 	val ethnicity = nullToUndefined(
 		obj.ethnicity
 	)
-	val preferredUserId = nullToUndefined(
-		obj.preferredUserId
-	)
 	val insurabilities = listToArray(
 		obj.insurabilities,
 		{ x1: DecryptedInsurability ->
@@ -503,7 +500,6 @@ public fun patient_toJs(obj: DecryptedPatient): DecryptedPatientJs {
 		"nationality:nationality," +
 		"race:race," +
 		"ethnicity:ethnicity," +
-		"preferredUserId:preferredUserId," +
 		"insurabilities:insurabilities," +
 		"partnerships:partnerships," +
 		"patientHealthCareParties:patientHealthCareParties," +
@@ -629,7 +625,6 @@ public fun patient_fromJs(obj: DecryptedPatientJs): DecryptedPatient {
 	val nationality = undefinedToNull(obj.nationality)
 	val race = undefinedToNull(obj.race)
 	val ethnicity = undefinedToNull(obj.ethnicity)
-	val preferredUserId = undefinedToNull(obj.preferredUserId)
 	val insurabilities = arrayToList(
 		obj.insurabilities,
 		"obj.insurabilities",
@@ -892,7 +887,6 @@ public fun patient_fromJs(obj: DecryptedPatientJs): DecryptedPatient {
 		nationality = nationality,
 		race = race,
 		ethnicity = ethnicity,
-		preferredUserId = preferredUserId,
 		insurabilities = insurabilities,
 		partnerships = partnerships,
 		patientHealthCareParties = patientHealthCareParties,
@@ -1075,9 +1069,6 @@ public fun patient_toJs(obj: EncryptedPatient): EncryptedPatientJs {
 	)
 	val ethnicity = nullToUndefined(
 		obj.ethnicity
-	)
-	val preferredUserId = nullToUndefined(
-		obj.preferredUserId
 	)
 	val insurabilities = listToArray(
 		obj.insurabilities,
@@ -1323,7 +1314,6 @@ public fun patient_toJs(obj: EncryptedPatient): EncryptedPatientJs {
 		"nationality:nationality," +
 		"race:race," +
 		"ethnicity:ethnicity," +
-		"preferredUserId:preferredUserId," +
 		"insurabilities:insurabilities," +
 		"partnerships:partnerships," +
 		"patientHealthCareParties:patientHealthCareParties," +
@@ -1449,7 +1439,6 @@ public fun patient_fromJs(obj: EncryptedPatientJs): EncryptedPatient {
 	val nationality = undefinedToNull(obj.nationality)
 	val race = undefinedToNull(obj.race)
 	val ethnicity = undefinedToNull(obj.ethnicity)
-	val preferredUserId = undefinedToNull(obj.preferredUserId)
 	val insurabilities = arrayToList(
 		obj.insurabilities,
 		"obj.insurabilities",
@@ -1712,7 +1701,6 @@ public fun patient_fromJs(obj: EncryptedPatientJs): EncryptedPatient {
 		nationality = nationality,
 		race = race,
 		ethnicity = ethnicity,
-		preferredUserId = preferredUserId,
 		insurabilities = insurabilities,
 		partnerships = partnerships,
 		patientHealthCareParties = patientHealthCareParties,
