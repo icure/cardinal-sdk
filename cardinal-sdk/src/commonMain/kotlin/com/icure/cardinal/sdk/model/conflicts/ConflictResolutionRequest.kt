@@ -15,5 +15,6 @@ data class ConflictResolutionRequest<E : StoredDocument>(
 	public val conflictsToPurge: List<String> = emptyList(),
 ) {
 	// region ConflictResolutionRequest-ConflictResolutionRequest
+
 	// endregion
 }

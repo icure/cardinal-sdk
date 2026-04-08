@@ -102,7 +102,8 @@ private class FullyCachedExchangeDataManagerInGroup(
 	private val creationJobs = mutableMapOf<String, Deferred<ExchangeDataWithUnencryptedContent>>()
 
 	// No need to keep two different mutexes for creation job and reload of caches in case of error.
-	// If caches is successful once then it can never become failed.
+	// If caches is successful once then it can never become failed (unless this scope is canceled: in that case new
+	// requests will start using a new instance of FullyCachedExchangeDataManagerInGroup so should be ok).
 	// If caches is failed or incomplete then we don't start any creation job until it completes successfully
 	private val creationAndCachesErrorReloadMutex = Mutex()
 
@@ -144,7 +145,7 @@ private class FullyCachedExchangeDataManagerInGroup(
 		delegateReferenceString: String,
 		allowCreationWithoutDelegateKey: Boolean,
 		allowCreationWithoutDelegatorKey: Boolean,
-		): ExchangeDataWithUnencryptedContent {
+	): ExchangeDataWithUnencryptedContent {
 		val (shouldRetryIfFailure, creationJob) = creationAndCachesErrorReloadMutex.withLock {
 			val existingJob = creationJobs[delegateReferenceString]
 			when {
@@ -191,7 +192,7 @@ private class FullyCachedExchangeDataManagerInGroup(
 		delegateReferenceString: String,
 		allowCreationWithoutDelegateKey: Boolean,
 		allowCreationWithoutDelegatorKey: Boolean,
-		) = cacheUpdateAndNewDataCreationScope.async {
+	) = cacheUpdateAndNewDataCreationScope.async {
 		// It could be possible that the caches have been updated between the last time we tried and the
 		// time we got the lock.
 		// In case they changed we need to check again.
@@ -248,7 +249,7 @@ private class FullyCachedExchangeDataManagerInGroup(
 	override suspend fun getCachedDecryptionDataKeyByAccessControlHash(
 		hashes: Set<SecureDelegationKeyString>,
 	): Map<SecureDelegationKeyString, ExchangeDataWithUnencryptedContent> =
-		caches.await().let {
+		getCachesAndAwaited().second.let {
 			hashes.mapNotNull { hash ->
 				it.dataByDelegationKey[hash]?.let { data ->
 					hash to ExchangeDataWithUnencryptedContent(
@@ -265,7 +266,7 @@ private class FullyCachedExchangeDataManagerInGroup(
 		ids: Set<String>,
 		waitOrRetrieveUncached: Boolean,
 	): Map<String, ExchangeDataWithPotentiallyDecryptedContent> =
-		caches.await().let {
+		getCachesAndAwaited().second.let {
 			ids.mapNotNull { id ->
 				it.dataById[id]?.let { data ->
 					if (data.decryptedDetails != null) {
@@ -281,7 +282,7 @@ private class FullyCachedExchangeDataManagerInGroup(
 		}
 
 	override suspend fun getEncodedAccessControlKeysValue(entityType: EntityWithEncryptionMetadataTypeName): List<Base64String> =
-		caches.await().let { it.entityTypeToAccessControlKeysValue.getValue(entityType) }
+		getCachesAndAwaited().second.entityTypeToAccessControlKeysValue.getValue(entityType)
 
 	override suspend fun cacheInjectedExchangeData(exchangeDataDetails: List<Pair<ExchangeDataWithUnencryptedContent, Boolean>>) {
 		val exchangeDataDetailsMap = exchangeDataDetails.associate { (data, isVerified) ->
@@ -300,7 +301,6 @@ private class FullyCachedExchangeDataManagerInGroup(
 		creationAndCachesErrorReloadMutex.withLock {
 			val currCaches = caches
 			cacheUpdateAndNewDataCreationScope.async {
-				println("Updating caches with injected exchange data: ${exchangeDataDetailsMap.keys}")
 				val awaited = currCaches.await()
 				cachesFrom(
 					dataById = awaited.dataById + exchangeDataDetailsMap,

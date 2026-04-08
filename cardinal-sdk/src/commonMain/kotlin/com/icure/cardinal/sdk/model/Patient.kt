@@ -294,11 +294,6 @@ sealed interface Patient :
 	public val ethnicity: String?
 
 	/**
-	 * The id of the user that usually handles this patient.
-	 */
-	public val preferredUserId: String?
-
-	/**
 	 * List of insurance coverages.
 	 */
 	public val insurabilities: List<Insurability>
@@ -616,10 +611,6 @@ data class DecryptedPatient(
 	 */
 	override val ethnicity: String? = null,
 	/**
-	 * The id of the user that usually handles this patient.
-	 */
-	override val preferredUserId: String? = null,
-	/**
 	 * List of insurance coverages.
 	 */
 	@param:DefaultValue("emptyList()")
@@ -933,10 +924,6 @@ data class EncryptedPatient(
 	 * The ethnicity of the patient.
 	 */
 	override val ethnicity: String? = null,
-	/**
-	 * The id of the user that usually handles this patient.
-	 */
-	override val preferredUserId: String? = null,
 	/**
 	 * List of insurance coverages.
 	 */

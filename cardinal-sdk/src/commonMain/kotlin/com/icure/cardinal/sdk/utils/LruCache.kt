@@ -8,7 +8,7 @@ import com.icure.utils.InternalIcureApi
 @InternalIcureApi
 class LruCache<K : Any, V : Any>(
 	private val maxCacheSize: Int?,
-) { // TODO test
+) {
 	// Most recently used
 	private var lastNode: CacheNode<K, V>? = null
 	// Least recently used
@@ -17,7 +17,7 @@ class LruCache<K : Any, V : Any>(
 
 	private data class CacheNode<K : Any, V : Any>(
 		val key: K,
-		val value: V,
+		var value: V,
 		var prev: CacheNode<K, V>? = null,
 		var next: CacheNode<K, V>? = null,
 	)
@@ -37,7 +37,9 @@ class LruCache<K : Any, V : Any>(
 	 * Updates the value for [key] to [value].
 	 */
 	fun set(key: K, value: V) {
-		val node = cache[key] ?: CacheNode(key, value).also {
+		val node = cache[key]?.also {
+			it.value = value
+		} ?: CacheNode(key, value).also {
 			if (maxCacheSize != null && cache.size >= maxCacheSize ) evictOldest()
 			cache[key] = it
 		}
@@ -69,6 +71,7 @@ class LruCache<K : Any, V : Any>(
 			cache.remove(oldest.key)
 			firstNode = oldest.next
 			firstNode?.prev = null
+			if (firstNode == null) lastNode = null
 		}?.value
 
 	private fun setUsed(node: CacheNode<K, V>) {
@@ -83,6 +86,7 @@ class LruCache<K : Any, V : Any>(
 			lastNode?.next = node
 			node.prev = lastNode
 			node.next = null
+			if (lastNode == null) firstNode = node
 			lastNode = node
 		}
 	}

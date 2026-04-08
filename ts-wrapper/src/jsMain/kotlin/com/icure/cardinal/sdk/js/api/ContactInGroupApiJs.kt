@@ -45,6 +45,9 @@ public external interface ContactInGroupApiJs {
 	public fun decryptPatientIdOf(contact: GroupScopedJs<ContactJs>):
 			Promise<Array<EntityReferenceInGroupJs>>
 
+	public fun decryptPatientIdOfService(service: GroupScopedJs<ServiceJs>):
+			Promise<Array<EntityReferenceInGroupJs>>
+
 	public fun createDelegationDeAnonymizationMetadata(entity: GroupScopedJs<ContactJs>,
 			delegates: Array<EntityReferenceInGroupJs>): Promise<Unit>
 

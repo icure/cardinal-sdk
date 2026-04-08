@@ -22,6 +22,7 @@ import com.icure.kryptom.crypto.RsaAlgorithm
 import com.icure.kryptom.crypto.RsaService
 import com.icure.kryptom.utils.toHexString
 import com.icure.utils.InternalIcureApi
+import kotlinx.coroutines.CancellationException
 
 private val log = getLogger("CryptoService")
 
@@ -80,6 +81,7 @@ suspend fun <KeyIdentifier, EncodedData> CryptoService.decryptDataWithKeys(
 				rsa.decrypt(encodedDataFormat.decode(encryptedAndEncoded), it)
 			}
 		}.onFailure {
+			if (it is CancellationException) throw it
 			log.w(it) { "Failed to decrypt data using RSA key $fp" }
 		}.getOrNull()
 	}

@@ -97,7 +97,7 @@ private class CachedLruExchangeDataManagerInGroup(
 	 * Note: currently keeps in cache also failed jobs, in future should maybe evict failed jobs as soon as they fail.
 	 */
 	private val exchangeDataByIdCache: LruCache<String, Deferred<CachedExchangeDataDetails?>> =
-		LruCache(maxCacheSize.coerceAtLeast(1)) // If cache is not at least 1 stuff is going to behave weird
+		LruCache(null)
 	private val delegateToVerifiedExchangeDataId =
 		mutableMapOf<String, Deferred<String>>()
 	private val secureDelegationKeysToExchangeDataId =
@@ -128,7 +128,7 @@ private class CachedLruExchangeDataManagerInGroup(
 				if (toEvict.decryptedDetails?.secureDelegationKeys?.isNotEmpty() == true) {
 					secureDelegationKeysToExchangeDataId -= toEvict.decryptedDetails.secureDelegationKeys
 				}
-				val entryForDelegate = delegateToVerifiedExchangeDataId[toEvict.exchangeData.id]
+				val entryForDelegate = delegateToVerifiedExchangeDataId[toEvict.exchangeData.delegate]
 				// If entryForDelegate points to the exchange data to evict, it will be completed
 				if (entryForDelegate?.isCompleted == true && entryForDelegate.getCompleted() == toEvict.exchangeData.id) {
 					@Suppress("DeferredResultUnused") // If we got here it is already completed or canceled.
@@ -145,9 +145,9 @@ private class CachedLruExchangeDataManagerInGroup(
 		// Check no one has evicted this entry before the cache additional info method has been called, else don't cache
 		// additional info
 		if (exchangeDataByIdCache.get(toCache.exchangeData.id) != null) {
-			exchangeDataByIdCache.set(toCache.exchangeData.id, CompletableDeferred(toCache))
-			if (toCache.decryptedDetails?.verified == true && delegateToVerifiedExchangeDataId[toCache.exchangeData.id]?.isCompleted != true) {
-				delegateToVerifiedExchangeDataId[toCache.exchangeData.id] = CompletableDeferred(toCache.exchangeData.id)
+			exchangeDataByIdCache.set(toCache.exchangeData.id, CompletableDeferred(toCache)) // No need to check data since we
+			if (toCache.decryptedDetails?.verified == true && delegateToVerifiedExchangeDataId[toCache.exchangeData.delegate]?.isCompleted != true) {
+				delegateToVerifiedExchangeDataId[toCache.exchangeData.delegate] = CompletableDeferred(toCache.exchangeData.id)
 			}
 			if (toCache.decryptedDetails?.secureDelegationKeys?.isNotEmpty() == true) secureDelegationKeysToExchangeDataId.putAll(
 				toCache.decryptedDetails.secureDelegationKeys.map { it to toCache.exchangeData.id }

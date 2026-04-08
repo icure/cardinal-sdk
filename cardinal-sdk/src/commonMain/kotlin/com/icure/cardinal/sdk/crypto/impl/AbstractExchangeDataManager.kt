@@ -135,7 +135,7 @@ abstract class AbstractExchangeDataManager(
 		val exchangeDataById = retrievedExchangeData.associateBy { it.id }
 
 		if (reEncryptWithOwnKeys) {
-			if (userEncryptionKeys.delegatorActorId() != selfReference.entityId) UnsupportedOperationException(
+			if (userEncryptionKeys.delegatorActorId() != selfReference.entityId) throw UnsupportedOperationException(
 				"Currently re-encryption of injected exchange data is not supported in ParentDelegator mode" // TODO is there a case for supporting this?
 			)
 			val selfVerifiedKeys = userEncryptionKeys.delegatorActorVerifiedKeys()
@@ -222,11 +222,11 @@ abstract class AbstractExchangeDataManagerInGroup(
 
 		val decryptedAccessControlSecretResult = base.tryDecryptAccessControlSecret(listOf(data), decryptionKeys)
 		val decryptedAccessControlSecret = decryptedAccessControlSecretResult.successfulDecryptions.firstOrNull()
-			?: throw Exception("Decryption key could be decrypted but access control secret could not for data $data")
+			?: throw IllegalStateException("Decryption key could be decrypted but access control secret could not for data $data")
 
 		val decryptedSharedSignatureKeyResult = base.tryDecryptSharedSignatureKeys(listOf(data), decryptionKeys)
 		val decryptedSharedSignatureKey = decryptedSharedSignatureKeyResult.successfulDecryptions.firstOrNull()
-			?: throw Exception("Decryption key could be decrypted but shared signature key could not for data $data")
+			?: throw IllegalStateException("Decryption key could be decrypted but shared signature key could not for data $data")
 		val unencryptedContent = UnencryptedExchangeDataContent(
 			accessControlSecret = decryptedAccessControlSecret,
 			exchangeKey = decryptedExchangeKey,

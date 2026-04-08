@@ -14,6 +14,9 @@ import com.icure.kryptom.utils.base64Encode
 import com.icure.utils.InternalIcureApi
 import io.ktor.utils.io.charsets.Charsets
 import io.ktor.utils.io.core.toByteArray
+import kotlinx.coroutines.CancellationException
+import kotlinx.coroutines.currentCoroutineContext
+import kotlinx.coroutines.ensureActive
 import kotlinx.serialization.json.JsonArray
 import kotlinx.serialization.json.JsonNull
 import kotlinx.serialization.json.JsonObject
@@ -47,7 +50,7 @@ class JsonEncryptionServiceImpl(
 			kotlin.runCatching {
 				val decryptedBytes = doDecrypt(base64Decode(it))
 				Serialization.json.parseToJsonElement(decryptedBytes.decodeToString()).jsonObject
-			}.getOrNull()
+			}.onFailure { if (it is CancellationException) throw it }.getOrNull()
 		}
 		return if (manifest.fullFieldsEncryption) {
 			val objWithoutEncryptedSelf = plainJson - ENCRYPTED_SELF
@@ -159,6 +162,7 @@ class JsonEncryptionServiceImpl(
 				if (!it.isString) throw IllegalEntityException("Encrypted self must be a string")
 			}?.content?.let { base64Decode(it) }?.let {
 				encryptionKeys.firstNotNullOfOrNull { encryptionKey ->
+					currentCoroutineContext().ensureActive()
 					kotlin.runCatching {
 						val decryptedBytes = cryptoService.aes.decrypt(it, encryptionKey)
 						// Note: chance that if wrong key provided we get "successfully" decrypt garbage -> we consider
