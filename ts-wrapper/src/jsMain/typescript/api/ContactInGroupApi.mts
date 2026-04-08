@@ -49,6 +49,12 @@ export interface ContactInGroupApi {
 
 	/**
 	 *
+	 *  In-group version of [ContactApi.decryptPatientIdOfService]
+	 */
+	decryptPatientIdOfService(service: GroupScoped<Service>): Promise<Array<EntityReferenceInGroup>>;
+
+	/**
+	 *
 	 *  In-group version of [ContactApi.createDelegationDeAnonymizationMetadata]
 	 */
 	createDelegationDeAnonymizationMetadata(entity: GroupScoped<Contact>,

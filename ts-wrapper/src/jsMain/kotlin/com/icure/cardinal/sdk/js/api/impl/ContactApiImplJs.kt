@@ -1589,6 +1589,25 @@ internal class ContactApiImplJs(
 			)
 		}
 
+		override fun decryptPatientIdOfService(service: GroupScopedJs<ServiceJs>):
+				Promise<Array<EntityReferenceInGroupJs>> = GlobalScope.promise {
+			val serviceConverted: GroupScoped<Service> = groupScoped_fromJs(
+				service,
+				{ x1: ServiceJs ->
+					service_fromJs(x1)
+				},
+			)
+			val result = contactApi.inGroup.decryptPatientIdOfService(
+				serviceConverted,
+			)
+			setToArray(
+				result,
+				{ x1: EntityReferenceInGroup ->
+					entityReferenceInGroup_toJs(x1)
+				},
+			)
+		}
+
 		override fun createDelegationDeAnonymizationMetadata(entity: GroupScopedJs<ContactJs>,
 				delegates: Array<EntityReferenceInGroupJs>): Promise<Unit> = GlobalScope.promise {
 			val entityConverted: GroupScoped<Contact> = groupScoped_fromJs(
@@ -2497,6 +2516,20 @@ internal class ContactApiImplJs(
 		val contactConverted: Contact = contact_fromJs(contact)
 		val result = contactApi.decryptPatientIdOf(
 			contactConverted,
+		)
+		setToArray(
+			result,
+			{ x1: EntityReferenceInGroup ->
+				entityReferenceInGroup_toJs(x1)
+			},
+		)
+	}
+
+	override fun decryptPatientIdOfService(service: ServiceJs):
+			Promise<Array<EntityReferenceInGroupJs>> = GlobalScope.promise {
+		val serviceConverted: Service = service_fromJs(service)
+		val result = contactApi.decryptPatientIdOfService(
+			serviceConverted,
 		)
 		setToArray(
 			result,
