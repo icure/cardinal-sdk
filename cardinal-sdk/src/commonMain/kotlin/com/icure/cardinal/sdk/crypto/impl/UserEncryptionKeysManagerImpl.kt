@@ -294,7 +294,7 @@ private class KeyLoader(
 				DataOwnerKeyInfo.Found(
 					it.pubSpkiHexString,
 					it.key,
-					isVerified = combinedVerificationDetails.getValue(dataOwnerInfo.dataOwner.id)[it.pubSpkiHexString.fingerprintV1()] == true,
+					isVerified = combinedVerificationDetails[dataOwnerInfo.dataOwner.id]?.get(it.pubSpkiHexString.fingerprintV1()) == true,
 					isDevice = false
 				)
 			}
