@@ -565,6 +565,18 @@ interface ContactApi : ContactBasicFlavourlessApi, ContactFlavouredApi<Decrypted
 	suspend fun decryptPatientIdOf(contact: Contact): Set<EntityReferenceInGroup>
 
 	/**
+	 * Attempts to extract the patient id linked to a service.
+	 * Note: services usually should be linked with only one patient, but this method returns a set for compatibility
+	 * with older versions of iCure
+	 * It is to be noted that only services returned by getServices, or filterServices method will have the metadata necessary
+	 * to deduce the patient id. In the case of services obtained directly from the Contact, you should use decryptPatientIdOf(Contact) instead.
+	 * @param service a service returned by getServices, or filterServices method.
+	 * @return the id of the patient linked to the service, or empty if the current user can't access any patient id
+	 * of the service.
+	 */
+	suspend fun decryptPatientIdOfService(service: Service): Set<EntityReferenceInGroup>
+
+	/**
 	 * Create metadata to allow other users to identify the anonymous delegates of a contact.
 	 *
 	 * When calling this method the SDK will use all the information available to the current user to try to identify
@@ -688,6 +700,11 @@ interface ContactInGroupApi : ContactBasicFlavourlessInGroupApi, ContactFlavoure
 	 * In-group version of [ContactApi.decryptPatientIdOf]
 	 */
 	suspend fun decryptPatientIdOf(contact: GroupScoped<Contact>): Set<EntityReferenceInGroup>
+
+	/**
+	 * In-group version of [ContactApi.decryptPatientIdOfService]
+	 */
+	suspend fun decryptPatientIdOfService(service: GroupScoped<Service>): Set<EntityReferenceInGroup>
 
 	/**
 	 * In-group version of [ContactApi.createDelegationDeAnonymizationMetadata]

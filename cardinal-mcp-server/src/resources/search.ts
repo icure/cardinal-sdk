@@ -89,7 +89,7 @@ export function registerSearchTool(server: McpServer) {
 		"Search Cardinal SDK documentation: API methods, models, and filters. No SDK initialization required. Supports multi-word queries (e.g., 'contact filter', 'form patient', 'filter by date').",
 		{
 			query: z.string().describe("Search term (e.g., 'patient', 'createCalendarItem', 'contact filter', 'filter forms by patient')"),
-			category: z.enum(["all", "apis", "models", "filters", "tutorials"]).optional().default("all")
+			category: z.enum(["all", "apis", "models", "filters", "tutorials", "guides"]).optional().default("all")
 				.describe("Limit search to a category"),
 			limit: z.number().optional().default(20).describe("Max results to return"),
 		},
@@ -217,6 +217,23 @@ export function registerSearchTool(server: McpServer) {
 							name: tutorial.title,
 							description: `Tutorial: ${tutorial.slug}`,
 							uri: `cardinal://docs/tutorial/${tutorial.slug}`,
+							score,
+						});
+					}
+				}
+			}
+
+			// Search guides
+			if (category === "all" || category === "guides") {
+				for (const guide of manifest.guides) {
+					const guideText = `${guide.title} ${guide.slug} ${guide.category} ${guide.content}`;
+					const score = scoreMatch(guideText, queryTokens, fullQueryLower);
+					if (score > 0) {
+						results.push({
+							type: "guide",
+							name: guide.title,
+							description: `[${guide.category}] ${guide.title}`,
+							uri: `cardinal://docs/guide/${guide.slug}`,
 							score,
 						});
 					}

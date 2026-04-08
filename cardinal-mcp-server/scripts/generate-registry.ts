@@ -30,9 +30,28 @@ interface ApiInfo {
 }
 
 const ENCRYPTABLE_ENTITIES = new Set([
-	"AccessLog", "CalendarItem", "Classification", "Contact", "Document",
+	"AccessLog", "CalendarItem", "Contact", "Document",
 	"Form", "HealthElement", "Invoice", "MaintenanceTask", "Message",
 	"Patient", "Receipt", "Topic",
+]);
+
+/**
+ * Only APIs explicitly listed in tool registrations should be included.
+ * Excludes deprecated APIs (TimeTable, MedicalLocation, Classification, etc.).
+ */
+const ALLOWED_APIS = new Set([
+	// data-owner-tools
+	"HealthcareParty", "Patient", "Device",
+	// admin-tools
+	"Group", "User", "Role", "Permission", "System", "Auth",
+	// crypto-tools
+	"Crypto", "Recovery", "ShamirKeysManager", "DataOwner", "CardinalMaintenanceTask",
+	// Supporting entities
+	"CalendarItemType", "FormTemplate", "DocumentTemplate",
+	// Encryptable entity APIs (used via dispatch)
+	"AccessLog", "Agenda", "CalendarItem", "Code", "Contact",
+	"Document", "Form", "HealthElement", "Insurance", "Invoice",
+	"MaintenanceTask", "Message", "Receipt", "Topic",
 ]);
 
 // Map from API name prefix to SDK property name
@@ -165,6 +184,7 @@ function main() {
 		if (skipPatterns.some(p => p.test(file))) continue;
 
 		const entityName = match[1];
+		if (!ALLOWED_APIS.has(entityName)) continue;
 		const dtsContent = fs.readFileSync(path.join(apiDir, file), "utf-8");
 		const methods = parseMethodSignatures(dtsContent);
 		const propertyName = toPropertyName(entityName);

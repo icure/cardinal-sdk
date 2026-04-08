@@ -49,12 +49,32 @@ export function registerFilterDocs(server: McpServer) {
 			md += `  }\n`;
 			md += `}\n`;
 			md += `\`\`\`\n\n`;
+			if (filter.description) {
+				md += `${filter.description}\n\n`;
+			}
+
+			if (manifest.filterReference) {
+				md += `## General Filter Concepts\n\n${manifest.filterReference}\n\n`;
+			}
+
 			md += `## Methods (${filter.methods.length})\n\n`;
 
 			for (const method of filter.methods) {
 				const paramStr = method.params.map(p => `${p.name}: ${p.type}`).join(", ");
 				md += `### ${method.name}\n`;
-				md += `\`\`\`typescript\n${entityName}Filters.${method.name}(${paramStr})\n\`\`\`\n\n`;
+				md += `\`\`\`typescript\n${entityName}Filters.${method.name}(${paramStr})\n\`\`\`\n`;
+				if (method.description) {
+					md += `${method.description}\n`;
+				}
+				if (method.returnType) {
+					md += `**Returns:** \`${method.returnType}\``;
+					if (method.sortable) {
+						md += ` | **Sortable:** Yes`;
+						if (method.sortOrder) md += ` (by ${method.sortOrder})`;
+					}
+					md += "\n";
+				}
+				md += "\n";
 			}
 
 			return {
