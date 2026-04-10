@@ -6,6 +6,7 @@ import com.icure.cardinal.sdk.model.embed.Service
 import com.icure.cardinal.sdk.model.filter.AbstractFilter
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
+import kotlin.Long
 import kotlin.String
 
 /**
@@ -31,6 +32,14 @@ data class ServiceByHcPartyTagPrefixFilter(
 	 * Optional description of this filter.
 	 */
 	override val desc: String? = null,
+	/**
+	 * Optional start of a range of date for the value date of the service
+	 */
+	public val startValueDate: Long? = null,
+	/**
+	 * Optional end of a range of date for the value date of the service
+	 */
+	public val endValueDate: Long? = null,
 ) : AbstractFilter<Service> {
 	// region ServiceByHcPartyTagPrefixFilter-ServiceByHcPartyTagPrefixFilter
 

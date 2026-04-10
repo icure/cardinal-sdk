@@ -138,14 +138,18 @@ import com.icure.cardinal.sdk.model.filter.pricing.PricingByRegionTypesLanguageL
 import com.icure.cardinal.sdk.model.filter.service.ServiceByAssociationIdFilter
 import com.icure.cardinal.sdk.model.filter.service.ServiceByDataOwnerPatientDateFilter
 import com.icure.cardinal.sdk.model.filter.service.ServiceByHcPartyCodePrefixFilter
+import com.icure.cardinal.sdk.model.filter.service.ServiceByHcPartyCodesFilter
 import com.icure.cardinal.sdk.model.filter.service.ServiceByHcPartyFilter
 import com.icure.cardinal.sdk.model.filter.service.ServiceByHcPartyHealthElementIdsFilter
 import com.icure.cardinal.sdk.model.filter.service.ServiceByHcPartyIdentifiersFilter
 import com.icure.cardinal.sdk.model.filter.service.ServiceByHcPartyMonthCodePrefixFilter
 import com.icure.cardinal.sdk.model.filter.service.ServiceByHcPartyMonthTagPrefixFilter
 import com.icure.cardinal.sdk.model.filter.service.ServiceByHcPartyPatientCodePrefixFilter
+import com.icure.cardinal.sdk.model.filter.service.ServiceByHcPartyPatientCodesFilter
+import com.icure.cardinal.sdk.model.filter.service.ServiceByHcPartyPatientTagCodesFilter
 import com.icure.cardinal.sdk.model.filter.service.ServiceByHcPartyPatientTagPrefixFilter
 import com.icure.cardinal.sdk.model.filter.service.ServiceByHcPartyTagCodeDateFilter
+import com.icure.cardinal.sdk.model.filter.service.ServiceByHcPartyTagCodesFilter
 import com.icure.cardinal.sdk.model.filter.service.ServiceByHcPartyTagPrefixFilter
 import com.icure.cardinal.sdk.model.filter.service.ServiceByIdsFilter
 import com.icure.cardinal.sdk.model.filter.service.ServiceByQualifiedLinkFilter
@@ -966,14 +970,18 @@ internal object ServiceAbstractFilterSerializer :
 			"ServiceByAssociationIdFilter" -> ServiceByAssociationIdFilter.serializer()
 			"ServiceByDataOwnerPatientDateFilter" -> ServiceByDataOwnerPatientDateFilter.serializer()
 			"ServiceByHcPartyCodePrefixFilter" -> ServiceByHcPartyCodePrefixFilter.serializer()
+			"ServiceByHcPartyCodesFilter" -> ServiceByHcPartyCodesFilter.serializer()
 			"ServiceByHcPartyFilter" -> ServiceByHcPartyFilter.serializer()
 			"ServiceByHcPartyHealthElementIdsFilter" -> ServiceByHcPartyHealthElementIdsFilter.serializer()
 			"ServiceByHcPartyIdentifiersFilter" -> ServiceByHcPartyIdentifiersFilter.serializer()
 			"ServiceByHcPartyMonthCodePrefixFilter" -> ServiceByHcPartyMonthCodePrefixFilter.serializer()
 			"ServiceByHcPartyMonthTagPrefixFilter" -> ServiceByHcPartyMonthTagPrefixFilter.serializer()
 			"ServiceByHcPartyPatientCodePrefixFilter" -> ServiceByHcPartyPatientCodePrefixFilter.serializer()
+			"ServiceByHcPartyPatientCodesFilter" -> ServiceByHcPartyPatientCodesFilter.serializer()
+			"ServiceByHcPartyPatientTagCodesFilter" -> ServiceByHcPartyPatientTagCodesFilter.serializer()
 			"ServiceByHcPartyPatientTagPrefixFilter" -> ServiceByHcPartyPatientTagPrefixFilter.serializer()
 			"ServiceByHcPartyTagCodeDateFilter" -> ServiceByHcPartyTagCodeDateFilter.serializer()
+			"ServiceByHcPartyTagCodesFilter" -> ServiceByHcPartyTagCodesFilter.serializer()
 			"ServiceByHcPartyTagPrefixFilter" -> ServiceByHcPartyTagPrefixFilter.serializer()
 			"ServiceByIdsFilter" -> ServiceByIdsFilter.serializer()
 			"ServiceByQualifiedLinkFilter" -> ServiceByQualifiedLinkFilter.serializer()
@@ -989,6 +997,7 @@ internal object ServiceAbstractFilterSerializer :
 			ServiceByAssociationIdFilter::class -> ServiceByAssociationIdFilter.serializer()
 			ServiceByDataOwnerPatientDateFilter::class -> ServiceByDataOwnerPatientDateFilter.serializer()
 			ServiceByHcPartyCodePrefixFilter::class -> ServiceByHcPartyCodePrefixFilter.serializer()
+			ServiceByHcPartyCodesFilter::class -> ServiceByHcPartyCodesFilter.serializer()
 			ServiceByHcPartyFilter::class -> ServiceByHcPartyFilter.serializer()
 			ServiceByHcPartyHealthElementIdsFilter::class ->
 				ServiceByHcPartyHealthElementIdsFilter.serializer()
@@ -997,9 +1006,12 @@ internal object ServiceAbstractFilterSerializer :
 			ServiceByHcPartyMonthTagPrefixFilter::class -> ServiceByHcPartyMonthTagPrefixFilter.serializer()
 			ServiceByHcPartyPatientCodePrefixFilter::class ->
 				ServiceByHcPartyPatientCodePrefixFilter.serializer()
+			ServiceByHcPartyPatientCodesFilter::class -> ServiceByHcPartyPatientCodesFilter.serializer()
+			ServiceByHcPartyPatientTagCodesFilter::class -> ServiceByHcPartyPatientTagCodesFilter.serializer()
 			ServiceByHcPartyPatientTagPrefixFilter::class ->
 				ServiceByHcPartyPatientTagPrefixFilter.serializer()
 			ServiceByHcPartyTagCodeDateFilter::class -> ServiceByHcPartyTagCodeDateFilter.serializer()
+			ServiceByHcPartyTagCodesFilter::class -> ServiceByHcPartyTagCodesFilter.serializer()
 			ServiceByHcPartyTagPrefixFilter::class -> ServiceByHcPartyTagPrefixFilter.serializer()
 			ServiceByIdsFilter::class -> ServiceByIdsFilter.serializer()
 			ServiceByQualifiedLinkFilter::class -> ServiceByQualifiedLinkFilter.serializer()
