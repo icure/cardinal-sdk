@@ -104,7 +104,7 @@ object Serialization {
 			"kotlinx.serialization.Polymorphic<Invoice>", "AbstractFilter<Invoice>", "com.icure.cardinal.sdk.model.Invoice" -> InvoiceAbstractFilterSerializer as KSerializer<AbstractFilter<T>>
 			"kotlinx.serialization.Polymorphic<Message>", "AbstractFilter<Message>", "com.icure.cardinal.sdk.model.Message" -> MessageAbstractFilterSerializer as KSerializer<AbstractFilter<T>>
 			"kotlinx.serialization.Polymorphic<Patient>", "AbstractFilter<Patient>", "com.icure.cardinal.sdk.model.Patient" -> PatientAbstractFilterSerializer as KSerializer<AbstractFilter<T>>
-			"kotlinx.serialization.Polymorphic<Service>", "AbstractFilter<Service>", "com.icure.cardinal.sdk.model.Service" -> ServiceAbstractFilterSerializer as KSerializer<AbstractFilter<T>>
+			"kotlinx.serialization.Polymorphic<Service>", "AbstractFilter<Service>", "com.icure.cardinal.sdk.model.embed.Service" -> ServiceAbstractFilterSerializer as KSerializer<AbstractFilter<T>>
 			"kotlinx.serialization.Polymorphic<Topic>", "AbstractFilter<Topic>", "com.icure.cardinal.sdk.model.Topic" -> TopicAbstractFilterSerializer as KSerializer<AbstractFilter<T>>
 			"kotlinx.serialization.Polymorphic<User>", "AbstractFilter<User>", "com.icure.cardinal.sdk.model.User" -> UserAbstractFilterSerializer as KSerializer<AbstractFilter<T>>
 			"kotlinx.serialization.Polymorphic<CalendarItem>", "AbstractFilter<CalendarItem>", "com.icure.cardinal.sdk.model.CalendarItem" -> UserAbstractFilterSerializer as KSerializer<AbstractFilter<T>>
