@@ -145,7 +145,7 @@ private class CachedLruExchangeDataManagerInGroup(
 		// Check no one has evicted this entry before the cache additional info method has been called, else don't cache
 		// additional info
 		if (exchangeDataByIdCache.get(toCache.exchangeData.id) != null) {
-			exchangeDataByIdCache.set(toCache.exchangeData.id, CompletableDeferred(toCache)) // No need to check data since we
+			exchangeDataByIdCache.set(toCache.exchangeData.id, CompletableDeferred(toCache)) // No need to check cache size since we are only updating an existing key
 			if (toCache.decryptedDetails?.verified == true && delegateToVerifiedExchangeDataId[toCache.exchangeData.delegate]?.isCompleted != true) {
 				delegateToVerifiedExchangeDataId[toCache.exchangeData.delegate] = CompletableDeferred(toCache.exchangeData.id)
 			}

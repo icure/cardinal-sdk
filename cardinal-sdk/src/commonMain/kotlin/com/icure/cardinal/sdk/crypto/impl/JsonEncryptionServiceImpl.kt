@@ -122,15 +122,41 @@ class JsonEncryptionServiceImpl(
 	override fun requiresEncryption(plainJson: JsonObject, manifest: EncryptedFieldsManifest): Boolean =
 		manifest.topLevelFields.any {
 			plainJson.containsKey(it)
-		} || manifest.nestedObjectsKeys.any { (nestedObjectField, manifest) ->
-			plainJson[nestedObjectField]?.let { requiresEncryption(it.jsonObject, manifest) } == true
-		} || manifest.arraysValuesKeys.any { (arrayField, manifest) ->
-			plainJson[arrayField]?.jsonArray?.any { arrayElement ->
-				requiresEncryption(arrayElement.jsonObject, manifest)
+		} || manifest.nestedObjectsKeys.any { (nestedObjectField, subManifest) ->
+			plainJson[nestedObjectField]?.let { value ->
+				when (value) {
+					JsonNull -> false
+					is JsonObject -> requiresEncryption(value, subManifest)
+					else -> throw IllegalArgumentException("${manifest.path}$nestedObjectField should be an object or null")
+				}
 			} == true
-		} || manifest.mapsValuesKeys.any { (mapField, manifest) ->
-			plainJson[mapField]?.jsonObject?.values?.any { mapElement ->
-				requiresEncryption(mapElement.jsonObject, manifest)
+		} || manifest.arraysValuesKeys.any { (arrayField, subManifest) ->
+			plainJson[arrayField]?.let { value ->
+				when (value) {
+					JsonNull -> false
+					is JsonArray -> value.any { arrayElement ->
+						when (arrayElement) {
+							JsonNull -> false
+							is JsonObject -> requiresEncryption(arrayElement, subManifest)
+							else -> throw IllegalArgumentException("All items of ${manifest.path}$arrayField should be objects or null")
+						}
+					}
+					else -> throw IllegalArgumentException("${manifest.path}$arrayField should be an array or null")
+				}
+			} == true
+		} || manifest.mapsValuesKeys.any { (mapField, subManifest) ->
+			plainJson[mapField]?.let { value ->
+				when (value) {
+					JsonNull -> false
+					is JsonObject -> value.values.any { mapElement ->
+						when (mapElement) {
+							JsonNull -> false
+							is JsonObject -> requiresEncryption(mapElement, subManifest)
+							else -> throw IllegalArgumentException("All values in map-like object ${manifest.path}$mapField should be objects or null")
+						}
+					}
+					else -> throw IllegalArgumentException("${manifest.path}$mapField should be an object or null")
+				}
 			} == true
 		}
 

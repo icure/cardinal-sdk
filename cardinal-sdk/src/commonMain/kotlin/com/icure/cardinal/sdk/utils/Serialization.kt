@@ -45,7 +45,11 @@ import kotlinx.serialization.modules.subclass
 @OptIn(ExperimentalSerializationApi::class)
 object Serialization {
 	// Note: order matters, serializer module must be defined before the Json configurations
-	private val ICureSerializerModule = SerializersModule {
+	/**
+	 * Main serializer modules for cardinal classes, required mostly for polymorphic serialization of internal classes,
+	 * but must be provided to kotlinx Json instances that will be used by the cardinal SDK
+	 */
+	val CardinalSerializerModule = SerializersModule {
 		polymorphic(StructureElement::class) {
 			subclass(TimePicker::class)
 			subclass(TextField::class)
@@ -82,6 +86,11 @@ object Serialization {
 		}
 	}
 
+	/**
+	 * Serializer module for polymorphic serialization of encryptable entities.
+	 */
+	val CardinalPolymorphicEncryptableSerializersModule: SerializersModule = EncryptableSerializationModule.module
+
 	@Suppress("UNCHECKED_CAST")
 	private fun <T : Identifiable<String>> getContextualAbstractFilter(genericSerializers: List<KSerializer<*>>): KSerializer<AbstractFilter<T>> =
 		when (val serialName = genericSerializers.single().descriptor.serialName) {
@@ -98,6 +107,8 @@ object Serialization {
 			"kotlinx.serialization.Polymorphic<Service>", "AbstractFilter<Service>", "com.icure.cardinal.sdk.model.Service" -> ServiceAbstractFilterSerializer as KSerializer<AbstractFilter<T>>
 			"kotlinx.serialization.Polymorphic<Topic>", "AbstractFilter<Topic>", "com.icure.cardinal.sdk.model.Topic" -> TopicAbstractFilterSerializer as KSerializer<AbstractFilter<T>>
 			"kotlinx.serialization.Polymorphic<User>", "AbstractFilter<User>", "com.icure.cardinal.sdk.model.User" -> UserAbstractFilterSerializer as KSerializer<AbstractFilter<T>>
+			"kotlinx.serialization.Polymorphic<CalendarItem>", "AbstractFilter<CalendarItem>", "com.icure.cardinal.sdk.model.CalendarItem" -> UserAbstractFilterSerializer as KSerializer<AbstractFilter<T>>
+			"kotlinx.serialization.Polymorphic<Form>", "AbstractFilter<Form>", "com.icure.cardinal.sdk.model.Form" -> UserAbstractFilterSerializer as KSerializer<AbstractFilter<T>>
 			else -> throw SerializationException("Unknown serial name $serialName for generic parameter of AbstractFilter")
 		}
 
@@ -105,21 +116,21 @@ object Serialization {
 		encodeDefaults = false
 		explicitNulls = true
 		ignoreUnknownKeys = false
-		serializersModule = ICureSerializerModule
+		serializersModule = CardinalSerializerModule
 	}
 
 	val fullJson = Json {
 		encodeDefaults = true
 		explicitNulls = true
 		ignoreUnknownKeys = false
-		serializersModule = ICureSerializerModule
+		serializersModule = CardinalSerializerModule
 	}
 
 	val lenientJson = Json {
 		encodeDefaults = false
 		explicitNulls = true
 		ignoreUnknownKeys = true
-		serializersModule = ICureSerializerModule
+		serializersModule = CardinalSerializerModule
 	}
 
 	@InternalIcureApi
@@ -127,7 +138,7 @@ object Serialization {
 		encodeDefaults = true
 		explicitNulls = true
 		ignoreUnknownKeys = false
-		serializersModule = ICureSerializerModule.plus(EncryptableSerializationModule.module)
+		serializersModule = CardinalSerializerModule.plus(EncryptableSerializationModule.module)
 		classDiscriminator = "kotlinType"
 	}
 }
