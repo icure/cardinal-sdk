@@ -208,7 +208,7 @@ public interface RawHealthcarePartyApi {
 		healthcareParties: List<HealthcareParty>,
 	): HttpResponse<List<HealthcareParty>>
 
-	suspend fun registerPatient(
+	suspend fun registerHealthcareParty(
 		groupId: String,
 		parentHcPartyId: String? = null,
 		token: String? = null,
