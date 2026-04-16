@@ -36,6 +36,7 @@ data class Subscription<O : Identifiable<String>>(
 	 * When true, uses Cardinal model serialization for the entity payloads.
 	 */
 	public val useCardinalModelSerialization: Boolean? = null,
+	public val cardinalSdkVersion: String? = null,
 ) {
   // region Subscription-Subscription
 

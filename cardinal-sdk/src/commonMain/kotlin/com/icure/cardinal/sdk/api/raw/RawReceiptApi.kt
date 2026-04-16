@@ -11,7 +11,9 @@ import com.icure.cardinal.sdk.model.requests.BulkShareOrUpdateMetadataParams
 import com.icure.cardinal.sdk.model.requests.EntityBulkShareResult
 import com.icure.utils.InternalIcureApi
 import kotlin.ByteArray
+import kotlin.Long
 import kotlin.String
+import kotlin.Unit
 import kotlin.collections.List
 
 // WARNING: This class is auto-generated. If you change it manually, your changes will be lost.
@@ -52,11 +54,27 @@ public interface RawReceiptApi {
 		attachmentId: String,
 	): HttpResponse<ByteArray>
 
+	suspend fun getReceiptAttachmentByBlobType(
+		receiptId: String,
+		blobType: String,
+	): HttpResponse<ByteArray>
+
 	suspend fun setReceiptAttachment(
 		receiptId: String,
 		blobType: String,
 		rev: String,
 		payload: ByteArray,
+	): HttpResponse<EncryptedReceipt>
+
+	suspend fun setReceiptDataAttachment(
+		receiptId: String,
+		blobType: String,
+		rev: String,
+		compressionAlgorithm: String? = null,
+		triedCompressionAlgorithmsVersion: String? = null,
+		realDataSize: Long? = null,
+		payload: ByteArray,
+		lengthHeader: Long?,
 	): HttpResponse<EncryptedReceipt>
 
 	suspend fun getReceipt(receiptId: String): HttpResponse<EncryptedReceipt>
@@ -168,5 +186,10 @@ public interface RawReceiptApi {
 		groupId: String,
 		entityIds: List<String>,
 	): HttpResponse<List<MergeResult>>
+
+	suspend fun migrateReceiptAttachmentToObjectStorage(
+		groupId: String,
+		receiptId: String,
+	): HttpResponse<Unit>
 	// endregion
 }

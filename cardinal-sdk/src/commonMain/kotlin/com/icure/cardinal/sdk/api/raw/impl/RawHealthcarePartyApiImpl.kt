@@ -618,7 +618,7 @@ class RawHealthcarePartyApiImpl(
 			setBody(healthcareParties)
 		}.wrap()
 
-	override suspend fun registerPatient(
+	override suspend fun registerHealthcareParty(
 		groupId: String,
 		parentHcPartyId: String?,
 		token: String?,
