@@ -42,7 +42,7 @@ kotlin {
 	configureMultiplatform(this)
 
 	sourceSets {
-		val commonMain by getting {
+		commonMain {
 			kotlin.srcDir(generateSdkVersion)
 			dependencies {
 				api(libs.ktorClientCore)
@@ -59,7 +59,7 @@ kotlin {
 				implementation(kotlin("reflect"))
 			}
 		}
-		val commonTest by getting {
+		commonTest {
 			dependencies {
 				implementation(libs.kotestAssertions)
 				implementation(libs.kotestEngine)
@@ -68,13 +68,13 @@ kotlin {
 				implementation(kotlin("test-annotations-common"))
 			}
 		}
-		val jvmMain by getting {
+		jvmMain {
 			dependencies {
 				implementation(libs.ktorClientEngineOkhttp)
 				implementation(libs.bouncyCastle)
 			}
 		}
-		val jvmTest by getting {
+		jvmTest {
 			dependencies {
 				implementation(libs.kotestRunnerJunit)
 				implementation(libs.ktorClientEngineCio) // Currently needed by test setup, remove later
@@ -82,18 +82,18 @@ kotlin {
 				implementation(libs.bundles.ktorServer)
 			}
 		}
-		val jsMain by getting {
+		jsMain {
 			dependencies {
 				implementation(libs.ktorClientEngineJs)
 			}
 		}
-		val androidMain by getting {
+		androidMain {
 			dependencies {
 				implementation(libs.ktorClientEngineOkhttp)
 				compileOnly(libs.androidx.datastore)
 			}
 		}
-		val androidUnitTest by getting {
+		val androidHostTest by getting {
 			dependencies {
 				implementation(libs.kotestRunnerJunit)
 			}
@@ -114,11 +114,6 @@ kotlin {
 			}
 		}
 	}
-}
-
-android {
-	namespace = "com.icure.cardinal.sdk"
-	configureAndroidLibrary()
 }
 
 configureJvmTest()

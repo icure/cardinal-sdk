@@ -4,7 +4,7 @@ import org.gradle.api.Project
 import org.gradle.kotlin.dsl.withType
 
 fun Project.configureJvmTest() {
-	tasks.named<Test>("jvmTest") {
+	tasks.withType<Test>().configureEach {
 		useJUnitPlatform()
 		filter {
 			isFailOnNoMatchingTests = false
@@ -18,10 +18,5 @@ fun Project.configureJvmTest() {
 			)
 			exceptionFormat = org.gradle.api.tasks.testing.logging.TestExceptionFormat.FULL
 		}
-	}
-
-
-	tasks.withType<Test>().configureEach {
-		useJUnitPlatform()
 	}
 }

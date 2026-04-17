@@ -196,22 +196,26 @@ val prepareTypescriptSourceCompilation = tasks.register("prepareTypescriptSource
 	}
 }
 
+val tscPath = providers.exec {
+	commandLine("bash", "-c", "which tsc")
+}.standardOutput.asText.map { it.trim() }
+
 val compileTypescriptSources = tasks.register("compileTypescriptSources") {
 	// Note: requires tsc in path
 	// Typescript configuration from tsconfig
 	dependsOn(prepareTypescriptSourceCompilation)
 	inputs.dir(projectDir.resolve(mergedTsProject))
 	inputs.file(projectDir.resolve("tsconfig.json"))
-	outputs.dir(projectDir.resolve(projectDir.resolve(tsCompiledSources)))
+	outputs.dir(tsCompiledSources)
 	doLast {
-		delete(tsCompiledSources)
-		exec {
-			val tsc = providers.exec {
-				commandLine("bash", "-c", "which tsc")
-			}.standardOutput.asText.get().trim()
-			println(tsc)
-			commandLine(tsc,"--project", projectDir.path)
-		}
+		tsCompiledSources.deleteRecursively()
+		val tsc = tscPath.get()
+		println(tsc)
+		val exitCode = ProcessBuilder(tsc, "--project", projectDir.path)
+			.inheritIO()
+			.start()
+			.waitFor()
+		check(exitCode == 0) { "tsc exited with code $exitCode" }
 	}
 }
 

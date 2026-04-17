@@ -51,7 +51,7 @@ kotlin {
 				implementation(libs.androidx.datastore)
 			}
 		}
-		val androidUnitTest by getting {
+		val androidHostTest by getting {
 			dependencies {
 				implementation(libs.kotestRunnerJunit)
 			}
@@ -61,11 +61,6 @@ kotlin {
 			}
 		}
 	}
-}
-
-android {
-	namespace = "com.icure.cardinal.sdk.dart"
-	configureAndroidLibrary()
 }
 
 fun projectHasSignatureProperties() =
