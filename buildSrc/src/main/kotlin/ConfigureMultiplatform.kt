@@ -122,7 +122,6 @@ fun Project.configureMultiplatform(
         }
     }
     if (macos) {
-        macosX64()
         macosArm64()
     }
     if (linux) {

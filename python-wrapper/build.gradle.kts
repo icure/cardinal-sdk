@@ -22,13 +22,6 @@ kotlin {
 			}
 		}
 	}
-	macosX64 {
-		binaries {
-			sharedLib {
-				baseName = sharedLibBaseName
-			}
-		}
-	}
 	mingwX64 {
 		binaries {
 			sharedLib {
