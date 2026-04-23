@@ -19,6 +19,7 @@ import com.icure.cardinal.sdk.model.requests.BulkShareOrUpdateMetadataParams
 import com.icure.cardinal.sdk.model.requests.EntityBulkShareResult
 import com.icure.utils.InternalIcureApi
 import io.ktor.client.request.accept
+import io.ktor.client.request.`header`
 import io.ktor.client.request.parameter
 import io.ktor.client.request.setBody
 import io.ktor.http.ContentType.Application
@@ -28,7 +29,9 @@ import io.ktor.http.contentType
 import io.ktor.http.takeFrom
 import io.ktor.util.date.GMTDate
 import kotlin.ByteArray
+import kotlin.Long
 import kotlin.String
+import kotlin.Unit
 import kotlin.collections.List
 
 // WARNING: This class is auto-generated. If you change it manually, your changes will be lost.
@@ -167,6 +170,19 @@ class RawReceiptApiImpl(
 			accept(Application.OctetStream)
 		}.wrap()
 
+	override suspend fun getReceiptAttachmentByBlobType(
+		receiptId: String,
+		blobType: String,
+	): HttpResponse<ByteArray> =
+		get(authProvider) {
+			url {
+				takeFrom(apiUrl)
+				appendPathSegments("rest", "v2", "receipt", receiptId, "attachment", "ofType", blobType)
+				parameter("ts", GMTDate().timestamp)
+			}
+			accept(Application.OctetStream)
+		}.wrap()
+
 	override suspend fun setReceiptAttachment(
 		receiptId: String,
 		blobType: String,
@@ -180,6 +196,30 @@ class RawReceiptApiImpl(
 				parameter("rev", rev)
 			}
 			accept(Application.Json)
+			setBody(ByteArrayContent(payload, Application.OctetStream))
+		}.wrap()
+
+	override suspend fun setReceiptDataAttachment(
+		receiptId: String,
+		blobType: String,
+		rev: String,
+		compressionAlgorithm: String?,
+		triedCompressionAlgorithmsVersion: String?,
+		realDataSize: Long?,
+		payload: ByteArray,
+		lengthHeader: Long?,
+	): HttpResponse<EncryptedReceipt> =
+		put(authProvider) {
+			url {
+				takeFrom(apiUrl)
+				appendPathSegments("rest", "v2", "receipt", receiptId, "dataattachment", blobType)
+				parameter("rev", rev)
+				parameter("compressionAlgorithm", compressionAlgorithm)
+				parameter("triedCompressionAlgorithmsVersion", triedCompressionAlgorithmsVersion)
+				parameter("realDataSize", realDataSize)
+			}
+			accept(Application.Json)
+			`header`("Content-Length", lengthHeader)
 			setBody(ByteArrayContent(payload, Application.OctetStream))
 		}.wrap()
 
@@ -526,6 +566,19 @@ class RawReceiptApiImpl(
 			contentType(Application.Json)
 			accept(Application.Json)
 			setBody(entityIds)
+		}.wrap()
+
+	override suspend fun migrateReceiptAttachmentToObjectStorage(
+		groupId: String,
+		receiptId: String,
+	): HttpResponse<Unit> =
+		post(authProvider, groupId) {
+			url {
+				takeFrom(apiUrl)
+				appendPathSegments("rest", "v2", "receipt", "inGroup", groupId, receiptId, "migrateAttachments")
+			}
+			contentType(Application.Json)
+			accept(Application.Json)
 		}.wrap()
 
 	// endregion

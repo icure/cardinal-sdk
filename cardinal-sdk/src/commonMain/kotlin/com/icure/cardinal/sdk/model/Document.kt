@@ -143,6 +143,13 @@ sealed interface Document :
 	public val otherUtis: Set<String>
 
 	/**
+	 * Extra Uniform Type Identifiers for the main attachment.
+	 */
+	public val mainAttachmentStoredDataSize: Long?
+
+	public val extraMainAttachmentInfo: ExtraMainAttachmentInfo?
+
+	/**
 	 * Secondary attachments for this document.
 	 */
 	public val secondaryAttachments: Map<String, DataAttachment>
@@ -181,6 +188,13 @@ sealed interface Document :
 	 * The security metadata of this entity, for access control.
 	 */
 	override val securityMetadata: SecurityMetadata?
+
+	@Serializable
+	public data class ExtraMainAttachmentInfo(
+		public val compressionAlgorithm: String? = null,
+		public val triedCompressionAlgorithmsVersion: String? = null,
+		public val realDataSize: Long? = null,
+	)
 	// region Document-Document
 
 	// endregion
@@ -281,6 +295,11 @@ data class DecryptedDocument(
 	 */
 	@param:DefaultValue("emptySet()")
 	override val otherUtis: Set<String> = emptySet(),
+	/**
+	 * Extra Uniform Type Identifiers for the main attachment.
+	 */
+	override val mainAttachmentStoredDataSize: Long? = null,
+	override val extraMainAttachmentInfo: Document.ExtraMainAttachmentInfo? = null,
 	/**
 	 * Secondary attachments for this document.
 	 */
@@ -421,6 +440,11 @@ data class EncryptedDocument(
 	 */
 	@param:DefaultValue("emptySet()")
 	override val otherUtis: Set<String> = emptySet(),
+	/**
+	 * Extra Uniform Type Identifiers for the main attachment.
+	 */
+	override val mainAttachmentStoredDataSize: Long? = null,
+	override val extraMainAttachmentInfo: Document.ExtraMainAttachmentInfo? = null,
 	/**
 	 * Secondary attachments for this document.
 	 */

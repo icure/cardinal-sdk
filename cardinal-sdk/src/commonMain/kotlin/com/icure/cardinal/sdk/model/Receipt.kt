@@ -6,8 +6,11 @@ import com.icure.cardinal.sdk.model.base.CodeStub
 import com.icure.cardinal.sdk.model.base.HasEncryptionMetadata
 import com.icure.cardinal.sdk.model.base.ICureDocument
 import com.icure.cardinal.sdk.model.base.StoredDocument
+import com.icure.cardinal.sdk.model.embed.DataAttachment
 import com.icure.cardinal.sdk.model.embed.Delegation
+import com.icure.cardinal.sdk.model.embed.DeletedAttachment
 import com.icure.cardinal.sdk.model.embed.Encryptable
+import com.icure.cardinal.sdk.model.embed.ReceiptBlobType
 import com.icure.cardinal.sdk.model.embed.SecurityMetadata
 import com.icure.cardinal.sdk.model.specializations.Base64String
 import com.icure.cardinal.sdk.utils.DefaultValue
@@ -17,7 +20,6 @@ import kotlin.String
 import kotlin.collections.List
 import kotlin.collections.Map
 import kotlin.collections.Set
-import com.icure.cardinal.sdk.model.embed.ReceiptBlobType
 
 /**
  * Represents a receipt for a healthcare transaction. Receipts are used to store acknowledgements
@@ -77,6 +79,15 @@ sealed interface Receipt :
 	 * Hard delete (unix epoch in ms) timestamp of the object.
 	 */
 	override val deletionDate: Long?
+
+	/**
+	 * Map of blob type to attachment id for the receipt.
+	 */
+	public val attachmentIds: Map<ReceiptBlobType, String>
+
+	public val attachmentInfos: Map<ReceiptBlobType, DataAttachment>
+
+	public val deletedAttachments: List<DeletedAttachment>
 
 	/**
 	 * List of references (e.g., nipReference, errorCode, errorPath, tarification, invoice UUID).
@@ -181,6 +192,15 @@ data class DecryptedReceipt(
 	 */
 	override val deletionDate: Long? = null,
 	/**
+	 * Map of blob type to attachment id for the receipt.
+	 */
+	@param:DefaultValue("emptyMap()")
+	override val attachmentIds: Map<ReceiptBlobType, String> = emptyMap(),
+	@param:DefaultValue("emptyMap()")
+	override val attachmentInfos: Map<ReceiptBlobType, DataAttachment> = emptyMap(),
+	@param:DefaultValue("emptyList()")
+	override val deletedAttachments: List<DeletedAttachment> = emptyList(),
+	/**
 	 * List of references (e.g., nipReference, errorCode, errorPath, tarification, invoice UUID).
 	 */
 	@param:DefaultValue("emptyList()")
@@ -280,6 +300,15 @@ data class EncryptedReceipt(
 	 * Hard delete (unix epoch in ms) timestamp of the object.
 	 */
 	override val deletionDate: Long? = null,
+	/**
+	 * Map of blob type to attachment id for the receipt.
+	 */
+	@param:DefaultValue("emptyMap()")
+	override val attachmentIds: Map<ReceiptBlobType, String> = emptyMap(),
+	@param:DefaultValue("emptyMap()")
+	override val attachmentInfos: Map<ReceiptBlobType, DataAttachment> = emptyMap(),
+	@param:DefaultValue("emptyList()")
+	override val deletedAttachments: List<DeletedAttachment> = emptyList(),
 	/**
 	 * List of references (e.g., nipReference, errorCode, errorPath, tarification, invoice UUID).
 	 */
