@@ -6,6 +6,7 @@ import com.icure.cardinal.sdk.model.filter.AbstractFilter
 import com.icure.cardinal.sdk.model.filter.chain.FilterChain
 import com.icure.cardinal.sdk.model.notification.SubscriptionEventType
 import com.icure.cardinal.sdk.utils.InternalCardinalException
+import com.icure.cardinal.sdk.utils.SDK_VERSION
 import com.icure.utils.InternalIcureApi
 import io.ktor.client.HttpClient
 import io.ktor.client.plugins.plugin
@@ -101,7 +102,7 @@ internal class WebSocketSubscription<E : Identifiable<String>> private construct
 					),
 					entityClass = qualifiedName,
 					accessControlKeys = null,
-					useCardinalModelSerialization = true
+					cardinalSdkVersion = SDK_VERSION
 				),
 			)
 			val subscription = WebSocketSubscription(

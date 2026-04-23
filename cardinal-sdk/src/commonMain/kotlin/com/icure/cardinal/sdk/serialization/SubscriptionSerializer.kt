@@ -32,6 +32,7 @@ class SubscriptionSerializer<O : Identifiable<String>>(
 		element("filter", filterChainSerializer.descriptor)
 		element<List<AccessControlKeyHexString>?>("accessControlKeys")
 		element<Boolean?>("useCardinalModelSerialization")
+		element<String?>("cardinalSdkVersion")
 	}
 
 	override fun deserialize(decoder: Decoder): Subscription<O> =
@@ -41,6 +42,7 @@ class SubscriptionSerializer<O : Identifiable<String>>(
 			var filter: FilterChain<O>? = null
 			var accessControlKeys: List<AccessControlKeyHexString>? = null
 			var useCardinalModelSerialization: Boolean? = null
+			var cardinalSdkVersion: String? = null
 			while (true) {
 				when (val index = decodeElementIndex(descriptor)) {
 					0 -> eventTypes = decodeSerializableElement(descriptor, 0, ListSerializer(SubscriptionEventType.serializer()))
@@ -48,6 +50,7 @@ class SubscriptionSerializer<O : Identifiable<String>>(
 					2 -> filter = decodeNullableSerializableElement(descriptor, 2, filterChainSerializer)
 					3 -> accessControlKeys = decodeNullableSerializableElement(descriptor, 3, ListSerializer(AccessControlKeyHexString.serializer()))
 					4 -> useCardinalModelSerialization = decodeNullableSerializableElement(descriptor, 4, Boolean.serializer())
+					5 -> cardinalSdkVersion = decodeNullableSerializableElement(descriptor, 5, String.serializer())
 					CompositeDecoder.DECODE_DONE -> break
 					else -> error("Unexpected index: $index")
 				}
@@ -58,6 +61,7 @@ class SubscriptionSerializer<O : Identifiable<String>>(
 				filter = filter,
 				accessControlKeys = accessControlKeys,
 				useCardinalModelSerialization = useCardinalModelSerialization,
+				cardinalSdkVersion = cardinalSdkVersion
 			)
 		}
 
