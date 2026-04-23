@@ -71,5 +71,6 @@ class SubscriptionSerializer<O : Identifiable<String>>(
 		encodeNullableSerializableElement(descriptor, 2, filterChainSerializer, value.filter)
 		encodeNullableSerializableElement(descriptor, 3, ListSerializer(AccessControlKeyHexString.serializer()), value.accessControlKeys)
 		encodeNullableSerializableElement(descriptor, 4, Boolean.serializer(), value.useCardinalModelSerialization)
+		encodeNullableSerializableElement(descriptor, 5, String.serializer(), value.cardinalSdkVersion)
 	}
 }

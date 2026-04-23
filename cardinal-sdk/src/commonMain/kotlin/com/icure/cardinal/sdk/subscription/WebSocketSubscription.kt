@@ -102,6 +102,7 @@ internal class WebSocketSubscription<E : Identifiable<String>> private construct
 					),
 					entityClass = qualifiedName,
 					accessControlKeys = null,
+					useCardinalModelSerialization = true, // TODO remove in future when all published backends support cardinalSdkVersion
 					cardinalSdkVersion = SDK_VERSION
 				),
 			)
