@@ -21,5 +21,6 @@ data class ServiceByHcPartyCodesFilter(
 	override val desc: String? = null,
 ) : AbstractFilter<Service> {
 	// region ServiceByHcPartyCodesFilter-ServiceByHcPartyCodesFilter
+
 	// endregion
 }

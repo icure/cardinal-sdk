@@ -430,7 +430,7 @@ public object HealthcarePartyApi {
     ApiScope.execute(
       dartResultCallback,
       DataOwnerRegistrationSuccess.serializer()) {
-      NativeReferences.get<CardinalNonCryptoApis>(sdkId).healthcareParty.registerPatient(
+      NativeReferences.get<CardinalNonCryptoApis>(sdkId).healthcareParty.registerHealthcareParty(
         groupId,
         parentHcPartyId,
         token,

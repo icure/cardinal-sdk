@@ -885,7 +885,7 @@ public fun registerPatientBlocking(sdk: CardinalNonCryptoApis, params: String): 
 		kotlin.runCatching {
 	val decodedParams = fullLanguageInteropJson.decodeFromString<RegisterPatientParams>(params)
 	runBlocking {
-		sdk.healthcareParty.registerPatient(
+		sdk.healthcareParty.registerHealthcareParty(
 			decodedParams.groupId,
 			decodedParams.parentHcPartyId,
 			decodedParams.token,
@@ -908,7 +908,7 @@ public fun registerPatientAsync(
 	val decodedParams = fullLanguageInteropJson.decodeFromString<RegisterPatientParams>(params)
 	GlobalScope.launch {
 		kotlin.runCatching {
-			sdk.healthcareParty.registerPatient(
+			sdk.healthcareParty.registerHealthcareParty(
 				decodedParams.groupId,
 				decodedParams.parentHcPartyId,
 				decodedParams.token,

@@ -5,6 +5,7 @@ package com.icure.cardinal.sdk.model.requests.document
 import com.icure.cardinal.sdk.utils.DefaultValue
 import kotlinx.serialization.Serializable
 import kotlin.Boolean
+import kotlin.Long
 import kotlin.String
 import kotlin.collections.List
 import kotlin.collections.Map
@@ -44,6 +45,9 @@ data class BulkAttachmentUpdateOptions(
 		 * Whether the attachment data is encrypted.
 		 */
 		public val dataIsEncrypted: Boolean? = null,
+		public val compressionAlgorithm: String? = null,
+		public val triedCompressionAlgorithmsVersion: String? = null,
+		public val realDataSize: Long? = null,
 	)
 	// region BulkAttachmentUpdateOptions-BulkAttachmentUpdateOptions
 

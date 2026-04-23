@@ -1,3 +1,4 @@
+import com.android.build.gradle.internal.dependency.configureSourceTypeAttribute
 import org.gradle.api.Project
 import org.gradle.jvm.toolchain.JavaLanguageVersion
 import org.gradle.kotlin.dsl.get
@@ -98,12 +99,8 @@ fun Project.configureMultiplatform(
         configureKotlinJs(this)
     }
     if (android) {
-        androidTarget {
-            compilerOptions {
-                jvmTarget.set(JvmTarget.JVM_11)
-            }
-            // Important: otherwise android will use the jvm library and it will not work...
-            publishLibraryVariants("release", "debug")
+        (this as org.gradle.api.plugins.ExtensionAware).extensions.configure<com.android.build.api.dsl.KotlinMultiplatformAndroidLibraryTarget>("android") {
+            configureAndroidLibrary()
         }
     }
     if (ios) {
@@ -125,7 +122,6 @@ fun Project.configureMultiplatform(
         }
     }
     if (macos) {
-        macosX64()
         macosArm64()
     }
     if (linux) {

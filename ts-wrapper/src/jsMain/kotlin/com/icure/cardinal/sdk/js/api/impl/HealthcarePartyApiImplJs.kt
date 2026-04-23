@@ -767,7 +767,7 @@ internal class HealthcarePartyApiImplJs(
 				undefinedToNull(useShortToken)
 			}
 			val hcpConverted: HealthcareParty = healthcareParty_fromJs(hcp)
-			val result = healthcarePartyApi.registerPatient(
+			val result = healthcarePartyApi.registerHealthcareParty(
 				groupIdConverted,
 				parentHcPartyIdConverted,
 				tokenConverted,

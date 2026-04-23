@@ -1,22 +1,22 @@
-import com.android.build.gradle.LibraryExtension
-import org.gradle.api.JavaVersion
+import com.android.build.api.dsl.KotlinMultiplatformAndroidLibraryTarget
+import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 
-@Suppress("UnstableApiUsage")
-fun LibraryExtension.configureAndroidLibrary() {
+fun KotlinMultiplatformAndroidLibraryTarget.configureAndroidLibrary() {
 	compileSdk = 34
-	sourceSets.getByName("main").manifest.srcFile("src/androidMain/AndroidManifest.xml")
-	defaultConfig {
-		minSdk = 26
+	minSdk = 26
+	namespace = "com.icure.cardinal.sdk"
+	compilerOptions {
+		jvmTarget.set(JvmTarget.JVM_1_8)
 	}
-	compileOptions {
-		sourceCompatibility = JavaVersion.VERSION_1_8
-		targetCompatibility = JavaVersion.VERSION_1_8
-	}
-	testOptions {
-		targetSdk = 34
-		unitTests.all {
-			it.useJUnitPlatform()
+	compilations.all {
+		if (name == "hostTest") {
+			compileTaskProvider.configure {
+				compilerOptions.jvmTarget.set(JvmTarget.JVM_11) // Need 11 to launch tests, due to kotest version
+			}
 		}
+	}
+	withHostTest {
+
 	}
 	lint {
 		checkReleaseBuilds = false

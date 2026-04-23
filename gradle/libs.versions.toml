@@ -1,19 +1,19 @@
 [versions]
-kotlin = "2.2.20"
+kotlin = "2.3.20"
 ktor = "3.2.1"
 coroutines = "1.10.2"
 kotlinIo = "0.6.0"
 kotlinSerialization = "1.9.0"
 kotlinDateTime = "0.7.1"
-kotest = "6.0.4"
-androidLibrary = "8.10.0"
-kryptom = "1.4.0"
+kotest = "6.1.11"
+androidLibrary = "9.1.1"
+kryptom = "1.5.0"
 kermit = "2.0.3"
 okio = "3.9.1"
 bouncyCastle = "1.70"
 kotp = "1.0.1"
 kerberus = "1.1.8"
-ksp = "2.2.20-2.0.4"
+ksp = "2.3.6"
 
 [libraries]
 
@@ -22,7 +22,7 @@ kotlinMultiplatformPlugin = { group = "org.jetbrains.kotlin.multiplatform", name
 kotlinSerializationPlugin = { group = "org.jetbrains.kotlin.plugin.serialization", name = "org.jetbrains.kotlin.plugin.serialization.gradle.plugin", version.ref = "kotlin" }
 kotestPlugin = { group = "io.kotest", name = "io.kotest.gradle.plugin", version.ref = "kotest" }
 kspPlugin = { group = "com.google.devtools.ksp", name = "com.google.devtools.ksp.gradle.plugin", version.ref = "ksp" }
-androidLibraryPlugin = { group = "com.android.library", name = "com.android.library.gradle.plugin", version.ref = "androidLibrary" }
+androidLibraryPlugin = { group = "com.android.kotlin.multiplatform.library", name = "com.android.kotlin.multiplatform.library.gradle.plugin", version.ref = "androidLibrary" }
 
 # Ktor
 ktorUtils = { group = "io.ktor", name = "ktor-utils", version.ref = "ktor" }
