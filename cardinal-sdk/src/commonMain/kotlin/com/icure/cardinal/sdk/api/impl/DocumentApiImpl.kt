@@ -435,7 +435,7 @@ private class DocumentBasicFlavourlessApiImpl(rawApi: RawDocumentApi) : Abstract
 		attachment: ByteArray,
 		encrypted: Boolean,
 	) =
-		rawApi.setDocumentAttachment(documentId, rev, utis, attachment, attachment.size.toLong(), encrypted).successBody()
+		rawApi.setDocumentAttachment(documentId, rev, utis, payload = attachment, lengthHeader = attachment.size.toLong(), encrypted = encrypted).successBody()
 
 	override suspend fun setRawSecondaryAttachment(
 		documentId: String,
@@ -445,7 +445,7 @@ private class DocumentBasicFlavourlessApiImpl(rawApi: RawDocumentApi) : Abstract
 		attachment: ByteArray,
 		encrypted: Boolean,
 	) =
-		rawApi.setSecondaryAttachment(documentId, key, rev, utis, attachment, attachment.size.toLong(), encrypted).successBody()
+		rawApi.setSecondaryAttachment(documentId, key, rev, utis, payload = attachment, lengthHeader = attachment.size.toLong(), encrypted = encrypted).successBody()
 
 	override suspend fun deleteMainAttachment(entityId: String, rev: String) =
 		rawApi.deleteAttachment(entityId, rev).successBody()
@@ -707,9 +707,9 @@ private class DocumentApiImpl(
 			document.id,
 			document.rev ?: throw IllegalArgumentException("Document must have a revision set before setting the attachment"),
 			utis,
-			payload,
-			attachment.size.toLong(),
-			true,
+			payload = payload,
+			lengthHeader = attachment.size.toLong(),
+			encrypted = true,
 		).successBody()
 	}
 
@@ -736,9 +736,9 @@ private class DocumentApiImpl(
 			key,
 			document.rev ?: throw IllegalArgumentException("Document must have a revision set before setting the attachment"),
 			utis,
-			payload,
-			attachment.size.toLong(),
-			true,
+			payload = payload,
+			lengthHeader = attachment.size.toLong(),
+			encrypted = true,
 		).successBody()
 	}
 
