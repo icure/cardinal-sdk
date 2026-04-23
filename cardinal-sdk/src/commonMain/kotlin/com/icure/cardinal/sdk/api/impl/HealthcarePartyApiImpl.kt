@@ -210,13 +210,13 @@ internal class HealthcarePartyApiImpl(
 	override suspend fun undeleteHealthcarePartiesByIds(entityIds: List<StoredDocumentIdentifier>): List<HealthcareParty> =
 		doUndeleteHealthcareParties(groupId = null, entityIds = entityIds)
 
-	override suspend fun registerPatient(
+	override suspend fun registerHealthcareParty(
 		groupId: String,
 		parentHcPartyId: String?,
 		token: String?,
 		useShortToken: Boolean?,
 		hcp: HealthcareParty,
-	) = rawApi.registerPatient(groupId, parentHcPartyId, token, useShortToken, hcp).successBody()
+	) = rawApi.registerHealthcareParty(groupId, parentHcPartyId, token, useShortToken, hcp).successBody()
 
 	override suspend fun subscribeToEvents(
 		events: Set<SubscriptionEventType>,

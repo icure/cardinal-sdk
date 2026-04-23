@@ -47,7 +47,7 @@ interface HealthcarePartyApi: Subscribable<HealthcareParty, HealthcareParty, Fil
 		filter: BaseSortableFilterOptions<HealthcareParty>,
 	): PaginatedListIterator<HealthcareParty>
 
-	suspend fun registerPatient(
+	suspend fun registerHealthcareParty(
 		groupId: String,
 		@DefaultValue("null")
 		parentHcPartyId: String? = null,
