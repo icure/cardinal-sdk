@@ -43,10 +43,10 @@ fun Project.configureKotlinLinux(
     kotlinMultiplatformExtension: KotlinMultiplatformExtension
 ) = with(kotlinMultiplatformExtension) {
     val localProperties = getLocalProperties()
-//	val linuxArm64Target = linuxArm64() currently have to disable since we have no good ktor engine implementation
+	val linuxArm64Target = linuxArm64()
     val linuxX64Target = linuxX64()
     listOf(
-//		linuxArm64Target,
+		linuxArm64Target,
         linuxX64Target
     ).onEach { target ->
         target.binaries {
