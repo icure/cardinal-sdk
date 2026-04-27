@@ -5,6 +5,7 @@ package com.icure.cardinal.sdk.model.notification
 import com.icure.cardinal.sdk.model.base.Identifiable
 import com.icure.cardinal.sdk.model.filter.chain.FilterChain
 import com.icure.cardinal.sdk.model.specializations.AccessControlKeyHexString
+import com.icure.cardinal.sdk.utils.DefaultValue
 import kotlin.Boolean
 import kotlin.String
 import kotlin.collections.List
@@ -37,6 +38,8 @@ data class Subscription<O : Identifiable<String>>(
 	 */
 	public val useCardinalModelSerialization: Boolean? = null,
 	public val cardinalSdkVersion: String? = null,
+	@param:DefaultValue("false")
+	public val includeLegacyFields: Boolean = false,
 ) {
   // region Subscription-Subscription
 
