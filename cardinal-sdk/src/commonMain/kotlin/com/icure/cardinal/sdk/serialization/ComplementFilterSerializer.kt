@@ -34,8 +34,8 @@ internal class ComplementFilterSerializer<O : Identifiable<String>>(
 			while (true) {
 				when (val index = decodeElementIndex(descriptor)) {
 					0 -> superSet = decodeSerializableElement(descriptor, 0, abstractFilterSerializer)
-					1 -> subSet = decodeSerializableElement(descriptor, 0, abstractFilterSerializer)
-					2 -> desc = decodeNullableSerializableElement(descriptor, 1, String.serializer())
+					1 -> subSet = decodeSerializableElement(descriptor, 1, abstractFilterSerializer)
+					2 -> desc = decodeNullableSerializableElement(descriptor, 2, String.serializer())
 					CompositeDecoder.DECODE_DONE -> break
 					else -> error("Unexpected index: $index")
 				}
