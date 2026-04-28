@@ -672,9 +672,12 @@ object ServiceFilters {
 
 	// --- Codes (Map<codeType, Collection<codeCode>>) filters ---
 
+	//TODO might want to add more alternative version where instead of passing directly the Map<String, Set<String>> we
+	// ask for List<TypeAndCode> and convert that to the map before creating the filter options
+
 	fun byCodesAndValueDateForDataOwner(
 		dataOwnerId: String,
-		codeCodes: Map<String, Collection<String>>,
+		codeCodes: Map<String, Set<String>>,
 		@DefaultValue("null")
 		startOfServiceValueDate: Long? = null,
 		@DefaultValue("null")
@@ -688,7 +691,7 @@ object ServiceFilters {
 
 	fun byCodesAndValueDateForDataOwnerInGroup(
 		dataOwner: EntityReferenceInGroup,
-		codeCodes: Map<String, Collection<String>>,
+		codeCodes: Map<String, Set<String>>,
 		@DefaultValue("null")
 		startOfServiceValueDate: Long? = null,
 		@DefaultValue("null")
@@ -701,7 +704,7 @@ object ServiceFilters {
 	)
 
 	fun byCodesAndValueDateForSelf(
-		codeCodes: Map<String, Collection<String>>,
+		codeCodes: Map<String, Set<String>>,
 		@DefaultValue("null")
 		startOfServiceValueDate: Long? = null,
 		@DefaultValue("null")
@@ -764,7 +767,7 @@ object ServiceFilters {
 
 	fun byTagCodesAndValueDateForDataOwner(
 		dataOwnerId: String,
-		tagCodes: Map<String, Collection<String>>,
+		tagCodes: Map<String, Set<String>>,
 		@DefaultValue("null")
 		startOfServiceValueDate: Long? = null,
 		@DefaultValue("null")
@@ -778,7 +781,7 @@ object ServiceFilters {
 
 	fun byTagCodesAndValueDateForDataOwnerInGroup(
 		dataOwner: EntityReferenceInGroup,
-		tagCodes: Map<String, Collection<String>>,
+		tagCodes: Map<String, Set<String>>,
 		@DefaultValue("null")
 		startOfServiceValueDate: Long? = null,
 		@DefaultValue("null")
@@ -791,7 +794,7 @@ object ServiceFilters {
 	)
 
 	fun byTagCodesAndValueDateForSelf(
-		tagCodes: Map<String, Collection<String>>,
+		tagCodes: Map<String, Set<String>>,
 		@DefaultValue("null")
 		startOfServiceValueDate: Long? = null,
 		@DefaultValue("null")
@@ -856,7 +859,7 @@ object ServiceFilters {
 	fun byPatientsCodesAndValueDateForDataOwner(
 		dataOwnerId: String,
 		patients: List<Patient>,
-		codeCodes: Map<String, Collection<String>>,
+		codeCodes: Map<String, Set<String>>,
 		@DefaultValue("null")
 		startOfServiceValueDate: Long? = null,
 		@DefaultValue("null")
@@ -873,7 +876,7 @@ object ServiceFilters {
 	fun byPatientsCodesAndValueDateForDataOwnerInGroup(
 		dataOwner: EntityReferenceInGroup,
 		patients: List<Patient>,
-		codeCodes: Map<String, Collection<String>>,
+		codeCodes: Map<String, Set<String>>,
 		@DefaultValue("null")
 		startOfServiceValueDate: Long? = null,
 		@DefaultValue("null")
@@ -889,7 +892,7 @@ object ServiceFilters {
 	@OptIn(InternalIcureApi::class)
 	fun byPatientsCodesAndValueDateForSelf(
 		patients: List<Patient>,
-		codeCodes: Map<String, Collection<String>>,
+		codeCodes: Map<String, Set<String>>,
 		@DefaultValue("null")
 		startOfServiceValueDate: Long? = null,
 		@DefaultValue("null")
@@ -904,7 +907,7 @@ object ServiceFilters {
 	fun byPatientSecretIdsCodesAndValueDateForDataOwner(
 		dataOwnerId: String,
 		secretIds: List<String>,
-		codeCodes: Map<String, Collection<String>>,
+		codeCodes: Map<String, Set<String>>,
 		@DefaultValue("null")
 		startOfServiceValueDate: Long? = null,
 		@DefaultValue("null")
@@ -920,7 +923,7 @@ object ServiceFilters {
 	fun byPatientSecretIdsCodesAndValueDateForDataOwnerInGroup(
 		dataOwner: EntityReferenceInGroup,
 		secretIds: List<String>,
-		codeCodes: Map<String, Collection<String>>,
+		codeCodes: Map<String, Set<String>>,
 		@DefaultValue("null")
 		startOfServiceValueDate: Long? = null,
 		@DefaultValue("null")
@@ -935,7 +938,7 @@ object ServiceFilters {
 
 	fun byPatientSecretIdsCodesAndValueDateForSelf(
 		secretIds: List<String>,
-		codeCodes: Map<String, Collection<String>>,
+		codeCodes: Map<String, Set<String>>,
 		@DefaultValue("null")
 		startOfServiceValueDate: Long? = null,
 		@DefaultValue("null")
@@ -1062,7 +1065,7 @@ object ServiceFilters {
 	fun byPatientsTagCodesAndValueDateForDataOwner(
 		dataOwnerId: String,
 		patients: List<Patient>,
-		tagCodes: Map<String, Collection<String>>,
+		tagCodes: Map<String, Set<String>>,
 		@DefaultValue("null")
 		startOfServiceValueDate: Long? = null,
 		@DefaultValue("null")
@@ -1079,7 +1082,7 @@ object ServiceFilters {
 	fun byPatientsTagCodesAndValueDateForDataOwnerInGroup(
 		dataOwner: EntityReferenceInGroup,
 		patients: List<Patient>,
-		tagCodes: Map<String, Collection<String>>,
+		tagCodes: Map<String, Set<String>>,
 		@DefaultValue("null")
 		startOfServiceValueDate: Long? = null,
 		@DefaultValue("null")
@@ -1095,7 +1098,7 @@ object ServiceFilters {
 	@OptIn(InternalIcureApi::class)
 	fun byPatientsTagCodesAndValueDateForSelf(
 		patients: List<Patient>,
-		tagCodes: Map<String, Collection<String>>,
+		tagCodes: Map<String, Set<String>>,
 		@DefaultValue("null")
 		startOfServiceValueDate: Long? = null,
 		@DefaultValue("null")
@@ -1110,7 +1113,7 @@ object ServiceFilters {
 	fun byPatientSecretIdsTagCodesAndValueDateForDataOwner(
 		dataOwnerId: String,
 		secretIds: List<String>,
-		tagCodes: Map<String, Collection<String>>,
+		tagCodes: Map<String, Set<String>>,
 		@DefaultValue("null")
 		startOfServiceValueDate: Long? = null,
 		@DefaultValue("null")
@@ -1126,7 +1129,7 @@ object ServiceFilters {
 	fun byPatientSecretIdsTagCodesAndValueDateForDataOwnerInGroup(
 		dataOwner: EntityReferenceInGroup,
 		secretIds: List<String>,
-		tagCodes: Map<String, Collection<String>>,
+		tagCodes: Map<String, Set<String>>,
 		@DefaultValue("null")
 		startOfServiceValueDate: Long? = null,
 		@DefaultValue("null")
@@ -1141,7 +1144,7 @@ object ServiceFilters {
 
 	fun byPatientSecretIdsTagCodesAndValueDateForSelf(
 		secretIds: List<String>,
-		tagCodes: Map<String, Collection<String>>,
+		tagCodes: Map<String, Set<String>>,
 		@DefaultValue("null")
 		startOfServiceValueDate: Long? = null,
 		@DefaultValue("null")
@@ -1432,7 +1435,7 @@ object ServiceFilters {
 
 	@Serializable
 	internal class ByCodesAndValueDateForDataOwner(
-		val codeCodes: Map<String, Collection<String>>,
+		val codeCodes: Map<String, Set<String>>,
 		val startOfServiceValueDate: Long?,
 		val endOfServiceValueDate: Long?,
 		val dataOwnerId: EntityReferenceInGroup
@@ -1440,7 +1443,7 @@ object ServiceFilters {
 
 	@Serializable
 	internal class ByCodesAndValueDateForSelf(
-		val codeCodes: Map<String, Collection<String>>,
+		val codeCodes: Map<String, Set<String>>,
 		val startOfServiceValueDate: Long?,
 		val endOfServiceValueDate: Long?,
 	): FilterOptions<Service>
@@ -1464,7 +1467,7 @@ object ServiceFilters {
 
 	@Serializable
 	internal class ByTagCodesAndValueDateForDataOwner(
-		val tagCodes: Map<String, Collection<String>>,
+		val tagCodes: Map<String, Set<String>>,
 		val startOfServiceValueDate: Long?,
 		val endOfServiceValueDate: Long?,
 		val dataOwnerId: EntityReferenceInGroup
@@ -1472,7 +1475,7 @@ object ServiceFilters {
 
 	@Serializable
 	internal class ByTagCodesAndValueDateForSelf(
-		val tagCodes: Map<String, Collection<String>>,
+		val tagCodes: Map<String, Set<String>>,
 		val startOfServiceValueDate: Long?,
 		val endOfServiceValueDate: Long?,
 	): FilterOptions<Service>
@@ -1498,7 +1501,7 @@ object ServiceFilters {
 	@InternalIcureApi
 	internal class ByPatientsCodesAndValueDateForDataOwner(
 		val patients: List<EntityWithEncryptionMetadataStub>,
-		val codeCodes: Map<String, Collection<String>>,
+		val codeCodes: Map<String, Set<String>>,
 		val startOfServiceValueDate: Long?,
 		val endOfServiceValueDate: Long?,
 		val dataOwnerId: EntityReferenceInGroup
@@ -1508,7 +1511,7 @@ object ServiceFilters {
 	@InternalIcureApi
 	internal class ByPatientsCodesAndValueDateForSelf(
 		val patients: List<EntityWithEncryptionMetadataStub>,
-		val codeCodes: Map<String, Collection<String>>,
+		val codeCodes: Map<String, Set<String>>,
 		val startOfServiceValueDate: Long?,
 		val endOfServiceValueDate: Long?,
 	): FilterOptions<Service>
@@ -1516,7 +1519,7 @@ object ServiceFilters {
 	@Serializable
 	internal class ByPatientSecretIdsCodesAndValueDateForDataOwner(
 		val secretIds: List<String>,
-		val codeCodes: Map<String, Collection<String>>,
+		val codeCodes: Map<String, Set<String>>,
 		val startOfServiceValueDate: Long?,
 		val endOfServiceValueDate: Long?,
 		val dataOwnerId: EntityReferenceInGroup
@@ -1525,7 +1528,7 @@ object ServiceFilters {
 	@Serializable
 	internal class ByPatientSecretIdsCodesAndValueDateForSelf(
 		val secretIds: List<String>,
-		val codeCodes: Map<String, Collection<String>>,
+		val codeCodes: Map<String, Set<String>>,
 		val startOfServiceValueDate: Long?,
 		val endOfServiceValueDate: Long?,
 	): FilterOptions<Service>
@@ -1574,7 +1577,7 @@ object ServiceFilters {
 	@InternalIcureApi
 	internal class ByPatientsTagCodesAndValueDateForDataOwner(
 		val patients: List<EntityWithEncryptionMetadataStub>,
-		val tagCodes: Map<String, Collection<String>>,
+		val tagCodes: Map<String, Set<String>>,
 		val startOfServiceValueDate: Long?,
 		val endOfServiceValueDate: Long?,
 		val dataOwnerId: EntityReferenceInGroup
@@ -1584,7 +1587,7 @@ object ServiceFilters {
 	@InternalIcureApi
 	internal class ByPatientsTagCodesAndValueDateForSelf(
 		val patients: List<EntityWithEncryptionMetadataStub>,
-		val tagCodes: Map<String, Collection<String>>,
+		val tagCodes: Map<String, Set<String>>,
 		val startOfServiceValueDate: Long?,
 		val endOfServiceValueDate: Long?,
 	): FilterOptions<Service>
@@ -1592,7 +1595,7 @@ object ServiceFilters {
 	@Serializable
 	internal class ByPatientSecretIdsTagCodesAndValueDateForDataOwner(
 		val secretIds: List<String>,
-		val tagCodes: Map<String, Collection<String>>,
+		val tagCodes: Map<String, Set<String>>,
 		val startOfServiceValueDate: Long?,
 		val endOfServiceValueDate: Long?,
 		val dataOwnerId: EntityReferenceInGroup
@@ -1601,7 +1604,7 @@ object ServiceFilters {
 	@Serializable
 	internal class ByPatientSecretIdsTagCodesAndValueDateForSelf(
 		val secretIds: List<String>,
-		val tagCodes: Map<String, Collection<String>>,
+		val tagCodes: Map<String, Set<String>>,
 		val startOfServiceValueDate: Long?,
 		val endOfServiceValueDate: Long?,
 	): FilterOptions<Service>
