@@ -1,6 +1,7 @@
 // auto-generated file
 import {expectArray, expectMap, expectNumber, expectObject, expectString, expectStringEnum, extractEntry} from '../internal/JsonDecodeUtils.mjs';
 import {randomUuid} from '../utils/Id.mjs';
+import {Document as Document_} from './Document.mjs';
 import {CodeStub} from './base/CodeStub.mjs';
 import {HasEncryptionMetadata} from './base/HasEncryptionMetadata.mjs';
 import {ICureDocument} from './base/ICureDocument.mjs';
@@ -95,6 +96,14 @@ export interface Document extends StoredDocument, ICureDocument<string>, HasEncr
 	 *  Extra Uniform Type Identifiers for the main attachment.
 	 */
 	otherUtis: Array<string>;
+
+	/**
+	 *
+	 *  Extra Uniform Type Identifiers for the main attachment.
+	 */
+	mainAttachmentStoredDataSize: number | undefined;
+
+	extraMainAttachmentInfo: Document.ExtraMainAttachmentInfo | undefined;
 
 	/**
 	 *
@@ -251,6 +260,14 @@ export class DecryptedDocument {
 
 	/**
 	 *
+	 *  Extra Uniform Type Identifiers for the main attachment.
+	 */
+	mainAttachmentStoredDataSize: number | undefined = undefined;
+
+	extraMainAttachmentInfo: Document_.ExtraMainAttachmentInfo | undefined = undefined;
+
+	/**
+	 *
 	 *  Secondary attachments for this document.
 	 */
 	secondaryAttachments: { [ key: string ]: DataAttachment } = {};
@@ -322,6 +339,8 @@ export class DecryptedDocument {
 		if ('objectStoreReference' in partial) this.objectStoreReference = partial.objectStoreReference;
 		if ('mainUti' in partial) this.mainUti = partial.mainUti;
 		if ('otherUtis' in partial && partial.otherUtis !== undefined) this.otherUtis = partial.otherUtis;
+		if ('mainAttachmentStoredDataSize' in partial) this.mainAttachmentStoredDataSize = partial.mainAttachmentStoredDataSize;
+		if ('extraMainAttachmentInfo' in partial) this.extraMainAttachmentInfo = partial.extraMainAttachmentInfo;
 		if ('secondaryAttachments' in partial && partial.secondaryAttachments !== undefined) this.secondaryAttachments = partial.secondaryAttachments;
 		if ('deletedAttachments' in partial && partial.deletedAttachments !== undefined) this.deletedAttachments = partial.deletedAttachments;
 		if ('secretForeignKeys' in partial && partial.secretForeignKeys !== undefined) this.secretForeignKeys = partial.secretForeignKeys;
@@ -355,6 +374,8 @@ export class DecryptedDocument {
 		if (this.objectStoreReference != undefined) res['objectStoreReference'] = this.objectStoreReference
 		if (this.mainUti != undefined) res['mainUti'] = this.mainUti
 		res['otherUtis'] = this.otherUtis.map((x0) => x0 )
+		if (this.mainAttachmentStoredDataSize != undefined) res['mainAttachmentStoredDataSize'] = this.mainAttachmentStoredDataSize
+		if (this.extraMainAttachmentInfo != undefined) res['extraMainAttachmentInfo'] = this.extraMainAttachmentInfo.toJSON()
 		res['secondaryAttachments'] = Object.fromEntries(Object.entries(this.secondaryAttachments).map(([k0, v0]) => [k0, v0.toJSON()]))
 		res['deletedAttachments'] = this.deletedAttachments.map((x0) => x0.toJSON() )
 		res['secretForeignKeys'] = this.secretForeignKeys.map((x0) => x0 )
@@ -394,6 +415,8 @@ export class DecryptedDocument {
 			objectStoreReference: expectString(extractEntry(jCpy, 'objectStoreReference', false, path), true, [...path, ".objectStoreReference"]),
 			mainUti: expectString(extractEntry(jCpy, 'mainUti', false, path), true, [...path, ".mainUti"]),
 			otherUtis: expectArray(extractEntry(jCpy, 'otherUtis', false, path), false, [...path, ".otherUtis"], (x0, p0) => expectString(x0, false, p0)),
+			mainAttachmentStoredDataSize: expectNumber(extractEntry(jCpy, 'mainAttachmentStoredDataSize', false, path), true, true, [...path, ".mainAttachmentStoredDataSize"]),
+			extraMainAttachmentInfo: expectObject(extractEntry(jCpy, 'extraMainAttachmentInfo', false, path), true, ignoreUnknownKeys, [...path, ".extraMainAttachmentInfo"], Document_.ExtraMainAttachmentInfo.fromJSON),
 			secondaryAttachments: expectMap(
 				extractEntry(jCpy, 'secondaryAttachments', false, path),
 				false,
@@ -572,6 +595,14 @@ export class EncryptedDocument {
 
 	/**
 	 *
+	 *  Extra Uniform Type Identifiers for the main attachment.
+	 */
+	mainAttachmentStoredDataSize: number | undefined = undefined;
+
+	extraMainAttachmentInfo: Document_.ExtraMainAttachmentInfo | undefined = undefined;
+
+	/**
+	 *
 	 *  Secondary attachments for this document.
 	 */
 	secondaryAttachments: { [ key: string ]: DataAttachment } = {};
@@ -643,6 +674,8 @@ export class EncryptedDocument {
 		if ('objectStoreReference' in partial) this.objectStoreReference = partial.objectStoreReference;
 		if ('mainUti' in partial) this.mainUti = partial.mainUti;
 		if ('otherUtis' in partial && partial.otherUtis !== undefined) this.otherUtis = partial.otherUtis;
+		if ('mainAttachmentStoredDataSize' in partial) this.mainAttachmentStoredDataSize = partial.mainAttachmentStoredDataSize;
+		if ('extraMainAttachmentInfo' in partial) this.extraMainAttachmentInfo = partial.extraMainAttachmentInfo;
 		if ('secondaryAttachments' in partial && partial.secondaryAttachments !== undefined) this.secondaryAttachments = partial.secondaryAttachments;
 		if ('deletedAttachments' in partial && partial.deletedAttachments !== undefined) this.deletedAttachments = partial.deletedAttachments;
 		if ('secretForeignKeys' in partial && partial.secretForeignKeys !== undefined) this.secretForeignKeys = partial.secretForeignKeys;
@@ -676,6 +709,8 @@ export class EncryptedDocument {
 		if (this.objectStoreReference != undefined) res['objectStoreReference'] = this.objectStoreReference
 		if (this.mainUti != undefined) res['mainUti'] = this.mainUti
 		res['otherUtis'] = this.otherUtis.map((x0) => x0 )
+		if (this.mainAttachmentStoredDataSize != undefined) res['mainAttachmentStoredDataSize'] = this.mainAttachmentStoredDataSize
+		if (this.extraMainAttachmentInfo != undefined) res['extraMainAttachmentInfo'] = this.extraMainAttachmentInfo.toJSON()
 		res['secondaryAttachments'] = Object.fromEntries(Object.entries(this.secondaryAttachments).map(([k0, v0]) => [k0, v0.toJSON()]))
 		res['deletedAttachments'] = this.deletedAttachments.map((x0) => x0.toJSON() )
 		res['secretForeignKeys'] = this.secretForeignKeys.map((x0) => x0 )
@@ -715,6 +750,8 @@ export class EncryptedDocument {
 			objectStoreReference: expectString(extractEntry(jCpy, 'objectStoreReference', false, path), true, [...path, ".objectStoreReference"]),
 			mainUti: expectString(extractEntry(jCpy, 'mainUti', false, path), true, [...path, ".mainUti"]),
 			otherUtis: expectArray(extractEntry(jCpy, 'otherUtis', false, path), false, [...path, ".otherUtis"], (x0, p0) => expectString(x0, false, p0)),
+			mainAttachmentStoredDataSize: expectNumber(extractEntry(jCpy, 'mainAttachmentStoredDataSize', false, path), true, true, [...path, ".mainAttachmentStoredDataSize"]),
+			extraMainAttachmentInfo: expectObject(extractEntry(jCpy, 'extraMainAttachmentInfo', false, path), true, ignoreUnknownKeys, [...path, ".extraMainAttachmentInfo"], Document_.ExtraMainAttachmentInfo.fromJSON),
 			secondaryAttachments: expectMap(
 				extractEntry(jCpy, 'secondaryAttachments', false, path),
 				false,
@@ -752,6 +789,49 @@ export class EncryptedDocument {
 			const unused = Object.keys(jCpy)
 			if (unused.length > 0) throw new Error(`Unexpected key(s) for json object EncryptedDocument at path ${path.join("")}: ${unused}`)}
 		return res
+	}
+
+}
+
+export namespace Document {
+
+	export class ExtraMainAttachmentInfo {
+
+		compressionAlgorithm: string | undefined = undefined;
+
+		triedCompressionAlgorithmsVersion: string | undefined = undefined;
+
+		realDataSize: number | undefined = undefined;
+
+		constructor(partial: Partial<ExtraMainAttachmentInfo>) {
+			if ('compressionAlgorithm' in partial) this.compressionAlgorithm = partial.compressionAlgorithm;
+			if ('triedCompressionAlgorithmsVersion' in partial) this.triedCompressionAlgorithmsVersion = partial.triedCompressionAlgorithmsVersion;
+			if ('realDataSize' in partial) this.realDataSize = partial.realDataSize;
+		}
+
+		toJSON(): object {
+			const res: { [k: string]: any } = {}
+			if (this.compressionAlgorithm != undefined) res['compressionAlgorithm'] = this.compressionAlgorithm
+			if (this.triedCompressionAlgorithmsVersion != undefined) res['triedCompressionAlgorithmsVersion'] = this.triedCompressionAlgorithmsVersion
+			if (this.realDataSize != undefined) res['realDataSize'] = this.realDataSize
+			return res
+		}
+
+		static fromJSON(json: any, ignoreUnknownKeys: boolean = false,
+				path: Array<string> = ['ExtraMainAttachmentInfo']): ExtraMainAttachmentInfo {
+			if (typeof json != 'object') throw new Error(`Expected json object at path ${path.join("")}`)
+			const jCpy = { ...json }
+			const res = new ExtraMainAttachmentInfo({
+				compressionAlgorithm: expectString(extractEntry(jCpy, 'compressionAlgorithm', false, path), true, [...path, ".compressionAlgorithm"]),
+				triedCompressionAlgorithmsVersion: expectString(extractEntry(jCpy, 'triedCompressionAlgorithmsVersion', false, path), true, [...path, ".triedCompressionAlgorithmsVersion"]),
+				realDataSize: expectNumber(extractEntry(jCpy, 'realDataSize', false, path), true, true, [...path, ".realDataSize"]),
+			})
+			if (!ignoreUnknownKeys) {
+				const unused = Object.keys(jCpy)
+				if (unused.length > 0) throw new Error(`Unexpected key(s) for json object ExtraMainAttachmentInfo at path ${path.join("")}: ${unused}`)}
+			return res
+		}
+
 	}
 
 }

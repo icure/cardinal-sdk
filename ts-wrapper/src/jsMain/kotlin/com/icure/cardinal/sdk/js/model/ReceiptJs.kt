@@ -7,7 +7,9 @@ import com.icure.cardinal.sdk.js.model.base.CodeStubJs
 import com.icure.cardinal.sdk.js.model.base.HasEncryptionMetadataJs
 import com.icure.cardinal.sdk.js.model.base.ICureDocumentJs
 import com.icure.cardinal.sdk.js.model.base.StoredDocumentJs
+import com.icure.cardinal.sdk.js.model.embed.DataAttachmentJs
 import com.icure.cardinal.sdk.js.model.embed.DelegationJs
+import com.icure.cardinal.sdk.js.model.embed.DeletedAttachmentJs
 import com.icure.cardinal.sdk.js.model.embed.EncryptableJs
 import com.icure.cardinal.sdk.js.model.embed.SecurityMetadataJs
 import com.icure.cardinal.sdk.js.utils.Record
@@ -21,6 +23,12 @@ import kotlin.js.JsQualifier
 @JsName("Receipt")
 public sealed external interface ReceiptJs : StoredDocumentJs, ICureDocumentJs<String>,
 		HasEncryptionMetadataJs, EncryptableJs {
+	public val attachmentIds: Record<String, out String>
+
+	public val attachmentInfos: Record<String, out DataAttachmentJs>
+
+	public val deletedAttachments: Array<out DeletedAttachmentJs>
+
 	public val references: Array<out String>
 
 	public val documentId: String?
@@ -53,6 +61,12 @@ public external class DecryptedReceiptJs(
 	override val codes: Array<CodeStubJs>
 
 	override val deletionDate: Double?
+
+	override val attachmentIds: Record<String, String>
+
+	override val attachmentInfos: Record<String, DataAttachmentJs>
+
+	override val deletedAttachments: Array<DeletedAttachmentJs>
 
 	override val references: Array<String>
 
@@ -98,6 +112,12 @@ public external class EncryptedReceiptJs(
 	override val codes: Array<CodeStubJs>
 
 	override val deletionDate: Double?
+
+	override val attachmentIds: Record<String, String>
+
+	override val attachmentInfos: Record<String, DataAttachmentJs>
+
+	override val deletedAttachments: Array<DeletedAttachmentJs>
 
 	override val references: Array<String>
 

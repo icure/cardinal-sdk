@@ -14,9 +14,15 @@ import com.icure.cardinal.sdk.js.model.CheckedConverters.undefinedToNull
 import com.icure.cardinal.sdk.js.model.base.CodeStubJs
 import com.icure.cardinal.sdk.js.model.base.codeStub_fromJs
 import com.icure.cardinal.sdk.js.model.base.codeStub_toJs
+import com.icure.cardinal.sdk.js.model.embed.DataAttachmentJs
 import com.icure.cardinal.sdk.js.model.embed.DelegationJs
+import com.icure.cardinal.sdk.js.model.embed.DeletedAttachmentJs
+import com.icure.cardinal.sdk.js.model.embed.dataAttachment_fromJs
+import com.icure.cardinal.sdk.js.model.embed.dataAttachment_toJs
 import com.icure.cardinal.sdk.js.model.embed.delegation_fromJs
 import com.icure.cardinal.sdk.js.model.embed.delegation_toJs
+import com.icure.cardinal.sdk.js.model.embed.deletedAttachment_fromJs
+import com.icure.cardinal.sdk.js.model.embed.deletedAttachment_toJs
 import com.icure.cardinal.sdk.js.model.embed.securityMetadata_fromJs
 import com.icure.cardinal.sdk.js.model.embed.securityMetadata_toJs
 import com.icure.cardinal.sdk.js.model.specializations.base64String_fromJs
@@ -25,7 +31,10 @@ import com.icure.cardinal.sdk.model.DecryptedReceipt
 import com.icure.cardinal.sdk.model.EncryptedReceipt
 import com.icure.cardinal.sdk.model.Receipt
 import com.icure.cardinal.sdk.model.base.CodeStub
+import com.icure.cardinal.sdk.model.embed.DataAttachment
 import com.icure.cardinal.sdk.model.embed.Delegation
+import com.icure.cardinal.sdk.model.embed.DeletedAttachment
+import com.icure.cardinal.sdk.model.embed.ReceiptBlobType
 import kotlin.Array
 import kotlin.String
 import kotlin.Suppress
@@ -63,6 +72,30 @@ public fun receipt_toJs(obj: DecryptedReceipt): DecryptedReceiptJs {
 	)
 	val deletionDate = nullToUndefined(
 		longToNumber(obj.deletionDate)
+	)
+	val attachmentIds = mapToObject(
+		obj.attachmentIds,
+		{ x1: ReceiptBlobType ->
+			x1.name
+		},
+		{ x1: String ->
+			x1
+		},
+	)
+	val attachmentInfos = mapToObject(
+		obj.attachmentInfos,
+		{ x1: ReceiptBlobType ->
+			x1.name
+		},
+		{ x1: DataAttachment ->
+			dataAttachment_toJs(x1)
+		},
+	)
+	val deletedAttachments = listToArray(
+		obj.deletedAttachments,
+		{ x1: DeletedAttachment ->
+			deletedAttachment_toJs(x1)
+		},
 	)
 	val references = listToArray(
 		obj.references,
@@ -147,6 +180,9 @@ public fun receipt_toJs(obj: DecryptedReceipt): DecryptedReceiptJs {
 		"tags:tags," +
 		"codes:codes," +
 		"deletionDate:deletionDate," +
+		"attachmentIds:attachmentIds," +
+		"attachmentInfos:attachmentInfos," +
+		"deletedAttachments:deletedAttachments," +
 		"references:references," +
 		"documentId:documentId," +
 		"category:category," +
@@ -182,6 +218,33 @@ public fun receipt_fromJs(obj: DecryptedReceiptJs): DecryptedReceipt {
 		},
 	)
 	val deletionDate = numberToLong(obj.deletionDate, "obj.deletionDate")
+	val attachmentIds = objectToMap(
+		obj.attachmentIds,
+		"obj.attachmentIds",
+		{ x1: String ->
+			ReceiptBlobType.valueOf(x1)
+		},
+		{ x1: String ->
+			x1
+		},
+	)
+	val attachmentInfos = objectToMap(
+		obj.attachmentInfos,
+		"obj.attachmentInfos",
+		{ x1: String ->
+			ReceiptBlobType.valueOf(x1)
+		},
+		{ x1: DataAttachmentJs ->
+			dataAttachment_fromJs(x1)
+		},
+	)
+	val deletedAttachments = arrayToList(
+		obj.deletedAttachments,
+		"obj.deletedAttachments",
+		{ x1: DeletedAttachmentJs ->
+			deletedAttachment_fromJs(x1)
+		},
+	)
 	val references = arrayToList(
 		obj.references,
 		"obj.references",
@@ -263,6 +326,9 @@ public fun receipt_fromJs(obj: DecryptedReceiptJs): DecryptedReceipt {
 		tags = tags,
 		codes = codes,
 		deletionDate = deletionDate,
+		attachmentIds = attachmentIds,
+		attachmentInfos = attachmentInfos,
+		deletedAttachments = deletedAttachments,
 		references = references,
 		documentId = documentId,
 		category = category,
@@ -308,6 +374,30 @@ public fun receipt_toJs(obj: EncryptedReceipt): EncryptedReceiptJs {
 	)
 	val deletionDate = nullToUndefined(
 		longToNumber(obj.deletionDate)
+	)
+	val attachmentIds = mapToObject(
+		obj.attachmentIds,
+		{ x1: ReceiptBlobType ->
+			x1.name
+		},
+		{ x1: String ->
+			x1
+		},
+	)
+	val attachmentInfos = mapToObject(
+		obj.attachmentInfos,
+		{ x1: ReceiptBlobType ->
+			x1.name
+		},
+		{ x1: DataAttachment ->
+			dataAttachment_toJs(x1)
+		},
+	)
+	val deletedAttachments = listToArray(
+		obj.deletedAttachments,
+		{ x1: DeletedAttachment ->
+			deletedAttachment_toJs(x1)
+		},
 	)
 	val references = listToArray(
 		obj.references,
@@ -392,6 +482,9 @@ public fun receipt_toJs(obj: EncryptedReceipt): EncryptedReceiptJs {
 		"tags:tags," +
 		"codes:codes," +
 		"deletionDate:deletionDate," +
+		"attachmentIds:attachmentIds," +
+		"attachmentInfos:attachmentInfos," +
+		"deletedAttachments:deletedAttachments," +
 		"references:references," +
 		"documentId:documentId," +
 		"category:category," +
@@ -427,6 +520,33 @@ public fun receipt_fromJs(obj: EncryptedReceiptJs): EncryptedReceipt {
 		},
 	)
 	val deletionDate = numberToLong(obj.deletionDate, "obj.deletionDate")
+	val attachmentIds = objectToMap(
+		obj.attachmentIds,
+		"obj.attachmentIds",
+		{ x1: String ->
+			ReceiptBlobType.valueOf(x1)
+		},
+		{ x1: String ->
+			x1
+		},
+	)
+	val attachmentInfos = objectToMap(
+		obj.attachmentInfos,
+		"obj.attachmentInfos",
+		{ x1: String ->
+			ReceiptBlobType.valueOf(x1)
+		},
+		{ x1: DataAttachmentJs ->
+			dataAttachment_fromJs(x1)
+		},
+	)
+	val deletedAttachments = arrayToList(
+		obj.deletedAttachments,
+		"obj.deletedAttachments",
+		{ x1: DeletedAttachmentJs ->
+			deletedAttachment_fromJs(x1)
+		},
+	)
 	val references = arrayToList(
 		obj.references,
 		"obj.references",
@@ -508,6 +628,9 @@ public fun receipt_fromJs(obj: EncryptedReceiptJs): EncryptedReceipt {
 		tags = tags,
 		codes = codes,
 		deletionDate = deletionDate,
+		attachmentIds = attachmentIds,
+		attachmentInfos = attachmentInfos,
+		deletedAttachments = deletedAttachments,
 		references = references,
 		documentId = documentId,
 		category = category,

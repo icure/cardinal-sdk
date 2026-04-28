@@ -44,10 +44,10 @@ export namespace CryptoActor {
 			path: Array<string> = ['CryptoActor']): CryptoActor {
 		switch ((json as CryptoActor).$ktClass) {
 			case 'com.icure.cardinal.sdk.model.Device': return Device.fromJSON(json, ignoreUnknownKeys)
+			case 'com.icure.cardinal.sdk.model.CryptoActorStub': return CryptoActorStub.fromJSON(json, ignoreUnknownKeys)
 			case 'com.icure.cardinal.sdk.model.DecryptedPatient': return DecryptedPatient.fromJSON(json, ignoreUnknownKeys)
 			case 'com.icure.cardinal.sdk.model.EncryptedPatient': return EncryptedPatient.fromJSON(json, ignoreUnknownKeys)
 			case 'com.icure.cardinal.sdk.model.HealthcareParty': return HealthcareParty.fromJSON(json, ignoreUnknownKeys)
-			case 'com.icure.cardinal.sdk.model.CryptoActorStub': return CryptoActorStub.fromJSON(json, ignoreUnknownKeys)
 			default: throw new Error('Unexpected discriminator for CryptoActor: ' + json.$ktClass)
 		}
 	}
