@@ -1,12 +1,15 @@
 // auto-generated file
-import {expectArray, expectMap, expectNumber, expectObject, expectString, extractEntry} from '../internal/JsonDecodeUtils.mjs';
+import {expectArray, expectMap, expectNumber, expectObject, expectString, expectStringEnum, extractEntry} from '../internal/JsonDecodeUtils.mjs';
 import {randomUuid} from '../utils/Id.mjs';
 import {CodeStub} from './base/CodeStub.mjs';
 import {HasEncryptionMetadata} from './base/HasEncryptionMetadata.mjs';
 import {ICureDocument} from './base/ICureDocument.mjs';
 import {StoredDocument} from './base/StoredDocument.mjs';
+import {DataAttachment} from './embed/DataAttachment.mjs';
 import {Delegation} from './embed/Delegation.mjs';
+import {DeletedAttachment} from './embed/DeletedAttachment.mjs';
 import {Encryptable} from './embed/Encryptable.mjs';
+import {ReceiptBlobType} from './embed/ReceiptBlobType.mjs';
 import {SecurityMetadata} from './embed/SecurityMetadata.mjs';
 import {Base64String} from './specializations/Base64String.mjs';
 
@@ -21,6 +24,16 @@ import {Base64String} from './specializations/Base64String.mjs';
  *  /
  */
 export interface Receipt extends StoredDocument, ICureDocument<string>, HasEncryptionMetadata, Encryptable {
+
+	/**
+	 *
+	 *  Map of blob type to attachment id for the receipt.
+	 */
+	attachmentIds: { [ key in ReceiptBlobType ]?: string };
+
+	attachmentInfos: { [ key in ReceiptBlobType ]?: DataAttachment };
+
+	deletedAttachments: Array<DeletedAttachment>;
 
 	/**
 	 *
@@ -119,6 +132,16 @@ export class DecryptedReceipt {
 
 	/**
 	 *
+	 *  Map of blob type to attachment id for the receipt.
+	 */
+	attachmentIds: { [ key in ReceiptBlobType ]?: string } = {};
+
+	attachmentInfos: { [ key in ReceiptBlobType ]?: DataAttachment } = {};
+
+	deletedAttachments: Array<DeletedAttachment> = [];
+
+	/**
+	 *
 	 *  List of references (e.g., nipReference, errorCode, errorPath, tarification, invoice UUID).
 	 */
 	references: Array<string> = [];
@@ -190,6 +213,9 @@ export class DecryptedReceipt {
 		if ('tags' in partial && partial.tags !== undefined) this.tags = partial.tags;
 		if ('codes' in partial && partial.codes !== undefined) this.codes = partial.codes;
 		if ('deletionDate' in partial) this.deletionDate = partial.deletionDate;
+		if ('attachmentIds' in partial && partial.attachmentIds !== undefined) this.attachmentIds = partial.attachmentIds;
+		if ('attachmentInfos' in partial && partial.attachmentInfos !== undefined) this.attachmentInfos = partial.attachmentInfos;
+		if ('deletedAttachments' in partial && partial.deletedAttachments !== undefined) this.deletedAttachments = partial.deletedAttachments;
 		if ('references' in partial && partial.references !== undefined) this.references = partial.references;
 		if ('documentId' in partial) this.documentId = partial.documentId;
 		if ('category' in partial) this.category = partial.category;
@@ -213,6 +239,9 @@ export class DecryptedReceipt {
 		res['tags'] = this.tags.map((x0) => x0.toJSON() )
 		res['codes'] = this.codes.map((x0) => x0.toJSON() )
 		if (this.deletionDate != undefined) res['deletionDate'] = this.deletionDate
+		res['attachmentIds'] = Object.fromEntries(Object.entries(this.attachmentIds).map(([k0, v0]) => [k0, v0]))
+		res['attachmentInfos'] = Object.fromEntries(Object.entries(this.attachmentInfos).map(([k0, v0]) => [k0, v0.toJSON()]))
+		res['deletedAttachments'] = this.deletedAttachments.map((x0) => x0.toJSON() )
 		res['references'] = this.references.map((x0) => x0 )
 		if (this.documentId != undefined) res['documentId'] = this.documentId
 		if (this.category != undefined) res['category'] = this.category
@@ -242,6 +271,21 @@ export class DecryptedReceipt {
 			tags: expectArray(extractEntry(jCpy, 'tags', false, path), false, [...path, ".tags"], (x0, p0) => expectObject(x0, false, ignoreUnknownKeys, p0, CodeStub.fromJSON)),
 			codes: expectArray(extractEntry(jCpy, 'codes', false, path), false, [...path, ".codes"], (x0, p0) => expectObject(x0, false, ignoreUnknownKeys, p0, CodeStub.fromJSON)),
 			deletionDate: expectNumber(extractEntry(jCpy, 'deletionDate', false, path), true, true, [...path, ".deletionDate"]),
+			attachmentIds: expectMap(
+				extractEntry(jCpy, 'attachmentIds', false, path),
+				false,
+				[...path, ".attachmentIds"],
+				(k0, p0) => expectStringEnum(k0, false, p0, ReceiptBlobType, 'ReceiptBlobType'),
+				(v0, p0) => expectString(v0, false, p0)
+			),
+			attachmentInfos: expectMap(
+				extractEntry(jCpy, 'attachmentInfos', false, path),
+				false,
+				[...path, ".attachmentInfos"],
+				(k0, p0) => expectStringEnum(k0, false, p0, ReceiptBlobType, 'ReceiptBlobType'),
+				(v0, p0) => expectObject(v0, false, ignoreUnknownKeys, p0, DataAttachment.fromJSON)
+			),
+			deletedAttachments: expectArray(extractEntry(jCpy, 'deletedAttachments', false, path), false, [...path, ".deletedAttachments"], (x0, p0) => expectObject(x0, false, ignoreUnknownKeys, p0, DeletedAttachment.fromJSON)),
 			references: expectArray(extractEntry(jCpy, 'references', false, path), false, [...path, ".references"], (x0, p0) => expectString(x0, false, p0)),
 			documentId: expectString(extractEntry(jCpy, 'documentId', false, path), true, [...path, ".documentId"]),
 			category: expectString(extractEntry(jCpy, 'category', false, path), true, [...path, ".category"]),
@@ -346,6 +390,16 @@ export class EncryptedReceipt {
 
 	/**
 	 *
+	 *  Map of blob type to attachment id for the receipt.
+	 */
+	attachmentIds: { [ key in ReceiptBlobType ]?: string } = {};
+
+	attachmentInfos: { [ key in ReceiptBlobType ]?: DataAttachment } = {};
+
+	deletedAttachments: Array<DeletedAttachment> = [];
+
+	/**
+	 *
 	 *  List of references (e.g., nipReference, errorCode, errorPath, tarification, invoice UUID).
 	 */
 	references: Array<string> = [];
@@ -417,6 +471,9 @@ export class EncryptedReceipt {
 		if ('tags' in partial && partial.tags !== undefined) this.tags = partial.tags;
 		if ('codes' in partial && partial.codes !== undefined) this.codes = partial.codes;
 		if ('deletionDate' in partial) this.deletionDate = partial.deletionDate;
+		if ('attachmentIds' in partial && partial.attachmentIds !== undefined) this.attachmentIds = partial.attachmentIds;
+		if ('attachmentInfos' in partial && partial.attachmentInfos !== undefined) this.attachmentInfos = partial.attachmentInfos;
+		if ('deletedAttachments' in partial && partial.deletedAttachments !== undefined) this.deletedAttachments = partial.deletedAttachments;
 		if ('references' in partial && partial.references !== undefined) this.references = partial.references;
 		if ('documentId' in partial) this.documentId = partial.documentId;
 		if ('category' in partial) this.category = partial.category;
@@ -440,6 +497,9 @@ export class EncryptedReceipt {
 		res['tags'] = this.tags.map((x0) => x0.toJSON() )
 		res['codes'] = this.codes.map((x0) => x0.toJSON() )
 		if (this.deletionDate != undefined) res['deletionDate'] = this.deletionDate
+		res['attachmentIds'] = Object.fromEntries(Object.entries(this.attachmentIds).map(([k0, v0]) => [k0, v0]))
+		res['attachmentInfos'] = Object.fromEntries(Object.entries(this.attachmentInfos).map(([k0, v0]) => [k0, v0.toJSON()]))
+		res['deletedAttachments'] = this.deletedAttachments.map((x0) => x0.toJSON() )
 		res['references'] = this.references.map((x0) => x0 )
 		if (this.documentId != undefined) res['documentId'] = this.documentId
 		if (this.category != undefined) res['category'] = this.category
@@ -469,6 +529,21 @@ export class EncryptedReceipt {
 			tags: expectArray(extractEntry(jCpy, 'tags', false, path), false, [...path, ".tags"], (x0, p0) => expectObject(x0, false, ignoreUnknownKeys, p0, CodeStub.fromJSON)),
 			codes: expectArray(extractEntry(jCpy, 'codes', false, path), false, [...path, ".codes"], (x0, p0) => expectObject(x0, false, ignoreUnknownKeys, p0, CodeStub.fromJSON)),
 			deletionDate: expectNumber(extractEntry(jCpy, 'deletionDate', false, path), true, true, [...path, ".deletionDate"]),
+			attachmentIds: expectMap(
+				extractEntry(jCpy, 'attachmentIds', false, path),
+				false,
+				[...path, ".attachmentIds"],
+				(k0, p0) => expectStringEnum(k0, false, p0, ReceiptBlobType, 'ReceiptBlobType'),
+				(v0, p0) => expectString(v0, false, p0)
+			),
+			attachmentInfos: expectMap(
+				extractEntry(jCpy, 'attachmentInfos', false, path),
+				false,
+				[...path, ".attachmentInfos"],
+				(k0, p0) => expectStringEnum(k0, false, p0, ReceiptBlobType, 'ReceiptBlobType'),
+				(v0, p0) => expectObject(v0, false, ignoreUnknownKeys, p0, DataAttachment.fromJSON)
+			),
+			deletedAttachments: expectArray(extractEntry(jCpy, 'deletedAttachments', false, path), false, [...path, ".deletedAttachments"], (x0, p0) => expectObject(x0, false, ignoreUnknownKeys, p0, DeletedAttachment.fromJSON)),
 			references: expectArray(extractEntry(jCpy, 'references', false, path), false, [...path, ".references"], (x0, p0) => expectString(x0, false, p0)),
 			documentId: expectString(extractEntry(jCpy, 'documentId', false, path), true, [...path, ".documentId"]),
 			category: expectString(extractEntry(jCpy, 'category', false, path), true, [...path, ".category"]),

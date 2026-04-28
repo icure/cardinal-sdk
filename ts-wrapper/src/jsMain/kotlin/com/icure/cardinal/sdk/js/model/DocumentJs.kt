@@ -47,6 +47,10 @@ public sealed external interface DocumentJs : StoredDocumentJs, ICureDocumentJs<
 
 	public val otherUtis: Array<out String>
 
+	public val mainAttachmentStoredDataSize: Double?
+
+	public val extraMainAttachmentInfo: DocumentJs_ExtraMainAttachmentInfoJs?
+
 	public val secondaryAttachments: Record<String, out DataAttachmentJs>
 
 	public val deletedAttachments: Array<out DeletedAttachmentJs>
@@ -99,6 +103,10 @@ public external class DecryptedDocumentJs(
 	override val mainUti: String?
 
 	override val otherUtis: Array<String>
+
+	override val mainAttachmentStoredDataSize: Double?
+
+	override val extraMainAttachmentInfo: DocumentJs_ExtraMainAttachmentInfoJs?
 
 	override val secondaryAttachments: Record<String, DataAttachmentJs>
 
@@ -164,6 +172,10 @@ public external class EncryptedDocumentJs(
 	override val mainUti: String?
 
 	override val otherUtis: Array<String>
+
+	override val mainAttachmentStoredDataSize: Double?
+
+	override val extraMainAttachmentInfo: DocumentJs_ExtraMainAttachmentInfoJs?
 
 	override val secondaryAttachments: Record<String, DataAttachmentJs>
 
