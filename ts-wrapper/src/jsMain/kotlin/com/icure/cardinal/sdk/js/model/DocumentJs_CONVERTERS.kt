@@ -117,6 +117,14 @@ public fun document_toJs(obj: DecryptedDocument): DecryptedDocumentJs {
 			x1
 		},
 	)
+	val mainAttachmentStoredDataSize = nullToUndefined(
+		longToNumber(obj.mainAttachmentStoredDataSize)
+	)
+	val extraMainAttachmentInfo = nullToUndefined(
+		obj.extraMainAttachmentInfo?.let { nonNull1 ->
+			document_ExtraMainAttachmentInfo_toJs(nonNull1)
+		}
+	)
 	val secondaryAttachments = mapToObject(
 		obj.secondaryAttachments,
 		{ x1: String ->
@@ -212,6 +220,8 @@ public fun document_toJs(obj: DecryptedDocument): DecryptedDocumentJs {
 		"objectStoreReference:objectStoreReference," +
 		"mainUti:mainUti," +
 		"otherUtis:otherUtis," +
+		"mainAttachmentStoredDataSize:mainAttachmentStoredDataSize," +
+		"extraMainAttachmentInfo:extraMainAttachmentInfo," +
 		"secondaryAttachments:secondaryAttachments," +
 		"deletedAttachments:deletedAttachments," +
 		"secretForeignKeys:secretForeignKeys," +
@@ -267,6 +277,11 @@ public fun document_fromJs(obj: DecryptedDocumentJs): DecryptedDocument {
 			x1
 		},
 	)
+	val mainAttachmentStoredDataSize = numberToLong(obj.mainAttachmentStoredDataSize,
+			"obj.mainAttachmentStoredDataSize")
+	val extraMainAttachmentInfo = obj.extraMainAttachmentInfo?.let { nonNull1 ->
+		document_ExtraMainAttachmentInfo_fromJs(nonNull1)
+	}
 	val secondaryAttachments = objectToMap(
 		obj.secondaryAttachments,
 		"obj.secondaryAttachments",
@@ -367,6 +382,8 @@ public fun document_fromJs(obj: DecryptedDocumentJs): DecryptedDocument {
 		objectStoreReference = objectStoreReference,
 		mainUti = mainUti,
 		otherUtis = otherUtis,
+		mainAttachmentStoredDataSize = mainAttachmentStoredDataSize,
+		extraMainAttachmentInfo = extraMainAttachmentInfo,
 		secondaryAttachments = secondaryAttachments,
 		deletedAttachments = deletedAttachments,
 		secretForeignKeys = secretForeignKeys,
@@ -453,6 +470,14 @@ public fun document_toJs(obj: EncryptedDocument): EncryptedDocumentJs {
 		{ x1: String ->
 			x1
 		},
+	)
+	val mainAttachmentStoredDataSize = nullToUndefined(
+		longToNumber(obj.mainAttachmentStoredDataSize)
+	)
+	val extraMainAttachmentInfo = nullToUndefined(
+		obj.extraMainAttachmentInfo?.let { nonNull1 ->
+			document_ExtraMainAttachmentInfo_toJs(nonNull1)
+		}
 	)
 	val secondaryAttachments = mapToObject(
 		obj.secondaryAttachments,
@@ -549,6 +574,8 @@ public fun document_toJs(obj: EncryptedDocument): EncryptedDocumentJs {
 		"objectStoreReference:objectStoreReference," +
 		"mainUti:mainUti," +
 		"otherUtis:otherUtis," +
+		"mainAttachmentStoredDataSize:mainAttachmentStoredDataSize," +
+		"extraMainAttachmentInfo:extraMainAttachmentInfo," +
 		"secondaryAttachments:secondaryAttachments," +
 		"deletedAttachments:deletedAttachments," +
 		"secretForeignKeys:secretForeignKeys," +
@@ -604,6 +631,11 @@ public fun document_fromJs(obj: EncryptedDocumentJs): EncryptedDocument {
 			x1
 		},
 	)
+	val mainAttachmentStoredDataSize = numberToLong(obj.mainAttachmentStoredDataSize,
+			"obj.mainAttachmentStoredDataSize")
+	val extraMainAttachmentInfo = obj.extraMainAttachmentInfo?.let { nonNull1 ->
+		document_ExtraMainAttachmentInfo_fromJs(nonNull1)
+	}
 	val secondaryAttachments = objectToMap(
 		obj.secondaryAttachments,
 		"obj.secondaryAttachments",
@@ -704,6 +736,8 @@ public fun document_fromJs(obj: EncryptedDocumentJs): EncryptedDocument {
 		objectStoreReference = objectStoreReference,
 		mainUti = mainUti,
 		otherUtis = otherUtis,
+		mainAttachmentStoredDataSize = mainAttachmentStoredDataSize,
+		extraMainAttachmentInfo = extraMainAttachmentInfo,
 		secondaryAttachments = secondaryAttachments,
 		deletedAttachments = deletedAttachments,
 		secretForeignKeys = secretForeignKeys,
@@ -725,4 +759,35 @@ public fun document_fromJs(obj: DocumentJs): Document = if (obj.isEncrypted) {
 	document_fromJs(obj as EncryptedDocumentJs)
 } else {
 	document_fromJs(obj as DecryptedDocumentJs)
+}
+
+@Suppress("UNUSED_VARIABLE")
+public fun document_ExtraMainAttachmentInfo_toJs(obj: Document.ExtraMainAttachmentInfo):
+		DocumentJs_ExtraMainAttachmentInfoJs {
+	val compressionAlgorithm = nullToUndefined(
+		obj.compressionAlgorithm
+	)
+	val triedCompressionAlgorithmsVersion = nullToUndefined(
+		obj.triedCompressionAlgorithmsVersion
+	)
+	val realDataSize = nullToUndefined(
+		longToNumber(obj.realDataSize)
+	)
+	return DocumentJs_ExtraMainAttachmentInfoJs(js("{" +
+		"compressionAlgorithm:compressionAlgorithm," +
+		"triedCompressionAlgorithmsVersion:triedCompressionAlgorithmsVersion," +
+		"realDataSize:realDataSize" +
+	"}"))
+}
+
+public fun document_ExtraMainAttachmentInfo_fromJs(obj: DocumentJs_ExtraMainAttachmentInfoJs):
+		Document.ExtraMainAttachmentInfo {
+	val compressionAlgorithm = undefinedToNull(obj.compressionAlgorithm)
+	val triedCompressionAlgorithmsVersion = undefinedToNull(obj.triedCompressionAlgorithmsVersion)
+	val realDataSize = numberToLong(obj.realDataSize, "obj.realDataSize")
+	return Document.ExtraMainAttachmentInfo(
+		compressionAlgorithm = compressionAlgorithm,
+		triedCompressionAlgorithmsVersion = triedCompressionAlgorithmsVersion,
+		realDataSize = realDataSize,
+	)
 }

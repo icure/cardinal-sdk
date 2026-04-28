@@ -737,7 +737,7 @@ internal class HealthcarePartyApiImplJs(
 		)
 	}
 
-	override fun registerPatient(
+	override fun registerHealthcareParty(
 		groupId: String,
 		hcp: HealthcarePartyJs,
 		options: dynamic,

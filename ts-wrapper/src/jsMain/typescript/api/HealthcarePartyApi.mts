@@ -38,7 +38,7 @@ export interface HealthcarePartyApi {
 
 	filterHealthPartiesBySorted(filter: BaseSortableFilterOptions<HealthcareParty>): Promise<PaginatedListIterator<HealthcareParty>>;
 
-	registerPatient(groupId: string, hcp: HealthcareParty,
+	registerHealthcareParty(groupId: string, hcp: HealthcareParty,
 			options?: { parentHcPartyId?: string | undefined, token?: string | undefined, useShortToken?: boolean | undefined }): Promise<DataOwnerRegistrationSuccess>;
 
 	/**

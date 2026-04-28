@@ -54,7 +54,7 @@ public external interface HealthcarePartyApiJs {
 	public fun filterHealthPartiesBySorted(filter: BaseSortableFilterOptionsJs<HealthcarePartyJs>):
 			Promise<PaginatedListIteratorJs<HealthcarePartyJs>>
 
-	public fun registerPatient(
+	public fun registerHealthcareParty(
 		groupId: String,
 		hcp: HealthcarePartyJs,
 		options: dynamic,
