@@ -433,6 +433,175 @@ interface ServiceFiltersFactory {
 	byPatientSecretIdsDateForSelf(secretIds: Array<string>,
 			options?: { from?: number | undefined, to?: number | undefined, descending?: boolean }): SortableFilterOptions<Service>;
 
+	byCodesAndValueDateForDataOwner(dataOwnerId: string, codeCodes: { [ key: string ]: Array<string> },
+			options?: { startOfServiceValueDate?: number | undefined, endOfServiceValueDate?: number | undefined }): BaseFilterOptions<Service>;
+
+	byCodesAndValueDateForDataOwnerInGroup(dataOwner: EntityReferenceInGroup,
+			codeCodes: { [ key: string ]: Array<string> },
+			options?: { startOfServiceValueDate?: number | undefined, endOfServiceValueDate?: number | undefined }): BaseFilterOptions<Service>;
+
+	byCodesAndValueDateForSelf(codeCodes: { [ key: string ]: Array<string> },
+			options?: { startOfServiceValueDate?: number | undefined, endOfServiceValueDate?: number | undefined }): FilterOptions<Service>;
+
+	byCodePrefixAndValueDateForDataOwner(dataOwnerId: string, codeType: string, codeCodePrefix: string,
+			options?: { startOfServiceValueDate?: number | undefined, endOfServiceValueDate?: number | undefined }): BaseFilterOptions<Service>;
+
+	byCodePrefixAndValueDateForDataOwnerInGroup(dataOwner: EntityReferenceInGroup, codeType: string,
+			codeCodePrefix: string,
+			options?: { startOfServiceValueDate?: number | undefined, endOfServiceValueDate?: number | undefined }): BaseFilterOptions<Service>;
+
+	byCodePrefixAndValueDateForSelf(codeType: string, codeCodePrefix: string,
+			options?: { startOfServiceValueDate?: number | undefined, endOfServiceValueDate?: number | undefined }): FilterOptions<Service>;
+
+	byTagCodesAndValueDateForDataOwner(dataOwnerId: string,
+			tagCodes: { [ key: string ]: Array<string> },
+			options?: { startOfServiceValueDate?: number | undefined, endOfServiceValueDate?: number | undefined }): BaseFilterOptions<Service>;
+
+	byTagCodesAndValueDateForDataOwnerInGroup(dataOwner: EntityReferenceInGroup,
+			tagCodes: { [ key: string ]: Array<string> },
+			options?: { startOfServiceValueDate?: number | undefined, endOfServiceValueDate?: number | undefined }): BaseFilterOptions<Service>;
+
+	byTagCodesAndValueDateForSelf(tagCodes: { [ key: string ]: Array<string> },
+			options?: { startOfServiceValueDate?: number | undefined, endOfServiceValueDate?: number | undefined }): FilterOptions<Service>;
+
+	byTagPrefixAndValueDateForDataOwner(dataOwnerId: string, tagType: string, tagCodePrefix: string,
+			options?: { startOfServiceValueDate?: number | undefined, endOfServiceValueDate?: number | undefined }): BaseFilterOptions<Service>;
+
+	byTagPrefixAndValueDateForDataOwnerInGroup(dataOwner: EntityReferenceInGroup, tagType: string,
+			tagCodePrefix: string,
+			options?: { startOfServiceValueDate?: number | undefined, endOfServiceValueDate?: number | undefined }): BaseFilterOptions<Service>;
+
+	byTagPrefixAndValueDateForSelf(tagType: string, tagCodePrefix: string,
+			options?: { startOfServiceValueDate?: number | undefined, endOfServiceValueDate?: number | undefined }): FilterOptions<Service>;
+
+	byPatientsCodesAndValueDateForDataOwner(dataOwnerId: string, patients: Array<Patient>,
+			codeCodes: { [ key: string ]: Array<string> },
+			options?: { startOfServiceValueDate?: number | undefined, endOfServiceValueDate?: number | undefined }): FilterOptions<Service>;
+
+	byPatientsCodesAndValueDateForDataOwnerInGroup(dataOwner: EntityReferenceInGroup,
+			patients: Array<Patient>, codeCodes: { [ key: string ]: Array<string> },
+			options?: { startOfServiceValueDate?: number | undefined, endOfServiceValueDate?: number | undefined }): FilterOptions<Service>;
+
+	byPatientsCodesAndValueDateForSelf(patients: Array<Patient>,
+			codeCodes: { [ key: string ]: Array<string> },
+			options?: { startOfServiceValueDate?: number | undefined, endOfServiceValueDate?: number | undefined }): FilterOptions<Service>;
+
+	byPatientSecretIdsCodesAndValueDateForDataOwner(dataOwnerId: string, secretIds: Array<string>,
+			codeCodes: { [ key: string ]: Array<string> },
+			options?: { startOfServiceValueDate?: number | undefined, endOfServiceValueDate?: number | undefined }): BaseFilterOptions<Service>;
+
+	byPatientSecretIdsCodesAndValueDateForDataOwnerInGroup(dataOwner: EntityReferenceInGroup,
+			secretIds: Array<string>, codeCodes: { [ key: string ]: Array<string> },
+			options?: { startOfServiceValueDate?: number | undefined, endOfServiceValueDate?: number | undefined }): BaseFilterOptions<Service>;
+
+	byPatientSecretIdsCodesAndValueDateForSelf(secretIds: Array<string>,
+			codeCodes: { [ key: string ]: Array<string> },
+			options?: { startOfServiceValueDate?: number | undefined, endOfServiceValueDate?: number | undefined }): FilterOptions<Service>;
+
+	byPatientsCodePrefixAndValueDateForDataOwner(
+			dataOwnerId: string,
+			patients: Array<Patient>,
+			codeType: string,
+			codeCodePrefix: string,
+			options?: { startOfServiceValueDate?: number | undefined, endOfServiceValueDate?: number | undefined }
+	): FilterOptions<Service>;
+
+	byPatientsCodePrefixAndValueDateForDataOwnerInGroup(
+			dataOwner: EntityReferenceInGroup,
+			patients: Array<Patient>,
+			codeType: string,
+			codeCodePrefix: string,
+			options?: { startOfServiceValueDate?: number | undefined, endOfServiceValueDate?: number | undefined }
+	): FilterOptions<Service>;
+
+	byPatientsCodePrefixAndValueDateForSelf(patients: Array<Patient>, codeType: string,
+			codeCodePrefix: string,
+			options?: { startOfServiceValueDate?: number | undefined, endOfServiceValueDate?: number | undefined }): FilterOptions<Service>;
+
+	byPatientSecretIdsCodePrefixAndValueDateForDataOwner(
+			dataOwnerId: string,
+			secretIds: Array<string>,
+			codeType: string,
+			codeCodePrefix: string,
+			options?: { startOfServiceValueDate?: number | undefined, endOfServiceValueDate?: number | undefined }
+	): BaseFilterOptions<Service>;
+
+	byPatientSecretIdsCodePrefixAndValueDateForDataOwnerInGroup(
+			dataOwner: EntityReferenceInGroup,
+			secretIds: Array<string>,
+			codeType: string,
+			codeCodePrefix: string,
+			options?: { startOfServiceValueDate?: number | undefined, endOfServiceValueDate?: number | undefined }
+	): BaseFilterOptions<Service>;
+
+	byPatientSecretIdsCodePrefixAndValueDateForSelf(secretIds: Array<string>, codeType: string,
+			codeCodePrefix: string,
+			options?: { startOfServiceValueDate?: number | undefined, endOfServiceValueDate?: number | undefined }): FilterOptions<Service>;
+
+	byPatientsTagCodesAndValueDateForDataOwner(dataOwnerId: string, patients: Array<Patient>,
+			tagCodes: { [ key: string ]: Array<string> },
+			options?: { startOfServiceValueDate?: number | undefined, endOfServiceValueDate?: number | undefined }): FilterOptions<Service>;
+
+	byPatientsTagCodesAndValueDateForDataOwnerInGroup(dataOwner: EntityReferenceInGroup,
+			patients: Array<Patient>, tagCodes: { [ key: string ]: Array<string> },
+			options?: { startOfServiceValueDate?: number | undefined, endOfServiceValueDate?: number | undefined }): FilterOptions<Service>;
+
+	byPatientsTagCodesAndValueDateForSelf(patients: Array<Patient>,
+			tagCodes: { [ key: string ]: Array<string> },
+			options?: { startOfServiceValueDate?: number | undefined, endOfServiceValueDate?: number | undefined }): FilterOptions<Service>;
+
+	byPatientSecretIdsTagCodesAndValueDateForDataOwner(dataOwnerId: string, secretIds: Array<string>,
+			tagCodes: { [ key: string ]: Array<string> },
+			options?: { startOfServiceValueDate?: number | undefined, endOfServiceValueDate?: number | undefined }): BaseFilterOptions<Service>;
+
+	byPatientSecretIdsTagCodesAndValueDateForDataOwnerInGroup(dataOwner: EntityReferenceInGroup,
+			secretIds: Array<string>, tagCodes: { [ key: string ]: Array<string> },
+			options?: { startOfServiceValueDate?: number | undefined, endOfServiceValueDate?: number | undefined }): BaseFilterOptions<Service>;
+
+	byPatientSecretIdsTagCodesAndValueDateForSelf(secretIds: Array<string>,
+			tagCodes: { [ key: string ]: Array<string> },
+			options?: { startOfServiceValueDate?: number | undefined, endOfServiceValueDate?: number | undefined }): FilterOptions<Service>;
+
+	byPatientsTagPrefixAndValueDateForDataOwner(
+			dataOwnerId: string,
+			patients: Array<Patient>,
+			tagType: string,
+			tagCodePrefix: string,
+			options?: { startOfServiceValueDate?: number | undefined, endOfServiceValueDate?: number | undefined }
+	): FilterOptions<Service>;
+
+	byPatientsTagPrefixAndValueDateForDataOwnerInGroup(
+			dataOwner: EntityReferenceInGroup,
+			patients: Array<Patient>,
+			tagType: string,
+			tagCodePrefix: string,
+			options?: { startOfServiceValueDate?: number | undefined, endOfServiceValueDate?: number | undefined }
+	): FilterOptions<Service>;
+
+	byPatientsTagPrefixAndValueDateForSelf(patients: Array<Patient>, tagType: string,
+			tagCodePrefix: string,
+			options?: { startOfServiceValueDate?: number | undefined, endOfServiceValueDate?: number | undefined }): FilterOptions<Service>;
+
+	byPatientSecretIdsTagPrefixAndValueDateForDataOwner(
+			dataOwnerId: string,
+			secretIds: Array<string>,
+			tagType: string,
+			tagCodePrefix: string,
+			options?: { startOfServiceValueDate?: number | undefined, endOfServiceValueDate?: number | undefined }
+	): BaseFilterOptions<Service>;
+
+	byPatientSecretIdsTagPrefixAndValueDateForDataOwnerInGroup(
+			dataOwner: EntityReferenceInGroup,
+			secretIds: Array<string>,
+			tagType: string,
+			tagCodePrefix: string,
+			options?: { startOfServiceValueDate?: number | undefined, endOfServiceValueDate?: number | undefined }
+	): BaseFilterOptions<Service>;
+
+	byPatientSecretIdsTagPrefixAndValueDateForSelf(secretIds: Array<string>, tagType: string,
+			tagCodePrefix: string,
+			options?: { startOfServiceValueDate?: number | undefined, endOfServiceValueDate?: number | undefined }): FilterOptions<Service>;
+
 }
 
 export const ServiceFilters: ServiceFiltersFactory = {
@@ -465,5 +634,41 @@ export const ServiceFilters: ServiceFiltersFactory = {
 			byPatientsDateForSelf: (patients, options) => InternalServiceFiltersObj.getInstance().byPatientsDateForSelf(patients, options),
 			byPatientSecretIdsDateForDataOwner: (dataOwnerId, secretIds, options) => InternalServiceFiltersObj.getInstance().byPatientSecretIdsDateForDataOwner(dataOwnerId, secretIds, options),
 			byPatientSecretIdsDateForDataOwnerInGroup: (dataOwner, secretIds, options) => InternalServiceFiltersObj.getInstance().byPatientSecretIdsDateForDataOwnerInGroup(dataOwner, secretIds, options),
-			byPatientSecretIdsDateForSelf: (secretIds, options) => InternalServiceFiltersObj.getInstance().byPatientSecretIdsDateForSelf(secretIds, options)
+			byPatientSecretIdsDateForSelf: (secretIds, options) => InternalServiceFiltersObj.getInstance().byPatientSecretIdsDateForSelf(secretIds, options),
+			byCodesAndValueDateForDataOwner: (dataOwnerId, codeCodes, options) => InternalServiceFiltersObj.getInstance().byCodesAndValueDateForDataOwner(dataOwnerId, codeCodes, options),
+			byCodesAndValueDateForDataOwnerInGroup: (dataOwner, codeCodes, options) => InternalServiceFiltersObj.getInstance().byCodesAndValueDateForDataOwnerInGroup(dataOwner, codeCodes, options),
+			byCodesAndValueDateForSelf: (codeCodes, options) => InternalServiceFiltersObj.getInstance().byCodesAndValueDateForSelf(codeCodes, options),
+			byCodePrefixAndValueDateForDataOwner: (dataOwnerId, codeType, codeCodePrefix, options) => InternalServiceFiltersObj.getInstance().byCodePrefixAndValueDateForDataOwner(dataOwnerId, codeType, codeCodePrefix, options),
+			byCodePrefixAndValueDateForDataOwnerInGroup: (dataOwner, codeType, codeCodePrefix, options) => InternalServiceFiltersObj.getInstance().byCodePrefixAndValueDateForDataOwnerInGroup(dataOwner, codeType, codeCodePrefix, options),
+			byCodePrefixAndValueDateForSelf: (codeType, codeCodePrefix, options) => InternalServiceFiltersObj.getInstance().byCodePrefixAndValueDateForSelf(codeType, codeCodePrefix, options),
+			byTagCodesAndValueDateForDataOwner: (dataOwnerId, tagCodes, options) => InternalServiceFiltersObj.getInstance().byTagCodesAndValueDateForDataOwner(dataOwnerId, tagCodes, options),
+			byTagCodesAndValueDateForDataOwnerInGroup: (dataOwner, tagCodes, options) => InternalServiceFiltersObj.getInstance().byTagCodesAndValueDateForDataOwnerInGroup(dataOwner, tagCodes, options),
+			byTagCodesAndValueDateForSelf: (tagCodes, options) => InternalServiceFiltersObj.getInstance().byTagCodesAndValueDateForSelf(tagCodes, options),
+			byTagPrefixAndValueDateForDataOwner: (dataOwnerId, tagType, tagCodePrefix, options) => InternalServiceFiltersObj.getInstance().byTagPrefixAndValueDateForDataOwner(dataOwnerId, tagType, tagCodePrefix, options),
+			byTagPrefixAndValueDateForDataOwnerInGroup: (dataOwner, tagType, tagCodePrefix, options) => InternalServiceFiltersObj.getInstance().byTagPrefixAndValueDateForDataOwnerInGroup(dataOwner, tagType, tagCodePrefix, options),
+			byTagPrefixAndValueDateForSelf: (tagType, tagCodePrefix, options) => InternalServiceFiltersObj.getInstance().byTagPrefixAndValueDateForSelf(tagType, tagCodePrefix, options),
+			byPatientsCodesAndValueDateForDataOwner: (dataOwnerId, patients, codeCodes, options) => InternalServiceFiltersObj.getInstance().byPatientsCodesAndValueDateForDataOwner(dataOwnerId, patients, codeCodes, options),
+			byPatientsCodesAndValueDateForDataOwnerInGroup: (dataOwner, patients, codeCodes, options) => InternalServiceFiltersObj.getInstance().byPatientsCodesAndValueDateForDataOwnerInGroup(dataOwner, patients, codeCodes, options),
+			byPatientsCodesAndValueDateForSelf: (patients, codeCodes, options) => InternalServiceFiltersObj.getInstance().byPatientsCodesAndValueDateForSelf(patients, codeCodes, options),
+			byPatientSecretIdsCodesAndValueDateForDataOwner: (dataOwnerId, secretIds, codeCodes, options) => InternalServiceFiltersObj.getInstance().byPatientSecretIdsCodesAndValueDateForDataOwner(dataOwnerId, secretIds, codeCodes, options),
+			byPatientSecretIdsCodesAndValueDateForDataOwnerInGroup: (dataOwner, secretIds, codeCodes, options) => InternalServiceFiltersObj.getInstance().byPatientSecretIdsCodesAndValueDateForDataOwnerInGroup(dataOwner, secretIds, codeCodes, options),
+			byPatientSecretIdsCodesAndValueDateForSelf: (secretIds, codeCodes, options) => InternalServiceFiltersObj.getInstance().byPatientSecretIdsCodesAndValueDateForSelf(secretIds, codeCodes, options),
+			byPatientsCodePrefixAndValueDateForDataOwner: (dataOwnerId, patients, codeType, codeCodePrefix, options) => InternalServiceFiltersObj.getInstance().byPatientsCodePrefixAndValueDateForDataOwner(dataOwnerId, patients, codeType, codeCodePrefix, options),
+			byPatientsCodePrefixAndValueDateForDataOwnerInGroup: (dataOwner, patients, codeType, codeCodePrefix, options) => InternalServiceFiltersObj.getInstance().byPatientsCodePrefixAndValueDateForDataOwnerInGroup(dataOwner, patients, codeType, codeCodePrefix, options),
+			byPatientsCodePrefixAndValueDateForSelf: (patients, codeType, codeCodePrefix, options) => InternalServiceFiltersObj.getInstance().byPatientsCodePrefixAndValueDateForSelf(patients, codeType, codeCodePrefix, options),
+			byPatientSecretIdsCodePrefixAndValueDateForDataOwner: (dataOwnerId, secretIds, codeType, codeCodePrefix, options) => InternalServiceFiltersObj.getInstance().byPatientSecretIdsCodePrefixAndValueDateForDataOwner(dataOwnerId, secretIds, codeType, codeCodePrefix, options),
+			byPatientSecretIdsCodePrefixAndValueDateForDataOwnerInGroup: (dataOwner, secretIds, codeType, codeCodePrefix, options) => InternalServiceFiltersObj.getInstance().byPatientSecretIdsCodePrefixAndValueDateForDataOwnerInGroup(dataOwner, secretIds, codeType, codeCodePrefix, options),
+			byPatientSecretIdsCodePrefixAndValueDateForSelf: (secretIds, codeType, codeCodePrefix, options) => InternalServiceFiltersObj.getInstance().byPatientSecretIdsCodePrefixAndValueDateForSelf(secretIds, codeType, codeCodePrefix, options),
+			byPatientsTagCodesAndValueDateForDataOwner: (dataOwnerId, patients, tagCodes, options) => InternalServiceFiltersObj.getInstance().byPatientsTagCodesAndValueDateForDataOwner(dataOwnerId, patients, tagCodes, options),
+			byPatientsTagCodesAndValueDateForDataOwnerInGroup: (dataOwner, patients, tagCodes, options) => InternalServiceFiltersObj.getInstance().byPatientsTagCodesAndValueDateForDataOwnerInGroup(dataOwner, patients, tagCodes, options),
+			byPatientsTagCodesAndValueDateForSelf: (patients, tagCodes, options) => InternalServiceFiltersObj.getInstance().byPatientsTagCodesAndValueDateForSelf(patients, tagCodes, options),
+			byPatientSecretIdsTagCodesAndValueDateForDataOwner: (dataOwnerId, secretIds, tagCodes, options) => InternalServiceFiltersObj.getInstance().byPatientSecretIdsTagCodesAndValueDateForDataOwner(dataOwnerId, secretIds, tagCodes, options),
+			byPatientSecretIdsTagCodesAndValueDateForDataOwnerInGroup: (dataOwner, secretIds, tagCodes, options) => InternalServiceFiltersObj.getInstance().byPatientSecretIdsTagCodesAndValueDateForDataOwnerInGroup(dataOwner, secretIds, tagCodes, options),
+			byPatientSecretIdsTagCodesAndValueDateForSelf: (secretIds, tagCodes, options) => InternalServiceFiltersObj.getInstance().byPatientSecretIdsTagCodesAndValueDateForSelf(secretIds, tagCodes, options),
+			byPatientsTagPrefixAndValueDateForDataOwner: (dataOwnerId, patients, tagType, tagCodePrefix, options) => InternalServiceFiltersObj.getInstance().byPatientsTagPrefixAndValueDateForDataOwner(dataOwnerId, patients, tagType, tagCodePrefix, options),
+			byPatientsTagPrefixAndValueDateForDataOwnerInGroup: (dataOwner, patients, tagType, tagCodePrefix, options) => InternalServiceFiltersObj.getInstance().byPatientsTagPrefixAndValueDateForDataOwnerInGroup(dataOwner, patients, tagType, tagCodePrefix, options),
+			byPatientsTagPrefixAndValueDateForSelf: (patients, tagType, tagCodePrefix, options) => InternalServiceFiltersObj.getInstance().byPatientsTagPrefixAndValueDateForSelf(patients, tagType, tagCodePrefix, options),
+			byPatientSecretIdsTagPrefixAndValueDateForDataOwner: (dataOwnerId, secretIds, tagType, tagCodePrefix, options) => InternalServiceFiltersObj.getInstance().byPatientSecretIdsTagPrefixAndValueDateForDataOwner(dataOwnerId, secretIds, tagType, tagCodePrefix, options),
+			byPatientSecretIdsTagPrefixAndValueDateForDataOwnerInGroup: (dataOwner, secretIds, tagType, tagCodePrefix, options) => InternalServiceFiltersObj.getInstance().byPatientSecretIdsTagPrefixAndValueDateForDataOwnerInGroup(dataOwner, secretIds, tagType, tagCodePrefix, options),
+			byPatientSecretIdsTagPrefixAndValueDateForSelf: (secretIds, tagType, tagCodePrefix, options) => InternalServiceFiltersObj.getInstance().byPatientSecretIdsTagPrefixAndValueDateForSelf(secretIds, tagType, tagCodePrefix, options)
 		};
