@@ -178,7 +178,8 @@ fun projectHasSignatureProperties() =
 //}
 
 mavenPublishing {
-	coordinates(group as String, project.name, project.version as String)
+	val publishedArtifactId: String = (findProperty("artifactId") as String?)?.takeIf { it.isNotBlank() } ?: project.name
+	coordinates(group as String, publishedArtifactId, project.version as String)
 
 	pom {
 		name.set("CardinalSDK")
