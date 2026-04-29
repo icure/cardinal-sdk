@@ -152,6 +152,13 @@ export interface CalendarItem extends StoredDocument, ICureDocument<string>, Has
 
 	/**
 	 *
+	 *  The healthcare party id associated with this calendar item. Deprecated: This field is scheduled
+	 *  for deletion
+	 */
+	hcpId: string | undefined;
+
+	/**
+	 *
 	 *  An id for linking recurring calendar items.
 	 */
 	recurrenceId: string | undefined;
@@ -366,6 +373,13 @@ export class DecryptedCalendarItem {
 
 	/**
 	 *
+	 *  The healthcare party id associated with this calendar item. Deprecated: This field is scheduled
+	 *  for deletion
+	 */
+	hcpId: string | undefined = undefined;
+
+	/**
+	 *
 	 *  An id for linking recurring calendar items.
 	 */
 	recurrenceId: string | undefined = undefined;
@@ -452,6 +466,7 @@ export class DecryptedCalendarItem {
 		if ('agendaId' in partial) this.agendaId = partial.agendaId;
 		if ('resourceGroup' in partial) this.resourceGroup = partial.resourceGroup;
 		if ('availabilitiesAssignmentStrategy' in partial) this.availabilitiesAssignmentStrategy = partial.availabilitiesAssignmentStrategy;
+		if ('hcpId' in partial) this.hcpId = partial.hcpId;
 		if ('recurrenceId' in partial) this.recurrenceId = partial.recurrenceId;
 		if ('meetingTags' in partial && partial.meetingTags !== undefined) this.meetingTags = partial.meetingTags;
 		if ('properties' in partial && partial.properties !== undefined) this.properties = partial.properties;
@@ -495,6 +510,7 @@ export class DecryptedCalendarItem {
 		if (this.agendaId != undefined) res['agendaId'] = this.agendaId
 		if (this.resourceGroup != undefined) res['resourceGroup'] = this.resourceGroup.toJSON()
 		if (this.availabilitiesAssignmentStrategy != undefined) res['availabilitiesAssignmentStrategy'] = this.availabilitiesAssignmentStrategy
+		if (this.hcpId != undefined) res['hcpId'] = this.hcpId
 		if (this.recurrenceId != undefined) res['recurrenceId'] = this.recurrenceId
 		res['meetingTags'] = this.meetingTags.map((x0) => x0.toJSON() )
 		res['properties'] = this.properties.map((x0) => x0.toJSON() )
@@ -544,6 +560,7 @@ export class DecryptedCalendarItem {
 			agendaId: expectString(extractEntry(jCpy, 'agendaId', false, path), true, [...path, ".agendaId"]),
 			resourceGroup: expectObject(extractEntry(jCpy, 'resourceGroup', false, path), true, ignoreUnknownKeys, [...path, ".resourceGroup"], CodeStub.fromJSON),
 			availabilitiesAssignmentStrategy: expectStringEnum(extractEntry(jCpy, 'availabilitiesAssignmentStrategy', false, path), true, [...path, ".availabilitiesAssignmentStrategy"], CalendarItem_.AvailabilitiesAssignmentStrategy, 'CalendarItem.AvailabilitiesAssignmentStrategy'),
+			hcpId: expectString(extractEntry(jCpy, 'hcpId', false, path), true, [...path, ".hcpId"]),
 			recurrenceId: expectString(extractEntry(jCpy, 'recurrenceId', false, path), true, [...path, ".recurrenceId"]),
 			meetingTags: expectArray(extractEntry(jCpy, 'meetingTags', false, path), false, [...path, ".meetingTags"], (x0, p0) => expectObject(x0, false, ignoreUnknownKeys, p0, DecryptedCalendarItemTag.fromJSON)),
 			properties: expectArray(extractEntry(jCpy, 'properties', false, path), false, [...path, ".properties"], (x0, p0) => expectObject(x0, false, ignoreUnknownKeys, p0, DecryptedPropertyStub.fromJSON)),
@@ -772,6 +789,13 @@ export class EncryptedCalendarItem {
 
 	/**
 	 *
+	 *  The healthcare party id associated with this calendar item. Deprecated: This field is scheduled
+	 *  for deletion
+	 */
+	hcpId: string | undefined = undefined;
+
+	/**
+	 *
 	 *  An id for linking recurring calendar items.
 	 */
 	recurrenceId: string | undefined = undefined;
@@ -858,6 +882,7 @@ export class EncryptedCalendarItem {
 		if ('agendaId' in partial) this.agendaId = partial.agendaId;
 		if ('resourceGroup' in partial) this.resourceGroup = partial.resourceGroup;
 		if ('availabilitiesAssignmentStrategy' in partial) this.availabilitiesAssignmentStrategy = partial.availabilitiesAssignmentStrategy;
+		if ('hcpId' in partial) this.hcpId = partial.hcpId;
 		if ('recurrenceId' in partial) this.recurrenceId = partial.recurrenceId;
 		if ('meetingTags' in partial && partial.meetingTags !== undefined) this.meetingTags = partial.meetingTags;
 		if ('properties' in partial && partial.properties !== undefined) this.properties = partial.properties;
@@ -901,6 +926,7 @@ export class EncryptedCalendarItem {
 		if (this.agendaId != undefined) res['agendaId'] = this.agendaId
 		if (this.resourceGroup != undefined) res['resourceGroup'] = this.resourceGroup.toJSON()
 		if (this.availabilitiesAssignmentStrategy != undefined) res['availabilitiesAssignmentStrategy'] = this.availabilitiesAssignmentStrategy
+		if (this.hcpId != undefined) res['hcpId'] = this.hcpId
 		if (this.recurrenceId != undefined) res['recurrenceId'] = this.recurrenceId
 		res['meetingTags'] = this.meetingTags.map((x0) => x0.toJSON() )
 		res['properties'] = this.properties.map((x0) => x0.toJSON() )
@@ -950,6 +976,7 @@ export class EncryptedCalendarItem {
 			agendaId: expectString(extractEntry(jCpy, 'agendaId', false, path), true, [...path, ".agendaId"]),
 			resourceGroup: expectObject(extractEntry(jCpy, 'resourceGroup', false, path), true, ignoreUnknownKeys, [...path, ".resourceGroup"], CodeStub.fromJSON),
 			availabilitiesAssignmentStrategy: expectStringEnum(extractEntry(jCpy, 'availabilitiesAssignmentStrategy', false, path), true, [...path, ".availabilitiesAssignmentStrategy"], CalendarItem_.AvailabilitiesAssignmentStrategy, 'CalendarItem.AvailabilitiesAssignmentStrategy'),
+			hcpId: expectString(extractEntry(jCpy, 'hcpId', false, path), true, [...path, ".hcpId"]),
 			recurrenceId: expectString(extractEntry(jCpy, 'recurrenceId', false, path), true, [...path, ".recurrenceId"]),
 			meetingTags: expectArray(extractEntry(jCpy, 'meetingTags', false, path), false, [...path, ".meetingTags"], (x0, p0) => expectObject(x0, false, ignoreUnknownKeys, p0, EncryptedCalendarItemTag.fromJSON)),
 			properties: expectArray(extractEntry(jCpy, 'properties', false, path), false, [...path, ".properties"], (x0, p0) => expectObject(x0, false, ignoreUnknownKeys, p0, EncryptedPropertyStub.fromJSON)),
