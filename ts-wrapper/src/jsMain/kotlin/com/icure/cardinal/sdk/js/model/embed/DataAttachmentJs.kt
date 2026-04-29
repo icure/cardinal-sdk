@@ -4,6 +4,7 @@
 package com.icure.cardinal.sdk.js.model.embed
 
 import kotlin.Array
+import kotlin.Double
 import kotlin.String
 import kotlin.js.JsName
 import kotlin.js.JsQualifier
@@ -17,4 +18,12 @@ public external class DataAttachmentJs(
 	public val objectStoreAttachmentId: String?
 
 	public val utis: Array<String>
+
+	public val compressionAlgorithm: String?
+
+	public val triedCompressionAlgorithmsVersion: String?
+
+	public val storedDataSize: Double?
+
+	public val realDataSize: Double?
 }

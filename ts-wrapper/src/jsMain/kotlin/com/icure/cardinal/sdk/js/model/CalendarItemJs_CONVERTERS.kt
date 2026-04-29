@@ -141,6 +141,9 @@ public fun calendarItem_toJs(obj: DecryptedCalendarItem): DecryptedCalendarItemJ
 			nonNull1.name
 		}
 	)
+	val hcpId = nullToUndefined(
+		obj.hcpId
+	)
 	val recurrenceId = nullToUndefined(
 		obj.recurrenceId
 	)
@@ -245,6 +248,7 @@ public fun calendarItem_toJs(obj: DecryptedCalendarItem): DecryptedCalendarItemJ
 		"agendaId:agendaId," +
 		"resourceGroup:resourceGroup," +
 		"availabilitiesAssignmentStrategy:availabilitiesAssignmentStrategy," +
+		"hcpId:hcpId," +
 		"recurrenceId:recurrenceId," +
 		"meetingTags:meetingTags," +
 		"properties:properties," +
@@ -306,6 +310,7 @@ public fun calendarItem_fromJs(obj: DecryptedCalendarItemJs): DecryptedCalendarI
 	val availabilitiesAssignmentStrategy = obj.availabilitiesAssignmentStrategy?.let { nonNull1 ->
 		CalendarItem.AvailabilitiesAssignmentStrategy.valueOf(nonNull1)
 	}
+	val hcpId = undefinedToNull(obj.hcpId)
 	val recurrenceId = undefinedToNull(obj.recurrenceId)
 	val meetingTags = arrayToSet(
 		obj.meetingTags,
@@ -413,6 +418,7 @@ public fun calendarItem_fromJs(obj: DecryptedCalendarItemJs): DecryptedCalendarI
 		agendaId = agendaId,
 		resourceGroup = resourceGroup,
 		availabilitiesAssignmentStrategy = availabilitiesAssignmentStrategy,
+		hcpId = hcpId,
 		recurrenceId = recurrenceId,
 		meetingTags = meetingTags,
 		properties = properties,
@@ -527,6 +533,9 @@ public fun calendarItem_toJs(obj: EncryptedCalendarItem): EncryptedCalendarItemJ
 			nonNull1.name
 		}
 	)
+	val hcpId = nullToUndefined(
+		obj.hcpId
+	)
 	val recurrenceId = nullToUndefined(
 		obj.recurrenceId
 	)
@@ -631,6 +640,7 @@ public fun calendarItem_toJs(obj: EncryptedCalendarItem): EncryptedCalendarItemJ
 		"agendaId:agendaId," +
 		"resourceGroup:resourceGroup," +
 		"availabilitiesAssignmentStrategy:availabilitiesAssignmentStrategy," +
+		"hcpId:hcpId," +
 		"recurrenceId:recurrenceId," +
 		"meetingTags:meetingTags," +
 		"properties:properties," +
@@ -692,6 +702,7 @@ public fun calendarItem_fromJs(obj: EncryptedCalendarItemJs): EncryptedCalendarI
 	val availabilitiesAssignmentStrategy = obj.availabilitiesAssignmentStrategy?.let { nonNull1 ->
 		CalendarItem.AvailabilitiesAssignmentStrategy.valueOf(nonNull1)
 	}
+	val hcpId = undefinedToNull(obj.hcpId)
 	val recurrenceId = undefinedToNull(obj.recurrenceId)
 	val meetingTags = arrayToSet(
 		obj.meetingTags,
@@ -799,6 +810,7 @@ public fun calendarItem_fromJs(obj: EncryptedCalendarItemJs): EncryptedCalendarI
 		agendaId = agendaId,
 		resourceGroup = resourceGroup,
 		availabilitiesAssignmentStrategy = availabilitiesAssignmentStrategy,
+		hcpId = hcpId,
 		recurrenceId = recurrenceId,
 		meetingTags = meetingTags,
 		properties = properties,

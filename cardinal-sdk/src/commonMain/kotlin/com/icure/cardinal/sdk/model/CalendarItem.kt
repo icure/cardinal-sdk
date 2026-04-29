@@ -196,6 +196,12 @@ sealed interface CalendarItem :
 	public val availabilitiesAssignmentStrategy: AvailabilitiesAssignmentStrategy?
 
 	/**
+	 * The healthcare party id associated with this calendar item. Deprecated: This field is scheduled
+	 * for deletion
+	 */
+	public val hcpId: String?
+
+	/**
 	 * An id for linking recurring calendar items.
 	 */
 	public val recurrenceId: String?
@@ -396,6 +402,11 @@ data class DecryptedCalendarItem(
 	override val availabilitiesAssignmentStrategy: CalendarItem.AvailabilitiesAssignmentStrategy? =
 		null,
 	/**
+	 * The healthcare party id associated with this calendar item. Deprecated: This field is scheduled
+	 * for deletion
+	 */
+	override val hcpId: String? = null,
+	/**
 	 * An id for linking recurring calendar items.
 	 */
 	override val recurrenceId: String? = null,
@@ -595,6 +606,11 @@ data class EncryptedCalendarItem(
 	 */
 	override val availabilitiesAssignmentStrategy: CalendarItem.AvailabilitiesAssignmentStrategy? =
 		null,
+	/**
+	 * The healthcare party id associated with this calendar item. Deprecated: This field is scheduled
+	 * for deletion
+	 */
+	override val hcpId: String? = null,
 	/**
 	 * An id for linking recurring calendar items.
 	 */
