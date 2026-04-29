@@ -69,6 +69,8 @@ public sealed external interface CalendarItemJs : StoredDocumentJs, ICureDocumen
 
 	public val availabilitiesAssignmentStrategy: String?
 
+	public val hcpId: String?
+
 	public val recurrenceId: String?
 
 	public val meetingTags: Array<out CalendarItemTagJs>
@@ -141,6 +143,8 @@ public external class DecryptedCalendarItemJs(
 	override val resourceGroup: CodeStubJs?
 
 	override val availabilitiesAssignmentStrategy: String?
+
+	override val hcpId: String?
 
 	override val recurrenceId: String?
 
@@ -226,6 +230,8 @@ public external class EncryptedCalendarItemJs(
 	override val resourceGroup: CodeStubJs?
 
 	override val availabilitiesAssignmentStrategy: String?
+
+	override val hcpId: String?
 
 	override val recurrenceId: String?
 
