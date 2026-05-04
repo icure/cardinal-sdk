@@ -9,7 +9,13 @@ import com.icure.kryptom.utils.hexToByteArray
 import com.icure.kryptom.utils.toHexString
 import io.ktor.utils.io.charsets.Charsets
 import io.ktor.utils.io.core.toByteArray
+import kotlinx.serialization.KSerializer
 import kotlinx.serialization.Serializable
+import kotlinx.serialization.descriptors.PrimitiveKind
+import kotlinx.serialization.descriptors.PrimitiveSerialDescriptor
+import kotlinx.serialization.descriptors.SerialDescriptor
+import kotlinx.serialization.encoding.Decoder
+import kotlinx.serialization.encoding.Encoder
 import kotlin.jvm.JvmInline
 
 /**
@@ -182,12 +188,12 @@ value class KeypairFingerprintV1String(
 }
 
 @JvmInline
-@Serializable
+@Serializable(with = KeypairFingerprintV2StringSerializer::class)
 value class KeypairFingerprintV2String(
 	val s: String
 ) {
 	companion object {
-		private const val LENGTH = 22
+		internal const val LENGTH = 22
 
 		fun fromV1(v1: KeypairFingerprintV1String): KeypairFingerprintV2String {
 			return KeypairFingerprintV2String(v1.s.dropLast(10))
@@ -200,5 +206,25 @@ value class KeypairFingerprintV2String(
 
 	init {
 		require(s.length == LENGTH && s.isValidHex()) { "Invalid fingerprint v2 string: $s" }
+	}
+}
+
+internal class KeypairFingerprintV2StringSerializer : KSerializer<KeypairFingerprintV2String> {
+	override val descriptor: SerialDescriptor =
+		PrimitiveSerialDescriptor("com.icure.cardinal.sdk.model.specializations.KeypairFingerprintV2String", PrimitiveKind.STRING)
+
+	override fun serialize(encoder: Encoder, value: KeypairFingerprintV2String) {
+		encoder.encodeString(value.s)
+	}
+
+	override fun deserialize(decoder: Decoder): KeypairFingerprintV2String {
+		return KeypairFingerprintV2String(decoder.decodeString().let { lenientV2String ->
+			if (
+				lenientV2String.length == KeypairFingerprintV1String.LENGTH
+				&& lenientV2String.endsWith(SpkiHexString.TRAILING_CONSTANT)
+			) {
+				lenientV2String.take(KeypairFingerprintV2String.LENGTH)
+			} else lenientV2String
+		})
 	}
 }
