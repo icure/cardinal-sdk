@@ -5,7 +5,7 @@ from cardinal_sdk.filters.ContactFilters import ContactFilters
 from cardinal_sdk.filters.PatientFilters import PatientFilters
 from cardinal_sdk.filters.DeviceFilters import DeviceFilters
 from cardinal_sdk.filters.UserFilters import UserFilters
-from cardinal_sdk.filters.ClassificationFilters import ClassificationFilters
+from cardinal_sdk.filters.FormTemplateFilters import FormTemplateFilters
 from cardinal_sdk.filters.CodeFilters import CodeFilters
 from cardinal_sdk.filters.GroupFilters import GroupFilters
 from cardinal_sdk.filters.TopicFilters import TopicFilters

@@ -6,14 +6,10 @@ import com.icure.cardinal.sdk.filters.BaseFilterOptions
 import com.icure.cardinal.sdk.filters.BaseSortableFilterOptions
 import com.icure.cardinal.sdk.filters.FilterOptions
 import com.icure.cardinal.sdk.model.EncryptedPropertyStub
-import com.icure.cardinal.sdk.model.ListOfIds
-import com.icure.cardinal.sdk.model.PaginatedList
+import com.icure.cardinal.sdk.model.StoredDocumentIdentifier
 import com.icure.cardinal.sdk.model.User
 import com.icure.cardinal.sdk.model.UserGroup
-import com.icure.cardinal.sdk.model.couchdb.DocIdentifier
 import com.icure.cardinal.sdk.model.security.Enable2faRequest
-import com.icure.cardinal.sdk.model.security.LoginIdentifier
-import com.icure.cardinal.sdk.model.security.TokenWithGroup
 import com.icure.cardinal.sdk.py.utils.PyResult
 import com.icure.cardinal.sdk.py.utils.failureToPyResultAsyncCallback
 import com.icure.cardinal.sdk.py.utils.failureToPyStringAsyncCallback
@@ -29,7 +25,6 @@ import com.icure.cardinal.sdk.utils.Serialization.fullLanguageInteropJson
 import com.icure.utils.InternalIcureApi
 import kotlin.Boolean
 import kotlin.Byte
-import kotlin.Int
 import kotlin.Long
 import kotlin.OptIn
 import kotlin.String
@@ -49,42 +44,6 @@ import kotlinx.serialization.Serializable
 import kotlinx.serialization.builtins.ListSerializer
 import kotlinx.serialization.builtins.serializer
 
-@Serializable
-private class DeleteUserUnsafeParams(
-	public val entityId: String,
-)
-
-@OptIn(InternalIcureApi::class)
-public fun deleteUserUnsafeBlocking(sdk: CardinalNonCryptoApis, params: String): String =
-		kotlin.runCatching {
-	val decodedParams = fullLanguageInteropJson.decodeFromString<DeleteUserUnsafeParams>(params)
-	runBlocking {
-		sdk.user.deleteUserUnsafe(
-			decodedParams.entityId,
-		)
-	}
-}.toPyString(DocIdentifier.serializer())
-
-@OptIn(
-	ExperimentalForeignApi::class,
-	InternalIcureApi::class,
-)
-public fun deleteUserUnsafeAsync(
-	sdk: CardinalNonCryptoApis,
-	params: String,
-	resultCallback: CPointer<CFunction<(CValues<ByteVarOf<Byte>>?,
-			CValues<ByteVarOf<Byte>>?) -> Unit>>,
-): COpaquePointer? = kotlin.runCatching {
-	val decodedParams = fullLanguageInteropJson.decodeFromString<DeleteUserUnsafeParams>(params)
-	GlobalScope.launch {
-		kotlin.runCatching {
-			sdk.user.deleteUserUnsafe(
-				decodedParams.entityId,
-			)
-		}.toPyStringAsyncCallback(DocIdentifier.serializer(), resultCallback)
-	}
-}.failureToPyStringAsyncCallback(resultCallback)
-
 public fun getCurrentUserBlocking(sdk: CardinalNonCryptoApis): String = kotlin.runCatching {
 	runBlocking {
 		sdk.user.getCurrentUser()
@@ -99,51 +58,6 @@ public fun getCurrentUserAsync(sdk: CardinalNonCryptoApis,
 		kotlin.runCatching {
 			sdk.user.getCurrentUser()
 		}.toPyStringAsyncCallback(User.serializer(), resultCallback)
-	}
-}.failureToPyStringAsyncCallback(resultCallback)
-
-@Serializable
-private class ListUsersByParams(
-	public val startKey: String? = null,
-	public val startDocumentId: String? = null,
-	public val limit: Int? = null,
-	public val skipPatients: Boolean? = null,
-)
-
-@OptIn(InternalIcureApi::class)
-public fun listUsersByBlocking(sdk: CardinalNonCryptoApis, params: String): String =
-		kotlin.runCatching {
-	val decodedParams = fullLanguageInteropJson.decodeFromString<ListUsersByParams>(params)
-	runBlocking {
-		sdk.user.listUsersBy(
-			decodedParams.startKey,
-			decodedParams.startDocumentId,
-			decodedParams.limit,
-			decodedParams.skipPatients,
-		)
-	}
-}.toPyString(PaginatedList.serializer(User.serializer()))
-
-@OptIn(
-	ExperimentalForeignApi::class,
-	InternalIcureApi::class,
-)
-public fun listUsersByAsync(
-	sdk: CardinalNonCryptoApis,
-	params: String,
-	resultCallback: CPointer<CFunction<(CValues<ByteVarOf<Byte>>?,
-			CValues<ByteVarOf<Byte>>?) -> Unit>>,
-): COpaquePointer? = kotlin.runCatching {
-	val decodedParams = fullLanguageInteropJson.decodeFromString<ListUsersByParams>(params)
-	GlobalScope.launch {
-		kotlin.runCatching {
-			sdk.user.listUsersBy(
-				decodedParams.startKey,
-				decodedParams.startDocumentId,
-				decodedParams.limit,
-				decodedParams.skipPatients,
-			)
-		}.toPyStringAsyncCallback(PaginatedList.serializer(User.serializer()), resultCallback)
 	}
 }.failureToPyStringAsyncCallback(resultCallback)
 
@@ -180,6 +94,42 @@ public fun createUserAsync(
 				decodedParams.user,
 			)
 		}.toPyStringAsyncCallback(User.serializer(), resultCallback)
+	}
+}.failureToPyStringAsyncCallback(resultCallback)
+
+@Serializable
+private class CreateUsersParams(
+	public val users: List<User>,
+)
+
+@OptIn(InternalIcureApi::class)
+public fun createUsersBlocking(sdk: CardinalNonCryptoApis, params: String): String =
+		kotlin.runCatching {
+	val decodedParams = fullLanguageInteropJson.decodeFromString<CreateUsersParams>(params)
+	runBlocking {
+		sdk.user.createUsers(
+			decodedParams.users,
+		)
+	}
+}.toPyString(ListSerializer(User.serializer()))
+
+@OptIn(
+	ExperimentalForeignApi::class,
+	InternalIcureApi::class,
+)
+public fun createUsersAsync(
+	sdk: CardinalNonCryptoApis,
+	params: String,
+	resultCallback: CPointer<CFunction<(CValues<ByteVarOf<Byte>>?,
+			CValues<ByteVarOf<Byte>>?) -> Unit>>,
+): COpaquePointer? = kotlin.runCatching {
+	val decodedParams = fullLanguageInteropJson.decodeFromString<CreateUsersParams>(params)
+	GlobalScope.launch {
+		kotlin.runCatching {
+			sdk.user.createUsers(
+				decodedParams.users,
+			)
+		}.toPyStringAsyncCallback(ListSerializer(User.serializer()), resultCallback)
 	}
 }.failureToPyStringAsyncCallback(resultCallback)
 
@@ -250,6 +200,78 @@ public fun getUsersAsync(
 		kotlin.runCatching {
 			sdk.user.getUsers(
 				decodedParams.userIds,
+			)
+		}.toPyStringAsyncCallback(ListSerializer(User.serializer()), resultCallback)
+	}
+}.failureToPyStringAsyncCallback(resultCallback)
+
+@Serializable
+private class ModifyUserParams(
+	public val user: User,
+)
+
+@OptIn(InternalIcureApi::class)
+public fun modifyUserBlocking(sdk: CardinalNonCryptoApis, params: String): String =
+		kotlin.runCatching {
+	val decodedParams = fullLanguageInteropJson.decodeFromString<ModifyUserParams>(params)
+	runBlocking {
+		sdk.user.modifyUser(
+			decodedParams.user,
+		)
+	}
+}.toPyString(User.serializer())
+
+@OptIn(
+	ExperimentalForeignApi::class,
+	InternalIcureApi::class,
+)
+public fun modifyUserAsync(
+	sdk: CardinalNonCryptoApis,
+	params: String,
+	resultCallback: CPointer<CFunction<(CValues<ByteVarOf<Byte>>?,
+			CValues<ByteVarOf<Byte>>?) -> Unit>>,
+): COpaquePointer? = kotlin.runCatching {
+	val decodedParams = fullLanguageInteropJson.decodeFromString<ModifyUserParams>(params)
+	GlobalScope.launch {
+		kotlin.runCatching {
+			sdk.user.modifyUser(
+				decodedParams.user,
+			)
+		}.toPyStringAsyncCallback(User.serializer(), resultCallback)
+	}
+}.failureToPyStringAsyncCallback(resultCallback)
+
+@Serializable
+private class ModifyUsersParams(
+	public val users: List<User>,
+)
+
+@OptIn(InternalIcureApi::class)
+public fun modifyUsersBlocking(sdk: CardinalNonCryptoApis, params: String): String =
+		kotlin.runCatching {
+	val decodedParams = fullLanguageInteropJson.decodeFromString<ModifyUsersParams>(params)
+	runBlocking {
+		sdk.user.modifyUsers(
+			decodedParams.users,
+		)
+	}
+}.toPyString(ListSerializer(User.serializer()))
+
+@OptIn(
+	ExperimentalForeignApi::class,
+	InternalIcureApi::class,
+)
+public fun modifyUsersAsync(
+	sdk: CardinalNonCryptoApis,
+	params: String,
+	resultCallback: CPointer<CFunction<(CValues<ByteVarOf<Byte>>?,
+			CValues<ByteVarOf<Byte>>?) -> Unit>>,
+): COpaquePointer? = kotlin.runCatching {
+	val decodedParams = fullLanguageInteropJson.decodeFromString<ModifyUsersParams>(params)
+	GlobalScope.launch {
+		kotlin.runCatching {
+			sdk.user.modifyUsers(
+				decodedParams.users,
 			)
 		}.toPyStringAsyncCallback(ListSerializer(User.serializer()), resultCallback)
 	}
@@ -396,42 +418,6 @@ public fun findByPatientIdAsync(
 				decodedParams.id,
 			)
 		}.toPyStringAsyncCallback(ListSerializer(String.serializer()), resultCallback)
-	}
-}.failureToPyStringAsyncCallback(resultCallback)
-
-@Serializable
-private class ModifyUserParams(
-	public val user: User,
-)
-
-@OptIn(InternalIcureApi::class)
-public fun modifyUserBlocking(sdk: CardinalNonCryptoApis, params: String): String =
-		kotlin.runCatching {
-	val decodedParams = fullLanguageInteropJson.decodeFromString<ModifyUserParams>(params)
-	runBlocking {
-		sdk.user.modifyUser(
-			decodedParams.user,
-		)
-	}
-}.toPyString(User.serializer())
-
-@OptIn(
-	ExperimentalForeignApi::class,
-	InternalIcureApi::class,
-)
-public fun modifyUserAsync(
-	sdk: CardinalNonCryptoApis,
-	params: String,
-	resultCallback: CPointer<CFunction<(CValues<ByteVarOf<Byte>>?,
-			CValues<ByteVarOf<Byte>>?) -> Unit>>,
-): COpaquePointer? = kotlin.runCatching {
-	val decodedParams = fullLanguageInteropJson.decodeFromString<ModifyUserParams>(params)
-	GlobalScope.launch {
-		kotlin.runCatching {
-			sdk.user.modifyUser(
-				decodedParams.user,
-			)
-		}.toPyStringAsyncCallback(User.serializer(), resultCallback)
 	}
 }.failureToPyStringAsyncCallback(resultCallback)
 
@@ -719,171 +705,9 @@ public fun getMatchingUsersAsync(sdk: CardinalNonCryptoApis,
 }.failureToPyStringAsyncCallback(resultCallback)
 
 @Serializable
-private class GetUsersInGroupParams(
-	public val groupId: String,
-	public val userIds: List<String>,
-)
-
-@OptIn(InternalIcureApi::class)
-public fun getUsersInGroupBlocking(sdk: CardinalNonCryptoApis, params: String): String =
-		kotlin.runCatching {
-	val decodedParams = fullLanguageInteropJson.decodeFromString<GetUsersInGroupParams>(params)
-	runBlocking {
-		sdk.user.getUsersInGroup(
-			decodedParams.groupId,
-			decodedParams.userIds,
-		)
-	}
-}.toPyString(ListSerializer(User.serializer()))
-
-@OptIn(
-	ExperimentalForeignApi::class,
-	InternalIcureApi::class,
-)
-public fun getUsersInGroupAsync(
-	sdk: CardinalNonCryptoApis,
-	params: String,
-	resultCallback: CPointer<CFunction<(CValues<ByteVarOf<Byte>>?,
-			CValues<ByteVarOf<Byte>>?) -> Unit>>,
-): COpaquePointer? = kotlin.runCatching {
-	val decodedParams = fullLanguageInteropJson.decodeFromString<GetUsersInGroupParams>(params)
-	GlobalScope.launch {
-		kotlin.runCatching {
-			sdk.user.getUsersInGroup(
-				decodedParams.groupId,
-				decodedParams.userIds,
-			)
-		}.toPyStringAsyncCallback(ListSerializer(User.serializer()), resultCallback)
-	}
-}.failureToPyStringAsyncCallback(resultCallback)
-
-@Serializable
-private class ListUsersInGroupParams(
-	public val groupId: String,
-	public val startKey: String? = null,
-	public val startDocumentId: String? = null,
-	public val limit: Int? = null,
-)
-
-@OptIn(InternalIcureApi::class)
-public fun listUsersInGroupBlocking(sdk: CardinalNonCryptoApis, params: String): String =
-		kotlin.runCatching {
-	val decodedParams = fullLanguageInteropJson.decodeFromString<ListUsersInGroupParams>(params)
-	runBlocking {
-		sdk.user.listUsersInGroup(
-			decodedParams.groupId,
-			decodedParams.startKey,
-			decodedParams.startDocumentId,
-			decodedParams.limit,
-		)
-	}
-}.toPyString(PaginatedList.serializer(User.serializer()))
-
-@OptIn(
-	ExperimentalForeignApi::class,
-	InternalIcureApi::class,
-)
-public fun listUsersInGroupAsync(
-	sdk: CardinalNonCryptoApis,
-	params: String,
-	resultCallback: CPointer<CFunction<(CValues<ByteVarOf<Byte>>?,
-			CValues<ByteVarOf<Byte>>?) -> Unit>>,
-): COpaquePointer? = kotlin.runCatching {
-	val decodedParams = fullLanguageInteropJson.decodeFromString<ListUsersInGroupParams>(params)
-	GlobalScope.launch {
-		kotlin.runCatching {
-			sdk.user.listUsersInGroup(
-				decodedParams.groupId,
-				decodedParams.startKey,
-				decodedParams.startDocumentId,
-				decodedParams.limit,
-			)
-		}.toPyStringAsyncCallback(PaginatedList.serializer(User.serializer()), resultCallback)
-	}
-}.failureToPyStringAsyncCallback(resultCallback)
-
-@Serializable
-private class CreateUserInGroupParams(
-	public val groupId: String,
-	public val user: User,
-)
-
-@OptIn(InternalIcureApi::class)
-public fun createUserInGroupBlocking(sdk: CardinalNonCryptoApis, params: String): String =
-		kotlin.runCatching {
-	val decodedParams = fullLanguageInteropJson.decodeFromString<CreateUserInGroupParams>(params)
-	runBlocking {
-		sdk.user.createUserInGroup(
-			decodedParams.groupId,
-			decodedParams.user,
-		)
-	}
-}.toPyString(User.serializer())
-
-@OptIn(
-	ExperimentalForeignApi::class,
-	InternalIcureApi::class,
-)
-public fun createUserInGroupAsync(
-	sdk: CardinalNonCryptoApis,
-	params: String,
-	resultCallback: CPointer<CFunction<(CValues<ByteVarOf<Byte>>?,
-			CValues<ByteVarOf<Byte>>?) -> Unit>>,
-): COpaquePointer? = kotlin.runCatching {
-	val decodedParams = fullLanguageInteropJson.decodeFromString<CreateUserInGroupParams>(params)
-	GlobalScope.launch {
-		kotlin.runCatching {
-			sdk.user.createUserInGroup(
-				decodedParams.groupId,
-				decodedParams.user,
-			)
-		}.toPyStringAsyncCallback(User.serializer(), resultCallback)
-	}
-}.failureToPyStringAsyncCallback(resultCallback)
-
-@Serializable
-private class ModifyUserInGroupParams(
-	public val groupId: String,
-	public val user: User,
-)
-
-@OptIn(InternalIcureApi::class)
-public fun modifyUserInGroupBlocking(sdk: CardinalNonCryptoApis, params: String): String =
-		kotlin.runCatching {
-	val decodedParams = fullLanguageInteropJson.decodeFromString<ModifyUserInGroupParams>(params)
-	runBlocking {
-		sdk.user.modifyUserInGroup(
-			decodedParams.groupId,
-			decodedParams.user,
-		)
-	}
-}.toPyString(User.serializer())
-
-@OptIn(
-	ExperimentalForeignApi::class,
-	InternalIcureApi::class,
-)
-public fun modifyUserInGroupAsync(
-	sdk: CardinalNonCryptoApis,
-	params: String,
-	resultCallback: CPointer<CFunction<(CValues<ByteVarOf<Byte>>?,
-			CValues<ByteVarOf<Byte>>?) -> Unit>>,
-): COpaquePointer? = kotlin.runCatching {
-	val decodedParams = fullLanguageInteropJson.decodeFromString<ModifyUserInGroupParams>(params)
-	GlobalScope.launch {
-		kotlin.runCatching {
-			sdk.user.modifyUserInGroup(
-				decodedParams.groupId,
-				decodedParams.user,
-			)
-		}.toPyStringAsyncCallback(User.serializer(), resultCallback)
-	}
-}.failureToPyStringAsyncCallback(resultCallback)
-
-@Serializable
 private class SetUserRolesParams(
 	public val userId: String,
-	public val rolesId: ListOfIds,
+	public val rolesIds: List<String>,
 )
 
 @OptIn(InternalIcureApi::class)
@@ -893,7 +717,7 @@ public fun setUserRolesBlocking(sdk: CardinalNonCryptoApis, params: String): Str
 	runBlocking {
 		sdk.user.setUserRoles(
 			decodedParams.userId,
-			decodedParams.rolesId,
+			decodedParams.rolesIds,
 		)
 	}
 }.toPyString(User.serializer())
@@ -913,49 +737,7 @@ public fun setUserRolesAsync(
 		kotlin.runCatching {
 			sdk.user.setUserRoles(
 				decodedParams.userId,
-				decodedParams.rolesId,
-			)
-		}.toPyStringAsyncCallback(User.serializer(), resultCallback)
-	}
-}.failureToPyStringAsyncCallback(resultCallback)
-
-@Serializable
-private class SetUserRolesInGroupParams(
-	public val userId: String,
-	public val groupId: String,
-	public val rolesId: ListOfIds,
-)
-
-@OptIn(InternalIcureApi::class)
-public fun setUserRolesInGroupBlocking(sdk: CardinalNonCryptoApis, params: String): String =
-		kotlin.runCatching {
-	val decodedParams = fullLanguageInteropJson.decodeFromString<SetUserRolesInGroupParams>(params)
-	runBlocking {
-		sdk.user.setUserRolesInGroup(
-			decodedParams.userId,
-			decodedParams.groupId,
-			decodedParams.rolesId,
-		)
-	}
-}.toPyString(User.serializer())
-
-@OptIn(
-	ExperimentalForeignApi::class,
-	InternalIcureApi::class,
-)
-public fun setUserRolesInGroupAsync(
-	sdk: CardinalNonCryptoApis,
-	params: String,
-	resultCallback: CPointer<CFunction<(CValues<ByteVarOf<Byte>>?,
-			CValues<ByteVarOf<Byte>>?) -> Unit>>,
-): COpaquePointer? = kotlin.runCatching {
-	val decodedParams = fullLanguageInteropJson.decodeFromString<SetUserRolesInGroupParams>(params)
-	GlobalScope.launch {
-		kotlin.runCatching {
-			sdk.user.setUserRolesInGroup(
-				decodedParams.userId,
-				decodedParams.groupId,
-				decodedParams.rolesId,
+				decodedParams.rolesIds,
 			)
 		}.toPyStringAsyncCallback(User.serializer(), resultCallback)
 	}
@@ -998,344 +780,6 @@ public fun resetUserRolesAsync(
 }.failureToPyStringAsyncCallback(resultCallback)
 
 @Serializable
-private class ResetUserRolesInGroupParams(
-	public val userId: String,
-	public val groupId: String,
-)
-
-@OptIn(InternalIcureApi::class)
-public fun resetUserRolesInGroupBlocking(sdk: CardinalNonCryptoApis, params: String): String =
-		kotlin.runCatching {
-	val decodedParams = fullLanguageInteropJson.decodeFromString<ResetUserRolesInGroupParams>(params)
-	runBlocking {
-		sdk.user.resetUserRolesInGroup(
-			decodedParams.userId,
-			decodedParams.groupId,
-		)
-	}
-}.toPyString(User.serializer())
-
-@OptIn(
-	ExperimentalForeignApi::class,
-	InternalIcureApi::class,
-)
-public fun resetUserRolesInGroupAsync(
-	sdk: CardinalNonCryptoApis,
-	params: String,
-	resultCallback: CPointer<CFunction<(CValues<ByteVarOf<Byte>>?,
-			CValues<ByteVarOf<Byte>>?) -> Unit>>,
-): COpaquePointer? = kotlin.runCatching {
-	val decodedParams = fullLanguageInteropJson.decodeFromString<ResetUserRolesInGroupParams>(params)
-	GlobalScope.launch {
-		kotlin.runCatching {
-			sdk.user.resetUserRolesInGroup(
-				decodedParams.userId,
-				decodedParams.groupId,
-			)
-		}.toPyStringAsyncCallback(User.serializer(), resultCallback)
-	}
-}.failureToPyStringAsyncCallback(resultCallback)
-
-@Serializable
-private class GetTokenInGroupParams(
-	public val groupId: String,
-	public val userId: String,
-	public val key: String,
-	public val token: String? = null,
-	public val tokenValidity: Long? = null,
-)
-
-@OptIn(InternalIcureApi::class)
-public fun getTokenInGroupBlocking(sdk: CardinalNonCryptoApis, params: String): String =
-		kotlin.runCatching {
-	val decodedParams = fullLanguageInteropJson.decodeFromString<GetTokenInGroupParams>(params)
-	runBlocking {
-		sdk.user.getTokenInGroup(
-			decodedParams.groupId,
-			decodedParams.userId,
-			decodedParams.key,
-			decodedParams.token,
-			decodedParams.tokenValidity,
-		)
-	}
-}.toPyString(String.serializer())
-
-@OptIn(
-	ExperimentalForeignApi::class,
-	InternalIcureApi::class,
-)
-public fun getTokenInGroupAsync(
-	sdk: CardinalNonCryptoApis,
-	params: String,
-	resultCallback: CPointer<CFunction<(CValues<ByteVarOf<Byte>>?,
-			CValues<ByteVarOf<Byte>>?) -> Unit>>,
-): COpaquePointer? = kotlin.runCatching {
-	val decodedParams = fullLanguageInteropJson.decodeFromString<GetTokenInGroupParams>(params)
-	GlobalScope.launch {
-		kotlin.runCatching {
-			sdk.user.getTokenInGroup(
-				decodedParams.groupId,
-				decodedParams.userId,
-				decodedParams.key,
-				decodedParams.token,
-				decodedParams.tokenValidity,
-			)
-		}.toPyStringAsyncCallback(String.serializer(), resultCallback)
-	}
-}.failureToPyStringAsyncCallback(resultCallback)
-
-@Serializable
-private class GetTokenInAllGroupsParams(
-	public val userIdentifier: String,
-	public val key: String,
-	public val token: String? = null,
-	public val tokenValidity: Long? = null,
-)
-
-@OptIn(InternalIcureApi::class)
-public fun getTokenInAllGroupsBlocking(sdk: CardinalNonCryptoApis, params: String): String =
-		kotlin.runCatching {
-	val decodedParams = fullLanguageInteropJson.decodeFromString<GetTokenInAllGroupsParams>(params)
-	runBlocking {
-		sdk.user.getTokenInAllGroups(
-			decodedParams.userIdentifier,
-			decodedParams.key,
-			decodedParams.token,
-			decodedParams.tokenValidity,
-		)
-	}
-}.toPyString(ListSerializer(TokenWithGroup.serializer()))
-
-@OptIn(
-	ExperimentalForeignApi::class,
-	InternalIcureApi::class,
-)
-public fun getTokenInAllGroupsAsync(
-	sdk: CardinalNonCryptoApis,
-	params: String,
-	resultCallback: CPointer<CFunction<(CValues<ByteVarOf<Byte>>?,
-			CValues<ByteVarOf<Byte>>?) -> Unit>>,
-): COpaquePointer? = kotlin.runCatching {
-	val decodedParams = fullLanguageInteropJson.decodeFromString<GetTokenInAllGroupsParams>(params)
-	GlobalScope.launch {
-		kotlin.runCatching {
-			sdk.user.getTokenInAllGroups(
-				decodedParams.userIdentifier,
-				decodedParams.key,
-				decodedParams.token,
-				decodedParams.tokenValidity,
-			)
-		}.toPyStringAsyncCallback(ListSerializer(TokenWithGroup.serializer()), resultCallback)
-	}
-}.failureToPyStringAsyncCallback(resultCallback)
-
-@Serializable
-private class FilterUsersInGroupByParams(
-	public val groupId: String,
-	public val filter: BaseFilterOptions<User>,
-)
-
-@OptIn(InternalIcureApi::class)
-public fun filterUsersInGroupByBlocking(sdk: CardinalNonCryptoApis, params: String): PyResult =
-		kotlin.runCatching {
-	val decodedParams = fullLanguageInteropJson.decodeFromString<FilterUsersInGroupByParams>(params)
-	runBlocking {
-		sdk.user.filterUsersInGroupBy(
-			decodedParams.groupId,
-			decodedParams.filter,
-		)
-	}
-}.toPyResult {
-	PaginatedListIteratorWithSerializer(it, User.serializer())}
-
-@OptIn(
-	ExperimentalForeignApi::class,
-	InternalIcureApi::class,
-)
-public fun filterUsersInGroupByAsync(
-	sdk: CardinalNonCryptoApis,
-	params: String,
-	resultCallback: CPointer<CFunction<(COpaquePointer?, CValues<ByteVarOf<Byte>>?) -> Unit>>,
-): COpaquePointer? = kotlin.runCatching {
-	val decodedParams = fullLanguageInteropJson.decodeFromString<FilterUsersInGroupByParams>(params)
-	GlobalScope.launch {
-		kotlin.runCatching {
-			sdk.user.filterUsersInGroupBy(
-				decodedParams.groupId,
-				decodedParams.filter,
-			)
-		}.toPyResultAsyncCallback(resultCallback) {
-			PaginatedListIteratorWithSerializer(it, User.serializer())}
-	}
-}.failureToPyResultAsyncCallback(resultCallback)
-
-@Serializable
-private class MatchUsersInGroupByParams(
-	public val groupId: String,
-	public val filter: BaseFilterOptions<User>,
-)
-
-@OptIn(InternalIcureApi::class)
-public fun matchUsersInGroupByBlocking(sdk: CardinalNonCryptoApis, params: String): String =
-		kotlin.runCatching {
-	val decodedParams = fullLanguageInteropJson.decodeFromString<MatchUsersInGroupByParams>(params)
-	runBlocking {
-		sdk.user.matchUsersInGroupBy(
-			decodedParams.groupId,
-			decodedParams.filter,
-		)
-	}
-}.toPyString(ListSerializer(String.serializer()))
-
-@OptIn(
-	ExperimentalForeignApi::class,
-	InternalIcureApi::class,
-)
-public fun matchUsersInGroupByAsync(
-	sdk: CardinalNonCryptoApis,
-	params: String,
-	resultCallback: CPointer<CFunction<(CValues<ByteVarOf<Byte>>?,
-			CValues<ByteVarOf<Byte>>?) -> Unit>>,
-): COpaquePointer? = kotlin.runCatching {
-	val decodedParams = fullLanguageInteropJson.decodeFromString<MatchUsersInGroupByParams>(params)
-	GlobalScope.launch {
-		kotlin.runCatching {
-			sdk.user.matchUsersInGroupBy(
-				decodedParams.groupId,
-				decodedParams.filter,
-			)
-		}.toPyStringAsyncCallback(ListSerializer(String.serializer()), resultCallback)
-	}
-}.failureToPyStringAsyncCallback(resultCallback)
-
-@Serializable
-private class FilterUsersInGroupBySortedParams(
-	public val groupId: String,
-	public val filter: BaseSortableFilterOptions<User>,
-)
-
-@OptIn(InternalIcureApi::class)
-public fun filterUsersInGroupBySortedBlocking(sdk: CardinalNonCryptoApis, params: String): PyResult
-		= kotlin.runCatching {
-	val decodedParams =
-			fullLanguageInteropJson.decodeFromString<FilterUsersInGroupBySortedParams>(params)
-	runBlocking {
-		sdk.user.filterUsersInGroupBySorted(
-			decodedParams.groupId,
-			decodedParams.filter,
-		)
-	}
-}.toPyResult {
-	PaginatedListIteratorWithSerializer(it, User.serializer())}
-
-@OptIn(
-	ExperimentalForeignApi::class,
-	InternalIcureApi::class,
-)
-public fun filterUsersInGroupBySortedAsync(
-	sdk: CardinalNonCryptoApis,
-	params: String,
-	resultCallback: CPointer<CFunction<(COpaquePointer?, CValues<ByteVarOf<Byte>>?) -> Unit>>,
-): COpaquePointer? = kotlin.runCatching {
-	val decodedParams =
-			fullLanguageInteropJson.decodeFromString<FilterUsersInGroupBySortedParams>(params)
-	GlobalScope.launch {
-		kotlin.runCatching {
-			sdk.user.filterUsersInGroupBySorted(
-				decodedParams.groupId,
-				decodedParams.filter,
-			)
-		}.toPyResultAsyncCallback(resultCallback) {
-			PaginatedListIteratorWithSerializer(it, User.serializer())}
-	}
-}.failureToPyResultAsyncCallback(resultCallback)
-
-@Serializable
-private class MatchUsersInGroupBySortedParams(
-	public val groupId: String,
-	public val filter: BaseSortableFilterOptions<User>,
-)
-
-@OptIn(InternalIcureApi::class)
-public fun matchUsersInGroupBySortedBlocking(sdk: CardinalNonCryptoApis, params: String): String =
-		kotlin.runCatching {
-	val decodedParams =
-			fullLanguageInteropJson.decodeFromString<MatchUsersInGroupBySortedParams>(params)
-	runBlocking {
-		sdk.user.matchUsersInGroupBySorted(
-			decodedParams.groupId,
-			decodedParams.filter,
-		)
-	}
-}.toPyString(ListSerializer(String.serializer()))
-
-@OptIn(
-	ExperimentalForeignApi::class,
-	InternalIcureApi::class,
-)
-public fun matchUsersInGroupBySortedAsync(
-	sdk: CardinalNonCryptoApis,
-	params: String,
-	resultCallback: CPointer<CFunction<(CValues<ByteVarOf<Byte>>?,
-			CValues<ByteVarOf<Byte>>?) -> Unit>>,
-): COpaquePointer? = kotlin.runCatching {
-	val decodedParams =
-			fullLanguageInteropJson.decodeFromString<MatchUsersInGroupBySortedParams>(params)
-	GlobalScope.launch {
-		kotlin.runCatching {
-			sdk.user.matchUsersInGroupBySorted(
-				decodedParams.groupId,
-				decodedParams.filter,
-			)
-		}.toPyStringAsyncCallback(ListSerializer(String.serializer()), resultCallback)
-	}
-}.failureToPyStringAsyncCallback(resultCallback)
-
-@Serializable
-private class Enable2faForUserWithGroupParams(
-	public val userId: String,
-	public val groupId: String,
-	public val request: Enable2faRequest,
-)
-
-@OptIn(InternalIcureApi::class)
-public fun enable2faForUserWithGroupBlocking(sdk: CardinalNonCryptoApis, params: String): String =
-		kotlin.runCatching {
-	val decodedParams =
-			fullLanguageInteropJson.decodeFromString<Enable2faForUserWithGroupParams>(params)
-	runBlocking {
-		sdk.user.enable2faForUser(
-			decodedParams.userId,
-			decodedParams.groupId,
-			decodedParams.request,
-		)
-	}
-}.toPyString(Unit.serializer())
-
-@OptIn(
-	ExperimentalForeignApi::class,
-	InternalIcureApi::class,
-)
-public fun enable2faForUserWithGroupAsync(
-	sdk: CardinalNonCryptoApis,
-	params: String,
-	resultCallback: CPointer<CFunction<(CValues<ByteVarOf<Byte>>?,
-			CValues<ByteVarOf<Byte>>?) -> Unit>>,
-): COpaquePointer? = kotlin.runCatching {
-	val decodedParams =
-			fullLanguageInteropJson.decodeFromString<Enable2faForUserWithGroupParams>(params)
-	GlobalScope.launch {
-		kotlin.runCatching {
-			sdk.user.enable2faForUser(
-				decodedParams.userId,
-				decodedParams.groupId,
-				decodedParams.request,
-			)
-		}.toPyStringAsyncCallback(Unit.serializer(), resultCallback)
-	}
-}.failureToPyStringAsyncCallback(resultCallback)
-
-@Serializable
 private class Enable2faForUserParams(
 	public val userId: String,
 	public val request: Enable2faRequest,
@@ -1369,47 +813,6 @@ public fun enable2faForUserAsync(
 			sdk.user.enable2faForUser(
 				decodedParams.userId,
 				decodedParams.request,
-			)
-		}.toPyStringAsyncCallback(Unit.serializer(), resultCallback)
-	}
-}.failureToPyStringAsyncCallback(resultCallback)
-
-@Serializable
-private class Disable2faForUserWithGroupParams(
-	public val userId: String,
-	public val groupId: String,
-)
-
-@OptIn(InternalIcureApi::class)
-public fun disable2faForUserWithGroupBlocking(sdk: CardinalNonCryptoApis, params: String): String =
-		kotlin.runCatching {
-	val decodedParams =
-			fullLanguageInteropJson.decodeFromString<Disable2faForUserWithGroupParams>(params)
-	runBlocking {
-		sdk.user.disable2faForUser(
-			decodedParams.userId,
-			decodedParams.groupId,
-		)
-	}
-}.toPyString(Unit.serializer())
-
-@OptIn(
-	ExperimentalForeignApi::class,
-	InternalIcureApi::class,
-)
-public fun disable2faForUserWithGroupAsync(
-	sdk: CardinalNonCryptoApis,
-	params: String,
-	resultCallback: CPointer<CFunction<(CValues<ByteVarOf<Byte>>?,
-			CValues<ByteVarOf<Byte>>?) -> Unit>>,
-): COpaquePointer? = kotlin.runCatching {
-	val decodedParams =
-			fullLanguageInteropJson.decodeFromString<Disable2faForUserWithGroupParams>(params)
-	GlobalScope.launch {
-		kotlin.runCatching {
-			sdk.user.disable2faForUser(
-				decodedParams.userId,
-				decodedParams.groupId,
 			)
 		}.toPyStringAsyncCallback(Unit.serializer(), resultCallback)
 	}
@@ -1488,19 +891,19 @@ public fun createAdminUserAsync(
 }.failureToPyStringAsyncCallback(resultCallback)
 
 @Serializable
-private class CreateAdminUserInGroupParams(
-	public val groupId: String,
-	public val user: User,
+private class ModifyUserPasswordParams(
+	public val userId: String,
+	public val newPassword: String,
 )
 
 @OptIn(InternalIcureApi::class)
-public fun createAdminUserInGroupBlocking(sdk: CardinalNonCryptoApis, params: String): String =
+public fun modifyUserPasswordBlocking(sdk: CardinalNonCryptoApis, params: String): String =
 		kotlin.runCatching {
-	val decodedParams = fullLanguageInteropJson.decodeFromString<CreateAdminUserInGroupParams>(params)
+	val decodedParams = fullLanguageInteropJson.decodeFromString<ModifyUserPasswordParams>(params)
 	runBlocking {
-		sdk.user.createAdminUserInGroup(
-			decodedParams.groupId,
-			decodedParams.user,
+		sdk.user.modifyUserPassword(
+			decodedParams.userId,
+			decodedParams.newPassword,
 		)
 	}
 }.toPyString(User.serializer())
@@ -1509,18 +912,102 @@ public fun createAdminUserInGroupBlocking(sdk: CardinalNonCryptoApis, params: St
 	ExperimentalForeignApi::class,
 	InternalIcureApi::class,
 )
-public fun createAdminUserInGroupAsync(
+public fun modifyUserPasswordAsync(
 	sdk: CardinalNonCryptoApis,
 	params: String,
 	resultCallback: CPointer<CFunction<(CValues<ByteVarOf<Byte>>?,
 			CValues<ByteVarOf<Byte>>?) -> Unit>>,
 ): COpaquePointer? = kotlin.runCatching {
-	val decodedParams = fullLanguageInteropJson.decodeFromString<CreateAdminUserInGroupParams>(params)
+	val decodedParams = fullLanguageInteropJson.decodeFromString<ModifyUserPasswordParams>(params)
 	GlobalScope.launch {
 		kotlin.runCatching {
-			sdk.user.createAdminUserInGroup(
-				decodedParams.groupId,
-				decodedParams.user,
+			sdk.user.modifyUserPassword(
+				decodedParams.userId,
+				decodedParams.newPassword,
+			)
+		}.toPyStringAsyncCallback(User.serializer(), resultCallback)
+	}
+}.failureToPyStringAsyncCallback(resultCallback)
+
+@Serializable
+private class ModifyUserEmailParams(
+	public val userId: String,
+	public val newEmail: String,
+	public val previousEmail: String?,
+)
+
+@OptIn(InternalIcureApi::class)
+public fun modifyUserEmailBlocking(sdk: CardinalNonCryptoApis, params: String): String =
+		kotlin.runCatching {
+	val decodedParams = fullLanguageInteropJson.decodeFromString<ModifyUserEmailParams>(params)
+	runBlocking {
+		sdk.user.modifyUserEmail(
+			decodedParams.userId,
+			decodedParams.newEmail,
+			decodedParams.previousEmail,
+		)
+	}
+}.toPyString(User.serializer())
+
+@OptIn(
+	ExperimentalForeignApi::class,
+	InternalIcureApi::class,
+)
+public fun modifyUserEmailAsync(
+	sdk: CardinalNonCryptoApis,
+	params: String,
+	resultCallback: CPointer<CFunction<(CValues<ByteVarOf<Byte>>?,
+			CValues<ByteVarOf<Byte>>?) -> Unit>>,
+): COpaquePointer? = kotlin.runCatching {
+	val decodedParams = fullLanguageInteropJson.decodeFromString<ModifyUserEmailParams>(params)
+	GlobalScope.launch {
+		kotlin.runCatching {
+			sdk.user.modifyUserEmail(
+				decodedParams.userId,
+				decodedParams.newEmail,
+				decodedParams.previousEmail,
+			)
+		}.toPyStringAsyncCallback(User.serializer(), resultCallback)
+	}
+}.failureToPyStringAsyncCallback(resultCallback)
+
+@Serializable
+private class ModifyUserMobilePhoneParams(
+	public val userId: String,
+	public val newMobilePhone: String,
+	public val previousMobilePhone: String?,
+)
+
+@OptIn(InternalIcureApi::class)
+public fun modifyUserMobilePhoneBlocking(sdk: CardinalNonCryptoApis, params: String): String =
+		kotlin.runCatching {
+	val decodedParams = fullLanguageInteropJson.decodeFromString<ModifyUserMobilePhoneParams>(params)
+	runBlocking {
+		sdk.user.modifyUserMobilePhone(
+			decodedParams.userId,
+			decodedParams.newMobilePhone,
+			decodedParams.previousMobilePhone,
+		)
+	}
+}.toPyString(User.serializer())
+
+@OptIn(
+	ExperimentalForeignApi::class,
+	InternalIcureApi::class,
+)
+public fun modifyUserMobilePhoneAsync(
+	sdk: CardinalNonCryptoApis,
+	params: String,
+	resultCallback: CPointer<CFunction<(CValues<ByteVarOf<Byte>>?,
+			CValues<ByteVarOf<Byte>>?) -> Unit>>,
+): COpaquePointer? = kotlin.runCatching {
+	val decodedParams = fullLanguageInteropJson.decodeFromString<ModifyUserMobilePhoneParams>(params)
+	GlobalScope.launch {
+		kotlin.runCatching {
+			sdk.user.modifyUserMobilePhone(
+				decodedParams.userId,
+				decodedParams.newMobilePhone,
+				decodedParams.previousMobilePhone,
 			)
 		}.toPyStringAsyncCallback(User.serializer(), resultCallback)
 	}
@@ -1542,7 +1029,7 @@ public fun deleteUserByIdBlocking(sdk: CardinalNonCryptoApis, params: String): S
 			decodedParams.rev,
 		)
 	}
-}.toPyString(DocIdentifier.serializer())
+}.toPyString(StoredDocumentIdentifier.serializer())
 
 @OptIn(
 	ExperimentalForeignApi::class,
@@ -1561,49 +1048,43 @@ public fun deleteUserByIdAsync(
 				decodedParams.entityId,
 				decodedParams.rev,
 			)
-		}.toPyStringAsyncCallback(DocIdentifier.serializer(), resultCallback)
+		}.toPyStringAsyncCallback(StoredDocumentIdentifier.serializer(), resultCallback)
 	}
 }.failureToPyStringAsyncCallback(resultCallback)
 
 @Serializable
-private class DeleteUserInGroupByIdParams(
-	public val groupId: String,
-	public val entityId: String,
-	public val rev: String,
+private class DeleteUsersByIdsParams(
+	public val userIds: List<StoredDocumentIdentifier>,
 )
 
 @OptIn(InternalIcureApi::class)
-public fun deleteUserInGroupByIdBlocking(sdk: CardinalNonCryptoApis, params: String): String =
+public fun deleteUsersByIdsBlocking(sdk: CardinalNonCryptoApis, params: String): String =
 		kotlin.runCatching {
-	val decodedParams = fullLanguageInteropJson.decodeFromString<DeleteUserInGroupByIdParams>(params)
+	val decodedParams = fullLanguageInteropJson.decodeFromString<DeleteUsersByIdsParams>(params)
 	runBlocking {
-		sdk.user.deleteUserInGroupById(
-			decodedParams.groupId,
-			decodedParams.entityId,
-			decodedParams.rev,
+		sdk.user.deleteUsersByIds(
+			decodedParams.userIds,
 		)
 	}
-}.toPyString(DocIdentifier.serializer())
+}.toPyString(ListSerializer(StoredDocumentIdentifier.serializer()))
 
 @OptIn(
 	ExperimentalForeignApi::class,
 	InternalIcureApi::class,
 )
-public fun deleteUserInGroupByIdAsync(
+public fun deleteUsersByIdsAsync(
 	sdk: CardinalNonCryptoApis,
 	params: String,
 	resultCallback: CPointer<CFunction<(CValues<ByteVarOf<Byte>>?,
 			CValues<ByteVarOf<Byte>>?) -> Unit>>,
 ): COpaquePointer? = kotlin.runCatching {
-	val decodedParams = fullLanguageInteropJson.decodeFromString<DeleteUserInGroupByIdParams>(params)
+	val decodedParams = fullLanguageInteropJson.decodeFromString<DeleteUsersByIdsParams>(params)
 	GlobalScope.launch {
 		kotlin.runCatching {
-			sdk.user.deleteUserInGroupById(
-				decodedParams.groupId,
-				decodedParams.entityId,
-				decodedParams.rev,
+			sdk.user.deleteUsersByIds(
+				decodedParams.userIds,
 			)
-		}.toPyStringAsyncCallback(DocIdentifier.serializer(), resultCallback)
+		}.toPyStringAsyncCallback(ListSerializer(StoredDocumentIdentifier.serializer()), resultCallback)
 	}
 }.failureToPyStringAsyncCallback(resultCallback)
 
@@ -1647,6 +1128,42 @@ public fun purgeUserByIdAsync(
 }.failureToPyStringAsyncCallback(resultCallback)
 
 @Serializable
+private class PurgeUsersByIdsParams(
+	public val userIds: List<StoredDocumentIdentifier>,
+)
+
+@OptIn(InternalIcureApi::class)
+public fun purgeUsersByIdsBlocking(sdk: CardinalNonCryptoApis, params: String): String =
+		kotlin.runCatching {
+	val decodedParams = fullLanguageInteropJson.decodeFromString<PurgeUsersByIdsParams>(params)
+	runBlocking {
+		sdk.user.purgeUsersByIds(
+			decodedParams.userIds,
+		)
+	}
+}.toPyString(ListSerializer(StoredDocumentIdentifier.serializer()))
+
+@OptIn(
+	ExperimentalForeignApi::class,
+	InternalIcureApi::class,
+)
+public fun purgeUsersByIdsAsync(
+	sdk: CardinalNonCryptoApis,
+	params: String,
+	resultCallback: CPointer<CFunction<(CValues<ByteVarOf<Byte>>?,
+			CValues<ByteVarOf<Byte>>?) -> Unit>>,
+): COpaquePointer? = kotlin.runCatching {
+	val decodedParams = fullLanguageInteropJson.decodeFromString<PurgeUsersByIdsParams>(params)
+	GlobalScope.launch {
+		kotlin.runCatching {
+			sdk.user.purgeUsersByIds(
+				decodedParams.userIds,
+			)
+		}.toPyStringAsyncCallback(ListSerializer(StoredDocumentIdentifier.serializer()), resultCallback)
+	}
+}.failureToPyStringAsyncCallback(resultCallback)
+
+@Serializable
 private class UndeleteUserByIdParams(
 	public val id: String,
 	public val rev: String,
@@ -1686,6 +1203,42 @@ public fun undeleteUserByIdAsync(
 }.failureToPyStringAsyncCallback(resultCallback)
 
 @Serializable
+private class UndeleteUsersByIdsParams(
+	public val userIds: List<StoredDocumentIdentifier>,
+)
+
+@OptIn(InternalIcureApi::class)
+public fun undeleteUsersByIdsBlocking(sdk: CardinalNonCryptoApis, params: String): String =
+		kotlin.runCatching {
+	val decodedParams = fullLanguageInteropJson.decodeFromString<UndeleteUsersByIdsParams>(params)
+	runBlocking {
+		sdk.user.undeleteUsersByIds(
+			decodedParams.userIds,
+		)
+	}
+}.toPyString(ListSerializer(User.serializer()))
+
+@OptIn(
+	ExperimentalForeignApi::class,
+	InternalIcureApi::class,
+)
+public fun undeleteUsersByIdsAsync(
+	sdk: CardinalNonCryptoApis,
+	params: String,
+	resultCallback: CPointer<CFunction<(CValues<ByteVarOf<Byte>>?,
+			CValues<ByteVarOf<Byte>>?) -> Unit>>,
+): COpaquePointer? = kotlin.runCatching {
+	val decodedParams = fullLanguageInteropJson.decodeFromString<UndeleteUsersByIdsParams>(params)
+	GlobalScope.launch {
+		kotlin.runCatching {
+			sdk.user.undeleteUsersByIds(
+				decodedParams.userIds,
+			)
+		}.toPyStringAsyncCallback(ListSerializer(User.serializer()), resultCallback)
+	}
+}.failureToPyStringAsyncCallback(resultCallback)
+
+@Serializable
 private class DeleteUserParams(
 	public val user: User,
 )
@@ -1699,7 +1252,7 @@ public fun deleteUserBlocking(sdk: CardinalNonCryptoApis, params: String): Strin
 			decodedParams.user,
 		)
 	}
-}.toPyString(DocIdentifier.serializer())
+}.toPyString(StoredDocumentIdentifier.serializer())
 
 @OptIn(
 	ExperimentalForeignApi::class,
@@ -1717,46 +1270,43 @@ public fun deleteUserAsync(
 			sdk.user.deleteUser(
 				decodedParams.user,
 			)
-		}.toPyStringAsyncCallback(DocIdentifier.serializer(), resultCallback)
+		}.toPyStringAsyncCallback(StoredDocumentIdentifier.serializer(), resultCallback)
 	}
 }.failureToPyStringAsyncCallback(resultCallback)
 
 @Serializable
-private class DeleteUserInGroupParams(
-	public val groupId: String,
-	public val user: User,
+private class DeleteUsersParams(
+	public val users: List<User>,
 )
 
 @OptIn(InternalIcureApi::class)
-public fun deleteUserInGroupBlocking(sdk: CardinalNonCryptoApis, params: String): String =
+public fun deleteUsersBlocking(sdk: CardinalNonCryptoApis, params: String): String =
 		kotlin.runCatching {
-	val decodedParams = fullLanguageInteropJson.decodeFromString<DeleteUserInGroupParams>(params)
+	val decodedParams = fullLanguageInteropJson.decodeFromString<DeleteUsersParams>(params)
 	runBlocking {
-		sdk.user.deleteUserInGroup(
-			decodedParams.groupId,
-			decodedParams.user,
+		sdk.user.deleteUsers(
+			decodedParams.users,
 		)
 	}
-}.toPyString(DocIdentifier.serializer())
+}.toPyString(ListSerializer(StoredDocumentIdentifier.serializer()))
 
 @OptIn(
 	ExperimentalForeignApi::class,
 	InternalIcureApi::class,
 )
-public fun deleteUserInGroupAsync(
+public fun deleteUsersAsync(
 	sdk: CardinalNonCryptoApis,
 	params: String,
 	resultCallback: CPointer<CFunction<(CValues<ByteVarOf<Byte>>?,
 			CValues<ByteVarOf<Byte>>?) -> Unit>>,
 ): COpaquePointer? = kotlin.runCatching {
-	val decodedParams = fullLanguageInteropJson.decodeFromString<DeleteUserInGroupParams>(params)
+	val decodedParams = fullLanguageInteropJson.decodeFromString<DeleteUsersParams>(params)
 	GlobalScope.launch {
 		kotlin.runCatching {
-			sdk.user.deleteUserInGroup(
-				decodedParams.groupId,
-				decodedParams.user,
+			sdk.user.deleteUsers(
+				decodedParams.users,
 			)
-		}.toPyStringAsyncCallback(DocIdentifier.serializer(), resultCallback)
+		}.toPyStringAsyncCallback(ListSerializer(StoredDocumentIdentifier.serializer()), resultCallback)
 	}
 }.failureToPyStringAsyncCallback(resultCallback)
 
@@ -1797,6 +1347,42 @@ public fun purgeUserAsync(
 }.failureToPyStringAsyncCallback(resultCallback)
 
 @Serializable
+private class PurgeUsersParams(
+	public val users: List<User>,
+)
+
+@OptIn(InternalIcureApi::class)
+public fun purgeUsersBlocking(sdk: CardinalNonCryptoApis, params: String): String =
+		kotlin.runCatching {
+	val decodedParams = fullLanguageInteropJson.decodeFromString<PurgeUsersParams>(params)
+	runBlocking {
+		sdk.user.purgeUsers(
+			decodedParams.users,
+		)
+	}
+}.toPyString(ListSerializer(StoredDocumentIdentifier.serializer()))
+
+@OptIn(
+	ExperimentalForeignApi::class,
+	InternalIcureApi::class,
+)
+public fun purgeUsersAsync(
+	sdk: CardinalNonCryptoApis,
+	params: String,
+	resultCallback: CPointer<CFunction<(CValues<ByteVarOf<Byte>>?,
+			CValues<ByteVarOf<Byte>>?) -> Unit>>,
+): COpaquePointer? = kotlin.runCatching {
+	val decodedParams = fullLanguageInteropJson.decodeFromString<PurgeUsersParams>(params)
+	GlobalScope.launch {
+		kotlin.runCatching {
+			sdk.user.purgeUsers(
+				decodedParams.users,
+			)
+		}.toPyStringAsyncCallback(ListSerializer(StoredDocumentIdentifier.serializer()), resultCallback)
+	}
+}.failureToPyStringAsyncCallback(resultCallback)
+
+@Serializable
 private class UndeleteUserParams(
 	public val user: User,
 )
@@ -1833,91 +1419,38 @@ public fun undeleteUserAsync(
 }.failureToPyStringAsyncCallback(resultCallback)
 
 @Serializable
-private class SetUserInheritsPermissionsParams(
-	public val userId: String,
-	public val groupId: String,
-	public val `value`: Boolean,
+private class UndeleteUsersParams(
+	public val users: List<User>,
 )
 
 @OptIn(InternalIcureApi::class)
-public fun setUserInheritsPermissionsBlocking(sdk: CardinalNonCryptoApis, params: String): String =
+public fun undeleteUsersBlocking(sdk: CardinalNonCryptoApis, params: String): String =
 		kotlin.runCatching {
-	val decodedParams =
-			fullLanguageInteropJson.decodeFromString<SetUserInheritsPermissionsParams>(params)
+	val decodedParams = fullLanguageInteropJson.decodeFromString<UndeleteUsersParams>(params)
 	runBlocking {
-		sdk.user.setUserInheritsPermissions(
-			decodedParams.userId,
-			decodedParams.groupId,
-			decodedParams.value,
+		sdk.user.undeleteUsers(
+			decodedParams.users,
 		)
 	}
-}.toPyString(String.serializer())
+}.toPyString(ListSerializer(User.serializer()))
 
 @OptIn(
 	ExperimentalForeignApi::class,
 	InternalIcureApi::class,
 )
-public fun setUserInheritsPermissionsAsync(
+public fun undeleteUsersAsync(
 	sdk: CardinalNonCryptoApis,
 	params: String,
 	resultCallback: CPointer<CFunction<(CValues<ByteVarOf<Byte>>?,
 			CValues<ByteVarOf<Byte>>?) -> Unit>>,
 ): COpaquePointer? = kotlin.runCatching {
-	val decodedParams =
-			fullLanguageInteropJson.decodeFromString<SetUserInheritsPermissionsParams>(params)
+	val decodedParams = fullLanguageInteropJson.decodeFromString<UndeleteUsersParams>(params)
 	GlobalScope.launch {
 		kotlin.runCatching {
-			sdk.user.setUserInheritsPermissions(
-				decodedParams.userId,
-				decodedParams.groupId,
-				decodedParams.value,
+			sdk.user.undeleteUsers(
+				decodedParams.users,
 			)
-		}.toPyStringAsyncCallback(String.serializer(), resultCallback)
-	}
-}.failureToPyStringAsyncCallback(resultCallback)
-
-@Serializable
-private class SetLoginIdentifiersParams(
-	public val userId: String,
-	public val groupId: String,
-	public val identifier: LoginIdentifier,
-	public val replaceExisting: Boolean,
-)
-
-@OptIn(InternalIcureApi::class)
-public fun setLoginIdentifiersBlocking(sdk: CardinalNonCryptoApis, params: String): String =
-		kotlin.runCatching {
-	val decodedParams = fullLanguageInteropJson.decodeFromString<SetLoginIdentifiersParams>(params)
-	runBlocking {
-		sdk.user.setLoginIdentifiers(
-			decodedParams.userId,
-			decodedParams.groupId,
-			decodedParams.identifier,
-			decodedParams.replaceExisting,
-		)
-	}
-}.toPyString(Boolean.serializer())
-
-@OptIn(
-	ExperimentalForeignApi::class,
-	InternalIcureApi::class,
-)
-public fun setLoginIdentifiersAsync(
-	sdk: CardinalNonCryptoApis,
-	params: String,
-	resultCallback: CPointer<CFunction<(CValues<ByteVarOf<Byte>>?,
-			CValues<ByteVarOf<Byte>>?) -> Unit>>,
-): COpaquePointer? = kotlin.runCatching {
-	val decodedParams = fullLanguageInteropJson.decodeFromString<SetLoginIdentifiersParams>(params)
-	GlobalScope.launch {
-		kotlin.runCatching {
-			sdk.user.setLoginIdentifiers(
-				decodedParams.userId,
-				decodedParams.groupId,
-				decodedParams.identifier,
-				decodedParams.replaceExisting,
-			)
-		}.toPyStringAsyncCallback(Boolean.serializer(), resultCallback)
+		}.toPyStringAsyncCallback(ListSerializer(User.serializer()), resultCallback)
 	}
 }.failureToPyStringAsyncCallback(resultCallback)
 

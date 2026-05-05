@@ -2,6 +2,7 @@
 package com.icure.cardinal.sdk.py.api.CryptoApi
 
 import com.icure.cardinal.sdk.CardinalApis
+import com.icure.cardinal.sdk.crypto.entities.EntityWithEncryptionMetadataTypeName
 import com.icure.cardinal.sdk.crypto.entities.ExchangeDataInjectionDetails
 import com.icure.cardinal.sdk.crypto.entities.RawDecryptedExchangeData
 import com.icure.cardinal.sdk.model.specializations.KeypairFingerprintV1String
@@ -27,8 +28,45 @@ import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 import kotlinx.serialization.Serializable
+import kotlinx.serialization.builtins.ListSerializer
 import kotlinx.serialization.builtins.MapSerializer
 import kotlinx.serialization.builtins.serializer
+
+@Serializable
+private class GetAccessControlKeysParams(
+	public val entityType: EntityWithEncryptionMetadataTypeName,
+)
+
+@OptIn(InternalIcureApi::class)
+public fun getAccessControlKeysBlocking(sdk: CardinalApis, params: String): String =
+		kotlin.runCatching {
+	val decodedParams = fullLanguageInteropJson.decodeFromString<GetAccessControlKeysParams>(params)
+	runBlocking {
+		sdk.crypto.getAccessControlKeys(
+			decodedParams.entityType,
+		)
+	}
+}.toPyString(ListSerializer(String.serializer()))
+
+@OptIn(
+	ExperimentalForeignApi::class,
+	InternalIcureApi::class,
+)
+public fun getAccessControlKeysAsync(
+	sdk: CardinalApis,
+	params: String,
+	resultCallback: CPointer<CFunction<(CValues<ByteVarOf<Byte>>?,
+			CValues<ByteVarOf<Byte>>?) -> Unit>>,
+): COpaquePointer? = kotlin.runCatching {
+	val decodedParams = fullLanguageInteropJson.decodeFromString<GetAccessControlKeysParams>(params)
+	GlobalScope.launch {
+		kotlin.runCatching {
+			sdk.crypto.getAccessControlKeys(
+				decodedParams.entityType,
+			)
+		}.toPyStringAsyncCallback(ListSerializer(String.serializer()), resultCallback)
+	}
+}.failureToPyStringAsyncCallback(resultCallback)
 
 public fun forceReloadBlocking(sdk: CardinalApis): String = kotlin.runCatching {
 	runBlocking {

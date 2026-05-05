@@ -6,6 +6,8 @@ import com.icure.cardinal.sdk.filters.BaseSortableFilterOptions
 import com.icure.cardinal.sdk.filters.FilterOptions
 import com.icure.cardinal.sdk.filters.HealthElementFilters
 import com.icure.cardinal.sdk.filters.SortableFilterOptions
+import com.icure.cardinal.sdk.model.EntityReferenceInGroup
+import com.icure.cardinal.sdk.model.GroupScoped
 import com.icure.cardinal.sdk.model.HealthElement
 import com.icure.cardinal.sdk.model.Patient
 import com.icure.cardinal.sdk.model.base.Identifier
@@ -13,7 +15,6 @@ import com.icure.cardinal.sdk.py.utils.toPyString
 import com.icure.cardinal.sdk.utils.Serialization.fullLanguageInteropJson
 import com.icure.utils.InternalIcureApi
 import kotlin.Boolean
-import kotlin.Int
 import kotlin.Long
 import kotlin.OptIn
 import kotlin.String
@@ -35,6 +36,20 @@ public fun allHealthElementsForDataOwner(params: String): String = kotlin.runCat
 	)
 }.toPyString(BaseFilterOptions.serializer(PolymorphicSerializer(HealthElement::class)))
 
+@Serializable
+private class AllHealthElementsForDataOwnerInGroupParams(
+	public val dataOwner: EntityReferenceInGroup,
+)
+
+@OptIn(InternalIcureApi::class)
+public fun allHealthElementsForDataOwnerInGroup(params: String): String = kotlin.runCatching {
+	val decodedParams =
+			fullLanguageInteropJson.decodeFromString<AllHealthElementsForDataOwnerInGroupParams>(params)
+	HealthElementFilters.allHealthElementsForDataOwnerInGroup(
+		decodedParams.dataOwner,
+	)
+}.toPyString(BaseFilterOptions.serializer(PolymorphicSerializer(HealthElement::class)))
+
 public fun allHealthElementsForSelf(): String = kotlin.runCatching {
 	HealthElementFilters.allHealthElementsForSelf()
 }.toPyString(FilterOptions.serializer(PolymorphicSerializer(HealthElement::class)))
@@ -51,6 +66,22 @@ public fun byIdentifiersForDataOwner(params: String): String = kotlin.runCatchin
 			fullLanguageInteropJson.decodeFromString<ByIdentifiersForDataOwnerParams>(params)
 	HealthElementFilters.byIdentifiersForDataOwner(
 		decodedParams.dataOwnerId,
+		decodedParams.identifiers,
+	)
+}.toPyString(BaseSortableFilterOptions.serializer(PolymorphicSerializer(HealthElement::class)))
+
+@Serializable
+private class ByIdentifiersForDataOwnerInGroupParams(
+	public val dataOwner: EntityReferenceInGroup,
+	public val identifiers: List<Identifier>,
+)
+
+@OptIn(InternalIcureApi::class)
+public fun byIdentifiersForDataOwnerInGroup(params: String): String = kotlin.runCatching {
+	val decodedParams =
+			fullLanguageInteropJson.decodeFromString<ByIdentifiersForDataOwnerInGroupParams>(params)
+	HealthElementFilters.byIdentifiersForDataOwnerInGroup(
+		decodedParams.dataOwner,
 		decodedParams.identifiers,
 	)
 }.toPyString(BaseSortableFilterOptions.serializer(PolymorphicSerializer(HealthElement::class)))
@@ -80,6 +111,24 @@ public fun byCodeForDataOwner(params: String): String = kotlin.runCatching {
 	val decodedParams = fullLanguageInteropJson.decodeFromString<ByCodeForDataOwnerParams>(params)
 	HealthElementFilters.byCodeForDataOwner(
 		decodedParams.dataOwnerId,
+		decodedParams.codeType,
+		decodedParams.codeCode,
+	)
+}.toPyString(BaseSortableFilterOptions.serializer(PolymorphicSerializer(HealthElement::class)))
+
+@Serializable
+private class ByCodeForDataOwnerInGroupParams(
+	public val dataOwner: EntityReferenceInGroup,
+	public val codeType: String,
+	public val codeCode: String? = null,
+)
+
+@OptIn(InternalIcureApi::class)
+public fun byCodeForDataOwnerInGroup(params: String): String = kotlin.runCatching {
+	val decodedParams =
+			fullLanguageInteropJson.decodeFromString<ByCodeForDataOwnerInGroupParams>(params)
+	HealthElementFilters.byCodeForDataOwnerInGroup(
+		decodedParams.dataOwner,
 		decodedParams.codeType,
 		decodedParams.codeCode,
 	)
@@ -118,6 +167,24 @@ public fun byTagForDataOwner(params: String): String = kotlin.runCatching {
 }.toPyString(BaseSortableFilterOptions.serializer(PolymorphicSerializer(HealthElement::class)))
 
 @Serializable
+private class ByTagForDataOwnerInGroupParams(
+	public val dataOwner: EntityReferenceInGroup,
+	public val tagType: String,
+	public val tagCode: String? = null,
+)
+
+@OptIn(InternalIcureApi::class)
+public fun byTagForDataOwnerInGroup(params: String): String = kotlin.runCatching {
+	val decodedParams =
+			fullLanguageInteropJson.decodeFromString<ByTagForDataOwnerInGroupParams>(params)
+	HealthElementFilters.byTagForDataOwnerInGroup(
+		decodedParams.dataOwner,
+		decodedParams.tagType,
+		decodedParams.tagCode,
+	)
+}.toPyString(BaseSortableFilterOptions.serializer(PolymorphicSerializer(HealthElement::class)))
+
+@Serializable
 private class ByTagForSelfParams(
 	public val tagType: String,
 	public val tagCode: String? = null,
@@ -148,6 +215,22 @@ public fun byPatientsForDataOwner(params: String): String = kotlin.runCatching {
 }.toPyString(SortableFilterOptions.serializer(PolymorphicSerializer(HealthElement::class)))
 
 @Serializable
+private class ByPatientsForDataOwnerInGroupParams(
+	public val dataOwner: EntityReferenceInGroup,
+	public val patients: List<GroupScoped<Patient>>,
+)
+
+@OptIn(InternalIcureApi::class)
+public fun byPatientsForDataOwnerInGroup(params: String): String = kotlin.runCatching {
+	val decodedParams =
+			fullLanguageInteropJson.decodeFromString<ByPatientsForDataOwnerInGroupParams>(params)
+	HealthElementFilters.byPatientsForDataOwnerInGroup(
+		decodedParams.dataOwner,
+		decodedParams.patients,
+	)
+}.toPyString(SortableFilterOptions.serializer(PolymorphicSerializer(HealthElement::class)))
+
+@Serializable
 private class ByPatientsForSelfParams(
 	public val patients: List<Patient>,
 )
@@ -172,6 +255,22 @@ public fun byPatientsSecretIdsForDataOwner(params: String): String = kotlin.runC
 			fullLanguageInteropJson.decodeFromString<ByPatientsSecretIdsForDataOwnerParams>(params)
 	HealthElementFilters.byPatientsSecretIdsForDataOwner(
 		decodedParams.dataOwnerId,
+		decodedParams.secretIds,
+	)
+}.toPyString(BaseSortableFilterOptions.serializer(PolymorphicSerializer(HealthElement::class)))
+
+@Serializable
+private class ByPatientsSecretIdsForDataOwnerInGroupParams(
+	public val dataOwner: EntityReferenceInGroup,
+	public val secretIds: List<String>,
+)
+
+@OptIn(InternalIcureApi::class)
+public fun byPatientsSecretIdsForDataOwnerInGroup(params: String): String = kotlin.runCatching {
+	val decodedParams =
+			fullLanguageInteropJson.decodeFromString<ByPatientsSecretIdsForDataOwnerInGroupParams>(params)
+	HealthElementFilters.byPatientsSecretIdsForDataOwnerInGroup(
+		decodedParams.dataOwner,
 		decodedParams.secretIds,
 	)
 }.toPyString(BaseSortableFilterOptions.serializer(PolymorphicSerializer(HealthElement::class)))
@@ -226,6 +325,28 @@ public fun byPatientsOpeningDateForDataOwner(params: String): String = kotlin.ru
 }.toPyString(SortableFilterOptions.serializer(PolymorphicSerializer(HealthElement::class)))
 
 @Serializable
+private class ByPatientsOpeningDateForDataOwnerInGroupParams(
+	public val dataOwner: EntityReferenceInGroup,
+	public val patients: List<GroupScoped<Patient>>,
+	public val from: Long? = null,
+	public val to: Long? = null,
+	public val descending: Boolean = false,
+)
+
+@OptIn(InternalIcureApi::class)
+public fun byPatientsOpeningDateForDataOwnerInGroup(params: String): String = kotlin.runCatching {
+	val decodedParams =
+			fullLanguageInteropJson.decodeFromString<ByPatientsOpeningDateForDataOwnerInGroupParams>(params)
+	HealthElementFilters.byPatientsOpeningDateForDataOwnerInGroup(
+		decodedParams.dataOwner,
+		decodedParams.patients,
+		decodedParams.from,
+		decodedParams.to,
+		decodedParams.descending,
+	)
+}.toPyString(SortableFilterOptions.serializer(PolymorphicSerializer(HealthElement::class)))
+
+@Serializable
 private class ByPatientsOpeningDateForSelfParams(
 	public val patients: List<Patient>,
 	public val from: Long? = null,
@@ -268,6 +389,29 @@ public fun byPatientSecretIdsOpeningDateForDataOwner(params: String): String = k
 }.toPyString(BaseSortableFilterOptions.serializer(PolymorphicSerializer(HealthElement::class)))
 
 @Serializable
+private class ByPatientSecretIdsOpeningDateForDataOwnerInGroupParams(
+	public val dataOwner: EntityReferenceInGroup,
+	public val secretIds: List<String>,
+	public val from: Long? = null,
+	public val to: Long? = null,
+	public val descending: Boolean = false,
+)
+
+@OptIn(InternalIcureApi::class)
+public fun byPatientSecretIdsOpeningDateForDataOwnerInGroup(params: String): String =
+		kotlin.runCatching {
+	val decodedParams =
+			fullLanguageInteropJson.decodeFromString<ByPatientSecretIdsOpeningDateForDataOwnerInGroupParams>(params)
+	HealthElementFilters.byPatientSecretIdsOpeningDateForDataOwnerInGroup(
+		decodedParams.dataOwner,
+		decodedParams.secretIds,
+		decodedParams.from,
+		decodedParams.to,
+		decodedParams.descending,
+	)
+}.toPyString(BaseSortableFilterOptions.serializer(PolymorphicSerializer(HealthElement::class)))
+
+@Serializable
 private class ByPatientSecretIdsOpeningDateForSelfParams(
 	public val secretIds: List<String>,
 	public val from: Long? = null,
@@ -286,31 +430,3 @@ public fun byPatientSecretIdsOpeningDateForSelf(params: String): String = kotlin
 		decodedParams.descending,
 	)
 }.toPyString(SortableFilterOptions.serializer(PolymorphicSerializer(HealthElement::class)))
-
-@Serializable
-private class ByStatusForDataOwnerParams(
-	public val dataOwnerId: String,
-	public val status: Int,
-)
-
-@OptIn(InternalIcureApi::class)
-public fun byStatusForDataOwner(params: String): String = kotlin.runCatching {
-	val decodedParams = fullLanguageInteropJson.decodeFromString<ByStatusForDataOwnerParams>(params)
-	HealthElementFilters.byStatusForDataOwner(
-		decodedParams.dataOwnerId,
-		decodedParams.status,
-	)
-}.toPyString(BaseFilterOptions.serializer(PolymorphicSerializer(HealthElement::class)))
-
-@Serializable
-private class ByStatusForSelfParams(
-	public val status: Int,
-)
-
-@OptIn(InternalIcureApi::class)
-public fun byStatusForSelf(params: String): String = kotlin.runCatching {
-	val decodedParams = fullLanguageInteropJson.decodeFromString<ByStatusForSelfParams>(params)
-	HealthElementFilters.byStatusForSelf(
-		decodedParams.status,
-	)
-}.toPyString(FilterOptions.serializer(PolymorphicSerializer(HealthElement::class)))

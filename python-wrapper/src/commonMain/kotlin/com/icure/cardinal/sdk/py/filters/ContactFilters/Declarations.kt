@@ -7,6 +7,8 @@ import com.icure.cardinal.sdk.filters.ContactFilters
 import com.icure.cardinal.sdk.filters.FilterOptions
 import com.icure.cardinal.sdk.filters.SortableFilterOptions
 import com.icure.cardinal.sdk.model.Contact
+import com.icure.cardinal.sdk.model.EntityReferenceInGroup
+import com.icure.cardinal.sdk.model.GroupScoped
 import com.icure.cardinal.sdk.model.Patient
 import com.icure.cardinal.sdk.model.base.Identifier
 import com.icure.cardinal.sdk.py.utils.toPyString
@@ -34,6 +36,20 @@ public fun allContactsForDataOwner(params: String): String = kotlin.runCatching 
 	)
 }.toPyString(BaseFilterOptions.serializer(PolymorphicSerializer(Contact::class)))
 
+@Serializable
+private class AllContactsForDataOwnerInGroupParams(
+	public val dataOwner: EntityReferenceInGroup,
+)
+
+@OptIn(InternalIcureApi::class)
+public fun allContactsForDataOwnerInGroup(params: String): String = kotlin.runCatching {
+	val decodedParams =
+			fullLanguageInteropJson.decodeFromString<AllContactsForDataOwnerInGroupParams>(params)
+	ContactFilters.allContactsForDataOwnerInGroup(
+		decodedParams.dataOwner,
+	)
+}.toPyString(BaseFilterOptions.serializer(PolymorphicSerializer(Contact::class)))
+
 public fun allContactsForSelf(): String = kotlin.runCatching {
 	ContactFilters.allContactsForSelf()
 }.toPyString(FilterOptions.serializer(PolymorphicSerializer(Contact::class)))
@@ -49,6 +65,22 @@ public fun byFormIdsForDataOwner(params: String): String = kotlin.runCatching {
 	val decodedParams = fullLanguageInteropJson.decodeFromString<ByFormIdsForDataOwnerParams>(params)
 	ContactFilters.byFormIdsForDataOwner(
 		decodedParams.dataOwnerId,
+		decodedParams.formIds,
+	)
+}.toPyString(BaseFilterOptions.serializer(PolymorphicSerializer(Contact::class)))
+
+@Serializable
+private class ByFormIdsForDataOwnerInGroupParams(
+	public val dataOwner: EntityReferenceInGroup,
+	public val formIds: Set<String>,
+)
+
+@OptIn(InternalIcureApi::class)
+public fun byFormIdsForDataOwnerInGroup(params: String): String = kotlin.runCatching {
+	val decodedParams =
+			fullLanguageInteropJson.decodeFromString<ByFormIdsForDataOwnerInGroupParams>(params)
+	ContactFilters.byFormIdsForDataOwnerInGroup(
+		decodedParams.dataOwner,
 		decodedParams.formIds,
 	)
 }.toPyString(BaseFilterOptions.serializer(PolymorphicSerializer(Contact::class)))
@@ -81,6 +113,28 @@ public fun byPatientsOpeningDateForDataOwner(params: String): String = kotlin.ru
 			fullLanguageInteropJson.decodeFromString<ByPatientsOpeningDateForDataOwnerParams>(params)
 	ContactFilters.byPatientsOpeningDateForDataOwner(
 		decodedParams.dataOwnerId,
+		decodedParams.patients,
+		decodedParams.from,
+		decodedParams.to,
+		decodedParams.descending,
+	)
+}.toPyString(SortableFilterOptions.serializer(PolymorphicSerializer(Contact::class)))
+
+@Serializable
+private class ByPatientsOpeningDateForDataOwnerInGroupParams(
+	public val dataOwner: EntityReferenceInGroup,
+	public val patients: List<GroupScoped<Patient>>,
+	public val from: Long? = null,
+	public val to: Long? = null,
+	public val descending: Boolean = false,
+)
+
+@OptIn(InternalIcureApi::class)
+public fun byPatientsOpeningDateForDataOwnerInGroup(params: String): String = kotlin.runCatching {
+	val decodedParams =
+			fullLanguageInteropJson.decodeFromString<ByPatientsOpeningDateForDataOwnerInGroupParams>(params)
+	ContactFilters.byPatientsOpeningDateForDataOwnerInGroup(
+		decodedParams.dataOwner,
 		decodedParams.patients,
 		decodedParams.from,
 		decodedParams.to,
@@ -131,6 +185,29 @@ public fun byPatientSecretIdsOpeningDateForDataOwner(params: String): String = k
 }.toPyString(BaseSortableFilterOptions.serializer(PolymorphicSerializer(Contact::class)))
 
 @Serializable
+private class ByPatientSecretIdsOpeningDateForDataOwnerInGroupParams(
+	public val dataOwner: EntityReferenceInGroup,
+	public val secretIds: List<String>,
+	public val from: Long? = null,
+	public val to: Long? = null,
+	public val descending: Boolean = false,
+)
+
+@OptIn(InternalIcureApi::class)
+public fun byPatientSecretIdsOpeningDateForDataOwnerInGroup(params: String): String =
+		kotlin.runCatching {
+	val decodedParams =
+			fullLanguageInteropJson.decodeFromString<ByPatientSecretIdsOpeningDateForDataOwnerInGroupParams>(params)
+	ContactFilters.byPatientSecretIdsOpeningDateForDataOwnerInGroup(
+		decodedParams.dataOwner,
+		decodedParams.secretIds,
+		decodedParams.from,
+		decodedParams.to,
+		decodedParams.descending,
+	)
+}.toPyString(BaseSortableFilterOptions.serializer(PolymorphicSerializer(Contact::class)))
+
+@Serializable
 private class ByPatientSecretIdsOpeningDateForSelfParams(
 	public val secretIds: List<String>,
 	public val from: Long? = null,
@@ -149,19 +226,6 @@ public fun byPatientSecretIdsOpeningDateForSelf(params: String): String = kotlin
 		decodedParams.descending,
 	)
 }.toPyString(SortableFilterOptions.serializer(PolymorphicSerializer(Contact::class)))
-
-@Serializable
-private class ByExternalIdParams(
-	public val externalId: String,
-)
-
-@OptIn(InternalIcureApi::class)
-public fun byExternalId(params: String): String = kotlin.runCatching {
-	val decodedParams = fullLanguageInteropJson.decodeFromString<ByExternalIdParams>(params)
-	ContactFilters.byExternalId(
-		decodedParams.externalId,
-	)
-}.toPyString(BaseFilterOptions.serializer(PolymorphicSerializer(Contact::class)))
 
 @Serializable
 private class ByIdentifiersForSelfParams(
@@ -193,6 +257,22 @@ public fun byIdentifiersForDataOwner(params: String): String = kotlin.runCatchin
 }.toPyString(BaseSortableFilterOptions.serializer(PolymorphicSerializer(Contact::class)))
 
 @Serializable
+private class ByIdentifiersForDataOwnerInGroupParams(
+	public val dataOwner: EntityReferenceInGroup,
+	public val identifiers: List<Identifier>,
+)
+
+@OptIn(InternalIcureApi::class)
+public fun byIdentifiersForDataOwnerInGroup(params: String): String = kotlin.runCatching {
+	val decodedParams =
+			fullLanguageInteropJson.decodeFromString<ByIdentifiersForDataOwnerInGroupParams>(params)
+	ContactFilters.byIdentifiersForDataOwnerInGroup(
+		decodedParams.dataOwner,
+		decodedParams.identifiers,
+	)
+}.toPyString(BaseSortableFilterOptions.serializer(PolymorphicSerializer(Contact::class)))
+
+@Serializable
 private class ByCodeAndOpeningDateForDataOwnerParams(
 	public val dataOwnerId: String,
 	public val codeType: String,
@@ -207,6 +287,28 @@ public fun byCodeAndOpeningDateForDataOwner(params: String): String = kotlin.run
 			fullLanguageInteropJson.decodeFromString<ByCodeAndOpeningDateForDataOwnerParams>(params)
 	ContactFilters.byCodeAndOpeningDateForDataOwner(
 		decodedParams.dataOwnerId,
+		decodedParams.codeType,
+		decodedParams.codeCode,
+		decodedParams.startOfContactOpeningDate,
+		decodedParams.endOfContactOpeningDate,
+	)
+}.toPyString(BaseSortableFilterOptions.serializer(PolymorphicSerializer(Contact::class)))
+
+@Serializable
+private class ByCodeAndOpeningDateForDataOwnerInGroupParams(
+	public val dataOwner: EntityReferenceInGroup,
+	public val codeType: String,
+	public val codeCode: String? = null,
+	public val startOfContactOpeningDate: Long? = null,
+	public val endOfContactOpeningDate: Long? = null,
+)
+
+@OptIn(InternalIcureApi::class)
+public fun byCodeAndOpeningDateForDataOwnerInGroup(params: String): String = kotlin.runCatching {
+	val decodedParams =
+			fullLanguageInteropJson.decodeFromString<ByCodeAndOpeningDateForDataOwnerInGroupParams>(params)
+	ContactFilters.byCodeAndOpeningDateForDataOwnerInGroup(
+		decodedParams.dataOwner,
 		decodedParams.codeType,
 		decodedParams.codeCode,
 		decodedParams.startOfContactOpeningDate,
@@ -257,6 +359,28 @@ public fun byTagAndOpeningDateForDataOwner(params: String): String = kotlin.runC
 }.toPyString(BaseSortableFilterOptions.serializer(PolymorphicSerializer(Contact::class)))
 
 @Serializable
+private class ByTagAndOpeningDateForDataOwnerInGroupParams(
+	public val dataOwner: EntityReferenceInGroup,
+	public val tagType: String,
+	public val tagCode: String? = null,
+	public val startOfContactOpeningDate: Long? = null,
+	public val endOfContactOpeningDate: Long? = null,
+)
+
+@OptIn(InternalIcureApi::class)
+public fun byTagAndOpeningDateForDataOwnerInGroup(params: String): String = kotlin.runCatching {
+	val decodedParams =
+			fullLanguageInteropJson.decodeFromString<ByTagAndOpeningDateForDataOwnerInGroupParams>(params)
+	ContactFilters.byTagAndOpeningDateForDataOwnerInGroup(
+		decodedParams.dataOwner,
+		decodedParams.tagType,
+		decodedParams.tagCode,
+		decodedParams.startOfContactOpeningDate,
+		decodedParams.endOfContactOpeningDate,
+	)
+}.toPyString(BaseSortableFilterOptions.serializer(PolymorphicSerializer(Contact::class)))
+
+@Serializable
 private class ByOpeningDateForDataOwnerParams(
 	public val dataOwnerId: String,
 	public val startDate: Long? = null,
@@ -270,6 +394,26 @@ public fun byOpeningDateForDataOwner(params: String): String = kotlin.runCatchin
 			fullLanguageInteropJson.decodeFromString<ByOpeningDateForDataOwnerParams>(params)
 	ContactFilters.byOpeningDateForDataOwner(
 		decodedParams.dataOwnerId,
+		decodedParams.startDate,
+		decodedParams.endDate,
+		decodedParams.descending,
+	)
+}.toPyString(BaseSortableFilterOptions.serializer(PolymorphicSerializer(Contact::class)))
+
+@Serializable
+private class ByOpeningDateForDataOwnerInGroupParams(
+	public val dataOwner: EntityReferenceInGroup,
+	public val startDate: Long? = null,
+	public val endDate: Long? = null,
+	public val descending: Boolean = false,
+)
+
+@OptIn(InternalIcureApi::class)
+public fun byOpeningDateForDataOwnerInGroup(params: String): String = kotlin.runCatching {
+	val decodedParams =
+			fullLanguageInteropJson.decodeFromString<ByOpeningDateForDataOwnerInGroupParams>(params)
+	ContactFilters.byOpeningDateForDataOwnerInGroup(
+		decodedParams.dataOwner,
 		decodedParams.startDate,
 		decodedParams.endDate,
 		decodedParams.descending,
@@ -327,6 +471,24 @@ public fun byServiceTagForDataOwner(params: String): String = kotlin.runCatching
 }.toPyString(BaseFilterOptions.serializer(PolymorphicSerializer(Contact::class)))
 
 @Serializable
+private class ByServiceTagForDataOwnerInGroupParams(
+	public val dataOwner: EntityReferenceInGroup,
+	public val tagType: String,
+	public val tagCode: String? = null,
+)
+
+@OptIn(InternalIcureApi::class)
+public fun byServiceTagForDataOwnerInGroup(params: String): String = kotlin.runCatching {
+	val decodedParams =
+			fullLanguageInteropJson.decodeFromString<ByServiceTagForDataOwnerInGroupParams>(params)
+	ContactFilters.byServiceTagForDataOwnerInGroup(
+		decodedParams.dataOwner,
+		decodedParams.tagType,
+		decodedParams.tagCode,
+	)
+}.toPyString(BaseFilterOptions.serializer(PolymorphicSerializer(Contact::class)))
+
+@Serializable
 private class ByServiceCodeForSelfParams(
 	public val codeType: String,
 	public val codeCode: String? = null,
@@ -354,6 +516,24 @@ public fun byServiceCodeForDataOwner(params: String): String = kotlin.runCatchin
 			fullLanguageInteropJson.decodeFromString<ByServiceCodeForDataOwnerParams>(params)
 	ContactFilters.byServiceCodeForDataOwner(
 		decodedParams.dataOwnerId,
+		decodedParams.codeType,
+		decodedParams.codeCode,
+	)
+}.toPyString(BaseFilterOptions.serializer(PolymorphicSerializer(Contact::class)))
+
+@Serializable
+private class ByServiceCodeForDataOwnerInGroupParams(
+	public val dataOwner: EntityReferenceInGroup,
+	public val codeType: String,
+	public val codeCode: String? = null,
+)
+
+@OptIn(InternalIcureApi::class)
+public fun byServiceCodeForDataOwnerInGroup(params: String): String = kotlin.runCatching {
+	val decodedParams =
+			fullLanguageInteropJson.decodeFromString<ByServiceCodeForDataOwnerInGroupParams>(params)
+	ContactFilters.byServiceCodeForDataOwnerInGroup(
+		decodedParams.dataOwner,
 		decodedParams.codeType,
 		decodedParams.codeCode,
 	)
@@ -395,6 +575,22 @@ public fun byPatientsForDataOwner(params: String): String = kotlin.runCatching {
 }.toPyString(SortableFilterOptions.serializer(PolymorphicSerializer(Contact::class)))
 
 @Serializable
+private class ByPatientsForDataOwnerInGroupParams(
+	public val dataOwner: EntityReferenceInGroup,
+	public val patients: List<GroupScoped<Patient>>,
+)
+
+@OptIn(InternalIcureApi::class)
+public fun byPatientsForDataOwnerInGroup(params: String): String = kotlin.runCatching {
+	val decodedParams =
+			fullLanguageInteropJson.decodeFromString<ByPatientsForDataOwnerInGroupParams>(params)
+	ContactFilters.byPatientsForDataOwnerInGroup(
+		decodedParams.dataOwner,
+		decodedParams.patients,
+	)
+}.toPyString(SortableFilterOptions.serializer(PolymorphicSerializer(Contact::class)))
+
+@Serializable
 private class ByPatientsForSelfParams(
 	public val patients: List<Patient>,
 )
@@ -419,6 +615,22 @@ public fun byPatientsSecretIdsForDataOwner(params: String): String = kotlin.runC
 			fullLanguageInteropJson.decodeFromString<ByPatientsSecretIdsForDataOwnerParams>(params)
 	ContactFilters.byPatientsSecretIdsForDataOwner(
 		decodedParams.dataOwnerId,
+		decodedParams.secretIds,
+	)
+}.toPyString(BaseSortableFilterOptions.serializer(PolymorphicSerializer(Contact::class)))
+
+@Serializable
+private class ByPatientsSecretIdsForDataOwnerInGroupParams(
+	public val dataOwner: EntityReferenceInGroup,
+	public val secretIds: List<String>,
+)
+
+@OptIn(InternalIcureApi::class)
+public fun byPatientsSecretIdsForDataOwnerInGroup(params: String): String = kotlin.runCatching {
+	val decodedParams =
+			fullLanguageInteropJson.decodeFromString<ByPatientsSecretIdsForDataOwnerInGroupParams>(params)
+	ContactFilters.byPatientsSecretIdsForDataOwnerInGroup(
+		decodedParams.dataOwner,
 		decodedParams.secretIds,
 	)
 }.toPyString(BaseSortableFilterOptions.serializer(PolymorphicSerializer(Contact::class)))

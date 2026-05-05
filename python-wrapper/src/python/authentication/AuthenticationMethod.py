@@ -1,9 +1,5 @@
 from dataclasses import dataclass
-from enum import Enum
 from typing import Union
-
-class ThirdPartyProvider(Enum):
-    GOOGLE = "GOOGLE"
 
 @dataclass
 class UsernamePassword:
@@ -15,12 +11,7 @@ class UsernameLongToken:
     username: str
     token: str
 
-@dataclass
-class ThirdPartyAuthentication:
-    token: str
-    provider: ThirdPartyProvider
-
-AuthenticationMethod = Union[UsernameLongToken, UsernamePassword, ThirdPartyAuthentication]
+AuthenticationMethod = Union[UsernameLongToken, UsernamePassword]
 
 def _serialize_authentication_method(auth_method: AuthenticationMethod) -> dict[str, any]:
     if isinstance(auth_method, UsernamePassword):

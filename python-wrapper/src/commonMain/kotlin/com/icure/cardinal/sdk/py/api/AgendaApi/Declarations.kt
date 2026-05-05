@@ -5,9 +5,7 @@ import com.icure.cardinal.sdk.CardinalNonCryptoApis
 import com.icure.cardinal.sdk.filters.BaseFilterOptions
 import com.icure.cardinal.sdk.filters.BaseSortableFilterOptions
 import com.icure.cardinal.sdk.model.Agenda
-import com.icure.cardinal.sdk.model.PaginatedList
 import com.icure.cardinal.sdk.model.StoredDocumentIdentifier
-import com.icure.cardinal.sdk.model.couchdb.DocIdentifier
 import com.icure.cardinal.sdk.py.utils.PyResult
 import com.icure.cardinal.sdk.py.utils.failureToPyResultAsyncCallback
 import com.icure.cardinal.sdk.py.utils.failureToPyStringAsyncCallback
@@ -19,7 +17,6 @@ import com.icure.cardinal.sdk.serialization.PaginatedListIteratorWithSerializer
 import com.icure.cardinal.sdk.utils.Serialization.fullLanguageInteropJson
 import com.icure.utils.InternalIcureApi
 import kotlin.Byte
-import kotlin.Int
 import kotlin.OptIn
 import kotlin.String
 import kotlin.Unit
@@ -38,47 +35,8 @@ import kotlinx.serialization.builtins.ListSerializer
 import kotlinx.serialization.builtins.serializer
 
 @Serializable
-private class GetAllAgendasParams(
-	public val startDocumentId: String?,
-	public val limit: Int?,
-)
-
-@OptIn(InternalIcureApi::class)
-public fun getAllAgendasBlocking(sdk: CardinalNonCryptoApis, params: String): String =
-		kotlin.runCatching {
-	val decodedParams = fullLanguageInteropJson.decodeFromString<GetAllAgendasParams>(params)
-	runBlocking {
-		sdk.agenda.getAllAgendas(
-			decodedParams.startDocumentId,
-			decodedParams.limit,
-		)
-	}
-}.toPyString(PaginatedList.serializer(Agenda.serializer()))
-
-@OptIn(
-	ExperimentalForeignApi::class,
-	InternalIcureApi::class,
-)
-public fun getAllAgendasAsync(
-	sdk: CardinalNonCryptoApis,
-	params: String,
-	resultCallback: CPointer<CFunction<(CValues<ByteVarOf<Byte>>?,
-			CValues<ByteVarOf<Byte>>?) -> Unit>>,
-): COpaquePointer? = kotlin.runCatching {
-	val decodedParams = fullLanguageInteropJson.decodeFromString<GetAllAgendasParams>(params)
-	GlobalScope.launch {
-		kotlin.runCatching {
-			sdk.agenda.getAllAgendas(
-				decodedParams.startDocumentId,
-				decodedParams.limit,
-			)
-		}.toPyStringAsyncCallback(PaginatedList.serializer(Agenda.serializer()), resultCallback)
-	}
-}.failureToPyStringAsyncCallback(resultCallback)
-
-@Serializable
 private class CreateAgendaParams(
-	public val agendaDto: Agenda,
+	public val agenda: Agenda,
 )
 
 @OptIn(InternalIcureApi::class)
@@ -87,7 +45,7 @@ public fun createAgendaBlocking(sdk: CardinalNonCryptoApis, params: String): Str
 	val decodedParams = fullLanguageInteropJson.decodeFromString<CreateAgendaParams>(params)
 	runBlocking {
 		sdk.agenda.createAgenda(
-			decodedParams.agendaDto,
+			decodedParams.agenda,
 		)
 	}
 }.toPyString(Agenda.serializer())
@@ -106,81 +64,45 @@ public fun createAgendaAsync(
 	GlobalScope.launch {
 		kotlin.runCatching {
 			sdk.agenda.createAgenda(
-				decodedParams.agendaDto,
+				decodedParams.agenda,
 			)
 		}.toPyStringAsyncCallback(Agenda.serializer(), resultCallback)
 	}
 }.failureToPyStringAsyncCallback(resultCallback)
 
 @Serializable
-private class DeleteAgendaUnsafeParams(
-	public val entityId: String,
+private class CreateAgendasParams(
+	public val agendas: List<Agenda>,
 )
 
 @OptIn(InternalIcureApi::class)
-public fun deleteAgendaUnsafeBlocking(sdk: CardinalNonCryptoApis, params: String): String =
+public fun createAgendasBlocking(sdk: CardinalNonCryptoApis, params: String): String =
 		kotlin.runCatching {
-	val decodedParams = fullLanguageInteropJson.decodeFromString<DeleteAgendaUnsafeParams>(params)
+	val decodedParams = fullLanguageInteropJson.decodeFromString<CreateAgendasParams>(params)
 	runBlocking {
-		sdk.agenda.deleteAgendaUnsafe(
-			decodedParams.entityId,
+		sdk.agenda.createAgendas(
+			decodedParams.agendas,
 		)
 	}
-}.toPyString(DocIdentifier.serializer())
+}.toPyString(ListSerializer(Agenda.serializer()))
 
 @OptIn(
 	ExperimentalForeignApi::class,
 	InternalIcureApi::class,
 )
-public fun deleteAgendaUnsafeAsync(
+public fun createAgendasAsync(
 	sdk: CardinalNonCryptoApis,
 	params: String,
 	resultCallback: CPointer<CFunction<(CValues<ByteVarOf<Byte>>?,
 			CValues<ByteVarOf<Byte>>?) -> Unit>>,
 ): COpaquePointer? = kotlin.runCatching {
-	val decodedParams = fullLanguageInteropJson.decodeFromString<DeleteAgendaUnsafeParams>(params)
+	val decodedParams = fullLanguageInteropJson.decodeFromString<CreateAgendasParams>(params)
 	GlobalScope.launch {
 		kotlin.runCatching {
-			sdk.agenda.deleteAgendaUnsafe(
-				decodedParams.entityId,
+			sdk.agenda.createAgendas(
+				decodedParams.agendas,
 			)
-		}.toPyStringAsyncCallback(DocIdentifier.serializer(), resultCallback)
-	}
-}.failureToPyStringAsyncCallback(resultCallback)
-
-@Serializable
-private class DeleteAgendasUnsafeParams(
-	public val entityIds: List<String>,
-)
-
-@OptIn(InternalIcureApi::class)
-public fun deleteAgendasUnsafeBlocking(sdk: CardinalNonCryptoApis, params: String): String =
-		kotlin.runCatching {
-	val decodedParams = fullLanguageInteropJson.decodeFromString<DeleteAgendasUnsafeParams>(params)
-	runBlocking {
-		sdk.agenda.deleteAgendasUnsafe(
-			decodedParams.entityIds,
-		)
-	}
-}.toPyString(ListSerializer(DocIdentifier.serializer()))
-
-@OptIn(
-	ExperimentalForeignApi::class,
-	InternalIcureApi::class,
-)
-public fun deleteAgendasUnsafeAsync(
-	sdk: CardinalNonCryptoApis,
-	params: String,
-	resultCallback: CPointer<CFunction<(CValues<ByteVarOf<Byte>>?,
-			CValues<ByteVarOf<Byte>>?) -> Unit>>,
-): COpaquePointer? = kotlin.runCatching {
-	val decodedParams = fullLanguageInteropJson.decodeFromString<DeleteAgendasUnsafeParams>(params)
-	GlobalScope.launch {
-		kotlin.runCatching {
-			sdk.agenda.deleteAgendasUnsafe(
-				decodedParams.entityIds,
-			)
-		}.toPyStringAsyncCallback(ListSerializer(DocIdentifier.serializer()), resultCallback)
+		}.toPyStringAsyncCallback(ListSerializer(Agenda.serializer()), resultCallback)
 	}
 }.failureToPyStringAsyncCallback(resultCallback)
 
@@ -200,7 +122,7 @@ public fun deleteAgendaByIdBlocking(sdk: CardinalNonCryptoApis, params: String):
 			decodedParams.rev,
 		)
 	}
-}.toPyString(DocIdentifier.serializer())
+}.toPyString(StoredDocumentIdentifier.serializer())
 
 @OptIn(
 	ExperimentalForeignApi::class,
@@ -219,7 +141,7 @@ public fun deleteAgendaByIdAsync(
 				decodedParams.entityId,
 				decodedParams.rev,
 			)
-		}.toPyStringAsyncCallback(DocIdentifier.serializer(), resultCallback)
+		}.toPyStringAsyncCallback(StoredDocumentIdentifier.serializer(), resultCallback)
 	}
 }.failureToPyStringAsyncCallback(resultCallback)
 
@@ -237,7 +159,7 @@ public fun deleteAgendasByIdsBlocking(sdk: CardinalNonCryptoApis, params: String
 			decodedParams.entityIds,
 		)
 	}
-}.toPyString(ListSerializer(DocIdentifier.serializer()))
+}.toPyString(ListSerializer(StoredDocumentIdentifier.serializer()))
 
 @OptIn(
 	ExperimentalForeignApi::class,
@@ -255,7 +177,7 @@ public fun deleteAgendasByIdsAsync(
 			sdk.agenda.deleteAgendasByIds(
 				decodedParams.entityIds,
 			)
-		}.toPyStringAsyncCallback(ListSerializer(DocIdentifier.serializer()), resultCallback)
+		}.toPyStringAsyncCallback(ListSerializer(StoredDocumentIdentifier.serializer()), resultCallback)
 	}
 }.failureToPyStringAsyncCallback(resultCallback)
 
@@ -299,6 +221,42 @@ public fun purgeAgendaByIdAsync(
 }.failureToPyStringAsyncCallback(resultCallback)
 
 @Serializable
+private class PurgeAgendasByIdsParams(
+	public val entityIds: List<StoredDocumentIdentifier>,
+)
+
+@OptIn(InternalIcureApi::class)
+public fun purgeAgendasByIdsBlocking(sdk: CardinalNonCryptoApis, params: String): String =
+		kotlin.runCatching {
+	val decodedParams = fullLanguageInteropJson.decodeFromString<PurgeAgendasByIdsParams>(params)
+	runBlocking {
+		sdk.agenda.purgeAgendasByIds(
+			decodedParams.entityIds,
+		)
+	}
+}.toPyString(ListSerializer(StoredDocumentIdentifier.serializer()))
+
+@OptIn(
+	ExperimentalForeignApi::class,
+	InternalIcureApi::class,
+)
+public fun purgeAgendasByIdsAsync(
+	sdk: CardinalNonCryptoApis,
+	params: String,
+	resultCallback: CPointer<CFunction<(CValues<ByteVarOf<Byte>>?,
+			CValues<ByteVarOf<Byte>>?) -> Unit>>,
+): COpaquePointer? = kotlin.runCatching {
+	val decodedParams = fullLanguageInteropJson.decodeFromString<PurgeAgendasByIdsParams>(params)
+	GlobalScope.launch {
+		kotlin.runCatching {
+			sdk.agenda.purgeAgendasByIds(
+				decodedParams.entityIds,
+			)
+		}.toPyStringAsyncCallback(ListSerializer(StoredDocumentIdentifier.serializer()), resultCallback)
+	}
+}.failureToPyStringAsyncCallback(resultCallback)
+
+@Serializable
 private class UndeleteAgendaByIdParams(
 	public val id: String,
 	public val rev: String,
@@ -338,6 +296,42 @@ public fun undeleteAgendaByIdAsync(
 }.failureToPyStringAsyncCallback(resultCallback)
 
 @Serializable
+private class UndeleteAgendasByIdsParams(
+	public val entityIds: List<StoredDocumentIdentifier>,
+)
+
+@OptIn(InternalIcureApi::class)
+public fun undeleteAgendasByIdsBlocking(sdk: CardinalNonCryptoApis, params: String): String =
+		kotlin.runCatching {
+	val decodedParams = fullLanguageInteropJson.decodeFromString<UndeleteAgendasByIdsParams>(params)
+	runBlocking {
+		sdk.agenda.undeleteAgendasByIds(
+			decodedParams.entityIds,
+		)
+	}
+}.toPyString(ListSerializer(Agenda.serializer()))
+
+@OptIn(
+	ExperimentalForeignApi::class,
+	InternalIcureApi::class,
+)
+public fun undeleteAgendasByIdsAsync(
+	sdk: CardinalNonCryptoApis,
+	params: String,
+	resultCallback: CPointer<CFunction<(CValues<ByteVarOf<Byte>>?,
+			CValues<ByteVarOf<Byte>>?) -> Unit>>,
+): COpaquePointer? = kotlin.runCatching {
+	val decodedParams = fullLanguageInteropJson.decodeFromString<UndeleteAgendasByIdsParams>(params)
+	GlobalScope.launch {
+		kotlin.runCatching {
+			sdk.agenda.undeleteAgendasByIds(
+				decodedParams.entityIds,
+			)
+		}.toPyStringAsyncCallback(ListSerializer(Agenda.serializer()), resultCallback)
+	}
+}.failureToPyStringAsyncCallback(resultCallback)
+
+@Serializable
 private class DeleteAgendaParams(
 	public val agenda: Agenda,
 )
@@ -351,7 +345,7 @@ public fun deleteAgendaBlocking(sdk: CardinalNonCryptoApis, params: String): Str
 			decodedParams.agenda,
 		)
 	}
-}.toPyString(DocIdentifier.serializer())
+}.toPyString(StoredDocumentIdentifier.serializer())
 
 @OptIn(
 	ExperimentalForeignApi::class,
@@ -369,7 +363,7 @@ public fun deleteAgendaAsync(
 			sdk.agenda.deleteAgenda(
 				decodedParams.agenda,
 			)
-		}.toPyStringAsyncCallback(DocIdentifier.serializer(), resultCallback)
+		}.toPyStringAsyncCallback(StoredDocumentIdentifier.serializer(), resultCallback)
 	}
 }.failureToPyStringAsyncCallback(resultCallback)
 
@@ -387,7 +381,7 @@ public fun deleteAgendasBlocking(sdk: CardinalNonCryptoApis, params: String): St
 			decodedParams.agendas,
 		)
 	}
-}.toPyString(ListSerializer(DocIdentifier.serializer()))
+}.toPyString(ListSerializer(StoredDocumentIdentifier.serializer()))
 
 @OptIn(
 	ExperimentalForeignApi::class,
@@ -405,7 +399,7 @@ public fun deleteAgendasAsync(
 			sdk.agenda.deleteAgendas(
 				decodedParams.agendas,
 			)
-		}.toPyStringAsyncCallback(ListSerializer(DocIdentifier.serializer()), resultCallback)
+		}.toPyStringAsyncCallback(ListSerializer(StoredDocumentIdentifier.serializer()), resultCallback)
 	}
 }.failureToPyStringAsyncCallback(resultCallback)
 
@@ -446,6 +440,42 @@ public fun purgeAgendaAsync(
 }.failureToPyStringAsyncCallback(resultCallback)
 
 @Serializable
+private class PurgeAgendasParams(
+	public val agendas: List<Agenda>,
+)
+
+@OptIn(InternalIcureApi::class)
+public fun purgeAgendasBlocking(sdk: CardinalNonCryptoApis, params: String): String =
+		kotlin.runCatching {
+	val decodedParams = fullLanguageInteropJson.decodeFromString<PurgeAgendasParams>(params)
+	runBlocking {
+		sdk.agenda.purgeAgendas(
+			decodedParams.agendas,
+		)
+	}
+}.toPyString(ListSerializer(StoredDocumentIdentifier.serializer()))
+
+@OptIn(
+	ExperimentalForeignApi::class,
+	InternalIcureApi::class,
+)
+public fun purgeAgendasAsync(
+	sdk: CardinalNonCryptoApis,
+	params: String,
+	resultCallback: CPointer<CFunction<(CValues<ByteVarOf<Byte>>?,
+			CValues<ByteVarOf<Byte>>?) -> Unit>>,
+): COpaquePointer? = kotlin.runCatching {
+	val decodedParams = fullLanguageInteropJson.decodeFromString<PurgeAgendasParams>(params)
+	GlobalScope.launch {
+		kotlin.runCatching {
+			sdk.agenda.purgeAgendas(
+				decodedParams.agendas,
+			)
+		}.toPyStringAsyncCallback(ListSerializer(StoredDocumentIdentifier.serializer()), resultCallback)
+	}
+}.failureToPyStringAsyncCallback(resultCallback)
+
+@Serializable
 private class UndeleteAgendaParams(
 	public val agenda: Agenda,
 )
@@ -478,6 +508,42 @@ public fun undeleteAgendaAsync(
 				decodedParams.agenda,
 			)
 		}.toPyStringAsyncCallback(Agenda.serializer(), resultCallback)
+	}
+}.failureToPyStringAsyncCallback(resultCallback)
+
+@Serializable
+private class UndeleteAgendasParams(
+	public val agendas: List<Agenda>,
+)
+
+@OptIn(InternalIcureApi::class)
+public fun undeleteAgendasBlocking(sdk: CardinalNonCryptoApis, params: String): String =
+		kotlin.runCatching {
+	val decodedParams = fullLanguageInteropJson.decodeFromString<UndeleteAgendasParams>(params)
+	runBlocking {
+		sdk.agenda.undeleteAgendas(
+			decodedParams.agendas,
+		)
+	}
+}.toPyString(ListSerializer(Agenda.serializer()))
+
+@OptIn(
+	ExperimentalForeignApi::class,
+	InternalIcureApi::class,
+)
+public fun undeleteAgendasAsync(
+	sdk: CardinalNonCryptoApis,
+	params: String,
+	resultCallback: CPointer<CFunction<(CValues<ByteVarOf<Byte>>?,
+			CValues<ByteVarOf<Byte>>?) -> Unit>>,
+): COpaquePointer? = kotlin.runCatching {
+	val decodedParams = fullLanguageInteropJson.decodeFromString<UndeleteAgendasParams>(params)
+	GlobalScope.launch {
+		kotlin.runCatching {
+			sdk.agenda.undeleteAgendas(
+				decodedParams.agendas,
+			)
+		}.toPyStringAsyncCallback(ListSerializer(Agenda.serializer()), resultCallback)
 	}
 }.failureToPyStringAsyncCallback(resultCallback)
 
@@ -554,44 +620,8 @@ public fun getAgendasAsync(
 }.failureToPyStringAsyncCallback(resultCallback)
 
 @Serializable
-private class GetAgendasForUserParams(
-	public val userId: String,
-)
-
-@OptIn(InternalIcureApi::class)
-public fun getAgendasForUserBlocking(sdk: CardinalNonCryptoApis, params: String): String =
-		kotlin.runCatching {
-	val decodedParams = fullLanguageInteropJson.decodeFromString<GetAgendasForUserParams>(params)
-	runBlocking {
-		sdk.agenda.getAgendasForUser(
-			decodedParams.userId,
-		)
-	}
-}.toPyString(Agenda.serializer())
-
-@OptIn(
-	ExperimentalForeignApi::class,
-	InternalIcureApi::class,
-)
-public fun getAgendasForUserAsync(
-	sdk: CardinalNonCryptoApis,
-	params: String,
-	resultCallback: CPointer<CFunction<(CValues<ByteVarOf<Byte>>?,
-			CValues<ByteVarOf<Byte>>?) -> Unit>>,
-): COpaquePointer? = kotlin.runCatching {
-	val decodedParams = fullLanguageInteropJson.decodeFromString<GetAgendasForUserParams>(params)
-	GlobalScope.launch {
-		kotlin.runCatching {
-			sdk.agenda.getAgendasForUser(
-				decodedParams.userId,
-			)
-		}.toPyStringAsyncCallback(Agenda.serializer(), resultCallback)
-	}
-}.failureToPyStringAsyncCallback(resultCallback)
-
-@Serializable
 private class ModifyAgendaParams(
-	public val agendaDto: Agenda,
+	public val agenda: Agenda,
 )
 
 @OptIn(InternalIcureApi::class)
@@ -600,7 +630,7 @@ public fun modifyAgendaBlocking(sdk: CardinalNonCryptoApis, params: String): Str
 	val decodedParams = fullLanguageInteropJson.decodeFromString<ModifyAgendaParams>(params)
 	runBlocking {
 		sdk.agenda.modifyAgenda(
-			decodedParams.agendaDto,
+			decodedParams.agenda,
 		)
 	}
 }.toPyString(Agenda.serializer())
@@ -619,9 +649,45 @@ public fun modifyAgendaAsync(
 	GlobalScope.launch {
 		kotlin.runCatching {
 			sdk.agenda.modifyAgenda(
-				decodedParams.agendaDto,
+				decodedParams.agenda,
 			)
 		}.toPyStringAsyncCallback(Agenda.serializer(), resultCallback)
+	}
+}.failureToPyStringAsyncCallback(resultCallback)
+
+@Serializable
+private class ModifyAgendasParams(
+	public val agendas: List<Agenda>,
+)
+
+@OptIn(InternalIcureApi::class)
+public fun modifyAgendasBlocking(sdk: CardinalNonCryptoApis, params: String): String =
+		kotlin.runCatching {
+	val decodedParams = fullLanguageInteropJson.decodeFromString<ModifyAgendasParams>(params)
+	runBlocking {
+		sdk.agenda.modifyAgendas(
+			decodedParams.agendas,
+		)
+	}
+}.toPyString(ListSerializer(Agenda.serializer()))
+
+@OptIn(
+	ExperimentalForeignApi::class,
+	InternalIcureApi::class,
+)
+public fun modifyAgendasAsync(
+	sdk: CardinalNonCryptoApis,
+	params: String,
+	resultCallback: CPointer<CFunction<(CValues<ByteVarOf<Byte>>?,
+			CValues<ByteVarOf<Byte>>?) -> Unit>>,
+): COpaquePointer? = kotlin.runCatching {
+	val decodedParams = fullLanguageInteropJson.decodeFromString<ModifyAgendasParams>(params)
+	GlobalScope.launch {
+		kotlin.runCatching {
+			sdk.agenda.modifyAgendas(
+				decodedParams.agendas,
+			)
+		}.toPyStringAsyncCallback(ListSerializer(Agenda.serializer()), resultCallback)
 	}
 }.failureToPyStringAsyncCallback(resultCallback)
 

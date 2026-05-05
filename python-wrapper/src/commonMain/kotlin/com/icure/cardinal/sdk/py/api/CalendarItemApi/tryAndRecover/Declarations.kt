@@ -6,8 +6,8 @@ import com.icure.cardinal.sdk.crypto.entities.CalendarItemShareOptions
 import com.icure.cardinal.sdk.filters.FilterOptions
 import com.icure.cardinal.sdk.filters.SortableFilterOptions
 import com.icure.cardinal.sdk.model.CalendarItem
-import com.icure.cardinal.sdk.model.PaginatedList
 import com.icure.cardinal.sdk.model.Patient
+import com.icure.cardinal.sdk.model.StoredDocumentIdentifier
 import com.icure.cardinal.sdk.py.utils.PyResult
 import com.icure.cardinal.sdk.py.utils.failureToPyResultAsyncCallback
 import com.icure.cardinal.sdk.py.utils.failureToPyStringAsyncCallback
@@ -18,10 +18,7 @@ import com.icure.cardinal.sdk.py.utils.toPyStringAsyncCallback
 import com.icure.cardinal.sdk.serialization.PaginatedListIteratorWithSerializer
 import com.icure.cardinal.sdk.utils.Serialization.fullLanguageInteropJson
 import com.icure.utils.InternalIcureApi
-import kotlin.Boolean
 import kotlin.Byte
-import kotlin.Int
-import kotlin.Long
 import kotlin.OptIn
 import kotlin.String
 import kotlin.Unit
@@ -119,57 +116,6 @@ public fun shareWithManyAsync(
 		}.toPyStringAsyncCallback(PolymorphicSerializer(CalendarItem::class), resultCallback)
 	}
 }.failureToPyStringAsyncCallback(resultCallback)
-
-@Serializable
-private class FindCalendarItemsByHcPartyPatientParams(
-	public val hcPartyId: String,
-	public val patient: Patient,
-	public val startDate: Long? = null,
-	public val endDate: Long? = null,
-	public val descending: Boolean? = null,
-)
-
-@OptIn(InternalIcureApi::class)
-public fun findCalendarItemsByHcPartyPatientBlocking(sdk: CardinalApis, params: String): PyResult =
-		kotlin.runCatching {
-	val decodedParams =
-			fullLanguageInteropJson.decodeFromString<FindCalendarItemsByHcPartyPatientParams>(params)
-	runBlocking {
-		sdk.calendarItem.tryAndRecover.findCalendarItemsByHcPartyPatient(
-			decodedParams.hcPartyId,
-			decodedParams.patient,
-			decodedParams.startDate,
-			decodedParams.endDate,
-			decodedParams.descending,
-		)
-	}
-}.toPyResult {
-	PaginatedListIteratorWithSerializer(it, PolymorphicSerializer(CalendarItem::class))}
-
-@OptIn(
-	ExperimentalForeignApi::class,
-	InternalIcureApi::class,
-)
-public fun findCalendarItemsByHcPartyPatientAsync(
-	sdk: CardinalApis,
-	params: String,
-	resultCallback: CPointer<CFunction<(COpaquePointer?, CValues<ByteVarOf<Byte>>?) -> Unit>>,
-): COpaquePointer? = kotlin.runCatching {
-	val decodedParams =
-			fullLanguageInteropJson.decodeFromString<FindCalendarItemsByHcPartyPatientParams>(params)
-	GlobalScope.launch {
-		kotlin.runCatching {
-			sdk.calendarItem.tryAndRecover.findCalendarItemsByHcPartyPatient(
-				decodedParams.hcPartyId,
-				decodedParams.patient,
-				decodedParams.startDate,
-				decodedParams.endDate,
-				decodedParams.descending,
-			)
-		}.toPyResultAsyncCallback(resultCallback) {
-			PaginatedListIteratorWithSerializer(it, PolymorphicSerializer(CalendarItem::class))}
-	}
-}.failureToPyResultAsyncCallback(resultCallback)
 
 @Serializable
 private class LinkToPatientParams(
@@ -325,6 +271,43 @@ public fun createCalendarItemAsync(
 }.failureToPyStringAsyncCallback(resultCallback)
 
 @Serializable
+private class CreateCalendarItemsParams(
+	public val entities: List<CalendarItem>,
+)
+
+@OptIn(InternalIcureApi::class)
+public fun createCalendarItemsBlocking(sdk: CardinalApis, params: String): String =
+		kotlin.runCatching {
+	val decodedParams = fullLanguageInteropJson.decodeFromString<CreateCalendarItemsParams>(params)
+	runBlocking {
+		sdk.calendarItem.tryAndRecover.createCalendarItems(
+			decodedParams.entities,
+		)
+	}
+}.toPyString(ListSerializer(PolymorphicSerializer(CalendarItem::class)))
+
+@OptIn(
+	ExperimentalForeignApi::class,
+	InternalIcureApi::class,
+)
+public fun createCalendarItemsAsync(
+	sdk: CardinalApis,
+	params: String,
+	resultCallback: CPointer<CFunction<(CValues<ByteVarOf<Byte>>?,
+			CValues<ByteVarOf<Byte>>?) -> Unit>>,
+): COpaquePointer? = kotlin.runCatching {
+	val decodedParams = fullLanguageInteropJson.decodeFromString<CreateCalendarItemsParams>(params)
+	GlobalScope.launch {
+		kotlin.runCatching {
+			sdk.calendarItem.tryAndRecover.createCalendarItems(
+				decodedParams.entities,
+			)
+		}.toPyStringAsyncCallback(ListSerializer(PolymorphicSerializer(CalendarItem::class)),
+				resultCallback)
+	}
+}.failureToPyStringAsyncCallback(resultCallback)
+
+@Serializable
 private class BookCalendarItemCheckingAvailabilityParams(
 	public val entity: CalendarItem,
 )
@@ -404,6 +387,45 @@ public fun undeleteCalendarItemByIdAsync(
 }.failureToPyStringAsyncCallback(resultCallback)
 
 @Serializable
+private class UndeleteCalendarItemsByIdsParams(
+	public val entityIds: List<StoredDocumentIdentifier>,
+)
+
+@OptIn(InternalIcureApi::class)
+public fun undeleteCalendarItemsByIdsBlocking(sdk: CardinalApis, params: String): String =
+		kotlin.runCatching {
+	val decodedParams =
+			fullLanguageInteropJson.decodeFromString<UndeleteCalendarItemsByIdsParams>(params)
+	runBlocking {
+		sdk.calendarItem.tryAndRecover.undeleteCalendarItemsByIds(
+			decodedParams.entityIds,
+		)
+	}
+}.toPyString(ListSerializer(PolymorphicSerializer(CalendarItem::class)))
+
+@OptIn(
+	ExperimentalForeignApi::class,
+	InternalIcureApi::class,
+)
+public fun undeleteCalendarItemsByIdsAsync(
+	sdk: CardinalApis,
+	params: String,
+	resultCallback: CPointer<CFunction<(CValues<ByteVarOf<Byte>>?,
+			CValues<ByteVarOf<Byte>>?) -> Unit>>,
+): COpaquePointer? = kotlin.runCatching {
+	val decodedParams =
+			fullLanguageInteropJson.decodeFromString<UndeleteCalendarItemsByIdsParams>(params)
+	GlobalScope.launch {
+		kotlin.runCatching {
+			sdk.calendarItem.tryAndRecover.undeleteCalendarItemsByIds(
+				decodedParams.entityIds,
+			)
+		}.toPyStringAsyncCallback(ListSerializer(PolymorphicSerializer(CalendarItem::class)),
+				resultCallback)
+	}
+}.failureToPyStringAsyncCallback(resultCallback)
+
+@Serializable
 private class UndeleteCalendarItemParams(
 	public val calendarItem: CalendarItem,
 )
@@ -440,6 +462,43 @@ public fun undeleteCalendarItemAsync(
 }.failureToPyStringAsyncCallback(resultCallback)
 
 @Serializable
+private class UndeleteCalendarItemsParams(
+	public val calendarItems: List<CalendarItem>,
+)
+
+@OptIn(InternalIcureApi::class)
+public fun undeleteCalendarItemsBlocking(sdk: CardinalApis, params: String): String =
+		kotlin.runCatching {
+	val decodedParams = fullLanguageInteropJson.decodeFromString<UndeleteCalendarItemsParams>(params)
+	runBlocking {
+		sdk.calendarItem.tryAndRecover.undeleteCalendarItems(
+			decodedParams.calendarItems,
+		)
+	}
+}.toPyString(ListSerializer(PolymorphicSerializer(CalendarItem::class)))
+
+@OptIn(
+	ExperimentalForeignApi::class,
+	InternalIcureApi::class,
+)
+public fun undeleteCalendarItemsAsync(
+	sdk: CardinalApis,
+	params: String,
+	resultCallback: CPointer<CFunction<(CValues<ByteVarOf<Byte>>?,
+			CValues<ByteVarOf<Byte>>?) -> Unit>>,
+): COpaquePointer? = kotlin.runCatching {
+	val decodedParams = fullLanguageInteropJson.decodeFromString<UndeleteCalendarItemsParams>(params)
+	GlobalScope.launch {
+		kotlin.runCatching {
+			sdk.calendarItem.tryAndRecover.undeleteCalendarItems(
+				decodedParams.calendarItems,
+			)
+		}.toPyStringAsyncCallback(ListSerializer(PolymorphicSerializer(CalendarItem::class)),
+				resultCallback)
+	}
+}.failureToPyStringAsyncCallback(resultCallback)
+
+@Serializable
 private class ModifyCalendarItemParams(
 	public val entity: CalendarItem,
 )
@@ -472,6 +531,43 @@ public fun modifyCalendarItemAsync(
 				decodedParams.entity,
 			)
 		}.toPyStringAsyncCallback(PolymorphicSerializer(CalendarItem::class), resultCallback)
+	}
+}.failureToPyStringAsyncCallback(resultCallback)
+
+@Serializable
+private class ModifyCalendarItemsParams(
+	public val entities: List<CalendarItem>,
+)
+
+@OptIn(InternalIcureApi::class)
+public fun modifyCalendarItemsBlocking(sdk: CardinalApis, params: String): String =
+		kotlin.runCatching {
+	val decodedParams = fullLanguageInteropJson.decodeFromString<ModifyCalendarItemsParams>(params)
+	runBlocking {
+		sdk.calendarItem.tryAndRecover.modifyCalendarItems(
+			decodedParams.entities,
+		)
+	}
+}.toPyString(ListSerializer(PolymorphicSerializer(CalendarItem::class)))
+
+@OptIn(
+	ExperimentalForeignApi::class,
+	InternalIcureApi::class,
+)
+public fun modifyCalendarItemsAsync(
+	sdk: CardinalApis,
+	params: String,
+	resultCallback: CPointer<CFunction<(CValues<ByteVarOf<Byte>>?,
+			CValues<ByteVarOf<Byte>>?) -> Unit>>,
+): COpaquePointer? = kotlin.runCatching {
+	val decodedParams = fullLanguageInteropJson.decodeFromString<ModifyCalendarItemsParams>(params)
+	GlobalScope.launch {
+		kotlin.runCatching {
+			sdk.calendarItem.tryAndRecover.modifyCalendarItems(
+				decodedParams.entities,
+			)
+		}.toPyStringAsyncCallback(ListSerializer(PolymorphicSerializer(CalendarItem::class)),
+				resultCallback)
 	}
 }.failureToPyStringAsyncCallback(resultCallback)
 
@@ -543,144 +639,6 @@ public fun getCalendarItemsAsync(
 				decodedParams.entityIds,
 			)
 		}.toPyStringAsyncCallback(ListSerializer(PolymorphicSerializer(CalendarItem::class)),
-				resultCallback)
-	}
-}.failureToPyStringAsyncCallback(resultCallback)
-
-@Serializable
-private class GetCalendarItemsByPeriodAndHcPartyIdParams(
-	public val startDate: Long,
-	public val endDate: Long,
-	public val hcPartyId: String,
-)
-
-@OptIn(InternalIcureApi::class)
-public fun getCalendarItemsByPeriodAndHcPartyIdBlocking(sdk: CardinalApis, params: String): String =
-		kotlin.runCatching {
-	val decodedParams =
-			fullLanguageInteropJson.decodeFromString<GetCalendarItemsByPeriodAndHcPartyIdParams>(params)
-	runBlocking {
-		sdk.calendarItem.tryAndRecover.getCalendarItemsByPeriodAndHcPartyId(
-			decodedParams.startDate,
-			decodedParams.endDate,
-			decodedParams.hcPartyId,
-		)
-	}
-}.toPyString(ListSerializer(PolymorphicSerializer(CalendarItem::class)))
-
-@OptIn(
-	ExperimentalForeignApi::class,
-	InternalIcureApi::class,
-)
-public fun getCalendarItemsByPeriodAndHcPartyIdAsync(
-	sdk: CardinalApis,
-	params: String,
-	resultCallback: CPointer<CFunction<(CValues<ByteVarOf<Byte>>?,
-			CValues<ByteVarOf<Byte>>?) -> Unit>>,
-): COpaquePointer? = kotlin.runCatching {
-	val decodedParams =
-			fullLanguageInteropJson.decodeFromString<GetCalendarItemsByPeriodAndHcPartyIdParams>(params)
-	GlobalScope.launch {
-		kotlin.runCatching {
-			sdk.calendarItem.tryAndRecover.getCalendarItemsByPeriodAndHcPartyId(
-				decodedParams.startDate,
-				decodedParams.endDate,
-				decodedParams.hcPartyId,
-			)
-		}.toPyStringAsyncCallback(ListSerializer(PolymorphicSerializer(CalendarItem::class)),
-				resultCallback)
-	}
-}.failureToPyStringAsyncCallback(resultCallback)
-
-@Serializable
-private class GetCalendarsByPeriodAndAgendaIdParams(
-	public val startDate: Long,
-	public val endDate: Long,
-	public val agendaId: String,
-)
-
-@OptIn(InternalIcureApi::class)
-public fun getCalendarsByPeriodAndAgendaIdBlocking(sdk: CardinalApis, params: String): String =
-		kotlin.runCatching {
-	val decodedParams =
-			fullLanguageInteropJson.decodeFromString<GetCalendarsByPeriodAndAgendaIdParams>(params)
-	runBlocking {
-		sdk.calendarItem.tryAndRecover.getCalendarsByPeriodAndAgendaId(
-			decodedParams.startDate,
-			decodedParams.endDate,
-			decodedParams.agendaId,
-		)
-	}
-}.toPyString(ListSerializer(PolymorphicSerializer(CalendarItem::class)))
-
-@OptIn(
-	ExperimentalForeignApi::class,
-	InternalIcureApi::class,
-)
-public fun getCalendarsByPeriodAndAgendaIdAsync(
-	sdk: CardinalApis,
-	params: String,
-	resultCallback: CPointer<CFunction<(CValues<ByteVarOf<Byte>>?,
-			CValues<ByteVarOf<Byte>>?) -> Unit>>,
-): COpaquePointer? = kotlin.runCatching {
-	val decodedParams =
-			fullLanguageInteropJson.decodeFromString<GetCalendarsByPeriodAndAgendaIdParams>(params)
-	GlobalScope.launch {
-		kotlin.runCatching {
-			sdk.calendarItem.tryAndRecover.getCalendarsByPeriodAndAgendaId(
-				decodedParams.startDate,
-				decodedParams.endDate,
-				decodedParams.agendaId,
-			)
-		}.toPyStringAsyncCallback(ListSerializer(PolymorphicSerializer(CalendarItem::class)),
-				resultCallback)
-	}
-}.failureToPyStringAsyncCallback(resultCallback)
-
-@Serializable
-private class FindCalendarItemsByRecurrenceIdParams(
-	public val recurrenceId: String,
-	public val startKey: String?,
-	public val startDocumentId: String?,
-	public val limit: Int,
-)
-
-@OptIn(InternalIcureApi::class)
-public fun findCalendarItemsByRecurrenceIdBlocking(sdk: CardinalApis, params: String): String =
-		kotlin.runCatching {
-	val decodedParams =
-			fullLanguageInteropJson.decodeFromString<FindCalendarItemsByRecurrenceIdParams>(params)
-	runBlocking {
-		sdk.calendarItem.tryAndRecover.findCalendarItemsByRecurrenceId(
-			decodedParams.recurrenceId,
-			decodedParams.startKey,
-			decodedParams.startDocumentId,
-			decodedParams.limit,
-		)
-	}
-}.toPyString(PaginatedList.serializer(PolymorphicSerializer(CalendarItem::class)))
-
-@OptIn(
-	ExperimentalForeignApi::class,
-	InternalIcureApi::class,
-)
-public fun findCalendarItemsByRecurrenceIdAsync(
-	sdk: CardinalApis,
-	params: String,
-	resultCallback: CPointer<CFunction<(CValues<ByteVarOf<Byte>>?,
-			CValues<ByteVarOf<Byte>>?) -> Unit>>,
-): COpaquePointer? = kotlin.runCatching {
-	val decodedParams =
-			fullLanguageInteropJson.decodeFromString<FindCalendarItemsByRecurrenceIdParams>(params)
-	GlobalScope.launch {
-		kotlin.runCatching {
-			sdk.calendarItem.tryAndRecover.findCalendarItemsByRecurrenceId(
-				decodedParams.recurrenceId,
-				decodedParams.startKey,
-				decodedParams.startDocumentId,
-				decodedParams.limit,
-			)
-		}.toPyStringAsyncCallback(PaginatedList.serializer(PolymorphicSerializer(CalendarItem::class)),
 				resultCallback)
 	}
 }.failureToPyStringAsyncCallback(resultCallback)

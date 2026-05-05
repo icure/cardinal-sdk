@@ -371,38 +371,6 @@ public fun byAddressForDataOwnerInGroup(params: String): String = kotlin.runCatc
 }.toPyString(BaseSortableFilterOptions.serializer(PolymorphicSerializer(Patient::class)))
 
 @Serializable
-private class ByExternalIdForDataOwnerParams(
-	public val dataOwnerId: String,
-	public val externalIdPrefix: String,
-)
-
-@OptIn(InternalIcureApi::class)
-public fun byExternalIdForDataOwner(params: String): String = kotlin.runCatching {
-	val decodedParams =
-			fullLanguageInteropJson.decodeFromString<ByExternalIdForDataOwnerParams>(params)
-	PatientFilters.byExternalIdForDataOwner(
-		decodedParams.dataOwnerId,
-		decodedParams.externalIdPrefix,
-	)
-}.toPyString(BaseSortableFilterOptions.serializer(PolymorphicSerializer(Patient::class)))
-
-@Serializable
-private class ByExternalIdForDataOwnerInGroupParams(
-	public val dataOwner: EntityReferenceInGroup,
-	public val externalIdPrefix: String,
-)
-
-@OptIn(InternalIcureApi::class)
-public fun byExternalIdForDataOwnerInGroup(params: String): String = kotlin.runCatching {
-	val decodedParams =
-			fullLanguageInteropJson.decodeFromString<ByExternalIdForDataOwnerInGroupParams>(params)
-	PatientFilters.byExternalIdForDataOwnerInGroup(
-		decodedParams.dataOwner,
-		decodedParams.externalIdPrefix,
-	)
-}.toPyString(BaseSortableFilterOptions.serializer(PolymorphicSerializer(Patient::class)))
-
-@Serializable
 private class ByIdentifiersForSelfParams(
 	public val identifiers: List<Identifier>,
 )
@@ -529,19 +497,6 @@ public fun byAddressForSelf(params: String): String = kotlin.runCatching {
 	val decodedParams = fullLanguageInteropJson.decodeFromString<ByAddressForSelfParams>(params)
 	PatientFilters.byAddressForSelf(
 		decodedParams.searchString,
-	)
-}.toPyString(SortableFilterOptions.serializer(PolymorphicSerializer(Patient::class)))
-
-@Serializable
-private class ByExternalIdForSelfParams(
-	public val externalIdPrefix: String,
-)
-
-@OptIn(InternalIcureApi::class)
-public fun byExternalIdForSelf(params: String): String = kotlin.runCatching {
-	val decodedParams = fullLanguageInteropJson.decodeFromString<ByExternalIdForSelfParams>(params)
-	PatientFilters.byExternalIdForSelf(
-		decodedParams.externalIdPrefix,
 	)
 }.toPyString(SortableFilterOptions.serializer(PolymorphicSerializer(Patient::class)))
 

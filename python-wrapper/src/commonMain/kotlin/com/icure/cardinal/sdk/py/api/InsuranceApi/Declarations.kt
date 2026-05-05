@@ -3,15 +3,13 @@ package com.icure.cardinal.sdk.py.api.InsuranceApi
 
 import com.icure.cardinal.sdk.CardinalNonCryptoApis
 import com.icure.cardinal.sdk.model.Insurance
-import com.icure.cardinal.sdk.model.PaginatedList
-import com.icure.cardinal.sdk.model.couchdb.DocIdentifier
+import com.icure.cardinal.sdk.model.StoredDocumentIdentifier
 import com.icure.cardinal.sdk.py.utils.failureToPyStringAsyncCallback
 import com.icure.cardinal.sdk.py.utils.toPyString
 import com.icure.cardinal.sdk.py.utils.toPyStringAsyncCallback
 import com.icure.cardinal.sdk.utils.Serialization.fullLanguageInteropJson
 import com.icure.utils.InternalIcureApi
 import kotlin.Byte
-import kotlin.Int
 import kotlin.OptIn
 import kotlin.String
 import kotlin.Unit
@@ -27,6 +25,79 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.builtins.ListSerializer
+import kotlinx.serialization.builtins.serializer
+
+@Serializable
+private class CreateInsuranceParams(
+	public val insurance: Insurance,
+)
+
+@OptIn(InternalIcureApi::class)
+public fun createInsuranceBlocking(sdk: CardinalNonCryptoApis, params: String): String =
+		kotlin.runCatching {
+	val decodedParams = fullLanguageInteropJson.decodeFromString<CreateInsuranceParams>(params)
+	runBlocking {
+		sdk.insurance.createInsurance(
+			decodedParams.insurance,
+		)
+	}
+}.toPyString(Insurance.serializer())
+
+@OptIn(
+	ExperimentalForeignApi::class,
+	InternalIcureApi::class,
+)
+public fun createInsuranceAsync(
+	sdk: CardinalNonCryptoApis,
+	params: String,
+	resultCallback: CPointer<CFunction<(CValues<ByteVarOf<Byte>>?,
+			CValues<ByteVarOf<Byte>>?) -> Unit>>,
+): COpaquePointer? = kotlin.runCatching {
+	val decodedParams = fullLanguageInteropJson.decodeFromString<CreateInsuranceParams>(params)
+	GlobalScope.launch {
+		kotlin.runCatching {
+			sdk.insurance.createInsurance(
+				decodedParams.insurance,
+			)
+		}.toPyStringAsyncCallback(Insurance.serializer(), resultCallback)
+	}
+}.failureToPyStringAsyncCallback(resultCallback)
+
+@Serializable
+private class CreateInsurancesParams(
+	public val insurances: List<Insurance>,
+)
+
+@OptIn(InternalIcureApi::class)
+public fun createInsurancesBlocking(sdk: CardinalNonCryptoApis, params: String): String =
+		kotlin.runCatching {
+	val decodedParams = fullLanguageInteropJson.decodeFromString<CreateInsurancesParams>(params)
+	runBlocking {
+		sdk.insurance.createInsurances(
+			decodedParams.insurances,
+		)
+	}
+}.toPyString(ListSerializer(Insurance.serializer()))
+
+@OptIn(
+	ExperimentalForeignApi::class,
+	InternalIcureApi::class,
+)
+public fun createInsurancesAsync(
+	sdk: CardinalNonCryptoApis,
+	params: String,
+	resultCallback: CPointer<CFunction<(CValues<ByteVarOf<Byte>>?,
+			CValues<ByteVarOf<Byte>>?) -> Unit>>,
+): COpaquePointer? = kotlin.runCatching {
+	val decodedParams = fullLanguageInteropJson.decodeFromString<CreateInsurancesParams>(params)
+	GlobalScope.launch {
+		kotlin.runCatching {
+			sdk.insurance.createInsurances(
+				decodedParams.insurances,
+			)
+		}.toPyStringAsyncCallback(ListSerializer(Insurance.serializer()), resultCallback)
+	}
+}.failureToPyStringAsyncCallback(resultCallback)
 
 @Serializable
 private class GetInsuranceParams(
@@ -66,7 +137,7 @@ public fun getInsuranceAsync(
 
 @Serializable
 private class GetInsurancesParams(
-	public val insuranceIds: List<String>,
+	public val insurancesIds: List<String>,
 )
 
 @OptIn(InternalIcureApi::class)
@@ -75,7 +146,7 @@ public fun getInsurancesBlocking(sdk: CardinalNonCryptoApis, params: String): St
 	val decodedParams = fullLanguageInteropJson.decodeFromString<GetInsurancesParams>(params)
 	runBlocking {
 		sdk.insurance.getInsurances(
-			decodedParams.insuranceIds,
+			decodedParams.insurancesIds,
 		)
 	}
 }.toPyString(ListSerializer(Insurance.serializer()))
@@ -94,23 +165,23 @@ public fun getInsurancesAsync(
 	GlobalScope.launch {
 		kotlin.runCatching {
 			sdk.insurance.getInsurances(
-				decodedParams.insuranceIds,
+				decodedParams.insurancesIds,
 			)
 		}.toPyStringAsyncCallback(ListSerializer(Insurance.serializer()), resultCallback)
 	}
 }.failureToPyStringAsyncCallback(resultCallback)
 
 @Serializable
-private class CreateInsuranceParams(
+private class ModifyInsuranceParams(
 	public val insurance: Insurance,
 )
 
 @OptIn(InternalIcureApi::class)
-public fun createInsuranceBlocking(sdk: CardinalNonCryptoApis, params: String): String =
+public fun modifyInsuranceBlocking(sdk: CardinalNonCryptoApis, params: String): String =
 		kotlin.runCatching {
-	val decodedParams = fullLanguageInteropJson.decodeFromString<CreateInsuranceParams>(params)
+	val decodedParams = fullLanguageInteropJson.decodeFromString<ModifyInsuranceParams>(params)
 	runBlocking {
-		sdk.insurance.createInsurance(
+		sdk.insurance.modifyInsurance(
 			decodedParams.insurance,
 		)
 	}
@@ -120,16 +191,16 @@ public fun createInsuranceBlocking(sdk: CardinalNonCryptoApis, params: String): 
 	ExperimentalForeignApi::class,
 	InternalIcureApi::class,
 )
-public fun createInsuranceAsync(
+public fun modifyInsuranceAsync(
 	sdk: CardinalNonCryptoApis,
 	params: String,
 	resultCallback: CPointer<CFunction<(CValues<ByteVarOf<Byte>>?,
 			CValues<ByteVarOf<Byte>>?) -> Unit>>,
 ): COpaquePointer? = kotlin.runCatching {
-	val decodedParams = fullLanguageInteropJson.decodeFromString<CreateInsuranceParams>(params)
+	val decodedParams = fullLanguageInteropJson.decodeFromString<ModifyInsuranceParams>(params)
 	GlobalScope.launch {
 		kotlin.runCatching {
-			sdk.insurance.createInsurance(
+			sdk.insurance.modifyInsurance(
 				decodedParams.insurance,
 			)
 		}.toPyStringAsyncCallback(Insurance.serializer(), resultCallback)
@@ -137,8 +208,119 @@ public fun createInsuranceAsync(
 }.failureToPyStringAsyncCallback(resultCallback)
 
 @Serializable
+private class ModifyInsurancesParams(
+	public val insurances: List<Insurance>,
+)
+
+@OptIn(InternalIcureApi::class)
+public fun modifyInsurancesBlocking(sdk: CardinalNonCryptoApis, params: String): String =
+		kotlin.runCatching {
+	val decodedParams = fullLanguageInteropJson.decodeFromString<ModifyInsurancesParams>(params)
+	runBlocking {
+		sdk.insurance.modifyInsurances(
+			decodedParams.insurances,
+		)
+	}
+}.toPyString(ListSerializer(Insurance.serializer()))
+
+@OptIn(
+	ExperimentalForeignApi::class,
+	InternalIcureApi::class,
+)
+public fun modifyInsurancesAsync(
+	sdk: CardinalNonCryptoApis,
+	params: String,
+	resultCallback: CPointer<CFunction<(CValues<ByteVarOf<Byte>>?,
+			CValues<ByteVarOf<Byte>>?) -> Unit>>,
+): COpaquePointer? = kotlin.runCatching {
+	val decodedParams = fullLanguageInteropJson.decodeFromString<ModifyInsurancesParams>(params)
+	GlobalScope.launch {
+		kotlin.runCatching {
+			sdk.insurance.modifyInsurances(
+				decodedParams.insurances,
+			)
+		}.toPyStringAsyncCallback(ListSerializer(Insurance.serializer()), resultCallback)
+	}
+}.failureToPyStringAsyncCallback(resultCallback)
+
+@Serializable
+private class DeleteInsuranceByIdParams(
+	public val entityId: String,
+	public val rev: String,
+)
+
+@OptIn(InternalIcureApi::class)
+public fun deleteInsuranceByIdBlocking(sdk: CardinalNonCryptoApis, params: String): String =
+		kotlin.runCatching {
+	val decodedParams = fullLanguageInteropJson.decodeFromString<DeleteInsuranceByIdParams>(params)
+	runBlocking {
+		sdk.insurance.deleteInsuranceById(
+			decodedParams.entityId,
+			decodedParams.rev,
+		)
+	}
+}.toPyString(StoredDocumentIdentifier.serializer())
+
+@OptIn(
+	ExperimentalForeignApi::class,
+	InternalIcureApi::class,
+)
+public fun deleteInsuranceByIdAsync(
+	sdk: CardinalNonCryptoApis,
+	params: String,
+	resultCallback: CPointer<CFunction<(CValues<ByteVarOf<Byte>>?,
+			CValues<ByteVarOf<Byte>>?) -> Unit>>,
+): COpaquePointer? = kotlin.runCatching {
+	val decodedParams = fullLanguageInteropJson.decodeFromString<DeleteInsuranceByIdParams>(params)
+	GlobalScope.launch {
+		kotlin.runCatching {
+			sdk.insurance.deleteInsuranceById(
+				decodedParams.entityId,
+				decodedParams.rev,
+			)
+		}.toPyStringAsyncCallback(StoredDocumentIdentifier.serializer(), resultCallback)
+	}
+}.failureToPyStringAsyncCallback(resultCallback)
+
+@Serializable
+private class DeleteInsuranceByIdsParams(
+	public val entityIds: List<StoredDocumentIdentifier>,
+)
+
+@OptIn(InternalIcureApi::class)
+public fun deleteInsuranceByIdsBlocking(sdk: CardinalNonCryptoApis, params: String): String =
+		kotlin.runCatching {
+	val decodedParams = fullLanguageInteropJson.decodeFromString<DeleteInsuranceByIdsParams>(params)
+	runBlocking {
+		sdk.insurance.deleteInsuranceByIds(
+			decodedParams.entityIds,
+		)
+	}
+}.toPyString(ListSerializer(StoredDocumentIdentifier.serializer()))
+
+@OptIn(
+	ExperimentalForeignApi::class,
+	InternalIcureApi::class,
+)
+public fun deleteInsuranceByIdsAsync(
+	sdk: CardinalNonCryptoApis,
+	params: String,
+	resultCallback: CPointer<CFunction<(CValues<ByteVarOf<Byte>>?,
+			CValues<ByteVarOf<Byte>>?) -> Unit>>,
+): COpaquePointer? = kotlin.runCatching {
+	val decodedParams = fullLanguageInteropJson.decodeFromString<DeleteInsuranceByIdsParams>(params)
+	GlobalScope.launch {
+		kotlin.runCatching {
+			sdk.insurance.deleteInsuranceByIds(
+				decodedParams.entityIds,
+			)
+		}.toPyStringAsyncCallback(ListSerializer(StoredDocumentIdentifier.serializer()), resultCallback)
+	}
+}.failureToPyStringAsyncCallback(resultCallback)
+
+@Serializable
 private class DeleteInsuranceParams(
-	public val insuranceId: String,
+	public val insurance: Insurance,
 )
 
 @OptIn(InternalIcureApi::class)
@@ -147,10 +329,10 @@ public fun deleteInsuranceBlocking(sdk: CardinalNonCryptoApis, params: String): 
 	val decodedParams = fullLanguageInteropJson.decodeFromString<DeleteInsuranceParams>(params)
 	runBlocking {
 		sdk.insurance.deleteInsurance(
-			decodedParams.insuranceId,
+			decodedParams.insurance,
 		)
 	}
-}.toPyString(DocIdentifier.serializer())
+}.toPyString(StoredDocumentIdentifier.serializer())
 
 @OptIn(
 	ExperimentalForeignApi::class,
@@ -166,48 +348,339 @@ public fun deleteInsuranceAsync(
 	GlobalScope.launch {
 		kotlin.runCatching {
 			sdk.insurance.deleteInsurance(
-				decodedParams.insuranceId,
+				decodedParams.insurance,
 			)
-		}.toPyStringAsyncCallback(DocIdentifier.serializer(), resultCallback)
+		}.toPyStringAsyncCallback(StoredDocumentIdentifier.serializer(), resultCallback)
 	}
 }.failureToPyStringAsyncCallback(resultCallback)
 
 @Serializable
-private class GetAllInsurancesParams(
-	public val startDocumentId: String? = null,
-	public val limit: Int? = null,
+private class DeleteInsurancesParams(
+	public val insurances: List<Insurance>,
 )
 
 @OptIn(InternalIcureApi::class)
-public fun getAllInsurancesBlocking(sdk: CardinalNonCryptoApis, params: String): String =
+public fun deleteInsurancesBlocking(sdk: CardinalNonCryptoApis, params: String): String =
 		kotlin.runCatching {
-	val decodedParams = fullLanguageInteropJson.decodeFromString<GetAllInsurancesParams>(params)
+	val decodedParams = fullLanguageInteropJson.decodeFromString<DeleteInsurancesParams>(params)
 	runBlocking {
-		sdk.insurance.getAllInsurances(
-			decodedParams.startDocumentId,
-			decodedParams.limit,
+		sdk.insurance.deleteInsurances(
+			decodedParams.insurances,
 		)
 	}
-}.toPyString(PaginatedList.serializer(Insurance.serializer()))
+}.toPyString(ListSerializer(StoredDocumentIdentifier.serializer()))
 
 @OptIn(
 	ExperimentalForeignApi::class,
 	InternalIcureApi::class,
 )
-public fun getAllInsurancesAsync(
+public fun deleteInsurancesAsync(
 	sdk: CardinalNonCryptoApis,
 	params: String,
 	resultCallback: CPointer<CFunction<(CValues<ByteVarOf<Byte>>?,
 			CValues<ByteVarOf<Byte>>?) -> Unit>>,
 ): COpaquePointer? = kotlin.runCatching {
-	val decodedParams = fullLanguageInteropJson.decodeFromString<GetAllInsurancesParams>(params)
+	val decodedParams = fullLanguageInteropJson.decodeFromString<DeleteInsurancesParams>(params)
 	GlobalScope.launch {
 		kotlin.runCatching {
-			sdk.insurance.getAllInsurances(
-				decodedParams.startDocumentId,
-				decodedParams.limit,
+			sdk.insurance.deleteInsurances(
+				decodedParams.insurances,
 			)
-		}.toPyStringAsyncCallback(PaginatedList.serializer(Insurance.serializer()), resultCallback)
+		}.toPyStringAsyncCallback(ListSerializer(StoredDocumentIdentifier.serializer()), resultCallback)
+	}
+}.failureToPyStringAsyncCallback(resultCallback)
+
+@Serializable
+private class UndeleteInsuranceByIdParams(
+	public val entityId: String,
+	public val rev: String,
+)
+
+@OptIn(InternalIcureApi::class)
+public fun undeleteInsuranceByIdBlocking(sdk: CardinalNonCryptoApis, params: String): String =
+		kotlin.runCatching {
+	val decodedParams = fullLanguageInteropJson.decodeFromString<UndeleteInsuranceByIdParams>(params)
+	runBlocking {
+		sdk.insurance.undeleteInsuranceById(
+			decodedParams.entityId,
+			decodedParams.rev,
+		)
+	}
+}.toPyString(Insurance.serializer())
+
+@OptIn(
+	ExperimentalForeignApi::class,
+	InternalIcureApi::class,
+)
+public fun undeleteInsuranceByIdAsync(
+	sdk: CardinalNonCryptoApis,
+	params: String,
+	resultCallback: CPointer<CFunction<(CValues<ByteVarOf<Byte>>?,
+			CValues<ByteVarOf<Byte>>?) -> Unit>>,
+): COpaquePointer? = kotlin.runCatching {
+	val decodedParams = fullLanguageInteropJson.decodeFromString<UndeleteInsuranceByIdParams>(params)
+	GlobalScope.launch {
+		kotlin.runCatching {
+			sdk.insurance.undeleteInsuranceById(
+				decodedParams.entityId,
+				decodedParams.rev,
+			)
+		}.toPyStringAsyncCallback(Insurance.serializer(), resultCallback)
+	}
+}.failureToPyStringAsyncCallback(resultCallback)
+
+@Serializable
+private class UndeleteInsuranceByIdsParams(
+	public val entityIds: List<StoredDocumentIdentifier>,
+)
+
+@OptIn(InternalIcureApi::class)
+public fun undeleteInsuranceByIdsBlocking(sdk: CardinalNonCryptoApis, params: String): String =
+		kotlin.runCatching {
+	val decodedParams = fullLanguageInteropJson.decodeFromString<UndeleteInsuranceByIdsParams>(params)
+	runBlocking {
+		sdk.insurance.undeleteInsuranceByIds(
+			decodedParams.entityIds,
+		)
+	}
+}.toPyString(ListSerializer(Insurance.serializer()))
+
+@OptIn(
+	ExperimentalForeignApi::class,
+	InternalIcureApi::class,
+)
+public fun undeleteInsuranceByIdsAsync(
+	sdk: CardinalNonCryptoApis,
+	params: String,
+	resultCallback: CPointer<CFunction<(CValues<ByteVarOf<Byte>>?,
+			CValues<ByteVarOf<Byte>>?) -> Unit>>,
+): COpaquePointer? = kotlin.runCatching {
+	val decodedParams = fullLanguageInteropJson.decodeFromString<UndeleteInsuranceByIdsParams>(params)
+	GlobalScope.launch {
+		kotlin.runCatching {
+			sdk.insurance.undeleteInsuranceByIds(
+				decodedParams.entityIds,
+			)
+		}.toPyStringAsyncCallback(ListSerializer(Insurance.serializer()), resultCallback)
+	}
+}.failureToPyStringAsyncCallback(resultCallback)
+
+@Serializable
+private class UndeleteInsuranceParams(
+	public val insurance: Insurance,
+)
+
+@OptIn(InternalIcureApi::class)
+public fun undeleteInsuranceBlocking(sdk: CardinalNonCryptoApis, params: String): String =
+		kotlin.runCatching {
+	val decodedParams = fullLanguageInteropJson.decodeFromString<UndeleteInsuranceParams>(params)
+	runBlocking {
+		sdk.insurance.undeleteInsurance(
+			decodedParams.insurance,
+		)
+	}
+}.toPyString(Insurance.serializer())
+
+@OptIn(
+	ExperimentalForeignApi::class,
+	InternalIcureApi::class,
+)
+public fun undeleteInsuranceAsync(
+	sdk: CardinalNonCryptoApis,
+	params: String,
+	resultCallback: CPointer<CFunction<(CValues<ByteVarOf<Byte>>?,
+			CValues<ByteVarOf<Byte>>?) -> Unit>>,
+): COpaquePointer? = kotlin.runCatching {
+	val decodedParams = fullLanguageInteropJson.decodeFromString<UndeleteInsuranceParams>(params)
+	GlobalScope.launch {
+		kotlin.runCatching {
+			sdk.insurance.undeleteInsurance(
+				decodedParams.insurance,
+			)
+		}.toPyStringAsyncCallback(Insurance.serializer(), resultCallback)
+	}
+}.failureToPyStringAsyncCallback(resultCallback)
+
+@Serializable
+private class UndeleteInsurancesParams(
+	public val insurances: List<Insurance>,
+)
+
+@OptIn(InternalIcureApi::class)
+public fun undeleteInsurancesBlocking(sdk: CardinalNonCryptoApis, params: String): String =
+		kotlin.runCatching {
+	val decodedParams = fullLanguageInteropJson.decodeFromString<UndeleteInsurancesParams>(params)
+	runBlocking {
+		sdk.insurance.undeleteInsurances(
+			decodedParams.insurances,
+		)
+	}
+}.toPyString(ListSerializer(Insurance.serializer()))
+
+@OptIn(
+	ExperimentalForeignApi::class,
+	InternalIcureApi::class,
+)
+public fun undeleteInsurancesAsync(
+	sdk: CardinalNonCryptoApis,
+	params: String,
+	resultCallback: CPointer<CFunction<(CValues<ByteVarOf<Byte>>?,
+			CValues<ByteVarOf<Byte>>?) -> Unit>>,
+): COpaquePointer? = kotlin.runCatching {
+	val decodedParams = fullLanguageInteropJson.decodeFromString<UndeleteInsurancesParams>(params)
+	GlobalScope.launch {
+		kotlin.runCatching {
+			sdk.insurance.undeleteInsurances(
+				decodedParams.insurances,
+			)
+		}.toPyStringAsyncCallback(ListSerializer(Insurance.serializer()), resultCallback)
+	}
+}.failureToPyStringAsyncCallback(resultCallback)
+
+@Serializable
+private class PurgeInsuranceByIdParams(
+	public val entityId: String,
+	public val rev: String,
+)
+
+@OptIn(InternalIcureApi::class)
+public fun purgeInsuranceByIdBlocking(sdk: CardinalNonCryptoApis, params: String): String =
+		kotlin.runCatching {
+	val decodedParams = fullLanguageInteropJson.decodeFromString<PurgeInsuranceByIdParams>(params)
+	runBlocking {
+		sdk.insurance.purgeInsuranceById(
+			decodedParams.entityId,
+			decodedParams.rev,
+		)
+	}
+}.toPyString(Unit.serializer())
+
+@OptIn(
+	ExperimentalForeignApi::class,
+	InternalIcureApi::class,
+)
+public fun purgeInsuranceByIdAsync(
+	sdk: CardinalNonCryptoApis,
+	params: String,
+	resultCallback: CPointer<CFunction<(CValues<ByteVarOf<Byte>>?,
+			CValues<ByteVarOf<Byte>>?) -> Unit>>,
+): COpaquePointer? = kotlin.runCatching {
+	val decodedParams = fullLanguageInteropJson.decodeFromString<PurgeInsuranceByIdParams>(params)
+	GlobalScope.launch {
+		kotlin.runCatching {
+			sdk.insurance.purgeInsuranceById(
+				decodedParams.entityId,
+				decodedParams.rev,
+			)
+		}.toPyStringAsyncCallback(Unit.serializer(), resultCallback)
+	}
+}.failureToPyStringAsyncCallback(resultCallback)
+
+@Serializable
+private class PurgeInsuranceByIdsParams(
+	public val entityIds: List<StoredDocumentIdentifier>,
+)
+
+@OptIn(InternalIcureApi::class)
+public fun purgeInsuranceByIdsBlocking(sdk: CardinalNonCryptoApis, params: String): String =
+		kotlin.runCatching {
+	val decodedParams = fullLanguageInteropJson.decodeFromString<PurgeInsuranceByIdsParams>(params)
+	runBlocking {
+		sdk.insurance.purgeInsuranceByIds(
+			decodedParams.entityIds,
+		)
+	}
+}.toPyString(ListSerializer(StoredDocumentIdentifier.serializer()))
+
+@OptIn(
+	ExperimentalForeignApi::class,
+	InternalIcureApi::class,
+)
+public fun purgeInsuranceByIdsAsync(
+	sdk: CardinalNonCryptoApis,
+	params: String,
+	resultCallback: CPointer<CFunction<(CValues<ByteVarOf<Byte>>?,
+			CValues<ByteVarOf<Byte>>?) -> Unit>>,
+): COpaquePointer? = kotlin.runCatching {
+	val decodedParams = fullLanguageInteropJson.decodeFromString<PurgeInsuranceByIdsParams>(params)
+	GlobalScope.launch {
+		kotlin.runCatching {
+			sdk.insurance.purgeInsuranceByIds(
+				decodedParams.entityIds,
+			)
+		}.toPyStringAsyncCallback(ListSerializer(StoredDocumentIdentifier.serializer()), resultCallback)
+	}
+}.failureToPyStringAsyncCallback(resultCallback)
+
+@Serializable
+private class PurgeInsuranceParams(
+	public val insurance: Insurance,
+)
+
+@OptIn(InternalIcureApi::class)
+public fun purgeInsuranceBlocking(sdk: CardinalNonCryptoApis, params: String): String =
+		kotlin.runCatching {
+	val decodedParams = fullLanguageInteropJson.decodeFromString<PurgeInsuranceParams>(params)
+	runBlocking {
+		sdk.insurance.purgeInsurance(
+			decodedParams.insurance,
+		)
+	}
+}.toPyString(Unit.serializer())
+
+@OptIn(
+	ExperimentalForeignApi::class,
+	InternalIcureApi::class,
+)
+public fun purgeInsuranceAsync(
+	sdk: CardinalNonCryptoApis,
+	params: String,
+	resultCallback: CPointer<CFunction<(CValues<ByteVarOf<Byte>>?,
+			CValues<ByteVarOf<Byte>>?) -> Unit>>,
+): COpaquePointer? = kotlin.runCatching {
+	val decodedParams = fullLanguageInteropJson.decodeFromString<PurgeInsuranceParams>(params)
+	GlobalScope.launch {
+		kotlin.runCatching {
+			sdk.insurance.purgeInsurance(
+				decodedParams.insurance,
+			)
+		}.toPyStringAsyncCallback(Unit.serializer(), resultCallback)
+	}
+}.failureToPyStringAsyncCallback(resultCallback)
+
+@Serializable
+private class PurgeInsurancesParams(
+	public val insurances: List<Insurance>,
+)
+
+@OptIn(InternalIcureApi::class)
+public fun purgeInsurancesBlocking(sdk: CardinalNonCryptoApis, params: String): String =
+		kotlin.runCatching {
+	val decodedParams = fullLanguageInteropJson.decodeFromString<PurgeInsurancesParams>(params)
+	runBlocking {
+		sdk.insurance.purgeInsurances(
+			decodedParams.insurances,
+		)
+	}
+}.toPyString(ListSerializer(StoredDocumentIdentifier.serializer()))
+
+@OptIn(
+	ExperimentalForeignApi::class,
+	InternalIcureApi::class,
+)
+public fun purgeInsurancesAsync(
+	sdk: CardinalNonCryptoApis,
+	params: String,
+	resultCallback: CPointer<CFunction<(CValues<ByteVarOf<Byte>>?,
+			CValues<ByteVarOf<Byte>>?) -> Unit>>,
+): COpaquePointer? = kotlin.runCatching {
+	val decodedParams = fullLanguageInteropJson.decodeFromString<PurgeInsurancesParams>(params)
+	GlobalScope.launch {
+		kotlin.runCatching {
+			sdk.insurance.purgeInsurances(
+				decodedParams.insurances,
+			)
+		}.toPyStringAsyncCallback(ListSerializer(StoredDocumentIdentifier.serializer()), resultCallback)
 	}
 }.failureToPyStringAsyncCallback(resultCallback)
 
@@ -278,159 +751,6 @@ public fun listInsurancesByNameAsync(
 		kotlin.runCatching {
 			sdk.insurance.listInsurancesByName(
 				decodedParams.insuranceName,
-			)
-		}.toPyStringAsyncCallback(ListSerializer(Insurance.serializer()), resultCallback)
-	}
-}.failureToPyStringAsyncCallback(resultCallback)
-
-@Serializable
-private class ModifyInsuranceParams(
-	public val insurance: Insurance,
-)
-
-@OptIn(InternalIcureApi::class)
-public fun modifyInsuranceBlocking(sdk: CardinalNonCryptoApis, params: String): String =
-		kotlin.runCatching {
-	val decodedParams = fullLanguageInteropJson.decodeFromString<ModifyInsuranceParams>(params)
-	runBlocking {
-		sdk.insurance.modifyInsurance(
-			decodedParams.insurance,
-		)
-	}
-}.toPyString(Insurance.serializer())
-
-@OptIn(
-	ExperimentalForeignApi::class,
-	InternalIcureApi::class,
-)
-public fun modifyInsuranceAsync(
-	sdk: CardinalNonCryptoApis,
-	params: String,
-	resultCallback: CPointer<CFunction<(CValues<ByteVarOf<Byte>>?,
-			CValues<ByteVarOf<Byte>>?) -> Unit>>,
-): COpaquePointer? = kotlin.runCatching {
-	val decodedParams = fullLanguageInteropJson.decodeFromString<ModifyInsuranceParams>(params)
-	GlobalScope.launch {
-		kotlin.runCatching {
-			sdk.insurance.modifyInsurance(
-				decodedParams.insurance,
-			)
-		}.toPyStringAsyncCallback(Insurance.serializer(), resultCallback)
-	}
-}.failureToPyStringAsyncCallback(resultCallback)
-
-@Serializable
-private class CreateInsurancesInGroupParams(
-	public val groupId: String,
-	public val insuranceBatch: List<Insurance>,
-)
-
-@OptIn(InternalIcureApi::class)
-public fun createInsurancesInGroupBlocking(sdk: CardinalNonCryptoApis, params: String): String =
-		kotlin.runCatching {
-	val decodedParams = fullLanguageInteropJson.decodeFromString<CreateInsurancesInGroupParams>(params)
-	runBlocking {
-		sdk.insurance.createInsurancesInGroup(
-			decodedParams.groupId,
-			decodedParams.insuranceBatch,
-		)
-	}
-}.toPyString(ListSerializer(Insurance.serializer()))
-
-@OptIn(
-	ExperimentalForeignApi::class,
-	InternalIcureApi::class,
-)
-public fun createInsurancesInGroupAsync(
-	sdk: CardinalNonCryptoApis,
-	params: String,
-	resultCallback: CPointer<CFunction<(CValues<ByteVarOf<Byte>>?,
-			CValues<ByteVarOf<Byte>>?) -> Unit>>,
-): COpaquePointer? = kotlin.runCatching {
-	val decodedParams = fullLanguageInteropJson.decodeFromString<CreateInsurancesInGroupParams>(params)
-	GlobalScope.launch {
-		kotlin.runCatching {
-			sdk.insurance.createInsurancesInGroup(
-				decodedParams.groupId,
-				decodedParams.insuranceBatch,
-			)
-		}.toPyStringAsyncCallback(ListSerializer(Insurance.serializer()), resultCallback)
-	}
-}.failureToPyStringAsyncCallback(resultCallback)
-
-@Serializable
-private class GetInsurancesInGroupParams(
-	public val groupId: String,
-	public val insuranceIds: String,
-)
-
-@OptIn(InternalIcureApi::class)
-public fun getInsurancesInGroupBlocking(sdk: CardinalNonCryptoApis, params: String): String =
-		kotlin.runCatching {
-	val decodedParams = fullLanguageInteropJson.decodeFromString<GetInsurancesInGroupParams>(params)
-	runBlocking {
-		sdk.insurance.getInsurancesInGroup(
-			decodedParams.groupId,
-			decodedParams.insuranceIds,
-		)
-	}
-}.toPyString(ListSerializer(Insurance.serializer()))
-
-@OptIn(
-	ExperimentalForeignApi::class,
-	InternalIcureApi::class,
-)
-public fun getInsurancesInGroupAsync(
-	sdk: CardinalNonCryptoApis,
-	params: String,
-	resultCallback: CPointer<CFunction<(CValues<ByteVarOf<Byte>>?,
-			CValues<ByteVarOf<Byte>>?) -> Unit>>,
-): COpaquePointer? = kotlin.runCatching {
-	val decodedParams = fullLanguageInteropJson.decodeFromString<GetInsurancesInGroupParams>(params)
-	GlobalScope.launch {
-		kotlin.runCatching {
-			sdk.insurance.getInsurancesInGroup(
-				decodedParams.groupId,
-				decodedParams.insuranceIds,
-			)
-		}.toPyStringAsyncCallback(ListSerializer(Insurance.serializer()), resultCallback)
-	}
-}.failureToPyStringAsyncCallback(resultCallback)
-
-@Serializable
-private class ModifyInsurancesInGroupParams(
-	public val groupId: String,
-	public val insuranceBatch: List<Insurance>,
-)
-
-@OptIn(InternalIcureApi::class)
-public fun modifyInsurancesInGroupBlocking(sdk: CardinalNonCryptoApis, params: String): String =
-		kotlin.runCatching {
-	val decodedParams = fullLanguageInteropJson.decodeFromString<ModifyInsurancesInGroupParams>(params)
-	runBlocking {
-		sdk.insurance.modifyInsurancesInGroup(
-			decodedParams.groupId,
-			decodedParams.insuranceBatch,
-		)
-	}
-}.toPyString(ListSerializer(Insurance.serializer()))
-
-@OptIn(
-	ExperimentalForeignApi::class,
-	InternalIcureApi::class,
-)
-public fun modifyInsurancesInGroupAsync(
-	sdk: CardinalNonCryptoApis,
-	params: String,
-	resultCallback: CPointer<CFunction<(CValues<ByteVarOf<Byte>>?,
-			CValues<ByteVarOf<Byte>>?) -> Unit>>,
-): COpaquePointer? = kotlin.runCatching {
-	val decodedParams = fullLanguageInteropJson.decodeFromString<ModifyInsurancesInGroupParams>(params)
-	GlobalScope.launch {
-		kotlin.runCatching {
-			sdk.insurance.modifyInsurancesInGroup(
-				decodedParams.groupId,
-				decodedParams.insuranceBatch,
 			)
 		}.toPyStringAsyncCallback(ListSerializer(Insurance.serializer()), resultCallback)
 	}

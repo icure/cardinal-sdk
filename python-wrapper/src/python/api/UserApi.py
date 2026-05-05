@@ -2,7 +2,7 @@
 import json
 from cardinal_sdk.async_utils import execute_async_method_job
 from cardinal_sdk.kotlin_types import symbols
-from cardinal_sdk.model import User, EncryptedPropertyStub, UserGroup, ListOfIds, TokenWithGroup, Enable2faRequest, DocIdentifier, LoginIdentifier, SubscriptionEventType, EntitySubscriptionConfiguration
+from cardinal_sdk.model import User, EncryptedPropertyStub, UserGroup, Enable2faRequest, StoredDocumentIdentifier, SubscriptionEventType, EntitySubscriptionConfiguration, GroupScoped, TokenWithGroup, LoginIdentifier
 from cardinal_sdk.model.CallResult import create_result_from_json, interpret_kt_error
 from ctypes import cast, c_char_p
 from typing import Optional
@@ -15,6 +15,7 @@ class UserApi:
 
 	def __init__(self, cardinal_sdk):
 		self.cardinal_sdk = cardinal_sdk
+		self.in_group = UserApiInGroup(self.cardinal_sdk)
 
 	async def get_current_user_async(self) -> User:
 		def do_decode(raw_result):
@@ -70,6 +71,37 @@ class UserApi:
 			return_value = User._deserialize(result_info.success)
 			return return_value
 
+	async def create_users_async(self, users: list[User]) -> list[User]:
+		def do_decode(raw_result):
+			return [User._deserialize(x1) for x1 in raw_result]
+		payload = {
+			"users": [x0.__serialize__() for x0 in users],
+		}
+		return await execute_async_method_job(
+			self.cardinal_sdk._executor,
+			True,
+			do_decode,
+			symbols.kotlin.root.com.icure.cardinal.sdk.py.api.UserApi.createUsersAsync,
+			self.cardinal_sdk._native,
+			json.dumps(payload).encode('utf-8'),
+		)
+
+	def create_users_blocking(self, users: list[User]) -> list[User]:
+		payload = {
+			"users": [x0.__serialize__() for x0 in users],
+		}
+		call_result = symbols.kotlin.root.com.icure.cardinal.sdk.py.api.UserApi.createUsersBlocking(
+			self.cardinal_sdk._native,
+			json.dumps(payload).encode('utf-8'),
+		)
+		result_info = create_result_from_json(cast(call_result, c_char_p).value.decode('utf-8'))
+		symbols.DisposeString(call_result)
+		if result_info.failure is not None:
+			raise interpret_kt_error(result_info.failure)
+		else:
+			return_value = [User._deserialize(x1) for x1 in result_info.success]
+			return return_value
+
 	async def get_user_async(self, user_id: str) -> Optional[User]:
 		def do_decode(raw_result):
 			return User._deserialize(raw_result) if raw_result is not None else None
@@ -121,6 +153,68 @@ class UserApi:
 			"userIds": [x0 for x0 in user_ids],
 		}
 		call_result = symbols.kotlin.root.com.icure.cardinal.sdk.py.api.UserApi.getUsersBlocking(
+			self.cardinal_sdk._native,
+			json.dumps(payload).encode('utf-8'),
+		)
+		result_info = create_result_from_json(cast(call_result, c_char_p).value.decode('utf-8'))
+		symbols.DisposeString(call_result)
+		if result_info.failure is not None:
+			raise interpret_kt_error(result_info.failure)
+		else:
+			return_value = [User._deserialize(x1) for x1 in result_info.success]
+			return return_value
+
+	async def modify_user_async(self, user: User) -> User:
+		def do_decode(raw_result):
+			return User._deserialize(raw_result)
+		payload = {
+			"user": user.__serialize__(),
+		}
+		return await execute_async_method_job(
+			self.cardinal_sdk._executor,
+			True,
+			do_decode,
+			symbols.kotlin.root.com.icure.cardinal.sdk.py.api.UserApi.modifyUserAsync,
+			self.cardinal_sdk._native,
+			json.dumps(payload).encode('utf-8'),
+		)
+
+	def modify_user_blocking(self, user: User) -> User:
+		payload = {
+			"user": user.__serialize__(),
+		}
+		call_result = symbols.kotlin.root.com.icure.cardinal.sdk.py.api.UserApi.modifyUserBlocking(
+			self.cardinal_sdk._native,
+			json.dumps(payload).encode('utf-8'),
+		)
+		result_info = create_result_from_json(cast(call_result, c_char_p).value.decode('utf-8'))
+		symbols.DisposeString(call_result)
+		if result_info.failure is not None:
+			raise interpret_kt_error(result_info.failure)
+		else:
+			return_value = User._deserialize(result_info.success)
+			return return_value
+
+	async def modify_users_async(self, users: list[User]) -> list[User]:
+		def do_decode(raw_result):
+			return [User._deserialize(x1) for x1 in raw_result]
+		payload = {
+			"users": [x0.__serialize__() for x0 in users],
+		}
+		return await execute_async_method_job(
+			self.cardinal_sdk._executor,
+			True,
+			do_decode,
+			symbols.kotlin.root.com.icure.cardinal.sdk.py.api.UserApi.modifyUsersAsync,
+			self.cardinal_sdk._native,
+			json.dumps(payload).encode('utf-8'),
+		)
+
+	def modify_users_blocking(self, users: list[User]) -> list[User]:
+		payload = {
+			"users": [x0.__serialize__() for x0 in users],
+		}
+		call_result = symbols.kotlin.root.com.icure.cardinal.sdk.py.api.UserApi.modifyUsersBlocking(
 			self.cardinal_sdk._native,
 			json.dumps(payload).encode('utf-8'),
 		)
@@ -254,37 +348,6 @@ class UserApi:
 			raise interpret_kt_error(result_info.failure)
 		else:
 			return_value = [x1 for x1 in result_info.success]
-			return return_value
-
-	async def modify_user_async(self, user: User) -> User:
-		def do_decode(raw_result):
-			return User._deserialize(raw_result)
-		payload = {
-			"user": user.__serialize__(),
-		}
-		return await execute_async_method_job(
-			self.cardinal_sdk._executor,
-			True,
-			do_decode,
-			symbols.kotlin.root.com.icure.cardinal.sdk.py.api.UserApi.modifyUserAsync,
-			self.cardinal_sdk._native,
-			json.dumps(payload).encode('utf-8'),
-		)
-
-	def modify_user_blocking(self, user: User) -> User:
-		payload = {
-			"user": user.__serialize__(),
-		}
-		call_result = symbols.kotlin.root.com.icure.cardinal.sdk.py.api.UserApi.modifyUserBlocking(
-			self.cardinal_sdk._native,
-			json.dumps(payload).encode('utf-8'),
-		)
-		result_info = create_result_from_json(cast(call_result, c_char_p).value.decode('utf-8'))
-		symbols.DisposeString(call_result)
-		if result_info.failure is not None:
-			raise interpret_kt_error(result_info.failure)
-		else:
-			return_value = User._deserialize(result_info.success)
 			return return_value
 
 	async def assign_healthcare_party_async(self, healthcare_party_id: str) -> User:
@@ -557,111 +620,12 @@ class UserApi:
 			return_value = [UserGroup._deserialize(x1) for x1 in result_info.success]
 			return return_value
 
-	async def get_users_in_group_async(self, group_id: str, user_ids: list[str]) -> list[User]:
-		def do_decode(raw_result):
-			return [User._deserialize(x1) for x1 in raw_result]
-		payload = {
-			"groupId": group_id,
-			"userIds": [x0 for x0 in user_ids],
-		}
-		return await execute_async_method_job(
-			self.cardinal_sdk._executor,
-			True,
-			do_decode,
-			symbols.kotlin.root.com.icure.cardinal.sdk.py.api.UserApi.getUsersInGroupAsync,
-			self.cardinal_sdk._native,
-			json.dumps(payload).encode('utf-8'),
-		)
-
-	def get_users_in_group_blocking(self, group_id: str, user_ids: list[str]) -> list[User]:
-		payload = {
-			"groupId": group_id,
-			"userIds": [x0 for x0 in user_ids],
-		}
-		call_result = symbols.kotlin.root.com.icure.cardinal.sdk.py.api.UserApi.getUsersInGroupBlocking(
-			self.cardinal_sdk._native,
-			json.dumps(payload).encode('utf-8'),
-		)
-		result_info = create_result_from_json(cast(call_result, c_char_p).value.decode('utf-8'))
-		symbols.DisposeString(call_result)
-		if result_info.failure is not None:
-			raise interpret_kt_error(result_info.failure)
-		else:
-			return_value = [User._deserialize(x1) for x1 in result_info.success]
-			return return_value
-
-	async def create_user_in_group_async(self, group_id: str, user: User) -> User:
-		def do_decode(raw_result):
-			return User._deserialize(raw_result)
-		payload = {
-			"groupId": group_id,
-			"user": user.__serialize__(),
-		}
-		return await execute_async_method_job(
-			self.cardinal_sdk._executor,
-			True,
-			do_decode,
-			symbols.kotlin.root.com.icure.cardinal.sdk.py.api.UserApi.createUserInGroupAsync,
-			self.cardinal_sdk._native,
-			json.dumps(payload).encode('utf-8'),
-		)
-
-	def create_user_in_group_blocking(self, group_id: str, user: User) -> User:
-		payload = {
-			"groupId": group_id,
-			"user": user.__serialize__(),
-		}
-		call_result = symbols.kotlin.root.com.icure.cardinal.sdk.py.api.UserApi.createUserInGroupBlocking(
-			self.cardinal_sdk._native,
-			json.dumps(payload).encode('utf-8'),
-		)
-		result_info = create_result_from_json(cast(call_result, c_char_p).value.decode('utf-8'))
-		symbols.DisposeString(call_result)
-		if result_info.failure is not None:
-			raise interpret_kt_error(result_info.failure)
-		else:
-			return_value = User._deserialize(result_info.success)
-			return return_value
-
-	async def modify_user_in_group_async(self, group_id: str, user: User) -> User:
-		def do_decode(raw_result):
-			return User._deserialize(raw_result)
-		payload = {
-			"groupId": group_id,
-			"user": user.__serialize__(),
-		}
-		return await execute_async_method_job(
-			self.cardinal_sdk._executor,
-			True,
-			do_decode,
-			symbols.kotlin.root.com.icure.cardinal.sdk.py.api.UserApi.modifyUserInGroupAsync,
-			self.cardinal_sdk._native,
-			json.dumps(payload).encode('utf-8'),
-		)
-
-	def modify_user_in_group_blocking(self, group_id: str, user: User) -> User:
-		payload = {
-			"groupId": group_id,
-			"user": user.__serialize__(),
-		}
-		call_result = symbols.kotlin.root.com.icure.cardinal.sdk.py.api.UserApi.modifyUserInGroupBlocking(
-			self.cardinal_sdk._native,
-			json.dumps(payload).encode('utf-8'),
-		)
-		result_info = create_result_from_json(cast(call_result, c_char_p).value.decode('utf-8'))
-		symbols.DisposeString(call_result)
-		if result_info.failure is not None:
-			raise interpret_kt_error(result_info.failure)
-		else:
-			return_value = User._deserialize(result_info.success)
-			return return_value
-
-	async def set_user_roles_async(self, user_id: str, roles_id: ListOfIds) -> User:
+	async def set_user_roles_async(self, user_id: str, roles_ids: list[str]) -> User:
 		def do_decode(raw_result):
 			return User._deserialize(raw_result)
 		payload = {
 			"userId": user_id,
-			"rolesId": roles_id.__serialize__(),
+			"rolesIds": [x0 for x0 in roles_ids],
 		}
 		return await execute_async_method_job(
 			self.cardinal_sdk._executor,
@@ -672,47 +636,12 @@ class UserApi:
 			json.dumps(payload).encode('utf-8'),
 		)
 
-	def set_user_roles_blocking(self, user_id: str, roles_id: ListOfIds) -> User:
+	def set_user_roles_blocking(self, user_id: str, roles_ids: list[str]) -> User:
 		payload = {
 			"userId": user_id,
-			"rolesId": roles_id.__serialize__(),
+			"rolesIds": [x0 for x0 in roles_ids],
 		}
 		call_result = symbols.kotlin.root.com.icure.cardinal.sdk.py.api.UserApi.setUserRolesBlocking(
-			self.cardinal_sdk._native,
-			json.dumps(payload).encode('utf-8'),
-		)
-		result_info = create_result_from_json(cast(call_result, c_char_p).value.decode('utf-8'))
-		symbols.DisposeString(call_result)
-		if result_info.failure is not None:
-			raise interpret_kt_error(result_info.failure)
-		else:
-			return_value = User._deserialize(result_info.success)
-			return return_value
-
-	async def set_user_roles_in_group_async(self, user_id: str, group_id: str, roles_id: ListOfIds) -> User:
-		def do_decode(raw_result):
-			return User._deserialize(raw_result)
-		payload = {
-			"userId": user_id,
-			"groupId": group_id,
-			"rolesId": roles_id.__serialize__(),
-		}
-		return await execute_async_method_job(
-			self.cardinal_sdk._executor,
-			True,
-			do_decode,
-			symbols.kotlin.root.com.icure.cardinal.sdk.py.api.UserApi.setUserRolesInGroupAsync,
-			self.cardinal_sdk._native,
-			json.dumps(payload).encode('utf-8'),
-		)
-
-	def set_user_roles_in_group_blocking(self, user_id: str, group_id: str, roles_id: ListOfIds) -> User:
-		payload = {
-			"userId": user_id,
-			"groupId": group_id,
-			"rolesId": roles_id.__serialize__(),
-		}
-		call_result = symbols.kotlin.root.com.icure.cardinal.sdk.py.api.UserApi.setUserRolesInGroupBlocking(
 			self.cardinal_sdk._native,
 			json.dumps(payload).encode('utf-8'),
 		)
@@ -755,301 +684,6 @@ class UserApi:
 			return_value = User._deserialize(result_info.success)
 			return return_value
 
-	async def reset_user_roles_in_group_async(self, user_id: str, group_id: str) -> User:
-		def do_decode(raw_result):
-			return User._deserialize(raw_result)
-		payload = {
-			"userId": user_id,
-			"groupId": group_id,
-		}
-		return await execute_async_method_job(
-			self.cardinal_sdk._executor,
-			True,
-			do_decode,
-			symbols.kotlin.root.com.icure.cardinal.sdk.py.api.UserApi.resetUserRolesInGroupAsync,
-			self.cardinal_sdk._native,
-			json.dumps(payload).encode('utf-8'),
-		)
-
-	def reset_user_roles_in_group_blocking(self, user_id: str, group_id: str) -> User:
-		payload = {
-			"userId": user_id,
-			"groupId": group_id,
-		}
-		call_result = symbols.kotlin.root.com.icure.cardinal.sdk.py.api.UserApi.resetUserRolesInGroupBlocking(
-			self.cardinal_sdk._native,
-			json.dumps(payload).encode('utf-8'),
-		)
-		result_info = create_result_from_json(cast(call_result, c_char_p).value.decode('utf-8'))
-		symbols.DisposeString(call_result)
-		if result_info.failure is not None:
-			raise interpret_kt_error(result_info.failure)
-		else:
-			return_value = User._deserialize(result_info.success)
-			return return_value
-
-	async def get_token_in_group_async(self, group_id: str, user_id: str, key: str, token: Optional[str] = None, token_validity: Optional[int] = None) -> str:
-		def do_decode(raw_result):
-			return raw_result
-		payload = {
-			"groupId": group_id,
-			"userId": user_id,
-			"key": key,
-			"token": token,
-			"tokenValidity": token_validity,
-		}
-		return await execute_async_method_job(
-			self.cardinal_sdk._executor,
-			True,
-			do_decode,
-			symbols.kotlin.root.com.icure.cardinal.sdk.py.api.UserApi.getTokenInGroupAsync,
-			self.cardinal_sdk._native,
-			json.dumps(payload).encode('utf-8'),
-		)
-
-	def get_token_in_group_blocking(self, group_id: str, user_id: str, key: str, token: Optional[str] = None, token_validity: Optional[int] = None) -> str:
-		payload = {
-			"groupId": group_id,
-			"userId": user_id,
-			"key": key,
-			"token": token,
-			"tokenValidity": token_validity,
-		}
-		call_result = symbols.kotlin.root.com.icure.cardinal.sdk.py.api.UserApi.getTokenInGroupBlocking(
-			self.cardinal_sdk._native,
-			json.dumps(payload).encode('utf-8'),
-		)
-		result_info = create_result_from_json(cast(call_result, c_char_p).value.decode('utf-8'))
-		symbols.DisposeString(call_result)
-		if result_info.failure is not None:
-			raise interpret_kt_error(result_info.failure)
-		else:
-			return_value = result_info.success
-			return return_value
-
-	async def get_token_in_all_groups_async(self, user_identifier: str, key: str, token: Optional[str] = None, token_validity: Optional[int] = None) -> list[TokenWithGroup]:
-		def do_decode(raw_result):
-			return [TokenWithGroup._deserialize(x1) for x1 in raw_result]
-		payload = {
-			"userIdentifier": user_identifier,
-			"key": key,
-			"token": token,
-			"tokenValidity": token_validity,
-		}
-		return await execute_async_method_job(
-			self.cardinal_sdk._executor,
-			True,
-			do_decode,
-			symbols.kotlin.root.com.icure.cardinal.sdk.py.api.UserApi.getTokenInAllGroupsAsync,
-			self.cardinal_sdk._native,
-			json.dumps(payload).encode('utf-8'),
-		)
-
-	def get_token_in_all_groups_blocking(self, user_identifier: str, key: str, token: Optional[str] = None, token_validity: Optional[int] = None) -> list[TokenWithGroup]:
-		payload = {
-			"userIdentifier": user_identifier,
-			"key": key,
-			"token": token,
-			"tokenValidity": token_validity,
-		}
-		call_result = symbols.kotlin.root.com.icure.cardinal.sdk.py.api.UserApi.getTokenInAllGroupsBlocking(
-			self.cardinal_sdk._native,
-			json.dumps(payload).encode('utf-8'),
-		)
-		result_info = create_result_from_json(cast(call_result, c_char_p).value.decode('utf-8'))
-		symbols.DisposeString(call_result)
-		if result_info.failure is not None:
-			raise interpret_kt_error(result_info.failure)
-		else:
-			return_value = [TokenWithGroup._deserialize(x1) for x1 in result_info.success]
-			return return_value
-
-	async def filter_users_in_group_by_async(self, group_id: str, filter: BaseFilterOptions[User]) -> PaginatedListIterator[User]:
-		def do_decode(raw_result):
-			return PaginatedListIterator[User](
-				producer = raw_result,
-				deserializer = lambda x: User._deserialize(x),
-				executor = self.cardinal_sdk._executor
-			)
-		payload = {
-			"groupId": group_id,
-			"filter": filter.__serialize__(),
-		}
-		return await execute_async_method_job(
-			self.cardinal_sdk._executor,
-			False,
-			do_decode,
-			symbols.kotlin.root.com.icure.cardinal.sdk.py.api.UserApi.filterUsersInGroupByAsync,
-			self.cardinal_sdk._native,
-			json.dumps(payload).encode('utf-8'),
-		)
-
-	def filter_users_in_group_by_blocking(self, group_id: str, filter: BaseFilterOptions[User]) -> PaginatedListIterator[User]:
-		payload = {
-			"groupId": group_id,
-			"filter": filter.__serialize__(),
-		}
-		call_result = symbols.kotlin.root.com.icure.cardinal.sdk.py.api.UserApi.filterUsersInGroupByBlocking(
-			self.cardinal_sdk._native,
-			json.dumps(payload).encode('utf-8'),
-		)
-		error_str_pointer = symbols.kotlin.root.com.icure.cardinal.sdk.py.utils.PyResult.get_failure(call_result)
-		if error_str_pointer is not None:
-			error_data_str = cast(error_str_pointer, c_char_p).value.decode('utf_8')
-			symbols.DisposeString(error_str_pointer)
-			symbols.DisposeStablePointer(call_result.pinned)
-			raise interpret_kt_error(json.loads(error_data_str))
-		else:
-			class_pointer = symbols.kotlin.root.com.icure.cardinal.sdk.py.utils.PyResult.get_success(call_result)
-			symbols.DisposeStablePointer(call_result.pinned)
-			return PaginatedListIterator[User](
-				producer = class_pointer,
-				deserializer = lambda x: User._deserialize(x),
-				executor = self.cardinal_sdk._executor
-			)
-
-	async def match_users_in_group_by_async(self, group_id: str, filter: BaseFilterOptions[User]) -> list[str]:
-		def do_decode(raw_result):
-			return [x1 for x1 in raw_result]
-		payload = {
-			"groupId": group_id,
-			"filter": filter.__serialize__(),
-		}
-		return await execute_async_method_job(
-			self.cardinal_sdk._executor,
-			True,
-			do_decode,
-			symbols.kotlin.root.com.icure.cardinal.sdk.py.api.UserApi.matchUsersInGroupByAsync,
-			self.cardinal_sdk._native,
-			json.dumps(payload).encode('utf-8'),
-		)
-
-	def match_users_in_group_by_blocking(self, group_id: str, filter: BaseFilterOptions[User]) -> list[str]:
-		payload = {
-			"groupId": group_id,
-			"filter": filter.__serialize__(),
-		}
-		call_result = symbols.kotlin.root.com.icure.cardinal.sdk.py.api.UserApi.matchUsersInGroupByBlocking(
-			self.cardinal_sdk._native,
-			json.dumps(payload).encode('utf-8'),
-		)
-		result_info = create_result_from_json(cast(call_result, c_char_p).value.decode('utf-8'))
-		symbols.DisposeString(call_result)
-		if result_info.failure is not None:
-			raise interpret_kt_error(result_info.failure)
-		else:
-			return_value = [x1 for x1 in result_info.success]
-			return return_value
-
-	async def filter_users_in_group_by_sorted_async(self, group_id: str, filter: BaseSortableFilterOptions[User]) -> PaginatedListIterator[User]:
-		def do_decode(raw_result):
-			return PaginatedListIterator[User](
-				producer = raw_result,
-				deserializer = lambda x: User._deserialize(x),
-				executor = self.cardinal_sdk._executor
-			)
-		payload = {
-			"groupId": group_id,
-			"filter": filter.__serialize__(),
-		}
-		return await execute_async_method_job(
-			self.cardinal_sdk._executor,
-			False,
-			do_decode,
-			symbols.kotlin.root.com.icure.cardinal.sdk.py.api.UserApi.filterUsersInGroupBySortedAsync,
-			self.cardinal_sdk._native,
-			json.dumps(payload).encode('utf-8'),
-		)
-
-	def filter_users_in_group_by_sorted_blocking(self, group_id: str, filter: BaseSortableFilterOptions[User]) -> PaginatedListIterator[User]:
-		payload = {
-			"groupId": group_id,
-			"filter": filter.__serialize__(),
-		}
-		call_result = symbols.kotlin.root.com.icure.cardinal.sdk.py.api.UserApi.filterUsersInGroupBySortedBlocking(
-			self.cardinal_sdk._native,
-			json.dumps(payload).encode('utf-8'),
-		)
-		error_str_pointer = symbols.kotlin.root.com.icure.cardinal.sdk.py.utils.PyResult.get_failure(call_result)
-		if error_str_pointer is not None:
-			error_data_str = cast(error_str_pointer, c_char_p).value.decode('utf_8')
-			symbols.DisposeString(error_str_pointer)
-			symbols.DisposeStablePointer(call_result.pinned)
-			raise interpret_kt_error(json.loads(error_data_str))
-		else:
-			class_pointer = symbols.kotlin.root.com.icure.cardinal.sdk.py.utils.PyResult.get_success(call_result)
-			symbols.DisposeStablePointer(call_result.pinned)
-			return PaginatedListIterator[User](
-				producer = class_pointer,
-				deserializer = lambda x: User._deserialize(x),
-				executor = self.cardinal_sdk._executor
-			)
-
-	async def match_users_in_group_by_sorted_async(self, group_id: str, filter: BaseSortableFilterOptions[User]) -> list[str]:
-		def do_decode(raw_result):
-			return [x1 for x1 in raw_result]
-		payload = {
-			"groupId": group_id,
-			"filter": filter.__serialize__(),
-		}
-		return await execute_async_method_job(
-			self.cardinal_sdk._executor,
-			True,
-			do_decode,
-			symbols.kotlin.root.com.icure.cardinal.sdk.py.api.UserApi.matchUsersInGroupBySortedAsync,
-			self.cardinal_sdk._native,
-			json.dumps(payload).encode('utf-8'),
-		)
-
-	def match_users_in_group_by_sorted_blocking(self, group_id: str, filter: BaseSortableFilterOptions[User]) -> list[str]:
-		payload = {
-			"groupId": group_id,
-			"filter": filter.__serialize__(),
-		}
-		call_result = symbols.kotlin.root.com.icure.cardinal.sdk.py.api.UserApi.matchUsersInGroupBySortedBlocking(
-			self.cardinal_sdk._native,
-			json.dumps(payload).encode('utf-8'),
-		)
-		result_info = create_result_from_json(cast(call_result, c_char_p).value.decode('utf-8'))
-		symbols.DisposeString(call_result)
-		if result_info.failure is not None:
-			raise interpret_kt_error(result_info.failure)
-		else:
-			return_value = [x1 for x1 in result_info.success]
-			return return_value
-
-	async def enable2fa_for_user_with_group_async(self, user_id: str, group_id: str, request: Enable2faRequest) -> None:
-		def do_decode(raw_result):
-			return raw_result
-		payload = {
-			"userId": user_id,
-			"groupId": group_id,
-			"request": request.__serialize__(),
-		}
-		return await execute_async_method_job(
-			self.cardinal_sdk._executor,
-			True,
-			do_decode,
-			symbols.kotlin.root.com.icure.cardinal.sdk.py.api.UserApi.enable2faForUserWithGroupAsync,
-			self.cardinal_sdk._native,
-			json.dumps(payload).encode('utf-8'),
-		)
-
-	def enable2fa_for_user_with_group_blocking(self, user_id: str, group_id: str, request: Enable2faRequest) -> None:
-		payload = {
-			"userId": user_id,
-			"groupId": group_id,
-			"request": request.__serialize__(),
-		}
-		call_result = symbols.kotlin.root.com.icure.cardinal.sdk.py.api.UserApi.enable2faForUserWithGroupBlocking(
-			self.cardinal_sdk._native,
-			json.dumps(payload).encode('utf-8'),
-		)
-		result_info = create_result_from_json(cast(call_result, c_char_p).value.decode('utf-8'))
-		symbols.DisposeString(call_result)
-		if result_info.failure is not None:
-			raise interpret_kt_error(result_info.failure)
-
 	async def enable2fa_for_user_async(self, user_id: str, request: Enable2faRequest) -> None:
 		def do_decode(raw_result):
 			return raw_result
@@ -1072,36 +706,6 @@ class UserApi:
 			"request": request.__serialize__(),
 		}
 		call_result = symbols.kotlin.root.com.icure.cardinal.sdk.py.api.UserApi.enable2faForUserBlocking(
-			self.cardinal_sdk._native,
-			json.dumps(payload).encode('utf-8'),
-		)
-		result_info = create_result_from_json(cast(call_result, c_char_p).value.decode('utf-8'))
-		symbols.DisposeString(call_result)
-		if result_info.failure is not None:
-			raise interpret_kt_error(result_info.failure)
-
-	async def disable2fa_for_user_with_group_async(self, user_id: str, group_id: str) -> None:
-		def do_decode(raw_result):
-			return raw_result
-		payload = {
-			"userId": user_id,
-			"groupId": group_id,
-		}
-		return await execute_async_method_job(
-			self.cardinal_sdk._executor,
-			True,
-			do_decode,
-			symbols.kotlin.root.com.icure.cardinal.sdk.py.api.UserApi.disable2faForUserWithGroupAsync,
-			self.cardinal_sdk._native,
-			json.dumps(payload).encode('utf-8'),
-		)
-
-	def disable2fa_for_user_with_group_blocking(self, user_id: str, group_id: str) -> None:
-		payload = {
-			"userId": user_id,
-			"groupId": group_id,
-		}
-		call_result = symbols.kotlin.root.com.icure.cardinal.sdk.py.api.UserApi.disable2faForUserWithGroupBlocking(
 			self.cardinal_sdk._native,
 			json.dumps(payload).encode('utf-8'),
 		)
@@ -1169,28 +773,28 @@ class UserApi:
 			return_value = User._deserialize(result_info.success)
 			return return_value
 
-	async def create_admin_user_in_group_async(self, group_id: str, user: User) -> User:
+	async def modify_user_password_async(self, user_id: str, new_password: str) -> User:
 		def do_decode(raw_result):
 			return User._deserialize(raw_result)
 		payload = {
-			"groupId": group_id,
-			"user": user.__serialize__(),
+			"userId": user_id,
+			"newPassword": new_password,
 		}
 		return await execute_async_method_job(
 			self.cardinal_sdk._executor,
 			True,
 			do_decode,
-			symbols.kotlin.root.com.icure.cardinal.sdk.py.api.UserApi.createAdminUserInGroupAsync,
+			symbols.kotlin.root.com.icure.cardinal.sdk.py.api.UserApi.modifyUserPasswordAsync,
 			self.cardinal_sdk._native,
 			json.dumps(payload).encode('utf-8'),
 		)
 
-	def create_admin_user_in_group_blocking(self, group_id: str, user: User) -> User:
+	def modify_user_password_blocking(self, user_id: str, new_password: str) -> User:
 		payload = {
-			"groupId": group_id,
-			"user": user.__serialize__(),
+			"userId": user_id,
+			"newPassword": new_password,
 		}
-		call_result = symbols.kotlin.root.com.icure.cardinal.sdk.py.api.UserApi.createAdminUserInGroupBlocking(
+		call_result = symbols.kotlin.root.com.icure.cardinal.sdk.py.api.UserApi.modifyUserPasswordBlocking(
 			self.cardinal_sdk._native,
 			json.dumps(payload).encode('utf-8'),
 		)
@@ -1202,9 +806,79 @@ class UserApi:
 			return_value = User._deserialize(result_info.success)
 			return return_value
 
-	async def delete_user_by_id_async(self, entity_id: str, rev: str) -> DocIdentifier:
+	async def modify_user_email_async(self, user_id: str, new_email: str, previous_email: Optional[str]) -> User:
 		def do_decode(raw_result):
-			return DocIdentifier._deserialize(raw_result)
+			return User._deserialize(raw_result)
+		payload = {
+			"userId": user_id,
+			"newEmail": new_email,
+			"previousEmail": previous_email,
+		}
+		return await execute_async_method_job(
+			self.cardinal_sdk._executor,
+			True,
+			do_decode,
+			symbols.kotlin.root.com.icure.cardinal.sdk.py.api.UserApi.modifyUserEmailAsync,
+			self.cardinal_sdk._native,
+			json.dumps(payload).encode('utf-8'),
+		)
+
+	def modify_user_email_blocking(self, user_id: str, new_email: str, previous_email: Optional[str]) -> User:
+		payload = {
+			"userId": user_id,
+			"newEmail": new_email,
+			"previousEmail": previous_email,
+		}
+		call_result = symbols.kotlin.root.com.icure.cardinal.sdk.py.api.UserApi.modifyUserEmailBlocking(
+			self.cardinal_sdk._native,
+			json.dumps(payload).encode('utf-8'),
+		)
+		result_info = create_result_from_json(cast(call_result, c_char_p).value.decode('utf-8'))
+		symbols.DisposeString(call_result)
+		if result_info.failure is not None:
+			raise interpret_kt_error(result_info.failure)
+		else:
+			return_value = User._deserialize(result_info.success)
+			return return_value
+
+	async def modify_user_mobile_phone_async(self, user_id: str, new_mobile_phone: str, previous_mobile_phone: Optional[str]) -> User:
+		def do_decode(raw_result):
+			return User._deserialize(raw_result)
+		payload = {
+			"userId": user_id,
+			"newMobilePhone": new_mobile_phone,
+			"previousMobilePhone": previous_mobile_phone,
+		}
+		return await execute_async_method_job(
+			self.cardinal_sdk._executor,
+			True,
+			do_decode,
+			symbols.kotlin.root.com.icure.cardinal.sdk.py.api.UserApi.modifyUserMobilePhoneAsync,
+			self.cardinal_sdk._native,
+			json.dumps(payload).encode('utf-8'),
+		)
+
+	def modify_user_mobile_phone_blocking(self, user_id: str, new_mobile_phone: str, previous_mobile_phone: Optional[str]) -> User:
+		payload = {
+			"userId": user_id,
+			"newMobilePhone": new_mobile_phone,
+			"previousMobilePhone": previous_mobile_phone,
+		}
+		call_result = symbols.kotlin.root.com.icure.cardinal.sdk.py.api.UserApi.modifyUserMobilePhoneBlocking(
+			self.cardinal_sdk._native,
+			json.dumps(payload).encode('utf-8'),
+		)
+		result_info = create_result_from_json(cast(call_result, c_char_p).value.decode('utf-8'))
+		symbols.DisposeString(call_result)
+		if result_info.failure is not None:
+			raise interpret_kt_error(result_info.failure)
+		else:
+			return_value = User._deserialize(result_info.success)
+			return return_value
+
+	async def delete_user_by_id_async(self, entity_id: str, rev: str) -> StoredDocumentIdentifier:
+		def do_decode(raw_result):
+			return StoredDocumentIdentifier._deserialize(raw_result)
 		payload = {
 			"entityId": entity_id,
 			"rev": rev,
@@ -1218,7 +892,7 @@ class UserApi:
 			json.dumps(payload).encode('utf-8'),
 		)
 
-	def delete_user_by_id_blocking(self, entity_id: str, rev: str) -> DocIdentifier:
+	def delete_user_by_id_blocking(self, entity_id: str, rev: str) -> StoredDocumentIdentifier:
 		payload = {
 			"entityId": entity_id,
 			"rev": rev,
@@ -1232,33 +906,29 @@ class UserApi:
 		if result_info.failure is not None:
 			raise interpret_kt_error(result_info.failure)
 		else:
-			return_value = DocIdentifier._deserialize(result_info.success)
+			return_value = StoredDocumentIdentifier._deserialize(result_info.success)
 			return return_value
 
-	async def delete_user_in_group_by_id_async(self, group_id: str, entity_id: str, rev: str) -> DocIdentifier:
+	async def delete_users_by_ids_async(self, user_ids: list[StoredDocumentIdentifier]) -> list[StoredDocumentIdentifier]:
 		def do_decode(raw_result):
-			return DocIdentifier._deserialize(raw_result)
+			return [StoredDocumentIdentifier._deserialize(x1) for x1 in raw_result]
 		payload = {
-			"groupId": group_id,
-			"entityId": entity_id,
-			"rev": rev,
+			"userIds": [x0.__serialize__() for x0 in user_ids],
 		}
 		return await execute_async_method_job(
 			self.cardinal_sdk._executor,
 			True,
 			do_decode,
-			symbols.kotlin.root.com.icure.cardinal.sdk.py.api.UserApi.deleteUserInGroupByIdAsync,
+			symbols.kotlin.root.com.icure.cardinal.sdk.py.api.UserApi.deleteUsersByIdsAsync,
 			self.cardinal_sdk._native,
 			json.dumps(payload).encode('utf-8'),
 		)
 
-	def delete_user_in_group_by_id_blocking(self, group_id: str, entity_id: str, rev: str) -> DocIdentifier:
+	def delete_users_by_ids_blocking(self, user_ids: list[StoredDocumentIdentifier]) -> list[StoredDocumentIdentifier]:
 		payload = {
-			"groupId": group_id,
-			"entityId": entity_id,
-			"rev": rev,
+			"userIds": [x0.__serialize__() for x0 in user_ids],
 		}
-		call_result = symbols.kotlin.root.com.icure.cardinal.sdk.py.api.UserApi.deleteUserInGroupByIdBlocking(
+		call_result = symbols.kotlin.root.com.icure.cardinal.sdk.py.api.UserApi.deleteUsersByIdsBlocking(
 			self.cardinal_sdk._native,
 			json.dumps(payload).encode('utf-8'),
 		)
@@ -1267,7 +937,7 @@ class UserApi:
 		if result_info.failure is not None:
 			raise interpret_kt_error(result_info.failure)
 		else:
-			return_value = DocIdentifier._deserialize(result_info.success)
+			return_value = [StoredDocumentIdentifier._deserialize(x1) for x1 in result_info.success]
 			return return_value
 
 	async def purge_user_by_id_async(self, id: str, rev: str) -> None:
@@ -1299,6 +969,37 @@ class UserApi:
 		symbols.DisposeString(call_result)
 		if result_info.failure is not None:
 			raise interpret_kt_error(result_info.failure)
+
+	async def purge_users_by_ids_async(self, user_ids: list[StoredDocumentIdentifier]) -> list[StoredDocumentIdentifier]:
+		def do_decode(raw_result):
+			return [StoredDocumentIdentifier._deserialize(x1) for x1 in raw_result]
+		payload = {
+			"userIds": [x0.__serialize__() for x0 in user_ids],
+		}
+		return await execute_async_method_job(
+			self.cardinal_sdk._executor,
+			True,
+			do_decode,
+			symbols.kotlin.root.com.icure.cardinal.sdk.py.api.UserApi.purgeUsersByIdsAsync,
+			self.cardinal_sdk._native,
+			json.dumps(payload).encode('utf-8'),
+		)
+
+	def purge_users_by_ids_blocking(self, user_ids: list[StoredDocumentIdentifier]) -> list[StoredDocumentIdentifier]:
+		payload = {
+			"userIds": [x0.__serialize__() for x0 in user_ids],
+		}
+		call_result = symbols.kotlin.root.com.icure.cardinal.sdk.py.api.UserApi.purgeUsersByIdsBlocking(
+			self.cardinal_sdk._native,
+			json.dumps(payload).encode('utf-8'),
+		)
+		result_info = create_result_from_json(cast(call_result, c_char_p).value.decode('utf-8'))
+		symbols.DisposeString(call_result)
+		if result_info.failure is not None:
+			raise interpret_kt_error(result_info.failure)
+		else:
+			return_value = [StoredDocumentIdentifier._deserialize(x1) for x1 in result_info.success]
+			return return_value
 
 	async def undelete_user_by_id_async(self, id: str, rev: str) -> User:
 		def do_decode(raw_result):
@@ -1333,9 +1034,40 @@ class UserApi:
 			return_value = User._deserialize(result_info.success)
 			return return_value
 
-	async def delete_user_async(self, user: User) -> DocIdentifier:
+	async def undelete_users_by_ids_async(self, user_ids: list[StoredDocumentIdentifier]) -> list[User]:
 		def do_decode(raw_result):
-			return DocIdentifier._deserialize(raw_result)
+			return [User._deserialize(x1) for x1 in raw_result]
+		payload = {
+			"userIds": [x0.__serialize__() for x0 in user_ids],
+		}
+		return await execute_async_method_job(
+			self.cardinal_sdk._executor,
+			True,
+			do_decode,
+			symbols.kotlin.root.com.icure.cardinal.sdk.py.api.UserApi.undeleteUsersByIdsAsync,
+			self.cardinal_sdk._native,
+			json.dumps(payload).encode('utf-8'),
+		)
+
+	def undelete_users_by_ids_blocking(self, user_ids: list[StoredDocumentIdentifier]) -> list[User]:
+		payload = {
+			"userIds": [x0.__serialize__() for x0 in user_ids],
+		}
+		call_result = symbols.kotlin.root.com.icure.cardinal.sdk.py.api.UserApi.undeleteUsersByIdsBlocking(
+			self.cardinal_sdk._native,
+			json.dumps(payload).encode('utf-8'),
+		)
+		result_info = create_result_from_json(cast(call_result, c_char_p).value.decode('utf-8'))
+		symbols.DisposeString(call_result)
+		if result_info.failure is not None:
+			raise interpret_kt_error(result_info.failure)
+		else:
+			return_value = [User._deserialize(x1) for x1 in result_info.success]
+			return return_value
+
+	async def delete_user_async(self, user: User) -> StoredDocumentIdentifier:
+		def do_decode(raw_result):
+			return StoredDocumentIdentifier._deserialize(raw_result)
 		payload = {
 			"user": user.__serialize__(),
 		}
@@ -1348,7 +1080,7 @@ class UserApi:
 			json.dumps(payload).encode('utf-8'),
 		)
 
-	def delete_user_blocking(self, user: User) -> DocIdentifier:
+	def delete_user_blocking(self, user: User) -> StoredDocumentIdentifier:
 		payload = {
 			"user": user.__serialize__(),
 		}
@@ -1361,31 +1093,29 @@ class UserApi:
 		if result_info.failure is not None:
 			raise interpret_kt_error(result_info.failure)
 		else:
-			return_value = DocIdentifier._deserialize(result_info.success)
+			return_value = StoredDocumentIdentifier._deserialize(result_info.success)
 			return return_value
 
-	async def delete_user_in_group_async(self, group_id: str, user: User) -> DocIdentifier:
+	async def delete_users_async(self, users: list[User]) -> list[StoredDocumentIdentifier]:
 		def do_decode(raw_result):
-			return DocIdentifier._deserialize(raw_result)
+			return [StoredDocumentIdentifier._deserialize(x1) for x1 in raw_result]
 		payload = {
-			"groupId": group_id,
-			"user": user.__serialize__(),
+			"users": [x0.__serialize__() for x0 in users],
 		}
 		return await execute_async_method_job(
 			self.cardinal_sdk._executor,
 			True,
 			do_decode,
-			symbols.kotlin.root.com.icure.cardinal.sdk.py.api.UserApi.deleteUserInGroupAsync,
+			symbols.kotlin.root.com.icure.cardinal.sdk.py.api.UserApi.deleteUsersAsync,
 			self.cardinal_sdk._native,
 			json.dumps(payload).encode('utf-8'),
 		)
 
-	def delete_user_in_group_blocking(self, group_id: str, user: User) -> DocIdentifier:
+	def delete_users_blocking(self, users: list[User]) -> list[StoredDocumentIdentifier]:
 		payload = {
-			"groupId": group_id,
-			"user": user.__serialize__(),
+			"users": [x0.__serialize__() for x0 in users],
 		}
-		call_result = symbols.kotlin.root.com.icure.cardinal.sdk.py.api.UserApi.deleteUserInGroupBlocking(
+		call_result = symbols.kotlin.root.com.icure.cardinal.sdk.py.api.UserApi.deleteUsersBlocking(
 			self.cardinal_sdk._native,
 			json.dumps(payload).encode('utf-8'),
 		)
@@ -1394,7 +1124,7 @@ class UserApi:
 		if result_info.failure is not None:
 			raise interpret_kt_error(result_info.failure)
 		else:
-			return_value = DocIdentifier._deserialize(result_info.success)
+			return_value = [StoredDocumentIdentifier._deserialize(x1) for x1 in result_info.success]
 			return return_value
 
 	async def purge_user_async(self, user: User) -> None:
@@ -1424,6 +1154,37 @@ class UserApi:
 		symbols.DisposeString(call_result)
 		if result_info.failure is not None:
 			raise interpret_kt_error(result_info.failure)
+
+	async def purge_users_async(self, users: list[User]) -> list[StoredDocumentIdentifier]:
+		def do_decode(raw_result):
+			return [StoredDocumentIdentifier._deserialize(x1) for x1 in raw_result]
+		payload = {
+			"users": [x0.__serialize__() for x0 in users],
+		}
+		return await execute_async_method_job(
+			self.cardinal_sdk._executor,
+			True,
+			do_decode,
+			symbols.kotlin.root.com.icure.cardinal.sdk.py.api.UserApi.purgeUsersAsync,
+			self.cardinal_sdk._native,
+			json.dumps(payload).encode('utf-8'),
+		)
+
+	def purge_users_blocking(self, users: list[User]) -> list[StoredDocumentIdentifier]:
+		payload = {
+			"users": [x0.__serialize__() for x0 in users],
+		}
+		call_result = symbols.kotlin.root.com.icure.cardinal.sdk.py.api.UserApi.purgeUsersBlocking(
+			self.cardinal_sdk._native,
+			json.dumps(payload).encode('utf-8'),
+		)
+		result_info = create_result_from_json(cast(call_result, c_char_p).value.decode('utf-8'))
+		symbols.DisposeString(call_result)
+		if result_info.failure is not None:
+			raise interpret_kt_error(result_info.failure)
+		else:
+			return_value = [StoredDocumentIdentifier._deserialize(x1) for x1 in result_info.success]
+			return return_value
 
 	async def undelete_user_async(self, user: User) -> User:
 		def do_decode(raw_result):
@@ -1456,30 +1217,26 @@ class UserApi:
 			return_value = User._deserialize(result_info.success)
 			return return_value
 
-	async def set_user_inherits_permissions_async(self, user_id: str, group_id: str, value: bool) -> str:
+	async def undelete_users_async(self, users: list[User]) -> list[User]:
 		def do_decode(raw_result):
-			return raw_result
+			return [User._deserialize(x1) for x1 in raw_result]
 		payload = {
-			"userId": user_id,
-			"groupId": group_id,
-			"value": value,
+			"users": [x0.__serialize__() for x0 in users],
 		}
 		return await execute_async_method_job(
 			self.cardinal_sdk._executor,
 			True,
 			do_decode,
-			symbols.kotlin.root.com.icure.cardinal.sdk.py.api.UserApi.setUserInheritsPermissionsAsync,
+			symbols.kotlin.root.com.icure.cardinal.sdk.py.api.UserApi.undeleteUsersAsync,
 			self.cardinal_sdk._native,
 			json.dumps(payload).encode('utf-8'),
 		)
 
-	def set_user_inherits_permissions_blocking(self, user_id: str, group_id: str, value: bool) -> str:
+	def undelete_users_blocking(self, users: list[User]) -> list[User]:
 		payload = {
-			"userId": user_id,
-			"groupId": group_id,
-			"value": value,
+			"users": [x0.__serialize__() for x0 in users],
 		}
-		call_result = symbols.kotlin.root.com.icure.cardinal.sdk.py.api.UserApi.setUserInheritsPermissionsBlocking(
+		call_result = symbols.kotlin.root.com.icure.cardinal.sdk.py.api.UserApi.undeleteUsersBlocking(
 			self.cardinal_sdk._native,
 			json.dumps(payload).encode('utf-8'),
 		)
@@ -1488,44 +1245,7 @@ class UserApi:
 		if result_info.failure is not None:
 			raise interpret_kt_error(result_info.failure)
 		else:
-			return_value = result_info.success
-			return return_value
-
-	async def set_login_identifiers_async(self, user_id: str, group_id: str, identifier: LoginIdentifier, replace_existing: bool) -> bool:
-		def do_decode(raw_result):
-			return raw_result
-		payload = {
-			"userId": user_id,
-			"groupId": group_id,
-			"identifier": identifier.__serialize__(),
-			"replaceExisting": replace_existing,
-		}
-		return await execute_async_method_job(
-			self.cardinal_sdk._executor,
-			True,
-			do_decode,
-			symbols.kotlin.root.com.icure.cardinal.sdk.py.api.UserApi.setLoginIdentifiersAsync,
-			self.cardinal_sdk._native,
-			json.dumps(payload).encode('utf-8'),
-		)
-
-	def set_login_identifiers_blocking(self, user_id: str, group_id: str, identifier: LoginIdentifier, replace_existing: bool) -> bool:
-		payload = {
-			"userId": user_id,
-			"groupId": group_id,
-			"identifier": identifier.__serialize__(),
-			"replaceExisting": replace_existing,
-		}
-		call_result = symbols.kotlin.root.com.icure.cardinal.sdk.py.api.UserApi.setLoginIdentifiersBlocking(
-			self.cardinal_sdk._native,
-			json.dumps(payload).encode('utf-8'),
-		)
-		result_info = create_result_from_json(cast(call_result, c_char_p).value.decode('utf-8'))
-		symbols.DisposeString(call_result)
-		if result_info.failure is not None:
-			raise interpret_kt_error(result_info.failure)
-		else:
-			return_value = result_info.success
+			return_value = [User._deserialize(x1) for x1 in result_info.success]
 			return return_value
 
 	async def set_external_jwt_auth_by_identifiers_for_current_user_async(self, external_jwt_config_id: str, external_authentication_token: str) -> bool:
@@ -1606,3 +1326,1122 @@ class UserApi:
 				deserializer = lambda x: User._deserialize(x),
 				executor = self.cardinal_sdk._executor
 			)
+
+
+class UserApiInGroup:
+
+	def __init__(self, cardinal_sdk):
+		self.cardinal_sdk = cardinal_sdk
+
+	async def create_user_async(self, user: GroupScoped[User]) -> GroupScoped[User]:
+		def do_decode(raw_result):
+			return GroupScoped._deserialize(raw_result, lambda x1: User._deserialize(x1))
+		payload = {
+			"user": user.__serialize__(lambda x0: x0.__serialize__()),
+		}
+		return await execute_async_method_job(
+			self.cardinal_sdk._executor,
+			True,
+			do_decode,
+			symbols.kotlin.root.com.icure.cardinal.sdk.py.api.UserApi.inGroup.createUserAsync,
+			self.cardinal_sdk._native,
+			json.dumps(payload).encode('utf-8'),
+		)
+
+	def create_user_blocking(self, user: GroupScoped[User]) -> GroupScoped[User]:
+		payload = {
+			"user": user.__serialize__(lambda x0: x0.__serialize__()),
+		}
+		call_result = symbols.kotlin.root.com.icure.cardinal.sdk.py.api.UserApi.inGroup.createUserBlocking(
+			self.cardinal_sdk._native,
+			json.dumps(payload).encode('utf-8'),
+		)
+		result_info = create_result_from_json(cast(call_result, c_char_p).value.decode('utf-8'))
+		symbols.DisposeString(call_result)
+		if result_info.failure is not None:
+			raise interpret_kt_error(result_info.failure)
+		else:
+			return_value = GroupScoped._deserialize(result_info.success, lambda x1: User._deserialize(x1))
+			return return_value
+
+	async def create_users_async(self, users: list[GroupScoped[User]]) -> list[GroupScoped[User]]:
+		def do_decode(raw_result):
+			return [GroupScoped._deserialize(x1, lambda x2: User._deserialize(x2)) for x1 in raw_result]
+		payload = {
+			"users": [x0.__serialize__(lambda x1: x1.__serialize__()) for x0 in users],
+		}
+		return await execute_async_method_job(
+			self.cardinal_sdk._executor,
+			True,
+			do_decode,
+			symbols.kotlin.root.com.icure.cardinal.sdk.py.api.UserApi.inGroup.createUsersAsync,
+			self.cardinal_sdk._native,
+			json.dumps(payload).encode('utf-8'),
+		)
+
+	def create_users_blocking(self, users: list[GroupScoped[User]]) -> list[GroupScoped[User]]:
+		payload = {
+			"users": [x0.__serialize__(lambda x1: x1.__serialize__()) for x0 in users],
+		}
+		call_result = symbols.kotlin.root.com.icure.cardinal.sdk.py.api.UserApi.inGroup.createUsersBlocking(
+			self.cardinal_sdk._native,
+			json.dumps(payload).encode('utf-8'),
+		)
+		result_info = create_result_from_json(cast(call_result, c_char_p).value.decode('utf-8'))
+		symbols.DisposeString(call_result)
+		if result_info.failure is not None:
+			raise interpret_kt_error(result_info.failure)
+		else:
+			return_value = [GroupScoped._deserialize(x1, lambda x2: User._deserialize(x2)) for x1 in result_info.success]
+			return return_value
+
+	async def get_user_async(self, group_id: str, user_id: str) -> Optional[GroupScoped[User]]:
+		def do_decode(raw_result):
+			return GroupScoped._deserialize(raw_result, lambda x1: User._deserialize(x1)) if raw_result is not None else None
+		payload = {
+			"groupId": group_id,
+			"userId": user_id,
+		}
+		return await execute_async_method_job(
+			self.cardinal_sdk._executor,
+			True,
+			do_decode,
+			symbols.kotlin.root.com.icure.cardinal.sdk.py.api.UserApi.inGroup.getUserAsync,
+			self.cardinal_sdk._native,
+			json.dumps(payload).encode('utf-8'),
+		)
+
+	def get_user_blocking(self, group_id: str, user_id: str) -> Optional[GroupScoped[User]]:
+		payload = {
+			"groupId": group_id,
+			"userId": user_id,
+		}
+		call_result = symbols.kotlin.root.com.icure.cardinal.sdk.py.api.UserApi.inGroup.getUserBlocking(
+			self.cardinal_sdk._native,
+			json.dumps(payload).encode('utf-8'),
+		)
+		result_info = create_result_from_json(cast(call_result, c_char_p).value.decode('utf-8'))
+		symbols.DisposeString(call_result)
+		if result_info.failure is not None:
+			raise interpret_kt_error(result_info.failure)
+		else:
+			return_value = GroupScoped._deserialize(result_info.success, lambda x1: User._deserialize(x1)) if result_info.success is not None else None
+			return return_value
+
+	async def get_users_async(self, group_id: str, user_ids: list[str]) -> list[GroupScoped[User]]:
+		def do_decode(raw_result):
+			return [GroupScoped._deserialize(x1, lambda x2: User._deserialize(x2)) for x1 in raw_result]
+		payload = {
+			"groupId": group_id,
+			"userIds": [x0 for x0 in user_ids],
+		}
+		return await execute_async_method_job(
+			self.cardinal_sdk._executor,
+			True,
+			do_decode,
+			symbols.kotlin.root.com.icure.cardinal.sdk.py.api.UserApi.inGroup.getUsersAsync,
+			self.cardinal_sdk._native,
+			json.dumps(payload).encode('utf-8'),
+		)
+
+	def get_users_blocking(self, group_id: str, user_ids: list[str]) -> list[GroupScoped[User]]:
+		payload = {
+			"groupId": group_id,
+			"userIds": [x0 for x0 in user_ids],
+		}
+		call_result = symbols.kotlin.root.com.icure.cardinal.sdk.py.api.UserApi.inGroup.getUsersBlocking(
+			self.cardinal_sdk._native,
+			json.dumps(payload).encode('utf-8'),
+		)
+		result_info = create_result_from_json(cast(call_result, c_char_p).value.decode('utf-8'))
+		symbols.DisposeString(call_result)
+		if result_info.failure is not None:
+			raise interpret_kt_error(result_info.failure)
+		else:
+			return_value = [GroupScoped._deserialize(x1, lambda x2: User._deserialize(x2)) for x1 in result_info.success]
+			return return_value
+
+	async def modify_user_async(self, user: GroupScoped[User]) -> GroupScoped[User]:
+		def do_decode(raw_result):
+			return GroupScoped._deserialize(raw_result, lambda x1: User._deserialize(x1))
+		payload = {
+			"user": user.__serialize__(lambda x0: x0.__serialize__()),
+		}
+		return await execute_async_method_job(
+			self.cardinal_sdk._executor,
+			True,
+			do_decode,
+			symbols.kotlin.root.com.icure.cardinal.sdk.py.api.UserApi.inGroup.modifyUserAsync,
+			self.cardinal_sdk._native,
+			json.dumps(payload).encode('utf-8'),
+		)
+
+	def modify_user_blocking(self, user: GroupScoped[User]) -> GroupScoped[User]:
+		payload = {
+			"user": user.__serialize__(lambda x0: x0.__serialize__()),
+		}
+		call_result = symbols.kotlin.root.com.icure.cardinal.sdk.py.api.UserApi.inGroup.modifyUserBlocking(
+			self.cardinal_sdk._native,
+			json.dumps(payload).encode('utf-8'),
+		)
+		result_info = create_result_from_json(cast(call_result, c_char_p).value.decode('utf-8'))
+		symbols.DisposeString(call_result)
+		if result_info.failure is not None:
+			raise interpret_kt_error(result_info.failure)
+		else:
+			return_value = GroupScoped._deserialize(result_info.success, lambda x1: User._deserialize(x1))
+			return return_value
+
+	async def modify_users_async(self, users: list[GroupScoped[User]]) -> list[GroupScoped[User]]:
+		def do_decode(raw_result):
+			return [GroupScoped._deserialize(x1, lambda x2: User._deserialize(x2)) for x1 in raw_result]
+		payload = {
+			"users": [x0.__serialize__(lambda x1: x1.__serialize__()) for x0 in users],
+		}
+		return await execute_async_method_job(
+			self.cardinal_sdk._executor,
+			True,
+			do_decode,
+			symbols.kotlin.root.com.icure.cardinal.sdk.py.api.UserApi.inGroup.modifyUsersAsync,
+			self.cardinal_sdk._native,
+			json.dumps(payload).encode('utf-8'),
+		)
+
+	def modify_users_blocking(self, users: list[GroupScoped[User]]) -> list[GroupScoped[User]]:
+		payload = {
+			"users": [x0.__serialize__(lambda x1: x1.__serialize__()) for x0 in users],
+		}
+		call_result = symbols.kotlin.root.com.icure.cardinal.sdk.py.api.UserApi.inGroup.modifyUsersBlocking(
+			self.cardinal_sdk._native,
+			json.dumps(payload).encode('utf-8'),
+		)
+		result_info = create_result_from_json(cast(call_result, c_char_p).value.decode('utf-8'))
+		symbols.DisposeString(call_result)
+		if result_info.failure is not None:
+			raise interpret_kt_error(result_info.failure)
+		else:
+			return_value = [GroupScoped._deserialize(x1, lambda x2: User._deserialize(x2)) for x1 in result_info.success]
+			return return_value
+
+	async def delete_user_by_id_async(self, user_id: GroupScoped[StoredDocumentIdentifier]) -> GroupScoped[StoredDocumentIdentifier]:
+		def do_decode(raw_result):
+			return GroupScoped._deserialize(raw_result, lambda x1: StoredDocumentIdentifier._deserialize(x1))
+		payload = {
+			"userId": user_id.__serialize__(lambda x0: x0.__serialize__()),
+		}
+		return await execute_async_method_job(
+			self.cardinal_sdk._executor,
+			True,
+			do_decode,
+			symbols.kotlin.root.com.icure.cardinal.sdk.py.api.UserApi.inGroup.deleteUserByIdAsync,
+			self.cardinal_sdk._native,
+			json.dumps(payload).encode('utf-8'),
+		)
+
+	def delete_user_by_id_blocking(self, user_id: GroupScoped[StoredDocumentIdentifier]) -> GroupScoped[StoredDocumentIdentifier]:
+		payload = {
+			"userId": user_id.__serialize__(lambda x0: x0.__serialize__()),
+		}
+		call_result = symbols.kotlin.root.com.icure.cardinal.sdk.py.api.UserApi.inGroup.deleteUserByIdBlocking(
+			self.cardinal_sdk._native,
+			json.dumps(payload).encode('utf-8'),
+		)
+		result_info = create_result_from_json(cast(call_result, c_char_p).value.decode('utf-8'))
+		symbols.DisposeString(call_result)
+		if result_info.failure is not None:
+			raise interpret_kt_error(result_info.failure)
+		else:
+			return_value = GroupScoped._deserialize(result_info.success, lambda x1: StoredDocumentIdentifier._deserialize(x1))
+			return return_value
+
+	async def delete_users_by_ids_async(self, user_ids: list[GroupScoped[StoredDocumentIdentifier]]) -> list[GroupScoped[StoredDocumentIdentifier]]:
+		def do_decode(raw_result):
+			return [GroupScoped._deserialize(x1, lambda x2: StoredDocumentIdentifier._deserialize(x2)) for x1 in raw_result]
+		payload = {
+			"userIds": [x0.__serialize__(lambda x1: x1.__serialize__()) for x0 in user_ids],
+		}
+		return await execute_async_method_job(
+			self.cardinal_sdk._executor,
+			True,
+			do_decode,
+			symbols.kotlin.root.com.icure.cardinal.sdk.py.api.UserApi.inGroup.deleteUsersByIdsAsync,
+			self.cardinal_sdk._native,
+			json.dumps(payload).encode('utf-8'),
+		)
+
+	def delete_users_by_ids_blocking(self, user_ids: list[GroupScoped[StoredDocumentIdentifier]]) -> list[GroupScoped[StoredDocumentIdentifier]]:
+		payload = {
+			"userIds": [x0.__serialize__(lambda x1: x1.__serialize__()) for x0 in user_ids],
+		}
+		call_result = symbols.kotlin.root.com.icure.cardinal.sdk.py.api.UserApi.inGroup.deleteUsersByIdsBlocking(
+			self.cardinal_sdk._native,
+			json.dumps(payload).encode('utf-8'),
+		)
+		result_info = create_result_from_json(cast(call_result, c_char_p).value.decode('utf-8'))
+		symbols.DisposeString(call_result)
+		if result_info.failure is not None:
+			raise interpret_kt_error(result_info.failure)
+		else:
+			return_value = [GroupScoped._deserialize(x1, lambda x2: StoredDocumentIdentifier._deserialize(x2)) for x1 in result_info.success]
+			return return_value
+
+	async def delete_user_async(self, user: GroupScoped[User]) -> GroupScoped[StoredDocumentIdentifier]:
+		def do_decode(raw_result):
+			return GroupScoped._deserialize(raw_result, lambda x1: StoredDocumentIdentifier._deserialize(x1))
+		payload = {
+			"user": user.__serialize__(lambda x0: x0.__serialize__()),
+		}
+		return await execute_async_method_job(
+			self.cardinal_sdk._executor,
+			True,
+			do_decode,
+			symbols.kotlin.root.com.icure.cardinal.sdk.py.api.UserApi.inGroup.deleteUserAsync,
+			self.cardinal_sdk._native,
+			json.dumps(payload).encode('utf-8'),
+		)
+
+	def delete_user_blocking(self, user: GroupScoped[User]) -> GroupScoped[StoredDocumentIdentifier]:
+		payload = {
+			"user": user.__serialize__(lambda x0: x0.__serialize__()),
+		}
+		call_result = symbols.kotlin.root.com.icure.cardinal.sdk.py.api.UserApi.inGroup.deleteUserBlocking(
+			self.cardinal_sdk._native,
+			json.dumps(payload).encode('utf-8'),
+		)
+		result_info = create_result_from_json(cast(call_result, c_char_p).value.decode('utf-8'))
+		symbols.DisposeString(call_result)
+		if result_info.failure is not None:
+			raise interpret_kt_error(result_info.failure)
+		else:
+			return_value = GroupScoped._deserialize(result_info.success, lambda x1: StoredDocumentIdentifier._deserialize(x1))
+			return return_value
+
+	async def delete_users_async(self, users: list[GroupScoped[User]]) -> list[GroupScoped[StoredDocumentIdentifier]]:
+		def do_decode(raw_result):
+			return [GroupScoped._deserialize(x1, lambda x2: StoredDocumentIdentifier._deserialize(x2)) for x1 in raw_result]
+		payload = {
+			"users": [x0.__serialize__(lambda x1: x1.__serialize__()) for x0 in users],
+		}
+		return await execute_async_method_job(
+			self.cardinal_sdk._executor,
+			True,
+			do_decode,
+			symbols.kotlin.root.com.icure.cardinal.sdk.py.api.UserApi.inGroup.deleteUsersAsync,
+			self.cardinal_sdk._native,
+			json.dumps(payload).encode('utf-8'),
+		)
+
+	def delete_users_blocking(self, users: list[GroupScoped[User]]) -> list[GroupScoped[StoredDocumentIdentifier]]:
+		payload = {
+			"users": [x0.__serialize__(lambda x1: x1.__serialize__()) for x0 in users],
+		}
+		call_result = symbols.kotlin.root.com.icure.cardinal.sdk.py.api.UserApi.inGroup.deleteUsersBlocking(
+			self.cardinal_sdk._native,
+			json.dumps(payload).encode('utf-8'),
+		)
+		result_info = create_result_from_json(cast(call_result, c_char_p).value.decode('utf-8'))
+		symbols.DisposeString(call_result)
+		if result_info.failure is not None:
+			raise interpret_kt_error(result_info.failure)
+		else:
+			return_value = [GroupScoped._deserialize(x1, lambda x2: StoredDocumentIdentifier._deserialize(x2)) for x1 in result_info.success]
+			return return_value
+
+	async def purge_user_by_id_async(self, user_id: GroupScoped[StoredDocumentIdentifier]) -> None:
+		def do_decode(raw_result):
+			return raw_result
+		payload = {
+			"userId": user_id.__serialize__(lambda x0: x0.__serialize__()),
+		}
+		return await execute_async_method_job(
+			self.cardinal_sdk._executor,
+			True,
+			do_decode,
+			symbols.kotlin.root.com.icure.cardinal.sdk.py.api.UserApi.inGroup.purgeUserByIdAsync,
+			self.cardinal_sdk._native,
+			json.dumps(payload).encode('utf-8'),
+		)
+
+	def purge_user_by_id_blocking(self, user_id: GroupScoped[StoredDocumentIdentifier]) -> None:
+		payload = {
+			"userId": user_id.__serialize__(lambda x0: x0.__serialize__()),
+		}
+		call_result = symbols.kotlin.root.com.icure.cardinal.sdk.py.api.UserApi.inGroup.purgeUserByIdBlocking(
+			self.cardinal_sdk._native,
+			json.dumps(payload).encode('utf-8'),
+		)
+		result_info = create_result_from_json(cast(call_result, c_char_p).value.decode('utf-8'))
+		symbols.DisposeString(call_result)
+		if result_info.failure is not None:
+			raise interpret_kt_error(result_info.failure)
+
+	async def purge_users_by_ids_async(self, user_ids: list[GroupScoped[StoredDocumentIdentifier]]) -> list[GroupScoped[StoredDocumentIdentifier]]:
+		def do_decode(raw_result):
+			return [GroupScoped._deserialize(x1, lambda x2: StoredDocumentIdentifier._deserialize(x2)) for x1 in raw_result]
+		payload = {
+			"userIds": [x0.__serialize__(lambda x1: x1.__serialize__()) for x0 in user_ids],
+		}
+		return await execute_async_method_job(
+			self.cardinal_sdk._executor,
+			True,
+			do_decode,
+			symbols.kotlin.root.com.icure.cardinal.sdk.py.api.UserApi.inGroup.purgeUsersByIdsAsync,
+			self.cardinal_sdk._native,
+			json.dumps(payload).encode('utf-8'),
+		)
+
+	def purge_users_by_ids_blocking(self, user_ids: list[GroupScoped[StoredDocumentIdentifier]]) -> list[GroupScoped[StoredDocumentIdentifier]]:
+		payload = {
+			"userIds": [x0.__serialize__(lambda x1: x1.__serialize__()) for x0 in user_ids],
+		}
+		call_result = symbols.kotlin.root.com.icure.cardinal.sdk.py.api.UserApi.inGroup.purgeUsersByIdsBlocking(
+			self.cardinal_sdk._native,
+			json.dumps(payload).encode('utf-8'),
+		)
+		result_info = create_result_from_json(cast(call_result, c_char_p).value.decode('utf-8'))
+		symbols.DisposeString(call_result)
+		if result_info.failure is not None:
+			raise interpret_kt_error(result_info.failure)
+		else:
+			return_value = [GroupScoped._deserialize(x1, lambda x2: StoredDocumentIdentifier._deserialize(x2)) for x1 in result_info.success]
+			return return_value
+
+	async def purge_user_async(self, user: GroupScoped[User]) -> None:
+		def do_decode(raw_result):
+			return raw_result
+		payload = {
+			"user": user.__serialize__(lambda x0: x0.__serialize__()),
+		}
+		return await execute_async_method_job(
+			self.cardinal_sdk._executor,
+			True,
+			do_decode,
+			symbols.kotlin.root.com.icure.cardinal.sdk.py.api.UserApi.inGroup.purgeUserAsync,
+			self.cardinal_sdk._native,
+			json.dumps(payload).encode('utf-8'),
+		)
+
+	def purge_user_blocking(self, user: GroupScoped[User]) -> None:
+		payload = {
+			"user": user.__serialize__(lambda x0: x0.__serialize__()),
+		}
+		call_result = symbols.kotlin.root.com.icure.cardinal.sdk.py.api.UserApi.inGroup.purgeUserBlocking(
+			self.cardinal_sdk._native,
+			json.dumps(payload).encode('utf-8'),
+		)
+		result_info = create_result_from_json(cast(call_result, c_char_p).value.decode('utf-8'))
+		symbols.DisposeString(call_result)
+		if result_info.failure is not None:
+			raise interpret_kt_error(result_info.failure)
+
+	async def purge_users_async(self, user_ids: list[GroupScoped[User]]) -> list[GroupScoped[StoredDocumentIdentifier]]:
+		def do_decode(raw_result):
+			return [GroupScoped._deserialize(x1, lambda x2: StoredDocumentIdentifier._deserialize(x2)) for x1 in raw_result]
+		payload = {
+			"userIds": [x0.__serialize__(lambda x1: x1.__serialize__()) for x0 in user_ids],
+		}
+		return await execute_async_method_job(
+			self.cardinal_sdk._executor,
+			True,
+			do_decode,
+			symbols.kotlin.root.com.icure.cardinal.sdk.py.api.UserApi.inGroup.purgeUsersAsync,
+			self.cardinal_sdk._native,
+			json.dumps(payload).encode('utf-8'),
+		)
+
+	def purge_users_blocking(self, user_ids: list[GroupScoped[User]]) -> list[GroupScoped[StoredDocumentIdentifier]]:
+		payload = {
+			"userIds": [x0.__serialize__(lambda x1: x1.__serialize__()) for x0 in user_ids],
+		}
+		call_result = symbols.kotlin.root.com.icure.cardinal.sdk.py.api.UserApi.inGroup.purgeUsersBlocking(
+			self.cardinal_sdk._native,
+			json.dumps(payload).encode('utf-8'),
+		)
+		result_info = create_result_from_json(cast(call_result, c_char_p).value.decode('utf-8'))
+		symbols.DisposeString(call_result)
+		if result_info.failure is not None:
+			raise interpret_kt_error(result_info.failure)
+		else:
+			return_value = [GroupScoped._deserialize(x1, lambda x2: StoredDocumentIdentifier._deserialize(x2)) for x1 in result_info.success]
+			return return_value
+
+	async def undelete_user_by_id_async(self, user_id: GroupScoped[StoredDocumentIdentifier]) -> GroupScoped[User]:
+		def do_decode(raw_result):
+			return GroupScoped._deserialize(raw_result, lambda x1: User._deserialize(x1))
+		payload = {
+			"userId": user_id.__serialize__(lambda x0: x0.__serialize__()),
+		}
+		return await execute_async_method_job(
+			self.cardinal_sdk._executor,
+			True,
+			do_decode,
+			symbols.kotlin.root.com.icure.cardinal.sdk.py.api.UserApi.inGroup.undeleteUserByIdAsync,
+			self.cardinal_sdk._native,
+			json.dumps(payload).encode('utf-8'),
+		)
+
+	def undelete_user_by_id_blocking(self, user_id: GroupScoped[StoredDocumentIdentifier]) -> GroupScoped[User]:
+		payload = {
+			"userId": user_id.__serialize__(lambda x0: x0.__serialize__()),
+		}
+		call_result = symbols.kotlin.root.com.icure.cardinal.sdk.py.api.UserApi.inGroup.undeleteUserByIdBlocking(
+			self.cardinal_sdk._native,
+			json.dumps(payload).encode('utf-8'),
+		)
+		result_info = create_result_from_json(cast(call_result, c_char_p).value.decode('utf-8'))
+		symbols.DisposeString(call_result)
+		if result_info.failure is not None:
+			raise interpret_kt_error(result_info.failure)
+		else:
+			return_value = GroupScoped._deserialize(result_info.success, lambda x1: User._deserialize(x1))
+			return return_value
+
+	async def undelete_users_by_ids_async(self, user_ids: list[GroupScoped[StoredDocumentIdentifier]]) -> list[GroupScoped[User]]:
+		def do_decode(raw_result):
+			return [GroupScoped._deserialize(x1, lambda x2: User._deserialize(x2)) for x1 in raw_result]
+		payload = {
+			"userIds": [x0.__serialize__(lambda x1: x1.__serialize__()) for x0 in user_ids],
+		}
+		return await execute_async_method_job(
+			self.cardinal_sdk._executor,
+			True,
+			do_decode,
+			symbols.kotlin.root.com.icure.cardinal.sdk.py.api.UserApi.inGroup.undeleteUsersByIdsAsync,
+			self.cardinal_sdk._native,
+			json.dumps(payload).encode('utf-8'),
+		)
+
+	def undelete_users_by_ids_blocking(self, user_ids: list[GroupScoped[StoredDocumentIdentifier]]) -> list[GroupScoped[User]]:
+		payload = {
+			"userIds": [x0.__serialize__(lambda x1: x1.__serialize__()) for x0 in user_ids],
+		}
+		call_result = symbols.kotlin.root.com.icure.cardinal.sdk.py.api.UserApi.inGroup.undeleteUsersByIdsBlocking(
+			self.cardinal_sdk._native,
+			json.dumps(payload).encode('utf-8'),
+		)
+		result_info = create_result_from_json(cast(call_result, c_char_p).value.decode('utf-8'))
+		symbols.DisposeString(call_result)
+		if result_info.failure is not None:
+			raise interpret_kt_error(result_info.failure)
+		else:
+			return_value = [GroupScoped._deserialize(x1, lambda x2: User._deserialize(x2)) for x1 in result_info.success]
+			return return_value
+
+	async def undelete_user_async(self, user: GroupScoped[User]) -> GroupScoped[User]:
+		def do_decode(raw_result):
+			return GroupScoped._deserialize(raw_result, lambda x1: User._deserialize(x1))
+		payload = {
+			"user": user.__serialize__(lambda x0: x0.__serialize__()),
+		}
+		return await execute_async_method_job(
+			self.cardinal_sdk._executor,
+			True,
+			do_decode,
+			symbols.kotlin.root.com.icure.cardinal.sdk.py.api.UserApi.inGroup.undeleteUserAsync,
+			self.cardinal_sdk._native,
+			json.dumps(payload).encode('utf-8'),
+		)
+
+	def undelete_user_blocking(self, user: GroupScoped[User]) -> GroupScoped[User]:
+		payload = {
+			"user": user.__serialize__(lambda x0: x0.__serialize__()),
+		}
+		call_result = symbols.kotlin.root.com.icure.cardinal.sdk.py.api.UserApi.inGroup.undeleteUserBlocking(
+			self.cardinal_sdk._native,
+			json.dumps(payload).encode('utf-8'),
+		)
+		result_info = create_result_from_json(cast(call_result, c_char_p).value.decode('utf-8'))
+		symbols.DisposeString(call_result)
+		if result_info.failure is not None:
+			raise interpret_kt_error(result_info.failure)
+		else:
+			return_value = GroupScoped._deserialize(result_info.success, lambda x1: User._deserialize(x1))
+			return return_value
+
+	async def undelete_users_async(self, users: list[GroupScoped[User]]) -> list[GroupScoped[User]]:
+		def do_decode(raw_result):
+			return [GroupScoped._deserialize(x1, lambda x2: User._deserialize(x2)) for x1 in raw_result]
+		payload = {
+			"users": [x0.__serialize__(lambda x1: x1.__serialize__()) for x0 in users],
+		}
+		return await execute_async_method_job(
+			self.cardinal_sdk._executor,
+			True,
+			do_decode,
+			symbols.kotlin.root.com.icure.cardinal.sdk.py.api.UserApi.inGroup.undeleteUsersAsync,
+			self.cardinal_sdk._native,
+			json.dumps(payload).encode('utf-8'),
+		)
+
+	def undelete_users_blocking(self, users: list[GroupScoped[User]]) -> list[GroupScoped[User]]:
+		payload = {
+			"users": [x0.__serialize__(lambda x1: x1.__serialize__()) for x0 in users],
+		}
+		call_result = symbols.kotlin.root.com.icure.cardinal.sdk.py.api.UserApi.inGroup.undeleteUsersBlocking(
+			self.cardinal_sdk._native,
+			json.dumps(payload).encode('utf-8'),
+		)
+		result_info = create_result_from_json(cast(call_result, c_char_p).value.decode('utf-8'))
+		symbols.DisposeString(call_result)
+		if result_info.failure is not None:
+			raise interpret_kt_error(result_info.failure)
+		else:
+			return_value = [GroupScoped._deserialize(x1, lambda x2: User._deserialize(x2)) for x1 in result_info.success]
+			return return_value
+
+	async def filter_users_by_async(self, group_id: str, filter: BaseFilterOptions[User]) -> PaginatedListIterator[GroupScoped[User]]:
+		def do_decode(raw_result):
+			return PaginatedListIterator[GroupScoped[User]](
+				producer = raw_result,
+				deserializer = lambda x: GroupScoped._deserialize(x, lambda x1: User._deserialize(x1)),
+				executor = self.cardinal_sdk._executor
+			)
+		payload = {
+			"groupId": group_id,
+			"filter": filter.__serialize__(),
+		}
+		return await execute_async_method_job(
+			self.cardinal_sdk._executor,
+			False,
+			do_decode,
+			symbols.kotlin.root.com.icure.cardinal.sdk.py.api.UserApi.inGroup.filterUsersByAsync,
+			self.cardinal_sdk._native,
+			json.dumps(payload).encode('utf-8'),
+		)
+
+	def filter_users_by_blocking(self, group_id: str, filter: BaseFilterOptions[User]) -> PaginatedListIterator[GroupScoped[User]]:
+		payload = {
+			"groupId": group_id,
+			"filter": filter.__serialize__(),
+		}
+		call_result = symbols.kotlin.root.com.icure.cardinal.sdk.py.api.UserApi.inGroup.filterUsersByBlocking(
+			self.cardinal_sdk._native,
+			json.dumps(payload).encode('utf-8'),
+		)
+		error_str_pointer = symbols.kotlin.root.com.icure.cardinal.sdk.py.utils.PyResult.get_failure(call_result)
+		if error_str_pointer is not None:
+			error_data_str = cast(error_str_pointer, c_char_p).value.decode('utf_8')
+			symbols.DisposeString(error_str_pointer)
+			symbols.DisposeStablePointer(call_result.pinned)
+			raise interpret_kt_error(json.loads(error_data_str))
+		else:
+			class_pointer = symbols.kotlin.root.com.icure.cardinal.sdk.py.utils.PyResult.get_success(call_result)
+			symbols.DisposeStablePointer(call_result.pinned)
+			return PaginatedListIterator[GroupScoped[User]](
+				producer = class_pointer,
+				deserializer = lambda x: GroupScoped._deserialize(x, lambda x1: User._deserialize(x1)),
+				executor = self.cardinal_sdk._executor
+			)
+
+	async def match_users_by_async(self, group_id: str, filter: BaseFilterOptions[User]) -> list[str]:
+		def do_decode(raw_result):
+			return [x1 for x1 in raw_result]
+		payload = {
+			"groupId": group_id,
+			"filter": filter.__serialize__(),
+		}
+		return await execute_async_method_job(
+			self.cardinal_sdk._executor,
+			True,
+			do_decode,
+			symbols.kotlin.root.com.icure.cardinal.sdk.py.api.UserApi.inGroup.matchUsersByAsync,
+			self.cardinal_sdk._native,
+			json.dumps(payload).encode('utf-8'),
+		)
+
+	def match_users_by_blocking(self, group_id: str, filter: BaseFilterOptions[User]) -> list[str]:
+		payload = {
+			"groupId": group_id,
+			"filter": filter.__serialize__(),
+		}
+		call_result = symbols.kotlin.root.com.icure.cardinal.sdk.py.api.UserApi.inGroup.matchUsersByBlocking(
+			self.cardinal_sdk._native,
+			json.dumps(payload).encode('utf-8'),
+		)
+		result_info = create_result_from_json(cast(call_result, c_char_p).value.decode('utf-8'))
+		symbols.DisposeString(call_result)
+		if result_info.failure is not None:
+			raise interpret_kt_error(result_info.failure)
+		else:
+			return_value = [x1 for x1 in result_info.success]
+			return return_value
+
+	async def filter_users_by_sorted_async(self, group_id: str, filter: BaseSortableFilterOptions[User]) -> PaginatedListIterator[GroupScoped[User]]:
+		def do_decode(raw_result):
+			return PaginatedListIterator[GroupScoped[User]](
+				producer = raw_result,
+				deserializer = lambda x: GroupScoped._deserialize(x, lambda x1: User._deserialize(x1)),
+				executor = self.cardinal_sdk._executor
+			)
+		payload = {
+			"groupId": group_id,
+			"filter": filter.__serialize__(),
+		}
+		return await execute_async_method_job(
+			self.cardinal_sdk._executor,
+			False,
+			do_decode,
+			symbols.kotlin.root.com.icure.cardinal.sdk.py.api.UserApi.inGroup.filterUsersBySortedAsync,
+			self.cardinal_sdk._native,
+			json.dumps(payload).encode('utf-8'),
+		)
+
+	def filter_users_by_sorted_blocking(self, group_id: str, filter: BaseSortableFilterOptions[User]) -> PaginatedListIterator[GroupScoped[User]]:
+		payload = {
+			"groupId": group_id,
+			"filter": filter.__serialize__(),
+		}
+		call_result = symbols.kotlin.root.com.icure.cardinal.sdk.py.api.UserApi.inGroup.filterUsersBySortedBlocking(
+			self.cardinal_sdk._native,
+			json.dumps(payload).encode('utf-8'),
+		)
+		error_str_pointer = symbols.kotlin.root.com.icure.cardinal.sdk.py.utils.PyResult.get_failure(call_result)
+		if error_str_pointer is not None:
+			error_data_str = cast(error_str_pointer, c_char_p).value.decode('utf_8')
+			symbols.DisposeString(error_str_pointer)
+			symbols.DisposeStablePointer(call_result.pinned)
+			raise interpret_kt_error(json.loads(error_data_str))
+		else:
+			class_pointer = symbols.kotlin.root.com.icure.cardinal.sdk.py.utils.PyResult.get_success(call_result)
+			symbols.DisposeStablePointer(call_result.pinned)
+			return PaginatedListIterator[GroupScoped[User]](
+				producer = class_pointer,
+				deserializer = lambda x: GroupScoped._deserialize(x, lambda x1: User._deserialize(x1)),
+				executor = self.cardinal_sdk._executor
+			)
+
+	async def match_users_by_sorted_async(self, group_id: str, filter: BaseSortableFilterOptions[User]) -> list[str]:
+		def do_decode(raw_result):
+			return [x1 for x1 in raw_result]
+		payload = {
+			"groupId": group_id,
+			"filter": filter.__serialize__(),
+		}
+		return await execute_async_method_job(
+			self.cardinal_sdk._executor,
+			True,
+			do_decode,
+			symbols.kotlin.root.com.icure.cardinal.sdk.py.api.UserApi.inGroup.matchUsersBySortedAsync,
+			self.cardinal_sdk._native,
+			json.dumps(payload).encode('utf-8'),
+		)
+
+	def match_users_by_sorted_blocking(self, group_id: str, filter: BaseSortableFilterOptions[User]) -> list[str]:
+		payload = {
+			"groupId": group_id,
+			"filter": filter.__serialize__(),
+		}
+		call_result = symbols.kotlin.root.com.icure.cardinal.sdk.py.api.UserApi.inGroup.matchUsersBySortedBlocking(
+			self.cardinal_sdk._native,
+			json.dumps(payload).encode('utf-8'),
+		)
+		result_info = create_result_from_json(cast(call_result, c_char_p).value.decode('utf-8'))
+		symbols.DisposeString(call_result)
+		if result_info.failure is not None:
+			raise interpret_kt_error(result_info.failure)
+		else:
+			return_value = [x1 for x1 in result_info.success]
+			return return_value
+
+	async def set_user_roles_async(self, user: GroupScoped[User], roles_ids: list[str]) -> GroupScoped[User]:
+		def do_decode(raw_result):
+			return GroupScoped._deserialize(raw_result, lambda x1: User._deserialize(x1))
+		payload = {
+			"user": user.__serialize__(lambda x0: x0.__serialize__()),
+			"rolesIds": [x0 for x0 in roles_ids],
+		}
+		return await execute_async_method_job(
+			self.cardinal_sdk._executor,
+			True,
+			do_decode,
+			symbols.kotlin.root.com.icure.cardinal.sdk.py.api.UserApi.inGroup.setUserRolesAsync,
+			self.cardinal_sdk._native,
+			json.dumps(payload).encode('utf-8'),
+		)
+
+	def set_user_roles_blocking(self, user: GroupScoped[User], roles_ids: list[str]) -> GroupScoped[User]:
+		payload = {
+			"user": user.__serialize__(lambda x0: x0.__serialize__()),
+			"rolesIds": [x0 for x0 in roles_ids],
+		}
+		call_result = symbols.kotlin.root.com.icure.cardinal.sdk.py.api.UserApi.inGroup.setUserRolesBlocking(
+			self.cardinal_sdk._native,
+			json.dumps(payload).encode('utf-8'),
+		)
+		result_info = create_result_from_json(cast(call_result, c_char_p).value.decode('utf-8'))
+		symbols.DisposeString(call_result)
+		if result_info.failure is not None:
+			raise interpret_kt_error(result_info.failure)
+		else:
+			return_value = GroupScoped._deserialize(result_info.success, lambda x1: User._deserialize(x1))
+			return return_value
+
+	async def reset_user_roles_async(self, user: GroupScoped[User]) -> GroupScoped[User]:
+		def do_decode(raw_result):
+			return GroupScoped._deserialize(raw_result, lambda x1: User._deserialize(x1))
+		payload = {
+			"user": user.__serialize__(lambda x0: x0.__serialize__()),
+		}
+		return await execute_async_method_job(
+			self.cardinal_sdk._executor,
+			True,
+			do_decode,
+			symbols.kotlin.root.com.icure.cardinal.sdk.py.api.UserApi.inGroup.resetUserRolesAsync,
+			self.cardinal_sdk._native,
+			json.dumps(payload).encode('utf-8'),
+		)
+
+	def reset_user_roles_blocking(self, user: GroupScoped[User]) -> GroupScoped[User]:
+		payload = {
+			"user": user.__serialize__(lambda x0: x0.__serialize__()),
+		}
+		call_result = symbols.kotlin.root.com.icure.cardinal.sdk.py.api.UserApi.inGroup.resetUserRolesBlocking(
+			self.cardinal_sdk._native,
+			json.dumps(payload).encode('utf-8'),
+		)
+		result_info = create_result_from_json(cast(call_result, c_char_p).value.decode('utf-8'))
+		symbols.DisposeString(call_result)
+		if result_info.failure is not None:
+			raise interpret_kt_error(result_info.failure)
+		else:
+			return_value = GroupScoped._deserialize(result_info.success, lambda x1: User._deserialize(x1))
+			return return_value
+
+	async def get_token_async(self, user_identifier: str, group_id: str, key: str, token: Optional[str] = None, token_validity: Optional[int] = None) -> str:
+		def do_decode(raw_result):
+			return raw_result
+		payload = {
+			"userIdentifier": user_identifier,
+			"groupId": group_id,
+			"key": key,
+			"token": token,
+			"tokenValidity": token_validity,
+		}
+		return await execute_async_method_job(
+			self.cardinal_sdk._executor,
+			True,
+			do_decode,
+			symbols.kotlin.root.com.icure.cardinal.sdk.py.api.UserApi.inGroup.getTokenAsync,
+			self.cardinal_sdk._native,
+			json.dumps(payload).encode('utf-8'),
+		)
+
+	def get_token_blocking(self, user_identifier: str, group_id: str, key: str, token: Optional[str] = None, token_validity: Optional[int] = None) -> str:
+		payload = {
+			"userIdentifier": user_identifier,
+			"groupId": group_id,
+			"key": key,
+			"token": token,
+			"tokenValidity": token_validity,
+		}
+		call_result = symbols.kotlin.root.com.icure.cardinal.sdk.py.api.UserApi.inGroup.getTokenBlocking(
+			self.cardinal_sdk._native,
+			json.dumps(payload).encode('utf-8'),
+		)
+		result_info = create_result_from_json(cast(call_result, c_char_p).value.decode('utf-8'))
+		symbols.DisposeString(call_result)
+		if result_info.failure is not None:
+			raise interpret_kt_error(result_info.failure)
+		else:
+			return_value = result_info.success
+			return return_value
+
+	async def get_token_in_all_groups_async(self, user_identifier: str, key: str, token: Optional[str] = None, token_validity: Optional[int] = None) -> list[TokenWithGroup]:
+		def do_decode(raw_result):
+			return [TokenWithGroup._deserialize(x1) for x1 in raw_result]
+		payload = {
+			"userIdentifier": user_identifier,
+			"key": key,
+			"token": token,
+			"tokenValidity": token_validity,
+		}
+		return await execute_async_method_job(
+			self.cardinal_sdk._executor,
+			True,
+			do_decode,
+			symbols.kotlin.root.com.icure.cardinal.sdk.py.api.UserApi.inGroup.getTokenInAllGroupsAsync,
+			self.cardinal_sdk._native,
+			json.dumps(payload).encode('utf-8'),
+		)
+
+	def get_token_in_all_groups_blocking(self, user_identifier: str, key: str, token: Optional[str] = None, token_validity: Optional[int] = None) -> list[TokenWithGroup]:
+		payload = {
+			"userIdentifier": user_identifier,
+			"key": key,
+			"token": token,
+			"tokenValidity": token_validity,
+		}
+		call_result = symbols.kotlin.root.com.icure.cardinal.sdk.py.api.UserApi.inGroup.getTokenInAllGroupsBlocking(
+			self.cardinal_sdk._native,
+			json.dumps(payload).encode('utf-8'),
+		)
+		result_info = create_result_from_json(cast(call_result, c_char_p).value.decode('utf-8'))
+		symbols.DisposeString(call_result)
+		if result_info.failure is not None:
+			raise interpret_kt_error(result_info.failure)
+		else:
+			return_value = [TokenWithGroup._deserialize(x1) for x1 in result_info.success]
+			return return_value
+
+	async def enable2fa_for_user_async(self, user: GroupScoped[User], request: Enable2faRequest) -> None:
+		def do_decode(raw_result):
+			return raw_result
+		payload = {
+			"user": user.__serialize__(lambda x0: x0.__serialize__()),
+			"request": request.__serialize__(),
+		}
+		return await execute_async_method_job(
+			self.cardinal_sdk._executor,
+			True,
+			do_decode,
+			symbols.kotlin.root.com.icure.cardinal.sdk.py.api.UserApi.inGroup.enable2faForUserAsync,
+			self.cardinal_sdk._native,
+			json.dumps(payload).encode('utf-8'),
+		)
+
+	def enable2fa_for_user_blocking(self, user: GroupScoped[User], request: Enable2faRequest) -> None:
+		payload = {
+			"user": user.__serialize__(lambda x0: x0.__serialize__()),
+			"request": request.__serialize__(),
+		}
+		call_result = symbols.kotlin.root.com.icure.cardinal.sdk.py.api.UserApi.inGroup.enable2faForUserBlocking(
+			self.cardinal_sdk._native,
+			json.dumps(payload).encode('utf-8'),
+		)
+		result_info = create_result_from_json(cast(call_result, c_char_p).value.decode('utf-8'))
+		symbols.DisposeString(call_result)
+		if result_info.failure is not None:
+			raise interpret_kt_error(result_info.failure)
+
+	async def disable2fa_for_user_async(self, user: GroupScoped[User]) -> None:
+		def do_decode(raw_result):
+			return raw_result
+		payload = {
+			"user": user.__serialize__(lambda x0: x0.__serialize__()),
+		}
+		return await execute_async_method_job(
+			self.cardinal_sdk._executor,
+			True,
+			do_decode,
+			symbols.kotlin.root.com.icure.cardinal.sdk.py.api.UserApi.inGroup.disable2faForUserAsync,
+			self.cardinal_sdk._native,
+			json.dumps(payload).encode('utf-8'),
+		)
+
+	def disable2fa_for_user_blocking(self, user: GroupScoped[User]) -> None:
+		payload = {
+			"user": user.__serialize__(lambda x0: x0.__serialize__()),
+		}
+		call_result = symbols.kotlin.root.com.icure.cardinal.sdk.py.api.UserApi.inGroup.disable2faForUserBlocking(
+			self.cardinal_sdk._native,
+			json.dumps(payload).encode('utf-8'),
+		)
+		result_info = create_result_from_json(cast(call_result, c_char_p).value.decode('utf-8'))
+		symbols.DisposeString(call_result)
+		if result_info.failure is not None:
+			raise interpret_kt_error(result_info.failure)
+
+	async def create_admin_user_async(self, user: GroupScoped[User]) -> GroupScoped[User]:
+		def do_decode(raw_result):
+			return GroupScoped._deserialize(raw_result, lambda x1: User._deserialize(x1))
+		payload = {
+			"user": user.__serialize__(lambda x0: x0.__serialize__()),
+		}
+		return await execute_async_method_job(
+			self.cardinal_sdk._executor,
+			True,
+			do_decode,
+			symbols.kotlin.root.com.icure.cardinal.sdk.py.api.UserApi.inGroup.createAdminUserAsync,
+			self.cardinal_sdk._native,
+			json.dumps(payload).encode('utf-8'),
+		)
+
+	def create_admin_user_blocking(self, user: GroupScoped[User]) -> GroupScoped[User]:
+		payload = {
+			"user": user.__serialize__(lambda x0: x0.__serialize__()),
+		}
+		call_result = symbols.kotlin.root.com.icure.cardinal.sdk.py.api.UserApi.inGroup.createAdminUserBlocking(
+			self.cardinal_sdk._native,
+			json.dumps(payload).encode('utf-8'),
+		)
+		result_info = create_result_from_json(cast(call_result, c_char_p).value.decode('utf-8'))
+		symbols.DisposeString(call_result)
+		if result_info.failure is not None:
+			raise interpret_kt_error(result_info.failure)
+		else:
+			return_value = GroupScoped._deserialize(result_info.success, lambda x1: User._deserialize(x1))
+			return return_value
+
+	async def modify_user_password_async(self, group_id: str, user_id: str, new_password: str) -> GroupScoped[User]:
+		def do_decode(raw_result):
+			return GroupScoped._deserialize(raw_result, lambda x1: User._deserialize(x1))
+		payload = {
+			"groupId": group_id,
+			"userId": user_id,
+			"newPassword": new_password,
+		}
+		return await execute_async_method_job(
+			self.cardinal_sdk._executor,
+			True,
+			do_decode,
+			symbols.kotlin.root.com.icure.cardinal.sdk.py.api.UserApi.inGroup.modifyUserPasswordAsync,
+			self.cardinal_sdk._native,
+			json.dumps(payload).encode('utf-8'),
+		)
+
+	def modify_user_password_blocking(self, group_id: str, user_id: str, new_password: str) -> GroupScoped[User]:
+		payload = {
+			"groupId": group_id,
+			"userId": user_id,
+			"newPassword": new_password,
+		}
+		call_result = symbols.kotlin.root.com.icure.cardinal.sdk.py.api.UserApi.inGroup.modifyUserPasswordBlocking(
+			self.cardinal_sdk._native,
+			json.dumps(payload).encode('utf-8'),
+		)
+		result_info = create_result_from_json(cast(call_result, c_char_p).value.decode('utf-8'))
+		symbols.DisposeString(call_result)
+		if result_info.failure is not None:
+			raise interpret_kt_error(result_info.failure)
+		else:
+			return_value = GroupScoped._deserialize(result_info.success, lambda x1: User._deserialize(x1))
+			return return_value
+
+	async def modify_user_email_async(self, group_id: str, user_id: str, new_email: str, previous_email: Optional[str]) -> GroupScoped[User]:
+		def do_decode(raw_result):
+			return GroupScoped._deserialize(raw_result, lambda x1: User._deserialize(x1))
+		payload = {
+			"groupId": group_id,
+			"userId": user_id,
+			"newEmail": new_email,
+			"previousEmail": previous_email,
+		}
+		return await execute_async_method_job(
+			self.cardinal_sdk._executor,
+			True,
+			do_decode,
+			symbols.kotlin.root.com.icure.cardinal.sdk.py.api.UserApi.inGroup.modifyUserEmailAsync,
+			self.cardinal_sdk._native,
+			json.dumps(payload).encode('utf-8'),
+		)
+
+	def modify_user_email_blocking(self, group_id: str, user_id: str, new_email: str, previous_email: Optional[str]) -> GroupScoped[User]:
+		payload = {
+			"groupId": group_id,
+			"userId": user_id,
+			"newEmail": new_email,
+			"previousEmail": previous_email,
+		}
+		call_result = symbols.kotlin.root.com.icure.cardinal.sdk.py.api.UserApi.inGroup.modifyUserEmailBlocking(
+			self.cardinal_sdk._native,
+			json.dumps(payload).encode('utf-8'),
+		)
+		result_info = create_result_from_json(cast(call_result, c_char_p).value.decode('utf-8'))
+		symbols.DisposeString(call_result)
+		if result_info.failure is not None:
+			raise interpret_kt_error(result_info.failure)
+		else:
+			return_value = GroupScoped._deserialize(result_info.success, lambda x1: User._deserialize(x1))
+			return return_value
+
+	async def modify_user_mobile_phone_async(self, group_id: str, user_id: str, new_mobile_phone: str, previous_mobile_phone: Optional[str]) -> GroupScoped[User]:
+		def do_decode(raw_result):
+			return GroupScoped._deserialize(raw_result, lambda x1: User._deserialize(x1))
+		payload = {
+			"groupId": group_id,
+			"userId": user_id,
+			"newMobilePhone": new_mobile_phone,
+			"previousMobilePhone": previous_mobile_phone,
+		}
+		return await execute_async_method_job(
+			self.cardinal_sdk._executor,
+			True,
+			do_decode,
+			symbols.kotlin.root.com.icure.cardinal.sdk.py.api.UserApi.inGroup.modifyUserMobilePhoneAsync,
+			self.cardinal_sdk._native,
+			json.dumps(payload).encode('utf-8'),
+		)
+
+	def modify_user_mobile_phone_blocking(self, group_id: str, user_id: str, new_mobile_phone: str, previous_mobile_phone: Optional[str]) -> GroupScoped[User]:
+		payload = {
+			"groupId": group_id,
+			"userId": user_id,
+			"newMobilePhone": new_mobile_phone,
+			"previousMobilePhone": previous_mobile_phone,
+		}
+		call_result = symbols.kotlin.root.com.icure.cardinal.sdk.py.api.UserApi.inGroup.modifyUserMobilePhoneBlocking(
+			self.cardinal_sdk._native,
+			json.dumps(payload).encode('utf-8'),
+		)
+		result_info = create_result_from_json(cast(call_result, c_char_p).value.decode('utf-8'))
+		symbols.DisposeString(call_result)
+		if result_info.failure is not None:
+			raise interpret_kt_error(result_info.failure)
+		else:
+			return_value = GroupScoped._deserialize(result_info.success, lambda x1: User._deserialize(x1))
+			return return_value
+
+	async def set_user_inherits_permissions_async(self, user: GroupScoped[User], value: bool) -> None:
+		def do_decode(raw_result):
+			return raw_result
+		payload = {
+			"user": user.__serialize__(lambda x0: x0.__serialize__()),
+			"value": value,
+		}
+		return await execute_async_method_job(
+			self.cardinal_sdk._executor,
+			True,
+			do_decode,
+			symbols.kotlin.root.com.icure.cardinal.sdk.py.api.UserApi.inGroup.setUserInheritsPermissionsAsync,
+			self.cardinal_sdk._native,
+			json.dumps(payload).encode('utf-8'),
+		)
+
+	def set_user_inherits_permissions_blocking(self, user: GroupScoped[User], value: bool) -> None:
+		payload = {
+			"user": user.__serialize__(lambda x0: x0.__serialize__()),
+			"value": value,
+		}
+		call_result = symbols.kotlin.root.com.icure.cardinal.sdk.py.api.UserApi.inGroup.setUserInheritsPermissionsBlocking(
+			self.cardinal_sdk._native,
+			json.dumps(payload).encode('utf-8'),
+		)
+		result_info = create_result_from_json(cast(call_result, c_char_p).value.decode('utf-8'))
+		symbols.DisposeString(call_result)
+		if result_info.failure is not None:
+			raise interpret_kt_error(result_info.failure)
+
+	async def set_login_identifiers_async(self, user: GroupScoped[User], identifier: LoginIdentifier, replace_existing: bool) -> bool:
+		def do_decode(raw_result):
+			return raw_result
+		payload = {
+			"user": user.__serialize__(lambda x0: x0.__serialize__()),
+			"identifier": identifier.__serialize__(),
+			"replaceExisting": replace_existing,
+		}
+		return await execute_async_method_job(
+			self.cardinal_sdk._executor,
+			True,
+			do_decode,
+			symbols.kotlin.root.com.icure.cardinal.sdk.py.api.UserApi.inGroup.setLoginIdentifiersAsync,
+			self.cardinal_sdk._native,
+			json.dumps(payload).encode('utf-8'),
+		)
+
+	def set_login_identifiers_blocking(self, user: GroupScoped[User], identifier: LoginIdentifier, replace_existing: bool) -> bool:
+		payload = {
+			"user": user.__serialize__(lambda x0: x0.__serialize__()),
+			"identifier": identifier.__serialize__(),
+			"replaceExisting": replace_existing,
+		}
+		call_result = symbols.kotlin.root.com.icure.cardinal.sdk.py.api.UserApi.inGroup.setLoginIdentifiersBlocking(
+			self.cardinal_sdk._native,
+			json.dumps(payload).encode('utf-8'),
+		)
+		result_info = create_result_from_json(cast(call_result, c_char_p).value.decode('utf-8'))
+		symbols.DisposeString(call_result)
+		if result_info.failure is not None:
+			raise interpret_kt_error(result_info.failure)
+		else:
+			return_value = result_info.success
+			return return_value

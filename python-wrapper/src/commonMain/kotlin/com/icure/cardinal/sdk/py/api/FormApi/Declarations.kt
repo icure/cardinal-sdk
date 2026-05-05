@@ -4,16 +4,17 @@ package com.icure.cardinal.sdk.py.api.FormApi
 import com.icure.cardinal.sdk.CardinalApis
 import com.icure.cardinal.sdk.crypto.entities.FormShareOptions
 import com.icure.cardinal.sdk.crypto.entities.SecretIdUseOption
+import com.icure.cardinal.sdk.filters.BaseFilterOptions
 import com.icure.cardinal.sdk.filters.FilterOptions
 import com.icure.cardinal.sdk.filters.SortableFilterOptions
 import com.icure.cardinal.sdk.model.DecryptedForm
 import com.icure.cardinal.sdk.model.EncryptedForm
+import com.icure.cardinal.sdk.model.EntityReferenceInGroup
 import com.icure.cardinal.sdk.model.Form
 import com.icure.cardinal.sdk.model.FormTemplate
 import com.icure.cardinal.sdk.model.Patient
 import com.icure.cardinal.sdk.model.StoredDocumentIdentifier
 import com.icure.cardinal.sdk.model.User
-import com.icure.cardinal.sdk.model.couchdb.DocIdentifier
 import com.icure.cardinal.sdk.model.embed.AccessLevel
 import com.icure.cardinal.sdk.model.specializations.HexString
 import com.icure.cardinal.sdk.py.utils.PyResult
@@ -30,7 +31,6 @@ import com.icure.utils.InternalIcureApi
 import kotlin.Boolean
 import kotlin.Byte
 import kotlin.ByteArray
-import kotlin.Long
 import kotlin.OptIn
 import kotlin.String
 import kotlin.Unit
@@ -189,7 +189,7 @@ public fun decryptPatientIdOfBlocking(sdk: CardinalApis, params: String): String
 			decodedParams.form,
 		)
 	}
-}.toPyString(SetSerializer(String.serializer()))
+}.toPyString(SetSerializer(EntityReferenceInGroup.serializer()))
 
 @OptIn(
 	ExperimentalForeignApi::class,
@@ -207,7 +207,7 @@ public fun decryptPatientIdOfAsync(
 			sdk.form.decryptPatientIdOf(
 				decodedParams.form,
 			)
-		}.toPyStringAsyncCallback(SetSerializer(String.serializer()), resultCallback)
+		}.toPyStringAsyncCallback(SetSerializer(EntityReferenceInGroup.serializer()), resultCallback)
 	}
 }.failureToPyStringAsyncCallback(resultCallback)
 
@@ -394,78 +394,6 @@ public fun matchFormsBySortedAsync(
 }.failureToPyStringAsyncCallback(resultCallback)
 
 @Serializable
-private class DeleteFormUnsafeParams(
-	public val entityId: String,
-)
-
-@OptIn(InternalIcureApi::class)
-public fun deleteFormUnsafeBlocking(sdk: CardinalApis, params: String): String =
-		kotlin.runCatching {
-	val decodedParams = fullLanguageInteropJson.decodeFromString<DeleteFormUnsafeParams>(params)
-	runBlocking {
-		sdk.form.deleteFormUnsafe(
-			decodedParams.entityId,
-		)
-	}
-}.toPyString(DocIdentifier.serializer())
-
-@OptIn(
-	ExperimentalForeignApi::class,
-	InternalIcureApi::class,
-)
-public fun deleteFormUnsafeAsync(
-	sdk: CardinalApis,
-	params: String,
-	resultCallback: CPointer<CFunction<(CValues<ByteVarOf<Byte>>?,
-			CValues<ByteVarOf<Byte>>?) -> Unit>>,
-): COpaquePointer? = kotlin.runCatching {
-	val decodedParams = fullLanguageInteropJson.decodeFromString<DeleteFormUnsafeParams>(params)
-	GlobalScope.launch {
-		kotlin.runCatching {
-			sdk.form.deleteFormUnsafe(
-				decodedParams.entityId,
-			)
-		}.toPyStringAsyncCallback(DocIdentifier.serializer(), resultCallback)
-	}
-}.failureToPyStringAsyncCallback(resultCallback)
-
-@Serializable
-private class DeleteFormsUnsafeParams(
-	public val entityIds: List<String>,
-)
-
-@OptIn(InternalIcureApi::class)
-public fun deleteFormsUnsafeBlocking(sdk: CardinalApis, params: String): String =
-		kotlin.runCatching {
-	val decodedParams = fullLanguageInteropJson.decodeFromString<DeleteFormsUnsafeParams>(params)
-	runBlocking {
-		sdk.form.deleteFormsUnsafe(
-			decodedParams.entityIds,
-		)
-	}
-}.toPyString(ListSerializer(DocIdentifier.serializer()))
-
-@OptIn(
-	ExperimentalForeignApi::class,
-	InternalIcureApi::class,
-)
-public fun deleteFormsUnsafeAsync(
-	sdk: CardinalApis,
-	params: String,
-	resultCallback: CPointer<CFunction<(CValues<ByteVarOf<Byte>>?,
-			CValues<ByteVarOf<Byte>>?) -> Unit>>,
-): COpaquePointer? = kotlin.runCatching {
-	val decodedParams = fullLanguageInteropJson.decodeFromString<DeleteFormsUnsafeParams>(params)
-	GlobalScope.launch {
-		kotlin.runCatching {
-			sdk.form.deleteFormsUnsafe(
-				decodedParams.entityIds,
-			)
-		}.toPyStringAsyncCallback(ListSerializer(DocIdentifier.serializer()), resultCallback)
-	}
-}.failureToPyStringAsyncCallback(resultCallback)
-
-@Serializable
 private class DeleteFormByIdParams(
 	public val entityId: String,
 	public val rev: String,
@@ -480,7 +408,7 @@ public fun deleteFormByIdBlocking(sdk: CardinalApis, params: String): String = k
 			decodedParams.rev,
 		)
 	}
-}.toPyString(DocIdentifier.serializer())
+}.toPyString(StoredDocumentIdentifier.serializer())
 
 @OptIn(
 	ExperimentalForeignApi::class,
@@ -499,7 +427,7 @@ public fun deleteFormByIdAsync(
 				decodedParams.entityId,
 				decodedParams.rev,
 			)
-		}.toPyStringAsyncCallback(DocIdentifier.serializer(), resultCallback)
+		}.toPyStringAsyncCallback(StoredDocumentIdentifier.serializer(), resultCallback)
 	}
 }.failureToPyStringAsyncCallback(resultCallback)
 
@@ -517,7 +445,7 @@ public fun deleteFormsByIdsBlocking(sdk: CardinalApis, params: String): String =
 			decodedParams.entityIds,
 		)
 	}
-}.toPyString(ListSerializer(DocIdentifier.serializer()))
+}.toPyString(ListSerializer(StoredDocumentIdentifier.serializer()))
 
 @OptIn(
 	ExperimentalForeignApi::class,
@@ -535,7 +463,7 @@ public fun deleteFormsByIdsAsync(
 			sdk.form.deleteFormsByIds(
 				decodedParams.entityIds,
 			)
-		}.toPyStringAsyncCallback(ListSerializer(DocIdentifier.serializer()), resultCallback)
+		}.toPyStringAsyncCallback(ListSerializer(StoredDocumentIdentifier.serializer()), resultCallback)
 	}
 }.failureToPyStringAsyncCallback(resultCallback)
 
@@ -578,6 +506,41 @@ public fun purgeFormByIdAsync(
 }.failureToPyStringAsyncCallback(resultCallback)
 
 @Serializable
+private class PurgeFormsByIdsParams(
+	public val entityIds: List<StoredDocumentIdentifier>,
+)
+
+@OptIn(InternalIcureApi::class)
+public fun purgeFormsByIdsBlocking(sdk: CardinalApis, params: String): String = kotlin.runCatching {
+	val decodedParams = fullLanguageInteropJson.decodeFromString<PurgeFormsByIdsParams>(params)
+	runBlocking {
+		sdk.form.purgeFormsByIds(
+			decodedParams.entityIds,
+		)
+	}
+}.toPyString(ListSerializer(StoredDocumentIdentifier.serializer()))
+
+@OptIn(
+	ExperimentalForeignApi::class,
+	InternalIcureApi::class,
+)
+public fun purgeFormsByIdsAsync(
+	sdk: CardinalApis,
+	params: String,
+	resultCallback: CPointer<CFunction<(CValues<ByteVarOf<Byte>>?,
+			CValues<ByteVarOf<Byte>>?) -> Unit>>,
+): COpaquePointer? = kotlin.runCatching {
+	val decodedParams = fullLanguageInteropJson.decodeFromString<PurgeFormsByIdsParams>(params)
+	GlobalScope.launch {
+		kotlin.runCatching {
+			sdk.form.purgeFormsByIds(
+				decodedParams.entityIds,
+			)
+		}.toPyStringAsyncCallback(ListSerializer(StoredDocumentIdentifier.serializer()), resultCallback)
+	}
+}.failureToPyStringAsyncCallback(resultCallback)
+
+@Serializable
 private class DeleteFormParams(
 	public val form: Form,
 )
@@ -590,7 +553,7 @@ public fun deleteFormBlocking(sdk: CardinalApis, params: String): String = kotli
 			decodedParams.form,
 		)
 	}
-}.toPyString(DocIdentifier.serializer())
+}.toPyString(StoredDocumentIdentifier.serializer())
 
 @OptIn(
 	ExperimentalForeignApi::class,
@@ -608,7 +571,7 @@ public fun deleteFormAsync(
 			sdk.form.deleteForm(
 				decodedParams.form,
 			)
-		}.toPyStringAsyncCallback(DocIdentifier.serializer(), resultCallback)
+		}.toPyStringAsyncCallback(StoredDocumentIdentifier.serializer(), resultCallback)
 	}
 }.failureToPyStringAsyncCallback(resultCallback)
 
@@ -625,7 +588,7 @@ public fun deleteFormsBlocking(sdk: CardinalApis, params: String): String = kotl
 			decodedParams.forms,
 		)
 	}
-}.toPyString(ListSerializer(DocIdentifier.serializer()))
+}.toPyString(ListSerializer(StoredDocumentIdentifier.serializer()))
 
 @OptIn(
 	ExperimentalForeignApi::class,
@@ -643,7 +606,7 @@ public fun deleteFormsAsync(
 			sdk.form.deleteForms(
 				decodedParams.forms,
 			)
-		}.toPyStringAsyncCallback(ListSerializer(DocIdentifier.serializer()), resultCallback)
+		}.toPyStringAsyncCallback(ListSerializer(StoredDocumentIdentifier.serializer()), resultCallback)
 	}
 }.failureToPyStringAsyncCallback(resultCallback)
 
@@ -679,6 +642,41 @@ public fun purgeFormAsync(
 				decodedParams.form,
 			)
 		}.toPyStringAsyncCallback(Unit.serializer(), resultCallback)
+	}
+}.failureToPyStringAsyncCallback(resultCallback)
+
+@Serializable
+private class PurgeFormsParams(
+	public val forms: List<Form>,
+)
+
+@OptIn(InternalIcureApi::class)
+public fun purgeFormsBlocking(sdk: CardinalApis, params: String): String = kotlin.runCatching {
+	val decodedParams = fullLanguageInteropJson.decodeFromString<PurgeFormsParams>(params)
+	runBlocking {
+		sdk.form.purgeForms(
+			decodedParams.forms,
+		)
+	}
+}.toPyString(ListSerializer(StoredDocumentIdentifier.serializer()))
+
+@OptIn(
+	ExperimentalForeignApi::class,
+	InternalIcureApi::class,
+)
+public fun purgeFormsAsync(
+	sdk: CardinalApis,
+	params: String,
+	resultCallback: CPointer<CFunction<(CValues<ByteVarOf<Byte>>?,
+			CValues<ByteVarOf<Byte>>?) -> Unit>>,
+): COpaquePointer? = kotlin.runCatching {
+	val decodedParams = fullLanguageInteropJson.decodeFromString<PurgeFormsParams>(params)
+	GlobalScope.launch {
+		kotlin.runCatching {
+			sdk.form.purgeForms(
+				decodedParams.forms,
+			)
+		}.toPyStringAsyncCallback(ListSerializer(StoredDocumentIdentifier.serializer()), resultCallback)
 	}
 }.failureToPyStringAsyncCallback(resultCallback)
 
@@ -721,50 +719,8 @@ public fun getFormTemplateAsync(
 }.failureToPyStringAsyncCallback(resultCallback)
 
 @Serializable
-private class ListFormTemplatesBySpecialityParams(
-	public val specialityCode: String,
-	public val raw: Boolean? = null,
-)
-
-@OptIn(InternalIcureApi::class)
-public fun listFormTemplatesBySpecialityBlocking(sdk: CardinalApis, params: String): String =
-		kotlin.runCatching {
-	val decodedParams =
-			fullLanguageInteropJson.decodeFromString<ListFormTemplatesBySpecialityParams>(params)
-	runBlocking {
-		sdk.form.listFormTemplatesBySpeciality(
-			decodedParams.specialityCode,
-			decodedParams.raw,
-		)
-	}
-}.toPyString(ListSerializer(FormTemplate.serializer()))
-
-@OptIn(
-	ExperimentalForeignApi::class,
-	InternalIcureApi::class,
-)
-public fun listFormTemplatesBySpecialityAsync(
-	sdk: CardinalApis,
-	params: String,
-	resultCallback: CPointer<CFunction<(CValues<ByteVarOf<Byte>>?,
-			CValues<ByteVarOf<Byte>>?) -> Unit>>,
-): COpaquePointer? = kotlin.runCatching {
-	val decodedParams =
-			fullLanguageInteropJson.decodeFromString<ListFormTemplatesBySpecialityParams>(params)
-	GlobalScope.launch {
-		kotlin.runCatching {
-			sdk.form.listFormTemplatesBySpeciality(
-				decodedParams.specialityCode,
-				decodedParams.raw,
-			)
-		}.toPyStringAsyncCallback(ListSerializer(FormTemplate.serializer()), resultCallback)
-	}
-}.failureToPyStringAsyncCallback(resultCallback)
-
-@Serializable
 private class GetFormTemplatesParams(
-	public val loadLayout: Boolean? = null,
-	public val raw: Boolean? = null,
+	public val formTemplateIds: List<String>,
 )
 
 @OptIn(InternalIcureApi::class)
@@ -773,8 +729,7 @@ public fun getFormTemplatesBlocking(sdk: CardinalApis, params: String): String =
 	val decodedParams = fullLanguageInteropJson.decodeFromString<GetFormTemplatesParams>(params)
 	runBlocking {
 		sdk.form.getFormTemplates(
-			decodedParams.loadLayout,
-			decodedParams.raw,
+			decodedParams.formTemplateIds,
 		)
 	}
 }.toPyString(ListSerializer(FormTemplate.serializer()))
@@ -793,8 +748,7 @@ public fun getFormTemplatesAsync(
 	GlobalScope.launch {
 		kotlin.runCatching {
 			sdk.form.getFormTemplates(
-				decodedParams.loadLayout,
-				decodedParams.raw,
+				decodedParams.formTemplateIds,
 			)
 		}.toPyStringAsyncCallback(ListSerializer(FormTemplate.serializer()), resultCallback)
 	}
@@ -837,8 +791,193 @@ public fun createFormTemplateAsync(
 }.failureToPyStringAsyncCallback(resultCallback)
 
 @Serializable
+private class CreateFormTemplatesParams(
+	public val formTemplates: List<FormTemplate>,
+)
+
+@OptIn(InternalIcureApi::class)
+public fun createFormTemplatesBlocking(sdk: CardinalApis, params: String): String =
+		kotlin.runCatching {
+	val decodedParams = fullLanguageInteropJson.decodeFromString<CreateFormTemplatesParams>(params)
+	runBlocking {
+		sdk.form.createFormTemplates(
+			decodedParams.formTemplates,
+		)
+	}
+}.toPyString(ListSerializer(FormTemplate.serializer()))
+
+@OptIn(
+	ExperimentalForeignApi::class,
+	InternalIcureApi::class,
+)
+public fun createFormTemplatesAsync(
+	sdk: CardinalApis,
+	params: String,
+	resultCallback: CPointer<CFunction<(CValues<ByteVarOf<Byte>>?,
+			CValues<ByteVarOf<Byte>>?) -> Unit>>,
+): COpaquePointer? = kotlin.runCatching {
+	val decodedParams = fullLanguageInteropJson.decodeFromString<CreateFormTemplatesParams>(params)
+	GlobalScope.launch {
+		kotlin.runCatching {
+			sdk.form.createFormTemplates(
+				decodedParams.formTemplates,
+			)
+		}.toPyStringAsyncCallback(ListSerializer(FormTemplate.serializer()), resultCallback)
+	}
+}.failureToPyStringAsyncCallback(resultCallback)
+
+@Serializable
+private class ModifyFormTemplateParams(
+	public val formTemplate: FormTemplate,
+)
+
+@OptIn(InternalIcureApi::class)
+public fun modifyFormTemplateBlocking(sdk: CardinalApis, params: String): String =
+		kotlin.runCatching {
+	val decodedParams = fullLanguageInteropJson.decodeFromString<ModifyFormTemplateParams>(params)
+	runBlocking {
+		sdk.form.modifyFormTemplate(
+			decodedParams.formTemplate,
+		)
+	}
+}.toPyString(FormTemplate.serializer())
+
+@OptIn(
+	ExperimentalForeignApi::class,
+	InternalIcureApi::class,
+)
+public fun modifyFormTemplateAsync(
+	sdk: CardinalApis,
+	params: String,
+	resultCallback: CPointer<CFunction<(CValues<ByteVarOf<Byte>>?,
+			CValues<ByteVarOf<Byte>>?) -> Unit>>,
+): COpaquePointer? = kotlin.runCatching {
+	val decodedParams = fullLanguageInteropJson.decodeFromString<ModifyFormTemplateParams>(params)
+	GlobalScope.launch {
+		kotlin.runCatching {
+			sdk.form.modifyFormTemplate(
+				decodedParams.formTemplate,
+			)
+		}.toPyStringAsyncCallback(FormTemplate.serializer(), resultCallback)
+	}
+}.failureToPyStringAsyncCallback(resultCallback)
+
+@Serializable
+private class ModifyFormTemplatesParams(
+	public val formTemplates: List<FormTemplate>,
+)
+
+@OptIn(InternalIcureApi::class)
+public fun modifyFormTemplatesBlocking(sdk: CardinalApis, params: String): String =
+		kotlin.runCatching {
+	val decodedParams = fullLanguageInteropJson.decodeFromString<ModifyFormTemplatesParams>(params)
+	runBlocking {
+		sdk.form.modifyFormTemplates(
+			decodedParams.formTemplates,
+		)
+	}
+}.toPyString(ListSerializer(FormTemplate.serializer()))
+
+@OptIn(
+	ExperimentalForeignApi::class,
+	InternalIcureApi::class,
+)
+public fun modifyFormTemplatesAsync(
+	sdk: CardinalApis,
+	params: String,
+	resultCallback: CPointer<CFunction<(CValues<ByteVarOf<Byte>>?,
+			CValues<ByteVarOf<Byte>>?) -> Unit>>,
+): COpaquePointer? = kotlin.runCatching {
+	val decodedParams = fullLanguageInteropJson.decodeFromString<ModifyFormTemplatesParams>(params)
+	GlobalScope.launch {
+		kotlin.runCatching {
+			sdk.form.modifyFormTemplates(
+				decodedParams.formTemplates,
+			)
+		}.toPyStringAsyncCallback(ListSerializer(FormTemplate.serializer()), resultCallback)
+	}
+}.failureToPyStringAsyncCallback(resultCallback)
+
+@Serializable
+private class DeleteFormTemplateByIdParams(
+	public val entityId: String,
+	public val rev: String,
+)
+
+@OptIn(InternalIcureApi::class)
+public fun deleteFormTemplateByIdBlocking(sdk: CardinalApis, params: String): String =
+		kotlin.runCatching {
+	val decodedParams = fullLanguageInteropJson.decodeFromString<DeleteFormTemplateByIdParams>(params)
+	runBlocking {
+		sdk.form.deleteFormTemplateById(
+			decodedParams.entityId,
+			decodedParams.rev,
+		)
+	}
+}.toPyString(StoredDocumentIdentifier.serializer())
+
+@OptIn(
+	ExperimentalForeignApi::class,
+	InternalIcureApi::class,
+)
+public fun deleteFormTemplateByIdAsync(
+	sdk: CardinalApis,
+	params: String,
+	resultCallback: CPointer<CFunction<(CValues<ByteVarOf<Byte>>?,
+			CValues<ByteVarOf<Byte>>?) -> Unit>>,
+): COpaquePointer? = kotlin.runCatching {
+	val decodedParams = fullLanguageInteropJson.decodeFromString<DeleteFormTemplateByIdParams>(params)
+	GlobalScope.launch {
+		kotlin.runCatching {
+			sdk.form.deleteFormTemplateById(
+				decodedParams.entityId,
+				decodedParams.rev,
+			)
+		}.toPyStringAsyncCallback(StoredDocumentIdentifier.serializer(), resultCallback)
+	}
+}.failureToPyStringAsyncCallback(resultCallback)
+
+@Serializable
+private class DeleteFormTemplatesByIdsParams(
+	public val entityIds: List<StoredDocumentIdentifier>,
+)
+
+@OptIn(InternalIcureApi::class)
+public fun deleteFormTemplatesByIdsBlocking(sdk: CardinalApis, params: String): String =
+		kotlin.runCatching {
+	val decodedParams =
+			fullLanguageInteropJson.decodeFromString<DeleteFormTemplatesByIdsParams>(params)
+	runBlocking {
+		sdk.form.deleteFormTemplatesByIds(
+			decodedParams.entityIds,
+		)
+	}
+}.toPyString(ListSerializer(StoredDocumentIdentifier.serializer()))
+
+@OptIn(
+	ExperimentalForeignApi::class,
+	InternalIcureApi::class,
+)
+public fun deleteFormTemplatesByIdsAsync(
+	sdk: CardinalApis,
+	params: String,
+	resultCallback: CPointer<CFunction<(CValues<ByteVarOf<Byte>>?,
+			CValues<ByteVarOf<Byte>>?) -> Unit>>,
+): COpaquePointer? = kotlin.runCatching {
+	val decodedParams =
+			fullLanguageInteropJson.decodeFromString<DeleteFormTemplatesByIdsParams>(params)
+	GlobalScope.launch {
+		kotlin.runCatching {
+			sdk.form.deleteFormTemplatesByIds(
+				decodedParams.entityIds,
+			)
+		}.toPyStringAsyncCallback(ListSerializer(StoredDocumentIdentifier.serializer()), resultCallback)
+	}
+}.failureToPyStringAsyncCallback(resultCallback)
+
+@Serializable
 private class DeleteFormTemplateParams(
-	public val formTemplateId: String,
+	public val formTemplate: FormTemplate,
 )
 
 @OptIn(InternalIcureApi::class)
@@ -847,10 +986,10 @@ public fun deleteFormTemplateBlocking(sdk: CardinalApis, params: String): String
 	val decodedParams = fullLanguageInteropJson.decodeFromString<DeleteFormTemplateParams>(params)
 	runBlocking {
 		sdk.form.deleteFormTemplate(
-			decodedParams.formTemplateId,
+			decodedParams.formTemplate,
 		)
 	}
-}.toPyString(DocIdentifier.serializer())
+}.toPyString(StoredDocumentIdentifier.serializer())
 
 @OptIn(
 	ExperimentalForeignApi::class,
@@ -866,23 +1005,138 @@ public fun deleteFormTemplateAsync(
 	GlobalScope.launch {
 		kotlin.runCatching {
 			sdk.form.deleteFormTemplate(
-				decodedParams.formTemplateId,
+				decodedParams.formTemplate,
 			)
-		}.toPyStringAsyncCallback(DocIdentifier.serializer(), resultCallback)
+		}.toPyStringAsyncCallback(StoredDocumentIdentifier.serializer(), resultCallback)
 	}
 }.failureToPyStringAsyncCallback(resultCallback)
 
 @Serializable
-private class UpdateFormTemplateParams(
+private class DeleteFormTemplatesParams(
+	public val formTemplates: List<FormTemplate>,
+)
+
+@OptIn(InternalIcureApi::class)
+public fun deleteFormTemplatesBlocking(sdk: CardinalApis, params: String): String =
+		kotlin.runCatching {
+	val decodedParams = fullLanguageInteropJson.decodeFromString<DeleteFormTemplatesParams>(params)
+	runBlocking {
+		sdk.form.deleteFormTemplates(
+			decodedParams.formTemplates,
+		)
+	}
+}.toPyString(ListSerializer(StoredDocumentIdentifier.serializer()))
+
+@OptIn(
+	ExperimentalForeignApi::class,
+	InternalIcureApi::class,
+)
+public fun deleteFormTemplatesAsync(
+	sdk: CardinalApis,
+	params: String,
+	resultCallback: CPointer<CFunction<(CValues<ByteVarOf<Byte>>?,
+			CValues<ByteVarOf<Byte>>?) -> Unit>>,
+): COpaquePointer? = kotlin.runCatching {
+	val decodedParams = fullLanguageInteropJson.decodeFromString<DeleteFormTemplatesParams>(params)
+	GlobalScope.launch {
+		kotlin.runCatching {
+			sdk.form.deleteFormTemplates(
+				decodedParams.formTemplates,
+			)
+		}.toPyStringAsyncCallback(ListSerializer(StoredDocumentIdentifier.serializer()), resultCallback)
+	}
+}.failureToPyStringAsyncCallback(resultCallback)
+
+@Serializable
+private class UndeleteFormTemplateByIdParams(
+	public val id: String,
+	public val rev: String,
+)
+
+@OptIn(InternalIcureApi::class)
+public fun undeleteFormTemplateByIdBlocking(sdk: CardinalApis, params: String): String =
+		kotlin.runCatching {
+	val decodedParams =
+			fullLanguageInteropJson.decodeFromString<UndeleteFormTemplateByIdParams>(params)
+	runBlocking {
+		sdk.form.undeleteFormTemplateById(
+			decodedParams.id,
+			decodedParams.rev,
+		)
+	}
+}.toPyString(FormTemplate.serializer())
+
+@OptIn(
+	ExperimentalForeignApi::class,
+	InternalIcureApi::class,
+)
+public fun undeleteFormTemplateByIdAsync(
+	sdk: CardinalApis,
+	params: String,
+	resultCallback: CPointer<CFunction<(CValues<ByteVarOf<Byte>>?,
+			CValues<ByteVarOf<Byte>>?) -> Unit>>,
+): COpaquePointer? = kotlin.runCatching {
+	val decodedParams =
+			fullLanguageInteropJson.decodeFromString<UndeleteFormTemplateByIdParams>(params)
+	GlobalScope.launch {
+		kotlin.runCatching {
+			sdk.form.undeleteFormTemplateById(
+				decodedParams.id,
+				decodedParams.rev,
+			)
+		}.toPyStringAsyncCallback(FormTemplate.serializer(), resultCallback)
+	}
+}.failureToPyStringAsyncCallback(resultCallback)
+
+@Serializable
+private class UndeleteFormTemplatesByIdsParams(
+	public val entityIds: List<StoredDocumentIdentifier>,
+)
+
+@OptIn(InternalIcureApi::class)
+public fun undeleteFormTemplatesByIdsBlocking(sdk: CardinalApis, params: String): String =
+		kotlin.runCatching {
+	val decodedParams =
+			fullLanguageInteropJson.decodeFromString<UndeleteFormTemplatesByIdsParams>(params)
+	runBlocking {
+		sdk.form.undeleteFormTemplatesByIds(
+			decodedParams.entityIds,
+		)
+	}
+}.toPyString(ListSerializer(FormTemplate.serializer()))
+
+@OptIn(
+	ExperimentalForeignApi::class,
+	InternalIcureApi::class,
+)
+public fun undeleteFormTemplatesByIdsAsync(
+	sdk: CardinalApis,
+	params: String,
+	resultCallback: CPointer<CFunction<(CValues<ByteVarOf<Byte>>?,
+			CValues<ByteVarOf<Byte>>?) -> Unit>>,
+): COpaquePointer? = kotlin.runCatching {
+	val decodedParams =
+			fullLanguageInteropJson.decodeFromString<UndeleteFormTemplatesByIdsParams>(params)
+	GlobalScope.launch {
+		kotlin.runCatching {
+			sdk.form.undeleteFormTemplatesByIds(
+				decodedParams.entityIds,
+			)
+		}.toPyStringAsyncCallback(ListSerializer(FormTemplate.serializer()), resultCallback)
+	}
+}.failureToPyStringAsyncCallback(resultCallback)
+
+@Serializable
+private class UndeleteFormTemplateParams(
 	public val formTemplate: FormTemplate,
 )
 
 @OptIn(InternalIcureApi::class)
-public fun updateFormTemplateBlocking(sdk: CardinalApis, params: String): String =
+public fun undeleteFormTemplateBlocking(sdk: CardinalApis, params: String): String =
 		kotlin.runCatching {
-	val decodedParams = fullLanguageInteropJson.decodeFromString<UpdateFormTemplateParams>(params)
+	val decodedParams = fullLanguageInteropJson.decodeFromString<UndeleteFormTemplateParams>(params)
 	runBlocking {
-		sdk.form.updateFormTemplate(
+		sdk.form.undeleteFormTemplate(
 			decodedParams.formTemplate,
 		)
 	}
@@ -892,19 +1146,202 @@ public fun updateFormTemplateBlocking(sdk: CardinalApis, params: String): String
 	ExperimentalForeignApi::class,
 	InternalIcureApi::class,
 )
-public fun updateFormTemplateAsync(
+public fun undeleteFormTemplateAsync(
 	sdk: CardinalApis,
 	params: String,
 	resultCallback: CPointer<CFunction<(CValues<ByteVarOf<Byte>>?,
 			CValues<ByteVarOf<Byte>>?) -> Unit>>,
 ): COpaquePointer? = kotlin.runCatching {
-	val decodedParams = fullLanguageInteropJson.decodeFromString<UpdateFormTemplateParams>(params)
+	val decodedParams = fullLanguageInteropJson.decodeFromString<UndeleteFormTemplateParams>(params)
 	GlobalScope.launch {
 		kotlin.runCatching {
-			sdk.form.updateFormTemplate(
+			sdk.form.undeleteFormTemplate(
 				decodedParams.formTemplate,
 			)
 		}.toPyStringAsyncCallback(FormTemplate.serializer(), resultCallback)
+	}
+}.failureToPyStringAsyncCallback(resultCallback)
+
+@Serializable
+private class UndeleteFormTemplatesParams(
+	public val formTemplates: List<FormTemplate>,
+)
+
+@OptIn(InternalIcureApi::class)
+public fun undeleteFormTemplatesBlocking(sdk: CardinalApis, params: String): String =
+		kotlin.runCatching {
+	val decodedParams = fullLanguageInteropJson.decodeFromString<UndeleteFormTemplatesParams>(params)
+	runBlocking {
+		sdk.form.undeleteFormTemplates(
+			decodedParams.formTemplates,
+		)
+	}
+}.toPyString(ListSerializer(FormTemplate.serializer()))
+
+@OptIn(
+	ExperimentalForeignApi::class,
+	InternalIcureApi::class,
+)
+public fun undeleteFormTemplatesAsync(
+	sdk: CardinalApis,
+	params: String,
+	resultCallback: CPointer<CFunction<(CValues<ByteVarOf<Byte>>?,
+			CValues<ByteVarOf<Byte>>?) -> Unit>>,
+): COpaquePointer? = kotlin.runCatching {
+	val decodedParams = fullLanguageInteropJson.decodeFromString<UndeleteFormTemplatesParams>(params)
+	GlobalScope.launch {
+		kotlin.runCatching {
+			sdk.form.undeleteFormTemplates(
+				decodedParams.formTemplates,
+			)
+		}.toPyStringAsyncCallback(ListSerializer(FormTemplate.serializer()), resultCallback)
+	}
+}.failureToPyStringAsyncCallback(resultCallback)
+
+@Serializable
+private class PurgeFormTemplateByIdParams(
+	public val id: String,
+	public val rev: String,
+)
+
+@OptIn(InternalIcureApi::class)
+public fun purgeFormTemplateByIdBlocking(sdk: CardinalApis, params: String): String =
+		kotlin.runCatching {
+	val decodedParams = fullLanguageInteropJson.decodeFromString<PurgeFormTemplateByIdParams>(params)
+	runBlocking {
+		sdk.form.purgeFormTemplateById(
+			decodedParams.id,
+			decodedParams.rev,
+		)
+	}
+}.toPyString(Unit.serializer())
+
+@OptIn(
+	ExperimentalForeignApi::class,
+	InternalIcureApi::class,
+)
+public fun purgeFormTemplateByIdAsync(
+	sdk: CardinalApis,
+	params: String,
+	resultCallback: CPointer<CFunction<(CValues<ByteVarOf<Byte>>?,
+			CValues<ByteVarOf<Byte>>?) -> Unit>>,
+): COpaquePointer? = kotlin.runCatching {
+	val decodedParams = fullLanguageInteropJson.decodeFromString<PurgeFormTemplateByIdParams>(params)
+	GlobalScope.launch {
+		kotlin.runCatching {
+			sdk.form.purgeFormTemplateById(
+				decodedParams.id,
+				decodedParams.rev,
+			)
+		}.toPyStringAsyncCallback(Unit.serializer(), resultCallback)
+	}
+}.failureToPyStringAsyncCallback(resultCallback)
+
+@Serializable
+private class PurgeFormTemplatesByIdsParams(
+	public val entityIds: List<StoredDocumentIdentifier>,
+)
+
+@OptIn(InternalIcureApi::class)
+public fun purgeFormTemplatesByIdsBlocking(sdk: CardinalApis, params: String): String =
+		kotlin.runCatching {
+	val decodedParams = fullLanguageInteropJson.decodeFromString<PurgeFormTemplatesByIdsParams>(params)
+	runBlocking {
+		sdk.form.purgeFormTemplatesByIds(
+			decodedParams.entityIds,
+		)
+	}
+}.toPyString(ListSerializer(StoredDocumentIdentifier.serializer()))
+
+@OptIn(
+	ExperimentalForeignApi::class,
+	InternalIcureApi::class,
+)
+public fun purgeFormTemplatesByIdsAsync(
+	sdk: CardinalApis,
+	params: String,
+	resultCallback: CPointer<CFunction<(CValues<ByteVarOf<Byte>>?,
+			CValues<ByteVarOf<Byte>>?) -> Unit>>,
+): COpaquePointer? = kotlin.runCatching {
+	val decodedParams = fullLanguageInteropJson.decodeFromString<PurgeFormTemplatesByIdsParams>(params)
+	GlobalScope.launch {
+		kotlin.runCatching {
+			sdk.form.purgeFormTemplatesByIds(
+				decodedParams.entityIds,
+			)
+		}.toPyStringAsyncCallback(ListSerializer(StoredDocumentIdentifier.serializer()), resultCallback)
+	}
+}.failureToPyStringAsyncCallback(resultCallback)
+
+@Serializable
+private class PurgeFormTemplateParams(
+	public val formTemplate: FormTemplate,
+)
+
+@OptIn(InternalIcureApi::class)
+public fun purgeFormTemplateBlocking(sdk: CardinalApis, params: String): String =
+		kotlin.runCatching {
+	val decodedParams = fullLanguageInteropJson.decodeFromString<PurgeFormTemplateParams>(params)
+	runBlocking {
+		sdk.form.purgeFormTemplate(
+			decodedParams.formTemplate,
+		)
+	}
+}.toPyString(Unit.serializer())
+
+@OptIn(
+	ExperimentalForeignApi::class,
+	InternalIcureApi::class,
+)
+public fun purgeFormTemplateAsync(
+	sdk: CardinalApis,
+	params: String,
+	resultCallback: CPointer<CFunction<(CValues<ByteVarOf<Byte>>?,
+			CValues<ByteVarOf<Byte>>?) -> Unit>>,
+): COpaquePointer? = kotlin.runCatching {
+	val decodedParams = fullLanguageInteropJson.decodeFromString<PurgeFormTemplateParams>(params)
+	GlobalScope.launch {
+		kotlin.runCatching {
+			sdk.form.purgeFormTemplate(
+				decodedParams.formTemplate,
+			)
+		}.toPyStringAsyncCallback(Unit.serializer(), resultCallback)
+	}
+}.failureToPyStringAsyncCallback(resultCallback)
+
+@Serializable
+private class PurgeFormTemplatesParams(
+	public val formTemplates: List<FormTemplate>,
+)
+
+@OptIn(InternalIcureApi::class)
+public fun purgeFormTemplatesBlocking(sdk: CardinalApis, params: String): String =
+		kotlin.runCatching {
+	val decodedParams = fullLanguageInteropJson.decodeFromString<PurgeFormTemplatesParams>(params)
+	runBlocking {
+		sdk.form.purgeFormTemplates(
+			decodedParams.formTemplates,
+		)
+	}
+}.toPyString(ListSerializer(StoredDocumentIdentifier.serializer()))
+
+@OptIn(
+	ExperimentalForeignApi::class,
+	InternalIcureApi::class,
+)
+public fun purgeFormTemplatesAsync(
+	sdk: CardinalApis,
+	params: String,
+	resultCallback: CPointer<CFunction<(CValues<ByteVarOf<Byte>>?,
+			CValues<ByteVarOf<Byte>>?) -> Unit>>,
+): COpaquePointer? = kotlin.runCatching {
+	val decodedParams = fullLanguageInteropJson.decodeFromString<PurgeFormTemplatesParams>(params)
+	GlobalScope.launch {
+		kotlin.runCatching {
+			sdk.form.purgeFormTemplates(
+				decodedParams.formTemplates,
+			)
+		}.toPyStringAsyncCallback(ListSerializer(StoredDocumentIdentifier.serializer()), resultCallback)
 	}
 }.failureToPyStringAsyncCallback(resultCallback)
 
@@ -946,6 +1383,42 @@ public fun setTemplateAttachmentAsync(
 				decodedParams.payload,
 			)
 		}.toPyStringAsyncCallback(String.serializer(), resultCallback)
+	}
+}.failureToPyStringAsyncCallback(resultCallback)
+
+@Serializable
+private class MatchFormTemplateByParams(
+	public val filter: BaseFilterOptions<FormTemplate>,
+)
+
+@OptIn(InternalIcureApi::class)
+public fun matchFormTemplateByBlocking(sdk: CardinalApis, params: String): String =
+		kotlin.runCatching {
+	val decodedParams = fullLanguageInteropJson.decodeFromString<MatchFormTemplateByParams>(params)
+	runBlocking {
+		sdk.form.matchFormTemplateBy(
+			decodedParams.filter,
+		)
+	}
+}.toPyString(ListSerializer(String.serializer()))
+
+@OptIn(
+	ExperimentalForeignApi::class,
+	InternalIcureApi::class,
+)
+public fun matchFormTemplateByAsync(
+	sdk: CardinalApis,
+	params: String,
+	resultCallback: CPointer<CFunction<(CValues<ByteVarOf<Byte>>?,
+			CValues<ByteVarOf<Byte>>?) -> Unit>>,
+): COpaquePointer? = kotlin.runCatching {
+	val decodedParams = fullLanguageInteropJson.decodeFromString<MatchFormTemplateByParams>(params)
+	GlobalScope.launch {
+		kotlin.runCatching {
+			sdk.form.matchFormTemplateBy(
+				decodedParams.filter,
+			)
+		}.toPyStringAsyncCallback(ListSerializer(String.serializer()), resultCallback)
 	}
 }.failureToPyStringAsyncCallback(resultCallback)
 
@@ -1027,57 +1500,6 @@ public fun shareWithManyAsync(
 		}.toPyStringAsyncCallback(DecryptedForm.serializer(), resultCallback)
 	}
 }.failureToPyStringAsyncCallback(resultCallback)
-
-@Serializable
-private class FindFormsByHcPartyPatientParams(
-	public val hcPartyId: String,
-	public val patient: Patient,
-	public val startDate: Long? = null,
-	public val endDate: Long? = null,
-	public val descending: Boolean? = null,
-)
-
-@OptIn(InternalIcureApi::class)
-public fun findFormsByHcPartyPatientBlocking(sdk: CardinalApis, params: String): PyResult =
-		kotlin.runCatching {
-	val decodedParams =
-			fullLanguageInteropJson.decodeFromString<FindFormsByHcPartyPatientParams>(params)
-	runBlocking {
-		sdk.form.findFormsByHcPartyPatient(
-			decodedParams.hcPartyId,
-			decodedParams.patient,
-			decodedParams.startDate,
-			decodedParams.endDate,
-			decodedParams.descending,
-		)
-	}
-}.toPyResult {
-	PaginatedListIteratorWithSerializer(it, DecryptedForm.serializer())}
-
-@OptIn(
-	ExperimentalForeignApi::class,
-	InternalIcureApi::class,
-)
-public fun findFormsByHcPartyPatientAsync(
-	sdk: CardinalApis,
-	params: String,
-	resultCallback: CPointer<CFunction<(COpaquePointer?, CValues<ByteVarOf<Byte>>?) -> Unit>>,
-): COpaquePointer? = kotlin.runCatching {
-	val decodedParams =
-			fullLanguageInteropJson.decodeFromString<FindFormsByHcPartyPatientParams>(params)
-	GlobalScope.launch {
-		kotlin.runCatching {
-			sdk.form.findFormsByHcPartyPatient(
-				decodedParams.hcPartyId,
-				decodedParams.patient,
-				decodedParams.startDate,
-				decodedParams.endDate,
-				decodedParams.descending,
-			)
-		}.toPyResultAsyncCallback(resultCallback) {
-			PaginatedListIteratorWithSerializer(it, DecryptedForm.serializer())}
-	}
-}.failureToPyResultAsyncCallback(resultCallback)
 
 @Serializable
 private class FilterFormsByParams(
@@ -1258,6 +1680,41 @@ public fun modifyFormAsync(
 }.failureToPyStringAsyncCallback(resultCallback)
 
 @Serializable
+private class ModifyFormsParams(
+	public val entities: List<DecryptedForm>,
+)
+
+@OptIn(InternalIcureApi::class)
+public fun modifyFormsBlocking(sdk: CardinalApis, params: String): String = kotlin.runCatching {
+	val decodedParams = fullLanguageInteropJson.decodeFromString<ModifyFormsParams>(params)
+	runBlocking {
+		sdk.form.modifyForms(
+			decodedParams.entities,
+		)
+	}
+}.toPyString(ListSerializer(DecryptedForm.serializer()))
+
+@OptIn(
+	ExperimentalForeignApi::class,
+	InternalIcureApi::class,
+)
+public fun modifyFormsAsync(
+	sdk: CardinalApis,
+	params: String,
+	resultCallback: CPointer<CFunction<(CValues<ByteVarOf<Byte>>?,
+			CValues<ByteVarOf<Byte>>?) -> Unit>>,
+): COpaquePointer? = kotlin.runCatching {
+	val decodedParams = fullLanguageInteropJson.decodeFromString<ModifyFormsParams>(params)
+	GlobalScope.launch {
+		kotlin.runCatching {
+			sdk.form.modifyForms(
+				decodedParams.entities,
+			)
+		}.toPyStringAsyncCallback(ListSerializer(DecryptedForm.serializer()), resultCallback)
+	}
+}.failureToPyStringAsyncCallback(resultCallback)
+
+@Serializable
 private class UndeleteFormByIdParams(
 	public val id: String,
 	public val rev: String,
@@ -1297,6 +1754,42 @@ public fun undeleteFormByIdAsync(
 }.failureToPyStringAsyncCallback(resultCallback)
 
 @Serializable
+private class UndeleteFormsByIdsParams(
+	public val entityIds: List<StoredDocumentIdentifier>,
+)
+
+@OptIn(InternalIcureApi::class)
+public fun undeleteFormsByIdsBlocking(sdk: CardinalApis, params: String): String =
+		kotlin.runCatching {
+	val decodedParams = fullLanguageInteropJson.decodeFromString<UndeleteFormsByIdsParams>(params)
+	runBlocking {
+		sdk.form.undeleteFormsByIds(
+			decodedParams.entityIds,
+		)
+	}
+}.toPyString(ListSerializer(DecryptedForm.serializer()))
+
+@OptIn(
+	ExperimentalForeignApi::class,
+	InternalIcureApi::class,
+)
+public fun undeleteFormsByIdsAsync(
+	sdk: CardinalApis,
+	params: String,
+	resultCallback: CPointer<CFunction<(CValues<ByteVarOf<Byte>>?,
+			CValues<ByteVarOf<Byte>>?) -> Unit>>,
+): COpaquePointer? = kotlin.runCatching {
+	val decodedParams = fullLanguageInteropJson.decodeFromString<UndeleteFormsByIdsParams>(params)
+	GlobalScope.launch {
+		kotlin.runCatching {
+			sdk.form.undeleteFormsByIds(
+				decodedParams.entityIds,
+			)
+		}.toPyStringAsyncCallback(ListSerializer(DecryptedForm.serializer()), resultCallback)
+	}
+}.failureToPyStringAsyncCallback(resultCallback)
+
+@Serializable
 private class UndeleteFormParams(
 	public val form: Form,
 )
@@ -1332,16 +1825,16 @@ public fun undeleteFormAsync(
 }.failureToPyStringAsyncCallback(resultCallback)
 
 @Serializable
-private class ModifyFormsParams(
-	public val entities: List<DecryptedForm>,
+private class UndeleteFormsParams(
+	public val forms: List<Form>,
 )
 
 @OptIn(InternalIcureApi::class)
-public fun modifyFormsBlocking(sdk: CardinalApis, params: String): String = kotlin.runCatching {
-	val decodedParams = fullLanguageInteropJson.decodeFromString<ModifyFormsParams>(params)
+public fun undeleteFormsBlocking(sdk: CardinalApis, params: String): String = kotlin.runCatching {
+	val decodedParams = fullLanguageInteropJson.decodeFromString<UndeleteFormsParams>(params)
 	runBlocking {
-		sdk.form.modifyForms(
-			decodedParams.entities,
+		sdk.form.undeleteForms(
+			decodedParams.forms,
 		)
 	}
 }.toPyString(ListSerializer(DecryptedForm.serializer()))
@@ -1350,17 +1843,17 @@ public fun modifyFormsBlocking(sdk: CardinalApis, params: String): String = kotl
 	ExperimentalForeignApi::class,
 	InternalIcureApi::class,
 )
-public fun modifyFormsAsync(
+public fun undeleteFormsAsync(
 	sdk: CardinalApis,
 	params: String,
 	resultCallback: CPointer<CFunction<(CValues<ByteVarOf<Byte>>?,
 			CValues<ByteVarOf<Byte>>?) -> Unit>>,
 ): COpaquePointer? = kotlin.runCatching {
-	val decodedParams = fullLanguageInteropJson.decodeFromString<ModifyFormsParams>(params)
+	val decodedParams = fullLanguageInteropJson.decodeFromString<UndeleteFormsParams>(params)
 	GlobalScope.launch {
 		kotlin.runCatching {
-			sdk.form.modifyForms(
-				decodedParams.entities,
+			sdk.form.undeleteForms(
+				decodedParams.forms,
 			)
 		}.toPyStringAsyncCallback(ListSerializer(DecryptedForm.serializer()), resultCallback)
 	}
@@ -1437,44 +1930,6 @@ public fun getFormsAsync(
 }.failureToPyStringAsyncCallback(resultCallback)
 
 @Serializable
-private class GetLatestFormByLogicalUuidParams(
-	public val logicalUuid: String,
-)
-
-@OptIn(InternalIcureApi::class)
-public fun getLatestFormByLogicalUuidBlocking(sdk: CardinalApis, params: String): String =
-		kotlin.runCatching {
-	val decodedParams =
-			fullLanguageInteropJson.decodeFromString<GetLatestFormByLogicalUuidParams>(params)
-	runBlocking {
-		sdk.form.getLatestFormByLogicalUuid(
-			decodedParams.logicalUuid,
-		)
-	}
-}.toPyString(DecryptedForm.serializer())
-
-@OptIn(
-	ExperimentalForeignApi::class,
-	InternalIcureApi::class,
-)
-public fun getLatestFormByLogicalUuidAsync(
-	sdk: CardinalApis,
-	params: String,
-	resultCallback: CPointer<CFunction<(CValues<ByteVarOf<Byte>>?,
-			CValues<ByteVarOf<Byte>>?) -> Unit>>,
-): COpaquePointer? = kotlin.runCatching {
-	val decodedParams =
-			fullLanguageInteropJson.decodeFromString<GetLatestFormByLogicalUuidParams>(params)
-	GlobalScope.launch {
-		kotlin.runCatching {
-			sdk.form.getLatestFormByLogicalUuid(
-				decodedParams.logicalUuid,
-			)
-		}.toPyStringAsyncCallback(DecryptedForm.serializer(), resultCallback)
-	}
-}.failureToPyStringAsyncCallback(resultCallback)
-
-@Serializable
 private class GetLatestFormByUniqueIdParams(
 	public val uniqueId: String,
 )
@@ -1507,116 +1962,5 @@ public fun getLatestFormByUniqueIdAsync(
 				decodedParams.uniqueId,
 			)
 		}.toPyStringAsyncCallback(DecryptedForm.serializer(), resultCallback)
-	}
-}.failureToPyStringAsyncCallback(resultCallback)
-
-@Serializable
-private class GetFormsByLogicalUuidParams(
-	public val logicalUuid: String,
-)
-
-@OptIn(InternalIcureApi::class)
-public fun getFormsByLogicalUuidBlocking(sdk: CardinalApis, params: String): String =
-		kotlin.runCatching {
-	val decodedParams = fullLanguageInteropJson.decodeFromString<GetFormsByLogicalUuidParams>(params)
-	runBlocking {
-		sdk.form.getFormsByLogicalUuid(
-			decodedParams.logicalUuid,
-		)
-	}
-}.toPyString(ListSerializer(DecryptedForm.serializer()))
-
-@OptIn(
-	ExperimentalForeignApi::class,
-	InternalIcureApi::class,
-)
-public fun getFormsByLogicalUuidAsync(
-	sdk: CardinalApis,
-	params: String,
-	resultCallback: CPointer<CFunction<(CValues<ByteVarOf<Byte>>?,
-			CValues<ByteVarOf<Byte>>?) -> Unit>>,
-): COpaquePointer? = kotlin.runCatching {
-	val decodedParams = fullLanguageInteropJson.decodeFromString<GetFormsByLogicalUuidParams>(params)
-	GlobalScope.launch {
-		kotlin.runCatching {
-			sdk.form.getFormsByLogicalUuid(
-				decodedParams.logicalUuid,
-			)
-		}.toPyStringAsyncCallback(ListSerializer(DecryptedForm.serializer()), resultCallback)
-	}
-}.failureToPyStringAsyncCallback(resultCallback)
-
-@Serializable
-private class GetFormsByUniqueIdParams(
-	public val uniqueId: String,
-)
-
-@OptIn(InternalIcureApi::class)
-public fun getFormsByUniqueIdBlocking(sdk: CardinalApis, params: String): String =
-		kotlin.runCatching {
-	val decodedParams = fullLanguageInteropJson.decodeFromString<GetFormsByUniqueIdParams>(params)
-	runBlocking {
-		sdk.form.getFormsByUniqueId(
-			decodedParams.uniqueId,
-		)
-	}
-}.toPyString(ListSerializer(DecryptedForm.serializer()))
-
-@OptIn(
-	ExperimentalForeignApi::class,
-	InternalIcureApi::class,
-)
-public fun getFormsByUniqueIdAsync(
-	sdk: CardinalApis,
-	params: String,
-	resultCallback: CPointer<CFunction<(CValues<ByteVarOf<Byte>>?,
-			CValues<ByteVarOf<Byte>>?) -> Unit>>,
-): COpaquePointer? = kotlin.runCatching {
-	val decodedParams = fullLanguageInteropJson.decodeFromString<GetFormsByUniqueIdParams>(params)
-	GlobalScope.launch {
-		kotlin.runCatching {
-			sdk.form.getFormsByUniqueId(
-				decodedParams.uniqueId,
-			)
-		}.toPyStringAsyncCallback(ListSerializer(DecryptedForm.serializer()), resultCallback)
-	}
-}.failureToPyStringAsyncCallback(resultCallback)
-
-@Serializable
-private class GetChildrenFormsParams(
-	public val hcPartyId: String,
-	public val parentId: String,
-)
-
-@OptIn(InternalIcureApi::class)
-public fun getChildrenFormsBlocking(sdk: CardinalApis, params: String): String =
-		kotlin.runCatching {
-	val decodedParams = fullLanguageInteropJson.decodeFromString<GetChildrenFormsParams>(params)
-	runBlocking {
-		sdk.form.getChildrenForms(
-			decodedParams.hcPartyId,
-			decodedParams.parentId,
-		)
-	}
-}.toPyString(ListSerializer(DecryptedForm.serializer()))
-
-@OptIn(
-	ExperimentalForeignApi::class,
-	InternalIcureApi::class,
-)
-public fun getChildrenFormsAsync(
-	sdk: CardinalApis,
-	params: String,
-	resultCallback: CPointer<CFunction<(CValues<ByteVarOf<Byte>>?,
-			CValues<ByteVarOf<Byte>>?) -> Unit>>,
-): COpaquePointer? = kotlin.runCatching {
-	val decodedParams = fullLanguageInteropJson.decodeFromString<GetChildrenFormsParams>(params)
-	GlobalScope.launch {
-		kotlin.runCatching {
-			sdk.form.getChildrenForms(
-				decodedParams.hcPartyId,
-				decodedParams.parentId,
-			)
-		}.toPyStringAsyncCallback(ListSerializer(DecryptedForm.serializer()), resultCallback)
 	}
 }.failureToPyStringAsyncCallback(resultCallback)

@@ -7,8 +7,7 @@ import com.icure.cardinal.sdk.filters.FilterOptions
 import com.icure.cardinal.sdk.filters.SortableFilterOptions
 import com.icure.cardinal.sdk.model.Contact
 import com.icure.cardinal.sdk.model.EncryptedContact
-import com.icure.cardinal.sdk.model.PaginatedList
-import com.icure.cardinal.sdk.model.Patient
+import com.icure.cardinal.sdk.model.StoredDocumentIdentifier
 import com.icure.cardinal.sdk.model.embed.EncryptedService
 import com.icure.cardinal.sdk.model.embed.Service
 import com.icure.cardinal.sdk.py.utils.PyResult
@@ -21,10 +20,7 @@ import com.icure.cardinal.sdk.py.utils.toPyStringAsyncCallback
 import com.icure.cardinal.sdk.serialization.PaginatedListIteratorWithSerializer
 import com.icure.cardinal.sdk.utils.Serialization.fullLanguageInteropJson
 import com.icure.utils.InternalIcureApi
-import kotlin.Boolean
 import kotlin.Byte
-import kotlin.Int
-import kotlin.Long
 import kotlin.OptIn
 import kotlin.String
 import kotlin.Unit
@@ -41,7 +37,6 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.builtins.ListSerializer
-import kotlinx.serialization.json.JsonElement
 
 @Serializable
 private class ShareWithParams(
@@ -121,57 +116,6 @@ public fun shareWithManyAsync(
 		}.toPyStringAsyncCallback(EncryptedContact.serializer(), resultCallback)
 	}
 }.failureToPyStringAsyncCallback(resultCallback)
-
-@Serializable
-private class FindContactsByHcPartyPatientParams(
-	public val hcPartyId: String,
-	public val patient: Patient,
-	public val startDate: Long? = null,
-	public val endDate: Long? = null,
-	public val descending: Boolean? = null,
-)
-
-@OptIn(InternalIcureApi::class)
-public fun findContactsByHcPartyPatientBlocking(sdk: CardinalApis, params: String): PyResult =
-		kotlin.runCatching {
-	val decodedParams =
-			fullLanguageInteropJson.decodeFromString<FindContactsByHcPartyPatientParams>(params)
-	runBlocking {
-		sdk.contact.encrypted.findContactsByHcPartyPatient(
-			decodedParams.hcPartyId,
-			decodedParams.patient,
-			decodedParams.startDate,
-			decodedParams.endDate,
-			decodedParams.descending,
-		)
-	}
-}.toPyResult {
-	PaginatedListIteratorWithSerializer(it, EncryptedContact.serializer())}
-
-@OptIn(
-	ExperimentalForeignApi::class,
-	InternalIcureApi::class,
-)
-public fun findContactsByHcPartyPatientAsync(
-	sdk: CardinalApis,
-	params: String,
-	resultCallback: CPointer<CFunction<(COpaquePointer?, CValues<ByteVarOf<Byte>>?) -> Unit>>,
-): COpaquePointer? = kotlin.runCatching {
-	val decodedParams =
-			fullLanguageInteropJson.decodeFromString<FindContactsByHcPartyPatientParams>(params)
-	GlobalScope.launch {
-		kotlin.runCatching {
-			sdk.contact.encrypted.findContactsByHcPartyPatient(
-				decodedParams.hcPartyId,
-				decodedParams.patient,
-				decodedParams.startDate,
-				decodedParams.endDate,
-				decodedParams.descending,
-			)
-		}.toPyResultAsyncCallback(resultCallback) {
-			PaginatedListIteratorWithSerializer(it, EncryptedContact.serializer())}
-	}
-}.failureToPyResultAsyncCallback(resultCallback)
 
 @Serializable
 private class FilterContactsByParams(
@@ -431,6 +375,42 @@ public fun undeleteContactByIdAsync(
 }.failureToPyStringAsyncCallback(resultCallback)
 
 @Serializable
+private class UndeleteContactsByIdsParams(
+	public val entityIds: List<StoredDocumentIdentifier>,
+)
+
+@OptIn(InternalIcureApi::class)
+public fun undeleteContactsByIdsBlocking(sdk: CardinalApis, params: String): String =
+		kotlin.runCatching {
+	val decodedParams = fullLanguageInteropJson.decodeFromString<UndeleteContactsByIdsParams>(params)
+	runBlocking {
+		sdk.contact.encrypted.undeleteContactsByIds(
+			decodedParams.entityIds,
+		)
+	}
+}.toPyString(ListSerializer(EncryptedContact.serializer()))
+
+@OptIn(
+	ExperimentalForeignApi::class,
+	InternalIcureApi::class,
+)
+public fun undeleteContactsByIdsAsync(
+	sdk: CardinalApis,
+	params: String,
+	resultCallback: CPointer<CFunction<(CValues<ByteVarOf<Byte>>?,
+			CValues<ByteVarOf<Byte>>?) -> Unit>>,
+): COpaquePointer? = kotlin.runCatching {
+	val decodedParams = fullLanguageInteropJson.decodeFromString<UndeleteContactsByIdsParams>(params)
+	GlobalScope.launch {
+		kotlin.runCatching {
+			sdk.contact.encrypted.undeleteContactsByIds(
+				decodedParams.entityIds,
+			)
+		}.toPyStringAsyncCallback(ListSerializer(EncryptedContact.serializer()), resultCallback)
+	}
+}.failureToPyStringAsyncCallback(resultCallback)
+
+@Serializable
 private class UndeleteContactParams(
 	public val contact: Contact,
 )
@@ -462,6 +442,42 @@ public fun undeleteContactAsync(
 				decodedParams.contact,
 			)
 		}.toPyStringAsyncCallback(EncryptedContact.serializer(), resultCallback)
+	}
+}.failureToPyStringAsyncCallback(resultCallback)
+
+@Serializable
+private class UndeleteContactsParams(
+	public val contacts: List<Contact>,
+)
+
+@OptIn(InternalIcureApi::class)
+public fun undeleteContactsBlocking(sdk: CardinalApis, params: String): String =
+		kotlin.runCatching {
+	val decodedParams = fullLanguageInteropJson.decodeFromString<UndeleteContactsParams>(params)
+	runBlocking {
+		sdk.contact.encrypted.undeleteContacts(
+			decodedParams.contacts,
+		)
+	}
+}.toPyString(ListSerializer(EncryptedContact.serializer()))
+
+@OptIn(
+	ExperimentalForeignApi::class,
+	InternalIcureApi::class,
+)
+public fun undeleteContactsAsync(
+	sdk: CardinalApis,
+	params: String,
+	resultCallback: CPointer<CFunction<(CValues<ByteVarOf<Byte>>?,
+			CValues<ByteVarOf<Byte>>?) -> Unit>>,
+): COpaquePointer? = kotlin.runCatching {
+	val decodedParams = fullLanguageInteropJson.decodeFromString<UndeleteContactsParams>(params)
+	GlobalScope.launch {
+		kotlin.runCatching {
+			sdk.contact.encrypted.undeleteContacts(
+				decodedParams.contacts,
+			)
+		}.toPyStringAsyncCallback(ListSerializer(EncryptedContact.serializer()), resultCallback)
 	}
 }.failureToPyStringAsyncCallback(resultCallback)
 
@@ -606,167 +622,6 @@ public fun getContactsAsync(
 }.failureToPyStringAsyncCallback(resultCallback)
 
 @Serializable
-private class ListContactByHCPartyServiceIdParams(
-	public val hcPartyId: String,
-	public val serviceId: String,
-)
-
-@OptIn(InternalIcureApi::class)
-public fun listContactByHCPartyServiceIdBlocking(sdk: CardinalApis, params: String): String =
-		kotlin.runCatching {
-	val decodedParams =
-			fullLanguageInteropJson.decodeFromString<ListContactByHCPartyServiceIdParams>(params)
-	runBlocking {
-		sdk.contact.encrypted.listContactByHCPartyServiceId(
-			decodedParams.hcPartyId,
-			decodedParams.serviceId,
-		)
-	}
-}.toPyString(ListSerializer(EncryptedContact.serializer()))
-
-@OptIn(
-	ExperimentalForeignApi::class,
-	InternalIcureApi::class,
-)
-public fun listContactByHCPartyServiceIdAsync(
-	sdk: CardinalApis,
-	params: String,
-	resultCallback: CPointer<CFunction<(CValues<ByteVarOf<Byte>>?,
-			CValues<ByteVarOf<Byte>>?) -> Unit>>,
-): COpaquePointer? = kotlin.runCatching {
-	val decodedParams =
-			fullLanguageInteropJson.decodeFromString<ListContactByHCPartyServiceIdParams>(params)
-	GlobalScope.launch {
-		kotlin.runCatching {
-			sdk.contact.encrypted.listContactByHCPartyServiceId(
-				decodedParams.hcPartyId,
-				decodedParams.serviceId,
-			)
-		}.toPyStringAsyncCallback(ListSerializer(EncryptedContact.serializer()), resultCallback)
-	}
-}.failureToPyStringAsyncCallback(resultCallback)
-
-@Serializable
-private class ListContactsByExternalIdParams(
-	public val externalId: String,
-)
-
-@OptIn(InternalIcureApi::class)
-public fun listContactsByExternalIdBlocking(sdk: CardinalApis, params: String): String =
-		kotlin.runCatching {
-	val decodedParams =
-			fullLanguageInteropJson.decodeFromString<ListContactsByExternalIdParams>(params)
-	runBlocking {
-		sdk.contact.encrypted.listContactsByExternalId(
-			decodedParams.externalId,
-		)
-	}
-}.toPyString(ListSerializer(EncryptedContact.serializer()))
-
-@OptIn(
-	ExperimentalForeignApi::class,
-	InternalIcureApi::class,
-)
-public fun listContactsByExternalIdAsync(
-	sdk: CardinalApis,
-	params: String,
-	resultCallback: CPointer<CFunction<(CValues<ByteVarOf<Byte>>?,
-			CValues<ByteVarOf<Byte>>?) -> Unit>>,
-): COpaquePointer? = kotlin.runCatching {
-	val decodedParams =
-			fullLanguageInteropJson.decodeFromString<ListContactsByExternalIdParams>(params)
-	GlobalScope.launch {
-		kotlin.runCatching {
-			sdk.contact.encrypted.listContactsByExternalId(
-				decodedParams.externalId,
-			)
-		}.toPyStringAsyncCallback(ListSerializer(EncryptedContact.serializer()), resultCallback)
-	}
-}.failureToPyStringAsyncCallback(resultCallback)
-
-@Serializable
-private class ListContactsByHCPartyAndFormIdParams(
-	public val hcPartyId: String,
-	public val formId: String,
-)
-
-@OptIn(InternalIcureApi::class)
-public fun listContactsByHCPartyAndFormIdBlocking(sdk: CardinalApis, params: String): String =
-		kotlin.runCatching {
-	val decodedParams =
-			fullLanguageInteropJson.decodeFromString<ListContactsByHCPartyAndFormIdParams>(params)
-	runBlocking {
-		sdk.contact.encrypted.listContactsByHCPartyAndFormId(
-			decodedParams.hcPartyId,
-			decodedParams.formId,
-		)
-	}
-}.toPyString(ListSerializer(EncryptedContact.serializer()))
-
-@OptIn(
-	ExperimentalForeignApi::class,
-	InternalIcureApi::class,
-)
-public fun listContactsByHCPartyAndFormIdAsync(
-	sdk: CardinalApis,
-	params: String,
-	resultCallback: CPointer<CFunction<(CValues<ByteVarOf<Byte>>?,
-			CValues<ByteVarOf<Byte>>?) -> Unit>>,
-): COpaquePointer? = kotlin.runCatching {
-	val decodedParams =
-			fullLanguageInteropJson.decodeFromString<ListContactsByHCPartyAndFormIdParams>(params)
-	GlobalScope.launch {
-		kotlin.runCatching {
-			sdk.contact.encrypted.listContactsByHCPartyAndFormId(
-				decodedParams.hcPartyId,
-				decodedParams.formId,
-			)
-		}.toPyStringAsyncCallback(ListSerializer(EncryptedContact.serializer()), resultCallback)
-	}
-}.failureToPyStringAsyncCallback(resultCallback)
-
-@Serializable
-private class ListContactsByHCPartyAndFormIdsParams(
-	public val hcPartyId: String,
-	public val formIds: List<String>,
-)
-
-@OptIn(InternalIcureApi::class)
-public fun listContactsByHCPartyAndFormIdsBlocking(sdk: CardinalApis, params: String): String =
-		kotlin.runCatching {
-	val decodedParams =
-			fullLanguageInteropJson.decodeFromString<ListContactsByHCPartyAndFormIdsParams>(params)
-	runBlocking {
-		sdk.contact.encrypted.listContactsByHCPartyAndFormIds(
-			decodedParams.hcPartyId,
-			decodedParams.formIds,
-		)
-	}
-}.toPyString(ListSerializer(EncryptedContact.serializer()))
-
-@OptIn(
-	ExperimentalForeignApi::class,
-	InternalIcureApi::class,
-)
-public fun listContactsByHCPartyAndFormIdsAsync(
-	sdk: CardinalApis,
-	params: String,
-	resultCallback: CPointer<CFunction<(CValues<ByteVarOf<Byte>>?,
-			CValues<ByteVarOf<Byte>>?) -> Unit>>,
-): COpaquePointer? = kotlin.runCatching {
-	val decodedParams =
-			fullLanguageInteropJson.decodeFromString<ListContactsByHCPartyAndFormIdsParams>(params)
-	GlobalScope.launch {
-		kotlin.runCatching {
-			sdk.contact.encrypted.listContactsByHCPartyAndFormIds(
-				decodedParams.hcPartyId,
-				decodedParams.formIds,
-			)
-		}.toPyStringAsyncCallback(ListSerializer(EncryptedContact.serializer()), resultCallback)
-	}
-}.failureToPyStringAsyncCallback(resultCallback)
-
-@Serializable
 private class GetServiceParams(
 	public val serviceId: String,
 )
@@ -833,176 +688,5 @@ public fun getServicesAsync(
 				decodedParams.entityIds,
 			)
 		}.toPyStringAsyncCallback(ListSerializer(EncryptedService.serializer()), resultCallback)
-	}
-}.failureToPyStringAsyncCallback(resultCallback)
-
-@Serializable
-private class GetServicesLinkedToParams(
-	public val linkType: String,
-	public val ids: List<String>,
-)
-
-@OptIn(InternalIcureApi::class)
-public fun getServicesLinkedToBlocking(sdk: CardinalApis, params: String): String =
-		kotlin.runCatching {
-	val decodedParams = fullLanguageInteropJson.decodeFromString<GetServicesLinkedToParams>(params)
-	runBlocking {
-		sdk.contact.encrypted.getServicesLinkedTo(
-			decodedParams.linkType,
-			decodedParams.ids,
-		)
-	}
-}.toPyString(ListSerializer(EncryptedService.serializer()))
-
-@OptIn(
-	ExperimentalForeignApi::class,
-	InternalIcureApi::class,
-)
-public fun getServicesLinkedToAsync(
-	sdk: CardinalApis,
-	params: String,
-	resultCallback: CPointer<CFunction<(CValues<ByteVarOf<Byte>>?,
-			CValues<ByteVarOf<Byte>>?) -> Unit>>,
-): COpaquePointer? = kotlin.runCatching {
-	val decodedParams = fullLanguageInteropJson.decodeFromString<GetServicesLinkedToParams>(params)
-	GlobalScope.launch {
-		kotlin.runCatching {
-			sdk.contact.encrypted.getServicesLinkedTo(
-				decodedParams.linkType,
-				decodedParams.ids,
-			)
-		}.toPyStringAsyncCallback(ListSerializer(EncryptedService.serializer()), resultCallback)
-	}
-}.failureToPyStringAsyncCallback(resultCallback)
-
-@Serializable
-private class ListServicesByAssociationIdParams(
-	public val associationId: String,
-)
-
-@OptIn(InternalIcureApi::class)
-public fun listServicesByAssociationIdBlocking(sdk: CardinalApis, params: String): String =
-		kotlin.runCatching {
-	val decodedParams =
-			fullLanguageInteropJson.decodeFromString<ListServicesByAssociationIdParams>(params)
-	runBlocking {
-		sdk.contact.encrypted.listServicesByAssociationId(
-			decodedParams.associationId,
-		)
-	}
-}.toPyString(ListSerializer(EncryptedService.serializer()))
-
-@OptIn(
-	ExperimentalForeignApi::class,
-	InternalIcureApi::class,
-)
-public fun listServicesByAssociationIdAsync(
-	sdk: CardinalApis,
-	params: String,
-	resultCallback: CPointer<CFunction<(CValues<ByteVarOf<Byte>>?,
-			CValues<ByteVarOf<Byte>>?) -> Unit>>,
-): COpaquePointer? = kotlin.runCatching {
-	val decodedParams =
-			fullLanguageInteropJson.decodeFromString<ListServicesByAssociationIdParams>(params)
-	GlobalScope.launch {
-		kotlin.runCatching {
-			sdk.contact.encrypted.listServicesByAssociationId(
-				decodedParams.associationId,
-			)
-		}.toPyStringAsyncCallback(ListSerializer(EncryptedService.serializer()), resultCallback)
-	}
-}.failureToPyStringAsyncCallback(resultCallback)
-
-@Serializable
-private class ListServicesByHealthElementIdParams(
-	public val hcPartyId: String,
-	public val healthElementId: String,
-)
-
-@OptIn(InternalIcureApi::class)
-public fun listServicesByHealthElementIdBlocking(sdk: CardinalApis, params: String): String =
-		kotlin.runCatching {
-	val decodedParams =
-			fullLanguageInteropJson.decodeFromString<ListServicesByHealthElementIdParams>(params)
-	runBlocking {
-		sdk.contact.encrypted.listServicesByHealthElementId(
-			decodedParams.hcPartyId,
-			decodedParams.healthElementId,
-		)
-	}
-}.toPyString(ListSerializer(EncryptedService.serializer()))
-
-@OptIn(
-	ExperimentalForeignApi::class,
-	InternalIcureApi::class,
-)
-public fun listServicesByHealthElementIdAsync(
-	sdk: CardinalApis,
-	params: String,
-	resultCallback: CPointer<CFunction<(CValues<ByteVarOf<Byte>>?,
-			CValues<ByteVarOf<Byte>>?) -> Unit>>,
-): COpaquePointer? = kotlin.runCatching {
-	val decodedParams =
-			fullLanguageInteropJson.decodeFromString<ListServicesByHealthElementIdParams>(params)
-	GlobalScope.launch {
-		kotlin.runCatching {
-			sdk.contact.encrypted.listServicesByHealthElementId(
-				decodedParams.hcPartyId,
-				decodedParams.healthElementId,
-			)
-		}.toPyStringAsyncCallback(ListSerializer(EncryptedService.serializer()), resultCallback)
-	}
-}.failureToPyStringAsyncCallback(resultCallback)
-
-@Serializable
-private class FindContactsByOpeningDateParams(
-	public val startDate: Long,
-	public val endDate: Long,
-	public val hcPartyId: String,
-	public val startKey: JsonElement? = null,
-	public val startDocumentId: String? = null,
-	public val limit: Int? = null,
-)
-
-@OptIn(InternalIcureApi::class)
-public fun findContactsByOpeningDateBlocking(sdk: CardinalApis, params: String): String =
-		kotlin.runCatching {
-	val decodedParams =
-			fullLanguageInteropJson.decodeFromString<FindContactsByOpeningDateParams>(params)
-	runBlocking {
-		sdk.contact.encrypted.findContactsByOpeningDate(
-			decodedParams.startDate,
-			decodedParams.endDate,
-			decodedParams.hcPartyId,
-			decodedParams.startKey,
-			decodedParams.startDocumentId,
-			decodedParams.limit,
-		)
-	}
-}.toPyString(PaginatedList.serializer(EncryptedContact.serializer()))
-
-@OptIn(
-	ExperimentalForeignApi::class,
-	InternalIcureApi::class,
-)
-public fun findContactsByOpeningDateAsync(
-	sdk: CardinalApis,
-	params: String,
-	resultCallback: CPointer<CFunction<(CValues<ByteVarOf<Byte>>?,
-			CValues<ByteVarOf<Byte>>?) -> Unit>>,
-): COpaquePointer? = kotlin.runCatching {
-	val decodedParams =
-			fullLanguageInteropJson.decodeFromString<FindContactsByOpeningDateParams>(params)
-	GlobalScope.launch {
-		kotlin.runCatching {
-			sdk.contact.encrypted.findContactsByOpeningDate(
-				decodedParams.startDate,
-				decodedParams.endDate,
-				decodedParams.hcPartyId,
-				decodedParams.startKey,
-				decodedParams.startDocumentId,
-				decodedParams.limit,
-			)
-		}.toPyStringAsyncCallback(PaginatedList.serializer(EncryptedContact.serializer()), resultCallback)
 	}
 }.failureToPyStringAsyncCallback(resultCallback)

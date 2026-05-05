@@ -6,9 +6,7 @@ import com.icure.cardinal.sdk.filters.BaseFilterOptions
 import com.icure.cardinal.sdk.filters.BaseSortableFilterOptions
 import com.icure.cardinal.sdk.model.AccessLog
 import com.icure.cardinal.sdk.model.EncryptedAccessLog
-import com.icure.cardinal.sdk.model.PaginatedList
 import com.icure.cardinal.sdk.model.StoredDocumentIdentifier
-import com.icure.cardinal.sdk.model.couchdb.DocIdentifier
 import com.icure.cardinal.sdk.py.utils.PyResult
 import com.icure.cardinal.sdk.py.utils.failureToPyResultAsyncCallback
 import com.icure.cardinal.sdk.py.utils.failureToPyStringAsyncCallback
@@ -19,10 +17,7 @@ import com.icure.cardinal.sdk.py.utils.toPyStringAsyncCallback
 import com.icure.cardinal.sdk.serialization.PaginatedListIteratorWithSerializer
 import com.icure.cardinal.sdk.utils.Serialization.fullLanguageInteropJson
 import com.icure.utils.InternalIcureApi
-import kotlin.Boolean
 import kotlin.Byte
-import kotlin.Int
-import kotlin.Long
 import kotlin.OptIn
 import kotlin.String
 import kotlin.Unit
@@ -189,78 +184,6 @@ public fun filterAccessLogsBySortedAsync(
 }.failureToPyResultAsyncCallback(resultCallback)
 
 @Serializable
-private class DeleteAccessLogUnsafeParams(
-	public val entityId: String,
-)
-
-@OptIn(InternalIcureApi::class)
-public fun deleteAccessLogUnsafeBlocking(sdk: CardinalBaseApis, params: String): String =
-		kotlin.runCatching {
-	val decodedParams = fullLanguageInteropJson.decodeFromString<DeleteAccessLogUnsafeParams>(params)
-	runBlocking {
-		sdk.accessLog.deleteAccessLogUnsafe(
-			decodedParams.entityId,
-		)
-	}
-}.toPyString(DocIdentifier.serializer())
-
-@OptIn(
-	ExperimentalForeignApi::class,
-	InternalIcureApi::class,
-)
-public fun deleteAccessLogUnsafeAsync(
-	sdk: CardinalBaseApis,
-	params: String,
-	resultCallback: CPointer<CFunction<(CValues<ByteVarOf<Byte>>?,
-			CValues<ByteVarOf<Byte>>?) -> Unit>>,
-): COpaquePointer? = kotlin.runCatching {
-	val decodedParams = fullLanguageInteropJson.decodeFromString<DeleteAccessLogUnsafeParams>(params)
-	GlobalScope.launch {
-		kotlin.runCatching {
-			sdk.accessLog.deleteAccessLogUnsafe(
-				decodedParams.entityId,
-			)
-		}.toPyStringAsyncCallback(DocIdentifier.serializer(), resultCallback)
-	}
-}.failureToPyStringAsyncCallback(resultCallback)
-
-@Serializable
-private class DeleteAccessLogsUnsafeParams(
-	public val entityIds: List<String>,
-)
-
-@OptIn(InternalIcureApi::class)
-public fun deleteAccessLogsUnsafeBlocking(sdk: CardinalBaseApis, params: String): String =
-		kotlin.runCatching {
-	val decodedParams = fullLanguageInteropJson.decodeFromString<DeleteAccessLogsUnsafeParams>(params)
-	runBlocking {
-		sdk.accessLog.deleteAccessLogsUnsafe(
-			decodedParams.entityIds,
-		)
-	}
-}.toPyString(ListSerializer(DocIdentifier.serializer()))
-
-@OptIn(
-	ExperimentalForeignApi::class,
-	InternalIcureApi::class,
-)
-public fun deleteAccessLogsUnsafeAsync(
-	sdk: CardinalBaseApis,
-	params: String,
-	resultCallback: CPointer<CFunction<(CValues<ByteVarOf<Byte>>?,
-			CValues<ByteVarOf<Byte>>?) -> Unit>>,
-): COpaquePointer? = kotlin.runCatching {
-	val decodedParams = fullLanguageInteropJson.decodeFromString<DeleteAccessLogsUnsafeParams>(params)
-	GlobalScope.launch {
-		kotlin.runCatching {
-			sdk.accessLog.deleteAccessLogsUnsafe(
-				decodedParams.entityIds,
-			)
-		}.toPyStringAsyncCallback(ListSerializer(DocIdentifier.serializer()), resultCallback)
-	}
-}.failureToPyStringAsyncCallback(resultCallback)
-
-@Serializable
 private class DeleteAccessLogByIdParams(
 	public val entityId: String,
 	public val rev: String,
@@ -276,7 +199,7 @@ public fun deleteAccessLogByIdBlocking(sdk: CardinalBaseApis, params: String): S
 			decodedParams.rev,
 		)
 	}
-}.toPyString(DocIdentifier.serializer())
+}.toPyString(StoredDocumentIdentifier.serializer())
 
 @OptIn(
 	ExperimentalForeignApi::class,
@@ -295,7 +218,7 @@ public fun deleteAccessLogByIdAsync(
 				decodedParams.entityId,
 				decodedParams.rev,
 			)
-		}.toPyStringAsyncCallback(DocIdentifier.serializer(), resultCallback)
+		}.toPyStringAsyncCallback(StoredDocumentIdentifier.serializer(), resultCallback)
 	}
 }.failureToPyStringAsyncCallback(resultCallback)
 
@@ -313,7 +236,7 @@ public fun deleteAccessLogsByIdsBlocking(sdk: CardinalBaseApis, params: String):
 			decodedParams.entityIds,
 		)
 	}
-}.toPyString(ListSerializer(DocIdentifier.serializer()))
+}.toPyString(ListSerializer(StoredDocumentIdentifier.serializer()))
 
 @OptIn(
 	ExperimentalForeignApi::class,
@@ -331,7 +254,7 @@ public fun deleteAccessLogsByIdsAsync(
 			sdk.accessLog.deleteAccessLogsByIds(
 				decodedParams.entityIds,
 			)
-		}.toPyStringAsyncCallback(ListSerializer(DocIdentifier.serializer()), resultCallback)
+		}.toPyStringAsyncCallback(ListSerializer(StoredDocumentIdentifier.serializer()), resultCallback)
 	}
 }.failureToPyStringAsyncCallback(resultCallback)
 
@@ -375,6 +298,42 @@ public fun purgeAccessLogByIdAsync(
 }.failureToPyStringAsyncCallback(resultCallback)
 
 @Serializable
+private class PurgeAccessLogsByIdsParams(
+	public val entityIds: List<StoredDocumentIdentifier>,
+)
+
+@OptIn(InternalIcureApi::class)
+public fun purgeAccessLogsByIdsBlocking(sdk: CardinalBaseApis, params: String): String =
+		kotlin.runCatching {
+	val decodedParams = fullLanguageInteropJson.decodeFromString<PurgeAccessLogsByIdsParams>(params)
+	runBlocking {
+		sdk.accessLog.purgeAccessLogsByIds(
+			decodedParams.entityIds,
+		)
+	}
+}.toPyString(ListSerializer(StoredDocumentIdentifier.serializer()))
+
+@OptIn(
+	ExperimentalForeignApi::class,
+	InternalIcureApi::class,
+)
+public fun purgeAccessLogsByIdsAsync(
+	sdk: CardinalBaseApis,
+	params: String,
+	resultCallback: CPointer<CFunction<(CValues<ByteVarOf<Byte>>?,
+			CValues<ByteVarOf<Byte>>?) -> Unit>>,
+): COpaquePointer? = kotlin.runCatching {
+	val decodedParams = fullLanguageInteropJson.decodeFromString<PurgeAccessLogsByIdsParams>(params)
+	GlobalScope.launch {
+		kotlin.runCatching {
+			sdk.accessLog.purgeAccessLogsByIds(
+				decodedParams.entityIds,
+			)
+		}.toPyStringAsyncCallback(ListSerializer(StoredDocumentIdentifier.serializer()), resultCallback)
+	}
+}.failureToPyStringAsyncCallback(resultCallback)
+
+@Serializable
 private class DeleteAccessLogParams(
 	public val accessLog: AccessLog,
 )
@@ -388,7 +347,7 @@ public fun deleteAccessLogBlocking(sdk: CardinalBaseApis, params: String): Strin
 			decodedParams.accessLog,
 		)
 	}
-}.toPyString(DocIdentifier.serializer())
+}.toPyString(StoredDocumentIdentifier.serializer())
 
 @OptIn(
 	ExperimentalForeignApi::class,
@@ -406,7 +365,7 @@ public fun deleteAccessLogAsync(
 			sdk.accessLog.deleteAccessLog(
 				decodedParams.accessLog,
 			)
-		}.toPyStringAsyncCallback(DocIdentifier.serializer(), resultCallback)
+		}.toPyStringAsyncCallback(StoredDocumentIdentifier.serializer(), resultCallback)
 	}
 }.failureToPyStringAsyncCallback(resultCallback)
 
@@ -424,7 +383,7 @@ public fun deleteAccessLogsBlocking(sdk: CardinalBaseApis, params: String): Stri
 			decodedParams.accessLogs,
 		)
 	}
-}.toPyString(ListSerializer(DocIdentifier.serializer()))
+}.toPyString(ListSerializer(StoredDocumentIdentifier.serializer()))
 
 @OptIn(
 	ExperimentalForeignApi::class,
@@ -442,7 +401,7 @@ public fun deleteAccessLogsAsync(
 			sdk.accessLog.deleteAccessLogs(
 				decodedParams.accessLogs,
 			)
-		}.toPyStringAsyncCallback(ListSerializer(DocIdentifier.serializer()), resultCallback)
+		}.toPyStringAsyncCallback(ListSerializer(StoredDocumentIdentifier.serializer()), resultCallback)
 	}
 }.failureToPyStringAsyncCallback(resultCallback)
 
@@ -483,6 +442,42 @@ public fun purgeAccessLogAsync(
 }.failureToPyStringAsyncCallback(resultCallback)
 
 @Serializable
+private class PurgeAccessLogsParams(
+	public val accessLogs: List<AccessLog>,
+)
+
+@OptIn(InternalIcureApi::class)
+public fun purgeAccessLogsBlocking(sdk: CardinalBaseApis, params: String): String =
+		kotlin.runCatching {
+	val decodedParams = fullLanguageInteropJson.decodeFromString<PurgeAccessLogsParams>(params)
+	runBlocking {
+		sdk.accessLog.purgeAccessLogs(
+			decodedParams.accessLogs,
+		)
+	}
+}.toPyString(ListSerializer(StoredDocumentIdentifier.serializer()))
+
+@OptIn(
+	ExperimentalForeignApi::class,
+	InternalIcureApi::class,
+)
+public fun purgeAccessLogsAsync(
+	sdk: CardinalBaseApis,
+	params: String,
+	resultCallback: CPointer<CFunction<(CValues<ByteVarOf<Byte>>?,
+			CValues<ByteVarOf<Byte>>?) -> Unit>>,
+): COpaquePointer? = kotlin.runCatching {
+	val decodedParams = fullLanguageInteropJson.decodeFromString<PurgeAccessLogsParams>(params)
+	GlobalScope.launch {
+		kotlin.runCatching {
+			sdk.accessLog.purgeAccessLogs(
+				decodedParams.accessLogs,
+			)
+		}.toPyStringAsyncCallback(ListSerializer(StoredDocumentIdentifier.serializer()), resultCallback)
+	}
+}.failureToPyStringAsyncCallback(resultCallback)
+
+@Serializable
 private class CreateAccessLogParams(
 	public val entity: EncryptedAccessLog,
 )
@@ -515,6 +510,42 @@ public fun createAccessLogAsync(
 				decodedParams.entity,
 			)
 		}.toPyStringAsyncCallback(EncryptedAccessLog.serializer(), resultCallback)
+	}
+}.failureToPyStringAsyncCallback(resultCallback)
+
+@Serializable
+private class CreateAccessLogsParams(
+	public val entities: List<EncryptedAccessLog>,
+)
+
+@OptIn(InternalIcureApi::class)
+public fun createAccessLogsBlocking(sdk: CardinalBaseApis, params: String): String =
+		kotlin.runCatching {
+	val decodedParams = fullLanguageInteropJson.decodeFromString<CreateAccessLogsParams>(params)
+	runBlocking {
+		sdk.accessLog.createAccessLogs(
+			decodedParams.entities,
+		)
+	}
+}.toPyString(ListSerializer(EncryptedAccessLog.serializer()))
+
+@OptIn(
+	ExperimentalForeignApi::class,
+	InternalIcureApi::class,
+)
+public fun createAccessLogsAsync(
+	sdk: CardinalBaseApis,
+	params: String,
+	resultCallback: CPointer<CFunction<(CValues<ByteVarOf<Byte>>?,
+			CValues<ByteVarOf<Byte>>?) -> Unit>>,
+): COpaquePointer? = kotlin.runCatching {
+	val decodedParams = fullLanguageInteropJson.decodeFromString<CreateAccessLogsParams>(params)
+	GlobalScope.launch {
+		kotlin.runCatching {
+			sdk.accessLog.createAccessLogs(
+				decodedParams.entities,
+			)
+		}.toPyStringAsyncCallback(ListSerializer(EncryptedAccessLog.serializer()), resultCallback)
 	}
 }.failureToPyStringAsyncCallback(resultCallback)
 
@@ -558,6 +589,42 @@ public fun undeleteAccessLogByIdAsync(
 }.failureToPyStringAsyncCallback(resultCallback)
 
 @Serializable
+private class UndeleteAccessLogsByIdsParams(
+	public val entityIds: List<StoredDocumentIdentifier>,
+)
+
+@OptIn(InternalIcureApi::class)
+public fun undeleteAccessLogsByIdsBlocking(sdk: CardinalBaseApis, params: String): String =
+		kotlin.runCatching {
+	val decodedParams = fullLanguageInteropJson.decodeFromString<UndeleteAccessLogsByIdsParams>(params)
+	runBlocking {
+		sdk.accessLog.undeleteAccessLogsByIds(
+			decodedParams.entityIds,
+		)
+	}
+}.toPyString(ListSerializer(EncryptedAccessLog.serializer()))
+
+@OptIn(
+	ExperimentalForeignApi::class,
+	InternalIcureApi::class,
+)
+public fun undeleteAccessLogsByIdsAsync(
+	sdk: CardinalBaseApis,
+	params: String,
+	resultCallback: CPointer<CFunction<(CValues<ByteVarOf<Byte>>?,
+			CValues<ByteVarOf<Byte>>?) -> Unit>>,
+): COpaquePointer? = kotlin.runCatching {
+	val decodedParams = fullLanguageInteropJson.decodeFromString<UndeleteAccessLogsByIdsParams>(params)
+	GlobalScope.launch {
+		kotlin.runCatching {
+			sdk.accessLog.undeleteAccessLogsByIds(
+				decodedParams.entityIds,
+			)
+		}.toPyStringAsyncCallback(ListSerializer(EncryptedAccessLog.serializer()), resultCallback)
+	}
+}.failureToPyStringAsyncCallback(resultCallback)
+
+@Serializable
 private class UndeleteAccessLogParams(
 	public val accessLog: AccessLog,
 )
@@ -594,6 +661,42 @@ public fun undeleteAccessLogAsync(
 }.failureToPyStringAsyncCallback(resultCallback)
 
 @Serializable
+private class UndeleteAccessLogsParams(
+	public val accessLogs: List<AccessLog>,
+)
+
+@OptIn(InternalIcureApi::class)
+public fun undeleteAccessLogsBlocking(sdk: CardinalBaseApis, params: String): String =
+		kotlin.runCatching {
+	val decodedParams = fullLanguageInteropJson.decodeFromString<UndeleteAccessLogsParams>(params)
+	runBlocking {
+		sdk.accessLog.undeleteAccessLogs(
+			decodedParams.accessLogs,
+		)
+	}
+}.toPyString(ListSerializer(EncryptedAccessLog.serializer()))
+
+@OptIn(
+	ExperimentalForeignApi::class,
+	InternalIcureApi::class,
+)
+public fun undeleteAccessLogsAsync(
+	sdk: CardinalBaseApis,
+	params: String,
+	resultCallback: CPointer<CFunction<(CValues<ByteVarOf<Byte>>?,
+			CValues<ByteVarOf<Byte>>?) -> Unit>>,
+): COpaquePointer? = kotlin.runCatching {
+	val decodedParams = fullLanguageInteropJson.decodeFromString<UndeleteAccessLogsParams>(params)
+	GlobalScope.launch {
+		kotlin.runCatching {
+			sdk.accessLog.undeleteAccessLogs(
+				decodedParams.accessLogs,
+			)
+		}.toPyStringAsyncCallback(ListSerializer(EncryptedAccessLog.serializer()), resultCallback)
+	}
+}.failureToPyStringAsyncCallback(resultCallback)
+
+@Serializable
 private class ModifyAccessLogParams(
 	public val entity: EncryptedAccessLog,
 )
@@ -626,6 +729,42 @@ public fun modifyAccessLogAsync(
 				decodedParams.entity,
 			)
 		}.toPyStringAsyncCallback(EncryptedAccessLog.serializer(), resultCallback)
+	}
+}.failureToPyStringAsyncCallback(resultCallback)
+
+@Serializable
+private class ModifyAccessLogsParams(
+	public val entities: List<EncryptedAccessLog>,
+)
+
+@OptIn(InternalIcureApi::class)
+public fun modifyAccessLogsBlocking(sdk: CardinalBaseApis, params: String): String =
+		kotlin.runCatching {
+	val decodedParams = fullLanguageInteropJson.decodeFromString<ModifyAccessLogsParams>(params)
+	runBlocking {
+		sdk.accessLog.modifyAccessLogs(
+			decodedParams.entities,
+		)
+	}
+}.toPyString(ListSerializer(EncryptedAccessLog.serializer()))
+
+@OptIn(
+	ExperimentalForeignApi::class,
+	InternalIcureApi::class,
+)
+public fun modifyAccessLogsAsync(
+	sdk: CardinalBaseApis,
+	params: String,
+	resultCallback: CPointer<CFunction<(CValues<ByteVarOf<Byte>>?,
+			CValues<ByteVarOf<Byte>>?) -> Unit>>,
+): COpaquePointer? = kotlin.runCatching {
+	val decodedParams = fullLanguageInteropJson.decodeFromString<ModifyAccessLogsParams>(params)
+	GlobalScope.launch {
+		kotlin.runCatching {
+			sdk.accessLog.modifyAccessLogs(
+				decodedParams.entities,
+			)
+		}.toPyStringAsyncCallback(ListSerializer(EncryptedAccessLog.serializer()), resultCallback)
 	}
 }.failureToPyStringAsyncCallback(resultCallback)
 
@@ -698,163 +837,5 @@ public fun getAccessLogsAsync(
 				decodedParams.entityIds,
 			)
 		}.toPyStringAsyncCallback(ListSerializer(EncryptedAccessLog.serializer()), resultCallback)
-	}
-}.failureToPyStringAsyncCallback(resultCallback)
-
-@Serializable
-private class FindAccessLogsByParams(
-	public val fromEpoch: Long?,
-	public val toEpoch: Long?,
-	public val startKey: Long?,
-	public val startDocumentId: String?,
-	public val limit: Int?,
-)
-
-@OptIn(InternalIcureApi::class)
-public fun findAccessLogsByBlocking(sdk: CardinalBaseApis, params: String): String =
-		kotlin.runCatching {
-	val decodedParams = fullLanguageInteropJson.decodeFromString<FindAccessLogsByParams>(params)
-	runBlocking {
-		sdk.accessLog.findAccessLogsBy(
-			decodedParams.fromEpoch,
-			decodedParams.toEpoch,
-			decodedParams.startKey,
-			decodedParams.startDocumentId,
-			decodedParams.limit,
-		)
-	}
-}.toPyString(PaginatedList.serializer(EncryptedAccessLog.serializer()))
-
-@OptIn(
-	ExperimentalForeignApi::class,
-	InternalIcureApi::class,
-)
-public fun findAccessLogsByAsync(
-	sdk: CardinalBaseApis,
-	params: String,
-	resultCallback: CPointer<CFunction<(CValues<ByteVarOf<Byte>>?,
-			CValues<ByteVarOf<Byte>>?) -> Unit>>,
-): COpaquePointer? = kotlin.runCatching {
-	val decodedParams = fullLanguageInteropJson.decodeFromString<FindAccessLogsByParams>(params)
-	GlobalScope.launch {
-		kotlin.runCatching {
-			sdk.accessLog.findAccessLogsBy(
-				decodedParams.fromEpoch,
-				decodedParams.toEpoch,
-				decodedParams.startKey,
-				decodedParams.startDocumentId,
-				decodedParams.limit,
-			)
-		}.toPyStringAsyncCallback(PaginatedList.serializer(EncryptedAccessLog.serializer()),
-				resultCallback)
-	}
-}.failureToPyStringAsyncCallback(resultCallback)
-
-@Serializable
-private class FindAccessLogsByUserAfterDateParams(
-	public val userId: String,
-	public val accessType: String? = null,
-	public val startDate: Long? = null,
-	public val startKey: String? = null,
-	public val startDocumentId: String? = null,
-	public val limit: Int? = null,
-	public val descending: Boolean? = null,
-)
-
-@OptIn(InternalIcureApi::class)
-public fun findAccessLogsByUserAfterDateBlocking(sdk: CardinalBaseApis, params: String): String =
-		kotlin.runCatching {
-	val decodedParams =
-			fullLanguageInteropJson.decodeFromString<FindAccessLogsByUserAfterDateParams>(params)
-	runBlocking {
-		sdk.accessLog.findAccessLogsByUserAfterDate(
-			decodedParams.userId,
-			decodedParams.accessType,
-			decodedParams.startDate,
-			decodedParams.startKey,
-			decodedParams.startDocumentId,
-			decodedParams.limit,
-			decodedParams.descending,
-		)
-	}
-}.toPyString(PaginatedList.serializer(EncryptedAccessLog.serializer()))
-
-@OptIn(
-	ExperimentalForeignApi::class,
-	InternalIcureApi::class,
-)
-public fun findAccessLogsByUserAfterDateAsync(
-	sdk: CardinalBaseApis,
-	params: String,
-	resultCallback: CPointer<CFunction<(CValues<ByteVarOf<Byte>>?,
-			CValues<ByteVarOf<Byte>>?) -> Unit>>,
-): COpaquePointer? = kotlin.runCatching {
-	val decodedParams =
-			fullLanguageInteropJson.decodeFromString<FindAccessLogsByUserAfterDateParams>(params)
-	GlobalScope.launch {
-		kotlin.runCatching {
-			sdk.accessLog.findAccessLogsByUserAfterDate(
-				decodedParams.userId,
-				decodedParams.accessType,
-				decodedParams.startDate,
-				decodedParams.startKey,
-				decodedParams.startDocumentId,
-				decodedParams.limit,
-				decodedParams.descending,
-			)
-		}.toPyStringAsyncCallback(PaginatedList.serializer(EncryptedAccessLog.serializer()),
-				resultCallback)
-	}
-}.failureToPyStringAsyncCallback(resultCallback)
-
-@Serializable
-private class FindAccessLogsInGroupParams(
-	public val groupId: String,
-	public val fromEpoch: Long? = null,
-	public val toEpoch: Long? = null,
-	public val startKey: Long? = null,
-	public val startDocumentId: String? = null,
-	public val limit: Int? = null,
-)
-
-@OptIn(InternalIcureApi::class)
-public fun findAccessLogsInGroupBlocking(sdk: CardinalBaseApis, params: String): String =
-		kotlin.runCatching {
-	val decodedParams = fullLanguageInteropJson.decodeFromString<FindAccessLogsInGroupParams>(params)
-	runBlocking {
-		sdk.accessLog.findAccessLogsInGroup(
-			decodedParams.groupId,
-			decodedParams.fromEpoch,
-			decodedParams.toEpoch,
-			decodedParams.startKey,
-			decodedParams.startDocumentId,
-			decodedParams.limit,
-		)
-	}
-}.toPyString(PaginatedList.serializer(EncryptedAccessLog.serializer()))
-
-@OptIn(
-	ExperimentalForeignApi::class,
-	InternalIcureApi::class,
-)
-public fun findAccessLogsInGroupAsync(
-	sdk: CardinalBaseApis,
-	params: String,
-	resultCallback: CPointer<CFunction<(CValues<ByteVarOf<Byte>>?,
-			CValues<ByteVarOf<Byte>>?) -> Unit>>,
-): COpaquePointer? = kotlin.runCatching {
-	val decodedParams = fullLanguageInteropJson.decodeFromString<FindAccessLogsInGroupParams>(params)
-	GlobalScope.launch {
-		kotlin.runCatching {
-			sdk.accessLog.findAccessLogsInGroup(
-				decodedParams.groupId,
-				decodedParams.fromEpoch,
-				decodedParams.toEpoch,
-				decodedParams.startKey,
-				decodedParams.startDocumentId,
-				decodedParams.limit,
-			)
-		}.toPyStringAsyncCallback(PaginatedList.serializer(EncryptedAccessLog.serializer()),
-				resultCallback)
 	}
 }.failureToPyStringAsyncCallback(resultCallback)

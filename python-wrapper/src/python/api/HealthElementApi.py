@@ -433,6 +433,37 @@ class HealthElementApi:
 		if result_info.failure is not None:
 			raise interpret_kt_error(result_info.failure)
 
+	async def purge_health_elements_by_ids_async(self, entity_ids: list[StoredDocumentIdentifier]) -> list[StoredDocumentIdentifier]:
+		def do_decode(raw_result):
+			return [StoredDocumentIdentifier._deserialize(x1) for x1 in raw_result]
+		payload = {
+			"entityIds": [x0.__serialize__() for x0 in entity_ids],
+		}
+		return await execute_async_method_job(
+			self.cardinal_sdk._executor,
+			True,
+			do_decode,
+			symbols.kotlin.root.com.icure.cardinal.sdk.py.api.HealthElementApi.purgeHealthElementsByIdsAsync,
+			self.cardinal_sdk._native,
+			json.dumps(payload).encode('utf-8'),
+		)
+
+	def purge_health_elements_by_ids_blocking(self, entity_ids: list[StoredDocumentIdentifier]) -> list[StoredDocumentIdentifier]:
+		payload = {
+			"entityIds": [x0.__serialize__() for x0 in entity_ids],
+		}
+		call_result = symbols.kotlin.root.com.icure.cardinal.sdk.py.api.HealthElementApi.purgeHealthElementsByIdsBlocking(
+			self.cardinal_sdk._native,
+			json.dumps(payload).encode('utf-8'),
+		)
+		result_info = create_result_from_json(cast(call_result, c_char_p).value.decode('utf-8'))
+		symbols.DisposeString(call_result)
+		if result_info.failure is not None:
+			raise interpret_kt_error(result_info.failure)
+		else:
+			return_value = [StoredDocumentIdentifier._deserialize(x1) for x1 in result_info.success]
+			return return_value
+
 	async def delete_health_element_async(self, health_element: HealthElement) -> StoredDocumentIdentifier:
 		def do_decode(raw_result):
 			return StoredDocumentIdentifier._deserialize(raw_result)
@@ -522,6 +553,37 @@ class HealthElementApi:
 		symbols.DisposeString(call_result)
 		if result_info.failure is not None:
 			raise interpret_kt_error(result_info.failure)
+
+	async def purge_health_elements_async(self, health_elements: list[HealthElement]) -> list[StoredDocumentIdentifier]:
+		def do_decode(raw_result):
+			return [StoredDocumentIdentifier._deserialize(x1) for x1 in raw_result]
+		payload = {
+			"healthElements": [serialize_health_element(x0) for x0 in health_elements],
+		}
+		return await execute_async_method_job(
+			self.cardinal_sdk._executor,
+			True,
+			do_decode,
+			symbols.kotlin.root.com.icure.cardinal.sdk.py.api.HealthElementApi.purgeHealthElementsAsync,
+			self.cardinal_sdk._native,
+			json.dumps(payload).encode('utf-8'),
+		)
+
+	def purge_health_elements_blocking(self, health_elements: list[HealthElement]) -> list[StoredDocumentIdentifier]:
+		payload = {
+			"healthElements": [serialize_health_element(x0) for x0 in health_elements],
+		}
+		call_result = symbols.kotlin.root.com.icure.cardinal.sdk.py.api.HealthElementApi.purgeHealthElementsBlocking(
+			self.cardinal_sdk._native,
+			json.dumps(payload).encode('utf-8'),
+		)
+		result_info = create_result_from_json(cast(call_result, c_char_p).value.decode('utf-8'))
+		symbols.DisposeString(call_result)
+		if result_info.failure is not None:
+			raise interpret_kt_error(result_info.failure)
+		else:
+			return_value = [StoredDocumentIdentifier._deserialize(x1) for x1 in result_info.success]
+			return return_value
 
 	async def share_with_async(self, delegate_id: str, health_element: DecryptedHealthElement, options: Optional[HealthElementShareOptions] = None) -> DecryptedHealthElement:
 		def do_decode(raw_result):
@@ -770,6 +832,37 @@ class HealthElementApi:
 			return_value = DecryptedHealthElement._deserialize(result_info.success)
 			return return_value
 
+	async def undelete_health_elements_by_ids_async(self, entity_ids: list[StoredDocumentIdentifier]) -> list[DecryptedHealthElement]:
+		def do_decode(raw_result):
+			return [DecryptedHealthElement._deserialize(x1) for x1 in raw_result]
+		payload = {
+			"entityIds": [x0.__serialize__() for x0 in entity_ids],
+		}
+		return await execute_async_method_job(
+			self.cardinal_sdk._executor,
+			True,
+			do_decode,
+			symbols.kotlin.root.com.icure.cardinal.sdk.py.api.HealthElementApi.undeleteHealthElementsByIdsAsync,
+			self.cardinal_sdk._native,
+			json.dumps(payload).encode('utf-8'),
+		)
+
+	def undelete_health_elements_by_ids_blocking(self, entity_ids: list[StoredDocumentIdentifier]) -> list[DecryptedHealthElement]:
+		payload = {
+			"entityIds": [x0.__serialize__() for x0 in entity_ids],
+		}
+		call_result = symbols.kotlin.root.com.icure.cardinal.sdk.py.api.HealthElementApi.undeleteHealthElementsByIdsBlocking(
+			self.cardinal_sdk._native,
+			json.dumps(payload).encode('utf-8'),
+		)
+		result_info = create_result_from_json(cast(call_result, c_char_p).value.decode('utf-8'))
+		symbols.DisposeString(call_result)
+		if result_info.failure is not None:
+			raise interpret_kt_error(result_info.failure)
+		else:
+			return_value = [DecryptedHealthElement._deserialize(x1) for x1 in result_info.success]
+			return return_value
+
 	async def undelete_health_element_async(self, health_element: HealthElement) -> DecryptedHealthElement:
 		def do_decode(raw_result):
 			return DecryptedHealthElement._deserialize(raw_result)
@@ -799,6 +892,37 @@ class HealthElementApi:
 			raise interpret_kt_error(result_info.failure)
 		else:
 			return_value = DecryptedHealthElement._deserialize(result_info.success)
+			return return_value
+
+	async def undelete_health_elements_async(self, health_elements: list[HealthElement]) -> list[DecryptedHealthElement]:
+		def do_decode(raw_result):
+			return [DecryptedHealthElement._deserialize(x1) for x1 in raw_result]
+		payload = {
+			"healthElements": [serialize_health_element(x0) for x0 in health_elements],
+		}
+		return await execute_async_method_job(
+			self.cardinal_sdk._executor,
+			True,
+			do_decode,
+			symbols.kotlin.root.com.icure.cardinal.sdk.py.api.HealthElementApi.undeleteHealthElementsAsync,
+			self.cardinal_sdk._native,
+			json.dumps(payload).encode('utf-8'),
+		)
+
+	def undelete_health_elements_blocking(self, health_elements: list[HealthElement]) -> list[DecryptedHealthElement]:
+		payload = {
+			"healthElements": [serialize_health_element(x0) for x0 in health_elements],
+		}
+		call_result = symbols.kotlin.root.com.icure.cardinal.sdk.py.api.HealthElementApi.undeleteHealthElementsBlocking(
+			self.cardinal_sdk._native,
+			json.dumps(payload).encode('utf-8'),
+		)
+		result_info = create_result_from_json(cast(call_result, c_char_p).value.decode('utf-8'))
+		symbols.DisposeString(call_result)
+		if result_info.failure is not None:
+			raise interpret_kt_error(result_info.failure)
+		else:
+			return_value = [DecryptedHealthElement._deserialize(x1) for x1 in result_info.success]
 			return return_value
 
 	async def modify_health_element_async(self, entity: DecryptedHealthElement) -> DecryptedHealthElement:
@@ -1224,6 +1348,37 @@ class HealthElementApiEncrypted:
 			return_value = EncryptedHealthElement._deserialize(result_info.success)
 			return return_value
 
+	async def undelete_health_elements_by_ids_async(self, entity_ids: list[StoredDocumentIdentifier]) -> list[EncryptedHealthElement]:
+		def do_decode(raw_result):
+			return [EncryptedHealthElement._deserialize(x1) for x1 in raw_result]
+		payload = {
+			"entityIds": [x0.__serialize__() for x0 in entity_ids],
+		}
+		return await execute_async_method_job(
+			self.cardinal_sdk._executor,
+			True,
+			do_decode,
+			symbols.kotlin.root.com.icure.cardinal.sdk.py.api.HealthElementApi.encrypted.undeleteHealthElementsByIdsAsync,
+			self.cardinal_sdk._native,
+			json.dumps(payload).encode('utf-8'),
+		)
+
+	def undelete_health_elements_by_ids_blocking(self, entity_ids: list[StoredDocumentIdentifier]) -> list[EncryptedHealthElement]:
+		payload = {
+			"entityIds": [x0.__serialize__() for x0 in entity_ids],
+		}
+		call_result = symbols.kotlin.root.com.icure.cardinal.sdk.py.api.HealthElementApi.encrypted.undeleteHealthElementsByIdsBlocking(
+			self.cardinal_sdk._native,
+			json.dumps(payload).encode('utf-8'),
+		)
+		result_info = create_result_from_json(cast(call_result, c_char_p).value.decode('utf-8'))
+		symbols.DisposeString(call_result)
+		if result_info.failure is not None:
+			raise interpret_kt_error(result_info.failure)
+		else:
+			return_value = [EncryptedHealthElement._deserialize(x1) for x1 in result_info.success]
+			return return_value
+
 	async def undelete_health_element_async(self, health_element: HealthElement) -> EncryptedHealthElement:
 		def do_decode(raw_result):
 			return EncryptedHealthElement._deserialize(raw_result)
@@ -1253,6 +1408,37 @@ class HealthElementApiEncrypted:
 			raise interpret_kt_error(result_info.failure)
 		else:
 			return_value = EncryptedHealthElement._deserialize(result_info.success)
+			return return_value
+
+	async def undelete_health_elements_async(self, health_elements: list[HealthElement]) -> list[EncryptedHealthElement]:
+		def do_decode(raw_result):
+			return [EncryptedHealthElement._deserialize(x1) for x1 in raw_result]
+		payload = {
+			"healthElements": [serialize_health_element(x0) for x0 in health_elements],
+		}
+		return await execute_async_method_job(
+			self.cardinal_sdk._executor,
+			True,
+			do_decode,
+			symbols.kotlin.root.com.icure.cardinal.sdk.py.api.HealthElementApi.encrypted.undeleteHealthElementsAsync,
+			self.cardinal_sdk._native,
+			json.dumps(payload).encode('utf-8'),
+		)
+
+	def undelete_health_elements_blocking(self, health_elements: list[HealthElement]) -> list[EncryptedHealthElement]:
+		payload = {
+			"healthElements": [serialize_health_element(x0) for x0 in health_elements],
+		}
+		call_result = symbols.kotlin.root.com.icure.cardinal.sdk.py.api.HealthElementApi.encrypted.undeleteHealthElementsBlocking(
+			self.cardinal_sdk._native,
+			json.dumps(payload).encode('utf-8'),
+		)
+		result_info = create_result_from_json(cast(call_result, c_char_p).value.decode('utf-8'))
+		symbols.DisposeString(call_result)
+		if result_info.failure is not None:
+			raise interpret_kt_error(result_info.failure)
+		else:
+			return_value = [EncryptedHealthElement._deserialize(x1) for x1 in result_info.success]
 			return return_value
 
 	async def modify_health_element_async(self, entity: EncryptedHealthElement) -> EncryptedHealthElement:
@@ -1632,6 +1818,37 @@ class HealthElementApiTryAndRecover:
 			return_value = deserialize_health_element(result_info.success)
 			return return_value
 
+	async def undelete_health_elements_by_ids_async(self, entity_ids: list[StoredDocumentIdentifier]) -> list[HealthElement]:
+		def do_decode(raw_result):
+			return [deserialize_health_element(x1) for x1 in raw_result]
+		payload = {
+			"entityIds": [x0.__serialize__() for x0 in entity_ids],
+		}
+		return await execute_async_method_job(
+			self.cardinal_sdk._executor,
+			True,
+			do_decode,
+			symbols.kotlin.root.com.icure.cardinal.sdk.py.api.HealthElementApi.tryAndRecover.undeleteHealthElementsByIdsAsync,
+			self.cardinal_sdk._native,
+			json.dumps(payload).encode('utf-8'),
+		)
+
+	def undelete_health_elements_by_ids_blocking(self, entity_ids: list[StoredDocumentIdentifier]) -> list[HealthElement]:
+		payload = {
+			"entityIds": [x0.__serialize__() for x0 in entity_ids],
+		}
+		call_result = symbols.kotlin.root.com.icure.cardinal.sdk.py.api.HealthElementApi.tryAndRecover.undeleteHealthElementsByIdsBlocking(
+			self.cardinal_sdk._native,
+			json.dumps(payload).encode('utf-8'),
+		)
+		result_info = create_result_from_json(cast(call_result, c_char_p).value.decode('utf-8'))
+		symbols.DisposeString(call_result)
+		if result_info.failure is not None:
+			raise interpret_kt_error(result_info.failure)
+		else:
+			return_value = [deserialize_health_element(x1) for x1 in result_info.success]
+			return return_value
+
 	async def undelete_health_element_async(self, health_element: HealthElement) -> HealthElement:
 		def do_decode(raw_result):
 			return deserialize_health_element(raw_result)
@@ -1661,6 +1878,37 @@ class HealthElementApiTryAndRecover:
 			raise interpret_kt_error(result_info.failure)
 		else:
 			return_value = deserialize_health_element(result_info.success)
+			return return_value
+
+	async def undelete_health_elements_async(self, health_elements: list[HealthElement]) -> list[HealthElement]:
+		def do_decode(raw_result):
+			return [deserialize_health_element(x1) for x1 in raw_result]
+		payload = {
+			"healthElements": [serialize_health_element(x0) for x0 in health_elements],
+		}
+		return await execute_async_method_job(
+			self.cardinal_sdk._executor,
+			True,
+			do_decode,
+			symbols.kotlin.root.com.icure.cardinal.sdk.py.api.HealthElementApi.tryAndRecover.undeleteHealthElementsAsync,
+			self.cardinal_sdk._native,
+			json.dumps(payload).encode('utf-8'),
+		)
+
+	def undelete_health_elements_blocking(self, health_elements: list[HealthElement]) -> list[HealthElement]:
+		payload = {
+			"healthElements": [serialize_health_element(x0) for x0 in health_elements],
+		}
+		call_result = symbols.kotlin.root.com.icure.cardinal.sdk.py.api.HealthElementApi.tryAndRecover.undeleteHealthElementsBlocking(
+			self.cardinal_sdk._native,
+			json.dumps(payload).encode('utf-8'),
+		)
+		result_info = create_result_from_json(cast(call_result, c_char_p).value.decode('utf-8'))
+		symbols.DisposeString(call_result)
+		if result_info.failure is not None:
+			raise interpret_kt_error(result_info.failure)
+		else:
+			return_value = [deserialize_health_element(x1) for x1 in result_info.success]
 			return return_value
 
 	async def modify_health_element_async(self, entity: HealthElement) -> HealthElement:
@@ -2054,6 +2302,314 @@ class HealthElementApiInGroup:
 			return_value = [GroupScoped._deserialize(x1, lambda x2: EncryptedHealthElement._deserialize(x2)) for x1 in result_info.success]
 			return return_value
 
+	async def match_health_elements_by_async(self, group_id: str, filter: FilterOptions[HealthElement]) -> list[str]:
+		def do_decode(raw_result):
+			return [x1 for x1 in raw_result]
+		payload = {
+			"groupId": group_id,
+			"filter": filter.__serialize__(),
+		}
+		return await execute_async_method_job(
+			self.cardinal_sdk._executor,
+			True,
+			do_decode,
+			symbols.kotlin.root.com.icure.cardinal.sdk.py.api.HealthElementApi.inGroup.matchHealthElementsByAsync,
+			self.cardinal_sdk._native,
+			json.dumps(payload).encode('utf-8'),
+		)
+
+	def match_health_elements_by_blocking(self, group_id: str, filter: FilterOptions[HealthElement]) -> list[str]:
+		payload = {
+			"groupId": group_id,
+			"filter": filter.__serialize__(),
+		}
+		call_result = symbols.kotlin.root.com.icure.cardinal.sdk.py.api.HealthElementApi.inGroup.matchHealthElementsByBlocking(
+			self.cardinal_sdk._native,
+			json.dumps(payload).encode('utf-8'),
+		)
+		result_info = create_result_from_json(cast(call_result, c_char_p).value.decode('utf-8'))
+		symbols.DisposeString(call_result)
+		if result_info.failure is not None:
+			raise interpret_kt_error(result_info.failure)
+		else:
+			return_value = [x1 for x1 in result_info.success]
+			return return_value
+
+	async def match_health_elements_by_sorted_async(self, group_id: str, filter: SortableFilterOptions[HealthElement]) -> list[str]:
+		def do_decode(raw_result):
+			return [x1 for x1 in raw_result]
+		payload = {
+			"groupId": group_id,
+			"filter": filter.__serialize__(),
+		}
+		return await execute_async_method_job(
+			self.cardinal_sdk._executor,
+			True,
+			do_decode,
+			symbols.kotlin.root.com.icure.cardinal.sdk.py.api.HealthElementApi.inGroup.matchHealthElementsBySortedAsync,
+			self.cardinal_sdk._native,
+			json.dumps(payload).encode('utf-8'),
+		)
+
+	def match_health_elements_by_sorted_blocking(self, group_id: str, filter: SortableFilterOptions[HealthElement]) -> list[str]:
+		payload = {
+			"groupId": group_id,
+			"filter": filter.__serialize__(),
+		}
+		call_result = symbols.kotlin.root.com.icure.cardinal.sdk.py.api.HealthElementApi.inGroup.matchHealthElementsBySortedBlocking(
+			self.cardinal_sdk._native,
+			json.dumps(payload).encode('utf-8'),
+		)
+		result_info = create_result_from_json(cast(call_result, c_char_p).value.decode('utf-8'))
+		symbols.DisposeString(call_result)
+		if result_info.failure is not None:
+			raise interpret_kt_error(result_info.failure)
+		else:
+			return_value = [x1 for x1 in result_info.success]
+			return return_value
+
+	async def delete_health_element_by_id_async(self, entity_id: GroupScoped[StoredDocumentIdentifier]) -> GroupScoped[StoredDocumentIdentifier]:
+		def do_decode(raw_result):
+			return GroupScoped._deserialize(raw_result, lambda x1: StoredDocumentIdentifier._deserialize(x1))
+		payload = {
+			"entityId": entity_id.__serialize__(lambda x0: x0.__serialize__()),
+		}
+		return await execute_async_method_job(
+			self.cardinal_sdk._executor,
+			True,
+			do_decode,
+			symbols.kotlin.root.com.icure.cardinal.sdk.py.api.HealthElementApi.inGroup.deleteHealthElementByIdAsync,
+			self.cardinal_sdk._native,
+			json.dumps(payload).encode('utf-8'),
+		)
+
+	def delete_health_element_by_id_blocking(self, entity_id: GroupScoped[StoredDocumentIdentifier]) -> GroupScoped[StoredDocumentIdentifier]:
+		payload = {
+			"entityId": entity_id.__serialize__(lambda x0: x0.__serialize__()),
+		}
+		call_result = symbols.kotlin.root.com.icure.cardinal.sdk.py.api.HealthElementApi.inGroup.deleteHealthElementByIdBlocking(
+			self.cardinal_sdk._native,
+			json.dumps(payload).encode('utf-8'),
+		)
+		result_info = create_result_from_json(cast(call_result, c_char_p).value.decode('utf-8'))
+		symbols.DisposeString(call_result)
+		if result_info.failure is not None:
+			raise interpret_kt_error(result_info.failure)
+		else:
+			return_value = GroupScoped._deserialize(result_info.success, lambda x1: StoredDocumentIdentifier._deserialize(x1))
+			return return_value
+
+	async def delete_health_elements_by_ids_async(self, entity_ids: list[GroupScoped[StoredDocumentIdentifier]]) -> list[GroupScoped[StoredDocumentIdentifier]]:
+		def do_decode(raw_result):
+			return [GroupScoped._deserialize(x1, lambda x2: StoredDocumentIdentifier._deserialize(x2)) for x1 in raw_result]
+		payload = {
+			"entityIds": [x0.__serialize__(lambda x1: x1.__serialize__()) for x0 in entity_ids],
+		}
+		return await execute_async_method_job(
+			self.cardinal_sdk._executor,
+			True,
+			do_decode,
+			symbols.kotlin.root.com.icure.cardinal.sdk.py.api.HealthElementApi.inGroup.deleteHealthElementsByIdsAsync,
+			self.cardinal_sdk._native,
+			json.dumps(payload).encode('utf-8'),
+		)
+
+	def delete_health_elements_by_ids_blocking(self, entity_ids: list[GroupScoped[StoredDocumentIdentifier]]) -> list[GroupScoped[StoredDocumentIdentifier]]:
+		payload = {
+			"entityIds": [x0.__serialize__(lambda x1: x1.__serialize__()) for x0 in entity_ids],
+		}
+		call_result = symbols.kotlin.root.com.icure.cardinal.sdk.py.api.HealthElementApi.inGroup.deleteHealthElementsByIdsBlocking(
+			self.cardinal_sdk._native,
+			json.dumps(payload).encode('utf-8'),
+		)
+		result_info = create_result_from_json(cast(call_result, c_char_p).value.decode('utf-8'))
+		symbols.DisposeString(call_result)
+		if result_info.failure is not None:
+			raise interpret_kt_error(result_info.failure)
+		else:
+			return_value = [GroupScoped._deserialize(x1, lambda x2: StoredDocumentIdentifier._deserialize(x2)) for x1 in result_info.success]
+			return return_value
+
+	async def purge_health_element_by_id_async(self, entity_id: GroupScoped[StoredDocumentIdentifier]) -> None:
+		def do_decode(raw_result):
+			return raw_result
+		payload = {
+			"entityId": entity_id.__serialize__(lambda x0: x0.__serialize__()),
+		}
+		return await execute_async_method_job(
+			self.cardinal_sdk._executor,
+			True,
+			do_decode,
+			symbols.kotlin.root.com.icure.cardinal.sdk.py.api.HealthElementApi.inGroup.purgeHealthElementByIdAsync,
+			self.cardinal_sdk._native,
+			json.dumps(payload).encode('utf-8'),
+		)
+
+	def purge_health_element_by_id_blocking(self, entity_id: GroupScoped[StoredDocumentIdentifier]) -> None:
+		payload = {
+			"entityId": entity_id.__serialize__(lambda x0: x0.__serialize__()),
+		}
+		call_result = symbols.kotlin.root.com.icure.cardinal.sdk.py.api.HealthElementApi.inGroup.purgeHealthElementByIdBlocking(
+			self.cardinal_sdk._native,
+			json.dumps(payload).encode('utf-8'),
+		)
+		result_info = create_result_from_json(cast(call_result, c_char_p).value.decode('utf-8'))
+		symbols.DisposeString(call_result)
+		if result_info.failure is not None:
+			raise interpret_kt_error(result_info.failure)
+
+	async def purge_health_elements_by_ids_async(self, entity_ids: list[GroupScoped[StoredDocumentIdentifier]]) -> list[GroupScoped[StoredDocumentIdentifier]]:
+		def do_decode(raw_result):
+			return [GroupScoped._deserialize(x1, lambda x2: StoredDocumentIdentifier._deserialize(x2)) for x1 in raw_result]
+		payload = {
+			"entityIds": [x0.__serialize__(lambda x1: x1.__serialize__()) for x0 in entity_ids],
+		}
+		return await execute_async_method_job(
+			self.cardinal_sdk._executor,
+			True,
+			do_decode,
+			symbols.kotlin.root.com.icure.cardinal.sdk.py.api.HealthElementApi.inGroup.purgeHealthElementsByIdsAsync,
+			self.cardinal_sdk._native,
+			json.dumps(payload).encode('utf-8'),
+		)
+
+	def purge_health_elements_by_ids_blocking(self, entity_ids: list[GroupScoped[StoredDocumentIdentifier]]) -> list[GroupScoped[StoredDocumentIdentifier]]:
+		payload = {
+			"entityIds": [x0.__serialize__(lambda x1: x1.__serialize__()) for x0 in entity_ids],
+		}
+		call_result = symbols.kotlin.root.com.icure.cardinal.sdk.py.api.HealthElementApi.inGroup.purgeHealthElementsByIdsBlocking(
+			self.cardinal_sdk._native,
+			json.dumps(payload).encode('utf-8'),
+		)
+		result_info = create_result_from_json(cast(call_result, c_char_p).value.decode('utf-8'))
+		symbols.DisposeString(call_result)
+		if result_info.failure is not None:
+			raise interpret_kt_error(result_info.failure)
+		else:
+			return_value = [GroupScoped._deserialize(x1, lambda x2: StoredDocumentIdentifier._deserialize(x2)) for x1 in result_info.success]
+			return return_value
+
+	async def delete_health_element_async(self, health_element: GroupScoped[HealthElement]) -> GroupScoped[StoredDocumentIdentifier]:
+		def do_decode(raw_result):
+			return GroupScoped._deserialize(raw_result, lambda x1: StoredDocumentIdentifier._deserialize(x1))
+		payload = {
+			"healthElement": health_element.__serialize__(lambda x0: serialize_health_element(x0)),
+		}
+		return await execute_async_method_job(
+			self.cardinal_sdk._executor,
+			True,
+			do_decode,
+			symbols.kotlin.root.com.icure.cardinal.sdk.py.api.HealthElementApi.inGroup.deleteHealthElementAsync,
+			self.cardinal_sdk._native,
+			json.dumps(payload).encode('utf-8'),
+		)
+
+	def delete_health_element_blocking(self, health_element: GroupScoped[HealthElement]) -> GroupScoped[StoredDocumentIdentifier]:
+		payload = {
+			"healthElement": health_element.__serialize__(lambda x0: serialize_health_element(x0)),
+		}
+		call_result = symbols.kotlin.root.com.icure.cardinal.sdk.py.api.HealthElementApi.inGroup.deleteHealthElementBlocking(
+			self.cardinal_sdk._native,
+			json.dumps(payload).encode('utf-8'),
+		)
+		result_info = create_result_from_json(cast(call_result, c_char_p).value.decode('utf-8'))
+		symbols.DisposeString(call_result)
+		if result_info.failure is not None:
+			raise interpret_kt_error(result_info.failure)
+		else:
+			return_value = GroupScoped._deserialize(result_info.success, lambda x1: StoredDocumentIdentifier._deserialize(x1))
+			return return_value
+
+	async def delete_health_elements_async(self, health_elements: list[GroupScoped[HealthElement]]) -> list[GroupScoped[StoredDocumentIdentifier]]:
+		def do_decode(raw_result):
+			return [GroupScoped._deserialize(x1, lambda x2: StoredDocumentIdentifier._deserialize(x2)) for x1 in raw_result]
+		payload = {
+			"healthElements": [x0.__serialize__(lambda x1: serialize_health_element(x1)) for x0 in health_elements],
+		}
+		return await execute_async_method_job(
+			self.cardinal_sdk._executor,
+			True,
+			do_decode,
+			symbols.kotlin.root.com.icure.cardinal.sdk.py.api.HealthElementApi.inGroup.deleteHealthElementsAsync,
+			self.cardinal_sdk._native,
+			json.dumps(payload).encode('utf-8'),
+		)
+
+	def delete_health_elements_blocking(self, health_elements: list[GroupScoped[HealthElement]]) -> list[GroupScoped[StoredDocumentIdentifier]]:
+		payload = {
+			"healthElements": [x0.__serialize__(lambda x1: serialize_health_element(x1)) for x0 in health_elements],
+		}
+		call_result = symbols.kotlin.root.com.icure.cardinal.sdk.py.api.HealthElementApi.inGroup.deleteHealthElementsBlocking(
+			self.cardinal_sdk._native,
+			json.dumps(payload).encode('utf-8'),
+		)
+		result_info = create_result_from_json(cast(call_result, c_char_p).value.decode('utf-8'))
+		symbols.DisposeString(call_result)
+		if result_info.failure is not None:
+			raise interpret_kt_error(result_info.failure)
+		else:
+			return_value = [GroupScoped._deserialize(x1, lambda x2: StoredDocumentIdentifier._deserialize(x2)) for x1 in result_info.success]
+			return return_value
+
+	async def purge_health_element_async(self, health_element: GroupScoped[HealthElement]) -> None:
+		def do_decode(raw_result):
+			return raw_result
+		payload = {
+			"healthElement": health_element.__serialize__(lambda x0: serialize_health_element(x0)),
+		}
+		return await execute_async_method_job(
+			self.cardinal_sdk._executor,
+			True,
+			do_decode,
+			symbols.kotlin.root.com.icure.cardinal.sdk.py.api.HealthElementApi.inGroup.purgeHealthElementAsync,
+			self.cardinal_sdk._native,
+			json.dumps(payload).encode('utf-8'),
+		)
+
+	def purge_health_element_blocking(self, health_element: GroupScoped[HealthElement]) -> None:
+		payload = {
+			"healthElement": health_element.__serialize__(lambda x0: serialize_health_element(x0)),
+		}
+		call_result = symbols.kotlin.root.com.icure.cardinal.sdk.py.api.HealthElementApi.inGroup.purgeHealthElementBlocking(
+			self.cardinal_sdk._native,
+			json.dumps(payload).encode('utf-8'),
+		)
+		result_info = create_result_from_json(cast(call_result, c_char_p).value.decode('utf-8'))
+		symbols.DisposeString(call_result)
+		if result_info.failure is not None:
+			raise interpret_kt_error(result_info.failure)
+
+	async def purge_health_elements_async(self, health_elements: list[GroupScoped[HealthElement]]) -> list[GroupScoped[StoredDocumentIdentifier]]:
+		def do_decode(raw_result):
+			return [GroupScoped._deserialize(x1, lambda x2: StoredDocumentIdentifier._deserialize(x2)) for x1 in raw_result]
+		payload = {
+			"healthElements": [x0.__serialize__(lambda x1: serialize_health_element(x1)) for x0 in health_elements],
+		}
+		return await execute_async_method_job(
+			self.cardinal_sdk._executor,
+			True,
+			do_decode,
+			symbols.kotlin.root.com.icure.cardinal.sdk.py.api.HealthElementApi.inGroup.purgeHealthElementsAsync,
+			self.cardinal_sdk._native,
+			json.dumps(payload).encode('utf-8'),
+		)
+
+	def purge_health_elements_blocking(self, health_elements: list[GroupScoped[HealthElement]]) -> list[GroupScoped[StoredDocumentIdentifier]]:
+		payload = {
+			"healthElements": [x0.__serialize__(lambda x1: serialize_health_element(x1)) for x0 in health_elements],
+		}
+		call_result = symbols.kotlin.root.com.icure.cardinal.sdk.py.api.HealthElementApi.inGroup.purgeHealthElementsBlocking(
+			self.cardinal_sdk._native,
+			json.dumps(payload).encode('utf-8'),
+		)
+		result_info = create_result_from_json(cast(call_result, c_char_p).value.decode('utf-8'))
+		symbols.DisposeString(call_result)
+		if result_info.failure is not None:
+			raise interpret_kt_error(result_info.failure)
+		else:
+			return_value = [GroupScoped._deserialize(x1, lambda x2: StoredDocumentIdentifier._deserialize(x2)) for x1 in result_info.success]
+			return return_value
+
 	async def share_with_async(self, delegate: EntityReferenceInGroup, health_element: GroupScoped[DecryptedHealthElement], options: Optional[HealthElementShareOptions] = None) -> GroupScoped[DecryptedHealthElement]:
 		def do_decode(raw_result):
 			return GroupScoped._deserialize(raw_result, lambda x1: DecryptedHealthElement._deserialize(x1))
@@ -2122,6 +2678,94 @@ class HealthElementApiInGroup:
 			return_value = GroupScoped._deserialize(result_info.success, lambda x1: DecryptedHealthElement._deserialize(x1))
 			return return_value
 
+	async def filter_health_elements_by_async(self, group_id: str, filter: FilterOptions[HealthElement]) -> PaginatedListIterator[GroupScoped[DecryptedHealthElement]]:
+		def do_decode(raw_result):
+			return PaginatedListIterator[GroupScoped[DecryptedHealthElement]](
+				producer = raw_result,
+				deserializer = lambda x: GroupScoped._deserialize(x, lambda x1: DecryptedHealthElement._deserialize(x1)),
+				executor = self.cardinal_sdk._executor
+			)
+		payload = {
+			"groupId": group_id,
+			"filter": filter.__serialize__(),
+		}
+		return await execute_async_method_job(
+			self.cardinal_sdk._executor,
+			False,
+			do_decode,
+			symbols.kotlin.root.com.icure.cardinal.sdk.py.api.HealthElementApi.inGroup.filterHealthElementsByAsync,
+			self.cardinal_sdk._native,
+			json.dumps(payload).encode('utf-8'),
+		)
+
+	def filter_health_elements_by_blocking(self, group_id: str, filter: FilterOptions[HealthElement]) -> PaginatedListIterator[GroupScoped[DecryptedHealthElement]]:
+		payload = {
+			"groupId": group_id,
+			"filter": filter.__serialize__(),
+		}
+		call_result = symbols.kotlin.root.com.icure.cardinal.sdk.py.api.HealthElementApi.inGroup.filterHealthElementsByBlocking(
+			self.cardinal_sdk._native,
+			json.dumps(payload).encode('utf-8'),
+		)
+		error_str_pointer = symbols.kotlin.root.com.icure.cardinal.sdk.py.utils.PyResult.get_failure(call_result)
+		if error_str_pointer is not None:
+			error_data_str = cast(error_str_pointer, c_char_p).value.decode('utf_8')
+			symbols.DisposeString(error_str_pointer)
+			symbols.DisposeStablePointer(call_result.pinned)
+			raise interpret_kt_error(json.loads(error_data_str))
+		else:
+			class_pointer = symbols.kotlin.root.com.icure.cardinal.sdk.py.utils.PyResult.get_success(call_result)
+			symbols.DisposeStablePointer(call_result.pinned)
+			return PaginatedListIterator[GroupScoped[DecryptedHealthElement]](
+				producer = class_pointer,
+				deserializer = lambda x: GroupScoped._deserialize(x, lambda x1: DecryptedHealthElement._deserialize(x1)),
+				executor = self.cardinal_sdk._executor
+			)
+
+	async def filter_health_elements_by_sorted_async(self, group_id: str, filter: SortableFilterOptions[HealthElement]) -> PaginatedListIterator[GroupScoped[DecryptedHealthElement]]:
+		def do_decode(raw_result):
+			return PaginatedListIterator[GroupScoped[DecryptedHealthElement]](
+				producer = raw_result,
+				deserializer = lambda x: GroupScoped._deserialize(x, lambda x1: DecryptedHealthElement._deserialize(x1)),
+				executor = self.cardinal_sdk._executor
+			)
+		payload = {
+			"groupId": group_id,
+			"filter": filter.__serialize__(),
+		}
+		return await execute_async_method_job(
+			self.cardinal_sdk._executor,
+			False,
+			do_decode,
+			symbols.kotlin.root.com.icure.cardinal.sdk.py.api.HealthElementApi.inGroup.filterHealthElementsBySortedAsync,
+			self.cardinal_sdk._native,
+			json.dumps(payload).encode('utf-8'),
+		)
+
+	def filter_health_elements_by_sorted_blocking(self, group_id: str, filter: SortableFilterOptions[HealthElement]) -> PaginatedListIterator[GroupScoped[DecryptedHealthElement]]:
+		payload = {
+			"groupId": group_id,
+			"filter": filter.__serialize__(),
+		}
+		call_result = symbols.kotlin.root.com.icure.cardinal.sdk.py.api.HealthElementApi.inGroup.filterHealthElementsBySortedBlocking(
+			self.cardinal_sdk._native,
+			json.dumps(payload).encode('utf-8'),
+		)
+		error_str_pointer = symbols.kotlin.root.com.icure.cardinal.sdk.py.utils.PyResult.get_failure(call_result)
+		if error_str_pointer is not None:
+			error_data_str = cast(error_str_pointer, c_char_p).value.decode('utf_8')
+			symbols.DisposeString(error_str_pointer)
+			symbols.DisposeStablePointer(call_result.pinned)
+			raise interpret_kt_error(json.loads(error_data_str))
+		else:
+			class_pointer = symbols.kotlin.root.com.icure.cardinal.sdk.py.utils.PyResult.get_success(call_result)
+			symbols.DisposeStablePointer(call_result.pinned)
+			return PaginatedListIterator[GroupScoped[DecryptedHealthElement]](
+				producer = class_pointer,
+				deserializer = lambda x: GroupScoped._deserialize(x, lambda x1: DecryptedHealthElement._deserialize(x1)),
+				executor = self.cardinal_sdk._executor
+			)
+
 	async def create_health_element_async(self, entity: GroupScoped[DecryptedHealthElement]) -> GroupScoped[DecryptedHealthElement]:
 		def do_decode(raw_result):
 			return GroupScoped._deserialize(raw_result, lambda x1: DecryptedHealthElement._deserialize(x1))
@@ -2151,6 +2795,161 @@ class HealthElementApiInGroup:
 			raise interpret_kt_error(result_info.failure)
 		else:
 			return_value = GroupScoped._deserialize(result_info.success, lambda x1: DecryptedHealthElement._deserialize(x1))
+			return return_value
+
+	async def create_health_elements_async(self, entities: list[GroupScoped[DecryptedHealthElement]]) -> list[GroupScoped[DecryptedHealthElement]]:
+		def do_decode(raw_result):
+			return [GroupScoped._deserialize(x1, lambda x2: DecryptedHealthElement._deserialize(x2)) for x1 in raw_result]
+		payload = {
+			"entities": [x0.__serialize__(lambda x1: x1.__serialize__()) for x0 in entities],
+		}
+		return await execute_async_method_job(
+			self.cardinal_sdk._executor,
+			True,
+			do_decode,
+			symbols.kotlin.root.com.icure.cardinal.sdk.py.api.HealthElementApi.inGroup.createHealthElementsAsync,
+			self.cardinal_sdk._native,
+			json.dumps(payload).encode('utf-8'),
+		)
+
+	def create_health_elements_blocking(self, entities: list[GroupScoped[DecryptedHealthElement]]) -> list[GroupScoped[DecryptedHealthElement]]:
+		payload = {
+			"entities": [x0.__serialize__(lambda x1: x1.__serialize__()) for x0 in entities],
+		}
+		call_result = symbols.kotlin.root.com.icure.cardinal.sdk.py.api.HealthElementApi.inGroup.createHealthElementsBlocking(
+			self.cardinal_sdk._native,
+			json.dumps(payload).encode('utf-8'),
+		)
+		result_info = create_result_from_json(cast(call_result, c_char_p).value.decode('utf-8'))
+		symbols.DisposeString(call_result)
+		if result_info.failure is not None:
+			raise interpret_kt_error(result_info.failure)
+		else:
+			return_value = [GroupScoped._deserialize(x1, lambda x2: DecryptedHealthElement._deserialize(x2)) for x1 in result_info.success]
+			return return_value
+
+	async def undelete_health_element_by_id_async(self, entity_id: GroupScoped[StoredDocumentIdentifier]) -> GroupScoped[DecryptedHealthElement]:
+		def do_decode(raw_result):
+			return GroupScoped._deserialize(raw_result, lambda x1: DecryptedHealthElement._deserialize(x1))
+		payload = {
+			"entityId": entity_id.__serialize__(lambda x0: x0.__serialize__()),
+		}
+		return await execute_async_method_job(
+			self.cardinal_sdk._executor,
+			True,
+			do_decode,
+			symbols.kotlin.root.com.icure.cardinal.sdk.py.api.HealthElementApi.inGroup.undeleteHealthElementByIdAsync,
+			self.cardinal_sdk._native,
+			json.dumps(payload).encode('utf-8'),
+		)
+
+	def undelete_health_element_by_id_blocking(self, entity_id: GroupScoped[StoredDocumentIdentifier]) -> GroupScoped[DecryptedHealthElement]:
+		payload = {
+			"entityId": entity_id.__serialize__(lambda x0: x0.__serialize__()),
+		}
+		call_result = symbols.kotlin.root.com.icure.cardinal.sdk.py.api.HealthElementApi.inGroup.undeleteHealthElementByIdBlocking(
+			self.cardinal_sdk._native,
+			json.dumps(payload).encode('utf-8'),
+		)
+		result_info = create_result_from_json(cast(call_result, c_char_p).value.decode('utf-8'))
+		symbols.DisposeString(call_result)
+		if result_info.failure is not None:
+			raise interpret_kt_error(result_info.failure)
+		else:
+			return_value = GroupScoped._deserialize(result_info.success, lambda x1: DecryptedHealthElement._deserialize(x1))
+			return return_value
+
+	async def undelete_health_elements_by_ids_async(self, entity_ids: list[GroupScoped[StoredDocumentIdentifier]]) -> list[GroupScoped[DecryptedHealthElement]]:
+		def do_decode(raw_result):
+			return [GroupScoped._deserialize(x1, lambda x2: DecryptedHealthElement._deserialize(x2)) for x1 in raw_result]
+		payload = {
+			"entityIds": [x0.__serialize__(lambda x1: x1.__serialize__()) for x0 in entity_ids],
+		}
+		return await execute_async_method_job(
+			self.cardinal_sdk._executor,
+			True,
+			do_decode,
+			symbols.kotlin.root.com.icure.cardinal.sdk.py.api.HealthElementApi.inGroup.undeleteHealthElementsByIdsAsync,
+			self.cardinal_sdk._native,
+			json.dumps(payload).encode('utf-8'),
+		)
+
+	def undelete_health_elements_by_ids_blocking(self, entity_ids: list[GroupScoped[StoredDocumentIdentifier]]) -> list[GroupScoped[DecryptedHealthElement]]:
+		payload = {
+			"entityIds": [x0.__serialize__(lambda x1: x1.__serialize__()) for x0 in entity_ids],
+		}
+		call_result = symbols.kotlin.root.com.icure.cardinal.sdk.py.api.HealthElementApi.inGroup.undeleteHealthElementsByIdsBlocking(
+			self.cardinal_sdk._native,
+			json.dumps(payload).encode('utf-8'),
+		)
+		result_info = create_result_from_json(cast(call_result, c_char_p).value.decode('utf-8'))
+		symbols.DisposeString(call_result)
+		if result_info.failure is not None:
+			raise interpret_kt_error(result_info.failure)
+		else:
+			return_value = [GroupScoped._deserialize(x1, lambda x2: DecryptedHealthElement._deserialize(x2)) for x1 in result_info.success]
+			return return_value
+
+	async def undelete_health_element_async(self, health_element: GroupScoped[HealthElement]) -> GroupScoped[DecryptedHealthElement]:
+		def do_decode(raw_result):
+			return GroupScoped._deserialize(raw_result, lambda x1: DecryptedHealthElement._deserialize(x1))
+		payload = {
+			"healthElement": health_element.__serialize__(lambda x0: serialize_health_element(x0)),
+		}
+		return await execute_async_method_job(
+			self.cardinal_sdk._executor,
+			True,
+			do_decode,
+			symbols.kotlin.root.com.icure.cardinal.sdk.py.api.HealthElementApi.inGroup.undeleteHealthElementAsync,
+			self.cardinal_sdk._native,
+			json.dumps(payload).encode('utf-8'),
+		)
+
+	def undelete_health_element_blocking(self, health_element: GroupScoped[HealthElement]) -> GroupScoped[DecryptedHealthElement]:
+		payload = {
+			"healthElement": health_element.__serialize__(lambda x0: serialize_health_element(x0)),
+		}
+		call_result = symbols.kotlin.root.com.icure.cardinal.sdk.py.api.HealthElementApi.inGroup.undeleteHealthElementBlocking(
+			self.cardinal_sdk._native,
+			json.dumps(payload).encode('utf-8'),
+		)
+		result_info = create_result_from_json(cast(call_result, c_char_p).value.decode('utf-8'))
+		symbols.DisposeString(call_result)
+		if result_info.failure is not None:
+			raise interpret_kt_error(result_info.failure)
+		else:
+			return_value = GroupScoped._deserialize(result_info.success, lambda x1: DecryptedHealthElement._deserialize(x1))
+			return return_value
+
+	async def undelete_health_elements_async(self, health_elements: list[GroupScoped[DecryptedHealthElement]]) -> list[GroupScoped[DecryptedHealthElement]]:
+		def do_decode(raw_result):
+			return [GroupScoped._deserialize(x1, lambda x2: DecryptedHealthElement._deserialize(x2)) for x1 in raw_result]
+		payload = {
+			"healthElements": [x0.__serialize__(lambda x1: x1.__serialize__()) for x0 in health_elements],
+		}
+		return await execute_async_method_job(
+			self.cardinal_sdk._executor,
+			True,
+			do_decode,
+			symbols.kotlin.root.com.icure.cardinal.sdk.py.api.HealthElementApi.inGroup.undeleteHealthElementsAsync,
+			self.cardinal_sdk._native,
+			json.dumps(payload).encode('utf-8'),
+		)
+
+	def undelete_health_elements_blocking(self, health_elements: list[GroupScoped[DecryptedHealthElement]]) -> list[GroupScoped[DecryptedHealthElement]]:
+		payload = {
+			"healthElements": [x0.__serialize__(lambda x1: x1.__serialize__()) for x0 in health_elements],
+		}
+		call_result = symbols.kotlin.root.com.icure.cardinal.sdk.py.api.HealthElementApi.inGroup.undeleteHealthElementsBlocking(
+			self.cardinal_sdk._native,
+			json.dumps(payload).encode('utf-8'),
+		)
+		result_info = create_result_from_json(cast(call_result, c_char_p).value.decode('utf-8'))
+		symbols.DisposeString(call_result)
+		if result_info.failure is not None:
+			raise interpret_kt_error(result_info.failure)
+		else:
+			return_value = [GroupScoped._deserialize(x1, lambda x2: DecryptedHealthElement._deserialize(x2)) for x1 in result_info.success]
 			return return_value
 
 	async def modify_health_element_async(self, entity: GroupScoped[DecryptedHealthElement]) -> GroupScoped[DecryptedHealthElement]:
@@ -2184,6 +2983,37 @@ class HealthElementApiInGroup:
 			return_value = GroupScoped._deserialize(result_info.success, lambda x1: DecryptedHealthElement._deserialize(x1))
 			return return_value
 
+	async def modify_health_elements_async(self, entities: list[GroupScoped[DecryptedHealthElement]]) -> list[GroupScoped[DecryptedHealthElement]]:
+		def do_decode(raw_result):
+			return [GroupScoped._deserialize(x1, lambda x2: DecryptedHealthElement._deserialize(x2)) for x1 in raw_result]
+		payload = {
+			"entities": [x0.__serialize__(lambda x1: x1.__serialize__()) for x0 in entities],
+		}
+		return await execute_async_method_job(
+			self.cardinal_sdk._executor,
+			True,
+			do_decode,
+			symbols.kotlin.root.com.icure.cardinal.sdk.py.api.HealthElementApi.inGroup.modifyHealthElementsAsync,
+			self.cardinal_sdk._native,
+			json.dumps(payload).encode('utf-8'),
+		)
+
+	def modify_health_elements_blocking(self, entities: list[GroupScoped[DecryptedHealthElement]]) -> list[GroupScoped[DecryptedHealthElement]]:
+		payload = {
+			"entities": [x0.__serialize__(lambda x1: x1.__serialize__()) for x0 in entities],
+		}
+		call_result = symbols.kotlin.root.com.icure.cardinal.sdk.py.api.HealthElementApi.inGroup.modifyHealthElementsBlocking(
+			self.cardinal_sdk._native,
+			json.dumps(payload).encode('utf-8'),
+		)
+		result_info = create_result_from_json(cast(call_result, c_char_p).value.decode('utf-8'))
+		symbols.DisposeString(call_result)
+		if result_info.failure is not None:
+			raise interpret_kt_error(result_info.failure)
+		else:
+			return_value = [GroupScoped._deserialize(x1, lambda x2: DecryptedHealthElement._deserialize(x2)) for x1 in result_info.success]
+			return return_value
+
 	async def get_health_element_async(self, group_id: str, entity_id: str) -> Optional[GroupScoped[DecryptedHealthElement]]:
 		def do_decode(raw_result):
 			return GroupScoped._deserialize(raw_result, lambda x1: DecryptedHealthElement._deserialize(x1)) if raw_result is not None else None
@@ -2215,6 +3045,39 @@ class HealthElementApiInGroup:
 			raise interpret_kt_error(result_info.failure)
 		else:
 			return_value = GroupScoped._deserialize(result_info.success, lambda x1: DecryptedHealthElement._deserialize(x1)) if result_info.success is not None else None
+			return return_value
+
+	async def get_health_elements_async(self, group_id: str, entity_ids: list[str]) -> list[GroupScoped[DecryptedHealthElement]]:
+		def do_decode(raw_result):
+			return [GroupScoped._deserialize(x1, lambda x2: DecryptedHealthElement._deserialize(x2)) for x1 in raw_result]
+		payload = {
+			"groupId": group_id,
+			"entityIds": [x0 for x0 in entity_ids],
+		}
+		return await execute_async_method_job(
+			self.cardinal_sdk._executor,
+			True,
+			do_decode,
+			symbols.kotlin.root.com.icure.cardinal.sdk.py.api.HealthElementApi.inGroup.getHealthElementsAsync,
+			self.cardinal_sdk._native,
+			json.dumps(payload).encode('utf-8'),
+		)
+
+	def get_health_elements_blocking(self, group_id: str, entity_ids: list[str]) -> list[GroupScoped[DecryptedHealthElement]]:
+		payload = {
+			"groupId": group_id,
+			"entityIds": [x0 for x0 in entity_ids],
+		}
+		call_result = symbols.kotlin.root.com.icure.cardinal.sdk.py.api.HealthElementApi.inGroup.getHealthElementsBlocking(
+			self.cardinal_sdk._native,
+			json.dumps(payload).encode('utf-8'),
+		)
+		result_info = create_result_from_json(cast(call_result, c_char_p).value.decode('utf-8'))
+		symbols.DisposeString(call_result)
+		if result_info.failure is not None:
+			raise interpret_kt_error(result_info.failure)
+		else:
+			return_value = [GroupScoped._deserialize(x1, lambda x2: DecryptedHealthElement._deserialize(x2)) for x1 in result_info.success]
 			return return_value
 
 
@@ -2291,6 +3154,94 @@ class HealthElementApiInGroupEncrypted:
 			return_value = GroupScoped._deserialize(result_info.success, lambda x1: EncryptedHealthElement._deserialize(x1))
 			return return_value
 
+	async def filter_health_elements_by_async(self, group_id: str, filter: FilterOptions[HealthElement]) -> PaginatedListIterator[GroupScoped[EncryptedHealthElement]]:
+		def do_decode(raw_result):
+			return PaginatedListIterator[GroupScoped[EncryptedHealthElement]](
+				producer = raw_result,
+				deserializer = lambda x: GroupScoped._deserialize(x, lambda x1: EncryptedHealthElement._deserialize(x1)),
+				executor = self.cardinal_sdk._executor
+			)
+		payload = {
+			"groupId": group_id,
+			"filter": filter.__serialize__(),
+		}
+		return await execute_async_method_job(
+			self.cardinal_sdk._executor,
+			False,
+			do_decode,
+			symbols.kotlin.root.com.icure.cardinal.sdk.py.api.HealthElementApi.inGroup.encrypted.filterHealthElementsByAsync,
+			self.cardinal_sdk._native,
+			json.dumps(payload).encode('utf-8'),
+		)
+
+	def filter_health_elements_by_blocking(self, group_id: str, filter: FilterOptions[HealthElement]) -> PaginatedListIterator[GroupScoped[EncryptedHealthElement]]:
+		payload = {
+			"groupId": group_id,
+			"filter": filter.__serialize__(),
+		}
+		call_result = symbols.kotlin.root.com.icure.cardinal.sdk.py.api.HealthElementApi.inGroup.encrypted.filterHealthElementsByBlocking(
+			self.cardinal_sdk._native,
+			json.dumps(payload).encode('utf-8'),
+		)
+		error_str_pointer = symbols.kotlin.root.com.icure.cardinal.sdk.py.utils.PyResult.get_failure(call_result)
+		if error_str_pointer is not None:
+			error_data_str = cast(error_str_pointer, c_char_p).value.decode('utf_8')
+			symbols.DisposeString(error_str_pointer)
+			symbols.DisposeStablePointer(call_result.pinned)
+			raise interpret_kt_error(json.loads(error_data_str))
+		else:
+			class_pointer = symbols.kotlin.root.com.icure.cardinal.sdk.py.utils.PyResult.get_success(call_result)
+			symbols.DisposeStablePointer(call_result.pinned)
+			return PaginatedListIterator[GroupScoped[EncryptedHealthElement]](
+				producer = class_pointer,
+				deserializer = lambda x: GroupScoped._deserialize(x, lambda x1: EncryptedHealthElement._deserialize(x1)),
+				executor = self.cardinal_sdk._executor
+			)
+
+	async def filter_health_elements_by_sorted_async(self, group_id: str, filter: SortableFilterOptions[HealthElement]) -> PaginatedListIterator[GroupScoped[EncryptedHealthElement]]:
+		def do_decode(raw_result):
+			return PaginatedListIterator[GroupScoped[EncryptedHealthElement]](
+				producer = raw_result,
+				deserializer = lambda x: GroupScoped._deserialize(x, lambda x1: EncryptedHealthElement._deserialize(x1)),
+				executor = self.cardinal_sdk._executor
+			)
+		payload = {
+			"groupId": group_id,
+			"filter": filter.__serialize__(),
+		}
+		return await execute_async_method_job(
+			self.cardinal_sdk._executor,
+			False,
+			do_decode,
+			symbols.kotlin.root.com.icure.cardinal.sdk.py.api.HealthElementApi.inGroup.encrypted.filterHealthElementsBySortedAsync,
+			self.cardinal_sdk._native,
+			json.dumps(payload).encode('utf-8'),
+		)
+
+	def filter_health_elements_by_sorted_blocking(self, group_id: str, filter: SortableFilterOptions[HealthElement]) -> PaginatedListIterator[GroupScoped[EncryptedHealthElement]]:
+		payload = {
+			"groupId": group_id,
+			"filter": filter.__serialize__(),
+		}
+		call_result = symbols.kotlin.root.com.icure.cardinal.sdk.py.api.HealthElementApi.inGroup.encrypted.filterHealthElementsBySortedBlocking(
+			self.cardinal_sdk._native,
+			json.dumps(payload).encode('utf-8'),
+		)
+		error_str_pointer = symbols.kotlin.root.com.icure.cardinal.sdk.py.utils.PyResult.get_failure(call_result)
+		if error_str_pointer is not None:
+			error_data_str = cast(error_str_pointer, c_char_p).value.decode('utf_8')
+			symbols.DisposeString(error_str_pointer)
+			symbols.DisposeStablePointer(call_result.pinned)
+			raise interpret_kt_error(json.loads(error_data_str))
+		else:
+			class_pointer = symbols.kotlin.root.com.icure.cardinal.sdk.py.utils.PyResult.get_success(call_result)
+			symbols.DisposeStablePointer(call_result.pinned)
+			return PaginatedListIterator[GroupScoped[EncryptedHealthElement]](
+				producer = class_pointer,
+				deserializer = lambda x: GroupScoped._deserialize(x, lambda x1: EncryptedHealthElement._deserialize(x1)),
+				executor = self.cardinal_sdk._executor
+			)
+
 	async def create_health_element_async(self, entity: GroupScoped[EncryptedHealthElement]) -> GroupScoped[EncryptedHealthElement]:
 		def do_decode(raw_result):
 			return GroupScoped._deserialize(raw_result, lambda x1: EncryptedHealthElement._deserialize(x1))
@@ -2320,6 +3271,161 @@ class HealthElementApiInGroupEncrypted:
 			raise interpret_kt_error(result_info.failure)
 		else:
 			return_value = GroupScoped._deserialize(result_info.success, lambda x1: EncryptedHealthElement._deserialize(x1))
+			return return_value
+
+	async def create_health_elements_async(self, entities: list[GroupScoped[EncryptedHealthElement]]) -> list[GroupScoped[EncryptedHealthElement]]:
+		def do_decode(raw_result):
+			return [GroupScoped._deserialize(x1, lambda x2: EncryptedHealthElement._deserialize(x2)) for x1 in raw_result]
+		payload = {
+			"entities": [x0.__serialize__(lambda x1: x1.__serialize__()) for x0 in entities],
+		}
+		return await execute_async_method_job(
+			self.cardinal_sdk._executor,
+			True,
+			do_decode,
+			symbols.kotlin.root.com.icure.cardinal.sdk.py.api.HealthElementApi.inGroup.encrypted.createHealthElementsAsync,
+			self.cardinal_sdk._native,
+			json.dumps(payload).encode('utf-8'),
+		)
+
+	def create_health_elements_blocking(self, entities: list[GroupScoped[EncryptedHealthElement]]) -> list[GroupScoped[EncryptedHealthElement]]:
+		payload = {
+			"entities": [x0.__serialize__(lambda x1: x1.__serialize__()) for x0 in entities],
+		}
+		call_result = symbols.kotlin.root.com.icure.cardinal.sdk.py.api.HealthElementApi.inGroup.encrypted.createHealthElementsBlocking(
+			self.cardinal_sdk._native,
+			json.dumps(payload).encode('utf-8'),
+		)
+		result_info = create_result_from_json(cast(call_result, c_char_p).value.decode('utf-8'))
+		symbols.DisposeString(call_result)
+		if result_info.failure is not None:
+			raise interpret_kt_error(result_info.failure)
+		else:
+			return_value = [GroupScoped._deserialize(x1, lambda x2: EncryptedHealthElement._deserialize(x2)) for x1 in result_info.success]
+			return return_value
+
+	async def undelete_health_element_by_id_async(self, entity_id: GroupScoped[StoredDocumentIdentifier]) -> GroupScoped[EncryptedHealthElement]:
+		def do_decode(raw_result):
+			return GroupScoped._deserialize(raw_result, lambda x1: EncryptedHealthElement._deserialize(x1))
+		payload = {
+			"entityId": entity_id.__serialize__(lambda x0: x0.__serialize__()),
+		}
+		return await execute_async_method_job(
+			self.cardinal_sdk._executor,
+			True,
+			do_decode,
+			symbols.kotlin.root.com.icure.cardinal.sdk.py.api.HealthElementApi.inGroup.encrypted.undeleteHealthElementByIdAsync,
+			self.cardinal_sdk._native,
+			json.dumps(payload).encode('utf-8'),
+		)
+
+	def undelete_health_element_by_id_blocking(self, entity_id: GroupScoped[StoredDocumentIdentifier]) -> GroupScoped[EncryptedHealthElement]:
+		payload = {
+			"entityId": entity_id.__serialize__(lambda x0: x0.__serialize__()),
+		}
+		call_result = symbols.kotlin.root.com.icure.cardinal.sdk.py.api.HealthElementApi.inGroup.encrypted.undeleteHealthElementByIdBlocking(
+			self.cardinal_sdk._native,
+			json.dumps(payload).encode('utf-8'),
+		)
+		result_info = create_result_from_json(cast(call_result, c_char_p).value.decode('utf-8'))
+		symbols.DisposeString(call_result)
+		if result_info.failure is not None:
+			raise interpret_kt_error(result_info.failure)
+		else:
+			return_value = GroupScoped._deserialize(result_info.success, lambda x1: EncryptedHealthElement._deserialize(x1))
+			return return_value
+
+	async def undelete_health_elements_by_ids_async(self, entity_ids: list[GroupScoped[StoredDocumentIdentifier]]) -> list[GroupScoped[EncryptedHealthElement]]:
+		def do_decode(raw_result):
+			return [GroupScoped._deserialize(x1, lambda x2: EncryptedHealthElement._deserialize(x2)) for x1 in raw_result]
+		payload = {
+			"entityIds": [x0.__serialize__(lambda x1: x1.__serialize__()) for x0 in entity_ids],
+		}
+		return await execute_async_method_job(
+			self.cardinal_sdk._executor,
+			True,
+			do_decode,
+			symbols.kotlin.root.com.icure.cardinal.sdk.py.api.HealthElementApi.inGroup.encrypted.undeleteHealthElementsByIdsAsync,
+			self.cardinal_sdk._native,
+			json.dumps(payload).encode('utf-8'),
+		)
+
+	def undelete_health_elements_by_ids_blocking(self, entity_ids: list[GroupScoped[StoredDocumentIdentifier]]) -> list[GroupScoped[EncryptedHealthElement]]:
+		payload = {
+			"entityIds": [x0.__serialize__(lambda x1: x1.__serialize__()) for x0 in entity_ids],
+		}
+		call_result = symbols.kotlin.root.com.icure.cardinal.sdk.py.api.HealthElementApi.inGroup.encrypted.undeleteHealthElementsByIdsBlocking(
+			self.cardinal_sdk._native,
+			json.dumps(payload).encode('utf-8'),
+		)
+		result_info = create_result_from_json(cast(call_result, c_char_p).value.decode('utf-8'))
+		symbols.DisposeString(call_result)
+		if result_info.failure is not None:
+			raise interpret_kt_error(result_info.failure)
+		else:
+			return_value = [GroupScoped._deserialize(x1, lambda x2: EncryptedHealthElement._deserialize(x2)) for x1 in result_info.success]
+			return return_value
+
+	async def undelete_health_element_async(self, health_element: GroupScoped[HealthElement]) -> GroupScoped[EncryptedHealthElement]:
+		def do_decode(raw_result):
+			return GroupScoped._deserialize(raw_result, lambda x1: EncryptedHealthElement._deserialize(x1))
+		payload = {
+			"healthElement": health_element.__serialize__(lambda x0: serialize_health_element(x0)),
+		}
+		return await execute_async_method_job(
+			self.cardinal_sdk._executor,
+			True,
+			do_decode,
+			symbols.kotlin.root.com.icure.cardinal.sdk.py.api.HealthElementApi.inGroup.encrypted.undeleteHealthElementAsync,
+			self.cardinal_sdk._native,
+			json.dumps(payload).encode('utf-8'),
+		)
+
+	def undelete_health_element_blocking(self, health_element: GroupScoped[HealthElement]) -> GroupScoped[EncryptedHealthElement]:
+		payload = {
+			"healthElement": health_element.__serialize__(lambda x0: serialize_health_element(x0)),
+		}
+		call_result = symbols.kotlin.root.com.icure.cardinal.sdk.py.api.HealthElementApi.inGroup.encrypted.undeleteHealthElementBlocking(
+			self.cardinal_sdk._native,
+			json.dumps(payload).encode('utf-8'),
+		)
+		result_info = create_result_from_json(cast(call_result, c_char_p).value.decode('utf-8'))
+		symbols.DisposeString(call_result)
+		if result_info.failure is not None:
+			raise interpret_kt_error(result_info.failure)
+		else:
+			return_value = GroupScoped._deserialize(result_info.success, lambda x1: EncryptedHealthElement._deserialize(x1))
+			return return_value
+
+	async def undelete_health_elements_async(self, health_elements: list[GroupScoped[EncryptedHealthElement]]) -> list[GroupScoped[EncryptedHealthElement]]:
+		def do_decode(raw_result):
+			return [GroupScoped._deserialize(x1, lambda x2: EncryptedHealthElement._deserialize(x2)) for x1 in raw_result]
+		payload = {
+			"healthElements": [x0.__serialize__(lambda x1: x1.__serialize__()) for x0 in health_elements],
+		}
+		return await execute_async_method_job(
+			self.cardinal_sdk._executor,
+			True,
+			do_decode,
+			symbols.kotlin.root.com.icure.cardinal.sdk.py.api.HealthElementApi.inGroup.encrypted.undeleteHealthElementsAsync,
+			self.cardinal_sdk._native,
+			json.dumps(payload).encode('utf-8'),
+		)
+
+	def undelete_health_elements_blocking(self, health_elements: list[GroupScoped[EncryptedHealthElement]]) -> list[GroupScoped[EncryptedHealthElement]]:
+		payload = {
+			"healthElements": [x0.__serialize__(lambda x1: x1.__serialize__()) for x0 in health_elements],
+		}
+		call_result = symbols.kotlin.root.com.icure.cardinal.sdk.py.api.HealthElementApi.inGroup.encrypted.undeleteHealthElementsBlocking(
+			self.cardinal_sdk._native,
+			json.dumps(payload).encode('utf-8'),
+		)
+		result_info = create_result_from_json(cast(call_result, c_char_p).value.decode('utf-8'))
+		symbols.DisposeString(call_result)
+		if result_info.failure is not None:
+			raise interpret_kt_error(result_info.failure)
+		else:
+			return_value = [GroupScoped._deserialize(x1, lambda x2: EncryptedHealthElement._deserialize(x2)) for x1 in result_info.success]
 			return return_value
 
 	async def modify_health_element_async(self, entity: GroupScoped[EncryptedHealthElement]) -> GroupScoped[EncryptedHealthElement]:
@@ -2353,6 +3459,37 @@ class HealthElementApiInGroupEncrypted:
 			return_value = GroupScoped._deserialize(result_info.success, lambda x1: EncryptedHealthElement._deserialize(x1))
 			return return_value
 
+	async def modify_health_elements_async(self, entities: list[GroupScoped[EncryptedHealthElement]]) -> list[GroupScoped[EncryptedHealthElement]]:
+		def do_decode(raw_result):
+			return [GroupScoped._deserialize(x1, lambda x2: EncryptedHealthElement._deserialize(x2)) for x1 in raw_result]
+		payload = {
+			"entities": [x0.__serialize__(lambda x1: x1.__serialize__()) for x0 in entities],
+		}
+		return await execute_async_method_job(
+			self.cardinal_sdk._executor,
+			True,
+			do_decode,
+			symbols.kotlin.root.com.icure.cardinal.sdk.py.api.HealthElementApi.inGroup.encrypted.modifyHealthElementsAsync,
+			self.cardinal_sdk._native,
+			json.dumps(payload).encode('utf-8'),
+		)
+
+	def modify_health_elements_blocking(self, entities: list[GroupScoped[EncryptedHealthElement]]) -> list[GroupScoped[EncryptedHealthElement]]:
+		payload = {
+			"entities": [x0.__serialize__(lambda x1: x1.__serialize__()) for x0 in entities],
+		}
+		call_result = symbols.kotlin.root.com.icure.cardinal.sdk.py.api.HealthElementApi.inGroup.encrypted.modifyHealthElementsBlocking(
+			self.cardinal_sdk._native,
+			json.dumps(payload).encode('utf-8'),
+		)
+		result_info = create_result_from_json(cast(call_result, c_char_p).value.decode('utf-8'))
+		symbols.DisposeString(call_result)
+		if result_info.failure is not None:
+			raise interpret_kt_error(result_info.failure)
+		else:
+			return_value = [GroupScoped._deserialize(x1, lambda x2: EncryptedHealthElement._deserialize(x2)) for x1 in result_info.success]
+			return return_value
+
 	async def get_health_element_async(self, group_id: str, entity_id: str) -> Optional[GroupScoped[EncryptedHealthElement]]:
 		def do_decode(raw_result):
 			return GroupScoped._deserialize(raw_result, lambda x1: EncryptedHealthElement._deserialize(x1)) if raw_result is not None else None
@@ -2384,6 +3521,39 @@ class HealthElementApiInGroupEncrypted:
 			raise interpret_kt_error(result_info.failure)
 		else:
 			return_value = GroupScoped._deserialize(result_info.success, lambda x1: EncryptedHealthElement._deserialize(x1)) if result_info.success is not None else None
+			return return_value
+
+	async def get_health_elements_async(self, group_id: str, entity_ids: list[str]) -> list[GroupScoped[EncryptedHealthElement]]:
+		def do_decode(raw_result):
+			return [GroupScoped._deserialize(x1, lambda x2: EncryptedHealthElement._deserialize(x2)) for x1 in raw_result]
+		payload = {
+			"groupId": group_id,
+			"entityIds": [x0 for x0 in entity_ids],
+		}
+		return await execute_async_method_job(
+			self.cardinal_sdk._executor,
+			True,
+			do_decode,
+			symbols.kotlin.root.com.icure.cardinal.sdk.py.api.HealthElementApi.inGroup.encrypted.getHealthElementsAsync,
+			self.cardinal_sdk._native,
+			json.dumps(payload).encode('utf-8'),
+		)
+
+	def get_health_elements_blocking(self, group_id: str, entity_ids: list[str]) -> list[GroupScoped[EncryptedHealthElement]]:
+		payload = {
+			"groupId": group_id,
+			"entityIds": [x0 for x0 in entity_ids],
+		}
+		call_result = symbols.kotlin.root.com.icure.cardinal.sdk.py.api.HealthElementApi.inGroup.encrypted.getHealthElementsBlocking(
+			self.cardinal_sdk._native,
+			json.dumps(payload).encode('utf-8'),
+		)
+		result_info = create_result_from_json(cast(call_result, c_char_p).value.decode('utf-8'))
+		symbols.DisposeString(call_result)
+		if result_info.failure is not None:
+			raise interpret_kt_error(result_info.failure)
+		else:
+			return_value = [GroupScoped._deserialize(x1, lambda x2: EncryptedHealthElement._deserialize(x2)) for x1 in result_info.success]
 			return return_value
 
 
@@ -2460,6 +3630,94 @@ class HealthElementApiInGroupTryAndRecover:
 			return_value = GroupScoped._deserialize(result_info.success, lambda x1: deserialize_health_element(x1))
 			return return_value
 
+	async def filter_health_elements_by_async(self, group_id: str, filter: FilterOptions[HealthElement]) -> PaginatedListIterator[GroupScoped[HealthElement]]:
+		def do_decode(raw_result):
+			return PaginatedListIterator[GroupScoped[HealthElement]](
+				producer = raw_result,
+				deserializer = lambda x: GroupScoped._deserialize(x, lambda x1: deserialize_health_element(x1)),
+				executor = self.cardinal_sdk._executor
+			)
+		payload = {
+			"groupId": group_id,
+			"filter": filter.__serialize__(),
+		}
+		return await execute_async_method_job(
+			self.cardinal_sdk._executor,
+			False,
+			do_decode,
+			symbols.kotlin.root.com.icure.cardinal.sdk.py.api.HealthElementApi.inGroup.tryAndRecover.filterHealthElementsByAsync,
+			self.cardinal_sdk._native,
+			json.dumps(payload).encode('utf-8'),
+		)
+
+	def filter_health_elements_by_blocking(self, group_id: str, filter: FilterOptions[HealthElement]) -> PaginatedListIterator[GroupScoped[HealthElement]]:
+		payload = {
+			"groupId": group_id,
+			"filter": filter.__serialize__(),
+		}
+		call_result = symbols.kotlin.root.com.icure.cardinal.sdk.py.api.HealthElementApi.inGroup.tryAndRecover.filterHealthElementsByBlocking(
+			self.cardinal_sdk._native,
+			json.dumps(payload).encode('utf-8'),
+		)
+		error_str_pointer = symbols.kotlin.root.com.icure.cardinal.sdk.py.utils.PyResult.get_failure(call_result)
+		if error_str_pointer is not None:
+			error_data_str = cast(error_str_pointer, c_char_p).value.decode('utf_8')
+			symbols.DisposeString(error_str_pointer)
+			symbols.DisposeStablePointer(call_result.pinned)
+			raise interpret_kt_error(json.loads(error_data_str))
+		else:
+			class_pointer = symbols.kotlin.root.com.icure.cardinal.sdk.py.utils.PyResult.get_success(call_result)
+			symbols.DisposeStablePointer(call_result.pinned)
+			return PaginatedListIterator[GroupScoped[HealthElement]](
+				producer = class_pointer,
+				deserializer = lambda x: GroupScoped._deserialize(x, lambda x1: deserialize_health_element(x1)),
+				executor = self.cardinal_sdk._executor
+			)
+
+	async def filter_health_elements_by_sorted_async(self, group_id: str, filter: SortableFilterOptions[HealthElement]) -> PaginatedListIterator[GroupScoped[HealthElement]]:
+		def do_decode(raw_result):
+			return PaginatedListIterator[GroupScoped[HealthElement]](
+				producer = raw_result,
+				deserializer = lambda x: GroupScoped._deserialize(x, lambda x1: deserialize_health_element(x1)),
+				executor = self.cardinal_sdk._executor
+			)
+		payload = {
+			"groupId": group_id,
+			"filter": filter.__serialize__(),
+		}
+		return await execute_async_method_job(
+			self.cardinal_sdk._executor,
+			False,
+			do_decode,
+			symbols.kotlin.root.com.icure.cardinal.sdk.py.api.HealthElementApi.inGroup.tryAndRecover.filterHealthElementsBySortedAsync,
+			self.cardinal_sdk._native,
+			json.dumps(payload).encode('utf-8'),
+		)
+
+	def filter_health_elements_by_sorted_blocking(self, group_id: str, filter: SortableFilterOptions[HealthElement]) -> PaginatedListIterator[GroupScoped[HealthElement]]:
+		payload = {
+			"groupId": group_id,
+			"filter": filter.__serialize__(),
+		}
+		call_result = symbols.kotlin.root.com.icure.cardinal.sdk.py.api.HealthElementApi.inGroup.tryAndRecover.filterHealthElementsBySortedBlocking(
+			self.cardinal_sdk._native,
+			json.dumps(payload).encode('utf-8'),
+		)
+		error_str_pointer = symbols.kotlin.root.com.icure.cardinal.sdk.py.utils.PyResult.get_failure(call_result)
+		if error_str_pointer is not None:
+			error_data_str = cast(error_str_pointer, c_char_p).value.decode('utf_8')
+			symbols.DisposeString(error_str_pointer)
+			symbols.DisposeStablePointer(call_result.pinned)
+			raise interpret_kt_error(json.loads(error_data_str))
+		else:
+			class_pointer = symbols.kotlin.root.com.icure.cardinal.sdk.py.utils.PyResult.get_success(call_result)
+			symbols.DisposeStablePointer(call_result.pinned)
+			return PaginatedListIterator[GroupScoped[HealthElement]](
+				producer = class_pointer,
+				deserializer = lambda x: GroupScoped._deserialize(x, lambda x1: deserialize_health_element(x1)),
+				executor = self.cardinal_sdk._executor
+			)
+
 	async def create_health_element_async(self, entity: GroupScoped[HealthElement]) -> GroupScoped[HealthElement]:
 		def do_decode(raw_result):
 			return GroupScoped._deserialize(raw_result, lambda x1: deserialize_health_element(x1))
@@ -2489,6 +3747,161 @@ class HealthElementApiInGroupTryAndRecover:
 			raise interpret_kt_error(result_info.failure)
 		else:
 			return_value = GroupScoped._deserialize(result_info.success, lambda x1: deserialize_health_element(x1))
+			return return_value
+
+	async def create_health_elements_async(self, entities: list[GroupScoped[HealthElement]]) -> list[GroupScoped[HealthElement]]:
+		def do_decode(raw_result):
+			return [GroupScoped._deserialize(x1, lambda x2: deserialize_health_element(x2)) for x1 in raw_result]
+		payload = {
+			"entities": [x0.__serialize__(lambda x1: serialize_health_element(x1)) for x0 in entities],
+		}
+		return await execute_async_method_job(
+			self.cardinal_sdk._executor,
+			True,
+			do_decode,
+			symbols.kotlin.root.com.icure.cardinal.sdk.py.api.HealthElementApi.inGroup.tryAndRecover.createHealthElementsAsync,
+			self.cardinal_sdk._native,
+			json.dumps(payload).encode('utf-8'),
+		)
+
+	def create_health_elements_blocking(self, entities: list[GroupScoped[HealthElement]]) -> list[GroupScoped[HealthElement]]:
+		payload = {
+			"entities": [x0.__serialize__(lambda x1: serialize_health_element(x1)) for x0 in entities],
+		}
+		call_result = symbols.kotlin.root.com.icure.cardinal.sdk.py.api.HealthElementApi.inGroup.tryAndRecover.createHealthElementsBlocking(
+			self.cardinal_sdk._native,
+			json.dumps(payload).encode('utf-8'),
+		)
+		result_info = create_result_from_json(cast(call_result, c_char_p).value.decode('utf-8'))
+		symbols.DisposeString(call_result)
+		if result_info.failure is not None:
+			raise interpret_kt_error(result_info.failure)
+		else:
+			return_value = [GroupScoped._deserialize(x1, lambda x2: deserialize_health_element(x2)) for x1 in result_info.success]
+			return return_value
+
+	async def undelete_health_element_by_id_async(self, entity_id: GroupScoped[StoredDocumentIdentifier]) -> GroupScoped[HealthElement]:
+		def do_decode(raw_result):
+			return GroupScoped._deserialize(raw_result, lambda x1: deserialize_health_element(x1))
+		payload = {
+			"entityId": entity_id.__serialize__(lambda x0: x0.__serialize__()),
+		}
+		return await execute_async_method_job(
+			self.cardinal_sdk._executor,
+			True,
+			do_decode,
+			symbols.kotlin.root.com.icure.cardinal.sdk.py.api.HealthElementApi.inGroup.tryAndRecover.undeleteHealthElementByIdAsync,
+			self.cardinal_sdk._native,
+			json.dumps(payload).encode('utf-8'),
+		)
+
+	def undelete_health_element_by_id_blocking(self, entity_id: GroupScoped[StoredDocumentIdentifier]) -> GroupScoped[HealthElement]:
+		payload = {
+			"entityId": entity_id.__serialize__(lambda x0: x0.__serialize__()),
+		}
+		call_result = symbols.kotlin.root.com.icure.cardinal.sdk.py.api.HealthElementApi.inGroup.tryAndRecover.undeleteHealthElementByIdBlocking(
+			self.cardinal_sdk._native,
+			json.dumps(payload).encode('utf-8'),
+		)
+		result_info = create_result_from_json(cast(call_result, c_char_p).value.decode('utf-8'))
+		symbols.DisposeString(call_result)
+		if result_info.failure is not None:
+			raise interpret_kt_error(result_info.failure)
+		else:
+			return_value = GroupScoped._deserialize(result_info.success, lambda x1: deserialize_health_element(x1))
+			return return_value
+
+	async def undelete_health_elements_by_ids_async(self, entity_ids: list[GroupScoped[StoredDocumentIdentifier]]) -> list[GroupScoped[HealthElement]]:
+		def do_decode(raw_result):
+			return [GroupScoped._deserialize(x1, lambda x2: deserialize_health_element(x2)) for x1 in raw_result]
+		payload = {
+			"entityIds": [x0.__serialize__(lambda x1: x1.__serialize__()) for x0 in entity_ids],
+		}
+		return await execute_async_method_job(
+			self.cardinal_sdk._executor,
+			True,
+			do_decode,
+			symbols.kotlin.root.com.icure.cardinal.sdk.py.api.HealthElementApi.inGroup.tryAndRecover.undeleteHealthElementsByIdsAsync,
+			self.cardinal_sdk._native,
+			json.dumps(payload).encode('utf-8'),
+		)
+
+	def undelete_health_elements_by_ids_blocking(self, entity_ids: list[GroupScoped[StoredDocumentIdentifier]]) -> list[GroupScoped[HealthElement]]:
+		payload = {
+			"entityIds": [x0.__serialize__(lambda x1: x1.__serialize__()) for x0 in entity_ids],
+		}
+		call_result = symbols.kotlin.root.com.icure.cardinal.sdk.py.api.HealthElementApi.inGroup.tryAndRecover.undeleteHealthElementsByIdsBlocking(
+			self.cardinal_sdk._native,
+			json.dumps(payload).encode('utf-8'),
+		)
+		result_info = create_result_from_json(cast(call_result, c_char_p).value.decode('utf-8'))
+		symbols.DisposeString(call_result)
+		if result_info.failure is not None:
+			raise interpret_kt_error(result_info.failure)
+		else:
+			return_value = [GroupScoped._deserialize(x1, lambda x2: deserialize_health_element(x2)) for x1 in result_info.success]
+			return return_value
+
+	async def undelete_health_element_async(self, health_element: GroupScoped[HealthElement]) -> GroupScoped[HealthElement]:
+		def do_decode(raw_result):
+			return GroupScoped._deserialize(raw_result, lambda x1: deserialize_health_element(x1))
+		payload = {
+			"healthElement": health_element.__serialize__(lambda x0: serialize_health_element(x0)),
+		}
+		return await execute_async_method_job(
+			self.cardinal_sdk._executor,
+			True,
+			do_decode,
+			symbols.kotlin.root.com.icure.cardinal.sdk.py.api.HealthElementApi.inGroup.tryAndRecover.undeleteHealthElementAsync,
+			self.cardinal_sdk._native,
+			json.dumps(payload).encode('utf-8'),
+		)
+
+	def undelete_health_element_blocking(self, health_element: GroupScoped[HealthElement]) -> GroupScoped[HealthElement]:
+		payload = {
+			"healthElement": health_element.__serialize__(lambda x0: serialize_health_element(x0)),
+		}
+		call_result = symbols.kotlin.root.com.icure.cardinal.sdk.py.api.HealthElementApi.inGroup.tryAndRecover.undeleteHealthElementBlocking(
+			self.cardinal_sdk._native,
+			json.dumps(payload).encode('utf-8'),
+		)
+		result_info = create_result_from_json(cast(call_result, c_char_p).value.decode('utf-8'))
+		symbols.DisposeString(call_result)
+		if result_info.failure is not None:
+			raise interpret_kt_error(result_info.failure)
+		else:
+			return_value = GroupScoped._deserialize(result_info.success, lambda x1: deserialize_health_element(x1))
+			return return_value
+
+	async def undelete_health_elements_async(self, health_elements: list[GroupScoped[HealthElement]]) -> list[GroupScoped[HealthElement]]:
+		def do_decode(raw_result):
+			return [GroupScoped._deserialize(x1, lambda x2: deserialize_health_element(x2)) for x1 in raw_result]
+		payload = {
+			"healthElements": [x0.__serialize__(lambda x1: serialize_health_element(x1)) for x0 in health_elements],
+		}
+		return await execute_async_method_job(
+			self.cardinal_sdk._executor,
+			True,
+			do_decode,
+			symbols.kotlin.root.com.icure.cardinal.sdk.py.api.HealthElementApi.inGroup.tryAndRecover.undeleteHealthElementsAsync,
+			self.cardinal_sdk._native,
+			json.dumps(payload).encode('utf-8'),
+		)
+
+	def undelete_health_elements_blocking(self, health_elements: list[GroupScoped[HealthElement]]) -> list[GroupScoped[HealthElement]]:
+		payload = {
+			"healthElements": [x0.__serialize__(lambda x1: serialize_health_element(x1)) for x0 in health_elements],
+		}
+		call_result = symbols.kotlin.root.com.icure.cardinal.sdk.py.api.HealthElementApi.inGroup.tryAndRecover.undeleteHealthElementsBlocking(
+			self.cardinal_sdk._native,
+			json.dumps(payload).encode('utf-8'),
+		)
+		result_info = create_result_from_json(cast(call_result, c_char_p).value.decode('utf-8'))
+		symbols.DisposeString(call_result)
+		if result_info.failure is not None:
+			raise interpret_kt_error(result_info.failure)
+		else:
+			return_value = [GroupScoped._deserialize(x1, lambda x2: deserialize_health_element(x2)) for x1 in result_info.success]
 			return return_value
 
 	async def modify_health_element_async(self, entity: GroupScoped[HealthElement]) -> GroupScoped[HealthElement]:
@@ -2522,6 +3935,37 @@ class HealthElementApiInGroupTryAndRecover:
 			return_value = GroupScoped._deserialize(result_info.success, lambda x1: deserialize_health_element(x1))
 			return return_value
 
+	async def modify_health_elements_async(self, entities: list[GroupScoped[HealthElement]]) -> list[GroupScoped[HealthElement]]:
+		def do_decode(raw_result):
+			return [GroupScoped._deserialize(x1, lambda x2: deserialize_health_element(x2)) for x1 in raw_result]
+		payload = {
+			"entities": [x0.__serialize__(lambda x1: serialize_health_element(x1)) for x0 in entities],
+		}
+		return await execute_async_method_job(
+			self.cardinal_sdk._executor,
+			True,
+			do_decode,
+			symbols.kotlin.root.com.icure.cardinal.sdk.py.api.HealthElementApi.inGroup.tryAndRecover.modifyHealthElementsAsync,
+			self.cardinal_sdk._native,
+			json.dumps(payload).encode('utf-8'),
+		)
+
+	def modify_health_elements_blocking(self, entities: list[GroupScoped[HealthElement]]) -> list[GroupScoped[HealthElement]]:
+		payload = {
+			"entities": [x0.__serialize__(lambda x1: serialize_health_element(x1)) for x0 in entities],
+		}
+		call_result = symbols.kotlin.root.com.icure.cardinal.sdk.py.api.HealthElementApi.inGroup.tryAndRecover.modifyHealthElementsBlocking(
+			self.cardinal_sdk._native,
+			json.dumps(payload).encode('utf-8'),
+		)
+		result_info = create_result_from_json(cast(call_result, c_char_p).value.decode('utf-8'))
+		symbols.DisposeString(call_result)
+		if result_info.failure is not None:
+			raise interpret_kt_error(result_info.failure)
+		else:
+			return_value = [GroupScoped._deserialize(x1, lambda x2: deserialize_health_element(x2)) for x1 in result_info.success]
+			return return_value
+
 	async def get_health_element_async(self, group_id: str, entity_id: str) -> Optional[GroupScoped[HealthElement]]:
 		def do_decode(raw_result):
 			return GroupScoped._deserialize(raw_result, lambda x1: deserialize_health_element(x1)) if raw_result is not None else None
@@ -2553,4 +3997,37 @@ class HealthElementApiInGroupTryAndRecover:
 			raise interpret_kt_error(result_info.failure)
 		else:
 			return_value = GroupScoped._deserialize(result_info.success, lambda x1: deserialize_health_element(x1)) if result_info.success is not None else None
+			return return_value
+
+	async def get_health_elements_async(self, group_id: str, entity_ids: list[str]) -> list[GroupScoped[HealthElement]]:
+		def do_decode(raw_result):
+			return [GroupScoped._deserialize(x1, lambda x2: deserialize_health_element(x2)) for x1 in raw_result]
+		payload = {
+			"groupId": group_id,
+			"entityIds": [x0 for x0 in entity_ids],
+		}
+		return await execute_async_method_job(
+			self.cardinal_sdk._executor,
+			True,
+			do_decode,
+			symbols.kotlin.root.com.icure.cardinal.sdk.py.api.HealthElementApi.inGroup.tryAndRecover.getHealthElementsAsync,
+			self.cardinal_sdk._native,
+			json.dumps(payload).encode('utf-8'),
+		)
+
+	def get_health_elements_blocking(self, group_id: str, entity_ids: list[str]) -> list[GroupScoped[HealthElement]]:
+		payload = {
+			"groupId": group_id,
+			"entityIds": [x0 for x0 in entity_ids],
+		}
+		call_result = symbols.kotlin.root.com.icure.cardinal.sdk.py.api.HealthElementApi.inGroup.tryAndRecover.getHealthElementsBlocking(
+			self.cardinal_sdk._native,
+			json.dumps(payload).encode('utf-8'),
+		)
+		result_info = create_result_from_json(cast(call_result, c_char_p).value.decode('utf-8'))
+		symbols.DisposeString(call_result)
+		if result_info.failure is not None:
+			raise interpret_kt_error(result_info.failure)
+		else:
+			return_value = [GroupScoped._deserialize(x1, lambda x2: deserialize_health_element(x2)) for x1 in result_info.success]
 			return return_value

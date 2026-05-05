@@ -257,6 +257,37 @@ class CalendarItemBasicApi:
 		if result_info.failure is not None:
 			raise interpret_kt_error(result_info.failure)
 
+	async def purge_calendar_items_by_ids_async(self, entity_ids: list[StoredDocumentIdentifier]) -> list[StoredDocumentIdentifier]:
+		def do_decode(raw_result):
+			return [StoredDocumentIdentifier._deserialize(x1) for x1 in raw_result]
+		payload = {
+			"entityIds": [x0.__serialize__() for x0 in entity_ids],
+		}
+		return await execute_async_method_job(
+			self.cardinal_sdk._executor,
+			True,
+			do_decode,
+			symbols.kotlin.root.com.icure.cardinal.sdk.py.api.CalendarItemBasicApi.purgeCalendarItemsByIdsAsync,
+			self.cardinal_sdk._native,
+			json.dumps(payload).encode('utf-8'),
+		)
+
+	def purge_calendar_items_by_ids_blocking(self, entity_ids: list[StoredDocumentIdentifier]) -> list[StoredDocumentIdentifier]:
+		payload = {
+			"entityIds": [x0.__serialize__() for x0 in entity_ids],
+		}
+		call_result = symbols.kotlin.root.com.icure.cardinal.sdk.py.api.CalendarItemBasicApi.purgeCalendarItemsByIdsBlocking(
+			self.cardinal_sdk._native,
+			json.dumps(payload).encode('utf-8'),
+		)
+		result_info = create_result_from_json(cast(call_result, c_char_p).value.decode('utf-8'))
+		symbols.DisposeString(call_result)
+		if result_info.failure is not None:
+			raise interpret_kt_error(result_info.failure)
+		else:
+			return_value = [StoredDocumentIdentifier._deserialize(x1) for x1 in result_info.success]
+			return return_value
+
 	async def delete_calendar_item_async(self, calendar_item: CalendarItem) -> StoredDocumentIdentifier:
 		def do_decode(raw_result):
 			return StoredDocumentIdentifier._deserialize(raw_result)
@@ -347,6 +378,37 @@ class CalendarItemBasicApi:
 		if result_info.failure is not None:
 			raise interpret_kt_error(result_info.failure)
 
+	async def purge_calendar_items_async(self, calendar_items: list[CalendarItem]) -> list[StoredDocumentIdentifier]:
+		def do_decode(raw_result):
+			return [StoredDocumentIdentifier._deserialize(x1) for x1 in raw_result]
+		payload = {
+			"calendarItems": [serialize_calendar_item(x0) for x0 in calendar_items],
+		}
+		return await execute_async_method_job(
+			self.cardinal_sdk._executor,
+			True,
+			do_decode,
+			symbols.kotlin.root.com.icure.cardinal.sdk.py.api.CalendarItemBasicApi.purgeCalendarItemsAsync,
+			self.cardinal_sdk._native,
+			json.dumps(payload).encode('utf-8'),
+		)
+
+	def purge_calendar_items_blocking(self, calendar_items: list[CalendarItem]) -> list[StoredDocumentIdentifier]:
+		payload = {
+			"calendarItems": [serialize_calendar_item(x0) for x0 in calendar_items],
+		}
+		call_result = symbols.kotlin.root.com.icure.cardinal.sdk.py.api.CalendarItemBasicApi.purgeCalendarItemsBlocking(
+			self.cardinal_sdk._native,
+			json.dumps(payload).encode('utf-8'),
+		)
+		result_info = create_result_from_json(cast(call_result, c_char_p).value.decode('utf-8'))
+		symbols.DisposeString(call_result)
+		if result_info.failure is not None:
+			raise interpret_kt_error(result_info.failure)
+		else:
+			return_value = [StoredDocumentIdentifier._deserialize(x1) for x1 in result_info.success]
+			return return_value
+
 	async def create_calendar_item_async(self, entity: EncryptedCalendarItem) -> EncryptedCalendarItem:
 		def do_decode(raw_result):
 			return EncryptedCalendarItem._deserialize(raw_result)
@@ -376,6 +438,37 @@ class CalendarItemBasicApi:
 			raise interpret_kt_error(result_info.failure)
 		else:
 			return_value = EncryptedCalendarItem._deserialize(result_info.success)
+			return return_value
+
+	async def create_calendar_items_async(self, entities: list[EncryptedCalendarItem]) -> list[EncryptedCalendarItem]:
+		def do_decode(raw_result):
+			return [EncryptedCalendarItem._deserialize(x1) for x1 in raw_result]
+		payload = {
+			"entities": [x0.__serialize__() for x0 in entities],
+		}
+		return await execute_async_method_job(
+			self.cardinal_sdk._executor,
+			True,
+			do_decode,
+			symbols.kotlin.root.com.icure.cardinal.sdk.py.api.CalendarItemBasicApi.createCalendarItemsAsync,
+			self.cardinal_sdk._native,
+			json.dumps(payload).encode('utf-8'),
+		)
+
+	def create_calendar_items_blocking(self, entities: list[EncryptedCalendarItem]) -> list[EncryptedCalendarItem]:
+		payload = {
+			"entities": [x0.__serialize__() for x0 in entities],
+		}
+		call_result = symbols.kotlin.root.com.icure.cardinal.sdk.py.api.CalendarItemBasicApi.createCalendarItemsBlocking(
+			self.cardinal_sdk._native,
+			json.dumps(payload).encode('utf-8'),
+		)
+		result_info = create_result_from_json(cast(call_result, c_char_p).value.decode('utf-8'))
+		symbols.DisposeString(call_result)
+		if result_info.failure is not None:
+			raise interpret_kt_error(result_info.failure)
+		else:
+			return_value = [EncryptedCalendarItem._deserialize(x1) for x1 in result_info.success]
 			return return_value
 
 	async def book_calendar_item_checking_availability_async(self, entity: EncryptedCalendarItem) -> EncryptedCalendarItem:
@@ -442,6 +535,37 @@ class CalendarItemBasicApi:
 			return_value = EncryptedCalendarItem._deserialize(result_info.success)
 			return return_value
 
+	async def undelete_calendar_items_by_ids_async(self, entity_ids: list[StoredDocumentIdentifier]) -> list[EncryptedCalendarItem]:
+		def do_decode(raw_result):
+			return [EncryptedCalendarItem._deserialize(x1) for x1 in raw_result]
+		payload = {
+			"entityIds": [x0.__serialize__() for x0 in entity_ids],
+		}
+		return await execute_async_method_job(
+			self.cardinal_sdk._executor,
+			True,
+			do_decode,
+			symbols.kotlin.root.com.icure.cardinal.sdk.py.api.CalendarItemBasicApi.undeleteCalendarItemsByIdsAsync,
+			self.cardinal_sdk._native,
+			json.dumps(payload).encode('utf-8'),
+		)
+
+	def undelete_calendar_items_by_ids_blocking(self, entity_ids: list[StoredDocumentIdentifier]) -> list[EncryptedCalendarItem]:
+		payload = {
+			"entityIds": [x0.__serialize__() for x0 in entity_ids],
+		}
+		call_result = symbols.kotlin.root.com.icure.cardinal.sdk.py.api.CalendarItemBasicApi.undeleteCalendarItemsByIdsBlocking(
+			self.cardinal_sdk._native,
+			json.dumps(payload).encode('utf-8'),
+		)
+		result_info = create_result_from_json(cast(call_result, c_char_p).value.decode('utf-8'))
+		symbols.DisposeString(call_result)
+		if result_info.failure is not None:
+			raise interpret_kt_error(result_info.failure)
+		else:
+			return_value = [EncryptedCalendarItem._deserialize(x1) for x1 in result_info.success]
+			return return_value
+
 	async def undelete_calendar_item_async(self, calendar_item: CalendarItem) -> EncryptedCalendarItem:
 		def do_decode(raw_result):
 			return EncryptedCalendarItem._deserialize(raw_result)
@@ -473,6 +597,37 @@ class CalendarItemBasicApi:
 			return_value = EncryptedCalendarItem._deserialize(result_info.success)
 			return return_value
 
+	async def undelete_calendar_items_async(self, calendar_items: list[CalendarItem]) -> list[EncryptedCalendarItem]:
+		def do_decode(raw_result):
+			return [EncryptedCalendarItem._deserialize(x1) for x1 in raw_result]
+		payload = {
+			"calendarItems": [serialize_calendar_item(x0) for x0 in calendar_items],
+		}
+		return await execute_async_method_job(
+			self.cardinal_sdk._executor,
+			True,
+			do_decode,
+			symbols.kotlin.root.com.icure.cardinal.sdk.py.api.CalendarItemBasicApi.undeleteCalendarItemsAsync,
+			self.cardinal_sdk._native,
+			json.dumps(payload).encode('utf-8'),
+		)
+
+	def undelete_calendar_items_blocking(self, calendar_items: list[CalendarItem]) -> list[EncryptedCalendarItem]:
+		payload = {
+			"calendarItems": [serialize_calendar_item(x0) for x0 in calendar_items],
+		}
+		call_result = symbols.kotlin.root.com.icure.cardinal.sdk.py.api.CalendarItemBasicApi.undeleteCalendarItemsBlocking(
+			self.cardinal_sdk._native,
+			json.dumps(payload).encode('utf-8'),
+		)
+		result_info = create_result_from_json(cast(call_result, c_char_p).value.decode('utf-8'))
+		symbols.DisposeString(call_result)
+		if result_info.failure is not None:
+			raise interpret_kt_error(result_info.failure)
+		else:
+			return_value = [EncryptedCalendarItem._deserialize(x1) for x1 in result_info.success]
+			return return_value
+
 	async def modify_calendar_item_async(self, entity: EncryptedCalendarItem) -> EncryptedCalendarItem:
 		def do_decode(raw_result):
 			return EncryptedCalendarItem._deserialize(raw_result)
@@ -502,6 +657,37 @@ class CalendarItemBasicApi:
 			raise interpret_kt_error(result_info.failure)
 		else:
 			return_value = EncryptedCalendarItem._deserialize(result_info.success)
+			return return_value
+
+	async def modify_calendar_items_async(self, entities: list[EncryptedCalendarItem]) -> list[EncryptedCalendarItem]:
+		def do_decode(raw_result):
+			return [EncryptedCalendarItem._deserialize(x1) for x1 in raw_result]
+		payload = {
+			"entities": [x0.__serialize__() for x0 in entities],
+		}
+		return await execute_async_method_job(
+			self.cardinal_sdk._executor,
+			True,
+			do_decode,
+			symbols.kotlin.root.com.icure.cardinal.sdk.py.api.CalendarItemBasicApi.modifyCalendarItemsAsync,
+			self.cardinal_sdk._native,
+			json.dumps(payload).encode('utf-8'),
+		)
+
+	def modify_calendar_items_blocking(self, entities: list[EncryptedCalendarItem]) -> list[EncryptedCalendarItem]:
+		payload = {
+			"entities": [x0.__serialize__() for x0 in entities],
+		}
+		call_result = symbols.kotlin.root.com.icure.cardinal.sdk.py.api.CalendarItemBasicApi.modifyCalendarItemsBlocking(
+			self.cardinal_sdk._native,
+			json.dumps(payload).encode('utf-8'),
+		)
+		result_info = create_result_from_json(cast(call_result, c_char_p).value.decode('utf-8'))
+		symbols.DisposeString(call_result)
+		if result_info.failure is not None:
+			raise interpret_kt_error(result_info.failure)
+		else:
+			return_value = [EncryptedCalendarItem._deserialize(x1) for x1 in result_info.success]
 			return return_value
 
 	async def get_calendar_item_async(self, entity_id: str) -> Optional[EncryptedCalendarItem]:
@@ -834,6 +1020,65 @@ class CalendarItemBasicApiInGroup:
 			return_value = [GroupScoped._deserialize(x1, lambda x2: StoredDocumentIdentifier._deserialize(x2)) for x1 in result_info.success]
 			return return_value
 
+	async def purge_calendar_item_by_id_async(self, entity_id: GroupScoped[StoredDocumentIdentifier]) -> None:
+		def do_decode(raw_result):
+			return raw_result
+		payload = {
+			"entityId": entity_id.__serialize__(lambda x0: x0.__serialize__()),
+		}
+		return await execute_async_method_job(
+			self.cardinal_sdk._executor,
+			True,
+			do_decode,
+			symbols.kotlin.root.com.icure.cardinal.sdk.py.api.CalendarItemBasicApi.inGroup.purgeCalendarItemByIdAsync,
+			self.cardinal_sdk._native,
+			json.dumps(payload).encode('utf-8'),
+		)
+
+	def purge_calendar_item_by_id_blocking(self, entity_id: GroupScoped[StoredDocumentIdentifier]) -> None:
+		payload = {
+			"entityId": entity_id.__serialize__(lambda x0: x0.__serialize__()),
+		}
+		call_result = symbols.kotlin.root.com.icure.cardinal.sdk.py.api.CalendarItemBasicApi.inGroup.purgeCalendarItemByIdBlocking(
+			self.cardinal_sdk._native,
+			json.dumps(payload).encode('utf-8'),
+		)
+		result_info = create_result_from_json(cast(call_result, c_char_p).value.decode('utf-8'))
+		symbols.DisposeString(call_result)
+		if result_info.failure is not None:
+			raise interpret_kt_error(result_info.failure)
+
+	async def purge_calendar_items_by_ids_async(self, entity_ids: list[GroupScoped[StoredDocumentIdentifier]]) -> list[GroupScoped[StoredDocumentIdentifier]]:
+		def do_decode(raw_result):
+			return [GroupScoped._deserialize(x1, lambda x2: StoredDocumentIdentifier._deserialize(x2)) for x1 in raw_result]
+		payload = {
+			"entityIds": [x0.__serialize__(lambda x1: x1.__serialize__()) for x0 in entity_ids],
+		}
+		return await execute_async_method_job(
+			self.cardinal_sdk._executor,
+			True,
+			do_decode,
+			symbols.kotlin.root.com.icure.cardinal.sdk.py.api.CalendarItemBasicApi.inGroup.purgeCalendarItemsByIdsAsync,
+			self.cardinal_sdk._native,
+			json.dumps(payload).encode('utf-8'),
+		)
+
+	def purge_calendar_items_by_ids_blocking(self, entity_ids: list[GroupScoped[StoredDocumentIdentifier]]) -> list[GroupScoped[StoredDocumentIdentifier]]:
+		payload = {
+			"entityIds": [x0.__serialize__(lambda x1: x1.__serialize__()) for x0 in entity_ids],
+		}
+		call_result = symbols.kotlin.root.com.icure.cardinal.sdk.py.api.CalendarItemBasicApi.inGroup.purgeCalendarItemsByIdsBlocking(
+			self.cardinal_sdk._native,
+			json.dumps(payload).encode('utf-8'),
+		)
+		result_info = create_result_from_json(cast(call_result, c_char_p).value.decode('utf-8'))
+		symbols.DisposeString(call_result)
+		if result_info.failure is not None:
+			raise interpret_kt_error(result_info.failure)
+		else:
+			return_value = [GroupScoped._deserialize(x1, lambda x2: StoredDocumentIdentifier._deserialize(x2)) for x1 in result_info.success]
+			return return_value
+
 	async def delete_calendar_item_async(self, calendar_item: GroupScoped[CalendarItem]) -> GroupScoped[StoredDocumentIdentifier]:
 		def do_decode(raw_result):
 			return GroupScoped._deserialize(raw_result, lambda x1: StoredDocumentIdentifier._deserialize(x1))
@@ -896,6 +1141,65 @@ class CalendarItemBasicApiInGroup:
 			return_value = [GroupScoped._deserialize(x1, lambda x2: StoredDocumentIdentifier._deserialize(x2)) for x1 in result_info.success]
 			return return_value
 
+	async def purge_calendar_item_async(self, calendar_item: GroupScoped[CalendarItem]) -> None:
+		def do_decode(raw_result):
+			return raw_result
+		payload = {
+			"calendarItem": calendar_item.__serialize__(lambda x0: serialize_calendar_item(x0)),
+		}
+		return await execute_async_method_job(
+			self.cardinal_sdk._executor,
+			True,
+			do_decode,
+			symbols.kotlin.root.com.icure.cardinal.sdk.py.api.CalendarItemBasicApi.inGroup.purgeCalendarItemAsync,
+			self.cardinal_sdk._native,
+			json.dumps(payload).encode('utf-8'),
+		)
+
+	def purge_calendar_item_blocking(self, calendar_item: GroupScoped[CalendarItem]) -> None:
+		payload = {
+			"calendarItem": calendar_item.__serialize__(lambda x0: serialize_calendar_item(x0)),
+		}
+		call_result = symbols.kotlin.root.com.icure.cardinal.sdk.py.api.CalendarItemBasicApi.inGroup.purgeCalendarItemBlocking(
+			self.cardinal_sdk._native,
+			json.dumps(payload).encode('utf-8'),
+		)
+		result_info = create_result_from_json(cast(call_result, c_char_p).value.decode('utf-8'))
+		symbols.DisposeString(call_result)
+		if result_info.failure is not None:
+			raise interpret_kt_error(result_info.failure)
+
+	async def purge_calendar_items_async(self, calendar_items: list[GroupScoped[CalendarItem]]) -> list[GroupScoped[StoredDocumentIdentifier]]:
+		def do_decode(raw_result):
+			return [GroupScoped._deserialize(x1, lambda x2: StoredDocumentIdentifier._deserialize(x2)) for x1 in raw_result]
+		payload = {
+			"calendarItems": [x0.__serialize__(lambda x1: serialize_calendar_item(x1)) for x0 in calendar_items],
+		}
+		return await execute_async_method_job(
+			self.cardinal_sdk._executor,
+			True,
+			do_decode,
+			symbols.kotlin.root.com.icure.cardinal.sdk.py.api.CalendarItemBasicApi.inGroup.purgeCalendarItemsAsync,
+			self.cardinal_sdk._native,
+			json.dumps(payload).encode('utf-8'),
+		)
+
+	def purge_calendar_items_blocking(self, calendar_items: list[GroupScoped[CalendarItem]]) -> list[GroupScoped[StoredDocumentIdentifier]]:
+		payload = {
+			"calendarItems": [x0.__serialize__(lambda x1: serialize_calendar_item(x1)) for x0 in calendar_items],
+		}
+		call_result = symbols.kotlin.root.com.icure.cardinal.sdk.py.api.CalendarItemBasicApi.inGroup.purgeCalendarItemsBlocking(
+			self.cardinal_sdk._native,
+			json.dumps(payload).encode('utf-8'),
+		)
+		result_info = create_result_from_json(cast(call_result, c_char_p).value.decode('utf-8'))
+		symbols.DisposeString(call_result)
+		if result_info.failure is not None:
+			raise interpret_kt_error(result_info.failure)
+		else:
+			return_value = [GroupScoped._deserialize(x1, lambda x2: StoredDocumentIdentifier._deserialize(x2)) for x1 in result_info.success]
+			return return_value
+
 	async def create_calendar_item_async(self, entity: GroupScoped[EncryptedCalendarItem]) -> GroupScoped[EncryptedCalendarItem]:
 		def do_decode(raw_result):
 			return GroupScoped._deserialize(raw_result, lambda x1: EncryptedCalendarItem._deserialize(x1))
@@ -927,6 +1231,161 @@ class CalendarItemBasicApiInGroup:
 			return_value = GroupScoped._deserialize(result_info.success, lambda x1: EncryptedCalendarItem._deserialize(x1))
 			return return_value
 
+	async def create_calendar_items_async(self, entities: list[GroupScoped[EncryptedCalendarItem]]) -> list[GroupScoped[EncryptedCalendarItem]]:
+		def do_decode(raw_result):
+			return [GroupScoped._deserialize(x1, lambda x2: EncryptedCalendarItem._deserialize(x2)) for x1 in raw_result]
+		payload = {
+			"entities": [x0.__serialize__(lambda x1: x1.__serialize__()) for x0 in entities],
+		}
+		return await execute_async_method_job(
+			self.cardinal_sdk._executor,
+			True,
+			do_decode,
+			symbols.kotlin.root.com.icure.cardinal.sdk.py.api.CalendarItemBasicApi.inGroup.createCalendarItemsAsync,
+			self.cardinal_sdk._native,
+			json.dumps(payload).encode('utf-8'),
+		)
+
+	def create_calendar_items_blocking(self, entities: list[GroupScoped[EncryptedCalendarItem]]) -> list[GroupScoped[EncryptedCalendarItem]]:
+		payload = {
+			"entities": [x0.__serialize__(lambda x1: x1.__serialize__()) for x0 in entities],
+		}
+		call_result = symbols.kotlin.root.com.icure.cardinal.sdk.py.api.CalendarItemBasicApi.inGroup.createCalendarItemsBlocking(
+			self.cardinal_sdk._native,
+			json.dumps(payload).encode('utf-8'),
+		)
+		result_info = create_result_from_json(cast(call_result, c_char_p).value.decode('utf-8'))
+		symbols.DisposeString(call_result)
+		if result_info.failure is not None:
+			raise interpret_kt_error(result_info.failure)
+		else:
+			return_value = [GroupScoped._deserialize(x1, lambda x2: EncryptedCalendarItem._deserialize(x2)) for x1 in result_info.success]
+			return return_value
+
+	async def undelete_calendar_item_by_id_async(self, entity_id: GroupScoped[StoredDocumentIdentifier]) -> GroupScoped[EncryptedCalendarItem]:
+		def do_decode(raw_result):
+			return GroupScoped._deserialize(raw_result, lambda x1: EncryptedCalendarItem._deserialize(x1))
+		payload = {
+			"entityId": entity_id.__serialize__(lambda x0: x0.__serialize__()),
+		}
+		return await execute_async_method_job(
+			self.cardinal_sdk._executor,
+			True,
+			do_decode,
+			symbols.kotlin.root.com.icure.cardinal.sdk.py.api.CalendarItemBasicApi.inGroup.undeleteCalendarItemByIdAsync,
+			self.cardinal_sdk._native,
+			json.dumps(payload).encode('utf-8'),
+		)
+
+	def undelete_calendar_item_by_id_blocking(self, entity_id: GroupScoped[StoredDocumentIdentifier]) -> GroupScoped[EncryptedCalendarItem]:
+		payload = {
+			"entityId": entity_id.__serialize__(lambda x0: x0.__serialize__()),
+		}
+		call_result = symbols.kotlin.root.com.icure.cardinal.sdk.py.api.CalendarItemBasicApi.inGroup.undeleteCalendarItemByIdBlocking(
+			self.cardinal_sdk._native,
+			json.dumps(payload).encode('utf-8'),
+		)
+		result_info = create_result_from_json(cast(call_result, c_char_p).value.decode('utf-8'))
+		symbols.DisposeString(call_result)
+		if result_info.failure is not None:
+			raise interpret_kt_error(result_info.failure)
+		else:
+			return_value = GroupScoped._deserialize(result_info.success, lambda x1: EncryptedCalendarItem._deserialize(x1))
+			return return_value
+
+	async def undelete_calendar_items_by_ids_async(self, entity_ids: list[GroupScoped[StoredDocumentIdentifier]]) -> list[GroupScoped[EncryptedCalendarItem]]:
+		def do_decode(raw_result):
+			return [GroupScoped._deserialize(x1, lambda x2: EncryptedCalendarItem._deserialize(x2)) for x1 in raw_result]
+		payload = {
+			"entityIds": [x0.__serialize__(lambda x1: x1.__serialize__()) for x0 in entity_ids],
+		}
+		return await execute_async_method_job(
+			self.cardinal_sdk._executor,
+			True,
+			do_decode,
+			symbols.kotlin.root.com.icure.cardinal.sdk.py.api.CalendarItemBasicApi.inGroup.undeleteCalendarItemsByIdsAsync,
+			self.cardinal_sdk._native,
+			json.dumps(payload).encode('utf-8'),
+		)
+
+	def undelete_calendar_items_by_ids_blocking(self, entity_ids: list[GroupScoped[StoredDocumentIdentifier]]) -> list[GroupScoped[EncryptedCalendarItem]]:
+		payload = {
+			"entityIds": [x0.__serialize__(lambda x1: x1.__serialize__()) for x0 in entity_ids],
+		}
+		call_result = symbols.kotlin.root.com.icure.cardinal.sdk.py.api.CalendarItemBasicApi.inGroup.undeleteCalendarItemsByIdsBlocking(
+			self.cardinal_sdk._native,
+			json.dumps(payload).encode('utf-8'),
+		)
+		result_info = create_result_from_json(cast(call_result, c_char_p).value.decode('utf-8'))
+		symbols.DisposeString(call_result)
+		if result_info.failure is not None:
+			raise interpret_kt_error(result_info.failure)
+		else:
+			return_value = [GroupScoped._deserialize(x1, lambda x2: EncryptedCalendarItem._deserialize(x2)) for x1 in result_info.success]
+			return return_value
+
+	async def undelete_calendar_item_async(self, calendar_item: GroupScoped[CalendarItem]) -> GroupScoped[EncryptedCalendarItem]:
+		def do_decode(raw_result):
+			return GroupScoped._deserialize(raw_result, lambda x1: EncryptedCalendarItem._deserialize(x1))
+		payload = {
+			"calendarItem": calendar_item.__serialize__(lambda x0: serialize_calendar_item(x0)),
+		}
+		return await execute_async_method_job(
+			self.cardinal_sdk._executor,
+			True,
+			do_decode,
+			symbols.kotlin.root.com.icure.cardinal.sdk.py.api.CalendarItemBasicApi.inGroup.undeleteCalendarItemAsync,
+			self.cardinal_sdk._native,
+			json.dumps(payload).encode('utf-8'),
+		)
+
+	def undelete_calendar_item_blocking(self, calendar_item: GroupScoped[CalendarItem]) -> GroupScoped[EncryptedCalendarItem]:
+		payload = {
+			"calendarItem": calendar_item.__serialize__(lambda x0: serialize_calendar_item(x0)),
+		}
+		call_result = symbols.kotlin.root.com.icure.cardinal.sdk.py.api.CalendarItemBasicApi.inGroup.undeleteCalendarItemBlocking(
+			self.cardinal_sdk._native,
+			json.dumps(payload).encode('utf-8'),
+		)
+		result_info = create_result_from_json(cast(call_result, c_char_p).value.decode('utf-8'))
+		symbols.DisposeString(call_result)
+		if result_info.failure is not None:
+			raise interpret_kt_error(result_info.failure)
+		else:
+			return_value = GroupScoped._deserialize(result_info.success, lambda x1: EncryptedCalendarItem._deserialize(x1))
+			return return_value
+
+	async def undelete_calendar_items_async(self, calendar_items: list[GroupScoped[EncryptedCalendarItem]]) -> list[GroupScoped[EncryptedCalendarItem]]:
+		def do_decode(raw_result):
+			return [GroupScoped._deserialize(x1, lambda x2: EncryptedCalendarItem._deserialize(x2)) for x1 in raw_result]
+		payload = {
+			"calendarItems": [x0.__serialize__(lambda x1: x1.__serialize__()) for x0 in calendar_items],
+		}
+		return await execute_async_method_job(
+			self.cardinal_sdk._executor,
+			True,
+			do_decode,
+			symbols.kotlin.root.com.icure.cardinal.sdk.py.api.CalendarItemBasicApi.inGroup.undeleteCalendarItemsAsync,
+			self.cardinal_sdk._native,
+			json.dumps(payload).encode('utf-8'),
+		)
+
+	def undelete_calendar_items_blocking(self, calendar_items: list[GroupScoped[EncryptedCalendarItem]]) -> list[GroupScoped[EncryptedCalendarItem]]:
+		payload = {
+			"calendarItems": [x0.__serialize__(lambda x1: x1.__serialize__()) for x0 in calendar_items],
+		}
+		call_result = symbols.kotlin.root.com.icure.cardinal.sdk.py.api.CalendarItemBasicApi.inGroup.undeleteCalendarItemsBlocking(
+			self.cardinal_sdk._native,
+			json.dumps(payload).encode('utf-8'),
+		)
+		result_info = create_result_from_json(cast(call_result, c_char_p).value.decode('utf-8'))
+		symbols.DisposeString(call_result)
+		if result_info.failure is not None:
+			raise interpret_kt_error(result_info.failure)
+		else:
+			return_value = [GroupScoped._deserialize(x1, lambda x2: EncryptedCalendarItem._deserialize(x2)) for x1 in result_info.success]
+			return return_value
+
 	async def modify_calendar_item_async(self, entity: GroupScoped[EncryptedCalendarItem]) -> GroupScoped[EncryptedCalendarItem]:
 		def do_decode(raw_result):
 			return GroupScoped._deserialize(raw_result, lambda x1: EncryptedCalendarItem._deserialize(x1))
@@ -956,6 +1415,37 @@ class CalendarItemBasicApiInGroup:
 			raise interpret_kt_error(result_info.failure)
 		else:
 			return_value = GroupScoped._deserialize(result_info.success, lambda x1: EncryptedCalendarItem._deserialize(x1))
+			return return_value
+
+	async def modify_calendar_items_async(self, entities: list[GroupScoped[EncryptedCalendarItem]]) -> list[GroupScoped[EncryptedCalendarItem]]:
+		def do_decode(raw_result):
+			return [GroupScoped._deserialize(x1, lambda x2: EncryptedCalendarItem._deserialize(x2)) for x1 in raw_result]
+		payload = {
+			"entities": [x0.__serialize__(lambda x1: x1.__serialize__()) for x0 in entities],
+		}
+		return await execute_async_method_job(
+			self.cardinal_sdk._executor,
+			True,
+			do_decode,
+			symbols.kotlin.root.com.icure.cardinal.sdk.py.api.CalendarItemBasicApi.inGroup.modifyCalendarItemsAsync,
+			self.cardinal_sdk._native,
+			json.dumps(payload).encode('utf-8'),
+		)
+
+	def modify_calendar_items_blocking(self, entities: list[GroupScoped[EncryptedCalendarItem]]) -> list[GroupScoped[EncryptedCalendarItem]]:
+		payload = {
+			"entities": [x0.__serialize__(lambda x1: x1.__serialize__()) for x0 in entities],
+		}
+		call_result = symbols.kotlin.root.com.icure.cardinal.sdk.py.api.CalendarItemBasicApi.inGroup.modifyCalendarItemsBlocking(
+			self.cardinal_sdk._native,
+			json.dumps(payload).encode('utf-8'),
+		)
+		result_info = create_result_from_json(cast(call_result, c_char_p).value.decode('utf-8'))
+		symbols.DisposeString(call_result)
+		if result_info.failure is not None:
+			raise interpret_kt_error(result_info.failure)
+		else:
+			return_value = [GroupScoped._deserialize(x1, lambda x2: EncryptedCalendarItem._deserialize(x2)) for x1 in result_info.success]
 			return return_value
 
 	async def get_calendar_item_async(self, group_id: str, entity_id: str) -> Optional[GroupScoped[EncryptedCalendarItem]]:

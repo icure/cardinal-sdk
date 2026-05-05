@@ -275,43 +275,6 @@ public fun createPatientAsync(
 }.failureToPyStringAsyncCallback(resultCallback)
 
 @Serializable
-private class CreatePatientsMinimalParams(
-	public val patients: List<GroupScoped<EncryptedPatient>>,
-)
-
-@OptIn(InternalIcureApi::class)
-public fun createPatientsMinimalBlocking(sdk: CardinalApis, params: String): String =
-		kotlin.runCatching {
-	val decodedParams = fullLanguageInteropJson.decodeFromString<CreatePatientsMinimalParams>(params)
-	runBlocking {
-		sdk.patient.inGroup.encrypted.createPatientsMinimal(
-			decodedParams.patients,
-		)
-	}
-}.toPyString(ListSerializer(GroupScoped.serializer(StoredDocumentIdentifier.serializer())))
-
-@OptIn(
-	ExperimentalForeignApi::class,
-	InternalIcureApi::class,
-)
-public fun createPatientsMinimalAsync(
-	sdk: CardinalApis,
-	params: String,
-	resultCallback: CPointer<CFunction<(CValues<ByteVarOf<Byte>>?,
-			CValues<ByteVarOf<Byte>>?) -> Unit>>,
-): COpaquePointer? = kotlin.runCatching {
-	val decodedParams = fullLanguageInteropJson.decodeFromString<CreatePatientsMinimalParams>(params)
-	GlobalScope.launch {
-		kotlin.runCatching {
-			sdk.patient.inGroup.encrypted.createPatientsMinimal(
-				decodedParams.patients,
-			)
-		}.toPyStringAsyncCallback(ListSerializer(GroupScoped.serializer(StoredDocumentIdentifier.serializer())),
-				resultCallback)
-	}
-}.failureToPyStringAsyncCallback(resultCallback)
-
-@Serializable
 private class CreatePatientsParams(
 	public val patients: List<GroupScoped<EncryptedPatient>>,
 )
@@ -341,6 +304,186 @@ public fun createPatientsAsync(
 		kotlin.runCatching {
 			sdk.patient.inGroup.encrypted.createPatients(
 				decodedParams.patients,
+			)
+		}.toPyStringAsyncCallback(ListSerializer(GroupScoped.serializer(EncryptedPatient.serializer())),
+				resultCallback)
+	}
+}.failureToPyStringAsyncCallback(resultCallback)
+
+@Serializable
+private class UndeletePatientParams(
+	public val patient: GroupScoped<Patient>,
+)
+
+@OptIn(InternalIcureApi::class)
+public fun undeletePatientBlocking(sdk: CardinalApis, params: String): String = kotlin.runCatching {
+	val decodedParams = fullLanguageInteropJson.decodeFromString<UndeletePatientParams>(params)
+	runBlocking {
+		sdk.patient.inGroup.encrypted.undeletePatient(
+			decodedParams.patient,
+		)
+	}
+}.toPyString(GroupScoped.serializer(EncryptedPatient.serializer()))
+
+@OptIn(
+	ExperimentalForeignApi::class,
+	InternalIcureApi::class,
+)
+public fun undeletePatientAsync(
+	sdk: CardinalApis,
+	params: String,
+	resultCallback: CPointer<CFunction<(CValues<ByteVarOf<Byte>>?,
+			CValues<ByteVarOf<Byte>>?) -> Unit>>,
+): COpaquePointer? = kotlin.runCatching {
+	val decodedParams = fullLanguageInteropJson.decodeFromString<UndeletePatientParams>(params)
+	GlobalScope.launch {
+		kotlin.runCatching {
+			sdk.patient.inGroup.encrypted.undeletePatient(
+				decodedParams.patient,
+			)
+		}.toPyStringAsyncCallback(GroupScoped.serializer(EncryptedPatient.serializer()), resultCallback)
+	}
+}.failureToPyStringAsyncCallback(resultCallback)
+
+@Serializable
+private class UndeletePatientsParams(
+	public val patients: List<GroupScoped<Patient>>,
+)
+
+@OptIn(InternalIcureApi::class)
+public fun undeletePatientsBlocking(sdk: CardinalApis, params: String): String =
+		kotlin.runCatching {
+	val decodedParams = fullLanguageInteropJson.decodeFromString<UndeletePatientsParams>(params)
+	runBlocking {
+		sdk.patient.inGroup.encrypted.undeletePatients(
+			decodedParams.patients,
+		)
+	}
+}.toPyString(ListSerializer(GroupScoped.serializer(EncryptedPatient.serializer())))
+
+@OptIn(
+	ExperimentalForeignApi::class,
+	InternalIcureApi::class,
+)
+public fun undeletePatientsAsync(
+	sdk: CardinalApis,
+	params: String,
+	resultCallback: CPointer<CFunction<(CValues<ByteVarOf<Byte>>?,
+			CValues<ByteVarOf<Byte>>?) -> Unit>>,
+): COpaquePointer? = kotlin.runCatching {
+	val decodedParams = fullLanguageInteropJson.decodeFromString<UndeletePatientsParams>(params)
+	GlobalScope.launch {
+		kotlin.runCatching {
+			sdk.patient.inGroup.encrypted.undeletePatients(
+				decodedParams.patients,
+			)
+		}.toPyStringAsyncCallback(ListSerializer(GroupScoped.serializer(EncryptedPatient.serializer())),
+				resultCallback)
+	}
+}.failureToPyStringAsyncCallback(resultCallback)
+
+@Serializable
+private class ModifyPatientParams(
+	public val entity: GroupScoped<EncryptedPatient>,
+)
+
+@OptIn(InternalIcureApi::class)
+public fun modifyPatientBlocking(sdk: CardinalApis, params: String): String = kotlin.runCatching {
+	val decodedParams = fullLanguageInteropJson.decodeFromString<ModifyPatientParams>(params)
+	runBlocking {
+		sdk.patient.inGroup.encrypted.modifyPatient(
+			decodedParams.entity,
+		)
+	}
+}.toPyString(GroupScoped.serializer(EncryptedPatient.serializer()))
+
+@OptIn(
+	ExperimentalForeignApi::class,
+	InternalIcureApi::class,
+)
+public fun modifyPatientAsync(
+	sdk: CardinalApis,
+	params: String,
+	resultCallback: CPointer<CFunction<(CValues<ByteVarOf<Byte>>?,
+			CValues<ByteVarOf<Byte>>?) -> Unit>>,
+): COpaquePointer? = kotlin.runCatching {
+	val decodedParams = fullLanguageInteropJson.decodeFromString<ModifyPatientParams>(params)
+	GlobalScope.launch {
+		kotlin.runCatching {
+			sdk.patient.inGroup.encrypted.modifyPatient(
+				decodedParams.entity,
+			)
+		}.toPyStringAsyncCallback(GroupScoped.serializer(EncryptedPatient.serializer()), resultCallback)
+	}
+}.failureToPyStringAsyncCallback(resultCallback)
+
+@Serializable
+private class UndeletePatientByIdParams(
+	public val patientId: GroupScoped<StoredDocumentIdentifier>,
+)
+
+@OptIn(InternalIcureApi::class)
+public fun undeletePatientByIdBlocking(sdk: CardinalApis, params: String): String =
+		kotlin.runCatching {
+	val decodedParams = fullLanguageInteropJson.decodeFromString<UndeletePatientByIdParams>(params)
+	runBlocking {
+		sdk.patient.inGroup.encrypted.undeletePatientById(
+			decodedParams.patientId,
+		)
+	}
+}.toPyString(GroupScoped.serializer(EncryptedPatient.serializer()))
+
+@OptIn(
+	ExperimentalForeignApi::class,
+	InternalIcureApi::class,
+)
+public fun undeletePatientByIdAsync(
+	sdk: CardinalApis,
+	params: String,
+	resultCallback: CPointer<CFunction<(CValues<ByteVarOf<Byte>>?,
+			CValues<ByteVarOf<Byte>>?) -> Unit>>,
+): COpaquePointer? = kotlin.runCatching {
+	val decodedParams = fullLanguageInteropJson.decodeFromString<UndeletePatientByIdParams>(params)
+	GlobalScope.launch {
+		kotlin.runCatching {
+			sdk.patient.inGroup.encrypted.undeletePatientById(
+				decodedParams.patientId,
+			)
+		}.toPyStringAsyncCallback(GroupScoped.serializer(EncryptedPatient.serializer()), resultCallback)
+	}
+}.failureToPyStringAsyncCallback(resultCallback)
+
+@Serializable
+private class UndeletePatientsByIdsParams(
+	public val patientIds: List<GroupScoped<StoredDocumentIdentifier>>,
+)
+
+@OptIn(InternalIcureApi::class)
+public fun undeletePatientsByIdsBlocking(sdk: CardinalApis, params: String): String =
+		kotlin.runCatching {
+	val decodedParams = fullLanguageInteropJson.decodeFromString<UndeletePatientsByIdsParams>(params)
+	runBlocking {
+		sdk.patient.inGroup.encrypted.undeletePatientsByIds(
+			decodedParams.patientIds,
+		)
+	}
+}.toPyString(ListSerializer(GroupScoped.serializer(EncryptedPatient.serializer())))
+
+@OptIn(
+	ExperimentalForeignApi::class,
+	InternalIcureApi::class,
+)
+public fun undeletePatientsByIdsAsync(
+	sdk: CardinalApis,
+	params: String,
+	resultCallback: CPointer<CFunction<(CValues<ByteVarOf<Byte>>?,
+			CValues<ByteVarOf<Byte>>?) -> Unit>>,
+): COpaquePointer? = kotlin.runCatching {
+	val decodedParams = fullLanguageInteropJson.decodeFromString<UndeletePatientsByIdsParams>(params)
+	GlobalScope.launch {
+		kotlin.runCatching {
+			sdk.patient.inGroup.encrypted.undeletePatientsByIds(
+				decodedParams.patientIds,
 			)
 		}.toPyStringAsyncCallback(ListSerializer(GroupScoped.serializer(EncryptedPatient.serializer())),
 				resultCallback)
@@ -464,43 +607,6 @@ public fun getPatientsAsync(
 				decodedParams.patientIds,
 			)
 		}.toPyStringAsyncCallback(ListSerializer(GroupScoped.serializer(EncryptedPatient.serializer())),
-				resultCallback)
-	}
-}.failureToPyStringAsyncCallback(resultCallback)
-
-@Serializable
-private class ModifyPatientsMinimalParams(
-	public val patients: List<GroupScoped<EncryptedPatient>>,
-)
-
-@OptIn(InternalIcureApi::class)
-public fun modifyPatientsMinimalBlocking(sdk: CardinalApis, params: String): String =
-		kotlin.runCatching {
-	val decodedParams = fullLanguageInteropJson.decodeFromString<ModifyPatientsMinimalParams>(params)
-	runBlocking {
-		sdk.patient.inGroup.encrypted.modifyPatientsMinimal(
-			decodedParams.patients,
-		)
-	}
-}.toPyString(ListSerializer(GroupScoped.serializer(StoredDocumentIdentifier.serializer())))
-
-@OptIn(
-	ExperimentalForeignApi::class,
-	InternalIcureApi::class,
-)
-public fun modifyPatientsMinimalAsync(
-	sdk: CardinalApis,
-	params: String,
-	resultCallback: CPointer<CFunction<(CValues<ByteVarOf<Byte>>?,
-			CValues<ByteVarOf<Byte>>?) -> Unit>>,
-): COpaquePointer? = kotlin.runCatching {
-	val decodedParams = fullLanguageInteropJson.decodeFromString<ModifyPatientsMinimalParams>(params)
-	GlobalScope.launch {
-		kotlin.runCatching {
-			sdk.patient.inGroup.encrypted.modifyPatientsMinimal(
-				decodedParams.patients,
-			)
-		}.toPyStringAsyncCallback(ListSerializer(GroupScoped.serializer(StoredDocumentIdentifier.serializer())),
 				resultCallback)
 	}
 }.failureToPyStringAsyncCallback(resultCallback)

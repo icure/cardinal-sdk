@@ -7,11 +7,11 @@ from cardinal_sdk.authentication.AuthenticationMethod import AuthenticationMetho
 from cardinal_sdk.storage.StorageFacadeOptions import StorageOptions, _serialize_storage_options, CustomStorageFacade, _CustomStorageFacadeBridge
 from cardinal_sdk.options.SdkOptions import SdkOptions, _serialize_encrypted_fields
 from cardinal_sdk.options.JsonPatcher import _JsonPatcherBridge
-from cardinal_sdk.api import DataOwnerApi, AccessLogApi, CalendarItemApi, ClassificationApi, ContactApi, \
+from cardinal_sdk.api import DataOwnerApi, AccessLogApi, CalendarItemApi, ContactApi, \
     DocumentApi, FormApi, HealthElementApi, InvoiceApi, MaintenanceTaskApi, MessageApi, PatientApi, ReceiptApi, \
     TopicApi, CodeApi, CryptoApi, DeviceApi, \
     FrontEndMigrationApi, GroupApi, HealthcarePartyApi, SystemApi, InsuranceApi, \
-    PermissionApi, PlaceApi, RecoveryApi, RoleApi, UserApi
+    PlaceApi, RecoveryApi, RoleApi, UserApi
 from cardinal_sdk.CryptoStrategies import _CryptoStrategiesBridge
 
 class CardinalSdk:
@@ -19,7 +19,6 @@ class CardinalSdk:
     __dataOwner: Optional[DataOwnerApi] = None
     __accessLog: Optional[AccessLogApi] = None
     __calendarItem: Optional[CalendarItemApi] = None
-    __classification: Optional[ClassificationApi] = None
     __contact: Optional[ContactApi] = None
     __document: Optional[DocumentApi] = None
     __form: Optional[FormApi] = None
@@ -37,7 +36,6 @@ class CardinalSdk:
     __healthcareParty: Optional[HealthcarePartyApi] = None
     __system: Optional[SystemApi] = None
     __insurance: Optional[InsuranceApi] = None
-    __permission: Optional[PermissionApi] = None
     __place: Optional[PlaceApi] = None
     __recovery: Optional[RecoveryApi] = None
     __role: Optional[RoleApi] = None
@@ -125,12 +123,6 @@ class CardinalSdk:
         if self.__calendarItem is None:
             self.__calendarItem = CalendarItemApi(self)
         return self.__calendarItem
-
-    @property
-    def classification(self):
-        if self.__classification is None:
-            self.__classification = ClassificationApi(self)
-        return self.__classification
 
     @property
     def contact(self):
@@ -233,12 +225,6 @@ class CardinalSdk:
         if self.__insurance is None:
             self.__insurance = InsuranceApi(self)
         return self.__insurance
-
-    @property
-    def permission(self):
-        if self.__permission is None:
-            self.__permission = PermissionApi(self)
-        return self.__permission
 
     @property
     def place(self):

@@ -387,40 +387,6 @@ class PatientFilters:
 			return return_value
 
 	@classmethod
-	def by_external_id_for_data_owner(cls, data_owner_id: str, external_id_prefix: str) -> BaseSortableFilterOptions[Patient]:
-		payload = {
-			"dataOwnerId": data_owner_id,
-			"externalIdPrefix": external_id_prefix,
-		}
-		call_result = symbols.kotlin.root.com.icure.cardinal.sdk.py.filters.PatientFilters.byExternalIdForDataOwner(
-			json.dumps(payload).encode('utf-8')
-		)
-		result_info = create_result_from_json(cast(call_result, c_char_p).value.decode('utf-8'))
-		symbols.DisposeString(call_result)
-		if result_info.failure is not None:
-			raise interpret_kt_error(result_info.failure)
-		else:
-			return_value = BaseSortableFilterOptions(result_info.success)
-			return return_value
-
-	@classmethod
-	def by_external_id_for_data_owner_in_group(cls, data_owner: EntityReferenceInGroup, external_id_prefix: str) -> BaseSortableFilterOptions[Patient]:
-		payload = {
-			"dataOwner": data_owner.__serialize__(),
-			"externalIdPrefix": external_id_prefix,
-		}
-		call_result = symbols.kotlin.root.com.icure.cardinal.sdk.py.filters.PatientFilters.byExternalIdForDataOwnerInGroup(
-			json.dumps(payload).encode('utf-8')
-		)
-		result_info = create_result_from_json(cast(call_result, c_char_p).value.decode('utf-8'))
-		symbols.DisposeString(call_result)
-		if result_info.failure is not None:
-			raise interpret_kt_error(result_info.failure)
-		else:
-			return_value = BaseSortableFilterOptions(result_info.success)
-			return return_value
-
-	@classmethod
 	def by_identifiers_for_self(cls, identifiers: list[Identifier]) -> SortableFilterOptions[Patient]:
 		payload = {
 			"identifiers": [x0.__serialize__() for x0 in identifiers],
@@ -559,22 +525,6 @@ class PatientFilters:
 			"searchString": search_string,
 		}
 		call_result = symbols.kotlin.root.com.icure.cardinal.sdk.py.filters.PatientFilters.byAddressForSelf(
-			json.dumps(payload).encode('utf-8')
-		)
-		result_info = create_result_from_json(cast(call_result, c_char_p).value.decode('utf-8'))
-		symbols.DisposeString(call_result)
-		if result_info.failure is not None:
-			raise interpret_kt_error(result_info.failure)
-		else:
-			return_value = SortableFilterOptions(result_info.success)
-			return return_value
-
-	@classmethod
-	def by_external_id_for_self(cls, external_id_prefix: str) -> SortableFilterOptions[Patient]:
-		payload = {
-			"externalIdPrefix": external_id_prefix,
-		}
-		call_result = symbols.kotlin.root.com.icure.cardinal.sdk.py.filters.PatientFilters.byExternalIdForSelf(
 			json.dumps(payload).encode('utf-8')
 		)
 		result_info = create_result_from_json(cast(call_result, c_char_p).value.decode('utf-8'))
