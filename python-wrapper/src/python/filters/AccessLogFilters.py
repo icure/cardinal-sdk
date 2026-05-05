@@ -1,6 +1,6 @@
 # auto-generated file
 import json
-from cardinal_sdk.model import Patient, serialize_patient, AccessLog
+from cardinal_sdk.model import Patient, serialize_patient, AccessLog, EntityReferenceInGroup, GroupScoped
 from typing import Optional
 from cardinal_sdk.kotlin_types import symbols
 from cardinal_sdk.model.CallResult import create_result_from_json, interpret_kt_error
@@ -20,6 +20,26 @@ class AccessLogFilters:
 			"descending": descending,
 		}
 		call_result = symbols.kotlin.root.com.icure.cardinal.sdk.py.filters.AccessLogFilters.byPatientsDateForDataOwner(
+			json.dumps(payload).encode('utf-8')
+		)
+		result_info = create_result_from_json(cast(call_result, c_char_p).value.decode('utf-8'))
+		symbols.DisposeString(call_result)
+		if result_info.failure is not None:
+			raise interpret_kt_error(result_info.failure)
+		else:
+			return_value = SortableFilterOptions(result_info.success)
+			return return_value
+
+	@classmethod
+	def by_patients_date_for_data_owner_in_group(cls, data_owner: EntityReferenceInGroup, patients: list[GroupScoped[Patient]], from_: Optional[int] = None, to: Optional[int] = None, descending: bool = False) -> SortableFilterOptions[AccessLog]:
+		payload = {
+			"dataOwner": data_owner.__serialize__(),
+			"patients": [x0.__serialize__(lambda x1: serialize_patient(x1)) for x0 in patients],
+			"from": from_,
+			"to": to,
+			"descending": descending,
+		}
+		call_result = symbols.kotlin.root.com.icure.cardinal.sdk.py.filters.AccessLogFilters.byPatientsDateForDataOwnerInGroup(
 			json.dumps(payload).encode('utf-8')
 		)
 		result_info = create_result_from_json(cast(call_result, c_char_p).value.decode('utf-8'))

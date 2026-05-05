@@ -430,11 +430,13 @@ class PatientApi:
 			return_value = [x1 for x1 in result_info.success]
 			return return_value
 
-	async def ensure_encryption_metadata_for_self_is_initialized_async(self, sharing_with: dict[str, AccessLevel] = {}) -> EncryptedPatient:
+	async def ensure_encryption_metadata_for_self_is_initialized_async(self, sharing_with: dict[str, AccessLevel] = {}, ignore_if_encryption_metadata_exists: bool = False, alternate_root_delegate_id: Optional[str] = None) -> EncryptedPatient:
 		def do_decode(raw_result):
 			return EncryptedPatient._deserialize(raw_result)
 		payload = {
 			"sharingWith": {k0: v0.__serialize__() for k0, v0 in sharing_with.items()},
+			"ignoreIfEncryptionMetadataExists": ignore_if_encryption_metadata_exists,
+			"alternateRootDelegateId": alternate_root_delegate_id,
 		}
 		return await execute_async_method_job(
 			self.cardinal_sdk._executor,
@@ -445,9 +447,11 @@ class PatientApi:
 			json.dumps(payload).encode('utf-8'),
 		)
 
-	def ensure_encryption_metadata_for_self_is_initialized_blocking(self, sharing_with: dict[str, AccessLevel] = {}) -> EncryptedPatient:
+	def ensure_encryption_metadata_for_self_is_initialized_blocking(self, sharing_with: dict[str, AccessLevel] = {}, ignore_if_encryption_metadata_exists: bool = False, alternate_root_delegate_id: Optional[str] = None) -> EncryptedPatient:
 		payload = {
 			"sharingWith": {k0: v0.__serialize__() for k0, v0 in sharing_with.items()},
+			"ignoreIfEncryptionMetadataExists": ignore_if_encryption_metadata_exists,
+			"alternateRootDelegateId": alternate_root_delegate_id,
 		}
 		call_result = symbols.kotlin.root.com.icure.cardinal.sdk.py.api.PatientApi.ensureEncryptionMetadataForSelfIsInitializedBlocking(
 			self.cardinal_sdk._native,
@@ -555,6 +559,37 @@ class PatientApi:
 		if result_info.failure is not None:
 			raise interpret_kt_error(result_info.failure)
 
+	async def purge_patients_by_ids_async(self, entity_ids: list[StoredDocumentIdentifier]) -> list[StoredDocumentIdentifier]:
+		def do_decode(raw_result):
+			return [StoredDocumentIdentifier._deserialize(x1) for x1 in raw_result]
+		payload = {
+			"entityIds": [x0.__serialize__() for x0 in entity_ids],
+		}
+		return await execute_async_method_job(
+			self.cardinal_sdk._executor,
+			True,
+			do_decode,
+			symbols.kotlin.root.com.icure.cardinal.sdk.py.api.PatientApi.purgePatientsByIdsAsync,
+			self.cardinal_sdk._native,
+			json.dumps(payload).encode('utf-8'),
+		)
+
+	def purge_patients_by_ids_blocking(self, entity_ids: list[StoredDocumentIdentifier]) -> list[StoredDocumentIdentifier]:
+		payload = {
+			"entityIds": [x0.__serialize__() for x0 in entity_ids],
+		}
+		call_result = symbols.kotlin.root.com.icure.cardinal.sdk.py.api.PatientApi.purgePatientsByIdsBlocking(
+			self.cardinal_sdk._native,
+			json.dumps(payload).encode('utf-8'),
+		)
+		result_info = create_result_from_json(cast(call_result, c_char_p).value.decode('utf-8'))
+		symbols.DisposeString(call_result)
+		if result_info.failure is not None:
+			raise interpret_kt_error(result_info.failure)
+		else:
+			return_value = [StoredDocumentIdentifier._deserialize(x1) for x1 in result_info.success]
+			return return_value
+
 	async def delete_patient_async(self, patient: Patient) -> StoredDocumentIdentifier:
 		def do_decode(raw_result):
 			return StoredDocumentIdentifier._deserialize(raw_result)
@@ -644,6 +679,37 @@ class PatientApi:
 		symbols.DisposeString(call_result)
 		if result_info.failure is not None:
 			raise interpret_kt_error(result_info.failure)
+
+	async def purge_patients_async(self, patients: list[Patient]) -> list[StoredDocumentIdentifier]:
+		def do_decode(raw_result):
+			return [StoredDocumentIdentifier._deserialize(x1) for x1 in raw_result]
+		payload = {
+			"patients": [serialize_patient(x0) for x0 in patients],
+		}
+		return await execute_async_method_job(
+			self.cardinal_sdk._executor,
+			True,
+			do_decode,
+			symbols.kotlin.root.com.icure.cardinal.sdk.py.api.PatientApi.purgePatientsAsync,
+			self.cardinal_sdk._native,
+			json.dumps(payload).encode('utf-8'),
+		)
+
+	def purge_patients_blocking(self, patients: list[Patient]) -> list[StoredDocumentIdentifier]:
+		payload = {
+			"patients": [serialize_patient(x0) for x0 in patients],
+		}
+		call_result = symbols.kotlin.root.com.icure.cardinal.sdk.py.api.PatientApi.purgePatientsBlocking(
+			self.cardinal_sdk._native,
+			json.dumps(payload).encode('utf-8'),
+		)
+		result_info = create_result_from_json(cast(call_result, c_char_p).value.decode('utf-8'))
+		symbols.DisposeString(call_result)
+		if result_info.failure is not None:
+			raise interpret_kt_error(result_info.failure)
+		else:
+			return_value = [StoredDocumentIdentifier._deserialize(x1) for x1 in result_info.success]
+			return return_value
 
 	async def get_data_owners_with_access_to_async(self, patient: Patient) -> EntityAccessInformation:
 		def do_decode(raw_result):
@@ -890,37 +956,6 @@ class PatientApi:
 			return_value = DecryptedPatient._deserialize(result_info.success)
 			return return_value
 
-	async def create_patients_minimal_async(self, patients: list[DecryptedPatient]) -> list[StoredDocumentIdentifier]:
-		def do_decode(raw_result):
-			return [StoredDocumentIdentifier._deserialize(x1) for x1 in raw_result]
-		payload = {
-			"patients": [x0.__serialize__() for x0 in patients],
-		}
-		return await execute_async_method_job(
-			self.cardinal_sdk._executor,
-			True,
-			do_decode,
-			symbols.kotlin.root.com.icure.cardinal.sdk.py.api.PatientApi.createPatientsMinimalAsync,
-			self.cardinal_sdk._native,
-			json.dumps(payload).encode('utf-8'),
-		)
-
-	def create_patients_minimal_blocking(self, patients: list[DecryptedPatient]) -> list[StoredDocumentIdentifier]:
-		payload = {
-			"patients": [x0.__serialize__() for x0 in patients],
-		}
-		call_result = symbols.kotlin.root.com.icure.cardinal.sdk.py.api.PatientApi.createPatientsMinimalBlocking(
-			self.cardinal_sdk._native,
-			json.dumps(payload).encode('utf-8'),
-		)
-		result_info = create_result_from_json(cast(call_result, c_char_p).value.decode('utf-8'))
-		symbols.DisposeString(call_result)
-		if result_info.failure is not None:
-			raise interpret_kt_error(result_info.failure)
-		else:
-			return_value = [StoredDocumentIdentifier._deserialize(x1) for x1 in result_info.success]
-			return return_value
-
 	async def create_patients_async(self, patients: list[DecryptedPatient]) -> list[DecryptedPatient]:
 		def do_decode(raw_result):
 			return [DecryptedPatient._deserialize(x1) for x1 in raw_result]
@@ -981,6 +1016,37 @@ class PatientApi:
 			raise interpret_kt_error(result_info.failure)
 		else:
 			return_value = deserialize_patient(result_info.success)
+			return return_value
+
+	async def undelete_patients_async(self, patients: list[Patient]) -> list[DecryptedPatient]:
+		def do_decode(raw_result):
+			return [DecryptedPatient._deserialize(x1) for x1 in raw_result]
+		payload = {
+			"patients": [serialize_patient(x0) for x0 in patients],
+		}
+		return await execute_async_method_job(
+			self.cardinal_sdk._executor,
+			True,
+			do_decode,
+			symbols.kotlin.root.com.icure.cardinal.sdk.py.api.PatientApi.undeletePatientsAsync,
+			self.cardinal_sdk._native,
+			json.dumps(payload).encode('utf-8'),
+		)
+
+	def undelete_patients_blocking(self, patients: list[Patient]) -> list[DecryptedPatient]:
+		payload = {
+			"patients": [serialize_patient(x0) for x0 in patients],
+		}
+		call_result = symbols.kotlin.root.com.icure.cardinal.sdk.py.api.PatientApi.undeletePatientsBlocking(
+			self.cardinal_sdk._native,
+			json.dumps(payload).encode('utf-8'),
+		)
+		result_info = create_result_from_json(cast(call_result, c_char_p).value.decode('utf-8'))
+		symbols.DisposeString(call_result)
+		if result_info.failure is not None:
+			raise interpret_kt_error(result_info.failure)
+		else:
+			return_value = [DecryptedPatient._deserialize(x1) for x1 in result_info.success]
 			return return_value
 
 	async def modify_patient_async(self, entity: DecryptedPatient) -> DecryptedPatient:
@@ -1047,7 +1113,7 @@ class PatientApi:
 			return_value = DecryptedPatient._deserialize(result_info.success)
 			return return_value
 
-	async def undelete_patients_async(self, ids: list[StoredDocumentIdentifier]) -> list[DecryptedPatient]:
+	async def undelete_patients_by_ids_async(self, ids: list[StoredDocumentIdentifier]) -> list[DecryptedPatient]:
 		def do_decode(raw_result):
 			return [DecryptedPatient._deserialize(x1) for x1 in raw_result]
 		payload = {
@@ -1057,16 +1123,16 @@ class PatientApi:
 			self.cardinal_sdk._executor,
 			True,
 			do_decode,
-			symbols.kotlin.root.com.icure.cardinal.sdk.py.api.PatientApi.undeletePatientsAsync,
+			symbols.kotlin.root.com.icure.cardinal.sdk.py.api.PatientApi.undeletePatientsByIdsAsync,
 			self.cardinal_sdk._native,
 			json.dumps(payload).encode('utf-8'),
 		)
 
-	def undelete_patients_blocking(self, ids: list[StoredDocumentIdentifier]) -> list[DecryptedPatient]:
+	def undelete_patients_by_ids_blocking(self, ids: list[StoredDocumentIdentifier]) -> list[DecryptedPatient]:
 		payload = {
 			"ids": [x0.__serialize__() for x0 in ids],
 		}
-		call_result = symbols.kotlin.root.com.icure.cardinal.sdk.py.api.PatientApi.undeletePatientsBlocking(
+		call_result = symbols.kotlin.root.com.icure.cardinal.sdk.py.api.PatientApi.undeletePatientsByIdsBlocking(
 			self.cardinal_sdk._native,
 			json.dumps(payload).encode('utf-8'),
 		)
@@ -1171,37 +1237,6 @@ class PatientApi:
 			raise interpret_kt_error(result_info.failure)
 		else:
 			return_value = [DecryptedPatient._deserialize(x1) for x1 in result_info.success]
-			return return_value
-
-	async def modify_patients_minimal_async(self, patients: list[DecryptedPatient]) -> list[StoredDocumentIdentifier]:
-		def do_decode(raw_result):
-			return [StoredDocumentIdentifier._deserialize(x1) for x1 in raw_result]
-		payload = {
-			"patients": [x0.__serialize__() for x0 in patients],
-		}
-		return await execute_async_method_job(
-			self.cardinal_sdk._executor,
-			True,
-			do_decode,
-			symbols.kotlin.root.com.icure.cardinal.sdk.py.api.PatientApi.modifyPatientsMinimalAsync,
-			self.cardinal_sdk._native,
-			json.dumps(payload).encode('utf-8'),
-		)
-
-	def modify_patients_minimal_blocking(self, patients: list[DecryptedPatient]) -> list[StoredDocumentIdentifier]:
-		payload = {
-			"patients": [x0.__serialize__() for x0 in patients],
-		}
-		call_result = symbols.kotlin.root.com.icure.cardinal.sdk.py.api.PatientApi.modifyPatientsMinimalBlocking(
-			self.cardinal_sdk._native,
-			json.dumps(payload).encode('utf-8'),
-		)
-		result_info = create_result_from_json(cast(call_result, c_char_p).value.decode('utf-8'))
-		symbols.DisposeString(call_result)
-		if result_info.failure is not None:
-			raise interpret_kt_error(result_info.failure)
-		else:
-			return_value = [StoredDocumentIdentifier._deserialize(x1) for x1 in result_info.success]
 			return return_value
 
 	async def modify_patients_async(self, patients: list[DecryptedPatient]) -> list[DecryptedPatient]:
@@ -1534,37 +1569,6 @@ class PatientApiEncrypted:
 			return_value = EncryptedPatient._deserialize(result_info.success)
 			return return_value
 
-	async def create_patients_minimal_async(self, patients: list[EncryptedPatient]) -> list[StoredDocumentIdentifier]:
-		def do_decode(raw_result):
-			return [StoredDocumentIdentifier._deserialize(x1) for x1 in raw_result]
-		payload = {
-			"patients": [x0.__serialize__() for x0 in patients],
-		}
-		return await execute_async_method_job(
-			self.cardinal_sdk._executor,
-			True,
-			do_decode,
-			symbols.kotlin.root.com.icure.cardinal.sdk.py.api.PatientApi.encrypted.createPatientsMinimalAsync,
-			self.cardinal_sdk._native,
-			json.dumps(payload).encode('utf-8'),
-		)
-
-	def create_patients_minimal_blocking(self, patients: list[EncryptedPatient]) -> list[StoredDocumentIdentifier]:
-		payload = {
-			"patients": [x0.__serialize__() for x0 in patients],
-		}
-		call_result = symbols.kotlin.root.com.icure.cardinal.sdk.py.api.PatientApi.encrypted.createPatientsMinimalBlocking(
-			self.cardinal_sdk._native,
-			json.dumps(payload).encode('utf-8'),
-		)
-		result_info = create_result_from_json(cast(call_result, c_char_p).value.decode('utf-8'))
-		symbols.DisposeString(call_result)
-		if result_info.failure is not None:
-			raise interpret_kt_error(result_info.failure)
-		else:
-			return_value = [StoredDocumentIdentifier._deserialize(x1) for x1 in result_info.success]
-			return return_value
-
 	async def create_patients_async(self, patients: list[EncryptedPatient]) -> list[EncryptedPatient]:
 		def do_decode(raw_result):
 			return [EncryptedPatient._deserialize(x1) for x1 in raw_result]
@@ -1625,6 +1629,37 @@ class PatientApiEncrypted:
 			raise interpret_kt_error(result_info.failure)
 		else:
 			return_value = deserialize_patient(result_info.success)
+			return return_value
+
+	async def undelete_patients_async(self, patients: list[Patient]) -> list[EncryptedPatient]:
+		def do_decode(raw_result):
+			return [EncryptedPatient._deserialize(x1) for x1 in raw_result]
+		payload = {
+			"patients": [serialize_patient(x0) for x0 in patients],
+		}
+		return await execute_async_method_job(
+			self.cardinal_sdk._executor,
+			True,
+			do_decode,
+			symbols.kotlin.root.com.icure.cardinal.sdk.py.api.PatientApi.encrypted.undeletePatientsAsync,
+			self.cardinal_sdk._native,
+			json.dumps(payload).encode('utf-8'),
+		)
+
+	def undelete_patients_blocking(self, patients: list[Patient]) -> list[EncryptedPatient]:
+		payload = {
+			"patients": [serialize_patient(x0) for x0 in patients],
+		}
+		call_result = symbols.kotlin.root.com.icure.cardinal.sdk.py.api.PatientApi.encrypted.undeletePatientsBlocking(
+			self.cardinal_sdk._native,
+			json.dumps(payload).encode('utf-8'),
+		)
+		result_info = create_result_from_json(cast(call_result, c_char_p).value.decode('utf-8'))
+		symbols.DisposeString(call_result)
+		if result_info.failure is not None:
+			raise interpret_kt_error(result_info.failure)
+		else:
+			return_value = [EncryptedPatient._deserialize(x1) for x1 in result_info.success]
 			return return_value
 
 	async def modify_patient_async(self, entity: EncryptedPatient) -> EncryptedPatient:
@@ -1691,7 +1726,7 @@ class PatientApiEncrypted:
 			return_value = EncryptedPatient._deserialize(result_info.success)
 			return return_value
 
-	async def undelete_patients_async(self, ids: list[StoredDocumentIdentifier]) -> list[EncryptedPatient]:
+	async def undelete_patients_by_ids_async(self, ids: list[StoredDocumentIdentifier]) -> list[EncryptedPatient]:
 		def do_decode(raw_result):
 			return [EncryptedPatient._deserialize(x1) for x1 in raw_result]
 		payload = {
@@ -1701,16 +1736,16 @@ class PatientApiEncrypted:
 			self.cardinal_sdk._executor,
 			True,
 			do_decode,
-			symbols.kotlin.root.com.icure.cardinal.sdk.py.api.PatientApi.encrypted.undeletePatientsAsync,
+			symbols.kotlin.root.com.icure.cardinal.sdk.py.api.PatientApi.encrypted.undeletePatientsByIdsAsync,
 			self.cardinal_sdk._native,
 			json.dumps(payload).encode('utf-8'),
 		)
 
-	def undelete_patients_blocking(self, ids: list[StoredDocumentIdentifier]) -> list[EncryptedPatient]:
+	def undelete_patients_by_ids_blocking(self, ids: list[StoredDocumentIdentifier]) -> list[EncryptedPatient]:
 		payload = {
 			"ids": [x0.__serialize__() for x0 in ids],
 		}
-		call_result = symbols.kotlin.root.com.icure.cardinal.sdk.py.api.PatientApi.encrypted.undeletePatientsBlocking(
+		call_result = symbols.kotlin.root.com.icure.cardinal.sdk.py.api.PatientApi.encrypted.undeletePatientsByIdsBlocking(
 			self.cardinal_sdk._native,
 			json.dumps(payload).encode('utf-8'),
 		)
@@ -1815,37 +1850,6 @@ class PatientApiEncrypted:
 			raise interpret_kt_error(result_info.failure)
 		else:
 			return_value = [EncryptedPatient._deserialize(x1) for x1 in result_info.success]
-			return return_value
-
-	async def modify_patients_minimal_async(self, patients: list[EncryptedPatient]) -> list[StoredDocumentIdentifier]:
-		def do_decode(raw_result):
-			return [StoredDocumentIdentifier._deserialize(x1) for x1 in raw_result]
-		payload = {
-			"patients": [x0.__serialize__() for x0 in patients],
-		}
-		return await execute_async_method_job(
-			self.cardinal_sdk._executor,
-			True,
-			do_decode,
-			symbols.kotlin.root.com.icure.cardinal.sdk.py.api.PatientApi.encrypted.modifyPatientsMinimalAsync,
-			self.cardinal_sdk._native,
-			json.dumps(payload).encode('utf-8'),
-		)
-
-	def modify_patients_minimal_blocking(self, patients: list[EncryptedPatient]) -> list[StoredDocumentIdentifier]:
-		payload = {
-			"patients": [x0.__serialize__() for x0 in patients],
-		}
-		call_result = symbols.kotlin.root.com.icure.cardinal.sdk.py.api.PatientApi.encrypted.modifyPatientsMinimalBlocking(
-			self.cardinal_sdk._native,
-			json.dumps(payload).encode('utf-8'),
-		)
-		result_info = create_result_from_json(cast(call_result, c_char_p).value.decode('utf-8'))
-		symbols.DisposeString(call_result)
-		if result_info.failure is not None:
-			raise interpret_kt_error(result_info.failure)
-		else:
-			return_value = [StoredDocumentIdentifier._deserialize(x1) for x1 in result_info.success]
 			return return_value
 
 	async def modify_patients_async(self, patients: list[EncryptedPatient]) -> list[EncryptedPatient]:
@@ -2132,37 +2136,6 @@ class PatientApiTryAndRecover:
 			return_value = deserialize_patient(result_info.success)
 			return return_value
 
-	async def create_patients_minimal_async(self, patients: list[Patient]) -> list[StoredDocumentIdentifier]:
-		def do_decode(raw_result):
-			return [StoredDocumentIdentifier._deserialize(x1) for x1 in raw_result]
-		payload = {
-			"patients": [serialize_patient(x0) for x0 in patients],
-		}
-		return await execute_async_method_job(
-			self.cardinal_sdk._executor,
-			True,
-			do_decode,
-			symbols.kotlin.root.com.icure.cardinal.sdk.py.api.PatientApi.tryAndRecover.createPatientsMinimalAsync,
-			self.cardinal_sdk._native,
-			json.dumps(payload).encode('utf-8'),
-		)
-
-	def create_patients_minimal_blocking(self, patients: list[Patient]) -> list[StoredDocumentIdentifier]:
-		payload = {
-			"patients": [serialize_patient(x0) for x0 in patients],
-		}
-		call_result = symbols.kotlin.root.com.icure.cardinal.sdk.py.api.PatientApi.tryAndRecover.createPatientsMinimalBlocking(
-			self.cardinal_sdk._native,
-			json.dumps(payload).encode('utf-8'),
-		)
-		result_info = create_result_from_json(cast(call_result, c_char_p).value.decode('utf-8'))
-		symbols.DisposeString(call_result)
-		if result_info.failure is not None:
-			raise interpret_kt_error(result_info.failure)
-		else:
-			return_value = [StoredDocumentIdentifier._deserialize(x1) for x1 in result_info.success]
-			return return_value
-
 	async def create_patients_async(self, patients: list[Patient]) -> list[Patient]:
 		def do_decode(raw_result):
 			return [deserialize_patient(x1) for x1 in raw_result]
@@ -2223,6 +2196,37 @@ class PatientApiTryAndRecover:
 			raise interpret_kt_error(result_info.failure)
 		else:
 			return_value = deserialize_patient(result_info.success)
+			return return_value
+
+	async def undelete_patients_async(self, patients: list[Patient]) -> list[Patient]:
+		def do_decode(raw_result):
+			return [deserialize_patient(x1) for x1 in raw_result]
+		payload = {
+			"patients": [serialize_patient(x0) for x0 in patients],
+		}
+		return await execute_async_method_job(
+			self.cardinal_sdk._executor,
+			True,
+			do_decode,
+			symbols.kotlin.root.com.icure.cardinal.sdk.py.api.PatientApi.tryAndRecover.undeletePatientsAsync,
+			self.cardinal_sdk._native,
+			json.dumps(payload).encode('utf-8'),
+		)
+
+	def undelete_patients_blocking(self, patients: list[Patient]) -> list[Patient]:
+		payload = {
+			"patients": [serialize_patient(x0) for x0 in patients],
+		}
+		call_result = symbols.kotlin.root.com.icure.cardinal.sdk.py.api.PatientApi.tryAndRecover.undeletePatientsBlocking(
+			self.cardinal_sdk._native,
+			json.dumps(payload).encode('utf-8'),
+		)
+		result_info = create_result_from_json(cast(call_result, c_char_p).value.decode('utf-8'))
+		symbols.DisposeString(call_result)
+		if result_info.failure is not None:
+			raise interpret_kt_error(result_info.failure)
+		else:
+			return_value = [deserialize_patient(x1) for x1 in result_info.success]
 			return return_value
 
 	async def modify_patient_async(self, entity: Patient) -> Patient:
@@ -2289,7 +2293,7 @@ class PatientApiTryAndRecover:
 			return_value = deserialize_patient(result_info.success)
 			return return_value
 
-	async def undelete_patients_async(self, ids: list[StoredDocumentIdentifier]) -> list[Patient]:
+	async def undelete_patients_by_ids_async(self, ids: list[StoredDocumentIdentifier]) -> list[Patient]:
 		def do_decode(raw_result):
 			return [deserialize_patient(x1) for x1 in raw_result]
 		payload = {
@@ -2299,16 +2303,16 @@ class PatientApiTryAndRecover:
 			self.cardinal_sdk._executor,
 			True,
 			do_decode,
-			symbols.kotlin.root.com.icure.cardinal.sdk.py.api.PatientApi.tryAndRecover.undeletePatientsAsync,
+			symbols.kotlin.root.com.icure.cardinal.sdk.py.api.PatientApi.tryAndRecover.undeletePatientsByIdsAsync,
 			self.cardinal_sdk._native,
 			json.dumps(payload).encode('utf-8'),
 		)
 
-	def undelete_patients_blocking(self, ids: list[StoredDocumentIdentifier]) -> list[Patient]:
+	def undelete_patients_by_ids_blocking(self, ids: list[StoredDocumentIdentifier]) -> list[Patient]:
 		payload = {
 			"ids": [x0.__serialize__() for x0 in ids],
 		}
-		call_result = symbols.kotlin.root.com.icure.cardinal.sdk.py.api.PatientApi.tryAndRecover.undeletePatientsBlocking(
+		call_result = symbols.kotlin.root.com.icure.cardinal.sdk.py.api.PatientApi.tryAndRecover.undeletePatientsByIdsBlocking(
 			self.cardinal_sdk._native,
 			json.dumps(payload).encode('utf-8'),
 		)
@@ -2413,37 +2417,6 @@ class PatientApiTryAndRecover:
 			raise interpret_kt_error(result_info.failure)
 		else:
 			return_value = [deserialize_patient(x1) for x1 in result_info.success]
-			return return_value
-
-	async def modify_patients_minimal_async(self, patients: list[Patient]) -> list[StoredDocumentIdentifier]:
-		def do_decode(raw_result):
-			return [StoredDocumentIdentifier._deserialize(x1) for x1 in raw_result]
-		payload = {
-			"patients": [serialize_patient(x0) for x0 in patients],
-		}
-		return await execute_async_method_job(
-			self.cardinal_sdk._executor,
-			True,
-			do_decode,
-			symbols.kotlin.root.com.icure.cardinal.sdk.py.api.PatientApi.tryAndRecover.modifyPatientsMinimalAsync,
-			self.cardinal_sdk._native,
-			json.dumps(payload).encode('utf-8'),
-		)
-
-	def modify_patients_minimal_blocking(self, patients: list[Patient]) -> list[StoredDocumentIdentifier]:
-		payload = {
-			"patients": [serialize_patient(x0) for x0 in patients],
-		}
-		call_result = symbols.kotlin.root.com.icure.cardinal.sdk.py.api.PatientApi.tryAndRecover.modifyPatientsMinimalBlocking(
-			self.cardinal_sdk._native,
-			json.dumps(payload).encode('utf-8'),
-		)
-		result_info = create_result_from_json(cast(call_result, c_char_p).value.decode('utf-8'))
-		symbols.DisposeString(call_result)
-		if result_info.failure is not None:
-			raise interpret_kt_error(result_info.failure)
-		else:
-			return_value = [StoredDocumentIdentifier._deserialize(x1) for x1 in result_info.success]
 			return return_value
 
 	async def modify_patients_async(self, patients: list[Patient]) -> list[Patient]:
@@ -2839,6 +2812,217 @@ class PatientApiInGroup:
 			return_value = [x1 for x1 in result_info.success]
 			return return_value
 
+	async def delete_patient_by_id_async(self, entity_id: GroupScoped[StoredDocumentIdentifier]) -> GroupScoped[StoredDocumentIdentifier]:
+		def do_decode(raw_result):
+			return GroupScoped._deserialize(raw_result, lambda x1: StoredDocumentIdentifier._deserialize(x1))
+		payload = {
+			"entityId": entity_id.__serialize__(lambda x0: x0.__serialize__()),
+		}
+		return await execute_async_method_job(
+			self.cardinal_sdk._executor,
+			True,
+			do_decode,
+			symbols.kotlin.root.com.icure.cardinal.sdk.py.api.PatientApi.inGroup.deletePatientByIdAsync,
+			self.cardinal_sdk._native,
+			json.dumps(payload).encode('utf-8'),
+		)
+
+	def delete_patient_by_id_blocking(self, entity_id: GroupScoped[StoredDocumentIdentifier]) -> GroupScoped[StoredDocumentIdentifier]:
+		payload = {
+			"entityId": entity_id.__serialize__(lambda x0: x0.__serialize__()),
+		}
+		call_result = symbols.kotlin.root.com.icure.cardinal.sdk.py.api.PatientApi.inGroup.deletePatientByIdBlocking(
+			self.cardinal_sdk._native,
+			json.dumps(payload).encode('utf-8'),
+		)
+		result_info = create_result_from_json(cast(call_result, c_char_p).value.decode('utf-8'))
+		symbols.DisposeString(call_result)
+		if result_info.failure is not None:
+			raise interpret_kt_error(result_info.failure)
+		else:
+			return_value = GroupScoped._deserialize(result_info.success, lambda x1: StoredDocumentIdentifier._deserialize(x1))
+			return return_value
+
+	async def delete_patients_by_ids_async(self, entity_ids: list[GroupScoped[StoredDocumentIdentifier]]) -> list[GroupScoped[StoredDocumentIdentifier]]:
+		def do_decode(raw_result):
+			return [GroupScoped._deserialize(x1, lambda x2: StoredDocumentIdentifier._deserialize(x2)) for x1 in raw_result]
+		payload = {
+			"entityIds": [x0.__serialize__(lambda x1: x1.__serialize__()) for x0 in entity_ids],
+		}
+		return await execute_async_method_job(
+			self.cardinal_sdk._executor,
+			True,
+			do_decode,
+			symbols.kotlin.root.com.icure.cardinal.sdk.py.api.PatientApi.inGroup.deletePatientsByIdsAsync,
+			self.cardinal_sdk._native,
+			json.dumps(payload).encode('utf-8'),
+		)
+
+	def delete_patients_by_ids_blocking(self, entity_ids: list[GroupScoped[StoredDocumentIdentifier]]) -> list[GroupScoped[StoredDocumentIdentifier]]:
+		payload = {
+			"entityIds": [x0.__serialize__(lambda x1: x1.__serialize__()) for x0 in entity_ids],
+		}
+		call_result = symbols.kotlin.root.com.icure.cardinal.sdk.py.api.PatientApi.inGroup.deletePatientsByIdsBlocking(
+			self.cardinal_sdk._native,
+			json.dumps(payload).encode('utf-8'),
+		)
+		result_info = create_result_from_json(cast(call_result, c_char_p).value.decode('utf-8'))
+		symbols.DisposeString(call_result)
+		if result_info.failure is not None:
+			raise interpret_kt_error(result_info.failure)
+		else:
+			return_value = [GroupScoped._deserialize(x1, lambda x2: StoredDocumentIdentifier._deserialize(x2)) for x1 in result_info.success]
+			return return_value
+
+	async def purge_patient_by_id_async(self, entity_id: GroupScoped[StoredDocumentIdentifier]) -> None:
+		def do_decode(raw_result):
+			return raw_result
+		payload = {
+			"entityId": entity_id.__serialize__(lambda x0: x0.__serialize__()),
+		}
+		return await execute_async_method_job(
+			self.cardinal_sdk._executor,
+			True,
+			do_decode,
+			symbols.kotlin.root.com.icure.cardinal.sdk.py.api.PatientApi.inGroup.purgePatientByIdAsync,
+			self.cardinal_sdk._native,
+			json.dumps(payload).encode('utf-8'),
+		)
+
+	def purge_patient_by_id_blocking(self, entity_id: GroupScoped[StoredDocumentIdentifier]) -> None:
+		payload = {
+			"entityId": entity_id.__serialize__(lambda x0: x0.__serialize__()),
+		}
+		call_result = symbols.kotlin.root.com.icure.cardinal.sdk.py.api.PatientApi.inGroup.purgePatientByIdBlocking(
+			self.cardinal_sdk._native,
+			json.dumps(payload).encode('utf-8'),
+		)
+		result_info = create_result_from_json(cast(call_result, c_char_p).value.decode('utf-8'))
+		symbols.DisposeString(call_result)
+		if result_info.failure is not None:
+			raise interpret_kt_error(result_info.failure)
+
+	async def purge_patients_by_ids_async(self, entity_ids: list[GroupScoped[StoredDocumentIdentifier]]) -> list[GroupScoped[StoredDocumentIdentifier]]:
+		def do_decode(raw_result):
+			return [GroupScoped._deserialize(x1, lambda x2: StoredDocumentIdentifier._deserialize(x2)) for x1 in raw_result]
+		payload = {
+			"entityIds": [x0.__serialize__(lambda x1: x1.__serialize__()) for x0 in entity_ids],
+		}
+		return await execute_async_method_job(
+			self.cardinal_sdk._executor,
+			True,
+			do_decode,
+			symbols.kotlin.root.com.icure.cardinal.sdk.py.api.PatientApi.inGroup.purgePatientsByIdsAsync,
+			self.cardinal_sdk._native,
+			json.dumps(payload).encode('utf-8'),
+		)
+
+	def purge_patients_by_ids_blocking(self, entity_ids: list[GroupScoped[StoredDocumentIdentifier]]) -> list[GroupScoped[StoredDocumentIdentifier]]:
+		payload = {
+			"entityIds": [x0.__serialize__(lambda x1: x1.__serialize__()) for x0 in entity_ids],
+		}
+		call_result = symbols.kotlin.root.com.icure.cardinal.sdk.py.api.PatientApi.inGroup.purgePatientsByIdsBlocking(
+			self.cardinal_sdk._native,
+			json.dumps(payload).encode('utf-8'),
+		)
+		result_info = create_result_from_json(cast(call_result, c_char_p).value.decode('utf-8'))
+		symbols.DisposeString(call_result)
+		if result_info.failure is not None:
+			raise interpret_kt_error(result_info.failure)
+		else:
+			return_value = [GroupScoped._deserialize(x1, lambda x2: StoredDocumentIdentifier._deserialize(x2)) for x1 in result_info.success]
+			return return_value
+
+	async def delete_patient_async(self, patient: GroupScoped[Patient]) -> GroupScoped[StoredDocumentIdentifier]:
+		def do_decode(raw_result):
+			return GroupScoped._deserialize(raw_result, lambda x1: StoredDocumentIdentifier._deserialize(x1))
+		payload = {
+			"patient": patient.__serialize__(lambda x0: serialize_patient(x0)),
+		}
+		return await execute_async_method_job(
+			self.cardinal_sdk._executor,
+			True,
+			do_decode,
+			symbols.kotlin.root.com.icure.cardinal.sdk.py.api.PatientApi.inGroup.deletePatientAsync,
+			self.cardinal_sdk._native,
+			json.dumps(payload).encode('utf-8'),
+		)
+
+	def delete_patient_blocking(self, patient: GroupScoped[Patient]) -> GroupScoped[StoredDocumentIdentifier]:
+		payload = {
+			"patient": patient.__serialize__(lambda x0: serialize_patient(x0)),
+		}
+		call_result = symbols.kotlin.root.com.icure.cardinal.sdk.py.api.PatientApi.inGroup.deletePatientBlocking(
+			self.cardinal_sdk._native,
+			json.dumps(payload).encode('utf-8'),
+		)
+		result_info = create_result_from_json(cast(call_result, c_char_p).value.decode('utf-8'))
+		symbols.DisposeString(call_result)
+		if result_info.failure is not None:
+			raise interpret_kt_error(result_info.failure)
+		else:
+			return_value = GroupScoped._deserialize(result_info.success, lambda x1: StoredDocumentIdentifier._deserialize(x1))
+			return return_value
+
+	async def delete_patients_async(self, patients: list[GroupScoped[Patient]]) -> list[GroupScoped[StoredDocumentIdentifier]]:
+		def do_decode(raw_result):
+			return [GroupScoped._deserialize(x1, lambda x2: StoredDocumentIdentifier._deserialize(x2)) for x1 in raw_result]
+		payload = {
+			"patients": [x0.__serialize__(lambda x1: serialize_patient(x1)) for x0 in patients],
+		}
+		return await execute_async_method_job(
+			self.cardinal_sdk._executor,
+			True,
+			do_decode,
+			symbols.kotlin.root.com.icure.cardinal.sdk.py.api.PatientApi.inGroup.deletePatientsAsync,
+			self.cardinal_sdk._native,
+			json.dumps(payload).encode('utf-8'),
+		)
+
+	def delete_patients_blocking(self, patients: list[GroupScoped[Patient]]) -> list[GroupScoped[StoredDocumentIdentifier]]:
+		payload = {
+			"patients": [x0.__serialize__(lambda x1: serialize_patient(x1)) for x0 in patients],
+		}
+		call_result = symbols.kotlin.root.com.icure.cardinal.sdk.py.api.PatientApi.inGroup.deletePatientsBlocking(
+			self.cardinal_sdk._native,
+			json.dumps(payload).encode('utf-8'),
+		)
+		result_info = create_result_from_json(cast(call_result, c_char_p).value.decode('utf-8'))
+		symbols.DisposeString(call_result)
+		if result_info.failure is not None:
+			raise interpret_kt_error(result_info.failure)
+		else:
+			return_value = [GroupScoped._deserialize(x1, lambda x2: StoredDocumentIdentifier._deserialize(x2)) for x1 in result_info.success]
+			return return_value
+
+	async def purge_patient_async(self, patient: GroupScoped[Patient]) -> None:
+		def do_decode(raw_result):
+			return raw_result
+		payload = {
+			"patient": patient.__serialize__(lambda x0: serialize_patient(x0)),
+		}
+		return await execute_async_method_job(
+			self.cardinal_sdk._executor,
+			True,
+			do_decode,
+			symbols.kotlin.root.com.icure.cardinal.sdk.py.api.PatientApi.inGroup.purgePatientAsync,
+			self.cardinal_sdk._native,
+			json.dumps(payload).encode('utf-8'),
+		)
+
+	def purge_patient_blocking(self, patient: GroupScoped[Patient]) -> None:
+		payload = {
+			"patient": patient.__serialize__(lambda x0: serialize_patient(x0)),
+		}
+		call_result = symbols.kotlin.root.com.icure.cardinal.sdk.py.api.PatientApi.inGroup.purgePatientBlocking(
+			self.cardinal_sdk._native,
+			json.dumps(payload).encode('utf-8'),
+		)
+		result_info = create_result_from_json(cast(call_result, c_char_p).value.decode('utf-8'))
+		symbols.DisposeString(call_result)
+		if result_info.failure is not None:
+			raise interpret_kt_error(result_info.failure)
+
 	async def get_data_owners_with_access_to_async(self, patient: GroupScoped[Patient]) -> EntityAccessInformation:
 		def do_decode(raw_result):
 			return EntityAccessInformation._deserialize(raw_result)
@@ -3088,37 +3272,6 @@ class PatientApiInGroup:
 			return_value = GroupScoped._deserialize(result_info.success, lambda x1: DecryptedPatient._deserialize(x1))
 			return return_value
 
-	async def create_patients_minimal_async(self, patients: list[GroupScoped[DecryptedPatient]]) -> list[GroupScoped[StoredDocumentIdentifier]]:
-		def do_decode(raw_result):
-			return [GroupScoped._deserialize(x1, lambda x2: StoredDocumentIdentifier._deserialize(x2)) for x1 in raw_result]
-		payload = {
-			"patients": [x0.__serialize__(lambda x1: x1.__serialize__()) for x0 in patients],
-		}
-		return await execute_async_method_job(
-			self.cardinal_sdk._executor,
-			True,
-			do_decode,
-			symbols.kotlin.root.com.icure.cardinal.sdk.py.api.PatientApi.inGroup.createPatientsMinimalAsync,
-			self.cardinal_sdk._native,
-			json.dumps(payload).encode('utf-8'),
-		)
-
-	def create_patients_minimal_blocking(self, patients: list[GroupScoped[DecryptedPatient]]) -> list[GroupScoped[StoredDocumentIdentifier]]:
-		payload = {
-			"patients": [x0.__serialize__(lambda x1: x1.__serialize__()) for x0 in patients],
-		}
-		call_result = symbols.kotlin.root.com.icure.cardinal.sdk.py.api.PatientApi.inGroup.createPatientsMinimalBlocking(
-			self.cardinal_sdk._native,
-			json.dumps(payload).encode('utf-8'),
-		)
-		result_info = create_result_from_json(cast(call_result, c_char_p).value.decode('utf-8'))
-		symbols.DisposeString(call_result)
-		if result_info.failure is not None:
-			raise interpret_kt_error(result_info.failure)
-		else:
-			return_value = [GroupScoped._deserialize(x1, lambda x2: StoredDocumentIdentifier._deserialize(x2)) for x1 in result_info.success]
-			return return_value
-
 	async def create_patients_async(self, patients: list[GroupScoped[DecryptedPatient]]) -> list[GroupScoped[DecryptedPatient]]:
 		def do_decode(raw_result):
 			return [GroupScoped._deserialize(x1, lambda x2: DecryptedPatient._deserialize(x2)) for x1 in raw_result]
@@ -3139,6 +3292,161 @@ class PatientApiInGroup:
 			"patients": [x0.__serialize__(lambda x1: x1.__serialize__()) for x0 in patients],
 		}
 		call_result = symbols.kotlin.root.com.icure.cardinal.sdk.py.api.PatientApi.inGroup.createPatientsBlocking(
+			self.cardinal_sdk._native,
+			json.dumps(payload).encode('utf-8'),
+		)
+		result_info = create_result_from_json(cast(call_result, c_char_p).value.decode('utf-8'))
+		symbols.DisposeString(call_result)
+		if result_info.failure is not None:
+			raise interpret_kt_error(result_info.failure)
+		else:
+			return_value = [GroupScoped._deserialize(x1, lambda x2: DecryptedPatient._deserialize(x2)) for x1 in result_info.success]
+			return return_value
+
+	async def undelete_patient_async(self, patient: GroupScoped[Patient]) -> GroupScoped[DecryptedPatient]:
+		def do_decode(raw_result):
+			return GroupScoped._deserialize(raw_result, lambda x1: DecryptedPatient._deserialize(x1))
+		payload = {
+			"patient": patient.__serialize__(lambda x0: serialize_patient(x0)),
+		}
+		return await execute_async_method_job(
+			self.cardinal_sdk._executor,
+			True,
+			do_decode,
+			symbols.kotlin.root.com.icure.cardinal.sdk.py.api.PatientApi.inGroup.undeletePatientAsync,
+			self.cardinal_sdk._native,
+			json.dumps(payload).encode('utf-8'),
+		)
+
+	def undelete_patient_blocking(self, patient: GroupScoped[Patient]) -> GroupScoped[DecryptedPatient]:
+		payload = {
+			"patient": patient.__serialize__(lambda x0: serialize_patient(x0)),
+		}
+		call_result = symbols.kotlin.root.com.icure.cardinal.sdk.py.api.PatientApi.inGroup.undeletePatientBlocking(
+			self.cardinal_sdk._native,
+			json.dumps(payload).encode('utf-8'),
+		)
+		result_info = create_result_from_json(cast(call_result, c_char_p).value.decode('utf-8'))
+		symbols.DisposeString(call_result)
+		if result_info.failure is not None:
+			raise interpret_kt_error(result_info.failure)
+		else:
+			return_value = GroupScoped._deserialize(result_info.success, lambda x1: DecryptedPatient._deserialize(x1))
+			return return_value
+
+	async def undelete_patients_async(self, patients: list[GroupScoped[Patient]]) -> list[GroupScoped[DecryptedPatient]]:
+		def do_decode(raw_result):
+			return [GroupScoped._deserialize(x1, lambda x2: DecryptedPatient._deserialize(x2)) for x1 in raw_result]
+		payload = {
+			"patients": [x0.__serialize__(lambda x1: serialize_patient(x1)) for x0 in patients],
+		}
+		return await execute_async_method_job(
+			self.cardinal_sdk._executor,
+			True,
+			do_decode,
+			symbols.kotlin.root.com.icure.cardinal.sdk.py.api.PatientApi.inGroup.undeletePatientsAsync,
+			self.cardinal_sdk._native,
+			json.dumps(payload).encode('utf-8'),
+		)
+
+	def undelete_patients_blocking(self, patients: list[GroupScoped[Patient]]) -> list[GroupScoped[DecryptedPatient]]:
+		payload = {
+			"patients": [x0.__serialize__(lambda x1: serialize_patient(x1)) for x0 in patients],
+		}
+		call_result = symbols.kotlin.root.com.icure.cardinal.sdk.py.api.PatientApi.inGroup.undeletePatientsBlocking(
+			self.cardinal_sdk._native,
+			json.dumps(payload).encode('utf-8'),
+		)
+		result_info = create_result_from_json(cast(call_result, c_char_p).value.decode('utf-8'))
+		symbols.DisposeString(call_result)
+		if result_info.failure is not None:
+			raise interpret_kt_error(result_info.failure)
+		else:
+			return_value = [GroupScoped._deserialize(x1, lambda x2: DecryptedPatient._deserialize(x2)) for x1 in result_info.success]
+			return return_value
+
+	async def modify_patient_async(self, entity: GroupScoped[DecryptedPatient]) -> GroupScoped[DecryptedPatient]:
+		def do_decode(raw_result):
+			return GroupScoped._deserialize(raw_result, lambda x1: DecryptedPatient._deserialize(x1))
+		payload = {
+			"entity": entity.__serialize__(lambda x0: x0.__serialize__()),
+		}
+		return await execute_async_method_job(
+			self.cardinal_sdk._executor,
+			True,
+			do_decode,
+			symbols.kotlin.root.com.icure.cardinal.sdk.py.api.PatientApi.inGroup.modifyPatientAsync,
+			self.cardinal_sdk._native,
+			json.dumps(payload).encode('utf-8'),
+		)
+
+	def modify_patient_blocking(self, entity: GroupScoped[DecryptedPatient]) -> GroupScoped[DecryptedPatient]:
+		payload = {
+			"entity": entity.__serialize__(lambda x0: x0.__serialize__()),
+		}
+		call_result = symbols.kotlin.root.com.icure.cardinal.sdk.py.api.PatientApi.inGroup.modifyPatientBlocking(
+			self.cardinal_sdk._native,
+			json.dumps(payload).encode('utf-8'),
+		)
+		result_info = create_result_from_json(cast(call_result, c_char_p).value.decode('utf-8'))
+		symbols.DisposeString(call_result)
+		if result_info.failure is not None:
+			raise interpret_kt_error(result_info.failure)
+		else:
+			return_value = GroupScoped._deserialize(result_info.success, lambda x1: DecryptedPatient._deserialize(x1))
+			return return_value
+
+	async def undelete_patient_by_id_async(self, patient_id: GroupScoped[StoredDocumentIdentifier]) -> GroupScoped[DecryptedPatient]:
+		def do_decode(raw_result):
+			return GroupScoped._deserialize(raw_result, lambda x1: DecryptedPatient._deserialize(x1))
+		payload = {
+			"patientId": patient_id.__serialize__(lambda x0: x0.__serialize__()),
+		}
+		return await execute_async_method_job(
+			self.cardinal_sdk._executor,
+			True,
+			do_decode,
+			symbols.kotlin.root.com.icure.cardinal.sdk.py.api.PatientApi.inGroup.undeletePatientByIdAsync,
+			self.cardinal_sdk._native,
+			json.dumps(payload).encode('utf-8'),
+		)
+
+	def undelete_patient_by_id_blocking(self, patient_id: GroupScoped[StoredDocumentIdentifier]) -> GroupScoped[DecryptedPatient]:
+		payload = {
+			"patientId": patient_id.__serialize__(lambda x0: x0.__serialize__()),
+		}
+		call_result = symbols.kotlin.root.com.icure.cardinal.sdk.py.api.PatientApi.inGroup.undeletePatientByIdBlocking(
+			self.cardinal_sdk._native,
+			json.dumps(payload).encode('utf-8'),
+		)
+		result_info = create_result_from_json(cast(call_result, c_char_p).value.decode('utf-8'))
+		symbols.DisposeString(call_result)
+		if result_info.failure is not None:
+			raise interpret_kt_error(result_info.failure)
+		else:
+			return_value = GroupScoped._deserialize(result_info.success, lambda x1: DecryptedPatient._deserialize(x1))
+			return return_value
+
+	async def undelete_patients_by_ids_async(self, patient_ids: list[GroupScoped[StoredDocumentIdentifier]]) -> list[GroupScoped[DecryptedPatient]]:
+		def do_decode(raw_result):
+			return [GroupScoped._deserialize(x1, lambda x2: DecryptedPatient._deserialize(x2)) for x1 in raw_result]
+		payload = {
+			"patientIds": [x0.__serialize__(lambda x1: x1.__serialize__()) for x0 in patient_ids],
+		}
+		return await execute_async_method_job(
+			self.cardinal_sdk._executor,
+			True,
+			do_decode,
+			symbols.kotlin.root.com.icure.cardinal.sdk.py.api.PatientApi.inGroup.undeletePatientsByIdsAsync,
+			self.cardinal_sdk._native,
+			json.dumps(payload).encode('utf-8'),
+		)
+
+	def undelete_patients_by_ids_blocking(self, patient_ids: list[GroupScoped[StoredDocumentIdentifier]]) -> list[GroupScoped[DecryptedPatient]]:
+		payload = {
+			"patientIds": [x0.__serialize__(lambda x1: x1.__serialize__()) for x0 in patient_ids],
+		}
+		call_result = symbols.kotlin.root.com.icure.cardinal.sdk.py.api.PatientApi.inGroup.undeletePatientsByIdsBlocking(
 			self.cardinal_sdk._native,
 			json.dumps(payload).encode('utf-8'),
 		)
@@ -3249,37 +3557,6 @@ class PatientApiInGroup:
 			raise interpret_kt_error(result_info.failure)
 		else:
 			return_value = [GroupScoped._deserialize(x1, lambda x2: DecryptedPatient._deserialize(x2)) for x1 in result_info.success]
-			return return_value
-
-	async def modify_patients_minimal_async(self, patients: list[GroupScoped[DecryptedPatient]]) -> list[GroupScoped[StoredDocumentIdentifier]]:
-		def do_decode(raw_result):
-			return [GroupScoped._deserialize(x1, lambda x2: StoredDocumentIdentifier._deserialize(x2)) for x1 in raw_result]
-		payload = {
-			"patients": [x0.__serialize__(lambda x1: x1.__serialize__()) for x0 in patients],
-		}
-		return await execute_async_method_job(
-			self.cardinal_sdk._executor,
-			True,
-			do_decode,
-			symbols.kotlin.root.com.icure.cardinal.sdk.py.api.PatientApi.inGroup.modifyPatientsMinimalAsync,
-			self.cardinal_sdk._native,
-			json.dumps(payload).encode('utf-8'),
-		)
-
-	def modify_patients_minimal_blocking(self, patients: list[GroupScoped[DecryptedPatient]]) -> list[GroupScoped[StoredDocumentIdentifier]]:
-		payload = {
-			"patients": [x0.__serialize__(lambda x1: x1.__serialize__()) for x0 in patients],
-		}
-		call_result = symbols.kotlin.root.com.icure.cardinal.sdk.py.api.PatientApi.inGroup.modifyPatientsMinimalBlocking(
-			self.cardinal_sdk._native,
-			json.dumps(payload).encode('utf-8'),
-		)
-		result_info = create_result_from_json(cast(call_result, c_char_p).value.decode('utf-8'))
-		symbols.DisposeString(call_result)
-		if result_info.failure is not None:
-			raise interpret_kt_error(result_info.failure)
-		else:
-			return_value = [GroupScoped._deserialize(x1, lambda x2: StoredDocumentIdentifier._deserialize(x2)) for x1 in result_info.success]
 			return return_value
 
 	async def modify_patients_async(self, patients: list[GroupScoped[DecryptedPatient]]) -> list[GroupScoped[DecryptedPatient]]:
@@ -3537,37 +3814,6 @@ class PatientApiInGroupEncrypted:
 			return_value = GroupScoped._deserialize(result_info.success, lambda x1: EncryptedPatient._deserialize(x1))
 			return return_value
 
-	async def create_patients_minimal_async(self, patients: list[GroupScoped[EncryptedPatient]]) -> list[GroupScoped[StoredDocumentIdentifier]]:
-		def do_decode(raw_result):
-			return [GroupScoped._deserialize(x1, lambda x2: StoredDocumentIdentifier._deserialize(x2)) for x1 in raw_result]
-		payload = {
-			"patients": [x0.__serialize__(lambda x1: x1.__serialize__()) for x0 in patients],
-		}
-		return await execute_async_method_job(
-			self.cardinal_sdk._executor,
-			True,
-			do_decode,
-			symbols.kotlin.root.com.icure.cardinal.sdk.py.api.PatientApi.inGroup.encrypted.createPatientsMinimalAsync,
-			self.cardinal_sdk._native,
-			json.dumps(payload).encode('utf-8'),
-		)
-
-	def create_patients_minimal_blocking(self, patients: list[GroupScoped[EncryptedPatient]]) -> list[GroupScoped[StoredDocumentIdentifier]]:
-		payload = {
-			"patients": [x0.__serialize__(lambda x1: x1.__serialize__()) for x0 in patients],
-		}
-		call_result = symbols.kotlin.root.com.icure.cardinal.sdk.py.api.PatientApi.inGroup.encrypted.createPatientsMinimalBlocking(
-			self.cardinal_sdk._native,
-			json.dumps(payload).encode('utf-8'),
-		)
-		result_info = create_result_from_json(cast(call_result, c_char_p).value.decode('utf-8'))
-		symbols.DisposeString(call_result)
-		if result_info.failure is not None:
-			raise interpret_kt_error(result_info.failure)
-		else:
-			return_value = [GroupScoped._deserialize(x1, lambda x2: StoredDocumentIdentifier._deserialize(x2)) for x1 in result_info.success]
-			return return_value
-
 	async def create_patients_async(self, patients: list[GroupScoped[EncryptedPatient]]) -> list[GroupScoped[EncryptedPatient]]:
 		def do_decode(raw_result):
 			return [GroupScoped._deserialize(x1, lambda x2: EncryptedPatient._deserialize(x2)) for x1 in raw_result]
@@ -3588,6 +3834,161 @@ class PatientApiInGroupEncrypted:
 			"patients": [x0.__serialize__(lambda x1: x1.__serialize__()) for x0 in patients],
 		}
 		call_result = symbols.kotlin.root.com.icure.cardinal.sdk.py.api.PatientApi.inGroup.encrypted.createPatientsBlocking(
+			self.cardinal_sdk._native,
+			json.dumps(payload).encode('utf-8'),
+		)
+		result_info = create_result_from_json(cast(call_result, c_char_p).value.decode('utf-8'))
+		symbols.DisposeString(call_result)
+		if result_info.failure is not None:
+			raise interpret_kt_error(result_info.failure)
+		else:
+			return_value = [GroupScoped._deserialize(x1, lambda x2: EncryptedPatient._deserialize(x2)) for x1 in result_info.success]
+			return return_value
+
+	async def undelete_patient_async(self, patient: GroupScoped[Patient]) -> GroupScoped[EncryptedPatient]:
+		def do_decode(raw_result):
+			return GroupScoped._deserialize(raw_result, lambda x1: EncryptedPatient._deserialize(x1))
+		payload = {
+			"patient": patient.__serialize__(lambda x0: serialize_patient(x0)),
+		}
+		return await execute_async_method_job(
+			self.cardinal_sdk._executor,
+			True,
+			do_decode,
+			symbols.kotlin.root.com.icure.cardinal.sdk.py.api.PatientApi.inGroup.encrypted.undeletePatientAsync,
+			self.cardinal_sdk._native,
+			json.dumps(payload).encode('utf-8'),
+		)
+
+	def undelete_patient_blocking(self, patient: GroupScoped[Patient]) -> GroupScoped[EncryptedPatient]:
+		payload = {
+			"patient": patient.__serialize__(lambda x0: serialize_patient(x0)),
+		}
+		call_result = symbols.kotlin.root.com.icure.cardinal.sdk.py.api.PatientApi.inGroup.encrypted.undeletePatientBlocking(
+			self.cardinal_sdk._native,
+			json.dumps(payload).encode('utf-8'),
+		)
+		result_info = create_result_from_json(cast(call_result, c_char_p).value.decode('utf-8'))
+		symbols.DisposeString(call_result)
+		if result_info.failure is not None:
+			raise interpret_kt_error(result_info.failure)
+		else:
+			return_value = GroupScoped._deserialize(result_info.success, lambda x1: EncryptedPatient._deserialize(x1))
+			return return_value
+
+	async def undelete_patients_async(self, patients: list[GroupScoped[Patient]]) -> list[GroupScoped[EncryptedPatient]]:
+		def do_decode(raw_result):
+			return [GroupScoped._deserialize(x1, lambda x2: EncryptedPatient._deserialize(x2)) for x1 in raw_result]
+		payload = {
+			"patients": [x0.__serialize__(lambda x1: serialize_patient(x1)) for x0 in patients],
+		}
+		return await execute_async_method_job(
+			self.cardinal_sdk._executor,
+			True,
+			do_decode,
+			symbols.kotlin.root.com.icure.cardinal.sdk.py.api.PatientApi.inGroup.encrypted.undeletePatientsAsync,
+			self.cardinal_sdk._native,
+			json.dumps(payload).encode('utf-8'),
+		)
+
+	def undelete_patients_blocking(self, patients: list[GroupScoped[Patient]]) -> list[GroupScoped[EncryptedPatient]]:
+		payload = {
+			"patients": [x0.__serialize__(lambda x1: serialize_patient(x1)) for x0 in patients],
+		}
+		call_result = symbols.kotlin.root.com.icure.cardinal.sdk.py.api.PatientApi.inGroup.encrypted.undeletePatientsBlocking(
+			self.cardinal_sdk._native,
+			json.dumps(payload).encode('utf-8'),
+		)
+		result_info = create_result_from_json(cast(call_result, c_char_p).value.decode('utf-8'))
+		symbols.DisposeString(call_result)
+		if result_info.failure is not None:
+			raise interpret_kt_error(result_info.failure)
+		else:
+			return_value = [GroupScoped._deserialize(x1, lambda x2: EncryptedPatient._deserialize(x2)) for x1 in result_info.success]
+			return return_value
+
+	async def modify_patient_async(self, entity: GroupScoped[EncryptedPatient]) -> GroupScoped[EncryptedPatient]:
+		def do_decode(raw_result):
+			return GroupScoped._deserialize(raw_result, lambda x1: EncryptedPatient._deserialize(x1))
+		payload = {
+			"entity": entity.__serialize__(lambda x0: x0.__serialize__()),
+		}
+		return await execute_async_method_job(
+			self.cardinal_sdk._executor,
+			True,
+			do_decode,
+			symbols.kotlin.root.com.icure.cardinal.sdk.py.api.PatientApi.inGroup.encrypted.modifyPatientAsync,
+			self.cardinal_sdk._native,
+			json.dumps(payload).encode('utf-8'),
+		)
+
+	def modify_patient_blocking(self, entity: GroupScoped[EncryptedPatient]) -> GroupScoped[EncryptedPatient]:
+		payload = {
+			"entity": entity.__serialize__(lambda x0: x0.__serialize__()),
+		}
+		call_result = symbols.kotlin.root.com.icure.cardinal.sdk.py.api.PatientApi.inGroup.encrypted.modifyPatientBlocking(
+			self.cardinal_sdk._native,
+			json.dumps(payload).encode('utf-8'),
+		)
+		result_info = create_result_from_json(cast(call_result, c_char_p).value.decode('utf-8'))
+		symbols.DisposeString(call_result)
+		if result_info.failure is not None:
+			raise interpret_kt_error(result_info.failure)
+		else:
+			return_value = GroupScoped._deserialize(result_info.success, lambda x1: EncryptedPatient._deserialize(x1))
+			return return_value
+
+	async def undelete_patient_by_id_async(self, patient_id: GroupScoped[StoredDocumentIdentifier]) -> GroupScoped[EncryptedPatient]:
+		def do_decode(raw_result):
+			return GroupScoped._deserialize(raw_result, lambda x1: EncryptedPatient._deserialize(x1))
+		payload = {
+			"patientId": patient_id.__serialize__(lambda x0: x0.__serialize__()),
+		}
+		return await execute_async_method_job(
+			self.cardinal_sdk._executor,
+			True,
+			do_decode,
+			symbols.kotlin.root.com.icure.cardinal.sdk.py.api.PatientApi.inGroup.encrypted.undeletePatientByIdAsync,
+			self.cardinal_sdk._native,
+			json.dumps(payload).encode('utf-8'),
+		)
+
+	def undelete_patient_by_id_blocking(self, patient_id: GroupScoped[StoredDocumentIdentifier]) -> GroupScoped[EncryptedPatient]:
+		payload = {
+			"patientId": patient_id.__serialize__(lambda x0: x0.__serialize__()),
+		}
+		call_result = symbols.kotlin.root.com.icure.cardinal.sdk.py.api.PatientApi.inGroup.encrypted.undeletePatientByIdBlocking(
+			self.cardinal_sdk._native,
+			json.dumps(payload).encode('utf-8'),
+		)
+		result_info = create_result_from_json(cast(call_result, c_char_p).value.decode('utf-8'))
+		symbols.DisposeString(call_result)
+		if result_info.failure is not None:
+			raise interpret_kt_error(result_info.failure)
+		else:
+			return_value = GroupScoped._deserialize(result_info.success, lambda x1: EncryptedPatient._deserialize(x1))
+			return return_value
+
+	async def undelete_patients_by_ids_async(self, patient_ids: list[GroupScoped[StoredDocumentIdentifier]]) -> list[GroupScoped[EncryptedPatient]]:
+		def do_decode(raw_result):
+			return [GroupScoped._deserialize(x1, lambda x2: EncryptedPatient._deserialize(x2)) for x1 in raw_result]
+		payload = {
+			"patientIds": [x0.__serialize__(lambda x1: x1.__serialize__()) for x0 in patient_ids],
+		}
+		return await execute_async_method_job(
+			self.cardinal_sdk._executor,
+			True,
+			do_decode,
+			symbols.kotlin.root.com.icure.cardinal.sdk.py.api.PatientApi.inGroup.encrypted.undeletePatientsByIdsAsync,
+			self.cardinal_sdk._native,
+			json.dumps(payload).encode('utf-8'),
+		)
+
+	def undelete_patients_by_ids_blocking(self, patient_ids: list[GroupScoped[StoredDocumentIdentifier]]) -> list[GroupScoped[EncryptedPatient]]:
+		payload = {
+			"patientIds": [x0.__serialize__(lambda x1: x1.__serialize__()) for x0 in patient_ids],
+		}
+		call_result = symbols.kotlin.root.com.icure.cardinal.sdk.py.api.PatientApi.inGroup.encrypted.undeletePatientsByIdsBlocking(
 			self.cardinal_sdk._native,
 			json.dumps(payload).encode('utf-8'),
 		)
@@ -3698,37 +4099,6 @@ class PatientApiInGroupEncrypted:
 			raise interpret_kt_error(result_info.failure)
 		else:
 			return_value = [GroupScoped._deserialize(x1, lambda x2: EncryptedPatient._deserialize(x2)) for x1 in result_info.success]
-			return return_value
-
-	async def modify_patients_minimal_async(self, patients: list[GroupScoped[EncryptedPatient]]) -> list[GroupScoped[StoredDocumentIdentifier]]:
-		def do_decode(raw_result):
-			return [GroupScoped._deserialize(x1, lambda x2: StoredDocumentIdentifier._deserialize(x2)) for x1 in raw_result]
-		payload = {
-			"patients": [x0.__serialize__(lambda x1: x1.__serialize__()) for x0 in patients],
-		}
-		return await execute_async_method_job(
-			self.cardinal_sdk._executor,
-			True,
-			do_decode,
-			symbols.kotlin.root.com.icure.cardinal.sdk.py.api.PatientApi.inGroup.encrypted.modifyPatientsMinimalAsync,
-			self.cardinal_sdk._native,
-			json.dumps(payload).encode('utf-8'),
-		)
-
-	def modify_patients_minimal_blocking(self, patients: list[GroupScoped[EncryptedPatient]]) -> list[GroupScoped[StoredDocumentIdentifier]]:
-		payload = {
-			"patients": [x0.__serialize__(lambda x1: x1.__serialize__()) for x0 in patients],
-		}
-		call_result = symbols.kotlin.root.com.icure.cardinal.sdk.py.api.PatientApi.inGroup.encrypted.modifyPatientsMinimalBlocking(
-			self.cardinal_sdk._native,
-			json.dumps(payload).encode('utf-8'),
-		)
-		result_info = create_result_from_json(cast(call_result, c_char_p).value.decode('utf-8'))
-		symbols.DisposeString(call_result)
-		if result_info.failure is not None:
-			raise interpret_kt_error(result_info.failure)
-		else:
-			return_value = [GroupScoped._deserialize(x1, lambda x2: StoredDocumentIdentifier._deserialize(x2)) for x1 in result_info.success]
 			return return_value
 
 	async def modify_patients_async(self, patients: list[GroupScoped[EncryptedPatient]]) -> list[GroupScoped[EncryptedPatient]]:
@@ -3986,37 +4356,6 @@ class PatientApiInGroupTryAndRecover:
 			return_value = GroupScoped._deserialize(result_info.success, lambda x1: deserialize_patient(x1))
 			return return_value
 
-	async def create_patients_minimal_async(self, patients: list[GroupScoped[Patient]]) -> list[GroupScoped[StoredDocumentIdentifier]]:
-		def do_decode(raw_result):
-			return [GroupScoped._deserialize(x1, lambda x2: StoredDocumentIdentifier._deserialize(x2)) for x1 in raw_result]
-		payload = {
-			"patients": [x0.__serialize__(lambda x1: serialize_patient(x1)) for x0 in patients],
-		}
-		return await execute_async_method_job(
-			self.cardinal_sdk._executor,
-			True,
-			do_decode,
-			symbols.kotlin.root.com.icure.cardinal.sdk.py.api.PatientApi.inGroup.tryAndRecover.createPatientsMinimalAsync,
-			self.cardinal_sdk._native,
-			json.dumps(payload).encode('utf-8'),
-		)
-
-	def create_patients_minimal_blocking(self, patients: list[GroupScoped[Patient]]) -> list[GroupScoped[StoredDocumentIdentifier]]:
-		payload = {
-			"patients": [x0.__serialize__(lambda x1: serialize_patient(x1)) for x0 in patients],
-		}
-		call_result = symbols.kotlin.root.com.icure.cardinal.sdk.py.api.PatientApi.inGroup.tryAndRecover.createPatientsMinimalBlocking(
-			self.cardinal_sdk._native,
-			json.dumps(payload).encode('utf-8'),
-		)
-		result_info = create_result_from_json(cast(call_result, c_char_p).value.decode('utf-8'))
-		symbols.DisposeString(call_result)
-		if result_info.failure is not None:
-			raise interpret_kt_error(result_info.failure)
-		else:
-			return_value = [GroupScoped._deserialize(x1, lambda x2: StoredDocumentIdentifier._deserialize(x2)) for x1 in result_info.success]
-			return return_value
-
 	async def create_patients_async(self, patients: list[GroupScoped[Patient]]) -> list[GroupScoped[Patient]]:
 		def do_decode(raw_result):
 			return [GroupScoped._deserialize(x1, lambda x2: deserialize_patient(x2)) for x1 in raw_result]
@@ -4037,6 +4376,161 @@ class PatientApiInGroupTryAndRecover:
 			"patients": [x0.__serialize__(lambda x1: serialize_patient(x1)) for x0 in patients],
 		}
 		call_result = symbols.kotlin.root.com.icure.cardinal.sdk.py.api.PatientApi.inGroup.tryAndRecover.createPatientsBlocking(
+			self.cardinal_sdk._native,
+			json.dumps(payload).encode('utf-8'),
+		)
+		result_info = create_result_from_json(cast(call_result, c_char_p).value.decode('utf-8'))
+		symbols.DisposeString(call_result)
+		if result_info.failure is not None:
+			raise interpret_kt_error(result_info.failure)
+		else:
+			return_value = [GroupScoped._deserialize(x1, lambda x2: deserialize_patient(x2)) for x1 in result_info.success]
+			return return_value
+
+	async def undelete_patient_async(self, patient: GroupScoped[Patient]) -> GroupScoped[Patient]:
+		def do_decode(raw_result):
+			return GroupScoped._deserialize(raw_result, lambda x1: deserialize_patient(x1))
+		payload = {
+			"patient": patient.__serialize__(lambda x0: serialize_patient(x0)),
+		}
+		return await execute_async_method_job(
+			self.cardinal_sdk._executor,
+			True,
+			do_decode,
+			symbols.kotlin.root.com.icure.cardinal.sdk.py.api.PatientApi.inGroup.tryAndRecover.undeletePatientAsync,
+			self.cardinal_sdk._native,
+			json.dumps(payload).encode('utf-8'),
+		)
+
+	def undelete_patient_blocking(self, patient: GroupScoped[Patient]) -> GroupScoped[Patient]:
+		payload = {
+			"patient": patient.__serialize__(lambda x0: serialize_patient(x0)),
+		}
+		call_result = symbols.kotlin.root.com.icure.cardinal.sdk.py.api.PatientApi.inGroup.tryAndRecover.undeletePatientBlocking(
+			self.cardinal_sdk._native,
+			json.dumps(payload).encode('utf-8'),
+		)
+		result_info = create_result_from_json(cast(call_result, c_char_p).value.decode('utf-8'))
+		symbols.DisposeString(call_result)
+		if result_info.failure is not None:
+			raise interpret_kt_error(result_info.failure)
+		else:
+			return_value = GroupScoped._deserialize(result_info.success, lambda x1: deserialize_patient(x1))
+			return return_value
+
+	async def undelete_patients_async(self, patients: list[GroupScoped[Patient]]) -> list[GroupScoped[Patient]]:
+		def do_decode(raw_result):
+			return [GroupScoped._deserialize(x1, lambda x2: deserialize_patient(x2)) for x1 in raw_result]
+		payload = {
+			"patients": [x0.__serialize__(lambda x1: serialize_patient(x1)) for x0 in patients],
+		}
+		return await execute_async_method_job(
+			self.cardinal_sdk._executor,
+			True,
+			do_decode,
+			symbols.kotlin.root.com.icure.cardinal.sdk.py.api.PatientApi.inGroup.tryAndRecover.undeletePatientsAsync,
+			self.cardinal_sdk._native,
+			json.dumps(payload).encode('utf-8'),
+		)
+
+	def undelete_patients_blocking(self, patients: list[GroupScoped[Patient]]) -> list[GroupScoped[Patient]]:
+		payload = {
+			"patients": [x0.__serialize__(lambda x1: serialize_patient(x1)) for x0 in patients],
+		}
+		call_result = symbols.kotlin.root.com.icure.cardinal.sdk.py.api.PatientApi.inGroup.tryAndRecover.undeletePatientsBlocking(
+			self.cardinal_sdk._native,
+			json.dumps(payload).encode('utf-8'),
+		)
+		result_info = create_result_from_json(cast(call_result, c_char_p).value.decode('utf-8'))
+		symbols.DisposeString(call_result)
+		if result_info.failure is not None:
+			raise interpret_kt_error(result_info.failure)
+		else:
+			return_value = [GroupScoped._deserialize(x1, lambda x2: deserialize_patient(x2)) for x1 in result_info.success]
+			return return_value
+
+	async def modify_patient_async(self, entity: GroupScoped[Patient]) -> GroupScoped[Patient]:
+		def do_decode(raw_result):
+			return GroupScoped._deserialize(raw_result, lambda x1: deserialize_patient(x1))
+		payload = {
+			"entity": entity.__serialize__(lambda x0: serialize_patient(x0)),
+		}
+		return await execute_async_method_job(
+			self.cardinal_sdk._executor,
+			True,
+			do_decode,
+			symbols.kotlin.root.com.icure.cardinal.sdk.py.api.PatientApi.inGroup.tryAndRecover.modifyPatientAsync,
+			self.cardinal_sdk._native,
+			json.dumps(payload).encode('utf-8'),
+		)
+
+	def modify_patient_blocking(self, entity: GroupScoped[Patient]) -> GroupScoped[Patient]:
+		payload = {
+			"entity": entity.__serialize__(lambda x0: serialize_patient(x0)),
+		}
+		call_result = symbols.kotlin.root.com.icure.cardinal.sdk.py.api.PatientApi.inGroup.tryAndRecover.modifyPatientBlocking(
+			self.cardinal_sdk._native,
+			json.dumps(payload).encode('utf-8'),
+		)
+		result_info = create_result_from_json(cast(call_result, c_char_p).value.decode('utf-8'))
+		symbols.DisposeString(call_result)
+		if result_info.failure is not None:
+			raise interpret_kt_error(result_info.failure)
+		else:
+			return_value = GroupScoped._deserialize(result_info.success, lambda x1: deserialize_patient(x1))
+			return return_value
+
+	async def undelete_patient_by_id_async(self, patient_id: GroupScoped[StoredDocumentIdentifier]) -> GroupScoped[Patient]:
+		def do_decode(raw_result):
+			return GroupScoped._deserialize(raw_result, lambda x1: deserialize_patient(x1))
+		payload = {
+			"patientId": patient_id.__serialize__(lambda x0: x0.__serialize__()),
+		}
+		return await execute_async_method_job(
+			self.cardinal_sdk._executor,
+			True,
+			do_decode,
+			symbols.kotlin.root.com.icure.cardinal.sdk.py.api.PatientApi.inGroup.tryAndRecover.undeletePatientByIdAsync,
+			self.cardinal_sdk._native,
+			json.dumps(payload).encode('utf-8'),
+		)
+
+	def undelete_patient_by_id_blocking(self, patient_id: GroupScoped[StoredDocumentIdentifier]) -> GroupScoped[Patient]:
+		payload = {
+			"patientId": patient_id.__serialize__(lambda x0: x0.__serialize__()),
+		}
+		call_result = symbols.kotlin.root.com.icure.cardinal.sdk.py.api.PatientApi.inGroup.tryAndRecover.undeletePatientByIdBlocking(
+			self.cardinal_sdk._native,
+			json.dumps(payload).encode('utf-8'),
+		)
+		result_info = create_result_from_json(cast(call_result, c_char_p).value.decode('utf-8'))
+		symbols.DisposeString(call_result)
+		if result_info.failure is not None:
+			raise interpret_kt_error(result_info.failure)
+		else:
+			return_value = GroupScoped._deserialize(result_info.success, lambda x1: deserialize_patient(x1))
+			return return_value
+
+	async def undelete_patients_by_ids_async(self, patient_ids: list[GroupScoped[StoredDocumentIdentifier]]) -> list[GroupScoped[Patient]]:
+		def do_decode(raw_result):
+			return [GroupScoped._deserialize(x1, lambda x2: deserialize_patient(x2)) for x1 in raw_result]
+		payload = {
+			"patientIds": [x0.__serialize__(lambda x1: x1.__serialize__()) for x0 in patient_ids],
+		}
+		return await execute_async_method_job(
+			self.cardinal_sdk._executor,
+			True,
+			do_decode,
+			symbols.kotlin.root.com.icure.cardinal.sdk.py.api.PatientApi.inGroup.tryAndRecover.undeletePatientsByIdsAsync,
+			self.cardinal_sdk._native,
+			json.dumps(payload).encode('utf-8'),
+		)
+
+	def undelete_patients_by_ids_blocking(self, patient_ids: list[GroupScoped[StoredDocumentIdentifier]]) -> list[GroupScoped[Patient]]:
+		payload = {
+			"patientIds": [x0.__serialize__(lambda x1: x1.__serialize__()) for x0 in patient_ids],
+		}
+		call_result = symbols.kotlin.root.com.icure.cardinal.sdk.py.api.PatientApi.inGroup.tryAndRecover.undeletePatientsByIdsBlocking(
 			self.cardinal_sdk._native,
 			json.dumps(payload).encode('utf-8'),
 		)
@@ -4147,37 +4641,6 @@ class PatientApiInGroupTryAndRecover:
 			raise interpret_kt_error(result_info.failure)
 		else:
 			return_value = [GroupScoped._deserialize(x1, lambda x2: deserialize_patient(x2)) for x1 in result_info.success]
-			return return_value
-
-	async def modify_patients_minimal_async(self, patients: list[GroupScoped[Patient]]) -> list[GroupScoped[StoredDocumentIdentifier]]:
-		def do_decode(raw_result):
-			return [GroupScoped._deserialize(x1, lambda x2: StoredDocumentIdentifier._deserialize(x2)) for x1 in raw_result]
-		payload = {
-			"patients": [x0.__serialize__(lambda x1: serialize_patient(x1)) for x0 in patients],
-		}
-		return await execute_async_method_job(
-			self.cardinal_sdk._executor,
-			True,
-			do_decode,
-			symbols.kotlin.root.com.icure.cardinal.sdk.py.api.PatientApi.inGroup.tryAndRecover.modifyPatientsMinimalAsync,
-			self.cardinal_sdk._native,
-			json.dumps(payload).encode('utf-8'),
-		)
-
-	def modify_patients_minimal_blocking(self, patients: list[GroupScoped[Patient]]) -> list[GroupScoped[StoredDocumentIdentifier]]:
-		payload = {
-			"patients": [x0.__serialize__(lambda x1: serialize_patient(x1)) for x0 in patients],
-		}
-		call_result = symbols.kotlin.root.com.icure.cardinal.sdk.py.api.PatientApi.inGroup.tryAndRecover.modifyPatientsMinimalBlocking(
-			self.cardinal_sdk._native,
-			json.dumps(payload).encode('utf-8'),
-		)
-		result_info = create_result_from_json(cast(call_result, c_char_p).value.decode('utf-8'))
-		symbols.DisposeString(call_result)
-		if result_info.failure is not None:
-			raise interpret_kt_error(result_info.failure)
-		else:
-			return_value = [GroupScoped._deserialize(x1, lambda x2: StoredDocumentIdentifier._deserialize(x2)) for x1 in result_info.success]
 			return return_value
 
 	async def modify_patients_async(self, patients: list[GroupScoped[Patient]]) -> list[GroupScoped[Patient]]:

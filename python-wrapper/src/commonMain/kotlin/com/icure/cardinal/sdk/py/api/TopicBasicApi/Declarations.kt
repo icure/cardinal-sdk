@@ -8,7 +8,6 @@ import com.icure.cardinal.sdk.model.EncryptedTopic
 import com.icure.cardinal.sdk.model.StoredDocumentIdentifier
 import com.icure.cardinal.sdk.model.Topic
 import com.icure.cardinal.sdk.model.TopicRole
-import com.icure.cardinal.sdk.model.couchdb.DocIdentifier
 import com.icure.cardinal.sdk.py.utils.PyResult
 import com.icure.cardinal.sdk.py.utils.failureToPyResultAsyncCallback
 import com.icure.cardinal.sdk.py.utils.failureToPyStringAsyncCallback
@@ -37,7 +36,6 @@ import kotlinx.cinterop.ExperimentalForeignApi
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
-import kotlinx.serialization.PolymorphicSerializer
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.builtins.ListSerializer
 import kotlinx.serialization.builtins.serializer
@@ -189,78 +187,6 @@ public fun filterTopicsBySortedAsync(
 }.failureToPyResultAsyncCallback(resultCallback)
 
 @Serializable
-private class DeleteTopicUnsafeParams(
-	public val entityId: String,
-)
-
-@OptIn(InternalIcureApi::class)
-public fun deleteTopicUnsafeBlocking(sdk: CardinalBaseApis, params: String): String =
-		kotlin.runCatching {
-	val decodedParams = fullLanguageInteropJson.decodeFromString<DeleteTopicUnsafeParams>(params)
-	runBlocking {
-		sdk.topic.deleteTopicUnsafe(
-			decodedParams.entityId,
-		)
-	}
-}.toPyString(DocIdentifier.serializer())
-
-@OptIn(
-	ExperimentalForeignApi::class,
-	InternalIcureApi::class,
-)
-public fun deleteTopicUnsafeAsync(
-	sdk: CardinalBaseApis,
-	params: String,
-	resultCallback: CPointer<CFunction<(CValues<ByteVarOf<Byte>>?,
-			CValues<ByteVarOf<Byte>>?) -> Unit>>,
-): COpaquePointer? = kotlin.runCatching {
-	val decodedParams = fullLanguageInteropJson.decodeFromString<DeleteTopicUnsafeParams>(params)
-	GlobalScope.launch {
-		kotlin.runCatching {
-			sdk.topic.deleteTopicUnsafe(
-				decodedParams.entityId,
-			)
-		}.toPyStringAsyncCallback(DocIdentifier.serializer(), resultCallback)
-	}
-}.failureToPyStringAsyncCallback(resultCallback)
-
-@Serializable
-private class DeleteTopicsUnsafeParams(
-	public val entityIds: List<String>,
-)
-
-@OptIn(InternalIcureApi::class)
-public fun deleteTopicsUnsafeBlocking(sdk: CardinalBaseApis, params: String): String =
-		kotlin.runCatching {
-	val decodedParams = fullLanguageInteropJson.decodeFromString<DeleteTopicsUnsafeParams>(params)
-	runBlocking {
-		sdk.topic.deleteTopicsUnsafe(
-			decodedParams.entityIds,
-		)
-	}
-}.toPyString(ListSerializer(DocIdentifier.serializer()))
-
-@OptIn(
-	ExperimentalForeignApi::class,
-	InternalIcureApi::class,
-)
-public fun deleteTopicsUnsafeAsync(
-	sdk: CardinalBaseApis,
-	params: String,
-	resultCallback: CPointer<CFunction<(CValues<ByteVarOf<Byte>>?,
-			CValues<ByteVarOf<Byte>>?) -> Unit>>,
-): COpaquePointer? = kotlin.runCatching {
-	val decodedParams = fullLanguageInteropJson.decodeFromString<DeleteTopicsUnsafeParams>(params)
-	GlobalScope.launch {
-		kotlin.runCatching {
-			sdk.topic.deleteTopicsUnsafe(
-				decodedParams.entityIds,
-			)
-		}.toPyStringAsyncCallback(ListSerializer(DocIdentifier.serializer()), resultCallback)
-	}
-}.failureToPyStringAsyncCallback(resultCallback)
-
-@Serializable
 private class DeleteTopicByIdParams(
 	public val entityId: String,
 	public val rev: String,
@@ -276,7 +202,7 @@ public fun deleteTopicByIdBlocking(sdk: CardinalBaseApis, params: String): Strin
 			decodedParams.rev,
 		)
 	}
-}.toPyString(DocIdentifier.serializer())
+}.toPyString(StoredDocumentIdentifier.serializer())
 
 @OptIn(
 	ExperimentalForeignApi::class,
@@ -295,7 +221,7 @@ public fun deleteTopicByIdAsync(
 				decodedParams.entityId,
 				decodedParams.rev,
 			)
-		}.toPyStringAsyncCallback(DocIdentifier.serializer(), resultCallback)
+		}.toPyStringAsyncCallback(StoredDocumentIdentifier.serializer(), resultCallback)
 	}
 }.failureToPyStringAsyncCallback(resultCallback)
 
@@ -313,7 +239,7 @@ public fun deleteTopicsByIdsBlocking(sdk: CardinalBaseApis, params: String): Str
 			decodedParams.entityIds,
 		)
 	}
-}.toPyString(ListSerializer(DocIdentifier.serializer()))
+}.toPyString(ListSerializer(StoredDocumentIdentifier.serializer()))
 
 @OptIn(
 	ExperimentalForeignApi::class,
@@ -331,7 +257,7 @@ public fun deleteTopicsByIdsAsync(
 			sdk.topic.deleteTopicsByIds(
 				decodedParams.entityIds,
 			)
-		}.toPyStringAsyncCallback(ListSerializer(DocIdentifier.serializer()), resultCallback)
+		}.toPyStringAsyncCallback(ListSerializer(StoredDocumentIdentifier.serializer()), resultCallback)
 	}
 }.failureToPyStringAsyncCallback(resultCallback)
 
@@ -375,6 +301,42 @@ public fun purgeTopicByIdAsync(
 }.failureToPyStringAsyncCallback(resultCallback)
 
 @Serializable
+private class PurgeTopicsByIdsParams(
+	public val entityIds: List<StoredDocumentIdentifier>,
+)
+
+@OptIn(InternalIcureApi::class)
+public fun purgeTopicsByIdsBlocking(sdk: CardinalBaseApis, params: String): String =
+		kotlin.runCatching {
+	val decodedParams = fullLanguageInteropJson.decodeFromString<PurgeTopicsByIdsParams>(params)
+	runBlocking {
+		sdk.topic.purgeTopicsByIds(
+			decodedParams.entityIds,
+		)
+	}
+}.toPyString(ListSerializer(StoredDocumentIdentifier.serializer()))
+
+@OptIn(
+	ExperimentalForeignApi::class,
+	InternalIcureApi::class,
+)
+public fun purgeTopicsByIdsAsync(
+	sdk: CardinalBaseApis,
+	params: String,
+	resultCallback: CPointer<CFunction<(CValues<ByteVarOf<Byte>>?,
+			CValues<ByteVarOf<Byte>>?) -> Unit>>,
+): COpaquePointer? = kotlin.runCatching {
+	val decodedParams = fullLanguageInteropJson.decodeFromString<PurgeTopicsByIdsParams>(params)
+	GlobalScope.launch {
+		kotlin.runCatching {
+			sdk.topic.purgeTopicsByIds(
+				decodedParams.entityIds,
+			)
+		}.toPyStringAsyncCallback(ListSerializer(StoredDocumentIdentifier.serializer()), resultCallback)
+	}
+}.failureToPyStringAsyncCallback(resultCallback)
+
+@Serializable
 private class DeleteTopicParams(
 	public val topic: Topic,
 )
@@ -387,7 +349,7 @@ public fun deleteTopicBlocking(sdk: CardinalBaseApis, params: String): String = 
 			decodedParams.topic,
 		)
 	}
-}.toPyString(DocIdentifier.serializer())
+}.toPyString(StoredDocumentIdentifier.serializer())
 
 @OptIn(
 	ExperimentalForeignApi::class,
@@ -405,7 +367,7 @@ public fun deleteTopicAsync(
 			sdk.topic.deleteTopic(
 				decodedParams.topic,
 			)
-		}.toPyStringAsyncCallback(DocIdentifier.serializer(), resultCallback)
+		}.toPyStringAsyncCallback(StoredDocumentIdentifier.serializer(), resultCallback)
 	}
 }.failureToPyStringAsyncCallback(resultCallback)
 
@@ -423,7 +385,7 @@ public fun deleteTopicsBlocking(sdk: CardinalBaseApis, params: String): String =
 			decodedParams.topics,
 		)
 	}
-}.toPyString(ListSerializer(DocIdentifier.serializer()))
+}.toPyString(ListSerializer(StoredDocumentIdentifier.serializer()))
 
 @OptIn(
 	ExperimentalForeignApi::class,
@@ -441,7 +403,7 @@ public fun deleteTopicsAsync(
 			sdk.topic.deleteTopics(
 				decodedParams.topics,
 			)
-		}.toPyStringAsyncCallback(ListSerializer(DocIdentifier.serializer()), resultCallback)
+		}.toPyStringAsyncCallback(ListSerializer(StoredDocumentIdentifier.serializer()), resultCallback)
 	}
 }.failureToPyStringAsyncCallback(resultCallback)
 
@@ -481,6 +443,41 @@ public fun purgeTopicAsync(
 }.failureToPyStringAsyncCallback(resultCallback)
 
 @Serializable
+private class PurgeTopicsParams(
+	public val topics: List<Topic>,
+)
+
+@OptIn(InternalIcureApi::class)
+public fun purgeTopicsBlocking(sdk: CardinalBaseApis, params: String): String = kotlin.runCatching {
+	val decodedParams = fullLanguageInteropJson.decodeFromString<PurgeTopicsParams>(params)
+	runBlocking {
+		sdk.topic.purgeTopics(
+			decodedParams.topics,
+		)
+	}
+}.toPyString(ListSerializer(StoredDocumentIdentifier.serializer()))
+
+@OptIn(
+	ExperimentalForeignApi::class,
+	InternalIcureApi::class,
+)
+public fun purgeTopicsAsync(
+	sdk: CardinalBaseApis,
+	params: String,
+	resultCallback: CPointer<CFunction<(CValues<ByteVarOf<Byte>>?,
+			CValues<ByteVarOf<Byte>>?) -> Unit>>,
+): COpaquePointer? = kotlin.runCatching {
+	val decodedParams = fullLanguageInteropJson.decodeFromString<PurgeTopicsParams>(params)
+	GlobalScope.launch {
+		kotlin.runCatching {
+			sdk.topic.purgeTopics(
+				decodedParams.topics,
+			)
+		}.toPyStringAsyncCallback(ListSerializer(StoredDocumentIdentifier.serializer()), resultCallback)
+	}
+}.failureToPyStringAsyncCallback(resultCallback)
+
+@Serializable
 private class CreateTopicParams(
 	public val entity: EncryptedTopic,
 )
@@ -516,73 +513,38 @@ public fun createTopicAsync(
 }.failureToPyStringAsyncCallback(resultCallback)
 
 @Serializable
-private class UndeleteTopicParams(
-	public val topic: Topic,
+private class CreateTopicsParams(
+	public val entities: List<EncryptedTopic>,
 )
 
 @OptIn(InternalIcureApi::class)
-public fun undeleteTopicBlocking(sdk: CardinalBaseApis, params: String): String =
+public fun createTopicsBlocking(sdk: CardinalBaseApis, params: String): String =
 		kotlin.runCatching {
-	val decodedParams = fullLanguageInteropJson.decodeFromString<UndeleteTopicParams>(params)
+	val decodedParams = fullLanguageInteropJson.decodeFromString<CreateTopicsParams>(params)
 	runBlocking {
-		sdk.topic.undeleteTopic(
-			decodedParams.topic,
+		sdk.topic.createTopics(
+			decodedParams.entities,
 		)
 	}
-}.toPyString(PolymorphicSerializer(Topic::class))
+}.toPyString(ListSerializer(EncryptedTopic.serializer()))
 
 @OptIn(
 	ExperimentalForeignApi::class,
 	InternalIcureApi::class,
 )
-public fun undeleteTopicAsync(
+public fun createTopicsAsync(
 	sdk: CardinalBaseApis,
 	params: String,
 	resultCallback: CPointer<CFunction<(CValues<ByteVarOf<Byte>>?,
 			CValues<ByteVarOf<Byte>>?) -> Unit>>,
 ): COpaquePointer? = kotlin.runCatching {
-	val decodedParams = fullLanguageInteropJson.decodeFromString<UndeleteTopicParams>(params)
+	val decodedParams = fullLanguageInteropJson.decodeFromString<CreateTopicsParams>(params)
 	GlobalScope.launch {
 		kotlin.runCatching {
-			sdk.topic.undeleteTopic(
-				decodedParams.topic,
+			sdk.topic.createTopics(
+				decodedParams.entities,
 			)
-		}.toPyStringAsyncCallback(PolymorphicSerializer(Topic::class), resultCallback)
-	}
-}.failureToPyStringAsyncCallback(resultCallback)
-
-@Serializable
-private class ModifyTopicParams(
-	public val entity: EncryptedTopic,
-)
-
-@OptIn(InternalIcureApi::class)
-public fun modifyTopicBlocking(sdk: CardinalBaseApis, params: String): String = kotlin.runCatching {
-	val decodedParams = fullLanguageInteropJson.decodeFromString<ModifyTopicParams>(params)
-	runBlocking {
-		sdk.topic.modifyTopic(
-			decodedParams.entity,
-		)
-	}
-}.toPyString(EncryptedTopic.serializer())
-
-@OptIn(
-	ExperimentalForeignApi::class,
-	InternalIcureApi::class,
-)
-public fun modifyTopicAsync(
-	sdk: CardinalBaseApis,
-	params: String,
-	resultCallback: CPointer<CFunction<(CValues<ByteVarOf<Byte>>?,
-			CValues<ByteVarOf<Byte>>?) -> Unit>>,
-): COpaquePointer? = kotlin.runCatching {
-	val decodedParams = fullLanguageInteropJson.decodeFromString<ModifyTopicParams>(params)
-	GlobalScope.launch {
-		kotlin.runCatching {
-			sdk.topic.modifyTopic(
-				decodedParams.entity,
-			)
-		}.toPyStringAsyncCallback(EncryptedTopic.serializer(), resultCallback)
+		}.toPyStringAsyncCallback(ListSerializer(EncryptedTopic.serializer()), resultCallback)
 	}
 }.failureToPyStringAsyncCallback(resultCallback)
 
@@ -622,6 +584,185 @@ public fun undeleteTopicByIdAsync(
 				decodedParams.rev,
 			)
 		}.toPyStringAsyncCallback(EncryptedTopic.serializer(), resultCallback)
+	}
+}.failureToPyStringAsyncCallback(resultCallback)
+
+@Serializable
+private class UndeleteTopicsByIdsParams(
+	public val entityIds: List<StoredDocumentIdentifier>,
+)
+
+@OptIn(InternalIcureApi::class)
+public fun undeleteTopicsByIdsBlocking(sdk: CardinalBaseApis, params: String): String =
+		kotlin.runCatching {
+	val decodedParams = fullLanguageInteropJson.decodeFromString<UndeleteTopicsByIdsParams>(params)
+	runBlocking {
+		sdk.topic.undeleteTopicsByIds(
+			decodedParams.entityIds,
+		)
+	}
+}.toPyString(ListSerializer(EncryptedTopic.serializer()))
+
+@OptIn(
+	ExperimentalForeignApi::class,
+	InternalIcureApi::class,
+)
+public fun undeleteTopicsByIdsAsync(
+	sdk: CardinalBaseApis,
+	params: String,
+	resultCallback: CPointer<CFunction<(CValues<ByteVarOf<Byte>>?,
+			CValues<ByteVarOf<Byte>>?) -> Unit>>,
+): COpaquePointer? = kotlin.runCatching {
+	val decodedParams = fullLanguageInteropJson.decodeFromString<UndeleteTopicsByIdsParams>(params)
+	GlobalScope.launch {
+		kotlin.runCatching {
+			sdk.topic.undeleteTopicsByIds(
+				decodedParams.entityIds,
+			)
+		}.toPyStringAsyncCallback(ListSerializer(EncryptedTopic.serializer()), resultCallback)
+	}
+}.failureToPyStringAsyncCallback(resultCallback)
+
+@Serializable
+private class UndeleteTopicParams(
+	public val topic: Topic,
+)
+
+@OptIn(InternalIcureApi::class)
+public fun undeleteTopicBlocking(sdk: CardinalBaseApis, params: String): String =
+		kotlin.runCatching {
+	val decodedParams = fullLanguageInteropJson.decodeFromString<UndeleteTopicParams>(params)
+	runBlocking {
+		sdk.topic.undeleteTopic(
+			decodedParams.topic,
+		)
+	}
+}.toPyString(EncryptedTopic.serializer())
+
+@OptIn(
+	ExperimentalForeignApi::class,
+	InternalIcureApi::class,
+)
+public fun undeleteTopicAsync(
+	sdk: CardinalBaseApis,
+	params: String,
+	resultCallback: CPointer<CFunction<(CValues<ByteVarOf<Byte>>?,
+			CValues<ByteVarOf<Byte>>?) -> Unit>>,
+): COpaquePointer? = kotlin.runCatching {
+	val decodedParams = fullLanguageInteropJson.decodeFromString<UndeleteTopicParams>(params)
+	GlobalScope.launch {
+		kotlin.runCatching {
+			sdk.topic.undeleteTopic(
+				decodedParams.topic,
+			)
+		}.toPyStringAsyncCallback(EncryptedTopic.serializer(), resultCallback)
+	}
+}.failureToPyStringAsyncCallback(resultCallback)
+
+@Serializable
+private class UndeleteTopicsParams(
+	public val topics: List<Topic>,
+)
+
+@OptIn(InternalIcureApi::class)
+public fun undeleteTopicsBlocking(sdk: CardinalBaseApis, params: String): String =
+		kotlin.runCatching {
+	val decodedParams = fullLanguageInteropJson.decodeFromString<UndeleteTopicsParams>(params)
+	runBlocking {
+		sdk.topic.undeleteTopics(
+			decodedParams.topics,
+		)
+	}
+}.toPyString(ListSerializer(EncryptedTopic.serializer()))
+
+@OptIn(
+	ExperimentalForeignApi::class,
+	InternalIcureApi::class,
+)
+public fun undeleteTopicsAsync(
+	sdk: CardinalBaseApis,
+	params: String,
+	resultCallback: CPointer<CFunction<(CValues<ByteVarOf<Byte>>?,
+			CValues<ByteVarOf<Byte>>?) -> Unit>>,
+): COpaquePointer? = kotlin.runCatching {
+	val decodedParams = fullLanguageInteropJson.decodeFromString<UndeleteTopicsParams>(params)
+	GlobalScope.launch {
+		kotlin.runCatching {
+			sdk.topic.undeleteTopics(
+				decodedParams.topics,
+			)
+		}.toPyStringAsyncCallback(ListSerializer(EncryptedTopic.serializer()), resultCallback)
+	}
+}.failureToPyStringAsyncCallback(resultCallback)
+
+@Serializable
+private class ModifyTopicParams(
+	public val entity: EncryptedTopic,
+)
+
+@OptIn(InternalIcureApi::class)
+public fun modifyTopicBlocking(sdk: CardinalBaseApis, params: String): String = kotlin.runCatching {
+	val decodedParams = fullLanguageInteropJson.decodeFromString<ModifyTopicParams>(params)
+	runBlocking {
+		sdk.topic.modifyTopic(
+			decodedParams.entity,
+		)
+	}
+}.toPyString(EncryptedTopic.serializer())
+
+@OptIn(
+	ExperimentalForeignApi::class,
+	InternalIcureApi::class,
+)
+public fun modifyTopicAsync(
+	sdk: CardinalBaseApis,
+	params: String,
+	resultCallback: CPointer<CFunction<(CValues<ByteVarOf<Byte>>?,
+			CValues<ByteVarOf<Byte>>?) -> Unit>>,
+): COpaquePointer? = kotlin.runCatching {
+	val decodedParams = fullLanguageInteropJson.decodeFromString<ModifyTopicParams>(params)
+	GlobalScope.launch {
+		kotlin.runCatching {
+			sdk.topic.modifyTopic(
+				decodedParams.entity,
+			)
+		}.toPyStringAsyncCallback(EncryptedTopic.serializer(), resultCallback)
+	}
+}.failureToPyStringAsyncCallback(resultCallback)
+
+@Serializable
+private class ModifyTopicsParams(
+	public val entities: List<EncryptedTopic>,
+)
+
+@OptIn(InternalIcureApi::class)
+public fun modifyTopicsBlocking(sdk: CardinalBaseApis, params: String): String =
+		kotlin.runCatching {
+	val decodedParams = fullLanguageInteropJson.decodeFromString<ModifyTopicsParams>(params)
+	runBlocking {
+		sdk.topic.modifyTopics(
+			decodedParams.entities,
+		)
+	}
+}.toPyString(ListSerializer(EncryptedTopic.serializer()))
+
+@OptIn(
+	ExperimentalForeignApi::class,
+	InternalIcureApi::class,
+)
+public fun modifyTopicsAsync(
+	sdk: CardinalBaseApis,
+	params: String,
+	resultCallback: CPointer<CFunction<(CValues<ByteVarOf<Byte>>?,
+			CValues<ByteVarOf<Byte>>?) -> Unit>>,
+): COpaquePointer? = kotlin.runCatching {
+	val decodedParams = fullLanguageInteropJson.decodeFromString<ModifyTopicsParams>(params)
+	GlobalScope.launch {
+		kotlin.runCatching {
+			sdk.topic.modifyTopics(
+				decodedParams.entities,
+			)
+		}.toPyStringAsyncCallback(ListSerializer(EncryptedTopic.serializer()), resultCallback)
 	}
 }.failureToPyStringAsyncCallback(resultCallback)
 

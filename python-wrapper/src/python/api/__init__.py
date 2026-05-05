@@ -4,7 +4,6 @@ from cardinal_sdk.api.AccessLogBasicApi import AccessLogBasicApi
 from cardinal_sdk.api.PlaceApi import PlaceApi
 from cardinal_sdk.api.DocumentBasicApi import DocumentBasicApi
 from cardinal_sdk.api.PatientBasicApi import PatientBasicApi
-from cardinal_sdk.api.ClassificationApi import ClassificationApi
 from cardinal_sdk.api.CalendarItemBasicApi import CalendarItemBasicApi
 from cardinal_sdk.api.MaintenanceTaskApi import MaintenanceTaskApi
 from cardinal_sdk.api.FormBasicApi import FormBasicApi
@@ -15,7 +14,6 @@ from cardinal_sdk.api.ContactApi import ContactApi
 from cardinal_sdk.api.ReceiptApi import ReceiptApi
 from cardinal_sdk.api.HealthcarePartyApi import HealthcarePartyApi
 from cardinal_sdk.api.AccessLogApi import AccessLogApi
-from cardinal_sdk.api.PermissionApi import PermissionApi
 from cardinal_sdk.api.CodeApi import CodeApi
 from cardinal_sdk.api.FrontEndMigrationApi import FrontEndMigrationApi
 from cardinal_sdk.api.TopicApi import TopicApi
@@ -25,7 +23,6 @@ from cardinal_sdk.api.ContactBasicApi import ContactBasicApi
 from cardinal_sdk.api.CalendarItemApi import CalendarItemApi
 from cardinal_sdk.api.CryptoApi import CryptoApi
 from cardinal_sdk.api.ReceiptBasicApi import ReceiptBasicApi
-from cardinal_sdk.api.ClassificationBasicApi import ClassificationBasicApi
 from cardinal_sdk.api.ShamirKeysManagerApi import ShamirKeysManagerApi
 from cardinal_sdk.api.DocumentApi import DocumentApi
 from cardinal_sdk.api.AuthApi import AuthApi

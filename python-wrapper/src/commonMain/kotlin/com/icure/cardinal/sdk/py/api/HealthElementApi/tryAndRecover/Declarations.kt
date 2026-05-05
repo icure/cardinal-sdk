@@ -6,7 +6,7 @@ import com.icure.cardinal.sdk.crypto.entities.HealthElementShareOptions
 import com.icure.cardinal.sdk.filters.FilterOptions
 import com.icure.cardinal.sdk.filters.SortableFilterOptions
 import com.icure.cardinal.sdk.model.HealthElement
-import com.icure.cardinal.sdk.model.Patient
+import com.icure.cardinal.sdk.model.StoredDocumentIdentifier
 import com.icure.cardinal.sdk.py.utils.PyResult
 import com.icure.cardinal.sdk.py.utils.failureToPyResultAsyncCallback
 import com.icure.cardinal.sdk.py.utils.failureToPyStringAsyncCallback
@@ -17,9 +17,7 @@ import com.icure.cardinal.sdk.py.utils.toPyStringAsyncCallback
 import com.icure.cardinal.sdk.serialization.PaginatedListIteratorWithSerializer
 import com.icure.cardinal.sdk.utils.Serialization.fullLanguageInteropJson
 import com.icure.utils.InternalIcureApi
-import kotlin.Boolean
 import kotlin.Byte
-import kotlin.Long
 import kotlin.OptIn
 import kotlin.String
 import kotlin.Unit
@@ -116,57 +114,6 @@ public fun shareWithManyAsync(
 		}.toPyStringAsyncCallback(PolymorphicSerializer(HealthElement::class), resultCallback)
 	}
 }.failureToPyStringAsyncCallback(resultCallback)
-
-@Serializable
-private class FindHealthElementsByHcPartyPatientParams(
-	public val hcPartyId: String,
-	public val patient: Patient,
-	public val startDate: Long? = null,
-	public val endDate: Long? = null,
-	public val descending: Boolean? = null,
-)
-
-@OptIn(InternalIcureApi::class)
-public fun findHealthElementsByHcPartyPatientBlocking(sdk: CardinalApis, params: String): PyResult =
-		kotlin.runCatching {
-	val decodedParams =
-			fullLanguageInteropJson.decodeFromString<FindHealthElementsByHcPartyPatientParams>(params)
-	runBlocking {
-		sdk.healthElement.tryAndRecover.findHealthElementsByHcPartyPatient(
-			decodedParams.hcPartyId,
-			decodedParams.patient,
-			decodedParams.startDate,
-			decodedParams.endDate,
-			decodedParams.descending,
-		)
-	}
-}.toPyResult {
-	PaginatedListIteratorWithSerializer(it, PolymorphicSerializer(HealthElement::class))}
-
-@OptIn(
-	ExperimentalForeignApi::class,
-	InternalIcureApi::class,
-)
-public fun findHealthElementsByHcPartyPatientAsync(
-	sdk: CardinalApis,
-	params: String,
-	resultCallback: CPointer<CFunction<(COpaquePointer?, CValues<ByteVarOf<Byte>>?) -> Unit>>,
-): COpaquePointer? = kotlin.runCatching {
-	val decodedParams =
-			fullLanguageInteropJson.decodeFromString<FindHealthElementsByHcPartyPatientParams>(params)
-	GlobalScope.launch {
-		kotlin.runCatching {
-			sdk.healthElement.tryAndRecover.findHealthElementsByHcPartyPatient(
-				decodedParams.hcPartyId,
-				decodedParams.patient,
-				decodedParams.startDate,
-				decodedParams.endDate,
-				decodedParams.descending,
-			)
-		}.toPyResultAsyncCallback(resultCallback) {
-			PaginatedListIteratorWithSerializer(it, PolymorphicSerializer(HealthElement::class))}
-	}
-}.failureToPyResultAsyncCallback(resultCallback)
 
 @Serializable
 private class FilterHealthElementsByParams(
@@ -359,6 +306,45 @@ public fun undeleteHealthElementByIdAsync(
 }.failureToPyStringAsyncCallback(resultCallback)
 
 @Serializable
+private class UndeleteHealthElementsByIdsParams(
+	public val entityIds: List<StoredDocumentIdentifier>,
+)
+
+@OptIn(InternalIcureApi::class)
+public fun undeleteHealthElementsByIdsBlocking(sdk: CardinalApis, params: String): String =
+		kotlin.runCatching {
+	val decodedParams =
+			fullLanguageInteropJson.decodeFromString<UndeleteHealthElementsByIdsParams>(params)
+	runBlocking {
+		sdk.healthElement.tryAndRecover.undeleteHealthElementsByIds(
+			decodedParams.entityIds,
+		)
+	}
+}.toPyString(ListSerializer(PolymorphicSerializer(HealthElement::class)))
+
+@OptIn(
+	ExperimentalForeignApi::class,
+	InternalIcureApi::class,
+)
+public fun undeleteHealthElementsByIdsAsync(
+	sdk: CardinalApis,
+	params: String,
+	resultCallback: CPointer<CFunction<(CValues<ByteVarOf<Byte>>?,
+			CValues<ByteVarOf<Byte>>?) -> Unit>>,
+): COpaquePointer? = kotlin.runCatching {
+	val decodedParams =
+			fullLanguageInteropJson.decodeFromString<UndeleteHealthElementsByIdsParams>(params)
+	GlobalScope.launch {
+		kotlin.runCatching {
+			sdk.healthElement.tryAndRecover.undeleteHealthElementsByIds(
+				decodedParams.entityIds,
+			)
+		}.toPyStringAsyncCallback(ListSerializer(PolymorphicSerializer(HealthElement::class)),
+				resultCallback)
+	}
+}.failureToPyStringAsyncCallback(resultCallback)
+
+@Serializable
 private class UndeleteHealthElementParams(
 	public val healthElement: HealthElement,
 )
@@ -391,6 +377,43 @@ public fun undeleteHealthElementAsync(
 				decodedParams.healthElement,
 			)
 		}.toPyStringAsyncCallback(PolymorphicSerializer(HealthElement::class), resultCallback)
+	}
+}.failureToPyStringAsyncCallback(resultCallback)
+
+@Serializable
+private class UndeleteHealthElementsParams(
+	public val healthElements: List<HealthElement>,
+)
+
+@OptIn(InternalIcureApi::class)
+public fun undeleteHealthElementsBlocking(sdk: CardinalApis, params: String): String =
+		kotlin.runCatching {
+	val decodedParams = fullLanguageInteropJson.decodeFromString<UndeleteHealthElementsParams>(params)
+	runBlocking {
+		sdk.healthElement.tryAndRecover.undeleteHealthElements(
+			decodedParams.healthElements,
+		)
+	}
+}.toPyString(ListSerializer(PolymorphicSerializer(HealthElement::class)))
+
+@OptIn(
+	ExperimentalForeignApi::class,
+	InternalIcureApi::class,
+)
+public fun undeleteHealthElementsAsync(
+	sdk: CardinalApis,
+	params: String,
+	resultCallback: CPointer<CFunction<(CValues<ByteVarOf<Byte>>?,
+			CValues<ByteVarOf<Byte>>?) -> Unit>>,
+): COpaquePointer? = kotlin.runCatching {
+	val decodedParams = fullLanguageInteropJson.decodeFromString<UndeleteHealthElementsParams>(params)
+	GlobalScope.launch {
+		kotlin.runCatching {
+			sdk.healthElement.tryAndRecover.undeleteHealthElements(
+				decodedParams.healthElements,
+			)
+		}.toPyStringAsyncCallback(ListSerializer(PolymorphicSerializer(HealthElement::class)),
+				resultCallback)
 	}
 }.failureToPyStringAsyncCallback(resultCallback)
 

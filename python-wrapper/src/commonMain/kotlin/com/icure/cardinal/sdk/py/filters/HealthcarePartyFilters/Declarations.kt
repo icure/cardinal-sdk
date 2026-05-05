@@ -118,22 +118,3 @@ public fun byParentId(params: String): String = kotlin.runCatching {
 		decodedParams.parentId,
 	)
 }.toPyString(BaseFilterOptions.serializer(HealthcareParty.serializer()))
-
-@Serializable
-private class ByTypeSpecialtyPostCodeParams(
-	public val specialty: String,
-	public val specCode: String,
-	public val startPostCode: String,
-	public val endPostCode: String,
-)
-
-@OptIn(InternalIcureApi::class)
-public fun byTypeSpecialtyPostCode(params: String): String = kotlin.runCatching {
-	val decodedParams = fullLanguageInteropJson.decodeFromString<ByTypeSpecialtyPostCodeParams>(params)
-	HealthcarePartyFilters.byTypeSpecialtyPostCode(
-		decodedParams.specialty,
-		decodedParams.specCode,
-		decodedParams.startPostCode,
-		decodedParams.endPostCode,
-	)
-}.toPyString(BaseFilterOptions.serializer(HealthcareParty.serializer()))

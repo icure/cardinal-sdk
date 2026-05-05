@@ -4,7 +4,7 @@ from cardinal_sdk.kotlin_types import symbols
 from cardinal_sdk.model.CallResult import create_result_from_json, interpret_kt_error
 from ctypes import cast, c_char_p
 from cardinal_sdk.filters.FilterOptions import BaseFilterOptions, FilterOptions, BaseSortableFilterOptions, SortableFilterOptions
-from cardinal_sdk.model import Message, Patient, serialize_patient, EntityReferenceInGroup
+from cardinal_sdk.model import Message, EntityReferenceInGroup, Patient, serialize_patient, GroupScoped
 from typing import Optional
 
 
@@ -56,6 +56,23 @@ class MessageFilters:
 			return return_value
 
 	@classmethod
+	def by_transport_guid_for_data_owner_in_group(cls, data_owner: EntityReferenceInGroup, transport_guid: str) -> BaseSortableFilterOptions[Message]:
+		payload = {
+			"dataOwner": data_owner.__serialize__(),
+			"transportGuid": transport_guid,
+		}
+		call_result = symbols.kotlin.root.com.icure.cardinal.sdk.py.filters.MessageFilters.byTransportGuidForDataOwnerInGroup(
+			json.dumps(payload).encode('utf-8')
+		)
+		result_info = create_result_from_json(cast(call_result, c_char_p).value.decode('utf-8'))
+		symbols.DisposeString(call_result)
+		if result_info.failure is not None:
+			raise interpret_kt_error(result_info.failure)
+		else:
+			return_value = BaseSortableFilterOptions(result_info.success)
+			return return_value
+
+	@classmethod
 	def by_transport_guid_for_self(cls, transport_guid: str) -> SortableFilterOptions[Message]:
 		payload = {
 			"transportGuid": transport_guid,
@@ -78,6 +95,23 @@ class MessageFilters:
 			"address": address,
 		}
 		call_result = symbols.kotlin.root.com.icure.cardinal.sdk.py.filters.MessageFilters.fromAddressForDataOwner(
+			json.dumps(payload).encode('utf-8')
+		)
+		result_info = create_result_from_json(cast(call_result, c_char_p).value.decode('utf-8'))
+		symbols.DisposeString(call_result)
+		if result_info.failure is not None:
+			raise interpret_kt_error(result_info.failure)
+		else:
+			return_value = BaseFilterOptions(result_info.success)
+			return return_value
+
+	@classmethod
+	def from_address_for_data_owner_in_group(cls, data_owner: EntityReferenceInGroup, address: str) -> BaseFilterOptions[Message]:
+		payload = {
+			"dataOwner": data_owner.__serialize__(),
+			"address": address,
+		}
+		call_result = symbols.kotlin.root.com.icure.cardinal.sdk.py.filters.MessageFilters.fromAddressForDataOwnerInGroup(
 			json.dumps(payload).encode('utf-8')
 		)
 		result_info = create_result_from_json(cast(call_result, c_char_p).value.decode('utf-8'))
@@ -114,6 +148,26 @@ class MessageFilters:
 			"descending": descending,
 		}
 		call_result = symbols.kotlin.root.com.icure.cardinal.sdk.py.filters.MessageFilters.byPatientsSentDateForDataOwner(
+			json.dumps(payload).encode('utf-8')
+		)
+		result_info = create_result_from_json(cast(call_result, c_char_p).value.decode('utf-8'))
+		symbols.DisposeString(call_result)
+		if result_info.failure is not None:
+			raise interpret_kt_error(result_info.failure)
+		else:
+			return_value = SortableFilterOptions(result_info.success)
+			return return_value
+
+	@classmethod
+	def by_patients_sent_date_for_data_owner_in_group(cls, data_owner: EntityReferenceInGroup, patients: list[GroupScoped[Patient]], from_: Optional[int] = None, to: Optional[int] = None, descending: bool = False) -> SortableFilterOptions[Message]:
+		payload = {
+			"dataOwner": data_owner.__serialize__(),
+			"patients": [x0.__serialize__(lambda x1: serialize_patient(x1)) for x0 in patients],
+			"from": from_,
+			"to": to,
+			"descending": descending,
+		}
+		call_result = symbols.kotlin.root.com.icure.cardinal.sdk.py.filters.MessageFilters.byPatientsSentDateForDataOwnerInGroup(
 			json.dumps(payload).encode('utf-8')
 		)
 		result_info = create_result_from_json(cast(call_result, c_char_p).value.decode('utf-8'))
@@ -164,6 +218,26 @@ class MessageFilters:
 			return return_value
 
 	@classmethod
+	def by_patient_secret_ids_sent_date_for_data_owner_in_group(cls, data_owner: EntityReferenceInGroup, secret_ids: list[str], from_: Optional[int] = None, to: Optional[int] = None, descending: bool = False) -> BaseSortableFilterOptions[Message]:
+		payload = {
+			"dataOwner": data_owner.__serialize__(),
+			"secretIds": [x0 for x0 in secret_ids],
+			"from": from_,
+			"to": to,
+			"descending": descending,
+		}
+		call_result = symbols.kotlin.root.com.icure.cardinal.sdk.py.filters.MessageFilters.byPatientSecretIdsSentDateForDataOwnerInGroup(
+			json.dumps(payload).encode('utf-8')
+		)
+		result_info = create_result_from_json(cast(call_result, c_char_p).value.decode('utf-8'))
+		symbols.DisposeString(call_result)
+		if result_info.failure is not None:
+			raise interpret_kt_error(result_info.failure)
+		else:
+			return_value = BaseSortableFilterOptions(result_info.success)
+			return return_value
+
+	@classmethod
 	def by_patient_secret_ids_sent_date_for_self(cls, secret_ids: list[str], from_: Optional[int] = None, to: Optional[int] = None, descending: bool = False) -> SortableFilterOptions[Message]:
 		payload = {
 			"secretIds": [x0 for x0 in secret_ids],
@@ -189,6 +263,23 @@ class MessageFilters:
 			"address": address,
 		}
 		call_result = symbols.kotlin.root.com.icure.cardinal.sdk.py.filters.MessageFilters.toAddressForDataOwner(
+			json.dumps(payload).encode('utf-8')
+		)
+		result_info = create_result_from_json(cast(call_result, c_char_p).value.decode('utf-8'))
+		symbols.DisposeString(call_result)
+		if result_info.failure is not None:
+			raise interpret_kt_error(result_info.failure)
+		else:
+			return_value = BaseFilterOptions(result_info.success)
+			return return_value
+
+	@classmethod
+	def to_address_for_data_owner_in_group(cls, data_owner: EntityReferenceInGroup, address: str) -> BaseFilterOptions[Message]:
+		payload = {
+			"dataOwner": data_owner.__serialize__(),
+			"address": address,
+		}
+		call_result = symbols.kotlin.root.com.icure.cardinal.sdk.py.filters.MessageFilters.toAddressForDataOwnerInGroup(
 			json.dumps(payload).encode('utf-8')
 		)
 		result_info = create_result_from_json(cast(call_result, c_char_p).value.decode('utf-8'))
@@ -236,6 +327,26 @@ class MessageFilters:
 			return return_value
 
 	@classmethod
+	def by_transport_guid_sent_date_for_data_owner_in_group(cls, data_owner: EntityReferenceInGroup, transport_guid: str, from_: Optional[int], to: Optional[int], descending: bool = False) -> BaseSortableFilterOptions[Message]:
+		payload = {
+			"dataOwner": data_owner.__serialize__(),
+			"transportGuid": transport_guid,
+			"from": from_,
+			"to": to,
+			"descending": descending,
+		}
+		call_result = symbols.kotlin.root.com.icure.cardinal.sdk.py.filters.MessageFilters.byTransportGuidSentDateForDataOwnerInGroup(
+			json.dumps(payload).encode('utf-8')
+		)
+		result_info = create_result_from_json(cast(call_result, c_char_p).value.decode('utf-8'))
+		symbols.DisposeString(call_result)
+		if result_info.failure is not None:
+			raise interpret_kt_error(result_info.failure)
+		else:
+			return_value = BaseSortableFilterOptions(result_info.success)
+			return return_value
+
+	@classmethod
 	def by_transport_guid_sent_date_for_self(cls, transport_guid: str, from_: Optional[int], to: Optional[int], descending: bool = False) -> SortableFilterOptions[Message]:
 		payload = {
 			"transportGuid": transport_guid,
@@ -261,6 +372,23 @@ class MessageFilters:
 			"transportGuid": transport_guid,
 		}
 		call_result = symbols.kotlin.root.com.icure.cardinal.sdk.py.filters.MessageFilters.latestByTransportGuidForDataOwner(
+			json.dumps(payload).encode('utf-8')
+		)
+		result_info = create_result_from_json(cast(call_result, c_char_p).value.decode('utf-8'))
+		symbols.DisposeString(call_result)
+		if result_info.failure is not None:
+			raise interpret_kt_error(result_info.failure)
+		else:
+			return_value = BaseFilterOptions(result_info.success)
+			return return_value
+
+	@classmethod
+	def latest_by_transport_guid_for_data_owner_in_group(cls, data_owner: EntityReferenceInGroup, transport_guid: str) -> BaseFilterOptions[Message]:
+		payload = {
+			"dataOwner": data_owner.__serialize__(),
+			"transportGuid": transport_guid,
+		}
+		call_result = symbols.kotlin.root.com.icure.cardinal.sdk.py.filters.MessageFilters.latestByTransportGuidForDataOwnerInGroup(
 			json.dumps(payload).encode('utf-8')
 		)
 		result_info = create_result_from_json(cast(call_result, c_char_p).value.decode('utf-8'))
@@ -339,14 +467,14 @@ class MessageFilters:
 			return return_value
 
 	@classmethod
-	def lifecycle_between_for_data_owner_in_group(cls, data_owner: EntityReferenceInGroup, start_timestamp: Optional[int], end_timestamp: Optional[int], descending: bool) -> BaseFilterOptions[Message]:
+	def lifecycle_between_for_data_owner_in_group_in_group(cls, data_owner: EntityReferenceInGroup, start_timestamp: Optional[int], end_timestamp: Optional[int], descending: bool) -> BaseFilterOptions[Message]:
 		payload = {
 			"dataOwner": data_owner.__serialize__(),
 			"startTimestamp": start_timestamp,
 			"endTimestamp": end_timestamp,
 			"descending": descending,
 		}
-		call_result = symbols.kotlin.root.com.icure.cardinal.sdk.py.filters.MessageFilters.lifecycleBetweenForDataOwnerInGroup(
+		call_result = symbols.kotlin.root.com.icure.cardinal.sdk.py.filters.MessageFilters.lifecycleBetweenForDataOwnerInGroupInGroup(
 			json.dumps(payload).encode('utf-8')
 		)
 		result_info = create_result_from_json(cast(call_result, c_char_p).value.decode('utf-8'))
@@ -373,4 +501,110 @@ class MessageFilters:
 			raise interpret_kt_error(result_info.failure)
 		else:
 			return_value = FilterOptions(result_info.success)
+			return return_value
+
+	@classmethod
+	def by_code_for_data_owner(cls, data_owner_id: str, code_type: str, code_code: Optional[str] = None) -> BaseSortableFilterOptions[Message]:
+		payload = {
+			"dataOwnerId": data_owner_id,
+			"codeType": code_type,
+			"codeCode": code_code,
+		}
+		call_result = symbols.kotlin.root.com.icure.cardinal.sdk.py.filters.MessageFilters.byCodeForDataOwner(
+			json.dumps(payload).encode('utf-8')
+		)
+		result_info = create_result_from_json(cast(call_result, c_char_p).value.decode('utf-8'))
+		symbols.DisposeString(call_result)
+		if result_info.failure is not None:
+			raise interpret_kt_error(result_info.failure)
+		else:
+			return_value = BaseSortableFilterOptions(result_info.success)
+			return return_value
+
+	@classmethod
+	def by_code_for_data_owner_in_group(cls, data_owner: EntityReferenceInGroup, code_type: str, code_code: Optional[str] = None) -> BaseSortableFilterOptions[Message]:
+		payload = {
+			"dataOwner": data_owner.__serialize__(),
+			"codeType": code_type,
+			"codeCode": code_code,
+		}
+		call_result = symbols.kotlin.root.com.icure.cardinal.sdk.py.filters.MessageFilters.byCodeForDataOwnerInGroup(
+			json.dumps(payload).encode('utf-8')
+		)
+		result_info = create_result_from_json(cast(call_result, c_char_p).value.decode('utf-8'))
+		symbols.DisposeString(call_result)
+		if result_info.failure is not None:
+			raise interpret_kt_error(result_info.failure)
+		else:
+			return_value = BaseSortableFilterOptions(result_info.success)
+			return return_value
+
+	@classmethod
+	def by_code_for_self(cls, code_type: str, code_code: Optional[str] = None) -> SortableFilterOptions[Message]:
+		payload = {
+			"codeType": code_type,
+			"codeCode": code_code,
+		}
+		call_result = symbols.kotlin.root.com.icure.cardinal.sdk.py.filters.MessageFilters.byCodeForSelf(
+			json.dumps(payload).encode('utf-8')
+		)
+		result_info = create_result_from_json(cast(call_result, c_char_p).value.decode('utf-8'))
+		symbols.DisposeString(call_result)
+		if result_info.failure is not None:
+			raise interpret_kt_error(result_info.failure)
+		else:
+			return_value = SortableFilterOptions(result_info.success)
+			return return_value
+
+	@classmethod
+	def by_tag_for_data_owner(cls, data_owner_id: str, tag_type: str, tag_code: Optional[str] = None) -> BaseSortableFilterOptions[Message]:
+		payload = {
+			"dataOwnerId": data_owner_id,
+			"tagType": tag_type,
+			"tagCode": tag_code,
+		}
+		call_result = symbols.kotlin.root.com.icure.cardinal.sdk.py.filters.MessageFilters.byTagForDataOwner(
+			json.dumps(payload).encode('utf-8')
+		)
+		result_info = create_result_from_json(cast(call_result, c_char_p).value.decode('utf-8'))
+		symbols.DisposeString(call_result)
+		if result_info.failure is not None:
+			raise interpret_kt_error(result_info.failure)
+		else:
+			return_value = BaseSortableFilterOptions(result_info.success)
+			return return_value
+
+	@classmethod
+	def by_tag_for_data_owner_in_group(cls, data_owner: EntityReferenceInGroup, tag_type: str, tag_code: Optional[str] = None) -> BaseSortableFilterOptions[Message]:
+		payload = {
+			"dataOwner": data_owner.__serialize__(),
+			"tagType": tag_type,
+			"tagCode": tag_code,
+		}
+		call_result = symbols.kotlin.root.com.icure.cardinal.sdk.py.filters.MessageFilters.byTagForDataOwnerInGroup(
+			json.dumps(payload).encode('utf-8')
+		)
+		result_info = create_result_from_json(cast(call_result, c_char_p).value.decode('utf-8'))
+		symbols.DisposeString(call_result)
+		if result_info.failure is not None:
+			raise interpret_kt_error(result_info.failure)
+		else:
+			return_value = BaseSortableFilterOptions(result_info.success)
+			return return_value
+
+	@classmethod
+	def by_tag_for_self(cls, tag_type: str, tag_code: Optional[str] = None) -> SortableFilterOptions[Message]:
+		payload = {
+			"tagType": tag_type,
+			"tagCode": tag_code,
+		}
+		call_result = symbols.kotlin.root.com.icure.cardinal.sdk.py.filters.MessageFilters.byTagForSelf(
+			json.dumps(payload).encode('utf-8')
+		)
+		result_info = create_result_from_json(cast(call_result, c_char_p).value.decode('utf-8'))
+		symbols.DisposeString(call_result)
+		if result_info.failure is not None:
+			raise interpret_kt_error(result_info.failure)
+		else:
+			return_value = SortableFilterOptions(result_info.success)
 			return return_value

@@ -2,6 +2,7 @@
 package com.icure.cardinal.sdk.py.api.CryptoApi.inGroup
 
 import com.icure.cardinal.sdk.CardinalApis
+import com.icure.cardinal.sdk.crypto.entities.EntityWithEncryptionMetadataTypeName
 import com.icure.cardinal.sdk.crypto.entities.RawDecryptedExchangeData
 import com.icure.cardinal.sdk.model.EntityReferenceInGroup
 import com.icure.cardinal.sdk.py.utils.failureToPyStringAsyncCallback
@@ -23,6 +24,8 @@ import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 import kotlinx.serialization.Serializable
+import kotlinx.serialization.builtins.ListSerializer
+import kotlinx.serialization.builtins.serializer
 
 @Serializable
 private class KeylessCreateExchangeDataToParams(
@@ -62,5 +65,44 @@ public fun keylessCreateExchangeDataToAsync(
 				decodedParams.delegate,
 			)
 		}.toPyStringAsyncCallback(RawDecryptedExchangeData.serializer(), resultCallback)
+	}
+}.failureToPyStringAsyncCallback(resultCallback)
+
+@Serializable
+private class GetAccessControlKeysParams(
+	public val groupId: String?,
+	public val entityType: EntityWithEncryptionMetadataTypeName,
+)
+
+@OptIn(InternalIcureApi::class)
+public fun getAccessControlKeysBlocking(sdk: CardinalApis, params: String): String =
+		kotlin.runCatching {
+	val decodedParams = fullLanguageInteropJson.decodeFromString<GetAccessControlKeysParams>(params)
+	runBlocking {
+		sdk.crypto.inGroup.getAccessControlKeys(
+			decodedParams.groupId,
+			decodedParams.entityType,
+		)
+	}
+}.toPyString(ListSerializer(String.serializer()))
+
+@OptIn(
+	ExperimentalForeignApi::class,
+	InternalIcureApi::class,
+)
+public fun getAccessControlKeysAsync(
+	sdk: CardinalApis,
+	params: String,
+	resultCallback: CPointer<CFunction<(CValues<ByteVarOf<Byte>>?,
+			CValues<ByteVarOf<Byte>>?) -> Unit>>,
+): COpaquePointer? = kotlin.runCatching {
+	val decodedParams = fullLanguageInteropJson.decodeFromString<GetAccessControlKeysParams>(params)
+	GlobalScope.launch {
+		kotlin.runCatching {
+			sdk.crypto.inGroup.getAccessControlKeys(
+				decodedParams.groupId,
+				decodedParams.entityType,
+			)
+		}.toPyStringAsyncCallback(ListSerializer(String.serializer()), resultCallback)
 	}
 }.failureToPyStringAsyncCallback(resultCallback)

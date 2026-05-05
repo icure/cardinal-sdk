@@ -5,6 +5,8 @@ import com.icure.cardinal.sdk.filters.AccessLogFilters
 import com.icure.cardinal.sdk.filters.BaseSortableFilterOptions
 import com.icure.cardinal.sdk.filters.SortableFilterOptions
 import com.icure.cardinal.sdk.model.AccessLog
+import com.icure.cardinal.sdk.model.EntityReferenceInGroup
+import com.icure.cardinal.sdk.model.GroupScoped
 import com.icure.cardinal.sdk.model.Patient
 import com.icure.cardinal.sdk.py.utils.toPyString
 import com.icure.cardinal.sdk.utils.Serialization.fullLanguageInteropJson
@@ -32,6 +34,28 @@ public fun byPatientsDateForDataOwner(params: String): String = kotlin.runCatchi
 			fullLanguageInteropJson.decodeFromString<ByPatientsDateForDataOwnerParams>(params)
 	AccessLogFilters.byPatientsDateForDataOwner(
 		decodedParams.dataOwnerId,
+		decodedParams.patients,
+		decodedParams.from,
+		decodedParams.to,
+		decodedParams.descending,
+	)
+}.toPyString(SortableFilterOptions.serializer(PolymorphicSerializer(AccessLog::class)))
+
+@Serializable
+private class ByPatientsDateForDataOwnerInGroupParams(
+	public val dataOwner: EntityReferenceInGroup,
+	public val patients: List<GroupScoped<Patient>>,
+	public val from: Instant? = null,
+	public val to: Instant? = null,
+	public val descending: Boolean = false,
+)
+
+@OptIn(InternalIcureApi::class)
+public fun byPatientsDateForDataOwnerInGroup(params: String): String = kotlin.runCatching {
+	val decodedParams =
+			fullLanguageInteropJson.decodeFromString<ByPatientsDateForDataOwnerInGroupParams>(params)
+	AccessLogFilters.byPatientsDateForDataOwnerInGroup(
+		decodedParams.dataOwner,
 		decodedParams.patients,
 		decodedParams.from,
 		decodedParams.to,

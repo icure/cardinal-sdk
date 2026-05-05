@@ -137,22 +137,3 @@ class HealthcarePartyFilters:
 		else:
 			return_value = BaseFilterOptions(result_info.success)
 			return return_value
-
-	@classmethod
-	def by_type_specialty_post_code(cls, specialty: str, spec_code: str, start_post_code: str, end_post_code: str) -> BaseFilterOptions[HealthcareParty]:
-		payload = {
-			"specialty": specialty,
-			"specCode": spec_code,
-			"startPostCode": start_post_code,
-			"endPostCode": end_post_code,
-		}
-		call_result = symbols.kotlin.root.com.icure.cardinal.sdk.py.filters.HealthcarePartyFilters.byTypeSpecialtyPostCode(
-			json.dumps(payload).encode('utf-8')
-		)
-		result_info = create_result_from_json(cast(call_result, c_char_p).value.decode('utf-8'))
-		symbols.DisposeString(call_result)
-		if result_info.failure is not None:
-			raise interpret_kt_error(result_info.failure)
-		else:
-			return_value = BaseFilterOptions(result_info.success)
-			return return_value

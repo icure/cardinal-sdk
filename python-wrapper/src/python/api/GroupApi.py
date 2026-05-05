@@ -2,7 +2,7 @@
 import json
 from cardinal_sdk.async_utils import execute_async_method_job
 from cardinal_sdk.kotlin_types import symbols
-from cardinal_sdk.model import Group, DatabaseInitialisation, GroupType, RegistrationInformation, PermissionType, RegistrationSuccess, Operation, UserType, RoleConfiguration, GroupDeletionReport, ListOfProperties, DesignDocument, IdWithRev, GroupDatabasesInfo, ReplicationInfo, DocIdentifier, ExternalJwtConfig
+from cardinal_sdk.model import Group, DatabaseInitialisation, GroupType, RegistrationInformation, RegistrationSuccess, Operation, UserType, RoleConfiguration, GroupDeletionReport, ListOfProperties, DesignDocument, IdWithRev, GroupDatabasesInfo, ReplicationInfo, DocIdentifier, ExternalJwtConfig, CodeStub
 from cardinal_sdk.model.CallResult import create_result_from_json, interpret_kt_error
 from ctypes import cast, c_char_p
 from typing import Optional
@@ -67,7 +67,7 @@ class GroupApi:
 			return_value = Group._deserialize(result_info.success)
 			return return_value
 
-	async def create_group_async(self, id: str, name: str, password: str, initialisation_data: DatabaseInitialisation, type: Optional[GroupType] = None, server: Optional[str] = None, q: Optional[int] = None, n: Optional[int] = None, super_group: Optional[str] = None, application_id: Optional[str] = None) -> Group:
+	async def create_group_async(self, id: str, name: str, password: str, initialisation_data: DatabaseInitialisation, type: Optional[GroupType] = None, server: Optional[str] = None, q: Optional[int] = None, n: Optional[int] = None, super_group: Optional[str] = None, project_id: Optional[str] = None) -> Group:
 		def do_decode(raw_result):
 			return Group._deserialize(raw_result)
 		payload = {
@@ -79,7 +79,7 @@ class GroupApi:
 			"q": q,
 			"n": n,
 			"superGroup": super_group,
-			"applicationId": application_id,
+			"projectId": project_id,
 			"initialisationData": initialisation_data.__serialize__(),
 		}
 		return await execute_async_method_job(
@@ -91,7 +91,7 @@ class GroupApi:
 			json.dumps(payload).encode('utf-8'),
 		)
 
-	def create_group_blocking(self, id: str, name: str, password: str, initialisation_data: DatabaseInitialisation, type: Optional[GroupType] = None, server: Optional[str] = None, q: Optional[int] = None, n: Optional[int] = None, super_group: Optional[str] = None, application_id: Optional[str] = None) -> Group:
+	def create_group_blocking(self, id: str, name: str, password: str, initialisation_data: DatabaseInitialisation, type: Optional[GroupType] = None, server: Optional[str] = None, q: Optional[int] = None, n: Optional[int] = None, super_group: Optional[str] = None, project_id: Optional[str] = None) -> Group:
 		payload = {
 			"id": id,
 			"name": name,
@@ -101,7 +101,7 @@ class GroupApi:
 			"q": q,
 			"n": n,
 			"superGroup": super_group,
-			"applicationId": application_id,
+			"projectId": project_id,
 			"initialisationData": initialisation_data.__serialize__(),
 		}
 		call_result = symbols.kotlin.root.com.icure.cardinal.sdk.py.api.GroupApi.createGroupBlocking(
@@ -116,12 +116,11 @@ class GroupApi:
 			return_value = Group._deserialize(result_info.success)
 			return return_value
 
-	async def register_new_group_administrator_async(self, registration_information: RegistrationInformation, type: Optional[GroupType] = None, role: Optional[PermissionType] = None) -> RegistrationSuccess:
+	async def register_new_group_administrator_async(self, registration_information: RegistrationInformation, type: Optional[GroupType] = None) -> RegistrationSuccess:
 		def do_decode(raw_result):
 			return RegistrationSuccess._deserialize(raw_result)
 		payload = {
 			"type": type.__serialize__() if type is not None else None,
-			"role": role.__serialize__() if role is not None else None,
 			"registrationInformation": registration_information.__serialize__(),
 		}
 		return await execute_async_method_job(
@@ -133,10 +132,9 @@ class GroupApi:
 			json.dumps(payload).encode('utf-8'),
 		)
 
-	def register_new_group_administrator_blocking(self, registration_information: RegistrationInformation, type: Optional[GroupType] = None, role: Optional[PermissionType] = None) -> RegistrationSuccess:
+	def register_new_group_administrator_blocking(self, registration_information: RegistrationInformation, type: Optional[GroupType] = None) -> RegistrationSuccess:
 		payload = {
 			"type": type.__serialize__() if type is not None else None,
-			"role": role.__serialize__() if role is not None else None,
 			"registrationInformation": registration_information.__serialize__(),
 		}
 		call_result = symbols.kotlin.root.com.icure.cardinal.sdk.py.api.GroupApi.registerNewGroupAdministratorBlocking(
@@ -853,4 +851,139 @@ class GroupApi:
 			raise interpret_kt_error(result_info.failure)
 		else:
 			return_value = result_info.success
+			return return_value
+
+	async def set_group_project_id_async(self, group_id: str, project_id: Optional[str], apply_to_subgroups: bool) -> None:
+		def do_decode(raw_result):
+			return raw_result
+		payload = {
+			"groupId": group_id,
+			"projectId": project_id,
+			"applyToSubgroups": apply_to_subgroups,
+		}
+		return await execute_async_method_job(
+			self.cardinal_sdk._executor,
+			True,
+			do_decode,
+			symbols.kotlin.root.com.icure.cardinal.sdk.py.api.GroupApi.setGroupProjectIdAsync,
+			self.cardinal_sdk._native,
+			json.dumps(payload).encode('utf-8'),
+		)
+
+	def set_group_project_id_blocking(self, group_id: str, project_id: Optional[str], apply_to_subgroups: bool) -> None:
+		payload = {
+			"groupId": group_id,
+			"projectId": project_id,
+			"applyToSubgroups": apply_to_subgroups,
+		}
+		call_result = symbols.kotlin.root.com.icure.cardinal.sdk.py.api.GroupApi.setGroupProjectIdBlocking(
+			self.cardinal_sdk._native,
+			json.dumps(payload).encode('utf-8'),
+		)
+		result_info = create_result_from_json(cast(call_result, c_char_p).value.decode('utf-8'))
+		symbols.DisposeString(call_result)
+		if result_info.failure is not None:
+			raise interpret_kt_error(result_info.failure)
+
+	async def modify_group_application_id_async(self, id: str, application_id: str) -> Group:
+		def do_decode(raw_result):
+			return Group._deserialize(raw_result)
+		payload = {
+			"id": id,
+			"applicationId": application_id,
+		}
+		return await execute_async_method_job(
+			self.cardinal_sdk._executor,
+			True,
+			do_decode,
+			symbols.kotlin.root.com.icure.cardinal.sdk.py.api.GroupApi.modifyGroupApplicationIdAsync,
+			self.cardinal_sdk._native,
+			json.dumps(payload).encode('utf-8'),
+		)
+
+	def modify_group_application_id_blocking(self, id: str, application_id: str) -> Group:
+		payload = {
+			"id": id,
+			"applicationId": application_id,
+		}
+		call_result = symbols.kotlin.root.com.icure.cardinal.sdk.py.api.GroupApi.modifyGroupApplicationIdBlocking(
+			self.cardinal_sdk._native,
+			json.dumps(payload).encode('utf-8'),
+		)
+		result_info = create_result_from_json(cast(call_result, c_char_p).value.decode('utf-8'))
+		symbols.DisposeString(call_result)
+		if result_info.failure is not None:
+			raise interpret_kt_error(result_info.failure)
+		else:
+			return_value = Group._deserialize(result_info.success)
+			return return_value
+
+	async def add_tag_to_group_async(self, id: str, rev: str, tag: CodeStub) -> Group:
+		def do_decode(raw_result):
+			return Group._deserialize(raw_result)
+		payload = {
+			"id": id,
+			"rev": rev,
+			"tag": tag.__serialize__(),
+		}
+		return await execute_async_method_job(
+			self.cardinal_sdk._executor,
+			True,
+			do_decode,
+			symbols.kotlin.root.com.icure.cardinal.sdk.py.api.GroupApi.addTagToGroupAsync,
+			self.cardinal_sdk._native,
+			json.dumps(payload).encode('utf-8'),
+		)
+
+	def add_tag_to_group_blocking(self, id: str, rev: str, tag: CodeStub) -> Group:
+		payload = {
+			"id": id,
+			"rev": rev,
+			"tag": tag.__serialize__(),
+		}
+		call_result = symbols.kotlin.root.com.icure.cardinal.sdk.py.api.GroupApi.addTagToGroupBlocking(
+			self.cardinal_sdk._native,
+			json.dumps(payload).encode('utf-8'),
+		)
+		result_info = create_result_from_json(cast(call_result, c_char_p).value.decode('utf-8'))
+		symbols.DisposeString(call_result)
+		if result_info.failure is not None:
+			raise interpret_kt_error(result_info.failure)
+		else:
+			return_value = Group._deserialize(result_info.success)
+			return return_value
+
+	async def remove_tag_from_group_async(self, id: str, rev: str, tag_id: str) -> Group:
+		def do_decode(raw_result):
+			return Group._deserialize(raw_result)
+		payload = {
+			"id": id,
+			"rev": rev,
+			"tagId": tag_id,
+		}
+		return await execute_async_method_job(
+			self.cardinal_sdk._executor,
+			True,
+			do_decode,
+			symbols.kotlin.root.com.icure.cardinal.sdk.py.api.GroupApi.removeTagFromGroupAsync,
+			self.cardinal_sdk._native,
+			json.dumps(payload).encode('utf-8'),
+		)
+
+	def remove_tag_from_group_blocking(self, id: str, rev: str, tag_id: str) -> Group:
+		payload = {
+			"id": id,
+			"rev": rev,
+			"tagId": tag_id,
+		}
+		call_result = symbols.kotlin.root.com.icure.cardinal.sdk.py.api.GroupApi.removeTagFromGroupBlocking(
+			self.cardinal_sdk._native,
+			json.dumps(payload).encode('utf-8'),
+		)
+		result_info = create_result_from_json(cast(call_result, c_char_p).value.decode('utf-8'))
+		symbols.DisposeString(call_result)
+		if result_info.failure is not None:
+			raise interpret_kt_error(result_info.failure)
+		else:
+			return_value = Group._deserialize(result_info.success)
 			return return_value

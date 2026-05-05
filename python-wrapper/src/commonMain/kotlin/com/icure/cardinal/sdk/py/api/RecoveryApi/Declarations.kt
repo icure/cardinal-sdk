@@ -3,12 +3,14 @@ package com.icure.cardinal.sdk.py.api.RecoveryApi
 
 import com.icure.cardinal.sdk.CardinalApis
 import com.icure.cardinal.sdk.crypto.entities.RecoveryDataKey
+import com.icure.cardinal.sdk.crypto.entities.RecoveryKeyOptions
 import com.icure.cardinal.sdk.crypto.entities.RecoveryKeySize
 import com.icure.cardinal.sdk.py.utils.failureToPyStringAsyncCallback
 import com.icure.cardinal.sdk.py.utils.toPyString
 import com.icure.cardinal.sdk.py.utils.toPyStringAsyncCallback
 import com.icure.cardinal.sdk.utils.Serialization.fullLanguageInteropJson
 import com.icure.utils.InternalIcureApi
+import kotlin.Boolean
 import kotlin.Byte
 import kotlin.Int
 import kotlin.OptIn
@@ -25,6 +27,53 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.builtins.serializer
+
+@Serializable
+private class CreateRecoveryInfoForAvailableParentKeyPairsParams(
+	public val parentId: String,
+	public val includeAncestorKeys: Boolean = false,
+	public val lifetimeSeconds: Int? = null,
+	public val recoveryKeyOptions: RecoveryKeyOptions? = null,
+)
+
+@OptIn(InternalIcureApi::class)
+public fun createRecoveryInfoForAvailableParentKeyPairsBlocking(sdk: CardinalApis, params: String):
+		String = kotlin.runCatching {
+	val decodedParams =
+			fullLanguageInteropJson.decodeFromString<CreateRecoveryInfoForAvailableParentKeyPairsParams>(params)
+	runBlocking {
+		sdk.recovery.createRecoveryInfoForAvailableParentKeyPairs(
+			decodedParams.parentId,
+			decodedParams.includeAncestorKeys,
+			decodedParams.lifetimeSeconds,
+			decodedParams.recoveryKeyOptions,
+		)
+	}
+}.toPyString(RecoveryDataKey.serializer())
+
+@OptIn(
+	ExperimentalForeignApi::class,
+	InternalIcureApi::class,
+)
+public fun createRecoveryInfoForAvailableParentKeyPairsAsync(
+	sdk: CardinalApis,
+	params: String,
+	resultCallback: CPointer<CFunction<(CValues<ByteVarOf<Byte>>?,
+			CValues<ByteVarOf<Byte>>?) -> Unit>>,
+): COpaquePointer? = kotlin.runCatching {
+	val decodedParams =
+			fullLanguageInteropJson.decodeFromString<CreateRecoveryInfoForAvailableParentKeyPairsParams>(params)
+	GlobalScope.launch {
+		kotlin.runCatching {
+			sdk.recovery.createRecoveryInfoForAvailableParentKeyPairs(
+				decodedParams.parentId,
+				decodedParams.includeAncestorKeys,
+				decodedParams.lifetimeSeconds,
+				decodedParams.recoveryKeyOptions,
+			)
+		}.toPyStringAsyncCallback(RecoveryDataKey.serializer(), resultCallback)
+	}
+}.failureToPyStringAsyncCallback(resultCallback)
 
 @Serializable
 private class PurgeRecoveryInfoParams(

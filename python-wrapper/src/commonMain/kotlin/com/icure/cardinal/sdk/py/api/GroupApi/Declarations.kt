@@ -11,6 +11,7 @@ import com.icure.cardinal.sdk.model.PaginatedList
 import com.icure.cardinal.sdk.model.RegistrationInformation
 import com.icure.cardinal.sdk.model.RegistrationSuccess
 import com.icure.cardinal.sdk.model.ReplicationInfo
+import com.icure.cardinal.sdk.model.base.CodeStub
 import com.icure.cardinal.sdk.model.couchdb.DesignDocument
 import com.icure.cardinal.sdk.model.couchdb.DocIdentifier
 import com.icure.cardinal.sdk.model.couchdb.GroupDatabasesInfo
@@ -19,7 +20,6 @@ import com.icure.cardinal.sdk.model.embed.RoleConfiguration
 import com.icure.cardinal.sdk.model.embed.UserType
 import com.icure.cardinal.sdk.model.security.ExternalJwtConfig
 import com.icure.cardinal.sdk.model.security.Operation
-import com.icure.cardinal.sdk.model.security.PermissionType
 import com.icure.cardinal.sdk.py.utils.failureToPyStringAsyncCallback
 import com.icure.cardinal.sdk.py.utils.toPyString
 import com.icure.cardinal.sdk.py.utils.toPyStringAsyncCallback
@@ -111,7 +111,7 @@ private class CreateGroupParams(
 	public val q: Int? = null,
 	public val n: Int? = null,
 	public val superGroup: String? = null,
-	public val applicationId: String? = null,
+	public val projectId: String? = null,
 	public val initialisationData: DatabaseInitialisation,
 )
 
@@ -129,7 +129,7 @@ public fun createGroupBlocking(sdk: CardinalNonCryptoApis, params: String): Stri
 			decodedParams.q,
 			decodedParams.n,
 			decodedParams.superGroup,
-			decodedParams.applicationId,
+			decodedParams.projectId,
 			decodedParams.initialisationData,
 		)
 	}
@@ -157,7 +157,7 @@ public fun createGroupAsync(
 				decodedParams.q,
 				decodedParams.n,
 				decodedParams.superGroup,
-				decodedParams.applicationId,
+				decodedParams.projectId,
 				decodedParams.initialisationData,
 			)
 		}.toPyStringAsyncCallback(Group.serializer(), resultCallback)
@@ -167,7 +167,6 @@ public fun createGroupAsync(
 @Serializable
 private class RegisterNewGroupAdministratorParams(
 	public val type: GroupType? = null,
-	public val role: PermissionType? = null,
 	public val registrationInformation: RegistrationInformation,
 )
 
@@ -179,7 +178,6 @@ public fun registerNewGroupAdministratorBlocking(sdk: CardinalNonCryptoApis, par
 	runBlocking {
 		sdk.group.registerNewGroupAdministrator(
 			decodedParams.type,
-			decodedParams.role,
 			decodedParams.registrationInformation,
 		)
 	}
@@ -201,7 +199,6 @@ public fun registerNewGroupAdministratorAsync(
 		kotlin.runCatching {
 			sdk.group.registerNewGroupAdministrator(
 				decodedParams.type,
-				decodedParams.role,
 				decodedParams.registrationInformation,
 			)
 		}.toPyStringAsyncCallback(RegistrationSuccess.serializer(), resultCallback)
@@ -1120,5 +1117,172 @@ public fun getOperationTokenForGroupAsync(
 				decodedParams.description,
 			)
 		}.toPyStringAsyncCallback(String.serializer(), resultCallback)
+	}
+}.failureToPyStringAsyncCallback(resultCallback)
+
+@Serializable
+private class SetGroupProjectIdParams(
+	public val groupId: String,
+	public val projectId: String?,
+	public val applyToSubgroups: Boolean,
+)
+
+@OptIn(InternalIcureApi::class)
+public fun setGroupProjectIdBlocking(sdk: CardinalNonCryptoApis, params: String): String =
+		kotlin.runCatching {
+	val decodedParams = fullLanguageInteropJson.decodeFromString<SetGroupProjectIdParams>(params)
+	runBlocking {
+		sdk.group.setGroupProjectId(
+			decodedParams.groupId,
+			decodedParams.projectId,
+			decodedParams.applyToSubgroups,
+		)
+	}
+}.toPyString(Unit.serializer())
+
+@OptIn(
+	ExperimentalForeignApi::class,
+	InternalIcureApi::class,
+)
+public fun setGroupProjectIdAsync(
+	sdk: CardinalNonCryptoApis,
+	params: String,
+	resultCallback: CPointer<CFunction<(CValues<ByteVarOf<Byte>>?,
+			CValues<ByteVarOf<Byte>>?) -> Unit>>,
+): COpaquePointer? = kotlin.runCatching {
+	val decodedParams = fullLanguageInteropJson.decodeFromString<SetGroupProjectIdParams>(params)
+	GlobalScope.launch {
+		kotlin.runCatching {
+			sdk.group.setGroupProjectId(
+				decodedParams.groupId,
+				decodedParams.projectId,
+				decodedParams.applyToSubgroups,
+			)
+		}.toPyStringAsyncCallback(Unit.serializer(), resultCallback)
+	}
+}.failureToPyStringAsyncCallback(resultCallback)
+
+@Serializable
+private class ModifyGroupApplicationIdParams(
+	public val id: String,
+	public val applicationId: String,
+)
+
+@OptIn(InternalIcureApi::class)
+public fun modifyGroupApplicationIdBlocking(sdk: CardinalNonCryptoApis, params: String): String =
+		kotlin.runCatching {
+	val decodedParams =
+			fullLanguageInteropJson.decodeFromString<ModifyGroupApplicationIdParams>(params)
+	runBlocking {
+		sdk.group.modifyGroupApplicationId(
+			decodedParams.id,
+			decodedParams.applicationId,
+		)
+	}
+}.toPyString(Group.serializer())
+
+@OptIn(
+	ExperimentalForeignApi::class,
+	InternalIcureApi::class,
+)
+public fun modifyGroupApplicationIdAsync(
+	sdk: CardinalNonCryptoApis,
+	params: String,
+	resultCallback: CPointer<CFunction<(CValues<ByteVarOf<Byte>>?,
+			CValues<ByteVarOf<Byte>>?) -> Unit>>,
+): COpaquePointer? = kotlin.runCatching {
+	val decodedParams =
+			fullLanguageInteropJson.decodeFromString<ModifyGroupApplicationIdParams>(params)
+	GlobalScope.launch {
+		kotlin.runCatching {
+			sdk.group.modifyGroupApplicationId(
+				decodedParams.id,
+				decodedParams.applicationId,
+			)
+		}.toPyStringAsyncCallback(Group.serializer(), resultCallback)
+	}
+}.failureToPyStringAsyncCallback(resultCallback)
+
+@Serializable
+private class AddTagToGroupParams(
+	public val id: String,
+	public val rev: String,
+	public val tag: CodeStub,
+)
+
+@OptIn(InternalIcureApi::class)
+public fun addTagToGroupBlocking(sdk: CardinalNonCryptoApis, params: String): String =
+		kotlin.runCatching {
+	val decodedParams = fullLanguageInteropJson.decodeFromString<AddTagToGroupParams>(params)
+	runBlocking {
+		sdk.group.addTagToGroup(
+			decodedParams.id,
+			decodedParams.rev,
+			decodedParams.tag,
+		)
+	}
+}.toPyString(Group.serializer())
+
+@OptIn(
+	ExperimentalForeignApi::class,
+	InternalIcureApi::class,
+)
+public fun addTagToGroupAsync(
+	sdk: CardinalNonCryptoApis,
+	params: String,
+	resultCallback: CPointer<CFunction<(CValues<ByteVarOf<Byte>>?,
+			CValues<ByteVarOf<Byte>>?) -> Unit>>,
+): COpaquePointer? = kotlin.runCatching {
+	val decodedParams = fullLanguageInteropJson.decodeFromString<AddTagToGroupParams>(params)
+	GlobalScope.launch {
+		kotlin.runCatching {
+			sdk.group.addTagToGroup(
+				decodedParams.id,
+				decodedParams.rev,
+				decodedParams.tag,
+			)
+		}.toPyStringAsyncCallback(Group.serializer(), resultCallback)
+	}
+}.failureToPyStringAsyncCallback(resultCallback)
+
+@Serializable
+private class RemoveTagFromGroupParams(
+	public val id: String,
+	public val rev: String,
+	public val tagId: String,
+)
+
+@OptIn(InternalIcureApi::class)
+public fun removeTagFromGroupBlocking(sdk: CardinalNonCryptoApis, params: String): String =
+		kotlin.runCatching {
+	val decodedParams = fullLanguageInteropJson.decodeFromString<RemoveTagFromGroupParams>(params)
+	runBlocking {
+		sdk.group.removeTagFromGroup(
+			decodedParams.id,
+			decodedParams.rev,
+			decodedParams.tagId,
+		)
+	}
+}.toPyString(Group.serializer())
+
+@OptIn(
+	ExperimentalForeignApi::class,
+	InternalIcureApi::class,
+)
+public fun removeTagFromGroupAsync(
+	sdk: CardinalNonCryptoApis,
+	params: String,
+	resultCallback: CPointer<CFunction<(CValues<ByteVarOf<Byte>>?,
+			CValues<ByteVarOf<Byte>>?) -> Unit>>,
+): COpaquePointer? = kotlin.runCatching {
+	val decodedParams = fullLanguageInteropJson.decodeFromString<RemoveTagFromGroupParams>(params)
+	GlobalScope.launch {
+		kotlin.runCatching {
+			sdk.group.removeTagFromGroup(
+				decodedParams.id,
+				decodedParams.rev,
+				decodedParams.tagId,
+			)
+		}.toPyStringAsyncCallback(Group.serializer(), resultCallback)
 	}
 }.failureToPyStringAsyncCallback(resultCallback)

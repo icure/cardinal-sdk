@@ -4,6 +4,7 @@ package com.icure.cardinal.sdk.py.api.ReceiptApi.tryAndRecover
 import com.icure.cardinal.sdk.CardinalApis
 import com.icure.cardinal.sdk.crypto.entities.ReceiptShareOptions
 import com.icure.cardinal.sdk.model.Receipt
+import com.icure.cardinal.sdk.model.StoredDocumentIdentifier
 import com.icure.cardinal.sdk.py.utils.failureToPyStringAsyncCallback
 import com.icure.cardinal.sdk.py.utils.toPyString
 import com.icure.cardinal.sdk.py.utils.toPyStringAsyncCallback
@@ -13,6 +14,7 @@ import kotlin.Byte
 import kotlin.OptIn
 import kotlin.String
 import kotlin.Unit
+import kotlin.collections.List
 import kotlin.collections.Map
 import kotlinx.cinterop.ByteVarOf
 import kotlinx.cinterop.CFunction
@@ -142,6 +144,187 @@ public fun createReceiptAsync(
 }.failureToPyStringAsyncCallback(resultCallback)
 
 @Serializable
+private class CreateReceiptsParams(
+	public val entities: List<Receipt>,
+)
+
+@OptIn(InternalIcureApi::class)
+public fun createReceiptsBlocking(sdk: CardinalApis, params: String): String = kotlin.runCatching {
+	val decodedParams = fullLanguageInteropJson.decodeFromString<CreateReceiptsParams>(params)
+	runBlocking {
+		sdk.receipt.tryAndRecover.createReceipts(
+			decodedParams.entities,
+		)
+	}
+}.toPyString(ListSerializer(PolymorphicSerializer(Receipt::class)))
+
+@OptIn(
+	ExperimentalForeignApi::class,
+	InternalIcureApi::class,
+)
+public fun createReceiptsAsync(
+	sdk: CardinalApis,
+	params: String,
+	resultCallback: CPointer<CFunction<(CValues<ByteVarOf<Byte>>?,
+			CValues<ByteVarOf<Byte>>?) -> Unit>>,
+): COpaquePointer? = kotlin.runCatching {
+	val decodedParams = fullLanguageInteropJson.decodeFromString<CreateReceiptsParams>(params)
+	GlobalScope.launch {
+		kotlin.runCatching {
+			sdk.receipt.tryAndRecover.createReceipts(
+				decodedParams.entities,
+			)
+		}.toPyStringAsyncCallback(ListSerializer(PolymorphicSerializer(Receipt::class)), resultCallback)
+	}
+}.failureToPyStringAsyncCallback(resultCallback)
+
+@Serializable
+private class UndeleteReceiptByIdParams(
+	public val id: String,
+	public val rev: String,
+)
+
+@OptIn(InternalIcureApi::class)
+public fun undeleteReceiptByIdBlocking(sdk: CardinalApis, params: String): String =
+		kotlin.runCatching {
+	val decodedParams = fullLanguageInteropJson.decodeFromString<UndeleteReceiptByIdParams>(params)
+	runBlocking {
+		sdk.receipt.tryAndRecover.undeleteReceiptById(
+			decodedParams.id,
+			decodedParams.rev,
+		)
+	}
+}.toPyString(PolymorphicSerializer(Receipt::class))
+
+@OptIn(
+	ExperimentalForeignApi::class,
+	InternalIcureApi::class,
+)
+public fun undeleteReceiptByIdAsync(
+	sdk: CardinalApis,
+	params: String,
+	resultCallback: CPointer<CFunction<(CValues<ByteVarOf<Byte>>?,
+			CValues<ByteVarOf<Byte>>?) -> Unit>>,
+): COpaquePointer? = kotlin.runCatching {
+	val decodedParams = fullLanguageInteropJson.decodeFromString<UndeleteReceiptByIdParams>(params)
+	GlobalScope.launch {
+		kotlin.runCatching {
+			sdk.receipt.tryAndRecover.undeleteReceiptById(
+				decodedParams.id,
+				decodedParams.rev,
+			)
+		}.toPyStringAsyncCallback(PolymorphicSerializer(Receipt::class), resultCallback)
+	}
+}.failureToPyStringAsyncCallback(resultCallback)
+
+@Serializable
+private class UndeleteReceiptsByIdsParams(
+	public val entityIds: List<StoredDocumentIdentifier>,
+)
+
+@OptIn(InternalIcureApi::class)
+public fun undeleteReceiptsByIdsBlocking(sdk: CardinalApis, params: String): String =
+		kotlin.runCatching {
+	val decodedParams = fullLanguageInteropJson.decodeFromString<UndeleteReceiptsByIdsParams>(params)
+	runBlocking {
+		sdk.receipt.tryAndRecover.undeleteReceiptsByIds(
+			decodedParams.entityIds,
+		)
+	}
+}.toPyString(ListSerializer(PolymorphicSerializer(Receipt::class)))
+
+@OptIn(
+	ExperimentalForeignApi::class,
+	InternalIcureApi::class,
+)
+public fun undeleteReceiptsByIdsAsync(
+	sdk: CardinalApis,
+	params: String,
+	resultCallback: CPointer<CFunction<(CValues<ByteVarOf<Byte>>?,
+			CValues<ByteVarOf<Byte>>?) -> Unit>>,
+): COpaquePointer? = kotlin.runCatching {
+	val decodedParams = fullLanguageInteropJson.decodeFromString<UndeleteReceiptsByIdsParams>(params)
+	GlobalScope.launch {
+		kotlin.runCatching {
+			sdk.receipt.tryAndRecover.undeleteReceiptsByIds(
+				decodedParams.entityIds,
+			)
+		}.toPyStringAsyncCallback(ListSerializer(PolymorphicSerializer(Receipt::class)), resultCallback)
+	}
+}.failureToPyStringAsyncCallback(resultCallback)
+
+@Serializable
+private class UndeleteReceiptParams(
+	public val receipt: Receipt,
+)
+
+@OptIn(InternalIcureApi::class)
+public fun undeleteReceiptBlocking(sdk: CardinalApis, params: String): String = kotlin.runCatching {
+	val decodedParams = fullLanguageInteropJson.decodeFromString<UndeleteReceiptParams>(params)
+	runBlocking {
+		sdk.receipt.tryAndRecover.undeleteReceipt(
+			decodedParams.receipt,
+		)
+	}
+}.toPyString(PolymorphicSerializer(Receipt::class))
+
+@OptIn(
+	ExperimentalForeignApi::class,
+	InternalIcureApi::class,
+)
+public fun undeleteReceiptAsync(
+	sdk: CardinalApis,
+	params: String,
+	resultCallback: CPointer<CFunction<(CValues<ByteVarOf<Byte>>?,
+			CValues<ByteVarOf<Byte>>?) -> Unit>>,
+): COpaquePointer? = kotlin.runCatching {
+	val decodedParams = fullLanguageInteropJson.decodeFromString<UndeleteReceiptParams>(params)
+	GlobalScope.launch {
+		kotlin.runCatching {
+			sdk.receipt.tryAndRecover.undeleteReceipt(
+				decodedParams.receipt,
+			)
+		}.toPyStringAsyncCallback(PolymorphicSerializer(Receipt::class), resultCallback)
+	}
+}.failureToPyStringAsyncCallback(resultCallback)
+
+@Serializable
+private class UndeleteReceiptsParams(
+	public val receipts: List<Receipt>,
+)
+
+@OptIn(InternalIcureApi::class)
+public fun undeleteReceiptsBlocking(sdk: CardinalApis, params: String): String =
+		kotlin.runCatching {
+	val decodedParams = fullLanguageInteropJson.decodeFromString<UndeleteReceiptsParams>(params)
+	runBlocking {
+		sdk.receipt.tryAndRecover.undeleteReceipts(
+			decodedParams.receipts,
+		)
+	}
+}.toPyString(ListSerializer(PolymorphicSerializer(Receipt::class)))
+
+@OptIn(
+	ExperimentalForeignApi::class,
+	InternalIcureApi::class,
+)
+public fun undeleteReceiptsAsync(
+	sdk: CardinalApis,
+	params: String,
+	resultCallback: CPointer<CFunction<(CValues<ByteVarOf<Byte>>?,
+			CValues<ByteVarOf<Byte>>?) -> Unit>>,
+): COpaquePointer? = kotlin.runCatching {
+	val decodedParams = fullLanguageInteropJson.decodeFromString<UndeleteReceiptsParams>(params)
+	GlobalScope.launch {
+		kotlin.runCatching {
+			sdk.receipt.tryAndRecover.undeleteReceipts(
+				decodedParams.receipts,
+			)
+		}.toPyStringAsyncCallback(ListSerializer(PolymorphicSerializer(Receipt::class)), resultCallback)
+	}
+}.failureToPyStringAsyncCallback(resultCallback)
+
+@Serializable
 private class ModifyReceiptParams(
 	public val entity: Receipt,
 )
@@ -177,6 +360,41 @@ public fun modifyReceiptAsync(
 }.failureToPyStringAsyncCallback(resultCallback)
 
 @Serializable
+private class ModifyReceiptsParams(
+	public val entities: List<Receipt>,
+)
+
+@OptIn(InternalIcureApi::class)
+public fun modifyReceiptsBlocking(sdk: CardinalApis, params: String): String = kotlin.runCatching {
+	val decodedParams = fullLanguageInteropJson.decodeFromString<ModifyReceiptsParams>(params)
+	runBlocking {
+		sdk.receipt.tryAndRecover.modifyReceipts(
+			decodedParams.entities,
+		)
+	}
+}.toPyString(ListSerializer(PolymorphicSerializer(Receipt::class)))
+
+@OptIn(
+	ExperimentalForeignApi::class,
+	InternalIcureApi::class,
+)
+public fun modifyReceiptsAsync(
+	sdk: CardinalApis,
+	params: String,
+	resultCallback: CPointer<CFunction<(CValues<ByteVarOf<Byte>>?,
+			CValues<ByteVarOf<Byte>>?) -> Unit>>,
+): COpaquePointer? = kotlin.runCatching {
+	val decodedParams = fullLanguageInteropJson.decodeFromString<ModifyReceiptsParams>(params)
+	GlobalScope.launch {
+		kotlin.runCatching {
+			sdk.receipt.tryAndRecover.modifyReceipts(
+				decodedParams.entities,
+			)
+		}.toPyStringAsyncCallback(ListSerializer(PolymorphicSerializer(Receipt::class)), resultCallback)
+	}
+}.failureToPyStringAsyncCallback(resultCallback)
+
+@Serializable
 private class GetReceiptParams(
 	public val entityId: String,
 )
@@ -208,6 +426,41 @@ public fun getReceiptAsync(
 				decodedParams.entityId,
 			)
 		}.toPyStringAsyncCallback(PolymorphicSerializer(Receipt::class), resultCallback)
+	}
+}.failureToPyStringAsyncCallback(resultCallback)
+
+@Serializable
+private class GetReceiptsParams(
+	public val entityIds: List<String>,
+)
+
+@OptIn(InternalIcureApi::class)
+public fun getReceiptsBlocking(sdk: CardinalApis, params: String): String = kotlin.runCatching {
+	val decodedParams = fullLanguageInteropJson.decodeFromString<GetReceiptsParams>(params)
+	runBlocking {
+		sdk.receipt.tryAndRecover.getReceipts(
+			decodedParams.entityIds,
+		)
+	}
+}.toPyString(ListSerializer(PolymorphicSerializer(Receipt::class)))
+
+@OptIn(
+	ExperimentalForeignApi::class,
+	InternalIcureApi::class,
+)
+public fun getReceiptsAsync(
+	sdk: CardinalApis,
+	params: String,
+	resultCallback: CPointer<CFunction<(CValues<ByteVarOf<Byte>>?,
+			CValues<ByteVarOf<Byte>>?) -> Unit>>,
+): COpaquePointer? = kotlin.runCatching {
+	val decodedParams = fullLanguageInteropJson.decodeFromString<GetReceiptsParams>(params)
+	GlobalScope.launch {
+		kotlin.runCatching {
+			sdk.receipt.tryAndRecover.getReceipts(
+				decodedParams.entityIds,
+			)
+		}.toPyStringAsyncCallback(ListSerializer(PolymorphicSerializer(Receipt::class)), resultCallback)
 	}
 }.failureToPyStringAsyncCallback(resultCallback)
 
