@@ -3,6 +3,7 @@ package com.icure.cardinal.sdk.api.raw
 import com.icure.cardinal.sdk.model.ListOfIds
 import com.icure.cardinal.sdk.model.Role
 import com.icure.cardinal.sdk.model.couchdb.DocIdentifier
+import com.icure.cardinal.sdk.model.requests.role.CreateRoleRequest
 import com.icure.utils.InternalIcureApi
 import kotlin.Int
 import kotlin.String
@@ -23,17 +24,17 @@ public interface RawRoleApi {
 
 	suspend fun getRolesByIds(roleIds: ListOfIds): HttpResponse<List<Role>>
 
-	suspend fun createRole(
+	suspend fun createRoleWithDescription(
 		name: String,
 		inheritsUpTo: Int? = null,
-		permissions: Set<String>,
+		roleParams: CreateRoleRequest,
 	): HttpResponse<Role>
 
-	suspend fun createRoleInGroup(
+	suspend fun createRoleInGroupWithDescription(
 		name: String,
 		groupId: String,
 		inheritsUpTo: Int? = null,
-		permissions: Set<String>,
+		roleParams: CreateRoleRequest,
 	): HttpResponse<Role>
 
 	suspend fun modifyRolePermissions(
