@@ -22,11 +22,11 @@ import com.icure.cardinal.sdk.model.embed.Right
 import kotlin.Deprecated
 
 /**
- * Represents an agenda that keeps track of appointments (calendar items) for a resource or group of
- * resources.
- * An agenda can specify a schedule for its resources and allows managing availabilities for
+ *
+ *  Represents an agenda that keeps track of appointments (calendar items) for a resource or group
+ * of resources.
+ *  An agenda can specify a schedule for its resources and allows managing availabilities for
  * booking.
- * /
  */
 @Serializable
 data class Agenda(

@@ -11,16 +11,16 @@ import kotlin.String
 import kotlin.collections.Set
 
 /**
- * The RoleDto class represents a role in the system, which can have permissions and can be
+ *
+ *  The RoleDto class represents a role in the system, which can have permissions and can be
  * inheritable up to a certain level by users in child Groups.$
- * down the group hierarchy this role can be inherited by users in child groups. A value of 0 means
+ *  down the group hierarchy this role can be inherited by users in child groups. A value of 0 means
  * it cannot be inherited, while a value of -1 means it can be inherited indefinitely.
- * /
  */
 @Serializable
 data class Role(
 	/**
-	 * The unique identifier of the role.
+	 * The unique identifier of the role. It is automatically set to <GROUP_ID>:<ROLE_NAME>
 	 */
 	override val id: String,
 	/**
@@ -32,11 +32,20 @@ data class Role(
 	 */
 	override val deletionDate: Long? = null,
 	/**
-	 * The name of the role.
+	 * The name of the role. It can only contain uppercase letters, numbers, and underscores for a max
+	 * length of 40 characters.
 	 */
 	public val name: String? = null,
 	/**
-	 * The maximum level of inheritance for this role, indicating how far
+	 * A short description for the role. It cannot exceed 300 characters.
+	 */
+	public val description: String? = null,
+	/**
+	 *
+	 *  Represents the levels in the descendant groups hierarchy where this role can be used. Eg:
+	 *  - null: all the users in the descendants of the group can use this role.
+	 *  - 0: only the users in the group can use this role.
+	 *  - 1: only the users in the group and in its children groups can use this role.
 	 */
 	public val inheritableUpTo: Int? = null,
 	/**
