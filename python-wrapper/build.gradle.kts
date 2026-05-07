@@ -1,3 +1,5 @@
+import kotlin.io.writeText
+
 plugins {
 	kotlinMultiplatform()
 	kotlinSerialization()
@@ -81,6 +83,97 @@ fun File.mergeInto(other: File) {
 		} else {
 			curr.copyRecursively(other.resolve(curr.name))
 		}
+	}
+}
+
+fun rsync(source: File, dst: File) {
+	val exitCode = ProcessBuilder("rsync", "-a", "${source.absolutePath}/", dst.absolutePath)
+		.inheritIO()
+		.start()
+		.waitFor()
+	check(exitCode == 0) { "rsync exited with code $exitCode" }
+}
+
+fun remove(source: File) {
+	val exitCode = ProcessBuilder("rm", "-rf", source.absolutePath)
+		.inheritIO()
+		.start()
+		.waitFor()
+	check(exitCode == 0) { "rm exited with code $exitCode" }
+}
+
+val pythonPath = providers.exec {
+	commandLine("bash", "-c", "which python3.12")
+}.standardOutput.asText.map { it.trim() }
+
+tasks.register("prepareDistributionArchive") {
+	group = "publishing"
+
+	doLast {
+		val sourceDir = System.getenv("PYTHON_NATIVE_LIB_SOURCE")
+			?: error("Environment variable PYTHON_NATIVE_LIB_SOURCE is not set")
+
+		val srcDir = projectDir.resolve("src/commonMain/resources/src")
+		if (srcDir.exists()) {
+			remove(srcDir)
+		}
+
+		val distDir = projectDir.resolve("src/commonMain/resources/dist")
+		if (distDir.exists()) {
+			remove(distDir)
+		}
+
+		val venvDir = projectDir.resolve("src/commonMain/resources/venv")
+		if (venvDir.exists()) {
+			remove(venvDir)
+		}
+
+		projectDir.resolve("src/commonMain/resources/src").mkdirs()
+		rsync(projectDir.resolve("src/python"), projectDir.resolve("src/commonMain/resources/src/cardinal_sdk"))
+
+		projectDir.resolve("src/commonMain/resources/src/lib").mkdirs()
+		rsync(File(sourceDir), projectDir.resolve("src/commonMain/resources/src/cardinal_sdk/lib"))
+
+		val tomlFile = projectDir.resolve("src/commonMain/resources/pyproject.toml")
+		val content = tomlFile.readText()
+		val version = project(":cardinal-sdk").version.toString()
+
+		tomlFile.writeText(
+			Regex("version = \"([^\"]+)\"").replace(content) {
+				"version = \"$version\""
+			}
+		)
+
+		val python = pythonPath.get()
+
+		val workDir = projectDir.resolve("src/commonMain/resources")
+
+		ProcessBuilder(python, "-m", "venv", "venv")
+			.directory(workDir)
+			.inheritIO()
+			.start()
+			.waitFor().also {
+				check(it == 0) { "venv exited with code $it" }
+			}
+
+		val venv = projectDir.resolve("src/commonMain/resources/venv").absolutePath
+
+		ProcessBuilder("$venv/bin/pip", "install", "--upgrade", "build")
+			.directory(workDir)
+			.inheritIO()
+			.start()
+			.waitFor().also {
+				check(it == 0) { "Install build exited with code $it" }
+			}
+
+		ProcessBuilder("$venv/bin/python", "-m", "build")
+			.directory(workDir)
+			.inheritIO()
+			.start()
+			.waitFor().also {
+				check(it == 0) { "build exited with code $it" }
+			}
+
 	}
 }
 

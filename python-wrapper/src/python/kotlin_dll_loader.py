@@ -1,7 +1,6 @@
 import platform
 from ctypes import CDLL
 from importlib.resources import path
-import os
 
 arch = platform.machine()
 system = platform.system().lower()
