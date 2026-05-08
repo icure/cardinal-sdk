@@ -40,12 +40,6 @@ export class Group implements StoredDocument, HasTags {
 
 	/**
 	 *
-	 *  Creation timestamp of the group. It may be null for older groups
-	 */
-	created: number | undefined = undefined;
-
-	/**
-	 *
 	 *  Tags that qualify the group as being member of a certain class.
 	 */
 	tags: Array<CodeStub> = [];
@@ -140,7 +134,6 @@ export class Group implements StoredDocument, HasTags {
 		this.id = partial.id ?? randomUuid();
 		if ('rev' in partial) this.rev = partial.rev;
 		if ('deletionDate' in partial) this.deletionDate = partial.deletionDate;
-		if ('created' in partial) this.created = partial.created;
 		if ('tags' in partial && partial.tags !== undefined) this.tags = partial.tags;
 		if ('publicTags' in partial && partial.publicTags !== undefined) this.publicTags = partial.publicTags;
 		if ('name' in partial) this.name = partial.name;
@@ -164,7 +157,6 @@ export class Group implements StoredDocument, HasTags {
 		res['id'] = this.id
 		if (this.rev != undefined) res['rev'] = this.rev
 		if (this.deletionDate != undefined) res['deletionDate'] = this.deletionDate
-		if (this.created != undefined) res['created'] = this.created
 		res['tags'] = this.tags.map((x0) => x0.toJSON() )
 		res['publicTags'] = this.publicTags.map((x0) => x0.toJSON() )
 		if (this.name != undefined) res['name'] = this.name
@@ -192,7 +184,6 @@ export class Group implements StoredDocument, HasTags {
 			id: expectString(extractEntry(jCpy, 'id', true, path), false, [...path, ".id"]),
 			rev: expectString(extractEntry(jCpy, 'rev', false, path), true, [...path, ".rev"]),
 			deletionDate: expectNumber(extractEntry(jCpy, 'deletionDate', false, path), true, true, [...path, ".deletionDate"]),
-			created: expectNumber(extractEntry(jCpy, 'created', false, path), true, true, [...path, ".created"]),
 			tags: expectArray(extractEntry(jCpy, 'tags', false, path), false, [...path, ".tags"], (x0, p0) => expectObject(x0, false, ignoreUnknownKeys, p0, CodeStub.fromJSON)),
 			publicTags: expectArray(extractEntry(jCpy, 'publicTags', false, path), false, [...path, ".publicTags"], (x0, p0) => expectObject(x0, false, ignoreUnknownKeys, p0, CodeStub.fromJSON)),
 			name: expectString(extractEntry(jCpy, 'name', false, path), true, [...path, ".name"]),
