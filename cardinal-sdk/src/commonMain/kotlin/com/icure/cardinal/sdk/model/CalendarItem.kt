@@ -28,10 +28,10 @@ import kotlin.collections.Set
 import com.icure.cardinal.sdk.model.embed.FlowItem
 
 /**
- * Represents an appointment or event in a calendar. Calendar items are linked to an agenda and can
+ *
+ *  Represents an appointment or event in a calendar. Calendar items are linked to an agenda and can
  * block
- * availabilities for scheduling purposes.
- * /
+ *  availabilities for scheduling purposes.
  */
 
 sealed interface CalendarItem :
@@ -265,10 +265,10 @@ sealed interface CalendarItem :
 }
 
 /**
- * Represents an appointment or event in a calendar. Calendar items are linked to an agenda and can
+ *
+ *  Represents an appointment or event in a calendar. Calendar items are linked to an agenda and can
  * block
- * availabilities for scheduling purposes.
- * /
+ *  availabilities for scheduling purposes.
  */
 @Serializable
 data class DecryptedCalendarItem(
@@ -470,10 +470,10 @@ override fun copyWithSecurityMetadata(securityMetadata: SecurityMetadata, secret
 }
 
 /**
- * Represents an appointment or event in a calendar. Calendar items are linked to an agenda and can
+ *
+ *  Represents an appointment or event in a calendar. Calendar items are linked to an agenda and can
  * block
- * availabilities for scheduling purposes.
- * /
+ *  availabilities for scheduling purposes.
  */
 @Serializable
 data class EncryptedCalendarItem(
