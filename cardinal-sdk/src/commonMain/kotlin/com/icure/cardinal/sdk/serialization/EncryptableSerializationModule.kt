@@ -72,6 +72,7 @@ import com.icure.cardinal.sdk.model.embed.DecryptedFlatRateTarification
 import com.icure.cardinal.sdk.model.embed.DecryptedInsurability
 import com.icure.cardinal.sdk.model.embed.DecryptedInvoicingCode
 import com.icure.cardinal.sdk.model.embed.DecryptedMedicalHouseContract
+import com.icure.cardinal.sdk.model.embed.DecryptedPartnership
 import com.icure.cardinal.sdk.model.embed.DecryptedPatientHealthCareParty
 import com.icure.cardinal.sdk.model.embed.DecryptedPlanOfAction
 import com.icure.cardinal.sdk.model.embed.DecryptedSchoolingInfo
@@ -93,6 +94,7 @@ import com.icure.cardinal.sdk.model.embed.EncryptedFlatRateTarification
 import com.icure.cardinal.sdk.model.embed.EncryptedInsurability
 import com.icure.cardinal.sdk.model.embed.EncryptedInvoicingCode
 import com.icure.cardinal.sdk.model.embed.EncryptedMedicalHouseContract
+import com.icure.cardinal.sdk.model.embed.EncryptedPartnership
 import com.icure.cardinal.sdk.model.embed.EncryptedPatientHealthCareParty
 import com.icure.cardinal.sdk.model.embed.EncryptedPlanOfAction
 import com.icure.cardinal.sdk.model.embed.EncryptedSchoolingInfo
@@ -107,6 +109,7 @@ import com.icure.cardinal.sdk.model.embed.FlatRateTarification
 import com.icure.cardinal.sdk.model.embed.Insurability
 import com.icure.cardinal.sdk.model.embed.InvoicingCode
 import com.icure.cardinal.sdk.model.embed.MedicalHouseContract
+import com.icure.cardinal.sdk.model.embed.Partnership
 import com.icure.cardinal.sdk.model.embed.PatientHealthCareParty
 import com.icure.cardinal.sdk.model.embed.PlanOfAction
 import com.icure.cardinal.sdk.model.embed.SchoolingInfo
@@ -217,6 +220,10 @@ internal object EncryptableSerializationModule {
 			polymorphic(Message::class) {
 				subclass(DecryptedMessage::class)
 				subclass(EncryptedMessage::class)
+			}
+			polymorphic(Partnership::class) {
+				subclass(DecryptedPartnership::class)
+				subclass(EncryptedPartnership::class)
 			}
 			polymorphic(Patient::class) {
 				subclass(DecryptedPatient::class)

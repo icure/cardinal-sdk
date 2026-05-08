@@ -10,22 +10,75 @@ import kotlin.String
  * patient).
  * /
  */
-@Serializable
-data class Partnership(
+
+sealed interface Partnership : Encryptable {
 	/**
 	 * The type of relationship (from CD-CONTACT-PERSON codes).
 	 */
-	public val type: PartnershipType? = null,
+	public val type: PartnershipType?
+
 	/**
 	 * The status of the relationship.
 	 */
-	public val status: PartnershipStatus? = null,
+	public val status: PartnershipStatus?
+
 	/**
 	 * The UUID of the contact person or patient in this relationship.
 	 */
-	public val partnerId: String? = null,
-) {
+	public val partnerId: String?
+
+	override val encryptedSelf: String?
 	// region Partnership-Partnership
 
+	// endregion
+}
+
+/**
+ * Represents a relationship between a patient and another person (contact person or another
+ * patient).
+ * /
+ */
+@Serializable
+data class DecryptedPartnership(
+	/**
+	 * The type of relationship (from CD-CONTACT-PERSON codes).
+	 */
+	override val type: PartnershipType? = null,
+	/**
+	 * The status of the relationship.
+	 */
+	override val status: PartnershipStatus? = null,
+	/**
+	 * The UUID of the contact person or patient in this relationship.
+	 */
+	override val partnerId: String? = null,
+	override val encryptedSelf: String? = null,
+) : Partnership {
+	// region Partnership-DecryptedPartnership
+	// endregion
+}
+
+/**
+ * Represents a relationship between a patient and another person (contact person or another
+ * patient).
+ * /
+ */
+@Serializable
+data class EncryptedPartnership(
+	/**
+	 * The type of relationship (from CD-CONTACT-PERSON codes).
+	 */
+	override val type: PartnershipType? = null,
+	/**
+	 * The status of the relationship.
+	 */
+	override val status: PartnershipStatus? = null,
+	/**
+	 * The UUID of the contact person or patient in this relationship.
+	 */
+	override val partnerId: String? = null,
+	override val encryptedSelf: String? = null,
+) : Partnership {
+	// region Partnership-EncryptedPartnership
 	// endregion
 }

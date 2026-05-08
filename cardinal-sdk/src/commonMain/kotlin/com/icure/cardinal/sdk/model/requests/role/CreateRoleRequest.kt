@@ -12,5 +12,6 @@ data class CreateRoleRequest(
 	public val description: String? = null,
 ) {
 	// region CreateRoleRequest-CreateRoleRequest
+
 	// endregion
 }
