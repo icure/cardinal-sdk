@@ -56,6 +56,7 @@ data class DecryptedPartnership(
 	override val encryptedSelf: Base64String? = null,
 ) : Partnership {
 	// region Partnership-DecryptedPartnership
+
 	// endregion
 }
 
@@ -81,5 +82,6 @@ data class EncryptedPartnership(
 	override val encryptedSelf: Base64String? = null,
 ) : Partnership {
 	// region Partnership-EncryptedPartnership
+
 	// endregion
 }
