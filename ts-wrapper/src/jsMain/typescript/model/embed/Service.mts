@@ -16,48 +16,132 @@ import {SecurityMetadata} from './SecurityMetadata.mjs';
 
 export interface Service extends Encryptable, ICureDocument<string>, HasEndOfLife {
 
+	/**
+	 *
+	 *  The transactionId is used when a single service had to be split into parts for technical
+	 *  reasons. Several services with the same non null transaction id form one single service
+	 */
 	transactionId: string | undefined;
 
 	identifier: Array<Identifier>;
 
+	/**
+	 *
+	 *  Id of the contact during which the service is provided. Only used when the Service is emitted
+	 *  outside of its contact
+	 */
 	contactId: string | undefined;
 
 	subContactIds: Array<string> | undefined;
 
+	/**
+	 *
+	 *  List of IDs of all plans of actions (healthcare approaches) as a part of which the Service is
+	 *  provided. Only used when the Service is emitted outside of its contact
+	 */
 	plansOfActionIds: Array<string> | undefined;
 
+	/**
+	 *
+	 *  List of IDs of all healthcare elements for which the service is provided. Only used when the
+	 *  Service is emitted outside of its contact
+	 */
 	healthElementsIds: Array<string> | undefined;
 
+	/**
+	 *
+	 *  List of Ids of all forms linked to the Service. Only used when the Service is emitted outside of
+	 *  its contact.
+	 */
 	formIds: Array<string> | undefined;
 
 	secretForeignKeys: Array<string> | undefined;
 
+	/**
+	 *
+	 *  The public patient key, encrypted here for separate Crypto Actors.
+	 */
 	cryptedForeignKeys: { [ key: string ]: Array<Delegation> };
 
+	/**
+	 *
+	 *  The delegations giving access to connected healthcare information.
+	 */
 	delegations: { [ key: string ]: Array<Delegation> };
 
+	/**
+	 *
+	 *  The contact secret encryption key used to encrypt the secured properties (like services for
+	 *  example), encrypted for separate Crypto Actors.
+	 */
 	encryptionKeys: { [ key: string ]: Array<Delegation> };
 
+	/**
+	 *
+	 *  Description / Unambiguous qualification (LOINC code) of the type of information contained in the
+	 *  service. Could be a code to qualify temperature, complaint, diagnostic, ...
+	 */
 	label: string | undefined;
 
+	/**
+	 *
+	 *  Used for sorting services inside an upper object (A contact, a transaction, a FHIR bundle, ...)
+	 */
 	index: number | undefined;
 
+	/**
+	 *
+	 *  Information contained in the service. Content is localized, using ISO language code as key
+	 */
 	content: { [ key: string ]: Content };
 
+	/**
+	 *
+	 *  Information contained in the service. Content is localized, using ISO language code as key
+	 */
 	textIndexes: { [ key: string ]: string };
 
+	/**
+	 *
+	 *  The date (YYYYMMDDhhmmss) when the Service is noted to have started and also closes on the same
+	 *  date
+	 */
 	valueDate: number | undefined;
 
+	/**
+	 *
+	 *  The date (YYYYMMDDhhmmss) of the start of the Service
+	 */
 	openingDate: number | undefined;
 
+	/**
+	 *
+	 *  The date (YYYYMMDDhhmmss) marking the end of the Service
+	 */
 	closingDate: number | undefined;
 
+	/**
+	 *
+	 *  Text, comments on the Service provided
+	 */
 	comment: string | undefined;
 
+	/**
+	 *
+	 *  List of invoicing codes
+	 */
 	invoicingCodes: Array<string>;
 
+	/**
+	 *
+	 *  Comments - Notes recorded by a HCP about this service
+	 */
 	notes: Array<Annotation>;
 
+	/**
+	 *
+	 *  Links towards related services (possibly in other contacts)
+	 */
 	qualifiedLinks: { [ key in LinkQualification ]?: { [ key: string ]: string } };
 
 	securityMetadata: SecurityMetadata | undefined;
@@ -70,62 +154,173 @@ export interface Service extends Encryptable, ICureDocument<string>, HasEndOfLif
 
 export class DecryptedService {
 
+	/**
+	 *
+	 *  The Id of the Service. We encourage using either a v4 UUID or a HL7 Id.
+	 */
 	id: string;
 
+	/**
+	 *
+	 *  The transactionId is used when a single service had to be split into parts for technical
+	 *  reasons. Several services with the same non null transaction id form one single service
+	 */
 	transactionId: string | undefined = undefined;
 
 	identifier: Array<Identifier> = [];
 
+	/**
+	 *
+	 *  Id of the contact during which the service is provided. Only used when the Service is emitted
+	 *  outside of its contact
+	 */
 	contactId: string | undefined = undefined;
 
 	subContactIds: Array<string> | undefined = undefined;
 
+	/**
+	 *
+	 *  List of IDs of all plans of actions (healthcare approaches) as a part of which the Service is
+	 *  provided. Only used when the Service is emitted outside of its contact
+	 */
 	plansOfActionIds: Array<string> | undefined = undefined;
 
+	/**
+	 *
+	 *  List of IDs of all healthcare elements for which the service is provided. Only used when the
+	 *  Service is emitted outside of its contact
+	 */
 	healthElementsIds: Array<string> | undefined = undefined;
 
+	/**
+	 *
+	 *  List of Ids of all forms linked to the Service. Only used when the Service is emitted outside of
+	 *  its contact.
+	 */
 	formIds: Array<string> | undefined = undefined;
 
 	secretForeignKeys: Array<string> | undefined = [];
 
+	/**
+	 *
+	 *  The public patient key, encrypted here for separate Crypto Actors.
+	 */
 	cryptedForeignKeys: { [ key: string ]: Array<Delegation> } = {};
 
+	/**
+	 *
+	 *  The delegations giving access to connected healthcare information.
+	 */
 	delegations: { [ key: string ]: Array<Delegation> } = {};
 
+	/**
+	 *
+	 *  The contact secret encryption key used to encrypt the secured properties (like services for
+	 *  example), encrypted for separate Crypto Actors.
+	 */
 	encryptionKeys: { [ key: string ]: Array<Delegation> } = {};
 
+	/**
+	 *
+	 *  Description / Unambiguous qualification (LOINC code) of the type of information contained in the
+	 *  service. Could be a code to qualify temperature, complaint, diagnostic, ...
+	 */
 	label: string | undefined = undefined;
 
+	/**
+	 *
+	 *  Used for sorting services inside an upper object (A contact, a transaction, a FHIR bundle, ...)
+	 */
 	index: number | undefined = undefined;
 
+	/**
+	 *
+	 *  Information contained in the service. Content is localized, using ISO language code as key
+	 */
 	content: { [ key: string ]: DecryptedContent } = {};
 
+	/**
+	 *
+	 *  Information contained in the service. Content is localized, using ISO language code as key
+	 */
 	textIndexes: { [ key: string ]: string } = {};
 
+	/**
+	 *
+	 *  The date (YYYYMMDDhhmmss) when the Service is noted to have started and also closes on the same
+	 *  date
+	 */
 	valueDate: number | undefined = undefined;
 
+	/**
+	 *
+	 *  The date (YYYYMMDDhhmmss) of the start of the Service
+	 */
 	openingDate: number | undefined = undefined;
 
+	/**
+	 *
+	 *  The date (YYYYMMDDhhmmss) marking the end of the Service
+	 */
 	closingDate: number | undefined = undefined;
 
+	/**
+	 *
+	 *  The timestamp (unix epoch in ms) of creation of the service, will be filled automatically if
+	 *  missing. Not enforced by the application server.
+	 */
 	created: number | undefined = undefined;
 
+	/**
+	 *
+	 *  The date (unix epoch in ms) of the latest modification of the service, will be filled
+	 *  automatically if missing. Not enforced by the application server.
+	 */
 	modified: number | undefined = undefined;
 
 	endOfLife: number | undefined = undefined;
 
+	/**
+	 *
+	 *  The id of the User that has created this service, if absent, falls back on the contact's author
+	 */
 	author: string | undefined = undefined;
 
+	/**
+	 *
+	 *  The id of the HealthcareParty that is responsible for this service, if absent, falls back on the
+	 *  contact's responsible
+	 */
 	responsible: string | undefined = undefined;
 
+	/**
+	 *
+	 *  Text, comments on the Service provided
+	 */
 	comment: string | undefined = undefined;
 
+	/**
+	 *
+	 *  List of invoicing codes
+	 */
 	invoicingCodes: Array<string> = [];
 
+	/**
+	 *
+	 *  Comments - Notes recorded by a HCP about this service
+	 */
 	notes: Array<Annotation> = [];
 
+	/**
+	 *
+	 *  Links towards related services (possibly in other contacts)
+	 */
 	qualifiedLinks: { [ key in LinkQualification ]?: { [ key: string ]: string } } = {};
 
+	/**
+	 *
+	 *  Links towards related services (possibly in other contacts)
+	 */
 	codes: Array<CodeStub> = [];
 
 	tags: Array<CodeStub> = [];
@@ -301,62 +496,173 @@ export class DecryptedService {
 
 export class EncryptedService {
 
+	/**
+	 *
+	 *  The Id of the Service. We encourage using either a v4 UUID or a HL7 Id.
+	 */
 	id: string;
 
+	/**
+	 *
+	 *  The transactionId is used when a single service had to be split into parts for technical
+	 *  reasons. Several services with the same non null transaction id form one single service
+	 */
 	transactionId: string | undefined = undefined;
 
 	identifier: Array<Identifier> = [];
 
+	/**
+	 *
+	 *  Id of the contact during which the service is provided. Only used when the Service is emitted
+	 *  outside of its contact
+	 */
 	contactId: string | undefined = undefined;
 
 	subContactIds: Array<string> | undefined = undefined;
 
+	/**
+	 *
+	 *  List of IDs of all plans of actions (healthcare approaches) as a part of which the Service is
+	 *  provided. Only used when the Service is emitted outside of its contact
+	 */
 	plansOfActionIds: Array<string> | undefined = undefined;
 
+	/**
+	 *
+	 *  List of IDs of all healthcare elements for which the service is provided. Only used when the
+	 *  Service is emitted outside of its contact
+	 */
 	healthElementsIds: Array<string> | undefined = undefined;
 
+	/**
+	 *
+	 *  List of Ids of all forms linked to the Service. Only used when the Service is emitted outside of
+	 *  its contact.
+	 */
 	formIds: Array<string> | undefined = undefined;
 
 	secretForeignKeys: Array<string> | undefined = [];
 
+	/**
+	 *
+	 *  The public patient key, encrypted here for separate Crypto Actors.
+	 */
 	cryptedForeignKeys: { [ key: string ]: Array<Delegation> } = {};
 
+	/**
+	 *
+	 *  The delegations giving access to connected healthcare information.
+	 */
 	delegations: { [ key: string ]: Array<Delegation> } = {};
 
+	/**
+	 *
+	 *  The contact secret encryption key used to encrypt the secured properties (like services for
+	 *  example), encrypted for separate Crypto Actors.
+	 */
 	encryptionKeys: { [ key: string ]: Array<Delegation> } = {};
 
+	/**
+	 *
+	 *  Description / Unambiguous qualification (LOINC code) of the type of information contained in the
+	 *  service. Could be a code to qualify temperature, complaint, diagnostic, ...
+	 */
 	label: string | undefined = undefined;
 
+	/**
+	 *
+	 *  Used for sorting services inside an upper object (A contact, a transaction, a FHIR bundle, ...)
+	 */
 	index: number | undefined = undefined;
 
+	/**
+	 *
+	 *  Information contained in the service. Content is localized, using ISO language code as key
+	 */
 	content: { [ key: string ]: EncryptedContent } = {};
 
+	/**
+	 *
+	 *  Information contained in the service. Content is localized, using ISO language code as key
+	 */
 	textIndexes: { [ key: string ]: string } = {};
 
+	/**
+	 *
+	 *  The date (YYYYMMDDhhmmss) when the Service is noted to have started and also closes on the same
+	 *  date
+	 */
 	valueDate: number | undefined = undefined;
 
+	/**
+	 *
+	 *  The date (YYYYMMDDhhmmss) of the start of the Service
+	 */
 	openingDate: number | undefined = undefined;
 
+	/**
+	 *
+	 *  The date (YYYYMMDDhhmmss) marking the end of the Service
+	 */
 	closingDate: number | undefined = undefined;
 
+	/**
+	 *
+	 *  The timestamp (unix epoch in ms) of creation of the service, will be filled automatically if
+	 *  missing. Not enforced by the application server.
+	 */
 	created: number | undefined = undefined;
 
+	/**
+	 *
+	 *  The date (unix epoch in ms) of the latest modification of the service, will be filled
+	 *  automatically if missing. Not enforced by the application server.
+	 */
 	modified: number | undefined = undefined;
 
 	endOfLife: number | undefined = undefined;
 
+	/**
+	 *
+	 *  The id of the User that has created this service, if absent, falls back on the contact's author
+	 */
 	author: string | undefined = undefined;
 
+	/**
+	 *
+	 *  The id of the HealthcareParty that is responsible for this service, if absent, falls back on the
+	 *  contact's responsible
+	 */
 	responsible: string | undefined = undefined;
 
+	/**
+	 *
+	 *  Text, comments on the Service provided
+	 */
 	comment: string | undefined = undefined;
 
+	/**
+	 *
+	 *  List of invoicing codes
+	 */
 	invoicingCodes: Array<string> = [];
 
+	/**
+	 *
+	 *  Comments - Notes recorded by a HCP about this service
+	 */
 	notes: Array<Annotation> = [];
 
+	/**
+	 *
+	 *  Links towards related services (possibly in other contacts)
+	 */
 	qualifiedLinks: { [ key in LinkQualification ]?: { [ key: string ]: string } } = {};
 
+	/**
+	 *
+	 *  Links towards related services (possibly in other contacts)
+	 */
 	codes: Array<CodeStub> = [];
 
 	tags: Array<CodeStub> = [];

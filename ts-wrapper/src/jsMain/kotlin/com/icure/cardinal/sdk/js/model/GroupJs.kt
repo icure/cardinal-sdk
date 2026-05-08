@@ -26,6 +26,8 @@ public external class GroupJs(
 
 	override val deletionDate: Double?
 
+	public val created: Double?
+
 	override val tags: Array<CodeStubJs>
 
 	public val publicTags: Array<CodeStubJs>
