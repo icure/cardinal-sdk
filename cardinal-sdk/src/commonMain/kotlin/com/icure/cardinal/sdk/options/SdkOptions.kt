@@ -265,24 +265,25 @@ data class EncryptedFieldsConfiguration(
 	val accessLog: Set<String> = setOf(
 		"detail",
 		"objectId",
-		"patientId"
+		"patientId" // Deprecated and ignored unless using the legacy support SDK
 	),
 	val calendarItem: Set<String> = setOf(
 		"details",
 		"title",
-		"patientId",
+		"patientId", // Deprecated and ignored unless using the legacy SDK
 		"phoneNumber",
 		"address",
 		"addressText",
 		"meetingTags[].*",
-		"flowItem"
+		"flowItem" // Deprecated and ignored unless using the legacy SDK
 	),
 	val contact: Set<String> = setOf(
 		"descr",
 		"notes[].markdown",
 		"location",
 		"encounterLocation",
-		"participants",
+		"participants", // Deprecated and ignored unless using the legacy SDK
+		"participantList"
 	),
 	val service: Set<String> = setOf(
 		"notes[].markdown",
@@ -292,9 +293,11 @@ data class EncryptedFieldsConfiguration(
 		"descr",
 		"note",
 		"notes[].markdown",
-		"careTeam[].*",
-		"episode[].name",
-		"episode[].comment"
+		"careTeam[].careTeamMemberType",
+		"careTeam[].healthcarePartyId",
+		"careTeam[].quality",
+		"episodes[].name",
+		"episodes[].comment"
 	),
 	val maintenanceTask: Set<String> = setOf(
 		"properties",
@@ -312,22 +315,22 @@ data class EncryptedFieldsConfiguration(
 		"nationality",
 		"race",
 		"ethnicity",
-		"picture",
+		"picture", // Deprecated and ignored unless using the legacy SDK
 		"insurabilities[].*",
 		"partnerships[].*",
 		"patientHealthCareParties[].*",
 		"financialInstitutionInformation[].*",
 		"medicalHouseContracts[].*",
 		"patientProfessions",
-		"comment",
-		"warning",
-		"fatherBirthCountry",
-		"birthCountry",
-		"nativeCountry",
-		"socialStatus",
-		"mainSourceOfIncome",
-		"schoolingInfos[].*",
-		"employementInfos[].*",
+		"comment", // Deprecated and ignored unless using the legacy SDK
+		"warning", // Deprecated and ignored unless using the legacy SDK
+		"fatherBirthCountry", // Deprecated and ignored unless using the legacy SDK
+		"birthCountry", // Deprecated and ignored unless using the legacy SDK
+		"nativeCountry", // Deprecated and ignored unless using the legacy SDK
+		"socialStatus", // Deprecated and ignored unless using the legacy SDK
+		"mainSourceOfIncome", // Deprecated and ignored unless using the legacy SDK
+		"schoolingInfos[].*", // Deprecated and ignored unless using the legacy SDK
+		"employementInfos[].*", // Deprecated and ignored unless using the legacy SDK
 	),
 	val message: Set<String> = setOf(
 		"subject"
@@ -338,7 +341,7 @@ data class EncryptedFieldsConfiguration(
 		"linkedHealthElements"
 	),
 	val document: Set<String> = setOf(
-		"medicalLocationId",
+		"medicalLocationId", // Deprecated and ignored unless using the legacy SDK
 		"name"
 	),
 	val form: Set<String> = setOf(
