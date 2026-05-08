@@ -40,10 +40,6 @@ data class Group(
 	 */
 	override val deletionDate: Long? = null,
 	/**
-	 * Creation timestamp of the group. It may be null for older groups
-	 */
-	public val created: Long? = null,
-	/**
 	 * Tags that qualify the group as being member of a certain class.
 	 */
 	@param:DefaultValue("emptySet()")
