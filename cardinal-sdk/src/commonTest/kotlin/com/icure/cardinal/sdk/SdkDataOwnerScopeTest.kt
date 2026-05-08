@@ -4,6 +4,7 @@ import com.icure.cardinal.sdk.api.raw.impl.RawRoleApiImpl
 import com.icure.cardinal.sdk.model.DecryptedPatient
 import com.icure.cardinal.sdk.model.EntityReferenceInGroup
 import com.icure.cardinal.sdk.model.embed.AccessLevel
+import com.icure.cardinal.sdk.model.requests.role.CreateRoleRequest
 import com.icure.cardinal.sdk.storage.impl.VolatileStorageFacade
 import com.icure.cardinal.sdk.test.DefaultRawApiConfig
 import com.icure.cardinal.sdk.test.autoCancelJob
@@ -32,10 +33,13 @@ class SdkDataOwnerScopeTest : StringSpec({
 			testGroupAdminAuth(),
 			DefaultRawApiConfig
 		)
-		actingScopeRoleId = roleApi.createRole(
+		actingScopeRoleId = roleApi.createRoleWithDescription(
 			"actingScopeRole-${defaultCryptoService.strongRandom.randomUUID()}",
 			null,
-			setOf("DataOwner.ActingScope.OfChildren")
+			CreateRoleRequest(
+				setOf("DataOwner.ActingScope.OfChildren"),
+				null,
+			)
 		).successBody().id
 	}
 

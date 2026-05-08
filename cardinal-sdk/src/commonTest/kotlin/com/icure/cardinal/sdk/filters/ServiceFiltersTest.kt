@@ -13,8 +13,8 @@ import io.kotest.matchers.types.shouldBeInstanceOf
 class ServiceFiltersTest : StringSpec({
 
 	val dataOwnerId = "data-owner-1"
-	val codeCodes = mapOf("LOINC" to listOf("12345", "67890"), "ATC" to listOf("A01"))
-	val tagCodes = mapOf("CD-ITEM" to listOf("clinical", "technical"), "CD-LIFECYCLE" to listOf("active"))
+	val codeCodes = mapOf("LOINC" to setOf("12345", "67890"), "ATC" to setOf("A01"))
+	val tagCodes = mapOf("CD-ITEM" to setOf("clinical", "technical"), "CD-LIFECYCLE" to setOf("active"))
 	val codeType = "LOINC"
 	val codeCodePrefix = "123"
 	val tagType = "CD-ITEM"
