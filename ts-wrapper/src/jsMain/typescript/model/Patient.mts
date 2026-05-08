@@ -17,7 +17,7 @@ import {DecryptedFinancialInstitutionInformation, EncryptedFinancialInstitutionI
 import {Gender} from './embed/Gender.mjs';
 import {DecryptedInsurability, EncryptedInsurability, Insurability} from './embed/Insurability.mjs';
 import {DecryptedMedicalHouseContract, EncryptedMedicalHouseContract, MedicalHouseContract} from './embed/MedicalHouseContract.mjs';
-import {Partnership} from './embed/Partnership.mjs';
+import {DecryptedPartnership, EncryptedPartnership, Partnership} from './embed/Partnership.mjs';
 import {DecryptedPatientHealthCareParty, EncryptedPatientHealthCareParty, PatientHealthCareParty} from './embed/PatientHealthCareParty.mjs';
 import {PersonName} from './embed/PersonName.mjs';
 import {PersonalStatus} from './embed/PersonalStatus.mjs';
@@ -553,7 +553,7 @@ export class DecryptedPatient {
 	 *
 	 *  List of partners, or persons of contact.
 	 */
-	partnerships: Array<Partnership> = [];
+	partnerships: Array<DecryptedPartnership> = [];
 
 	/**
 	 *
@@ -874,7 +874,7 @@ export class DecryptedPatient {
 			race: expectString(extractEntry(jCpy, 'race', false, path), true, [...path, ".race"]),
 			ethnicity: expectString(extractEntry(jCpy, 'ethnicity', false, path), true, [...path, ".ethnicity"]),
 			insurabilities: expectArray(extractEntry(jCpy, 'insurabilities', false, path), false, [...path, ".insurabilities"], (x0, p0) => expectObject(x0, false, ignoreUnknownKeys, p0, DecryptedInsurability.fromJSON)),
-			partnerships: expectArray(extractEntry(jCpy, 'partnerships', false, path), false, [...path, ".partnerships"], (x0, p0) => expectObject(x0, false, ignoreUnknownKeys, p0, Partnership.fromJSON)),
+			partnerships: expectArray(extractEntry(jCpy, 'partnerships', false, path), false, [...path, ".partnerships"], (x0, p0) => expectObject(x0, false, ignoreUnknownKeys, p0, DecryptedPartnership.fromJSON)),
 			patientHealthCareParties: expectArray(extractEntry(jCpy, 'patientHealthCareParties', false, path), false, [...path, ".patientHealthCareParties"], (x0, p0) => expectObject(x0, false, ignoreUnknownKeys, p0, DecryptedPatientHealthCareParty.fromJSON)),
 			financialInstitutionInformation: expectArray(extractEntry(jCpy, 'financialInstitutionInformation', false, path), false, [...path, ".financialInstitutionInformation"], (x0, p0) => expectObject(x0, false, ignoreUnknownKeys, p0, DecryptedFinancialInstitutionInformation.fromJSON)),
 			medicalHouseContracts: expectArray(extractEntry(jCpy, 'medicalHouseContracts', false, path), false, [...path, ".medicalHouseContracts"], (x0, p0) => expectObject(x0, false, ignoreUnknownKeys, p0, DecryptedMedicalHouseContract.fromJSON)),
@@ -1255,7 +1255,7 @@ export class EncryptedPatient {
 	 *
 	 *  List of partners, or persons of contact.
 	 */
-	partnerships: Array<Partnership> = [];
+	partnerships: Array<EncryptedPartnership> = [];
 
 	/**
 	 *
@@ -1576,7 +1576,7 @@ export class EncryptedPatient {
 			race: expectString(extractEntry(jCpy, 'race', false, path), true, [...path, ".race"]),
 			ethnicity: expectString(extractEntry(jCpy, 'ethnicity', false, path), true, [...path, ".ethnicity"]),
 			insurabilities: expectArray(extractEntry(jCpy, 'insurabilities', false, path), false, [...path, ".insurabilities"], (x0, p0) => expectObject(x0, false, ignoreUnknownKeys, p0, EncryptedInsurability.fromJSON)),
-			partnerships: expectArray(extractEntry(jCpy, 'partnerships', false, path), false, [...path, ".partnerships"], (x0, p0) => expectObject(x0, false, ignoreUnknownKeys, p0, Partnership.fromJSON)),
+			partnerships: expectArray(extractEntry(jCpy, 'partnerships', false, path), false, [...path, ".partnerships"], (x0, p0) => expectObject(x0, false, ignoreUnknownKeys, p0, EncryptedPartnership.fromJSON)),
 			patientHealthCareParties: expectArray(extractEntry(jCpy, 'patientHealthCareParties', false, path), false, [...path, ".patientHealthCareParties"], (x0, p0) => expectObject(x0, false, ignoreUnknownKeys, p0, EncryptedPatientHealthCareParty.fromJSON)),
 			financialInstitutionInformation: expectArray(extractEntry(jCpy, 'financialInstitutionInformation', false, path), false, [...path, ".financialInstitutionInformation"], (x0, p0) => expectObject(x0, false, ignoreUnknownKeys, p0, EncryptedFinancialInstitutionInformation.fromJSON)),
 			medicalHouseContracts: expectArray(extractEntry(jCpy, 'medicalHouseContracts', false, path), false, [...path, ".medicalHouseContracts"], (x0, p0) => expectObject(x0, false, ignoreUnknownKeys, p0, EncryptedMedicalHouseContract.fromJSON)),
