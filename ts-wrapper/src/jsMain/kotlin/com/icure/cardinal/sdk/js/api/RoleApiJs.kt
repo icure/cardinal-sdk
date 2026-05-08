@@ -26,6 +26,7 @@ public external interface RoleApiJs {
 	public fun createRole(
 		name: String,
 		permissions: Array<String>,
+		description: String?,
 		options: dynamic,
 	): Promise<RoleJs>
 
@@ -33,6 +34,7 @@ public external interface RoleApiJs {
 		groupId: String,
 		name: String,
 		permissions: Array<String>,
+		description: String?,
 		options: dynamic,
 	): Promise<RoleJs>
 

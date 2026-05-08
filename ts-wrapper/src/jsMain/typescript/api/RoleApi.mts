@@ -45,27 +45,34 @@ export interface RoleApi {
 	/**
 	 *
 	 *  Creates a new role.
-	 *  @param name the [Role.name].
+	 *  @param name the [Role.name]. It can only contain uppercase characters A->Z, underscores and cannot be longer than 40 characters.
 	 *  @param permissions the set of permissions that this role will grant.
+	 *  @param description a short description (max 300 characters) for the role.
 	 *  @param inheritsUpTo the maximum level in the downward group hierarchy where this role can be accessed (null = any child group at
 	 *  any level, 0 = only the current group can access this role, 1 = only this group and children groups can access this role, etc...)
 	 *  @return the created role.
 	 */
-	createRole(name: string, permissions: Array<string>,
+	createRole(name: string, permissions: Array<string>, description: string | undefined,
 			options?: { inheritsUpTo?: number | undefined }): Promise<Role>;
 
 	/**
 	 *
 	 *  Creates a new role in a specific group.
 	 *  @param groupId the id of the group.
-	 *  @param name the [Role.name].
+	 *  @param name the [Role.name]. It can only contain uppercase characters A->Z, underscores and cannot be longer than 40 characters.
+	 *  @param description a short description (max 300 characters) for the role.
 	 *  @param permissions the set of permissions that this role will grant.
 	 *  @param inheritsUpTo the maximum level in the downward group hierarchy where this role can be accessed (null = any child group at
 	 *  any level, 0 = only the current group can access this role, 1 = only this group and children groups can access this role, etc...)
 	 *  @return the created role.
 	 */
-	createRoleInGroup(groupId: string, name: string, permissions: Array<string>,
-			options?: { inheritsUpTo?: number | undefined }): Promise<Role>;
+	createRoleInGroup(
+			groupId: string,
+			name: string,
+			permissions: Array<string>,
+			description: string | undefined,
+			options?: { inheritsUpTo?: number | undefined }
+	): Promise<Role>;
 
 	/**
 	 *

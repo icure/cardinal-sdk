@@ -41,6 +41,9 @@ public fun group_toJs(obj: Group): GroupJs {
 	val deletionDate = nullToUndefined(
 		longToNumber(obj.deletionDate)
 	)
+	val created = nullToUndefined(
+		longToNumber(obj.created)
+	)
 	val tags = setToArray(
 		obj.tags,
 		{ x1: CodeStub ->
@@ -135,6 +138,7 @@ public fun group_toJs(obj: Group): GroupJs {
 		"id:id," +
 		"rev:rev," +
 		"deletionDate:deletionDate," +
+		"created:created," +
 		"tags:tags," +
 		"publicTags:publicTags," +
 		"name:name," +
@@ -158,6 +162,7 @@ public fun group_fromJs(obj: GroupJs): Group {
 	val id = obj.id
 	val rev = undefinedToNull(obj.rev)
 	val deletionDate = numberToLong(obj.deletionDate, "obj.deletionDate")
+	val created = numberToLong(obj.created, "obj.created")
 	val tags = arrayToSet(
 		obj.tags,
 		"obj.tags",
@@ -247,6 +252,7 @@ public fun group_fromJs(obj: GroupJs): Group {
 		id = id,
 		rev = rev,
 		deletionDate = deletionDate,
+		created = created,
 		tags = tags,
 		publicTags = publicTags,
 		name = name,

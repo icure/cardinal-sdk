@@ -22,6 +22,8 @@ public external class RoleJs(
 
 	public val name: String?
 
+	public val description: String?
+
 	public val inheritableUpTo: Double?
 
 	public val permissions: Array<String>
