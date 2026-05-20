@@ -15,6 +15,7 @@ import com.icure.cardinal.sdk.js.model.embed.DecryptedAddressJs
 import com.icure.cardinal.sdk.js.model.embed.DecryptedFinancialInstitutionInformationJs
 import com.icure.cardinal.sdk.js.model.embed.DecryptedInsurabilityJs
 import com.icure.cardinal.sdk.js.model.embed.DecryptedMedicalHouseContractJs
+import com.icure.cardinal.sdk.js.model.embed.DecryptedPartnershipJs
 import com.icure.cardinal.sdk.js.model.embed.DecryptedPatientHealthCarePartyJs
 import com.icure.cardinal.sdk.js.model.embed.DelegationJs
 import com.icure.cardinal.sdk.js.model.embed.EncryptableJs
@@ -22,6 +23,7 @@ import com.icure.cardinal.sdk.js.model.embed.EncryptedAddressJs
 import com.icure.cardinal.sdk.js.model.embed.EncryptedFinancialInstitutionInformationJs
 import com.icure.cardinal.sdk.js.model.embed.EncryptedInsurabilityJs
 import com.icure.cardinal.sdk.js.model.embed.EncryptedMedicalHouseContractJs
+import com.icure.cardinal.sdk.js.model.embed.EncryptedPartnershipJs
 import com.icure.cardinal.sdk.js.model.embed.EncryptedPatientHealthCarePartyJs
 import com.icure.cardinal.sdk.js.model.embed.FinancialInstitutionInformationJs
 import com.icure.cardinal.sdk.js.model.embed.InsurabilityJs
@@ -209,7 +211,7 @@ public external class DecryptedPatientJs(
 
 	override val insurabilities: Array<DecryptedInsurabilityJs>
 
-	override val partnerships: Array<PartnershipJs>
+	override val partnerships: Array<DecryptedPartnershipJs>
 
 	override val patientHealthCareParties: Array<DecryptedPatientHealthCarePartyJs>
 
@@ -350,7 +352,7 @@ public external class EncryptedPatientJs(
 
 	override val insurabilities: Array<EncryptedInsurabilityJs>
 
-	override val partnerships: Array<PartnershipJs>
+	override val partnerships: Array<EncryptedPartnershipJs>
 
 	override val patientHealthCareParties: Array<EncryptedPatientHealthCarePartyJs>
 
