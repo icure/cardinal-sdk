@@ -10,6 +10,7 @@ import com.icure.cardinal.sdk.model.couchdb.DocIdentifier
 import com.icure.cardinal.sdk.model.requests.BulkShareOrUpdateMetadataParams
 import com.icure.cardinal.sdk.model.requests.EntityBulkShareResult
 import com.icure.utils.InternalIcureApi
+import kotlin.Boolean
 import kotlin.ByteArray
 import kotlin.Long
 import kotlin.String
@@ -82,6 +83,12 @@ public interface RawReceiptApi {
 	suspend fun getReceipts(receiptIds: ListOfIds): HttpResponse<List<EncryptedReceipt>>
 
 	suspend fun listByReference(ref: String): HttpResponse<List<EncryptedReceipt>>
+
+	suspend fun listReceiptsBetweenDates(
+		startDate: Long? = null,
+		endDate: Long? = null,
+		descending: Boolean? = null,
+	): HttpResponse<List<EncryptedReceipt>>
 
 	suspend fun modifyReceipt(receiptDto: EncryptedReceipt): HttpResponse<EncryptedReceipt>
 

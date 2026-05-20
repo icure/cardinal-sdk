@@ -28,6 +28,7 @@ import io.ktor.http.content.ByteArrayContent
 import io.ktor.http.contentType
 import io.ktor.http.takeFrom
 import io.ktor.util.date.GMTDate
+import kotlin.Boolean
 import kotlin.ByteArray
 import kotlin.Long
 import kotlin.String
@@ -249,6 +250,23 @@ class RawReceiptApiImpl(
 			url {
 				takeFrom(apiUrl)
 				appendPathSegments("rest", "v2", "receipt", "byRef", ref)
+				parameter("ts", GMTDate().timestamp)
+			}
+			accept(Application.Json)
+		}.wrap()
+
+	override suspend fun listReceiptsBetweenDates(
+		startDate: Long?,
+		endDate: Long?,
+		descending: Boolean?,
+	): HttpResponse<List<EncryptedReceipt>> =
+		get(authProvider) {
+			url {
+				takeFrom(apiUrl)
+				appendPathSegments("rest", "v2", "receipt", "byCreated")
+				parameter("startDate", startDate)
+				parameter("endDate", endDate)
+				parameter("descending", descending)
 				parameter("ts", GMTDate().timestamp)
 			}
 			accept(Application.Json)
