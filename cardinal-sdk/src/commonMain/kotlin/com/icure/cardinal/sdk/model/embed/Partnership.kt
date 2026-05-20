@@ -2,6 +2,7 @@
 // If you want to change the way this class is generated, see [this repo](https://github.com/icure/sdk-codegen).
 package com.icure.cardinal.sdk.model.embed
 
+import com.icure.cardinal.sdk.model.specializations.Base64String
 import kotlinx.serialization.Serializable
 import kotlin.String
 
@@ -10,22 +11,77 @@ import kotlin.String
  * patient).
  * /
  */
-@Serializable
-data class Partnership(
+
+sealed interface Partnership : Encryptable {
 	/**
 	 * The type of relationship (from CD-CONTACT-PERSON codes).
 	 */
-	public val type: PartnershipType? = null,
+	public val type: PartnershipType?
+
 	/**
 	 * The status of the relationship.
 	 */
-	public val status: PartnershipStatus? = null,
+	public val status: PartnershipStatus?
+
 	/**
 	 * The UUID of the contact person or patient in this relationship.
 	 */
-	public val partnerId: String? = null,
-) {
+	public val partnerId: String?
+
+	override val encryptedSelf: Base64String?
 	// region Partnership-Partnership
+
+	// endregion
+}
+
+/**
+ * Represents a relationship between a patient and another person (contact person or another
+ * patient).
+ * /
+ */
+@Serializable
+data class DecryptedPartnership(
+	/**
+	 * The type of relationship (from CD-CONTACT-PERSON codes).
+	 */
+	override val type: PartnershipType? = null,
+	/**
+	 * The status of the relationship.
+	 */
+	override val status: PartnershipStatus? = null,
+	/**
+	 * The UUID of the contact person or patient in this relationship.
+	 */
+	override val partnerId: String? = null,
+	override val encryptedSelf: Base64String? = null,
+) : Partnership {
+	// region Partnership-DecryptedPartnership
+
+	// endregion
+}
+
+/**
+ * Represents a relationship between a patient and another person (contact person or another
+ * patient).
+ * /
+ */
+@Serializable
+data class EncryptedPartnership(
+	/**
+	 * The type of relationship (from CD-CONTACT-PERSON codes).
+	 */
+	override val type: PartnershipType? = null,
+	/**
+	 * The status of the relationship.
+	 */
+	override val status: PartnershipStatus? = null,
+	/**
+	 * The UUID of the contact person or patient in this relationship.
+	 */
+	override val partnerId: String? = null,
+	override val encryptedSelf: Base64String? = null,
+) : Partnership {
+	// region Partnership-EncryptedPartnership
 
 	// endregion
 }

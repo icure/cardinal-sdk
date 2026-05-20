@@ -15,6 +15,7 @@ import com.icure.cardinal.sdk.model.embed.DecryptedAddress
 import com.icure.cardinal.sdk.model.embed.DecryptedFinancialInstitutionInformation
 import com.icure.cardinal.sdk.model.embed.DecryptedInsurability
 import com.icure.cardinal.sdk.model.embed.DecryptedMedicalHouseContract
+import com.icure.cardinal.sdk.model.embed.DecryptedPartnership
 import com.icure.cardinal.sdk.model.embed.DecryptedPatientHealthCareParty
 import com.icure.cardinal.sdk.model.embed.Delegation
 import com.icure.cardinal.sdk.model.embed.Encryptable
@@ -22,6 +23,7 @@ import com.icure.cardinal.sdk.model.embed.EncryptedAddress
 import com.icure.cardinal.sdk.model.embed.EncryptedFinancialInstitutionInformation
 import com.icure.cardinal.sdk.model.embed.EncryptedInsurability
 import com.icure.cardinal.sdk.model.embed.EncryptedMedicalHouseContract
+import com.icure.cardinal.sdk.model.embed.EncryptedPartnership
 import com.icure.cardinal.sdk.model.embed.EncryptedPatientHealthCareParty
 import com.icure.cardinal.sdk.model.embed.FinancialInstitutionInformation
 import com.icure.cardinal.sdk.model.embed.Gender
@@ -619,7 +621,7 @@ data class DecryptedPatient(
 	 * List of partners, or persons of contact.
 	 */
 	@param:DefaultValue("emptyList()")
-	override val partnerships: List<Partnership> = emptyList(),
+	override val partnerships: List<DecryptedPartnership> = emptyList(),
 	/**
 	 * Links between this patient and healthcare parties.
 	 */
@@ -933,7 +935,7 @@ data class EncryptedPatient(
 	 * List of partners, or persons of contact.
 	 */
 	@param:DefaultValue("emptyList()")
-	override val partnerships: List<Partnership> = emptyList(),
+	override val partnerships: List<EncryptedPartnership> = emptyList(),
 	/**
 	 * Links between this patient and healthcare parties.
 	 */

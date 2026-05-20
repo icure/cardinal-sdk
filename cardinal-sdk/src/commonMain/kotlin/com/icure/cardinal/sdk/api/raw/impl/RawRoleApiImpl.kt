@@ -9,6 +9,7 @@ import com.icure.cardinal.sdk.auth.services.AuthProvider
 import com.icure.cardinal.sdk.model.ListOfIds
 import com.icure.cardinal.sdk.model.Role
 import com.icure.cardinal.sdk.model.couchdb.DocIdentifier
+import com.icure.cardinal.sdk.model.requests.role.CreateRoleRequest
 import com.icure.utils.InternalIcureApi
 import io.ktor.client.request.accept
 import io.ktor.client.request.parameter
@@ -74,37 +75,37 @@ class RawRoleApiImpl(
 			setBody(roleIds)
 		}.wrap()
 
-	override suspend fun createRole(
+	override suspend fun createRoleWithDescription(
 		name: String,
 		inheritsUpTo: Int?,
-		permissions: Set<String>,
+		roleParams: CreateRoleRequest,
 	): HttpResponse<Role> =
 		post(authProvider) {
 			url {
 				takeFrom(apiUrl)
-				appendPathSegments("rest", "v2", "role", name)
+				appendPathSegments("rest", "v2", "role", name, "withDescription")
 				parameter("inheritsUpTo", inheritsUpTo)
 			}
 			contentType(Application.Json)
 			accept(Application.Json)
-			setBody(permissions)
+			setBody(roleParams)
 		}.wrap()
 
-	override suspend fun createRoleInGroup(
+	override suspend fun createRoleInGroupWithDescription(
 		name: String,
 		groupId: String,
 		inheritsUpTo: Int?,
-		permissions: Set<String>,
+		roleParams: CreateRoleRequest,
 	): HttpResponse<Role> =
 		post(authProvider) {
 			url {
 				takeFrom(apiUrl)
-				appendPathSegments("rest", "v2", "role", name, "inGroup", groupId)
+				appendPathSegments("rest", "v2", "role", name, "inGroup", groupId, "withDescription")
 				parameter("inheritsUpTo", inheritsUpTo)
 			}
 			contentType(Application.Json)
 			accept(Application.Json)
-			setBody(permissions)
+			setBody(roleParams)
 		}.wrap()
 
 	override suspend fun modifyRolePermissions(

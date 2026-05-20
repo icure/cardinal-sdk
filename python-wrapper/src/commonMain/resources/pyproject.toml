@@ -4,8 +4,8 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "cardinal-sdk"
-version = "1.2.0" # TODO: this can be retrieved from GitHub by setuptools
-requires-python = ">=3.9"
+version = "2.4.4"
+requires-python = ">=3.12"
 authors = [
     { name = "iCure" }
 ]

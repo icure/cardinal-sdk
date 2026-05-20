@@ -24,14 +24,15 @@ import com.icure.cardinal.sdk.js.model.embed.DecryptedAddressJs
 import com.icure.cardinal.sdk.js.model.embed.DecryptedFinancialInstitutionInformationJs
 import com.icure.cardinal.sdk.js.model.embed.DecryptedInsurabilityJs
 import com.icure.cardinal.sdk.js.model.embed.DecryptedMedicalHouseContractJs
+import com.icure.cardinal.sdk.js.model.embed.DecryptedPartnershipJs
 import com.icure.cardinal.sdk.js.model.embed.DecryptedPatientHealthCarePartyJs
 import com.icure.cardinal.sdk.js.model.embed.DelegationJs
 import com.icure.cardinal.sdk.js.model.embed.EncryptedAddressJs
 import com.icure.cardinal.sdk.js.model.embed.EncryptedFinancialInstitutionInformationJs
 import com.icure.cardinal.sdk.js.model.embed.EncryptedInsurabilityJs
 import com.icure.cardinal.sdk.js.model.embed.EncryptedMedicalHouseContractJs
+import com.icure.cardinal.sdk.js.model.embed.EncryptedPartnershipJs
 import com.icure.cardinal.sdk.js.model.embed.EncryptedPatientHealthCarePartyJs
-import com.icure.cardinal.sdk.js.model.embed.PartnershipJs
 import com.icure.cardinal.sdk.js.model.embed.PersonNameJs
 import com.icure.cardinal.sdk.js.model.embed.address_fromJs
 import com.icure.cardinal.sdk.js.model.embed.address_toJs
@@ -76,15 +77,16 @@ import com.icure.cardinal.sdk.model.embed.DecryptedAddress
 import com.icure.cardinal.sdk.model.embed.DecryptedFinancialInstitutionInformation
 import com.icure.cardinal.sdk.model.embed.DecryptedInsurability
 import com.icure.cardinal.sdk.model.embed.DecryptedMedicalHouseContract
+import com.icure.cardinal.sdk.model.embed.DecryptedPartnership
 import com.icure.cardinal.sdk.model.embed.DecryptedPatientHealthCareParty
 import com.icure.cardinal.sdk.model.embed.Delegation
 import com.icure.cardinal.sdk.model.embed.EncryptedAddress
 import com.icure.cardinal.sdk.model.embed.EncryptedFinancialInstitutionInformation
 import com.icure.cardinal.sdk.model.embed.EncryptedInsurability
 import com.icure.cardinal.sdk.model.embed.EncryptedMedicalHouseContract
+import com.icure.cardinal.sdk.model.embed.EncryptedPartnership
 import com.icure.cardinal.sdk.model.embed.EncryptedPatientHealthCareParty
 import com.icure.cardinal.sdk.model.embed.Gender
-import com.icure.cardinal.sdk.model.embed.Partnership
 import com.icure.cardinal.sdk.model.embed.PersonName
 import com.icure.cardinal.sdk.model.embed.PersonalStatus
 import com.icure.cardinal.sdk.model.specializations.AesExchangeKeyEncryptionKeypairIdentifier
@@ -264,7 +266,7 @@ public fun patient_toJs(obj: DecryptedPatient): DecryptedPatientJs {
 	)
 	val partnerships = listToArray(
 		obj.partnerships,
-		{ x1: Partnership ->
+		{ x1: DecryptedPartnership ->
 			partnership_toJs(x1)
 		},
 	)
@@ -635,7 +637,7 @@ public fun patient_fromJs(obj: DecryptedPatientJs): DecryptedPatient {
 	val partnerships = arrayToList(
 		obj.partnerships,
 		"obj.partnerships",
-		{ x1: PartnershipJs ->
+		{ x1: DecryptedPartnershipJs ->
 			partnership_fromJs(x1)
 		},
 	)
@@ -1078,7 +1080,7 @@ public fun patient_toJs(obj: EncryptedPatient): EncryptedPatientJs {
 	)
 	val partnerships = listToArray(
 		obj.partnerships,
-		{ x1: Partnership ->
+		{ x1: EncryptedPartnership ->
 			partnership_toJs(x1)
 		},
 	)
@@ -1449,7 +1451,7 @@ public fun patient_fromJs(obj: EncryptedPatientJs): EncryptedPatient {
 	val partnerships = arrayToList(
 		obj.partnerships,
 		"obj.partnerships",
-		{ x1: PartnershipJs ->
+		{ x1: EncryptedPartnershipJs ->
 			partnership_fromJs(x1)
 		},
 	)

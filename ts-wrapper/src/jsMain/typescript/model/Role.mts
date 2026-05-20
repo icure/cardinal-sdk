@@ -6,17 +6,17 @@ import {StoredDocument} from './base/StoredDocument.mjs';
 
 /**
  *
- *  The RoleDto class represents a role in the system, which can have permissions and can be
+ *
+ *   The RoleDto class represents a role in the system, which can have permissions and can be
  *  inheritable up to a certain level by users in child Groups.$
- *  down the group hierarchy this role can be inherited by users in child groups. A value of 0 means
+ *   down the group hierarchy this role can be inherited by users in child groups. A value of 0 means
  *  it cannot be inherited, while a value of -1 means it can be inherited indefinitely.
- *  /
  */
 export class Role implements StoredDocument {
 
 	/**
 	 *
-	 *  The unique identifier of the role.
+	 *  The unique identifier of the role. It is automatically set to <GROUP_ID>:<ROLE_NAME>
 	 */
 	id: string;
 
@@ -34,13 +34,24 @@ export class Role implements StoredDocument {
 
 	/**
 	 *
-	 *  The name of the role.
+	 *  The name of the role. It can only contain uppercase letters, numbers, and underscores for a max
+	 *  length of 40 characters.
 	 */
 	name: string | undefined = undefined;
 
 	/**
 	 *
-	 *  The maximum level of inheritance for this role, indicating how far
+	 *  A short description for the role. It cannot exceed 300 characters.
+	 */
+	description: string | undefined = undefined;
+
+	/**
+	 *
+	 *
+	 *   Represents the levels in the descendant groups hierarchy where this role can be used. Eg:
+	 *   - null: all the users in the descendants of the group can use this role.
+	 *   - 0: only the users in the group can use this role.
+	 *   - 1: only the users in the group and in its children groups can use this role.
 	 */
 	inheritableUpTo: number | undefined = undefined;
 
@@ -56,6 +67,7 @@ export class Role implements StoredDocument {
 		if ('rev' in partial) this.rev = partial.rev;
 		if ('deletionDate' in partial) this.deletionDate = partial.deletionDate;
 		if ('name' in partial) this.name = partial.name;
+		if ('description' in partial) this.description = partial.description;
 		if ('inheritableUpTo' in partial) this.inheritableUpTo = partial.inheritableUpTo;
 		if ('permissions' in partial && partial.permissions !== undefined) this.permissions = partial.permissions;
 	}
@@ -66,6 +78,7 @@ export class Role implements StoredDocument {
 		if (this.rev != undefined) res['rev'] = this.rev
 		if (this.deletionDate != undefined) res['deletionDate'] = this.deletionDate
 		if (this.name != undefined) res['name'] = this.name
+		if (this.description != undefined) res['description'] = this.description
 		if (this.inheritableUpTo != undefined) res['inheritableUpTo'] = this.inheritableUpTo
 		res['permissions'] = this.permissions.map((x0) => x0 )
 		return res
@@ -80,6 +93,7 @@ export class Role implements StoredDocument {
 			rev: expectString(extractEntry(jCpy, 'rev', false, path), true, [...path, ".rev"]),
 			deletionDate: expectNumber(extractEntry(jCpy, 'deletionDate', false, path), true, true, [...path, ".deletionDate"]),
 			name: expectString(extractEntry(jCpy, 'name', false, path), true, [...path, ".name"]),
+			description: expectString(extractEntry(jCpy, 'description', false, path), true, [...path, ".description"]),
 			inheritableUpTo: expectNumber(extractEntry(jCpy, 'inheritableUpTo', false, path), true, true, [...path, ".inheritableUpTo"]),
 			permissions: expectArray(extractEntry(jCpy, 'permissions', false, path), false, [...path, ".permissions"], (x0, p0) => expectString(x0, false, p0)),
 		})

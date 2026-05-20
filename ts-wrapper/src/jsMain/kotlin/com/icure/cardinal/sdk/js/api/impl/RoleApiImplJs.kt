@@ -9,6 +9,7 @@ import com.icure.cardinal.sdk.js.model.CheckedConverters.arrayToSet
 import com.icure.cardinal.sdk.js.model.CheckedConverters.listToArray
 import com.icure.cardinal.sdk.js.model.CheckedConverters.nullToUndefined
 import com.icure.cardinal.sdk.js.model.CheckedConverters.numberToInt
+import com.icure.cardinal.sdk.js.model.CheckedConverters.undefinedToNull
 import com.icure.cardinal.sdk.js.model.RoleJs
 import com.icure.cardinal.sdk.js.model.role_toJs
 import com.icure.cardinal.sdk.model.Role
@@ -98,6 +99,7 @@ internal class RoleApiImplJs(
 	override fun createRole(
 		name: String,
 		permissions: Array<String>,
+		description: String?,
 		options: dynamic,
 	): Promise<RoleJs> {
 		val _options = options ?: js("{}")
@@ -110,6 +112,7 @@ internal class RoleApiImplJs(
 					x1
 				},
 			)
+			val descriptionConverted: String? = undefinedToNull(description)
 			val inheritsUpToConverted: Int? = convertingOptionOrDefaultNullable(
 				_options,
 				"inheritsUpTo",
@@ -120,6 +123,7 @@ internal class RoleApiImplJs(
 			val result = roleApi.createRole(
 				nameConverted,
 				permissionsConverted,
+				descriptionConverted,
 				inheritsUpToConverted,
 			)
 			role_toJs(result)
@@ -130,6 +134,7 @@ internal class RoleApiImplJs(
 		groupId: String,
 		name: String,
 		permissions: Array<String>,
+		description: String?,
 		options: dynamic,
 	): Promise<RoleJs> {
 		val _options = options ?: js("{}")
@@ -143,6 +148,7 @@ internal class RoleApiImplJs(
 					x1
 				},
 			)
+			val descriptionConverted: String? = undefinedToNull(description)
 			val inheritsUpToConverted: Int? = convertingOptionOrDefaultNullable(
 				_options,
 				"inheritsUpTo",
@@ -154,6 +160,7 @@ internal class RoleApiImplJs(
 				groupIdConverted,
 				nameConverted,
 				permissionsConverted,
+				descriptionConverted,
 				inheritsUpToConverted,
 			)
 			role_toJs(result)

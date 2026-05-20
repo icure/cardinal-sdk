@@ -34,7 +34,7 @@ export class Group implements StoredDocument, HasTags {
 
 	/**
 	 *
-	 *  Hard delete (unix epoch in ms) timestamp of the object.
+	 *  Soft delete (unix epoch in ms) timestamp of the object.
 	 */
 	deletionDate: number | undefined = undefined;
 

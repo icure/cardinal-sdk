@@ -13,3 +13,4 @@ python-wrapper/src/python/lib
 cardinal-sdk/src/commonMain/kotlin/com/icure/cardinal/sdk/example
 python-wrapper/src/commonMain/resources/dist
 python-wrapper/src/commonMain/resources/src
+python-wrapper/src/commonMain/resources/venv

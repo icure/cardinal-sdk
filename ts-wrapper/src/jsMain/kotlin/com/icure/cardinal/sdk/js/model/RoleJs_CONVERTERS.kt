@@ -25,6 +25,9 @@ public fun role_toJs(obj: Role): RoleJs {
 	val name = nullToUndefined(
 		obj.name
 	)
+	val description = nullToUndefined(
+		obj.description
+	)
 	val inheritableUpTo = nullToUndefined(
 		intToNumber(obj.inheritableUpTo)
 	)
@@ -39,6 +42,7 @@ public fun role_toJs(obj: Role): RoleJs {
 		"rev:rev," +
 		"deletionDate:deletionDate," +
 		"name:name," +
+		"description:description," +
 		"inheritableUpTo:inheritableUpTo," +
 		"permissions:permissions" +
 	"}"))
@@ -49,6 +53,7 @@ public fun role_fromJs(obj: RoleJs): Role {
 	val rev = undefinedToNull(obj.rev)
 	val deletionDate = numberToLong(obj.deletionDate, "obj.deletionDate")
 	val name = undefinedToNull(obj.name)
+	val description = undefinedToNull(obj.description)
 	val inheritableUpTo = numberToInt(obj.inheritableUpTo, "obj.inheritableUpTo")
 	val permissions = arrayToSet(
 		obj.permissions,
@@ -62,6 +67,7 @@ public fun role_fromJs(obj: RoleJs): Role {
 		rev = rev,
 		deletionDate = deletionDate,
 		name = name,
+		description = description,
 		inheritableUpTo = inheritableUpTo,
 		permissions = permissions,
 	)

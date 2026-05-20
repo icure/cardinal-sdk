@@ -7,6 +7,7 @@ import com.icure.cardinal.sdk.api.raw.successBodyOrNull404
 import com.icure.cardinal.sdk.api.raw.successBodyOrThrowRevisionConflict
 import com.icure.cardinal.sdk.model.ListOfIds
 import com.icure.cardinal.sdk.model.Role
+import com.icure.cardinal.sdk.model.requests.role.CreateRoleRequest
 import com.icure.utils.InternalIcureApi
 
 @InternalIcureApi
@@ -27,15 +28,32 @@ internal class RoleApiImpl(
 	override suspend fun createRole(
 		name: String,
 		permissions: Set<String>,
+		description: String?,
 		inheritsUpTo: Int?,
-	): Role = rawApi.createRole(name, inheritsUpTo, permissions).successBody()
+	): Role = rawApi.createRoleWithDescription(
+		name = name,
+		inheritsUpTo = inheritsUpTo,
+		roleParams = CreateRoleRequest(
+			permissions = permissions,
+			description = description,
+		)
+	).successBody()
 
 	override suspend fun createRoleInGroup(
 		groupId: String,
 		name: String,
 		permissions: Set<String>,
+		description: String?,
 		inheritsUpTo: Int?,
-	): Role = rawApi.createRoleInGroup(name, groupId, inheritsUpTo, permissions).successBody()
+	): Role = rawApi.createRoleInGroupWithDescription(
+		name = name,
+		groupId = groupId,
+		inheritsUpTo = inheritsUpTo,
+		roleParams = CreateRoleRequest(
+			permissions = permissions,
+			description = description,
+		)
+	).successBody()
 
 	override suspend fun modifyRolePermissions(
 		roleId: String,

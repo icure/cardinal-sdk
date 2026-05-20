@@ -36,7 +36,7 @@ data class Group(
 	 */
 	override val rev: String? = null,
 	/**
-	 * Hard delete (unix epoch in ms) timestamp of the object.
+	 * Soft delete (unix epoch in ms) timestamp of the object.
 	 */
 	override val deletionDate: Long? = null,
 	/**

@@ -17,10 +17,10 @@ import {Base64String} from './specializations/Base64String.mjs';
 
 /**
  *
- *  Represents an appointment or event in a calendar. Calendar items are linked to an agenda and can
+ *
+ *   Represents an appointment or event in a calendar. Calendar items are linked to an agenda and can
  *  block
- *  availabilities for scheduling purposes.
- *  /
+ *   availabilities for scheduling purposes.
  */
 export interface CalendarItem extends StoredDocument, ICureDocument<string>, HasEncryptionMetadata, Encryptable {
 
@@ -183,10 +183,10 @@ export interface CalendarItem extends StoredDocument, ICureDocument<string>, Has
 
 /**
  *
- *  Represents an appointment or event in a calendar. Calendar items are linked to an agenda and can
+ *
+ *   Represents an appointment or event in a calendar. Calendar items are linked to an agenda and can
  *  block
- *  availabilities for scheduling purposes.
- *  /
+ *   availabilities for scheduling purposes.
  */
 export class DecryptedCalendarItem {
 
@@ -599,10 +599,10 @@ export class DecryptedCalendarItem {
 
 /**
  *
- *  Represents an appointment or event in a calendar. Calendar items are linked to an agenda and can
+ *
+ *   Represents an appointment or event in a calendar. Calendar items are linked to an agenda and can
  *  block
- *  availabilities for scheduling purposes.
- *  /
+ *   availabilities for scheduling purposes.
  */
 export class EncryptedCalendarItem {
 
