@@ -38,23 +38,19 @@ interface HealthElementFiltersFactory {
 	 *  an identifier that has the same exact [Identifier.system] and [Identifier.value] as one of the provided
 	 *  [identifiers]. Other properties of the provided identifiers are ignored.
 	 *
-	 *  These options are sortable. When sorting using these options the health elements will be in the same order as the input
-	 *  identifiers. In case an entity has multiple identifiers only the first matching identifier is considered for the
-	 *  sorting.
-	 *
 	 *  @param dataOwnerId a data owner id or null to use the current data owner id
 	 *  @param identifiers a list of identifiers
 	 *  @return options for health element filtering
 	 */
 	byIdentifiersForDataOwner(dataOwnerId: string,
-			identifiers: Array<Identifier>): BaseSortableFilterOptions<HealthElement>;
+			identifiers: Array<Identifier>): BaseFilterOptions<HealthElement>;
 
 	/**
 	 *
 	 *  In group version of [byIdentifiersForDataOwner].
 	 */
 	byIdentifiersForDataOwnerInGroup(dataOwner: EntityReferenceInGroup,
-			identifiers: Array<Identifier>): BaseSortableFilterOptions<HealthElement>;
+			identifiers: Array<Identifier>): BaseFilterOptions<HealthElement>;
 
 	/**
 	 *
@@ -62,21 +58,15 @@ interface HealthElementFiltersFactory {
 	 *  an identifier that has the same exact [Identifier.system] and [Identifier.value] as one of the provided
 	 *  [identifiers]. Other properties of the provided identifiers are ignored.
 	 *
-	 *  These options are sortable. When sorting using these options the health elements will be in the same order as the input
-	 *  identifiers. In case an entity has multiple identifiers only the first matching identifier is considered for the
-	 *  sorting.
-	 *
 	 *  @param identifiers a list of identifiers
 	 *  @return options for health element filtering
 	 */
-	byIdentifiersForSelf(identifiers: Array<Identifier>): SortableFilterOptions<HealthElement>;
+	byIdentifiersForSelf(identifiers: Array<Identifier>): FilterOptions<HealthElement>;
 
 	/**
 	 *
 	 *  Options for health element filtering which match all health elements shared directly (i.e. ignoring hierarchies) with a specific data owner that have a certain code.
 	 *  If you specify only the [codeType] you will get all entities that have at least a code of that type.
-	 *
-	 *  These options are sortable. When sorting using these options the health elements will be sorted by [codeCode].
 	 *
 	 *  @param dataOwnerId a data owner id
 	 *  @param codeType a code type
@@ -84,35 +74,31 @@ interface HealthElementFiltersFactory {
 	 *  with a code of the provided type.
 	 */
 	byCodeForDataOwner(dataOwnerId: string, codeType: string,
-			options?: { codeCode?: string | undefined }): BaseSortableFilterOptions<HealthElement>;
+			options?: { codeCode?: string | undefined }): BaseFilterOptions<HealthElement>;
 
 	/**
 	 *
 	 *  In group version of [byCodeForDataOwner].
 	 */
 	byCodeForDataOwnerInGroup(dataOwner: EntityReferenceInGroup, codeType: string,
-			options?: { codeCode?: string | undefined }): BaseSortableFilterOptions<HealthElement>;
+			options?: { codeCode?: string | undefined }): BaseFilterOptions<HealthElement>;
 
 	/**
 	 *
 	 *  Options for health element filtering which match all health elements shared directly (i.e. ignoring hierarchies) with the current data owner that have a certain code.
 	 *  If you specify only the [codeType] you will get all entities that have at least a code of that type.
 	 *
-	 *  These options are sortable. When sorting using these options the health elements will be sorted by [codeCode].
-	 *
 	 *  @param codeType a code type
 	 *  @param codeCode a code for the provided code type, or null if you want the filter to accept any entity
 	 *  with a code of the provided type.
 	 */
 	byCodeForSelf(codeType: string,
-			options?: { codeCode?: string | undefined }): SortableFilterOptions<HealthElement>;
+			options?: { codeCode?: string | undefined }): FilterOptions<HealthElement>;
 
 	/**
 	 *
 	 *  Options for health element filtering which match all health elements shared directly (i.e. ignoring hierarchies) with a specific data owner that have a certain tag.
 	 *  If you specify only the [tagType] you will get all entities that have at least a tag of that type.
-	 *
-	 *  These options are sortable. When sorting using these options the health elements will be sorted by [tagCode].
 	 *
 	 *  @param dataOwnerId a data owner id
 	 *  @param tagType a tag type
@@ -120,28 +106,26 @@ interface HealthElementFiltersFactory {
 	 *  with a tag of the provided type.
 	 */
 	byTagForDataOwner(dataOwnerId: string, tagType: string,
-			options?: { tagCode?: string | undefined }): BaseSortableFilterOptions<HealthElement>;
+			options?: { tagCode?: string | undefined }): BaseFilterOptions<HealthElement>;
 
 	/**
 	 *
 	 *  In group version of [byTagForDataOwner].
 	 */
 	byTagForDataOwnerInGroup(dataOwner: EntityReferenceInGroup, tagType: string,
-			options?: { tagCode?: string | undefined }): BaseSortableFilterOptions<HealthElement>;
+			options?: { tagCode?: string | undefined }): BaseFilterOptions<HealthElement>;
 
 	/**
 	 *
 	 *  Options for health element filtering which match all health elements shared directly (i.e. ignoring hierarchies) with the current data owner that have a certain tag.
 	 *  If you specify only the [tagType] you will get all entities that have at least a tag of that type.
 	 *
-	 *  These options are sortable. When sorting using these options the health elements will be sorted by [tagCode].
-	 *
 	 *  @param tagType a tag type
 	 *  @param tagCode a code for the provided tag type, or null if you want the filter to accept any entity
 	 *  with a tag of the provided type.
 	 */
 	byTagForSelf(tagType: string,
-			options?: { tagCode?: string | undefined }): SortableFilterOptions<HealthElement>;
+			options?: { tagCode?: string | undefined }): FilterOptions<HealthElement>;
 
 	/**
 	 *
@@ -155,21 +139,18 @@ interface HealthElementFiltersFactory {
 	 *  simply be ignored.
 	 *  Note that these may not be used in methods of apis from [CardinalBaseApis].
 	 *
-	 *  These options are sortable. When sorting using these options the health elements will be sorted by the patients, using
-	 *  the same order as the input patients.
-	 *
 	 *  @param dataOwnerId a data owner id
 	 *  @param patients a list of patients.
 	 */
 	byPatientsForDataOwner(dataOwnerId: string,
-			patients: Array<Patient>): SortableFilterOptions<HealthElement>;
+			patients: Array<Patient>): FilterOptions<HealthElement>;
 
 	/**
 	 *
 	 *  In group version of [byPatientsForDataOwner].
 	 */
 	byPatientsForDataOwnerInGroup(dataOwner: EntityReferenceInGroup,
-			patients: Array<GroupScoped<Patient>>): SortableFilterOptions<HealthElement>;
+			patients: Array<GroupScoped<Patient>>): FilterOptions<HealthElement>;
 
 	/**
 	 *
@@ -183,42 +164,35 @@ interface HealthElementFiltersFactory {
 	 *  simply be ignored.
 	 *  Note that these may not be used in methods of apis from [CardinalBaseApis].
 	 *
-	 *  These options are sortable. When sorting using these options the health elements will be sorted by the patients, using
-	 *  the same order as the input patients.
-	 *
 	 *  @param patients a list of patients.
 	 */
-	byPatientsForSelf(patients: Array<Patient>): SortableFilterOptions<HealthElement>;
+	byPatientsForSelf(patients: Array<Patient>): FilterOptions<HealthElement>;
 
 	/**
 	 *
 	 *  Options for health element filtering which match all health elements shared directly (i.e. ignoring hierarchies) with a specific data owner that are linked with a
 	 *  patient through one of the provided secret ids.
-	 *  These options are sortable. When sorting using these options the health elements will be sorted by the linked patients
-	 *  secret id, using the same order as the input.
 	 *
 	 *  @param dataOwnerId a data owner id
 	 *  @param secretIds a list of patients secret ids
 	 */
 	byPatientsSecretIdsForDataOwner(dataOwnerId: string,
-			secretIds: Array<string>): BaseSortableFilterOptions<HealthElement>;
+			secretIds: Array<string>): BaseFilterOptions<HealthElement>;
 
 	/**
 	 *
 	 *  In group version of [byPatientsSecretIdsForDataOwner].
 	 */
 	byPatientsSecretIdsForDataOwnerInGroup(dataOwner: EntityReferenceInGroup,
-			secretIds: Array<string>): BaseSortableFilterOptions<HealthElement>;
+			secretIds: Array<string>): BaseFilterOptions<HealthElement>;
 
 	/**
 	 *
 	 *  Options for health element filtering which match all health elements shared directly (i.e. ignoring hierarchies) with the current data owner that are linked with a
 	 *  patient through one of the provided secret ids.
-	 *  These options are sortable. When sorting using these options the health elements will be sorted by the linked patients
-	 *  secret id, using the same order as the input.
 	 *  @param secretIds a list of patients secret ids
 	 */
-	byPatientsSecretIdsForSelf(secretIds: Array<string>): SortableFilterOptions<HealthElement>;
+	byPatientsSecretIdsForSelf(secretIds: Array<string>): FilterOptions<HealthElement>;
 
 	/**
 	 *

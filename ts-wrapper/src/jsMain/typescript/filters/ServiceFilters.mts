@@ -36,22 +36,19 @@ interface ServiceFiltersFactory {
 	 *  an identifier that has the same exact [Identifier.system] and [Identifier.value] as one of the provided
 	 *  [identifiers]. Other properties of the provided identifiers are ignored.
 	 *
-	 *  These options are sortable. When sorting using these options the services will be in the same order as the input
-	 *  identifiers. In case an entity has multiple identifiers only the first matching identifier is considered for the
-	 *  sorting.
 	 *  @param identifiers a list of identifiers
 	 *  @param dataOwnerId a data owner id
 	 *  @return options for service filtering
 	 */
 	byIdentifiersForDataOwner(dataOwnerId: string,
-			identifiers: Array<Identifier>): BaseSortableFilterOptions<Service>;
+			identifiers: Array<Identifier>): BaseFilterOptions<Service>;
 
 	/**
 	 *
 	 *  In group version of [byIdentifiersForDataOwner].
 	 */
 	byIdentifiersForDataOwnerInGroup(dataOwner: EntityReferenceInGroup,
-			identifiers: Array<Identifier>): BaseSortableFilterOptions<Service>;
+			identifiers: Array<Identifier>): BaseFilterOptions<Service>;
 
 	/**
 	 *
@@ -60,9 +57,6 @@ interface ServiceFiltersFactory {
 	 *
 	 *  You can also limit the result to only services that are within a certain [Service.valueDate] timeframe (or [Service.openingDate]
 	 *  if the first is missing), but in that case you must specify the [codeCode].
-	 *
-	 *  These options are sortable. When sorting using these options the services will be sorted first by [codeCode] then
-	 *  by [Service.valueDate].
 	 *
 	 *  @param codeType a code type
 	 *  @param codeCode a code for the provided code type, or null if you want the filter to accept any entity
@@ -75,14 +69,14 @@ interface ServiceFiltersFactory {
 	 *  @throws IllegalArgumentException if you provide a range for the value date but no [codeCode].
 	 */
 	byCodeAndValueDateForDataOwner(dataOwnerId: string, codeType: string,
-			options?: { codeCode?: string | undefined, startOfServiceValueDate?: number | undefined, endOfServiceValueDate?: number | undefined }): BaseSortableFilterOptions<Service>;
+			options?: { codeCode?: string | undefined, startOfServiceValueDate?: number | undefined, endOfServiceValueDate?: number | undefined }): BaseFilterOptions<Service>;
 
 	/**
 	 *
 	 *  In group version of [byCodeAndValueDateForDataOwner].
 	 */
 	byCodeAndValueDateForDataOwnerInGroup(dataOwner: EntityReferenceInGroup, codeType: string,
-			options?: { codeCode?: string | undefined, startOfServiceValueDate?: number | undefined, endOfServiceValueDate?: number | undefined }): BaseSortableFilterOptions<Service>;
+			options?: { codeCode?: string | undefined, startOfServiceValueDate?: number | undefined, endOfServiceValueDate?: number | undefined }): BaseFilterOptions<Service>;
 
 	/**
 	 *
@@ -91,9 +85,6 @@ interface ServiceFiltersFactory {
 	 *
 	 *  You can also limit the result to only services that are within a certain [Service.valueDate] timeframe (or [Service.openingDate]
 	 *  if the first is missing), but in that case you must specify the [tagCode].
-	 *
-	 *  These options are sortable. When sorting using these options the services will be sorted first by [tagCode] then
-	 *  by [Service.valueDate].
 	 *
 	 *  @param tagType a tag type
 	 *  @param tagCode a code for the provided tag type, or null if you want the filter to accept any entity
@@ -106,14 +97,14 @@ interface ServiceFiltersFactory {
 	 *  @throws IllegalArgumentException if you provide a range for the value date but no [tagCode].
 	 */
 	byTagAndValueDateForDataOwner(dataOwnerId: string, tagType: string,
-			options?: { tagCode?: string | undefined, startOfServiceValueDate?: number | undefined, endOfServiceValueDate?: number | undefined }): BaseSortableFilterOptions<Service>;
+			options?: { tagCode?: string | undefined, startOfServiceValueDate?: number | undefined, endOfServiceValueDate?: number | undefined }): BaseFilterOptions<Service>;
 
 	/**
 	 *
 	 *  In group version of [byTagAndValueDateForDataOwner].
 	 */
 	byTagAndValueDateForDataOwnerInGroup(dataOwner: EntityReferenceInGroup, tagType: string,
-			options?: { tagCode?: string | undefined, startOfServiceValueDate?: number | undefined, endOfServiceValueDate?: number | undefined }): BaseSortableFilterOptions<Service>;
+			options?: { tagCode?: string | undefined, startOfServiceValueDate?: number | undefined, endOfServiceValueDate?: number | undefined }): BaseFilterOptions<Service>;
 
 	/**
 	 *
@@ -127,39 +118,35 @@ interface ServiceFiltersFactory {
 	 *  simply be ignored.
 	 *  Note that these may not be used in methods of apis from [CardinalBaseApis].
 	 *
-	 *  These options are sortable. When sorting using these options the services will be sorted by the patients, using
-	 *  the same order as the input patients.
 	 *  @param patients a list of patients.
 	 *  @param dataOwnerId a data owner id
 	 */
-	byPatientsForDataOwner(dataOwnerId: string,
-			patients: Array<Patient>): SortableFilterOptions<Service>;
+	byPatientsForDataOwner(dataOwnerId: string, patients: Array<Patient>): FilterOptions<Service>;
 
 	/**
 	 *
 	 *  In group version of [byPatientsForDataOwner].
 	 */
 	byPatientsForDataOwnerInGroup(dataOwner: EntityReferenceInGroup,
-			patients: Array<Patient>): SortableFilterOptions<Service>;
+			patients: Array<Patient>): FilterOptions<Service>;
 
 	/**
 	 *
 	 *  Options for service filtering which match all services shared directly (i.e. ignoring hierarchies) with a specific data owner that are linked with a
 	 *  patient through one of the provided secret ids.
-	 *  These options are sortable. When sorting using these options the services will be sorted by the linked patients
-	 *  secret id, using the same order as the input.
+	 *
 	 *  @param secretIds a list of patients secret ids
 	 *  @param dataOwnerId a data owner id
 	 */
 	byPatientsSecretIdsForDataOwner(dataOwnerId: string,
-			secretIds: Array<string>): BaseSortableFilterOptions<Service>;
+			secretIds: Array<string>): BaseFilterOptions<Service>;
 
 	/**
 	 *
 	 *  In group version of [byPatientsSecretIdsForDataOwner].
 	 */
 	byPatientsSecretIdsForDataOwnerInGroup(dataOwner: EntityReferenceInGroup,
-			secretIds: Array<string>): BaseSortableFilterOptions<Service>;
+			secretIds: Array<string>): BaseFilterOptions<Service>;
 
 	/**
 	 *
@@ -167,21 +154,18 @@ interface ServiceFiltersFactory {
 	 *  least a [SubContact] (from [Contact.subContacts]) where [SubContact.healthElementId] matches one of the provided
 	 *  id.
 	 *
-	 *  These options are sortable. When sorting using these options the services will be sorted in the same order as the
-	 *  input health element ids. If a service exists in multiple subcontacts only the first subcontact with matching
-	 *  health element service is considered for the ordering.
 	 *  @param healthElementIds a list of health element ids
 	 *  @param dataOwnerId a data owner id
 	 */
 	byHealthElementIdFromSubContactForDataOwner(dataOwnerId: string,
-			healthElementIds: Array<string>): BaseSortableFilterOptions<Service>;
+			healthElementIds: Array<string>): BaseFilterOptions<Service>;
 
 	/**
 	 *
 	 *  In group version of [byHealthElementIdFromSubContactForDataOwner].
 	 */
 	byHealthElementIdFromSubContactForDataOwnerInGroup(dataOwner: EntityReferenceInGroup,
-			healthElementIds: Array<string>): BaseSortableFilterOptions<Service>;
+			healthElementIds: Array<string>): BaseFilterOptions<Service>;
 
 	/**
 	 *
@@ -189,13 +173,10 @@ interface ServiceFiltersFactory {
 	 *  an identifier that has the same exact [Identifier.system] and [Identifier.value] as one of the provided
 	 *  [identifiers]. Other properties of the provided identifiers are ignored.
 	 *
-	 *  These options are sortable. When sorting using these options the services will be in the same order as the input
-	 *  identifiers. In case an entity has multiple identifiers only the first matching identifier is considered for the
-	 *  sorting.
 	 *  @param identifiers a list of identifiers
 	 *  @return options for service filtering
 	 */
-	byIdentifiersForSelf(identifiers: Array<Identifier>): SortableFilterOptions<Service>;
+	byIdentifiersForSelf(identifiers: Array<Identifier>): FilterOptions<Service>;
 
 	/**
 	 *
@@ -204,9 +185,6 @@ interface ServiceFiltersFactory {
 	 *
 	 *  You can also limit the result to only services that are within a certain [Service.valueDate] timeframe (or [Service.openingDate]
 	 *  if the first is missing), but in that case you must specify the [codeCode].
-	 *
-	 *  These options are sortable. When sorting using these options the services will be sorted first by [codeCode] then
-	 *  by [Service.valueDate].
 	 *
 	 *  @param codeType a code type
 	 *  @param codeCode a code for the provided code type, or null if you want the filter to accept any entity
@@ -218,7 +196,7 @@ interface ServiceFiltersFactory {
 	 *  @throws IllegalArgumentException if you provide a range for the value date but no [codeCode].
 	 */
 	byCodeAndValueDateForSelf(codeType: string,
-			options?: { codeCode?: string | undefined, startOfServiceValueDate?: number | undefined, endOfServiceValueDate?: number | undefined }): SortableFilterOptions<Service>;
+			options?: { codeCode?: string | undefined, startOfServiceValueDate?: number | undefined, endOfServiceValueDate?: number | undefined }): FilterOptions<Service>;
 
 	/**
 	 *
@@ -227,9 +205,6 @@ interface ServiceFiltersFactory {
 	 *
 	 *  You can also limit the result to only services that are within a certain [Service.valueDate] timeframe (or [Service.openingDate]
 	 *  if the first is missing), but in that case you must specify the [tagCode].
-	 *
-	 *  These options are sortable. When sorting using these options the services will be sorted first by [tagCode] then
-	 *  by [Service.valueDate].
 	 *
 	 *  @param tagType a tag type
 	 *  @param tagCode a code for the provided tag type, or null if you want the filter to accept any entity
@@ -241,7 +216,7 @@ interface ServiceFiltersFactory {
 	 *  @throws IllegalArgumentException if you provide a range for the value date but no [tagCode].
 	 */
 	byTagAndValueDateForSelf(tagType: string,
-			options?: { tagCode?: string | undefined, startOfServiceValueDate?: number | undefined, endOfServiceValueDate?: number | undefined }): SortableFilterOptions<Service>;
+			options?: { tagCode?: string | undefined, startOfServiceValueDate?: number | undefined, endOfServiceValueDate?: number | undefined }): FilterOptions<Service>;
 
 	/**
 	 *
@@ -255,23 +230,18 @@ interface ServiceFiltersFactory {
 	 *  simply be ignored.
 	 *  Note that these may not be used in methods of apis from [CardinalBaseApis].
 	 *
-	 *  These options are sortable. When sorting using these options the services will be sorted by the patients, using
-	 *  the same order as the input patients.
-	 *
 	 *  @param patients a list of patients.
 	 */
-	byPatientsForSelf(patients: Array<Patient>): SortableFilterOptions<Service>;
+	byPatientsForSelf(patients: Array<Patient>): FilterOptions<Service>;
 
 	/**
 	 *
 	 *  Options for service filtering which match all services shared directly (i.e. ignoring hierarchies) with the current data owner that are linked with a
 	 *  patient through one of the provided secret ids.
-	 *  These options are sortable. When sorting using these options the services will be sorted by the linked patients
-	 *  secret id, using the same order as the input.
 	 *
 	 *  @param secretIds a list of patients secret ids
 	 */
-	byPatientsSecretIdsForSelf(secretIds: Array<string>): SortableFilterOptions<Service>;
+	byPatientsSecretIdsForSelf(secretIds: Array<string>): FilterOptions<Service>;
 
 	/**
 	 *
@@ -279,13 +249,9 @@ interface ServiceFiltersFactory {
 	 *  least a [SubContact] (from [Contact.subContacts]) where [SubContact.healthElementId] matches one of the provided
 	 *  id.
 	 *
-	 *  These options are sortable. When sorting using these options the services will be sorted in the same order as the
-	 *  input health element ids. If a service exists in multiple subcontacts only the first subcontact with matching
-	 *  health element service is considered for the ordering.
-	 *
 	 *  @param healthElementIds a list of health element ids
 	 */
-	byHealthElementIdFromSubContactForSelf(healthElementIds: Array<string>): SortableFilterOptions<Service>;
+	byHealthElementIdFromSubContactForSelf(healthElementIds: Array<string>): FilterOptions<Service>;
 
 	/**
 	 *

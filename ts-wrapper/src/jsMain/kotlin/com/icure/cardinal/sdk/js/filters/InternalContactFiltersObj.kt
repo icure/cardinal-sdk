@@ -368,8 +368,7 @@ public object InternalContactFiltersObj {
 		return SortableFilterOptionsJsImpl(result)
 	}
 
-	public fun byIdentifiersForSelf(identifiers: Array<IdentifierJs>):
-			SortableFilterOptionsJs<ContactJs> {
+	public fun byIdentifiersForSelf(identifiers: Array<IdentifierJs>): FilterOptionsJs<ContactJs> {
 		val identifiersConverted: List<Identifier> = arrayToList(
 			identifiers,
 			"identifiers",
@@ -380,11 +379,11 @@ public object InternalContactFiltersObj {
 		val result = ContactFilters.byIdentifiersForSelf(
 			identifiersConverted,
 		)
-		return SortableFilterOptionsJsImpl(result)
+		return FilterOptionsJsImpl(result)
 	}
 
 	public fun byIdentifiersForDataOwner(dataOwnerId: String, identifiers: Array<IdentifierJs>):
-			BaseSortableFilterOptionsJs<ContactJs> {
+			BaseFilterOptionsJs<ContactJs> {
 		val dataOwnerIdConverted: String = dataOwnerId
 		val identifiersConverted: List<Identifier> = arrayToList(
 			identifiers,
@@ -397,11 +396,11 @@ public object InternalContactFiltersObj {
 			dataOwnerIdConverted,
 			identifiersConverted,
 		)
-		return BaseSortableFilterOptionsJsImpl(result)
+		return BaseFilterOptionsJsImpl(result)
 	}
 
 	public fun byIdentifiersForDataOwnerInGroup(dataOwner: EntityReferenceInGroupJs,
-			identifiers: Array<IdentifierJs>): BaseSortableFilterOptionsJs<ContactJs> {
+			identifiers: Array<IdentifierJs>): BaseFilterOptionsJs<ContactJs> {
 		val dataOwnerConverted: EntityReferenceInGroup = entityReferenceInGroup_fromJs(dataOwner)
 		val identifiersConverted: List<Identifier> = arrayToList(
 			identifiers,
@@ -414,7 +413,7 @@ public object InternalContactFiltersObj {
 			dataOwnerConverted,
 			identifiersConverted,
 		)
-		return BaseSortableFilterOptionsJsImpl(result)
+		return BaseFilterOptionsJsImpl(result)
 	}
 
 	public fun byCodeAndOpeningDateForDataOwner(
@@ -867,7 +866,7 @@ public object InternalContactFiltersObj {
 	}
 
 	public fun byPatientsForDataOwner(dataOwnerId: String, patients: Array<PatientJs>):
-			SortableFilterOptionsJs<ContactJs> {
+			FilterOptionsJs<ContactJs> {
 		val dataOwnerIdConverted: String = dataOwnerId
 		val patientsConverted: List<Patient> = arrayToList(
 			patients,
@@ -880,11 +879,11 @@ public object InternalContactFiltersObj {
 			dataOwnerIdConverted,
 			patientsConverted,
 		)
-		return SortableFilterOptionsJsImpl(result)
+		return FilterOptionsJsImpl(result)
 	}
 
 	public fun byPatientsForDataOwnerInGroup(dataOwner: EntityReferenceInGroupJs,
-			patients: Array<GroupScopedJs<PatientJs>>): SortableFilterOptionsJs<ContactJs> {
+			patients: Array<GroupScopedJs<PatientJs>>): FilterOptionsJs<ContactJs> {
 		val dataOwnerConverted: EntityReferenceInGroup = entityReferenceInGroup_fromJs(dataOwner)
 		val patientsConverted: List<GroupScoped<Patient>> = arrayToList(
 			patients,
@@ -902,10 +901,10 @@ public object InternalContactFiltersObj {
 			dataOwnerConverted,
 			patientsConverted,
 		)
-		return SortableFilterOptionsJsImpl(result)
+		return FilterOptionsJsImpl(result)
 	}
 
-	public fun byPatientsForSelf(patients: Array<PatientJs>): SortableFilterOptionsJs<ContactJs> {
+	public fun byPatientsForSelf(patients: Array<PatientJs>): FilterOptionsJs<ContactJs> {
 		val patientsConverted: List<Patient> = arrayToList(
 			patients,
 			"patients",
@@ -916,11 +915,11 @@ public object InternalContactFiltersObj {
 		val result = ContactFilters.byPatientsForSelf(
 			patientsConverted,
 		)
-		return SortableFilterOptionsJsImpl(result)
+		return FilterOptionsJsImpl(result)
 	}
 
 	public fun byPatientsSecretIdsForDataOwner(dataOwnerId: String, secretIds: Array<String>):
-			BaseSortableFilterOptionsJs<ContactJs> {
+			BaseFilterOptionsJs<ContactJs> {
 		val dataOwnerIdConverted: String = dataOwnerId
 		val secretIdsConverted: List<String> = arrayToList(
 			secretIds,
@@ -933,11 +932,11 @@ public object InternalContactFiltersObj {
 			dataOwnerIdConverted,
 			secretIdsConverted,
 		)
-		return BaseSortableFilterOptionsJsImpl(result)
+		return BaseFilterOptionsJsImpl(result)
 	}
 
 	public fun byPatientsSecretIdsForDataOwnerInGroup(dataOwner: EntityReferenceInGroupJs,
-			secretIds: Array<String>): BaseSortableFilterOptionsJs<ContactJs> {
+			secretIds: Array<String>): BaseFilterOptionsJs<ContactJs> {
 		val dataOwnerConverted: EntityReferenceInGroup = entityReferenceInGroup_fromJs(dataOwner)
 		val secretIdsConverted: List<String> = arrayToList(
 			secretIds,
@@ -950,11 +949,10 @@ public object InternalContactFiltersObj {
 			dataOwnerConverted,
 			secretIdsConverted,
 		)
-		return BaseSortableFilterOptionsJsImpl(result)
+		return BaseFilterOptionsJsImpl(result)
 	}
 
-	public fun byPatientsSecretIdsForSelf(secretIds: Array<String>):
-			SortableFilterOptionsJs<ContactJs> {
+	public fun byPatientsSecretIdsForSelf(secretIds: Array<String>): FilterOptionsJs<ContactJs> {
 		val secretIdsConverted: List<String> = arrayToList(
 			secretIds,
 			"secretIds",
@@ -965,7 +963,7 @@ public object InternalContactFiltersObj {
 		val result = ContactFilters.byPatientsSecretIdsForSelf(
 			secretIdsConverted,
 		)
-		return SortableFilterOptionsJsImpl(result)
+		return FilterOptionsJsImpl(result)
 	}
 
 	public fun byServiceIds(serviceIds: Array<String>): BaseSortableFilterOptionsJs<ContactJs> {

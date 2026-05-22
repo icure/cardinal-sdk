@@ -628,7 +628,7 @@ public object InternalDocumentFiltersObj {
 		dataOwnerId: String,
 		codeType: String,
 		options: dynamic,
-	): BaseSortableFilterOptionsJs<DocumentJs> {
+	): BaseFilterOptionsJs<DocumentJs> {
 		val _options = options ?: js("{}")
 		val dataOwnerIdConverted: String = dataOwnerId
 		val codeTypeConverted: String = codeType
@@ -644,14 +644,14 @@ public object InternalDocumentFiltersObj {
 			codeTypeConverted,
 			codeCodeConverted,
 		)
-		return BaseSortableFilterOptionsJsImpl(result)
+		return BaseFilterOptionsJsImpl(result)
 	}
 
 	public fun byCodeForDataOwnerInGroup(
 		dataOwner: EntityReferenceInGroupJs,
 		codeType: String,
 		options: dynamic,
-	): BaseSortableFilterOptionsJs<DocumentJs> {
+	): BaseFilterOptionsJs<DocumentJs> {
 		val _options = options ?: js("{}")
 		val dataOwnerConverted: EntityReferenceInGroup = entityReferenceInGroup_fromJs(dataOwner)
 		val codeTypeConverted: String = codeType
@@ -667,7 +667,7 @@ public object InternalDocumentFiltersObj {
 			codeTypeConverted,
 			codeCodeConverted,
 		)
-		return BaseSortableFilterOptionsJsImpl(result)
+		return BaseFilterOptionsJsImpl(result)
 	}
 
 	public fun byCodeForSelf(codeType: String, options: dynamic): SortableFilterOptionsJs<DocumentJs> {
@@ -691,7 +691,7 @@ public object InternalDocumentFiltersObj {
 		dataOwnerId: String,
 		tagType: String,
 		options: dynamic,
-	): BaseSortableFilterOptionsJs<DocumentJs> {
+	): BaseFilterOptionsJs<DocumentJs> {
 		val _options = options ?: js("{}")
 		val dataOwnerIdConverted: String = dataOwnerId
 		val tagTypeConverted: String = tagType
@@ -707,14 +707,14 @@ public object InternalDocumentFiltersObj {
 			tagTypeConverted,
 			tagCodeConverted,
 		)
-		return BaseSortableFilterOptionsJsImpl(result)
+		return BaseFilterOptionsJsImpl(result)
 	}
 
 	public fun byTagForDataOwnerInGroup(
 		dataOwner: EntityReferenceInGroupJs,
 		tagType: String,
 		options: dynamic,
-	): BaseSortableFilterOptionsJs<DocumentJs> {
+	): BaseFilterOptionsJs<DocumentJs> {
 		val _options = options ?: js("{}")
 		val dataOwnerConverted: EntityReferenceInGroup = entityReferenceInGroup_fromJs(dataOwner)
 		val tagTypeConverted: String = tagType
@@ -730,10 +730,10 @@ public object InternalDocumentFiltersObj {
 			tagTypeConverted,
 			tagCodeConverted,
 		)
-		return BaseSortableFilterOptionsJsImpl(result)
+		return BaseFilterOptionsJsImpl(result)
 	}
 
-	public fun byTagForSelf(tagType: String, options: dynamic): SortableFilterOptionsJs<DocumentJs> {
+	public fun byTagForSelf(tagType: String, options: dynamic): FilterOptionsJs<DocumentJs> {
 		val _options = options ?: js("{}")
 		val tagTypeConverted: String = tagType
 		val tagCodeConverted: String? = convertingOptionOrDefaultNullable(
@@ -747,6 +747,6 @@ public object InternalDocumentFiltersObj {
 			tagTypeConverted,
 			tagCodeConverted,
 		)
-		return SortableFilterOptionsJsImpl(result)
+		return FilterOptionsJsImpl(result)
 	}
 }
