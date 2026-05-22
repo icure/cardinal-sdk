@@ -46,16 +46,12 @@ object MaintenanceTaskFilters {
      * an identifier that has the same exact [Identifier.system] and [Identifier.value] as one of the provided
      * [identifiers]. Other properties of the provided identifiers are ignored.
      *
-     * These options are sortable. When sorting using these options the maintenance tasks will be in the same order as the input
-     * identifiers. In case an entity has multiple identifiers only the first matching identifier is considered for the
-     * sorting.
      * @param identifiers a list of identifiers
      * @return options for maintenance task filtering
      */
     fun byIdentifiersForSelf(
         identifiers: List<Identifier>,
-    ): SortableFilterOptions<MaintenanceTask> =
-        ByIdentifiersForSelf(identifiers)
+    ): FilterOptions<MaintenanceTask> = ByIdentifiersForSelf(identifiers)
 
     /**
      * Options for maintenance task filtering which match all the maintenance tasks shared directly (i.e. ignoring hierarchies) with a specific data owner
@@ -131,7 +127,7 @@ object MaintenanceTaskFilters {
     @Serializable
     internal class ByIdentifiersForSelf(
         val identifiers : List<Identifier>
-    ): SortableFilterOptions<MaintenanceTask>
+    ): FilterOptions<MaintenanceTask>
 
     @Serializable
     internal class ByTypeForDataOwner(

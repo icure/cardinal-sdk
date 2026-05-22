@@ -360,34 +360,26 @@ object PatientFilters {
 	 * an identifier that has the same exact [Identifier.system] and [Identifier.value] as one of the provided
 	 * [identifiers]. Other properties of the provided identifiers are ignored.
 	 *
-	 * These options are sortable. When sorting using these options the patients will be in the same order as the input
-	 * identifiers. In case an entity has multiple identifiers only the first matching identifier is considered for the
-	 * sorting.
-	 *
 	 * @param identifiers a list of identifiers
 	 * @return options for patient filtering
 	 */
 	fun byIdentifiersForSelf(
 		identifiers: List<Identifier>
-	): SortableFilterOptions<Patient> =
-		ByIdentifiersForSelf(identifiers)
+	): FilterOptions<Patient> = ByIdentifiersForSelf(identifiers)
 
 	/**
 	 * Options for patient filtering which match all the patients shared directly (i.e. ignoring hierarchies) with the current data owner that have
 	 * [Patient.ssin] matching one of the provided ssins.
-	 * These options are sortable. When sorting using these options the patients will be in the same order as the
-	 * provided ssins.
 	 *
 	 * @param ssins a list of ssins
 	 */
 	fun bySsinsForSelf(
 		ssins: List<String>
-	): SortableFilterOptions<Patient> = BySsinsForSelf(ssins)
+	): FilterOptions<Patient> = BySsinsForSelf(ssins)
 
 	/**
 	 * Options for patient filtering which match all the patients shared directly (i.e. ignoring hierarchies) with the current data owner that have
 	 * [Patient.dateOfBirth] between the provided values (inclusive).
-	 * These options are sortable. When sorting using these options the patients will be ordered by date of birth.
 	 *
 	 * @param fromDate the start date in YYYYMMDD format (inclusive)
 	 * @param toDate the end date in YYYYMMDD format (inclusive)
@@ -395,7 +387,7 @@ object PatientFilters {
 	fun byDateOfBirthBetweenForSelf(
 		fromDate: Int,
 		toDate: Int
-	): SortableFilterOptions<Patient> = ByDateOfBirthBetweenForSelf(
+	): FilterOptions<Patient> = ByDateOfBirthBetweenForSelf(
 		fromDate = fromDate,
 		toDate = toDate,
 	)
@@ -416,9 +408,6 @@ object PatientFilters {
 	 * provided [Patient.gender], and optionally also the provided [Patient.education] and [Patient.profession].
 	 * Note you can only provide profession if you have provided the education.
 	 *
-	 * These options are sortable. When sorting using these options the patients will be ordered first by education
-	 * then by profession.
-	 *
 	 * @param gender the patient gender.
 	 * @param education the patient education. If not provided patient the education of the patient will be ignored by
 	 * this filter.
@@ -432,7 +421,7 @@ object PatientFilters {
 		education: String? = null,
 		@DefaultValue("null")
 		profession: String? = null
-	): SortableFilterOptions<Patient> =
+	): FilterOptions<Patient> =
 		ByGenderEducationProfessionForSelf(
 			gender = gender,
 			education = education,
@@ -454,23 +443,17 @@ object PatientFilters {
 	 * an address with a [Patient.addresses] where one of the [Address.telecoms] has a [Telecom.telecomNumber] that
 	 * starts with the provided [searchString].
 	 *
-	 * These options are sortable. When sorting using these options the patients will be ordered lexicographically by
-	 * the matching telecom number.
-	 *
 	 * @param searchString start of a patient telecom. Non-alphanumeric characters are ignored.
 	 */
 	fun byTelecomForSelf(
 		searchString: String
-	) : SortableFilterOptions<Patient> = ByTelecomForSelf(searchString)
+	) : FilterOptions<Patient> = ByTelecomForSelf(searchString)
 
 	/**
 	 * Options for patient filtering which match all the patients shared directly (i.e. ignoring hierarchies) with the current data owner that have at least
 	 * an [Patient.addresses] where the [Address.street] or [Address.city] contain the provided [searchString] and
 	 * [Address.postalCode] matches the provided [postalCode].
-	 * Additionally you can limit the search to a specific house number.
-	 *
-	 * These options are sortable. When sorting using these options the patients will be ordered lexicographically first
-	 * by the matching portion of street+city, then by postal code and finally by house number.
+	 * Additionally, you can limit the search to a specific house number.
 	 *
 	 * @param searchString part of a patient address street or city
 	 * @param postalCode the patient postal code
@@ -481,7 +464,7 @@ object PatientFilters {
 		postalCode: String,
 		@DefaultValue("null")
 		houseNumber: String? = null
-	) : SortableFilterOptions<Patient> =
+	) : FilterOptions<Patient> =
 		ByAddressPostalCodeHouseNumberForSelf(
 			searchString = searchString,
 			postalCode = postalCode,
@@ -493,14 +476,11 @@ object PatientFilters {
 	 * an [Patient.addresses] where the [Address.street], [Address.postalCode] or [Address.city] contain the provided
 	 * [searchString].
 	 *
-	 * These options are sortable. When sorting using these options the patients will be ordered lexicographically first
-	 * by the matching portion of street+postalCode+city, then by postal code and finally by house number.
-	 *
 	 * @param searchString part of a patient address street, postal code, or city
 	 */
 	fun byAddressForSelf(
 		searchString: String
-	) : SortableFilterOptions<Patient> = ByAddressForSelf(searchString = searchString)
+	) : FilterOptions<Patient> = ByAddressForSelf(searchString = searchString)
 
 	/**
 	 * Options for patient filtering which match all the patients shared directly (i.e. ignoring hierarchies) with the current data owner
@@ -624,30 +604,30 @@ object PatientFilters {
 	@Serializable
 	internal class ByIdentifiersForSelf(
 		val identifiers: List<Identifier>
-	) : SortableFilterOptions<Patient>
+	) : FilterOptions<Patient>
 
 	@Serializable
 	internal class BySsinsForSelf(
 		val ssins: List<String>
-	): SortableFilterOptions<Patient>
+	): FilterOptions<Patient>
 
 	@Serializable
 	internal class ByDateOfBirthBetweenForSelf(
 		val fromDate: Int,
 		val toDate: Int
-	): SortableFilterOptions<Patient>
+	): FilterOptions<Patient>
 
 	@Serializable
 	internal class ByNameForSelf(
 		val searchString: String
-	) : SortableFilterOptions<Patient>
+	) : FilterOptions<Patient>
 
 	@Serializable
 	internal class ByGenderEducationProfessionForSelf(
 		val gender: Gender,
 		val education: String?,
 		val profession: String?
-	): SortableFilterOptions<Patient> {
+	): FilterOptions<Patient> {
 		init {
 			require (profession == null || education != null) {
 				"You must provide a value for education if you want to filter by profession"
@@ -663,19 +643,19 @@ object PatientFilters {
 	@Serializable
 	internal class ByTelecomForSelf(
 		val searchString: String
-	) : SortableFilterOptions<Patient>
+	) : FilterOptions<Patient>
 
 	@Serializable
 	internal class ByAddressPostalCodeHouseNumberForSelf(
 		val searchString: String,
 		val postalCode: String,
 		val houseNumber: String?
-	) : SortableFilterOptions<Patient>
+	) : FilterOptions<Patient>
 
 	@Serializable
 	internal class ByAddressForSelf(
 		val searchString: String
-	) : SortableFilterOptions<Patient>
+	) : FilterOptions<Patient>
 
 	@Serializable
 	internal class ByTagForDataOwner(

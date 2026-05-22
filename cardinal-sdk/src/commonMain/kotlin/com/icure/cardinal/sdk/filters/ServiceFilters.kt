@@ -314,15 +314,12 @@ object ServiceFilters {
 	 * an identifier that has the same exact [Identifier.system] and [Identifier.value] as one of the provided
 	 * [identifiers]. Other properties of the provided identifiers are ignored.
 	 *
-	 * These options are sortable. When sorting using these options the services will be in the same order as the input
-	 * identifiers. In case an entity has multiple identifiers only the first matching identifier is considered for the
-	 * sorting.
 	 * @param identifiers a list of identifiers
 	 * @return options for service filtering
 	 */
 	fun byIdentifiersForSelf(
 		identifiers: List<Identifier>,
-	): SortableFilterOptions<Service> =
+	): FilterOptions<Service> =
 		ByIdentifiersForSelf(identifiers)
 
 	/**
@@ -404,29 +401,24 @@ object ServiceFilters {
 	 * simply be ignored.
 	 * Note that these may not be used in methods of apis from [CardinalBaseApis].
 	 *
-	 * These options are sortable. When sorting using these options the services will be sorted by the patients, using
-	 * the same order as the input patients.
-	 *
 	 * @param patients a list of patients.
 	 */
 	@OptIn(InternalIcureApi::class)
 	fun byPatientsForSelf(
 		patients: List<Patient>,
-	): SortableFilterOptions<Service> = ByPatientsForSelf(
+	): FilterOptions<Service> = ByPatientsForSelf(
 		patients = patients.map { it.toEncryptionMetadataStub() },
 	)
 
 	/**
 	 * Options for service filtering which match all services shared directly (i.e. ignoring hierarchies) with the current data owner that are linked with a
 	 * patient through one of the provided secret ids.
-	 * These options are sortable. When sorting using these options the services will be sorted by the linked patients
-	 * secret id, using the same order as the input.
 	 *
 	 * @param secretIds a list of patients secret ids
 	 */
 	fun byPatientsSecretIdsForSelf(
 		secretIds: List<String>,
-	): SortableFilterOptions<Service> = ByPatientsSecretIdsForSelf(
+	): FilterOptions<Service> = ByPatientsSecretIdsForSelf(
 		secretIds = secretIds,
 	)
 
@@ -436,15 +428,11 @@ object ServiceFilters {
 	 * least a [SubContact] (from [Contact.subContacts]) where [SubContact.healthElementId] matches one of the provided
 	 * id.
 	 *
-	 * These options are sortable. When sorting using these options the services will be sorted in the same order as the
-	 * input health element ids. If a service exists in multiple subcontacts only the first subcontact with matching
-	 * health element service is considered for the ordering.
-	 *
 	 * @param healthElementIds a list of health element ids
 	 */
 	fun byHealthElementIdFromSubContactForSelf(
 		healthElementIds: List<String>,
-	): SortableFilterOptions<Service> = ByHealthElementIdFromSubcontactForSelf(
+	): FilterOptions<Service> = ByHealthElementIdFromSubcontactForSelf(
 		healthElementIds = healthElementIds,
 	)
 
@@ -1331,7 +1319,7 @@ object ServiceFilters {
 	@Serializable
 	internal class ByIdentifiersForSelf(
 		val identifiers: List<Identifier>
-	) : SortableFilterOptions<Service>
+	) : FilterOptions<Service>
 
 	@Serializable
 	internal class ByCodeAndValueDateForSelf(
@@ -1365,17 +1353,17 @@ object ServiceFilters {
 	@InternalIcureApi
 	internal class ByPatientsForSelf(
 		val patients: List<EntityWithEncryptionMetadataStub>
-	): SortableFilterOptions<Service>
+	): FilterOptions<Service>
 
 	@Serializable
 	internal class ByPatientsSecretIdsForSelf(
 		val secretIds: List<String>
-	): SortableFilterOptions<Service>
+	): FilterOptions<Service>
 
 	@Serializable
 	internal class ByHealthElementIdFromSubcontactForSelf(
 		val healthElementIds: List<String>
-	): SortableFilterOptions<Service>
+	): FilterOptions<Service>
 
 	@Serializable
 	internal class ByIds(

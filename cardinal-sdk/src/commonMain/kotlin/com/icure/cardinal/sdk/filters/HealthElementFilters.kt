@@ -85,17 +85,12 @@ object HealthElementFilters {
 	 * an identifier that has the same exact [Identifier.system] and [Identifier.value] as one of the provided
 	 * [identifiers]. Other properties of the provided identifiers are ignored.
 	 *
-	 * These options are sortable. When sorting using these options the health elements will be in the same order as the input
-	 * identifiers. In case an entity has multiple identifiers only the first matching identifier is considered for the
-	 * sorting.
-	 *
 	 * @param identifiers a list of identifiers
 	 * @return options for health element filtering
 	 */
 	fun byIdentifiersForSelf(
 		identifiers: List<Identifier>
-	): SortableFilterOptions<HealthElement> =
-		ByIdentifiersForSelf(identifiers)
+	): FilterOptions<HealthElement> = ByIdentifiersForSelf(identifiers)
 
 	/**
 	 * Options for health element filtering which match all health elements shared directly (i.e. ignoring hierarchies) with a specific data owner that have a certain code.
@@ -137,8 +132,6 @@ object HealthElementFilters {
 	 * Options for health element filtering which match all health elements shared directly (i.e. ignoring hierarchies) with the current data owner that have a certain code.
 	 * If you specify only the [codeType] you will get all entities that have at least a code of that type.
 	 *
-	 * These options are sortable. When sorting using these options the health elements will be sorted by [codeCode].
-	 *
 	 * @param codeType a code type
 	 * @param codeCode a code for the provided code type, or null if you want the filter to accept any entity
 	 * with a code of the provided type.
@@ -147,7 +140,7 @@ object HealthElementFilters {
 		codeType: String,
 		@DefaultValue("null")
 		codeCode: String? = null
-	): SortableFilterOptions<HealthElement> = ByCodeForSelf(
+	): FilterOptions<HealthElement> = ByCodeForSelf(
 		codeType = codeType,
 		codeCode = codeCode
 	)
@@ -192,8 +185,6 @@ object HealthElementFilters {
 	 * Options for health element filtering which match all health elements shared directly (i.e. ignoring hierarchies) with the current data owner that have a certain tag.
 	 * If you specify only the [tagType] you will get all entities that have at least a tag of that type.
 	 *
-	 * These options are sortable. When sorting using these options the health elements will be sorted by [tagCode].
-	 *
 	 * @param tagType a tag type
 	 * @param tagCode a code for the provided tag type, or null if you want the filter to accept any entity
 	 * with a tag of the provided type.
@@ -202,7 +193,7 @@ object HealthElementFilters {
 		tagType: String,
 		@DefaultValue("null")
 		tagCode: String? = null
-	): SortableFilterOptions<HealthElement> = ByTagForSelf(
+	): FilterOptions<HealthElement> = ByTagForSelf(
 			tagType = tagType,
 			tagCode = tagCode
 		)
@@ -256,15 +247,12 @@ object HealthElementFilters {
 	 * simply be ignored.
 	 * Note that these may not be used in methods of apis from [CardinalBaseApis].
 	 *
-	 * These options are sortable. When sorting using these options the health elements will be sorted by the patients, using
-	 * the same order as the input patients.
-	 *
 	 * @param patients a list of patients.
 	 */
 	@OptIn(InternalIcureApi::class)
 	fun byPatientsForSelf(
 		patients: List<Patient>
-	): SortableFilterOptions<HealthElement> = ByPatientsForSelf(
+	): FilterOptions<HealthElement> = ByPatientsForSelf(
 		patients = patients.map { it.toEncryptionMetadataStub() }
 	)
 
@@ -299,13 +287,11 @@ object HealthElementFilters {
 	/**
 	 * Options for health element filtering which match all health elements shared directly (i.e. ignoring hierarchies) with the current data owner that are linked with a
 	 * patient through one of the provided secret ids.
-	 * These options are sortable. When sorting using these options the health elements will be sorted by the linked patients
-	 * secret id, using the same order as the input.
 	 * @param secretIds a list of patients secret ids
 	 */
 	fun byPatientsSecretIdsForSelf(
 		secretIds: List<String>
-	): SortableFilterOptions<HealthElement> = ByPatientsSecretIdsForSelf(secretIds = secretIds)
+	): FilterOptions<HealthElement> = ByPatientsSecretIdsForSelf(secretIds = secretIds)
 
 	/**
 	 * Filter options that match all health elements with one of the provided ids.
@@ -520,7 +506,7 @@ object HealthElementFilters {
 	@Serializable
 	internal class ByIdentifiersForSelf(
 		val identifiers: List<Identifier>,
-	): SortableFilterOptions<HealthElement>
+	): FilterOptions<HealthElement>
 
 	@Serializable
 	internal class ByCodeForDataOwner(
@@ -533,7 +519,7 @@ object HealthElementFilters {
 	internal class ByCodeForSelf(
 		val codeType: String,
 		val codeCode: String?,
-	): SortableFilterOptions<HealthElement>
+	): FilterOptions<HealthElement>
 
 	@Serializable
 	internal class ByTagForDataOwner(
@@ -546,7 +532,7 @@ object HealthElementFilters {
 	internal class ByTagForSelf(
 		val tagType: String,
 		val tagCode: String?,
-	): SortableFilterOptions<HealthElement>
+	): FilterOptions<HealthElement>
 
 	@Serializable
 	@InternalIcureApi
@@ -559,7 +545,7 @@ object HealthElementFilters {
 	@InternalIcureApi
 	internal class ByPatientsForSelf(
 		val patients: List<EntityWithEncryptionMetadataStub>
-	) : SortableFilterOptions<HealthElement>
+	) : FilterOptions<HealthElement>
 
 	@Serializable
 	internal class ByPatientsSecretIdsForDataOwner(
@@ -570,7 +556,7 @@ object HealthElementFilters {
 	@Serializable
 	internal class ByPatientsSecretIdsForSelf(
 		val secretIds: List<String>
-	): SortableFilterOptions<HealthElement>
+	): FilterOptions<HealthElement>
 
 	@Serializable
 	internal class ByIds(
