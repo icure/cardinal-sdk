@@ -1,5 +1,5 @@
 // auto-generated file
-import {BaseSortableFilterOptions, FilterOptions, InternalDocumentFiltersObj, SortableFilterOptions} from '../cardinal-sdk-ts.mjs';
+import {BaseFilterOptions, BaseSortableFilterOptions, FilterOptions, InternalDocumentFiltersObj, SortableFilterOptions} from '../cardinal-sdk-ts.mjs';
 import {Document} from '../model/Document.mjs';
 import {EntityReferenceInGroup} from '../model/EntityReferenceInGroup.mjs';
 import {GroupScoped} from '../model/GroupScoped.mjs';
@@ -314,22 +314,20 @@ interface DocumentFiltersFactory {
 	 *  Options for document filtering which match all documents shared directly (i.e. ignoring hierarchies) with a specific data owner that have a certain code.
 	 *  If you specify only the [codeType] you will get all entities that have at least a code of that type.
 	 *
-	 *  These options are sortable. When sorting using these options the documents will be sorted by [codeCode].
-	 *
 	 *  @param dataOwnerId a data owner id
 	 *  @param codeType a code type
 	 *  @param codeCode a code for the provided code type, or null if you want the filter to accept any entity
 	 *  with a code of the provided type.
 	 */
 	byCodeForDataOwner(dataOwnerId: string, codeType: string,
-			options?: { codeCode?: string | undefined }): BaseSortableFilterOptions<Document>;
+			options?: { codeCode?: string | undefined }): BaseFilterOptions<Document>;
 
 	/**
 	 *
 	 *  In group version of [byCodeForDataOwner].
 	 */
 	byCodeForDataOwnerInGroup(dataOwner: EntityReferenceInGroup, codeType: string,
-			options?: { codeCode?: string | undefined }): BaseSortableFilterOptions<Document>;
+			options?: { codeCode?: string | undefined }): BaseFilterOptions<Document>;
 
 	/**
 	 *
@@ -350,36 +348,31 @@ interface DocumentFiltersFactory {
 	 *  Options for document filtering which match all documents shared directly (i.e. ignoring hierarchies) with a specific data owner that have a certain tag.
 	 *  If you specify only the [tagType] you will get all entities that have at least a tag of that type.
 	 *
-	 *  These options are sortable. When sorting using these options the documents will be sorted by [tagCode].
-	 *
 	 *  @param dataOwnerId a data owner id
 	 *  @param tagType a tag type
 	 *  @param tagCode a code for the provided tag type, or null if you want the filter to accept any entity
 	 *  with a tag of the provided type.
 	 */
 	byTagForDataOwner(dataOwnerId: string, tagType: string,
-			options?: { tagCode?: string | undefined }): BaseSortableFilterOptions<Document>;
+			options?: { tagCode?: string | undefined }): BaseFilterOptions<Document>;
 
 	/**
 	 *
 	 *  In group version of [byTagForDataOwner].
 	 */
 	byTagForDataOwnerInGroup(dataOwner: EntityReferenceInGroup, tagType: string,
-			options?: { tagCode?: string | undefined }): BaseSortableFilterOptions<Document>;
+			options?: { tagCode?: string | undefined }): BaseFilterOptions<Document>;
 
 	/**
 	 *
 	 *  Options for document filtering which match all documents shared directly (i.e. ignoring hierarchies) with the current data owner that have a certain tag.
 	 *  If you specify only the [tagType] you will get all entities that have at least a tag of that type.
 	 *
-	 *  These options are sortable. When sorting using these options the documents will be sorted by [tagCode].
-	 *
 	 *  @param tagType a tag type
 	 *  @param tagCode a code for the provided tag type, or null if you want the filter to accept any entity
 	 *  with a tag of the provided type.
 	 */
-	byTagForSelf(tagType: string,
-			options?: { tagCode?: string | undefined }): SortableFilterOptions<Document>;
+	byTagForSelf(tagType: string, options?: { tagCode?: string | undefined }): FilterOptions<Document>;
 
 }
 

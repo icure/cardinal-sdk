@@ -32,7 +32,7 @@ public object InternalMaintenanceTaskFiltersObj {
 	}
 
 	public fun byIdentifiersForDataOwner(dataOwnerId: String, identifiers: Array<IdentifierJs>):
-			BaseSortableFilterOptionsJs<MaintenanceTaskJs> {
+			BaseFilterOptionsJs<MaintenanceTaskJs> {
 		val dataOwnerIdConverted: String = dataOwnerId
 		val identifiersConverted: List<Identifier> = arrayToList(
 			identifiers,
@@ -45,11 +45,11 @@ public object InternalMaintenanceTaskFiltersObj {
 			dataOwnerIdConverted,
 			identifiersConverted,
 		)
-		return BaseSortableFilterOptionsJsImpl(result)
+		return BaseFilterOptionsJsImpl(result)
 	}
 
 	public fun byIdentifiersForSelf(identifiers: Array<IdentifierJs>):
-			SortableFilterOptionsJs<MaintenanceTaskJs> {
+			FilterOptionsJs<MaintenanceTaskJs> {
 		val identifiersConverted: List<Identifier> = arrayToList(
 			identifiers,
 			"identifiers",
@@ -60,7 +60,7 @@ public object InternalMaintenanceTaskFiltersObj {
 		val result = MaintenanceTaskFilters.byIdentifiersForSelf(
 			identifiersConverted,
 		)
-		return SortableFilterOptionsJsImpl(result)
+		return FilterOptionsJsImpl(result)
 	}
 
 	public fun byTypeForDataOwner(dataOwnerId: String, type: String):

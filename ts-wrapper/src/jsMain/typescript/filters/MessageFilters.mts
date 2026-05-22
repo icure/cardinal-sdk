@@ -28,31 +28,27 @@ interface MessageFiltersFactory {
 	 *  Creates options for message filtering that will match all messages shared directly (i.e. ignoring hierarchies) with a specific data owner that have the
 	 *  provided transportGuid.
 	 *
-	 *  These options are sortable. When sorting using these options the messages will be sorted by [Message.sent].
-	 *
 	 *  @param dataOwnerId a data owner id
 	 *  @param transportGuid a message transport guid
 	 */
 	byTransportGuidForDataOwner(dataOwnerId: string,
-			transportGuid: string): BaseSortableFilterOptions<Message>;
+			transportGuid: string): BaseFilterOptions<Message>;
 
 	/**
 	 *
 	 *  In group version of [byTransportGuidForDataOwner].
 	 */
 	byTransportGuidForDataOwnerInGroup(dataOwner: EntityReferenceInGroup,
-			transportGuid: string): BaseSortableFilterOptions<Message>;
+			transportGuid: string): BaseFilterOptions<Message>;
 
 	/**
 	 *
 	 *  Creates options for message filtering that will match all messages shared directly (i.e. ignoring hierarchies) with the current data owner that have the
 	 *  provided transportGuid.
 	 *
-	 *  These options are sortable. When sorting using these options the messages will be sorted by [Message.sent].
-	 *
 	 *  @param transportGuid a message transport guid
 	 */
-	byTransportGuidForSelf(transportGuid: string): SortableFilterOptions<Message>;
+	byTransportGuidForSelf(transportGuid: string): FilterOptions<Message>;
 
 	/**
 	 *
@@ -226,9 +222,6 @@ interface MessageFiltersFactory {
 	 *  Filter options for message filtering that will match all messages shared directly (i.e. ignoring hierarchies) with a specific data owner
 	 *  where [Message.transportGuid] is equal to [transportGuid] and [Message.sent] is between [from] (inclusive) and [to] (inclusive).
 	 *
-	 *  These options are sortable. When sorting using these options the messages will be sorted by [Message.sent] in ascending or
-	 *  descending order according to the value of the [descending] parameter.
-	 *
 	 *  @param dataOwnerId the id of a data owner.
 	 *  @param transportGuid the transport guid to use in the filter.
 	 *  @param from the minimum value for [Message.sent].
@@ -241,7 +234,7 @@ interface MessageFiltersFactory {
 			from: number | undefined,
 			to: number | undefined,
 			options?: { descending?: boolean }
-	): BaseSortableFilterOptions<Message>;
+	): BaseFilterOptions<Message>;
 
 	/**
 	 *
@@ -253,15 +246,12 @@ interface MessageFiltersFactory {
 			from: number | undefined,
 			to: number | undefined,
 			options?: { descending?: boolean }
-	): BaseSortableFilterOptions<Message>;
+	): BaseFilterOptions<Message>;
 
 	/**
 	 *
 	 *  Filter options for message filtering that will match all messages shared directly (i.e. ignoring hierarchies) with the current data owner
 	 *  where [Message.transportGuid] is equal to [transportGuid] and [Message.sent] is between [from] (inclusive) and [to] (inclusive).
-	 *
-	 *  These options are sortable. When sorting using these options the messages will be sorted by [Message.sent] in ascending or
-	 *  descending order according to the value of the [descending] parameter.
 	 *
 	 *  @param transportGuid the transport guid to use in the filter.
 	 *  @param from the minimum value for [Message.sent].
@@ -269,7 +259,7 @@ interface MessageFiltersFactory {
 	 *  @param descending whether to sort the results in descending or ascending order by [Message.sent] (default: ascending).
 	 */
 	byTransportGuidSentDateForSelf(transportGuid: string, from: number | undefined,
-			to: number | undefined, options?: { descending?: boolean }): SortableFilterOptions<Message>;
+			to: number | undefined, options?: { descending?: boolean }): FilterOptions<Message>;
 
 	/**
 	 *
@@ -382,14 +372,12 @@ interface MessageFiltersFactory {
 	 *  Options for message filtering which match all messages shared directly (i.e. ignoring hierarchies) with the current data owner that have a certain code.
 	 *  If you specify only the [codeType] you will get all entities that have at least a code of that type.
 	 *
-	 *  These options are sortable. When sorting using these options the messages will be sorted by [codeCode].
-	 *
 	 *  @param codeType a code type
 	 *  @param codeCode a code for the provided code type, or null if you want the filter to accept any entity
 	 *  with a code of the provided type.
 	 */
 	byCodeForSelf(codeType: string,
-			options?: { codeCode?: string | undefined }): SortableFilterOptions<Message>;
+			options?: { codeCode?: string | undefined }): FilterOptions<Message>;
 
 	/**
 	 *
@@ -418,14 +406,11 @@ interface MessageFiltersFactory {
 	 *  Options for message filtering which match all messages shared directly (i.e. ignoring hierarchies) with the current data owner that have a certain tag.
 	 *  If you specify only the [tagType] you will get all entities that have at least a tag of that type.
 	 *
-	 *  These options are sortable. When sorting using these options the messages will be sorted by [tagCode].
-	 *
 	 *  @param tagType a tag type
 	 *  @param tagCode a code for the provided tag type, or null if you want the filter to accept any entity
 	 *  with a tag of the provided type.
 	 */
-	byTagForSelf(tagType: string,
-			options?: { tagCode?: string | undefined }): SortableFilterOptions<Message>;
+	byTagForSelf(tagType: string, options?: { tagCode?: string | undefined }): FilterOptions<Message>;
 
 }
 
