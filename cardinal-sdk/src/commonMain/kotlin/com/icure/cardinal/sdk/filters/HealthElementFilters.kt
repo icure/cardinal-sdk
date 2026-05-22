@@ -57,10 +57,6 @@ object HealthElementFilters {
 	 * an identifier that has the same exact [Identifier.system] and [Identifier.value] as one of the provided
 	 * [identifiers]. Other properties of the provided identifiers are ignored.
 	 *
-	 * These options are sortable. When sorting using these options the health elements will be in the same order as the input
-	 * identifiers. In case an entity has multiple identifiers only the first matching identifier is considered for the
-	 * sorting.
-	 *
 	 * @param dataOwnerId a data owner id or null to use the current data owner id
 	 * @param identifiers a list of identifiers
 	 * @return options for health element filtering
@@ -68,7 +64,7 @@ object HealthElementFilters {
 	fun byIdentifiersForDataOwner(
 		dataOwnerId: String,
 		identifiers: List<Identifier>
-	): BaseSortableFilterOptions<HealthElement> =
+	): BaseFilterOptions<HealthElement> =
 		ByIdentifiersForDataOwner(identifiers, EntityReferenceInGroup(entityId = dataOwnerId, groupId = null))
 
 	/**
@@ -77,7 +73,7 @@ object HealthElementFilters {
 	fun byIdentifiersForDataOwnerInGroup(
 		dataOwner: EntityReferenceInGroup,
 		identifiers: List<Identifier>
-	): BaseSortableFilterOptions<HealthElement> =
+	): BaseFilterOptions<HealthElement> =
 		ByIdentifiersForDataOwner(identifiers, dataOwner)
 
 	/**
@@ -96,8 +92,6 @@ object HealthElementFilters {
 	 * Options for health element filtering which match all health elements shared directly (i.e. ignoring hierarchies) with a specific data owner that have a certain code.
 	 * If you specify only the [codeType] you will get all entities that have at least a code of that type.
 	 *
-	 * These options are sortable. When sorting using these options the health elements will be sorted by [codeCode].
-	 *
 	 * @param dataOwnerId a data owner id
 	 * @param codeType a code type
 	 * @param codeCode a code for the provided code type, or null if you want the filter to accept any entity
@@ -108,7 +102,7 @@ object HealthElementFilters {
 		codeType: String,
 		@DefaultValue("null")
 		codeCode: String? = null
-	): BaseSortableFilterOptions<HealthElement> = ByCodeForDataOwner(
+	): BaseFilterOptions<HealthElement> = ByCodeForDataOwner(
 		codeType = codeType,
 		codeCode = codeCode,
 		dataOwnerId = EntityReferenceInGroup(groupId = null, entityId = dataOwnerId)
@@ -122,7 +116,7 @@ object HealthElementFilters {
 		codeType: String,
 		@DefaultValue("null")
 		codeCode: String? = null
-	): BaseSortableFilterOptions<HealthElement> = ByCodeForDataOwner(
+	): BaseFilterOptions<HealthElement> = ByCodeForDataOwner(
 		codeType = codeType,
 		codeCode = codeCode,
 		dataOwnerId = dataOwner
@@ -149,8 +143,6 @@ object HealthElementFilters {
 	 * Options for health element filtering which match all health elements shared directly (i.e. ignoring hierarchies) with a specific data owner that have a certain tag.
 	 * If you specify only the [tagType] you will get all entities that have at least a tag of that type.
 	 *
-	 * These options are sortable. When sorting using these options the health elements will be sorted by [tagCode].
-	 *
 	 * @param dataOwnerId a data owner id
 	 * @param tagType a tag type
 	 * @param tagCode a code for the provided tag type, or null if you want the filter to accept any entity
@@ -161,7 +153,7 @@ object HealthElementFilters {
 		tagType: String,
 		@DefaultValue("null")
 		tagCode: String? = null
-	): BaseSortableFilterOptions<HealthElement> = ByTagForDataOwner(
+	): BaseFilterOptions<HealthElement> = ByTagForDataOwner(
 		tagType = tagType,
 		tagCode = tagCode,
 		dataOwnerId = EntityReferenceInGroup(groupId = null, entityId = dataOwnerId)
@@ -175,7 +167,7 @@ object HealthElementFilters {
 		tagType: String,
 		@DefaultValue("null")
 		tagCode: String? = null
-	): BaseSortableFilterOptions<HealthElement> = ByTagForDataOwner(
+	): BaseFilterOptions<HealthElement> = ByTagForDataOwner(
 		tagType = tagType,
 		tagCode = tagCode,
 		dataOwnerId = dataOwner
@@ -209,9 +201,6 @@ object HealthElementFilters {
 	 * simply be ignored.
 	 * Note that these may not be used in methods of apis from [CardinalBaseApis].
 	 *
-	 * These options are sortable. When sorting using these options the health elements will be sorted by the patients, using
-	 * the same order as the input patients.
-	 *
 	 * @param dataOwnerId a data owner id
 	 * @param patients a list of patients.
 	 */
@@ -219,7 +208,7 @@ object HealthElementFilters {
 	fun byPatientsForDataOwner(
 		dataOwnerId: String,
 		patients: List<Patient>
-	): SortableFilterOptions<HealthElement> = ByPatientsForDataOwner(
+	): FilterOptions<HealthElement> = ByPatientsForDataOwner(
 		patients = patients.map { Pair(it.toEncryptionMetadataStub(), null) },
 		dataOwnerId = EntityReferenceInGroup(groupId = null, entityId = dataOwnerId)
 	)
@@ -231,7 +220,7 @@ object HealthElementFilters {
 	fun byPatientsForDataOwnerInGroup(
 		dataOwner: EntityReferenceInGroup,
 		patients: List<GroupScoped<Patient>>
-	): SortableFilterOptions<HealthElement> = ByPatientsForDataOwner(
+	): FilterOptions<HealthElement> = ByPatientsForDataOwner(
 		patients = patients.map { Pair(it.entity.toEncryptionMetadataStub(), it.groupId) },
 		dataOwnerId = dataOwner
 	)
@@ -259,8 +248,6 @@ object HealthElementFilters {
 	/**
 	 * Options for health element filtering which match all health elements shared directly (i.e. ignoring hierarchies) with a specific data owner that are linked with a
 	 * patient through one of the provided secret ids.
-	 * These options are sortable. When sorting using these options the health elements will be sorted by the linked patients
-	 * secret id, using the same order as the input.
 	 *
 	 * @param dataOwnerId a data owner id
 	 * @param secretIds a list of patients secret ids
@@ -268,7 +255,7 @@ object HealthElementFilters {
 	fun byPatientsSecretIdsForDataOwner(
 		dataOwnerId: String,
 		secretIds: List<String>
-	): BaseSortableFilterOptions<HealthElement> = ByPatientsSecretIdsForDataOwner(
+	): BaseFilterOptions<HealthElement> = ByPatientsSecretIdsForDataOwner(
 		secretIds = secretIds,
 		dataOwnerId = EntityReferenceInGroup(groupId = null, entityId = dataOwnerId)
 	)
@@ -279,7 +266,7 @@ object HealthElementFilters {
 	fun byPatientsSecretIdsForDataOwnerInGroup(
 		dataOwner: EntityReferenceInGroup,
 		secretIds: List<String>
-	): BaseSortableFilterOptions<HealthElement> = ByPatientsSecretIdsForDataOwner(
+	): BaseFilterOptions<HealthElement> = ByPatientsSecretIdsForDataOwner(
 		secretIds = secretIds,
 		dataOwnerId = dataOwner
 	)
@@ -501,7 +488,7 @@ object HealthElementFilters {
 	internal class ByIdentifiersForDataOwner(
 		val identifiers: List<Identifier>,
 		val dataOwnerId: EntityReferenceInGroup
-	): BaseSortableFilterOptions<HealthElement>
+	): BaseFilterOptions<HealthElement>
 
 	@Serializable
 	internal class ByIdentifiersForSelf(
@@ -513,7 +500,7 @@ object HealthElementFilters {
 		val codeType: String,
 		val codeCode: String?,
 		val dataOwnerId: EntityReferenceInGroup
-	): BaseSortableFilterOptions<HealthElement>
+	): BaseFilterOptions<HealthElement>
 
 	@Serializable
 	internal class ByCodeForSelf(
@@ -526,7 +513,7 @@ object HealthElementFilters {
 		val tagType: String,
 		val tagCode: String?,
 		val dataOwnerId: EntityReferenceInGroup
-	): BaseSortableFilterOptions<HealthElement>
+	): BaseFilterOptions<HealthElement>
 
 	@Serializable
 	internal class ByTagForSelf(
@@ -539,7 +526,7 @@ object HealthElementFilters {
 	internal class ByPatientsForDataOwner(
 		val patients: List<Pair<EntityWithEncryptionMetadataStub, String?>>,
 		val dataOwnerId: EntityReferenceInGroup
-	) : SortableFilterOptions<HealthElement>
+	) : FilterOptions<HealthElement>
 
 	@Serializable
 	@InternalIcureApi
@@ -551,7 +538,7 @@ object HealthElementFilters {
 	internal class ByPatientsSecretIdsForDataOwner(
 		val secretIds: List<String>,
 		val dataOwnerId: EntityReferenceInGroup
-	): BaseSortableFilterOptions<HealthElement>
+	): BaseFilterOptions<HealthElement>
 
 	@Serializable
 	internal class ByPatientsSecretIdsForSelf(

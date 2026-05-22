@@ -686,9 +686,6 @@ object ContactFilters {
 	 * simply be ignored.
 	 * Note that these may not be used in methods of apis from [CardinalBaseApis].
 	 *
-	 * These options are sortable. When sorting using these options the contacts will be sorted by the patients, using
-	 * the same order as the input patients.
-	 *
 	 * @param dataOwnerId a data owner id
 	 * @param patients a list of patients.
 	 */
@@ -696,7 +693,7 @@ object ContactFilters {
 	fun byPatientsForDataOwner(
 		dataOwnerId: String,
 		patients: List<Patient>
-	): SortableFilterOptions<Contact> = ByPatientsForDataOwner(
+	): FilterOptions<Contact> = ByPatientsForDataOwner(
 		patients = patients.map { Pair(it.toEncryptionMetadataStub(), null) },
 		dataOwnerId = EntityReferenceInGroup(entityId = dataOwnerId, groupId = null),
 	)
@@ -708,7 +705,7 @@ object ContactFilters {
 	fun byPatientsForDataOwnerInGroup(
 		dataOwner: EntityReferenceInGroup,
 		patients: List<GroupScoped<Patient>>
-	): SortableFilterOptions<Contact> = ByPatientsForDataOwner(
+	): FilterOptions<Contact> = ByPatientsForDataOwner(
 		patients = patients.map { Pair(it.entity.toEncryptionMetadataStub(), it.groupId) },
 		dataOwnerId = dataOwner
 	)
@@ -736,8 +733,6 @@ object ContactFilters {
 	/**
 	 * Options for contact filtering which match all contacts shared directly (i.e. ignoring hierarchies) with a specific data owner that are linked with a
 	 * patient through one of the provided secret ids.
-	 * These options are sortable. When sorting using these options the contacts will be sorted by the linked patients
-	 * secret id, using the same order as the input.
 	 *
 	 * @param dataOwnerId a data owner id
 	 * @param secretIds a list of patients secret ids
@@ -745,7 +740,7 @@ object ContactFilters {
 	fun byPatientsSecretIdsForDataOwner(
 		dataOwnerId: String,
 		secretIds: List<String>
-	): BaseSortableFilterOptions<Contact> = ByPatientsSecretIdsForDataOwner(
+	): BaseFilterOptions<Contact> = ByPatientsSecretIdsForDataOwner(
 		secretIds = secretIds,
 		dataOwnerId = EntityReferenceInGroup(entityId = dataOwnerId, groupId = null),
 	)
@@ -756,7 +751,7 @@ object ContactFilters {
 	fun byPatientsSecretIdsForDataOwnerInGroup(
 		dataOwner: EntityReferenceInGroup,
 		secretIds: List<String>
-	): BaseSortableFilterOptions<Contact> = ByPatientsSecretIdsForDataOwner(
+	): BaseFilterOptions<Contact> = ByPatientsSecretIdsForDataOwner(
 		secretIds = secretIds,
 		dataOwnerId = dataOwner
 	)
@@ -954,7 +949,7 @@ object ContactFilters {
 	internal class ByPatientsForDataOwner(
 		val patients: List<Pair<EntityWithEncryptionMetadataStub, String?>>,
 		val dataOwnerId: EntityReferenceInGroup
-	): BaseSortableFilterOptions<Contact>
+	): BaseFilterOptions<Contact>
 
 	@Serializable
 	@InternalIcureApi
@@ -966,7 +961,7 @@ object ContactFilters {
 	internal class ByPatientsSecretIdsForDataOwner(
 		val secretIds: List<String>,
 		val dataOwnerId: EntityReferenceInGroup
-	): BaseSortableFilterOptions<Contact>
+	): BaseFilterOptions<Contact>
 
 	@Serializable
 	internal class ByPatientsSecretIdsForSelf(

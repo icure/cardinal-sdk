@@ -73,9 +73,6 @@ object ServiceFilters {
 	 * an identifier that has the same exact [Identifier.system] and [Identifier.value] as one of the provided
 	 * [identifiers]. Other properties of the provided identifiers are ignored.
 	 *
-	 * These options are sortable. When sorting using these options the services will be in the same order as the input
-	 * identifiers. In case an entity has multiple identifiers only the first matching identifier is considered for the
-	 * sorting.
 	 * @param identifiers a list of identifiers
 	 * @param dataOwnerId a data owner id
 	 * @return options for service filtering
@@ -83,7 +80,7 @@ object ServiceFilters {
 	fun byIdentifiersForDataOwner(
 		dataOwnerId: String,
 		identifiers: List<Identifier>,
-	): BaseSortableFilterOptions<Service> = ByIdentifiersForDataOwner(
+	): BaseFilterOptions<Service> = ByIdentifiersForDataOwner(
 		identifiers = identifiers,
 		dataOwnerId = EntityReferenceInGroup(entityId = dataOwnerId, groupId = null)
 	)
@@ -94,7 +91,7 @@ object ServiceFilters {
 	fun byIdentifiersForDataOwnerInGroup(
 		dataOwner: EntityReferenceInGroup,
 		identifiers: List<Identifier>,
-	): BaseSortableFilterOptions<Service> = ByIdentifiersForDataOwner(
+	): BaseFilterOptions<Service> = ByIdentifiersForDataOwner(
 		identifiers = identifiers,
 		dataOwnerId = dataOwner
 	)
@@ -105,9 +102,6 @@ object ServiceFilters {
 	 *
 	 * You can also limit the result to only services that are within a certain [Service.valueDate] timeframe (or [Service.openingDate]
 	 * if the first is missing), but in that case you must specify the [codeCode].
-	 *
-	 * These options are sortable. When sorting using these options the services will be sorted first by [codeCode] then
-	 * by [Service.valueDate].
 	 *
 	 * @param codeType a code type
 	 * @param codeCode a code for the provided code type, or null if you want the filter to accept any entity
@@ -128,7 +122,7 @@ object ServiceFilters {
 		startOfServiceValueDate: Long? = null,
 		@DefaultValue("null")
 		endOfServiceValueDate: Long? = null,
-	): BaseSortableFilterOptions<Service> = ByCodeAndValueDateForDataOwner(
+	): BaseFilterOptions<Service> = ByCodeAndValueDateForDataOwner(
 		codeType = codeType,
 		codeCode = codeCode,
 		startOfServiceValueDate = startOfServiceValueDate,
@@ -148,7 +142,7 @@ object ServiceFilters {
 		startOfServiceValueDate: Long? = null,
 		@DefaultValue("null")
 		endOfServiceValueDate: Long? = null,
-	): BaseSortableFilterOptions<Service> = ByCodeAndValueDateForDataOwner(
+	): BaseFilterOptions<Service> = ByCodeAndValueDateForDataOwner(
 		codeType = codeType,
 		codeCode = codeCode,
 		startOfServiceValueDate = startOfServiceValueDate,
@@ -162,9 +156,6 @@ object ServiceFilters {
 	 *
 	 * You can also limit the result to only services that are within a certain [Service.valueDate] timeframe (or [Service.openingDate]
 	 * if the first is missing), but in that case you must specify the [tagCode].
-	 *
-	 * These options are sortable. When sorting using these options the services will be sorted first by [tagCode] then
-	 * by [Service.valueDate].
 	 *
 	 * @param tagType a tag type
 	 * @param tagCode a code for the provided tag type, or null if you want the filter to accept any entity
@@ -185,7 +176,7 @@ object ServiceFilters {
 		startOfServiceValueDate: Long? = null,
 		@DefaultValue("null")
 		endOfServiceValueDate: Long? = null,
-	): BaseSortableFilterOptions<Service> = ByTagAndValueDateForDataOwner(
+	): BaseFilterOptions<Service> = ByTagAndValueDateForDataOwner(
 		tagType = tagType,
 		tagCode = tagCode,
 		startOfServiceValueDate = startOfServiceValueDate,
@@ -205,7 +196,7 @@ object ServiceFilters {
 		startOfServiceValueDate: Long? = null,
 		@DefaultValue("null")
 		endOfServiceValueDate: Long? = null,
-	): BaseSortableFilterOptions<Service> = ByTagAndValueDateForDataOwner(
+	): BaseFilterOptions<Service> = ByTagAndValueDateForDataOwner(
 		tagType = tagType,
 		tagCode = tagCode,
 		startOfServiceValueDate = startOfServiceValueDate,
@@ -224,8 +215,6 @@ object ServiceFilters {
 	 * simply be ignored.
 	 * Note that these may not be used in methods of apis from [CardinalBaseApis].
 	 *
-	 * These options are sortable. When sorting using these options the services will be sorted by the patients, using
-	 * the same order as the input patients.
 	 * @param patients a list of patients.
 	 * @param dataOwnerId a data owner id
 	 */
@@ -233,7 +222,7 @@ object ServiceFilters {
 	fun byPatientsForDataOwner(
 		dataOwnerId: String,
 		patients: List<Patient>,
-	): SortableFilterOptions<Service> = ByPatientsForDataOwner(
+	): FilterOptions<Service> = ByPatientsForDataOwner(
 		patients = patients.map { it.toEncryptionMetadataStub() },
 		dataOwnerId = EntityReferenceInGroup(entityId = dataOwnerId, groupId = null)
 	)
@@ -245,7 +234,7 @@ object ServiceFilters {
 	fun byPatientsForDataOwnerInGroup(
 		dataOwner: EntityReferenceInGroup,
 		patients: List<Patient>,
-	): SortableFilterOptions<Service> = ByPatientsForDataOwner(
+	): FilterOptions<Service> = ByPatientsForDataOwner(
 		patients = patients.map { it.toEncryptionMetadataStub() },
 		dataOwnerId = dataOwner
 	)
@@ -253,15 +242,14 @@ object ServiceFilters {
 	/**
 	 * Options for service filtering which match all services shared directly (i.e. ignoring hierarchies) with a specific data owner that are linked with a
 	 * patient through one of the provided secret ids.
-	 * These options are sortable. When sorting using these options the services will be sorted by the linked patients
-	 * secret id, using the same order as the input.
+	 *
 	 * @param secretIds a list of patients secret ids
 	 * @param dataOwnerId a data owner id
 	 */
 	fun byPatientsSecretIdsForDataOwner(
 		dataOwnerId: String,
 		secretIds: List<String>,
-	): BaseSortableFilterOptions<Service> = ByPatientsSecretIdsForDataOwner(
+	): BaseFilterOptions<Service> = ByPatientsSecretIdsForDataOwner(
 		secretIds = secretIds,
 		dataOwnerId = EntityReferenceInGroup(entityId = dataOwnerId, groupId = null)
 	)
@@ -272,7 +260,7 @@ object ServiceFilters {
 	fun byPatientsSecretIdsForDataOwnerInGroup(
 		dataOwner: EntityReferenceInGroup,
 		secretIds: List<String>,
-	): BaseSortableFilterOptions<Service> = ByPatientsSecretIdsForDataOwner(
+	): BaseFilterOptions<Service> = ByPatientsSecretIdsForDataOwner(
 		secretIds = secretIds,
 		dataOwnerId = dataOwner
 	)
@@ -283,16 +271,13 @@ object ServiceFilters {
 	 * least a [SubContact] (from [Contact.subContacts]) where [SubContact.healthElementId] matches one of the provided
 	 * id.
 	 *
-	 * These options are sortable. When sorting using these options the services will be sorted in the same order as the
-	 * input health element ids. If a service exists in multiple subcontacts only the first subcontact with matching
-	 * health element service is considered for the ordering.
 	 * @param healthElementIds a list of health element ids
 	 * @param dataOwnerId a data owner id
 	 */
 	fun byHealthElementIdFromSubContactForDataOwner(
 		dataOwnerId: String,
 		healthElementIds: List<String>,
-	): BaseSortableFilterOptions<Service> = ByHealthElementIdFromSubcontactForDataOwner(
+	): BaseFilterOptions<Service> = ByHealthElementIdFromSubcontactForDataOwner(
 		healthElementIds = healthElementIds,
 		dataOwnerId = EntityReferenceInGroup(entityId = dataOwnerId, groupId = null)
 	)
@@ -303,7 +288,7 @@ object ServiceFilters {
 	fun byHealthElementIdFromSubContactForDataOwnerInGroup(
 		dataOwner: EntityReferenceInGroup,
 		healthElementIds: List<String>,
-	): BaseSortableFilterOptions<Service> = ByHealthElementIdFromSubcontactForDataOwner(
+	): BaseFilterOptions<Service> = ByHealthElementIdFromSubcontactForDataOwner(
 		healthElementIds = healthElementIds,
 		dataOwnerId = dataOwner
 	)
@@ -329,9 +314,6 @@ object ServiceFilters {
 	 * You can also limit the result to only services that are within a certain [Service.valueDate] timeframe (or [Service.openingDate]
 	 * if the first is missing), but in that case you must specify the [codeCode].
 	 *
-	 * These options are sortable. When sorting using these options the services will be sorted first by [codeCode] then
-	 * by [Service.valueDate].
-	 *
 	 * @param codeType a code type
 	 * @param codeCode a code for the provided code type, or null if you want the filter to accept any entity
 	 * with a code of the provided type.
@@ -349,7 +331,7 @@ object ServiceFilters {
 		startOfServiceValueDate: Long? = null,
 		@DefaultValue("null")
 		endOfServiceValueDate: Long? = null,
-	): SortableFilterOptions<Service> = ByCodeAndValueDateForSelf(
+	): FilterOptions<Service> = ByCodeAndValueDateForSelf(
 		codeType = codeType,
 		codeCode = codeCode,
 		startOfServiceValueDate = startOfServiceValueDate,
@@ -362,9 +344,6 @@ object ServiceFilters {
 	 *
 	 * You can also limit the result to only services that are within a certain [Service.valueDate] timeframe (or [Service.openingDate]
 	 * if the first is missing), but in that case you must specify the [tagCode].
-	 *
-	 * These options are sortable. When sorting using these options the services will be sorted first by [tagCode] then
-	 * by [Service.valueDate].
 	 *
 	 * @param tagType a tag type
 	 * @param tagCode a code for the provided tag type, or null if you want the filter to accept any entity
@@ -383,7 +362,7 @@ object ServiceFilters {
 		startOfServiceValueDate: Long? = null,
 		@DefaultValue("null")
 		endOfServiceValueDate: Long? = null,
-	): SortableFilterOptions<Service> = ByTagAndValueDateForSelf(
+	): FilterOptions<Service> = ByTagAndValueDateForSelf(
 		tagType = tagType,
 		tagCode = tagCode,
 		startOfServiceValueDate = startOfServiceValueDate,
@@ -1262,7 +1241,7 @@ object ServiceFilters {
 	internal class ByIdentifiersForDataOwner(
 		val identifiers: List<Identifier>,
 		val dataOwnerId: EntityReferenceInGroup,
-	) : BaseSortableFilterOptions<Service>
+	) : BaseFilterOptions<Service>
 
 	@Serializable
 	internal class ByCodeAndValueDateForDataOwner(
@@ -1271,7 +1250,7 @@ object ServiceFilters {
 		val startOfServiceValueDate: Long?,
 		val endOfServiceValueDate: Long?,
 		val dataOwnerId: EntityReferenceInGroup
-	): BaseSortableFilterOptions<Service> {
+	): BaseFilterOptions<Service> {
 		init {
 			require (codeCode != null || (startOfServiceValueDate == null && endOfServiceValueDate == null)) {
 				"Code code is mandatory if you want to restrict the range of service value date"
@@ -1286,7 +1265,7 @@ object ServiceFilters {
 		val startOfServiceValueDate: Long?,
 		val endOfServiceValueDate: Long?,
 		val dataOwnerId: EntityReferenceInGroup
-	): BaseSortableFilterOptions<Service> {
+	): BaseFilterOptions<Service> {
 		init {
 			require (tagCode != null || (startOfServiceValueDate == null && endOfServiceValueDate == null)) {
 				"Tag code is mandatory if you want to restrict the range of service value date"
@@ -1299,19 +1278,19 @@ object ServiceFilters {
 	internal class ByPatientsForDataOwner(
 		val patients: List<EntityWithEncryptionMetadataStub>,
 		val dataOwnerId: EntityReferenceInGroup,
-	): SortableFilterOptions<Service>
+	): FilterOptions<Service>
 
 	@Serializable
 	internal class ByPatientsSecretIdsForDataOwner(
 		val secretIds: List<String>,
 		val dataOwnerId: EntityReferenceInGroup,
-	): BaseSortableFilterOptions<Service>
+	): BaseFilterOptions<Service>
 
 	@Serializable
 	internal class ByHealthElementIdFromSubcontactForDataOwner(
 		val healthElementIds: List<String>,
 		val dataOwnerId: EntityReferenceInGroup
-	): BaseSortableFilterOptions<Service>
+	): BaseFilterOptions<Service>
 
 	@Serializable
 	internal data object AllForSelf : FilterOptions<Service>
@@ -1327,7 +1306,7 @@ object ServiceFilters {
 		val codeCode: String?,
 		val startOfServiceValueDate: Long?,
 		val endOfServiceValueDate: Long?
-	): SortableFilterOptions<Service> {
+	): FilterOptions<Service> {
 		init {
 			require (codeCode != null || (startOfServiceValueDate == null && endOfServiceValueDate == null)) {
 				"Code code is mandatory if you want to restrict the range of service value date"
@@ -1341,7 +1320,7 @@ object ServiceFilters {
 		val tagCode: String?,
 		val startOfServiceValueDate: Long?,
 		val endOfServiceValueDate: Long?
-	): SortableFilterOptions<Service> {
+	): FilterOptions<Service> {
 		init {
 			require (tagCode != null || (startOfServiceValueDate == null && endOfServiceValueDate == null)) {
 				"Tag code is mandatory if you want to restrict the range of service value date"

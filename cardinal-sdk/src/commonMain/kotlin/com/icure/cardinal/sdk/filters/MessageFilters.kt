@@ -51,15 +51,13 @@ object MessageFilters {
 	 * Creates options for message filtering that will match all messages shared directly (i.e. ignoring hierarchies) with a specific data owner that have the
 	 * provided transportGuid.
 	 *
-	 * These options are sortable. When sorting using these options the messages will be sorted by [Message.sent].
-	 *
 	 * @param dataOwnerId a data owner id
 	 * @param transportGuid a message transport guid
 	 */
 	fun byTransportGuidForDataOwner(
 		dataOwnerId: String,
 		transportGuid: String
-	): BaseSortableFilterOptions<Message> = ByTransportGuidForDataOwner(
+	): BaseFilterOptions<Message> = ByTransportGuidForDataOwner(
 		transportGuid = transportGuid,
 		dataOwnerId = EntityReferenceInGroup(groupId = null, entityId = dataOwnerId)
 	)
@@ -70,7 +68,7 @@ object MessageFilters {
 	fun byTransportGuidForDataOwnerInGroup(
 		dataOwner: EntityReferenceInGroup,
 		transportGuid: String
-	): BaseSortableFilterOptions<Message> = ByTransportGuidForDataOwner(
+	): BaseFilterOptions<Message> = ByTransportGuidForDataOwner(
 		transportGuid = transportGuid,
 		dataOwnerId = dataOwner
 	)
@@ -346,9 +344,6 @@ object MessageFilters {
 	 * Filter options for message filtering that will match all messages shared directly (i.e. ignoring hierarchies) with a specific data owner
 	 * where [Message.transportGuid] is equal to [transportGuid] and [Message.sent] is between [from] (inclusive) and [to] (inclusive).
 	 *
-	 * These options are sortable. When sorting using these options the messages will be sorted by [Message.sent] in ascending or
-	 * descending order according to the value of the [descending] parameter.
-	 *
 	 * @param dataOwnerId the id of a data owner.
 	 * @param transportGuid the transport guid to use in the filter.
 	 * @param from the minimum value for [Message.sent].
@@ -362,7 +357,7 @@ object MessageFilters {
 		to: Instant?,
 		@DefaultValue("false")
 		descending: Boolean = false
-	): BaseSortableFilterOptions<Message> = ByTransportGuidSentDateForDataOwner(
+	): BaseFilterOptions<Message> = ByTransportGuidSentDateForDataOwner(
 		dataOwnerId = EntityReferenceInGroup(groupId = null, entityId = dataOwnerId),
 		transportGuid = transportGuid,
 		from = from,
@@ -380,7 +375,7 @@ object MessageFilters {
 		to: Instant?,
 		@DefaultValue("false")
 		descending: Boolean = false
-	): BaseSortableFilterOptions<Message> = ByTransportGuidSentDateForDataOwner(
+	): BaseFilterOptions<Message> = ByTransportGuidSentDateForDataOwner(
 		dataOwnerId = dataOwner,
 		transportGuid = transportGuid,
 		from = from,
@@ -391,9 +386,6 @@ object MessageFilters {
 	/**
 	 * Filter options for message filtering that will match all messages shared directly (i.e. ignoring hierarchies) with the current data owner
 	 * where [Message.transportGuid] is equal to [transportGuid] and [Message.sent] is between [from] (inclusive) and [to] (inclusive).
-	 *
-	 * These options are sortable. When sorting using these options the messages will be sorted by [Message.sent] in ascending or
-	 * descending order according to the value of the [descending] parameter.
 	 *
 	 * @param transportGuid the transport guid to use in the filter.
 	 * @param from the minimum value for [Message.sent].
@@ -406,7 +398,7 @@ object MessageFilters {
 		to: Instant?,
 		@DefaultValue("false")
 		descending: Boolean = false
-	): SortableFilterOptions<Message> = ByTransportGuidSentDateForSelf(transportGuid, from, to, descending)
+	): FilterOptions<Message> = ByTransportGuidSentDateForSelf(transportGuid, from, to, descending)
 
 	/**
 	 * Filter options for message filtering that will match all messages shared directly (i.e. ignoring hierarchies) with a specific data owner
@@ -638,7 +630,7 @@ object MessageFilters {
 	internal class ByTransportGuidForDataOwner(
 		val transportGuid: String,
 		val dataOwnerId: EntityReferenceInGroup
-	) : BaseSortableFilterOptions<Message>
+	) : BaseFilterOptions<Message>
 
 	@Serializable
 	internal class ByTransportGuidForSelf(
@@ -710,7 +702,7 @@ object MessageFilters {
 		val from: Instant?,
 		val to: Instant?,
 		val descending: Boolean
-	): BaseSortableFilterOptions<Message>
+	): BaseFilterOptions<Message>
 
 	@Serializable
 	internal class ByTransportGuidSentDateForSelf(
@@ -718,7 +710,7 @@ object MessageFilters {
 		val from: Instant?,
 		val to: Instant?,
 		val descending: Boolean
-	): SortableFilterOptions<Message>
+	): FilterOptions<Message>
 
 	@Serializable
 	internal class LatestByTransportGuidForDataOwner(
