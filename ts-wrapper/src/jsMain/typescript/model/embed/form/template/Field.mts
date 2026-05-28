@@ -20,4 +20,4 @@ import {TimePicker} from './TimePicker.mjs';
  *  validation rules, and optional codification and tagging.
  *  /
  */
-export type Field = TextField | MeasureField | DatePicker | DateTimePicker | MultipleChoice | TimePicker | DropdownField | RadioButton | NumberField | CheckBox;
+export type Field = DropdownField | DateTimePicker | RadioButton | MultipleChoice | MeasureField | CheckBox | TextField | TimePicker | DatePicker | NumberField;
