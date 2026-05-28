@@ -11,7 +11,7 @@ kryptom = "1.5.0"
 kermit = "2.0.3"
 okio = "3.9.1"
 bouncyCastle = "1.70"
-kotp = "1.0.1"
+kotp = "1.1.0"
 kerberus = "1.1.8"
 ksp = "2.3.6"
 
