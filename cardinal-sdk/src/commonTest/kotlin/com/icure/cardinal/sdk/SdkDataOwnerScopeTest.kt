@@ -20,6 +20,7 @@ import io.kotest.assertions.throwables.shouldThrow
 import io.kotest.core.spec.style.StringSpec
 import io.kotest.matchers.nulls.shouldNotBeNull
 import io.kotest.matchers.shouldBe
+import kotlin.random.Random
 
 @OptIn(InternalIcureApi::class)
 class SdkDataOwnerScopeTest : StringSpec({
@@ -34,7 +35,7 @@ class SdkDataOwnerScopeTest : StringSpec({
 			DefaultRawApiConfig
 		)
 		actingScopeRoleId = roleApi.createRoleWithDescription(
-			"actingScopeRole-${defaultCryptoService.strongRandom.randomUUID()}",
+			"ACTING_SCOPE_${Random.nextBytes(8).toHexString(HexFormat.UpperCase)}",
 			null,
 			CreateRoleRequest(
 				setOf("DataOwner.ActingScope.OfChildren"),
