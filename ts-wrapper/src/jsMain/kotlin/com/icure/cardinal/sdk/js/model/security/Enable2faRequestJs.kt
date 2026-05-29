@@ -15,4 +15,8 @@ public external class Enable2faRequestJs(
 	public val secret: String
 
 	public val otpLength: Double
+
+	public val otp: String
+
+	public val algorithm: String?
 }

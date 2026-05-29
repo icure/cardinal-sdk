@@ -286,13 +286,17 @@ public fun user_SystemMetadata_toJs(obj: User.SystemMetadata): UserJs_SystemMeta
 	val verifiedMobilePhone = nullToUndefined(
 		obj.verifiedMobilePhone
 	)
+	val uses2fa = nullToUndefined(
+		obj.uses2fa
+	)
 	return UserJs_SystemMetadataJs(js("{" +
 		"roles:roles," +
 		"isAdmin:isAdmin," +
 		"inheritsRoles:inheritsRoles," +
 		"loginIdentifiers:loginIdentifiers," +
 		"verifiedEmail:verifiedEmail," +
-		"verifiedMobilePhone:verifiedMobilePhone" +
+		"verifiedMobilePhone:verifiedMobilePhone," +
+		"uses2fa:uses2fa" +
 	"}"))
 }
 
@@ -315,6 +319,7 @@ public fun user_SystemMetadata_fromJs(obj: UserJs_SystemMetadataJs): User.System
 	)
 	val verifiedEmail = undefinedToNull(obj.verifiedEmail)
 	val verifiedMobilePhone = undefinedToNull(obj.verifiedMobilePhone)
+	val uses2fa = undefinedToNull(obj.uses2fa)
 	return User.SystemMetadata(
 		roles = roles,
 		isAdmin = isAdmin,
@@ -322,5 +327,6 @@ public fun user_SystemMetadata_fromJs(obj: UserJs_SystemMetadataJs): User.System
 		loginIdentifiers = loginIdentifiers,
 		verifiedEmail = verifiedEmail,
 		verifiedMobilePhone = verifiedMobilePhone,
+		uses2fa = uses2fa,
 	)
 }
