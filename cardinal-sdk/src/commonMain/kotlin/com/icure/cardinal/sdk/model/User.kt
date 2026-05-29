@@ -135,6 +135,11 @@ data class User(
 		public val loginIdentifiers: List<LoginIdentifier> = emptyList(),
 		public val verifiedEmail: Boolean? = null,
 		public val verifiedMobilePhone: Boolean? = null,
+		/**
+		 *
+		 *  True if the user has 2fa enabled for login with password
+		 */
+		public val uses2fa: Boolean? = null,
 	)
 	// region User-User
 
