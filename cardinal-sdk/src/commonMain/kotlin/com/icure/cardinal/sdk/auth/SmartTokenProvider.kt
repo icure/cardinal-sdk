@@ -129,11 +129,15 @@ internal class SmartTokenProvider private constructor (
 			)
 			if (initializationSecret != null && (initialRefreshToken == null || isJwtExpiredOrInvalid(initialRefreshToken))) {
 				val token = provider.doGetTokenWithSecret(initializationSecret, null)
-				if (token is DoGetTokenResult.Success) {
-					provider.cachedToken = token.bearer.token
-					provider.cachedRefreshToken = token.refresh.token
-				} else {
-					throw IllegalArgumentException("Could not get a token with the provided initial secret of type ${initializationSecret::class.simpleName}.")
+				when (token) {
+					is DoGetTokenResult.Success -> {
+						provider.cachedToken = token.bearer.token
+						provider.cachedRefreshToken = token.refresh.token
+					}
+					is DoGetTokenResult.Failure if token.reason == DoGetTokenResult.DoGetTokenResultFailureReason.Needs2FA -> {
+						// No caching token but no failure, will have to ask for 2fa
+					}
+					else -> throw IllegalArgumentException("Could not get a token with the provided initial secret of type ${initializationSecret::class.simpleName}.")
 				}
 			}
 			return provider

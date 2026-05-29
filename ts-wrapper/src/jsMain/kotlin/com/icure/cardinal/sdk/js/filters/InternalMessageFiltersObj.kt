@@ -46,33 +46,33 @@ public object InternalMessageFiltersObj {
 	}
 
 	public fun byTransportGuidForDataOwner(dataOwnerId: String, transportGuid: String):
-			BaseSortableFilterOptionsJs<MessageJs> {
+			BaseFilterOptionsJs<MessageJs> {
 		val dataOwnerIdConverted: String = dataOwnerId
 		val transportGuidConverted: String = transportGuid
 		val result = MessageFilters.byTransportGuidForDataOwner(
 			dataOwnerIdConverted,
 			transportGuidConverted,
 		)
-		return BaseSortableFilterOptionsJsImpl(result)
+		return BaseFilterOptionsJsImpl(result)
 	}
 
 	public fun byTransportGuidForDataOwnerInGroup(dataOwner: EntityReferenceInGroupJs,
-			transportGuid: String): BaseSortableFilterOptionsJs<MessageJs> {
+			transportGuid: String): BaseFilterOptionsJs<MessageJs> {
 		val dataOwnerConverted: EntityReferenceInGroup = entityReferenceInGroup_fromJs(dataOwner)
 		val transportGuidConverted: String = transportGuid
 		val result = MessageFilters.byTransportGuidForDataOwnerInGroup(
 			dataOwnerConverted,
 			transportGuidConverted,
 		)
-		return BaseSortableFilterOptionsJsImpl(result)
+		return BaseFilterOptionsJsImpl(result)
 	}
 
-	public fun byTransportGuidForSelf(transportGuid: String): SortableFilterOptionsJs<MessageJs> {
+	public fun byTransportGuidForSelf(transportGuid: String): FilterOptionsJs<MessageJs> {
 		val transportGuidConverted: String = transportGuid
 		val result = MessageFilters.byTransportGuidForSelf(
 			transportGuidConverted,
 		)
-		return SortableFilterOptionsJsImpl(result)
+		return FilterOptionsJsImpl(result)
 	}
 
 	public fun fromAddressForDataOwner(dataOwnerId: String, address: String):
@@ -406,7 +406,7 @@ public object InternalMessageFiltersObj {
 		from: Double?,
 		to: Double?,
 		options: dynamic,
-	): BaseSortableFilterOptionsJs<MessageJs> {
+	): BaseFilterOptionsJs<MessageJs> {
 		val _options = options ?: js("{}")
 		val dataOwnerIdConverted: String = dataOwnerId
 		val transportGuidConverted: String = transportGuid
@@ -426,7 +426,7 @@ public object InternalMessageFiltersObj {
 			toConverted,
 			descendingConverted,
 		)
-		return BaseSortableFilterOptionsJsImpl(result)
+		return BaseFilterOptionsJsImpl(result)
 	}
 
 	public fun byTransportGuidSentDateForDataOwnerInGroup(
@@ -435,7 +435,7 @@ public object InternalMessageFiltersObj {
 		from: Double?,
 		to: Double?,
 		options: dynamic,
-	): BaseSortableFilterOptionsJs<MessageJs> {
+	): BaseFilterOptionsJs<MessageJs> {
 		val _options = options ?: js("{}")
 		val dataOwnerConverted: EntityReferenceInGroup = entityReferenceInGroup_fromJs(dataOwner)
 		val transportGuidConverted: String = transportGuid
@@ -455,7 +455,7 @@ public object InternalMessageFiltersObj {
 			toConverted,
 			descendingConverted,
 		)
-		return BaseSortableFilterOptionsJsImpl(result)
+		return BaseFilterOptionsJsImpl(result)
 	}
 
 	public fun byTransportGuidSentDateForSelf(
@@ -463,7 +463,7 @@ public object InternalMessageFiltersObj {
 		from: Double?,
 		to: Double?,
 		options: dynamic,
-	): SortableFilterOptionsJs<MessageJs> {
+	): FilterOptionsJs<MessageJs> {
 		val _options = options ?: js("{}")
 		val transportGuidConverted: String = transportGuid
 		val fromConverted: Instant? = numberToInstant(from, "from")
@@ -481,7 +481,7 @@ public object InternalMessageFiltersObj {
 			toConverted,
 			descendingConverted,
 		)
-		return SortableFilterOptionsJsImpl(result)
+		return FilterOptionsJsImpl(result)
 	}
 
 	public fun latestByTransportGuidForDataOwner(dataOwnerId: String, transportGuid: String):
@@ -642,7 +642,7 @@ public object InternalMessageFiltersObj {
 		return BaseSortableFilterOptionsJsImpl(result)
 	}
 
-	public fun byCodeForSelf(codeType: String, options: dynamic): SortableFilterOptionsJs<MessageJs> {
+	public fun byCodeForSelf(codeType: String, options: dynamic): FilterOptionsJs<MessageJs> {
 		val _options = options ?: js("{}")
 		val codeTypeConverted: String = codeType
 		val codeCodeConverted: String? = convertingOptionOrDefaultNullable(
@@ -656,7 +656,7 @@ public object InternalMessageFiltersObj {
 			codeTypeConverted,
 			codeCodeConverted,
 		)
-		return SortableFilterOptionsJsImpl(result)
+		return FilterOptionsJsImpl(result)
 	}
 
 	public fun byTagForDataOwner(
@@ -705,7 +705,7 @@ public object InternalMessageFiltersObj {
 		return BaseSortableFilterOptionsJsImpl(result)
 	}
 
-	public fun byTagForSelf(tagType: String, options: dynamic): SortableFilterOptionsJs<MessageJs> {
+	public fun byTagForSelf(tagType: String, options: dynamic): FilterOptionsJs<MessageJs> {
 		val _options = options ?: js("{}")
 		val tagTypeConverted: String = tagType
 		val tagCodeConverted: String? = convertingOptionOrDefaultNullable(
@@ -719,6 +719,6 @@ public object InternalMessageFiltersObj {
 			tagTypeConverted,
 			tagCodeConverted,
 		)
-		return SortableFilterOptionsJsImpl(result)
+		return FilterOptionsJsImpl(result)
 	}
 }

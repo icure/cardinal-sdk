@@ -69,7 +69,8 @@ class AbstractFilterSerializationTest: StringSpec({
 				"entityClass" to JsonPrimitive("Patient"),
 				"filter" to filterChainByIdsJson,
 				"accessControlKeys" to JsonArray(listOf()),
-				"useCardinalModelSerialization" to JsonNull
+				"useCardinalModelSerialization" to JsonNull,
+				"cardinalSdkVersion" to JsonNull
 			)
 		)
 

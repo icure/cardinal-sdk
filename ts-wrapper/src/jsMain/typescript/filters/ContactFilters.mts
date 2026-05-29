@@ -177,13 +177,9 @@ interface ContactFiltersFactory {
 	 *  have at least an identifier that has the same exact [Identifier.system] and [Identifier.value] as one of the provided
 	 *  [identifiers]. Other properties of the provided identifiers are ignored.
 	 *
-	 *  These options are sortable. When sorting using these options the contacts will be in the same order as the input
-	 *  identifiers. In case an entity has multiple identifiers only the first matching identifier is considered for the
-	 *  sorting.
-	 *
 	 *  @param identifiers a list of identifiers
 	 */
-	byIdentifiersForSelf(identifiers: Array<Identifier>): SortableFilterOptions<Contact>;
+	byIdentifiersForSelf(identifiers: Array<Identifier>): FilterOptions<Contact>;
 
 	/**
 	 *
@@ -191,21 +187,18 @@ interface ContactFiltersFactory {
 	 *  that have at least an identifier that has the same exact [Identifier.system] and [Identifier.value] as one of the provided
 	 *  [identifiers]. Other properties of the provided identifiers are ignored.
 	 *
-	 *  These options are sortable. When sorting using these options the contacts will be in the same order as the input
-	 *  identifiers. In case an entity has multiple identifiers only the first matching identifier is considered for the
-	 *  sorting.
 	 *  @param dataOwnerId a data owner id
 	 *  @param identifiers a list of identifiers
 	 */
 	byIdentifiersForDataOwner(dataOwnerId: string,
-			identifiers: Array<Identifier>): BaseSortableFilterOptions<Contact>;
+			identifiers: Array<Identifier>): BaseFilterOptions<Contact>;
 
 	/**
 	 *
 	 *  In group version of [byIdentifiersForDataOwner].
 	 */
 	byIdentifiersForDataOwnerInGroup(dataOwner: EntityReferenceInGroup,
-			identifiers: Array<Identifier>): BaseSortableFilterOptions<Contact>;
+			identifiers: Array<Identifier>): BaseFilterOptions<Contact>;
 
 	/**
 	 *
@@ -439,21 +432,17 @@ interface ContactFiltersFactory {
 	 *  simply be ignored.
 	 *  Note that these may not be used in methods of apis from [CardinalBaseApis].
 	 *
-	 *  These options are sortable. When sorting using these options the contacts will be sorted by the patients, using
-	 *  the same order as the input patients.
-	 *
 	 *  @param dataOwnerId a data owner id
 	 *  @param patients a list of patients.
 	 */
-	byPatientsForDataOwner(dataOwnerId: string,
-			patients: Array<Patient>): SortableFilterOptions<Contact>;
+	byPatientsForDataOwner(dataOwnerId: string, patients: Array<Patient>): FilterOptions<Contact>;
 
 	/**
 	 *
 	 *  In group version of [byPatientsForDataOwner].
 	 */
 	byPatientsForDataOwnerInGroup(dataOwner: EntityReferenceInGroup,
-			patients: Array<GroupScoped<Patient>>): SortableFilterOptions<Contact>;
+			patients: Array<GroupScoped<Patient>>): FilterOptions<Contact>;
 
 	/**
 	 *
@@ -467,43 +456,36 @@ interface ContactFiltersFactory {
 	 *  simply be ignored.
 	 *  Note that these may not be used in methods of apis from [CardinalBaseApis].
 	 *
-	 *  These options are sortable. When sorting using these options the contacts will be sorted by the patients, using
-	 *  the same order as the input patients.
-	 *
 	 *  @param patients a list of patients.
 	 */
-	byPatientsForSelf(patients: Array<Patient>): SortableFilterOptions<Contact>;
+	byPatientsForSelf(patients: Array<Patient>): FilterOptions<Contact>;
 
 	/**
 	 *
 	 *  Options for contact filtering which match all contacts shared directly (i.e. ignoring hierarchies) with a specific data owner that are linked with a
 	 *  patient through one of the provided secret ids.
-	 *  These options are sortable. When sorting using these options the contacts will be sorted by the linked patients
-	 *  secret id, using the same order as the input.
 	 *
 	 *  @param dataOwnerId a data owner id
 	 *  @param secretIds a list of patients secret ids
 	 */
 	byPatientsSecretIdsForDataOwner(dataOwnerId: string,
-			secretIds: Array<string>): BaseSortableFilterOptions<Contact>;
+			secretIds: Array<string>): BaseFilterOptions<Contact>;
 
 	/**
 	 *
 	 *  In group version of [byPatientsSecretIdsForDataOwner].
 	 */
 	byPatientsSecretIdsForDataOwnerInGroup(dataOwner: EntityReferenceInGroup,
-			secretIds: Array<string>): BaseSortableFilterOptions<Contact>;
+			secretIds: Array<string>): BaseFilterOptions<Contact>;
 
 	/**
 	 *
 	 *  Options for contact filtering which match all contacts shared directly (i.e. ignoring hierarchies) with the current data owner that are linked with a
 	 *  patient through one of the provided secret ids.
-	 *  These options are sortable. When sorting using these options the contacts will be sorted by the linked patients
-	 *  secret id, using the same order as the input.
 	 *
 	 *  @param secretIds a list of patients secret ids
 	 */
-	byPatientsSecretIdsForSelf(secretIds: Array<string>): SortableFilterOptions<Contact>;
+	byPatientsSecretIdsForSelf(secretIds: Array<string>): FilterOptions<Contact>;
 
 	/**
 	 *

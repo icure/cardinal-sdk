@@ -499,8 +499,6 @@ object DocumentFilters {
 	 * Options for document filtering which match all documents shared directly (i.e. ignoring hierarchies) with a specific data owner that have a certain code.
 	 * If you specify only the [codeType] you will get all entities that have at least a code of that type.
 	 *
-	 * These options are sortable. When sorting using these options the documents will be sorted by [codeCode].
-	 *
 	 * @param dataOwnerId a data owner id
 	 * @param codeType a code type
 	 * @param codeCode a code for the provided code type, or null if you want the filter to accept any entity
@@ -511,7 +509,7 @@ object DocumentFilters {
 		codeType: String,
 		@DefaultValue("null")
 		codeCode: String? = null
-	): BaseSortableFilterOptions<Document> = ByCodeForDataOwner(
+	): BaseFilterOptions<Document> = ByCodeForDataOwner(
 		codeType = codeType,
 		codeCode = codeCode,
 		dataOwnerId = EntityReferenceInGroup(groupId = null, entityId = dataOwnerId)
@@ -525,7 +523,7 @@ object DocumentFilters {
 		codeType: String,
 		@DefaultValue("null")
 		codeCode: String? = null
-	): BaseSortableFilterOptions<Document> = ByCodeForDataOwner(
+	): BaseFilterOptions<Document> = ByCodeForDataOwner(
 		codeType = codeType,
 		codeCode = codeCode,
 		dataOwnerId = dataOwner
@@ -554,8 +552,6 @@ object DocumentFilters {
 	 * Options for document filtering which match all documents shared directly (i.e. ignoring hierarchies) with a specific data owner that have a certain tag.
 	 * If you specify only the [tagType] you will get all entities that have at least a tag of that type.
 	 *
-	 * These options are sortable. When sorting using these options the documents will be sorted by [tagCode].
-	 *
 	 * @param dataOwnerId a data owner id
 	 * @param tagType a tag type
 	 * @param tagCode a code for the provided tag type, or null if you want the filter to accept any entity
@@ -566,7 +562,7 @@ object DocumentFilters {
 		tagType: String,
 		@DefaultValue("null")
 		tagCode: String? = null
-	): BaseSortableFilterOptions<Document> = ByTagForDataOwner(
+	): BaseFilterOptions<Document> = ByTagForDataOwner(
 		tagType = tagType,
 		tagCode = tagCode,
 		dataOwnerId = EntityReferenceInGroup(groupId = null, entityId = dataOwnerId)
@@ -580,7 +576,7 @@ object DocumentFilters {
 		tagType: String,
 		@DefaultValue("null")
 		tagCode: String? = null
-	): BaseSortableFilterOptions<Document> = ByTagForDataOwner(
+	): BaseFilterOptions<Document> = ByTagForDataOwner(
 		tagType = tagType,
 		tagCode = tagCode,
 		dataOwnerId = dataOwner
@@ -590,8 +586,6 @@ object DocumentFilters {
 	 * Options for document filtering which match all documents shared directly (i.e. ignoring hierarchies) with the current data owner that have a certain tag.
 	 * If you specify only the [tagType] you will get all entities that have at least a tag of that type.
 	 *
-	 * These options are sortable. When sorting using these options the documents will be sorted by [tagCode].
-	 *
 	 * @param tagType a tag type
 	 * @param tagCode a code for the provided tag type, or null if you want the filter to accept any entity
 	 * with a tag of the provided type.
@@ -600,7 +594,7 @@ object DocumentFilters {
 		tagType: String,
 		@DefaultValue("null")
 		tagCode: String? = null
-	): SortableFilterOptions<Document> = ByTagForSelf(
+	): FilterOptions<Document> = ByTagForSelf(
 		tagType = tagType,
 		tagCode = tagCode
 	)
@@ -709,7 +703,7 @@ object DocumentFilters {
 		val codeType: String,
 		val codeCode: String?,
 		val dataOwnerId: EntityReferenceInGroup
-	): BaseSortableFilterOptions<Document>
+	): BaseFilterOptions<Document>
 
 	@Serializable
 	internal class ByCodeForSelf(
@@ -722,13 +716,13 @@ object DocumentFilters {
 		val tagType: String,
 		val tagCode: String?,
 		val dataOwnerId: EntityReferenceInGroup
-	): BaseSortableFilterOptions<Document>
+	): BaseFilterOptions<Document>
 
 	@Serializable
 	internal class ByTagForSelf(
 		val tagType: String,
 		val tagCode: String?,
-	): SortableFilterOptions<Document>
+	): FilterOptions<Document>
 }
 
 @InternalIcureApi

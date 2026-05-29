@@ -30,7 +30,6 @@ import com.icure.utils.InternalIcureApi
 import kotlinx.coroutines.currentCoroutineContext
 import kotlin.time.Instant
 import kotlinx.serialization.Serializable
-import kotlin.coroutines.coroutineContext
 
 object MessageFilters {
 	/**
@@ -52,15 +51,13 @@ object MessageFilters {
 	 * Creates options for message filtering that will match all messages shared directly (i.e. ignoring hierarchies) with a specific data owner that have the
 	 * provided transportGuid.
 	 *
-	 * These options are sortable. When sorting using these options the messages will be sorted by [Message.sent].
-	 *
 	 * @param dataOwnerId a data owner id
 	 * @param transportGuid a message transport guid
 	 */
 	fun byTransportGuidForDataOwner(
 		dataOwnerId: String,
 		transportGuid: String
-	): BaseSortableFilterOptions<Message> = ByTransportGuidForDataOwner(
+	): BaseFilterOptions<Message> = ByTransportGuidForDataOwner(
 		transportGuid = transportGuid,
 		dataOwnerId = EntityReferenceInGroup(groupId = null, entityId = dataOwnerId)
 	)
@@ -71,7 +68,7 @@ object MessageFilters {
 	fun byTransportGuidForDataOwnerInGroup(
 		dataOwner: EntityReferenceInGroup,
 		transportGuid: String
-	): BaseSortableFilterOptions<Message> = ByTransportGuidForDataOwner(
+	): BaseFilterOptions<Message> = ByTransportGuidForDataOwner(
 		transportGuid = transportGuid,
 		dataOwnerId = dataOwner
 	)
@@ -80,13 +77,11 @@ object MessageFilters {
 	 * Creates options for message filtering that will match all messages shared directly (i.e. ignoring hierarchies) with the current data owner that have the
 	 * provided transportGuid.
 	 *
-	 * These options are sortable. When sorting using these options the messages will be sorted by [Message.sent].
-	 *
 	 * @param transportGuid a message transport guid
 	 */
 	fun byTransportGuidForSelf(
 		transportGuid: String,
-	): SortableFilterOptions<Message> = ByTransportGuidForSelf(transportGuid)
+	): FilterOptions<Message> = ByTransportGuidForSelf(transportGuid)
 
 	/**
 	 * Filter options for message filtering that will match all messages shared directly (i.e. ignoring hierarchies) with a specific data owner
@@ -349,9 +344,6 @@ object MessageFilters {
 	 * Filter options for message filtering that will match all messages shared directly (i.e. ignoring hierarchies) with a specific data owner
 	 * where [Message.transportGuid] is equal to [transportGuid] and [Message.sent] is between [from] (inclusive) and [to] (inclusive).
 	 *
-	 * These options are sortable. When sorting using these options the messages will be sorted by [Message.sent] in ascending or
-	 * descending order according to the value of the [descending] parameter.
-	 *
 	 * @param dataOwnerId the id of a data owner.
 	 * @param transportGuid the transport guid to use in the filter.
 	 * @param from the minimum value for [Message.sent].
@@ -365,7 +357,7 @@ object MessageFilters {
 		to: Instant?,
 		@DefaultValue("false")
 		descending: Boolean = false
-	): BaseSortableFilterOptions<Message> = ByTransportGuidSentDateForDataOwner(
+	): BaseFilterOptions<Message> = ByTransportGuidSentDateForDataOwner(
 		dataOwnerId = EntityReferenceInGroup(groupId = null, entityId = dataOwnerId),
 		transportGuid = transportGuid,
 		from = from,
@@ -383,7 +375,7 @@ object MessageFilters {
 		to: Instant?,
 		@DefaultValue("false")
 		descending: Boolean = false
-	): BaseSortableFilterOptions<Message> = ByTransportGuidSentDateForDataOwner(
+	): BaseFilterOptions<Message> = ByTransportGuidSentDateForDataOwner(
 		dataOwnerId = dataOwner,
 		transportGuid = transportGuid,
 		from = from,
@@ -394,9 +386,6 @@ object MessageFilters {
 	/**
 	 * Filter options for message filtering that will match all messages shared directly (i.e. ignoring hierarchies) with the current data owner
 	 * where [Message.transportGuid] is equal to [transportGuid] and [Message.sent] is between [from] (inclusive) and [to] (inclusive).
-	 *
-	 * These options are sortable. When sorting using these options the messages will be sorted by [Message.sent] in ascending or
-	 * descending order according to the value of the [descending] parameter.
 	 *
 	 * @param transportGuid the transport guid to use in the filter.
 	 * @param from the minimum value for [Message.sent].
@@ -409,7 +398,7 @@ object MessageFilters {
 		to: Instant?,
 		@DefaultValue("false")
 		descending: Boolean = false
-	): SortableFilterOptions<Message> = ByTransportGuidSentDateForSelf(transportGuid, from, to, descending)
+	): FilterOptions<Message> = ByTransportGuidSentDateForSelf(transportGuid, from, to, descending)
 
 	/**
 	 * Filter options for message filtering that will match all messages shared directly (i.e. ignoring hierarchies) with a specific data owner
@@ -563,8 +552,6 @@ object MessageFilters {
 	 * Options for message filtering which match all messages shared directly (i.e. ignoring hierarchies) with the current data owner that have a certain code.
 	 * If you specify only the [codeType] you will get all entities that have at least a code of that type.
 	 *
-	 * These options are sortable. When sorting using these options the messages will be sorted by [codeCode].
-	 *
 	 * @param codeType a code type
 	 * @param codeCode a code for the provided code type, or null if you want the filter to accept any entity
 	 * with a code of the provided type.
@@ -573,7 +560,7 @@ object MessageFilters {
 		codeType: String,
 		@DefaultValue("null")
 		codeCode: String? = null
-	): SortableFilterOptions<Message> = ByCodeForSelf(
+	): FilterOptions<Message> = ByCodeForSelf(
 		codeType = codeType,
 		codeCode = codeCode
 	)
@@ -618,8 +605,6 @@ object MessageFilters {
 	 * Options for message filtering which match all messages shared directly (i.e. ignoring hierarchies) with the current data owner that have a certain tag.
 	 * If you specify only the [tagType] you will get all entities that have at least a tag of that type.
 	 *
-	 * These options are sortable. When sorting using these options the messages will be sorted by [tagCode].
-	 *
 	 * @param tagType a tag type
 	 * @param tagCode a code for the provided tag type, or null if you want the filter to accept any entity
 	 * with a tag of the provided type.
@@ -628,7 +613,7 @@ object MessageFilters {
 		tagType: String,
 		@DefaultValue("null")
 		tagCode: String? = null
-	): SortableFilterOptions<Message> = ByTagForSelf(
+	): FilterOptions<Message> = ByTagForSelf(
 		tagType = tagType,
 		tagCode = tagCode
 	)
@@ -645,12 +630,12 @@ object MessageFilters {
 	internal class ByTransportGuidForDataOwner(
 		val transportGuid: String,
 		val dataOwnerId: EntityReferenceInGroup
-	) : BaseSortableFilterOptions<Message>
+	) : BaseFilterOptions<Message>
 
 	@Serializable
 	internal class ByTransportGuidForSelf(
 		val transportGuid: String
-	) : BaseSortableFilterOptions<Message>
+	) : BaseFilterOptions<Message>
 
 	@Serializable
 	internal class FromAddressForDataOwner(
@@ -717,7 +702,7 @@ object MessageFilters {
 		val from: Instant?,
 		val to: Instant?,
 		val descending: Boolean
-	): BaseSortableFilterOptions<Message>
+	): BaseFilterOptions<Message>
 
 	@Serializable
 	internal class ByTransportGuidSentDateForSelf(
@@ -725,7 +710,7 @@ object MessageFilters {
 		val from: Instant?,
 		val to: Instant?,
 		val descending: Boolean
-	): SortableFilterOptions<Message>
+	): FilterOptions<Message>
 
 	@Serializable
 	internal class LatestByTransportGuidForDataOwner(
@@ -774,7 +759,7 @@ object MessageFilters {
 	internal class ByCodeForSelf(
 		val codeType: String,
 		val codeCode: String?,
-	): SortableFilterOptions<Message>
+	): FilterOptions<Message>
 
 	@Serializable
 	internal class ByTagForDataOwner(
@@ -787,7 +772,7 @@ object MessageFilters {
 	internal class ByTagForSelf(
 		val tagType: String,
 		val tagCode: String?,
-	): SortableFilterOptions<Message>
+	): FilterOptions<Message>
 }
 
 @InternalIcureApi
