@@ -25,4 +25,6 @@ public external class UserJs_SystemMetadataJs(
 	public val verifiedEmail: Boolean?
 
 	public val verifiedMobilePhone: Boolean?
+
+	public val uses2fa: Boolean?
 }

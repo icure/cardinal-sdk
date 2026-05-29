@@ -269,6 +269,13 @@ export namespace User {
 
 		verifiedMobilePhone: boolean | undefined = undefined;
 
+		/**
+		 *
+		 *
+		 *   True if the user has 2fa enabled for login with password
+		 */
+		uses2fa: boolean | undefined = undefined;
+
 		constructor(partial: Partial<SystemMetadata> & Pick<SystemMetadata, "roles" | "isAdmin" | "inheritsRoles">) {
 			this.roles = partial.roles;
 			this.isAdmin = partial.isAdmin;
@@ -276,6 +283,7 @@ export namespace User {
 			if ('loginIdentifiers' in partial && partial.loginIdentifiers !== undefined) this.loginIdentifiers = partial.loginIdentifiers;
 			if ('verifiedEmail' in partial) this.verifiedEmail = partial.verifiedEmail;
 			if ('verifiedMobilePhone' in partial) this.verifiedMobilePhone = partial.verifiedMobilePhone;
+			if ('uses2fa' in partial) this.uses2fa = partial.uses2fa;
 		}
 
 		toJSON(): object {
@@ -286,6 +294,7 @@ export namespace User {
 			res['loginIdentifiers'] = this.loginIdentifiers.map((x0) => x0.toJSON() )
 			if (this.verifiedEmail != undefined) res['verifiedEmail'] = this.verifiedEmail
 			if (this.verifiedMobilePhone != undefined) res['verifiedMobilePhone'] = this.verifiedMobilePhone
+			if (this.uses2fa != undefined) res['uses2fa'] = this.uses2fa
 			return res
 		}
 
@@ -300,6 +309,7 @@ export namespace User {
 				loginIdentifiers: expectArray(extractEntry(jCpy, 'loginIdentifiers', false, path), false, [...path, ".loginIdentifiers"], (x0, p0) => expectObject(x0, false, ignoreUnknownKeys, p0, LoginIdentifier.fromJSON)),
 				verifiedEmail: expectBoolean(extractEntry(jCpy, 'verifiedEmail', false, path), true, [...path, ".verifiedEmail"]),
 				verifiedMobilePhone: expectBoolean(extractEntry(jCpy, 'verifiedMobilePhone', false, path), true, [...path, ".verifiedMobilePhone"]),
+				uses2fa: expectBoolean(extractEntry(jCpy, 'uses2fa', false, path), true, [...path, ".uses2fa"]),
 			})
 			if (!ignoreUnknownKeys) {
 				const unused = Object.keys(jCpy)
