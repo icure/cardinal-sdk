@@ -3,9 +3,9 @@ package com.icure.cardinal.sdk.utils
 import com.icure.kryptom.utils.base64Decode
 import com.icure.cardinal.sdk.auth.level
 import com.icure.cardinal.sdk.model.embed.AuthenticationClass
-import io.ktor.util.date.GMTDate
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
+import kotlin.time.Clock
 import kotlin.time.Duration
 import kotlin.time.Duration.Companion.seconds
 
@@ -37,7 +37,7 @@ internal data class JwtPayload(
 	fun isValidForAuthClass(authenticationClass: AuthenticationClass, padding: Duration): Boolean {
 		if (tokenAuthenticationClass == null || tokenAuthenticationClass < authenticationClass.level) return false
 		val issuedTime = exp - (duration ?: DEFAULT_DURATION_SECONDS) * 1000
-		val tokenAgeMs = GMTDate().timestamp - issuedTime
+		val tokenAgeMs = Clock.System.now().toEpochMilliseconds() - issuedTime
 		return tokenAgeMs < (MAXIMUM_ELEVATED_SECURITY_LIFETIME_MILLIS - padding.inWholeMilliseconds)
 	}
 }
@@ -54,6 +54,6 @@ internal fun decodeClaims(jwt: String): JwtPayload {
  */
 fun isJwtExpiredOrInvalid(jwt: String, refreshPadding: Duration = 0L.seconds): Boolean = runCatching {
 		val payload = decodeClaims(jwt)
-		(payload.exp * 1000) < (GMTDate().timestamp - refreshPadding.inWholeMilliseconds)
+		(payload.exp * 1000) < (Clock.System.now().toEpochMilliseconds() - refreshPadding.inWholeMilliseconds)
 	}.getOrDefault(false)
 
