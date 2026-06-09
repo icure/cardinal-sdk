@@ -52,6 +52,8 @@ interface ModelDoc {
 	variants?: string[];
 	implements?: string[];
 	fields: ModelField[];
+	/** True when this model represents an enum; `fields` then holds the enum constants. */
+	isEnum?: boolean;
 }
 
 interface FilterMethodDoc {
@@ -481,6 +483,91 @@ function parseModelFile(filePath: string, models: Record<string, ModelDoc>) {
 			};
 		}
 	}
+
+	// Extract top-level enum declarations (e.g. UsersStatus, Gender)
+	const enumPattern = /export\s+declare\s+enum\s+(\w+)\s*\{/g;
+	while ((match = enumPattern.exec(content)) !== null) {
+		const enumName = match[1];
+		const body = extractBalancedBlock(content, match.index + match[0].length - 1);
+		if (!models[enumName]) {
+			models[enumName] = {
+				name: enumName,
+				description: "Enumeration.",
+				isEnum: true,
+				fields: extractEnumMembers(body),
+			};
+		}
+	}
+
+	// Extract nested classes/enums declared inside `export declare namespace X { ... }`.
+	// These hold qualified-name types such as `User.SystemMetadata` (login identifiers,
+	// verified email/phone, 2FA flag) and `Enable2faRequest.Algorithm` (TOTP hashing algo).
+	const namespacePattern = /export\s+declare\s+namespace\s+(\w+)\s*\{/g;
+	while ((match = namespacePattern.exec(content)) !== null) {
+		const parent = match[1];
+		const nsBody = extractBalancedBlock(content, match.index + match[0].length - 1);
+
+		const nestedClassPattern = /(?:export\s+)?class\s+(\w+)(?:\s+extends\s+[\w.]+)?(?:\s+implements\s+([\w,\s.]+))?\s*\{/g;
+		let nested;
+		while ((nested = nestedClassPattern.exec(nsBody)) !== null) {
+			const key = `${parent}.${nested[1]}`;
+			const implements_ = nested[2]?.split(",").map(s => s.trim()).filter(Boolean);
+			const fields = extractClassFields(nsBody, nested.index + nested[0].length);
+			if (!models[key]) {
+				models[key] = { name: key, implements: implements_, fields };
+			}
+		}
+
+		const nestedEnumPattern = /(?:export\s+)?enum\s+(\w+)\s*\{/g;
+		while ((nested = nestedEnumPattern.exec(nsBody)) !== null) {
+			const key = `${parent}.${nested[1]}`;
+			const enumBody = extractBalancedBlock(nsBody, nested.index + nested[0].length - 1);
+			if (!models[key]) {
+				models[key] = {
+					name: key,
+					description: "Enumeration.",
+					isEnum: true,
+					fields: extractEnumMembers(enumBody),
+				};
+			}
+		}
+	}
+}
+
+/**
+ * Returns the contents between the matching braces, given the index of the opening `{`.
+ */
+function extractBalancedBlock(content: string, openBraceIdx: number): string {
+	let depth = 0;
+	let i = openBraceIdx;
+	for (; i < content.length; i++) {
+		if (content[i] === "{") depth++;
+		else if (content[i] === "}") {
+			depth--;
+			if (depth === 0) break;
+		}
+	}
+	return content.substring(openBraceIdx + 1, i);
+}
+
+/**
+ * Parses enum constants. Handles both string-valued (`Sha1 = "Sha1"`),
+ * number-valued (`First = 0`), and bare (`First,`) members.
+ */
+function extractEnumMembers(body: string): ModelField[] {
+	const fields: ModelField[] = [];
+	const valued = /(\w+)\s*=\s*("(?:[^"\\]|\\.)*"|'(?:[^'\\]|\\.)*'|-?\d+)/g;
+	let match;
+	while ((match = valued.exec(body)) !== null) {
+		fields.push({ name: match[1], type: match[2], description: "enum constant" });
+	}
+	if (fields.length === 0) {
+		const bare = /(?:^|[\{,])\s*(\w+)\s*(?=[,\}])/g;
+		while ((match = bare.exec(body)) !== null) {
+			fields.push({ name: match[1], type: match[1], description: "enum constant" });
+		}
+	}
+	return fields;
 }
 
 function extractClassFields(content: string, startIdx: number): ModelField[] {
@@ -495,16 +582,33 @@ function extractClassFields(content: string, startIdx: number): ModelField[] {
 	}
 
 	const body = content.substring(startIdx, i - 1);
-	const fieldPattern = /(?:readonly\s+)?(\w+)(\?)?:\s*([^;]+);/g;
+	// Capture an optional leading TSDoc comment so field descriptions (e.g. the
+	// "True if the user has 2fa enabled for login with password" doc on uses2fa)
+	// are preserved instead of discarded.
+	const fieldPattern = /(?:\/\*\*([\s\S]*?)\*\/\s*)?(?:readonly\s+)?(\w+)(\?)?:\s*([^;]+);/g;
 	let match;
 	while ((match = fieldPattern.exec(body)) !== null) {
-		const name = match[1];
-		const type = match[3].trim();
+		const name = match[2];
+		const type = match[4].trim();
 		if (name === "constructor" || name === "__doNotUseOrImplementIt") continue;
-		fields.push({ name, type, description: "" });
+		fields.push({ name, type, description: cleanDocComment(match[1]) });
 	}
 
 	return fields;
+}
+
+/**
+ * Turns a raw TSDoc block body into a single-line description.
+ */
+function cleanDocComment(raw: string | undefined): string {
+	if (!raw) return "";
+	return raw
+		.split("\n")
+		.map(l => l.replace(/^\s*\*\s?/, "").trim())
+		.filter(l => l && !l.startsWith("@"))
+		.join(" ")
+		.replace(/\s+/g, " ")
+		.trim();
 }
 
 function extractInterfaceFields(content: string, startIdx: number): ModelField[] {
