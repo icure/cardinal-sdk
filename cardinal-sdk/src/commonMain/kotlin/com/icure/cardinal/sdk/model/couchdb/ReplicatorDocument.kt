@@ -72,10 +72,6 @@ data class ReplicatorDocument(
 	 * Information about the document revisions.
 	 */
 	public val revsInfo: List<Map<String, String>>? = null,
-	/**
-	 * A map of the document revision history.
-	 */
-	public val revHistory: Map<String, String>? = null,
 ) : Versionable<String> {
 	// region ReplicatorDocument-ReplicatorDocument
 
