@@ -13,6 +13,7 @@ import com.icure.cardinal.sdk.utils.DefaultValue
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.json.JsonNames
 import kotlin.Boolean
+import kotlin.Int
 import kotlin.Long
 import kotlin.String
 import kotlin.collections.List
@@ -109,6 +110,17 @@ data class Group(
 	@JsonNames("applicationId")
 	public val projectId: String? = null,
 	public val templates: TemplatesConfiguration? = null,
+	/**
+	 *
+	 *  The versions of the custom design doc schema applied to the group.
+	 */
+	@param:DefaultValue("emptySet()")
+	public val designDocSchemaVersions: Set<Int> = emptySet(),
+	/**
+	 *
+	 *  The version of the custom design doc schema to apply by default children groups on creation.
+	 */
+	public val defaultChildrenSchemaVersion: Int? = null,
 ) : StoredDocument, HasTags {
 	@Serializable
 	public data class TemplatesConfiguration(
