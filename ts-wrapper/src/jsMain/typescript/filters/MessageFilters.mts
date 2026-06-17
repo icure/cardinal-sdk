@@ -328,7 +328,7 @@ interface MessageFiltersFactory {
 	 *  In-group version of [lifecycleBetweenForDataOwner].
 	 *  The data owner can be from a different group than the group of the user executing the query.
 	 */
-	lifecycleBetweenForDataOwnerInGroupInGroup(dataOwner: EntityReferenceInGroup,
+	lifecycleBetweenForDataOwnerInGroup(dataOwner: EntityReferenceInGroup,
 			startTimestamp: number | undefined, endTimestamp: number | undefined,
 			descending: boolean): BaseFilterOptions<Message>;
 
@@ -441,7 +441,7 @@ export const MessageFilters: MessageFiltersFactory = {
 			byInvoiceIds: (invoiceIds) => InternalMessageFiltersObj.getInstance().byInvoiceIds(invoiceIds),
 			byParentIds: (parentIds) => InternalMessageFiltersObj.getInstance().byParentIds(parentIds),
 			lifecycleBetweenForDataOwner: (dataOwnerId, startTimestamp, endTimestamp, descending) => InternalMessageFiltersObj.getInstance().lifecycleBetweenForDataOwner(dataOwnerId, startTimestamp, endTimestamp, descending),
-			lifecycleBetweenForDataOwnerInGroupInGroup: (dataOwner, startTimestamp, endTimestamp, descending) => InternalMessageFiltersObj.getInstance().lifecycleBetweenForDataOwnerInGroupInGroup(dataOwner, startTimestamp, endTimestamp, descending),
+			lifecycleBetweenForDataOwnerInGroup: (dataOwner, startTimestamp, endTimestamp, descending) => InternalMessageFiltersObj.getInstance().lifecycleBetweenForDataOwnerInGroup(dataOwner, startTimestamp, endTimestamp, descending),
 			lifecycleBetweenForSelf: (startTimestamp, endTimestamp, descending) => InternalMessageFiltersObj.getInstance().lifecycleBetweenForSelf(startTimestamp, endTimestamp, descending),
 			byCodeForDataOwner: (dataOwnerId, codeType, options) => InternalMessageFiltersObj.getInstance().byCodeForDataOwner(dataOwnerId, codeType, options),
 			byCodeForDataOwnerInGroup: (dataOwner, codeType, options) => InternalMessageFiltersObj.getInstance().byCodeForDataOwnerInGroup(dataOwner, codeType, options),

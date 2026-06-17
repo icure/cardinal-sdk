@@ -17,15 +17,6 @@ public fun designDocument_toJs(obj: DesignDocument): DesignDocumentJs {
 	val rev = nullToUndefined(
 		obj.rev
 	)
-	val revHistory = mapToObject(
-		obj.revHistory,
-		{ x1: String ->
-			x1
-		},
-		{ x1: String ->
-			x1
-		},
-	)
 	val language = nullToUndefined(
 		obj.language
 	)
@@ -79,7 +70,6 @@ public fun designDocument_toJs(obj: DesignDocument): DesignDocumentJs {
 	return DesignDocumentJs(js("{" +
 		"id:id," +
 		"rev:rev," +
-		"revHistory:revHistory," +
 		"language:language," +
 		"views:views," +
 		"lists:lists," +
@@ -92,16 +82,6 @@ public fun designDocument_toJs(obj: DesignDocument): DesignDocumentJs {
 public fun designDocument_fromJs(obj: DesignDocumentJs): DesignDocument {
 	val id = obj.id
 	val rev = undefinedToNull(obj.rev)
-	val revHistory = objectToMap(
-		obj.revHistory,
-		"obj.revHistory",
-		{ x1: String ->
-			x1
-		},
-		{ x1: String ->
-			x1
-		},
-	)
 	val language = undefinedToNull(obj.language)
 	val views = objectToMap(
 		obj.views,
@@ -156,7 +136,6 @@ public fun designDocument_fromJs(obj: DesignDocumentJs): DesignDocument {
 	return DesignDocument(
 		id = id,
 		rev = rev,
-		revHistory = revHistory,
 		language = language,
 		views = views,
 		lists = lists,
