@@ -12,6 +12,7 @@ import com.icure.cardinal.sdk.api.CryptoApi
 import com.icure.cardinal.sdk.api.DataOwnerApi
 import com.icure.cardinal.sdk.api.DeviceApi
 import com.icure.cardinal.sdk.api.DocumentApi
+import com.icure.cardinal.sdk.api.FilterApi
 import com.icure.cardinal.sdk.api.FormApi
 import com.icure.cardinal.sdk.api.FrontEndMigrationApi
 import com.icure.cardinal.sdk.api.GroupApi
@@ -38,6 +39,7 @@ import com.icure.cardinal.sdk.api.impl.CodeApiImpl
 import com.icure.cardinal.sdk.api.impl.CryptoApiImpl
 import com.icure.cardinal.sdk.api.impl.DataOwnerApiImpl
 import com.icure.cardinal.sdk.api.impl.DeviceApiImpl
+import com.icure.cardinal.sdk.api.impl.FilterApiImpl
 import com.icure.cardinal.sdk.api.impl.FrontEndMigrationApiImpl
 import com.icure.cardinal.sdk.api.impl.GroupApiImpl
 import com.icure.cardinal.sdk.api.impl.HealthcarePartyApiImpl
@@ -78,6 +80,7 @@ import com.icure.cardinal.sdk.api.raw.impl.RawDeviceApiImpl
 import com.icure.cardinal.sdk.api.raw.impl.RawDocumentApiImpl
 import com.icure.cardinal.sdk.api.raw.impl.RawExchangeDataApiImpl
 import com.icure.cardinal.sdk.api.raw.impl.RawExchangeDataMapApiImpl
+import com.icure.cardinal.sdk.api.raw.impl.RawFilterApiImpl
 import com.icure.cardinal.sdk.api.raw.impl.RawFormApiImpl
 import com.icure.cardinal.sdk.api.raw.impl.RawFrontEndMigrationApiImpl
 import com.icure.cardinal.sdk.api.raw.impl.RawGroupApiImpl
@@ -910,6 +913,16 @@ internal class CardinalSdkImpl(
 			authProvider,
 			config.crypto.headersProvider,
 			config.rawApiConfig,
+		)
+	}
+
+	override val filter: FilterApi by lazy {
+		FilterApiImpl(
+			rawApi = RawFilterApiImpl(
+				apiUrl,
+				authProvider,
+				config.rawApiConfig
+			)
 		)
 	}
 

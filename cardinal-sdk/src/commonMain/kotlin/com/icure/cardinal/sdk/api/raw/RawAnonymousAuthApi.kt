@@ -4,6 +4,7 @@ import com.icure.cardinal.sdk.model.LoginCredentials
 import com.icure.cardinal.sdk.model.security.jwt.JwtResponse
 import com.icure.utils.InternalIcureApi
 import kotlin.Boolean
+import kotlin.Int
 import kotlin.Long
 import kotlin.String
 import kotlin.Unit
@@ -20,6 +21,7 @@ public interface RawAnonymousAuthApi {
 		groupId: String? = null,
 		applicationId: String? = null,
 		scopeDataOwner: String? = null,
+		requestedSchemaVersion: Int? = null,
 	): HttpResponse<JwtResponse>
 
 	suspend fun refresh(
@@ -49,6 +51,7 @@ public interface RawAnonymousAuthApi {
 		groupId: String? = null,
 		applicationId: String? = null,
 		scopeDataOwner: String? = null,
+		requestedSchemaVersion: Int? = null,
 	): HttpResponse<JwtResponse>
 
 	suspend fun loginWithExternalJwt(
@@ -59,6 +62,7 @@ public interface RawAnonymousAuthApi {
 		minimumAuthenticationClass: String? = null,
 		scopeDataOwner: String? = null,
 		doNotUseApplicationIdForGroupSelection: Boolean? = null,
+		requestedSchemaVersion: Int? = null,
 	): HttpResponse<JwtResponse>
 
 	suspend fun loginFas(
@@ -66,6 +70,7 @@ public interface RawAnonymousAuthApi {
 		groupId: String? = null,
 		applicationId: String? = null,
 		scopeDataOwner: String? = null,
+		requestedSchemaVersion: Int? = null,
 	): HttpResponse<JwtResponse>
 
 	suspend fun invalidateRefreshJWT(refreshToken: String): HttpResponse<Unit>

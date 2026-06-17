@@ -44,6 +44,7 @@ import kotlin.String
 import kotlin.Unit
 import kotlin.collections.List
 import kotlin.collections.Map
+import kotlin.collections.Set
 
 // WARNING: This class is auto-generated. If you change it manually, your changes will be lost.
 // If you want to change the way this class is generated, see [this repo](https://github.com/icure/sdk-codegen).
@@ -83,6 +84,58 @@ class RawGroupApiImpl(
 			accept(Application.Json)
 			`header`("password", password)
 			setBody(initialisationData)
+		}.wrap()
+
+	override suspend fun createApplicationGroup(
+		id: String,
+		name: String,
+		server: String?,
+		q: Int?,
+		n: Int?,
+		superGroup: String?,
+		minimumKrakenVersion: String?,
+		applicationId: String?,
+	): HttpResponse<Group> =
+		post(authProvider) {
+			url {
+				takeFrom(apiUrl)
+				appendPathSegments("rest", "v2", "group", id, "application")
+				parameter("name", name)
+				parameter("server", server)
+				parameter("q", q)
+				parameter("n", n)
+				parameter("superGroup", superGroup)
+				parameter("minimumKrakenVersion", minimumKrakenVersion)
+				parameter("applicationId", applicationId)
+			}
+			contentType(Application.Json)
+			accept(Application.Json)
+		}.wrap()
+
+	override suspend fun createDatabaseGroup(
+		id: String,
+		name: String,
+		server: String?,
+		q: Int?,
+		n: Int?,
+		superGroup: String?,
+		minimumKrakenVersion: String?,
+		applicationId: String?,
+	): HttpResponse<Group> =
+		post(authProvider) {
+			url {
+				takeFrom(apiUrl)
+				appendPathSegments("rest", "v2", "group", id, "database")
+				parameter("name", name)
+				parameter("server", server)
+				parameter("q", q)
+				parameter("n", n)
+				parameter("superGroup", superGroup)
+				parameter("minimumKrakenVersion", minimumKrakenVersion)
+				parameter("applicationId", applicationId)
+			}
+			contentType(Application.Json)
+			accept(Application.Json)
 		}.wrap()
 
 	override suspend fun registerNewGroupAdministrator(
@@ -517,6 +570,62 @@ class RawGroupApiImpl(
 			contentType(Application.Json)
 			accept(Application.Json)
 			setBodyWithSerializer(GroupAbstractFilterSerializer, filter)
+		}.wrap()
+
+	override suspend fun uniqueSchemaVersionsForApplicationGroup(applicationGroupId: String): HttpResponse<Set<Int>> =
+		get(authProvider) {
+			url {
+				takeFrom(apiUrl)
+				appendPathSegments("rest", "v2", "group", applicationGroupId, "schemaVersions")
+				parameter("ts", GMTDate().timestamp)
+			}
+			accept(Application.Json)
+		}.wrap()
+
+	override suspend fun setDefaultChildrenSchemaVersion(
+		applicationGroupId: String,
+		schemaVersion: Int,
+	): HttpResponse<Group> =
+		post(authProvider) {
+			url {
+				takeFrom(apiUrl)
+				appendPathSegments("rest", "v2", "group", applicationGroupId, "defaultSchemaVersion")
+				parameter("schemaVersion", schemaVersion)
+			}
+			contentType(Application.Json)
+			accept(Application.Json)
+		}.wrap()
+
+	override suspend fun addSchemaVersionOnGroups(
+		applicationGroupId: String,
+		schemaVersion: Int,
+		groupIds: ListOfIds,
+	): HttpResponse<List<Group>> =
+		post(authProvider) {
+			url {
+				takeFrom(apiUrl)
+				appendPathSegments("rest", "v2", "group", "schema", applicationGroupId, "add", "$schemaVersion")
+			}
+			contentType(Application.Json)
+			accept(Application.Json)
+			setBody(groupIds)
+		}.wrap()
+
+	override suspend fun removeSchemaVersionOnGroups(
+		applicationGroupId: String,
+		schemaVersion: Int,
+		force: Boolean,
+		groupIds: ListOfIds,
+	): HttpResponse<List<Group>> =
+		post(authProvider) {
+			url {
+				takeFrom(apiUrl)
+				appendPathSegments("rest", "v2", "group", "schema", applicationGroupId, "remove", "$schemaVersion")
+				parameter("force", force)
+			}
+			contentType(Application.Json)
+			accept(Application.Json)
+			setBody(groupIds)
 		}.wrap()
 
 	// endregion

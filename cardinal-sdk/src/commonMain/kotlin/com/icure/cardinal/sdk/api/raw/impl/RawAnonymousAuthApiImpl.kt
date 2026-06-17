@@ -19,6 +19,7 @@ import io.ktor.http.contentType
 import io.ktor.http.takeFrom
 import io.ktor.util.date.GMTDate
 import kotlin.Boolean
+import kotlin.Int
 import kotlin.Long
 import kotlin.String
 import kotlin.Unit
@@ -38,6 +39,7 @@ class RawAnonymousAuthApiImpl(
 		groupId: String?,
 		applicationId: String?,
 		scopeDataOwner: String?,
+		requestedSchemaVersion: Int?,
 	): HttpResponse<JwtResponse> =
 		post {
 			url {
@@ -50,6 +52,7 @@ class RawAnonymousAuthApiImpl(
 			}
 			contentType(Application.Json)
 			accept(Application.Json)
+			`header`("Schema-Version", requestedSchemaVersion)
 			setBody(loginCredentials)
 		}.wrap()
 
@@ -126,6 +129,7 @@ class RawAnonymousAuthApiImpl(
 		groupId: String?,
 		applicationId: String?,
 		scopeDataOwner: String?,
+		requestedSchemaVersion: Int?,
 	): HttpResponse<JwtResponse> =
 		post {
 			url {
@@ -138,6 +142,7 @@ class RawAnonymousAuthApiImpl(
 			contentType(Application.Json)
 			accept(Application.Json)
 			`header`("token", token)
+			`header`("Schema-Version", requestedSchemaVersion)
 		}.wrap()
 
 	override suspend fun loginWithExternalJwt(
@@ -148,6 +153,7 @@ class RawAnonymousAuthApiImpl(
 		minimumAuthenticationClass: String?,
 		scopeDataOwner: String?,
 		doNotUseApplicationIdForGroupSelection: Boolean?,
+		requestedSchemaVersion: Int?,
 	): HttpResponse<JwtResponse> =
 		post {
 			url {
@@ -162,6 +168,7 @@ class RawAnonymousAuthApiImpl(
 			contentType(Application.Json)
 			accept(Application.Json)
 			`header`("token", token)
+			`header`("Schema-Version", requestedSchemaVersion)
 		}.wrap()
 
 	override suspend fun loginFas(
@@ -169,6 +176,7 @@ class RawAnonymousAuthApiImpl(
 		groupId: String?,
 		applicationId: String?,
 		scopeDataOwner: String?,
+		requestedSchemaVersion: Int?,
 	): HttpResponse<JwtResponse> =
 		post {
 			url {
@@ -181,6 +189,7 @@ class RawAnonymousAuthApiImpl(
 			contentType(Application.Json)
 			accept(Application.Json)
 			`header`("token", token)
+			`header`("Schema-Version", requestedSchemaVersion)
 		}.wrap()
 
 	override suspend fun invalidateRefreshJWT(refreshToken: String): HttpResponse<Unit> =

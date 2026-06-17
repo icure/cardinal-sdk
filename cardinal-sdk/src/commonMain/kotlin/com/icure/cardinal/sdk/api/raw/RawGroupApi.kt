@@ -28,6 +28,7 @@ import kotlin.String
 import kotlin.Unit
 import kotlin.collections.List
 import kotlin.collections.Map
+import kotlin.collections.Set
 
 // WARNING: This class is auto-generated. If you change it manually, your changes will be lost.
 // If you want to change the way this class is generated, see [this repo](https://github.com/icure/sdk-codegen).
@@ -46,6 +47,28 @@ public interface RawGroupApi {
 		superGroup: String? = null,
 		applicationId: String? = null,
 		initialisationData: DatabaseInitialisation,
+	): HttpResponse<Group>
+
+	suspend fun createApplicationGroup(
+		id: String,
+		name: String,
+		server: String? = null,
+		q: Int? = null,
+		n: Int? = null,
+		superGroup: String? = null,
+		minimumKrakenVersion: String? = null,
+		applicationId: String? = null,
+	): HttpResponse<Group>
+
+	suspend fun createDatabaseGroup(
+		id: String,
+		name: String,
+		server: String? = null,
+		q: Int? = null,
+		n: Int? = null,
+		superGroup: String? = null,
+		minimumKrakenVersion: String? = null,
+		applicationId: String? = null,
 	): HttpResponse<Group>
 
 	suspend fun registerNewGroupAdministrator(
@@ -187,5 +210,25 @@ public interface RawGroupApi {
 	suspend fun listAllGroupsIds(): HttpResponse<List<DocIdentifier>>
 
 	suspend fun matchGroupsBy(filter: AbstractFilter<Group>): HttpResponse<List<String>>
+
+	suspend fun uniqueSchemaVersionsForApplicationGroup(applicationGroupId: String): HttpResponse<Set<Int>>
+
+	suspend fun setDefaultChildrenSchemaVersion(
+		applicationGroupId: String,
+		schemaVersion: Int,
+	): HttpResponse<Group>
+
+	suspend fun addSchemaVersionOnGroups(
+		applicationGroupId: String,
+		schemaVersion: Int,
+		groupIds: ListOfIds,
+	): HttpResponse<List<Group>>
+
+	suspend fun removeSchemaVersionOnGroups(
+		applicationGroupId: String,
+		schemaVersion: Int,
+		force: Boolean,
+		groupIds: ListOfIds,
+	): HttpResponse<List<Group>>
 	// endregion
 }
