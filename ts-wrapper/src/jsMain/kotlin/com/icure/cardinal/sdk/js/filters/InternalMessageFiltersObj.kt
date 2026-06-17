@@ -561,7 +561,7 @@ public object InternalMessageFiltersObj {
 		return BaseFilterOptionsJsImpl(result)
 	}
 
-	public fun lifecycleBetweenForDataOwnerInGroupInGroup(
+	public fun lifecycleBetweenForDataOwnerInGroup(
 		dataOwner: EntityReferenceInGroupJs,
 		startTimestamp: Double?,
 		endTimestamp: Double?,

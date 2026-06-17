@@ -27,12 +27,6 @@ export class DesignDocument {
 
 	/**
 	 *
-	 *  A map of revision history entries.
-	 */
-	revHistory: { [ key: string ]: string } = {};
-
-	/**
-	 *
 	 *  The programming language used for the design document functions.
 	 */
 	language: string | undefined = undefined;
@@ -70,7 +64,6 @@ export class DesignDocument {
 	constructor(partial: Partial<DesignDocument>) {
 		this.id = partial.id ?? randomUuid();
 		if ('rev' in partial) this.rev = partial.rev;
-		if ('revHistory' in partial && partial.revHistory !== undefined) this.revHistory = partial.revHistory;
 		if ('language' in partial) this.language = partial.language;
 		if ('views' in partial && partial.views !== undefined) this.views = partial.views;
 		if ('lists' in partial && partial.lists !== undefined) this.lists = partial.lists;
@@ -83,7 +76,6 @@ export class DesignDocument {
 		const res: { [k: string]: any } = {}
 		res['id'] = this.id
 		if (this.rev != undefined) res['rev'] = this.rev
-		res['revHistory'] = Object.fromEntries(Object.entries(this.revHistory).map(([k0, v0]) => [k0, v0]))
 		if (this.language != undefined) res['language'] = this.language
 		res['views'] = Object.fromEntries(Object.entries(this.views).map(([k0, v0]) => [k0, v0.toJSON()]))
 		res['lists'] = Object.fromEntries(Object.entries(this.lists).map(([k0, v0]) => [k0, v0]))
@@ -100,13 +92,6 @@ export class DesignDocument {
 		const res = new DesignDocument({
 			id: expectString(extractEntry(jCpy, 'id', true, path), false, [...path, ".id"]),
 			rev: expectString(extractEntry(jCpy, 'rev', false, path), true, [...path, ".rev"]),
-			revHistory: expectMap(
-				extractEntry(jCpy, 'revHistory', false, path),
-				false,
-				[...path, ".revHistory"],
-				(k0, p0) => expectString(k0, false, p0),
-				(v0, p0) => expectString(v0, false, p0)
-			),
 			language: expectString(extractEntry(jCpy, 'language', false, path), true, [...path, ".language"]),
 			views: expectMap(
 				extractEntry(jCpy, 'views', false, path),

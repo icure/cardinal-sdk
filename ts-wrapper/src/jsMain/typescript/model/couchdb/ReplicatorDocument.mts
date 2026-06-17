@@ -92,12 +92,6 @@ export class ReplicatorDocument implements Versionable<string> {
 	 */
 	revsInfo: Array<{ [ key: string ]: string }> | undefined = undefined;
 
-	/**
-	 *
-	 *  A map of the document revision history.
-	 */
-	revHistory: { [ key: string ]: string } | undefined = undefined;
-
 	constructor(partial: Partial<ReplicatorDocument>) {
 		this.id = partial.id ?? randomUuid();
 		if ('rev' in partial) this.rev = partial.rev;
@@ -112,7 +106,6 @@ export class ReplicatorDocument implements Versionable<string> {
 		if ('replicationStats' in partial) this.replicationStats = partial.replicationStats;
 		if ('errorCount' in partial) this.errorCount = partial.errorCount;
 		if ('revsInfo' in partial) this.revsInfo = partial.revsInfo;
-		if ('revHistory' in partial) this.revHistory = partial.revHistory;
 	}
 
 	toJSON(): object {
@@ -130,7 +123,6 @@ export class ReplicatorDocument implements Versionable<string> {
 		if (this.replicationStats != undefined) res['replicationStats'] = this.replicationStats.toJSON()
 		if (this.errorCount != undefined) res['errorCount'] = this.errorCount
 		if (this.revsInfo != undefined) res['revsInfo'] = this.revsInfo.map((x0) => Object.fromEntries(Object.entries(x0).map(([k1, v1]) => [k1, v1])) )
-		if (this.revHistory != undefined) res['revHistory'] = Object.fromEntries(Object.entries(this.revHistory).map(([k0, v0]) => [k0, v0]))
 		return res
 	}
 
@@ -158,13 +150,6 @@ export class ReplicatorDocument implements Versionable<string> {
 				(k1, p1) => expectString(k1, false, p1),
 				(v1, p1) => expectString(v1, false, p1)
 			)),
-			revHistory: expectMap(
-				extractEntry(jCpy, 'revHistory', false, path),
-				true,
-				[...path, ".revHistory"],
-				(k0, p0) => expectString(k0, false, p0),
-				(v0, p0) => expectString(v0, false, p0)
-			),
 		})
 		if (!ignoreUnknownKeys) {
 			const unused = Object.keys(jCpy)
