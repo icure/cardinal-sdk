@@ -38,7 +38,7 @@ internal data class JwtPayload(
 		if (tokenAuthenticationClass == null || tokenAuthenticationClass < authenticationClass.level) return false
 		val issuedTime = exp - (duration ?: DEFAULT_DURATION_SECONDS) * 1000
 		val tokenAgeMs = Clock.System.now().toEpochMilliseconds() - issuedTime
-		return tokenAgeMs < (MAXIMUM_ELEVATED_SECURITY_LIFETIME_MILLIS - padding.inWholeMilliseconds)
+		return tokenAgeMs < (MAXIMUM_ELEVATED_SECURITY_LIFETIME_MILLIS + padding.inWholeMilliseconds)
 	}
 }
 
