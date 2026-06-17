@@ -26,7 +26,6 @@ import com.icure.cardinal.sdk.test.testGroupAdminAuth
 import com.icure.cardinal.sdk.test.testGroupId
 import com.icure.cardinal.sdk.test.uuid
 import com.icure.cardinal.sdk.utils.DEFAULT_ENABLED
-import com.icure.cardinal.sdk.utils.RequestStatusException
 import com.icure.kotp.ShaVersion
 import com.icure.kotp.Totp
 import com.icure.kryptom.crypto.HmacAlgorithm
@@ -223,7 +222,15 @@ class SmartAuthTest : StringSpec({
 		val totpSecret = Totp.generateTOTPSecret(32, HmacAlgorithm.HmacSha256)
 		val totp = Totp(secret = totpSecret, shaVersion = ShaVersion.Sha256)
 		val userPwd = uuid()
-		adminUserApi.enable2faForUser(initialUser.id, Enable2faRequest(totpSecret, otpLength)).successBody()
+		adminUserApi.enable2faForUser(
+			userId = initialUser.id,
+			request = Enable2faRequest(
+				secret = totpSecret,
+				otpLength = otpLength,
+				otp = totp.generate(digits = otpLength),
+				algorithm = Enable2faRequest.Algorithm.Sha256
+			)
+		).successBody()
 		val userWithPwdAnd2fa = adminUserApi.modifyUser(
 			initialUser.copy(
 				passwordHash = userPwd,
@@ -292,7 +299,15 @@ class SmartAuthTest : StringSpec({
 		val totpSecret = Totp.generateTOTPSecret(32, HmacAlgorithm.HmacSha256)
 		val totp = Totp(secret = totpSecret, shaVersion = ShaVersion.Sha256)
 		val userPwd = uuid()
-		adminUserApi.enable2faForUser(initialUser.id, Enable2faRequest(totpSecret, otpLength))
+		adminUserApi.enable2faForUser(
+			userId = initialUser.id,
+			request = Enable2faRequest(
+				secret = totpSecret,
+				otpLength = otpLength,
+				otp = totp.generate(digits = otpLength),
+				algorithm = Enable2faRequest.Algorithm.Sha256
+			)
+		)
 		val userWithPwdAnd2fa = adminUserApi.modifyUser(
 			initialUser.copy(
 				passwordHash = userPwd,

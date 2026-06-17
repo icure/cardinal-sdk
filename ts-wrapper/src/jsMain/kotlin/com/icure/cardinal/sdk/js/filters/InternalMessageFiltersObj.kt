@@ -571,7 +571,7 @@ public object InternalMessageFiltersObj {
 		val startTimestampConverted: Long? = numberToLong(startTimestamp, "startTimestamp")
 		val endTimestampConverted: Long? = numberToLong(endTimestamp, "endTimestamp")
 		val descendingConverted: Boolean = descending
-		val result = MessageFilters.lifecycleBetweenForDataOwnerInGroupInGroup(
+		val result = MessageFilters.lifecycleBetweenForDataOwnerInGroup(
 			dataOwnerConverted,
 			startTimestampConverted,
 			endTimestampConverted,
