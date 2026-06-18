@@ -41,6 +41,4 @@ public external class ReplicatorDocumentJs(
 	public val errorCount: Double?
 
 	public val revsInfo: Array<Record<String, String>>?
-
-	public val revHistory: Record<String, String>?
 }

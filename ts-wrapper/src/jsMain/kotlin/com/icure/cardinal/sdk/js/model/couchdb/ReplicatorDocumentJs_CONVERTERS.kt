@@ -8,7 +8,6 @@ import com.icure.cardinal.sdk.js.model.CheckedConverters.mapToObject
 import com.icure.cardinal.sdk.js.model.CheckedConverters.nullToUndefined
 import com.icure.cardinal.sdk.js.model.CheckedConverters.numberToInt
 import com.icure.cardinal.sdk.js.model.CheckedConverters.objectToMap
-import com.icure.cardinal.sdk.js.model.CheckedConverters.objectToMapNullsafe
 import com.icure.cardinal.sdk.js.model.CheckedConverters.stringToZonedDateTime
 import com.icure.cardinal.sdk.js.model.CheckedConverters.undefinedToNull
 import com.icure.cardinal.sdk.js.model.CheckedConverters.zonedDateTimeToString
@@ -81,17 +80,6 @@ public fun replicatorDocument_toJs(obj: ReplicatorDocument): ReplicatorDocumentJ
 			},
 		)
 	)
-	val revHistory = nullToUndefined(
-		mapToObject(
-			obj.revHistory,
-			{ x1: String ->
-				x1
-			},
-			{ x1: String ->
-				x1
-			},
-		)
-	)
 	return ReplicatorDocumentJs(js("{" +
 		"id:id," +
 		"rev:rev," +
@@ -105,8 +93,7 @@ public fun replicatorDocument_toJs(obj: ReplicatorDocument): ReplicatorDocumentJ
 		"replicationStateTime:replicationStateTime," +
 		"replicationStats:replicationStats," +
 		"errorCount:errorCount," +
-		"revsInfo:revsInfo," +
-		"revHistory:revHistory" +
+		"revsInfo:revsInfo" +
 	"}"))
 }
 
@@ -152,16 +139,6 @@ public fun replicatorDocument_fromJs(obj: ReplicatorDocumentJs): ReplicatorDocum
 			)
 		},
 	)
-	val revHistory = objectToMapNullsafe(
-		obj.revHistory,
-		"obj.revHistory",
-		{ x1: String ->
-			x1
-		},
-		{ x1: String ->
-			x1
-		},
-	)
 	return ReplicatorDocument(
 		id = id,
 		rev = rev,
@@ -176,6 +153,5 @@ public fun replicatorDocument_fromJs(obj: ReplicatorDocumentJs): ReplicatorDocum
 		replicationStats = replicationStats,
 		errorCount = errorCount,
 		revsInfo = revsInfo,
-		revHistory = revHistory,
 	)
 }

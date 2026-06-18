@@ -16,8 +16,6 @@ public external class DesignDocumentJs(
 
 	public val rev: String?
 
-	public val revHistory: Record<String, String>
-
 	public val language: String?
 
 	public val views: Record<String, ViewJs>

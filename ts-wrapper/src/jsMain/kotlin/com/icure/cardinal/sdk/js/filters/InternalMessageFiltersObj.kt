@@ -561,7 +561,7 @@ public object InternalMessageFiltersObj {
 		return BaseFilterOptionsJsImpl(result)
 	}
 
-	public fun lifecycleBetweenForDataOwnerInGroupInGroup(
+	public fun lifecycleBetweenForDataOwnerInGroup(
 		dataOwner: EntityReferenceInGroupJs,
 		startTimestamp: Double?,
 		endTimestamp: Double?,
@@ -571,7 +571,7 @@ public object InternalMessageFiltersObj {
 		val startTimestampConverted: Long? = numberToLong(startTimestamp, "startTimestamp")
 		val endTimestampConverted: Long? = numberToLong(endTimestamp, "endTimestamp")
 		val descendingConverted: Boolean = descending
-		val result = MessageFilters.lifecycleBetweenForDataOwnerInGroupInGroup(
+		val result = MessageFilters.lifecycleBetweenForDataOwnerInGroup(
 			dataOwnerConverted,
 			startTimestampConverted,
 			endTimestampConverted,

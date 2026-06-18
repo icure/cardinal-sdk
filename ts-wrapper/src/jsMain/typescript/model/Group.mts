@@ -130,6 +130,20 @@ export class Group implements StoredDocument, HasTags {
 
 	templates: Group.TemplatesConfiguration | undefined = undefined;
 
+	/**
+	 *
+	 *
+	 *   The versions of the custom design doc schema applied to the group.
+	 */
+	designDocSchemaVersions: Array<number> = [];
+
+	/**
+	 *
+	 *
+	 *   The version of the custom design doc schema to apply by default children groups on creation.
+	 */
+	defaultChildrenSchemaVersion: number | undefined = undefined;
+
 	constructor(partial: Partial<Group> & Pick<Group, "minimumAuthenticationClassForElevatedPrivileges">) {
 		this.id = partial.id ?? randomUuid();
 		if ('rev' in partial) this.rev = partial.rev;
@@ -150,6 +164,8 @@ export class Group implements StoredDocument, HasTags {
 		if ('superGroup' in partial) this.superGroup = partial.superGroup;
 		if ('projectId' in partial) this.projectId = partial.projectId;
 		if ('templates' in partial) this.templates = partial.templates;
+		if ('designDocSchemaVersions' in partial && partial.designDocSchemaVersions !== undefined) this.designDocSchemaVersions = partial.designDocSchemaVersions;
+		if ('defaultChildrenSchemaVersion' in partial) this.defaultChildrenSchemaVersion = partial.defaultChildrenSchemaVersion;
 	}
 
 	toJSON(): object {
@@ -173,6 +189,8 @@ export class Group implements StoredDocument, HasTags {
 		if (this.superGroup != undefined) res['superGroup'] = this.superGroup
 		if (this.projectId != undefined) res['projectId'] = this.projectId
 		if (this.templates != undefined) res['templates'] = this.templates.toJSON()
+		res['designDocSchemaVersions'] = this.designDocSchemaVersions.map((x0) => x0 )
+		if (this.defaultChildrenSchemaVersion != undefined) res['defaultChildrenSchemaVersion'] = this.defaultChildrenSchemaVersion
 		return res
 	}
 
@@ -224,6 +242,8 @@ export class Group implements StoredDocument, HasTags {
 			superGroup: expectString(extractEntry(jCpy, 'superGroup', false, path), true, [...path, ".superGroup"]),
 			projectId: expectString(extractEntry(jCpy, 'projectId', false, path), true, [...path, ".projectId"]),
 			templates: expectObject(extractEntry(jCpy, 'templates', false, path), true, ignoreUnknownKeys, [...path, ".templates"], Group.TemplatesConfiguration.fromJSON),
+			designDocSchemaVersions: expectArray(extractEntry(jCpy, 'designDocSchemaVersions', false, path), false, [...path, ".designDocSchemaVersions"], (x0, p0) => expectNumber(x0, false, true, p0)),
+			defaultChildrenSchemaVersion: expectNumber(extractEntry(jCpy, 'defaultChildrenSchemaVersion', false, path), true, true, [...path, ".defaultChildrenSchemaVersion"]),
 		})
 		if (!ignoreUnknownKeys) {
 			const unused = Object.keys(jCpy)

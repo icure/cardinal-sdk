@@ -24,11 +24,6 @@ data class DesignDocument(
 	 */
 	public val rev: String? = null,
 	/**
-	 * A map of revision history entries.
-	 */
-	@param:DefaultValue("emptyMap()")
-	public val revHistory: Map<String, String> = emptyMap(),
-	/**
 	 * The programming language used for the design document functions.
 	 */
 	public val language: String? = null,

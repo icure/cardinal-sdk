@@ -485,7 +485,7 @@ object MessageFilters {
 	 * In-group version of [lifecycleBetweenForDataOwner].
 	 * The data owner can be from a different group than the group of the user executing the query.
 	 */
-	fun lifecycleBetweenForDataOwnerInGroupInGroup(
+	fun lifecycleBetweenForDataOwnerInGroup(
 		dataOwner: EntityReferenceInGroup,
 		startTimestamp: Long?,
 		endTimestamp: Long?,
