@@ -25,5 +25,6 @@ data class FilterDefinition(
 	public val views: List<String> = emptyList(),
 ) {
 	// region FilterDefinition-FilterDefinition
+
 	// endregion
 }
