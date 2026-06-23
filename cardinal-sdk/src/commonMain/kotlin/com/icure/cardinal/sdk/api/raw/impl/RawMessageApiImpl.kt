@@ -460,7 +460,8 @@ class RawMessageApiImpl(
 		get(authProvider) {
 			url {
 				takeFrom(apiUrl)
-				appendPathSegments("rest", "v2", "message", "conflicts", entityId)
+				appendPathSegments("rest", "v2", "message", "conflicts", "of")
+				parameter("entityId", entityId)
 				parameter("ts", GMTDate().timestamp)
 			}
 			accept(Application.Json)
@@ -718,7 +719,8 @@ class RawMessageApiImpl(
 		get(authProvider) {
 			url {
 				takeFrom(apiUrl)
-				appendPathSegments("rest", "v2", "message", "inGroup", groupId, "conflicts", entityId)
+				appendPathSegments("rest", "v2", "message", "inGroup", groupId, "conflicts", "of")
+				parameter("entityId", entityId)
 				parameter("ts", GMTDate().timestamp)
 			}
 			accept(Application.Json)

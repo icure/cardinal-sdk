@@ -596,7 +596,8 @@ class RawInvoiceApiImpl(
 		get(authProvider) {
 			url {
 				takeFrom(apiUrl)
-				appendPathSegments("rest", "v2", "invoice", "conflicts", entityId)
+				appendPathSegments("rest", "v2", "invoice", "conflicts", "of")
+				parameter("entityId", entityId)
 				parameter("ts", GMTDate().timestamp)
 			}
 			accept(Application.Json)
@@ -843,7 +844,8 @@ class RawInvoiceApiImpl(
 		get(authProvider) {
 			url {
 				takeFrom(apiUrl)
-				appendPathSegments("rest", "v2", "invoice", "inGroup", groupId, "conflicts", entityId)
+				appendPathSegments("rest", "v2", "invoice", "inGroup", groupId, "conflicts", "of")
+				parameter("entityId", entityId)
 				parameter("ts", GMTDate().timestamp)
 			}
 			accept(Application.Json)

@@ -215,7 +215,8 @@ class RawPlaceApiImpl(
 		get(authProvider) {
 			url {
 				takeFrom(apiUrl)
-				appendPathSegments("rest", "v2", "place", "conflicts", entityId)
+				appendPathSegments("rest", "v2", "place", "conflicts", "of")
+				parameter("entityId", entityId)
 				parameter("ts", GMTDate().timestamp)
 			}
 			accept(Application.Json)
@@ -432,7 +433,8 @@ class RawPlaceApiImpl(
 		get(authProvider) {
 			url {
 				takeFrom(apiUrl)
-				appendPathSegments("rest", "v2", "place", "inGroup", groupId, "conflicts", entityId)
+				appendPathSegments("rest", "v2", "place", "inGroup", groupId, "conflicts", "of")
+				parameter("entityId", entityId)
 				parameter("ts", GMTDate().timestamp)
 			}
 			accept(Application.Json)

@@ -239,7 +239,8 @@ class RawAgendaApiImpl(
 		get(authProvider) {
 			url {
 				takeFrom(apiUrl)
-				appendPathSegments("rest", "v2", "agenda", "conflicts", entityId)
+				appendPathSegments("rest", "v2", "agenda", "conflicts", "of")
+				parameter("entityId", entityId)
 				parameter("ts", GMTDate().timestamp)
 			}
 			accept(Application.Json)
@@ -470,7 +471,8 @@ class RawAgendaApiImpl(
 		get(authProvider) {
 			url {
 				takeFrom(apiUrl)
-				appendPathSegments("rest", "v2", "agenda", "inGroup", groupId, "conflicts", entityId)
+				appendPathSegments("rest", "v2", "agenda", "inGroup", groupId, "conflicts", "of")
+				parameter("entityId", entityId)
 				parameter("ts", GMTDate().timestamp)
 			}
 			accept(Application.Json)
