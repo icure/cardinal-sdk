@@ -374,7 +374,8 @@ class RawHealthcarePartyApiImpl(
 		get(authProvider) {
 			url {
 				takeFrom(apiUrl)
-				appendPathSegments("rest", "v2", "hcparty", "conflicts", entityId)
+				appendPathSegments("rest", "v2", "hcparty", "conflicts", "of")
+				parameter("entityId", entityId)
 				parameter("ts", GMTDate().timestamp)
 			}
 			accept(Application.Json)
@@ -669,7 +670,8 @@ class RawHealthcarePartyApiImpl(
 		get(authProvider) {
 			url {
 				takeFrom(apiUrl)
-				appendPathSegments("rest", "v2", "hcparty", "inGroup", groupId, "conflicts", entityId)
+				appendPathSegments("rest", "v2", "hcparty", "inGroup", groupId, "conflicts", "of")
+				parameter("entityId", entityId)
 				parameter("ts", GMTDate().timestamp)
 			}
 			accept(Application.Json)

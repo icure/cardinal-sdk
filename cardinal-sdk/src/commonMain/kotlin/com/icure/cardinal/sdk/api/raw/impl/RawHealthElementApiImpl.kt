@@ -304,7 +304,8 @@ class RawHealthElementApiImpl(
 		get(authProvider) {
 			url {
 				takeFrom(apiUrl)
-				appendPathSegments("rest", "v2", "helement", "conflicts", entityId)
+				appendPathSegments("rest", "v2", "helement", "conflicts", "of")
+				parameter("entityId", entityId)
 				parameter("ts", GMTDate().timestamp)
 			}
 			accept(Application.Json)
@@ -560,7 +561,8 @@ class RawHealthElementApiImpl(
 		get(authProvider) {
 			url {
 				takeFrom(apiUrl)
-				appendPathSegments("rest", "v2", "helement", "inGroup", groupId, "conflicts", entityId)
+				appendPathSegments("rest", "v2", "helement", "inGroup", groupId, "conflicts", "of")
+				parameter("entityId", entityId)
 				parameter("ts", GMTDate().timestamp)
 			}
 			accept(Application.Json)

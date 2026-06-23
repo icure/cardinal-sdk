@@ -519,7 +519,8 @@ class RawFormApiImpl(
 		get(authProvider) {
 			url {
 				takeFrom(apiUrl)
-				appendPathSegments("rest", "v2", "form", "conflicts", entityId)
+				appendPathSegments("rest", "v2", "form", "conflicts", "of")
+				parameter("entityId", entityId)
 				parameter("ts", GMTDate().timestamp)
 			}
 			accept(Application.Json)
@@ -992,7 +993,8 @@ class RawFormApiImpl(
 		get(authProvider) {
 			url {
 				takeFrom(apiUrl)
-				appendPathSegments("rest", "v2", "form", "inGroup", groupId, "conflicts", entityId)
+				appendPathSegments("rest", "v2", "form", "inGroup", groupId, "conflicts", "of")
+				parameter("entityId", entityId)
 				parameter("ts", GMTDate().timestamp)
 			}
 			accept(Application.Json)

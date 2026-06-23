@@ -474,7 +474,8 @@ class RawTopicApiImpl(
 		get(authProvider) {
 			url {
 				takeFrom(apiUrl)
-				appendPathSegments("rest", "v2", "topic", "conflicts", entityId)
+				appendPathSegments("rest", "v2", "topic", "conflicts", "of")
+				parameter("entityId", entityId)
 				parameter("ts", GMTDate().timestamp)
 			}
 			accept(Application.Json)
@@ -521,7 +522,8 @@ class RawTopicApiImpl(
 		get(authProvider) {
 			url {
 				takeFrom(apiUrl)
-				appendPathSegments("rest", "v2", "topic", "inGroup", groupId, "conflicts", entityId)
+				appendPathSegments("rest", "v2", "topic", "inGroup", groupId, "conflicts", "of")
+				parameter("entityId", entityId)
 				parameter("ts", GMTDate().timestamp)
 			}
 			accept(Application.Json)

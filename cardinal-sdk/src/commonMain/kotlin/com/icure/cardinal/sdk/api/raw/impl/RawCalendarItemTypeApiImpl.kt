@@ -242,7 +242,8 @@ class RawCalendarItemTypeApiImpl(
 		get(authProvider) {
 			url {
 				takeFrom(apiUrl)
-				appendPathSegments("rest", "v2", "calendarItemType", "conflicts", entityId)
+				appendPathSegments("rest", "v2", "calendarItemType", "conflicts", "of")
+				parameter("entityId", entityId)
 				parameter("ts", GMTDate().timestamp)
 			}
 			accept(Application.Json)
@@ -461,7 +462,8 @@ class RawCalendarItemTypeApiImpl(
 		get(authProvider) {
 			url {
 				takeFrom(apiUrl)
-				appendPathSegments("rest", "v2", "calendarItemType", "inGroup", groupId, "conflicts", entityId)
+				appendPathSegments("rest", "v2", "calendarItemType", "inGroup", groupId, "conflicts", "of")
+				parameter("entityId", entityId)
 				parameter("ts", GMTDate().timestamp)
 			}
 			accept(Application.Json)

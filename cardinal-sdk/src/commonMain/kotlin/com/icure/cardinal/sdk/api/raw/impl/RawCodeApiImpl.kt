@@ -413,7 +413,8 @@ class RawCodeApiImpl(
 		get(authProvider) {
 			url {
 				takeFrom(apiUrl)
-				appendPathSegments("rest", "v2", "code", "conflicts", entityId)
+				appendPathSegments("rest", "v2", "code", "conflicts", "of")
+				parameter("entityId", entityId)
 				parameter("ts", GMTDate().timestamp)
 			}
 			accept(Application.Json)
@@ -644,7 +645,8 @@ class RawCodeApiImpl(
 		get(authProvider) {
 			url {
 				takeFrom(apiUrl)
-				appendPathSegments("rest", "v2", "code", "inGroup", groupId, "conflicts", entityId)
+				appendPathSegments("rest", "v2", "code", "inGroup", groupId, "conflicts", "of")
+				parameter("entityId", entityId)
 				parameter("ts", GMTDate().timestamp)
 			}
 			accept(Application.Json)
