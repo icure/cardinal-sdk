@@ -14,6 +14,7 @@ import com.icure.cardinal.sdk.model.User
 import com.icure.cardinal.sdk.model.UserGroup
 import com.icure.cardinal.sdk.model.conflicts.ConflictResolutionRequest
 import com.icure.cardinal.sdk.model.conflicts.ConflictResolutionResult
+import com.icure.cardinal.sdk.model.conflicts.ConflictResolutionStrategy
 import com.icure.cardinal.sdk.model.conflicts.MergeResult
 import com.icure.cardinal.sdk.model.couchdb.DocIdentifier
 import com.icure.cardinal.sdk.model.filter.AbstractFilter
@@ -414,11 +415,15 @@ class RawUserApiImpl(
 			setBody(request)
 		}.wrap()
 
-	override suspend fun autoSolveConflicts(entityIds: List<String>): HttpResponse<List<MergeResult>> =
+	override suspend fun autoSolveConflicts(
+		entityIds: List<String>,
+		strategy: ConflictResolutionStrategy,
+	): HttpResponse<List<MergeResult>> =
 		post(authProvider) {
 			url {
 				takeFrom(apiUrl)
 				appendPathSegments("rest", "v2", "user", "conflicts", "solve")
+				parameter("strategy", strategy.dtoSerialName)
 			}
 			contentType(Application.Json)
 			accept(Application.Json)
@@ -1081,11 +1086,13 @@ class RawUserApiImpl(
 	override suspend fun autoSolveConflictsInGroup(
 		groupId: String,
 		entityIds: List<String>,
+		strategy: ConflictResolutionStrategy,
 	): HttpResponse<List<MergeResult>> =
 		post(authProvider) {
 			url {
 				takeFrom(apiUrl)
 				appendPathSegments("rest", "v2", "user", "inGroup", groupId, "conflicts", "solve")
+				parameter("strategy", strategy.dtoSerialName)
 			}
 			contentType(Application.Json)
 			accept(Application.Json)

@@ -28,6 +28,9 @@ sealed interface Partnership : Encryptable {
 	 */
 	public val partnerId: String?
 
+	/**
+	 * Deprecated. Description of the relationship from the other person to this patient.
+	 */
 	override val encryptedSelf: Base64String?
 	// region Partnership-Partnership
 
@@ -53,6 +56,9 @@ data class DecryptedPartnership(
 	 * The UUID of the contact person or patient in this relationship.
 	 */
 	override val partnerId: String? = null,
+	/**
+	 * Deprecated. Description of the relationship from the other person to this patient.
+	 */
 	override val encryptedSelf: Base64String? = null,
 ) : Partnership {
 	// region Partnership-DecryptedPartnership
@@ -79,6 +85,9 @@ data class EncryptedPartnership(
 	 * The UUID of the contact person or patient in this relationship.
 	 */
 	override val partnerId: String? = null,
+	/**
+	 * Deprecated. Description of the relationship from the other person to this patient.
+	 */
 	override val encryptedSelf: Base64String? = null,
 ) : Partnership {
 	// region Partnership-EncryptedPartnership

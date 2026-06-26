@@ -85,8 +85,14 @@ sealed interface Receipt :
 	 */
 	public val attachmentIds: Map<ReceiptBlobType, String>
 
+	/**
+	 * Map of blob type to attachment id for the receipt.
+	 */
 	public val attachmentInfos: Map<ReceiptBlobType, DataAttachment>
 
+	/**
+	 * Map of blob type to attachment id for the receipt.
+	 */
 	public val deletedAttachments: List<DeletedAttachment>
 
 	/**
@@ -196,8 +202,14 @@ data class DecryptedReceipt(
 	 */
 	@param:DefaultValue("emptyMap()")
 	override val attachmentIds: Map<ReceiptBlobType, String> = emptyMap(),
+	/**
+	 * Map of blob type to attachment id for the receipt.
+	 */
 	@param:DefaultValue("emptyMap()")
 	override val attachmentInfos: Map<ReceiptBlobType, DataAttachment> = emptyMap(),
+	/**
+	 * Map of blob type to attachment id for the receipt.
+	 */
 	@param:DefaultValue("emptyList()")
 	override val deletedAttachments: List<DeletedAttachment> = emptyList(),
 	/**
@@ -305,8 +317,14 @@ data class EncryptedReceipt(
 	 */
 	@param:DefaultValue("emptyMap()")
 	override val attachmentIds: Map<ReceiptBlobType, String> = emptyMap(),
+	/**
+	 * Map of blob type to attachment id for the receipt.
+	 */
 	@param:DefaultValue("emptyMap()")
 	override val attachmentInfos: Map<ReceiptBlobType, DataAttachment> = emptyMap(),
+	/**
+	 * Map of blob type to attachment id for the receipt.
+	 */
 	@param:DefaultValue("emptyList()")
 	override val deletedAttachments: List<DeletedAttachment> = emptyList(),
 	/**

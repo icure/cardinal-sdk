@@ -21,10 +21,10 @@ import kotlin.collections.Map
 import kotlin.collections.Set
 
 /**
- * Represents a group in the iCure platform. A group corresponds to a practice, hospital, or
+ *
+ *  Represents a group in the iCure platform. A group corresponds to a practice, hospital, or
  * organization
- * that contains its own set of databases and users.
- * /
+ *  that contains its own set of databases and users.
  */
 @Serializable
 data class Group(
@@ -109,6 +109,9 @@ data class Group(
 	 */
 	@JsonNames("applicationId")
 	public val projectId: String? = null,
+	/**
+	 * A user-chosen identifier for the applications for which this group holds data.
+	 */
 	public val templates: TemplatesConfiguration? = null,
 	/**
 	 *
