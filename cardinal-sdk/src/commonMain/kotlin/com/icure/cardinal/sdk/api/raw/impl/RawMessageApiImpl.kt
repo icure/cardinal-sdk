@@ -483,13 +483,13 @@ class RawMessageApiImpl(
 
 	override suspend fun autoSolveConflicts(
 		entityIds: List<String>,
-		strategy: ConflictResolutionStrategy,
+		strategy: ConflictResolutionStrategy?,
 	): HttpResponse<List<MergeResult>> =
 		post(authProvider) {
 			url {
 				takeFrom(apiUrl)
 				appendPathSegments("rest", "v2", "message", "conflicts", "solve")
-				parameter("strategy", strategy.dtoSerialName)
+				parameter("strategy", strategy?.dtoSerialName)
 			}
 			contentType(Application.Json)
 			accept(Application.Json)
@@ -748,13 +748,13 @@ class RawMessageApiImpl(
 	override suspend fun autoSolveConflictsInGroup(
 		groupId: String,
 		entityIds: List<String>,
-		strategy: ConflictResolutionStrategy,
+		strategy: ConflictResolutionStrategy?,
 	): HttpResponse<List<MergeResult>> =
 		post(authProvider) {
 			url {
 				takeFrom(apiUrl)
 				appendPathSegments("rest", "v2", "message", "inGroup", groupId, "conflicts", "solve")
-				parameter("strategy", strategy.dtoSerialName)
+				parameter("strategy", strategy?.dtoSerialName)
 			}
 			contentType(Application.Json)
 			accept(Application.Json)
