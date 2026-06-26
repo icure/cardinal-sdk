@@ -45,8 +45,17 @@ data class BulkAttachmentUpdateOptions(
 		 * Whether the attachment data is encrypted.
 		 */
 		public val dataIsEncrypted: Boolean? = null,
+		/**
+		 * Whether the attachment data is encrypted.
+		 */
 		public val compressionAlgorithm: String? = null,
+		/**
+		 * Whether the attachment data is encrypted.
+		 */
 		public val triedCompressionAlgorithmsVersion: String? = null,
+		/**
+		 * Whether the attachment data is encrypted.
+		 */
 		public val realDataSize: Long? = null,
 	)
 	// region BulkAttachmentUpdateOptions-BulkAttachmentUpdateOptions

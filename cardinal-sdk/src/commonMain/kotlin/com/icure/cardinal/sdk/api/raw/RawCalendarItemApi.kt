@@ -8,6 +8,7 @@ import com.icure.cardinal.sdk.model.ListOfIdsAndRev
 import com.icure.cardinal.sdk.model.PaginatedList
 import com.icure.cardinal.sdk.model.conflicts.ConflictResolutionRequest
 import com.icure.cardinal.sdk.model.conflicts.ConflictResolutionResult
+import com.icure.cardinal.sdk.model.conflicts.ConflictResolutionStrategy
 import com.icure.cardinal.sdk.model.conflicts.MergeResult
 import com.icure.cardinal.sdk.model.couchdb.DocIdentifier
 import com.icure.cardinal.sdk.model.filter.AbstractFilter
@@ -141,7 +142,11 @@ public interface RawCalendarItemApi {
 		request: ConflictResolutionRequest<EncryptedCalendarItem>,
 	): HttpResponse<ConflictResolutionResult<EncryptedCalendarItem>>
 
-	suspend fun autoSolveConflicts(entityIds: List<String>): HttpResponse<List<MergeResult>>
+	suspend fun autoSolveConflicts(
+		entityIds: List<String>,
+		strategy: ConflictResolutionStrategy =
+			FullMergeability,
+	): HttpResponse<List<MergeResult>>
 	// endregion
 
 	// region cloud endpoints
@@ -238,6 +243,7 @@ public interface RawCalendarItemApi {
 	suspend fun autoSolveConflictsInGroup(
 		groupId: String,
 		entityIds: List<String>,
+		strategy: ConflictResolutionStrategy = FullMergeability,
 	): HttpResponse<List<MergeResult>>
 	// endregion
 }

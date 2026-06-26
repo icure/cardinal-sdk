@@ -44,6 +44,13 @@ sealed interface SecureDelegationKeyMap : StoredDocument, HasEncryptionMetadata,
 	 */
 	public val `delegate`: String?
 
+	/**
+	 * The delegate of the secure delegation key this map refers to, if the delegate is anonymous in
+	 * the delegation,
+	 * and if not encrypted.
+	 * On the server side this value should always be encrypted.
+	 * /
+	 */
 	override val secretForeignKeys: Set<String>
 
 	override val cryptedForeignKeys: Map<String, Set<Delegation>>
@@ -87,6 +94,13 @@ data class DecryptedSecureDelegationKeyMap(
 	 *  On the server side this value should always be encrypted.
 	 */
 	override val `delegate`: String? = null,
+	/**
+	 * The delegate of the secure delegation key this map refers to, if the delegate is anonymous in
+	 * the delegation,
+	 * and if not encrypted.
+	 * On the server side this value should always be encrypted.
+	 * /
+	 */
 	@param:DefaultValue("emptySet()")
 	override val secretForeignKeys: Set<String> = emptySet(),
 	@param:DefaultValue("emptyMap()")
@@ -130,6 +144,13 @@ data class EncryptedSecureDelegationKeyMap(
 	 *  On the server side this value should always be encrypted.
 	 */
 	override val `delegate`: String? = null,
+	/**
+	 * The delegate of the secure delegation key this map refers to, if the delegate is anonymous in
+	 * the delegation,
+	 * and if not encrypted.
+	 * On the server side this value should always be encrypted.
+	 * /
+	 */
 	@param:DefaultValue("emptySet()")
 	override val secretForeignKeys: Set<String> = emptySet(),
 	@param:DefaultValue("emptyMap()")

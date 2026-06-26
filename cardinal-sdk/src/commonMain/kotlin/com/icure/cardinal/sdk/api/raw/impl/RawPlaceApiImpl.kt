@@ -12,6 +12,7 @@ import com.icure.cardinal.sdk.model.PaginatedList
 import com.icure.cardinal.sdk.model.Place
 import com.icure.cardinal.sdk.model.conflicts.ConflictResolutionRequest
 import com.icure.cardinal.sdk.model.conflicts.ConflictResolutionResult
+import com.icure.cardinal.sdk.model.conflicts.ConflictResolutionStrategy
 import com.icure.cardinal.sdk.model.conflicts.MergeResult
 import com.icure.cardinal.sdk.model.couchdb.DocIdentifier
 import com.icure.utils.InternalIcureApi
@@ -233,11 +234,15 @@ class RawPlaceApiImpl(
 			setBody(request)
 		}.wrap()
 
-	override suspend fun autoSolveConflicts(entityIds: List<String>): HttpResponse<List<MergeResult>> =
+	override suspend fun autoSolveConflicts(
+		entityIds: List<String>,
+		strategy: ConflictResolutionStrategy,
+	): HttpResponse<List<MergeResult>> =
 		post(authProvider) {
 			url {
 				takeFrom(apiUrl)
 				appendPathSegments("rest", "v2", "place", "conflicts", "solve")
+				parameter("strategy", strategy.dtoSerialName)
 			}
 			contentType(Application.Json)
 			accept(Application.Json)
@@ -457,11 +462,13 @@ class RawPlaceApiImpl(
 	override suspend fun autoSolveConflictsInGroup(
 		groupId: String,
 		entityIds: List<String>,
+		strategy: ConflictResolutionStrategy,
 	): HttpResponse<List<MergeResult>> =
 		post(authProvider) {
 			url {
 				takeFrom(apiUrl)
 				appendPathSegments("rest", "v2", "place", "inGroup", groupId, "conflicts", "solve")
+				parameter("strategy", strategy.dtoSerialName)
 			}
 			contentType(Application.Json)
 			accept(Application.Json)
