@@ -34,6 +34,11 @@ export class Identifier {
 	 */
 	start: string | undefined = undefined;
 
+	/**
+	 *
+	 *  Time period when id is/was valid for use
+	 *  /
+	 */
 	end: string | undefined = undefined;
 
 	/**

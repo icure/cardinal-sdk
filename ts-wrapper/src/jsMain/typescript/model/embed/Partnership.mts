@@ -64,6 +64,10 @@ export class DecryptedPartnership {
 	 */
 	partnerId: string | undefined = undefined;
 
+	/**
+	 *
+	 *  Deprecated. Description of the relationship from the other person to this patient.
+	 */
 	encryptedSelf: Base64String | undefined = undefined;
 
 	readonly isEncrypted: false = false;
@@ -131,6 +135,10 @@ export class EncryptedPartnership {
 	 */
 	partnerId: string | undefined = undefined;
 
+	/**
+	 *
+	 *  Deprecated. Description of the relationship from the other person to this patient.
+	 */
 	encryptedSelf: Base64String | undefined = undefined;
 
 	readonly isEncrypted: true = true;
