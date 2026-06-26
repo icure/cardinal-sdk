@@ -330,13 +330,13 @@ class RawAccessLogApiImpl(
 
 	override suspend fun autoSolveConflicts(
 		entityIds: List<String>,
-		strategy: ConflictResolutionStrategy,
+		strategy: ConflictResolutionStrategy?,
 	): HttpResponse<List<MergeResult>> =
 		post(authProvider) {
 			url {
 				takeFrom(apiUrl)
 				appendPathSegments("rest", "v2", "accesslog", "conflicts", "solve")
-				parameter("strategy", strategy.dtoSerialName)
+				parameter("strategy", strategy?.dtoSerialName)
 			}
 			contentType(Application.Json)
 			accept(Application.Json)
@@ -609,13 +609,13 @@ class RawAccessLogApiImpl(
 	override suspend fun autoSolveConflictsInGroup(
 		groupId: String,
 		entityIds: List<String>,
-		strategy: ConflictResolutionStrategy,
+		strategy: ConflictResolutionStrategy?,
 	): HttpResponse<List<MergeResult>> =
 		post(authProvider) {
 			url {
 				takeFrom(apiUrl)
 				appendPathSegments("rest", "v2", "accesslog", "inGroup", groupId, "conflicts", "solve")
-				parameter("strategy", strategy.dtoSerialName)
+				parameter("strategy", strategy?.dtoSerialName)
 			}
 			contentType(Application.Json)
 			accept(Application.Json)

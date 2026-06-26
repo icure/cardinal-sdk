@@ -188,8 +188,7 @@ public interface RawInvoiceApi {
 
 	suspend fun autoSolveConflicts(
 		entityIds: List<String>,
-		strategy: ConflictResolutionStrategy =
-			FullMergeability,
+		strategy: ConflictResolutionStrategy?,
 	): HttpResponse<List<MergeResult>>
 	// endregion
 
@@ -283,7 +282,7 @@ public interface RawInvoiceApi {
 	suspend fun autoSolveConflictsInGroup(
 		groupId: String,
 		entityIds: List<String>,
-		strategy: ConflictResolutionStrategy = FullMergeability,
+		strategy: ConflictResolutionStrategy?,
 	): HttpResponse<List<MergeResult>>
 	// endregion
 }

@@ -165,8 +165,7 @@ public interface RawTopicApi {
 
 	suspend fun autoSolveConflicts(
 		entityIds: List<String>,
-		strategy: ConflictResolutionStrategy =
-			FullMergeability,
+		strategy: ConflictResolutionStrategy?,
 	): HttpResponse<List<MergeResult>>
 
 	suspend fun getConflictingEntitiesIdsInGroup(groupId: String): HttpResponse<List<String>>
@@ -184,7 +183,7 @@ public interface RawTopicApi {
 	suspend fun autoSolveConflictsInGroup(
 		groupId: String,
 		entityIds: List<String>,
-		strategy: ConflictResolutionStrategy = FullMergeability,
+		strategy: ConflictResolutionStrategy?,
 	): HttpResponse<List<MergeResult>>
 	// endregion
 }

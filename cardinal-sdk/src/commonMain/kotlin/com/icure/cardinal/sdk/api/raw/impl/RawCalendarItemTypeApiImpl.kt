@@ -265,13 +265,13 @@ class RawCalendarItemTypeApiImpl(
 
 	override suspend fun autoSolveConflicts(
 		entityIds: List<String>,
-		strategy: ConflictResolutionStrategy,
+		strategy: ConflictResolutionStrategy?,
 	): HttpResponse<List<MergeResult>> =
 		post(authProvider) {
 			url {
 				takeFrom(apiUrl)
 				appendPathSegments("rest", "v2", "calendarItemType", "conflicts", "solve")
-				parameter("strategy", strategy.dtoSerialName)
+				parameter("strategy", strategy?.dtoSerialName)
 			}
 			contentType(Application.Json)
 			accept(Application.Json)
@@ -491,13 +491,13 @@ class RawCalendarItemTypeApiImpl(
 	override suspend fun autoSolveConflictsInGroup(
 		groupId: String,
 		entityIds: List<String>,
-		strategy: ConflictResolutionStrategy,
+		strategy: ConflictResolutionStrategy?,
 	): HttpResponse<List<MergeResult>> =
 		post(authProvider) {
 			url {
 				takeFrom(apiUrl)
 				appendPathSegments("rest", "v2", "calendarItemType", "inGroup", groupId, "conflicts", "solve")
-				parameter("strategy", strategy.dtoSerialName)
+				parameter("strategy", strategy?.dtoSerialName)
 			}
 			contentType(Application.Json)
 			accept(Application.Json)
