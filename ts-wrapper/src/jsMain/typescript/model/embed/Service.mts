@@ -23,6 +23,11 @@ export interface Service extends Encryptable, ICureDocument<string>, HasEndOfLif
 	 */
 	transactionId: string | undefined;
 
+	/**
+	 *
+	 *  The transactionId is used when a single service had to be split into parts for technical
+	 *  reasons. Several services with the same non null transaction id form one single service
+	 */
 	identifier: Array<Identifier>;
 
 	/**
@@ -55,6 +60,11 @@ export interface Service extends Encryptable, ICureDocument<string>, HasEndOfLif
 	 */
 	formIds: Array<string> | undefined;
 
+	/**
+	 *
+	 *  List of Ids of all forms linked to the Service. Only used when the Service is emitted outside of
+	 *  its contact.
+	 */
 	secretForeignKeys: Array<string> | undefined;
 
 	/**
@@ -167,6 +177,11 @@ export class DecryptedService {
 	 */
 	transactionId: string | undefined = undefined;
 
+	/**
+	 *
+	 *  The transactionId is used when a single service had to be split into parts for technical
+	 *  reasons. Several services with the same non null transaction id form one single service
+	 */
 	identifier: Array<Identifier> = [];
 
 	/**
@@ -199,6 +214,11 @@ export class DecryptedService {
 	 */
 	formIds: Array<string> | undefined = undefined;
 
+	/**
+	 *
+	 *  List of Ids of all forms linked to the Service. Only used when the Service is emitted outside of
+	 *  its contact.
+	 */
 	secretForeignKeys: Array<string> | undefined = [];
 
 	/**
@@ -509,6 +529,11 @@ export class EncryptedService {
 	 */
 	transactionId: string | undefined = undefined;
 
+	/**
+	 *
+	 *  The transactionId is used when a single service had to be split into parts for technical
+	 *  reasons. Several services with the same non null transaction id form one single service
+	 */
 	identifier: Array<Identifier> = [];
 
 	/**
@@ -541,6 +566,11 @@ export class EncryptedService {
 	 */
 	formIds: Array<string> | undefined = undefined;
 
+	/**
+	 *
+	 *  List of Ids of all forms linked to the Service. Only used when the Service is emitted outside of
+	 *  its contact.
+	 */
 	secretForeignKeys: Array<string> | undefined = [];
 
 	/**

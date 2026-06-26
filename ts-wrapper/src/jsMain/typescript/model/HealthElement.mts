@@ -20,12 +20,12 @@ import {Base64String} from './specializations/Base64String.mjs';
 
 /**
  *
- *  Represents a healthcare element. A healthcare element is a patient-centric representation of a
+ *
+ *   Represents a healthcare element. A healthcare element is a patient-centric representation of a
  *  healthcare problem
- *  that evolves over time in its name/label and characteristics. It is a central element in the
+ *   that evolves over time in its name/label and characteristics. It is a central element in the
  *  organisation of the
- *  electronic health record, used to filter and link medical data in a meaningful way.
- *  /
+ *   electronic health record, used to filter and link medical data in a meaningful way.
  */
 export interface HealthElement extends StoredDocument, ICureDocument<string>, HasEncryptionMetadata, Encryptable, HasEndOfLife {
 
@@ -135,12 +135,12 @@ export interface HealthElement extends StoredDocument, ICureDocument<string>, Ha
 
 /**
  *
- *  Represents a healthcare element. A healthcare element is a patient-centric representation of a
+ *
+ *   Represents a healthcare element. A healthcare element is a patient-centric representation of a
  *  healthcare problem
- *  that evolves over time in its name/label and characteristics. It is a central element in the
+ *   that evolves over time in its name/label and characteristics. It is a central element in the
  *  organisation of the
- *  electronic health record, used to filter and link medical data in a meaningful way.
- *  /
+ *   electronic health record, used to filter and link medical data in a meaningful way.
  */
 export class DecryptedHealthElement {
 
@@ -482,12 +482,12 @@ export class DecryptedHealthElement {
 
 /**
  *
- *  Represents a healthcare element. A healthcare element is a patient-centric representation of a
+ *
+ *   Represents a healthcare element. A healthcare element is a patient-centric representation of a
  *  healthcare problem
- *  that evolves over time in its name/label and characteristics. It is a central element in the
+ *   that evolves over time in its name/label and characteristics. It is a central element in the
  *  organisation of the
- *  electronic health record, used to filter and link medical data in a meaningful way.
- *  /
+ *   electronic health record, used to filter and link medical data in a meaningful way.
  */
 export class EncryptedHealthElement {
 

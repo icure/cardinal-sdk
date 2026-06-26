@@ -13,10 +13,10 @@ import {OperationToken} from './security/OperationToken.mjs';
 
 /**
  *
- *  Represents a group in the iCure platform. A group corresponds to a practice, hospital, or
+ *
+ *   Represents a group in the iCure platform. A group corresponds to a practice, hospital, or
  *  organization
- *  that contains its own set of databases and users.
- *  /
+ *   that contains its own set of databases and users.
  */
 export class Group implements StoredDocument, HasTags {
 
@@ -128,6 +128,10 @@ export class Group implements StoredDocument, HasTags {
 	 */
 	projectId: string | undefined = undefined;
 
+	/**
+	 *
+	 *  A user-chosen identifier for the applications for which this group holds data.
+	 */
 	templates: Group.TemplatesConfiguration | undefined = undefined;
 
 	/**
