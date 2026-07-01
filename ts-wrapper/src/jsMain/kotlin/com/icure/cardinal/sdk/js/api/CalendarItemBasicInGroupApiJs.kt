@@ -6,11 +6,13 @@ package com.icure.cardinal.sdk.js.api
 import com.icure.cardinal.sdk.js.filters.BaseFilterOptionsJs
 import com.icure.cardinal.sdk.js.filters.BaseSortableFilterOptionsJs
 import com.icure.cardinal.sdk.js.model.CalendarItemJs
+import com.icure.cardinal.sdk.js.model.CalendarItemOccupancyJs
 import com.icure.cardinal.sdk.js.model.EncryptedCalendarItemJs
 import com.icure.cardinal.sdk.js.model.GroupScopedJs
 import com.icure.cardinal.sdk.js.model.StoredDocumentIdentifierJs
 import com.icure.cardinal.sdk.js.utils.pagination.PaginatedListIteratorJs
 import kotlin.Array
+import kotlin.Double
 import kotlin.String
 import kotlin.Unit
 import kotlin.js.JsName
@@ -31,6 +33,29 @@ public external interface CalendarItemBasicInGroupApiJs {
 	public fun filterCalendarItemsBySorted(groupId: String,
 			filter: BaseSortableFilterOptionsJs<CalendarItemJs>):
 			Promise<PaginatedListIteratorJs<GroupScopedJs<EncryptedCalendarItemJs>>>
+
+	public fun getCalendarItemsOccupancyByPeriodForSelf(
+		groupId: String,
+		startDate: Double,
+		endDate: Double,
+		extensionInDays: Double?,
+	): Promise<Array<CalendarItemOccupancyJs>>
+
+	public fun getCalendarItemsOccupancyByPeriodForHealthcareParty(
+		groupId: String,
+		startDate: Double,
+		endDate: Double,
+		hcPartyId: String,
+		extensionInDays: Double?,
+	): Promise<Array<CalendarItemOccupancyJs>>
+
+	public fun getCalendarItemsOccupancyByPeriodAndAgendaId(
+		groupId: String,
+		startDate: Double,
+		endDate: Double,
+		agendaId: String,
+		extensionInDays: Double?,
+	): Promise<Array<CalendarItemOccupancyJs>>
 
 	public fun deleteCalendarItemById(entityId: GroupScopedJs<StoredDocumentIdentifierJs>):
 			Promise<GroupScopedJs<StoredDocumentIdentifierJs>>
