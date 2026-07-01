@@ -1,6 +1,7 @@
 package com.icure.cardinal.sdk.api.raw
 
 import com.icure.cardinal.sdk.model.CalendarItem
+import com.icure.cardinal.sdk.model.CalendarItemOccupancy
 import com.icure.cardinal.sdk.model.EncryptedCalendarItem
 import com.icure.cardinal.sdk.model.IcureStub
 import com.icure.cardinal.sdk.model.ListOfIds
@@ -77,6 +78,20 @@ public interface RawCalendarItemApi {
 		endDate: Long,
 		agendaId: String,
 	): HttpResponse<List<EncryptedCalendarItem>>
+
+	suspend fun getCalendarItemsOccupancyByPeriodAndHcPartyId(
+		startDate: Long,
+		endDate: Long,
+		hcPartyId: String,
+		extensionInDays: Int? = null,
+	): HttpResponse<List<CalendarItemOccupancy>>
+
+	suspend fun getCalendarItemsOccupancyByPeriodAndAgendaId(
+		startDate: Long,
+		endDate: Long,
+		agendaId: String,
+		extensionInDays: Int? = null,
+	): HttpResponse<List<CalendarItemOccupancy>>
 
 	suspend fun getCalendarItemsWithIds(calendarItemIds: ListOfIds): HttpResponse<List<EncryptedCalendarItem>>
 
@@ -179,6 +194,22 @@ public interface RawCalendarItemApi {
 		groupId: String,
 		calendarItemIds: ListOfIds,
 	): HttpResponse<List<EncryptedCalendarItem>>
+
+	suspend fun getCalendarItemsOccupancyByPeriodAndHcPartyIdInGroup(
+		groupId: String,
+		startDate: Long,
+		endDate: Long,
+		hcPartyId: String,
+		extensionInDays: Int? = null,
+	): HttpResponse<List<CalendarItemOccupancy>>
+
+	suspend fun getCalendarItemsOccupancyByPeriodAndAgendaIdInGroup(
+		groupId: String,
+		startDate: Long,
+		endDate: Long,
+		agendaId: String,
+		extensionInDays: Int? = null,
+	): HttpResponse<List<CalendarItemOccupancy>>
 
 	suspend fun deleteCalendarItemsInGroup(
 		groupId: String,
