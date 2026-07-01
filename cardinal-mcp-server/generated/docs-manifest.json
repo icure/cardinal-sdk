@@ -4976,6 +4976,22 @@
         }
       ]
     },
+    "Filter": {
+      "name": "FilterApi",
+      "description": "API for Filter operations",
+      "isEncryptable": false,
+      "methods": [
+        {
+          "name": "getFilterOptionsDefinitions",
+          "description": "",
+          "params": [],
+          "returnType": "{\n        [key: string]: Array<FilterOptionGroupWithViews",
+          "flavours": [
+            "none"
+          ]
+        }
+      ]
+    },
     "Form": {
       "name": "FormApi",
       "description": "API for Form operations",
@@ -15046,6 +15062,31 @@
         }
       ]
     },
+    "CalendarItemOccupancy": {
+      "name": "CalendarItemOccupancy",
+      "fields": [
+        {
+          "name": "timestamp",
+          "type": "number",
+          "description": "A fuzzy date-time at which the occupancy changes."
+        },
+        {
+          "name": "occupancy",
+          "type": "number",
+          "description": "The number of calendar items that are concurrently busy starting from [timestamp]."
+        },
+        {
+          "name": "partial",
+          "type": "Partial<CalendarItemOccupancy> & Pick<CalendarItemOccupancy, \"timestamp\" | \"occupancy\">)",
+          "description": ""
+        },
+        {
+          "name": "json",
+          "type": "any, ignoreUnknownKeys?: boolean, path?: Array<string>): CalendarItemOccupancy",
+          "description": ""
+        }
+      ]
+    },
     "CalendarItemType": {
       "name": "CalendarItemType",
       "implements": [
@@ -16059,7 +16100,7 @@
         {
           "name": "extraMainAttachmentInfo",
           "type": "Document_.ExtraMainAttachmentInfo | undefined",
-          "description": ""
+          "description": "Extra Uniform Type Identifiers for the main attachment."
         },
         {
           "name": "secondaryAttachments",
@@ -16235,7 +16276,7 @@
         {
           "name": "extraMainAttachmentInfo",
           "type": "Document_.ExtraMainAttachmentInfo | undefined",
-          "description": ""
+          "description": "Extra Uniform Type Identifiers for the main attachment."
         },
         {
           "name": "secondaryAttachments",
@@ -16956,7 +16997,17 @@
         {
           "name": "templates",
           "type": "Group.TemplatesConfiguration | undefined",
-          "description": ""
+          "description": "A user-chosen identifier for the applications for which this group holds data."
+        },
+        {
+          "name": "designDocSchemaVersions",
+          "type": "Array<number>",
+          "description": "The versions of the custom design doc schema applied to the group."
+        },
+        {
+          "name": "defaultChildrenSchemaVersion",
+          "type": "number | undefined",
+          "description": "The version of the custom design doc schema to apply by default children groups on creation."
         },
         {
           "name": "partial",
@@ -20009,12 +20060,12 @@
         {
           "name": "attachmentInfos",
           "type": "{\n        [key in ReceiptBlobType]?: DataAttachment",
-          "description": ""
+          "description": "Map of blob type to attachment id for the receipt."
         },
         {
           "name": "deletedAttachments",
           "type": "Array<DeletedAttachment>",
-          "description": ""
+          "description": "Map of blob type to attachment id for the receipt."
         },
         {
           "name": "references",
@@ -20139,12 +20190,12 @@
         {
           "name": "attachmentInfos",
           "type": "{\n        [key in ReceiptBlobType]?: DataAttachment",
-          "description": ""
+          "description": "Map of blob type to attachment id for the receipt."
         },
         {
           "name": "deletedAttachments",
           "type": "Array<DeletedAttachment>",
-          "description": ""
+          "description": "Map of blob type to attachment id for the receipt."
         },
         {
           "name": "references",
@@ -20940,7 +20991,7 @@
         {
           "name": "end",
           "type": "string | undefined",
-          "description": ""
+          "description": "Time period when id is/was valid for use /"
         },
         {
           "name": "system",
@@ -21281,11 +21332,6 @@
           "name": "rev",
           "type": "string | undefined",
           "description": "The current revision of the design document."
-        },
-        {
-          "name": "revHistory",
-          "type": "{\n        [key: string]: string",
-          "description": "A map of revision history entries."
         },
         {
           "name": "language",
@@ -24733,87 +24779,87 @@
         {
           "name": "instructionForPatient",
           "type": "string | undefined",
-          "description": ""
+          "description": "The expiration date of the medication. Format: yyyyMMdd /"
         },
         {
           "name": "instructionForReimbursement",
           "type": "string | undefined",
-          "description": ""
+          "description": "The expiration date of the medication. Format: yyyyMMdd /"
         },
         {
           "name": "commentForDelivery",
           "type": "string | undefined",
-          "description": ""
+          "description": "The expiration date of the medication. Format: yyyyMMdd /"
         },
         {
           "name": "drugRoute",
           "type": "string | undefined",
-          "description": ""
+          "description": "The expiration date of the medication. Format: yyyyMMdd /"
         },
         {
           "name": "temporality",
           "type": "string | undefined",
-          "description": ""
+          "description": "The expiration date of the medication. Format: yyyyMMdd /"
         },
         {
           "name": "frequency",
           "type": "CodeStub | undefined",
-          "description": ""
+          "description": "The expiration date of the medication. Format: yyyyMMdd /"
         },
         {
           "name": "reimbursementReason",
           "type": "CodeStub | undefined",
-          "description": ""
+          "description": "The expiration date of the medication. Format: yyyyMMdd /"
         },
         {
           "name": "substitutionAllowed",
           "type": "boolean | undefined",
-          "description": ""
+          "description": "The expiration date of the medication. Format: yyyyMMdd /"
         },
         {
           "name": "beginMoment",
           "type": "number | undefined",
-          "description": ""
+          "description": "The expiration date of the medication. Format: yyyyMMdd /"
         },
         {
           "name": "endMoment",
           "type": "number | undefined",
-          "description": ""
+          "description": "The expiration date of the medication. Format: yyyyMMdd /"
         },
         {
           "name": "deliveryMoment",
           "type": "number | undefined",
-          "description": ""
+          "description": "The expiration date of the medication. Format: yyyyMMdd /"
         },
         {
           "name": "endExecutionMoment",
           "type": "number | undefined",
-          "description": ""
+          "description": "The expiration date of the medication. Format: yyyyMMdd /"
         },
         {
           "name": "duration",
           "type": "Duration | undefined",
-          "description": ""
+          "description": "The expiration date of the medication. Format: yyyyMMdd /"
         },
         {
           "name": "renewal",
           "type": "Renewal | undefined",
-          "description": ""
+          "description": "The expiration date of the medication. Format: yyyyMMdd /"
         },
         {
           "name": "knownUsage",
           "type": "boolean | undefined",
-          "description": ""
+          "description": "The expiration date of the medication. Format: yyyyMMdd /"
         },
         {
           "name": "regimen",
           "type": "Array<RegimenItem> | undefined",
-          "description": ""
+          "description": "The expiration date of the medication. Format: yyyyMMdd /"
         },
         {
           "name": "posology",
           "type": "string | undefined",
-          "description": ""
+          "description": "The expiration date of the medication. Format: yyyyMMdd /"
         },
         {
           "name": "stockLocation",
@@ -25019,7 +25065,7 @@
         {
           "name": "encryptedSelf",
           "type": "Base64String | undefined",
-          "description": ""
+          "description": "Deprecated. Description of the relationship from the other person to this patient."
         },
         {
           "name": "isEncrypted",
@@ -25059,7 +25105,7 @@
         {
           "name": "encryptedSelf",
           "type": "Base64String | undefined",
-          "description": ""
+          "description": "Deprecated. Description of the relationship from the other person to this patient."
         },
         {
           "name": "isEncrypted",
@@ -26345,7 +26391,7 @@
         {
           "name": "identifier",
           "type": "Array<Identifier>",
-          "description": ""
+          "description": "The transactionId is used when a single service had to be split into parts for technical reasons. Several services with the same non null transaction id form one single service"
         },
         {
           "name": "contactId",
@@ -26375,7 +26421,7 @@
         {
           "name": "secretForeignKeys",
           "type": "Array<string> | undefined",
-          "description": ""
+          "description": "List of Ids of all forms linked to the Service. Only used when the Service is emitted outside of its contact."
         },
         {
           "name": "cryptedForeignKeys",
@@ -26525,7 +26571,7 @@
         {
           "name": "identifier",
           "type": "Array<Identifier>",
-          "description": ""
+          "description": "The transactionId is used when a single service had to be split into parts for technical reasons. Several services with the same non null transaction id form one single service"
         },
         {
           "name": "contactId",
@@ -26555,7 +26601,7 @@
         {
           "name": "secretForeignKeys",
           "type": "Array<string> | undefined",
-          "description": ""
+          "description": "List of Ids of all forms linked to the Service. Only used when the Service is emitted outside of its contact."
         },
         {
           "name": "cryptedForeignKeys",
@@ -28784,6 +28830,41 @@
           "name": "Registering",
           "type": "\"Registering\"",
           "description": "enum constant"
+        }
+      ]
+    },
+    "FilterOptionGroupWithViews": {
+      "name": "FilterOptionGroupWithViews",
+      "fields": [
+        {
+          "name": "name",
+          "type": "string",
+          "description": ""
+        },
+        {
+          "name": "factoryMethods",
+          "type": "Array<string>",
+          "description": ""
+        },
+        {
+          "name": "targetFilter",
+          "type": "string",
+          "description": ""
+        },
+        {
+          "name": "views",
+          "type": "Array<string>",
+          "description": ""
+        },
+        {
+          "name": "partial",
+          "type": "Partial<FilterOptionGroupWithViews> & Pick<FilterOptionGroupWithViews, \"name\" | \"factoryMethods\" | \"targetFilter\" | \"views\">)",
+          "description": ""
+        },
+        {
+          "name": "json",
+          "type": "any, ignoreUnknownKeys?: boolean, path?: Array<string>): FilterOptionGroupWithViews",
+          "description": ""
         }
       ]
     },
@@ -32849,8 +32930,8 @@
           "sortOrder": ""
         },
         {
-          "name": "lifecycleBetweenForDataOwnerInGroupInGroup",
-          "description": "",
+          "name": "lifecycleBetweenForDataOwnerInGroup",
+          "description": "Key parameters: `startTimestamp?`, `endTimestamp?`, `descending`",
           "params": [
             {
               "name": "dataOwner",
@@ -32868,7 +32949,10 @@
               "name": "descending",
               "type": "boolean"
             }
-          ]
+          ],
+          "returnType": "FilterOptions",
+          "sortable": false,
+          "sortOrder": ""
         },
         {
           "name": "lifecycleBetweenForSelf",

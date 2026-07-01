@@ -1,6 +1,6 @@
 {
   "name": "@icure/cardinal-mcp-server",
-  "version": "2.2.0",
+  "version": "2.8.0",
   "description": "MCP server exposing Cardinal SDK documentation and operational tools",
   "type": "module",
   "main": "dist/index.js",
@@ -33,7 +33,7 @@
   ],
   "license": "MIT",
   "dependencies": {
-    "@icure/cardinal-sdk": "^2.6.1",
+    "@icure/cardinal-sdk": "^2.8.0",
     "@modelcontextprotocol/sdk": "^1.26.0",
     "zod": "^3.25.0"
   },

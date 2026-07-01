@@ -2994,6 +2994,18 @@ export const METHOD_REGISTRY: Record<string, ApiInfo> = {
 			}
 		]
 	},
+	"Filter": {
+		"apiName": "FilterApi",
+		"propertyName": "filter",
+		"isEncryptable": false,
+		"methods": [
+			{
+				"name": "getFilterOptionsDefinitions",
+				"params": [],
+				"returnType": "Promise<{ [key: string]: Array<FilterOptionGroupWithViews>"
+			}
+		]
+	},
 	"Form": {
 		"apiName": "FormApi",
 		"propertyName": "form",

@@ -61,6 +61,17 @@ describe("tools/list", () => {
 			expect(names.has(name)).toBe(true);
 		}
 	});
+
+	it("exposes the Filter API alongside the other non-crypto APIs on cardinal_admin", async () => {
+		const { tools } = await client.listTools();
+		const admin = tools.find(t => t.name === "cardinal_admin");
+		expect(admin).toBeDefined();
+
+		const apiEnum = (admin!.inputSchema.properties as Record<string, { enum?: string[] }>).api?.enum;
+		expect(apiEnum).toEqual(
+			expect.arrayContaining(["Group", "User", "Role", "Permission", "System", "Auth", "Filter"]),
+		);
+	});
 });
 
 describe("resources/list", () => {
