@@ -8,6 +8,7 @@ import com.icure.cardinal.sdk.filters.BaseSortableFilterOptions
 import com.icure.cardinal.sdk.filters.FilterOptions
 import com.icure.cardinal.sdk.filters.SortableFilterOptions
 import com.icure.cardinal.sdk.model.CalendarItem
+import com.icure.cardinal.sdk.model.CalendarItemOccupancy
 import com.icure.cardinal.sdk.model.DecryptedCalendarItem
 import com.icure.cardinal.sdk.model.EncryptedCalendarItem
 import com.icure.cardinal.sdk.model.EntityReferenceInGroup
@@ -723,6 +724,55 @@ interface CalendarItemBasicApi : CalendarItemBasicFlavourlessApi, CalendarItemBa
 	suspend fun filterCalendarItemsBySorted(
 		filter: BaseSortableFilterOptions<CalendarItem>
 	): PaginatedListIterator<EncryptedCalendarItem>
+
+	/**
+	 * Computes the concurrent-occupancy histogram of the calendar items for the current data owner over the
+	 * period [startDate]..[endDate] (fuzzy date-times, either bound may be null = open).
+	 *
+	 * Only calendar items whose whole interval fits within the search range are considered. By default, the
+	 * range is exactly [startDate]..[endDate], so items starting before [startDate] or ending after [endDate]
+	 * are ignored. Pass [extensionInDays] to widen the range by that many days on each side, which lets items
+	 * that start shortly before [startDate] (contributing to the occupancy baseline) or end shortly after
+	 * [endDate] be taken into account. Items reaching beyond the extended range are still ignored.
+	 */
+	suspend fun getCalendarItemsOccupancyByPeriodForSelf(
+		startDate: Long,
+		endDate: Long,
+		extensionInDays: Int? = null,
+	): List<CalendarItemOccupancy>
+
+	/**
+	 * Computes the concurrent-occupancy histogram of the calendar items of [hcPartyId] over the
+	 * period [startDate]..[endDate] (fuzzy date-times, either bound may be null = open).
+	 *
+	 * Only calendar items whose whole interval fits within the search range are considered. By default, the
+	 * range is exactly [startDate]..[endDate], so items starting before [startDate] or ending after [endDate]
+	 * are ignored. Pass [extensionInDays] to widen the range by that many days on each side, which lets items
+	 * that start shortly before [startDate] (contributing to the occupancy baseline) or end shortly after
+	 * [endDate] be taken into account. Items reaching beyond the extended range are still ignored.
+	 */
+	suspend fun getCalendarItemsOccupancyByPeriodForHealthcareParty(
+		startDate: Long,
+		endDate: Long,
+		hcPartyId: String,
+		extensionInDays: Int? = null,
+	): List<CalendarItemOccupancy>
+
+	/**
+	 * Computes the concurrent-occupancy histogram of the calendar items of the agenda [agendaId] over the
+	 * period [startDate]..[endDate] (fuzzy date-times, either bound may be null = open).
+	 *
+	 * Only calendar items whose whole interval fits within the search range are considered. By default, the range
+	 * is exactly [startDate]..[endDate], you can pass a non-null [extensionInDays] to widen it by that many days on each side (e.g.
+	 * to include items that start before [startDate] but are still open during the period). Items reaching beyond
+	 * the extended range are ignored.
+	 */
+	suspend fun getCalendarItemsOccupancyByPeriodAndAgendaId(
+		startDate: Long,
+		endDate: Long,
+		agendaId: String,
+		extensionInDays: Int? = null,
+	): List<CalendarItemOccupancy>
 }
 
 interface CalendarItemBasicInGroupApi : CalendarItemBasicFlavourlessInGroupApi, CalendarItemBasicFlavouredInGroupApi<EncryptedCalendarItem> { // TODO subscribable
@@ -745,4 +795,36 @@ interface CalendarItemBasicInGroupApi : CalendarItemBasicFlavourlessInGroupApi, 
 	 * In-group version of [CalendarItemBasicApi.filterCalendarItemsBySorted]
 	 */
 	suspend fun filterCalendarItemsBySorted(groupId: String, filter: BaseSortableFilterOptions<CalendarItem>): PaginatedListIterator<GroupScoped<EncryptedCalendarItem>>
+
+	/**
+	 * In-group version of [getCalendarItemsOccupancyByPeriodForSelf].
+	 */
+	suspend fun getCalendarItemsOccupancyByPeriodForSelf(
+		groupId: String,
+		startDate: Long,
+		endDate: Long,
+		extensionInDays: Int? = null,
+	): List<CalendarItemOccupancy>
+
+	/**
+	 * In-group version of [getCalendarItemsOccupancyByPeriodForHealthcareParty].
+	 */
+	suspend fun getCalendarItemsOccupancyByPeriodForHealthcareParty(
+		groupId: String,
+		startDate: Long,
+		endDate: Long,
+		hcPartyId: String,
+		extensionInDays: Int? = null,
+	): List<CalendarItemOccupancy>
+
+	/**
+	 * In-group version of [getCalendarItemsOccupancyByPeriodAndAgendaId].
+	 */
+	suspend fun getCalendarItemsOccupancyByPeriodAndAgendaId(
+		groupId: String,
+		startDate: Long,
+		endDate: Long,
+		agendaId: String,
+		extensionInDays: Int? = null,
+	): List<CalendarItemOccupancy>
 }
