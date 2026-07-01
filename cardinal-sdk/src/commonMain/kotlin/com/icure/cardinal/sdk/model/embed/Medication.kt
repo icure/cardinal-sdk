@@ -23,90 +23,22 @@ data class Medication(
 	 *  The expiration date of the medication. Format: yyyyMMdd
 	 */
 	public val expirationDate: Long? = null,
-	/**
-	 * The expiration date of the medication. Format: yyyyMMdd
-	 * /
-	 */
 	public val instructionForPatient: String? = null,
-	/**
-	 * The expiration date of the medication. Format: yyyyMMdd
-	 * /
-	 */
 	public val instructionForReimbursement: String? = null,
-	/**
-	 * The expiration date of the medication. Format: yyyyMMdd
-	 * /
-	 */
 	public val commentForDelivery: String? = null,
-	/**
-	 * The expiration date of the medication. Format: yyyyMMdd
-	 * /
-	 */
 	public val drugRoute: String? = null,
-	/**
-	 * The expiration date of the medication. Format: yyyyMMdd
-	 * /
-	 */
 	public val temporality: String? = null,
-	/**
-	 * The expiration date of the medication. Format: yyyyMMdd
-	 * /
-	 */
 	public val frequency: CodeStub? = null,
-	/**
-	 * The expiration date of the medication. Format: yyyyMMdd
-	 * /
-	 */
 	public val reimbursementReason: CodeStub? = null,
-	/**
-	 * The expiration date of the medication. Format: yyyyMMdd
-	 * /
-	 */
 	public val substitutionAllowed: Boolean? = null,
-	/**
-	 * The expiration date of the medication. Format: yyyyMMdd
-	 * /
-	 */
 	public val beginMoment: Long? = null,
-	/**
-	 * The expiration date of the medication. Format: yyyyMMdd
-	 * /
-	 */
 	public val endMoment: Long? = null,
-	/**
-	 * The expiration date of the medication. Format: yyyyMMdd
-	 * /
-	 */
 	public val deliveryMoment: Long? = null,
-	/**
-	 * The expiration date of the medication. Format: yyyyMMdd
-	 * /
-	 */
 	public val endExecutionMoment: Long? = null,
-	/**
-	 * The expiration date of the medication. Format: yyyyMMdd
-	 * /
-	 */
 	public val duration: Duration? = null,
-	/**
-	 * The expiration date of the medication. Format: yyyyMMdd
-	 * /
-	 */
 	public val renewal: Renewal? = null,
-	/**
-	 * The expiration date of the medication. Format: yyyyMMdd
-	 * /
-	 */
 	public val knownUsage: Boolean? = null,
-	/**
-	 * The expiration date of the medication. Format: yyyyMMdd
-	 * /
-	 */
 	public val regimen: List<RegimenItem>? = null,
-	/**
-	 * The expiration date of the medication. Format: yyyyMMdd
-	 * /
-	 */
 	public val posology: String? = null,
 	public val stockLocation: DecryptedAddress? = null,
 ) {
