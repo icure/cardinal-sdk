@@ -28,123 +28,38 @@ export class Medication {
 	 */
 	expirationDate: number | undefined = undefined;
 
-	/**
-	 *
-	 *  The expiration date of the medication. Format: yyyyMMdd
-	 *  /
-	 */
 	instructionForPatient: string | undefined = undefined;
 
-	/**
-	 *
-	 *  The expiration date of the medication. Format: yyyyMMdd
-	 *  /
-	 */
 	instructionForReimbursement: string | undefined = undefined;
 
-	/**
-	 *
-	 *  The expiration date of the medication. Format: yyyyMMdd
-	 *  /
-	 */
 	commentForDelivery: string | undefined = undefined;
 
-	/**
-	 *
-	 *  The expiration date of the medication. Format: yyyyMMdd
-	 *  /
-	 */
 	drugRoute: string | undefined = undefined;
 
-	/**
-	 *
-	 *  The expiration date of the medication. Format: yyyyMMdd
-	 *  /
-	 */
 	temporality: string | undefined = undefined;
 
-	/**
-	 *
-	 *  The expiration date of the medication. Format: yyyyMMdd
-	 *  /
-	 */
 	frequency: CodeStub | undefined = undefined;
 
-	/**
-	 *
-	 *  The expiration date of the medication. Format: yyyyMMdd
-	 *  /
-	 */
 	reimbursementReason: CodeStub | undefined = undefined;
 
-	/**
-	 *
-	 *  The expiration date of the medication. Format: yyyyMMdd
-	 *  /
-	 */
 	substitutionAllowed: boolean | undefined = undefined;
 
-	/**
-	 *
-	 *  The expiration date of the medication. Format: yyyyMMdd
-	 *  /
-	 */
 	beginMoment: number | undefined = undefined;
 
-	/**
-	 *
-	 *  The expiration date of the medication. Format: yyyyMMdd
-	 *  /
-	 */
 	endMoment: number | undefined = undefined;
 
-	/**
-	 *
-	 *  The expiration date of the medication. Format: yyyyMMdd
-	 *  /
-	 */
 	deliveryMoment: number | undefined = undefined;
 
-	/**
-	 *
-	 *  The expiration date of the medication. Format: yyyyMMdd
-	 *  /
-	 */
 	endExecutionMoment: number | undefined = undefined;
 
-	/**
-	 *
-	 *  The expiration date of the medication. Format: yyyyMMdd
-	 *  /
-	 */
 	duration: Duration | undefined = undefined;
 
-	/**
-	 *
-	 *  The expiration date of the medication. Format: yyyyMMdd
-	 *  /
-	 */
 	renewal: Renewal | undefined = undefined;
 
-	/**
-	 *
-	 *  The expiration date of the medication. Format: yyyyMMdd
-	 *  /
-	 */
 	knownUsage: boolean | undefined = undefined;
 
-	/**
-	 *
-	 *  The expiration date of the medication. Format: yyyyMMdd
-	 *  /
-	 */
 	regimen: Array<RegimenItem> | undefined = undefined;
 
-	/**
-	 *
-	 *  The expiration date of the medication. Format: yyyyMMdd
-	 *  /
-	 */
 	posology: string | undefined = undefined;
 
 	stockLocation: DecryptedAddress | undefined = undefined;

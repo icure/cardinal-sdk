@@ -622,6 +622,50 @@ private class CalendarItemApiImpl(
 			groupId: String,
 			filter: SortableFilterOptions<CalendarItem>,
 		): List<String> = doMatchCalendarItemsBySorted(groupId, filter)
+
+		override suspend fun getCalendarItemsOccupancyByPeriodForHealthcareParty(
+			groupId: String,
+			startDate: Long,
+			endDate: Long,
+			hcPartyId: String,
+			extensionInDays: Int?
+		): List<CalendarItemOccupancy> = doGetCalendarItemsOccupancyByPeriodForHealthcareParty(
+			groupId = groupId,
+			startDate = startDate,
+			endDate = endDate,
+			hcPartyId = hcPartyId,
+			extensionInDays = extensionInDays,
+		)
+
+		override suspend fun getCalendarItemsOccupancyByPeriodForSelf(
+			groupId: String,
+			startDate: Long,
+			endDate: Long,
+			extensionInDays: Int?
+		): List<CalendarItemOccupancy> {
+			val currentHcPartyReference = config.crypto.dataOwnerApi.getCurrentDataOwnerReference()
+			return doGetCalendarItemsOccupancyByPeriodForHealthcareParty(
+				groupId = groupId,
+				startDate = startDate,
+				endDate = endDate,
+				hcPartyId = currentHcPartyReference.asReferenceStringInGroup(groupId, null),
+				extensionInDays = extensionInDays,
+			)
+		}
+
+		override suspend fun getCalendarItemsOccupancyByPeriodAndAgendaId(
+			groupId: String,
+			startDate: Long,
+			endDate: Long,
+			agendaId: String,
+			extensionInDays: Int?
+		): List<CalendarItemOccupancy> = doGetCalendarItemsOccupancyByPeriodAndAgendaId(
+			groupId = groupId,
+			startDate = startDate,
+			endDate = endDate,
+			agendaId = agendaId,
+			extensionInDays = extensionInDays,
+		)
 	}
 
 	private val crypto get() = config.crypto
@@ -755,6 +799,93 @@ private class CalendarItemApiImpl(
 		filter: SortableFilterOptions<CalendarItem>
 	): List<String> =
 		doMatchCalendarItemsBy(groupId, filter)
+
+	override suspend fun getCalendarItemsOccupancyByPeriodForHealthcareParty(
+		startDate: Long,
+		endDate: Long,
+		hcPartyId: String,
+		extensionInDays: Int?
+	): List<CalendarItemOccupancy> = doGetCalendarItemsOccupancyByPeriodForHealthcareParty(
+		groupId = null,
+		startDate = startDate,
+		endDate = endDate,
+		hcPartyId = hcPartyId,
+		extensionInDays = extensionInDays,
+	)
+
+	override suspend fun getCalendarItemsOccupancyByPeriodForSelf(
+		startDate: Long,
+		endDate: Long,
+		extensionInDays: Int?
+	): List<CalendarItemOccupancy> {
+		val currentHcPartyId = config.crypto.dataOwnerApi.getCurrentDataOwnerId()
+		return doGetCalendarItemsOccupancyByPeriodForHealthcareParty(
+			groupId = null,
+			startDate = startDate,
+			endDate = endDate,
+			hcPartyId = currentHcPartyId,
+			extensionInDays = extensionInDays,
+		)
+	}
+
+	private suspend fun doGetCalendarItemsOccupancyByPeriodForHealthcareParty(
+		groupId: String?,
+		startDate: Long,
+		endDate: Long,
+		hcPartyId: String,
+		extensionInDays: Int? = null,
+	): List<CalendarItemOccupancy> = if (groupId == null) {
+		rawApi.getCalendarItemsOccupancyByPeriodAndHcPartyId(
+			startDate = startDate,
+			endDate = endDate,
+			hcPartyId = hcPartyId,
+			extensionInDays = extensionInDays
+		).successBody()
+	} else {
+		rawApi.getCalendarItemsOccupancyByPeriodAndHcPartyIdInGroup(
+			groupId = groupId,
+			startDate = startDate,
+			endDate = endDate,
+			hcPartyId = hcPartyId,
+			extensionInDays = extensionInDays
+		).successBody()
+	}
+
+	override suspend fun getCalendarItemsOccupancyByPeriodAndAgendaId(
+		startDate: Long,
+		endDate: Long,
+		agendaId: String,
+		extensionInDays: Int?
+	): List<CalendarItemOccupancy> = doGetCalendarItemsOccupancyByPeriodAndAgendaId(
+		groupId = null,
+		startDate = startDate,
+		endDate = endDate,
+		agendaId = agendaId,
+		extensionInDays = extensionInDays,
+	)
+
+	private suspend fun doGetCalendarItemsOccupancyByPeriodAndAgendaId(
+		groupId: String?,
+		startDate: Long,
+		endDate: Long,
+		agendaId: String,
+		extensionInDays: Int? = null,
+	): List<CalendarItemOccupancy> = if (groupId == null) {
+		rawApi.getCalendarItemsOccupancyByPeriodAndAgendaId(
+			startDate = startDate,
+			endDate = endDate,
+			agendaId = agendaId,
+			extensionInDays = extensionInDays
+		).successBody()
+	} else {
+		rawApi.getCalendarItemsOccupancyByPeriodAndAgendaIdInGroup(
+			groupId = groupId,
+			startDate = startDate,
+			endDate = endDate,
+			agendaId = agendaId,
+			extensionInDays = extensionInDays
+		).successBody()
+	}
 
 	override suspend fun subscribeToEvents(
 		events: Set<SubscriptionEventType>,
