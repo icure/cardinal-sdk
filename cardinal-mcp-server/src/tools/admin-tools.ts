@@ -2,7 +2,7 @@ import { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
 import { z } from "zod";
 import { dispatch } from "./dispatch.js";
 
-const ADMIN_APIS = ["Group", "User", "Role", "Permission", "System", "Auth"] as const;
+const ADMIN_APIS = ["Group", "User", "Role", "Permission", "System", "Auth", "Filter"] as const;
 
 export function registerAdminTools(server: McpServer) {
 	server.tool(
