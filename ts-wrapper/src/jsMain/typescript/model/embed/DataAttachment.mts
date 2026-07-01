@@ -4,9 +4,9 @@ import {expectArray, expectNumber, expectString, extractEntry} from '../../inter
 
 /**
  *
- *  Represents a data attachment that can be stored either as a CouchDB attachment or via object
+ *
+ *   Represents a data attachment that can be stored either as a CouchDB attachment or via object
  *  storage.
- *  /
  */
 export class DataAttachment {
 

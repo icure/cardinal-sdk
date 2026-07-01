@@ -13,6 +13,7 @@ import com.icure.cardinal.sdk.model.ListOfIds
 import com.icure.cardinal.sdk.model.ListOfIdsAndRev
 import com.icure.cardinal.sdk.model.conflicts.ConflictResolutionRequest
 import com.icure.cardinal.sdk.model.conflicts.ConflictResolutionResult
+import com.icure.cardinal.sdk.model.conflicts.ConflictResolutionStrategy
 import com.icure.cardinal.sdk.model.conflicts.MergeResult
 import com.icure.cardinal.sdk.model.couchdb.DocIdentifier
 import com.icure.cardinal.sdk.model.requests.BulkShareOrUpdateMetadataParams
@@ -319,7 +320,8 @@ class RawReceiptApiImpl(
 		get(authProvider) {
 			url {
 				takeFrom(apiUrl)
-				appendPathSegments("rest", "v2", "receipt", "conflicts", entityId)
+				appendPathSegments("rest", "v2", "receipt", "conflicts", "of")
+				parameter("entityId", entityId)
 				parameter("ts", GMTDate().timestamp)
 			}
 			accept(Application.Json)
@@ -338,11 +340,15 @@ class RawReceiptApiImpl(
 			setBody(request)
 		}.wrap()
 
-	override suspend fun autoSolveConflicts(entityIds: List<String>): HttpResponse<List<MergeResult>> =
+	override suspend fun autoSolveConflicts(
+		entityIds: List<String>,
+		strategy: ConflictResolutionStrategy?,
+	): HttpResponse<List<MergeResult>> =
 		post(authProvider) {
 			url {
 				takeFrom(apiUrl)
 				appendPathSegments("rest", "v2", "receipt", "conflicts", "solve")
+				parameter("strategy", strategy?.dtoSerialName)
 			}
 			contentType(Application.Json)
 			accept(Application.Json)
@@ -552,7 +558,8 @@ class RawReceiptApiImpl(
 		get(authProvider) {
 			url {
 				takeFrom(apiUrl)
-				appendPathSegments("rest", "v2", "receipt", "inGroup", groupId, "conflicts", entityId)
+				appendPathSegments("rest", "v2", "receipt", "inGroup", groupId, "conflicts", "of")
+				parameter("entityId", entityId)
 				parameter("ts", GMTDate().timestamp)
 			}
 			accept(Application.Json)
@@ -575,11 +582,13 @@ class RawReceiptApiImpl(
 	override suspend fun autoSolveConflictsInGroup(
 		groupId: String,
 		entityIds: List<String>,
+		strategy: ConflictResolutionStrategy?,
 	): HttpResponse<List<MergeResult>> =
 		post(authProvider) {
 			url {
 				takeFrom(apiUrl)
 				appendPathSegments("rest", "v2", "receipt", "inGroup", groupId, "conflicts", "solve")
+				parameter("strategy", strategy?.dtoSerialName)
 			}
 			contentType(Application.Json)
 			accept(Application.Json)

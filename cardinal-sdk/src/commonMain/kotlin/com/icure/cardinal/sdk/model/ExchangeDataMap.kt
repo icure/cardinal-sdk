@@ -30,7 +30,6 @@ data class ExchangeDataMap(
 	override val rev: String? = null,
 	/**
 	 * A map where each key is a public key fingerprint and the value is an encrypted exchange data id.
-	 *
 	 */
 	@param:DefaultValue("emptyMap()")
 	public val encryptedExchangeDataIds: Map<KeypairFingerprintV2String, Base64String> = emptyMap(),

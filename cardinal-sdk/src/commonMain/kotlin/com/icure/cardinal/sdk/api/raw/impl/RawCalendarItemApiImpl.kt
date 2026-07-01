@@ -9,6 +9,7 @@ import com.icure.cardinal.sdk.auth.services.AuthProvider
 import com.icure.cardinal.sdk.crypto.AccessControlKeysHeadersProvider
 import com.icure.cardinal.sdk.crypto.entities.EntityWithEncryptionMetadataTypeName
 import com.icure.cardinal.sdk.model.CalendarItem
+import com.icure.cardinal.sdk.model.CalendarItemOccupancy
 import com.icure.cardinal.sdk.model.EncryptedCalendarItem
 import com.icure.cardinal.sdk.model.IcureStub
 import com.icure.cardinal.sdk.model.ListOfIds
@@ -16,6 +17,7 @@ import com.icure.cardinal.sdk.model.ListOfIdsAndRev
 import com.icure.cardinal.sdk.model.PaginatedList
 import com.icure.cardinal.sdk.model.conflicts.ConflictResolutionRequest
 import com.icure.cardinal.sdk.model.conflicts.ConflictResolutionResult
+import com.icure.cardinal.sdk.model.conflicts.ConflictResolutionStrategy
 import com.icure.cardinal.sdk.model.conflicts.MergeResult
 import com.icure.cardinal.sdk.model.couchdb.DocIdentifier
 import com.icure.cardinal.sdk.model.filter.AbstractFilter
@@ -242,6 +244,44 @@ class RawCalendarItemApiImpl(
 			accept(Application.Json)
 		}.wrap()
 
+	override suspend fun getCalendarItemsOccupancyByPeriodAndHcPartyId(
+		startDate: Long,
+		endDate: Long,
+		hcPartyId: String,
+		extensionInDays: Int?,
+	): HttpResponse<List<CalendarItemOccupancy>> =
+		post(authProvider) {
+			url {
+				takeFrom(apiUrl)
+				appendPathSegments("rest", "v2", "calendarItem", "occupancyByPeriodAndHcPartyId")
+				parameter("startDate", startDate)
+				parameter("endDate", endDate)
+				parameter("hcPartyId", hcPartyId)
+				parameter("extensionInDays", extensionInDays)
+			}
+			contentType(Application.Json)
+			accept(Application.Json)
+		}.wrap()
+
+	override suspend fun getCalendarItemsOccupancyByPeriodAndAgendaId(
+		startDate: Long,
+		endDate: Long,
+		agendaId: String,
+		extensionInDays: Int?,
+	): HttpResponse<List<CalendarItemOccupancy>> =
+		post(authProvider) {
+			url {
+				takeFrom(apiUrl)
+				appendPathSegments("rest", "v2", "calendarItem", "occupancyByPeriodAndAgendaId")
+				parameter("startDate", startDate)
+				parameter("endDate", endDate)
+				parameter("agendaId", agendaId)
+				parameter("extensionInDays", extensionInDays)
+			}
+			contentType(Application.Json)
+			accept(Application.Json)
+		}.wrap()
+
 	override suspend fun getCalendarItemsWithIds(calendarItemIds: ListOfIds): HttpResponse<List<EncryptedCalendarItem>> =
 		post(authProvider) {
 			url {
@@ -438,7 +478,8 @@ class RawCalendarItemApiImpl(
 		get(authProvider) {
 			url {
 				takeFrom(apiUrl)
-				appendPathSegments("rest", "v2", "calendarItem", "conflicts", entityId)
+				appendPathSegments("rest", "v2", "calendarItem", "conflicts", "of")
+				parameter("entityId", entityId)
 				parameter("ts", GMTDate().timestamp)
 			}
 			accept(Application.Json)
@@ -457,11 +498,15 @@ class RawCalendarItemApiImpl(
 			setBody(request)
 		}.wrap()
 
-	override suspend fun autoSolveConflicts(entityIds: List<String>): HttpResponse<List<MergeResult>> =
+	override suspend fun autoSolveConflicts(
+		entityIds: List<String>,
+		strategy: ConflictResolutionStrategy?,
+	): HttpResponse<List<MergeResult>> =
 		post(authProvider) {
 			url {
 				takeFrom(apiUrl)
 				appendPathSegments("rest", "v2", "calendarItem", "conflicts", "solve")
+				parameter("strategy", strategy?.dtoSerialName)
 			}
 			contentType(Application.Json)
 			accept(Application.Json)
@@ -559,6 +604,46 @@ class RawCalendarItemApiImpl(
 			contentType(Application.Json)
 			accept(Application.Json)
 			setBody(calendarItemIds)
+		}.wrap()
+
+	override suspend fun getCalendarItemsOccupancyByPeriodAndHcPartyIdInGroup(
+		groupId: String,
+		startDate: Long,
+		endDate: Long,
+		hcPartyId: String,
+		extensionInDays: Int?,
+	): HttpResponse<List<CalendarItemOccupancy>> =
+		post(authProvider, groupId) {
+			url {
+				takeFrom(apiUrl)
+				appendPathSegments("rest", "v2", "calendarItem", "inGroup", groupId, "occupancyByPeriodAndHcPartyId")
+				parameter("startDate", startDate)
+				parameter("endDate", endDate)
+				parameter("hcPartyId", hcPartyId)
+				parameter("extensionInDays", extensionInDays)
+			}
+			contentType(Application.Json)
+			accept(Application.Json)
+		}.wrap()
+
+	override suspend fun getCalendarItemsOccupancyByPeriodAndAgendaIdInGroup(
+		groupId: String,
+		startDate: Long,
+		endDate: Long,
+		agendaId: String,
+		extensionInDays: Int?,
+	): HttpResponse<List<CalendarItemOccupancy>> =
+		post(authProvider, groupId) {
+			url {
+				takeFrom(apiUrl)
+				appendPathSegments("rest", "v2", "calendarItem", "inGroup", groupId, "occupancyByPeriodAndAgendaId")
+				parameter("startDate", startDate)
+				parameter("endDate", endDate)
+				parameter("agendaId", agendaId)
+				parameter("extensionInDays", extensionInDays)
+			}
+			contentType(Application.Json)
+			accept(Application.Json)
 		}.wrap()
 
 	override suspend fun deleteCalendarItemsInGroup(
@@ -722,7 +807,8 @@ class RawCalendarItemApiImpl(
 		get(authProvider) {
 			url {
 				takeFrom(apiUrl)
-				appendPathSegments("rest", "v2", "calendarItem", "inGroup", groupId, "conflicts", entityId)
+				appendPathSegments("rest", "v2", "calendarItem", "inGroup", groupId, "conflicts", "of")
+				parameter("entityId", entityId)
 				parameter("ts", GMTDate().timestamp)
 			}
 			accept(Application.Json)
@@ -745,11 +831,13 @@ class RawCalendarItemApiImpl(
 	override suspend fun autoSolveConflictsInGroup(
 		groupId: String,
 		entityIds: List<String>,
+		strategy: ConflictResolutionStrategy?,
 	): HttpResponse<List<MergeResult>> =
 		post(authProvider) {
 			url {
 				takeFrom(apiUrl)
 				appendPathSegments("rest", "v2", "calendarItem", "inGroup", groupId, "conflicts", "solve")
+				parameter("strategy", strategy?.dtoSerialName)
 			}
 			contentType(Application.Json)
 			accept(Application.Json)

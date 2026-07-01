@@ -34,12 +34,12 @@ import kotlin.collections.Set
 import kotlin.Int
 
 /**
- * Represents a healthcare element. A healthcare element is a patient-centric representation of a
+ *
+ *  Represents a healthcare element. A healthcare element is a patient-centric representation of a
  * healthcare problem
- * that evolves over time in its name/label and characteristics. It is a central element in the
+ *  that evolves over time in its name/label and characteristics. It is a central element in the
  * organisation of the
- * electronic health record, used to filter and link medical data in a meaningful way.
- * /
+ *  electronic health record, used to filter and link medical data in a meaningful way.
  */
 
 sealed interface HealthElement :
@@ -219,12 +219,12 @@ sealed interface HealthElement :
 }
 
 /**
- * Represents a healthcare element. A healthcare element is a patient-centric representation of a
+ *
+ *  Represents a healthcare element. A healthcare element is a patient-centric representation of a
  * healthcare problem
- * that evolves over time in its name/label and characteristics. It is a central element in the
+ *  that evolves over time in its name/label and characteristics. It is a central element in the
  * organisation of the
- * electronic health record, used to filter and link medical data in a meaningful way.
- * /
+ *  electronic health record, used to filter and link medical data in a meaningful way.
  */
 @Serializable
 data class DecryptedHealthElement(
@@ -379,12 +379,12 @@ override fun copyWithSecurityMetadata(securityMetadata: SecurityMetadata, secret
 }
 
 /**
- * Represents a healthcare element. A healthcare element is a patient-centric representation of a
+ *
+ *  Represents a healthcare element. A healthcare element is a patient-centric representation of a
  * healthcare problem
- * that evolves over time in its name/label and characteristics. It is a central element in the
+ *  that evolves over time in its name/label and characteristics. It is a central element in the
  * organisation of the
- * electronic health record, used to filter and link medical data in a meaningful way.
- * /
+ *  electronic health record, used to filter and link medical data in a meaningful way.
  */
 @Serializable
 data class EncryptedHealthElement(

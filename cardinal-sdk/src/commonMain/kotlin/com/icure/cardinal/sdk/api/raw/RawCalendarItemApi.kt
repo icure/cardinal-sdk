@@ -1,6 +1,7 @@
 package com.icure.cardinal.sdk.api.raw
 
 import com.icure.cardinal.sdk.model.CalendarItem
+import com.icure.cardinal.sdk.model.CalendarItemOccupancy
 import com.icure.cardinal.sdk.model.EncryptedCalendarItem
 import com.icure.cardinal.sdk.model.IcureStub
 import com.icure.cardinal.sdk.model.ListOfIds
@@ -8,6 +9,7 @@ import com.icure.cardinal.sdk.model.ListOfIdsAndRev
 import com.icure.cardinal.sdk.model.PaginatedList
 import com.icure.cardinal.sdk.model.conflicts.ConflictResolutionRequest
 import com.icure.cardinal.sdk.model.conflicts.ConflictResolutionResult
+import com.icure.cardinal.sdk.model.conflicts.ConflictResolutionStrategy
 import com.icure.cardinal.sdk.model.conflicts.MergeResult
 import com.icure.cardinal.sdk.model.couchdb.DocIdentifier
 import com.icure.cardinal.sdk.model.filter.AbstractFilter
@@ -77,6 +79,20 @@ public interface RawCalendarItemApi {
 		agendaId: String,
 	): HttpResponse<List<EncryptedCalendarItem>>
 
+	suspend fun getCalendarItemsOccupancyByPeriodAndHcPartyId(
+		startDate: Long,
+		endDate: Long,
+		hcPartyId: String,
+		extensionInDays: Int? = null,
+	): HttpResponse<List<CalendarItemOccupancy>>
+
+	suspend fun getCalendarItemsOccupancyByPeriodAndAgendaId(
+		startDate: Long,
+		endDate: Long,
+		agendaId: String,
+		extensionInDays: Int? = null,
+	): HttpResponse<List<CalendarItemOccupancy>>
+
 	suspend fun getCalendarItemsWithIds(calendarItemIds: ListOfIds): HttpResponse<List<EncryptedCalendarItem>>
 
 	suspend fun listCalendarItemsByHCPartyPatientForeignKeys(
@@ -141,7 +157,10 @@ public interface RawCalendarItemApi {
 		request: ConflictResolutionRequest<EncryptedCalendarItem>,
 	): HttpResponse<ConflictResolutionResult<EncryptedCalendarItem>>
 
-	suspend fun autoSolveConflicts(entityIds: List<String>): HttpResponse<List<MergeResult>>
+	suspend fun autoSolveConflicts(
+		entityIds: List<String>,
+		strategy: ConflictResolutionStrategy?,
+	): HttpResponse<List<MergeResult>>
 	// endregion
 
 	// region cloud endpoints
@@ -175,6 +194,22 @@ public interface RawCalendarItemApi {
 		groupId: String,
 		calendarItemIds: ListOfIds,
 	): HttpResponse<List<EncryptedCalendarItem>>
+
+	suspend fun getCalendarItemsOccupancyByPeriodAndHcPartyIdInGroup(
+		groupId: String,
+		startDate: Long,
+		endDate: Long,
+		hcPartyId: String,
+		extensionInDays: Int? = null,
+	): HttpResponse<List<CalendarItemOccupancy>>
+
+	suspend fun getCalendarItemsOccupancyByPeriodAndAgendaIdInGroup(
+		groupId: String,
+		startDate: Long,
+		endDate: Long,
+		agendaId: String,
+		extensionInDays: Int? = null,
+	): HttpResponse<List<CalendarItemOccupancy>>
 
 	suspend fun deleteCalendarItemsInGroup(
 		groupId: String,
@@ -238,6 +273,7 @@ public interface RawCalendarItemApi {
 	suspend fun autoSolveConflictsInGroup(
 		groupId: String,
 		entityIds: List<String>,
+		strategy: ConflictResolutionStrategy?,
 	): HttpResponse<List<MergeResult>>
 	// endregion
 }

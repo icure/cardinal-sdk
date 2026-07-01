@@ -6,6 +6,7 @@ import com.icure.cardinal.sdk.model.PaginatedList
 import com.icure.cardinal.sdk.model.Place
 import com.icure.cardinal.sdk.model.conflicts.ConflictResolutionRequest
 import com.icure.cardinal.sdk.model.conflicts.ConflictResolutionResult
+import com.icure.cardinal.sdk.model.conflicts.ConflictResolutionStrategy
 import com.icure.cardinal.sdk.model.conflicts.MergeResult
 import com.icure.cardinal.sdk.model.couchdb.DocIdentifier
 import com.icure.utils.InternalIcureApi
@@ -65,7 +66,10 @@ public interface RawPlaceApi {
 
 	suspend fun declareConflictWinner(request: ConflictResolutionRequest<Place>): HttpResponse<ConflictResolutionResult<Place>>
 
-	suspend fun autoSolveConflicts(entityIds: List<String>): HttpResponse<List<MergeResult>>
+	suspend fun autoSolveConflicts(
+		entityIds: List<String>,
+		strategy: ConflictResolutionStrategy?,
+	): HttpResponse<List<MergeResult>>
 	// endregion
 
 	// region cloud endpoints
@@ -148,6 +152,7 @@ public interface RawPlaceApi {
 	suspend fun autoSolveConflictsInGroup(
 		groupId: String,
 		entityIds: List<String>,
+		strategy: ConflictResolutionStrategy?,
 	): HttpResponse<List<MergeResult>>
 	// endregion
 }

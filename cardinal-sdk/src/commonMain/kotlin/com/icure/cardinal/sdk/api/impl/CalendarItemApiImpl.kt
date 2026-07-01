@@ -27,6 +27,7 @@ import com.icure.cardinal.sdk.filters.FilterOptions
 import com.icure.cardinal.sdk.filters.SortableFilterOptions
 import com.icure.cardinal.sdk.filters.mapCalendarItemFilterOptions
 import com.icure.cardinal.sdk.model.CalendarItem
+import com.icure.cardinal.sdk.model.CalendarItemOccupancy
 import com.icure.cardinal.sdk.model.DecryptedCalendarItem
 import com.icure.cardinal.sdk.model.EncryptedCalendarItem
 import com.icure.cardinal.sdk.model.EntityReferenceInGroup
@@ -824,12 +825,56 @@ private class CalendarItemBasicApiImpl(
 				doMatchCalendarItemsBy(groupId, filter),
 			) { getCalendarItems(groupId, it) }
 
-
 		override suspend fun filterCalendarItemsBySorted(
 			groupId: String,
 			filter: BaseSortableFilterOptions<CalendarItem>
 		): PaginatedListIterator<GroupScoped<EncryptedCalendarItem>> =
 			filterCalendarItemsBy(groupId, filter)
+
+		override suspend fun getCalendarItemsOccupancyByPeriodForHealthcareParty(
+			groupId: String,
+			startDate: Long,
+			endDate: Long,
+			hcPartyId: String,
+			extensionInDays: Int?
+		): List<CalendarItemOccupancy> = doGetCalendarItemsOccupancyByPeriodForHealthcareParty(
+			groupId = groupId,
+			startDate = startDate,
+			endDate = endDate,
+			hcPartyId = hcPartyId,
+			extensionInDays = extensionInDays,
+		)
+
+		override suspend fun getCalendarItemsOccupancyByPeriodForSelf(
+			groupId: String,
+			startDate: Long,
+			endDate: Long,
+			extensionInDays: Int?
+		): List<CalendarItemOccupancy> {
+			val currentHcPartyReference = (config as? ApiConfiguration)?.crypto?.dataOwnerApi?.getCurrentDataOwnerReference()
+				?: throw IllegalStateException("Cannot retrieve current data owner reference")
+			return doGetCalendarItemsOccupancyByPeriodForHealthcareParty(
+				groupId = groupId,
+				startDate = startDate,
+				endDate = endDate,
+				hcPartyId = currentHcPartyReference.asReferenceStringInGroup(groupId, null),
+				extensionInDays = extensionInDays,
+			)
+		}
+
+		override suspend fun getCalendarItemsOccupancyByPeriodAndAgendaId(
+			groupId: String,
+			startDate: Long,
+			endDate: Long,
+			agendaId: String,
+			extensionInDays: Int?
+		): List<CalendarItemOccupancy> = doGetCalendarItemsOccupancyByPeriodAndAgendaId(
+			groupId = groupId,
+			startDate = startDate,
+			endDate = endDate,
+			agendaId = agendaId,
+			extensionInDays = extensionInDays,
+		)
 	}
 
 	override suspend fun matchCalendarItemsBy(filter: BaseFilterOptions<CalendarItem>): List<String> =
@@ -866,6 +911,94 @@ private class CalendarItemBasicApiImpl(
 				)
 			).successBody()
 		}
+
+	override suspend fun getCalendarItemsOccupancyByPeriodForHealthcareParty(
+		startDate: Long,
+		endDate: Long,
+		hcPartyId: String,
+		extensionInDays: Int?
+	): List<CalendarItemOccupancy> = doGetCalendarItemsOccupancyByPeriodForHealthcareParty(
+		groupId = null,
+		startDate = startDate,
+		endDate = endDate,
+		hcPartyId = hcPartyId,
+		extensionInDays = extensionInDays,
+	)
+
+	override suspend fun getCalendarItemsOccupancyByPeriodForSelf(
+		startDate: Long,
+		endDate: Long,
+		extensionInDays: Int?
+	): List<CalendarItemOccupancy> {
+		val currentHcPartyId = (config as? ApiConfiguration)?.crypto?.dataOwnerApi?.getCurrentDataOwnerId()
+			?: throw IllegalStateException("Cannot retrieve current data owner id")
+		return doGetCalendarItemsOccupancyByPeriodForHealthcareParty(
+			groupId = null,
+			startDate = startDate,
+			endDate = endDate,
+			hcPartyId = currentHcPartyId,
+			extensionInDays = extensionInDays,
+		)
+	}
+
+	private suspend fun doGetCalendarItemsOccupancyByPeriodForHealthcareParty(
+		groupId: String?,
+		startDate: Long,
+		endDate: Long,
+		hcPartyId: String,
+		extensionInDays: Int? = null,
+	): List<CalendarItemOccupancy> = if (groupId == null) {
+		rawApi.getCalendarItemsOccupancyByPeriodAndHcPartyId(
+			startDate = startDate,
+			endDate = endDate,
+			hcPartyId = hcPartyId,
+			extensionInDays = extensionInDays
+		).successBody()
+	} else {
+		rawApi.getCalendarItemsOccupancyByPeriodAndHcPartyIdInGroup(
+			groupId = groupId,
+			startDate = startDate,
+			endDate = endDate,
+			hcPartyId = hcPartyId,
+			extensionInDays = extensionInDays
+		).successBody()
+	}
+
+	override suspend fun getCalendarItemsOccupancyByPeriodAndAgendaId(
+		startDate: Long,
+		endDate: Long,
+		agendaId: String,
+		extensionInDays: Int?
+	): List<CalendarItemOccupancy> = doGetCalendarItemsOccupancyByPeriodAndAgendaId(
+		groupId = null,
+		startDate = startDate,
+		endDate = endDate,
+		agendaId = agendaId,
+		extensionInDays = extensionInDays,
+	)
+
+	private suspend fun doGetCalendarItemsOccupancyByPeriodAndAgendaId(
+		groupId: String?,
+		startDate: Long,
+		endDate: Long,
+		agendaId: String,
+		extensionInDays: Int? = null,
+	) = if (groupId == null) {
+		rawApi.getCalendarItemsOccupancyByPeriodAndAgendaId(
+			startDate = startDate,
+			endDate = endDate,
+			agendaId = agendaId,
+			extensionInDays = extensionInDays
+		).successBody()
+	} else {
+		rawApi.getCalendarItemsOccupancyByPeriodAndAgendaIdInGroup(
+			groupId = groupId,
+			startDate = startDate,
+			endDate = endDate,
+			agendaId = agendaId,
+			extensionInDays = extensionInDays
+		).successBody()
+	}
 
 	override suspend fun subscribeToEvents(
 		events: Set<SubscriptionEventType>,
