@@ -21,10 +21,13 @@ import com.icure.cardinal.sdk.js.filters.SortableFilterOptionsJs
 import com.icure.cardinal.sdk.js.filters.filterOptions_fromJs
 import com.icure.cardinal.sdk.js.filters.sortableFilterOptions_fromJs
 import com.icure.cardinal.sdk.js.model.CalendarItemJs
+import com.icure.cardinal.sdk.js.model.CalendarItemOccupancyJs
 import com.icure.cardinal.sdk.js.model.CheckedConverters.arrayToList
 import com.icure.cardinal.sdk.js.model.CheckedConverters.arrayToSet
 import com.icure.cardinal.sdk.js.model.CheckedConverters.listToArray
 import com.icure.cardinal.sdk.js.model.CheckedConverters.nullToUndefined
+import com.icure.cardinal.sdk.js.model.CheckedConverters.numberToInt
+import com.icure.cardinal.sdk.js.model.CheckedConverters.numberToLong
 import com.icure.cardinal.sdk.js.model.CheckedConverters.objectToMap
 import com.icure.cardinal.sdk.js.model.CheckedConverters.setToArray
 import com.icure.cardinal.sdk.js.model.CheckedConverters.undefinedToNull
@@ -35,6 +38,7 @@ import com.icure.cardinal.sdk.js.model.GroupScopedJs
 import com.icure.cardinal.sdk.js.model.PatientJs
 import com.icure.cardinal.sdk.js.model.StoredDocumentIdentifierJs
 import com.icure.cardinal.sdk.js.model.UserJs
+import com.icure.cardinal.sdk.js.model.calendarItemOccupancy_toJs
 import com.icure.cardinal.sdk.js.model.calendarItem_fromJs
 import com.icure.cardinal.sdk.js.model.calendarItem_toJs
 import com.icure.cardinal.sdk.js.model.entityReferenceInGroup_fromJs
@@ -58,6 +62,7 @@ import com.icure.cardinal.sdk.js.utils.Record
 import com.icure.cardinal.sdk.js.utils.pagination.PaginatedListIteratorJs
 import com.icure.cardinal.sdk.js.utils.pagination.paginatedListIterator_toJs
 import com.icure.cardinal.sdk.model.CalendarItem
+import com.icure.cardinal.sdk.model.CalendarItemOccupancy
 import com.icure.cardinal.sdk.model.DecryptedCalendarItem
 import com.icure.cardinal.sdk.model.EncryptedCalendarItem
 import com.icure.cardinal.sdk.model.EntityReferenceInGroup
@@ -71,6 +76,9 @@ import com.icure.cardinal.sdk.subscription.EntitySubscriptionConfiguration
 import com.icure.cardinal.sdk.subscription.SubscriptionEventType
 import kotlin.Array
 import kotlin.Boolean
+import kotlin.Double
+import kotlin.Int
+import kotlin.Long
 import kotlin.OptIn
 import kotlin.String
 import kotlin.Unit
@@ -1578,6 +1586,84 @@ internal class CalendarItemApiImplJs(
 			)
 		}
 
+		override fun getCalendarItemsOccupancyByPeriodForSelf(
+			groupId: String,
+			startDate: Double,
+			endDate: Double,
+			extensionInDays: Double?,
+		): Promise<Array<CalendarItemOccupancyJs>> = GlobalScope.promise {
+			val groupIdConverted: String = groupId
+			val startDateConverted: Long = numberToLong(startDate, "startDate")
+			val endDateConverted: Long = numberToLong(endDate, "endDate")
+			val extensionInDaysConverted: Int? = numberToInt(extensionInDays, "extensionInDays")
+			val result = calendarItemApi.inGroup.getCalendarItemsOccupancyByPeriodForSelf(
+				groupIdConverted,
+				startDateConverted,
+				endDateConverted,
+				extensionInDaysConverted,
+			)
+			listToArray(
+				result,
+				{ x1: CalendarItemOccupancy ->
+					calendarItemOccupancy_toJs(x1)
+				},
+			)
+		}
+
+		override fun getCalendarItemsOccupancyByPeriodForHealthcareParty(
+			groupId: String,
+			startDate: Double,
+			endDate: Double,
+			hcPartyId: String,
+			extensionInDays: Double?,
+		): Promise<Array<CalendarItemOccupancyJs>> = GlobalScope.promise {
+			val groupIdConverted: String = groupId
+			val startDateConverted: Long = numberToLong(startDate, "startDate")
+			val endDateConverted: Long = numberToLong(endDate, "endDate")
+			val hcPartyIdConverted: String = hcPartyId
+			val extensionInDaysConverted: Int? = numberToInt(extensionInDays, "extensionInDays")
+			val result = calendarItemApi.inGroup.getCalendarItemsOccupancyByPeriodForHealthcareParty(
+				groupIdConverted,
+				startDateConverted,
+				endDateConverted,
+				hcPartyIdConverted,
+				extensionInDaysConverted,
+			)
+			listToArray(
+				result,
+				{ x1: CalendarItemOccupancy ->
+					calendarItemOccupancy_toJs(x1)
+				},
+			)
+		}
+
+		override fun getCalendarItemsOccupancyByPeriodAndAgendaId(
+			groupId: String,
+			startDate: Double,
+			endDate: Double,
+			agendaId: String,
+			extensionInDays: Double?,
+		): Promise<Array<CalendarItemOccupancyJs>> = GlobalScope.promise {
+			val groupIdConverted: String = groupId
+			val startDateConverted: Long = numberToLong(startDate, "startDate")
+			val endDateConverted: Long = numberToLong(endDate, "endDate")
+			val agendaIdConverted: String = agendaId
+			val extensionInDaysConverted: Int? = numberToInt(extensionInDays, "extensionInDays")
+			val result = calendarItemApi.inGroup.getCalendarItemsOccupancyByPeriodAndAgendaId(
+				groupIdConverted,
+				startDateConverted,
+				endDateConverted,
+				agendaIdConverted,
+				extensionInDaysConverted,
+			)
+			listToArray(
+				result,
+				{ x1: CalendarItemOccupancy ->
+					calendarItemOccupancy_toJs(x1)
+				},
+			)
+		}
+
 		override fun deleteCalendarItemById(entityId: GroupScopedJs<StoredDocumentIdentifierJs>):
 				Promise<GroupScopedJs<StoredDocumentIdentifierJs>> = GlobalScope.promise {
 			val entityIdConverted: GroupScoped<StoredDocumentIdentifier> = groupScoped_fromJs(
@@ -2314,6 +2400,75 @@ internal class CalendarItemApiImplJs(
 			result,
 			{ x1: String ->
 				x1
+			},
+		)
+	}
+
+	override fun getCalendarItemsOccupancyByPeriodForSelf(
+		startDate: Double,
+		endDate: Double,
+		extensionInDays: Double?,
+	): Promise<Array<CalendarItemOccupancyJs>> = GlobalScope.promise {
+		val startDateConverted: Long = numberToLong(startDate, "startDate")
+		val endDateConverted: Long = numberToLong(endDate, "endDate")
+		val extensionInDaysConverted: Int? = numberToInt(extensionInDays, "extensionInDays")
+		val result = calendarItemApi.getCalendarItemsOccupancyByPeriodForSelf(
+			startDateConverted,
+			endDateConverted,
+			extensionInDaysConverted,
+		)
+		listToArray(
+			result,
+			{ x1: CalendarItemOccupancy ->
+				calendarItemOccupancy_toJs(x1)
+			},
+		)
+	}
+
+	override fun getCalendarItemsOccupancyByPeriodForHealthcareParty(
+		startDate: Double,
+		endDate: Double,
+		hcPartyId: String,
+		extensionInDays: Double?,
+	): Promise<Array<CalendarItemOccupancyJs>> = GlobalScope.promise {
+		val startDateConverted: Long = numberToLong(startDate, "startDate")
+		val endDateConverted: Long = numberToLong(endDate, "endDate")
+		val hcPartyIdConverted: String = hcPartyId
+		val extensionInDaysConverted: Int? = numberToInt(extensionInDays, "extensionInDays")
+		val result = calendarItemApi.getCalendarItemsOccupancyByPeriodForHealthcareParty(
+			startDateConverted,
+			endDateConverted,
+			hcPartyIdConverted,
+			extensionInDaysConverted,
+		)
+		listToArray(
+			result,
+			{ x1: CalendarItemOccupancy ->
+				calendarItemOccupancy_toJs(x1)
+			},
+		)
+	}
+
+	override fun getCalendarItemsOccupancyByPeriodAndAgendaId(
+		startDate: Double,
+		endDate: Double,
+		agendaId: String,
+		extensionInDays: Double?,
+	): Promise<Array<CalendarItemOccupancyJs>> = GlobalScope.promise {
+		val startDateConverted: Long = numberToLong(startDate, "startDate")
+		val endDateConverted: Long = numberToLong(endDate, "endDate")
+		val agendaIdConverted: String = agendaId
+		val extensionInDaysConverted: Int? = numberToInt(extensionInDays, "extensionInDays")
+		val result = calendarItemApi.getCalendarItemsOccupancyByPeriodAndAgendaId(
+			startDateConverted,
+			endDateConverted,
+			agendaIdConverted,
+			extensionInDaysConverted,
+		)
+		listToArray(
+			result,
+			{ x1: CalendarItemOccupancy ->
+				calendarItemOccupancy_toJs(x1)
 			},
 		)
 	}
