@@ -171,6 +171,17 @@ class RawInsuranceApiImpl(
 			setBody(insuranceIds)
 		}.wrap()
 
+	override suspend fun matchInsurancesBy(filter: AbstractFilter<Insurance>): HttpResponse<List<String>> =
+		post(authProvider) {
+			url {
+				takeFrom(apiUrl)
+				appendPathSegments("rest", "v2", "insurance", "match")
+			}
+			contentType(Application.Json)
+			accept(Application.Json)
+			setBodyWithSerializer(InsuranceAbstractFilterSerializer, filter)
+		}.wrap()
+
 	override suspend fun listInsurancesByCode(insuranceCode: String): HttpResponse<List<Insurance>> =
 		get(authProvider) {
 			url {

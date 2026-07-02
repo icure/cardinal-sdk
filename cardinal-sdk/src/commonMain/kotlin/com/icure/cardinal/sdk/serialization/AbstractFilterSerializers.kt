@@ -99,6 +99,8 @@ import com.icure.cardinal.sdk.model.filter.healthelement.HealthElementByHcPartyT
 import com.icure.cardinal.sdk.model.filter.healthelement.HealthElementByHcPartyTagFilter
 import com.icure.cardinal.sdk.model.filter.healthelement.HealthElementByIdsFilter
 import com.icure.cardinal.sdk.model.filter.insurance.AllInsurancesFilter
+import com.icure.cardinal.sdk.model.filter.insurance.InsuranceByIdentifiersFilter
+import com.icure.cardinal.sdk.model.filter.insurance.InsuranceByTagCodeFilter
 import com.icure.cardinal.sdk.model.filter.invoice.InvoiceByHcPartyCodeDateFilter
 import com.icure.cardinal.sdk.model.filter.maintenancetask.MaintenanceTaskAfterDateFilter
 import com.icure.cardinal.sdk.model.filter.maintenancetask.MaintenanceTaskByHcPartyAndIdentifiersFilter
@@ -761,6 +763,8 @@ internal object InsuranceAbstractFilterSerializer :
 			"IntersectionFilter" -> IntersectionFilterSerializer(this)
 			"UnionFilter" -> UnionFilterSerializer(this)
 			"AllInsurancesFilter" -> AllInsurancesFilter.serializer()
+			"InsuranceByIdentifiersFilter" -> InsuranceByIdentifiersFilter.serializer()
+			"InsuranceByTagCodeFilter" -> InsuranceByTagCodeFilter.serializer()
 			else -> null
 		}
 
@@ -770,6 +774,8 @@ internal object InsuranceAbstractFilterSerializer :
 			IntersectionFilter::class -> IntersectionFilterSerializer(this)
 			UnionFilter::class -> UnionFilterSerializer(this)
 			AllInsurancesFilter::class -> AllInsurancesFilter.serializer()
+			InsuranceByIdentifiersFilter::class -> InsuranceByIdentifiersFilter.serializer()
+			InsuranceByTagCodeFilter::class -> InsuranceByTagCodeFilter.serializer()
 			else -> null
 		}
 }

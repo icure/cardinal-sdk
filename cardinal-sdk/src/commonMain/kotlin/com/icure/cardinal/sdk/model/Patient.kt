@@ -5,6 +5,7 @@ package com.icure.cardinal.sdk.model
 import com.icure.cardinal.sdk.model.base.CodeStub
 import com.icure.cardinal.sdk.model.base.CryptoActor
 import com.icure.cardinal.sdk.model.base.HasEncryptionMetadata
+import com.icure.cardinal.sdk.model.base.HasIdentifier
 import com.icure.cardinal.sdk.model.base.ICureDocument
 import com.icure.cardinal.sdk.model.base.Identifier
 import com.icure.cardinal.sdk.model.base.Person
@@ -74,6 +75,7 @@ sealed interface Patient :
 	Person,
 	HasEncryptionMetadata,
 	Encryptable,
+	HasIdentifier,
 	CryptoActor {
 	/**
 	 * The Id of the patient. We encourage using either a v4 UUID or a HL7 Id.
@@ -83,7 +85,7 @@ sealed interface Patient :
 	/**
 	 * The patient's identifiers, used by the client to uniquely identify the patient.
 	 */
-	public val identifier: List<Identifier>
+	override val identifier: List<Identifier>
 
 	/**
 	 * The revision of the patient in the database, used for conflict management / optimistic locking.

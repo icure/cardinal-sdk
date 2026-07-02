@@ -2,6 +2,7 @@
 // If you want to change the way this class is generated, see [this repo](https://github.com/icure/sdk-codegen).
 package com.icure.cardinal.sdk.model
 
+import com.icure.cardinal.sdk.model.base.HasIdentifier
 import com.icure.cardinal.sdk.model.base.Identifier
 import com.icure.cardinal.sdk.model.base.StoredDocument
 import com.icure.cardinal.sdk.model.embed.DelegationTag
@@ -49,7 +50,7 @@ data class User(
 	 * The identifiers of the user.
 	 */
 	@param:DefaultValue("emptyList()")
-	public val identifier: List<Identifier> = emptyList(),
+	override val identifier: List<Identifier> = emptyList(),
 	/**
 	 * Last name of the user.
 	 */
@@ -125,7 +126,7 @@ data class User(
 	 * Metadata used to enrich the user with information from the cloud environment.
 	 */
 	public val systemMetadata: SystemMetadata? = null,
-) : StoredDocument {
+) : StoredDocument, HasIdentifier {
 	@Serializable
 	public data class SystemMetadata(
 		public val roles: Set<String>,

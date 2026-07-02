@@ -2,19 +2,26 @@
 // If you want to change the way this class is generated, see [this repo](https://github.com/icure/sdk-codegen).
 package com.icure.cardinal.sdk.model
 
+import com.icure.cardinal.sdk.model.base.CodeStub
+import com.icure.cardinal.sdk.model.base.HasCodes
+import com.icure.cardinal.sdk.model.base.HasIdentifier
+import com.icure.cardinal.sdk.model.base.HasTags
+import com.icure.cardinal.sdk.model.base.Identifier
 import com.icure.cardinal.sdk.model.base.StoredDocument
 import com.icure.cardinal.sdk.model.embed.DecryptedAddress
 import com.icure.cardinal.sdk.utils.DefaultValue
 import kotlinx.serialization.Serializable
-import kotlin.Boolean
 import kotlin.Long
 import kotlin.String
+import kotlin.collections.List
 import kotlin.collections.Map
+import kotlin.collections.Set
+import kotlin.Boolean
 
 /**
- * Represents an insurance entity. An insurance can be a mutual fund, a private insurance company,
- * or any other type of insurance organization that covers healthcare costs.
- * /
+ *
+ *  Represents an insurance entity. An insurance can be a mutual fund, a private insurance company,
+ *  or any other type of insurance organization that covers healthcare costs.
  */
 @Serializable
 data class Insurance(
@@ -37,20 +44,20 @@ data class Insurance(
 	@param:DefaultValue("emptyMap()")
 	public val name: Map<String, String> = emptyMap(),
 	/**
-	 * Whether this is a private insurance.
+	 * The identifiers of the insurance.
 	 */
-	@param:DefaultValue("false")
-	public val privateInsurance: Boolean = false,
+	@param:DefaultValue("emptyList()")
+	override val identifier: List<Identifier> = emptyList(),
 	/**
-	 * Whether this insurance covers hospitalisation.
+	 * Tags that qualify the insurance as being member of a certain class.
 	 */
-	@param:DefaultValue("false")
-	public val hospitalisationInsurance: Boolean = false,
+	@param:DefaultValue("emptySet()")
+	override val tags: Set<CodeStub> = emptySet(),
 	/**
-	 * Whether this insurance covers ambulatory care.
+	 * Codes that identify or qualify this particular insurance.
 	 */
-	@param:DefaultValue("false")
-	public val ambulatoryInsurance: Boolean = false,
+	@param:DefaultValue("emptySet()")
+	override val codes: Set<CodeStub> = emptySet(),
 	/**
 	 * The insurance code.
 	 */
@@ -67,7 +74,7 @@ data class Insurance(
 	 * The address of the insurance company.
 	 */
 	public val address: DecryptedAddress,
-) : StoredDocument {
+) : StoredDocument, HasTags, HasCodes, HasIdentifier {
 	// region Insurance-Insurance
 
 	// endregion
