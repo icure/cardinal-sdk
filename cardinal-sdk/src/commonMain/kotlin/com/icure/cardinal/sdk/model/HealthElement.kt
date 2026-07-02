@@ -10,11 +10,13 @@ import com.icure.cardinal.sdk.model.base.Identifier
 import com.icure.cardinal.sdk.model.base.StoredDocument
 import com.icure.cardinal.sdk.model.embed.Annotation
 import com.icure.cardinal.sdk.model.embed.CareTeamMember
+import com.icure.cardinal.sdk.model.embed.DecryptedAnnotation
 import com.icure.cardinal.sdk.model.embed.DecryptedCareTeamMember
 import com.icure.cardinal.sdk.model.embed.DecryptedEpisode
 import com.icure.cardinal.sdk.model.embed.DecryptedPlanOfAction
 import com.icure.cardinal.sdk.model.embed.Delegation
 import com.icure.cardinal.sdk.model.embed.Encryptable
+import com.icure.cardinal.sdk.model.embed.EncryptedAnnotation
 import com.icure.cardinal.sdk.model.embed.EncryptedCareTeamMember
 import com.icure.cardinal.sdk.model.embed.EncryptedEpisode
 import com.icure.cardinal.sdk.model.embed.EncryptedPlanOfAction
@@ -306,7 +308,7 @@ data class DecryptedHealthElement(
 	 * Localized text annotations for the healthcare element.
 	 */
 	@param:DefaultValue("emptyList()")
-	override val notes: List<Annotation> = emptyList(),
+	override val notes: List<DecryptedAnnotation> = emptyList(),
 	/**
 	 * Whether the healthcare element is relevant or not.
 	 */
@@ -466,7 +468,7 @@ data class EncryptedHealthElement(
 	 * Localized text annotations for the healthcare element.
 	 */
 	@param:DefaultValue("emptyList()")
-	override val notes: List<Annotation> = emptyList(),
+	override val notes: List<EncryptedAnnotation> = emptyList(),
 	/**
 	 * Whether the healthcare element is relevant or not.
 	 */

@@ -308,7 +308,7 @@ data class DecryptedService(
 	 * Comments - Notes recorded by a HCP about this service
 	 */
 	@param:DefaultValue("emptyList()")
-	override val notes: List<Annotation> = emptyList(),
+	override val notes: List<DecryptedAnnotation> = emptyList(),
 	/**
 	 * Links towards related services (possibly in other contacts)
 	 */
@@ -454,7 +454,7 @@ data class EncryptedService(
 	 * Comments - Notes recorded by a HCP about this service
 	 */
 	@param:DefaultValue("emptyList()")
-	override val notes: List<Annotation> = emptyList(),
+	override val notes: List<EncryptedAnnotation> = emptyList(),
 	/**
 	 * Links towards related services (possibly in other contacts)
 	 */

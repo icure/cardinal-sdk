@@ -56,11 +56,13 @@ import com.icure.cardinal.sdk.model.Receipt
 import com.icure.cardinal.sdk.model.SecureDelegationKeyMap
 import com.icure.cardinal.sdk.model.Topic
 import com.icure.cardinal.sdk.model.embed.Address
+import com.icure.cardinal.sdk.model.embed.Annotation
 import com.icure.cardinal.sdk.model.embed.CalendarItemTag
 import com.icure.cardinal.sdk.model.embed.CareTeamMember
 import com.icure.cardinal.sdk.model.embed.CareTeamMembership
 import com.icure.cardinal.sdk.model.embed.Content
 import com.icure.cardinal.sdk.model.embed.DecryptedAddress
+import com.icure.cardinal.sdk.model.embed.DecryptedAnnotation
 import com.icure.cardinal.sdk.model.embed.DecryptedCalendarItemTag
 import com.icure.cardinal.sdk.model.embed.DecryptedCareTeamMember
 import com.icure.cardinal.sdk.model.embed.DecryptedCareTeamMembership
@@ -83,6 +85,7 @@ import com.icure.cardinal.sdk.model.embed.DecryptedTypedValue
 import com.icure.cardinal.sdk.model.embed.DecryptedValorisation
 import com.icure.cardinal.sdk.model.embed.EmploymentInfo
 import com.icure.cardinal.sdk.model.embed.EncryptedAddress
+import com.icure.cardinal.sdk.model.embed.EncryptedAnnotation
 import com.icure.cardinal.sdk.model.embed.EncryptedCalendarItemTag
 import com.icure.cardinal.sdk.model.embed.EncryptedCareTeamMember
 import com.icure.cardinal.sdk.model.embed.EncryptedCareTeamMembership
@@ -132,6 +135,10 @@ internal object EncryptableSerializationModule {
 			polymorphic(Address::class) {
 				subclass(DecryptedAddress::class)
 				subclass(EncryptedAddress::class)
+			}
+			polymorphic(Annotation::class) {
+				subclass(DecryptedAnnotation::class)
+				subclass(EncryptedAnnotation::class)
 			}
 			polymorphic(ApplicationSettings::class) {
 				subclass(DecryptedApplicationSettings::class)
