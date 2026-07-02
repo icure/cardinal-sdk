@@ -597,7 +597,10 @@ private class CardinalBaseApisImpl(
 		SystemApiImpl(RawICureApiImpl(apiUrl, authProvider, config.rawApiConfig))
 	}
 	override val insurance: InsuranceApi by lazy {
-		InsuranceApiImpl(RawInsuranceApiImpl(apiUrl, authProvider, config.rawApiConfig))
+		InsuranceApiImpl(
+			rawApi = RawInsuranceApiImpl(apiUrl, authProvider, config.rawApiConfig),
+			config = config
+		)
 	}
 	override val place: PlaceApi by lazy {
 		PlaceApiImpl(RawPlaceApiImpl(apiUrl, authProvider, config.rawApiConfig))
