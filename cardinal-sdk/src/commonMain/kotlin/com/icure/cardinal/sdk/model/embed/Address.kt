@@ -4,6 +4,7 @@ package com.icure.cardinal.sdk.model.embed
 
 import com.icure.cardinal.sdk.model.base.CodeStub
 import com.icure.cardinal.sdk.model.base.HasCodes
+import com.icure.cardinal.sdk.model.base.HasIdentifier
 import com.icure.cardinal.sdk.model.base.HasTags
 import com.icure.cardinal.sdk.model.base.Identifier
 import com.icure.cardinal.sdk.model.specializations.Base64String
@@ -13,12 +14,12 @@ import kotlin.String
 import kotlin.collections.List
 import kotlin.collections.Set
 
-sealed interface Address : Encryptable, HasTags, HasCodes {
+sealed interface Address : Encryptable, HasTags, HasCodes, HasIdentifier {
 	override val tags: Set<CodeStub>
 
 	override val codes: Set<CodeStub>
 
-	public val identifier: List<Identifier>
+	override val identifier: List<Identifier>
 
 	public val addressType: AddressType?
 

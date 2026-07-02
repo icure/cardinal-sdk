@@ -55,6 +55,8 @@ public interface RawInsuranceApi {
 
 	suspend fun getInsurances(insuranceIds: ListOfIds): HttpResponse<List<Insurance>>
 
+	suspend fun matchInsurancesBy(filter: AbstractFilter<Insurance>): HttpResponse<List<String>>
+
 	suspend fun listInsurancesByCode(insuranceCode: String): HttpResponse<List<Insurance>>
 
 	suspend fun listInsurancesByName(insuranceName: String): HttpResponse<List<Insurance>>

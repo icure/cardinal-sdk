@@ -5,6 +5,7 @@ package com.icure.cardinal.sdk.model
 import com.icure.cardinal.sdk.model.base.CodeStub
 import com.icure.cardinal.sdk.model.base.HasEncryptionMetadata
 import com.icure.cardinal.sdk.model.base.HasEndOfLife
+import com.icure.cardinal.sdk.model.base.HasIdentifier
 import com.icure.cardinal.sdk.model.base.ICureDocument
 import com.icure.cardinal.sdk.model.base.Identifier
 import com.icure.cardinal.sdk.model.base.StoredDocument
@@ -59,7 +60,8 @@ sealed interface Contact :
 	ICureDocument<String>,
 	HasEncryptionMetadata,
 	Encryptable,
-	HasEndOfLife {
+	HasEndOfLife,
+	HasIdentifier {
 	/**
 	 * The Id of the contact. We encourage using either a v4 UUID or a HL7 Id.
 	 */
@@ -107,7 +109,7 @@ sealed interface Contact :
 	/**
 	 * The identifiers of the Contact.
 	 */
-	public val identifier: List<Identifier>
+	override val identifier: List<Identifier>
 
 	/**
 	 * Soft delete (unix epoch in ms) timestamp of the object.
