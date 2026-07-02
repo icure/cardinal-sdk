@@ -5,6 +5,7 @@ import {DecryptedPropertyStub, EncryptedPropertyStub, PropertyStub} from './Prop
 import {CodeStub} from './base/CodeStub.mjs';
 import {HasEncryptionMetadata} from './base/HasEncryptionMetadata.mjs';
 import {HasEndOfLife} from './base/HasEndOfLife.mjs';
+import {HasIdentifier} from './base/HasIdentifier.mjs';
 import {ICureDocument} from './base/ICureDocument.mjs';
 import {Identifier} from './base/Identifier.mjs';
 import {StoredDocument} from './base/StoredDocument.mjs';
@@ -23,13 +24,7 @@ import {Base64String} from './specializations/Base64String.mjs';
  *  asynchronous processing.
  *  /
  */
-export interface MaintenanceTask extends StoredDocument, ICureDocument<string>, HasEncryptionMetadata, Encryptable, HasEndOfLife {
-
-	/**
-	 *
-	 *  The identifiers of the maintenance task.
-	 */
-	identifier: Array<Identifier>;
+export interface MaintenanceTask extends StoredDocument, ICureDocument<string>, HasEncryptionMetadata, Encryptable, HasEndOfLife, HasIdentifier {
 
 	/**
 	 *

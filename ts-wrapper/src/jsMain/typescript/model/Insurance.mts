@@ -1,17 +1,22 @@
 // auto-generated file
-import {expectBoolean, expectMap, expectNumber, expectObject, expectString, extractEntry} from '../internal/JsonDecodeUtils.mjs';
+import {expectArray, expectMap, expectNumber, expectObject, expectString, extractEntry} from '../internal/JsonDecodeUtils.mjs';
 import {randomUuid} from '../utils/Id.mjs';
+import {CodeStub} from './base/CodeStub.mjs';
+import {HasCodes} from './base/HasCodes.mjs';
+import {HasIdentifier} from './base/HasIdentifier.mjs';
+import {HasTags} from './base/HasTags.mjs';
+import {Identifier} from './base/Identifier.mjs';
 import {StoredDocument} from './base/StoredDocument.mjs';
 import {DecryptedAddress} from './embed/Address.mjs';
 
 
 /**
  *
- *  Represents an insurance entity. An insurance can be a mutual fund, a private insurance company,
- *  or any other type of insurance organization that covers healthcare costs.
- *  /
+ *
+ *   Represents an insurance entity. An insurance can be a mutual fund, a private insurance company,
+ *   or any other type of insurance organization that covers healthcare costs.
  */
-export class Insurance implements StoredDocument {
+export class Insurance implements StoredDocument, HasTags, HasCodes, HasIdentifier {
 
 	/**
 	 *
@@ -40,21 +45,21 @@ export class Insurance implements StoredDocument {
 
 	/**
 	 *
-	 *  Whether this is a private insurance.
+	 *  The identifiers of the insurance.
 	 */
-	privateInsurance: boolean = false;
+	identifier: Array<Identifier> = [];
 
 	/**
 	 *
-	 *  Whether this insurance covers hospitalisation.
+	 *  Tags that qualify the insurance as being member of a certain class.
 	 */
-	hospitalisationInsurance: boolean = false;
+	tags: Array<CodeStub> = [];
 
 	/**
 	 *
-	 *  Whether this insurance covers ambulatory care.
+	 *  Codes that identify or qualify this particular insurance.
 	 */
-	ambulatoryInsurance: boolean = false;
+	codes: Array<CodeStub> = [];
 
 	/**
 	 *
@@ -85,9 +90,9 @@ export class Insurance implements StoredDocument {
 		if ('rev' in partial) this.rev = partial.rev;
 		if ('deletionDate' in partial) this.deletionDate = partial.deletionDate;
 		if ('name' in partial && partial.name !== undefined) this.name = partial.name;
-		if ('privateInsurance' in partial && partial.privateInsurance !== undefined) this.privateInsurance = partial.privateInsurance;
-		if ('hospitalisationInsurance' in partial && partial.hospitalisationInsurance !== undefined) this.hospitalisationInsurance = partial.hospitalisationInsurance;
-		if ('ambulatoryInsurance' in partial && partial.ambulatoryInsurance !== undefined) this.ambulatoryInsurance = partial.ambulatoryInsurance;
+		if ('identifier' in partial && partial.identifier !== undefined) this.identifier = partial.identifier;
+		if ('tags' in partial && partial.tags !== undefined) this.tags = partial.tags;
+		if ('codes' in partial && partial.codes !== undefined) this.codes = partial.codes;
 		if ('code' in partial) this.code = partial.code;
 		if ('agreementNumber' in partial) this.agreementNumber = partial.agreementNumber;
 		if ('parent' in partial) this.parent = partial.parent;
@@ -100,9 +105,9 @@ export class Insurance implements StoredDocument {
 		if (this.rev != undefined) res['rev'] = this.rev
 		if (this.deletionDate != undefined) res['deletionDate'] = this.deletionDate
 		res['name'] = Object.fromEntries(Object.entries(this.name).map(([k0, v0]) => [k0, v0]))
-		res['privateInsurance'] = this.privateInsurance
-		res['hospitalisationInsurance'] = this.hospitalisationInsurance
-		res['ambulatoryInsurance'] = this.ambulatoryInsurance
+		res['identifier'] = this.identifier.map((x0) => x0.toJSON() )
+		res['tags'] = this.tags.map((x0) => x0.toJSON() )
+		res['codes'] = this.codes.map((x0) => x0.toJSON() )
 		if (this.code != undefined) res['code'] = this.code
 		if (this.agreementNumber != undefined) res['agreementNumber'] = this.agreementNumber
 		if (this.parent != undefined) res['parent'] = this.parent
@@ -125,9 +130,9 @@ export class Insurance implements StoredDocument {
 				(k0, p0) => expectString(k0, false, p0),
 				(v0, p0) => expectString(v0, false, p0)
 			),
-			privateInsurance: expectBoolean(extractEntry(jCpy, 'privateInsurance', false, path), false, [...path, ".privateInsurance"]),
-			hospitalisationInsurance: expectBoolean(extractEntry(jCpy, 'hospitalisationInsurance', false, path), false, [...path, ".hospitalisationInsurance"]),
-			ambulatoryInsurance: expectBoolean(extractEntry(jCpy, 'ambulatoryInsurance', false, path), false, [...path, ".ambulatoryInsurance"]),
+			identifier: expectArray(extractEntry(jCpy, 'identifier', false, path), false, [...path, ".identifier"], (x0, p0) => expectObject(x0, false, ignoreUnknownKeys, p0, Identifier.fromJSON)),
+			tags: expectArray(extractEntry(jCpy, 'tags', false, path), false, [...path, ".tags"], (x0, p0) => expectObject(x0, false, ignoreUnknownKeys, p0, CodeStub.fromJSON)),
+			codes: expectArray(extractEntry(jCpy, 'codes', false, path), false, [...path, ".codes"], (x0, p0) => expectObject(x0, false, ignoreUnknownKeys, p0, CodeStub.fromJSON)),
 			code: expectString(extractEntry(jCpy, 'code', false, path), true, [...path, ".code"]),
 			agreementNumber: expectString(extractEntry(jCpy, 'agreementNumber', false, path), true, [...path, ".agreementNumber"]),
 			parent: expectString(extractEntry(jCpy, 'parent', false, path), true, [...path, ".parent"]),
