@@ -15,3 +15,14 @@ internal fun <T> List<T>.requireUniqueElements(collectionName: String = "Collect
 		"$collectionName contains duplicate elements: ${this.groupingBy { it }.eachCount().filter { it.value > 1 }.keys}"
 	}
 }
+
+/**
+ * Returns true if this set and [other] share at least one element.
+ */
+fun <T> Set<T>.intersects(other: Set<T>): Boolean {
+	val (smaller, larger) = if (this.size <= other.size) this to other else other to this
+	for (element in smaller) {
+		if (element in larger) return true
+	}
+	return false
+}
