@@ -122,7 +122,7 @@ public external class DecryptedServiceJs(
 
 	override val invoicingCodes: Array<String>
 
-	override val notes: Array<AnnotationJs>
+	override val notes: Array<DecryptedAnnotationJs>
 
 	override val qualifiedLinks: Record<String, Record<String, String>>
 
@@ -193,7 +193,7 @@ public external class EncryptedServiceJs(
 
 	override val invoicingCodes: Array<String>
 
-	override val notes: Array<AnnotationJs>
+	override val notes: Array<EncryptedAnnotationJs>
 
 	override val qualifiedLinks: Record<String, Record<String, String>>
 

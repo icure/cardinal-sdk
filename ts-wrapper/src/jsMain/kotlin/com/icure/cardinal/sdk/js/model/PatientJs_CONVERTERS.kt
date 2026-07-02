@@ -19,8 +19,8 @@ import com.icure.cardinal.sdk.js.model.base.codeStub_fromJs
 import com.icure.cardinal.sdk.js.model.base.codeStub_toJs
 import com.icure.cardinal.sdk.js.model.base.identifier_fromJs
 import com.icure.cardinal.sdk.js.model.base.identifier_toJs
-import com.icure.cardinal.sdk.js.model.embed.AnnotationJs
 import com.icure.cardinal.sdk.js.model.embed.DecryptedAddressJs
+import com.icure.cardinal.sdk.js.model.embed.DecryptedAnnotationJs
 import com.icure.cardinal.sdk.js.model.embed.DecryptedFinancialInstitutionInformationJs
 import com.icure.cardinal.sdk.js.model.embed.DecryptedInsurabilityJs
 import com.icure.cardinal.sdk.js.model.embed.DecryptedMedicalHouseContractJs
@@ -28,6 +28,7 @@ import com.icure.cardinal.sdk.js.model.embed.DecryptedPartnershipJs
 import com.icure.cardinal.sdk.js.model.embed.DecryptedPatientHealthCarePartyJs
 import com.icure.cardinal.sdk.js.model.embed.DelegationJs
 import com.icure.cardinal.sdk.js.model.embed.EncryptedAddressJs
+import com.icure.cardinal.sdk.js.model.embed.EncryptedAnnotationJs
 import com.icure.cardinal.sdk.js.model.embed.EncryptedFinancialInstitutionInformationJs
 import com.icure.cardinal.sdk.js.model.embed.EncryptedInsurabilityJs
 import com.icure.cardinal.sdk.js.model.embed.EncryptedMedicalHouseContractJs
@@ -72,8 +73,8 @@ import com.icure.cardinal.sdk.model.EncryptedPropertyStub
 import com.icure.cardinal.sdk.model.Patient
 import com.icure.cardinal.sdk.model.base.CodeStub
 import com.icure.cardinal.sdk.model.base.Identifier
-import com.icure.cardinal.sdk.model.embed.Annotation
 import com.icure.cardinal.sdk.model.embed.DecryptedAddress
+import com.icure.cardinal.sdk.model.embed.DecryptedAnnotation
 import com.icure.cardinal.sdk.model.embed.DecryptedFinancialInstitutionInformation
 import com.icure.cardinal.sdk.model.embed.DecryptedInsurability
 import com.icure.cardinal.sdk.model.embed.DecryptedMedicalHouseContract
@@ -81,6 +82,7 @@ import com.icure.cardinal.sdk.model.embed.DecryptedPartnership
 import com.icure.cardinal.sdk.model.embed.DecryptedPatientHealthCareParty
 import com.icure.cardinal.sdk.model.embed.Delegation
 import com.icure.cardinal.sdk.model.embed.EncryptedAddress
+import com.icure.cardinal.sdk.model.embed.EncryptedAnnotation
 import com.icure.cardinal.sdk.model.embed.EncryptedFinancialInstitutionInformation
 import com.icure.cardinal.sdk.model.embed.EncryptedInsurability
 import com.icure.cardinal.sdk.model.embed.EncryptedMedicalHouseContract
@@ -239,7 +241,7 @@ public fun patient_toJs(obj: DecryptedPatient): DecryptedPatientJs {
 	)
 	val notes = listToArray(
 		obj.notes,
-		{ x1: Annotation ->
+		{ x1: DecryptedAnnotation ->
 			annotation_toJs(x1)
 		},
 	)
@@ -618,7 +620,7 @@ public fun patient_fromJs(obj: DecryptedPatientJs): DecryptedPatient {
 	val notes = arrayToList(
 		obj.notes,
 		"obj.notes",
-		{ x1: AnnotationJs ->
+		{ x1: DecryptedAnnotationJs ->
 			annotation_fromJs(x1)
 		},
 	)
@@ -1053,7 +1055,7 @@ public fun patient_toJs(obj: EncryptedPatient): EncryptedPatientJs {
 	)
 	val notes = listToArray(
 		obj.notes,
-		{ x1: Annotation ->
+		{ x1: EncryptedAnnotation ->
 			annotation_toJs(x1)
 		},
 	)
@@ -1432,7 +1434,7 @@ public fun patient_fromJs(obj: EncryptedPatientJs): EncryptedPatient {
 	val notes = arrayToList(
 		obj.notes,
 		"obj.notes",
-		{ x1: AnnotationJs ->
+		{ x1: EncryptedAnnotationJs ->
 			annotation_fromJs(x1)
 		},
 	)

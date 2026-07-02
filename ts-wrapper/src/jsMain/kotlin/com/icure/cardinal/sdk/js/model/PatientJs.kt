@@ -13,6 +13,7 @@ import com.icure.cardinal.sdk.js.model.base.PersonJs
 import com.icure.cardinal.sdk.js.model.base.StoredDocumentJs
 import com.icure.cardinal.sdk.js.model.embed.AnnotationJs
 import com.icure.cardinal.sdk.js.model.embed.DecryptedAddressJs
+import com.icure.cardinal.sdk.js.model.embed.DecryptedAnnotationJs
 import com.icure.cardinal.sdk.js.model.embed.DecryptedFinancialInstitutionInformationJs
 import com.icure.cardinal.sdk.js.model.embed.DecryptedInsurabilityJs
 import com.icure.cardinal.sdk.js.model.embed.DecryptedMedicalHouseContractJs
@@ -21,6 +22,7 @@ import com.icure.cardinal.sdk.js.model.embed.DecryptedPatientHealthCarePartyJs
 import com.icure.cardinal.sdk.js.model.embed.DelegationJs
 import com.icure.cardinal.sdk.js.model.embed.EncryptableJs
 import com.icure.cardinal.sdk.js.model.embed.EncryptedAddressJs
+import com.icure.cardinal.sdk.js.model.embed.EncryptedAnnotationJs
 import com.icure.cardinal.sdk.js.model.embed.EncryptedFinancialInstitutionInformationJs
 import com.icure.cardinal.sdk.js.model.embed.EncryptedInsurabilityJs
 import com.icure.cardinal.sdk.js.model.embed.EncryptedMedicalHouseContractJs
@@ -196,7 +198,7 @@ public external class DecryptedPatientJs(
 
 	override val profession: String?
 
-	override val notes: Array<AnnotationJs>
+	override val notes: Array<DecryptedAnnotationJs>
 
 	override val note: String?
 
@@ -337,7 +339,7 @@ public external class EncryptedPatientJs(
 
 	override val profession: String?
 
-	override val notes: Array<AnnotationJs>
+	override val notes: Array<EncryptedAnnotationJs>
 
 	override val note: String?
 

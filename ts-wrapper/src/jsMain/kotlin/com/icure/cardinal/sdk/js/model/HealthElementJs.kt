@@ -11,11 +11,13 @@ import com.icure.cardinal.sdk.js.model.base.IdentifierJs
 import com.icure.cardinal.sdk.js.model.base.StoredDocumentJs
 import com.icure.cardinal.sdk.js.model.embed.AnnotationJs
 import com.icure.cardinal.sdk.js.model.embed.CareTeamMemberJs
+import com.icure.cardinal.sdk.js.model.embed.DecryptedAnnotationJs
 import com.icure.cardinal.sdk.js.model.embed.DecryptedCareTeamMemberJs
 import com.icure.cardinal.sdk.js.model.embed.DecryptedEpisodeJs
 import com.icure.cardinal.sdk.js.model.embed.DecryptedPlanOfActionJs
 import com.icure.cardinal.sdk.js.model.embed.DelegationJs
 import com.icure.cardinal.sdk.js.model.embed.EncryptableJs
+import com.icure.cardinal.sdk.js.model.embed.EncryptedAnnotationJs
 import com.icure.cardinal.sdk.js.model.embed.EncryptedCareTeamMemberJs
 import com.icure.cardinal.sdk.js.model.embed.EncryptedEpisodeJs
 import com.icure.cardinal.sdk.js.model.embed.EncryptedPlanOfActionJs
@@ -106,7 +108,7 @@ public external class DecryptedHealthElementJs(
 
 	override val note: String?
 
-	override val notes: Array<AnnotationJs>
+	override val notes: Array<DecryptedAnnotationJs>
 
 	override val relevant: Boolean
 
@@ -177,7 +179,7 @@ public external class EncryptedHealthElementJs(
 
 	override val note: String?
 
-	override val notes: Array<AnnotationJs>
+	override val notes: Array<EncryptedAnnotationJs>
 
 	override val relevant: Boolean
 
