@@ -204,7 +204,8 @@ internal class MaintenanceTaskApiImpl(
 					EntityWithEncryptionMetadataTypeName.MaintenanceTask,
 					EncryptedMaintenanceTask.serializer(),
 					DecryptedMaintenanceTask.serializer(),
-					config.encryption.maintenanceTask
+					config.encryption.maintenanceTask,
+					config.entityEncodingJson,
 				)
 
 			override suspend fun maybeDecrypt(

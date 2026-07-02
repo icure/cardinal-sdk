@@ -46,7 +46,7 @@ suspend fun SdkOptionsJs.toKt(): SdkOptions {
 			CryptoStrategiesBridge(it, this.cryptoService ?: adaptCryptoServiceForExternal(defaultSdkOptions.cryptoService))
 		} ?: defaultSdkOptions.cryptoStrategies,
 		jsonPatcher = this.jsonPatcher?.let { JsonPatcherBridge(it) } ?: defaultSdkOptions.jsonPatcher,
-		lenientJson = this.lenientJson ?: defaultSdkOptions.lenientJson,
+		ignoreUnknownFields = this.ignoreUnknownFields ?: defaultSdkOptions.ignoreUnknownFields,
 		dataOwnerScope = this.dataOwnerScope ?: defaultSdkOptions.dataOwnerScope,
 	)
 }
@@ -61,7 +61,7 @@ suspend fun BasicSdkOptionsJs.toKt(): BasicSdkOptions {
 				groupSelectorJs(ktGroups.map { userGroup_toJs(it) }.toTypedArray()).await()
 			}
 		} ?: defaultApiOptions.groupSelector,
-		lenientJson = this.lenientJson ?: defaultApiOptions.lenientJson,
+		ignoreUnknownFields = this.ignoreUnknownFields ?: defaultApiOptions.ignoreUnknownFields,
 		dataOwnerScope = this.dataOwnerScope ?: defaultApiOptions.dataOwnerScope,
 	)
 }
@@ -83,7 +83,7 @@ suspend fun BasicToFullSdkOptionsJs.toKt(jsCryptoService: XCryptoService): Basic
 fun AnonymousSdkOptionsJs.toKt(): AnonymousSdkOptions {
 	val defaultApiOptions = AnonymousSdkOptions()
 	return AnonymousSdkOptions(
-		lenientJson = this.lenientJson ?: defaultApiOptions.lenientJson
+		ignoreUnknownFields = this.ignoreUnknownFields ?: defaultApiOptions.ignoreUnknownFields,
 	)
 }
 

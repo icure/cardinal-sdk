@@ -31,14 +31,6 @@ interface HttpSdkOptions {
 	 */
 	val httpClientJson: Json?
 	/**
-	 * If true the SDK will use lenient deserialization of the entities coming from the backend.
-	 *
-	 * This could be helpful when developing using the nightly deployments of the backend, as the SDK will ignore minor changes to the data model.
-	 *
-	 * This option however could cause loss of data when connecting with incompatible versions of the backend, and should be disabled in production.
-	 */
-	val lenientJson: Boolean
-	/**
 	 * Configure a global timeout for requests, overriding the configuration on [httpClient] if provided.
 	 * The default timeout on the default http client is 60s
 	 */
@@ -49,7 +41,25 @@ interface HttpSdkOptions {
 	val requestRetryConfiguration: RequestRetryConfiguration?
 }
 
-interface CommonSdkOptions : HttpSdkOptions {
+interface SerializationOptions {
+	/**
+	 * If true, on deserialization of data coming from the backend or from the decrypted content of an entity any
+	 * field that is not present in the data model will be ignored.
+	 *
+	 * Note that updating an entity where some fields were ignored during deserialization will result in data loss.
+	 *
+	 * If the ignored keys are coming from the encrypted content of an entity you can provide a [SdkOptions.jsonPatcher]
+	 * to specify how the unknown fields should be migrated.
+	 *
+	 * If a custom [HttpSdkOptions.httpClientJson] is provided, this option must be unconfigured (null) or match the
+	 * ignoreUnknownKeys configuration of that.
+	 * If no [HttpSdkOptions.httpClientJson] is configured the default for this behaviour is disabled by default (strict
+	 * by default).
+	 */
+	val ignoreUnknownFields: Boolean?
+}
+
+interface CommonSdkOptions : HttpSdkOptions, SerializationOptions {
 	/**
 	 * Configure which fields of entities should be encrypted
 	 */
@@ -86,10 +96,29 @@ typealias GroupSelector = suspend (availableGroups: List<UserGroup>) -> String
 data class AnonymousSdkOptions(
 	override val httpClient: HttpClient? = null,
 	override val httpClientJson: Json? = null,
-	override val lenientJson: Boolean = false,
 	override val requestTimeout: Duration? = null,
-	override val requestRetryConfiguration: RequestRetryConfiguration = RequestRetryConfiguration()
-): HttpSdkOptions
+	override val requestRetryConfiguration: RequestRetryConfiguration = RequestRetryConfiguration(),
+	override val ignoreUnknownFields: Boolean? = null,
+): HttpSdkOptions, SerializationOptions {
+	init {
+		validateHttpAndSerializationOptions()
+	}
+
+	@Deprecated("lenientJson has been replaced with ignoreUnknownFields", level = DeprecationLevel.ERROR)
+	constructor(
+		httpClient: HttpClient? = null,
+		httpClientJson: Json? = null,
+		lenientJson: Boolean,
+		requestTimeout: Duration? = null,
+		requestRetryConfiguration: RequestRetryConfiguration = RequestRetryConfiguration()
+	) : this(
+		httpClient = httpClient,
+		httpClientJson = httpClientJson,
+		requestTimeout = requestTimeout,
+		requestRetryConfiguration = requestRetryConfiguration,
+		ignoreUnknownFields = lenientJson,
+	)
+}
 
 /**
  * Optional parameters used in teh conversion from a basic sdk to a full sdk.
@@ -174,7 +203,6 @@ data class SdkOptions(
 	 * of the entity.
 	 */
 	val jsonPatcher: JsonPatcher? = null,
-	override val lenientJson: Boolean = false,
 	/**
 	 * Sets a parent job to use in the sdk scope.
 	 * When that job is canceled, the SDK scope which runs all background tasks will also be canceled.
@@ -184,20 +212,48 @@ data class SdkOptions(
 	override val requestTimeout: Duration? = null,
 	override val requestRetryConfiguration: RequestRetryConfiguration = RequestRetryConfiguration(),
 	override val dataOwnerScope: String? = null,
+	override val ignoreUnknownFields: Boolean? = null,
 ): BoundSdkOptions {
 	init {
-		if (httpClientJson != null) {
-			require(httpClient != null) {
-				"httpClient should be provided if httpClientJson is provided"
-			}
-		}
-
-		if (lenientJson) {
-			require(httpClient == null) {
-				"Cannot use lenientJson with a custom httpClient"
-			}
-		}
+		validateHttpAndSerializationOptions()
 	}
+
+	@Deprecated("lenientJson has been replaced with ignoreUnknownFields", level = DeprecationLevel.ERROR)
+	constructor(
+		encryptedFields: EncryptedFieldsConfiguration = EncryptedFieldsConfiguration(),
+		useHierarchicalDataOwners: Boolean = true,
+		httpClient: HttpClient? = null,
+		httpClientJson: Json? = null,
+		createTransferKeys: Boolean = true,
+		cryptoService: CryptoService = defaultCryptoService,
+		groupSelector: GroupSelector? = null,
+		autoCreateEncryptionKeyForExistingLegacyData: Boolean = false,
+		keyStorage: KeyStorageFacade? = null,
+		cryptoStrategies: CryptoStrategies? = null,
+		jsonPatcher: JsonPatcher? = null,
+		lenientJson: Boolean,
+		parentJob: Job? = null,
+		requestTimeout: Duration? = null,
+		requestRetryConfiguration: RequestRetryConfiguration = RequestRetryConfiguration(),
+		dataOwnerScope: String? = null,
+	) : this(
+		encryptedFields = encryptedFields,
+		useHierarchicalDataOwners = useHierarchicalDataOwners,
+		httpClient = httpClient,
+		httpClientJson = httpClientJson,
+		createTransferKeys = createTransferKeys,
+		cryptoService = cryptoService,
+		groupSelector = groupSelector,
+		autoCreateEncryptionKeyForExistingLegacyData = autoCreateEncryptionKeyForExistingLegacyData,
+		keyStorage = keyStorage,
+		cryptoStrategies = cryptoStrategies,
+		jsonPatcher = jsonPatcher,
+		ignoreUnknownFields = lenientJson,
+		parentJob = parentJob,
+		requestTimeout = requestTimeout,
+		requestRetryConfiguration = requestRetryConfiguration,
+		dataOwnerScope = dataOwnerScope,
+	)
 }
 
 data class BasicSdkOptions(
@@ -206,24 +262,37 @@ data class BasicSdkOptions(
 	override val httpClientJson: Json? = null,
 	override val cryptoService: CryptoService = defaultCryptoService,
 	override val groupSelector: GroupSelector? = null,
-	override val lenientJson: Boolean = false,
 	override val requestTimeout: Duration? = null,
 	override val requestRetryConfiguration: RequestRetryConfiguration = RequestRetryConfiguration(),
-	override val dataOwnerScope: String? = null
+	override val dataOwnerScope: String? = null,
+	override val ignoreUnknownFields: Boolean? = null,
 ): BoundSdkOptions {
 	init {
-		if (httpClientJson != null) {
-			require(httpClient != null) {
-				"httpClient should be provided if httpClientJson is provided"
-			}
-		}
-
-		if (lenientJson) {
-			require(httpClient == null) {
-				"Cannot use lenientJson with a custom httpClient"
-			}
-		}
+		validateHttpAndSerializationOptions()
 	}
+
+	@Deprecated("lenientJson has been replaced with ignoreUnknownFields", level = DeprecationLevel.ERROR)
+	constructor(
+		encryptedFields: EncryptedFieldsConfiguration = EncryptedFieldsConfiguration(),
+		httpClient: HttpClient? = null,
+		httpClientJson: Json? = null,
+		cryptoService: CryptoService = defaultCryptoService,
+		groupSelector: GroupSelector? = null,
+		lenientJson: Boolean,
+		requestTimeout: Duration? = null,
+		requestRetryConfiguration: RequestRetryConfiguration = RequestRetryConfiguration(),
+		dataOwnerScope: String? = null
+	) : this(
+		encryptedFields = encryptedFields,
+		httpClient = httpClient,
+		httpClientJson = httpClientJson,
+		cryptoService = cryptoService,
+		groupSelector = groupSelector,
+		ignoreUnknownFields = lenientJson,
+		requestTimeout = requestTimeout,
+		requestRetryConfiguration = requestRetryConfiguration,
+		dataOwnerScope = dataOwnerScope,
+	)
 }
 
 data class UnboundBasicSdkOptions(
@@ -231,7 +300,6 @@ data class UnboundBasicSdkOptions(
 	override val httpClient: HttpClient? = null,
 	override val httpClientJson: Json? = null,
 	override val cryptoService: CryptoService = defaultCryptoService,
-	override val lenientJson: Boolean = false,
 	/**
 	 * Some basic SDK methods require as context the group where the SDK is acting on.
 	 *
@@ -244,20 +312,31 @@ data class UnboundBasicSdkOptions(
 	val getBoundGroupId: (CoroutineContext) -> String? = { null },
 	override val requestTimeout: Duration? = null,
 	override val requestRetryConfiguration: RequestRetryConfiguration = RequestRetryConfiguration(),
+	override val ignoreUnknownFields: Boolean? = null,
 ): CommonSdkOptions {
 	init {
-		if (httpClientJson != null) {
-			require(httpClient != null) {
-				"httpClient should be provided if httpClientJson is provided"
-			}
-		}
-
-		if (lenientJson) {
-			require(httpClient == null) {
-				"Cannot use lenientJson with a custom httpClient"
-			}
-		}
+		validateHttpAndSerializationOptions()
 	}
+
+	@Deprecated("lenientJson has been replaced with ignoreUnknownFields", level = DeprecationLevel.ERROR)
+	constructor(
+		encryptedFields: EncryptedFieldsConfiguration = EncryptedFieldsConfiguration(),
+		httpClient: HttpClient? = null,
+		httpClientJson: Json? = null,
+		cryptoService: CryptoService = defaultCryptoService,
+		lenientJson: Boolean,
+		getBoundGroupId: (CoroutineContext) -> String? = { null },
+		requestTimeout: Duration? = null,
+		requestRetryConfiguration: RequestRetryConfiguration = RequestRetryConfiguration(),
+	) : this(
+		encryptedFields = encryptedFields,
+		httpClient = httpClient,
+		httpClientJson = httpClientJson,
+		cryptoService = cryptoService,
+		ignoreUnknownFields = lenientJson,
+		requestTimeout = requestTimeout,
+		requestRetryConfiguration = requestRetryConfiguration,
+	)
 }
 
 @Serializable
@@ -403,5 +482,27 @@ data class RequestRetryConfiguration(
 	}
 }
 
-internal fun HttpSdkOptions.configuredClientOrDefault() = this.httpClient ?: (if (this.lenientJson) CardinalSdk.sharedHttpClientUsingLenientJson else CardinalSdk.sharedHttpClient)
-internal fun HttpSdkOptions.configuredJsonOrDefault() = this.httpClientJson ?: (if (this.lenientJson) Serialization.lenientJson else Serialization.json)
+internal fun <T> T.configuredClientOrDefault() where T : HttpSdkOptions, T : SerializationOptions =
+	this.httpClient ?: (if (this.ignoreUnknownFields == true) CardinalSdk.sharedHttpClientUsingLenientJson else CardinalSdk.sharedHttpClient)
+internal fun <T> T.configuredJsonOrDefault() where T : HttpSdkOptions, T : SerializationOptions =
+	this.httpClientJson ?: (if (this.ignoreUnknownFields == true) Serialization.lenientJson else Serialization.json)
+internal fun <T> T.ignoreUnknownFieldsOrDefault() where T : HttpSdkOptions, T : SerializationOptions =
+	this.ignoreUnknownFields ?: this.httpClientJson?.configuration?.ignoreUnknownKeys ?: false
+
+private fun <T> T.validateHttpAndSerializationOptions() where T : HttpSdkOptions, T : SerializationOptions {
+	if (httpClient != null) {
+		require (httpClientJson != null) {
+			"When providing a custom httpClient you must also provide the json serializer to use."
+		}
+	} else {
+		require (httpClientJson == null) {
+			"httpClientJson should be provided only if you provide a httpClient."
+		}
+	}
+
+	if (ignoreUnknownFields != null) {
+		require (httpClientJson?.configuration?.ignoreUnknownKeys?.let { it == ignoreUnknownFields } ?: true) {
+			"ignoreUnknownFields must match the ignoreUnknownKeys configuration of the provided json serializer."
+		}
+	}
+}
