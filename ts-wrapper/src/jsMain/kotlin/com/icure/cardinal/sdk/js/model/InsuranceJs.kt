@@ -3,10 +3,15 @@
 
 package com.icure.cardinal.sdk.js.model
 
+import com.icure.cardinal.sdk.js.model.base.CodeStubJs
+import com.icure.cardinal.sdk.js.model.base.HasCodesJs
+import com.icure.cardinal.sdk.js.model.base.HasIdentifierJs
+import com.icure.cardinal.sdk.js.model.base.HasTagsJs
+import com.icure.cardinal.sdk.js.model.base.IdentifierJs
 import com.icure.cardinal.sdk.js.model.base.StoredDocumentJs
 import com.icure.cardinal.sdk.js.model.embed.DecryptedAddressJs
 import com.icure.cardinal.sdk.js.utils.Record
-import kotlin.Boolean
+import kotlin.Array
 import kotlin.Double
 import kotlin.String
 import kotlin.js.JsName
@@ -15,7 +20,7 @@ import kotlin.js.JsQualifier
 @JsName("Insurance")
 public external class InsuranceJs(
 	partial: dynamic,
-) : StoredDocumentJs {
+) : StoredDocumentJs, HasTagsJs, HasCodesJs, HasIdentifierJs {
 	override val id: String
 
 	override val rev: String?
@@ -24,11 +29,11 @@ public external class InsuranceJs(
 
 	public val name: Record<String, String>
 
-	public val privateInsurance: Boolean
+	override val identifier: Array<IdentifierJs>
 
-	public val hospitalisationInsurance: Boolean
+	override val tags: Array<CodeStubJs>
 
-	public val ambulatoryInsurance: Boolean
+	override val codes: Array<CodeStubJs>
 
 	public val code: String?
 

@@ -2,6 +2,7 @@
 import {expectArray, expectObject, expectString, expectStringEnum, extractEntry} from '../../internal/JsonDecodeUtils.mjs';
 import {CodeStub} from '../base/CodeStub.mjs';
 import {HasCodes} from '../base/HasCodes.mjs';
+import {HasIdentifier} from '../base/HasIdentifier.mjs';
 import {HasTags} from '../base/HasTags.mjs';
 import {Identifier} from '../base/Identifier.mjs';
 import {Base64String} from '../specializations/Base64String.mjs';
@@ -11,9 +12,7 @@ import {Encryptable} from './Encryptable.mjs';
 import {DecryptedTelecom, EncryptedTelecom, Telecom} from './Telecom.mjs';
 
 
-export interface Address extends Encryptable, HasTags, HasCodes {
-
-	identifier: Array<Identifier>;
+export interface Address extends Encryptable, HasTags, HasCodes, HasIdentifier {
 
 	addressType: AddressType | undefined;
 

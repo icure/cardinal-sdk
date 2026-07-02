@@ -5,6 +5,7 @@ import {DecryptedPropertyStub, EncryptedPropertyStub, PropertyStub} from './Prop
 import {CodeStub} from './base/CodeStub.mjs';
 import {CryptoActor} from './base/CryptoActor.mjs';
 import {HasEncryptionMetadata} from './base/HasEncryptionMetadata.mjs';
+import {HasIdentifier} from './base/HasIdentifier.mjs';
 import {ICureDocument} from './base/ICureDocument.mjs';
 import {Identifier} from './base/Identifier.mjs';
 import {Person} from './base/Person.mjs';
@@ -38,13 +39,7 @@ import {SpkiHexString} from './specializations/SpkiHexString.mjs';
  *  end-to-end encryption of sensitive data.
  *  /
  */
-export interface Patient extends StoredDocument, ICureDocument<string>, Person, HasEncryptionMetadata, Encryptable, CryptoActor {
-
-	/**
-	 *
-	 *  The patient's identifiers, used by the client to uniquely identify the patient.
-	 */
-	identifier: Array<Identifier>;
+export interface Patient extends StoredDocument, ICureDocument<string>, Person, HasEncryptionMetadata, Encryptable, HasIdentifier, CryptoActor {
 
 	/**
 	 *

@@ -3,6 +3,7 @@
 
 package com.icure.cardinal.sdk.js.model
 
+import com.icure.cardinal.sdk.js.model.base.HasIdentifierJs
 import com.icure.cardinal.sdk.js.model.base.IdentifierJs
 import com.icure.cardinal.sdk.js.model.base.StoredDocumentJs
 import com.icure.cardinal.sdk.js.model.security.AuthenticationTokenJs
@@ -17,7 +18,7 @@ import kotlin.js.JsQualifier
 @JsName("User")
 public external class UserJs(
 	partial: dynamic,
-) : StoredDocumentJs {
+) : StoredDocumentJs, HasIdentifierJs {
 	override val id: String
 
 	override val rev: String?
@@ -26,7 +27,7 @@ public external class UserJs(
 
 	public val created: Double?
 
-	public val identifier: Array<IdentifierJs>
+	override val identifier: Array<IdentifierJs>
 
 	public val name: String?
 
