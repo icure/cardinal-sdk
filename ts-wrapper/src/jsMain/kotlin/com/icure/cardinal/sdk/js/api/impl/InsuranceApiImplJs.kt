@@ -2,8 +2,14 @@
 package com.icure.cardinal.sdk.js.api.`impl`
 
 import com.icure.cardinal.sdk.api.InsuranceApi
+import com.icure.cardinal.sdk.filters.BaseFilterOptions
+import com.icure.cardinal.sdk.filters.BaseSortableFilterOptions
 import com.icure.cardinal.sdk.js.api.InsuranceApiJs
 import com.icure.cardinal.sdk.js.api.InsuranceInGroupApiJs
+import com.icure.cardinal.sdk.js.filters.BaseFilterOptionsJs
+import com.icure.cardinal.sdk.js.filters.BaseSortableFilterOptionsJs
+import com.icure.cardinal.sdk.js.filters.baseFilterOptions_fromJs
+import com.icure.cardinal.sdk.js.filters.baseSortableFilterOptions_fromJs
 import com.icure.cardinal.sdk.js.model.CheckedConverters.arrayToList
 import com.icure.cardinal.sdk.js.model.CheckedConverters.listToArray
 import com.icure.cardinal.sdk.js.model.CheckedConverters.nullToUndefined
@@ -16,6 +22,8 @@ import com.icure.cardinal.sdk.js.model.insurance_fromJs
 import com.icure.cardinal.sdk.js.model.insurance_toJs
 import com.icure.cardinal.sdk.js.model.storedDocumentIdentifier_fromJs
 import com.icure.cardinal.sdk.js.model.storedDocumentIdentifier_toJs
+import com.icure.cardinal.sdk.js.utils.pagination.PaginatedListIteratorJs
+import com.icure.cardinal.sdk.js.utils.pagination.paginatedListIterator_toJs
 import com.icure.cardinal.sdk.model.GroupScoped
 import com.icure.cardinal.sdk.model.Insurance
 import com.icure.cardinal.sdk.model.StoredDocumentIdentifier
@@ -462,6 +470,84 @@ internal class InsuranceApiImplJs(
 				},
 			)
 		}
+
+		override fun matchInsurancesBy(groupId: String, filter: BaseFilterOptionsJs<InsuranceJs>):
+				Promise<Array<String>> = GlobalScope.promise {
+			val groupIdConverted: String = groupId
+			val filterConverted: BaseFilterOptions<Insurance> = baseFilterOptions_fromJs(filter)
+			val result = insuranceApi.inGroup.matchInsurancesBy(
+				groupIdConverted,
+				filterConverted,
+			)
+			listToArray(
+				result,
+				{ x1: String ->
+					x1
+				},
+			)
+		}
+
+		override fun matchInsurancesBySorted(groupId: String,
+				filter: BaseSortableFilterOptionsJs<InsuranceJs>): Promise<Array<String>> =
+				GlobalScope.promise {
+			val groupIdConverted: String = groupId
+			val filterConverted: BaseSortableFilterOptions<Insurance> =
+					baseSortableFilterOptions_fromJs(filter)
+			val result = insuranceApi.inGroup.matchInsurancesBySorted(
+				groupIdConverted,
+				filterConverted,
+			)
+			listToArray(
+				result,
+				{ x1: String ->
+					x1
+				},
+			)
+		}
+
+		override fun filterInsurancesBy(groupId: String, filter: BaseFilterOptionsJs<InsuranceJs>):
+				Promise<PaginatedListIteratorJs<GroupScopedJs<InsuranceJs>>> = GlobalScope.promise {
+			val groupIdConverted: String = groupId
+			val filterConverted: BaseFilterOptions<Insurance> = baseFilterOptions_fromJs(filter)
+			val result = insuranceApi.inGroup.filterInsurancesBy(
+				groupIdConverted,
+				filterConverted,
+			)
+			paginatedListIterator_toJs(
+				result,
+				{ x1: GroupScoped<Insurance> ->
+					groupScoped_toJs(
+						x1,
+						{ x2: Insurance ->
+							insurance_toJs(x2)
+						},
+					)
+				},
+			)
+		}
+
+		override fun filterInsurancesBySorted(groupId: String,
+				filter: BaseSortableFilterOptionsJs<InsuranceJs>):
+				Promise<PaginatedListIteratorJs<GroupScopedJs<InsuranceJs>>> = GlobalScope.promise {
+			val groupIdConverted: String = groupId
+			val filterConverted: BaseSortableFilterOptions<Insurance> =
+					baseSortableFilterOptions_fromJs(filter)
+			val result = insuranceApi.inGroup.filterInsurancesBySorted(
+				groupIdConverted,
+				filterConverted,
+			)
+			paginatedListIterator_toJs(
+				result,
+				{ x1: GroupScoped<Insurance> ->
+					groupScoped_toJs(
+						x1,
+						{ x2: Insurance ->
+							insurance_toJs(x2)
+						},
+					)
+				},
+			)
+		}
 	}
 
 	override fun createInsurance(insurance: InsuranceJs): Promise<InsuranceJs> = GlobalScope.promise {
@@ -752,6 +838,64 @@ internal class InsuranceApiImplJs(
 			insuranceNameConverted,
 		)
 		listToArray(
+			result,
+			{ x1: Insurance ->
+				insurance_toJs(x1)
+			},
+		)
+	}
+
+	override fun matchInsurancesBy(filter: BaseFilterOptionsJs<InsuranceJs>): Promise<Array<String>> =
+			GlobalScope.promise {
+		val filterConverted: BaseFilterOptions<Insurance> = baseFilterOptions_fromJs(filter)
+		val result = insuranceApi.matchInsurancesBy(
+			filterConverted,
+		)
+		listToArray(
+			result,
+			{ x1: String ->
+				x1
+			},
+		)
+	}
+
+	override fun filterInsurancesBy(filter: BaseFilterOptionsJs<InsuranceJs>):
+			Promise<PaginatedListIteratorJs<InsuranceJs>> = GlobalScope.promise {
+		val filterConverted: BaseFilterOptions<Insurance> = baseFilterOptions_fromJs(filter)
+		val result = insuranceApi.filterInsurancesBy(
+			filterConverted,
+		)
+		paginatedListIterator_toJs(
+			result,
+			{ x1: Insurance ->
+				insurance_toJs(x1)
+			},
+		)
+	}
+
+	override fun matchInsurancesBySorted(filter: BaseSortableFilterOptionsJs<InsuranceJs>):
+			Promise<Array<String>> = GlobalScope.promise {
+		val filterConverted: BaseSortableFilterOptions<Insurance> =
+				baseSortableFilterOptions_fromJs(filter)
+		val result = insuranceApi.matchInsurancesBySorted(
+			filterConverted,
+		)
+		listToArray(
+			result,
+			{ x1: String ->
+				x1
+			},
+		)
+	}
+
+	override fun filterInsurancesBySorted(filter: BaseSortableFilterOptionsJs<InsuranceJs>):
+			Promise<PaginatedListIteratorJs<InsuranceJs>> = GlobalScope.promise {
+		val filterConverted: BaseSortableFilterOptions<Insurance> =
+				baseSortableFilterOptions_fromJs(filter)
+		val result = insuranceApi.filterInsurancesBySorted(
+			filterConverted,
+		)
+		paginatedListIterator_toJs(
 			result,
 			{ x1: Insurance ->
 				insurance_toJs(x1)

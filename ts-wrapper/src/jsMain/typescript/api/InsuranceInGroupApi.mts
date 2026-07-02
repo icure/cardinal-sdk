@@ -1,4 +1,5 @@
 // auto-generated file
+import {BaseFilterOptions, BaseSortableFilterOptions, PaginatedListIterator} from '../cardinal-sdk-ts.mjs';
 import {GroupScoped} from '../model/GroupScoped.mjs';
 import {Insurance} from '../model/Insurance.mjs';
 import {StoredDocumentIdentifier} from '../model/StoredDocumentIdentifier.mjs';
@@ -42,5 +43,16 @@ export interface InsuranceInGroupApi {
 	purgeInsurance(insurance: GroupScoped<Insurance>): Promise<void>;
 
 	purgeInsurances(insurances: Array<GroupScoped<Insurance>>): Promise<Array<GroupScoped<StoredDocumentIdentifier>>>;
+
+	matchInsurancesBy(groupId: string, filter: BaseFilterOptions<Insurance>): Promise<Array<string>>;
+
+	matchInsurancesBySorted(groupId: string,
+			filter: BaseSortableFilterOptions<Insurance>): Promise<Array<string>>;
+
+	filterInsurancesBy(groupId: string,
+			filter: BaseFilterOptions<Insurance>): Promise<PaginatedListIterator<GroupScoped<Insurance>>>;
+
+	filterInsurancesBySorted(groupId: string,
+			filter: BaseSortableFilterOptions<Insurance>): Promise<PaginatedListIterator<GroupScoped<Insurance>>>;
 
 }
