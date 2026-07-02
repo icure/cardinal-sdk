@@ -37,5 +37,6 @@ data class InsuranceByTagCodeFilter(
 	override val desc: String? = null,
 ) : AbstractFilter<Insurance> {
 	// region InsuranceByTagCodeFilter-InsuranceByTagCodeFilter
+
 	// endregion
 }

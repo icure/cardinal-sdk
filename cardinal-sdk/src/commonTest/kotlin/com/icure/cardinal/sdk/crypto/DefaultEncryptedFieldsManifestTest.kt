@@ -17,11 +17,11 @@ import com.icure.cardinal.sdk.model.DecryptedTopic
 import com.icure.cardinal.sdk.model.PropertyTypeStub
 import com.icure.cardinal.sdk.model.base.CodeStub
 import com.icure.cardinal.sdk.model.base.ParticipantType
-import com.icure.cardinal.sdk.model.embed.Annotation
 import com.icure.cardinal.sdk.model.embed.CareTeamMemberType
 import com.icure.cardinal.sdk.model.embed.ContactParticipant
 import com.icure.cardinal.sdk.model.embed.ContractChangeType
 import com.icure.cardinal.sdk.model.embed.DecryptedAddress
+import com.icure.cardinal.sdk.model.embed.DecryptedAnnotation
 import com.icure.cardinal.sdk.model.embed.DecryptedCalendarItemTag
 import com.icure.cardinal.sdk.model.embed.DecryptedCareTeamMember
 import com.icure.cardinal.sdk.model.embed.DecryptedEpisode
@@ -145,7 +145,7 @@ class DefaultEncryptedFieldsManifestTest : StringSpec({
 			location = uuid(),
 			openingDate = 20240101L,
 			encounterLocation = DecryptedAddress(city = "Brussels"),
-			notes = listOf(Annotation(id = uuid(), markdown = mapOf("en" to "contact note"))),
+			notes = listOf(DecryptedAnnotation(id = uuid(), markdown = mapOf("en" to "contact note"))),
 			participantList = listOf(ContactParticipant(type = ParticipantType.Attender, hcpId = uuid()))
 		)
 		hcpApi.contact.createContact(
@@ -175,7 +175,7 @@ class DefaultEncryptedFieldsManifestTest : StringSpec({
 			id = uuid(),
 			comment = uuid(),
 			label = uuid(),
-			notes = listOf(Annotation(id = uuid(), markdown = mapOf("en" to "service note")))
+			notes = listOf(DecryptedAnnotation(id = uuid(), markdown = mapOf("en" to "service note")))
 		)
 		val decryptedContact = DecryptedContact(
 			id = uuid(),
@@ -204,7 +204,7 @@ class DefaultEncryptedFieldsManifestTest : StringSpec({
 			descr = uuid(),
 			note = uuid(),
 			healthElementId = uuid(),
-			notes = listOf(Annotation(id = uuid(), markdown = mapOf("en" to "health note"))),
+			notes = listOf(DecryptedAnnotation(id = uuid(), markdown = mapOf("en" to "health note"))),
 			careTeam = listOf(
 				DecryptedCareTeamMember(
 					id = uuid(),
@@ -298,7 +298,7 @@ class DefaultEncryptedFieldsManifestTest : StringSpec({
 			civility = "Dr",
 			languages = listOf("en", "fr"),
 			patientProfessions = listOf(CodeStub(id = uuid(), type = "profession", code = uuid())),
-			notes = listOf(Annotation(id = uuid(), markdown = mapOf("en" to "patient note"))),
+			notes = listOf(DecryptedAnnotation(id = uuid(), markdown = mapOf("en" to "patient note"))),
 			partnerships = listOf(
 				DecryptedPartnership(
 					type = PartnershipType.Spouse,

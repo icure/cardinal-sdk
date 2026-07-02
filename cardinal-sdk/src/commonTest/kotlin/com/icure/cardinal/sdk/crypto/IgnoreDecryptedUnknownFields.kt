@@ -3,9 +3,8 @@ package com.icure.cardinal.sdk.crypto
 import com.icure.cardinal.sdk.CardinalSdk
 import com.icure.cardinal.sdk.model.DecryptedContact
 import com.icure.cardinal.sdk.model.DecryptedPatient
-import com.icure.cardinal.sdk.model.EncryptedContact
-import com.icure.cardinal.sdk.model.embed.Annotation
 import com.icure.cardinal.sdk.model.embed.DecryptedService
+import com.icure.cardinal.sdk.model.embed.EncryptedAnnotation
 import com.icure.cardinal.sdk.model.embed.EncryptedContent
 import com.icure.cardinal.sdk.model.embed.EncryptedService
 import com.icure.cardinal.sdk.model.specializations.Base64String
@@ -93,12 +92,12 @@ class IgnoreDecryptedUnknownFields : StringSpec({
 		strictSdk.patient.encrypted.modifyPatient(
 			encryptedPatient.copy(
 				notes = listOf(
-					Annotation( // TODO will break with fixing of Annotation not being marked as encryptable
+					EncryptedAnnotation(
 						id = "1",
 						encryptedSelf = patientInfo.encryptData(
 							// language=JSON
 							"""{"markdown":{"en":"Some encrypted note"},"unknown":"ignored or throws"}"""
-						).s
+						)
 					)
 				)
 			)
@@ -152,12 +151,12 @@ class IgnoreDecryptedUnknownFields : StringSpec({
 		strictSdk.contact.encrypted.modifyContact(
 			encryptedContact.copy(
 				notes = listOf(
-					Annotation( // TODO will break with fixing of Annotation not being marked as encryptable
+					EncryptedAnnotation(
 						id = "1",
 						encryptedSelf = contactInfo.encryptData(
 							// language=JSON
 							"""{"markdown":{"en":"Some encrypted note"},"unknown":"ignored or throws"}"""
-						).s
+						)
 					)
 				)
 			)
