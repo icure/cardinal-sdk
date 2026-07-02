@@ -70,7 +70,7 @@ data class DecryptedAddress(
 	override val country: String? = null,
 	override val note: String? = null,
 	@param:DefaultValue("emptyList()")
-	override val notes: List<Annotation> = emptyList(),
+	override val notes: List<DecryptedAnnotation> = emptyList(),
 	@param:DefaultValue("emptyList()")
 	override val telecoms: List<DecryptedTelecom> = emptyList(),
 	override val encryptedSelf: Base64String? = null,
@@ -99,7 +99,7 @@ data class EncryptedAddress(
 	override val country: String? = null,
 	override val note: String? = null,
 	@param:DefaultValue("emptyList()")
-	override val notes: List<Annotation> = emptyList(),
+	override val notes: List<EncryptedAnnotation> = emptyList(),
 	@param:DefaultValue("emptyList()")
 	override val telecoms: List<EncryptedTelecom> = emptyList(),
 	override val encryptedSelf: Base64String? = null,

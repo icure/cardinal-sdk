@@ -64,9 +64,14 @@ data class DataOwnerDetails private constructor (
 
 	/**
 	 * Creates a new api with access to the original key of the user and his parents.
+	 * @param options extra options to use for the sdk, but some will be overridden by this method (including the cryptoStrategies).
 	 */
-	suspend fun api(baseJob: Job, cryptoStrategies: CryptoStrategies = BasicCryptoStrategies): CardinalSdk =
-		initApi(baseJob, cryptoStrategies) { addInitialKeysToStorage(it) }
+	suspend fun api(
+		baseJob: Job,
+		cryptoStrategies: CryptoStrategies = BasicCryptoStrategies,
+		options: SdkOptions = SdkOptions()
+	): CardinalSdk =
+		initApi(baseJob, cryptoStrategies, options = options) { addInitialKeysToStorage(it) }
 
 	/**
 	 * Creates a new api with access to the original key of the user and his parents.
@@ -169,6 +174,7 @@ data class DataOwnerDetails private constructor (
 		parentJob: Job,
 		cryptoStrategies: CryptoStrategies,
 		storageFacade: StorageFacade = VolatileStorageFacade(),
+		options: SdkOptions = SdkOptions(),
 		fillStorage: suspend (storage: CardinalStorageFacade) -> Unit
 	): CardinalSdk =
 		CardinalSdk.initialize(
@@ -184,7 +190,7 @@ data class DataOwnerDetails private constructor (
 					false
 				))
 			},
-			SdkOptions(
+			options.copy(
 				useHierarchicalDataOwners = true,
 				cryptoStrategies = cryptoStrategies,
 				parentJob = parentJob

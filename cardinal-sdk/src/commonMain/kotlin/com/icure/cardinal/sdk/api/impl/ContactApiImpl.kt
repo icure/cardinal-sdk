@@ -87,10 +87,10 @@ private suspend fun DecryptedService.encrypt(
 	if (this.hasOnlyCompoundContent()) {
 		config.crypto.jsonEncryption.encrypt(
 			contactKey,
-			Serialization.json.encodeToJsonElement(this).jsonObject,
+			config.entityEncodingJson.encodeToJsonElement(this).jsonObject,
 			config.encryption.serviceBase
 		).let {
-			Serialization.json.decodeFromJsonElement<EncryptedService>(it)
+			config.entityEncodingJson.decodeFromJsonElement<EncryptedService>(it)
 		}.copy(
 			content = content.mapValues { (_, compoundContent) ->
 				EncryptedContent(
@@ -105,10 +105,10 @@ private suspend fun DecryptedService.encrypt(
 	} else {
 		config.crypto.jsonEncryption.encrypt(
 			contactKey,
-			Serialization.json.encodeToJsonElement(this).jsonObject,
+			config.entityEncodingJson.encodeToJsonElement(this).jsonObject,
 			config.encryption.serviceWithContent
 		).let {
-			Serialization.json.decodeFromJsonElement(it)
+			config.entityEncodingJson.decodeFromJsonElement(it)
 		}
 	}
 
@@ -158,10 +158,10 @@ private suspend fun encryptContacts(
 		val contactKey = keysById.getValue(contact.id).key
 		config.crypto.jsonEncryption.encrypt(
 			contactKey,
-			Serialization.json.encodeToJsonElement(contact).jsonObject,
+			config.entityEncodingJson.encodeToJsonElement(contact).jsonObject,
 			config.encryption.contact
 		).let {
-			Serialization.json.decodeFromJsonElement<EncryptedContact>(it)
+			config.entityEncodingJson.decodeFromJsonElement<EncryptedContact>(it)
 		}.copy(
 			services = contact.services.map {
 				it.encrypt(config, contactKey)
@@ -225,11 +225,11 @@ private suspend fun tryDecryptServices(
 		EntityWithEncryptionMetadataTypeName.Contact,
 	) { serviceStub, _, keys ->
 		runCatching {
-			Serialization.json.decodeFromJsonElement<DecryptedService>(
+			config.entityEncodingJson.decodeFromJsonElement<DecryptedService>(
 				config.jsonPatcher.patchIndividualService(
 					config.crypto.jsonEncryption.decrypt(
 						keys,
-						Serialization.json.encodeToJsonElement(servicesById.getValue(serviceStub.id)).jsonObject
+						config.entityEncodingJson.encodeToJsonElement(servicesById.getValue(serviceStub.id)).jsonObject
 					)
 				)
 			)
@@ -279,7 +279,7 @@ private fun decryptedApiFlavour(
 		entities,
 		EntityWithEncryptionMetadataTypeName.Contact,
 		EncryptedContact.serializer(),
-	) { Serialization.json.decodeFromJsonElement<DecryptedContact>(config.jsonPatcher.patchContact(it)) }
+	) { config.entityEncodingJson.decodeFromJsonElement<DecryptedContact>(config.jsonPatcher.patchContact(it)) }
 
 }
 
@@ -335,7 +335,7 @@ private fun tryAndRecoverApiFlavour(
 			entities,
 			EntityWithEncryptionMetadataTypeName.Contact,
 			EncryptedContact.serializer(),
-		) { Serialization.json.decodeFromJsonElement<DecryptedContact>(config.jsonPatcher.patchContact(it)) }
+		) { config.entityEncodingJson.decodeFromJsonElement<DecryptedContact>(config.jsonPatcher.patchContact(it)) }
 
 	override suspend fun validateAndMaybeEncrypt(
 		entitiesGroupId: String?,

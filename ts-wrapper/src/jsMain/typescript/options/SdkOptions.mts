@@ -67,13 +67,17 @@ export interface SdkOptions {
    */
   readonly jsonPatcher?: JsonPatcher
   /**
-   * If true the SDK will use lenient deserialization of the entities coming from the backend.
+   * If true, on deserialization of data coming from the backend or from the decrypted content of an entity any
+   * field that is not present in the data model will be ignored.
    *
-   * This could be helpful when developing using the nightly deployments of the backend, as the SDK will ignore minor changes to the data model.
+   * Note that updating an entity where some fields were ignored during deserialization will result in data loss.
    *
-   * This option however could cause loss of data when connecting with incompatible versions of the backend, and should be disabled in production.
+   * If the ignored keys are coming from the encrypted content of an entity you can provide a {@link jsonPatcher}
+   * to specify how the unknown fields should be migrated.
+   *
+   * This behaviour is disabled by default (strict by default).
    */
-  readonly lenientJson?: boolean
+  readonly ignoreUnknownFields?: boolean
   /**
    * If not null the SDK will immediately set the data owner scope to the provided value after login.
    */
@@ -100,13 +104,14 @@ export interface BasicSdkOptions {
    */
   readonly groupSelector?: (availableGroups: Array<UserGroup>) => Promise<string>
   /**
-   * If true the SDK will use lenient deserialization of the entities coming from the backend.
+   * If true, on deserialization of data coming from the backend or from the decrypted content of an entity any
+   * field that is not present in the data model will be ignored.
    *
-   * This could be helpful when developing using the nightly deployments of the backend, as the SDK will ignore minor changes to the data model.
+   * Note that updating an entity where some fields were ignored during deserialization will result in data loss.
    *
-   * This option however could cause loss of data when connecting with incompatible versions of the backend, and should be disabled in production.
+   * This behaviour is disabled by default (strict by default).
    */
-  readonly lenientJson?: boolean
+  readonly ignoreUnknownFields?: boolean
   /**
    * If not null the SDK will immediately set the data owner scope to the provided value after login.
    */
@@ -146,13 +151,14 @@ export interface BasicToFullSdkOptions {
 
 export interface AnonymousSdkOptions {
   /**
-   * If true the SDK will use lenient deserialization of the entities coming from the backend.
+   * If true, on deserialization of data coming from the backend or from the decrypted content of an entity any
+   * field that is not present in the data model will be ignored.
    *
-   * This could be helpful when developing using the nightly deployments of the backend, as the SDK will ignore minor changes to the data model.
+   * Note that updating an entity where some fields were ignored during deserialization will result in data loss.
    *
-   * This option however could cause loss of data when connecting with incompatible versions of the backend, and should be disabled in production.
+   * This behaviour is disabled by default (strict by default).
    */
-  readonly lenientJson?: boolean
+  readonly ignoreUnknownFields?: boolean
 }
 
 export interface EncryptedFieldsConfiguration {

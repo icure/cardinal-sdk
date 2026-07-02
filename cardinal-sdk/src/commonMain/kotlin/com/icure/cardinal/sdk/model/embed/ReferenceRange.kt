@@ -42,7 +42,7 @@ data class ReferenceRange(
 	 * Annotations providing additional context.
 	 */
 	@param:DefaultValue("emptyList()")
-	public val notes: List<Annotation> = emptyList(),
+	public val notes: List<DecryptedAnnotation> = emptyList(),
 	/**
 	 * The age range to which this reference range applies.
 	 */

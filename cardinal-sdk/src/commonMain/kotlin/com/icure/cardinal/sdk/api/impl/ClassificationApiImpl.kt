@@ -198,7 +198,8 @@ internal class ClassificationApiImpl(
 				EntityWithEncryptionMetadataTypeName.Classification,
 				EncryptedClassification.serializer(),
 				DecryptedClassification.serializer(),
-				config.encryption.classification
+				config.encryption.classification,
+				config.entityEncodingJson,
 			)
 
 			override suspend fun maybeDecrypt(

@@ -13,6 +13,7 @@ import com.icure.cardinal.sdk.model.base.StoredDocument
 import com.icure.cardinal.sdk.model.embed.Address
 import com.icure.cardinal.sdk.model.embed.Annotation
 import com.icure.cardinal.sdk.model.embed.DecryptedAddress
+import com.icure.cardinal.sdk.model.embed.DecryptedAnnotation
 import com.icure.cardinal.sdk.model.embed.DecryptedFinancialInstitutionInformation
 import com.icure.cardinal.sdk.model.embed.DecryptedInsurability
 import com.icure.cardinal.sdk.model.embed.DecryptedMedicalHouseContract
@@ -21,6 +22,7 @@ import com.icure.cardinal.sdk.model.embed.DecryptedPatientHealthCareParty
 import com.icure.cardinal.sdk.model.embed.Delegation
 import com.icure.cardinal.sdk.model.embed.Encryptable
 import com.icure.cardinal.sdk.model.embed.EncryptedAddress
+import com.icure.cardinal.sdk.model.embed.EncryptedAnnotation
 import com.icure.cardinal.sdk.model.embed.EncryptedFinancialInstitutionInformation
 import com.icure.cardinal.sdk.model.embed.EncryptedInsurability
 import com.icure.cardinal.sdk.model.embed.EncryptedMedicalHouseContract
@@ -593,7 +595,7 @@ data class DecryptedPatient(
 	 * Localized text notes (can be confidential).
 	 */
 	@param:DefaultValue("emptyList()")
-	override val notes: List<Annotation> = emptyList(),
+	override val notes: List<DecryptedAnnotation> = emptyList(),
 	/**
 	 * A text note (can be confidential, encrypted by default).
 	 */
@@ -907,7 +909,7 @@ data class EncryptedPatient(
 	 * Localized text notes (can be confidential).
 	 */
 	@param:DefaultValue("emptyList()")
-	override val notes: List<Annotation> = emptyList(),
+	override val notes: List<EncryptedAnnotation> = emptyList(),
 	/**
 	 * A text note (can be confidential, encrypted by default).
 	 */

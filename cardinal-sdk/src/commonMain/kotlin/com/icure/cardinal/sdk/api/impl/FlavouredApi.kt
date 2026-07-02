@@ -11,9 +11,9 @@ import com.icure.cardinal.sdk.options.ApiConfiguration
 import com.icure.cardinal.sdk.options.BasicApiConfiguration
 import com.icure.cardinal.sdk.options.EntitiesEncryptedFieldsManifests
 import com.icure.cardinal.sdk.options.JsonPatcher
-import com.icure.cardinal.sdk.utils.Serialization
 import com.icure.utils.InternalIcureApi
 import kotlinx.serialization.KSerializer
+import kotlinx.serialization.json.Json
 import kotlinx.serialization.json.JsonElement
 
 internal interface FlavouredApi<EncryptedEntity : HasEncryptionMetadata, FlavouredEntity : HasEncryptionMetadata> {
@@ -48,7 +48,7 @@ internal interface FlavouredApi<EncryptedEntity : HasEncryptionMetadata, Flavour
 					type,
 					decryptedSerializer,
 					config.encryption.manifest(),
-				) { Serialization.json.decodeFromJsonElement(encryptedSerializer, it) }
+				) { config.entityEncodingJson.decodeFromJsonElement(encryptedSerializer, it) }
 			}
 
 			override suspend fun maybeDecrypt(
@@ -60,7 +60,7 @@ internal interface FlavouredApi<EncryptedEntity : HasEncryptionMetadata, Flavour
 					entities,
 					type,
 					encryptedSerializer,
-				) { Serialization.json.decodeFromJsonElement(decryptedSerializer, config.jsonPatcher.patchJson(it)) }
+				) { config.entityEncodingJson.decodeFromJsonElement(decryptedSerializer, config.jsonPatcher.patchJson(it)) }
 		}
 
 		@InternalIcureApi
@@ -108,7 +108,8 @@ internal interface FlavouredApi<EncryptedEntity : HasEncryptionMetadata, Flavour
 					entitiesType = type,
 					encryptedSerializer = encryptedSerializer,
 					decryptedSerializer = decryptedSerializer,
-					fieldsToEncrypt = config.encryption.manifest()
+					fieldsToEncrypt = config.encryption.manifest(),
+					json = config.entityEncodingJson,
 				)
 
 			override suspend fun maybeDecrypt(
@@ -120,7 +121,7 @@ internal interface FlavouredApi<EncryptedEntity : HasEncryptionMetadata, Flavour
 					entities,
 					type,
 					encryptedSerializer,
-				) { Serialization.json.decodeFromJsonElement(decryptedSerializer, config.jsonPatcher.patchJson(it)) }
+				) { config.entityEncodingJson.decodeFromJsonElement(decryptedSerializer, config.jsonPatcher.patchJson(it)) }
 		}
 	}
 }
@@ -149,7 +150,8 @@ internal suspend inline fun <Base, reified EncryptedEntity : Base, reified Decry
 	entitiesType: EntityWithEncryptionMetadataTypeName,
 	encryptedSerializer: KSerializer<EncryptedEntity>,
 	decryptedSerializer: KSerializer<DecryptedEntity>,
-	fieldsToEncrypt: EncryptedFieldsManifest
+	fieldsToEncrypt: EncryptedFieldsManifest,
+	json: Json
 ): List<EncryptedEntity> where Base : HasEncryptionMetadata, Base : Encryptable =
 	validateOrEncryptEntities<Base, EncryptedEntity, DecryptedEntity>(
 		entities = entities,
@@ -165,7 +167,7 @@ internal suspend inline fun <Base, reified EncryptedEntity : Base, reified Decry
 				entitiesType,
 				decryptedSerializer,
 				fieldsToEncrypt
-			) { Serialization.json.decodeFromJsonElement(encryptedSerializer, it) }
+			) { json.decodeFromJsonElement(encryptedSerializer, it) }
 		},
 		doValidate = {
 			validateEncryptedEntities(

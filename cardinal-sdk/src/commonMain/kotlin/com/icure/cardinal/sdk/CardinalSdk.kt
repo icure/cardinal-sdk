@@ -673,7 +673,8 @@ internal suspend fun initializeApiCrypto(
 			options.jsonPatcher ?: object : JsonPatcher {},
 			options.parentJob,
 			rawApiConfig,
-			boundGroup
+			boundGroup,
+			json,
 		),
 		userEncryptionKeysInitInfo.newKey?.key,
 		sdkScope

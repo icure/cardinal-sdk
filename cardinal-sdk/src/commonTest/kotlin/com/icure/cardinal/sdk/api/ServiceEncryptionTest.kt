@@ -8,6 +8,7 @@ import com.icure.cardinal.sdk.model.base.CodeStub
 import com.icure.cardinal.sdk.model.embed.Annotation
 import com.icure.cardinal.sdk.model.embed.DecryptedContent
 import com.icure.cardinal.sdk.model.embed.DecryptedService
+import com.icure.cardinal.sdk.model.embed.EncryptedAnnotation
 import com.icure.cardinal.sdk.model.embed.EncryptedContent
 import com.icure.cardinal.sdk.model.embed.EncryptedService
 import com.icure.cardinal.sdk.test.DataOwnerDetails
@@ -304,7 +305,7 @@ class ServiceEncryptionTest : StringSpec({
 		service: EncryptedService
 	): EncryptedService =
 		service.copy(
-			notes = service.notes + Annotation(id = "some note", markdown = mapOf("en" to "don't do this"))
+			notes = service.notes + EncryptedAnnotation(id = "some note", markdown = mapOf("en" to "don't do this"))
 		)
 
 	fun addToServiceContent(

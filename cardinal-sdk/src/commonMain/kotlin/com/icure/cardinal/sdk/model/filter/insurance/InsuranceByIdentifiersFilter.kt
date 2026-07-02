@@ -29,5 +29,6 @@ data class InsuranceByIdentifiersFilter(
 	override val desc: String? = null,
 ) : AbstractFilter<Insurance> {
 	// region InsuranceByIdentifiersFilter-InsuranceByIdentifiersFilter
+
 	// endregion
 }
