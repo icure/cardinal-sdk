@@ -6,6 +6,7 @@ import com.icure.cardinal.sdk.model.base.CodeStub
 import com.icure.cardinal.sdk.model.base.CryptoActor
 import com.icure.cardinal.sdk.model.base.DataOwner
 import com.icure.cardinal.sdk.model.base.HasCodes
+import com.icure.cardinal.sdk.model.base.HasIdentifier
 import com.icure.cardinal.sdk.model.base.HasTags
 import com.icure.cardinal.sdk.model.base.Identifier
 import com.icure.cardinal.sdk.model.base.Named
@@ -72,7 +73,7 @@ data class HealthcareParty(
 	 * the HCP.
 	 */
 	@param:DefaultValue("emptyList()")
-	public val identifier: List<Identifier> = emptyList(),
+	override val identifier: List<Identifier> = emptyList(),
 	/**
 	 * Tags that qualify the healthcare party as being member of a certain class.
 	 */
@@ -224,7 +225,7 @@ data class HealthcareParty(
 	 */
 	@param:DefaultValue("emptySet()")
 	override val publicKeysForOaepWithSha256: Set<SpkiHexString> = emptySet(),
-) : StoredDocument, Named, Person, CryptoActor, DataOwner, HasCodes, HasTags {
+) : StoredDocument, Named, Person, CryptoActor, DataOwner, HasCodes, HasTags, HasIdentifier {
 	// region HealthcareParty-HealthcareParty
 	companion object {
 		const val KRAKEN_QUALIFIED_NAME = "org.taktik.icure.entities.HealthcareParty"

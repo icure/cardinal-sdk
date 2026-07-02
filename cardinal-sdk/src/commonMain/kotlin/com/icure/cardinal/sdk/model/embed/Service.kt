@@ -4,6 +4,7 @@ package com.icure.cardinal.sdk.model.embed
 
 import com.icure.cardinal.sdk.model.base.CodeStub
 import com.icure.cardinal.sdk.model.base.HasEndOfLife
+import com.icure.cardinal.sdk.model.base.HasIdentifier
 import com.icure.cardinal.sdk.model.base.ICureDocument
 import com.icure.cardinal.sdk.model.base.Identifier
 import com.icure.cardinal.sdk.model.base.LinkQualification
@@ -17,7 +18,7 @@ import kotlin.collections.Map
 import kotlin.collections.Set
 import kotlin.Int
 
-sealed interface Service : Encryptable, ICureDocument<String>, HasEndOfLife {
+sealed interface Service : Encryptable, ICureDocument<String>, HasEndOfLife, HasIdentifier {
 	/**
 	 * The Id of the Service. We encourage using either a v4 UUID or a HL7 Id.
 	 */
@@ -33,7 +34,7 @@ sealed interface Service : Encryptable, ICureDocument<String>, HasEndOfLife {
 	 * The transactionId is used when a single service had to be split into parts for technical
 	 * reasons. Several services with the same non null transaction id form one single service
 	 */
-	public val identifier: List<Identifier>
+	override val identifier: List<Identifier>
 
 	/**
 	 * Id of the contact during which the service is provided. Only used when the Service is emitted

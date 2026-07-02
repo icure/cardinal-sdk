@@ -26,5 +26,6 @@ data class CalendarItemOccupancy(
 	public val occupancy: Long,
 ) {
 	// region CalendarItemOccupancy-CalendarItemOccupancy
+
 	// endregion
 }

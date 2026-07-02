@@ -1,9 +1,12 @@
 package com.icure.cardinal.sdk.api
 
+import com.icure.cardinal.sdk.filters.BaseFilterOptions
+import com.icure.cardinal.sdk.filters.BaseSortableFilterOptions
 import com.icure.cardinal.sdk.model.Insurance
 import com.icure.cardinal.sdk.model.GroupScoped
 import com.icure.cardinal.sdk.model.StoredDocumentIdentifier
 import com.icure.cardinal.sdk.model.toStoredDocumentIdentifier
+import com.icure.cardinal.sdk.utils.pagination.PaginatedListIterator
 
 interface InsuranceApi {
 
@@ -46,6 +49,18 @@ interface InsuranceApi {
 	suspend fun listInsurancesByCode(insuranceCode: String): List<Insurance>
 	suspend fun listInsurancesByName(insuranceName: String): List<Insurance>
 
+	suspend fun matchInsurancesBy(filter: BaseFilterOptions<Insurance>): List<String>
+
+	suspend fun filterInsurancesBy(
+		filter: BaseFilterOptions<Insurance>,
+	): PaginatedListIterator<Insurance>
+
+	suspend fun matchInsurancesBySorted(filter: BaseSortableFilterOptions<Insurance>): List<String>
+
+	suspend fun filterInsurancesBySorted(
+		filter: BaseSortableFilterOptions<Insurance>,
+	): PaginatedListIterator<Insurance>
+
 }
 
 interface InsuranceInGroupApi {
@@ -84,4 +99,15 @@ interface InsuranceInGroupApi {
 	suspend fun purgeInsurances(insurances: List<GroupScoped<Insurance>>): List<GroupScoped<StoredDocumentIdentifier>> =
 		purgeInsuranceByIds(insurances.map { it.toStoredDocumentIdentifier() })
 
+	suspend fun matchInsurancesBy(groupId: String, filter: BaseFilterOptions<Insurance>): List<String>
+	suspend fun matchInsurancesBySorted(groupId: String, filter: BaseSortableFilterOptions<Insurance>): List<String>
+
+	suspend fun filterInsurancesBy(
+		groupId: String,
+		filter: BaseFilterOptions<Insurance>,
+	): PaginatedListIterator<GroupScoped<Insurance>>
+	suspend fun filterInsurancesBySorted(
+		groupId: String,
+		filter: BaseSortableFilterOptions<Insurance>,
+	): PaginatedListIterator<GroupScoped<Insurance>>
 }

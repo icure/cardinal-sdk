@@ -6,6 +6,7 @@ package com.icure.cardinal.sdk.js.model
 import com.icure.cardinal.sdk.js.model.base.CodeStubJs
 import com.icure.cardinal.sdk.js.model.base.CryptoActorJs
 import com.icure.cardinal.sdk.js.model.base.HasEncryptionMetadataJs
+import com.icure.cardinal.sdk.js.model.base.HasIdentifierJs
 import com.icure.cardinal.sdk.js.model.base.ICureDocumentJs
 import com.icure.cardinal.sdk.js.model.base.IdentifierJs
 import com.icure.cardinal.sdk.js.model.base.PersonJs
@@ -43,9 +44,7 @@ import kotlin.js.JsQualifier
 
 @JsName("Patient")
 public sealed external interface PatientJs : StoredDocumentJs, ICureDocumentJs<String>, PersonJs,
-		HasEncryptionMetadataJs, EncryptableJs, CryptoActorJs {
-	public val identifier: Array<out IdentifierJs>
-
+		HasEncryptionMetadataJs, EncryptableJs, HasIdentifierJs, CryptoActorJs {
 	public val birthSex: String?
 
 	public val mergeToPatientId: String?

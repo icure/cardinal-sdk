@@ -5,17 +5,24 @@ import com.icure.cardinal.sdk.api.InsuranceApi
 import com.icure.cardinal.sdk.api.raw.RawInsuranceApi
 import com.icure.cardinal.sdk.api.raw.successBodyOrNull404
 import com.icure.cardinal.sdk.api.raw.successBodyOrThrowRevisionConflict
+import com.icure.cardinal.sdk.filters.BaseFilterOptions
+import com.icure.cardinal.sdk.filters.BaseSortableFilterOptions
+import com.icure.cardinal.sdk.filters.mapInsuranceFilterOptions
 import com.icure.cardinal.sdk.model.Insurance
 import com.icure.cardinal.sdk.model.GroupScoped
 import com.icure.cardinal.sdk.model.ListOfIds
 import com.icure.cardinal.sdk.model.ListOfIdsAndRev
 import com.icure.cardinal.sdk.model.StoredDocumentIdentifier
 import com.icure.cardinal.sdk.model.toStoredDocumentIdentifier
+import com.icure.cardinal.sdk.options.BasicApiConfiguration
+import com.icure.cardinal.sdk.utils.pagination.IdsPageIterator
+import com.icure.cardinal.sdk.utils.pagination.PaginatedListIterator
 import com.icure.utils.InternalIcureApi
 
 @OptIn(InternalIcureApi::class)
 internal abstract class AbstractInsuranceApi(
 	protected val rawApi: RawInsuranceApi,
+	private val config: BasicApiConfiguration
 ) {
 
 	protected suspend fun doCreateInsurance(groupId: String?, entity: Insurance): Insurance {
@@ -118,14 +125,25 @@ internal abstract class AbstractInsuranceApi(
 				rawApi.purgeInsurancesInGroup(groupId = groupId, ListOfIdsAndRev(ids))
 			}.successBody().map { it.toStoredDocumentIdentifier() }
 		}
+
+	protected suspend fun doMatchInsurancesBy(groupId: String?, filter: BaseFilterOptions<Insurance>) =
+		if (groupId == null) {
+			rawApi.matchInsurancesBy(mapInsuranceFilterOptions(filter, config))
+		} else {
+			rawApi.matchInsurancesBy(groupId, mapInsuranceFilterOptions(filter, config, groupId))
+		}.successBody()
+
+	protected suspend fun doMatchInsurancesBySorted(groupId: String?, filter: BaseSortableFilterOptions<Insurance>) =
+		doMatchInsurancesBy(groupId = groupId, filter = filter)
 }
 
 @InternalIcureApi
 internal class InsuranceApiImpl(
 	rawApi: RawInsuranceApi,
-) : InsuranceApi, AbstractInsuranceApi(rawApi) {
+	config: BasicApiConfiguration
+) : InsuranceApi, AbstractInsuranceApi(rawApi, config) {
 
-	override val inGroup: InsuranceInGroupApi = InsuranceInGroupApiImpl(rawApi)
+	override val inGroup: InsuranceInGroupApi = InsuranceInGroupApiImpl(rawApi, config)
 
 	override suspend fun getInsurance(insuranceId: String) = doGetInsurance(groupId = null, entityId = insuranceId)
 
@@ -171,12 +189,24 @@ internal class InsuranceApiImpl(
 	override suspend fun listInsurancesByName(insuranceName: String) =
 		rawApi.listInsurancesByName(insuranceName).successBody()
 
+	override suspend fun matchInsurancesBy(filter: BaseFilterOptions<Insurance>): List<String> =
+		doMatchInsurancesBy(groupId = null, filter = filter)
+
+	override suspend fun filterInsurancesBy(filter: BaseFilterOptions<Insurance>): PaginatedListIterator<Insurance> =
+		IdsPageIterator(matchInsurancesBy(filter), this::getInsurances)
+
+	override suspend fun matchInsurancesBySorted(filter: BaseSortableFilterOptions<Insurance>): List<String> =
+		doMatchInsurancesBySorted(groupId = null, filter = filter)
+
+	override suspend fun filterInsurancesBySorted(filter: BaseSortableFilterOptions<Insurance>): PaginatedListIterator<Insurance> =
+		IdsPageIterator(matchInsurancesBySorted(filter), this::getInsurances)
 }
 
 @OptIn(InternalIcureApi::class)
 internal class InsuranceInGroupApiImpl(
-	rawApi: RawInsuranceApi
-) : InsuranceInGroupApi, AbstractInsuranceApi(rawApi) {
+	rawApi: RawInsuranceApi,
+	config: BasicApiConfiguration
+) : InsuranceInGroupApi, AbstractInsuranceApi(rawApi, config) {
 
 	override suspend fun createInsurance(insurance: GroupScoped<Insurance>): GroupScoped<Insurance> =
 		groupScopedWith(insurance) { groupId, entity -> doCreateInsurance(groupId, entity) }
@@ -227,6 +257,32 @@ internal class InsuranceInGroupApiImpl(
 	override suspend fun purgeInsuranceByIds(entityIds: List<GroupScoped<StoredDocumentIdentifier>>): List<GroupScoped<StoredDocumentIdentifier>> =
 		entityIds.mapUniqueIdentifiablesChunkedByGroup { groupId, chunk ->
 			doPurgeInsurances(groupId = groupId, entityIds = chunk)
+		}
+
+	override suspend fun matchInsurancesBy(
+		groupId: String,
+		filter: BaseFilterOptions<Insurance>,
+	): List<String> = doMatchInsurancesBy(groupId = groupId, filter = filter)
+
+	override suspend fun matchInsurancesBySorted(
+		groupId: String,
+		filter: BaseSortableFilterOptions<Insurance>,
+	): List<String> = doMatchInsurancesBySorted(groupId = groupId, filter = filter)
+
+	override suspend fun filterInsurancesBy(
+		groupId: String,
+		filter: BaseFilterOptions<Insurance>,
+	): PaginatedListIterator<GroupScoped<Insurance>> =
+		IdsPageIterator(matchInsurancesBy(groupId, filter)) { ids ->
+			getInsurances(groupId = groupId, insurancesIds = ids)
+		}
+
+	override suspend fun filterInsurancesBySorted(
+		groupId: String,
+		filter: BaseSortableFilterOptions<Insurance>,
+	): PaginatedListIterator<GroupScoped<Insurance>> =
+		IdsPageIterator(matchInsurancesBySorted(groupId, filter)) { ids ->
+			getInsurances(groupId = groupId, insurancesIds = ids)
 		}
 
 }

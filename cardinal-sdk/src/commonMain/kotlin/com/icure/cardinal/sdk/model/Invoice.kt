@@ -4,6 +4,7 @@ package com.icure.cardinal.sdk.model
 
 import com.icure.cardinal.sdk.model.base.CodeStub
 import com.icure.cardinal.sdk.model.base.HasEncryptionMetadata
+import com.icure.cardinal.sdk.model.base.HasIdentifier
 import com.icure.cardinal.sdk.model.base.ICureDocument
 import com.icure.cardinal.sdk.model.base.Identifier
 import com.icure.cardinal.sdk.model.base.StoredDocument
@@ -42,7 +43,8 @@ sealed interface Invoice :
 	StoredDocument,
 	ICureDocument<String>,
 	HasEncryptionMetadata,
-	Encryptable {
+	Encryptable,
+	HasIdentifier {
 	/**
 	 * The Id of the Invoice. We encourage using either a v4 UUID or a HL7 Id.
 	 */
@@ -56,7 +58,7 @@ sealed interface Invoice :
 	/**
 	 * The identifiers of the invoice.
 	 */
-	public val identifier: List<Identifier>
+	override val identifier: List<Identifier>
 
 	/**
 	 * The timestamp (unix epoch in ms) of creation.

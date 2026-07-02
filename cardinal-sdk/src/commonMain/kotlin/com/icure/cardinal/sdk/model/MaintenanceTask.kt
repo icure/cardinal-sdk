@@ -5,6 +5,7 @@ package com.icure.cardinal.sdk.model
 import com.icure.cardinal.sdk.model.base.CodeStub
 import com.icure.cardinal.sdk.model.base.HasEncryptionMetadata
 import com.icure.cardinal.sdk.model.base.HasEndOfLife
+import com.icure.cardinal.sdk.model.base.HasIdentifier
 import com.icure.cardinal.sdk.model.base.ICureDocument
 import com.icure.cardinal.sdk.model.base.Identifier
 import com.icure.cardinal.sdk.model.base.StoredDocument
@@ -34,7 +35,8 @@ sealed interface MaintenanceTask :
 	ICureDocument<String>,
 	HasEncryptionMetadata,
 	Encryptable,
-	HasEndOfLife {
+	HasEndOfLife,
+	HasIdentifier {
 	/**
 	 * The unique identifier of the maintenance task.
 	 */
@@ -49,7 +51,7 @@ sealed interface MaintenanceTask :
 	/**
 	 * The identifiers of the maintenance task.
 	 */
-	public val identifier: List<Identifier>
+	override val identifier: List<Identifier>
 
 	/**
 	 * The timestamp (unix epoch in ms) of creation.

@@ -6,6 +6,7 @@ import {CodeStub} from './base/CodeStub.mjs';
 import {CryptoActor} from './base/CryptoActor.mjs';
 import {DataOwner} from './base/DataOwner.mjs';
 import {HasCodes} from './base/HasCodes.mjs';
+import {HasIdentifier} from './base/HasIdentifier.mjs';
 import {HasTags} from './base/HasTags.mjs';
 import {Identifier} from './base/Identifier.mjs';
 import {Named} from './base/Named.mjs';
@@ -30,7 +31,7 @@ import {SpkiHexString} from './specializations/SpkiHexString.mjs';
  *  icure-healthdata CouchDB database.
  *  /
  */
-export class HealthcareParty implements StoredDocument, Named, Person, CryptoActor, DataOwner, HasCodes, HasTags {
+export class HealthcareParty implements StoredDocument, Named, Person, CryptoActor, DataOwner, HasCodes, HasTags, HasIdentifier {
 
 	/**
 	 *
