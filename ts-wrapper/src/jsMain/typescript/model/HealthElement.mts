@@ -7,7 +7,7 @@ import {HasEndOfLife} from './base/HasEndOfLife.mjs';
 import {ICureDocument} from './base/ICureDocument.mjs';
 import {Identifier} from './base/Identifier.mjs';
 import {StoredDocument} from './base/StoredDocument.mjs';
-import {Annotation} from './embed/Annotation.mjs';
+import {Annotation, DecryptedAnnotation, EncryptedAnnotation} from './embed/Annotation.mjs';
 import {CareTeamMember, DecryptedCareTeamMember, EncryptedCareTeamMember} from './embed/CareTeamMember.mjs';
 import {Delegation} from './embed/Delegation.mjs';
 import {Encryptable} from './embed/Encryptable.mjs';
@@ -253,7 +253,7 @@ export class DecryptedHealthElement {
 	 *
 	 *  Localized text annotations for the healthcare element.
 	 */
-	notes: Array<Annotation> = [];
+	notes: Array<DecryptedAnnotation> = [];
 
 	/**
 	 *
@@ -438,7 +438,7 @@ export class DecryptedHealthElement {
 			closingDate: expectNumber(extractEntry(jCpy, 'closingDate', false, path), true, true, [...path, ".closingDate"]),
 			descr: expectString(extractEntry(jCpy, 'descr', false, path), true, [...path, ".descr"]),
 			note: expectString(extractEntry(jCpy, 'note', false, path), true, [...path, ".note"]),
-			notes: expectArray(extractEntry(jCpy, 'notes', false, path), false, [...path, ".notes"], (x0, p0) => expectObject(x0, false, ignoreUnknownKeys, p0, Annotation.fromJSON)),
+			notes: expectArray(extractEntry(jCpy, 'notes', false, path), false, [...path, ".notes"], (x0, p0) => expectObject(x0, false, ignoreUnknownKeys, p0, DecryptedAnnotation.fromJSON)),
 			relevant: expectBoolean(extractEntry(jCpy, 'relevant', false, path), false, [...path, ".relevant"]),
 			idOpeningContact: expectString(extractEntry(jCpy, 'idOpeningContact', false, path), true, [...path, ".idOpeningContact"]),
 			idClosingContact: expectString(extractEntry(jCpy, 'idClosingContact', false, path), true, [...path, ".idClosingContact"]),
@@ -600,7 +600,7 @@ export class EncryptedHealthElement {
 	 *
 	 *  Localized text annotations for the healthcare element.
 	 */
-	notes: Array<Annotation> = [];
+	notes: Array<EncryptedAnnotation> = [];
 
 	/**
 	 *
@@ -785,7 +785,7 @@ export class EncryptedHealthElement {
 			closingDate: expectNumber(extractEntry(jCpy, 'closingDate', false, path), true, true, [...path, ".closingDate"]),
 			descr: expectString(extractEntry(jCpy, 'descr', false, path), true, [...path, ".descr"]),
 			note: expectString(extractEntry(jCpy, 'note', false, path), true, [...path, ".note"]),
-			notes: expectArray(extractEntry(jCpy, 'notes', false, path), false, [...path, ".notes"], (x0, p0) => expectObject(x0, false, ignoreUnknownKeys, p0, Annotation.fromJSON)),
+			notes: expectArray(extractEntry(jCpy, 'notes', false, path), false, [...path, ".notes"], (x0, p0) => expectObject(x0, false, ignoreUnknownKeys, p0, EncryptedAnnotation.fromJSON)),
 			relevant: expectBoolean(extractEntry(jCpy, 'relevant', false, path), false, [...path, ".relevant"]),
 			idOpeningContact: expectString(extractEntry(jCpy, 'idOpeningContact', false, path), true, [...path, ".idOpeningContact"]),
 			idClosingContact: expectString(extractEntry(jCpy, 'idClosingContact', false, path), true, [...path, ".idClosingContact"]),

@@ -14,11 +14,13 @@ import com.icure.cardinal.sdk.js.model.embed.AddressJs
 import com.icure.cardinal.sdk.js.model.embed.AnnotationJs
 import com.icure.cardinal.sdk.js.model.embed.ContactParticipantJs
 import com.icure.cardinal.sdk.js.model.embed.DecryptedAddressJs
+import com.icure.cardinal.sdk.js.model.embed.DecryptedAnnotationJs
 import com.icure.cardinal.sdk.js.model.embed.DecryptedServiceJs
 import com.icure.cardinal.sdk.js.model.embed.DecryptedSubContactJs
 import com.icure.cardinal.sdk.js.model.embed.DelegationJs
 import com.icure.cardinal.sdk.js.model.embed.EncryptableJs
 import com.icure.cardinal.sdk.js.model.embed.EncryptedAddressJs
+import com.icure.cardinal.sdk.js.model.embed.EncryptedAnnotationJs
 import com.icure.cardinal.sdk.js.model.embed.EncryptedServiceJs
 import com.icure.cardinal.sdk.js.model.embed.EncryptedSubContactJs
 import com.icure.cardinal.sdk.js.model.embed.SecurityMetadataJs
@@ -118,7 +120,7 @@ public external class DecryptedContactJs(
 
 	override val securityMetadata: SecurityMetadataJs?
 
-	override val notes: Array<AnnotationJs>
+	override val notes: Array<DecryptedAnnotationJs>
 
 	override val isEncrypted: Boolean
 }
@@ -181,7 +183,7 @@ public external class EncryptedContactJs(
 
 	override val securityMetadata: SecurityMetadataJs?
 
-	override val notes: Array<AnnotationJs>
+	override val notes: Array<EncryptedAnnotationJs>
 
 	override val isEncrypted: Boolean
 }
