@@ -5,6 +5,7 @@ package com.icure.cardinal.sdk.js.model.embed
 
 import com.icure.cardinal.sdk.js.model.base.CodeStubJs
 import com.icure.cardinal.sdk.js.model.base.HasCodesJs
+import com.icure.cardinal.sdk.js.model.base.HasIdentifierJs
 import com.icure.cardinal.sdk.js.model.base.HasTagsJs
 import com.icure.cardinal.sdk.js.model.base.IdentifierJs
 import kotlin.Array
@@ -14,9 +15,7 @@ import kotlin.js.JsName
 import kotlin.js.JsQualifier
 
 @JsName("Address")
-public sealed external interface AddressJs : EncryptableJs, HasTagsJs, HasCodesJs {
-	public val identifier: Array<out IdentifierJs>
-
+public sealed external interface AddressJs : EncryptableJs, HasTagsJs, HasCodesJs, HasIdentifierJs {
 	public val addressType: String?
 
 	public val descr: String?
