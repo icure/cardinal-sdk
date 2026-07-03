@@ -1,44 +1,20 @@
-package com.icure.cardinal.sdk.crypto
-
-import com.icure.cardinal.sdk.utils.intersects
-import com.icure.kryptom.crypto.AesAlgorithm
-import com.icure.kryptom.crypto.AesKey
+package com.icure.cardinal.sdk.crypto.encryptor
 
 /**
- * A strategy for encryption and decryption of an entity of a known type.
- *
- * Encryption is based on an encryption manifest, which specifies which fields of the entity need to be encrypted.
- *
- * Decryption instead is independent of the manifest, any encrypted field in the entity is automatically decrypted,
- * (independently of what the manifest specifies for that field), potentially overriding the non-encrypted value for
- * that field if any.
+ * Specifies how entities should be encrypted.
  */
-interface EntityEncryptor<ENCRYPTED : Any, DECRYPTED : Any> {
-	fun encrypt(
-		encryptionKeys: AesKey<AesAlgorithm.CbcWithPkcs7Padding>,
-		encryptedEntity: ENCRYPTED,
-	): DECRYPTED
-
+data class EntitiesEncryptionManifests(
 	/**
-	 * Decrypts the given [encryptedEntity] using the given [decryptionKeys] which must be non-empty.
+	 * Manifests of all the entities that should be partially encrypted, both root entities (which are referenced by
+	 * [accessLog], [calendarItem], ... + the [service] special case) and embedded entities which are referenced by other manifests
+	 * [EntityEncryptionManifest].
 	 *
-	 * If multiple [decryptionKeys] are provided this method tries all of them in order on each encrypted field
-	 * encountered, until one of them succeeds.
-	 *
-	 * This is required in the unlikely scenario that a single entity is encrypted using different keys for different
-	 * parts (may happen if separate entities have been merged without access to the encrypted content).
+	 * Each manifest must only be used to handle one type of entity, but it is possible to have multiple manifests
+	 * per type of entity.
+	 * For example, you can have an [com.icure.cardinal.sdk.model.embed.Annotation] inside a
+	 * [com.icure.cardinal.sdk.model.Patient] be encrypted differently from the annotation inside a
+	 * [com.icure.cardinal.sdk.model.Contact]).
 	 */
-	fun decrypt(
-		decryptionKeys: Collection<AesKey<AesAlgorithm.CbcWithPkcs7Padding>>,
-		encryptedEntity: ENCRYPTED,
-	): DECRYPTED
-}
-
-interface EntityEncryptorFactory<ENCRYPTED : Any, DECRYPTED : Any> {
-	fun create(manifest: EntityEncryptionManifest): EntityEncryptor<ENCRYPTED, DECRYPTED>
-}
-
-data class EntitiesEncryptionManifest(
 	val manifestsByName: Map<String, EntityEncryptionManifest>,
 	/**
 	 * Name of the manifest in [manifestsByName] that should be used for the encryption of [com.icure.cardinal.sdk.model.AccessLog] entities
@@ -104,34 +80,38 @@ data class EntitiesEncryptionManifest(
 	 */
 	val classification: String,
 	/**
-	 * Name of the manifest in [manifestsByName] that should be used for the encryption of [com.icure.cardinal.sdk.model.TimeTable] entities
-	 */
-	val timeTable: String,
-	/**
 	 * Name of the manifest in [manifestsByName] that should be used for the encryption of [com.icure.cardinal.sdk.model.Invoice] entities
 	 */
 	val invoice: String,
-)
-
-data class EntityEncryptionManifest(
-	/**
-	 * Fields to encrypt directly in the entity.
-	 * When a field is encrypted the value in the encrypted entity is replaced by the default value for that field,
-	 * and the real value is kept in the encryptedSelf content.
-	 */
-	val fieldsToEncrypt: Set<String>,
-	/**
-	 * Fields to encrypt recursively using another manifest, the key is the field name, the value is the name of the
-	 * manifest, which must be in the [EntitiesEncryptionManifest.manifestsByName] map.
-	 *
-	 * If the field is a map or collection the manifest will be applied to the corresponding values or elements;
-	 * multiple levels are also supported.
-	 */
-	val recursiveEncryption: Map<String, String>
 ) {
 	init {
-		require (!recursiveEncryption.keys.intersects(fieldsToEncrypt)) {
-			"Recursive encryption and direct encryption cannot be used on the same field"
+		val entityManifestNames = mapOf(
+			"accessLog" to accessLog,
+			"calendarItem" to calendarItem,
+			"contact" to contact,
+			"service" to service,
+			"healthElement" to healthElement,
+			"maintenanceTask" to maintenanceTask,
+			"patient" to patient,
+			"message" to message,
+			"topic" to topic,
+			"document" to document,
+			"form" to form,
+			"receipt" to receipt,
+			"classification" to classification,
+			"invoice" to invoice,
+		)
+		for ((entityName, manifestName) in entityManifestNames) {
+			require(manifestName in manifestsByName) {
+				"Manifest `$manifestName` referenced by `$entityName` is not defined in manifestsByName"
+			}
+		}
+		for ((manifestName, manifest) in manifestsByName) {
+			for (recursiveManifestName in manifest.recursiveEncryption.values) {
+				require(recursiveManifestName in manifestsByName) {
+					"Manifest `$recursiveManifestName` referenced by recursive encryption of manifest `$manifestName` is not defined in manifestsByName"
+				}
+			}
 		}
 	}
 }
