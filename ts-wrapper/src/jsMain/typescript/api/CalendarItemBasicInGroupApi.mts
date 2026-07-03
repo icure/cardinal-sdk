@@ -1,6 +1,7 @@
 // auto-generated file
 import {BaseFilterOptions, BaseSortableFilterOptions, PaginatedListIterator} from '../cardinal-sdk-ts.mjs';
 import {CalendarItem, EncryptedCalendarItem} from '../model/CalendarItem.mjs';
+import {CalendarItemOccupancy} from '../model/CalendarItemOccupancy.mjs';
 import {GroupScoped} from '../model/GroupScoped.mjs';
 import {StoredDocumentIdentifier} from '../model/StoredDocumentIdentifier.mjs';
 
@@ -34,6 +35,37 @@ export interface CalendarItemBasicInGroupApi {
 	 */
 	filterCalendarItemsBySorted(groupId: string,
 			filter: BaseSortableFilterOptions<CalendarItem>): Promise<PaginatedListIterator<GroupScoped<EncryptedCalendarItem>>>;
+
+	/**
+	 *
+	 *  In-group version of [getCalendarItemsOccupancyByPeriodForSelf].
+	 */
+	getCalendarItemsOccupancyByPeriodForSelf(groupId: string, startDate: number, endDate: number,
+			extensionInDays: number | undefined): Promise<Array<CalendarItemOccupancy>>;
+
+	/**
+	 *
+	 *  In-group version of [getCalendarItemsOccupancyByPeriodForHealthcareParty].
+	 */
+	getCalendarItemsOccupancyByPeriodForHealthcareParty(
+			groupId: string,
+			startDate: number,
+			endDate: number,
+			hcPartyId: string,
+			extensionInDays: number | undefined
+	): Promise<Array<CalendarItemOccupancy>>;
+
+	/**
+	 *
+	 *  In-group version of [getCalendarItemsOccupancyByPeriodAndAgendaId].
+	 */
+	getCalendarItemsOccupancyByPeriodAndAgendaId(
+			groupId: string,
+			startDate: number,
+			endDate: number,
+			agendaId: string,
+			extensionInDays: number | undefined
+	): Promise<Array<CalendarItemOccupancy>>;
 
 	/**
 	 *

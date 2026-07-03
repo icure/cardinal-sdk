@@ -103,6 +103,10 @@ export interface Document extends StoredDocument, ICureDocument<string>, HasEncr
 	 */
 	mainAttachmentStoredDataSize: number | undefined;
 
+	/**
+	 *
+	 *  Extra Uniform Type Identifiers for the main attachment.
+	 */
 	extraMainAttachmentInfo: Document.ExtraMainAttachmentInfo | undefined;
 
 	/**
@@ -264,6 +268,10 @@ export class DecryptedDocument {
 	 */
 	mainAttachmentStoredDataSize: number | undefined = undefined;
 
+	/**
+	 *
+	 *  Extra Uniform Type Identifiers for the main attachment.
+	 */
 	extraMainAttachmentInfo: Document_.ExtraMainAttachmentInfo | undefined = undefined;
 
 	/**
@@ -599,6 +607,10 @@ export class EncryptedDocument {
 	 */
 	mainAttachmentStoredDataSize: number | undefined = undefined;
 
+	/**
+	 *
+	 *  Extra Uniform Type Identifiers for the main attachment.
+	 */
 	extraMainAttachmentInfo: Document_.ExtraMainAttachmentInfo | undefined = undefined;
 
 	/**

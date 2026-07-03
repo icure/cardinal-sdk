@@ -4,6 +4,7 @@ package com.icure.cardinal.sdk.model.embed
 
 import com.icure.cardinal.sdk.model.base.CodeStub
 import com.icure.cardinal.sdk.model.base.HasEndOfLife
+import com.icure.cardinal.sdk.model.base.HasIdentifier
 import com.icure.cardinal.sdk.model.base.ICureDocument
 import com.icure.cardinal.sdk.model.base.Identifier
 import com.icure.cardinal.sdk.model.base.LinkQualification
@@ -17,7 +18,7 @@ import kotlin.collections.Map
 import kotlin.collections.Set
 import kotlin.Int
 
-sealed interface Service : Encryptable, ICureDocument<String>, HasEndOfLife {
+sealed interface Service : Encryptable, ICureDocument<String>, HasEndOfLife, HasIdentifier {
 	/**
 	 * The Id of the Service. We encourage using either a v4 UUID or a HL7 Id.
 	 */
@@ -29,7 +30,11 @@ sealed interface Service : Encryptable, ICureDocument<String>, HasEndOfLife {
 	 */
 	public val transactionId: String?
 
-	public val identifier: List<Identifier>
+	/**
+	 * The transactionId is used when a single service had to be split into parts for technical
+	 * reasons. Several services with the same non null transaction id form one single service
+	 */
+	override val identifier: List<Identifier>
 
 	/**
 	 * Id of the contact during which the service is provided. Only used when the Service is emitted
@@ -57,6 +62,10 @@ sealed interface Service : Encryptable, ICureDocument<String>, HasEndOfLife {
 	 */
 	public val formIds: Set<String>?
 
+	/**
+	 * List of Ids of all forms linked to the Service. Only used when the Service is emitted outside of
+	 * its contact.
+	 */
 	public val secretForeignKeys: Set<String>?
 
 	/**
@@ -185,6 +194,10 @@ data class DecryptedService(
 	 * reasons. Several services with the same non null transaction id form one single service
 	 */
 	override val transactionId: String? = null,
+	/**
+	 * The transactionId is used when a single service had to be split into parts for technical
+	 * reasons. Several services with the same non null transaction id form one single service
+	 */
 	@param:DefaultValue("emptyList()")
 	override val identifier: List<Identifier> = emptyList(),
 	/**
@@ -208,6 +221,10 @@ data class DecryptedService(
 	 * its contact.
 	 */
 	override val formIds: Set<String>? = null,
+	/**
+	 * List of Ids of all forms linked to the Service. Only used when the Service is emitted outside of
+	 * its contact.
+	 */
 	@param:DefaultValue("emptySet()")
 	override val secretForeignKeys: Set<String>? = emptySet(),
 	/**
@@ -291,7 +308,7 @@ data class DecryptedService(
 	 * Comments - Notes recorded by a HCP about this service
 	 */
 	@param:DefaultValue("emptyList()")
-	override val notes: List<Annotation> = emptyList(),
+	override val notes: List<DecryptedAnnotation> = emptyList(),
 	/**
 	 * Links towards related services (possibly in other contacts)
 	 */
@@ -323,6 +340,10 @@ data class EncryptedService(
 	 * reasons. Several services with the same non null transaction id form one single service
 	 */
 	override val transactionId: String? = null,
+	/**
+	 * The transactionId is used when a single service had to be split into parts for technical
+	 * reasons. Several services with the same non null transaction id form one single service
+	 */
 	@param:DefaultValue("emptyList()")
 	override val identifier: List<Identifier> = emptyList(),
 	/**
@@ -346,6 +367,10 @@ data class EncryptedService(
 	 * its contact.
 	 */
 	override val formIds: Set<String>? = null,
+	/**
+	 * List of Ids of all forms linked to the Service. Only used when the Service is emitted outside of
+	 * its contact.
+	 */
 	@param:DefaultValue("emptySet()")
 	override val secretForeignKeys: Set<String>? = emptySet(),
 	/**
@@ -429,7 +454,7 @@ data class EncryptedService(
 	 * Comments - Notes recorded by a HCP about this service
 	 */
 	@param:DefaultValue("emptyList()")
-	override val notes: List<Annotation> = emptyList(),
+	override val notes: List<EncryptedAnnotation> = emptyList(),
 	/**
 	 * Links towards related services (possibly in other contacts)
 	 */

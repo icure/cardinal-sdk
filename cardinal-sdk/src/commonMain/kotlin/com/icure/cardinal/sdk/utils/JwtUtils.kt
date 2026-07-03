@@ -38,7 +38,7 @@ internal data class JwtPayload(
 		if (tokenAuthenticationClass == null || tokenAuthenticationClass < authenticationClass.level) return false
 		val issuedTime = exp - (duration ?: DEFAULT_DURATION_SECONDS) * 1000
 		val tokenAgeMs = Clock.System.now().toEpochMilliseconds() - issuedTime
-		return tokenAgeMs < (MAXIMUM_ELEVATED_SECURITY_LIFETIME_MILLIS - padding.inWholeMilliseconds)
+		return tokenAgeMs < (MAXIMUM_ELEVATED_SECURITY_LIFETIME_MILLIS + padding.inWholeMilliseconds)
 	}
 }
 
@@ -54,6 +54,6 @@ internal fun decodeClaims(jwt: String): JwtPayload {
  */
 fun isJwtExpiredOrInvalid(jwt: String, refreshPadding: Duration = 0L.seconds): Boolean = runCatching {
 		val payload = decodeClaims(jwt)
-		(payload.exp * 1000) < (Clock.System.now().toEpochMilliseconds() - refreshPadding.inWholeMilliseconds)
+		(payload.exp * 1000) < (Clock.System.now().toEpochMilliseconds() + refreshPadding.inWholeMilliseconds)
 	}.getOrDefault(false)
 

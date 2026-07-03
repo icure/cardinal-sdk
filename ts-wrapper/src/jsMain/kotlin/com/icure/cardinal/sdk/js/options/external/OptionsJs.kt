@@ -5,6 +5,8 @@ import com.icure.cardinal.sdk.js.auth.CaptchaOptionsJs
 import com.icure.cardinal.sdk.js.crypto.CryptoStrategiesJs
 import com.icure.cardinal.sdk.js.model.UserGroupJs
 import com.icure.cardinal.sdk.js.storage.KeyStorageFacadeJs
+import com.icure.cardinal.sdk.options.HttpSdkOptions
+import com.icure.cardinal.sdk.options.SdkOptions
 import com.icure.kryptom.crypto.external.XCryptoService
 import kotlin.js.Promise
 
@@ -73,7 +75,7 @@ external interface SdkOptionsJs {
 	val keyStorage: KeyStorageFacadeJs?
 	val cryptoStrategies: CryptoStrategiesJs?
 	val jsonPatcher: JsonPatcherJs?
-	val lenientJson: Boolean?
+	val ignoreUnknownFields: Boolean?
 	val dataOwnerScope: String?
 }
 
@@ -92,13 +94,13 @@ external interface BasicSdkOptionsJs {
 	val encryptedFields: EncryptedFieldsConfigurationJs?
 	val cryptoService: XCryptoService?
 	val groupSelector: ((availableGroups: Array<UserGroupJs>) -> Promise<String>)?
-	val lenientJson: Boolean?
+	val ignoreUnknownFields: Boolean?
 	val dataOwnerScope: String?
 }
 
 @JsName("AnonymousSdkOptions")
 external interface AnonymousSdkOptionsJs {
-	val lenientJson: Boolean?
+	val ignoreUnknownFields: Boolean?
 }
 
 @JsName("EncryptedFieldsConfiguration")

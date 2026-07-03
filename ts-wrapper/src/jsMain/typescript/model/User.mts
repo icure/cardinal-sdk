@@ -2,6 +2,7 @@
 import {expectArray, expectBoolean, expectMap, expectNumber, expectObject, expectString, expectStringEnum, extractEntry} from '../internal/JsonDecodeUtils.mjs';
 import {randomUuid} from '../utils/Id.mjs';
 import {DecryptedPropertyStub} from './PropertyStub.mjs';
+import {HasIdentifier} from './base/HasIdentifier.mjs';
 import {Identifier} from './base/Identifier.mjs';
 import {StoredDocument} from './base/StoredDocument.mjs';
 import {DelegationTag} from './embed/DelegationTag.mjs';
@@ -13,12 +14,12 @@ import {Permission} from './security/Permission.mjs';
 
 /**
  *
- *  Represents a user that can log in to the iCure platform. A user can be linked to a healthcare
+ *
+ *   Represents a user that can log in to the iCure platform. A user can be linked to a healthcare
  *  party,
- *  a patient, or a device, and holds authentication credentials, roles, and permissions.
- *  /
+ *   a patient, or a device, and holds authentication credentials, roles, and permissions.
  */
-export class User implements StoredDocument {
+export class User implements StoredDocument, HasIdentifier {
 
 	/**
 	 *

@@ -29,6 +29,10 @@ data class Identifier(
 	 *  Time period when id is/was valid for use
 	 */
 	public val start: String? = null,
+	/**
+	 * Time period when id is/was valid for use
+	 * /
+	 */
 	public val end: String? = null,
 	/**
 	 *

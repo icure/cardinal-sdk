@@ -37,7 +37,13 @@ data class Subscription<O : Identifiable<String>>(
 	 * When true, uses Cardinal model serialization for the entity payloads.
 	 */
 	public val useCardinalModelSerialization: Boolean? = null,
+	/**
+	 * When true, uses Cardinal model serialization for the entity payloads.
+	 */
 	public val cardinalSdkVersion: String? = null,
+	/**
+	 * When true, uses Cardinal model serialization for the entity payloads.
+	 */
 	@param:DefaultValue("false")
 	public val includeLegacyFields: Boolean = false,
 ) {

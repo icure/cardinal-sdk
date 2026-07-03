@@ -3,10 +3,12 @@ package com.icure.cardinal.sdk.js.model
 
 import com.icure.cardinal.sdk.js.model.CheckedConverters.arrayToList
 import com.icure.cardinal.sdk.js.model.CheckedConverters.arrayToSet
+import com.icure.cardinal.sdk.js.model.CheckedConverters.intToNumber
 import com.icure.cardinal.sdk.js.model.CheckedConverters.listToArray
 import com.icure.cardinal.sdk.js.model.CheckedConverters.longToNumber
 import com.icure.cardinal.sdk.js.model.CheckedConverters.mapToObject
 import com.icure.cardinal.sdk.js.model.CheckedConverters.nullToUndefined
+import com.icure.cardinal.sdk.js.model.CheckedConverters.numberToInt
 import com.icure.cardinal.sdk.js.model.CheckedConverters.numberToLong
 import com.icure.cardinal.sdk.js.model.CheckedConverters.objectToMap
 import com.icure.cardinal.sdk.js.model.CheckedConverters.setToArray
@@ -28,6 +30,8 @@ import com.icure.cardinal.sdk.model.embed.UserType
 import com.icure.cardinal.sdk.model.security.ExternalJwtConfig
 import com.icure.cardinal.sdk.model.security.OperationToken
 import kotlin.Array
+import kotlin.Double
+import kotlin.Int
 import kotlin.String
 import kotlin.Suppress
 import kotlin.collections.Set
@@ -131,6 +135,15 @@ public fun group_toJs(obj: Group): GroupJs {
 			group_TemplatesConfiguration_toJs(nonNull1)
 		}
 	)
+	val designDocSchemaVersions = setToArray(
+		obj.designDocSchemaVersions,
+		{ x1: Int ->
+			intToNumber(x1)
+		},
+	)
+	val defaultChildrenSchemaVersion = nullToUndefined(
+		intToNumber(obj.defaultChildrenSchemaVersion)
+	)
 	return GroupJs(js("{" +
 		"id:id," +
 		"rev:rev," +
@@ -150,7 +163,9 @@ public fun group_toJs(obj: Group): GroupJs {
 		"minimumAuthenticationClassForElevatedPrivileges:minimumAuthenticationClassForElevatedPrivileges," +
 		"superGroup:superGroup," +
 		"projectId:projectId," +
-		"templates:templates" +
+		"templates:templates," +
+		"designDocSchemaVersions:designDocSchemaVersions," +
+		"defaultChildrenSchemaVersion:defaultChildrenSchemaVersion" +
 	"}"))
 }
 
@@ -243,6 +258,15 @@ public fun group_fromJs(obj: GroupJs): Group {
 	val templates = obj.templates?.let { nonNull1 ->
 		group_TemplatesConfiguration_fromJs(nonNull1)
 	}
+	val designDocSchemaVersions = arrayToSet(
+		obj.designDocSchemaVersions,
+		"obj.designDocSchemaVersions",
+		{ x1: Double ->
+			numberToInt(x1, "x1")
+		},
+	)
+	val defaultChildrenSchemaVersion = numberToInt(obj.defaultChildrenSchemaVersion,
+			"obj.defaultChildrenSchemaVersion")
 	return Group(
 		id = id,
 		rev = rev,
@@ -263,6 +287,8 @@ public fun group_fromJs(obj: GroupJs): Group {
 		superGroup = superGroup,
 		projectId = projectId,
 		templates = templates,
+		designDocSchemaVersions = designDocSchemaVersions,
+		defaultChildrenSchemaVersion = defaultChildrenSchemaVersion,
 	)
 }
 

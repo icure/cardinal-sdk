@@ -6,6 +6,7 @@ import com.icure.cardinal.sdk.model.ListOfIdsAndRev
 import com.icure.cardinal.sdk.model.PaginatedList
 import com.icure.cardinal.sdk.model.conflicts.ConflictResolutionRequest
 import com.icure.cardinal.sdk.model.conflicts.ConflictResolutionResult
+import com.icure.cardinal.sdk.model.conflicts.ConflictResolutionStrategy
 import com.icure.cardinal.sdk.model.conflicts.MergeResult
 import com.icure.cardinal.sdk.model.couchdb.DocIdentifier
 import com.icure.cardinal.sdk.model.filter.AbstractFilter
@@ -54,6 +55,8 @@ public interface RawInsuranceApi {
 
 	suspend fun getInsurances(insuranceIds: ListOfIds): HttpResponse<List<Insurance>>
 
+	suspend fun matchInsurancesBy(filter: AbstractFilter<Insurance>): HttpResponse<List<String>>
+
 	suspend fun listInsurancesByCode(insuranceCode: String): HttpResponse<List<Insurance>>
 
 	suspend fun listInsurancesByName(insuranceName: String): HttpResponse<List<Insurance>>
@@ -68,7 +71,10 @@ public interface RawInsuranceApi {
 
 	suspend fun declareConflictWinner(request: ConflictResolutionRequest<Insurance>): HttpResponse<ConflictResolutionResult<Insurance>>
 
-	suspend fun autoSolveConflicts(entityIds: List<String>): HttpResponse<List<MergeResult>>
+	suspend fun autoSolveConflicts(
+		entityIds: List<String>,
+		strategy: ConflictResolutionStrategy?,
+	): HttpResponse<List<MergeResult>>
 	// endregion
 
 	// region cloud endpoints
@@ -156,6 +162,7 @@ public interface RawInsuranceApi {
 	suspend fun autoSolveConflictsInGroup(
 		groupId: String,
 		entityIds: List<String>,
+		strategy: ConflictResolutionStrategy?,
 	): HttpResponse<List<MergeResult>>
 	// endregion
 }

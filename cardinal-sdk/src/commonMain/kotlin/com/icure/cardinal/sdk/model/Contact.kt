@@ -5,6 +5,7 @@ package com.icure.cardinal.sdk.model
 import com.icure.cardinal.sdk.model.base.CodeStub
 import com.icure.cardinal.sdk.model.base.HasEncryptionMetadata
 import com.icure.cardinal.sdk.model.base.HasEndOfLife
+import com.icure.cardinal.sdk.model.base.HasIdentifier
 import com.icure.cardinal.sdk.model.base.ICureDocument
 import com.icure.cardinal.sdk.model.base.Identifier
 import com.icure.cardinal.sdk.model.base.StoredDocument
@@ -12,11 +13,13 @@ import com.icure.cardinal.sdk.model.embed.Address
 import com.icure.cardinal.sdk.model.embed.Annotation
 import com.icure.cardinal.sdk.model.embed.ContactParticipant
 import com.icure.cardinal.sdk.model.embed.DecryptedAddress
+import com.icure.cardinal.sdk.model.embed.DecryptedAnnotation
 import com.icure.cardinal.sdk.model.embed.DecryptedService
 import com.icure.cardinal.sdk.model.embed.DecryptedSubContact
 import com.icure.cardinal.sdk.model.embed.Delegation
 import com.icure.cardinal.sdk.model.embed.Encryptable
 import com.icure.cardinal.sdk.model.embed.EncryptedAddress
+import com.icure.cardinal.sdk.model.embed.EncryptedAnnotation
 import com.icure.cardinal.sdk.model.embed.EncryptedService
 import com.icure.cardinal.sdk.model.embed.EncryptedSubContact
 import com.icure.cardinal.sdk.model.embed.SecurityMetadata
@@ -59,7 +62,8 @@ sealed interface Contact :
 	ICureDocument<String>,
 	HasEncryptionMetadata,
 	Encryptable,
-	HasEndOfLife {
+	HasEndOfLife,
+	HasIdentifier {
 	/**
 	 * The Id of the contact. We encourage using either a v4 UUID or a HL7 Id.
 	 */
@@ -107,7 +111,7 @@ sealed interface Contact :
 	/**
 	 * The identifiers of the Contact.
 	 */
-	public val identifier: List<Identifier>
+	override val identifier: List<Identifier>
 
 	/**
 	 * Soft delete (unix epoch in ms) timestamp of the object.
@@ -366,7 +370,7 @@ data class DecryptedContact(
 	 * Comments and notes recorded by a healthcare party about this contact.
 	 */
 	@param:DefaultValue("emptyList()")
-	override val notes: List<Annotation> = emptyList(),
+	override val notes: List<DecryptedAnnotation> = emptyList(),
 ) : Contact {
 	// region Contact-DecryptedContact
 override fun copyWithSecurityMetadata(securityMetadata: SecurityMetadata, secretForeignKeys: Set<String>): DecryptedContact =
@@ -526,7 +530,7 @@ data class EncryptedContact(
 	 * Comments and notes recorded by a healthcare party about this contact.
 	 */
 	@param:DefaultValue("emptyList()")
-	override val notes: List<Annotation> = emptyList(),
+	override val notes: List<EncryptedAnnotation> = emptyList(),
 ) : Contact {
 	// region Contact-EncryptedContact
 override fun copyWithSecurityMetadata(securityMetadata: SecurityMetadata, secretForeignKeys: Set<String>): EncryptedContact =

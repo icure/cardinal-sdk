@@ -4,6 +4,7 @@ package com.icure.cardinal.sdk.model.embed
 
 import com.icure.cardinal.sdk.model.base.CodeStub
 import com.icure.cardinal.sdk.model.base.HasCodes
+import com.icure.cardinal.sdk.model.base.HasIdentifier
 import com.icure.cardinal.sdk.model.base.HasTags
 import com.icure.cardinal.sdk.model.base.Identifier
 import com.icure.cardinal.sdk.model.specializations.Base64String
@@ -13,12 +14,12 @@ import kotlin.String
 import kotlin.collections.List
 import kotlin.collections.Set
 
-sealed interface Address : Encryptable, HasTags, HasCodes {
+sealed interface Address : Encryptable, HasTags, HasCodes, HasIdentifier {
 	override val tags: Set<CodeStub>
 
 	override val codes: Set<CodeStub>
 
-	public val identifier: List<Identifier>
+	override val identifier: List<Identifier>
 
 	public val addressType: AddressType?
 
@@ -69,7 +70,7 @@ data class DecryptedAddress(
 	override val country: String? = null,
 	override val note: String? = null,
 	@param:DefaultValue("emptyList()")
-	override val notes: List<Annotation> = emptyList(),
+	override val notes: List<DecryptedAnnotation> = emptyList(),
 	@param:DefaultValue("emptyList()")
 	override val telecoms: List<DecryptedTelecom> = emptyList(),
 	override val encryptedSelf: Base64String? = null,
@@ -98,7 +99,7 @@ data class EncryptedAddress(
 	override val country: String? = null,
 	override val note: String? = null,
 	@param:DefaultValue("emptyList()")
-	override val notes: List<Annotation> = emptyList(),
+	override val notes: List<EncryptedAnnotation> = emptyList(),
 	@param:DefaultValue("emptyList()")
 	override val telecoms: List<EncryptedTelecom> = emptyList(),
 	override val encryptedSelf: Base64String? = null,

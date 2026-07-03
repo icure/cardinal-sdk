@@ -5,9 +5,9 @@ import com.icure.cardinal.sdk.auth.services.JwtBasedAuthProvider
 import com.icure.cardinal.sdk.crypto.BasicInternalCryptoApi
 import com.icure.cardinal.sdk.crypto.InternalCryptoServices
 import com.icure.cardinal.sdk.crypto.entities.SdkBoundGroup
-import com.icure.cardinal.sdk.storage.CardinalStorageFacade
 import com.icure.utils.InternalIcureApi
 import kotlinx.coroutines.Job
+import kotlinx.serialization.json.Json
 import kotlin.coroutines.CoroutineContext
 
 /**
@@ -33,6 +33,7 @@ internal interface ApiConfiguration : BasicApiConfiguration {
 	override val crypto: InternalCryptoServices
 	val jsonPatcher: JsonPatcher
 	val parentJob: Job?
+	val entityEncodingJson: Json
 }
 
 @InternalIcureApi
@@ -45,7 +46,8 @@ internal data class ApiConfigurationImpl(
 	override val jsonPatcher: JsonPatcher,
 	override val parentJob: Job?,
 	override val rawApiConfig: RawApiConfig,
-	val boundGroup: SdkBoundGroup?
+	val boundGroup: SdkBoundGroup?,
+	override val entityEncodingJson: Json,
 ) : ApiConfiguration {
 	override fun getBoundGroup(coroutineContext: CoroutineContext): SdkBoundGroup? =
 		boundGroup

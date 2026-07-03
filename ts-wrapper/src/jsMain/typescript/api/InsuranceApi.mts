@@ -1,4 +1,5 @@
 // auto-generated file
+import {BaseFilterOptions, BaseSortableFilterOptions, PaginatedListIterator} from '../cardinal-sdk-ts.mjs';
 import {Insurance} from '../model/Insurance.mjs';
 import {StoredDocumentIdentifier} from '../model/StoredDocumentIdentifier.mjs';
 import {InsuranceInGroupApi} from './InsuranceInGroupApi.mjs';
@@ -47,5 +48,13 @@ export interface InsuranceApi {
 	listInsurancesByCode(insuranceCode: string): Promise<Array<Insurance>>;
 
 	listInsurancesByName(insuranceName: string): Promise<Array<Insurance>>;
+
+	matchInsurancesBy(filter: BaseFilterOptions<Insurance>): Promise<Array<string>>;
+
+	filterInsurancesBy(filter: BaseFilterOptions<Insurance>): Promise<PaginatedListIterator<Insurance>>;
+
+	matchInsurancesBySorted(filter: BaseSortableFilterOptions<Insurance>): Promise<Array<string>>;
+
+	filterInsurancesBySorted(filter: BaseSortableFilterOptions<Insurance>): Promise<PaginatedListIterator<Insurance>>;
 
 }

@@ -3,6 +3,7 @@ import {FilterOptions, PaginatedListIterator, SortableFilterOptions} from '../ca
 import {CalendarItemShareOptions} from '../crypto/entities/CalendarItemShareOptions.mjs';
 import {SecretIdUseOption} from '../crypto/entities/SecretIdUseOption.mjs';
 import {CalendarItem, DecryptedCalendarItem, EncryptedCalendarItem} from '../model/CalendarItem.mjs';
+import {CalendarItemOccupancy} from '../model/CalendarItemOccupancy.mjs';
 import {EntityReferenceInGroup} from '../model/EntityReferenceInGroup.mjs';
 import {GroupScoped} from '../model/GroupScoped.mjs';
 import {Patient} from '../model/Patient.mjs';
@@ -83,6 +84,37 @@ export interface CalendarItemInGroupApi {
 	 */
 	matchCalendarItemsBySorted(groupId: string,
 			filter: SortableFilterOptions<CalendarItem>): Promise<Array<string>>;
+
+	/**
+	 *
+	 *  In-group version of [CalendarItemApi.getCalendarItemsOccupancyByPeriodForSelf].
+	 */
+	getCalendarItemsOccupancyByPeriodForSelf(groupId: string, startDate: number, endDate: number,
+			extensionInDays: number | undefined): Promise<Array<CalendarItemOccupancy>>;
+
+	/**
+	 *
+	 *  In-group version of [CalendarItemApi.getCalendarItemsOccupancyByPeriodForHealthcareParty].
+	 */
+	getCalendarItemsOccupancyByPeriodForHealthcareParty(
+			groupId: string,
+			startDate: number,
+			endDate: number,
+			hcPartyId: string,
+			extensionInDays: number | undefined
+	): Promise<Array<CalendarItemOccupancy>>;
+
+	/**
+	 *
+	 *  In-group version of [CalendarItemApi.getCalendarItemsOccupancyByPeriodAndAgendaId].
+	 */
+	getCalendarItemsOccupancyByPeriodAndAgendaId(
+			groupId: string,
+			startDate: number,
+			endDate: number,
+			agendaId: string,
+			extensionInDays: number | undefined
+	): Promise<Array<CalendarItemOccupancy>>;
 
 	/**
 	 *

@@ -3,9 +3,12 @@
 
 package com.icure.cardinal.sdk.js.api
 
+import com.icure.cardinal.sdk.js.filters.BaseFilterOptionsJs
+import com.icure.cardinal.sdk.js.filters.BaseSortableFilterOptionsJs
 import com.icure.cardinal.sdk.js.model.GroupScopedJs
 import com.icure.cardinal.sdk.js.model.InsuranceJs
 import com.icure.cardinal.sdk.js.model.StoredDocumentIdentifierJs
+import com.icure.cardinal.sdk.js.utils.pagination.PaginatedListIteratorJs
 import kotlin.Array
 import kotlin.String
 import kotlin.Unit
@@ -65,4 +68,17 @@ public external interface InsuranceInGroupApiJs {
 
 	public fun purgeInsurances(insurances: Array<GroupScopedJs<InsuranceJs>>):
 			Promise<Array<GroupScopedJs<StoredDocumentIdentifierJs>>>
+
+	public fun matchInsurancesBy(groupId: String, filter: BaseFilterOptionsJs<InsuranceJs>):
+			Promise<Array<String>>
+
+	public fun matchInsurancesBySorted(groupId: String,
+			filter: BaseSortableFilterOptionsJs<InsuranceJs>): Promise<Array<String>>
+
+	public fun filterInsurancesBy(groupId: String, filter: BaseFilterOptionsJs<InsuranceJs>):
+			Promise<PaginatedListIteratorJs<GroupScopedJs<InsuranceJs>>>
+
+	public fun filterInsurancesBySorted(groupId: String,
+			filter: BaseSortableFilterOptionsJs<InsuranceJs>):
+			Promise<PaginatedListIteratorJs<GroupScopedJs<InsuranceJs>>>
 }

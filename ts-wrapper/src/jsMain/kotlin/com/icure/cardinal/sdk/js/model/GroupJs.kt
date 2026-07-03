@@ -57,4 +57,8 @@ public external class GroupJs(
 	public val projectId: String?
 
 	public val templates: GroupJs_TemplatesConfigurationJs?
+
+	public val designDocSchemaVersions: Array<Double>
+
+	public val defaultChildrenSchemaVersion: Double?
 }

@@ -470,7 +470,7 @@ private class LifecycleBetweenForDataOwnerInGroupInGroupParams(
 public fun lifecycleBetweenForDataOwnerInGroupInGroup(params: String): String = kotlin.runCatching {
 	val decodedParams =
 			fullLanguageInteropJson.decodeFromString<LifecycleBetweenForDataOwnerInGroupInGroupParams>(params)
-	MessageFilters.lifecycleBetweenForDataOwnerInGroupInGroup(
+	MessageFilters.lifecycleBetweenForDataOwnerInGroup(
 		decodedParams.dataOwner,
 		decodedParams.startTimestamp,
 		decodedParams.endTimestamp,

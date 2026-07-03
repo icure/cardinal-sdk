@@ -1,6 +1,7 @@
 // auto-generated file
 import {BaseFilterOptions, BaseSortableFilterOptions, FilterOptions, PaginatedListIterator} from '../cardinal-sdk-ts.mjs';
 import {CalendarItem, EncryptedCalendarItem} from '../model/CalendarItem.mjs';
+import {CalendarItemOccupancy} from '../model/CalendarItemOccupancy.mjs';
 import {StoredDocumentIdentifier} from '../model/StoredDocumentIdentifier.mjs';
 import {EntitySubscription} from '../subscription/EntitySubscription.mjs';
 import {EntitySubscriptionConfiguration} from '../subscription/EntitySubscriptionConfiguration.mjs';
@@ -65,6 +66,47 @@ export interface CalendarItemBasicApi {
 	 *  @return an iterator that iterates over all calendarItems matching the provided filter.
 	 */
 	filterCalendarItemsBySorted(filter: BaseSortableFilterOptions<CalendarItem>): Promise<PaginatedListIterator<EncryptedCalendarItem>>;
+
+	/**
+	 *
+	 *  Computes the concurrent-occupancy histogram of the calendar items for the current data owner over the
+	 *  period [startDate]..[endDate] (fuzzy date-times, either bound may be null = open).
+	 *
+	 *  Only calendar items whose whole interval fits within the search range are considered. By default, the
+	 *  range is exactly [startDate]..[endDate], so items starting before [startDate] or ending after [endDate]
+	 *  are ignored. Pass [extensionInDays] to widen the range by that many days on each side, which lets items
+	 *  that start shortly before [startDate] (contributing to the occupancy baseline) or end shortly after
+	 *  [endDate] be taken into account. Items reaching beyond the extended range are still ignored.
+	 */
+	getCalendarItemsOccupancyByPeriodForSelf(startDate: number, endDate: number,
+			extensionInDays: number | undefined): Promise<Array<CalendarItemOccupancy>>;
+
+	/**
+	 *
+	 *  Computes the concurrent-occupancy histogram of the calendar items of [hcPartyId] over the
+	 *  period [startDate]..[endDate] (fuzzy date-times, either bound may be null = open).
+	 *
+	 *  Only calendar items whose whole interval fits within the search range are considered. By default, the
+	 *  range is exactly [startDate]..[endDate], so items starting before [startDate] or ending after [endDate]
+	 *  are ignored. Pass [extensionInDays] to widen the range by that many days on each side, which lets items
+	 *  that start shortly before [startDate] (contributing to the occupancy baseline) or end shortly after
+	 *  [endDate] be taken into account. Items reaching beyond the extended range are still ignored.
+	 */
+	getCalendarItemsOccupancyByPeriodForHealthcareParty(startDate: number, endDate: number,
+			hcPartyId: string, extensionInDays: number | undefined): Promise<Array<CalendarItemOccupancy>>;
+
+	/**
+	 *
+	 *  Computes the concurrent-occupancy histogram of the calendar items of the agenda [agendaId] over the
+	 *  period [startDate]..[endDate] (fuzzy date-times, either bound may be null = open).
+	 *
+	 *  Only calendar items whose whole interval fits within the search range are considered. By default, the range
+	 *  is exactly [startDate]..[endDate], you can pass a non-null [extensionInDays] to widen it by that many days on each side (e.g.
+	 *  to include items that start before [startDate] but are still open during the period). Items reaching beyond
+	 *  the extended range are ignored.
+	 */
+	getCalendarItemsOccupancyByPeriodAndAgendaId(startDate: number, endDate: number, agendaId: string,
+			extensionInDays: number | undefined): Promise<Array<CalendarItemOccupancy>>;
 
 	/**
 	 *

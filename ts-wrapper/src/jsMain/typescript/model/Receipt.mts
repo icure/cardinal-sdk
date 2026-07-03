@@ -31,8 +31,16 @@ export interface Receipt extends StoredDocument, ICureDocument<string>, HasEncry
 	 */
 	attachmentIds: { [ key in ReceiptBlobType ]?: string };
 
+	/**
+	 *
+	 *  Map of blob type to attachment id for the receipt.
+	 */
 	attachmentInfos: { [ key in ReceiptBlobType ]?: DataAttachment };
 
+	/**
+	 *
+	 *  Map of blob type to attachment id for the receipt.
+	 */
 	deletedAttachments: Array<DeletedAttachment>;
 
 	/**
@@ -136,8 +144,16 @@ export class DecryptedReceipt {
 	 */
 	attachmentIds: { [ key in ReceiptBlobType ]?: string } = {};
 
+	/**
+	 *
+	 *  Map of blob type to attachment id for the receipt.
+	 */
 	attachmentInfos: { [ key in ReceiptBlobType ]?: DataAttachment } = {};
 
+	/**
+	 *
+	 *  Map of blob type to attachment id for the receipt.
+	 */
 	deletedAttachments: Array<DeletedAttachment> = [];
 
 	/**
@@ -394,8 +410,16 @@ export class EncryptedReceipt {
 	 */
 	attachmentIds: { [ key in ReceiptBlobType ]?: string } = {};
 
+	/**
+	 *
+	 *  Map of blob type to attachment id for the receipt.
+	 */
 	attachmentInfos: { [ key in ReceiptBlobType ]?: DataAttachment } = {};
 
+	/**
+	 *
+	 *  Map of blob type to attachment id for the receipt.
+	 */
 	deletedAttachments: Array<DeletedAttachment> = [];
 
 	/**

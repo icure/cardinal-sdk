@@ -9,9 +9,9 @@ import kotlin.String
 import kotlin.collections.List
 
 /**
- * Represents a data attachment that can be stored either as a CouchDB attachment or via object
+ *
+ *  Represents a data attachment that can be stored either as a CouchDB attachment or via object
  * storage.
- * /
  */
 @Serializable
 data class DataAttachment(

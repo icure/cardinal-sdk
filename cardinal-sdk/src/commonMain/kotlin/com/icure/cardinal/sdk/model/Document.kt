@@ -147,6 +147,9 @@ sealed interface Document :
 	 */
 	public val mainAttachmentStoredDataSize: Long?
 
+	/**
+	 * Extra Uniform Type Identifiers for the main attachment.
+	 */
 	public val extraMainAttachmentInfo: ExtraMainAttachmentInfo?
 
 	/**
@@ -299,6 +302,9 @@ data class DecryptedDocument(
 	 * Extra Uniform Type Identifiers for the main attachment.
 	 */
 	override val mainAttachmentStoredDataSize: Long? = null,
+	/**
+	 * Extra Uniform Type Identifiers for the main attachment.
+	 */
 	override val extraMainAttachmentInfo: Document.ExtraMainAttachmentInfo? = null,
 	/**
 	 * Secondary attachments for this document.
@@ -444,6 +450,9 @@ data class EncryptedDocument(
 	 * Extra Uniform Type Identifiers for the main attachment.
 	 */
 	override val mainAttachmentStoredDataSize: Long? = null,
+	/**
+	 * Extra Uniform Type Identifiers for the main attachment.
+	 */
 	override val extraMainAttachmentInfo: Document.ExtraMainAttachmentInfo? = null,
 	/**
 	 * Secondary attachments for this document.

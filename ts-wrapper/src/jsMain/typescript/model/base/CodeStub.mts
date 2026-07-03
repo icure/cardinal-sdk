@@ -5,10 +5,10 @@ import {CodeIdentification} from './CodeIdentification.mjs';
 
 /**
  *
- *  A lightweight reference to a code from a codification system, used as a stub in entities that
+ *
+ *   A lightweight reference to a code from a codification system, used as a stub in entities that
  *  reference codes
- *  without embedding the full code definition. The id is typically formatted as type|code|version.
- *  /
+ *   without embedding the full code definition. The id is typically formatted as type|code|version.
  */
 export class CodeStub implements CodeIdentification<string | undefined> {
 

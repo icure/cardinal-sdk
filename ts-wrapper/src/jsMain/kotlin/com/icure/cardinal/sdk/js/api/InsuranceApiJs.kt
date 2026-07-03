@@ -3,8 +3,11 @@
 
 package com.icure.cardinal.sdk.js.api
 
+import com.icure.cardinal.sdk.js.filters.BaseFilterOptionsJs
+import com.icure.cardinal.sdk.js.filters.BaseSortableFilterOptionsJs
 import com.icure.cardinal.sdk.js.model.InsuranceJs
 import com.icure.cardinal.sdk.js.model.StoredDocumentIdentifierJs
+import com.icure.cardinal.sdk.js.utils.pagination.PaginatedListIteratorJs
 import kotlin.Array
 import kotlin.String
 import kotlin.Unit
@@ -60,4 +63,15 @@ public external interface InsuranceApiJs {
 	public fun listInsurancesByCode(insuranceCode: String): Promise<Array<InsuranceJs>>
 
 	public fun listInsurancesByName(insuranceName: String): Promise<Array<InsuranceJs>>
+
+	public fun matchInsurancesBy(filter: BaseFilterOptionsJs<InsuranceJs>): Promise<Array<String>>
+
+	public fun filterInsurancesBy(filter: BaseFilterOptionsJs<InsuranceJs>):
+			Promise<PaginatedListIteratorJs<InsuranceJs>>
+
+	public fun matchInsurancesBySorted(filter: BaseSortableFilterOptionsJs<InsuranceJs>):
+			Promise<Array<String>>
+
+	public fun filterInsurancesBySorted(filter: BaseSortableFilterOptionsJs<InsuranceJs>):
+			Promise<PaginatedListIteratorJs<InsuranceJs>>
 }

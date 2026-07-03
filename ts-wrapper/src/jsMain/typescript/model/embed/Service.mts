@@ -3,6 +3,7 @@ import {expectArray, expectMap, expectNumber, expectObject, expectString, expect
 import {randomUuid} from '../../utils/Id.mjs';
 import {CodeStub} from '../base/CodeStub.mjs';
 import {HasEndOfLife} from '../base/HasEndOfLife.mjs';
+import {HasIdentifier} from '../base/HasIdentifier.mjs';
 import {ICureDocument} from '../base/ICureDocument.mjs';
 import {Identifier} from '../base/Identifier.mjs';
 import {LinkQualification} from '../base/LinkQualification.mjs';
@@ -14,7 +15,7 @@ import {Encryptable} from './Encryptable.mjs';
 import {SecurityMetadata} from './SecurityMetadata.mjs';
 
 
-export interface Service extends Encryptable, ICureDocument<string>, HasEndOfLife {
+export interface Service extends Encryptable, ICureDocument<string>, HasEndOfLife, HasIdentifier {
 
 	/**
 	 *
@@ -22,8 +23,6 @@ export interface Service extends Encryptable, ICureDocument<string>, HasEndOfLif
 	 *  reasons. Several services with the same non null transaction id form one single service
 	 */
 	transactionId: string | undefined;
-
-	identifier: Array<Identifier>;
 
 	/**
 	 *
@@ -55,6 +54,11 @@ export interface Service extends Encryptable, ICureDocument<string>, HasEndOfLif
 	 */
 	formIds: Array<string> | undefined;
 
+	/**
+	 *
+	 *  List of Ids of all forms linked to the Service. Only used when the Service is emitted outside of
+	 *  its contact.
+	 */
 	secretForeignKeys: Array<string> | undefined;
 
 	/**
@@ -167,6 +171,11 @@ export class DecryptedService {
 	 */
 	transactionId: string | undefined = undefined;
 
+	/**
+	 *
+	 *  The transactionId is used when a single service had to be split into parts for technical
+	 *  reasons. Several services with the same non null transaction id form one single service
+	 */
 	identifier: Array<Identifier> = [];
 
 	/**
@@ -199,6 +208,11 @@ export class DecryptedService {
 	 */
 	formIds: Array<string> | undefined = undefined;
 
+	/**
+	 *
+	 *  List of Ids of all forms linked to the Service. Only used when the Service is emitted outside of
+	 *  its contact.
+	 */
 	secretForeignKeys: Array<string> | undefined = [];
 
 	/**
@@ -509,6 +523,11 @@ export class EncryptedService {
 	 */
 	transactionId: string | undefined = undefined;
 
+	/**
+	 *
+	 *  The transactionId is used when a single service had to be split into parts for technical
+	 *  reasons. Several services with the same non null transaction id form one single service
+	 */
 	identifier: Array<Identifier> = [];
 
 	/**
@@ -541,6 +560,11 @@ export class EncryptedService {
 	 */
 	formIds: Array<string> | undefined = undefined;
 
+	/**
+	 *
+	 *  List of Ids of all forms linked to the Service. Only used when the Service is emitted outside of
+	 *  its contact.
+	 */
 	secretForeignKeys: Array<string> | undefined = [];
 
 	/**

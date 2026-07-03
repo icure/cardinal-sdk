@@ -26,21 +26,76 @@ data class TimeTableItem(
 	 * Thursday until 30 September 2022.)
 	 */
 	public val rrule: String? = null,
+	/**
+	 * a RFC-5545 recurrence rule specifying the days and recurrence type of the timetable item.
+	 * ("RRULE:FREQ=WEEKLY;UNTIL=20220930T150400Z;COUNT=30;INTERVAL=2;WKST=MO;BYDAY=TH" = every 2 weeks on
+	 * Thursday until 30 September 2022.)
+	 */
 	public val notBeforeInMinutes: Int? = null,
+	/**
+	 * a RFC-5545 recurrence rule specifying the days and recurrence type of the timetable item.
+	 * ("RRULE:FREQ=WEEKLY;UNTIL=20220930T150400Z;COUNT=30;INTERVAL=2;WKST=MO;BYDAY=TH" = every 2 weeks on
+	 * Thursday until 30 September 2022.)
+	 */
 	public val notAfterInMinutes: Int? = null,
+	/**
+	 * a RFC-5545 recurrence rule specifying the days and recurrence type of the timetable item.
+	 * ("RRULE:FREQ=WEEKLY;UNTIL=20220930T150400Z;COUNT=30;INTERVAL=2;WKST=MO;BYDAY=TH" = every 2 weeks on
+	 * Thursday until 30 September 2022.)
+	 */
 	public val zoneId: String? = null,
+	/**
+	 * a RFC-5545 recurrence rule specifying the days and recurrence type of the timetable item.
+	 * ("RRULE:FREQ=WEEKLY;UNTIL=20220930T150400Z;COUNT=30;INTERVAL=2;WKST=MO;BYDAY=TH" = every 2 weeks on
+	 * Thursday until 30 September 2022.)
+	 */
 	@param:DefaultValue("emptyList()")
 	public val hours: List<TimeTableHour> = emptyList(),
+	/**
+	 * a RFC-5545 recurrence rule specifying the days and recurrence type of the timetable item.
+	 * ("RRULE:FREQ=WEEKLY;UNTIL=20220930T150400Z;COUNT=30;INTERVAL=2;WKST=MO;BYDAY=TH" = every 2 weeks on
+	 * Thursday until 30 September 2022.)
+	 */
 	public val calendarItemTypeId: String? = null,
+	/**
+	 * a RFC-5545 recurrence rule specifying the days and recurrence type of the timetable item.
+	 * ("RRULE:FREQ=WEEKLY;UNTIL=20220930T150400Z;COUNT=30;INTERVAL=2;WKST=MO;BYDAY=TH" = every 2 weeks on
+	 * Thursday until 30 September 2022.)
+	 */
 	@param:DefaultValue("false")
 	public val homeVisit: Boolean = false,
+	/**
+	 * a RFC-5545 recurrence rule specifying the days and recurrence type of the timetable item.
+	 * ("RRULE:FREQ=WEEKLY;UNTIL=20220930T150400Z;COUNT=30;INTERVAL=2;WKST=MO;BYDAY=TH" = every 2 weeks on
+	 * Thursday until 30 September 2022.)
+	 */
 	public val placeId: String? = null,
+	/**
+	 * a RFC-5545 recurrence rule specifying the days and recurrence type of the timetable item.
+	 * ("RRULE:FREQ=WEEKLY;UNTIL=20220930T150400Z;COUNT=30;INTERVAL=2;WKST=MO;BYDAY=TH" = every 2 weeks on
+	 * Thursday until 30 September 2022.)
+	 */
 	@param:DefaultValue("false")
 	public val publicTimeTableItem: Boolean = false,
+	/**
+	 * a RFC-5545 recurrence rule specifying the days and recurrence type of the timetable item.
+	 * ("RRULE:FREQ=WEEKLY;UNTIL=20220930T150400Z;COUNT=30;INTERVAL=2;WKST=MO;BYDAY=TH" = every 2 weeks on
+	 * Thursday until 30 September 2022.)
+	 */
 	@param:DefaultValue("true")
 	public val acceptsNewPatient: Boolean = true,
+	/**
+	 * a RFC-5545 recurrence rule specifying the days and recurrence type of the timetable item.
+	 * ("RRULE:FREQ=WEEKLY;UNTIL=20220930T150400Z;COUNT=30;INTERVAL=2;WKST=MO;BYDAY=TH" = every 2 weeks on
+	 * Thursday until 30 September 2022.)
+	 */
 	@param:DefaultValue("false")
 	public val unavailable: Boolean = false,
+	/**
+	 * a RFC-5545 recurrence rule specifying the days and recurrence type of the timetable item.
+	 * ("RRULE:FREQ=WEEKLY;UNTIL=20220930T150400Z;COUNT=30;INTERVAL=2;WKST=MO;BYDAY=TH" = every 2 weeks on
+	 * Thursday until 30 September 2022.)
+	 */
 	@param:DefaultValue("emptySet()")
 	public val reservingRights: Set<String> = emptySet(),
 ) {

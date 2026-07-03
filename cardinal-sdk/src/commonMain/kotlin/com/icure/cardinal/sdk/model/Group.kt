@@ -13,6 +13,7 @@ import com.icure.cardinal.sdk.utils.DefaultValue
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.json.JsonNames
 import kotlin.Boolean
+import kotlin.Int
 import kotlin.Long
 import kotlin.String
 import kotlin.collections.List
@@ -20,10 +21,10 @@ import kotlin.collections.Map
 import kotlin.collections.Set
 
 /**
- * Represents a group in the iCure platform. A group corresponds to a practice, hospital, or
+ *
+ *  Represents a group in the iCure platform. A group corresponds to a practice, hospital, or
  * organization
- * that contains its own set of databases and users.
- * /
+ *  that contains its own set of databases and users.
  */
 @Serializable
 data class Group(
@@ -108,7 +109,21 @@ data class Group(
 	 */
 	@JsonNames("applicationId")
 	public val projectId: String? = null,
+	/**
+	 * A user-chosen identifier for the applications for which this group holds data.
+	 */
 	public val templates: TemplatesConfiguration? = null,
+	/**
+	 *
+	 *  The versions of the custom design doc schema applied to the group.
+	 */
+	@param:DefaultValue("emptySet()")
+	public val designDocSchemaVersions: Set<Int> = emptySet(),
+	/**
+	 *
+	 *  The version of the custom design doc schema to apply by default children groups on creation.
+	 */
+	public val defaultChildrenSchemaVersion: Int? = null,
 ) : StoredDocument, HasTags {
 	@Serializable
 	public data class TemplatesConfiguration(

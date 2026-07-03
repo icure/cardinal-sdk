@@ -12,6 +12,7 @@ import com.icure.cardinal.sdk.model.ListOfIdsAndRev
 import com.icure.cardinal.sdk.model.PaginatedList
 import com.icure.cardinal.sdk.model.conflicts.ConflictResolutionRequest
 import com.icure.cardinal.sdk.model.conflicts.ConflictResolutionResult
+import com.icure.cardinal.sdk.model.conflicts.ConflictResolutionStrategy
 import com.icure.cardinal.sdk.model.conflicts.MergeResult
 import com.icure.cardinal.sdk.model.couchdb.DocIdentifier
 import com.icure.cardinal.sdk.model.filter.AbstractFilter
@@ -170,6 +171,17 @@ class RawInsuranceApiImpl(
 			setBody(insuranceIds)
 		}.wrap()
 
+	override suspend fun matchInsurancesBy(filter: AbstractFilter<Insurance>): HttpResponse<List<String>> =
+		post(authProvider) {
+			url {
+				takeFrom(apiUrl)
+				appendPathSegments("rest", "v2", "insurance", "match")
+			}
+			contentType(Application.Json)
+			accept(Application.Json)
+			setBodyWithSerializer(InsuranceAbstractFilterSerializer, filter)
+		}.wrap()
+
 	override suspend fun listInsurancesByCode(insuranceCode: String): HttpResponse<List<Insurance>> =
 		get(authProvider) {
 			url {
@@ -226,7 +238,8 @@ class RawInsuranceApiImpl(
 		get(authProvider) {
 			url {
 				takeFrom(apiUrl)
-				appendPathSegments("rest", "v2", "insurance", "conflicts", entityId)
+				appendPathSegments("rest", "v2", "insurance", "conflicts", "of")
+				parameter("entityId", entityId)
 				parameter("ts", GMTDate().timestamp)
 			}
 			accept(Application.Json)
@@ -245,11 +258,15 @@ class RawInsuranceApiImpl(
 			setBody(request)
 		}.wrap()
 
-	override suspend fun autoSolveConflicts(entityIds: List<String>): HttpResponse<List<MergeResult>> =
+	override suspend fun autoSolveConflicts(
+		entityIds: List<String>,
+		strategy: ConflictResolutionStrategy?,
+	): HttpResponse<List<MergeResult>> =
 		post(authProvider) {
 			url {
 				takeFrom(apiUrl)
 				appendPathSegments("rest", "v2", "insurance", "conflicts", "solve")
+				parameter("strategy", strategy?.dtoSerialName)
 			}
 			contentType(Application.Json)
 			accept(Application.Json)
@@ -459,7 +476,8 @@ class RawInsuranceApiImpl(
 		get(authProvider) {
 			url {
 				takeFrom(apiUrl)
-				appendPathSegments("rest", "v2", "insurance", "inGroup", groupId, "conflicts", entityId)
+				appendPathSegments("rest", "v2", "insurance", "inGroup", groupId, "conflicts", "of")
+				parameter("entityId", entityId)
 				parameter("ts", GMTDate().timestamp)
 			}
 			accept(Application.Json)
@@ -482,11 +500,13 @@ class RawInsuranceApiImpl(
 	override suspend fun autoSolveConflictsInGroup(
 		groupId: String,
 		entityIds: List<String>,
+		strategy: ConflictResolutionStrategy?,
 	): HttpResponse<List<MergeResult>> =
 		post(authProvider) {
 			url {
 				takeFrom(apiUrl)
 				appendPathSegments("rest", "v2", "insurance", "inGroup", groupId, "conflicts", "solve")
+				parameter("strategy", strategy?.dtoSerialName)
 			}
 			contentType(Application.Json)
 			accept(Application.Json)
