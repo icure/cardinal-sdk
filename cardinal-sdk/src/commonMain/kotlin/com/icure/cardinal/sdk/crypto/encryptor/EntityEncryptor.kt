@@ -3,6 +3,8 @@ package com.icure.cardinal.sdk.crypto.encryptor
 import com.icure.cardinal.sdk.model.embed.Encryptable
 import com.icure.kryptom.crypto.AesAlgorithm
 import com.icure.kryptom.crypto.AesKey
+import com.icure.kryptom.crypto.CryptoService
+import kotlinx.serialization.json.Json
 
 /**
  * A strategy for encryption of an entity of a known type.
@@ -17,8 +19,10 @@ internal interface EntityEncryptor<ENCRYPTED : Encryptable, DECRYPTED : Encrypta
 	/**
 	 * Encrypts the given [clearEntity] using the configuration of this encryptor.
 	 */
-	fun encrypt(
-		encryptionKeys: AesKey<AesAlgorithm.CbcWithPkcs7Padding>,
+	suspend fun encrypt(
+		encryptionKey: AesKey<AesAlgorithm.CbcWithPkcs7Padding>,
 		clearEntity: DECRYPTED,
+		encodingJson: Json,
+		cryptoService: CryptoService,
 	): ENCRYPTED
 }

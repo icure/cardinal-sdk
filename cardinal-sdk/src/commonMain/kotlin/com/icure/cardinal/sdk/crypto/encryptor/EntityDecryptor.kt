@@ -3,6 +3,7 @@ package com.icure.cardinal.sdk.crypto.encryptor
 import com.icure.cardinal.sdk.model.embed.Encryptable
 import com.icure.kryptom.crypto.AesAlgorithm
 import com.icure.kryptom.crypto.AesKey
+import com.icure.kryptom.crypto.CryptoService
 import kotlinx.serialization.json.Json
 import kotlinx.serialization.json.JsonObject
 
@@ -62,11 +63,12 @@ interface EntityDecryptor<ENCRYPTED : Encryptable, DECRYPTED: Encryptable> {
 	 * @throws com.icure.cardinal.sdk.utils.EntityEncryptionException if the entity can't be fully decrypted using the
 	 * provided keys, or if the decrypted content is not valid.
 	 */
-	fun decrypt(
+	suspend fun decrypt(
 		decryptionKeys: Collection<AesKey<AesAlgorithm.CbcWithPkcs7Padding>>,
 		encryptedEntity: ENCRYPTED,
 		patchDecryptedSelfJson: ((JsonObject) -> JsonObject)?,
 		ignoreUnknownDecryptedFields: Boolean,
 		encryptedContentDecoder: Json,
+		cryptoService: CryptoService
 	): DECRYPTED
 }

@@ -12,8 +12,7 @@ internal interface EntityEncryptorFactory<ENCRYPTED : Encryptable, DECRYPTED : E
 	): EntityEncryptor<ENCRYPTED, DECRYPTED>
 
 	/**
-	 * Initialize an entity encryptor that does not encrypt any field (equivalent to providing an empty manifest),
-	 * but can still decrypt.
+	 * Get an entity encryptor that does not encrypt any field (equivalent to providing an empty manifest).
 	 */
-	fun createEmptyEncryptor(): EntityEncryptor<ENCRYPTED, DECRYPTED>
+	val empty: EntityEncryptor<ENCRYPTED, DECRYPTED>
 }
