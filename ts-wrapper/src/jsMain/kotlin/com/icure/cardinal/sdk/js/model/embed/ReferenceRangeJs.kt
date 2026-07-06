@@ -24,7 +24,7 @@ public external class ReferenceRangeJs(
 
 	public val codes: Array<CodeStubJs>
 
-	public val notes: Array<AnnotationJs>
+	public val notes: Array<DecryptedAnnotationJs>
 
 	public val age: RangeJs?
 }

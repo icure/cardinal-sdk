@@ -1,7 +1,7 @@
 // auto-generated file
 import {expectArray, expectNumber, expectObject, expectString, extractEntry} from '../../internal/JsonDecodeUtils.mjs';
 import {CodeStub} from '../base/CodeStub.mjs';
-import {Annotation} from './Annotation.mjs';
+import {DecryptedAnnotation} from './Annotation.mjs';
 import {Range} from './Range.mjs';
 
 
@@ -47,7 +47,7 @@ export class ReferenceRange {
 	 *
 	 *  Annotations providing additional context.
 	 */
-	notes: Array<Annotation> = [];
+	notes: Array<DecryptedAnnotation> = [];
 
 	/**
 	 *
@@ -87,7 +87,7 @@ export class ReferenceRange {
 			stringValue: expectString(extractEntry(jCpy, 'stringValue', false, path), true, [...path, ".stringValue"]),
 			tags: expectArray(extractEntry(jCpy, 'tags', false, path), false, [...path, ".tags"], (x0, p0) => expectObject(x0, false, ignoreUnknownKeys, p0, CodeStub.fromJSON)),
 			codes: expectArray(extractEntry(jCpy, 'codes', false, path), false, [...path, ".codes"], (x0, p0) => expectObject(x0, false, ignoreUnknownKeys, p0, CodeStub.fromJSON)),
-			notes: expectArray(extractEntry(jCpy, 'notes', false, path), false, [...path, ".notes"], (x0, p0) => expectObject(x0, false, ignoreUnknownKeys, p0, Annotation.fromJSON)),
+			notes: expectArray(extractEntry(jCpy, 'notes', false, path), false, [...path, ".notes"], (x0, p0) => expectObject(x0, false, ignoreUnknownKeys, p0, DecryptedAnnotation.fromJSON)),
 			age: expectObject(extractEntry(jCpy, 'age', false, path), true, ignoreUnknownKeys, [...path, ".age"], Range.fromJSON),
 		})
 		if (!ignoreUnknownKeys) {

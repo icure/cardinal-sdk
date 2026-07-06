@@ -73,7 +73,7 @@ public external class DecryptedAddressJs(
 
 	override val note: String?
 
-	override val notes: Array<AnnotationJs>
+	override val notes: Array<DecryptedAnnotationJs>
 
 	override val telecoms: Array<DecryptedTelecomJs>
 
@@ -112,7 +112,7 @@ public external class EncryptedAddressJs(
 
 	override val note: String?
 
-	override val notes: Array<AnnotationJs>
+	override val notes: Array<EncryptedAnnotationJs>
 
 	override val telecoms: Array<EncryptedTelecomJs>
 

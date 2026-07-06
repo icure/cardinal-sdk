@@ -23,10 +23,11 @@ import com.icure.cardinal.sdk.js.utils.Record
 import com.icure.cardinal.sdk.model.base.CodeStub
 import com.icure.cardinal.sdk.model.base.Identifier
 import com.icure.cardinal.sdk.model.base.LinkQualification
-import com.icure.cardinal.sdk.model.embed.Annotation
+import com.icure.cardinal.sdk.model.embed.DecryptedAnnotation
 import com.icure.cardinal.sdk.model.embed.DecryptedContent
 import com.icure.cardinal.sdk.model.embed.DecryptedService
 import com.icure.cardinal.sdk.model.embed.Delegation
+import com.icure.cardinal.sdk.model.embed.EncryptedAnnotation
 import com.icure.cardinal.sdk.model.embed.EncryptedContent
 import com.icure.cardinal.sdk.model.embed.EncryptedService
 import com.icure.cardinal.sdk.model.embed.Service
@@ -192,7 +193,7 @@ public fun service_toJs(obj: DecryptedService): DecryptedServiceJs {
 	)
 	val notes = listToArray(
 		obj.notes,
-		{ x1: Annotation ->
+		{ x1: DecryptedAnnotation ->
 			annotation_toJs(x1)
 		},
 	)
@@ -406,7 +407,7 @@ public fun service_fromJs(obj: DecryptedServiceJs): DecryptedService {
 	val notes = arrayToList(
 		obj.notes,
 		"obj.notes",
-		{ x1: AnnotationJs ->
+		{ x1: DecryptedAnnotationJs ->
 			annotation_fromJs(x1)
 		},
 	)
@@ -641,7 +642,7 @@ public fun service_toJs(obj: EncryptedService): EncryptedServiceJs {
 	)
 	val notes = listToArray(
 		obj.notes,
-		{ x1: Annotation ->
+		{ x1: EncryptedAnnotation ->
 			annotation_toJs(x1)
 		},
 	)
@@ -855,7 +856,7 @@ public fun service_fromJs(obj: EncryptedServiceJs): EncryptedService {
 	val notes = arrayToList(
 		obj.notes,
 		"obj.notes",
-		{ x1: AnnotationJs ->
+		{ x1: EncryptedAnnotationJs ->
 			annotation_fromJs(x1)
 		},
 	)
