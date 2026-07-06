@@ -17,11 +17,12 @@ import com.icure.cardinal.sdk.js.model.base.codeStub_fromJs
 import com.icure.cardinal.sdk.js.model.base.codeStub_toJs
 import com.icure.cardinal.sdk.js.model.base.identifier_fromJs
 import com.icure.cardinal.sdk.js.model.base.identifier_toJs
-import com.icure.cardinal.sdk.js.model.embed.AnnotationJs
 import com.icure.cardinal.sdk.js.model.embed.ContactParticipantJs
+import com.icure.cardinal.sdk.js.model.embed.DecryptedAnnotationJs
 import com.icure.cardinal.sdk.js.model.embed.DecryptedServiceJs
 import com.icure.cardinal.sdk.js.model.embed.DecryptedSubContactJs
 import com.icure.cardinal.sdk.js.model.embed.DelegationJs
+import com.icure.cardinal.sdk.js.model.embed.EncryptedAnnotationJs
 import com.icure.cardinal.sdk.js.model.embed.EncryptedServiceJs
 import com.icure.cardinal.sdk.js.model.embed.EncryptedSubContactJs
 import com.icure.cardinal.sdk.js.model.embed.address_fromJs
@@ -45,11 +46,12 @@ import com.icure.cardinal.sdk.model.DecryptedContact
 import com.icure.cardinal.sdk.model.EncryptedContact
 import com.icure.cardinal.sdk.model.base.CodeStub
 import com.icure.cardinal.sdk.model.base.Identifier
-import com.icure.cardinal.sdk.model.embed.Annotation
 import com.icure.cardinal.sdk.model.embed.ContactParticipant
+import com.icure.cardinal.sdk.model.embed.DecryptedAnnotation
 import com.icure.cardinal.sdk.model.embed.DecryptedService
 import com.icure.cardinal.sdk.model.embed.DecryptedSubContact
 import com.icure.cardinal.sdk.model.embed.Delegation
+import com.icure.cardinal.sdk.model.embed.EncryptedAnnotation
 import com.icure.cardinal.sdk.model.embed.EncryptedService
 import com.icure.cardinal.sdk.model.embed.EncryptedSubContact
 import kotlin.Array
@@ -202,7 +204,7 @@ public fun contact_toJs(obj: DecryptedContact): DecryptedContactJs {
 	)
 	val notes = listToArray(
 		obj.notes,
-		{ x1: Annotation ->
+		{ x1: DecryptedAnnotation ->
 			annotation_toJs(x1)
 		},
 	)
@@ -364,7 +366,7 @@ public fun contact_fromJs(obj: DecryptedContactJs): DecryptedContact {
 	val notes = arrayToList(
 		obj.notes,
 		"obj.notes",
-		{ x1: AnnotationJs ->
+		{ x1: DecryptedAnnotationJs ->
 			annotation_fromJs(x1)
 		},
 	)
@@ -545,7 +547,7 @@ public fun contact_toJs(obj: EncryptedContact): EncryptedContactJs {
 	)
 	val notes = listToArray(
 		obj.notes,
-		{ x1: Annotation ->
+		{ x1: EncryptedAnnotation ->
 			annotation_toJs(x1)
 		},
 	)
@@ -707,7 +709,7 @@ public fun contact_fromJs(obj: EncryptedContactJs): EncryptedContact {
 	val notes = arrayToList(
 		obj.notes,
 		"obj.notes",
-		{ x1: AnnotationJs ->
+		{ x1: EncryptedAnnotationJs ->
 			annotation_fromJs(x1)
 		},
 	)

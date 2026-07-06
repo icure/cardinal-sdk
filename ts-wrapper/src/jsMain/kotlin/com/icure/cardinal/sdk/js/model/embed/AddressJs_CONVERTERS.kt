@@ -19,10 +19,11 @@ import com.icure.cardinal.sdk.model.base.CodeStub
 import com.icure.cardinal.sdk.model.base.Identifier
 import com.icure.cardinal.sdk.model.embed.Address
 import com.icure.cardinal.sdk.model.embed.AddressType
-import com.icure.cardinal.sdk.model.embed.Annotation
 import com.icure.cardinal.sdk.model.embed.DecryptedAddress
+import com.icure.cardinal.sdk.model.embed.DecryptedAnnotation
 import com.icure.cardinal.sdk.model.embed.DecryptedTelecom
 import com.icure.cardinal.sdk.model.embed.EncryptedAddress
+import com.icure.cardinal.sdk.model.embed.EncryptedAnnotation
 import com.icure.cardinal.sdk.model.embed.EncryptedTelecom
 import kotlin.Suppress
 
@@ -80,7 +81,7 @@ public fun address_toJs(obj: DecryptedAddress): DecryptedAddressJs {
 	)
 	val notes = listToArray(
 		obj.notes,
-		{ x1: Annotation ->
+		{ x1: DecryptedAnnotation ->
 			annotation_toJs(x1)
 		},
 	)
@@ -152,7 +153,7 @@ public fun address_fromJs(obj: DecryptedAddressJs): DecryptedAddress {
 	val notes = arrayToList(
 		obj.notes,
 		"obj.notes",
-		{ x1: AnnotationJs ->
+		{ x1: DecryptedAnnotationJs ->
 			annotation_fromJs(x1)
 		},
 	)
@@ -240,7 +241,7 @@ public fun address_toJs(obj: EncryptedAddress): EncryptedAddressJs {
 	)
 	val notes = listToArray(
 		obj.notes,
-		{ x1: Annotation ->
+		{ x1: EncryptedAnnotation ->
 			annotation_toJs(x1)
 		},
 	)
@@ -312,7 +313,7 @@ public fun address_fromJs(obj: EncryptedAddressJs): EncryptedAddress {
 	val notes = arrayToList(
 		obj.notes,
 		"obj.notes",
-		{ x1: AnnotationJs ->
+		{ x1: EncryptedAnnotationJs ->
 			annotation_fromJs(x1)
 		},
 	)

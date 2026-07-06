@@ -7,7 +7,7 @@ import {HasTags} from '../base/HasTags.mjs';
 import {Identifier} from '../base/Identifier.mjs';
 import {Base64String} from '../specializations/Base64String.mjs';
 import {AddressType} from './AddressType.mjs';
-import {Annotation} from './Annotation.mjs';
+import {Annotation, DecryptedAnnotation, EncryptedAnnotation} from './Annotation.mjs';
 import {Encryptable} from './Encryptable.mjs';
 import {DecryptedTelecom, EncryptedTelecom, Telecom} from './Telecom.mjs';
 
@@ -72,7 +72,7 @@ export class DecryptedAddress {
 
 	note: string | undefined = undefined;
 
-	notes: Array<Annotation> = [];
+	notes: Array<DecryptedAnnotation> = [];
 
 	telecoms: Array<DecryptedTelecom> = [];
 
@@ -141,7 +141,7 @@ export class DecryptedAddress {
 			state: expectString(extractEntry(jCpy, 'state', false, path), true, [...path, ".state"]),
 			country: expectString(extractEntry(jCpy, 'country', false, path), true, [...path, ".country"]),
 			note: expectString(extractEntry(jCpy, 'note', false, path), true, [...path, ".note"]),
-			notes: expectArray(extractEntry(jCpy, 'notes', false, path), false, [...path, ".notes"], (x0, p0) => expectObject(x0, false, ignoreUnknownKeys, p0, Annotation.fromJSON)),
+			notes: expectArray(extractEntry(jCpy, 'notes', false, path), false, [...path, ".notes"], (x0, p0) => expectObject(x0, false, ignoreUnknownKeys, p0, DecryptedAnnotation.fromJSON)),
 			telecoms: expectArray(extractEntry(jCpy, 'telecoms', false, path), false, [...path, ".telecoms"], (x0, p0) => expectObject(x0, false, ignoreUnknownKeys, p0, DecryptedTelecom.fromJSON)),
 			encryptedSelf: expectString(extractEntry(jCpy, 'encryptedSelf', false, path), true, [...path, ".encryptedSelf"]) as Base64String,
 		})
@@ -181,7 +181,7 @@ export class EncryptedAddress {
 
 	note: string | undefined = undefined;
 
-	notes: Array<Annotation> = [];
+	notes: Array<EncryptedAnnotation> = [];
 
 	telecoms: Array<EncryptedTelecom> = [];
 
@@ -250,7 +250,7 @@ export class EncryptedAddress {
 			state: expectString(extractEntry(jCpy, 'state', false, path), true, [...path, ".state"]),
 			country: expectString(extractEntry(jCpy, 'country', false, path), true, [...path, ".country"]),
 			note: expectString(extractEntry(jCpy, 'note', false, path), true, [...path, ".note"]),
-			notes: expectArray(extractEntry(jCpy, 'notes', false, path), false, [...path, ".notes"], (x0, p0) => expectObject(x0, false, ignoreUnknownKeys, p0, Annotation.fromJSON)),
+			notes: expectArray(extractEntry(jCpy, 'notes', false, path), false, [...path, ".notes"], (x0, p0) => expectObject(x0, false, ignoreUnknownKeys, p0, EncryptedAnnotation.fromJSON)),
 			telecoms: expectArray(extractEntry(jCpy, 'telecoms', false, path), false, [...path, ".telecoms"], (x0, p0) => expectObject(x0, false, ignoreUnknownKeys, p0, EncryptedTelecom.fromJSON)),
 			encryptedSelf: expectString(extractEntry(jCpy, 'encryptedSelf', false, path), true, [...path, ".encryptedSelf"]) as Base64String,
 		})

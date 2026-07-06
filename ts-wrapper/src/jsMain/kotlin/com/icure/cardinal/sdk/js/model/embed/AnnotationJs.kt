@@ -14,11 +14,7 @@ import kotlin.js.JsName
 import kotlin.js.JsQualifier
 
 @JsName("Annotation")
-public external class AnnotationJs(
-	partial: dynamic,
-) : IdentifiableJs<String> {
-	override val id: String
-
+public sealed external interface AnnotationJs : IdentifiableJs<String>, EncryptableJs {
 	public val author: String?
 
 	public val created: Double?
@@ -27,13 +23,67 @@ public external class AnnotationJs(
 
 	public val text: String?
 
-	public val markdown: Record<String, String>
+	public val markdown: Record<String, out String>
 
 	public val location: String?
 
 	public val confidential: Boolean?
 
-	public val tags: Array<CodeStubJs>
+	public val tags: Array<out CodeStubJs>
 
-	public val encryptedSelf: String?
+	public val isEncrypted: Boolean
+}
+
+@JsName("DecryptedAnnotation")
+public external class DecryptedAnnotationJs(
+	partial: dynamic,
+) : AnnotationJs {
+	override val id: String
+
+	override val author: String?
+
+	override val created: Double?
+
+	override val modified: Double?
+
+	override val text: String?
+
+	override val markdown: Record<String, String>
+
+	override val location: String?
+
+	override val confidential: Boolean?
+
+	override val tags: Array<CodeStubJs>
+
+	override val encryptedSelf: String?
+
+	override val isEncrypted: Boolean
+}
+
+@JsName("EncryptedAnnotation")
+public external class EncryptedAnnotationJs(
+	partial: dynamic,
+) : AnnotationJs {
+	override val id: String
+
+	override val author: String?
+
+	override val created: Double?
+
+	override val modified: Double?
+
+	override val text: String?
+
+	override val markdown: Record<String, String>
+
+	override val location: String?
+
+	override val confidential: Boolean?
+
+	override val tags: Array<CodeStubJs>
+
+	override val encryptedSelf: String?
+
+	override val isEncrypted: Boolean
 }

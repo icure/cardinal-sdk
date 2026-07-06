@@ -17,11 +17,12 @@ import com.icure.cardinal.sdk.js.model.base.codeStub_fromJs
 import com.icure.cardinal.sdk.js.model.base.codeStub_toJs
 import com.icure.cardinal.sdk.js.model.base.identifier_fromJs
 import com.icure.cardinal.sdk.js.model.base.identifier_toJs
-import com.icure.cardinal.sdk.js.model.embed.AnnotationJs
+import com.icure.cardinal.sdk.js.model.embed.DecryptedAnnotationJs
 import com.icure.cardinal.sdk.js.model.embed.DecryptedCareTeamMemberJs
 import com.icure.cardinal.sdk.js.model.embed.DecryptedEpisodeJs
 import com.icure.cardinal.sdk.js.model.embed.DecryptedPlanOfActionJs
 import com.icure.cardinal.sdk.js.model.embed.DelegationJs
+import com.icure.cardinal.sdk.js.model.embed.EncryptedAnnotationJs
 import com.icure.cardinal.sdk.js.model.embed.EncryptedCareTeamMemberJs
 import com.icure.cardinal.sdk.js.model.embed.EncryptedEpisodeJs
 import com.icure.cardinal.sdk.js.model.embed.EncryptedPlanOfActionJs
@@ -44,11 +45,12 @@ import com.icure.cardinal.sdk.model.EncryptedHealthElement
 import com.icure.cardinal.sdk.model.HealthElement
 import com.icure.cardinal.sdk.model.base.CodeStub
 import com.icure.cardinal.sdk.model.base.Identifier
-import com.icure.cardinal.sdk.model.embed.Annotation
+import com.icure.cardinal.sdk.model.embed.DecryptedAnnotation
 import com.icure.cardinal.sdk.model.embed.DecryptedCareTeamMember
 import com.icure.cardinal.sdk.model.embed.DecryptedEpisode
 import com.icure.cardinal.sdk.model.embed.DecryptedPlanOfAction
 import com.icure.cardinal.sdk.model.embed.Delegation
+import com.icure.cardinal.sdk.model.embed.EncryptedAnnotation
 import com.icure.cardinal.sdk.model.embed.EncryptedCareTeamMember
 import com.icure.cardinal.sdk.model.embed.EncryptedEpisode
 import com.icure.cardinal.sdk.model.embed.EncryptedPlanOfAction
@@ -120,7 +122,7 @@ public fun healthElement_toJs(obj: DecryptedHealthElement): DecryptedHealthEleme
 	)
 	val notes = listToArray(
 		obj.notes,
-		{ x1: Annotation ->
+		{ x1: DecryptedAnnotation ->
 			annotation_toJs(x1)
 		},
 	)
@@ -290,7 +292,7 @@ public fun healthElement_fromJs(obj: DecryptedHealthElementJs): DecryptedHealthE
 	val notes = arrayToList(
 		obj.notes,
 		"obj.notes",
-		{ x1: AnnotationJs ->
+		{ x1: DecryptedAnnotationJs ->
 			annotation_fromJs(x1)
 		},
 	)
@@ -481,7 +483,7 @@ public fun healthElement_toJs(obj: EncryptedHealthElement): EncryptedHealthEleme
 	)
 	val notes = listToArray(
 		obj.notes,
-		{ x1: Annotation ->
+		{ x1: EncryptedAnnotation ->
 			annotation_toJs(x1)
 		},
 	)
@@ -651,7 +653,7 @@ public fun healthElement_fromJs(obj: EncryptedHealthElementJs): EncryptedHealthE
 	val notes = arrayToList(
 		obj.notes,
 		"obj.notes",
-		{ x1: AnnotationJs ->
+		{ x1: EncryptedAnnotationJs ->
 			annotation_fromJs(x1)
 		},
 	)

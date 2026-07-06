@@ -8,7 +8,7 @@ import {ICureDocument} from '../base/ICureDocument.mjs';
 import {Identifier} from '../base/Identifier.mjs';
 import {LinkQualification} from '../base/LinkQualification.mjs';
 import {Base64String} from '../specializations/Base64String.mjs';
-import {Annotation} from './Annotation.mjs';
+import {Annotation, DecryptedAnnotation, EncryptedAnnotation} from './Annotation.mjs';
 import {Content, DecryptedContent, EncryptedContent} from './Content.mjs';
 import {Delegation} from './Delegation.mjs';
 import {Encryptable} from './Encryptable.mjs';
@@ -323,7 +323,7 @@ export class DecryptedService {
 	 *
 	 *  Comments - Notes recorded by a HCP about this service
 	 */
-	notes: Array<Annotation> = [];
+	notes: Array<DecryptedAnnotation> = [];
 
 	/**
 	 *
@@ -481,7 +481,7 @@ export class DecryptedService {
 			responsible: expectString(extractEntry(jCpy, 'responsible', false, path), true, [...path, ".responsible"]),
 			comment: expectString(extractEntry(jCpy, 'comment', false, path), true, [...path, ".comment"]),
 			invoicingCodes: expectArray(extractEntry(jCpy, 'invoicingCodes', false, path), false, [...path, ".invoicingCodes"], (x0, p0) => expectString(x0, false, p0)),
-			notes: expectArray(extractEntry(jCpy, 'notes', false, path), false, [...path, ".notes"], (x0, p0) => expectObject(x0, false, ignoreUnknownKeys, p0, Annotation.fromJSON)),
+			notes: expectArray(extractEntry(jCpy, 'notes', false, path), false, [...path, ".notes"], (x0, p0) => expectObject(x0, false, ignoreUnknownKeys, p0, DecryptedAnnotation.fromJSON)),
 			qualifiedLinks: expectMap(
 				extractEntry(jCpy, 'qualifiedLinks', false, path),
 				false,
@@ -675,7 +675,7 @@ export class EncryptedService {
 	 *
 	 *  Comments - Notes recorded by a HCP about this service
 	 */
-	notes: Array<Annotation> = [];
+	notes: Array<EncryptedAnnotation> = [];
 
 	/**
 	 *
@@ -833,7 +833,7 @@ export class EncryptedService {
 			responsible: expectString(extractEntry(jCpy, 'responsible', false, path), true, [...path, ".responsible"]),
 			comment: expectString(extractEntry(jCpy, 'comment', false, path), true, [...path, ".comment"]),
 			invoicingCodes: expectArray(extractEntry(jCpy, 'invoicingCodes', false, path), false, [...path, ".invoicingCodes"], (x0, p0) => expectString(x0, false, p0)),
-			notes: expectArray(extractEntry(jCpy, 'notes', false, path), false, [...path, ".notes"], (x0, p0) => expectObject(x0, false, ignoreUnknownKeys, p0, Annotation.fromJSON)),
+			notes: expectArray(extractEntry(jCpy, 'notes', false, path), false, [...path, ".notes"], (x0, p0) => expectObject(x0, false, ignoreUnknownKeys, p0, EncryptedAnnotation.fromJSON)),
 			qualifiedLinks: expectMap(
 				extractEntry(jCpy, 'qualifiedLinks', false, path),
 				false,

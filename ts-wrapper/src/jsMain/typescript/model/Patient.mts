@@ -11,7 +11,7 @@ import {Identifier} from './base/Identifier.mjs';
 import {Person} from './base/Person.mjs';
 import {StoredDocument} from './base/StoredDocument.mjs';
 import {DecryptedAddress, EncryptedAddress} from './embed/Address.mjs';
-import {Annotation} from './embed/Annotation.mjs';
+import {Annotation, DecryptedAnnotation, EncryptedAnnotation} from './embed/Annotation.mjs';
 import {Delegation} from './embed/Delegation.mjs';
 import {Encryptable} from './embed/Encryptable.mjs';
 import {DecryptedFinancialInstitutionInformation, EncryptedFinancialInstitutionInformation, FinancialInstitutionInformation} from './embed/FinancialInstitutionInformation.mjs';
@@ -506,7 +506,7 @@ export class DecryptedPatient {
 	 *
 	 *  Localized text notes (can be confidential).
 	 */
-	notes: Array<Annotation> = [];
+	notes: Array<DecryptedAnnotation> = [];
 
 	/**
 	 *
@@ -862,7 +862,7 @@ export class DecryptedPatient {
 			deceased: expectBoolean(extractEntry(jCpy, 'deceased', false, path), true, [...path, ".deceased"]),
 			education: expectString(extractEntry(jCpy, 'education', false, path), true, [...path, ".education"]),
 			profession: expectString(extractEntry(jCpy, 'profession', false, path), true, [...path, ".profession"]),
-			notes: expectArray(extractEntry(jCpy, 'notes', false, path), false, [...path, ".notes"], (x0, p0) => expectObject(x0, false, ignoreUnknownKeys, p0, Annotation.fromJSON)),
+			notes: expectArray(extractEntry(jCpy, 'notes', false, path), false, [...path, ".notes"], (x0, p0) => expectObject(x0, false, ignoreUnknownKeys, p0, DecryptedAnnotation.fromJSON)),
 			note: expectString(extractEntry(jCpy, 'note', false, path), true, [...path, ".note"]),
 			administrativeNote: expectString(extractEntry(jCpy, 'administrativeNote', false, path), true, [...path, ".administrativeNote"]),
 			nationality: expectString(extractEntry(jCpy, 'nationality', false, path), true, [...path, ".nationality"]),
@@ -1208,7 +1208,7 @@ export class EncryptedPatient {
 	 *
 	 *  Localized text notes (can be confidential).
 	 */
-	notes: Array<Annotation> = [];
+	notes: Array<EncryptedAnnotation> = [];
 
 	/**
 	 *
@@ -1564,7 +1564,7 @@ export class EncryptedPatient {
 			deceased: expectBoolean(extractEntry(jCpy, 'deceased', false, path), true, [...path, ".deceased"]),
 			education: expectString(extractEntry(jCpy, 'education', false, path), true, [...path, ".education"]),
 			profession: expectString(extractEntry(jCpy, 'profession', false, path), true, [...path, ".profession"]),
-			notes: expectArray(extractEntry(jCpy, 'notes', false, path), false, [...path, ".notes"], (x0, p0) => expectObject(x0, false, ignoreUnknownKeys, p0, Annotation.fromJSON)),
+			notes: expectArray(extractEntry(jCpy, 'notes', false, path), false, [...path, ".notes"], (x0, p0) => expectObject(x0, false, ignoreUnknownKeys, p0, EncryptedAnnotation.fromJSON)),
 			note: expectString(extractEntry(jCpy, 'note', false, path), true, [...path, ".note"]),
 			administrativeNote: expectString(extractEntry(jCpy, 'administrativeNote', false, path), true, [...path, ".administrativeNote"]),
 			nationality: expectString(extractEntry(jCpy, 'nationality', false, path), true, [...path, ".nationality"]),
