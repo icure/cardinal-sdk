@@ -14,7 +14,7 @@ import kotlinx.coroutines.ensureActive
 import kotlinx.serialization.json.JsonElement
 import kotlinx.serialization.json.JsonObject
 
-abstract class AbstractEntityDecryptor<ENCRYPTED : Encryptable, DECRYPTED : Encryptable> :
+internal abstract class AbstractEntityDecryptor<ENCRYPTED : Encryptable, DECRYPTED : Encryptable> :
 	EntityDecryptor<ENCRYPTED, DECRYPTED> {
 
 	protected suspend fun decryptAndPatchContent(

@@ -15,7 +15,7 @@ import kotlinx.coroutines.CancellationException
 import kotlinx.serialization.json.JsonObject
 import kotlinx.serialization.json.jsonObject
 
-abstract class AbstractEntityEncryptor<ENCRYPTED : Encryptable, DECRYPTED : Encryptable> :
+internal abstract class AbstractEntityEncryptor<ENCRYPTED : Encryptable, DECRYPTED : Encryptable> :
 	EntityEncryptor<ENCRYPTED, DECRYPTED> {
 
 	protected suspend fun getUpdatedEncryptSelf(

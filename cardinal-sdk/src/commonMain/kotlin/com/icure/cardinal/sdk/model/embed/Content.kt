@@ -2,6 +2,7 @@
 // If you want to change the way this class is generated, see [this repo](https://github.com/icure/sdk-codegen).
 package com.icure.cardinal.sdk.model.embed
 
+import com.icure.cardinal.sdk.model.specializations.Base64String
 import com.icure.cardinal.sdk.serialization.ByteArraySerializer
 import com.icure.cardinal.sdk.serialization.InstantSerializer
 import kotlinx.serialization.Serializable
@@ -20,7 +21,7 @@ import kotlin.time.Instant
  * /
  */
 
-sealed interface Content {
+sealed interface Content : Encryptable {
 	/**
 	 * A string value.
 	 */
@@ -87,20 +88,7 @@ sealed interface Content {
 	public val range: List<Measure>?
 	// region Content-Content
 	// Update when new fields are added
-	fun isCompound() =
-		stringValue == null &&
-			numberValue == null &&
-			booleanValue == null &&
-			instantValue == null &&
-			fuzzyDateValue == null &&
-			binaryValue == null &&
-			documentId == null &&
-			measureValue == null &&
-			medicationValue == null &&
-			timeSeries == null &&
-			ratio.isNullOrEmpty() &&
-			range.isNullOrEmpty() &&
-			!compoundValue.isNullOrEmpty()
+
 	// endregion
 }
 
@@ -166,6 +154,7 @@ data class DecryptedContent(
 	 * A list of measures representing a range.
 	 */
 	override val range: List<Measure>? = null,
+	override val encryptedSelf: Base64String? = null,
 ) : Content {
 	// region Content-DecryptedContent
 
@@ -234,6 +223,7 @@ data class EncryptedContent(
 	 * A list of measures representing a range.
 	 */
 	override val range: List<Measure>? = null,
+	override val encryptedSelf: Base64String? = null,
 ) : Content {
 	// region Content-EncryptedContent
 

@@ -74,10 +74,6 @@ import kotlinx.serialization.json.decodeFromJsonElement
 import kotlinx.serialization.json.encodeToJsonElement
 import kotlinx.serialization.json.jsonObject
 
-private fun Service.hasOnlyCompoundContent() =
-	content.values.all {
-		it.isCompound()
-	}
 
 @InternalIcureApi
 private suspend fun DecryptedService.encrypt(
