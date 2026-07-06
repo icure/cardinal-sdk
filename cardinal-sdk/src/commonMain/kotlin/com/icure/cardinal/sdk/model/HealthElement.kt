@@ -3,6 +3,7 @@
 package com.icure.cardinal.sdk.model
 
 import com.icure.cardinal.sdk.model.base.CodeStub
+import com.icure.cardinal.sdk.model.base.ExtendableRoot
 import com.icure.cardinal.sdk.model.base.HasEncryptionMetadata
 import com.icure.cardinal.sdk.model.base.HasEndOfLife
 import com.icure.cardinal.sdk.model.base.ICureDocument
@@ -27,13 +28,14 @@ import com.icure.cardinal.sdk.model.embed.SecurityMetadata
 import com.icure.cardinal.sdk.model.specializations.Base64String
 import com.icure.cardinal.sdk.utils.DefaultValue
 import kotlinx.serialization.Serializable
+import kotlinx.serialization.json.JsonObject
 import kotlin.Boolean
+import kotlin.Int
 import kotlin.Long
 import kotlin.String
 import kotlin.collections.List
 import kotlin.collections.Map
 import kotlin.collections.Set
-import kotlin.Int
 
 /**
  *
@@ -49,7 +51,8 @@ sealed interface HealthElement :
 	ICureDocument<String>,
 	HasEncryptionMetadata,
 	Encryptable,
-	HasEndOfLife {
+	HasEndOfLife,
+	ExtendableRoot {
 	/**
 	 * The Id of the healthcare element. We encourage using either a v4 UUID or a HL7 Id.
 	 */
@@ -212,6 +215,10 @@ sealed interface HealthElement :
 	 * The security metadata of the entity.
 	 */
 	override val securityMetadata: SecurityMetadata?
+
+	override val extensions: JsonObject?
+
+	override val extensionsVersion: Int?
 	// region HealthElement-HealthElement
 
 	companion object {
@@ -373,6 +380,8 @@ data class DecryptedHealthElement(
 	 * The security metadata of the entity.
 	 */
 	override val securityMetadata: SecurityMetadata? = null,
+	override val extensions: JsonObject? = null,
+	override val extensionsVersion: Int? = null,
 ) : HealthElement {
 	// region HealthElement-DecryptedHealthElement
 override fun copyWithSecurityMetadata(securityMetadata: SecurityMetadata, secretForeignKeys: Set<String>): DecryptedHealthElement =
@@ -533,6 +542,8 @@ data class EncryptedHealthElement(
 	 * The security metadata of the entity.
 	 */
 	override val securityMetadata: SecurityMetadata? = null,
+	override val extensions: JsonObject? = null,
+	override val extensionsVersion: Int? = null,
 ) : HealthElement {
 	// region HealthElement-EncryptedHealthElement
 override fun copyWithSecurityMetadata(securityMetadata: SecurityMetadata, secretForeignKeys: Set<String>): EncryptedHealthElement =

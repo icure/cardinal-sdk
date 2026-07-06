@@ -242,6 +242,14 @@ public interface RawUserApi {
 		tokenValidity: Long? = null,
 	): HttpResponse<List<TokenWithGroup>>
 
+	suspend fun getTokenInAllSubGroups(
+		rootGroupId: String,
+		userIdentifier: String,
+		key: String,
+		token: String? = null,
+		tokenValidity: Long? = null,
+	): HttpResponse<List<TokenWithGroup>>
+
 	suspend fun filterUsersInGroupBy(
 		groupId: String,
 		startDocumentId: String? = null,

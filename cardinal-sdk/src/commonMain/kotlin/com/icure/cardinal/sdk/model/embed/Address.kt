@@ -3,6 +3,7 @@
 package com.icure.cardinal.sdk.model.embed
 
 import com.icure.cardinal.sdk.model.base.CodeStub
+import com.icure.cardinal.sdk.model.base.Extendable
 import com.icure.cardinal.sdk.model.base.HasCodes
 import com.icure.cardinal.sdk.model.base.HasIdentifier
 import com.icure.cardinal.sdk.model.base.HasTags
@@ -10,11 +11,12 @@ import com.icure.cardinal.sdk.model.base.Identifier
 import com.icure.cardinal.sdk.model.specializations.Base64String
 import com.icure.cardinal.sdk.utils.DefaultValue
 import kotlinx.serialization.Serializable
+import kotlinx.serialization.json.JsonObject
 import kotlin.String
 import kotlin.collections.List
 import kotlin.collections.Set
 
-sealed interface Address : Encryptable, HasTags, HasCodes, HasIdentifier {
+sealed interface Address : Encryptable, HasTags, HasCodes, HasIdentifier, Extendable {
 	override val tags: Set<CodeStub>
 
 	override val codes: Set<CodeStub>
@@ -46,6 +48,8 @@ sealed interface Address : Encryptable, HasTags, HasCodes, HasIdentifier {
 	public val telecoms: List<Telecom>
 
 	override val encryptedSelf: Base64String?
+
+	override val extensions: JsonObject?
   // region Address-Address
 
   // endregion
@@ -74,6 +78,7 @@ data class DecryptedAddress(
 	@param:DefaultValue("emptyList()")
 	override val telecoms: List<DecryptedTelecom> = emptyList(),
 	override val encryptedSelf: Base64String? = null,
+	override val extensions: JsonObject? = null,
 ) : Address {
 	// region Address-DecryptedAddress
 
@@ -103,6 +108,7 @@ data class EncryptedAddress(
 	@param:DefaultValue("emptyList()")
 	override val telecoms: List<EncryptedTelecom> = emptyList(),
 	override val encryptedSelf: Base64String? = null,
+	override val extensions: JsonObject? = null,
 ) : Address {
 	// region Address-EncryptedAddress
 

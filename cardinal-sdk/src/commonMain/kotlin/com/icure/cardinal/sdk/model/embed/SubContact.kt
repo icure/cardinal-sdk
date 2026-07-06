@@ -3,17 +3,19 @@
 package com.icure.cardinal.sdk.model.embed
 
 import com.icure.cardinal.sdk.model.base.CodeStub
+import com.icure.cardinal.sdk.model.base.Extendable
 import com.icure.cardinal.sdk.model.base.ICureDocument
 import com.icure.cardinal.sdk.model.specializations.Base64String
 import com.icure.cardinal.sdk.utils.DefaultValue
 import kotlinx.serialization.Serializable
+import kotlinx.serialization.json.JsonObject
 import kotlin.Long
 import kotlin.String
 import kotlin.collections.List
 import kotlin.collections.Set
 import kotlin.Int
 
-sealed interface SubContact : Encryptable, ICureDocument<String?> {
+sealed interface SubContact : Encryptable, ICureDocument<String?>, Extendable {
 	override val id: String?
 
 	override val created: Long?
@@ -41,6 +43,8 @@ sealed interface SubContact : Encryptable, ICureDocument<String?> {
 	public val services: List<ServiceLink>
 
 	override val encryptedSelf: Base64String?
+
+	override val extensions: JsonObject?
 	// region SubContact-SubContact
 
 	// endregion
@@ -65,6 +69,7 @@ data class DecryptedSubContact(
 	@param:DefaultValue("emptyList()")
 	override val services: List<ServiceLink> = emptyList(),
 	override val encryptedSelf: Base64String? = null,
+	override val extensions: JsonObject? = null,
 ) : SubContact {
 	// region SubContact-DecryptedSubContact
 
@@ -90,6 +95,7 @@ data class EncryptedSubContact(
 	@param:DefaultValue("emptyList()")
 	override val services: List<ServiceLink> = emptyList(),
 	override val encryptedSelf: Base64String? = null,
+	override val extensions: JsonObject? = null,
 ) : SubContact {
 	// region SubContact-EncryptedSubContact
 

@@ -709,6 +709,24 @@ class RawUserApiImpl(
 			`header`("token", token)
 		}.wrap()
 
+	override suspend fun getTokenInAllSubGroups(
+		rootGroupId: String,
+		userIdentifier: String,
+		key: String,
+		token: String?,
+		tokenValidity: Long?,
+	): HttpResponse<List<TokenWithGroup>> =
+		post(authProvider) {
+			url {
+				takeFrom(apiUrl)
+				appendPathSegments("rest", "v2", "user", "inAllSubGroups", rootGroupId, "token", userIdentifier, key)
+				parameter("tokenValidity", tokenValidity)
+			}
+			contentType(Application.Json)
+			accept(Application.Json)
+			`header`("token", token)
+		}.wrap()
+
 	override suspend fun filterUsersInGroupBy(
 		groupId: String,
 		startDocumentId: String?,

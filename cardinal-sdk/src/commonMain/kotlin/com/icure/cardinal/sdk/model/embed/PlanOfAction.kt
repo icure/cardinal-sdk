@@ -3,12 +3,14 @@
 package com.icure.cardinal.sdk.model.embed
 
 import com.icure.cardinal.sdk.model.base.CodeStub
+import com.icure.cardinal.sdk.model.base.Extendable
 import com.icure.cardinal.sdk.model.base.HasEndOfLife
 import com.icure.cardinal.sdk.model.base.ICureDocument
 import com.icure.cardinal.sdk.model.base.Named
 import com.icure.cardinal.sdk.model.specializations.Base64String
 import com.icure.cardinal.sdk.utils.DefaultValue
 import kotlinx.serialization.Serializable
+import kotlinx.serialization.json.JsonObject
 import kotlin.Long
 import kotlin.String
 import kotlin.collections.List
@@ -16,7 +18,12 @@ import kotlin.collections.Set
 import kotlin.Boolean
 import kotlin.Int
 
-sealed interface PlanOfAction : Encryptable, ICureDocument<String>, Named, HasEndOfLife {
+sealed interface PlanOfAction :
+	Encryptable,
+	ICureDocument<String>,
+	Named,
+	HasEndOfLife,
+	Extendable {
 	override val id: String
 
 	override val created: Long?
@@ -56,6 +63,8 @@ sealed interface PlanOfAction : Encryptable, ICureDocument<String>, Named, HasEn
 	public val careTeamMemberships: List<CareTeamMembership>
 
 	override val encryptedSelf: Base64String?
+
+	override val extensions: JsonObject?
 	// region PlanOfAction-PlanOfAction
 
 	// endregion
@@ -86,6 +95,7 @@ data class DecryptedPlanOfAction(
 	@param:DefaultValue("emptyList()")
 	override val careTeamMemberships: List<DecryptedCareTeamMembership> = emptyList(),
 	override val encryptedSelf: Base64String? = null,
+	override val extensions: JsonObject? = null,
 ) : PlanOfAction {
 	// region PlanOfAction-DecryptedPlanOfAction
 
@@ -117,6 +127,7 @@ data class EncryptedPlanOfAction(
 	@param:DefaultValue("emptyList()")
 	override val careTeamMemberships: List<EncryptedCareTeamMembership> = emptyList(),
 	override val encryptedSelf: Base64String? = null,
+	override val extensions: JsonObject? = null,
 ) : PlanOfAction {
 	// region PlanOfAction-EncryptedPlanOfAction
 

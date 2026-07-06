@@ -3,6 +3,7 @@
 package com.icure.cardinal.sdk.model
 
 import com.icure.cardinal.sdk.model.base.CodeStub
+import com.icure.cardinal.sdk.model.base.ExtendableRoot
 import com.icure.cardinal.sdk.model.base.HasEncryptionMetadata
 import com.icure.cardinal.sdk.model.base.ICureDocument
 import com.icure.cardinal.sdk.model.base.StoredDocument
@@ -19,8 +20,10 @@ import com.icure.cardinal.sdk.model.specializations.Base64String
 import com.icure.cardinal.sdk.utils.DefaultValue
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
+import kotlinx.serialization.json.JsonObject
 import kotlin.Boolean
 import kotlin.Deprecated
+import kotlin.Int
 import kotlin.Long
 import kotlin.String
 import kotlin.collections.Map
@@ -38,7 +41,8 @@ sealed interface CalendarItem :
 	StoredDocument,
 	ICureDocument<String>,
 	HasEncryptionMetadata,
-	Encryptable {
+	Encryptable,
+	ExtendableRoot {
 	/**
 	 * The Id of the calendar item. We encourage using either a v4 UUID or a HL7 Id.
 	 */
@@ -246,6 +250,10 @@ sealed interface CalendarItem :
 	 */
 	override val securityMetadata: SecurityMetadata?
 
+	override val extensions: JsonObject?
+
+	override val extensionsVersion: Int?
+
 	@Serializable
 	public enum class AvailabilitiesAssignmentStrategy(
 		internal val dtoSerialName: String,
@@ -448,6 +456,8 @@ data class DecryptedCalendarItem(
 	 * The security metadata of this entity, for access control.
 	 */
 	override val securityMetadata: SecurityMetadata? = null,
+	override val extensions: JsonObject? = null,
+	override val extensionsVersion: Int? = null,
 ) : CalendarItem {
 	// region CalendarItem-DecryptedCalendarItem
 override fun copyWithSecurityMetadata(securityMetadata: SecurityMetadata, secretForeignKeys: Set<String>): DecryptedCalendarItem =
@@ -653,6 +663,8 @@ data class EncryptedCalendarItem(
 	 * The security metadata of this entity, for access control.
 	 */
 	override val securityMetadata: SecurityMetadata? = null,
+	override val extensions: JsonObject? = null,
+	override val extensionsVersion: Int? = null,
 ) : CalendarItem {
 	// region CalendarItem-EncryptedCalendarItem
 override fun copyWithSecurityMetadata(securityMetadata: SecurityMetadata, secretForeignKeys: Set<String>): EncryptedCalendarItem =

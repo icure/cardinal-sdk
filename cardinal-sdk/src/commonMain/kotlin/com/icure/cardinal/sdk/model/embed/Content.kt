@@ -86,9 +86,13 @@ sealed interface Content : Encryptable {
 	 * A list of measures representing a range.
 	 */
 	public val range: List<Measure>?
+
+	/**
+	 * A list of measures representing a range.
+	 */
+	override val encryptedSelf: Base64String?
 	// region Content-Content
 	// Update when new fields are added
-
 	// endregion
 }
 
@@ -154,6 +158,9 @@ data class DecryptedContent(
 	 * A list of measures representing a range.
 	 */
 	override val range: List<Measure>? = null,
+	/**
+	 * A list of measures representing a range.
+	 */
 	override val encryptedSelf: Base64String? = null,
 ) : Content {
 	// region Content-DecryptedContent
@@ -223,6 +230,9 @@ data class EncryptedContent(
 	 * A list of measures representing a range.
 	 */
 	override val range: List<Measure>? = null,
+	/**
+	 * A list of measures representing a range.
+	 */
 	override val encryptedSelf: Base64String? = null,
 ) : Content {
 	// region Content-EncryptedContent

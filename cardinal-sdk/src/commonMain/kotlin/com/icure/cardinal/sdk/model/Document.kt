@@ -3,6 +3,7 @@
 package com.icure.cardinal.sdk.model
 
 import com.icure.cardinal.sdk.model.base.CodeStub
+import com.icure.cardinal.sdk.model.base.ExtendableRoot
 import com.icure.cardinal.sdk.model.base.HasEncryptionMetadata
 import com.icure.cardinal.sdk.model.base.ICureDocument
 import com.icure.cardinal.sdk.model.base.StoredDocument
@@ -16,6 +17,8 @@ import com.icure.cardinal.sdk.model.embed.SecurityMetadata
 import com.icure.cardinal.sdk.model.specializations.Base64String
 import com.icure.cardinal.sdk.utils.DefaultValue
 import kotlinx.serialization.Serializable
+import kotlinx.serialization.json.JsonObject
+import kotlin.Int
 import kotlin.Long
 import kotlin.String
 import kotlin.collections.List
@@ -36,7 +39,8 @@ sealed interface Document :
 	StoredDocument,
 	ICureDocument<String>,
 	HasEncryptionMetadata,
-	Encryptable {
+	Encryptable,
+	ExtendableRoot {
 	/**
 	 * The Id of the document. We encourage using either a v4 UUID or a HL7 Id.
 	 */
@@ -127,14 +131,8 @@ sealed interface Document :
 	 */
 	public val attachmentId: String?
 
-	/**
-	 * The id of the main attachment in the object storage service.
-	 */
 	public val objectStoreReference: String?
 
-	/**
-	 * The main Uniform Type Identifier of the main attachment.
-	 */
 	public val mainUti: String?
 
 	/**
@@ -142,14 +140,8 @@ sealed interface Document :
 	 */
 	public val otherUtis: Set<String>
 
-	/**
-	 * Extra Uniform Type Identifiers for the main attachment.
-	 */
 	public val mainAttachmentStoredDataSize: Long?
 
-	/**
-	 * Extra Uniform Type Identifiers for the main attachment.
-	 */
 	public val extraMainAttachmentInfo: ExtraMainAttachmentInfo?
 
 	/**
@@ -191,6 +183,10 @@ sealed interface Document :
 	 * The security metadata of this entity, for access control.
 	 */
 	override val securityMetadata: SecurityMetadata?
+
+	override val extensions: JsonObject?
+
+	override val extensionsVersion: Int?
 
 	@Serializable
 	public data class ExtraMainAttachmentInfo(
@@ -285,26 +281,14 @@ data class DecryptedDocument(
 	 * The id of the main attachment stored as a CouchDB attachment.
 	 */
 	override val attachmentId: String? = null,
-	/**
-	 * The id of the main attachment in the object storage service.
-	 */
 	override val objectStoreReference: String? = null,
-	/**
-	 * The main Uniform Type Identifier of the main attachment.
-	 */
 	override val mainUti: String? = null,
 	/**
 	 * Extra Uniform Type Identifiers for the main attachment.
 	 */
 	@param:DefaultValue("emptySet()")
 	override val otherUtis: Set<String> = emptySet(),
-	/**
-	 * Extra Uniform Type Identifiers for the main attachment.
-	 */
 	override val mainAttachmentStoredDataSize: Long? = null,
-	/**
-	 * Extra Uniform Type Identifiers for the main attachment.
-	 */
 	override val extraMainAttachmentInfo: Document.ExtraMainAttachmentInfo? = null,
 	/**
 	 * Secondary attachments for this document.
@@ -344,6 +328,8 @@ data class DecryptedDocument(
 	 * The security metadata of this entity, for access control.
 	 */
 	override val securityMetadata: SecurityMetadata? = null,
+	override val extensions: JsonObject? = null,
+	override val extensionsVersion: Int? = null,
 ) : Document {
 	// region Document-DecryptedDocument
 override fun copyWithSecurityMetadata(securityMetadata: SecurityMetadata, secretForeignKeys: Set<String>): DecryptedDocument =
@@ -433,26 +419,14 @@ data class EncryptedDocument(
 	 * The id of the main attachment stored as a CouchDB attachment.
 	 */
 	override val attachmentId: String? = null,
-	/**
-	 * The id of the main attachment in the object storage service.
-	 */
 	override val objectStoreReference: String? = null,
-	/**
-	 * The main Uniform Type Identifier of the main attachment.
-	 */
 	override val mainUti: String? = null,
 	/**
 	 * Extra Uniform Type Identifiers for the main attachment.
 	 */
 	@param:DefaultValue("emptySet()")
 	override val otherUtis: Set<String> = emptySet(),
-	/**
-	 * Extra Uniform Type Identifiers for the main attachment.
-	 */
 	override val mainAttachmentStoredDataSize: Long? = null,
-	/**
-	 * Extra Uniform Type Identifiers for the main attachment.
-	 */
 	override val extraMainAttachmentInfo: Document.ExtraMainAttachmentInfo? = null,
 	/**
 	 * Secondary attachments for this document.
@@ -492,6 +466,8 @@ data class EncryptedDocument(
 	 * The security metadata of this entity, for access control.
 	 */
 	override val securityMetadata: SecurityMetadata? = null,
+	override val extensions: JsonObject? = null,
+	override val extensionsVersion: Int? = null,
 ) : Document {
 	// region Document-EncryptedDocument
 override fun copyWithSecurityMetadata(securityMetadata: SecurityMetadata, secretForeignKeys: Set<String>): EncryptedDocument =

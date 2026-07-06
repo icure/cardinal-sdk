@@ -5,6 +5,7 @@ package com.icure.cardinal.sdk.model
 import com.icure.cardinal.sdk.model.base.CodeStub
 import com.icure.cardinal.sdk.model.base.CryptoActor
 import com.icure.cardinal.sdk.model.base.DataOwner
+import com.icure.cardinal.sdk.model.base.ExtendableRoot
 import com.icure.cardinal.sdk.model.base.HasCodes
 import com.icure.cardinal.sdk.model.base.HasIdentifier
 import com.icure.cardinal.sdk.model.base.HasTags
@@ -22,7 +23,9 @@ import com.icure.cardinal.sdk.model.specializations.HexString
 import com.icure.cardinal.sdk.model.specializations.SpkiHexString
 import com.icure.cardinal.sdk.utils.DefaultValue
 import kotlinx.serialization.Serializable
+import kotlinx.serialization.json.JsonObject
 import kotlin.Boolean
+import kotlin.Int
 import kotlin.Long
 import kotlin.String
 import kotlin.collections.List
@@ -35,7 +38,6 @@ import com.icure.cardinal.sdk.model.embed.TelecomType
 import com.icure.cardinal.sdk.serialization.ByteArraySerializer
 import kotlin.ByteArray
 import kotlin.Deprecated
-import kotlin.Int
 
 /**
  * Represents a healthcare party. A healthcare party is a person or organization that provides
@@ -225,7 +227,17 @@ data class HealthcareParty(
 	 */
 	@param:DefaultValue("emptySet()")
 	override val publicKeysForOaepWithSha256: Set<SpkiHexString> = emptySet(),
-) : StoredDocument, Named, Person, CryptoActor, DataOwner, HasCodes, HasTags, HasIdentifier {
+	override val extensions: JsonObject? = null,
+	override val extensionsVersion: Int? = null,
+) : StoredDocument,
+	Named,
+	Person,
+	CryptoActor,
+	DataOwner,
+	HasCodes,
+	HasTags,
+	HasIdentifier,
+	ExtendableRoot {
 	// region HealthcareParty-HealthcareParty
 	companion object {
 		const val KRAKEN_QUALIFIED_NAME = "org.taktik.icure.entities.HealthcareParty"

@@ -2,10 +2,12 @@
 // If you want to change the way this class is generated, see [this repo](https://github.com/icure/sdk-codegen).
 package com.icure.cardinal.sdk.model
 
+import com.icure.cardinal.sdk.model.base.ExtendableRoot
 import com.icure.cardinal.sdk.model.base.StoredDocument
 import com.icure.cardinal.sdk.utils.DefaultValue
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
+import kotlinx.serialization.json.JsonObject
 import kotlin.Boolean
 import kotlin.Int
 import kotlin.Long
@@ -91,7 +93,9 @@ data class CalendarItemType(
 	 * Public properties exposed to anonymous endpoints for public calendar items.
 	 */
 	public val publicProperties: Set<DecryptedPropertyStub>? = null,
-) : StoredDocument {
+	override val extensions: JsonObject? = null,
+	override val extensionsVersion: Int? = null,
+) : StoredDocument, ExtendableRoot {
 	@Serializable
 	public sealed interface DurationConfig {
 		@Serializable

@@ -3,6 +3,7 @@
 package com.icure.cardinal.sdk.model
 
 import com.icure.cardinal.sdk.model.base.CodeStub
+import com.icure.cardinal.sdk.model.base.ExtendableRoot
 import com.icure.cardinal.sdk.model.base.HasEncryptionMetadata
 import com.icure.cardinal.sdk.model.base.HasEndOfLife
 import com.icure.cardinal.sdk.model.base.HasIdentifier
@@ -28,6 +29,8 @@ import com.icure.cardinal.sdk.model.embed.SubContact
 import com.icure.cardinal.sdk.model.specializations.Base64String
 import com.icure.cardinal.sdk.utils.DefaultValue
 import kotlinx.serialization.Serializable
+import kotlinx.serialization.json.JsonObject
+import kotlin.Int
 import kotlin.Long
 import kotlin.String
 import kotlin.collections.List
@@ -63,7 +66,8 @@ sealed interface Contact :
 	HasEncryptionMetadata,
 	Encryptable,
 	HasEndOfLife,
-	HasIdentifier {
+	HasIdentifier,
+	ExtendableRoot {
 	/**
 	 * The Id of the contact. We encourage using either a v4 UUID or a HL7 Id.
 	 */
@@ -211,6 +215,10 @@ sealed interface Contact :
 	 * Comments and notes recorded by a healthcare party about this contact.
 	 */
 	public val notes: List<Annotation>
+
+	override val extensions: JsonObject?
+
+	override val extensionsVersion: Int?
 	// region Contact-Contact
 	companion object {
 		const val KRAKEN_QUALIFIED_NAME = "org.taktik.icure.entities.Contact"
@@ -371,6 +379,8 @@ data class DecryptedContact(
 	 */
 	@param:DefaultValue("emptyList()")
 	override val notes: List<DecryptedAnnotation> = emptyList(),
+	override val extensions: JsonObject? = null,
+	override val extensionsVersion: Int? = null,
 ) : Contact {
 	// region Contact-DecryptedContact
 override fun copyWithSecurityMetadata(securityMetadata: SecurityMetadata, secretForeignKeys: Set<String>): DecryptedContact =
@@ -531,6 +541,8 @@ data class EncryptedContact(
 	 */
 	@param:DefaultValue("emptyList()")
 	override val notes: List<EncryptedAnnotation> = emptyList(),
+	override val extensions: JsonObject? = null,
+	override val extensionsVersion: Int? = null,
 ) : Contact {
 	// region Contact-EncryptedContact
 override fun copyWithSecurityMetadata(securityMetadata: SecurityMetadata, secretForeignKeys: Set<String>): EncryptedContact =

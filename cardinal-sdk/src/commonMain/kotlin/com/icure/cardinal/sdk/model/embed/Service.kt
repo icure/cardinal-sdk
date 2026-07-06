@@ -3,6 +3,7 @@
 package com.icure.cardinal.sdk.model.embed
 
 import com.icure.cardinal.sdk.model.base.CodeStub
+import com.icure.cardinal.sdk.model.base.Extendable
 import com.icure.cardinal.sdk.model.base.HasEndOfLife
 import com.icure.cardinal.sdk.model.base.HasIdentifier
 import com.icure.cardinal.sdk.model.base.ICureDocument
@@ -11,14 +12,20 @@ import com.icure.cardinal.sdk.model.base.LinkQualification
 import com.icure.cardinal.sdk.model.specializations.Base64String
 import com.icure.cardinal.sdk.utils.DefaultValue
 import kotlinx.serialization.Serializable
+import kotlinx.serialization.json.JsonObject
+import kotlin.Int
 import kotlin.Long
 import kotlin.String
 import kotlin.collections.List
 import kotlin.collections.Map
 import kotlin.collections.Set
-import kotlin.Int
 
-sealed interface Service : Encryptable, ICureDocument<String>, HasEndOfLife, HasIdentifier {
+sealed interface Service :
+	Encryptable,
+	ICureDocument<String>,
+	HasEndOfLife,
+	HasIdentifier,
+	Extendable {
 	/**
 	 * The Id of the Service. We encourage using either a v4 UUID or a HL7 Id.
 	 */
@@ -100,9 +107,6 @@ sealed interface Service : Encryptable, ICureDocument<String>, HasEndOfLife, Has
 	 */
 	public val content: Map<String, Content>
 
-	/**
-	 * Information contained in the service. Content is localized, using ISO language code as key
-	 */
 	public val textIndexes: Map<String, String>
 
 	/**
@@ -176,6 +180,10 @@ sealed interface Service : Encryptable, ICureDocument<String>, HasEndOfLife, Has
 	override val encryptedSelf: Base64String?
 
 	public val securityMetadata: SecurityMetadata?
+
+	override val extensions: JsonObject?
+
+	public val contactExtensionsVersions: Int?
 	// region Service-Service
 	companion object {
 		const val KRAKEN_QUALIFIED_NAME = "org.taktik.icure.entities.embed.Service"
@@ -257,9 +265,6 @@ data class DecryptedService(
 	 */
 	@param:DefaultValue("emptyMap()")
 	override val content: Map<String, DecryptedContent> = emptyMap(),
-	/**
-	 * Information contained in the service. Content is localized, using ISO language code as key
-	 */
 	@param:DefaultValue("emptyMap()")
 	override val textIndexes: Map<String, String> = emptyMap(),
 	/**
@@ -323,6 +328,8 @@ data class DecryptedService(
 	override val tags: Set<CodeStub> = emptySet(),
 	override val encryptedSelf: Base64String? = null,
 	override val securityMetadata: SecurityMetadata? = null,
+	override val extensions: JsonObject? = null,
+	override val contactExtensionsVersions: Int? = null,
 ) : Service {
 	// region Service-DecryptedService
 
@@ -403,9 +410,6 @@ data class EncryptedService(
 	 */
 	@param:DefaultValue("emptyMap()")
 	override val content: Map<String, EncryptedContent> = emptyMap(),
-	/**
-	 * Information contained in the service. Content is localized, using ISO language code as key
-	 */
 	@param:DefaultValue("emptyMap()")
 	override val textIndexes: Map<String, String> = emptyMap(),
 	/**
@@ -469,6 +473,8 @@ data class EncryptedService(
 	override val tags: Set<CodeStub> = emptySet(),
 	override val encryptedSelf: Base64String? = null,
 	override val securityMetadata: SecurityMetadata? = null,
+	override val extensions: JsonObject? = null,
+	override val contactExtensionsVersions: Int? = null,
 ) : Service {
 	// region Service-EncryptedService
 

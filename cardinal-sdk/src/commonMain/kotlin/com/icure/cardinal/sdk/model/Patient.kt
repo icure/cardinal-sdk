@@ -4,6 +4,7 @@ package com.icure.cardinal.sdk.model
 
 import com.icure.cardinal.sdk.model.base.CodeStub
 import com.icure.cardinal.sdk.model.base.CryptoActor
+import com.icure.cardinal.sdk.model.base.ExtendableRoot
 import com.icure.cardinal.sdk.model.base.HasEncryptionMetadata
 import com.icure.cardinal.sdk.model.base.HasIdentifier
 import com.icure.cardinal.sdk.model.base.ICureDocument
@@ -44,6 +45,7 @@ import com.icure.cardinal.sdk.model.specializations.HexString
 import com.icure.cardinal.sdk.model.specializations.SpkiHexString
 import com.icure.cardinal.sdk.utils.DefaultValue
 import kotlinx.serialization.Serializable
+import kotlinx.serialization.json.JsonObject
 import kotlin.Boolean
 import kotlin.Int
 import kotlin.Long
@@ -78,7 +80,8 @@ sealed interface Patient :
 	HasEncryptionMetadata,
 	Encryptable,
 	HasIdentifier,
-	CryptoActor {
+	CryptoActor,
+	ExtendableRoot {
 	/**
 	 * The Id of the patient. We encourage using either a v4 UUID or a HL7 Id.
 	 */
@@ -410,6 +413,10 @@ sealed interface Patient :
 	 * Always null for patients.
 	 */
 	override val parentId: Nothing?
+
+	override val extensions: JsonObject?
+
+	override val extensionsVersion: Int?
 	// region Patient-Patient
 	companion object {
 		const val KRAKEN_QUALIFIED_NAME = "org.taktik.icure.entities.Patient"
@@ -724,6 +731,8 @@ data class DecryptedPatient(
 	 * Always null for patients.
 	 */
 	override val parentId: Nothing? = null,
+	override val extensions: JsonObject? = null,
+	override val extensionsVersion: Int? = null,
 ) : Patient {
 	// region Patient-DecryptedPatient
 override fun copyWithSecurityMetadata(securityMetadata: SecurityMetadata, secretForeignKeys: Set<String>): DecryptedPatient =
@@ -1038,6 +1047,8 @@ data class EncryptedPatient(
 	 * Always null for patients.
 	 */
 	override val parentId: Nothing? = null,
+	override val extensions: JsonObject? = null,
+	override val extensionsVersion: Int? = null,
 ) : Patient {
 	// region Patient-EncryptedPatient
 override fun copyWithSecurityMetadata(securityMetadata: SecurityMetadata, secretForeignKeys: Set<String>): EncryptedPatient =

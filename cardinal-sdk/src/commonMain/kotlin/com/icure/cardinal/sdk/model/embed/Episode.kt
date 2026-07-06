@@ -2,10 +2,12 @@
 // If you want to change the way this class is generated, see [this repo](https://github.com/icure/sdk-codegen).
 package com.icure.cardinal.sdk.model.embed
 
+import com.icure.cardinal.sdk.model.base.Extendable
 import com.icure.cardinal.sdk.model.base.Identifiable
 import com.icure.cardinal.sdk.model.base.Named
 import com.icure.cardinal.sdk.model.specializations.Base64String
 import kotlinx.serialization.Serializable
+import kotlinx.serialization.json.JsonObject
 import kotlin.Long
 import kotlin.String
 
@@ -15,7 +17,7 @@ import kotlin.String
  * /
  */
 
-sealed interface Episode : Encryptable, Identifiable<String>, Named {
+sealed interface Episode : Encryptable, Identifiable<String>, Named, Extendable {
 	/**
 	 * The unique identifier of this episode.
 	 */
@@ -45,6 +47,8 @@ sealed interface Episode : Encryptable, Identifiable<String>, Named {
 	 * The base64-encoded encrypted content of this episode.
 	 */
 	override val encryptedSelf: Base64String?
+
+	override val extensions: JsonObject?
 	// region Episode-Episode
 
 	// endregion
@@ -81,6 +85,7 @@ data class DecryptedEpisode(
 	 * The base64-encoded encrypted content of this episode.
 	 */
 	override val encryptedSelf: Base64String? = null,
+	override val extensions: JsonObject? = null,
 ) : Episode {
 	// region Episode-DecryptedEpisode
 
@@ -118,6 +123,7 @@ data class EncryptedEpisode(
 	 * The base64-encoded encrypted content of this episode.
 	 */
 	override val encryptedSelf: Base64String? = null,
+	override val extensions: JsonObject? = null,
 ) : Episode {
 	// region Episode-EncryptedEpisode
 

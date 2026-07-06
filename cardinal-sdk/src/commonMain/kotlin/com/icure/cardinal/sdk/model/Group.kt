@@ -96,6 +96,7 @@ data class Group(
 	 */
 	@param:DefaultValue("emptyMap()")
 	public val externalJwtConfig: Map<String, ExternalJwtConfig> = emptyMap(),
+	public val customEntityConfig: CustomEntityConfiguration? = null,
 	/**
 	 * The minimum authentication class required for elevated privileges.
 	 */
@@ -125,6 +126,12 @@ data class Group(
 	 */
 	public val defaultChildrenSchemaVersion: Int? = null,
 ) : StoredDocument, HasTags {
+	@Serializable
+	public data class CustomEntityConfiguration(
+		public val sourceGroup: String,
+		public val version: Int,
+	)
+
 	@Serializable
 	public data class TemplatesConfiguration(
 		public val specId: String,

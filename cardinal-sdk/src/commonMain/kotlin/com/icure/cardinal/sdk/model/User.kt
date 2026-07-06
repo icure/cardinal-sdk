@@ -2,6 +2,7 @@
 // If you want to change the way this class is generated, see [this repo](https://github.com/icure/sdk-codegen).
 package com.icure.cardinal.sdk.model
 
+import com.icure.cardinal.sdk.model.base.ExtendableRoot
 import com.icure.cardinal.sdk.model.base.HasIdentifier
 import com.icure.cardinal.sdk.model.base.Identifier
 import com.icure.cardinal.sdk.model.base.StoredDocument
@@ -13,7 +14,9 @@ import com.icure.cardinal.sdk.model.security.Permission
 import com.icure.cardinal.sdk.serialization.InstantSerializer
 import com.icure.cardinal.sdk.utils.DefaultValue
 import kotlinx.serialization.Serializable
+import kotlinx.serialization.json.JsonObject
 import kotlin.Boolean
+import kotlin.Int
 import kotlin.Long
 import kotlin.String
 import kotlin.collections.List
@@ -126,7 +129,9 @@ data class User(
 	 * Metadata used to enrich the user with information from the cloud environment.
 	 */
 	public val systemMetadata: SystemMetadata? = null,
-) : StoredDocument, HasIdentifier {
+	override val extensions: JsonObject? = null,
+	override val extensionsVersion: Int? = null,
+) : StoredDocument, HasIdentifier, ExtendableRoot {
 	@Serializable
 	public data class SystemMetadata(
 		public val roles: Set<String>,

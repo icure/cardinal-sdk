@@ -129,6 +129,7 @@ data class DecryptedAnnotation(
 	override val encryptedSelf: Base64String? = null,
 ) : Annotation {
 	// region Annotation-DecryptedAnnotation
+
 	// endregion
 }
 
@@ -185,5 +186,6 @@ data class EncryptedAnnotation(
 	override val encryptedSelf: Base64String? = null,
 ) : Annotation {
 	// region Annotation-EncryptedAnnotation
+
 	// endregion
 }

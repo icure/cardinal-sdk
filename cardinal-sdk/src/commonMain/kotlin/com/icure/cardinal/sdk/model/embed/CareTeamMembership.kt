@@ -2,8 +2,10 @@
 // If you want to change the way this class is generated, see [this repo](https://github.com/icure/sdk-codegen).
 package com.icure.cardinal.sdk.model.embed
 
+import com.icure.cardinal.sdk.model.base.Extendable
 import com.icure.cardinal.sdk.model.specializations.Base64String
 import kotlinx.serialization.Serializable
+import kotlinx.serialization.json.JsonObject
 import kotlin.Long
 import kotlin.String
 
@@ -13,7 +15,7 @@ import kotlin.String
  * /
  */
 
-sealed interface CareTeamMembership : Encryptable {
+sealed interface CareTeamMembership : Encryptable, Extendable {
 	/**
 	 * The start date (unix epoch in ms) of this membership.
 	 */
@@ -38,6 +40,8 @@ sealed interface CareTeamMembership : Encryptable {
 	 * The base64-encoded encrypted content of this membership.
 	 */
 	override val encryptedSelf: Base64String?
+
+	override val extensions: JsonObject?
 	// region CareTeamMembership-CareTeamMembership
 
 	// endregion
@@ -70,6 +74,7 @@ data class DecryptedCareTeamMembership(
 	 * The base64-encoded encrypted content of this membership.
 	 */
 	override val encryptedSelf: Base64String? = null,
+	override val extensions: JsonObject? = null,
 ) : CareTeamMembership {
 	// region CareTeamMembership-DecryptedCareTeamMembership
 
@@ -103,6 +108,7 @@ data class EncryptedCareTeamMembership(
 	 * The base64-encoded encrypted content of this membership.
 	 */
 	override val encryptedSelf: Base64String? = null,
+	override val extensions: JsonObject? = null,
 ) : CareTeamMembership {
 	// region CareTeamMembership-EncryptedCareTeamMembership
 

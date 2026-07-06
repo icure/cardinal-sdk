@@ -3,9 +3,11 @@
 package com.icure.cardinal.sdk.model.embed
 
 import com.icure.cardinal.sdk.model.base.CodeStub
+import com.icure.cardinal.sdk.model.base.Extendable
 import com.icure.cardinal.sdk.model.base.Identifiable
 import com.icure.cardinal.sdk.model.specializations.Base64String
 import kotlinx.serialization.Serializable
+import kotlinx.serialization.json.JsonObject
 import kotlin.String
 
 /**
@@ -14,7 +16,7 @@ import kotlin.String
  * /
  */
 
-sealed interface CareTeamMember : Encryptable, Identifiable<String> {
+sealed interface CareTeamMember : Encryptable, Identifiable<String>, Extendable {
 	/**
 	 * The unique identifier of this care team member.
 	 */
@@ -39,6 +41,8 @@ sealed interface CareTeamMember : Encryptable, Identifiable<String> {
 	 * The base64-encoded encrypted content of this care team member.
 	 */
 	override val encryptedSelf: Base64String?
+
+	override val extensions: JsonObject?
 	// region CareTeamMember-CareTeamMember
 
 	// endregion
@@ -71,6 +75,7 @@ data class DecryptedCareTeamMember(
 	 * The base64-encoded encrypted content of this care team member.
 	 */
 	override val encryptedSelf: Base64String? = null,
+	override val extensions: JsonObject? = null,
 ) : CareTeamMember {
 	// region CareTeamMember-DecryptedCareTeamMember
 
@@ -104,6 +109,7 @@ data class EncryptedCareTeamMember(
 	 * The base64-encoded encrypted content of this care team member.
 	 */
 	override val encryptedSelf: Base64String? = null,
+	override val extensions: JsonObject? = null,
 ) : CareTeamMember {
 	// region CareTeamMember-EncryptedCareTeamMember
 

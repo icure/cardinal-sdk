@@ -5,6 +5,7 @@ package com.icure.cardinal.sdk.model
 import com.icure.cardinal.sdk.model.base.CodeStub
 import com.icure.cardinal.sdk.model.base.CryptoActor
 import com.icure.cardinal.sdk.model.base.DataOwner
+import com.icure.cardinal.sdk.model.base.ExtendableRoot
 import com.icure.cardinal.sdk.model.base.ICureDocument
 import com.icure.cardinal.sdk.model.base.Identifier
 import com.icure.cardinal.sdk.model.base.Named
@@ -15,6 +16,8 @@ import com.icure.cardinal.sdk.model.specializations.HexString
 import com.icure.cardinal.sdk.model.specializations.SpkiHexString
 import com.icure.cardinal.sdk.utils.DefaultValue
 import kotlinx.serialization.Serializable
+import kotlinx.serialization.json.JsonObject
+import kotlin.Int
 import kotlin.Long
 import kotlin.String
 import kotlin.collections.List
@@ -138,7 +141,12 @@ data class Device(
 	 * Properties specific to the crypto actor role of this device.
 	 */
 	override val cryptoActorProperties: Set<DecryptedPropertyStub> = emptySet(),
-) : StoredDocument, ICureDocument<String>, Named, CryptoActor, DataOwner {
+	/**
+	 * Properties specific to the crypto actor role of this device.
+	 */
+	override val extensions: JsonObject? = null,
+	override val extensionsVersion: Int? = null,
+) : StoredDocument, ICureDocument<String>, Named, CryptoActor, DataOwner, ExtendableRoot {
 	// region Device-Device
 	companion object {
 		const val KRAKEN_QUALIFIED_NAME = "org.taktik.icure.entities.Device"

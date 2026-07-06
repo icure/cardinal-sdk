@@ -2,11 +2,13 @@
 // If you want to change the way this class is generated, see [this repo](https://github.com/icure/sdk-codegen).
 package com.icure.cardinal.sdk.model.embed
 
+import com.icure.cardinal.sdk.model.base.Extendable
 import com.icure.cardinal.sdk.model.specializations.Base64String
 import kotlinx.serialization.Serializable
+import kotlinx.serialization.json.JsonObject
 import kotlin.String
 
-sealed interface Telecom : Encryptable {
+sealed interface Telecom : Encryptable, Extendable {
 	public val telecomType: TelecomType?
 
 	public val telecomNumber: String?
@@ -14,6 +16,8 @@ sealed interface Telecom : Encryptable {
 	public val telecomDescription: String?
 
 	override val encryptedSelf: Base64String?
+
+	override val extensions: JsonObject?
 	// region Telecom-Telecom
 
 	// endregion
@@ -25,6 +29,7 @@ data class DecryptedTelecom(
 	override val telecomNumber: String? = null,
 	override val telecomDescription: String? = null,
 	override val encryptedSelf: Base64String? = null,
+	override val extensions: JsonObject? = null,
 ) : Telecom {
 	// region Telecom-DecryptedTelecom
 
@@ -37,6 +42,7 @@ data class EncryptedTelecom(
 	override val telecomNumber: String? = null,
 	override val telecomDescription: String? = null,
 	override val encryptedSelf: Base64String? = null,
+	override val extensions: JsonObject? = null,
 ) : Telecom {
 	// region Telecom-EncryptedTelecom
 

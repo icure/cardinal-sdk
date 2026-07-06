@@ -3,6 +3,7 @@
 package com.icure.cardinal.sdk.model
 
 import com.icure.cardinal.sdk.model.base.CodeStub
+import com.icure.cardinal.sdk.model.base.ExtendableRoot
 import com.icure.cardinal.sdk.model.base.HasEncryptionMetadata
 import com.icure.cardinal.sdk.model.base.ICureDocument
 import com.icure.cardinal.sdk.model.base.StoredDocument
@@ -12,6 +13,8 @@ import com.icure.cardinal.sdk.model.embed.SecurityMetadata
 import com.icure.cardinal.sdk.model.specializations.Base64String
 import com.icure.cardinal.sdk.utils.DefaultValue
 import kotlinx.serialization.Serializable
+import kotlinx.serialization.json.JsonObject
+import kotlin.Int
 import kotlin.Long
 import kotlin.String
 import kotlin.collections.Map
@@ -28,7 +31,8 @@ sealed interface Topic :
 	StoredDocument,
 	ICureDocument<String>,
 	HasEncryptionMetadata,
-	Encryptable {
+	Encryptable,
+	ExtendableRoot {
 	/**
 	 * The unique identifier of the topic.
 	 */
@@ -133,6 +137,13 @@ sealed interface Topic :
 	 * Set of ids of services linked to this topic.
 	 */
 	public val linkedServices: Set<String>
+
+	/**
+	 * Set of ids of services linked to this topic.
+	 */
+	override val extensions: JsonObject?
+
+	override val extensionsVersion: Int?
 	// region Topic-Topic
 	companion object {
 		const val KRAKEN_QUALIFIED_NAME = "org.taktik.icure.entities.Topic"
@@ -241,6 +252,11 @@ data class DecryptedTopic(
 	 */
 	@param:DefaultValue("emptySet()")
 	override val linkedServices: Set<String> = emptySet(),
+	/**
+	 * Set of ids of services linked to this topic.
+	 */
+	override val extensions: JsonObject? = null,
+	override val extensionsVersion: Int? = null,
 ) : Topic {
 	// region Topic-DecryptedTopic
 override fun copyWithSecurityMetadata(securityMetadata: SecurityMetadata, secretForeignKeys: Set<String>): DecryptedTopic =
@@ -349,6 +365,11 @@ data class EncryptedTopic(
 	 */
 	@param:DefaultValue("emptySet()")
 	override val linkedServices: Set<String> = emptySet(),
+	/**
+	 * Set of ids of services linked to this topic.
+	 */
+	override val extensions: JsonObject? = null,
+	override val extensionsVersion: Int? = null,
 ) : Topic {
 	// region Topic-EncryptedTopic
 override fun copyWithSecurityMetadata(securityMetadata: SecurityMetadata, secretForeignKeys: Set<String>): EncryptedTopic =

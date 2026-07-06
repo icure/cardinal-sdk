@@ -3,6 +3,7 @@
 package com.icure.cardinal.sdk.model
 
 import com.icure.cardinal.sdk.model.base.CodeStub
+import com.icure.cardinal.sdk.model.base.ExtendableRoot
 import com.icure.cardinal.sdk.model.base.HasEncryptionMetadata
 import com.icure.cardinal.sdk.model.base.ICureDocument
 import com.icure.cardinal.sdk.model.base.StoredDocument
@@ -13,12 +14,13 @@ import com.icure.cardinal.sdk.model.embed.SecurityMetadata
 import com.icure.cardinal.sdk.model.specializations.Base64String
 import com.icure.cardinal.sdk.utils.DefaultValue
 import kotlinx.serialization.Serializable
+import kotlinx.serialization.json.JsonObject
+import kotlin.Int
 import kotlin.Long
 import kotlin.String
 import kotlin.collections.Map
 import kotlin.collections.Set
 import com.icure.cardinal.sdk.model.embed.MessageAttachment
-import kotlin.Int
 import kotlin.collections.List
 
 /**
@@ -32,7 +34,8 @@ sealed interface Message :
 	StoredDocument,
 	ICureDocument<String>,
 	HasEncryptionMetadata,
-	Encryptable {
+	Encryptable,
+	ExtendableRoot {
 	/**
 	 * The ID of the message. We encourage using either a v4 UUID or a HL7 Id.
 	 */
@@ -182,6 +185,10 @@ sealed interface Message :
 	 * The security metadata of the entity.
 	 */
 	override val securityMetadata: SecurityMetadata?
+
+	override val extensions: JsonObject?
+
+	override val extensionsVersion: Int?
 	// region Message-Message
 	companion object{
 		const val KRAKEN_QUALIFIED_NAME = "org.taktik.icure.entities.Message"
@@ -329,6 +336,8 @@ data class DecryptedMessage(
 	 * The security metadata of the entity.
 	 */
 	override val securityMetadata: SecurityMetadata? = null,
+	override val extensions: JsonObject? = null,
+	override val extensionsVersion: Int? = null,
 ) : Message {
 	// region Message-DecryptedMessage
 override fun copyWithSecurityMetadata(securityMetadata: SecurityMetadata, secretForeignKeys: Set<String>): DecryptedMessage =
@@ -476,6 +485,8 @@ data class EncryptedMessage(
 	 * The security metadata of the entity.
 	 */
 	override val securityMetadata: SecurityMetadata? = null,
+	override val extensions: JsonObject? = null,
+	override val extensionsVersion: Int? = null,
 ) : Message {
 	// region Message-EncryptedMessage
 override fun copyWithSecurityMetadata(securityMetadata: SecurityMetadata, secretForeignKeys: Set<String>): EncryptedMessage =
