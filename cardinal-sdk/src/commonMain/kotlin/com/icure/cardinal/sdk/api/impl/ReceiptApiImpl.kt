@@ -361,10 +361,10 @@ private abstract class AbstractReceiptBasicFlavourless(
 		}
 
 	suspend fun getRawReceiptAttachment(receiptId: String, attachmentId: String): ByteArray =
-		rawApi.getReceiptAttachment(receiptId, attachmentId).successBody()
+		rawApi.getReceiptAttachment(receiptId = receiptId, attachmentId = attachmentId).successBody()
 
 	suspend fun setRawReceiptAttachment(receiptId: String, rev: String, blobType: String, attachment: ByteArray): EncryptedReceipt =
-		rawApi.setReceiptAttachment(receiptId, rev, blobType, attachment).successBody()
+		rawApi.setReceiptAttachment(receiptId = receiptId, blobType = blobType, rev = rev, payload = attachment).successBody()
 }
 
 @InternalIcureApi
