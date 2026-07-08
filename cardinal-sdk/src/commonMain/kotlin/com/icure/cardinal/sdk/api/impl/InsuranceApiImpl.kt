@@ -28,109 +28,109 @@ internal abstract class AbstractInsuranceApi(
 	protected suspend fun doCreateInsurance(groupId: String?, entity: Insurance): Insurance {
 		requireIsValidForCreation(entity)
 		return if (groupId == null) {
-			rawApi.createInsurance(entity)
+			rawApi.createInsurance(insuranceDto = entity)
 		} else {
-			rawApi.createInsuranceInGroup(groupId, entity)
+			rawApi.createInsuranceInGroup(groupId = groupId, insurance = entity)
 		}.successBody()
 	}
 
 	protected suspend fun doCreateInsurances(groupId: String?, entities: List<Insurance>): List<Insurance> =
 		skipRequestOnEmptyList(entities) { insurances ->
 			if (groupId == null) {
-				rawApi.createInsurances(insurances)
+				rawApi.createInsurances(insuranceDtos = insurances)
 			} else {
-				rawApi.createInsurancesInGroup(groupId, insurances)
+				rawApi.createInsurancesInGroup(groupId = groupId, insuranceBatch = insurances)
 			}.successBody()
 		}
 
 	protected suspend fun doGetInsurance(groupId: String?, entityId: String): Insurance? =
 		if (groupId == null) {
-			rawApi.getInsurance(entityId)
+			rawApi.getInsurance(insuranceId = entityId)
 		} else {
-			rawApi.getInsuranceInGroup(groupId, entityId)
+			rawApi.getInsuranceInGroup(groupId = groupId, insuranceId = entityId)
 		}.successBodyOrNull404()
 
 	protected suspend fun doGetInsurances(groupId: String?, entityIds: List<String>): List<Insurance> =
 		skipRequestOnEmptyList(entityIds) { ids ->
 			if (groupId == null) {
-				rawApi.getInsurances(ListOfIds(ids))
+				rawApi.getInsurances(insuranceIds = ListOfIds(ids))
 			} else {
-				rawApi.getInsurancesInGroup(groupId, ListOfIds(ids))
+				rawApi.getInsurancesInGroup(groupId = groupId, insuranceIds = ListOfIds(ids))
 			}.successBody()
 		}
 
 	protected suspend fun doModifyInsurance(groupId: String?, entity: Insurance): Insurance {
 		requireIsValidForModification(entity)
 		return if (groupId == null) {
-			rawApi.modifyInsurance(entity)
+			rawApi.modifyInsurance(insuranceDto = entity)
 		} else {
-			rawApi.modifyInsuranceInGroup(groupId, entity)
+			rawApi.modifyInsuranceInGroup(groupId = groupId, insurance = entity)
 		}.successBodyOrThrowRevisionConflict()
 	}
 
 	protected suspend fun doModifyInsurances(groupId: String?, entities: List<Insurance>): List<Insurance> =
 		skipRequestOnEmptyList(entities) { insurances ->
 			if (groupId == null) {
-				rawApi.modifyInsurances(insurances)
+				rawApi.modifyInsurances(insuranceDtos = insurances)
 			} else {
-				rawApi.modifyInsurancesInGroup(groupId, insurances)
+				rawApi.modifyInsurancesInGroup(groupId = groupId, insuranceBatch = insurances)
 			}.successBody()
 		}
 
 	protected suspend fun doDeleteInsurance(groupId: String?, entityId: String, rev: String): StoredDocumentIdentifier =
 		if (groupId == null) {
-			rawApi.deleteInsurance(entityId, rev)
+			rawApi.deleteInsurance(insuranceId = entityId, rev = rev)
 		} else {
-			rawApi.deleteInsuranceInGroup(groupId, entityId, rev)
+			rawApi.deleteInsuranceInGroup(groupId = groupId, insuranceId = entityId, rev = rev)
 		}.successBodyOrThrowRevisionConflict().toStoredDocumentIdentifier()
 
 	protected suspend fun doDeleteInsurances(groupId: String?, entityIds: List<StoredDocumentIdentifier>): List<StoredDocumentIdentifier> =
 		skipRequestOnEmptyList(entityIds) { ids ->
 			if (groupId == null) {
-				rawApi.deleteInsurances(ListOfIdsAndRev(ids))
+				rawApi.deleteInsurances(insuranceIds = ListOfIdsAndRev(ids))
 			} else {
-				rawApi.deleteInsurancesInGroup(groupId = groupId, ListOfIdsAndRev(ids))
+				rawApi.deleteInsurancesInGroup(groupId = groupId, insuranceIds = ListOfIdsAndRev(ids))
 			}.successBody().map { it.toStoredDocumentIdentifier() }
 		}
 
 	protected suspend fun doUndeleteInsurance(groupId: String?, entityId: String, rev: String): Insurance =
 		if (groupId == null) {
-			rawApi.undeleteInsurance(entityId, rev)
+			rawApi.undeleteInsurance(insuranceId = entityId, rev = rev)
 		} else {
-			rawApi.undeleteInsuranceInGroup(groupId, entityId, rev)
+			rawApi.undeleteInsuranceInGroup(groupId = groupId, insuranceId = entityId, rev = rev)
 		}.successBodyOrThrowRevisionConflict()
 
 	protected suspend fun doUndeleteInsurances(groupId: String?, entityIds: List<StoredDocumentIdentifier>): List<Insurance> =
 		skipRequestOnEmptyList(entityIds) { ids ->
 			if (groupId == null) {
-				rawApi.undeleteInsurances(ListOfIdsAndRev(ids))
+				rawApi.undeleteInsurances(insuranceIds = ListOfIdsAndRev(ids))
 			} else {
-				rawApi.undeleteInsurancesInGroup(groupId = groupId, ListOfIdsAndRev(ids))
+				rawApi.undeleteInsurancesInGroup(groupId = groupId, insuranceIds = ListOfIdsAndRev(ids))
 			}.successBody()
 		}
 
 	protected suspend fun doPurgeInsurance(groupId: String?, entityId: String, rev: String) {
 		if (groupId == null) {
-			rawApi.purgeInsurance(entityId, rev)
+			rawApi.purgeInsurance(insuranceId = entityId, rev = rev)
 		} else {
-			rawApi.purgeInsuranceInGroup(groupId, entityId, rev)
+			rawApi.purgeInsuranceInGroup(groupId = groupId, insuranceId = entityId, rev = rev)
 		}.successBodyOrThrowRevisionConflict()
 	}
 
 	protected suspend fun doPurgeInsurances(groupId: String?, entityIds: List<StoredDocumentIdentifier>): List<StoredDocumentIdentifier> =
 		skipRequestOnEmptyList(entityIds) { ids ->
 			if (groupId == null) {
-				rawApi.purgeInsurances(ListOfIdsAndRev(ids))
+				rawApi.purgeInsurances(insuranceIds = ListOfIdsAndRev(ids))
 			} else {
-				rawApi.purgeInsurancesInGroup(groupId = groupId, ListOfIdsAndRev(ids))
+				rawApi.purgeInsurancesInGroup(groupId = groupId, insuranceIds = ListOfIdsAndRev(ids))
 			}.successBody().map { it.toStoredDocumentIdentifier() }
 		}
 
 	protected suspend fun doMatchInsurancesBy(groupId: String?, filter: BaseFilterOptions<Insurance>) =
 		if (groupId == null) {
-			rawApi.matchInsurancesBy(mapInsuranceFilterOptions(filter, config))
+			rawApi.matchInsurancesBy(filter = mapInsuranceFilterOptions(filter, config))
 		} else {
-			rawApi.matchInsurancesBy(groupId, mapInsuranceFilterOptions(filter, config, groupId))
+			rawApi.matchInsurancesBy(groupId = groupId, filter = mapInsuranceFilterOptions(filter, config, groupId))
 		}.successBody()
 
 	protected suspend fun doMatchInsurancesBySorted(groupId: String?, filter: BaseSortableFilterOptions<Insurance>) =
@@ -184,10 +184,10 @@ internal class InsuranceApiImpl(
 		doPurgeInsurances(groupId = null, entityIds = entityIds)
 
 	override suspend fun listInsurancesByCode(insuranceCode: String) =
-		rawApi.listInsurancesByCode(insuranceCode).successBody()
+		rawApi.listInsurancesByCode(insuranceCode = insuranceCode).successBody()
 
 	override suspend fun listInsurancesByName(insuranceName: String) =
-		rawApi.listInsurancesByName(insuranceName).successBody()
+		rawApi.listInsurancesByName(insuranceName = insuranceName).successBody()
 
 	override suspend fun matchInsurancesBy(filter: BaseFilterOptions<Insurance>): List<String> =
 		doMatchInsurancesBy(groupId = null, filter = filter)

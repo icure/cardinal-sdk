@@ -46,18 +46,19 @@ private abstract class AbstractClassificationBasicFlavouredApi<E : Classificatio
 	override suspend fun createClassification(entity: E): E {
 		require(entity.securityMetadata != null) { "Entity must have security metadata initialized. Make sure to use the `withEncryptionMetadata` method." }
 		return rawApi.createClassification(
-			validateAndMaybeEncrypt(null, entity),
+			c = validateAndMaybeEncrypt(null, entity),
 		).successBody().let {
 			maybeDecrypt(null, it)
 		}
 	}
 
 	override suspend fun modifyClassification(entity: E): E =
-		rawApi.modifyClassification(validateAndMaybeEncrypt(null, entity)).successBodyOrThrowRevisionConflict().let { maybeDecrypt(null, it) }
-
+		rawApi.modifyClassification(classificationDto = validateAndMaybeEncrypt(null, entity))
+			.successBodyOrThrowRevisionConflict()
+			.let { maybeDecrypt(null, it) }
 
 	override suspend fun getClassification(entityId: String): E? =
-		rawApi.getClassification(entityId).successBodyOrNull404()
+		rawApi.getClassification(classificationId = entityId).successBodyOrNull404()
 			?.let { maybeDecrypt(null, it) }
 
 	override suspend fun getClassifications(entityIds: List<String>): List<E> =
@@ -84,7 +85,7 @@ private abstract class AbstractClassificationFlavouredApi<E : Classification>(
 			delegates.keyAsLocalDataOwnerReferences(),
 			true,
 			{ getClassification(it) ?: throw NotFoundException("Classification $it not found") },
-			{ maybeDecrypt(null, rawApi.bulkShare(it).successBody()) }
+			{ maybeDecrypt(null, rawApi.bulkShare(request = it).successBody()) }
 		).updatedEntityOrThrow()
 
 	@Deprecated("Use filter instead")
@@ -109,7 +110,7 @@ private abstract class AbstractClassificationFlavouredApi<E : Classification>(
 				).toList())
 		).successBody()
 	) { ids ->
-		maybeDecrypt(rawApi.getClassifications(ListOfIds(ids)).successBody())
+		maybeDecrypt(rawApi.getClassifications(classificationIds = ListOfIds(ids)).successBody())
 	}
 
 	override suspend fun filterClassificationsBySorted(filter: SortableFilterOptions<Classification>): PaginatedListIterator<E> =
@@ -118,7 +119,7 @@ private abstract class AbstractClassificationFlavouredApi<E : Classification>(
 	override suspend fun filterClassificationsBy(filter: FilterOptions<Classification>): PaginatedListIterator<E> =
 		IdsPageIterator(
 			rawApi.matchClassificationBy(
-				mapClassificationFilterOptions(
+				filter = mapClassificationFilterOptions(
 					filter,
 					config.crypto.dataOwnerApi.getCurrentDataOwnerId(),
 					config.crypto.entity
@@ -131,9 +132,10 @@ private abstract class AbstractClassificationFlavouredApi<E : Classification>(
 @InternalIcureApi
 private class AbstractClassificationBasicFlavourlessApi(val rawApi: RawClassificationApi) :
 	ClassificationBasicFlavourlessApi {
-	override suspend fun deleteClassification(entityId: String) = rawApi.deleteClassification(entityId).successBody()
+	override suspend fun deleteClassification(entityId: String) =
+		rawApi.deleteClassification(classificationId = entityId).successBody()
 	override suspend fun deleteClassifications(entityIds: List<String>) = rawApi.deleteClassifications(
-		ListOfIds(
+		classificationIds = ListOfIds(
 			entityIds
 		)
 	).successBody()
@@ -231,21 +233,21 @@ internal class ClassificationApiImpl(
 		alternateRootDelegateId: String?,
 	): DecryptedClassification =
 		crypto.entity.entityWithInitializedEncryptedMetadata(
-            null,
-            (base ?: DecryptedClassification(crypto.primitives.strongRandom.randomUUID())).copy(
-                created = base?.created ?: currentEpochMs(),
-                modified = base?.modified ?: currentEpochMs(),
-                responsible = base?.responsible ?: user?.takeIf { config.autofillAuthor }?.dataOwnerId,
-                author = base?.author ?: user?.id?.takeIf { config.autofillAuthor },
-            ),
-            EntityWithEncryptionMetadataTypeName.Classification,
-            OwningEntityDetails(
-                null,
-                patient.id,
-                crypto.entity.resolveSecretIdOption(null, patient, EntityWithEncryptionMetadataTypeName.Patient, secretId),
-            ),
-            initializeEncryptionKey = true,
-            autoDelegations = (delegates + user?.autoDelegationsFor(DelegationTag.MedicalInformation).orEmpty()).keyAsLocalDataOwnerReferences(),
+			null,
+			(base ?: DecryptedClassification(crypto.primitives.strongRandom.randomUUID())).copy(
+				created = base?.created ?: currentEpochMs(),
+				modified = base?.modified ?: currentEpochMs(),
+				responsible = base?.responsible ?: user?.takeIf { config.autofillAuthor }?.dataOwnerId,
+				author = base?.author ?: user?.id?.takeIf { config.autofillAuthor },
+			),
+			EntityWithEncryptionMetadataTypeName.Classification,
+			OwningEntityDetails(
+				null,
+				patient.id,
+				crypto.entity.resolveSecretIdOption(null, patient, EntityWithEncryptionMetadataTypeName.Patient, secretId),
+			),
+			initializeEncryptionKey = true,
+			autoDelegations = (delegates + user?.autoDelegationsFor(DelegationTag.MedicalInformation).orEmpty()).keyAsLocalDataOwnerReferences(),
 			alternateRootDataOwnerReference = alternateRootDelegateId?.let { EntityReferenceInGroup(it, null) },
 		).updatedEntity
 
@@ -277,7 +279,7 @@ internal class ClassificationApiImpl(
 
 	override suspend fun matchClassificationsBy(filter: FilterOptions<Classification>): List<String> =
 		rawApi.matchClassificationBy(
-			mapClassificationFilterOptions(
+			filter = mapClassificationFilterOptions(
 				filter,
 				config.crypto.dataOwnerApi.getCurrentDataOwnerId(),
 				config.crypto.entity
@@ -307,7 +309,7 @@ internal class ClassificationBasicApiImpl(
 }, ClassificationBasicFlavourlessApi by AbstractClassificationBasicFlavourlessApi(rawApi) {
 	override suspend fun matchClassificationsBy(filter: BaseFilterOptions<Classification>): List<String> =
 		rawApi.matchClassificationBy(
-			mapClassificationFilterOptions(
+			filter = mapClassificationFilterOptions(
 				filter,
 				null,
 				null

@@ -98,9 +98,9 @@ private abstract class AbstractFormBasicFlavouredApi<E : Form>(
 		requireIsValidForCreation(entity)
 		val encrypted = validateAndMaybeEncrypt(groupId, entity)
 		return if (groupId == null) {
-			rawApi.createForm(encrypted)
+			rawApi.createForm(ft = encrypted)
 		} else {
-			rawApi.createFormInGroup(groupId, encrypted)
+			rawApi.createFormInGroup(groupId = groupId, formDto = encrypted)
 		}.successBody().let {
 			maybeDecrypt(groupId, it)
 		}
@@ -109,9 +109,9 @@ private abstract class AbstractFormBasicFlavouredApi<E : Form>(
 	protected suspend fun doCreateForms(groupId: String?, entities: List<E>): List<E> = skipRequestOnEmptyList(entities) { forms ->
 		val encrypted = validateAndMaybeEncrypt(groupId, forms)
 		return if (groupId == null) {
-			rawApi.createForms(encrypted)
+			rawApi.createForms(formDtos = encrypted)
 		} else {
-			rawApi.createFormsInGroup(groupId, encrypted)
+			rawApi.createFormsInGroup(groupId = groupId, formDtos = encrypted)
 		}.successBody().let {
 			maybeDecrypt(groupId, it)
 		}
@@ -119,16 +119,16 @@ private abstract class AbstractFormBasicFlavouredApi<E : Form>(
 
 	protected suspend fun doUndeleteForm(groupId: String?, entityId: String, rev: String): E =
 		if (groupId == null) {
-			rawApi.undeleteForm(entityId, rev)
+			rawApi.undeleteForm(formId = entityId, rev = rev)
 		} else {
-			rawApi.undeleteFormInGroup(groupId, entityId, rev)
+			rawApi.undeleteFormInGroup(groupId = groupId, formId = entityId, rev = rev)
 		}.successBodyOrThrowRevisionConflict().let { maybeDecrypt(groupId, it) }
 
 	protected suspend fun doUndeleteForms(groupId: String?, entityIds: List<StoredDocumentIdentifier>): List<E> = skipRequestOnEmptyList(entityIds) { ids ->
 		if (groupId == null) {
-			rawApi.undeleteForms(ListOfIdsAndRev(ids))
+			rawApi.undeleteForms(formIds = ListOfIdsAndRev(ids))
 		} else {
-			rawApi.undeleteFormsInGroup(groupId, ListOfIdsAndRev(ids))
+			rawApi.undeleteFormsInGroup(groupId = groupId, formIds = ListOfIdsAndRev(ids))
 		}.successBody().let { maybeDecrypt(groupId, it) }
 	}
 
@@ -136,18 +136,18 @@ private abstract class AbstractFormBasicFlavouredApi<E : Form>(
 		requireIsValidForModification(entity)
 		val encrypted = validateAndMaybeEncrypt(groupId, entity)
 		return if (groupId == null) {
-			rawApi.modifyForm(encrypted)
+			rawApi.modifyForm(formDto = encrypted)
 		} else {
-			rawApi.modifyFormInGroup(groupId, encrypted)
+			rawApi.modifyFormInGroup(groupId = groupId, formDto = encrypted)
 		}.successBodyOrThrowRevisionConflict().let { maybeDecrypt(groupId, it) }
 	}
 
 	protected suspend fun doModifyForms(groupId: String?, entities: List<E>): List<E> = skipRequestOnEmptyList(entities) { forms ->
 		val encrypted = validateAndMaybeEncrypt(groupId, forms)
 		return if (groupId == null) {
-			rawApi.modifyForms(encrypted)
+			rawApi.modifyForms(formDtos = encrypted)
 		} else {
-			rawApi.modifyFormsInGroup(groupId, encrypted)
+			rawApi.modifyFormsInGroup(groupId = groupId, formDtos = encrypted)
 		}.successBody().let {
 			maybeDecrypt(groupId, it)
 		}
@@ -155,16 +155,16 @@ private abstract class AbstractFormBasicFlavouredApi<E : Form>(
 
 	protected suspend fun doGetForm(groupId: String?, entityId: String): E? =
 		if (groupId == null) {
-			rawApi.getForm(entityId)
+			rawApi.getForm(formId = entityId)
 		} else {
-			rawApi.getFormInGroup(groupId, entityId)
+			rawApi.getFormInGroup(groupId = groupId, formId = entityId)
 		}.successBodyOrNull404()?.let { maybeDecrypt(groupId, it) }
 
 	suspend fun doGetForms(groupId: String?, entityIds: List<String>) = skipRequestOnEmptyList(entityIds) { ids ->
 		if (groupId == null) {
-			rawApi.getForms(ListOfIds(ids))
+			rawApi.getForms(formIds = ListOfIds(ids))
 		} else {
-			rawApi.getFormsInGroup(groupId, ListOfIds(ids))
+			rawApi.getFormsInGroup(groupId = groupId, formIds = ListOfIds(ids))
 		}.successBody().let { maybeDecrypt(groupId, it) }
 	}
 }
@@ -199,7 +199,8 @@ private class FormBasicFlavouredApiImpl<E: Form>(
 
 	override suspend fun getForms(entityIds: List<String>): List<E> = doGetForms(groupId = null, entityIds)
 
-	override suspend fun getLatestFormByUniqueId(uniqueId: String) = rawApi.getFormByUniqueId(uniqueId).successBody().let { maybeDecrypt(null, it) }
+	override suspend fun getLatestFormByUniqueId(uniqueId: String) =
+		rawApi.getFormByUniqueId(uniqueId = uniqueId).successBody().let { maybeDecrypt(null, it) }
 }
 
 @InternalIcureApi
@@ -273,9 +274,9 @@ private abstract class AbstractFormFlavouredApi<E : Form>(
 				maybeDecrypt(
 					groupId,
 					if (groupId == null)
-						rawApi.bulkShare(it).successBody()
+						rawApi.bulkShare(request = it).successBody()
 					else
-						rawApi.bulkShare(it, groupId).successBody()
+						rawApi.bulkShare(request = it, groupId = groupId).successBody()
 				)
 			}
 		).updatedEntityOrThrow()
@@ -287,7 +288,7 @@ private abstract class AbstractFormFlavouredApi<E : Form>(
 	): PaginatedListIterator<T> =
 		IdsPageIterator(
 			rawApi.matchFormsBy(
-				mapFormFilterOptions(
+				filter = mapFormFilterOptions(
 					filter,
 					config,
 					groupId

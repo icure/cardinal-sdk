@@ -102,7 +102,7 @@ private suspend fun RawTopicApi.doMatchTopicsBy(
 ): List<String> =
 	if (groupId == null) {
 		matchTopicsBy(
-			mapTopicFilterOptions(
+			filter = mapTopicFilterOptions(
 				filter,
 				config,
 				requestGroup = null
@@ -137,9 +137,9 @@ private abstract class AbstractTopicBasicFlavouredApi<E : Topic>(
 		requireIsValidForCreation(entity)
 		val encrypted = validateAndMaybeEncrypt(groupId, entity)
 		return if (groupId == null) {
-			rawApi.createTopic(encrypted)
+			rawApi.createTopic(ft = encrypted)
 		} else {
-			rawApi.createTopicInGroup(groupId, encrypted)
+			rawApi.createTopicInGroup(groupId = groupId, topicDto = encrypted)
 		}.successBody().let {
 			maybeDecrypt(groupId, it)
 		}
@@ -148,9 +148,9 @@ private abstract class AbstractTopicBasicFlavouredApi<E : Topic>(
 	protected suspend fun doCreateTopics(groupId: String?, entities: List<E>): List<E> = skipRequestOnEmptyList(entities) { topics ->
 		val encrypted = validateAndMaybeEncrypt(groupId, topics)
 		return if (groupId == null) {
-			rawApi.createTopics(encrypted)
+			rawApi.createTopics(topicDtos = encrypted)
 		} else {
-			rawApi.createTopicsInGroup(groupId, encrypted)
+			rawApi.createTopicsInGroup(groupId = groupId, topicDtos = encrypted)
 		}.successBody().let {
 			maybeDecrypt(groupId, it)
 		}
@@ -158,16 +158,16 @@ private abstract class AbstractTopicBasicFlavouredApi<E : Topic>(
 
 	protected suspend fun doUndeleteTopic(groupId: String?, entityId: String, rev: String): E =
 		if (groupId == null) {
-			rawApi.undeleteTopic(entityId, rev)
+			rawApi.undeleteTopic(topicId = entityId, rev = rev)
 		} else {
-			rawApi.undeleteTopicInGroup(groupId, entityId, rev)
+			rawApi.undeleteTopicInGroup(groupId = groupId, topicId = entityId, rev = rev)
 		}.successBodyOrThrowRevisionConflict().let { maybeDecrypt(groupId, it) }
 
 	protected suspend fun doUndeleteTopics(groupId: String?, entityIds: List<StoredDocumentIdentifier>): List<E> = skipRequestOnEmptyList(entityIds) { ids ->
 		if (groupId == null) {
-			rawApi.undeleteTopics(ListOfIdsAndRev(ids))
+			rawApi.undeleteTopics(topicIds = ListOfIdsAndRev(ids))
 		} else {
-			rawApi.undeleteTopicsInGroup(groupId, ListOfIdsAndRev(ids))
+			rawApi.undeleteTopicsInGroup(groupId = groupId, topicIds = ListOfIdsAndRev(ids))
 		}.successBody().let { maybeDecrypt(groupId, it) }
 	}
 
@@ -175,18 +175,18 @@ private abstract class AbstractTopicBasicFlavouredApi<E : Topic>(
 		requireIsValidForModification(entity)
 		val encrypted = validateAndMaybeEncrypt(groupId, entity)
 		return if (groupId == null) {
-			rawApi.modifyTopic(encrypted)
+			rawApi.modifyTopic(topicDto = encrypted)
 		} else {
-			rawApi.modifyTopicInGroup(groupId, encrypted)
+			rawApi.modifyTopicInGroup(groupId = groupId, topicDto = encrypted)
 		}.successBodyOrThrowRevisionConflict().let { maybeDecrypt(groupId, it) }
 	}
 
 	protected suspend fun doModifyTopics(groupId: String?, entities: List<E>): List<E> = skipRequestOnEmptyList(entities) { topics ->
 		val encrypted = validateAndMaybeEncrypt(groupId, topics)
 		return if (groupId == null) {
-			rawApi.modifyTopics(encrypted)
+			rawApi.modifyTopics(topicDtos = encrypted)
 		} else {
-			rawApi.modifyTopicsInGroup(groupId, encrypted)
+			rawApi.modifyTopicsInGroup(groupId = groupId, topicDtos = encrypted)
 		}.successBody().let {
 			maybeDecrypt(groupId, it)
 		}
@@ -194,16 +194,16 @@ private abstract class AbstractTopicBasicFlavouredApi<E : Topic>(
 
 	protected suspend fun doGetTopic(groupId: String?, entityId: String): E? =
 		if (groupId == null) {
-			rawApi.getTopic(entityId)
+			rawApi.getTopic(topicId = entityId)
 		} else {
-			rawApi.getTopicInGroup(groupId, entityId)
+			rawApi.getTopicInGroup(groupId = groupId, topicId = entityId)
 		}.successBodyOrNull404()?.let { maybeDecrypt(groupId, it) }
 
 	suspend fun doGetTopics(groupId: String?, entityIds: List<String>): List<E> = skipRequestOnEmptyList(entityIds) { ids ->
 		if (groupId == null) {
-			rawApi.getTopics(ListOfIds(ids))
+			rawApi.getTopics(topicIds = ListOfIds(ids))
 		} else {
-			rawApi.getTopicsInGroup(groupId, ListOfIds(ids))
+			rawApi.getTopicsInGroup(groupId = groupId, topicIds = ListOfIds(ids))
 		}.successBody().let { maybeDecrypt(groupId, it) }
 	}
 
@@ -240,11 +240,11 @@ private class TopicBasicFlavouredApiImpl<E : Topic>(
 	override suspend fun getTopics(entityIds: List<String>): List<E> = doGetTopics(groupId = null, entityIds = entityIds)
 
 	override suspend fun addParticipant(entityId: String, dataOwnerId: String, topicRole: TopicRole): E =
-		rawApi.addParticipant(entityId, AddParticipant(dataOwnerId, topicRole))
+		rawApi.addParticipant(topicId = entityId, request = AddParticipant(dataOwnerId, topicRole))
 			.successBody().let { maybeDecrypt(entitiesGroupId = null, entity = it) }
 
 	override suspend fun removeParticipant(entityId: String, dataOwnerId: String): E =
-		rawApi.removeParticipant(entityId, RemoveParticipant(dataOwnerId))
+		rawApi.removeParticipant(topicId = entityId, request = RemoveParticipant(dataOwnerId))
 			.successBody().let { maybeDecrypt(entitiesGroupId = null, entity = it) }
 }
 
@@ -317,9 +317,9 @@ private abstract class AbstractTopicFlavouredApi<E : Topic>(
 			maybeDecrypt(
 				entityGroupId,
 				if (entityGroupId == null)
-					rawApi.bulkShare(it).successBody()
+					rawApi.bulkShare(request = it).successBody()
 				else
-					rawApi.bulkShare(it, entityGroupId).successBody()
+					rawApi.bulkShare(request = it, groupId = entityGroupId).successBody()
 			)
 		}
 	).updatedEntityOrThrow()
@@ -401,34 +401,34 @@ private abstract class AbstractTopicBasicFlavourless(
 
 	protected suspend fun doDeleteTopic(groupId: String?, entityId: String, rev: String): StoredDocumentIdentifier =
 		if (groupId == null) {
-			rawApi.deleteTopic(entityId, rev)
+			rawApi.deleteTopic(topicId = entityId, rev = rev)
 		} else {
-			rawApi.deleteTopicInGroup(groupId, entityId, rev)
+			rawApi.deleteTopicInGroup(groupId = groupId, topicId = entityId, rev = rev)
 		}.successBodyOrThrowRevisionConflict().toStoredDocumentIdentifier()
 
 	protected suspend fun doDeleteTopics(groupId: String?, entityIds: List<StoredDocumentIdentifier>): List<StoredDocumentIdentifier> =
 		skipRequestOnEmptyList(entityIds) { ids ->
 			if (groupId == null) {
-				rawApi.deleteTopicsWithRev(ListOfIdsAndRev(ids))
+				rawApi.deleteTopicsWithRev(topicIds = ListOfIdsAndRev(ids))
 			} else {
-				rawApi.deleteTopicsInGroup(groupId, ListOfIdsAndRev(ids))
+				rawApi.deleteTopicsInGroup(groupId = groupId, topicIds = ListOfIdsAndRev(ids))
 			}.successBody().toStoredDocumentIdentifier()
 		}
 
 	protected suspend fun doPurgeTopic(groupId: String?, entityId: String, rev: String) {
 		if (groupId == null) {
-			rawApi.purgeTopic(entityId, rev)
+			rawApi.purgeTopic(topicId = entityId, rev = rev)
 		} else {
-			rawApi.purgeTopicInGroup(groupId, entityId, rev)
+			rawApi.purgeTopicInGroup(groupId = groupId, topicId = entityId, rev = rev)
 		}.successBodyOrThrowRevisionConflict()
 	}
 
 	protected suspend fun doPurgeTopics(groupId: String?, entityIds: List<StoredDocumentIdentifier>): List<StoredDocumentIdentifier> =
 		skipRequestOnEmptyList(entityIds) { ids ->
 			if (groupId == null) {
-				rawApi.purgeTopics(ListOfIdsAndRev(ids))
+				rawApi.purgeTopics(topicIds = ListOfIdsAndRev(ids))
 			} else {
-				rawApi.purgeTopicsInGroup(groupId, ListOfIdsAndRev(ids))
+				rawApi.purgeTopicsInGroup(groupId = groupId, topicIds = ListOfIdsAndRev(ids))
 			}.successBody().toStoredDocumentIdentifier()
 		}
 }

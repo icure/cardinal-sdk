@@ -35,107 +35,107 @@ internal abstract class AbstractDeviceApi(
 	protected suspend fun doCreateDevice(groupId: String?, entity: Device): Device {
 		requireIsValidForCreation(entity)
 		return if (groupId == null) {
-			rawApi.createDevice(entity)
+			rawApi.createDevice(p = entity)
 		} else {
-			rawApi.createDeviceInGroup(groupId, entity)
+			rawApi.createDeviceInGroup(groupId = groupId, deviceDto = entity)
 		}.successBody()
 	}
 
 	protected suspend fun doCreateDevices(groupId: String?, entities: List<Device>): List<Device> =
 		skipRequestOnEmptyList(entities) { calendarItemTypes ->
 			if (groupId == null) {
-				rawApi.createDevices(calendarItemTypes)
+				rawApi.createDevices(deviceDtos = calendarItemTypes)
 			} else {
-				rawApi.createDevicesInGroup(groupId, calendarItemTypes)
+				rawApi.createDevicesInGroup(groupId = groupId, deviceDtos = calendarItemTypes)
 			}.successBody()
 		}
 
 	protected suspend fun doGetDevice(groupId: String?, entityId: String): Device? =
 		if (groupId == null) {
-			rawApi.getDevice(entityId)
+			rawApi.getDevice(deviceId = entityId)
 		} else {
-			rawApi.getDeviceInGroup(groupId, entityId)
+			rawApi.getDeviceInGroup(groupId = groupId, deviceId = entityId)
 		}.successBodyOrNull404()
 
 	protected suspend fun doGetDevices(groupId: String?, entityIds: List<String>): List<Device> =
 		skipRequestOnEmptyList(entityIds) { ids ->
 			if (groupId == null) {
-				rawApi.getDevices(ListOfIds(ids))
+				rawApi.getDevices(deviceIds = ListOfIds(ids))
 			} else {
-				rawApi.getDevicesInGroup(groupId, ListOfIds(ids))
+				rawApi.getDevicesInGroup(groupId = groupId, deviceIds = ListOfIds(ids))
 			}.successBody()
 		}
 
 	protected suspend fun doModifyDevice(groupId: String?, entity: Device): Device {
 		requireIsValidForModification(entity)
 		return if (groupId == null) {
-			rawApi.updateDevice(entity)
+			rawApi.updateDevice(deviceDto = entity)
 		} else {
-			rawApi.modifyDeviceInGroup(groupId, entity)
+			rawApi.modifyDeviceInGroup(groupId = groupId, deviceDto = entity)
 		}.successBodyOrThrowRevisionConflict()
 	}
 
 	protected suspend fun doModifyDevices(groupId: String?, entities: List<Device>): List<Device> =
 		skipRequestOnEmptyList(entities) { calendarItemTypes ->
 			if (groupId == null) {
-				rawApi.updateDevices(calendarItemTypes)
+				rawApi.updateDevices(deviceDtos = calendarItemTypes)
 			} else {
-				rawApi.modifyDevicesInGroup(groupId, calendarItemTypes)
+				rawApi.modifyDevicesInGroup(groupId = groupId, deviceDtos = calendarItemTypes)
 			}.successBody()
 		}
 
 	protected suspend fun doDeleteDevice(groupId: String?, entityId: String, rev: String): StoredDocumentIdentifier =
 		if (groupId == null) {
-			rawApi.deleteDevice(entityId, rev)
+			rawApi.deleteDevice(deviceId = entityId, rev = rev)
 		} else {
-			rawApi.deleteDeviceInGroup(groupId, entityId, rev)
+			rawApi.deleteDeviceInGroup(groupId = groupId, deviceId = entityId, rev = rev)
 		}.successBodyOrThrowRevisionConflict().toStoredDocumentIdentifier()
 
 	protected suspend fun doDeleteDevices(groupId: String?, entityIds: List<StoredDocumentIdentifier>): List<StoredDocumentIdentifier> =
 		skipRequestOnEmptyList(entityIds) { ids ->
 			if (groupId == null) {
-				rawApi.deleteDevicesWithRev(ListOfIdsAndRev(ids))
+				rawApi.deleteDevicesWithRev(deviceIds = ListOfIdsAndRev(ids))
 			} else {
-				rawApi.deleteDevicesInGroupWithRev(groupId = groupId, ListOfIdsAndRev(ids))
+				rawApi.deleteDevicesInGroupWithRev(groupId = groupId, deviceIds = ListOfIdsAndRev(ids))
 			}.successBody().map { it.toStoredDocumentIdentifier() }
 		}
 
 	protected suspend fun doUndeleteDevice(groupId: String?, entityId: String, rev: String): Device =
 		if (groupId == null) {
-			rawApi.undeleteDevice(entityId, rev)
+			rawApi.undeleteDevice(deviceId = entityId, rev = rev)
 		} else {
-			rawApi.undeleteDeviceInGroup(groupId, entityId, rev)
+			rawApi.undeleteDeviceInGroup(groupId = groupId, deviceId = entityId, rev = rev)
 		}.successBodyOrThrowRevisionConflict()
 
 	protected suspend fun doUndeleteDevices(groupId: String?, entityIds: List<StoredDocumentIdentifier>): List<Device> =
 		skipRequestOnEmptyList(entityIds) { ids ->
 			if (groupId == null) {
-				rawApi.undeleteDevices(ListOfIdsAndRev(ids))
+				rawApi.undeleteDevices(deviceIds = ListOfIdsAndRev(ids))
 			} else {
-				rawApi.undeleteDevicesInGroup(groupId = groupId, ListOfIdsAndRev(ids))
+				rawApi.undeleteDevicesInGroup(groupId = groupId, deviceIds = ListOfIdsAndRev(ids))
 			}.successBody()
 		}
 
 	protected suspend fun doPurgeDevice(groupId: String?, entityId: String, rev: String) {
 		if (groupId == null) {
-			rawApi.purgeDevice(entityId, rev)
+			rawApi.purgeDevice(deviceId = entityId, rev = rev)
 		} else {
-			rawApi.purgeDeviceInGroup(groupId, entityId, rev)
+			rawApi.purgeDeviceInGroup(groupId = groupId, deviceId = entityId, rev = rev)
 		}.successBodyOrThrowRevisionConflict()
 	}
 
 	protected suspend fun doPurgeDevices(groupId: String?, entityIds: List<StoredDocumentIdentifier>): List<StoredDocumentIdentifier> =
 		skipRequestOnEmptyList(entityIds) { ids ->
 			if (groupId == null) {
-				rawApi.purgeDevices(ListOfIdsAndRev(ids))
+				rawApi.purgeDevices(deviceIds = ListOfIdsAndRev(ids))
 			} else {
-				rawApi.purgeDevicesInGroup(groupId = groupId, ListOfIdsAndRev(ids))
+				rawApi.purgeDevicesInGroup(groupId = groupId, deviceIds = ListOfIdsAndRev(ids))
 			}.successBody().map { it.toStoredDocumentIdentifier() }
 		}
 
 	protected suspend fun doMatchDevicesBy(groupId: String?, filter: BaseFilterOptions<Device>): List<String> =
 		if (groupId == null) {
-			rawApi.matchDevicesBy(mapDeviceFilterOptions(filter, config))
+			rawApi.matchDevicesBy(filter = mapDeviceFilterOptions(filter, config))
 		} else {
 			rawApi.matchDevicesInGroupBy(groupId = groupId, filter = mapDeviceFilterOptions(filter, config, groupId))
 		}.successBody()

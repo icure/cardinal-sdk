@@ -14,9 +14,9 @@ class AnonymousAgendaApiImpl(
 		propertyId: String,
 		propertyValue: String,
 	): PublicAgendasAndCalendarItemTypes = raw.listAnonymousAgendaAndAppointmentTypes(
-		groupId,
-		propertyId,
-		propertyValue
+		groupId = groupId,
+		propertyId = propertyId,
+		propertyValue = propertyValue
 	).successBody()
 
 	override suspend fun listAnonymousAvailabilities(
@@ -27,11 +27,11 @@ class AnonymousAgendaApiImpl(
 		endDate: Long,
 		limit: Int?
 	): List<Long> = raw.listAnonymousAvailabilities(
-		groupId,
-		agendaId,
-		calendarItemTypeId,
-		startDate,
-		endDate,
-		limit,
+		groupId = groupId,
+		agendaId = agendaId,
+		calendarItemTypeId = calendarItemTypeId,
+		startDate = startDate,
+		endDate = endDate,
+		limit = limit,
 	).successBody()
 }
