@@ -360,9 +360,9 @@ private abstract class AbstractContactBasicFlavouredApi<E : Contact, S : Service
 		requireIsValidForCreation(entity)
 		val encrypted = validateAndMaybeEncrypt(groupId, entity)
 		return if (groupId == null) {
-			rawApi.createContact(encrypted)
+			rawApi.createContact(c = encrypted)
 		} else {
-			rawApi.createContactInGroup(groupId, encrypted)
+			rawApi.createContactInGroup(groupId = groupId, contactDto = encrypted)
 		}.successBody().let {
 			maybeDecrypt(groupId, it)
 		}
@@ -371,9 +371,9 @@ private abstract class AbstractContactBasicFlavouredApi<E : Contact, S : Service
 	protected suspend fun doCreateContacts(groupId: String?, entities: List<E>): List<E> = skipRequestOnEmptyList(entities) { contacts ->
 		val encrypted = validateAndMaybeEncrypt(groupId, contacts)
 		if (groupId == null) {
-			rawApi.createContacts(encrypted)
+			rawApi.createContacts(contactDtos = encrypted)
 		} else {
-			rawApi.createContactsInGroup(groupId, encrypted)
+			rawApi.createContactsInGroup(groupId = groupId, contactDtos = encrypted)
 		}.successBody().let {
 			maybeDecrypt(groupId, it)
 		}
@@ -381,7 +381,7 @@ private abstract class AbstractContactBasicFlavouredApi<E : Contact, S : Service
 
 	protected suspend fun doUndeleteContact(groupId: String?, id: String, rev: String): E =
 		if (groupId == null) {
-			rawApi.undeleteContact(id, rev)
+			rawApi.undeleteContact(contactId = id, rev = rev)
 		} else {
 			rawApi.undeleteContactInGroup(groupId = groupId, contactId = id, rev = rev)
 		}.successBodyOrThrowRevisionConflict().let { maybeDecrypt(groupId, it) }
@@ -389,9 +389,9 @@ private abstract class AbstractContactBasicFlavouredApi<E : Contact, S : Service
 	protected suspend fun doUndeleteContacts(groupId: String?, entityIds: List<StoredDocumentIdentifier>): List<E> =
 		skipRequestOnEmptyList(entityIds) { ids ->
 			if (groupId == null) {
-				rawApi.undeleteContacts(ListOfIdsAndRev(ids))
+				rawApi.undeleteContacts(contactIds = ListOfIdsAndRev(ids))
 			} else {
-				rawApi.undeleteContactsInGroup(groupId, ListOfIdsAndRev(ids))
+				rawApi.undeleteContactsInGroup(groupId = groupId, contactIds = ListOfIdsAndRev(ids))
 			}.successBody().let { maybeDecrypt(entitiesGroupId = groupId, entities = it) }
 		}
 
@@ -399,9 +399,9 @@ private abstract class AbstractContactBasicFlavouredApi<E : Contact, S : Service
 		requireIsValidForModification(entity)
 		val encrypted = validateAndMaybeEncrypt(groupId, entity)
 		return if (groupId == null) {
-			rawApi.modifyContact(encrypted)
+			rawApi.modifyContact(contactDto = encrypted)
 		} else {
-			rawApi.modifyContactInGroup(groupId, encrypted)
+			rawApi.modifyContactInGroup(groupId = groupId, contactDto = encrypted)
 		}.successBodyOrThrowRevisionConflict().let {
 			maybeDecrypt(groupId, it)
 		}
@@ -413,9 +413,9 @@ private abstract class AbstractContactBasicFlavouredApi<E : Contact, S : Service
 	): List<E> = skipRequestOnEmptyList(entities) { contacts ->
 		val encrypted = validateAndMaybeEncrypt(groupId, contacts)
 		return if (groupId == null) {
-			rawApi.modifyContacts(encrypted)
+			rawApi.modifyContacts(contactDtos = encrypted)
 		} else {
-			rawApi.modifyContactsInGroup(groupId, encrypted)
+			rawApi.modifyContactsInGroup(groupId = groupId, contactDtos = encrypted)
 		}.successBodyOrThrowRevisionConflict().let {
 			maybeDecrypt(groupId, it)
 		}
@@ -423,7 +423,7 @@ private abstract class AbstractContactBasicFlavouredApi<E : Contact, S : Service
 
 	protected suspend fun doGetContact(groupId: String?, entityId: String): E? =
 		if (groupId == null) {
-			rawApi.getContact(entityId)
+			rawApi.getContact(contactId = entityId)
 		} else {
 			rawApi.getContactInGroup(groupId = groupId, contactId = entityId)
 		}.successBodyOrNull404()?.let {
@@ -432,15 +432,15 @@ private abstract class AbstractContactBasicFlavouredApi<E : Contact, S : Service
 
 	suspend fun doGetContacts(groupId: String?, entityIds: List<String>): List<E> = skipRequestOnEmptyList(entityIds) { ids ->
 		if (groupId == null) {
-			rawApi.getContacts(ListOfIds(ids))
+			rawApi.getContacts(contactIds = ListOfIds(ids))
 		} else {
-			rawApi.getContactsInGroup(groupId, ListOfIds(ids))
+			rawApi.getContactsInGroup(groupId = groupId, contactIds = ListOfIds(ids))
 		}.successBody().let { maybeDecrypt(groupId, it) }
 	}
 
 	protected suspend fun doGetService(groupId: String?, entityId: String): S? =
 		if (groupId == null) {
-			rawApi.getService(entityId)
+			rawApi.getService(serviceId = entityId)
 		} else {
 			rawApi.getServiceInGroup(groupId = groupId, serviceId = entityId)
 		}.successBodyOrNull404()?.let {
@@ -449,9 +449,9 @@ private abstract class AbstractContactBasicFlavouredApi<E : Contact, S : Service
 
 	protected suspend fun doGetServices(groupId: String?, entityIds: List<String>): List<S> = skipRequestOnEmptyList(entityIds) { ids ->
 		if (groupId == null) {
-			rawApi.getServices(ListOfIds(ids))
+			rawApi.getServices(ids = ListOfIds(ids))
 		} else {
-			rawApi.getServicesInGroup(groupId = groupId, ListOfIds(ids))
+			rawApi.getServicesInGroup(groupId = groupId, ids = ListOfIds(ids))
 		}.successBody().let {
 			maybeDecryptServices(groupId, it)
 		}
@@ -572,9 +572,9 @@ private abstract class AbstractContactFlavouredApi<E : Contact, S : Service>(
 				maybeDecrypt(
 					groupId,
 					if (groupId == null)
-						rawApi.bulkShare(it).successBody()
+						rawApi.bulkShare(request = it).successBody()
 					else
-						rawApi.bulkShare(it, groupId).successBody()
+						rawApi.bulkShare(request = it, groupId = groupId).successBody()
 				)
 			}
 		).updatedEntityOrThrow()
@@ -586,7 +586,7 @@ private abstract class AbstractContactFlavouredApi<E : Contact, S : Service>(
 	): PaginatedListIterator<T> =
 		IdsPageIterator(
 			rawApi.matchContactsBy(
-				mapContactFilterOptions(
+				filter = mapContactFilterOptions(
 					filter,
 					config,
 					groupId
@@ -625,7 +625,7 @@ private  class ContactFlavouredApiImpl<E : Contact, S : Service>(
 	override suspend fun filterServicesBy(filter: FilterOptions<Service>): PaginatedListIterator<S> =
 		IdsPageIterator(
 			rawApi.matchServicesBy(
-				mapServiceFilterOptions(
+				filter = mapServiceFilterOptions(
 					filterOptions = filter,
 					config = config,
 					requestGroup = null
@@ -677,34 +677,34 @@ private abstract class AbstractContactBasicFlavourless(
 
 	protected suspend fun doDeleteContact(groupId: String?, entityId: String, rev: String): StoredDocumentIdentifier =
 		if (groupId == null) {
-			rawApi.deleteContact(entityId, rev)
+			rawApi.deleteContact(contactId = entityId, rev = rev)
 		} else {
-			rawApi.deleteContactInGroup(groupId, entityId, rev)
+			rawApi.deleteContactInGroup(groupId = groupId, contactId = entityId, rev = rev)
 		}.successBodyOrThrowRevisionConflict().toStoredDocumentIdentifier()
 
 	protected suspend fun doDeleteContacts(groupId: String?, entityIds: List<StoredDocumentIdentifier>): List<StoredDocumentIdentifier> =
 		skipRequestOnEmptyList(entityIds) { ids ->
 			if (groupId == null) {
-				rawApi.deleteContactsWithRev(ListOfIdsAndRev(ids))
+				rawApi.deleteContactsWithRev(contactIds = ListOfIdsAndRev(ids))
 			} else {
-				rawApi.deleteContactsInGroup(groupId, ListOfIdsAndRev(ids))
+				rawApi.deleteContactsInGroup(groupId = groupId, contactIds = ListOfIdsAndRev(ids))
 			}.successBody().toStoredDocumentIdentifier()
 		}
 
 	protected suspend fun doPurgeContact(groupId: String?, entityId: String, rev: String) {
 		if (groupId == null) {
-			rawApi.purgeContact(entityId, rev)
+			rawApi.purgeContact(contactId = entityId, rev = rev)
 		} else {
-			rawApi.purgeContactInGroup(groupId, entityId, rev)
+			rawApi.purgeContactInGroup(groupId = groupId, contactId = entityId, rev = rev)
 		}.successBodyOrThrowRevisionConflict()
 	}
 
 	protected suspend fun doPurgeContacts(groupId: String?, entityIds: List<StoredDocumentIdentifier>): List<StoredDocumentIdentifier> =
 		skipRequestOnEmptyList(entityIds) { ids ->
 			if (groupId == null) {
-				rawApi.purgeContacts(ListOfIdsAndRev(ids))
+				rawApi.purgeContacts(contactIds = ListOfIdsAndRev(ids))
 			} else {
-				rawApi.purgeContactsInGroup(groupId, ListOfIdsAndRev(ids))
+				rawApi.purgeContactsInGroup(groupId = groupId, contactIds = ListOfIdsAndRev(ids))
 			}.successBody().toStoredDocumentIdentifier()
 		}
 
@@ -727,7 +727,7 @@ private class ContactBasicFlavourlessApiImpl(rawApi: RawContactApi) : AbstractCo
 		doPurgeContacts(groupId = null, entityIds = entityIds)
 
 	override suspend fun getServiceCodesOccurrences(codeType: String, minOccurrences: Long): List<LabelledOccurence> {
-		return rawApi.getServiceCodesOccurrences(codeType, minOccurrences).successBody()
+		return rawApi.getServiceCodesOccurrences(codeType = codeType, minOccurrences = minOccurrences).successBody()
 	}
 }
 
@@ -1005,7 +1005,7 @@ private class ContactApiImpl(
 	private suspend fun doMatchContactsBy(groupId: String?, filter: FilterOptions<Contact>): List<String> =
 		if (groupId == null) {
 			rawApi.matchContactsBy(
-				mapContactFilterOptions(
+				filter = mapContactFilterOptions(
 					filter,
 					config,
 					groupId
@@ -1013,12 +1013,12 @@ private class ContactApiImpl(
 			).successBody()
 		} else {
 			rawApi.matchContactsInGroupBy(
-				groupId = groupId,
 				filter = mapContactFilterOptions(
 					filter,
 					config,
 					groupId
-				)
+				),
+				groupId = groupId,
 			).successBody()
 		}
 
@@ -1034,7 +1034,7 @@ private class ContactApiImpl(
 	private suspend fun doMatchServicesBy(groupId: String?, filter: FilterOptions<Service>): List<String> =
 		if (groupId == null) {
 			rawApi.matchServicesBy(
-				mapServiceFilterOptions(
+				filter = mapServiceFilterOptions(
 					filter,
 					config,
 					groupId
@@ -1238,7 +1238,7 @@ private class ContactBasicApiImpl(
 	private suspend fun doMatchContactsBy(groupId: String?, filter: FilterOptions<Contact>): List<String> =
 		if (groupId == null) {
 			rawApi.matchContactsBy(
-				mapContactFilterOptions(
+				filter = mapContactFilterOptions(
 					filter,
 					config,
 					groupId
@@ -1246,12 +1246,12 @@ private class ContactBasicApiImpl(
 			).successBody()
 		} else {
 			rawApi.matchContactsInGroupBy(
-				groupId = groupId,
 				filter = mapContactFilterOptions(
 					filter,
 					config,
 					groupId
-				)
+				),
+				groupId = groupId,
 			).successBody()
 		}
 
@@ -1261,7 +1261,7 @@ private class ContactBasicApiImpl(
 	private suspend fun doMatchServicesBy(groupId: String?, filter: FilterOptions<Service>): List<String> =
 		if (groupId == null) {
 			rawApi.matchServicesBy(
-				mapServiceFilterOptions(
+				filter = mapServiceFilterOptions(
 					filter,
 					config,
 					groupId

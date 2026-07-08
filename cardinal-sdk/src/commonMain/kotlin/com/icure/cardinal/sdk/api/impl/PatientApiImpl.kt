@@ -121,7 +121,7 @@ private suspend fun RawPatientApi.doMatchPatientsBy(
 ): List<String> =
 	if (groupId == null) {
 		matchPatientsBy(
-			mapPatientFilterOptions(
+			filter = mapPatientFilterOptions(
 				filter,
 				config,
 				requestGroup = null
@@ -156,9 +156,9 @@ private abstract class AbstractPatientBasicFlavouredApi<E : Patient>(
 		requireIsValidForCreation(patient)
 		val encrypted = validateAndMaybeEncrypt(groupId, patient)
 		return if (groupId == null) {
-			rawApi.createPatient(encrypted)
+			rawApi.createPatient(p = encrypted)
 		} else {
-			rawApi.createPatientInGroup(groupId, encrypted)
+			rawApi.createPatientInGroup(groupId = groupId, patientDto = encrypted)
 		}.successBody().let { maybeDecrypt(groupId, it) }
 	}
 
@@ -168,24 +168,24 @@ private abstract class AbstractPatientBasicFlavouredApi<E : Patient>(
 	): List<E> = skipRequestOnEmptyList(patients) { entities ->
 		val encrypted = validateAndMaybeEncrypt(groupId, entities)
 		if (groupId == null) {
-			rawApi.createPatientsFull(encrypted)
+			rawApi.createPatientsFull(patientDtos = encrypted)
 		} else {
-			rawApi.createPatientsInGroupFull(groupId, encrypted)
+			rawApi.createPatientsInGroupFull(groupId = groupId, patientDtos = encrypted)
 		}.successBody().let { maybeDecrypt(groupId, it) }
 	}
 
 	protected suspend fun doUndeletePatient(groupId: String?, entityId: String, rev: String): E =
 		if (groupId == null) {
-			rawApi.undeletePatient(entityId, rev)
+			rawApi.undeletePatient(patientId = entityId, rev = rev)
 		} else {
-			rawApi.undeletePatientInGroup(groupId, entityId, rev)
+			rawApi.undeletePatientInGroup(groupId = groupId, patientId = entityId, rev = rev)
 		}.successBodyOrThrowRevisionConflict().let { maybeDecrypt(groupId, it) }
 
 	protected suspend fun doUndeletePatients(groupId: String?, entityIds: List<StoredDocumentIdentifier>): List<E> = skipRequestOnEmptyList(entityIds) { ids ->
 		if (groupId == null) {
-			rawApi.undeletePatients(ListOfIdsAndRev(ids))
+			rawApi.undeletePatients(ids = ListOfIdsAndRev(ids))
 		} else {
-			rawApi.undeletePatientsInGroup(groupId, ListOfIdsAndRev(ids))
+			rawApi.undeletePatientsInGroup(groupId = groupId, ids = ListOfIdsAndRev(ids))
 		}.successBody().let { maybeDecrypt(groupId, it) }
 	}
 
@@ -193,9 +193,9 @@ private abstract class AbstractPatientBasicFlavouredApi<E : Patient>(
 		requireIsValidForModification(entity)
 		val encrypted = validateAndMaybeEncrypt(groupId, entity)
 		return if (groupId == null) {
-			rawApi.modifyPatient(encrypted)
+			rawApi.modifyPatient(patientDto = encrypted)
 		} else {
-			rawApi.modifyPatientInGroup(groupId, encrypted)
+			rawApi.modifyPatientInGroup(groupId = groupId, patientDto = encrypted)
 		}.successBodyOrThrowRevisionConflict().let { maybeDecrypt(groupId, it) }
 	}
 
@@ -205,9 +205,9 @@ private abstract class AbstractPatientBasicFlavouredApi<E : Patient>(
 	): List<E> = skipRequestOnEmptyList(patients) { entities ->
 		val encrypted = validateAndMaybeEncrypt(groupId, entities)
 		if (groupId == null) {
-			rawApi.modifyPatientsFull(encrypted)
+			rawApi.modifyPatientsFull(patientDtos = encrypted)
 		} else {
-			rawApi.modifyPatientsInGroupFull(groupId, encrypted)
+			rawApi.modifyPatientsInGroupFull(groupId = groupId, patientDtos = encrypted)
 		}.successBody().let { maybeDecrypt(groupId, it) }
 	}
 
@@ -216,7 +216,7 @@ private abstract class AbstractPatientBasicFlavouredApi<E : Patient>(
 
 	protected suspend fun doGetEncryptedPatient(groupId: String?, entityId: String): EncryptedPatient? =
 		if (groupId == null) {
-			rawApi.getPatient(entityId)
+			rawApi.getPatient(patientId = entityId)
 		} else {
 			rawApi.getPatientInGroup(groupId = groupId, patientId = entityId)
 		}.successBodyOrNull404()
@@ -250,9 +250,9 @@ private abstract class AbstractPatientBasicFlavouredApi<E : Patient>(
 	suspend fun doGetPatients(groupId: String?, patientIds: List<String>) =
 		skipRequestOnEmptyList(patientIds) { ids ->
 			if (groupId == null) {
-				rawApi.getPatients(ListOfIds(ids))
+				rawApi.getPatients(patientIds = ListOfIds(ids))
 			} else {
-				rawApi.getPatientsInGroup(groupId, ListOfIds(ids))
+				rawApi.getPatientsInGroup(groupId = groupId, patientIds = ListOfIds(ids))
 			}.successBody().let {
 				maybeDecrypt(groupId, it)
 			}
@@ -386,9 +386,9 @@ private abstract class AbstractPatientFlavouredApi<E : Patient>(
 				maybeDecrypt(
 					groupId,
 					if (groupId == null)
-						rawApi.bulkShare(it).successBody()
+						rawApi.bulkShare(request = it).successBody()
 					else
-						rawApi.bulkShare(it, groupId).successBody()
+						rawApi.bulkShare(request = it, groupId = groupId).successBody()
 				)
 			}
 		).updatedEntityOrThrow()
@@ -402,7 +402,7 @@ private abstract class AbstractPatientFlavouredApi<E : Patient>(
 			patient,
 			EntityWithEncryptionMetadataTypeName.Patient,
 			{ doGetPatient(groupId, it) ?: throw NotFoundException("Patient $it not found") },
-			{ maybeDecrypt(null, rawApi.bulkShare(it).successBody()) }
+			{ maybeDecrypt(null, rawApi.bulkShare(request = it).successBody()) }
 		) ?: patient
 	}
 
@@ -487,34 +487,34 @@ private abstract class AbstractPatientBasicFlavourless(
 
 	protected suspend fun doDeletePatient(groupId: String?, entityId: String, rev: String): StoredDocumentIdentifier =
 		if (groupId == null) {
-			rawApi.deletePatient(entityId, rev)
+			rawApi.deletePatient(patientId = entityId, rev = rev)
 		} else {
-			rawApi.deletePatientInGroup(groupId, entityId, rev)
+			rawApi.deletePatientInGroup(groupId = groupId, patientId = entityId, rev = rev)
 		}.successBodyOrThrowRevisionConflict().toStoredDocumentIdentifier()
 
 	protected suspend fun doDeletePatients(groupId: String?, entityIds: List<StoredDocumentIdentifier>): List<StoredDocumentIdentifier> =
 		skipRequestOnEmptyList(entityIds) { ids ->
 			if (groupId == null) {
-				rawApi.deletePatientsWithRev(ListOfIdsAndRev(ids))
+				rawApi.deletePatientsWithRev(patientIds = ListOfIdsAndRev(ids))
 			} else {
-				rawApi.deletePatientsWithRevInGroup(groupId, ListOfIdsAndRev(ids))
+				rawApi.deletePatientsWithRevInGroup(groupId = groupId, patientIds = ListOfIdsAndRev(ids))
 			}.successBody().toStoredDocumentIdentifier()
 		}
 
 	protected suspend fun doPurgePatient(groupId: String?, entityId: String, rev: String) {
 		if (groupId == null) {
-			rawApi.purgePatient(entityId, rev)
+			rawApi.purgePatient(patientId = entityId, rev = rev)
 		} else {
-			rawApi.purgePatientInGroup(groupId, entityId, rev)
+			rawApi.purgePatientInGroup(groupId = groupId, patientId = entityId, rev = rev)
 		}.successBodyOrThrowRevisionConflict()
 	}
 
 	protected suspend fun doPurgePatients(groupId: String?, entityIds: List<StoredDocumentIdentifier>): List<StoredDocumentIdentifier> =
 		skipRequestOnEmptyList(entityIds) { ids ->
 			if (groupId == null) {
-				rawApi.purgePatients(ListOfIdsAndRev(ids))
+				rawApi.purgePatients(patientIds = ListOfIdsAndRev(ids))
 			} else {
-				rawApi.purgePatientsInGroup(groupId, ListOfIdsAndRev(ids))
+				rawApi.purgePatientsInGroup(groupId = groupId, patientIds = ListOfIdsAndRev(ids))
 			}.successBody().toStoredDocumentIdentifier()
 		}
 
@@ -789,7 +789,7 @@ private class PatientApiImpl(
 
 			val retrievedHealthElements = findDelegationStubsForHcPartyAndParent(delegationSecretKeys.toList(), hcp.id, parentId) { doId, delSecKeys ->
 				val heIds = rawHealthElementApi.listHealthElementIdsByDataOwnerPatientOpeningDate(dataOwnerId = doId, secretPatientKeys = ListOfIds(delSecKeys)).successBody()
-				rawHealthElementApi.listHealthElementsDelegationsStubById(ListOfIds(heIds)).successBody()
+				rawHealthElementApi.listHealthElementsDelegationsStubById(healthElementIds = ListOfIds(heIds)).successBody()
 			}
 			val shareHealthElementsResult = doShareEntitiesAndUpdateStatus(
 				entities = retrievedHealthElements,
@@ -798,72 +798,72 @@ private class PatientApiImpl(
 					it.contains(ShareAllPatientDataOptions.Tag.All)
 						|| it.contains(ShareAllPatientDataOptions.Tag.MedicalInformation)
 				},
-				getEntity = { rawHealthElementApi.getHealthElement(it).successBody().asIcureStub() },
-				doShareMinimal = { params -> rawHealthElementApi.bulkShareMinimal(params).successBody() }
+				getEntity = { rawHealthElementApi.getHealthElement(healthElementId = it).successBody().asIcureStub() },
+				doShareMinimal = { params -> rawHealthElementApi.bulkShareMinimal(request = params).successBody() }
 			)
 
 			val retrievedForms = findDelegationStubsForHcPartyAndParent(delegationSecretKeys.toList(), hcp.id, parentId) { doId, delSecKeys ->
 				val formIds =  rawFormApi.listFormIdsByDataOwnerPatientOpeningDate(dataOwnerId = doId, secretPatientKeys = ListOfIds(delSecKeys)).successBody()
-				rawFormApi.findFormsDelegationsStubsByIds(ListOfIds(formIds)).successBody()
+				rawFormApi.findFormsDelegationsStubsByIds(formIds = ListOfIds(formIds)).successBody()
 			}
 			val shareFormsResult = doShareEntitiesAndUpdateStatus(
 				entities = retrievedForms,
 				entitiesType = EntityWithEncryptionMetadataTypeName.Form,
 				tagsCondition = { it.contains(ShareAllPatientDataOptions.Tag.All) || it.contains(
 					ShareAllPatientDataOptions.Tag.MedicalInformation) },
-				getEntity = { rawFormApi.getForm(it).successBody().asIcureStub() },
-				doShareMinimal = { params -> rawFormApi.bulkShareMinimal(params).successBody() }
+				getEntity = { rawFormApi.getForm(formId = it).successBody().asIcureStub() },
+				doShareMinimal = { params -> rawFormApi.bulkShareMinimal(request = params).successBody() }
 			)
 
 			val retrievedContacts = findDelegationStubsForHcPartyAndParent(delegationSecretKeys.toList(), hcp.id, parentId) { doId, delSecKeys ->
 				val contactIds = rawContactApi.listContactIdsByDataOwnerPatientOpeningDate(dataOwnerId = doId, secretPatientKeys = ListOfIds(delSecKeys)).successBody()
-				rawContactApi.findContactsDelegationsStubsByIds(ListOfIds(contactIds)).successBody()
+				rawContactApi.findContactsDelegationsStubsByIds(contactIds = ListOfIds(contactIds)).successBody()
 			}
 			val shareContactsResult = doShareEntitiesAndUpdateStatus(
 				entities = retrievedContacts,
 				entitiesType = EntityWithEncryptionMetadataTypeName.Contact,
 				tagsCondition = { it.contains(ShareAllPatientDataOptions.Tag.All) || it.contains(
 					ShareAllPatientDataOptions.Tag.MedicalInformation) },
-				getEntity = { rawContactApi.getContact(it).successBody().asIcureStub() },
-				doShareMinimal = { params -> rawContactApi.bulkShareMinimal(params).successBody() }
+				getEntity = { rawContactApi.getContact(contactId = it).successBody().asIcureStub() },
+				doShareMinimal = { params -> rawContactApi.bulkShareMinimal(request = params).successBody() }
 			)
 
 			val retrievedInvoices = findDelegationStubsForHcPartyAndParent(delegationSecretKeys.toList(), hcp.id, parentId) { doId, delSecKeys ->
 				val invoiceIds = rawInvoiceApi.listInvoiceIdsByDataOwnerPatientInvoiceDate(dataOwnerId = doId, secretPatientKeys = ListOfIds(delSecKeys)).successBody()
-				rawInvoiceApi.listInvoicesDelegationsStubsByIds(ListOfIds(invoiceIds)).successBody()
+				rawInvoiceApi.listInvoicesDelegationsStubsByIds(invoiceIds = ListOfIds(invoiceIds)).successBody()
 			}
 			val shareInvoicesResult = doShareEntitiesAndUpdateStatus(
 				entities = retrievedInvoices,
 				entitiesType = EntityWithEncryptionMetadataTypeName.Invoice,
 				tagsCondition = { it.contains(ShareAllPatientDataOptions.Tag.All) || it.contains(
 					ShareAllPatientDataOptions.Tag.FinancialInformation) },
-				getEntity = { rawInvoiceApi.getInvoice(it).successBody().asIcureStub() },
-				doShareMinimal = { params -> rawInvoiceApi.bulkShareMinimal(params).successBody() }
+				getEntity = { rawInvoiceApi.getInvoice(invoiceId = it).successBody().asIcureStub() },
+				doShareMinimal = { params -> rawInvoiceApi.bulkShareMinimal(request = params).successBody() }
 			)
 
 			val retrievedCalendarItems = findDelegationStubsForHcPartyAndParent(delegationSecretKeys.toList(), hcp.id, parentId) { doId, delSecKeys ->
-				rawCalendarItemApi.findCalendarItemsDelegationsStubsByHCPartyPatientForeignKeys(doId, delSecKeys).successBody()
+				rawCalendarItemApi.findCalendarItemsDelegationsStubsByHCPartyPatientForeignKeys(hcPartyId = doId, secretPatientKeys = delSecKeys).successBody()
 			}
 			val shareCalendarItemsResult = doShareEntitiesAndUpdateStatus(
 				entities = retrievedCalendarItems,
 				entitiesType = EntityWithEncryptionMetadataTypeName.CalendarItem,
 				tagsCondition = { it.contains(ShareAllPatientDataOptions.Tag.All) || it.contains(
 					ShareAllPatientDataOptions.Tag.MedicalInformation) },
-				getEntity = { rawCalendarItemApi.getCalendarItem(it).successBody().asIcureStub() },
-				doShareMinimal = { params -> rawCalendarItemApi.bulkShareMinimal(params).successBody() }
+				getEntity = { rawCalendarItemApi.getCalendarItem(calendarItemId = it).successBody().asIcureStub() },
+				doShareMinimal = { params -> rawCalendarItemApi.bulkShareMinimal(request = params).successBody() }
 			)
 
 			val retrievedClassifications = findDelegationStubsForHcPartyAndParent(delegationSecretKeys.toList(), hcp.id, parentId) { doId, delSecKeys ->
 				val classificationIds = rawClassificationApi.listClassificationIdsByDataOwnerPatientCreated(dataOwnerId = doId, secretPatientKeys = ListOfIds(delSecKeys)).successBody()
-				rawClassificationApi.findClassificationsDelegationsStubsByIds(ListOfIds(classificationIds)).successBody()
+				rawClassificationApi.findClassificationsDelegationsStubsByIds(classificationIds = ListOfIds(classificationIds)).successBody()
 			}
 			val shareClassificationResult = doShareEntitiesAndUpdateStatus(
 				entities = retrievedClassifications,
 				entitiesType = EntityWithEncryptionMetadataTypeName.Classification,
 				tagsCondition = { it.contains(ShareAllPatientDataOptions.Tag.All) || it.contains(
 					ShareAllPatientDataOptions.Tag.MedicalInformation) },
-				getEntity = { rawClassificationApi.getClassification(it).successBody().asIcureStub() },
-				doShareMinimal = { params -> rawClassificationApi.bulkShareMinimal(params).successBody() }
+				getEntity = { rawClassificationApi.getClassification(classificationId = it).successBody().asIcureStub() },
+				doShareMinimal = { params -> rawClassificationApi.bulkShareMinimal(request = params).successBody() }
 			)
 
 			mapOf(
@@ -900,7 +900,7 @@ private class PatientApiImpl(
 				EntityWithEncryptionMetadataTypeName.Patient,
 				true,
 				{ getPatient(it) ?: throw NotFoundException("Patient $it not found") },
-				{ params -> rawApi.bulkShareMinimal(params).successBody() }
+				{ params -> rawApi.bulkShareMinimal(request = params).successBody() }
 			)
 			ShareAllPatientDataOptions.EntityResult(
 				success = result.updateErrors.isEmpty(),
@@ -1125,10 +1125,10 @@ private class PatientApiImpl(
 					}).keyAsLocalDataOwnerReferences(),
 					autoRetry = false, // Will retry with the updated entity: maybe no need to update metadata after all
 					getUpdatedEntity = { throw UnsupportedOperationException("No retry") },
-					doRequestBulkShareOrUpdate = { rawApi.bulkShare(it).successBody() },
+					doRequestBulkShareOrUpdate = { rawApi.bulkShare(request = it).successBody() },
 				)
 				if (shareResult is SimpleShareResult.Failure && shareResult.errorsDetails.all { it.shouldRetry }) {
-					val updatedSelf = rawApi.getPatient(self.id).successBody()
+					val updatedSelf = rawApi.getPatient(patientId = self.id).successBody()
 					if (updatedSelf.rev != self.rev) {
 						ensureEncryptionMetadataForSelfIsInitialized(sharingWith)
 					} else shareResult.updatedEntityOrThrow()
