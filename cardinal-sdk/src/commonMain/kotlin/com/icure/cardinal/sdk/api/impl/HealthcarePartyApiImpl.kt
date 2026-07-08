@@ -36,109 +36,109 @@ internal abstract class AbstractHealthcarePartyApi(
 	protected suspend fun doCreateHealthcareParty(groupId: String?, entity: HealthcareParty): HealthcareParty {
 		requireIsValidForCreation(entity)
 		return if (groupId == null) {
-			rawApi.createHealthcareParty(entity)
+			rawApi.createHealthcareParty(h = entity)
 		} else {
-			rawApi.createHealthcarePartyInGroup(groupId, entity)
+			rawApi.createHealthcarePartyInGroup(groupId = groupId, h = entity)
 		}.successBody()
 	}
 
 	protected suspend fun doCreateHealthcareParties(groupId: String?, entities: List<HealthcareParty>): List<HealthcareParty> =
 		skipRequestOnEmptyList(entities) { healthcareParties ->
 			if (groupId == null) {
-				rawApi.createHealthcareParties(healthcareParties)
+				rawApi.createHealthcareParties(healthcareParties = healthcareParties)
 			} else {
-				rawApi.createHealthcarePartiesInGroup(groupId, healthcareParties)
+				rawApi.createHealthcarePartiesInGroup(groupId = groupId, healthcareParties = healthcareParties)
 			}.successBody()
 		}
 
 	protected suspend fun doGetHealthcareParty(groupId: String?, entityId: String): HealthcareParty? =
 		if (groupId == null) {
-			rawApi.getHealthcareParty(entityId)
+			rawApi.getHealthcareParty(healthcarePartyId = entityId)
 		} else {
-			rawApi.getHealthcarePartyInGroup(groupId, entityId)
+			rawApi.getHealthcarePartyInGroup(groupId = groupId, healthcarePartyId = entityId)
 		}.successBodyOrNull404()
 
 	protected suspend fun doGetHealthcareParties(groupId: String?, entityIds: List<String>): List<HealthcareParty> =
 		skipRequestOnEmptyList(entityIds) { ids ->
 			if (groupId == null) {
-				rawApi.getHealthcareParties(ListOfIds(ids))
+				rawApi.getHealthcareParties(healthcarePartyIds = ListOfIds(ids))
 			} else {
-				rawApi.getHealthcarePartiesInGroup(groupId, ListOfIds(ids))
+				rawApi.getHealthcarePartiesInGroup(groupId = groupId, healthcarePartyIds = ListOfIds(ids))
 			}.successBody()
 		}
 
 	protected suspend fun doModifyHealthcareParty(groupId: String?, entity: HealthcareParty): HealthcareParty {
 		requireIsValidForModification(entity)
 		return if (groupId == null) {
-			rawApi.modifyHealthcareParty(entity)
+			rawApi.modifyHealthcareParty(healthcarePartyDto = entity)
 		} else {
-			rawApi.modifyHealthcarePartyInGroup(groupId, entity)
+			rawApi.modifyHealthcarePartyInGroup(groupId = groupId, healthcarePartyDto = entity)
 		}.successBodyOrThrowRevisionConflict()
 	}
 
 	protected suspend fun doModifyHealthcareParties(groupId: String?, entities: List<HealthcareParty>): List<HealthcareParty> =
 		skipRequestOnEmptyList(entities) { healthcareParties ->
 			if (groupId == null) {
-				rawApi.modifyHealthcareParties(healthcareParties)
+				rawApi.modifyHealthcareParties(healthcareParties = healthcareParties)
 			} else {
-				rawApi.modifyHealthcarePartiesInGroup(groupId, healthcareParties)
+				rawApi.modifyHealthcarePartiesInGroup(groupId = groupId, healthcareParties = healthcareParties)
 			}.successBody()
 		}
 
 	protected suspend fun doDeleteHealthcareParty(groupId: String?, entityId: String, rev: String): StoredDocumentIdentifier =
 		if (groupId == null) {
-			rawApi.deleteHealthcareParty(entityId, rev)
+			rawApi.deleteHealthcareParty(healthcarePartyId = entityId, rev = rev)
 		} else {
-			rawApi.deleteHealthcarePartyInGroup(groupId, entityId, rev)
+			rawApi.deleteHealthcarePartyInGroup(groupId = groupId, healthcarePartyId = entityId, rev = rev)
 		}.successBodyOrThrowRevisionConflict().toStoredDocumentIdentifier()
 
 	protected suspend fun doDeleteHealthcareParties(groupId: String?, entityIds: List<StoredDocumentIdentifier>): List<StoredDocumentIdentifier> =
 		skipRequestOnEmptyList(entityIds) { ids ->
 			if (groupId == null) {
-				rawApi.deleteHealthcarePartiesWithRev(ListOfIdsAndRev(ids))
+				rawApi.deleteHealthcarePartiesWithRev(healthcarePartyIds = ListOfIdsAndRev(ids))
 			} else {
-				rawApi.deleteHealthcarePartiesInGroupWithRev(groupId = groupId, ListOfIdsAndRev(ids))
+				rawApi.deleteHealthcarePartiesInGroupWithRev(groupId = groupId, healthcarePartyIds = ListOfIdsAndRev(ids))
 			}.successBody().map { it.toStoredDocumentIdentifier() }
 		}
 
 	protected suspend fun doUndeleteHealthcareParty(groupId: String?, entityId: String, rev: String): HealthcareParty =
 		if (groupId == null) {
-			rawApi.undeleteHealthcareParty(entityId, rev)
+			rawApi.undeleteHealthcareParty(healthcarePartyId = entityId, rev = rev)
 		} else {
-			rawApi.undeleteHealthcarePartyInGroup(groupId, entityId, rev)
+			rawApi.undeleteHealthcarePartyInGroup(groupId = groupId, healthcarePartyId = entityId, rev = rev)
 		}.successBodyOrThrowRevisionConflict()
 
 	protected suspend fun doUndeleteHealthcareParties(groupId: String?, entityIds: List<StoredDocumentIdentifier>): List<HealthcareParty> =
 		skipRequestOnEmptyList(entityIds) { ids ->
 			if (groupId == null) {
-				rawApi.undeleteHealthcareParties(ListOfIdsAndRev(ids))
+				rawApi.undeleteHealthcareParties(healthcarePartyIds = ListOfIdsAndRev(ids))
 			} else {
-				rawApi.undeleteHealthcarePartiesInGroup(groupId = groupId, ListOfIdsAndRev(ids))
+				rawApi.undeleteHealthcarePartiesInGroup(groupId = groupId, healthcarePartyIds = ListOfIdsAndRev(ids))
 			}.successBody()
 		}
 
 	protected suspend fun doPurgeHealthcareParty(groupId: String?, entityId: String, rev: String) {
 		if (groupId == null) {
-			rawApi.purgeHealthcareParty(entityId, rev)
+			rawApi.purgeHealthcareParty(healthcarePartyId = entityId, rev = rev)
 		} else {
-			rawApi.purgeHealthcarePartyInGroup(groupId, entityId, rev)
+			rawApi.purgeHealthcarePartyInGroup(groupId = groupId, healthcarePartyId = entityId, rev = rev)
 		}.successBodyOrThrowRevisionConflict()
 	}
 
 	protected suspend fun doPurgeHealthcareParties(groupId: String?, entityIds: List<StoredDocumentIdentifier>): List<StoredDocumentIdentifier> =
 		skipRequestOnEmptyList(entityIds) { ids ->
 			if (groupId == null) {
-				rawApi.purgeHealthcareParties(ListOfIdsAndRev(ids))
+				rawApi.purgeHealthcareParties(healthcarePartyIds = ListOfIdsAndRev(ids))
 			} else {
-				rawApi.purgeHealthcarePartiesInGroup(groupId = groupId, ListOfIdsAndRev(ids))
+				rawApi.purgeHealthcarePartiesInGroup(groupId = groupId, healthcarePartyIds = ListOfIdsAndRev(ids))
 			}.successBody().map { it.toStoredDocumentIdentifier() }
 		}
 
 	protected suspend fun doMatchHealthcarePartiesBy(groupId: String?, filter: BaseFilterOptions<HealthcareParty>) =
 		if (groupId == null) {
-			rawApi.matchHealthcarePartiesBy(mapHealthcarePartyFilterOptions(filter))
+			rawApi.matchHealthcarePartiesBy(filter = mapHealthcarePartyFilterOptions(filter))
 		} else {
-			rawApi.matchHealthcarePartiesInGroupBy(groupId, mapHealthcarePartyFilterOptions(filter))
+			rawApi.matchHealthcarePartiesInGroupBy(groupId = groupId, filter = mapHealthcarePartyFilterOptions(filter))
 		}.successBody()
 
 	protected suspend fun doMatchHealthcarePartiesBySorted(groupId: String?, filter: BaseSortableFilterOptions<HealthcareParty>) =
@@ -177,7 +177,8 @@ internal class HealthcarePartyApiImpl(
 		return doModifyHealthcareParties(groupId = null, entities = healthcareParties)
 	}
 
-	override suspend fun getPublicKey(healthcarePartyId: String) = rawApi.getPublicKey(healthcarePartyId).successBody()
+	override suspend fun getPublicKey(healthcarePartyId: String) =
+		rawApi.getPublicKey(healthcarePartyId = healthcarePartyId).successBody()
 
 	override suspend fun matchHealthcarePartiesBy(filter: BaseFilterOptions<HealthcareParty>) =
 		doMatchHealthcarePartiesBy(groupId = null, filter = filter)
@@ -216,7 +217,13 @@ internal class HealthcarePartyApiImpl(
 		token: String?,
 		useShortToken: Boolean?,
 		hcp: HealthcareParty,
-	) = rawApi.registerHealthcareParty(groupId, parentHcPartyId, token, useShortToken, hcp).successBody()
+	) = rawApi.registerHealthcareParty(
+		groupId = groupId,
+		parentHcPartyId = parentHcPartyId,
+		token = token,
+		useShortToken = useShortToken,
+		hcp = hcp
+	).successBody()
 
 	override suspend fun subscribeToEvents(
 		events: Set<SubscriptionEventType>,

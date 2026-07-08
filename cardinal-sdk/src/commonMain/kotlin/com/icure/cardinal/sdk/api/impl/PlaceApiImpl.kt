@@ -21,101 +21,101 @@ internal abstract class AbstractPlaceApi(
 	protected suspend fun doCreatePlace(groupId: String?, entity: Place): Place {
 		requireIsValidForCreation(entity)
 		return if (groupId == null) {
-			rawApi.createPlace(entity)
+			rawApi.createPlace(placeDto = entity)
 		} else {
-			rawApi.createPlaceInGroup(groupId, entity)
+			rawApi.createPlaceInGroup(groupId = groupId, place = entity)
 		}.successBody()
 	}
 
 	protected suspend fun doCreatePlaces(groupId: String?, entities: List<Place>): List<Place> =
 		skipRequestOnEmptyList(entities) { places ->
 			if (groupId == null) {
-				rawApi.createPlaces(places)
+				rawApi.createPlaces(placeDtos = places)
 			} else {
-				rawApi.createPlacesInGroup(groupId, places)
+				rawApi.createPlacesInGroup(groupId = groupId, placeBatch = places)
 			}.successBody()
 		}
 
 	protected suspend fun doGetPlace(groupId: String?, entityId: String): Place? =
 		if (groupId == null) {
-			rawApi.getPlace(entityId)
+			rawApi.getPlace(placeId = entityId)
 		} else {
-			rawApi.getPlaceInGroup(groupId, entityId)
+			rawApi.getPlaceInGroup(groupId = groupId, placeId = entityId)
 		}.successBodyOrNull404()
 
 	protected suspend fun doGetPlaces(groupId: String?, entityIds: List<String>): List<Place> =
 		skipRequestOnEmptyList(entityIds) { ids ->
 			if (groupId == null) {
-				rawApi.getPlacesByIds(ListOfIds(ids))
+				rawApi.getPlacesByIds(placeIds = ListOfIds(ids))
 			} else {
-				rawApi.getPlacesInGroup(groupId, ListOfIds(ids))
+				rawApi.getPlacesInGroup(groupId = groupId, placeIds = ListOfIds(ids))
 			}.successBody()
 		}
 
 	protected suspend fun doModifyPlace(groupId: String?, entity: Place): Place {
 		requireIsValidForModification(entity)
 		return if (groupId == null) {
-			rawApi.modifyPlace(entity)
+			rawApi.modifyPlace(placeDto = entity)
 		} else {
-			rawApi.modifyPlaceInGroup(groupId, entity)
+			rawApi.modifyPlaceInGroup(groupId = groupId, place = entity)
 		}.successBodyOrThrowRevisionConflict()
 	}
 
 	protected suspend fun doModifyPlaces(groupId: String?, entities: List<Place>): List<Place> =
 		skipRequestOnEmptyList(entities) { places ->
 			if (groupId == null) {
-				rawApi.modifyPlaces(places)
+				rawApi.modifyPlaces(placeDtos = places)
 			} else {
-				rawApi.modifyPlacesInGroup(groupId, places)
+				rawApi.modifyPlacesInGroup(groupId = groupId, placeBatch = places)
 			}.successBody()
 		}
 
 	protected suspend fun doDeletePlace(groupId: String?, entityId: String, rev: String): StoredDocumentIdentifier =
 		if (groupId == null) {
-			rawApi.deletePlace(entityId, rev)
+			rawApi.deletePlace(placeId = entityId, rev = rev)
 		} else {
-			rawApi.deletePlaceInGroup(groupId, entityId, rev)
+			rawApi.deletePlaceInGroup(groupId = groupId, placeId = entityId, rev = rev)
 		}.successBodyOrThrowRevisionConflict().toStoredDocumentIdentifier()
 
 	protected suspend fun doDeletePlaces(groupId: String?, entityIds: List<StoredDocumentIdentifier>): List<StoredDocumentIdentifier> =
 		skipRequestOnEmptyList(entityIds) { ids ->
 			if (groupId == null) {
-				rawApi.deletePlacesWithRev(ListOfIdsAndRev(ids))
+				rawApi.deletePlacesWithRev(placeIds = ListOfIdsAndRev(ids))
 			} else {
-				rawApi.deletePlacesInGroup(groupId = groupId, ListOfIdsAndRev(ids))
+				rawApi.deletePlacesInGroup(groupId = groupId, placeIds = ListOfIdsAndRev(ids))
 			}.successBody().map { it.toStoredDocumentIdentifier() }
 		}
 
 	protected suspend fun doUndeletePlace(groupId: String?, entityId: String, rev: String): Place =
 		if (groupId == null) {
-			rawApi.undeletePlace(entityId, rev)
+			rawApi.undeletePlace(placeId = entityId, rev = rev)
 		} else {
-			rawApi.undeletePlaceInGroup(groupId, entityId, rev)
+			rawApi.undeletePlaceInGroup(groupId = groupId, placeId = entityId, rev = rev)
 		}.successBodyOrThrowRevisionConflict()
 
 	protected suspend fun doUndeletePlaces(groupId: String?, entityIds: List<StoredDocumentIdentifier>): List<Place> =
 		skipRequestOnEmptyList(entityIds) { ids ->
 			if (groupId == null) {
-				rawApi.undeletePlaces(ListOfIdsAndRev(ids))
+				rawApi.undeletePlaces(placeIds = ListOfIdsAndRev(ids))
 			} else {
-				rawApi.undeletePlacesInGroup(groupId = groupId, ListOfIdsAndRev(ids))
+				rawApi.undeletePlacesInGroup(groupId = groupId, placeIds = ListOfIdsAndRev(ids))
 			}.successBody()
 		}
 
 	protected suspend fun doPurgePlace(groupId: String?, entityId: String, rev: String) {
 		if (groupId == null) {
-			rawApi.purgePlace(entityId, rev)
+			rawApi.purgePlace(placeId = entityId, rev = rev)
 		} else {
-			rawApi.purgePlaceInGroup(groupId, entityId, rev)
+			rawApi.purgePlaceInGroup(groupId = groupId, placeId = entityId, rev = rev)
 		}.successBodyOrThrowRevisionConflict()
 	}
 
 	protected suspend fun doPurgePlaces(groupId: String?, entityIds: List<StoredDocumentIdentifier>): List<StoredDocumentIdentifier> =
 		skipRequestOnEmptyList(entityIds) { ids ->
 			if (groupId == null) {
-				rawApi.purgePlaces(ListOfIdsAndRev(ids))
+				rawApi.purgePlaces(placeIds = ListOfIdsAndRev(ids))
 			} else {
-				rawApi.purgePlacesInGroup(groupId = groupId, ListOfIdsAndRev(ids))
+				rawApi.purgePlacesInGroup(groupId = groupId, placeIds = ListOfIdsAndRev(ids))
 			}.successBody().map { it.toStoredDocumentIdentifier() }
 		}
 }

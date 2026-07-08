@@ -38,107 +38,107 @@ internal abstract class AbstractUserApi(
 	protected suspend fun doCreateUser(groupId: String?, entity: User): User {
 		requireIsValidForCreation(entity)
 		return if (groupId == null) {
-			rawApi.createUser(entity)
+			rawApi.createUser(userDto = entity)
 		} else {
-			rawApi.createUserInGroup(groupId, entity)
+			rawApi.createUserInGroup(groupId = groupId, userDto = entity)
 		}.successBody()
 	}
 
 	protected suspend fun doCreateUsers(groupId: String?, entities: List<User>): List<User> =
 		skipRequestOnEmptyList(entities) { calendarItemTypes ->
 			if (groupId == null) {
-				rawApi.createUsers(calendarItemTypes)
+				rawApi.createUsers(userDtos = calendarItemTypes)
 			} else {
-				rawApi.createUsersInGroup(groupId, calendarItemTypes)
+				rawApi.createUsersInGroup(groupId = groupId, userDtos = calendarItemTypes)
 			}.successBody()
 		}
 
 	protected suspend fun doGetUser(groupId: String?, entityId: String): User? =
 		if (groupId == null) {
-			rawApi.getUser(entityId)
+			rawApi.getUser(userId = entityId)
 		} else {
-			rawApi.getUserInGroup(groupId, entityId)
+			rawApi.getUserInGroup(groupId = groupId, userId = entityId)
 		}.successBodyOrNull404()
 
 	protected suspend fun doGetUsers(groupId: String?, entityIds: List<String>): List<User> =
 		skipRequestOnEmptyList(entityIds) { ids ->
 			if (groupId == null) {
-				rawApi.getUsers(ListOfIds(ids))
+				rawApi.getUsers(userIds = ListOfIds(ids))
 			} else {
-				rawApi.getUsersInGroup(groupId, ListOfIds(ids))
+				rawApi.getUsersInGroup(groupId = groupId, userIds = ListOfIds(ids))
 			}.successBody()
 		}
 
 	protected suspend fun doModifyUser(groupId: String?, entity: User): User {
 		requireIsValidForModification(entity)
 		return if (groupId == null) {
-			rawApi.modifyUser(entity)
+			rawApi.modifyUser(userDto = entity)
 		} else {
-			rawApi.modifyUserInGroup(groupId, entity)
+			rawApi.modifyUserInGroup(groupId = groupId, userDto = entity)
 		}.successBodyOrThrowRevisionConflict()
 	}
 
 	protected suspend fun doModifyUsers(groupId: String?, entities: List<User>): List<User> =
 		skipRequestOnEmptyList(entities) { calendarItemTypes ->
 			if (groupId == null) {
-				rawApi.modifyUsers(calendarItemTypes)
+				rawApi.modifyUsers(userDtos = calendarItemTypes)
 			} else {
-				rawApi.modifyUsersInGroup(groupId, calendarItemTypes)
+				rawApi.modifyUsersInGroup(groupId = groupId, userDtos = calendarItemTypes)
 			}.successBody()
 		}
 
 	protected suspend fun doDeleteUser(groupId: String?, entityId: String, rev: String): StoredDocumentIdentifier =
 		if (groupId == null) {
-			rawApi.deleteUser(entityId, rev)
+			rawApi.deleteUser(userId = entityId, rev = rev)
 		} else {
-			rawApi.deleteUserInGroup(groupId, entityId, rev)
+			rawApi.deleteUserInGroup(groupId = groupId, userId = entityId, rev = rev)
 		}.successBodyOrThrowRevisionConflict().toStoredDocumentIdentifier()
 
 	protected suspend fun doDeleteUsers(groupId: String?, entityIds: List<StoredDocumentIdentifier>): List<StoredDocumentIdentifier> =
 		skipRequestOnEmptyList(entityIds) { ids ->
 			if (groupId == null) {
-				rawApi.deleteUsers(ListOfIdsAndRev(ids))
+				rawApi.deleteUsers(userIds = ListOfIdsAndRev(ids))
 			} else {
-				rawApi.deleteUsersInGroup(groupId = groupId, ListOfIdsAndRev(ids))
+				rawApi.deleteUsersInGroup(groupId = groupId, userIds = ListOfIdsAndRev(ids))
 			}.successBody().map { it.toStoredDocumentIdentifier() }
 		}
 
 	protected suspend fun doUndeleteUser(groupId: String?, entityId: String, rev: String): User =
 		if (groupId == null) {
-			rawApi.undeleteUser(entityId, rev)
+			rawApi.undeleteUser(userId = entityId, rev = rev)
 		} else {
-			rawApi.undeleteUserInGroup(groupId, entityId, rev)
+			rawApi.undeleteUserInGroup(groupId = groupId, userId = entityId, rev = rev)
 		}.successBodyOrThrowRevisionConflict()
 
 	protected suspend fun doUndeleteUsers(groupId: String?, entityIds: List<StoredDocumentIdentifier>): List<User> =
 		skipRequestOnEmptyList(entityIds) { ids ->
 			if (groupId == null) {
-				rawApi.undeleteUsers(ListOfIdsAndRev(ids))
+				rawApi.undeleteUsers(userIds = ListOfIdsAndRev(ids))
 			} else {
-				rawApi.undeleteUsersInGroup(groupId = groupId, ListOfIdsAndRev(ids))
+				rawApi.undeleteUsersInGroup(groupId = groupId, userIds = ListOfIdsAndRev(ids))
 			}.successBody()
 		}
 
 	protected suspend fun doPurgeUser(groupId: String?, entityId: String, rev: String) {
 		if (groupId == null) {
-			rawApi.purgeUser(entityId, rev)
+			rawApi.purgeUser(userId = entityId, rev = rev)
 		} else {
-			rawApi.purgeUserInGroup(groupId, entityId, rev)
+			rawApi.purgeUserInGroup(groupId = groupId, userId = entityId, rev = rev)
 		}.successBodyOrThrowRevisionConflict()
 	}
 
 	protected suspend fun doPurgeUsers(groupId: String?, entityIds: List<StoredDocumentIdentifier>): List<StoredDocumentIdentifier> =
 		skipRequestOnEmptyList(entityIds) { ids ->
 			if (groupId == null) {
-				rawApi.purgeUsers(ListOfIdsAndRev(ids))
+				rawApi.purgeUsers(userIds = ListOfIdsAndRev(ids))
 			} else {
-				rawApi.purgeUsersInGroup(groupId = groupId, ListOfIdsAndRev(ids))
+				rawApi.purgeUsersInGroup(groupId = groupId, userIds = ListOfIdsAndRev(ids))
 			}.successBody().map { it.toStoredDocumentIdentifier() }
 		}
 
 	protected suspend fun doMatchUsersBy(groupId: String?, filter: BaseFilterOptions<User>): List<String> =
 		if (groupId == null) {
-			rawApi.matchUsersBy(mapUserFilterOptions(filter))
+			rawApi.matchUsersBy(filter = mapUserFilterOptions(filter))
 		} else {
 			rawApi.matchUsersInGroupBy(groupId = groupId, filter = mapUserFilterOptions(filter))
 		}.successBody()
@@ -169,13 +169,13 @@ internal class UserApiImpl(
 
 	override suspend fun getUsers(userIds: List<String>) = doGetUsers(groupId = null, entityIds = userIds)
 
-	override suspend fun getUserByEmail(email: String) = rawApi.getUserByEmail(email).successBodyOrNull404()
+	override suspend fun getUserByEmail(email: String) = rawApi.getUserByEmail(email = email).successBodyOrNull404()
 
-	override suspend fun getUserByPhoneNumber(phoneNumber: String) = rawApi.getUserByPhoneNumber(phoneNumber).successBodyOrNull404()
+	override suspend fun getUserByPhoneNumber(phoneNumber: String) = rawApi.getUserByPhoneNumber(phoneNumber = phoneNumber).successBodyOrNull404()
 
-	override suspend fun findByHcpartyId(id: String) = rawApi.findByHcpartyId(id).successBody()
+	override suspend fun findByHcpartyId(id: String) = rawApi.findByHcpartyId(id = id).successBody()
 
-	override suspend fun findByPatientId(id: String) = rawApi.findByPatientId(id).successBody()
+	override suspend fun findByPatientId(id: String) = rawApi.findByPatientId(id = id).successBody()
 
 	override suspend fun modifyUser(user: User) = doModifyUser(groupId = null, entity = user)
 
@@ -184,19 +184,19 @@ internal class UserApiImpl(
 		return doModifyUsers(groupId = null, entities = users)
 	}
 
-	override suspend fun assignHealthcareParty(healthcarePartyId: String) = rawApi.assignHealthcareParty(healthcarePartyId).successBody()
+	override suspend fun assignHealthcareParty(healthcarePartyId: String) = rawApi.assignHealthcareParty(healthcarePartyId = healthcarePartyId).successBody()
 
 	override suspend fun modifyProperties(
 		userId: String,
 		properties: List<EncryptedPropertyStub>?,
-	) = rawApi.modifyProperties(userId, properties).successBody()
+	) = rawApi.modifyProperties(userId = userId, properties = properties).successBody()
 
 	override suspend fun getToken(
 		userId: String,
 		key: String,
 		tokenValidity: Long?,
 		token: String?,
-	) = rawApi.getToken(userId, key, tokenValidity, token).successBody()
+	) = rawApi.getToken(userId = userId, key = key, tokenValidity = tokenValidity, token = token).successBody()
 
 	override suspend fun matchUsersBy(filter: BaseFilterOptions<User>) =
 		doMatchUsersBy(groupId = null, filter = filter)
@@ -239,42 +239,42 @@ internal class UserApiImpl(
 	).successBodyOrThrowRevisionConflict()
 
 	override suspend fun setUserRoles(userId: String, rolesIds: List<String>) =
-		rawApi.setRolesForUser(userId, ListOfIds(rolesIds)).successBodyOrThrowRevisionConflict()
+		rawApi.setRolesForUser(userId = userId, rolesId = ListOfIds(rolesIds)).successBodyOrThrowRevisionConflict()
 
-	override suspend fun resetUserRoles(userId: String) = rawApi.resetUserRoles(userId).successBodyOrThrowRevisionConflict()
+	override suspend fun resetUserRoles(userId: String) = rawApi.resetUserRoles(userId = userId).successBodyOrThrowRevisionConflict()
 
 	override suspend fun enable2faForUser(
 		userId: String,
 		request: Enable2faRequest,
 	) {
-		rawApi.enable2faForUser(userId, request).successBody()
+		rawApi.enable2faForUser(userId = userId, request = request).successBody()
 	}
 
 	override suspend fun disable2faForUser(userId: String) {
-		rawApi.disable2faForUser(userId).successBody()
+		rawApi.disable2faForUser(userId = userId).successBody()
 	}
 
-	override suspend fun createAdminUser(user: User) = rawApi.createAdminUser(user).successBody()
+	override suspend fun createAdminUser(user: User) = rawApi.createAdminUser(userDto = user).successBody()
 
 	override suspend fun modifyUserPassword(
 		userId: String,
 		newPassword: String,
 	): User =
-		rawApi.changeUserPassword(userId, ChangeUserPasswordRequest(newPassword)).successBody()
+		rawApi.changeUserPassword(userId = userId, request = ChangeUserPasswordRequest(newPassword)).successBody()
 
 	override suspend fun modifyUserEmail(
 		userId: String,
 		newEmail: String,
 		previousEmail: String?,
 	): User =
-		rawApi.changeUserEmail(userId, newEmail, previousEmail).successBody()
+		rawApi.changeUserEmail(userId = userId, newEmail = newEmail, previousEmail = previousEmail).successBody()
 
 	override suspend fun modifyUserMobilePhone(
 		userId: String,
 		newMobilePhone: String,
 		previousMobilePhone: String?,
 	): User =
-		rawApi.changeUserMobilePhone(userId, newMobilePhone, previousMobilePhone).successBody()
+		rawApi.changeUserMobilePhone(userId = userId, newMobilePhone = newMobilePhone, previousMobilePhone = previousMobilePhone).successBody()
 
 	override suspend fun subscribeToEvents(
 		events: Set<SubscriptionEventType>,
@@ -392,8 +392,8 @@ internal class UserInGroupApiImpl(
 
 	override suspend fun setUserInheritsPermissions(user: GroupScoped<User>, value: Boolean) {
 		rawApi.setUserInheritsPermissions(
-			groupId = user.groupId,
 			userId = user.entity.id,
+			groupId = user.groupId,
 			value = value
 		).successBodyOrThrowRevisionConflict()
 	}
@@ -405,8 +405,8 @@ internal class UserInGroupApiImpl(
 	): Boolean = rawApi.setLoginIdentifiers(
 		userId = user.entity.id,
 		groupId = user.groupId,
-		identifier = identifier,
-		replaceExisting = replaceExisting
+		replaceExisting = replaceExisting,
+		identifier = identifier
 	).successBodyOrThrowRevisionConflict()
 
 	override suspend fun setUserRoles(
@@ -445,7 +445,7 @@ internal class UserInGroupApiImpl(
 		key: String,
 		token: String?,
 		tokenValidity: Long?,
-	) = rawApi.getTokenInAllGroups(userIdentifier, key, token, tokenValidity).successBody()
+	) = rawApi.getTokenInAllGroups(userIdentifier = userIdentifier, key = key, token = token, tokenValidity = tokenValidity).successBody()
 
 	override suspend fun enable2faForUser(
 		user: GroupScoped<User>,

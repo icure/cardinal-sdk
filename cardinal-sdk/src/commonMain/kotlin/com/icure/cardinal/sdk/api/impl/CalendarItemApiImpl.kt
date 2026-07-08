@@ -106,9 +106,9 @@ private abstract class AbstractCalendarItemBasicFlavouredApi<E : CalendarItem>(
 		requireIsValidForCreation(entity)
 		val encrypted = validateAndMaybeEncrypt(groupId, entity)
 		return if (groupId == null) {
-			rawApi.createCalendarItem(encrypted)
+			rawApi.createCalendarItem(calendarItemDto = encrypted)
 		} else {
-			rawApi.createCalendarItemInGroup(groupId, encrypted)
+			rawApi.createCalendarItemInGroup(groupId = groupId, calendarItemDto = encrypted)
 		}.successBody().let {
 			maybeDecrypt(groupId, it)
 		}
@@ -117,9 +117,9 @@ private abstract class AbstractCalendarItemBasicFlavouredApi<E : CalendarItem>(
 	protected suspend fun doCreateCalendarItems(groupId: String?, entities: List<E>): List<E> = skipRequestOnEmptyList(entities) { calendarItems ->
 		val encrypted = validateAndMaybeEncrypt(groupId, calendarItems)
 		if (groupId == null) {
-			rawApi.createCalendarItems(encrypted)
+			rawApi.createCalendarItems(calendarItemDtos = encrypted)
 		} else {
-			rawApi.createCalendarItemsInGroup(groupId, encrypted)
+			rawApi.createCalendarItemsInGroup(groupId = groupId, calendarItemDtos = encrypted)
 		}.successBody().let {
 			maybeDecrypt(groupId, it)
 		}
@@ -127,7 +127,7 @@ private abstract class AbstractCalendarItemBasicFlavouredApi<E : CalendarItem>(
 
 	protected suspend fun doUndeleteCalendarItemById(groupId: String?, id: String, rev: String): E =
 		if (groupId == null) {
-			rawApi.undeleteCalendarItem(id, rev)
+			rawApi.undeleteCalendarItem(calendarItemId = id, rev = rev)
 		} else {
 			rawApi.undeleteCalendarItemInGroup(groupId = groupId, calendarItemId = id, rev = rev)
 		}.successBodyOrThrowRevisionConflict().let { maybeDecrypt(groupId, it) }
@@ -135,9 +135,9 @@ private abstract class AbstractCalendarItemBasicFlavouredApi<E : CalendarItem>(
 	protected suspend fun doUndeleteCalendarItemsByIds(groupId: String?, entityIds: List<StoredDocumentIdentifier>): List<E> =
 		skipRequestOnEmptyList(entityIds) { ids ->
 			if (groupId == null) {
-				rawApi.undeleteCalendarItems(ListOfIdsAndRev(ids))
+				rawApi.undeleteCalendarItems(calendarItemIds = ListOfIdsAndRev(ids))
 			} else {
-				rawApi.undeleteCalendarItemsInGroup(groupId, ListOfIdsAndRev(ids))
+				rawApi.undeleteCalendarItemsInGroup(groupId = groupId, calendarItemIdsAndRevs = ListOfIdsAndRev(ids))
 			}.successBody().let { maybeDecrypt(entitiesGroupId = groupId, entities = it) }
 		}
 
@@ -145,9 +145,9 @@ private abstract class AbstractCalendarItemBasicFlavouredApi<E : CalendarItem>(
 		requireIsValidForModification(entity)
 		val encrypted = validateAndMaybeEncrypt(groupId, entity)
 		return if (groupId == null) {
-			rawApi.modifyCalendarItem(encrypted)
+			rawApi.modifyCalendarItem(calendarItemDto = encrypted)
 		} else {
-			rawApi.modifyCalendarItemInGroup(groupId, encrypted)
+			rawApi.modifyCalendarItemInGroup(groupId = groupId, calendarItemDto = encrypted)
 		}.successBodyOrThrowRevisionConflict().let {
 			maybeDecrypt(groupId, it)
 		}
@@ -159,9 +159,9 @@ private abstract class AbstractCalendarItemBasicFlavouredApi<E : CalendarItem>(
 	): List<E> = skipRequestOnEmptyList(entities) { calendarItems ->
 		val encrypted = validateAndMaybeEncrypt(groupId, calendarItems)
 		return if (groupId == null) {
-			rawApi.modifyCalendarItems(encrypted)
+			rawApi.modifyCalendarItems(calendarItemDtos = encrypted)
 		} else {
-			rawApi.modifyCalendarItemsInGroup(groupId, encrypted)
+			rawApi.modifyCalendarItemsInGroup(groupId = groupId, calendarItemDtos = encrypted)
 		}.successBodyOrThrowRevisionConflict().let {
 			maybeDecrypt(groupId, it)
 		}
@@ -169,7 +169,7 @@ private abstract class AbstractCalendarItemBasicFlavouredApi<E : CalendarItem>(
 
 	protected suspend fun doGetCalendarItem(groupId: String?, entityId: String): E? =
 		if (groupId == null) {
-			rawApi.getCalendarItem(entityId)
+			rawApi.getCalendarItem(calendarItemId = entityId)
 		} else {
 			rawApi.getCalendarItemInGroup(groupId = groupId, calendarItemId = entityId)
 		}.successBodyOrNull404()?.let {
@@ -178,9 +178,9 @@ private abstract class AbstractCalendarItemBasicFlavouredApi<E : CalendarItem>(
 
 	suspend fun doGetCalendarItems(groupId: String?, entityIds: List<String>): List<E> = skipRequestOnEmptyList(entityIds) { ids ->
 		if (groupId == null) {
-			rawApi.getCalendarItemsWithIds(ListOfIds(ids))
+			rawApi.getCalendarItemsWithIds(calendarItemIds = ListOfIds(ids))
 		} else {
-			rawApi.getCalendarItemsInGroup(groupId, ListOfIds(ids))
+			rawApi.getCalendarItemsInGroup(groupId = groupId, calendarItemIds = ListOfIds(ids))
 		}.successBody().let { maybeDecrypt(groupId, it) }
 	}
 }
@@ -205,7 +205,7 @@ private class CalendarItemBasicFlavouredApiImpl<E : CalendarItem>(
 		val encrypted = validateAndMaybeEncrypt(null, entity)
 		return maybeDecrypt(
 			null,
-			rawApi.safeBook(encrypted).successBody(MissingAvailabilityException)
+			rawApi.safeBook(calendarItemDto = encrypted).successBody(MissingAvailabilityException)
 		)
 	}
 
@@ -300,9 +300,9 @@ private abstract class AbstractCalendarItemFlavouredApi<E : CalendarItem>(
 				maybeDecrypt(
 					groupId,
 					if (groupId == null)
-						rawApi.bulkShare(it).successBody()
+						rawApi.bulkShare(request = it).successBody()
 					else
-						rawApi.bulkShare(it, groupId).successBody()
+						rawApi.bulkShare(request = it, groupId = groupId).successBody()
 				)
 			}
 		).updatedEntityOrThrow()
@@ -314,7 +314,7 @@ private abstract class AbstractCalendarItemFlavouredApi<E : CalendarItem>(
 	): PaginatedListIterator<T> =
 		IdsPageIterator(
 			rawApi.matchCalendarItemsBy(
-				mapCalendarItemFilterOptions(
+				filter = mapCalendarItemFilterOptions(
 					filter,
 					config,
 					groupId
@@ -373,8 +373,8 @@ private class CalendarItemFlavouredApiImpl<E : CalendarItem>(
 			),
 			EntityWithEncryptionMetadataTypeName.CalendarItem,
 			true,
-			{ rawApi.getCalendarItem(it).successBody() },
-			{ rawApi.bulkShare(it).successBody() }
+			{ rawApi.getCalendarItem(calendarItemId = it).successBody() },
+			{ rawApi.bulkShare(request = it).successBody() }
 		)
 		if(shareResult.updatedEntities.isEmpty() || shareResult.updatedEntities.first().id != calendarItem.id) {
 			val errorsForEntity = shareResult.updateErrors.filter { it.entityId == calendarItem.id }
@@ -387,7 +387,7 @@ private class CalendarItemFlavouredApiImpl<E : CalendarItem>(
 		return maybeDecrypt(
 			null,
 			rawApi.modifyCalendarItem(
-				(shareResult.updatedEntities.first() as EncryptedCalendarItem).copy(secretForeignKeys = secretForeignKeys)
+				calendarItemDto = (shareResult.updatedEntities.first() as EncryptedCalendarItem).copy(secretForeignKeys = secretForeignKeys)
 			).successBody()
 		)
 	}
@@ -447,34 +447,34 @@ private abstract class AbstractCalendarItemBasicFlavourless(
 
 	protected suspend fun doDeleteCalendarItemById(groupId: String?, entityId: String, rev: String): StoredDocumentIdentifier =
 		if (groupId == null) {
-			rawApi.deleteCalendarItem(entityId, rev)
+			rawApi.deleteCalendarItem(calendarItemId = entityId, rev = rev)
 		} else {
-			rawApi.deleteCalendarItemInGroup(groupId, entityId, rev)
+			rawApi.deleteCalendarItemInGroup(groupId = groupId, calendarItemId = entityId, rev = rev)
 		}.successBodyOrThrowRevisionConflict().toStoredDocumentIdentifier()
 
 	protected suspend fun doDeleteCalendarItemsByIds(groupId: String?, entityIds: List<StoredDocumentIdentifier>): List<StoredDocumentIdentifier> =
 		skipRequestOnEmptyList(entityIds) { ids ->
 			if (groupId == null) {
-				rawApi.deleteCalendarItemsWithRev(ListOfIdsAndRev(ids))
+				rawApi.deleteCalendarItemsWithRev(calendarItemIds = ListOfIdsAndRev(ids))
 			} else {
-				rawApi.deleteCalendarItemsInGroup(groupId, ListOfIdsAndRev(ids))
+				rawApi.deleteCalendarItemsInGroup(groupId = groupId, calendarItemIdsAndRevs = ListOfIdsAndRev(ids))
 			}.successBody().toStoredDocumentIdentifier()
 		}
 
 	protected suspend fun doPurgeCalendarItemById(groupId: String?, entityId: String, rev: String) {
 		if (groupId == null) {
-			rawApi.purgeCalendarItem(entityId, rev)
+			rawApi.purgeCalendarItem(calendarItemId = entityId, rev = rev)
 		} else {
-			rawApi.purgeCalendarItemInGroup(groupId, entityId, rev)
+			rawApi.purgeCalendarItemInGroup(groupId = groupId, calendarItemId = entityId, rev = rev)
 		}.successBodyOrThrowRevisionConflict()
 	}
 
 	protected suspend fun doPurgeCalendarItemsByIds(groupId: String?, entityIds: List<StoredDocumentIdentifier>): List<StoredDocumentIdentifier> =
 		skipRequestOnEmptyList(entityIds) { ids ->
 			if (groupId == null) {
-				rawApi.purgeCalendarItems(ListOfIdsAndRev(ids))
+				rawApi.purgeCalendarItems(calendarItemIds = ListOfIdsAndRev(ids))
 			} else {
-				rawApi.purgeCalendarItemsInGroup(groupId, ListOfIdsAndRev(ids))
+				rawApi.purgeCalendarItemsInGroup(groupId = groupId, calendarItemIdsAndRevs = ListOfIdsAndRev(ids))
 			}.successBody().toStoredDocumentIdentifier()
 		}
 }
@@ -774,7 +774,7 @@ private class CalendarItemApiImpl(
 	private suspend fun doMatchCalendarItemsBy(groupId: String?, filter: FilterOptions<CalendarItem>): List<String> =
 		if (groupId == null) {
 			rawApi.matchCalendarItemsBy(
-				mapCalendarItemFilterOptions(
+				filter = mapCalendarItemFilterOptions(
 					filter,
 					config,
 					groupId
@@ -782,12 +782,12 @@ private class CalendarItemApiImpl(
 			).successBody()
 		} else {
 			rawApi.matchCalendarItemsInGroupBy(
-				groupId = groupId,
 				filter = mapCalendarItemFilterOptions(
 					filter,
 					config,
 					groupId
-				)
+				),
+				groupId = groupId,
 			).successBody()
 		}
 
@@ -1026,7 +1026,7 @@ private class CalendarItemBasicApiImpl(
 	private suspend fun doMatchCalendarItemsBy(groupId: String?, filter: BaseFilterOptions<CalendarItem>): List<String> =
 		if (groupId == null) {
 			rawApi.matchCalendarItemsBy(
-				mapCalendarItemFilterOptions(
+				filter = mapCalendarItemFilterOptions(
 					filter,
 					config,
 					groupId
@@ -1034,12 +1034,12 @@ private class CalendarItemBasicApiImpl(
 			).successBody()
 		} else {
 			rawApi.matchCalendarItemsInGroupBy(
-				groupId = groupId,
 				filter = mapCalendarItemFilterOptions(
 					filter,
 					config,
 					groupId
-				)
+				),
+				groupId = groupId,
 			).successBody()
 		}
 

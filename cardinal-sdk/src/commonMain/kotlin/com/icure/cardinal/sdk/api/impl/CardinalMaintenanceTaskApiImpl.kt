@@ -138,9 +138,9 @@ class CardinalMaintenanceTaskApiImpl(
 	): Set<String> {
 		val self = dataOwnerApi.getCurrentDataOwnerId()
 		val candidatesForExchangeData = exchangeDataManager.base.raw.getParticipantCounterparts(
-			self,
-			requestToOwnerTypes.joinToString(","),
-			key.fingerprintV2().s
+			dataOwnerId = self,
+			counterpartsTypes = requestToOwnerTypes.joinToString(","),
+			ignoreOnEntryForFingerprint = key.fingerprintV2().s
 		).successBody().toSet()
 		val fingerprintV1 = key.fingerprintV1()
 		val exchangeKeysInfo = baseExchangeKeysManager.getAllExchangeKeysWith(self, requestToOwnerTypes)

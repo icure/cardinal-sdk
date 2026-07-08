@@ -100,7 +100,7 @@ private suspend fun RawMessageApi.doMatchMessagesBy(
 ): List<String> =
 	if (groupId == null) {
 		matchMessagesBy(
-			mapMessageFilterOptions(
+			filter = mapMessageFilterOptions(
 				filter,
 				config,
 				requestGroup = null
@@ -135,9 +135,9 @@ private abstract class AbstractMessageBasicFlavouredApi<E : Message>(
 		requireIsValidForCreation(entity)
 		val encrypted = validateAndMaybeEncrypt(groupId, entity)
 		return if (groupId == null) {
-			rawApi.createMessage(encrypted)
+			rawApi.createMessage(messageDto = encrypted)
 		} else {
-			rawApi.createMessageInGroup(groupId, encrypted)
+			rawApi.createMessageInGroup(groupId = groupId, messageDto = encrypted)
 		}.successBody().let {
 			maybeDecrypt(groupId, it)
 		}
@@ -146,9 +146,9 @@ private abstract class AbstractMessageBasicFlavouredApi<E : Message>(
 	protected suspend fun doCreateMessages(groupId: String?, entities: List<E>): List<E> = skipRequestOnEmptyList(entities) { messages ->
 		val encrypted = validateAndMaybeEncrypt(groupId, messages)
 		return if (groupId == null) {
-			rawApi.createMessages(encrypted)
+			rawApi.createMessages(messageDtos = encrypted)
 		} else {
-			rawApi.createMessagesInGroup(groupId, encrypted)
+			rawApi.createMessagesInGroup(groupId = groupId, messageDtos = encrypted)
 		}.successBody().let {
 			maybeDecrypt(groupId, it)
 		}
@@ -156,16 +156,16 @@ private abstract class AbstractMessageBasicFlavouredApi<E : Message>(
 
 	protected suspend fun doUndeleteMessage(groupId: String?, entityId: String, rev: String): E =
 		if (groupId == null) {
-			rawApi.undeleteMessage(entityId, rev)
+			rawApi.undeleteMessage(messageId = entityId, rev = rev)
 		} else {
-			rawApi.undeleteMessageInGroup(groupId, entityId, rev)
+			rawApi.undeleteMessageInGroup(groupId = groupId, messageId = entityId, rev = rev)
 		}.successBodyOrThrowRevisionConflict().let { maybeDecrypt(groupId, it) }
 
 	protected suspend fun doUndeleteMessages(groupId: String?, entityIds: List<StoredDocumentIdentifier>): List<E> = skipRequestOnEmptyList(entityIds) { ids ->
 		if (groupId == null) {
-			rawApi.undeleteMessages(ListOfIdsAndRev(ids))
+			rawApi.undeleteMessages(messageIds = ListOfIdsAndRev(ids))
 		} else {
-			rawApi.undeleteMessagesInGroup(groupId, ListOfIdsAndRev(ids))
+			rawApi.undeleteMessagesInGroup(groupId = groupId, messageIds = ListOfIdsAndRev(ids))
 		}.successBody().let { maybeDecrypt(groupId, it) }
 	}
 
@@ -173,18 +173,18 @@ private abstract class AbstractMessageBasicFlavouredApi<E : Message>(
 		requireIsValidForModification(entity)
 		val encrypted = validateAndMaybeEncrypt(groupId, entity)
 		return if (groupId == null) {
-			rawApi.modifyMessage(encrypted)
+			rawApi.modifyMessage(messageDto = encrypted)
 		} else {
-			rawApi.modifyMessageInGroup(groupId, encrypted)
+			rawApi.modifyMessageInGroup(groupId = groupId, messageDto = encrypted)
 		}.successBodyOrThrowRevisionConflict().let { maybeDecrypt(groupId, it) }
 	}
 
 	protected suspend fun doModifyMessages(groupId: String?, entities: List<E>): List<E> = skipRequestOnEmptyList(entities) { messages ->
 		val encrypted = validateAndMaybeEncrypt(groupId, messages)
 		return if (groupId == null) {
-			rawApi.modifyMessages(encrypted)
+			rawApi.modifyMessages(messageDtos = encrypted)
 		} else {
-			rawApi.modifyMessagesInGroup(groupId, encrypted)
+			rawApi.modifyMessagesInGroup(groupId = groupId, messageDtos = encrypted)
 		}.successBody().let {
 			maybeDecrypt(groupId, it)
 		}
@@ -192,16 +192,16 @@ private abstract class AbstractMessageBasicFlavouredApi<E : Message>(
 
 	protected suspend fun doGetMessage(groupId: String?, entityId: String): E? =
 		if (groupId == null) {
-			rawApi.getMessage(entityId)
+			rawApi.getMessage(messageId = entityId)
 		} else {
 			rawApi.getMessageInGroup(groupId = groupId, messageId = entityId)
 		}.successBodyOrNull404()?.let { maybeDecrypt(groupId, it) }
 
 	suspend fun doGetMessages(groupId: String?, entityIds: List<String>) = skipRequestOnEmptyList(entityIds) { ids ->
 		if (groupId == null) {
-			rawApi.getMessages(ListOfIds(ids))
+			rawApi.getMessages(messageIds = ListOfIds(ids))
 		} else {
-			rawApi.getMessagesInGroup(groupId, ListOfIds(ids))
+			rawApi.getMessagesInGroup(groupId = groupId, messageIds = ListOfIds(ids))
 		}.successBody().let { maybeDecrypt(groupId, it) }
 	}
 }
@@ -223,7 +223,7 @@ private class MessageBasicFlavouredApiImpl<E : Message>(
 	override suspend fun createMessageInTopic(entity: E): E {
 		requireIsValidForCreation(entity)
 		val encrypted = validateAndMaybeEncrypt(null, entity)
-		return rawApi.createMessageInTopic(encrypted).successBody().let {
+		return rawApi.createMessageInTopic(messageDto = encrypted).successBody().let {
 			maybeDecrypt(null, it)
 		}
 	}
@@ -249,7 +249,9 @@ private class MessageBasicFlavouredApiImpl<E : Message>(
 		time: Long?,
 		readStatus: Boolean,
 		userId: String?,
-	) = rawApi.setMessagesReadStatus(MessagesReadStatusUpdate(entityIds, time, readStatus, userId)).successBody().let { maybeDecrypt(null, it) }
+	) = rawApi.setMessagesReadStatus(
+		`data` = MessagesReadStatusUpdate(entityIds, time, readStatus, userId)
+	).successBody().let { maybeDecrypt(null, it) }
 }
 
 @InternalIcureApi
@@ -324,9 +326,9 @@ private abstract class AbstractMessageFlavouredApi<E : Message>(
 				maybeDecrypt(
 					entityGroupId,
 					if (entityGroupId == null)
-						rawApi.bulkShare(it).successBody()
+						rawApi.bulkShare(request = it).successBody()
 					else
-						rawApi.bulkShare(it, entityGroupId).successBody()
+						rawApi.bulkShare(request = it, groupId = entityGroupId).successBody()
 				)
 			}
 		).updatedEntityOrThrow()
@@ -412,34 +414,34 @@ private abstract class AbstractMessageBasicFlavourless(
 
 	protected suspend fun doDeleteMessage(groupId: String?, entityId: String, rev: String): StoredDocumentIdentifier =
 		if (groupId == null) {
-			rawApi.deleteMessage(entityId, rev)
+			rawApi.deleteMessage(messageId = entityId, rev = rev)
 		} else {
-			rawApi.deleteMessageInGroup(groupId, entityId, rev)
+			rawApi.deleteMessageInGroup(groupId = groupId, messageId = entityId, rev = rev)
 		}.successBodyOrThrowRevisionConflict().toStoredDocumentIdentifier()
 
 	protected suspend fun doDeleteMessages(groupId: String?, entityIds: List<StoredDocumentIdentifier>): List<StoredDocumentIdentifier> =
 		skipRequestOnEmptyList(entityIds) { ids ->
 			if (groupId == null) {
-				rawApi.deleteMessagesWithRev(ListOfIdsAndRev(ids))
+				rawApi.deleteMessagesWithRev(messageIds = ListOfIdsAndRev(ids))
 			} else {
-				rawApi.deleteMessagesInGroup(groupId, ListOfIdsAndRev(ids))
+				rawApi.deleteMessagesInGroup(groupId = groupId, messageIds = ListOfIdsAndRev(ids))
 			}.successBody().toStoredDocumentIdentifier()
 		}
 
 	protected suspend fun doPurgeMessage(groupId: String?, entityId: String, rev: String) {
 		if (groupId == null) {
-			rawApi.purgeMessage(entityId, rev)
+			rawApi.purgeMessage(messageId = entityId, rev = rev)
 		} else {
-			rawApi.purgeMessageInGroup(groupId, entityId, rev)
+			rawApi.purgeMessageInGroup(groupId = groupId, messageId = entityId, rev = rev)
 		}.successBodyOrThrowRevisionConflict()
 	}
 
 	protected suspend fun doPurgeMessages(groupId: String?, entityIds: List<StoredDocumentIdentifier>): List<StoredDocumentIdentifier> =
 		skipRequestOnEmptyList(entityIds) { ids ->
 			if (groupId == null) {
-				rawApi.purgeMessages(ListOfIdsAndRev(ids))
+				rawApi.purgeMessages(messageIds = ListOfIdsAndRev(ids))
 			} else {
-				rawApi.purgeMessagesInGroup(groupId, ListOfIdsAndRev(ids))
+				rawApi.purgeMessagesInGroup(groupId = groupId, messageIds = ListOfIdsAndRev(ids))
 			}.successBody().toStoredDocumentIdentifier()
 		}
 }

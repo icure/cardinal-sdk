@@ -96,9 +96,9 @@ private abstract class AbstractDocumentBasicFlavouredApi<E : Document>(
 		requireIsValidForCreation(entity)
 		val encrypted = validateAndMaybeEncrypt(groupId, entity)
 		return if (groupId == null) {
-			rawApi.createDocument(encrypted)
+			rawApi.createDocument(documentDto = encrypted)
 		} else {
-			rawApi.createDocumentInGroup(groupId, encrypted)
+			rawApi.createDocumentInGroup(groupId = groupId, documentDto = encrypted)
 		}.successBody().let {
 			maybeDecrypt(groupId, it)
 		}
@@ -107,9 +107,9 @@ private abstract class AbstractDocumentBasicFlavouredApi<E : Document>(
 	protected suspend fun doCreateDocuments(groupId: String?, entities: List<E>): List<E> = skipRequestOnEmptyList(entities) { documents ->
 		val encrypted = validateAndMaybeEncrypt(groupId, documents)
 		if (groupId == null) {
-			rawApi.createDocuments(encrypted)
+			rawApi.createDocuments(documentDtos = encrypted)
 		} else {
-			rawApi.createDocumentsInGroup(groupId, encrypted)
+			rawApi.createDocumentsInGroup(groupId = groupId, documentDtos = encrypted)
 		}.successBody().let {
 			maybeDecrypt(groupId, it)
 		}
@@ -117,7 +117,7 @@ private abstract class AbstractDocumentBasicFlavouredApi<E : Document>(
 
 	protected suspend fun doUndeleteDocument(groupId: String?, entityId: String, rev: String): E =
 		if (groupId == null) {
-			rawApi.undeleteDocument(entityId, rev)
+			rawApi.undeleteDocument(documentId = entityId, rev = rev)
 		} else {
 			rawApi.undeleteDocumentInGroup(groupId = groupId, documentId = entityId, rev = rev)
 		}.successBodyOrThrowRevisionConflict().let { maybeDecrypt(groupId, it) }
@@ -125,9 +125,9 @@ private abstract class AbstractDocumentBasicFlavouredApi<E : Document>(
 	protected suspend fun doUndeleteDocuments(groupId: String?, entityIds: List<StoredDocumentIdentifier>): List<E> =
 		skipRequestOnEmptyList(entityIds) { ids ->
 			if (groupId == null) {
-				rawApi.undeleteDocuments(ListOfIdsAndRev(ids))
+				rawApi.undeleteDocuments(documentIds = ListOfIdsAndRev(ids))
 			} else {
-				rawApi.undeleteDocumentsInGroup(groupId, ListOfIdsAndRev(ids))
+				rawApi.undeleteDocumentsInGroup(groupId = groupId, documentIds = ListOfIdsAndRev(ids))
 			}.successBody().let { maybeDecrypt(entitiesGroupId = groupId, entities = it) }
 		}
 
@@ -135,9 +135,9 @@ private abstract class AbstractDocumentBasicFlavouredApi<E : Document>(
 		requireIsValidForModification(entity)
 		val encrypted = validateAndMaybeEncrypt(groupId, entity)
 		return if (groupId == null) {
-			rawApi.modifyDocument(encrypted)
+			rawApi.modifyDocument(documentDto = encrypted)
 		} else {
-			rawApi.modifyDocumentInGroup(groupId, encrypted)
+			rawApi.modifyDocumentInGroup(groupId = groupId, documentDto = encrypted)
 		}.successBodyOrThrowRevisionConflict().let {
 			maybeDecrypt(groupId, it)
 		}
@@ -146,9 +146,9 @@ private abstract class AbstractDocumentBasicFlavouredApi<E : Document>(
 	protected suspend fun doModifyDocuments(groupId: String?, entities: List<E>): List<E> = skipRequestOnEmptyList(entities) { documents ->
 		val encrypted = validateAndMaybeEncrypt(groupId, documents)
 		return if (groupId == null) {
-			rawApi.modifyDocuments(encrypted)
+			rawApi.modifyDocuments(documentDtos = encrypted)
 		} else {
-			rawApi.modifyDocumentsInGroup(groupId, encrypted)
+			rawApi.modifyDocumentsInGroup(groupId = groupId, documentDtos = encrypted)
 		}.successBodyOrThrowRevisionConflict().let {
 			maybeDecrypt(groupId, it)
 		}
@@ -156,7 +156,7 @@ private abstract class AbstractDocumentBasicFlavouredApi<E : Document>(
 
 	protected suspend fun doGetDocument(groupId: String?, entityId: String): E? =
 		if (groupId == null) {
-			rawApi.getDocument(entityId)
+			rawApi.getDocument(documentId = entityId)
 		} else {
 			rawApi.getDocumentInGroup(groupId = groupId, documentId = entityId)
 		}.successBodyOrNull404()?.let {
@@ -165,9 +165,9 @@ private abstract class AbstractDocumentBasicFlavouredApi<E : Document>(
 
 	suspend fun doGetDocuments(groupId: String?, entityIds: List<String>): List<E> = skipRequestOnEmptyList(entityIds) { ids ->
 		if (groupId == null) {
-			rawApi.getDocuments(ListOfIds(ids))
+			rawApi.getDocuments(documentIds = ListOfIds(ids))
 		} else {
-			rawApi.getDocumentsInGroup(groupId, ListOfIds(ids))
+			rawApi.getDocumentsInGroup(groupId = groupId, documentIds = ListOfIds(ids))
 		}.successBody().let { maybeDecrypt(groupId, it) }
 	}
 
@@ -274,9 +274,9 @@ private abstract class AbstractDocumentFlavouredApi<E : Document>(
 				maybeDecrypt(
 					groupId,
 					if (groupId == null)
-						rawApi.bulkShare(it).successBody()
+						rawApi.bulkShare(request = it).successBody()
 					else
-						rawApi.bulkShare(it, groupId).successBody()
+						rawApi.bulkShare(request = it, groupId = groupId).successBody()
 				)
 			}
 		).updatedEntityOrThrow()
@@ -288,7 +288,7 @@ private abstract class AbstractDocumentFlavouredApi<E : Document>(
 	): PaginatedListIterator<T> =
 		IdsPageIterator(
 			rawApi.matchDocumentsBy(
-				mapDocumentFilterOptions(
+				filter = mapDocumentFilterOptions(
 					filter,
 					config,
 					groupId
@@ -374,34 +374,34 @@ private abstract class AbstractDocumentBasicFlavourless(
 
 	protected suspend fun doDeleteDocument(groupId: String?, entityId: String, rev: String): StoredDocumentIdentifier =
 		if (groupId == null) {
-			rawApi.deleteDocument(entityId, rev)
+			rawApi.deleteDocument(documentId = entityId, rev = rev)
 		} else {
-			rawApi.deleteDocumentInGroup(groupId, entityId, rev)
+			rawApi.deleteDocumentInGroup(groupId = groupId, documentId = entityId, rev = rev)
 		}.successBodyOrThrowRevisionConflict().toStoredDocumentIdentifier()
 
 	protected suspend fun doDeleteDocuments(groupId: String?, entityIds: List<StoredDocumentIdentifier>): List<StoredDocumentIdentifier> =
 		skipRequestOnEmptyList(entityIds) { ids ->
 			if (groupId == null) {
-				rawApi.deleteDocumentsWithRev(ListOfIdsAndRev(ids))
+				rawApi.deleteDocumentsWithRev(documentIds = ListOfIdsAndRev(ids))
 			} else {
-				rawApi.deleteDocumentsInGroup(groupId, ListOfIdsAndRev(ids))
+				rawApi.deleteDocumentsInGroup(groupId = groupId, documentIds = ListOfIdsAndRev(ids))
 			}.successBody().toStoredDocumentIdentifier()
 		}
 
 	protected suspend fun doPurgeDocument(groupId: String?, entityId: String, rev: String) {
 		if (groupId == null) {
-			rawApi.purgeDocument(entityId, rev)
+			rawApi.purgeDocument(documentId = entityId, rev = rev)
 		} else {
-			rawApi.purgeDocumentInGroup(groupId, entityId, rev)
+			rawApi.purgeDocumentInGroup(groupId = groupId, documentId = entityId, rev = rev)
 		}.successBodyOrThrowRevisionConflict()
 	}
 
 	protected suspend fun doPurgeDocuments(groupId: String?, entityIds: List<StoredDocumentIdentifier>): List<StoredDocumentIdentifier> =
 		skipRequestOnEmptyList(entityIds) { ids ->
 			if (groupId == null) {
-				rawApi.purgeDocuments(ListOfIdsAndRev(ids))
+				rawApi.purgeDocuments(documentIds = ListOfIdsAndRev(ids))
 			} else {
-				rawApi.purgeDocumentsInGroup(groupId, ListOfIdsAndRev(ids))
+				rawApi.purgeDocumentsInGroup(groupId = groupId, documentIds = ListOfIdsAndRev(ids))
 			}.successBody().toStoredDocumentIdentifier()
 		}
 }
@@ -423,10 +423,10 @@ private class DocumentBasicFlavourlessApiImpl(rawApi: RawDocumentApi) : Abstract
 		doPurgeDocuments(groupId = null, entityIds = entityIds)
 
 	override suspend fun getRawMainAttachment(documentId: String) =
-		rawApi.getMainAttachment(documentId).successBody()
+		rawApi.getMainAttachment(documentId = documentId).successBody()
 
 	override suspend fun getRawSecondaryAttachment(documentId: String, key: String) =
-		rawApi.getSecondaryAttachment(documentId, key).successBody()
+		rawApi.getSecondaryAttachment(documentId = documentId, key = key).successBody()
 
 	override suspend fun setRawMainAttachment(
 		documentId: String,
@@ -435,7 +435,14 @@ private class DocumentBasicFlavourlessApiImpl(rawApi: RawDocumentApi) : Abstract
 		attachment: ByteArray,
 		encrypted: Boolean,
 	) =
-		rawApi.setDocumentAttachment(documentId, rev, utis, payload = attachment, lengthHeader = attachment.size.toLong(), encrypted = encrypted).successBody()
+		rawApi.setDocumentAttachment(
+			documentId = documentId,
+			rev = rev,
+			utis = utis,
+			payload = attachment,
+			lengthHeader = attachment.size.toLong(),
+			encrypted = encrypted
+		).successBody()
 
 	override suspend fun setRawSecondaryAttachment(
 		documentId: String,
@@ -445,13 +452,21 @@ private class DocumentBasicFlavourlessApiImpl(rawApi: RawDocumentApi) : Abstract
 		attachment: ByteArray,
 		encrypted: Boolean,
 	) =
-		rawApi.setSecondaryAttachment(documentId, key, rev, utis, payload = attachment, lengthHeader = attachment.size.toLong(), encrypted = encrypted).successBody()
+		rawApi.setSecondaryAttachment(
+			documentId = documentId,
+			key = key,
+			rev = rev,
+			utis = utis,
+			payload = attachment,
+			lengthHeader = attachment.size.toLong(),
+			encrypted = encrypted
+		).successBody()
 
 	override suspend fun deleteMainAttachment(entityId: String, rev: String) =
-		rawApi.deleteAttachment(entityId, rev).successBody()
+		rawApi.deleteAttachment(documentId = entityId, rev = rev).successBody()
 
 	override suspend fun deleteSecondaryAttachment(documentId: String, key: String, rev: String) =
-		rawApi.deleteSecondaryAttachment(documentId, key, rev).successBody()
+		rawApi.deleteSecondaryAttachment(documentId = documentId, key = key, rev = rev).successBody()
 }
 
 @InternalIcureApi
@@ -695,8 +710,14 @@ private class DocumentApiImpl(
 		document: Document,
 		decryptedAttachmentValidator: (suspend (document: ByteArray) -> Boolean)?
 	) =
-		rawApi.getMainAttachment(document.id).successBody().let {
-			crypto.entity.decryptAttachmentOf(null, document, EntityWithEncryptionMetadataTypeName.Document, it, decryptedAttachmentValidator)
+		rawApi.getMainAttachment(documentId = document.id).successBody().let {
+			crypto.entity.decryptAttachmentOf(
+				entityGroupId = null,
+				entity = document,
+				entityType = EntityWithEncryptionMetadataTypeName.Document,
+				content = it,
+				validator = decryptedAttachmentValidator
+			)
 		}
 
 	override suspend fun encryptAndSetMainAttachment(document: Document, utis: List<String>?, attachment: ByteArray): EncryptedDocument {
@@ -704,9 +725,9 @@ private class DocumentApiImpl(
 			?: throw EntityEncryptionException("Cannot extract encryption key from document")
 		val payload = crypto.primitives.aes.encrypt(attachment, aesKey)
 		return rawApi.setDocumentAttachment(
-			document.id,
-			document.rev ?: throw IllegalArgumentException("Document must have a revision set before setting the attachment"),
-			utis,
+			documentId = document.id,
+			rev = document.rev ?: throw IllegalArgumentException("Document must have a revision set before setting the attachment"),
+			utis = utis,
 			payload = payload,
 			lengthHeader = attachment.size.toLong(),
 			encrypted = true,
@@ -718,8 +739,14 @@ private class DocumentApiImpl(
 		key: String,
 		decryptedAttachmentValidator: (suspend (document: ByteArray) -> Boolean)?
 	) =
-		rawApi.getSecondaryAttachment(document.id, key).successBody().let {
-			crypto.entity.decryptAttachmentOf(null, document, EntityWithEncryptionMetadataTypeName.Document, it, decryptedAttachmentValidator)
+		rawApi.getSecondaryAttachment(documentId = document.id, key = key).successBody().let {
+			crypto.entity.decryptAttachmentOf(
+				entityGroupId = null,
+				entity = document,
+				entityType = EntityWithEncryptionMetadataTypeName.Document,
+				content = it,
+				validator = decryptedAttachmentValidator
+			)
 		}
 
 	override suspend fun encryptAndSetSecondaryAttachment(
@@ -732,10 +759,10 @@ private class DocumentApiImpl(
 			?: throw EntityEncryptionException("Cannot extract encryption key from document")
 		val payload = crypto.primitives.aes.encrypt(attachment, aesKey)
 		return rawApi.setSecondaryAttachment(
-			document.id,
-			key,
-			document.rev ?: throw IllegalArgumentException("Document must have a revision set before setting the attachment"),
-			utis,
+			documentId = document.id,
+			key = key,
+			rev = document.rev ?: throw IllegalArgumentException("Document must have a revision set before setting the attachment"),
+			utis = utis,
 			payload = payload,
 			lengthHeader = attachment.size.toLong(),
 			encrypted = true,
@@ -799,7 +826,7 @@ private class DocumentApiImpl(
 	private suspend fun doMatchDocumentsBy(groupId: String?, filter: FilterOptions<Document>): List<String> =
 		if (groupId == null) {
 			rawApi.matchDocumentsBy(
-				mapDocumentFilterOptions(
+				filter = mapDocumentFilterOptions(
 					filter,
 					config,
 					groupId
@@ -886,7 +913,7 @@ private class DocumentBasicApiImpl(
 	private suspend fun doMatchDocumentsBy(groupId: String?, filter: BaseFilterOptions<Document>): List<String> =
 		if (groupId == null) {
 			rawApi.matchDocumentsBy(
-				mapDocumentFilterOptions(
+				filter = mapDocumentFilterOptions(
 					filter,
 					config,
 					groupId

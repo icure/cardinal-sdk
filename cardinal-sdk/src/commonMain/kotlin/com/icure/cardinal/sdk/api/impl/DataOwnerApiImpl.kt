@@ -42,10 +42,10 @@ class DataOwnerApiImpl(
 		getOrCacheInfo().first.hierarchy
 
 	override suspend fun getDataOwner(ownerId: String): DataOwnerWithType =
-		rawApi.getDataOwner(ownerId).successBody()
+		rawApi.getDataOwner(dataOwnerId = ownerId).successBody()
 
 	override suspend fun getCryptoActorStub(ownerId: String): CryptoActorStubWithType =
-		rawApi.getDataOwnerStub(ownerId).successBody()
+		rawApi.getDataOwnerStub(dataOwnerId = ownerId).successBody()
 
 	override suspend fun getCurrentDataOwnerHierarchyIdsFrom(parentId: String): List<String> {
 		getCurrentDataOwnerHierarchyIds()
@@ -62,7 +62,7 @@ class DataOwnerApiImpl(
 		}
 
 	override suspend fun modifyDataOwnerStub(cryptoActorStubWithTypeDto: CryptoActorStubWithType): CryptoActorStubWithType =
-		rawApi.modifyDataOwnerStub(cryptoActorStubWithTypeDto).successBodyOrThrowRevisionConflict()
+		rawApi.modifyDataOwnerStub(updated = cryptoActorStubWithTypeDto).successBodyOrThrowRevisionConflict()
 
 	override suspend fun getCurrentDataOwnerType(): DataOwnerType =
 		getOrCacheInfo().first.type
@@ -101,9 +101,9 @@ class DataOwnerApiImpl(
 	override suspend fun getCryptoActorStubInGroup(entityReferenceInGroup: EntityReferenceInGroup): CryptoActorStubWithType {
 		val dataOwnerGroup = entityReferenceInGroup.normalized(boundGroup).groupId
 		return if (dataOwnerGroup == null) {
-			rawApi.getDataOwnerStub(entityReferenceInGroup.entityId).successBody()
+			rawApi.getDataOwnerStub(dataOwnerId = entityReferenceInGroup.entityId).successBody()
 		} else {
-			rawApi.getCryptoActorStubInGroup(dataOwnerGroup, entityReferenceInGroup.entityId).successBody()
+			rawApi.getCryptoActorStubInGroup(groupId = dataOwnerGroup, dataOwnerId = entityReferenceInGroup.entityId).successBody()
 		}
 	}
 

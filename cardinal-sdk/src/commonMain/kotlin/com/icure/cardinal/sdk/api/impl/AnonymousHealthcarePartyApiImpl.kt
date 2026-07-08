@@ -11,5 +11,5 @@ class AnonymousHealthcarePartyApiImpl(
 ): AnonymousHealthcarePartyApi {
 	override suspend fun getPublicHealthcarePartiesInGroup(
 		groupId: String
-	): List<HealthcareParty> = raw.listPublicHealthcarePartiesInGroup(groupId).successBody()
+	): List<HealthcareParty> = raw.listPublicHealthcarePartiesInGroup(groupId = groupId).successBody()
 }

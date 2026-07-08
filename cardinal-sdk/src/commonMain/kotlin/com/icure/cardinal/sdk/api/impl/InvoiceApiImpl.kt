@@ -98,9 +98,9 @@ private abstract class AbstractInvoiceBasicFlavouredApi<E : Invoice>(
 		requireIsValidForCreation(entity)
 		val encrypted = validateAndMaybeEncrypt(groupId, entity)
 		return if (groupId == null) {
-			rawApi.createInvoice(encrypted)
+			rawApi.createInvoice(invoiceDto = encrypted)
 		} else {
-			rawApi.createInvoiceInGroup(groupId, encrypted)
+			rawApi.createInvoiceInGroup(groupId = groupId, invoiceDto = encrypted)
 		}.successBody().let {
 			maybeDecrypt(groupId, it)
 		}
@@ -109,9 +109,9 @@ private abstract class AbstractInvoiceBasicFlavouredApi<E : Invoice>(
 	protected suspend fun doCreateInvoices(groupId: String?, entities: List<E>): List<E> = skipRequestOnEmptyList(entities) { invoices ->
 		val encrypted = validateAndMaybeEncrypt(groupId, invoices)
 		return if (groupId == null) {
-			rawApi.createInvoices(encrypted)
+			rawApi.createInvoices(invoiceDtos = encrypted)
 		} else {
-			rawApi.createInvoicesInGroup(groupId, encrypted)
+			rawApi.createInvoicesInGroup(groupId = groupId, invoiceDtos = encrypted)
 		}.successBody().let {
 			maybeDecrypt(groupId, it)
 		}
@@ -119,16 +119,16 @@ private abstract class AbstractInvoiceBasicFlavouredApi<E : Invoice>(
 
 	protected suspend fun doUndeleteInvoice(groupId: String?, entityId: String, rev: String): E =
 		if (groupId == null) {
-			rawApi.undeleteInvoice(entityId, rev)
+			rawApi.undeleteInvoice(invoiceId = entityId, rev = rev)
 		} else {
-			rawApi.undeleteInvoiceInGroup(groupId, entityId, rev)
+			rawApi.undeleteInvoiceInGroup(groupId = groupId, invoiceId = entityId, rev = rev)
 		}.successBodyOrThrowRevisionConflict().let { maybeDecrypt(groupId, it) }
 
 	protected suspend fun doUndeleteInvoices(groupId: String?, entityIds: List<StoredDocumentIdentifier>): List<E> = skipRequestOnEmptyList(entityIds) { ids ->
 		if (groupId == null) {
-			rawApi.undeleteInvoices(ListOfIdsAndRev(ids))
+			rawApi.undeleteInvoices(invoiceIds = ListOfIdsAndRev(ids))
 		} else {
-			rawApi.undeleteInvoicesInGroup(groupId, ListOfIdsAndRev(ids))
+			rawApi.undeleteInvoicesInGroup(groupId = groupId, invoiceIds = ListOfIdsAndRev(ids))
 		}.successBody().let { maybeDecrypt(groupId, it) }
 	}
 
@@ -136,18 +136,18 @@ private abstract class AbstractInvoiceBasicFlavouredApi<E : Invoice>(
 		requireIsValidForModification(entity)
 		val encrypted = validateAndMaybeEncrypt(groupId, entity)
 		return if (groupId == null) {
-			rawApi.modifyInvoice(encrypted)
+			rawApi.modifyInvoice(invoiceDto = encrypted)
 		} else {
-			rawApi.modifyInvoiceInGroup(groupId, encrypted)
+			rawApi.modifyInvoiceInGroup(groupId = groupId, invoiceDto = encrypted)
 		}.successBodyOrThrowRevisionConflict().let { maybeDecrypt(groupId, it) }
 	}
 
 	protected suspend fun doModifyInvoices(groupId: String?, entities: List<E>): List<E> = skipRequestOnEmptyList(entities) { invoices ->
 		val encrypted = validateAndMaybeEncrypt(groupId, invoices)
 		return if (groupId == null) {
-			rawApi.modifyInvoices(encrypted)
+			rawApi.modifyInvoices(invoiceDtos = encrypted)
 		} else {
-			rawApi.modifyInvoicesInGroup(groupId, encrypted)
+			rawApi.modifyInvoicesInGroup(groupId = groupId, invoiceDtos = encrypted)
 		}.successBody().let {
 			maybeDecrypt(groupId, it)
 		}
@@ -155,16 +155,16 @@ private abstract class AbstractInvoiceBasicFlavouredApi<E : Invoice>(
 
 	protected suspend fun doGetInvoice(groupId: String?, entityId: String): E? =
 		if (groupId == null) {
-			rawApi.getInvoice(entityId)
+			rawApi.getInvoice(invoiceId = entityId)
 		} else {
 			rawApi.getInvoiceInGroup(groupId = groupId, invoiceId = entityId)
 		}.successBodyOrNull404()?.let { maybeDecrypt(groupId, it) }
 
 	suspend fun doGetInvoices(groupId: String?, entityIds: List<String>) = skipRequestOnEmptyList(entityIds) { ids ->
 		if (groupId == null) {
-			rawApi.getInvoices(ListOfIds(ids))
+			rawApi.getInvoices(invoiceIds = ListOfIds(ids))
 		} else {
-			rawApi.getInvoicesInGroup(groupId, ListOfIds(ids))
+			rawApi.getInvoicesInGroup(groupId = groupId, invoiceIds = ListOfIds(ids))
 		}.successBody().let { maybeDecrypt(groupId, it) }
 	}
 

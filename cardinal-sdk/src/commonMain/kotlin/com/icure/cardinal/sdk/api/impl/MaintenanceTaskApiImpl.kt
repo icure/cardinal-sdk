@@ -55,25 +55,30 @@ private abstract class AbstractMaintenanceTaskBasicFlavouredApi<E : MaintenanceT
 	override suspend fun createMaintenanceTask(entity: E): E {
 		require(entity.securityMetadata != null) { "Entity must have security metadata initialized. Make sure to use the `withEncryptionMetadata` method." }
 		return rawApi.createMaintenanceTask(
-			validateAndMaybeEncrypt(null, entity)
+			maintenanceTaskDto = validateAndMaybeEncrypt(null, entity)
 		).successBody().let {
 			maybeDecrypt(null, it)
 		}
 	}
 
 	override suspend fun undeleteMaintenanceTaskById(id: String, rev: String): E =
-		rawApi.undeleteMaintenanceTask(id, rev).successBodyOrThrowRevisionConflict().let { maybeDecrypt(null, it) }
+		rawApi.undeleteMaintenanceTask(maintenanceTaskId = id, rev = rev)
+			.successBodyOrThrowRevisionConflict()
+			.let { maybeDecrypt(null, it) }
 
 	override suspend fun modifyMaintenanceTask(entity: E): E =
-		rawApi.modifyMaintenanceTask(validateAndMaybeEncrypt(null, entity)).successBodyOrThrowRevisionConflict().let { maybeDecrypt(null, it) }
+		rawApi.modifyMaintenanceTask(maintenanceTaskDto = validateAndMaybeEncrypt(null, entity))
+			.successBodyOrThrowRevisionConflict()
+			.let { maybeDecrypt(null, it) }
 
 
 	override suspend fun getMaintenanceTask(entityId: String): E? =
-		rawApi.getMaintenanceTask(entityId).successBodyOrNull404()?.let {
+		rawApi.getMaintenanceTask(maintenanceTaskId = entityId).successBodyOrNull404()?.let {
 			maybeDecrypt(null, it)
 		}
 
-	override suspend fun getMaintenanceTasks(entityIds: List<String>): List<E> = rawApi.getMaintenanceTasks(ListOfIds(entityIds)).successBody().let { maybeDecrypt(it) }
+	override suspend fun getMaintenanceTasks(entityIds: List<String>): List<E> =
+		rawApi.getMaintenanceTasks(ids = ListOfIds(entityIds)).successBody().let { maybeDecrypt(it) }
 }
 
 @InternalIcureApi
@@ -97,7 +102,7 @@ private abstract class AbstractMaintenanceTaskFlavouredApi<E : MaintenanceTask>(
 			delegates.keyAsLocalDataOwnerReferences(),
 			true,
 			{ getMaintenanceTask(it) ?: throw NotFoundException("MaintenanceTask $it not found") },
-			{ maybeDecrypt(null, rawApi.bulkShare(it).successBody()) }
+			{ maybeDecrypt(null, rawApi.bulkShare(request = it).successBody()) }
 		).updatedEntityOrThrow()
 
 	override suspend fun filterMaintenanceTasksBySorted(filter: SortableFilterOptions<MaintenanceTask>): PaginatedListIterator<E> =
@@ -105,11 +110,13 @@ private abstract class AbstractMaintenanceTaskFlavouredApi<E : MaintenanceTask>(
 
 	override suspend fun filterMaintenanceTasksBy(filter: FilterOptions<MaintenanceTask>): PaginatedListIterator<E> =
 		IdsPageIterator(
-			rawApi.matchMaintenanceTasksBy(mapMaintenanceTaskFilterOptions(
-				filter,
-				config.crypto.dataOwnerApi.getCurrentDataOwnerId(),
-				config.crypto.entity
-			)).successBody(),
+			rawApi.matchMaintenanceTasksBy(
+				filter = mapMaintenanceTaskFilterOptions(
+					filter,
+					config.crypto.dataOwnerApi.getCurrentDataOwnerId(),
+					config.crypto.entity
+				)
+			).successBody(),
 			this::getMaintenanceTasks
 		)
 }
@@ -120,21 +127,21 @@ private class AbstractMaintenanceTaskBasicFlavourlessApi(val rawApi: RawMaintena
 
 	@Deprecated("Deletion without rev is unsafe")
 	override suspend fun deleteMaintenanceTaskUnsafe(entityId: String): DocIdentifier =
-		rawApi.deleteMaintenanceTask(entityId).successBodyOrThrowRevisionConflict()
+		rawApi.deleteMaintenanceTask(maintenanceTaskId = entityId).successBodyOrThrowRevisionConflict()
 
 	@Deprecated("Deletion without rev is unsafe")
 	override suspend fun deleteMaintenanceTasksUnsafe(entityIds: List<String>): List<DocIdentifier> =
-		rawApi.deleteMaintenanceTasks(ListOfIds(entityIds)).successBody()
+		rawApi.deleteMaintenanceTasks(maintenanceTaskIds = ListOfIds(entityIds)).successBody()
 
 	override suspend fun deleteMaintenanceTaskById(entityId: String, rev: String): DocIdentifier =
-		rawApi.deleteMaintenanceTask(entityId, rev).successBodyOrThrowRevisionConflict()
+		rawApi.deleteMaintenanceTask(maintenanceTaskId = entityId, rev = rev).successBodyOrThrowRevisionConflict()
 
 	override suspend fun purgeMaintenanceTaskById(id: String, rev: String) {
-		rawApi.purgeMaintenanceTask(id, rev).successBodyOrThrowRevisionConflict()
+		rawApi.purgeMaintenanceTask(maintenanceTaskId = id, rev = rev).successBodyOrThrowRevisionConflict()
 	}
 
 	override suspend fun deleteMaintenanceTasksByIds(entityIds: List<StoredDocumentIdentifier>): List<DocIdentifier> =
-		rawApi.deleteMaintenanceTasksWithRev(ListOfIdsAndRev(entityIds)).successBody()
+		rawApi.deleteMaintenanceTasksWithRev(maintenanceTaskIds = ListOfIdsAndRev(entityIds)).successBody()
 }
 
 @InternalIcureApi
@@ -336,11 +343,13 @@ internal class MaintenanceTaskApiImpl(
 		matchMaintenanceTasksBy(filter)
 
 	override suspend fun matchMaintenanceTasksBy(filter: FilterOptions<MaintenanceTask>): List<String> =
-		rawApi.matchMaintenanceTasksBy(mapMaintenanceTaskFilterOptions(
-			filter,
-			config.crypto.dataOwnerApi.getCurrentDataOwnerId(),
-			config.crypto.entity
-		)).successBody()
+		rawApi.matchMaintenanceTasksBy(
+			filter = mapMaintenanceTaskFilterOptions(
+				filter,
+				config.crypto.dataOwnerApi.getCurrentDataOwnerId(),
+				config.crypto.entity
+			)
+		).successBody()
 }
 
 @InternalIcureApi
@@ -374,11 +383,13 @@ internal class MaintenanceTaskBasicApiImpl(
 		matchMaintenanceTasksBy(filter)
 
 	override suspend fun matchMaintenanceTasksBy(filter: BaseFilterOptions<MaintenanceTask>): List<String> =
-		rawApi.matchMaintenanceTasksBy(mapMaintenanceTaskFilterOptions(
-			filter,
-			null,
-			null
-		)).successBody()
+		rawApi.matchMaintenanceTasksBy(
+			filter = mapMaintenanceTaskFilterOptions(
+				filter,
+				null,
+				null
+			)
+		).successBody()
 
 	override suspend fun subscribeToEvents(
 		events: Set<SubscriptionEventType>,

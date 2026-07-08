@@ -95,9 +95,9 @@ private abstract class AbstractAccessLogBasicFlavouredApi<E : AccessLog>(
 		val encrypted = validateAndMaybeEncrypt(groupId, entity)
 		return (
 			if (groupId == null) {
-				rawApi.createAccessLog(encrypted)
+				rawApi.createAccessLog(accessLogDto = encrypted)
 			} else {
-				rawApi.createAccessLogInGroup(groupId, encrypted)
+				rawApi.createAccessLogInGroup(groupId = groupId, accessLogDto = encrypted)
 			}
 		).successBody().let {
 			maybeDecrypt(groupId, it)
@@ -107,9 +107,9 @@ private abstract class AbstractAccessLogBasicFlavouredApi<E : AccessLog>(
 	protected suspend fun doCreateAccessLogs(groupId: String?, entities: List<E>): List<E> = skipRequestOnEmptyList(entities) { accessLogs ->
 		val encrypted = validateAndMaybeEncrypt(entitiesGroupId = groupId, entities = accessLogs)
 		if (groupId == null) {
-			rawApi.createAccessLogs(encrypted)
+			rawApi.createAccessLogs(accessLogDtos = encrypted)
 		} else {
-			rawApi.createAccessLogsInGroup(groupId, encrypted)
+			rawApi.createAccessLogsInGroup(groupId = groupId, accessLogsDto = encrypted)
 		}.successBody().let {
 			maybeDecrypt(groupId, it)
 		}
@@ -119,8 +119,8 @@ private abstract class AbstractAccessLogBasicFlavouredApi<E : AccessLog>(
 		requireIsValidForModification(entity)
 		val encrypted = validateAndMaybeEncrypt(groupId, entity)
 		return (
-			if (groupId == null) rawApi.modifyAccessLog(encrypted)
-			else rawApi.modifyAccessLogInGroup(groupId, encrypted)
+			if (groupId == null) rawApi.modifyAccessLog(accessLogDto = encrypted)
+			else rawApi.modifyAccessLogInGroup(groupId = groupId, accessLogDto = encrypted)
 		).successBodyOrThrowRevisionConflict().let {
 			maybeDecrypt(groupId, it)
 		}
@@ -129,8 +129,8 @@ private abstract class AbstractAccessLogBasicFlavouredApi<E : AccessLog>(
 	protected suspend fun doModifyAccessLogs(groupId: String?, entities: List<E>): List<E> = skipRequestOnEmptyList(entities) { accessLogs ->
 		val encrypted = validateAndMaybeEncrypt(groupId, accessLogs)
 		return (
-			if (groupId == null) rawApi.modifyAccessLogs(encrypted)
-			else rawApi.modifyAccessLogsInGroup(groupId, encrypted)
+			if (groupId == null) rawApi.modifyAccessLogs(accessLogDtos = encrypted)
+			else rawApi.modifyAccessLogsInGroup(groupId = groupId, accessLogsDto = encrypted)
 		).successBodyOrThrowRevisionConflict().let {
 			maybeDecrypt(groupId, it)
 		}
@@ -139,7 +139,7 @@ private abstract class AbstractAccessLogBasicFlavouredApi<E : AccessLog>(
 	protected suspend fun doGetAccessLog(groupId: String?, entityId: String): E? =
 		(
 			if (groupId == null)
-				rawApi.getAccessLog(entityId)
+				rawApi.getAccessLog(accessLogId = entityId)
 			else
 				rawApi.getAccessLogInGroup(groupId = groupId, accessLogId = entityId)
 		).successBodyOrNull404()?.let {
@@ -150,9 +150,9 @@ private abstract class AbstractAccessLogBasicFlavouredApi<E : AccessLog>(
 		maybeDecrypt(
 			groupId,
 			if (groupId == null)
-				rawApi.getAccessLogByIds(ListOfIds(ids)).successBody()
+				rawApi.getAccessLogByIds(accessLogIds = ListOfIds(ids)).successBody()
 			else
-				rawApi.getAccessLogsInGroup(groupId, ListOfIds(ids)).successBody()
+				rawApi.getAccessLogsInGroup(groupId = groupId, accessLogIds = ListOfIds(ids)).successBody()
 		)
 	}
 
@@ -174,10 +174,13 @@ private class AccessLogBasicFlavouredApiImpl<E : AccessLog>(
 	}
 
 	override suspend fun undeleteAccessLogById(id: String, rev: String): E =
-		rawApi.undeleteAccessLog(id, rev).successBodyOrThrowRevisionConflict().let { maybeDecrypt(entitiesGroupId = null, entity = it) }
+		rawApi.undeleteAccessLog(
+			accessLogId = id,
+			rev = rev,
+		).successBodyOrThrowRevisionConflict().let { maybeDecrypt(entitiesGroupId = null, entity = it) }
 
 	override suspend fun undeleteAccessLogsByIds(entityIds: List<StoredDocumentIdentifier>): List<E> = skipRequestOnEmptyList(entityIds) { ids ->
-		rawApi.undeleteAccessLogs(ListOfIdsAndRev(ids = ids)).successBody().let {
+		rawApi.undeleteAccessLogs(accessLogIds = ListOfIdsAndRev(ids = ids)).successBody().let {
 			maybeDecrypt(entitiesGroupId = null, entities = it)
 		}
 	}
@@ -214,7 +217,7 @@ private class AccessLogBasicFlavouredInGroupApiImpl<E : AccessLog>(
 	}
 
 	override suspend fun undeleteAccessLogById(entityId: GroupScoped<StoredDocumentIdentifier>): GroupScoped<E> =
-		rawApi.undeleteAccessLogInGroup(entityId.groupId, entityId.entity.id, entityId.entity.rev)
+		rawApi.undeleteAccessLogInGroup(groupId = entityId.groupId, accessLogId = entityId.entity.id, rev = entityId.entity.rev)
 			.successBodyOrThrowRevisionConflict()
 			.let { GroupScoped(entity = maybeDecrypt(entitiesGroupId = entityId.groupId, entity = it), groupId = entityId.groupId) }
 
@@ -273,9 +276,9 @@ private abstract class AbstractAccessLogFlavouredApi<E : AccessLog>(
 				maybeDecrypt(
 					groupId,
 					if (groupId == null)
-						rawApi.bulkShare(it).successBody()
+						rawApi.bulkShare(request = it).successBody()
 					else
-						rawApi.bulkShare(it, groupId).successBody()
+						rawApi.bulkShare(request = it, groupId = groupId).successBody()
 				)
 			}
 		).updatedEntityOrThrow()
@@ -287,7 +290,7 @@ private abstract class AbstractAccessLogFlavouredApi<E : AccessLog>(
 	): PaginatedListIterator<T> =
 		IdsPageIterator(
 			rawApi.matchAccessLogsBy(
-				mapAccessLogFilterOptions(
+				filter = mapAccessLogFilterOptions(
 					filter,
 					config,
 					groupId
@@ -373,17 +376,17 @@ private abstract class AbstractAccessLogBasicFlavourless(
 	protected suspend fun doDeleteAccessLogById(groupId: String?, entityId: String, rev: String): StoredDocumentIdentifier =
 		(
 			if (groupId == null)
-				rawApi.deleteAccessLog(entityId, rev)
+				rawApi.deleteAccessLog(accessLogId = entityId, rev = rev)
 			else
-				rawApi.deleteAccessLogInGroup(groupId, entityId, rev)
+				rawApi.deleteAccessLogInGroup(groupId = groupId, accessLogId = entityId, rev = rev)
 		).successBodyOrThrowRevisionConflict().toStoredDocumentIdentifier()
 
 	protected suspend fun doDeleteAccessLogsByIds(groupId: String?, entityIds: List<StoredDocumentIdentifier>): List<StoredDocumentIdentifier> =
 		skipRequestOnEmptyList(entityIds) { ids ->
 			if (groupId == null) {
-				rawApi.deleteAccessLogsWithRev(ListOfIdsAndRev(ids))
+				rawApi.deleteAccessLogsWithRev(accessLogIds = ListOfIdsAndRev(ids))
 			} else {
-				rawApi.deleteAccessLogsInGroup(groupId, ListOfIdsAndRev(ids))
+				rawApi.deleteAccessLogsInGroup(groupId = groupId, accessLogIdsAndRevs = ListOfIdsAndRev(ids))
 			}.successBody().toStoredDocumentIdentifier()
 		}
 
@@ -399,9 +402,9 @@ private abstract class AbstractAccessLogBasicFlavourless(
 	protected suspend fun doPurgeAccessLogsByIds(groupId: String?, entityIds: List<StoredDocumentIdentifier>): List<StoredDocumentIdentifier> =
 		skipRequestOnEmptyList(entityIds) { ids ->
 			if (groupId == null) {
-				rawApi.purgeAccessLogs(ListOfIdsAndRev(ids))
+				rawApi.purgeAccessLogs(accessLogIds = ListOfIdsAndRev(ids))
 			} else {
-				rawApi.purgeAccessLogsInGroup(groupId, ListOfIdsAndRev(ids))
+				rawApi.purgeAccessLogsInGroup(groupId = groupId, accessLogIdsAndRevs = ListOfIdsAndRev(ids))
 			}.successBody().toStoredDocumentIdentifier()
 		}
 }
@@ -646,7 +649,7 @@ private class AccessLogApiImpl(
 	private suspend fun doMatchAccessLogsBy(groupId: String?, filter: FilterOptions<AccessLog>): List<String> =
 		if (groupId == null) {
 			rawApi.matchAccessLogsBy(
-				mapAccessLogFilterOptions(
+				filter = mapAccessLogFilterOptions(
 					filter,
 					config,
 					groupId
@@ -654,12 +657,12 @@ private class AccessLogApiImpl(
 			).successBody()
 		} else {
 			rawApi.matchAccessLogsInGroupBy(
-				groupId = groupId,
 				filter = mapAccessLogFilterOptions(
 					filter,
 					config,
 					groupId
-				)
+				),
+				groupId = groupId,
 			).successBody()
 		}
 }
@@ -716,7 +719,7 @@ private class AccessLogBasicApiImpl(
 	private suspend fun doMatchAccessLogsBy(groupId: String?, filter: BaseFilterOptions<AccessLog>): List<String> =
 		if (groupId == null) {
 			rawApi.matchAccessLogsBy(
-				mapAccessLogFilterOptions(
+				filter = mapAccessLogFilterOptions(
 					filter,
 					config,
 					groupId
@@ -724,12 +727,12 @@ private class AccessLogBasicApiImpl(
 			).successBody()
 		} else {
 			rawApi.matchAccessLogsInGroupBy(
-				groupId = groupId,
 				filter = mapAccessLogFilterOptions(
 					filter,
 					config,
 					groupId
-				)
+				),
+				groupId = groupId,
 			).successBody()
 		}
 

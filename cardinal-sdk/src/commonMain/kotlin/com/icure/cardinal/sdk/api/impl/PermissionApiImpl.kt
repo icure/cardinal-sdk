@@ -13,7 +13,7 @@ internal class PermissionApiImpl(
 		userId: String,
 		permissions: Permission,
 	) = rawApi.modifyUserPermissions(
-		userId,
-		permissions,
+		userId = userId,
+		permissions = permissions,
 	).successBody()
 }
