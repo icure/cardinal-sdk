@@ -19,11 +19,11 @@ internal class RoleApiImpl(
 
 	override suspend fun getAllRoles() = rawApi.getRoles().successBody()
 
-	override suspend fun getAllRolesInGroup(groupId: String): List<Role> = rawApi.getRolesInGroup(groupId).successBody()
+	override suspend fun getAllRolesInGroup(groupId: String): List<Role> = rawApi.getRolesInGroup(groupId = groupId).successBody()
 
-	override suspend fun getRole(roleId: String): Role? = rawApi.getRole(roleId).successBodyOrNull404()
+	override suspend fun getRole(roleId: String): Role? = rawApi.getRole(roleId = roleId).successBodyOrNull404()
 
-	override suspend fun getRoles(rolesIds: List<String>): List<Role> = rawApi.getRolesByIds(ListOfIds(rolesIds)).successBody()
+	override suspend fun getRoles(rolesIds: List<String>): List<Role> = rawApi.getRolesByIds(roleIds = ListOfIds(rolesIds)).successBody()
 
 	override suspend fun createRole(
 		name: String,
@@ -58,9 +58,9 @@ internal class RoleApiImpl(
 	override suspend fun modifyRolePermissions(
 		roleId: String,
 		permissions: Set<String>,
-	): Role = rawApi.modifyRolePermissions(roleId, permissions).successBodyOrThrowRevisionConflict()
+	): Role = rawApi.modifyRolePermissions(roleId = roleId, permissions = permissions).successBodyOrThrowRevisionConflict()
 
 	override suspend fun purgeRole(roleId: String, rev: String) {
-		rawApi.purgeRole(roleId, rev).successBodyOrThrowRevisionConflict()
+		rawApi.purgeRole(roleId = roleId, rev = rev).successBodyOrThrowRevisionConflict()
 	}
 }

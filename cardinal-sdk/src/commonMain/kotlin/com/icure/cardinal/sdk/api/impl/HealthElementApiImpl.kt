@@ -98,7 +98,7 @@ private suspend fun RawHealthElementApi.doMatchHealthElementsBy(
 ): List<String> =
 	if (groupId == null) {
 		matchHealthElementsBy(
-			mapHealthElementFilterOptions(
+			filter = mapHealthElementFilterOptions(
 				filter,
 				config,
 				requestGroup = null
@@ -106,12 +106,12 @@ private suspend fun RawHealthElementApi.doMatchHealthElementsBy(
 		)
 	} else {
 		matchHealthElementsInGroupBy(
-			groupId = groupId,
 			filter = mapHealthElementFilterOptions(
 				filter,
 				config,
 				requestGroup = groupId
-			)
+			),
+			groupId = groupId
 		)
 	}.successBody()
 
@@ -133,9 +133,9 @@ private abstract class AbstractHealthElementBasicFlavouredApi<E : HealthElement>
 		requireIsValidForCreation(entity)
 		val encrypted = validateAndMaybeEncrypt(groupId, entity)
 		return if (groupId == null) {
-			rawApi.createHealthElement(encrypted)
+			rawApi.createHealthElement(c = encrypted)
 		} else {
-			rawApi.createHealthElementInGroup(groupId, encrypted)
+			rawApi.createHealthElementInGroup(groupId = groupId, healthElementDto = encrypted)
 		}.successBody().let {
 			maybeDecrypt(groupId, it)
 		}
@@ -144,9 +144,9 @@ private abstract class AbstractHealthElementBasicFlavouredApi<E : HealthElement>
 	protected suspend fun doCreateHealthElements(groupId: String?, entities: List<E>): List<E> = skipRequestOnEmptyList(entities) { healthElements ->
 		val encrypted = validateAndMaybeEncrypt(groupId, healthElements)
 		return if (groupId == null) {
-			rawApi.createHealthElements(encrypted)
+			rawApi.createHealthElements(healthElementDtos = encrypted)
 		} else {
-			rawApi.createHealthElementsInGroup(groupId, encrypted)
+			rawApi.createHealthElementsInGroup(groupId = groupId, healthElementDtos = encrypted)
 		}.successBody().let {
 			maybeDecrypt(groupId, it)
 		}
@@ -154,16 +154,16 @@ private abstract class AbstractHealthElementBasicFlavouredApi<E : HealthElement>
 
 	protected suspend fun doUndeleteHealthElement(groupId: String?, entityId: String, rev: String): E =
 		if (groupId == null) {
-			rawApi.undeleteHealthElement(entityId, rev)
+			rawApi.undeleteHealthElement(healthElementId = entityId, rev = rev)
 		} else {
-			rawApi.undeleteHealthElementInGroup(groupId, entityId, rev)
+			rawApi.undeleteHealthElementInGroup(groupId = groupId, healthElementId = entityId, rev = rev)
 		}.successBodyOrThrowRevisionConflict().let { maybeDecrypt(groupId, it) }
 
 	protected suspend fun doUndeleteHealthElements(groupId: String?, entityIds: List<StoredDocumentIdentifier>): List<E> = skipRequestOnEmptyList(entityIds) { ids ->
 		if (groupId == null) {
-			rawApi.undeleteHealthElements(ListOfIdsAndRev(ids))
+			rawApi.undeleteHealthElements(healthElementIds = ListOfIdsAndRev(ids))
 		} else {
-			rawApi.undeleteHealthElementsInGroup(groupId, ListOfIdsAndRev(ids))
+			rawApi.undeleteHealthElementsInGroup(groupId = groupId, healthElementIds = ListOfIdsAndRev(ids))
 		}.successBody().let { maybeDecrypt(groupId, it) }
 	}
 
@@ -171,18 +171,18 @@ private abstract class AbstractHealthElementBasicFlavouredApi<E : HealthElement>
 		requireIsValidForModification(entity)
 		val encrypted = validateAndMaybeEncrypt(groupId, entity)
 		return if (groupId == null) {
-			rawApi.modifyHealthElement(encrypted)
+			rawApi.modifyHealthElement(healthElementDto = encrypted)
 		} else {
-			rawApi.modifyHealthElementInGroup(groupId, encrypted)
+			rawApi.modifyHealthElementInGroup(groupId = groupId, healthElementDto = encrypted)
 		}.successBodyOrThrowRevisionConflict().let { maybeDecrypt(groupId, it) }
 	}
 
 	protected suspend fun doModifyHealthElements(groupId: String?, entities: List<E>): List<E> = skipRequestOnEmptyList(entities) { healthElements ->
 		val encrypted = validateAndMaybeEncrypt(groupId, healthElements)
 		return if (groupId == null) {
-			rawApi.modifyHealthElements(encrypted)
+			rawApi.modifyHealthElements(healthElementDtos = encrypted)
 		} else {
-			rawApi.modifyHealthElementsInGroup(groupId, encrypted)
+			rawApi.modifyHealthElementsInGroup(groupId = groupId, healthElementDtos = encrypted)
 		}.successBody().let {
 			maybeDecrypt(groupId, it)
 		}
@@ -190,16 +190,16 @@ private abstract class AbstractHealthElementBasicFlavouredApi<E : HealthElement>
 
 	protected suspend fun doGetHealthElement(groupId: String?, entityId: String): E? =
 		if (groupId == null) {
-			rawApi.getHealthElement(entityId)
+			rawApi.getHealthElement(healthElementId = entityId)
 		} else {
 			rawApi.getHealthElementInGroup(groupId = groupId, healthElementId = entityId)
 		}.successBodyOrNull404()?.let { maybeDecrypt(groupId, it) }
 
 	suspend fun doGetHealthElements(groupId: String?, entityIds: List<String>) = skipRequestOnEmptyList(entityIds) { ids ->
 		if (groupId == null) {
-			rawApi.getHealthElements(ListOfIds(ids))
+			rawApi.getHealthElements(healthElementIds = ListOfIds(ids))
 		} else {
-			rawApi.getHealthElementsInGroup(groupId, ListOfIds(ids))
+			rawApi.getHealthElementsInGroup(groupId = groupId, healthElementIds = ListOfIds(ids))
 		}.successBody().let { maybeDecrypt(groupId, it) }
 	}
 }
@@ -306,9 +306,9 @@ private abstract class AbstractHealthElementFlavouredApi<E : HealthElement>(
 				maybeDecrypt(
 					entityGroupId,
 					if (entityGroupId == null)
-						rawApi.bulkShare(it).successBody()
+						rawApi.bulkShare(request = it).successBody()
 					else
-						rawApi.bulkShare(it, entityGroupId).successBody()
+						rawApi.bulkShare(request = it, groupId = entityGroupId).successBody()
 				)
 			}
 		).updatedEntityOrThrow()
@@ -392,34 +392,34 @@ private abstract class AbstractHealthElementBasicFlavourless(
 
 	protected suspend fun doDeleteHealthElement(groupId: String?, entityId: String, rev: String): StoredDocumentIdentifier =
 		if (groupId == null) {
-			rawApi.deleteHealthElement(entityId, rev)
+			rawApi.deleteHealthElement(healthElementId = entityId, rev = rev)
 		} else {
-			rawApi.deleteHealthElementInGroup(groupId, entityId, rev)
+			rawApi.deleteHealthElementInGroup(groupId = groupId, healthElementId = entityId, rev = rev)
 		}.successBodyOrThrowRevisionConflict().toStoredDocumentIdentifier()
 
 	protected suspend fun doDeleteHealthElements(groupId: String?, entityIds: List<StoredDocumentIdentifier>): List<StoredDocumentIdentifier> =
 		skipRequestOnEmptyList(entityIds) { ids ->
 			if (groupId == null) {
-				rawApi.deleteHealthElementsWithRev(ListOfIdsAndRev(ids))
+				rawApi.deleteHealthElementsWithRev(healthElementIds = ListOfIdsAndRev(ids))
 			} else {
-				rawApi.deleteHealthElementsInGroup(groupId, ListOfIdsAndRev(ids))
+				rawApi.deleteHealthElementsInGroup(groupId = groupId, healthElementIds = ListOfIdsAndRev(ids))
 			}.successBody().toStoredDocumentIdentifier()
 		}
 
 	protected suspend fun doPurgeHealthElement(groupId: String?, entityId: String, rev: String) {
 		if (groupId == null) {
-			rawApi.purgeHealthElement(entityId, rev)
+			rawApi.purgeHealthElement(healthElementId = entityId, rev = rev)
 		} else {
-			rawApi.purgeHealthElementInGroup(groupId, entityId, rev)
+			rawApi.purgeHealthElementInGroup(groupId = groupId, healthElementId = entityId, rev = rev)
 		}.successBodyOrThrowRevisionConflict()
 	}
 
 	protected suspend fun doPurgeHealthElements(groupId: String?, entityIds: List<StoredDocumentIdentifier>): List<StoredDocumentIdentifier> =
 		skipRequestOnEmptyList(entityIds) { ids ->
 			if (groupId == null) {
-				rawApi.purgeHealthElements(ListOfIdsAndRev(ids))
+				rawApi.purgeHealthElements(healthElementIds = ListOfIdsAndRev(ids))
 			} else {
-				rawApi.purgeHealthElementsInGroup(groupId, ListOfIdsAndRev(ids))
+				rawApi.purgeHealthElementsInGroup(groupId = groupId, healthElementIds = ListOfIdsAndRev(ids))
 			}.successBody().toStoredDocumentIdentifier()
 		}
 }

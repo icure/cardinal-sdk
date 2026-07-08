@@ -21,101 +21,101 @@ internal abstract class AbstractCalendarItemTypeApi(
 	protected suspend fun doCreateCalendarItemType(groupId: String?, entity: CalendarItemType): CalendarItemType {
 		requireIsValidForCreation(entity)
 		return if (groupId == null) {
-			rawApi.createCalendarItemType(entity)
+			rawApi.createCalendarItemType(calendarItemTypeDto = entity)
 		} else {
-			rawApi.createCalendarItemTypeInGroup(groupId, entity)
+			rawApi.createCalendarItemTypeInGroup(groupId = groupId, calendarItemTypeDto = entity)
 		}.successBody()
 	}
 
 	protected suspend fun doCreateCalendarItemTypes(groupId: String?, entities: List<CalendarItemType>): List<CalendarItemType> =
 		skipRequestOnEmptyList(entities) { calendarItemTypes ->
 			if (groupId == null) {
-				rawApi.createCalendarItemTypes(calendarItemTypes)
+				rawApi.createCalendarItemTypes(calendarItemTypeDtos = calendarItemTypes)
 			} else {
-				rawApi.createCalendarItemTypesInGroup(groupId, calendarItemTypes)
+				rawApi.createCalendarItemTypesInGroup(groupId = groupId, calendarItemTypeDtos = calendarItemTypes)
 			}.successBody()
 		}
 
 	protected suspend fun doGetCalendarItemType(groupId: String?, entityId: String): CalendarItemType? =
 		if (groupId == null) {
-			rawApi.getCalendarItemType(entityId)
+			rawApi.getCalendarItemType(calendarItemTypeId = entityId)
 		} else {
-			rawApi.getCalendarItemTypeInGroup(groupId, entityId)
+			rawApi.getCalendarItemTypeInGroup(groupId = groupId, calendarItemTypeId = entityId)
 		}.successBodyOrNull404()
 
 	protected suspend fun doGetCalendarItemTypes(groupId: String?, entityIds: List<String>): List<CalendarItemType> =
 		skipRequestOnEmptyList(entityIds) { ids ->
 			if (groupId == null) {
-				rawApi.getCalendarItemTypesByIds(ListOfIds(ids))
+				rawApi.getCalendarItemTypesByIds(calendarItemTypeIds = ListOfIds(ids))
 			} else {
-				rawApi.getCalendarItemTypesInGroup(groupId, ListOfIds(ids))
+				rawApi.getCalendarItemTypesInGroup(groupId = groupId, calendarItemTypeIds = ListOfIds(ids))
 			}.successBody()
 		}
 
 	protected suspend fun doModifyCalendarItemType(groupId: String?, entity: CalendarItemType): CalendarItemType {
 		requireIsValidForModification(entity)
 		return if (groupId == null) {
-			rawApi.modifyCalendarItemType(entity)
+			rawApi.modifyCalendarItemType(calendarItemTypeDto = entity)
 		} else {
-			rawApi.modifyCalendarItemTypeInGroup(groupId, entity)
+			rawApi.modifyCalendarItemTypeInGroup(groupId = groupId, calendarItemTypeDto = entity)
 		}.successBodyOrThrowRevisionConflict()
 	}
 
 	protected suspend fun doModifyCalendarItemTypes(groupId: String?, entities: List<CalendarItemType>): List<CalendarItemType> =
 		skipRequestOnEmptyList(entities) { calendarItemTypes ->
 			if (groupId == null) {
-				rawApi.modifyCalendarItemTypes(calendarItemTypes)
+				rawApi.modifyCalendarItemTypes(calendarItemTypeDtos = calendarItemTypes)
 			} else {
-				rawApi.modifyCalendarItemTypesInGroup(groupId, calendarItemTypes)
+				rawApi.modifyCalendarItemTypesInGroup(groupId = groupId, calendarItemTypeDtos = calendarItemTypes)
 			}.successBody()
 		}
 
 	protected suspend fun doDeleteCalendarItemType(groupId: String?, entityId: String, rev: String): StoredDocumentIdentifier =
 		if (groupId == null) {
-			rawApi.deleteCalendarItemType(entityId, rev)
+			rawApi.deleteCalendarItemType(calendarItemTypeId = entityId, rev = rev)
 		} else {
-			rawApi.deleteCalendarItemTypeInGroup(groupId, entityId, rev)
+			rawApi.deleteCalendarItemTypeInGroup(groupId = groupId, calendarItemTypeId = entityId, rev = rev)
 		}.successBodyOrThrowRevisionConflict().toStoredDocumentIdentifier()
 
 	protected suspend fun doDeleteCalendarItemTypes(groupId: String?, entityIds: List<StoredDocumentIdentifier>): List<StoredDocumentIdentifier> =
 		skipRequestOnEmptyList(entityIds) { ids ->
 			if (groupId == null) {
-				rawApi.deleteCalendarItemTypesWithRev(ListOfIdsAndRev(ids))
+				rawApi.deleteCalendarItemTypesWithRev(calendarItemTypeIds = ListOfIdsAndRev(ids))
 			} else {
-				rawApi.deleteCalendarItemTypesInGroup(groupId = groupId, ListOfIdsAndRev(ids))
+				rawApi.deleteCalendarItemTypesInGroup(groupId = groupId, calendarItemIdsAndRevs = ListOfIdsAndRev(ids))
 			}.successBody().map { it.toStoredDocumentIdentifier() }
 		}
 
 	protected suspend fun doUndeleteCalendarItemType(groupId: String?, entityId: String, rev: String): CalendarItemType =
 		if (groupId == null) {
-			rawApi.undeleteCalendarItemType(entityId, rev)
+			rawApi.undeleteCalendarItemType(calendarItemTypeId = entityId, rev = rev)
 		} else {
-			rawApi.undeleteCalendarItemTypeInGroup(groupId, entityId, rev)
+			rawApi.undeleteCalendarItemTypeInGroup(groupId = groupId, calendarItemTypeId = entityId, rev = rev)
 		}.successBodyOrThrowRevisionConflict()
 
 	protected suspend fun doUndeleteCalendarItemTypes(groupId: String?, entityIds: List<StoredDocumentIdentifier>): List<CalendarItemType> =
 		skipRequestOnEmptyList(entityIds) { ids ->
 			if (groupId == null) {
-				rawApi.undeleteCalendarItemTypes(ListOfIdsAndRev(ids))
+				rawApi.undeleteCalendarItemTypes(calendarItemTypeIds = ListOfIdsAndRev(ids))
 			} else {
-				rawApi.undeleteCalendarItemTypesInGroup(groupId = groupId, ListOfIdsAndRev(ids))
+				rawApi.undeleteCalendarItemTypesInGroup(groupId = groupId, calendarItemIdsAndRevs = ListOfIdsAndRev(ids))
 			}.successBody()
 		}
 
 	protected suspend fun doPurgeCalendarItemType(groupId: String?, entityId: String, rev: String) {
 		if (groupId == null) {
-			rawApi.purgeCalendarItemType(entityId, rev)
+			rawApi.purgeCalendarItemType(calendarItemTypeId = entityId, rev = rev)
 		} else {
-			rawApi.purgeCalendarItemTypeInGroup(groupId, entityId, rev)
+			rawApi.purgeCalendarItemTypeInGroup(groupId = groupId, calendarItemTypeId = entityId, rev = rev)
 		}.successBodyOrThrowRevisionConflict()
 	}
 
 	protected suspend fun doPurgeCalendarItemTypes(groupId: String?, entityIds: List<StoredDocumentIdentifier>): List<StoredDocumentIdentifier> =
 		skipRequestOnEmptyList(entityIds) { ids ->
 			if (groupId == null) {
-				rawApi.purgeCalendarItemTypesWithRev(ListOfIdsAndRev(ids))
+				rawApi.purgeCalendarItemTypesWithRev(calendarItemTypeIds = ListOfIdsAndRev(ids))
 			} else {
-				rawApi.purgeCalendarItemTypesInGroup(groupId = groupId, ListOfIdsAndRev(ids))
+				rawApi.purgeCalendarItemTypesInGroup(groupId = groupId, calendarItemIdsAndRevs = ListOfIdsAndRev(ids))
 			}.successBody().map { it.toStoredDocumentIdentifier() }
 		}
 }

@@ -88,9 +88,9 @@ private abstract class AbstractReceiptBasicFlavouredApi<E : Receipt>(
 		requireIsValidForCreation(entity)
 		val encrypted = validateAndMaybeEncrypt(groupId, entity)
 		return if (groupId == null) {
-			rawApi.createReceipt(encrypted)
+			rawApi.createReceipt(receiptDto = encrypted)
 		} else {
-			rawApi.createReceiptInGroup(groupId, encrypted)
+			rawApi.createReceiptInGroup(groupId = groupId, receiptDto = encrypted)
 		}.successBody().let {
 			maybeDecrypt(groupId, it)
 		}
@@ -99,9 +99,9 @@ private abstract class AbstractReceiptBasicFlavouredApi<E : Receipt>(
 	protected suspend fun doCreateReceipts(groupId: String?, entities: List<E>): List<E> = skipRequestOnEmptyList(entities) { receipts ->
 		val encrypted = validateAndMaybeEncrypt(groupId, receipts)
 		return if (groupId == null) {
-			rawApi.createReceipts(encrypted)
+			rawApi.createReceipts(receiptDtos = encrypted)
 		} else {
-			rawApi.createReceiptsInGroup(groupId, encrypted)
+			rawApi.createReceiptsInGroup(groupId = groupId, receiptDtos = encrypted)
 		}.successBody().let {
 			maybeDecrypt(groupId, it)
 		}
@@ -109,16 +109,16 @@ private abstract class AbstractReceiptBasicFlavouredApi<E : Receipt>(
 
 	protected suspend fun doUndeleteReceipt(groupId: String?, entityId: String, rev: String): E =
 		if (groupId == null) {
-			rawApi.undeleteReceipt(entityId, rev)
+			rawApi.undeleteReceipt(receiptId = entityId, rev = rev)
 		} else {
-			rawApi.undeleteReceiptInGroup(groupId, entityId, rev)
+			rawApi.undeleteReceiptInGroup(groupId = groupId, receiptId = entityId, rev = rev)
 		}.successBodyOrThrowRevisionConflict().let { maybeDecrypt(groupId, it) }
 
 	protected suspend fun doUndeleteReceipts(groupId: String?, entityIds: List<StoredDocumentIdentifier>): List<E> = skipRequestOnEmptyList(entityIds) { ids ->
 		if (groupId == null) {
-			rawApi.undeleteReceipts(ListOfIdsAndRev(ids))
+			rawApi.undeleteReceipts(receiptIds = ListOfIdsAndRev(ids))
 		} else {
-			rawApi.undeleteReceiptsInGroup(groupId, ListOfIdsAndRev(ids))
+			rawApi.undeleteReceiptsInGroup(groupId = groupId, receiptIds = ListOfIdsAndRev(ids))
 		}.successBody().let { maybeDecrypt(groupId, it) }
 	}
 
@@ -126,18 +126,18 @@ private abstract class AbstractReceiptBasicFlavouredApi<E : Receipt>(
 		requireIsValidForModification(entity)
 		val encrypted = validateAndMaybeEncrypt(groupId, entity)
 		return if (groupId == null) {
-			rawApi.modifyReceipt(encrypted)
+			rawApi.modifyReceipt(receiptDto = encrypted)
 		} else {
-			rawApi.modifyReceiptInGroup(groupId, encrypted)
+			rawApi.modifyReceiptInGroup(groupId = groupId, receiptDto = encrypted)
 		}.successBodyOrThrowRevisionConflict().let { maybeDecrypt(groupId, it) }
 	}
 
 	protected suspend fun doModifyReceipts(groupId: String?, entities: List<E>): List<E> = skipRequestOnEmptyList(entities) { receipts ->
 		val encrypted = validateAndMaybeEncrypt(groupId, receipts)
 		return if (groupId == null) {
-			rawApi.modifyReceipts(encrypted)
+			rawApi.modifyReceipts(receiptDtos = encrypted)
 		} else {
-			rawApi.modifyReceiptsInGroup(groupId, encrypted)
+			rawApi.modifyReceiptsInGroup(groupId = groupId, receiptDtos = encrypted)
 		}.successBody().let {
 			maybeDecrypt(groupId, it)
 		}
@@ -145,16 +145,16 @@ private abstract class AbstractReceiptBasicFlavouredApi<E : Receipt>(
 
 	protected suspend fun doGetReceipt(groupId: String?, entityId: String): E? =
 		if (groupId == null) {
-			rawApi.getReceipt(entityId)
+			rawApi.getReceipt(receiptId = entityId)
 		} else {
-			rawApi.getReceiptInGroup(groupId, entityId)
+			rawApi.getReceiptInGroup(groupId = groupId, receiptId = entityId)
 		}.successBodyOrNull404()?.let { maybeDecrypt(groupId, it) }
 
 	protected suspend fun doGetReceipts(groupId: String?, entityIds: List<String>): List<E> = skipRequestOnEmptyList(entityIds) { ids ->
 		if (groupId == null) {
-			rawApi.getReceipts(ListOfIds(ids))
+			rawApi.getReceipts(receiptIds = ListOfIds(ids))
 		} else {
-			rawApi.getReceiptsInGroup(groupId, ListOfIds(ids))
+			rawApi.getReceiptsInGroup(groupId = groupId, receiptIds = ListOfIds(ids))
 		}.successBody().let { maybeDecrypt(groupId, it) }
 	}
 }
@@ -190,7 +190,7 @@ private class ReceiptBasicFlavouredApiImpl<E : Receipt>(
 	override suspend fun getReceipts(entityIds: List<String>): List<E> = doGetReceipts(groupId = null, entityIds = entityIds)
 
 	override suspend fun listByReference(reference: String): List<E> =
-		rawApi.listByReference(reference).successBody().let { maybeDecrypt(null, it) }
+		rawApi.listByReference(ref = reference).successBody().let { maybeDecrypt(null, it) }
 }
 
 @InternalIcureApi
@@ -262,9 +262,9 @@ private abstract class AbstractReceiptFlavouredApi<E : Receipt>(
 				maybeDecrypt(
 					entitiesGroupId = entityGroupId,
 					shareResults = if (entityGroupId == null)
-						rawApi.bulkShare(it).successBody()
+						rawApi.bulkShare(request = it).successBody()
 					else
-						rawApi.bulkShare(it, entityGroupId).successBody()
+						rawApi.bulkShare(request = it, groupId = entityGroupId).successBody()
 				)
 			}
 		).updatedEntityOrThrow()
@@ -361,10 +361,10 @@ private abstract class AbstractReceiptBasicFlavourless(
 		}
 
 	suspend fun getRawReceiptAttachment(receiptId: String, attachmentId: String): ByteArray =
-		rawApi.getReceiptAttachment(receiptId, attachmentId).successBody()
+		rawApi.getReceiptAttachment(receiptId = receiptId, attachmentId = attachmentId).successBody()
 
 	suspend fun setRawReceiptAttachment(receiptId: String, rev: String, blobType: String, attachment: ByteArray): EncryptedReceipt =
-		rawApi.setReceiptAttachment(receiptId, rev, blobType, attachment).successBody()
+		rawApi.setReceiptAttachment(receiptId = receiptId, blobType = blobType, rev = rev, payload = attachment).successBody()
 }
 
 @InternalIcureApi

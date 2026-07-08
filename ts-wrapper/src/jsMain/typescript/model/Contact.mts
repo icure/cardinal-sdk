@@ -9,7 +9,7 @@ import {ICureDocument} from './base/ICureDocument.mjs';
 import {Identifier} from './base/Identifier.mjs';
 import {StoredDocument} from './base/StoredDocument.mjs';
 import {Address, DecryptedAddress, EncryptedAddress} from './embed/Address.mjs';
-import {Annotation} from './embed/Annotation.mjs';
+import {Annotation, DecryptedAnnotation, EncryptedAnnotation} from './embed/Annotation.mjs';
 import {ContactParticipant} from './embed/ContactParticipant.mjs';
 import {Delegation} from './embed/Delegation.mjs';
 import {Encryptable} from './embed/Encryptable.mjs';
@@ -314,7 +314,7 @@ export class DecryptedContact {
 	 *
 	 *  Comments and notes recorded by a healthcare party about this contact.
 	 */
-	notes: Array<Annotation> = [];
+	notes: Array<DecryptedAnnotation> = [];
 
 	readonly isEncrypted: false = false;
 
@@ -435,7 +435,7 @@ export class DecryptedContact {
 			),
 			encryptedSelf: expectString(extractEntry(jCpy, 'encryptedSelf', false, path), true, [...path, ".encryptedSelf"]) as Base64String,
 			securityMetadata: expectObject(extractEntry(jCpy, 'securityMetadata', false, path), true, ignoreUnknownKeys, [...path, ".securityMetadata"], SecurityMetadata.fromJSON),
-			notes: expectArray(extractEntry(jCpy, 'notes', false, path), false, [...path, ".notes"], (x0, p0) => expectObject(x0, false, ignoreUnknownKeys, p0, Annotation.fromJSON)),
+			notes: expectArray(extractEntry(jCpy, 'notes', false, path), false, [...path, ".notes"], (x0, p0) => expectObject(x0, false, ignoreUnknownKeys, p0, DecryptedAnnotation.fromJSON)),
 		})
 		if (!ignoreUnknownKeys) {
 			const unused = Object.keys(jCpy)
@@ -642,7 +642,7 @@ export class EncryptedContact {
 	 *
 	 *  Comments and notes recorded by a healthcare party about this contact.
 	 */
-	notes: Array<Annotation> = [];
+	notes: Array<EncryptedAnnotation> = [];
 
 	readonly isEncrypted: true = true;
 
@@ -763,7 +763,7 @@ export class EncryptedContact {
 			),
 			encryptedSelf: expectString(extractEntry(jCpy, 'encryptedSelf', false, path), true, [...path, ".encryptedSelf"]) as Base64String,
 			securityMetadata: expectObject(extractEntry(jCpy, 'securityMetadata', false, path), true, ignoreUnknownKeys, [...path, ".securityMetadata"], SecurityMetadata.fromJSON),
-			notes: expectArray(extractEntry(jCpy, 'notes', false, path), false, [...path, ".notes"], (x0, p0) => expectObject(x0, false, ignoreUnknownKeys, p0, Annotation.fromJSON)),
+			notes: expectArray(extractEntry(jCpy, 'notes', false, path), false, [...path, ".notes"], (x0, p0) => expectObject(x0, false, ignoreUnknownKeys, p0, EncryptedAnnotation.fromJSON)),
 		})
 		if (!ignoreUnknownKeys) {
 			const unused = Object.keys(jCpy)

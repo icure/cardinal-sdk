@@ -29,107 +29,107 @@ internal abstract class AbstractCodeApi(
 	protected suspend fun doCreateCode(groupId: String?, entity: Code): Code {
 		requireIsValidForCreation(entity)
 		return if (groupId == null) {
-			rawApi.createCode(entity)
+			rawApi.createCode(c = entity)
 		} else {
-			rawApi.createCodeInGroup(groupId, entity)
+			rawApi.createCodeInGroup(groupId = groupId, c = entity)
 		}.successBody()
 	}
 
 	protected suspend fun doCreateCodes(groupId: String?, entities: List<Code>): List<Code> =
 		skipRequestOnEmptyList(entities) { calendarItemTypes ->
 			if (groupId == null) {
-				rawApi.createCodes(calendarItemTypes)
+				rawApi.createCodes(codeBatch = calendarItemTypes)
 			} else {
-				rawApi.createCodesInGroup(groupId, calendarItemTypes)
+				rawApi.createCodesInGroup(groupId = groupId, codeBatch = calendarItemTypes)
 			}.successBody()
 		}
 
 	protected suspend fun doGetCode(groupId: String?, entityId: String): Code? =
 		if (groupId == null) {
-			rawApi.getCode(entityId)
+			rawApi.getCode(codeId = entityId)
 		} else {
-			rawApi.getCodeInGroup(groupId, entityId)
+			rawApi.getCodeInGroup(groupId = groupId, codeId = entityId)
 		}.successBodyOrNull404()
 
 	protected suspend fun doGetCodes(groupId: String?, entityIds: List<String>): List<Code> =
 		skipRequestOnEmptyList(entityIds) { ids ->
 			if (groupId == null) {
-				rawApi.getCodes(ListOfIds(ids))
+				rawApi.getCodes(codeIds = ListOfIds(ids))
 			} else {
-				rawApi.getCodesInGroup(groupId, ListOfIds(ids))
+				rawApi.getCodesInGroup(groupId = groupId, codeIds = ListOfIds(ids))
 			}.successBody()
 		}
 
 	protected suspend fun doModifyCode(groupId: String?, entity: Code): Code {
 		requireIsValidForModification(entity)
 		return if (groupId == null) {
-			rawApi.modifyCode(entity)
+			rawApi.modifyCode(codeDto = entity)
 		} else {
-			rawApi.modifyCodeInGroup(groupId, entity)
+			rawApi.modifyCodeInGroup(groupId = groupId, code = entity)
 		}.successBodyOrThrowRevisionConflict()
 	}
 
 	protected suspend fun doModifyCodes(groupId: String?, entities: List<Code>): List<Code> =
 		skipRequestOnEmptyList(entities) { calendarItemTypes ->
 			if (groupId == null) {
-				rawApi.modifyCodes(calendarItemTypes)
+				rawApi.modifyCodes(codeBatch = calendarItemTypes)
 			} else {
-				rawApi.modifyCodesInGroup(groupId, calendarItemTypes)
+				rawApi.modifyCodesInGroup(groupId = groupId, codeBatch = calendarItemTypes)
 			}.successBody()
 		}
 
 	protected suspend fun doDeleteCode(groupId: String?, entityId: String, rev: String): StoredDocumentIdentifier =
 		if (groupId == null) {
-			rawApi.deleteCode(entityId, rev)
+			rawApi.deleteCode(codeId = entityId, rev = rev)
 		} else {
-			rawApi.deleteCodeInGroup(groupId, entityId, rev)
+			rawApi.deleteCodeInGroup(groupId = groupId, codeId = entityId, rev = rev)
 		}.successBodyOrThrowRevisionConflict().toStoredDocumentIdentifier()
 
 	protected suspend fun doDeleteCodes(groupId: String?, entityIds: List<StoredDocumentIdentifier>): List<StoredDocumentIdentifier> =
 		skipRequestOnEmptyList(entityIds) { ids ->
 			if (groupId == null) {
-				rawApi.deleteCodes(ListOfIdsAndRev(ids))
+				rawApi.deleteCodes(codeIds = ListOfIdsAndRev(ids))
 			} else {
-				rawApi.deleteCodesInGroup(groupId = groupId, ListOfIdsAndRev(ids))
+				rawApi.deleteCodesInGroup(groupId = groupId, codeIds = ListOfIdsAndRev(ids))
 			}.successBody().map { it.toStoredDocumentIdentifier() }
 		}
 
 	protected suspend fun doUndeleteCode(groupId: String?, entityId: String, rev: String): Code =
 		if (groupId == null) {
-			rawApi.undeleteCode(entityId, rev)
+			rawApi.undeleteCode(codeId = entityId, rev = rev)
 		} else {
-			rawApi.undeleteCodeInGroup(groupId, entityId, rev)
+			rawApi.undeleteCodeInGroup(groupId = groupId, codeId = entityId, rev = rev)
 		}.successBodyOrThrowRevisionConflict()
 
 	protected suspend fun doUndeleteCodes(groupId: String?, entityIds: List<StoredDocumentIdentifier>): List<Code> =
 		skipRequestOnEmptyList(entityIds) { ids ->
 			if (groupId == null) {
-				rawApi.undeleteCodes(ListOfIdsAndRev(ids))
+				rawApi.undeleteCodes(codeIds = ListOfIdsAndRev(ids))
 			} else {
-				rawApi.undeleteCodesInGroup(groupId = groupId, ListOfIdsAndRev(ids))
+				rawApi.undeleteCodesInGroup(groupId = groupId, codeIds = ListOfIdsAndRev(ids))
 			}.successBody()
 		}
 
 	protected suspend fun doPurgeCode(groupId: String?, entityId: String, rev: String) {
 		if (groupId == null) {
-			rawApi.purgeCode(entityId, rev)
+			rawApi.purgeCode(codeId = entityId, rev = rev)
 		} else {
-			rawApi.purgeCodeInGroup(groupId, entityId, rev)
+			rawApi.purgeCodeInGroup(groupId = groupId, codeId = entityId, rev = rev)
 		}.successBodyOrThrowRevisionConflict()
 	}
 
 	protected suspend fun doPurgeCodes(groupId: String?, entityIds: List<StoredDocumentIdentifier>): List<StoredDocumentIdentifier> =
 		skipRequestOnEmptyList(entityIds) { ids ->
 			if (groupId == null) {
-				rawApi.purgeCodes(ListOfIdsAndRev(ids))
+				rawApi.purgeCodes(codeIds = ListOfIdsAndRev(ids))
 			} else {
-				rawApi.purgeCodesInGroup(groupId = groupId, ListOfIdsAndRev(ids))
+				rawApi.purgeCodesInGroup(groupId = groupId, codeIds = ListOfIdsAndRev(ids))
 			}.successBody().map { it.toStoredDocumentIdentifier() }
 		}
 
 	protected suspend fun doMatchCodesBy(groupId: String?, filter: BaseFilterOptions<Code>): List<String> =
 		if (groupId == null) {
-			rawApi.matchCodesBy(mapCodeFilterOptions(filter, config))
+			rawApi.matchCodesBy(filter = mapCodeFilterOptions(filter, config))
 		} else {
 			rawApi.matchCodesBy(groupId = groupId, filter = mapCodeFilterOptions(filter, config, groupId))
 		}.successBody()
@@ -144,28 +144,30 @@ internal class CodeApiImpl(
 
 	override val inGroup = CodeInGroupApiImpl(rawApi, config)
 
-	override suspend fun listCodeTypesBy(region: String?, type: String?): List<String> = rawApi.listCodeTypesBy(region, type).successBody()
+	override suspend fun listCodeTypesBy(region: String?, type: String?): List<String> =
+		rawApi.listCodeTypesBy(region = region, type = type).successBody()
 
-	override suspend fun listTagTypesBy(region: String?, type: String?): List<String> = rawApi.listTagTypesBy(region, type).successBody()
+	override suspend fun listTagTypesBy(region: String?, type: String?): List<String> =
+		rawApi.listTagTypesBy(region = region, type = type).successBody()
 
 	override suspend fun isCodeValid(
 		type: String,
 		code: String,
 		version: String?,
-	): BooleanResponse = rawApi.isCodeValid(type, code, version).successBody()
+	): BooleanResponse = rawApi.isCodeValid(type = type, code = code, version = version).successBody()
 
 	override suspend fun getCodeByRegionLanguageTypeLabel(
 		region: String,
 		label: String,
 		type: String,
 		languages: String?,
-	): Code? = rawApi.getCodeByRegionLanguageTypeLabelOr404(region, label, type, languages).successBodyOrNull404()
+	): Code? = rawApi.getCodeByRegionLanguageTypeLabelOr404(region = region, label = label, type = type, languages = languages).successBodyOrNull404()
 
 	override suspend fun getCodeWithParts(
 		type: String,
 		code: String,
 		version: String,
-	): Code? = rawApi.getCodeWithParts(type, code, version).successBodyOrNull404()
+	): Code? = rawApi.getCodeWithParts(type = type, code = code, version = version).successBodyOrNull404()
 
 	override suspend fun createCode(code: Code): Code = doCreateCode(groupId = null, code)
 

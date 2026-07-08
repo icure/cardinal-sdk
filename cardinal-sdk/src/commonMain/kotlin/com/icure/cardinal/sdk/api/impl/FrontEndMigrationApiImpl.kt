@@ -12,16 +12,19 @@ internal  class FrontEndMigrationApiImpl(
 	private val rawApi: RawFrontEndMigrationApi,
 ) : FrontEndMigrationApi {
 	override suspend fun getFrontEndMigration(frontEndMigrationId: String) =
-		rawApi.getFrontEndMigration(frontEndMigrationId).successBodyOrNull404()
+		rawApi.getFrontEndMigration(frontEndMigrationId = frontEndMigrationId).successBodyOrNull404()
 
 	override suspend fun createFrontEndMigration(frontEndMigration: FrontEndMigration) =
-		rawApi.createFrontEndMigration(frontEndMigration).successBody()
+		rawApi.createFrontEndMigration(frontEndMigrationDto = frontEndMigration).successBody()
 
 	override suspend fun getFrontEndMigrations() = rawApi.getFrontEndMigrations().successBody()
 
-	override suspend fun deleteFrontEndMigration(frontEndMigrationId: String) = rawApi.deleteFrontEndMigration(frontEndMigrationId).successBody()
+	override suspend fun deleteFrontEndMigration(frontEndMigrationId: String) =
+		rawApi.deleteFrontEndMigration(frontEndMigrationId = frontEndMigrationId).successBody()
 
-	override suspend fun getFrontEndMigrationByName(frontEndMigrationName: String) = rawApi.getFrontEndMigrationByName(frontEndMigrationName).successBody()
+	override suspend fun getFrontEndMigrationByName(frontEndMigrationName: String) =
+		rawApi.getFrontEndMigrationByName(frontEndMigrationName = frontEndMigrationName).successBody()
 
-	override suspend fun modifyFrontEndMigration(frontEndMigration: FrontEndMigration) = rawApi.modifyFrontEndMigration(frontEndMigration).successBodyOrThrowRevisionConflict()
+	override suspend fun modifyFrontEndMigration(frontEndMigration: FrontEndMigration) =
+		rawApi.modifyFrontEndMigration(frontEndMigrationDto = frontEndMigration).successBodyOrThrowRevisionConflict()
 }
