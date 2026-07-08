@@ -6,7 +6,7 @@ package com.icure.cardinal.sdk.crypto.encryptor
 data class EntitiesEncryptionManifests(
 	/**
 	 * Manifests of all the entities that should be partially encrypted, both root entities (which are referenced by
-	 * [accessLog], [calendarItem], ... + the [service] special case) and embedded entities which are referenced by other manifests
+	 * [accessLog], [calendarItem], ...) and embedded entities which are referenced by other manifests
 	 * [EntityEncryptionManifest].
 	 *
 	 * Each manifest must only be used to handle one type of entity, but it is possible to have multiple manifests
@@ -26,23 +26,8 @@ data class EntitiesEncryptionManifests(
 	val calendarItem: String,
 	/**
 	 * Name of the manifest in [manifestsByName] that should be used for the encryption of [com.icure.cardinal.sdk.model.Contact] entities.
-	 *
-	 * Note that the encryption configuration of [com.icure.cardinal.sdk.model.Contact.services] is done specially through the
-	 * manifest defined in [service] and should not be done through the contact's manifest.
 	 */
 	val contact: String,
-	/**
-	 * Name of the manifest in [manifestsByName] that should be used for the encryption of [com.icure.cardinal.sdk.model.embed.Service] entities.
-	 *
-	 * Note that the encryption configuration of [com.icure.cardinal.sdk.model.embed.Service.content] is not configurable, and instead is always
-	 * done according to the following rules:
-	 * - If all the values of the service content have non-null and non-empty values only for [com.icure.cardinal.sdk.model.embed.Content.compoundValue]
-	 *   then only the content itself is not encrypted, and instead the contained compound Services are encrypted using this same manifest.
-	 *   This also means that the content's map keys will be unencrypted.
-	 * - In all other cases the content map is included in its entirety: the map keys and any compound service will be completely hidden within the
-	 *   encrypted content.
-	 */
-	val service: String,
 	/**
 	 * Name of the manifest in [manifestsByName] that should be used for the encryption of [com.icure.cardinal.sdk.model.HealthElement] entities
 	 */
@@ -89,7 +74,6 @@ data class EntitiesEncryptionManifests(
 			"accessLog" to accessLog,
 			"calendarItem" to calendarItem,
 			"contact" to contact,
-			"service" to service,
 			"healthElement" to healthElement,
 			"maintenanceTask" to maintenanceTask,
 			"patient" to patient,

@@ -8,5 +8,7 @@ interface ExtendableRoot : Extendable {
 	public val extensionsVersion: Int?
 
 	// region ExtendableRoot-ExtendableRoot
+
+
 	// endregion
 }

@@ -8,5 +8,7 @@ interface Extendable {
 	public val extensions: JsonObject?
 
 	// region Extendable-Extendable
+
+
 	// endregion
 }

@@ -7,6 +7,7 @@ import com.icure.cardinal.sdk.crypto.encryptor.EntityEncryptionManifest
 import com.icure.cardinal.sdk.crypto.encryptor.EntityEncryptor
 import com.icure.cardinal.sdk.crypto.encryptor.EntityEncryptorFactory
 import com.icure.cardinal.sdk.crypto.encryptor.RootEntitiesEncryptors
+import com.icure.cardinal.sdk.crypto.encryptor.impl.generated.LegacyServiceEncryptorFactory
 import com.icure.cardinal.sdk.model.DecryptedAccessLog
 import com.icure.cardinal.sdk.model.DecryptedCalendarItem
 import com.icure.cardinal.sdk.model.DecryptedClassification
@@ -76,18 +77,24 @@ internal abstract class AbstractEntitiesEncryptorInitializer : EntitiesEncryptor
 	/**
 	 * Gives access to all the encryptor factories by key = (encrypted entity type, decrypted entity type)
 	 */
-	abstract val encryptorFactoriesByType: Map<Pair<KClass<*>, KClass<*>>, EntityEncryptorFactory<*, *>>
+	protected abstract val encryptorFactoriesByType: Map<Pair<KClass<*>, KClass<*>>, EntityEncryptorFactory<*, *>>
+	/**
+	 * Same as above, but the encryptor factory for Service uses the legacy content encryption solution
+	 */
+	private val encryptorFactoriesByTypeWithLegacyService: Map<Pair<KClass<*>, KClass<*>>, EntityEncryptorFactory<*, *>> =
+		encryptorFactoriesByType + Pair(
+			(EncryptedService::class to DecryptedService::class),
+			LegacyServiceEncryptorFactory
+		)
 
-	@Suppress("UNCHECKED_CAST")
-	private fun <ENCRYPTED : Any, DECRYPTED : Any> getEncryptorFactoryFor(encrypted: KClass<ENCRYPTED>, decrypted: KClass<DECRYPTED>) =
-		ensureNonNull(
-			encryptorFactoriesByType[encrypted to decrypted]
-		) {
-			"Missing encryptor factory for ${encrypted.simpleName} <-> ${decrypted.simpleName}"
-		} as EntityEncryptorFactory<ENCRYPTED, DECRYPTED>
-
-	override fun initializeEncryptorsForManifests(manifests: EntitiesEncryptionManifests): RootEntitiesEncryptors {
-		val context = Context(manifests)
+	override fun initializeEncryptorsForManifests(
+		manifests: EntitiesEncryptionManifests,
+		useLegacyServiceContentEncryption: Boolean,
+	): RootEntitiesEncryptors {
+		val context = Context(
+			manifests,
+			if (useLegacyServiceContentEncryption) encryptorFactoriesByTypeWithLegacyService else encryptorFactoriesByType,
+		)
 		fillInitialQueue(context, manifests)
 		while (context.toGenerateQueue.isNotEmpty()) {
 			val currRequest = context.toGenerateQueue.removeFirst()
@@ -107,9 +114,6 @@ internal abstract class AbstractEntitiesEncryptorInitializer : EntitiesEncryptor
 			contact = ensureNonNull(context.manifestToEncryptor[manifests.contact]) {
 				"Encryptor ${manifests.contact} for Contact should have been initialized."
 			} as EntityEncryptor<EncryptedContact, DecryptedContact>,
-			service = ensureNonNull(context.manifestToEncryptor[manifests.service]) {
-				"Encryptor ${manifests.service} for Service should have been initialized."
-			} as EntityEncryptor<EncryptedService, DecryptedService>,
 			healthElement = ensureNonNull(context.manifestToEncryptor[manifests.healthElement]) {
 				"Encryptor ${manifests.healthElement} for HealthElement should have been initialized."
 			} as EntityEncryptor<EncryptedHealthElement, DecryptedHealthElement>,
@@ -147,7 +151,6 @@ internal abstract class AbstractEntitiesEncryptorInitializer : EntitiesEncryptor
 		context.markManifestTypeAndQueueGeneration<EncryptedAccessLog, DecryptedAccessLog>(manifests.accessLog)
 		context.markManifestTypeAndQueueGeneration<EncryptedCalendarItem, DecryptedCalendarItem>(manifests.calendarItem)
 		context.markManifestTypeAndQueueGeneration<EncryptedContact, DecryptedContact>(manifests.contact)
-		context.markManifestTypeAndQueueGeneration<EncryptedService, DecryptedService>(manifests.service)
 		context.markManifestTypeAndQueueGeneration<EncryptedHealthElement, DecryptedHealthElement>(manifests.healthElement)
 		context.markManifestTypeAndQueueGeneration<EncryptedMaintenanceTask, DecryptedMaintenanceTask>(manifests.maintenanceTask)
 		context.markManifestTypeAndQueueGeneration<EncryptedPatient, DecryptedPatient>(manifests.patient)
@@ -160,15 +163,16 @@ internal abstract class AbstractEntitiesEncryptorInitializer : EntitiesEncryptor
 		context.markManifestTypeAndQueueGeneration<EncryptedInvoice, DecryptedInvoice>(manifests.invoice)
 	}
 
-	private inline fun <reified ENCRYPTED : Any, reified DECRYPTED : Any> Context.markManifestTypeAndQueueGeneration(manifestName: String) =
+	private inline fun <reified ENCRYPTED : Encryptable, reified DECRYPTED : Encryptable> Context.markManifestTypeAndQueueGeneration(manifestName: String) =
 		markManifestTypeAndQueueGeneration(
 			manifestName = manifestName,
 			encryptedClass = ENCRYPTED::class,
 			decryptedClass = DECRYPTED::class
 		)
 
-	private inner class Context(
-		private val manifests: EntitiesEncryptionManifests
+	private class Context(
+		private val manifests: EntitiesEncryptionManifests,
+		private val factories: Map<Pair<KClass<*>, KClass<*>>, EntityEncryptorFactory<*, *>>
 	) : EncryptorFactoryContext {
 		private val manifestTypeRegistry = mutableMapOf<String, Pair<KClass<*>, KClass<*>>>() // manifest name -> (encrypted class, decrypted class)
 		val manifestToEncryptor = mutableMapOf<String, EntityEncryptor<*, *>>()
@@ -199,7 +203,7 @@ internal abstract class AbstractEntitiesEncryptorInitializer : EntitiesEncryptor
 				"Manifest $manifestName is not defined." // Validation with better error messages is done at init of EntitiesEncryptionManifests
 			}
 
-		fun markManifestTypeAndQueueGeneration(manifestName: String, encryptedClass: KClass<*>, decryptedClass: KClass<*>) {
+		fun markManifestTypeAndQueueGeneration(manifestName: String, encryptedClass: KClass<out Encryptable>, decryptedClass: KClass<out Encryptable>) {
 			val registered = manifestTypeRegistry[manifestName]
 			if (registered != null) {
 				require(registered.first == encryptedClass && registered.second == decryptedClass) {
@@ -212,6 +216,14 @@ internal abstract class AbstractEntitiesEncryptorInitializer : EntitiesEncryptor
 				toGenerateQueue.addLast(GenerationRequest(manifestName, factory))
 			}
 		}
+
+		@Suppress("UNCHECKED_CAST")
+		private fun <ENCRYPTED : Encryptable, DECRYPTED : Encryptable> getEncryptorFactoryFor(encrypted: KClass<ENCRYPTED>, decrypted: KClass<DECRYPTED>) =
+			ensureNonNull(
+				factories[encrypted to decrypted]
+			) {
+				"Missing encryptor factory for ${encrypted.simpleName} <-> ${decrypted.simpleName}"
+			} as EntityEncryptorFactory<ENCRYPTED, DECRYPTED>
 	}
 
 	private data class GenerationRequest(
