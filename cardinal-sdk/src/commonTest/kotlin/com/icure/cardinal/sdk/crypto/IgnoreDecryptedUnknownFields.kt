@@ -13,6 +13,7 @@ import com.icure.cardinal.sdk.test.autoCancelJob
 import com.icure.cardinal.sdk.test.createHcpUser
 import com.icure.cardinal.sdk.test.initializeTestEnvironment
 import com.icure.cardinal.sdk.test.uuid
+import com.icure.cardinal.sdk.utils.EntityEncryptionException
 import com.icure.kryptom.crypto.AesAlgorithm
 import com.icure.kryptom.crypto.AesKey
 import com.icure.kryptom.crypto.defaultCryptoService
@@ -22,11 +23,9 @@ import io.kotest.core.spec.style.StringSpec
 import io.kotest.matchers.collections.shouldHaveSize
 import io.kotest.matchers.maps.shouldBeEmpty
 import io.kotest.matchers.maps.shouldHaveSize
-import io.kotest.matchers.nulls.shouldBeNull
 import io.kotest.matchers.nulls.shouldNotBeNull
 import io.kotest.matchers.shouldBe
 import io.ktor.utils.io.core.toByteArray
-import kotlinx.serialization.SerializationException
 
 class IgnoreDecryptedUnknownFields : StringSpec({
 	val specJob = autoCancelJob()
@@ -82,7 +81,7 @@ class IgnoreDecryptedUnknownFields : StringSpec({
 				)
 			)
 		)
-		shouldThrow<SerializationException> { strictSdk.patient.getPatient(encryptedPatient.id) }
+		shouldThrow<EntityEncryptionException> { strictSdk.patient.getPatient(encryptedPatient.id) }
 		ignoringSdk.patient.getPatient(encryptedPatient.id).shouldNotBeNull().note shouldBe "Some encrypted note"
 	}
 
@@ -102,7 +101,7 @@ class IgnoreDecryptedUnknownFields : StringSpec({
 				)
 			)
 		)
-		shouldThrow<SerializationException> { strictSdk.patient.getPatient(encryptedPatient.id) }
+		shouldThrow<EntityEncryptionException> { strictSdk.patient.getPatient(encryptedPatient.id) }
 		ignoringSdk.patient.getPatient(encryptedPatient.id).shouldNotBeNull().notes.shouldHaveSize(1).single().markdown.shouldHaveSize(1).getValue("en") shouldBe "Some encrypted note"
 	}
 
@@ -141,7 +140,7 @@ class IgnoreDecryptedUnknownFields : StringSpec({
 				)
 			)
 		)
-		shouldThrow<SerializationException> { strictSdk.contact.getContact(encryptedContact.id) }
+		shouldThrow<EntityEncryptionException> { strictSdk.contact.getContact(encryptedContact.id) }
 		ignoringSdk.contact.getContact(encryptedContact.id).shouldNotBeNull().descr shouldBe "Some encrypted description"
 	}
 
@@ -161,7 +160,7 @@ class IgnoreDecryptedUnknownFields : StringSpec({
 				)
 			)
 		)
-		shouldThrow<SerializationException> { strictSdk.contact.getContact(encryptedContact.id) }
+		shouldThrow<EntityEncryptionException> { strictSdk.contact.getContact(encryptedContact.id) }
 		ignoringSdk.contact.getContact(encryptedContact.id).shouldNotBeNull().notes.shouldHaveSize(1).single().markdown.shouldHaveSize(1).getValue("en") shouldBe "Some encrypted note"
 	}
 
@@ -181,7 +180,7 @@ class IgnoreDecryptedUnknownFields : StringSpec({
 				)
 			)
 		)
-		shouldThrow<SerializationException> { strictSdk.contact.getContact(encryptedContact.id) }
+		shouldThrow<EntityEncryptionException> { strictSdk.contact.getContact(encryptedContact.id) }
 		ignoringSdk.contact.getContact(encryptedContact.id).shouldNotBeNull().services.shouldHaveSize(1).single().comment shouldBe "Some encrypted comment"
 	}
 
@@ -201,7 +200,7 @@ class IgnoreDecryptedUnknownFields : StringSpec({
 				)
 			)
 		)
-		shouldThrow<SerializationException> { strictSdk.contact.getContact(encryptedContact.id) }
+		shouldThrow<EntityEncryptionException> { strictSdk.contact.getContact(encryptedContact.id) }
 		ignoringSdk.contact.getContact(encryptedContact.id).shouldNotBeNull().services.shouldHaveSize(1).single().content.shouldHaveSize(1).getValue("en") shouldBe
 			com.icure.cardinal.sdk.model.embed.DecryptedContent(stringValue = "applepen")
 	}
@@ -239,7 +238,7 @@ class IgnoreDecryptedUnknownFields : StringSpec({
 			compoundService.content.shouldBeEmpty()
 			compoundService.id shouldBe "compound1"
 		}
-		shouldThrow<SerializationException> { strictSdk.contact.getContact(encryptedContact.id) }
+		shouldThrow<EntityEncryptionException> { strictSdk.contact.getContact(encryptedContact.id) }
 		ignoringSdk.contact.getContact(encryptedContact.id).shouldNotBeNull()
 			.services.shouldHaveSize(1).single()
 			.content.shouldHaveSize(1).getValue("*")

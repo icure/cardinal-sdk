@@ -13,7 +13,6 @@ import com.icure.cardinal.sdk.crypto.ExchangeDataManager
 import com.icure.cardinal.sdk.crypto.ExchangeKeysManager
 import com.icure.cardinal.sdk.crypto.IncrementalSecurityMetadataDecryptor
 import com.icure.cardinal.sdk.crypto.InternalCryptoServices
-import com.icure.cardinal.sdk.crypto.JsonEncryptionService
 import com.icure.cardinal.sdk.crypto.RecoveryDataEncryption
 import com.icure.cardinal.sdk.crypto.SecureDelegationsManager
 import com.icure.cardinal.sdk.crypto.UserEncryptionKeysManager
@@ -31,7 +30,6 @@ class InternalCryptoApiImpl(
 	override val primitives: CryptoService,
 	override val exchangeDataManager: ExchangeDataManager,
 	override val exchangeKeysManager: ExchangeKeysManager,
-	override val jsonEncryption: JsonEncryptionService,
 	override val delegationsDeAnonymization: DelegationsDeAnonymization,
 	override val dataOwnerApi: DataOwnerApi,
 	override val userEncryptionKeysManager: UserEncryptionKeysManager,
@@ -58,7 +56,6 @@ class InternalCryptoApiImpl(
 @InternalIcureApi
 class BasicInternalCryptoApiImpl(
 	override val primitives: CryptoService,
-	override val jsonEncryption: JsonEncryptionService,
 	override val validationService: EntityValidationService,
 	override val entityAccessInformationProvider: EntityAccessInformationProvider
 ) : BasicInternalCryptoApi

@@ -5,14 +5,14 @@ import com.icure.cardinal.sdk.crypto.BaseSecurityMetadataDecryptor
 import com.icure.cardinal.sdk.crypto.EntityEncryptionService
 import com.icure.cardinal.sdk.crypto.EntityValidationService
 import com.icure.cardinal.sdk.crypto.IncrementalSecurityMetadataDecryptor
-import com.icure.cardinal.sdk.crypto.JsonEncryptionService
 import com.icure.cardinal.sdk.crypto.SecureDelegationsManager
 import com.icure.cardinal.sdk.crypto.UserEncryptionKeysManager
-import com.icure.cardinal.sdk.crypto.decrypt
+import com.icure.cardinal.sdk.crypto.encryptor.DecryptedJsonStrictness
+import com.icure.cardinal.sdk.crypto.encryptor.EntityDecryptor
+import com.icure.cardinal.sdk.crypto.encryptor.EntityEncryptor
 import com.icure.cardinal.sdk.crypto.entities.BulkShareResult
 import com.icure.cardinal.sdk.crypto.entities.DecryptedMetadataDetails
 import com.icure.cardinal.sdk.crypto.entities.DelegateShareOptions
-import com.icure.cardinal.sdk.crypto.entities.EncryptedFieldsManifest
 import com.icure.cardinal.sdk.crypto.entities.EntityDataEncryptionResult
 import com.icure.cardinal.sdk.crypto.entities.EntityEncryptionKeyDetails
 import com.icure.cardinal.sdk.crypto.entities.EntityEncryptionMetadataInitialisationResult
@@ -42,7 +42,6 @@ import com.icure.cardinal.sdk.model.specializations.HexString
 import com.icure.cardinal.sdk.model.specializations.SecureDelegationKeyString
 import com.icure.cardinal.sdk.utils.EntityEncryptionException
 import com.icure.cardinal.sdk.utils.IllegalEntityException
-import com.icure.cardinal.sdk.utils.Serialization
 import com.icure.cardinal.sdk.utils.generation.JsMapAsObjectArray
 import com.icure.cardinal.sdk.utils.getLogger
 import com.icure.kryptom.crypto.AesAlgorithm
@@ -51,9 +50,7 @@ import com.icure.kryptom.utils.toHexString
 import com.icure.utils.InternalIcureApi
 import kotlinx.coroutines.currentCoroutineContext
 import kotlinx.coroutines.ensureActive
-import kotlinx.serialization.SerializationStrategy
-import kotlinx.serialization.json.JsonElement
-import kotlinx.serialization.json.jsonObject
+import kotlinx.serialization.json.Json
 
 @InternalIcureApi
 class EntityEncryptionServiceImpl(
@@ -62,11 +59,12 @@ class EntityEncryptionServiceImpl(
 	private val incrementalSecurityMetadataDecryptor: IncrementalSecurityMetadataDecryptor,
 	private val dataOwnerApi: DataOwnerApi,
 	private val cryptoService: CryptoService,
-	private val jsonEncryptionService: JsonEncryptionService,
 	private val autoCreateEncryptionKeyForExistingLegacyData: Boolean,
 	private val userEncryptionKeysManager: UserEncryptionKeysManager,
-	private val boundGroup: SdkBoundGroup?
-) : EntityEncryptionService, EntityValidationService by EntityValidationServiceImpl(jsonEncryptionService) {
+	private val boundGroup: SdkBoundGroup?,
+	private val json: Json,
+	private val ignoreUnknownDecryptedFields: Boolean,
+) : EntityEncryptionService, EntityValidationService by EntityValidationServiceImpl() {
 	/*
 	 * TODO should add bulk init encryption metadata?
 	 */
@@ -274,10 +272,8 @@ class EntityEncryptionServiceImpl(
 		entityGroupId: String?,
 		unencryptedEntities: List<D>,
 		entityType: EntityWithEncryptionMetadataTypeName,
-		unencryptedEntitySerializer: SerializationStrategy<D>,
-		fieldsToEncrypt: EncryptedFieldsManifest,
-		constructor: (json: JsonElement) -> E
-	): List<E> where E : HasEncryptionMetadata, D : HasEncryptionMetadata, E : Encryptable, D : Encryptable {
+		entityEncryptor: EntityEncryptor<E, D>
+	): List<E> where E : HasEncryptionMetadata, E : Encryptable, D : HasEncryptionMetadata, D : Encryptable {
 		val updatedEntities = unencryptedEntities.map { e ->
 			ensureEncryptionKeysInitialized(
 				entityGroupId,
@@ -290,9 +286,12 @@ class EntityEncryptionServiceImpl(
 			"Entities ${updatedEntities.map { it.id }} of type ${entityType.id} have no encryption keys, and can't be encrypted; entity may have not been initialized properly."
 		)
 		return updatedEntities.map {
-			val plainJson = Serialization.json.encodeToJsonElement(unencryptedEntitySerializer, it).jsonObject
-			val encryptedJson = jsonEncryptionService.encrypt(keyInfo.getValue(it.id).key, plainJson, fieldsToEncrypt)
-			constructor(encryptedJson)
+			entityEncryptor.encrypt(
+				keyInfo.getValue(it.id).key,
+				it,
+				json,
+				cryptoService
+			)
 		}
 	}
 
@@ -300,8 +299,7 @@ class EntityEncryptionServiceImpl(
 		entityGroupId: String?,
 		encryptedEntities: List<E>,
 		entityType: EntityWithEncryptionMetadataTypeName,
-		encryptedEntitySerializer: SerializationStrategy<E>,
-		constructor: (json: JsonElement) -> D
+		entityDecryptor: EntityDecryptor<E, D>,
 	): Map<String, Result<D>> where D : HasEncryptionMetadata, E : HasEncryptionMetadata, E : Encryptable, D : Encryptable =
 		incrementalSecurityMetadataDecryptor.doManyIncrementallyDecryptingKeys(
 			entityGroupId,
@@ -310,13 +308,15 @@ class EntityEncryptionServiceImpl(
 		) { entity, _, keys ->
 			currentCoroutineContext().ensureActive()
 			kotlin.runCatching {
-				val encryptedJson = Serialization.json.encodeToJsonElement(encryptedEntitySerializer, entity).jsonObject
-				val decrypted = jsonEncryptionService.decrypt(
-					keys,
-					encryptedJson,
-					"${entityType.id}(\"${entity.id}\")"
+				entityDecryptor.decrypt(
+					decryptionKeys = keys.map { it.key },
+					encryptedEntity = entity,
+					patchDecryptedSelfJson = null,
+					// TODO for entities that declare a specific version that is known we should use the loosest possible option
+					decryptedJsonStrictness = if (ignoreUnknownDecryptedFields) DecryptedJsonStrictness.IgnoreUnknownFields else DecryptedJsonStrictness.Strict,
+					encryptedContentDecoder = json,
+					cryptoService = cryptoService
 				)
-				constructor(decrypted)
 			}
 		}
 
@@ -324,20 +324,18 @@ class EntityEncryptionServiceImpl(
 		entityGroupId: String?,
 		encryptedEntities: List<E>,
 		entityType: EntityWithEncryptionMetadataTypeName,
-		encryptedEntitySerializer: SerializationStrategy<E>,
-		constructor: (json: JsonElement) -> D
+		entityDecryptor: EntityDecryptor<E, D>,
 	): List<B> where B : HasEncryptionMetadata, B : Encryptable {
-		val decrypted = doDecryptEntities(entityGroupId, encryptedEntities, entityType, encryptedEntitySerializer, constructor)
+		val decrypted = doDecryptEntities(entityGroupId, encryptedEntities, entityType, entityDecryptor)
 		return encryptedEntities.map { decrypted[it.id]?.getOrNull() ?: it }
 	}
 	override suspend fun <E, D> decryptEntities(
 		entityGroupId: String?,
 		encryptedEntities: List<E>,
 		entityType: EntityWithEncryptionMetadataTypeName,
-		encryptedEntitySerializer: SerializationStrategy<E>,
-		constructor: (json: JsonElement) -> D
+		entityDecryptor: EntityDecryptor<E, D>,
 	): List<D> where D : HasEncryptionMetadata, E : HasEncryptionMetadata, E : Encryptable, D : Encryptable {
-		val decrypted = doDecryptEntities(entityGroupId, encryptedEntities, entityType, encryptedEntitySerializer, constructor)
+		val decrypted = doDecryptEntities(entityGroupId, encryptedEntities, entityType, entityDecryptor)
 		return encryptedEntities.map {
 			(decrypted[it.id] ?: throw EntityEncryptionException("Couldn't decrypt any encryption key for ${entityType.id}(\"${it.id}\")")).getOrThrow()
 		}

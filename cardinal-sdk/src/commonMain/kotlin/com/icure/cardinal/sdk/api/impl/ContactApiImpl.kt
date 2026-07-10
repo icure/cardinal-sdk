@@ -1,19 +1,21 @@
 package com.icure.cardinal.sdk.api.impl
 
-import com.icure.cardinal.sdk.api.ContactBasicApi
 import com.icure.cardinal.sdk.api.ContactApi
+import com.icure.cardinal.sdk.api.ContactBasicApi
+import com.icure.cardinal.sdk.api.ContactBasicFlavouredApi
 import com.icure.cardinal.sdk.api.ContactBasicFlavouredInGroupApi
 import com.icure.cardinal.sdk.api.ContactBasicFlavourlessApi
 import com.icure.cardinal.sdk.api.ContactBasicFlavourlessInGroupApi
-import com.icure.cardinal.sdk.api.ContactFlavouredInGroupApi
-import com.icure.cardinal.sdk.api.ContactBasicFlavouredApi
 import com.icure.cardinal.sdk.api.ContactBasicInGroupApi
 import com.icure.cardinal.sdk.api.ContactFlavouredApi
+import com.icure.cardinal.sdk.api.ContactFlavouredInGroupApi
 import com.icure.cardinal.sdk.api.ContactInGroupApi
 import com.icure.cardinal.sdk.api.raw.RawContactApi
 import com.icure.cardinal.sdk.api.raw.successBodyOrNull404
 import com.icure.cardinal.sdk.api.raw.successBodyOrThrowRevisionConflict
-import com.icure.cardinal.sdk.crypto.decrypt
+import com.icure.cardinal.sdk.crypto.encryptor.DecryptedJsonStrictness
+import com.icure.cardinal.sdk.crypto.encryptor.impl.generated.ContactDecryptor
+import com.icure.cardinal.sdk.crypto.encryptor.impl.generated.ServiceDecryptor
 import com.icure.cardinal.sdk.crypto.entities.ContactShareOptions
 import com.icure.cardinal.sdk.crypto.entities.EntityWithEncryptionMetadataTypeName
 import com.icure.cardinal.sdk.crypto.entities.OwningEntityDetails
@@ -41,7 +43,6 @@ import com.icure.cardinal.sdk.model.data.LabelledOccurence
 import com.icure.cardinal.sdk.model.embed.AccessLevel
 import com.icure.cardinal.sdk.model.embed.DecryptedService
 import com.icure.cardinal.sdk.model.embed.DelegationTag
-import com.icure.cardinal.sdk.model.embed.EncryptedContent
 import com.icure.cardinal.sdk.model.embed.EncryptedService
 import com.icure.cardinal.sdk.model.embed.Service
 import com.icure.cardinal.sdk.model.extensions.autoDelegationsFor
@@ -62,129 +63,13 @@ import com.icure.cardinal.sdk.utils.Serialization
 import com.icure.cardinal.sdk.utils.currentEpochMs
 import com.icure.cardinal.sdk.utils.currentFuzzyDateTime
 import com.icure.cardinal.sdk.utils.ensure
-import com.icure.cardinal.sdk.utils.ensureNonNull
 import com.icure.cardinal.sdk.utils.generation.JsMapAsObjectArray
 import com.icure.cardinal.sdk.utils.pagination.IdsPageIterator
 import com.icure.cardinal.sdk.utils.pagination.PaginatedListIterator
-import com.icure.kryptom.crypto.AesAlgorithm
-import com.icure.kryptom.crypto.AesKey
 import com.icure.utils.InternalIcureApi
+import kotlinx.coroutines.currentCoroutineContext
+import kotlinx.coroutines.ensureActive
 import kotlinx.datetime.TimeZone
-import kotlinx.serialization.json.decodeFromJsonElement
-import kotlinx.serialization.json.encodeToJsonElement
-import kotlinx.serialization.json.jsonObject
-
-
-@InternalIcureApi
-private suspend fun DecryptedService.encrypt(
-	config: ApiConfiguration,
-	contactKey: AesKey<AesAlgorithm.CbcWithPkcs7Padding>
-): EncryptedService =
-	if (this.hasOnlyCompoundContent()) {
-		config.crypto.jsonEncryption.encrypt(
-			contactKey,
-			config.entityEncodingJson.encodeToJsonElement(this).jsonObject,
-			config.encryption.serviceBase
-		).let {
-			config.entityEncodingJson.decodeFromJsonElement<EncryptedService>(it)
-		}.copy(
-			content = content.mapValues { (_, compoundContent) ->
-				EncryptedContent(
-					compoundValue = ensureNonNull(compoundContent.compoundValue) {
-						"Compound value can't be null on a only-compound compound content"
-					}.map {
-						it.encrypt(config, contactKey)
-					}
-				)
-			}
-		)
-	} else {
-		config.crypto.jsonEncryption.encrypt(
-			contactKey,
-			config.entityEncodingJson.encodeToJsonElement(this).jsonObject,
-			config.encryption.serviceWithContent
-		).let {
-			config.entityEncodingJson.decodeFromJsonElement(it)
-		}
-	}
-
-
-@InternalIcureApi
-private fun EncryptedService.requiresEncryption(
-	config: BasicApiConfiguration
-): Boolean =
-	if (this.hasOnlyCompoundContent()) {
-		config.crypto.jsonEncryption.requiresEncryption(
-			Serialization.json.encodeToJsonElement(this).jsonObject,
-			config.encryption.serviceBase
-		) || content.values.any { compoundContent ->
-			ensureNonNull(compoundContent.compoundValue) {
-				"Compound value can't be null on a only-compound compound content"
-			}.any {
-				it.requiresEncryption(config)
-			}
-		}
-	} else {
-		config.crypto.jsonEncryption.requiresEncryption(
-			Serialization.json.encodeToJsonElement(this).jsonObject,
-			config.encryption.serviceWithContent
-		)
-	}
-
-@InternalIcureApi
-private suspend fun encryptContacts(
-	config: ApiConfiguration,
-	entitiesGroupId: String?,
-	contacts: List<DecryptedContact>
-): List<EncryptedContact> {
-	contacts.forEach {
-		require(it.securityMetadata != null) {
-			"Contact must have security metadata initialized. Make sure to use the `withEncryptionMetadata` method before creating a new contact."
-		}
-	}
-	val keysById = config.crypto.entity.tryDecryptAndImportAnyEncryptionKey(
-		entitiesGroupId,
-		contacts,
-		EntityWithEncryptionMetadataTypeName.Contact
-	)
-	if (!contacts.all { keysById.containsKey(it.id) }) throw EntityEncryptionException(
-		"No encryption key found for Contacts ${contacts.filter { !keysById.containsKey(it.id) }.map { it.id }}"
-	)
-	return contacts.map { contact ->
-		val contactKey = keysById.getValue(contact.id).key
-		config.crypto.jsonEncryption.encrypt(
-			contactKey,
-			config.entityEncodingJson.encodeToJsonElement(contact).jsonObject,
-			config.encryption.contact
-		).let {
-			config.entityEncodingJson.decodeFromJsonElement<EncryptedContact>(it)
-		}.copy(
-			services = contact.services.map {
-				it.encrypt(config, contactKey)
-			}.toSet(),
-		)
-	}
-}
-
-@InternalIcureApi
-private suspend fun validateEncryptedContacts(
-	config: BasicApiConfiguration,
-	contacts: List<EncryptedContact>
-) {
-	config.crypto.validationService.validateEncryptedEntities(
-		contacts,
-		EntityWithEncryptionMetadataTypeName.Contact,
-		EncryptedContact.serializer(),
-		config.encryption.contact
-	)
-	contacts.forEach { contact ->
-		contact.services.forEach {
-			if (it.requiresEncryption(config)) {
-				throw EntityEncryptionException("Service ${it.id} in contact ${contact.id} is not properly encrypted according to the manifest")
-			}
-		}
-	}
-}
 
 @InternalIcureApi
 internal fun Service.asIcureStub(): IcureStub {
@@ -220,14 +105,16 @@ private suspend fun tryDecryptServices(
 		services.map { it.asIcureStub() },
 		EntityWithEncryptionMetadataTypeName.Contact,
 	) { serviceStub, _, keys ->
+		currentCoroutineContext().ensureActive()
 		runCatching {
-			config.entityEncodingJson.decodeFromJsonElement<DecryptedService>(
-				config.jsonPatcher.patchIndividualService(
-					config.crypto.jsonEncryption.decrypt(
-						keys,
-						config.entityEncodingJson.encodeToJsonElement(servicesById.getValue(serviceStub.id)).jsonObject
-					)
-				)
+			ServiceDecryptor.decrypt(
+				decryptionKeys = keys.map { it.key },
+				encryptedEntity = servicesById.getValue(serviceStub.id),
+				patchDecryptedSelfJson = null,
+				// TODO should use the loosest possible option if service has a root contact extensions versions
+				decryptedJsonStrictness = if (config.ignoreUnkonwnDecryptedFields) DecryptedJsonStrictness.IgnoreUnknownFields else DecryptedJsonStrictness.Strict,
+				encryptedContentDecoder = config.rawApiConfig.json,
+				cryptoService = config.crypto.primitives
 			)
 		}
 	}
@@ -241,6 +128,7 @@ private suspend fun tryDecryptServices(
 	}
 }
 
+
 internal interface ContactExtendedFlavouredApi<E : HasEncryptionMetadata, S : Service> : FlavouredApi<EncryptedContact, E> {
 	suspend fun maybeDecryptServices(entitiesGroupId: String?, entities: List<EncryptedService>): List<S>
 }
@@ -248,101 +136,53 @@ internal interface ContactExtendedFlavouredApi<E : HasEncryptionMetadata, S : Se
 @InternalIcureApi
 private fun decryptedApiFlavour(
 	config: ApiConfiguration
-): ContactExtendedFlavouredApi<DecryptedContact, DecryptedService> = object : ContactExtendedFlavouredApi<DecryptedContact, DecryptedService> {
+): ContactExtendedFlavouredApi<DecryptedContact, DecryptedService> = object :
+	ContactExtendedFlavouredApi<DecryptedContact, DecryptedService>,
+	FlavouredApi<EncryptedContact, DecryptedContact> by FlavouredApi.decrypted(
+		config,
+		config.encryptors.contact,
+		ContactDecryptor,
+		EntityWithEncryptionMetadataTypeName.Contact
+	) {
 	override suspend fun maybeDecryptServices(
 		entitiesGroupId: String?,
-		entities: List<EncryptedService>,
+		entities: List<EncryptedService>
 	): List<DecryptedService> {
-		val successfullyDecrypted = tryDecryptServices(
-			config,
-			entitiesGroupId,
-			entities,
-			requireAllSuccess = true
-		)
-		return entities.map { successfullyDecrypted.getValue(it.id) }
+		TODO("Not yet implemented")
 	}
-
-	override suspend fun validateAndMaybeEncrypt(
-		entitiesGroupId: String?,
-		entities: List<DecryptedContact>,
-	): List<EncryptedContact> = encryptContacts(config, entitiesGroupId, entities)
-
-	override suspend fun maybeDecrypt(
-		entitiesGroupId: String?,
-		entities: List<EncryptedContact>,
-	): List<DecryptedContact> = config.crypto.entity.decryptEntities(
-		entitiesGroupId,
-		entities,
-		EntityWithEncryptionMetadataTypeName.Contact,
-		EncryptedContact.serializer(),
-	) { config.entityEncodingJson.decodeFromJsonElement<DecryptedContact>(config.jsonPatcher.patchContact(it)) }
-
 }
 
 @InternalIcureApi
 private fun encryptedApiFlavour(
 	config: BasicApiConfiguration
-): ContactExtendedFlavouredApi<EncryptedContact, EncryptedService> = object : ContactExtendedFlavouredApi<EncryptedContact, EncryptedService> {
+): ContactExtendedFlavouredApi<EncryptedContact, EncryptedService> = object :
+	ContactExtendedFlavouredApi<EncryptedContact, EncryptedService>,
+	FlavouredApi<EncryptedContact, EncryptedContact> by FlavouredApi.encrypted(
+		config,
+	) {
 	override suspend fun maybeDecryptServices(
 		entitiesGroupId: String?,
 		entities: List<EncryptedService>,
 	): List<EncryptedService> = entities
-
-	override suspend fun validateAndMaybeEncrypt(
-		entitiesGroupId: String?,
-		entities: List<EncryptedContact>,
-	): List<EncryptedContact> = entities.also {
-		validateEncryptedContacts(
-			config,
-			it
-		)
-	}
-
-	override suspend fun maybeDecrypt(
-		entitiesGroupId: String?,
-		entities: List<EncryptedContact>,
-	): List<EncryptedContact> = entities
-
 }
 
 @InternalIcureApi
 private fun tryAndRecoverApiFlavour(
 	config: ApiConfiguration
-): ContactExtendedFlavouredApi<Contact, Service> = object : ContactExtendedFlavouredApi<Contact, Service> {
+): ContactExtendedFlavouredApi<Contact, Service> = object :
+	ContactExtendedFlavouredApi<Contact, Service>,
+	FlavouredApi<EncryptedContact, Contact> by FlavouredApi.tryAndRecover(
+		config,
+		config.encryptors.contact,
+		ContactDecryptor,
+		EntityWithEncryptionMetadataTypeName.Contact
+	) {
 	override suspend fun maybeDecryptServices(
 		entitiesGroupId: String?,
 		entities: List<EncryptedService>
 	): List<Service> {
-		val successfullyDecrypted = tryDecryptServices(
-			config,
-			entitiesGroupId,
-			entities,
-			requireAllSuccess = false
-		)
-		return entities.map { successfullyDecrypted[it.id] ?: it }
+		TODO()
 	}
-
-	override suspend fun maybeDecrypt(
-		entitiesGroupId: String?,
-		entities: List<EncryptedContact>
-	): List<Contact> =
-		config.crypto.entity.tryDecryptEntities(
-			entitiesGroupId,
-			entities,
-			EntityWithEncryptionMetadataTypeName.Contact,
-			EncryptedContact.serializer(),
-		) { config.entityEncodingJson.decodeFromJsonElement<DecryptedContact>(config.jsonPatcher.patchContact(it)) }
-
-	override suspend fun validateAndMaybeEncrypt(
-		entitiesGroupId: String?,
-		entities: List<Contact>
-	): List<EncryptedContact> =
-		validateOrEncryptEntities<Contact, EncryptedContact, DecryptedContact>(
-			entities,
-			{ encryptContacts(config, entitiesGroupId, it) },
-			{ validateEncryptedContacts(config, it) }
-		)
-
 }
 
 @InternalIcureApi

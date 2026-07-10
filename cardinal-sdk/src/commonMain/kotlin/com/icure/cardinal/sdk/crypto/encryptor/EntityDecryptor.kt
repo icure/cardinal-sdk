@@ -4,9 +4,20 @@ import com.icure.cardinal.sdk.model.embed.Encryptable
 import com.icure.kryptom.crypto.AesAlgorithm
 import com.icure.kryptom.crypto.AesKey
 import com.icure.kryptom.crypto.CryptoService
+import com.icure.utils.InternalIcureApi
 import kotlinx.serialization.json.Json
 import kotlinx.serialization.json.JsonObject
 
+/*TODO
+ * Currently the entire concept of json patcher has been removed:
+ * - The previous patcher was not suitable for patching of recursively encrypted entities (patching an encrypted
+ *   annotation from inside a patient: we have to patch the decrypted encryptedSelf of the annotation, not of the
+ *   patient)
+ * - With introduction of proper migration system patching should not be needed anymore
+ * - Only entities coming from legacy typescript may need json patching, typesafety of cardinal should have prevented
+ *   bad entities being accidentally created. For current use cases ignoring unknown decrypted fields shoudl be
+ *   sufficient.
+ */
 /**
  * A strategy for decryption of an entity of a known type.
  *
@@ -16,6 +27,7 @@ import kotlinx.serialization.json.JsonObject
  * All instances of a CardinalSDK use the same decryptor for a given entity, for this reason there is no
  * [EntityEncryptorFactory] equivalent.
  */
+@InternalIcureApi
 interface EntityDecryptor<ENCRYPTED : Encryptable, DECRYPTED: Encryptable> {
 	/**
 	 * Decrypts the given [encryptedEntity] using the given [decryptionKeys] which must be non-empty.
@@ -31,14 +43,14 @@ interface EntityDecryptor<ENCRYPTED : Encryptable, DECRYPTED: Encryptable> {
 	 * # Handling bad json in encrypted self
 	 *
 	 * The [patchDecryptedSelfJson] function can be used to modify the json decrypted from the entity before continuing
-	 * interpretation of it. This is useful to handle migration of data predating the introduction of the customised
+	 * interpretation of it. This is useful to handle migration of data predating the introduction of the customized
 	 * SDK migration framework which may be using some deprecated fields.
 	 *
-	 * You can also use [ignoreUnknownDecryptedFields] to ignore all entries in the decrypted json that do not correspond to a
-	 * field known by the SDK. If a [patchDecryptedSelfJson] function is provided, the json will be patched before
-	 * ignoring unknown keys.
+	 * You can also use [decryptedJsonStrictness] to ignore all entries in the decrypted json that do not correspond to
+	 * a field known by the SDK or can't be decoded properly with [encryptedContentDecoder].
+	 * If a [patchDecryptedSelfJson] function is provided, the json will be patched before ignoring unknown keys.
 	 *
-	 * Note that [ignoreUnknownDecryptedFields] is not automatically applied to the decoding of the nested entities, which is
+	 * Note that [decryptedJsonStrictness] does not modify how strictly the nested entities are decoded, which is
 	 * instead handled by the provided [encryptedContentDecoder].
 	 * For example, if a [com.icure.cardinal.sdk.model.EncryptedPatient]'s encrypted self contains:
 	 * ```json
@@ -47,9 +59,9 @@ interface EntityDecryptor<ENCRYPTED : Encryptable, DECRYPTED: Encryptable> {
 	 *   "notes": [{ "id": "x", "unknownInEmbedded": "this field does not exist in Annotation" }]
 	 * }
 	 * ```
-	 * then the `unknownInRoot` field will be ignored automatically by [ignoreUnknownDecryptedFields], but the way the
-	 * `unknownInEmbedded` field will be treated depends solely on how the provided [encryptedContentDecoder] is
-	 * configured.
+	 * then the `unknownInRoot` field will be ignored automatically by [decryptedJsonStrictness] if it is not
+	 * [DecryptedJsonStrictness.Strict], but the way the `unknownInEmbedded` field will be treated depends solely on how
+	 * the provided [encryptedContentDecoder] is configured.
 	 *
 	 * If the decrypted content of the entity is not valid json then decryption will fail without using
 	 * [patchDecryptedSelfJson].
@@ -57,7 +69,7 @@ interface EntityDecryptor<ENCRYPTED : Encryptable, DECRYPTED: Encryptable> {
 	 * @param decryptionKeys the keys to use for decryption.
 	 * @param encryptedEntity the entity to decrypt.
 	 * @param patchDecryptedSelfJson a function that can be used to patch the content of the entity.
-	 * @param ignoreUnknownDecryptedFields if unknown fields found in the decrypted json should be ignored.
+	 * @param decryptedJsonStrictness how strictly the json in the decrypted self should be interpreted.
 	 * @param encryptedContentDecoder the json decoder to use to decode the values of the encrypted content.
 	 * @return the decrypted entity.
 	 * @throws com.icure.cardinal.sdk.utils.EntityEncryptionException if the entity can't be fully decrypted using the
@@ -67,7 +79,7 @@ interface EntityDecryptor<ENCRYPTED : Encryptable, DECRYPTED: Encryptable> {
 		decryptionKeys: Collection<AesKey<AesAlgorithm.CbcWithPkcs7Padding>>,
 		encryptedEntity: ENCRYPTED,
 		patchDecryptedSelfJson: ((JsonObject) -> JsonObject)?,
-		ignoreUnknownDecryptedFields: Boolean,
+		decryptedJsonStrictness: DecryptedJsonStrictness,
 		encryptedContentDecoder: Json,
 		cryptoService: CryptoService
 	): DECRYPTED

@@ -1,6 +1,7 @@
 // This file is auto-generated
 package com.icure.cardinal.sdk.crypto.encryptor.`impl`.generated
 
+import com.icure.cardinal.sdk.crypto.encryptor.DecryptedJsonStrictness
 import com.icure.cardinal.sdk.crypto.encryptor.`impl`.AbstractEntityDecryptor
 import com.icure.cardinal.sdk.model.DecryptedForm
 import com.icure.cardinal.sdk.model.EncryptedForm
@@ -8,18 +9,18 @@ import com.icure.cardinal.sdk.utils.EntityEncryptionException
 import com.icure.kryptom.crypto.AesAlgorithm
 import com.icure.kryptom.crypto.AesKey
 import com.icure.kryptom.crypto.CryptoService
+import com.icure.utils.InternalIcureApi
 import kotlinx.serialization.json.Json
 import kotlinx.serialization.json.JsonObject
-import kotlinx.serialization.json.decodeFromJsonElement
-import kotlin.Boolean
 import kotlin.collections.Collection
 
+@InternalIcureApi
 internal object FormDecryptor : AbstractEntityDecryptor<EncryptedForm, DecryptedForm>() {
 	override suspend fun decrypt(
 		decryptionKeys: Collection<AesKey<AesAlgorithm.CbcWithPkcs7Padding>>,
 		encryptedEntity: EncryptedForm,
 		patchDecryptedSelfJson: ((JsonObject) -> JsonObject)?,
-		ignoreUnknownDecryptedFields: Boolean,
+		decryptedJsonStrictness: DecryptedJsonStrictness,
 		encryptedContentDecoder: Json,
 		cryptoService: CryptoService,
 	): DecryptedForm {
@@ -36,159 +37,108 @@ internal object FormDecryptor : AbstractEntityDecryptor<EncryptedForm, Decrypted
 				id = encryptedEntity.id,
 				rev = encryptedEntity.rev,
 				created =
-					decryptedContent["created"].let {
-						if (it != null) {
-							usedEncryptedContent += "created"
-							encryptedContentDecoder.decodeFromJsonElement(it)
-						} else {
-							encryptedEntity.created
-						}
-					},
+					encryptedContentDecoder.decodeDecrypted(
+						decryptedContent["created"]?.also { usedEncryptedContent += "created" },
+						encryptedEntity.created,
+						decryptedJsonStrictness,
+					),
 				modified =
-					decryptedContent["modified"].let {
-						if (it != null) {
-							usedEncryptedContent += "modified"
-							encryptedContentDecoder.decodeFromJsonElement(it)
-						} else {
-							encryptedEntity.modified
-						}
-					},
+					encryptedContentDecoder.decodeDecrypted(
+						decryptedContent["modified"]?.also { usedEncryptedContent += "modified" },
+						encryptedEntity.modified,
+						decryptedJsonStrictness,
+					),
 				author =
-					decryptedContent["author"].let {
-						if (it != null) {
-							usedEncryptedContent += "author"
-							encryptedContentDecoder.decodeFromJsonElement(it)
-						} else {
-							encryptedEntity.author
-						}
-					},
+					encryptedContentDecoder.decodeDecrypted(
+						decryptedContent["author"]?.also { usedEncryptedContent += "author" },
+						encryptedEntity.author,
+						decryptedJsonStrictness,
+					),
 				responsible =
-					decryptedContent["responsible"].let {
-						if (it != null) {
-							usedEncryptedContent += "responsible"
-							encryptedContentDecoder.decodeFromJsonElement(it)
-						} else {
-							encryptedEntity.responsible
-						}
-					},
+					encryptedContentDecoder.decodeDecrypted(
+						decryptedContent["responsible"]?.also { usedEncryptedContent += "responsible" },
+						encryptedEntity.responsible,
+						decryptedJsonStrictness,
+					),
 				tags =
-					decryptedContent["tags"].let {
-						if (it != null) {
-							usedEncryptedContent += "tags"
-							encryptedContentDecoder.decodeFromJsonElement(it)
-						} else {
-							encryptedEntity.tags
-						}
-					},
+					encryptedContentDecoder.decodeDecrypted(
+						decryptedContent["tags"]?.also { usedEncryptedContent += "tags" },
+						encryptedEntity.tags,
+						decryptedJsonStrictness,
+					),
 				codes =
-					decryptedContent["codes"].let {
-						if (it != null) {
-							usedEncryptedContent += "codes"
-							encryptedContentDecoder.decodeFromJsonElement(it)
-						} else {
-							encryptedEntity.codes
-						}
-					},
+					encryptedContentDecoder.decodeDecrypted(
+						decryptedContent["codes"]?.also { usedEncryptedContent += "codes" },
+						encryptedEntity.codes,
+						decryptedJsonStrictness,
+					),
 				deletionDate = encryptedEntity.deletionDate,
 				openingDate =
-					decryptedContent["openingDate"].let {
-						if (it != null) {
-							usedEncryptedContent += "openingDate"
-							encryptedContentDecoder.decodeFromJsonElement(it)
-						} else {
-							encryptedEntity.openingDate
-						}
-					},
+					encryptedContentDecoder.decodeDecrypted(
+						decryptedContent["openingDate"]?.also { usedEncryptedContent += "openingDate" },
+						encryptedEntity.openingDate,
+						decryptedJsonStrictness,
+					),
 				status =
-					decryptedContent["status"].let {
-						if (it != null) {
-							usedEncryptedContent += "status"
-							encryptedContentDecoder.decodeFromJsonElement(it)
-						} else {
-							encryptedEntity.status
-						}
-					},
+					encryptedContentDecoder.decodeDecrypted(
+						decryptedContent["status"]?.also { usedEncryptedContent += "status" },
+						encryptedEntity.status,
+						decryptedJsonStrictness,
+					),
 				version =
-					decryptedContent["version"].let {
-						if (it != null) {
-							usedEncryptedContent += "version"
-							encryptedContentDecoder.decodeFromJsonElement(it)
-						} else {
-							encryptedEntity.version
-						}
-					},
+					encryptedContentDecoder.decodeDecrypted(
+						decryptedContent["version"]?.also { usedEncryptedContent += "version" },
+						encryptedEntity.version,
+						decryptedJsonStrictness,
+					),
 				descr =
-					decryptedContent["descr"].let {
-						if (it != null) {
-							usedEncryptedContent += "descr"
-							encryptedContentDecoder.decodeFromJsonElement(it)
-						} else {
-							encryptedEntity.descr
-						}
-					},
+					encryptedContentDecoder.decodeDecrypted(
+						decryptedContent["descr"]?.also { usedEncryptedContent += "descr" },
+						encryptedEntity.descr,
+						decryptedJsonStrictness,
+					),
 				uniqueId =
-					decryptedContent["uniqueId"].let {
-						if (it != null) {
-							usedEncryptedContent += "uniqueId"
-							encryptedContentDecoder.decodeFromJsonElement(it)
-						} else {
-							encryptedEntity.uniqueId
-						}
-					},
+					encryptedContentDecoder.decodeDecrypted(
+						decryptedContent["uniqueId"]?.also { usedEncryptedContent += "uniqueId" },
+						encryptedEntity.uniqueId,
+						decryptedJsonStrictness,
+					),
 				formTemplateId =
-					decryptedContent["formTemplateId"].let {
-						if (it != null) {
-							usedEncryptedContent += "formTemplateId"
-							encryptedContentDecoder.decodeFromJsonElement(it)
-						} else {
-							encryptedEntity.formTemplateId
-						}
-					},
+					encryptedContentDecoder.decodeDecrypted(
+						decryptedContent["formTemplateId"]?.also { usedEncryptedContent += "formTemplateId" },
+						encryptedEntity.formTemplateId,
+						decryptedJsonStrictness,
+					),
 				contactId =
-					decryptedContent["contactId"].let {
-						if (it != null) {
-							usedEncryptedContent += "contactId"
-							encryptedContentDecoder.decodeFromJsonElement(it)
-						} else {
-							encryptedEntity.contactId
-						}
-					},
+					encryptedContentDecoder.decodeDecrypted(
+						decryptedContent["contactId"]?.also { usedEncryptedContent += "contactId" },
+						encryptedEntity.contactId,
+						decryptedJsonStrictness,
+					),
 				healthElementId =
-					decryptedContent["healthElementId"].let {
-						if (it != null) {
-							usedEncryptedContent += "healthElementId"
-							encryptedContentDecoder.decodeFromJsonElement(it)
-						} else {
-							encryptedEntity.healthElementId
-						}
-					},
+					encryptedContentDecoder.decodeDecrypted(
+						decryptedContent["healthElementId"]?.also { usedEncryptedContent += "healthElementId" },
+						encryptedEntity.healthElementId,
+						decryptedJsonStrictness,
+					),
 				planOfActionId =
-					decryptedContent["planOfActionId"].let {
-						if (it != null) {
-							usedEncryptedContent += "planOfActionId"
-							encryptedContentDecoder.decodeFromJsonElement(it)
-						} else {
-							encryptedEntity.planOfActionId
-						}
-					},
+					encryptedContentDecoder.decodeDecrypted(
+						decryptedContent["planOfActionId"]?.also { usedEncryptedContent += "planOfActionId" },
+						encryptedEntity.planOfActionId,
+						decryptedJsonStrictness,
+					),
 				parent =
-					decryptedContent["parent"].let {
-						if (it != null) {
-							usedEncryptedContent += "parent"
-							encryptedContentDecoder.decodeFromJsonElement(it)
-						} else {
-							encryptedEntity.parent
-						}
-					},
+					encryptedContentDecoder.decodeDecrypted(
+						decryptedContent["parent"]?.also { usedEncryptedContent += "parent" },
+						encryptedEntity.parent,
+						decryptedJsonStrictness,
+					),
 				anchorId =
-					decryptedContent["anchorId"].let {
-						if (it != null) {
-							usedEncryptedContent += "anchorId"
-							encryptedContentDecoder.decodeFromJsonElement(it)
-						} else {
-							encryptedEntity.anchorId
-						}
-					},
+					encryptedContentDecoder.decodeDecrypted(
+						decryptedContent["anchorId"]?.also { usedEncryptedContent += "anchorId" },
+						encryptedEntity.anchorId,
+						decryptedJsonStrictness,
+					),
 				secretForeignKeys = encryptedEntity.secretForeignKeys,
 				cryptedForeignKeys = encryptedEntity.cryptedForeignKeys,
 				delegations = encryptedEntity.delegations,
@@ -196,7 +146,7 @@ internal object FormDecryptor : AbstractEntityDecryptor<EncryptedForm, Decrypted
 				encryptedSelf = encryptedEntity.encryptedSelf,
 				securityMetadata = encryptedEntity.securityMetadata,
 			)
-		if (!ignoreUnknownDecryptedFields && decryptedContent.size != usedEncryptedContent.size) {
+		if (decryptedJsonStrictness == DecryptedJsonStrictness.Strict && decryptedContent.size != usedEncryptedContent.size) {
 			throw EntityEncryptionException("The Form encrypted content contains unexpected fields: ${decryptedContent.keys - usedEncryptedContent}")
 		}
 		return result

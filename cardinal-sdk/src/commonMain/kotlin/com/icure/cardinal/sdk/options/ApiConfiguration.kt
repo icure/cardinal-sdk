@@ -4,6 +4,7 @@ import com.icure.cardinal.sdk.api.raw.RawApiConfig
 import com.icure.cardinal.sdk.auth.services.JwtBasedAuthProvider
 import com.icure.cardinal.sdk.crypto.BasicInternalCryptoApi
 import com.icure.cardinal.sdk.crypto.InternalCryptoServices
+import com.icure.cardinal.sdk.crypto.encryptor.RootEntitiesEncryptors
 import com.icure.cardinal.sdk.crypto.entities.SdkBoundGroup
 import com.icure.utils.InternalIcureApi
 import kotlinx.coroutines.Job
@@ -18,7 +19,6 @@ internal interface BasicApiConfiguration {
 	val apiUrl: String
 	val webSocketAuthProvider: JwtBasedAuthProvider?
 	val crypto: BasicInternalCryptoApi
-	val encryption: EntitiesEncryptedFieldsManifests
 	val rawApiConfig: RawApiConfig
 
 	fun requireWebSocketAuthProvider(): JwtBasedAuthProvider =
@@ -31,9 +31,9 @@ internal interface BasicApiConfiguration {
 internal interface ApiConfiguration : BasicApiConfiguration {
 	val autofillAuthor: Boolean
 	override val crypto: InternalCryptoServices
-	val jsonPatcher: JsonPatcher
 	val parentJob: Job?
-	val entityEncodingJson: Json
+	val encryptors: RootEntitiesEncryptors
+	val ignoreUnkonwnDecryptedFields: Boolean
 }
 
 @InternalIcureApi
@@ -42,12 +42,11 @@ internal data class ApiConfigurationImpl(
 	override val webSocketAuthProvider: JwtBasedAuthProvider?,
 	override val autofillAuthor: Boolean,
 	override val crypto: InternalCryptoServices,
-	override val encryption: EntitiesEncryptedFieldsManifests,
-	override val jsonPatcher: JsonPatcher,
 	override val parentJob: Job?,
 	override val rawApiConfig: RawApiConfig,
 	val boundGroup: SdkBoundGroup?,
-	override val entityEncodingJson: Json,
+	override val encryptors: RootEntitiesEncryptors,
+	override val ignoreUnkonwnDecryptedFields: Boolean,
 ) : ApiConfiguration {
 	override fun getBoundGroup(coroutineContext: CoroutineContext): SdkBoundGroup? =
 		boundGroup
@@ -58,9 +57,8 @@ internal data class BasicApiConfigurationImpl(
 	override val apiUrl: String,
 	override val webSocketAuthProvider: JwtBasedAuthProvider?,
 	override val crypto: BasicInternalCryptoApi,
-	override val encryption: EntitiesEncryptedFieldsManifests,
 	override val rawApiConfig: RawApiConfig,
-	val boundGroup: SdkBoundGroup?
+	val boundGroup: SdkBoundGroup?,
 ) : BasicApiConfiguration {
 	override fun getBoundGroup(coroutineContext: CoroutineContext): SdkBoundGroup? =
 		boundGroup
@@ -71,7 +69,6 @@ internal data class UnboundBasicApiConfigurationImpl(
 	override val apiUrl: String,
 	override val webSocketAuthProvider: JwtBasedAuthProvider?,
 	override val crypto: BasicInternalCryptoApi,
-	override val encryption: EntitiesEncryptedFieldsManifests,
 	override val rawApiConfig: RawApiConfig,
 	val boundGroupProvider: (CoroutineContext) -> SdkBoundGroup?
 ) : BasicApiConfiguration {

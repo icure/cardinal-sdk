@@ -19,6 +19,7 @@ import com.icure.cardinal.sdk.model.embed.EncryptedSubContact
 import com.icure.kryptom.crypto.AesAlgorithm
 import com.icure.kryptom.crypto.AesKey
 import com.icure.kryptom.crypto.CryptoService
+import com.icure.utils.InternalIcureApi
 import kotlinx.serialization.json.Json
 import kotlinx.serialization.json.JsonElement
 import kotlinx.serialization.json.JsonObject
@@ -26,27 +27,28 @@ import kotlinx.serialization.json.encodeToJsonElement
 import kotlin.Boolean
 import kotlin.String
 
+@InternalIcureApi
 internal object ContactEncryptorFactory : EntityEncryptorFactory<EncryptedContact, DecryptedContact> {
 	override val empty: EntityEncryptor<EncryptedContact, DecryptedContact> =
 		ContactEncryptor(
-			created = false,
-			modified = false,
-			author = false,
-			responsible = false,
-			tags = false,
-			codes = false,
-			identifier = false,
-			groupId = false,
-			openingDate = false,
-			closingDate = false,
-			descr = false,
-			location = false,
-			encounterType = false,
-			encounterLocation = EncryptableFieldConfig.None(AddressEncryptorFactory),
-			subContacts = EncryptableFieldConfig.None(SubContactEncryptorFactory),
-			services = EncryptableFieldConfig.None(ServiceEncryptorFactory),
-			participantList = false,
-			notes = EncryptableFieldConfig.None(AnnotationEncryptorFactory),
+			created_e = false,
+			modified_e = false,
+			author_e = false,
+			responsible_e = false,
+			tags_e = false,
+			codes_e = false,
+			identifier_e = false,
+			groupId_e = false,
+			openingDate_e = false,
+			closingDate_e = false,
+			descr_e = false,
+			location_e = false,
+			encounterType_e = false,
+			encounterLocation_e = EncryptableFieldConfig.None(AddressEncryptorFactory),
+			subContacts_e = EncryptableFieldConfig.None(SubContactEncryptorFactory),
+			services_e = EncryptableFieldConfig.None(ServiceEncryptorFactory),
+			participantList_e = false,
+			notes_e = EncryptableFieldConfig.None(AnnotationEncryptorFactory),
 		)
 
 	override fun create(
@@ -55,20 +57,20 @@ internal object ContactEncryptorFactory : EntityEncryptorFactory<EncryptedContac
 	): EntityEncryptor<EncryptedContact, DecryptedContact> {
 		val manifest = encryptorFactoryContext.getManifest(entityManifestName)
 		return ContactEncryptor(
-			created = "created" in manifest.fieldsToEncrypt,
-			modified = "modified" in manifest.fieldsToEncrypt,
-			author = "author" in manifest.fieldsToEncrypt,
-			responsible = "responsible" in manifest.fieldsToEncrypt,
-			tags = "tags" in manifest.fieldsToEncrypt,
-			codes = "codes" in manifest.fieldsToEncrypt,
-			identifier = "identifier" in manifest.fieldsToEncrypt,
-			groupId = "groupId" in manifest.fieldsToEncrypt,
-			openingDate = "openingDate" in manifest.fieldsToEncrypt,
-			closingDate = "closingDate" in manifest.fieldsToEncrypt,
-			descr = "descr" in manifest.fieldsToEncrypt,
-			location = "location" in manifest.fieldsToEncrypt,
-			encounterType = "encounterType" in manifest.fieldsToEncrypt,
-			encounterLocation =
+			created_e = "created" in manifest.fieldsToEncrypt,
+			modified_e = "modified" in manifest.fieldsToEncrypt,
+			author_e = "author" in manifest.fieldsToEncrypt,
+			responsible_e = "responsible" in manifest.fieldsToEncrypt,
+			tags_e = "tags" in manifest.fieldsToEncrypt,
+			codes_e = "codes" in manifest.fieldsToEncrypt,
+			identifier_e = "identifier" in manifest.fieldsToEncrypt,
+			groupId_e = "groupId" in manifest.fieldsToEncrypt,
+			openingDate_e = "openingDate" in manifest.fieldsToEncrypt,
+			closingDate_e = "closingDate" in manifest.fieldsToEncrypt,
+			descr_e = "descr" in manifest.fieldsToEncrypt,
+			location_e = "location" in manifest.fieldsToEncrypt,
+			encounterType_e = "encounterType" in manifest.fieldsToEncrypt,
+			encounterLocation_e =
 				if ("encounterLocation" in manifest.fieldsToEncrypt) {
 					EncryptableFieldConfig.Full()
 				} else {
@@ -82,7 +84,7 @@ internal object ContactEncryptorFactory : EntityEncryptorFactory<EncryptedContac
 						)
 					} ?: EncryptableFieldConfig.None(AddressEncryptorFactory)
 				},
-			subContacts =
+			subContacts_e =
 				if ("subContacts" in manifest.fieldsToEncrypt) {
 					EncryptableFieldConfig.Full()
 				} else {
@@ -96,7 +98,7 @@ internal object ContactEncryptorFactory : EntityEncryptorFactory<EncryptedContac
 						)
 					} ?: EncryptableFieldConfig.None(SubContactEncryptorFactory)
 				},
-			services =
+			services_e =
 				if ("services" in manifest.fieldsToEncrypt) {
 					EncryptableFieldConfig.Full()
 				} else {
@@ -110,8 +112,8 @@ internal object ContactEncryptorFactory : EntityEncryptorFactory<EncryptedContac
 						)
 					} ?: EncryptableFieldConfig.None(ServiceEncryptorFactory)
 				},
-			participantList = "participantList" in manifest.fieldsToEncrypt,
-			notes =
+			participantList_e = "participantList" in manifest.fieldsToEncrypt,
+			notes_e =
 				if ("notes" in manifest.fieldsToEncrypt) {
 					EncryptableFieldConfig.Full()
 				} else {
@@ -129,25 +131,26 @@ internal object ContactEncryptorFactory : EntityEncryptorFactory<EncryptedContac
 	}
 }
 
+@InternalIcureApi
 private class ContactEncryptor(
-	private val created: Boolean,
-	private val modified: Boolean,
-	private val author: Boolean,
-	private val responsible: Boolean,
-	private val tags: Boolean,
-	private val codes: Boolean,
-	private val identifier: Boolean,
-	private val groupId: Boolean,
-	private val openingDate: Boolean,
-	private val closingDate: Boolean,
-	private val descr: Boolean,
-	private val location: Boolean,
-	private val encounterType: Boolean,
-	private val encounterLocation: EncryptableFieldConfig<EncryptedAddress, DecryptedAddress>,
-	private val subContacts: EncryptableFieldConfig<EncryptedSubContact, DecryptedSubContact>,
-	private val services: EncryptableFieldConfig<EncryptedService, DecryptedService>,
-	private val participantList: Boolean,
-	private val notes: EncryptableFieldConfig<EncryptedAnnotation, DecryptedAnnotation>,
+	private val created_e: Boolean,
+	private val modified_e: Boolean,
+	private val author_e: Boolean,
+	private val responsible_e: Boolean,
+	private val tags_e: Boolean,
+	private val codes_e: Boolean,
+	private val identifier_e: Boolean,
+	private val groupId_e: Boolean,
+	private val openingDate_e: Boolean,
+	private val closingDate_e: Boolean,
+	private val descr_e: Boolean,
+	private val location_e: Boolean,
+	private val encounterType_e: Boolean,
+	private val encounterLocation_e: EncryptableFieldConfig<EncryptedAddress, DecryptedAddress>,
+	private val subContacts_e: EncryptableFieldConfig<EncryptedSubContact, DecryptedSubContact>,
+	private val services_e: EncryptableFieldConfig<EncryptedService, DecryptedService>,
+	private val participantList_e: Boolean,
+	private val notes_e: EncryptableFieldConfig<EncryptedAnnotation, DecryptedAnnotation>,
 ) : AbstractEntityEncryptor<EncryptedContact, DecryptedContact>() {
 	override suspend fun encrypt(
 		encryptionKey: AesKey<AesAlgorithm.CbcWithPkcs7Padding>,
@@ -156,44 +159,89 @@ private class ContactEncryptor(
 		cryptoService: CryptoService,
 	): EncryptedContact {
 		val dataToEncrypt = mutableMapOf<String, JsonElement>()
-		if (created) dataToEncrypt["created"] = encodingJson.encodeToJsonElement(clearEntity.created)
-		if (modified) dataToEncrypt["modified"] = encodingJson.encodeToJsonElement(clearEntity.modified)
-		if (author) dataToEncrypt["author"] = encodingJson.encodeToJsonElement(clearEntity.author)
-		if (responsible) dataToEncrypt["responsible"] = encodingJson.encodeToJsonElement(clearEntity.responsible)
-		if (tags) dataToEncrypt["tags"] = encodingJson.encodeToJsonElement(clearEntity.tags)
-		if (codes) dataToEncrypt["codes"] = encodingJson.encodeToJsonElement(clearEntity.codes)
-		if (identifier) dataToEncrypt["identifier"] = encodingJson.encodeToJsonElement(clearEntity.identifier)
-		if (groupId) dataToEncrypt["groupId"] = encodingJson.encodeToJsonElement(clearEntity.groupId)
-		if (openingDate) dataToEncrypt["openingDate"] = encodingJson.encodeToJsonElement(clearEntity.openingDate)
-		if (closingDate) dataToEncrypt["closingDate"] = encodingJson.encodeToJsonElement(clearEntity.closingDate)
-		if (descr) dataToEncrypt["descr"] = encodingJson.encodeToJsonElement(clearEntity.descr)
-		if (location) dataToEncrypt["location"] = encodingJson.encodeToJsonElement(clearEntity.location)
-		if (encounterType) dataToEncrypt["encounterType"] = encodingJson.encodeToJsonElement(clearEntity.encounterType)
-		if (encounterLocation.fullEncryption) dataToEncrypt["encounterLocation"] = encodingJson.encodeToJsonElement(clearEntity.encounterLocation)
-		if (subContacts.fullEncryption) dataToEncrypt["subContacts"] = encodingJson.encodeToJsonElement(clearEntity.subContacts)
-		if (services.fullEncryption) dataToEncrypt["services"] = encodingJson.encodeToJsonElement(clearEntity.services)
-		if (participantList) dataToEncrypt["participantList"] = encodingJson.encodeToJsonElement(clearEntity.participantList)
-		if (notes.fullEncryption) dataToEncrypt["notes"] = encodingJson.encodeToJsonElement(clearEntity.notes)
+		if (created_e && clearEntity.created != null) dataToEncrypt["created"] = encodingJson.encodeToJsonElement(clearEntity.created)
+		if (modified_e && clearEntity.modified != null) dataToEncrypt["modified"] = encodingJson.encodeToJsonElement(clearEntity.modified)
+		if (author_e && clearEntity.author != null) dataToEncrypt["author"] = encodingJson.encodeToJsonElement(clearEntity.author)
+		if (responsible_e && clearEntity.responsible != null) {
+			dataToEncrypt["responsible"] =
+				encodingJson.encodeToJsonElement(
+					clearEntity.responsible,
+				)
+		}
+		if (tags_e && clearEntity.tags.isNotEmpty()) dataToEncrypt["tags"] = encodingJson.encodeToJsonElement(clearEntity.tags)
+		if (codes_e && clearEntity.codes.isNotEmpty()) dataToEncrypt["codes"] = encodingJson.encodeToJsonElement(clearEntity.codes)
+		if (identifier_e && clearEntity.identifier.isNotEmpty()) {
+			dataToEncrypt["identifier"] =
+				encodingJson.encodeToJsonElement(
+					clearEntity.identifier,
+				)
+		}
+		if (groupId_e && clearEntity.groupId != null) dataToEncrypt["groupId"] = encodingJson.encodeToJsonElement(clearEntity.groupId)
+		if (openingDate_e && clearEntity.openingDate != null) {
+			dataToEncrypt["openingDate"] =
+				encodingJson.encodeToJsonElement(
+					clearEntity.openingDate,
+				)
+		}
+		if (closingDate_e && clearEntity.closingDate != null) {
+			dataToEncrypt["closingDate"] =
+				encodingJson.encodeToJsonElement(
+					clearEntity.closingDate,
+				)
+		}
+		if (descr_e && clearEntity.descr != null) dataToEncrypt["descr"] = encodingJson.encodeToJsonElement(clearEntity.descr)
+		if (location_e && clearEntity.location != null) dataToEncrypt["location"] = encodingJson.encodeToJsonElement(clearEntity.location)
+		if (encounterType_e && clearEntity.encounterType != null) {
+			dataToEncrypt["encounterType"] =
+				encodingJson.encodeToJsonElement(
+					clearEntity.encounterType,
+				)
+		}
+		if (encounterLocation_e.fullEncryption && clearEntity.encounterLocation != null) {
+			dataToEncrypt["encounterLocation"] =
+				encodingJson.encodeToJsonElement(
+					clearEntity.encounterLocation,
+				)
+		}
+		if (subContacts_e.fullEncryption && clearEntity.subContacts.isNotEmpty()) {
+			dataToEncrypt["subContacts"] =
+				encodingJson.encodeToJsonElement(
+					clearEntity.subContacts,
+				)
+		}
+		if (services_e.fullEncryption && clearEntity.services.isNotEmpty()) {
+			dataToEncrypt["services"] =
+				encodingJson.encodeToJsonElement(
+					clearEntity.services,
+				)
+		}
+		if (participantList_e && clearEntity.participantList.isNotEmpty()) {
+			dataToEncrypt["participantList"] =
+				encodingJson.encodeToJsonElement(
+					clearEntity.participantList,
+				)
+		}
+		if (notes_e.fullEncryption && clearEntity.notes.isNotEmpty()) dataToEncrypt["notes"] = encodingJson.encodeToJsonElement(clearEntity.notes)
 		return EncryptedContact(
 			id = clearEntity.id,
 			rev = clearEntity.rev,
-			created = if (created) null else clearEntity.created,
-			modified = if (modified) null else clearEntity.modified,
-			author = if (author) null else clearEntity.author,
-			responsible = if (responsible) null else clearEntity.responsible,
-			tags = if (tags) emptySet() else clearEntity.tags,
-			codes = if (codes) emptySet() else clearEntity.codes,
-			identifier = if (identifier) emptyList() else clearEntity.identifier,
+			created = if (created_e) null else clearEntity.created,
+			modified = if (modified_e) null else clearEntity.modified,
+			author = if (author_e) null else clearEntity.author,
+			responsible = if (responsible_e) null else clearEntity.responsible,
+			tags = if (tags_e) emptySet() else clearEntity.tags,
+			codes = if (codes_e) emptySet() else clearEntity.codes,
+			identifier = if (identifier_e) emptyList() else clearEntity.identifier,
 			endOfLife = clearEntity.endOfLife,
 			deletionDate = clearEntity.deletionDate,
-			groupId = if (groupId) null else clearEntity.groupId,
-			openingDate = if (openingDate) null else clearEntity.openingDate,
-			closingDate = if (closingDate) null else clearEntity.closingDate,
-			descr = if (descr) null else clearEntity.descr,
-			location = if (location) null else clearEntity.location,
-			encounterType = if (encounterType) null else clearEntity.encounterType,
+			groupId = if (groupId_e) null else clearEntity.groupId,
+			openingDate = if (openingDate_e) null else clearEntity.openingDate,
+			closingDate = if (closingDate_e) null else clearEntity.closingDate,
+			descr = if (descr_e) null else clearEntity.descr,
+			location = if (location_e) null else clearEntity.location,
+			encounterType = if (encounterType_e) null else clearEntity.encounterType,
 			encounterLocation =
-				encounterLocation.encryptor.let { encryptor ->
+				encounterLocation_e.encryptor.let { encryptor ->
 					if (encryptor == null) {
 						null
 					} else {
@@ -203,7 +251,7 @@ private class ContactEncryptor(
 					}
 				},
 			subContacts =
-				subContacts.encryptor.let { encryptor ->
+				subContacts_e.encryptor.let { encryptor ->
 					if (encryptor == null) {
 						emptySet()
 					} else {
@@ -213,7 +261,7 @@ private class ContactEncryptor(
 					}
 				},
 			services =
-				services.encryptor.let { encryptor ->
+				services_e.encryptor.let { encryptor ->
 					if (encryptor == null) {
 						emptySet()
 					} else {
@@ -222,7 +270,7 @@ private class ContactEncryptor(
 						}
 					}
 				},
-			participantList = if (participantList) emptyList() else clearEntity.participantList,
+			participantList = if (participantList_e) emptyList() else clearEntity.participantList,
 			secretForeignKeys = clearEntity.secretForeignKeys,
 			cryptedForeignKeys = clearEntity.cryptedForeignKeys,
 			delegations = clearEntity.delegations,
@@ -230,7 +278,7 @@ private class ContactEncryptor(
 			encryptedSelf = getUpdatedEncryptSelf(encryptionKey, clearEntity, JsonObject(dataToEncrypt), cryptoService),
 			securityMetadata = clearEntity.securityMetadata,
 			notes =
-				notes.encryptor.let { encryptor ->
+				notes_e.encryptor.let { encryptor ->
 					if (encryptor == null) {
 						emptyList()
 					} else {

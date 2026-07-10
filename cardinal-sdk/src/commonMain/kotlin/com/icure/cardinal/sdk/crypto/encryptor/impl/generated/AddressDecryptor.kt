@@ -1,6 +1,7 @@
 // This file is auto-generated
 package com.icure.cardinal.sdk.crypto.encryptor.`impl`.generated
 
+import com.icure.cardinal.sdk.crypto.encryptor.DecryptedJsonStrictness
 import com.icure.cardinal.sdk.crypto.encryptor.`impl`.AbstractEntityDecryptor
 import com.icure.cardinal.sdk.model.embed.DecryptedAddress
 import com.icure.cardinal.sdk.model.embed.EncryptedAddress
@@ -8,18 +9,18 @@ import com.icure.cardinal.sdk.utils.EntityEncryptionException
 import com.icure.kryptom.crypto.AesAlgorithm
 import com.icure.kryptom.crypto.AesKey
 import com.icure.kryptom.crypto.CryptoService
+import com.icure.utils.InternalIcureApi
 import kotlinx.serialization.json.Json
 import kotlinx.serialization.json.JsonObject
-import kotlinx.serialization.json.decodeFromJsonElement
-import kotlin.Boolean
 import kotlin.collections.Collection
 
+@InternalIcureApi
 internal object AddressDecryptor : AbstractEntityDecryptor<EncryptedAddress, DecryptedAddress>() {
 	override suspend fun decrypt(
 		decryptionKeys: Collection<AesKey<AesAlgorithm.CbcWithPkcs7Padding>>,
 		encryptedEntity: EncryptedAddress,
 		patchDecryptedSelfJson: ((JsonObject) -> JsonObject)?,
-		ignoreUnknownDecryptedFields: Boolean,
+		decryptedJsonStrictness: DecryptedJsonStrictness,
 		encryptedContentDecoder: Json,
 		cryptoService: CryptoService,
 	): DecryptedAddress {
@@ -34,162 +35,117 @@ internal object AddressDecryptor : AbstractEntityDecryptor<EncryptedAddress, Dec
 		val result =
 			DecryptedAddress(
 				tags =
-					decryptedContent["tags"].let {
-						if (it != null) {
-							usedEncryptedContent += "tags"
-							encryptedContentDecoder.decodeFromJsonElement(it)
-						} else {
-							encryptedEntity.tags
-						}
-					},
+					encryptedContentDecoder.decodeDecrypted(
+						decryptedContent["tags"]?.also { usedEncryptedContent += "tags" },
+						encryptedEntity.tags,
+						decryptedJsonStrictness,
+					),
 				codes =
-					decryptedContent["codes"].let {
-						if (it != null) {
-							usedEncryptedContent += "codes"
-							encryptedContentDecoder.decodeFromJsonElement(it)
-						} else {
-							encryptedEntity.codes
-						}
-					},
+					encryptedContentDecoder.decodeDecrypted(
+						decryptedContent["codes"]?.also { usedEncryptedContent += "codes" },
+						encryptedEntity.codes,
+						decryptedJsonStrictness,
+					),
 				identifier =
-					decryptedContent["identifier"].let {
-						if (it != null) {
-							usedEncryptedContent += "identifier"
-							encryptedContentDecoder.decodeFromJsonElement(it)
-						} else {
-							encryptedEntity.identifier
-						}
-					},
+					encryptedContentDecoder.decodeDecrypted(
+						decryptedContent["identifier"]?.also { usedEncryptedContent += "identifier" },
+						encryptedEntity.identifier,
+						decryptedJsonStrictness,
+					),
 				addressType =
-					decryptedContent["addressType"].let {
-						if (it != null) {
-							usedEncryptedContent += "addressType"
-							encryptedContentDecoder.decodeFromJsonElement(it)
-						} else {
-							encryptedEntity.addressType
-						}
-					},
+					encryptedContentDecoder.decodeDecrypted(
+						decryptedContent["addressType"]?.also { usedEncryptedContent += "addressType" },
+						encryptedEntity.addressType,
+						decryptedJsonStrictness,
+					),
 				descr =
-					decryptedContent["descr"].let {
-						if (it != null) {
-							usedEncryptedContent += "descr"
-							encryptedContentDecoder.decodeFromJsonElement(it)
-						} else {
-							encryptedEntity.descr
-						}
-					},
+					encryptedContentDecoder.decodeDecrypted(
+						decryptedContent["descr"]?.also { usedEncryptedContent += "descr" },
+						encryptedEntity.descr,
+						decryptedJsonStrictness,
+					),
 				street =
-					decryptedContent["street"].let {
-						if (it != null) {
-							usedEncryptedContent += "street"
-							encryptedContentDecoder.decodeFromJsonElement(it)
-						} else {
-							encryptedEntity.street
-						}
-					},
+					encryptedContentDecoder.decodeDecrypted(
+						decryptedContent["street"]?.also { usedEncryptedContent += "street" },
+						encryptedEntity.street,
+						decryptedJsonStrictness,
+					),
 				houseNumber =
-					decryptedContent["houseNumber"].let {
-						if (it != null) {
-							usedEncryptedContent += "houseNumber"
-							encryptedContentDecoder.decodeFromJsonElement(it)
-						} else {
-							encryptedEntity.houseNumber
-						}
-					},
+					encryptedContentDecoder.decodeDecrypted(
+						decryptedContent["houseNumber"]?.also { usedEncryptedContent += "houseNumber" },
+						encryptedEntity.houseNumber,
+						decryptedJsonStrictness,
+					),
 				postboxNumber =
-					decryptedContent["postboxNumber"].let {
-						if (it != null) {
-							usedEncryptedContent += "postboxNumber"
-							encryptedContentDecoder.decodeFromJsonElement(it)
-						} else {
-							encryptedEntity.postboxNumber
-						}
-					},
+					encryptedContentDecoder.decodeDecrypted(
+						decryptedContent["postboxNumber"]?.also { usedEncryptedContent += "postboxNumber" },
+						encryptedEntity.postboxNumber,
+						decryptedJsonStrictness,
+					),
 				postalCode =
-					decryptedContent["postalCode"].let {
-						if (it != null) {
-							usedEncryptedContent += "postalCode"
-							encryptedContentDecoder.decodeFromJsonElement(it)
-						} else {
-							encryptedEntity.postalCode
-						}
-					},
+					encryptedContentDecoder.decodeDecrypted(
+						decryptedContent["postalCode"]?.also { usedEncryptedContent += "postalCode" },
+						encryptedEntity.postalCode,
+						decryptedJsonStrictness,
+					),
 				city =
-					decryptedContent["city"].let {
-						if (it != null) {
-							usedEncryptedContent += "city"
-							encryptedContentDecoder.decodeFromJsonElement(it)
-						} else {
-							encryptedEntity.city
-						}
-					},
+					encryptedContentDecoder.decodeDecrypted(
+						decryptedContent["city"]?.also { usedEncryptedContent += "city" },
+						encryptedEntity.city,
+						decryptedJsonStrictness,
+					),
 				state =
-					decryptedContent["state"].let {
-						if (it != null) {
-							usedEncryptedContent += "state"
-							encryptedContentDecoder.decodeFromJsonElement(it)
-						} else {
-							encryptedEntity.state
-						}
-					},
+					encryptedContentDecoder.decodeDecrypted(
+						decryptedContent["state"]?.also { usedEncryptedContent += "state" },
+						encryptedEntity.state,
+						decryptedJsonStrictness,
+					),
 				country =
-					decryptedContent["country"].let {
-						if (it != null) {
-							usedEncryptedContent += "country"
-							encryptedContentDecoder.decodeFromJsonElement(it)
-						} else {
-							encryptedEntity.country
-						}
-					},
+					encryptedContentDecoder.decodeDecrypted(
+						decryptedContent["country"]?.also { usedEncryptedContent += "country" },
+						encryptedEntity.country,
+						decryptedJsonStrictness,
+					),
 				note =
-					decryptedContent["note"].let {
-						if (it != null) {
-							usedEncryptedContent += "note"
-							encryptedContentDecoder.decodeFromJsonElement(it)
-						} else {
-							encryptedEntity.note
-						}
-					},
+					encryptedContentDecoder.decodeDecrypted(
+						decryptedContent["note"]?.also { usedEncryptedContent += "note" },
+						encryptedEntity.note,
+						decryptedJsonStrictness,
+					),
 				notes =
-					decryptedContent["notes"].let {
-						if (it != null) {
-							usedEncryptedContent += "notes"
-							encryptedContentDecoder.decodeFromJsonElement(it)
-						} else {
-							encryptedEntity.notes.map { x0 ->
-								AnnotationDecryptor.decrypt(
-									decryptionKeys = decryptionKeys,
-									encryptedEntity = x0,
-									patchDecryptedSelfJson = patchDecryptedSelfJson,
-									ignoreUnknownDecryptedFields = ignoreUnknownDecryptedFields,
-									encryptedContentDecoder = encryptedContentDecoder,
-									cryptoService = cryptoService,
-								)
-							}
-						}
-					},
+					encryptedContentDecoder.decodeDecrypted(
+						decryptedContent["notes"]?.also { usedEncryptedContent += "notes" },
+						encryptedEntity.notes.map { x0 ->
+							AnnotationDecryptor.decrypt(
+								decryptionKeys = decryptionKeys,
+								encryptedEntity = x0,
+								patchDecryptedSelfJson = patchDecryptedSelfJson,
+								decryptedJsonStrictness = decryptedJsonStrictness,
+								encryptedContentDecoder = encryptedContentDecoder,
+								cryptoService = cryptoService,
+							)
+						},
+						decryptedJsonStrictness,
+					),
 				telecoms =
-					decryptedContent["telecoms"].let {
-						if (it != null) {
-							usedEncryptedContent += "telecoms"
-							encryptedContentDecoder.decodeFromJsonElement(it)
-						} else {
-							encryptedEntity.telecoms.map { x0 ->
-								TelecomDecryptor.decrypt(
-									decryptionKeys = decryptionKeys,
-									encryptedEntity = x0,
-									patchDecryptedSelfJson = patchDecryptedSelfJson,
-									ignoreUnknownDecryptedFields = ignoreUnknownDecryptedFields,
-									encryptedContentDecoder = encryptedContentDecoder,
-									cryptoService = cryptoService,
-								)
-							}
-						}
-					},
+					encryptedContentDecoder.decodeDecrypted(
+						decryptedContent["telecoms"]?.also { usedEncryptedContent += "telecoms" },
+						encryptedEntity.telecoms.map { x0 ->
+							TelecomDecryptor.decrypt(
+								decryptionKeys = decryptionKeys,
+								encryptedEntity = x0,
+								patchDecryptedSelfJson = patchDecryptedSelfJson,
+								decryptedJsonStrictness = decryptedJsonStrictness,
+								encryptedContentDecoder = encryptedContentDecoder,
+								cryptoService = cryptoService,
+							)
+						},
+						decryptedJsonStrictness,
+					),
 				encryptedSelf = encryptedEntity.encryptedSelf,
 				extensions = encryptedEntity.extensions,
 			)
-		if (!ignoreUnknownDecryptedFields && decryptedContent.size != usedEncryptedContent.size) {
+		if (decryptedJsonStrictness == DecryptedJsonStrictness.Strict && decryptedContent.size != usedEncryptedContent.size) {
 			throw EntityEncryptionException(
 				"The Address encrypted content contains unexpected fields: ${decryptedContent.keys - usedEncryptedContent}",
 			)

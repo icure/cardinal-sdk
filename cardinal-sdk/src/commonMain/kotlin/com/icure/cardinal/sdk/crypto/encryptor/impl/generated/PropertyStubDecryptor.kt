@@ -1,6 +1,7 @@
 // This file is auto-generated
 package com.icure.cardinal.sdk.crypto.encryptor.`impl`.generated
 
+import com.icure.cardinal.sdk.crypto.encryptor.DecryptedJsonStrictness
 import com.icure.cardinal.sdk.crypto.encryptor.`impl`.AbstractEntityDecryptor
 import com.icure.cardinal.sdk.model.DecryptedPropertyStub
 import com.icure.cardinal.sdk.model.EncryptedPropertyStub
@@ -8,19 +9,19 @@ import com.icure.cardinal.sdk.utils.EntityEncryptionException
 import com.icure.kryptom.crypto.AesAlgorithm
 import com.icure.kryptom.crypto.AesKey
 import com.icure.kryptom.crypto.CryptoService
+import com.icure.utils.InternalIcureApi
 import kotlinx.serialization.json.Json
 import kotlinx.serialization.json.JsonObject
-import kotlinx.serialization.json.decodeFromJsonElement
-import kotlin.Boolean
 import kotlin.collections.Collection
 
+@InternalIcureApi
 internal object PropertyStubDecryptor :
 	AbstractEntityDecryptor<EncryptedPropertyStub, DecryptedPropertyStub>() {
 	override suspend fun decrypt(
 		decryptionKeys: Collection<AesKey<AesAlgorithm.CbcWithPkcs7Padding>>,
 		encryptedEntity: EncryptedPropertyStub,
 		patchDecryptedSelfJson: ((JsonObject) -> JsonObject)?,
-		ignoreUnknownDecryptedFields: Boolean,
+		decryptedJsonStrictness: DecryptedJsonStrictness,
 		encryptedContentDecoder: Json,
 		cryptoService: CryptoService,
 	): DecryptedPropertyStub {
@@ -35,44 +36,35 @@ internal object PropertyStubDecryptor :
 		val result =
 			DecryptedPropertyStub(
 				id =
-					decryptedContent["id"].let {
-						if (it != null) {
-							usedEncryptedContent += "id"
-							encryptedContentDecoder.decodeFromJsonElement(it)
-						} else {
-							encryptedEntity.id
-						}
-					},
+					encryptedContentDecoder.decodeDecrypted(
+						decryptedContent["id"]?.also { usedEncryptedContent += "id" },
+						encryptedEntity.id,
+						decryptedJsonStrictness,
+					),
 				type =
-					decryptedContent["type"].let {
-						if (it != null) {
-							usedEncryptedContent += "type"
-							encryptedContentDecoder.decodeFromJsonElement(it)
-						} else {
-							encryptedEntity.type
-						}
-					},
+					encryptedContentDecoder.decodeDecrypted(
+						decryptedContent["type"]?.also { usedEncryptedContent += "type" },
+						encryptedEntity.type,
+						decryptedJsonStrictness,
+					),
 				typedValue =
-					decryptedContent["typedValue"].let {
-						if (it != null) {
-							usedEncryptedContent += "typedValue"
-							encryptedContentDecoder.decodeFromJsonElement(it)
-						} else {
-							encryptedEntity.typedValue?.let {
-								TypedValueDecryptor.decrypt(
-									decryptionKeys = decryptionKeys,
-									encryptedEntity = it,
-									patchDecryptedSelfJson = patchDecryptedSelfJson,
-									ignoreUnknownDecryptedFields = ignoreUnknownDecryptedFields,
-									encryptedContentDecoder = encryptedContentDecoder,
-									cryptoService = cryptoService,
-								)
-							}
-						}
-					},
+					encryptedContentDecoder.decodeDecrypted(
+						decryptedContent["typedValue"]?.also { usedEncryptedContent += "typedValue" },
+						encryptedEntity.typedValue?.let {
+							TypedValueDecryptor.decrypt(
+								decryptionKeys = decryptionKeys,
+								encryptedEntity = it,
+								patchDecryptedSelfJson = patchDecryptedSelfJson,
+								decryptedJsonStrictness = decryptedJsonStrictness,
+								encryptedContentDecoder = encryptedContentDecoder,
+								cryptoService = cryptoService,
+							)
+						},
+						decryptedJsonStrictness,
+					),
 				encryptedSelf = encryptedEntity.encryptedSelf,
 			)
-		if (!ignoreUnknownDecryptedFields && decryptedContent.size != usedEncryptedContent.size) {
+		if (decryptedJsonStrictness == DecryptedJsonStrictness.Strict && decryptedContent.size != usedEncryptedContent.size) {
 			throw EntityEncryptionException(
 				"The PropertyStub encrypted content contains unexpected fields: ${decryptedContent.keys - usedEncryptedContent}",
 			)

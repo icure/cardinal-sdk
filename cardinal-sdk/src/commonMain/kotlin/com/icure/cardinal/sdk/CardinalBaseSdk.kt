@@ -21,7 +21,6 @@ import com.icure.cardinal.sdk.api.impl.FrontEndMigrationApiImpl
 import com.icure.cardinal.sdk.api.impl.GroupApiImpl
 import com.icure.cardinal.sdk.api.impl.HealthcarePartyApiImpl
 import com.icure.cardinal.sdk.api.impl.InsuranceApiImpl
-import com.icure.cardinal.sdk.api.impl.MaintenanceTaskBasicApiImpl
 import com.icure.cardinal.sdk.api.impl.PlaceApiImpl
 import com.icure.cardinal.sdk.api.impl.RoleApiImpl
 import com.icure.cardinal.sdk.api.impl.SystemApiImpl
@@ -34,6 +33,8 @@ import com.icure.cardinal.sdk.api.impl.initDocumentBasicApi
 import com.icure.cardinal.sdk.api.impl.initFormBasicApi
 import com.icure.cardinal.sdk.api.impl.initHealthElementBasicApi
 import com.icure.cardinal.sdk.api.impl.initInvoiceBasicApi
+import com.icure.cardinal.sdk.api.impl.initMaintenanceTaskApi
+import com.icure.cardinal.sdk.api.impl.initMaintenanceTaskBasicApi
 import com.icure.cardinal.sdk.api.impl.initMessageBasicApi
 import com.icure.cardinal.sdk.api.impl.initPatientBasicApi
 import com.icure.cardinal.sdk.api.impl.initReceiptBasicApi
@@ -80,7 +81,6 @@ import com.icure.cardinal.sdk.crypto.entities.SdkBoundGroup
 import com.icure.cardinal.sdk.crypto.impl.BasicEntityAccessInformationProvider
 import com.icure.cardinal.sdk.crypto.impl.BasicInternalCryptoApiImpl
 import com.icure.cardinal.sdk.crypto.impl.EntityValidationServiceImpl
-import com.icure.cardinal.sdk.crypto.impl.JsonEncryptionServiceImpl
 import com.icure.cardinal.sdk.crypto.impl.NoAccessControlKeysHeadersProvider
 import com.icure.cardinal.sdk.model.LoginCredentials
 import com.icure.cardinal.sdk.options.AuthenticationMethod
@@ -88,8 +88,7 @@ import com.icure.cardinal.sdk.options.BasicApiConfiguration
 import com.icure.cardinal.sdk.options.BasicApiConfigurationImpl
 import com.icure.cardinal.sdk.options.BasicSdkOptions
 import com.icure.cardinal.sdk.options.BasicToFullSdkOptions
-import com.icure.cardinal.sdk.options.EncryptedFieldsConfiguration
-import com.icure.cardinal.sdk.options.EntitiesEncryptedFieldsManifests
+import com.icure.cardinal.sdk.options.EncryptedFieldsOptions
 import com.icure.cardinal.sdk.options.RequestRetryConfiguration
 import com.icure.cardinal.sdk.options.UnboundBasicApiConfigurationImpl
 import com.icure.cardinal.sdk.options.UnboundBasicSdkOptions
@@ -97,6 +96,7 @@ import com.icure.cardinal.sdk.options.configuredClientOrDefault
 import com.icure.cardinal.sdk.options.configuredJsonOrDefault
 import com.icure.cardinal.sdk.options.getAuthProvider
 import com.icure.cardinal.sdk.options.getGroupAndAuthProvider
+import com.icure.cardinal.sdk.options.ignoreUnknownFieldsOrDefault
 import com.icure.cardinal.sdk.storage.StorageFacade
 import com.icure.cardinal.sdk.utils.ensureNonNull
 import com.icure.cardinal.sdk.utils.retryWithDelays
@@ -109,6 +109,7 @@ import kotlin.time.Duration.Companion.seconds
 /**
  * Similar to the [CardinalBaseSdk] but is not bound to a specific user and/or group.
  * This allows using proxy authentication methods.
+ * All proxied authentication can be of different groups but must be for the same project
  */
 @InternalIcureApi
 interface CardinalUnboundBaseSdk : CardinalBaseApis {
@@ -152,19 +153,15 @@ interface CardinalUnboundBaseSdk : CardinalBaseApis {
 				RawMessageGatewayApi(client, cryptoService),
 				krakenUrl = baseUrl
 			)
-			val manifests = EntitiesEncryptedFieldsManifests.fromEncryptedFields(options.encryptedFields)
-			val jsonEncryptionService = JsonEncryptionServiceImpl(cryptoService)
 			val boundGroupProvider = { context: CoroutineContext -> options.getBoundGroupId(context)?.let(::SdkBoundGroup) }
 			val config = UnboundBasicApiConfigurationImpl(
 				apiUrl = baseUrl,
 				webSocketAuthProvider = authProvider as? JwtBasedAuthProvider,
 				crypto = BasicInternalCryptoApiImpl(
 					primitives = options.cryptoService,
-					jsonEncryption = jsonEncryptionService,
-					validationService = EntityValidationServiceImpl(jsonEncryptionService),
+					validationService = EntityValidationServiceImpl(),
 					entityAccessInformationProvider = BasicEntityAccessInformationProvider(boundGroupProvider)
 				),
-				encryption = manifests,
 				rawApiConfig = rawApiConfig,
 				boundGroupProvider = boundGroupProvider
 			)
@@ -266,18 +263,14 @@ interface CardinalBaseSdk : CardinalBaseApis {
 				rawApiConfig = rawApiConfig,
 			)
 			val boundGroup = chosenGroup?.let(::SdkBoundGroup)
-			val manifests = EntitiesEncryptedFieldsManifests.fromEncryptedFields(options.encryptedFields)
-			val jsonEncryptionService = JsonEncryptionServiceImpl(cryptoService)
 			val config = BasicApiConfigurationImpl(
 				apiUrl = baseUrl,
 				webSocketAuthProvider = authProvider as? JwtBasedAuthProvider,
 				crypto = BasicInternalCryptoApiImpl(
 					primitives = options.cryptoService,
-					jsonEncryption = jsonEncryptionService,
-					validationService = EntityValidationServiceImpl(jsonEncryptionService),
+					validationService = EntityValidationServiceImpl(),
 					entityAccessInformationProvider = BasicEntityAccessInformationProvider { boundGroup }
 				),
-				encryption = manifests,
 				rawApiConfig = rawApiConfig,
 				boundGroup = boundGroup
 			)
@@ -531,13 +524,14 @@ private class CardinalBaseApisImpl(
 	}
 
 	override val maintenanceTask by lazy {
-		MaintenanceTaskBasicApiImpl(
+		initMaintenanceTaskBasicApi(
 			RawMaintenanceTaskApiImpl(
 				apiUrl,
 				authProvider,
 				NoAccessControlKeysHeadersProvider,
 				config.rawApiConfig
-			), config
+			),
+			config
 		)
 	}
 
@@ -618,15 +612,17 @@ private class CardinalBaseApisImpl(
 
 private fun BasicSdkOptions.asInitialized() =
 	InitializedBaseSdkOptions(
-		encryptedFields = encryptedFields,
+		encryptedFieldsOptions = encryptedFieldsOptions,
 		requestTimeout = requestTimeout,
 		requestRetryConfiguration = requestRetryConfiguration,
+		ignoreUnknownFields = ignoreUnknownFieldsOrDefault(),
 	)
 
 private data class InitializedBaseSdkOptions(
-	val encryptedFields: EncryptedFieldsConfiguration = EncryptedFieldsConfiguration(),
-	val requestTimeout: Duration? = null,
-	val requestRetryConfiguration: RequestRetryConfiguration = RequestRetryConfiguration(),
+	val encryptedFieldsOptions: EncryptedFieldsOptions?,
+	val requestTimeout: Duration?,
+	val requestRetryConfiguration: RequestRetryConfiguration,
+	val ignoreUnknownFields: Boolean,
 )
 
 private fun makeInitializedSdkOptions(
@@ -634,16 +630,16 @@ private fun makeInitializedSdkOptions(
 	full: BasicToFullSdkOptions,
 	storage: StorageFacade
 ) = InitializedSdkOptions(
-	encryptedFields = base.encryptedFields,
+	encryptedFieldsOptions = base.encryptedFieldsOptions,
 	useHierarchicalDataOwners = full.useHierarchicalDataOwners,
 	createTransferKeys = full.createTransferKeys,
 	autoCreateEncryptionKeyForExistingLegacyData = full.autoCreateEncryptionKeyForExistingLegacyData,
-	jsonPatcher = full.jsonPatcher,
 	parentJob = full.parentJob,
 	requestTimeout = base.requestTimeout,
 	requestRetryConfiguration = base.requestRetryConfiguration,
 	keyStorage = full.keyStorage,
 	baseStorage = storage,
+	ignoreUnknownFields = base.ignoreUnknownFields,
 )
 
 @InternalIcureApi

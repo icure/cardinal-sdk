@@ -32,7 +32,6 @@ interface InternalCryptoServices : BasicInternalCryptoApi{
 @InternalIcureApi
 interface BasicInternalCryptoApi {
 	val primitives: CryptoService
-	val jsonEncryption: JsonEncryptionService
 	val validationService: EntityValidationService
 	val entityAccessInformationProvider: EntityAccessInformationProvider
 }

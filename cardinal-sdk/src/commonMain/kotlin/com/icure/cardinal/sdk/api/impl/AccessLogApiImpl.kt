@@ -13,6 +13,7 @@ import com.icure.cardinal.sdk.api.AccessLogInGroupApi
 import com.icure.cardinal.sdk.api.raw.RawAccessLogApi
 import com.icure.cardinal.sdk.api.raw.successBodyOrNull404
 import com.icure.cardinal.sdk.api.raw.successBodyOrThrowRevisionConflict
+import com.icure.cardinal.sdk.crypto.encryptor.impl.generated.AccessLogDecryptor
 import com.icure.cardinal.sdk.crypto.entities.AccessLogShareOptions
 import com.icure.cardinal.sdk.crypto.entities.EntityWithEncryptionMetadataTypeName
 import com.icure.cardinal.sdk.crypto.entities.OwningEntityDetails
@@ -41,8 +42,6 @@ import com.icure.cardinal.sdk.model.specializations.HexString
 import com.icure.cardinal.sdk.model.toStoredDocumentIdentifier
 import com.icure.cardinal.sdk.options.ApiConfiguration
 import com.icure.cardinal.sdk.options.BasicApiConfiguration
-import com.icure.cardinal.sdk.options.EntitiesEncryptedFieldsManifests
-import com.icure.cardinal.sdk.options.JsonPatcher
 import com.icure.cardinal.sdk.utils.currentEpochMs
 import com.icure.cardinal.sdk.utils.generation.JsMapAsObjectArray
 import com.icure.cardinal.sdk.utils.pagination.IdsPageIterator
@@ -54,9 +53,6 @@ private fun encryptedApiFlavour(
 	config: BasicApiConfiguration
 ): FlavouredApi<EncryptedAccessLog, EncryptedAccessLog> = FlavouredApi.encrypted(
 	config = config,
-	encryptedSerializer = EncryptedAccessLog.serializer(),
-	type = EntityWithEncryptionMetadataTypeName.AccessLog,
-	manifest = EntitiesEncryptedFieldsManifests::accessLog
 )
 
 @InternalIcureApi
@@ -64,11 +60,9 @@ private fun decryptedApiFlavour(
 	config: ApiConfiguration
 ): FlavouredApi<EncryptedAccessLog, DecryptedAccessLog> = FlavouredApi.decrypted(
 	config = config,
-	encryptedSerializer = EncryptedAccessLog.serializer(),
-	decryptedSerializer = DecryptedAccessLog.serializer(),
 	type = EntityWithEncryptionMetadataTypeName.AccessLog,
-	manifest = EntitiesEncryptedFieldsManifests::accessLog,
-	patchJson = JsonPatcher::patchAccessLog
+	encryptor = config.encryptors.accessLog,
+	decryptor = AccessLogDecryptor,
 )
 
 @InternalIcureApi
@@ -76,11 +70,9 @@ private fun tryAndRecoverApiFlavour(
 	config: ApiConfiguration
 ): FlavouredApi<EncryptedAccessLog, AccessLog> = FlavouredApi.tryAndRecover(
 	config = config,
-	encryptedSerializer = EncryptedAccessLog.serializer(),
-	decryptedSerializer = DecryptedAccessLog.serializer(),
 	type = EntityWithEncryptionMetadataTypeName.AccessLog,
-	manifest = EntitiesEncryptedFieldsManifests::accessLog,
-	patchJson = JsonPatcher::patchAccessLog
+	encryptor = config.encryptors.accessLog,
+	decryptor = AccessLogDecryptor,
 )
 
 @InternalIcureApi

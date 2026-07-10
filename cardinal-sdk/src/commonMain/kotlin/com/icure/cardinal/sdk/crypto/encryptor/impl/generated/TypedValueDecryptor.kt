@@ -1,6 +1,7 @@
 // This file is auto-generated
 package com.icure.cardinal.sdk.crypto.encryptor.`impl`.generated
 
+import com.icure.cardinal.sdk.crypto.encryptor.DecryptedJsonStrictness
 import com.icure.cardinal.sdk.crypto.encryptor.`impl`.AbstractEntityDecryptor
 import com.icure.cardinal.sdk.model.embed.DecryptedTypedValue
 import com.icure.cardinal.sdk.model.embed.EncryptedTypedValue
@@ -9,20 +10,20 @@ import com.icure.cardinal.sdk.utils.EntityEncryptionException
 import com.icure.kryptom.crypto.AesAlgorithm
 import com.icure.kryptom.crypto.AesKey
 import com.icure.kryptom.crypto.CryptoService
+import com.icure.utils.InternalIcureApi
 import kotlinx.serialization.builtins.nullable
 import kotlinx.serialization.json.Json
 import kotlinx.serialization.json.JsonObject
-import kotlinx.serialization.json.decodeFromJsonElement
-import kotlin.Boolean
 import kotlin.collections.Collection
 
+@InternalIcureApi
 internal object TypedValueDecryptor :
 	AbstractEntityDecryptor<EncryptedTypedValue, DecryptedTypedValue>() {
 	override suspend fun decrypt(
 		decryptionKeys: Collection<AesKey<AesAlgorithm.CbcWithPkcs7Padding>>,
 		encryptedEntity: EncryptedTypedValue,
 		patchDecryptedSelfJson: ((JsonObject) -> JsonObject)?,
-		ignoreUnknownDecryptedFields: Boolean,
+		decryptedJsonStrictness: DecryptedJsonStrictness,
 		encryptedContentDecoder: Json,
 		cryptoService: CryptoService,
 	): DecryptedTypedValue {
@@ -37,62 +38,45 @@ internal object TypedValueDecryptor :
 		val result =
 			DecryptedTypedValue(
 				type =
-					decryptedContent["type"].let {
-						if (it != null) {
-							usedEncryptedContent += "type"
-							encryptedContentDecoder.decodeFromJsonElement(it)
-						} else {
-							encryptedEntity.type
-						}
-					},
+					encryptedContentDecoder.decodeDecrypted(
+						decryptedContent["type"]?.also { usedEncryptedContent += "type" },
+						encryptedEntity.type,
+						decryptedJsonStrictness,
+					),
 				booleanValue =
-					decryptedContent["booleanValue"].let {
-						if (it != null) {
-							usedEncryptedContent += "booleanValue"
-							encryptedContentDecoder.decodeFromJsonElement(it)
-						} else {
-							encryptedEntity.booleanValue
-						}
-					},
+					encryptedContentDecoder.decodeDecrypted(
+						decryptedContent["booleanValue"]?.also { usedEncryptedContent += "booleanValue" },
+						encryptedEntity.booleanValue,
+						decryptedJsonStrictness,
+					),
 				integerValue =
-					decryptedContent["integerValue"].let {
-						if (it != null) {
-							usedEncryptedContent += "integerValue"
-							encryptedContentDecoder.decodeFromJsonElement(it)
-						} else {
-							encryptedEntity.integerValue
-						}
-					},
+					encryptedContentDecoder.decodeDecrypted(
+						decryptedContent["integerValue"]?.also { usedEncryptedContent += "integerValue" },
+						encryptedEntity.integerValue,
+						decryptedJsonStrictness,
+					),
 				doubleValue =
-					decryptedContent["doubleValue"].let {
-						if (it != null) {
-							usedEncryptedContent += "doubleValue"
-							encryptedContentDecoder.decodeFromJsonElement(it)
-						} else {
-							encryptedEntity.doubleValue
-						}
-					},
+					encryptedContentDecoder.decodeDecrypted(
+						decryptedContent["doubleValue"]?.also { usedEncryptedContent += "doubleValue" },
+						encryptedEntity.doubleValue,
+						decryptedJsonStrictness,
+					),
 				stringValue =
-					decryptedContent["stringValue"].let {
-						if (it != null) {
-							usedEncryptedContent += "stringValue"
-							encryptedContentDecoder.decodeFromJsonElement(it)
-						} else {
-							encryptedEntity.stringValue
-						}
-					},
+					encryptedContentDecoder.decodeDecrypted(
+						decryptedContent["stringValue"]?.also { usedEncryptedContent += "stringValue" },
+						encryptedEntity.stringValue,
+						decryptedJsonStrictness,
+					),
 				dateValue =
-					decryptedContent["dateValue"].let {
-						if (it != null) {
-							usedEncryptedContent += "dateValue"
-							encryptedContentDecoder.decodeFromJsonElement(InstantSerializer.nullable, it)
-						} else {
-							encryptedEntity.dateValue
-						}
-					},
+					encryptedContentDecoder.decodeDecrypted(
+						InstantSerializer.nullable,
+						decryptedContent["dateValue"]?.also { usedEncryptedContent += "dateValue" },
+						encryptedEntity.dateValue,
+						decryptedJsonStrictness,
+					),
 				encryptedSelf = encryptedEntity.encryptedSelf,
 			)
-		if (!ignoreUnknownDecryptedFields && decryptedContent.size != usedEncryptedContent.size) {
+		if (decryptedJsonStrictness == DecryptedJsonStrictness.Strict && decryptedContent.size != usedEncryptedContent.size) {
 			throw EntityEncryptionException(
 				"The TypedValue encrypted content contains unexpected fields: ${decryptedContent.keys - usedEncryptedContent}",
 			)

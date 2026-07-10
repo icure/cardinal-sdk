@@ -4,65 +4,74 @@ import com.icure.cardinal.sdk.CardinalSdk
 import com.icure.cardinal.sdk.model.DecryptedContact
 import com.icure.cardinal.sdk.model.DecryptedPatient
 import com.icure.cardinal.sdk.model.EncryptedContact
-import com.icure.cardinal.sdk.model.base.CodeStub
-import com.icure.cardinal.sdk.model.embed.Annotation
+import com.icure.cardinal.sdk.model.embed.Content
 import com.icure.cardinal.sdk.model.embed.DecryptedContent
 import com.icure.cardinal.sdk.model.embed.DecryptedService
-import com.icure.cardinal.sdk.model.embed.EncryptedAnnotation
-import com.icure.cardinal.sdk.model.embed.EncryptedContent
 import com.icure.cardinal.sdk.model.embed.EncryptedService
+import com.icure.cardinal.sdk.options.EncryptedFieldsOptions
+import com.icure.cardinal.sdk.options.SdkOptions
 import com.icure.cardinal.sdk.test.DataOwnerDetails
 import com.icure.cardinal.sdk.test.autoCancelJob
 import com.icure.cardinal.sdk.test.createHcpUser
 import com.icure.cardinal.sdk.test.initializeTestEnvironment
 import com.icure.cardinal.sdk.test.uuid
 import com.icure.cardinal.sdk.utils.DEFAULT_ENABLED
-import com.icure.cardinal.sdk.utils.EntityEncryptionException
-import io.kotest.assertions.throwables.shouldThrow
 import io.kotest.core.spec.style.StringSpec
 import io.kotest.matchers.collections.shouldContainExactlyInAnyOrder
 import io.kotest.matchers.maps.shouldBeEmpty
+import io.kotest.matchers.nulls.shouldBeNull
 import io.kotest.matchers.nulls.shouldNotBeNull
 import io.kotest.matchers.shouldBe
-import io.kotest.matchers.shouldNotBe
 
 class ServiceEncryptionTest : StringSpec({
 	lateinit var hcp: DataOwnerDetails
-	lateinit var sdk: CardinalSdk
+	lateinit var sdkLegacy: CardinalSdk
+	lateinit var sdkDefault: CardinalSdk
 	lateinit var patient: DecryptedPatient
 	val specJob = autoCancelJob()
 
 	beforeSpec {
 		initializeTestEnvironment()
 		hcp = createHcpUser()
-		sdk = hcp.api(specJob)
-		patient = sdk.patient.createPatient(sdk.patient.withEncryptionMetadata(DecryptedPatient(uuid())))
+		sdkLegacy = hcp.api(specJob, options = SdkOptions(encryptedFieldsOptions = EncryptedFieldsOptions.Legacy))
+		sdkDefault = hcp.api(specJob)
+		patient = sdkLegacy.patient.createPatient(sdkLegacy.patient.withEncryptionMetadata(DecryptedPatient(uuid())))
 	}
 
-	fun checkDecryptedServicesContent(
-		actualDecryptedServices: Collection<DecryptedService>,
+	suspend fun checkDecryptedServicesContent(
+		contactId: String,
 		expectedServices: List<DecryptedService>
 	) {
-		actualDecryptedServices.map { it.id } shouldContainExactlyInAnyOrder expectedServices.map { it.id }
-		expectedServices.forEach { expectedService ->
-			actualDecryptedServices.find { it.id == expectedService.id }.shouldNotBeNull().also { actualService ->
-				actualService.content.forEach { (key, actualContent) ->
-					val expectedContent = expectedService.content.getValue(key)
-					actualContent.copy(
-						compoundValue = null,
-						binaryValue = null
-					) shouldBe expectedContent.copy(
-						compoundValue = null,
-						binaryValue = null
-					)
-					actualContent.binaryValue?.toList() shouldBe expectedContent.binaryValue?.toList()
-					checkDecryptedServicesContent(
-						actualContent.compoundValue.orEmpty(),
-						expectedContent.compoundValue.orEmpty()
-					)
+		fun checkOne(
+			actualDecryptedServices: Collection<DecryptedService>,
+			expectedServices: List<DecryptedService>
+		) {
+			actualDecryptedServices.map { it.id } shouldContainExactlyInAnyOrder expectedServices.map { it.id }
+			expectedServices.forEach { expectedService ->
+				actualDecryptedServices.find { it.id == expectedService.id }.shouldNotBeNull().also { actualService ->
+					actualService.content.forEach { (key, actualContent) ->
+						val expectedContent = expectedService.content.getValue(key)
+						actualContent.copy(
+							compoundValue = null,
+							binaryValue = null,
+							encryptedSelf = null
+						) shouldBe expectedContent.copy(
+							compoundValue = null,
+							binaryValue = null,
+							encryptedSelf = null
+						)
+						actualContent.binaryValue?.toList() shouldBe expectedContent.binaryValue?.toList()
+						checkOne(
+							actualContent.compoundValue.orEmpty(),
+							expectedContent.compoundValue.orEmpty()
+						)
+					}
 				}
 			}
 		}
+		checkOne(sdkLegacy.contact.getContact(contactId).shouldNotBeNull().services, expectedServices)
+		checkOne(sdkDefault.contact.getContact(contactId).shouldNotBeNull().services, expectedServices)
+
 	}
 
 	// Compound data and other data in the same service is encrypted as a simple service
@@ -156,7 +165,7 @@ class ServiceEncryptionTest : StringSpec({
 		)
 	)
 
-	fun verifyHasCorrectlyEncryptedCompoundService(
+	fun legacyVerifyHasCorrectlyEncryptedCompoundService(
 		contact: EncryptedContact
 	) {
 		val actualService = contact.services.find { it.id == compoundService.id }.shouldNotBeNull()
@@ -212,7 +221,7 @@ class ServiceEncryptionTest : StringSpec({
 		)
 	)
 
-	fun verifyHasCorrectlyEncryptedMultiContentCompoundService(
+	fun legacyVerifyHasCorrectlyEncryptedMultiContentCompoundService(
 		contact: EncryptedContact
 	) {
 		val actualService = contact.services.find { it.id == multiContentCompound.id }.shouldNotBeNull()
@@ -266,7 +275,7 @@ class ServiceEncryptionTest : StringSpec({
 		)
 	)
 
-	fun verifyHasCorrectlyEncryptedDeepCompoundService(
+	fun legacyVerifyHasCorrectlyEncryptedDeepCompoundService(
 		contact: EncryptedContact
 	) {
 		val actualService = contact.services.find { it.id == deepCompound.id }.shouldNotBeNull()
@@ -280,6 +289,21 @@ class ServiceEncryptionTest : StringSpec({
 			it.content.shouldBeEmpty()
 		}
 	}
+
+	fun Content.isCompound(): Boolean =
+		!compoundValue.isNullOrEmpty() &&
+			stringValue == null &&
+			numberValue == null &&
+			booleanValue == null &&
+			instantValue == null &&
+			fuzzyDateValue == null &&
+			binaryValue == null &&
+			documentId == null &&
+			measureValue == null &&
+			medicationValue == null &&
+			timeSeries == null &&
+			ratio.isNullOrEmpty() &&
+			range.isNullOrEmpty()
 
 	fun modifyOneNestedService(
 		service: EncryptedService,
@@ -301,134 +325,73 @@ class ServiceEncryptionTest : StringSpec({
 			)
 		} else modifyService(service)
 
-	fun addToServiceNotes(
-		service: EncryptedService
-	): EncryptedService =
-		service.copy(
-			notes = service.notes + EncryptedAnnotation(id = "some note", markdown = mapOf("en" to "don't do this"))
-		)
-
-	fun addToServiceContent(
-		service: EncryptedService
-	): EncryptedService = service.copy(
-		content = service.content.also { it.shouldBeEmpty() } + Pair(
-			"xx",
-			/*TODO
-			 * adding a compound content may actually be allowed -> BAD
-			 * If we figure out an easy way of doing a check we can improve this, otherwise we just accept that this can't
-			 * be detected (especially with no decryption context) and just write in the documentation that the validation
-			 * is done on a best effor basis (note it is actually already best effort, if you use different manifests in
-			 * different parts of the app validation is going to be useless...)
-			 */
-			EncryptedContent(booleanValue = false)
-		)
-	)
-
-	fun copyWithLegalChanges(service: EncryptedService): EncryptedService =
-		service.copy(
-			codes = service.codes + CodeStub("type|code|1", type = "type", code = "code", version = "1"),
-			content = service.content.mapValues { (_, content) ->
-				content.copy(
-					compoundValue = content.compoundValue?.map { copyWithLegalChanges(it) }
-				)
-			}
-		)
-
-	suspend fun checkEncryptedValidation(contact: EncryptedContact) {
-		shouldThrow<EntityEncryptionException> {
-			sdk.contact.encrypted.modifyContact(contact.copy(descr = "Something"))
-		}
-		listOf(
-			::addToServiceNotes,
-			::addToServiceContent
-		).forEach { doIllegalModify ->
-			contact.services.indices.forEach { currModifyServiceIndex ->
-				val modified = contact.copy(services = contact.services.mapIndexed { i, service ->
-					if (i == currModifyServiceIndex) {
-						modifyOneNestedService(service, doIllegalModify)
-					} else service
-				}.toSet())
-				shouldThrow<EntityEncryptionException> {
-					sdk.contact.encrypted.modifyContact(modified)
-				}
-			}
-		}
-		val legalChanges = contact.copy(
-			codes = contact.codes + CodeStub("type|code|1", type = "type", code = "code", version = "1"),
-			services = contact.services.map { copyWithLegalChanges(it) }.toSet()
-		)
-		sdk.contact.encrypted.modifyContact(legalChanges).rev shouldNotBe legalChanges.rev // It should work
-	}
-
-	"Content of service should be encrypted in full if it contains non compound data".config(enabled = DEFAULT_ENABLED) {
-		val contact = sdk.contact.createContact(
-			sdk.contact.withEncryptionMetadata(
-                DecryptedContact(
-                    id = uuid(),
-                    services = setOf(simpleService1, simpleService2, simpleService3, simpleService4)
-                ),
-                patient
+	"Legacy content encryption - Content of service should be encrypted in full if it contains non compound data".config(enabled = DEFAULT_ENABLED) {
+		val contact = sdkLegacy.contact.createContact(
+			sdkLegacy.contact.withEncryptionMetadata(
+				DecryptedContact(
+					id = uuid(),
+					services = setOf(simpleService1, simpleService2, simpleService3, simpleService4)
+				),
+				patient
 			)
 		)
-		val encryptedContact = sdk.contact.encrypted.getContact(contact.id).shouldNotBeNull()
+		val encryptedContact = sdkLegacy.contact.encrypted.getContact(contact.id).shouldNotBeNull()
 		encryptedContact.services.forEach { service ->
 			service.content.shouldBeEmpty()
 		}
 		checkDecryptedServicesContent(
-			sdk.contact.getContact(contact.id).shouldNotBeNull().services,
+			contact.id,
 			listOf(simpleService1, simpleService2, simpleService3, simpleService4)
 		)
-		checkEncryptedValidation(encryptedContact)
 	}
 
-	"Content of service should be encrypted recursively on compound data".config(enabled = DEFAULT_ENABLED) {
-		val contact = sdk.contact.createContact(
-			sdk.contact.withEncryptionMetadata(
-                DecryptedContact(
-                    id = uuid(),
-                    services = setOf(compoundService, multiContentCompound, deepCompound)
-                ),
-                patient
+	"Legacy content encryption - Content of service should be encrypted recursively on compound data".config(enabled = DEFAULT_ENABLED) {
+		val contact = sdkLegacy.contact.createContact(
+			sdkLegacy.contact.withEncryptionMetadata(
+				DecryptedContact(
+					id = uuid(),
+					services = setOf(compoundService, multiContentCompound, deepCompound)
+				),
+				patient
 			)
 		)
-		val encryptedContact = sdk.contact.encrypted.getContact(contact.id).shouldNotBeNull()
-		verifyHasCorrectlyEncryptedCompoundService(encryptedContact)
-		verifyHasCorrectlyEncryptedMultiContentCompoundService(encryptedContact)
-		verifyHasCorrectlyEncryptedDeepCompoundService(encryptedContact)
+		val encryptedContact = sdkLegacy.contact.encrypted.getContact(contact.id).shouldNotBeNull()
+		legacyVerifyHasCorrectlyEncryptedCompoundService(encryptedContact)
+		legacyVerifyHasCorrectlyEncryptedMultiContentCompoundService(encryptedContact)
+		legacyVerifyHasCorrectlyEncryptedDeepCompoundService(encryptedContact)
 		checkDecryptedServicesContent(
-			sdk.contact.getContact(contact.id).shouldNotBeNull().services,
+			contact.id,
 			listOf(compoundService, multiContentCompound, deepCompound)
 		)
-		checkEncryptedValidation(encryptedContact)
 	}
 
-	"A mix of compund and simple service should each have their content encrypted as needed".config(enabled = DEFAULT_ENABLED) {
-		val contact = sdk.contact.createContact(
-			sdk.contact.withEncryptionMetadata(
-                DecryptedContact(
-                    id = uuid(),
-                    services = setOf(
-                        compoundService,
-                        multiContentCompound,
-                        deepCompound,
-                        simpleService1,
-                        simpleService2,
-                        simpleService3,
-                        simpleService4
-                    )
-                ),
-                patient
+	"Legacy content encryption - A mix of compound and simple service should each have their content encrypted as needed".config(enabled = DEFAULT_ENABLED) {
+		val contact = sdkLegacy.contact.createContact(
+			sdkLegacy.contact.withEncryptionMetadata(
+				DecryptedContact(
+					id = uuid(),
+					services = setOf(
+						compoundService,
+						multiContentCompound,
+						deepCompound,
+						simpleService1,
+						simpleService2,
+						simpleService3,
+						simpleService4
+					)
+				),
+				patient
 			)
 		)
-		val encryptedContact = sdk.contact.encrypted.getContact(contact.id).shouldNotBeNull()
-		verifyHasCorrectlyEncryptedCompoundService(encryptedContact)
-		verifyHasCorrectlyEncryptedMultiContentCompoundService(encryptedContact)
-		verifyHasCorrectlyEncryptedDeepCompoundService(encryptedContact)
+		val encryptedContact = sdkLegacy.contact.encrypted.getContact(contact.id).shouldNotBeNull()
+		legacyVerifyHasCorrectlyEncryptedCompoundService(encryptedContact)
+		legacyVerifyHasCorrectlyEncryptedMultiContentCompoundService(encryptedContact)
+		legacyVerifyHasCorrectlyEncryptedDeepCompoundService(encryptedContact)
 		encryptedContact.services.filter { it.id in simpleServicesIds }.forEach {
 			it.content.shouldBeEmpty()
 		}
 		checkDecryptedServicesContent(
-			sdk.contact.getContact(contact.id).shouldNotBeNull().services,
+			contact.id,
 			listOf(
 				compoundService,
 				multiContentCompound,
@@ -439,6 +402,104 @@ class ServiceEncryptionTest : StringSpec({
 				simpleService4
 			)
 		)
-		checkEncryptedValidation(encryptedContact)
+	}
+
+	fun defaultVerifyHasCorrectlyEncryptedServiceContent(
+		actualService: EncryptedService,
+		expectedService: DecryptedService
+	) {
+		actualService.content.keys shouldBe expectedService.content.keys
+		expectedService.content.forEach { (key, expectedContent) ->
+			val actualContent = actualService.content.getValue(key)
+			// All fields other than compoundValue are always encrypted in full, regardless of whether the
+			// content is a simple value, a compound value, or a mix of the two.
+			actualContent.stringValue.shouldBeNull()
+			actualContent.numberValue.shouldBeNull()
+			actualContent.booleanValue.shouldBeNull()
+			actualContent.instantValue.shouldBeNull()
+			actualContent.fuzzyDateValue.shouldBeNull()
+			actualContent.binaryValue.shouldBeNull()
+			actualContent.documentId.shouldBeNull()
+			actualContent.measureValue.shouldBeNull()
+			actualContent.medicationValue.shouldBeNull()
+			actualContent.timeSeries.shouldBeNull()
+			actualContent.ratio.shouldBeNull()
+			actualContent.range.shouldBeNull()
+			if (
+				expectedContent.stringValue != null ||
+				expectedContent.numberValue != null ||
+				expectedContent.booleanValue != null ||
+				expectedContent.instantValue != null ||
+				expectedContent.fuzzyDateValue != null ||
+				expectedContent.binaryValue != null ||
+				expectedContent.documentId != null ||
+				expectedContent.measureValue != null ||
+				expectedContent.medicationValue != null ||
+				expectedContent.timeSeries != null ||
+				expectedContent.ratio != null ||
+				expectedContent.range != null
+			) {
+				actualContent.encryptedSelf.shouldNotBeNull()
+			} else {
+				actualContent.encryptedSelf.shouldBeNull()
+			}
+			val expectedCompoundValue = expectedContent.compoundValue
+			if (expectedCompoundValue.isNullOrEmpty()) {
+				actualContent.compoundValue shouldBe expectedCompoundValue
+			} else {
+				val actualCompoundValue = actualContent.compoundValue.shouldNotBeNull()
+				actualCompoundValue.map { it.id }.toSet() shouldBe expectedCompoundValue.map { it.id }.toSet()
+				expectedCompoundValue.forEach { expectedSubservice ->
+					val actualSubservice = actualCompoundValue.find { it.id == expectedSubservice.id }.shouldNotBeNull()
+					defaultVerifyHasCorrectlyEncryptedServiceContent(actualSubservice, expectedSubservice)
+				}
+			}
+		}
+	}
+
+	"Default content encryption - A content compound value should be always encrypted recursively while all other parts of the service content should be encrypted in full".config(enabled = DEFAULT_ENABLED) {
+		val contact = sdkDefault.contact.createContact(
+			sdkDefault.contact.withEncryptionMetadata(
+				DecryptedContact(
+					id = uuid(),
+					services = setOf(
+						compoundService,
+						multiContentCompound,
+						deepCompound,
+						simpleService1,
+						simpleService2,
+						simpleService3,
+						simpleService4
+					)
+				),
+				patient
+			)
+		)
+		val encryptedContact = sdkDefault.contact.encrypted.getContact(contact.id).shouldNotBeNull()
+		sdkDefault.contact.getContact(contact.id).shouldNotBeNull()
+		listOf(
+			compoundService,
+			multiContentCompound,
+			deepCompound,
+			simpleService1,
+			simpleService2,
+			simpleService3,
+			simpleService4
+		).forEach { expectedService ->
+			val actualService = encryptedContact.services.find { it.id == expectedService.id }.shouldNotBeNull()
+			defaultVerifyHasCorrectlyEncryptedServiceContent(actualService, expectedService)
+		}
+		checkDecryptedServicesContent(
+			contact.id,
+			listOf(
+				compoundService,
+				multiContentCompound,
+				deepCompound,
+				simpleService1,
+				simpleService2,
+				simpleService3,
+				simpleService4
+			)
+		)
 	}
 })

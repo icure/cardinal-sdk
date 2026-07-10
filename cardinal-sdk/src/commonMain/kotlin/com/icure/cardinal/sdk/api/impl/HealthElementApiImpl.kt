@@ -13,6 +13,7 @@ import com.icure.cardinal.sdk.api.HealthElementInGroupApi
 import com.icure.cardinal.sdk.api.raw.RawHealthElementApi
 import com.icure.cardinal.sdk.api.raw.successBodyOrNull404
 import com.icure.cardinal.sdk.api.raw.successBodyOrThrowRevisionConflict
+import com.icure.cardinal.sdk.crypto.encryptor.impl.generated.HealthElementDecryptor
 import com.icure.cardinal.sdk.crypto.entities.EntityWithEncryptionMetadataTypeName
 import com.icure.cardinal.sdk.crypto.entities.HealthElementShareOptions
 import com.icure.cardinal.sdk.crypto.entities.OwningEntityDetails
@@ -41,8 +42,6 @@ import com.icure.cardinal.sdk.model.specializations.HexString
 import com.icure.cardinal.sdk.model.toStoredDocumentIdentifier
 import com.icure.cardinal.sdk.options.ApiConfiguration
 import com.icure.cardinal.sdk.options.BasicApiConfiguration
-import com.icure.cardinal.sdk.options.EntitiesEncryptedFieldsManifests
-import com.icure.cardinal.sdk.options.JsonPatcher
 import com.icure.cardinal.sdk.serialization.HealthElementAbstractFilterSerializer
 import com.icure.cardinal.sdk.serialization.SubscriptionSerializer
 import com.icure.cardinal.sdk.subscription.EntitySubscription
@@ -61,9 +60,6 @@ private fun encryptedApiFlavour(
 	config: BasicApiConfiguration
 ): FlavouredApi<EncryptedHealthElement, EncryptedHealthElement> = FlavouredApi.encrypted(
 	config = config,
-	encryptedSerializer = EncryptedHealthElement.serializer(),
-	type = EntityWithEncryptionMetadataTypeName.HealthElement,
-	manifest = EntitiesEncryptedFieldsManifests::healthElement
 )
 
 @InternalIcureApi
@@ -71,11 +67,9 @@ private fun decryptedApiFlavour(
 	config: ApiConfiguration
 ): FlavouredApi<EncryptedHealthElement, DecryptedHealthElement> = FlavouredApi.decrypted(
 	config = config,
-	encryptedSerializer = EncryptedHealthElement.serializer(),
-	decryptedSerializer = DecryptedHealthElement.serializer(),
 	type = EntityWithEncryptionMetadataTypeName.HealthElement,
-	manifest = EntitiesEncryptedFieldsManifests::healthElement,
-	patchJson = JsonPatcher::patchHealthElement
+	encryptor = config.encryptors.healthElement,
+	decryptor = HealthElementDecryptor,
 )
 
 @InternalIcureApi
@@ -83,11 +77,9 @@ private fun tryAndRecoverApiFlavour(
 	config: ApiConfiguration
 ): FlavouredApi<EncryptedHealthElement, HealthElement> = FlavouredApi.tryAndRecover(
 	config = config,
-	encryptedSerializer = EncryptedHealthElement.serializer(),
-	decryptedSerializer = DecryptedHealthElement.serializer(),
 	type = EntityWithEncryptionMetadataTypeName.HealthElement,
-	manifest = EntitiesEncryptedFieldsManifests::healthElement,
-	patchJson = JsonPatcher::patchHealthElement
+	encryptor = config.encryptors.healthElement,
+	decryptor = HealthElementDecryptor,
 )
 
 @OptIn(InternalIcureApi::class)

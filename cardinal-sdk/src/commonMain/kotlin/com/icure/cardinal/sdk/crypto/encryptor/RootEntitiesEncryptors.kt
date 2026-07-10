@@ -26,13 +26,14 @@ import com.icure.cardinal.sdk.model.EncryptedMessage
 import com.icure.cardinal.sdk.model.EncryptedPatient
 import com.icure.cardinal.sdk.model.EncryptedReceipt
 import com.icure.cardinal.sdk.model.EncryptedTopic
+import com.icure.utils.InternalIcureApi
 
+@InternalIcureApi
 internal data class RootEntitiesEncryptors(
 	val accessLog: EntityEncryptor<EncryptedAccessLog, DecryptedAccessLog>,
 	val calendarItem: EntityEncryptor<EncryptedCalendarItem, DecryptedCalendarItem>,
 	val contact: EntityEncryptor<EncryptedContact, DecryptedContact>,
 	val healthElement: EntityEncryptor<EncryptedHealthElement, DecryptedHealthElement>,
-	val maintenanceTask: EntityEncryptor<EncryptedMaintenanceTask, DecryptedMaintenanceTask>,
 	val patient: EntityEncryptor<EncryptedPatient, DecryptedPatient>,
 	val message: EntityEncryptor<EncryptedMessage, DecryptedMessage>,
 	val topic: EntityEncryptor<EncryptedTopic, DecryptedTopic>,

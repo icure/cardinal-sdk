@@ -33,10 +33,6 @@ data class EntitiesEncryptionManifests(
 	 */
 	val healthElement: String,
 	/**
-	 * Name of the manifest in [manifestsByName] that should be used for the encryption of [com.icure.cardinal.sdk.model.MaintenanceTask] entities
-	 */
-	val maintenanceTask: String,
-	/**
 	 * Name of the manifest in [manifestsByName] that should be used for the encryption of [com.icure.cardinal.sdk.model.Patient] entities
 	 */
 	val patient: String,
@@ -75,7 +71,6 @@ data class EntitiesEncryptionManifests(
 			"calendarItem" to calendarItem,
 			"contact" to contact,
 			"healthElement" to healthElement,
-			"maintenanceTask" to maintenanceTask,
 			"patient" to patient,
 			"message" to message,
 			"topic" to topic,

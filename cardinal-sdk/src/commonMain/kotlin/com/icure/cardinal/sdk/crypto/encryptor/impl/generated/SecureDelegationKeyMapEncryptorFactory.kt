@@ -10,6 +10,7 @@ import com.icure.cardinal.sdk.model.EncryptedSecureDelegationKeyMap
 import com.icure.kryptom.crypto.AesAlgorithm
 import com.icure.kryptom.crypto.AesKey
 import com.icure.kryptom.crypto.CryptoService
+import com.icure.utils.InternalIcureApi
 import kotlinx.serialization.json.Json
 import kotlinx.serialization.json.JsonElement
 import kotlinx.serialization.json.JsonObject
@@ -17,13 +18,14 @@ import kotlinx.serialization.json.encodeToJsonElement
 import kotlin.Boolean
 import kotlin.String
 
+@InternalIcureApi
 internal object SecureDelegationKeyMapEncryptorFactory :
 	EntityEncryptorFactory<EncryptedSecureDelegationKeyMap, DecryptedSecureDelegationKeyMap> {
 	override val empty:
 		EntityEncryptor<EncryptedSecureDelegationKeyMap, DecryptedSecureDelegationKeyMap> =
 		SecureDelegationKeyMapEncryptor(
-			delegator = false,
-			delegate = false,
+			delegator_e = false,
+			delegate_e = false,
 		)
 
 	override fun create(
@@ -32,15 +34,16 @@ internal object SecureDelegationKeyMapEncryptorFactory :
 	): EntityEncryptor<EncryptedSecureDelegationKeyMap, DecryptedSecureDelegationKeyMap> {
 		val manifest = encryptorFactoryContext.getManifest(entityManifestName)
 		return SecureDelegationKeyMapEncryptor(
-			delegator = "delegator" in manifest.fieldsToEncrypt,
-			delegate = "delegate" in manifest.fieldsToEncrypt,
+			delegator_e = "delegator" in manifest.fieldsToEncrypt,
+			delegate_e = "delegate" in manifest.fieldsToEncrypt,
 		)
 	}
 }
 
+@InternalIcureApi
 private class SecureDelegationKeyMapEncryptor(
-	private val delegator: Boolean,
-	private val `delegate`: Boolean,
+	private val delegator_e: Boolean,
+	private val delegate_e: Boolean,
 ) : AbstractEntityEncryptor<EncryptedSecureDelegationKeyMap, DecryptedSecureDelegationKeyMap>() {
 	override suspend fun encrypt(
 		encryptionKey: AesKey<AesAlgorithm.CbcWithPkcs7Padding>,
@@ -49,14 +52,14 @@ private class SecureDelegationKeyMapEncryptor(
 		cryptoService: CryptoService,
 	): EncryptedSecureDelegationKeyMap {
 		val dataToEncrypt = mutableMapOf<String, JsonElement>()
-		if (delegator) dataToEncrypt["delegator"] = encodingJson.encodeToJsonElement(clearEntity.delegator)
-		if (delegate) dataToEncrypt["delegate"] = encodingJson.encodeToJsonElement(clearEntity.delegate)
+		if (delegator_e && clearEntity.delegator != null) dataToEncrypt["delegator"] = encodingJson.encodeToJsonElement(clearEntity.delegator)
+		if (delegate_e && clearEntity.delegate != null) dataToEncrypt["delegate"] = encodingJson.encodeToJsonElement(clearEntity.delegate)
 		return EncryptedSecureDelegationKeyMap(
 			id = clearEntity.id,
 			rev = clearEntity.rev,
 			delegationKey = clearEntity.delegationKey,
-			delegator = if (delegator) null else clearEntity.delegator,
-			delegate = if (delegate) null else clearEntity.delegate,
+			delegator = if (delegator_e) null else clearEntity.delegator,
+			delegate = if (delegate_e) null else clearEntity.delegate,
 			secretForeignKeys = clearEntity.secretForeignKeys,
 			cryptedForeignKeys = clearEntity.cryptedForeignKeys,
 			delegations = clearEntity.delegations,

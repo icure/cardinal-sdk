@@ -1,6 +1,7 @@
 // This file is auto-generated
 package com.icure.cardinal.sdk.crypto.encryptor.`impl`.generated
 
+import com.icure.cardinal.sdk.crypto.encryptor.DecryptedJsonStrictness
 import com.icure.cardinal.sdk.crypto.encryptor.`impl`.AbstractEntityDecryptor
 import com.icure.cardinal.sdk.model.DecryptedPatient
 import com.icure.cardinal.sdk.model.EncryptedPatient
@@ -8,18 +9,18 @@ import com.icure.cardinal.sdk.utils.EntityEncryptionException
 import com.icure.kryptom.crypto.AesAlgorithm
 import com.icure.kryptom.crypto.AesKey
 import com.icure.kryptom.crypto.CryptoService
+import com.icure.utils.InternalIcureApi
 import kotlinx.serialization.json.Json
 import kotlinx.serialization.json.JsonObject
-import kotlinx.serialization.json.decodeFromJsonElement
-import kotlin.Boolean
 import kotlin.collections.Collection
 
+@InternalIcureApi
 internal object PatientDecryptor : AbstractEntityDecryptor<EncryptedPatient, DecryptedPatient>() {
 	override suspend fun decrypt(
 		decryptionKeys: Collection<AesKey<AesAlgorithm.CbcWithPkcs7Padding>>,
 		encryptedEntity: EncryptedPatient,
 		patchDecryptedSelfJson: ((JsonObject) -> JsonObject)?,
-		ignoreUnknownDecryptedFields: Boolean,
+		decryptedJsonStrictness: DecryptedJsonStrictness,
 		encryptedContentDecoder: Json,
 		cryptoService: CryptoService,
 	): DecryptedPatient {
@@ -35,504 +36,363 @@ internal object PatientDecryptor : AbstractEntityDecryptor<EncryptedPatient, Dec
 			DecryptedPatient(
 				id = encryptedEntity.id,
 				identifier =
-					decryptedContent["identifier"].let {
-						if (it != null) {
-							usedEncryptedContent += "identifier"
-							encryptedContentDecoder.decodeFromJsonElement(it)
-						} else {
-							encryptedEntity.identifier
-						}
-					},
+					encryptedContentDecoder.decodeDecrypted(
+						decryptedContent["identifier"]?.also { usedEncryptedContent += "identifier" },
+						encryptedEntity.identifier,
+						decryptedJsonStrictness,
+					),
 				rev = encryptedEntity.rev,
 				created =
-					decryptedContent["created"].let {
-						if (it != null) {
-							usedEncryptedContent += "created"
-							encryptedContentDecoder.decodeFromJsonElement(it)
-						} else {
-							encryptedEntity.created
-						}
-					},
+					encryptedContentDecoder.decodeDecrypted(
+						decryptedContent["created"]?.also { usedEncryptedContent += "created" },
+						encryptedEntity.created,
+						decryptedJsonStrictness,
+					),
 				modified =
-					decryptedContent["modified"].let {
-						if (it != null) {
-							usedEncryptedContent += "modified"
-							encryptedContentDecoder.decodeFromJsonElement(it)
-						} else {
-							encryptedEntity.modified
-						}
-					},
+					encryptedContentDecoder.decodeDecrypted(
+						decryptedContent["modified"]?.also { usedEncryptedContent += "modified" },
+						encryptedEntity.modified,
+						decryptedJsonStrictness,
+					),
 				author =
-					decryptedContent["author"].let {
-						if (it != null) {
-							usedEncryptedContent += "author"
-							encryptedContentDecoder.decodeFromJsonElement(it)
-						} else {
-							encryptedEntity.author
-						}
-					},
+					encryptedContentDecoder.decodeDecrypted(
+						decryptedContent["author"]?.also { usedEncryptedContent += "author" },
+						encryptedEntity.author,
+						decryptedJsonStrictness,
+					),
 				responsible =
-					decryptedContent["responsible"].let {
-						if (it != null) {
-							usedEncryptedContent += "responsible"
-							encryptedContentDecoder.decodeFromJsonElement(it)
-						} else {
-							encryptedEntity.responsible
-						}
-					},
+					encryptedContentDecoder.decodeDecrypted(
+						decryptedContent["responsible"]?.also { usedEncryptedContent += "responsible" },
+						encryptedEntity.responsible,
+						decryptedJsonStrictness,
+					),
 				tags =
-					decryptedContent["tags"].let {
-						if (it != null) {
-							usedEncryptedContent += "tags"
-							encryptedContentDecoder.decodeFromJsonElement(it)
-						} else {
-							encryptedEntity.tags
-						}
-					},
+					encryptedContentDecoder.decodeDecrypted(
+						decryptedContent["tags"]?.also { usedEncryptedContent += "tags" },
+						encryptedEntity.tags,
+						decryptedJsonStrictness,
+					),
 				codes =
-					decryptedContent["codes"].let {
-						if (it != null) {
-							usedEncryptedContent += "codes"
-							encryptedContentDecoder.decodeFromJsonElement(it)
-						} else {
-							encryptedEntity.codes
-						}
-					},
+					encryptedContentDecoder.decodeDecrypted(
+						decryptedContent["codes"]?.also { usedEncryptedContent += "codes" },
+						encryptedEntity.codes,
+						decryptedJsonStrictness,
+					),
 				deletionDate = encryptedEntity.deletionDate,
 				firstName =
-					decryptedContent["firstName"].let {
-						if (it != null) {
-							usedEncryptedContent += "firstName"
-							encryptedContentDecoder.decodeFromJsonElement(it)
-						} else {
-							encryptedEntity.firstName
-						}
-					},
+					encryptedContentDecoder.decodeDecrypted(
+						decryptedContent["firstName"]?.also { usedEncryptedContent += "firstName" },
+						encryptedEntity.firstName,
+						decryptedJsonStrictness,
+					),
 				lastName =
-					decryptedContent["lastName"].let {
-						if (it != null) {
-							usedEncryptedContent += "lastName"
-							encryptedContentDecoder.decodeFromJsonElement(it)
-						} else {
-							encryptedEntity.lastName
-						}
-					},
+					encryptedContentDecoder.decodeDecrypted(
+						decryptedContent["lastName"]?.also { usedEncryptedContent += "lastName" },
+						encryptedEntity.lastName,
+						decryptedJsonStrictness,
+					),
 				names =
-					decryptedContent["names"].let {
-						if (it != null) {
-							usedEncryptedContent += "names"
-							encryptedContentDecoder.decodeFromJsonElement(it)
-						} else {
-							encryptedEntity.names
-						}
-					},
+					encryptedContentDecoder.decodeDecrypted(
+						decryptedContent["names"]?.also { usedEncryptedContent += "names" },
+						encryptedEntity.names,
+						decryptedJsonStrictness,
+					),
 				companyName =
-					decryptedContent["companyName"].let {
-						if (it != null) {
-							usedEncryptedContent += "companyName"
-							encryptedContentDecoder.decodeFromJsonElement(it)
-						} else {
-							encryptedEntity.companyName
-						}
-					},
+					encryptedContentDecoder.decodeDecrypted(
+						decryptedContent["companyName"]?.also { usedEncryptedContent += "companyName" },
+						encryptedEntity.companyName,
+						decryptedJsonStrictness,
+					),
 				languages =
-					decryptedContent["languages"].let {
-						if (it != null) {
-							usedEncryptedContent += "languages"
-							encryptedContentDecoder.decodeFromJsonElement(it)
-						} else {
-							encryptedEntity.languages
-						}
-					},
+					encryptedContentDecoder.decodeDecrypted(
+						decryptedContent["languages"]?.also { usedEncryptedContent += "languages" },
+						encryptedEntity.languages,
+						decryptedJsonStrictness,
+					),
 				addresses =
-					decryptedContent["addresses"].let {
-						if (it != null) {
-							usedEncryptedContent += "addresses"
-							encryptedContentDecoder.decodeFromJsonElement(it)
-						} else {
-							encryptedEntity.addresses.map { x0 ->
-								AddressDecryptor.decrypt(
-									decryptionKeys = decryptionKeys,
-									encryptedEntity = x0,
-									patchDecryptedSelfJson = patchDecryptedSelfJson,
-									ignoreUnknownDecryptedFields = ignoreUnknownDecryptedFields,
-									encryptedContentDecoder = encryptedContentDecoder,
-									cryptoService = cryptoService,
-								)
-							}
-						}
-					},
+					encryptedContentDecoder.decodeDecrypted(
+						decryptedContent["addresses"]?.also { usedEncryptedContent += "addresses" },
+						encryptedEntity.addresses.map { x0 ->
+							AddressDecryptor.decrypt(
+								decryptionKeys = decryptionKeys,
+								encryptedEntity = x0,
+								patchDecryptedSelfJson = patchDecryptedSelfJson,
+								decryptedJsonStrictness = decryptedJsonStrictness,
+								encryptedContentDecoder = encryptedContentDecoder,
+								cryptoService = cryptoService,
+							)
+						},
+						decryptedJsonStrictness,
+					),
 				civility =
-					decryptedContent["civility"].let {
-						if (it != null) {
-							usedEncryptedContent += "civility"
-							encryptedContentDecoder.decodeFromJsonElement(it)
-						} else {
-							encryptedEntity.civility
-						}
-					},
+					encryptedContentDecoder.decodeDecrypted(
+						decryptedContent["civility"]?.also { usedEncryptedContent += "civility" },
+						encryptedEntity.civility,
+						decryptedJsonStrictness,
+					),
 				gender =
-					decryptedContent["gender"].let {
-						if (it != null) {
-							usedEncryptedContent += "gender"
-							encryptedContentDecoder.decodeFromJsonElement(it)
-						} else {
-							encryptedEntity.gender
-						}
-					},
+					encryptedContentDecoder.decodeDecrypted(
+						decryptedContent["gender"]?.also { usedEncryptedContent += "gender" },
+						encryptedEntity.gender,
+						decryptedJsonStrictness,
+					),
 				birthSex =
-					decryptedContent["birthSex"].let {
-						if (it != null) {
-							usedEncryptedContent += "birthSex"
-							encryptedContentDecoder.decodeFromJsonElement(it)
-						} else {
-							encryptedEntity.birthSex
-						}
-					},
+					encryptedContentDecoder.decodeDecrypted(
+						decryptedContent["birthSex"]?.also { usedEncryptedContent += "birthSex" },
+						encryptedEntity.birthSex,
+						decryptedJsonStrictness,
+					),
 				mergeToPatientId = encryptedEntity.mergeToPatientId,
 				mergedIds = encryptedEntity.mergedIds,
 				alias =
-					decryptedContent["alias"].let {
-						if (it != null) {
-							usedEncryptedContent += "alias"
-							encryptedContentDecoder.decodeFromJsonElement(it)
-						} else {
-							encryptedEntity.alias
-						}
-					},
+					encryptedContentDecoder.decodeDecrypted(
+						decryptedContent["alias"]?.also { usedEncryptedContent += "alias" },
+						encryptedEntity.alias,
+						decryptedJsonStrictness,
+					),
 				active =
-					decryptedContent["active"].let {
-						if (it != null) {
-							usedEncryptedContent += "active"
-							encryptedContentDecoder.decodeFromJsonElement(it)
-						} else {
-							encryptedEntity.active
-						}
-					},
+					encryptedContentDecoder.decodeDecrypted(
+						decryptedContent["active"]?.also { usedEncryptedContent += "active" },
+						encryptedEntity.active,
+						decryptedJsonStrictness,
+					),
 				deactivationReason =
-					decryptedContent["deactivationReason"].let {
-						if (it != null) {
-							usedEncryptedContent += "deactivationReason"
-							encryptedContentDecoder.decodeFromJsonElement(it)
-						} else {
-							encryptedEntity.deactivationReason
-						}
-					},
+					encryptedContentDecoder.decodeDecrypted(
+						decryptedContent["deactivationReason"]?.also { usedEncryptedContent += "deactivationReason" },
+						encryptedEntity.deactivationReason,
+						decryptedJsonStrictness,
+					),
 				deactivationDate =
-					decryptedContent["deactivationDate"].let {
-						if (it != null) {
-							usedEncryptedContent += "deactivationDate"
-							encryptedContentDecoder.decodeFromJsonElement(it)
-						} else {
-							encryptedEntity.deactivationDate
-						}
-					},
+					encryptedContentDecoder.decodeDecrypted(
+						decryptedContent["deactivationDate"]?.also { usedEncryptedContent += "deactivationDate" },
+						encryptedEntity.deactivationDate,
+						decryptedJsonStrictness,
+					),
 				ssin =
-					decryptedContent["ssin"].let {
-						if (it != null) {
-							usedEncryptedContent += "ssin"
-							encryptedContentDecoder.decodeFromJsonElement(it)
-						} else {
-							encryptedEntity.ssin
-						}
-					},
+					encryptedContentDecoder.decodeDecrypted(
+						decryptedContent["ssin"]?.also { usedEncryptedContent += "ssin" },
+						encryptedEntity.ssin,
+						decryptedJsonStrictness,
+					),
 				maidenName =
-					decryptedContent["maidenName"].let {
-						if (it != null) {
-							usedEncryptedContent += "maidenName"
-							encryptedContentDecoder.decodeFromJsonElement(it)
-						} else {
-							encryptedEntity.maidenName
-						}
-					},
+					encryptedContentDecoder.decodeDecrypted(
+						decryptedContent["maidenName"]?.also { usedEncryptedContent += "maidenName" },
+						encryptedEntity.maidenName,
+						decryptedJsonStrictness,
+					),
 				spouseName =
-					decryptedContent["spouseName"].let {
-						if (it != null) {
-							usedEncryptedContent += "spouseName"
-							encryptedContentDecoder.decodeFromJsonElement(it)
-						} else {
-							encryptedEntity.spouseName
-						}
-					},
+					encryptedContentDecoder.decodeDecrypted(
+						decryptedContent["spouseName"]?.also { usedEncryptedContent += "spouseName" },
+						encryptedEntity.spouseName,
+						decryptedJsonStrictness,
+					),
 				partnerName =
-					decryptedContent["partnerName"].let {
-						if (it != null) {
-							usedEncryptedContent += "partnerName"
-							encryptedContentDecoder.decodeFromJsonElement(it)
-						} else {
-							encryptedEntity.partnerName
-						}
-					},
+					encryptedContentDecoder.decodeDecrypted(
+						decryptedContent["partnerName"]?.also { usedEncryptedContent += "partnerName" },
+						encryptedEntity.partnerName,
+						decryptedJsonStrictness,
+					),
 				personalStatus =
-					decryptedContent["personalStatus"].let {
-						if (it != null) {
-							usedEncryptedContent += "personalStatus"
-							encryptedContentDecoder.decodeFromJsonElement(it)
-						} else {
-							encryptedEntity.personalStatus
-						}
-					},
+					encryptedContentDecoder.decodeDecrypted(
+						decryptedContent["personalStatus"]?.also { usedEncryptedContent += "personalStatus" },
+						encryptedEntity.personalStatus,
+						decryptedJsonStrictness,
+					),
 				dateOfBirth =
-					decryptedContent["dateOfBirth"].let {
-						if (it != null) {
-							usedEncryptedContent += "dateOfBirth"
-							encryptedContentDecoder.decodeFromJsonElement(it)
-						} else {
-							encryptedEntity.dateOfBirth
-						}
-					},
+					encryptedContentDecoder.decodeDecrypted(
+						decryptedContent["dateOfBirth"]?.also { usedEncryptedContent += "dateOfBirth" },
+						encryptedEntity.dateOfBirth,
+						decryptedJsonStrictness,
+					),
 				dateOfDeath =
-					decryptedContent["dateOfDeath"].let {
-						if (it != null) {
-							usedEncryptedContent += "dateOfDeath"
-							encryptedContentDecoder.decodeFromJsonElement(it)
-						} else {
-							encryptedEntity.dateOfDeath
-						}
-					},
+					encryptedContentDecoder.decodeDecrypted(
+						decryptedContent["dateOfDeath"]?.also { usedEncryptedContent += "dateOfDeath" },
+						encryptedEntity.dateOfDeath,
+						decryptedJsonStrictness,
+					),
 				timestampOfLatestEidReading =
-					decryptedContent["timestampOfLatestEidReading"].let {
-						if (it != null) {
-							usedEncryptedContent += "timestampOfLatestEidReading"
-							encryptedContentDecoder.decodeFromJsonElement(it)
-						} else {
-							encryptedEntity.timestampOfLatestEidReading
-						}
-					},
+					encryptedContentDecoder.decodeDecrypted(
+						decryptedContent["timestampOfLatestEidReading"]?.also { usedEncryptedContent += "timestampOfLatestEidReading" },
+						encryptedEntity.timestampOfLatestEidReading,
+						decryptedJsonStrictness,
+					),
 				placeOfBirth =
-					decryptedContent["placeOfBirth"].let {
-						if (it != null) {
-							usedEncryptedContent += "placeOfBirth"
-							encryptedContentDecoder.decodeFromJsonElement(it)
-						} else {
-							encryptedEntity.placeOfBirth
-						}
-					},
+					encryptedContentDecoder.decodeDecrypted(
+						decryptedContent["placeOfBirth"]?.also { usedEncryptedContent += "placeOfBirth" },
+						encryptedEntity.placeOfBirth,
+						decryptedJsonStrictness,
+					),
 				placeOfDeath =
-					decryptedContent["placeOfDeath"].let {
-						if (it != null) {
-							usedEncryptedContent += "placeOfDeath"
-							encryptedContentDecoder.decodeFromJsonElement(it)
-						} else {
-							encryptedEntity.placeOfDeath
-						}
-					},
+					encryptedContentDecoder.decodeDecrypted(
+						decryptedContent["placeOfDeath"]?.also { usedEncryptedContent += "placeOfDeath" },
+						encryptedEntity.placeOfDeath,
+						decryptedJsonStrictness,
+					),
 				deceased =
-					decryptedContent["deceased"].let {
-						if (it != null) {
-							usedEncryptedContent += "deceased"
-							encryptedContentDecoder.decodeFromJsonElement(it)
-						} else {
-							encryptedEntity.deceased
-						}
-					},
+					encryptedContentDecoder.decodeDecrypted(
+						decryptedContent["deceased"]?.also { usedEncryptedContent += "deceased" },
+						encryptedEntity.deceased,
+						decryptedJsonStrictness,
+					),
 				education =
-					decryptedContent["education"].let {
-						if (it != null) {
-							usedEncryptedContent += "education"
-							encryptedContentDecoder.decodeFromJsonElement(it)
-						} else {
-							encryptedEntity.education
-						}
-					},
+					encryptedContentDecoder.decodeDecrypted(
+						decryptedContent["education"]?.also { usedEncryptedContent += "education" },
+						encryptedEntity.education,
+						decryptedJsonStrictness,
+					),
 				profession =
-					decryptedContent["profession"].let {
-						if (it != null) {
-							usedEncryptedContent += "profession"
-							encryptedContentDecoder.decodeFromJsonElement(it)
-						} else {
-							encryptedEntity.profession
-						}
-					},
+					encryptedContentDecoder.decodeDecrypted(
+						decryptedContent["profession"]?.also { usedEncryptedContent += "profession" },
+						encryptedEntity.profession,
+						decryptedJsonStrictness,
+					),
 				notes =
-					decryptedContent["notes"].let {
-						if (it != null) {
-							usedEncryptedContent += "notes"
-							encryptedContentDecoder.decodeFromJsonElement(it)
-						} else {
-							encryptedEntity.notes.map { x0 ->
-								AnnotationDecryptor.decrypt(
-									decryptionKeys = decryptionKeys,
-									encryptedEntity = x0,
-									patchDecryptedSelfJson = patchDecryptedSelfJson,
-									ignoreUnknownDecryptedFields = ignoreUnknownDecryptedFields,
-									encryptedContentDecoder = encryptedContentDecoder,
-									cryptoService = cryptoService,
-								)
-							}
-						}
-					},
+					encryptedContentDecoder.decodeDecrypted(
+						decryptedContent["notes"]?.also { usedEncryptedContent += "notes" },
+						encryptedEntity.notes.map { x0 ->
+							AnnotationDecryptor.decrypt(
+								decryptionKeys = decryptionKeys,
+								encryptedEntity = x0,
+								patchDecryptedSelfJson = patchDecryptedSelfJson,
+								decryptedJsonStrictness = decryptedJsonStrictness,
+								encryptedContentDecoder = encryptedContentDecoder,
+								cryptoService = cryptoService,
+							)
+						},
+						decryptedJsonStrictness,
+					),
 				note =
-					decryptedContent["note"].let {
-						if (it != null) {
-							usedEncryptedContent += "note"
-							encryptedContentDecoder.decodeFromJsonElement(it)
-						} else {
-							encryptedEntity.note
-						}
-					},
+					encryptedContentDecoder.decodeDecrypted(
+						decryptedContent["note"]?.also { usedEncryptedContent += "note" },
+						encryptedEntity.note,
+						decryptedJsonStrictness,
+					),
 				administrativeNote =
-					decryptedContent["administrativeNote"].let {
-						if (it != null) {
-							usedEncryptedContent += "administrativeNote"
-							encryptedContentDecoder.decodeFromJsonElement(it)
-						} else {
-							encryptedEntity.administrativeNote
-						}
-					},
+					encryptedContentDecoder.decodeDecrypted(
+						decryptedContent["administrativeNote"]?.also { usedEncryptedContent += "administrativeNote" },
+						encryptedEntity.administrativeNote,
+						decryptedJsonStrictness,
+					),
 				nationality =
-					decryptedContent["nationality"].let {
-						if (it != null) {
-							usedEncryptedContent += "nationality"
-							encryptedContentDecoder.decodeFromJsonElement(it)
-						} else {
-							encryptedEntity.nationality
-						}
-					},
+					encryptedContentDecoder.decodeDecrypted(
+						decryptedContent["nationality"]?.also { usedEncryptedContent += "nationality" },
+						encryptedEntity.nationality,
+						decryptedJsonStrictness,
+					),
 				race =
-					decryptedContent["race"].let {
-						if (it != null) {
-							usedEncryptedContent += "race"
-							encryptedContentDecoder.decodeFromJsonElement(it)
-						} else {
-							encryptedEntity.race
-						}
-					},
+					encryptedContentDecoder.decodeDecrypted(
+						decryptedContent["race"]?.also { usedEncryptedContent += "race" },
+						encryptedEntity.race,
+						decryptedJsonStrictness,
+					),
 				ethnicity =
-					decryptedContent["ethnicity"].let {
-						if (it != null) {
-							usedEncryptedContent += "ethnicity"
-							encryptedContentDecoder.decodeFromJsonElement(it)
-						} else {
-							encryptedEntity.ethnicity
-						}
-					},
+					encryptedContentDecoder.decodeDecrypted(
+						decryptedContent["ethnicity"]?.also { usedEncryptedContent += "ethnicity" },
+						encryptedEntity.ethnicity,
+						decryptedJsonStrictness,
+					),
 				insurabilities =
-					decryptedContent["insurabilities"].let {
-						if (it != null) {
-							usedEncryptedContent += "insurabilities"
-							encryptedContentDecoder.decodeFromJsonElement(it)
-						} else {
-							encryptedEntity.insurabilities.map { x0 ->
-								InsurabilityDecryptor.decrypt(
-									decryptionKeys = decryptionKeys,
-									encryptedEntity = x0,
-									patchDecryptedSelfJson = patchDecryptedSelfJson,
-									ignoreUnknownDecryptedFields = ignoreUnknownDecryptedFields,
-									encryptedContentDecoder = encryptedContentDecoder,
-									cryptoService = cryptoService,
-								)
-							}
-						}
-					},
+					encryptedContentDecoder.decodeDecrypted(
+						decryptedContent["insurabilities"]?.also { usedEncryptedContent += "insurabilities" },
+						encryptedEntity.insurabilities.map { x0 ->
+							InsurabilityDecryptor.decrypt(
+								decryptionKeys = decryptionKeys,
+								encryptedEntity = x0,
+								patchDecryptedSelfJson = patchDecryptedSelfJson,
+								decryptedJsonStrictness = decryptedJsonStrictness,
+								encryptedContentDecoder = encryptedContentDecoder,
+								cryptoService = cryptoService,
+							)
+						},
+						decryptedJsonStrictness,
+					),
 				partnerships =
-					decryptedContent["partnerships"].let {
-						if (it != null) {
-							usedEncryptedContent += "partnerships"
-							encryptedContentDecoder.decodeFromJsonElement(it)
-						} else {
-							encryptedEntity.partnerships.map { x0 ->
-								PartnershipDecryptor.decrypt(
-									decryptionKeys = decryptionKeys,
-									encryptedEntity = x0,
-									patchDecryptedSelfJson = patchDecryptedSelfJson,
-									ignoreUnknownDecryptedFields = ignoreUnknownDecryptedFields,
-									encryptedContentDecoder = encryptedContentDecoder,
-									cryptoService = cryptoService,
-								)
-							}
-						}
-					},
+					encryptedContentDecoder.decodeDecrypted(
+						decryptedContent["partnerships"]?.also { usedEncryptedContent += "partnerships" },
+						encryptedEntity.partnerships.map { x0 ->
+							PartnershipDecryptor.decrypt(
+								decryptionKeys = decryptionKeys,
+								encryptedEntity = x0,
+								patchDecryptedSelfJson = patchDecryptedSelfJson,
+								decryptedJsonStrictness = decryptedJsonStrictness,
+								encryptedContentDecoder = encryptedContentDecoder,
+								cryptoService = cryptoService,
+							)
+						},
+						decryptedJsonStrictness,
+					),
 				patientHealthCareParties =
-					decryptedContent["patientHealthCareParties"].let {
-						if (it != null) {
-							usedEncryptedContent += "patientHealthCareParties"
-							encryptedContentDecoder.decodeFromJsonElement(it)
-						} else {
-							encryptedEntity.patientHealthCareParties.map { x0 ->
-								PatientHealthCarePartyDecryptor.decrypt(
-									decryptionKeys = decryptionKeys,
-									encryptedEntity = x0,
-									patchDecryptedSelfJson = patchDecryptedSelfJson,
-									ignoreUnknownDecryptedFields = ignoreUnknownDecryptedFields,
-									encryptedContentDecoder = encryptedContentDecoder,
-									cryptoService = cryptoService,
-								)
-							}
-						}
-					},
+					encryptedContentDecoder.decodeDecrypted(
+						decryptedContent["patientHealthCareParties"]?.also { usedEncryptedContent += "patientHealthCareParties" },
+						encryptedEntity.patientHealthCareParties.map { x0 ->
+							PatientHealthCarePartyDecryptor.decrypt(
+								decryptionKeys = decryptionKeys,
+								encryptedEntity = x0,
+								patchDecryptedSelfJson = patchDecryptedSelfJson,
+								decryptedJsonStrictness = decryptedJsonStrictness,
+								encryptedContentDecoder = encryptedContentDecoder,
+								cryptoService = cryptoService,
+							)
+						},
+						decryptedJsonStrictness,
+					),
 				financialInstitutionInformation =
-					decryptedContent["financialInstitutionInformation"].let {
-						if (it != null) {
-							usedEncryptedContent += "financialInstitutionInformation"
-							encryptedContentDecoder.decodeFromJsonElement(it)
-						} else {
-							encryptedEntity.financialInstitutionInformation.map { x0 ->
-								FinancialInstitutionInformationDecryptor.decrypt(
-									decryptionKeys = decryptionKeys,
-									encryptedEntity = x0,
-									patchDecryptedSelfJson = patchDecryptedSelfJson,
-									ignoreUnknownDecryptedFields = ignoreUnknownDecryptedFields,
-									encryptedContentDecoder = encryptedContentDecoder,
-									cryptoService = cryptoService,
-								)
-							}
-						}
-					},
+					encryptedContentDecoder.decodeDecrypted(
+						decryptedContent["financialInstitutionInformation"]?.also { usedEncryptedContent += "financialInstitutionInformation" },
+						encryptedEntity.financialInstitutionInformation.map { x0 ->
+							FinancialInstitutionInformationDecryptor.decrypt(
+								decryptionKeys = decryptionKeys,
+								encryptedEntity = x0,
+								patchDecryptedSelfJson = patchDecryptedSelfJson,
+								decryptedJsonStrictness = decryptedJsonStrictness,
+								encryptedContentDecoder = encryptedContentDecoder,
+								cryptoService = cryptoService,
+							)
+						},
+						decryptedJsonStrictness,
+					),
 				medicalHouseContracts =
-					decryptedContent["medicalHouseContracts"].let {
-						if (it != null) {
-							usedEncryptedContent += "medicalHouseContracts"
-							encryptedContentDecoder.decodeFromJsonElement(it)
-						} else {
-							encryptedEntity.medicalHouseContracts.map { x0 ->
-								MedicalHouseContractDecryptor.decrypt(
-									decryptionKeys = decryptionKeys,
-									encryptedEntity = x0,
-									patchDecryptedSelfJson = patchDecryptedSelfJson,
-									ignoreUnknownDecryptedFields = ignoreUnknownDecryptedFields,
-									encryptedContentDecoder = encryptedContentDecoder,
-									cryptoService = cryptoService,
-								)
-							}
-						}
-					},
+					encryptedContentDecoder.decodeDecrypted(
+						decryptedContent["medicalHouseContracts"]?.also { usedEncryptedContent += "medicalHouseContracts" },
+						encryptedEntity.medicalHouseContracts.map { x0 ->
+							MedicalHouseContractDecryptor.decrypt(
+								decryptionKeys = decryptionKeys,
+								encryptedEntity = x0,
+								patchDecryptedSelfJson = patchDecryptedSelfJson,
+								decryptedJsonStrictness = decryptedJsonStrictness,
+								encryptedContentDecoder = encryptedContentDecoder,
+								cryptoService = cryptoService,
+							)
+						},
+						decryptedJsonStrictness,
+					),
 				patientProfessions =
-					decryptedContent["patientProfessions"].let {
-						if (it != null) {
-							usedEncryptedContent += "patientProfessions"
-							encryptedContentDecoder.decodeFromJsonElement(it)
-						} else {
-							encryptedEntity.patientProfessions
-						}
-					},
+					encryptedContentDecoder.decodeDecrypted(
+						decryptedContent["patientProfessions"]?.also { usedEncryptedContent += "patientProfessions" },
+						encryptedEntity.patientProfessions,
+						decryptedJsonStrictness,
+					),
 				parameters =
-					decryptedContent["parameters"].let {
-						if (it != null) {
-							usedEncryptedContent += "parameters"
-							encryptedContentDecoder.decodeFromJsonElement(it)
-						} else {
-							encryptedEntity.parameters
-						}
-					},
+					encryptedContentDecoder.decodeDecrypted(
+						decryptedContent["parameters"]?.also { usedEncryptedContent += "parameters" },
+						encryptedEntity.parameters,
+						decryptedJsonStrictness,
+					),
 				properties =
-					decryptedContent["properties"].let {
-						if (it != null) {
-							usedEncryptedContent += "properties"
-							encryptedContentDecoder.decodeFromJsonElement(it)
-						} else {
-							encryptedEntity.properties.mapTo(mutableSetOf()) { x0 ->
-								PropertyStubDecryptor.decrypt(
-									decryptionKeys = decryptionKeys,
-									encryptedEntity = x0,
-									patchDecryptedSelfJson = patchDecryptedSelfJson,
-									ignoreUnknownDecryptedFields = ignoreUnknownDecryptedFields,
-									encryptedContentDecoder = encryptedContentDecoder,
-									cryptoService = cryptoService,
-								)
-							}
-						}
-					},
+					encryptedContentDecoder.decodeDecrypted(
+						decryptedContent["properties"]?.also { usedEncryptedContent += "properties" },
+						encryptedEntity.properties.mapTo(mutableSetOf()) { x0 ->
+							PropertyStubDecryptor.decrypt(
+								decryptionKeys = decryptionKeys,
+								encryptedEntity = x0,
+								patchDecryptedSelfJson = patchDecryptedSelfJson,
+								decryptedJsonStrictness = decryptedJsonStrictness,
+								encryptedContentDecoder = encryptedContentDecoder,
+								cryptoService = cryptoService,
+							)
+						},
+						decryptedJsonStrictness,
+					),
 				hcPartyKeys = encryptedEntity.hcPartyKeys,
 				aesExchangeKeys = encryptedEntity.aesExchangeKeys,
 				transferKeys = encryptedEntity.transferKeys,
@@ -550,7 +410,7 @@ internal object PatientDecryptor : AbstractEntityDecryptor<EncryptedPatient, Dec
 				extensions = encryptedEntity.extensions,
 				extensionsVersion = encryptedEntity.extensionsVersion,
 			)
-		if (!ignoreUnknownDecryptedFields && decryptedContent.size != usedEncryptedContent.size) {
+		if (decryptedJsonStrictness == DecryptedJsonStrictness.Strict && decryptedContent.size != usedEncryptedContent.size) {
 			throw EntityEncryptionException(
 				"The Patient encrypted content contains unexpected fields: ${decryptedContent.keys - usedEncryptedContent}",
 			)

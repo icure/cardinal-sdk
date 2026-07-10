@@ -1,6 +1,7 @@
 // This file is auto-generated
 package com.icure.cardinal.sdk.crypto.encryptor.`impl`.generated
 
+import com.icure.cardinal.sdk.crypto.encryptor.DecryptedJsonStrictness
 import com.icure.cardinal.sdk.crypto.encryptor.`impl`.AbstractEntityDecryptor
 import com.icure.cardinal.sdk.model.embed.DecryptedValorisation
 import com.icure.cardinal.sdk.model.embed.EncryptedValorisation
@@ -8,19 +9,19 @@ import com.icure.cardinal.sdk.utils.EntityEncryptionException
 import com.icure.kryptom.crypto.AesAlgorithm
 import com.icure.kryptom.crypto.AesKey
 import com.icure.kryptom.crypto.CryptoService
+import com.icure.utils.InternalIcureApi
 import kotlinx.serialization.json.Json
 import kotlinx.serialization.json.JsonObject
-import kotlinx.serialization.json.decodeFromJsonElement
-import kotlin.Boolean
 import kotlin.collections.Collection
 
+@InternalIcureApi
 internal object ValorisationDecryptor :
 	AbstractEntityDecryptor<EncryptedValorisation, DecryptedValorisation>() {
 	override suspend fun decrypt(
 		decryptionKeys: Collection<AesKey<AesAlgorithm.CbcWithPkcs7Padding>>,
 		encryptedEntity: EncryptedValorisation,
 		patchDecryptedSelfJson: ((JsonObject) -> JsonObject)?,
-		ignoreUnknownDecryptedFields: Boolean,
+		decryptedJsonStrictness: DecryptedJsonStrictness,
 		encryptedContentDecoder: Json,
 		cryptoService: CryptoService,
 	): DecryptedValorisation {
@@ -35,98 +36,68 @@ internal object ValorisationDecryptor :
 		val result =
 			DecryptedValorisation(
 				startOfValidity =
-					decryptedContent["startOfValidity"].let {
-						if (it != null) {
-							usedEncryptedContent += "startOfValidity"
-							encryptedContentDecoder.decodeFromJsonElement(it)
-						} else {
-							encryptedEntity.startOfValidity
-						}
-					},
+					encryptedContentDecoder.decodeDecrypted(
+						decryptedContent["startOfValidity"]?.also { usedEncryptedContent += "startOfValidity" },
+						encryptedEntity.startOfValidity,
+						decryptedJsonStrictness,
+					),
 				endOfValidity =
-					decryptedContent["endOfValidity"].let {
-						if (it != null) {
-							usedEncryptedContent += "endOfValidity"
-							encryptedContentDecoder.decodeFromJsonElement(it)
-						} else {
-							encryptedEntity.endOfValidity
-						}
-					},
+					encryptedContentDecoder.decodeDecrypted(
+						decryptedContent["endOfValidity"]?.also { usedEncryptedContent += "endOfValidity" },
+						encryptedEntity.endOfValidity,
+						decryptedJsonStrictness,
+					),
 				predicate =
-					decryptedContent["predicate"].let {
-						if (it != null) {
-							usedEncryptedContent += "predicate"
-							encryptedContentDecoder.decodeFromJsonElement(it)
-						} else {
-							encryptedEntity.predicate
-						}
-					},
+					encryptedContentDecoder.decodeDecrypted(
+						decryptedContent["predicate"]?.also { usedEncryptedContent += "predicate" },
+						encryptedEntity.predicate,
+						decryptedJsonStrictness,
+					),
 				reference =
-					decryptedContent["reference"].let {
-						if (it != null) {
-							usedEncryptedContent += "reference"
-							encryptedContentDecoder.decodeFromJsonElement(it)
-						} else {
-							encryptedEntity.reference
-						}
-					},
+					encryptedContentDecoder.decodeDecrypted(
+						decryptedContent["reference"]?.also { usedEncryptedContent += "reference" },
+						encryptedEntity.reference,
+						decryptedJsonStrictness,
+					),
 				totalAmount =
-					decryptedContent["totalAmount"].let {
-						if (it != null) {
-							usedEncryptedContent += "totalAmount"
-							encryptedContentDecoder.decodeFromJsonElement(it)
-						} else {
-							encryptedEntity.totalAmount
-						}
-					},
+					encryptedContentDecoder.decodeDecrypted(
+						decryptedContent["totalAmount"]?.also { usedEncryptedContent += "totalAmount" },
+						encryptedEntity.totalAmount,
+						decryptedJsonStrictness,
+					),
 				reimbursement =
-					decryptedContent["reimbursement"].let {
-						if (it != null) {
-							usedEncryptedContent += "reimbursement"
-							encryptedContentDecoder.decodeFromJsonElement(it)
-						} else {
-							encryptedEntity.reimbursement
-						}
-					},
+					encryptedContentDecoder.decodeDecrypted(
+						decryptedContent["reimbursement"]?.also { usedEncryptedContent += "reimbursement" },
+						encryptedEntity.reimbursement,
+						decryptedJsonStrictness,
+					),
 				patientIntervention =
-					decryptedContent["patientIntervention"].let {
-						if (it != null) {
-							usedEncryptedContent += "patientIntervention"
-							encryptedContentDecoder.decodeFromJsonElement(it)
-						} else {
-							encryptedEntity.patientIntervention
-						}
-					},
+					encryptedContentDecoder.decodeDecrypted(
+						decryptedContent["patientIntervention"]?.also { usedEncryptedContent += "patientIntervention" },
+						encryptedEntity.patientIntervention,
+						decryptedJsonStrictness,
+					),
 				doctorSupplement =
-					decryptedContent["doctorSupplement"].let {
-						if (it != null) {
-							usedEncryptedContent += "doctorSupplement"
-							encryptedContentDecoder.decodeFromJsonElement(it)
-						} else {
-							encryptedEntity.doctorSupplement
-						}
-					},
+					encryptedContentDecoder.decodeDecrypted(
+						decryptedContent["doctorSupplement"]?.also { usedEncryptedContent += "doctorSupplement" },
+						encryptedEntity.doctorSupplement,
+						decryptedJsonStrictness,
+					),
 				vat =
-					decryptedContent["vat"].let {
-						if (it != null) {
-							usedEncryptedContent += "vat"
-							encryptedContentDecoder.decodeFromJsonElement(it)
-						} else {
-							encryptedEntity.vat
-						}
-					},
+					encryptedContentDecoder.decodeDecrypted(
+						decryptedContent["vat"]?.also { usedEncryptedContent += "vat" },
+						encryptedEntity.vat,
+						decryptedJsonStrictness,
+					),
 				label =
-					decryptedContent["label"].let {
-						if (it != null) {
-							usedEncryptedContent += "label"
-							encryptedContentDecoder.decodeFromJsonElement(it)
-						} else {
-							encryptedEntity.label
-						}
-					},
+					encryptedContentDecoder.decodeDecrypted(
+						decryptedContent["label"]?.also { usedEncryptedContent += "label" },
+						encryptedEntity.label,
+						decryptedJsonStrictness,
+					),
 				encryptedSelf = encryptedEntity.encryptedSelf,
 			)
-		if (!ignoreUnknownDecryptedFields && decryptedContent.size != usedEncryptedContent.size) {
+		if (decryptedJsonStrictness == DecryptedJsonStrictness.Strict && decryptedContent.size != usedEncryptedContent.size) {
 			throw EntityEncryptionException(
 				"The Valorisation encrypted content contains unexpected fields: ${decryptedContent.keys - usedEncryptedContent}",
 			)

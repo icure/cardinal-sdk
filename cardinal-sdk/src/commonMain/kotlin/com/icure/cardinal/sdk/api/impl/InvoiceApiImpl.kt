@@ -13,6 +13,7 @@ import com.icure.cardinal.sdk.api.InvoiceInGroupApi
 import com.icure.cardinal.sdk.api.raw.RawInvoiceApi
 import com.icure.cardinal.sdk.api.raw.successBodyOrNull404
 import com.icure.cardinal.sdk.api.raw.successBodyOrThrowRevisionConflict
+import com.icure.cardinal.sdk.crypto.encryptor.impl.generated.InvoiceDecryptor
 import com.icure.cardinal.sdk.crypto.entities.EntityWithEncryptionMetadataTypeName
 import com.icure.cardinal.sdk.crypto.entities.InvoiceShareOptions
 import com.icure.cardinal.sdk.crypto.entities.OwningEntityDetails
@@ -39,9 +40,6 @@ import com.icure.cardinal.sdk.model.specializations.HexString
 import com.icure.cardinal.sdk.model.toStoredDocumentIdentifier
 import com.icure.cardinal.sdk.options.ApiConfiguration
 import com.icure.cardinal.sdk.options.BasicApiConfiguration
-import com.icure.cardinal.sdk.options.EntitiesEncryptedFieldsManifests
-import com.icure.cardinal.sdk.options.JsonPatcher
-import com.icure.cardinal.sdk.utils.Serialization
 import com.icure.cardinal.sdk.utils.currentEpochMs
 import com.icure.cardinal.sdk.utils.currentFuzzyDateTime
 import com.icure.cardinal.sdk.utils.generation.JsMapAsObjectArray
@@ -51,16 +49,12 @@ import com.icure.cardinal.sdk.utils.pagination.encodeStartKey
 import com.icure.utils.InternalIcureApi
 import kotlinx.datetime.TimeZone
 import kotlinx.serialization.json.JsonElement
-import kotlinx.serialization.json.decodeFromJsonElement
 
 @InternalIcureApi
 private fun encryptedApiFlavour(
 	config: BasicApiConfiguration
 ): FlavouredApi<EncryptedInvoice, EncryptedInvoice> = FlavouredApi.encrypted(
 	config = config,
-	encryptedSerializer = EncryptedInvoice.serializer(),
-	type = EntityWithEncryptionMetadataTypeName.Invoice,
-	manifest = EntitiesEncryptedFieldsManifests::invoice
 )
 
 @InternalIcureApi
@@ -68,11 +62,9 @@ private fun decryptedApiFlavour(
 	config: ApiConfiguration
 ): FlavouredApi<EncryptedInvoice, DecryptedInvoice> = FlavouredApi.decrypted(
 	config = config,
-	encryptedSerializer = EncryptedInvoice.serializer(),
-	decryptedSerializer = DecryptedInvoice.serializer(),
 	type = EntityWithEncryptionMetadataTypeName.Invoice,
-	manifest = EntitiesEncryptedFieldsManifests::invoice,
-	patchJson = JsonPatcher::patchInvoice
+	encryptor = config.encryptors.invoice,
+	decryptor = InvoiceDecryptor,
 )
 
 @InternalIcureApi
@@ -80,11 +72,9 @@ private fun tryAndRecoverApiFlavour(
 	config: ApiConfiguration
 ): FlavouredApi<EncryptedInvoice, Invoice> = FlavouredApi.tryAndRecover(
 	config = config,
-	encryptedSerializer = EncryptedInvoice.serializer(),
-	decryptedSerializer = DecryptedInvoice.serializer(),
 	type = EntityWithEncryptionMetadataTypeName.Invoice,
-	manifest = EntitiesEncryptedFieldsManifests::invoice,
-	patchJson = JsonPatcher::patchInvoice
+	encryptor = config.encryptors.invoice,
+	decryptor = InvoiceDecryptor,
 )
 
 @InternalIcureApi
@@ -747,20 +737,10 @@ private class InvoiceApiImpl(
 		).updatedEntity
 
 	override suspend fun decrypt(invoice: EncryptedInvoice): DecryptedInvoice =
-		config.crypto.entity.decryptEntities(
-			null,
-			listOf(invoice),
-			EntityWithEncryptionMetadataTypeName.Invoice,
-			EncryptedInvoice.serializer(),
-		) { Serialization.json.decodeFromJsonElement<DecryptedInvoice>(config.jsonPatcher.patchInvoice(it)) }.single()
+		decryptedFlavour.maybeDecrypt(null, invoice)
 
 	override suspend fun tryDecrypt(invoice: EncryptedInvoice): Invoice =
-		config.crypto.entity.tryDecryptEntities(
-			null,
-			listOf(invoice),
-			EntityWithEncryptionMetadataTypeName.Invoice,
-			EncryptedInvoice.serializer(),
-		) { Serialization.json.decodeFromJsonElement<DecryptedInvoice>(config.jsonPatcher.patchInvoice(it)) }.single()
+		tryAndRecoverFlavour.maybeDecrypt(null, invoice)
 }
 
 @InternalIcureApi

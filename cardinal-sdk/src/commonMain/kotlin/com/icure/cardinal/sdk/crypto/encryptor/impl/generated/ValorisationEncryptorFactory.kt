@@ -10,6 +10,7 @@ import com.icure.cardinal.sdk.model.embed.EncryptedValorisation
 import com.icure.kryptom.crypto.AesAlgorithm
 import com.icure.kryptom.crypto.AesKey
 import com.icure.kryptom.crypto.CryptoService
+import com.icure.utils.InternalIcureApi
 import kotlinx.serialization.json.Json
 import kotlinx.serialization.json.JsonElement
 import kotlinx.serialization.json.JsonObject
@@ -17,20 +18,21 @@ import kotlinx.serialization.json.encodeToJsonElement
 import kotlin.Boolean
 import kotlin.String
 
+@InternalIcureApi
 internal object ValorisationEncryptorFactory :
 	EntityEncryptorFactory<EncryptedValorisation, DecryptedValorisation> {
 	override val empty: EntityEncryptor<EncryptedValorisation, DecryptedValorisation> =
 		ValorisationEncryptor(
-			startOfValidity = false,
-			endOfValidity = false,
-			predicate = false,
-			reference = false,
-			totalAmount = false,
-			reimbursement = false,
-			patientIntervention = false,
-			doctorSupplement = false,
-			vat = false,
-			label = false,
+			startOfValidity_e = false,
+			endOfValidity_e = false,
+			predicate_e = false,
+			reference_e = false,
+			totalAmount_e = false,
+			reimbursement_e = false,
+			patientIntervention_e = false,
+			doctorSupplement_e = false,
+			vat_e = false,
+			label_e = false,
 		)
 
 	override fun create(
@@ -39,31 +41,32 @@ internal object ValorisationEncryptorFactory :
 	): EntityEncryptor<EncryptedValorisation, DecryptedValorisation> {
 		val manifest = encryptorFactoryContext.getManifest(entityManifestName)
 		return ValorisationEncryptor(
-			startOfValidity = "startOfValidity" in manifest.fieldsToEncrypt,
-			endOfValidity = "endOfValidity" in manifest.fieldsToEncrypt,
-			predicate = "predicate" in manifest.fieldsToEncrypt,
-			reference = "reference" in manifest.fieldsToEncrypt,
-			totalAmount = "totalAmount" in manifest.fieldsToEncrypt,
-			reimbursement = "reimbursement" in manifest.fieldsToEncrypt,
-			patientIntervention = "patientIntervention" in manifest.fieldsToEncrypt,
-			doctorSupplement = "doctorSupplement" in manifest.fieldsToEncrypt,
-			vat = "vat" in manifest.fieldsToEncrypt,
-			label = "label" in manifest.fieldsToEncrypt,
+			startOfValidity_e = "startOfValidity" in manifest.fieldsToEncrypt,
+			endOfValidity_e = "endOfValidity" in manifest.fieldsToEncrypt,
+			predicate_e = "predicate" in manifest.fieldsToEncrypt,
+			reference_e = "reference" in manifest.fieldsToEncrypt,
+			totalAmount_e = "totalAmount" in manifest.fieldsToEncrypt,
+			reimbursement_e = "reimbursement" in manifest.fieldsToEncrypt,
+			patientIntervention_e = "patientIntervention" in manifest.fieldsToEncrypt,
+			doctorSupplement_e = "doctorSupplement" in manifest.fieldsToEncrypt,
+			vat_e = "vat" in manifest.fieldsToEncrypt,
+			label_e = "label" in manifest.fieldsToEncrypt,
 		)
 	}
 }
 
+@InternalIcureApi
 private class ValorisationEncryptor(
-	private val startOfValidity: Boolean,
-	private val endOfValidity: Boolean,
-	private val predicate: Boolean,
-	private val reference: Boolean,
-	private val totalAmount: Boolean,
-	private val reimbursement: Boolean,
-	private val patientIntervention: Boolean,
-	private val doctorSupplement: Boolean,
-	private val vat: Boolean,
-	private val label: Boolean,
+	private val startOfValidity_e: Boolean,
+	private val endOfValidity_e: Boolean,
+	private val predicate_e: Boolean,
+	private val reference_e: Boolean,
+	private val totalAmount_e: Boolean,
+	private val reimbursement_e: Boolean,
+	private val patientIntervention_e: Boolean,
+	private val doctorSupplement_e: Boolean,
+	private val vat_e: Boolean,
+	private val label_e: Boolean,
 ) : AbstractEntityEncryptor<EncryptedValorisation, DecryptedValorisation>() {
 	override suspend fun encrypt(
 		encryptionKey: AesKey<AesAlgorithm.CbcWithPkcs7Padding>,
@@ -72,27 +75,57 @@ private class ValorisationEncryptor(
 		cryptoService: CryptoService,
 	): EncryptedValorisation {
 		val dataToEncrypt = mutableMapOf<String, JsonElement>()
-		if (startOfValidity) dataToEncrypt["startOfValidity"] = encodingJson.encodeToJsonElement(clearEntity.startOfValidity)
-		if (endOfValidity) dataToEncrypt["endOfValidity"] = encodingJson.encodeToJsonElement(clearEntity.endOfValidity)
-		if (predicate) dataToEncrypt["predicate"] = encodingJson.encodeToJsonElement(clearEntity.predicate)
-		if (reference) dataToEncrypt["reference"] = encodingJson.encodeToJsonElement(clearEntity.reference)
-		if (totalAmount) dataToEncrypt["totalAmount"] = encodingJson.encodeToJsonElement(clearEntity.totalAmount)
-		if (reimbursement) dataToEncrypt["reimbursement"] = encodingJson.encodeToJsonElement(clearEntity.reimbursement)
-		if (patientIntervention) dataToEncrypt["patientIntervention"] = encodingJson.encodeToJsonElement(clearEntity.patientIntervention)
-		if (doctorSupplement) dataToEncrypt["doctorSupplement"] = encodingJson.encodeToJsonElement(clearEntity.doctorSupplement)
-		if (vat) dataToEncrypt["vat"] = encodingJson.encodeToJsonElement(clearEntity.vat)
-		if (label) dataToEncrypt["label"] = encodingJson.encodeToJsonElement(clearEntity.label)
+		if (startOfValidity_e && clearEntity.startOfValidity != null) {
+			dataToEncrypt["startOfValidity"] =
+				encodingJson.encodeToJsonElement(
+					clearEntity.startOfValidity,
+				)
+		}
+		if (endOfValidity_e && clearEntity.endOfValidity != null) {
+			dataToEncrypt["endOfValidity"] =
+				encodingJson.encodeToJsonElement(
+					clearEntity.endOfValidity,
+				)
+		}
+		if (predicate_e && clearEntity.predicate != null) dataToEncrypt["predicate"] = encodingJson.encodeToJsonElement(clearEntity.predicate)
+		if (reference_e && clearEntity.reference != null) dataToEncrypt["reference"] = encodingJson.encodeToJsonElement(clearEntity.reference)
+		if (totalAmount_e && clearEntity.totalAmount != null) {
+			dataToEncrypt["totalAmount"] =
+				encodingJson.encodeToJsonElement(
+					clearEntity.totalAmount,
+				)
+		}
+		if (reimbursement_e && clearEntity.reimbursement != null) {
+			dataToEncrypt["reimbursement"] =
+				encodingJson.encodeToJsonElement(
+					clearEntity.reimbursement,
+				)
+		}
+		if (patientIntervention_e && clearEntity.patientIntervention != null) {
+			dataToEncrypt["patientIntervention"] =
+				encodingJson.encodeToJsonElement(
+					clearEntity.patientIntervention,
+				)
+		}
+		if (doctorSupplement_e && clearEntity.doctorSupplement != null) {
+			dataToEncrypt["doctorSupplement"] =
+				encodingJson.encodeToJsonElement(
+					clearEntity.doctorSupplement,
+				)
+		}
+		if (vat_e && clearEntity.vat != null) dataToEncrypt["vat"] = encodingJson.encodeToJsonElement(clearEntity.vat)
+		if (label_e && (clearEntity.label?.isNotEmpty() ?: true)) dataToEncrypt["label"] = encodingJson.encodeToJsonElement(clearEntity.label)
 		return EncryptedValorisation(
-			startOfValidity = if (startOfValidity) null else clearEntity.startOfValidity,
-			endOfValidity = if (endOfValidity) null else clearEntity.endOfValidity,
-			predicate = if (predicate) null else clearEntity.predicate,
-			reference = if (reference) null else clearEntity.reference,
-			totalAmount = if (totalAmount) null else clearEntity.totalAmount,
-			reimbursement = if (reimbursement) null else clearEntity.reimbursement,
-			patientIntervention = if (patientIntervention) null else clearEntity.patientIntervention,
-			doctorSupplement = if (doctorSupplement) null else clearEntity.doctorSupplement,
-			vat = if (vat) null else clearEntity.vat,
-			label = if (label) emptyMap() else clearEntity.label,
+			startOfValidity = if (startOfValidity_e) null else clearEntity.startOfValidity,
+			endOfValidity = if (endOfValidity_e) null else clearEntity.endOfValidity,
+			predicate = if (predicate_e) null else clearEntity.predicate,
+			reference = if (reference_e) null else clearEntity.reference,
+			totalAmount = if (totalAmount_e) null else clearEntity.totalAmount,
+			reimbursement = if (reimbursement_e) null else clearEntity.reimbursement,
+			patientIntervention = if (patientIntervention_e) null else clearEntity.patientIntervention,
+			doctorSupplement = if (doctorSupplement_e) null else clearEntity.doctorSupplement,
+			vat = if (vat_e) null else clearEntity.vat,
+			label = if (label_e) emptyMap() else clearEntity.label,
 			encryptedSelf = getUpdatedEncryptSelf(encryptionKey, clearEntity, JsonObject(dataToEncrypt), cryptoService),
 		)
 	}

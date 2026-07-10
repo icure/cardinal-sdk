@@ -13,6 +13,7 @@ import com.icure.cardinal.sdk.model.embed.EncryptedTypedValue
 import com.icure.kryptom.crypto.AesAlgorithm
 import com.icure.kryptom.crypto.AesKey
 import com.icure.kryptom.crypto.CryptoService
+import com.icure.utils.InternalIcureApi
 import kotlinx.serialization.json.Json
 import kotlinx.serialization.json.JsonElement
 import kotlinx.serialization.json.JsonObject
@@ -20,13 +21,14 @@ import kotlinx.serialization.json.encodeToJsonElement
 import kotlin.Boolean
 import kotlin.String
 
+@InternalIcureApi
 internal object PropertyStubEncryptorFactory :
 	EntityEncryptorFactory<EncryptedPropertyStub, DecryptedPropertyStub> {
 	override val empty: EntityEncryptor<EncryptedPropertyStub, DecryptedPropertyStub> =
 		PropertyStubEncryptor(
-			id = false,
-			type = false,
-			typedValue = EncryptableFieldConfig.None(TypedValueEncryptorFactory),
+			id_e = false,
+			type_e = false,
+			typedValue_e = EncryptableFieldConfig.None(TypedValueEncryptorFactory),
 		)
 
 	override fun create(
@@ -35,9 +37,9 @@ internal object PropertyStubEncryptorFactory :
 	): EntityEncryptor<EncryptedPropertyStub, DecryptedPropertyStub> {
 		val manifest = encryptorFactoryContext.getManifest(entityManifestName)
 		return PropertyStubEncryptor(
-			id = "id" in manifest.fieldsToEncrypt,
-			type = "type" in manifest.fieldsToEncrypt,
-			typedValue =
+			id_e = "id" in manifest.fieldsToEncrypt,
+			type_e = "type" in manifest.fieldsToEncrypt,
+			typedValue_e =
 				if ("typedValue" in manifest.fieldsToEncrypt) {
 					EncryptableFieldConfig.Full()
 				} else {
@@ -55,10 +57,11 @@ internal object PropertyStubEncryptorFactory :
 	}
 }
 
+@InternalIcureApi
 private class PropertyStubEncryptor(
-	private val id: Boolean,
-	private val type: Boolean,
-	private val typedValue: EncryptableFieldConfig<EncryptedTypedValue, DecryptedTypedValue>,
+	private val id_e: Boolean,
+	private val type_e: Boolean,
+	private val typedValue_e: EncryptableFieldConfig<EncryptedTypedValue, DecryptedTypedValue>,
 ) : AbstractEntityEncryptor<EncryptedPropertyStub, DecryptedPropertyStub>() {
 	override suspend fun encrypt(
 		encryptionKey: AesKey<AesAlgorithm.CbcWithPkcs7Padding>,
@@ -67,14 +70,19 @@ private class PropertyStubEncryptor(
 		cryptoService: CryptoService,
 	): EncryptedPropertyStub {
 		val dataToEncrypt = mutableMapOf<String, JsonElement>()
-		if (id) dataToEncrypt["id"] = encodingJson.encodeToJsonElement(clearEntity.id)
-		if (type) dataToEncrypt["type"] = encodingJson.encodeToJsonElement(clearEntity.type)
-		if (typedValue.fullEncryption) dataToEncrypt["typedValue"] = encodingJson.encodeToJsonElement(clearEntity.typedValue)
+		if (id_e && clearEntity.id != null) dataToEncrypt["id"] = encodingJson.encodeToJsonElement(clearEntity.id)
+		if (type_e && clearEntity.type != null) dataToEncrypt["type"] = encodingJson.encodeToJsonElement(clearEntity.type)
+		if (typedValue_e.fullEncryption && clearEntity.typedValue != null) {
+			dataToEncrypt["typedValue"] =
+				encodingJson.encodeToJsonElement(
+					clearEntity.typedValue,
+				)
+		}
 		return EncryptedPropertyStub(
-			id = if (id) null else clearEntity.id,
-			type = if (type) null else clearEntity.type,
+			id = if (id_e) null else clearEntity.id,
+			type = if (type_e) null else clearEntity.type,
 			typedValue =
-				typedValue.encryptor.let { encryptor ->
+				typedValue_e.encryptor.let { encryptor ->
 					if (encryptor == null) {
 						null
 					} else {

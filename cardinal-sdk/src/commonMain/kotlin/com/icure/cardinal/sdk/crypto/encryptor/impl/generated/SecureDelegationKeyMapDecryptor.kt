@@ -1,6 +1,7 @@
 // This file is auto-generated
 package com.icure.cardinal.sdk.crypto.encryptor.`impl`.generated
 
+import com.icure.cardinal.sdk.crypto.encryptor.DecryptedJsonStrictness
 import com.icure.cardinal.sdk.crypto.encryptor.`impl`.AbstractEntityDecryptor
 import com.icure.cardinal.sdk.model.DecryptedSecureDelegationKeyMap
 import com.icure.cardinal.sdk.model.EncryptedSecureDelegationKeyMap
@@ -8,19 +9,19 @@ import com.icure.cardinal.sdk.utils.EntityEncryptionException
 import com.icure.kryptom.crypto.AesAlgorithm
 import com.icure.kryptom.crypto.AesKey
 import com.icure.kryptom.crypto.CryptoService
+import com.icure.utils.InternalIcureApi
 import kotlinx.serialization.json.Json
 import kotlinx.serialization.json.JsonObject
-import kotlinx.serialization.json.decodeFromJsonElement
-import kotlin.Boolean
 import kotlin.collections.Collection
 
+@InternalIcureApi
 internal object SecureDelegationKeyMapDecryptor :
 	AbstractEntityDecryptor<EncryptedSecureDelegationKeyMap, DecryptedSecureDelegationKeyMap>() {
 	override suspend fun decrypt(
 		decryptionKeys: Collection<AesKey<AesAlgorithm.CbcWithPkcs7Padding>>,
 		encryptedEntity: EncryptedSecureDelegationKeyMap,
 		patchDecryptedSelfJson: ((JsonObject) -> JsonObject)?,
-		ignoreUnknownDecryptedFields: Boolean,
+		decryptedJsonStrictness: DecryptedJsonStrictness,
 		encryptedContentDecoder: Json,
 		cryptoService: CryptoService,
 	): DecryptedSecureDelegationKeyMap {
@@ -38,23 +39,17 @@ internal object SecureDelegationKeyMapDecryptor :
 				rev = encryptedEntity.rev,
 				delegationKey = encryptedEntity.delegationKey,
 				delegator =
-					decryptedContent["delegator"].let {
-						if (it != null) {
-							usedEncryptedContent += "delegator"
-							encryptedContentDecoder.decodeFromJsonElement(it)
-						} else {
-							encryptedEntity.delegator
-						}
-					},
+					encryptedContentDecoder.decodeDecrypted(
+						decryptedContent["delegator"]?.also { usedEncryptedContent += "delegator" },
+						encryptedEntity.delegator,
+						decryptedJsonStrictness,
+					),
 				delegate =
-					decryptedContent["delegate"].let {
-						if (it != null) {
-							usedEncryptedContent += "delegate"
-							encryptedContentDecoder.decodeFromJsonElement(it)
-						} else {
-							encryptedEntity.delegate
-						}
-					},
+					encryptedContentDecoder.decodeDecrypted(
+						decryptedContent["delegate"]?.also { usedEncryptedContent += "delegate" },
+						encryptedEntity.delegate,
+						decryptedJsonStrictness,
+					),
 				secretForeignKeys = encryptedEntity.secretForeignKeys,
 				cryptedForeignKeys = encryptedEntity.cryptedForeignKeys,
 				delegations = encryptedEntity.delegations,
@@ -63,7 +58,7 @@ internal object SecureDelegationKeyMapDecryptor :
 				securityMetadata = encryptedEntity.securityMetadata,
 				deletionDate = encryptedEntity.deletionDate,
 			)
-		if (!ignoreUnknownDecryptedFields && decryptedContent.size != usedEncryptedContent.size) {
+		if (decryptedJsonStrictness == DecryptedJsonStrictness.Strict && decryptedContent.size != usedEncryptedContent.size) {
 			throw EntityEncryptionException(
 				"The SecureDelegationKeyMap encrypted content contains unexpected fields: ${decryptedContent.keys - usedEncryptedContent}",
 			)

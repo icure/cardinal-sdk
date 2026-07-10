@@ -13,6 +13,7 @@ import com.icure.cardinal.sdk.api.TopicInGroupApi
 import com.icure.cardinal.sdk.api.raw.RawTopicApi
 import com.icure.cardinal.sdk.api.raw.successBodyOrNull404
 import com.icure.cardinal.sdk.api.raw.successBodyOrThrowRevisionConflict
+import com.icure.cardinal.sdk.crypto.encryptor.impl.generated.TopicDecryptor
 import com.icure.cardinal.sdk.crypto.entities.EntityWithEncryptionMetadataTypeName
 import com.icure.cardinal.sdk.crypto.entities.OwningEntityDetails
 import com.icure.cardinal.sdk.crypto.entities.SecretIdUseOption
@@ -44,8 +45,6 @@ import com.icure.cardinal.sdk.model.specializations.HexString
 import com.icure.cardinal.sdk.model.toStoredDocumentIdentifier
 import com.icure.cardinal.sdk.options.ApiConfiguration
 import com.icure.cardinal.sdk.options.BasicApiConfiguration
-import com.icure.cardinal.sdk.options.EntitiesEncryptedFieldsManifests
-import com.icure.cardinal.sdk.options.JsonPatcher
 import com.icure.cardinal.sdk.serialization.SubscriptionSerializer
 import com.icure.cardinal.sdk.serialization.TopicAbstractFilterSerializer
 import com.icure.cardinal.sdk.subscription.EntitySubscription
@@ -58,16 +57,12 @@ import com.icure.cardinal.sdk.utils.generation.JsMapAsObjectArray
 import com.icure.cardinal.sdk.utils.pagination.IdsPageIterator
 import com.icure.cardinal.sdk.utils.pagination.PaginatedListIterator
 import com.icure.utils.InternalIcureApi
-import kotlinx.serialization.json.decodeFromJsonElement
 
 @InternalIcureApi
 private fun encryptedApiFlavour(
 	config: BasicApiConfiguration
 ): FlavouredApi<EncryptedTopic, EncryptedTopic> = FlavouredApi.encrypted(
 	config = config,
-	encryptedSerializer = EncryptedTopic.serializer(),
-	type = EntityWithEncryptionMetadataTypeName.Topic,
-	manifest = EntitiesEncryptedFieldsManifests::topic
 )
 
 @InternalIcureApi
@@ -75,11 +70,9 @@ private fun decryptedApiFlavour(
 	config: ApiConfiguration
 ): FlavouredApi<EncryptedTopic, DecryptedTopic> = FlavouredApi.decrypted(
 	config = config,
-	encryptedSerializer = EncryptedTopic.serializer(),
-	decryptedSerializer = DecryptedTopic.serializer(),
 	type = EntityWithEncryptionMetadataTypeName.Topic,
-	manifest = EntitiesEncryptedFieldsManifests::topic,
-	patchJson = JsonPatcher::patchTopic
+	encryptor = config.encryptors.topic,
+	decryptor = TopicDecryptor,
 )
 
 @InternalIcureApi
@@ -87,11 +80,9 @@ private fun tryAndRecoverApiFlavour(
 	config: ApiConfiguration
 ): FlavouredApi<EncryptedTopic, Topic> = FlavouredApi.tryAndRecover(
 	config = config,
-	encryptedSerializer = EncryptedTopic.serializer(),
-	decryptedSerializer = DecryptedTopic.serializer(),
 	type = EntityWithEncryptionMetadataTypeName.Topic,
-	manifest = EntitiesEncryptedFieldsManifests::topic,
-	patchJson = JsonPatcher::patchTopic
+	encryptor = config.encryptors.topic,
+	decryptor = TopicDecryptor,
 )
 
 @OptIn(InternalIcureApi::class)
@@ -658,20 +649,10 @@ private class TopicApiImpl(
 	}
 
 	override suspend fun decrypt(topic: EncryptedTopic): DecryptedTopic =
-		config.crypto.entity.decryptEntities(
-			null,
-			listOf(topic),
-			EntityWithEncryptionMetadataTypeName.Topic,
-			EncryptedTopic.serializer(),
-		) { Serialization.json.decodeFromJsonElement<DecryptedTopic>(config.jsonPatcher.patchTopic(it)) }.single()
+		decryptedFlavour.maybeDecrypt(null, topic)
 
 	override suspend fun tryDecrypt(topic: EncryptedTopic): Topic =
-		config.crypto.entity.tryDecryptEntities(
-			null,
-			listOf(topic),
-			EntityWithEncryptionMetadataTypeName.Topic,
-			EncryptedTopic.serializer(),
-		) { Serialization.json.decodeFromJsonElement<DecryptedTopic>(config.jsonPatcher.patchTopic(it)) }.single()
+		tryAndRecoverFlavour.maybeDecrypt(null, topic)
 
 	override suspend fun matchTopicsBy(filter: FilterOptions<Topic>): List<String> =
 		rawApi.doMatchTopicsBy(config = config, groupId = null, filter = filter)

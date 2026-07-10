@@ -29,6 +29,7 @@ import com.icure.cardinal.sdk.model.embed.PersonalStatus
 import com.icure.kryptom.crypto.AesAlgorithm
 import com.icure.kryptom.crypto.AesKey
 import com.icure.kryptom.crypto.CryptoService
+import com.icure.utils.InternalIcureApi
 import kotlinx.serialization.json.Json
 import kotlinx.serialization.json.JsonElement
 import kotlinx.serialization.json.JsonObject
@@ -36,56 +37,57 @@ import kotlinx.serialization.json.encodeToJsonElement
 import kotlin.Boolean
 import kotlin.String
 
+@InternalIcureApi
 internal object PatientEncryptorFactory : EntityEncryptorFactory<EncryptedPatient, DecryptedPatient> {
 	override val empty: EntityEncryptor<EncryptedPatient, DecryptedPatient> =
 		PatientEncryptor(
-			identifier = false,
-			created = false,
-			modified = false,
-			author = false,
-			responsible = false,
-			tags = false,
-			codes = false,
-			firstName = false,
-			lastName = false,
-			names = false,
-			companyName = false,
-			languages = false,
-			addresses = EncryptableFieldConfig.None(AddressEncryptorFactory),
-			civility = false,
-			gender = false,
-			birthSex = false,
-			alias = false,
-			active = false,
-			deactivationReason = false,
-			deactivationDate = false,
-			ssin = false,
-			maidenName = false,
-			spouseName = false,
-			partnerName = false,
-			personalStatus = false,
-			dateOfBirth = false,
-			dateOfDeath = false,
-			timestampOfLatestEidReading = false,
-			placeOfBirth = false,
-			placeOfDeath = false,
-			deceased = false,
-			education = false,
-			profession = false,
-			notes = EncryptableFieldConfig.None(AnnotationEncryptorFactory),
-			note = false,
-			administrativeNote = false,
-			nationality = false,
-			race = false,
-			ethnicity = false,
-			insurabilities = EncryptableFieldConfig.None(InsurabilityEncryptorFactory),
-			partnerships = EncryptableFieldConfig.None(PartnershipEncryptorFactory),
-			patientHealthCareParties = EncryptableFieldConfig.None(PatientHealthCarePartyEncryptorFactory),
-			financialInstitutionInformation = EncryptableFieldConfig.None(FinancialInstitutionInformationEncryptorFactory),
-			medicalHouseContracts = EncryptableFieldConfig.None(MedicalHouseContractEncryptorFactory),
-			patientProfessions = false,
-			parameters = false,
-			properties = EncryptableFieldConfig.None(PropertyStubEncryptorFactory),
+			identifier_e = false,
+			created_e = false,
+			modified_e = false,
+			author_e = false,
+			responsible_e = false,
+			tags_e = false,
+			codes_e = false,
+			firstName_e = false,
+			lastName_e = false,
+			names_e = false,
+			companyName_e = false,
+			languages_e = false,
+			addresses_e = EncryptableFieldConfig.None(AddressEncryptorFactory),
+			civility_e = false,
+			gender_e = false,
+			birthSex_e = false,
+			alias_e = false,
+			active_e = false,
+			deactivationReason_e = false,
+			deactivationDate_e = false,
+			ssin_e = false,
+			maidenName_e = false,
+			spouseName_e = false,
+			partnerName_e = false,
+			personalStatus_e = false,
+			dateOfBirth_e = false,
+			dateOfDeath_e = false,
+			timestampOfLatestEidReading_e = false,
+			placeOfBirth_e = false,
+			placeOfDeath_e = false,
+			deceased_e = false,
+			education_e = false,
+			profession_e = false,
+			notes_e = EncryptableFieldConfig.None(AnnotationEncryptorFactory),
+			note_e = false,
+			administrativeNote_e = false,
+			nationality_e = false,
+			race_e = false,
+			ethnicity_e = false,
+			insurabilities_e = EncryptableFieldConfig.None(InsurabilityEncryptorFactory),
+			partnerships_e = EncryptableFieldConfig.None(PartnershipEncryptorFactory),
+			patientHealthCareParties_e = EncryptableFieldConfig.None(PatientHealthCarePartyEncryptorFactory),
+			financialInstitutionInformation_e = EncryptableFieldConfig.None(FinancialInstitutionInformationEncryptorFactory),
+			medicalHouseContracts_e = EncryptableFieldConfig.None(MedicalHouseContractEncryptorFactory),
+			patientProfessions_e = false,
+			parameters_e = false,
+			properties_e = EncryptableFieldConfig.None(PropertyStubEncryptorFactory),
 		)
 
 	override fun create(
@@ -94,19 +96,19 @@ internal object PatientEncryptorFactory : EntityEncryptorFactory<EncryptedPatien
 	): EntityEncryptor<EncryptedPatient, DecryptedPatient> {
 		val manifest = encryptorFactoryContext.getManifest(entityManifestName)
 		return PatientEncryptor(
-			identifier = "identifier" in manifest.fieldsToEncrypt,
-			created = "created" in manifest.fieldsToEncrypt,
-			modified = "modified" in manifest.fieldsToEncrypt,
-			author = "author" in manifest.fieldsToEncrypt,
-			responsible = "responsible" in manifest.fieldsToEncrypt,
-			tags = "tags" in manifest.fieldsToEncrypt,
-			codes = "codes" in manifest.fieldsToEncrypt,
-			firstName = "firstName" in manifest.fieldsToEncrypt,
-			lastName = "lastName" in manifest.fieldsToEncrypt,
-			names = "names" in manifest.fieldsToEncrypt,
-			companyName = "companyName" in manifest.fieldsToEncrypt,
-			languages = "languages" in manifest.fieldsToEncrypt,
-			addresses =
+			identifier_e = "identifier" in manifest.fieldsToEncrypt,
+			created_e = "created" in manifest.fieldsToEncrypt,
+			modified_e = "modified" in manifest.fieldsToEncrypt,
+			author_e = "author" in manifest.fieldsToEncrypt,
+			responsible_e = "responsible" in manifest.fieldsToEncrypt,
+			tags_e = "tags" in manifest.fieldsToEncrypt,
+			codes_e = "codes" in manifest.fieldsToEncrypt,
+			firstName_e = "firstName" in manifest.fieldsToEncrypt,
+			lastName_e = "lastName" in manifest.fieldsToEncrypt,
+			names_e = "names" in manifest.fieldsToEncrypt,
+			companyName_e = "companyName" in manifest.fieldsToEncrypt,
+			languages_e = "languages" in manifest.fieldsToEncrypt,
+			addresses_e =
 				if ("addresses" in manifest.fieldsToEncrypt) {
 					EncryptableFieldConfig.Full()
 				} else {
@@ -120,27 +122,27 @@ internal object PatientEncryptorFactory : EntityEncryptorFactory<EncryptedPatien
 						)
 					} ?: EncryptableFieldConfig.None(AddressEncryptorFactory)
 				},
-			civility = "civility" in manifest.fieldsToEncrypt,
-			gender = "gender" in manifest.fieldsToEncrypt,
-			birthSex = "birthSex" in manifest.fieldsToEncrypt,
-			alias = "alias" in manifest.fieldsToEncrypt,
-			active = "active" in manifest.fieldsToEncrypt,
-			deactivationReason = "deactivationReason" in manifest.fieldsToEncrypt,
-			deactivationDate = "deactivationDate" in manifest.fieldsToEncrypt,
-			ssin = "ssin" in manifest.fieldsToEncrypt,
-			maidenName = "maidenName" in manifest.fieldsToEncrypt,
-			spouseName = "spouseName" in manifest.fieldsToEncrypt,
-			partnerName = "partnerName" in manifest.fieldsToEncrypt,
-			personalStatus = "personalStatus" in manifest.fieldsToEncrypt,
-			dateOfBirth = "dateOfBirth" in manifest.fieldsToEncrypt,
-			dateOfDeath = "dateOfDeath" in manifest.fieldsToEncrypt,
-			timestampOfLatestEidReading = "timestampOfLatestEidReading" in manifest.fieldsToEncrypt,
-			placeOfBirth = "placeOfBirth" in manifest.fieldsToEncrypt,
-			placeOfDeath = "placeOfDeath" in manifest.fieldsToEncrypt,
-			deceased = "deceased" in manifest.fieldsToEncrypt,
-			education = "education" in manifest.fieldsToEncrypt,
-			profession = "profession" in manifest.fieldsToEncrypt,
-			notes =
+			civility_e = "civility" in manifest.fieldsToEncrypt,
+			gender_e = "gender" in manifest.fieldsToEncrypt,
+			birthSex_e = "birthSex" in manifest.fieldsToEncrypt,
+			alias_e = "alias" in manifest.fieldsToEncrypt,
+			active_e = "active" in manifest.fieldsToEncrypt,
+			deactivationReason_e = "deactivationReason" in manifest.fieldsToEncrypt,
+			deactivationDate_e = "deactivationDate" in manifest.fieldsToEncrypt,
+			ssin_e = "ssin" in manifest.fieldsToEncrypt,
+			maidenName_e = "maidenName" in manifest.fieldsToEncrypt,
+			spouseName_e = "spouseName" in manifest.fieldsToEncrypt,
+			partnerName_e = "partnerName" in manifest.fieldsToEncrypt,
+			personalStatus_e = "personalStatus" in manifest.fieldsToEncrypt,
+			dateOfBirth_e = "dateOfBirth" in manifest.fieldsToEncrypt,
+			dateOfDeath_e = "dateOfDeath" in manifest.fieldsToEncrypt,
+			timestampOfLatestEidReading_e = "timestampOfLatestEidReading" in manifest.fieldsToEncrypt,
+			placeOfBirth_e = "placeOfBirth" in manifest.fieldsToEncrypt,
+			placeOfDeath_e = "placeOfDeath" in manifest.fieldsToEncrypt,
+			deceased_e = "deceased" in manifest.fieldsToEncrypt,
+			education_e = "education" in manifest.fieldsToEncrypt,
+			profession_e = "profession" in manifest.fieldsToEncrypt,
+			notes_e =
 				if ("notes" in manifest.fieldsToEncrypt) {
 					EncryptableFieldConfig.Full()
 				} else {
@@ -154,12 +156,12 @@ internal object PatientEncryptorFactory : EntityEncryptorFactory<EncryptedPatien
 						)
 					} ?: EncryptableFieldConfig.None(AnnotationEncryptorFactory)
 				},
-			note = "note" in manifest.fieldsToEncrypt,
-			administrativeNote = "administrativeNote" in manifest.fieldsToEncrypt,
-			nationality = "nationality" in manifest.fieldsToEncrypt,
-			race = "race" in manifest.fieldsToEncrypt,
-			ethnicity = "ethnicity" in manifest.fieldsToEncrypt,
-			insurabilities =
+			note_e = "note" in manifest.fieldsToEncrypt,
+			administrativeNote_e = "administrativeNote" in manifest.fieldsToEncrypt,
+			nationality_e = "nationality" in manifest.fieldsToEncrypt,
+			race_e = "race" in manifest.fieldsToEncrypt,
+			ethnicity_e = "ethnicity" in manifest.fieldsToEncrypt,
+			insurabilities_e =
 				if ("insurabilities" in manifest.fieldsToEncrypt) {
 					EncryptableFieldConfig.Full()
 				} else {
@@ -173,7 +175,7 @@ internal object PatientEncryptorFactory : EntityEncryptorFactory<EncryptedPatien
 						)
 					} ?: EncryptableFieldConfig.None(InsurabilityEncryptorFactory)
 				},
-			partnerships =
+			partnerships_e =
 				if ("partnerships" in manifest.fieldsToEncrypt) {
 					EncryptableFieldConfig.Full()
 				} else {
@@ -187,7 +189,7 @@ internal object PatientEncryptorFactory : EntityEncryptorFactory<EncryptedPatien
 						)
 					} ?: EncryptableFieldConfig.None(PartnershipEncryptorFactory)
 				},
-			patientHealthCareParties =
+			patientHealthCareParties_e =
 				if ("patientHealthCareParties" in manifest.fieldsToEncrypt) {
 					EncryptableFieldConfig.Full()
 				} else {
@@ -201,7 +203,7 @@ internal object PatientEncryptorFactory : EntityEncryptorFactory<EncryptedPatien
 						)
 					} ?: EncryptableFieldConfig.None(PatientHealthCarePartyEncryptorFactory)
 				},
-			financialInstitutionInformation =
+			financialInstitutionInformation_e =
 				if ("financialInstitutionInformation" in manifest.fieldsToEncrypt) {
 					EncryptableFieldConfig.Full()
 				} else {
@@ -215,7 +217,7 @@ internal object PatientEncryptorFactory : EntityEncryptorFactory<EncryptedPatien
 						)
 					} ?: EncryptableFieldConfig.None(FinancialInstitutionInformationEncryptorFactory)
 				},
-			medicalHouseContracts =
+			medicalHouseContracts_e =
 				if ("medicalHouseContracts" in manifest.fieldsToEncrypt) {
 					EncryptableFieldConfig.Full()
 				} else {
@@ -229,9 +231,9 @@ internal object PatientEncryptorFactory : EntityEncryptorFactory<EncryptedPatien
 						)
 					} ?: EncryptableFieldConfig.None(MedicalHouseContractEncryptorFactory)
 				},
-			patientProfessions = "patientProfessions" in manifest.fieldsToEncrypt,
-			parameters = "parameters" in manifest.fieldsToEncrypt,
-			properties =
+			patientProfessions_e = "patientProfessions" in manifest.fieldsToEncrypt,
+			parameters_e = "parameters" in manifest.fieldsToEncrypt,
+			properties_e =
 				if ("properties" in manifest.fieldsToEncrypt) {
 					EncryptableFieldConfig.Full()
 				} else {
@@ -249,55 +251,56 @@ internal object PatientEncryptorFactory : EntityEncryptorFactory<EncryptedPatien
 	}
 }
 
+@InternalIcureApi
 private class PatientEncryptor(
-	private val identifier: Boolean,
-	private val created: Boolean,
-	private val modified: Boolean,
-	private val author: Boolean,
-	private val responsible: Boolean,
-	private val tags: Boolean,
-	private val codes: Boolean,
-	private val firstName: Boolean,
-	private val lastName: Boolean,
-	private val names: Boolean,
-	private val companyName: Boolean,
-	private val languages: Boolean,
-	private val addresses: EncryptableFieldConfig<EncryptedAddress, DecryptedAddress>,
-	private val civility: Boolean,
-	private val gender: Boolean,
-	private val birthSex: Boolean,
-	private val alias: Boolean,
-	private val active: Boolean,
-	private val deactivationReason: Boolean,
-	private val deactivationDate: Boolean,
-	private val ssin: Boolean,
-	private val maidenName: Boolean,
-	private val spouseName: Boolean,
-	private val partnerName: Boolean,
-	private val personalStatus: Boolean,
-	private val dateOfBirth: Boolean,
-	private val dateOfDeath: Boolean,
-	private val timestampOfLatestEidReading: Boolean,
-	private val placeOfBirth: Boolean,
-	private val placeOfDeath: Boolean,
-	private val deceased: Boolean,
-	private val education: Boolean,
-	private val profession: Boolean,
-	private val notes: EncryptableFieldConfig<EncryptedAnnotation, DecryptedAnnotation>,
-	private val note: Boolean,
-	private val administrativeNote: Boolean,
-	private val nationality: Boolean,
-	private val race: Boolean,
-	private val ethnicity: Boolean,
-	private val insurabilities: EncryptableFieldConfig<EncryptedInsurability, DecryptedInsurability>,
-	private val partnerships: EncryptableFieldConfig<EncryptedPartnership, DecryptedPartnership>,
-	private val patientHealthCareParties: EncryptableFieldConfig<EncryptedPatientHealthCareParty, DecryptedPatientHealthCareParty>,
-	private val financialInstitutionInformation:
+	private val identifier_e: Boolean,
+	private val created_e: Boolean,
+	private val modified_e: Boolean,
+	private val author_e: Boolean,
+	private val responsible_e: Boolean,
+	private val tags_e: Boolean,
+	private val codes_e: Boolean,
+	private val firstName_e: Boolean,
+	private val lastName_e: Boolean,
+	private val names_e: Boolean,
+	private val companyName_e: Boolean,
+	private val languages_e: Boolean,
+	private val addresses_e: EncryptableFieldConfig<EncryptedAddress, DecryptedAddress>,
+	private val civility_e: Boolean,
+	private val gender_e: Boolean,
+	private val birthSex_e: Boolean,
+	private val alias_e: Boolean,
+	private val active_e: Boolean,
+	private val deactivationReason_e: Boolean,
+	private val deactivationDate_e: Boolean,
+	private val ssin_e: Boolean,
+	private val maidenName_e: Boolean,
+	private val spouseName_e: Boolean,
+	private val partnerName_e: Boolean,
+	private val personalStatus_e: Boolean,
+	private val dateOfBirth_e: Boolean,
+	private val dateOfDeath_e: Boolean,
+	private val timestampOfLatestEidReading_e: Boolean,
+	private val placeOfBirth_e: Boolean,
+	private val placeOfDeath_e: Boolean,
+	private val deceased_e: Boolean,
+	private val education_e: Boolean,
+	private val profession_e: Boolean,
+	private val notes_e: EncryptableFieldConfig<EncryptedAnnotation, DecryptedAnnotation>,
+	private val note_e: Boolean,
+	private val administrativeNote_e: Boolean,
+	private val nationality_e: Boolean,
+	private val race_e: Boolean,
+	private val ethnicity_e: Boolean,
+	private val insurabilities_e: EncryptableFieldConfig<EncryptedInsurability, DecryptedInsurability>,
+	private val partnerships_e: EncryptableFieldConfig<EncryptedPartnership, DecryptedPartnership>,
+	private val patientHealthCareParties_e: EncryptableFieldConfig<EncryptedPatientHealthCareParty, DecryptedPatientHealthCareParty>,
+	private val financialInstitutionInformation_e:
 		EncryptableFieldConfig<EncryptedFinancialInstitutionInformation, DecryptedFinancialInstitutionInformation>,
-	private val medicalHouseContracts: EncryptableFieldConfig<EncryptedMedicalHouseContract, DecryptedMedicalHouseContract>,
-	private val patientProfessions: Boolean,
-	private val parameters: Boolean,
-	private val properties: EncryptableFieldConfig<EncryptedPropertyStub, DecryptedPropertyStub>,
+	private val medicalHouseContracts_e: EncryptableFieldConfig<EncryptedMedicalHouseContract, DecryptedMedicalHouseContract>,
+	private val patientProfessions_e: Boolean,
+	private val parameters_e: Boolean,
+	private val properties_e: EncryptableFieldConfig<EncryptedPropertyStub, DecryptedPropertyStub>,
 ) : AbstractEntityEncryptor<EncryptedPatient, DecryptedPatient>() {
 	override suspend fun encrypt(
 		encryptionKey: AesKey<AesAlgorithm.CbcWithPkcs7Padding>,
@@ -306,91 +309,196 @@ private class PatientEncryptor(
 		cryptoService: CryptoService,
 	): EncryptedPatient {
 		val dataToEncrypt = mutableMapOf<String, JsonElement>()
-		if (identifier) dataToEncrypt["identifier"] = encodingJson.encodeToJsonElement(clearEntity.identifier)
-		if (created) dataToEncrypt["created"] = encodingJson.encodeToJsonElement(clearEntity.created)
-		if (modified) dataToEncrypt["modified"] = encodingJson.encodeToJsonElement(clearEntity.modified)
-		if (author) dataToEncrypt["author"] = encodingJson.encodeToJsonElement(clearEntity.author)
-		if (responsible) dataToEncrypt["responsible"] = encodingJson.encodeToJsonElement(clearEntity.responsible)
-		if (tags) dataToEncrypt["tags"] = encodingJson.encodeToJsonElement(clearEntity.tags)
-		if (codes) dataToEncrypt["codes"] = encodingJson.encodeToJsonElement(clearEntity.codes)
-		if (firstName) dataToEncrypt["firstName"] = encodingJson.encodeToJsonElement(clearEntity.firstName)
-		if (lastName) dataToEncrypt["lastName"] = encodingJson.encodeToJsonElement(clearEntity.lastName)
-		if (names) dataToEncrypt["names"] = encodingJson.encodeToJsonElement(clearEntity.names)
-		if (companyName) dataToEncrypt["companyName"] = encodingJson.encodeToJsonElement(clearEntity.companyName)
-		if (languages) dataToEncrypt["languages"] = encodingJson.encodeToJsonElement(clearEntity.languages)
-		if (addresses.fullEncryption) dataToEncrypt["addresses"] = encodingJson.encodeToJsonElement(clearEntity.addresses)
-		if (civility) dataToEncrypt["civility"] = encodingJson.encodeToJsonElement(clearEntity.civility)
-		if (gender) dataToEncrypt["gender"] = encodingJson.encodeToJsonElement(clearEntity.gender)
-		if (birthSex) dataToEncrypt["birthSex"] = encodingJson.encodeToJsonElement(clearEntity.birthSex)
-		if (alias) dataToEncrypt["alias"] = encodingJson.encodeToJsonElement(clearEntity.alias)
-		if (active) dataToEncrypt["active"] = encodingJson.encodeToJsonElement(clearEntity.active)
-		if (deactivationReason) dataToEncrypt["deactivationReason"] = encodingJson.encodeToJsonElement(clearEntity.deactivationReason)
-		if (deactivationDate) dataToEncrypt["deactivationDate"] = encodingJson.encodeToJsonElement(clearEntity.deactivationDate)
-		if (ssin) dataToEncrypt["ssin"] = encodingJson.encodeToJsonElement(clearEntity.ssin)
-		if (maidenName) dataToEncrypt["maidenName"] = encodingJson.encodeToJsonElement(clearEntity.maidenName)
-		if (spouseName) dataToEncrypt["spouseName"] = encodingJson.encodeToJsonElement(clearEntity.spouseName)
-		if (partnerName) dataToEncrypt["partnerName"] = encodingJson.encodeToJsonElement(clearEntity.partnerName)
-		if (personalStatus) dataToEncrypt["personalStatus"] = encodingJson.encodeToJsonElement(clearEntity.personalStatus)
-		if (dateOfBirth) dataToEncrypt["dateOfBirth"] = encodingJson.encodeToJsonElement(clearEntity.dateOfBirth)
-		if (dateOfDeath) dataToEncrypt["dateOfDeath"] = encodingJson.encodeToJsonElement(clearEntity.dateOfDeath)
-		if (timestampOfLatestEidReading) {
+		if (identifier_e && clearEntity.identifier.isNotEmpty()) {
+			dataToEncrypt["identifier"] =
+				encodingJson.encodeToJsonElement(
+					clearEntity.identifier,
+				)
+		}
+		if (created_e && clearEntity.created != null) dataToEncrypt["created"] = encodingJson.encodeToJsonElement(clearEntity.created)
+		if (modified_e && clearEntity.modified != null) dataToEncrypt["modified"] = encodingJson.encodeToJsonElement(clearEntity.modified)
+		if (author_e && clearEntity.author != null) dataToEncrypt["author"] = encodingJson.encodeToJsonElement(clearEntity.author)
+		if (responsible_e && clearEntity.responsible != null) {
+			dataToEncrypt["responsible"] =
+				encodingJson.encodeToJsonElement(
+					clearEntity.responsible,
+				)
+		}
+		if (tags_e && clearEntity.tags.isNotEmpty()) dataToEncrypt["tags"] = encodingJson.encodeToJsonElement(clearEntity.tags)
+		if (codes_e && clearEntity.codes.isNotEmpty()) dataToEncrypt["codes"] = encodingJson.encodeToJsonElement(clearEntity.codes)
+		if (firstName_e && clearEntity.firstName != null) dataToEncrypt["firstName"] = encodingJson.encodeToJsonElement(clearEntity.firstName)
+		if (lastName_e && clearEntity.lastName != null) dataToEncrypt["lastName"] = encodingJson.encodeToJsonElement(clearEntity.lastName)
+		if (names_e && clearEntity.names.isNotEmpty()) dataToEncrypt["names"] = encodingJson.encodeToJsonElement(clearEntity.names)
+		if (companyName_e && clearEntity.companyName != null) {
+			dataToEncrypt["companyName"] =
+				encodingJson.encodeToJsonElement(
+					clearEntity.companyName,
+				)
+		}
+		if (languages_e && clearEntity.languages.isNotEmpty()) {
+			dataToEncrypt["languages"] =
+				encodingJson.encodeToJsonElement(
+					clearEntity.languages,
+				)
+		}
+		if (addresses_e.fullEncryption && clearEntity.addresses.isNotEmpty()) {
+			dataToEncrypt["addresses"] =
+				encodingJson.encodeToJsonElement(
+					clearEntity.addresses,
+				)
+		}
+		if (civility_e && clearEntity.civility != null) dataToEncrypt["civility"] = encodingJson.encodeToJsonElement(clearEntity.civility)
+		if (gender_e && clearEntity.gender != Gender.Unknown) dataToEncrypt["gender"] = encodingJson.encodeToJsonElement(clearEntity.gender)
+		if (birthSex_e && clearEntity.birthSex != Gender.Unknown) {
+			dataToEncrypt["birthSex"] =
+				encodingJson.encodeToJsonElement(
+					clearEntity.birthSex,
+				)
+		}
+		if (alias_e && clearEntity.alias != null) dataToEncrypt["alias"] = encodingJson.encodeToJsonElement(clearEntity.alias)
+		if (active_e && clearEntity.active != true) dataToEncrypt["active"] = encodingJson.encodeToJsonElement(clearEntity.active)
+		if (deactivationReason_e && clearEntity.deactivationReason != "none") {
+			dataToEncrypt["deactivationReason"] =
+				encodingJson.encodeToJsonElement(
+					clearEntity.deactivationReason,
+				)
+		}
+		if (deactivationDate_e && clearEntity.deactivationDate != null) {
+			dataToEncrypt["deactivationDate"] =
+				encodingJson.encodeToJsonElement(
+					clearEntity.deactivationDate,
+				)
+		}
+		if (ssin_e && clearEntity.ssin != null) dataToEncrypt["ssin"] = encodingJson.encodeToJsonElement(clearEntity.ssin)
+		if (maidenName_e && clearEntity.maidenName != null) dataToEncrypt["maidenName"] = encodingJson.encodeToJsonElement(clearEntity.maidenName)
+		if (spouseName_e && clearEntity.spouseName != null) dataToEncrypt["spouseName"] = encodingJson.encodeToJsonElement(clearEntity.spouseName)
+		if (partnerName_e && clearEntity.partnerName != null) {
+			dataToEncrypt["partnerName"] =
+				encodingJson.encodeToJsonElement(
+					clearEntity.partnerName,
+				)
+		}
+		if (personalStatus_e && clearEntity.personalStatus != PersonalStatus.Unknown) {
+			dataToEncrypt["personalStatus"] =
+				encodingJson.encodeToJsonElement(
+					clearEntity.personalStatus,
+				)
+		}
+		if (dateOfBirth_e && clearEntity.dateOfBirth != null) {
+			dataToEncrypt["dateOfBirth"] =
+				encodingJson.encodeToJsonElement(
+					clearEntity.dateOfBirth,
+				)
+		}
+		if (dateOfDeath_e && clearEntity.dateOfDeath != null) {
+			dataToEncrypt["dateOfDeath"] =
+				encodingJson.encodeToJsonElement(
+					clearEntity.dateOfDeath,
+				)
+		}
+		if (timestampOfLatestEidReading_e && clearEntity.timestampOfLatestEidReading != null) {
 			dataToEncrypt["timestampOfLatestEidReading"] =
 				encodingJson.encodeToJsonElement(
 					clearEntity.timestampOfLatestEidReading,
 				)
 		}
-		if (placeOfBirth) dataToEncrypt["placeOfBirth"] = encodingJson.encodeToJsonElement(clearEntity.placeOfBirth)
-		if (placeOfDeath) dataToEncrypt["placeOfDeath"] = encodingJson.encodeToJsonElement(clearEntity.placeOfDeath)
-		if (deceased) dataToEncrypt["deceased"] = encodingJson.encodeToJsonElement(clearEntity.deceased)
-		if (education) dataToEncrypt["education"] = encodingJson.encodeToJsonElement(clearEntity.education)
-		if (profession) dataToEncrypt["profession"] = encodingJson.encodeToJsonElement(clearEntity.profession)
-		if (notes.fullEncryption) dataToEncrypt["notes"] = encodingJson.encodeToJsonElement(clearEntity.notes)
-		if (note) dataToEncrypt["note"] = encodingJson.encodeToJsonElement(clearEntity.note)
-		if (administrativeNote) dataToEncrypt["administrativeNote"] = encodingJson.encodeToJsonElement(clearEntity.administrativeNote)
-		if (nationality) dataToEncrypt["nationality"] = encodingJson.encodeToJsonElement(clearEntity.nationality)
-		if (race) dataToEncrypt["race"] = encodingJson.encodeToJsonElement(clearEntity.race)
-		if (ethnicity) dataToEncrypt["ethnicity"] = encodingJson.encodeToJsonElement(clearEntity.ethnicity)
-		if (insurabilities.fullEncryption) dataToEncrypt["insurabilities"] = encodingJson.encodeToJsonElement(clearEntity.insurabilities)
-		if (partnerships.fullEncryption) dataToEncrypt["partnerships"] = encodingJson.encodeToJsonElement(clearEntity.partnerships)
-		if (patientHealthCareParties.fullEncryption) {
+		if (placeOfBirth_e && clearEntity.placeOfBirth != null) {
+			dataToEncrypt["placeOfBirth"] =
+				encodingJson.encodeToJsonElement(
+					clearEntity.placeOfBirth,
+				)
+		}
+		if (placeOfDeath_e && clearEntity.placeOfDeath != null) {
+			dataToEncrypt["placeOfDeath"] =
+				encodingJson.encodeToJsonElement(
+					clearEntity.placeOfDeath,
+				)
+		}
+		if (deceased_e && clearEntity.deceased != null) dataToEncrypt["deceased"] = encodingJson.encodeToJsonElement(clearEntity.deceased)
+		if (education_e && clearEntity.education != null) dataToEncrypt["education"] = encodingJson.encodeToJsonElement(clearEntity.education)
+		if (profession_e && clearEntity.profession != null) dataToEncrypt["profession"] = encodingJson.encodeToJsonElement(clearEntity.profession)
+		if (notes_e.fullEncryption && clearEntity.notes.isNotEmpty()) dataToEncrypt["notes"] = encodingJson.encodeToJsonElement(clearEntity.notes)
+		if (note_e && clearEntity.note != null) dataToEncrypt["note"] = encodingJson.encodeToJsonElement(clearEntity.note)
+		if (administrativeNote_e && clearEntity.administrativeNote != null) {
+			dataToEncrypt["administrativeNote"] =
+				encodingJson.encodeToJsonElement(
+					clearEntity.administrativeNote,
+				)
+		}
+		if (nationality_e && clearEntity.nationality != null) {
+			dataToEncrypt["nationality"] =
+				encodingJson.encodeToJsonElement(
+					clearEntity.nationality,
+				)
+		}
+		if (race_e && clearEntity.race != null) dataToEncrypt["race"] = encodingJson.encodeToJsonElement(clearEntity.race)
+		if (ethnicity_e && clearEntity.ethnicity != null) dataToEncrypt["ethnicity"] = encodingJson.encodeToJsonElement(clearEntity.ethnicity)
+		if (insurabilities_e.fullEncryption && clearEntity.insurabilities.isNotEmpty()) {
+			dataToEncrypt["insurabilities"] =
+				encodingJson.encodeToJsonElement(
+					clearEntity.insurabilities,
+				)
+		}
+		if (partnerships_e.fullEncryption && clearEntity.partnerships.isNotEmpty()) {
+			dataToEncrypt["partnerships"] =
+				encodingJson.encodeToJsonElement(
+					clearEntity.partnerships,
+				)
+		}
+		if (patientHealthCareParties_e.fullEncryption && clearEntity.patientHealthCareParties.isNotEmpty()) {
 			dataToEncrypt["patientHealthCareParties"] =
 				encodingJson.encodeToJsonElement(
 					clearEntity.patientHealthCareParties,
 				)
 		}
-		if (financialInstitutionInformation.fullEncryption) {
+		if (financialInstitutionInformation_e.fullEncryption && clearEntity.financialInstitutionInformation.isNotEmpty()) {
 			dataToEncrypt["financialInstitutionInformation"] =
 				encodingJson.encodeToJsonElement(
 					clearEntity.financialInstitutionInformation,
 				)
 		}
-		if (medicalHouseContracts.fullEncryption) {
+		if (medicalHouseContracts_e.fullEncryption && clearEntity.medicalHouseContracts.isNotEmpty()) {
 			dataToEncrypt["medicalHouseContracts"] =
 				encodingJson.encodeToJsonElement(
 					clearEntity.medicalHouseContracts,
 				)
 		}
-		if (patientProfessions) dataToEncrypt["patientProfessions"] = encodingJson.encodeToJsonElement(clearEntity.patientProfessions)
-		if (parameters) dataToEncrypt["parameters"] = encodingJson.encodeToJsonElement(clearEntity.parameters)
-		if (properties.fullEncryption) dataToEncrypt["properties"] = encodingJson.encodeToJsonElement(clearEntity.properties)
+		if (patientProfessions_e && clearEntity.patientProfessions.isNotEmpty()) {
+			dataToEncrypt["patientProfessions"] =
+				encodingJson.encodeToJsonElement(
+					clearEntity.patientProfessions,
+				)
+		}
+		if (parameters_e && clearEntity.parameters.isNotEmpty()) {
+			dataToEncrypt["parameters"] =
+				encodingJson.encodeToJsonElement(
+					clearEntity.parameters,
+				)
+		}
+		if (properties_e.fullEncryption && clearEntity.properties.isNotEmpty()) {
+			dataToEncrypt["properties"] =
+				encodingJson.encodeToJsonElement(
+					clearEntity.properties,
+				)
+		}
 		return EncryptedPatient(
 			id = clearEntity.id,
-			identifier = if (identifier) emptyList() else clearEntity.identifier,
+			identifier = if (identifier_e) emptyList() else clearEntity.identifier,
 			rev = clearEntity.rev,
-			created = if (created) null else clearEntity.created,
-			modified = if (modified) null else clearEntity.modified,
-			author = if (author) null else clearEntity.author,
-			responsible = if (responsible) null else clearEntity.responsible,
-			tags = if (tags) emptySet() else clearEntity.tags,
-			codes = if (codes) emptySet() else clearEntity.codes,
+			created = if (created_e) null else clearEntity.created,
+			modified = if (modified_e) null else clearEntity.modified,
+			author = if (author_e) null else clearEntity.author,
+			responsible = if (responsible_e) null else clearEntity.responsible,
+			tags = if (tags_e) emptySet() else clearEntity.tags,
+			codes = if (codes_e) emptySet() else clearEntity.codes,
 			deletionDate = clearEntity.deletionDate,
-			firstName = if (firstName) null else clearEntity.firstName,
-			lastName = if (lastName) null else clearEntity.lastName,
-			names = if (names) emptyList() else clearEntity.names,
-			companyName = if (companyName) null else clearEntity.companyName,
-			languages = if (languages) emptyList() else clearEntity.languages,
+			firstName = if (firstName_e) null else clearEntity.firstName,
+			lastName = if (lastName_e) null else clearEntity.lastName,
+			names = if (names_e) emptyList() else clearEntity.names,
+			companyName = if (companyName_e) null else clearEntity.companyName,
+			languages = if (languages_e) emptyList() else clearEntity.languages,
 			addresses =
-				addresses.encryptor.let { encryptor ->
+				addresses_e.encryptor.let { encryptor ->
 					if (encryptor == null) {
 						emptyList()
 					} else {
@@ -399,30 +507,30 @@ private class PatientEncryptor(
 						}
 					}
 				},
-			civility = if (civility) null else clearEntity.civility,
-			gender = if (gender) Gender.Unknown else clearEntity.gender,
-			birthSex = if (birthSex) Gender.Unknown else clearEntity.birthSex,
+			civility = if (civility_e) null else clearEntity.civility,
+			gender = if (gender_e) Gender.Unknown else clearEntity.gender,
+			birthSex = if (birthSex_e) Gender.Unknown else clearEntity.birthSex,
 			mergeToPatientId = clearEntity.mergeToPatientId,
 			mergedIds = clearEntity.mergedIds,
-			alias = if (alias) null else clearEntity.alias,
-			active = if (active) true else clearEntity.active,
-			deactivationReason = if (deactivationReason) "none" else clearEntity.deactivationReason,
-			deactivationDate = if (deactivationDate) null else clearEntity.deactivationDate,
-			ssin = if (ssin) null else clearEntity.ssin,
-			maidenName = if (maidenName) null else clearEntity.maidenName,
-			spouseName = if (spouseName) null else clearEntity.spouseName,
-			partnerName = if (partnerName) null else clearEntity.partnerName,
-			personalStatus = if (personalStatus) PersonalStatus.Unknown else clearEntity.personalStatus,
-			dateOfBirth = if (dateOfBirth) null else clearEntity.dateOfBirth,
-			dateOfDeath = if (dateOfDeath) null else clearEntity.dateOfDeath,
-			timestampOfLatestEidReading = if (timestampOfLatestEidReading) null else clearEntity.timestampOfLatestEidReading,
-			placeOfBirth = if (placeOfBirth) null else clearEntity.placeOfBirth,
-			placeOfDeath = if (placeOfDeath) null else clearEntity.placeOfDeath,
-			deceased = if (deceased) null else clearEntity.deceased,
-			education = if (education) null else clearEntity.education,
-			profession = if (profession) null else clearEntity.profession,
+			alias = if (alias_e) null else clearEntity.alias,
+			active = if (active_e) true else clearEntity.active,
+			deactivationReason = if (deactivationReason_e) "none" else clearEntity.deactivationReason,
+			deactivationDate = if (deactivationDate_e) null else clearEntity.deactivationDate,
+			ssin = if (ssin_e) null else clearEntity.ssin,
+			maidenName = if (maidenName_e) null else clearEntity.maidenName,
+			spouseName = if (spouseName_e) null else clearEntity.spouseName,
+			partnerName = if (partnerName_e) null else clearEntity.partnerName,
+			personalStatus = if (personalStatus_e) PersonalStatus.Unknown else clearEntity.personalStatus,
+			dateOfBirth = if (dateOfBirth_e) null else clearEntity.dateOfBirth,
+			dateOfDeath = if (dateOfDeath_e) null else clearEntity.dateOfDeath,
+			timestampOfLatestEidReading = if (timestampOfLatestEidReading_e) null else clearEntity.timestampOfLatestEidReading,
+			placeOfBirth = if (placeOfBirth_e) null else clearEntity.placeOfBirth,
+			placeOfDeath = if (placeOfDeath_e) null else clearEntity.placeOfDeath,
+			deceased = if (deceased_e) null else clearEntity.deceased,
+			education = if (education_e) null else clearEntity.education,
+			profession = if (profession_e) null else clearEntity.profession,
 			notes =
-				notes.encryptor.let { encryptor ->
+				notes_e.encryptor.let { encryptor ->
 					if (encryptor == null) {
 						emptyList()
 					} else {
@@ -431,13 +539,13 @@ private class PatientEncryptor(
 						}
 					}
 				},
-			note = if (note) null else clearEntity.note,
-			administrativeNote = if (administrativeNote) null else clearEntity.administrativeNote,
-			nationality = if (nationality) null else clearEntity.nationality,
-			race = if (race) null else clearEntity.race,
-			ethnicity = if (ethnicity) null else clearEntity.ethnicity,
+			note = if (note_e) null else clearEntity.note,
+			administrativeNote = if (administrativeNote_e) null else clearEntity.administrativeNote,
+			nationality = if (nationality_e) null else clearEntity.nationality,
+			race = if (race_e) null else clearEntity.race,
+			ethnicity = if (ethnicity_e) null else clearEntity.ethnicity,
 			insurabilities =
-				insurabilities.encryptor.let { encryptor ->
+				insurabilities_e.encryptor.let { encryptor ->
 					if (encryptor == null) {
 						emptyList()
 					} else {
@@ -447,7 +555,7 @@ private class PatientEncryptor(
 					}
 				},
 			partnerships =
-				partnerships.encryptor.let { encryptor ->
+				partnerships_e.encryptor.let { encryptor ->
 					if (encryptor == null) {
 						emptyList()
 					} else {
@@ -457,7 +565,7 @@ private class PatientEncryptor(
 					}
 				},
 			patientHealthCareParties =
-				patientHealthCareParties.encryptor.let { encryptor ->
+				patientHealthCareParties_e.encryptor.let { encryptor ->
 					if (encryptor == null) {
 						emptyList()
 					} else {
@@ -467,7 +575,7 @@ private class PatientEncryptor(
 					}
 				},
 			financialInstitutionInformation =
-				financialInstitutionInformation.encryptor.let { encryptor ->
+				financialInstitutionInformation_e.encryptor.let { encryptor ->
 					if (encryptor == null) {
 						emptyList()
 					} else {
@@ -477,7 +585,7 @@ private class PatientEncryptor(
 					}
 				},
 			medicalHouseContracts =
-				medicalHouseContracts.encryptor.let { encryptor ->
+				medicalHouseContracts_e.encryptor.let { encryptor ->
 					if (encryptor == null) {
 						emptyList()
 					} else {
@@ -486,10 +594,10 @@ private class PatientEncryptor(
 						}
 					}
 				},
-			patientProfessions = if (patientProfessions) emptyList() else clearEntity.patientProfessions,
-			parameters = if (parameters) emptyMap() else clearEntity.parameters,
+			patientProfessions = if (patientProfessions_e) emptyList() else clearEntity.patientProfessions,
+			parameters = if (parameters_e) emptyMap() else clearEntity.parameters,
 			properties =
-				properties.encryptor.let { encryptor ->
+				properties_e.encryptor.let { encryptor ->
 					if (encryptor == null) {
 						emptySet()
 					} else {

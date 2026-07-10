@@ -46,10 +46,10 @@ interface SerializationOptions {
 	 * If true, on deserialization of data coming from the backend or from the decrypted content of an entity any
 	 * field that is not present in the data model will be ignored.
 	 *
-	 * Note that updating an entity where some fields were ignored during deserialization will result in data loss.
-	 *
-	 * If the ignored keys are coming from the encrypted content of an entity you can provide a [SdkOptions.jsonPatcher]
-	 * to specify how the unknown fields should be migrated.
+	 * Note that updating an entity where some fields were ignored during deserialization will potentially result in
+	 * data loss. This should not happen unless you depend on data that was created using the legacy iCure
+	 * typescript SDK (pre-cardinal). Future versions of Cardinal SDK will allow providing a custom "patcher" for the
+	 * decrypted entity json which can migrate the decrypted data without ignoring the encrypted fields.
 	 *
 	 * If a custom [HttpSdkOptions.httpClientJson] is provided, this option must be unconfigured (null) or match the
 	 * ignoreUnknownKeys configuration of that.
@@ -61,9 +61,10 @@ interface SerializationOptions {
 
 interface CommonSdkOptions : HttpSdkOptions, SerializationOptions {
 	/**
-	 * Configure which fields of entities should be encrypted
+	 * Specifies which fields should be encrypted for each entity, root or embedded.
+	 * Normally this parameter should be automatically filled by the generated customized SDK.
 	 */
-	val encryptedFields: EncryptedFieldsConfiguration
+	val encryptedFieldsOptions: EncryptedFieldsOptions?
 	/**
 	 * Service for encryption primitives
 	 */
@@ -103,21 +104,6 @@ data class AnonymousSdkOptions(
 	init {
 		validateHttpAndSerializationOptions()
 	}
-
-	@Deprecated("lenientJson has been replaced with ignoreUnknownFields", level = DeprecationLevel.ERROR)
-	constructor(
-		httpClient: HttpClient? = null,
-		httpClientJson: Json? = null,
-		lenientJson: Boolean,
-		requestTimeout: Duration? = null,
-		requestRetryConfiguration: RequestRetryConfiguration = RequestRetryConfiguration()
-	) : this(
-		httpClient = httpClient,
-		httpClientJson = httpClientJson,
-		requestTimeout = requestTimeout,
-		requestRetryConfiguration = requestRetryConfiguration,
-		ignoreUnknownFields = lenientJson,
-	)
 }
 
 /**
@@ -145,17 +131,12 @@ data class BasicToFullSdkOptions(
 	 */
 	val cryptoStrategies: CryptoStrategies? = null,
 	/**
-	 * Refer to [SdkOptions.jsonPatcher]
-	 */
-	val jsonPatcher: JsonPatcher? = null,
-	/**
 	 * Refer to [SdkOptions.parentJob]
 	 */
 	val parentJob: Job? = null,
 )
 
 data class SdkOptions(
-	override val encryptedFields: EncryptedFieldsConfiguration = EncryptedFieldsConfiguration(),
 	/**
 	 * Has only effect when logging in as an hcp user.
 	 *
@@ -198,12 +179,6 @@ data class SdkOptions(
 	 */
 	val cryptoStrategies: CryptoStrategies? = null,
 	/**
-	 * Patcher for the decrypted entities json.
-	 * This allows adapting to changes in the data model of entities even if the changes are done to the encrypted part
-	 * of the entity.
-	 */
-	val jsonPatcher: JsonPatcher? = null,
-	/**
 	 * Sets a parent job to use in the sdk scope.
 	 * When that job is canceled, the SDK scope which runs all background tasks will also be canceled.
 	 * The SDK shouldn't be used anymore after this job is canceled.
@@ -213,51 +188,14 @@ data class SdkOptions(
 	override val requestRetryConfiguration: RequestRetryConfiguration = RequestRetryConfiguration(),
 	override val dataOwnerScope: String? = null,
 	override val ignoreUnknownFields: Boolean? = null,
+	override val encryptedFieldsOptions: EncryptedFieldsOptions? = null,
 ): BoundSdkOptions {
 	init {
 		validateHttpAndSerializationOptions()
 	}
-
-	@Deprecated("lenientJson has been replaced with ignoreUnknownFields", level = DeprecationLevel.ERROR)
-	constructor(
-		encryptedFields: EncryptedFieldsConfiguration = EncryptedFieldsConfiguration(),
-		useHierarchicalDataOwners: Boolean = true,
-		httpClient: HttpClient? = null,
-		httpClientJson: Json? = null,
-		createTransferKeys: Boolean = true,
-		cryptoService: CryptoService = defaultCryptoService,
-		groupSelector: GroupSelector? = null,
-		autoCreateEncryptionKeyForExistingLegacyData: Boolean = false,
-		keyStorage: KeyStorageFacade? = null,
-		cryptoStrategies: CryptoStrategies? = null,
-		jsonPatcher: JsonPatcher? = null,
-		lenientJson: Boolean,
-		parentJob: Job? = null,
-		requestTimeout: Duration? = null,
-		requestRetryConfiguration: RequestRetryConfiguration = RequestRetryConfiguration(),
-		dataOwnerScope: String? = null,
-	) : this(
-		encryptedFields = encryptedFields,
-		useHierarchicalDataOwners = useHierarchicalDataOwners,
-		httpClient = httpClient,
-		httpClientJson = httpClientJson,
-		createTransferKeys = createTransferKeys,
-		cryptoService = cryptoService,
-		groupSelector = groupSelector,
-		autoCreateEncryptionKeyForExistingLegacyData = autoCreateEncryptionKeyForExistingLegacyData,
-		keyStorage = keyStorage,
-		cryptoStrategies = cryptoStrategies,
-		jsonPatcher = jsonPatcher,
-		ignoreUnknownFields = lenientJson,
-		parentJob = parentJob,
-		requestTimeout = requestTimeout,
-		requestRetryConfiguration = requestRetryConfiguration,
-		dataOwnerScope = dataOwnerScope,
-	)
 }
 
 data class BasicSdkOptions(
-	override val encryptedFields: EncryptedFieldsConfiguration = EncryptedFieldsConfiguration(),
 	override val httpClient: HttpClient? = null,
 	override val httpClientJson: Json? = null,
 	override val cryptoService: CryptoService = defaultCryptoService,
@@ -266,37 +204,14 @@ data class BasicSdkOptions(
 	override val requestRetryConfiguration: RequestRetryConfiguration = RequestRetryConfiguration(),
 	override val dataOwnerScope: String? = null,
 	override val ignoreUnknownFields: Boolean? = null,
+	override val encryptedFieldsOptions: EncryptedFieldsOptions? = null,
 ): BoundSdkOptions {
 	init {
 		validateHttpAndSerializationOptions()
 	}
-
-	@Deprecated("lenientJson has been replaced with ignoreUnknownFields", level = DeprecationLevel.ERROR)
-	constructor(
-		encryptedFields: EncryptedFieldsConfiguration = EncryptedFieldsConfiguration(),
-		httpClient: HttpClient? = null,
-		httpClientJson: Json? = null,
-		cryptoService: CryptoService = defaultCryptoService,
-		groupSelector: GroupSelector? = null,
-		lenientJson: Boolean,
-		requestTimeout: Duration? = null,
-		requestRetryConfiguration: RequestRetryConfiguration = RequestRetryConfiguration(),
-		dataOwnerScope: String? = null
-	) : this(
-		encryptedFields = encryptedFields,
-		httpClient = httpClient,
-		httpClientJson = httpClientJson,
-		cryptoService = cryptoService,
-		groupSelector = groupSelector,
-		ignoreUnknownFields = lenientJson,
-		requestTimeout = requestTimeout,
-		requestRetryConfiguration = requestRetryConfiguration,
-		dataOwnerScope = dataOwnerScope,
-	)
 }
 
 data class UnboundBasicSdkOptions(
-	override val encryptedFields: EncryptedFieldsConfiguration = EncryptedFieldsConfiguration(),
 	override val httpClient: HttpClient? = null,
 	override val httpClientJson: Json? = null,
 	override val cryptoService: CryptoService = defaultCryptoService,
@@ -313,130 +228,12 @@ data class UnboundBasicSdkOptions(
 	override val requestTimeout: Duration? = null,
 	override val requestRetryConfiguration: RequestRetryConfiguration = RequestRetryConfiguration(),
 	override val ignoreUnknownFields: Boolean? = null,
+	override val encryptedFieldsOptions: EncryptedFieldsOptions? = null,
 ): CommonSdkOptions {
 	init {
 		validateHttpAndSerializationOptions()
 	}
-
-	@Deprecated("lenientJson has been replaced with ignoreUnknownFields", level = DeprecationLevel.ERROR)
-	constructor(
-		encryptedFields: EncryptedFieldsConfiguration = EncryptedFieldsConfiguration(),
-		httpClient: HttpClient? = null,
-		httpClientJson: Json? = null,
-		cryptoService: CryptoService = defaultCryptoService,
-		lenientJson: Boolean,
-		getBoundGroupId: (CoroutineContext) -> String? = { null },
-		requestTimeout: Duration? = null,
-		requestRetryConfiguration: RequestRetryConfiguration = RequestRetryConfiguration(),
-	) : this(
-		encryptedFields = encryptedFields,
-		httpClient = httpClient,
-		httpClientJson = httpClientJson,
-		cryptoService = cryptoService,
-		ignoreUnknownFields = lenientJson,
-		requestTimeout = requestTimeout,
-		requestRetryConfiguration = requestRetryConfiguration,
-	)
 }
-
-@Serializable
-data class EncryptedFieldsConfiguration(
-	val accessLog: Set<String> = setOf(
-		"detail",
-		"objectId",
-		"patientId" // Deprecated and ignored unless using the legacy support SDK
-	),
-	val calendarItem: Set<String> = setOf(
-		"details",
-		"title",
-		"patientId", // Deprecated and ignored unless using the legacy SDK
-		"phoneNumber",
-		"address",
-		"addressText",
-		"meetingTags[].*",
-		"flowItem" // Deprecated and ignored unless using the legacy SDK
-	),
-	val contact: Set<String> = setOf(
-		"descr",
-		"notes[].markdown",
-		"location",
-		"encounterLocation",
-		"participants", // Deprecated and ignored unless using the legacy SDK
-		"participantList"
-	),
-	val service: Set<String> = setOf(
-		"notes[].markdown",
-		"comment",
-	),
-	val healthElement: Set<String> = setOf(
-		"descr",
-		"note",
-		"notes[].markdown",
-		"careTeam[].careTeamMemberType",
-		"careTeam[].healthcarePartyId",
-		"careTeam[].quality",
-		"episodes[].name",
-		"episodes[].comment"
-	),
-	val maintenanceTask: Set<String> = setOf(
-		"properties",
-	),
-	val patient: Set<String> = setOf(
-		"note",
-		"notes[].markdown",
-		"created",
-		"modified",
-		"companyName",
-		"languages",
-		"civility",
-		"birthSex",
-		"personalStatus",
-		"nationality",
-		"race",
-		"ethnicity",
-		"picture", // Deprecated and ignored unless using the legacy SDK
-		"insurabilities[].*",
-		"partnerships[].*",
-		"patientHealthCareParties[].*",
-		"financialInstitutionInformation[].*",
-		"medicalHouseContracts[].*",
-		"patientProfessions",
-		"comment", // Deprecated and ignored unless using the legacy SDK
-		"warning", // Deprecated and ignored unless using the legacy SDK
-		"fatherBirthCountry", // Deprecated and ignored unless using the legacy SDK
-		"birthCountry", // Deprecated and ignored unless using the legacy SDK
-		"nativeCountry", // Deprecated and ignored unless using the legacy SDK
-		"socialStatus", // Deprecated and ignored unless using the legacy SDK
-		"mainSourceOfIncome", // Deprecated and ignored unless using the legacy SDK
-		"schoolingInfos[].*", // Deprecated and ignored unless using the legacy SDK
-		"employementInfos[].*", // Deprecated and ignored unless using the legacy SDK
-	),
-	val message: Set<String> = setOf(
-		"subject"
-	),
-	val topic: Set<String> = setOf(
-		"description",
-		"linkedServices",
-		"linkedHealthElements"
-	),
-	val document: Set<String> = setOf(
-		"medicalLocationId", // Deprecated and ignored unless using the legacy SDK
-		"name"
-	),
-	val form: Set<String> = setOf(
-		"descr"
-	),
-	val receipt: Set<String> = setOf(
-		"references"
-	),
-	val classification: Set<String> = setOf(
-		"label"
-	),
-	val timeTable: Set<String> = emptySet(),
-	val invoice: Set<String> = setOf(
-		"reason"
-	),
-)
 
 /**
  * Configures how requests should be retried.

@@ -10,6 +10,7 @@ import com.icure.cardinal.sdk.model.EncryptedTopic
 import com.icure.kryptom.crypto.AesAlgorithm
 import com.icure.kryptom.crypto.AesKey
 import com.icure.kryptom.crypto.CryptoService
+import com.icure.utils.InternalIcureApi
 import kotlinx.serialization.json.Json
 import kotlinx.serialization.json.JsonElement
 import kotlinx.serialization.json.JsonObject
@@ -17,20 +18,21 @@ import kotlinx.serialization.json.encodeToJsonElement
 import kotlin.Boolean
 import kotlin.String
 
+@InternalIcureApi
 internal object TopicEncryptorFactory : EntityEncryptorFactory<EncryptedTopic, DecryptedTopic> {
 	override val empty: EntityEncryptor<EncryptedTopic, DecryptedTopic> =
 		TopicEncryptor(
-			created = false,
-			modified = false,
-			healthElementId = false,
-			contactId = false,
-			description = false,
-			codes = false,
-			tags = false,
-			author = false,
-			responsible = false,
-			linkedHealthElements = false,
-			linkedServices = false,
+			created_e = false,
+			modified_e = false,
+			healthElementId_e = false,
+			contactId_e = false,
+			description_e = false,
+			codes_e = false,
+			tags_e = false,
+			author_e = false,
+			responsible_e = false,
+			linkedHealthElements_e = false,
+			linkedServices_e = false,
 		)
 
 	override fun create(
@@ -39,33 +41,34 @@ internal object TopicEncryptorFactory : EntityEncryptorFactory<EncryptedTopic, D
 	): EntityEncryptor<EncryptedTopic, DecryptedTopic> {
 		val manifest = encryptorFactoryContext.getManifest(entityManifestName)
 		return TopicEncryptor(
-			created = "created" in manifest.fieldsToEncrypt,
-			modified = "modified" in manifest.fieldsToEncrypt,
-			healthElementId = "healthElementId" in manifest.fieldsToEncrypt,
-			contactId = "contactId" in manifest.fieldsToEncrypt,
-			description = "description" in manifest.fieldsToEncrypt,
-			codes = "codes" in manifest.fieldsToEncrypt,
-			tags = "tags" in manifest.fieldsToEncrypt,
-			author = "author" in manifest.fieldsToEncrypt,
-			responsible = "responsible" in manifest.fieldsToEncrypt,
-			linkedHealthElements = "linkedHealthElements" in manifest.fieldsToEncrypt,
-			linkedServices = "linkedServices" in manifest.fieldsToEncrypt,
+			created_e = "created" in manifest.fieldsToEncrypt,
+			modified_e = "modified" in manifest.fieldsToEncrypt,
+			healthElementId_e = "healthElementId" in manifest.fieldsToEncrypt,
+			contactId_e = "contactId" in manifest.fieldsToEncrypt,
+			description_e = "description" in manifest.fieldsToEncrypt,
+			codes_e = "codes" in manifest.fieldsToEncrypt,
+			tags_e = "tags" in manifest.fieldsToEncrypt,
+			author_e = "author" in manifest.fieldsToEncrypt,
+			responsible_e = "responsible" in manifest.fieldsToEncrypt,
+			linkedHealthElements_e = "linkedHealthElements" in manifest.fieldsToEncrypt,
+			linkedServices_e = "linkedServices" in manifest.fieldsToEncrypt,
 		)
 	}
 }
 
+@InternalIcureApi
 private class TopicEncryptor(
-	private val created: Boolean,
-	private val modified: Boolean,
-	private val healthElementId: Boolean,
-	private val contactId: Boolean,
-	private val description: Boolean,
-	private val codes: Boolean,
-	private val tags: Boolean,
-	private val author: Boolean,
-	private val responsible: Boolean,
-	private val linkedHealthElements: Boolean,
-	private val linkedServices: Boolean,
+	private val created_e: Boolean,
+	private val modified_e: Boolean,
+	private val healthElementId_e: Boolean,
+	private val contactId_e: Boolean,
+	private val description_e: Boolean,
+	private val codes_e: Boolean,
+	private val tags_e: Boolean,
+	private val author_e: Boolean,
+	private val responsible_e: Boolean,
+	private val linkedHealthElements_e: Boolean,
+	private val linkedServices_e: Boolean,
 ) : AbstractEntityEncryptor<EncryptedTopic, DecryptedTopic>() {
 	override suspend fun encrypt(
 		encryptionKey: AesKey<AesAlgorithm.CbcWithPkcs7Padding>,
@@ -74,29 +77,54 @@ private class TopicEncryptor(
 		cryptoService: CryptoService,
 	): EncryptedTopic {
 		val dataToEncrypt = mutableMapOf<String, JsonElement>()
-		if (created) dataToEncrypt["created"] = encodingJson.encodeToJsonElement(clearEntity.created)
-		if (modified) dataToEncrypt["modified"] = encodingJson.encodeToJsonElement(clearEntity.modified)
-		if (healthElementId) dataToEncrypt["healthElementId"] = encodingJson.encodeToJsonElement(clearEntity.healthElementId)
-		if (contactId) dataToEncrypt["contactId"] = encodingJson.encodeToJsonElement(clearEntity.contactId)
-		if (description) dataToEncrypt["description"] = encodingJson.encodeToJsonElement(clearEntity.description)
-		if (codes) dataToEncrypt["codes"] = encodingJson.encodeToJsonElement(clearEntity.codes)
-		if (tags) dataToEncrypt["tags"] = encodingJson.encodeToJsonElement(clearEntity.tags)
-		if (author) dataToEncrypt["author"] = encodingJson.encodeToJsonElement(clearEntity.author)
-		if (responsible) dataToEncrypt["responsible"] = encodingJson.encodeToJsonElement(clearEntity.responsible)
-		if (linkedHealthElements) dataToEncrypt["linkedHealthElements"] = encodingJson.encodeToJsonElement(clearEntity.linkedHealthElements)
-		if (linkedServices) dataToEncrypt["linkedServices"] = encodingJson.encodeToJsonElement(clearEntity.linkedServices)
+		if (created_e && clearEntity.created != null) dataToEncrypt["created"] = encodingJson.encodeToJsonElement(clearEntity.created)
+		if (modified_e && clearEntity.modified != null) dataToEncrypt["modified"] = encodingJson.encodeToJsonElement(clearEntity.modified)
+		if (healthElementId_e && clearEntity.healthElementId != null) {
+			dataToEncrypt["healthElementId"] =
+				encodingJson.encodeToJsonElement(
+					clearEntity.healthElementId,
+				)
+		}
+		if (contactId_e && clearEntity.contactId != null) dataToEncrypt["contactId"] = encodingJson.encodeToJsonElement(clearEntity.contactId)
+		if (description_e && clearEntity.description != null) {
+			dataToEncrypt["description"] =
+				encodingJson.encodeToJsonElement(
+					clearEntity.description,
+				)
+		}
+		if (codes_e && clearEntity.codes.isNotEmpty()) dataToEncrypt["codes"] = encodingJson.encodeToJsonElement(clearEntity.codes)
+		if (tags_e && clearEntity.tags.isNotEmpty()) dataToEncrypt["tags"] = encodingJson.encodeToJsonElement(clearEntity.tags)
+		if (author_e && clearEntity.author != null) dataToEncrypt["author"] = encodingJson.encodeToJsonElement(clearEntity.author)
+		if (responsible_e && clearEntity.responsible != null) {
+			dataToEncrypt["responsible"] =
+				encodingJson.encodeToJsonElement(
+					clearEntity.responsible,
+				)
+		}
+		if (linkedHealthElements_e && clearEntity.linkedHealthElements.isNotEmpty()) {
+			dataToEncrypt["linkedHealthElements"] =
+				encodingJson.encodeToJsonElement(
+					clearEntity.linkedHealthElements,
+				)
+		}
+		if (linkedServices_e && clearEntity.linkedServices.isNotEmpty()) {
+			dataToEncrypt["linkedServices"] =
+				encodingJson.encodeToJsonElement(
+					clearEntity.linkedServices,
+				)
+		}
 		return EncryptedTopic(
 			id = clearEntity.id,
 			rev = clearEntity.rev,
-			created = if (created) null else clearEntity.created,
-			modified = if (modified) null else clearEntity.modified,
-			healthElementId = if (healthElementId) null else clearEntity.healthElementId,
-			contactId = if (contactId) null else clearEntity.contactId,
-			description = if (description) null else clearEntity.description,
-			codes = if (codes) emptySet() else clearEntity.codes,
-			tags = if (tags) emptySet() else clearEntity.tags,
-			author = if (author) null else clearEntity.author,
-			responsible = if (responsible) null else clearEntity.responsible,
+			created = if (created_e) null else clearEntity.created,
+			modified = if (modified_e) null else clearEntity.modified,
+			healthElementId = if (healthElementId_e) null else clearEntity.healthElementId,
+			contactId = if (contactId_e) null else clearEntity.contactId,
+			description = if (description_e) null else clearEntity.description,
+			codes = if (codes_e) emptySet() else clearEntity.codes,
+			tags = if (tags_e) emptySet() else clearEntity.tags,
+			author = if (author_e) null else clearEntity.author,
+			responsible = if (responsible_e) null else clearEntity.responsible,
 			deletionDate = clearEntity.deletionDate,
 			activeParticipants = clearEntity.activeParticipants,
 			securityMetadata = clearEntity.securityMetadata,
@@ -105,8 +133,8 @@ private class TopicEncryptor(
 			delegations = clearEntity.delegations,
 			encryptionKeys = clearEntity.encryptionKeys,
 			encryptedSelf = getUpdatedEncryptSelf(encryptionKey, clearEntity, JsonObject(dataToEncrypt), cryptoService),
-			linkedHealthElements = if (linkedHealthElements) emptySet() else clearEntity.linkedHealthElements,
-			linkedServices = if (linkedServices) emptySet() else clearEntity.linkedServices,
+			linkedHealthElements = if (linkedHealthElements_e) emptySet() else clearEntity.linkedHealthElements,
+			linkedServices = if (linkedServices_e) emptySet() else clearEntity.linkedServices,
 			extensions = clearEntity.extensions,
 			extensionsVersion = clearEntity.extensionsVersion,
 		)

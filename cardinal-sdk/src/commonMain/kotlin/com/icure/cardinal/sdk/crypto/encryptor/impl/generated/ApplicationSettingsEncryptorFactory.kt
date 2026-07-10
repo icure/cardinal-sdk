@@ -10,6 +10,7 @@ import com.icure.cardinal.sdk.model.EncryptedApplicationSettings
 import com.icure.kryptom.crypto.AesAlgorithm
 import com.icure.kryptom.crypto.AesKey
 import com.icure.kryptom.crypto.CryptoService
+import com.icure.utils.InternalIcureApi
 import kotlinx.serialization.json.Json
 import kotlinx.serialization.json.JsonElement
 import kotlinx.serialization.json.JsonObject
@@ -17,18 +18,19 @@ import kotlinx.serialization.json.encodeToJsonElement
 import kotlin.Boolean
 import kotlin.String
 
+@InternalIcureApi
 internal object ApplicationSettingsEncryptorFactory :
 	EntityEncryptorFactory<EncryptedApplicationSettings, DecryptedApplicationSettings> {
 	override val empty: EntityEncryptor<EncryptedApplicationSettings, DecryptedApplicationSettings> =
 		ApplicationSettingsEncryptor(
-			created = false,
-			modified = false,
-			author = false,
-			responsible = false,
-			tags = false,
-			codes = false,
-			settings = false,
-			encryptedSettings = false,
+			created_e = false,
+			modified_e = false,
+			author_e = false,
+			responsible_e = false,
+			tags_e = false,
+			codes_e = false,
+			settings_e = false,
+			encryptedSettings_e = false,
 		)
 
 	override fun create(
@@ -37,27 +39,28 @@ internal object ApplicationSettingsEncryptorFactory :
 	): EntityEncryptor<EncryptedApplicationSettings, DecryptedApplicationSettings> {
 		val manifest = encryptorFactoryContext.getManifest(entityManifestName)
 		return ApplicationSettingsEncryptor(
-			created = "created" in manifest.fieldsToEncrypt,
-			modified = "modified" in manifest.fieldsToEncrypt,
-			author = "author" in manifest.fieldsToEncrypt,
-			responsible = "responsible" in manifest.fieldsToEncrypt,
-			tags = "tags" in manifest.fieldsToEncrypt,
-			codes = "codes" in manifest.fieldsToEncrypt,
-			settings = "settings" in manifest.fieldsToEncrypt,
-			encryptedSettings = "encryptedSettings" in manifest.fieldsToEncrypt,
+			created_e = "created" in manifest.fieldsToEncrypt,
+			modified_e = "modified" in manifest.fieldsToEncrypt,
+			author_e = "author" in manifest.fieldsToEncrypt,
+			responsible_e = "responsible" in manifest.fieldsToEncrypt,
+			tags_e = "tags" in manifest.fieldsToEncrypt,
+			codes_e = "codes" in manifest.fieldsToEncrypt,
+			settings_e = "settings" in manifest.fieldsToEncrypt,
+			encryptedSettings_e = "encryptedSettings" in manifest.fieldsToEncrypt,
 		)
 	}
 }
 
+@InternalIcureApi
 private class ApplicationSettingsEncryptor(
-	private val created: Boolean,
-	private val modified: Boolean,
-	private val author: Boolean,
-	private val responsible: Boolean,
-	private val tags: Boolean,
-	private val codes: Boolean,
-	private val settings: Boolean,
-	private val encryptedSettings: Boolean,
+	private val created_e: Boolean,
+	private val modified_e: Boolean,
+	private val author_e: Boolean,
+	private val responsible_e: Boolean,
+	private val tags_e: Boolean,
+	private val codes_e: Boolean,
+	private val settings_e: Boolean,
+	private val encryptedSettings_e: Boolean,
 ) : AbstractEntityEncryptor<EncryptedApplicationSettings, DecryptedApplicationSettings>() {
 	override suspend fun encrypt(
 		encryptionKey: AesKey<AesAlgorithm.CbcWithPkcs7Padding>,
@@ -66,27 +69,37 @@ private class ApplicationSettingsEncryptor(
 		cryptoService: CryptoService,
 	): EncryptedApplicationSettings {
 		val dataToEncrypt = mutableMapOf<String, JsonElement>()
-		if (created) dataToEncrypt["created"] = encodingJson.encodeToJsonElement(clearEntity.created)
-		if (modified) dataToEncrypt["modified"] = encodingJson.encodeToJsonElement(clearEntity.modified)
-		if (author) dataToEncrypt["author"] = encodingJson.encodeToJsonElement(clearEntity.author)
-		if (responsible) dataToEncrypt["responsible"] = encodingJson.encodeToJsonElement(clearEntity.responsible)
-		if (tags) dataToEncrypt["tags"] = encodingJson.encodeToJsonElement(clearEntity.tags)
-		if (codes) dataToEncrypt["codes"] = encodingJson.encodeToJsonElement(clearEntity.codes)
-		if (settings) dataToEncrypt["settings"] = encodingJson.encodeToJsonElement(clearEntity.settings)
-		if (encryptedSettings) dataToEncrypt["encryptedSettings"] = encodingJson.encodeToJsonElement(clearEntity.encryptedSettings)
+		if (created_e && clearEntity.created != null) dataToEncrypt["created"] = encodingJson.encodeToJsonElement(clearEntity.created)
+		if (modified_e && clearEntity.modified != null) dataToEncrypt["modified"] = encodingJson.encodeToJsonElement(clearEntity.modified)
+		if (author_e && clearEntity.author != null) dataToEncrypt["author"] = encodingJson.encodeToJsonElement(clearEntity.author)
+		if (responsible_e && clearEntity.responsible != null) {
+			dataToEncrypt["responsible"] =
+				encodingJson.encodeToJsonElement(
+					clearEntity.responsible,
+				)
+		}
+		if (tags_e && clearEntity.tags.isNotEmpty()) dataToEncrypt["tags"] = encodingJson.encodeToJsonElement(clearEntity.tags)
+		if (codes_e && clearEntity.codes.isNotEmpty()) dataToEncrypt["codes"] = encodingJson.encodeToJsonElement(clearEntity.codes)
+		if (settings_e && clearEntity.settings.isNotEmpty()) dataToEncrypt["settings"] = encodingJson.encodeToJsonElement(clearEntity.settings)
+		if (encryptedSettings_e && clearEntity.encryptedSettings.isNotEmpty()) {
+			dataToEncrypt["encryptedSettings"] =
+				encodingJson.encodeToJsonElement(
+					clearEntity.encryptedSettings,
+				)
+		}
 		return EncryptedApplicationSettings(
 			id = clearEntity.id,
 			rev = clearEntity.rev,
-			created = if (created) null else clearEntity.created,
-			modified = if (modified) null else clearEntity.modified,
-			author = if (author) null else clearEntity.author,
-			responsible = if (responsible) null else clearEntity.responsible,
-			tags = if (tags) emptySet() else clearEntity.tags,
-			codes = if (codes) emptySet() else clearEntity.codes,
+			created = if (created_e) null else clearEntity.created,
+			modified = if (modified_e) null else clearEntity.modified,
+			author = if (author_e) null else clearEntity.author,
+			responsible = if (responsible_e) null else clearEntity.responsible,
+			tags = if (tags_e) emptySet() else clearEntity.tags,
+			codes = if (codes_e) emptySet() else clearEntity.codes,
 			endOfLife = clearEntity.endOfLife,
 			deletionDate = clearEntity.deletionDate,
-			settings = if (settings) emptyMap() else clearEntity.settings,
-			encryptedSettings = if (encryptedSettings) emptyMap() else clearEntity.encryptedSettings,
+			settings = if (settings_e) emptyMap() else clearEntity.settings,
+			encryptedSettings = if (encryptedSettings_e) emptyMap() else clearEntity.encryptedSettings,
 			secretForeignKeys = clearEntity.secretForeignKeys,
 			cryptedForeignKeys = clearEntity.cryptedForeignKeys,
 			delegations = clearEntity.delegations,

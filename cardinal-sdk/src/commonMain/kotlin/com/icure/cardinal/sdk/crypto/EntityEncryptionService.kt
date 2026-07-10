@@ -1,5 +1,7 @@
 package com.icure.cardinal.sdk.crypto
 
+import com.icure.cardinal.sdk.crypto.encryptor.EntityDecryptor
+import com.icure.cardinal.sdk.crypto.encryptor.EntityEncryptor
 import com.icure.cardinal.sdk.crypto.entities.BulkShareResult
 import com.icure.cardinal.sdk.crypto.entities.DelegateShareOptions
 import com.icure.cardinal.sdk.crypto.entities.EncryptedFieldsManifest
@@ -338,8 +340,7 @@ interface EntityEncryptionService : EntityValidationService {
 		entityGroupId: String?,
 		encryptedEntities: List<E>,
 		entityType: EntityWithEncryptionMetadataTypeName,
-		encryptedEntitySerializer: SerializationStrategy<E>,
-		constructor: (json: JsonElement) -> D,
+		entityDecryptor: EntityDecryptor<E, D>,
 	): List<B> where B : HasEncryptionMetadata, B : Encryptable
 
 
@@ -350,8 +351,7 @@ interface EntityEncryptionService : EntityValidationService {
 		entityGroupId: String?,
 		encryptedEntities: List<E>,
 		entityType: EntityWithEncryptionMetadataTypeName,
-		encryptedEntitySerializer: SerializationStrategy<E>,
-		constructor: (json: JsonElement) -> D,
+		entityDecryptor: EntityDecryptor<E, D>,
 	): List<D> where E : HasEncryptionMetadata, E : Encryptable, D : HasEncryptionMetadata, D : Encryptable
 
 	/**
@@ -363,9 +363,7 @@ interface EntityEncryptionService : EntityValidationService {
 		entityGroupId: String?,
 		unencryptedEntities: List<D>,
 		entityType: EntityWithEncryptionMetadataTypeName,
-		unencryptedEntitySerializer: SerializationStrategy<D>,
-		fieldsToEncrypt: EncryptedFieldsManifest,
-		constructor: (json: JsonElement) -> E,
+		entityEncryptor: EntityEncryptor<E, D>,
 	): List<E> where E : HasEncryptionMetadata, E : Encryptable, D : HasEncryptionMetadata, D : Encryptable
 
 	/**
@@ -464,5 +462,9 @@ interface EntityEncryptionService : EntityValidationService {
 		entityType: EntityWithEncryptionMetadataTypeName,
 		secretIdUseOption: SecretIdUseOption,
 	): Set<String>
+
+	fun decrypt() {
+		TODO("Not yet implemented")
+	}
 	// endregion
 }

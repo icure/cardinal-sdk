@@ -13,6 +13,7 @@ import com.icure.cardinal.sdk.model.EncryptedPropertyStub
 import com.icure.kryptom.crypto.AesAlgorithm
 import com.icure.kryptom.crypto.AesKey
 import com.icure.kryptom.crypto.CryptoService
+import com.icure.utils.InternalIcureApi
 import kotlinx.serialization.json.Json
 import kotlinx.serialization.json.JsonElement
 import kotlinx.serialization.json.JsonObject
@@ -20,30 +21,31 @@ import kotlinx.serialization.json.encodeToJsonElement
 import kotlin.Boolean
 import kotlin.String
 
+@InternalIcureApi
 internal object MessageEncryptorFactory : EntityEncryptorFactory<EncryptedMessage, DecryptedMessage> {
 	override val empty: EntityEncryptor<EncryptedMessage, DecryptedMessage> =
 		MessageEncryptor(
-			created = false,
-			modified = false,
-			author = false,
-			responsible = false,
-			tags = false,
-			codes = false,
-			fromAddress = false,
-			fromHealthcarePartyId = false,
-			recipients = false,
-			toAddresses = false,
-			received = false,
-			sent = false,
-			metas = false,
-			readStatus = false,
-			transportGuid = false,
-			remark = false,
-			conversationGuid = false,
-			subject = false,
-			invoiceIds = false,
-			parentId = false,
-			properties = EncryptableFieldConfig.None(PropertyStubEncryptorFactory),
+			created_e = false,
+			modified_e = false,
+			author_e = false,
+			responsible_e = false,
+			tags_e = false,
+			codes_e = false,
+			fromAddress_e = false,
+			fromHealthcarePartyId_e = false,
+			recipients_e = false,
+			toAddresses_e = false,
+			received_e = false,
+			sent_e = false,
+			metas_e = false,
+			readStatus_e = false,
+			transportGuid_e = false,
+			remark_e = false,
+			conversationGuid_e = false,
+			subject_e = false,
+			invoiceIds_e = false,
+			parentId_e = false,
+			properties_e = EncryptableFieldConfig.None(PropertyStubEncryptorFactory),
 		)
 
 	override fun create(
@@ -52,27 +54,27 @@ internal object MessageEncryptorFactory : EntityEncryptorFactory<EncryptedMessag
 	): EntityEncryptor<EncryptedMessage, DecryptedMessage> {
 		val manifest = encryptorFactoryContext.getManifest(entityManifestName)
 		return MessageEncryptor(
-			created = "created" in manifest.fieldsToEncrypt,
-			modified = "modified" in manifest.fieldsToEncrypt,
-			author = "author" in manifest.fieldsToEncrypt,
-			responsible = "responsible" in manifest.fieldsToEncrypt,
-			tags = "tags" in manifest.fieldsToEncrypt,
-			codes = "codes" in manifest.fieldsToEncrypt,
-			fromAddress = "fromAddress" in manifest.fieldsToEncrypt,
-			fromHealthcarePartyId = "fromHealthcarePartyId" in manifest.fieldsToEncrypt,
-			recipients = "recipients" in manifest.fieldsToEncrypt,
-			toAddresses = "toAddresses" in manifest.fieldsToEncrypt,
-			received = "received" in manifest.fieldsToEncrypt,
-			sent = "sent" in manifest.fieldsToEncrypt,
-			metas = "metas" in manifest.fieldsToEncrypt,
-			readStatus = "readStatus" in manifest.fieldsToEncrypt,
-			transportGuid = "transportGuid" in manifest.fieldsToEncrypt,
-			remark = "remark" in manifest.fieldsToEncrypt,
-			conversationGuid = "conversationGuid" in manifest.fieldsToEncrypt,
-			subject = "subject" in manifest.fieldsToEncrypt,
-			invoiceIds = "invoiceIds" in manifest.fieldsToEncrypt,
-			parentId = "parentId" in manifest.fieldsToEncrypt,
-			properties =
+			created_e = "created" in manifest.fieldsToEncrypt,
+			modified_e = "modified" in manifest.fieldsToEncrypt,
+			author_e = "author" in manifest.fieldsToEncrypt,
+			responsible_e = "responsible" in manifest.fieldsToEncrypt,
+			tags_e = "tags" in manifest.fieldsToEncrypt,
+			codes_e = "codes" in manifest.fieldsToEncrypt,
+			fromAddress_e = "fromAddress" in manifest.fieldsToEncrypt,
+			fromHealthcarePartyId_e = "fromHealthcarePartyId" in manifest.fieldsToEncrypt,
+			recipients_e = "recipients" in manifest.fieldsToEncrypt,
+			toAddresses_e = "toAddresses" in manifest.fieldsToEncrypt,
+			received_e = "received" in manifest.fieldsToEncrypt,
+			sent_e = "sent" in manifest.fieldsToEncrypt,
+			metas_e = "metas" in manifest.fieldsToEncrypt,
+			readStatus_e = "readStatus" in manifest.fieldsToEncrypt,
+			transportGuid_e = "transportGuid" in manifest.fieldsToEncrypt,
+			remark_e = "remark" in manifest.fieldsToEncrypt,
+			conversationGuid_e = "conversationGuid" in manifest.fieldsToEncrypt,
+			subject_e = "subject" in manifest.fieldsToEncrypt,
+			invoiceIds_e = "invoiceIds" in manifest.fieldsToEncrypt,
+			parentId_e = "parentId" in manifest.fieldsToEncrypt,
+			properties_e =
 				if ("properties" in manifest.fieldsToEncrypt) {
 					EncryptableFieldConfig.Full()
 				} else {
@@ -90,28 +92,29 @@ internal object MessageEncryptorFactory : EntityEncryptorFactory<EncryptedMessag
 	}
 }
 
+@InternalIcureApi
 private class MessageEncryptor(
-	private val created: Boolean,
-	private val modified: Boolean,
-	private val author: Boolean,
-	private val responsible: Boolean,
-	private val tags: Boolean,
-	private val codes: Boolean,
-	private val fromAddress: Boolean,
-	private val fromHealthcarePartyId: Boolean,
-	private val recipients: Boolean,
-	private val toAddresses: Boolean,
-	private val received: Boolean,
-	private val sent: Boolean,
-	private val metas: Boolean,
-	private val readStatus: Boolean,
-	private val transportGuid: Boolean,
-	private val remark: Boolean,
-	private val conversationGuid: Boolean,
-	private val subject: Boolean,
-	private val invoiceIds: Boolean,
-	private val parentId: Boolean,
-	private val properties: EncryptableFieldConfig<EncryptedPropertyStub, DecryptedPropertyStub>,
+	private val created_e: Boolean,
+	private val modified_e: Boolean,
+	private val author_e: Boolean,
+	private val responsible_e: Boolean,
+	private val tags_e: Boolean,
+	private val codes_e: Boolean,
+	private val fromAddress_e: Boolean,
+	private val fromHealthcarePartyId_e: Boolean,
+	private val recipients_e: Boolean,
+	private val toAddresses_e: Boolean,
+	private val received_e: Boolean,
+	private val sent_e: Boolean,
+	private val metas_e: Boolean,
+	private val readStatus_e: Boolean,
+	private val transportGuid_e: Boolean,
+	private val remark_e: Boolean,
+	private val conversationGuid_e: Boolean,
+	private val subject_e: Boolean,
+	private val invoiceIds_e: Boolean,
+	private val parentId_e: Boolean,
+	private val properties_e: EncryptableFieldConfig<EncryptedPropertyStub, DecryptedPropertyStub>,
 ) : AbstractEntityEncryptor<EncryptedMessage, DecryptedMessage>() {
 	override suspend fun encrypt(
 		encryptionKey: AesKey<AesAlgorithm.CbcWithPkcs7Padding>,
@@ -120,53 +123,103 @@ private class MessageEncryptor(
 		cryptoService: CryptoService,
 	): EncryptedMessage {
 		val dataToEncrypt = mutableMapOf<String, JsonElement>()
-		if (created) dataToEncrypt["created"] = encodingJson.encodeToJsonElement(clearEntity.created)
-		if (modified) dataToEncrypt["modified"] = encodingJson.encodeToJsonElement(clearEntity.modified)
-		if (author) dataToEncrypt["author"] = encodingJson.encodeToJsonElement(clearEntity.author)
-		if (responsible) dataToEncrypt["responsible"] = encodingJson.encodeToJsonElement(clearEntity.responsible)
-		if (tags) dataToEncrypt["tags"] = encodingJson.encodeToJsonElement(clearEntity.tags)
-		if (codes) dataToEncrypt["codes"] = encodingJson.encodeToJsonElement(clearEntity.codes)
-		if (fromAddress) dataToEncrypt["fromAddress"] = encodingJson.encodeToJsonElement(clearEntity.fromAddress)
-		if (fromHealthcarePartyId) dataToEncrypt["fromHealthcarePartyId"] = encodingJson.encodeToJsonElement(clearEntity.fromHealthcarePartyId)
-		if (recipients) dataToEncrypt["recipients"] = encodingJson.encodeToJsonElement(clearEntity.recipients)
-		if (toAddresses) dataToEncrypt["toAddresses"] = encodingJson.encodeToJsonElement(clearEntity.toAddresses)
-		if (received) dataToEncrypt["received"] = encodingJson.encodeToJsonElement(clearEntity.received)
-		if (sent) dataToEncrypt["sent"] = encodingJson.encodeToJsonElement(clearEntity.sent)
-		if (metas) dataToEncrypt["metas"] = encodingJson.encodeToJsonElement(clearEntity.metas)
-		if (readStatus) dataToEncrypt["readStatus"] = encodingJson.encodeToJsonElement(clearEntity.readStatus)
-		if (transportGuid) dataToEncrypt["transportGuid"] = encodingJson.encodeToJsonElement(clearEntity.transportGuid)
-		if (remark) dataToEncrypt["remark"] = encodingJson.encodeToJsonElement(clearEntity.remark)
-		if (conversationGuid) dataToEncrypt["conversationGuid"] = encodingJson.encodeToJsonElement(clearEntity.conversationGuid)
-		if (subject) dataToEncrypt["subject"] = encodingJson.encodeToJsonElement(clearEntity.subject)
-		if (invoiceIds) dataToEncrypt["invoiceIds"] = encodingJson.encodeToJsonElement(clearEntity.invoiceIds)
-		if (parentId) dataToEncrypt["parentId"] = encodingJson.encodeToJsonElement(clearEntity.parentId)
-		if (properties.fullEncryption) dataToEncrypt["properties"] = encodingJson.encodeToJsonElement(clearEntity.properties)
+		if (created_e && clearEntity.created != null) dataToEncrypt["created"] = encodingJson.encodeToJsonElement(clearEntity.created)
+		if (modified_e && clearEntity.modified != null) dataToEncrypt["modified"] = encodingJson.encodeToJsonElement(clearEntity.modified)
+		if (author_e && clearEntity.author != null) dataToEncrypt["author"] = encodingJson.encodeToJsonElement(clearEntity.author)
+		if (responsible_e && clearEntity.responsible != null) {
+			dataToEncrypt["responsible"] =
+				encodingJson.encodeToJsonElement(
+					clearEntity.responsible,
+				)
+		}
+		if (tags_e && clearEntity.tags.isNotEmpty()) dataToEncrypt["tags"] = encodingJson.encodeToJsonElement(clearEntity.tags)
+		if (codes_e && clearEntity.codes.isNotEmpty()) dataToEncrypt["codes"] = encodingJson.encodeToJsonElement(clearEntity.codes)
+		if (fromAddress_e && clearEntity.fromAddress != null) {
+			dataToEncrypt["fromAddress"] =
+				encodingJson.encodeToJsonElement(
+					clearEntity.fromAddress,
+				)
+		}
+		if (fromHealthcarePartyId_e && clearEntity.fromHealthcarePartyId != null) {
+			dataToEncrypt["fromHealthcarePartyId"] =
+				encodingJson.encodeToJsonElement(
+					clearEntity.fromHealthcarePartyId,
+				)
+		}
+		if (recipients_e && clearEntity.recipients.isNotEmpty()) {
+			dataToEncrypt["recipients"] =
+				encodingJson.encodeToJsonElement(
+					clearEntity.recipients,
+				)
+		}
+		if (toAddresses_e && clearEntity.toAddresses.isNotEmpty()) {
+			dataToEncrypt["toAddresses"] =
+				encodingJson.encodeToJsonElement(
+					clearEntity.toAddresses,
+				)
+		}
+		if (received_e && clearEntity.received != null) dataToEncrypt["received"] = encodingJson.encodeToJsonElement(clearEntity.received)
+		if (sent_e && clearEntity.sent != null) dataToEncrypt["sent"] = encodingJson.encodeToJsonElement(clearEntity.sent)
+		if (metas_e && clearEntity.metas.isNotEmpty()) dataToEncrypt["metas"] = encodingJson.encodeToJsonElement(clearEntity.metas)
+		if (readStatus_e && clearEntity.readStatus.isNotEmpty()) {
+			dataToEncrypt["readStatus"] =
+				encodingJson.encodeToJsonElement(
+					clearEntity.readStatus,
+				)
+		}
+		if (transportGuid_e && clearEntity.transportGuid != null) {
+			dataToEncrypt["transportGuid"] =
+				encodingJson.encodeToJsonElement(
+					clearEntity.transportGuid,
+				)
+		}
+		if (remark_e && clearEntity.remark != null) dataToEncrypt["remark"] = encodingJson.encodeToJsonElement(clearEntity.remark)
+		if (conversationGuid_e && clearEntity.conversationGuid != null) {
+			dataToEncrypt["conversationGuid"] =
+				encodingJson.encodeToJsonElement(
+					clearEntity.conversationGuid,
+				)
+		}
+		if (subject_e && clearEntity.subject != null) dataToEncrypt["subject"] = encodingJson.encodeToJsonElement(clearEntity.subject)
+		if (invoiceIds_e && clearEntity.invoiceIds.isNotEmpty()) {
+			dataToEncrypt["invoiceIds"] =
+				encodingJson.encodeToJsonElement(
+					clearEntity.invoiceIds,
+				)
+		}
+		if (parentId_e && clearEntity.parentId != null) dataToEncrypt["parentId"] = encodingJson.encodeToJsonElement(clearEntity.parentId)
+		if (properties_e.fullEncryption && clearEntity.properties.isNotEmpty()) {
+			dataToEncrypt["properties"] =
+				encodingJson.encodeToJsonElement(
+					clearEntity.properties,
+				)
+		}
 		return EncryptedMessage(
 			id = clearEntity.id,
 			rev = clearEntity.rev,
-			created = if (created) null else clearEntity.created,
-			modified = if (modified) null else clearEntity.modified,
-			author = if (author) null else clearEntity.author,
-			responsible = if (responsible) null else clearEntity.responsible,
-			tags = if (tags) emptySet() else clearEntity.tags,
-			codes = if (codes) emptySet() else clearEntity.codes,
+			created = if (created_e) null else clearEntity.created,
+			modified = if (modified_e) null else clearEntity.modified,
+			author = if (author_e) null else clearEntity.author,
+			responsible = if (responsible_e) null else clearEntity.responsible,
+			tags = if (tags_e) emptySet() else clearEntity.tags,
+			codes = if (codes_e) emptySet() else clearEntity.codes,
 			deletionDate = clearEntity.deletionDate,
-			fromAddress = if (fromAddress) null else clearEntity.fromAddress,
-			fromHealthcarePartyId = if (fromHealthcarePartyId) null else clearEntity.fromHealthcarePartyId,
-			recipients = if (recipients) emptySet() else clearEntity.recipients,
-			toAddresses = if (toAddresses) emptySet() else clearEntity.toAddresses,
-			received = if (received) null else clearEntity.received,
-			sent = if (sent) null else clearEntity.sent,
-			metas = if (metas) emptyMap() else clearEntity.metas,
-			readStatus = if (readStatus) emptyMap() else clearEntity.readStatus,
-			transportGuid = if (transportGuid) null else clearEntity.transportGuid,
-			remark = if (remark) null else clearEntity.remark,
-			conversationGuid = if (conversationGuid) null else clearEntity.conversationGuid,
-			subject = if (subject) null else clearEntity.subject,
-			invoiceIds = if (invoiceIds) emptySet() else clearEntity.invoiceIds,
-			parentId = if (parentId) null else clearEntity.parentId,
+			fromAddress = if (fromAddress_e) null else clearEntity.fromAddress,
+			fromHealthcarePartyId = if (fromHealthcarePartyId_e) null else clearEntity.fromHealthcarePartyId,
+			recipients = if (recipients_e) emptySet() else clearEntity.recipients,
+			toAddresses = if (toAddresses_e) emptySet() else clearEntity.toAddresses,
+			received = if (received_e) null else clearEntity.received,
+			sent = if (sent_e) null else clearEntity.sent,
+			metas = if (metas_e) emptyMap() else clearEntity.metas,
+			readStatus = if (readStatus_e) emptyMap() else clearEntity.readStatus,
+			transportGuid = if (transportGuid_e) null else clearEntity.transportGuid,
+			remark = if (remark_e) null else clearEntity.remark,
+			conversationGuid = if (conversationGuid_e) null else clearEntity.conversationGuid,
+			subject = if (subject_e) null else clearEntity.subject,
+			invoiceIds = if (invoiceIds_e) emptySet() else clearEntity.invoiceIds,
+			parentId = if (parentId_e) null else clearEntity.parentId,
 			properties =
-				properties.encryptor.let { encryptor ->
+				properties_e.encryptor.let { encryptor ->
 					if (encryptor == null) {
 						emptySet()
 					} else {

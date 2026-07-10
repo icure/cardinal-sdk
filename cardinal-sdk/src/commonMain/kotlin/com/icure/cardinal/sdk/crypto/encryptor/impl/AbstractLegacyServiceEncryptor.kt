@@ -7,6 +7,7 @@ import com.icure.cardinal.sdk.model.embed.EncryptedService
 import com.icure.kryptom.crypto.AesAlgorithm
 import com.icure.kryptom.crypto.AesKey
 import com.icure.kryptom.crypto.CryptoService
+import com.icure.utils.InternalIcureApi
 import kotlinx.serialization.json.Json
 import kotlin.collections.component1
 import kotlin.collections.component2
@@ -15,6 +16,7 @@ import kotlin.collections.component2
  * Partial implementation of the service encryptor, which provides support for service content encryption using the
  * legacy logic for content encryption.
  */
+@InternalIcureApi
 internal abstract class AbstractLegacyServiceEncryptor : AbstractEntityEncryptor<EncryptedService, DecryptedService>() {
 	sealed interface ContentLegacyEncryptionResult {
 		data object Full : ContentLegacyEncryptionResult

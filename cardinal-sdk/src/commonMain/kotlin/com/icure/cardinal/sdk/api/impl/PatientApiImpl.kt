@@ -20,6 +20,7 @@ import com.icure.cardinal.sdk.api.raw.RawInvoiceApi
 import com.icure.cardinal.sdk.api.raw.RawPatientApi
 import com.icure.cardinal.sdk.api.raw.successBodyOrNull404
 import com.icure.cardinal.sdk.api.raw.successBodyOrThrowRevisionConflict
+import com.icure.cardinal.sdk.crypto.encryptor.impl.generated.PatientDecryptor
 import com.icure.cardinal.sdk.crypto.entities.DelegateShareOptions
 import com.icure.cardinal.sdk.crypto.entities.EntityAccessInformation
 import com.icure.cardinal.sdk.crypto.entities.EntityWithEncryptionMetadataTypeName
@@ -63,8 +64,6 @@ import com.icure.cardinal.sdk.model.specializations.HexString
 import com.icure.cardinal.sdk.model.toStoredDocumentIdentifier
 import com.icure.cardinal.sdk.options.ApiConfiguration
 import com.icure.cardinal.sdk.options.BasicApiConfiguration
-import com.icure.cardinal.sdk.options.EntitiesEncryptedFieldsManifests
-import com.icure.cardinal.sdk.options.JsonPatcher
 import com.icure.cardinal.sdk.serialization.PatientAbstractFilterSerializer
 import com.icure.cardinal.sdk.serialization.SubscriptionSerializer
 import com.icure.cardinal.sdk.subscription.EntitySubscription
@@ -84,9 +83,6 @@ private fun encryptedApiFlavour(
 	config: BasicApiConfiguration
 ): FlavouredApi<EncryptedPatient, EncryptedPatient> = FlavouredApi.encrypted(
 	config = config,
-	encryptedSerializer = EncryptedPatient.serializer(),
-	type = EntityWithEncryptionMetadataTypeName.Patient,
-	manifest = EntitiesEncryptedFieldsManifests::patient
 )
 
 @InternalIcureApi
@@ -94,11 +90,9 @@ private fun decryptedApiFlavour(
 	config: ApiConfiguration
 ): FlavouredApi<EncryptedPatient, DecryptedPatient> = FlavouredApi.decrypted(
 	config = config,
-	encryptedSerializer = EncryptedPatient.serializer(),
-	decryptedSerializer = DecryptedPatient.serializer(),
 	type = EntityWithEncryptionMetadataTypeName.Patient,
-	manifest = EntitiesEncryptedFieldsManifests::patient,
-	patchJson = JsonPatcher::patchPatient
+	encryptor = config.encryptors.patient,
+	decryptor = PatientDecryptor,
 )
 
 @InternalIcureApi
@@ -106,11 +100,9 @@ private fun tryAndRecoverApiFlavour(
 	config: ApiConfiguration
 ): FlavouredApi<EncryptedPatient, Patient> = FlavouredApi.tryAndRecover(
 	config = config,
-	encryptedSerializer = EncryptedPatient.serializer(),
-	decryptedSerializer = DecryptedPatient.serializer(),
 	type = EntityWithEncryptionMetadataTypeName.Patient,
-	manifest = EntitiesEncryptedFieldsManifests::patient,
-	patchJson = JsonPatcher::patchPatient
+	encryptor = config.encryptors.patient,
+	decryptor = PatientDecryptor,
 )
 
 @OptIn(InternalIcureApi::class)

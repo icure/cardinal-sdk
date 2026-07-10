@@ -1,6 +1,7 @@
 // This file is auto-generated
 package com.icure.cardinal.sdk.crypto.encryptor.`impl`.generated
 
+import com.icure.cardinal.sdk.crypto.encryptor.DecryptedJsonStrictness
 import com.icure.cardinal.sdk.crypto.encryptor.`impl`.AbstractEntityDecryptor
 import com.icure.cardinal.sdk.model.DecryptedInvoice
 import com.icure.cardinal.sdk.model.EncryptedInvoice
@@ -8,18 +9,18 @@ import com.icure.cardinal.sdk.utils.EntityEncryptionException
 import com.icure.kryptom.crypto.AesAlgorithm
 import com.icure.kryptom.crypto.AesKey
 import com.icure.kryptom.crypto.CryptoService
+import com.icure.utils.InternalIcureApi
 import kotlinx.serialization.json.Json
 import kotlinx.serialization.json.JsonObject
-import kotlinx.serialization.json.decodeFromJsonElement
-import kotlin.Boolean
 import kotlin.collections.Collection
 
+@InternalIcureApi
 internal object InvoiceDecryptor : AbstractEntityDecryptor<EncryptedInvoice, DecryptedInvoice>() {
 	override suspend fun decrypt(
 		decryptionKeys: Collection<AesKey<AesAlgorithm.CbcWithPkcs7Padding>>,
 		encryptedEntity: EncryptedInvoice,
 		patchDecryptedSelfJson: ((JsonObject) -> JsonObject)?,
-		ignoreUnknownDecryptedFields: Boolean,
+		decryptedJsonStrictness: DecryptedJsonStrictness,
 		encryptedContentDecoder: Json,
 		cryptoService: CryptoService,
 	): DecryptedInvoice {
@@ -36,492 +37,333 @@ internal object InvoiceDecryptor : AbstractEntityDecryptor<EncryptedInvoice, Dec
 				id = encryptedEntity.id,
 				rev = encryptedEntity.rev,
 				identifier =
-					decryptedContent["identifier"].let {
-						if (it != null) {
-							usedEncryptedContent += "identifier"
-							encryptedContentDecoder.decodeFromJsonElement(it)
-						} else {
-							encryptedEntity.identifier
-						}
-					},
+					encryptedContentDecoder.decodeDecrypted(
+						decryptedContent["identifier"]?.also { usedEncryptedContent += "identifier" },
+						encryptedEntity.identifier,
+						decryptedJsonStrictness,
+					),
 				created =
-					decryptedContent["created"].let {
-						if (it != null) {
-							usedEncryptedContent += "created"
-							encryptedContentDecoder.decodeFromJsonElement(it)
-						} else {
-							encryptedEntity.created
-						}
-					},
+					encryptedContentDecoder.decodeDecrypted(
+						decryptedContent["created"]?.also { usedEncryptedContent += "created" },
+						encryptedEntity.created,
+						decryptedJsonStrictness,
+					),
 				modified =
-					decryptedContent["modified"].let {
-						if (it != null) {
-							usedEncryptedContent += "modified"
-							encryptedContentDecoder.decodeFromJsonElement(it)
-						} else {
-							encryptedEntity.modified
-						}
-					},
+					encryptedContentDecoder.decodeDecrypted(
+						decryptedContent["modified"]?.also { usedEncryptedContent += "modified" },
+						encryptedEntity.modified,
+						decryptedJsonStrictness,
+					),
 				author =
-					decryptedContent["author"].let {
-						if (it != null) {
-							usedEncryptedContent += "author"
-							encryptedContentDecoder.decodeFromJsonElement(it)
-						} else {
-							encryptedEntity.author
-						}
-					},
+					encryptedContentDecoder.decodeDecrypted(
+						decryptedContent["author"]?.also { usedEncryptedContent += "author" },
+						encryptedEntity.author,
+						decryptedJsonStrictness,
+					),
 				responsible =
-					decryptedContent["responsible"].let {
-						if (it != null) {
-							usedEncryptedContent += "responsible"
-							encryptedContentDecoder.decodeFromJsonElement(it)
-						} else {
-							encryptedEntity.responsible
-						}
-					},
+					encryptedContentDecoder.decodeDecrypted(
+						decryptedContent["responsible"]?.also { usedEncryptedContent += "responsible" },
+						encryptedEntity.responsible,
+						decryptedJsonStrictness,
+					),
 				tags =
-					decryptedContent["tags"].let {
-						if (it != null) {
-							usedEncryptedContent += "tags"
-							encryptedContentDecoder.decodeFromJsonElement(it)
-						} else {
-							encryptedEntity.tags
-						}
-					},
+					encryptedContentDecoder.decodeDecrypted(
+						decryptedContent["tags"]?.also { usedEncryptedContent += "tags" },
+						encryptedEntity.tags,
+						decryptedJsonStrictness,
+					),
 				codes =
-					decryptedContent["codes"].let {
-						if (it != null) {
-							usedEncryptedContent += "codes"
-							encryptedContentDecoder.decodeFromJsonElement(it)
-						} else {
-							encryptedEntity.codes
-						}
-					},
+					encryptedContentDecoder.decodeDecrypted(
+						decryptedContent["codes"]?.also { usedEncryptedContent += "codes" },
+						encryptedEntity.codes,
+						decryptedJsonStrictness,
+					),
 				deletionDate = encryptedEntity.deletionDate,
 				invoiceDate =
-					decryptedContent["invoiceDate"].let {
-						if (it != null) {
-							usedEncryptedContent += "invoiceDate"
-							encryptedContentDecoder.decodeFromJsonElement(it)
-						} else {
-							encryptedEntity.invoiceDate
-						}
-					},
+					encryptedContentDecoder.decodeDecrypted(
+						decryptedContent["invoiceDate"]?.also { usedEncryptedContent += "invoiceDate" },
+						encryptedEntity.invoiceDate,
+						decryptedJsonStrictness,
+					),
 				sentDate =
-					decryptedContent["sentDate"].let {
-						if (it != null) {
-							usedEncryptedContent += "sentDate"
-							encryptedContentDecoder.decodeFromJsonElement(it)
-						} else {
-							encryptedEntity.sentDate
-						}
-					},
+					encryptedContentDecoder.decodeDecrypted(
+						decryptedContent["sentDate"]?.also { usedEncryptedContent += "sentDate" },
+						encryptedEntity.sentDate,
+						decryptedJsonStrictness,
+					),
 				printedDate =
-					decryptedContent["printedDate"].let {
-						if (it != null) {
-							usedEncryptedContent += "printedDate"
-							encryptedContentDecoder.decodeFromJsonElement(it)
-						} else {
-							encryptedEntity.printedDate
-						}
-					},
+					encryptedContentDecoder.decodeDecrypted(
+						decryptedContent["printedDate"]?.also { usedEncryptedContent += "printedDate" },
+						encryptedEntity.printedDate,
+						decryptedJsonStrictness,
+					),
 				invoicingCodes =
-					decryptedContent["invoicingCodes"].let {
-						if (it != null) {
-							usedEncryptedContent += "invoicingCodes"
-							encryptedContentDecoder.decodeFromJsonElement(it)
-						} else {
-							encryptedEntity.invoicingCodes.map { x0 ->
-								InvoicingCodeDecryptor.decrypt(
-									decryptionKeys = decryptionKeys,
-									encryptedEntity = x0,
-									patchDecryptedSelfJson = patchDecryptedSelfJson,
-									ignoreUnknownDecryptedFields = ignoreUnknownDecryptedFields,
-									encryptedContentDecoder = encryptedContentDecoder,
-									cryptoService = cryptoService,
-								)
-							}
-						}
-					},
+					encryptedContentDecoder.decodeDecrypted(
+						decryptedContent["invoicingCodes"]?.also { usedEncryptedContent += "invoicingCodes" },
+						encryptedEntity.invoicingCodes.map { x0 ->
+							InvoicingCodeDecryptor.decrypt(
+								decryptionKeys = decryptionKeys,
+								encryptedEntity = x0,
+								patchDecryptedSelfJson = patchDecryptedSelfJson,
+								decryptedJsonStrictness = decryptedJsonStrictness,
+								encryptedContentDecoder = encryptedContentDecoder,
+								cryptoService = cryptoService,
+							)
+						},
+						decryptedJsonStrictness,
+					),
 				receipts =
-					decryptedContent["receipts"].let {
-						if (it != null) {
-							usedEncryptedContent += "receipts"
-							encryptedContentDecoder.decodeFromJsonElement(it)
-						} else {
-							encryptedEntity.receipts
-						}
-					},
+					encryptedContentDecoder.decodeDecrypted(
+						decryptedContent["receipts"]?.also { usedEncryptedContent += "receipts" },
+						encryptedEntity.receipts,
+						decryptedJsonStrictness,
+					),
 				recipientId =
-					decryptedContent["recipientId"].let {
-						if (it != null) {
-							usedEncryptedContent += "recipientId"
-							encryptedContentDecoder.decodeFromJsonElement(it)
-						} else {
-							encryptedEntity.recipientId
-						}
-					},
+					encryptedContentDecoder.decodeDecrypted(
+						decryptedContent["recipientId"]?.also { usedEncryptedContent += "recipientId" },
+						encryptedEntity.recipientId,
+						decryptedJsonStrictness,
+					),
 				invoiceReference =
-					decryptedContent["invoiceReference"].let {
-						if (it != null) {
-							usedEncryptedContent += "invoiceReference"
-							encryptedContentDecoder.decodeFromJsonElement(it)
-						} else {
-							encryptedEntity.invoiceReference
-						}
-					},
+					encryptedContentDecoder.decodeDecrypted(
+						decryptedContent["invoiceReference"]?.also { usedEncryptedContent += "invoiceReference" },
+						encryptedEntity.invoiceReference,
+						decryptedJsonStrictness,
+					),
 				decisionReference =
-					decryptedContent["decisionReference"].let {
-						if (it != null) {
-							usedEncryptedContent += "decisionReference"
-							encryptedContentDecoder.decodeFromJsonElement(it)
-						} else {
-							encryptedEntity.decisionReference
-						}
-					},
+					encryptedContentDecoder.decodeDecrypted(
+						decryptedContent["decisionReference"]?.also { usedEncryptedContent += "decisionReference" },
+						encryptedEntity.decisionReference,
+						decryptedJsonStrictness,
+					),
 				thirdPartyReference =
-					decryptedContent["thirdPartyReference"].let {
-						if (it != null) {
-							usedEncryptedContent += "thirdPartyReference"
-							encryptedContentDecoder.decodeFromJsonElement(it)
-						} else {
-							encryptedEntity.thirdPartyReference
-						}
-					},
+					encryptedContentDecoder.decodeDecrypted(
+						decryptedContent["thirdPartyReference"]?.also { usedEncryptedContent += "thirdPartyReference" },
+						encryptedEntity.thirdPartyReference,
+						decryptedJsonStrictness,
+					),
 				thirdPartyPaymentJustification =
-					decryptedContent["thirdPartyPaymentJustification"].let {
-						if (it != null) {
-							usedEncryptedContent += "thirdPartyPaymentJustification"
-							encryptedContentDecoder.decodeFromJsonElement(it)
-						} else {
-							encryptedEntity.thirdPartyPaymentJustification
-						}
-					},
+					encryptedContentDecoder.decodeDecrypted(
+						decryptedContent["thirdPartyPaymentJustification"]?.also { usedEncryptedContent += "thirdPartyPaymentJustification" },
+						encryptedEntity.thirdPartyPaymentJustification,
+						decryptedJsonStrictness,
+					),
 				thirdPartyPaymentReason =
-					decryptedContent["thirdPartyPaymentReason"].let {
-						if (it != null) {
-							usedEncryptedContent += "thirdPartyPaymentReason"
-							encryptedContentDecoder.decodeFromJsonElement(it)
-						} else {
-							encryptedEntity.thirdPartyPaymentReason
-						}
-					},
+					encryptedContentDecoder.decodeDecrypted(
+						decryptedContent["thirdPartyPaymentReason"]?.also { usedEncryptedContent += "thirdPartyPaymentReason" },
+						encryptedEntity.thirdPartyPaymentReason,
+						decryptedJsonStrictness,
+					),
 				reason =
-					decryptedContent["reason"].let {
-						if (it != null) {
-							usedEncryptedContent += "reason"
-							encryptedContentDecoder.decodeFromJsonElement(it)
-						} else {
-							encryptedEntity.reason
-						}
-					},
+					encryptedContentDecoder.decodeDecrypted(
+						decryptedContent["reason"]?.also { usedEncryptedContent += "reason" },
+						encryptedEntity.reason,
+						decryptedJsonStrictness,
+					),
 				groupId =
-					decryptedContent["groupId"].let {
-						if (it != null) {
-							usedEncryptedContent += "groupId"
-							encryptedContentDecoder.decodeFromJsonElement(it)
-						} else {
-							encryptedEntity.groupId
-						}
-					},
+					encryptedContentDecoder.decodeDecrypted(
+						decryptedContent["groupId"]?.also { usedEncryptedContent += "groupId" },
+						encryptedEntity.groupId,
+						decryptedJsonStrictness,
+					),
 				paymentType =
-					decryptedContent["paymentType"].let {
-						if (it != null) {
-							usedEncryptedContent += "paymentType"
-							encryptedContentDecoder.decodeFromJsonElement(it)
-						} else {
-							encryptedEntity.paymentType
-						}
-					},
+					encryptedContentDecoder.decodeDecrypted(
+						decryptedContent["paymentType"]?.also { usedEncryptedContent += "paymentType" },
+						encryptedEntity.paymentType,
+						decryptedJsonStrictness,
+					),
 				paid =
-					decryptedContent["paid"].let {
-						if (it != null) {
-							usedEncryptedContent += "paid"
-							encryptedContentDecoder.decodeFromJsonElement(it)
-						} else {
-							encryptedEntity.paid
-						}
-					},
+					encryptedContentDecoder.decodeDecrypted(
+						decryptedContent["paid"]?.also { usedEncryptedContent += "paid" },
+						encryptedEntity.paid,
+						decryptedJsonStrictness,
+					),
 				payments =
-					decryptedContent["payments"].let {
-						if (it != null) {
-							usedEncryptedContent += "payments"
-							encryptedContentDecoder.decodeFromJsonElement(it)
-						} else {
-							encryptedEntity.payments
-						}
-					},
+					encryptedContentDecoder.decodeDecrypted(
+						decryptedContent["payments"]?.also { usedEncryptedContent += "payments" },
+						encryptedEntity.payments,
+						decryptedJsonStrictness,
+					),
 				gnotionSsin =
-					decryptedContent["gnotionSsin"].let {
-						if (it != null) {
-							usedEncryptedContent += "gnotionSsin"
-							encryptedContentDecoder.decodeFromJsonElement(it)
-						} else {
-							encryptedEntity.gnotionSsin
-						}
-					},
+					encryptedContentDecoder.decodeDecrypted(
+						decryptedContent["gnotionSsin"]?.also { usedEncryptedContent += "gnotionSsin" },
+						encryptedEntity.gnotionSsin,
+						decryptedJsonStrictness,
+					),
 				gnotionLastName =
-					decryptedContent["gnotionLastName"].let {
-						if (it != null) {
-							usedEncryptedContent += "gnotionLastName"
-							encryptedContentDecoder.decodeFromJsonElement(it)
-						} else {
-							encryptedEntity.gnotionLastName
-						}
-					},
+					encryptedContentDecoder.decodeDecrypted(
+						decryptedContent["gnotionLastName"]?.also { usedEncryptedContent += "gnotionLastName" },
+						encryptedEntity.gnotionLastName,
+						decryptedJsonStrictness,
+					),
 				gnotionFirstName =
-					decryptedContent["gnotionFirstName"].let {
-						if (it != null) {
-							usedEncryptedContent += "gnotionFirstName"
-							encryptedContentDecoder.decodeFromJsonElement(it)
-						} else {
-							encryptedEntity.gnotionFirstName
-						}
-					},
+					encryptedContentDecoder.decodeDecrypted(
+						decryptedContent["gnotionFirstName"]?.also { usedEncryptedContent += "gnotionFirstName" },
+						encryptedEntity.gnotionFirstName,
+						decryptedJsonStrictness,
+					),
 				gnotionCdHcParty =
-					decryptedContent["gnotionCdHcParty"].let {
-						if (it != null) {
-							usedEncryptedContent += "gnotionCdHcParty"
-							encryptedContentDecoder.decodeFromJsonElement(it)
-						} else {
-							encryptedEntity.gnotionCdHcParty
-						}
-					},
+					encryptedContentDecoder.decodeDecrypted(
+						decryptedContent["gnotionCdHcParty"]?.also { usedEncryptedContent += "gnotionCdHcParty" },
+						encryptedEntity.gnotionCdHcParty,
+						decryptedJsonStrictness,
+					),
 				invoicePeriod =
-					decryptedContent["invoicePeriod"].let {
-						if (it != null) {
-							usedEncryptedContent += "invoicePeriod"
-							encryptedContentDecoder.decodeFromJsonElement(it)
-						} else {
-							encryptedEntity.invoicePeriod
-						}
-					},
+					encryptedContentDecoder.decodeDecrypted(
+						decryptedContent["invoicePeriod"]?.also { usedEncryptedContent += "invoicePeriod" },
+						encryptedEntity.invoicePeriod,
+						decryptedJsonStrictness,
+					),
 				careProviderType =
-					decryptedContent["careProviderType"].let {
-						if (it != null) {
-							usedEncryptedContent += "careProviderType"
-							encryptedContentDecoder.decodeFromJsonElement(it)
-						} else {
-							encryptedEntity.careProviderType
-						}
-					},
+					encryptedContentDecoder.decodeDecrypted(
+						decryptedContent["careProviderType"]?.also { usedEncryptedContent += "careProviderType" },
+						encryptedEntity.careProviderType,
+						decryptedJsonStrictness,
+					),
 				internshipSsin =
-					decryptedContent["internshipSsin"].let {
-						if (it != null) {
-							usedEncryptedContent += "internshipSsin"
-							encryptedContentDecoder.decodeFromJsonElement(it)
-						} else {
-							encryptedEntity.internshipSsin
-						}
-					},
+					encryptedContentDecoder.decodeDecrypted(
+						decryptedContent["internshipSsin"]?.also { usedEncryptedContent += "internshipSsin" },
+						encryptedEntity.internshipSsin,
+						decryptedJsonStrictness,
+					),
 				internshipLastName =
-					decryptedContent["internshipLastName"].let {
-						if (it != null) {
-							usedEncryptedContent += "internshipLastName"
-							encryptedContentDecoder.decodeFromJsonElement(it)
-						} else {
-							encryptedEntity.internshipLastName
-						}
-					},
+					encryptedContentDecoder.decodeDecrypted(
+						decryptedContent["internshipLastName"]?.also { usedEncryptedContent += "internshipLastName" },
+						encryptedEntity.internshipLastName,
+						decryptedJsonStrictness,
+					),
 				internshipFirstName =
-					decryptedContent["internshipFirstName"].let {
-						if (it != null) {
-							usedEncryptedContent += "internshipFirstName"
-							encryptedContentDecoder.decodeFromJsonElement(it)
-						} else {
-							encryptedEntity.internshipFirstName
-						}
-					},
+					encryptedContentDecoder.decodeDecrypted(
+						decryptedContent["internshipFirstName"]?.also { usedEncryptedContent += "internshipFirstName" },
+						encryptedEntity.internshipFirstName,
+						decryptedJsonStrictness,
+					),
 				internshipCdHcParty =
-					decryptedContent["internshipCdHcParty"].let {
-						if (it != null) {
-							usedEncryptedContent += "internshipCdHcParty"
-							encryptedContentDecoder.decodeFromJsonElement(it)
-						} else {
-							encryptedEntity.internshipCdHcParty
-						}
-					},
+					encryptedContentDecoder.decodeDecrypted(
+						decryptedContent["internshipCdHcParty"]?.also { usedEncryptedContent += "internshipCdHcParty" },
+						encryptedEntity.internshipCdHcParty,
+						decryptedJsonStrictness,
+					),
 				internshipCbe =
-					decryptedContent["internshipCbe"].let {
-						if (it != null) {
-							usedEncryptedContent += "internshipCbe"
-							encryptedContentDecoder.decodeFromJsonElement(it)
-						} else {
-							encryptedEntity.internshipCbe
-						}
-					},
+					encryptedContentDecoder.decodeDecrypted(
+						decryptedContent["internshipCbe"]?.also { usedEncryptedContent += "internshipCbe" },
+						encryptedEntity.internshipCbe,
+						decryptedJsonStrictness,
+					),
 				supervisorSsin =
-					decryptedContent["supervisorSsin"].let {
-						if (it != null) {
-							usedEncryptedContent += "supervisorSsin"
-							encryptedContentDecoder.decodeFromJsonElement(it)
-						} else {
-							encryptedEntity.supervisorSsin
-						}
-					},
+					encryptedContentDecoder.decodeDecrypted(
+						decryptedContent["supervisorSsin"]?.also { usedEncryptedContent += "supervisorSsin" },
+						encryptedEntity.supervisorSsin,
+						decryptedJsonStrictness,
+					),
 				supervisorLastName =
-					decryptedContent["supervisorLastName"].let {
-						if (it != null) {
-							usedEncryptedContent += "supervisorLastName"
-							encryptedContentDecoder.decodeFromJsonElement(it)
-						} else {
-							encryptedEntity.supervisorLastName
-						}
-					},
+					encryptedContentDecoder.decodeDecrypted(
+						decryptedContent["supervisorLastName"]?.also { usedEncryptedContent += "supervisorLastName" },
+						encryptedEntity.supervisorLastName,
+						decryptedJsonStrictness,
+					),
 				supervisorFirstName =
-					decryptedContent["supervisorFirstName"].let {
-						if (it != null) {
-							usedEncryptedContent += "supervisorFirstName"
-							encryptedContentDecoder.decodeFromJsonElement(it)
-						} else {
-							encryptedEntity.supervisorFirstName
-						}
-					},
+					encryptedContentDecoder.decodeDecrypted(
+						decryptedContent["supervisorFirstName"]?.also { usedEncryptedContent += "supervisorFirstName" },
+						encryptedEntity.supervisorFirstName,
+						decryptedJsonStrictness,
+					),
 				supervisorCdHcParty =
-					decryptedContent["supervisorCdHcParty"].let {
-						if (it != null) {
-							usedEncryptedContent += "supervisorCdHcParty"
-							encryptedContentDecoder.decodeFromJsonElement(it)
-						} else {
-							encryptedEntity.supervisorCdHcParty
-						}
-					},
+					encryptedContentDecoder.decodeDecrypted(
+						decryptedContent["supervisorCdHcParty"]?.also { usedEncryptedContent += "supervisorCdHcParty" },
+						encryptedEntity.supervisorCdHcParty,
+						decryptedJsonStrictness,
+					),
 				supervisorCbe =
-					decryptedContent["supervisorCbe"].let {
-						if (it != null) {
-							usedEncryptedContent += "supervisorCbe"
-							encryptedContentDecoder.decodeFromJsonElement(it)
-						} else {
-							encryptedEntity.supervisorCbe
-						}
-					},
+					encryptedContentDecoder.decodeDecrypted(
+						decryptedContent["supervisorCbe"]?.also { usedEncryptedContent += "supervisorCbe" },
+						encryptedEntity.supervisorCbe,
+						decryptedJsonStrictness,
+					),
 				error =
-					decryptedContent["error"].let {
-						if (it != null) {
-							usedEncryptedContent += "error"
-							encryptedContentDecoder.decodeFromJsonElement(it)
-						} else {
-							encryptedEntity.error
-						}
-					},
+					encryptedContentDecoder.decodeDecrypted(
+						decryptedContent["error"]?.also { usedEncryptedContent += "error" },
+						encryptedEntity.error,
+						decryptedJsonStrictness,
+					),
 				encounterLocationName =
-					decryptedContent["encounterLocationName"].let {
-						if (it != null) {
-							usedEncryptedContent += "encounterLocationName"
-							encryptedContentDecoder.decodeFromJsonElement(it)
-						} else {
-							encryptedEntity.encounterLocationName
-						}
-					},
+					encryptedContentDecoder.decodeDecrypted(
+						decryptedContent["encounterLocationName"]?.also { usedEncryptedContent += "encounterLocationName" },
+						encryptedEntity.encounterLocationName,
+						decryptedJsonStrictness,
+					),
 				encounterLocationNorm =
-					decryptedContent["encounterLocationNorm"].let {
-						if (it != null) {
-							usedEncryptedContent += "encounterLocationNorm"
-							encryptedContentDecoder.decodeFromJsonElement(it)
-						} else {
-							encryptedEntity.encounterLocationNorm
-						}
-					},
+					encryptedContentDecoder.decodeDecrypted(
+						decryptedContent["encounterLocationNorm"]?.also { usedEncryptedContent += "encounterLocationNorm" },
+						encryptedEntity.encounterLocationNorm,
+						decryptedJsonStrictness,
+					),
 				longDelayJustification =
-					decryptedContent["longDelayJustification"].let {
-						if (it != null) {
-							usedEncryptedContent += "longDelayJustification"
-							encryptedContentDecoder.decodeFromJsonElement(it)
-						} else {
-							encryptedEntity.longDelayJustification
-						}
-					},
+					encryptedContentDecoder.decodeDecrypted(
+						decryptedContent["longDelayJustification"]?.also { usedEncryptedContent += "longDelayJustification" },
+						encryptedEntity.longDelayJustification,
+						decryptedJsonStrictness,
+					),
 				correctiveInvoiceId =
-					decryptedContent["correctiveInvoiceId"].let {
-						if (it != null) {
-							usedEncryptedContent += "correctiveInvoiceId"
-							encryptedContentDecoder.decodeFromJsonElement(it)
-						} else {
-							encryptedEntity.correctiveInvoiceId
-						}
-					},
+					encryptedContentDecoder.decodeDecrypted(
+						decryptedContent["correctiveInvoiceId"]?.also { usedEncryptedContent += "correctiveInvoiceId" },
+						encryptedEntity.correctiveInvoiceId,
+						decryptedJsonStrictness,
+					),
 				correctedInvoiceId =
-					decryptedContent["correctedInvoiceId"].let {
-						if (it != null) {
-							usedEncryptedContent += "correctedInvoiceId"
-							encryptedContentDecoder.decodeFromJsonElement(it)
-						} else {
-							encryptedEntity.correctedInvoiceId
-						}
-					},
+					encryptedContentDecoder.decodeDecrypted(
+						decryptedContent["correctedInvoiceId"]?.also { usedEncryptedContent += "correctedInvoiceId" },
+						encryptedEntity.correctedInvoiceId,
+						decryptedJsonStrictness,
+					),
 				creditNote =
-					decryptedContent["creditNote"].let {
-						if (it != null) {
-							usedEncryptedContent += "creditNote"
-							encryptedContentDecoder.decodeFromJsonElement(it)
-						} else {
-							encryptedEntity.creditNote
-						}
-					},
+					encryptedContentDecoder.decodeDecrypted(
+						decryptedContent["creditNote"]?.also { usedEncryptedContent += "creditNote" },
+						encryptedEntity.creditNote,
+						decryptedJsonStrictness,
+					),
 				creditNoteRelatedInvoiceId =
-					decryptedContent["creditNoteRelatedInvoiceId"].let {
-						if (it != null) {
-							usedEncryptedContent += "creditNoteRelatedInvoiceId"
-							encryptedContentDecoder.decodeFromJsonElement(it)
-						} else {
-							encryptedEntity.creditNoteRelatedInvoiceId
-						}
-					},
+					encryptedContentDecoder.decodeDecrypted(
+						decryptedContent["creditNoteRelatedInvoiceId"]?.also { usedEncryptedContent += "creditNoteRelatedInvoiceId" },
+						encryptedEntity.creditNoteRelatedInvoiceId,
+						decryptedJsonStrictness,
+					),
 				idDocument =
-					decryptedContent["idDocument"].let {
-						if (it != null) {
-							usedEncryptedContent += "idDocument"
-							encryptedContentDecoder.decodeFromJsonElement(it)
-						} else {
-							encryptedEntity.idDocument
-						}
-					},
+					encryptedContentDecoder.decodeDecrypted(
+						decryptedContent["idDocument"]?.also { usedEncryptedContent += "idDocument" },
+						encryptedEntity.idDocument,
+						decryptedJsonStrictness,
+					),
 				admissionDate =
-					decryptedContent["admissionDate"].let {
-						if (it != null) {
-							usedEncryptedContent += "admissionDate"
-							encryptedContentDecoder.decodeFromJsonElement(it)
-						} else {
-							encryptedEntity.admissionDate
-						}
-					},
+					encryptedContentDecoder.decodeDecrypted(
+						decryptedContent["admissionDate"]?.also { usedEncryptedContent += "admissionDate" },
+						encryptedEntity.admissionDate,
+						decryptedJsonStrictness,
+					),
 				locationService =
-					decryptedContent["locationService"].let {
-						if (it != null) {
-							usedEncryptedContent += "locationService"
-							encryptedContentDecoder.decodeFromJsonElement(it)
-						} else {
-							encryptedEntity.locationService
-						}
-					},
+					encryptedContentDecoder.decodeDecrypted(
+						decryptedContent["locationService"]?.also { usedEncryptedContent += "locationService" },
+						encryptedEntity.locationService,
+						decryptedJsonStrictness,
+					),
 				cancelReason =
-					decryptedContent["cancelReason"].let {
-						if (it != null) {
-							usedEncryptedContent += "cancelReason"
-							encryptedContentDecoder.decodeFromJsonElement(it)
-						} else {
-							encryptedEntity.cancelReason
-						}
-					},
+					encryptedContentDecoder.decodeDecrypted(
+						decryptedContent["cancelReason"]?.also { usedEncryptedContent += "cancelReason" },
+						encryptedEntity.cancelReason,
+						decryptedJsonStrictness,
+					),
 				cancelDate =
-					decryptedContent["cancelDate"].let {
-						if (it != null) {
-							usedEncryptedContent += "cancelDate"
-							encryptedContentDecoder.decodeFromJsonElement(it)
-						} else {
-							encryptedEntity.cancelDate
-						}
-					},
+					encryptedContentDecoder.decodeDecrypted(
+						decryptedContent["cancelDate"]?.also { usedEncryptedContent += "cancelDate" },
+						encryptedEntity.cancelDate,
+						decryptedJsonStrictness,
+					),
 				options =
-					decryptedContent["options"].let {
-						if (it != null) {
-							usedEncryptedContent += "options"
-							encryptedContentDecoder.decodeFromJsonElement(it)
-						} else {
-							encryptedEntity.options
-						}
-					},
+					encryptedContentDecoder.decodeDecrypted(
+						decryptedContent["options"]?.also { usedEncryptedContent += "options" },
+						encryptedEntity.options,
+						decryptedJsonStrictness,
+					),
 				secretForeignKeys = encryptedEntity.secretForeignKeys,
 				cryptedForeignKeys = encryptedEntity.cryptedForeignKeys,
 				delegations = encryptedEntity.delegations,
@@ -529,7 +371,7 @@ internal object InvoiceDecryptor : AbstractEntityDecryptor<EncryptedInvoice, Dec
 				encryptedSelf = encryptedEntity.encryptedSelf,
 				securityMetadata = encryptedEntity.securityMetadata,
 			)
-		if (!ignoreUnknownDecryptedFields && decryptedContent.size != usedEncryptedContent.size) {
+		if (decryptedJsonStrictness == DecryptedJsonStrictness.Strict && decryptedContent.size != usedEncryptedContent.size) {
 			throw EntityEncryptionException(
 				"The Invoice encrypted content contains unexpected fields: ${decryptedContent.keys - usedEncryptedContent}",
 			)

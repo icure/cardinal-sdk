@@ -10,6 +10,7 @@ import com.icure.cardinal.sdk.model.embed.EncryptedCareTeamMember
 import com.icure.kryptom.crypto.AesAlgorithm
 import com.icure.kryptom.crypto.AesKey
 import com.icure.kryptom.crypto.CryptoService
+import com.icure.utils.InternalIcureApi
 import kotlinx.serialization.json.Json
 import kotlinx.serialization.json.JsonElement
 import kotlinx.serialization.json.JsonObject
@@ -17,13 +18,14 @@ import kotlinx.serialization.json.encodeToJsonElement
 import kotlin.Boolean
 import kotlin.String
 
+@InternalIcureApi
 internal object CareTeamMemberEncryptorFactory :
 	EntityEncryptorFactory<EncryptedCareTeamMember, DecryptedCareTeamMember> {
 	override val empty: EntityEncryptor<EncryptedCareTeamMember, DecryptedCareTeamMember> =
 		CareTeamMemberEncryptor(
-			careTeamMemberType = false,
-			healthcarePartyId = false,
-			quality = false,
+			careTeamMemberType_e = false,
+			healthcarePartyId_e = false,
+			quality_e = false,
 		)
 
 	override fun create(
@@ -32,17 +34,18 @@ internal object CareTeamMemberEncryptorFactory :
 	): EntityEncryptor<EncryptedCareTeamMember, DecryptedCareTeamMember> {
 		val manifest = encryptorFactoryContext.getManifest(entityManifestName)
 		return CareTeamMemberEncryptor(
-			careTeamMemberType = "careTeamMemberType" in manifest.fieldsToEncrypt,
-			healthcarePartyId = "healthcarePartyId" in manifest.fieldsToEncrypt,
-			quality = "quality" in manifest.fieldsToEncrypt,
+			careTeamMemberType_e = "careTeamMemberType" in manifest.fieldsToEncrypt,
+			healthcarePartyId_e = "healthcarePartyId" in manifest.fieldsToEncrypt,
+			quality_e = "quality" in manifest.fieldsToEncrypt,
 		)
 	}
 }
 
+@InternalIcureApi
 private class CareTeamMemberEncryptor(
-	private val careTeamMemberType: Boolean,
-	private val healthcarePartyId: Boolean,
-	private val quality: Boolean,
+	private val careTeamMemberType_e: Boolean,
+	private val healthcarePartyId_e: Boolean,
+	private val quality_e: Boolean,
 ) : AbstractEntityEncryptor<EncryptedCareTeamMember, DecryptedCareTeamMember>() {
 	override suspend fun encrypt(
 		encryptionKey: AesKey<AesAlgorithm.CbcWithPkcs7Padding>,
@@ -51,14 +54,24 @@ private class CareTeamMemberEncryptor(
 		cryptoService: CryptoService,
 	): EncryptedCareTeamMember {
 		val dataToEncrypt = mutableMapOf<String, JsonElement>()
-		if (careTeamMemberType) dataToEncrypt["careTeamMemberType"] = encodingJson.encodeToJsonElement(clearEntity.careTeamMemberType)
-		if (healthcarePartyId) dataToEncrypt["healthcarePartyId"] = encodingJson.encodeToJsonElement(clearEntity.healthcarePartyId)
-		if (quality) dataToEncrypt["quality"] = encodingJson.encodeToJsonElement(clearEntity.quality)
+		if (careTeamMemberType_e && clearEntity.careTeamMemberType != null) {
+			dataToEncrypt["careTeamMemberType"] =
+				encodingJson.encodeToJsonElement(
+					clearEntity.careTeamMemberType,
+				)
+		}
+		if (healthcarePartyId_e && clearEntity.healthcarePartyId != null) {
+			dataToEncrypt["healthcarePartyId"] =
+				encodingJson.encodeToJsonElement(
+					clearEntity.healthcarePartyId,
+				)
+		}
+		if (quality_e && clearEntity.quality != null) dataToEncrypt["quality"] = encodingJson.encodeToJsonElement(clearEntity.quality)
 		return EncryptedCareTeamMember(
 			id = clearEntity.id,
-			careTeamMemberType = if (careTeamMemberType) null else clearEntity.careTeamMemberType,
-			healthcarePartyId = if (healthcarePartyId) null else clearEntity.healthcarePartyId,
-			quality = if (quality) null else clearEntity.quality,
+			careTeamMemberType = if (careTeamMemberType_e) null else clearEntity.careTeamMemberType,
+			healthcarePartyId = if (healthcarePartyId_e) null else clearEntity.healthcarePartyId,
+			quality = if (quality_e) null else clearEntity.quality,
 			encryptedSelf = getUpdatedEncryptSelf(encryptionKey, clearEntity, JsonObject(dataToEncrypt), cryptoService),
 			extensions = clearEntity.extensions,
 		)

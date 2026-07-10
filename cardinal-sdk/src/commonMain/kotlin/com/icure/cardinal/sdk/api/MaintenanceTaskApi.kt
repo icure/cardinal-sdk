@@ -7,8 +7,11 @@ import com.icure.cardinal.sdk.filters.BaseSortableFilterOptions
 import com.icure.cardinal.sdk.filters.FilterOptions
 import com.icure.cardinal.sdk.filters.SortableFilterOptions
 import com.icure.cardinal.sdk.model.DecryptedMaintenanceTask
+import com.icure.cardinal.sdk.model.DecryptedPatient
 import com.icure.cardinal.sdk.model.EncryptedMaintenanceTask
+import com.icure.cardinal.sdk.model.EncryptedPatient
 import com.icure.cardinal.sdk.model.MaintenanceTask
+import com.icure.cardinal.sdk.model.Patient
 import com.icure.cardinal.sdk.model.StoredDocumentIdentifier
 import com.icure.cardinal.sdk.model.User
 import com.icure.cardinal.sdk.model.couchdb.DocIdentifier
@@ -292,19 +295,36 @@ interface MaintenanceTaskApi : MaintenanceTaskBasicFlavourlessApi, MaintenanceTa
 	suspend fun createDelegationDeAnonymizationMetadata(entity: MaintenanceTask, delegates: Set<String>)
 
 	/**
+	 * Decrypts maintenance tasks, throwing an exception if it is not possible.
+	 * @param maintenanceTasks encrypted maintenance tasks
+	 * @return the decrypted maintenance tasks
+	 * @throws EntityEncryptionException if any of the provided maintenance tasks couldn't be decrypted
+	 */
+	suspend fun decrypt(maintenanceTasks: List<EncryptedMaintenanceTask>): List<DecryptedMaintenanceTask>
+
+	/**
+	 * Tries to decrypt a maintenance tasks, returns the input if it is not possible.
+	 * @param maintenanceTasks encrypted maintenance tasks
+	 * @return all the provided maintenance task, each of them decrypted if possible or unchanged (still encrypted)
+	 */
+	suspend fun tryDecrypt(maintenanceTasks: List<EncryptedMaintenanceTask>): List<MaintenanceTask>
+
+	/**
 	 * Decrypts a maintenance task, throwing an exception if it is not possible.
 	 * @param maintenanceTask a maintenance task
 	 * @return the decrypted maintenance task
 	 * @throws EntityEncryptionException if the maintenance task could not be decrypted
 	 */
-	suspend fun decrypt(maintenanceTask: EncryptedMaintenanceTask): DecryptedMaintenanceTask
+	suspend fun decrypt(maintenanceTask: EncryptedMaintenanceTask): DecryptedMaintenanceTask =
+		decrypt(listOf(maintenanceTask)).single()
 
 	/**
 	 * Tries to decrypt a maintenance task, returns the input if it is not possible.
 	 * @param maintenanceTask an encrypted maintenance task
 	 * @return the decrypted maintenance task if the decryption was successful or the input if it was not.
 	 */
-	suspend fun tryDecrypt(maintenanceTask: EncryptedMaintenanceTask): MaintenanceTask
+	suspend fun tryDecrypt(maintenanceTask: EncryptedMaintenanceTask): MaintenanceTask =
+		tryDecrypt(listOf(maintenanceTask)).single()
 
 	/**
 	 * Give access to the encrypted flavour of the api

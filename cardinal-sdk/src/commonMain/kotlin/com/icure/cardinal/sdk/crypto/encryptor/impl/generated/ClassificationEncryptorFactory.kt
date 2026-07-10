@@ -10,6 +10,7 @@ import com.icure.cardinal.sdk.model.EncryptedClassification
 import com.icure.kryptom.crypto.AesAlgorithm
 import com.icure.kryptom.crypto.AesKey
 import com.icure.kryptom.crypto.CryptoService
+import com.icure.utils.InternalIcureApi
 import kotlinx.serialization.json.Json
 import kotlinx.serialization.json.JsonElement
 import kotlinx.serialization.json.JsonObject
@@ -17,19 +18,20 @@ import kotlinx.serialization.json.encodeToJsonElement
 import kotlin.Boolean
 import kotlin.String
 
+@InternalIcureApi
 internal object ClassificationEncryptorFactory :
 	EntityEncryptorFactory<EncryptedClassification, DecryptedClassification> {
 	override val empty: EntityEncryptor<EncryptedClassification, DecryptedClassification> =
 		ClassificationEncryptor(
-			created = false,
-			modified = false,
-			author = false,
-			responsible = false,
-			tags = false,
-			codes = false,
-			parentId = false,
-			label = false,
-			templateId = false,
+			created_e = false,
+			modified_e = false,
+			author_e = false,
+			responsible_e = false,
+			tags_e = false,
+			codes_e = false,
+			parentId_e = false,
+			label_e = false,
+			templateId_e = false,
 		)
 
 	override fun create(
@@ -38,29 +40,30 @@ internal object ClassificationEncryptorFactory :
 	): EntityEncryptor<EncryptedClassification, DecryptedClassification> {
 		val manifest = encryptorFactoryContext.getManifest(entityManifestName)
 		return ClassificationEncryptor(
-			created = "created" in manifest.fieldsToEncrypt,
-			modified = "modified" in manifest.fieldsToEncrypt,
-			author = "author" in manifest.fieldsToEncrypt,
-			responsible = "responsible" in manifest.fieldsToEncrypt,
-			tags = "tags" in manifest.fieldsToEncrypt,
-			codes = "codes" in manifest.fieldsToEncrypt,
-			parentId = "parentId" in manifest.fieldsToEncrypt,
-			label = "label" in manifest.fieldsToEncrypt,
-			templateId = "templateId" in manifest.fieldsToEncrypt,
+			created_e = "created" in manifest.fieldsToEncrypt,
+			modified_e = "modified" in manifest.fieldsToEncrypt,
+			author_e = "author" in manifest.fieldsToEncrypt,
+			responsible_e = "responsible" in manifest.fieldsToEncrypt,
+			tags_e = "tags" in manifest.fieldsToEncrypt,
+			codes_e = "codes" in manifest.fieldsToEncrypt,
+			parentId_e = "parentId" in manifest.fieldsToEncrypt,
+			label_e = "label" in manifest.fieldsToEncrypt,
+			templateId_e = "templateId" in manifest.fieldsToEncrypt,
 		)
 	}
 }
 
+@InternalIcureApi
 private class ClassificationEncryptor(
-	private val created: Boolean,
-	private val modified: Boolean,
-	private val author: Boolean,
-	private val responsible: Boolean,
-	private val tags: Boolean,
-	private val codes: Boolean,
-	private val parentId: Boolean,
-	private val label: Boolean,
-	private val templateId: Boolean,
+	private val created_e: Boolean,
+	private val modified_e: Boolean,
+	private val author_e: Boolean,
+	private val responsible_e: Boolean,
+	private val tags_e: Boolean,
+	private val codes_e: Boolean,
+	private val parentId_e: Boolean,
+	private val label_e: Boolean,
+	private val templateId_e: Boolean,
 ) : AbstractEntityEncryptor<EncryptedClassification, DecryptedClassification>() {
 	override suspend fun encrypt(
 		encryptionKey: AesKey<AesAlgorithm.CbcWithPkcs7Padding>,
@@ -69,29 +72,34 @@ private class ClassificationEncryptor(
 		cryptoService: CryptoService,
 	): EncryptedClassification {
 		val dataToEncrypt = mutableMapOf<String, JsonElement>()
-		if (created) dataToEncrypt["created"] = encodingJson.encodeToJsonElement(clearEntity.created)
-		if (modified) dataToEncrypt["modified"] = encodingJson.encodeToJsonElement(clearEntity.modified)
-		if (author) dataToEncrypt["author"] = encodingJson.encodeToJsonElement(clearEntity.author)
-		if (responsible) dataToEncrypt["responsible"] = encodingJson.encodeToJsonElement(clearEntity.responsible)
-		if (tags) dataToEncrypt["tags"] = encodingJson.encodeToJsonElement(clearEntity.tags)
-		if (codes) dataToEncrypt["codes"] = encodingJson.encodeToJsonElement(clearEntity.codes)
-		if (parentId) dataToEncrypt["parentId"] = encodingJson.encodeToJsonElement(clearEntity.parentId)
-		if (label) dataToEncrypt["label"] = encodingJson.encodeToJsonElement(clearEntity.label)
-		if (templateId) dataToEncrypt["templateId"] = encodingJson.encodeToJsonElement(clearEntity.templateId)
+		if (created_e && clearEntity.created != null) dataToEncrypt["created"] = encodingJson.encodeToJsonElement(clearEntity.created)
+		if (modified_e && clearEntity.modified != null) dataToEncrypt["modified"] = encodingJson.encodeToJsonElement(clearEntity.modified)
+		if (author_e && clearEntity.author != null) dataToEncrypt["author"] = encodingJson.encodeToJsonElement(clearEntity.author)
+		if (responsible_e && clearEntity.responsible != null) {
+			dataToEncrypt["responsible"] =
+				encodingJson.encodeToJsonElement(
+					clearEntity.responsible,
+				)
+		}
+		if (tags_e && clearEntity.tags.isNotEmpty()) dataToEncrypt["tags"] = encodingJson.encodeToJsonElement(clearEntity.tags)
+		if (codes_e && clearEntity.codes.isNotEmpty()) dataToEncrypt["codes"] = encodingJson.encodeToJsonElement(clearEntity.codes)
+		if (parentId_e && clearEntity.parentId != null) dataToEncrypt["parentId"] = encodingJson.encodeToJsonElement(clearEntity.parentId)
+		if (label_e && clearEntity.label != "") dataToEncrypt["label"] = encodingJson.encodeToJsonElement(clearEntity.label)
+		if (templateId_e && clearEntity.templateId != null) dataToEncrypt["templateId"] = encodingJson.encodeToJsonElement(clearEntity.templateId)
 		return EncryptedClassification(
 			id = clearEntity.id,
 			rev = clearEntity.rev,
-			created = if (created) null else clearEntity.created,
-			modified = if (modified) null else clearEntity.modified,
-			author = if (author) null else clearEntity.author,
-			responsible = if (responsible) null else clearEntity.responsible,
-			tags = if (tags) emptySet() else clearEntity.tags,
-			codes = if (codes) emptySet() else clearEntity.codes,
+			created = if (created_e) null else clearEntity.created,
+			modified = if (modified_e) null else clearEntity.modified,
+			author = if (author_e) null else clearEntity.author,
+			responsible = if (responsible_e) null else clearEntity.responsible,
+			tags = if (tags_e) emptySet() else clearEntity.tags,
+			codes = if (codes_e) emptySet() else clearEntity.codes,
 			endOfLife = clearEntity.endOfLife,
 			deletionDate = clearEntity.deletionDate,
-			parentId = if (parentId) null else clearEntity.parentId,
-			label = if (label) "" else clearEntity.label,
-			templateId = if (templateId) null else clearEntity.templateId,
+			parentId = if (parentId_e) null else clearEntity.parentId,
+			label = if (label_e) "" else clearEntity.label,
+			templateId = if (templateId_e) null else clearEntity.templateId,
 			secretForeignKeys = clearEntity.secretForeignKeys,
 			cryptedForeignKeys = clearEntity.cryptedForeignKeys,
 			delegations = clearEntity.delegations,

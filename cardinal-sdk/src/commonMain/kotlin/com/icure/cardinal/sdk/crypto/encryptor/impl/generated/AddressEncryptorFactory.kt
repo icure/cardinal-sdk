@@ -15,6 +15,7 @@ import com.icure.cardinal.sdk.model.embed.EncryptedTelecom
 import com.icure.kryptom.crypto.AesAlgorithm
 import com.icure.kryptom.crypto.AesKey
 import com.icure.kryptom.crypto.CryptoService
+import com.icure.utils.InternalIcureApi
 import kotlinx.serialization.json.Json
 import kotlinx.serialization.json.JsonElement
 import kotlinx.serialization.json.JsonObject
@@ -22,24 +23,25 @@ import kotlinx.serialization.json.encodeToJsonElement
 import kotlin.Boolean
 import kotlin.String
 
+@InternalIcureApi
 internal object AddressEncryptorFactory : EntityEncryptorFactory<EncryptedAddress, DecryptedAddress> {
 	override val empty: EntityEncryptor<EncryptedAddress, DecryptedAddress> =
 		AddressEncryptor(
-			tags = false,
-			codes = false,
-			identifier = false,
-			addressType = false,
-			descr = false,
-			street = false,
-			houseNumber = false,
-			postboxNumber = false,
-			postalCode = false,
-			city = false,
-			state = false,
-			country = false,
-			note = false,
-			notes = EncryptableFieldConfig.None(AnnotationEncryptorFactory),
-			telecoms = EncryptableFieldConfig.None(TelecomEncryptorFactory),
+			tags_e = false,
+			codes_e = false,
+			identifier_e = false,
+			addressType_e = false,
+			descr_e = false,
+			street_e = false,
+			houseNumber_e = false,
+			postboxNumber_e = false,
+			postalCode_e = false,
+			city_e = false,
+			state_e = false,
+			country_e = false,
+			note_e = false,
+			notes_e = EncryptableFieldConfig.None(AnnotationEncryptorFactory),
+			telecoms_e = EncryptableFieldConfig.None(TelecomEncryptorFactory),
 		)
 
 	override fun create(
@@ -48,20 +50,20 @@ internal object AddressEncryptorFactory : EntityEncryptorFactory<EncryptedAddres
 	): EntityEncryptor<EncryptedAddress, DecryptedAddress> {
 		val manifest = encryptorFactoryContext.getManifest(entityManifestName)
 		return AddressEncryptor(
-			tags = "tags" in manifest.fieldsToEncrypt,
-			codes = "codes" in manifest.fieldsToEncrypt,
-			identifier = "identifier" in manifest.fieldsToEncrypt,
-			addressType = "addressType" in manifest.fieldsToEncrypt,
-			descr = "descr" in manifest.fieldsToEncrypt,
-			street = "street" in manifest.fieldsToEncrypt,
-			houseNumber = "houseNumber" in manifest.fieldsToEncrypt,
-			postboxNumber = "postboxNumber" in manifest.fieldsToEncrypt,
-			postalCode = "postalCode" in manifest.fieldsToEncrypt,
-			city = "city" in manifest.fieldsToEncrypt,
-			state = "state" in manifest.fieldsToEncrypt,
-			country = "country" in manifest.fieldsToEncrypt,
-			note = "note" in manifest.fieldsToEncrypt,
-			notes =
+			tags_e = "tags" in manifest.fieldsToEncrypt,
+			codes_e = "codes" in manifest.fieldsToEncrypt,
+			identifier_e = "identifier" in manifest.fieldsToEncrypt,
+			addressType_e = "addressType" in manifest.fieldsToEncrypt,
+			descr_e = "descr" in manifest.fieldsToEncrypt,
+			street_e = "street" in manifest.fieldsToEncrypt,
+			houseNumber_e = "houseNumber" in manifest.fieldsToEncrypt,
+			postboxNumber_e = "postboxNumber" in manifest.fieldsToEncrypt,
+			postalCode_e = "postalCode" in manifest.fieldsToEncrypt,
+			city_e = "city" in manifest.fieldsToEncrypt,
+			state_e = "state" in manifest.fieldsToEncrypt,
+			country_e = "country" in manifest.fieldsToEncrypt,
+			note_e = "note" in manifest.fieldsToEncrypt,
+			notes_e =
 				if ("notes" in manifest.fieldsToEncrypt) {
 					EncryptableFieldConfig.Full()
 				} else {
@@ -75,7 +77,7 @@ internal object AddressEncryptorFactory : EntityEncryptorFactory<EncryptedAddres
 						)
 					} ?: EncryptableFieldConfig.None(AnnotationEncryptorFactory)
 				},
-			telecoms =
+			telecoms_e =
 				if ("telecoms" in manifest.fieldsToEncrypt) {
 					EncryptableFieldConfig.Full()
 				} else {
@@ -93,22 +95,23 @@ internal object AddressEncryptorFactory : EntityEncryptorFactory<EncryptedAddres
 	}
 }
 
+@InternalIcureApi
 private class AddressEncryptor(
-	private val tags: Boolean,
-	private val codes: Boolean,
-	private val identifier: Boolean,
-	private val addressType: Boolean,
-	private val descr: Boolean,
-	private val street: Boolean,
-	private val houseNumber: Boolean,
-	private val postboxNumber: Boolean,
-	private val postalCode: Boolean,
-	private val city: Boolean,
-	private val state: Boolean,
-	private val country: Boolean,
-	private val note: Boolean,
-	private val notes: EncryptableFieldConfig<EncryptedAnnotation, DecryptedAnnotation>,
-	private val telecoms: EncryptableFieldConfig<EncryptedTelecom, DecryptedTelecom>,
+	private val tags_e: Boolean,
+	private val codes_e: Boolean,
+	private val identifier_e: Boolean,
+	private val addressType_e: Boolean,
+	private val descr_e: Boolean,
+	private val street_e: Boolean,
+	private val houseNumber_e: Boolean,
+	private val postboxNumber_e: Boolean,
+	private val postalCode_e: Boolean,
+	private val city_e: Boolean,
+	private val state_e: Boolean,
+	private val country_e: Boolean,
+	private val note_e: Boolean,
+	private val notes_e: EncryptableFieldConfig<EncryptedAnnotation, DecryptedAnnotation>,
+	private val telecoms_e: EncryptableFieldConfig<EncryptedTelecom, DecryptedTelecom>,
 ) : AbstractEntityEncryptor<EncryptedAddress, DecryptedAddress>() {
 	override suspend fun encrypt(
 		encryptionKey: AesKey<AesAlgorithm.CbcWithPkcs7Padding>,
@@ -117,37 +120,62 @@ private class AddressEncryptor(
 		cryptoService: CryptoService,
 	): EncryptedAddress {
 		val dataToEncrypt = mutableMapOf<String, JsonElement>()
-		if (tags) dataToEncrypt["tags"] = encodingJson.encodeToJsonElement(clearEntity.tags)
-		if (codes) dataToEncrypt["codes"] = encodingJson.encodeToJsonElement(clearEntity.codes)
-		if (identifier) dataToEncrypt["identifier"] = encodingJson.encodeToJsonElement(clearEntity.identifier)
-		if (addressType) dataToEncrypt["addressType"] = encodingJson.encodeToJsonElement(clearEntity.addressType)
-		if (descr) dataToEncrypt["descr"] = encodingJson.encodeToJsonElement(clearEntity.descr)
-		if (street) dataToEncrypt["street"] = encodingJson.encodeToJsonElement(clearEntity.street)
-		if (houseNumber) dataToEncrypt["houseNumber"] = encodingJson.encodeToJsonElement(clearEntity.houseNumber)
-		if (postboxNumber) dataToEncrypt["postboxNumber"] = encodingJson.encodeToJsonElement(clearEntity.postboxNumber)
-		if (postalCode) dataToEncrypt["postalCode"] = encodingJson.encodeToJsonElement(clearEntity.postalCode)
-		if (city) dataToEncrypt["city"] = encodingJson.encodeToJsonElement(clearEntity.city)
-		if (state) dataToEncrypt["state"] = encodingJson.encodeToJsonElement(clearEntity.state)
-		if (country) dataToEncrypt["country"] = encodingJson.encodeToJsonElement(clearEntity.country)
-		if (note) dataToEncrypt["note"] = encodingJson.encodeToJsonElement(clearEntity.note)
-		if (notes.fullEncryption) dataToEncrypt["notes"] = encodingJson.encodeToJsonElement(clearEntity.notes)
-		if (telecoms.fullEncryption) dataToEncrypt["telecoms"] = encodingJson.encodeToJsonElement(clearEntity.telecoms)
+		if (tags_e && clearEntity.tags.isNotEmpty()) dataToEncrypt["tags"] = encodingJson.encodeToJsonElement(clearEntity.tags)
+		if (codes_e && clearEntity.codes.isNotEmpty()) dataToEncrypt["codes"] = encodingJson.encodeToJsonElement(clearEntity.codes)
+		if (identifier_e && clearEntity.identifier.isNotEmpty()) {
+			dataToEncrypt["identifier"] =
+				encodingJson.encodeToJsonElement(
+					clearEntity.identifier,
+				)
+		}
+		if (addressType_e && clearEntity.addressType != null) {
+			dataToEncrypt["addressType"] =
+				encodingJson.encodeToJsonElement(
+					clearEntity.addressType,
+				)
+		}
+		if (descr_e && clearEntity.descr != null) dataToEncrypt["descr"] = encodingJson.encodeToJsonElement(clearEntity.descr)
+		if (street_e && clearEntity.street != null) dataToEncrypt["street"] = encodingJson.encodeToJsonElement(clearEntity.street)
+		if (houseNumber_e && clearEntity.houseNumber != null) {
+			dataToEncrypt["houseNumber"] =
+				encodingJson.encodeToJsonElement(
+					clearEntity.houseNumber,
+				)
+		}
+		if (postboxNumber_e && clearEntity.postboxNumber != null) {
+			dataToEncrypt["postboxNumber"] =
+				encodingJson.encodeToJsonElement(
+					clearEntity.postboxNumber,
+				)
+		}
+		if (postalCode_e && clearEntity.postalCode != null) dataToEncrypt["postalCode"] = encodingJson.encodeToJsonElement(clearEntity.postalCode)
+		if (city_e && clearEntity.city != null) dataToEncrypt["city"] = encodingJson.encodeToJsonElement(clearEntity.city)
+		if (state_e && clearEntity.state != null) dataToEncrypt["state"] = encodingJson.encodeToJsonElement(clearEntity.state)
+		if (country_e && clearEntity.country != null) dataToEncrypt["country"] = encodingJson.encodeToJsonElement(clearEntity.country)
+		if (note_e && clearEntity.note != null) dataToEncrypt["note"] = encodingJson.encodeToJsonElement(clearEntity.note)
+		if (notes_e.fullEncryption && clearEntity.notes.isNotEmpty()) dataToEncrypt["notes"] = encodingJson.encodeToJsonElement(clearEntity.notes)
+		if (telecoms_e.fullEncryption && clearEntity.telecoms.isNotEmpty()) {
+			dataToEncrypt["telecoms"] =
+				encodingJson.encodeToJsonElement(
+					clearEntity.telecoms,
+				)
+		}
 		return EncryptedAddress(
-			tags = if (tags) emptySet() else clearEntity.tags,
-			codes = if (codes) emptySet() else clearEntity.codes,
-			identifier = if (identifier) emptyList() else clearEntity.identifier,
-			addressType = if (addressType) null else clearEntity.addressType,
-			descr = if (descr) null else clearEntity.descr,
-			street = if (street) null else clearEntity.street,
-			houseNumber = if (houseNumber) null else clearEntity.houseNumber,
-			postboxNumber = if (postboxNumber) null else clearEntity.postboxNumber,
-			postalCode = if (postalCode) null else clearEntity.postalCode,
-			city = if (city) null else clearEntity.city,
-			state = if (state) null else clearEntity.state,
-			country = if (country) null else clearEntity.country,
-			note = if (note) null else clearEntity.note,
+			tags = if (tags_e) emptySet() else clearEntity.tags,
+			codes = if (codes_e) emptySet() else clearEntity.codes,
+			identifier = if (identifier_e) emptyList() else clearEntity.identifier,
+			addressType = if (addressType_e) null else clearEntity.addressType,
+			descr = if (descr_e) null else clearEntity.descr,
+			street = if (street_e) null else clearEntity.street,
+			houseNumber = if (houseNumber_e) null else clearEntity.houseNumber,
+			postboxNumber = if (postboxNumber_e) null else clearEntity.postboxNumber,
+			postalCode = if (postalCode_e) null else clearEntity.postalCode,
+			city = if (city_e) null else clearEntity.city,
+			state = if (state_e) null else clearEntity.state,
+			country = if (country_e) null else clearEntity.country,
+			note = if (note_e) null else clearEntity.note,
 			notes =
-				notes.encryptor.let { encryptor ->
+				notes_e.encryptor.let { encryptor ->
 					if (encryptor == null) {
 						emptyList()
 					} else {
@@ -157,7 +185,7 @@ private class AddressEncryptor(
 					}
 				},
 			telecoms =
-				telecoms.encryptor.let { encryptor ->
+				telecoms_e.encryptor.let { encryptor ->
 					if (encryptor == null) {
 						emptyList()
 					} else {

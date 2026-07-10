@@ -1,7 +1,9 @@
 package com.icure.cardinal.sdk.crypto.encryptor
 
 import com.icure.cardinal.sdk.model.embed.Encryptable
+import com.icure.utils.InternalIcureApi
 
+@InternalIcureApi
 internal interface EntityEncryptorFactory<ENCRYPTED : Encryptable, DECRYPTED : Encryptable> {
 	/**
 	 * Initialize this entity encryptor using a manifest.

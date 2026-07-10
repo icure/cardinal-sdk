@@ -13,6 +13,7 @@ import com.icure.cardinal.sdk.api.DocumentFlavouredApi
 import com.icure.cardinal.sdk.api.raw.RawDocumentApi
 import com.icure.cardinal.sdk.api.raw.successBodyOrNull404
 import com.icure.cardinal.sdk.api.raw.successBodyOrThrowRevisionConflict
+import com.icure.cardinal.sdk.crypto.encryptor.impl.generated.DocumentDecryptor
 import com.icure.cardinal.sdk.crypto.entities.DocumentShareOptions
 import com.icure.cardinal.sdk.crypto.entities.EntityWithEncryptionMetadataTypeName
 import com.icure.cardinal.sdk.crypto.entities.OwningEntityDetails
@@ -42,8 +43,6 @@ import com.icure.cardinal.sdk.model.specializations.HexString
 import com.icure.cardinal.sdk.model.toStoredDocumentIdentifier
 import com.icure.cardinal.sdk.options.ApiConfiguration
 import com.icure.cardinal.sdk.options.BasicApiConfiguration
-import com.icure.cardinal.sdk.options.EntitiesEncryptedFieldsManifests
-import com.icure.cardinal.sdk.options.JsonPatcher
 import com.icure.cardinal.sdk.utils.EntityEncryptionException
 import com.icure.cardinal.sdk.utils.currentEpochMs
 import com.icure.cardinal.sdk.utils.generation.JsMapAsObjectArray
@@ -56,9 +55,6 @@ private fun encryptedApiFlavour(
 	config: BasicApiConfiguration
 ): FlavouredApi<EncryptedDocument, EncryptedDocument> = FlavouredApi.encrypted(
 	config = config,
-	encryptedSerializer = EncryptedDocument.serializer(),
-	type = EntityWithEncryptionMetadataTypeName.Document,
-	manifest = EntitiesEncryptedFieldsManifests::document
 )
 
 @InternalIcureApi
@@ -66,11 +62,9 @@ private fun decryptedApiFlavour(
 	config: ApiConfiguration
 ): FlavouredApi<EncryptedDocument, DecryptedDocument> = FlavouredApi.decrypted(
 	config = config,
-	encryptedSerializer = EncryptedDocument.serializer(),
-	decryptedSerializer = DecryptedDocument.serializer(),
 	type = EntityWithEncryptionMetadataTypeName.Document,
-	manifest = EntitiesEncryptedFieldsManifests::document,
-	patchJson = JsonPatcher::patchDocument
+	encryptor = config.encryptors.document,
+	decryptor = DocumentDecryptor,
 )
 
 @InternalIcureApi
@@ -78,11 +72,9 @@ private fun tryAndRecoverApiFlavour(
 	config: ApiConfiguration
 ): FlavouredApi<EncryptedDocument, Document> = FlavouredApi.tryAndRecover(
 	config = config,
-	encryptedSerializer = EncryptedDocument.serializer(),
-	decryptedSerializer = DecryptedDocument.serializer(),
 	type = EntityWithEncryptionMetadataTypeName.Document,
-	manifest = EntitiesEncryptedFieldsManifests::document,
-	patchJson = JsonPatcher::patchDocument
+	encryptor = config.encryptors.document,
+	decryptor = DocumentDecryptor,
 )
 
 @InternalIcureApi

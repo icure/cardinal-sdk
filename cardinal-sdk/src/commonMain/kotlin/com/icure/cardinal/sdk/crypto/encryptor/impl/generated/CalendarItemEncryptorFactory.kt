@@ -17,6 +17,7 @@ import com.icure.cardinal.sdk.model.embed.EncryptedCalendarItemTag
 import com.icure.kryptom.crypto.AesAlgorithm
 import com.icure.kryptom.crypto.AesKey
 import com.icure.kryptom.crypto.CryptoService
+import com.icure.utils.InternalIcureApi
 import kotlinx.serialization.json.Json
 import kotlinx.serialization.json.JsonElement
 import kotlinx.serialization.json.JsonObject
@@ -24,40 +25,41 @@ import kotlinx.serialization.json.encodeToJsonElement
 import kotlin.Boolean
 import kotlin.String
 
+@InternalIcureApi
 internal object CalendarItemEncryptorFactory :
 	EntityEncryptorFactory<EncryptedCalendarItem, DecryptedCalendarItem> {
 	override val empty: EntityEncryptor<EncryptedCalendarItem, DecryptedCalendarItem> =
 		CalendarItemEncryptor(
-			created = false,
-			modified = false,
-			author = false,
-			responsible = false,
-			tags = false,
-			codes = false,
-			title = false,
-			calendarItemTypeId = false,
-			masterCalendarItemId = false,
-			important = false,
-			homeVisit = false,
-			phoneNumber = false,
-			placeId = false,
-			address = EncryptableFieldConfig.None(AddressEncryptorFactory),
-			addressText = false,
-			startTime = false,
-			endTime = false,
-			confirmationTime = false,
-			cancellationTimestamp = false,
-			confirmationId = false,
-			duration = false,
-			allDay = false,
-			details = false,
-			wasMigrated = false,
-			agendaId = false,
-			resourceGroup = false,
-			hcpId = false,
-			recurrenceId = false,
-			meetingTags = EncryptableFieldConfig.None(CalendarItemTagEncryptorFactory),
-			properties = EncryptableFieldConfig.None(PropertyStubEncryptorFactory),
+			created_e = false,
+			modified_e = false,
+			author_e = false,
+			responsible_e = false,
+			tags_e = false,
+			codes_e = false,
+			title_e = false,
+			calendarItemTypeId_e = false,
+			masterCalendarItemId_e = false,
+			important_e = false,
+			homeVisit_e = false,
+			phoneNumber_e = false,
+			placeId_e = false,
+			address_e = EncryptableFieldConfig.None(AddressEncryptorFactory),
+			addressText_e = false,
+			startTime_e = false,
+			endTime_e = false,
+			confirmationTime_e = false,
+			cancellationTimestamp_e = false,
+			confirmationId_e = false,
+			duration_e = false,
+			allDay_e = false,
+			details_e = false,
+			wasMigrated_e = false,
+			agendaId_e = false,
+			resourceGroup_e = false,
+			hcpId_e = false,
+			recurrenceId_e = false,
+			meetingTags_e = EncryptableFieldConfig.None(CalendarItemTagEncryptorFactory),
+			properties_e = EncryptableFieldConfig.None(PropertyStubEncryptorFactory),
 		)
 
 	override fun create(
@@ -66,20 +68,20 @@ internal object CalendarItemEncryptorFactory :
 	): EntityEncryptor<EncryptedCalendarItem, DecryptedCalendarItem> {
 		val manifest = encryptorFactoryContext.getManifest(entityManifestName)
 		return CalendarItemEncryptor(
-			created = "created" in manifest.fieldsToEncrypt,
-			modified = "modified" in manifest.fieldsToEncrypt,
-			author = "author" in manifest.fieldsToEncrypt,
-			responsible = "responsible" in manifest.fieldsToEncrypt,
-			tags = "tags" in manifest.fieldsToEncrypt,
-			codes = "codes" in manifest.fieldsToEncrypt,
-			title = "title" in manifest.fieldsToEncrypt,
-			calendarItemTypeId = "calendarItemTypeId" in manifest.fieldsToEncrypt,
-			masterCalendarItemId = "masterCalendarItemId" in manifest.fieldsToEncrypt,
-			important = "important" in manifest.fieldsToEncrypt,
-			homeVisit = "homeVisit" in manifest.fieldsToEncrypt,
-			phoneNumber = "phoneNumber" in manifest.fieldsToEncrypt,
-			placeId = "placeId" in manifest.fieldsToEncrypt,
-			address =
+			created_e = "created" in manifest.fieldsToEncrypt,
+			modified_e = "modified" in manifest.fieldsToEncrypt,
+			author_e = "author" in manifest.fieldsToEncrypt,
+			responsible_e = "responsible" in manifest.fieldsToEncrypt,
+			tags_e = "tags" in manifest.fieldsToEncrypt,
+			codes_e = "codes" in manifest.fieldsToEncrypt,
+			title_e = "title" in manifest.fieldsToEncrypt,
+			calendarItemTypeId_e = "calendarItemTypeId" in manifest.fieldsToEncrypt,
+			masterCalendarItemId_e = "masterCalendarItemId" in manifest.fieldsToEncrypt,
+			important_e = "important" in manifest.fieldsToEncrypt,
+			homeVisit_e = "homeVisit" in manifest.fieldsToEncrypt,
+			phoneNumber_e = "phoneNumber" in manifest.fieldsToEncrypt,
+			placeId_e = "placeId" in manifest.fieldsToEncrypt,
+			address_e =
 				if ("address" in manifest.fieldsToEncrypt) {
 					EncryptableFieldConfig.Full()
 				} else {
@@ -93,21 +95,21 @@ internal object CalendarItemEncryptorFactory :
 						)
 					} ?: EncryptableFieldConfig.None(AddressEncryptorFactory)
 				},
-			addressText = "addressText" in manifest.fieldsToEncrypt,
-			startTime = "startTime" in manifest.fieldsToEncrypt,
-			endTime = "endTime" in manifest.fieldsToEncrypt,
-			confirmationTime = "confirmationTime" in manifest.fieldsToEncrypt,
-			cancellationTimestamp = "cancellationTimestamp" in manifest.fieldsToEncrypt,
-			confirmationId = "confirmationId" in manifest.fieldsToEncrypt,
-			duration = "duration" in manifest.fieldsToEncrypt,
-			allDay = "allDay" in manifest.fieldsToEncrypt,
-			details = "details" in manifest.fieldsToEncrypt,
-			wasMigrated = "wasMigrated" in manifest.fieldsToEncrypt,
-			agendaId = "agendaId" in manifest.fieldsToEncrypt,
-			resourceGroup = "resourceGroup" in manifest.fieldsToEncrypt,
-			hcpId = "hcpId" in manifest.fieldsToEncrypt,
-			recurrenceId = "recurrenceId" in manifest.fieldsToEncrypt,
-			meetingTags =
+			addressText_e = "addressText" in manifest.fieldsToEncrypt,
+			startTime_e = "startTime" in manifest.fieldsToEncrypt,
+			endTime_e = "endTime" in manifest.fieldsToEncrypt,
+			confirmationTime_e = "confirmationTime" in manifest.fieldsToEncrypt,
+			cancellationTimestamp_e = "cancellationTimestamp" in manifest.fieldsToEncrypt,
+			confirmationId_e = "confirmationId" in manifest.fieldsToEncrypt,
+			duration_e = "duration" in manifest.fieldsToEncrypt,
+			allDay_e = "allDay" in manifest.fieldsToEncrypt,
+			details_e = "details" in manifest.fieldsToEncrypt,
+			wasMigrated_e = "wasMigrated" in manifest.fieldsToEncrypt,
+			agendaId_e = "agendaId" in manifest.fieldsToEncrypt,
+			resourceGroup_e = "resourceGroup" in manifest.fieldsToEncrypt,
+			hcpId_e = "hcpId" in manifest.fieldsToEncrypt,
+			recurrenceId_e = "recurrenceId" in manifest.fieldsToEncrypt,
+			meetingTags_e =
 				if ("meetingTags" in manifest.fieldsToEncrypt) {
 					EncryptableFieldConfig.Full()
 				} else {
@@ -121,7 +123,7 @@ internal object CalendarItemEncryptorFactory :
 						)
 					} ?: EncryptableFieldConfig.None(CalendarItemTagEncryptorFactory)
 				},
-			properties =
+			properties_e =
 				if ("properties" in manifest.fieldsToEncrypt) {
 					EncryptableFieldConfig.Full()
 				} else {
@@ -139,37 +141,38 @@ internal object CalendarItemEncryptorFactory :
 	}
 }
 
+@InternalIcureApi
 private class CalendarItemEncryptor(
-	private val created: Boolean,
-	private val modified: Boolean,
-	private val author: Boolean,
-	private val responsible: Boolean,
-	private val tags: Boolean,
-	private val codes: Boolean,
-	private val title: Boolean,
-	private val calendarItemTypeId: Boolean,
-	private val masterCalendarItemId: Boolean,
-	private val important: Boolean,
-	private val homeVisit: Boolean,
-	private val phoneNumber: Boolean,
-	private val placeId: Boolean,
-	private val address: EncryptableFieldConfig<EncryptedAddress, DecryptedAddress>,
-	private val addressText: Boolean,
-	private val startTime: Boolean,
-	private val endTime: Boolean,
-	private val confirmationTime: Boolean,
-	private val cancellationTimestamp: Boolean,
-	private val confirmationId: Boolean,
-	private val duration: Boolean,
-	private val allDay: Boolean,
-	private val details: Boolean,
-	private val wasMigrated: Boolean,
-	private val agendaId: Boolean,
-	private val resourceGroup: Boolean,
-	private val hcpId: Boolean,
-	private val recurrenceId: Boolean,
-	private val meetingTags: EncryptableFieldConfig<EncryptedCalendarItemTag, DecryptedCalendarItemTag>,
-	private val properties: EncryptableFieldConfig<EncryptedPropertyStub, DecryptedPropertyStub>,
+	private val created_e: Boolean,
+	private val modified_e: Boolean,
+	private val author_e: Boolean,
+	private val responsible_e: Boolean,
+	private val tags_e: Boolean,
+	private val codes_e: Boolean,
+	private val title_e: Boolean,
+	private val calendarItemTypeId_e: Boolean,
+	private val masterCalendarItemId_e: Boolean,
+	private val important_e: Boolean,
+	private val homeVisit_e: Boolean,
+	private val phoneNumber_e: Boolean,
+	private val placeId_e: Boolean,
+	private val address_e: EncryptableFieldConfig<EncryptedAddress, DecryptedAddress>,
+	private val addressText_e: Boolean,
+	private val startTime_e: Boolean,
+	private val endTime_e: Boolean,
+	private val confirmationTime_e: Boolean,
+	private val cancellationTimestamp_e: Boolean,
+	private val confirmationId_e: Boolean,
+	private val duration_e: Boolean,
+	private val allDay_e: Boolean,
+	private val details_e: Boolean,
+	private val wasMigrated_e: Boolean,
+	private val agendaId_e: Boolean,
+	private val resourceGroup_e: Boolean,
+	private val hcpId_e: Boolean,
+	private val recurrenceId_e: Boolean,
+	private val meetingTags_e: EncryptableFieldConfig<EncryptedCalendarItemTag, DecryptedCalendarItemTag>,
+	private val properties_e: EncryptableFieldConfig<EncryptedPropertyStub, DecryptedPropertyStub>,
 ) : AbstractEntityEncryptor<EncryptedCalendarItem, DecryptedCalendarItem>() {
 	override suspend fun encrypt(
 		encryptionKey: AesKey<AesAlgorithm.CbcWithPkcs7Padding>,
@@ -178,55 +181,125 @@ private class CalendarItemEncryptor(
 		cryptoService: CryptoService,
 	): EncryptedCalendarItem {
 		val dataToEncrypt = mutableMapOf<String, JsonElement>()
-		if (created) dataToEncrypt["created"] = encodingJson.encodeToJsonElement(clearEntity.created)
-		if (modified) dataToEncrypt["modified"] = encodingJson.encodeToJsonElement(clearEntity.modified)
-		if (author) dataToEncrypt["author"] = encodingJson.encodeToJsonElement(clearEntity.author)
-		if (responsible) dataToEncrypt["responsible"] = encodingJson.encodeToJsonElement(clearEntity.responsible)
-		if (tags) dataToEncrypt["tags"] = encodingJson.encodeToJsonElement(clearEntity.tags)
-		if (codes) dataToEncrypt["codes"] = encodingJson.encodeToJsonElement(clearEntity.codes)
-		if (title) dataToEncrypt["title"] = encodingJson.encodeToJsonElement(clearEntity.title)
-		if (calendarItemTypeId) dataToEncrypt["calendarItemTypeId"] = encodingJson.encodeToJsonElement(clearEntity.calendarItemTypeId)
-		if (masterCalendarItemId) dataToEncrypt["masterCalendarItemId"] = encodingJson.encodeToJsonElement(clearEntity.masterCalendarItemId)
-		if (important) dataToEncrypt["important"] = encodingJson.encodeToJsonElement(clearEntity.important)
-		if (homeVisit) dataToEncrypt["homeVisit"] = encodingJson.encodeToJsonElement(clearEntity.homeVisit)
-		if (phoneNumber) dataToEncrypt["phoneNumber"] = encodingJson.encodeToJsonElement(clearEntity.phoneNumber)
-		if (placeId) dataToEncrypt["placeId"] = encodingJson.encodeToJsonElement(clearEntity.placeId)
-		if (address.fullEncryption) dataToEncrypt["address"] = encodingJson.encodeToJsonElement(clearEntity.address)
-		if (addressText) dataToEncrypt["addressText"] = encodingJson.encodeToJsonElement(clearEntity.addressText)
-		if (startTime) dataToEncrypt["startTime"] = encodingJson.encodeToJsonElement(clearEntity.startTime)
-		if (endTime) dataToEncrypt["endTime"] = encodingJson.encodeToJsonElement(clearEntity.endTime)
-		if (confirmationTime) dataToEncrypt["confirmationTime"] = encodingJson.encodeToJsonElement(clearEntity.confirmationTime)
-		if (cancellationTimestamp) dataToEncrypt["cancellationTimestamp"] = encodingJson.encodeToJsonElement(clearEntity.cancellationTimestamp)
-		if (confirmationId) dataToEncrypt["confirmationId"] = encodingJson.encodeToJsonElement(clearEntity.confirmationId)
-		if (duration) dataToEncrypt["duration"] = encodingJson.encodeToJsonElement(clearEntity.duration)
-		if (allDay) dataToEncrypt["allDay"] = encodingJson.encodeToJsonElement(clearEntity.allDay)
-		if (details) dataToEncrypt["details"] = encodingJson.encodeToJsonElement(clearEntity.details)
-		if (wasMigrated) dataToEncrypt["wasMigrated"] = encodingJson.encodeToJsonElement(clearEntity.wasMigrated)
-		if (agendaId) dataToEncrypt["agendaId"] = encodingJson.encodeToJsonElement(clearEntity.agendaId)
-		if (resourceGroup) dataToEncrypt["resourceGroup"] = encodingJson.encodeToJsonElement(clearEntity.resourceGroup)
-		if (hcpId) dataToEncrypt["hcpId"] = encodingJson.encodeToJsonElement(clearEntity.hcpId)
-		if (recurrenceId) dataToEncrypt["recurrenceId"] = encodingJson.encodeToJsonElement(clearEntity.recurrenceId)
-		if (meetingTags.fullEncryption) dataToEncrypt["meetingTags"] = encodingJson.encodeToJsonElement(clearEntity.meetingTags)
-		if (properties.fullEncryption) dataToEncrypt["properties"] = encodingJson.encodeToJsonElement(clearEntity.properties)
+		if (created_e && clearEntity.created != null) dataToEncrypt["created"] = encodingJson.encodeToJsonElement(clearEntity.created)
+		if (modified_e && clearEntity.modified != null) dataToEncrypt["modified"] = encodingJson.encodeToJsonElement(clearEntity.modified)
+		if (author_e && clearEntity.author != null) dataToEncrypt["author"] = encodingJson.encodeToJsonElement(clearEntity.author)
+		if (responsible_e && clearEntity.responsible != null) {
+			dataToEncrypt["responsible"] =
+				encodingJson.encodeToJsonElement(
+					clearEntity.responsible,
+				)
+		}
+		if (tags_e && clearEntity.tags.isNotEmpty()) dataToEncrypt["tags"] = encodingJson.encodeToJsonElement(clearEntity.tags)
+		if (codes_e && clearEntity.codes.isNotEmpty()) dataToEncrypt["codes"] = encodingJson.encodeToJsonElement(clearEntity.codes)
+		if (title_e && clearEntity.title != null) dataToEncrypt["title"] = encodingJson.encodeToJsonElement(clearEntity.title)
+		if (calendarItemTypeId_e && clearEntity.calendarItemTypeId != null) {
+			dataToEncrypt["calendarItemTypeId"] =
+				encodingJson.encodeToJsonElement(
+					clearEntity.calendarItemTypeId,
+				)
+		}
+		if (masterCalendarItemId_e && clearEntity.masterCalendarItemId != null) {
+			dataToEncrypt["masterCalendarItemId"] =
+				encodingJson.encodeToJsonElement(
+					clearEntity.masterCalendarItemId,
+				)
+		}
+		if (important_e && clearEntity.important != null) dataToEncrypt["important"] = encodingJson.encodeToJsonElement(clearEntity.important)
+		if (homeVisit_e && clearEntity.homeVisit != null) dataToEncrypt["homeVisit"] = encodingJson.encodeToJsonElement(clearEntity.homeVisit)
+		if (phoneNumber_e && clearEntity.phoneNumber != null) {
+			dataToEncrypt["phoneNumber"] =
+				encodingJson.encodeToJsonElement(
+					clearEntity.phoneNumber,
+				)
+		}
+		if (placeId_e && clearEntity.placeId != null) dataToEncrypt["placeId"] = encodingJson.encodeToJsonElement(clearEntity.placeId)
+		if (address_e.fullEncryption && clearEntity.address != null) {
+			dataToEncrypt["address"] =
+				encodingJson.encodeToJsonElement(
+					clearEntity.address,
+				)
+		}
+		if (addressText_e && clearEntity.addressText != null) {
+			dataToEncrypt["addressText"] =
+				encodingJson.encodeToJsonElement(
+					clearEntity.addressText,
+				)
+		}
+		if (startTime_e && clearEntity.startTime != null) dataToEncrypt["startTime"] = encodingJson.encodeToJsonElement(clearEntity.startTime)
+		if (endTime_e && clearEntity.endTime != null) dataToEncrypt["endTime"] = encodingJson.encodeToJsonElement(clearEntity.endTime)
+		if (confirmationTime_e && clearEntity.confirmationTime != null) {
+			dataToEncrypt["confirmationTime"] =
+				encodingJson.encodeToJsonElement(
+					clearEntity.confirmationTime,
+				)
+		}
+		if (cancellationTimestamp_e && clearEntity.cancellationTimestamp != null) {
+			dataToEncrypt["cancellationTimestamp"] =
+				encodingJson.encodeToJsonElement(
+					clearEntity.cancellationTimestamp,
+				)
+		}
+		if (confirmationId_e && clearEntity.confirmationId != null) {
+			dataToEncrypt["confirmationId"] =
+				encodingJson.encodeToJsonElement(
+					clearEntity.confirmationId,
+				)
+		}
+		if (duration_e && clearEntity.duration != null) dataToEncrypt["duration"] = encodingJson.encodeToJsonElement(clearEntity.duration)
+		if (allDay_e && clearEntity.allDay != null) dataToEncrypt["allDay"] = encodingJson.encodeToJsonElement(clearEntity.allDay)
+		if (details_e && clearEntity.details != null) dataToEncrypt["details"] = encodingJson.encodeToJsonElement(clearEntity.details)
+		if (wasMigrated_e && clearEntity.wasMigrated != null) {
+			dataToEncrypt["wasMigrated"] =
+				encodingJson.encodeToJsonElement(
+					clearEntity.wasMigrated,
+				)
+		}
+		if (agendaId_e && clearEntity.agendaId != null) dataToEncrypt["agendaId"] = encodingJson.encodeToJsonElement(clearEntity.agendaId)
+		if (resourceGroup_e && clearEntity.resourceGroup != null) {
+			dataToEncrypt["resourceGroup"] =
+				encodingJson.encodeToJsonElement(
+					clearEntity.resourceGroup,
+				)
+		}
+		if (hcpId_e && clearEntity.hcpId != null) dataToEncrypt["hcpId"] = encodingJson.encodeToJsonElement(clearEntity.hcpId)
+		if (recurrenceId_e && clearEntity.recurrenceId != null) {
+			dataToEncrypt["recurrenceId"] =
+				encodingJson.encodeToJsonElement(
+					clearEntity.recurrenceId,
+				)
+		}
+		if (meetingTags_e.fullEncryption && clearEntity.meetingTags.isNotEmpty()) {
+			dataToEncrypt["meetingTags"] =
+				encodingJson.encodeToJsonElement(
+					clearEntity.meetingTags,
+				)
+		}
+		if (properties_e.fullEncryption && clearEntity.properties.isNotEmpty()) {
+			dataToEncrypt["properties"] =
+				encodingJson.encodeToJsonElement(
+					clearEntity.properties,
+				)
+		}
 		return EncryptedCalendarItem(
 			id = clearEntity.id,
 			rev = clearEntity.rev,
-			created = if (created) null else clearEntity.created,
-			modified = if (modified) null else clearEntity.modified,
-			author = if (author) null else clearEntity.author,
-			responsible = if (responsible) null else clearEntity.responsible,
-			tags = if (tags) emptySet() else clearEntity.tags,
-			codes = if (codes) emptySet() else clearEntity.codes,
+			created = if (created_e) null else clearEntity.created,
+			modified = if (modified_e) null else clearEntity.modified,
+			author = if (author_e) null else clearEntity.author,
+			responsible = if (responsible_e) null else clearEntity.responsible,
+			tags = if (tags_e) emptySet() else clearEntity.tags,
+			codes = if (codes_e) emptySet() else clearEntity.codes,
 			deletionDate = clearEntity.deletionDate,
-			title = if (title) null else clearEntity.title,
-			calendarItemTypeId = if (calendarItemTypeId) null else clearEntity.calendarItemTypeId,
-			masterCalendarItemId = if (masterCalendarItemId) null else clearEntity.masterCalendarItemId,
-			important = if (important) null else clearEntity.important,
-			homeVisit = if (homeVisit) null else clearEntity.homeVisit,
-			phoneNumber = if (phoneNumber) null else clearEntity.phoneNumber,
-			placeId = if (placeId) null else clearEntity.placeId,
+			title = if (title_e) null else clearEntity.title,
+			calendarItemTypeId = if (calendarItemTypeId_e) null else clearEntity.calendarItemTypeId,
+			masterCalendarItemId = if (masterCalendarItemId_e) null else clearEntity.masterCalendarItemId,
+			important = if (important_e) null else clearEntity.important,
+			homeVisit = if (homeVisit_e) null else clearEntity.homeVisit,
+			phoneNumber = if (phoneNumber_e) null else clearEntity.phoneNumber,
+			placeId = if (placeId_e) null else clearEntity.placeId,
 			address =
-				address.encryptor.let { encryptor ->
+				address_e.encryptor.let { encryptor ->
 					if (encryptor == null) {
 						null
 					} else {
@@ -235,23 +308,23 @@ private class CalendarItemEncryptor(
 						}
 					}
 				},
-			addressText = if (addressText) null else clearEntity.addressText,
-			startTime = if (startTime) null else clearEntity.startTime,
-			endTime = if (endTime) null else clearEntity.endTime,
-			confirmationTime = if (confirmationTime) null else clearEntity.confirmationTime,
-			cancellationTimestamp = if (cancellationTimestamp) null else clearEntity.cancellationTimestamp,
-			confirmationId = if (confirmationId) null else clearEntity.confirmationId,
-			duration = if (duration) null else clearEntity.duration,
-			allDay = if (allDay) null else clearEntity.allDay,
-			details = if (details) null else clearEntity.details,
-			wasMigrated = if (wasMigrated) null else clearEntity.wasMigrated,
-			agendaId = if (agendaId) null else clearEntity.agendaId,
-			resourceGroup = if (resourceGroup) null else clearEntity.resourceGroup,
+			addressText = if (addressText_e) null else clearEntity.addressText,
+			startTime = if (startTime_e) null else clearEntity.startTime,
+			endTime = if (endTime_e) null else clearEntity.endTime,
+			confirmationTime = if (confirmationTime_e) null else clearEntity.confirmationTime,
+			cancellationTimestamp = if (cancellationTimestamp_e) null else clearEntity.cancellationTimestamp,
+			confirmationId = if (confirmationId_e) null else clearEntity.confirmationId,
+			duration = if (duration_e) null else clearEntity.duration,
+			allDay = if (allDay_e) null else clearEntity.allDay,
+			details = if (details_e) null else clearEntity.details,
+			wasMigrated = if (wasMigrated_e) null else clearEntity.wasMigrated,
+			agendaId = if (agendaId_e) null else clearEntity.agendaId,
+			resourceGroup = if (resourceGroup_e) null else clearEntity.resourceGroup,
 			availabilitiesAssignmentStrategy = clearEntity.availabilitiesAssignmentStrategy,
-			hcpId = if (hcpId) null else clearEntity.hcpId,
-			recurrenceId = if (recurrenceId) null else clearEntity.recurrenceId,
+			hcpId = if (hcpId_e) null else clearEntity.hcpId,
+			recurrenceId = if (recurrenceId_e) null else clearEntity.recurrenceId,
 			meetingTags =
-				meetingTags.encryptor.let { encryptor ->
+				meetingTags_e.encryptor.let { encryptor ->
 					if (encryptor == null) {
 						emptySet()
 					} else {
@@ -261,7 +334,7 @@ private class CalendarItemEncryptor(
 					}
 				},
 			properties =
-				properties.encryptor.let { encryptor ->
+				properties_e.encryptor.let { encryptor ->
 					if (encryptor == null) {
 						emptySet()
 					} else {

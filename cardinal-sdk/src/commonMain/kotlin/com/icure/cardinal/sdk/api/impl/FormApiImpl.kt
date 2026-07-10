@@ -13,6 +13,7 @@ import com.icure.cardinal.sdk.api.FormFlavouredApi
 import com.icure.cardinal.sdk.api.raw.RawFormApi
 import com.icure.cardinal.sdk.api.raw.successBodyOrNull404
 import com.icure.cardinal.sdk.api.raw.successBodyOrThrowRevisionConflict
+import com.icure.cardinal.sdk.crypto.encryptor.impl.generated.FormDecryptor
 import com.icure.cardinal.sdk.crypto.entities.FormShareOptions
 import com.icure.cardinal.sdk.crypto.entities.EntityWithEncryptionMetadataTypeName
 import com.icure.cardinal.sdk.crypto.entities.OwningEntityDetails
@@ -43,24 +44,17 @@ import com.icure.cardinal.sdk.model.specializations.HexString
 import com.icure.cardinal.sdk.model.toStoredDocumentIdentifier
 import com.icure.cardinal.sdk.options.ApiConfiguration
 import com.icure.cardinal.sdk.options.BasicApiConfiguration
-import com.icure.cardinal.sdk.options.EntitiesEncryptedFieldsManifests
-import com.icure.cardinal.sdk.options.JsonPatcher
-import com.icure.cardinal.sdk.utils.Serialization
 import com.icure.cardinal.sdk.utils.currentEpochMs
 import com.icure.cardinal.sdk.utils.generation.JsMapAsObjectArray
 import com.icure.cardinal.sdk.utils.pagination.IdsPageIterator
 import com.icure.cardinal.sdk.utils.pagination.PaginatedListIterator
 import com.icure.utils.InternalIcureApi
-import kotlinx.serialization.json.decodeFromJsonElement
 
 @InternalIcureApi
 private fun encryptedApiFlavour(
 	config: BasicApiConfiguration
 ): FlavouredApi<EncryptedForm, EncryptedForm> = FlavouredApi.encrypted(
 	config = config,
-	encryptedSerializer = EncryptedForm.serializer(),
-	type = EntityWithEncryptionMetadataTypeName.Form,
-	manifest = EntitiesEncryptedFieldsManifests::form
 )
 
 @InternalIcureApi
@@ -68,11 +62,9 @@ private fun decryptedApiFlavour(
 	config: ApiConfiguration
 ): FlavouredApi<EncryptedForm, DecryptedForm> = FlavouredApi.decrypted(
 	config = config,
-	encryptedSerializer = EncryptedForm.serializer(),
-	decryptedSerializer = DecryptedForm.serializer(),
 	type = EntityWithEncryptionMetadataTypeName.Form,
-	manifest = EntitiesEncryptedFieldsManifests::form,
-	patchJson = JsonPatcher::patchForm
+	encryptor = config.encryptors.form,
+	decryptor = FormDecryptor,
 )
 
 @InternalIcureApi
@@ -80,11 +72,9 @@ private fun tryAndRecoverApiFlavour(
 	config: ApiConfiguration
 ): FlavouredApi<EncryptedForm, Form> = FlavouredApi.tryAndRecover(
 	config = config,
-	encryptedSerializer = EncryptedForm.serializer(),
-	decryptedSerializer = DecryptedForm.serializer(),
 	type = EntityWithEncryptionMetadataTypeName.Form,
-	manifest = EntitiesEncryptedFieldsManifests::form,
-	patchJson = JsonPatcher::patchForm
+	encryptor = config.encryptors.form,
+	decryptor = FormDecryptor,
 )
 
 @InternalIcureApi
@@ -858,20 +848,10 @@ private class FormApiImpl(
 	}
 
 	override suspend fun decrypt(form: EncryptedForm): DecryptedForm =
-		config.crypto.entity.decryptEntities(
-			null,
-			listOf(form),
-			EntityWithEncryptionMetadataTypeName.Form,
-			EncryptedForm.serializer(),
-		) { Serialization.json.decodeFromJsonElement<DecryptedForm>(config.jsonPatcher.patchForm(it)) }.single()
+		decryptedFlavour.maybeDecrypt(null, form)
 
 	override suspend fun tryDecrypt(form: EncryptedForm): Form =
-		config.crypto.entity.tryDecryptEntities(
-			null,
-			listOf(form),
-			EntityWithEncryptionMetadataTypeName.Form,
-			EncryptedForm.serializer(),
-		) { Serialization.json.decodeFromJsonElement<DecryptedForm>(config.jsonPatcher.patchForm(it)) }.single()
+		tryAndRecoverFlavour.maybeDecrypt(null, form)
 
 	override suspend fun matchFormsBy(filter: FilterOptions<Form>): List<String> = doMatchFormsBy(groupId = null, filter = filter)
 

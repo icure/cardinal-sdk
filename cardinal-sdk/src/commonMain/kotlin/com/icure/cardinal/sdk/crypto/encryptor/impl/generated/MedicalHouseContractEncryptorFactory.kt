@@ -10,6 +10,7 @@ import com.icure.cardinal.sdk.model.embed.EncryptedMedicalHouseContract
 import com.icure.kryptom.crypto.AesAlgorithm
 import com.icure.kryptom.crypto.AesKey
 import com.icure.kryptom.crypto.CryptoService
+import com.icure.utils.InternalIcureApi
 import kotlinx.serialization.json.Json
 import kotlinx.serialization.json.JsonElement
 import kotlinx.serialization.json.JsonObject
@@ -17,42 +18,43 @@ import kotlinx.serialization.json.encodeToJsonElement
 import kotlin.Boolean
 import kotlin.String
 
+@InternalIcureApi
 internal object MedicalHouseContractEncryptorFactory :
 	EntityEncryptorFactory<EncryptedMedicalHouseContract, DecryptedMedicalHouseContract> {
 	override val empty: EntityEncryptor<EncryptedMedicalHouseContract, DecryptedMedicalHouseContract> =
 		MedicalHouseContractEncryptor(
-			contractId = false,
-			validFrom = false,
-			validTo = false,
-			mmNihii = false,
-			hcpId = false,
-			changeType = false,
-			parentContractId = false,
-			changedBy = false,
-			startOfContract = false,
-			startOfCoverage = false,
-			endOfContract = false,
-			endOfCoverage = false,
-			kine = false,
-			gp = false,
-			ptd = false,
-			nurse = false,
-			noKine = false,
-			noGp = false,
-			noNurse = false,
-			unsubscriptionReasonId = false,
-			ptdStart = false,
-			ptdEnd = false,
-			ptdLastInvoiced = false,
-			startOfSuspension = false,
-			endOfSuspension = false,
-			suspensionReason = false,
-			suspensionSource = false,
-			forcedSuspension = false,
-			signatureType = false,
-			status = false,
-			options = false,
-			receipts = false,
+			contractId_e = false,
+			validFrom_e = false,
+			validTo_e = false,
+			mmNihii_e = false,
+			hcpId_e = false,
+			changeType_e = false,
+			parentContractId_e = false,
+			changedBy_e = false,
+			startOfContract_e = false,
+			startOfCoverage_e = false,
+			endOfContract_e = false,
+			endOfCoverage_e = false,
+			kine_e = false,
+			gp_e = false,
+			ptd_e = false,
+			nurse_e = false,
+			noKine_e = false,
+			noGp_e = false,
+			noNurse_e = false,
+			unsubscriptionReasonId_e = false,
+			ptdStart_e = false,
+			ptdEnd_e = false,
+			ptdLastInvoiced_e = false,
+			startOfSuspension_e = false,
+			endOfSuspension_e = false,
+			suspensionReason_e = false,
+			suspensionSource_e = false,
+			forcedSuspension_e = false,
+			signatureType_e = false,
+			status_e = false,
+			options_e = false,
+			receipts_e = false,
 		)
 
 	override fun create(
@@ -61,75 +63,76 @@ internal object MedicalHouseContractEncryptorFactory :
 	): EntityEncryptor<EncryptedMedicalHouseContract, DecryptedMedicalHouseContract> {
 		val manifest = encryptorFactoryContext.getManifest(entityManifestName)
 		return MedicalHouseContractEncryptor(
-			contractId = "contractId" in manifest.fieldsToEncrypt,
-			validFrom = "validFrom" in manifest.fieldsToEncrypt,
-			validTo = "validTo" in manifest.fieldsToEncrypt,
-			mmNihii = "mmNihii" in manifest.fieldsToEncrypt,
-			hcpId = "hcpId" in manifest.fieldsToEncrypt,
-			changeType = "changeType" in manifest.fieldsToEncrypt,
-			parentContractId = "parentContractId" in manifest.fieldsToEncrypt,
-			changedBy = "changedBy" in manifest.fieldsToEncrypt,
-			startOfContract = "startOfContract" in manifest.fieldsToEncrypt,
-			startOfCoverage = "startOfCoverage" in manifest.fieldsToEncrypt,
-			endOfContract = "endOfContract" in manifest.fieldsToEncrypt,
-			endOfCoverage = "endOfCoverage" in manifest.fieldsToEncrypt,
-			kine = "kine" in manifest.fieldsToEncrypt,
-			gp = "gp" in manifest.fieldsToEncrypt,
-			ptd = "ptd" in manifest.fieldsToEncrypt,
-			nurse = "nurse" in manifest.fieldsToEncrypt,
-			noKine = "noKine" in manifest.fieldsToEncrypt,
-			noGp = "noGp" in manifest.fieldsToEncrypt,
-			noNurse = "noNurse" in manifest.fieldsToEncrypt,
-			unsubscriptionReasonId = "unsubscriptionReasonId" in manifest.fieldsToEncrypt,
-			ptdStart = "ptdStart" in manifest.fieldsToEncrypt,
-			ptdEnd = "ptdEnd" in manifest.fieldsToEncrypt,
-			ptdLastInvoiced = "ptdLastInvoiced" in manifest.fieldsToEncrypt,
-			startOfSuspension = "startOfSuspension" in manifest.fieldsToEncrypt,
-			endOfSuspension = "endOfSuspension" in manifest.fieldsToEncrypt,
-			suspensionReason = "suspensionReason" in manifest.fieldsToEncrypt,
-			suspensionSource = "suspensionSource" in manifest.fieldsToEncrypt,
-			forcedSuspension = "forcedSuspension" in manifest.fieldsToEncrypt,
-			signatureType = "signatureType" in manifest.fieldsToEncrypt,
-			status = "status" in manifest.fieldsToEncrypt,
-			options = "options" in manifest.fieldsToEncrypt,
-			receipts = "receipts" in manifest.fieldsToEncrypt,
+			contractId_e = "contractId" in manifest.fieldsToEncrypt,
+			validFrom_e = "validFrom" in manifest.fieldsToEncrypt,
+			validTo_e = "validTo" in manifest.fieldsToEncrypt,
+			mmNihii_e = "mmNihii" in manifest.fieldsToEncrypt,
+			hcpId_e = "hcpId" in manifest.fieldsToEncrypt,
+			changeType_e = "changeType" in manifest.fieldsToEncrypt,
+			parentContractId_e = "parentContractId" in manifest.fieldsToEncrypt,
+			changedBy_e = "changedBy" in manifest.fieldsToEncrypt,
+			startOfContract_e = "startOfContract" in manifest.fieldsToEncrypt,
+			startOfCoverage_e = "startOfCoverage" in manifest.fieldsToEncrypt,
+			endOfContract_e = "endOfContract" in manifest.fieldsToEncrypt,
+			endOfCoverage_e = "endOfCoverage" in manifest.fieldsToEncrypt,
+			kine_e = "kine" in manifest.fieldsToEncrypt,
+			gp_e = "gp" in manifest.fieldsToEncrypt,
+			ptd_e = "ptd" in manifest.fieldsToEncrypt,
+			nurse_e = "nurse" in manifest.fieldsToEncrypt,
+			noKine_e = "noKine" in manifest.fieldsToEncrypt,
+			noGp_e = "noGp" in manifest.fieldsToEncrypt,
+			noNurse_e = "noNurse" in manifest.fieldsToEncrypt,
+			unsubscriptionReasonId_e = "unsubscriptionReasonId" in manifest.fieldsToEncrypt,
+			ptdStart_e = "ptdStart" in manifest.fieldsToEncrypt,
+			ptdEnd_e = "ptdEnd" in manifest.fieldsToEncrypt,
+			ptdLastInvoiced_e = "ptdLastInvoiced" in manifest.fieldsToEncrypt,
+			startOfSuspension_e = "startOfSuspension" in manifest.fieldsToEncrypt,
+			endOfSuspension_e = "endOfSuspension" in manifest.fieldsToEncrypt,
+			suspensionReason_e = "suspensionReason" in manifest.fieldsToEncrypt,
+			suspensionSource_e = "suspensionSource" in manifest.fieldsToEncrypt,
+			forcedSuspension_e = "forcedSuspension" in manifest.fieldsToEncrypt,
+			signatureType_e = "signatureType" in manifest.fieldsToEncrypt,
+			status_e = "status" in manifest.fieldsToEncrypt,
+			options_e = "options" in manifest.fieldsToEncrypt,
+			receipts_e = "receipts" in manifest.fieldsToEncrypt,
 		)
 	}
 }
 
+@InternalIcureApi
 private class MedicalHouseContractEncryptor(
-	private val contractId: Boolean,
-	private val validFrom: Boolean,
-	private val validTo: Boolean,
-	private val mmNihii: Boolean,
-	private val hcpId: Boolean,
-	private val changeType: Boolean,
-	private val parentContractId: Boolean,
-	private val changedBy: Boolean,
-	private val startOfContract: Boolean,
-	private val startOfCoverage: Boolean,
-	private val endOfContract: Boolean,
-	private val endOfCoverage: Boolean,
-	private val kine: Boolean,
-	private val gp: Boolean,
-	private val ptd: Boolean,
-	private val nurse: Boolean,
-	private val noKine: Boolean,
-	private val noGp: Boolean,
-	private val noNurse: Boolean,
-	private val unsubscriptionReasonId: Boolean,
-	private val ptdStart: Boolean,
-	private val ptdEnd: Boolean,
-	private val ptdLastInvoiced: Boolean,
-	private val startOfSuspension: Boolean,
-	private val endOfSuspension: Boolean,
-	private val suspensionReason: Boolean,
-	private val suspensionSource: Boolean,
-	private val forcedSuspension: Boolean,
-	private val signatureType: Boolean,
-	private val status: Boolean,
-	private val options: Boolean,
-	private val receipts: Boolean,
+	private val contractId_e: Boolean,
+	private val validFrom_e: Boolean,
+	private val validTo_e: Boolean,
+	private val mmNihii_e: Boolean,
+	private val hcpId_e: Boolean,
+	private val changeType_e: Boolean,
+	private val parentContractId_e: Boolean,
+	private val changedBy_e: Boolean,
+	private val startOfContract_e: Boolean,
+	private val startOfCoverage_e: Boolean,
+	private val endOfContract_e: Boolean,
+	private val endOfCoverage_e: Boolean,
+	private val kine_e: Boolean,
+	private val gp_e: Boolean,
+	private val ptd_e: Boolean,
+	private val nurse_e: Boolean,
+	private val noKine_e: Boolean,
+	private val noGp_e: Boolean,
+	private val noNurse_e: Boolean,
+	private val unsubscriptionReasonId_e: Boolean,
+	private val ptdStart_e: Boolean,
+	private val ptdEnd_e: Boolean,
+	private val ptdLastInvoiced_e: Boolean,
+	private val startOfSuspension_e: Boolean,
+	private val endOfSuspension_e: Boolean,
+	private val suspensionReason_e: Boolean,
+	private val suspensionSource_e: Boolean,
+	private val forcedSuspension_e: Boolean,
+	private val signatureType_e: Boolean,
+	private val status_e: Boolean,
+	private val options_e: Boolean,
+	private val receipts_e: Boolean,
 ) : AbstractEntityEncryptor<EncryptedMedicalHouseContract, DecryptedMedicalHouseContract>() {
 	override suspend fun encrypt(
 		encryptionKey: AesKey<AesAlgorithm.CbcWithPkcs7Padding>,
@@ -138,71 +141,136 @@ private class MedicalHouseContractEncryptor(
 		cryptoService: CryptoService,
 	): EncryptedMedicalHouseContract {
 		val dataToEncrypt = mutableMapOf<String, JsonElement>()
-		if (contractId) dataToEncrypt["contractId"] = encodingJson.encodeToJsonElement(clearEntity.contractId)
-		if (validFrom) dataToEncrypt["validFrom"] = encodingJson.encodeToJsonElement(clearEntity.validFrom)
-		if (validTo) dataToEncrypt["validTo"] = encodingJson.encodeToJsonElement(clearEntity.validTo)
-		if (mmNihii) dataToEncrypt["mmNihii"] = encodingJson.encodeToJsonElement(clearEntity.mmNihii)
-		if (hcpId) dataToEncrypt["hcpId"] = encodingJson.encodeToJsonElement(clearEntity.hcpId)
-		if (changeType) dataToEncrypt["changeType"] = encodingJson.encodeToJsonElement(clearEntity.changeType)
-		if (parentContractId) dataToEncrypt["parentContractId"] = encodingJson.encodeToJsonElement(clearEntity.parentContractId)
-		if (changedBy) dataToEncrypt["changedBy"] = encodingJson.encodeToJsonElement(clearEntity.changedBy)
-		if (startOfContract) dataToEncrypt["startOfContract"] = encodingJson.encodeToJsonElement(clearEntity.startOfContract)
-		if (startOfCoverage) dataToEncrypt["startOfCoverage"] = encodingJson.encodeToJsonElement(clearEntity.startOfCoverage)
-		if (endOfContract) dataToEncrypt["endOfContract"] = encodingJson.encodeToJsonElement(clearEntity.endOfContract)
-		if (endOfCoverage) dataToEncrypt["endOfCoverage"] = encodingJson.encodeToJsonElement(clearEntity.endOfCoverage)
-		if (kine) dataToEncrypt["kine"] = encodingJson.encodeToJsonElement(clearEntity.kine)
-		if (gp) dataToEncrypt["gp"] = encodingJson.encodeToJsonElement(clearEntity.gp)
-		if (ptd) dataToEncrypt["ptd"] = encodingJson.encodeToJsonElement(clearEntity.ptd)
-		if (nurse) dataToEncrypt["nurse"] = encodingJson.encodeToJsonElement(clearEntity.nurse)
-		if (noKine) dataToEncrypt["noKine"] = encodingJson.encodeToJsonElement(clearEntity.noKine)
-		if (noGp) dataToEncrypt["noGp"] = encodingJson.encodeToJsonElement(clearEntity.noGp)
-		if (noNurse) dataToEncrypt["noNurse"] = encodingJson.encodeToJsonElement(clearEntity.noNurse)
-		if (unsubscriptionReasonId) dataToEncrypt["unsubscriptionReasonId"] = encodingJson.encodeToJsonElement(clearEntity.unsubscriptionReasonId)
-		if (ptdStart) dataToEncrypt["ptdStart"] = encodingJson.encodeToJsonElement(clearEntity.ptdStart)
-		if (ptdEnd) dataToEncrypt["ptdEnd"] = encodingJson.encodeToJsonElement(clearEntity.ptdEnd)
-		if (ptdLastInvoiced) dataToEncrypt["ptdLastInvoiced"] = encodingJson.encodeToJsonElement(clearEntity.ptdLastInvoiced)
-		if (startOfSuspension) dataToEncrypt["startOfSuspension"] = encodingJson.encodeToJsonElement(clearEntity.startOfSuspension)
-		if (endOfSuspension) dataToEncrypt["endOfSuspension"] = encodingJson.encodeToJsonElement(clearEntity.endOfSuspension)
-		if (suspensionReason) dataToEncrypt["suspensionReason"] = encodingJson.encodeToJsonElement(clearEntity.suspensionReason)
-		if (suspensionSource) dataToEncrypt["suspensionSource"] = encodingJson.encodeToJsonElement(clearEntity.suspensionSource)
-		if (forcedSuspension) dataToEncrypt["forcedSuspension"] = encodingJson.encodeToJsonElement(clearEntity.forcedSuspension)
-		if (signatureType) dataToEncrypt["signatureType"] = encodingJson.encodeToJsonElement(clearEntity.signatureType)
-		if (status) dataToEncrypt["status"] = encodingJson.encodeToJsonElement(clearEntity.status)
-		if (options) dataToEncrypt["options"] = encodingJson.encodeToJsonElement(clearEntity.options)
-		if (receipts) dataToEncrypt["receipts"] = encodingJson.encodeToJsonElement(clearEntity.receipts)
+		if (contractId_e && clearEntity.contractId != null) dataToEncrypt["contractId"] = encodingJson.encodeToJsonElement(clearEntity.contractId)
+		if (validFrom_e && clearEntity.validFrom != null) dataToEncrypt["validFrom"] = encodingJson.encodeToJsonElement(clearEntity.validFrom)
+		if (validTo_e && clearEntity.validTo != null) dataToEncrypt["validTo"] = encodingJson.encodeToJsonElement(clearEntity.validTo)
+		if (mmNihii_e && clearEntity.mmNihii != null) dataToEncrypt["mmNihii"] = encodingJson.encodeToJsonElement(clearEntity.mmNihii)
+		if (hcpId_e && clearEntity.hcpId != null) dataToEncrypt["hcpId"] = encodingJson.encodeToJsonElement(clearEntity.hcpId)
+		if (changeType_e && clearEntity.changeType != null) dataToEncrypt["changeType"] = encodingJson.encodeToJsonElement(clearEntity.changeType)
+		if (parentContractId_e && clearEntity.parentContractId != null) {
+			dataToEncrypt["parentContractId"] =
+				encodingJson.encodeToJsonElement(
+					clearEntity.parentContractId,
+				)
+		}
+		if (changedBy_e && clearEntity.changedBy != null) dataToEncrypt["changedBy"] = encodingJson.encodeToJsonElement(clearEntity.changedBy)
+		if (startOfContract_e && clearEntity.startOfContract != null) {
+			dataToEncrypt["startOfContract"] =
+				encodingJson.encodeToJsonElement(
+					clearEntity.startOfContract,
+				)
+		}
+		if (startOfCoverage_e && clearEntity.startOfCoverage != null) {
+			dataToEncrypt["startOfCoverage"] =
+				encodingJson.encodeToJsonElement(
+					clearEntity.startOfCoverage,
+				)
+		}
+		if (endOfContract_e && clearEntity.endOfContract != null) {
+			dataToEncrypt["endOfContract"] =
+				encodingJson.encodeToJsonElement(
+					clearEntity.endOfContract,
+				)
+		}
+		if (endOfCoverage_e && clearEntity.endOfCoverage != null) {
+			dataToEncrypt["endOfCoverage"] =
+				encodingJson.encodeToJsonElement(
+					clearEntity.endOfCoverage,
+				)
+		}
+		if (kine_e && clearEntity.kine != false) dataToEncrypt["kine"] = encodingJson.encodeToJsonElement(clearEntity.kine)
+		if (gp_e && clearEntity.gp != false) dataToEncrypt["gp"] = encodingJson.encodeToJsonElement(clearEntity.gp)
+		if (ptd_e && clearEntity.ptd != false) dataToEncrypt["ptd"] = encodingJson.encodeToJsonElement(clearEntity.ptd)
+		if (nurse_e && clearEntity.nurse != false) dataToEncrypt["nurse"] = encodingJson.encodeToJsonElement(clearEntity.nurse)
+		if (noKine_e && clearEntity.noKine != false) dataToEncrypt["noKine"] = encodingJson.encodeToJsonElement(clearEntity.noKine)
+		if (noGp_e && clearEntity.noGp != false) dataToEncrypt["noGp"] = encodingJson.encodeToJsonElement(clearEntity.noGp)
+		if (noNurse_e && clearEntity.noNurse != false) dataToEncrypt["noNurse"] = encodingJson.encodeToJsonElement(clearEntity.noNurse)
+		if (unsubscriptionReasonId_e && clearEntity.unsubscriptionReasonId != null) {
+			dataToEncrypt["unsubscriptionReasonId"] =
+				encodingJson.encodeToJsonElement(
+					clearEntity.unsubscriptionReasonId,
+				)
+		}
+		if (ptdStart_e && clearEntity.ptdStart != null) dataToEncrypt["ptdStart"] = encodingJson.encodeToJsonElement(clearEntity.ptdStart)
+		if (ptdEnd_e && clearEntity.ptdEnd != null) dataToEncrypt["ptdEnd"] = encodingJson.encodeToJsonElement(clearEntity.ptdEnd)
+		if (ptdLastInvoiced_e && clearEntity.ptdLastInvoiced != null) {
+			dataToEncrypt["ptdLastInvoiced"] =
+				encodingJson.encodeToJsonElement(
+					clearEntity.ptdLastInvoiced,
+				)
+		}
+		if (startOfSuspension_e && clearEntity.startOfSuspension != null) {
+			dataToEncrypt["startOfSuspension"] =
+				encodingJson.encodeToJsonElement(
+					clearEntity.startOfSuspension,
+				)
+		}
+		if (endOfSuspension_e && clearEntity.endOfSuspension != null) {
+			dataToEncrypt["endOfSuspension"] =
+				encodingJson.encodeToJsonElement(
+					clearEntity.endOfSuspension,
+				)
+		}
+		if (suspensionReason_e && clearEntity.suspensionReason != null) {
+			dataToEncrypt["suspensionReason"] =
+				encodingJson.encodeToJsonElement(
+					clearEntity.suspensionReason,
+				)
+		}
+		if (suspensionSource_e && clearEntity.suspensionSource != null) {
+			dataToEncrypt["suspensionSource"] =
+				encodingJson.encodeToJsonElement(
+					clearEntity.suspensionSource,
+				)
+		}
+		if (forcedSuspension_e && clearEntity.forcedSuspension != false) {
+			dataToEncrypt["forcedSuspension"] =
+				encodingJson.encodeToJsonElement(
+					clearEntity.forcedSuspension,
+				)
+		}
+		if (signatureType_e && clearEntity.signatureType != null) {
+			dataToEncrypt["signatureType"] =
+				encodingJson.encodeToJsonElement(
+					clearEntity.signatureType,
+				)
+		}
+		if (status_e && clearEntity.status != null) dataToEncrypt["status"] = encodingJson.encodeToJsonElement(clearEntity.status)
+		if (options_e && clearEntity.options.isNotEmpty()) dataToEncrypt["options"] = encodingJson.encodeToJsonElement(clearEntity.options)
+		if (receipts_e && clearEntity.receipts.isNotEmpty()) dataToEncrypt["receipts"] = encodingJson.encodeToJsonElement(clearEntity.receipts)
 		return EncryptedMedicalHouseContract(
-			contractId = if (contractId) null else clearEntity.contractId,
-			validFrom = if (validFrom) null else clearEntity.validFrom,
-			validTo = if (validTo) null else clearEntity.validTo,
-			mmNihii = if (mmNihii) null else clearEntity.mmNihii,
-			hcpId = if (hcpId) null else clearEntity.hcpId,
-			changeType = if (changeType) null else clearEntity.changeType,
-			parentContractId = if (parentContractId) null else clearEntity.parentContractId,
-			changedBy = if (changedBy) null else clearEntity.changedBy,
-			startOfContract = if (startOfContract) null else clearEntity.startOfContract,
-			startOfCoverage = if (startOfCoverage) null else clearEntity.startOfCoverage,
-			endOfContract = if (endOfContract) null else clearEntity.endOfContract,
-			endOfCoverage = if (endOfCoverage) null else clearEntity.endOfCoverage,
-			kine = if (kine) false else clearEntity.kine,
-			gp = if (gp) false else clearEntity.gp,
-			ptd = if (ptd) false else clearEntity.ptd,
-			nurse = if (nurse) false else clearEntity.nurse,
-			noKine = if (noKine) false else clearEntity.noKine,
-			noGp = if (noGp) false else clearEntity.noGp,
-			noNurse = if (noNurse) false else clearEntity.noNurse,
-			unsubscriptionReasonId = if (unsubscriptionReasonId) null else clearEntity.unsubscriptionReasonId,
-			ptdStart = if (ptdStart) null else clearEntity.ptdStart,
-			ptdEnd = if (ptdEnd) null else clearEntity.ptdEnd,
-			ptdLastInvoiced = if (ptdLastInvoiced) null else clearEntity.ptdLastInvoiced,
-			startOfSuspension = if (startOfSuspension) null else clearEntity.startOfSuspension,
-			endOfSuspension = if (endOfSuspension) null else clearEntity.endOfSuspension,
-			suspensionReason = if (suspensionReason) null else clearEntity.suspensionReason,
-			suspensionSource = if (suspensionSource) null else clearEntity.suspensionSource,
-			forcedSuspension = if (forcedSuspension) false else clearEntity.forcedSuspension,
-			signatureType = if (signatureType) null else clearEntity.signatureType,
-			status = if (status) null else clearEntity.status,
-			options = if (options) emptyMap() else clearEntity.options,
-			receipts = if (receipts) emptyMap() else clearEntity.receipts,
+			contractId = if (contractId_e) null else clearEntity.contractId,
+			validFrom = if (validFrom_e) null else clearEntity.validFrom,
+			validTo = if (validTo_e) null else clearEntity.validTo,
+			mmNihii = if (mmNihii_e) null else clearEntity.mmNihii,
+			hcpId = if (hcpId_e) null else clearEntity.hcpId,
+			changeType = if (changeType_e) null else clearEntity.changeType,
+			parentContractId = if (parentContractId_e) null else clearEntity.parentContractId,
+			changedBy = if (changedBy_e) null else clearEntity.changedBy,
+			startOfContract = if (startOfContract_e) null else clearEntity.startOfContract,
+			startOfCoverage = if (startOfCoverage_e) null else clearEntity.startOfCoverage,
+			endOfContract = if (endOfContract_e) null else clearEntity.endOfContract,
+			endOfCoverage = if (endOfCoverage_e) null else clearEntity.endOfCoverage,
+			kine = if (kine_e) false else clearEntity.kine,
+			gp = if (gp_e) false else clearEntity.gp,
+			ptd = if (ptd_e) false else clearEntity.ptd,
+			nurse = if (nurse_e) false else clearEntity.nurse,
+			noKine = if (noKine_e) false else clearEntity.noKine,
+			noGp = if (noGp_e) false else clearEntity.noGp,
+			noNurse = if (noNurse_e) false else clearEntity.noNurse,
+			unsubscriptionReasonId = if (unsubscriptionReasonId_e) null else clearEntity.unsubscriptionReasonId,
+			ptdStart = if (ptdStart_e) null else clearEntity.ptdStart,
+			ptdEnd = if (ptdEnd_e) null else clearEntity.ptdEnd,
+			ptdLastInvoiced = if (ptdLastInvoiced_e) null else clearEntity.ptdLastInvoiced,
+			startOfSuspension = if (startOfSuspension_e) null else clearEntity.startOfSuspension,
+			endOfSuspension = if (endOfSuspension_e) null else clearEntity.endOfSuspension,
+			suspensionReason = if (suspensionReason_e) null else clearEntity.suspensionReason,
+			suspensionSource = if (suspensionSource_e) null else clearEntity.suspensionSource,
+			forcedSuspension = if (forcedSuspension_e) false else clearEntity.forcedSuspension,
+			signatureType = if (signatureType_e) null else clearEntity.signatureType,
+			status = if (status_e) null else clearEntity.status,
+			options = if (options_e) emptyMap() else clearEntity.options,
+			receipts = if (receipts_e) emptyMap() else clearEntity.receipts,
 			encryptedSelf = getUpdatedEncryptSelf(encryptionKey, clearEntity, JsonObject(dataToEncrypt), cryptoService),
 		)
 	}

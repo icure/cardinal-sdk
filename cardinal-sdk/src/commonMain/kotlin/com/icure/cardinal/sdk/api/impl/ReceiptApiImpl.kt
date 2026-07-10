@@ -13,6 +13,7 @@ import com.icure.cardinal.sdk.api.ReceiptInGroupApi
 import com.icure.cardinal.sdk.api.raw.RawReceiptApi
 import com.icure.cardinal.sdk.api.raw.successBodyOrNull404
 import com.icure.cardinal.sdk.api.raw.successBodyOrThrowRevisionConflict
+import com.icure.cardinal.sdk.crypto.encryptor.impl.generated.ReceiptDecryptor
 import com.icure.cardinal.sdk.crypto.entities.EntityWithEncryptionMetadataTypeName
 import com.icure.cardinal.sdk.crypto.entities.OwningEntityDetails
 import com.icure.cardinal.sdk.crypto.entities.ReceiptShareOptions
@@ -36,8 +37,6 @@ import com.icure.cardinal.sdk.model.specializations.HexString
 import com.icure.cardinal.sdk.model.toStoredDocumentIdentifier
 import com.icure.cardinal.sdk.options.ApiConfiguration
 import com.icure.cardinal.sdk.options.BasicApiConfiguration
-import com.icure.cardinal.sdk.options.EntitiesEncryptedFieldsManifests
-import com.icure.cardinal.sdk.options.JsonPatcher
 import com.icure.cardinal.sdk.utils.EntityEncryptionException
 import com.icure.cardinal.sdk.utils.currentEpochMs
 import com.icure.cardinal.sdk.utils.generation.JsMapAsObjectArray
@@ -48,9 +47,6 @@ private fun encryptedApiFlavour(
 	config: BasicApiConfiguration
 ): FlavouredApi<EncryptedReceipt, EncryptedReceipt> = FlavouredApi.encrypted(
 	config = config,
-	encryptedSerializer = EncryptedReceipt.serializer(),
-	type = EntityWithEncryptionMetadataTypeName.Receipt,
-	manifest = EntitiesEncryptedFieldsManifests::receipt
 )
 
 @InternalIcureApi
@@ -58,11 +54,9 @@ private fun decryptedApiFlavour(
 	config: ApiConfiguration
 ): FlavouredApi<EncryptedReceipt, DecryptedReceipt> = FlavouredApi.decrypted(
 	config = config,
-	encryptedSerializer = EncryptedReceipt.serializer(),
-	decryptedSerializer = DecryptedReceipt.serializer(),
 	type = EntityWithEncryptionMetadataTypeName.Receipt,
-	manifest = EntitiesEncryptedFieldsManifests::receipt,
-	patchJson = JsonPatcher::patchReceipt
+	encryptor = config.encryptors.receipt,
+	decryptor = ReceiptDecryptor,
 )
 
 @InternalIcureApi
@@ -70,11 +64,9 @@ private fun tryAndRecoverApiFlavour(
 	config: ApiConfiguration
 ): FlavouredApi<EncryptedReceipt, Receipt> = FlavouredApi.tryAndRecover(
 	config = config,
-	encryptedSerializer = EncryptedReceipt.serializer(),
-	decryptedSerializer = DecryptedReceipt.serializer(),
 	type = EntityWithEncryptionMetadataTypeName.Receipt,
-	manifest = EntitiesEncryptedFieldsManifests::receipt,
-	patchJson = JsonPatcher::patchReceipt
+	encryptor = config.encryptors.receipt,
+	decryptor = ReceiptDecryptor,
 )
 
 @InternalIcureApi

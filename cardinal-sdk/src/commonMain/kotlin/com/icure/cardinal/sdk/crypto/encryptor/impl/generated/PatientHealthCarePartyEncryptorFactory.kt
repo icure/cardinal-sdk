@@ -13,6 +13,7 @@ import com.icure.cardinal.sdk.model.embed.EncryptedPatientHealthCareParty
 import com.icure.kryptom.crypto.AesAlgorithm
 import com.icure.kryptom.crypto.AesKey
 import com.icure.kryptom.crypto.CryptoService
+import com.icure.utils.InternalIcureApi
 import kotlinx.serialization.json.Json
 import kotlinx.serialization.json.JsonElement
 import kotlinx.serialization.json.JsonObject
@@ -20,16 +21,17 @@ import kotlinx.serialization.json.encodeToJsonElement
 import kotlin.Boolean
 import kotlin.String
 
+@InternalIcureApi
 internal object PatientHealthCarePartyEncryptorFactory :
 	EntityEncryptorFactory<EncryptedPatientHealthCareParty, DecryptedPatientHealthCareParty> {
 	override val empty:
 		EntityEncryptor<EncryptedPatientHealthCareParty, DecryptedPatientHealthCareParty> =
 		PatientHealthCarePartyEncryptor(
-			type = false,
-			healthcarePartyId = false,
-			sendFormats = false,
-			referralPeriods = false,
-			properties = EncryptableFieldConfig.None(PropertyStubEncryptorFactory),
+			type_e = false,
+			healthcarePartyId_e = false,
+			sendFormats_e = false,
+			referralPeriods_e = false,
+			properties_e = EncryptableFieldConfig.None(PropertyStubEncryptorFactory),
 		)
 
 	override fun create(
@@ -38,11 +40,11 @@ internal object PatientHealthCarePartyEncryptorFactory :
 	): EntityEncryptor<EncryptedPatientHealthCareParty, DecryptedPatientHealthCareParty> {
 		val manifest = encryptorFactoryContext.getManifest(entityManifestName)
 		return PatientHealthCarePartyEncryptor(
-			type = "type" in manifest.fieldsToEncrypt,
-			healthcarePartyId = "healthcarePartyId" in manifest.fieldsToEncrypt,
-			sendFormats = "sendFormats" in manifest.fieldsToEncrypt,
-			referralPeriods = "referralPeriods" in manifest.fieldsToEncrypt,
-			properties =
+			type_e = "type" in manifest.fieldsToEncrypt,
+			healthcarePartyId_e = "healthcarePartyId" in manifest.fieldsToEncrypt,
+			sendFormats_e = "sendFormats" in manifest.fieldsToEncrypt,
+			referralPeriods_e = "referralPeriods" in manifest.fieldsToEncrypt,
+			properties_e =
 				if ("properties" in manifest.fieldsToEncrypt) {
 					EncryptableFieldConfig.Full()
 				} else {
@@ -60,12 +62,13 @@ internal object PatientHealthCarePartyEncryptorFactory :
 	}
 }
 
+@InternalIcureApi
 private class PatientHealthCarePartyEncryptor(
-	private val type: Boolean,
-	private val healthcarePartyId: Boolean,
-	private val sendFormats: Boolean,
-	private val referralPeriods: Boolean,
-	private val properties: EncryptableFieldConfig<EncryptedPropertyStub, DecryptedPropertyStub>,
+	private val type_e: Boolean,
+	private val healthcarePartyId_e: Boolean,
+	private val sendFormats_e: Boolean,
+	private val referralPeriods_e: Boolean,
+	private val properties_e: EncryptableFieldConfig<EncryptedPropertyStub, DecryptedPropertyStub>,
 ) : AbstractEntityEncryptor<EncryptedPatientHealthCareParty, DecryptedPatientHealthCareParty>() {
 	override suspend fun encrypt(
 		encryptionKey: AesKey<AesAlgorithm.CbcWithPkcs7Padding>,
@@ -74,18 +77,38 @@ private class PatientHealthCarePartyEncryptor(
 		cryptoService: CryptoService,
 	): EncryptedPatientHealthCareParty {
 		val dataToEncrypt = mutableMapOf<String, JsonElement>()
-		if (type) dataToEncrypt["type"] = encodingJson.encodeToJsonElement(clearEntity.type)
-		if (healthcarePartyId) dataToEncrypt["healthcarePartyId"] = encodingJson.encodeToJsonElement(clearEntity.healthcarePartyId)
-		if (sendFormats) dataToEncrypt["sendFormats"] = encodingJson.encodeToJsonElement(clearEntity.sendFormats)
-		if (referralPeriods) dataToEncrypt["referralPeriods"] = encodingJson.encodeToJsonElement(clearEntity.referralPeriods)
-		if (properties.fullEncryption) dataToEncrypt["properties"] = encodingJson.encodeToJsonElement(clearEntity.properties)
+		if (type_e && clearEntity.type != null) dataToEncrypt["type"] = encodingJson.encodeToJsonElement(clearEntity.type)
+		if (healthcarePartyId_e && clearEntity.healthcarePartyId != null) {
+			dataToEncrypt["healthcarePartyId"] =
+				encodingJson.encodeToJsonElement(
+					clearEntity.healthcarePartyId,
+				)
+		}
+		if (sendFormats_e && clearEntity.sendFormats.isNotEmpty()) {
+			dataToEncrypt["sendFormats"] =
+				encodingJson.encodeToJsonElement(
+					clearEntity.sendFormats,
+				)
+		}
+		if (referralPeriods_e && clearEntity.referralPeriods.isNotEmpty()) {
+			dataToEncrypt["referralPeriods"] =
+				encodingJson.encodeToJsonElement(
+					clearEntity.referralPeriods,
+				)
+		}
+		if (properties_e.fullEncryption && clearEntity.properties != null) {
+			dataToEncrypt["properties"] =
+				encodingJson.encodeToJsonElement(
+					clearEntity.properties,
+				)
+		}
 		return EncryptedPatientHealthCareParty(
-			type = if (type) null else clearEntity.type,
-			healthcarePartyId = if (healthcarePartyId) null else clearEntity.healthcarePartyId,
-			sendFormats = if (sendFormats) emptyMap() else clearEntity.sendFormats,
-			referralPeriods = if (referralPeriods) emptyList() else clearEntity.referralPeriods,
+			type = if (type_e) null else clearEntity.type,
+			healthcarePartyId = if (healthcarePartyId_e) null else clearEntity.healthcarePartyId,
+			sendFormats = if (sendFormats_e) emptyMap() else clearEntity.sendFormats,
+			referralPeriods = if (referralPeriods_e) emptyList() else clearEntity.referralPeriods,
 			properties =
-				properties.encryptor.let { encryptor ->
+				properties_e.encryptor.let { encryptor ->
 					if (encryptor == null) {
 						null
 					} else {

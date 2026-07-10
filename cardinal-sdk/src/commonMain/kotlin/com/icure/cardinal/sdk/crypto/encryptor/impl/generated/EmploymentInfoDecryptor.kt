@@ -1,6 +1,7 @@
 // This file is auto-generated
 package com.icure.cardinal.sdk.crypto.encryptor.`impl`.generated
 
+import com.icure.cardinal.sdk.crypto.encryptor.DecryptedJsonStrictness
 import com.icure.cardinal.sdk.crypto.encryptor.`impl`.AbstractEntityDecryptor
 import com.icure.cardinal.sdk.model.embed.DecryptedEmploymentInfo
 import com.icure.cardinal.sdk.model.embed.EncryptedEmploymentInfo
@@ -8,19 +9,19 @@ import com.icure.cardinal.sdk.utils.EntityEncryptionException
 import com.icure.kryptom.crypto.AesAlgorithm
 import com.icure.kryptom.crypto.AesKey
 import com.icure.kryptom.crypto.CryptoService
+import com.icure.utils.InternalIcureApi
 import kotlinx.serialization.json.Json
 import kotlinx.serialization.json.JsonObject
-import kotlinx.serialization.json.decodeFromJsonElement
-import kotlin.Boolean
 import kotlin.collections.Collection
 
+@InternalIcureApi
 internal object EmploymentInfoDecryptor :
 	AbstractEntityDecryptor<EncryptedEmploymentInfo, DecryptedEmploymentInfo>() {
 	override suspend fun decrypt(
 		decryptionKeys: Collection<AesKey<AesAlgorithm.CbcWithPkcs7Padding>>,
 		encryptedEntity: EncryptedEmploymentInfo,
 		patchDecryptedSelfJson: ((JsonObject) -> JsonObject)?,
-		ignoreUnknownDecryptedFields: Boolean,
+		decryptedJsonStrictness: DecryptedJsonStrictness,
 		encryptedContentDecoder: Json,
 		cryptoService: CryptoService,
 	): DecryptedEmploymentInfo {
@@ -35,44 +36,32 @@ internal object EmploymentInfoDecryptor :
 		val result =
 			DecryptedEmploymentInfo(
 				startDate =
-					decryptedContent["startDate"].let {
-						if (it != null) {
-							usedEncryptedContent += "startDate"
-							encryptedContentDecoder.decodeFromJsonElement(it)
-						} else {
-							encryptedEntity.startDate
-						}
-					},
+					encryptedContentDecoder.decodeDecrypted(
+						decryptedContent["startDate"]?.also { usedEncryptedContent += "startDate" },
+						encryptedEntity.startDate,
+						decryptedJsonStrictness,
+					),
 				endDate =
-					decryptedContent["endDate"].let {
-						if (it != null) {
-							usedEncryptedContent += "endDate"
-							encryptedContentDecoder.decodeFromJsonElement(it)
-						} else {
-							encryptedEntity.endDate
-						}
-					},
+					encryptedContentDecoder.decodeDecrypted(
+						decryptedContent["endDate"]?.also { usedEncryptedContent += "endDate" },
+						encryptedEntity.endDate,
+						decryptedJsonStrictness,
+					),
 				professionType =
-					decryptedContent["professionType"].let {
-						if (it != null) {
-							usedEncryptedContent += "professionType"
-							encryptedContentDecoder.decodeFromJsonElement(it)
-						} else {
-							encryptedEntity.professionType
-						}
-					},
+					encryptedContentDecoder.decodeDecrypted(
+						decryptedContent["professionType"]?.also { usedEncryptedContent += "professionType" },
+						encryptedEntity.professionType,
+						decryptedJsonStrictness,
+					),
 				employer =
-					decryptedContent["employer"].let {
-						if (it != null) {
-							usedEncryptedContent += "employer"
-							encryptedContentDecoder.decodeFromJsonElement(it)
-						} else {
-							encryptedEntity.employer
-						}
-					},
+					encryptedContentDecoder.decodeDecrypted(
+						decryptedContent["employer"]?.also { usedEncryptedContent += "employer" },
+						encryptedEntity.employer,
+						decryptedJsonStrictness,
+					),
 				encryptedSelf = encryptedEntity.encryptedSelf,
 			)
-		if (!ignoreUnknownDecryptedFields && decryptedContent.size != usedEncryptedContent.size) {
+		if (decryptedJsonStrictness == DecryptedJsonStrictness.Strict && decryptedContent.size != usedEncryptedContent.size) {
 			throw EntityEncryptionException(
 				"The EmploymentInfo encrypted content contains unexpected fields: ${decryptedContent.keys - usedEncryptedContent}",
 			)

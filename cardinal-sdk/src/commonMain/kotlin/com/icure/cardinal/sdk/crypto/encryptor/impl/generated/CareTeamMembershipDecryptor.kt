@@ -1,6 +1,7 @@
 // This file is auto-generated
 package com.icure.cardinal.sdk.crypto.encryptor.`impl`.generated
 
+import com.icure.cardinal.sdk.crypto.encryptor.DecryptedJsonStrictness
 import com.icure.cardinal.sdk.crypto.encryptor.`impl`.AbstractEntityDecryptor
 import com.icure.cardinal.sdk.model.embed.DecryptedCareTeamMembership
 import com.icure.cardinal.sdk.model.embed.EncryptedCareTeamMembership
@@ -8,19 +9,19 @@ import com.icure.cardinal.sdk.utils.EntityEncryptionException
 import com.icure.kryptom.crypto.AesAlgorithm
 import com.icure.kryptom.crypto.AesKey
 import com.icure.kryptom.crypto.CryptoService
+import com.icure.utils.InternalIcureApi
 import kotlinx.serialization.json.Json
 import kotlinx.serialization.json.JsonObject
-import kotlinx.serialization.json.decodeFromJsonElement
-import kotlin.Boolean
 import kotlin.collections.Collection
 
+@InternalIcureApi
 internal object CareTeamMembershipDecryptor :
 	AbstractEntityDecryptor<EncryptedCareTeamMembership, DecryptedCareTeamMembership>() {
 	override suspend fun decrypt(
 		decryptionKeys: Collection<AesKey<AesAlgorithm.CbcWithPkcs7Padding>>,
 		encryptedEntity: EncryptedCareTeamMembership,
 		patchDecryptedSelfJson: ((JsonObject) -> JsonObject)?,
-		ignoreUnknownDecryptedFields: Boolean,
+		decryptedJsonStrictness: DecryptedJsonStrictness,
 		encryptedContentDecoder: Json,
 		cryptoService: CryptoService,
 	): DecryptedCareTeamMembership {
@@ -35,45 +36,33 @@ internal object CareTeamMembershipDecryptor :
 		val result =
 			DecryptedCareTeamMembership(
 				startDate =
-					decryptedContent["startDate"].let {
-						if (it != null) {
-							usedEncryptedContent += "startDate"
-							encryptedContentDecoder.decodeFromJsonElement(it)
-						} else {
-							encryptedEntity.startDate
-						}
-					},
+					encryptedContentDecoder.decodeDecrypted(
+						decryptedContent["startDate"]?.also { usedEncryptedContent += "startDate" },
+						encryptedEntity.startDate,
+						decryptedJsonStrictness,
+					),
 				endDate =
-					decryptedContent["endDate"].let {
-						if (it != null) {
-							usedEncryptedContent += "endDate"
-							encryptedContentDecoder.decodeFromJsonElement(it)
-						} else {
-							encryptedEntity.endDate
-						}
-					},
+					encryptedContentDecoder.decodeDecrypted(
+						decryptedContent["endDate"]?.also { usedEncryptedContent += "endDate" },
+						encryptedEntity.endDate,
+						decryptedJsonStrictness,
+					),
 				careTeamMemberId =
-					decryptedContent["careTeamMemberId"].let {
-						if (it != null) {
-							usedEncryptedContent += "careTeamMemberId"
-							encryptedContentDecoder.decodeFromJsonElement(it)
-						} else {
-							encryptedEntity.careTeamMemberId
-						}
-					},
+					encryptedContentDecoder.decodeDecrypted(
+						decryptedContent["careTeamMemberId"]?.also { usedEncryptedContent += "careTeamMemberId" },
+						encryptedEntity.careTeamMemberId,
+						decryptedJsonStrictness,
+					),
 				membershipType =
-					decryptedContent["membershipType"].let {
-						if (it != null) {
-							usedEncryptedContent += "membershipType"
-							encryptedContentDecoder.decodeFromJsonElement(it)
-						} else {
-							encryptedEntity.membershipType
-						}
-					},
+					encryptedContentDecoder.decodeDecrypted(
+						decryptedContent["membershipType"]?.also { usedEncryptedContent += "membershipType" },
+						encryptedEntity.membershipType,
+						decryptedJsonStrictness,
+					),
 				encryptedSelf = encryptedEntity.encryptedSelf,
 				extensions = encryptedEntity.extensions,
 			)
-		if (!ignoreUnknownDecryptedFields && decryptedContent.size != usedEncryptedContent.size) {
+		if (decryptedJsonStrictness == DecryptedJsonStrictness.Strict && decryptedContent.size != usedEncryptedContent.size) {
 			throw EntityEncryptionException(
 				"The CareTeamMembership encrypted content contains unexpected fields: ${decryptedContent.keys - usedEncryptedContent}",
 			)

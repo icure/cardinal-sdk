@@ -10,6 +10,7 @@ import com.icure.cardinal.sdk.model.embed.EncryptedAnnotation
 import com.icure.kryptom.crypto.AesAlgorithm
 import com.icure.kryptom.crypto.AesKey
 import com.icure.kryptom.crypto.CryptoService
+import com.icure.utils.InternalIcureApi
 import kotlinx.serialization.json.Json
 import kotlinx.serialization.json.JsonElement
 import kotlinx.serialization.json.JsonObject
@@ -17,18 +18,19 @@ import kotlinx.serialization.json.encodeToJsonElement
 import kotlin.Boolean
 import kotlin.String
 
+@InternalIcureApi
 internal object AnnotationEncryptorFactory :
 	EntityEncryptorFactory<EncryptedAnnotation, DecryptedAnnotation> {
 	override val empty: EntityEncryptor<EncryptedAnnotation, DecryptedAnnotation> =
 		AnnotationEncryptor(
-			author = false,
-			created = false,
-			modified = false,
-			text = false,
-			markdown = false,
-			location = false,
-			confidential = false,
-			tags = false,
+			author_e = false,
+			created_e = false,
+			modified_e = false,
+			text_e = false,
+			markdown_e = false,
+			location_e = false,
+			confidential_e = false,
+			tags_e = false,
 		)
 
 	override fun create(
@@ -37,27 +39,28 @@ internal object AnnotationEncryptorFactory :
 	): EntityEncryptor<EncryptedAnnotation, DecryptedAnnotation> {
 		val manifest = encryptorFactoryContext.getManifest(entityManifestName)
 		return AnnotationEncryptor(
-			author = "author" in manifest.fieldsToEncrypt,
-			created = "created" in manifest.fieldsToEncrypt,
-			modified = "modified" in manifest.fieldsToEncrypt,
-			text = "text" in manifest.fieldsToEncrypt,
-			markdown = "markdown" in manifest.fieldsToEncrypt,
-			location = "location" in manifest.fieldsToEncrypt,
-			confidential = "confidential" in manifest.fieldsToEncrypt,
-			tags = "tags" in manifest.fieldsToEncrypt,
+			author_e = "author" in manifest.fieldsToEncrypt,
+			created_e = "created" in manifest.fieldsToEncrypt,
+			modified_e = "modified" in manifest.fieldsToEncrypt,
+			text_e = "text" in manifest.fieldsToEncrypt,
+			markdown_e = "markdown" in manifest.fieldsToEncrypt,
+			location_e = "location" in manifest.fieldsToEncrypt,
+			confidential_e = "confidential" in manifest.fieldsToEncrypt,
+			tags_e = "tags" in manifest.fieldsToEncrypt,
 		)
 	}
 }
 
+@InternalIcureApi
 private class AnnotationEncryptor(
-	private val author: Boolean,
-	private val created: Boolean,
-	private val modified: Boolean,
-	private val text: Boolean,
-	private val markdown: Boolean,
-	private val location: Boolean,
-	private val confidential: Boolean,
-	private val tags: Boolean,
+	private val author_e: Boolean,
+	private val created_e: Boolean,
+	private val modified_e: Boolean,
+	private val text_e: Boolean,
+	private val markdown_e: Boolean,
+	private val location_e: Boolean,
+	private val confidential_e: Boolean,
+	private val tags_e: Boolean,
 ) : AbstractEntityEncryptor<EncryptedAnnotation, DecryptedAnnotation>() {
 	override suspend fun encrypt(
 		encryptionKey: AesKey<AesAlgorithm.CbcWithPkcs7Padding>,
@@ -66,24 +69,29 @@ private class AnnotationEncryptor(
 		cryptoService: CryptoService,
 	): EncryptedAnnotation {
 		val dataToEncrypt = mutableMapOf<String, JsonElement>()
-		if (author) dataToEncrypt["author"] = encodingJson.encodeToJsonElement(clearEntity.author)
-		if (created) dataToEncrypt["created"] = encodingJson.encodeToJsonElement(clearEntity.created)
-		if (modified) dataToEncrypt["modified"] = encodingJson.encodeToJsonElement(clearEntity.modified)
-		if (text) dataToEncrypt["text"] = encodingJson.encodeToJsonElement(clearEntity.text)
-		if (markdown) dataToEncrypt["markdown"] = encodingJson.encodeToJsonElement(clearEntity.markdown)
-		if (location) dataToEncrypt["location"] = encodingJson.encodeToJsonElement(clearEntity.location)
-		if (confidential) dataToEncrypt["confidential"] = encodingJson.encodeToJsonElement(clearEntity.confidential)
-		if (tags) dataToEncrypt["tags"] = encodingJson.encodeToJsonElement(clearEntity.tags)
+		if (author_e && clearEntity.author != null) dataToEncrypt["author"] = encodingJson.encodeToJsonElement(clearEntity.author)
+		if (created_e && clearEntity.created != null) dataToEncrypt["created"] = encodingJson.encodeToJsonElement(clearEntity.created)
+		if (modified_e && clearEntity.modified != null) dataToEncrypt["modified"] = encodingJson.encodeToJsonElement(clearEntity.modified)
+		if (text_e && clearEntity.text != null) dataToEncrypt["text"] = encodingJson.encodeToJsonElement(clearEntity.text)
+		if (markdown_e && clearEntity.markdown.isNotEmpty()) dataToEncrypt["markdown"] = encodingJson.encodeToJsonElement(clearEntity.markdown)
+		if (location_e && clearEntity.location != null) dataToEncrypt["location"] = encodingJson.encodeToJsonElement(clearEntity.location)
+		if (confidential_e && clearEntity.confidential != null) {
+			dataToEncrypt["confidential"] =
+				encodingJson.encodeToJsonElement(
+					clearEntity.confidential,
+				)
+		}
+		if (tags_e && clearEntity.tags.isNotEmpty()) dataToEncrypt["tags"] = encodingJson.encodeToJsonElement(clearEntity.tags)
 		return EncryptedAnnotation(
 			id = clearEntity.id,
-			author = if (author) null else clearEntity.author,
-			created = if (created) null else clearEntity.created,
-			modified = if (modified) null else clearEntity.modified,
-			text = if (text) null else clearEntity.text,
-			markdown = if (markdown) emptyMap() else clearEntity.markdown,
-			location = if (location) null else clearEntity.location,
-			confidential = if (confidential) null else clearEntity.confidential,
-			tags = if (tags) emptySet() else clearEntity.tags,
+			author = if (author_e) null else clearEntity.author,
+			created = if (created_e) null else clearEntity.created,
+			modified = if (modified_e) null else clearEntity.modified,
+			text = if (text_e) null else clearEntity.text,
+			markdown = if (markdown_e) emptyMap() else clearEntity.markdown,
+			location = if (location_e) null else clearEntity.location,
+			confidential = if (confidential_e) null else clearEntity.confidential,
+			tags = if (tags_e) emptySet() else clearEntity.tags,
 			encryptedSelf = getUpdatedEncryptSelf(encryptionKey, clearEntity, JsonObject(dataToEncrypt), cryptoService),
 		)
 	}

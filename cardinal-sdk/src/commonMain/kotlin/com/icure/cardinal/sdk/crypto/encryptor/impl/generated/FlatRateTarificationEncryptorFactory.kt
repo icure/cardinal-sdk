@@ -13,6 +13,7 @@ import com.icure.cardinal.sdk.model.embed.EncryptedValorisation
 import com.icure.kryptom.crypto.AesAlgorithm
 import com.icure.kryptom.crypto.AesKey
 import com.icure.kryptom.crypto.CryptoService
+import com.icure.utils.InternalIcureApi
 import kotlinx.serialization.json.Json
 import kotlinx.serialization.json.JsonElement
 import kotlinx.serialization.json.JsonObject
@@ -20,14 +21,15 @@ import kotlinx.serialization.json.encodeToJsonElement
 import kotlin.Boolean
 import kotlin.String
 
+@InternalIcureApi
 internal object FlatRateTarificationEncryptorFactory :
 	EntityEncryptorFactory<EncryptedFlatRateTarification, DecryptedFlatRateTarification> {
 	override val empty: EntityEncryptor<EncryptedFlatRateTarification, DecryptedFlatRateTarification> =
 		FlatRateTarificationEncryptor(
-			code = false,
-			flatRateType = false,
-			label = false,
-			valorisations = EncryptableFieldConfig.None(ValorisationEncryptorFactory),
+			code_e = false,
+			flatRateType_e = false,
+			label_e = false,
+			valorisations_e = EncryptableFieldConfig.None(ValorisationEncryptorFactory),
 		)
 
 	override fun create(
@@ -36,10 +38,10 @@ internal object FlatRateTarificationEncryptorFactory :
 	): EntityEncryptor<EncryptedFlatRateTarification, DecryptedFlatRateTarification> {
 		val manifest = encryptorFactoryContext.getManifest(entityManifestName)
 		return FlatRateTarificationEncryptor(
-			code = "code" in manifest.fieldsToEncrypt,
-			flatRateType = "flatRateType" in manifest.fieldsToEncrypt,
-			label = "label" in manifest.fieldsToEncrypt,
-			valorisations =
+			code_e = "code" in manifest.fieldsToEncrypt,
+			flatRateType_e = "flatRateType" in manifest.fieldsToEncrypt,
+			label_e = "label" in manifest.fieldsToEncrypt,
+			valorisations_e =
 				if ("valorisations" in manifest.fieldsToEncrypt) {
 					EncryptableFieldConfig.Full()
 				} else {
@@ -57,11 +59,12 @@ internal object FlatRateTarificationEncryptorFactory :
 	}
 }
 
+@InternalIcureApi
 private class FlatRateTarificationEncryptor(
-	private val code: Boolean,
-	private val flatRateType: Boolean,
-	private val label: Boolean,
-	private val valorisations: EncryptableFieldConfig<EncryptedValorisation, DecryptedValorisation>,
+	private val code_e: Boolean,
+	private val flatRateType_e: Boolean,
+	private val label_e: Boolean,
+	private val valorisations_e: EncryptableFieldConfig<EncryptedValorisation, DecryptedValorisation>,
 ) : AbstractEntityEncryptor<EncryptedFlatRateTarification, DecryptedFlatRateTarification>() {
 	override suspend fun encrypt(
 		encryptionKey: AesKey<AesAlgorithm.CbcWithPkcs7Padding>,
@@ -70,16 +73,26 @@ private class FlatRateTarificationEncryptor(
 		cryptoService: CryptoService,
 	): EncryptedFlatRateTarification {
 		val dataToEncrypt = mutableMapOf<String, JsonElement>()
-		if (code) dataToEncrypt["code"] = encodingJson.encodeToJsonElement(clearEntity.code)
-		if (flatRateType) dataToEncrypt["flatRateType"] = encodingJson.encodeToJsonElement(clearEntity.flatRateType)
-		if (label) dataToEncrypt["label"] = encodingJson.encodeToJsonElement(clearEntity.label)
-		if (valorisations.fullEncryption) dataToEncrypt["valorisations"] = encodingJson.encodeToJsonElement(clearEntity.valorisations)
+		if (code_e && clearEntity.code != null) dataToEncrypt["code"] = encodingJson.encodeToJsonElement(clearEntity.code)
+		if (flatRateType_e && clearEntity.flatRateType != null) {
+			dataToEncrypt["flatRateType"] =
+				encodingJson.encodeToJsonElement(
+					clearEntity.flatRateType,
+				)
+		}
+		if (label_e && clearEntity.label != null) dataToEncrypt["label"] = encodingJson.encodeToJsonElement(clearEntity.label)
+		if (valorisations_e.fullEncryption && clearEntity.valorisations.isNotEmpty()) {
+			dataToEncrypt["valorisations"] =
+				encodingJson.encodeToJsonElement(
+					clearEntity.valorisations,
+				)
+		}
 		return EncryptedFlatRateTarification(
-			code = if (code) null else clearEntity.code,
-			flatRateType = if (flatRateType) null else clearEntity.flatRateType,
-			label = if (label) null else clearEntity.label,
+			code = if (code_e) null else clearEntity.code,
+			flatRateType = if (flatRateType_e) null else clearEntity.flatRateType,
+			label = if (label_e) null else clearEntity.label,
 			valorisations =
-				valorisations.encryptor.let { encryptor ->
+				valorisations_e.encryptor.let { encryptor ->
 					if (encryptor == null) {
 						emptyList()
 					} else {

@@ -8,6 +8,11 @@ import com.icure.cardinal.sdk.api.MaintenanceTaskFlavouredApi
 import com.icure.cardinal.sdk.api.raw.RawMaintenanceTaskApi
 import com.icure.cardinal.sdk.api.raw.successBodyOrNull404
 import com.icure.cardinal.sdk.api.raw.successBodyOrThrowRevisionConflict
+import com.icure.cardinal.sdk.crypto.encryptor.EncryptorOptions
+import com.icure.cardinal.sdk.crypto.encryptor.EntityEncryptionManifest
+import com.icure.cardinal.sdk.crypto.encryptor.impl.generated.GeneratedEntitiesEncryptorInitializer
+import com.icure.cardinal.sdk.crypto.encryptor.impl.generated.MaintenanceTaskDecryptor
+import com.icure.cardinal.sdk.crypto.encryptor.initializeSingleEncryptor
 import com.icure.cardinal.sdk.crypto.entities.EntityWithEncryptionMetadataTypeName
 import com.icure.cardinal.sdk.crypto.entities.MaintenanceTaskShareOptions
 import com.icure.cardinal.sdk.exceptions.NotFoundException
@@ -43,14 +48,55 @@ import com.icure.cardinal.sdk.utils.currentEpochMs
 import com.icure.cardinal.sdk.utils.pagination.IdsPageIterator
 import com.icure.cardinal.sdk.utils.pagination.PaginatedListIterator
 import com.icure.utils.InternalIcureApi
-import kotlinx.serialization.json.decodeFromJsonElement
+
+@InternalIcureApi
+private val maintenanceTaskEncryptor = GeneratedEntitiesEncryptorInitializer.initializeSingleEncryptor<
+	EncryptedMaintenanceTask,
+	DecryptedMaintenanceTask
+>(
+	"MaintenanceTask",
+	mapOf("MaintenanceTask" to EntityEncryptionManifest(setOf("properties"), emptyMap())),
+	// Currently the maintenance task encryptor does not depend on the options so we can actually use anything here
+	EncryptorOptions(
+		useLegacyServiceContentEncryption = false,
+		serializeEncryptedSelfUsingLegacyNames = false
+	),
+)
+
+@InternalIcureApi
+private fun encryptedApiFlavour(
+	config: BasicApiConfiguration
+): FlavouredApi<EncryptedMaintenanceTask, EncryptedMaintenanceTask> = FlavouredApi.encrypted(
+	config = config,
+)
+
+@InternalIcureApi
+private fun decryptedApiFlavour(
+	config: ApiConfiguration
+): FlavouredApi<EncryptedMaintenanceTask, DecryptedMaintenanceTask> = FlavouredApi.decrypted(
+	config = config,
+	type = EntityWithEncryptionMetadataTypeName.MaintenanceTask,
+	encryptor = maintenanceTaskEncryptor,
+	decryptor = MaintenanceTaskDecryptor,
+)
+
+@InternalIcureApi
+private fun tryAndRecoverApiFlavour(
+	config: ApiConfiguration
+): FlavouredApi<EncryptedMaintenanceTask, MaintenanceTask> = FlavouredApi.tryAndRecover(
+	config = config,
+	type = EntityWithEncryptionMetadataTypeName.MaintenanceTask,
+	encryptor = maintenanceTaskEncryptor,
+	decryptor = MaintenanceTaskDecryptor,
+)
 
 
 @InternalIcureApi
-private abstract class AbstractMaintenanceTaskBasicFlavouredApi<E : MaintenanceTask>(
+private open class MaintenanceTaskBasicFlavouredApiImpl<E : MaintenanceTask>(
 	protected val rawApi: RawMaintenanceTaskApi,
-	private val config: BasicApiConfiguration
-) : MaintenanceTaskBasicFlavouredApi<E>, FlavouredApi<EncryptedMaintenanceTask, E> {
+	private val config: BasicApiConfiguration,
+	flavour: FlavouredApi<EncryptedMaintenanceTask, E>,
+) : MaintenanceTaskBasicFlavouredApi<E>, FlavouredApi<EncryptedMaintenanceTask, E> by flavour {
 
 	override suspend fun createMaintenanceTask(entity: E): E {
 		require(entity.securityMetadata != null) { "Entity must have security metadata initialized. Make sure to use the `withEncryptionMetadata` method." }
@@ -82,10 +128,12 @@ private abstract class AbstractMaintenanceTaskBasicFlavouredApi<E : MaintenanceT
 }
 
 @InternalIcureApi
-private abstract class AbstractMaintenanceTaskFlavouredApi<E : MaintenanceTask>(
+private class MaintenanceTaskFlavouredApiImpl<E : MaintenanceTask>(
 	rawApi: RawMaintenanceTaskApi,
-	protected val config: ApiConfiguration
-) : AbstractMaintenanceTaskBasicFlavouredApi<E>(rawApi, config), MaintenanceTaskFlavouredApi<E> {
+	protected val config: ApiConfiguration,
+	flavour: FlavouredApi<EncryptedMaintenanceTask, E>,
+) : MaintenanceTaskBasicFlavouredApiImpl<E>(rawApi, config, flavour),
+	MaintenanceTaskFlavouredApi<E> {
 
 	override suspend fun shareWith(
 		delegateId: String,
@@ -145,93 +193,37 @@ private class AbstractMaintenanceTaskBasicFlavourlessApi(val rawApi: RawMaintena
 }
 
 @InternalIcureApi
-internal class MaintenanceTaskApiImpl(
+internal fun initMaintenanceTaskApi(
+	rawApi: RawMaintenanceTaskApi,
+	config: ApiConfiguration,
+): MaintenanceTaskApi {
+	val decryptedFlavour = decryptedApiFlavour(config)
+	val encryptedFlavour = encryptedApiFlavour(config)
+	val tryAndRecoverFlavour = tryAndRecoverApiFlavour(config)
+	return MaintenanceTaskApiImpl(
+		rawApi,
+		config,
+		encryptedFlavour,
+		decryptedFlavour,
+		tryAndRecoverFlavour
+	)
+}
+
+@InternalIcureApi
+private class MaintenanceTaskApiImpl(
 	private val rawApi: RawMaintenanceTaskApi,
-	private val config: ApiConfiguration
-) : MaintenanceTaskApi, MaintenanceTaskFlavouredApi<DecryptedMaintenanceTask> by object :
-	AbstractMaintenanceTaskFlavouredApi<DecryptedMaintenanceTask>(rawApi, config) {
-	override suspend fun validateAndMaybeEncrypt(
-		entitiesGroupId: String?,
-		entities: List<DecryptedMaintenanceTask>
-	): List<EncryptedMaintenanceTask> =
-		this.config.crypto.entity.encryptEntities(
-			entitiesGroupId,
-			entities,
-			EntityWithEncryptionMetadataTypeName.MaintenanceTask,
-			DecryptedMaintenanceTask.serializer(),
-			this.config.encryption.maintenanceTask,
-		) { Serialization.json.decodeFromJsonElement<EncryptedMaintenanceTask>(it) }
-
-	override suspend fun maybeDecrypt(
-		entitiesGroupId: String?,
-		entities: List<EncryptedMaintenanceTask>
-	): List<DecryptedMaintenanceTask> =
-		this.config.crypto.entity.decryptEntities(
-			entitiesGroupId,
-			entities,
-			EntityWithEncryptionMetadataTypeName.MaintenanceTask,
-			EncryptedMaintenanceTask.serializer(),
-		) {
-			Serialization.json.decodeFromJsonElement<DecryptedMaintenanceTask>(
-				config.jsonPatcher.patchMaintenanceTask(
-					it
-				)
-			)
-		}
-}, MaintenanceTaskBasicFlavourlessApi by AbstractMaintenanceTaskBasicFlavourlessApi(rawApi, config) {
+	private val config: ApiConfiguration,
+	encryptedFlavour: FlavouredApi<EncryptedMaintenanceTask, EncryptedMaintenanceTask>,
+	private val decryptedFlavour: FlavouredApi<EncryptedMaintenanceTask, DecryptedMaintenanceTask>,
+	private val tryAndRecoverFlavour: FlavouredApi<EncryptedMaintenanceTask, MaintenanceTask>,
+) : MaintenanceTaskApi,
+	MaintenanceTaskFlavouredApi<DecryptedMaintenanceTask> by MaintenanceTaskFlavouredApiImpl(rawApi, config, decryptedFlavour),
+	MaintenanceTaskBasicFlavourlessApi by AbstractMaintenanceTaskBasicFlavourlessApi(rawApi, config) {
 	override val encrypted: MaintenanceTaskFlavouredApi<EncryptedMaintenanceTask> =
-		object : AbstractMaintenanceTaskFlavouredApi<EncryptedMaintenanceTask>(rawApi, config) {
-			override suspend fun validateAndMaybeEncrypt(
-				entitiesGroupId: String?,
-				entities: List<EncryptedMaintenanceTask>
-			): List<EncryptedMaintenanceTask> =
-				config.crypto.entity.validateEncryptedEntities(
-					entities,
-					EntityWithEncryptionMetadataTypeName.MaintenanceTask,
-					EncryptedMaintenanceTask.serializer(),
-					config.encryption.maintenanceTask
-				)
-
-			override suspend fun maybeDecrypt(
-				entitiesGroupId: String?,
-				entities: List<EncryptedMaintenanceTask>
-			): List<EncryptedMaintenanceTask> =
-				entities
-		}
+		MaintenanceTaskFlavouredApiImpl(rawApi, config, encryptedFlavour)
 
 	override val tryAndRecover: MaintenanceTaskFlavouredApi<MaintenanceTask> =
-		object : AbstractMaintenanceTaskFlavouredApi<MaintenanceTask>(rawApi, config) {
-			override suspend fun validateAndMaybeEncrypt(
-				entitiesGroupId: String?,
-				entities: List<MaintenanceTask>
-			): List<EncryptedMaintenanceTask> =
-				config.crypto.entity.validateOrEncryptEntities(
-					entitiesGroupId,
-					entities,
-					EntityWithEncryptionMetadataTypeName.MaintenanceTask,
-					EncryptedMaintenanceTask.serializer(),
-					DecryptedMaintenanceTask.serializer(),
-					config.encryption.maintenanceTask,
-					config.entityEncodingJson,
-				)
-
-			override suspend fun maybeDecrypt(
-				entitiesGroupId: String?,
-				entities: List<EncryptedMaintenanceTask>
-			): List<MaintenanceTask> =
-				config.crypto.entity.tryDecryptEntities(
-					entitiesGroupId,
-					entities,
-					EntityWithEncryptionMetadataTypeName.MaintenanceTask,
-					EncryptedMaintenanceTask.serializer(),
-				) {
-					Serialization.json.decodeFromJsonElement<DecryptedMaintenanceTask>(
-						config.jsonPatcher.patchMaintenanceTask(
-							it
-						)
-					)
-				}
-		}
+		MaintenanceTaskFlavouredApiImpl(rawApi, config, tryAndRecoverFlavour)
 
 	override suspend fun getEncryptionKeysOf(maintenanceTask: MaintenanceTask): Set<HexString> =
 		config.crypto.entity.encryptionKeysOf(
@@ -284,34 +276,11 @@ internal class MaintenanceTaskApiImpl(
 			alternateRootDataOwnerReference = alternateRootDelegateId?.let { EntityReferenceInGroup(it, null) },
 		).updatedEntity
 
+	override suspend fun decrypt(maintenanceTasks: List<EncryptedMaintenanceTask>): List<DecryptedMaintenanceTask> =
+		decryptedFlavour.maybeDecrypt(maintenanceTasks)
 
-	override suspend fun decrypt(maintenanceTask: EncryptedMaintenanceTask): DecryptedMaintenanceTask =
-		config.crypto.entity.decryptEntities(
-			null,
-			listOf(maintenanceTask),
-			EntityWithEncryptionMetadataTypeName.MaintenanceTask,
-			EncryptedMaintenanceTask.serializer(),
-		) {
-			Serialization.json.decodeFromJsonElement<DecryptedMaintenanceTask>(
-				config.jsonPatcher.patchMaintenanceTask(
-					it
-				)
-			)
-		}.single()
-
-	override suspend fun tryDecrypt(maintenanceTask: EncryptedMaintenanceTask): MaintenanceTask =
-		config.crypto.entity.tryDecryptEntities(
-			null,
-			listOf(maintenanceTask),
-			EntityWithEncryptionMetadataTypeName.MaintenanceTask,
-			EncryptedMaintenanceTask.serializer(),
-		) {
-			Serialization.json.decodeFromJsonElement<DecryptedMaintenanceTask>(
-				config.jsonPatcher.patchMaintenanceTask(
-					it
-				)
-			)
-		}.single()
+	override suspend fun tryDecrypt(maintenanceTasks: List<EncryptedMaintenanceTask>): List<MaintenanceTask> =
+		tryAndRecoverFlavour.maybeDecrypt(maintenanceTasks)
 
 	override suspend fun subscribeToEvents(
 		events: Set<SubscriptionEventType>,
@@ -353,23 +322,25 @@ internal class MaintenanceTaskApiImpl(
 }
 
 @InternalIcureApi
-internal class MaintenanceTaskBasicApiImpl(
-	private val rawApi: RawMaintenanceTaskApi,
-	private val config: BasicApiConfiguration
-) : MaintenanceTaskBasicApi, MaintenanceTaskBasicFlavouredApi<EncryptedMaintenanceTask> by object :
-	AbstractMaintenanceTaskBasicFlavouredApi<EncryptedMaintenanceTask>(rawApi, config) {
-	override suspend fun validateAndMaybeEncrypt(
-		entitiesGroupId: String?,
-		entities: List<EncryptedMaintenanceTask>
-	): List<EncryptedMaintenanceTask> =
-		config.crypto.validationService.validateEncryptedEntities(entities, EntityWithEncryptionMetadataTypeName.MaintenanceTask, EncryptedMaintenanceTask.serializer(), config.encryption.maintenanceTask)
+internal fun initMaintenanceTaskBasicApi(
+	rawApi: RawMaintenanceTaskApi,
+	config: BasicApiConfiguration,
+): MaintenanceTaskBasicApi {
+	val encryptedFlavour = encryptedApiFlavour(config)
+	return MaintenanceTaskBasicApiImpl(
+		rawApi,
+		config,
+		encryptedFlavour,
+	)
+}
 
-	override suspend fun maybeDecrypt(
-		entitiesGroupId: String?,
-		entities: List<EncryptedMaintenanceTask>
-	): List<EncryptedMaintenanceTask> =
-		entities
-}, MaintenanceTaskBasicFlavourlessApi by AbstractMaintenanceTaskBasicFlavourlessApi(rawApi, config) {
+@InternalIcureApi
+private class MaintenanceTaskBasicApiImpl(
+	private val rawApi: RawMaintenanceTaskApi,
+	private val config: BasicApiConfiguration,
+	encryptedFlavour: FlavouredApi<EncryptedMaintenanceTask, EncryptedMaintenanceTask>,
+) : MaintenanceTaskBasicApi, MaintenanceTaskBasicFlavouredApi<EncryptedMaintenanceTask> by MaintenanceTaskBasicFlavouredApiImpl(rawApi, config, encryptedFlavour),
+	MaintenanceTaskBasicFlavourlessApi by AbstractMaintenanceTaskBasicFlavourlessApi(rawApi, config) {
 	override suspend fun filterMaintenanceTasksBySorted(filter: BaseSortableFilterOptions<MaintenanceTask>): PaginatedListIterator<EncryptedMaintenanceTask> =
 		filterMaintenanceTasksBy(filter)
 

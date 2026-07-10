@@ -14,6 +14,7 @@ import com.icure.cardinal.sdk.api.raw.RawCalendarItemApi
 import com.icure.cardinal.sdk.api.raw.RawDataOwnerApi
 import com.icure.cardinal.sdk.api.raw.successBodyOrNull404
 import com.icure.cardinal.sdk.api.raw.successBodyOrThrowRevisionConflict
+import com.icure.cardinal.sdk.crypto.encryptor.impl.generated.CalendarItemDecryptor
 import com.icure.cardinal.sdk.crypto.entities.CalendarItemShareOptions
 import com.icure.cardinal.sdk.crypto.entities.DelegateShareOptions
 import com.icure.cardinal.sdk.crypto.entities.EntityWithEncryptionMetadataTypeName
@@ -46,8 +47,6 @@ import com.icure.cardinal.sdk.model.specializations.HexString
 import com.icure.cardinal.sdk.model.toStoredDocumentIdentifier
 import com.icure.cardinal.sdk.options.ApiConfiguration
 import com.icure.cardinal.sdk.options.BasicApiConfiguration
-import com.icure.cardinal.sdk.options.EntitiesEncryptedFieldsManifests
-import com.icure.cardinal.sdk.options.JsonPatcher
 import com.icure.cardinal.sdk.serialization.CalendarItemAbstractFilterSerializer
 import com.icure.cardinal.sdk.serialization.SubscriptionSerializer
 import com.icure.cardinal.sdk.subscription.EntitySubscription
@@ -66,9 +65,6 @@ private fun encryptedApiFlavour(
 	config: BasicApiConfiguration
 ): FlavouredApi<EncryptedCalendarItem, EncryptedCalendarItem> = FlavouredApi.encrypted(
 	config = config,
-	encryptedSerializer = EncryptedCalendarItem.serializer(),
-	type = EntityWithEncryptionMetadataTypeName.CalendarItem,
-	manifest = EntitiesEncryptedFieldsManifests::calendarItem
 )
 
 @InternalIcureApi
@@ -76,11 +72,9 @@ private fun decryptedApiFlavour(
 	config: ApiConfiguration
 ): FlavouredApi<EncryptedCalendarItem, DecryptedCalendarItem> = FlavouredApi.decrypted(
 	config = config,
-	encryptedSerializer = EncryptedCalendarItem.serializer(),
-	decryptedSerializer = DecryptedCalendarItem.serializer(),
 	type = EntityWithEncryptionMetadataTypeName.CalendarItem,
-	manifest = EntitiesEncryptedFieldsManifests::calendarItem,
-	patchJson = JsonPatcher::patchCalendarItem
+	encryptor = config.encryptors.calendarItem,
+	decryptor = CalendarItemDecryptor,
 )
 
 @InternalIcureApi
@@ -88,11 +82,9 @@ private fun tryAndRecoverApiFlavour(
 	config: ApiConfiguration
 ): FlavouredApi<EncryptedCalendarItem, CalendarItem> = FlavouredApi.tryAndRecover(
 	config = config,
-	encryptedSerializer = EncryptedCalendarItem.serializer(),
-	decryptedSerializer = DecryptedCalendarItem.serializer(),
 	type = EntityWithEncryptionMetadataTypeName.CalendarItem,
-	manifest = EntitiesEncryptedFieldsManifests::calendarItem,
-	patchJson = JsonPatcher::patchCalendarItem
+	encryptor = config.encryptors.calendarItem,
+	decryptor = CalendarItemDecryptor,
 )
 
 @InternalIcureApi

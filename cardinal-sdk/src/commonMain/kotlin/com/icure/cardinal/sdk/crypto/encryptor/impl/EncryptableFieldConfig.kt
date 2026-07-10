@@ -3,7 +3,9 @@ package com.icure.cardinal.sdk.crypto.encryptor.impl
 import com.icure.cardinal.sdk.crypto.encryptor.EntityEncryptor
 import com.icure.cardinal.sdk.crypto.encryptor.EntityEncryptorFactory
 import com.icure.cardinal.sdk.model.embed.Encryptable
+import com.icure.utils.InternalIcureApi
 
+@InternalIcureApi
 internal sealed interface EncryptableFieldConfig<ENCRYPTED : Encryptable, DECRYPTED : Encryptable> {
 	val encryptor: EntityEncryptor<ENCRYPTED, DECRYPTED>?
 	val fullEncryption: Boolean

@@ -9,12 +9,14 @@ import com.icure.kryptom.crypto.AesAlgorithm
 import com.icure.kryptom.crypto.AesKey
 import com.icure.kryptom.crypto.CryptoService
 import com.icure.kryptom.utils.base64Encode
+import com.icure.utils.InternalIcureApi
 import io.ktor.utils.io.charsets.Charsets
 import io.ktor.utils.io.core.toByteArray
 import kotlinx.coroutines.CancellationException
 import kotlinx.serialization.json.JsonObject
 import kotlinx.serialization.json.jsonObject
 
+@InternalIcureApi
 internal abstract class AbstractEntityEncryptor<ENCRYPTED : Encryptable, DECRYPTED : Encryptable> :
 	EntityEncryptor<ENCRYPTED, DECRYPTED> {
 

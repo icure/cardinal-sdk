@@ -44,7 +44,6 @@ import com.icure.cardinal.sdk.api.impl.FrontEndMigrationApiImpl
 import com.icure.cardinal.sdk.api.impl.GroupApiImpl
 import com.icure.cardinal.sdk.api.impl.HealthcarePartyApiImpl
 import com.icure.cardinal.sdk.api.impl.InsuranceApiImpl
-import com.icure.cardinal.sdk.api.impl.MaintenanceTaskApiImpl
 import com.icure.cardinal.sdk.api.impl.PlaceApiImpl
 import com.icure.cardinal.sdk.api.impl.RecoveryApiImpl
 import com.icure.cardinal.sdk.api.impl.RoleApiImpl
@@ -58,6 +57,7 @@ import com.icure.cardinal.sdk.api.impl.initDocumentApi
 import com.icure.cardinal.sdk.api.impl.initFormApi
 import com.icure.cardinal.sdk.api.impl.initHealthElementApi
 import com.icure.cardinal.sdk.api.impl.initInvoiceApi
+import com.icure.cardinal.sdk.api.impl.initMaintenanceTaskApi
 import com.icure.cardinal.sdk.api.impl.initMessageApi
 import com.icure.cardinal.sdk.api.impl.initPatientApi
 import com.icure.cardinal.sdk.api.impl.initReceiptApi
@@ -109,6 +109,7 @@ import com.icure.cardinal.sdk.auth.services.AuthProvider
 import com.icure.cardinal.sdk.auth.services.JwtBasedAuthProvider
 import com.icure.cardinal.sdk.crypto.AccessControlKeysHeadersProvider
 import com.icure.cardinal.sdk.crypto.CryptoStrategies
+import com.icure.cardinal.sdk.crypto.encryptor.impl.generated.GeneratedEntitiesEncryptorInitializer
 import com.icure.cardinal.sdk.crypto.entities.SdkBoundGroup
 import com.icure.cardinal.sdk.crypto.impl.AccessControlKeysHeadersProviderImpl
 import com.icure.cardinal.sdk.crypto.impl.BaseExchangeDataManagerImpl
@@ -124,7 +125,6 @@ import com.icure.cardinal.sdk.crypto.impl.ExchangeKeysManagerImpl
 import com.icure.cardinal.sdk.crypto.impl.FullyCachedExchangeDataManager
 import com.icure.cardinal.sdk.crypto.impl.IncrementalSecurityMetadataDecryptorImpl
 import com.icure.cardinal.sdk.crypto.impl.InternalCryptoApiImpl
-import com.icure.cardinal.sdk.crypto.impl.JsonEncryptionServiceImpl
 import com.icure.cardinal.sdk.crypto.impl.NoAccessControlKeysHeadersProvider
 import com.icure.cardinal.sdk.crypto.impl.RecoveryDataEncryptionImpl
 import com.icure.cardinal.sdk.crypto.impl.SecureDelegationsEncryptionImpl
@@ -139,14 +139,15 @@ import com.icure.cardinal.sdk.model.extensions.type
 import com.icure.cardinal.sdk.options.ApiConfiguration
 import com.icure.cardinal.sdk.options.ApiConfigurationImpl
 import com.icure.cardinal.sdk.options.AuthenticationMethod
-import com.icure.cardinal.sdk.options.EncryptedFieldsConfiguration
-import com.icure.cardinal.sdk.options.EntitiesEncryptedFieldsManifests
-import com.icure.cardinal.sdk.options.JsonPatcher
+import com.icure.cardinal.sdk.options.EncryptedFieldsOptions
 import com.icure.cardinal.sdk.options.RequestRetryConfiguration
 import com.icure.cardinal.sdk.options.SdkOptions
 import com.icure.cardinal.sdk.options.configuredClientOrDefault
 import com.icure.cardinal.sdk.options.configuredJsonOrDefault
+import com.icure.cardinal.sdk.options.encryptorOptions
 import com.icure.cardinal.sdk.options.getGroupAndAuthProvider
+import com.icure.cardinal.sdk.options.ignoreUnknownFieldsOrDefault
+import com.icure.cardinal.sdk.options.manifests
 import com.icure.cardinal.sdk.storage.CardinalStorageFacade
 import com.icure.cardinal.sdk.storage.KeyStorageFacade
 import com.icure.cardinal.sdk.storage.StorageFacade
@@ -443,29 +444,29 @@ private class AuthenticationWithProcessStepImpl(
 }
 
 private fun SdkOptions.asInitialized(baseStorage: StorageFacade): InitializedSdkOptions = InitializedSdkOptions(
-	encryptedFields = encryptedFields,
 	useHierarchicalDataOwners = useHierarchicalDataOwners,
 	createTransferKeys = createTransferKeys,
 	autoCreateEncryptionKeyForExistingLegacyData = autoCreateEncryptionKeyForExistingLegacyData,
-	jsonPatcher = jsonPatcher,
 	parentJob = parentJob,
 	requestTimeout = requestTimeout,
 	requestRetryConfiguration = requestRetryConfiguration,
 	baseStorage = baseStorage,
-	keyStorage = keyStorage
+	keyStorage = keyStorage,
+	encryptedFieldsOptions = encryptedFieldsOptions,
+	ignoreUnknownFields = ignoreUnknownFieldsOrDefault()
 )
 
 internal data class InitializedSdkOptions(
-	val encryptedFields: EncryptedFieldsConfiguration,
+	val encryptedFieldsOptions: EncryptedFieldsOptions?,
 	val useHierarchicalDataOwners: Boolean,
 	val createTransferKeys: Boolean,
 	val autoCreateEncryptionKeyForExistingLegacyData: Boolean,
-	val jsonPatcher: JsonPatcher?,
 	val parentJob: Job?,
 	val requestTimeout: Duration?,
 	val requestRetryConfiguration: RequestRetryConfiguration,
 	val keyStorage: KeyStorageFacade?,
 	val baseStorage: StorageFacade,
+	val ignoreUnknownFields: Boolean,
 )
 
 private const val ANONYMITY_HEADER = "Icure-Request-Autofix-Anonymity"
@@ -610,17 +611,17 @@ internal suspend fun initializeApiCrypto(
 		userEncryptionKeys,
 		cryptoService
 	)
-	val jsonEncryptionService = JsonEncryptionServiceImpl(cryptoService)
 	val entityEncryptionService = EntityEncryptionServiceImpl(
 		secureDelegationsManager = secureDelegationsManager,
 		baseSecurityMetadataDecryptor = baseSecurityMetadataDecryptor,
 		incrementalSecurityMetadataDecryptor = incrementalSecurityMetadataDecryptor,
 		dataOwnerApi = dataOwnerApi,
 		cryptoService = cryptoService,
-		jsonEncryptionService = jsonEncryptionService,
 		autoCreateEncryptionKeyForExistingLegacyData = options.autoCreateEncryptionKeyForExistingLegacyData,
 		userEncryptionKeysManager = userEncryptionKeys,
-		boundGroup = boundGroup
+		boundGroup = boundGroup,
+		json = json,
+		ignoreUnknownDecryptedFields = options.ignoreUnknownFields,
 	)
 	val headersProvider: AccessControlKeysHeadersProvider =
 		if (delegatorActorIsAnonymous)
@@ -632,7 +633,6 @@ internal suspend fun initializeApiCrypto(
 		cryptoService,
 		exchangeDataManager,
 		exchangeKeysManager,
-		jsonEncryptionService,
 		DelegationsDeAnonymizationImpl(
 			baseSecurityMetadataDecryptor,
 			RawSecureDelegationKeyMapApiImpl(apiUrl, authProvider, rawApiConfig),
@@ -662,19 +662,21 @@ internal suspend fun initializeApiCrypto(
 		).updateSelfTransferKeys()
 	}
 
-	val manifests = EntitiesEncryptedFieldsManifests.fromEncryptedFields(options.encryptedFields)
+	val encryptors = GeneratedEntitiesEncryptorInitializer.initializeEncryptorsForManifests(
+		options.encryptedFieldsOptions.manifests,
+		options.encryptedFieldsOptions.encryptorOptions
+	)
 	return Triple(
 		ApiConfigurationImpl(
-			apiUrl,
-			if (authProvider is JwtBasedAuthProvider) authProvider else null,
-			!selfIsAnonymous,
-			crypto,
-			manifests,
-			options.jsonPatcher ?: object : JsonPatcher {},
-			options.parentJob,
-			rawApiConfig,
-			boundGroup,
-			json,
+			apiUrl = apiUrl,
+			webSocketAuthProvider = authProvider as? JwtBasedAuthProvider,
+			autofillAuthor = !selfIsAnonymous,
+			crypto = crypto,
+			parentJob = options.parentJob,
+			rawApiConfig = rawApiConfig,
+			boundGroup = boundGroup,
+			encryptors = encryptors,
+			ignoreUnkonwnDecryptedFields = options.ignoreUnknownFields,
 		),
 		userEncryptionKeysInitInfo.newKey?.key,
 		sdkScope
@@ -827,9 +829,9 @@ internal class CardinalSdkImpl(
 	}
 
 	override val maintenanceTask: MaintenanceTaskApi by lazy {
-		MaintenanceTaskApiImpl(
+		initMaintenanceTaskApi(
 			rawMaintenanceTaskApi,
-			config
+			config,
 		)
 	}
 
