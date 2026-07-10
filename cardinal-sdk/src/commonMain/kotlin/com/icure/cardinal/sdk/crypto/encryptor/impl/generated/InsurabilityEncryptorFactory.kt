@@ -22,21 +22,32 @@ import kotlin.String
 internal object InsurabilityEncryptorFactory :
 	EntityEncryptorFactory<EncryptedInsurability, DecryptedInsurability> {
 	override val empty: EntityEncryptor<EncryptedInsurability, DecryptedInsurability> =
-		InsurabilityEncryptor(
-			parameters_e = false,
-			hospitalisation_e = false,
-			ambulatory_e = false,
-			dental_e = false,
-			identificationNumber_e = false,
-			insuranceId_e = false,
-			startDate_e = false,
-			endDate_e = false,
-			titularyId_e = false,
-		)
+		object :
+			EntityEncryptor<EncryptedInsurability, DecryptedInsurability> {
+			override suspend fun encrypt(
+				encryptionKey: AesKey<AesAlgorithm.CbcWithPkcs7Padding>,
+				clearEntity: DecryptedInsurability,
+			): EncryptedInsurability =
+				EncryptedInsurability(
+					parameters = clearEntity.parameters,
+					hospitalisation = clearEntity.hospitalisation,
+					ambulatory = clearEntity.ambulatory,
+					dental = clearEntity.dental,
+					identificationNumber = clearEntity.identificationNumber,
+					insuranceId = clearEntity.insuranceId,
+					startDate = clearEntity.startDate,
+					endDate = clearEntity.endDate,
+					titularyId = clearEntity.titularyId,
+					encryptedSelf = null,
+					extensions = clearEntity.extensions,
+				)
+		}
 
 	override fun create(
 		entityManifestName: String,
 		encryptorFactoryContext: EncryptorFactoryContext,
+		encodingJson: Json,
+		cryptoService: CryptoService,
 	): EntityEncryptor<EncryptedInsurability, DecryptedInsurability> {
 		val manifest = encryptorFactoryContext.getManifest(entityManifestName)
 		return InsurabilityEncryptor(
@@ -49,6 +60,8 @@ internal object InsurabilityEncryptorFactory :
 			startDate_e = "startDate" in manifest.fieldsToEncrypt,
 			endDate_e = "endDate" in manifest.fieldsToEncrypt,
 			titularyId_e = "titularyId" in manifest.fieldsToEncrypt,
+			encodingJson = encodingJson,
+			cryptoService = cryptoService,
 		)
 	}
 }
@@ -64,12 +77,12 @@ private class InsurabilityEncryptor(
 	private val startDate_e: Boolean,
 	private val endDate_e: Boolean,
 	private val titularyId_e: Boolean,
-) : AbstractEntityEncryptor<EncryptedInsurability, DecryptedInsurability>() {
+	private val encodingJson: Json,
+	cryptoService: CryptoService,
+) : AbstractEntityEncryptor<EncryptedInsurability, DecryptedInsurability>(cryptoService) {
 	override suspend fun encrypt(
 		encryptionKey: AesKey<AesAlgorithm.CbcWithPkcs7Padding>,
 		clearEntity: DecryptedInsurability,
-		encodingJson: Json,
-		cryptoService: CryptoService,
 	): EncryptedInsurability {
 		val dataToEncrypt = mutableMapOf<String, JsonElement>()
 		if (parameters_e && clearEntity.parameters.isNotEmpty()) {
@@ -111,7 +124,7 @@ private class InsurabilityEncryptor(
 			startDate = if (startDate_e) null else clearEntity.startDate,
 			endDate = if (endDate_e) null else clearEntity.endDate,
 			titularyId = if (titularyId_e) null else clearEntity.titularyId,
-			encryptedSelf = getUpdatedEncryptSelf(encryptionKey, clearEntity, JsonObject(dataToEncrypt), cryptoService),
+			encryptedSelf = getUpdatedEncryptSelf(encryptionKey, clearEntity, JsonObject(dataToEncrypt)),
 			extensions = clearEntity.extensions,
 		)
 	}

@@ -22,16 +22,26 @@ import kotlin.String
 internal object SchoolingInfoEncryptorFactory :
 	EntityEncryptorFactory<EncryptedSchoolingInfo, DecryptedSchoolingInfo> {
 	override val empty: EntityEncryptor<EncryptedSchoolingInfo, DecryptedSchoolingInfo> =
-		SchoolingInfoEncryptor(
-			startDate_e = false,
-			endDate_e = false,
-			school_e = false,
-			typeOfEducation_e = false,
-		)
+		object :
+			EntityEncryptor<EncryptedSchoolingInfo, DecryptedSchoolingInfo> {
+			override suspend fun encrypt(
+				encryptionKey: AesKey<AesAlgorithm.CbcWithPkcs7Padding>,
+				clearEntity: DecryptedSchoolingInfo,
+			): EncryptedSchoolingInfo =
+				EncryptedSchoolingInfo(
+					startDate = clearEntity.startDate,
+					endDate = clearEntity.endDate,
+					school = clearEntity.school,
+					typeOfEducation = clearEntity.typeOfEducation,
+					encryptedSelf = null,
+				)
+		}
 
 	override fun create(
 		entityManifestName: String,
 		encryptorFactoryContext: EncryptorFactoryContext,
+		encodingJson: Json,
+		cryptoService: CryptoService,
 	): EntityEncryptor<EncryptedSchoolingInfo, DecryptedSchoolingInfo> {
 		val manifest = encryptorFactoryContext.getManifest(entityManifestName)
 		return SchoolingInfoEncryptor(
@@ -39,6 +49,8 @@ internal object SchoolingInfoEncryptorFactory :
 			endDate_e = "endDate" in manifest.fieldsToEncrypt,
 			school_e = "school" in manifest.fieldsToEncrypt,
 			typeOfEducation_e = "typeOfEducation" in manifest.fieldsToEncrypt,
+			encodingJson = encodingJson,
+			cryptoService = cryptoService,
 		)
 	}
 }
@@ -49,12 +61,12 @@ private class SchoolingInfoEncryptor(
 	private val endDate_e: Boolean,
 	private val school_e: Boolean,
 	private val typeOfEducation_e: Boolean,
-) : AbstractEntityEncryptor<EncryptedSchoolingInfo, DecryptedSchoolingInfo>() {
+	private val encodingJson: Json,
+	cryptoService: CryptoService,
+) : AbstractEntityEncryptor<EncryptedSchoolingInfo, DecryptedSchoolingInfo>(cryptoService) {
 	override suspend fun encrypt(
 		encryptionKey: AesKey<AesAlgorithm.CbcWithPkcs7Padding>,
 		clearEntity: DecryptedSchoolingInfo,
-		encodingJson: Json,
-		cryptoService: CryptoService,
 	): EncryptedSchoolingInfo {
 		val dataToEncrypt = mutableMapOf<String, JsonElement>()
 		if (startDate_e && clearEntity.startDate != null) dataToEncrypt["startDate"] = encodingJson.encodeToJsonElement(clearEntity.startDate)
@@ -71,7 +83,7 @@ private class SchoolingInfoEncryptor(
 			endDate = if (endDate_e) null else clearEntity.endDate,
 			school = if (school_e) null else clearEntity.school,
 			typeOfEducation = if (typeOfEducation_e) null else clearEntity.typeOfEducation,
-			encryptedSelf = getUpdatedEncryptSelf(encryptionKey, clearEntity, JsonObject(dataToEncrypt), cryptoService),
+			encryptedSelf = getUpdatedEncryptSelf(encryptionKey, clearEntity, JsonObject(dataToEncrypt)),
 		)
 	}
 }

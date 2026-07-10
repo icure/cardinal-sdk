@@ -21,39 +21,20 @@ import kotlinx.serialization.json.JsonObject
 import kotlinx.serialization.json.encodeToJsonElement
 import kotlin.Boolean
 import kotlin.String
+import kotlin.UnsupportedOperationException
 
 @InternalIcureApi
 internal object LegacyServiceEncryptorFactory :
 	EntityEncryptorFactory<EncryptedService, DecryptedService> {
-	override val empty: EntityEncryptor<EncryptedService, DecryptedService> =
-		LegacyServiceEncryptor(
-			transactionId_e = false,
-			identifier_e = false,
-			subContactIds_e = false,
-			plansOfActionIds_e = false,
-			healthElementsIds_e = false,
-			formIds_e = false,
-			label_e = false,
-			index_e = false,
-			textIndexes_e = false,
-			valueDate_e = false,
-			openingDate_e = false,
-			closingDate_e = false,
-			created_e = false,
-			modified_e = false,
-			author_e = false,
-			responsible_e = false,
-			comment_e = false,
-			invoicingCodes_e = false,
-			notes_e = EncryptableFieldConfig.None(AnnotationEncryptorFactory),
-			qualifiedLinks_e = false,
-			codes_e = false,
-			tags_e = false,
-		)
+	override val empty: EntityEncryptor<EncryptedService, DecryptedService>
+		get() =
+			throw UnsupportedOperationException("It is not allowed to use legacy service encryption with an empty encryptor factory for service.")
 
 	override fun create(
 		entityManifestName: String,
 		encryptorFactoryContext: EncryptorFactoryContext,
+		encodingJson: Json,
+		cryptoService: CryptoService,
 	): EntityEncryptor<EncryptedService, DecryptedService> {
 		val manifest = encryptorFactoryContext.getManifest(entityManifestName)
 		require(
@@ -98,6 +79,8 @@ internal object LegacyServiceEncryptorFactory :
 			qualifiedLinks_e = "qualifiedLinks" in manifest.fieldsToEncrypt,
 			codes_e = "codes" in manifest.fieldsToEncrypt,
 			tags_e = "tags" in manifest.fieldsToEncrypt,
+			encodingJson = encodingJson,
+			cryptoService = cryptoService,
 		)
 	}
 }
@@ -126,7 +109,9 @@ private class LegacyServiceEncryptor(
 	private val qualifiedLinks_e: Boolean,
 	private val codes_e: Boolean,
 	private val tags_e: Boolean,
-) : AbstractLegacyServiceEncryptor() {
+	private val encodingJson: Json,
+	cryptoService: CryptoService,
+) : AbstractLegacyServiceEncryptor(cryptoService) {
 	protected override fun DecryptedContent.isCompound(): Boolean =
 		!compoundValue.isNullOrEmpty() &&
 			stringValue == null &&
@@ -145,11 +130,9 @@ private class LegacyServiceEncryptor(
 	override suspend fun encrypt(
 		encryptionKey: AesKey<AesAlgorithm.CbcWithPkcs7Padding>,
 		clearEntity: DecryptedService,
-		encodingJson: Json,
-		cryptoService: CryptoService,
 	): EncryptedService {
 		val dataToEncrypt = mutableMapOf<String, JsonElement>()
-		val contentEncryptionResult = legacyEncryptContent(encryptionKey, clearEntity, encodingJson, cryptoService)
+		val contentEncryptionResult = legacyEncryptContent(encryptionKey, clearEntity)
 		if (contentEncryptionResult is ContentLegacyEncryptionResult.Full) {
 			dataToEncrypt["content"] = encodingJson.encodeToJsonElement(clearEntity.content)
 		}
@@ -267,14 +250,14 @@ private class LegacyServiceEncryptor(
 						emptyList()
 					} else {
 						clearEntity.notes.map { x0 ->
-							encryptor.encrypt(encryptionKey, x0, encodingJson, cryptoService)
+							encryptor.encrypt(encryptionKey, x0)
 						}
 					}
 				},
 			qualifiedLinks = if (qualifiedLinks_e) emptyMap() else clearEntity.qualifiedLinks,
 			codes = if (codes_e) emptySet() else clearEntity.codes,
 			tags = if (tags_e) emptySet() else clearEntity.tags,
-			encryptedSelf = getUpdatedEncryptSelf(encryptionKey, clearEntity, JsonObject(dataToEncrypt), cryptoService),
+			encryptedSelf = getUpdatedEncryptSelf(encryptionKey, clearEntity, JsonObject(dataToEncrypt)),
 			securityMetadata = clearEntity.securityMetadata,
 			extensions = clearEntity.extensions,
 			contactExtensionsVersions = clearEntity.contactExtensionsVersions,

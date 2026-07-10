@@ -27,25 +27,40 @@ import kotlin.String
 @InternalIcureApi
 internal object ContentEncryptorFactory : EntityEncryptorFactory<EncryptedContent, DecryptedContent> {
 	override val empty: EntityEncryptor<EncryptedContent, DecryptedContent> =
-		ContentEncryptor(
-			stringValue_e = false,
-			numberValue_e = false,
-			booleanValue_e = false,
-			instantValue_e = false,
-			fuzzyDateValue_e = false,
-			binaryValue_e = false,
-			documentId_e = false,
-			measureValue_e = false,
-			medicationValue_e = false,
-			timeSeries_e = false,
-			compoundValue_e = EncryptableFieldConfig.None(ServiceEncryptorFactory),
-			ratio_e = false,
-			range_e = false,
-		)
+		object :
+			EntityEncryptor<EncryptedContent, DecryptedContent> {
+			override suspend fun encrypt(
+				encryptionKey: AesKey<AesAlgorithm.CbcWithPkcs7Padding>,
+				clearEntity: DecryptedContent,
+			): EncryptedContent =
+				EncryptedContent(
+					stringValue = clearEntity.stringValue,
+					numberValue = clearEntity.numberValue,
+					booleanValue = clearEntity.booleanValue,
+					instantValue = clearEntity.instantValue,
+					fuzzyDateValue = clearEntity.fuzzyDateValue,
+					binaryValue = clearEntity.binaryValue,
+					documentId = clearEntity.documentId,
+					measureValue = clearEntity.measureValue,
+					medicationValue = clearEntity.medicationValue,
+					timeSeries = clearEntity.timeSeries,
+					compoundValue =
+						clearEntity.compoundValue?.let {
+							it.map { x0 ->
+								ServiceEncryptorFactory.empty.encrypt(encryptionKey, x0)
+							}
+						},
+					ratio = clearEntity.ratio,
+					range = clearEntity.range,
+					encryptedSelf = null,
+				)
+		}
 
 	override fun create(
 		entityManifestName: String,
 		encryptorFactoryContext: EncryptorFactoryContext,
+		encodingJson: Json,
+		cryptoService: CryptoService,
 	): EntityEncryptor<EncryptedContent, DecryptedContent> {
 		val manifest = encryptorFactoryContext.getManifest(entityManifestName)
 		return ContentEncryptor(
@@ -75,6 +90,8 @@ internal object ContentEncryptorFactory : EntityEncryptorFactory<EncryptedConten
 				},
 			ratio_e = "ratio" in manifest.fieldsToEncrypt,
 			range_e = "range" in manifest.fieldsToEncrypt,
+			encodingJson = encodingJson,
+			cryptoService = cryptoService,
 		)
 	}
 }
@@ -94,12 +111,12 @@ private class ContentEncryptor(
 	private val compoundValue_e: EncryptableFieldConfig<EncryptedService, DecryptedService>,
 	private val ratio_e: Boolean,
 	private val range_e: Boolean,
-) : AbstractEntityEncryptor<EncryptedContent, DecryptedContent>() {
+	private val encodingJson: Json,
+	cryptoService: CryptoService,
+) : AbstractEntityEncryptor<EncryptedContent, DecryptedContent>(cryptoService) {
 	override suspend fun encrypt(
 		encryptionKey: AesKey<AesAlgorithm.CbcWithPkcs7Padding>,
 		clearEntity: DecryptedContent,
-		encodingJson: Json,
-		cryptoService: CryptoService,
 	): EncryptedContent {
 		val dataToEncrypt = mutableMapOf<String, JsonElement>()
 		if (stringValue_e && clearEntity.stringValue != null) {
@@ -180,14 +197,14 @@ private class ContentEncryptor(
 					} else {
 						clearEntity.compoundValue?.let {
 							it.map { x0 ->
-								encryptor.encrypt(encryptionKey, x0, encodingJson, cryptoService)
+								encryptor.encrypt(encryptionKey, x0)
 							}
 						}
 					}
 				},
 			ratio = if (ratio_e) null else clearEntity.ratio,
 			range = if (range_e) null else clearEntity.range,
-			encryptedSelf = getUpdatedEncryptSelf(encryptionKey, clearEntity, JsonObject(dataToEncrypt), cryptoService),
+			encryptedSelf = getUpdatedEncryptSelf(encryptionKey, clearEntity, JsonObject(dataToEncrypt)),
 		)
 	}
 }

@@ -22,67 +22,77 @@ import kotlin.String
 internal object InvoicingCodeEncryptorFactory :
 	EntityEncryptorFactory<EncryptedInvoicingCode, DecryptedInvoicingCode> {
 	override val empty: EntityEncryptor<EncryptedInvoicingCode, DecryptedInvoicingCode> =
-		InvoicingCodeEncryptor(
-			dateCode_e = false,
-			logicalId_e = false,
-			label_e = false,
-			userId_e = false,
-			contactId_e = false,
-			serviceId_e = false,
-			tarificationId_e = false,
-			tarificationId_n = "pricingId",
-			code_e = false,
-			paymentType_e = false,
-			paid_e = false,
-			totalAmount_e = false,
-			reimbursement_e = false,
-			patientIntervention_e = false,
-			amiIntervention_e = false,
-			doctorSupplement_e = false,
-			conventionAmount_e = false,
-			vat_e = false,
-			error_e = false,
-			contract_e = false,
-			contractDate_e = false,
-			units_e = false,
-			side_e = false,
-			timeOfDay_e = false,
-			eidReadingHour_e = false,
-			eidReadingValue_e = false,
-			override3rdPayerCode_e = false,
-			override3rdPayerReason_e = false,
-			transplantationCode_e = false,
-			prescriberNorm_e = false,
-			productLabel_e = false,
-			percentNorm_e = false,
-			prescriberNihii_e = false,
-			relatedCode_e = false,
-			prescriptionDate_e = false,
-			derogationMaxNumber_e = false,
-			prescriberSsin_e = false,
-			prescriberLastName_e = false,
-			prescriberFirstName_e = false,
-			prescriberCdHcParty_e = false,
-			locationNihii_e = false,
-			locationCdHcParty_e = false,
-			locationService_e = false,
-			admissionDate_e = false,
-			canceled_e = false,
-			accepted_e = false,
-			pending_e = false,
-			resent_e = false,
-			archived_e = false,
-			lost_e = false,
-			insuranceJustification_e = false,
-			cancelPatientInterventionReason_e = false,
-			status_e = false,
-			codeLabel_e = false,
-			options_e = false,
-		)
+		object :
+			EntityEncryptor<EncryptedInvoicingCode, DecryptedInvoicingCode> {
+			override suspend fun encrypt(
+				encryptionKey: AesKey<AesAlgorithm.CbcWithPkcs7Padding>,
+				clearEntity: DecryptedInvoicingCode,
+			): EncryptedInvoicingCode =
+				EncryptedInvoicingCode(
+					id = clearEntity.id,
+					dateCode = clearEntity.dateCode,
+					logicalId = clearEntity.logicalId,
+					label = clearEntity.label,
+					userId = clearEntity.userId,
+					contactId = clearEntity.contactId,
+					serviceId = clearEntity.serviceId,
+					pricingId = clearEntity.pricingId,
+					code = clearEntity.code,
+					paymentType = clearEntity.paymentType,
+					paid = clearEntity.paid,
+					totalAmount = clearEntity.totalAmount,
+					reimbursement = clearEntity.reimbursement,
+					patientIntervention = clearEntity.patientIntervention,
+					amiIntervention = clearEntity.amiIntervention,
+					doctorSupplement = clearEntity.doctorSupplement,
+					conventionAmount = clearEntity.conventionAmount,
+					vat = clearEntity.vat,
+					error = clearEntity.error,
+					contract = clearEntity.contract,
+					contractDate = clearEntity.contractDate,
+					units = clearEntity.units,
+					side = clearEntity.side,
+					timeOfDay = clearEntity.timeOfDay,
+					eidReadingHour = clearEntity.eidReadingHour,
+					eidReadingValue = clearEntity.eidReadingValue,
+					override3rdPayerCode = clearEntity.override3rdPayerCode,
+					override3rdPayerReason = clearEntity.override3rdPayerReason,
+					transplantationCode = clearEntity.transplantationCode,
+					prescriberNorm = clearEntity.prescriberNorm,
+					productLabel = clearEntity.productLabel,
+					percentNorm = clearEntity.percentNorm,
+					prescriberNihii = clearEntity.prescriberNihii,
+					relatedCode = clearEntity.relatedCode,
+					prescriptionDate = clearEntity.prescriptionDate,
+					derogationMaxNumber = clearEntity.derogationMaxNumber,
+					prescriberSsin = clearEntity.prescriberSsin,
+					prescriberLastName = clearEntity.prescriberLastName,
+					prescriberFirstName = clearEntity.prescriberFirstName,
+					prescriberCdHcParty = clearEntity.prescriberCdHcParty,
+					locationNihii = clearEntity.locationNihii,
+					locationCdHcParty = clearEntity.locationCdHcParty,
+					locationService = clearEntity.locationService,
+					admissionDate = clearEntity.admissionDate,
+					canceled = clearEntity.canceled,
+					accepted = clearEntity.accepted,
+					pending = clearEntity.pending,
+					resent = clearEntity.resent,
+					archived = clearEntity.archived,
+					lost = clearEntity.lost,
+					insuranceJustification = clearEntity.insuranceJustification,
+					cancelPatientInterventionReason = clearEntity.cancelPatientInterventionReason,
+					status = clearEntity.status,
+					codeLabel = clearEntity.codeLabel,
+					options = clearEntity.options,
+					encryptedSelf = null,
+				)
+		}
 
 	override fun create(
 		entityManifestName: String,
 		encryptorFactoryContext: EncryptorFactoryContext,
+		encodingJson: Json,
+		cryptoService: CryptoService,
 	): EntityEncryptor<EncryptedInvoicingCode, DecryptedInvoicingCode> {
 		val manifest = encryptorFactoryContext.getManifest(entityManifestName)
 		return InvoicingCodeEncryptor(
@@ -141,6 +151,8 @@ internal object InvoicingCodeEncryptorFactory :
 			status_e = "status" in manifest.fieldsToEncrypt,
 			codeLabel_e = "codeLabel" in manifest.fieldsToEncrypt,
 			options_e = "options" in manifest.fieldsToEncrypt,
+			encodingJson = encodingJson,
+			cryptoService = cryptoService,
 		)
 	}
 }
@@ -202,12 +214,12 @@ private class InvoicingCodeEncryptor(
 	private val status_e: Boolean,
 	private val codeLabel_e: Boolean,
 	private val options_e: Boolean,
-) : AbstractEntityEncryptor<EncryptedInvoicingCode, DecryptedInvoicingCode>() {
+	private val encodingJson: Json,
+	cryptoService: CryptoService,
+) : AbstractEntityEncryptor<EncryptedInvoicingCode, DecryptedInvoicingCode>(cryptoService) {
 	override suspend fun encrypt(
 		encryptionKey: AesKey<AesAlgorithm.CbcWithPkcs7Padding>,
 		clearEntity: DecryptedInvoicingCode,
-		encodingJson: Json,
-		cryptoService: CryptoService,
 	): EncryptedInvoicingCode {
 		val dataToEncrypt = mutableMapOf<String, JsonElement>()
 		if (dateCode_e && clearEntity.dateCode != null) dataToEncrypt["dateCode"] = encodingJson.encodeToJsonElement(clearEntity.dateCode)
@@ -475,7 +487,7 @@ private class InvoicingCodeEncryptor(
 			status = if (status_e) null else clearEntity.status,
 			codeLabel = if (codeLabel_e) null else clearEntity.codeLabel,
 			options = if (options_e) emptyMap() else clearEntity.options,
-			encryptedSelf = getUpdatedEncryptSelf(encryptionKey, clearEntity, JsonObject(dataToEncrypt), cryptoService),
+			encryptedSelf = getUpdatedEncryptSelf(encryptionKey, clearEntity, JsonObject(dataToEncrypt)),
 		)
 	}
 }

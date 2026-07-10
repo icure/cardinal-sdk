@@ -25,15 +25,28 @@ import kotlin.String
 internal object PropertyStubEncryptorFactory :
 	EntityEncryptorFactory<EncryptedPropertyStub, DecryptedPropertyStub> {
 	override val empty: EntityEncryptor<EncryptedPropertyStub, DecryptedPropertyStub> =
-		PropertyStubEncryptor(
-			id_e = false,
-			type_e = false,
-			typedValue_e = EncryptableFieldConfig.None(TypedValueEncryptorFactory),
-		)
+		object :
+			EntityEncryptor<EncryptedPropertyStub, DecryptedPropertyStub> {
+			override suspend fun encrypt(
+				encryptionKey: AesKey<AesAlgorithm.CbcWithPkcs7Padding>,
+				clearEntity: DecryptedPropertyStub,
+			): EncryptedPropertyStub =
+				EncryptedPropertyStub(
+					id = clearEntity.id,
+					type = clearEntity.type,
+					typedValue =
+						clearEntity.typedValue?.let {
+							TypedValueEncryptorFactory.empty.encrypt(encryptionKey, it)
+						},
+					encryptedSelf = null,
+				)
+		}
 
 	override fun create(
 		entityManifestName: String,
 		encryptorFactoryContext: EncryptorFactoryContext,
+		encodingJson: Json,
+		cryptoService: CryptoService,
 	): EntityEncryptor<EncryptedPropertyStub, DecryptedPropertyStub> {
 		val manifest = encryptorFactoryContext.getManifest(entityManifestName)
 		return PropertyStubEncryptor(
@@ -53,6 +66,8 @@ internal object PropertyStubEncryptorFactory :
 						)
 					} ?: EncryptableFieldConfig.None(TypedValueEncryptorFactory)
 				},
+			encodingJson = encodingJson,
+			cryptoService = cryptoService,
 		)
 	}
 }
@@ -62,12 +77,12 @@ private class PropertyStubEncryptor(
 	private val id_e: Boolean,
 	private val type_e: Boolean,
 	private val typedValue_e: EncryptableFieldConfig<EncryptedTypedValue, DecryptedTypedValue>,
-) : AbstractEntityEncryptor<EncryptedPropertyStub, DecryptedPropertyStub>() {
+	private val encodingJson: Json,
+	cryptoService: CryptoService,
+) : AbstractEntityEncryptor<EncryptedPropertyStub, DecryptedPropertyStub>(cryptoService) {
 	override suspend fun encrypt(
 		encryptionKey: AesKey<AesAlgorithm.CbcWithPkcs7Padding>,
 		clearEntity: DecryptedPropertyStub,
-		encodingJson: Json,
-		cryptoService: CryptoService,
 	): EncryptedPropertyStub {
 		val dataToEncrypt = mutableMapOf<String, JsonElement>()
 		if (id_e && clearEntity.id != null) dataToEncrypt["id"] = encodingJson.encodeToJsonElement(clearEntity.id)
@@ -87,11 +102,11 @@ private class PropertyStubEncryptor(
 						null
 					} else {
 						clearEntity.typedValue?.let {
-							encryptor.encrypt(encryptionKey, it, encodingJson, cryptoService)
+							encryptor.encrypt(encryptionKey, it)
 						}
 					}
 				},
-			encryptedSelf = getUpdatedEncryptSelf(encryptionKey, clearEntity, JsonObject(dataToEncrypt), cryptoService),
+			encryptedSelf = getUpdatedEncryptSelf(encryptionKey, clearEntity, JsonObject(dataToEncrypt)),
 		)
 	}
 }

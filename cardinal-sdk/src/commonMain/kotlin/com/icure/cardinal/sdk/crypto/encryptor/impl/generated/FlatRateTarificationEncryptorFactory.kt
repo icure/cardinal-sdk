@@ -25,16 +25,28 @@ import kotlin.String
 internal object FlatRateTarificationEncryptorFactory :
 	EntityEncryptorFactory<EncryptedFlatRateTarification, DecryptedFlatRateTarification> {
 	override val empty: EntityEncryptor<EncryptedFlatRateTarification, DecryptedFlatRateTarification> =
-		FlatRateTarificationEncryptor(
-			code_e = false,
-			flatRateType_e = false,
-			label_e = false,
-			valorisations_e = EncryptableFieldConfig.None(ValorisationEncryptorFactory),
-		)
+		object : EntityEncryptor<EncryptedFlatRateTarification, DecryptedFlatRateTarification> {
+			override suspend fun encrypt(
+				encryptionKey: AesKey<AesAlgorithm.CbcWithPkcs7Padding>,
+				clearEntity: DecryptedFlatRateTarification,
+			): EncryptedFlatRateTarification =
+				EncryptedFlatRateTarification(
+					code = clearEntity.code,
+					flatRateType = clearEntity.flatRateType,
+					label = clearEntity.label,
+					valorisations =
+						clearEntity.valorisations.map { x0 ->
+							ValorisationEncryptorFactory.empty.encrypt(encryptionKey, x0)
+						},
+					encryptedSelf = null,
+				)
+		}
 
 	override fun create(
 		entityManifestName: String,
 		encryptorFactoryContext: EncryptorFactoryContext,
+		encodingJson: Json,
+		cryptoService: CryptoService,
 	): EntityEncryptor<EncryptedFlatRateTarification, DecryptedFlatRateTarification> {
 		val manifest = encryptorFactoryContext.getManifest(entityManifestName)
 		return FlatRateTarificationEncryptor(
@@ -55,6 +67,8 @@ internal object FlatRateTarificationEncryptorFactory :
 						)
 					} ?: EncryptableFieldConfig.None(ValorisationEncryptorFactory)
 				},
+			encodingJson = encodingJson,
+			cryptoService = cryptoService,
 		)
 	}
 }
@@ -65,12 +79,13 @@ private class FlatRateTarificationEncryptor(
 	private val flatRateType_e: Boolean,
 	private val label_e: Boolean,
 	private val valorisations_e: EncryptableFieldConfig<EncryptedValorisation, DecryptedValorisation>,
-) : AbstractEntityEncryptor<EncryptedFlatRateTarification, DecryptedFlatRateTarification>() {
+	private val encodingJson: Json,
+	cryptoService: CryptoService,
+) :
+	AbstractEntityEncryptor<EncryptedFlatRateTarification, DecryptedFlatRateTarification>(cryptoService) {
 	override suspend fun encrypt(
 		encryptionKey: AesKey<AesAlgorithm.CbcWithPkcs7Padding>,
 		clearEntity: DecryptedFlatRateTarification,
-		encodingJson: Json,
-		cryptoService: CryptoService,
 	): EncryptedFlatRateTarification {
 		val dataToEncrypt = mutableMapOf<String, JsonElement>()
 		if (code_e && clearEntity.code != null) dataToEncrypt["code"] = encodingJson.encodeToJsonElement(clearEntity.code)
@@ -97,11 +112,11 @@ private class FlatRateTarificationEncryptor(
 						emptyList()
 					} else {
 						clearEntity.valorisations.map { x0 ->
-							encryptor.encrypt(encryptionKey, x0, encodingJson, cryptoService)
+							encryptor.encrypt(encryptionKey, x0)
 						}
 					}
 				},
-			encryptedSelf = getUpdatedEncryptSelf(encryptionKey, clearEntity, JsonObject(dataToEncrypt), cryptoService),
+			encryptedSelf = getUpdatedEncryptSelf(encryptionKey, clearEntity, JsonObject(dataToEncrypt)),
 		)
 	}
 }

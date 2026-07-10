@@ -23,19 +23,40 @@ internal object SecureDelegationKeyMapEncryptorFactory :
 	EntityEncryptorFactory<EncryptedSecureDelegationKeyMap, DecryptedSecureDelegationKeyMap> {
 	override val empty:
 		EntityEncryptor<EncryptedSecureDelegationKeyMap, DecryptedSecureDelegationKeyMap> =
-		SecureDelegationKeyMapEncryptor(
-			delegator_e = false,
-			delegate_e = false,
-		)
+		object :
+			EntityEncryptor<EncryptedSecureDelegationKeyMap, DecryptedSecureDelegationKeyMap> {
+			override suspend fun encrypt(
+				encryptionKey: AesKey<AesAlgorithm.CbcWithPkcs7Padding>,
+				clearEntity: DecryptedSecureDelegationKeyMap,
+			): EncryptedSecureDelegationKeyMap =
+				EncryptedSecureDelegationKeyMap(
+					id = clearEntity.id,
+					rev = clearEntity.rev,
+					delegationKey = clearEntity.delegationKey,
+					delegator = clearEntity.delegator,
+					delegate = clearEntity.delegate,
+					secretForeignKeys = clearEntity.secretForeignKeys,
+					cryptedForeignKeys = clearEntity.cryptedForeignKeys,
+					delegations = clearEntity.delegations,
+					encryptionKeys = clearEntity.encryptionKeys,
+					encryptedSelf = null,
+					securityMetadata = clearEntity.securityMetadata,
+					deletionDate = clearEntity.deletionDate,
+				)
+		}
 
 	override fun create(
 		entityManifestName: String,
 		encryptorFactoryContext: EncryptorFactoryContext,
+		encodingJson: Json,
+		cryptoService: CryptoService,
 	): EntityEncryptor<EncryptedSecureDelegationKeyMap, DecryptedSecureDelegationKeyMap> {
 		val manifest = encryptorFactoryContext.getManifest(entityManifestName)
 		return SecureDelegationKeyMapEncryptor(
 			delegator_e = "delegator" in manifest.fieldsToEncrypt,
 			delegate_e = "delegate" in manifest.fieldsToEncrypt,
+			encodingJson = encodingJson,
+			cryptoService = cryptoService,
 		)
 	}
 }
@@ -44,12 +65,13 @@ internal object SecureDelegationKeyMapEncryptorFactory :
 private class SecureDelegationKeyMapEncryptor(
 	private val delegator_e: Boolean,
 	private val delegate_e: Boolean,
-) : AbstractEntityEncryptor<EncryptedSecureDelegationKeyMap, DecryptedSecureDelegationKeyMap>() {
+	private val encodingJson: Json,
+	cryptoService: CryptoService,
+) :
+	AbstractEntityEncryptor<EncryptedSecureDelegationKeyMap, DecryptedSecureDelegationKeyMap>(cryptoService) {
 	override suspend fun encrypt(
 		encryptionKey: AesKey<AesAlgorithm.CbcWithPkcs7Padding>,
 		clearEntity: DecryptedSecureDelegationKeyMap,
-		encodingJson: Json,
-		cryptoService: CryptoService,
 	): EncryptedSecureDelegationKeyMap {
 		val dataToEncrypt = mutableMapOf<String, JsonElement>()
 		if (delegator_e && clearEntity.delegator != null) dataToEncrypt["delegator"] = encodingJson.encodeToJsonElement(clearEntity.delegator)
@@ -64,7 +86,7 @@ private class SecureDelegationKeyMapEncryptor(
 			cryptedForeignKeys = clearEntity.cryptedForeignKeys,
 			delegations = clearEntity.delegations,
 			encryptionKeys = clearEntity.encryptionKeys,
-			encryptedSelf = getUpdatedEncryptSelf(encryptionKey, clearEntity, JsonObject(dataToEncrypt), cryptoService),
+			encryptedSelf = getUpdatedEncryptSelf(encryptionKey, clearEntity, JsonObject(dataToEncrypt)),
 			securityMetadata = clearEntity.securityMetadata,
 			deletionDate = clearEntity.deletionDate,
 		)

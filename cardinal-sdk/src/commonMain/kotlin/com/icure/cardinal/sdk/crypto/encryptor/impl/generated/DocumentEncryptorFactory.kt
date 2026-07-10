@@ -22,24 +22,54 @@ import kotlin.String
 internal object DocumentEncryptorFactory :
 	EntityEncryptorFactory<EncryptedDocument, DecryptedDocument> {
 	override val empty: EntityEncryptor<EncryptedDocument, DecryptedDocument> =
-		DocumentEncryptor(
-			created_e = false,
-			modified_e = false,
-			author_e = false,
-			responsible_e = false,
-			tags_e = false,
-			codes_e = false,
-			documentType_e = false,
-			documentStatus_e = false,
-			externalUri_e = false,
-			name_e = false,
-			version_e = false,
-			openingContactId_e = false,
-		)
+		object :
+			EntityEncryptor<EncryptedDocument, DecryptedDocument> {
+			override suspend fun encrypt(
+				encryptionKey: AesKey<AesAlgorithm.CbcWithPkcs7Padding>,
+				clearEntity: DecryptedDocument,
+			): EncryptedDocument =
+				EncryptedDocument(
+					id = clearEntity.id,
+					rev = clearEntity.rev,
+					created = clearEntity.created,
+					modified = clearEntity.modified,
+					author = clearEntity.author,
+					responsible = clearEntity.responsible,
+					tags = clearEntity.tags,
+					codes = clearEntity.codes,
+					deletionDate = clearEntity.deletionDate,
+					documentType = clearEntity.documentType,
+					documentStatus = clearEntity.documentStatus,
+					externalUri = clearEntity.externalUri,
+					name = clearEntity.name,
+					version = clearEntity.version,
+					size = clearEntity.size,
+					hash = clearEntity.hash,
+					openingContactId = clearEntity.openingContactId,
+					attachmentId = clearEntity.attachmentId,
+					objectStoreReference = clearEntity.objectStoreReference,
+					mainUti = clearEntity.mainUti,
+					otherUtis = clearEntity.otherUtis,
+					mainAttachmentStoredDataSize = clearEntity.mainAttachmentStoredDataSize,
+					extraMainAttachmentInfo = clearEntity.extraMainAttachmentInfo,
+					secondaryAttachments = clearEntity.secondaryAttachments,
+					deletedAttachments = clearEntity.deletedAttachments,
+					secretForeignKeys = clearEntity.secretForeignKeys,
+					cryptedForeignKeys = clearEntity.cryptedForeignKeys,
+					delegations = clearEntity.delegations,
+					encryptionKeys = clearEntity.encryptionKeys,
+					encryptedSelf = null,
+					securityMetadata = clearEntity.securityMetadata,
+					extensions = clearEntity.extensions,
+					extensionsVersion = clearEntity.extensionsVersion,
+				)
+		}
 
 	override fun create(
 		entityManifestName: String,
 		encryptorFactoryContext: EncryptorFactoryContext,
+		encodingJson: Json,
+		cryptoService: CryptoService,
 	): EntityEncryptor<EncryptedDocument, DecryptedDocument> {
 		val manifest = encryptorFactoryContext.getManifest(entityManifestName)
 		return DocumentEncryptor(
@@ -55,6 +85,8 @@ internal object DocumentEncryptorFactory :
 			name_e = "name" in manifest.fieldsToEncrypt,
 			version_e = "version" in manifest.fieldsToEncrypt,
 			openingContactId_e = "openingContactId" in manifest.fieldsToEncrypt,
+			encodingJson = encodingJson,
+			cryptoService = cryptoService,
 		)
 	}
 }
@@ -73,12 +105,12 @@ private class DocumentEncryptor(
 	private val name_e: Boolean,
 	private val version_e: Boolean,
 	private val openingContactId_e: Boolean,
-) : AbstractEntityEncryptor<EncryptedDocument, DecryptedDocument>() {
+	private val encodingJson: Json,
+	cryptoService: CryptoService,
+) : AbstractEntityEncryptor<EncryptedDocument, DecryptedDocument>(cryptoService) {
 	override suspend fun encrypt(
 		encryptionKey: AesKey<AesAlgorithm.CbcWithPkcs7Padding>,
 		clearEntity: DecryptedDocument,
-		encodingJson: Json,
-		cryptoService: CryptoService,
 	): EncryptedDocument {
 		val dataToEncrypt = mutableMapOf<String, JsonElement>()
 		if (created_e && clearEntity.created != null) dataToEncrypt["created"] = encodingJson.encodeToJsonElement(clearEntity.created)
@@ -148,7 +180,7 @@ private class DocumentEncryptor(
 			cryptedForeignKeys = clearEntity.cryptedForeignKeys,
 			delegations = clearEntity.delegations,
 			encryptionKeys = clearEntity.encryptionKeys,
-			encryptedSelf = getUpdatedEncryptSelf(encryptionKey, clearEntity, JsonObject(dataToEncrypt), cryptoService),
+			encryptedSelf = getUpdatedEncryptSelf(encryptionKey, clearEntity, JsonObject(dataToEncrypt)),
 			securityMetadata = clearEntity.securityMetadata,
 			extensions = clearEntity.extensions,
 			extensionsVersion = clearEntity.extensionsVersion,

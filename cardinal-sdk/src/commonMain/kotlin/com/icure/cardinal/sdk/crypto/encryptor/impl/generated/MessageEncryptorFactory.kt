@@ -24,33 +24,56 @@ import kotlin.String
 @InternalIcureApi
 internal object MessageEncryptorFactory : EntityEncryptorFactory<EncryptedMessage, DecryptedMessage> {
 	override val empty: EntityEncryptor<EncryptedMessage, DecryptedMessage> =
-		MessageEncryptor(
-			created_e = false,
-			modified_e = false,
-			author_e = false,
-			responsible_e = false,
-			tags_e = false,
-			codes_e = false,
-			fromAddress_e = false,
-			fromHealthcarePartyId_e = false,
-			recipients_e = false,
-			toAddresses_e = false,
-			received_e = false,
-			sent_e = false,
-			metas_e = false,
-			readStatus_e = false,
-			transportGuid_e = false,
-			remark_e = false,
-			conversationGuid_e = false,
-			subject_e = false,
-			invoiceIds_e = false,
-			parentId_e = false,
-			properties_e = EncryptableFieldConfig.None(PropertyStubEncryptorFactory),
-		)
+		object :
+			EntityEncryptor<EncryptedMessage, DecryptedMessage> {
+			override suspend fun encrypt(
+				encryptionKey: AesKey<AesAlgorithm.CbcWithPkcs7Padding>,
+				clearEntity: DecryptedMessage,
+			): EncryptedMessage =
+				EncryptedMessage(
+					id = clearEntity.id,
+					rev = clearEntity.rev,
+					created = clearEntity.created,
+					modified = clearEntity.modified,
+					author = clearEntity.author,
+					responsible = clearEntity.responsible,
+					tags = clearEntity.tags,
+					codes = clearEntity.codes,
+					deletionDate = clearEntity.deletionDate,
+					fromAddress = clearEntity.fromAddress,
+					fromHealthcarePartyId = clearEntity.fromHealthcarePartyId,
+					recipients = clearEntity.recipients,
+					toAddresses = clearEntity.toAddresses,
+					received = clearEntity.received,
+					sent = clearEntity.sent,
+					metas = clearEntity.metas,
+					readStatus = clearEntity.readStatus,
+					transportGuid = clearEntity.transportGuid,
+					remark = clearEntity.remark,
+					conversationGuid = clearEntity.conversationGuid,
+					subject = clearEntity.subject,
+					invoiceIds = clearEntity.invoiceIds,
+					parentId = clearEntity.parentId,
+					properties =
+						clearEntity.properties.mapTo(mutableSetOf()) { x0 ->
+							PropertyStubEncryptorFactory.empty.encrypt(encryptionKey, x0)
+						},
+					secretForeignKeys = clearEntity.secretForeignKeys,
+					cryptedForeignKeys = clearEntity.cryptedForeignKeys,
+					delegations = clearEntity.delegations,
+					encryptionKeys = clearEntity.encryptionKeys,
+					encryptedSelf = null,
+					securityMetadata = clearEntity.securityMetadata,
+					extensions = clearEntity.extensions,
+					extensionsVersion = clearEntity.extensionsVersion,
+				)
+		}
 
 	override fun create(
 		entityManifestName: String,
 		encryptorFactoryContext: EncryptorFactoryContext,
+		encodingJson: Json,
+		cryptoService: CryptoService,
 	): EntityEncryptor<EncryptedMessage, DecryptedMessage> {
 		val manifest = encryptorFactoryContext.getManifest(entityManifestName)
 		return MessageEncryptor(
@@ -88,6 +111,8 @@ internal object MessageEncryptorFactory : EntityEncryptorFactory<EncryptedMessag
 						)
 					} ?: EncryptableFieldConfig.None(PropertyStubEncryptorFactory)
 				},
+			encodingJson = encodingJson,
+			cryptoService = cryptoService,
 		)
 	}
 }
@@ -115,12 +140,12 @@ private class MessageEncryptor(
 	private val invoiceIds_e: Boolean,
 	private val parentId_e: Boolean,
 	private val properties_e: EncryptableFieldConfig<EncryptedPropertyStub, DecryptedPropertyStub>,
-) : AbstractEntityEncryptor<EncryptedMessage, DecryptedMessage>() {
+	private val encodingJson: Json,
+	cryptoService: CryptoService,
+) : AbstractEntityEncryptor<EncryptedMessage, DecryptedMessage>(cryptoService) {
 	override suspend fun encrypt(
 		encryptionKey: AesKey<AesAlgorithm.CbcWithPkcs7Padding>,
 		clearEntity: DecryptedMessage,
-		encodingJson: Json,
-		cryptoService: CryptoService,
 	): EncryptedMessage {
 		val dataToEncrypt = mutableMapOf<String, JsonElement>()
 		if (created_e && clearEntity.created != null) dataToEncrypt["created"] = encodingJson.encodeToJsonElement(clearEntity.created)
@@ -224,7 +249,7 @@ private class MessageEncryptor(
 						emptySet()
 					} else {
 						clearEntity.properties.mapTo(mutableSetOf()) { x0 ->
-							encryptor.encrypt(encryptionKey, x0, encodingJson, cryptoService)
+							encryptor.encrypt(encryptionKey, x0)
 						}
 					}
 				},
@@ -232,7 +257,7 @@ private class MessageEncryptor(
 			cryptedForeignKeys = clearEntity.cryptedForeignKeys,
 			delegations = clearEntity.delegations,
 			encryptionKeys = clearEntity.encryptionKeys,
-			encryptedSelf = getUpdatedEncryptSelf(encryptionKey, clearEntity, JsonObject(dataToEncrypt), cryptoService),
+			encryptedSelf = getUpdatedEncryptSelf(encryptionKey, clearEntity, JsonObject(dataToEncrypt)),
 			securityMetadata = clearEntity.securityMetadata,
 			extensions = clearEntity.extensions,
 			extensionsVersion = clearEntity.extensionsVersion,

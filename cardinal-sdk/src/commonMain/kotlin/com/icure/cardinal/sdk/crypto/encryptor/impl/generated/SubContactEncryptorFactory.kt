@@ -22,24 +22,36 @@ import kotlin.String
 internal object SubContactEncryptorFactory :
 	EntityEncryptorFactory<EncryptedSubContact, DecryptedSubContact> {
 	override val empty: EntityEncryptor<EncryptedSubContact, DecryptedSubContact> =
-		SubContactEncryptor(
-			created_e = false,
-			modified_e = false,
-			author_e = false,
-			responsible_e = false,
-			tags_e = false,
-			codes_e = false,
-			descr_e = false,
-			protocol_e = false,
-			formId_e = false,
-			planOfActionId_e = false,
-			healthElementId_e = false,
-			services_e = false,
-		)
+		object :
+			EntityEncryptor<EncryptedSubContact, DecryptedSubContact> {
+			override suspend fun encrypt(
+				encryptionKey: AesKey<AesAlgorithm.CbcWithPkcs7Padding>,
+				clearEntity: DecryptedSubContact,
+			): EncryptedSubContact =
+				EncryptedSubContact(
+					id = clearEntity.id,
+					created = clearEntity.created,
+					modified = clearEntity.modified,
+					author = clearEntity.author,
+					responsible = clearEntity.responsible,
+					tags = clearEntity.tags,
+					codes = clearEntity.codes,
+					descr = clearEntity.descr,
+					protocol = clearEntity.protocol,
+					formId = clearEntity.formId,
+					planOfActionId = clearEntity.planOfActionId,
+					healthElementId = clearEntity.healthElementId,
+					services = clearEntity.services,
+					encryptedSelf = null,
+					extensions = clearEntity.extensions,
+				)
+		}
 
 	override fun create(
 		entityManifestName: String,
 		encryptorFactoryContext: EncryptorFactoryContext,
+		encodingJson: Json,
+		cryptoService: CryptoService,
 	): EntityEncryptor<EncryptedSubContact, DecryptedSubContact> {
 		val manifest = encryptorFactoryContext.getManifest(entityManifestName)
 		return SubContactEncryptor(
@@ -55,6 +67,8 @@ internal object SubContactEncryptorFactory :
 			planOfActionId_e = "planOfActionId" in manifest.fieldsToEncrypt,
 			healthElementId_e = "healthElementId" in manifest.fieldsToEncrypt,
 			services_e = "services" in manifest.fieldsToEncrypt,
+			encodingJson = encodingJson,
+			cryptoService = cryptoService,
 		)
 	}
 }
@@ -73,12 +87,12 @@ private class SubContactEncryptor(
 	private val planOfActionId_e: Boolean,
 	private val healthElementId_e: Boolean,
 	private val services_e: Boolean,
-) : AbstractEntityEncryptor<EncryptedSubContact, DecryptedSubContact>() {
+	private val encodingJson: Json,
+	cryptoService: CryptoService,
+) : AbstractEntityEncryptor<EncryptedSubContact, DecryptedSubContact>(cryptoService) {
 	override suspend fun encrypt(
 		encryptionKey: AesKey<AesAlgorithm.CbcWithPkcs7Padding>,
 		clearEntity: DecryptedSubContact,
-		encodingJson: Json,
-		cryptoService: CryptoService,
 	): EncryptedSubContact {
 		val dataToEncrypt = mutableMapOf<String, JsonElement>()
 		if (created_e && clearEntity.created != null) dataToEncrypt["created"] = encodingJson.encodeToJsonElement(clearEntity.created)
@@ -122,7 +136,7 @@ private class SubContactEncryptor(
 			planOfActionId = if (planOfActionId_e) null else clearEntity.planOfActionId,
 			healthElementId = if (healthElementId_e) null else clearEntity.healthElementId,
 			services = if (services_e) emptyList() else clearEntity.services,
-			encryptedSelf = getUpdatedEncryptSelf(encryptionKey, clearEntity, JsonObject(dataToEncrypt), cryptoService),
+			encryptedSelf = getUpdatedEncryptSelf(encryptionKey, clearEntity, JsonObject(dataToEncrypt)),
 			extensions = clearEntity.extensions,
 		)
 	}

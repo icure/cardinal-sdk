@@ -21,25 +21,43 @@ import kotlin.String
 @InternalIcureApi
 internal object ReceiptEncryptorFactory : EntityEncryptorFactory<EncryptedReceipt, DecryptedReceipt> {
 	override val empty: EntityEncryptor<EncryptedReceipt, DecryptedReceipt> =
-		ReceiptEncryptor(
-			created_e = false,
-			modified_e = false,
-			author_e = false,
-			responsible_e = false,
-			tags_e = false,
-			codes_e = false,
-			attachmentIds_e = false,
-			attachmentInfos_e = false,
-			deletedAttachments_e = false,
-			references_e = false,
-			documentId_e = false,
-			category_e = false,
-			subCategory_e = false,
-		)
+		object :
+			EntityEncryptor<EncryptedReceipt, DecryptedReceipt> {
+			override suspend fun encrypt(
+				encryptionKey: AesKey<AesAlgorithm.CbcWithPkcs7Padding>,
+				clearEntity: DecryptedReceipt,
+			): EncryptedReceipt =
+				EncryptedReceipt(
+					id = clearEntity.id,
+					rev = clearEntity.rev,
+					created = clearEntity.created,
+					modified = clearEntity.modified,
+					author = clearEntity.author,
+					responsible = clearEntity.responsible,
+					tags = clearEntity.tags,
+					codes = clearEntity.codes,
+					deletionDate = clearEntity.deletionDate,
+					attachmentIds = clearEntity.attachmentIds,
+					attachmentInfos = clearEntity.attachmentInfos,
+					deletedAttachments = clearEntity.deletedAttachments,
+					references = clearEntity.references,
+					documentId = clearEntity.documentId,
+					category = clearEntity.category,
+					subCategory = clearEntity.subCategory,
+					secretForeignKeys = clearEntity.secretForeignKeys,
+					cryptedForeignKeys = clearEntity.cryptedForeignKeys,
+					delegations = clearEntity.delegations,
+					encryptionKeys = clearEntity.encryptionKeys,
+					encryptedSelf = null,
+					securityMetadata = clearEntity.securityMetadata,
+				)
+		}
 
 	override fun create(
 		entityManifestName: String,
 		encryptorFactoryContext: EncryptorFactoryContext,
+		encodingJson: Json,
+		cryptoService: CryptoService,
 	): EntityEncryptor<EncryptedReceipt, DecryptedReceipt> {
 		val manifest = encryptorFactoryContext.getManifest(entityManifestName)
 		return ReceiptEncryptor(
@@ -56,6 +74,8 @@ internal object ReceiptEncryptorFactory : EntityEncryptorFactory<EncryptedReceip
 			documentId_e = "documentId" in manifest.fieldsToEncrypt,
 			category_e = "category" in manifest.fieldsToEncrypt,
 			subCategory_e = "subCategory" in manifest.fieldsToEncrypt,
+			encodingJson = encodingJson,
+			cryptoService = cryptoService,
 		)
 	}
 }
@@ -75,12 +95,12 @@ private class ReceiptEncryptor(
 	private val documentId_e: Boolean,
 	private val category_e: Boolean,
 	private val subCategory_e: Boolean,
-) : AbstractEntityEncryptor<EncryptedReceipt, DecryptedReceipt>() {
+	private val encodingJson: Json,
+	cryptoService: CryptoService,
+) : AbstractEntityEncryptor<EncryptedReceipt, DecryptedReceipt>(cryptoService) {
 	override suspend fun encrypt(
 		encryptionKey: AesKey<AesAlgorithm.CbcWithPkcs7Padding>,
 		clearEntity: DecryptedReceipt,
-		encodingJson: Json,
-		cryptoService: CryptoService,
 	): EncryptedReceipt {
 		val dataToEncrypt = mutableMapOf<String, JsonElement>()
 		if (created_e && clearEntity.created != null) dataToEncrypt["created"] = encodingJson.encodeToJsonElement(clearEntity.created)
@@ -147,7 +167,7 @@ private class ReceiptEncryptor(
 			cryptedForeignKeys = clearEntity.cryptedForeignKeys,
 			delegations = clearEntity.delegations,
 			encryptionKeys = clearEntity.encryptionKeys,
-			encryptedSelf = getUpdatedEncryptSelf(encryptionKey, clearEntity, JsonObject(dataToEncrypt), cryptoService),
+			encryptedSelf = getUpdatedEncryptSelf(encryptionKey, clearEntity, JsonObject(dataToEncrypt)),
 			securityMetadata = clearEntity.securityMetadata,
 		)
 	}

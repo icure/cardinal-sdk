@@ -25,14 +25,30 @@ import kotlin.String
 internal object PropertyEncryptorFactory :
 	EntityEncryptorFactory<EncryptedProperty, DecryptedProperty> {
 	override val empty: EntityEncryptor<EncryptedProperty, DecryptedProperty> =
-		PropertyEncryptor(
-			type_e = false,
-			typedValue_e = EncryptableFieldConfig.None(TypedValueEncryptorFactory),
-		)
+		object :
+			EntityEncryptor<EncryptedProperty, DecryptedProperty> {
+			override suspend fun encrypt(
+				encryptionKey: AesKey<AesAlgorithm.CbcWithPkcs7Padding>,
+				clearEntity: DecryptedProperty,
+			): EncryptedProperty =
+				EncryptedProperty(
+					id = clearEntity.id,
+					rev = clearEntity.rev,
+					deletionDate = clearEntity.deletionDate,
+					type = clearEntity.type,
+					typedValue =
+						clearEntity.typedValue?.let {
+							TypedValueEncryptorFactory.empty.encrypt(encryptionKey, it)
+						},
+					encryptedSelf = null,
+				)
+		}
 
 	override fun create(
 		entityManifestName: String,
 		encryptorFactoryContext: EncryptorFactoryContext,
+		encodingJson: Json,
+		cryptoService: CryptoService,
 	): EntityEncryptor<EncryptedProperty, DecryptedProperty> {
 		val manifest = encryptorFactoryContext.getManifest(entityManifestName)
 		return PropertyEncryptor(
@@ -51,6 +67,8 @@ internal object PropertyEncryptorFactory :
 						)
 					} ?: EncryptableFieldConfig.None(TypedValueEncryptorFactory)
 				},
+			encodingJson = encodingJson,
+			cryptoService = cryptoService,
 		)
 	}
 }
@@ -59,12 +77,12 @@ internal object PropertyEncryptorFactory :
 private class PropertyEncryptor(
 	private val type_e: Boolean,
 	private val typedValue_e: EncryptableFieldConfig<EncryptedTypedValue, DecryptedTypedValue>,
-) : AbstractEntityEncryptor<EncryptedProperty, DecryptedProperty>() {
+	private val encodingJson: Json,
+	cryptoService: CryptoService,
+) : AbstractEntityEncryptor<EncryptedProperty, DecryptedProperty>(cryptoService) {
 	override suspend fun encrypt(
 		encryptionKey: AesKey<AesAlgorithm.CbcWithPkcs7Padding>,
 		clearEntity: DecryptedProperty,
-		encodingJson: Json,
-		cryptoService: CryptoService,
 	): EncryptedProperty {
 		val dataToEncrypt = mutableMapOf<String, JsonElement>()
 		if (type_e && clearEntity.type != null) dataToEncrypt["type"] = encodingJson.encodeToJsonElement(clearEntity.type)
@@ -85,11 +103,11 @@ private class PropertyEncryptor(
 						null
 					} else {
 						clearEntity.typedValue?.let {
-							encryptor.encrypt(encryptionKey, it, encodingJson, cryptoService)
+							encryptor.encrypt(encryptionKey, it)
 						}
 					}
 				},
-			encryptedSelf = getUpdatedEncryptSelf(encryptionKey, clearEntity, JsonObject(dataToEncrypt), cryptoService),
+			encryptedSelf = getUpdatedEncryptSelf(encryptionKey, clearEntity, JsonObject(dataToEncrypt)),
 		)
 	}
 }

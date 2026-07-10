@@ -26,17 +26,32 @@ internal object PatientHealthCarePartyEncryptorFactory :
 	EntityEncryptorFactory<EncryptedPatientHealthCareParty, DecryptedPatientHealthCareParty> {
 	override val empty:
 		EntityEncryptor<EncryptedPatientHealthCareParty, DecryptedPatientHealthCareParty> =
-		PatientHealthCarePartyEncryptor(
-			type_e = false,
-			healthcarePartyId_e = false,
-			sendFormats_e = false,
-			referralPeriods_e = false,
-			properties_e = EncryptableFieldConfig.None(PropertyStubEncryptorFactory),
-		)
+		object :
+			EntityEncryptor<EncryptedPatientHealthCareParty, DecryptedPatientHealthCareParty> {
+			override suspend fun encrypt(
+				encryptionKey: AesKey<AesAlgorithm.CbcWithPkcs7Padding>,
+				clearEntity: DecryptedPatientHealthCareParty,
+			): EncryptedPatientHealthCareParty =
+				EncryptedPatientHealthCareParty(
+					type = clearEntity.type,
+					healthcarePartyId = clearEntity.healthcarePartyId,
+					sendFormats = clearEntity.sendFormats,
+					referralPeriods = clearEntity.referralPeriods,
+					properties =
+						clearEntity.properties?.let {
+							it.mapTo(mutableSetOf()) { x0 ->
+								PropertyStubEncryptorFactory.empty.encrypt(encryptionKey, x0)
+							}
+						},
+					encryptedSelf = null,
+				)
+		}
 
 	override fun create(
 		entityManifestName: String,
 		encryptorFactoryContext: EncryptorFactoryContext,
+		encodingJson: Json,
+		cryptoService: CryptoService,
 	): EntityEncryptor<EncryptedPatientHealthCareParty, DecryptedPatientHealthCareParty> {
 		val manifest = encryptorFactoryContext.getManifest(entityManifestName)
 		return PatientHealthCarePartyEncryptor(
@@ -58,6 +73,8 @@ internal object PatientHealthCarePartyEncryptorFactory :
 						)
 					} ?: EncryptableFieldConfig.None(PropertyStubEncryptorFactory)
 				},
+			encodingJson = encodingJson,
+			cryptoService = cryptoService,
 		)
 	}
 }
@@ -69,12 +86,13 @@ private class PatientHealthCarePartyEncryptor(
 	private val sendFormats_e: Boolean,
 	private val referralPeriods_e: Boolean,
 	private val properties_e: EncryptableFieldConfig<EncryptedPropertyStub, DecryptedPropertyStub>,
-) : AbstractEntityEncryptor<EncryptedPatientHealthCareParty, DecryptedPatientHealthCareParty>() {
+	private val encodingJson: Json,
+	cryptoService: CryptoService,
+) :
+	AbstractEntityEncryptor<EncryptedPatientHealthCareParty, DecryptedPatientHealthCareParty>(cryptoService) {
 	override suspend fun encrypt(
 		encryptionKey: AesKey<AesAlgorithm.CbcWithPkcs7Padding>,
 		clearEntity: DecryptedPatientHealthCareParty,
-		encodingJson: Json,
-		cryptoService: CryptoService,
 	): EncryptedPatientHealthCareParty {
 		val dataToEncrypt = mutableMapOf<String, JsonElement>()
 		if (type_e && clearEntity.type != null) dataToEncrypt["type"] = encodingJson.encodeToJsonElement(clearEntity.type)
@@ -114,12 +132,12 @@ private class PatientHealthCarePartyEncryptor(
 					} else {
 						clearEntity.properties?.let {
 							it.mapTo(mutableSetOf()) { x0 ->
-								encryptor.encrypt(encryptionKey, x0, encodingJson, cryptoService)
+								encryptor.encrypt(encryptionKey, x0)
 							}
 						}
 					}
 				},
-			encryptedSelf = getUpdatedEncryptSelf(encryptionKey, clearEntity, JsonObject(dataToEncrypt), cryptoService),
+			encryptedSelf = getUpdatedEncryptSelf(encryptionKey, clearEntity, JsonObject(dataToEncrypt)),
 		)
 	}
 }

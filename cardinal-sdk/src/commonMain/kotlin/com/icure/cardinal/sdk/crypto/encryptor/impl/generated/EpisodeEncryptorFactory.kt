@@ -21,16 +21,28 @@ import kotlin.String
 @InternalIcureApi
 internal object EpisodeEncryptorFactory : EntityEncryptorFactory<EncryptedEpisode, DecryptedEpisode> {
 	override val empty: EntityEncryptor<EncryptedEpisode, DecryptedEpisode> =
-		EpisodeEncryptor(
-			name_e = false,
-			comment_e = false,
-			startDate_e = false,
-			endDate_e = false,
-		)
+		object :
+			EntityEncryptor<EncryptedEpisode, DecryptedEpisode> {
+			override suspend fun encrypt(
+				encryptionKey: AesKey<AesAlgorithm.CbcWithPkcs7Padding>,
+				clearEntity: DecryptedEpisode,
+			): EncryptedEpisode =
+				EncryptedEpisode(
+					id = clearEntity.id,
+					name = clearEntity.name,
+					comment = clearEntity.comment,
+					startDate = clearEntity.startDate,
+					endDate = clearEntity.endDate,
+					encryptedSelf = null,
+					extensions = clearEntity.extensions,
+				)
+		}
 
 	override fun create(
 		entityManifestName: String,
 		encryptorFactoryContext: EncryptorFactoryContext,
+		encodingJson: Json,
+		cryptoService: CryptoService,
 	): EntityEncryptor<EncryptedEpisode, DecryptedEpisode> {
 		val manifest = encryptorFactoryContext.getManifest(entityManifestName)
 		return EpisodeEncryptor(
@@ -38,6 +50,8 @@ internal object EpisodeEncryptorFactory : EntityEncryptorFactory<EncryptedEpisod
 			comment_e = "comment" in manifest.fieldsToEncrypt,
 			startDate_e = "startDate" in manifest.fieldsToEncrypt,
 			endDate_e = "endDate" in manifest.fieldsToEncrypt,
+			encodingJson = encodingJson,
+			cryptoService = cryptoService,
 		)
 	}
 }
@@ -48,12 +62,12 @@ private class EpisodeEncryptor(
 	private val comment_e: Boolean,
 	private val startDate_e: Boolean,
 	private val endDate_e: Boolean,
-) : AbstractEntityEncryptor<EncryptedEpisode, DecryptedEpisode>() {
+	private val encodingJson: Json,
+	cryptoService: CryptoService,
+) : AbstractEntityEncryptor<EncryptedEpisode, DecryptedEpisode>(cryptoService) {
 	override suspend fun encrypt(
 		encryptionKey: AesKey<AesAlgorithm.CbcWithPkcs7Padding>,
 		clearEntity: DecryptedEpisode,
-		encodingJson: Json,
-		cryptoService: CryptoService,
 	): EncryptedEpisode {
 		val dataToEncrypt = mutableMapOf<String, JsonElement>()
 		if (name_e && clearEntity.name != null) dataToEncrypt["name"] = encodingJson.encodeToJsonElement(clearEntity.name)
@@ -66,7 +80,7 @@ private class EpisodeEncryptor(
 			comment = if (comment_e) null else clearEntity.comment,
 			startDate = if (startDate_e) null else clearEntity.startDate,
 			endDate = if (endDate_e) null else clearEntity.endDate,
-			encryptedSelf = getUpdatedEncryptSelf(encryptionKey, clearEntity, JsonObject(dataToEncrypt), cryptoService),
+			encryptedSelf = getUpdatedEncryptSelf(encryptionKey, clearEntity, JsonObject(dataToEncrypt)),
 			extensions = clearEntity.extensions,
 		)
 	}

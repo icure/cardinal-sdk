@@ -24,7 +24,5 @@ interface EntityEncryptor<ENCRYPTED : Encryptable, DECRYPTED : Encryptable> {
 	suspend fun encrypt(
 		encryptionKey: AesKey<AesAlgorithm.CbcWithPkcs7Padding>,
 		clearEntity: DECRYPTED,
-		encodingJson: Json,
-		cryptoService: CryptoService,
 	): ENCRYPTED
 }

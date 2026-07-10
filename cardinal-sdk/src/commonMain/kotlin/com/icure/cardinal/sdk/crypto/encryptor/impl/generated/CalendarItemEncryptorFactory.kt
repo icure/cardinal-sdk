@@ -29,42 +29,72 @@ import kotlin.String
 internal object CalendarItemEncryptorFactory :
 	EntityEncryptorFactory<EncryptedCalendarItem, DecryptedCalendarItem> {
 	override val empty: EntityEncryptor<EncryptedCalendarItem, DecryptedCalendarItem> =
-		CalendarItemEncryptor(
-			created_e = false,
-			modified_e = false,
-			author_e = false,
-			responsible_e = false,
-			tags_e = false,
-			codes_e = false,
-			title_e = false,
-			calendarItemTypeId_e = false,
-			masterCalendarItemId_e = false,
-			important_e = false,
-			homeVisit_e = false,
-			phoneNumber_e = false,
-			placeId_e = false,
-			address_e = EncryptableFieldConfig.None(AddressEncryptorFactory),
-			addressText_e = false,
-			startTime_e = false,
-			endTime_e = false,
-			confirmationTime_e = false,
-			cancellationTimestamp_e = false,
-			confirmationId_e = false,
-			duration_e = false,
-			allDay_e = false,
-			details_e = false,
-			wasMigrated_e = false,
-			agendaId_e = false,
-			resourceGroup_e = false,
-			hcpId_e = false,
-			recurrenceId_e = false,
-			meetingTags_e = EncryptableFieldConfig.None(CalendarItemTagEncryptorFactory),
-			properties_e = EncryptableFieldConfig.None(PropertyStubEncryptorFactory),
-		)
+		object :
+			EntityEncryptor<EncryptedCalendarItem, DecryptedCalendarItem> {
+			override suspend fun encrypt(
+				encryptionKey: AesKey<AesAlgorithm.CbcWithPkcs7Padding>,
+				clearEntity: DecryptedCalendarItem,
+			): EncryptedCalendarItem =
+				EncryptedCalendarItem(
+					id = clearEntity.id,
+					rev = clearEntity.rev,
+					created = clearEntity.created,
+					modified = clearEntity.modified,
+					author = clearEntity.author,
+					responsible = clearEntity.responsible,
+					tags = clearEntity.tags,
+					codes = clearEntity.codes,
+					deletionDate = clearEntity.deletionDate,
+					title = clearEntity.title,
+					calendarItemTypeId = clearEntity.calendarItemTypeId,
+					masterCalendarItemId = clearEntity.masterCalendarItemId,
+					important = clearEntity.important,
+					homeVisit = clearEntity.homeVisit,
+					phoneNumber = clearEntity.phoneNumber,
+					placeId = clearEntity.placeId,
+					address =
+						clearEntity.address?.let {
+							AddressEncryptorFactory.empty.encrypt(encryptionKey, it)
+						},
+					addressText = clearEntity.addressText,
+					startTime = clearEntity.startTime,
+					endTime = clearEntity.endTime,
+					confirmationTime = clearEntity.confirmationTime,
+					cancellationTimestamp = clearEntity.cancellationTimestamp,
+					confirmationId = clearEntity.confirmationId,
+					duration = clearEntity.duration,
+					allDay = clearEntity.allDay,
+					details = clearEntity.details,
+					wasMigrated = clearEntity.wasMigrated,
+					agendaId = clearEntity.agendaId,
+					resourceGroup = clearEntity.resourceGroup,
+					availabilitiesAssignmentStrategy = clearEntity.availabilitiesAssignmentStrategy,
+					hcpId = clearEntity.hcpId,
+					recurrenceId = clearEntity.recurrenceId,
+					meetingTags =
+						clearEntity.meetingTags.mapTo(mutableSetOf()) { x0 ->
+							CalendarItemTagEncryptorFactory.empty.encrypt(encryptionKey, x0)
+						},
+					properties =
+						clearEntity.properties.mapTo(mutableSetOf()) { x0 ->
+							PropertyStubEncryptorFactory.empty.encrypt(encryptionKey, x0)
+						},
+					secretForeignKeys = clearEntity.secretForeignKeys,
+					cryptedForeignKeys = clearEntity.cryptedForeignKeys,
+					delegations = clearEntity.delegations,
+					encryptionKeys = clearEntity.encryptionKeys,
+					encryptedSelf = null,
+					securityMetadata = clearEntity.securityMetadata,
+					extensions = clearEntity.extensions,
+					extensionsVersion = clearEntity.extensionsVersion,
+				)
+		}
 
 	override fun create(
 		entityManifestName: String,
 		encryptorFactoryContext: EncryptorFactoryContext,
+		encodingJson: Json,
+		cryptoService: CryptoService,
 	): EntityEncryptor<EncryptedCalendarItem, DecryptedCalendarItem> {
 		val manifest = encryptorFactoryContext.getManifest(entityManifestName)
 		return CalendarItemEncryptor(
@@ -137,6 +167,8 @@ internal object CalendarItemEncryptorFactory :
 						)
 					} ?: EncryptableFieldConfig.None(PropertyStubEncryptorFactory)
 				},
+			encodingJson = encodingJson,
+			cryptoService = cryptoService,
 		)
 	}
 }
@@ -173,12 +205,12 @@ private class CalendarItemEncryptor(
 	private val recurrenceId_e: Boolean,
 	private val meetingTags_e: EncryptableFieldConfig<EncryptedCalendarItemTag, DecryptedCalendarItemTag>,
 	private val properties_e: EncryptableFieldConfig<EncryptedPropertyStub, DecryptedPropertyStub>,
-) : AbstractEntityEncryptor<EncryptedCalendarItem, DecryptedCalendarItem>() {
+	private val encodingJson: Json,
+	cryptoService: CryptoService,
+) : AbstractEntityEncryptor<EncryptedCalendarItem, DecryptedCalendarItem>(cryptoService) {
 	override suspend fun encrypt(
 		encryptionKey: AesKey<AesAlgorithm.CbcWithPkcs7Padding>,
 		clearEntity: DecryptedCalendarItem,
-		encodingJson: Json,
-		cryptoService: CryptoService,
 	): EncryptedCalendarItem {
 		val dataToEncrypt = mutableMapOf<String, JsonElement>()
 		if (created_e && clearEntity.created != null) dataToEncrypt["created"] = encodingJson.encodeToJsonElement(clearEntity.created)
@@ -304,7 +336,7 @@ private class CalendarItemEncryptor(
 						null
 					} else {
 						clearEntity.address?.let {
-							encryptor.encrypt(encryptionKey, it, encodingJson, cryptoService)
+							encryptor.encrypt(encryptionKey, it)
 						}
 					}
 				},
@@ -329,7 +361,7 @@ private class CalendarItemEncryptor(
 						emptySet()
 					} else {
 						clearEntity.meetingTags.mapTo(mutableSetOf()) { x0 ->
-							encryptor.encrypt(encryptionKey, x0, encodingJson, cryptoService)
+							encryptor.encrypt(encryptionKey, x0)
 						}
 					}
 				},
@@ -339,7 +371,7 @@ private class CalendarItemEncryptor(
 						emptySet()
 					} else {
 						clearEntity.properties.mapTo(mutableSetOf()) { x0 ->
-							encryptor.encrypt(encryptionKey, x0, encodingJson, cryptoService)
+							encryptor.encrypt(encryptionKey, x0)
 						}
 					}
 				},
@@ -347,7 +379,7 @@ private class CalendarItemEncryptor(
 			cryptedForeignKeys = clearEntity.cryptedForeignKeys,
 			delegations = clearEntity.delegations,
 			encryptionKeys = clearEntity.encryptionKeys,
-			encryptedSelf = getUpdatedEncryptSelf(encryptionKey, clearEntity, JsonObject(dataToEncrypt), cryptoService),
+			encryptedSelf = getUpdatedEncryptSelf(encryptionKey, clearEntity, JsonObject(dataToEncrypt)),
 			securityMetadata = clearEntity.securityMetadata,
 			extensions = clearEntity.extensions,
 			extensionsVersion = clearEntity.extensionsVersion,

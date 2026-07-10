@@ -8,7 +8,6 @@ import com.icure.kryptom.crypto.AesAlgorithm
 import com.icure.kryptom.crypto.AesKey
 import com.icure.kryptom.crypto.CryptoService
 import com.icure.utils.InternalIcureApi
-import kotlinx.serialization.json.Json
 import kotlin.collections.component1
 import kotlin.collections.component2
 
@@ -17,7 +16,9 @@ import kotlin.collections.component2
  * legacy logic for content encryption.
  */
 @InternalIcureApi
-internal abstract class AbstractLegacyServiceEncryptor : AbstractEntityEncryptor<EncryptedService, DecryptedService>() {
+internal abstract class AbstractLegacyServiceEncryptor(
+	cryptoService: CryptoService,
+) : AbstractEntityEncryptor<EncryptedService, DecryptedService>(cryptoService) {
 	sealed interface ContentLegacyEncryptionResult {
 		data object Full : ContentLegacyEncryptionResult
 		data class Partial(val content: Map<String, EncryptedContent>) : ContentLegacyEncryptionResult
@@ -56,8 +57,6 @@ internal abstract class AbstractLegacyServiceEncryptor : AbstractEntityEncryptor
 	protected suspend fun legacyEncryptContent(
 		encryptionKey: AesKey<AesAlgorithm.CbcWithPkcs7Padding>,
 		service: DecryptedService,
-		encodingJson: Json,
-		cryptoService: CryptoService,
 	): ContentLegacyEncryptionResult =
 		if (service.hasOnlyCompoundContent()) {
 			ContentLegacyEncryptionResult.Partial(
@@ -67,8 +66,6 @@ internal abstract class AbstractLegacyServiceEncryptor : AbstractEntityEncryptor
 							this.encrypt(
 								encryptionKey,
 								compoundService,
-								encodingJson,
-								cryptoService
 							)
 						}
 					)

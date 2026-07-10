@@ -40,59 +40,113 @@ import kotlin.String
 @InternalIcureApi
 internal object PatientEncryptorFactory : EntityEncryptorFactory<EncryptedPatient, DecryptedPatient> {
 	override val empty: EntityEncryptor<EncryptedPatient, DecryptedPatient> =
-		PatientEncryptor(
-			identifier_e = false,
-			created_e = false,
-			modified_e = false,
-			author_e = false,
-			responsible_e = false,
-			tags_e = false,
-			codes_e = false,
-			firstName_e = false,
-			lastName_e = false,
-			names_e = false,
-			companyName_e = false,
-			languages_e = false,
-			addresses_e = EncryptableFieldConfig.None(AddressEncryptorFactory),
-			civility_e = false,
-			gender_e = false,
-			birthSex_e = false,
-			alias_e = false,
-			active_e = false,
-			deactivationReason_e = false,
-			deactivationDate_e = false,
-			ssin_e = false,
-			maidenName_e = false,
-			spouseName_e = false,
-			partnerName_e = false,
-			personalStatus_e = false,
-			dateOfBirth_e = false,
-			dateOfDeath_e = false,
-			timestampOfLatestEidReading_e = false,
-			placeOfBirth_e = false,
-			placeOfDeath_e = false,
-			deceased_e = false,
-			education_e = false,
-			profession_e = false,
-			notes_e = EncryptableFieldConfig.None(AnnotationEncryptorFactory),
-			note_e = false,
-			administrativeNote_e = false,
-			nationality_e = false,
-			race_e = false,
-			ethnicity_e = false,
-			insurabilities_e = EncryptableFieldConfig.None(InsurabilityEncryptorFactory),
-			partnerships_e = EncryptableFieldConfig.None(PartnershipEncryptorFactory),
-			patientHealthCareParties_e = EncryptableFieldConfig.None(PatientHealthCarePartyEncryptorFactory),
-			financialInstitutionInformation_e = EncryptableFieldConfig.None(FinancialInstitutionInformationEncryptorFactory),
-			medicalHouseContracts_e = EncryptableFieldConfig.None(MedicalHouseContractEncryptorFactory),
-			patientProfessions_e = false,
-			parameters_e = false,
-			properties_e = EncryptableFieldConfig.None(PropertyStubEncryptorFactory),
-		)
+		object :
+			EntityEncryptor<EncryptedPatient, DecryptedPatient> {
+			override suspend fun encrypt(
+				encryptionKey: AesKey<AesAlgorithm.CbcWithPkcs7Padding>,
+				clearEntity: DecryptedPatient,
+			): EncryptedPatient =
+				EncryptedPatient(
+					id = clearEntity.id,
+					identifier = clearEntity.identifier,
+					rev = clearEntity.rev,
+					created = clearEntity.created,
+					modified = clearEntity.modified,
+					author = clearEntity.author,
+					responsible = clearEntity.responsible,
+					tags = clearEntity.tags,
+					codes = clearEntity.codes,
+					deletionDate = clearEntity.deletionDate,
+					firstName = clearEntity.firstName,
+					lastName = clearEntity.lastName,
+					names = clearEntity.names,
+					companyName = clearEntity.companyName,
+					languages = clearEntity.languages,
+					addresses =
+						clearEntity.addresses.map { x0 ->
+							AddressEncryptorFactory.empty.encrypt(encryptionKey, x0)
+						},
+					civility = clearEntity.civility,
+					gender = clearEntity.gender,
+					birthSex = clearEntity.birthSex,
+					mergeToPatientId = clearEntity.mergeToPatientId,
+					mergedIds = clearEntity.mergedIds,
+					alias = clearEntity.alias,
+					active = clearEntity.active,
+					deactivationReason = clearEntity.deactivationReason,
+					deactivationDate = clearEntity.deactivationDate,
+					ssin = clearEntity.ssin,
+					maidenName = clearEntity.maidenName,
+					spouseName = clearEntity.spouseName,
+					partnerName = clearEntity.partnerName,
+					personalStatus = clearEntity.personalStatus,
+					dateOfBirth = clearEntity.dateOfBirth,
+					dateOfDeath = clearEntity.dateOfDeath,
+					timestampOfLatestEidReading = clearEntity.timestampOfLatestEidReading,
+					placeOfBirth = clearEntity.placeOfBirth,
+					placeOfDeath = clearEntity.placeOfDeath,
+					deceased = clearEntity.deceased,
+					education = clearEntity.education,
+					profession = clearEntity.profession,
+					notes =
+						clearEntity.notes.map { x0 ->
+							AnnotationEncryptorFactory.empty.encrypt(encryptionKey, x0)
+						},
+					note = clearEntity.note,
+					administrativeNote = clearEntity.administrativeNote,
+					nationality = clearEntity.nationality,
+					race = clearEntity.race,
+					ethnicity = clearEntity.ethnicity,
+					insurabilities =
+						clearEntity.insurabilities.map { x0 ->
+							InsurabilityEncryptorFactory.empty.encrypt(encryptionKey, x0)
+						},
+					partnerships =
+						clearEntity.partnerships.map { x0 ->
+							PartnershipEncryptorFactory.empty.encrypt(encryptionKey, x0)
+						},
+					patientHealthCareParties =
+						clearEntity.patientHealthCareParties.map { x0 ->
+							PatientHealthCarePartyEncryptorFactory.empty.encrypt(encryptionKey, x0)
+						},
+					financialInstitutionInformation =
+						clearEntity.financialInstitutionInformation.map { x0 ->
+							FinancialInstitutionInformationEncryptorFactory.empty.encrypt(encryptionKey, x0)
+						},
+					medicalHouseContracts =
+						clearEntity.medicalHouseContracts.map { x0 ->
+							MedicalHouseContractEncryptorFactory.empty.encrypt(encryptionKey, x0)
+						},
+					patientProfessions = clearEntity.patientProfessions,
+					parameters = clearEntity.parameters,
+					properties =
+						clearEntity.properties.mapTo(mutableSetOf()) { x0 ->
+							PropertyStubEncryptorFactory.empty.encrypt(encryptionKey, x0)
+						},
+					hcPartyKeys = clearEntity.hcPartyKeys,
+					aesExchangeKeys = clearEntity.aesExchangeKeys,
+					transferKeys = clearEntity.transferKeys,
+					privateKeyShamirPartitions = clearEntity.privateKeyShamirPartitions,
+					publicKey = clearEntity.publicKey,
+					publicKeysForOaepWithSha256 = clearEntity.publicKeysForOaepWithSha256,
+					secretForeignKeys = clearEntity.secretForeignKeys,
+					cryptedForeignKeys = clearEntity.cryptedForeignKeys,
+					delegations = clearEntity.delegations,
+					encryptionKeys = clearEntity.encryptionKeys,
+					encryptedSelf = null,
+					securityMetadata = clearEntity.securityMetadata,
+					cryptoActorProperties = clearEntity.cryptoActorProperties,
+					parentId = clearEntity.parentId,
+					extensions = clearEntity.extensions,
+					extensionsVersion = clearEntity.extensionsVersion,
+				)
+		}
 
 	override fun create(
 		entityManifestName: String,
 		encryptorFactoryContext: EncryptorFactoryContext,
+		encodingJson: Json,
+		cryptoService: CryptoService,
 	): EntityEncryptor<EncryptedPatient, DecryptedPatient> {
 		val manifest = encryptorFactoryContext.getManifest(entityManifestName)
 		return PatientEncryptor(
@@ -247,6 +301,8 @@ internal object PatientEncryptorFactory : EntityEncryptorFactory<EncryptedPatien
 						)
 					} ?: EncryptableFieldConfig.None(PropertyStubEncryptorFactory)
 				},
+			encodingJson = encodingJson,
+			cryptoService = cryptoService,
 		)
 	}
 }
@@ -301,12 +357,12 @@ private class PatientEncryptor(
 	private val patientProfessions_e: Boolean,
 	private val parameters_e: Boolean,
 	private val properties_e: EncryptableFieldConfig<EncryptedPropertyStub, DecryptedPropertyStub>,
-) : AbstractEntityEncryptor<EncryptedPatient, DecryptedPatient>() {
+	private val encodingJson: Json,
+	cryptoService: CryptoService,
+) : AbstractEntityEncryptor<EncryptedPatient, DecryptedPatient>(cryptoService) {
 	override suspend fun encrypt(
 		encryptionKey: AesKey<AesAlgorithm.CbcWithPkcs7Padding>,
 		clearEntity: DecryptedPatient,
-		encodingJson: Json,
-		cryptoService: CryptoService,
 	): EncryptedPatient {
 		val dataToEncrypt = mutableMapOf<String, JsonElement>()
 		if (identifier_e && clearEntity.identifier.isNotEmpty()) {
@@ -503,7 +559,7 @@ private class PatientEncryptor(
 						emptyList()
 					} else {
 						clearEntity.addresses.map { x0 ->
-							encryptor.encrypt(encryptionKey, x0, encodingJson, cryptoService)
+							encryptor.encrypt(encryptionKey, x0)
 						}
 					}
 				},
@@ -535,7 +591,7 @@ private class PatientEncryptor(
 						emptyList()
 					} else {
 						clearEntity.notes.map { x0 ->
-							encryptor.encrypt(encryptionKey, x0, encodingJson, cryptoService)
+							encryptor.encrypt(encryptionKey, x0)
 						}
 					}
 				},
@@ -550,7 +606,7 @@ private class PatientEncryptor(
 						emptyList()
 					} else {
 						clearEntity.insurabilities.map { x0 ->
-							encryptor.encrypt(encryptionKey, x0, encodingJson, cryptoService)
+							encryptor.encrypt(encryptionKey, x0)
 						}
 					}
 				},
@@ -560,7 +616,7 @@ private class PatientEncryptor(
 						emptyList()
 					} else {
 						clearEntity.partnerships.map { x0 ->
-							encryptor.encrypt(encryptionKey, x0, encodingJson, cryptoService)
+							encryptor.encrypt(encryptionKey, x0)
 						}
 					}
 				},
@@ -570,7 +626,7 @@ private class PatientEncryptor(
 						emptyList()
 					} else {
 						clearEntity.patientHealthCareParties.map { x0 ->
-							encryptor.encrypt(encryptionKey, x0, encodingJson, cryptoService)
+							encryptor.encrypt(encryptionKey, x0)
 						}
 					}
 				},
@@ -580,7 +636,7 @@ private class PatientEncryptor(
 						emptyList()
 					} else {
 						clearEntity.financialInstitutionInformation.map { x0 ->
-							encryptor.encrypt(encryptionKey, x0, encodingJson, cryptoService)
+							encryptor.encrypt(encryptionKey, x0)
 						}
 					}
 				},
@@ -590,7 +646,7 @@ private class PatientEncryptor(
 						emptyList()
 					} else {
 						clearEntity.medicalHouseContracts.map { x0 ->
-							encryptor.encrypt(encryptionKey, x0, encodingJson, cryptoService)
+							encryptor.encrypt(encryptionKey, x0)
 						}
 					}
 				},
@@ -602,7 +658,7 @@ private class PatientEncryptor(
 						emptySet()
 					} else {
 						clearEntity.properties.mapTo(mutableSetOf()) { x0 ->
-							encryptor.encrypt(encryptionKey, x0, encodingJson, cryptoService)
+							encryptor.encrypt(encryptionKey, x0)
 						}
 					}
 				},
@@ -616,7 +672,7 @@ private class PatientEncryptor(
 			cryptedForeignKeys = clearEntity.cryptedForeignKeys,
 			delegations = clearEntity.delegations,
 			encryptionKeys = clearEntity.encryptionKeys,
-			encryptedSelf = getUpdatedEncryptSelf(encryptionKey, clearEntity, JsonObject(dataToEncrypt), cryptoService),
+			encryptedSelf = getUpdatedEncryptSelf(encryptionKey, clearEntity, JsonObject(dataToEncrypt)),
 			securityMetadata = clearEntity.securityMetadata,
 			cryptoActorProperties = clearEntity.cryptoActorProperties,
 			parentId = clearEntity.parentId,

@@ -22,16 +22,26 @@ import kotlin.String
 internal object CareTeamMembershipEncryptorFactory :
 	EntityEncryptorFactory<EncryptedCareTeamMembership, DecryptedCareTeamMembership> {
 	override val empty: EntityEncryptor<EncryptedCareTeamMembership, DecryptedCareTeamMembership> =
-		CareTeamMembershipEncryptor(
-			startDate_e = false,
-			endDate_e = false,
-			careTeamMemberId_e = false,
-			membershipType_e = false,
-		)
+		object : EntityEncryptor<EncryptedCareTeamMembership, DecryptedCareTeamMembership> {
+			override suspend fun encrypt(
+				encryptionKey: AesKey<AesAlgorithm.CbcWithPkcs7Padding>,
+				clearEntity: DecryptedCareTeamMembership,
+			): EncryptedCareTeamMembership =
+				EncryptedCareTeamMembership(
+					startDate = clearEntity.startDate,
+					endDate = clearEntity.endDate,
+					careTeamMemberId = clearEntity.careTeamMemberId,
+					membershipType = clearEntity.membershipType,
+					encryptedSelf = null,
+					extensions = clearEntity.extensions,
+				)
+		}
 
 	override fun create(
 		entityManifestName: String,
 		encryptorFactoryContext: EncryptorFactoryContext,
+		encodingJson: Json,
+		cryptoService: CryptoService,
 	): EntityEncryptor<EncryptedCareTeamMembership, DecryptedCareTeamMembership> {
 		val manifest = encryptorFactoryContext.getManifest(entityManifestName)
 		return CareTeamMembershipEncryptor(
@@ -39,6 +49,8 @@ internal object CareTeamMembershipEncryptorFactory :
 			endDate_e = "endDate" in manifest.fieldsToEncrypt,
 			careTeamMemberId_e = "careTeamMemberId" in manifest.fieldsToEncrypt,
 			membershipType_e = "membershipType" in manifest.fieldsToEncrypt,
+			encodingJson = encodingJson,
+			cryptoService = cryptoService,
 		)
 	}
 }
@@ -49,12 +61,12 @@ private class CareTeamMembershipEncryptor(
 	private val endDate_e: Boolean,
 	private val careTeamMemberId_e: Boolean,
 	private val membershipType_e: Boolean,
-) : AbstractEntityEncryptor<EncryptedCareTeamMembership, DecryptedCareTeamMembership>() {
+	private val encodingJson: Json,
+	cryptoService: CryptoService,
+) : AbstractEntityEncryptor<EncryptedCareTeamMembership, DecryptedCareTeamMembership>(cryptoService) {
 	override suspend fun encrypt(
 		encryptionKey: AesKey<AesAlgorithm.CbcWithPkcs7Padding>,
 		clearEntity: DecryptedCareTeamMembership,
-		encodingJson: Json,
-		cryptoService: CryptoService,
 	): EncryptedCareTeamMembership {
 		val dataToEncrypt = mutableMapOf<String, JsonElement>()
 		if (startDate_e && clearEntity.startDate != null) dataToEncrypt["startDate"] = encodingJson.encodeToJsonElement(clearEntity.startDate)
@@ -76,7 +88,7 @@ private class CareTeamMembershipEncryptor(
 			endDate = if (endDate_e) null else clearEntity.endDate,
 			careTeamMemberId = if (careTeamMemberId_e) null else clearEntity.careTeamMemberId,
 			membershipType = if (membershipType_e) null else clearEntity.membershipType,
-			encryptedSelf = getUpdatedEncryptSelf(encryptionKey, clearEntity, JsonObject(dataToEncrypt), cryptoService),
+			encryptedSelf = getUpdatedEncryptSelf(encryptionKey, clearEntity, JsonObject(dataToEncrypt)),
 			extensions = clearEntity.extensions,
 		)
 	}

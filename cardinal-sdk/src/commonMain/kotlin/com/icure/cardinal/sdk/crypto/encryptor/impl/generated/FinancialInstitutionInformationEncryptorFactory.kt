@@ -23,19 +23,29 @@ internal object FinancialInstitutionInformationEncryptorFactory :
 	EntityEncryptorFactory<EncryptedFinancialInstitutionInformation, DecryptedFinancialInstitutionInformation> {
 	override val empty:
 		EntityEncryptor<EncryptedFinancialInstitutionInformation, DecryptedFinancialInstitutionInformation> =
-		FinancialInstitutionInformationEncryptor(
-			name_e = false,
-			key_e = false,
-			bankAccount_e = false,
-			bic_e = false,
-			proxyBankAccount_e = false,
-			proxyBic_e = false,
-			preferredFiiForPartners_e = false,
-		)
+		object :
+			EntityEncryptor<EncryptedFinancialInstitutionInformation, DecryptedFinancialInstitutionInformation> {
+			override suspend fun encrypt(
+				encryptionKey: AesKey<AesAlgorithm.CbcWithPkcs7Padding>,
+				clearEntity: DecryptedFinancialInstitutionInformation,
+			): EncryptedFinancialInstitutionInformation =
+				EncryptedFinancialInstitutionInformation(
+					name = clearEntity.name,
+					key = clearEntity.key,
+					bankAccount = clearEntity.bankAccount,
+					bic = clearEntity.bic,
+					proxyBankAccount = clearEntity.proxyBankAccount,
+					proxyBic = clearEntity.proxyBic,
+					preferredFiiForPartners = clearEntity.preferredFiiForPartners,
+					encryptedSelf = null,
+				)
+		}
 
 	override fun create(
 		entityManifestName: String,
 		encryptorFactoryContext: EncryptorFactoryContext,
+		encodingJson: Json,
+		cryptoService: CryptoService,
 	): EntityEncryptor<EncryptedFinancialInstitutionInformation, DecryptedFinancialInstitutionInformation> {
 		val manifest = encryptorFactoryContext.getManifest(entityManifestName)
 		return FinancialInstitutionInformationEncryptor(
@@ -46,6 +56,8 @@ internal object FinancialInstitutionInformationEncryptorFactory :
 			proxyBankAccount_e = "proxyBankAccount" in manifest.fieldsToEncrypt,
 			proxyBic_e = "proxyBic" in manifest.fieldsToEncrypt,
 			preferredFiiForPartners_e = "preferredFiiForPartners" in manifest.fieldsToEncrypt,
+			encodingJson = encodingJson,
+			cryptoService = cryptoService,
 		)
 	}
 }
@@ -59,13 +71,13 @@ private class FinancialInstitutionInformationEncryptor(
 	private val proxyBankAccount_e: Boolean,
 	private val proxyBic_e: Boolean,
 	private val preferredFiiForPartners_e: Boolean,
+	private val encodingJson: Json,
+	cryptoService: CryptoService,
 ) :
-	AbstractEntityEncryptor<EncryptedFinancialInstitutionInformation, DecryptedFinancialInstitutionInformation>() {
+	AbstractEntityEncryptor<EncryptedFinancialInstitutionInformation, DecryptedFinancialInstitutionInformation>(cryptoService) {
 	override suspend fun encrypt(
 		encryptionKey: AesKey<AesAlgorithm.CbcWithPkcs7Padding>,
 		clearEntity: DecryptedFinancialInstitutionInformation,
-		encodingJson: Json,
-		cryptoService: CryptoService,
 	): EncryptedFinancialInstitutionInformation {
 		val dataToEncrypt = mutableMapOf<String, JsonElement>()
 		if (name_e && clearEntity.name != null) dataToEncrypt["name"] = encodingJson.encodeToJsonElement(clearEntity.name)
@@ -98,7 +110,7 @@ private class FinancialInstitutionInformationEncryptor(
 			proxyBankAccount = if (proxyBankAccount_e) null else clearEntity.proxyBankAccount,
 			proxyBic = if (proxyBic_e) null else clearEntity.proxyBic,
 			preferredFiiForPartners = if (preferredFiiForPartners_e) emptySet() else clearEntity.preferredFiiForPartners,
-			encryptedSelf = getUpdatedEncryptSelf(encryptionKey, clearEntity, JsonObject(dataToEncrypt), cryptoService),
+			encryptedSelf = getUpdatedEncryptSelf(encryptionKey, clearEntity, JsonObject(dataToEncrypt)),
 		)
 	}
 }

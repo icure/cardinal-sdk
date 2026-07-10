@@ -25,29 +25,45 @@ import kotlin.String
 internal object PlanOfActionEncryptorFactory :
 	EntityEncryptorFactory<EncryptedPlanOfAction, DecryptedPlanOfAction> {
 	override val empty: EntityEncryptor<EncryptedPlanOfAction, DecryptedPlanOfAction> =
-		PlanOfActionEncryptor(
-			created_e = false,
-			modified_e = false,
-			author_e = false,
-			responsible_e = false,
-			tags_e = false,
-			codes_e = false,
-			prescriberId_e = false,
-			valueDate_e = false,
-			openingDate_e = false,
-			closingDate_e = false,
-			deadlineDate_e = false,
-			name_e = false,
-			descr_e = false,
-			note_e = false,
-			idOpeningContact_e = false,
-			idClosingContact_e = false,
-			careTeamMemberships_e = EncryptableFieldConfig.None(CareTeamMembershipEncryptorFactory),
-		)
+		object :
+			EntityEncryptor<EncryptedPlanOfAction, DecryptedPlanOfAction> {
+			override suspend fun encrypt(
+				encryptionKey: AesKey<AesAlgorithm.CbcWithPkcs7Padding>,
+				clearEntity: DecryptedPlanOfAction,
+			): EncryptedPlanOfAction =
+				EncryptedPlanOfAction(
+					id = clearEntity.id,
+					created = clearEntity.created,
+					modified = clearEntity.modified,
+					author = clearEntity.author,
+					responsible = clearEntity.responsible,
+					tags = clearEntity.tags,
+					codes = clearEntity.codes,
+					endOfLife = clearEntity.endOfLife,
+					prescriberId = clearEntity.prescriberId,
+					valueDate = clearEntity.valueDate,
+					openingDate = clearEntity.openingDate,
+					closingDate = clearEntity.closingDate,
+					deadlineDate = clearEntity.deadlineDate,
+					name = clearEntity.name,
+					descr = clearEntity.descr,
+					note = clearEntity.note,
+					idOpeningContact = clearEntity.idOpeningContact,
+					idClosingContact = clearEntity.idClosingContact,
+					careTeamMemberships =
+						clearEntity.careTeamMemberships.map { x0 ->
+							CareTeamMembershipEncryptorFactory.empty.encrypt(encryptionKey, x0)
+						},
+					encryptedSelf = null,
+					extensions = clearEntity.extensions,
+				)
+		}
 
 	override fun create(
 		entityManifestName: String,
 		encryptorFactoryContext: EncryptorFactoryContext,
+		encodingJson: Json,
+		cryptoService: CryptoService,
 	): EntityEncryptor<EncryptedPlanOfAction, DecryptedPlanOfAction> {
 		val manifest = encryptorFactoryContext.getManifest(entityManifestName)
 		return PlanOfActionEncryptor(
@@ -81,6 +97,8 @@ internal object PlanOfActionEncryptorFactory :
 						)
 					} ?: EncryptableFieldConfig.None(CareTeamMembershipEncryptorFactory)
 				},
+			encodingJson = encodingJson,
+			cryptoService = cryptoService,
 		)
 	}
 }
@@ -104,12 +122,12 @@ private class PlanOfActionEncryptor(
 	private val idOpeningContact_e: Boolean,
 	private val idClosingContact_e: Boolean,
 	private val careTeamMemberships_e: EncryptableFieldConfig<EncryptedCareTeamMembership, DecryptedCareTeamMembership>,
-) : AbstractEntityEncryptor<EncryptedPlanOfAction, DecryptedPlanOfAction>() {
+	private val encodingJson: Json,
+	cryptoService: CryptoService,
+) : AbstractEntityEncryptor<EncryptedPlanOfAction, DecryptedPlanOfAction>(cryptoService) {
 	override suspend fun encrypt(
 		encryptionKey: AesKey<AesAlgorithm.CbcWithPkcs7Padding>,
 		clearEntity: DecryptedPlanOfAction,
-		encodingJson: Json,
-		cryptoService: CryptoService,
 	): EncryptedPlanOfAction {
 		val dataToEncrypt = mutableMapOf<String, JsonElement>()
 		if (created_e && clearEntity.created != null) dataToEncrypt["created"] = encodingJson.encodeToJsonElement(clearEntity.created)
@@ -194,11 +212,11 @@ private class PlanOfActionEncryptor(
 						emptyList()
 					} else {
 						clearEntity.careTeamMemberships.map { x0 ->
-							encryptor.encrypt(encryptionKey, x0, encodingJson, cryptoService)
+							encryptor.encrypt(encryptionKey, x0)
 						}
 					}
 				},
-			encryptedSelf = getUpdatedEncryptSelf(encryptionKey, clearEntity, JsonObject(dataToEncrypt), cryptoService),
+			encryptedSelf = getUpdatedEncryptSelf(encryptionKey, clearEntity, JsonObject(dataToEncrypt)),
 			extensions = clearEntity.extensions,
 		)
 	}

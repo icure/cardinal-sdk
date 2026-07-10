@@ -22,44 +22,53 @@ import kotlin.String
 internal object MedicalHouseContractEncryptorFactory :
 	EntityEncryptorFactory<EncryptedMedicalHouseContract, DecryptedMedicalHouseContract> {
 	override val empty: EntityEncryptor<EncryptedMedicalHouseContract, DecryptedMedicalHouseContract> =
-		MedicalHouseContractEncryptor(
-			contractId_e = false,
-			validFrom_e = false,
-			validTo_e = false,
-			mmNihii_e = false,
-			hcpId_e = false,
-			changeType_e = false,
-			parentContractId_e = false,
-			changedBy_e = false,
-			startOfContract_e = false,
-			startOfCoverage_e = false,
-			endOfContract_e = false,
-			endOfCoverage_e = false,
-			kine_e = false,
-			gp_e = false,
-			ptd_e = false,
-			nurse_e = false,
-			noKine_e = false,
-			noGp_e = false,
-			noNurse_e = false,
-			unsubscriptionReasonId_e = false,
-			ptdStart_e = false,
-			ptdEnd_e = false,
-			ptdLastInvoiced_e = false,
-			startOfSuspension_e = false,
-			endOfSuspension_e = false,
-			suspensionReason_e = false,
-			suspensionSource_e = false,
-			forcedSuspension_e = false,
-			signatureType_e = false,
-			status_e = false,
-			options_e = false,
-			receipts_e = false,
-		)
+		object : EntityEncryptor<EncryptedMedicalHouseContract, DecryptedMedicalHouseContract> {
+			override suspend fun encrypt(
+				encryptionKey: AesKey<AesAlgorithm.CbcWithPkcs7Padding>,
+				clearEntity: DecryptedMedicalHouseContract,
+			): EncryptedMedicalHouseContract =
+				EncryptedMedicalHouseContract(
+					contractId = clearEntity.contractId,
+					validFrom = clearEntity.validFrom,
+					validTo = clearEntity.validTo,
+					mmNihii = clearEntity.mmNihii,
+					hcpId = clearEntity.hcpId,
+					changeType = clearEntity.changeType,
+					parentContractId = clearEntity.parentContractId,
+					changedBy = clearEntity.changedBy,
+					startOfContract = clearEntity.startOfContract,
+					startOfCoverage = clearEntity.startOfCoverage,
+					endOfContract = clearEntity.endOfContract,
+					endOfCoverage = clearEntity.endOfCoverage,
+					kine = clearEntity.kine,
+					gp = clearEntity.gp,
+					ptd = clearEntity.ptd,
+					nurse = clearEntity.nurse,
+					noKine = clearEntity.noKine,
+					noGp = clearEntity.noGp,
+					noNurse = clearEntity.noNurse,
+					unsubscriptionReasonId = clearEntity.unsubscriptionReasonId,
+					ptdStart = clearEntity.ptdStart,
+					ptdEnd = clearEntity.ptdEnd,
+					ptdLastInvoiced = clearEntity.ptdLastInvoiced,
+					startOfSuspension = clearEntity.startOfSuspension,
+					endOfSuspension = clearEntity.endOfSuspension,
+					suspensionReason = clearEntity.suspensionReason,
+					suspensionSource = clearEntity.suspensionSource,
+					forcedSuspension = clearEntity.forcedSuspension,
+					signatureType = clearEntity.signatureType,
+					status = clearEntity.status,
+					options = clearEntity.options,
+					receipts = clearEntity.receipts,
+					encryptedSelf = null,
+				)
+		}
 
 	override fun create(
 		entityManifestName: String,
 		encryptorFactoryContext: EncryptorFactoryContext,
+		encodingJson: Json,
+		cryptoService: CryptoService,
 	): EntityEncryptor<EncryptedMedicalHouseContract, DecryptedMedicalHouseContract> {
 		val manifest = encryptorFactoryContext.getManifest(entityManifestName)
 		return MedicalHouseContractEncryptor(
@@ -95,6 +104,8 @@ internal object MedicalHouseContractEncryptorFactory :
 			status_e = "status" in manifest.fieldsToEncrypt,
 			options_e = "options" in manifest.fieldsToEncrypt,
 			receipts_e = "receipts" in manifest.fieldsToEncrypt,
+			encodingJson = encodingJson,
+			cryptoService = cryptoService,
 		)
 	}
 }
@@ -133,12 +144,13 @@ private class MedicalHouseContractEncryptor(
 	private val status_e: Boolean,
 	private val options_e: Boolean,
 	private val receipts_e: Boolean,
-) : AbstractEntityEncryptor<EncryptedMedicalHouseContract, DecryptedMedicalHouseContract>() {
+	private val encodingJson: Json,
+	cryptoService: CryptoService,
+) :
+	AbstractEntityEncryptor<EncryptedMedicalHouseContract, DecryptedMedicalHouseContract>(cryptoService) {
 	override suspend fun encrypt(
 		encryptionKey: AesKey<AesAlgorithm.CbcWithPkcs7Padding>,
 		clearEntity: DecryptedMedicalHouseContract,
-		encodingJson: Json,
-		cryptoService: CryptoService,
 	): EncryptedMedicalHouseContract {
 		val dataToEncrypt = mutableMapOf<String, JsonElement>()
 		if (contractId_e && clearEntity.contractId != null) dataToEncrypt["contractId"] = encodingJson.encodeToJsonElement(clearEntity.contractId)
@@ -271,7 +283,7 @@ private class MedicalHouseContractEncryptor(
 			status = if (status_e) null else clearEntity.status,
 			options = if (options_e) emptyMap() else clearEntity.options,
 			receipts = if (receipts_e) emptyMap() else clearEntity.receipts,
-			encryptedSelf = getUpdatedEncryptSelf(encryptionKey, clearEntity, JsonObject(dataToEncrypt), cryptoService),
+			encryptedSelf = getUpdatedEncryptSelf(encryptionKey, clearEntity, JsonObject(dataToEncrypt)),
 		)
 	}
 }

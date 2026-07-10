@@ -24,18 +24,28 @@ import kotlin.String
 internal object TypedValueEncryptorFactory :
 	EntityEncryptorFactory<EncryptedTypedValue, DecryptedTypedValue> {
 	override val empty: EntityEncryptor<EncryptedTypedValue, DecryptedTypedValue> =
-		TypedValueEncryptor(
-			type_e = false,
-			booleanValue_e = false,
-			integerValue_e = false,
-			doubleValue_e = false,
-			stringValue_e = false,
-			dateValue_e = false,
-		)
+		object :
+			EntityEncryptor<EncryptedTypedValue, DecryptedTypedValue> {
+			override suspend fun encrypt(
+				encryptionKey: AesKey<AesAlgorithm.CbcWithPkcs7Padding>,
+				clearEntity: DecryptedTypedValue,
+			): EncryptedTypedValue =
+				EncryptedTypedValue(
+					type = clearEntity.type,
+					booleanValue = clearEntity.booleanValue,
+					integerValue = clearEntity.integerValue,
+					doubleValue = clearEntity.doubleValue,
+					stringValue = clearEntity.stringValue,
+					dateValue = clearEntity.dateValue,
+					encryptedSelf = null,
+				)
+		}
 
 	override fun create(
 		entityManifestName: String,
 		encryptorFactoryContext: EncryptorFactoryContext,
+		encodingJson: Json,
+		cryptoService: CryptoService,
 	): EntityEncryptor<EncryptedTypedValue, DecryptedTypedValue> {
 		val manifest = encryptorFactoryContext.getManifest(entityManifestName)
 		return TypedValueEncryptor(
@@ -45,6 +55,8 @@ internal object TypedValueEncryptorFactory :
 			doubleValue_e = "doubleValue" in manifest.fieldsToEncrypt,
 			stringValue_e = "stringValue" in manifest.fieldsToEncrypt,
 			dateValue_e = "dateValue" in manifest.fieldsToEncrypt,
+			encodingJson = encodingJson,
+			cryptoService = cryptoService,
 		)
 	}
 }
@@ -57,12 +69,12 @@ private class TypedValueEncryptor(
 	private val doubleValue_e: Boolean,
 	private val stringValue_e: Boolean,
 	private val dateValue_e: Boolean,
-) : AbstractEntityEncryptor<EncryptedTypedValue, DecryptedTypedValue>() {
+	private val encodingJson: Json,
+	cryptoService: CryptoService,
+) : AbstractEntityEncryptor<EncryptedTypedValue, DecryptedTypedValue>(cryptoService) {
 	override suspend fun encrypt(
 		encryptionKey: AesKey<AesAlgorithm.CbcWithPkcs7Padding>,
 		clearEntity: DecryptedTypedValue,
-		encodingJson: Json,
-		cryptoService: CryptoService,
 	): EncryptedTypedValue {
 		val dataToEncrypt = mutableMapOf<String, JsonElement>()
 		if (type_e && clearEntity.type != null) dataToEncrypt["type"] = encodingJson.encodeToJsonElement(clearEntity.type)
@@ -104,7 +116,7 @@ private class TypedValueEncryptor(
 			doubleValue = if (doubleValue_e) null else clearEntity.doubleValue,
 			stringValue = if (stringValue_e) null else clearEntity.stringValue,
 			dateValue = if (dateValue_e) null else clearEntity.dateValue,
-			encryptedSelf = getUpdatedEncryptSelf(encryptionKey, clearEntity, JsonObject(dataToEncrypt), cryptoService),
+			encryptedSelf = getUpdatedEncryptSelf(encryptionKey, clearEntity, JsonObject(dataToEncrypt)),
 		)
 	}
 }

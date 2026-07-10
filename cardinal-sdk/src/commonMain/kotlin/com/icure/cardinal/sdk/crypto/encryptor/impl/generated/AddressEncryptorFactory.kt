@@ -26,27 +26,44 @@ import kotlin.String
 @InternalIcureApi
 internal object AddressEncryptorFactory : EntityEncryptorFactory<EncryptedAddress, DecryptedAddress> {
 	override val empty: EntityEncryptor<EncryptedAddress, DecryptedAddress> =
-		AddressEncryptor(
-			tags_e = false,
-			codes_e = false,
-			identifier_e = false,
-			addressType_e = false,
-			descr_e = false,
-			street_e = false,
-			houseNumber_e = false,
-			postboxNumber_e = false,
-			postalCode_e = false,
-			city_e = false,
-			state_e = false,
-			country_e = false,
-			note_e = false,
-			notes_e = EncryptableFieldConfig.None(AnnotationEncryptorFactory),
-			telecoms_e = EncryptableFieldConfig.None(TelecomEncryptorFactory),
-		)
+		object :
+			EntityEncryptor<EncryptedAddress, DecryptedAddress> {
+			override suspend fun encrypt(
+				encryptionKey: AesKey<AesAlgorithm.CbcWithPkcs7Padding>,
+				clearEntity: DecryptedAddress,
+			): EncryptedAddress =
+				EncryptedAddress(
+					tags = clearEntity.tags,
+					codes = clearEntity.codes,
+					identifier = clearEntity.identifier,
+					addressType = clearEntity.addressType,
+					descr = clearEntity.descr,
+					street = clearEntity.street,
+					houseNumber = clearEntity.houseNumber,
+					postboxNumber = clearEntity.postboxNumber,
+					postalCode = clearEntity.postalCode,
+					city = clearEntity.city,
+					state = clearEntity.state,
+					country = clearEntity.country,
+					note = clearEntity.note,
+					notes =
+						clearEntity.notes.map { x0 ->
+							AnnotationEncryptorFactory.empty.encrypt(encryptionKey, x0)
+						},
+					telecoms =
+						clearEntity.telecoms.map { x0 ->
+							TelecomEncryptorFactory.empty.encrypt(encryptionKey, x0)
+						},
+					encryptedSelf = null,
+					extensions = clearEntity.extensions,
+				)
+		}
 
 	override fun create(
 		entityManifestName: String,
 		encryptorFactoryContext: EncryptorFactoryContext,
+		encodingJson: Json,
+		cryptoService: CryptoService,
 	): EntityEncryptor<EncryptedAddress, DecryptedAddress> {
 		val manifest = encryptorFactoryContext.getManifest(entityManifestName)
 		return AddressEncryptor(
@@ -91,6 +108,8 @@ internal object AddressEncryptorFactory : EntityEncryptorFactory<EncryptedAddres
 						)
 					} ?: EncryptableFieldConfig.None(TelecomEncryptorFactory)
 				},
+			encodingJson = encodingJson,
+			cryptoService = cryptoService,
 		)
 	}
 }
@@ -112,12 +131,12 @@ private class AddressEncryptor(
 	private val note_e: Boolean,
 	private val notes_e: EncryptableFieldConfig<EncryptedAnnotation, DecryptedAnnotation>,
 	private val telecoms_e: EncryptableFieldConfig<EncryptedTelecom, DecryptedTelecom>,
-) : AbstractEntityEncryptor<EncryptedAddress, DecryptedAddress>() {
+	private val encodingJson: Json,
+	cryptoService: CryptoService,
+) : AbstractEntityEncryptor<EncryptedAddress, DecryptedAddress>(cryptoService) {
 	override suspend fun encrypt(
 		encryptionKey: AesKey<AesAlgorithm.CbcWithPkcs7Padding>,
 		clearEntity: DecryptedAddress,
-		encodingJson: Json,
-		cryptoService: CryptoService,
 	): EncryptedAddress {
 		val dataToEncrypt = mutableMapOf<String, JsonElement>()
 		if (tags_e && clearEntity.tags.isNotEmpty()) dataToEncrypt["tags"] = encodingJson.encodeToJsonElement(clearEntity.tags)
@@ -180,7 +199,7 @@ private class AddressEncryptor(
 						emptyList()
 					} else {
 						clearEntity.notes.map { x0 ->
-							encryptor.encrypt(encryptionKey, x0, encodingJson, cryptoService)
+							encryptor.encrypt(encryptionKey, x0)
 						}
 					}
 				},
@@ -190,11 +209,11 @@ private class AddressEncryptor(
 						emptyList()
 					} else {
 						clearEntity.telecoms.map { x0 ->
-							encryptor.encrypt(encryptionKey, x0, encodingJson, cryptoService)
+							encryptor.encrypt(encryptionKey, x0)
 						}
 					}
 				},
-			encryptedSelf = getUpdatedEncryptSelf(encryptionKey, clearEntity, JsonObject(dataToEncrypt), cryptoService),
+			encryptedSelf = getUpdatedEncryptSelf(encryptionKey, clearEntity, JsonObject(dataToEncrypt)),
 			extensions = clearEntity.extensions,
 		)
 	}

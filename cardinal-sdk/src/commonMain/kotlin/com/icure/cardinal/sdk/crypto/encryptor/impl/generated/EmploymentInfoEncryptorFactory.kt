@@ -22,16 +22,26 @@ import kotlin.String
 internal object EmploymentInfoEncryptorFactory :
 	EntityEncryptorFactory<EncryptedEmploymentInfo, DecryptedEmploymentInfo> {
 	override val empty: EntityEncryptor<EncryptedEmploymentInfo, DecryptedEmploymentInfo> =
-		EmploymentInfoEncryptor(
-			startDate_e = false,
-			endDate_e = false,
-			professionType_e = false,
-			employer_e = false,
-		)
+		object :
+			EntityEncryptor<EncryptedEmploymentInfo, DecryptedEmploymentInfo> {
+			override suspend fun encrypt(
+				encryptionKey: AesKey<AesAlgorithm.CbcWithPkcs7Padding>,
+				clearEntity: DecryptedEmploymentInfo,
+			): EncryptedEmploymentInfo =
+				EncryptedEmploymentInfo(
+					startDate = clearEntity.startDate,
+					endDate = clearEntity.endDate,
+					professionType = clearEntity.professionType,
+					employer = clearEntity.employer,
+					encryptedSelf = null,
+				)
+		}
 
 	override fun create(
 		entityManifestName: String,
 		encryptorFactoryContext: EncryptorFactoryContext,
+		encodingJson: Json,
+		cryptoService: CryptoService,
 	): EntityEncryptor<EncryptedEmploymentInfo, DecryptedEmploymentInfo> {
 		val manifest = encryptorFactoryContext.getManifest(entityManifestName)
 		return EmploymentInfoEncryptor(
@@ -39,6 +49,8 @@ internal object EmploymentInfoEncryptorFactory :
 			endDate_e = "endDate" in manifest.fieldsToEncrypt,
 			professionType_e = "professionType" in manifest.fieldsToEncrypt,
 			employer_e = "employer" in manifest.fieldsToEncrypt,
+			encodingJson = encodingJson,
+			cryptoService = cryptoService,
 		)
 	}
 }
@@ -49,12 +61,12 @@ private class EmploymentInfoEncryptor(
 	private val endDate_e: Boolean,
 	private val professionType_e: Boolean,
 	private val employer_e: Boolean,
-) : AbstractEntityEncryptor<EncryptedEmploymentInfo, DecryptedEmploymentInfo>() {
+	private val encodingJson: Json,
+	cryptoService: CryptoService,
+) : AbstractEntityEncryptor<EncryptedEmploymentInfo, DecryptedEmploymentInfo>(cryptoService) {
 	override suspend fun encrypt(
 		encryptionKey: AesKey<AesAlgorithm.CbcWithPkcs7Padding>,
 		clearEntity: DecryptedEmploymentInfo,
-		encodingJson: Json,
-		cryptoService: CryptoService,
 	): EncryptedEmploymentInfo {
 		val dataToEncrypt = mutableMapOf<String, JsonElement>()
 		if (startDate_e && clearEntity.startDate != null) dataToEncrypt["startDate"] = encodingJson.encodeToJsonElement(clearEntity.startDate)
@@ -71,7 +83,7 @@ private class EmploymentInfoEncryptor(
 			endDate = if (endDate_e) null else clearEntity.endDate,
 			professionType = if (professionType_e) null else clearEntity.professionType,
 			employer = if (employer_e) null else clearEntity.employer,
-			encryptedSelf = getUpdatedEncryptSelf(encryptionKey, clearEntity, JsonObject(dataToEncrypt), cryptoService),
+			encryptedSelf = getUpdatedEncryptSelf(encryptionKey, clearEntity, JsonObject(dataToEncrypt)),
 		)
 	}
 }

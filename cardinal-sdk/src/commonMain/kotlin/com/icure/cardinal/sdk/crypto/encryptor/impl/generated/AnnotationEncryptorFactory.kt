@@ -22,20 +22,31 @@ import kotlin.String
 internal object AnnotationEncryptorFactory :
 	EntityEncryptorFactory<EncryptedAnnotation, DecryptedAnnotation> {
 	override val empty: EntityEncryptor<EncryptedAnnotation, DecryptedAnnotation> =
-		AnnotationEncryptor(
-			author_e = false,
-			created_e = false,
-			modified_e = false,
-			text_e = false,
-			markdown_e = false,
-			location_e = false,
-			confidential_e = false,
-			tags_e = false,
-		)
+		object :
+			EntityEncryptor<EncryptedAnnotation, DecryptedAnnotation> {
+			override suspend fun encrypt(
+				encryptionKey: AesKey<AesAlgorithm.CbcWithPkcs7Padding>,
+				clearEntity: DecryptedAnnotation,
+			): EncryptedAnnotation =
+				EncryptedAnnotation(
+					id = clearEntity.id,
+					author = clearEntity.author,
+					created = clearEntity.created,
+					modified = clearEntity.modified,
+					text = clearEntity.text,
+					markdown = clearEntity.markdown,
+					location = clearEntity.location,
+					confidential = clearEntity.confidential,
+					tags = clearEntity.tags,
+					encryptedSelf = null,
+				)
+		}
 
 	override fun create(
 		entityManifestName: String,
 		encryptorFactoryContext: EncryptorFactoryContext,
+		encodingJson: Json,
+		cryptoService: CryptoService,
 	): EntityEncryptor<EncryptedAnnotation, DecryptedAnnotation> {
 		val manifest = encryptorFactoryContext.getManifest(entityManifestName)
 		return AnnotationEncryptor(
@@ -47,6 +58,8 @@ internal object AnnotationEncryptorFactory :
 			location_e = "location" in manifest.fieldsToEncrypt,
 			confidential_e = "confidential" in manifest.fieldsToEncrypt,
 			tags_e = "tags" in manifest.fieldsToEncrypt,
+			encodingJson = encodingJson,
+			cryptoService = cryptoService,
 		)
 	}
 }
@@ -61,12 +74,12 @@ private class AnnotationEncryptor(
 	private val location_e: Boolean,
 	private val confidential_e: Boolean,
 	private val tags_e: Boolean,
-) : AbstractEntityEncryptor<EncryptedAnnotation, DecryptedAnnotation>() {
+	private val encodingJson: Json,
+	cryptoService: CryptoService,
+) : AbstractEntityEncryptor<EncryptedAnnotation, DecryptedAnnotation>(cryptoService) {
 	override suspend fun encrypt(
 		encryptionKey: AesKey<AesAlgorithm.CbcWithPkcs7Padding>,
 		clearEntity: DecryptedAnnotation,
-		encodingJson: Json,
-		cryptoService: CryptoService,
 	): EncryptedAnnotation {
 		val dataToEncrypt = mutableMapOf<String, JsonElement>()
 		if (author_e && clearEntity.author != null) dataToEncrypt["author"] = encodingJson.encodeToJsonElement(clearEntity.author)
@@ -92,7 +105,7 @@ private class AnnotationEncryptor(
 			location = if (location_e) null else clearEntity.location,
 			confidential = if (confidential_e) null else clearEntity.confidential,
 			tags = if (tags_e) emptySet() else clearEntity.tags,
-			encryptedSelf = getUpdatedEncryptSelf(encryptionKey, clearEntity, JsonObject(dataToEncrypt), cryptoService),
+			encryptedSelf = getUpdatedEncryptSelf(encryptionKey, clearEntity, JsonObject(dataToEncrypt)),
 		)
 	}
 }

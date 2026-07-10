@@ -22,21 +22,35 @@ import kotlin.String
 internal object CareTeamMemberEncryptorFactory :
 	EntityEncryptorFactory<EncryptedCareTeamMember, DecryptedCareTeamMember> {
 	override val empty: EntityEncryptor<EncryptedCareTeamMember, DecryptedCareTeamMember> =
-		CareTeamMemberEncryptor(
-			careTeamMemberType_e = false,
-			healthcarePartyId_e = false,
-			quality_e = false,
-		)
+		object :
+			EntityEncryptor<EncryptedCareTeamMember, DecryptedCareTeamMember> {
+			override suspend fun encrypt(
+				encryptionKey: AesKey<AesAlgorithm.CbcWithPkcs7Padding>,
+				clearEntity: DecryptedCareTeamMember,
+			): EncryptedCareTeamMember =
+				EncryptedCareTeamMember(
+					id = clearEntity.id,
+					careTeamMemberType = clearEntity.careTeamMemberType,
+					healthcarePartyId = clearEntity.healthcarePartyId,
+					quality = clearEntity.quality,
+					encryptedSelf = null,
+					extensions = clearEntity.extensions,
+				)
+		}
 
 	override fun create(
 		entityManifestName: String,
 		encryptorFactoryContext: EncryptorFactoryContext,
+		encodingJson: Json,
+		cryptoService: CryptoService,
 	): EntityEncryptor<EncryptedCareTeamMember, DecryptedCareTeamMember> {
 		val manifest = encryptorFactoryContext.getManifest(entityManifestName)
 		return CareTeamMemberEncryptor(
 			careTeamMemberType_e = "careTeamMemberType" in manifest.fieldsToEncrypt,
 			healthcarePartyId_e = "healthcarePartyId" in manifest.fieldsToEncrypt,
 			quality_e = "quality" in manifest.fieldsToEncrypt,
+			encodingJson = encodingJson,
+			cryptoService = cryptoService,
 		)
 	}
 }
@@ -46,12 +60,12 @@ private class CareTeamMemberEncryptor(
 	private val careTeamMemberType_e: Boolean,
 	private val healthcarePartyId_e: Boolean,
 	private val quality_e: Boolean,
-) : AbstractEntityEncryptor<EncryptedCareTeamMember, DecryptedCareTeamMember>() {
+	private val encodingJson: Json,
+	cryptoService: CryptoService,
+) : AbstractEntityEncryptor<EncryptedCareTeamMember, DecryptedCareTeamMember>(cryptoService) {
 	override suspend fun encrypt(
 		encryptionKey: AesKey<AesAlgorithm.CbcWithPkcs7Padding>,
 		clearEntity: DecryptedCareTeamMember,
-		encodingJson: Json,
-		cryptoService: CryptoService,
 	): EncryptedCareTeamMember {
 		val dataToEncrypt = mutableMapOf<String, JsonElement>()
 		if (careTeamMemberType_e && clearEntity.careTeamMemberType != null) {
@@ -72,7 +86,7 @@ private class CareTeamMemberEncryptor(
 			careTeamMemberType = if (careTeamMemberType_e) null else clearEntity.careTeamMemberType,
 			healthcarePartyId = if (healthcarePartyId_e) null else clearEntity.healthcarePartyId,
 			quality = if (quality_e) null else clearEntity.quality,
-			encryptedSelf = getUpdatedEncryptSelf(encryptionKey, clearEntity, JsonObject(dataToEncrypt), cryptoService),
+			encryptedSelf = getUpdatedEncryptSelf(encryptionKey, clearEntity, JsonObject(dataToEncrypt)),
 			extensions = clearEntity.extensions,
 		)
 	}

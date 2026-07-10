@@ -30,30 +30,63 @@ import kotlin.String
 @InternalIcureApi
 internal object ContactEncryptorFactory : EntityEncryptorFactory<EncryptedContact, DecryptedContact> {
 	override val empty: EntityEncryptor<EncryptedContact, DecryptedContact> =
-		ContactEncryptor(
-			created_e = false,
-			modified_e = false,
-			author_e = false,
-			responsible_e = false,
-			tags_e = false,
-			codes_e = false,
-			identifier_e = false,
-			groupId_e = false,
-			openingDate_e = false,
-			closingDate_e = false,
-			descr_e = false,
-			location_e = false,
-			encounterType_e = false,
-			encounterLocation_e = EncryptableFieldConfig.None(AddressEncryptorFactory),
-			subContacts_e = EncryptableFieldConfig.None(SubContactEncryptorFactory),
-			services_e = EncryptableFieldConfig.None(ServiceEncryptorFactory),
-			participantList_e = false,
-			notes_e = EncryptableFieldConfig.None(AnnotationEncryptorFactory),
-		)
+		object :
+			EntityEncryptor<EncryptedContact, DecryptedContact> {
+			override suspend fun encrypt(
+				encryptionKey: AesKey<AesAlgorithm.CbcWithPkcs7Padding>,
+				clearEntity: DecryptedContact,
+			): EncryptedContact =
+				EncryptedContact(
+					id = clearEntity.id,
+					rev = clearEntity.rev,
+					created = clearEntity.created,
+					modified = clearEntity.modified,
+					author = clearEntity.author,
+					responsible = clearEntity.responsible,
+					tags = clearEntity.tags,
+					codes = clearEntity.codes,
+					identifier = clearEntity.identifier,
+					endOfLife = clearEntity.endOfLife,
+					deletionDate = clearEntity.deletionDate,
+					groupId = clearEntity.groupId,
+					openingDate = clearEntity.openingDate,
+					closingDate = clearEntity.closingDate,
+					descr = clearEntity.descr,
+					location = clearEntity.location,
+					encounterType = clearEntity.encounterType,
+					encounterLocation =
+						clearEntity.encounterLocation?.let {
+							AddressEncryptorFactory.empty.encrypt(encryptionKey, it)
+						},
+					subContacts =
+						clearEntity.subContacts.mapTo(mutableSetOf()) { x0 ->
+							SubContactEncryptorFactory.empty.encrypt(encryptionKey, x0)
+						},
+					services =
+						clearEntity.services.mapTo(mutableSetOf()) { x0 ->
+							ServiceEncryptorFactory.empty.encrypt(encryptionKey, x0)
+						},
+					participantList = clearEntity.participantList,
+					secretForeignKeys = clearEntity.secretForeignKeys,
+					cryptedForeignKeys = clearEntity.cryptedForeignKeys,
+					delegations = clearEntity.delegations,
+					encryptionKeys = clearEntity.encryptionKeys,
+					encryptedSelf = null,
+					securityMetadata = clearEntity.securityMetadata,
+					notes =
+						clearEntity.notes.map { x0 ->
+							AnnotationEncryptorFactory.empty.encrypt(encryptionKey, x0)
+						},
+					extensions = clearEntity.extensions,
+					extensionsVersion = clearEntity.extensionsVersion,
+				)
+		}
 
 	override fun create(
 		entityManifestName: String,
 		encryptorFactoryContext: EncryptorFactoryContext,
+		encodingJson: Json,
+		cryptoService: CryptoService,
 	): EntityEncryptor<EncryptedContact, DecryptedContact> {
 		val manifest = encryptorFactoryContext.getManifest(entityManifestName)
 		return ContactEncryptor(
@@ -127,6 +160,8 @@ internal object ContactEncryptorFactory : EntityEncryptorFactory<EncryptedContac
 						)
 					} ?: EncryptableFieldConfig.None(AnnotationEncryptorFactory)
 				},
+			encodingJson = encodingJson,
+			cryptoService = cryptoService,
 		)
 	}
 }
@@ -151,12 +186,12 @@ private class ContactEncryptor(
 	private val services_e: EncryptableFieldConfig<EncryptedService, DecryptedService>,
 	private val participantList_e: Boolean,
 	private val notes_e: EncryptableFieldConfig<EncryptedAnnotation, DecryptedAnnotation>,
-) : AbstractEntityEncryptor<EncryptedContact, DecryptedContact>() {
+	private val encodingJson: Json,
+	cryptoService: CryptoService,
+) : AbstractEntityEncryptor<EncryptedContact, DecryptedContact>(cryptoService) {
 	override suspend fun encrypt(
 		encryptionKey: AesKey<AesAlgorithm.CbcWithPkcs7Padding>,
 		clearEntity: DecryptedContact,
-		encodingJson: Json,
-		cryptoService: CryptoService,
 	): EncryptedContact {
 		val dataToEncrypt = mutableMapOf<String, JsonElement>()
 		if (created_e && clearEntity.created != null) dataToEncrypt["created"] = encodingJson.encodeToJsonElement(clearEntity.created)
@@ -246,7 +281,7 @@ private class ContactEncryptor(
 						null
 					} else {
 						clearEntity.encounterLocation?.let {
-							encryptor.encrypt(encryptionKey, it, encodingJson, cryptoService)
+							encryptor.encrypt(encryptionKey, it)
 						}
 					}
 				},
@@ -256,7 +291,7 @@ private class ContactEncryptor(
 						emptySet()
 					} else {
 						clearEntity.subContacts.mapTo(mutableSetOf()) { x0 ->
-							encryptor.encrypt(encryptionKey, x0, encodingJson, cryptoService)
+							encryptor.encrypt(encryptionKey, x0)
 						}
 					}
 				},
@@ -266,7 +301,7 @@ private class ContactEncryptor(
 						emptySet()
 					} else {
 						clearEntity.services.mapTo(mutableSetOf()) { x0 ->
-							encryptor.encrypt(encryptionKey, x0, encodingJson, cryptoService)
+							encryptor.encrypt(encryptionKey, x0)
 						}
 					}
 				},
@@ -275,7 +310,7 @@ private class ContactEncryptor(
 			cryptedForeignKeys = clearEntity.cryptedForeignKeys,
 			delegations = clearEntity.delegations,
 			encryptionKeys = clearEntity.encryptionKeys,
-			encryptedSelf = getUpdatedEncryptSelf(encryptionKey, clearEntity, JsonObject(dataToEncrypt), cryptoService),
+			encryptedSelf = getUpdatedEncryptSelf(encryptionKey, clearEntity, JsonObject(dataToEncrypt)),
 			securityMetadata = clearEntity.securityMetadata,
 			notes =
 				notes_e.encryptor.let { encryptor ->
@@ -283,7 +318,7 @@ private class ContactEncryptor(
 						emptyList()
 					} else {
 						clearEntity.notes.map { x0 ->
-							encryptor.encrypt(encryptionKey, x0, encodingJson, cryptoService)
+							encryptor.encrypt(encryptionKey, x0)
 						}
 					}
 				},

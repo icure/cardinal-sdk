@@ -24,23 +24,43 @@ import kotlin.String
 internal object AccessLogEncryptorFactory :
 	EntityEncryptorFactory<EncryptedAccessLog, DecryptedAccessLog> {
 	override val empty: EntityEncryptor<EncryptedAccessLog, DecryptedAccessLog> =
-		AccessLogEncryptor(
-			created_e = false,
-			modified_e = false,
-			author_e = false,
-			responsible_e = false,
-			tags_e = false,
-			codes_e = false,
-			objectId_e = false,
-			accessType_e = false,
-			user_e = false,
-			detail_e = false,
-			date_e = false,
-		)
+		object :
+			EntityEncryptor<EncryptedAccessLog, DecryptedAccessLog> {
+			override suspend fun encrypt(
+				encryptionKey: AesKey<AesAlgorithm.CbcWithPkcs7Padding>,
+				clearEntity: DecryptedAccessLog,
+			): EncryptedAccessLog =
+				EncryptedAccessLog(
+					id = clearEntity.id,
+					rev = clearEntity.rev,
+					created = clearEntity.created,
+					modified = clearEntity.modified,
+					author = clearEntity.author,
+					responsible = clearEntity.responsible,
+					tags = clearEntity.tags,
+					codes = clearEntity.codes,
+					deletionDate = clearEntity.deletionDate,
+					objectId = clearEntity.objectId,
+					accessType = clearEntity.accessType,
+					user = clearEntity.user,
+					detail = clearEntity.detail,
+					date = clearEntity.date,
+					secretForeignKeys = clearEntity.secretForeignKeys,
+					cryptedForeignKeys = clearEntity.cryptedForeignKeys,
+					delegations = clearEntity.delegations,
+					encryptionKeys = clearEntity.encryptionKeys,
+					encryptedSelf = null,
+					securityMetadata = clearEntity.securityMetadata,
+					extensions = clearEntity.extensions,
+					extensionsVersion = clearEntity.extensionsVersion,
+				)
+		}
 
 	override fun create(
 		entityManifestName: String,
 		encryptorFactoryContext: EncryptorFactoryContext,
+		encodingJson: Json,
+		cryptoService: CryptoService,
 	): EntityEncryptor<EncryptedAccessLog, DecryptedAccessLog> {
 		val manifest = encryptorFactoryContext.getManifest(entityManifestName)
 		return AccessLogEncryptor(
@@ -55,6 +75,8 @@ internal object AccessLogEncryptorFactory :
 			user_e = "user" in manifest.fieldsToEncrypt,
 			detail_e = "detail" in manifest.fieldsToEncrypt,
 			date_e = "date" in manifest.fieldsToEncrypt,
+			encodingJson = encodingJson,
+			cryptoService = cryptoService,
 		)
 	}
 }
@@ -72,12 +94,12 @@ private class AccessLogEncryptor(
 	private val user_e: Boolean,
 	private val detail_e: Boolean,
 	private val date_e: Boolean,
-) : AbstractEntityEncryptor<EncryptedAccessLog, DecryptedAccessLog>() {
+	private val encodingJson: Json,
+	cryptoService: CryptoService,
+) : AbstractEntityEncryptor<EncryptedAccessLog, DecryptedAccessLog>(cryptoService) {
 	override suspend fun encrypt(
 		encryptionKey: AesKey<AesAlgorithm.CbcWithPkcs7Padding>,
 		clearEntity: DecryptedAccessLog,
-		encodingJson: Json,
-		cryptoService: CryptoService,
 	): EncryptedAccessLog {
 		val dataToEncrypt = mutableMapOf<String, JsonElement>()
 		if (created_e && clearEntity.created != null) dataToEncrypt["created"] = encodingJson.encodeToJsonElement(clearEntity.created)
@@ -121,7 +143,7 @@ private class AccessLogEncryptor(
 			cryptedForeignKeys = clearEntity.cryptedForeignKeys,
 			delegations = clearEntity.delegations,
 			encryptionKeys = clearEntity.encryptionKeys,
-			encryptedSelf = getUpdatedEncryptSelf(encryptionKey, clearEntity, JsonObject(dataToEncrypt), cryptoService),
+			encryptedSelf = getUpdatedEncryptSelf(encryptionKey, clearEntity, JsonObject(dataToEncrypt)),
 			securityMetadata = clearEntity.securityMetadata,
 			extensions = clearEntity.extensions,
 			extensionsVersion = clearEntity.extensionsVersion,

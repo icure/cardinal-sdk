@@ -26,22 +26,44 @@ import kotlin.String
 internal object MaintenanceTaskEncryptorFactory :
 	EntityEncryptorFactory<EncryptedMaintenanceTask, DecryptedMaintenanceTask> {
 	override val empty: EntityEncryptor<EncryptedMaintenanceTask, DecryptedMaintenanceTask> =
-		MaintenanceTaskEncryptor(
-			identifier_e = false,
-			created_e = false,
-			modified_e = false,
-			author_e = false,
-			responsible_e = false,
-			tags_e = false,
-			codes_e = false,
-			taskType_e = false,
-			properties_e = EncryptableFieldConfig.None(PropertyStubEncryptorFactory),
-			status_e = false,
-		)
+		object :
+			EntityEncryptor<EncryptedMaintenanceTask, DecryptedMaintenanceTask> {
+			override suspend fun encrypt(
+				encryptionKey: AesKey<AesAlgorithm.CbcWithPkcs7Padding>,
+				clearEntity: DecryptedMaintenanceTask,
+			): EncryptedMaintenanceTask =
+				EncryptedMaintenanceTask(
+					id = clearEntity.id,
+					rev = clearEntity.rev,
+					identifier = clearEntity.identifier,
+					created = clearEntity.created,
+					modified = clearEntity.modified,
+					author = clearEntity.author,
+					responsible = clearEntity.responsible,
+					tags = clearEntity.tags,
+					codes = clearEntity.codes,
+					endOfLife = clearEntity.endOfLife,
+					deletionDate = clearEntity.deletionDate,
+					taskType = clearEntity.taskType,
+					properties =
+						clearEntity.properties.mapTo(mutableSetOf()) { x0 ->
+							PropertyStubEncryptorFactory.empty.encrypt(encryptionKey, x0)
+						},
+					status = clearEntity.status,
+					secretForeignKeys = clearEntity.secretForeignKeys,
+					cryptedForeignKeys = clearEntity.cryptedForeignKeys,
+					delegations = clearEntity.delegations,
+					encryptionKeys = clearEntity.encryptionKeys,
+					encryptedSelf = null,
+					securityMetadata = clearEntity.securityMetadata,
+				)
+		}
 
 	override fun create(
 		entityManifestName: String,
 		encryptorFactoryContext: EncryptorFactoryContext,
+		encodingJson: Json,
+		cryptoService: CryptoService,
 	): EntityEncryptor<EncryptedMaintenanceTask, DecryptedMaintenanceTask> {
 		val manifest = encryptorFactoryContext.getManifest(entityManifestName)
 		return MaintenanceTaskEncryptor(
@@ -68,6 +90,8 @@ internal object MaintenanceTaskEncryptorFactory :
 					} ?: EncryptableFieldConfig.None(PropertyStubEncryptorFactory)
 				},
 			status_e = "status" in manifest.fieldsToEncrypt,
+			encodingJson = encodingJson,
+			cryptoService = cryptoService,
 		)
 	}
 }
@@ -84,12 +108,12 @@ private class MaintenanceTaskEncryptor(
 	private val taskType_e: Boolean,
 	private val properties_e: EncryptableFieldConfig<EncryptedPropertyStub, DecryptedPropertyStub>,
 	private val status_e: Boolean,
-) : AbstractEntityEncryptor<EncryptedMaintenanceTask, DecryptedMaintenanceTask>() {
+	private val encodingJson: Json,
+	cryptoService: CryptoService,
+) : AbstractEntityEncryptor<EncryptedMaintenanceTask, DecryptedMaintenanceTask>(cryptoService) {
 	override suspend fun encrypt(
 		encryptionKey: AesKey<AesAlgorithm.CbcWithPkcs7Padding>,
 		clearEntity: DecryptedMaintenanceTask,
-		encodingJson: Json,
-		cryptoService: CryptoService,
 	): EncryptedMaintenanceTask {
 		val dataToEncrypt = mutableMapOf<String, JsonElement>()
 		if (identifier_e && clearEntity.identifier.isNotEmpty()) {
@@ -136,7 +160,7 @@ private class MaintenanceTaskEncryptor(
 						emptySet()
 					} else {
 						clearEntity.properties.mapTo(mutableSetOf()) { x0 ->
-							encryptor.encrypt(encryptionKey, x0, encodingJson, cryptoService)
+							encryptor.encrypt(encryptionKey, x0)
 						}
 					}
 				},
@@ -145,7 +169,7 @@ private class MaintenanceTaskEncryptor(
 			cryptedForeignKeys = clearEntity.cryptedForeignKeys,
 			delegations = clearEntity.delegations,
 			encryptionKeys = clearEntity.encryptionKeys,
-			encryptedSelf = getUpdatedEncryptSelf(encryptionKey, clearEntity, JsonObject(dataToEncrypt), cryptoService),
+			encryptedSelf = getUpdatedEncryptSelf(encryptionKey, clearEntity, JsonObject(dataToEncrypt)),
 			securityMetadata = clearEntity.securityMetadata,
 		)
 	}

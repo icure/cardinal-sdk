@@ -22,20 +22,38 @@ import kotlin.String
 internal object ApplicationSettingsEncryptorFactory :
 	EntityEncryptorFactory<EncryptedApplicationSettings, DecryptedApplicationSettings> {
 	override val empty: EntityEncryptor<EncryptedApplicationSettings, DecryptedApplicationSettings> =
-		ApplicationSettingsEncryptor(
-			created_e = false,
-			modified_e = false,
-			author_e = false,
-			responsible_e = false,
-			tags_e = false,
-			codes_e = false,
-			settings_e = false,
-			encryptedSettings_e = false,
-		)
+		object : EntityEncryptor<EncryptedApplicationSettings, DecryptedApplicationSettings> {
+			override suspend fun encrypt(
+				encryptionKey: AesKey<AesAlgorithm.CbcWithPkcs7Padding>,
+				clearEntity: DecryptedApplicationSettings,
+			): EncryptedApplicationSettings =
+				EncryptedApplicationSettings(
+					id = clearEntity.id,
+					rev = clearEntity.rev,
+					created = clearEntity.created,
+					modified = clearEntity.modified,
+					author = clearEntity.author,
+					responsible = clearEntity.responsible,
+					tags = clearEntity.tags,
+					codes = clearEntity.codes,
+					endOfLife = clearEntity.endOfLife,
+					deletionDate = clearEntity.deletionDate,
+					settings = clearEntity.settings,
+					encryptedSettings = clearEntity.encryptedSettings,
+					secretForeignKeys = clearEntity.secretForeignKeys,
+					cryptedForeignKeys = clearEntity.cryptedForeignKeys,
+					delegations = clearEntity.delegations,
+					encryptionKeys = clearEntity.encryptionKeys,
+					securityMetadata = clearEntity.securityMetadata,
+					encryptedSelf = null,
+				)
+		}
 
 	override fun create(
 		entityManifestName: String,
 		encryptorFactoryContext: EncryptorFactoryContext,
+		encodingJson: Json,
+		cryptoService: CryptoService,
 	): EntityEncryptor<EncryptedApplicationSettings, DecryptedApplicationSettings> {
 		val manifest = encryptorFactoryContext.getManifest(entityManifestName)
 		return ApplicationSettingsEncryptor(
@@ -47,6 +65,8 @@ internal object ApplicationSettingsEncryptorFactory :
 			codes_e = "codes" in manifest.fieldsToEncrypt,
 			settings_e = "settings" in manifest.fieldsToEncrypt,
 			encryptedSettings_e = "encryptedSettings" in manifest.fieldsToEncrypt,
+			encodingJson = encodingJson,
+			cryptoService = cryptoService,
 		)
 	}
 }
@@ -61,12 +81,13 @@ private class ApplicationSettingsEncryptor(
 	private val codes_e: Boolean,
 	private val settings_e: Boolean,
 	private val encryptedSettings_e: Boolean,
-) : AbstractEntityEncryptor<EncryptedApplicationSettings, DecryptedApplicationSettings>() {
+	private val encodingJson: Json,
+	cryptoService: CryptoService,
+) :
+	AbstractEntityEncryptor<EncryptedApplicationSettings, DecryptedApplicationSettings>(cryptoService) {
 	override suspend fun encrypt(
 		encryptionKey: AesKey<AesAlgorithm.CbcWithPkcs7Padding>,
 		clearEntity: DecryptedApplicationSettings,
-		encodingJson: Json,
-		cryptoService: CryptoService,
 	): EncryptedApplicationSettings {
 		val dataToEncrypt = mutableMapOf<String, JsonElement>()
 		if (created_e && clearEntity.created != null) dataToEncrypt["created"] = encodingJson.encodeToJsonElement(clearEntity.created)
@@ -105,7 +126,7 @@ private class ApplicationSettingsEncryptor(
 			delegations = clearEntity.delegations,
 			encryptionKeys = clearEntity.encryptionKeys,
 			securityMetadata = clearEntity.securityMetadata,
-			encryptedSelf = getUpdatedEncryptSelf(encryptionKey, clearEntity, JsonObject(dataToEncrypt), cryptoService),
+			encryptedSelf = getUpdatedEncryptSelf(encryptionKey, clearEntity, JsonObject(dataToEncrypt)),
 		)
 	}
 }

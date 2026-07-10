@@ -21,29 +21,47 @@ import kotlin.String
 @InternalIcureApi
 internal object FormEncryptorFactory : EntityEncryptorFactory<EncryptedForm, DecryptedForm> {
 	override val empty: EntityEncryptor<EncryptedForm, DecryptedForm> =
-		FormEncryptor(
-			created_e = false,
-			modified_e = false,
-			author_e = false,
-			responsible_e = false,
-			tags_e = false,
-			codes_e = false,
-			openingDate_e = false,
-			status_e = false,
-			version_e = false,
-			descr_e = false,
-			uniqueId_e = false,
-			formTemplateId_e = false,
-			contactId_e = false,
-			healthElementId_e = false,
-			planOfActionId_e = false,
-			parent_e = false,
-			anchorId_e = false,
-		)
+		object :
+			EntityEncryptor<EncryptedForm, DecryptedForm> {
+			override suspend fun encrypt(
+				encryptionKey: AesKey<AesAlgorithm.CbcWithPkcs7Padding>,
+				clearEntity: DecryptedForm,
+			): EncryptedForm =
+				EncryptedForm(
+					id = clearEntity.id,
+					rev = clearEntity.rev,
+					created = clearEntity.created,
+					modified = clearEntity.modified,
+					author = clearEntity.author,
+					responsible = clearEntity.responsible,
+					tags = clearEntity.tags,
+					codes = clearEntity.codes,
+					deletionDate = clearEntity.deletionDate,
+					openingDate = clearEntity.openingDate,
+					status = clearEntity.status,
+					version = clearEntity.version,
+					descr = clearEntity.descr,
+					uniqueId = clearEntity.uniqueId,
+					formTemplateId = clearEntity.formTemplateId,
+					contactId = clearEntity.contactId,
+					healthElementId = clearEntity.healthElementId,
+					planOfActionId = clearEntity.planOfActionId,
+					parent = clearEntity.parent,
+					anchorId = clearEntity.anchorId,
+					secretForeignKeys = clearEntity.secretForeignKeys,
+					cryptedForeignKeys = clearEntity.cryptedForeignKeys,
+					delegations = clearEntity.delegations,
+					encryptionKeys = clearEntity.encryptionKeys,
+					encryptedSelf = null,
+					securityMetadata = clearEntity.securityMetadata,
+				)
+		}
 
 	override fun create(
 		entityManifestName: String,
 		encryptorFactoryContext: EncryptorFactoryContext,
+		encodingJson: Json,
+		cryptoService: CryptoService,
 	): EntityEncryptor<EncryptedForm, DecryptedForm> {
 		val manifest = encryptorFactoryContext.getManifest(entityManifestName)
 		return FormEncryptor(
@@ -64,6 +82,8 @@ internal object FormEncryptorFactory : EntityEncryptorFactory<EncryptedForm, Dec
 			planOfActionId_e = "planOfActionId" in manifest.fieldsToEncrypt,
 			parent_e = "parent" in manifest.fieldsToEncrypt,
 			anchorId_e = "anchorId" in manifest.fieldsToEncrypt,
+			encodingJson = encodingJson,
+			cryptoService = cryptoService,
 		)
 	}
 }
@@ -87,12 +107,12 @@ private class FormEncryptor(
 	private val planOfActionId_e: Boolean,
 	private val parent_e: Boolean,
 	private val anchorId_e: Boolean,
-) : AbstractEntityEncryptor<EncryptedForm, DecryptedForm>() {
+	private val encodingJson: Json,
+	cryptoService: CryptoService,
+) : AbstractEntityEncryptor<EncryptedForm, DecryptedForm>(cryptoService) {
 	override suspend fun encrypt(
 		encryptionKey: AesKey<AesAlgorithm.CbcWithPkcs7Padding>,
 		clearEntity: DecryptedForm,
-		encodingJson: Json,
-		cryptoService: CryptoService,
 	): EncryptedForm {
 		val dataToEncrypt = mutableMapOf<String, JsonElement>()
 		if (created_e && clearEntity.created != null) dataToEncrypt["created"] = encodingJson.encodeToJsonElement(clearEntity.created)
@@ -162,7 +182,7 @@ private class FormEncryptor(
 			cryptedForeignKeys = clearEntity.cryptedForeignKeys,
 			delegations = clearEntity.delegations,
 			encryptionKeys = clearEntity.encryptionKeys,
-			encryptedSelf = getUpdatedEncryptSelf(encryptionKey, clearEntity, JsonObject(dataToEncrypt), cryptoService),
+			encryptedSelf = getUpdatedEncryptSelf(encryptionKey, clearEntity, JsonObject(dataToEncrypt)),
 			securityMetadata = clearEntity.securityMetadata,
 		)
 	}

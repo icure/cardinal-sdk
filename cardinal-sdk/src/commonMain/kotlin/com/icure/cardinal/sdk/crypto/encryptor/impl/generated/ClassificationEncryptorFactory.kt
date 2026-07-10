@@ -22,21 +22,40 @@ import kotlin.String
 internal object ClassificationEncryptorFactory :
 	EntityEncryptorFactory<EncryptedClassification, DecryptedClassification> {
 	override val empty: EntityEncryptor<EncryptedClassification, DecryptedClassification> =
-		ClassificationEncryptor(
-			created_e = false,
-			modified_e = false,
-			author_e = false,
-			responsible_e = false,
-			tags_e = false,
-			codes_e = false,
-			parentId_e = false,
-			label_e = false,
-			templateId_e = false,
-		)
+		object :
+			EntityEncryptor<EncryptedClassification, DecryptedClassification> {
+			override suspend fun encrypt(
+				encryptionKey: AesKey<AesAlgorithm.CbcWithPkcs7Padding>,
+				clearEntity: DecryptedClassification,
+			): EncryptedClassification =
+				EncryptedClassification(
+					id = clearEntity.id,
+					rev = clearEntity.rev,
+					created = clearEntity.created,
+					modified = clearEntity.modified,
+					author = clearEntity.author,
+					responsible = clearEntity.responsible,
+					tags = clearEntity.tags,
+					codes = clearEntity.codes,
+					endOfLife = clearEntity.endOfLife,
+					deletionDate = clearEntity.deletionDate,
+					parentId = clearEntity.parentId,
+					label = clearEntity.label,
+					templateId = clearEntity.templateId,
+					secretForeignKeys = clearEntity.secretForeignKeys,
+					cryptedForeignKeys = clearEntity.cryptedForeignKeys,
+					delegations = clearEntity.delegations,
+					encryptionKeys = clearEntity.encryptionKeys,
+					encryptedSelf = null,
+					securityMetadata = clearEntity.securityMetadata,
+				)
+		}
 
 	override fun create(
 		entityManifestName: String,
 		encryptorFactoryContext: EncryptorFactoryContext,
+		encodingJson: Json,
+		cryptoService: CryptoService,
 	): EntityEncryptor<EncryptedClassification, DecryptedClassification> {
 		val manifest = encryptorFactoryContext.getManifest(entityManifestName)
 		return ClassificationEncryptor(
@@ -49,6 +68,8 @@ internal object ClassificationEncryptorFactory :
 			parentId_e = "parentId" in manifest.fieldsToEncrypt,
 			label_e = "label" in manifest.fieldsToEncrypt,
 			templateId_e = "templateId" in manifest.fieldsToEncrypt,
+			encodingJson = encodingJson,
+			cryptoService = cryptoService,
 		)
 	}
 }
@@ -64,12 +85,12 @@ private class ClassificationEncryptor(
 	private val parentId_e: Boolean,
 	private val label_e: Boolean,
 	private val templateId_e: Boolean,
-) : AbstractEntityEncryptor<EncryptedClassification, DecryptedClassification>() {
+	private val encodingJson: Json,
+	cryptoService: CryptoService,
+) : AbstractEntityEncryptor<EncryptedClassification, DecryptedClassification>(cryptoService) {
 	override suspend fun encrypt(
 		encryptionKey: AesKey<AesAlgorithm.CbcWithPkcs7Padding>,
 		clearEntity: DecryptedClassification,
-		encodingJson: Json,
-		cryptoService: CryptoService,
 	): EncryptedClassification {
 		val dataToEncrypt = mutableMapOf<String, JsonElement>()
 		if (created_e && clearEntity.created != null) dataToEncrypt["created"] = encodingJson.encodeToJsonElement(clearEntity.created)
@@ -104,7 +125,7 @@ private class ClassificationEncryptor(
 			cryptedForeignKeys = clearEntity.cryptedForeignKeys,
 			delegations = clearEntity.delegations,
 			encryptionKeys = clearEntity.encryptionKeys,
-			encryptedSelf = getUpdatedEncryptSelf(encryptionKey, clearEntity, JsonObject(dataToEncrypt), cryptoService),
+			encryptedSelf = getUpdatedEncryptSelf(encryptionKey, clearEntity, JsonObject(dataToEncrypt)),
 			securityMetadata = clearEntity.securityMetadata,
 		)
 	}

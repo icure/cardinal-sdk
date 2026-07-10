@@ -15,8 +15,11 @@ internal interface EncryptorFactoryContext {
 	 * [EntityEncryptor] of the requested type.
 	 *
 	 * Fails fast if the manifest name is not valid, if the manifest was already registered for other types, or
-	 * if there is no encryptor available for the requested types: if this method returns then it guarantees that the
-	 * lazy will be able to initialize properly.
+	 * if there is no encryptor available for the requested types.
+	 *
+	 * Part of the validation, however, is done lazily, so there is no guarantee that if this method returns then the
+	 * lazy will be able to initialize properly. It is the job of the [EntitiesEncryptorInitializer] to make sure that
+	 * all dependencies are valid before returning the initialized encryptors.
 	 */
 	fun <ENCRYPTED : Encryptable, DECRYPTED : Encryptable> getEntityEncryptorProvider(
 		entityManifestName: String,

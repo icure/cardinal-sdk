@@ -22,22 +22,32 @@ import kotlin.String
 internal object ValorisationEncryptorFactory :
 	EntityEncryptorFactory<EncryptedValorisation, DecryptedValorisation> {
 	override val empty: EntityEncryptor<EncryptedValorisation, DecryptedValorisation> =
-		ValorisationEncryptor(
-			startOfValidity_e = false,
-			endOfValidity_e = false,
-			predicate_e = false,
-			reference_e = false,
-			totalAmount_e = false,
-			reimbursement_e = false,
-			patientIntervention_e = false,
-			doctorSupplement_e = false,
-			vat_e = false,
-			label_e = false,
-		)
+		object :
+			EntityEncryptor<EncryptedValorisation, DecryptedValorisation> {
+			override suspend fun encrypt(
+				encryptionKey: AesKey<AesAlgorithm.CbcWithPkcs7Padding>,
+				clearEntity: DecryptedValorisation,
+			): EncryptedValorisation =
+				EncryptedValorisation(
+					startOfValidity = clearEntity.startOfValidity,
+					endOfValidity = clearEntity.endOfValidity,
+					predicate = clearEntity.predicate,
+					reference = clearEntity.reference,
+					totalAmount = clearEntity.totalAmount,
+					reimbursement = clearEntity.reimbursement,
+					patientIntervention = clearEntity.patientIntervention,
+					doctorSupplement = clearEntity.doctorSupplement,
+					vat = clearEntity.vat,
+					label = clearEntity.label,
+					encryptedSelf = null,
+				)
+		}
 
 	override fun create(
 		entityManifestName: String,
 		encryptorFactoryContext: EncryptorFactoryContext,
+		encodingJson: Json,
+		cryptoService: CryptoService,
 	): EntityEncryptor<EncryptedValorisation, DecryptedValorisation> {
 		val manifest = encryptorFactoryContext.getManifest(entityManifestName)
 		return ValorisationEncryptor(
@@ -51,6 +61,8 @@ internal object ValorisationEncryptorFactory :
 			doctorSupplement_e = "doctorSupplement" in manifest.fieldsToEncrypt,
 			vat_e = "vat" in manifest.fieldsToEncrypt,
 			label_e = "label" in manifest.fieldsToEncrypt,
+			encodingJson = encodingJson,
+			cryptoService = cryptoService,
 		)
 	}
 }
@@ -67,12 +79,12 @@ private class ValorisationEncryptor(
 	private val doctorSupplement_e: Boolean,
 	private val vat_e: Boolean,
 	private val label_e: Boolean,
-) : AbstractEntityEncryptor<EncryptedValorisation, DecryptedValorisation>() {
+	private val encodingJson: Json,
+	cryptoService: CryptoService,
+) : AbstractEntityEncryptor<EncryptedValorisation, DecryptedValorisation>(cryptoService) {
 	override suspend fun encrypt(
 		encryptionKey: AesKey<AesAlgorithm.CbcWithPkcs7Padding>,
 		clearEntity: DecryptedValorisation,
-		encodingJson: Json,
-		cryptoService: CryptoService,
 	): EncryptedValorisation {
 		val dataToEncrypt = mutableMapOf<String, JsonElement>()
 		if (startOfValidity_e && clearEntity.startOfValidity != null) {
@@ -126,7 +138,7 @@ private class ValorisationEncryptor(
 			doctorSupplement = if (doctorSupplement_e) null else clearEntity.doctorSupplement,
 			vat = if (vat_e) null else clearEntity.vat,
 			label = if (label_e) emptyMap() else clearEntity.label,
-			encryptedSelf = getUpdatedEncryptSelf(encryptionKey, clearEntity, JsonObject(dataToEncrypt), cryptoService),
+			encryptedSelf = getUpdatedEncryptSelf(encryptionKey, clearEntity, JsonObject(dataToEncrypt)),
 		)
 	}
 }

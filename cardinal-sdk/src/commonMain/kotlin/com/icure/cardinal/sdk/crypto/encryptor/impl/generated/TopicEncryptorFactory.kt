@@ -21,23 +21,44 @@ import kotlin.String
 @InternalIcureApi
 internal object TopicEncryptorFactory : EntityEncryptorFactory<EncryptedTopic, DecryptedTopic> {
 	override val empty: EntityEncryptor<EncryptedTopic, DecryptedTopic> =
-		TopicEncryptor(
-			created_e = false,
-			modified_e = false,
-			healthElementId_e = false,
-			contactId_e = false,
-			description_e = false,
-			codes_e = false,
-			tags_e = false,
-			author_e = false,
-			responsible_e = false,
-			linkedHealthElements_e = false,
-			linkedServices_e = false,
-		)
+		object :
+			EntityEncryptor<EncryptedTopic, DecryptedTopic> {
+			override suspend fun encrypt(
+				encryptionKey: AesKey<AesAlgorithm.CbcWithPkcs7Padding>,
+				clearEntity: DecryptedTopic,
+			): EncryptedTopic =
+				EncryptedTopic(
+					id = clearEntity.id,
+					rev = clearEntity.rev,
+					created = clearEntity.created,
+					modified = clearEntity.modified,
+					healthElementId = clearEntity.healthElementId,
+					contactId = clearEntity.contactId,
+					description = clearEntity.description,
+					codes = clearEntity.codes,
+					tags = clearEntity.tags,
+					author = clearEntity.author,
+					responsible = clearEntity.responsible,
+					deletionDate = clearEntity.deletionDate,
+					activeParticipants = clearEntity.activeParticipants,
+					securityMetadata = clearEntity.securityMetadata,
+					secretForeignKeys = clearEntity.secretForeignKeys,
+					cryptedForeignKeys = clearEntity.cryptedForeignKeys,
+					delegations = clearEntity.delegations,
+					encryptionKeys = clearEntity.encryptionKeys,
+					encryptedSelf = null,
+					linkedHealthElements = clearEntity.linkedHealthElements,
+					linkedServices = clearEntity.linkedServices,
+					extensions = clearEntity.extensions,
+					extensionsVersion = clearEntity.extensionsVersion,
+				)
+		}
 
 	override fun create(
 		entityManifestName: String,
 		encryptorFactoryContext: EncryptorFactoryContext,
+		encodingJson: Json,
+		cryptoService: CryptoService,
 	): EntityEncryptor<EncryptedTopic, DecryptedTopic> {
 		val manifest = encryptorFactoryContext.getManifest(entityManifestName)
 		return TopicEncryptor(
@@ -52,6 +73,8 @@ internal object TopicEncryptorFactory : EntityEncryptorFactory<EncryptedTopic, D
 			responsible_e = "responsible" in manifest.fieldsToEncrypt,
 			linkedHealthElements_e = "linkedHealthElements" in manifest.fieldsToEncrypt,
 			linkedServices_e = "linkedServices" in manifest.fieldsToEncrypt,
+			encodingJson = encodingJson,
+			cryptoService = cryptoService,
 		)
 	}
 }
@@ -69,12 +92,12 @@ private class TopicEncryptor(
 	private val responsible_e: Boolean,
 	private val linkedHealthElements_e: Boolean,
 	private val linkedServices_e: Boolean,
-) : AbstractEntityEncryptor<EncryptedTopic, DecryptedTopic>() {
+	private val encodingJson: Json,
+	cryptoService: CryptoService,
+) : AbstractEntityEncryptor<EncryptedTopic, DecryptedTopic>(cryptoService) {
 	override suspend fun encrypt(
 		encryptionKey: AesKey<AesAlgorithm.CbcWithPkcs7Padding>,
 		clearEntity: DecryptedTopic,
-		encodingJson: Json,
-		cryptoService: CryptoService,
 	): EncryptedTopic {
 		val dataToEncrypt = mutableMapOf<String, JsonElement>()
 		if (created_e && clearEntity.created != null) dataToEncrypt["created"] = encodingJson.encodeToJsonElement(clearEntity.created)
@@ -132,7 +155,7 @@ private class TopicEncryptor(
 			cryptedForeignKeys = clearEntity.cryptedForeignKeys,
 			delegations = clearEntity.delegations,
 			encryptionKeys = clearEntity.encryptionKeys,
-			encryptedSelf = getUpdatedEncryptSelf(encryptionKey, clearEntity, JsonObject(dataToEncrypt), cryptoService),
+			encryptedSelf = getUpdatedEncryptSelf(encryptionKey, clearEntity, JsonObject(dataToEncrypt)),
 			linkedHealthElements = if (linkedHealthElements_e) emptySet() else clearEntity.linkedHealthElements,
 			linkedServices = if (linkedServices_e) emptySet() else clearEntity.linkedServices,
 			extensions = clearEntity.extensions,

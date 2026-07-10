@@ -24,65 +24,86 @@ import kotlin.String
 @InternalIcureApi
 internal object InvoiceEncryptorFactory : EntityEncryptorFactory<EncryptedInvoice, DecryptedInvoice> {
 	override val empty: EntityEncryptor<EncryptedInvoice, DecryptedInvoice> =
-		InvoiceEncryptor(
-			identifier_e = false,
-			created_e = false,
-			modified_e = false,
-			author_e = false,
-			responsible_e = false,
-			tags_e = false,
-			codes_e = false,
-			invoiceDate_e = false,
-			sentDate_e = false,
-			printedDate_e = false,
-			invoicingCodes_e = EncryptableFieldConfig.None(InvoicingCodeEncryptorFactory),
-			receipts_e = false,
-			recipientId_e = false,
-			invoiceReference_e = false,
-			decisionReference_e = false,
-			thirdPartyReference_e = false,
-			thirdPartyPaymentJustification_e = false,
-			thirdPartyPaymentReason_e = false,
-			reason_e = false,
-			groupId_e = false,
-			paymentType_e = false,
-			paid_e = false,
-			payments_e = false,
-			gnotionSsin_e = false,
-			gnotionLastName_e = false,
-			gnotionFirstName_e = false,
-			gnotionCdHcParty_e = false,
-			invoicePeriod_e = false,
-			careProviderType_e = false,
-			internshipSsin_e = false,
-			internshipLastName_e = false,
-			internshipFirstName_e = false,
-			internshipCdHcParty_e = false,
-			internshipCbe_e = false,
-			supervisorSsin_e = false,
-			supervisorLastName_e = false,
-			supervisorFirstName_e = false,
-			supervisorCdHcParty_e = false,
-			supervisorCbe_e = false,
-			error_e = false,
-			encounterLocationName_e = false,
-			encounterLocationNorm_e = false,
-			longDelayJustification_e = false,
-			correctiveInvoiceId_e = false,
-			correctedInvoiceId_e = false,
-			creditNote_e = false,
-			creditNoteRelatedInvoiceId_e = false,
-			idDocument_e = false,
-			admissionDate_e = false,
-			locationService_e = false,
-			cancelReason_e = false,
-			cancelDate_e = false,
-			options_e = false,
-		)
+		object :
+			EntityEncryptor<EncryptedInvoice, DecryptedInvoice> {
+			override suspend fun encrypt(
+				encryptionKey: AesKey<AesAlgorithm.CbcWithPkcs7Padding>,
+				clearEntity: DecryptedInvoice,
+			): EncryptedInvoice =
+				EncryptedInvoice(
+					id = clearEntity.id,
+					rev = clearEntity.rev,
+					identifier = clearEntity.identifier,
+					created = clearEntity.created,
+					modified = clearEntity.modified,
+					author = clearEntity.author,
+					responsible = clearEntity.responsible,
+					tags = clearEntity.tags,
+					codes = clearEntity.codes,
+					deletionDate = clearEntity.deletionDate,
+					invoiceDate = clearEntity.invoiceDate,
+					sentDate = clearEntity.sentDate,
+					printedDate = clearEntity.printedDate,
+					invoicingCodes =
+						clearEntity.invoicingCodes.map { x0 ->
+							InvoicingCodeEncryptorFactory.empty.encrypt(encryptionKey, x0)
+						},
+					receipts = clearEntity.receipts,
+					recipientId = clearEntity.recipientId,
+					invoiceReference = clearEntity.invoiceReference,
+					decisionReference = clearEntity.decisionReference,
+					thirdPartyReference = clearEntity.thirdPartyReference,
+					thirdPartyPaymentJustification = clearEntity.thirdPartyPaymentJustification,
+					thirdPartyPaymentReason = clearEntity.thirdPartyPaymentReason,
+					reason = clearEntity.reason,
+					groupId = clearEntity.groupId,
+					paymentType = clearEntity.paymentType,
+					paid = clearEntity.paid,
+					payments = clearEntity.payments,
+					gnotionSsin = clearEntity.gnotionSsin,
+					gnotionLastName = clearEntity.gnotionLastName,
+					gnotionFirstName = clearEntity.gnotionFirstName,
+					gnotionCdHcParty = clearEntity.gnotionCdHcParty,
+					invoicePeriod = clearEntity.invoicePeriod,
+					careProviderType = clearEntity.careProviderType,
+					internshipSsin = clearEntity.internshipSsin,
+					internshipLastName = clearEntity.internshipLastName,
+					internshipFirstName = clearEntity.internshipFirstName,
+					internshipCdHcParty = clearEntity.internshipCdHcParty,
+					internshipCbe = clearEntity.internshipCbe,
+					supervisorSsin = clearEntity.supervisorSsin,
+					supervisorLastName = clearEntity.supervisorLastName,
+					supervisorFirstName = clearEntity.supervisorFirstName,
+					supervisorCdHcParty = clearEntity.supervisorCdHcParty,
+					supervisorCbe = clearEntity.supervisorCbe,
+					error = clearEntity.error,
+					encounterLocationName = clearEntity.encounterLocationName,
+					encounterLocationNorm = clearEntity.encounterLocationNorm,
+					longDelayJustification = clearEntity.longDelayJustification,
+					correctiveInvoiceId = clearEntity.correctiveInvoiceId,
+					correctedInvoiceId = clearEntity.correctedInvoiceId,
+					creditNote = clearEntity.creditNote,
+					creditNoteRelatedInvoiceId = clearEntity.creditNoteRelatedInvoiceId,
+					idDocument = clearEntity.idDocument,
+					admissionDate = clearEntity.admissionDate,
+					locationService = clearEntity.locationService,
+					cancelReason = clearEntity.cancelReason,
+					cancelDate = clearEntity.cancelDate,
+					options = clearEntity.options,
+					secretForeignKeys = clearEntity.secretForeignKeys,
+					cryptedForeignKeys = clearEntity.cryptedForeignKeys,
+					delegations = clearEntity.delegations,
+					encryptionKeys = clearEntity.encryptionKeys,
+					encryptedSelf = null,
+					securityMetadata = clearEntity.securityMetadata,
+				)
+		}
 
 	override fun create(
 		entityManifestName: String,
 		encryptorFactoryContext: EncryptorFactoryContext,
+		encodingJson: Json,
+		cryptoService: CryptoService,
 	): EntityEncryptor<EncryptedInvoice, DecryptedInvoice> {
 		val manifest = encryptorFactoryContext.getManifest(entityManifestName)
 		return InvoiceEncryptor(
@@ -152,6 +173,8 @@ internal object InvoiceEncryptorFactory : EntityEncryptorFactory<EncryptedInvoic
 			cancelReason_e = "cancelReason" in manifest.fieldsToEncrypt,
 			cancelDate_e = "cancelDate" in manifest.fieldsToEncrypt,
 			options_e = "options" in manifest.fieldsToEncrypt,
+			encodingJson = encodingJson,
+			cryptoService = cryptoService,
 		)
 	}
 }
@@ -211,12 +234,12 @@ private class InvoiceEncryptor(
 	private val cancelReason_e: Boolean,
 	private val cancelDate_e: Boolean,
 	private val options_e: Boolean,
-) : AbstractEntityEncryptor<EncryptedInvoice, DecryptedInvoice>() {
+	private val encodingJson: Json,
+	cryptoService: CryptoService,
+) : AbstractEntityEncryptor<EncryptedInvoice, DecryptedInvoice>(cryptoService) {
 	override suspend fun encrypt(
 		encryptionKey: AesKey<AesAlgorithm.CbcWithPkcs7Padding>,
 		clearEntity: DecryptedInvoice,
-		encodingJson: Json,
-		cryptoService: CryptoService,
 	): EncryptedInvoice {
 		val dataToEncrypt = mutableMapOf<String, JsonElement>()
 		if (identifier_e && clearEntity.identifier.isNotEmpty()) {
@@ -477,7 +500,7 @@ private class InvoiceEncryptor(
 						emptyList()
 					} else {
 						clearEntity.invoicingCodes.map { x0 ->
-							encryptor.encrypt(encryptionKey, x0, encodingJson, cryptoService)
+							encryptor.encrypt(encryptionKey, x0)
 						}
 					}
 				},
@@ -527,7 +550,7 @@ private class InvoiceEncryptor(
 			cryptedForeignKeys = clearEntity.cryptedForeignKeys,
 			delegations = clearEntity.delegations,
 			encryptionKeys = clearEntity.encryptionKeys,
-			encryptedSelf = getUpdatedEncryptSelf(encryptionKey, clearEntity, JsonObject(dataToEncrypt), cryptoService),
+			encryptedSelf = getUpdatedEncryptSelf(encryptionKey, clearEntity, JsonObject(dataToEncrypt)),
 			securityMetadata = clearEntity.securityMetadata,
 		)
 	}

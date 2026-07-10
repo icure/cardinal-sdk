@@ -31,34 +31,67 @@ import kotlin.String
 internal object HealthElementEncryptorFactory :
 	EntityEncryptorFactory<EncryptedHealthElement, DecryptedHealthElement> {
 	override val empty: EntityEncryptor<EncryptedHealthElement, DecryptedHealthElement> =
-		HealthElementEncryptor(
-			identifiers_e = false,
-			created_e = false,
-			modified_e = false,
-			author_e = false,
-			responsible_e = false,
-			tags_e = false,
-			codes_e = false,
-			healthElementId_e = false,
-			valueDate_e = false,
-			openingDate_e = false,
-			closingDate_e = false,
-			descr_e = false,
-			note_e = false,
-			notes_e = EncryptableFieldConfig.None(AnnotationEncryptorFactory),
-			relevant_e = false,
-			idOpeningContact_e = false,
-			idClosingContact_e = false,
-			idService_e = false,
-			laterality_e = false,
-			plansOfAction_e = EncryptableFieldConfig.None(PlanOfActionEncryptorFactory),
-			episodes_e = EncryptableFieldConfig.None(EpisodeEncryptorFactory),
-			careTeam_e = EncryptableFieldConfig.None(CareTeamMemberEncryptorFactory),
-		)
+		object :
+			EntityEncryptor<EncryptedHealthElement, DecryptedHealthElement> {
+			override suspend fun encrypt(
+				encryptionKey: AesKey<AesAlgorithm.CbcWithPkcs7Padding>,
+				clearEntity: DecryptedHealthElement,
+			): EncryptedHealthElement =
+				EncryptedHealthElement(
+					id = clearEntity.id,
+					identifiers = clearEntity.identifiers,
+					rev = clearEntity.rev,
+					created = clearEntity.created,
+					modified = clearEntity.modified,
+					author = clearEntity.author,
+					responsible = clearEntity.responsible,
+					tags = clearEntity.tags,
+					codes = clearEntity.codes,
+					endOfLife = clearEntity.endOfLife,
+					deletionDate = clearEntity.deletionDate,
+					healthElementId = clearEntity.healthElementId,
+					valueDate = clearEntity.valueDate,
+					openingDate = clearEntity.openingDate,
+					closingDate = clearEntity.closingDate,
+					descr = clearEntity.descr,
+					note = clearEntity.note,
+					notes =
+						clearEntity.notes.map { x0 ->
+							AnnotationEncryptorFactory.empty.encrypt(encryptionKey, x0)
+						},
+					relevant = clearEntity.relevant,
+					idOpeningContact = clearEntity.idOpeningContact,
+					idClosingContact = clearEntity.idClosingContact,
+					idService = clearEntity.idService,
+					laterality = clearEntity.laterality,
+					plansOfAction =
+						clearEntity.plansOfAction.map { x0 ->
+							PlanOfActionEncryptorFactory.empty.encrypt(encryptionKey, x0)
+						},
+					episodes =
+						clearEntity.episodes.map { x0 ->
+							EpisodeEncryptorFactory.empty.encrypt(encryptionKey, x0)
+						},
+					careTeam =
+						clearEntity.careTeam.map { x0 ->
+							CareTeamMemberEncryptorFactory.empty.encrypt(encryptionKey, x0)
+						},
+					secretForeignKeys = clearEntity.secretForeignKeys,
+					cryptedForeignKeys = clearEntity.cryptedForeignKeys,
+					delegations = clearEntity.delegations,
+					encryptionKeys = clearEntity.encryptionKeys,
+					encryptedSelf = null,
+					securityMetadata = clearEntity.securityMetadata,
+					extensions = clearEntity.extensions,
+					extensionsVersion = clearEntity.extensionsVersion,
+				)
+		}
 
 	override fun create(
 		entityManifestName: String,
 		encryptorFactoryContext: EncryptorFactoryContext,
+		encodingJson: Json,
+		cryptoService: CryptoService,
 	): EntityEncryptor<EncryptedHealthElement, DecryptedHealthElement> {
 		val manifest = encryptorFactoryContext.getManifest(entityManifestName)
 		return HealthElementEncryptor(
@@ -136,6 +169,8 @@ internal object HealthElementEncryptorFactory :
 						)
 					} ?: EncryptableFieldConfig.None(CareTeamMemberEncryptorFactory)
 				},
+			encodingJson = encodingJson,
+			cryptoService = cryptoService,
 		)
 	}
 }
@@ -164,12 +199,12 @@ private class HealthElementEncryptor(
 	private val plansOfAction_e: EncryptableFieldConfig<EncryptedPlanOfAction, DecryptedPlanOfAction>,
 	private val episodes_e: EncryptableFieldConfig<EncryptedEpisode, DecryptedEpisode>,
 	private val careTeam_e: EncryptableFieldConfig<EncryptedCareTeamMember, DecryptedCareTeamMember>,
-) : AbstractEntityEncryptor<EncryptedHealthElement, DecryptedHealthElement>() {
+	private val encodingJson: Json,
+	cryptoService: CryptoService,
+) : AbstractEntityEncryptor<EncryptedHealthElement, DecryptedHealthElement>(cryptoService) {
 	override suspend fun encrypt(
 		encryptionKey: AesKey<AesAlgorithm.CbcWithPkcs7Padding>,
 		clearEntity: DecryptedHealthElement,
-		encodingJson: Json,
-		cryptoService: CryptoService,
 	): EncryptedHealthElement {
 		val dataToEncrypt = mutableMapOf<String, JsonElement>()
 		if (identifiers_e && clearEntity.identifiers.isNotEmpty()) {
@@ -268,7 +303,7 @@ private class HealthElementEncryptor(
 						emptyList()
 					} else {
 						clearEntity.notes.map { x0 ->
-							encryptor.encrypt(encryptionKey, x0, encodingJson, cryptoService)
+							encryptor.encrypt(encryptionKey, x0)
 						}
 					}
 				},
@@ -283,7 +318,7 @@ private class HealthElementEncryptor(
 						emptyList()
 					} else {
 						clearEntity.plansOfAction.map { x0 ->
-							encryptor.encrypt(encryptionKey, x0, encodingJson, cryptoService)
+							encryptor.encrypt(encryptionKey, x0)
 						}
 					}
 				},
@@ -293,7 +328,7 @@ private class HealthElementEncryptor(
 						emptyList()
 					} else {
 						clearEntity.episodes.map { x0 ->
-							encryptor.encrypt(encryptionKey, x0, encodingJson, cryptoService)
+							encryptor.encrypt(encryptionKey, x0)
 						}
 					}
 				},
@@ -303,7 +338,7 @@ private class HealthElementEncryptor(
 						emptyList()
 					} else {
 						clearEntity.careTeam.map { x0 ->
-							encryptor.encrypt(encryptionKey, x0, encodingJson, cryptoService)
+							encryptor.encrypt(encryptionKey, x0)
 						}
 					}
 				},
@@ -311,7 +346,7 @@ private class HealthElementEncryptor(
 			cryptedForeignKeys = clearEntity.cryptedForeignKeys,
 			delegations = clearEntity.delegations,
 			encryptionKeys = clearEntity.encryptionKeys,
-			encryptedSelf = getUpdatedEncryptSelf(encryptionKey, clearEntity, JsonObject(dataToEncrypt), cryptoService),
+			encryptedSelf = getUpdatedEncryptSelf(encryptionKey, clearEntity, JsonObject(dataToEncrypt)),
 			securityMetadata = clearEntity.securityMetadata,
 			extensions = clearEntity.extensions,
 			extensionsVersion = clearEntity.extensionsVersion,

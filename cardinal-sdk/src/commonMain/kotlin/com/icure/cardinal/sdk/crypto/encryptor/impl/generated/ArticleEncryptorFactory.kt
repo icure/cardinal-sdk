@@ -21,20 +21,39 @@ import kotlin.String
 @InternalIcureApi
 internal object ArticleEncryptorFactory : EntityEncryptorFactory<EncryptedArticle, DecryptedArticle> {
 	override val empty: EntityEncryptor<EncryptedArticle, DecryptedArticle> =
-		ArticleEncryptor(
-			created_e = false,
-			modified_e = false,
-			author_e = false,
-			responsible_e = false,
-			tags_e = false,
-			codes_e = false,
-			name_e = false,
-			classification_e = false,
-		)
+		object :
+			EntityEncryptor<EncryptedArticle, DecryptedArticle> {
+			override suspend fun encrypt(
+				encryptionKey: AesKey<AesAlgorithm.CbcWithPkcs7Padding>,
+				clearEntity: DecryptedArticle,
+			): EncryptedArticle =
+				EncryptedArticle(
+					id = clearEntity.id,
+					rev = clearEntity.rev,
+					created = clearEntity.created,
+					modified = clearEntity.modified,
+					author = clearEntity.author,
+					responsible = clearEntity.responsible,
+					tags = clearEntity.tags,
+					codes = clearEntity.codes,
+					endOfLife = clearEntity.endOfLife,
+					deletionDate = clearEntity.deletionDate,
+					name = clearEntity.name,
+					classification = clearEntity.classification,
+					secretForeignKeys = clearEntity.secretForeignKeys,
+					cryptedForeignKeys = clearEntity.cryptedForeignKeys,
+					delegations = clearEntity.delegations,
+					encryptionKeys = clearEntity.encryptionKeys,
+					encryptedSelf = null,
+					securityMetadata = clearEntity.securityMetadata,
+				)
+		}
 
 	override fun create(
 		entityManifestName: String,
 		encryptorFactoryContext: EncryptorFactoryContext,
+		encodingJson: Json,
+		cryptoService: CryptoService,
 	): EntityEncryptor<EncryptedArticle, DecryptedArticle> {
 		val manifest = encryptorFactoryContext.getManifest(entityManifestName)
 		return ArticleEncryptor(
@@ -46,6 +65,8 @@ internal object ArticleEncryptorFactory : EntityEncryptorFactory<EncryptedArticl
 			codes_e = "codes" in manifest.fieldsToEncrypt,
 			name_e = "name" in manifest.fieldsToEncrypt,
 			classification_e = "classification" in manifest.fieldsToEncrypt,
+			encodingJson = encodingJson,
+			cryptoService = cryptoService,
 		)
 	}
 }
@@ -60,12 +81,12 @@ private class ArticleEncryptor(
 	private val codes_e: Boolean,
 	private val name_e: Boolean,
 	private val classification_e: Boolean,
-) : AbstractEntityEncryptor<EncryptedArticle, DecryptedArticle>() {
+	private val encodingJson: Json,
+	cryptoService: CryptoService,
+) : AbstractEntityEncryptor<EncryptedArticle, DecryptedArticle>(cryptoService) {
 	override suspend fun encrypt(
 		encryptionKey: AesKey<AesAlgorithm.CbcWithPkcs7Padding>,
 		clearEntity: DecryptedArticle,
-		encodingJson: Json,
-		cryptoService: CryptoService,
 	): EncryptedArticle {
 		val dataToEncrypt = mutableMapOf<String, JsonElement>()
 		if (created_e && clearEntity.created != null) dataToEncrypt["created"] = encodingJson.encodeToJsonElement(clearEntity.created)
@@ -103,7 +124,7 @@ private class ArticleEncryptor(
 			cryptedForeignKeys = clearEntity.cryptedForeignKeys,
 			delegations = clearEntity.delegations,
 			encryptionKeys = clearEntity.encryptionKeys,
-			encryptedSelf = getUpdatedEncryptSelf(encryptionKey, clearEntity, JsonObject(dataToEncrypt), cryptoService),
+			encryptedSelf = getUpdatedEncryptSelf(encryptionKey, clearEntity, JsonObject(dataToEncrypt)),
 			securityMetadata = clearEntity.securityMetadata,
 		)
 	}

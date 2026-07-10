@@ -21,21 +21,34 @@ import kotlin.String
 @InternalIcureApi
 internal object TelecomEncryptorFactory : EntityEncryptorFactory<EncryptedTelecom, DecryptedTelecom> {
 	override val empty: EntityEncryptor<EncryptedTelecom, DecryptedTelecom> =
-		TelecomEncryptor(
-			telecomType_e = false,
-			telecomNumber_e = false,
-			telecomDescription_e = false,
-		)
+		object :
+			EntityEncryptor<EncryptedTelecom, DecryptedTelecom> {
+			override suspend fun encrypt(
+				encryptionKey: AesKey<AesAlgorithm.CbcWithPkcs7Padding>,
+				clearEntity: DecryptedTelecom,
+			): EncryptedTelecom =
+				EncryptedTelecom(
+					telecomType = clearEntity.telecomType,
+					telecomNumber = clearEntity.telecomNumber,
+					telecomDescription = clearEntity.telecomDescription,
+					encryptedSelf = null,
+					extensions = clearEntity.extensions,
+				)
+		}
 
 	override fun create(
 		entityManifestName: String,
 		encryptorFactoryContext: EncryptorFactoryContext,
+		encodingJson: Json,
+		cryptoService: CryptoService,
 	): EntityEncryptor<EncryptedTelecom, DecryptedTelecom> {
 		val manifest = encryptorFactoryContext.getManifest(entityManifestName)
 		return TelecomEncryptor(
 			telecomType_e = "telecomType" in manifest.fieldsToEncrypt,
 			telecomNumber_e = "telecomNumber" in manifest.fieldsToEncrypt,
 			telecomDescription_e = "telecomDescription" in manifest.fieldsToEncrypt,
+			encodingJson = encodingJson,
+			cryptoService = cryptoService,
 		)
 	}
 }
@@ -45,12 +58,12 @@ private class TelecomEncryptor(
 	private val telecomType_e: Boolean,
 	private val telecomNumber_e: Boolean,
 	private val telecomDescription_e: Boolean,
-) : AbstractEntityEncryptor<EncryptedTelecom, DecryptedTelecom>() {
+	private val encodingJson: Json,
+	cryptoService: CryptoService,
+) : AbstractEntityEncryptor<EncryptedTelecom, DecryptedTelecom>(cryptoService) {
 	override suspend fun encrypt(
 		encryptionKey: AesKey<AesAlgorithm.CbcWithPkcs7Padding>,
 		clearEntity: DecryptedTelecom,
-		encodingJson: Json,
-		cryptoService: CryptoService,
 	): EncryptedTelecom {
 		val dataToEncrypt = mutableMapOf<String, JsonElement>()
 		if (telecomType_e && clearEntity.telecomType != null) {
@@ -75,7 +88,7 @@ private class TelecomEncryptor(
 			telecomType = if (telecomType_e) null else clearEntity.telecomType,
 			telecomNumber = if (telecomNumber_e) null else clearEntity.telecomNumber,
 			telecomDescription = if (telecomDescription_e) null else clearEntity.telecomDescription,
-			encryptedSelf = getUpdatedEncryptSelf(encryptionKey, clearEntity, JsonObject(dataToEncrypt), cryptoService),
+			encryptedSelf = getUpdatedEncryptSelf(encryptionKey, clearEntity, JsonObject(dataToEncrypt)),
 			extensions = clearEntity.extensions,
 		)
 	}

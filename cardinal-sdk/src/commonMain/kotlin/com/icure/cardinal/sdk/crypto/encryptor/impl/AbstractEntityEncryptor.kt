@@ -17,33 +17,19 @@ import kotlinx.serialization.json.JsonObject
 import kotlinx.serialization.json.jsonObject
 
 @InternalIcureApi
-internal abstract class AbstractEntityEncryptor<ENCRYPTED : Encryptable, DECRYPTED : Encryptable> :
-	EntityEncryptor<ENCRYPTED, DECRYPTED> {
+internal abstract class AbstractEntityEncryptor<ENCRYPTED : Encryptable, DECRYPTED : Encryptable>(
+	private val cryptoService: CryptoService,
+) : EntityEncryptor<ENCRYPTED, DECRYPTED> {
 
 	protected suspend fun getUpdatedEncryptSelf(
 		encryptionKey: AesKey<AesAlgorithm.CbcWithPkcs7Padding>,
 		entity: DECRYPTED,
 		updatedEncryptedSelfContent: JsonObject,
-		cryptoService: CryptoService,
-	): Base64String? {
-		if (updatedEncryptedSelfContent.isEmpty()) return null
-		val existingEncryptedSelfContent = entity.encryptedSelf?.let {
-			kotlin.runCatching {
-				val decryptedBytes = cryptoService.aes.decrypt(it.decode(), encryptionKey)
-				Serialization.json.parseToJsonElement(decryptedBytes.decodeToString()).jsonObject
-			}.onFailure { e -> if (e is CancellationException) throw e }.getOrNull()
-		}
-		return if (existingEncryptedSelfContent == updatedEncryptedSelfContent) {
-			entity.encryptedSelf
-		} else {
-			Base64String(
-				base64Encode(
-					cryptoService.aes.encrypt(
-						updatedEncryptedSelfContent.toString().toByteArray(Charsets.UTF_8),
-						encryptionKey
-					)
-				)
-			)
-		}
-	}
+	): Base64String? =
+		EncryptorsHelpers.getUpdatedEncryptSelf(
+			encryptionKey,
+			updatedEncryptedSelfContent,
+			entity.encryptedSelf,
+			cryptoService
+		)
 }
