@@ -33,7 +33,7 @@ internal interface ApiConfiguration : BasicApiConfiguration {
 	override val crypto: InternalCryptoServices
 	val parentJob: Job?
 	val encryptors: RootEntitiesEncryptors
-	val ignoreUnkonwnDecryptedFields: Boolean
+	val encryptedContentJson: Json
 }
 
 @InternalIcureApi
@@ -46,7 +46,7 @@ internal data class ApiConfigurationImpl(
 	override val rawApiConfig: RawApiConfig,
 	val boundGroup: SdkBoundGroup?,
 	override val encryptors: RootEntitiesEncryptors,
-	override val ignoreUnkonwnDecryptedFields: Boolean,
+	override val encryptedContentJson: Json,
 ) : ApiConfiguration {
 	override fun getBoundGroup(coroutineContext: CoroutineContext): SdkBoundGroup? =
 		boundGroup

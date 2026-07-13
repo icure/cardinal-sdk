@@ -7,7 +7,6 @@ import com.icure.cardinal.sdk.crypto.EntityValidationService
 import com.icure.cardinal.sdk.crypto.IncrementalSecurityMetadataDecryptor
 import com.icure.cardinal.sdk.crypto.SecureDelegationsManager
 import com.icure.cardinal.sdk.crypto.UserEncryptionKeysManager
-import com.icure.cardinal.sdk.crypto.encryptor.DecryptedJsonStrictness
 import com.icure.cardinal.sdk.crypto.encryptor.EntityDecryptor
 import com.icure.cardinal.sdk.crypto.encryptor.EntityEncryptor
 import com.icure.cardinal.sdk.crypto.entities.BulkShareResult
@@ -30,7 +29,9 @@ import com.icure.cardinal.sdk.crypto.entities.SimpleDelegateShareOptions
 import com.icure.cardinal.sdk.crypto.entities.SimpleDelegateShareOptionsImpl
 import com.icure.cardinal.sdk.crypto.entities.SimpleShareResult
 import com.icure.cardinal.sdk.crypto.entities.resolve
+import com.icure.cardinal.sdk.customsdk.commons.model.CustomisedModelVersion
 import com.icure.cardinal.sdk.model.EntityReferenceInGroup
+import com.icure.cardinal.sdk.model.base.ExtendableRoot
 import com.icure.cardinal.sdk.model.base.HasEncryptionMetadata
 import com.icure.cardinal.sdk.model.embed.AccessLevel
 import com.icure.cardinal.sdk.model.embed.Encryptable
@@ -40,8 +41,9 @@ import com.icure.cardinal.sdk.model.requests.EntityShareOrMetadataUpdateRequest
 import com.icure.cardinal.sdk.model.requests.RequestedPermission
 import com.icure.cardinal.sdk.model.specializations.HexString
 import com.icure.cardinal.sdk.model.specializations.SecureDelegationKeyString
-import com.icure.cardinal.sdk.utils.EntityEncryptionException
 import com.icure.cardinal.sdk.utils.IllegalEntityException
+import com.icure.cardinal.sdk.utils.UnavailableEncryptionKeyException
+import com.icure.cardinal.sdk.utils.UndecryptableContentException
 import com.icure.cardinal.sdk.utils.generation.JsMapAsObjectArray
 import com.icure.cardinal.sdk.utils.getLogger
 import com.icure.kryptom.crypto.AesAlgorithm
@@ -50,7 +52,6 @@ import com.icure.kryptom.utils.toHexString
 import com.icure.utils.InternalIcureApi
 import kotlinx.coroutines.currentCoroutineContext
 import kotlinx.coroutines.ensureActive
-import kotlinx.serialization.json.Json
 
 @InternalIcureApi
 class EntityEncryptionServiceImpl(
@@ -62,8 +63,6 @@ class EntityEncryptionServiceImpl(
 	private val autoCreateEncryptionKeyForExistingLegacyData: Boolean,
 	private val userEncryptionKeysManager: UserEncryptionKeysManager,
 	private val boundGroup: SdkBoundGroup?,
-	private val json: Json,
-	private val ignoreUnknownDecryptedFields: Boolean,
 ) : EntityEncryptionService, EntityValidationService by EntityValidationServiceImpl() {
 	/*
 	 * TODO should add bulk init encryption metadata?
@@ -282,15 +281,13 @@ class EntityEncryptionServiceImpl(
 			) ?: e
 		}
 		val keyInfo = tryDecryptAndImportAnyEncryptionKey(entityGroupId, updatedEntities, entityType)
-		if (updatedEntities.any { !keyInfo.containsKey(it.id) }) throw EntityEncryptionException(
+		if (updatedEntities.any { !keyInfo.containsKey(it.id) }) throw UnavailableEncryptionKeyException(
 			"Entities ${updatedEntities.map { it.id }} of type ${entityType.id} have no encryption keys, and can't be encrypted; entity may have not been initialized properly."
 		)
 		return updatedEntities.map {
 			entityEncryptor.encrypt(
-				keyInfo.getValue(it.id).key,
-				it,
-				json,
-				cryptoService
+				encryptionKey = keyInfo.getValue(it.id).key,
+				clearEntity = it,
 			)
 		}
 	}
@@ -300,6 +297,7 @@ class EntityEncryptionServiceImpl(
 		encryptedEntities: List<E>,
 		entityType: EntityWithEncryptionMetadataTypeName,
 		entityDecryptor: EntityDecryptor<E, D>,
+		getRootModelVersion: E.() -> Int?
 	): Map<String, Result<D>> where D : HasEncryptionMetadata, E : HasEncryptionMetadata, E : Encryptable, D : Encryptable =
 		incrementalSecurityMetadataDecryptor.doManyIncrementallyDecryptingKeys(
 			entityGroupId,
@@ -311,11 +309,7 @@ class EntityEncryptionServiceImpl(
 				entityDecryptor.decrypt(
 					decryptionKeys = keys.map { it.key },
 					encryptedEntity = entity,
-					patchDecryptedSelfJson = null,
-					// TODO for entities that declare a specific version that is known we should use the loosest possible option
-					decryptedJsonStrictness = if (ignoreUnknownDecryptedFields) DecryptedJsonStrictness.IgnoreUnknownFields else DecryptedJsonStrictness.Strict,
-					encryptedContentDecoder = json,
-					cryptoService = cryptoService
+					customisedModelVersion = entity.getRootModelVersion()?.let { CustomisedModelVersion(entityType, it) }
 				)
 			}
 		}
@@ -325,8 +319,9 @@ class EntityEncryptionServiceImpl(
 		encryptedEntities: List<E>,
 		entityType: EntityWithEncryptionMetadataTypeName,
 		entityDecryptor: EntityDecryptor<E, D>,
+		getRootModelVersion: E.() -> Int?
 	): List<B> where B : HasEncryptionMetadata, B : Encryptable {
-		val decrypted = doDecryptEntities(entityGroupId, encryptedEntities, entityType, entityDecryptor)
+		val decrypted = doDecryptEntities(entityGroupId, encryptedEntities, entityType, entityDecryptor, getRootModelVersion)
 		return encryptedEntities.map { decrypted[it.id]?.getOrNull() ?: it }
 	}
 	override suspend fun <E, D> decryptEntities(
@@ -334,10 +329,11 @@ class EntityEncryptionServiceImpl(
 		encryptedEntities: List<E>,
 		entityType: EntityWithEncryptionMetadataTypeName,
 		entityDecryptor: EntityDecryptor<E, D>,
+		getRootModelVersion: E.() -> Int?
 	): List<D> where D : HasEncryptionMetadata, E : HasEncryptionMetadata, E : Encryptable, D : Encryptable {
-		val decrypted = doDecryptEntities(entityGroupId, encryptedEntities, entityType, entityDecryptor)
+		val decrypted = doDecryptEntities(entityGroupId, encryptedEntities, entityType, entityDecryptor, getRootModelVersion)
 		return encryptedEntities.map {
-			(decrypted[it.id] ?: throw EntityEncryptionException("Couldn't decrypt any encryption key for ${entityType.id}(\"${it.id}\")")).getOrThrow()
+			(decrypted[it.id] ?: throw UnavailableEncryptionKeyException("Couldn't decrypt any encryption key for ${entityType.id}(\"${it.id}\")")).getOrThrow()
 		}
 	}
 
@@ -382,7 +378,7 @@ class EntityEncryptionServiceImpl(
 				kotlin.runCatching {
 					cryptoService.aes.decrypt(content, key.key).takeIf { validator == null || validator(it) }
 				}.getOrNull()
-			}?.let { Result.success(it) } ?: Result.failure(EntityEncryptionException(
+			}?.let { Result.success(it) } ?: Result.failure(UndecryptableContentException(
 				"No valid key found for the decryption of attachment of ${entityType.id}(\"${entity.id}\")"
 			))
 		}
@@ -403,7 +399,7 @@ class EntityEncryptionServiceImpl(
 		content: ByteArray,
 		validator: (suspend (decryptedData: ByteArray) -> Boolean)?
 	): ByteArray = (
-		doDecryptAttachmentOf(entityGroupId, entity, entityType, content, validator) ?: throw EntityEncryptionException(
+		doDecryptAttachmentOf(entityGroupId, entity, entityType, content, validator) ?: throw UnavailableEncryptionKeyException(
 			"No encryption key found for ${entityType.id}(\"${entity.id}\")"
 		)
 	).getOrThrow()

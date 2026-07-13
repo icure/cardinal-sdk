@@ -13,7 +13,6 @@ import com.icure.cardinal.sdk.api.AccessLogInGroupApi
 import com.icure.cardinal.sdk.api.raw.RawAccessLogApi
 import com.icure.cardinal.sdk.api.raw.successBodyOrNull404
 import com.icure.cardinal.sdk.api.raw.successBodyOrThrowRevisionConflict
-import com.icure.cardinal.sdk.crypto.encryptor.impl.generated.AccessLogDecryptor
 import com.icure.cardinal.sdk.crypto.entities.AccessLogShareOptions
 import com.icure.cardinal.sdk.crypto.entities.EntityWithEncryptionMetadataTypeName
 import com.icure.cardinal.sdk.crypto.entities.OwningEntityDetails
@@ -61,8 +60,8 @@ private fun decryptedApiFlavour(
 ): FlavouredApi<EncryptedAccessLog, DecryptedAccessLog> = FlavouredApi.decrypted(
 	config = config,
 	type = EntityWithEncryptionMetadataTypeName.AccessLog,
-	encryptor = config.encryptors.accessLog,
-	decryptor = AccessLogDecryptor,
+	encryptors = config.encryptors.accessLog,
+	getRootModelVersion = EncryptedAccessLog::extensionsVersion,
 )
 
 @InternalIcureApi
@@ -71,8 +70,8 @@ private fun tryAndRecoverApiFlavour(
 ): FlavouredApi<EncryptedAccessLog, AccessLog> = FlavouredApi.tryAndRecover(
 	config = config,
 	type = EntityWithEncryptionMetadataTypeName.AccessLog,
-	encryptor = config.encryptors.accessLog,
-	decryptor = AccessLogDecryptor,
+	encryptors = config.encryptors.accessLog,
+	getRootModelVersion = EncryptedAccessLog::extensionsVersion,
 )
 
 @InternalIcureApi

@@ -11,11 +11,11 @@ internal interface EntityEncryptorFactory<ENCRYPTED : Encryptable, DECRYPTED : E
 	 * Initialize this entity encryptor using a manifest.
 	 *
 	 * Should never be called directly, the creation of encryptors should be delegated to the
-	 * [EntitiesEncryptorInitializer].
+	 * [EntitiesEncryptorsInitializer].
 	 */
 	fun create(
 		entityManifestName: String,
-		encryptorFactoryContext: EncryptorFactoryContext,
+		encryptorsFactoryContext: EntityEncryptorsFactoryContext,
 		encodingJson: Json,
 		cryptoService: CryptoService,
 	): EntityEncryptor<ENCRYPTED, DECRYPTED>

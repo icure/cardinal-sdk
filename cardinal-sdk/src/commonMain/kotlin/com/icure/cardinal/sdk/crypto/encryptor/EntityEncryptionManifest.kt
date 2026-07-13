@@ -1,5 +1,6 @@
 package com.icure.cardinal.sdk.crypto.encryptor;
 
+import com.icure.cardinal.sdk.customsdk.commons.model.CustomisedModelVersion
 import com.icure.cardinal.sdk.utils.intersects
 import com.icure.kryptom.crypto.AesAlgorithm
 import com.icure.kryptom.crypto.AesKey
@@ -21,20 +22,25 @@ data class EntityEncryptionManifest(
 	 * multiple levels are also supported.
 	 */
 	val recursiveEncryption: Map<String, String>,
-//TODO
-//	/**
-//	 * Only applicable to extendable entities, if not null on the manifest of a non-extendable entity throws exception
-//	 * on creation of the encryptor.
-//	 *
-//	 * Takes in input the extensions, encryption key, and crypto service to use for actually performing the encryption.
-//	 */
-//	val extensionsEncryptor: (
-//		(
-//			extensions: JsonObject,
-//			encryptionKey: AesKey<AesAlgorithm.CbcWithPkcs7Padding>,
-//			cryptoService: CryptoService,
-//		) -> JsonObject
-//	)?,
+	/**
+	 * Specifies how to decrypt extensions based on the version of the customized model (valus are keys in
+	 * [EntitiesEncryptionManifests.extensionsManifestsByName])
+	 *
+	 * There are multiple manifests that could be used, and they are indexed by a pair of model version number and type,
+	 * since the model version number is not enough. For example:
+	 * - Patient V1 depends on Address V1, Hcp V1 depends also on Address V1
+	 * - updates something in extensions of Patient -> get Patient V2, but address stays Address V1
+	 * - updates something in Address -> get Address V2, Patient V3 depends on Address V2, Hcp V2 depends on Address V2
+	 * -> Knowing only the version of the root model is not enough: V2 of a root model points to Address V1 if the root
+	 *    model is patient or Address V2 if the root model is Hcp
+	 */
+	val extensionsManifestsByModelVersion: Map<CustomisedModelVersion, String>,
+	/**
+	 * Specifies how to encrypt the extensions, matches the current version of customised model (value is a key of
+	 * [EntitiesEncryptionManifests.extensionsManifestsByName]).
+	 * This is always the same independently of the root model.
+	 */
+	val currentExtensionsManifest: String?
 ) {
 	init {
 		require (!recursiveEncryption.keys.intersects(fieldsToEncrypt)) {

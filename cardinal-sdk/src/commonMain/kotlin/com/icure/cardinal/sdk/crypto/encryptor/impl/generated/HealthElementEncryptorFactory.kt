@@ -1,9 +1,11 @@
 // This file is auto-generated
 package com.icure.cardinal.sdk.crypto.encryptor.`impl`.generated
 
-import com.icure.cardinal.sdk.crypto.encryptor.EncryptorFactoryContext
 import com.icure.cardinal.sdk.crypto.encryptor.EntityEncryptor
 import com.icure.cardinal.sdk.crypto.encryptor.EntityEncryptorFactory
+import com.icure.cardinal.sdk.crypto.encryptor.EntityEncryptorsFactoryContext
+import com.icure.cardinal.sdk.crypto.encryptor.ExtensionsEncryptors
+import com.icure.cardinal.sdk.crypto.encryptor.encryptExtension
 import com.icure.cardinal.sdk.crypto.encryptor.`impl`.AbstractEntityEncryptor
 import com.icure.cardinal.sdk.crypto.encryptor.`impl`.EncryptableFieldConfig
 import com.icure.cardinal.sdk.model.DecryptedHealthElement
@@ -25,6 +27,7 @@ import kotlinx.serialization.json.JsonElement
 import kotlinx.serialization.json.JsonObject
 import kotlinx.serialization.json.encodeToJsonElement
 import kotlin.Boolean
+import kotlin.Lazy
 import kotlin.String
 
 @InternalIcureApi
@@ -89,11 +92,19 @@ internal object HealthElementEncryptorFactory :
 
 	override fun create(
 		entityManifestName: String,
-		encryptorFactoryContext: EncryptorFactoryContext,
+		encryptorsFactoryContext: EntityEncryptorsFactoryContext,
 		encodingJson: Json,
 		cryptoService: CryptoService,
 	): EntityEncryptor<EncryptedHealthElement, DecryptedHealthElement> {
-		val manifest = encryptorFactoryContext.getManifest(entityManifestName)
+		val manifest = encryptorsFactoryContext.getManifest(entityManifestName)
+		val extensionsEncryptor =
+			manifest.currentExtensionsManifest?.let {
+				encryptorsFactoryContext.getExtensionEncryptorsProvider(
+					extensionsManifestName = it,
+					encryptedClass = EncryptedHealthElement::class,
+					decryptedClass = DecryptedHealthElement::class,
+				)
+			}
 		return HealthElementEncryptor(
 			identifiers_e = "identifiers" in manifest.fieldsToEncrypt,
 			created_e = "created" in manifest.fieldsToEncrypt,
@@ -114,7 +125,7 @@ internal object HealthElementEncryptorFactory :
 				} else {
 					manifest.recursiveEncryption["notes"]?.let {
 						EncryptableFieldConfig.Configured(
-							encryptorFactoryContext.getEntityEncryptorProvider(
+							encryptorsFactoryContext.getEntityEncryptorsProvider(
 								entityManifestName = it,
 								encryptedClass = EncryptedAnnotation::class,
 								decryptedClass = DecryptedAnnotation::class,
@@ -133,7 +144,7 @@ internal object HealthElementEncryptorFactory :
 				} else {
 					manifest.recursiveEncryption["plansOfAction"]?.let {
 						EncryptableFieldConfig.Configured(
-							encryptorFactoryContext.getEntityEncryptorProvider(
+							encryptorsFactoryContext.getEntityEncryptorsProvider(
 								entityManifestName = it,
 								encryptedClass = EncryptedPlanOfAction::class,
 								decryptedClass = DecryptedPlanOfAction::class,
@@ -147,7 +158,7 @@ internal object HealthElementEncryptorFactory :
 				} else {
 					manifest.recursiveEncryption["episodes"]?.let {
 						EncryptableFieldConfig.Configured(
-							encryptorFactoryContext.getEntityEncryptorProvider(
+							encryptorsFactoryContext.getEntityEncryptorsProvider(
 								entityManifestName = it,
 								encryptedClass = EncryptedEpisode::class,
 								decryptedClass = DecryptedEpisode::class,
@@ -161,7 +172,7 @@ internal object HealthElementEncryptorFactory :
 				} else {
 					manifest.recursiveEncryption["careTeam"]?.let {
 						EncryptableFieldConfig.Configured(
-							encryptorFactoryContext.getEntityEncryptorProvider(
+							encryptorsFactoryContext.getEntityEncryptorsProvider(
 								entityManifestName = it,
 								encryptedClass = EncryptedCareTeamMember::class,
 								decryptedClass = DecryptedCareTeamMember::class,
@@ -169,6 +180,7 @@ internal object HealthElementEncryptorFactory :
 						)
 					} ?: EncryptableFieldConfig.None(CareTeamMemberEncryptorFactory)
 				},
+			extensionsEncryptor = extensionsEncryptor,
 			encodingJson = encodingJson,
 			cryptoService = cryptoService,
 		)
@@ -199,6 +211,7 @@ private class HealthElementEncryptor(
 	private val plansOfAction_e: EncryptableFieldConfig<EncryptedPlanOfAction, DecryptedPlanOfAction>,
 	private val episodes_e: EncryptableFieldConfig<EncryptedEpisode, DecryptedEpisode>,
 	private val careTeam_e: EncryptableFieldConfig<EncryptedCareTeamMember, DecryptedCareTeamMember>,
+	private val extensionsEncryptor: Lazy<ExtensionsEncryptors>?,
 	private val encodingJson: Json,
 	cryptoService: CryptoService,
 ) : AbstractEntityEncryptor<EncryptedHealthElement, DecryptedHealthElement>(cryptoService) {
@@ -348,7 +361,7 @@ private class HealthElementEncryptor(
 			encryptionKeys = clearEntity.encryptionKeys,
 			encryptedSelf = getUpdatedEncryptSelf(encryptionKey, clearEntity, JsonObject(dataToEncrypt)),
 			securityMetadata = clearEntity.securityMetadata,
-			extensions = clearEntity.extensions,
+			extensions = extensionsEncryptor?.value?.encryptExtension(encryptionKey, clearEntity.extensions) ?: clearEntity.extensions,
 			extensionsVersion = clearEntity.extensionsVersion,
 		)
 	}

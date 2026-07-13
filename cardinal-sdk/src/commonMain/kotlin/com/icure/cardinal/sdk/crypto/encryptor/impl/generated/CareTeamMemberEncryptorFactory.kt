@@ -1,9 +1,11 @@
 // This file is auto-generated
 package com.icure.cardinal.sdk.crypto.encryptor.`impl`.generated
 
-import com.icure.cardinal.sdk.crypto.encryptor.EncryptorFactoryContext
 import com.icure.cardinal.sdk.crypto.encryptor.EntityEncryptor
 import com.icure.cardinal.sdk.crypto.encryptor.EntityEncryptorFactory
+import com.icure.cardinal.sdk.crypto.encryptor.EntityEncryptorsFactoryContext
+import com.icure.cardinal.sdk.crypto.encryptor.ExtensionsEncryptors
+import com.icure.cardinal.sdk.crypto.encryptor.encryptExtension
 import com.icure.cardinal.sdk.crypto.encryptor.`impl`.AbstractEntityEncryptor
 import com.icure.cardinal.sdk.model.embed.DecryptedCareTeamMember
 import com.icure.cardinal.sdk.model.embed.EncryptedCareTeamMember
@@ -16,6 +18,7 @@ import kotlinx.serialization.json.JsonElement
 import kotlinx.serialization.json.JsonObject
 import kotlinx.serialization.json.encodeToJsonElement
 import kotlin.Boolean
+import kotlin.Lazy
 import kotlin.String
 
 @InternalIcureApi
@@ -40,15 +43,24 @@ internal object CareTeamMemberEncryptorFactory :
 
 	override fun create(
 		entityManifestName: String,
-		encryptorFactoryContext: EncryptorFactoryContext,
+		encryptorsFactoryContext: EntityEncryptorsFactoryContext,
 		encodingJson: Json,
 		cryptoService: CryptoService,
 	): EntityEncryptor<EncryptedCareTeamMember, DecryptedCareTeamMember> {
-		val manifest = encryptorFactoryContext.getManifest(entityManifestName)
+		val manifest = encryptorsFactoryContext.getManifest(entityManifestName)
+		val extensionsEncryptor =
+			manifest.currentExtensionsManifest?.let {
+				encryptorsFactoryContext.getExtensionEncryptorsProvider(
+					extensionsManifestName = it,
+					encryptedClass = EncryptedCareTeamMember::class,
+					decryptedClass = DecryptedCareTeamMember::class,
+				)
+			}
 		return CareTeamMemberEncryptor(
 			careTeamMemberType_e = "careTeamMemberType" in manifest.fieldsToEncrypt,
 			healthcarePartyId_e = "healthcarePartyId" in manifest.fieldsToEncrypt,
 			quality_e = "quality" in manifest.fieldsToEncrypt,
+			extensionsEncryptor = extensionsEncryptor,
 			encodingJson = encodingJson,
 			cryptoService = cryptoService,
 		)
@@ -60,6 +72,7 @@ private class CareTeamMemberEncryptor(
 	private val careTeamMemberType_e: Boolean,
 	private val healthcarePartyId_e: Boolean,
 	private val quality_e: Boolean,
+	private val extensionsEncryptor: Lazy<ExtensionsEncryptors>?,
 	private val encodingJson: Json,
 	cryptoService: CryptoService,
 ) : AbstractEntityEncryptor<EncryptedCareTeamMember, DecryptedCareTeamMember>(cryptoService) {
@@ -87,7 +100,7 @@ private class CareTeamMemberEncryptor(
 			healthcarePartyId = if (healthcarePartyId_e) null else clearEntity.healthcarePartyId,
 			quality = if (quality_e) null else clearEntity.quality,
 			encryptedSelf = getUpdatedEncryptSelf(encryptionKey, clearEntity, JsonObject(dataToEncrypt)),
-			extensions = clearEntity.extensions,
+			extensions = extensionsEncryptor?.value?.encryptExtension(encryptionKey, clearEntity.extensions) ?: clearEntity.extensions,
 		)
 	}
 }

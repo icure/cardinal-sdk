@@ -23,10 +23,75 @@ class ResourceNotFoundException(
 class IllegalEntityException(message: String, cause: Throwable? = null) : Exception(message, cause)
 
 /**
- * Signals that an error occurred during the encryption/decryption (e.g. can't find a key) or encryption validation (e.g. something that
- * should be encrypted according to the manifest is not encrypted) of an entity.
+ * A common supertype for errors that occurred during the decryption, encryption, or encryption validation
+ * of an entity.
+ * @param message a human-readable message describing the error.
+ * @param cause if this was triggered by another error that error (may provide additional details).
  */
-class EntityEncryptionException(message: String, cause: Throwable? = null) : Exception(message, cause)
+sealed class EntityEncryptionException(
+	message: String,
+	cause: Throwable? = null
+) : Exception(
+	message,
+	cause
+)
+
+/**
+ * The entity or related content can't be decrypted or encrypted because this instance of the SDK can't access the
+ * encryption key of the entity.
+ *
+ * This can happen, for example, if:
+ * - The entity was not shared with the user of this cardinal SDK
+ * - This instance of cardinal SDK does not have access to the private key of the user that is required for the
+ *   decryption of the entity.
+ */
+class UnavailableEncryptionKeyException(
+	message: String,
+	cause: Throwable? = null
+) : EntityEncryptionException(
+	message,
+	cause
+)
+
+/**
+ * This instance of the SDK is able to decrypt one or more keys of the entity, but the entity contains at least
+ * some encrypted content that can't be decrypted using the provided key.
+ *
+ * This could happen for example if:
+ * - The entity is a result of a merge between different entities, and there are now multiple encryption keys
+ *   associated to this entity. The user does not have access to all the keys and can't decrypt at least a
+ *   part of the entity.
+ * - A user intentionally created a new entity with invalid encrypted content
+ * - A user with write access to an existing entity intentionally replaced the encrypted content with invalid
+ *   data.
+ */
+class UndecryptableContentException(
+	message: String,
+	cause: Throwable? = null
+) : EntityEncryptionException(
+	message,
+	cause
+)
+
+
+/**
+ * This instance of the SDK is able to decrypt and parse the encrypted structured content of the entity, but the
+ * decrypted content does not match the expected structure, for example:
+ * - The decrypted content contains data fields that the SDK does not know of
+ * - The decrypted content contains a known data field, but the type is not what the SDK expects, or the SDK can't
+ *   decode to the known type.
+ *
+ * This could happen for example if:
+ * - The entity was created with the legacy iCure SKD (predating-cardinal) and the encrypted content was not migrated
+ * - A user intentionally created a new entity or modified an existing entity with invalid encrypted content
+ */
+class UnexpectedEncryptedContentException(
+	message: String,
+	cause: Throwable? = null
+) : EntityEncryptionException(
+	message,
+	cause
+)
 
 class RequestStatusException(
 	val requestMethod: HttpMethod,
@@ -58,21 +123,6 @@ inline fun ensure(value: Boolean, lazyMessage: () -> String) {
 		throw InternalCardinalException(lazyMessage())
 	}
 }
-
-/**
- * Checks an invariant at runtime. If value is not true there is an implementation error on iCure's side.
- */
-@OptIn(ExperimentalContracts::class)
-@InternalIcureApi
-inline fun ensureEncryption(value: Boolean, lazyMessage: () -> String) {
-	contract {
-		returns() implies value
-	}
-	if (!value) {
-		throw EntityEncryptionException(lazyMessage())
-	}
-}
-
 
 @OptIn(ExperimentalContracts::class)
 @InternalIcureApi

@@ -1,9 +1,9 @@
 // This file is auto-generated
 package com.icure.cardinal.sdk.crypto.encryptor.`impl`.generated
 
-import com.icure.cardinal.sdk.crypto.encryptor.EncryptorFactoryContext
 import com.icure.cardinal.sdk.crypto.encryptor.EntityEncryptor
 import com.icure.cardinal.sdk.crypto.encryptor.EntityEncryptorFactory
+import com.icure.cardinal.sdk.crypto.encryptor.EntityEncryptorsFactoryContext
 import com.icure.cardinal.sdk.crypto.encryptor.`impl`.AbstractEntityEncryptor
 import com.icure.cardinal.sdk.model.embed.DecryptedSchoolingInfo
 import com.icure.cardinal.sdk.model.embed.EncryptedSchoolingInfo
@@ -39,11 +39,14 @@ internal object SchoolingInfoEncryptorFactory :
 
 	override fun create(
 		entityManifestName: String,
-		encryptorFactoryContext: EncryptorFactoryContext,
+		encryptorsFactoryContext: EntityEncryptorsFactoryContext,
 		encodingJson: Json,
 		cryptoService: CryptoService,
 	): EntityEncryptor<EncryptedSchoolingInfo, DecryptedSchoolingInfo> {
-		val manifest = encryptorFactoryContext.getManifest(entityManifestName)
+		val manifest = encryptorsFactoryContext.getManifest(entityManifestName)
+		require(manifest.currentExtensionsManifest == null) {
+			"SchoolingInfo is not Extendable and does not support extensions encryption, but its manifest defines a currentExtensionsManifest."
+		}
 		return SchoolingInfoEncryptor(
 			startDate_e = "startDate" in manifest.fieldsToEncrypt,
 			endDate_e = "endDate" in manifest.fieldsToEncrypt,

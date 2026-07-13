@@ -1,9 +1,11 @@
 // This file is auto-generated
 package com.icure.cardinal.sdk.crypto.encryptor.`impl`.generated
 
-import com.icure.cardinal.sdk.crypto.encryptor.EncryptorFactoryContext
 import com.icure.cardinal.sdk.crypto.encryptor.EntityEncryptor
 import com.icure.cardinal.sdk.crypto.encryptor.EntityEncryptorFactory
+import com.icure.cardinal.sdk.crypto.encryptor.EntityEncryptorsFactoryContext
+import com.icure.cardinal.sdk.crypto.encryptor.ExtensionsEncryptors
+import com.icure.cardinal.sdk.crypto.encryptor.encryptExtension
 import com.icure.cardinal.sdk.crypto.encryptor.`impl`.AbstractEntityEncryptor
 import com.icure.cardinal.sdk.crypto.encryptor.`impl`.EncryptableFieldConfig
 import com.icure.cardinal.sdk.model.DecryptedContact
@@ -25,6 +27,7 @@ import kotlinx.serialization.json.JsonElement
 import kotlinx.serialization.json.JsonObject
 import kotlinx.serialization.json.encodeToJsonElement
 import kotlin.Boolean
+import kotlin.Lazy
 import kotlin.String
 
 @InternalIcureApi
@@ -84,11 +87,19 @@ internal object ContactEncryptorFactory : EntityEncryptorFactory<EncryptedContac
 
 	override fun create(
 		entityManifestName: String,
-		encryptorFactoryContext: EncryptorFactoryContext,
+		encryptorsFactoryContext: EntityEncryptorsFactoryContext,
 		encodingJson: Json,
 		cryptoService: CryptoService,
 	): EntityEncryptor<EncryptedContact, DecryptedContact> {
-		val manifest = encryptorFactoryContext.getManifest(entityManifestName)
+		val manifest = encryptorsFactoryContext.getManifest(entityManifestName)
+		val extensionsEncryptor =
+			manifest.currentExtensionsManifest?.let {
+				encryptorsFactoryContext.getExtensionEncryptorsProvider(
+					extensionsManifestName = it,
+					encryptedClass = EncryptedContact::class,
+					decryptedClass = DecryptedContact::class,
+				)
+			}
 		return ContactEncryptor(
 			created_e = "created" in manifest.fieldsToEncrypt,
 			modified_e = "modified" in manifest.fieldsToEncrypt,
@@ -109,7 +120,7 @@ internal object ContactEncryptorFactory : EntityEncryptorFactory<EncryptedContac
 				} else {
 					manifest.recursiveEncryption["encounterLocation"]?.let {
 						EncryptableFieldConfig.Configured(
-							encryptorFactoryContext.getEntityEncryptorProvider(
+							encryptorsFactoryContext.getEntityEncryptorsProvider(
 								entityManifestName = it,
 								encryptedClass = EncryptedAddress::class,
 								decryptedClass = DecryptedAddress::class,
@@ -123,7 +134,7 @@ internal object ContactEncryptorFactory : EntityEncryptorFactory<EncryptedContac
 				} else {
 					manifest.recursiveEncryption["subContacts"]?.let {
 						EncryptableFieldConfig.Configured(
-							encryptorFactoryContext.getEntityEncryptorProvider(
+							encryptorsFactoryContext.getEntityEncryptorsProvider(
 								entityManifestName = it,
 								encryptedClass = EncryptedSubContact::class,
 								decryptedClass = DecryptedSubContact::class,
@@ -137,7 +148,7 @@ internal object ContactEncryptorFactory : EntityEncryptorFactory<EncryptedContac
 				} else {
 					manifest.recursiveEncryption["services"]?.let {
 						EncryptableFieldConfig.Configured(
-							encryptorFactoryContext.getEntityEncryptorProvider(
+							encryptorsFactoryContext.getEntityEncryptorsProvider(
 								entityManifestName = it,
 								encryptedClass = EncryptedService::class,
 								decryptedClass = DecryptedService::class,
@@ -152,7 +163,7 @@ internal object ContactEncryptorFactory : EntityEncryptorFactory<EncryptedContac
 				} else {
 					manifest.recursiveEncryption["notes"]?.let {
 						EncryptableFieldConfig.Configured(
-							encryptorFactoryContext.getEntityEncryptorProvider(
+							encryptorsFactoryContext.getEntityEncryptorsProvider(
 								entityManifestName = it,
 								encryptedClass = EncryptedAnnotation::class,
 								decryptedClass = DecryptedAnnotation::class,
@@ -160,6 +171,7 @@ internal object ContactEncryptorFactory : EntityEncryptorFactory<EncryptedContac
 						)
 					} ?: EncryptableFieldConfig.None(AnnotationEncryptorFactory)
 				},
+			extensionsEncryptor = extensionsEncryptor,
 			encodingJson = encodingJson,
 			cryptoService = cryptoService,
 		)
@@ -186,6 +198,7 @@ private class ContactEncryptor(
 	private val services_e: EncryptableFieldConfig<EncryptedService, DecryptedService>,
 	private val participantList_e: Boolean,
 	private val notes_e: EncryptableFieldConfig<EncryptedAnnotation, DecryptedAnnotation>,
+	private val extensionsEncryptor: Lazy<ExtensionsEncryptors>?,
 	private val encodingJson: Json,
 	cryptoService: CryptoService,
 ) : AbstractEntityEncryptor<EncryptedContact, DecryptedContact>(cryptoService) {
@@ -322,7 +335,7 @@ private class ContactEncryptor(
 						}
 					}
 				},
-			extensions = clearEntity.extensions,
+			extensions = extensionsEncryptor?.value?.encryptExtension(encryptionKey, clearEntity.extensions) ?: clearEntity.extensions,
 			extensionsVersion = clearEntity.extensionsVersion,
 		)
 	}

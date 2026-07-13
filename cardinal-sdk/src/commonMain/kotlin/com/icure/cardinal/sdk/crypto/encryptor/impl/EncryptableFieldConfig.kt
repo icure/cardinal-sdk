@@ -2,6 +2,7 @@ package com.icure.cardinal.sdk.crypto.encryptor.impl
 
 import com.icure.cardinal.sdk.crypto.encryptor.EntityEncryptor
 import com.icure.cardinal.sdk.crypto.encryptor.EntityEncryptorFactory
+import com.icure.cardinal.sdk.crypto.encryptor.EntityEncryptors
 import com.icure.cardinal.sdk.model.embed.Encryptable
 import com.icure.utils.InternalIcureApi
 
@@ -29,10 +30,10 @@ internal sealed interface EncryptableFieldConfig<ENCRYPTED : Encryptable, DECRYP
 	}
 
 	data class Configured<ENCRYPTED : Encryptable, DECRYPTED : Encryptable>(
-		private val configuration: Lazy<EntityEncryptor<ENCRYPTED, DECRYPTED>>
+		private val configuration: Lazy<EntityEncryptors<ENCRYPTED, DECRYPTED>>
 	) : EncryptableFieldConfig<ENCRYPTED, DECRYPTED> {
 		override val encryptor: EntityEncryptor<ENCRYPTED, DECRYPTED>
-			get() = configuration.value
+			get() = configuration.value.encryptor
 		override val fullEncryption: Boolean get() = false
 	}
 

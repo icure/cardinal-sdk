@@ -1,9 +1,11 @@
 // This file is auto-generated
 package com.icure.cardinal.sdk.crypto.encryptor.`impl`.generated
 
-import com.icure.cardinal.sdk.crypto.encryptor.EncryptorFactoryContext
 import com.icure.cardinal.sdk.crypto.encryptor.EntityEncryptor
 import com.icure.cardinal.sdk.crypto.encryptor.EntityEncryptorFactory
+import com.icure.cardinal.sdk.crypto.encryptor.EntityEncryptorsFactoryContext
+import com.icure.cardinal.sdk.crypto.encryptor.ExtensionsEncryptors
+import com.icure.cardinal.sdk.crypto.encryptor.encryptExtension
 import com.icure.cardinal.sdk.crypto.encryptor.`impl`.AbstractEntityEncryptor
 import com.icure.cardinal.sdk.crypto.encryptor.`impl`.EncryptableFieldConfig
 import com.icure.cardinal.sdk.model.embed.DecryptedAddress
@@ -21,6 +23,7 @@ import kotlinx.serialization.json.JsonElement
 import kotlinx.serialization.json.JsonObject
 import kotlinx.serialization.json.encodeToJsonElement
 import kotlin.Boolean
+import kotlin.Lazy
 import kotlin.String
 
 @InternalIcureApi
@@ -61,11 +64,19 @@ internal object AddressEncryptorFactory : EntityEncryptorFactory<EncryptedAddres
 
 	override fun create(
 		entityManifestName: String,
-		encryptorFactoryContext: EncryptorFactoryContext,
+		encryptorsFactoryContext: EntityEncryptorsFactoryContext,
 		encodingJson: Json,
 		cryptoService: CryptoService,
 	): EntityEncryptor<EncryptedAddress, DecryptedAddress> {
-		val manifest = encryptorFactoryContext.getManifest(entityManifestName)
+		val manifest = encryptorsFactoryContext.getManifest(entityManifestName)
+		val extensionsEncryptor =
+			manifest.currentExtensionsManifest?.let {
+				encryptorsFactoryContext.getExtensionEncryptorsProvider(
+					extensionsManifestName = it,
+					encryptedClass = EncryptedAddress::class,
+					decryptedClass = DecryptedAddress::class,
+				)
+			}
 		return AddressEncryptor(
 			tags_e = "tags" in manifest.fieldsToEncrypt,
 			codes_e = "codes" in manifest.fieldsToEncrypt,
@@ -86,7 +97,7 @@ internal object AddressEncryptorFactory : EntityEncryptorFactory<EncryptedAddres
 				} else {
 					manifest.recursiveEncryption["notes"]?.let {
 						EncryptableFieldConfig.Configured(
-							encryptorFactoryContext.getEntityEncryptorProvider(
+							encryptorsFactoryContext.getEntityEncryptorsProvider(
 								entityManifestName = it,
 								encryptedClass = EncryptedAnnotation::class,
 								decryptedClass = DecryptedAnnotation::class,
@@ -100,7 +111,7 @@ internal object AddressEncryptorFactory : EntityEncryptorFactory<EncryptedAddres
 				} else {
 					manifest.recursiveEncryption["telecoms"]?.let {
 						EncryptableFieldConfig.Configured(
-							encryptorFactoryContext.getEntityEncryptorProvider(
+							encryptorsFactoryContext.getEntityEncryptorsProvider(
 								entityManifestName = it,
 								encryptedClass = EncryptedTelecom::class,
 								decryptedClass = DecryptedTelecom::class,
@@ -108,6 +119,7 @@ internal object AddressEncryptorFactory : EntityEncryptorFactory<EncryptedAddres
 						)
 					} ?: EncryptableFieldConfig.None(TelecomEncryptorFactory)
 				},
+			extensionsEncryptor = extensionsEncryptor,
 			encodingJson = encodingJson,
 			cryptoService = cryptoService,
 		)
@@ -131,6 +143,7 @@ private class AddressEncryptor(
 	private val note_e: Boolean,
 	private val notes_e: EncryptableFieldConfig<EncryptedAnnotation, DecryptedAnnotation>,
 	private val telecoms_e: EncryptableFieldConfig<EncryptedTelecom, DecryptedTelecom>,
+	private val extensionsEncryptor: Lazy<ExtensionsEncryptors>?,
 	private val encodingJson: Json,
 	cryptoService: CryptoService,
 ) : AbstractEntityEncryptor<EncryptedAddress, DecryptedAddress>(cryptoService) {
@@ -214,7 +227,7 @@ private class AddressEncryptor(
 					}
 				},
 			encryptedSelf = getUpdatedEncryptSelf(encryptionKey, clearEntity, JsonObject(dataToEncrypt)),
-			extensions = clearEntity.extensions,
+			extensions = extensionsEncryptor?.value?.encryptExtension(encryptionKey, clearEntity.extensions) ?: clearEntity.extensions,
 		)
 	}
 }

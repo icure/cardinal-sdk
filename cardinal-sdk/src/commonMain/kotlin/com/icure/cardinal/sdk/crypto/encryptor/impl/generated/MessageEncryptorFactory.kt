@@ -1,9 +1,11 @@
 // This file is auto-generated
 package com.icure.cardinal.sdk.crypto.encryptor.`impl`.generated
 
-import com.icure.cardinal.sdk.crypto.encryptor.EncryptorFactoryContext
 import com.icure.cardinal.sdk.crypto.encryptor.EntityEncryptor
 import com.icure.cardinal.sdk.crypto.encryptor.EntityEncryptorFactory
+import com.icure.cardinal.sdk.crypto.encryptor.EntityEncryptorsFactoryContext
+import com.icure.cardinal.sdk.crypto.encryptor.ExtensionsEncryptors
+import com.icure.cardinal.sdk.crypto.encryptor.encryptExtension
 import com.icure.cardinal.sdk.crypto.encryptor.`impl`.AbstractEntityEncryptor
 import com.icure.cardinal.sdk.crypto.encryptor.`impl`.EncryptableFieldConfig
 import com.icure.cardinal.sdk.model.DecryptedMessage
@@ -19,6 +21,7 @@ import kotlinx.serialization.json.JsonElement
 import kotlinx.serialization.json.JsonObject
 import kotlinx.serialization.json.encodeToJsonElement
 import kotlin.Boolean
+import kotlin.Lazy
 import kotlin.String
 
 @InternalIcureApi
@@ -71,11 +74,19 @@ internal object MessageEncryptorFactory : EntityEncryptorFactory<EncryptedMessag
 
 	override fun create(
 		entityManifestName: String,
-		encryptorFactoryContext: EncryptorFactoryContext,
+		encryptorsFactoryContext: EntityEncryptorsFactoryContext,
 		encodingJson: Json,
 		cryptoService: CryptoService,
 	): EntityEncryptor<EncryptedMessage, DecryptedMessage> {
-		val manifest = encryptorFactoryContext.getManifest(entityManifestName)
+		val manifest = encryptorsFactoryContext.getManifest(entityManifestName)
+		val extensionsEncryptor =
+			manifest.currentExtensionsManifest?.let {
+				encryptorsFactoryContext.getExtensionEncryptorsProvider(
+					extensionsManifestName = it,
+					encryptedClass = EncryptedMessage::class,
+					decryptedClass = DecryptedMessage::class,
+				)
+			}
 		return MessageEncryptor(
 			created_e = "created" in manifest.fieldsToEncrypt,
 			modified_e = "modified" in manifest.fieldsToEncrypt,
@@ -103,7 +114,7 @@ internal object MessageEncryptorFactory : EntityEncryptorFactory<EncryptedMessag
 				} else {
 					manifest.recursiveEncryption["properties"]?.let {
 						EncryptableFieldConfig.Configured(
-							encryptorFactoryContext.getEntityEncryptorProvider(
+							encryptorsFactoryContext.getEntityEncryptorsProvider(
 								entityManifestName = it,
 								encryptedClass = EncryptedPropertyStub::class,
 								decryptedClass = DecryptedPropertyStub::class,
@@ -111,6 +122,7 @@ internal object MessageEncryptorFactory : EntityEncryptorFactory<EncryptedMessag
 						)
 					} ?: EncryptableFieldConfig.None(PropertyStubEncryptorFactory)
 				},
+			extensionsEncryptor = extensionsEncryptor,
 			encodingJson = encodingJson,
 			cryptoService = cryptoService,
 		)
@@ -140,6 +152,7 @@ private class MessageEncryptor(
 	private val invoiceIds_e: Boolean,
 	private val parentId_e: Boolean,
 	private val properties_e: EncryptableFieldConfig<EncryptedPropertyStub, DecryptedPropertyStub>,
+	private val extensionsEncryptor: Lazy<ExtensionsEncryptors>?,
 	private val encodingJson: Json,
 	cryptoService: CryptoService,
 ) : AbstractEntityEncryptor<EncryptedMessage, DecryptedMessage>(cryptoService) {
@@ -259,7 +272,7 @@ private class MessageEncryptor(
 			encryptionKeys = clearEntity.encryptionKeys,
 			encryptedSelf = getUpdatedEncryptSelf(encryptionKey, clearEntity, JsonObject(dataToEncrypt)),
 			securityMetadata = clearEntity.securityMetadata,
-			extensions = clearEntity.extensions,
+			extensions = extensionsEncryptor?.value?.encryptExtension(encryptionKey, clearEntity.extensions) ?: clearEntity.extensions,
 			extensionsVersion = clearEntity.extensionsVersion,
 		)
 	}

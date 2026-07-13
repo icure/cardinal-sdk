@@ -97,6 +97,7 @@ import com.icure.cardinal.sdk.options.configuredJsonOrDefault
 import com.icure.cardinal.sdk.options.getAuthProvider
 import com.icure.cardinal.sdk.options.getGroupAndAuthProvider
 import com.icure.cardinal.sdk.options.ignoreUnknownFieldsOrDefault
+import com.icure.cardinal.sdk.options.unversionedEntitiesDecryptedJsonStrictnessOrDefault
 import com.icure.cardinal.sdk.storage.StorageFacade
 import com.icure.cardinal.sdk.utils.ensureNonNull
 import com.icure.cardinal.sdk.utils.retryWithDelays
@@ -639,7 +640,10 @@ private fun makeInitializedSdkOptions(
 	requestRetryConfiguration = base.requestRetryConfiguration,
 	keyStorage = full.keyStorage,
 	baseStorage = storage,
-	ignoreUnknownFields = base.ignoreUnknownFields,
+	unversionedEntitiesDecryptedJsonStrictness = unversionedEntitiesDecryptedJsonStrictnessOrDefault(
+		full.unversionedEntitiesDecryptedJsonStrictness,
+		base.ignoreUnknownFields
+	)
 )
 
 @InternalIcureApi

@@ -1,8 +1,7 @@
 package com.icure.cardinal.sdk.api.impl
 
 import com.icure.cardinal.sdk.crypto.EntityEncryptionService
-import com.icure.cardinal.sdk.crypto.encryptor.EntityDecryptor
-import com.icure.cardinal.sdk.crypto.encryptor.EntityEncryptor
+import com.icure.cardinal.sdk.crypto.encryptor.EntityEncryptors
 import com.icure.cardinal.sdk.crypto.entities.EntityWithEncryptionMetadataTypeName
 import com.icure.cardinal.sdk.model.PaginatedList
 import com.icure.cardinal.sdk.model.base.HasEncryptionMetadata
@@ -60,9 +59,9 @@ internal interface FlavouredApi<EncryptedEntity : HasEncryptionMetadata, Flavour
 		@InternalIcureApi
 		fun <EncryptedEntity, DecryptedEntity> decrypted(
 			config: ApiConfiguration,
-			encryptor: EntityEncryptor<EncryptedEntity, DecryptedEntity>,
-			decryptor: EntityDecryptor<EncryptedEntity, DecryptedEntity>,
+			encryptors: EntityEncryptors<EncryptedEntity, DecryptedEntity>,
 			type: EntityWithEncryptionMetadataTypeName,
+			getRootModelVersion: EncryptedEntity.() -> Int?,
 		) where EncryptedEntity: HasEncryptionMetadata,
 				DecryptedEntity: HasEncryptionMetadata,
 				EncryptedEntity: Encryptable,
@@ -80,7 +79,7 @@ internal interface FlavouredApi<EncryptedEntity : HasEncryptionMetadata, Flavour
 					entitiesGroupId,
 					entities,
 					type,
-					encryptor,
+					encryptors.encryptor,
 				)
 			}
 
@@ -92,7 +91,8 @@ internal interface FlavouredApi<EncryptedEntity : HasEncryptionMetadata, Flavour
 					entitiesGroupId,
 					entities,
 					type,
-					decryptor,
+					encryptors.decryptor,
+					getRootModelVersion
 				)
 		}
 
@@ -117,9 +117,9 @@ internal interface FlavouredApi<EncryptedEntity : HasEncryptionMetadata, Flavour
 		@InternalIcureApi
 		inline fun <Base, reified EncryptedEntity : Base, reified DecryptedEntity : Base> tryAndRecover(
 			config: ApiConfiguration,
-			encryptor: EntityEncryptor<EncryptedEntity, DecryptedEntity>,
-			decryptor: EntityDecryptor<EncryptedEntity, DecryptedEntity>,
+			encryptors: EntityEncryptors<EncryptedEntity, DecryptedEntity>,
 			type: EntityWithEncryptionMetadataTypeName,
+			noinline getRootModelVersion: EncryptedEntity.() -> Int?,
 		) where Base: HasEncryptionMetadata, Base: Encryptable = object : FlavouredApi<EncryptedEntity, Base> {
 			override suspend fun validateAndMaybeEncrypt(
 				entitiesGroupId: String?,
@@ -129,7 +129,7 @@ internal interface FlavouredApi<EncryptedEntity : HasEncryptionMetadata, Flavour
 					entitiesGroupId = entitiesGroupId,
 					entities = entities,
 					entitiesType = type,
-					encryptor = encryptor,
+					encryptors = encryptors,
 				)
 
 			override suspend fun maybeDecrypt(
@@ -140,7 +140,8 @@ internal interface FlavouredApi<EncryptedEntity : HasEncryptionMetadata, Flavour
 					entitiesGroupId,
 					entities,
 					type,
-					decryptor,
+					encryptors.decryptor,
+					getRootModelVersion
 				)
 		}
 	}
@@ -168,7 +169,7 @@ internal suspend inline fun <Base, reified EncryptedEntity : Base, reified Decry
 	entitiesGroupId: String?,
 	entities: List<Base>,
 	entitiesType: EntityWithEncryptionMetadataTypeName,
-	encryptor: EntityEncryptor<EncryptedEntity, DecryptedEntity>,
+	encryptors: EntityEncryptors<EncryptedEntity, DecryptedEntity>,
 ): List<EncryptedEntity> where Base : HasEncryptionMetadata, Base : Encryptable =
 	validateOrEncryptEntities<Base, EncryptedEntity, DecryptedEntity>(
 		entities = entities,
@@ -182,7 +183,7 @@ internal suspend inline fun <Base, reified EncryptedEntity : Base, reified Decry
 				entitiesGroupId,
 				decryptedEntities,
 				entitiesType,
-				encryptor,
+				encryptors.encryptor,
 			)
 		},
 		doValidate = {

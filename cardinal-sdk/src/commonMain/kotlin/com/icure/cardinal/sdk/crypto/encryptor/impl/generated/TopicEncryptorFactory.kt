@@ -1,9 +1,11 @@
 // This file is auto-generated
 package com.icure.cardinal.sdk.crypto.encryptor.`impl`.generated
 
-import com.icure.cardinal.sdk.crypto.encryptor.EncryptorFactoryContext
 import com.icure.cardinal.sdk.crypto.encryptor.EntityEncryptor
 import com.icure.cardinal.sdk.crypto.encryptor.EntityEncryptorFactory
+import com.icure.cardinal.sdk.crypto.encryptor.EntityEncryptorsFactoryContext
+import com.icure.cardinal.sdk.crypto.encryptor.ExtensionsEncryptors
+import com.icure.cardinal.sdk.crypto.encryptor.encryptExtension
 import com.icure.cardinal.sdk.crypto.encryptor.`impl`.AbstractEntityEncryptor
 import com.icure.cardinal.sdk.model.DecryptedTopic
 import com.icure.cardinal.sdk.model.EncryptedTopic
@@ -16,6 +18,7 @@ import kotlinx.serialization.json.JsonElement
 import kotlinx.serialization.json.JsonObject
 import kotlinx.serialization.json.encodeToJsonElement
 import kotlin.Boolean
+import kotlin.Lazy
 import kotlin.String
 
 @InternalIcureApi
@@ -56,11 +59,19 @@ internal object TopicEncryptorFactory : EntityEncryptorFactory<EncryptedTopic, D
 
 	override fun create(
 		entityManifestName: String,
-		encryptorFactoryContext: EncryptorFactoryContext,
+		encryptorsFactoryContext: EntityEncryptorsFactoryContext,
 		encodingJson: Json,
 		cryptoService: CryptoService,
 	): EntityEncryptor<EncryptedTopic, DecryptedTopic> {
-		val manifest = encryptorFactoryContext.getManifest(entityManifestName)
+		val manifest = encryptorsFactoryContext.getManifest(entityManifestName)
+		val extensionsEncryptor =
+			manifest.currentExtensionsManifest?.let {
+				encryptorsFactoryContext.getExtensionEncryptorsProvider(
+					extensionsManifestName = it,
+					encryptedClass = EncryptedTopic::class,
+					decryptedClass = DecryptedTopic::class,
+				)
+			}
 		return TopicEncryptor(
 			created_e = "created" in manifest.fieldsToEncrypt,
 			modified_e = "modified" in manifest.fieldsToEncrypt,
@@ -73,6 +84,7 @@ internal object TopicEncryptorFactory : EntityEncryptorFactory<EncryptedTopic, D
 			responsible_e = "responsible" in manifest.fieldsToEncrypt,
 			linkedHealthElements_e = "linkedHealthElements" in manifest.fieldsToEncrypt,
 			linkedServices_e = "linkedServices" in manifest.fieldsToEncrypt,
+			extensionsEncryptor = extensionsEncryptor,
 			encodingJson = encodingJson,
 			cryptoService = cryptoService,
 		)
@@ -92,6 +104,7 @@ private class TopicEncryptor(
 	private val responsible_e: Boolean,
 	private val linkedHealthElements_e: Boolean,
 	private val linkedServices_e: Boolean,
+	private val extensionsEncryptor: Lazy<ExtensionsEncryptors>?,
 	private val encodingJson: Json,
 	cryptoService: CryptoService,
 ) : AbstractEntityEncryptor<EncryptedTopic, DecryptedTopic>(cryptoService) {
@@ -158,7 +171,7 @@ private class TopicEncryptor(
 			encryptedSelf = getUpdatedEncryptSelf(encryptionKey, clearEntity, JsonObject(dataToEncrypt)),
 			linkedHealthElements = if (linkedHealthElements_e) emptySet() else clearEntity.linkedHealthElements,
 			linkedServices = if (linkedServices_e) emptySet() else clearEntity.linkedServices,
-			extensions = clearEntity.extensions,
+			extensions = extensionsEncryptor?.value?.encryptExtension(encryptionKey, clearEntity.extensions) ?: clearEntity.extensions,
 			extensionsVersion = clearEntity.extensionsVersion,
 		)
 	}

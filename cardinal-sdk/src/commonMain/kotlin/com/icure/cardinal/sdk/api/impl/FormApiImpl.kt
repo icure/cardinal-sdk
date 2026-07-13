@@ -13,7 +13,6 @@ import com.icure.cardinal.sdk.api.FormFlavouredApi
 import com.icure.cardinal.sdk.api.raw.RawFormApi
 import com.icure.cardinal.sdk.api.raw.successBodyOrNull404
 import com.icure.cardinal.sdk.api.raw.successBodyOrThrowRevisionConflict
-import com.icure.cardinal.sdk.crypto.encryptor.impl.generated.FormDecryptor
 import com.icure.cardinal.sdk.crypto.entities.FormShareOptions
 import com.icure.cardinal.sdk.crypto.entities.EntityWithEncryptionMetadataTypeName
 import com.icure.cardinal.sdk.crypto.entities.OwningEntityDetails
@@ -63,8 +62,8 @@ private fun decryptedApiFlavour(
 ): FlavouredApi<EncryptedForm, DecryptedForm> = FlavouredApi.decrypted(
 	config = config,
 	type = EntityWithEncryptionMetadataTypeName.Form,
-	encryptor = config.encryptors.form,
-	decryptor = FormDecryptor,
+	encryptors = config.encryptors.form,
+	getRootModelVersion = { null },
 )
 
 @InternalIcureApi
@@ -73,8 +72,8 @@ private fun tryAndRecoverApiFlavour(
 ): FlavouredApi<EncryptedForm, Form> = FlavouredApi.tryAndRecover(
 	config = config,
 	type = EntityWithEncryptionMetadataTypeName.Form,
-	encryptor = config.encryptors.form,
-	decryptor = FormDecryptor,
+	encryptors = config.encryptors.form,
+	getRootModelVersion = { null },
 )
 
 @InternalIcureApi

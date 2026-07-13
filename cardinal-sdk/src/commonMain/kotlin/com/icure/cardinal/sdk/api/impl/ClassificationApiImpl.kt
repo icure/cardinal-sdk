@@ -8,7 +8,6 @@ import com.icure.cardinal.sdk.api.ClassificationFlavouredApi
 import com.icure.cardinal.sdk.api.raw.RawClassificationApi
 import com.icure.cardinal.sdk.api.raw.successBodyOrNull404
 import com.icure.cardinal.sdk.api.raw.successBodyOrThrowRevisionConflict
-import com.icure.cardinal.sdk.crypto.encryptor.impl.generated.ClassificationDecryptor
 import com.icure.cardinal.sdk.crypto.entities.ClassificationShareOptions
 import com.icure.cardinal.sdk.crypto.entities.EntityWithEncryptionMetadataTypeName
 import com.icure.cardinal.sdk.crypto.entities.OwningEntityDetails
@@ -51,8 +50,8 @@ private fun decryptedApiFlavour(
 ): FlavouredApi<EncryptedClassification, DecryptedClassification> = FlavouredApi.decrypted(
 	config = config,
 	type = EntityWithEncryptionMetadataTypeName.Classification,
-	encryptor = config.encryptors.classification,
-	decryptor = ClassificationDecryptor,
+	encryptors = config.encryptors.classification,
+	getRootModelVersion = { null },
 )
 
 @InternalIcureApi
@@ -61,8 +60,8 @@ private fun tryAndRecoverApiFlavour(
 ): FlavouredApi<EncryptedClassification, Classification> = FlavouredApi.tryAndRecover(
 	config = config,
 	type = EntityWithEncryptionMetadataTypeName.Classification,
-	encryptor = config.encryptors.classification,
-	decryptor = ClassificationDecryptor,
+	encryptors = config.encryptors.classification,
+	getRootModelVersion = { null },
 )
 
 @InternalIcureApi

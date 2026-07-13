@@ -1,9 +1,9 @@
 // This file is auto-generated
 package com.icure.cardinal.sdk.crypto.encryptor.`impl`.generated
 
-import com.icure.cardinal.sdk.crypto.encryptor.EncryptorFactoryContext
 import com.icure.cardinal.sdk.crypto.encryptor.EntityEncryptor
 import com.icure.cardinal.sdk.crypto.encryptor.EntityEncryptorFactory
+import com.icure.cardinal.sdk.crypto.encryptor.EntityEncryptorsFactoryContext
 import com.icure.cardinal.sdk.crypto.encryptor.`impl`.AbstractEntityEncryptor
 import com.icure.cardinal.sdk.model.embed.DecryptedInvoicingCode
 import com.icure.cardinal.sdk.model.embed.EncryptedInvoicingCode
@@ -90,11 +90,14 @@ internal object InvoicingCodeEncryptorFactory :
 
 	override fun create(
 		entityManifestName: String,
-		encryptorFactoryContext: EncryptorFactoryContext,
+		encryptorsFactoryContext: EntityEncryptorsFactoryContext,
 		encodingJson: Json,
 		cryptoService: CryptoService,
 	): EntityEncryptor<EncryptedInvoicingCode, DecryptedInvoicingCode> {
-		val manifest = encryptorFactoryContext.getManifest(entityManifestName)
+		val manifest = encryptorsFactoryContext.getManifest(entityManifestName)
+		require(manifest.currentExtensionsManifest == null) {
+			"InvoicingCode is not Extendable and does not support extensions encryption, but its manifest defines a currentExtensionsManifest."
+		}
 		return InvoicingCodeEncryptor(
 			dateCode_e = "dateCode" in manifest.fieldsToEncrypt,
 			logicalId_e = "logicalId" in manifest.fieldsToEncrypt,
@@ -103,7 +106,7 @@ internal object InvoicingCodeEncryptorFactory :
 			contactId_e = "contactId" in manifest.fieldsToEncrypt,
 			serviceId_e = "serviceId" in manifest.fieldsToEncrypt,
 			tarificationId_e = "pricingId" in manifest.fieldsToEncrypt,
-			tarificationId_n = if (encryptorFactoryContext.serializeEncryptedSelfUsingLegacyNames) "tarificationId" else "pricingId",
+			tarificationId_n = if (encryptorsFactoryContext.serializeEncryptedSelfUsingLegacyNames) "tarificationId" else "pricingId",
 			code_e = "code" in manifest.fieldsToEncrypt,
 			paymentType_e = "paymentType" in manifest.fieldsToEncrypt,
 			paid_e = "paid" in manifest.fieldsToEncrypt,

@@ -1,9 +1,9 @@
 // This file is auto-generated
 package com.icure.cardinal.sdk.crypto.encryptor.`impl`.generated
 
-import com.icure.cardinal.sdk.crypto.encryptor.EncryptorFactoryContext
 import com.icure.cardinal.sdk.crypto.encryptor.EntityEncryptor
 import com.icure.cardinal.sdk.crypto.encryptor.EntityEncryptorFactory
+import com.icure.cardinal.sdk.crypto.encryptor.EntityEncryptorsFactoryContext
 import com.icure.cardinal.sdk.crypto.encryptor.`impl`.AbstractEntityEncryptor
 import com.icure.cardinal.sdk.crypto.encryptor.`impl`.EncryptableFieldConfig
 import com.icure.cardinal.sdk.model.embed.DecryptedContent
@@ -58,11 +58,14 @@ internal object ContentEncryptorFactory : EntityEncryptorFactory<EncryptedConten
 
 	override fun create(
 		entityManifestName: String,
-		encryptorFactoryContext: EncryptorFactoryContext,
+		encryptorsFactoryContext: EntityEncryptorsFactoryContext,
 		encodingJson: Json,
 		cryptoService: CryptoService,
 	): EntityEncryptor<EncryptedContent, DecryptedContent> {
-		val manifest = encryptorFactoryContext.getManifest(entityManifestName)
+		val manifest = encryptorsFactoryContext.getManifest(entityManifestName)
+		require(manifest.currentExtensionsManifest == null) {
+			"Content is not Extendable and does not support extensions encryption, but its manifest defines a currentExtensionsManifest."
+		}
 		return ContentEncryptor(
 			stringValue_e = "stringValue" in manifest.fieldsToEncrypt,
 			numberValue_e = "numberValue" in manifest.fieldsToEncrypt,
@@ -80,7 +83,7 @@ internal object ContentEncryptorFactory : EntityEncryptorFactory<EncryptedConten
 				} else {
 					manifest.recursiveEncryption["compoundValue"]?.let {
 						EncryptableFieldConfig.Configured(
-							encryptorFactoryContext.getEntityEncryptorProvider(
+							encryptorsFactoryContext.getEntityEncryptorsProvider(
 								entityManifestName = it,
 								encryptedClass = EncryptedService::class,
 								decryptedClass = DecryptedService::class,

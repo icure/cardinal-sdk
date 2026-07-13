@@ -10,7 +10,6 @@ import com.icure.kryptom.crypto.CryptoService
 import com.icure.kryptom.crypto.defaultCryptoService
 import io.ktor.client.HttpClient
 import kotlinx.coroutines.Job
-import kotlinx.serialization.Serializable
 import kotlinx.serialization.json.Json
 import kotlin.coroutines.CoroutineContext
 import kotlin.time.Duration
@@ -28,6 +27,8 @@ interface HttpSdkOptions {
 	val httpClient: HttpClient?
 	/**
 	 * The instance of [Json] used by the provided [httpClient] (leave null if [httpClient] is null).
+	 * Note that this json is used only for handling serialization of entities from/to the backend and is not used for
+	 * handling serialization of encrypted content.
 	 */
 	val httpClientJson: Json?
 	/**
@@ -43,13 +44,16 @@ interface HttpSdkOptions {
 
 interface SerializationOptions {
 	/**
-	 * If true, on deserialization of data coming from the backend or from the decrypted content of an entity any
-	 * field that is not present in the data model will be ignored.
+	 * If true, on deserialization of data coming from the backend any field that is not present in the data model will
+	 * be ignored.
+	 *
+	 * If false any unknown field will cause the deserialization to fail. This can happen if:
+	 * - You are using data that was created using the legacy iCure typescript SDK (pre-cardinal).
+	 * - A new field has been added to the data model, and a new version of your application already uses the new field,
+	 *   but this instance still depends on an older version of the SDK.
 	 *
 	 * Note that updating an entity where some fields were ignored during deserialization will potentially result in
-	 * data loss. This should not happen unless you depend on data that was created using the legacy iCure
-	 * typescript SDK (pre-cardinal). Future versions of Cardinal SDK will allow providing a custom "patcher" for the
-	 * decrypted entity json which can migrate the decrypted data without ignoring the encrypted fields.
+	 * data loss.
 	 *
 	 * If a custom [HttpSdkOptions.httpClientJson] is provided, this option must be unconfigured (null) or match the
 	 * ignoreUnknownKeys configuration of that.
@@ -134,6 +138,10 @@ data class BasicToFullSdkOptions(
 	 * Refer to [SdkOptions.parentJob]
 	 */
 	val parentJob: Job? = null,
+	/**
+	 * Refer to [SdkOptions.unversionedEntitiesDecryptedJsonStrictness]
+	 */
+	val unversionedEntitiesDecryptedJsonStrictness: DecryptedJsonStrictness?
 )
 
 data class SdkOptions(
@@ -189,6 +197,26 @@ data class SdkOptions(
 	override val dataOwnerScope: String? = null,
 	override val ignoreUnknownFields: Boolean? = null,
 	override val encryptedFieldsOptions: EncryptedFieldsOptions? = null,
+	/**
+	 * Specifies how strict json decoding should be when decoding the encrypted content of an entity that is not using
+	 * the versioned data model (created before cardinal 3.0). For all entities that are already using the versioned
+	 * data model the decoding is always equivalent to [DecryptedJsonStrictness.IgnoreBadValues].
+	 *
+	 * We recommend to use [DecryptedJsonStrictness.Strict]:
+	 * - If your application does not depend on data coming from the legacy iCure typescript SDK then your application
+	 *   will not have content that is invalid for cardinal
+	 * - If your application uses data from the legacy iCure typescript SDK AND that data is not fully supported by
+	 *   cardinal you can detect it before potentially destroying part of its content. A future version of cardinal
+	 *   will allow you to specify a "patcher" that can modify the encrypted content before cardinal tries to interpret
+	 *   it so that you can migrate the existing data to a format understandable by cardinal.
+	 *
+	 * When [ignoreUnknownFields] is false or defaults to false then this defaults to [DecryptedJsonStrictness.Strict],
+	 * else it defaults to [DecryptedJsonStrictness.IgnoreUnknownFields].
+	 *
+	 * It is still possible to override the default with any value of [DecryptedJsonStrictness] regardless of the value
+	 * of [ignoreUnknownFields].
+	 */
+	val unversionedEntitiesDecryptedJsonStrictness: DecryptedJsonStrictness? = null,
 ): BoundSdkOptions {
 	init {
 		validateHttpAndSerializationOptions()
@@ -285,6 +313,12 @@ internal fun <T> T.configuredJsonOrDefault() where T : HttpSdkOptions, T : Seria
 	this.httpClientJson ?: (if (this.ignoreUnknownFields == true) Serialization.lenientJson else Serialization.json)
 internal fun <T> T.ignoreUnknownFieldsOrDefault() where T : HttpSdkOptions, T : SerializationOptions =
 	this.ignoreUnknownFields ?: this.httpClientJson?.configuration?.ignoreUnknownKeys ?: false
+internal fun unversionedEntitiesDecryptedJsonStrictnessOrDefault(strictness: DecryptedJsonStrictness?, ignoreUnknownFields: Boolean) =
+	strictness ?:
+		if (ignoreUnknownFields)
+			DecryptedJsonStrictness.IgnoreUnknownFields
+		else
+			DecryptedJsonStrictness.Strict
 
 private fun <T> T.validateHttpAndSerializationOptions() where T : HttpSdkOptions, T : SerializationOptions {
 	if (httpClient != null) {

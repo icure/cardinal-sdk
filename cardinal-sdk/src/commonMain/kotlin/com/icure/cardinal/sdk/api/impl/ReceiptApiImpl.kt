@@ -13,7 +13,6 @@ import com.icure.cardinal.sdk.api.ReceiptInGroupApi
 import com.icure.cardinal.sdk.api.raw.RawReceiptApi
 import com.icure.cardinal.sdk.api.raw.successBodyOrNull404
 import com.icure.cardinal.sdk.api.raw.successBodyOrThrowRevisionConflict
-import com.icure.cardinal.sdk.crypto.encryptor.impl.generated.ReceiptDecryptor
 import com.icure.cardinal.sdk.crypto.entities.EntityWithEncryptionMetadataTypeName
 import com.icure.cardinal.sdk.crypto.entities.OwningEntityDetails
 import com.icure.cardinal.sdk.crypto.entities.ReceiptShareOptions
@@ -38,6 +37,7 @@ import com.icure.cardinal.sdk.model.toStoredDocumentIdentifier
 import com.icure.cardinal.sdk.options.ApiConfiguration
 import com.icure.cardinal.sdk.options.BasicApiConfiguration
 import com.icure.cardinal.sdk.utils.EntityEncryptionException
+import com.icure.cardinal.sdk.utils.UnavailableEncryptionKeyException
 import com.icure.cardinal.sdk.utils.currentEpochMs
 import com.icure.cardinal.sdk.utils.generation.JsMapAsObjectArray
 import com.icure.utils.InternalIcureApi
@@ -55,8 +55,8 @@ private fun decryptedApiFlavour(
 ): FlavouredApi<EncryptedReceipt, DecryptedReceipt> = FlavouredApi.decrypted(
 	config = config,
 	type = EntityWithEncryptionMetadataTypeName.Receipt,
-	encryptor = config.encryptors.receipt,
-	decryptor = ReceiptDecryptor,
+	encryptors = config.encryptors.receipt,
+	getRootModelVersion = { null },
 )
 
 @InternalIcureApi
@@ -65,8 +65,8 @@ private fun tryAndRecoverApiFlavour(
 ): FlavouredApi<EncryptedReceipt, Receipt> = FlavouredApi.tryAndRecover(
 	config = config,
 	type = EntityWithEncryptionMetadataTypeName.Receipt,
-	encryptor = config.encryptors.receipt,
-	decryptor = ReceiptDecryptor,
+	encryptors = config.encryptors.receipt,
+	getRootModelVersion = { null },
 )
 
 @InternalIcureApi
@@ -550,7 +550,7 @@ private class ReceiptApiImpl(
 				listOf(receipt),
 				EntityWithEncryptionMetadataTypeName.Receipt
 			)[receipt.id]?.key
-				?: throw EntityEncryptionException("Cannot extract decryption key from Receipt(\"${receipt.id}\")")
+				?: throw UnavailableEncryptionKeyException("Cannot extract decryption key from Receipt(\"${receipt.id}\")")
 			config.crypto.primitives.aes.decrypt(it, aesKey)
 		}
 
@@ -615,7 +615,7 @@ private class ReceiptApiImpl(
 			listOf(receipt),
 			EntityWithEncryptionMetadataTypeName.Receipt
 		)[receipt.id]?.key
-			?: throw EntityEncryptionException("Cannot extract encryption key from receipt")
+			?: throw UnavailableEncryptionKeyException("Cannot extract encryption key from receipt")
 		val payload = config.crypto.primitives.aes.encrypt(attachment, aesKey)
 		return rawApi.setReceiptAttachment(
 			receipt.id,

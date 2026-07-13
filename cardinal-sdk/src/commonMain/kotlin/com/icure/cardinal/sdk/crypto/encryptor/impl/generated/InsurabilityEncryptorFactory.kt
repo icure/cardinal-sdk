@@ -1,9 +1,11 @@
 // This file is auto-generated
 package com.icure.cardinal.sdk.crypto.encryptor.`impl`.generated
 
-import com.icure.cardinal.sdk.crypto.encryptor.EncryptorFactoryContext
 import com.icure.cardinal.sdk.crypto.encryptor.EntityEncryptor
 import com.icure.cardinal.sdk.crypto.encryptor.EntityEncryptorFactory
+import com.icure.cardinal.sdk.crypto.encryptor.EntityEncryptorsFactoryContext
+import com.icure.cardinal.sdk.crypto.encryptor.ExtensionsEncryptors
+import com.icure.cardinal.sdk.crypto.encryptor.encryptExtension
 import com.icure.cardinal.sdk.crypto.encryptor.`impl`.AbstractEntityEncryptor
 import com.icure.cardinal.sdk.model.embed.DecryptedInsurability
 import com.icure.cardinal.sdk.model.embed.EncryptedInsurability
@@ -16,6 +18,7 @@ import kotlinx.serialization.json.JsonElement
 import kotlinx.serialization.json.JsonObject
 import kotlinx.serialization.json.encodeToJsonElement
 import kotlin.Boolean
+import kotlin.Lazy
 import kotlin.String
 
 @InternalIcureApi
@@ -45,11 +48,19 @@ internal object InsurabilityEncryptorFactory :
 
 	override fun create(
 		entityManifestName: String,
-		encryptorFactoryContext: EncryptorFactoryContext,
+		encryptorsFactoryContext: EntityEncryptorsFactoryContext,
 		encodingJson: Json,
 		cryptoService: CryptoService,
 	): EntityEncryptor<EncryptedInsurability, DecryptedInsurability> {
-		val manifest = encryptorFactoryContext.getManifest(entityManifestName)
+		val manifest = encryptorsFactoryContext.getManifest(entityManifestName)
+		val extensionsEncryptor =
+			manifest.currentExtensionsManifest?.let {
+				encryptorsFactoryContext.getExtensionEncryptorsProvider(
+					extensionsManifestName = it,
+					encryptedClass = EncryptedInsurability::class,
+					decryptedClass = DecryptedInsurability::class,
+				)
+			}
 		return InsurabilityEncryptor(
 			parameters_e = "parameters" in manifest.fieldsToEncrypt,
 			hospitalisation_e = "hospitalisation" in manifest.fieldsToEncrypt,
@@ -60,6 +71,7 @@ internal object InsurabilityEncryptorFactory :
 			startDate_e = "startDate" in manifest.fieldsToEncrypt,
 			endDate_e = "endDate" in manifest.fieldsToEncrypt,
 			titularyId_e = "titularyId" in manifest.fieldsToEncrypt,
+			extensionsEncryptor = extensionsEncryptor,
 			encodingJson = encodingJson,
 			cryptoService = cryptoService,
 		)
@@ -77,6 +89,7 @@ private class InsurabilityEncryptor(
 	private val startDate_e: Boolean,
 	private val endDate_e: Boolean,
 	private val titularyId_e: Boolean,
+	private val extensionsEncryptor: Lazy<ExtensionsEncryptors>?,
 	private val encodingJson: Json,
 	cryptoService: CryptoService,
 ) : AbstractEntityEncryptor<EncryptedInsurability, DecryptedInsurability>(cryptoService) {
@@ -125,7 +138,7 @@ private class InsurabilityEncryptor(
 			endDate = if (endDate_e) null else clearEntity.endDate,
 			titularyId = if (titularyId_e) null else clearEntity.titularyId,
 			encryptedSelf = getUpdatedEncryptSelf(encryptionKey, clearEntity, JsonObject(dataToEncrypt)),
-			extensions = clearEntity.extensions,
+			extensions = extensionsEncryptor?.value?.encryptExtension(encryptionKey, clearEntity.extensions) ?: clearEntity.extensions,
 		)
 	}
 }

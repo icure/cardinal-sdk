@@ -16,6 +16,7 @@ import com.icure.cardinal.sdk.crypto.entities.SecretIdUseOption
 import com.icure.cardinal.sdk.crypto.entities.SimpleDelegateShareOptions
 import com.icure.cardinal.sdk.crypto.entities.SimpleShareResult
 import com.icure.cardinal.sdk.model.EntityReferenceInGroup
+import com.icure.cardinal.sdk.model.base.ExtendableRoot
 import com.icure.cardinal.sdk.model.base.HasEncryptionMetadata
 import com.icure.cardinal.sdk.model.embed.AccessLevel
 import com.icure.cardinal.sdk.model.embed.Encryptable
@@ -341,6 +342,7 @@ interface EntityEncryptionService : EntityValidationService {
 		encryptedEntities: List<E>,
 		entityType: EntityWithEncryptionMetadataTypeName,
 		entityDecryptor: EntityDecryptor<E, D>,
+		getRootModelVersion: E.() -> Int?
 	): List<B> where B : HasEncryptionMetadata, B : Encryptable
 
 
@@ -352,6 +354,7 @@ interface EntityEncryptionService : EntityValidationService {
 		encryptedEntities: List<E>,
 		entityType: EntityWithEncryptionMetadataTypeName,
 		entityDecryptor: EntityDecryptor<E, D>,
+		getRootModelVersion: E.() -> Int?
 	): List<D> where E : HasEncryptionMetadata, E : Encryptable, D : HasEncryptionMetadata, D : Encryptable
 
 	/**

@@ -1,9 +1,11 @@
 // This file is auto-generated
 package com.icure.cardinal.sdk.crypto.encryptor.`impl`.generated
 
-import com.icure.cardinal.sdk.crypto.encryptor.EncryptorFactoryContext
 import com.icure.cardinal.sdk.crypto.encryptor.EntityEncryptor
 import com.icure.cardinal.sdk.crypto.encryptor.EntityEncryptorFactory
+import com.icure.cardinal.sdk.crypto.encryptor.EntityEncryptorsFactoryContext
+import com.icure.cardinal.sdk.crypto.encryptor.ExtensionsEncryptors
+import com.icure.cardinal.sdk.crypto.encryptor.encryptExtension
 import com.icure.cardinal.sdk.crypto.encryptor.`impl`.AbstractEntityEncryptor
 import com.icure.cardinal.sdk.crypto.encryptor.`impl`.EncryptableFieldConfig
 import com.icure.cardinal.sdk.model.embed.DecryptedAnnotation
@@ -21,6 +23,7 @@ import kotlinx.serialization.json.JsonElement
 import kotlinx.serialization.json.JsonObject
 import kotlinx.serialization.json.encodeToJsonElement
 import kotlin.Boolean
+import kotlin.Lazy
 import kotlin.String
 
 @InternalIcureApi
@@ -78,11 +81,19 @@ internal object ServiceEncryptorFactory : EntityEncryptorFactory<EncryptedServic
 
 	override fun create(
 		entityManifestName: String,
-		encryptorFactoryContext: EncryptorFactoryContext,
+		encryptorsFactoryContext: EntityEncryptorsFactoryContext,
 		encodingJson: Json,
 		cryptoService: CryptoService,
 	): EntityEncryptor<EncryptedService, DecryptedService> {
-		val manifest = encryptorFactoryContext.getManifest(entityManifestName)
+		val manifest = encryptorsFactoryContext.getManifest(entityManifestName)
+		val extensionsEncryptor =
+			manifest.currentExtensionsManifest?.let {
+				encryptorsFactoryContext.getExtensionEncryptorsProvider(
+					extensionsManifestName = it,
+					encryptedClass = EncryptedService::class,
+					decryptedClass = DecryptedService::class,
+				)
+			}
 		return ServiceEncryptor(
 			transactionId_e = "transactionId" in manifest.fieldsToEncrypt,
 			identifier_e = "identifier" in manifest.fieldsToEncrypt,
@@ -98,7 +109,7 @@ internal object ServiceEncryptorFactory : EntityEncryptorFactory<EncryptedServic
 				} else {
 					manifest.recursiveEncryption["content"]?.let {
 						EncryptableFieldConfig.Configured(
-							encryptorFactoryContext.getEntityEncryptorProvider(
+							encryptorsFactoryContext.getEntityEncryptorsProvider(
 								entityManifestName = it,
 								encryptedClass = EncryptedContent::class,
 								decryptedClass = DecryptedContent::class,
@@ -122,7 +133,7 @@ internal object ServiceEncryptorFactory : EntityEncryptorFactory<EncryptedServic
 				} else {
 					manifest.recursiveEncryption["notes"]?.let {
 						EncryptableFieldConfig.Configured(
-							encryptorFactoryContext.getEntityEncryptorProvider(
+							encryptorsFactoryContext.getEntityEncryptorsProvider(
 								entityManifestName = it,
 								encryptedClass = EncryptedAnnotation::class,
 								decryptedClass = DecryptedAnnotation::class,
@@ -133,6 +144,7 @@ internal object ServiceEncryptorFactory : EntityEncryptorFactory<EncryptedServic
 			qualifiedLinks_e = "qualifiedLinks" in manifest.fieldsToEncrypt,
 			codes_e = "codes" in manifest.fieldsToEncrypt,
 			tags_e = "tags" in manifest.fieldsToEncrypt,
+			extensionsEncryptor = extensionsEncryptor,
 			encodingJson = encodingJson,
 			cryptoService = cryptoService,
 		)
@@ -164,6 +176,7 @@ private class ServiceEncryptor(
 	private val qualifiedLinks_e: Boolean,
 	private val codes_e: Boolean,
 	private val tags_e: Boolean,
+	private val extensionsEncryptor: Lazy<ExtensionsEncryptors>?,
 	private val encodingJson: Json,
 	cryptoService: CryptoService,
 ) : AbstractEntityEncryptor<EncryptedService, DecryptedService>(cryptoService) {
@@ -306,7 +319,7 @@ private class ServiceEncryptor(
 			tags = if (tags_e) emptySet() else clearEntity.tags,
 			encryptedSelf = getUpdatedEncryptSelf(encryptionKey, clearEntity, JsonObject(dataToEncrypt)),
 			securityMetadata = clearEntity.securityMetadata,
-			extensions = clearEntity.extensions,
+			extensions = extensionsEncryptor?.value?.encryptExtension(encryptionKey, clearEntity.extensions) ?: clearEntity.extensions,
 			contactExtensionsVersions = clearEntity.contactExtensionsVersions,
 		)
 	}

@@ -13,7 +13,6 @@ import com.icure.cardinal.sdk.api.HealthElementInGroupApi
 import com.icure.cardinal.sdk.api.raw.RawHealthElementApi
 import com.icure.cardinal.sdk.api.raw.successBodyOrNull404
 import com.icure.cardinal.sdk.api.raw.successBodyOrThrowRevisionConflict
-import com.icure.cardinal.sdk.crypto.encryptor.impl.generated.HealthElementDecryptor
 import com.icure.cardinal.sdk.crypto.entities.EntityWithEncryptionMetadataTypeName
 import com.icure.cardinal.sdk.crypto.entities.HealthElementShareOptions
 import com.icure.cardinal.sdk.crypto.entities.OwningEntityDetails
@@ -68,8 +67,8 @@ private fun decryptedApiFlavour(
 ): FlavouredApi<EncryptedHealthElement, DecryptedHealthElement> = FlavouredApi.decrypted(
 	config = config,
 	type = EntityWithEncryptionMetadataTypeName.HealthElement,
-	encryptor = config.encryptors.healthElement,
-	decryptor = HealthElementDecryptor,
+	encryptors = config.encryptors.healthElement,
+	getRootModelVersion = EncryptedHealthElement::extensionsVersion,
 )
 
 @InternalIcureApi
@@ -78,8 +77,8 @@ private fun tryAndRecoverApiFlavour(
 ): FlavouredApi<EncryptedHealthElement, HealthElement> = FlavouredApi.tryAndRecover(
 	config = config,
 	type = EntityWithEncryptionMetadataTypeName.HealthElement,
-	encryptor = config.encryptors.healthElement,
-	decryptor = HealthElementDecryptor,
+	encryptors = config.encryptors.healthElement,
+	getRootModelVersion = EncryptedHealthElement::extensionsVersion,
 )
 
 @OptIn(InternalIcureApi::class)

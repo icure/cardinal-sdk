@@ -20,7 +20,6 @@ import com.icure.cardinal.sdk.api.raw.RawInvoiceApi
 import com.icure.cardinal.sdk.api.raw.RawPatientApi
 import com.icure.cardinal.sdk.api.raw.successBodyOrNull404
 import com.icure.cardinal.sdk.api.raw.successBodyOrThrowRevisionConflict
-import com.icure.cardinal.sdk.crypto.encryptor.impl.generated.PatientDecryptor
 import com.icure.cardinal.sdk.crypto.entities.DelegateShareOptions
 import com.icure.cardinal.sdk.crypto.entities.EntityAccessInformation
 import com.icure.cardinal.sdk.crypto.entities.EntityWithEncryptionMetadataTypeName
@@ -91,8 +90,8 @@ private fun decryptedApiFlavour(
 ): FlavouredApi<EncryptedPatient, DecryptedPatient> = FlavouredApi.decrypted(
 	config = config,
 	type = EntityWithEncryptionMetadataTypeName.Patient,
-	encryptor = config.encryptors.patient,
-	decryptor = PatientDecryptor,
+	encryptors = config.encryptors.patient,
+	getRootModelVersion = EncryptedPatient::extensionsVersion,
 )
 
 @InternalIcureApi
@@ -101,8 +100,8 @@ private fun tryAndRecoverApiFlavour(
 ): FlavouredApi<EncryptedPatient, Patient> = FlavouredApi.tryAndRecover(
 	config = config,
 	type = EntityWithEncryptionMetadataTypeName.Patient,
-	encryptor = config.encryptors.patient,
-	decryptor = PatientDecryptor,
+	encryptors = config.encryptors.patient,
+	getRootModelVersion = EncryptedPatient::extensionsVersion,
 )
 
 @OptIn(InternalIcureApi::class)

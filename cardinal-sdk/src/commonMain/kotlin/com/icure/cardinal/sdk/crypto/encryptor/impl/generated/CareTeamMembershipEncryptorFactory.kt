@@ -1,9 +1,11 @@
 // This file is auto-generated
 package com.icure.cardinal.sdk.crypto.encryptor.`impl`.generated
 
-import com.icure.cardinal.sdk.crypto.encryptor.EncryptorFactoryContext
 import com.icure.cardinal.sdk.crypto.encryptor.EntityEncryptor
 import com.icure.cardinal.sdk.crypto.encryptor.EntityEncryptorFactory
+import com.icure.cardinal.sdk.crypto.encryptor.EntityEncryptorsFactoryContext
+import com.icure.cardinal.sdk.crypto.encryptor.ExtensionsEncryptors
+import com.icure.cardinal.sdk.crypto.encryptor.encryptExtension
 import com.icure.cardinal.sdk.crypto.encryptor.`impl`.AbstractEntityEncryptor
 import com.icure.cardinal.sdk.model.embed.DecryptedCareTeamMembership
 import com.icure.cardinal.sdk.model.embed.EncryptedCareTeamMembership
@@ -16,6 +18,7 @@ import kotlinx.serialization.json.JsonElement
 import kotlinx.serialization.json.JsonObject
 import kotlinx.serialization.json.encodeToJsonElement
 import kotlin.Boolean
+import kotlin.Lazy
 import kotlin.String
 
 @InternalIcureApi
@@ -39,16 +42,25 @@ internal object CareTeamMembershipEncryptorFactory :
 
 	override fun create(
 		entityManifestName: String,
-		encryptorFactoryContext: EncryptorFactoryContext,
+		encryptorsFactoryContext: EntityEncryptorsFactoryContext,
 		encodingJson: Json,
 		cryptoService: CryptoService,
 	): EntityEncryptor<EncryptedCareTeamMembership, DecryptedCareTeamMembership> {
-		val manifest = encryptorFactoryContext.getManifest(entityManifestName)
+		val manifest = encryptorsFactoryContext.getManifest(entityManifestName)
+		val extensionsEncryptor =
+			manifest.currentExtensionsManifest?.let {
+				encryptorsFactoryContext.getExtensionEncryptorsProvider(
+					extensionsManifestName = it,
+					encryptedClass = EncryptedCareTeamMembership::class,
+					decryptedClass = DecryptedCareTeamMembership::class,
+				)
+			}
 		return CareTeamMembershipEncryptor(
 			startDate_e = "startDate" in manifest.fieldsToEncrypt,
 			endDate_e = "endDate" in manifest.fieldsToEncrypt,
 			careTeamMemberId_e = "careTeamMemberId" in manifest.fieldsToEncrypt,
 			membershipType_e = "membershipType" in manifest.fieldsToEncrypt,
+			extensionsEncryptor = extensionsEncryptor,
 			encodingJson = encodingJson,
 			cryptoService = cryptoService,
 		)
@@ -61,6 +73,7 @@ private class CareTeamMembershipEncryptor(
 	private val endDate_e: Boolean,
 	private val careTeamMemberId_e: Boolean,
 	private val membershipType_e: Boolean,
+	private val extensionsEncryptor: Lazy<ExtensionsEncryptors>?,
 	private val encodingJson: Json,
 	cryptoService: CryptoService,
 ) : AbstractEntityEncryptor<EncryptedCareTeamMembership, DecryptedCareTeamMembership>(cryptoService) {
@@ -89,7 +102,7 @@ private class CareTeamMembershipEncryptor(
 			careTeamMemberId = if (careTeamMemberId_e) null else clearEntity.careTeamMemberId,
 			membershipType = if (membershipType_e) null else clearEntity.membershipType,
 			encryptedSelf = getUpdatedEncryptSelf(encryptionKey, clearEntity, JsonObject(dataToEncrypt)),
-			extensions = clearEntity.extensions,
+			extensions = extensionsEncryptor?.value?.encryptExtension(encryptionKey, clearEntity.extensions) ?: clearEntity.extensions,
 		)
 	}
 }

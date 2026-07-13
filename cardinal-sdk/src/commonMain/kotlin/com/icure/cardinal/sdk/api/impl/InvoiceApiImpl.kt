@@ -13,7 +13,6 @@ import com.icure.cardinal.sdk.api.InvoiceInGroupApi
 import com.icure.cardinal.sdk.api.raw.RawInvoiceApi
 import com.icure.cardinal.sdk.api.raw.successBodyOrNull404
 import com.icure.cardinal.sdk.api.raw.successBodyOrThrowRevisionConflict
-import com.icure.cardinal.sdk.crypto.encryptor.impl.generated.InvoiceDecryptor
 import com.icure.cardinal.sdk.crypto.entities.EntityWithEncryptionMetadataTypeName
 import com.icure.cardinal.sdk.crypto.entities.InvoiceShareOptions
 import com.icure.cardinal.sdk.crypto.entities.OwningEntityDetails
@@ -63,8 +62,8 @@ private fun decryptedApiFlavour(
 ): FlavouredApi<EncryptedInvoice, DecryptedInvoice> = FlavouredApi.decrypted(
 	config = config,
 	type = EntityWithEncryptionMetadataTypeName.Invoice,
-	encryptor = config.encryptors.invoice,
-	decryptor = InvoiceDecryptor,
+	encryptors = config.encryptors.invoice,
+	getRootModelVersion = { null },
 )
 
 @InternalIcureApi
@@ -73,8 +72,8 @@ private fun tryAndRecoverApiFlavour(
 ): FlavouredApi<EncryptedInvoice, Invoice> = FlavouredApi.tryAndRecover(
 	config = config,
 	type = EntityWithEncryptionMetadataTypeName.Invoice,
-	encryptor = config.encryptors.invoice,
-	decryptor = InvoiceDecryptor,
+	encryptors = config.encryptors.invoice,
+	getRootModelVersion = { null },
 )
 
 @InternalIcureApi

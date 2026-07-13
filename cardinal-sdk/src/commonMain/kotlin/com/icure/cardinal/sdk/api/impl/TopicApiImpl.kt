@@ -13,7 +13,6 @@ import com.icure.cardinal.sdk.api.TopicInGroupApi
 import com.icure.cardinal.sdk.api.raw.RawTopicApi
 import com.icure.cardinal.sdk.api.raw.successBodyOrNull404
 import com.icure.cardinal.sdk.api.raw.successBodyOrThrowRevisionConflict
-import com.icure.cardinal.sdk.crypto.encryptor.impl.generated.TopicDecryptor
 import com.icure.cardinal.sdk.crypto.entities.EntityWithEncryptionMetadataTypeName
 import com.icure.cardinal.sdk.crypto.entities.OwningEntityDetails
 import com.icure.cardinal.sdk.crypto.entities.SecretIdUseOption
@@ -71,8 +70,8 @@ private fun decryptedApiFlavour(
 ): FlavouredApi<EncryptedTopic, DecryptedTopic> = FlavouredApi.decrypted(
 	config = config,
 	type = EntityWithEncryptionMetadataTypeName.Topic,
-	encryptor = config.encryptors.topic,
-	decryptor = TopicDecryptor,
+	encryptors = config.encryptors.topic,
+	getRootModelVersion = EncryptedTopic::extensionsVersion,
 )
 
 @InternalIcureApi
@@ -81,8 +80,8 @@ private fun tryAndRecoverApiFlavour(
 ): FlavouredApi<EncryptedTopic, Topic> = FlavouredApi.tryAndRecover(
 	config = config,
 	type = EntityWithEncryptionMetadataTypeName.Topic,
-	encryptor = config.encryptors.topic,
-	decryptor = TopicDecryptor,
+	encryptors = config.encryptors.topic,
+	getRootModelVersion = EncryptedTopic::extensionsVersion,
 )
 
 @OptIn(InternalIcureApi::class)

@@ -1,8 +1,7 @@
 // This file is auto-generated
 package com.icure.cardinal.sdk.crypto.encryptor.`impl`.generated
 
-import com.icure.cardinal.sdk.crypto.encryptor.EntityEncryptorFactory
-import com.icure.cardinal.sdk.crypto.encryptor.`impl`.AbstractEntitiesEncryptorInitializer
+import com.icure.cardinal.sdk.crypto.encryptor.`impl`.AbstractEntitiesEncryptorsInitializer
 import com.icure.cardinal.sdk.model.DecryptedAccessLog
 import com.icure.cardinal.sdk.model.DecryptedApplicationSettings
 import com.icure.cardinal.sdk.model.DecryptedArticle
@@ -89,169 +88,329 @@ import kotlin.collections.Map
 import kotlin.reflect.KClass
 
 @InternalIcureApi
-internal object GeneratedEntitiesEncryptorInitializer : AbstractEntitiesEncryptorInitializer() {
+internal object GeneratedEntitiesEncryptorInitializer : AbstractEntitiesEncryptorsInitializer() {
 	override val encryptorFactoriesByType:
-		Map<Pair<KClass<*>, KClass<*>>, EntityEncryptorFactory<*, *>> =
+		Map<Pair<KClass<*>, KClass<*>>, AbstractEntitiesEncryptorsInitializer.Factories<*, *>> =
 		mapOf(
 			Pair(
 				EncryptedAccessLog::class,
 				DecryptedAccessLog::class,
-			) to AccessLogEncryptorFactory,
+			) to
+				AbstractEntitiesEncryptorsInitializer.Factories(
+					encryptor = AccessLogEncryptorFactory,
+					decryptor = AccessLogDecryptorFactory,
+				),
 			Pair(
 				EncryptedAddress::class,
 				DecryptedAddress::class,
-			) to AddressEncryptorFactory,
+			) to
+				AbstractEntitiesEncryptorsInitializer.Factories(
+					encryptor = AddressEncryptorFactory,
+					decryptor = AddressDecryptorFactory,
+				),
 			Pair(
 				EncryptedAnnotation::class,
 				DecryptedAnnotation::class,
-			) to AnnotationEncryptorFactory,
+			) to
+				AbstractEntitiesEncryptorsInitializer.Factories(
+					encryptor = AnnotationEncryptorFactory,
+					decryptor = AnnotationDecryptorFactory,
+				),
 			Pair(
 				EncryptedApplicationSettings::class,
 				DecryptedApplicationSettings::class,
-			) to ApplicationSettingsEncryptorFactory,
+			) to
+				AbstractEntitiesEncryptorsInitializer.Factories(
+					encryptor = ApplicationSettingsEncryptorFactory,
+					decryptor = ApplicationSettingsDecryptorFactory,
+				),
 			Pair(
 				EncryptedArticle::class,
 				DecryptedArticle::class,
-			) to ArticleEncryptorFactory,
+			) to
+				AbstractEntitiesEncryptorsInitializer.Factories(
+					encryptor = ArticleEncryptorFactory,
+					decryptor = ArticleDecryptorFactory,
+				),
 			Pair(
 				EncryptedCalendarItem::class,
 				DecryptedCalendarItem::class,
-			) to CalendarItemEncryptorFactory,
+			) to
+				AbstractEntitiesEncryptorsInitializer.Factories(
+					encryptor = CalendarItemEncryptorFactory,
+					decryptor = CalendarItemDecryptorFactory,
+				),
 			Pair(
 				EncryptedCalendarItemTag::class,
 				DecryptedCalendarItemTag::class,
-			) to CalendarItemTagEncryptorFactory,
+			) to
+				AbstractEntitiesEncryptorsInitializer.Factories(
+					encryptor = CalendarItemTagEncryptorFactory,
+					decryptor = CalendarItemTagDecryptorFactory,
+				),
 			Pair(
 				EncryptedCareTeamMember::class,
 				DecryptedCareTeamMember::class,
-			) to CareTeamMemberEncryptorFactory,
+			) to
+				AbstractEntitiesEncryptorsInitializer.Factories(
+					encryptor = CareTeamMemberEncryptorFactory,
+					decryptor = CareTeamMemberDecryptorFactory,
+				),
 			Pair(
 				EncryptedCareTeamMembership::class,
 				DecryptedCareTeamMembership::class,
-			) to CareTeamMembershipEncryptorFactory,
+			) to
+				AbstractEntitiesEncryptorsInitializer.Factories(
+					encryptor = CareTeamMembershipEncryptorFactory,
+					decryptor = CareTeamMembershipDecryptorFactory,
+				),
 			Pair(
 				EncryptedClassification::class,
 				DecryptedClassification::class,
-			) to ClassificationEncryptorFactory,
+			) to
+				AbstractEntitiesEncryptorsInitializer.Factories(
+					encryptor = ClassificationEncryptorFactory,
+					decryptor = ClassificationDecryptorFactory,
+				),
 			Pair(
 				EncryptedContact::class,
 				DecryptedContact::class,
-			) to ContactEncryptorFactory,
+			) to
+				AbstractEntitiesEncryptorsInitializer.Factories(
+					encryptor = ContactEncryptorFactory,
+					decryptor = ContactDecryptorFactory,
+				),
 			Pair(
 				EncryptedContent::class,
 				DecryptedContent::class,
-			) to ContentEncryptorFactory,
+			) to
+				AbstractEntitiesEncryptorsInitializer.Factories(
+					encryptor = ContentEncryptorFactory,
+					decryptor = ContentDecryptorFactory,
+				),
 			Pair(
 				EncryptedDocument::class,
 				DecryptedDocument::class,
-			) to DocumentEncryptorFactory,
+			) to
+				AbstractEntitiesEncryptorsInitializer.Factories(
+					encryptor = DocumentEncryptorFactory,
+					decryptor = DocumentDecryptorFactory,
+				),
 			Pair(
 				EncryptedEmploymentInfo::class,
 				DecryptedEmploymentInfo::class,
-			) to EmploymentInfoEncryptorFactory,
+			) to
+				AbstractEntitiesEncryptorsInitializer.Factories(
+					encryptor = EmploymentInfoEncryptorFactory,
+					decryptor = EmploymentInfoDecryptorFactory,
+				),
 			Pair(
 				EncryptedEpisode::class,
 				DecryptedEpisode::class,
-			) to EpisodeEncryptorFactory,
+			) to
+				AbstractEntitiesEncryptorsInitializer.Factories(
+					encryptor = EpisodeEncryptorFactory,
+					decryptor = EpisodeDecryptorFactory,
+				),
 			Pair(
 				EncryptedFinancialInstitutionInformation::class,
 				DecryptedFinancialInstitutionInformation::class,
-			) to FinancialInstitutionInformationEncryptorFactory,
+			) to
+				AbstractEntitiesEncryptorsInitializer.Factories(
+					encryptor = FinancialInstitutionInformationEncryptorFactory,
+					decryptor = FinancialInstitutionInformationDecryptorFactory,
+				),
 			Pair(
 				EncryptedFlatRateTarification::class,
 				DecryptedFlatRateTarification::class,
-			) to FlatRateTarificationEncryptorFactory,
+			) to
+				AbstractEntitiesEncryptorsInitializer.Factories(
+					encryptor = FlatRateTarificationEncryptorFactory,
+					decryptor = FlatRateTarificationDecryptorFactory,
+				),
 			Pair(
 				EncryptedForm::class,
 				DecryptedForm::class,
-			) to FormEncryptorFactory,
+			) to
+				AbstractEntitiesEncryptorsInitializer.Factories(
+					encryptor = FormEncryptorFactory,
+					decryptor = FormDecryptorFactory,
+				),
 			Pair(
 				EncryptedHealthElement::class,
 				DecryptedHealthElement::class,
-			) to HealthElementEncryptorFactory,
+			) to
+				AbstractEntitiesEncryptorsInitializer.Factories(
+					encryptor = HealthElementEncryptorFactory,
+					decryptor = HealthElementDecryptorFactory,
+				),
 			Pair(
 				EncryptedInsurability::class,
 				DecryptedInsurability::class,
-			) to InsurabilityEncryptorFactory,
+			) to
+				AbstractEntitiesEncryptorsInitializer.Factories(
+					encryptor = InsurabilityEncryptorFactory,
+					decryptor = InsurabilityDecryptorFactory,
+				),
 			Pair(
 				EncryptedInvoice::class,
 				DecryptedInvoice::class,
-			) to InvoiceEncryptorFactory,
+			) to
+				AbstractEntitiesEncryptorsInitializer.Factories(
+					encryptor = InvoiceEncryptorFactory,
+					decryptor = InvoiceDecryptorFactory,
+				),
 			Pair(
 				EncryptedInvoicingCode::class,
 				DecryptedInvoicingCode::class,
-			) to InvoicingCodeEncryptorFactory,
+			) to
+				AbstractEntitiesEncryptorsInitializer.Factories(
+					encryptor = InvoicingCodeEncryptorFactory,
+					decryptor = InvoicingCodeDecryptorFactory,
+				),
 			Pair(
 				EncryptedMaintenanceTask::class,
 				DecryptedMaintenanceTask::class,
-			) to MaintenanceTaskEncryptorFactory,
+			) to
+				AbstractEntitiesEncryptorsInitializer.Factories(
+					encryptor = MaintenanceTaskEncryptorFactory,
+					decryptor = MaintenanceTaskDecryptorFactory,
+				),
 			Pair(
 				EncryptedMedicalHouseContract::class,
 				DecryptedMedicalHouseContract::class,
-			) to MedicalHouseContractEncryptorFactory,
+			) to
+				AbstractEntitiesEncryptorsInitializer.Factories(
+					encryptor = MedicalHouseContractEncryptorFactory,
+					decryptor = MedicalHouseContractDecryptorFactory,
+				),
 			Pair(
 				EncryptedMessage::class,
 				DecryptedMessage::class,
-			) to MessageEncryptorFactory,
+			) to
+				AbstractEntitiesEncryptorsInitializer.Factories(
+					encryptor = MessageEncryptorFactory,
+					decryptor = MessageDecryptorFactory,
+				),
 			Pair(
 				EncryptedPartnership::class,
 				DecryptedPartnership::class,
-			) to PartnershipEncryptorFactory,
+			) to
+				AbstractEntitiesEncryptorsInitializer.Factories(
+					encryptor = PartnershipEncryptorFactory,
+					decryptor = PartnershipDecryptorFactory,
+				),
 			Pair(
 				EncryptedPatient::class,
 				DecryptedPatient::class,
-			) to PatientEncryptorFactory,
+			) to
+				AbstractEntitiesEncryptorsInitializer.Factories(
+					encryptor = PatientEncryptorFactory,
+					decryptor = PatientDecryptorFactory,
+				),
 			Pair(
 				EncryptedPatientHealthCareParty::class,
 				DecryptedPatientHealthCareParty::class,
-			) to PatientHealthCarePartyEncryptorFactory,
+			) to
+				AbstractEntitiesEncryptorsInitializer.Factories(
+					encryptor = PatientHealthCarePartyEncryptorFactory,
+					decryptor = PatientHealthCarePartyDecryptorFactory,
+				),
 			Pair(
 				EncryptedPlanOfAction::class,
 				DecryptedPlanOfAction::class,
-			) to PlanOfActionEncryptorFactory,
+			) to
+				AbstractEntitiesEncryptorsInitializer.Factories(
+					encryptor = PlanOfActionEncryptorFactory,
+					decryptor = PlanOfActionDecryptorFactory,
+				),
 			Pair(
 				EncryptedProperty::class,
 				DecryptedProperty::class,
-			) to PropertyEncryptorFactory,
+			) to
+				AbstractEntitiesEncryptorsInitializer.Factories(
+					encryptor = PropertyEncryptorFactory,
+					decryptor = PropertyDecryptorFactory,
+				),
 			Pair(
 				EncryptedPropertyStub::class,
 				DecryptedPropertyStub::class,
-			) to PropertyStubEncryptorFactory,
+			) to
+				AbstractEntitiesEncryptorsInitializer.Factories(
+					encryptor = PropertyStubEncryptorFactory,
+					decryptor = PropertyStubDecryptorFactory,
+				),
 			Pair(
 				EncryptedReceipt::class,
 				DecryptedReceipt::class,
-			) to ReceiptEncryptorFactory,
+			) to
+				AbstractEntitiesEncryptorsInitializer.Factories(
+					encryptor = ReceiptEncryptorFactory,
+					decryptor = ReceiptDecryptorFactory,
+				),
 			Pair(
 				EncryptedSchoolingInfo::class,
 				DecryptedSchoolingInfo::class,
-			) to SchoolingInfoEncryptorFactory,
+			) to
+				AbstractEntitiesEncryptorsInitializer.Factories(
+					encryptor = SchoolingInfoEncryptorFactory,
+					decryptor = SchoolingInfoDecryptorFactory,
+				),
 			Pair(
 				EncryptedSecureDelegationKeyMap::class,
 				DecryptedSecureDelegationKeyMap::class,
-			) to SecureDelegationKeyMapEncryptorFactory,
+			) to
+				AbstractEntitiesEncryptorsInitializer.Factories(
+					encryptor = SecureDelegationKeyMapEncryptorFactory,
+					decryptor = SecureDelegationKeyMapDecryptorFactory,
+				),
 			Pair(
 				EncryptedService::class,
 				DecryptedService::class,
-			) to ServiceEncryptorFactory,
+			) to
+				AbstractEntitiesEncryptorsInitializer.Factories(
+					encryptor = ServiceEncryptorFactory,
+					decryptor = ServiceDecryptorFactory,
+				),
 			Pair(
 				EncryptedSubContact::class,
 				DecryptedSubContact::class,
-			) to SubContactEncryptorFactory,
+			) to
+				AbstractEntitiesEncryptorsInitializer.Factories(
+					encryptor = SubContactEncryptorFactory,
+					decryptor = SubContactDecryptorFactory,
+				),
 			Pair(
 				EncryptedTelecom::class,
 				DecryptedTelecom::class,
-			) to TelecomEncryptorFactory,
+			) to
+				AbstractEntitiesEncryptorsInitializer.Factories(
+					encryptor = TelecomEncryptorFactory,
+					decryptor = TelecomDecryptorFactory,
+				),
 			Pair(
 				EncryptedTopic::class,
 				DecryptedTopic::class,
-			) to TopicEncryptorFactory,
+			) to
+				AbstractEntitiesEncryptorsInitializer.Factories(
+					encryptor = TopicEncryptorFactory,
+					decryptor = TopicDecryptorFactory,
+				),
 			Pair(
 				EncryptedTypedValue::class,
 				DecryptedTypedValue::class,
-			) to TypedValueEncryptorFactory,
+			) to
+				AbstractEntitiesEncryptorsInitializer.Factories(
+					encryptor = TypedValueEncryptorFactory,
+					decryptor = TypedValueDecryptorFactory,
+				),
 			Pair(
 				EncryptedValorisation::class,
 				DecryptedValorisation::class,
-			) to ValorisationEncryptorFactory,
+			) to
+				AbstractEntitiesEncryptorsInitializer.Factories(
+					encryptor = ValorisationEncryptorFactory,
+					decryptor = ValorisationDecryptorFactory,
+				),
 		)
 }

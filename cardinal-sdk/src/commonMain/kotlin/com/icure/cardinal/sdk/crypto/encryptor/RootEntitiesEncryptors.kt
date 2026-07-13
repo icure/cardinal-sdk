@@ -1,5 +1,6 @@
 package com.icure.cardinal.sdk.crypto.encryptor
 
+import com.icure.cardinal.sdk.crypto.encryptor.impl.generated.ContactDecryptor
 import com.icure.cardinal.sdk.model.DecryptedAccessLog
 import com.icure.cardinal.sdk.model.DecryptedCalendarItem
 import com.icure.cardinal.sdk.model.DecryptedClassification
@@ -30,16 +31,18 @@ import com.icure.utils.InternalIcureApi
 
 @InternalIcureApi
 internal data class RootEntitiesEncryptors(
-	val accessLog: EntityEncryptor<EncryptedAccessLog, DecryptedAccessLog>,
-	val calendarItem: EntityEncryptor<EncryptedCalendarItem, DecryptedCalendarItem>,
-	val contact: EntityEncryptor<EncryptedContact, DecryptedContact>,
-	val healthElement: EntityEncryptor<EncryptedHealthElement, DecryptedHealthElement>,
-	val patient: EntityEncryptor<EncryptedPatient, DecryptedPatient>,
-	val message: EntityEncryptor<EncryptedMessage, DecryptedMessage>,
-	val topic: EntityEncryptor<EncryptedTopic, DecryptedTopic>,
-	val document: EntityEncryptor<EncryptedDocument, DecryptedDocument>,
-	val form: EntityEncryptor<EncryptedForm, DecryptedForm>,
-	val receipt: EntityEncryptor<EncryptedReceipt, DecryptedReceipt>,
-	val classification: EntityEncryptor<EncryptedClassification, DecryptedClassification>,
-	val invoice: EntityEncryptor<EncryptedInvoice, DecryptedInvoice>,
-)
+	val accessLog: EntityEncryptors<EncryptedAccessLog, DecryptedAccessLog>,
+	val calendarItem: EntityEncryptors<EncryptedCalendarItem, DecryptedCalendarItem>,
+	val contact: EntityEncryptors<EncryptedContact, DecryptedContact>,
+	val healthElement: EntityEncryptors<EncryptedHealthElement, DecryptedHealthElement>,
+	val patient: EntityEncryptors<EncryptedPatient, DecryptedPatient>,
+	val message: EntityEncryptors<EncryptedMessage, DecryptedMessage>,
+	val topic: EntityEncryptors<EncryptedTopic, DecryptedTopic>,
+	val document: EntityEncryptors<EncryptedDocument, DecryptedDocument>,
+	val form: EntityEncryptors<EncryptedForm, DecryptedForm>,
+	val receipt: EntityEncryptors<EncryptedReceipt, DecryptedReceipt>,
+	val classification: EntityEncryptors<EncryptedClassification, DecryptedClassification>,
+	val invoice: EntityEncryptors<EncryptedInvoice, DecryptedInvoice>,
+) {
+	val serviceDecryptor = (contact.decryptor as ContactDecryptor).servicesDecryptor.value
+}

@@ -13,7 +13,6 @@ import com.icure.cardinal.sdk.api.DocumentFlavouredApi
 import com.icure.cardinal.sdk.api.raw.RawDocumentApi
 import com.icure.cardinal.sdk.api.raw.successBodyOrNull404
 import com.icure.cardinal.sdk.api.raw.successBodyOrThrowRevisionConflict
-import com.icure.cardinal.sdk.crypto.encryptor.impl.generated.DocumentDecryptor
 import com.icure.cardinal.sdk.crypto.entities.DocumentShareOptions
 import com.icure.cardinal.sdk.crypto.entities.EntityWithEncryptionMetadataTypeName
 import com.icure.cardinal.sdk.crypto.entities.OwningEntityDetails
@@ -44,6 +43,7 @@ import com.icure.cardinal.sdk.model.toStoredDocumentIdentifier
 import com.icure.cardinal.sdk.options.ApiConfiguration
 import com.icure.cardinal.sdk.options.BasicApiConfiguration
 import com.icure.cardinal.sdk.utils.EntityEncryptionException
+import com.icure.cardinal.sdk.utils.UnavailableEncryptionKeyException
 import com.icure.cardinal.sdk.utils.currentEpochMs
 import com.icure.cardinal.sdk.utils.generation.JsMapAsObjectArray
 import com.icure.cardinal.sdk.utils.pagination.IdsPageIterator
@@ -63,8 +63,8 @@ private fun decryptedApiFlavour(
 ): FlavouredApi<EncryptedDocument, DecryptedDocument> = FlavouredApi.decrypted(
 	config = config,
 	type = EntityWithEncryptionMetadataTypeName.Document,
-	encryptor = config.encryptors.document,
-	decryptor = DocumentDecryptor,
+	encryptors = config.encryptors.document,
+	getRootModelVersion = EncryptedDocument::extensionsVersion,
 )
 
 @InternalIcureApi
@@ -73,8 +73,8 @@ private fun tryAndRecoverApiFlavour(
 ): FlavouredApi<EncryptedDocument, Document> = FlavouredApi.tryAndRecover(
 	config = config,
 	type = EntityWithEncryptionMetadataTypeName.Document,
-	encryptor = config.encryptors.document,
-	decryptor = DocumentDecryptor,
+	encryptors = config.encryptors.document,
+	getRootModelVersion = EncryptedDocument::extensionsVersion,
 )
 
 @InternalIcureApi
@@ -714,7 +714,7 @@ private class DocumentApiImpl(
 
 	override suspend fun encryptAndSetMainAttachment(document: Document, utis: List<String>?, attachment: ByteArray): EncryptedDocument {
 		val aesKey = crypto.entity.tryDecryptAndImportAnyEncryptionKey(null, listOf(document), EntityWithEncryptionMetadataTypeName.Document)[document.id]?.key
-			?: throw EntityEncryptionException("Cannot extract encryption key from document")
+			?: throw UnavailableEncryptionKeyException("Cannot extract encryption key from document")
 		val payload = crypto.primitives.aes.encrypt(attachment, aesKey)
 		return rawApi.setDocumentAttachment(
 			documentId = document.id,
@@ -748,7 +748,7 @@ private class DocumentApiImpl(
 		attachment: ByteArray,
 	): EncryptedDocument {
 		val aesKey = crypto.entity.tryDecryptAndImportAnyEncryptionKey(null, listOf(document), EntityWithEncryptionMetadataTypeName.Document)[document.id]?.key
-			?: throw EntityEncryptionException("Cannot extract encryption key from document")
+			?: throw UnavailableEncryptionKeyException("Cannot extract encryption key from document")
 		val payload = crypto.primitives.aes.encrypt(attachment, aesKey)
 		return rawApi.setSecondaryAttachment(
 			documentId = document.id,

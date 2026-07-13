@@ -17,6 +17,10 @@ data class EntitiesEncryptionManifests(
 	 */
 	val manifestsByName: Map<String, EntityEncryptionManifest>,
 	/**
+	 * Manifests for extensions encryption.
+	 */
+	val extensionsManifestsByName: Map<String, ExtensionsEncryptionManifest>,
+	/**
 	 * Name of the manifest in [manifestsByName] that should be used for the encryption of [com.icure.cardinal.sdk.model.AccessLog] entities
 	 */
 	val accessLog: String,

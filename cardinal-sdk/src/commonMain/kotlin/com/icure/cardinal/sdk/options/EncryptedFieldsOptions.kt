@@ -41,10 +41,14 @@ private fun createDefaultEntitiesEncryptionManifests(
 		"Annotation" to EntityEncryptionManifest(
 			fieldsToEncrypt = setOf("markdown"),
 			recursiveEncryption = emptyMap(),
+			extensionsManifestsByModelVersion = emptyMap(),
+			currentExtensionsManifest = null,
 		),
 		"CalendarItemTag" to EntityEncryptionManifest(
 			fieldsToEncrypt = setOf("code", "date", "userId", "userName"),
 			recursiveEncryption = emptyMap(),
+			extensionsManifestsByModelVersion = emptyMap(),
+			currentExtensionsManifest = null,
 		),
 		"Service" to EntityEncryptionManifest(
 			fieldsToEncrypt = setOf("comment"),
@@ -52,6 +56,8 @@ private fun createDefaultEntitiesEncryptionManifests(
 				"notes" to "Annotation",
 				if (useLegacyServiceContentEncryption) null else ("content" to "Content")
 			).toMap(),
+			extensionsManifestsByModelVersion = emptyMap(),
+			currentExtensionsManifest = null,
 		),
 		if (useLegacyServiceContentEncryption) null else (
 			"Content" to EntityEncryptionManifest(
@@ -72,15 +78,21 @@ private fun createDefaultEntitiesEncryptionManifests(
 				recursiveEncryption = mapOf(
 					"compoundValue" to "Service",
 				),
+				extensionsManifestsByModelVersion = emptyMap(),
+				currentExtensionsManifest = null,
 			)
 		),
 		"CareTeamMember" to EntityEncryptionManifest(
 			fieldsToEncrypt = setOf("careTeamMemberType", "healthcarePartyId", "quality"),
 			recursiveEncryption = emptyMap(),
+			extensionsManifestsByModelVersion = emptyMap(),
+			currentExtensionsManifest = null,
 		),
 		"Episode" to EntityEncryptionManifest(
 			fieldsToEncrypt = setOf("name", "comment"),
 			recursiveEncryption = emptyMap(),
+			extensionsManifestsByModelVersion = emptyMap(),
+			currentExtensionsManifest = null,
 		),
 		"Insurability" to EntityEncryptionManifest(
 			fieldsToEncrypt = setOf(
@@ -95,14 +107,20 @@ private fun createDefaultEntitiesEncryptionManifests(
 				"titularyId",
 			),
 			recursiveEncryption = emptyMap(),
+			extensionsManifestsByModelVersion = emptyMap(),
+			currentExtensionsManifest = null,
 		),
 		"Partnership" to EntityEncryptionManifest(
 			fieldsToEncrypt = setOf("type", "status", "partnerId"),
 			recursiveEncryption = emptyMap(),
+			extensionsManifestsByModelVersion = emptyMap(),
+			currentExtensionsManifest = null,
 		),
 		"PatientHealthCareParty" to EntityEncryptionManifest(
 			fieldsToEncrypt = setOf("type", "healthcarePartyId", "sendFormats", "referralPeriods", "properties"),
 			recursiveEncryption = emptyMap(),
+			extensionsManifestsByModelVersion = emptyMap(),
+			currentExtensionsManifest = null,
 		),
 		"FinancialInstitutionInformation" to EntityEncryptionManifest(
 			fieldsToEncrypt = setOf(
@@ -115,14 +133,20 @@ private fun createDefaultEntitiesEncryptionManifests(
 				"preferredFiiForPartners",
 			),
 			recursiveEncryption = emptyMap(),
+			extensionsManifestsByModelVersion = emptyMap(),
+			currentExtensionsManifest = null,
 		),
 		"SchoolingInfo" to EntityEncryptionManifest(
 			fieldsToEncrypt = setOf("startDate", "endDate", "school", "typeOfEducation"),
 			recursiveEncryption = emptyMap(),
+			extensionsManifestsByModelVersion = emptyMap(),
+			currentExtensionsManifest = null,
 		),
 		"EmploymentInfo" to EntityEncryptionManifest(
 			fieldsToEncrypt = setOf("startDate", "endDate", "professionType", "employer"),
 			recursiveEncryption = emptyMap(),
+			extensionsManifestsByModelVersion = emptyMap(),
+			currentExtensionsManifest = null,
 		),
 		"MedicalHouseContract" to EntityEncryptionManifest(
 			fieldsToEncrypt = setOf(
@@ -160,6 +184,8 @@ private fun createDefaultEntitiesEncryptionManifests(
 				"receipts",
 			),
 			recursiveEncryption = emptyMap(),
+			extensionsManifestsByModelVersion = emptyMap(),
+			currentExtensionsManifest = null,
 		),
 		"AccessLog" to EntityEncryptionManifest(
 			fieldsToEncrypt = setOf(
@@ -168,6 +194,8 @@ private fun createDefaultEntitiesEncryptionManifests(
 				"patientId", // Deprecated and ignored unless using the legacy support SDK
 			),
 			recursiveEncryption = emptyMap(),
+			extensionsManifestsByModelVersion = emptyMap(),
+			currentExtensionsManifest = null,
 		),
 		"CalendarItem" to EntityEncryptionManifest(
 			fieldsToEncrypt = setOf(
@@ -182,6 +210,8 @@ private fun createDefaultEntitiesEncryptionManifests(
 			// The old configuration used "meetingTags[].*" (encrypt every field of each tag); there is no
 			// equivalent wildcard anymore, so we emulate it with a dedicated manifest listing every field.
 			recursiveEncryption = mapOf("meetingTags" to "CalendarItemTag"),
+			extensionsManifestsByModelVersion = emptyMap(),
+			currentExtensionsManifest = null,
 		),
 		"Contact" to EntityEncryptionManifest(
 			fieldsToEncrypt = setOf(
@@ -195,6 +225,8 @@ private fun createDefaultEntitiesEncryptionManifests(
 				"notes" to "Annotation",
 				"services" to "Service",
 			),
+			extensionsManifestsByModelVersion = emptyMap(),
+			currentExtensionsManifest = null,
 		),
 		"HealthElement" to EntityEncryptionManifest(
 			fieldsToEncrypt = setOf("descr", "note"),
@@ -203,6 +235,8 @@ private fun createDefaultEntitiesEncryptionManifests(
 				"careTeam" to "CareTeamMember",
 				"episodes" to "Episode",
 			),
+			extensionsManifestsByModelVersion = emptyMap(),
+			currentExtensionsManifest = null,
 		),
 		"Patient" to EntityEncryptionManifest(
 			fieldsToEncrypt = setOf(
@@ -237,14 +271,20 @@ private fun createDefaultEntitiesEncryptionManifests(
 				"schoolingInfos" to "SchoolingInfo", // Deprecated and ignored unless using the legacy support SDK
 				"employementInfos" to "EmploymentInfo", // Deprecated and ignored unless using the legacy support SDK
 			),
+			extensionsManifestsByModelVersion = emptyMap(),
+			currentExtensionsManifest = null,
 		),
 		"Message" to EntityEncryptionManifest(
 			fieldsToEncrypt = setOf("subject"),
 			recursiveEncryption = emptyMap(),
+			extensionsManifestsByModelVersion = emptyMap(),
+			currentExtensionsManifest = null,
 		),
 		"Topic" to EntityEncryptionManifest(
 			fieldsToEncrypt = setOf("description", "linkedServices", "linkedHealthElements"),
 			recursiveEncryption = emptyMap(),
+			extensionsManifestsByModelVersion = emptyMap(),
+			currentExtensionsManifest = null,
 		),
 		"Document" to EntityEncryptionManifest(
 			fieldsToEncrypt = setOf(
@@ -252,24 +292,35 @@ private fun createDefaultEntitiesEncryptionManifests(
 				"name",
 			),
 			recursiveEncryption = emptyMap(),
+			extensionsManifestsByModelVersion = emptyMap(),
+			currentExtensionsManifest = null,
 		),
 		"Form" to EntityEncryptionManifest(
 			fieldsToEncrypt = setOf("descr"),
 			recursiveEncryption = emptyMap(),
+			extensionsManifestsByModelVersion = emptyMap(),
+			currentExtensionsManifest = null,
 		),
 		"Receipt" to EntityEncryptionManifest(
 			fieldsToEncrypt = setOf("references"),
 			recursiveEncryption = emptyMap(),
+			extensionsManifestsByModelVersion = emptyMap(),
+			currentExtensionsManifest = null,
 		),
 		"Classification" to EntityEncryptionManifest(
 			fieldsToEncrypt = setOf("label"),
 			recursiveEncryption = emptyMap(),
+			extensionsManifestsByModelVersion = emptyMap(),
+			currentExtensionsManifest = null,
 		),
 		"Invoice" to EntityEncryptionManifest(
 			fieldsToEncrypt = setOf("reason"),
 			recursiveEncryption = emptyMap(),
+			extensionsManifestsByModelVersion = emptyMap(),
+			currentExtensionsManifest = null,
 		),
 	).toMap(),
+	extensionsManifestsByName = emptyMap(),
 	accessLog = "AccessLog",
 	calendarItem = "CalendarItem",
 	contact = "Contact",

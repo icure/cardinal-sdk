@@ -13,7 +13,6 @@ import com.icure.cardinal.sdk.api.MessageInGroupApi
 import com.icure.cardinal.sdk.api.raw.RawMessageApi
 import com.icure.cardinal.sdk.api.raw.successBodyOrNull404
 import com.icure.cardinal.sdk.api.raw.successBodyOrThrowRevisionConflict
-import com.icure.cardinal.sdk.crypto.encryptor.impl.generated.MessageDecryptor
 import com.icure.cardinal.sdk.crypto.entities.EntityWithEncryptionMetadataTypeName
 import com.icure.cardinal.sdk.crypto.entities.MessageShareOptions
 import com.icure.cardinal.sdk.crypto.entities.OwningEntityDetails
@@ -70,8 +69,8 @@ private fun decryptedApiFlavour(
 ): FlavouredApi<EncryptedMessage, DecryptedMessage> = FlavouredApi.decrypted(
 	config = config,
 	type = EntityWithEncryptionMetadataTypeName.Message,
-	encryptor = config.encryptors.message,
-	decryptor = MessageDecryptor,
+	encryptors = config.encryptors.message,
+	getRootModelVersion = EncryptedMessage::extensionsVersion,
 )
 
 @InternalIcureApi
@@ -80,8 +79,8 @@ private fun tryAndRecoverApiFlavour(
 ): FlavouredApi<EncryptedMessage, Message> = FlavouredApi.tryAndRecover(
 	config = config,
 	type = EntityWithEncryptionMetadataTypeName.Message,
-	encryptor = config.encryptors.message,
-	decryptor = MessageDecryptor,
+	encryptors = config.encryptors.message,
+	getRootModelVersion = EncryptedMessage::extensionsVersion,
 )
 
 @OptIn(InternalIcureApi::class)

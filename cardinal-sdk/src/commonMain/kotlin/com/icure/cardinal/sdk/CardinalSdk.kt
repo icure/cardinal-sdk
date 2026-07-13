@@ -109,6 +109,8 @@ import com.icure.cardinal.sdk.auth.services.AuthProvider
 import com.icure.cardinal.sdk.auth.services.JwtBasedAuthProvider
 import com.icure.cardinal.sdk.crypto.AccessControlKeysHeadersProvider
 import com.icure.cardinal.sdk.crypto.CryptoStrategies
+import com.icure.cardinal.sdk.crypto.encryptor.DecryptorOptions
+import com.icure.cardinal.sdk.crypto.encryptor.SharedEncryptorsOptions
 import com.icure.cardinal.sdk.crypto.encryptor.impl.generated.GeneratedEntitiesEncryptorInitializer
 import com.icure.cardinal.sdk.crypto.entities.SdkBoundGroup
 import com.icure.cardinal.sdk.crypto.impl.AccessControlKeysHeadersProviderImpl
@@ -139,15 +141,18 @@ import com.icure.cardinal.sdk.model.extensions.type
 import com.icure.cardinal.sdk.options.ApiConfiguration
 import com.icure.cardinal.sdk.options.ApiConfigurationImpl
 import com.icure.cardinal.sdk.options.AuthenticationMethod
+import com.icure.cardinal.sdk.options.DecryptedJsonStrictness
 import com.icure.cardinal.sdk.options.EncryptedFieldsOptions
 import com.icure.cardinal.sdk.options.RequestRetryConfiguration
 import com.icure.cardinal.sdk.options.SdkOptions
+import com.icure.cardinal.sdk.options.SerializationOptions
 import com.icure.cardinal.sdk.options.configuredClientOrDefault
 import com.icure.cardinal.sdk.options.configuredJsonOrDefault
 import com.icure.cardinal.sdk.options.encryptorOptions
 import com.icure.cardinal.sdk.options.getGroupAndAuthProvider
 import com.icure.cardinal.sdk.options.ignoreUnknownFieldsOrDefault
 import com.icure.cardinal.sdk.options.manifests
+import com.icure.cardinal.sdk.options.unversionedEntitiesDecryptedJsonStrictnessOrDefault
 import com.icure.cardinal.sdk.storage.CardinalStorageFacade
 import com.icure.cardinal.sdk.storage.KeyStorageFacade
 import com.icure.cardinal.sdk.storage.StorageFacade
@@ -443,18 +448,23 @@ private class AuthenticationWithProcessStepImpl(
 	}
 }
 
-private fun SdkOptions.asInitialized(baseStorage: StorageFacade): InitializedSdkOptions = InitializedSdkOptions(
-	useHierarchicalDataOwners = useHierarchicalDataOwners,
-	createTransferKeys = createTransferKeys,
-	autoCreateEncryptionKeyForExistingLegacyData = autoCreateEncryptionKeyForExistingLegacyData,
-	parentJob = parentJob,
-	requestTimeout = requestTimeout,
-	requestRetryConfiguration = requestRetryConfiguration,
-	baseStorage = baseStorage,
-	keyStorage = keyStorage,
-	encryptedFieldsOptions = encryptedFieldsOptions,
-	ignoreUnknownFields = ignoreUnknownFieldsOrDefault()
-)
+private fun SdkOptions.asInitialized(baseStorage: StorageFacade): InitializedSdkOptions {
+	return InitializedSdkOptions(
+		useHierarchicalDataOwners = useHierarchicalDataOwners,
+		createTransferKeys = createTransferKeys,
+		autoCreateEncryptionKeyForExistingLegacyData = autoCreateEncryptionKeyForExistingLegacyData,
+		parentJob = parentJob,
+		requestTimeout = requestTimeout,
+		requestRetryConfiguration = requestRetryConfiguration,
+		baseStorage = baseStorage,
+		keyStorage = keyStorage,
+		encryptedFieldsOptions = encryptedFieldsOptions,
+		unversionedEntitiesDecryptedJsonStrictness = unversionedEntitiesDecryptedJsonStrictnessOrDefault(
+			this.unversionedEntitiesDecryptedJsonStrictness,
+			this.ignoreUnknownFieldsOrDefault()
+		)
+	)
+}
 
 internal data class InitializedSdkOptions(
 	val encryptedFieldsOptions: EncryptedFieldsOptions?,
@@ -466,7 +476,11 @@ internal data class InitializedSdkOptions(
 	val requestRetryConfiguration: RequestRetryConfiguration,
 	val keyStorage: KeyStorageFacade?,
 	val baseStorage: StorageFacade,
-	val ignoreUnknownFields: Boolean,
+	val unversionedEntitiesDecryptedJsonStrictness: DecryptedJsonStrictness
+)
+
+internal fun InitializedSdkOptions.decryptorOptions() = DecryptorOptions(
+	unversionedEntitiesDecryptedJsonStrictness = unversionedEntitiesDecryptedJsonStrictness
 )
 
 private const val ANONYMITY_HEADER = "Icure-Request-Autofix-Anonymity"
@@ -620,8 +634,6 @@ internal suspend fun initializeApiCrypto(
 		autoCreateEncryptionKeyForExistingLegacyData = options.autoCreateEncryptionKeyForExistingLegacyData,
 		userEncryptionKeysManager = userEncryptionKeys,
 		boundGroup = boundGroup,
-		json = json,
-		ignoreUnknownDecryptedFields = options.ignoreUnknownFields,
 	)
 	val headersProvider: AccessControlKeysHeadersProvider =
 		if (delegatorActorIsAnonymous)
@@ -661,10 +673,15 @@ internal suspend fun initializeApiCrypto(
 			dataOwnerApi
 		).updateSelfTransferKeys()
 	}
-
+	val encryptorsJson = when (options.unversionedEntitiesDecryptedJsonStrictness) {
+		DecryptedJsonStrictness.Strict -> Serialization.json
+		DecryptedJsonStrictness.IgnoreUnknownFields, DecryptedJsonStrictness.IgnoreBadValues -> Serialization.lenientJson
+	}
 	val encryptors = GeneratedEntitiesEncryptorInitializer.initializeEncryptorsForManifests(
 		options.encryptedFieldsOptions.manifests,
-		options.encryptedFieldsOptions.encryptorOptions
+		options.encryptedFieldsOptions.encryptorOptions,
+		options.decryptorOptions(),
+		SharedEncryptorsOptions(encryptorsJson, cryptoService)
 	)
 	return Triple(
 		ApiConfigurationImpl(
@@ -676,7 +693,7 @@ internal suspend fun initializeApiCrypto(
 			rawApiConfig = rawApiConfig,
 			boundGroup = boundGroup,
 			encryptors = encryptors,
-			ignoreUnkonwnDecryptedFields = options.ignoreUnknownFields,
+			encryptedContentJson = encryptorsJson,
 		),
 		userEncryptionKeysInitInfo.newKey?.key,
 		sdkScope

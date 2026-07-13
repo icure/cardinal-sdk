@@ -1,9 +1,9 @@
 // This file is auto-generated
 package com.icure.cardinal.sdk.crypto.encryptor.`impl`.generated
 
-import com.icure.cardinal.sdk.crypto.encryptor.EncryptorFactoryContext
 import com.icure.cardinal.sdk.crypto.encryptor.EntityEncryptor
 import com.icure.cardinal.sdk.crypto.encryptor.EntityEncryptorFactory
+import com.icure.cardinal.sdk.crypto.encryptor.EntityEncryptorsFactoryContext
 import com.icure.cardinal.sdk.crypto.encryptor.`impl`.AbstractEntityEncryptor
 import com.icure.cardinal.sdk.crypto.encryptor.`impl`.EncryptableFieldConfig
 import com.icure.cardinal.sdk.model.embed.DecryptedFlatRateTarification
@@ -44,11 +44,14 @@ internal object FlatRateTarificationEncryptorFactory :
 
 	override fun create(
 		entityManifestName: String,
-		encryptorFactoryContext: EncryptorFactoryContext,
+		encryptorsFactoryContext: EntityEncryptorsFactoryContext,
 		encodingJson: Json,
 		cryptoService: CryptoService,
 	): EntityEncryptor<EncryptedFlatRateTarification, DecryptedFlatRateTarification> {
-		val manifest = encryptorFactoryContext.getManifest(entityManifestName)
+		val manifest = encryptorsFactoryContext.getManifest(entityManifestName)
+		require(manifest.currentExtensionsManifest == null) {
+			"FlatRateTarification is not Extendable and does not support extensions encryption, but its manifest defines a currentExtensionsManifest."
+		}
 		return FlatRateTarificationEncryptor(
 			code_e = "code" in manifest.fieldsToEncrypt,
 			flatRateType_e = "flatRateType" in manifest.fieldsToEncrypt,
@@ -59,7 +62,7 @@ internal object FlatRateTarificationEncryptorFactory :
 				} else {
 					manifest.recursiveEncryption["valorisations"]?.let {
 						EncryptableFieldConfig.Configured(
-							encryptorFactoryContext.getEntityEncryptorProvider(
+							encryptorsFactoryContext.getEntityEncryptorsProvider(
 								entityManifestName = it,
 								encryptedClass = EncryptedValorisation::class,
 								decryptedClass = DecryptedValorisation::class,

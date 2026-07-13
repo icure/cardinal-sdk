@@ -14,7 +14,6 @@ import com.icure.cardinal.sdk.api.raw.RawCalendarItemApi
 import com.icure.cardinal.sdk.api.raw.RawDataOwnerApi
 import com.icure.cardinal.sdk.api.raw.successBodyOrNull404
 import com.icure.cardinal.sdk.api.raw.successBodyOrThrowRevisionConflict
-import com.icure.cardinal.sdk.crypto.encryptor.impl.generated.CalendarItemDecryptor
 import com.icure.cardinal.sdk.crypto.entities.CalendarItemShareOptions
 import com.icure.cardinal.sdk.crypto.entities.DelegateShareOptions
 import com.icure.cardinal.sdk.crypto.entities.EntityWithEncryptionMetadataTypeName
@@ -73,8 +72,8 @@ private fun decryptedApiFlavour(
 ): FlavouredApi<EncryptedCalendarItem, DecryptedCalendarItem> = FlavouredApi.decrypted(
 	config = config,
 	type = EntityWithEncryptionMetadataTypeName.CalendarItem,
-	encryptor = config.encryptors.calendarItem,
-	decryptor = CalendarItemDecryptor,
+	encryptors = config.encryptors.calendarItem,
+	getRootModelVersion = EncryptedCalendarItem::extensionsVersion,
 )
 
 @InternalIcureApi
@@ -83,8 +82,8 @@ private fun tryAndRecoverApiFlavour(
 ): FlavouredApi<EncryptedCalendarItem, CalendarItem> = FlavouredApi.tryAndRecover(
 	config = config,
 	type = EntityWithEncryptionMetadataTypeName.CalendarItem,
-	encryptor = config.encryptors.calendarItem,
-	decryptor = CalendarItemDecryptor,
+	encryptors = config.encryptors.calendarItem,
+	getRootModelVersion = EncryptedCalendarItem::extensionsVersion,
 )
 
 @InternalIcureApi

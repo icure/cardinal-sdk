@@ -8,11 +8,13 @@ import com.icure.cardinal.sdk.api.MaintenanceTaskFlavouredApi
 import com.icure.cardinal.sdk.api.raw.RawMaintenanceTaskApi
 import com.icure.cardinal.sdk.api.raw.successBodyOrNull404
 import com.icure.cardinal.sdk.api.raw.successBodyOrThrowRevisionConflict
+import com.icure.cardinal.sdk.crypto.encryptor.DecryptorOptions
 import com.icure.cardinal.sdk.crypto.encryptor.EncryptorOptions
 import com.icure.cardinal.sdk.crypto.encryptor.EntityEncryptionManifest
+import com.icure.cardinal.sdk.crypto.encryptor.EntityEncryptors
+import com.icure.cardinal.sdk.crypto.encryptor.SharedEncryptorsOptions
 import com.icure.cardinal.sdk.crypto.encryptor.impl.generated.GeneratedEntitiesEncryptorInitializer
-import com.icure.cardinal.sdk.crypto.encryptor.impl.generated.MaintenanceTaskDecryptor
-import com.icure.cardinal.sdk.crypto.encryptor.initializeSingleEncryptor
+import com.icure.cardinal.sdk.crypto.encryptor.initializeSingleEntityEncryptors
 import com.icure.cardinal.sdk.crypto.entities.EntityWithEncryptionMetadataTypeName
 import com.icure.cardinal.sdk.crypto.entities.MaintenanceTaskShareOptions
 import com.icure.cardinal.sdk.exceptions.NotFoundException
@@ -37,6 +39,7 @@ import com.icure.cardinal.sdk.model.extensions.dataOwnerId
 import com.icure.cardinal.sdk.model.specializations.HexString
 import com.icure.cardinal.sdk.options.ApiConfiguration
 import com.icure.cardinal.sdk.options.BasicApiConfiguration
+import com.icure.cardinal.sdk.options.DecryptedJsonStrictness
 import com.icure.cardinal.sdk.serialization.MaintenanceTaskAbstractFilterSerializer
 import com.icure.cardinal.sdk.serialization.SubscriptionSerializer
 import com.icure.cardinal.sdk.subscription.EntitySubscription
@@ -50,20 +53,6 @@ import com.icure.cardinal.sdk.utils.pagination.PaginatedListIterator
 import com.icure.utils.InternalIcureApi
 
 @InternalIcureApi
-private val maintenanceTaskEncryptor = GeneratedEntitiesEncryptorInitializer.initializeSingleEncryptor<
-	EncryptedMaintenanceTask,
-	DecryptedMaintenanceTask
->(
-	"MaintenanceTask",
-	mapOf("MaintenanceTask" to EntityEncryptionManifest(setOf("properties"), emptyMap())),
-	// Currently the maintenance task encryptor does not depend on the options so we can actually use anything here
-	EncryptorOptions(
-		useLegacyServiceContentEncryption = false,
-		serializeEncryptedSelfUsingLegacyNames = false
-	),
-)
-
-@InternalIcureApi
 private fun encryptedApiFlavour(
 	config: BasicApiConfiguration
 ): FlavouredApi<EncryptedMaintenanceTask, EncryptedMaintenanceTask> = FlavouredApi.encrypted(
@@ -72,22 +61,24 @@ private fun encryptedApiFlavour(
 
 @InternalIcureApi
 private fun decryptedApiFlavour(
-	config: ApiConfiguration
+	config: ApiConfiguration,
+	maintenanceTaskEncryptors: EntityEncryptors<EncryptedMaintenanceTask, DecryptedMaintenanceTask>
 ): FlavouredApi<EncryptedMaintenanceTask, DecryptedMaintenanceTask> = FlavouredApi.decrypted(
 	config = config,
 	type = EntityWithEncryptionMetadataTypeName.MaintenanceTask,
-	encryptor = maintenanceTaskEncryptor,
-	decryptor = MaintenanceTaskDecryptor,
+	encryptors = maintenanceTaskEncryptors,
+	getRootModelVersion = { null },
 )
 
 @InternalIcureApi
 private fun tryAndRecoverApiFlavour(
-	config: ApiConfiguration
+	config: ApiConfiguration,
+	maintenanceTaskEncryptors: EntityEncryptors<EncryptedMaintenanceTask, DecryptedMaintenanceTask>
 ): FlavouredApi<EncryptedMaintenanceTask, MaintenanceTask> = FlavouredApi.tryAndRecover(
 	config = config,
 	type = EntityWithEncryptionMetadataTypeName.MaintenanceTask,
-	encryptor = maintenanceTaskEncryptor,
-	decryptor = MaintenanceTaskDecryptor,
+	encryptors = maintenanceTaskEncryptors,
+	getRootModelVersion = { null },
 )
 
 
@@ -197,9 +188,33 @@ internal fun initMaintenanceTaskApi(
 	rawApi: RawMaintenanceTaskApi,
 	config: ApiConfiguration,
 ): MaintenanceTaskApi {
-	val decryptedFlavour = decryptedApiFlavour(config)
+	val maintenanceTaskEncryptors = GeneratedEntitiesEncryptorInitializer.initializeSingleEntityEncryptors<
+		EncryptedMaintenanceTask,
+		DecryptedMaintenanceTask
+		>(
+		"MaintenanceTask",
+		mapOf("MaintenanceTask" to EntityEncryptionManifest(
+			setOf("properties"),
+			emptyMap(),
+			emptyMap(),
+			null
+		)),
+		// Currently the maintenance task encryptor does not depend on the options so we can actually use anything here
+		EncryptorOptions(
+			useLegacyServiceContentEncryption = false,
+			serializeEncryptedSelfUsingLegacyNames = false
+		),
+		DecryptorOptions(
+			unversionedEntitiesDecryptedJsonStrictness = DecryptedJsonStrictness.IgnoreBadValues // Don't contain important data
+		),
+		SharedEncryptorsOptions(
+			json = Serialization.lenientJson,
+			cryptoService = config.crypto.primitives,
+		)
+	)
+	val decryptedFlavour = decryptedApiFlavour(config, maintenanceTaskEncryptors)
 	val encryptedFlavour = encryptedApiFlavour(config)
-	val tryAndRecoverFlavour = tryAndRecoverApiFlavour(config)
+	val tryAndRecoverFlavour = tryAndRecoverApiFlavour(config, maintenanceTaskEncryptors)
 	return MaintenanceTaskApiImpl(
 		rawApi,
 		config,

@@ -6,11 +6,12 @@ import com.icure.cardinal.sdk.crypto.BaseSecurityMetadataDecryptor
 import com.icure.cardinal.sdk.crypto.DelegationsDeAnonymization
 import com.icure.cardinal.sdk.crypto.EntityEncryptionService
 import com.icure.cardinal.sdk.crypto.UserEncryptionKeysManager
+import com.icure.cardinal.sdk.crypto.encryptor.DecryptorOptions
 import com.icure.cardinal.sdk.crypto.encryptor.EncryptorOptions
 import com.icure.cardinal.sdk.crypto.encryptor.EntityEncryptionManifest
+import com.icure.cardinal.sdk.crypto.encryptor.SharedEncryptorsOptions
 import com.icure.cardinal.sdk.crypto.encryptor.impl.generated.GeneratedEntitiesEncryptorInitializer
-import com.icure.cardinal.sdk.crypto.encryptor.impl.generated.SecureDelegationKeyMapDecryptor
-import com.icure.cardinal.sdk.crypto.encryptor.initializeSingleEncryptor
+import com.icure.cardinal.sdk.crypto.encryptor.initializeSingleEntityEncryptors
 import com.icure.cardinal.sdk.crypto.entities.EntityAccessInformation
 import com.icure.cardinal.sdk.crypto.entities.EntityWithEncryptionMetadataTypeName
 import com.icure.cardinal.sdk.crypto.entities.SdkBoundGroup
@@ -28,6 +29,8 @@ import com.icure.cardinal.sdk.model.base.HasEncryptionMetadata
 import com.icure.cardinal.sdk.model.embed.AccessLevel
 import com.icure.cardinal.sdk.model.requests.RequestedPermission
 import com.icure.cardinal.sdk.model.specializations.encodeAsAccessControlHeaders
+import com.icure.cardinal.sdk.options.DecryptedJsonStrictness
+import com.icure.cardinal.sdk.utils.Serialization
 import com.icure.cardinal.sdk.utils.ensure
 import com.icure.cardinal.sdk.utils.getLogger
 import com.icure.kryptom.crypto.CryptoService
@@ -45,20 +48,24 @@ class DelegationsDeAnonymizationImpl(
 ) : DelegationsDeAnonymization {
 	companion object {
 		private val log = getLogger("DelegationsDeAnonymization")
-
-		private val delegationKeyMapEncryptor = GeneratedEntitiesEncryptorInitializer.initializeSingleEncryptor<
-			EncryptedSecureDelegationKeyMap,
-			DecryptedSecureDelegationKeyMap
-		>(
-			"SecureDelegationKeyMap",
-			mapOf("SecureDelegationKeyMap" to EntityEncryptionManifest(setOf("delegate", "delegator"), emptyMap())),
-			// Currently the maintenance task encryptor does not depend on the options so we can actually use anything here
-			EncryptorOptions(
-				useLegacyServiceContentEncryption = false,
-				serializeEncryptedSelfUsingLegacyNames = false
-			),
-		)
 	}
+
+	private val delegationKeyMapEncryptors = GeneratedEntitiesEncryptorInitializer.initializeSingleEntityEncryptors<
+		EncryptedSecureDelegationKeyMap,
+		DecryptedSecureDelegationKeyMap
+	>(
+		"SecureDelegationKeyMap",
+		mapOf("SecureDelegationKeyMap" to EntityEncryptionManifest(setOf("delegate", "delegator"), emptyMap(), emptyMap(), null)),
+		// Currently the maintenance task encryptor does not depend on the options so we can actually use anything here
+		EncryptorOptions(
+			useLegacyServiceContentEncryption = false,
+			serializeEncryptedSelfUsingLegacyNames = false
+		),
+		DecryptorOptions(
+			DecryptedJsonStrictness.IgnoreBadValues
+		),
+		SharedEncryptorsOptions(Serialization.lenientJson, crypto)
+	)
 
 	override suspend fun createOrUpdateDeAnonymizationInfo(
 		entityGroupId: String?,
@@ -175,10 +182,11 @@ class DelegationsDeAnonymizationImpl(
 					)
 			).successBody()
 			entity.tryDecryptEntities(
-				entityGroupId,
-				encryptedMaps,
-				entityType,
-				SecureDelegationKeyMapDecryptor,
+				entityGroupId = entityGroupId,
+				encryptedEntities = encryptedMaps,
+				entityType = entityType,
+				entityDecryptor = delegationKeyMapEncryptors.decryptor,
+				getRootModelVersion = { null }
 			).filterIsInstance<DecryptedSecureDelegationKeyMap>()
 		} else emptyList()
 
@@ -281,10 +289,10 @@ class DelegationsDeAnonymizationImpl(
             autoDelegations = initialDelegates.associateWith { AccessLevel.Read }
 		)
 		val encryptedKeyMap = entity.encryptEntities(
-			resolvedGroup,
-			listOf(initialMapInfo.updatedEntity),
-			entityType,
-			delegationKeyMapEncryptor,
+			entityGroupId = resolvedGroup,
+			unencryptedEntities = listOf(initialMapInfo.updatedEntity),
+			entityType = entityType,
+			entityEncryptor = delegationKeyMapEncryptors.encryptor,
 		).single()
 		val accessControlKeyHeaders = listOf(delegationMembersDetails.accessControlSecret.toAccessControlKeyStringFor(entityType, crypto)).encodeAsAccessControlHeaders().map { it.s }
 		if (resolvedGroup != null) {
