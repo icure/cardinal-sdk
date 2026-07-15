@@ -1,12 +1,18 @@
 package com.icure.cardinal.sdk.crypto.encryptor;
 
+import com.icure.cardinal.sdk.crypto.entities.EntityWithEncryptionMetadataTypeName
 import com.icure.cardinal.sdk.customsdk.commons.model.CustomisedModelVersion
 import com.icure.cardinal.sdk.utils.intersects
 import com.icure.kryptom.crypto.AesAlgorithm
 import com.icure.kryptom.crypto.AesKey
 import com.icure.kryptom.crypto.CryptoService
+import kotlinx.serialization.KSerializer
+import kotlinx.serialization.Serializable
+import kotlinx.serialization.builtins.MapSerializer
+import kotlinx.serialization.builtins.serializer
 import kotlinx.serialization.json.JsonObject
 
+@Serializable
 data class EntityEncryptionManifest(
 	/**
 	 * Fields to encrypt directly in the entity.
@@ -23,8 +29,10 @@ data class EntityEncryptionManifest(
 	 */
 	val recursiveEncryption: Map<String, String>,
 	/**
-	 * Specifies how to decrypt extensions based on the version of the customized model (valus are keys in
-	 * [EntitiesEncryptionManifests.extensionsManifestsByName])
+	 * Specifies how to decrypt extensions based on the version of the customized model:
+	 * - Outer map keys are [CustomisedModelVersion.modelType]
+	 * - Inner map keys are [CustomisedModelVersion.typeVersion]
+	 * - Inner map values are keys in [EntitiesEncryptionManifests.extensionsManifestsByName]
 	 *
 	 * There are multiple manifests that could be used, and they are indexed by a pair of model version number and type,
 	 * since the model version number is not enough. For example:
@@ -34,7 +42,7 @@ data class EntityEncryptionManifest(
 	 * -> Knowing only the version of the root model is not enough: V2 of a root model points to Address V1 if the root
 	 *    model is patient or Address V2 if the root model is Hcp
 	 */
-	val extensionsManifestsByModelVersion: Map<CustomisedModelVersion, String>,
+	val extensionsManifestsByModelVersion: Map<EntityWithEncryptionMetadataTypeName, Map<Int, String>>,
 	/**
 	 * Specifies how to encrypt the extensions, matches the current version of customised model (value is a key of
 	 * [EntitiesEncryptionManifests.extensionsManifestsByName]).

@@ -6,6 +6,7 @@ import com.icure.cardinal.sdk.crypto.encryptor.EntityDecryptorFactory
 import com.icure.cardinal.sdk.crypto.encryptor.EntityEncryptorsFactoryContext
 import com.icure.cardinal.sdk.crypto.encryptor.ExtensionsEncryptors
 import com.icure.cardinal.sdk.crypto.encryptor.`impl`.AbstractEntityDecryptor
+import com.icure.cardinal.sdk.crypto.encryptor.`impl`.loadExtensionsEncryptors
 import com.icure.cardinal.sdk.customsdk.commons.model.CustomisedModelVersion
 import com.icure.cardinal.sdk.model.DecryptedMessage
 import com.icure.cardinal.sdk.model.DecryptedPropertyStub
@@ -36,7 +37,7 @@ internal object MessageDecryptorFactory : EntityDecryptorFactory<EncryptedMessag
 	): EntityDecryptor<EncryptedMessage, DecryptedMessage> {
 		val manifest = entityManifestName?.let { encryptorsFactoryContext.getManifest(it) }
 		val extensionsDecryptorsByVersion =
-			manifest?.extensionsManifestsByModelVersion?.mapValues { (_, extensionsManifestName) ->
+			manifest?.extensionsManifestsByModelVersion?.loadExtensionsEncryptors { extensionsManifestName ->
 				encryptorsFactoryContext.getExtensionEncryptorsProvider(
 					extensionsManifestName = extensionsManifestName,
 					encryptedClass = EncryptedMessage::class,

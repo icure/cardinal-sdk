@@ -1,8 +1,11 @@
 package com.icure.cardinal.sdk.crypto.encryptor
 
+import kotlinx.serialization.Serializable
+
 /**
  * Specifies how entities should be encrypted.
  */
+@Serializable
 data class EntitiesEncryptionManifests(
 	/**
 	 * Manifests of all the entities that should be partially encrypted, both root entities (which are referenced by

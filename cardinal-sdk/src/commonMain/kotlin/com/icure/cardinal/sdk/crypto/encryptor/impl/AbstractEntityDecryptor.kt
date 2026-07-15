@@ -1,6 +1,9 @@
 package com.icure.cardinal.sdk.crypto.encryptor.impl
 
 import com.icure.cardinal.sdk.crypto.encryptor.EntityDecryptor
+import com.icure.cardinal.sdk.crypto.encryptor.ExtensionsEncryptors
+import com.icure.cardinal.sdk.crypto.entities.EntityWithEncryptionMetadataTypeName
+import com.icure.cardinal.sdk.customsdk.commons.model.CustomisedModelVersion
 import com.icure.cardinal.sdk.model.embed.Encryptable
 import com.icure.cardinal.sdk.options.DecryptedJsonStrictness
 import com.icure.cardinal.sdk.utils.UnexpectedEncryptedContentException
@@ -75,3 +78,11 @@ internal abstract class AbstractEntityDecryptor<ENCRYPTED : Encryptable, DECRYPT
 			alternative
 		}
 }
+
+internal fun Map<EntityWithEncryptionMetadataTypeName, Map<Int, String>>.loadExtensionsEncryptors(
+	getExtensionsEncryptorsProvider: (extensionsManifestName: String) -> Lazy<ExtensionsEncryptors>
+): Map<CustomisedModelVersion, Lazy<ExtensionsEncryptors>> = this.flatMap { (type, inner) ->
+	inner.map { (version, manifestName) ->
+		CustomisedModelVersion(modelType = type, typeVersion = version) to getExtensionsEncryptorsProvider(manifestName)
+	}
+}.toMap()
