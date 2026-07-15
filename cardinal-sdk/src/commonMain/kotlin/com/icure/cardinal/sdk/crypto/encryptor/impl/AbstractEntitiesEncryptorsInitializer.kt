@@ -373,7 +373,7 @@ internal abstract class AbstractEntitiesEncryptorsInitializer : EntitiesEncrypto
 				}
 			} else {
 				extensionsManifestTypeRegistry[extensionsManifestName] = marker
-				getManifest(extensionsManifestName) // just check exists
+				getExtensionsManifest(extensionsManifestName) // just check exists
 				toGenerateQueue.addLast(GenerationRequest.ExtensionEncryptors(extensionsManifestName))
 			}
 			return initializedExtensionsLazies[extensionsManifestName] ?: lazy {
