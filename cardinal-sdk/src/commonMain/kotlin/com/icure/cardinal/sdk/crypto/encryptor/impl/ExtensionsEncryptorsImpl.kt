@@ -84,35 +84,36 @@ internal class ExtensionsEncryptorsImpl(
 	override suspend fun decryptExtension(
 		decryptionKeys: Collection<AesKey<AesAlgorithm.CbcWithPkcs7Padding>>,
 		extensions: JsonObject
-	): JsonObject = JsonObject(
+	): JsonObject {
+		val res = extensions.toMutableMap()
 		EncryptorsHelpers.decryptEncryptSelf(
 			decryptionKeys = decryptionKeys,
 			encryptedSelf = extensions[ENCRYPTED_SELF]?.let {
 				Base64String((it as JsonPrimitive).content) // Server validates that encrypted self is a base64 string
 			},
 			cryptoService = cryptoService
-		).mapNotNull { (name, value) ->
+		).forEach { (name, value) ->
 			if (name in fullEncryptionFields) {
-				name to value
-			} else {
-				recursiveEncryption[name]?.decryptExtensionValue(decryptionKeys, value)?.let { name to it }
+				res[name] = value
 			}
-		}.toMap()
-	)
+		}
+		recursiveEncryption.forEach { (name, encryptor) ->
+			extensions[name]?.also {
+				res[name] = encryptor.decryptExtensionValue(decryptionKeys, it)
+			}
+		}
+		return JsonObject(res)
+	}
 
 	interface Recursive {
 		suspend fun encryptExtensionValue(
 			encryptionKey: AesKey<AesAlgorithm.CbcWithPkcs7Padding>,
 			value: JsonElement,
 		): JsonElement
-		/**
-		 * Returns null if the decrypted value does not match the expected structure and should be ignored.
-		 * When the expected structure is a collection or a map it is possible that only some values can be ignored.
-		 */
 		suspend fun decryptExtensionValue(
 			decryptionKeys: kotlin.collections.Collection<AesKey<AesAlgorithm.CbcWithPkcs7Padding>>,
 			value: JsonElement,
-		): JsonElement?
+		): JsonElement
 
 		class Collection(
 			val recursive: Recursive,
@@ -129,10 +130,10 @@ internal class ExtensionsEncryptorsImpl(
 			override suspend fun decryptExtensionValue(
 				decryptionKeys: kotlin.collections.Collection<AesKey<AesAlgorithm.CbcWithPkcs7Padding>>,
 				value: JsonElement,
-			): JsonElement? {
+			): JsonElement {
 				if (value == JsonNull) return value
-				if (value !is JsonArray) return null
-				return JsonArray(value.mapNotNull { recursive.decryptExtensionValue(decryptionKeys, it) })
+				ensure(value is JsonArray) { "Expected JsonArray or JsonNull, got ${value::class.simpleName}" }
+				return JsonArray(value.map { recursive.decryptExtensionValue(decryptionKeys, it) })
 			}
 		}
 
@@ -151,12 +152,10 @@ internal class ExtensionsEncryptorsImpl(
 			override suspend fun decryptExtensionValue(
 				decryptionKeys: kotlin.collections.Collection<AesKey<AesAlgorithm.CbcWithPkcs7Padding>>,
 				value: JsonElement,
-			): JsonElement? {
+			): JsonElement {
 				if (value == JsonNull) return value
-				if (value !is JsonObject) return null
-				return JsonObject(value.mapNotNull { (k, v) ->
-					recursive.decryptExtensionValue(decryptionKeys, v)?.let { k to v }
-				}.toMap())
+				ensure(value is JsonObject) { "Expected JsonObject or JsonNull, got ${value::class.simpleName}" }
+				return JsonObject(value.mapValues { recursive.decryptExtensionValue(decryptionKeys, it.value) })
 			}
 		}
 
@@ -175,9 +174,9 @@ internal class ExtensionsEncryptorsImpl(
 			override suspend fun decryptExtensionValue(
 				decryptionKeys: kotlin.collections.Collection<AesKey<AesAlgorithm.CbcWithPkcs7Padding>>,
 				value: JsonElement,
-			): JsonElement? {
+			): JsonElement {
 				if (value == JsonNull) return value
-				if (value !is JsonObject) return null
+				ensure(value is JsonObject) { "Expected JsonObject or JsonNull, got ${value::class.simpleName}" }
 				return encryptor.value.decryptExtension(decryptionKeys, value)
 			}
 		}
