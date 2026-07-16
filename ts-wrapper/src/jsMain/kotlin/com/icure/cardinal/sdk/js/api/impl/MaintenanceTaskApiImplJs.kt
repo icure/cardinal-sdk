@@ -493,15 +493,6 @@ internal class MaintenanceTaskApiImplJs(
 		)
 	}
 
-	override fun decrypt(maintenanceTask: EncryptedMaintenanceTaskJs):
-			Promise<DecryptedMaintenanceTaskJs> = GlobalScope.promise {
-		val maintenanceTaskConverted: EncryptedMaintenanceTask = maintenanceTask_fromJs(maintenanceTask)
-		val result = maintenanceTaskApi.decrypt(
-			maintenanceTaskConverted,
-		)
-		maintenanceTask_toJs(result)
-	}
-
 	override fun tryDecrypt(maintenanceTasks: Array<EncryptedMaintenanceTaskJs>):
 			Promise<Array<MaintenanceTaskJs>> = GlobalScope.promise {
 		val maintenanceTasksConverted: List<EncryptedMaintenanceTask> = arrayToList(
@@ -520,15 +511,6 @@ internal class MaintenanceTaskApiImplJs(
 				maintenanceTask_toJs(x1)
 			},
 		)
-	}
-
-	override fun tryDecrypt(maintenanceTask: EncryptedMaintenanceTaskJs): Promise<MaintenanceTaskJs> =
-			GlobalScope.promise {
-		val maintenanceTaskConverted: EncryptedMaintenanceTask = maintenanceTask_fromJs(maintenanceTask)
-		val result = maintenanceTaskApi.tryDecrypt(
-			maintenanceTaskConverted,
-		)
-		maintenanceTask_toJs(result)
 	}
 
 	override fun matchMaintenanceTasksBy(filter: FilterOptionsJs<MaintenanceTaskJs>):

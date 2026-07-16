@@ -112,28 +112,11 @@ export interface MaintenanceTaskApi {
 
 	/**
 	 *
-	 *  Decrypts a maintenance task, throwing an exception if it is not possible.
-	 *  @param maintenanceTask a maintenance task
-	 *  @return the decrypted maintenance task
-	 *  @throws EntityEncryptionException if the maintenance task could not be decrypted
-	 */
-	decrypt(maintenanceTask: EncryptedMaintenanceTask): Promise<DecryptedMaintenanceTask>;
-
-	/**
-	 *
 	 *  Tries to decrypt a maintenance tasks, returns the input if it is not possible.
 	 *  @param maintenanceTasks encrypted maintenance tasks
 	 *  @return all the provided maintenance task, each of them decrypted if possible or unchanged (still encrypted)
 	 */
 	tryDecrypt(maintenanceTasks: Array<EncryptedMaintenanceTask>): Promise<Array<MaintenanceTask>>;
-
-	/**
-	 *
-	 *  Tries to decrypt a maintenance task, returns the input if it is not possible.
-	 *  @param maintenanceTask an encrypted maintenance task
-	 *  @return the decrypted maintenance task if the decryption was successful or the input if it was not.
-	 */
-	tryDecrypt(maintenanceTask: EncryptedMaintenanceTask): Promise<MaintenanceTask>;
 
 	/**
 	 *

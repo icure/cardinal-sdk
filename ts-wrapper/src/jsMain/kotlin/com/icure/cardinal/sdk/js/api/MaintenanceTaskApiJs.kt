@@ -43,13 +43,8 @@ public external interface MaintenanceTaskApiJs {
 	public fun decrypt(maintenanceTasks: Array<EncryptedMaintenanceTaskJs>):
 			Promise<Array<DecryptedMaintenanceTaskJs>>
 
-	public fun decrypt(maintenanceTask: EncryptedMaintenanceTaskJs):
-			Promise<DecryptedMaintenanceTaskJs>
-
 	public fun tryDecrypt(maintenanceTasks: Array<EncryptedMaintenanceTaskJs>):
 			Promise<Array<MaintenanceTaskJs>>
-
-	public fun tryDecrypt(maintenanceTask: EncryptedMaintenanceTaskJs): Promise<MaintenanceTaskJs>
 
 	public fun matchMaintenanceTasksBy(filter: FilterOptionsJs<MaintenanceTaskJs>):
 			Promise<Array<String>>

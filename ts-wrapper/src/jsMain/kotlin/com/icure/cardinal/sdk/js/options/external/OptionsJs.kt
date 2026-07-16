@@ -5,10 +5,13 @@ import com.icure.cardinal.sdk.js.auth.CaptchaOptionsJs
 import com.icure.cardinal.sdk.js.crypto.CryptoStrategiesJs
 import com.icure.cardinal.sdk.js.model.UserGroupJs
 import com.icure.cardinal.sdk.js.storage.KeyStorageFacadeJs
-import com.icure.cardinal.sdk.options.HttpSdkOptions
-import com.icure.cardinal.sdk.options.SdkOptions
 import com.icure.kryptom.crypto.external.XCryptoService
 import kotlin.js.Promise
+
+/*TODO
+ * - New encrypted fields settings
+ * - unversionedEntitiesDecryptedJsonStrictness
+ */
 
 @JsName("AuthenticationMethod")
 external interface AuthenticationMethodJs
@@ -66,7 +69,6 @@ external interface AuthenticationProcessTemplateParametersJs {
 
 @JsName("SdkOptions")
 external interface SdkOptionsJs {
-	val encryptedFields: EncryptedFieldsConfigurationJs?
 	val useHierarchicalDataOwners: Boolean?
 	val createTransferKeys: Boolean?
 	val cryptoService: XCryptoService?
@@ -74,7 +76,6 @@ external interface SdkOptionsJs {
 	val autoCreateEncryptionKeyForExistingLegacyData: Boolean?
 	val keyStorage: KeyStorageFacadeJs?
 	val cryptoStrategies: CryptoStrategiesJs?
-	val jsonPatcher: JsonPatcherJs?
 	val ignoreUnknownFields: Boolean?
 	val dataOwnerScope: String?
 }
@@ -86,12 +87,10 @@ external interface BasicToFullSdkOptionsJs {
 	val autoCreateEncryptionKeyForExistingLegacyData: Boolean?
 	val keyStorage: KeyStorageFacadeJs?
 	val cryptoStrategies: CryptoStrategiesJs?
-	val jsonPatcher: JsonPatcherJs?
 }
 
 @JsName("BasicSdkOptions")
 external interface BasicSdkOptionsJs {
-	val encryptedFields: EncryptedFieldsConfigurationJs?
 	val cryptoService: XCryptoService?
 	val groupSelector: ((availableGroups: Array<UserGroupJs>) -> Promise<String>)?
 	val ignoreUnknownFields: Boolean?
@@ -101,42 +100,4 @@ external interface BasicSdkOptionsJs {
 @JsName("AnonymousSdkOptions")
 external interface AnonymousSdkOptionsJs {
 	val ignoreUnknownFields: Boolean?
-}
-
-@JsName("EncryptedFieldsConfiguration")
-external interface EncryptedFieldsConfigurationJs {
-	val accessLog: Array<String>?
-	val calendarItem: Array<String>?
-	val contact: Array<String>?
-	val service: Array<String>?
-	val healthElement: Array<String>?
-	val maintenanceTask: Array<String>?
-	val patient: Array<String>?
-	val message: Array<String>?
-	val topic: Array<String>?
-	val document: Array<String>?
-	val form: Array<String>?
-	val receipt: Array<String>?
-	val classification: Array<String>?
-	val timeTable: Array<String>?
-	val invoice: Array<String>?
-}
-
-@JsName("JsonPatcher")
-external interface JsonPatcherJs {
-	val patchAccessLog: ((json: dynamic) -> dynamic)?
-	val patchCalendarItem: ((json: dynamic) -> dynamic)?
-	val patchContact: ((json: dynamic) -> dynamic)?
-	val patchIndividualService: ((json: dynamic) -> dynamic)?
-	val patchHealthElement: ((json: dynamic) -> dynamic)?
-	val patchMaintenanceTask: ((json: dynamic) -> dynamic)?
-	val patchPatient: ((json: dynamic) -> dynamic)?
-	val patchMessage: ((json: dynamic) -> dynamic)?
-	val patchTopic: ((json: dynamic) -> dynamic)?
-	val patchDocument: ((json: dynamic) -> dynamic)?
-	val patchForm: ((json: dynamic) -> dynamic)?
-	val patchReceipt: ((json: dynamic) -> dynamic)?
-	val patchClassification: ((json: dynamic) -> dynamic)?
-	val patchTimeTable: ((json: dynamic) -> dynamic)?
-	val patchInvoice: ((json: dynamic) -> dynamic)?
 }

@@ -310,23 +310,6 @@ interface MaintenanceTaskApi : MaintenanceTaskBasicFlavourlessApi, MaintenanceTa
 	suspend fun tryDecrypt(maintenanceTasks: List<EncryptedMaintenanceTask>): List<MaintenanceTask>
 
 	/**
-	 * Decrypts a maintenance task, throwing an exception if it is not possible.
-	 * @param maintenanceTask a maintenance task
-	 * @return the decrypted maintenance task
-	 * @throws EntityEncryptionException if the maintenance task could not be decrypted
-	 */
-	suspend fun decrypt(maintenanceTask: EncryptedMaintenanceTask): DecryptedMaintenanceTask =
-		decrypt(listOf(maintenanceTask)).single()
-
-	/**
-	 * Tries to decrypt a maintenance task, returns the input if it is not possible.
-	 * @param maintenanceTask an encrypted maintenance task
-	 * @return the decrypted maintenance task if the decryption was successful or the input if it was not.
-	 */
-	suspend fun tryDecrypt(maintenanceTask: EncryptedMaintenanceTask): MaintenanceTask =
-		tryDecrypt(listOf(maintenanceTask)).single()
-
-	/**
 	 * Give access to the encrypted flavour of the api
 	 */
 	val encrypted: MaintenanceTaskFlavouredApi<EncryptedMaintenanceTask>

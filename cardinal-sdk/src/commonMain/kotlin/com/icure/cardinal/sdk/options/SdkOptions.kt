@@ -141,7 +141,7 @@ data class BasicToFullSdkOptions(
 	/**
 	 * Refer to [SdkOptions.unversionedEntitiesDecryptedJsonStrictness]
 	 */
-	val unversionedEntitiesDecryptedJsonStrictness: DecryptedJsonStrictness?
+	val unversionedEntitiesDecryptedJsonStrictness: DecryptedJsonStrictness? = null
 )
 
 data class SdkOptions(

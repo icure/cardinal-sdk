@@ -6,10 +6,6 @@ import {CardinalKeyStorageOptions} from "../cardinal-sdk-ts.mjs";
 
 export interface SdkOptions {
   /**
-   * Configure which fields of entities should be encrypted
-   */
-  readonly encryptedFields?: EncryptedFieldsConfiguration
-  /**
    * Has only effect when logging in as an hcp user.
    *
    * If true the api will be initialized in a hierarchical mode, where each data owner is considered to have access
@@ -61,21 +57,21 @@ export interface SdkOptions {
    */
   readonly cryptoStrategies?: CryptoStrategies
   /**
-   * Patcher for the decrypted entities json.
-   * This allows adapting to changes in the data model of entities even if the changes are done to the encrypted part
-   * of the entity.
-   */
-  readonly jsonPatcher?: JsonPatcher
-  /**
-   * If true, on deserialization of data coming from the backend or from the decrypted content of an entity any
-   * field that is not present in the data model will be ignored.
+   * If true, on deserialization of data coming from the backend any field that is not present in the data model will
+   * be ignored.
    *
-   * Note that updating an entity where some fields were ignored during deserialization will result in data loss.
+   * If false any unknown field will cause the deserialization to fail. This can happen if:
+   * - You are using data that was created using the legacy iCure typescript SDK (pre-cardinal).
+   * - A new field has been added to the data model, and a new version of your application already uses the new field,
+   *   but this instance still depends on an older version of the SDK.
    *
-   * If the ignored keys are coming from the encrypted content of an entity you can provide a {@link jsonPatcher}
-   * to specify how the unknown fields should be migrated.
+   * Note that updating an entity where some fields were ignored during deserialization will potentially result in
+   * data loss.
    *
-   * This behaviour is disabled by default (strict by default).
+   * If a custom [HttpSdkOptions.httpClientJson] is provided, this option must be unconfigured (null) or match the
+   * ignoreUnknownKeys configuration of that.
+   * If no [HttpSdkOptions.httpClientJson] is configured the default for this behaviour is disabled by default (strict
+   * by default).
    */
   readonly ignoreUnknownFields?: boolean
   /**
@@ -85,10 +81,6 @@ export interface SdkOptions {
 }
 
 export interface BasicSdkOptions {
-  /**
-   * Configure which fields of entities should be encrypted
-   */
-  readonly encryptedFields?: EncryptedFieldsConfiguration
   /**
    * Service for encryption primitives.
    */
@@ -104,12 +96,21 @@ export interface BasicSdkOptions {
    */
   readonly groupSelector?: (availableGroups: Array<UserGroup>) => Promise<string>
   /**
-   * If true, on deserialization of data coming from the backend or from the decrypted content of an entity any
-   * field that is not present in the data model will be ignored.
+   * If true, on deserialization of data coming from the backend any field that is not present in the data model will
+   * be ignored.
    *
-   * Note that updating an entity where some fields were ignored during deserialization will result in data loss.
+   * If false any unknown field will cause the deserialization to fail. This can happen if:
+   * - You are using data that was created using the legacy iCure typescript SDK (pre-cardinal).
+   * - A new field has been added to the data model, and a new version of your application already uses the new field,
+   *   but this instance still depends on an older version of the SDK.
    *
-   * This behaviour is disabled by default (strict by default).
+   * Note that updating an entity where some fields were ignored during deserialization will potentially result in
+   * data loss.
+   *
+   * If a custom [HttpSdkOptions.httpClientJson] is provided, this option must be unconfigured (null) or match the
+   * ignoreUnknownKeys configuration of that.
+   * If no [HttpSdkOptions.httpClientJson] is configured the default for this behaviour is disabled by default (strict
+   * by default).
    */
   readonly ignoreUnknownFields?: boolean
   /**
@@ -142,10 +143,6 @@ export interface BasicToFullSdkOptions {
    * Refer to {@link SdkOptions.cryptoStrategies }
    */
   readonly cryptoStrategies?: CryptoStrategies
-  /**
-   * Refer to {@link SdkOptions.jsonPatcher }
-   */
-  readonly jsonPatcher?: JsonPatcher
 }
 
 
@@ -159,96 +156,4 @@ export interface AnonymousSdkOptions {
    * This behaviour is disabled by default (strict by default).
    */
   readonly ignoreUnknownFields?: boolean
-}
-
-export interface EncryptedFieldsConfiguration {
-  readonly accessLog?: Array<string>
-  readonly calendarItem?: Array<string>
-  readonly contact?: Array<string>
-  readonly service?: Array<string>
-  readonly healthElement?: Array<string>
-  readonly maintenanceTask?: Array<string>
-  readonly patient?: Array<string>
-  readonly message?: Array<string>
-  readonly topic?: Array<string>
-  readonly document?: Array<string>
-  readonly form?: Array<string>
-  readonly receipt?: Array<string>
-  readonly classification?: Array<string>
-  readonly timeTable?: Array<string>
-  readonly invoice?: Array<string>
-}
-
-/**
- * Provides methods to patch the json representing a certain type of entity after decryption and before validation and
- * proper deserialization.
- * Each of these methods takes in input the parsed json of the decrypted entity and must return the patched json.
- * All the patchers are optional, if you don't define a patcher the json of the entity will be used by the sdk as is
- * without any patching.
- *
- *
- */
-export interface JsonPatcher {
-  /**
-   * Patches the decrypted json of an AccessLog
-   */
-  readonly patchAccessLog?: ((json: any) => any)
-  /**
-   * Patches the decrypted json of a CalendarItem
-   */
-  readonly patchCalendarItem?: ((json: any) => any)
-  /**
-   * Patches the decrypted json of a Contact
-   */
-  readonly patchContact?: ((json: any) => any)
-  /**
-   * Patches the decrypted json of a Service.
-   * This method is used only when a service is retrieved by itself, without the rest of the contact.
-   * Services retrieved as part of a contact should be patched as part of {@link patchContact}
-   */
-  readonly patchIndividualService?: ((json: any) => any)
-  /**
-   * Patches the decrypted json of a HealthElement
-   */
-  readonly patchHealthElement?: ((json: any) => any)
-  /**
-   * Patches the decrypted json of a MaintenanceTask
-   */
-  readonly patchMaintenanceTask?: ((json: any) => any)
-  /**
-   * Patches the decrypted json of a Patient
-   */
-  readonly patchPatient?: ((json: any) => any)
-  /**
-   * Patches the decrypted json of a Message
-   */
-  readonly patchMessage?: ((json: any) => any)
-  /**
-   * Patches the decrypted json of a Topic
-   */
-  readonly patchTopic?: ((json: any) => any)
-  /**
-   * Patches the decrypted json of a Document
-   */
-  readonly patchDocument?: ((json: any) => any)
-  /**
-   * Patches the decrypted json of a Form
-   */
-  readonly patchForm?: ((json: any) => any)
-  /**
-   * Patches the decrypted json of a Receipt
-   */
-  readonly patchReceipt?: ((json: any) => any)
-  /**
-   * Patches the decrypted json of a Classification
-   */
-  readonly patchClassification?: ((json: any) => any)
-  /**
-   * Patches the decrypted json of a TimeTable
-   */
-  readonly patchTimeTable?: ((json: any) => any)
-  /**
-   * Patches the decrypted json of a Invoice
-   */
-  readonly patchInvoice?: ((json: any) => any)
 }
