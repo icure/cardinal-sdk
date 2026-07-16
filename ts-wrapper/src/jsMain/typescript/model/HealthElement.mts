@@ -2,6 +2,7 @@
 import {expectArray, expectBoolean, expectMap, expectNumber, expectObject, expectString, expectStringEnum, extractEntry} from '../internal/JsonDecodeUtils.mjs';
 import {randomUuid} from '../utils/Id.mjs';
 import {CodeStub} from './base/CodeStub.mjs';
+import {ExtendableRoot} from './base/ExtendableRoot.mjs';
 import {HasEncryptionMetadata} from './base/HasEncryptionMetadata.mjs';
 import {HasEndOfLife} from './base/HasEndOfLife.mjs';
 import {ICureDocument} from './base/ICureDocument.mjs';
@@ -27,7 +28,7 @@ import {Base64String} from './specializations/Base64String.mjs';
  *  organisation of the
  *   electronic health record, used to filter and link medical data in a meaningful way.
  */
-export interface HealthElement extends StoredDocument, ICureDocument<string>, HasEncryptionMetadata, Encryptable, HasEndOfLife {
+export interface HealthElement extends StoredDocument, ICureDocument<string>, HasEncryptionMetadata, Encryptable, HasEndOfLife, ExtendableRoot {
 
 	/**
 	 *
@@ -339,6 +340,10 @@ export class DecryptedHealthElement {
 	 */
 	securityMetadata: SecurityMetadata | undefined = undefined;
 
+	extensions: Record<string, any> | undefined = undefined;
+
+	extensionsVersion: number | undefined = undefined;
+
 	readonly isEncrypted: false = false;
 
 	constructor(partial: Partial<DecryptedHealthElement>) {
@@ -375,6 +380,8 @@ export class DecryptedHealthElement {
 		if ('encryptionKeys' in partial && partial.encryptionKeys !== undefined) this.encryptionKeys = partial.encryptionKeys;
 		if ('encryptedSelf' in partial) this.encryptedSelf = partial.encryptedSelf;
 		if ('securityMetadata' in partial) this.securityMetadata = partial.securityMetadata;
+		if ('extensions' in partial) this.extensions = partial.extensions;
+		if ('extensionsVersion' in partial) this.extensionsVersion = partial.extensionsVersion;
 	}
 
 	toJSON(): object {
@@ -411,6 +418,8 @@ export class DecryptedHealthElement {
 		res['encryptionKeys'] = Object.fromEntries(Object.entries(this.encryptionKeys).map(([k0, v0]) => [k0, v0.map((x1) => x1.toJSON() )]))
 		if (this.encryptedSelf != undefined) res['encryptedSelf'] = this.encryptedSelf
 		if (this.securityMetadata != undefined) res['securityMetadata'] = this.securityMetadata.toJSON()
+		if (this.extensions != undefined) res['extensions'] = this.extensions
+		if (this.extensionsVersion != undefined) res['extensionsVersion'] = this.extensionsVersion
 		res['isEncrypted'] = false
 		return res
 	}
@@ -471,6 +480,8 @@ export class DecryptedHealthElement {
 			),
 			encryptedSelf: expectString(extractEntry(jCpy, 'encryptedSelf', false, path), true, [...path, ".encryptedSelf"]) as Base64String,
 			securityMetadata: expectObject(extractEntry(jCpy, 'securityMetadata', false, path), true, ignoreUnknownKeys, [...path, ".securityMetadata"], SecurityMetadata.fromJSON),
+			extensions: extractEntry(jCpy, 'extensions', false, path),
+			extensionsVersion: expectNumber(extractEntry(jCpy, 'extensionsVersion', false, path), true, true, [...path, ".extensionsVersion"]),
 		})
 		if (!ignoreUnknownKeys) {
 			const unused = Object.keys(jCpy)
@@ -686,6 +697,10 @@ export class EncryptedHealthElement {
 	 */
 	securityMetadata: SecurityMetadata | undefined = undefined;
 
+	extensions: Record<string, any> | undefined = undefined;
+
+	extensionsVersion: number | undefined = undefined;
+
 	readonly isEncrypted: true = true;
 
 	constructor(partial: Partial<EncryptedHealthElement>) {
@@ -722,6 +737,8 @@ export class EncryptedHealthElement {
 		if ('encryptionKeys' in partial && partial.encryptionKeys !== undefined) this.encryptionKeys = partial.encryptionKeys;
 		if ('encryptedSelf' in partial) this.encryptedSelf = partial.encryptedSelf;
 		if ('securityMetadata' in partial) this.securityMetadata = partial.securityMetadata;
+		if ('extensions' in partial) this.extensions = partial.extensions;
+		if ('extensionsVersion' in partial) this.extensionsVersion = partial.extensionsVersion;
 	}
 
 	toJSON(): object {
@@ -758,6 +775,8 @@ export class EncryptedHealthElement {
 		res['encryptionKeys'] = Object.fromEntries(Object.entries(this.encryptionKeys).map(([k0, v0]) => [k0, v0.map((x1) => x1.toJSON() )]))
 		if (this.encryptedSelf != undefined) res['encryptedSelf'] = this.encryptedSelf
 		if (this.securityMetadata != undefined) res['securityMetadata'] = this.securityMetadata.toJSON()
+		if (this.extensions != undefined) res['extensions'] = this.extensions
+		if (this.extensionsVersion != undefined) res['extensionsVersion'] = this.extensionsVersion
 		res['isEncrypted'] = true
 		return res
 	}
@@ -818,6 +837,8 @@ export class EncryptedHealthElement {
 			),
 			encryptedSelf: expectString(extractEntry(jCpy, 'encryptedSelf', false, path), true, [...path, ".encryptedSelf"]) as Base64String,
 			securityMetadata: expectObject(extractEntry(jCpy, 'securityMetadata', false, path), true, ignoreUnknownKeys, [...path, ".securityMetadata"], SecurityMetadata.fromJSON),
+			extensions: extractEntry(jCpy, 'extensions', false, path),
+			extensionsVersion: expectNumber(extractEntry(jCpy, 'extensionsVersion', false, path), true, true, [...path, ".extensionsVersion"]),
 		})
 		if (!ignoreUnknownKeys) {
 			const unused = Object.keys(jCpy)

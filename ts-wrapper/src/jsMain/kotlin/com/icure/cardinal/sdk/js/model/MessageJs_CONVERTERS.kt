@@ -2,9 +2,13 @@
 package com.icure.cardinal.sdk.js.model
 
 import com.icure.cardinal.sdk.js.model.CheckedConverters.arrayToSet
+import com.icure.cardinal.sdk.js.model.CheckedConverters.dynamicToJsonObjectNullsafe
+import com.icure.cardinal.sdk.js.model.CheckedConverters.intToNumber
+import com.icure.cardinal.sdk.js.model.CheckedConverters.jsonToDynamic
 import com.icure.cardinal.sdk.js.model.CheckedConverters.longToNumber
 import com.icure.cardinal.sdk.js.model.CheckedConverters.mapToObject
 import com.icure.cardinal.sdk.js.model.CheckedConverters.nullToUndefined
+import com.icure.cardinal.sdk.js.model.CheckedConverters.numberToInt
 import com.icure.cardinal.sdk.js.model.CheckedConverters.numberToLong
 import com.icure.cardinal.sdk.js.model.CheckedConverters.objectToMap
 import com.icure.cardinal.sdk.js.model.CheckedConverters.setToArray
@@ -195,6 +199,12 @@ public fun message_toJs(obj: DecryptedMessage): DecryptedMessageJs {
 			securityMetadata_toJs(nonNull1)
 		}
 	)
+	val extensions = nullToUndefined(
+		jsonToDynamic(obj.extensions)
+	)
+	val extensionsVersion = nullToUndefined(
+		intToNumber(obj.extensionsVersion)
+	)
 	return DecryptedMessageJs(js("{" +
 		"id:id," +
 		"rev:rev," +
@@ -225,7 +235,9 @@ public fun message_toJs(obj: DecryptedMessage): DecryptedMessageJs {
 		"delegations:delegations," +
 		"encryptionKeys:encryptionKeys," +
 		"encryptedSelf:encryptedSelf," +
-		"securityMetadata:securityMetadata" +
+		"securityMetadata:securityMetadata," +
+		"extensions:extensions," +
+		"extensionsVersion:extensionsVersion" +
 	"}"))
 }
 
@@ -369,6 +381,8 @@ public fun message_fromJs(obj: DecryptedMessageJs): DecryptedMessage {
 	val securityMetadata = obj.securityMetadata?.let { nonNull1 ->
 		securityMetadata_fromJs(nonNull1)
 	}
+	val extensions = dynamicToJsonObjectNullsafe(obj.extensions, "obj.extensions")
+	val extensionsVersion = numberToInt(obj.extensionsVersion, "obj.extensionsVersion")
 	return DecryptedMessage(
 		id = id,
 		rev = rev,
@@ -400,6 +414,8 @@ public fun message_fromJs(obj: DecryptedMessageJs): DecryptedMessage {
 		encryptionKeys = encryptionKeys,
 		encryptedSelf = encryptedSelf,
 		securityMetadata = securityMetadata,
+		extensions = extensions,
+		extensionsVersion = extensionsVersion,
 	)
 }
 
@@ -563,6 +579,12 @@ public fun message_toJs(obj: EncryptedMessage): EncryptedMessageJs {
 			securityMetadata_toJs(nonNull1)
 		}
 	)
+	val extensions = nullToUndefined(
+		jsonToDynamic(obj.extensions)
+	)
+	val extensionsVersion = nullToUndefined(
+		intToNumber(obj.extensionsVersion)
+	)
 	return EncryptedMessageJs(js("{" +
 		"id:id," +
 		"rev:rev," +
@@ -593,7 +615,9 @@ public fun message_toJs(obj: EncryptedMessage): EncryptedMessageJs {
 		"delegations:delegations," +
 		"encryptionKeys:encryptionKeys," +
 		"encryptedSelf:encryptedSelf," +
-		"securityMetadata:securityMetadata" +
+		"securityMetadata:securityMetadata," +
+		"extensions:extensions," +
+		"extensionsVersion:extensionsVersion" +
 	"}"))
 }
 
@@ -737,6 +761,8 @@ public fun message_fromJs(obj: EncryptedMessageJs): EncryptedMessage {
 	val securityMetadata = obj.securityMetadata?.let { nonNull1 ->
 		securityMetadata_fromJs(nonNull1)
 	}
+	val extensions = dynamicToJsonObjectNullsafe(obj.extensions, "obj.extensions")
+	val extensionsVersion = numberToInt(obj.extensionsVersion, "obj.extensionsVersion")
 	return EncryptedMessage(
 		id = id,
 		rev = rev,
@@ -768,6 +794,8 @@ public fun message_fromJs(obj: EncryptedMessageJs): EncryptedMessage {
 		encryptionKeys = encryptionKeys,
 		encryptedSelf = encryptedSelf,
 		securityMetadata = securityMetadata,
+		extensions = extensions,
+		extensionsVersion = extensionsVersion,
 	)
 }
 

@@ -3,6 +3,8 @@ package com.icure.cardinal.sdk.js.model.embed
 
 import com.icure.cardinal.sdk.js.model.CheckedConverters.arrayToList
 import com.icure.cardinal.sdk.js.model.CheckedConverters.arrayToSet
+import com.icure.cardinal.sdk.js.model.CheckedConverters.dynamicToJsonObjectNullsafe
+import com.icure.cardinal.sdk.js.model.CheckedConverters.jsonToDynamic
 import com.icure.cardinal.sdk.js.model.CheckedConverters.listToArray
 import com.icure.cardinal.sdk.js.model.CheckedConverters.nullToUndefined
 import com.icure.cardinal.sdk.js.model.CheckedConverters.setToArray
@@ -96,6 +98,9 @@ public fun address_toJs(obj: DecryptedAddress): DecryptedAddressJs {
 			base64String_toJs(nonNull1)
 		}
 	)
+	val extensions = nullToUndefined(
+		jsonToDynamic(obj.extensions)
+	)
 	return DecryptedAddressJs(js("{" +
 		"tags:tags," +
 		"codes:codes," +
@@ -112,7 +117,8 @@ public fun address_toJs(obj: DecryptedAddress): DecryptedAddressJs {
 		"note:note," +
 		"notes:notes," +
 		"telecoms:telecoms," +
-		"encryptedSelf:encryptedSelf" +
+		"encryptedSelf:encryptedSelf," +
+		"extensions:extensions" +
 	"}"))
 }
 
@@ -167,6 +173,7 @@ public fun address_fromJs(obj: DecryptedAddressJs): DecryptedAddress {
 	val encryptedSelf = obj.encryptedSelf?.let { nonNull1 ->
 		base64String_fromJs(nonNull1)
 	}
+	val extensions = dynamicToJsonObjectNullsafe(obj.extensions, "obj.extensions")
 	return DecryptedAddress(
 		tags = tags,
 		codes = codes,
@@ -184,6 +191,7 @@ public fun address_fromJs(obj: DecryptedAddressJs): DecryptedAddress {
 		notes = notes,
 		telecoms = telecoms,
 		encryptedSelf = encryptedSelf,
+		extensions = extensions,
 	)
 }
 
@@ -256,6 +264,9 @@ public fun address_toJs(obj: EncryptedAddress): EncryptedAddressJs {
 			base64String_toJs(nonNull1)
 		}
 	)
+	val extensions = nullToUndefined(
+		jsonToDynamic(obj.extensions)
+	)
 	return EncryptedAddressJs(js("{" +
 		"tags:tags," +
 		"codes:codes," +
@@ -272,7 +283,8 @@ public fun address_toJs(obj: EncryptedAddress): EncryptedAddressJs {
 		"note:note," +
 		"notes:notes," +
 		"telecoms:telecoms," +
-		"encryptedSelf:encryptedSelf" +
+		"encryptedSelf:encryptedSelf," +
+		"extensions:extensions" +
 	"}"))
 }
 
@@ -327,6 +339,7 @@ public fun address_fromJs(obj: EncryptedAddressJs): EncryptedAddress {
 	val encryptedSelf = obj.encryptedSelf?.let { nonNull1 ->
 		base64String_fromJs(nonNull1)
 	}
+	val extensions = dynamicToJsonObjectNullsafe(obj.extensions, "obj.extensions")
 	return EncryptedAddress(
 		tags = tags,
 		codes = codes,
@@ -344,6 +357,7 @@ public fun address_fromJs(obj: EncryptedAddressJs): EncryptedAddress {
 		notes = notes,
 		telecoms = telecoms,
 		encryptedSelf = encryptedSelf,
+		extensions = extensions,
 	)
 }
 

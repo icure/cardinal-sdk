@@ -2,6 +2,7 @@
 import {expectArray, expectBoolean, expectMap, expectNumber, expectObject, expectString, extractEntry} from '../internal/JsonDecodeUtils.mjs';
 import {randomUuid} from '../utils/Id.mjs';
 import {DecryptedPropertyStub} from './PropertyStub.mjs';
+import {ExtendableRoot} from './base/ExtendableRoot.mjs';
 import {StoredDocument} from './base/StoredDocument.mjs';
 
 
@@ -12,7 +13,7 @@ import {StoredDocument} from './base/StoredDocument.mjs';
  *  Calendar item types are used to categorize calendar items within an agenda.
  *  /
  */
-export class CalendarItemType implements StoredDocument {
+export class CalendarItemType implements StoredDocument, ExtendableRoot {
 
 	/**
 	 *
@@ -111,6 +112,10 @@ export class CalendarItemType implements StoredDocument {
 	 */
 	publicProperties: Array<DecryptedPropertyStub> | undefined = undefined;
 
+	extensions: Record<string, any> | undefined = undefined;
+
+	extensionsVersion: number | undefined = undefined;
+
 	constructor(partial: Partial<CalendarItemType>) {
 		this.id = partial.id ?? randomUuid();
 		if ('rev' in partial) this.rev = partial.rev;
@@ -128,6 +133,8 @@ export class CalendarItemType implements StoredDocument {
 		if ('otherInfos' in partial && partial.otherInfos !== undefined) this.otherInfos = partial.otherInfos;
 		if ('subjectByLanguage' in partial && partial.subjectByLanguage !== undefined) this.subjectByLanguage = partial.subjectByLanguage;
 		if ('publicProperties' in partial) this.publicProperties = partial.publicProperties;
+		if ('extensions' in partial) this.extensions = partial.extensions;
+		if ('extensionsVersion' in partial) this.extensionsVersion = partial.extensionsVersion;
 	}
 
 	toJSON(): object {
@@ -148,6 +155,8 @@ export class CalendarItemType implements StoredDocument {
 		res['otherInfos'] = Object.fromEntries(Object.entries(this.otherInfos).map(([k0, v0]) => [k0, v0]))
 		res['subjectByLanguage'] = Object.fromEntries(Object.entries(this.subjectByLanguage).map(([k0, v0]) => [k0, v0]))
 		if (this.publicProperties != undefined) res['publicProperties'] = this.publicProperties.map((x0) => x0.toJSON() )
+		if (this.extensions != undefined) res['extensions'] = this.extensions
+		if (this.extensionsVersion != undefined) res['extensionsVersion'] = this.extensionsVersion
 		return res
 	}
 
@@ -184,6 +193,8 @@ export class CalendarItemType implements StoredDocument {
 				(v0, p0) => expectString(v0, false, p0)
 			),
 			publicProperties: expectArray(extractEntry(jCpy, 'publicProperties', false, path), true, [...path, ".publicProperties"], (x0, p0) => expectObject(x0, false, ignoreUnknownKeys, p0, DecryptedPropertyStub.fromJSON)),
+			extensions: extractEntry(jCpy, 'extensions', false, path),
+			extensionsVersion: expectNumber(extractEntry(jCpy, 'extensionsVersion', false, path), true, true, [...path, ".extensionsVersion"]),
 		})
 		if (!ignoreUnknownKeys) {
 			const unused = Object.keys(jCpy)

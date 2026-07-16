@@ -2,9 +2,13 @@
 package com.icure.cardinal.sdk.js.model
 
 import com.icure.cardinal.sdk.js.model.CheckedConverters.arrayToSet
+import com.icure.cardinal.sdk.js.model.CheckedConverters.dynamicToJsonObjectNullsafe
+import com.icure.cardinal.sdk.js.model.CheckedConverters.intToNumber
+import com.icure.cardinal.sdk.js.model.CheckedConverters.jsonToDynamic
 import com.icure.cardinal.sdk.js.model.CheckedConverters.longToNumber
 import com.icure.cardinal.sdk.js.model.CheckedConverters.mapToObject
 import com.icure.cardinal.sdk.js.model.CheckedConverters.nullToUndefined
+import com.icure.cardinal.sdk.js.model.CheckedConverters.numberToInt
 import com.icure.cardinal.sdk.js.model.CheckedConverters.numberToLong
 import com.icure.cardinal.sdk.js.model.CheckedConverters.objectToMap
 import com.icure.cardinal.sdk.js.model.CheckedConverters.setToArray
@@ -151,6 +155,12 @@ public fun topic_toJs(obj: DecryptedTopic): DecryptedTopicJs {
 			x1
 		},
 	)
+	val extensions = nullToUndefined(
+		jsonToDynamic(obj.extensions)
+	)
+	val extensionsVersion = nullToUndefined(
+		intToNumber(obj.extensionsVersion)
+	)
 	return DecryptedTopicJs(js("{" +
 		"id:id," +
 		"rev:rev," +
@@ -172,7 +182,9 @@ public fun topic_toJs(obj: DecryptedTopic): DecryptedTopicJs {
 		"encryptionKeys:encryptionKeys," +
 		"encryptedSelf:encryptedSelf," +
 		"linkedHealthElements:linkedHealthElements," +
-		"linkedServices:linkedServices" +
+		"linkedServices:linkedServices," +
+		"extensions:extensions," +
+		"extensionsVersion:extensionsVersion" +
 	"}"))
 }
 
@@ -286,6 +298,8 @@ public fun topic_fromJs(obj: DecryptedTopicJs): DecryptedTopic {
 			x1
 		},
 	)
+	val extensions = dynamicToJsonObjectNullsafe(obj.extensions, "obj.extensions")
+	val extensionsVersion = numberToInt(obj.extensionsVersion, "obj.extensionsVersion")
 	return DecryptedTopic(
 		id = id,
 		rev = rev,
@@ -308,6 +322,8 @@ public fun topic_fromJs(obj: DecryptedTopicJs): DecryptedTopic {
 		encryptedSelf = encryptedSelf,
 		linkedHealthElements = linkedHealthElements,
 		linkedServices = linkedServices,
+		extensions = extensions,
+		extensionsVersion = extensionsVersion,
 	)
 }
 
@@ -432,6 +448,12 @@ public fun topic_toJs(obj: EncryptedTopic): EncryptedTopicJs {
 			x1
 		},
 	)
+	val extensions = nullToUndefined(
+		jsonToDynamic(obj.extensions)
+	)
+	val extensionsVersion = nullToUndefined(
+		intToNumber(obj.extensionsVersion)
+	)
 	return EncryptedTopicJs(js("{" +
 		"id:id," +
 		"rev:rev," +
@@ -453,7 +475,9 @@ public fun topic_toJs(obj: EncryptedTopic): EncryptedTopicJs {
 		"encryptionKeys:encryptionKeys," +
 		"encryptedSelf:encryptedSelf," +
 		"linkedHealthElements:linkedHealthElements," +
-		"linkedServices:linkedServices" +
+		"linkedServices:linkedServices," +
+		"extensions:extensions," +
+		"extensionsVersion:extensionsVersion" +
 	"}"))
 }
 
@@ -567,6 +591,8 @@ public fun topic_fromJs(obj: EncryptedTopicJs): EncryptedTopic {
 			x1
 		},
 	)
+	val extensions = dynamicToJsonObjectNullsafe(obj.extensions, "obj.extensions")
+	val extensionsVersion = numberToInt(obj.extensionsVersion, "obj.extensionsVersion")
 	return EncryptedTopic(
 		id = id,
 		rev = rev,
@@ -589,6 +615,8 @@ public fun topic_fromJs(obj: EncryptedTopicJs): EncryptedTopic {
 		encryptedSelf = encryptedSelf,
 		linkedHealthElements = linkedHealthElements,
 		linkedServices = linkedServices,
+		extensions = extensions,
+		extensionsVersion = extensionsVersion,
 	)
 }
 

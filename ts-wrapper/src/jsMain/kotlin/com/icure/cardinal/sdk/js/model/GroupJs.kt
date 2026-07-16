@@ -50,6 +50,8 @@ public external class GroupJs(
 
 	public val externalJwtConfig: Record<String, ExternalJwtConfigJs>
 
+	public val customEntityConfig: GroupJs_CustomEntityConfigurationJs?
+
 	public val minimumAuthenticationClassForElevatedPrivileges: String
 
 	public val superGroup: String?

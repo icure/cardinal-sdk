@@ -2,6 +2,7 @@
 import {expectObject, expectString, expectStringEnum, extractEntry} from '../../internal/JsonDecodeUtils.mjs';
 import {randomUuid} from '../../utils/Id.mjs';
 import {CodeStub} from '../base/CodeStub.mjs';
+import {Extendable} from '../base/Extendable.mjs';
 import {Identifiable} from '../base/Identifiable.mjs';
 import {Base64String} from '../specializations/Base64String.mjs';
 import {CareTeamMemberType} from './CareTeamMemberType.mjs';
@@ -14,7 +15,7 @@ import {Encryptable} from './Encryptable.mjs';
  *  their role.
  *  /
  */
-export interface CareTeamMember extends Encryptable, Identifiable<string> {
+export interface CareTeamMember extends Encryptable, Identifiable<string>, Extendable {
 
 	/**
 	 *
@@ -78,6 +79,8 @@ export class DecryptedCareTeamMember {
 	 */
 	encryptedSelf: Base64String | undefined = undefined;
 
+	extensions: Record<string, any> | undefined = undefined;
+
 	readonly isEncrypted: false = false;
 
 	constructor(partial: Partial<DecryptedCareTeamMember>) {
@@ -87,6 +90,7 @@ export class DecryptedCareTeamMember {
 		if ('healthcarePartyId' in partial) this.healthcarePartyId = partial.healthcarePartyId;
 		if ('quality' in partial) this.quality = partial.quality;
 		if ('encryptedSelf' in partial) this.encryptedSelf = partial.encryptedSelf;
+		if ('extensions' in partial) this.extensions = partial.extensions;
 	}
 
 	toJSON(): object {
@@ -96,6 +100,7 @@ export class DecryptedCareTeamMember {
 		if (this.healthcarePartyId != undefined) res['healthcarePartyId'] = this.healthcarePartyId
 		if (this.quality != undefined) res['quality'] = this.quality.toJSON()
 		if (this.encryptedSelf != undefined) res['encryptedSelf'] = this.encryptedSelf
+		if (this.extensions != undefined) res['extensions'] = this.extensions
 		res['isEncrypted'] = false
 		return res
 	}
@@ -111,6 +116,7 @@ export class DecryptedCareTeamMember {
 			healthcarePartyId: expectString(extractEntry(jCpy, 'healthcarePartyId', false, path), true, [...path, ".healthcarePartyId"]),
 			quality: expectObject(extractEntry(jCpy, 'quality', false, path), true, ignoreUnknownKeys, [...path, ".quality"], CodeStub.fromJSON),
 			encryptedSelf: expectString(extractEntry(jCpy, 'encryptedSelf', false, path), true, [...path, ".encryptedSelf"]) as Base64String,
+			extensions: extractEntry(jCpy, 'extensions', false, path),
 		})
 		if (!ignoreUnknownKeys) {
 			const unused = Object.keys(jCpy)
@@ -158,6 +164,8 @@ export class EncryptedCareTeamMember {
 	 */
 	encryptedSelf: Base64String | undefined = undefined;
 
+	extensions: Record<string, any> | undefined = undefined;
+
 	readonly isEncrypted: true = true;
 
 	constructor(partial: Partial<EncryptedCareTeamMember>) {
@@ -167,6 +175,7 @@ export class EncryptedCareTeamMember {
 		if ('healthcarePartyId' in partial) this.healthcarePartyId = partial.healthcarePartyId;
 		if ('quality' in partial) this.quality = partial.quality;
 		if ('encryptedSelf' in partial) this.encryptedSelf = partial.encryptedSelf;
+		if ('extensions' in partial) this.extensions = partial.extensions;
 	}
 
 	toJSON(): object {
@@ -176,6 +185,7 @@ export class EncryptedCareTeamMember {
 		if (this.healthcarePartyId != undefined) res['healthcarePartyId'] = this.healthcarePartyId
 		if (this.quality != undefined) res['quality'] = this.quality.toJSON()
 		if (this.encryptedSelf != undefined) res['encryptedSelf'] = this.encryptedSelf
+		if (this.extensions != undefined) res['extensions'] = this.extensions
 		res['isEncrypted'] = true
 		return res
 	}
@@ -191,6 +201,7 @@ export class EncryptedCareTeamMember {
 			healthcarePartyId: expectString(extractEntry(jCpy, 'healthcarePartyId', false, path), true, [...path, ".healthcarePartyId"]),
 			quality: expectObject(extractEntry(jCpy, 'quality', false, path), true, ignoreUnknownKeys, [...path, ".quality"], CodeStub.fromJSON),
 			encryptedSelf: expectString(extractEntry(jCpy, 'encryptedSelf', false, path), true, [...path, ".encryptedSelf"]) as Base64String,
+			extensions: extractEntry(jCpy, 'extensions', false, path),
 		})
 		if (!ignoreUnknownKeys) {
 			const unused = Object.keys(jCpy)

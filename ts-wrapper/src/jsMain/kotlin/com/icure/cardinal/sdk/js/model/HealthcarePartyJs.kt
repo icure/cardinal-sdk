@@ -6,6 +6,7 @@ package com.icure.cardinal.sdk.js.model
 import com.icure.cardinal.sdk.js.model.base.CodeStubJs
 import com.icure.cardinal.sdk.js.model.base.CryptoActorJs
 import com.icure.cardinal.sdk.js.model.base.DataOwnerJs
+import com.icure.cardinal.sdk.js.model.base.ExtendableRootJs
 import com.icure.cardinal.sdk.js.model.base.HasCodesJs
 import com.icure.cardinal.sdk.js.model.base.HasIdentifierJs
 import com.icure.cardinal.sdk.js.model.base.HasTagsJs
@@ -28,7 +29,7 @@ import kotlin.js.JsQualifier
 public external class HealthcarePartyJs(
 	partial: dynamic,
 ) : StoredDocumentJs, NamedJs, PersonJs, CryptoActorJs, DataOwnerJs, HasCodesJs, HasTagsJs,
-		HasIdentifierJs {
+		HasIdentifierJs, ExtendableRootJs {
 	override val id: String
 
 	override val rev: String?
@@ -106,6 +107,10 @@ public external class HealthcarePartyJs(
 	override val publicKey: String?
 
 	override val publicKeysForOaepWithSha256: Array<String>
+
+	override val extensions: dynamic
+
+	override val extensionsVersion: Double?
 
 	override val ktClass: String
 }

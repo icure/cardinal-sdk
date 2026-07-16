@@ -3,6 +3,7 @@ import {expectArray, expectBoolean, expectMap, expectNumber, expectObject, expec
 import {randomUuid} from '../utils/Id.mjs';
 import {DecryptedPropertyStub} from './PropertyStub.mjs';
 import {CodeStub} from './base/CodeStub.mjs';
+import {ExtendableRoot} from './base/ExtendableRoot.mjs';
 import {HasEndOfLife} from './base/HasEndOfLife.mjs';
 import {ICureDocument} from './base/ICureDocument.mjs';
 import {StoredDocument} from './base/StoredDocument.mjs';
@@ -19,7 +20,7 @@ import {UserAccessLevel} from './embed/UserAccessLevel.mjs';
  *   An agenda can specify a schedule for its resources and allows managing availabilities for
  *  booking.
  */
-export class Agenda implements StoredDocument, ICureDocument<string>, HasEndOfLife {
+export class Agenda implements StoredDocument, ICureDocument<string>, HasEndOfLife, ExtendableRoot {
 
 	/**
 	 *
@@ -142,6 +143,10 @@ export class Agenda implements StoredDocument, ICureDocument<string>, HasEndOfLi
 	 */
 	schedules: Array<ResourceGroupAllocationSchedule> = [];
 
+	extensions: Record<string, any> | undefined = undefined;
+
+	extensionsVersion: number | undefined = undefined;
+
 	constructor(partial: Partial<Agenda>) {
 		this.id = partial.id ?? randomUuid();
 		if ('rev' in partial) this.rev = partial.rev;
@@ -163,6 +168,8 @@ export class Agenda implements StoredDocument, ICureDocument<string>, HasEndOfLi
 		if ('publicBookingQuota' in partial) this.publicBookingQuota = partial.publicBookingQuota;
 		if ('properties' in partial && partial.properties !== undefined) this.properties = partial.properties;
 		if ('schedules' in partial && partial.schedules !== undefined) this.schedules = partial.schedules;
+		if ('extensions' in partial) this.extensions = partial.extensions;
+		if ('extensionsVersion' in partial) this.extensionsVersion = partial.extensionsVersion;
 	}
 
 	toJSON(): object {
@@ -187,6 +194,8 @@ export class Agenda implements StoredDocument, ICureDocument<string>, HasEndOfLi
 		if (this.publicBookingQuota != undefined) res['publicBookingQuota'] = this.publicBookingQuota
 		res['properties'] = this.properties.map((x0) => x0.toJSON() )
 		res['schedules'] = this.schedules.map((x0) => x0.toJSON() )
+		if (this.extensions != undefined) res['extensions'] = this.extensions
+		if (this.extensionsVersion != undefined) res['extensionsVersion'] = this.extensionsVersion
 		return res
 	}
 
@@ -221,6 +230,8 @@ export class Agenda implements StoredDocument, ICureDocument<string>, HasEndOfLi
 			publicBookingQuota: expectNumber(extractEntry(jCpy, 'publicBookingQuota', false, path), true, true, [...path, ".publicBookingQuota"]),
 			properties: expectArray(extractEntry(jCpy, 'properties', false, path), false, [...path, ".properties"], (x0, p0) => expectObject(x0, false, ignoreUnknownKeys, p0, DecryptedPropertyStub.fromJSON)),
 			schedules: expectArray(extractEntry(jCpy, 'schedules', false, path), false, [...path, ".schedules"], (x0, p0) => expectObject(x0, false, ignoreUnknownKeys, p0, ResourceGroupAllocationSchedule.fromJSON)),
+			extensions: extractEntry(jCpy, 'extensions', false, path),
+			extensionsVersion: expectNumber(extractEntry(jCpy, 'extensionsVersion', false, path), true, true, [...path, ".extensionsVersion"]),
 		})
 		if (!ignoreUnknownKeys) {
 			const unused = Object.keys(jCpy)

@@ -3,6 +3,7 @@ import {expectArray, expectMap, expectNumber, expectObject, expectString, expect
 import {randomUuid} from '../utils/Id.mjs';
 import {TopicRole} from './TopicRole.mjs';
 import {CodeStub} from './base/CodeStub.mjs';
+import {ExtendableRoot} from './base/ExtendableRoot.mjs';
 import {HasEncryptionMetadata} from './base/HasEncryptionMetadata.mjs';
 import {ICureDocument} from './base/ICureDocument.mjs';
 import {StoredDocument} from './base/StoredDocument.mjs';
@@ -19,7 +20,7 @@ import {Base64String} from './specializations/Base64String.mjs';
  *  and can be linked to health elements and services for medical context.
  *  /
  */
-export interface Topic extends StoredDocument, ICureDocument<string>, HasEncryptionMetadata, Encryptable {
+export interface Topic extends StoredDocument, ICureDocument<string>, HasEncryptionMetadata, Encryptable, ExtendableRoot {
 
 	/**
 	 *
@@ -198,6 +199,14 @@ export class DecryptedTopic {
 	 */
 	linkedServices: Array<string> = [];
 
+	/**
+	 *
+	 *  Set of ids of services linked to this topic.
+	 */
+	extensions: Record<string, any> | undefined = undefined;
+
+	extensionsVersion: number | undefined = undefined;
+
 	readonly isEncrypted: false = false;
 
 	constructor(partial: Partial<DecryptedTopic>) {
@@ -223,6 +232,8 @@ export class DecryptedTopic {
 		if ('encryptedSelf' in partial) this.encryptedSelf = partial.encryptedSelf;
 		if ('linkedHealthElements' in partial && partial.linkedHealthElements !== undefined) this.linkedHealthElements = partial.linkedHealthElements;
 		if ('linkedServices' in partial && partial.linkedServices !== undefined) this.linkedServices = partial.linkedServices;
+		if ('extensions' in partial) this.extensions = partial.extensions;
+		if ('extensionsVersion' in partial) this.extensionsVersion = partial.extensionsVersion;
 	}
 
 	toJSON(): object {
@@ -248,6 +259,8 @@ export class DecryptedTopic {
 		if (this.encryptedSelf != undefined) res['encryptedSelf'] = this.encryptedSelf
 		res['linkedHealthElements'] = this.linkedHealthElements.map((x0) => x0 )
 		res['linkedServices'] = this.linkedServices.map((x0) => x0 )
+		if (this.extensions != undefined) res['extensions'] = this.extensions
+		if (this.extensionsVersion != undefined) res['extensionsVersion'] = this.extensionsVersion
 		res['isEncrypted'] = false
 		return res
 	}
@@ -303,6 +316,8 @@ export class DecryptedTopic {
 			encryptedSelf: expectString(extractEntry(jCpy, 'encryptedSelf', false, path), true, [...path, ".encryptedSelf"]) as Base64String,
 			linkedHealthElements: expectArray(extractEntry(jCpy, 'linkedHealthElements', false, path), false, [...path, ".linkedHealthElements"], (x0, p0) => expectString(x0, false, p0)),
 			linkedServices: expectArray(extractEntry(jCpy, 'linkedServices', false, path), false, [...path, ".linkedServices"], (x0, p0) => expectString(x0, false, p0)),
+			extensions: extractEntry(jCpy, 'extensions', false, path),
+			extensionsVersion: expectNumber(extractEntry(jCpy, 'extensionsVersion', false, path), true, true, [...path, ".extensionsVersion"]),
 		})
 		if (!ignoreUnknownKeys) {
 			const unused = Object.keys(jCpy)
@@ -447,6 +462,14 @@ export class EncryptedTopic {
 	 */
 	linkedServices: Array<string> = [];
 
+	/**
+	 *
+	 *  Set of ids of services linked to this topic.
+	 */
+	extensions: Record<string, any> | undefined = undefined;
+
+	extensionsVersion: number | undefined = undefined;
+
 	readonly isEncrypted: true = true;
 
 	constructor(partial: Partial<EncryptedTopic>) {
@@ -472,6 +495,8 @@ export class EncryptedTopic {
 		if ('encryptedSelf' in partial) this.encryptedSelf = partial.encryptedSelf;
 		if ('linkedHealthElements' in partial && partial.linkedHealthElements !== undefined) this.linkedHealthElements = partial.linkedHealthElements;
 		if ('linkedServices' in partial && partial.linkedServices !== undefined) this.linkedServices = partial.linkedServices;
+		if ('extensions' in partial) this.extensions = partial.extensions;
+		if ('extensionsVersion' in partial) this.extensionsVersion = partial.extensionsVersion;
 	}
 
 	toJSON(): object {
@@ -497,6 +522,8 @@ export class EncryptedTopic {
 		if (this.encryptedSelf != undefined) res['encryptedSelf'] = this.encryptedSelf
 		res['linkedHealthElements'] = this.linkedHealthElements.map((x0) => x0 )
 		res['linkedServices'] = this.linkedServices.map((x0) => x0 )
+		if (this.extensions != undefined) res['extensions'] = this.extensions
+		if (this.extensionsVersion != undefined) res['extensionsVersion'] = this.extensionsVersion
 		res['isEncrypted'] = true
 		return res
 	}
@@ -552,6 +579,8 @@ export class EncryptedTopic {
 			encryptedSelf: expectString(extractEntry(jCpy, 'encryptedSelf', false, path), true, [...path, ".encryptedSelf"]) as Base64String,
 			linkedHealthElements: expectArray(extractEntry(jCpy, 'linkedHealthElements', false, path), false, [...path, ".linkedHealthElements"], (x0, p0) => expectString(x0, false, p0)),
 			linkedServices: expectArray(extractEntry(jCpy, 'linkedServices', false, path), false, [...path, ".linkedServices"], (x0, p0) => expectString(x0, false, p0)),
+			extensions: extractEntry(jCpy, 'extensions', false, path),
+			extensionsVersion: expectNumber(extractEntry(jCpy, 'extensionsVersion', false, path), true, true, [...path, ".extensionsVersion"]),
 		})
 		if (!ignoreUnknownKeys) {
 			const unused = Object.keys(jCpy)

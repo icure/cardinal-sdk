@@ -3,6 +3,7 @@
 
 package com.icure.cardinal.sdk.js.model.embed
 
+import com.icure.cardinal.sdk.js.model.base.ExtendableJs
 import com.icure.cardinal.sdk.js.model.base.IdentifiableJs
 import com.icure.cardinal.sdk.js.model.base.NamedJs
 import kotlin.Boolean
@@ -12,7 +13,8 @@ import kotlin.js.JsName
 import kotlin.js.JsQualifier
 
 @JsName("Episode")
-public sealed external interface EpisodeJs : EncryptableJs, IdentifiableJs<String>, NamedJs {
+public sealed external interface EpisodeJs : EncryptableJs, IdentifiableJs<String>, NamedJs,
+		ExtendableJs {
 	public val comment: String?
 
 	public val startDate: Double?
@@ -38,6 +40,8 @@ public external class DecryptedEpisodeJs(
 
 	override val encryptedSelf: String?
 
+	override val extensions: dynamic
+
 	override val isEncrypted: Boolean
 }
 
@@ -56,6 +60,8 @@ public external class EncryptedEpisodeJs(
 	override val endDate: Double?
 
 	override val encryptedSelf: String?
+
+	override val extensions: dynamic
 
 	override val isEncrypted: Boolean
 }

@@ -9,6 +9,8 @@ import com.icure.cardinal.sdk.js.model.CheckedConverters.nullToUndefined
 import com.icure.cardinal.sdk.js.model.CheckedConverters.numberToInstant
 import com.icure.cardinal.sdk.js.model.CheckedConverters.numberToLong
 import com.icure.cardinal.sdk.js.model.CheckedConverters.undefinedToNull
+import com.icure.cardinal.sdk.js.model.specializations.base64String_fromJs
+import com.icure.cardinal.sdk.js.model.specializations.base64String_toJs
 import com.icure.cardinal.sdk.model.embed.Content
 import com.icure.cardinal.sdk.model.embed.DecryptedContent
 import com.icure.cardinal.sdk.model.embed.DecryptedService
@@ -79,6 +81,11 @@ public fun content_toJs(obj: DecryptedContent): DecryptedContentJs {
 			},
 		)
 	)
+	val encryptedSelf = nullToUndefined(
+		obj.encryptedSelf?.let { nonNull1 ->
+			base64String_toJs(nonNull1)
+		}
+	)
 	return DecryptedContentJs(js("{" +
 		"stringValue:stringValue," +
 		"numberValue:numberValue," +
@@ -92,7 +99,8 @@ public fun content_toJs(obj: DecryptedContent): DecryptedContentJs {
 		"timeSeries:timeSeries," +
 		"compoundValue:compoundValue," +
 		"ratio:ratio," +
-		"range:range" +
+		"range:range," +
+		"encryptedSelf:encryptedSelf" +
 	"}"))
 }
 
@@ -134,6 +142,9 @@ public fun content_fromJs(obj: DecryptedContentJs): DecryptedContent {
 			measure_fromJs(x1)
 		},
 	)
+	val encryptedSelf = obj.encryptedSelf?.let { nonNull1 ->
+		base64String_fromJs(nonNull1)
+	}
 	return DecryptedContent(
 		stringValue = stringValue,
 		numberValue = numberValue,
@@ -148,6 +159,7 @@ public fun content_fromJs(obj: DecryptedContentJs): DecryptedContent {
 		compoundValue = compoundValue,
 		ratio = ratio,
 		range = range,
+		encryptedSelf = encryptedSelf,
 	)
 }
 
@@ -213,6 +225,11 @@ public fun content_toJs(obj: EncryptedContent): EncryptedContentJs {
 			},
 		)
 	)
+	val encryptedSelf = nullToUndefined(
+		obj.encryptedSelf?.let { nonNull1 ->
+			base64String_toJs(nonNull1)
+		}
+	)
 	return EncryptedContentJs(js("{" +
 		"stringValue:stringValue," +
 		"numberValue:numberValue," +
@@ -226,7 +243,8 @@ public fun content_toJs(obj: EncryptedContent): EncryptedContentJs {
 		"timeSeries:timeSeries," +
 		"compoundValue:compoundValue," +
 		"ratio:ratio," +
-		"range:range" +
+		"range:range," +
+		"encryptedSelf:encryptedSelf" +
 	"}"))
 }
 
@@ -268,6 +286,9 @@ public fun content_fromJs(obj: EncryptedContentJs): EncryptedContent {
 			measure_fromJs(x1)
 		},
 	)
+	val encryptedSelf = obj.encryptedSelf?.let { nonNull1 ->
+		base64String_fromJs(nonNull1)
+	}
 	return EncryptedContent(
 		stringValue = stringValue,
 		numberValue = numberValue,
@@ -282,6 +303,7 @@ public fun content_fromJs(obj: EncryptedContentJs): EncryptedContent {
 		compoundValue = compoundValue,
 		ratio = ratio,
 		range = range,
+		encryptedSelf = encryptedSelf,
 	)
 }
 

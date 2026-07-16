@@ -3,6 +3,8 @@ package com.icure.cardinal.sdk.js.model.embed
 
 import com.icure.cardinal.sdk.js.model.CheckedConverters.arrayToList
 import com.icure.cardinal.sdk.js.model.CheckedConverters.arrayToSet
+import com.icure.cardinal.sdk.js.model.CheckedConverters.dynamicToJsonObjectNullsafe
+import com.icure.cardinal.sdk.js.model.CheckedConverters.jsonToDynamic
 import com.icure.cardinal.sdk.js.model.CheckedConverters.listToArray
 import com.icure.cardinal.sdk.js.model.CheckedConverters.longToNumber
 import com.icure.cardinal.sdk.js.model.CheckedConverters.nullToUndefined
@@ -76,6 +78,9 @@ public fun subContact_toJs(obj: DecryptedSubContact): DecryptedSubContactJs {
 			base64String_toJs(nonNull1)
 		}
 	)
+	val extensions = nullToUndefined(
+		jsonToDynamic(obj.extensions)
+	)
 	return DecryptedSubContactJs(js("{" +
 		"id:id," +
 		"created:created," +
@@ -90,7 +95,8 @@ public fun subContact_toJs(obj: DecryptedSubContact): DecryptedSubContactJs {
 		"planOfActionId:planOfActionId," +
 		"healthElementId:healthElementId," +
 		"services:services," +
-		"encryptedSelf:encryptedSelf" +
+		"encryptedSelf:encryptedSelf," +
+		"extensions:extensions" +
 	"}"))
 }
 
@@ -129,6 +135,7 @@ public fun subContact_fromJs(obj: DecryptedSubContactJs): DecryptedSubContact {
 	val encryptedSelf = obj.encryptedSelf?.let { nonNull1 ->
 		base64String_fromJs(nonNull1)
 	}
+	val extensions = dynamicToJsonObjectNullsafe(obj.extensions, "obj.extensions")
 	return DecryptedSubContact(
 		id = id,
 		created = created,
@@ -144,6 +151,7 @@ public fun subContact_fromJs(obj: DecryptedSubContactJs): DecryptedSubContact {
 		healthElementId = healthElementId,
 		services = services,
 		encryptedSelf = encryptedSelf,
+		extensions = extensions,
 	)
 }
 
@@ -202,6 +210,9 @@ public fun subContact_toJs(obj: EncryptedSubContact): EncryptedSubContactJs {
 			base64String_toJs(nonNull1)
 		}
 	)
+	val extensions = nullToUndefined(
+		jsonToDynamic(obj.extensions)
+	)
 	return EncryptedSubContactJs(js("{" +
 		"id:id," +
 		"created:created," +
@@ -216,7 +227,8 @@ public fun subContact_toJs(obj: EncryptedSubContact): EncryptedSubContactJs {
 		"planOfActionId:planOfActionId," +
 		"healthElementId:healthElementId," +
 		"services:services," +
-		"encryptedSelf:encryptedSelf" +
+		"encryptedSelf:encryptedSelf," +
+		"extensions:extensions" +
 	"}"))
 }
 
@@ -255,6 +267,7 @@ public fun subContact_fromJs(obj: EncryptedSubContactJs): EncryptedSubContact {
 	val encryptedSelf = obj.encryptedSelf?.let { nonNull1 ->
 		base64String_fromJs(nonNull1)
 	}
+	val extensions = dynamicToJsonObjectNullsafe(obj.extensions, "obj.extensions")
 	return EncryptedSubContact(
 		id = id,
 		created = created,
@@ -270,6 +283,7 @@ public fun subContact_fromJs(obj: EncryptedSubContactJs): EncryptedSubContact {
 		healthElementId = healthElementId,
 		services = services,
 		encryptedSelf = encryptedSelf,
+		extensions = extensions,
 	)
 }
 

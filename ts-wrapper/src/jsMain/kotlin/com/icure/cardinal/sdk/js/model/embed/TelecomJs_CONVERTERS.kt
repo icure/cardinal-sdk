@@ -1,6 +1,8 @@
 // auto-generated file
 package com.icure.cardinal.sdk.js.model.embed
 
+import com.icure.cardinal.sdk.js.model.CheckedConverters.dynamicToJsonObjectNullsafe
+import com.icure.cardinal.sdk.js.model.CheckedConverters.jsonToDynamic
 import com.icure.cardinal.sdk.js.model.CheckedConverters.nullToUndefined
 import com.icure.cardinal.sdk.js.model.CheckedConverters.undefinedToNull
 import com.icure.cardinal.sdk.js.model.specializations.base64String_fromJs
@@ -29,11 +31,15 @@ public fun telecom_toJs(obj: DecryptedTelecom): DecryptedTelecomJs {
 			base64String_toJs(nonNull1)
 		}
 	)
+	val extensions = nullToUndefined(
+		jsonToDynamic(obj.extensions)
+	)
 	return DecryptedTelecomJs(js("{" +
 		"telecomType:telecomType," +
 		"telecomNumber:telecomNumber," +
 		"telecomDescription:telecomDescription," +
-		"encryptedSelf:encryptedSelf" +
+		"encryptedSelf:encryptedSelf," +
+		"extensions:extensions" +
 	"}"))
 }
 
@@ -46,11 +52,13 @@ public fun telecom_fromJs(obj: DecryptedTelecomJs): DecryptedTelecom {
 	val encryptedSelf = obj.encryptedSelf?.let { nonNull1 ->
 		base64String_fromJs(nonNull1)
 	}
+	val extensions = dynamicToJsonObjectNullsafe(obj.extensions, "obj.extensions")
 	return DecryptedTelecom(
 		telecomType = telecomType,
 		telecomNumber = telecomNumber,
 		telecomDescription = telecomDescription,
 		encryptedSelf = encryptedSelf,
+		extensions = extensions,
 	)
 }
 
@@ -72,11 +80,15 @@ public fun telecom_toJs(obj: EncryptedTelecom): EncryptedTelecomJs {
 			base64String_toJs(nonNull1)
 		}
 	)
+	val extensions = nullToUndefined(
+		jsonToDynamic(obj.extensions)
+	)
 	return EncryptedTelecomJs(js("{" +
 		"telecomType:telecomType," +
 		"telecomNumber:telecomNumber," +
 		"telecomDescription:telecomDescription," +
-		"encryptedSelf:encryptedSelf" +
+		"encryptedSelf:encryptedSelf," +
+		"extensions:extensions" +
 	"}"))
 }
 
@@ -89,11 +101,13 @@ public fun telecom_fromJs(obj: EncryptedTelecomJs): EncryptedTelecom {
 	val encryptedSelf = obj.encryptedSelf?.let { nonNull1 ->
 		base64String_fromJs(nonNull1)
 	}
+	val extensions = dynamicToJsonObjectNullsafe(obj.extensions, "obj.extensions")
 	return EncryptedTelecom(
 		telecomType = telecomType,
 		telecomNumber = telecomNumber,
 		telecomDescription = telecomDescription,
 		encryptedSelf = encryptedSelf,
+		extensions = extensions,
 	)
 }
 

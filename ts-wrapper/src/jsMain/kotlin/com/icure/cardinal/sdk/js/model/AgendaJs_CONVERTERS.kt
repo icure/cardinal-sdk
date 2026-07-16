@@ -3,7 +3,9 @@ package com.icure.cardinal.sdk.js.model
 
 import com.icure.cardinal.sdk.js.model.CheckedConverters.arrayToList
 import com.icure.cardinal.sdk.js.model.CheckedConverters.arrayToSet
+import com.icure.cardinal.sdk.js.model.CheckedConverters.dynamicToJsonObjectNullsafe
 import com.icure.cardinal.sdk.js.model.CheckedConverters.intToNumber
+import com.icure.cardinal.sdk.js.model.CheckedConverters.jsonToDynamic
 import com.icure.cardinal.sdk.js.model.CheckedConverters.listToArray
 import com.icure.cardinal.sdk.js.model.CheckedConverters.longToNumber
 import com.icure.cardinal.sdk.js.model.CheckedConverters.mapToObject
@@ -107,6 +109,12 @@ public fun agenda_toJs(obj: Agenda): AgendaJs {
 			resourceGroupAllocationSchedule_toJs(x1)
 		},
 	)
+	val extensions = nullToUndefined(
+		jsonToDynamic(obj.extensions)
+	)
+	val extensionsVersion = nullToUndefined(
+		intToNumber(obj.extensionsVersion)
+	)
 	return AgendaJs(js("{" +
 		"id:id," +
 		"rev:rev," +
@@ -127,7 +135,9 @@ public fun agenda_toJs(obj: Agenda): AgendaJs {
 		"slottingAlgorithm:slottingAlgorithm," +
 		"publicBookingQuota:publicBookingQuota," +
 		"properties:properties," +
-		"schedules:schedules" +
+		"schedules:schedules," +
+		"extensions:extensions," +
+		"extensionsVersion:extensionsVersion" +
 	"}"))
 }
 
@@ -187,6 +197,8 @@ public fun agenda_fromJs(obj: AgendaJs): Agenda {
 			resourceGroupAllocationSchedule_fromJs(x1)
 		},
 	)
+	val extensions = dynamicToJsonObjectNullsafe(obj.extensions, "obj.extensions")
+	val extensionsVersion = numberToInt(obj.extensionsVersion, "obj.extensionsVersion")
 	return Agenda(
 		id = id,
 		rev = rev,
@@ -208,5 +220,7 @@ public fun agenda_fromJs(obj: AgendaJs): Agenda {
 		publicBookingQuota = publicBookingQuota,
 		properties = properties,
 		schedules = schedules,
+		extensions = extensions,
+		extensionsVersion = extensionsVersion,
 	)
 }

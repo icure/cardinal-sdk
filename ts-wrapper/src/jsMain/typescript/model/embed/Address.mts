@@ -1,6 +1,7 @@
 // auto-generated file
 import {expectArray, expectObject, expectString, expectStringEnum, extractEntry} from '../../internal/JsonDecodeUtils.mjs';
 import {CodeStub} from '../base/CodeStub.mjs';
+import {Extendable} from '../base/Extendable.mjs';
 import {HasCodes} from '../base/HasCodes.mjs';
 import {HasIdentifier} from '../base/HasIdentifier.mjs';
 import {HasTags} from '../base/HasTags.mjs';
@@ -12,7 +13,7 @@ import {Encryptable} from './Encryptable.mjs';
 import {DecryptedTelecom, EncryptedTelecom, Telecom} from './Telecom.mjs';
 
 
-export interface Address extends Encryptable, HasTags, HasCodes, HasIdentifier {
+export interface Address extends Encryptable, HasTags, HasCodes, HasIdentifier, Extendable {
 
 	addressType: AddressType | undefined;
 
@@ -78,6 +79,8 @@ export class DecryptedAddress {
 
 	encryptedSelf: Base64String | undefined = undefined;
 
+	extensions: Record<string, any> | undefined = undefined;
+
 	readonly isEncrypted: false = false;
 
 	constructor(partial: Partial<DecryptedAddress>) {
@@ -98,6 +101,7 @@ export class DecryptedAddress {
 		if ('notes' in partial && partial.notes !== undefined) this.notes = partial.notes;
 		if ('telecoms' in partial && partial.telecoms !== undefined) this.telecoms = partial.telecoms;
 		if ('encryptedSelf' in partial) this.encryptedSelf = partial.encryptedSelf;
+		if ('extensions' in partial) this.extensions = partial.extensions;
 	}
 
 	toJSON(): object {
@@ -118,6 +122,7 @@ export class DecryptedAddress {
 		res['notes'] = this.notes.map((x0) => x0.toJSON() )
 		res['telecoms'] = this.telecoms.map((x0) => x0.toJSON() )
 		if (this.encryptedSelf != undefined) res['encryptedSelf'] = this.encryptedSelf
+		if (this.extensions != undefined) res['extensions'] = this.extensions
 		res['isEncrypted'] = false
 		return res
 	}
@@ -144,6 +149,7 @@ export class DecryptedAddress {
 			notes: expectArray(extractEntry(jCpy, 'notes', false, path), false, [...path, ".notes"], (x0, p0) => expectObject(x0, false, ignoreUnknownKeys, p0, DecryptedAnnotation.fromJSON)),
 			telecoms: expectArray(extractEntry(jCpy, 'telecoms', false, path), false, [...path, ".telecoms"], (x0, p0) => expectObject(x0, false, ignoreUnknownKeys, p0, DecryptedTelecom.fromJSON)),
 			encryptedSelf: expectString(extractEntry(jCpy, 'encryptedSelf', false, path), true, [...path, ".encryptedSelf"]) as Base64String,
+			extensions: extractEntry(jCpy, 'extensions', false, path),
 		})
 		if (!ignoreUnknownKeys) {
 			const unused = Object.keys(jCpy)
@@ -187,6 +193,8 @@ export class EncryptedAddress {
 
 	encryptedSelf: Base64String | undefined = undefined;
 
+	extensions: Record<string, any> | undefined = undefined;
+
 	readonly isEncrypted: true = true;
 
 	constructor(partial: Partial<EncryptedAddress>) {
@@ -207,6 +215,7 @@ export class EncryptedAddress {
 		if ('notes' in partial && partial.notes !== undefined) this.notes = partial.notes;
 		if ('telecoms' in partial && partial.telecoms !== undefined) this.telecoms = partial.telecoms;
 		if ('encryptedSelf' in partial) this.encryptedSelf = partial.encryptedSelf;
+		if ('extensions' in partial) this.extensions = partial.extensions;
 	}
 
 	toJSON(): object {
@@ -227,6 +236,7 @@ export class EncryptedAddress {
 		res['notes'] = this.notes.map((x0) => x0.toJSON() )
 		res['telecoms'] = this.telecoms.map((x0) => x0.toJSON() )
 		if (this.encryptedSelf != undefined) res['encryptedSelf'] = this.encryptedSelf
+		if (this.extensions != undefined) res['extensions'] = this.extensions
 		res['isEncrypted'] = true
 		return res
 	}
@@ -253,6 +263,7 @@ export class EncryptedAddress {
 			notes: expectArray(extractEntry(jCpy, 'notes', false, path), false, [...path, ".notes"], (x0, p0) => expectObject(x0, false, ignoreUnknownKeys, p0, EncryptedAnnotation.fromJSON)),
 			telecoms: expectArray(extractEntry(jCpy, 'telecoms', false, path), false, [...path, ".telecoms"], (x0, p0) => expectObject(x0, false, ignoreUnknownKeys, p0, EncryptedTelecom.fromJSON)),
 			encryptedSelf: expectString(extractEntry(jCpy, 'encryptedSelf', false, path), true, [...path, ".encryptedSelf"]) as Base64String,
+			extensions: extractEntry(jCpy, 'extensions', false, path),
 		})
 		if (!ignoreUnknownKeys) {
 			const unused = Object.keys(jCpy)

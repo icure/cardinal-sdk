@@ -3,7 +3,9 @@ package com.icure.cardinal.sdk.js.model
 
 import com.icure.cardinal.sdk.js.model.CheckedConverters.arrayToList
 import com.icure.cardinal.sdk.js.model.CheckedConverters.arrayToSet
+import com.icure.cardinal.sdk.js.model.CheckedConverters.dynamicToJsonObjectNullsafe
 import com.icure.cardinal.sdk.js.model.CheckedConverters.intToNumber
+import com.icure.cardinal.sdk.js.model.CheckedConverters.jsonToDynamic
 import com.icure.cardinal.sdk.js.model.CheckedConverters.listToArray
 import com.icure.cardinal.sdk.js.model.CheckedConverters.longToNumber
 import com.icure.cardinal.sdk.js.model.CheckedConverters.mapToObject
@@ -459,6 +461,12 @@ public fun patient_toJs(obj: DecryptedPatient): DecryptedPatientJs {
 	val parentId = nullToUndefined(
 		obj.parentId
 	)
+	val extensions = nullToUndefined(
+		jsonToDynamic(obj.extensions)
+	)
+	val extensionsVersion = nullToUndefined(
+		intToNumber(obj.extensionsVersion)
+	)
 	return DecryptedPatientJs(js("{" +
 		"id:id," +
 		"identifier:identifier," +
@@ -525,7 +533,9 @@ public fun patient_toJs(obj: DecryptedPatient): DecryptedPatientJs {
 		"encryptedSelf:encryptedSelf," +
 		"securityMetadata:securityMetadata," +
 		"cryptoActorProperties:cryptoActorProperties," +
-		"parentId:parentId" +
+		"parentId:parentId," +
+		"extensions:extensions," +
+		"extensionsVersion:extensionsVersion" +
 	"}"))
 }
 
@@ -846,6 +856,8 @@ public fun patient_fromJs(obj: DecryptedPatientJs): DecryptedPatient {
 		},
 	)
 	val parentId = obj.parentId
+	val extensions = dynamicToJsonObjectNullsafe(obj.extensions, "obj.extensions")
+	val extensionsVersion = numberToInt(obj.extensionsVersion, "obj.extensionsVersion")
 	return DecryptedPatient(
 		id = id,
 		identifier = identifier,
@@ -913,6 +925,8 @@ public fun patient_fromJs(obj: DecryptedPatientJs): DecryptedPatient {
 		securityMetadata = securityMetadata,
 		cryptoActorProperties = cryptoActorProperties,
 		parentId = parentId,
+		extensions = extensions,
+		extensionsVersion = extensionsVersion,
 	)
 }
 
@@ -1273,6 +1287,12 @@ public fun patient_toJs(obj: EncryptedPatient): EncryptedPatientJs {
 	val parentId = nullToUndefined(
 		obj.parentId
 	)
+	val extensions = nullToUndefined(
+		jsonToDynamic(obj.extensions)
+	)
+	val extensionsVersion = nullToUndefined(
+		intToNumber(obj.extensionsVersion)
+	)
 	return EncryptedPatientJs(js("{" +
 		"id:id," +
 		"identifier:identifier," +
@@ -1339,7 +1359,9 @@ public fun patient_toJs(obj: EncryptedPatient): EncryptedPatientJs {
 		"encryptedSelf:encryptedSelf," +
 		"securityMetadata:securityMetadata," +
 		"cryptoActorProperties:cryptoActorProperties," +
-		"parentId:parentId" +
+		"parentId:parentId," +
+		"extensions:extensions," +
+		"extensionsVersion:extensionsVersion" +
 	"}"))
 }
 
@@ -1660,6 +1682,8 @@ public fun patient_fromJs(obj: EncryptedPatientJs): EncryptedPatient {
 		},
 	)
 	val parentId = obj.parentId
+	val extensions = dynamicToJsonObjectNullsafe(obj.extensions, "obj.extensions")
+	val extensionsVersion = numberToInt(obj.extensionsVersion, "obj.extensionsVersion")
 	return EncryptedPatient(
 		id = id,
 		identifier = identifier,
@@ -1727,6 +1751,8 @@ public fun patient_fromJs(obj: EncryptedPatientJs): EncryptedPatient {
 		securityMetadata = securityMetadata,
 		cryptoActorProperties = cryptoActorProperties,
 		parentId = parentId,
+		extensions = extensions,
+		extensionsVersion = extensionsVersion,
 	)
 }
 

@@ -3,9 +3,19 @@
 
 package com.icure.cardinal.sdk.js.model
 
+import kotlin.Double
 import kotlin.String
 import kotlin.js.JsName
 import kotlin.js.JsQualifier
+
+@JsName("CustomEntityConfiguration")
+public external class GroupJs_CustomEntityConfigurationJs(
+	partial: dynamic,
+) {
+	public val sourceGroup: String
+
+	public val version: Double
+}
 
 @JsName("TemplatesConfiguration")
 public external class GroupJs_TemplatesConfigurationJs(

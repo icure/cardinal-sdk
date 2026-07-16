@@ -3,6 +3,7 @@
 
 package com.icure.cardinal.sdk.js.model.embed
 
+import com.icure.cardinal.sdk.js.model.base.ExtendableJs
 import kotlin.Boolean
 import kotlin.Double
 import kotlin.String
@@ -10,7 +11,7 @@ import kotlin.js.JsName
 import kotlin.js.JsQualifier
 
 @JsName("CareTeamMembership")
-public sealed external interface CareTeamMembershipJs : EncryptableJs {
+public sealed external interface CareTeamMembershipJs : EncryptableJs, ExtendableJs {
 	public val startDate: Double?
 
 	public val endDate: Double?
@@ -36,6 +37,8 @@ public external class DecryptedCareTeamMembershipJs(
 
 	override val encryptedSelf: String?
 
+	override val extensions: dynamic
+
 	override val isEncrypted: Boolean
 }
 
@@ -52,6 +55,8 @@ public external class EncryptedCareTeamMembershipJs(
 	override val membershipType: String?
 
 	override val encryptedSelf: String?
+
+	override val extensions: dynamic
 
 	override val isEncrypted: Boolean
 }

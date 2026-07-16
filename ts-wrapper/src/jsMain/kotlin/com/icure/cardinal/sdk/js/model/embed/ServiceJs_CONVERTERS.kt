@@ -3,10 +3,14 @@ package com.icure.cardinal.sdk.js.model.embed
 
 import com.icure.cardinal.sdk.js.model.CheckedConverters.arrayToList
 import com.icure.cardinal.sdk.js.model.CheckedConverters.arrayToSet
+import com.icure.cardinal.sdk.js.model.CheckedConverters.dynamicToJsonObjectNullsafe
+import com.icure.cardinal.sdk.js.model.CheckedConverters.intToNumber
+import com.icure.cardinal.sdk.js.model.CheckedConverters.jsonToDynamic
 import com.icure.cardinal.sdk.js.model.CheckedConverters.listToArray
 import com.icure.cardinal.sdk.js.model.CheckedConverters.longToNumber
 import com.icure.cardinal.sdk.js.model.CheckedConverters.mapToObject
 import com.icure.cardinal.sdk.js.model.CheckedConverters.nullToUndefined
+import com.icure.cardinal.sdk.js.model.CheckedConverters.numberToInt
 import com.icure.cardinal.sdk.js.model.CheckedConverters.numberToLong
 import com.icure.cardinal.sdk.js.model.CheckedConverters.objectToMap
 import com.icure.cardinal.sdk.js.model.CheckedConverters.setToArray
@@ -236,6 +240,12 @@ public fun service_toJs(obj: DecryptedService): DecryptedServiceJs {
 			securityMetadata_toJs(nonNull1)
 		}
 	)
+	val extensions = nullToUndefined(
+		jsonToDynamic(obj.extensions)
+	)
+	val contactExtensionsVersions = nullToUndefined(
+		intToNumber(obj.contactExtensionsVersions)
+	)
 	return DecryptedServiceJs(js("{" +
 		"id:id," +
 		"transactionId:transactionId," +
@@ -268,7 +278,9 @@ public fun service_toJs(obj: DecryptedService): DecryptedServiceJs {
 		"codes:codes," +
 		"tags:tags," +
 		"encryptedSelf:encryptedSelf," +
-		"securityMetadata:securityMetadata" +
+		"securityMetadata:securityMetadata," +
+		"extensions:extensions," +
+		"contactExtensionsVersions:contactExtensionsVersions" +
 	"}"))
 }
 
@@ -450,6 +462,9 @@ public fun service_fromJs(obj: DecryptedServiceJs): DecryptedService {
 	val securityMetadata = obj.securityMetadata?.let { nonNull1 ->
 		securityMetadata_fromJs(nonNull1)
 	}
+	val extensions = dynamicToJsonObjectNullsafe(obj.extensions, "obj.extensions")
+	val contactExtensionsVersions = numberToInt(obj.contactExtensionsVersions,
+			"obj.contactExtensionsVersions")
 	return DecryptedService(
 		id = id,
 		transactionId = transactionId,
@@ -483,6 +498,8 @@ public fun service_fromJs(obj: DecryptedServiceJs): DecryptedService {
 		tags = tags,
 		encryptedSelf = encryptedSelf,
 		securityMetadata = securityMetadata,
+		extensions = extensions,
+		contactExtensionsVersions = contactExtensionsVersions,
 	)
 }
 
@@ -685,6 +702,12 @@ public fun service_toJs(obj: EncryptedService): EncryptedServiceJs {
 			securityMetadata_toJs(nonNull1)
 		}
 	)
+	val extensions = nullToUndefined(
+		jsonToDynamic(obj.extensions)
+	)
+	val contactExtensionsVersions = nullToUndefined(
+		intToNumber(obj.contactExtensionsVersions)
+	)
 	return EncryptedServiceJs(js("{" +
 		"id:id," +
 		"transactionId:transactionId," +
@@ -717,7 +740,9 @@ public fun service_toJs(obj: EncryptedService): EncryptedServiceJs {
 		"codes:codes," +
 		"tags:tags," +
 		"encryptedSelf:encryptedSelf," +
-		"securityMetadata:securityMetadata" +
+		"securityMetadata:securityMetadata," +
+		"extensions:extensions," +
+		"contactExtensionsVersions:contactExtensionsVersions" +
 	"}"))
 }
 
@@ -899,6 +924,9 @@ public fun service_fromJs(obj: EncryptedServiceJs): EncryptedService {
 	val securityMetadata = obj.securityMetadata?.let { nonNull1 ->
 		securityMetadata_fromJs(nonNull1)
 	}
+	val extensions = dynamicToJsonObjectNullsafe(obj.extensions, "obj.extensions")
+	val contactExtensionsVersions = numberToInt(obj.contactExtensionsVersions,
+			"obj.contactExtensionsVersions")
 	return EncryptedService(
 		id = id,
 		transactionId = transactionId,
@@ -932,6 +960,8 @@ public fun service_fromJs(obj: EncryptedServiceJs): EncryptedService {
 		tags = tags,
 		encryptedSelf = encryptedSelf,
 		securityMetadata = securityMetadata,
+		extensions = extensions,
+		contactExtensionsVersions = contactExtensionsVersions,
 	)
 }
 

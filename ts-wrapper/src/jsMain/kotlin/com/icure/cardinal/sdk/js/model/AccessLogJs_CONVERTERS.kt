@@ -2,11 +2,15 @@
 package com.icure.cardinal.sdk.js.model
 
 import com.icure.cardinal.sdk.js.model.CheckedConverters.arrayToSet
+import com.icure.cardinal.sdk.js.model.CheckedConverters.dynamicToJsonObjectNullsafe
 import com.icure.cardinal.sdk.js.model.CheckedConverters.instantToNumber
+import com.icure.cardinal.sdk.js.model.CheckedConverters.intToNumber
+import com.icure.cardinal.sdk.js.model.CheckedConverters.jsonToDynamic
 import com.icure.cardinal.sdk.js.model.CheckedConverters.longToNumber
 import com.icure.cardinal.sdk.js.model.CheckedConverters.mapToObject
 import com.icure.cardinal.sdk.js.model.CheckedConverters.nullToUndefined
 import com.icure.cardinal.sdk.js.model.CheckedConverters.numberToInstant
+import com.icure.cardinal.sdk.js.model.CheckedConverters.numberToInt
 import com.icure.cardinal.sdk.js.model.CheckedConverters.numberToLong
 import com.icure.cardinal.sdk.js.model.CheckedConverters.objectToMap
 import com.icure.cardinal.sdk.js.model.CheckedConverters.setToArray
@@ -137,6 +141,12 @@ public fun accessLog_toJs(obj: DecryptedAccessLog): DecryptedAccessLogJs {
 			securityMetadata_toJs(nonNull1)
 		}
 	)
+	val extensions = nullToUndefined(
+		jsonToDynamic(obj.extensions)
+	)
+	val extensionsVersion = nullToUndefined(
+		intToNumber(obj.extensionsVersion)
+	)
 	return DecryptedAccessLogJs(js("{" +
 		"id:id," +
 		"rev:rev," +
@@ -157,7 +167,9 @@ public fun accessLog_toJs(obj: DecryptedAccessLog): DecryptedAccessLogJs {
 		"delegations:delegations," +
 		"encryptionKeys:encryptionKeys," +
 		"encryptedSelf:encryptedSelf," +
-		"securityMetadata:securityMetadata" +
+		"securityMetadata:securityMetadata," +
+		"extensions:extensions," +
+		"extensionsVersion:extensionsVersion" +
 	"}"))
 }
 
@@ -249,6 +261,8 @@ public fun accessLog_fromJs(obj: DecryptedAccessLogJs): DecryptedAccessLog {
 	val securityMetadata = obj.securityMetadata?.let { nonNull1 ->
 		securityMetadata_fromJs(nonNull1)
 	}
+	val extensions = dynamicToJsonObjectNullsafe(obj.extensions, "obj.extensions")
+	val extensionsVersion = numberToInt(obj.extensionsVersion, "obj.extensionsVersion")
 	return DecryptedAccessLog(
 		id = id,
 		rev = rev,
@@ -270,6 +284,8 @@ public fun accessLog_fromJs(obj: DecryptedAccessLogJs): DecryptedAccessLog {
 		encryptionKeys = encryptionKeys,
 		encryptedSelf = encryptedSelf,
 		securityMetadata = securityMetadata,
+		extensions = extensions,
+		extensionsVersion = extensionsVersion,
 	)
 }
 
@@ -379,6 +395,12 @@ public fun accessLog_toJs(obj: EncryptedAccessLog): EncryptedAccessLogJs {
 			securityMetadata_toJs(nonNull1)
 		}
 	)
+	val extensions = nullToUndefined(
+		jsonToDynamic(obj.extensions)
+	)
+	val extensionsVersion = nullToUndefined(
+		intToNumber(obj.extensionsVersion)
+	)
 	return EncryptedAccessLogJs(js("{" +
 		"id:id," +
 		"rev:rev," +
@@ -399,7 +421,9 @@ public fun accessLog_toJs(obj: EncryptedAccessLog): EncryptedAccessLogJs {
 		"delegations:delegations," +
 		"encryptionKeys:encryptionKeys," +
 		"encryptedSelf:encryptedSelf," +
-		"securityMetadata:securityMetadata" +
+		"securityMetadata:securityMetadata," +
+		"extensions:extensions," +
+		"extensionsVersion:extensionsVersion" +
 	"}"))
 }
 
@@ -491,6 +515,8 @@ public fun accessLog_fromJs(obj: EncryptedAccessLogJs): EncryptedAccessLog {
 	val securityMetadata = obj.securityMetadata?.let { nonNull1 ->
 		securityMetadata_fromJs(nonNull1)
 	}
+	val extensions = dynamicToJsonObjectNullsafe(obj.extensions, "obj.extensions")
+	val extensionsVersion = numberToInt(obj.extensionsVersion, "obj.extensionsVersion")
 	return EncryptedAccessLog(
 		id = id,
 		rev = rev,
@@ -512,6 +538,8 @@ public fun accessLog_fromJs(obj: EncryptedAccessLogJs): EncryptedAccessLog {
 		encryptionKeys = encryptionKeys,
 		encryptedSelf = encryptedSelf,
 		securityMetadata = securityMetadata,
+		extensions = extensions,
+		extensionsVersion = extensionsVersion,
 	)
 }
 

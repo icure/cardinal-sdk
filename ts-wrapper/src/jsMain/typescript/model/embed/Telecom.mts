@@ -1,11 +1,12 @@
 // auto-generated file
 import {expectString, expectStringEnum, extractEntry} from '../../internal/JsonDecodeUtils.mjs';
+import {Extendable} from '../base/Extendable.mjs';
 import {Base64String} from '../specializations/Base64String.mjs';
 import {Encryptable} from './Encryptable.mjs';
 import {TelecomType} from './TelecomType.mjs';
 
 
-export interface Telecom extends Encryptable {
+export interface Telecom extends Encryptable, Extendable {
 
 	telecomType: TelecomType | undefined;
 
@@ -29,6 +30,8 @@ export class DecryptedTelecom {
 
 	encryptedSelf: Base64String | undefined = undefined;
 
+	extensions: Record<string, any> | undefined = undefined;
+
 	readonly isEncrypted: false = false;
 
 	constructor(partial: Partial<DecryptedTelecom>) {
@@ -37,6 +40,7 @@ export class DecryptedTelecom {
 		if ('telecomNumber' in partial) this.telecomNumber = partial.telecomNumber;
 		if ('telecomDescription' in partial) this.telecomDescription = partial.telecomDescription;
 		if ('encryptedSelf' in partial) this.encryptedSelf = partial.encryptedSelf;
+		if ('extensions' in partial) this.extensions = partial.extensions;
 	}
 
 	toJSON(): object {
@@ -45,6 +49,7 @@ export class DecryptedTelecom {
 		if (this.telecomNumber != undefined) res['telecomNumber'] = this.telecomNumber
 		if (this.telecomDescription != undefined) res['telecomDescription'] = this.telecomDescription
 		if (this.encryptedSelf != undefined) res['encryptedSelf'] = this.encryptedSelf
+		if (this.extensions != undefined) res['extensions'] = this.extensions
 		res['isEncrypted'] = false
 		return res
 	}
@@ -59,6 +64,7 @@ export class DecryptedTelecom {
 			telecomNumber: expectString(extractEntry(jCpy, 'telecomNumber', false, path), true, [...path, ".telecomNumber"]),
 			telecomDescription: expectString(extractEntry(jCpy, 'telecomDescription', false, path), true, [...path, ".telecomDescription"]),
 			encryptedSelf: expectString(extractEntry(jCpy, 'encryptedSelf', false, path), true, [...path, ".encryptedSelf"]) as Base64String,
+			extensions: extractEntry(jCpy, 'extensions', false, path),
 		})
 		if (!ignoreUnknownKeys) {
 			const unused = Object.keys(jCpy)
@@ -78,6 +84,8 @@ export class EncryptedTelecom {
 
 	encryptedSelf: Base64String | undefined = undefined;
 
+	extensions: Record<string, any> | undefined = undefined;
+
 	readonly isEncrypted: true = true;
 
 	constructor(partial: Partial<EncryptedTelecom>) {
@@ -86,6 +94,7 @@ export class EncryptedTelecom {
 		if ('telecomNumber' in partial) this.telecomNumber = partial.telecomNumber;
 		if ('telecomDescription' in partial) this.telecomDescription = partial.telecomDescription;
 		if ('encryptedSelf' in partial) this.encryptedSelf = partial.encryptedSelf;
+		if ('extensions' in partial) this.extensions = partial.extensions;
 	}
 
 	toJSON(): object {
@@ -94,6 +103,7 @@ export class EncryptedTelecom {
 		if (this.telecomNumber != undefined) res['telecomNumber'] = this.telecomNumber
 		if (this.telecomDescription != undefined) res['telecomDescription'] = this.telecomDescription
 		if (this.encryptedSelf != undefined) res['encryptedSelf'] = this.encryptedSelf
+		if (this.extensions != undefined) res['extensions'] = this.extensions
 		res['isEncrypted'] = true
 		return res
 	}
@@ -108,6 +118,7 @@ export class EncryptedTelecom {
 			telecomNumber: expectString(extractEntry(jCpy, 'telecomNumber', false, path), true, [...path, ".telecomNumber"]),
 			telecomDescription: expectString(extractEntry(jCpy, 'telecomDescription', false, path), true, [...path, ".telecomDescription"]),
 			encryptedSelf: expectString(extractEntry(jCpy, 'encryptedSelf', false, path), true, [...path, ".encryptedSelf"]) as Base64String,
+			extensions: extractEntry(jCpy, 'extensions', false, path),
 		})
 		if (!ignoreUnknownKeys) {
 			const unused = Object.keys(jCpy)

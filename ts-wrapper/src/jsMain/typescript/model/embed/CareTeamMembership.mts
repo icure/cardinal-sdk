@@ -1,5 +1,6 @@
 // auto-generated file
 import {expectNumber, expectString, expectStringEnum, extractEntry} from '../../internal/JsonDecodeUtils.mjs';
+import {Extendable} from '../base/Extendable.mjs';
 import {Base64String} from '../specializations/Base64String.mjs';
 import {Encryptable} from './Encryptable.mjs';
 import {MembershipType} from './MembershipType.mjs';
@@ -11,7 +12,7 @@ import {MembershipType} from './MembershipType.mjs';
  *  involvement.
  *  /
  */
-export interface CareTeamMembership extends Encryptable {
+export interface CareTeamMembership extends Encryptable, Extendable {
 
 	/**
 	 *
@@ -81,6 +82,8 @@ export class DecryptedCareTeamMembership {
 	 */
 	encryptedSelf: Base64String | undefined = undefined;
 
+	extensions: Record<string, any> | undefined = undefined;
+
 	readonly isEncrypted: false = false;
 
 	constructor(partial: Partial<DecryptedCareTeamMembership>) {
@@ -90,6 +93,7 @@ export class DecryptedCareTeamMembership {
 		if ('careTeamMemberId' in partial) this.careTeamMemberId = partial.careTeamMemberId;
 		if ('membershipType' in partial) this.membershipType = partial.membershipType;
 		if ('encryptedSelf' in partial) this.encryptedSelf = partial.encryptedSelf;
+		if ('extensions' in partial) this.extensions = partial.extensions;
 	}
 
 	toJSON(): object {
@@ -99,6 +103,7 @@ export class DecryptedCareTeamMembership {
 		if (this.careTeamMemberId != undefined) res['careTeamMemberId'] = this.careTeamMemberId
 		if (this.membershipType != undefined) res['membershipType'] = this.membershipType
 		if (this.encryptedSelf != undefined) res['encryptedSelf'] = this.encryptedSelf
+		if (this.extensions != undefined) res['extensions'] = this.extensions
 		res['isEncrypted'] = false
 		return res
 	}
@@ -114,6 +119,7 @@ export class DecryptedCareTeamMembership {
 			careTeamMemberId: expectString(extractEntry(jCpy, 'careTeamMemberId', false, path), true, [...path, ".careTeamMemberId"]),
 			membershipType: expectStringEnum(extractEntry(jCpy, 'membershipType', false, path), true, [...path, ".membershipType"], MembershipType, 'MembershipType'),
 			encryptedSelf: expectString(extractEntry(jCpy, 'encryptedSelf', false, path), true, [...path, ".encryptedSelf"]) as Base64String,
+			extensions: extractEntry(jCpy, 'extensions', false, path),
 		})
 		if (!ignoreUnknownKeys) {
 			const unused = Object.keys(jCpy)
@@ -161,6 +167,8 @@ export class EncryptedCareTeamMembership {
 	 */
 	encryptedSelf: Base64String | undefined = undefined;
 
+	extensions: Record<string, any> | undefined = undefined;
+
 	readonly isEncrypted: true = true;
 
 	constructor(partial: Partial<EncryptedCareTeamMembership>) {
@@ -170,6 +178,7 @@ export class EncryptedCareTeamMembership {
 		if ('careTeamMemberId' in partial) this.careTeamMemberId = partial.careTeamMemberId;
 		if ('membershipType' in partial) this.membershipType = partial.membershipType;
 		if ('encryptedSelf' in partial) this.encryptedSelf = partial.encryptedSelf;
+		if ('extensions' in partial) this.extensions = partial.extensions;
 	}
 
 	toJSON(): object {
@@ -179,6 +188,7 @@ export class EncryptedCareTeamMembership {
 		if (this.careTeamMemberId != undefined) res['careTeamMemberId'] = this.careTeamMemberId
 		if (this.membershipType != undefined) res['membershipType'] = this.membershipType
 		if (this.encryptedSelf != undefined) res['encryptedSelf'] = this.encryptedSelf
+		if (this.extensions != undefined) res['extensions'] = this.extensions
 		res['isEncrypted'] = true
 		return res
 	}
@@ -194,6 +204,7 @@ export class EncryptedCareTeamMembership {
 			careTeamMemberId: expectString(extractEntry(jCpy, 'careTeamMemberId', false, path), true, [...path, ".careTeamMemberId"]),
 			membershipType: expectStringEnum(extractEntry(jCpy, 'membershipType', false, path), true, [...path, ".membershipType"], MembershipType, 'MembershipType'),
 			encryptedSelf: expectString(extractEntry(jCpy, 'encryptedSelf', false, path), true, [...path, ".encryptedSelf"]) as Base64String,
+			extensions: extractEntry(jCpy, 'extensions', false, path),
 		})
 		if (!ignoreUnknownKeys) {
 			const unused = Object.keys(jCpy)

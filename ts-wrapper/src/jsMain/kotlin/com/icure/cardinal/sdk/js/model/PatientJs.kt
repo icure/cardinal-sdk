@@ -5,6 +5,7 @@ package com.icure.cardinal.sdk.js.model
 
 import com.icure.cardinal.sdk.js.model.base.CodeStubJs
 import com.icure.cardinal.sdk.js.model.base.CryptoActorJs
+import com.icure.cardinal.sdk.js.model.base.ExtendableRootJs
 import com.icure.cardinal.sdk.js.model.base.HasEncryptionMetadataJs
 import com.icure.cardinal.sdk.js.model.base.HasIdentifierJs
 import com.icure.cardinal.sdk.js.model.base.ICureDocumentJs
@@ -46,7 +47,7 @@ import kotlin.js.JsQualifier
 
 @JsName("Patient")
 public sealed external interface PatientJs : StoredDocumentJs, ICureDocumentJs<String>, PersonJs,
-		HasEncryptionMetadataJs, EncryptableJs, HasIdentifierJs, CryptoActorJs {
+		HasEncryptionMetadataJs, EncryptableJs, HasIdentifierJs, CryptoActorJs, ExtendableRootJs {
 	public val birthSex: String?
 
 	public val mergeToPatientId: String?
@@ -254,6 +255,10 @@ public external class DecryptedPatientJs(
 
 	override val parentId: Nothing?
 
+	override val extensions: dynamic
+
+	override val extensionsVersion: Double?
+
 	override val isEncrypted: Boolean
 
 	override val ktClass: String
@@ -394,6 +399,10 @@ public external class EncryptedPatientJs(
 	override val cryptoActorProperties: Array<DecryptedPropertyStubJs>
 
 	override val parentId: Nothing?
+
+	override val extensions: dynamic
+
+	override val extensionsVersion: Double?
 
 	override val isEncrypted: Boolean
 

@@ -1,6 +1,7 @@
 // auto-generated file
 import {expectNumber, expectObject, expectString, extractEntry} from '../internal/JsonDecodeUtils.mjs';
 import {randomUuid} from '../utils/Id.mjs';
+import {ExtendableRoot} from './base/ExtendableRoot.mjs';
 import {Named} from './base/Named.mjs';
 import {StoredDocument} from './base/StoredDocument.mjs';
 import {DecryptedAddress} from './embed/Address.mjs';
@@ -11,7 +12,7 @@ import {DecryptedAddress} from './embed/Address.mjs';
  *  DTO representing a physical place or location, such as a clinic or office.
  *  /
  */
-export class Place implements StoredDocument, Named {
+export class Place implements StoredDocument, Named, ExtendableRoot {
 
 	/**
 	 *
@@ -43,12 +44,22 @@ export class Place implements StoredDocument, Named {
 	 */
 	address: DecryptedAddress | undefined = undefined;
 
+	/**
+	 *
+	 *  The address of the place.
+	 */
+	extensions: Record<string, any> | undefined = undefined;
+
+	extensionsVersion: number | undefined = undefined;
+
 	constructor(partial: Partial<Place>) {
 		this.id = partial.id ?? randomUuid();
 		if ('rev' in partial) this.rev = partial.rev;
 		if ('deletionDate' in partial) this.deletionDate = partial.deletionDate;
 		if ('name' in partial) this.name = partial.name;
 		if ('address' in partial) this.address = partial.address;
+		if ('extensions' in partial) this.extensions = partial.extensions;
+		if ('extensionsVersion' in partial) this.extensionsVersion = partial.extensionsVersion;
 	}
 
 	toJSON(): object {
@@ -58,6 +69,8 @@ export class Place implements StoredDocument, Named {
 		if (this.deletionDate != undefined) res['deletionDate'] = this.deletionDate
 		if (this.name != undefined) res['name'] = this.name
 		if (this.address != undefined) res['address'] = this.address.toJSON()
+		if (this.extensions != undefined) res['extensions'] = this.extensions
+		if (this.extensionsVersion != undefined) res['extensionsVersion'] = this.extensionsVersion
 		return res
 	}
 
@@ -71,6 +84,8 @@ export class Place implements StoredDocument, Named {
 			deletionDate: expectNumber(extractEntry(jCpy, 'deletionDate', false, path), true, true, [...path, ".deletionDate"]),
 			name: expectString(extractEntry(jCpy, 'name', false, path), true, [...path, ".name"]),
 			address: expectObject(extractEntry(jCpy, 'address', false, path), true, ignoreUnknownKeys, [...path, ".address"], DecryptedAddress.fromJSON),
+			extensions: extractEntry(jCpy, 'extensions', false, path),
+			extensionsVersion: expectNumber(extractEntry(jCpy, 'extensionsVersion', false, path), true, true, [...path, ".extensionsVersion"]),
 		})
 		if (!ignoreUnknownKeys) {
 			const unused = Object.keys(jCpy)

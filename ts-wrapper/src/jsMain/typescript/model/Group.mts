@@ -110,6 +110,8 @@ export class Group implements StoredDocument, HasTags {
 	 */
 	externalJwtConfig: { [ key: string ]: ExternalJwtConfig } = {};
 
+	customEntityConfig: Group.CustomEntityConfiguration | undefined = undefined;
+
 	/**
 	 *
 	 *  The minimum authentication class required for elevated privileges.
@@ -164,6 +166,7 @@ export class Group implements StoredDocument, HasTags {
 		if ('sharedEntities' in partial && partial.sharedEntities !== undefined) this.sharedEntities = partial.sharedEntities;
 		if ('minimumKrakenVersion' in partial) this.minimumKrakenVersion = partial.minimumKrakenVersion;
 		if ('externalJwtConfig' in partial && partial.externalJwtConfig !== undefined) this.externalJwtConfig = partial.externalJwtConfig;
+		if ('customEntityConfig' in partial) this.customEntityConfig = partial.customEntityConfig;
 		this.minimumAuthenticationClassForElevatedPrivileges = partial.minimumAuthenticationClassForElevatedPrivileges;
 		if ('superGroup' in partial) this.superGroup = partial.superGroup;
 		if ('projectId' in partial) this.projectId = partial.projectId;
@@ -189,6 +192,7 @@ export class Group implements StoredDocument, HasTags {
 		res['sharedEntities'] = Object.fromEntries(Object.entries(this.sharedEntities).map(([k0, v0]) => [k0, v0]))
 		if (this.minimumKrakenVersion != undefined) res['minimumKrakenVersion'] = this.minimumKrakenVersion
 		res['externalJwtConfig'] = Object.fromEntries(Object.entries(this.externalJwtConfig).map(([k0, v0]) => [k0, v0.toJSON()]))
+		if (this.customEntityConfig != undefined) res['customEntityConfig'] = this.customEntityConfig.toJSON()
 		res['minimumAuthenticationClassForElevatedPrivileges'] = this.minimumAuthenticationClassForElevatedPrivileges
 		if (this.superGroup != undefined) res['superGroup'] = this.superGroup
 		if (this.projectId != undefined) res['projectId'] = this.projectId
@@ -242,6 +246,7 @@ export class Group implements StoredDocument, HasTags {
 				(k0, p0) => expectString(k0, false, p0),
 				(v0, p0) => expectObject(v0, false, ignoreUnknownKeys, p0, ExternalJwtConfig.fromJSON)
 			),
+			customEntityConfig: expectObject(extractEntry(jCpy, 'customEntityConfig', false, path), true, ignoreUnknownKeys, [...path, ".customEntityConfig"], Group.CustomEntityConfiguration.fromJSON),
 			minimumAuthenticationClassForElevatedPrivileges: expectStringEnum(extractEntry(jCpy, 'minimumAuthenticationClassForElevatedPrivileges', true, path), false, [...path, ".minimumAuthenticationClassForElevatedPrivileges"], AuthenticationClass, 'AuthenticationClass'),
 			superGroup: expectString(extractEntry(jCpy, 'superGroup', false, path), true, [...path, ".superGroup"]),
 			projectId: expectString(extractEntry(jCpy, 'projectId', false, path), true, [...path, ".projectId"]),
@@ -258,6 +263,40 @@ export class Group implements StoredDocument, HasTags {
 }
 
 export namespace Group {
+
+	export class CustomEntityConfiguration {
+
+		sourceGroup: string;
+
+		version: number;
+
+		constructor(partial: Partial<CustomEntityConfiguration> & Pick<CustomEntityConfiguration, "sourceGroup" | "version">) {
+			this.sourceGroup = partial.sourceGroup;
+			this.version = partial.version;
+		}
+
+		toJSON(): object {
+			const res: { [k: string]: any } = {}
+			res['sourceGroup'] = this.sourceGroup
+			res['version'] = this.version
+			return res
+		}
+
+		static fromJSON(json: any, ignoreUnknownKeys: boolean = false,
+				path: Array<string> = ['CustomEntityConfiguration']): CustomEntityConfiguration {
+			if (typeof json != 'object') throw new Error(`Expected json object at path ${path.join("")}`)
+			const jCpy = { ...json }
+			const res = new CustomEntityConfiguration({
+				sourceGroup: expectString(extractEntry(jCpy, 'sourceGroup', true, path), false, [...path, ".sourceGroup"]),
+				version: expectNumber(extractEntry(jCpy, 'version', true, path), false, true, [...path, ".version"]),
+			})
+			if (!ignoreUnknownKeys) {
+				const unused = Object.keys(jCpy)
+				if (unused.length > 0) throw new Error(`Unexpected key(s) for json object CustomEntityConfiguration at path ${path.join("")}: ${unused}`)}
+			return res
+		}
+
+	}
 
 	export class TemplatesConfiguration {
 

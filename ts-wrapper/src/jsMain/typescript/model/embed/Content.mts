@@ -1,6 +1,8 @@
 // auto-generated file
 import {decodeBase64, encodeBase64} from '../../internal/BytesEncoding.mjs';
 import {expectArray, expectBoolean, expectNumber, expectObject, expectString, extractEntry} from '../../internal/JsonDecodeUtils.mjs';
+import {Base64String} from '../specializations/Base64String.mjs';
+import {Encryptable} from './Encryptable.mjs';
 import {Measure} from './Measure.mjs';
 import {Medication} from './Medication.mjs';
 import {DecryptedService, EncryptedService, Service} from './Service.mjs';
@@ -14,7 +16,7 @@ import {TimeSeries} from './TimeSeries.mjs';
  *  sub-services.
  *  /
  */
-export interface Content {
+export interface Content extends Encryptable {
 
 	/**
 	 *
@@ -187,6 +189,12 @@ export class DecryptedContent {
 	 */
 	range: Array<Measure> | undefined = undefined;
 
+	/**
+	 *
+	 *  A list of measures representing a range.
+	 */
+	encryptedSelf: Base64String | undefined = undefined;
+
 	readonly isEncrypted: false = false;
 
 	constructor(partial: Partial<DecryptedContent>) {
@@ -204,6 +212,7 @@ export class DecryptedContent {
 		if ('compoundValue' in partial) this.compoundValue = partial.compoundValue;
 		if ('ratio' in partial) this.ratio = partial.ratio;
 		if ('range' in partial) this.range = partial.range;
+		if ('encryptedSelf' in partial) this.encryptedSelf = partial.encryptedSelf;
 	}
 
 	toJSON(): object {
@@ -221,6 +230,7 @@ export class DecryptedContent {
 		if (this.compoundValue != undefined) res['compoundValue'] = this.compoundValue.map((x0) => x0.toJSON() )
 		if (this.ratio != undefined) res['ratio'] = this.ratio.map((x0) => x0.toJSON() )
 		if (this.range != undefined) res['range'] = this.range.map((x0) => x0.toJSON() )
+		if (this.encryptedSelf != undefined) res['encryptedSelf'] = this.encryptedSelf
 		res['isEncrypted'] = false
 		return res
 	}
@@ -244,6 +254,7 @@ export class DecryptedContent {
 			compoundValue: expectArray(extractEntry(jCpy, 'compoundValue', false, path), true, [...path, ".compoundValue"], (x0, p0) => expectObject(x0, false, ignoreUnknownKeys, p0, DecryptedService.fromJSON)),
 			ratio: expectArray(extractEntry(jCpy, 'ratio', false, path), true, [...path, ".ratio"], (x0, p0) => expectObject(x0, false, ignoreUnknownKeys, p0, Measure.fromJSON)),
 			range: expectArray(extractEntry(jCpy, 'range', false, path), true, [...path, ".range"], (x0, p0) => expectObject(x0, false, ignoreUnknownKeys, p0, Measure.fromJSON)),
+			encryptedSelf: expectString(extractEntry(jCpy, 'encryptedSelf', false, path), true, [...path, ".encryptedSelf"]) as Base64String,
 		})
 		if (!ignoreUnknownKeys) {
 			const unused = Object.keys(jCpy)
@@ -340,6 +351,12 @@ export class EncryptedContent {
 	 */
 	range: Array<Measure> | undefined = undefined;
 
+	/**
+	 *
+	 *  A list of measures representing a range.
+	 */
+	encryptedSelf: Base64String | undefined = undefined;
+
 	readonly isEncrypted: true = true;
 
 	constructor(partial: Partial<EncryptedContent>) {
@@ -357,6 +374,7 @@ export class EncryptedContent {
 		if ('compoundValue' in partial) this.compoundValue = partial.compoundValue;
 		if ('ratio' in partial) this.ratio = partial.ratio;
 		if ('range' in partial) this.range = partial.range;
+		if ('encryptedSelf' in partial) this.encryptedSelf = partial.encryptedSelf;
 	}
 
 	toJSON(): object {
@@ -374,6 +392,7 @@ export class EncryptedContent {
 		if (this.compoundValue != undefined) res['compoundValue'] = this.compoundValue.map((x0) => x0.toJSON() )
 		if (this.ratio != undefined) res['ratio'] = this.ratio.map((x0) => x0.toJSON() )
 		if (this.range != undefined) res['range'] = this.range.map((x0) => x0.toJSON() )
+		if (this.encryptedSelf != undefined) res['encryptedSelf'] = this.encryptedSelf
 		res['isEncrypted'] = true
 		return res
 	}
@@ -397,6 +416,7 @@ export class EncryptedContent {
 			compoundValue: expectArray(extractEntry(jCpy, 'compoundValue', false, path), true, [...path, ".compoundValue"], (x0, p0) => expectObject(x0, false, ignoreUnknownKeys, p0, EncryptedService.fromJSON)),
 			ratio: expectArray(extractEntry(jCpy, 'ratio', false, path), true, [...path, ".ratio"], (x0, p0) => expectObject(x0, false, ignoreUnknownKeys, p0, Measure.fromJSON)),
 			range: expectArray(extractEntry(jCpy, 'range', false, path), true, [...path, ".range"], (x0, p0) => expectObject(x0, false, ignoreUnknownKeys, p0, Measure.fromJSON)),
+			encryptedSelf: expectString(extractEntry(jCpy, 'encryptedSelf', false, path), true, [...path, ".encryptedSelf"]) as Base64String,
 		})
 		if (!ignoreUnknownKeys) {
 			const unused = Object.keys(jCpy)

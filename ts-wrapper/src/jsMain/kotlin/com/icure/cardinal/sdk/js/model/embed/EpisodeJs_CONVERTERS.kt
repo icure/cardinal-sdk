@@ -1,6 +1,8 @@
 // auto-generated file
 package com.icure.cardinal.sdk.js.model.embed
 
+import com.icure.cardinal.sdk.js.model.CheckedConverters.dynamicToJsonObjectNullsafe
+import com.icure.cardinal.sdk.js.model.CheckedConverters.jsonToDynamic
 import com.icure.cardinal.sdk.js.model.CheckedConverters.longToNumber
 import com.icure.cardinal.sdk.js.model.CheckedConverters.nullToUndefined
 import com.icure.cardinal.sdk.js.model.CheckedConverters.numberToLong
@@ -32,13 +34,17 @@ public fun episode_toJs(obj: DecryptedEpisode): DecryptedEpisodeJs {
 			base64String_toJs(nonNull1)
 		}
 	)
+	val extensions = nullToUndefined(
+		jsonToDynamic(obj.extensions)
+	)
 	return DecryptedEpisodeJs(js("{" +
 		"id:id," +
 		"name:name," +
 		"comment:comment," +
 		"startDate:startDate," +
 		"endDate:endDate," +
-		"encryptedSelf:encryptedSelf" +
+		"encryptedSelf:encryptedSelf," +
+		"extensions:extensions" +
 	"}"))
 }
 
@@ -51,6 +57,7 @@ public fun episode_fromJs(obj: DecryptedEpisodeJs): DecryptedEpisode {
 	val encryptedSelf = obj.encryptedSelf?.let { nonNull1 ->
 		base64String_fromJs(nonNull1)
 	}
+	val extensions = dynamicToJsonObjectNullsafe(obj.extensions, "obj.extensions")
 	return DecryptedEpisode(
 		id = id,
 		name = name,
@@ -58,6 +65,7 @@ public fun episode_fromJs(obj: DecryptedEpisodeJs): DecryptedEpisode {
 		startDate = startDate,
 		endDate = endDate,
 		encryptedSelf = encryptedSelf,
+		extensions = extensions,
 	)
 }
 
@@ -81,13 +89,17 @@ public fun episode_toJs(obj: EncryptedEpisode): EncryptedEpisodeJs {
 			base64String_toJs(nonNull1)
 		}
 	)
+	val extensions = nullToUndefined(
+		jsonToDynamic(obj.extensions)
+	)
 	return EncryptedEpisodeJs(js("{" +
 		"id:id," +
 		"name:name," +
 		"comment:comment," +
 		"startDate:startDate," +
 		"endDate:endDate," +
-		"encryptedSelf:encryptedSelf" +
+		"encryptedSelf:encryptedSelf," +
+		"extensions:extensions" +
 	"}"))
 }
 
@@ -100,6 +112,7 @@ public fun episode_fromJs(obj: EncryptedEpisodeJs): EncryptedEpisode {
 	val encryptedSelf = obj.encryptedSelf?.let { nonNull1 ->
 		base64String_fromJs(nonNull1)
 	}
+	val extensions = dynamicToJsonObjectNullsafe(obj.extensions, "obj.extensions")
 	return EncryptedEpisode(
 		id = id,
 		name = name,
@@ -107,6 +120,7 @@ public fun episode_fromJs(obj: EncryptedEpisodeJs): EncryptedEpisode {
 		startDate = startDate,
 		endDate = endDate,
 		encryptedSelf = encryptedSelf,
+		extensions = extensions,
 	)
 }
 

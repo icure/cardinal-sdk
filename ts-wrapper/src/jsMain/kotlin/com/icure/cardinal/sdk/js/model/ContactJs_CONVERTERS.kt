@@ -3,10 +3,14 @@ package com.icure.cardinal.sdk.js.model
 
 import com.icure.cardinal.sdk.js.model.CheckedConverters.arrayToList
 import com.icure.cardinal.sdk.js.model.CheckedConverters.arrayToSet
+import com.icure.cardinal.sdk.js.model.CheckedConverters.dynamicToJsonObjectNullsafe
+import com.icure.cardinal.sdk.js.model.CheckedConverters.intToNumber
+import com.icure.cardinal.sdk.js.model.CheckedConverters.jsonToDynamic
 import com.icure.cardinal.sdk.js.model.CheckedConverters.listToArray
 import com.icure.cardinal.sdk.js.model.CheckedConverters.longToNumber
 import com.icure.cardinal.sdk.js.model.CheckedConverters.mapToObject
 import com.icure.cardinal.sdk.js.model.CheckedConverters.nullToUndefined
+import com.icure.cardinal.sdk.js.model.CheckedConverters.numberToInt
 import com.icure.cardinal.sdk.js.model.CheckedConverters.numberToLong
 import com.icure.cardinal.sdk.js.model.CheckedConverters.objectToMap
 import com.icure.cardinal.sdk.js.model.CheckedConverters.setToArray
@@ -208,6 +212,12 @@ public fun contact_toJs(obj: DecryptedContact): DecryptedContactJs {
 			annotation_toJs(x1)
 		},
 	)
+	val extensions = nullToUndefined(
+		jsonToDynamic(obj.extensions)
+	)
+	val extensionsVersion = nullToUndefined(
+		intToNumber(obj.extensionsVersion)
+	)
 	return DecryptedContactJs(js("{" +
 		"id:id," +
 		"rev:rev," +
@@ -236,7 +246,9 @@ public fun contact_toJs(obj: DecryptedContact): DecryptedContactJs {
 		"encryptionKeys:encryptionKeys," +
 		"encryptedSelf:encryptedSelf," +
 		"securityMetadata:securityMetadata," +
-		"notes:notes" +
+		"notes:notes," +
+		"extensions:extensions," +
+		"extensionsVersion:extensionsVersion" +
 	"}"))
 }
 
@@ -370,6 +382,8 @@ public fun contact_fromJs(obj: DecryptedContactJs): DecryptedContact {
 			annotation_fromJs(x1)
 		},
 	)
+	val extensions = dynamicToJsonObjectNullsafe(obj.extensions, "obj.extensions")
+	val extensionsVersion = numberToInt(obj.extensionsVersion, "obj.extensionsVersion")
 	return DecryptedContact(
 		id = id,
 		rev = rev,
@@ -399,6 +413,8 @@ public fun contact_fromJs(obj: DecryptedContactJs): DecryptedContact {
 		encryptedSelf = encryptedSelf,
 		securityMetadata = securityMetadata,
 		notes = notes,
+		extensions = extensions,
+		extensionsVersion = extensionsVersion,
 	)
 }
 
@@ -551,6 +567,12 @@ public fun contact_toJs(obj: EncryptedContact): EncryptedContactJs {
 			annotation_toJs(x1)
 		},
 	)
+	val extensions = nullToUndefined(
+		jsonToDynamic(obj.extensions)
+	)
+	val extensionsVersion = nullToUndefined(
+		intToNumber(obj.extensionsVersion)
+	)
 	return EncryptedContactJs(js("{" +
 		"id:id," +
 		"rev:rev," +
@@ -579,7 +601,9 @@ public fun contact_toJs(obj: EncryptedContact): EncryptedContactJs {
 		"encryptionKeys:encryptionKeys," +
 		"encryptedSelf:encryptedSelf," +
 		"securityMetadata:securityMetadata," +
-		"notes:notes" +
+		"notes:notes," +
+		"extensions:extensions," +
+		"extensionsVersion:extensionsVersion" +
 	"}"))
 }
 
@@ -713,6 +737,8 @@ public fun contact_fromJs(obj: EncryptedContactJs): EncryptedContact {
 			annotation_fromJs(x1)
 		},
 	)
+	val extensions = dynamicToJsonObjectNullsafe(obj.extensions, "obj.extensions")
+	val extensionsVersion = numberToInt(obj.extensionsVersion, "obj.extensionsVersion")
 	return EncryptedContact(
 		id = id,
 		rev = rev,
@@ -742,6 +768,8 @@ public fun contact_fromJs(obj: EncryptedContactJs): EncryptedContact {
 		encryptedSelf = encryptedSelf,
 		securityMetadata = securityMetadata,
 		notes = notes,
+		extensions = extensions,
+		extensionsVersion = extensionsVersion,
 	)
 }
 

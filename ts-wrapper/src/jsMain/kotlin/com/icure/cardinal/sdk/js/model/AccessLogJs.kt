@@ -4,6 +4,7 @@
 package com.icure.cardinal.sdk.js.model
 
 import com.icure.cardinal.sdk.js.model.base.CodeStubJs
+import com.icure.cardinal.sdk.js.model.base.ExtendableRootJs
 import com.icure.cardinal.sdk.js.model.base.HasEncryptionMetadataJs
 import com.icure.cardinal.sdk.js.model.base.ICureDocumentJs
 import com.icure.cardinal.sdk.js.model.base.StoredDocumentJs
@@ -20,7 +21,7 @@ import kotlin.js.JsQualifier
 
 @JsName("AccessLog")
 public sealed external interface AccessLogJs : StoredDocumentJs, ICureDocumentJs<String>,
-		HasEncryptionMetadataJs, EncryptableJs {
+		HasEncryptionMetadataJs, EncryptableJs, ExtendableRootJs {
 	public val objectId: String?
 
 	public val accessType: String?
@@ -78,6 +79,10 @@ public external class DecryptedAccessLogJs(
 
 	override val securityMetadata: SecurityMetadataJs?
 
+	override val extensions: dynamic
+
+	override val extensionsVersion: Double?
+
 	override val isEncrypted: Boolean
 }
 
@@ -124,6 +129,10 @@ public external class EncryptedAccessLogJs(
 	override val encryptedSelf: String?
 
 	override val securityMetadata: SecurityMetadataJs?
+
+	override val extensions: dynamic
+
+	override val extensionsVersion: Double?
 
 	override val isEncrypted: Boolean
 }

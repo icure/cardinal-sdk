@@ -2,6 +2,7 @@
 import {expectArray, expectBoolean, expectMap, expectNumber, expectObject, expectString, expectStringEnum, extractEntry} from '../internal/JsonDecodeUtils.mjs';
 import {randomUuid} from '../utils/Id.mjs';
 import {DecryptedPropertyStub} from './PropertyStub.mjs';
+import {ExtendableRoot} from './base/ExtendableRoot.mjs';
 import {HasIdentifier} from './base/HasIdentifier.mjs';
 import {Identifier} from './base/Identifier.mjs';
 import {StoredDocument} from './base/StoredDocument.mjs';
@@ -19,7 +20,7 @@ import {Permission} from './security/Permission.mjs';
  *  party,
  *   a patient, or a device, and holds authentication credentials, roles, and permissions.
  */
-export class User implements StoredDocument, HasIdentifier {
+export class User implements StoredDocument, HasIdentifier, ExtendableRoot {
 
 	/**
 	 *
@@ -154,6 +155,10 @@ export class User implements StoredDocument, HasIdentifier {
 	 */
 	systemMetadata: User.SystemMetadata | undefined = undefined;
 
+	extensions: Record<string, any> | undefined = undefined;
+
+	extensionsVersion: number | undefined = undefined;
+
 	constructor(partial: Partial<User>) {
 		this.id = partial.id ?? randomUuid();
 		if ('rev' in partial) this.rev = partial.rev;
@@ -177,6 +182,8 @@ export class User implements StoredDocument, HasIdentifier {
 		if ('mobilePhone' in partial) this.mobilePhone = partial.mobilePhone;
 		if ('authenticationTokens' in partial && partial.authenticationTokens !== undefined) this.authenticationTokens = partial.authenticationTokens;
 		if ('systemMetadata' in partial) this.systemMetadata = partial.systemMetadata;
+		if ('extensions' in partial) this.extensions = partial.extensions;
+		if ('extensionsVersion' in partial) this.extensionsVersion = partial.extensionsVersion;
 	}
 
 	toJSON(): object {
@@ -203,6 +210,8 @@ export class User implements StoredDocument, HasIdentifier {
 		if (this.mobilePhone != undefined) res['mobilePhone'] = this.mobilePhone
 		res['authenticationTokens'] = Object.fromEntries(Object.entries(this.authenticationTokens).map(([k0, v0]) => [k0, v0.toJSON()]))
 		if (this.systemMetadata != undefined) res['systemMetadata'] = this.systemMetadata.toJSON()
+		if (this.extensions != undefined) res['extensions'] = this.extensions
+		if (this.extensionsVersion != undefined) res['extensionsVersion'] = this.extensionsVersion
 		return res
 	}
 
@@ -245,6 +254,8 @@ export class User implements StoredDocument, HasIdentifier {
 				(v0, p0) => expectObject(v0, false, ignoreUnknownKeys, p0, AuthenticationToken.fromJSON)
 			),
 			systemMetadata: expectObject(extractEntry(jCpy, 'systemMetadata', false, path), true, ignoreUnknownKeys, [...path, ".systemMetadata"], User.SystemMetadata.fromJSON),
+			extensions: extractEntry(jCpy, 'extensions', false, path),
+			extensionsVersion: expectNumber(extractEntry(jCpy, 'extensionsVersion', false, path), true, true, [...path, ".extensionsVersion"]),
 		})
 		if (!ignoreUnknownKeys) {
 			const unused = Object.keys(jCpy)

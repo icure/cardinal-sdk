@@ -3,6 +3,7 @@
 
 package com.icure.cardinal.sdk.js.model
 
+import com.icure.cardinal.sdk.js.model.base.ExtendableRootJs
 import com.icure.cardinal.sdk.js.model.base.HasIdentifierJs
 import com.icure.cardinal.sdk.js.model.base.IdentifierJs
 import com.icure.cardinal.sdk.js.model.base.StoredDocumentJs
@@ -18,7 +19,7 @@ import kotlin.js.JsQualifier
 @JsName("User")
 public external class UserJs(
 	partial: dynamic,
-) : StoredDocumentJs, HasIdentifierJs {
+) : StoredDocumentJs, HasIdentifierJs, ExtendableRootJs {
 	override val id: String
 
 	override val rev: String?
@@ -62,4 +63,8 @@ public external class UserJs(
 	public val authenticationTokens: Record<String, AuthenticationTokenJs>
 
 	public val systemMetadata: UserJs_SystemMetadataJs?
+
+	override val extensions: dynamic
+
+	override val extensionsVersion: Double?
 }

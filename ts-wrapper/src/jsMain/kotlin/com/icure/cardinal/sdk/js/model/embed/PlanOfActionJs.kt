@@ -4,6 +4,7 @@
 package com.icure.cardinal.sdk.js.model.embed
 
 import com.icure.cardinal.sdk.js.model.base.CodeStubJs
+import com.icure.cardinal.sdk.js.model.base.ExtendableJs
 import com.icure.cardinal.sdk.js.model.base.HasEndOfLifeJs
 import com.icure.cardinal.sdk.js.model.base.ICureDocumentJs
 import com.icure.cardinal.sdk.js.model.base.NamedJs
@@ -16,7 +17,7 @@ import kotlin.js.JsQualifier
 
 @JsName("PlanOfAction")
 public sealed external interface PlanOfActionJs : EncryptableJs, ICureDocumentJs<String>, NamedJs,
-		HasEndOfLifeJs {
+		HasEndOfLifeJs, ExtendableJs {
 	public val prescriberId: String?
 
 	public val valueDate: Double?
@@ -84,6 +85,8 @@ public external class DecryptedPlanOfActionJs(
 
 	override val encryptedSelf: String?
 
+	override val extensions: dynamic
+
 	override val isEncrypted: Boolean
 }
 
@@ -130,6 +133,8 @@ public external class EncryptedPlanOfActionJs(
 	override val careTeamMemberships: Array<EncryptedCareTeamMembershipJs>
 
 	override val encryptedSelf: String?
+
+	override val extensions: dynamic
 
 	override val isEncrypted: Boolean
 }

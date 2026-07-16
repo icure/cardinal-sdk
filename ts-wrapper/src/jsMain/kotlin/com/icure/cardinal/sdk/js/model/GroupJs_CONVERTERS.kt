@@ -122,6 +122,11 @@ public fun group_toJs(obj: Group): GroupJs {
 			externalJwtConfig_toJs(x1)
 		},
 	)
+	val customEntityConfig = nullToUndefined(
+		obj.customEntityConfig?.let { nonNull1 ->
+			group_CustomEntityConfiguration_toJs(nonNull1)
+		}
+	)
 	val minimumAuthenticationClassForElevatedPrivileges =
 			obj.minimumAuthenticationClassForElevatedPrivileges.name
 	val superGroup = nullToUndefined(
@@ -160,6 +165,7 @@ public fun group_toJs(obj: Group): GroupJs {
 		"sharedEntities:sharedEntities," +
 		"minimumKrakenVersion:minimumKrakenVersion," +
 		"externalJwtConfig:externalJwtConfig," +
+		"customEntityConfig:customEntityConfig," +
 		"minimumAuthenticationClassForElevatedPrivileges:minimumAuthenticationClassForElevatedPrivileges," +
 		"superGroup:superGroup," +
 		"projectId:projectId," +
@@ -251,6 +257,9 @@ public fun group_fromJs(obj: GroupJs): Group {
 			externalJwtConfig_fromJs(x1)
 		},
 	)
+	val customEntityConfig = obj.customEntityConfig?.let { nonNull1 ->
+		group_CustomEntityConfiguration_fromJs(nonNull1)
+	}
 	val minimumAuthenticationClassForElevatedPrivileges =
 			AuthenticationClass.valueOf(obj.minimumAuthenticationClassForElevatedPrivileges)
 	val superGroup = undefinedToNull(obj.superGroup)
@@ -283,12 +292,34 @@ public fun group_fromJs(obj: GroupJs): Group {
 		sharedEntities = sharedEntities,
 		minimumKrakenVersion = minimumKrakenVersion,
 		externalJwtConfig = externalJwtConfig,
+		customEntityConfig = customEntityConfig,
 		minimumAuthenticationClassForElevatedPrivileges = minimumAuthenticationClassForElevatedPrivileges,
 		superGroup = superGroup,
 		projectId = projectId,
 		templates = templates,
 		designDocSchemaVersions = designDocSchemaVersions,
 		defaultChildrenSchemaVersion = defaultChildrenSchemaVersion,
+	)
+}
+
+@Suppress("UNUSED_VARIABLE")
+public fun group_CustomEntityConfiguration_toJs(obj: Group.CustomEntityConfiguration):
+		GroupJs_CustomEntityConfigurationJs {
+	val sourceGroup = obj.sourceGroup
+	val version = intToNumber(obj.version)
+	return GroupJs_CustomEntityConfigurationJs(js("{" +
+		"sourceGroup:sourceGroup," +
+		"version:version" +
+	"}"))
+}
+
+public fun group_CustomEntityConfiguration_fromJs(obj: GroupJs_CustomEntityConfigurationJs):
+		Group.CustomEntityConfiguration {
+	val sourceGroup = obj.sourceGroup
+	val version = numberToInt(obj.version, "obj.version")
+	return Group.CustomEntityConfiguration(
+		sourceGroup = sourceGroup,
+		version = version,
 	)
 }
 

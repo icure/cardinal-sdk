@@ -12,7 +12,7 @@ import kotlin.js.JsName
 import kotlin.js.JsQualifier
 
 @JsName("Content")
-public sealed external interface ContentJs {
+public sealed external interface ContentJs : EncryptableJs {
 	public val stringValue: String?
 
 	public val numberValue: Double?
@@ -72,6 +72,8 @@ public external class DecryptedContentJs(
 
 	override val range: Array<MeasureJs>?
 
+	override val encryptedSelf: String?
+
 	override val isEncrypted: Boolean
 }
 
@@ -104,6 +106,8 @@ public external class EncryptedContentJs(
 	override val ratio: Array<MeasureJs>?
 
 	override val range: Array<MeasureJs>?
+
+	override val encryptedSelf: String?
 
 	override val isEncrypted: Boolean
 }

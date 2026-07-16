@@ -2,6 +2,7 @@
 import {expectArray, expectNumber, expectObject, expectString, extractEntry} from '../../internal/JsonDecodeUtils.mjs';
 import {randomUuid} from '../../utils/Id.mjs';
 import {CodeStub} from '../base/CodeStub.mjs';
+import {Extendable} from '../base/Extendable.mjs';
 import {HasEndOfLife} from '../base/HasEndOfLife.mjs';
 import {ICureDocument} from '../base/ICureDocument.mjs';
 import {Named} from '../base/Named.mjs';
@@ -10,7 +11,7 @@ import {CareTeamMembership, DecryptedCareTeamMembership, EncryptedCareTeamMember
 import {Encryptable} from './Encryptable.mjs';
 
 
-export interface PlanOfAction extends Encryptable, ICureDocument<string>, Named, HasEndOfLife {
+export interface PlanOfAction extends Encryptable, ICureDocument<string>, Named, HasEndOfLife, Extendable {
 
 	prescriberId: string | undefined;
 
@@ -80,6 +81,8 @@ export class DecryptedPlanOfAction {
 
 	encryptedSelf: Base64String | undefined = undefined;
 
+	extensions: Record<string, any> | undefined = undefined;
+
 	readonly isEncrypted: false = false;
 
 	constructor(partial: Partial<DecryptedPlanOfAction>) {
@@ -104,6 +107,7 @@ export class DecryptedPlanOfAction {
 		if ('idClosingContact' in partial) this.idClosingContact = partial.idClosingContact;
 		if ('careTeamMemberships' in partial && partial.careTeamMemberships !== undefined) this.careTeamMemberships = partial.careTeamMemberships;
 		if ('encryptedSelf' in partial) this.encryptedSelf = partial.encryptedSelf;
+		if ('extensions' in partial) this.extensions = partial.extensions;
 	}
 
 	toJSON(): object {
@@ -128,6 +132,7 @@ export class DecryptedPlanOfAction {
 		if (this.idClosingContact != undefined) res['idClosingContact'] = this.idClosingContact
 		res['careTeamMemberships'] = this.careTeamMemberships.map((x0) => x0.toJSON() )
 		if (this.encryptedSelf != undefined) res['encryptedSelf'] = this.encryptedSelf
+		if (this.extensions != undefined) res['extensions'] = this.extensions
 		res['isEncrypted'] = false
 		return res
 	}
@@ -158,6 +163,7 @@ export class DecryptedPlanOfAction {
 			idClosingContact: expectString(extractEntry(jCpy, 'idClosingContact', false, path), true, [...path, ".idClosingContact"]),
 			careTeamMemberships: expectArray(extractEntry(jCpy, 'careTeamMemberships', false, path), false, [...path, ".careTeamMemberships"], (x0, p0) => expectObject(x0, false, ignoreUnknownKeys, p0, DecryptedCareTeamMembership.fromJSON)),
 			encryptedSelf: expectString(extractEntry(jCpy, 'encryptedSelf', false, path), true, [...path, ".encryptedSelf"]) as Base64String,
+			extensions: extractEntry(jCpy, 'extensions', false, path),
 		})
 		if (!ignoreUnknownKeys) {
 			const unused = Object.keys(jCpy)
@@ -209,6 +215,8 @@ export class EncryptedPlanOfAction {
 
 	encryptedSelf: Base64String | undefined = undefined;
 
+	extensions: Record<string, any> | undefined = undefined;
+
 	readonly isEncrypted: true = true;
 
 	constructor(partial: Partial<EncryptedPlanOfAction>) {
@@ -233,6 +241,7 @@ export class EncryptedPlanOfAction {
 		if ('idClosingContact' in partial) this.idClosingContact = partial.idClosingContact;
 		if ('careTeamMemberships' in partial && partial.careTeamMemberships !== undefined) this.careTeamMemberships = partial.careTeamMemberships;
 		if ('encryptedSelf' in partial) this.encryptedSelf = partial.encryptedSelf;
+		if ('extensions' in partial) this.extensions = partial.extensions;
 	}
 
 	toJSON(): object {
@@ -257,6 +266,7 @@ export class EncryptedPlanOfAction {
 		if (this.idClosingContact != undefined) res['idClosingContact'] = this.idClosingContact
 		res['careTeamMemberships'] = this.careTeamMemberships.map((x0) => x0.toJSON() )
 		if (this.encryptedSelf != undefined) res['encryptedSelf'] = this.encryptedSelf
+		if (this.extensions != undefined) res['extensions'] = this.extensions
 		res['isEncrypted'] = true
 		return res
 	}
@@ -287,6 +297,7 @@ export class EncryptedPlanOfAction {
 			idClosingContact: expectString(extractEntry(jCpy, 'idClosingContact', false, path), true, [...path, ".idClosingContact"]),
 			careTeamMemberships: expectArray(extractEntry(jCpy, 'careTeamMemberships', false, path), false, [...path, ".careTeamMemberships"], (x0, p0) => expectObject(x0, false, ignoreUnknownKeys, p0, EncryptedCareTeamMembership.fromJSON)),
 			encryptedSelf: expectString(extractEntry(jCpy, 'encryptedSelf', false, path), true, [...path, ".encryptedSelf"]) as Base64String,
+			extensions: extractEntry(jCpy, 'extensions', false, path),
 		})
 		if (!ignoreUnknownKeys) {
 			const unused = Object.keys(jCpy)

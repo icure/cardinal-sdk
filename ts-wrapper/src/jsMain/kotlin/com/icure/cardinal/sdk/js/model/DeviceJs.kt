@@ -6,6 +6,7 @@ package com.icure.cardinal.sdk.js.model
 import com.icure.cardinal.sdk.js.model.base.CodeStubJs
 import com.icure.cardinal.sdk.js.model.base.CryptoActorJs
 import com.icure.cardinal.sdk.js.model.base.DataOwnerJs
+import com.icure.cardinal.sdk.js.model.base.ExtendableRootJs
 import com.icure.cardinal.sdk.js.model.base.ICureDocumentJs
 import com.icure.cardinal.sdk.js.model.base.IdentifierJs
 import com.icure.cardinal.sdk.js.model.base.NamedJs
@@ -20,7 +21,8 @@ import kotlin.js.JsQualifier
 @JsName("Device")
 public external class DeviceJs(
 	partial: dynamic,
-) : StoredDocumentJs, ICureDocumentJs<String>, NamedJs, CryptoActorJs, DataOwnerJs {
+) : StoredDocumentJs, ICureDocumentJs<String>, NamedJs, CryptoActorJs, DataOwnerJs, ExtendableRootJs
+		{
 	override val id: String
 
 	override val rev: String?
@@ -68,6 +70,10 @@ public external class DeviceJs(
 	override val publicKeysForOaepWithSha256: Array<String>
 
 	override val cryptoActorProperties: Array<DecryptedPropertyStubJs>
+
+	override val extensions: dynamic
+
+	override val extensionsVersion: Double?
 
 	override val ktClass: String
 }

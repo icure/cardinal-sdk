@@ -3,10 +3,14 @@ package com.icure.cardinal.sdk.js.model
 
 import com.icure.cardinal.sdk.js.model.CheckedConverters.arrayToList
 import com.icure.cardinal.sdk.js.model.CheckedConverters.arrayToSet
+import com.icure.cardinal.sdk.js.model.CheckedConverters.dynamicToJsonObjectNullsafe
+import com.icure.cardinal.sdk.js.model.CheckedConverters.intToNumber
+import com.icure.cardinal.sdk.js.model.CheckedConverters.jsonToDynamic
 import com.icure.cardinal.sdk.js.model.CheckedConverters.listToArray
 import com.icure.cardinal.sdk.js.model.CheckedConverters.longToNumber
 import com.icure.cardinal.sdk.js.model.CheckedConverters.mapToObject
 import com.icure.cardinal.sdk.js.model.CheckedConverters.nullToUndefined
+import com.icure.cardinal.sdk.js.model.CheckedConverters.numberToInt
 import com.icure.cardinal.sdk.js.model.CheckedConverters.numberToLong
 import com.icure.cardinal.sdk.js.model.CheckedConverters.objectToMap
 import com.icure.cardinal.sdk.js.model.CheckedConverters.setToArray
@@ -185,6 +189,12 @@ public fun device_toJs(obj: Device): DeviceJs {
 			propertyStub_toJs(x1)
 		},
 	)
+	val extensions = nullToUndefined(
+		jsonToDynamic(obj.extensions)
+	)
+	val extensionsVersion = nullToUndefined(
+		intToNumber(obj.extensionsVersion)
+	)
 	return DeviceJs(js("{" +
 		"id:id," +
 		"rev:rev," +
@@ -209,7 +219,9 @@ public fun device_toJs(obj: Device): DeviceJs {
 		"privateKeyShamirPartitions:privateKeyShamirPartitions," +
 		"publicKey:publicKey," +
 		"publicKeysForOaepWithSha256:publicKeysForOaepWithSha256," +
-		"cryptoActorProperties:cryptoActorProperties" +
+		"cryptoActorProperties:cryptoActorProperties," +
+		"extensions:extensions," +
+		"extensionsVersion:extensionsVersion" +
 	"}"))
 }
 
@@ -345,6 +357,8 @@ public fun device_fromJs(obj: DeviceJs): Device {
 			propertyStub_fromJs(x1)
 		},
 	)
+	val extensions = dynamicToJsonObjectNullsafe(obj.extensions, "obj.extensions")
+	val extensionsVersion = numberToInt(obj.extensionsVersion, "obj.extensionsVersion")
 	return Device(
 		id = id,
 		rev = rev,
@@ -370,5 +384,7 @@ public fun device_fromJs(obj: DeviceJs): Device {
 		publicKey = publicKey,
 		publicKeysForOaepWithSha256 = publicKeysForOaepWithSha256,
 		cryptoActorProperties = cryptoActorProperties,
+		extensions = extensions,
+		extensionsVersion = extensionsVersion,
 	)
 }

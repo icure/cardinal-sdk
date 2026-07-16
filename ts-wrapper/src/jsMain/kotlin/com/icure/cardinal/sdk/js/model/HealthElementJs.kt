@@ -4,6 +4,7 @@
 package com.icure.cardinal.sdk.js.model
 
 import com.icure.cardinal.sdk.js.model.base.CodeStubJs
+import com.icure.cardinal.sdk.js.model.base.ExtendableRootJs
 import com.icure.cardinal.sdk.js.model.base.HasEncryptionMetadataJs
 import com.icure.cardinal.sdk.js.model.base.HasEndOfLifeJs
 import com.icure.cardinal.sdk.js.model.base.ICureDocumentJs
@@ -34,7 +35,7 @@ import kotlin.js.JsQualifier
 
 @JsName("HealthElement")
 public sealed external interface HealthElementJs : StoredDocumentJs, ICureDocumentJs<String>,
-		HasEncryptionMetadataJs, EncryptableJs, HasEndOfLifeJs {
+		HasEncryptionMetadataJs, EncryptableJs, HasEndOfLifeJs, ExtendableRootJs {
 	public val identifiers: Array<out IdentifierJs>
 
 	public val healthElementId: String?
@@ -138,6 +139,10 @@ public external class DecryptedHealthElementJs(
 
 	override val securityMetadata: SecurityMetadataJs?
 
+	override val extensions: dynamic
+
+	override val extensionsVersion: Double?
+
 	override val isEncrypted: Boolean
 }
 
@@ -208,6 +213,10 @@ public external class EncryptedHealthElementJs(
 	override val encryptedSelf: String?
 
 	override val securityMetadata: SecurityMetadataJs?
+
+	override val extensions: dynamic
+
+	override val extensionsVersion: Double?
 
 	override val isEncrypted: Boolean
 }

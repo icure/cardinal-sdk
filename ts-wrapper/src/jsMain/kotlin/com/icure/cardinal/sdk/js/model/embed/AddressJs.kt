@@ -4,6 +4,7 @@
 package com.icure.cardinal.sdk.js.model.embed
 
 import com.icure.cardinal.sdk.js.model.base.CodeStubJs
+import com.icure.cardinal.sdk.js.model.base.ExtendableJs
 import com.icure.cardinal.sdk.js.model.base.HasCodesJs
 import com.icure.cardinal.sdk.js.model.base.HasIdentifierJs
 import com.icure.cardinal.sdk.js.model.base.HasTagsJs
@@ -15,7 +16,8 @@ import kotlin.js.JsName
 import kotlin.js.JsQualifier
 
 @JsName("Address")
-public sealed external interface AddressJs : EncryptableJs, HasTagsJs, HasCodesJs, HasIdentifierJs {
+public sealed external interface AddressJs : EncryptableJs, HasTagsJs, HasCodesJs, HasIdentifierJs,
+		ExtendableJs {
 	public val addressType: String?
 
 	public val descr: String?
@@ -79,6 +81,8 @@ public external class DecryptedAddressJs(
 
 	override val encryptedSelf: String?
 
+	override val extensions: dynamic
+
 	override val isEncrypted: Boolean
 }
 
@@ -117,6 +121,8 @@ public external class EncryptedAddressJs(
 	override val telecoms: Array<EncryptedTelecomJs>
 
 	override val encryptedSelf: String?
+
+	override val extensions: dynamic
 
 	override val isEncrypted: Boolean
 }

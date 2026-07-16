@@ -40,8 +40,14 @@ public external interface MaintenanceTaskApiJs {
 	public fun createDelegationDeAnonymizationMetadata(entity: MaintenanceTaskJs,
 			delegates: Array<String>): Promise<Unit>
 
+	public fun decrypt(maintenanceTasks: Array<EncryptedMaintenanceTaskJs>):
+			Promise<Array<DecryptedMaintenanceTaskJs>>
+
 	public fun decrypt(maintenanceTask: EncryptedMaintenanceTaskJs):
 			Promise<DecryptedMaintenanceTaskJs>
+
+	public fun tryDecrypt(maintenanceTasks: Array<EncryptedMaintenanceTaskJs>):
+			Promise<Array<MaintenanceTaskJs>>
 
 	public fun tryDecrypt(maintenanceTask: EncryptedMaintenanceTaskJs): Promise<MaintenanceTaskJs>
 

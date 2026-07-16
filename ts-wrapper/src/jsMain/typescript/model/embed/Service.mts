@@ -2,6 +2,7 @@
 import {expectArray, expectMap, expectNumber, expectObject, expectString, expectStringEnum, extractEntry} from '../../internal/JsonDecodeUtils.mjs';
 import {randomUuid} from '../../utils/Id.mjs';
 import {CodeStub} from '../base/CodeStub.mjs';
+import {Extendable} from '../base/Extendable.mjs';
 import {HasEndOfLife} from '../base/HasEndOfLife.mjs';
 import {HasIdentifier} from '../base/HasIdentifier.mjs';
 import {ICureDocument} from '../base/ICureDocument.mjs';
@@ -15,7 +16,7 @@ import {Encryptable} from './Encryptable.mjs';
 import {SecurityMetadata} from './SecurityMetadata.mjs';
 
 
-export interface Service extends Encryptable, ICureDocument<string>, HasEndOfLife, HasIdentifier {
+export interface Service extends Encryptable, ICureDocument<string>, HasEndOfLife, HasIdentifier, Extendable {
 
 	/**
 	 *
@@ -99,10 +100,6 @@ export interface Service extends Encryptable, ICureDocument<string>, HasEndOfLif
 	 */
 	content: { [ key: string ]: Content };
 
-	/**
-	 *
-	 *  Information contained in the service. Content is localized, using ISO language code as key
-	 */
 	textIndexes: { [ key: string ]: string };
 
 	/**
@@ -149,6 +146,8 @@ export interface Service extends Encryptable, ICureDocument<string>, HasEndOfLif
 	qualifiedLinks: { [ key in LinkQualification ]?: { [ key: string ]: string } };
 
 	securityMetadata: SecurityMetadata | undefined;
+
+	contactExtensionsVersions: number | undefined;
 
 	readonly isEncrypted: boolean;
 
@@ -253,10 +252,6 @@ export class DecryptedService {
 	 */
 	content: { [ key: string ]: DecryptedContent } = {};
 
-	/**
-	 *
-	 *  Information contained in the service. Content is localized, using ISO language code as key
-	 */
 	textIndexes: { [ key: string ]: string } = {};
 
 	/**
@@ -343,6 +338,10 @@ export class DecryptedService {
 
 	securityMetadata: SecurityMetadata | undefined = undefined;
 
+	extensions: Record<string, any> | undefined = undefined;
+
+	contactExtensionsVersions: number | undefined = undefined;
+
 	readonly isEncrypted: false = false;
 
 	constructor(partial: Partial<DecryptedService>) {
@@ -379,6 +378,8 @@ export class DecryptedService {
 		if ('tags' in partial && partial.tags !== undefined) this.tags = partial.tags;
 		if ('encryptedSelf' in partial) this.encryptedSelf = partial.encryptedSelf;
 		if ('securityMetadata' in partial) this.securityMetadata = partial.securityMetadata;
+		if ('extensions' in partial) this.extensions = partial.extensions;
+		if ('contactExtensionsVersions' in partial) this.contactExtensionsVersions = partial.contactExtensionsVersions;
 	}
 
 	toJSON(): object {
@@ -415,6 +416,8 @@ export class DecryptedService {
 		res['tags'] = this.tags.map((x0) => x0.toJSON() )
 		if (this.encryptedSelf != undefined) res['encryptedSelf'] = this.encryptedSelf
 		if (this.securityMetadata != undefined) res['securityMetadata'] = this.securityMetadata.toJSON()
+		if (this.extensions != undefined) res['extensions'] = this.extensions
+		if (this.contactExtensionsVersions != undefined) res['contactExtensionsVersions'] = this.contactExtensionsVersions
 		res['isEncrypted'] = false
 		return res
 	}
@@ -499,6 +502,8 @@ export class DecryptedService {
 			tags: expectArray(extractEntry(jCpy, 'tags', false, path), false, [...path, ".tags"], (x0, p0) => expectObject(x0, false, ignoreUnknownKeys, p0, CodeStub.fromJSON)),
 			encryptedSelf: expectString(extractEntry(jCpy, 'encryptedSelf', false, path), true, [...path, ".encryptedSelf"]) as Base64String,
 			securityMetadata: expectObject(extractEntry(jCpy, 'securityMetadata', false, path), true, ignoreUnknownKeys, [...path, ".securityMetadata"], SecurityMetadata.fromJSON),
+			extensions: extractEntry(jCpy, 'extensions', false, path),
+			contactExtensionsVersions: expectNumber(extractEntry(jCpy, 'contactExtensionsVersions', false, path), true, true, [...path, ".contactExtensionsVersions"]),
 		})
 		if (!ignoreUnknownKeys) {
 			const unused = Object.keys(jCpy)
@@ -605,10 +610,6 @@ export class EncryptedService {
 	 */
 	content: { [ key: string ]: EncryptedContent } = {};
 
-	/**
-	 *
-	 *  Information contained in the service. Content is localized, using ISO language code as key
-	 */
 	textIndexes: { [ key: string ]: string } = {};
 
 	/**
@@ -695,6 +696,10 @@ export class EncryptedService {
 
 	securityMetadata: SecurityMetadata | undefined = undefined;
 
+	extensions: Record<string, any> | undefined = undefined;
+
+	contactExtensionsVersions: number | undefined = undefined;
+
 	readonly isEncrypted: true = true;
 
 	constructor(partial: Partial<EncryptedService>) {
@@ -731,6 +736,8 @@ export class EncryptedService {
 		if ('tags' in partial && partial.tags !== undefined) this.tags = partial.tags;
 		if ('encryptedSelf' in partial) this.encryptedSelf = partial.encryptedSelf;
 		if ('securityMetadata' in partial) this.securityMetadata = partial.securityMetadata;
+		if ('extensions' in partial) this.extensions = partial.extensions;
+		if ('contactExtensionsVersions' in partial) this.contactExtensionsVersions = partial.contactExtensionsVersions;
 	}
 
 	toJSON(): object {
@@ -767,6 +774,8 @@ export class EncryptedService {
 		res['tags'] = this.tags.map((x0) => x0.toJSON() )
 		if (this.encryptedSelf != undefined) res['encryptedSelf'] = this.encryptedSelf
 		if (this.securityMetadata != undefined) res['securityMetadata'] = this.securityMetadata.toJSON()
+		if (this.extensions != undefined) res['extensions'] = this.extensions
+		if (this.contactExtensionsVersions != undefined) res['contactExtensionsVersions'] = this.contactExtensionsVersions
 		res['isEncrypted'] = true
 		return res
 	}
@@ -851,6 +860,8 @@ export class EncryptedService {
 			tags: expectArray(extractEntry(jCpy, 'tags', false, path), false, [...path, ".tags"], (x0, p0) => expectObject(x0, false, ignoreUnknownKeys, p0, CodeStub.fromJSON)),
 			encryptedSelf: expectString(extractEntry(jCpy, 'encryptedSelf', false, path), true, [...path, ".encryptedSelf"]) as Base64String,
 			securityMetadata: expectObject(extractEntry(jCpy, 'securityMetadata', false, path), true, ignoreUnknownKeys, [...path, ".securityMetadata"], SecurityMetadata.fromJSON),
+			extensions: extractEntry(jCpy, 'extensions', false, path),
+			contactExtensionsVersions: expectNumber(extractEntry(jCpy, 'contactExtensionsVersions', false, path), true, true, [...path, ".contactExtensionsVersions"]),
 		})
 		if (!ignoreUnknownKeys) {
 			const unused = Object.keys(jCpy)

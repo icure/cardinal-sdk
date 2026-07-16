@@ -1,6 +1,8 @@
 // auto-generated file
 package com.icure.cardinal.sdk.js.model.embed
 
+import com.icure.cardinal.sdk.js.model.CheckedConverters.dynamicToJsonObjectNullsafe
+import com.icure.cardinal.sdk.js.model.CheckedConverters.jsonToDynamic
 import com.icure.cardinal.sdk.js.model.CheckedConverters.longToNumber
 import com.icure.cardinal.sdk.js.model.CheckedConverters.mapToObject
 import com.icure.cardinal.sdk.js.model.CheckedConverters.nullToUndefined
@@ -55,6 +57,9 @@ public fun insurability_toJs(obj: DecryptedInsurability): DecryptedInsurabilityJ
 			base64String_toJs(nonNull1)
 		}
 	)
+	val extensions = nullToUndefined(
+		jsonToDynamic(obj.extensions)
+	)
 	return DecryptedInsurabilityJs(js("{" +
 		"parameters:parameters," +
 		"hospitalisation:hospitalisation," +
@@ -65,7 +70,8 @@ public fun insurability_toJs(obj: DecryptedInsurability): DecryptedInsurabilityJ
 		"startDate:startDate," +
 		"endDate:endDate," +
 		"titularyId:titularyId," +
-		"encryptedSelf:encryptedSelf" +
+		"encryptedSelf:encryptedSelf," +
+		"extensions:extensions" +
 	"}"))
 }
 
@@ -91,6 +97,7 @@ public fun insurability_fromJs(obj: DecryptedInsurabilityJs): DecryptedInsurabil
 	val encryptedSelf = obj.encryptedSelf?.let { nonNull1 ->
 		base64String_fromJs(nonNull1)
 	}
+	val extensions = dynamicToJsonObjectNullsafe(obj.extensions, "obj.extensions")
 	return DecryptedInsurability(
 		parameters = parameters,
 		hospitalisation = hospitalisation,
@@ -102,6 +109,7 @@ public fun insurability_fromJs(obj: DecryptedInsurabilityJs): DecryptedInsurabil
 		endDate = endDate,
 		titularyId = titularyId,
 		encryptedSelf = encryptedSelf,
+		extensions = extensions,
 	)
 }
 
@@ -145,6 +153,9 @@ public fun insurability_toJs(obj: EncryptedInsurability): EncryptedInsurabilityJ
 			base64String_toJs(nonNull1)
 		}
 	)
+	val extensions = nullToUndefined(
+		jsonToDynamic(obj.extensions)
+	)
 	return EncryptedInsurabilityJs(js("{" +
 		"parameters:parameters," +
 		"hospitalisation:hospitalisation," +
@@ -155,7 +166,8 @@ public fun insurability_toJs(obj: EncryptedInsurability): EncryptedInsurabilityJ
 		"startDate:startDate," +
 		"endDate:endDate," +
 		"titularyId:titularyId," +
-		"encryptedSelf:encryptedSelf" +
+		"encryptedSelf:encryptedSelf," +
+		"extensions:extensions" +
 	"}"))
 }
 
@@ -181,6 +193,7 @@ public fun insurability_fromJs(obj: EncryptedInsurabilityJs): EncryptedInsurabil
 	val encryptedSelf = obj.encryptedSelf?.let { nonNull1 ->
 		base64String_fromJs(nonNull1)
 	}
+	val extensions = dynamicToJsonObjectNullsafe(obj.extensions, "obj.extensions")
 	return EncryptedInsurability(
 		parameters = parameters,
 		hospitalisation = hospitalisation,
@@ -192,6 +205,7 @@ public fun insurability_fromJs(obj: EncryptedInsurabilityJs): EncryptedInsurabil
 		endDate = endDate,
 		titularyId = titularyId,
 		encryptedSelf = encryptedSelf,
+		extensions = extensions,
 	)
 }
 

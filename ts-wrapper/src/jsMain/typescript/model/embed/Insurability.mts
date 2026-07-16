@@ -1,10 +1,11 @@
 // auto-generated file
 import {expectBoolean, expectMap, expectNumber, expectString, extractEntry} from '../../internal/JsonDecodeUtils.mjs';
+import {Extendable} from '../base/Extendable.mjs';
 import {Base64String} from '../specializations/Base64String.mjs';
 import {Encryptable} from './Encryptable.mjs';
 
 
-export interface Insurability extends Encryptable {
+export interface Insurability extends Encryptable, Extendable {
 
 	parameters: { [ key: string ]: string };
 
@@ -52,6 +53,8 @@ export class DecryptedInsurability {
 
 	encryptedSelf: Base64String | undefined = undefined;
 
+	extensions: Record<string, any> | undefined = undefined;
+
 	readonly isEncrypted: false = false;
 
 	constructor(partial: Partial<DecryptedInsurability>) {
@@ -66,6 +69,7 @@ export class DecryptedInsurability {
 		if ('endDate' in partial) this.endDate = partial.endDate;
 		if ('titularyId' in partial) this.titularyId = partial.titularyId;
 		if ('encryptedSelf' in partial) this.encryptedSelf = partial.encryptedSelf;
+		if ('extensions' in partial) this.extensions = partial.extensions;
 	}
 
 	toJSON(): object {
@@ -80,6 +84,7 @@ export class DecryptedInsurability {
 		if (this.endDate != undefined) res['endDate'] = this.endDate
 		if (this.titularyId != undefined) res['titularyId'] = this.titularyId
 		if (this.encryptedSelf != undefined) res['encryptedSelf'] = this.encryptedSelf
+		if (this.extensions != undefined) res['extensions'] = this.extensions
 		res['isEncrypted'] = false
 		return res
 	}
@@ -106,6 +111,7 @@ export class DecryptedInsurability {
 			endDate: expectNumber(extractEntry(jCpy, 'endDate', false, path), true, true, [...path, ".endDate"]),
 			titularyId: expectString(extractEntry(jCpy, 'titularyId', false, path), true, [...path, ".titularyId"]),
 			encryptedSelf: expectString(extractEntry(jCpy, 'encryptedSelf', false, path), true, [...path, ".encryptedSelf"]) as Base64String,
+			extensions: extractEntry(jCpy, 'extensions', false, path),
 		})
 		if (!ignoreUnknownKeys) {
 			const unused = Object.keys(jCpy)
@@ -137,6 +143,8 @@ export class EncryptedInsurability {
 
 	encryptedSelf: Base64String | undefined = undefined;
 
+	extensions: Record<string, any> | undefined = undefined;
+
 	readonly isEncrypted: true = true;
 
 	constructor(partial: Partial<EncryptedInsurability>) {
@@ -151,6 +159,7 @@ export class EncryptedInsurability {
 		if ('endDate' in partial) this.endDate = partial.endDate;
 		if ('titularyId' in partial) this.titularyId = partial.titularyId;
 		if ('encryptedSelf' in partial) this.encryptedSelf = partial.encryptedSelf;
+		if ('extensions' in partial) this.extensions = partial.extensions;
 	}
 
 	toJSON(): object {
@@ -165,6 +174,7 @@ export class EncryptedInsurability {
 		if (this.endDate != undefined) res['endDate'] = this.endDate
 		if (this.titularyId != undefined) res['titularyId'] = this.titularyId
 		if (this.encryptedSelf != undefined) res['encryptedSelf'] = this.encryptedSelf
+		if (this.extensions != undefined) res['extensions'] = this.extensions
 		res['isEncrypted'] = true
 		return res
 	}
@@ -191,6 +201,7 @@ export class EncryptedInsurability {
 			endDate: expectNumber(extractEntry(jCpy, 'endDate', false, path), true, true, [...path, ".endDate"]),
 			titularyId: expectString(extractEntry(jCpy, 'titularyId', false, path), true, [...path, ".titularyId"]),
 			encryptedSelf: expectString(extractEntry(jCpy, 'encryptedSelf', false, path), true, [...path, ".encryptedSelf"]) as Base64String,
+			extensions: extractEntry(jCpy, 'extensions', false, path),
 		})
 		if (!ignoreUnknownKeys) {
 			const unused = Object.keys(jCpy)

@@ -1,6 +1,7 @@
 // auto-generated file
 import {expectNumber, expectString, extractEntry} from '../../internal/JsonDecodeUtils.mjs';
 import {randomUuid} from '../../utils/Id.mjs';
+import {Extendable} from '../base/Extendable.mjs';
 import {Identifiable} from '../base/Identifiable.mjs';
 import {Named} from '../base/Named.mjs';
 import {Base64String} from '../specializations/Base64String.mjs';
@@ -13,7 +14,7 @@ import {Encryptable} from './Encryptable.mjs';
  *  a specific concern.
  *  /
  */
-export interface Episode extends Encryptable, Identifiable<string>, Named {
+export interface Episode extends Encryptable, Identifiable<string>, Named, Extendable {
 
 	/**
 	 *
@@ -83,6 +84,8 @@ export class DecryptedEpisode {
 	 */
 	encryptedSelf: Base64String | undefined = undefined;
 
+	extensions: Record<string, any> | undefined = undefined;
+
 	readonly isEncrypted: false = false;
 
 	constructor(partial: Partial<DecryptedEpisode>) {
@@ -93,6 +96,7 @@ export class DecryptedEpisode {
 		if ('startDate' in partial) this.startDate = partial.startDate;
 		if ('endDate' in partial) this.endDate = partial.endDate;
 		if ('encryptedSelf' in partial) this.encryptedSelf = partial.encryptedSelf;
+		if ('extensions' in partial) this.extensions = partial.extensions;
 	}
 
 	toJSON(): object {
@@ -103,6 +107,7 @@ export class DecryptedEpisode {
 		if (this.startDate != undefined) res['startDate'] = this.startDate
 		if (this.endDate != undefined) res['endDate'] = this.endDate
 		if (this.encryptedSelf != undefined) res['encryptedSelf'] = this.encryptedSelf
+		if (this.extensions != undefined) res['extensions'] = this.extensions
 		res['isEncrypted'] = false
 		return res
 	}
@@ -119,6 +124,7 @@ export class DecryptedEpisode {
 			startDate: expectNumber(extractEntry(jCpy, 'startDate', false, path), true, true, [...path, ".startDate"]),
 			endDate: expectNumber(extractEntry(jCpy, 'endDate', false, path), true, true, [...path, ".endDate"]),
 			encryptedSelf: expectString(extractEntry(jCpy, 'encryptedSelf', false, path), true, [...path, ".encryptedSelf"]) as Base64String,
+			extensions: extractEntry(jCpy, 'extensions', false, path),
 		})
 		if (!ignoreUnknownKeys) {
 			const unused = Object.keys(jCpy)
@@ -172,6 +178,8 @@ export class EncryptedEpisode {
 	 */
 	encryptedSelf: Base64String | undefined = undefined;
 
+	extensions: Record<string, any> | undefined = undefined;
+
 	readonly isEncrypted: true = true;
 
 	constructor(partial: Partial<EncryptedEpisode>) {
@@ -182,6 +190,7 @@ export class EncryptedEpisode {
 		if ('startDate' in partial) this.startDate = partial.startDate;
 		if ('endDate' in partial) this.endDate = partial.endDate;
 		if ('encryptedSelf' in partial) this.encryptedSelf = partial.encryptedSelf;
+		if ('extensions' in partial) this.extensions = partial.extensions;
 	}
 
 	toJSON(): object {
@@ -192,6 +201,7 @@ export class EncryptedEpisode {
 		if (this.startDate != undefined) res['startDate'] = this.startDate
 		if (this.endDate != undefined) res['endDate'] = this.endDate
 		if (this.encryptedSelf != undefined) res['encryptedSelf'] = this.encryptedSelf
+		if (this.extensions != undefined) res['extensions'] = this.extensions
 		res['isEncrypted'] = true
 		return res
 	}
@@ -208,6 +218,7 @@ export class EncryptedEpisode {
 			startDate: expectNumber(extractEntry(jCpy, 'startDate', false, path), true, true, [...path, ".startDate"]),
 			endDate: expectNumber(extractEntry(jCpy, 'endDate', false, path), true, true, [...path, ".endDate"]),
 			encryptedSelf: expectString(extractEntry(jCpy, 'encryptedSelf', false, path), true, [...path, ".encryptedSelf"]) as Base64String,
+			extensions: extractEntry(jCpy, 'extensions', false, path),
 		})
 		if (!ignoreUnknownKeys) {
 			const unused = Object.keys(jCpy)

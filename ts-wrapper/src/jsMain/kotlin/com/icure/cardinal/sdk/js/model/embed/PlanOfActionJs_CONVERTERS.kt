@@ -3,6 +3,8 @@ package com.icure.cardinal.sdk.js.model.embed
 
 import com.icure.cardinal.sdk.js.model.CheckedConverters.arrayToList
 import com.icure.cardinal.sdk.js.model.CheckedConverters.arrayToSet
+import com.icure.cardinal.sdk.js.model.CheckedConverters.dynamicToJsonObjectNullsafe
+import com.icure.cardinal.sdk.js.model.CheckedConverters.jsonToDynamic
 import com.icure.cardinal.sdk.js.model.CheckedConverters.listToArray
 import com.icure.cardinal.sdk.js.model.CheckedConverters.longToNumber
 import com.icure.cardinal.sdk.js.model.CheckedConverters.nullToUndefined
@@ -93,6 +95,9 @@ public fun planOfAction_toJs(obj: DecryptedPlanOfAction): DecryptedPlanOfActionJ
 			base64String_toJs(nonNull1)
 		}
 	)
+	val extensions = nullToUndefined(
+		jsonToDynamic(obj.extensions)
+	)
 	return DecryptedPlanOfActionJs(js("{" +
 		"id:id," +
 		"created:created," +
@@ -113,7 +118,8 @@ public fun planOfAction_toJs(obj: DecryptedPlanOfAction): DecryptedPlanOfActionJ
 		"idOpeningContact:idOpeningContact," +
 		"idClosingContact:idClosingContact," +
 		"careTeamMemberships:careTeamMemberships," +
-		"encryptedSelf:encryptedSelf" +
+		"encryptedSelf:encryptedSelf," +
+		"extensions:extensions" +
 	"}"))
 }
 
@@ -158,6 +164,7 @@ public fun planOfAction_fromJs(obj: DecryptedPlanOfActionJs): DecryptedPlanOfAct
 	val encryptedSelf = obj.encryptedSelf?.let { nonNull1 ->
 		base64String_fromJs(nonNull1)
 	}
+	val extensions = dynamicToJsonObjectNullsafe(obj.extensions, "obj.extensions")
 	return DecryptedPlanOfAction(
 		id = id,
 		created = created,
@@ -179,6 +186,7 @@ public fun planOfAction_fromJs(obj: DecryptedPlanOfActionJs): DecryptedPlanOfAct
 		idClosingContact = idClosingContact,
 		careTeamMemberships = careTeamMemberships,
 		encryptedSelf = encryptedSelf,
+		extensions = extensions,
 	)
 }
 
@@ -253,6 +261,9 @@ public fun planOfAction_toJs(obj: EncryptedPlanOfAction): EncryptedPlanOfActionJ
 			base64String_toJs(nonNull1)
 		}
 	)
+	val extensions = nullToUndefined(
+		jsonToDynamic(obj.extensions)
+	)
 	return EncryptedPlanOfActionJs(js("{" +
 		"id:id," +
 		"created:created," +
@@ -273,7 +284,8 @@ public fun planOfAction_toJs(obj: EncryptedPlanOfAction): EncryptedPlanOfActionJ
 		"idOpeningContact:idOpeningContact," +
 		"idClosingContact:idClosingContact," +
 		"careTeamMemberships:careTeamMemberships," +
-		"encryptedSelf:encryptedSelf" +
+		"encryptedSelf:encryptedSelf," +
+		"extensions:extensions" +
 	"}"))
 }
 
@@ -318,6 +330,7 @@ public fun planOfAction_fromJs(obj: EncryptedPlanOfActionJs): EncryptedPlanOfAct
 	val encryptedSelf = obj.encryptedSelf?.let { nonNull1 ->
 		base64String_fromJs(nonNull1)
 	}
+	val extensions = dynamicToJsonObjectNullsafe(obj.extensions, "obj.extensions")
 	return EncryptedPlanOfAction(
 		id = id,
 		created = created,
@@ -339,6 +352,7 @@ public fun planOfAction_fromJs(obj: EncryptedPlanOfActionJs): EncryptedPlanOfAct
 		idClosingContact = idClosingContact,
 		careTeamMemberships = careTeamMemberships,
 		encryptedSelf = encryptedSelf,
+		extensions = extensions,
 	)
 }
 

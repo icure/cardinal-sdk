@@ -1,8 +1,12 @@
 // auto-generated file
 package com.icure.cardinal.sdk.js.model
 
+import com.icure.cardinal.sdk.js.model.CheckedConverters.dynamicToJsonObjectNullsafe
+import com.icure.cardinal.sdk.js.model.CheckedConverters.intToNumber
+import com.icure.cardinal.sdk.js.model.CheckedConverters.jsonToDynamic
 import com.icure.cardinal.sdk.js.model.CheckedConverters.longToNumber
 import com.icure.cardinal.sdk.js.model.CheckedConverters.nullToUndefined
+import com.icure.cardinal.sdk.js.model.CheckedConverters.numberToInt
 import com.icure.cardinal.sdk.js.model.CheckedConverters.numberToLong
 import com.icure.cardinal.sdk.js.model.CheckedConverters.undefinedToNull
 import com.icure.cardinal.sdk.js.model.embed.address_fromJs
@@ -27,12 +31,20 @@ public fun place_toJs(obj: Place): PlaceJs {
 			address_toJs(nonNull1)
 		}
 	)
+	val extensions = nullToUndefined(
+		jsonToDynamic(obj.extensions)
+	)
+	val extensionsVersion = nullToUndefined(
+		intToNumber(obj.extensionsVersion)
+	)
 	return PlaceJs(js("{" +
 		"id:id," +
 		"rev:rev," +
 		"deletionDate:deletionDate," +
 		"name:name," +
-		"address:address" +
+		"address:address," +
+		"extensions:extensions," +
+		"extensionsVersion:extensionsVersion" +
 	"}"))
 }
 
@@ -44,11 +56,15 @@ public fun place_fromJs(obj: PlaceJs): Place {
 	val address = obj.address?.let { nonNull1 ->
 		address_fromJs(nonNull1)
 	}
+	val extensions = dynamicToJsonObjectNullsafe(obj.extensions, "obj.extensions")
+	val extensionsVersion = numberToInt(obj.extensionsVersion, "obj.extensionsVersion")
 	return Place(
 		id = id,
 		rev = rev,
 		deletionDate = deletionDate,
 		name = name,
 		address = address,
+		extensions = extensions,
+		extensionsVersion = extensionsVersion,
 	)
 }

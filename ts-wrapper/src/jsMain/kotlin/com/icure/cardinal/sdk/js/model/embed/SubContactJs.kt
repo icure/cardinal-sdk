@@ -4,6 +4,7 @@
 package com.icure.cardinal.sdk.js.model.embed
 
 import com.icure.cardinal.sdk.js.model.base.CodeStubJs
+import com.icure.cardinal.sdk.js.model.base.ExtendableJs
 import com.icure.cardinal.sdk.js.model.base.ICureDocumentJs
 import kotlin.Array
 import kotlin.Boolean
@@ -13,7 +14,8 @@ import kotlin.js.JsName
 import kotlin.js.JsQualifier
 
 @JsName("SubContact")
-public sealed external interface SubContactJs : EncryptableJs, ICureDocumentJs<String?> {
+public sealed external interface SubContactJs : EncryptableJs, ICureDocumentJs<String?>,
+		ExtendableJs {
 	public val descr: String?
 
 	public val protocol: String?
@@ -61,6 +63,8 @@ public external class DecryptedSubContactJs(
 
 	override val encryptedSelf: String?
 
+	override val extensions: dynamic
+
 	override val isEncrypted: Boolean
 }
 
@@ -95,6 +99,8 @@ public external class EncryptedSubContactJs(
 	override val services: Array<ServiceLinkJs>
 
 	override val encryptedSelf: String?
+
+	override val extensions: dynamic
 
 	override val isEncrypted: Boolean
 }

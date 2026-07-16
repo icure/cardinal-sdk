@@ -2,7 +2,9 @@
 package com.icure.cardinal.sdk.js.model
 
 import com.icure.cardinal.sdk.js.model.CheckedConverters.arrayToSet
+import com.icure.cardinal.sdk.js.model.CheckedConverters.dynamicToJsonObjectNullsafe
 import com.icure.cardinal.sdk.js.model.CheckedConverters.intToNumber
+import com.icure.cardinal.sdk.js.model.CheckedConverters.jsonToDynamic
 import com.icure.cardinal.sdk.js.model.CheckedConverters.longToNumber
 import com.icure.cardinal.sdk.js.model.CheckedConverters.mapToObject
 import com.icure.cardinal.sdk.js.model.CheckedConverters.nullToUndefined
@@ -84,6 +86,12 @@ public fun calendarItemType_toJs(obj: CalendarItemType): CalendarItemTypeJs {
 			},
 		)
 	)
+	val extensions = nullToUndefined(
+		jsonToDynamic(obj.extensions)
+	)
+	val extensionsVersion = nullToUndefined(
+		intToNumber(obj.extensionsVersion)
+	)
 	return CalendarItemTypeJs(js("{" +
 		"id:id," +
 		"rev:rev," +
@@ -100,7 +108,9 @@ public fun calendarItemType_toJs(obj: CalendarItemType): CalendarItemTypeJs {
 		"docIds:docIds," +
 		"otherInfos:otherInfos," +
 		"subjectByLanguage:subjectByLanguage," +
-		"publicProperties:publicProperties" +
+		"publicProperties:publicProperties," +
+		"extensions:extensions," +
+		"extensionsVersion:extensionsVersion" +
 	"}"))
 }
 
@@ -153,6 +163,8 @@ public fun calendarItemType_fromJs(obj: CalendarItemTypeJs): CalendarItemType {
 			propertyStub_fromJs(x1)
 		},
 	)
+	val extensions = dynamicToJsonObjectNullsafe(obj.extensions, "obj.extensions")
+	val extensionsVersion = numberToInt(obj.extensionsVersion, "obj.extensionsVersion")
 	return CalendarItemType(
 		id = id,
 		rev = rev,
@@ -170,6 +182,8 @@ public fun calendarItemType_fromJs(obj: CalendarItemTypeJs): CalendarItemType {
 		otherInfos = otherInfos,
 		subjectByLanguage = subjectByLanguage,
 		publicProperties = publicProperties,
+		extensions = extensions,
+		extensionsVersion = extensionsVersion,
 	)
 }
 

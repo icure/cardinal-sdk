@@ -1,6 +1,8 @@
 // auto-generated file
 package com.icure.cardinal.sdk.js.model.embed
 
+import com.icure.cardinal.sdk.js.model.CheckedConverters.dynamicToJsonObjectNullsafe
+import com.icure.cardinal.sdk.js.model.CheckedConverters.jsonToDynamic
 import com.icure.cardinal.sdk.js.model.CheckedConverters.nullToUndefined
 import com.icure.cardinal.sdk.js.model.CheckedConverters.undefinedToNull
 import com.icure.cardinal.sdk.js.model.base.codeStub_fromJs
@@ -34,12 +36,16 @@ public fun careTeamMember_toJs(obj: DecryptedCareTeamMember): DecryptedCareTeamM
 			base64String_toJs(nonNull1)
 		}
 	)
+	val extensions = nullToUndefined(
+		jsonToDynamic(obj.extensions)
+	)
 	return DecryptedCareTeamMemberJs(js("{" +
 		"id:id," +
 		"careTeamMemberType:careTeamMemberType," +
 		"healthcarePartyId:healthcarePartyId," +
 		"quality:quality," +
-		"encryptedSelf:encryptedSelf" +
+		"encryptedSelf:encryptedSelf," +
+		"extensions:extensions" +
 	"}"))
 }
 
@@ -55,12 +61,14 @@ public fun careTeamMember_fromJs(obj: DecryptedCareTeamMemberJs): DecryptedCareT
 	val encryptedSelf = obj.encryptedSelf?.let { nonNull1 ->
 		base64String_fromJs(nonNull1)
 	}
+	val extensions = dynamicToJsonObjectNullsafe(obj.extensions, "obj.extensions")
 	return DecryptedCareTeamMember(
 		id = id,
 		careTeamMemberType = careTeamMemberType,
 		healthcarePartyId = healthcarePartyId,
 		quality = quality,
 		encryptedSelf = encryptedSelf,
+		extensions = extensions,
 	)
 }
 
@@ -85,12 +93,16 @@ public fun careTeamMember_toJs(obj: EncryptedCareTeamMember): EncryptedCareTeamM
 			base64String_toJs(nonNull1)
 		}
 	)
+	val extensions = nullToUndefined(
+		jsonToDynamic(obj.extensions)
+	)
 	return EncryptedCareTeamMemberJs(js("{" +
 		"id:id," +
 		"careTeamMemberType:careTeamMemberType," +
 		"healthcarePartyId:healthcarePartyId," +
 		"quality:quality," +
-		"encryptedSelf:encryptedSelf" +
+		"encryptedSelf:encryptedSelf," +
+		"extensions:extensions" +
 	"}"))
 }
 
@@ -106,12 +118,14 @@ public fun careTeamMember_fromJs(obj: EncryptedCareTeamMemberJs): EncryptedCareT
 	val encryptedSelf = obj.encryptedSelf?.let { nonNull1 ->
 		base64String_fromJs(nonNull1)
 	}
+	val extensions = dynamicToJsonObjectNullsafe(obj.extensions, "obj.extensions")
 	return EncryptedCareTeamMember(
 		id = id,
 		careTeamMemberType = careTeamMemberType,
 		healthcarePartyId = healthcarePartyId,
 		quality = quality,
 		encryptedSelf = encryptedSelf,
+		extensions = extensions,
 	)
 }
 

@@ -4,6 +4,7 @@
 package com.icure.cardinal.sdk.js.model.embed
 
 import com.icure.cardinal.sdk.js.model.base.CodeStubJs
+import com.icure.cardinal.sdk.js.model.base.ExtendableJs
 import com.icure.cardinal.sdk.js.model.base.HasEndOfLifeJs
 import com.icure.cardinal.sdk.js.model.base.HasIdentifierJs
 import com.icure.cardinal.sdk.js.model.base.ICureDocumentJs
@@ -18,7 +19,7 @@ import kotlin.js.JsQualifier
 
 @JsName("Service")
 public sealed external interface ServiceJs : EncryptableJs, ICureDocumentJs<String>, HasEndOfLifeJs,
-		HasIdentifierJs {
+		HasIdentifierJs, ExtendableJs {
 	public val transactionId: String?
 
 	public val contactId: String?
@@ -62,6 +63,8 @@ public sealed external interface ServiceJs : EncryptableJs, ICureDocumentJs<Stri
 	public val qualifiedLinks: Record<String, out Record<String, out String>>
 
 	public val securityMetadata: SecurityMetadataJs?
+
+	public val contactExtensionsVersions: Double?
 
 	public val isEncrypted: Boolean
 }
@@ -134,6 +137,10 @@ public external class DecryptedServiceJs(
 
 	override val securityMetadata: SecurityMetadataJs?
 
+	override val extensions: dynamic
+
+	override val contactExtensionsVersions: Double?
+
 	override val isEncrypted: Boolean
 }
 
@@ -204,6 +211,10 @@ public external class EncryptedServiceJs(
 	override val encryptedSelf: String?
 
 	override val securityMetadata: SecurityMetadataJs?
+
+	override val extensions: dynamic
+
+	override val contactExtensionsVersions: Double?
 
 	override val isEncrypted: Boolean
 }
