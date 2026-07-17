@@ -80,7 +80,6 @@ external interface SdkOptionsJs {
 	val ignoreUnknownFields: Boolean?
 	val dataOwnerScope: String?
 	val unversionedEntitiesDecryptedJsonStrictness: String?
-	val encryptedFieldsOptions: dynamic
 }
 
 @JsName("BasicToFullSdkOptions")
@@ -99,10 +98,14 @@ external interface BasicSdkOptionsJs {
 	val groupSelector: ((availableGroups: Array<UserGroupJs>) -> Promise<String>)?
 	val ignoreUnknownFields: Boolean?
 	val dataOwnerScope: String?
-	val encryptedFieldsOptions: dynamic
 }
 
 @JsName("AnonymousSdkOptions")
 external interface AnonymousSdkOptionsJs {
 	val ignoreUnknownFields: Boolean?
+}
+
+@JsName("CustomisedSdkOptions")
+external interface CustomisedSdkOptionsJs {
+	val encryptedFieldsOptions: dynamic
 }

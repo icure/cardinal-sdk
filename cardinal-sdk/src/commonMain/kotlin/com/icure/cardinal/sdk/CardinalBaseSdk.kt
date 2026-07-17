@@ -88,6 +88,7 @@ import com.icure.cardinal.sdk.options.BasicApiConfiguration
 import com.icure.cardinal.sdk.options.BasicApiConfigurationImpl
 import com.icure.cardinal.sdk.options.BasicSdkOptions
 import com.icure.cardinal.sdk.options.BasicToFullSdkOptions
+import com.icure.cardinal.sdk.options.CustomisedSdkOptions
 import com.icure.cardinal.sdk.options.EncryptedFieldsOptions
 import com.icure.cardinal.sdk.options.RequestRetryConfiguration
 import com.icure.cardinal.sdk.options.UnboundBasicApiConfigurationImpl
@@ -130,7 +131,8 @@ interface CardinalUnboundBaseSdk : CardinalBaseApis {
 		suspend fun initialize(
 			baseUrl: String,
 			authenticationMethod: AuthenticationMethod,
-			options: UnboundBasicSdkOptions = UnboundBasicSdkOptions()
+			options: UnboundBasicSdkOptions = UnboundBasicSdkOptions(),
+			customisedSdkOptions: CustomisedSdkOptions = CustomisedSdkOptions(),
 		): CardinalUnboundBaseSdk {
 			val client = options.configuredClientOrDefault()
 			val json = options.configuredJsonOrDefault()
@@ -243,7 +245,8 @@ interface CardinalBaseSdk : CardinalBaseApis {
 			projectId: String?,
 			baseUrl: String,
 			authenticationMethod: AuthenticationMethod,
-			options: BasicSdkOptions = BasicSdkOptions()
+			options: BasicSdkOptions = BasicSdkOptions(),
+			customisedSdkOptions: CustomisedSdkOptions = CustomisedSdkOptions(),
 		): CardinalBaseSdk {
 			val client = options.configuredClientOrDefault()
 			val json = options.configuredJsonOrDefault()
@@ -279,7 +282,7 @@ interface CardinalBaseSdk : CardinalBaseApis {
 				authProvider,
 				config,
 				chosenGroup,
-				options.asInitialized()
+				initializedOptions(options, customisedSdkOptions)
 			)
 		}
 
@@ -312,7 +315,8 @@ interface CardinalBaseSdk : CardinalBaseApis {
 			userTelecom: String,
 			captcha: CaptchaOptions,
 			authenticationProcessTemplateParameters: AuthenticationProcessTemplateParameters = AuthenticationProcessTemplateParameters(),
-			options: BasicSdkOptions = BasicSdkOptions()
+			options: BasicSdkOptions = BasicSdkOptions(),
+			customisedSdkOptions: CustomisedSdkOptions = CustomisedSdkOptions(),
 		): BaseAuthenticationWithProcessStep {
 			val api = RawMessageGatewayApi(options.configuredClientOrDefault(), options.cryptoService)
 			val requestId = api.startProcess(
@@ -330,6 +334,7 @@ interface CardinalBaseSdk : CardinalBaseApis {
 				projectId = projectId,
 				baseUrl = baseUrl,
 				options = options,
+				customisedSdkOptions = customisedSdkOptions,
 				api = api,
 				messageGatewayUrl = messageGatewayUrl,
 				externalServicesSpecId = externalServicesSpecId,
@@ -345,6 +350,7 @@ private class BaseAuthenticationWithProcessStepImpl(
 	private val projectId: String?,
 	private val baseUrl: String,
 	private val options: BasicSdkOptions,
+	private val customisedSdkOptions: CustomisedSdkOptions,
 	private val api: RawMessageGatewayApi,
 	private val messageGatewayUrl: String,
 	private val externalServicesSpecId: String,
@@ -383,7 +389,8 @@ private class BaseAuthenticationWithProcessStepImpl(
 				JwtBearer(ensureNonNull(loginResult.token)  { "Successful login gave null bearer token"}),
 				JwtRefresh(ensureNonNull(loginResult.refreshToken)  { "Successful login gave null refresh token"}),
 			)),
-			options
+			options,
+			customisedSdkOptions,
 		)
 	}
 }
@@ -611,12 +618,15 @@ private class CardinalBaseApisImpl(
 	}
 }
 
-private fun BasicSdkOptions.asInitialized() =
+private fun initializedOptions(
+	options: BasicSdkOptions,
+	customisedSdkOptions: CustomisedSdkOptions,
+) =
 	InitializedBaseSdkOptions(
-		encryptedFieldsOptions = encryptedFieldsOptions,
-		requestTimeout = requestTimeout,
-		requestRetryConfiguration = requestRetryConfiguration,
-		ignoreUnknownFields = ignoreUnknownFieldsOrDefault(),
+		encryptedFieldsOptions = customisedSdkOptions.encryptedFieldsOptions,
+		requestTimeout = options.requestTimeout,
+		requestRetryConfiguration = options.requestRetryConfiguration,
+		ignoreUnknownFields = options.ignoreUnknownFieldsOrDefault(),
 	)
 
 private data class InitializedBaseSdkOptions(

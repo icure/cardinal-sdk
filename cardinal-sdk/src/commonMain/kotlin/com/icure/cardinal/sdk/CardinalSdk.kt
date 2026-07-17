@@ -141,11 +141,11 @@ import com.icure.cardinal.sdk.model.extensions.type
 import com.icure.cardinal.sdk.options.ApiConfiguration
 import com.icure.cardinal.sdk.options.ApiConfigurationImpl
 import com.icure.cardinal.sdk.options.AuthenticationMethod
+import com.icure.cardinal.sdk.options.CustomisedSdkOptions
 import com.icure.cardinal.sdk.options.DecryptedJsonStrictness
 import com.icure.cardinal.sdk.options.EncryptedFieldsOptions
 import com.icure.cardinal.sdk.options.RequestRetryConfiguration
 import com.icure.cardinal.sdk.options.SdkOptions
-import com.icure.cardinal.sdk.options.SerializationOptions
 import com.icure.cardinal.sdk.options.configuredClientOrDefault
 import com.icure.cardinal.sdk.options.configuredJsonOrDefault
 import com.icure.cardinal.sdk.options.encryptorOptions
@@ -298,7 +298,8 @@ interface CardinalSdk : CardinalApis {
 			baseUrl: String,
 			authenticationMethod: AuthenticationMethod,
 			baseStorage: StorageFacade,
-			options: SdkOptions = SdkOptions()
+			options: SdkOptions = SdkOptions(),
+			customisedSdkOptions: CustomisedSdkOptions = CustomisedSdkOptions(),
 		): CardinalSdk {
 			val client = options.configuredClientOrDefault()
 			val json = options.configuredJsonOrDefault()
@@ -317,7 +318,7 @@ interface CardinalSdk : CardinalApis {
 					retryConfiguration = options.requestRetryConfiguration
 				)
 			)
-			val initializedSdkOptions = options.asInitialized(baseStorage)
+			val initializedSdkOptions = buildInitializedOptions(baseStorage, options, customisedSdkOptions)
 			val (initializedCrypto, newKey, scope) = initializeApiCrypto(
 				baseUrl,
 				authProvider,
@@ -369,7 +370,8 @@ interface CardinalSdk : CardinalApis {
 			captcha: CaptchaOptions,
 			baseStorage: StorageFacade,
 			authenticationProcessTemplateParameters: AuthenticationProcessTemplateParameters = AuthenticationProcessTemplateParameters(),
-			options: SdkOptions = SdkOptions()
+			options: SdkOptions = SdkOptions(),
+			customisedSdkOptions: CustomisedSdkOptions = CustomisedSdkOptions(),
 		): AuthenticationWithProcessStep {
 			val api = RawMessageGatewayApi(options.configuredClientOrDefault(), options.cryptoService)
 			val requestId = api.startProcess(
@@ -388,6 +390,7 @@ interface CardinalSdk : CardinalApis {
 				baseUrl = baseUrl,
 				baseStorage = baseStorage,
 				options = options,
+				customisedSdkOptions = customisedSdkOptions,
 				api = api,
 				messageGatewayUrl = messageGatewayUrl,
 				externalServicesSpecId = externalServicesSpecId,
@@ -404,6 +407,7 @@ private class AuthenticationWithProcessStepImpl(
 	private val baseUrl: String,
 	private val baseStorage: StorageFacade,
 	private val options: SdkOptions,
+	private val customisedSdkOptions: CustomisedSdkOptions,
 	private val api: RawMessageGatewayApi,
 	private val messageGatewayUrl: String,
 	private val externalServicesSpecId: String,
@@ -443,25 +447,30 @@ private class AuthenticationWithProcessStepImpl(
 				JwtRefresh(ensureNonNull(loginResult.refreshToken)  { "Successful login gave null refresh token"}),
 			)),
 			baseStorage,
-			options
+			options,
+			customisedSdkOptions
 		)
 	}
 }
 
-private fun SdkOptions.asInitialized(baseStorage: StorageFacade): InitializedSdkOptions {
+private fun buildInitializedOptions(
+	baseStorage: StorageFacade,
+	sdkOptions: SdkOptions,
+	customisedSdkOptions: CustomisedSdkOptions,
+): InitializedSdkOptions {
 	return InitializedSdkOptions(
-		useHierarchicalDataOwners = useHierarchicalDataOwners,
-		createTransferKeys = createTransferKeys,
-		autoCreateEncryptionKeyForExistingLegacyData = autoCreateEncryptionKeyForExistingLegacyData,
-		parentJob = parentJob,
-		requestTimeout = requestTimeout,
-		requestRetryConfiguration = requestRetryConfiguration,
+		useHierarchicalDataOwners = sdkOptions.useHierarchicalDataOwners,
+		createTransferKeys = sdkOptions.createTransferKeys,
+		autoCreateEncryptionKeyForExistingLegacyData = sdkOptions.autoCreateEncryptionKeyForExistingLegacyData,
+		parentJob = sdkOptions.parentJob,
+		requestTimeout = sdkOptions.requestTimeout,
+		requestRetryConfiguration = sdkOptions.requestRetryConfiguration,
 		baseStorage = baseStorage,
-		keyStorage = keyStorage,
-		encryptedFieldsOptions = encryptedFieldsOptions,
+		keyStorage = sdkOptions.keyStorage,
+		encryptedFieldsOptions = customisedSdkOptions.encryptedFieldsOptions,
 		unversionedEntitiesDecryptedJsonStrictness = unversionedEntitiesDecryptedJsonStrictnessOrDefault(
-			this.unversionedEntitiesDecryptedJsonStrictness,
-			this.ignoreUnknownFieldsOrDefault()
+			sdkOptions.unversionedEntitiesDecryptedJsonStrictness,
+			sdkOptions.ignoreUnknownFieldsOrDefault()
 		)
 	)
 }

@@ -4,7 +4,6 @@ import {KeyStorageFacade} from "../storage/StorageFacade.mjs";
 import {CryptoStrategies} from "../crypto/CryptoStrategies.mjs";
 import {CardinalKeyStorageOptions} from "../cardinal-sdk-ts.mjs";
 import {DecryptedJsonStrictness} from "./DecryptedJsonStrictness.mjs";
-import {EncryptedFieldsOptions} from "./EncryptedFieldsOptions.mjs";
 
 export interface SdkOptions {
   /**
@@ -100,11 +99,6 @@ export interface SdkOptions {
    * of [ignoreUnknownFields].
    */
   readonly unversionedEntitiesDecryptedJsonStrictness?: DecryptedJsonStrictness
-  /**
-   * Specifies which fields should be encrypted for each entity, root or embedded.
-   * Normally this parameter should be automatically filled by the generated customized SDK.
-   */
-  readonly encryptedFieldsOptions?: EncryptedFieldsOptions
 }
 
 export interface BasicSdkOptions {
@@ -144,11 +138,6 @@ export interface BasicSdkOptions {
    * If not null the SDK will immediately set the data owner scope to the provided value after login.
    */
   readonly dataOwnerScope?: string
-  /**
-   * Specifies which fields should be encrypted for each entity, root or embedded.
-   * Normally this parameter should be automatically filled by the generated customized SDK.
-   */
-  readonly encryptedFieldsOptions?: EncryptedFieldsOptions
 }
 
 /**

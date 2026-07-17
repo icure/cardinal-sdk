@@ -5,12 +5,14 @@ import com.icure.cardinal.sdk.js.model.userGroup_toJs
 import com.icure.cardinal.sdk.js.options.external.AnonymousSdkOptionsJs
 import com.icure.cardinal.sdk.js.options.external.BasicSdkOptionsJs
 import com.icure.cardinal.sdk.js.options.external.BasicToFullSdkOptionsJs
-import com.icure.cardinal.sdk.js.options.external.SdkOptionsJs
+ import com.icure.cardinal.sdk.js.options.external.CustomisedSdkOptionsJs
+ import com.icure.cardinal.sdk.js.options.external.SdkOptionsJs
 import com.icure.cardinal.sdk.js.storage.loadKeyStorageOptions
  import com.icure.cardinal.sdk.js.utils.cardinalInternalGlobals
  import com.icure.cardinal.sdk.options.AnonymousSdkOptions
 import com.icure.cardinal.sdk.options.BasicSdkOptions
 import com.icure.cardinal.sdk.options.BasicToFullSdkOptions
+ import com.icure.cardinal.sdk.options.CustomisedSdkOptions
  import com.icure.cardinal.sdk.options.DecryptedJsonStrictness
  import com.icure.cardinal.sdk.options.EncryptedFieldsOptions
  import com.icure.cardinal.sdk.options.PartialEncryptedManifest
@@ -46,7 +48,6 @@ suspend fun SdkOptionsJs.toKt(): SdkOptions {
 		unversionedEntitiesDecryptedJsonStrictness = this.unversionedEntitiesDecryptedJsonStrictness?.let {
 			DecryptedJsonStrictness.valueOf(it)
 		} ?: defaultSdkOptions.unversionedEntitiesDecryptedJsonStrictness,
-		encryptedFieldsOptions = parseEncryptedFieldOptions(encryptedFieldsOptions) ?: defaultSdkOptions.encryptedFieldsOptions,
 	)
 }
 
@@ -61,7 +62,6 @@ suspend fun BasicSdkOptionsJs.toKt(): BasicSdkOptions {
 		} ?: defaultApiOptions.groupSelector,
 		ignoreUnknownFields = this.ignoreUnknownFields ?: defaultApiOptions.ignoreUnknownFields,
 		dataOwnerScope = this.dataOwnerScope ?: defaultApiOptions.dataOwnerScope,
-		encryptedFieldsOptions = parseEncryptedFieldOptions(encryptedFieldsOptions) ?: defaultApiOptions.encryptedFieldsOptions,
 	)
 }
 
@@ -85,6 +85,13 @@ fun AnonymousSdkOptionsJs.toKt(): AnonymousSdkOptions {
 	val defaultApiOptions = AnonymousSdkOptions()
 	return AnonymousSdkOptions(
 		ignoreUnknownFields = this.ignoreUnknownFields ?: defaultApiOptions.ignoreUnknownFields,
+	)
+}
+
+fun CustomisedSdkOptionsJs.toKt(): CustomisedSdkOptions {
+	val defaultSdkOptions = CustomisedSdkOptions()
+	return CustomisedSdkOptions(
+		encryptedFieldsOptions = parseEncryptedFieldOptions(encryptedFieldsOptions) ?: defaultSdkOptions.encryptedFieldsOptions,
 	)
 }
 

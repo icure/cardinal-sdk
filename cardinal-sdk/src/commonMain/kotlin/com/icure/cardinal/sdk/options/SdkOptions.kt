@@ -65,11 +65,6 @@ interface SerializationOptions {
 
 interface CommonSdkOptions : HttpSdkOptions, SerializationOptions {
 	/**
-	 * Specifies which fields should be encrypted for each entity, root or embedded.
-	 * Normally this parameter should be automatically filled by the generated customized SDK.
-	 */
-	val encryptedFieldsOptions: EncryptedFieldsOptions?
-	/**
 	 * Service for encryption primitives
 	 */
 	val cryptoService: CryptoService
@@ -196,7 +191,6 @@ data class SdkOptions(
 	override val requestRetryConfiguration: RequestRetryConfiguration = RequestRetryConfiguration(),
 	override val dataOwnerScope: String? = null,
 	override val ignoreUnknownFields: Boolean? = null,
-	override val encryptedFieldsOptions: EncryptedFieldsOptions? = null,
 	/**
 	 * Specifies how strict json decoding should be when decoding the encrypted content of an entity that is not using
 	 * the versioned data model (created before cardinal 3.0). For all entities that are already using the versioned
@@ -232,7 +226,6 @@ data class BasicSdkOptions(
 	override val requestRetryConfiguration: RequestRetryConfiguration = RequestRetryConfiguration(),
 	override val dataOwnerScope: String? = null,
 	override val ignoreUnknownFields: Boolean? = null,
-	override val encryptedFieldsOptions: EncryptedFieldsOptions? = null,
 ): BoundSdkOptions {
 	init {
 		validateHttpAndSerializationOptions()
@@ -256,7 +249,6 @@ data class UnboundBasicSdkOptions(
 	override val requestTimeout: Duration? = null,
 	override val requestRetryConfiguration: RequestRetryConfiguration = RequestRetryConfiguration(),
 	override val ignoreUnknownFields: Boolean? = null,
-	override val encryptedFieldsOptions: EncryptedFieldsOptions? = null,
 ): CommonSdkOptions {
 	init {
 		validateHttpAndSerializationOptions()

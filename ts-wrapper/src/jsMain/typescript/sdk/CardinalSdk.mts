@@ -53,6 +53,7 @@ import {AuthApi} from "../api/AuthApi.mjs";
 import {CalendarItemTypeApi} from "../api/CalendarItemTypeApi.mjs";
 import {AnonymousHealthcarePartyApi} from "../api/AnonymousHealthcarePartyApi.mjs";
 import {AnonymousAgendaApi} from "../api/AnonymousAgendaApi.mjs";
+import {CustomisedSdkOptions} from "../options/CustomisedSdkOptions.mjs";
 
 export interface CardinalApis {
   readonly auth: AuthApi
@@ -211,20 +212,23 @@ export namespace CardinalSdk {
    * @param baseStorage an implementation of {@link StorageFacade} or standard icure storage options, used for persistent
    * storage of various information including the user keys if {@link SdkOptions.keyStorage}1 is not provided.
    * @param options optional parameters for the initialization of the sdk.
+   * @param customisedSdkOptions parameters for the initialization of the sdk that should normally be automatically passed by the customised SDK generator
    */
   export async function initialize(
     projectId: string | undefined,
     baseUrl: string,
     authenticationMethod: AuthenticationMethod,
     baseStorage: StorageFacade | CardinalStorageOptions,
-    options?: SdkOptions
+    options?: SdkOptions,
+    customisedSdkOptions?: CustomisedSdkOptions,
   ): Promise<CardinalSdk> {
     return await InternalSdkInitializers.getInstance().initializeSdk(
       projectId,
       baseUrl,
       authenticationMethod,
       baseStorage,
-      options
+      options,
+      customisedSdkOptions,
     )
   }
 
@@ -246,6 +250,7 @@ export namespace CardinalSdk {
    * information including the user keys if [ApiOptions.keyStorage] is not provided.
    * @param authenticationProcessTemplateParameters optional parameters which may be used by sms/email templates.
    * @param options optional parameters for the initialization of the sdk.
+   * @param customisedSdkOptions parameters for the initialization of the sdk that should normally be automatically passed by the customised SDK generator
    */
   export async function initializeWithProcess(
     projectId: string | undefined,
@@ -258,7 +263,8 @@ export namespace CardinalSdk {
     captchaOptions: CaptchaOptions,
     baseStorage: StorageFacade | CardinalStorageOptions,
     authenticationProcessTemplateParameters?: AuthenticationProcessTemplateParameters,
-    options?: SdkOptions
+    options?: SdkOptions,
+    customisedSdkOptions?: CustomisedSdkOptions,
   ): Promise<AuthenticationWithProcessStep> {
     return await InternalSdkInitializers.getInstance().initializeWithProcess(
       projectId,
@@ -272,6 +278,7 @@ export namespace CardinalSdk {
       baseStorage,
       authenticationProcessTemplateParameters,
       options,
+      customisedSdkOptions,
     )
   }
 
@@ -297,18 +304,21 @@ export namespace CardinalBaseSdk {
    * @param baseUrl the url of the iCure backend to use
    * @param authenticationMethod specifies how the sdk should authenticate.
    * @param options optional parameters for the initialization of the sdk.
+   * @param customisedSdkOptions parameters for the initialization of the sdk that should normally be automatically passed by the customised SDK generator
    */
   export async function initialize(
     projectId: string | undefined,
     baseUrl: string,
     authenticationMethod: AuthenticationMethod,
-    options?: BasicSdkOptions
+    options?: BasicSdkOptions,
+    customisedSdkOptions?: CustomisedSdkOptions,
   ): Promise<CardinalBaseSdk> {
     return await InternalSdkInitializers.getInstance().initializeBase(
       projectId,
       baseUrl,
       authenticationMethod,
-      options
+      options,
+      customisedSdkOptions,
     )
   }
 
@@ -328,6 +338,7 @@ export namespace CardinalBaseSdk {
    * @param captchaOptions the captcha options
    * @param authenticationProcessTemplateParameters optional parameters which may be used by sms/email templates.
    * @param options optional parameters for the initialization of the sdk.
+   * @param customisedSdkOptions parameters for the initialization of the sdk that should normally be automatically passed by the customised SDK generator
    */
   export async function initializeWithProcess(
     projectId: string | undefined,
@@ -339,7 +350,8 @@ export namespace CardinalBaseSdk {
     userTelecom: string,
     captchaOptions: CaptchaOptions,
     authenticationProcessTemplateParameters?: AuthenticationProcessTemplateParameters,
-    options?: BasicSdkOptions
+    options?: BasicSdkOptions,
+    customisedSdkOptions?: CustomisedSdkOptions,
   ): Promise<BaseAuthenticationWithProcessStep> {
     return await InternalSdkInitializers.getInstance().initializeWithProcessBase(
       projectId,
@@ -352,6 +364,7 @@ export namespace CardinalBaseSdk {
       captchaOptions,
       authenticationProcessTemplateParameters,
       options,
+      customisedSdkOptions,
     )
   }
 

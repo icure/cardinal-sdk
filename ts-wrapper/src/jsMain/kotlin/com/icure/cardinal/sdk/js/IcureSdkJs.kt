@@ -109,12 +109,14 @@ import com.icure.cardinal.sdk.js.options.external.AuthenticationMethodJs
 import com.icure.cardinal.sdk.js.options.external.AuthenticationProcessTemplateParametersJs
 import com.icure.cardinal.sdk.js.options.external.BasicSdkOptionsJs
 import com.icure.cardinal.sdk.js.options.external.BasicToFullSdkOptionsJs
+import com.icure.cardinal.sdk.js.options.external.CustomisedSdkOptionsJs
 import com.icure.cardinal.sdk.js.options.external.SdkOptionsJs
 import com.icure.cardinal.sdk.js.options.toKt
 import com.icure.cardinal.sdk.js.storage.loadStorageOptions
 import com.icure.cardinal.sdk.options.AnonymousSdkOptions
 import com.icure.cardinal.sdk.options.BasicSdkOptions
 import com.icure.cardinal.sdk.options.BasicToFullSdkOptions
+import com.icure.cardinal.sdk.options.CustomisedSdkOptions
 import com.icure.cardinal.sdk.options.SdkOptions
 import com.icure.kryptom.crypto.defaultCryptoService
 import com.icure.kryptom.crypto.external.XCryptoService
@@ -132,7 +134,8 @@ object InternalSdkInitializers {
 		baseUrl: String,
 		authenticationMethod: AuthenticationMethodJs,
 		storageFacade: dynamic,
-		options: SdkOptionsJs?
+		options: SdkOptionsJs?,
+		customisedSdkOptions: CustomisedSdkOptionsJs?
 	): Promise<CardinalSdkJs> = GlobalScope.promise {
 		CardinalSdkJsImpl(CardinalSdk.initialize(
 			projectId,
@@ -140,6 +143,7 @@ object InternalSdkInitializers {
 			authenticationMethod.toKt(),
 			loadStorageOptions(storageFacade),
 			options?.toKt() ?: SdkOptions(),
+			customisedSdkOptions?.toKt() ?: CustomisedSdkOptions(),
 		))
 	}
 
@@ -154,7 +158,8 @@ object InternalSdkInitializers {
 		captchaOptions: CaptchaOptionsJs,
 		baseStorage: dynamic,
 		authenticationProcessTemplateParameters: AuthenticationProcessTemplateParametersJs?,
-		options: SdkOptionsJs?
+		options: SdkOptionsJs?,
+		customisedSdkOptions: CustomisedSdkOptionsJs?
 	): Promise<AuthenticationWithProcessStepJs> = GlobalScope.promise {
 		val ktStep = CardinalSdk.initializeWithProcess(
 			projectId,
@@ -167,7 +172,8 @@ object InternalSdkInitializers {
 			captchaOptions_fromJs(captchaOptions),
 			loadStorageOptions(baseStorage),
 			authenticationProcessTemplateParameters?.toKt() ?: AuthenticationProcessTemplateParameters(),
-			options?.toKt() ?: SdkOptions()
+			options?.toKt() ?: SdkOptions(),
+			customisedSdkOptions?.toKt() ?: CustomisedSdkOptions(),
 		)
 		object : AuthenticationWithProcessStepJs {
 			override fun completeAuthentication(validationCode: String): Promise<CardinalSdkJs> = GlobalScope.promise {
@@ -180,14 +186,16 @@ object InternalSdkInitializers {
 		projectId: String?,
 		baseUrl: String,
 		authenticationMethod: AuthenticationMethodJs,
-		options: BasicSdkOptionsJs?
+		options: BasicSdkOptionsJs?,
+		customisedSdkOptions: CustomisedSdkOptionsJs?
 	): Promise<CardinalBaseSdkJs> = GlobalScope.promise {
 		CardinalBaseSdkJsImpl(
 			CardinalBaseSdk.initialize(
 				projectId,
 				baseUrl,
 				authenticationMethod.toKt(),
-				options?.toKt() ?: BasicSdkOptions()
+				options?.toKt() ?: BasicSdkOptions(),
+				customisedSdkOptions?.toKt() ?: CustomisedSdkOptions(),
 			),
 			options?.cryptoService ?: adaptCryptoServiceForExternal(defaultCryptoService)
 		)
@@ -203,7 +211,8 @@ object InternalSdkInitializers {
 		userTelecom: String,
 		captchaOptions: CaptchaOptionsJs,
 		authenticationProcessTemplateParameters: AuthenticationProcessTemplateParametersJs?,
-		options: BasicSdkOptionsJs?
+		options: BasicSdkOptionsJs?,
+		customisedSdkOptions: CustomisedSdkOptionsJs?
 	): Promise<BaseAuthenticationWithProcessStepJs> = GlobalScope.promise {
 		val ktStep = CardinalBaseSdk.initializeWithProcess(
 			projectId,
@@ -215,7 +224,8 @@ object InternalSdkInitializers {
 			userTelecom,
 			captchaOptions_fromJs(captchaOptions),
 			authenticationProcessTemplateParameters?.toKt() ?: AuthenticationProcessTemplateParameters(),
-			options?.toKt() ?: BasicSdkOptions()
+			options?.toKt() ?: BasicSdkOptions(),
+			customisedSdkOptions?.toKt() ?: CustomisedSdkOptions(),
 		)
 		object : BaseAuthenticationWithProcessStepJs {
 			override fun completeAuthentication(validationCode: String): Promise<CardinalBaseSdkJs> = GlobalScope.promise {
