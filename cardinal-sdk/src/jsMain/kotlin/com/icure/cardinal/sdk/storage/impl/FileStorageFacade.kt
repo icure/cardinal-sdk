@@ -20,9 +20,9 @@ class NodeFileStorageFacade private constructor (
 	companion object {
 		@Suppress("UNCHECKED_CAST_TO_EXTERNAL_INTERFACE")
 		suspend fun initialise(directory: String): NodeFileStorageFacade {
-			val fs = if (eval("typeof(require) !== 'function'") as Boolean) {
-				(eval("import('fs/promises')") as Promise<NodeFsAsync>).await()
-			} else eval("require('fs/promises')") as NodeFsAsync
+			val fs = if (js("typeof(require) !== 'function'") as Boolean) {
+				(js("import('fs/promises')") as Promise<NodeFsAsync>).await()
+			} else js("require('fs/promises')") as NodeFsAsync
 			try {
 				fs.mkdir(directory, json("recursive" to true)).await()
 			} catch (e: Exception) {
