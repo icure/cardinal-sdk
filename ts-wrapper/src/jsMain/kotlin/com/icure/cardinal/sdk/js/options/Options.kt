@@ -11,13 +11,19 @@ import com.icure.cardinal.sdk.js.storage.loadKeyStorageOptions
  import com.icure.cardinal.sdk.options.AnonymousSdkOptions
 import com.icure.cardinal.sdk.options.BasicSdkOptions
 import com.icure.cardinal.sdk.options.BasicToFullSdkOptions
-import com.icure.cardinal.sdk.options.SdkOptions
+ import com.icure.cardinal.sdk.options.DecryptedJsonStrictness
+ import com.icure.cardinal.sdk.options.EncryptedFieldsOptions
+ import com.icure.cardinal.sdk.options.PartialEncryptedManifest
+ import com.icure.cardinal.sdk.options.SdkOptions
 import com.icure.kryptom.crypto.CryptoService
 import com.icure.kryptom.crypto.external.XCryptoService
 import com.icure.kryptom.crypto.external.adaptCryptoServiceForExternal
 import com.icure.kryptom.crypto.external.adaptExternalCryptoService
 import com.icure.kryptom.js.defaultJsCryptoAvailable
 import kotlinx.coroutines.await
+ import kotlinx.serialization.ExperimentalSerializationApi
+ import kotlinx.serialization.json.Json
+ import kotlinx.serialization.json.decodeFromDynamic
 
 suspend fun SdkOptionsJs.toKt(): SdkOptions {
 	val defaultSdkOptions = SdkOptions()
@@ -37,6 +43,10 @@ suspend fun SdkOptionsJs.toKt(): SdkOptions {
 		} ?: defaultSdkOptions.cryptoStrategies,
 		ignoreUnknownFields = this.ignoreUnknownFields ?: defaultSdkOptions.ignoreUnknownFields,
 		dataOwnerScope = this.dataOwnerScope ?: defaultSdkOptions.dataOwnerScope,
+		unversionedEntitiesDecryptedJsonStrictness = this.unversionedEntitiesDecryptedJsonStrictness?.let {
+			DecryptedJsonStrictness.valueOf(it)
+		} ?: defaultSdkOptions.unversionedEntitiesDecryptedJsonStrictness,
+		encryptedFieldsOptions = parseEncryptedFieldOptions(encryptedFieldsOptions) ?: defaultSdkOptions.encryptedFieldsOptions,
 	)
 }
 
@@ -51,6 +61,7 @@ suspend fun BasicSdkOptionsJs.toKt(): BasicSdkOptions {
 		} ?: defaultApiOptions.groupSelector,
 		ignoreUnknownFields = this.ignoreUnknownFields ?: defaultApiOptions.ignoreUnknownFields,
 		dataOwnerScope = this.dataOwnerScope ?: defaultApiOptions.dataOwnerScope,
+		encryptedFieldsOptions = parseEncryptedFieldOptions(encryptedFieldsOptions) ?: defaultApiOptions.encryptedFieldsOptions,
 	)
 }
 
@@ -64,6 +75,9 @@ suspend fun BasicToFullSdkOptionsJs.toKt(jsCryptoService: XCryptoService): Basic
 		cryptoStrategies = this.cryptoStrategies?.let {
 			CryptoStrategiesBridge(it, jsCryptoService)
 		} ?: defaultOptions.cryptoStrategies,
+		unversionedEntitiesDecryptedJsonStrictness = this.unversionedEntitiesDecryptedJsonStrictness?.let {
+			DecryptedJsonStrictness.valueOf(it)
+		} ?: defaultOptions.unversionedEntitiesDecryptedJsonStrictness,
 	)
 }
 
@@ -87,4 +101,16 @@ private fun XCryptoService?.checkRequiredAdaptAndPolyfillRandom(): CryptoService
 		cardinalInternalGlobals.randomUuid = adapted.strongRandom::randomUUID
 	}
 	return adapted
+}
+
+@OptIn(ExperimentalSerializationApi::class)
+private fun parseEncryptedFieldOptions(options: dynamic): EncryptedFieldsOptions? {
+	if (options == null) return null
+	if (options == "Legacy") return EncryptedFieldsOptions.Legacy
+	if (options == "Default") return EncryptedFieldsOptions.Default
+	val manifestsJson = options.manifestsJson
+	if (manifestsJson != null) {
+		return EncryptedFieldsOptions.Custom(Json.decodeFromDynamic(PartialEncryptedManifest.serializer(), manifestsJson))
+	}
+	throw IllegalArgumentException("Invalid encryptedFieldsOptions: $options")
 }

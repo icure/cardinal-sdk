@@ -3,6 +3,8 @@ import {UserGroup} from "../model/UserGroup.mjs";
 import {KeyStorageFacade} from "../storage/StorageFacade.mjs";
 import {CryptoStrategies} from "../crypto/CryptoStrategies.mjs";
 import {CardinalKeyStorageOptions} from "../cardinal-sdk-ts.mjs";
+import {DecryptedJsonStrictness} from "./DecryptedJsonStrictness.mjs";
+import {EncryptedFieldsOptions} from "./EncryptedFieldsOptions.mjs";
 
 export interface SdkOptions {
   /**
@@ -78,6 +80,31 @@ export interface SdkOptions {
    * If not null the SDK will immediately set the data owner scope to the provided value after login.
    */
   readonly dataOwnerScope?: string
+  /**
+   * Specifies how strict json decoding should be when decoding the encrypted content of an entity that is not using
+   * the versioned data model (created before cardinal 3.0). For all entities that are already using the versioned
+   * data model the decoding is always equivalent to [DecryptedJsonStrictness.IgnoreBadValues].
+   *
+   * We recommend to use [DecryptedJsonStrictness.Strict]:
+   * - If your application does not depend on data coming from the legacy iCure typescript SDK then your application
+   *   will not have content that is invalid for cardinal
+   * - If your application uses data from the legacy iCure typescript SDK AND that data is not fully supported by
+   *   cardinal you can detect it before potentially destroying part of its content. A future version of cardinal
+   *   will allow you to specify a "patcher" that can modify the encrypted content before cardinal tries to interpret
+   *   it so that you can migrate the existing data to a format understandable by cardinal.
+   *
+   * When [ignoreUnknownFields] is false or defaults to false then this defaults to [DecryptedJsonStrictness.Strict],
+   * else it defaults to [DecryptedJsonStrictness.IgnoreUnknownFields].
+   *
+   * It is still possible to override the default with any value of [DecryptedJsonStrictness] regardless of the value
+   * of [ignoreUnknownFields].
+   */
+  readonly unversionedEntitiesDecryptedJsonStrictness?: DecryptedJsonStrictness
+  /**
+   * Specifies which fields should be encrypted for each entity, root or embedded.
+   * Normally this parameter should be automatically filled by the generated customized SDK.
+   */
+  readonly encryptedFieldsOptions?: EncryptedFieldsOptions
 }
 
 export interface BasicSdkOptions {
@@ -117,6 +144,11 @@ export interface BasicSdkOptions {
    * If not null the SDK will immediately set the data owner scope to the provided value after login.
    */
   readonly dataOwnerScope?: string
+  /**
+   * Specifies which fields should be encrypted for each entity, root or embedded.
+   * Normally this parameter should be automatically filled by the generated customized SDK.
+   */
+  readonly encryptedFieldsOptions?: EncryptedFieldsOptions
 }
 
 /**
@@ -143,6 +175,10 @@ export interface BasicToFullSdkOptions {
    * Refer to {@link SdkOptions.cryptoStrategies }
    */
   readonly cryptoStrategies?: CryptoStrategies
+  /**
+   * Refer to {@link SdkOptions.unversionedEntitiesDecryptedJsonStrictness }
+   */
+  readonly unversionedEntitiesDecryptedJsonStrictness?: DecryptedJsonStrictness
 }
 
 

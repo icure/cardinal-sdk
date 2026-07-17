@@ -5,13 +5,13 @@ import com.icure.cardinal.sdk.crypto.encryptor.EntitiesEncryptionManifests
 import com.icure.cardinal.sdk.crypto.encryptor.EntityEncryptionManifest
 import com.icure.cardinal.sdk.crypto.encryptor.ExtensionsEncryptionManifest
 import com.icure.cardinal.sdk.utils.intersects
+import kotlinx.serialization.Serializable
 
 sealed interface EncryptedFieldsOptions {
 	data object Default : EncryptedFieldsOptions
 	data object Legacy : EncryptedFieldsOptions
 	data class Custom(
-		val manifests: EntitiesEncryptionManifests,
-		val encryptorOptions: EncryptorOptions,
+		val manifests: PartialEncryptedManifest,
 	) : EncryptedFieldsOptions
 }
 
@@ -27,13 +27,16 @@ private val defaultEncryptorOptions = EncryptorOptions(
 internal val EncryptedFieldsOptions?.encryptorOptions: EncryptorOptions get() = when (this) {
 	EncryptedFieldsOptions.Legacy -> legacyEncryptorOptions
 	EncryptedFieldsOptions.Default, null -> defaultEncryptorOptions
-	is EncryptedFieldsOptions.Custom -> encryptorOptions
+	is EncryptedFieldsOptions.Custom -> EncryptorOptions(
+		useLegacyServiceContentEncryption = manifests.useLegacyBase,
+		serializeEncryptedSelfUsingLegacyNames = manifests.useLegacyBase,
+	)
 }
 
 internal val EncryptedFieldsOptions?.manifests: EntitiesEncryptionManifests get() = when (this) {
 	EncryptedFieldsOptions.Legacy -> legacyEntitiesEncryptionManifests
 	EncryptedFieldsOptions.Default, null -> defaultEntitiesEncryptionManifests
-	is EncryptedFieldsOptions.Custom -> manifests
+	is EncryptedFieldsOptions.Custom -> manifests.buildFullManifest()
 }
 
 private fun createDefaultEntitiesEncryptionManifests(
@@ -341,46 +344,43 @@ private val defaultEntitiesEncryptionManifests = createDefaultEntitiesEncryption
 private val legacyEntitiesEncryptionManifests = createDefaultEntitiesEncryptionManifests(useLegacyServiceContentEncryption = true)
 
 // TODO will be non-nullable later on, everything must be defined by the custom config, even if it matches default / base
-fun buildCustomEncryptedFieldOptions(
-	manifestsByName: Map<String, EntityEncryptionManifest>,
-	extensionsManifestsByName: Map<String, ExtensionsEncryptionManifest>,
-	accessLog: String? = null,
-	calendarItem: String? = null,
-	contact: String? = null,
-	healthElement: String? = null,
-	patient: String? = null,
-	message: String? = null,
-	topic: String? = null,
-	document: String? = null,
-	form: String? = null,
-	receipt: String? = null,
-	classification: String? = null,
-	invoice: String? = null,
-	useLegacyBase: Boolean = false,
-) : EncryptedFieldsOptions {
+@Serializable
+data class PartialEncryptedManifest(
+	val manifestsByName: Map<String, EntityEncryptionManifest>,
+	val extensionsManifestsByName: Map<String, ExtensionsEncryptionManifest>,
+	val accessLog: String? = null,
+	val calendarItem: String? = null,
+	val contact: String? = null,
+	val healthElement: String? = null,
+	val patient: String? = null,
+	val message: String? = null,
+	val topic: String? = null,
+	val document: String? = null,
+	val form: String? = null,
+	val receipt: String? = null,
+	val classification: String? = null,
+	val invoice: String? = null,
+	val useLegacyBase: Boolean = false,
+)
+
+private fun PartialEncryptedManifest.buildFullManifest(): EntitiesEncryptionManifests {
 	val base = if (useLegacyBase) legacyEntitiesEncryptionManifests else defaultEntitiesEncryptionManifests
 	require(!manifestsByName.keys.intersects(base.manifestsByName.keys)) { "manifestsByName cannot contain keys from the base manifests" }
 	require(!extensionsManifestsByName.keys.intersects(base.extensionsManifestsByName.keys)) { "extensionsManifestsByName cannot contain keys from the base manifests" }
-	return EncryptedFieldsOptions.Custom(
-		manifests = EntitiesEncryptionManifests(
-			manifestsByName = manifestsByName + base.manifestsByName,
-			extensionsManifestsByName = extensionsManifestsByName + base.extensionsManifestsByName,
-			accessLog = accessLog ?: base.accessLog,
-			calendarItem = calendarItem ?: base.calendarItem,
-			contact = contact ?: base.contact,
-			healthElement = healthElement ?: base.healthElement,
-			patient = patient ?: base.patient,
-			message = message ?: base.message,
-			topic = topic ?: base.topic,
-			document = document ?: base.document,
-			form = form ?: base.form,
-			receipt = receipt ?: base.receipt,
-			classification = classification ?: base.classification,
-			invoice = invoice ?: base.invoice,
-		),
-		encryptorOptions = EncryptorOptions(
-			useLegacyServiceContentEncryption = useLegacyBase,
-			serializeEncryptedSelfUsingLegacyNames = useLegacyBase,
-		)
+	return EntitiesEncryptionManifests(
+		manifestsByName = manifestsByName + base.manifestsByName,
+		extensionsManifestsByName = extensionsManifestsByName + base.extensionsManifestsByName,
+		accessLog = accessLog ?: base.accessLog,
+		calendarItem = calendarItem ?: base.calendarItem,
+		contact = contact ?: base.contact,
+		healthElement = healthElement ?: base.healthElement,
+		patient = patient ?: base.patient,
+		message = message ?: base.message,
+		topic = topic ?: base.topic,
+		document = document ?: base.document,
+		form = form ?: base.form,
+		receipt = receipt ?: base.receipt,
+		classification = classification ?: base.classification,
+		invoice = invoice ?: base.invoice,
 	)
 }
