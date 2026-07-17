@@ -302,6 +302,7 @@ tasks.register("prepareDistributionPackage") {
 			replacing = listOf(
 				Replacement("\"name\": \"$moduleName\"", with = "\"name\": \"@icure/cardinal-sdk\""),
 				Replacement("\"version\": \"0.0.0-unspecified\"", with = "\"version\": \"${project(":cardinal-sdk").version}\""),
+				Replacement("\n}", with = ",\n  \"browser\": { \"ws\": false }\n}")
 			)
 		)
 	}
