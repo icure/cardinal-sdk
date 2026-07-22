@@ -10,6 +10,7 @@ import com.icure.cardinal.sdk.crypto.impl.BasicCryptoStrategies
 import com.icure.cardinal.sdk.model.DataOwnerWithType
 import com.icure.cardinal.sdk.model.specializations.SpkiHexString
 import com.icure.cardinal.sdk.options.AuthenticationMethod
+import com.icure.cardinal.sdk.options.CustomisedSdkOptions
 import com.icure.cardinal.sdk.options.SdkOptions
 import com.icure.cardinal.sdk.options.getAuthProvider
 import com.icure.cardinal.sdk.storage.CardinalStorageFacade
@@ -69,9 +70,15 @@ data class DataOwnerDetails private constructor (
 	suspend fun api(
 		baseJob: Job,
 		cryptoStrategies: CryptoStrategies = BasicCryptoStrategies,
-		options: SdkOptions = SdkOptions()
+		options: SdkOptions = SdkOptions(),
+		customisedSdkOptions: CustomisedSdkOptions = CustomisedSdkOptions(),
 	): CardinalSdk =
-		initApi(baseJob, cryptoStrategies, options = options) { addInitialKeysToStorage(it) }
+		initApi(
+			baseJob,
+			cryptoStrategies,
+			options = options,
+			customisedSdkOptions = customisedSdkOptions,
+		) { addInitialKeysToStorage(it) }
 
 	/**
 	 * Creates a new api with access to the original key of the user and his parents.
@@ -175,6 +182,7 @@ data class DataOwnerDetails private constructor (
 		cryptoStrategies: CryptoStrategies,
 		storageFacade: StorageFacade = VolatileStorageFacade(),
 		options: SdkOptions = SdkOptions(),
+		customisedSdkOptions: CustomisedSdkOptions = CustomisedSdkOptions(),
 		fillStorage: suspend (storage: CardinalStorageFacade) -> Unit
 	): CardinalSdk =
 		CardinalSdk.initialize(
@@ -182,19 +190,14 @@ data class DataOwnerDetails private constructor (
 			baseUrl,
 			AuthenticationMethod.UsingCredentials(UsernamePassword(username, password)),
 			storageFacade.also {
-				fillStorage(CardinalStorageFacade(
-					JsonAndBase64KeyStorage(it),
-					it,
-					DefaultStorageEntryKeysFactory,
-					defaultCryptoService,
-					false
-				))
+				fillStorage(it.wrapToCardinalStorage())
 			},
 			options.copy(
 				useHierarchicalDataOwners = true,
 				cryptoStrategies = cryptoStrategies,
 				parentJob = parentJob
-			)
+			),
+			customisedSdkOptions = customisedSdkOptions,
 		)
 
 	private suspend fun addInitialKeysToStorage(storage: CardinalStorageFacade) {
@@ -207,6 +210,19 @@ data class DataOwnerDetails private constructor (
 		}
 		parent?.addInitialKeysToStorage(storage)
 	}
+
+	suspend fun addInitialKeysToStorage(storage: StorageFacade) {
+		addInitialKeysToStorage(storage.wrapToCardinalStorage())
+	}
+
+	private fun StorageFacade.wrapToCardinalStorage() =
+		CardinalStorageFacade(
+			JsonAndBase64KeyStorage(this),
+			this,
+			DefaultStorageEntryKeysFactory,
+			defaultCryptoService,
+			false
+		)
 
 	fun hierarchy(): List<String> = parent?.hierarchy().orEmpty() + dataOwnerId
 }

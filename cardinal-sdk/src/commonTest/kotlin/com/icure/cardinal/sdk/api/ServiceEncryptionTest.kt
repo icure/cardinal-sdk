@@ -8,6 +8,7 @@ import com.icure.cardinal.sdk.model.embed.Content
 import com.icure.cardinal.sdk.model.embed.DecryptedContent
 import com.icure.cardinal.sdk.model.embed.DecryptedService
 import com.icure.cardinal.sdk.model.embed.EncryptedService
+import com.icure.cardinal.sdk.options.CustomisedSdkOptions
 import com.icure.cardinal.sdk.options.EncryptedFieldsOptions
 import com.icure.cardinal.sdk.options.SdkOptions
 import com.icure.cardinal.sdk.test.DataOwnerDetails
@@ -33,7 +34,7 @@ class ServiceEncryptionTest : StringSpec({
 	beforeSpec {
 		initializeTestEnvironment()
 		hcp = createHcpUser()
-		sdkLegacy = hcp.api(specJob, options = SdkOptions(encryptedFieldsOptions = EncryptedFieldsOptions.Legacy))
+		sdkLegacy = hcp.api(specJob, customisedSdkOptions = CustomisedSdkOptions(encryptedFieldsOptions = EncryptedFieldsOptions.Legacy))
 		sdkDefault = hcp.api(specJob)
 		patient = sdkLegacy.patient.createPatient(sdkLegacy.patient.withEncryptionMetadata(DecryptedPatient(uuid())))
 	}
