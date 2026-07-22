@@ -112,7 +112,7 @@ private suspend fun tryDecryptServices(
 			config.encryptors.serviceDecryptor.decrypt(
 				decryptionKeys = keys.map { it.key },
 				encryptedEntity = fullService,
-				customisedModelVersion = fullService.contactExtensionsVersions?.let {
+				customisedModelVersion = fullService.contactCustomisedModelVersion?.let {
 					CustomisedModelVersion(EntityWithEncryptionMetadataTypeName.Contact, it)
 				}
 			)
@@ -142,7 +142,7 @@ private fun decryptedApiFlavour(
 		config = config,
 		encryptors = config.encryptors.contact,
 		type = EntityWithEncryptionMetadataTypeName.Contact,
-		getRootModelVersion = Contact::extensionsVersion,
+		getRootModelVersion = Contact::customisedModelVersion,
 	) {
 		override suspend fun maybeDecryptServices(
 			entitiesGroupId: String?,
@@ -181,7 +181,7 @@ private fun tryAndRecoverApiFlavour(
 		config = config,
 		encryptors = config.encryptors.contact,
 		type = EntityWithEncryptionMetadataTypeName.Contact,
-		getRootModelVersion = Contact::extensionsVersion,
+		getRootModelVersion = Contact::customisedModelVersion,
 	) {
 		override suspend fun maybeDecryptServices(
 			entitiesGroupId: String?,

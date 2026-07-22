@@ -3,7 +3,8 @@
 package com.icure.cardinal.sdk.model
 
 import com.icure.cardinal.sdk.model.base.CodeStub
-import com.icure.cardinal.sdk.model.base.ExtendableRoot
+import com.icure.cardinal.sdk.model.base.CustomisableRoot
+import com.icure.cardinal.sdk.model.base.Extendable
 import com.icure.cardinal.sdk.model.base.HasEncryptionMetadata
 import com.icure.cardinal.sdk.model.base.HasEndOfLife
 import com.icure.cardinal.sdk.model.base.HasIdentifier
@@ -67,7 +68,8 @@ sealed interface Contact :
 	Encryptable,
 	HasEndOfLife,
 	HasIdentifier,
-	ExtendableRoot {
+	CustomisableRoot,
+	Extendable {
 	/**
 	 * The Id of the contact. We encourage using either a v4 UUID or a HL7 Id.
 	 */
@@ -218,7 +220,7 @@ sealed interface Contact :
 
 	override val extensions: JsonObject?
 
-	override val extensionsVersion: Int?
+	override val customisedModelVersion: Int?
 	// region Contact-Contact
 	companion object {
 		const val KRAKEN_QUALIFIED_NAME = "org.taktik.icure.entities.Contact"
@@ -380,7 +382,7 @@ data class DecryptedContact(
 	@param:DefaultValue("emptyList()")
 	override val notes: List<DecryptedAnnotation> = emptyList(),
 	override val extensions: JsonObject? = null,
-	override val extensionsVersion: Int? = null,
+	override val customisedModelVersion: Int? = null,
 ) : Contact {
 	// region Contact-DecryptedContact
 override fun copyWithSecurityMetadata(securityMetadata: SecurityMetadata, secretForeignKeys: Set<String>): DecryptedContact =
@@ -542,7 +544,7 @@ data class EncryptedContact(
 	@param:DefaultValue("emptyList()")
 	override val notes: List<EncryptedAnnotation> = emptyList(),
 	override val extensions: JsonObject? = null,
-	override val extensionsVersion: Int? = null,
+	override val customisedModelVersion: Int? = null,
 ) : Contact {
 	// region Contact-EncryptedContact
 override fun copyWithSecurityMetadata(securityMetadata: SecurityMetadata, secretForeignKeys: Set<String>): EncryptedContact =

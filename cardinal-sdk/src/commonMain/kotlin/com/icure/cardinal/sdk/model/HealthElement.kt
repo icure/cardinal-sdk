@@ -3,7 +3,8 @@
 package com.icure.cardinal.sdk.model
 
 import com.icure.cardinal.sdk.model.base.CodeStub
-import com.icure.cardinal.sdk.model.base.ExtendableRoot
+import com.icure.cardinal.sdk.model.base.CustomisableRoot
+import com.icure.cardinal.sdk.model.base.Extendable
 import com.icure.cardinal.sdk.model.base.HasEncryptionMetadata
 import com.icure.cardinal.sdk.model.base.HasEndOfLife
 import com.icure.cardinal.sdk.model.base.ICureDocument
@@ -52,7 +53,8 @@ sealed interface HealthElement :
 	HasEncryptionMetadata,
 	Encryptable,
 	HasEndOfLife,
-	ExtendableRoot {
+	CustomisableRoot,
+	Extendable {
 	/**
 	 * The Id of the healthcare element. We encourage using either a v4 UUID or a HL7 Id.
 	 */
@@ -218,7 +220,7 @@ sealed interface HealthElement :
 
 	override val extensions: JsonObject?
 
-	override val extensionsVersion: Int?
+	override val customisedModelVersion: Int?
 	// region HealthElement-HealthElement
 
 	companion object {
@@ -381,7 +383,7 @@ data class DecryptedHealthElement(
 	 */
 	override val securityMetadata: SecurityMetadata? = null,
 	override val extensions: JsonObject? = null,
-	override val extensionsVersion: Int? = null,
+	override val customisedModelVersion: Int? = null,
 ) : HealthElement {
 	// region HealthElement-DecryptedHealthElement
 override fun copyWithSecurityMetadata(securityMetadata: SecurityMetadata, secretForeignKeys: Set<String>): DecryptedHealthElement =
@@ -543,7 +545,7 @@ data class EncryptedHealthElement(
 	 */
 	override val securityMetadata: SecurityMetadata? = null,
 	override val extensions: JsonObject? = null,
-	override val extensionsVersion: Int? = null,
+	override val customisedModelVersion: Int? = null,
 ) : HealthElement {
 	// region HealthElement-EncryptedHealthElement
 override fun copyWithSecurityMetadata(securityMetadata: SecurityMetadata, secretForeignKeys: Set<String>): EncryptedHealthElement =

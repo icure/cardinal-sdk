@@ -3,7 +3,8 @@
 package com.icure.cardinal.sdk.model
 
 import com.icure.cardinal.sdk.model.base.CodeStub
-import com.icure.cardinal.sdk.model.base.ExtendableRoot
+import com.icure.cardinal.sdk.model.base.CustomisableRoot
+import com.icure.cardinal.sdk.model.base.Extendable
 import com.icure.cardinal.sdk.model.base.HasEncryptionMetadata
 import com.icure.cardinal.sdk.model.base.ICureDocument
 import com.icure.cardinal.sdk.model.base.StoredDocument
@@ -42,7 +43,8 @@ sealed interface CalendarItem :
 	ICureDocument<String>,
 	HasEncryptionMetadata,
 	Encryptable,
-	ExtendableRoot {
+	CustomisableRoot,
+	Extendable {
 	/**
 	 * The Id of the calendar item. We encourage using either a v4 UUID or a HL7 Id.
 	 */
@@ -252,7 +254,7 @@ sealed interface CalendarItem :
 
 	override val extensions: JsonObject?
 
-	override val extensionsVersion: Int?
+	override val customisedModelVersion: Int?
 
 	@Serializable
 	public enum class AvailabilitiesAssignmentStrategy(
@@ -457,7 +459,7 @@ data class DecryptedCalendarItem(
 	 */
 	override val securityMetadata: SecurityMetadata? = null,
 	override val extensions: JsonObject? = null,
-	override val extensionsVersion: Int? = null,
+	override val customisedModelVersion: Int? = null,
 ) : CalendarItem {
 	// region CalendarItem-DecryptedCalendarItem
 override fun copyWithSecurityMetadata(securityMetadata: SecurityMetadata, secretForeignKeys: Set<String>): DecryptedCalendarItem =
@@ -664,7 +666,7 @@ data class EncryptedCalendarItem(
 	 */
 	override val securityMetadata: SecurityMetadata? = null,
 	override val extensions: JsonObject? = null,
-	override val extensionsVersion: Int? = null,
+	override val customisedModelVersion: Int? = null,
 ) : CalendarItem {
 	// region CalendarItem-EncryptedCalendarItem
 override fun copyWithSecurityMetadata(securityMetadata: SecurityMetadata, secretForeignKeys: Set<String>): EncryptedCalendarItem =

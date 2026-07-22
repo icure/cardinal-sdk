@@ -243,8 +243,8 @@ public fun service_toJs(obj: DecryptedService): DecryptedServiceJs {
 	val extensions = nullToUndefined(
 		jsonToDynamic(obj.extensions)
 	)
-	val contactExtensionsVersions = nullToUndefined(
-		intToNumber(obj.contactExtensionsVersions)
+	val contactCustomisedModelVersion = nullToUndefined(
+		intToNumber(obj.contactCustomisedModelVersion)
 	)
 	return DecryptedServiceJs(js("{" +
 		"id:id," +
@@ -280,7 +280,7 @@ public fun service_toJs(obj: DecryptedService): DecryptedServiceJs {
 		"encryptedSelf:encryptedSelf," +
 		"securityMetadata:securityMetadata," +
 		"extensions:extensions," +
-		"contactExtensionsVersions:contactExtensionsVersions" +
+		"contactCustomisedModelVersion:contactCustomisedModelVersion" +
 	"}"))
 }
 
@@ -463,8 +463,8 @@ public fun service_fromJs(obj: DecryptedServiceJs): DecryptedService {
 		securityMetadata_fromJs(nonNull1)
 	}
 	val extensions = dynamicToJsonObjectNullsafe(obj.extensions, "obj.extensions")
-	val contactExtensionsVersions = numberToInt(obj.contactExtensionsVersions,
-			"obj.contactExtensionsVersions")
+	val contactCustomisedModelVersion = numberToInt(obj.contactCustomisedModelVersion,
+			"obj.contactCustomisedModelVersion")
 	return DecryptedService(
 		id = id,
 		transactionId = transactionId,
@@ -499,7 +499,7 @@ public fun service_fromJs(obj: DecryptedServiceJs): DecryptedService {
 		encryptedSelf = encryptedSelf,
 		securityMetadata = securityMetadata,
 		extensions = extensions,
-		contactExtensionsVersions = contactExtensionsVersions,
+		contactCustomisedModelVersion = contactCustomisedModelVersion,
 	)
 }
 
@@ -705,8 +705,8 @@ public fun service_toJs(obj: EncryptedService): EncryptedServiceJs {
 	val extensions = nullToUndefined(
 		jsonToDynamic(obj.extensions)
 	)
-	val contactExtensionsVersions = nullToUndefined(
-		intToNumber(obj.contactExtensionsVersions)
+	val contactCustomisedModelVersion = nullToUndefined(
+		intToNumber(obj.contactCustomisedModelVersion)
 	)
 	return EncryptedServiceJs(js("{" +
 		"id:id," +
@@ -742,7 +742,7 @@ public fun service_toJs(obj: EncryptedService): EncryptedServiceJs {
 		"encryptedSelf:encryptedSelf," +
 		"securityMetadata:securityMetadata," +
 		"extensions:extensions," +
-		"contactExtensionsVersions:contactExtensionsVersions" +
+		"contactCustomisedModelVersion:contactCustomisedModelVersion" +
 	"}"))
 }
 
@@ -925,8 +925,8 @@ public fun service_fromJs(obj: EncryptedServiceJs): EncryptedService {
 		securityMetadata_fromJs(nonNull1)
 	}
 	val extensions = dynamicToJsonObjectNullsafe(obj.extensions, "obj.extensions")
-	val contactExtensionsVersions = numberToInt(obj.contactExtensionsVersions,
-			"obj.contactExtensionsVersions")
+	val contactCustomisedModelVersion = numberToInt(obj.contactCustomisedModelVersion,
+			"obj.contactCustomisedModelVersion")
 	return EncryptedService(
 		id = id,
 		transactionId = transactionId,
@@ -961,7 +961,7 @@ public fun service_fromJs(obj: EncryptedServiceJs): EncryptedService {
 		encryptedSelf = encryptedSelf,
 		securityMetadata = securityMetadata,
 		extensions = extensions,
-		contactExtensionsVersions = contactExtensionsVersions,
+		contactCustomisedModelVersion = contactCustomisedModelVersion,
 	)
 }
 

@@ -71,7 +71,7 @@ private fun decryptedApiFlavour(
 	config = config,
 	type = EntityWithEncryptionMetadataTypeName.Topic,
 	encryptors = config.encryptors.topic,
-	getRootModelVersion = EncryptedTopic::extensionsVersion,
+	getRootModelVersion = EncryptedTopic::customisedModelVersion,
 )
 
 @InternalIcureApi
@@ -81,7 +81,7 @@ private fun tryAndRecoverApiFlavour(
 	config = config,
 	type = EntityWithEncryptionMetadataTypeName.Topic,
 	encryptors = config.encryptors.topic,
-	getRootModelVersion = EncryptedTopic::extensionsVersion,
+	getRootModelVersion = EncryptedTopic::customisedModelVersion,
 )
 
 @OptIn(InternalIcureApi::class)

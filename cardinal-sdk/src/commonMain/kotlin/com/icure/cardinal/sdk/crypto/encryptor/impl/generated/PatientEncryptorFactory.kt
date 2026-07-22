@@ -141,7 +141,7 @@ internal object PatientEncryptorFactory : EntityEncryptorFactory<EncryptedPatien
 					cryptoActorProperties = clearEntity.cryptoActorProperties,
 					parentId = clearEntity.parentId,
 					extensions = clearEntity.extensions,
-					extensionsVersion = clearEntity.extensionsVersion,
+					customisedModelVersion = clearEntity.customisedModelVersion,
 				)
 		}
 
@@ -690,7 +690,7 @@ private class PatientEncryptor(
 			cryptoActorProperties = clearEntity.cryptoActorProperties,
 			parentId = clearEntity.parentId,
 			extensions = extensionsEncryptor?.value?.encryptExtension(encryptionKey, clearEntity.extensions) ?: clearEntity.extensions,
-			extensionsVersion = clearEntity.extensionsVersion,
+			customisedModelVersion = clearEntity.customisedModelVersion,
 		)
 	}
 }

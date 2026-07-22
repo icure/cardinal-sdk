@@ -215,8 +215,8 @@ public fun contact_toJs(obj: DecryptedContact): DecryptedContactJs {
 	val extensions = nullToUndefined(
 		jsonToDynamic(obj.extensions)
 	)
-	val extensionsVersion = nullToUndefined(
-		intToNumber(obj.extensionsVersion)
+	val customisedModelVersion = nullToUndefined(
+		intToNumber(obj.customisedModelVersion)
 	)
 	return DecryptedContactJs(js("{" +
 		"id:id," +
@@ -248,7 +248,7 @@ public fun contact_toJs(obj: DecryptedContact): DecryptedContactJs {
 		"securityMetadata:securityMetadata," +
 		"notes:notes," +
 		"extensions:extensions," +
-		"extensionsVersion:extensionsVersion" +
+		"customisedModelVersion:customisedModelVersion" +
 	"}"))
 }
 
@@ -383,7 +383,7 @@ public fun contact_fromJs(obj: DecryptedContactJs): DecryptedContact {
 		},
 	)
 	val extensions = dynamicToJsonObjectNullsafe(obj.extensions, "obj.extensions")
-	val extensionsVersion = numberToInt(obj.extensionsVersion, "obj.extensionsVersion")
+	val customisedModelVersion = numberToInt(obj.customisedModelVersion, "obj.customisedModelVersion")
 	return DecryptedContact(
 		id = id,
 		rev = rev,
@@ -414,7 +414,7 @@ public fun contact_fromJs(obj: DecryptedContactJs): DecryptedContact {
 		securityMetadata = securityMetadata,
 		notes = notes,
 		extensions = extensions,
-		extensionsVersion = extensionsVersion,
+		customisedModelVersion = customisedModelVersion,
 	)
 }
 
@@ -570,8 +570,8 @@ public fun contact_toJs(obj: EncryptedContact): EncryptedContactJs {
 	val extensions = nullToUndefined(
 		jsonToDynamic(obj.extensions)
 	)
-	val extensionsVersion = nullToUndefined(
-		intToNumber(obj.extensionsVersion)
+	val customisedModelVersion = nullToUndefined(
+		intToNumber(obj.customisedModelVersion)
 	)
 	return EncryptedContactJs(js("{" +
 		"id:id," +
@@ -603,7 +603,7 @@ public fun contact_toJs(obj: EncryptedContact): EncryptedContactJs {
 		"securityMetadata:securityMetadata," +
 		"notes:notes," +
 		"extensions:extensions," +
-		"extensionsVersion:extensionsVersion" +
+		"customisedModelVersion:customisedModelVersion" +
 	"}"))
 }
 
@@ -738,7 +738,7 @@ public fun contact_fromJs(obj: EncryptedContactJs): EncryptedContact {
 		},
 	)
 	val extensions = dynamicToJsonObjectNullsafe(obj.extensions, "obj.extensions")
-	val extensionsVersion = numberToInt(obj.extensionsVersion, "obj.extensionsVersion")
+	val customisedModelVersion = numberToInt(obj.customisedModelVersion, "obj.customisedModelVersion")
 	return EncryptedContact(
 		id = id,
 		rev = rev,
@@ -769,7 +769,7 @@ public fun contact_fromJs(obj: EncryptedContactJs): EncryptedContact {
 		securityMetadata = securityMetadata,
 		notes = notes,
 		extensions = extensions,
-		extensionsVersion = extensionsVersion,
+		customisedModelVersion = customisedModelVersion,
 	)
 }
 

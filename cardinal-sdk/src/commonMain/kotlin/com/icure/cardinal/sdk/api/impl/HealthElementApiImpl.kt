@@ -68,7 +68,7 @@ private fun decryptedApiFlavour(
 	config = config,
 	type = EntityWithEncryptionMetadataTypeName.HealthElement,
 	encryptors = config.encryptors.healthElement,
-	getRootModelVersion = EncryptedHealthElement::extensionsVersion,
+	getRootModelVersion = EncryptedHealthElement::customisedModelVersion,
 )
 
 @InternalIcureApi
@@ -78,7 +78,7 @@ private fun tryAndRecoverApiFlavour(
 	config = config,
 	type = EntityWithEncryptionMetadataTypeName.HealthElement,
 	encryptors = config.encryptors.healthElement,
-	getRootModelVersion = EncryptedHealthElement::extensionsVersion,
+	getRootModelVersion = EncryptedHealthElement::customisedModelVersion,
 )
 
 @OptIn(InternalIcureApi::class)

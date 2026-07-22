@@ -61,7 +61,7 @@ private fun decryptedApiFlavour(
 	config = config,
 	type = EntityWithEncryptionMetadataTypeName.AccessLog,
 	encryptors = config.encryptors.accessLog,
-	getRootModelVersion = EncryptedAccessLog::extensionsVersion,
+	getRootModelVersion = EncryptedAccessLog::customisedModelVersion,
 )
 
 @InternalIcureApi
@@ -71,7 +71,7 @@ private fun tryAndRecoverApiFlavour(
 	config = config,
 	type = EntityWithEncryptionMetadataTypeName.AccessLog,
 	encryptors = config.encryptors.accessLog,
-	getRootModelVersion = EncryptedAccessLog::extensionsVersion,
+	getRootModelVersion = EncryptedAccessLog::customisedModelVersion,
 )
 
 @InternalIcureApi

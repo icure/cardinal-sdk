@@ -3,7 +3,8 @@
 package com.icure.cardinal.sdk.model
 
 import com.icure.cardinal.sdk.model.base.CodeStub
-import com.icure.cardinal.sdk.model.base.ExtendableRoot
+import com.icure.cardinal.sdk.model.base.CustomisableRoot
+import com.icure.cardinal.sdk.model.base.Extendable
 import com.icure.cardinal.sdk.model.base.HasEndOfLife
 import com.icure.cardinal.sdk.model.base.ICureDocument
 import com.icure.cardinal.sdk.model.base.StoredDocument
@@ -120,8 +121,8 @@ data class Agenda(
 	@param:DefaultValue("emptyList()")
 	public val schedules: List<ResourceGroupAllocationSchedule> = emptyList(),
 	override val extensions: JsonObject? = null,
-	override val extensionsVersion: Int? = null,
-) : StoredDocument, ICureDocument<String>, HasEndOfLife, ExtendableRoot {
+	override val customisedModelVersion: Int? = null,
+) : StoredDocument, ICureDocument<String>, HasEndOfLife, CustomisableRoot, Extendable {
 	// region Agenda-Agenda
 
 	// endregion

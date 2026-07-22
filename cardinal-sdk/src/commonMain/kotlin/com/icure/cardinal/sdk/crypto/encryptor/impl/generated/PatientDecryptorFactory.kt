@@ -574,7 +574,7 @@ private class PatientDecryptor(
 				cryptoActorProperties = encryptedEntity.cryptoActorProperties,
 				parentId = encryptedEntity.parentId,
 				extensions = extensions,
-				extensionsVersion = encryptedEntity.extensionsVersion,
+				customisedModelVersion = encryptedEntity.customisedModelVersion,
 			)
 		if (entityCustomisedModelVersion == null &&
 			unversionedEntitiesDecryptedJsonStrictness == DecryptedJsonStrictness.Strict &&

@@ -4,7 +4,8 @@
 package com.icure.cardinal.sdk.js.model
 
 import com.icure.cardinal.sdk.js.model.base.CodeStubJs
-import com.icure.cardinal.sdk.js.model.base.ExtendableRootJs
+import com.icure.cardinal.sdk.js.model.base.CustomisableRootJs
+import com.icure.cardinal.sdk.js.model.base.ExtendableJs
 import com.icure.cardinal.sdk.js.model.base.HasEncryptionMetadataJs
 import com.icure.cardinal.sdk.js.model.base.ICureDocumentJs
 import com.icure.cardinal.sdk.js.model.base.StoredDocumentJs
@@ -22,7 +23,7 @@ import kotlin.js.JsQualifier
 
 @JsName("Message")
 public sealed external interface MessageJs : StoredDocumentJs, ICureDocumentJs<String>,
-		HasEncryptionMetadataJs, EncryptableJs, ExtendableRootJs {
+		HasEncryptionMetadataJs, EncryptableJs, CustomisableRootJs, ExtendableJs {
 	public val fromAddress: String?
 
 	public val fromHealthcarePartyId: String?
@@ -122,7 +123,7 @@ public external class DecryptedMessageJs(
 
 	override val extensions: dynamic
 
-	override val extensionsVersion: Double?
+	override val customisedModelVersion: Double?
 
 	override val isEncrypted: Boolean
 }
@@ -193,7 +194,7 @@ public external class EncryptedMessageJs(
 
 	override val extensions: dynamic
 
-	override val extensionsVersion: Double?
+	override val customisedModelVersion: Double?
 
 	override val isEncrypted: Boolean
 }

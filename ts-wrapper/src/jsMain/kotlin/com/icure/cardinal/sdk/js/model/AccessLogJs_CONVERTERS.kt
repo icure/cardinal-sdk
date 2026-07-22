@@ -144,8 +144,8 @@ public fun accessLog_toJs(obj: DecryptedAccessLog): DecryptedAccessLogJs {
 	val extensions = nullToUndefined(
 		jsonToDynamic(obj.extensions)
 	)
-	val extensionsVersion = nullToUndefined(
-		intToNumber(obj.extensionsVersion)
+	val customisedModelVersion = nullToUndefined(
+		intToNumber(obj.customisedModelVersion)
 	)
 	return DecryptedAccessLogJs(js("{" +
 		"id:id," +
@@ -169,7 +169,7 @@ public fun accessLog_toJs(obj: DecryptedAccessLog): DecryptedAccessLogJs {
 		"encryptedSelf:encryptedSelf," +
 		"securityMetadata:securityMetadata," +
 		"extensions:extensions," +
-		"extensionsVersion:extensionsVersion" +
+		"customisedModelVersion:customisedModelVersion" +
 	"}"))
 }
 
@@ -262,7 +262,7 @@ public fun accessLog_fromJs(obj: DecryptedAccessLogJs): DecryptedAccessLog {
 		securityMetadata_fromJs(nonNull1)
 	}
 	val extensions = dynamicToJsonObjectNullsafe(obj.extensions, "obj.extensions")
-	val extensionsVersion = numberToInt(obj.extensionsVersion, "obj.extensionsVersion")
+	val customisedModelVersion = numberToInt(obj.customisedModelVersion, "obj.customisedModelVersion")
 	return DecryptedAccessLog(
 		id = id,
 		rev = rev,
@@ -285,7 +285,7 @@ public fun accessLog_fromJs(obj: DecryptedAccessLogJs): DecryptedAccessLog {
 		encryptedSelf = encryptedSelf,
 		securityMetadata = securityMetadata,
 		extensions = extensions,
-		extensionsVersion = extensionsVersion,
+		customisedModelVersion = customisedModelVersion,
 	)
 }
 
@@ -398,8 +398,8 @@ public fun accessLog_toJs(obj: EncryptedAccessLog): EncryptedAccessLogJs {
 	val extensions = nullToUndefined(
 		jsonToDynamic(obj.extensions)
 	)
-	val extensionsVersion = nullToUndefined(
-		intToNumber(obj.extensionsVersion)
+	val customisedModelVersion = nullToUndefined(
+		intToNumber(obj.customisedModelVersion)
 	)
 	return EncryptedAccessLogJs(js("{" +
 		"id:id," +
@@ -423,7 +423,7 @@ public fun accessLog_toJs(obj: EncryptedAccessLog): EncryptedAccessLogJs {
 		"encryptedSelf:encryptedSelf," +
 		"securityMetadata:securityMetadata," +
 		"extensions:extensions," +
-		"extensionsVersion:extensionsVersion" +
+		"customisedModelVersion:customisedModelVersion" +
 	"}"))
 }
 
@@ -516,7 +516,7 @@ public fun accessLog_fromJs(obj: EncryptedAccessLogJs): EncryptedAccessLog {
 		securityMetadata_fromJs(nonNull1)
 	}
 	val extensions = dynamicToJsonObjectNullsafe(obj.extensions, "obj.extensions")
-	val extensionsVersion = numberToInt(obj.extensionsVersion, "obj.extensionsVersion")
+	val customisedModelVersion = numberToInt(obj.customisedModelVersion, "obj.customisedModelVersion")
 	return EncryptedAccessLog(
 		id = id,
 		rev = rev,
@@ -539,7 +539,7 @@ public fun accessLog_fromJs(obj: EncryptedAccessLogJs): EncryptedAccessLog {
 		encryptedSelf = encryptedSelf,
 		securityMetadata = securityMetadata,
 		extensions = extensions,
-		extensionsVersion = extensionsVersion,
+		customisedModelVersion = customisedModelVersion,
 	)
 }
 

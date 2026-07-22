@@ -73,7 +73,7 @@ private fun decryptedApiFlavour(
 	config = config,
 	type = EntityWithEncryptionMetadataTypeName.CalendarItem,
 	encryptors = config.encryptors.calendarItem,
-	getRootModelVersion = EncryptedCalendarItem::extensionsVersion,
+	getRootModelVersion = EncryptedCalendarItem::customisedModelVersion,
 )
 
 @InternalIcureApi
@@ -83,7 +83,7 @@ private fun tryAndRecoverApiFlavour(
 	config = config,
 	type = EntityWithEncryptionMetadataTypeName.CalendarItem,
 	encryptors = config.encryptors.calendarItem,
-	getRootModelVersion = EncryptedCalendarItem::extensionsVersion,
+	getRootModelVersion = EncryptedCalendarItem::customisedModelVersion,
 )
 
 @InternalIcureApi

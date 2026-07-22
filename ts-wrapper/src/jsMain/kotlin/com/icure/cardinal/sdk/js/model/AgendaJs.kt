@@ -4,7 +4,8 @@
 package com.icure.cardinal.sdk.js.model
 
 import com.icure.cardinal.sdk.js.model.base.CodeStubJs
-import com.icure.cardinal.sdk.js.model.base.ExtendableRootJs
+import com.icure.cardinal.sdk.js.model.base.CustomisableRootJs
+import com.icure.cardinal.sdk.js.model.base.ExtendableJs
 import com.icure.cardinal.sdk.js.model.base.HasEndOfLifeJs
 import com.icure.cardinal.sdk.js.model.base.ICureDocumentJs
 import com.icure.cardinal.sdk.js.model.base.StoredDocumentJs
@@ -21,7 +22,7 @@ import kotlin.js.JsQualifier
 @JsName("Agenda")
 public external class AgendaJs(
 	partial: dynamic,
-) : StoredDocumentJs, ICureDocumentJs<String>, HasEndOfLifeJs, ExtendableRootJs {
+) : StoredDocumentJs, ICureDocumentJs<String>, HasEndOfLifeJs, CustomisableRootJs, ExtendableJs {
 	override val id: String
 
 	override val rev: String?
@@ -64,5 +65,5 @@ public external class AgendaJs(
 
 	override val extensions: dynamic
 
-	override val extensionsVersion: Double?
+	override val customisedModelVersion: Double?
 }

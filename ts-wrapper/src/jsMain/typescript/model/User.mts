@@ -2,7 +2,8 @@
 import {expectArray, expectBoolean, expectMap, expectNumber, expectObject, expectString, expectStringEnum, extractEntry} from '../internal/JsonDecodeUtils.mjs';
 import {randomUuid} from '../utils/Id.mjs';
 import {DecryptedPropertyStub} from './PropertyStub.mjs';
-import {ExtendableRoot} from './base/ExtendableRoot.mjs';
+import {CustomisableRoot} from './base/CustomisableRoot.mjs';
+import {Extendable} from './base/Extendable.mjs';
 import {HasIdentifier} from './base/HasIdentifier.mjs';
 import {Identifier} from './base/Identifier.mjs';
 import {StoredDocument} from './base/StoredDocument.mjs';
@@ -20,7 +21,7 @@ import {Permission} from './security/Permission.mjs';
  *  party,
  *   a patient, or a device, and holds authentication credentials, roles, and permissions.
  */
-export class User implements StoredDocument, HasIdentifier, ExtendableRoot {
+export class User implements StoredDocument, HasIdentifier, CustomisableRoot, Extendable {
 
 	/**
 	 *
@@ -157,7 +158,7 @@ export class User implements StoredDocument, HasIdentifier, ExtendableRoot {
 
 	extensions: Record<string, any> | undefined = undefined;
 
-	extensionsVersion: number | undefined = undefined;
+	customisedModelVersion: number | undefined = undefined;
 
 	constructor(partial: Partial<User>) {
 		this.id = partial.id ?? randomUuid();
@@ -183,7 +184,7 @@ export class User implements StoredDocument, HasIdentifier, ExtendableRoot {
 		if ('authenticationTokens' in partial && partial.authenticationTokens !== undefined) this.authenticationTokens = partial.authenticationTokens;
 		if ('systemMetadata' in partial) this.systemMetadata = partial.systemMetadata;
 		if ('extensions' in partial) this.extensions = partial.extensions;
-		if ('extensionsVersion' in partial) this.extensionsVersion = partial.extensionsVersion;
+		if ('customisedModelVersion' in partial) this.customisedModelVersion = partial.customisedModelVersion;
 	}
 
 	toJSON(): object {
@@ -211,7 +212,7 @@ export class User implements StoredDocument, HasIdentifier, ExtendableRoot {
 		res['authenticationTokens'] = Object.fromEntries(Object.entries(this.authenticationTokens).map(([k0, v0]) => [k0, v0.toJSON()]))
 		if (this.systemMetadata != undefined) res['systemMetadata'] = this.systemMetadata.toJSON()
 		if (this.extensions != undefined) res['extensions'] = this.extensions
-		if (this.extensionsVersion != undefined) res['extensionsVersion'] = this.extensionsVersion
+		if (this.customisedModelVersion != undefined) res['customisedModelVersion'] = this.customisedModelVersion
 		return res
 	}
 
@@ -255,7 +256,7 @@ export class User implements StoredDocument, HasIdentifier, ExtendableRoot {
 			),
 			systemMetadata: expectObject(extractEntry(jCpy, 'systemMetadata', false, path), true, ignoreUnknownKeys, [...path, ".systemMetadata"], User.SystemMetadata.fromJSON),
 			extensions: extractEntry(jCpy, 'extensions', false, path),
-			extensionsVersion: expectNumber(extractEntry(jCpy, 'extensionsVersion', false, path), true, true, [...path, ".extensionsVersion"]),
+			customisedModelVersion: expectNumber(extractEntry(jCpy, 'customisedModelVersion', false, path), true, true, [...path, ".customisedModelVersion"]),
 		})
 		if (!ignoreUnknownKeys) {
 			const unused = Object.keys(jCpy)

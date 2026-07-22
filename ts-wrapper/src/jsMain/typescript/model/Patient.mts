@@ -4,7 +4,8 @@ import {randomUuid} from '../utils/Id.mjs';
 import {DecryptedPropertyStub, EncryptedPropertyStub, PropertyStub} from './PropertyStub.mjs';
 import {CodeStub} from './base/CodeStub.mjs';
 import {CryptoActor} from './base/CryptoActor.mjs';
-import {ExtendableRoot} from './base/ExtendableRoot.mjs';
+import {CustomisableRoot} from './base/CustomisableRoot.mjs';
+import {Extendable} from './base/Extendable.mjs';
 import {HasEncryptionMetadata} from './base/HasEncryptionMetadata.mjs';
 import {HasIdentifier} from './base/HasIdentifier.mjs';
 import {ICureDocument} from './base/ICureDocument.mjs';
@@ -40,7 +41,7 @@ import {SpkiHexString} from './specializations/SpkiHexString.mjs';
  *  end-to-end encryption of sensitive data.
  *  /
  */
-export interface Patient extends StoredDocument, ICureDocument<string>, Person, HasEncryptionMetadata, Encryptable, HasIdentifier, CryptoActor, ExtendableRoot {
+export interface Patient extends StoredDocument, ICureDocument<string>, Person, HasEncryptionMetadata, Encryptable, HasIdentifier, CryptoActor, CustomisableRoot, Extendable {
 
 	/**
 	 *
@@ -673,7 +674,7 @@ export class DecryptedPatient {
 
 	extensions: Record<string, any> | undefined = undefined;
 
-	extensionsVersion: number | undefined = undefined;
+	customisedModelVersion: number | undefined = undefined;
 
 	readonly isEncrypted: false = false;
 
@@ -748,7 +749,7 @@ export class DecryptedPatient {
 		if ('cryptoActorProperties' in partial && partial.cryptoActorProperties !== undefined) this.cryptoActorProperties = partial.cryptoActorProperties;
 		if ('parentId' in partial) this.parentId = partial.parentId;
 		if ('extensions' in partial) this.extensions = partial.extensions;
-		if ('extensionsVersion' in partial) this.extensionsVersion = partial.extensionsVersion;
+		if ('customisedModelVersion' in partial) this.customisedModelVersion = partial.customisedModelVersion;
 	}
 
 	toJSON(): object {
@@ -820,7 +821,7 @@ export class DecryptedPatient {
 		res['cryptoActorProperties'] = this.cryptoActorProperties.map((x0) => x0.toJSON() )
 		if (this.parentId != undefined) throw new Error('Unexpected nullish value for parentId')
 		if (this.extensions != undefined) res['extensions'] = this.extensions
-		if (this.extensionsVersion != undefined) res['extensionsVersion'] = this.extensionsVersion
+		if (this.customisedModelVersion != undefined) res['customisedModelVersion'] = this.customisedModelVersion
 		res['isEncrypted'] = false
 		res['$ktClass'] = 'com.icure.cardinal.sdk.model.DecryptedPatient'
 		return res
@@ -966,7 +967,7 @@ export class DecryptedPatient {
 			cryptoActorProperties: expectArray(extractEntry(jCpy, 'cryptoActorProperties', false, path), false, [...path, ".cryptoActorProperties"], (x0, p0) => expectObject(x0, false, ignoreUnknownKeys, p0, DecryptedPropertyStub.fromJSON)),
 			parentId: expectNullish(extractEntry(jCpy, 'parentId', false, path), [...path, ".parentId"]),
 			extensions: extractEntry(jCpy, 'extensions', false, path),
-			extensionsVersion: expectNumber(extractEntry(jCpy, 'extensionsVersion', false, path), true, true, [...path, ".extensionsVersion"]),
+			customisedModelVersion: expectNumber(extractEntry(jCpy, 'customisedModelVersion', false, path), true, true, [...path, ".customisedModelVersion"]),
 		})
 		if (!ignoreUnknownKeys) {
 			const unused = Object.keys(jCpy)
@@ -1385,7 +1386,7 @@ export class EncryptedPatient {
 
 	extensions: Record<string, any> | undefined = undefined;
 
-	extensionsVersion: number | undefined = undefined;
+	customisedModelVersion: number | undefined = undefined;
 
 	readonly isEncrypted: true = true;
 
@@ -1460,7 +1461,7 @@ export class EncryptedPatient {
 		if ('cryptoActorProperties' in partial && partial.cryptoActorProperties !== undefined) this.cryptoActorProperties = partial.cryptoActorProperties;
 		if ('parentId' in partial) this.parentId = partial.parentId;
 		if ('extensions' in partial) this.extensions = partial.extensions;
-		if ('extensionsVersion' in partial) this.extensionsVersion = partial.extensionsVersion;
+		if ('customisedModelVersion' in partial) this.customisedModelVersion = partial.customisedModelVersion;
 	}
 
 	toJSON(): object {
@@ -1532,7 +1533,7 @@ export class EncryptedPatient {
 		res['cryptoActorProperties'] = this.cryptoActorProperties.map((x0) => x0.toJSON() )
 		if (this.parentId != undefined) throw new Error('Unexpected nullish value for parentId')
 		if (this.extensions != undefined) res['extensions'] = this.extensions
-		if (this.extensionsVersion != undefined) res['extensionsVersion'] = this.extensionsVersion
+		if (this.customisedModelVersion != undefined) res['customisedModelVersion'] = this.customisedModelVersion
 		res['isEncrypted'] = true
 		res['$ktClass'] = 'com.icure.cardinal.sdk.model.EncryptedPatient'
 		return res
@@ -1678,7 +1679,7 @@ export class EncryptedPatient {
 			cryptoActorProperties: expectArray(extractEntry(jCpy, 'cryptoActorProperties', false, path), false, [...path, ".cryptoActorProperties"], (x0, p0) => expectObject(x0, false, ignoreUnknownKeys, p0, DecryptedPropertyStub.fromJSON)),
 			parentId: expectNullish(extractEntry(jCpy, 'parentId', false, path), [...path, ".parentId"]),
 			extensions: extractEntry(jCpy, 'extensions', false, path),
-			extensionsVersion: expectNumber(extractEntry(jCpy, 'extensionsVersion', false, path), true, true, [...path, ".extensionsVersion"]),
+			customisedModelVersion: expectNumber(extractEntry(jCpy, 'customisedModelVersion', false, path), true, true, [...path, ".customisedModelVersion"]),
 		})
 		if (!ignoreUnknownKeys) {
 			const unused = Object.keys(jCpy)

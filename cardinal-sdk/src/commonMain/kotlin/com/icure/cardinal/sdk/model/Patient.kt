@@ -4,7 +4,8 @@ package com.icure.cardinal.sdk.model
 
 import com.icure.cardinal.sdk.model.base.CodeStub
 import com.icure.cardinal.sdk.model.base.CryptoActor
-import com.icure.cardinal.sdk.model.base.ExtendableRoot
+import com.icure.cardinal.sdk.model.base.CustomisableRoot
+import com.icure.cardinal.sdk.model.base.Extendable
 import com.icure.cardinal.sdk.model.base.HasEncryptionMetadata
 import com.icure.cardinal.sdk.model.base.HasIdentifier
 import com.icure.cardinal.sdk.model.base.ICureDocument
@@ -81,7 +82,8 @@ sealed interface Patient :
 	Encryptable,
 	HasIdentifier,
 	CryptoActor,
-	ExtendableRoot {
+	CustomisableRoot,
+	Extendable {
 	/**
 	 * The Id of the patient. We encourage using either a v4 UUID or a HL7 Id.
 	 */
@@ -416,7 +418,7 @@ sealed interface Patient :
 
 	override val extensions: JsonObject?
 
-	override val extensionsVersion: Int?
+	override val customisedModelVersion: Int?
 	// region Patient-Patient
 	companion object {
 		const val KRAKEN_QUALIFIED_NAME = "org.taktik.icure.entities.Patient"
@@ -732,7 +734,7 @@ data class DecryptedPatient(
 	 */
 	override val parentId: Nothing? = null,
 	override val extensions: JsonObject? = null,
-	override val extensionsVersion: Int? = null,
+	override val customisedModelVersion: Int? = null,
 ) : Patient {
 	// region Patient-DecryptedPatient
 override fun copyWithSecurityMetadata(securityMetadata: SecurityMetadata, secretForeignKeys: Set<String>): DecryptedPatient =
@@ -1048,7 +1050,7 @@ data class EncryptedPatient(
 	 */
 	override val parentId: Nothing? = null,
 	override val extensions: JsonObject? = null,
-	override val extensionsVersion: Int? = null,
+	override val customisedModelVersion: Int? = null,
 ) : Patient {
 	// region Patient-EncryptedPatient
 override fun copyWithSecurityMetadata(securityMetadata: SecurityMetadata, secretForeignKeys: Set<String>): EncryptedPatient =

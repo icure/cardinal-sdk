@@ -192,8 +192,8 @@ public fun device_toJs(obj: Device): DeviceJs {
 	val extensions = nullToUndefined(
 		jsonToDynamic(obj.extensions)
 	)
-	val extensionsVersion = nullToUndefined(
-		intToNumber(obj.extensionsVersion)
+	val customisedModelVersion = nullToUndefined(
+		intToNumber(obj.customisedModelVersion)
 	)
 	return DeviceJs(js("{" +
 		"id:id," +
@@ -221,7 +221,7 @@ public fun device_toJs(obj: Device): DeviceJs {
 		"publicKeysForOaepWithSha256:publicKeysForOaepWithSha256," +
 		"cryptoActorProperties:cryptoActorProperties," +
 		"extensions:extensions," +
-		"extensionsVersion:extensionsVersion" +
+		"customisedModelVersion:customisedModelVersion" +
 	"}"))
 }
 
@@ -358,7 +358,7 @@ public fun device_fromJs(obj: DeviceJs): Device {
 		},
 	)
 	val extensions = dynamicToJsonObjectNullsafe(obj.extensions, "obj.extensions")
-	val extensionsVersion = numberToInt(obj.extensionsVersion, "obj.extensionsVersion")
+	val customisedModelVersion = numberToInt(obj.customisedModelVersion, "obj.customisedModelVersion")
 	return Device(
 		id = id,
 		rev = rev,
@@ -385,6 +385,6 @@ public fun device_fromJs(obj: DeviceJs): Device {
 		publicKeysForOaepWithSha256 = publicKeysForOaepWithSha256,
 		cryptoActorProperties = cryptoActorProperties,
 		extensions = extensions,
-		extensionsVersion = extensionsVersion,
+		customisedModelVersion = customisedModelVersion,
 	)
 }

@@ -4,8 +4,9 @@ import {randomUuid} from '../utils/Id.mjs';
 import {DecryptedPropertyStub} from './PropertyStub.mjs';
 import {CodeStub} from './base/CodeStub.mjs';
 import {CryptoActor} from './base/CryptoActor.mjs';
+import {CustomisableRoot} from './base/CustomisableRoot.mjs';
 import {DataOwner} from './base/DataOwner.mjs';
-import {ExtendableRoot} from './base/ExtendableRoot.mjs';
+import {Extendable} from './base/Extendable.mjs';
 import {ICureDocument} from './base/ICureDocument.mjs';
 import {Identifier} from './base/Identifier.mjs';
 import {Named} from './base/Named.mjs';
@@ -23,7 +24,7 @@ import {SpkiHexString} from './specializations/SpkiHexString.mjs';
  *  A device can act as a data owner and crypto actor for secure data exchange.
  *  /
  */
-export class Device implements StoredDocument, ICureDocument<string>, Named, CryptoActor, DataOwner, ExtendableRoot {
+export class Device implements StoredDocument, ICureDocument<string>, Named, CryptoActor, DataOwner, CustomisableRoot, Extendable {
 
 	/**
 	 *
@@ -175,7 +176,7 @@ export class Device implements StoredDocument, ICureDocument<string>, Named, Cry
 	 */
 	extensions: Record<string, any> | undefined = undefined;
 
-	extensionsVersion: number | undefined = undefined;
+	customisedModelVersion: number | undefined = undefined;
 
 	readonly $ktClass: 'com.icure.cardinal.sdk.model.Device' = 'com.icure.cardinal.sdk.model.Device';
 
@@ -205,7 +206,7 @@ export class Device implements StoredDocument, ICureDocument<string>, Named, Cry
 		if ('publicKeysForOaepWithSha256' in partial && partial.publicKeysForOaepWithSha256 !== undefined) this.publicKeysForOaepWithSha256 = partial.publicKeysForOaepWithSha256;
 		if ('cryptoActorProperties' in partial && partial.cryptoActorProperties !== undefined) this.cryptoActorProperties = partial.cryptoActorProperties;
 		if ('extensions' in partial) this.extensions = partial.extensions;
-		if ('extensionsVersion' in partial) this.extensionsVersion = partial.extensionsVersion;
+		if ('customisedModelVersion' in partial) this.customisedModelVersion = partial.customisedModelVersion;
 	}
 
 	toJSON(): object {
@@ -235,7 +236,7 @@ export class Device implements StoredDocument, ICureDocument<string>, Named, Cry
 		res['publicKeysForOaepWithSha256'] = this.publicKeysForOaepWithSha256.map((x0) => x0 )
 		res['cryptoActorProperties'] = this.cryptoActorProperties.map((x0) => x0.toJSON() )
 		if (this.extensions != undefined) res['extensions'] = this.extensions
-		if (this.extensionsVersion != undefined) res['extensionsVersion'] = this.extensionsVersion
+		if (this.customisedModelVersion != undefined) res['customisedModelVersion'] = this.customisedModelVersion
 		res['$ktClass'] = 'com.icure.cardinal.sdk.model.Device'
 		return res
 	}
@@ -313,7 +314,7 @@ export class Device implements StoredDocument, ICureDocument<string>, Named, Cry
 			publicKeysForOaepWithSha256: expectArray(extractEntry(jCpy, 'publicKeysForOaepWithSha256', false, path), false, [...path, ".publicKeysForOaepWithSha256"], (x0, p0) => expectString(x0, false, p0) as SpkiHexString),
 			cryptoActorProperties: expectArray(extractEntry(jCpy, 'cryptoActorProperties', false, path), false, [...path, ".cryptoActorProperties"], (x0, p0) => expectObject(x0, false, ignoreUnknownKeys, p0, DecryptedPropertyStub.fromJSON)),
 			extensions: extractEntry(jCpy, 'extensions', false, path),
-			extensionsVersion: expectNumber(extractEntry(jCpy, 'extensionsVersion', false, path), true, true, [...path, ".extensionsVersion"]),
+			customisedModelVersion: expectNumber(extractEntry(jCpy, 'customisedModelVersion', false, path), true, true, [...path, ".customisedModelVersion"]),
 		})
 		if (!ignoreUnknownKeys) {
 			const unused = Object.keys(jCpy)

@@ -323,7 +323,7 @@ private class HealthElementDecryptor(
 				encryptedSelf = encryptedEntity.encryptedSelf,
 				securityMetadata = encryptedEntity.securityMetadata,
 				extensions = extensions,
-				extensionsVersion = encryptedEntity.extensionsVersion,
+				customisedModelVersion = encryptedEntity.customisedModelVersion,
 			)
 		if (entityCustomisedModelVersion == null &&
 			unversionedEntitiesDecryptedJsonStrictness == DecryptedJsonStrictness.Strict &&

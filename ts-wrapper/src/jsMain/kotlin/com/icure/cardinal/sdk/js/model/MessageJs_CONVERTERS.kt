@@ -202,8 +202,8 @@ public fun message_toJs(obj: DecryptedMessage): DecryptedMessageJs {
 	val extensions = nullToUndefined(
 		jsonToDynamic(obj.extensions)
 	)
-	val extensionsVersion = nullToUndefined(
-		intToNumber(obj.extensionsVersion)
+	val customisedModelVersion = nullToUndefined(
+		intToNumber(obj.customisedModelVersion)
 	)
 	return DecryptedMessageJs(js("{" +
 		"id:id," +
@@ -237,7 +237,7 @@ public fun message_toJs(obj: DecryptedMessage): DecryptedMessageJs {
 		"encryptedSelf:encryptedSelf," +
 		"securityMetadata:securityMetadata," +
 		"extensions:extensions," +
-		"extensionsVersion:extensionsVersion" +
+		"customisedModelVersion:customisedModelVersion" +
 	"}"))
 }
 
@@ -382,7 +382,7 @@ public fun message_fromJs(obj: DecryptedMessageJs): DecryptedMessage {
 		securityMetadata_fromJs(nonNull1)
 	}
 	val extensions = dynamicToJsonObjectNullsafe(obj.extensions, "obj.extensions")
-	val extensionsVersion = numberToInt(obj.extensionsVersion, "obj.extensionsVersion")
+	val customisedModelVersion = numberToInt(obj.customisedModelVersion, "obj.customisedModelVersion")
 	return DecryptedMessage(
 		id = id,
 		rev = rev,
@@ -415,7 +415,7 @@ public fun message_fromJs(obj: DecryptedMessageJs): DecryptedMessage {
 		encryptedSelf = encryptedSelf,
 		securityMetadata = securityMetadata,
 		extensions = extensions,
-		extensionsVersion = extensionsVersion,
+		customisedModelVersion = customisedModelVersion,
 	)
 }
 
@@ -582,8 +582,8 @@ public fun message_toJs(obj: EncryptedMessage): EncryptedMessageJs {
 	val extensions = nullToUndefined(
 		jsonToDynamic(obj.extensions)
 	)
-	val extensionsVersion = nullToUndefined(
-		intToNumber(obj.extensionsVersion)
+	val customisedModelVersion = nullToUndefined(
+		intToNumber(obj.customisedModelVersion)
 	)
 	return EncryptedMessageJs(js("{" +
 		"id:id," +
@@ -617,7 +617,7 @@ public fun message_toJs(obj: EncryptedMessage): EncryptedMessageJs {
 		"encryptedSelf:encryptedSelf," +
 		"securityMetadata:securityMetadata," +
 		"extensions:extensions," +
-		"extensionsVersion:extensionsVersion" +
+		"customisedModelVersion:customisedModelVersion" +
 	"}"))
 }
 
@@ -762,7 +762,7 @@ public fun message_fromJs(obj: EncryptedMessageJs): EncryptedMessage {
 		securityMetadata_fromJs(nonNull1)
 	}
 	val extensions = dynamicToJsonObjectNullsafe(obj.extensions, "obj.extensions")
-	val extensionsVersion = numberToInt(obj.extensionsVersion, "obj.extensionsVersion")
+	val customisedModelVersion = numberToInt(obj.customisedModelVersion, "obj.customisedModelVersion")
 	return EncryptedMessage(
 		id = id,
 		rev = rev,
@@ -795,7 +795,7 @@ public fun message_fromJs(obj: EncryptedMessageJs): EncryptedMessage {
 		encryptedSelf = encryptedSelf,
 		securityMetadata = securityMetadata,
 		extensions = extensions,
-		extensionsVersion = extensionsVersion,
+		customisedModelVersion = customisedModelVersion,
 	)
 }
 

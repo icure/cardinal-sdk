@@ -86,7 +86,7 @@ internal object HealthElementEncryptorFactory :
 					encryptedSelf = null,
 					securityMetadata = clearEntity.securityMetadata,
 					extensions = clearEntity.extensions,
-					extensionsVersion = clearEntity.extensionsVersion,
+					customisedModelVersion = clearEntity.customisedModelVersion,
 				)
 		}
 
@@ -362,7 +362,7 @@ private class HealthElementEncryptor(
 			encryptedSelf = getUpdatedEncryptSelf(encryptionKey, clearEntity, JsonObject(dataToEncrypt)),
 			securityMetadata = clearEntity.securityMetadata,
 			extensions = extensionsEncryptor?.value?.encryptExtension(encryptionKey, clearEntity.extensions) ?: clearEntity.extensions,
-			extensionsVersion = clearEntity.extensionsVersion,
+			customisedModelVersion = clearEntity.customisedModelVersion,
 		)
 	}
 }

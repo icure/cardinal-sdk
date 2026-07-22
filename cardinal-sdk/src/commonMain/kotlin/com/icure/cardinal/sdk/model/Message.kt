@@ -3,7 +3,8 @@
 package com.icure.cardinal.sdk.model
 
 import com.icure.cardinal.sdk.model.base.CodeStub
-import com.icure.cardinal.sdk.model.base.ExtendableRoot
+import com.icure.cardinal.sdk.model.base.CustomisableRoot
+import com.icure.cardinal.sdk.model.base.Extendable
 import com.icure.cardinal.sdk.model.base.HasEncryptionMetadata
 import com.icure.cardinal.sdk.model.base.ICureDocument
 import com.icure.cardinal.sdk.model.base.StoredDocument
@@ -35,7 +36,8 @@ sealed interface Message :
 	ICureDocument<String>,
 	HasEncryptionMetadata,
 	Encryptable,
-	ExtendableRoot {
+	CustomisableRoot,
+	Extendable {
 	/**
 	 * The ID of the message. We encourage using either a v4 UUID or a HL7 Id.
 	 */
@@ -188,7 +190,7 @@ sealed interface Message :
 
 	override val extensions: JsonObject?
 
-	override val extensionsVersion: Int?
+	override val customisedModelVersion: Int?
 	// region Message-Message
 	companion object{
 		const val KRAKEN_QUALIFIED_NAME = "org.taktik.icure.entities.Message"
@@ -337,7 +339,7 @@ data class DecryptedMessage(
 	 */
 	override val securityMetadata: SecurityMetadata? = null,
 	override val extensions: JsonObject? = null,
-	override val extensionsVersion: Int? = null,
+	override val customisedModelVersion: Int? = null,
 ) : Message {
 	// region Message-DecryptedMessage
 override fun copyWithSecurityMetadata(securityMetadata: SecurityMetadata, secretForeignKeys: Set<String>): DecryptedMessage =
@@ -486,7 +488,7 @@ data class EncryptedMessage(
 	 */
 	override val securityMetadata: SecurityMetadata? = null,
 	override val extensions: JsonObject? = null,
-	override val extensionsVersion: Int? = null,
+	override val customisedModelVersion: Int? = null,
 ) : Message {
 	// region Message-EncryptedMessage
 override fun copyWithSecurityMetadata(securityMetadata: SecurityMetadata, secretForeignKeys: Set<String>): EncryptedMessage =

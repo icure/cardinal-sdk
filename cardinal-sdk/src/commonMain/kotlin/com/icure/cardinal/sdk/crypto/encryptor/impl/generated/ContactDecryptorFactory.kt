@@ -298,7 +298,7 @@ internal class ContactDecryptor(
 						entityCustomisedModelVersion,
 					),
 				extensions = extensions,
-				extensionsVersion = encryptedEntity.extensionsVersion,
+				customisedModelVersion = encryptedEntity.customisedModelVersion,
 			)
 		if (entityCustomisedModelVersion == null &&
 			unversionedEntitiesDecryptedJsonStrictness == DecryptedJsonStrictness.Strict &&

@@ -273,7 +273,7 @@ private class LegacyServiceEncryptor(
 			encryptedSelf = getUpdatedEncryptSelf(encryptionKey, clearEntity, JsonObject(dataToEncrypt)),
 			securityMetadata = clearEntity.securityMetadata,
 			extensions = extensionsEncryptor?.value?.encryptExtension(encryptionKey, clearEntity.extensions) ?: clearEntity.extensions,
-			contactExtensionsVersions = clearEntity.contactExtensionsVersions,
+			contactCustomisedModelVersion = clearEntity.contactCustomisedModelVersion,
 		)
 	}
 }

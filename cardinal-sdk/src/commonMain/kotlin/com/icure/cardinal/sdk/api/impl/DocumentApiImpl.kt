@@ -64,7 +64,7 @@ private fun decryptedApiFlavour(
 	config = config,
 	type = EntityWithEncryptionMetadataTypeName.Document,
 	encryptors = config.encryptors.document,
-	getRootModelVersion = EncryptedDocument::extensionsVersion,
+	getRootModelVersion = EncryptedDocument::customisedModelVersion,
 )
 
 @InternalIcureApi
@@ -74,7 +74,7 @@ private fun tryAndRecoverApiFlavour(
 	config = config,
 	type = EntityWithEncryptionMetadataTypeName.Document,
 	encryptors = config.encryptors.document,
-	getRootModelVersion = EncryptedDocument::extensionsVersion,
+	getRootModelVersion = EncryptedDocument::customisedModelVersion,
 )
 
 @InternalIcureApi

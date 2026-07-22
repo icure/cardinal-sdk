@@ -64,7 +64,7 @@ public sealed external interface ServiceJs : EncryptableJs, ICureDocumentJs<Stri
 
 	public val securityMetadata: SecurityMetadataJs?
 
-	public val contactExtensionsVersions: Double?
+	public val contactCustomisedModelVersion: Double?
 
 	public val isEncrypted: Boolean
 }
@@ -139,7 +139,7 @@ public external class DecryptedServiceJs(
 
 	override val extensions: dynamic
 
-	override val contactExtensionsVersions: Double?
+	override val contactCustomisedModelVersion: Double?
 
 	override val isEncrypted: Boolean
 }
@@ -214,7 +214,7 @@ public external class EncryptedServiceJs(
 
 	override val extensions: dynamic
 
-	override val contactExtensionsVersions: Double?
+	override val contactCustomisedModelVersion: Double?
 
 	override val isEncrypted: Boolean
 }

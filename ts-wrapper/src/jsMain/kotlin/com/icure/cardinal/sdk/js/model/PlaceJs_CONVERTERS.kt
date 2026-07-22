@@ -34,8 +34,8 @@ public fun place_toJs(obj: Place): PlaceJs {
 	val extensions = nullToUndefined(
 		jsonToDynamic(obj.extensions)
 	)
-	val extensionsVersion = nullToUndefined(
-		intToNumber(obj.extensionsVersion)
+	val customisedModelVersion = nullToUndefined(
+		intToNumber(obj.customisedModelVersion)
 	)
 	return PlaceJs(js("{" +
 		"id:id," +
@@ -44,7 +44,7 @@ public fun place_toJs(obj: Place): PlaceJs {
 		"name:name," +
 		"address:address," +
 		"extensions:extensions," +
-		"extensionsVersion:extensionsVersion" +
+		"customisedModelVersion:customisedModelVersion" +
 	"}"))
 }
 
@@ -57,7 +57,7 @@ public fun place_fromJs(obj: PlaceJs): Place {
 		address_fromJs(nonNull1)
 	}
 	val extensions = dynamicToJsonObjectNullsafe(obj.extensions, "obj.extensions")
-	val extensionsVersion = numberToInt(obj.extensionsVersion, "obj.extensionsVersion")
+	val customisedModelVersion = numberToInt(obj.customisedModelVersion, "obj.customisedModelVersion")
 	return Place(
 		id = id,
 		rev = rev,
@@ -65,6 +65,6 @@ public fun place_fromJs(obj: PlaceJs): Place {
 		name = name,
 		address = address,
 		extensions = extensions,
-		extensionsVersion = extensionsVersion,
+		customisedModelVersion = customisedModelVersion,
 	)
 }

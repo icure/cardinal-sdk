@@ -3,7 +3,8 @@
 
 package com.icure.cardinal.sdk.js.model
 
-import com.icure.cardinal.sdk.js.model.base.ExtendableRootJs
+import com.icure.cardinal.sdk.js.model.base.CustomisableRootJs
+import com.icure.cardinal.sdk.js.model.base.ExtendableJs
 import com.icure.cardinal.sdk.js.model.base.NamedJs
 import com.icure.cardinal.sdk.js.model.base.StoredDocumentJs
 import com.icure.cardinal.sdk.js.model.embed.DecryptedAddressJs
@@ -15,7 +16,7 @@ import kotlin.js.JsQualifier
 @JsName("Place")
 public external class PlaceJs(
 	partial: dynamic,
-) : StoredDocumentJs, NamedJs, ExtendableRootJs {
+) : StoredDocumentJs, NamedJs, CustomisableRootJs, ExtendableJs {
 	override val id: String
 
 	override val rev: String?
@@ -28,5 +29,5 @@ public external class PlaceJs(
 
 	override val extensions: dynamic
 
-	override val extensionsVersion: Double?
+	override val customisedModelVersion: Double?
 }

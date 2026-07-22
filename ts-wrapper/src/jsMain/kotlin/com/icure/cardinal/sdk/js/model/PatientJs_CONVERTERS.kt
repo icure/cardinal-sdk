@@ -464,8 +464,8 @@ public fun patient_toJs(obj: DecryptedPatient): DecryptedPatientJs {
 	val extensions = nullToUndefined(
 		jsonToDynamic(obj.extensions)
 	)
-	val extensionsVersion = nullToUndefined(
-		intToNumber(obj.extensionsVersion)
+	val customisedModelVersion = nullToUndefined(
+		intToNumber(obj.customisedModelVersion)
 	)
 	return DecryptedPatientJs(js("{" +
 		"id:id," +
@@ -535,7 +535,7 @@ public fun patient_toJs(obj: DecryptedPatient): DecryptedPatientJs {
 		"cryptoActorProperties:cryptoActorProperties," +
 		"parentId:parentId," +
 		"extensions:extensions," +
-		"extensionsVersion:extensionsVersion" +
+		"customisedModelVersion:customisedModelVersion" +
 	"}"))
 }
 
@@ -857,7 +857,7 @@ public fun patient_fromJs(obj: DecryptedPatientJs): DecryptedPatient {
 	)
 	val parentId = obj.parentId
 	val extensions = dynamicToJsonObjectNullsafe(obj.extensions, "obj.extensions")
-	val extensionsVersion = numberToInt(obj.extensionsVersion, "obj.extensionsVersion")
+	val customisedModelVersion = numberToInt(obj.customisedModelVersion, "obj.customisedModelVersion")
 	return DecryptedPatient(
 		id = id,
 		identifier = identifier,
@@ -926,7 +926,7 @@ public fun patient_fromJs(obj: DecryptedPatientJs): DecryptedPatient {
 		cryptoActorProperties = cryptoActorProperties,
 		parentId = parentId,
 		extensions = extensions,
-		extensionsVersion = extensionsVersion,
+		customisedModelVersion = customisedModelVersion,
 	)
 }
 
@@ -1290,8 +1290,8 @@ public fun patient_toJs(obj: EncryptedPatient): EncryptedPatientJs {
 	val extensions = nullToUndefined(
 		jsonToDynamic(obj.extensions)
 	)
-	val extensionsVersion = nullToUndefined(
-		intToNumber(obj.extensionsVersion)
+	val customisedModelVersion = nullToUndefined(
+		intToNumber(obj.customisedModelVersion)
 	)
 	return EncryptedPatientJs(js("{" +
 		"id:id," +
@@ -1361,7 +1361,7 @@ public fun patient_toJs(obj: EncryptedPatient): EncryptedPatientJs {
 		"cryptoActorProperties:cryptoActorProperties," +
 		"parentId:parentId," +
 		"extensions:extensions," +
-		"extensionsVersion:extensionsVersion" +
+		"customisedModelVersion:customisedModelVersion" +
 	"}"))
 }
 
@@ -1683,7 +1683,7 @@ public fun patient_fromJs(obj: EncryptedPatientJs): EncryptedPatient {
 	)
 	val parentId = obj.parentId
 	val extensions = dynamicToJsonObjectNullsafe(obj.extensions, "obj.extensions")
-	val extensionsVersion = numberToInt(obj.extensionsVersion, "obj.extensionsVersion")
+	val customisedModelVersion = numberToInt(obj.customisedModelVersion, "obj.customisedModelVersion")
 	return EncryptedPatient(
 		id = id,
 		identifier = identifier,
@@ -1752,7 +1752,7 @@ public fun patient_fromJs(obj: EncryptedPatientJs): EncryptedPatient {
 		cryptoActorProperties = cryptoActorProperties,
 		parentId = parentId,
 		extensions = extensions,
-		extensionsVersion = extensionsVersion,
+		customisedModelVersion = customisedModelVersion,
 	)
 }
 

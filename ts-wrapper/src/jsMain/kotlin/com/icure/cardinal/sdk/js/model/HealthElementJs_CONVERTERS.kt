@@ -224,8 +224,8 @@ public fun healthElement_toJs(obj: DecryptedHealthElement): DecryptedHealthEleme
 	val extensions = nullToUndefined(
 		jsonToDynamic(obj.extensions)
 	)
-	val extensionsVersion = nullToUndefined(
-		intToNumber(obj.extensionsVersion)
+	val customisedModelVersion = nullToUndefined(
+		intToNumber(obj.customisedModelVersion)
 	)
 	return DecryptedHealthElementJs(js("{" +
 		"id:id," +
@@ -261,7 +261,7 @@ public fun healthElement_toJs(obj: DecryptedHealthElement): DecryptedHealthEleme
 		"encryptedSelf:encryptedSelf," +
 		"securityMetadata:securityMetadata," +
 		"extensions:extensions," +
-		"extensionsVersion:extensionsVersion" +
+		"customisedModelVersion:customisedModelVersion" +
 	"}"))
 }
 
@@ -398,7 +398,7 @@ public fun healthElement_fromJs(obj: DecryptedHealthElementJs): DecryptedHealthE
 		securityMetadata_fromJs(nonNull1)
 	}
 	val extensions = dynamicToJsonObjectNullsafe(obj.extensions, "obj.extensions")
-	val extensionsVersion = numberToInt(obj.extensionsVersion, "obj.extensionsVersion")
+	val customisedModelVersion = numberToInt(obj.customisedModelVersion, "obj.customisedModelVersion")
 	return DecryptedHealthElement(
 		id = id,
 		identifiers = identifiers,
@@ -433,7 +433,7 @@ public fun healthElement_fromJs(obj: DecryptedHealthElementJs): DecryptedHealthE
 		encryptedSelf = encryptedSelf,
 		securityMetadata = securityMetadata,
 		extensions = extensions,
-		extensionsVersion = extensionsVersion,
+		customisedModelVersion = customisedModelVersion,
 	)
 }
 
@@ -597,8 +597,8 @@ public fun healthElement_toJs(obj: EncryptedHealthElement): EncryptedHealthEleme
 	val extensions = nullToUndefined(
 		jsonToDynamic(obj.extensions)
 	)
-	val extensionsVersion = nullToUndefined(
-		intToNumber(obj.extensionsVersion)
+	val customisedModelVersion = nullToUndefined(
+		intToNumber(obj.customisedModelVersion)
 	)
 	return EncryptedHealthElementJs(js("{" +
 		"id:id," +
@@ -634,7 +634,7 @@ public fun healthElement_toJs(obj: EncryptedHealthElement): EncryptedHealthEleme
 		"encryptedSelf:encryptedSelf," +
 		"securityMetadata:securityMetadata," +
 		"extensions:extensions," +
-		"extensionsVersion:extensionsVersion" +
+		"customisedModelVersion:customisedModelVersion" +
 	"}"))
 }
 
@@ -771,7 +771,7 @@ public fun healthElement_fromJs(obj: EncryptedHealthElementJs): EncryptedHealthE
 		securityMetadata_fromJs(nonNull1)
 	}
 	val extensions = dynamicToJsonObjectNullsafe(obj.extensions, "obj.extensions")
-	val extensionsVersion = numberToInt(obj.extensionsVersion, "obj.extensionsVersion")
+	val customisedModelVersion = numberToInt(obj.customisedModelVersion, "obj.customisedModelVersion")
 	return EncryptedHealthElement(
 		id = id,
 		identifiers = identifiers,
@@ -806,7 +806,7 @@ public fun healthElement_fromJs(obj: EncryptedHealthElementJs): EncryptedHealthE
 		encryptedSelf = encryptedSelf,
 		securityMetadata = securityMetadata,
 		extensions = extensions,
-		extensionsVersion = extensionsVersion,
+		customisedModelVersion = customisedModelVersion,
 	)
 }
 

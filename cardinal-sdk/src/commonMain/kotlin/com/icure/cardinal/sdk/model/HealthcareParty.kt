@@ -4,8 +4,9 @@ package com.icure.cardinal.sdk.model
 
 import com.icure.cardinal.sdk.model.base.CodeStub
 import com.icure.cardinal.sdk.model.base.CryptoActor
+import com.icure.cardinal.sdk.model.base.CustomisableRoot
 import com.icure.cardinal.sdk.model.base.DataOwner
-import com.icure.cardinal.sdk.model.base.ExtendableRoot
+import com.icure.cardinal.sdk.model.base.Extendable
 import com.icure.cardinal.sdk.model.base.HasCodes
 import com.icure.cardinal.sdk.model.base.HasIdentifier
 import com.icure.cardinal.sdk.model.base.HasTags
@@ -228,7 +229,7 @@ data class HealthcareParty(
 	@param:DefaultValue("emptySet()")
 	override val publicKeysForOaepWithSha256: Set<SpkiHexString> = emptySet(),
 	override val extensions: JsonObject? = null,
-	override val extensionsVersion: Int? = null,
+	override val customisedModelVersion: Int? = null,
 ) : StoredDocument,
 	Named,
 	Person,
@@ -237,7 +238,8 @@ data class HealthcareParty(
 	HasCodes,
 	HasTags,
 	HasIdentifier,
-	ExtendableRoot {
+	CustomisableRoot,
+	Extendable {
 	// region HealthcareParty-HealthcareParty
 	companion object {
 		const val KRAKEN_QUALIFIED_NAME = "org.taktik.icure.entities.HealthcareParty"

@@ -183,7 +183,7 @@ sealed interface Service :
 
 	override val extensions: JsonObject?
 
-	public val contactExtensionsVersions: Int?
+	public val contactCustomisedModelVersion: Int?
 	// region Service-Service
 	companion object {
 		const val KRAKEN_QUALIFIED_NAME = "org.taktik.icure.entities.embed.Service"
@@ -329,7 +329,7 @@ data class DecryptedService(
 	override val encryptedSelf: Base64String? = null,
 	override val securityMetadata: SecurityMetadata? = null,
 	override val extensions: JsonObject? = null,
-	override val contactExtensionsVersions: Int? = null,
+	override val contactCustomisedModelVersion: Int? = null,
 ) : Service {
 	// region Service-DecryptedService
 
@@ -474,7 +474,7 @@ data class EncryptedService(
 	override val encryptedSelf: Base64String? = null,
 	override val securityMetadata: SecurityMetadata? = null,
 	override val extensions: JsonObject? = null,
-	override val contactExtensionsVersions: Int? = null,
+	override val contactCustomisedModelVersion: Int? = null,
 ) : Service {
 	// region Service-EncryptedService
 

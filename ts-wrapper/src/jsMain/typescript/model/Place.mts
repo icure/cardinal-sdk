@@ -1,7 +1,8 @@
 // auto-generated file
 import {expectNumber, expectObject, expectString, extractEntry} from '../internal/JsonDecodeUtils.mjs';
 import {randomUuid} from '../utils/Id.mjs';
-import {ExtendableRoot} from './base/ExtendableRoot.mjs';
+import {CustomisableRoot} from './base/CustomisableRoot.mjs';
+import {Extendable} from './base/Extendable.mjs';
 import {Named} from './base/Named.mjs';
 import {StoredDocument} from './base/StoredDocument.mjs';
 import {DecryptedAddress} from './embed/Address.mjs';
@@ -12,7 +13,7 @@ import {DecryptedAddress} from './embed/Address.mjs';
  *  DTO representing a physical place or location, such as a clinic or office.
  *  /
  */
-export class Place implements StoredDocument, Named, ExtendableRoot {
+export class Place implements StoredDocument, Named, CustomisableRoot, Extendable {
 
 	/**
 	 *
@@ -50,7 +51,7 @@ export class Place implements StoredDocument, Named, ExtendableRoot {
 	 */
 	extensions: Record<string, any> | undefined = undefined;
 
-	extensionsVersion: number | undefined = undefined;
+	customisedModelVersion: number | undefined = undefined;
 
 	constructor(partial: Partial<Place>) {
 		this.id = partial.id ?? randomUuid();
@@ -59,7 +60,7 @@ export class Place implements StoredDocument, Named, ExtendableRoot {
 		if ('name' in partial) this.name = partial.name;
 		if ('address' in partial) this.address = partial.address;
 		if ('extensions' in partial) this.extensions = partial.extensions;
-		if ('extensionsVersion' in partial) this.extensionsVersion = partial.extensionsVersion;
+		if ('customisedModelVersion' in partial) this.customisedModelVersion = partial.customisedModelVersion;
 	}
 
 	toJSON(): object {
@@ -70,7 +71,7 @@ export class Place implements StoredDocument, Named, ExtendableRoot {
 		if (this.name != undefined) res['name'] = this.name
 		if (this.address != undefined) res['address'] = this.address.toJSON()
 		if (this.extensions != undefined) res['extensions'] = this.extensions
-		if (this.extensionsVersion != undefined) res['extensionsVersion'] = this.extensionsVersion
+		if (this.customisedModelVersion != undefined) res['customisedModelVersion'] = this.customisedModelVersion
 		return res
 	}
 
@@ -85,7 +86,7 @@ export class Place implements StoredDocument, Named, ExtendableRoot {
 			name: expectString(extractEntry(jCpy, 'name', false, path), true, [...path, ".name"]),
 			address: expectObject(extractEntry(jCpy, 'address', false, path), true, ignoreUnknownKeys, [...path, ".address"], DecryptedAddress.fromJSON),
 			extensions: extractEntry(jCpy, 'extensions', false, path),
-			extensionsVersion: expectNumber(extractEntry(jCpy, 'extensionsVersion', false, path), true, true, [...path, ".extensionsVersion"]),
+			customisedModelVersion: expectNumber(extractEntry(jCpy, 'customisedModelVersion', false, path), true, true, [...path, ".customisedModelVersion"]),
 		})
 		if (!ignoreUnknownKeys) {
 			const unused = Object.keys(jCpy)

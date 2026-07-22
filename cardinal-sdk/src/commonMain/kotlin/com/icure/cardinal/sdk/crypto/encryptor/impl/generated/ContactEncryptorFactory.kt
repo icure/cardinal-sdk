@@ -81,7 +81,7 @@ internal object ContactEncryptorFactory : EntityEncryptorFactory<EncryptedContac
 							AnnotationEncryptorFactory.empty.encrypt(encryptionKey, x0)
 						},
 					extensions = clearEntity.extensions,
-					extensionsVersion = clearEntity.extensionsVersion,
+					customisedModelVersion = clearEntity.customisedModelVersion,
 				)
 		}
 
@@ -336,7 +336,7 @@ private class ContactEncryptor(
 					}
 				},
 			extensions = extensionsEncryptor?.value?.encryptExtension(encryptionKey, clearEntity.extensions) ?: clearEntity.extensions,
-			extensionsVersion = clearEntity.extensionsVersion,
+			customisedModelVersion = clearEntity.customisedModelVersion,
 		)
 	}
 }

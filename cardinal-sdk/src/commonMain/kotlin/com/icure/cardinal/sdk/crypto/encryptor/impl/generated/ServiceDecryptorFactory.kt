@@ -281,7 +281,7 @@ private class ServiceDecryptor(
 				encryptedSelf = encryptedEntity.encryptedSelf,
 				securityMetadata = encryptedEntity.securityMetadata,
 				extensions = extensions,
-				contactExtensionsVersions = encryptedEntity.contactExtensionsVersions,
+				contactCustomisedModelVersion = encryptedEntity.contactCustomisedModelVersion,
 			)
 		if (entityCustomisedModelVersion == null &&
 			unversionedEntitiesDecryptedJsonStrictness == DecryptedJsonStrictness.Strict &&

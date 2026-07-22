@@ -3,7 +3,8 @@
 
 package com.icure.cardinal.sdk.js.model
 
-import com.icure.cardinal.sdk.js.model.base.ExtendableRootJs
+import com.icure.cardinal.sdk.js.model.base.CustomisableRootJs
+import com.icure.cardinal.sdk.js.model.base.ExtendableJs
 import com.icure.cardinal.sdk.js.model.base.StoredDocumentJs
 import com.icure.cardinal.sdk.js.utils.Record
 import kotlin.Array
@@ -16,7 +17,7 @@ import kotlin.js.JsQualifier
 @JsName("CalendarItemType")
 public external class CalendarItemTypeJs(
 	partial: dynamic,
-) : StoredDocumentJs, ExtendableRootJs {
+) : StoredDocumentJs, CustomisableRootJs, ExtendableJs {
 	override val id: String
 
 	override val rev: String?
@@ -51,5 +52,5 @@ public external class CalendarItemTypeJs(
 
 	override val extensions: dynamic
 
-	override val extensionsVersion: Double?
+	override val customisedModelVersion: Double?
 }

@@ -4,7 +4,8 @@
 package com.icure.cardinal.sdk.js.model
 
 import com.icure.cardinal.sdk.js.model.base.CodeStubJs
-import com.icure.cardinal.sdk.js.model.base.ExtendableRootJs
+import com.icure.cardinal.sdk.js.model.base.CustomisableRootJs
+import com.icure.cardinal.sdk.js.model.base.ExtendableJs
 import com.icure.cardinal.sdk.js.model.base.HasEncryptionMetadataJs
 import com.icure.cardinal.sdk.js.model.base.HasEndOfLifeJs
 import com.icure.cardinal.sdk.js.model.base.HasIdentifierJs
@@ -37,7 +38,8 @@ import kotlin.js.JsQualifier
 
 @JsName("Contact")
 public sealed external interface ContactJs : StoredDocumentJs, ICureDocumentJs<String>,
-		HasEncryptionMetadataJs, EncryptableJs, HasEndOfLifeJs, HasIdentifierJs, ExtendableRootJs {
+		HasEncryptionMetadataJs, EncryptableJs, HasEndOfLifeJs, HasIdentifierJs, CustomisableRootJs,
+		ExtendableJs {
 	public val groupId: String?
 
 	public val openingDate: Double?
@@ -125,7 +127,7 @@ public external class DecryptedContactJs(
 
 	override val extensions: dynamic
 
-	override val extensionsVersion: Double?
+	override val customisedModelVersion: Double?
 
 	override val isEncrypted: Boolean
 }
@@ -192,7 +194,7 @@ public external class EncryptedContactJs(
 
 	override val extensions: dynamic
 
-	override val extensionsVersion: Double?
+	override val customisedModelVersion: Double?
 
 	override val isEncrypted: Boolean
 }

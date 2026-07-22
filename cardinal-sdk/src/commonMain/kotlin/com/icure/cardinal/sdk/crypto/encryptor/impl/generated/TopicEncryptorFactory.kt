@@ -53,7 +53,7 @@ internal object TopicEncryptorFactory : EntityEncryptorFactory<EncryptedTopic, D
 					linkedHealthElements = clearEntity.linkedHealthElements,
 					linkedServices = clearEntity.linkedServices,
 					extensions = clearEntity.extensions,
-					extensionsVersion = clearEntity.extensionsVersion,
+					customisedModelVersion = clearEntity.customisedModelVersion,
 				)
 		}
 
@@ -172,7 +172,7 @@ private class TopicEncryptor(
 			linkedHealthElements = if (linkedHealthElements_e) emptySet() else clearEntity.linkedHealthElements,
 			linkedServices = if (linkedServices_e) emptySet() else clearEntity.linkedServices,
 			extensions = extensionsEncryptor?.value?.encryptExtension(encryptionKey, clearEntity.extensions) ?: clearEntity.extensions,
-			extensionsVersion = clearEntity.extensionsVersion,
+			customisedModelVersion = clearEntity.customisedModelVersion,
 		)
 	}
 }

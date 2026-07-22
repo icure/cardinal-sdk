@@ -112,8 +112,8 @@ public fun agenda_toJs(obj: Agenda): AgendaJs {
 	val extensions = nullToUndefined(
 		jsonToDynamic(obj.extensions)
 	)
-	val extensionsVersion = nullToUndefined(
-		intToNumber(obj.extensionsVersion)
+	val customisedModelVersion = nullToUndefined(
+		intToNumber(obj.customisedModelVersion)
 	)
 	return AgendaJs(js("{" +
 		"id:id," +
@@ -137,7 +137,7 @@ public fun agenda_toJs(obj: Agenda): AgendaJs {
 		"properties:properties," +
 		"schedules:schedules," +
 		"extensions:extensions," +
-		"extensionsVersion:extensionsVersion" +
+		"customisedModelVersion:customisedModelVersion" +
 	"}"))
 }
 
@@ -198,7 +198,7 @@ public fun agenda_fromJs(obj: AgendaJs): Agenda {
 		},
 	)
 	val extensions = dynamicToJsonObjectNullsafe(obj.extensions, "obj.extensions")
-	val extensionsVersion = numberToInt(obj.extensionsVersion, "obj.extensionsVersion")
+	val customisedModelVersion = numberToInt(obj.customisedModelVersion, "obj.customisedModelVersion")
 	return Agenda(
 		id = id,
 		rev = rev,
@@ -221,6 +221,6 @@ public fun agenda_fromJs(obj: AgendaJs): Agenda {
 		properties = properties,
 		schedules = schedules,
 		extensions = extensions,
-		extensionsVersion = extensionsVersion,
+		customisedModelVersion = customisedModelVersion,
 	)
 }

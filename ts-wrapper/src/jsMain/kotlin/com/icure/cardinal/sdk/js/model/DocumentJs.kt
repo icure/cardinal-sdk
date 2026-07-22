@@ -4,7 +4,8 @@
 package com.icure.cardinal.sdk.js.model
 
 import com.icure.cardinal.sdk.js.model.base.CodeStubJs
-import com.icure.cardinal.sdk.js.model.base.ExtendableRootJs
+import com.icure.cardinal.sdk.js.model.base.CustomisableRootJs
+import com.icure.cardinal.sdk.js.model.base.ExtendableJs
 import com.icure.cardinal.sdk.js.model.base.HasEncryptionMetadataJs
 import com.icure.cardinal.sdk.js.model.base.ICureDocumentJs
 import com.icure.cardinal.sdk.js.model.base.StoredDocumentJs
@@ -23,7 +24,7 @@ import kotlin.js.JsQualifier
 
 @JsName("Document")
 public sealed external interface DocumentJs : StoredDocumentJs, ICureDocumentJs<String>,
-		HasEncryptionMetadataJs, EncryptableJs, ExtendableRootJs {
+		HasEncryptionMetadataJs, EncryptableJs, CustomisableRootJs, ExtendableJs {
 	public val documentType: String?
 
 	public val documentStatus: String?
@@ -127,7 +128,7 @@ public external class DecryptedDocumentJs(
 
 	override val extensions: dynamic
 
-	override val extensionsVersion: Double?
+	override val customisedModelVersion: Double?
 
 	override val isEncrypted: Boolean
 }
@@ -200,7 +201,7 @@ public external class EncryptedDocumentJs(
 
 	override val extensions: dynamic
 
-	override val extensionsVersion: Double?
+	override val customisedModelVersion: Double?
 
 	override val isEncrypted: Boolean
 }

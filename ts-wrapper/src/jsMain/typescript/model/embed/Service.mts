@@ -147,7 +147,7 @@ export interface Service extends Encryptable, ICureDocument<string>, HasEndOfLif
 
 	securityMetadata: SecurityMetadata | undefined;
 
-	contactExtensionsVersions: number | undefined;
+	contactCustomisedModelVersion: number | undefined;
 
 	readonly isEncrypted: boolean;
 
@@ -340,7 +340,7 @@ export class DecryptedService {
 
 	extensions: Record<string, any> | undefined = undefined;
 
-	contactExtensionsVersions: number | undefined = undefined;
+	contactCustomisedModelVersion: number | undefined = undefined;
 
 	readonly isEncrypted: false = false;
 
@@ -379,7 +379,7 @@ export class DecryptedService {
 		if ('encryptedSelf' in partial) this.encryptedSelf = partial.encryptedSelf;
 		if ('securityMetadata' in partial) this.securityMetadata = partial.securityMetadata;
 		if ('extensions' in partial) this.extensions = partial.extensions;
-		if ('contactExtensionsVersions' in partial) this.contactExtensionsVersions = partial.contactExtensionsVersions;
+		if ('contactCustomisedModelVersion' in partial) this.contactCustomisedModelVersion = partial.contactCustomisedModelVersion;
 	}
 
 	toJSON(): object {
@@ -417,7 +417,7 @@ export class DecryptedService {
 		if (this.encryptedSelf != undefined) res['encryptedSelf'] = this.encryptedSelf
 		if (this.securityMetadata != undefined) res['securityMetadata'] = this.securityMetadata.toJSON()
 		if (this.extensions != undefined) res['extensions'] = this.extensions
-		if (this.contactExtensionsVersions != undefined) res['contactExtensionsVersions'] = this.contactExtensionsVersions
+		if (this.contactCustomisedModelVersion != undefined) res['contactCustomisedModelVersion'] = this.contactCustomisedModelVersion
 		res['isEncrypted'] = false
 		return res
 	}
@@ -503,7 +503,7 @@ export class DecryptedService {
 			encryptedSelf: expectString(extractEntry(jCpy, 'encryptedSelf', false, path), true, [...path, ".encryptedSelf"]) as Base64String,
 			securityMetadata: expectObject(extractEntry(jCpy, 'securityMetadata', false, path), true, ignoreUnknownKeys, [...path, ".securityMetadata"], SecurityMetadata.fromJSON),
 			extensions: extractEntry(jCpy, 'extensions', false, path),
-			contactExtensionsVersions: expectNumber(extractEntry(jCpy, 'contactExtensionsVersions', false, path), true, true, [...path, ".contactExtensionsVersions"]),
+			contactCustomisedModelVersion: expectNumber(extractEntry(jCpy, 'contactCustomisedModelVersion', false, path), true, true, [...path, ".contactCustomisedModelVersion"]),
 		})
 		if (!ignoreUnknownKeys) {
 			const unused = Object.keys(jCpy)
@@ -698,7 +698,7 @@ export class EncryptedService {
 
 	extensions: Record<string, any> | undefined = undefined;
 
-	contactExtensionsVersions: number | undefined = undefined;
+	contactCustomisedModelVersion: number | undefined = undefined;
 
 	readonly isEncrypted: true = true;
 
@@ -737,7 +737,7 @@ export class EncryptedService {
 		if ('encryptedSelf' in partial) this.encryptedSelf = partial.encryptedSelf;
 		if ('securityMetadata' in partial) this.securityMetadata = partial.securityMetadata;
 		if ('extensions' in partial) this.extensions = partial.extensions;
-		if ('contactExtensionsVersions' in partial) this.contactExtensionsVersions = partial.contactExtensionsVersions;
+		if ('contactCustomisedModelVersion' in partial) this.contactCustomisedModelVersion = partial.contactCustomisedModelVersion;
 	}
 
 	toJSON(): object {
@@ -775,7 +775,7 @@ export class EncryptedService {
 		if (this.encryptedSelf != undefined) res['encryptedSelf'] = this.encryptedSelf
 		if (this.securityMetadata != undefined) res['securityMetadata'] = this.securityMetadata.toJSON()
 		if (this.extensions != undefined) res['extensions'] = this.extensions
-		if (this.contactExtensionsVersions != undefined) res['contactExtensionsVersions'] = this.contactExtensionsVersions
+		if (this.contactCustomisedModelVersion != undefined) res['contactCustomisedModelVersion'] = this.contactCustomisedModelVersion
 		res['isEncrypted'] = true
 		return res
 	}
@@ -861,7 +861,7 @@ export class EncryptedService {
 			encryptedSelf: expectString(extractEntry(jCpy, 'encryptedSelf', false, path), true, [...path, ".encryptedSelf"]) as Base64String,
 			securityMetadata: expectObject(extractEntry(jCpy, 'securityMetadata', false, path), true, ignoreUnknownKeys, [...path, ".securityMetadata"], SecurityMetadata.fromJSON),
 			extensions: extractEntry(jCpy, 'extensions', false, path),
-			contactExtensionsVersions: expectNumber(extractEntry(jCpy, 'contactExtensionsVersions', false, path), true, true, [...path, ".contactExtensionsVersions"]),
+			contactCustomisedModelVersion: expectNumber(extractEntry(jCpy, 'contactCustomisedModelVersion', false, path), true, true, [...path, ".contactCustomisedModelVersion"]),
 		})
 		if (!ignoreUnknownKeys) {
 			const unused = Object.keys(jCpy)

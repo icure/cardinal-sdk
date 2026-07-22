@@ -224,8 +224,8 @@ public fun calendarItem_toJs(obj: DecryptedCalendarItem): DecryptedCalendarItemJ
 	val extensions = nullToUndefined(
 		jsonToDynamic(obj.extensions)
 	)
-	val extensionsVersion = nullToUndefined(
-		intToNumber(obj.extensionsVersion)
+	val customisedModelVersion = nullToUndefined(
+		intToNumber(obj.customisedModelVersion)
 	)
 	return DecryptedCalendarItemJs(js("{" +
 		"id:id," +
@@ -269,7 +269,7 @@ public fun calendarItem_toJs(obj: DecryptedCalendarItem): DecryptedCalendarItemJ
 		"encryptedSelf:encryptedSelf," +
 		"securityMetadata:securityMetadata," +
 		"extensions:extensions," +
-		"extensionsVersion:extensionsVersion" +
+		"customisedModelVersion:customisedModelVersion" +
 	"}"))
 }
 
@@ -400,7 +400,7 @@ public fun calendarItem_fromJs(obj: DecryptedCalendarItemJs): DecryptedCalendarI
 		securityMetadata_fromJs(nonNull1)
 	}
 	val extensions = dynamicToJsonObjectNullsafe(obj.extensions, "obj.extensions")
-	val extensionsVersion = numberToInt(obj.extensionsVersion, "obj.extensionsVersion")
+	val customisedModelVersion = numberToInt(obj.customisedModelVersion, "obj.customisedModelVersion")
 	return DecryptedCalendarItem(
 		id = id,
 		rev = rev,
@@ -443,7 +443,7 @@ public fun calendarItem_fromJs(obj: DecryptedCalendarItemJs): DecryptedCalendarI
 		encryptedSelf = encryptedSelf,
 		securityMetadata = securityMetadata,
 		extensions = extensions,
-		extensionsVersion = extensionsVersion,
+		customisedModelVersion = customisedModelVersion,
 	)
 }
 
@@ -628,8 +628,8 @@ public fun calendarItem_toJs(obj: EncryptedCalendarItem): EncryptedCalendarItemJ
 	val extensions = nullToUndefined(
 		jsonToDynamic(obj.extensions)
 	)
-	val extensionsVersion = nullToUndefined(
-		intToNumber(obj.extensionsVersion)
+	val customisedModelVersion = nullToUndefined(
+		intToNumber(obj.customisedModelVersion)
 	)
 	return EncryptedCalendarItemJs(js("{" +
 		"id:id," +
@@ -673,7 +673,7 @@ public fun calendarItem_toJs(obj: EncryptedCalendarItem): EncryptedCalendarItemJ
 		"encryptedSelf:encryptedSelf," +
 		"securityMetadata:securityMetadata," +
 		"extensions:extensions," +
-		"extensionsVersion:extensionsVersion" +
+		"customisedModelVersion:customisedModelVersion" +
 	"}"))
 }
 
@@ -804,7 +804,7 @@ public fun calendarItem_fromJs(obj: EncryptedCalendarItemJs): EncryptedCalendarI
 		securityMetadata_fromJs(nonNull1)
 	}
 	val extensions = dynamicToJsonObjectNullsafe(obj.extensions, "obj.extensions")
-	val extensionsVersion = numberToInt(obj.extensionsVersion, "obj.extensionsVersion")
+	val customisedModelVersion = numberToInt(obj.customisedModelVersion, "obj.customisedModelVersion")
 	return EncryptedCalendarItem(
 		id = id,
 		rev = rev,
@@ -847,7 +847,7 @@ public fun calendarItem_fromJs(obj: EncryptedCalendarItemJs): EncryptedCalendarI
 		encryptedSelf = encryptedSelf,
 		securityMetadata = securityMetadata,
 		extensions = extensions,
-		extensionsVersion = extensionsVersion,
+		customisedModelVersion = customisedModelVersion,
 	)
 }
 

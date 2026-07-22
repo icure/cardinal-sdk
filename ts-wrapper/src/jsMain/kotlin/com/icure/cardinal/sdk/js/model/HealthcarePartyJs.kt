@@ -5,8 +5,9 @@ package com.icure.cardinal.sdk.js.model
 
 import com.icure.cardinal.sdk.js.model.base.CodeStubJs
 import com.icure.cardinal.sdk.js.model.base.CryptoActorJs
+import com.icure.cardinal.sdk.js.model.base.CustomisableRootJs
 import com.icure.cardinal.sdk.js.model.base.DataOwnerJs
-import com.icure.cardinal.sdk.js.model.base.ExtendableRootJs
+import com.icure.cardinal.sdk.js.model.base.ExtendableJs
 import com.icure.cardinal.sdk.js.model.base.HasCodesJs
 import com.icure.cardinal.sdk.js.model.base.HasIdentifierJs
 import com.icure.cardinal.sdk.js.model.base.HasTagsJs
@@ -29,7 +30,7 @@ import kotlin.js.JsQualifier
 public external class HealthcarePartyJs(
 	partial: dynamic,
 ) : StoredDocumentJs, NamedJs, PersonJs, CryptoActorJs, DataOwnerJs, HasCodesJs, HasTagsJs,
-		HasIdentifierJs, ExtendableRootJs {
+		HasIdentifierJs, CustomisableRootJs, ExtendableJs {
 	override val id: String
 
 	override val rev: String?
@@ -110,7 +111,7 @@ public external class HealthcarePartyJs(
 
 	override val extensions: dynamic
 
-	override val extensionsVersion: Double?
+	override val customisedModelVersion: Double?
 
 	override val ktClass: String
 }

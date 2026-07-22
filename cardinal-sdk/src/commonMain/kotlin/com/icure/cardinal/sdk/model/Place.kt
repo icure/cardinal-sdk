@@ -2,7 +2,8 @@
 // If you want to change the way this class is generated, see [this repo](https://github.com/icure/sdk-codegen).
 package com.icure.cardinal.sdk.model
 
-import com.icure.cardinal.sdk.model.base.ExtendableRoot
+import com.icure.cardinal.sdk.model.base.CustomisableRoot
+import com.icure.cardinal.sdk.model.base.Extendable
 import com.icure.cardinal.sdk.model.base.Named
 import com.icure.cardinal.sdk.model.base.StoredDocument
 import com.icure.cardinal.sdk.model.embed.DecryptedAddress
@@ -42,8 +43,8 @@ data class Place(
 	 * The address of the place.
 	 */
 	override val extensions: JsonObject? = null,
-	override val extensionsVersion: Int? = null,
-) : StoredDocument, Named, ExtendableRoot {
+	override val customisedModelVersion: Int? = null,
+) : StoredDocument, Named, CustomisableRoot, Extendable {
 	// region Place-Place
 
 	// endregion

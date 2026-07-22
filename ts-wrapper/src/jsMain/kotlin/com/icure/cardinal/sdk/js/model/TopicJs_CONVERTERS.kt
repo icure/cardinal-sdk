@@ -158,8 +158,8 @@ public fun topic_toJs(obj: DecryptedTopic): DecryptedTopicJs {
 	val extensions = nullToUndefined(
 		jsonToDynamic(obj.extensions)
 	)
-	val extensionsVersion = nullToUndefined(
-		intToNumber(obj.extensionsVersion)
+	val customisedModelVersion = nullToUndefined(
+		intToNumber(obj.customisedModelVersion)
 	)
 	return DecryptedTopicJs(js("{" +
 		"id:id," +
@@ -184,7 +184,7 @@ public fun topic_toJs(obj: DecryptedTopic): DecryptedTopicJs {
 		"linkedHealthElements:linkedHealthElements," +
 		"linkedServices:linkedServices," +
 		"extensions:extensions," +
-		"extensionsVersion:extensionsVersion" +
+		"customisedModelVersion:customisedModelVersion" +
 	"}"))
 }
 
@@ -299,7 +299,7 @@ public fun topic_fromJs(obj: DecryptedTopicJs): DecryptedTopic {
 		},
 	)
 	val extensions = dynamicToJsonObjectNullsafe(obj.extensions, "obj.extensions")
-	val extensionsVersion = numberToInt(obj.extensionsVersion, "obj.extensionsVersion")
+	val customisedModelVersion = numberToInt(obj.customisedModelVersion, "obj.customisedModelVersion")
 	return DecryptedTopic(
 		id = id,
 		rev = rev,
@@ -323,7 +323,7 @@ public fun topic_fromJs(obj: DecryptedTopicJs): DecryptedTopic {
 		linkedHealthElements = linkedHealthElements,
 		linkedServices = linkedServices,
 		extensions = extensions,
-		extensionsVersion = extensionsVersion,
+		customisedModelVersion = customisedModelVersion,
 	)
 }
 
@@ -451,8 +451,8 @@ public fun topic_toJs(obj: EncryptedTopic): EncryptedTopicJs {
 	val extensions = nullToUndefined(
 		jsonToDynamic(obj.extensions)
 	)
-	val extensionsVersion = nullToUndefined(
-		intToNumber(obj.extensionsVersion)
+	val customisedModelVersion = nullToUndefined(
+		intToNumber(obj.customisedModelVersion)
 	)
 	return EncryptedTopicJs(js("{" +
 		"id:id," +
@@ -477,7 +477,7 @@ public fun topic_toJs(obj: EncryptedTopic): EncryptedTopicJs {
 		"linkedHealthElements:linkedHealthElements," +
 		"linkedServices:linkedServices," +
 		"extensions:extensions," +
-		"extensionsVersion:extensionsVersion" +
+		"customisedModelVersion:customisedModelVersion" +
 	"}"))
 }
 
@@ -592,7 +592,7 @@ public fun topic_fromJs(obj: EncryptedTopicJs): EncryptedTopic {
 		},
 	)
 	val extensions = dynamicToJsonObjectNullsafe(obj.extensions, "obj.extensions")
-	val extensionsVersion = numberToInt(obj.extensionsVersion, "obj.extensionsVersion")
+	val customisedModelVersion = numberToInt(obj.customisedModelVersion, "obj.customisedModelVersion")
 	return EncryptedTopic(
 		id = id,
 		rev = rev,
@@ -616,7 +616,7 @@ public fun topic_fromJs(obj: EncryptedTopicJs): EncryptedTopic {
 		linkedHealthElements = linkedHealthElements,
 		linkedServices = linkedServices,
 		extensions = extensions,
-		extensionsVersion = extensionsVersion,
+		customisedModelVersion = customisedModelVersion,
 	)
 }
 
