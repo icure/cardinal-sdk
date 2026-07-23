@@ -121,6 +121,11 @@ public interface RawUserApi {
 		previousMobilePhone: String? = null,
 	): HttpResponse<User>
 
+	suspend fun removeUserMobilePhone(
+		userId: String,
+		previousMobilePhone: String? = null,
+	): HttpResponse<User>
+
 	suspend fun changeUserPassword(
 		userId: String,
 		request: ChangeUserPasswordRequest,
@@ -236,6 +241,14 @@ public interface RawUserApi {
 	): HttpResponse<String>
 
 	suspend fun getTokenInAllGroups(
+		userIdentifier: String,
+		key: String,
+		token: String? = null,
+		tokenValidity: Long? = null,
+	): HttpResponse<List<TokenWithGroup>>
+
+	suspend fun getTokenInAllSubGroups(
+		rootGroupId: String,
 		userIdentifier: String,
 		key: String,
 		token: String? = null,

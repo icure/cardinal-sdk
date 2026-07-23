@@ -369,6 +369,19 @@ class RawUserApiImpl(
 			accept(Application.Json)
 		}.wrap()
 
+	override suspend fun removeUserMobilePhone(
+		userId: String,
+		previousMobilePhone: String?,
+	): HttpResponse<User> =
+		delete(authProvider) {
+			url {
+				takeFrom(apiUrl)
+				appendPathSegments("rest", "v2", "user", userId, "mobilePhone")
+				parameter("previousMobilePhone", previousMobilePhone)
+			}
+			accept(Application.Json)
+		}.wrap()
+
 	override suspend fun changeUserPassword(
 		userId: String,
 		request: ChangeUserPasswordRequest,
@@ -702,6 +715,24 @@ class RawUserApiImpl(
 			url {
 				takeFrom(apiUrl)
 				appendPathSegments("rest", "v2", "user", "inAllGroups", "token", userIdentifier, key)
+				parameter("tokenValidity", tokenValidity)
+			}
+			contentType(Application.Json)
+			accept(Application.Json)
+			`header`("token", token)
+		}.wrap()
+
+	override suspend fun getTokenInAllSubGroups(
+		rootGroupId: String,
+		userIdentifier: String,
+		key: String,
+		token: String?,
+		tokenValidity: Long?,
+	): HttpResponse<List<TokenWithGroup>> =
+		post(authProvider) {
+			url {
+				takeFrom(apiUrl)
+				appendPathSegments("rest", "v2", "user", "inAllSubGroups", rootGroupId, "token", userIdentifier, key)
 				parameter("tokenValidity", tokenValidity)
 			}
 			contentType(Application.Json)
