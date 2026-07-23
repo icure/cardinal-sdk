@@ -1,9 +1,9 @@
 package com.icure.cardinal.sdk.crypto
 
+import com.icure.cardinal.sdk.crypto.entities.DelegateOptions
 import com.icure.cardinal.sdk.model.EntityReferenceInGroup
 import com.icure.cardinal.sdk.crypto.entities.EntityWithEncryptionMetadataTypeName
 import com.icure.cardinal.sdk.model.base.HasEncryptionMetadata
-import com.icure.cardinal.sdk.model.embed.AccessLevel
 import com.icure.cardinal.sdk.model.requests.EntityShareOrMetadataUpdateRequest
 import com.icure.cardinal.sdk.model.requests.RequestedPermission
 import com.icure.cardinal.sdk.model.specializations.HexString
@@ -30,7 +30,7 @@ interface SecureDelegationsManager {
 		owningEntityIds: Set<String>,
 		owningEntitySecretIds: Set<String>,
 		encryptionKeys: Set<HexString>,
-		autoDelegations: Map<EntityReferenceInGroup, AccessLevel>,
+		autoDelegations: Map<EntityReferenceInGroup, DelegateOptions>,
 		alternateRootDataOwnerReference: EntityReferenceInGroup? = null
 	): T
 

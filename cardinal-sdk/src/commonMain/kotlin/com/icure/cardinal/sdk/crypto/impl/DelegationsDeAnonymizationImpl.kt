@@ -258,17 +258,17 @@ class DelegationsDeAnonymizationImpl(
 		).filter { it != delegatorReference }
 		val resolvedGroup = boundGroup.resolve(entityGroupId)
 		val initialMapInfo = entity.entityWithInitializedEncryptedMetadata(
-            entityGroupId = resolvedGroup,
-            entity = DecryptedSecureDelegationKeyMap(
-                id = crypto.strongRandom.randomUUID(),
-                delegate = delegationMembersDetails.delegate.asReferenceStringInGroup(entityGroupId, boundGroup),
-                delegator = delegationMembersDetails.delegator.asReferenceStringInGroup(entityGroupId, boundGroup),
-                delegationKey = delegationKey
-            ),
-            entityType = entityType,
-            owningEntityDetails = null,
-            initializeEncryptionKey = true,
-            autoDelegations = initialDelegates.associateWith { AccessLevel.Read }
+			entityGroupId = resolvedGroup,
+			entity = DecryptedSecureDelegationKeyMap(
+				id = crypto.strongRandom.randomUUID(),
+				delegate = delegationMembersDetails.delegate.asReferenceStringInGroup(entityGroupId, boundGroup),
+				delegator = delegationMembersDetails.delegator.asReferenceStringInGroup(entityGroupId, boundGroup),
+				delegationKey = delegationKey
+			),
+			entityType = entityType,
+			owningEntityDetails = null,
+			initializeEncryptionKey = true,
+			autoDelegations = initialDelegates.associateWith { AccessLevel.Read }
 		)
 		val encryptedKeyMap = entity.encryptEntities(
 			resolvedGroup,

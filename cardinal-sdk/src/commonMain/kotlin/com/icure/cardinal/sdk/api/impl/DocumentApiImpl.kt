@@ -648,6 +648,26 @@ private class DocumentApiImpl(
 			)
 		)
 
+	override suspend fun withEncryptionMetadataLinkedToPatientAndDelegates(
+		base: DecryptedDocument?,
+		patient: Patient,
+		delegates: Map<String, DocumentDelegateOptions>,
+		user: User?,
+		secretId: SecretIdUseOption,
+		alternateRootDelegateId: String?
+	): DecryptedDocument =
+		doWithEncryptionMetadataAndDelegates(
+			base,
+			user,
+			delegates,
+			alternateRootDelegateId,
+			OwningEntityDetails(
+				null,
+				patient.id,
+				crypto.entity.resolveSecretIdOption(null, patient, EntityWithEncryptionMetadataTypeName.Patient, secretId)
+			)
+		)
+
 	override suspend fun withEncryptionMetadataLinkedToMessage(
 		base: DecryptedDocument?,
 		message: Message,
@@ -668,18 +688,61 @@ private class DocumentApiImpl(
 			)
 		)
 
+	override suspend fun withEncryptionMetadataLinkedToMessageAndDelegates(
+		base: DecryptedDocument?,
+		message: Message,
+		delegates: Map<String, DocumentDelegateOptions>,
+		user: User?,
+		secretId: SecretIdUseOption,
+		alternateRootDelegateId: String?
+	): DecryptedDocument =
+		doWithEncryptionMetadataAndDelegates(
+			base,
+			user,
+			delegates,
+			alternateRootDelegateId,
+			OwningEntityDetails(
+				null,
+				message.id,
+				crypto.entity.resolveSecretIdOption(null, message, EntityWithEncryptionMetadataTypeName.Message, secretId)
+			)
+		)
+
 	override suspend fun withEncryptionMetadataUnlinked(
 		base: DecryptedDocument?,
 		user: User?,
 		delegates: Map<String, AccessLevel>,
 		alternateRootDelegateId: String?
 	): DecryptedDocument =
-		doWithEncryptionMetadata(base, user, delegates, alternateRootDelegateId, null)
+		doWithEncryptionMetadataAndDelegates(base, user, delegates, alternateRootDelegateId, null)
+
+	override suspend fun withEncryptionMetadataUnlinkedAndDelegates(
+		base: DecryptedDocument?,
+		delegates: Map<String, DocumentDelegateOptions>,
+		user: User?,
+		alternateRootDelegateId: String?
+	): DecryptedDocument =
+		doWithEncryptionMetadataAndDelegates(base, user, delegates, alternateRootDelegateId, null)
 
 	private suspend fun doWithEncryptionMetadata(
 		base: DecryptedDocument?,
 		user: User?,
 		delegates: Map<String, AccessLevel>,
+		alternateRootDelegateId: String?,
+		owningEntityDetails: OwningEntityDetails?,
+	) =
+		doWithEncryptionMetadataAndDelegates(
+			base = base,
+			user = user,
+			delegates = delegates.mapValues { it.value.toDefaultDelegateOptions() },
+			alternateRootDelegateId = alternateRootDelegateId,
+			owningEntityDetails = owningEntityDetails,
+		)
+
+	private suspend fun doWithEncryptionMetadataAndDelegates(
+		base: DecryptedDocument?,
+		user: User?,
+		delegates: Map<String, DelegateOptions>,
 		alternateRootDelegateId: String?,
 		owningEntityDetails: OwningEntityDetails?,
 	) =
