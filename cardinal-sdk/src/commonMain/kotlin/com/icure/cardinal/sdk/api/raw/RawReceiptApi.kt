@@ -143,6 +143,19 @@ public interface RawReceiptApi {
 		receiptIds: ListOfIds,
 	): HttpResponse<List<EncryptedReceipt>>
 
+	suspend fun listReceiptsBetweenDatesInGroup(
+		groupId: String,
+		startDate: Long? = null,
+		endDate: Long? = null,
+		descending: Boolean? = null,
+	): HttpResponse<List<EncryptedReceipt>>
+
+	suspend fun getReceiptAttachmentInGroup(
+		groupId: String,
+		receiptId: String,
+		attachmentId: String,
+	): HttpResponse<ByteArray>
+
 	suspend fun deleteReceiptInGroup(
 		groupId: String,
 		receiptId: String,
