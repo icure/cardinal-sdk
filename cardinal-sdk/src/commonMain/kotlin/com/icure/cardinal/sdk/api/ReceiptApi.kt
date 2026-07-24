@@ -1,5 +1,6 @@
 package com.icure.cardinal.sdk.api
 
+import com.icure.cardinal.sdk.crypto.entities.ReceiptDelegateOptions
 import com.icure.cardinal.sdk.crypto.entities.ReceiptShareOptions
 import com.icure.cardinal.sdk.crypto.entities.SecretIdUseOption
 import com.icure.cardinal.sdk.crypto.entities.ShareMetadataBehaviour
@@ -353,6 +354,19 @@ interface ReceiptApi : ReceiptBasicFlavourlessApi, ReceiptFlavouredApi<Decrypted
 		@DefaultValue("null")
 		alternateRootDelegateId: String? = null,
 	): DecryptedReceipt
+
+	suspend fun withEncryptionMetadataAndDelegates(
+		base: DecryptedReceipt?,
+		patient: Patient?,
+		delegates: Map<String, ReceiptDelegateOptions>,
+		@DefaultValue("null")
+		user: User? = null,
+		@DefaultValue("com.icure.cardinal.sdk.crypto.entities.SecretIdUseOption.UseAnySharedWithParent")
+		secretId: SecretIdUseOption = SecretIdUseOption.UseAnySharedWithParent,
+		@DefaultValue("null")
+		alternateRootDelegateId: String? = null,
+	): DecryptedReceipt
+
 	suspend fun getAndDecryptReceiptAttachment(receipt: Receipt, attachmentId: String): ByteArray
 	suspend fun encryptAndSetReceiptAttachment(receipt: Receipt, blobType: String, attachment: ByteArray): EncryptedReceipt
 	suspend fun getEncryptionKeysOf(receipt: Receipt): Set<HexString>
@@ -385,6 +399,22 @@ interface ReceiptInGroupApi : ReceiptBasicFlavourlessInGroupApi, ReceiptFlavoure
 		user: User? = null,
 		@DefaultValue("emptyMap()")
 		delegates: Map<String, AccessLevel> = emptyMap(),
+		@DefaultValue("com.icure.cardinal.sdk.crypto.entities.SecretIdUseOption.UseAnySharedWithParent")
+		secretId: SecretIdUseOption = SecretIdUseOption.UseAnySharedWithParent,
+		@DefaultValue("null")
+		alternateRootDelegateId: String? = null,
+	): GroupScoped<DecryptedReceipt>
+
+	/**
+	 * In-group version of [ReceiptApi.withEncryptionMetadataAndDelegates]
+	 */
+	suspend fun withEncryptionMetadataAndDelegates(
+		groupId: String,
+		base: DecryptedReceipt?,
+		patient: GroupScoped<Patient>?,
+		delegates: Map<String, ReceiptDelegateOptions>,
+		@DefaultValue("null")
+		user: User? = null,
 		@DefaultValue("com.icure.cardinal.sdk.crypto.entities.SecretIdUseOption.UseAnySharedWithParent")
 		secretId: SecretIdUseOption = SecretIdUseOption.UseAnySharedWithParent,
 		@DefaultValue("null")

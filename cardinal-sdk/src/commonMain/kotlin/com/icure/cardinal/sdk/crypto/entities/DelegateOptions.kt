@@ -119,17 +119,6 @@ data class InvoiceDelegateOptions(
 
 @OptIn(InternalIcureApi::class)
 @Serializable
-data class MaintenanceTaskDelegateOptions(
-	override val accessLevel: AccessLevel,
-	override val shareEncryptionKey: Boolean = true,
-	override val shareSecretId: Boolean = true,
-) : DelegateOptions {
-
-	override val shareOwningEntityId get() = false
-}
-
-@OptIn(InternalIcureApi::class)
-@Serializable
 data class MessageDelegateOptions(
 	override val accessLevel: AccessLevel,
 	override val shareEncryptionKey: Boolean = true,
