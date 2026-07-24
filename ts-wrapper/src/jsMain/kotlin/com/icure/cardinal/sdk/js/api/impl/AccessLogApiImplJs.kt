@@ -1974,17 +1974,22 @@ internal class AccessLogApiImplJs(
 		}
 	}
 
-	override fun withEncryptionMetadata(
-		base: DecryptedAccessLogJs?,
-		patient: PatientJs,
-		options: dynamic,
-	): Promise<DecryptedAccessLogJs> {
+	override fun withEncryptionMetadata(base: DecryptedAccessLogJs?, options: dynamic):
+			Promise<DecryptedAccessLogJs> {
 		val _options = options ?: js("{}")
 		return GlobalScope.promise {
 			val baseConverted: DecryptedAccessLog? = base?.let { nonNull1 ->
 				accessLog_fromJs(nonNull1)
 			}
-			val patientConverted: Patient = patient_fromJs(patient)
+			val patientConverted: Patient? = convertingOptionOrDefaultNullable(
+				_options,
+				"patient",
+				null
+			) { patient: PatientJs? ->
+				patient?.let { nonNull1 ->
+					patient_fromJs(nonNull1)
+				}
+			}
 			val userConverted: User? = convertingOptionOrDefaultNullable(
 				_options,
 				"user",

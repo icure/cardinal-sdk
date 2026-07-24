@@ -31,9 +31,13 @@ public external interface AccessLogApiJs {
 
 	public val inGroup: AccessLogInGroupApiJs
 
-	public fun withEncryptionMetadata(
+	public fun withEncryptionMetadata(base: DecryptedAccessLogJs?, options: dynamic):
+			Promise<DecryptedAccessLogJs>
+
+	public fun withEncryptionMetadataAndDelegates(
 		base: DecryptedAccessLogJs?,
 		patient: PatientJs,
+		delegates: Record<String, AccessLogDelegateOptionsJs>,
 		options: dynamic,
 	): Promise<DecryptedAccessLogJs>
 
