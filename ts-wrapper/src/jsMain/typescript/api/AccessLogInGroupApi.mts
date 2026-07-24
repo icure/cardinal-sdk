@@ -25,20 +25,15 @@ export interface AccessLogInGroupApi {
 	 *  In-group version of [AccessLogApi.withEncryptionMetadata]
 	 */
 	withEncryptionMetadata(entityGroupId: string, base: DecryptedAccessLog | undefined,
-			patient: GroupScoped<Patient>,
-			options?: { user?: User | undefined, delegates?: ArrayWithUniqueKeys<{ delegate: EntityReferenceInGroup, accessLevel: AccessLevel }, 'delegate'>, secretId?: SecretIdUseOption, alternateRootDelegateReference?: EntityReferenceInGroup | undefined }): Promise<GroupScoped<DecryptedAccessLog>>;
+			options?: { patient?: GroupScoped<Patient> | undefined, user?: User | undefined, delegates?: ArrayWithUniqueKeys<{ delegate: EntityReferenceInGroup, accessLevel: AccessLevel }, 'delegate'>, secretId?: SecretIdUseOption, alternateRootDelegateReference?: EntityReferenceInGroup | undefined }): Promise<GroupScoped<DecryptedAccessLog>>;
 
 	/**
 	 *
 	 *  In-group version of [AccessLogApi.withEncryptionMetadataAndDelegates]
 	 */
-	withEncryptionMetadataAndDelegates(
-			entityGroupId: string,
-			base: DecryptedAccessLog | undefined,
-			patient: GroupScoped<Patient>,
+	withEncryptionMetadataAndDelegates(entityGroupId: string, base: DecryptedAccessLog | undefined,
 			delegates: ArrayWithUniqueKeys<{ delegate: EntityReferenceInGroup, delegateOptions: AccessLogDelegateOptions }, 'delegate'>,
-			options?: { user?: User | undefined, secretId?: SecretIdUseOption, alternateRootDelegateReference?: EntityReferenceInGroup | undefined }
-	): Promise<GroupScoped<DecryptedAccessLog>>;
+			options?: { patient?: GroupScoped<Patient> | undefined, user?: User | undefined, secretId?: SecretIdUseOption, alternateRootDelegateReference?: EntityReferenceInGroup | undefined }): Promise<GroupScoped<DecryptedAccessLog>>;
 
 	/**
 	 *

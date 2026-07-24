@@ -10,7 +10,6 @@ import com.icure.cardinal.sdk.js.model.DecryptedAccessLogJs
 import com.icure.cardinal.sdk.js.model.EncryptedAccessLogJs
 import com.icure.cardinal.sdk.js.model.EntityReferenceInGroupJs
 import com.icure.cardinal.sdk.js.model.GroupScopedJs
-import com.icure.cardinal.sdk.js.model.PatientJs
 import com.icure.cardinal.sdk.js.model.StoredDocumentIdentifierJs
 import com.icure.cardinal.sdk.js.synthetic.mapasobjectarray.EntityReferenceInGroupToAccessLogDelegateOptionsMapObject_delegate_delegateOptions
 import kotlin.Array
@@ -30,14 +29,12 @@ public external interface AccessLogInGroupApiJs {
 	public fun withEncryptionMetadata(
 		entityGroupId: String,
 		base: DecryptedAccessLogJs?,
-		patient: GroupScopedJs<PatientJs>,
 		options: dynamic,
 	): Promise<GroupScopedJs<DecryptedAccessLogJs>>
 
 	public fun withEncryptionMetadataAndDelegates(
 		entityGroupId: String,
 		base: DecryptedAccessLogJs?,
-		patient: GroupScopedJs<PatientJs>,
 		delegates: Array<EntityReferenceInGroupToAccessLogDelegateOptionsMapObject_delegate_delegateOptions>,
 		options: dynamic,
 	): Promise<GroupScopedJs<DecryptedAccessLogJs>>

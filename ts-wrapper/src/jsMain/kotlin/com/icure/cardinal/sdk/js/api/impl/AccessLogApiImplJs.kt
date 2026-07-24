@@ -1246,7 +1246,6 @@ internal class AccessLogApiImplJs(
 		override fun withEncryptionMetadata(
 			entityGroupId: String,
 			base: DecryptedAccessLogJs?,
-			patient: GroupScopedJs<PatientJs>,
 			options: dynamic,
 		): Promise<GroupScopedJs<DecryptedAccessLogJs>> {
 			val _options = options ?: js("{}")
@@ -1255,12 +1254,20 @@ internal class AccessLogApiImplJs(
 				val baseConverted: DecryptedAccessLog? = base?.let { nonNull1 ->
 					accessLog_fromJs(nonNull1)
 				}
-				val patientConverted: GroupScoped<Patient> = groupScoped_fromJs(
-					patient,
-					{ x1: PatientJs ->
-						patient_fromJs(x1)
-					},
-				)
+				val patientConverted: GroupScoped<Patient>? = convertingOptionOrDefaultNullable(
+					_options,
+					"patient",
+					null
+				) { patient: GroupScopedJs<PatientJs>? ->
+					patient?.let { nonNull1 ->
+						groupScoped_fromJs(
+							nonNull1,
+							{ x1: PatientJs ->
+								patient_fromJs(x1)
+							},
+						)
+					}
+				}
 				val userConverted: User? = convertingOptionOrDefaultNullable(
 					_options,
 					"user",
@@ -1316,7 +1323,6 @@ internal class AccessLogApiImplJs(
 		override fun withEncryptionMetadataAndDelegates(
 			entityGroupId: String,
 			base: DecryptedAccessLogJs?,
-			patient: GroupScopedJs<PatientJs>,
 			delegates: Array<EntityReferenceInGroupToAccessLogDelegateOptionsMapObject_delegate_delegateOptions>,
 			options: dynamic,
 		): Promise<GroupScopedJs<DecryptedAccessLogJs>> {
@@ -1326,14 +1332,22 @@ internal class AccessLogApiImplJs(
 				val baseConverted: DecryptedAccessLog? = base?.let { nonNull1 ->
 					accessLog_fromJs(nonNull1)
 				}
-				val patientConverted: GroupScoped<Patient> = groupScoped_fromJs(
-					patient,
-					{ x1: PatientJs ->
-						patient_fromJs(x1)
-					},
-				)
 				val delegatesConverted: Map<EntityReferenceInGroup, AccessLogDelegateOptions> =
 						EntityReferenceInGroupToAccessLogDelegateOptionsMapObject_delegate_delegateOptions_fromJs(delegates)
+				val patientConverted: GroupScoped<Patient>? = convertingOptionOrDefaultNullable(
+					_options,
+					"patient",
+					null
+				) { patient: GroupScopedJs<PatientJs>? ->
+					patient?.let { nonNull1 ->
+						groupScoped_fromJs(
+							nonNull1,
+							{ x1: PatientJs ->
+								patient_fromJs(x1)
+							},
+						)
+					}
+				}
 				val userConverted: User? = convertingOptionOrDefaultNullable(
 					_options,
 					"user",
@@ -1363,8 +1377,8 @@ internal class AccessLogApiImplJs(
 				val result = accessLogApi.inGroup.withEncryptionMetadataAndDelegates(
 					entityGroupIdConverted,
 					baseConverted,
-					patientConverted,
 					delegatesConverted,
+					patientConverted,
 					userConverted,
 					secretIdConverted,
 					alternateRootDelegateReferenceConverted,
@@ -2043,7 +2057,6 @@ internal class AccessLogApiImplJs(
 
 	override fun withEncryptionMetadataAndDelegates(
 		base: DecryptedAccessLogJs?,
-		patient: PatientJs,
 		delegates: Record<String, AccessLogDelegateOptionsJs>,
 		options: dynamic,
 	): Promise<DecryptedAccessLogJs> {
@@ -2052,7 +2065,6 @@ internal class AccessLogApiImplJs(
 			val baseConverted: DecryptedAccessLog? = base?.let { nonNull1 ->
 				accessLog_fromJs(nonNull1)
 			}
-			val patientConverted: Patient = patient_fromJs(patient)
 			val delegatesConverted: Map<String, AccessLogDelegateOptions> = objectToMap(
 				delegates,
 				"delegates",
@@ -2063,6 +2075,15 @@ internal class AccessLogApiImplJs(
 					accessLogDelegateOptions_fromJs(x1)
 				},
 			)
+			val patientConverted: Patient? = convertingOptionOrDefaultNullable(
+				_options,
+				"patient",
+				null
+			) { patient: PatientJs? ->
+				patient?.let { nonNull1 ->
+					patient_fromJs(nonNull1)
+				}
+			}
 			val userConverted: User? = convertingOptionOrDefaultNullable(
 				_options,
 				"user",
@@ -2088,8 +2109,8 @@ internal class AccessLogApiImplJs(
 			}
 			val result = accessLogApi.withEncryptionMetadataAndDelegates(
 				baseConverted,
-				patientConverted,
 				delegatesConverted,
+				patientConverted,
 				userConverted,
 				secretIdConverted,
 				alternateRootDelegateIdConverted,
