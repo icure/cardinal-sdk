@@ -89,7 +89,7 @@ export interface InvoiceBasicApi {
 	/**
 	 *
 	 *  Gives an approximation of the amount of times each tarification code ([Invoice.invoicingCodes] ->
-	 *  [InvoicingCode.tarificationId]) is used in invoices where the current data owner is a direct delegate (does not
+	 *  [InvoicingCode.pricingId]) is used in invoices where the current data owner is a direct delegate (does not
 	 *  count situations where the data owner has access to the service through delegations to a parent data owner).
 	 *  This number is not exact, and may be cached, so you should not use this method if you need precise values, but
 	 *  it can be useful if you want to give suggestions.

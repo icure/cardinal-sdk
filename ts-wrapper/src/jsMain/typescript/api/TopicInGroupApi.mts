@@ -1,6 +1,7 @@
 // auto-generated file
 import {FilterOptions, PaginatedListIterator, SortableFilterOptions} from '../cardinal-sdk-ts.mjs';
 import {SecretIdUseOption} from '../crypto/entities/SecretIdUseOption.mjs';
+import {TopicDelegateOptions} from '../crypto/entities/TopicDelegateOptions.mjs';
 import {TopicShareOptions} from '../crypto/entities/TopicShareOptions.mjs';
 import {EntityReferenceInGroup} from '../model/EntityReferenceInGroup.mjs';
 import {GroupScoped} from '../model/GroupScoped.mjs';
@@ -27,6 +28,18 @@ export interface TopicInGroupApi {
 	withEncryptionMetadata(groupId: string, base: DecryptedTopic | undefined,
 			patient: GroupScoped<Patient> | undefined,
 			options?: { user?: User | undefined, delegates?: { [ key: string ]: AccessLevel }, secretId?: SecretIdUseOption, alternateRootDelegateId?: string | undefined }): Promise<GroupScoped<DecryptedTopic>>;
+
+	/**
+	 *
+	 *  In-group version of [TopicApi.withEncryptionMetadataAndDelegates]
+	 */
+	withEncryptionMetadataAndDelegates(
+			groupId: string,
+			base: DecryptedTopic | undefined,
+			patient: GroupScoped<Patient> | undefined,
+			delegates: ArrayWithUniqueKeys<{ delegate: EntityReferenceInGroup, delegateOptions: TopicDelegateOptions }, 'delegate'>,
+			options?: { user?: User | undefined, secretId?: SecretIdUseOption, alternateRootDelegateId?: string | undefined }
+	): Promise<GroupScoped<DecryptedTopic>>;
 
 	/**
 	 *

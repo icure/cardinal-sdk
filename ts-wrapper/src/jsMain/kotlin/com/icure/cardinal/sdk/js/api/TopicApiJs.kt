@@ -3,6 +3,7 @@
 
 package com.icure.cardinal.sdk.js.api
 
+import com.icure.cardinal.sdk.js.crypto.entities.TopicDelegateOptionsJs
 import com.icure.cardinal.sdk.js.crypto.entities.TopicShareOptionsJs
 import com.icure.cardinal.sdk.js.filters.FilterOptionsJs
 import com.icure.cardinal.sdk.js.filters.SortableFilterOptionsJs
@@ -34,6 +35,13 @@ public external interface TopicApiJs {
 	public fun withEncryptionMetadata(
 		base: DecryptedTopicJs?,
 		patient: PatientJs?,
+		options: dynamic,
+	): Promise<DecryptedTopicJs>
+
+	public fun withEncryptionMetadataAndDelegates(
+		base: DecryptedTopicJs?,
+		patient: PatientJs?,
+		delegates: Record<String, TopicDelegateOptionsJs>,
 		options: dynamic,
 	): Promise<DecryptedTopicJs>
 

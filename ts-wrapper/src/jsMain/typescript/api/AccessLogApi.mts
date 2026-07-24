@@ -1,5 +1,6 @@
 // auto-generated file
 import {FilterOptions, PaginatedListIterator, SortableFilterOptions} from '../cardinal-sdk-ts.mjs';
+import {AccessLogDelegateOptions} from '../crypto/entities/AccessLogDelegateOptions.mjs';
 import {AccessLogShareOptions} from '../crypto/entities/AccessLogShareOptions.mjs';
 import {SecretIdUseOption} from '../crypto/entities/SecretIdUseOption.mjs';
 import {AccessLog, DecryptedAccessLog, EncryptedAccessLog} from '../model/AccessLog.mjs';
@@ -34,8 +35,27 @@ export interface AccessLogApi {
 	 *  @return an access log with initialized encryption metadata.
 	 *  @throws IllegalArgumentException if base is not null and has a revision or has encryption metadata.
 	 */
-	withEncryptionMetadata(base: DecryptedAccessLog | undefined, patient: Patient,
-			options?: { user?: User | undefined, delegates?: { [ key: string ]: AccessLevel }, secretId?: SecretIdUseOption, alternateRootDelegateId?: string | undefined }): Promise<DecryptedAccessLog>;
+	withEncryptionMetadata(base: DecryptedAccessLog | undefined,
+			options?: { patient?: Patient | undefined, user?: User | undefined, delegates?: { [ key: string ]: AccessLevel }, secretId?: SecretIdUseOption, alternateRootDelegateId?: string | undefined }): Promise<DecryptedAccessLog>;
+
+	/**
+	 *
+	 *  Creates a new access log with initialized encryption metadata, specifying fine-grained options for each additional data owner that
+	 *  will have access to the entity.
+	 *  @param base an access log with initialized content and uninitialized encryption metadata. The result of this
+	 *  method takes the content from [base] if provided.
+	 *  @param patient the patient linked to the access log.
+	 *  @param user the current user, will be used for the auto-delegations if provided.
+	 *  @param delegates additional data owners that will have access to the newly created entity. You may choose the
+	 *  permissions that the delegates will have on the entity and if they will have access to the secretIds, encryptionKeys, and/or
+	 *  owningEntityIds of the new entity.
+	 *  @param secretId specifies which secret id of [patient] to use for the new access log
+	 *  @return an access log with initialized encryption metadata.
+	 *  @throws IllegalArgumentException if base is not null and has a revision or has encryption metadata.
+	 */
+	withEncryptionMetadataAndDelegates(base: DecryptedAccessLog | undefined, patient: Patient,
+			delegates: { [ key: string ]: AccessLogDelegateOptions },
+			options?: { user?: User | undefined, secretId?: SecretIdUseOption, alternateRootDelegateId?: string | undefined }): Promise<DecryptedAccessLog>;
 
 	/**
 	 *

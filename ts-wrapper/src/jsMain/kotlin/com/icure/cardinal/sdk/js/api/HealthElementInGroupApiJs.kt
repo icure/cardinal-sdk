@@ -12,6 +12,7 @@ import com.icure.cardinal.sdk.js.model.GroupScopedJs
 import com.icure.cardinal.sdk.js.model.HealthElementJs
 import com.icure.cardinal.sdk.js.model.PatientJs
 import com.icure.cardinal.sdk.js.model.StoredDocumentIdentifierJs
+import com.icure.cardinal.sdk.js.synthetic.mapasobjectarray.EntityReferenceInGroupToHealthElementDelegateOptionsMapObject_delegate_delegateOptions
 import com.icure.cardinal.sdk.js.synthetic.mapasobjectarray.EntityReferenceInGroupToHealthElementShareOptionsMapObject_delegate_shareOptions
 import com.icure.cardinal.sdk.js.utils.pagination.PaginatedListIteratorJs
 import kotlin.Array
@@ -32,6 +33,14 @@ public external interface HealthElementInGroupApiJs {
 		entityGroupId: String,
 		base: DecryptedHealthElementJs?,
 		patient: GroupScopedJs<PatientJs>,
+		options: dynamic,
+	): Promise<GroupScopedJs<DecryptedHealthElementJs>>
+
+	public fun withEncryptionMetadataAndDelegates(
+		entityGroupId: String,
+		base: DecryptedHealthElementJs?,
+		patient: GroupScopedJs<PatientJs>,
+		delegates: Array<EntityReferenceInGroupToHealthElementDelegateOptionsMapObject_delegate_delegateOptions>,
 		options: dynamic,
 	): Promise<GroupScopedJs<DecryptedHealthElementJs>>
 

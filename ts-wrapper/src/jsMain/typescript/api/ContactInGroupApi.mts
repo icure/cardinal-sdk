@@ -1,5 +1,6 @@
 // auto-generated file
 import {FilterOptions, PaginatedListIterator, SortableFilterOptions} from '../cardinal-sdk-ts.mjs';
+import {ContactDelegateOptions} from '../crypto/entities/ContactDelegateOptions.mjs';
 import {ContactShareOptions} from '../crypto/entities/ContactShareOptions.mjs';
 import {SecretIdUseOption} from '../crypto/entities/SecretIdUseOption.mjs';
 import {Contact, DecryptedContact, EncryptedContact} from '../model/Contact.mjs';
@@ -28,6 +29,18 @@ export interface ContactInGroupApi {
 	withEncryptionMetadata(entityGroupId: string, base: DecryptedContact | undefined,
 			patient: GroupScoped<Patient> | undefined,
 			options?: { user?: User | undefined, delegates?: ArrayWithUniqueKeys<{ delegate: EntityReferenceInGroup, accessLevel: AccessLevel }, 'delegate'>, secretId?: SecretIdUseOption, alternateRootDelegateReference?: EntityReferenceInGroup | undefined }): Promise<GroupScoped<DecryptedContact>>;
+
+	/**
+	 *
+	 *  In-group version of [ContactApi.withEncryptionMetadataAndDelegates]
+	 */
+	withEncryptionMetadataAndDelegates(
+			entityGroupId: string,
+			base: DecryptedContact | undefined,
+			patient: GroupScoped<Patient> | undefined,
+			delegates: ArrayWithUniqueKeys<{ delegate: EntityReferenceInGroup, delegateOptions: ContactDelegateOptions }, 'delegate'>,
+			options?: { user?: User | undefined, secretId?: SecretIdUseOption, alternateRootDelegateReference?: EntityReferenceInGroup | undefined }
+	): Promise<GroupScoped<DecryptedContact>>;
 
 	/**
 	 *

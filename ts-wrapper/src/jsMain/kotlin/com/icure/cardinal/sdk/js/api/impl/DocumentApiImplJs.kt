@@ -2,6 +2,7 @@
 package com.icure.cardinal.sdk.js.api.`impl`
 
 import com.icure.cardinal.sdk.api.DocumentApi
+import com.icure.cardinal.sdk.crypto.entities.DocumentDelegateOptions
 import com.icure.cardinal.sdk.crypto.entities.DocumentShareOptions
 import com.icure.cardinal.sdk.crypto.entities.SecretIdUseOption
 import com.icure.cardinal.sdk.filters.FilterOptions
@@ -12,8 +13,10 @@ import com.icure.cardinal.sdk.js.api.DocumentApiJs
 import com.icure.cardinal.sdk.js.api.DocumentFlavouredApiJs
 import com.icure.cardinal.sdk.js.api.DocumentFlavouredInGroupApiJs
 import com.icure.cardinal.sdk.js.api.DocumentInGroupApiJs
+import com.icure.cardinal.sdk.js.crypto.entities.DocumentDelegateOptionsJs
 import com.icure.cardinal.sdk.js.crypto.entities.DocumentShareOptionsJs
 import com.icure.cardinal.sdk.js.crypto.entities.SecretIdUseOptionJs
+import com.icure.cardinal.sdk.js.crypto.entities.documentDelegateOptions_fromJs
 import com.icure.cardinal.sdk.js.crypto.entities.documentShareOptions_fromJs
 import com.icure.cardinal.sdk.js.crypto.entities.secretIdUseOption_fromJs
 import com.icure.cardinal.sdk.js.filters.FilterOptionsJs
@@ -1311,6 +1314,76 @@ internal class DocumentApiImplJs(
 			}
 		}
 
+		override fun withEncryptionMetadataAndDelegatesLinkedToMessage(
+			entityGroupId: String,
+			base: DecryptedDocumentJs?,
+			message: GroupScopedJs<MessageJs>,
+			delegates: Record<String, DocumentDelegateOptionsJs>,
+			options: dynamic,
+		): Promise<GroupScopedJs<DecryptedDocumentJs>> {
+			val _options = options ?: js("{}")
+			return GlobalScope.promise {
+				val entityGroupIdConverted: String = entityGroupId
+				val baseConverted: DecryptedDocument? = base?.let { nonNull1 ->
+					document_fromJs(nonNull1)
+				}
+				val messageConverted: GroupScoped<Message> = groupScoped_fromJs(
+					message,
+					{ x1: MessageJs ->
+						message_fromJs(x1)
+					},
+				)
+				val delegatesConverted: Map<String, DocumentDelegateOptions> = objectToMap(
+					delegates,
+					"delegates",
+					{ x1: String ->
+						x1
+					},
+					{ x1: DocumentDelegateOptionsJs ->
+						documentDelegateOptions_fromJs(x1)
+					},
+				)
+				val userConverted: User? = convertingOptionOrDefaultNullable(
+					_options,
+					"user",
+					null
+				) { user: UserJs? ->
+					user?.let { nonNull1 ->
+						user_fromJs(nonNull1)
+					}
+				}
+				val secretIdConverted: SecretIdUseOption = convertingOptionOrDefaultNonNull(
+					_options,
+					"secretId",
+					com.icure.cardinal.sdk.crypto.entities.SecretIdUseOption.UseAnySharedWithParent
+				) { secretId: SecretIdUseOptionJs ->
+					secretIdUseOption_fromJs(secretId)
+				}
+				val alternateRootDelegateIdConverted: String? = convertingOptionOrDefaultNullable(
+					_options,
+					"alternateRootDelegateId",
+					null
+				) { alternateRootDelegateId: String? ->
+					undefinedToNull(alternateRootDelegateId)
+				}
+				val result = documentApi.inGroup.withEncryptionMetadataAndDelegatesLinkedToMessage(
+					entityGroupIdConverted,
+					baseConverted,
+					messageConverted,
+					delegatesConverted,
+					userConverted,
+					secretIdConverted,
+					alternateRootDelegateIdConverted,
+				)
+				groupScoped_toJs(
+					result,
+					{ x1: DecryptedDocument ->
+						document_toJs(x1)
+					},
+				)
+			}
+		}
+
 		override fun withEncryptionMetadataLinkedToPatient(
 			entityGroupId: String,
 			base: DecryptedDocumentJs?,
@@ -1386,6 +1459,76 @@ internal class DocumentApiImplJs(
 			}
 		}
 
+		override fun withEncryptionMetadataAndDelegatesLinkedToPatient(
+			entityGroupId: String,
+			base: DecryptedDocumentJs?,
+			patient: GroupScopedJs<PatientJs>,
+			delegates: Record<String, DocumentDelegateOptionsJs>,
+			options: dynamic,
+		): Promise<GroupScopedJs<DecryptedDocumentJs>> {
+			val _options = options ?: js("{}")
+			return GlobalScope.promise {
+				val entityGroupIdConverted: String = entityGroupId
+				val baseConverted: DecryptedDocument? = base?.let { nonNull1 ->
+					document_fromJs(nonNull1)
+				}
+				val patientConverted: GroupScoped<Patient> = groupScoped_fromJs(
+					patient,
+					{ x1: PatientJs ->
+						patient_fromJs(x1)
+					},
+				)
+				val delegatesConverted: Map<String, DocumentDelegateOptions> = objectToMap(
+					delegates,
+					"delegates",
+					{ x1: String ->
+						x1
+					},
+					{ x1: DocumentDelegateOptionsJs ->
+						documentDelegateOptions_fromJs(x1)
+					},
+				)
+				val userConverted: User? = convertingOptionOrDefaultNullable(
+					_options,
+					"user",
+					null
+				) { user: UserJs? ->
+					user?.let { nonNull1 ->
+						user_fromJs(nonNull1)
+					}
+				}
+				val secretIdConverted: SecretIdUseOption = convertingOptionOrDefaultNonNull(
+					_options,
+					"secretId",
+					com.icure.cardinal.sdk.crypto.entities.SecretIdUseOption.UseAnySharedWithParent
+				) { secretId: SecretIdUseOptionJs ->
+					secretIdUseOption_fromJs(secretId)
+				}
+				val alternateRootDelegateIdConverted: String? = convertingOptionOrDefaultNullable(
+					_options,
+					"alternateRootDelegateId",
+					null
+				) { alternateRootDelegateId: String? ->
+					undefinedToNull(alternateRootDelegateId)
+				}
+				val result = documentApi.inGroup.withEncryptionMetadataAndDelegatesLinkedToPatient(
+					entityGroupIdConverted,
+					baseConverted,
+					patientConverted,
+					delegatesConverted,
+					userConverted,
+					secretIdConverted,
+					alternateRootDelegateIdConverted,
+				)
+				groupScoped_toJs(
+					result,
+					{ x1: DecryptedDocument ->
+						document_toJs(x1)
+					},
+				)
+			}
+		}
+
 		override fun withEncryptionMetadataUnlinked(
 			entityGroupId: String,
 			base: DecryptedDocumentJs?,
@@ -1434,6 +1577,60 @@ internal class DocumentApiImplJs(
 					baseConverted,
 					userConverted,
 					delegatesConverted,
+					alternateRootDelegateIdConverted,
+				)
+				groupScoped_toJs(
+					result,
+					{ x1: DecryptedDocument ->
+						document_toJs(x1)
+					},
+				)
+			}
+		}
+
+		override fun withEncryptionMetadataAndDelegatesUnlinked(
+			entityGroupId: String,
+			base: DecryptedDocumentJs?,
+			delegates: Record<String, DocumentDelegateOptionsJs>,
+			options: dynamic,
+		): Promise<GroupScopedJs<DecryptedDocumentJs>> {
+			val _options = options ?: js("{}")
+			return GlobalScope.promise {
+				val entityGroupIdConverted: String = entityGroupId
+				val baseConverted: DecryptedDocument? = base?.let { nonNull1 ->
+					document_fromJs(nonNull1)
+				}
+				val delegatesConverted: Map<String, DocumentDelegateOptions> = objectToMap(
+					delegates,
+					"delegates",
+					{ x1: String ->
+						x1
+					},
+					{ x1: DocumentDelegateOptionsJs ->
+						documentDelegateOptions_fromJs(x1)
+					},
+				)
+				val userConverted: User? = convertingOptionOrDefaultNullable(
+					_options,
+					"user",
+					null
+				) { user: UserJs? ->
+					user?.let { nonNull1 ->
+						user_fromJs(nonNull1)
+					}
+				}
+				val alternateRootDelegateIdConverted: String? = convertingOptionOrDefaultNullable(
+					_options,
+					"alternateRootDelegateId",
+					null
+				) { alternateRootDelegateId: String? ->
+					undefinedToNull(alternateRootDelegateId)
+				}
+				val result = documentApi.inGroup.withEncryptionMetadataAndDelegatesUnlinked(
+					entityGroupIdConverted,
+					baseConverted,
+					delegatesConverted,
+					userConverted,
 					alternateRootDelegateIdConverted,
 				)
 				groupScoped_toJs(
@@ -2206,6 +2403,63 @@ internal class DocumentApiImplJs(
 		}
 	}
 
+	override fun withEncryptionMetadataAndDelegatesLinkedToMessage(
+		base: DecryptedDocumentJs?,
+		message: MessageJs,
+		delegates: Record<String, DocumentDelegateOptionsJs>,
+		options: dynamic,
+	): Promise<DecryptedDocumentJs> {
+		val _options = options ?: js("{}")
+		return GlobalScope.promise {
+			val baseConverted: DecryptedDocument? = base?.let { nonNull1 ->
+				document_fromJs(nonNull1)
+			}
+			val messageConverted: Message = message_fromJs(message)
+			val delegatesConverted: Map<String, DocumentDelegateOptions> = objectToMap(
+				delegates,
+				"delegates",
+				{ x1: String ->
+					x1
+				},
+				{ x1: DocumentDelegateOptionsJs ->
+					documentDelegateOptions_fromJs(x1)
+				},
+			)
+			val userConverted: User? = convertingOptionOrDefaultNullable(
+				_options,
+				"user",
+				null
+			) { user: UserJs? ->
+				user?.let { nonNull1 ->
+					user_fromJs(nonNull1)
+				}
+			}
+			val secretIdConverted: SecretIdUseOption = convertingOptionOrDefaultNonNull(
+				_options,
+				"secretId",
+				com.icure.cardinal.sdk.crypto.entities.SecretIdUseOption.UseAnySharedWithParent
+			) { secretId: SecretIdUseOptionJs ->
+				secretIdUseOption_fromJs(secretId)
+			}
+			val alternateRootDelegateIdConverted: String? = convertingOptionOrDefaultNullable(
+				_options,
+				"alternateRootDelegateId",
+				null
+			) { alternateRootDelegateId: String? ->
+				undefinedToNull(alternateRootDelegateId)
+			}
+			val result = documentApi.withEncryptionMetadataAndDelegatesLinkedToMessage(
+				baseConverted,
+				messageConverted,
+				delegatesConverted,
+				userConverted,
+				secretIdConverted,
+				alternateRootDelegateIdConverted,
+			)
+			document_toJs(result)
+		}
+	}
+
 	override fun withEncryptionMetadataLinkedToPatient(
 		base: DecryptedDocumentJs?,
 		patient: PatientJs,
@@ -2268,6 +2522,63 @@ internal class DocumentApiImplJs(
 		}
 	}
 
+	override fun withEncryptionMetadataAndDelegatesLinkedToPatient(
+		base: DecryptedDocumentJs?,
+		patient: PatientJs,
+		delegates: Record<String, DocumentDelegateOptionsJs>,
+		options: dynamic,
+	): Promise<DecryptedDocumentJs> {
+		val _options = options ?: js("{}")
+		return GlobalScope.promise {
+			val baseConverted: DecryptedDocument? = base?.let { nonNull1 ->
+				document_fromJs(nonNull1)
+			}
+			val patientConverted: Patient = patient_fromJs(patient)
+			val delegatesConverted: Map<String, DocumentDelegateOptions> = objectToMap(
+				delegates,
+				"delegates",
+				{ x1: String ->
+					x1
+				},
+				{ x1: DocumentDelegateOptionsJs ->
+					documentDelegateOptions_fromJs(x1)
+				},
+			)
+			val userConverted: User? = convertingOptionOrDefaultNullable(
+				_options,
+				"user",
+				null
+			) { user: UserJs? ->
+				user?.let { nonNull1 ->
+					user_fromJs(nonNull1)
+				}
+			}
+			val secretIdConverted: SecretIdUseOption = convertingOptionOrDefaultNonNull(
+				_options,
+				"secretId",
+				com.icure.cardinal.sdk.crypto.entities.SecretIdUseOption.UseAnySharedWithParent
+			) { secretId: SecretIdUseOptionJs ->
+				secretIdUseOption_fromJs(secretId)
+			}
+			val alternateRootDelegateIdConverted: String? = convertingOptionOrDefaultNullable(
+				_options,
+				"alternateRootDelegateId",
+				null
+			) { alternateRootDelegateId: String? ->
+				undefinedToNull(alternateRootDelegateId)
+			}
+			val result = documentApi.withEncryptionMetadataAndDelegatesLinkedToPatient(
+				baseConverted,
+				patientConverted,
+				delegatesConverted,
+				userConverted,
+				secretIdConverted,
+				alternateRootDelegateIdConverted,
+			)
+			document_toJs(result)
+		}
+	}
+
 	override fun withEncryptionMetadataUnlinked(base: DecryptedDocumentJs?, options: dynamic):
 			Promise<DecryptedDocumentJs> {
 		val _options = options ?: js("{}")
@@ -2311,6 +2622,52 @@ internal class DocumentApiImplJs(
 				baseConverted,
 				userConverted,
 				delegatesConverted,
+				alternateRootDelegateIdConverted,
+			)
+			document_toJs(result)
+		}
+	}
+
+	override fun withEncryptionMetadataAndDelegatesUnlinked(
+		base: DecryptedDocumentJs?,
+		delegates: Record<String, DocumentDelegateOptionsJs>,
+		options: dynamic,
+	): Promise<DecryptedDocumentJs> {
+		val _options = options ?: js("{}")
+		return GlobalScope.promise {
+			val baseConverted: DecryptedDocument? = base?.let { nonNull1 ->
+				document_fromJs(nonNull1)
+			}
+			val delegatesConverted: Map<String, DocumentDelegateOptions> = objectToMap(
+				delegates,
+				"delegates",
+				{ x1: String ->
+					x1
+				},
+				{ x1: DocumentDelegateOptionsJs ->
+					documentDelegateOptions_fromJs(x1)
+				},
+			)
+			val userConverted: User? = convertingOptionOrDefaultNullable(
+				_options,
+				"user",
+				null
+			) { user: UserJs? ->
+				user?.let { nonNull1 ->
+					user_fromJs(nonNull1)
+				}
+			}
+			val alternateRootDelegateIdConverted: String? = convertingOptionOrDefaultNullable(
+				_options,
+				"alternateRootDelegateId",
+				null
+			) { alternateRootDelegateId: String? ->
+				undefinedToNull(alternateRootDelegateId)
+			}
+			val result = documentApi.withEncryptionMetadataAndDelegatesUnlinked(
+				baseConverted,
+				delegatesConverted,
+				userConverted,
 				alternateRootDelegateIdConverted,
 			)
 			document_toJs(result)

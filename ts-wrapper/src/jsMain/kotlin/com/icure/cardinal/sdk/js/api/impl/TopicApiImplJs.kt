@@ -3,6 +3,7 @@ package com.icure.cardinal.sdk.js.api.`impl`
 
 import com.icure.cardinal.sdk.api.TopicApi
 import com.icure.cardinal.sdk.crypto.entities.SecretIdUseOption
+import com.icure.cardinal.sdk.crypto.entities.TopicDelegateOptions
 import com.icure.cardinal.sdk.crypto.entities.TopicShareOptions
 import com.icure.cardinal.sdk.filters.FilterOptions
 import com.icure.cardinal.sdk.filters.SortableFilterOptions
@@ -13,8 +14,10 @@ import com.icure.cardinal.sdk.js.api.TopicFlavouredApiJs
 import com.icure.cardinal.sdk.js.api.TopicFlavouredInGroupApiJs
 import com.icure.cardinal.sdk.js.api.TopicInGroupApiJs
 import com.icure.cardinal.sdk.js.crypto.entities.SecretIdUseOptionJs
+import com.icure.cardinal.sdk.js.crypto.entities.TopicDelegateOptionsJs
 import com.icure.cardinal.sdk.js.crypto.entities.TopicShareOptionsJs
 import com.icure.cardinal.sdk.js.crypto.entities.secretIdUseOption_fromJs
+import com.icure.cardinal.sdk.js.crypto.entities.topicDelegateOptions_fromJs
 import com.icure.cardinal.sdk.js.crypto.entities.topicShareOptions_fromJs
 import com.icure.cardinal.sdk.js.filters.FilterOptionsJs
 import com.icure.cardinal.sdk.js.filters.SortableFilterOptionsJs
@@ -50,6 +53,8 @@ import com.icure.cardinal.sdk.js.subscription.EntitySubscriptionConfigurationJs
 import com.icure.cardinal.sdk.js.subscription.EntitySubscriptionJs
 import com.icure.cardinal.sdk.js.subscription.entitySubscriptionConfiguration_fromJs
 import com.icure.cardinal.sdk.js.subscription.entitySubscription_toJs
+import com.icure.cardinal.sdk.js.synthetic.mapasobjectarray.EntityReferenceInGroupToTopicDelegateOptionsMapObject_delegate_delegateOptions
+import com.icure.cardinal.sdk.js.synthetic.mapasobjectarray.EntityReferenceInGroupToTopicDelegateOptionsMapObject_delegate_delegateOptions_fromJs
 import com.icure.cardinal.sdk.js.synthetic.mapasobjectarray.EntityReferenceInGroupToTopicShareOptionsMapObject_delegate_shareOptions
 import com.icure.cardinal.sdk.js.synthetic.mapasobjectarray.EntityReferenceInGroupToTopicShareOptionsMapObject_delegate_shareOptions_fromJs
 import com.icure.cardinal.sdk.js.utils.Record
@@ -1363,6 +1368,70 @@ internal class TopicApiImplJs(
 			}
 		}
 
+		override fun withEncryptionMetadataAndDelegates(
+			groupId: String,
+			base: DecryptedTopicJs?,
+			patient: GroupScopedJs<PatientJs>?,
+			delegates: Array<EntityReferenceInGroupToTopicDelegateOptionsMapObject_delegate_delegateOptions>,
+			options: dynamic,
+		): Promise<GroupScopedJs<DecryptedTopicJs>> {
+			val _options = options ?: js("{}")
+			return GlobalScope.promise {
+				val groupIdConverted: String = groupId
+				val baseConverted: DecryptedTopic? = base?.let { nonNull1 ->
+					topic_fromJs(nonNull1)
+				}
+				val patientConverted: GroupScoped<Patient>? = patient?.let { nonNull1 ->
+					groupScoped_fromJs(
+						nonNull1,
+						{ x1: PatientJs ->
+							patient_fromJs(x1)
+						},
+					)
+				}
+				val delegatesConverted: Map<EntityReferenceInGroup, TopicDelegateOptions> =
+						EntityReferenceInGroupToTopicDelegateOptionsMapObject_delegate_delegateOptions_fromJs(delegates)
+				val userConverted: User? = convertingOptionOrDefaultNullable(
+					_options,
+					"user",
+					null
+				) { user: UserJs? ->
+					user?.let { nonNull1 ->
+						user_fromJs(nonNull1)
+					}
+				}
+				val secretIdConverted: SecretIdUseOption = convertingOptionOrDefaultNonNull(
+					_options,
+					"secretId",
+					com.icure.cardinal.sdk.crypto.entities.SecretIdUseOption.UseAnySharedWithParent
+				) { secretId: SecretIdUseOptionJs ->
+					secretIdUseOption_fromJs(secretId)
+				}
+				val alternateRootDelegateIdConverted: String? = convertingOptionOrDefaultNullable(
+					_options,
+					"alternateRootDelegateId",
+					null
+				) { alternateRootDelegateId: String? ->
+					undefinedToNull(alternateRootDelegateId)
+				}
+				val result = topicApi.inGroup.withEncryptionMetadataAndDelegates(
+					groupIdConverted,
+					baseConverted,
+					patientConverted,
+					delegatesConverted,
+					userConverted,
+					secretIdConverted,
+					alternateRootDelegateIdConverted,
+				)
+				groupScoped_toJs(
+					result,
+					{ x1: DecryptedTopic ->
+						topic_toJs(x1)
+					},
+				)
+			}
+		}
+
 		override fun getEncryptionKeysOf(topic: GroupScopedJs<TopicJs>): Promise<Array<String>> =
 				GlobalScope.promise {
 			val topicConverted: GroupScoped<Topic> = groupScoped_fromJs(
@@ -2117,6 +2186,65 @@ internal class TopicApiImplJs(
 				patientConverted,
 				userConverted,
 				delegatesConverted,
+				secretIdConverted,
+				alternateRootDelegateIdConverted,
+			)
+			topic_toJs(result)
+		}
+	}
+
+	override fun withEncryptionMetadataAndDelegates(
+		base: DecryptedTopicJs?,
+		patient: PatientJs?,
+		delegates: Record<String, TopicDelegateOptionsJs>,
+		options: dynamic,
+	): Promise<DecryptedTopicJs> {
+		val _options = options ?: js("{}")
+		return GlobalScope.promise {
+			val baseConverted: DecryptedTopic? = base?.let { nonNull1 ->
+				topic_fromJs(nonNull1)
+			}
+			val patientConverted: Patient? = patient?.let { nonNull1 ->
+				patient_fromJs(nonNull1)
+			}
+			val delegatesConverted: Map<String, TopicDelegateOptions> = objectToMap(
+				delegates,
+				"delegates",
+				{ x1: String ->
+					x1
+				},
+				{ x1: TopicDelegateOptionsJs ->
+					topicDelegateOptions_fromJs(x1)
+				},
+			)
+			val userConverted: User? = convertingOptionOrDefaultNullable(
+				_options,
+				"user",
+				null
+			) { user: UserJs? ->
+				user?.let { nonNull1 ->
+					user_fromJs(nonNull1)
+				}
+			}
+			val secretIdConverted: SecretIdUseOption = convertingOptionOrDefaultNonNull(
+				_options,
+				"secretId",
+				com.icure.cardinal.sdk.crypto.entities.SecretIdUseOption.UseAnySharedWithParent
+			) { secretId: SecretIdUseOptionJs ->
+				secretIdUseOption_fromJs(secretId)
+			}
+			val alternateRootDelegateIdConverted: String? = convertingOptionOrDefaultNullable(
+				_options,
+				"alternateRootDelegateId",
+				null
+			) { alternateRootDelegateId: String? ->
+				undefinedToNull(alternateRootDelegateId)
+			}
+			val result = topicApi.withEncryptionMetadataAndDelegates(
+				baseConverted,
+				patientConverted,
+				delegatesConverted,
+				userConverted,
 				secretIdConverted,
 				alternateRootDelegateIdConverted,
 			)
