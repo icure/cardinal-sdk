@@ -22,6 +22,7 @@ import com.icure.cardinal.sdk.model.ListOfIds
 import com.icure.cardinal.sdk.model.SecureDelegationKeyMap
 import com.icure.cardinal.sdk.model.base.HasEncryptionMetadata
 import com.icure.cardinal.sdk.model.embed.AccessLevel
+import com.icure.cardinal.sdk.model.extensions.toDefaultDelegateOptions
 import com.icure.cardinal.sdk.model.requests.RequestedPermission
 import com.icure.cardinal.sdk.model.specializations.encodeAsAccessControlHeaders
 import com.icure.cardinal.sdk.utils.Serialization
@@ -268,7 +269,7 @@ class DelegationsDeAnonymizationImpl(
 			entityType = entityType,
 			owningEntityDetails = null,
 			initializeEncryptionKey = true,
-			autoDelegations = initialDelegates.associateWith { AccessLevel.Read }
+			autoDelegations = initialDelegates.associateWith { AccessLevel.Read }.mapValues { it.value.toDefaultDelegateOptions() }
 		)
 		val encryptedKeyMap = entity.encryptEntities(
 			resolvedGroup,
