@@ -396,7 +396,8 @@ interface AccessLogApi : AccessLogBasicFlavourlessApi, AccessLogFlavouredApi<Dec
 	 */
 	suspend fun withEncryptionMetadata(
 		base: DecryptedAccessLog?,
-		patient: Patient,
+		@DefaultValue("null")
+		patient: Patient? = null,
 		@DefaultValue("null")
 		user: User? = null,
 		@DefaultValue("emptyMap()")
