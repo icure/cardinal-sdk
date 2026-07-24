@@ -1213,6 +1213,17 @@ internal class UserApiImplJs(
 		user_toJs(result)
 	}
 
+	override fun removeUserMobilePhone(userId: String, previousMobilePhone: String?): Promise<UserJs> =
+			GlobalScope.promise {
+		val userIdConverted: String = userId
+		val previousMobilePhoneConverted: String? = undefinedToNull(previousMobilePhone)
+		val result = userApi.removeUserMobilePhone(
+			userIdConverted,
+			previousMobilePhoneConverted,
+		)
+		user_toJs(result)
+	}
+
 	override fun deleteUserById(entityId: String, rev: String): Promise<StoredDocumentIdentifierJs> =
 			GlobalScope.promise {
 		val entityIdConverted: String = entityId

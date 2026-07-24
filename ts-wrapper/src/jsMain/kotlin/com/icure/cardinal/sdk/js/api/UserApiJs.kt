@@ -94,6 +94,8 @@ public external interface UserApiJs {
 		previousMobilePhone: String?,
 	): Promise<UserJs>
 
+	public fun removeUserMobilePhone(userId: String, previousMobilePhone: String?): Promise<UserJs>
+
 	public fun deleteUserById(entityId: String, rev: String): Promise<StoredDocumentIdentifierJs>
 
 	public fun deleteUsersByIds(userIds: Array<StoredDocumentIdentifierJs>):

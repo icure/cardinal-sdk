@@ -1,5 +1,6 @@
 // auto-generated file
 import {FilterOptions, PaginatedListIterator, SortableFilterOptions} from '../cardinal-sdk-ts.mjs';
+import {MessageDelegateOptions} from '../crypto/entities/MessageDelegateOptions.mjs';
 import {MessageShareOptions} from '../crypto/entities/MessageShareOptions.mjs';
 import {SecretIdUseOption} from '../crypto/entities/SecretIdUseOption.mjs';
 import {EntityReferenceInGroup} from '../model/EntityReferenceInGroup.mjs';
@@ -42,10 +43,29 @@ export interface MessageApi {
 
 	/**
 	 *
+	 *  Creates a new access log with initialized encryption metadata, specifying fine-grained options for each additional data owner that
+	 *  will have access to the entity.
+	 *  @param base a message with initialized content and uninitialized encryption metadata. The result of this
+	 *  method takes the content from [base] if provided.
+	 *  @param patient the patient linked to the Message.
+	 *  @param user the current user, will be used for the auto-delegations if provided.
+	 *  @param delegates additional data owners that will have access to the newly created entity. You may choose the
+	 *  permissions that the delegates will have on the entity and if they will have access to the secretIds, encryptionKeys, and/or
+	 *  owningEntityIds of the new entity.
+	 *  @param secretId specifies which secret id of [patient] to use for the new Message
+	 *  @return a message with initialized encryption metadata.
+	 *  @throws IllegalArgumentException if base is not null and has a revision or has encryption metadata.
+	 */
+	withEncryptionMetadataAndDelegates(base: DecryptedMessage | undefined,
+			patient: Patient | undefined, delegates: { [ key: string ]: MessageDelegateOptions },
+			options?: { user?: User | undefined, secretId?: SecretIdUseOption, alternateRootDelegateId?: string | undefined }): Promise<DecryptedMessage>;
+
+	/**
+	 *
 	 *  Attempts to extract the encryption keys of a message. If the user does not have access to any encryption key
 	 *  of the access log the method will return an empty set.
 	 *  Note: entities now have only one encryption key, but this method returns a set for compatibility with older
-	 *  versions of iCure where this was not a guarantee.
+	 *  versions of Cardinal where this was not a guarantee.
 	 *  @param message a message
 	 *  @return the encryption keys extracted from the provided Message.
 	 */

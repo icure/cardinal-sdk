@@ -2,6 +2,7 @@
 package com.icure.cardinal.sdk.js.api.`impl`
 
 import com.icure.cardinal.sdk.api.ReceiptApi
+import com.icure.cardinal.sdk.crypto.entities.ReceiptDelegateOptions
 import com.icure.cardinal.sdk.crypto.entities.ReceiptShareOptions
 import com.icure.cardinal.sdk.crypto.entities.SecretIdUseOption
 import com.icure.cardinal.sdk.js.api.DefaultParametersSupport.convertingOptionOrDefaultNonNull
@@ -10,8 +11,10 @@ import com.icure.cardinal.sdk.js.api.ReceiptApiJs
 import com.icure.cardinal.sdk.js.api.ReceiptFlavouredApiJs
 import com.icure.cardinal.sdk.js.api.ReceiptFlavouredInGroupApiJs
 import com.icure.cardinal.sdk.js.api.ReceiptInGroupApiJs
+import com.icure.cardinal.sdk.js.crypto.entities.ReceiptDelegateOptionsJs
 import com.icure.cardinal.sdk.js.crypto.entities.ReceiptShareOptionsJs
 import com.icure.cardinal.sdk.js.crypto.entities.SecretIdUseOptionJs
+import com.icure.cardinal.sdk.js.crypto.entities.receiptDelegateOptions_fromJs
 import com.icure.cardinal.sdk.js.crypto.entities.receiptShareOptions_fromJs
 import com.icure.cardinal.sdk.js.crypto.entities.secretIdUseOption_fromJs
 import com.icure.cardinal.sdk.js.model.CheckedConverters.arrayToList
@@ -1186,6 +1189,78 @@ internal class ReceiptApiImplJs(
 			}
 		}
 
+		override fun withEncryptionMetadataAndDelegates(
+			groupId: String,
+			base: DecryptedReceiptJs?,
+			patient: GroupScopedJs<PatientJs>?,
+			delegates: Record<String, ReceiptDelegateOptionsJs>,
+			options: dynamic,
+		): Promise<GroupScopedJs<DecryptedReceiptJs>> {
+			val _options = options ?: js("{}")
+			return GlobalScope.promise {
+				val groupIdConverted: String = groupId
+				val baseConverted: DecryptedReceipt? = base?.let { nonNull1 ->
+					receipt_fromJs(nonNull1)
+				}
+				val patientConverted: GroupScoped<Patient>? = patient?.let { nonNull1 ->
+					groupScoped_fromJs(
+						nonNull1,
+						{ x1: PatientJs ->
+							patient_fromJs(x1)
+						},
+					)
+				}
+				val delegatesConverted: Map<String, ReceiptDelegateOptions> = objectToMap(
+					delegates,
+					"delegates",
+					{ x1: String ->
+						x1
+					},
+					{ x1: ReceiptDelegateOptionsJs ->
+						receiptDelegateOptions_fromJs(x1)
+					},
+				)
+				val userConverted: User? = convertingOptionOrDefaultNullable(
+					_options,
+					"user",
+					null
+				) { user: UserJs? ->
+					user?.let { nonNull1 ->
+						user_fromJs(nonNull1)
+					}
+				}
+				val secretIdConverted: SecretIdUseOption = convertingOptionOrDefaultNonNull(
+					_options,
+					"secretId",
+					com.icure.cardinal.sdk.crypto.entities.SecretIdUseOption.UseAnySharedWithParent
+				) { secretId: SecretIdUseOptionJs ->
+					secretIdUseOption_fromJs(secretId)
+				}
+				val alternateRootDelegateIdConverted: String? = convertingOptionOrDefaultNullable(
+					_options,
+					"alternateRootDelegateId",
+					null
+				) { alternateRootDelegateId: String? ->
+					undefinedToNull(alternateRootDelegateId)
+				}
+				val result = receiptApi.inGroup.withEncryptionMetadataAndDelegates(
+					groupIdConverted,
+					baseConverted,
+					patientConverted,
+					delegatesConverted,
+					userConverted,
+					secretIdConverted,
+					alternateRootDelegateIdConverted,
+				)
+				groupScoped_toJs(
+					result,
+					{ x1: DecryptedReceipt ->
+						receipt_toJs(x1)
+					},
+				)
+			}
+		}
+
 		override fun getEncryptionKeysOf(receipt: GroupScopedJs<ReceiptJs>): Promise<Array<String>> =
 				GlobalScope.promise {
 			val receiptConverted: GroupScoped<Receipt> = groupScoped_fromJs(
@@ -1867,6 +1942,65 @@ internal class ReceiptApiImplJs(
 				patientConverted,
 				userConverted,
 				delegatesConverted,
+				secretIdConverted,
+				alternateRootDelegateIdConverted,
+			)
+			receipt_toJs(result)
+		}
+	}
+
+	override fun withEncryptionMetadataAndDelegates(
+		base: DecryptedReceiptJs?,
+		patient: PatientJs?,
+		delegates: Record<String, ReceiptDelegateOptionsJs>,
+		options: dynamic,
+	): Promise<DecryptedReceiptJs> {
+		val _options = options ?: js("{}")
+		return GlobalScope.promise {
+			val baseConverted: DecryptedReceipt? = base?.let { nonNull1 ->
+				receipt_fromJs(nonNull1)
+			}
+			val patientConverted: Patient? = patient?.let { nonNull1 ->
+				patient_fromJs(nonNull1)
+			}
+			val delegatesConverted: Map<String, ReceiptDelegateOptions> = objectToMap(
+				delegates,
+				"delegates",
+				{ x1: String ->
+					x1
+				},
+				{ x1: ReceiptDelegateOptionsJs ->
+					receiptDelegateOptions_fromJs(x1)
+				},
+			)
+			val userConverted: User? = convertingOptionOrDefaultNullable(
+				_options,
+				"user",
+				null
+			) { user: UserJs? ->
+				user?.let { nonNull1 ->
+					user_fromJs(nonNull1)
+				}
+			}
+			val secretIdConverted: SecretIdUseOption = convertingOptionOrDefaultNonNull(
+				_options,
+				"secretId",
+				com.icure.cardinal.sdk.crypto.entities.SecretIdUseOption.UseAnySharedWithParent
+			) { secretId: SecretIdUseOptionJs ->
+				secretIdUseOption_fromJs(secretId)
+			}
+			val alternateRootDelegateIdConverted: String? = convertingOptionOrDefaultNullable(
+				_options,
+				"alternateRootDelegateId",
+				null
+			) { alternateRootDelegateId: String? ->
+				undefinedToNull(alternateRootDelegateId)
+			}
+			val result = receiptApi.withEncryptionMetadataAndDelegates(
+				baseConverted,
+				patientConverted,
+				delegatesConverted,
+				userConverted,
 				secretIdConverted,
 				alternateRootDelegateIdConverted,
 			)

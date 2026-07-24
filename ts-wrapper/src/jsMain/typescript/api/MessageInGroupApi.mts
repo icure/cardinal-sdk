@@ -1,5 +1,6 @@
 // auto-generated file
 import {FilterOptions, PaginatedListIterator, SortableFilterOptions} from '../cardinal-sdk-ts.mjs';
+import {MessageDelegateOptions} from '../crypto/entities/MessageDelegateOptions.mjs';
 import {MessageShareOptions} from '../crypto/entities/MessageShareOptions.mjs';
 import {SecretIdUseOption} from '../crypto/entities/SecretIdUseOption.mjs';
 import {EntityReferenceInGroup} from '../model/EntityReferenceInGroup.mjs';
@@ -27,6 +28,18 @@ export interface MessageInGroupApi {
 	withEncryptionMetadata(entityGroupId: string, base: DecryptedMessage | undefined,
 			patient: GroupScoped<Patient> | undefined,
 			options?: { user?: User | undefined, delegates?: ArrayWithUniqueKeys<{ delegate: EntityReferenceInGroup, accessLevel: AccessLevel }, 'delegate'>, secretId?: SecretIdUseOption, alternateRootDelegateReference?: EntityReferenceInGroup | undefined }): Promise<GroupScoped<DecryptedMessage>>;
+
+	/**
+	 *
+	 *  In-group version of [MessageApi.withEncryptionMetadataAndDelegates]
+	 */
+	withEncryptionMetadataAndDelegates(
+			entityGroupId: string,
+			base: DecryptedMessage | undefined,
+			patient: GroupScoped<Patient> | undefined,
+			delegates: ArrayWithUniqueKeys<{ delegate: EntityReferenceInGroup, delegateOptions: MessageDelegateOptions }, 'delegate'>,
+			options?: { user?: User | undefined, secretId?: SecretIdUseOption, alternateRootDelegateReference?: EntityReferenceInGroup | undefined }
+	): Promise<GroupScoped<DecryptedMessage>>;
 
 	/**
 	 *

@@ -3,6 +3,7 @@
 
 package com.icure.cardinal.sdk.js.api
 
+import com.icure.cardinal.sdk.js.crypto.entities.DocumentDelegateOptionsJs
 import com.icure.cardinal.sdk.js.crypto.entities.DocumentShareOptionsJs
 import com.icure.cardinal.sdk.js.filters.FilterOptionsJs
 import com.icure.cardinal.sdk.js.filters.SortableFilterOptionsJs
@@ -38,14 +39,34 @@ public external interface DocumentApiJs {
 		options: dynamic,
 	): Promise<DecryptedDocumentJs>
 
+	public fun withEncryptionMetadataAndDelegatesLinkedToMessage(
+		base: DecryptedDocumentJs?,
+		message: MessageJs,
+		delegates: Record<String, DocumentDelegateOptionsJs>,
+		options: dynamic,
+	): Promise<DecryptedDocumentJs>
+
 	public fun withEncryptionMetadataLinkedToPatient(
 		base: DecryptedDocumentJs?,
 		patient: PatientJs,
 		options: dynamic,
 	): Promise<DecryptedDocumentJs>
 
+	public fun withEncryptionMetadataAndDelegatesLinkedToPatient(
+		base: DecryptedDocumentJs?,
+		patient: PatientJs,
+		delegates: Record<String, DocumentDelegateOptionsJs>,
+		options: dynamic,
+	): Promise<DecryptedDocumentJs>
+
 	public fun withEncryptionMetadataUnlinked(base: DecryptedDocumentJs?, options: dynamic):
 			Promise<DecryptedDocumentJs>
+
+	public fun withEncryptionMetadataAndDelegatesUnlinked(
+		base: DecryptedDocumentJs?,
+		delegates: Record<String, DocumentDelegateOptionsJs>,
+		options: dynamic,
+	): Promise<DecryptedDocumentJs>
 
 	public fun getAndTryDecryptMainAttachment(document: DocumentJs, options: dynamic):
 			Promise<ByteArray?>

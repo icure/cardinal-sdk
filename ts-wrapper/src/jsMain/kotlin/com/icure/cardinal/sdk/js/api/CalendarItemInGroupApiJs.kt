@@ -13,6 +13,8 @@ import com.icure.cardinal.sdk.js.model.EntityReferenceInGroupJs
 import com.icure.cardinal.sdk.js.model.GroupScopedJs
 import com.icure.cardinal.sdk.js.model.PatientJs
 import com.icure.cardinal.sdk.js.model.StoredDocumentIdentifierJs
+import com.icure.cardinal.sdk.js.model.UserJs
+import com.icure.cardinal.sdk.js.synthetic.mapasobjectarray.EntityReferenceInGroupToCalendarItemDelegateOptionsMapObject_delegate_delegateOptions
 import com.icure.cardinal.sdk.js.synthetic.mapasobjectarray.EntityReferenceInGroupToCalendarItemShareOptionsMapObject_delegate_shareOptions
 import com.icure.cardinal.sdk.js.utils.pagination.PaginatedListIteratorJs
 import kotlin.Array
@@ -34,6 +36,15 @@ public external interface CalendarItemInGroupApiJs {
 		entityGroupId: String,
 		base: DecryptedCalendarItemJs?,
 		patient: GroupScopedJs<PatientJs>?,
+		options: dynamic,
+	): Promise<GroupScopedJs<DecryptedCalendarItemJs>>
+
+	public fun withEncryptionMetadataAndDelegates(
+		entityGroupId: String,
+		base: DecryptedCalendarItemJs?,
+		patient: GroupScopedJs<PatientJs>?,
+		delegates: Array<EntityReferenceInGroupToCalendarItemDelegateOptionsMapObject_delegate_delegateOptions>,
+		user: UserJs?,
 		options: dynamic,
 	): Promise<GroupScopedJs<DecryptedCalendarItemJs>>
 

@@ -3,6 +3,7 @@
 
 package com.icure.cardinal.sdk.js.api
 
+import com.icure.cardinal.sdk.js.crypto.entities.ReceiptDelegateOptionsJs
 import com.icure.cardinal.sdk.js.crypto.entities.ReceiptShareOptionsJs
 import com.icure.cardinal.sdk.js.model.DecryptedReceiptJs
 import com.icure.cardinal.sdk.js.model.EncryptedReceiptJs
@@ -32,6 +33,13 @@ public external interface ReceiptApiJs {
 	public fun withEncryptionMetadata(
 		base: DecryptedReceiptJs?,
 		patient: PatientJs?,
+		options: dynamic,
+	): Promise<DecryptedReceiptJs>
+
+	public fun withEncryptionMetadataAndDelegates(
+		base: DecryptedReceiptJs?,
+		patient: PatientJs?,
+		delegates: Record<String, ReceiptDelegateOptionsJs>,
 		options: dynamic,
 	): Promise<DecryptedReceiptJs>
 

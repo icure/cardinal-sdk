@@ -1,5 +1,6 @@
 // auto-generated file
 import {PaginatedListIterator} from '../cardinal-sdk-ts.mjs';
+import {InvoiceDelegateOptions} from '../crypto/entities/InvoiceDelegateOptions.mjs';
 import {InvoiceShareOptions} from '../crypto/entities/InvoiceShareOptions.mjs';
 import {SecretIdUseOption} from '../crypto/entities/SecretIdUseOption.mjs';
 import {EntityReferenceInGroup} from '../model/EntityReferenceInGroup.mjs';
@@ -41,6 +42,25 @@ export interface InvoiceApi {
 	 */
 	withEncryptionMetadata(base: DecryptedInvoice | undefined, patient: Patient | undefined,
 			options?: { user?: User | undefined, delegates?: { [ key: string ]: AccessLevel }, secretId?: SecretIdUseOption, alternateRootDelegateId?: string | undefined }): Promise<DecryptedInvoice>;
+
+	/**
+	 *
+	 *  Creates a new access log with initialized encryption metadata, specifying fine-grained options for each additional data owner that
+	 *  will have access to the entity.
+	 *  @param base an invoice with initialized content and uninitialized encryption metadata. The result of this
+	 *  method takes the content from [base] if provided.
+	 *  @param patient the patient linked to the invoice.
+	 *  @param user the current user, will be used for the auto-delegations if provided.
+	 *  @param delegates additional data owners that will have access to the newly created entity. You may choose the
+	 *  permissions that the delegates will have on the entity and if they will have access to the secretIds, encryptionKeys, and/or
+	 *  owningEntityIds of the new entity.
+	 *  @param secretId specifies which secret id of [patient] to use for the new invoice
+	 *  @return an invoice with initialized encryption metadata.
+	 *  @throws IllegalArgumentException if base is not null and has a revision or has encryption metadata.
+	 */
+	withEncryptionMetadataAndDelegates(base: DecryptedInvoice | undefined,
+			patient: Patient | undefined, delegates: { [ key: string ]: InvoiceDelegateOptions },
+			options?: { user?: User | undefined, secretId?: SecretIdUseOption, alternateRootDelegateId?: string | undefined }): Promise<DecryptedInvoice>;
 
 	/**
 	 *
@@ -203,7 +223,7 @@ export interface InvoiceApi {
 	/**
 	 *
 	 *  Gives an approximation of the amount of times each tarification code ([Invoice.invoicingCodes] ->
-	 *  [InvoicingCode.tarificationId]) is used in invoices where the current data owner is a direct delegate (does not
+	 *  [InvoicingCode.pricingId]) is used in invoices where the current data owner is a direct delegate (does not
 	 *  count situations where the data owner has access to the service through delegations to a parent data owner).
 	 *  This number is not exact, and may be cached, so you should not use this method if you need precise values, but
 	 *  it can be useful if you want to give suggestions.

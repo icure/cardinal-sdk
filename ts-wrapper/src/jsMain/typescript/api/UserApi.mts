@@ -119,6 +119,17 @@ export interface UserApi {
 
 	/**
 	 *
+	 *  Removes a user mobile phone given its previous value, throwing a [RevisionConflictException] if the provided
+	 *  [previousMobilePhone] does not match the stored value.
+	 *
+	 *  This method should be favored over a simple [modifyUser] when changing the MobilePhone as it does not require knowing
+	 *  the revision of the user directly, and can work even if there is a [com.icure.cardinal.sdk.auth.services.SmartAuthProvider]
+	 *  that is modifying the user tokens when performing the request.
+	 */
+	removeUserMobilePhone(userId: string, previousMobilePhone: string | undefined): Promise<User>;
+
+	/**
+	 *
 	 *  Deletes a user. If you don't have write access to the user the method will fail.
 	 *  @param entityId id of the user.
 	 *  @param rev the latest known rev of the user to delete
