@@ -606,7 +606,7 @@ private class AccessLogApiImpl(
 
 	override suspend fun withEncryptionMetadata(
 		base: DecryptedAccessLog?,
-		patient: Patient,
+		patient: Patient?,
 		user: User?,
 		delegates: Map<String, AccessLevel>,
 		secretId: SecretIdUseOption,
@@ -615,7 +615,7 @@ private class AccessLogApiImpl(
 		doWithEncryptionMetadata(
 			entityGroupId = null,
 			base = base,
-			patientInGroup = Pair(patient, null),
+			patientInGroup = patient?.let { Pair(it, null) },
 			user = user,
 			delegates = delegates.keyAsLocalDataOwnerReferences(),
 			secretId = secretId,
@@ -643,7 +643,7 @@ private class AccessLogApiImpl(
 	private suspend fun doWithEncryptionMetadata(
 		entityGroupId: String?,
 		base: DecryptedAccessLog?,
-		patientInGroup: Pair<Patient, String?>,
+		patientInGroup: Pair<Patient, String?>?,
 		user: User?,
 		delegates: @JsMapAsObjectArray(keyEntryName = "delegate", valueEntryName = "accessLevel") Map<EntityReferenceInGroup, AccessLevel>,
 		secretId: SecretIdUseOption,
@@ -662,7 +662,7 @@ private class AccessLogApiImpl(
 	private suspend fun doWithEncryptionMetadataAndDelegates(
 		entityGroupId: String?,
 		base: DecryptedAccessLog?,
-		patientInGroup: Pair<Patient, String?>,
+		patientInGroup: Pair<Patient, String?>?,
 		user: User?,
 		delegates: @JsMapAsObjectArray(keyEntryName = "delegate", valueEntryName = "delegateOptions") Map<EntityReferenceInGroup, DelegateOptions>,
 		secretId: SecretIdUseOption,
@@ -677,7 +677,7 @@ private class AccessLogApiImpl(
 				author = base?.author ?: user?.id?.takeIf { config.autofillAuthor },
 			),
 			entityType = EntityWithEncryptionMetadataTypeName.AccessLog,
-			owningEntityDetails = patientInGroup.let { (patient, patientGroup) ->
+			owningEntityDetails = patientInGroup?.let { (patient, patientGroup) ->
 				OwningEntityDetails(
 					patientGroup,
 					patient.id,
