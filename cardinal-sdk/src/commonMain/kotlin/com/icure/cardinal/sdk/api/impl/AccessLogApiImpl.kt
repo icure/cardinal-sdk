@@ -498,7 +498,7 @@ private class AccessLogApiImpl(
 		override suspend fun withEncryptionMetadata(
 			entityGroupId: String,
 			base: DecryptedAccessLog?,
-			patient: GroupScoped<Patient>,
+			patient: GroupScoped<Patient>?,
 			user: User?,
 			delegates: @JsMapAsObjectArray(
 				keyEntryName = "delegate",
@@ -511,7 +511,7 @@ private class AccessLogApiImpl(
 				doWithEncryptionMetadata(
 					entityGroupId = entityGroupId,
 					base = base,
-					patientInGroup = patient.let { Pair(it.entity, it.groupId) },
+					patientInGroup = patient?.let { Pair(it.entity, it.groupId) },
 					user = user,
 					delegates = delegates,
 					secretId = secretId,
@@ -523,7 +523,7 @@ private class AccessLogApiImpl(
 		override suspend fun withEncryptionMetadataAndDelegates(
 			entityGroupId: String,
 			base: DecryptedAccessLog?,
-			patient: GroupScoped<Patient>,
+			patient: GroupScoped<Patient>?,
 			delegates: @JsMapAsObjectArray(
 				keyEntryName = "delegate",
 				valueEntryName = "delegateOptions"
@@ -536,7 +536,7 @@ private class AccessLogApiImpl(
 				doWithEncryptionMetadataAndDelegates(
 					entityGroupId = entityGroupId,
 					base = base,
-					patientInGroup = patient.let { Pair(it.entity, it.groupId) },
+					patientInGroup = patient?.let { Pair(it.entity, it.groupId) },
 					user = user,
 					delegates = delegates,
 					secretId = secretId,
@@ -624,7 +624,7 @@ private class AccessLogApiImpl(
 
 	override suspend fun withEncryptionMetadataAndDelegates(
 		base: DecryptedAccessLog?,
-		patient: Patient,
+		patient: Patient?,
 		delegates: Map<String, AccessLogDelegateOptions>,
 		user: User?,
 		secretId: SecretIdUseOption,
@@ -633,7 +633,7 @@ private class AccessLogApiImpl(
 		doWithEncryptionMetadataAndDelegates(
 			entityGroupId = null,
 			base = base,
-			patientInGroup = Pair(patient, null),
+			patientInGroup = patient?.let { Pair(it, null) },
 			user = user,
 			delegates = delegates.keyAsLocalDataOwnerReferences(),
 			secretId = secretId,

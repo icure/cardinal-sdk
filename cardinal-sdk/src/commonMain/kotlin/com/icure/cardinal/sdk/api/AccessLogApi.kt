@@ -424,7 +424,8 @@ interface AccessLogApi : AccessLogBasicFlavourlessApi, AccessLogFlavouredApi<Dec
 	 */
 	suspend fun withEncryptionMetadataAndDelegates(
 		base: DecryptedAccessLog?,
-		patient: Patient,
+		patient: Patient? = null,
+		@DefaultValue("null")
 		delegates: Map<String, AccessLogDelegateOptions>,
 		@DefaultValue("null")
 		user: User? = null,
@@ -572,7 +573,8 @@ interface AccessLogInGroupApi : AccessLogBasicFlavourlessInGroupApi, AccessLogBa
 	suspend fun withEncryptionMetadata(
 		entityGroupId: String,
 		base: DecryptedAccessLog?,
-		patient: GroupScoped<Patient>,
+		@DefaultValue("null")
+		patient: GroupScoped<Patient>? = null,
 		@DefaultValue("null")
 		user: User? = null,
 		@DefaultValue("emptyMap()")
@@ -589,7 +591,8 @@ interface AccessLogInGroupApi : AccessLogBasicFlavourlessInGroupApi, AccessLogBa
 	suspend fun withEncryptionMetadataAndDelegates(
 		entityGroupId: String,
 		base: DecryptedAccessLog?,
-		patient: GroupScoped<Patient>,
+		@DefaultValue("null")
+		patient: GroupScoped<Patient>? = null,
 		delegates: @JsMapAsObjectArray(keyEntryName = "delegate", valueEntryName = "delegateOptions") Map<EntityReferenceInGroup, AccessLogDelegateOptions>,
 		@DefaultValue("null")
 		user: User? = null,

@@ -43,6 +43,9 @@ jobs:
                       if echo "$LABELS" | grep -q "ts-generation"; then
                         echo "PR has ts-generation label, skipping workflow"
                         echo "skip=true" >> $GITHUB_OUTPUT
+                      elif echo "$LABELS" | grep -q "python-generation"; then
+                        echo "PR has python-generation label, skipping workflow"
+                        echo "skip=true" >> $GITHUB_OUTPUT
                       else
                         echo "PR does not have ts-generation label, continuing"
                         echo "skip=false" >> $GITHUB_OUTPUT
