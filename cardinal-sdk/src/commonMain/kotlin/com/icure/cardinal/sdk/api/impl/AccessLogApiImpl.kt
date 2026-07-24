@@ -523,11 +523,11 @@ private class AccessLogApiImpl(
 		override suspend fun withEncryptionMetadataAndDelegates(
 			entityGroupId: String,
 			base: DecryptedAccessLog?,
-			patient: GroupScoped<Patient>?,
 			delegates: @JsMapAsObjectArray(
 				keyEntryName = "delegate",
 				valueEntryName = "delegateOptions"
 			) Map<EntityReferenceInGroup, AccessLogDelegateOptions>,
+			patient: GroupScoped<Patient>?,
 			user: User?,
 			secretId: SecretIdUseOption,
 			alternateRootDelegateReference: EntityReferenceInGroup?
@@ -624,8 +624,8 @@ private class AccessLogApiImpl(
 
 	override suspend fun withEncryptionMetadataAndDelegates(
 		base: DecryptedAccessLog?,
-		patient: Patient?,
 		delegates: Map<String, AccessLogDelegateOptions>,
+		patient: Patient?,
 		user: User?,
 		secretId: SecretIdUseOption,
 		alternateRootDelegateId: String?,
