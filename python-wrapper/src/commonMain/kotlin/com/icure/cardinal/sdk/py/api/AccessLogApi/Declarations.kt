@@ -2,6 +2,7 @@
 package com.icure.cardinal.sdk.py.api.AccessLogApi
 
 import com.icure.cardinal.sdk.CardinalApis
+import com.icure.cardinal.sdk.crypto.entities.AccessLogDelegateOptions
 import com.icure.cardinal.sdk.crypto.entities.AccessLogShareOptions
 import com.icure.cardinal.sdk.crypto.entities.SecretIdUseOption
 import com.icure.cardinal.sdk.filters.FilterOptions
@@ -51,7 +52,7 @@ import kotlinx.serialization.builtins.serializer
 @Serializable
 private class WithEncryptionMetadataParams(
 	public val base: DecryptedAccessLog?,
-	public val patient: Patient,
+	public val patient: Patient? = null,
 	public val user: User? = null,
 	public val delegates: Map<String, AccessLevel> = emptyMap(),
 	public val secretId: SecretIdUseOption =
@@ -93,6 +94,60 @@ public fun withEncryptionMetadataAsync(
 				decodedParams.patient,
 				decodedParams.user,
 				decodedParams.delegates,
+				decodedParams.secretId,
+				decodedParams.alternateRootDelegateId,
+			)
+		}.toPyStringAsyncCallback(DecryptedAccessLog.serializer(), resultCallback)
+	}
+}.failureToPyStringAsyncCallback(resultCallback)
+
+@Serializable
+private class WithEncryptionMetadataAndDelegatesParams(
+	public val base: DecryptedAccessLog?,
+	public val delegates: Map<String, AccessLogDelegateOptions>,
+	public val patient: Patient? = null,
+	public val user: User? = null,
+	public val secretId: SecretIdUseOption =
+			com.icure.cardinal.sdk.crypto.entities.SecretIdUseOption.UseAnySharedWithParent,
+	public val alternateRootDelegateId: String? = null,
+)
+
+@OptIn(InternalIcureApi::class)
+public fun withEncryptionMetadataAndDelegatesBlocking(sdk: CardinalApis, params: String): String =
+		kotlin.runCatching {
+	val decodedParams =
+			fullLanguageInteropJson.decodeFromString<WithEncryptionMetadataAndDelegatesParams>(params)
+	runBlocking {
+		sdk.accessLog.withEncryptionMetadataAndDelegates(
+			decodedParams.base,
+			decodedParams.delegates,
+			decodedParams.patient,
+			decodedParams.user,
+			decodedParams.secretId,
+			decodedParams.alternateRootDelegateId,
+		)
+	}
+}.toPyString(DecryptedAccessLog.serializer())
+
+@OptIn(
+	ExperimentalForeignApi::class,
+	InternalIcureApi::class,
+)
+public fun withEncryptionMetadataAndDelegatesAsync(
+	sdk: CardinalApis,
+	params: String,
+	resultCallback: CPointer<CFunction<(CValues<ByteVarOf<Byte>>?,
+			CValues<ByteVarOf<Byte>>?) -> Unit>>,
+): COpaquePointer? = kotlin.runCatching {
+	val decodedParams =
+			fullLanguageInteropJson.decodeFromString<WithEncryptionMetadataAndDelegatesParams>(params)
+	GlobalScope.launch {
+		kotlin.runCatching {
+			sdk.accessLog.withEncryptionMetadataAndDelegates(
+				decodedParams.base,
+				decodedParams.delegates,
+				decodedParams.patient,
+				decodedParams.user,
 				decodedParams.secretId,
 				decodedParams.alternateRootDelegateId,
 			)

@@ -152,12 +152,13 @@ class RoleApi:
 			return_value = [Role._deserialize(x1) for x1 in result_info.success]
 			return return_value
 
-	async def create_role_async(self, name: str, permissions: set[str], inherits_up_to: Optional[int] = None) -> Role:
+	async def create_role_async(self, name: str, permissions: set[str], description: Optional[str], inherits_up_to: Optional[int] = None) -> Role:
 		def do_decode(raw_result):
 			return Role._deserialize(raw_result)
 		payload = {
 			"name": name,
 			"permissions": [x0 for x0 in permissions],
+			"description": description,
 			"inheritsUpTo": inherits_up_to,
 		}
 		return await execute_async_method_job(
@@ -169,10 +170,11 @@ class RoleApi:
 			json.dumps(payload).encode('utf-8'),
 		)
 
-	def create_role_blocking(self, name: str, permissions: set[str], inherits_up_to: Optional[int] = None) -> Role:
+	def create_role_blocking(self, name: str, permissions: set[str], description: Optional[str], inherits_up_to: Optional[int] = None) -> Role:
 		payload = {
 			"name": name,
 			"permissions": [x0 for x0 in permissions],
+			"description": description,
 			"inheritsUpTo": inherits_up_to,
 		}
 		call_result = symbols.kotlin.root.com.icure.cardinal.sdk.py.api.RoleApi.createRoleBlocking(
@@ -187,13 +189,14 @@ class RoleApi:
 			return_value = Role._deserialize(result_info.success)
 			return return_value
 
-	async def create_role_in_group_async(self, group_id: str, name: str, permissions: set[str], inherits_up_to: Optional[int] = None) -> Role:
+	async def create_role_in_group_async(self, group_id: str, name: str, permissions: set[str], description: Optional[str], inherits_up_to: Optional[int] = None) -> Role:
 		def do_decode(raw_result):
 			return Role._deserialize(raw_result)
 		payload = {
 			"groupId": group_id,
 			"name": name,
 			"permissions": [x0 for x0 in permissions],
+			"description": description,
 			"inheritsUpTo": inherits_up_to,
 		}
 		return await execute_async_method_job(
@@ -205,11 +208,12 @@ class RoleApi:
 			json.dumps(payload).encode('utf-8'),
 		)
 
-	def create_role_in_group_blocking(self, group_id: str, name: str, permissions: set[str], inherits_up_to: Optional[int] = None) -> Role:
+	def create_role_in_group_blocking(self, group_id: str, name: str, permissions: set[str], description: Optional[str], inherits_up_to: Optional[int] = None) -> Role:
 		payload = {
 			"groupId": group_id,
 			"name": name,
 			"permissions": [x0 for x0 in permissions],
+			"description": description,
 			"inheritsUpTo": inherits_up_to,
 		}
 		call_result = symbols.kotlin.root.com.icure.cardinal.sdk.py.api.RoleApi.createRoleInGroupBlocking(

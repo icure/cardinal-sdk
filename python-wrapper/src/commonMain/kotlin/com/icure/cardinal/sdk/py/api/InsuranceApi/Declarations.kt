@@ -2,11 +2,18 @@
 package com.icure.cardinal.sdk.py.api.InsuranceApi
 
 import com.icure.cardinal.sdk.CardinalNonCryptoApis
+import com.icure.cardinal.sdk.filters.BaseFilterOptions
+import com.icure.cardinal.sdk.filters.BaseSortableFilterOptions
 import com.icure.cardinal.sdk.model.Insurance
 import com.icure.cardinal.sdk.model.StoredDocumentIdentifier
+import com.icure.cardinal.sdk.py.utils.PyResult
+import com.icure.cardinal.sdk.py.utils.failureToPyResultAsyncCallback
 import com.icure.cardinal.sdk.py.utils.failureToPyStringAsyncCallback
+import com.icure.cardinal.sdk.py.utils.toPyResult
+import com.icure.cardinal.sdk.py.utils.toPyResultAsyncCallback
 import com.icure.cardinal.sdk.py.utils.toPyString
 import com.icure.cardinal.sdk.py.utils.toPyStringAsyncCallback
+import com.icure.cardinal.sdk.serialization.PaginatedListIteratorWithSerializer
 import com.icure.cardinal.sdk.utils.Serialization.fullLanguageInteropJson
 import com.icure.utils.InternalIcureApi
 import kotlin.Byte
@@ -755,3 +762,151 @@ public fun listInsurancesByNameAsync(
 		}.toPyStringAsyncCallback(ListSerializer(Insurance.serializer()), resultCallback)
 	}
 }.failureToPyStringAsyncCallback(resultCallback)
+
+@Serializable
+private class MatchInsurancesByParams(
+	public val filter: BaseFilterOptions<Insurance>,
+)
+
+@OptIn(InternalIcureApi::class)
+public fun matchInsurancesByBlocking(sdk: CardinalNonCryptoApis, params: String): String =
+		kotlin.runCatching {
+	val decodedParams = fullLanguageInteropJson.decodeFromString<MatchInsurancesByParams>(params)
+	runBlocking {
+		sdk.insurance.matchInsurancesBy(
+			decodedParams.filter,
+		)
+	}
+}.toPyString(ListSerializer(String.serializer()))
+
+@OptIn(
+	ExperimentalForeignApi::class,
+	InternalIcureApi::class,
+)
+public fun matchInsurancesByAsync(
+	sdk: CardinalNonCryptoApis,
+	params: String,
+	resultCallback: CPointer<CFunction<(CValues<ByteVarOf<Byte>>?,
+			CValues<ByteVarOf<Byte>>?) -> Unit>>,
+): COpaquePointer? = kotlin.runCatching {
+	val decodedParams = fullLanguageInteropJson.decodeFromString<MatchInsurancesByParams>(params)
+	GlobalScope.launch {
+		kotlin.runCatching {
+			sdk.insurance.matchInsurancesBy(
+				decodedParams.filter,
+			)
+		}.toPyStringAsyncCallback(ListSerializer(String.serializer()), resultCallback)
+	}
+}.failureToPyStringAsyncCallback(resultCallback)
+
+@Serializable
+private class FilterInsurancesByParams(
+	public val filter: BaseFilterOptions<Insurance>,
+)
+
+@OptIn(InternalIcureApi::class)
+public fun filterInsurancesByBlocking(sdk: CardinalNonCryptoApis, params: String): PyResult =
+		kotlin.runCatching {
+	val decodedParams = fullLanguageInteropJson.decodeFromString<FilterInsurancesByParams>(params)
+	runBlocking {
+		sdk.insurance.filterInsurancesBy(
+			decodedParams.filter,
+		)
+	}
+}.toPyResult {
+	PaginatedListIteratorWithSerializer(it, Insurance.serializer())}
+
+@OptIn(
+	ExperimentalForeignApi::class,
+	InternalIcureApi::class,
+)
+public fun filterInsurancesByAsync(
+	sdk: CardinalNonCryptoApis,
+	params: String,
+	resultCallback: CPointer<CFunction<(COpaquePointer?, CValues<ByteVarOf<Byte>>?) -> Unit>>,
+): COpaquePointer? = kotlin.runCatching {
+	val decodedParams = fullLanguageInteropJson.decodeFromString<FilterInsurancesByParams>(params)
+	GlobalScope.launch {
+		kotlin.runCatching {
+			sdk.insurance.filterInsurancesBy(
+				decodedParams.filter,
+			)
+		}.toPyResultAsyncCallback(resultCallback) {
+			PaginatedListIteratorWithSerializer(it, Insurance.serializer())}
+	}
+}.failureToPyResultAsyncCallback(resultCallback)
+
+@Serializable
+private class MatchInsurancesBySortedParams(
+	public val filter: BaseSortableFilterOptions<Insurance>,
+)
+
+@OptIn(InternalIcureApi::class)
+public fun matchInsurancesBySortedBlocking(sdk: CardinalNonCryptoApis, params: String): String =
+		kotlin.runCatching {
+	val decodedParams = fullLanguageInteropJson.decodeFromString<MatchInsurancesBySortedParams>(params)
+	runBlocking {
+		sdk.insurance.matchInsurancesBySorted(
+			decodedParams.filter,
+		)
+	}
+}.toPyString(ListSerializer(String.serializer()))
+
+@OptIn(
+	ExperimentalForeignApi::class,
+	InternalIcureApi::class,
+)
+public fun matchInsurancesBySortedAsync(
+	sdk: CardinalNonCryptoApis,
+	params: String,
+	resultCallback: CPointer<CFunction<(CValues<ByteVarOf<Byte>>?,
+			CValues<ByteVarOf<Byte>>?) -> Unit>>,
+): COpaquePointer? = kotlin.runCatching {
+	val decodedParams = fullLanguageInteropJson.decodeFromString<MatchInsurancesBySortedParams>(params)
+	GlobalScope.launch {
+		kotlin.runCatching {
+			sdk.insurance.matchInsurancesBySorted(
+				decodedParams.filter,
+			)
+		}.toPyStringAsyncCallback(ListSerializer(String.serializer()), resultCallback)
+	}
+}.failureToPyStringAsyncCallback(resultCallback)
+
+@Serializable
+private class FilterInsurancesBySortedParams(
+	public val filter: BaseSortableFilterOptions<Insurance>,
+)
+
+@OptIn(InternalIcureApi::class)
+public fun filterInsurancesBySortedBlocking(sdk: CardinalNonCryptoApis, params: String): PyResult =
+		kotlin.runCatching {
+	val decodedParams =
+			fullLanguageInteropJson.decodeFromString<FilterInsurancesBySortedParams>(params)
+	runBlocking {
+		sdk.insurance.filterInsurancesBySorted(
+			decodedParams.filter,
+		)
+	}
+}.toPyResult {
+	PaginatedListIteratorWithSerializer(it, Insurance.serializer())}
+
+@OptIn(
+	ExperimentalForeignApi::class,
+	InternalIcureApi::class,
+)
+public fun filterInsurancesBySortedAsync(
+	sdk: CardinalNonCryptoApis,
+	params: String,
+	resultCallback: CPointer<CFunction<(COpaquePointer?, CValues<ByteVarOf<Byte>>?) -> Unit>>,
+): COpaquePointer? = kotlin.runCatching {
+	val decodedParams =
+			fullLanguageInteropJson.decodeFromString<FilterInsurancesBySortedParams>(params)
+	GlobalScope.launch {
+		kotlin.runCatching {
+			sdk.insurance.filterInsurancesBySorted(
+				decodedParams.filter,
+			)
+		}.toPyResultAsyncCallback(resultCallback) {
+			PaginatedListIteratorWithSerializer(it, Insurance.serializer())}
+	}
+}.failureToPyResultAsyncCallback(resultCallback)

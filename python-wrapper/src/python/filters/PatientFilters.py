@@ -3,7 +3,7 @@ import json
 from cardinal_sdk.kotlin_types import symbols
 from cardinal_sdk.model.CallResult import create_result_from_json, interpret_kt_error
 from ctypes import cast, c_char_p
-from cardinal_sdk.filters.FilterOptions import BaseFilterOptions, FilterOptions, SortableFilterOptions, BaseSortableFilterOptions
+from cardinal_sdk.filters.FilterOptions import BaseFilterOptions, FilterOptions, SortableFilterOptions
 from cardinal_sdk.model import Patient, EntityReferenceInGroup, Identifier, Gender
 from typing import Optional
 
@@ -71,7 +71,7 @@ class PatientFilters:
 			return return_value
 
 	@classmethod
-	def by_identifiers_for_data_owner(cls, data_owner_id: str, identifiers: list[Identifier]) -> BaseSortableFilterOptions[Patient]:
+	def by_identifiers_for_data_owner(cls, data_owner_id: str, identifiers: list[Identifier]) -> BaseFilterOptions[Patient]:
 		payload = {
 			"dataOwnerId": data_owner_id,
 			"identifiers": [x0.__serialize__() for x0 in identifiers],
@@ -84,11 +84,11 @@ class PatientFilters:
 		if result_info.failure is not None:
 			raise interpret_kt_error(result_info.failure)
 		else:
-			return_value = BaseSortableFilterOptions(result_info.success)
+			return_value = BaseFilterOptions(result_info.success)
 			return return_value
 
 	@classmethod
-	def by_identifiers_for_data_owner_in_group(cls, data_owner: EntityReferenceInGroup, identifiers: list[Identifier]) -> BaseSortableFilterOptions[Patient]:
+	def by_identifiers_for_data_owner_in_group(cls, data_owner: EntityReferenceInGroup, identifiers: list[Identifier]) -> BaseFilterOptions[Patient]:
 		payload = {
 			"dataOwner": data_owner.__serialize__(),
 			"identifiers": [x0.__serialize__() for x0 in identifiers],
@@ -101,11 +101,11 @@ class PatientFilters:
 		if result_info.failure is not None:
 			raise interpret_kt_error(result_info.failure)
 		else:
-			return_value = BaseSortableFilterOptions(result_info.success)
+			return_value = BaseFilterOptions(result_info.success)
 			return return_value
 
 	@classmethod
-	def by_ssins_for_data_owner(cls, data_owner_id: str, ssins: list[str]) -> BaseSortableFilterOptions[Patient]:
+	def by_ssins_for_data_owner(cls, data_owner_id: str, ssins: list[str]) -> BaseFilterOptions[Patient]:
 		payload = {
 			"dataOwnerId": data_owner_id,
 			"ssins": [x0 for x0 in ssins],
@@ -118,11 +118,11 @@ class PatientFilters:
 		if result_info.failure is not None:
 			raise interpret_kt_error(result_info.failure)
 		else:
-			return_value = BaseSortableFilterOptions(result_info.success)
+			return_value = BaseFilterOptions(result_info.success)
 			return return_value
 
 	@classmethod
-	def by_ssins_for_data_owner_in_group(cls, data_owner: EntityReferenceInGroup, ssins: list[str]) -> BaseSortableFilterOptions[Patient]:
+	def by_ssins_for_data_owner_in_group(cls, data_owner: EntityReferenceInGroup, ssins: list[str]) -> BaseFilterOptions[Patient]:
 		payload = {
 			"dataOwner": data_owner.__serialize__(),
 			"ssins": [x0 for x0 in ssins],
@@ -135,11 +135,11 @@ class PatientFilters:
 		if result_info.failure is not None:
 			raise interpret_kt_error(result_info.failure)
 		else:
-			return_value = BaseSortableFilterOptions(result_info.success)
+			return_value = BaseFilterOptions(result_info.success)
 			return return_value
 
 	@classmethod
-	def by_date_of_birth_between_for_data_owner(cls, data_owner_id: str, from_date: int, to_date: int) -> BaseSortableFilterOptions[Patient]:
+	def by_date_of_birth_between_for_data_owner(cls, data_owner_id: str, from_date: int, to_date: int) -> BaseFilterOptions[Patient]:
 		payload = {
 			"dataOwnerId": data_owner_id,
 			"fromDate": from_date,
@@ -153,11 +153,11 @@ class PatientFilters:
 		if result_info.failure is not None:
 			raise interpret_kt_error(result_info.failure)
 		else:
-			return_value = BaseSortableFilterOptions(result_info.success)
+			return_value = BaseFilterOptions(result_info.success)
 			return return_value
 
 	@classmethod
-	def by_date_of_birth_between_for_data_owner_in_group(cls, data_owner: EntityReferenceInGroup, from_date: int, to_date: int) -> BaseSortableFilterOptions[Patient]:
+	def by_date_of_birth_between_for_data_owner_in_group(cls, data_owner: EntityReferenceInGroup, from_date: int, to_date: int) -> BaseFilterOptions[Patient]:
 		payload = {
 			"dataOwner": data_owner.__serialize__(),
 			"fromDate": from_date,
@@ -171,7 +171,7 @@ class PatientFilters:
 		if result_info.failure is not None:
 			raise interpret_kt_error(result_info.failure)
 		else:
-			return_value = BaseSortableFilterOptions(result_info.success)
+			return_value = BaseFilterOptions(result_info.success)
 			return return_value
 
 	@classmethod
@@ -209,7 +209,7 @@ class PatientFilters:
 			return return_value
 
 	@classmethod
-	def by_gender_education_profession_for_data_owner(cls, data_owner_id: str, gender: Gender, education: Optional[str] = None, profession: Optional[str] = None) -> BaseSortableFilterOptions[Patient]:
+	def by_gender_education_profession_for_data_owner(cls, data_owner_id: str, gender: Gender, education: Optional[str] = None, profession: Optional[str] = None) -> BaseFilterOptions[Patient]:
 		payload = {
 			"dataOwnerId": data_owner_id,
 			"gender": gender.__serialize__(),
@@ -224,11 +224,11 @@ class PatientFilters:
 		if result_info.failure is not None:
 			raise interpret_kt_error(result_info.failure)
 		else:
-			return_value = BaseSortableFilterOptions(result_info.success)
+			return_value = BaseFilterOptions(result_info.success)
 			return return_value
 
 	@classmethod
-	def by_gender_education_profession_for_data_owner_in_group(cls, data_owner: EntityReferenceInGroup, gender: Gender, education: Optional[str] = None, profession: Optional[str] = None) -> BaseSortableFilterOptions[Patient]:
+	def by_gender_education_profession_for_data_owner_in_group(cls, data_owner: EntityReferenceInGroup, gender: Gender, education: Optional[str] = None, profession: Optional[str] = None) -> BaseFilterOptions[Patient]:
 		payload = {
 			"dataOwner": data_owner.__serialize__(),
 			"gender": gender.__serialize__(),
@@ -243,7 +243,7 @@ class PatientFilters:
 		if result_info.failure is not None:
 			raise interpret_kt_error(result_info.failure)
 		else:
-			return_value = BaseSortableFilterOptions(result_info.success)
+			return_value = BaseFilterOptions(result_info.success)
 			return return_value
 
 	@classmethod
@@ -281,7 +281,7 @@ class PatientFilters:
 			return return_value
 
 	@classmethod
-	def by_telecom_for_data_owner(cls, data_owner_id: str, search_string: str) -> BaseSortableFilterOptions[Patient]:
+	def by_telecom_for_data_owner(cls, data_owner_id: str, search_string: str) -> BaseFilterOptions[Patient]:
 		payload = {
 			"dataOwnerId": data_owner_id,
 			"searchString": search_string,
@@ -294,11 +294,11 @@ class PatientFilters:
 		if result_info.failure is not None:
 			raise interpret_kt_error(result_info.failure)
 		else:
-			return_value = BaseSortableFilterOptions(result_info.success)
+			return_value = BaseFilterOptions(result_info.success)
 			return return_value
 
 	@classmethod
-	def by_telecom_for_data_owner_in_group(cls, data_owner: EntityReferenceInGroup, search_string: str) -> BaseSortableFilterOptions[Patient]:
+	def by_telecom_for_data_owner_in_group(cls, data_owner: EntityReferenceInGroup, search_string: str) -> BaseFilterOptions[Patient]:
 		payload = {
 			"dataOwner": data_owner.__serialize__(),
 			"searchString": search_string,
@@ -311,11 +311,11 @@ class PatientFilters:
 		if result_info.failure is not None:
 			raise interpret_kt_error(result_info.failure)
 		else:
-			return_value = BaseSortableFilterOptions(result_info.success)
+			return_value = BaseFilterOptions(result_info.success)
 			return return_value
 
 	@classmethod
-	def by_address_postal_code_house_number_for_data_owner(cls, data_owner_id: str, search_string: str, postal_code: str, house_number: Optional[str] = None) -> BaseSortableFilterOptions[Patient]:
+	def by_address_postal_code_house_number_for_data_owner(cls, data_owner_id: str, search_string: str, postal_code: str, house_number: Optional[str] = None) -> BaseFilterOptions[Patient]:
 		payload = {
 			"dataOwnerId": data_owner_id,
 			"searchString": search_string,
@@ -330,11 +330,11 @@ class PatientFilters:
 		if result_info.failure is not None:
 			raise interpret_kt_error(result_info.failure)
 		else:
-			return_value = BaseSortableFilterOptions(result_info.success)
+			return_value = BaseFilterOptions(result_info.success)
 			return return_value
 
 	@classmethod
-	def by_address_postal_code_house_number_for_data_owner_in_group(cls, data_owner: EntityReferenceInGroup, search_string: str, postal_code: str, house_number: Optional[str] = None) -> BaseSortableFilterOptions[Patient]:
+	def by_address_postal_code_house_number_for_data_owner_in_group(cls, data_owner: EntityReferenceInGroup, search_string: str, postal_code: str, house_number: Optional[str] = None) -> BaseFilterOptions[Patient]:
 		payload = {
 			"dataOwner": data_owner.__serialize__(),
 			"searchString": search_string,
@@ -349,11 +349,11 @@ class PatientFilters:
 		if result_info.failure is not None:
 			raise interpret_kt_error(result_info.failure)
 		else:
-			return_value = BaseSortableFilterOptions(result_info.success)
+			return_value = BaseFilterOptions(result_info.success)
 			return return_value
 
 	@classmethod
-	def by_address_for_data_owner(cls, data_owner_id: str, search_string: str) -> BaseSortableFilterOptions[Patient]:
+	def by_address_for_data_owner(cls, data_owner_id: str, search_string: str) -> BaseFilterOptions[Patient]:
 		payload = {
 			"dataOwnerId": data_owner_id,
 			"searchString": search_string,
@@ -366,11 +366,11 @@ class PatientFilters:
 		if result_info.failure is not None:
 			raise interpret_kt_error(result_info.failure)
 		else:
-			return_value = BaseSortableFilterOptions(result_info.success)
+			return_value = BaseFilterOptions(result_info.success)
 			return return_value
 
 	@classmethod
-	def by_address_for_data_owner_in_group(cls, data_owner: EntityReferenceInGroup, search_string: str) -> BaseSortableFilterOptions[Patient]:
+	def by_address_for_data_owner_in_group(cls, data_owner: EntityReferenceInGroup, search_string: str) -> BaseFilterOptions[Patient]:
 		payload = {
 			"dataOwner": data_owner.__serialize__(),
 			"searchString": search_string,
@@ -383,11 +383,11 @@ class PatientFilters:
 		if result_info.failure is not None:
 			raise interpret_kt_error(result_info.failure)
 		else:
-			return_value = BaseSortableFilterOptions(result_info.success)
+			return_value = BaseFilterOptions(result_info.success)
 			return return_value
 
 	@classmethod
-	def by_identifiers_for_self(cls, identifiers: list[Identifier]) -> SortableFilterOptions[Patient]:
+	def by_identifiers_for_self(cls, identifiers: list[Identifier]) -> FilterOptions[Patient]:
 		payload = {
 			"identifiers": [x0.__serialize__() for x0 in identifiers],
 		}
@@ -399,11 +399,11 @@ class PatientFilters:
 		if result_info.failure is not None:
 			raise interpret_kt_error(result_info.failure)
 		else:
-			return_value = SortableFilterOptions(result_info.success)
+			return_value = FilterOptions(result_info.success)
 			return return_value
 
 	@classmethod
-	def by_ssins_for_self(cls, ssins: list[str]) -> SortableFilterOptions[Patient]:
+	def by_ssins_for_self(cls, ssins: list[str]) -> FilterOptions[Patient]:
 		payload = {
 			"ssins": [x0 for x0 in ssins],
 		}
@@ -415,11 +415,11 @@ class PatientFilters:
 		if result_info.failure is not None:
 			raise interpret_kt_error(result_info.failure)
 		else:
-			return_value = SortableFilterOptions(result_info.success)
+			return_value = FilterOptions(result_info.success)
 			return return_value
 
 	@classmethod
-	def by_date_of_birth_between_for_self(cls, from_date: int, to_date: int) -> SortableFilterOptions[Patient]:
+	def by_date_of_birth_between_for_self(cls, from_date: int, to_date: int) -> FilterOptions[Patient]:
 		payload = {
 			"fromDate": from_date,
 			"toDate": to_date,
@@ -432,7 +432,7 @@ class PatientFilters:
 		if result_info.failure is not None:
 			raise interpret_kt_error(result_info.failure)
 		else:
-			return_value = SortableFilterOptions(result_info.success)
+			return_value = FilterOptions(result_info.success)
 			return return_value
 
 	@classmethod
@@ -452,7 +452,7 @@ class PatientFilters:
 			return return_value
 
 	@classmethod
-	def by_gender_education_profession_for_self(cls, gender: Gender, education: Optional[str] = None, profession: Optional[str] = None) -> SortableFilterOptions[Patient]:
+	def by_gender_education_profession_for_self(cls, gender: Gender, education: Optional[str] = None, profession: Optional[str] = None) -> FilterOptions[Patient]:
 		payload = {
 			"gender": gender.__serialize__(),
 			"education": education,
@@ -466,7 +466,7 @@ class PatientFilters:
 		if result_info.failure is not None:
 			raise interpret_kt_error(result_info.failure)
 		else:
-			return_value = SortableFilterOptions(result_info.success)
+			return_value = FilterOptions(result_info.success)
 			return return_value
 
 	@classmethod
@@ -486,7 +486,7 @@ class PatientFilters:
 			return return_value
 
 	@classmethod
-	def by_telecom_for_self(cls, search_string: str) -> SortableFilterOptions[Patient]:
+	def by_telecom_for_self(cls, search_string: str) -> FilterOptions[Patient]:
 		payload = {
 			"searchString": search_string,
 		}
@@ -498,11 +498,11 @@ class PatientFilters:
 		if result_info.failure is not None:
 			raise interpret_kt_error(result_info.failure)
 		else:
-			return_value = SortableFilterOptions(result_info.success)
+			return_value = FilterOptions(result_info.success)
 			return return_value
 
 	@classmethod
-	def by_address_postal_code_house_number_for_self(cls, search_string: str, postal_code: str, house_number: Optional[str] = None) -> SortableFilterOptions[Patient]:
+	def by_address_postal_code_house_number_for_self(cls, search_string: str, postal_code: str, house_number: Optional[str] = None) -> FilterOptions[Patient]:
 		payload = {
 			"searchString": search_string,
 			"postalCode": postal_code,
@@ -516,11 +516,11 @@ class PatientFilters:
 		if result_info.failure is not None:
 			raise interpret_kt_error(result_info.failure)
 		else:
-			return_value = SortableFilterOptions(result_info.success)
+			return_value = FilterOptions(result_info.success)
 			return return_value
 
 	@classmethod
-	def by_address_for_self(cls, search_string: str) -> SortableFilterOptions[Patient]:
+	def by_address_for_self(cls, search_string: str) -> FilterOptions[Patient]:
 		payload = {
 			"searchString": search_string,
 		}
@@ -532,7 +532,7 @@ class PatientFilters:
 		if result_info.failure is not None:
 			raise interpret_kt_error(result_info.failure)
 		else:
-			return_value = SortableFilterOptions(result_info.success)
+			return_value = FilterOptions(result_info.success)
 			return return_value
 
 	@classmethod

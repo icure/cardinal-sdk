@@ -54,7 +54,7 @@ public fun byTransportGuidForDataOwner(params: String): String = kotlin.runCatch
 		decodedParams.dataOwnerId,
 		decodedParams.transportGuid,
 	)
-}.toPyString(BaseSortableFilterOptions.serializer(PolymorphicSerializer(Message::class)))
+}.toPyString(BaseFilterOptions.serializer(PolymorphicSerializer(Message::class)))
 
 @Serializable
 private class ByTransportGuidForDataOwnerInGroupParams(
@@ -70,7 +70,7 @@ public fun byTransportGuidForDataOwnerInGroup(params: String): String = kotlin.r
 		decodedParams.dataOwner,
 		decodedParams.transportGuid,
 	)
-}.toPyString(BaseSortableFilterOptions.serializer(PolymorphicSerializer(Message::class)))
+}.toPyString(BaseFilterOptions.serializer(PolymorphicSerializer(Message::class)))
 
 @Serializable
 private class ByTransportGuidForSelfParams(
@@ -83,7 +83,7 @@ public fun byTransportGuidForSelf(params: String): String = kotlin.runCatching {
 	MessageFilters.byTransportGuidForSelf(
 		decodedParams.transportGuid,
 	)
-}.toPyString(SortableFilterOptions.serializer(PolymorphicSerializer(Message::class)))
+}.toPyString(FilterOptions.serializer(PolymorphicSerializer(Message::class)))
 
 @Serializable
 private class FromAddressForDataOwnerParams(
@@ -322,7 +322,7 @@ public fun byTransportGuidSentDateForDataOwner(params: String): String = kotlin.
 		decodedParams.to,
 		decodedParams.descending,
 	)
-}.toPyString(BaseSortableFilterOptions.serializer(PolymorphicSerializer(Message::class)))
+}.toPyString(BaseFilterOptions.serializer(PolymorphicSerializer(Message::class)))
 
 @Serializable
 private class ByTransportGuidSentDateForDataOwnerInGroupParams(
@@ -344,7 +344,7 @@ public fun byTransportGuidSentDateForDataOwnerInGroup(params: String): String = 
 		decodedParams.to,
 		decodedParams.descending,
 	)
-}.toPyString(BaseSortableFilterOptions.serializer(PolymorphicSerializer(Message::class)))
+}.toPyString(BaseFilterOptions.serializer(PolymorphicSerializer(Message::class)))
 
 @Serializable
 private class ByTransportGuidSentDateForSelfParams(
@@ -364,7 +364,7 @@ public fun byTransportGuidSentDateForSelf(params: String): String = kotlin.runCa
 		decodedParams.to,
 		decodedParams.descending,
 	)
-}.toPyString(SortableFilterOptions.serializer(PolymorphicSerializer(Message::class)))
+}.toPyString(FilterOptions.serializer(PolymorphicSerializer(Message::class)))
 
 @Serializable
 private class LatestByTransportGuidForDataOwnerParams(
@@ -459,7 +459,7 @@ public fun lifecycleBetweenForDataOwner(params: String): String = kotlin.runCatc
 }.toPyString(BaseFilterOptions.serializer(PolymorphicSerializer(Message::class)))
 
 @Serializable
-private class LifecycleBetweenForDataOwnerInGroupInGroupParams(
+private class LifecycleBetweenForDataOwnerInGroupParams(
 	public val dataOwner: EntityReferenceInGroup,
 	public val startTimestamp: Long?,
 	public val endTimestamp: Long?,
@@ -467,9 +467,9 @@ private class LifecycleBetweenForDataOwnerInGroupInGroupParams(
 )
 
 @OptIn(InternalIcureApi::class)
-public fun lifecycleBetweenForDataOwnerInGroupInGroup(params: String): String = kotlin.runCatching {
+public fun lifecycleBetweenForDataOwnerInGroup(params: String): String = kotlin.runCatching {
 	val decodedParams =
-			fullLanguageInteropJson.decodeFromString<LifecycleBetweenForDataOwnerInGroupInGroupParams>(params)
+			fullLanguageInteropJson.decodeFromString<LifecycleBetweenForDataOwnerInGroupParams>(params)
 	MessageFilters.lifecycleBetweenForDataOwnerInGroup(
 		decodedParams.dataOwner,
 		decodedParams.startTimestamp,
@@ -543,7 +543,7 @@ public fun byCodeForSelf(params: String): String = kotlin.runCatching {
 		decodedParams.codeType,
 		decodedParams.codeCode,
 	)
-}.toPyString(SortableFilterOptions.serializer(PolymorphicSerializer(Message::class)))
+}.toPyString(FilterOptions.serializer(PolymorphicSerializer(Message::class)))
 
 @Serializable
 private class ByTagForDataOwnerParams(
@@ -593,4 +593,4 @@ public fun byTagForSelf(params: String): String = kotlin.runCatching {
 		decodedParams.tagType,
 		decodedParams.tagCode,
 	)
-}.toPyString(SortableFilterOptions.serializer(PolymorphicSerializer(Message::class)))
+}.toPyString(FilterOptions.serializer(PolymorphicSerializer(Message::class)))

@@ -2,6 +2,7 @@
 package com.icure.cardinal.sdk.py.api.FormApi
 
 import com.icure.cardinal.sdk.CardinalApis
+import com.icure.cardinal.sdk.crypto.entities.FormDelegateOptions
 import com.icure.cardinal.sdk.crypto.entities.FormShareOptions
 import com.icure.cardinal.sdk.crypto.entities.SecretIdUseOption
 import com.icure.cardinal.sdk.filters.BaseFilterOptions
@@ -97,6 +98,60 @@ public fun withEncryptionMetadataAsync(
 				decodedParams.patient,
 				decodedParams.user,
 				decodedParams.delegates,
+				decodedParams.secretId,
+				decodedParams.alternateRootDelegateId,
+			)
+		}.toPyStringAsyncCallback(DecryptedForm.serializer(), resultCallback)
+	}
+}.failureToPyStringAsyncCallback(resultCallback)
+
+@Serializable
+private class WithEncryptionMetadataAndDelegatesParams(
+	public val base: DecryptedForm?,
+	public val patient: Patient,
+	public val delegates: Map<String, FormDelegateOptions>,
+	public val user: User? = null,
+	public val secretId: SecretIdUseOption =
+			com.icure.cardinal.sdk.crypto.entities.SecretIdUseOption.UseAnySharedWithParent,
+	public val alternateRootDelegateId: String? = null,
+)
+
+@OptIn(InternalIcureApi::class)
+public fun withEncryptionMetadataAndDelegatesBlocking(sdk: CardinalApis, params: String): String =
+		kotlin.runCatching {
+	val decodedParams =
+			fullLanguageInteropJson.decodeFromString<WithEncryptionMetadataAndDelegatesParams>(params)
+	runBlocking {
+		sdk.form.withEncryptionMetadataAndDelegates(
+			decodedParams.base,
+			decodedParams.patient,
+			decodedParams.delegates,
+			decodedParams.user,
+			decodedParams.secretId,
+			decodedParams.alternateRootDelegateId,
+		)
+	}
+}.toPyString(DecryptedForm.serializer())
+
+@OptIn(
+	ExperimentalForeignApi::class,
+	InternalIcureApi::class,
+)
+public fun withEncryptionMetadataAndDelegatesAsync(
+	sdk: CardinalApis,
+	params: String,
+	resultCallback: CPointer<CFunction<(CValues<ByteVarOf<Byte>>?,
+			CValues<ByteVarOf<Byte>>?) -> Unit>>,
+): COpaquePointer? = kotlin.runCatching {
+	val decodedParams =
+			fullLanguageInteropJson.decodeFromString<WithEncryptionMetadataAndDelegatesParams>(params)
+	GlobalScope.launch {
+		kotlin.runCatching {
+			sdk.form.withEncryptionMetadataAndDelegates(
+				decodedParams.base,
+				decodedParams.patient,
+				decodedParams.delegates,
+				decodedParams.user,
 				decodedParams.secretId,
 				decodedParams.alternateRootDelegateId,
 			)
