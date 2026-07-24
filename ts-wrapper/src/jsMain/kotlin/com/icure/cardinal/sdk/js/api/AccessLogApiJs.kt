@@ -41,13 +41,6 @@ public external interface AccessLogApiJs {
 		options: dynamic,
 	): Promise<DecryptedAccessLogJs>
 
-	public fun withEncryptionMetadataAndDelegates(
-		base: DecryptedAccessLogJs?,
-		patient: PatientJs,
-		delegates: Record<String, AccessLogDelegateOptionsJs>,
-		options: dynamic,
-	): Promise<DecryptedAccessLogJs>
-
 	public fun getEncryptionKeysOf(accessLog: AccessLogJs): Promise<Array<String>>
 
 	public fun hasWriteAccess(accessLog: AccessLogJs): Promise<Boolean>
