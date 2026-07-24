@@ -424,9 +424,9 @@ interface AccessLogApi : AccessLogBasicFlavourlessApi, AccessLogFlavouredApi<Dec
 	 */
 	suspend fun withEncryptionMetadataAndDelegates(
 		base: DecryptedAccessLog?,
-		patient: Patient? = null,
-		@DefaultValue("null")
 		delegates: Map<String, AccessLogDelegateOptions>,
+		@DefaultValue("null")
+		patient: Patient? = null,
 		@DefaultValue("null")
 		user: User? = null,
 		@DefaultValue("com.icure.cardinal.sdk.crypto.entities.SecretIdUseOption.UseAnySharedWithParent")
@@ -591,9 +591,9 @@ interface AccessLogInGroupApi : AccessLogBasicFlavourlessInGroupApi, AccessLogBa
 	suspend fun withEncryptionMetadataAndDelegates(
 		entityGroupId: String,
 		base: DecryptedAccessLog?,
+		delegates: @JsMapAsObjectArray(keyEntryName = "delegate", valueEntryName = "delegateOptions") Map<EntityReferenceInGroup, AccessLogDelegateOptions>,
 		@DefaultValue("null")
 		patient: GroupScoped<Patient>? = null,
-		delegates: @JsMapAsObjectArray(keyEntryName = "delegate", valueEntryName = "delegateOptions") Map<EntityReferenceInGroup, AccessLogDelegateOptions>,
 		@DefaultValue("null")
 		user: User? = null,
 		@DefaultValue("com.icure.cardinal.sdk.crypto.entities.SecretIdUseOption.UseAnySharedWithParent")
