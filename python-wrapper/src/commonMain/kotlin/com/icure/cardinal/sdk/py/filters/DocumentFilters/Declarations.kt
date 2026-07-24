@@ -1,6 +1,7 @@
 // auto-generated file
 package com.icure.cardinal.sdk.py.filters.DocumentFilters
 
+import com.icure.cardinal.sdk.filters.BaseFilterOptions
 import com.icure.cardinal.sdk.filters.BaseSortableFilterOptions
 import com.icure.cardinal.sdk.filters.DocumentFilters
 import com.icure.cardinal.sdk.filters.FilterOptions
@@ -387,7 +388,7 @@ public fun byCodeForDataOwner(params: String): String = kotlin.runCatching {
 		decodedParams.codeType,
 		decodedParams.codeCode,
 	)
-}.toPyString(BaseSortableFilterOptions.serializer(PolymorphicSerializer(Document::class)))
+}.toPyString(BaseFilterOptions.serializer(PolymorphicSerializer(Document::class)))
 
 @Serializable
 private class ByCodeForDataOwnerInGroupParams(
@@ -405,7 +406,7 @@ public fun byCodeForDataOwnerInGroup(params: String): String = kotlin.runCatchin
 		decodedParams.codeType,
 		decodedParams.codeCode,
 	)
-}.toPyString(BaseSortableFilterOptions.serializer(PolymorphicSerializer(Document::class)))
+}.toPyString(BaseFilterOptions.serializer(PolymorphicSerializer(Document::class)))
 
 @Serializable
 private class ByCodeForSelfParams(
@@ -437,7 +438,7 @@ public fun byTagForDataOwner(params: String): String = kotlin.runCatching {
 		decodedParams.tagType,
 		decodedParams.tagCode,
 	)
-}.toPyString(BaseSortableFilterOptions.serializer(PolymorphicSerializer(Document::class)))
+}.toPyString(BaseFilterOptions.serializer(PolymorphicSerializer(Document::class)))
 
 @Serializable
 private class ByTagForDataOwnerInGroupParams(
@@ -455,7 +456,7 @@ public fun byTagForDataOwnerInGroup(params: String): String = kotlin.runCatching
 		decodedParams.tagType,
 		decodedParams.tagCode,
 	)
-}.toPyString(BaseSortableFilterOptions.serializer(PolymorphicSerializer(Document::class)))
+}.toPyString(BaseFilterOptions.serializer(PolymorphicSerializer(Document::class)))
 
 @Serializable
 private class ByTagForSelfParams(
@@ -470,4 +471,4 @@ public fun byTagForSelf(params: String): String = kotlin.runCatching {
 		decodedParams.tagType,
 		decodedParams.tagCode,
 	)
-}.toPyString(SortableFilterOptions.serializer(PolymorphicSerializer(Document::class)))
+}.toPyString(FilterOptions.serializer(PolymorphicSerializer(Document::class)))

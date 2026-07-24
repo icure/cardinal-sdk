@@ -3,7 +3,7 @@ import json
 from cardinal_sdk.kotlin_types import symbols
 from cardinal_sdk.model.CallResult import create_result_from_json, interpret_kt_error
 from ctypes import cast, c_char_p
-from cardinal_sdk.filters.FilterOptions import BaseSortableFilterOptions, SortableFilterOptions, BaseFilterOptions, FilterOptions
+from cardinal_sdk.filters.FilterOptions import BaseSortableFilterOptions, BaseFilterOptions, FilterOptions, SortableFilterOptions
 from cardinal_sdk.model import MaintenanceTask, Identifier
 
 
@@ -26,7 +26,7 @@ class MaintenanceTaskFilters:
 			return return_value
 
 	@classmethod
-	def by_identifiers_for_data_owner(cls, data_owner_id: str, identifiers: list[Identifier]) -> BaseSortableFilterOptions[MaintenanceTask]:
+	def by_identifiers_for_data_owner(cls, data_owner_id: str, identifiers: list[Identifier]) -> BaseFilterOptions[MaintenanceTask]:
 		payload = {
 			"dataOwnerId": data_owner_id,
 			"identifiers": [x0.__serialize__() for x0 in identifiers],
@@ -39,11 +39,11 @@ class MaintenanceTaskFilters:
 		if result_info.failure is not None:
 			raise interpret_kt_error(result_info.failure)
 		else:
-			return_value = BaseSortableFilterOptions(result_info.success)
+			return_value = BaseFilterOptions(result_info.success)
 			return return_value
 
 	@classmethod
-	def by_identifiers_for_self(cls, identifiers: list[Identifier]) -> SortableFilterOptions[MaintenanceTask]:
+	def by_identifiers_for_self(cls, identifiers: list[Identifier]) -> FilterOptions[MaintenanceTask]:
 		payload = {
 			"identifiers": [x0.__serialize__() for x0 in identifiers],
 		}
@@ -55,7 +55,7 @@ class MaintenanceTaskFilters:
 		if result_info.failure is not None:
 			raise interpret_kt_error(result_info.failure)
 		else:
-			return_value = SortableFilterOptions(result_info.success)
+			return_value = FilterOptions(result_info.success)
 			return return_value
 
 	@classmethod

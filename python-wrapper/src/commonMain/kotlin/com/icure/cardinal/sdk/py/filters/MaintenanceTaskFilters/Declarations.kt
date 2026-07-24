@@ -45,7 +45,7 @@ public fun byIdentifiersForDataOwner(params: String): String = kotlin.runCatchin
 		decodedParams.dataOwnerId,
 		decodedParams.identifiers,
 	)
-}.toPyString(BaseSortableFilterOptions.serializer(PolymorphicSerializer(MaintenanceTask::class)))
+}.toPyString(BaseFilterOptions.serializer(PolymorphicSerializer(MaintenanceTask::class)))
 
 @Serializable
 private class ByIdentifiersForSelfParams(
@@ -58,7 +58,7 @@ public fun byIdentifiersForSelf(params: String): String = kotlin.runCatching {
 	MaintenanceTaskFilters.byIdentifiersForSelf(
 		decodedParams.identifiers,
 	)
-}.toPyString(SortableFilterOptions.serializer(PolymorphicSerializer(MaintenanceTask::class)))
+}.toPyString(FilterOptions.serializer(PolymorphicSerializer(MaintenanceTask::class)))
 
 @Serializable
 private class ByTypeForDataOwnerParams(

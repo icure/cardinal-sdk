@@ -1,7 +1,7 @@
 # auto-generated file
 import json
 from cardinal_sdk.filters.FilterOptions import FilterOptions, SortableFilterOptions
-from cardinal_sdk.model import Contact, Service, DecryptedContact, Patient, User, AccessLevel, SecretIdUseOption, SecretIdUseOptionUseAnySharedWithParent, serialize_patient, serialize_secret_id_use_option, serialize_contact, EntityReferenceInGroup, serialize_service, EncryptedContact, deserialize_contact, EncryptedService, DecryptedService, deserialize_service, EntitySubscriptionConfiguration, StoredDocumentIdentifier, LabelledOccurence, ContactShareOptions, SubscriptionEventType, GroupScoped
+from cardinal_sdk.model import Contact, Service, DecryptedContact, Patient, User, AccessLevel, SecretIdUseOption, SecretIdUseOptionUseAnySharedWithParent, serialize_patient, serialize_secret_id_use_option, ContactDelegateOptions, serialize_contact, EntityReferenceInGroup, serialize_service, EncryptedContact, deserialize_contact, EncryptedService, DecryptedService, deserialize_service, EntitySubscriptionConfiguration, StoredDocumentIdentifier, LabelledOccurence, ContactShareOptions, SubscriptionEventType, GroupScoped
 from cardinal_sdk.async_utils import execute_async_method_job
 from cardinal_sdk.kotlin_types import symbols
 from cardinal_sdk.model.CallResult import create_result_from_json, interpret_kt_error
@@ -174,6 +174,47 @@ class ContactApi:
 			"alternateRootDelegateId": alternate_root_delegate_id,
 		}
 		call_result = symbols.kotlin.root.com.icure.cardinal.sdk.py.api.ContactApi.withEncryptionMetadataBlocking(
+			self.cardinal_sdk._native,
+			json.dumps(payload).encode('utf-8'),
+		)
+		result_info = create_result_from_json(cast(call_result, c_char_p).value.decode('utf-8'))
+		symbols.DisposeString(call_result)
+		if result_info.failure is not None:
+			raise interpret_kt_error(result_info.failure)
+		else:
+			return_value = DecryptedContact._deserialize(result_info.success)
+			return return_value
+
+	async def with_encryption_metadata_and_delegates_async(self, base: Optional[DecryptedContact], patient: Patient, delegates: dict[str, ContactDelegateOptions], user: Optional[User] = None, secret_id: SecretIdUseOption = SecretIdUseOptionUseAnySharedWithParent(), alternate_root_delegate_id: Optional[str] = None) -> DecryptedContact:
+		def do_decode(raw_result):
+			return DecryptedContact._deserialize(raw_result)
+		payload = {
+			"base": base.__serialize__() if base is not None else None,
+			"patient": serialize_patient(patient),
+			"delegates": {k0: v0.__serialize__() for k0, v0 in delegates.items()},
+			"user": user.__serialize__() if user is not None else None,
+			"secretId": serialize_secret_id_use_option(secret_id),
+			"alternateRootDelegateId": alternate_root_delegate_id,
+		}
+		return await execute_async_method_job(
+			self.cardinal_sdk._executor,
+			True,
+			do_decode,
+			symbols.kotlin.root.com.icure.cardinal.sdk.py.api.ContactApi.withEncryptionMetadataAndDelegatesAsync,
+			self.cardinal_sdk._native,
+			json.dumps(payload).encode('utf-8'),
+		)
+
+	def with_encryption_metadata_and_delegates_blocking(self, base: Optional[DecryptedContact], patient: Patient, delegates: dict[str, ContactDelegateOptions], user: Optional[User] = None, secret_id: SecretIdUseOption = SecretIdUseOptionUseAnySharedWithParent(), alternate_root_delegate_id: Optional[str] = None) -> DecryptedContact:
+		payload = {
+			"base": base.__serialize__() if base is not None else None,
+			"patient": serialize_patient(patient),
+			"delegates": {k0: v0.__serialize__() for k0, v0 in delegates.items()},
+			"user": user.__serialize__() if user is not None else None,
+			"secretId": serialize_secret_id_use_option(secret_id),
+			"alternateRootDelegateId": alternate_root_delegate_id,
+		}
+		call_result = symbols.kotlin.root.com.icure.cardinal.sdk.py.api.ContactApi.withEncryptionMetadataAndDelegatesBlocking(
 			self.cardinal_sdk._native,
 			json.dumps(payload).encode('utf-8'),
 		)
@@ -2714,6 +2755,49 @@ class ContactApiInGroup:
 			"alternateRootDelegateReference": alternate_root_delegate_reference.__serialize__() if alternate_root_delegate_reference is not None else None,
 		}
 		call_result = symbols.kotlin.root.com.icure.cardinal.sdk.py.api.ContactApi.inGroup.withEncryptionMetadataBlocking(
+			self.cardinal_sdk._native,
+			json.dumps(payload).encode('utf-8'),
+		)
+		result_info = create_result_from_json(cast(call_result, c_char_p).value.decode('utf-8'))
+		symbols.DisposeString(call_result)
+		if result_info.failure is not None:
+			raise interpret_kt_error(result_info.failure)
+		else:
+			return_value = GroupScoped._deserialize(result_info.success, lambda x1: DecryptedContact._deserialize(x1))
+			return return_value
+
+	async def with_encryption_metadata_and_delegates_async(self, entity_group_id: str, base: Optional[DecryptedContact], patient: Optional[GroupScoped[Patient]], delegates: dict[EntityReferenceInGroup, ContactDelegateOptions], user: Optional[User] = None, secret_id: SecretIdUseOption = SecretIdUseOptionUseAnySharedWithParent(), alternate_root_delegate_reference: Optional[EntityReferenceInGroup] = None) -> GroupScoped[DecryptedContact]:
+		def do_decode(raw_result):
+			return GroupScoped._deserialize(raw_result, lambda x1: DecryptedContact._deserialize(x1))
+		payload = {
+			"entityGroupId": entity_group_id,
+			"base": base.__serialize__() if base is not None else None,
+			"patient": patient.__serialize__(lambda x0: serialize_patient(x0)) if patient is not None else None,
+			"delegates": [{ "k": k0.__serialize__(), "v": v0.__serialize__() } for k0, v0 in delegates.items()],
+			"user": user.__serialize__() if user is not None else None,
+			"secretId": serialize_secret_id_use_option(secret_id),
+			"alternateRootDelegateReference": alternate_root_delegate_reference.__serialize__() if alternate_root_delegate_reference is not None else None,
+		}
+		return await execute_async_method_job(
+			self.cardinal_sdk._executor,
+			True,
+			do_decode,
+			symbols.kotlin.root.com.icure.cardinal.sdk.py.api.ContactApi.inGroup.withEncryptionMetadataAndDelegatesAsync,
+			self.cardinal_sdk._native,
+			json.dumps(payload).encode('utf-8'),
+		)
+
+	def with_encryption_metadata_and_delegates_blocking(self, entity_group_id: str, base: Optional[DecryptedContact], patient: Optional[GroupScoped[Patient]], delegates: dict[EntityReferenceInGroup, ContactDelegateOptions], user: Optional[User] = None, secret_id: SecretIdUseOption = SecretIdUseOptionUseAnySharedWithParent(), alternate_root_delegate_reference: Optional[EntityReferenceInGroup] = None) -> GroupScoped[DecryptedContact]:
+		payload = {
+			"entityGroupId": entity_group_id,
+			"base": base.__serialize__() if base is not None else None,
+			"patient": patient.__serialize__(lambda x0: serialize_patient(x0)) if patient is not None else None,
+			"delegates": [{ "k": k0.__serialize__(), "v": v0.__serialize__() } for k0, v0 in delegates.items()],
+			"user": user.__serialize__() if user is not None else None,
+			"secretId": serialize_secret_id_use_option(secret_id),
+			"alternateRootDelegateReference": alternate_root_delegate_reference.__serialize__() if alternate_root_delegate_reference is not None else None,
+		}
+		call_result = symbols.kotlin.root.com.icure.cardinal.sdk.py.api.ContactApi.inGroup.withEncryptionMetadataAndDelegatesBlocking(
 			self.cardinal_sdk._native,
 			json.dumps(payload).encode('utf-8'),
 		)

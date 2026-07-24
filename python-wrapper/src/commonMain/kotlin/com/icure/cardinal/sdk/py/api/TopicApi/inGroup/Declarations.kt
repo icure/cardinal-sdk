@@ -3,6 +3,7 @@ package com.icure.cardinal.sdk.py.api.TopicApi.inGroup
 
 import com.icure.cardinal.sdk.CardinalApis
 import com.icure.cardinal.sdk.crypto.entities.SecretIdUseOption
+import com.icure.cardinal.sdk.crypto.entities.TopicDelegateOptions
 import com.icure.cardinal.sdk.crypto.entities.TopicShareOptions
 import com.icure.cardinal.sdk.filters.FilterOptions
 import com.icure.cardinal.sdk.filters.SortableFilterOptions
@@ -98,6 +99,65 @@ public fun withEncryptionMetadataAsync(
 				decodedParams.patient,
 				decodedParams.user,
 				decodedParams.delegates,
+				decodedParams.secretId,
+				decodedParams.alternateRootDelegateId,
+			)
+		}.toPyStringAsyncCallback(GroupScoped.serializer(DecryptedTopic.serializer()), resultCallback)
+	}
+}.failureToPyStringAsyncCallback(resultCallback)
+
+@Serializable
+private class WithEncryptionMetadataAndDelegatesParams(
+	public val groupId: String,
+	public val base: DecryptedTopic?,
+	public val patient: GroupScoped<Patient>?,
+	@Serializable(MapAsArraySerializer::class)
+	@OptIn(InternalIcureApi::class)
+	public val delegates: Map<EntityReferenceInGroup, TopicDelegateOptions>,
+	public val user: User? = null,
+	public val secretId: SecretIdUseOption =
+			com.icure.cardinal.sdk.crypto.entities.SecretIdUseOption.UseAnySharedWithParent,
+	public val alternateRootDelegateId: String? = null,
+)
+
+@OptIn(InternalIcureApi::class)
+public fun withEncryptionMetadataAndDelegatesBlocking(sdk: CardinalApis, params: String): String =
+		kotlin.runCatching {
+	val decodedParams =
+			fullLanguageInteropJson.decodeFromString<WithEncryptionMetadataAndDelegatesParams>(params)
+	runBlocking {
+		sdk.topic.inGroup.withEncryptionMetadataAndDelegates(
+			decodedParams.groupId,
+			decodedParams.base,
+			decodedParams.patient,
+			decodedParams.delegates,
+			decodedParams.user,
+			decodedParams.secretId,
+			decodedParams.alternateRootDelegateId,
+		)
+	}
+}.toPyString(GroupScoped.serializer(DecryptedTopic.serializer()))
+
+@OptIn(
+	ExperimentalForeignApi::class,
+	InternalIcureApi::class,
+)
+public fun withEncryptionMetadataAndDelegatesAsync(
+	sdk: CardinalApis,
+	params: String,
+	resultCallback: CPointer<CFunction<(CValues<ByteVarOf<Byte>>?,
+			CValues<ByteVarOf<Byte>>?) -> Unit>>,
+): COpaquePointer? = kotlin.runCatching {
+	val decodedParams =
+			fullLanguageInteropJson.decodeFromString<WithEncryptionMetadataAndDelegatesParams>(params)
+	GlobalScope.launch {
+		kotlin.runCatching {
+			sdk.topic.inGroup.withEncryptionMetadataAndDelegates(
+				decodedParams.groupId,
+				decodedParams.base,
+				decodedParams.patient,
+				decodedParams.delegates,
+				decodedParams.user,
 				decodedParams.secretId,
 				decodedParams.alternateRootDelegateId,
 			)
