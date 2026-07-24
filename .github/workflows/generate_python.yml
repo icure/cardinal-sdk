@@ -5,7 +5,7 @@ on:
             - develop
 env:
     JSON_OUTPUT_DIR: ./cardinal-sdk/build/generated/ksp/jvm/jvmMain/resources
-    SDK_NATIVE_HEADER_FILE: ./python-wrapper/build/bin/linuxArm64/debugShared/libcardinal_sdk_native_pylib_api.h
+    SDK_NATIVE_HEADER_FILE: ./python-wrapper/build/bin/linuxX64/debugShared/libcardinal_sdk_native_pylib_api.h
     BUILDER_JAR_PATH: sdk-codegen-codeGenerator.jar
     REPO_PATH: cardinal-sdk
 
@@ -59,7 +59,7 @@ jobs:
     setup:
         needs: check-label
         if: needs.check-label.outputs.should-skip != 'true'
-        runs-on: ubuntu-24.04-arm
+        runs-on: ubuntu-latest
         name: Setup environment & generating python sdk
         env:
             SDK_CODEGEN_VERSION: 1.9.0
@@ -112,7 +112,7 @@ jobs:
 
             -   name: Generate .h file
                 run: |
-                    ./gradlew :python-wrapper:linkDebugSharedLinuxArm64
+                    ./gradlew :python-wrapper:linkDebugSharedLinuxX64
 
             -   name: Generate cinterop
                 run: |
