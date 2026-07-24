@@ -130,8 +130,8 @@ jobs:
                 uses: peter-evans/create-pull-request@v7
                 with:
                     token: ${{ secrets.GH_PERSONAL_ACCESS_TOKEN }}
-                    commit-message: "chore: Update Typescript SDK on PR merge to develop"
-                    title: "Updated Typescript SDK"
+                    commit-message: "chore: Update Python SDK on PR merge to develop"
+                    title: "Updated Python SDK"
                     add-paths: python-wrapper/src/python,python-wrapper/src/commonMain/kotlin
                     branch: ${{ env.BRANCH_NAME }}
                     base: ${{ env.BASE_BRANCH }}
