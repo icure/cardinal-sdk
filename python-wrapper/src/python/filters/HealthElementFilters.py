@@ -55,7 +55,7 @@ class HealthElementFilters:
 			return return_value
 
 	@classmethod
-	def by_identifiers_for_data_owner(cls, data_owner_id: str, identifiers: list[Identifier]) -> BaseSortableFilterOptions[HealthElement]:
+	def by_identifiers_for_data_owner(cls, data_owner_id: str, identifiers: list[Identifier]) -> BaseFilterOptions[HealthElement]:
 		payload = {
 			"dataOwnerId": data_owner_id,
 			"identifiers": [x0.__serialize__() for x0 in identifiers],
@@ -68,11 +68,11 @@ class HealthElementFilters:
 		if result_info.failure is not None:
 			raise interpret_kt_error(result_info.failure)
 		else:
-			return_value = BaseSortableFilterOptions(result_info.success)
+			return_value = BaseFilterOptions(result_info.success)
 			return return_value
 
 	@classmethod
-	def by_identifiers_for_data_owner_in_group(cls, data_owner: EntityReferenceInGroup, identifiers: list[Identifier]) -> BaseSortableFilterOptions[HealthElement]:
+	def by_identifiers_for_data_owner_in_group(cls, data_owner: EntityReferenceInGroup, identifiers: list[Identifier]) -> BaseFilterOptions[HealthElement]:
 		payload = {
 			"dataOwner": data_owner.__serialize__(),
 			"identifiers": [x0.__serialize__() for x0 in identifiers],
@@ -85,11 +85,11 @@ class HealthElementFilters:
 		if result_info.failure is not None:
 			raise interpret_kt_error(result_info.failure)
 		else:
-			return_value = BaseSortableFilterOptions(result_info.success)
+			return_value = BaseFilterOptions(result_info.success)
 			return return_value
 
 	@classmethod
-	def by_identifiers_for_self(cls, identifiers: list[Identifier]) -> SortableFilterOptions[HealthElement]:
+	def by_identifiers_for_self(cls, identifiers: list[Identifier]) -> FilterOptions[HealthElement]:
 		payload = {
 			"identifiers": [x0.__serialize__() for x0 in identifiers],
 		}
@@ -101,11 +101,11 @@ class HealthElementFilters:
 		if result_info.failure is not None:
 			raise interpret_kt_error(result_info.failure)
 		else:
-			return_value = SortableFilterOptions(result_info.success)
+			return_value = FilterOptions(result_info.success)
 			return return_value
 
 	@classmethod
-	def by_code_for_data_owner(cls, data_owner_id: str, code_type: str, code_code: Optional[str] = None) -> BaseSortableFilterOptions[HealthElement]:
+	def by_code_for_data_owner(cls, data_owner_id: str, code_type: str, code_code: Optional[str] = None) -> BaseFilterOptions[HealthElement]:
 		payload = {
 			"dataOwnerId": data_owner_id,
 			"codeType": code_type,
@@ -119,11 +119,11 @@ class HealthElementFilters:
 		if result_info.failure is not None:
 			raise interpret_kt_error(result_info.failure)
 		else:
-			return_value = BaseSortableFilterOptions(result_info.success)
+			return_value = BaseFilterOptions(result_info.success)
 			return return_value
 
 	@classmethod
-	def by_code_for_data_owner_in_group(cls, data_owner: EntityReferenceInGroup, code_type: str, code_code: Optional[str] = None) -> BaseSortableFilterOptions[HealthElement]:
+	def by_code_for_data_owner_in_group(cls, data_owner: EntityReferenceInGroup, code_type: str, code_code: Optional[str] = None) -> BaseFilterOptions[HealthElement]:
 		payload = {
 			"dataOwner": data_owner.__serialize__(),
 			"codeType": code_type,
@@ -137,11 +137,11 @@ class HealthElementFilters:
 		if result_info.failure is not None:
 			raise interpret_kt_error(result_info.failure)
 		else:
-			return_value = BaseSortableFilterOptions(result_info.success)
+			return_value = BaseFilterOptions(result_info.success)
 			return return_value
 
 	@classmethod
-	def by_code_for_self(cls, code_type: str, code_code: Optional[str] = None) -> SortableFilterOptions[HealthElement]:
+	def by_code_for_self(cls, code_type: str, code_code: Optional[str] = None) -> FilterOptions[HealthElement]:
 		payload = {
 			"codeType": code_type,
 			"codeCode": code_code,
@@ -154,11 +154,11 @@ class HealthElementFilters:
 		if result_info.failure is not None:
 			raise interpret_kt_error(result_info.failure)
 		else:
-			return_value = SortableFilterOptions(result_info.success)
+			return_value = FilterOptions(result_info.success)
 			return return_value
 
 	@classmethod
-	def by_tag_for_data_owner(cls, data_owner_id: str, tag_type: str, tag_code: Optional[str] = None) -> BaseSortableFilterOptions[HealthElement]:
+	def by_tag_for_data_owner(cls, data_owner_id: str, tag_type: str, tag_code: Optional[str] = None) -> BaseFilterOptions[HealthElement]:
 		payload = {
 			"dataOwnerId": data_owner_id,
 			"tagType": tag_type,
@@ -172,11 +172,11 @@ class HealthElementFilters:
 		if result_info.failure is not None:
 			raise interpret_kt_error(result_info.failure)
 		else:
-			return_value = BaseSortableFilterOptions(result_info.success)
+			return_value = BaseFilterOptions(result_info.success)
 			return return_value
 
 	@classmethod
-	def by_tag_for_data_owner_in_group(cls, data_owner: EntityReferenceInGroup, tag_type: str, tag_code: Optional[str] = None) -> BaseSortableFilterOptions[HealthElement]:
+	def by_tag_for_data_owner_in_group(cls, data_owner: EntityReferenceInGroup, tag_type: str, tag_code: Optional[str] = None) -> BaseFilterOptions[HealthElement]:
 		payload = {
 			"dataOwner": data_owner.__serialize__(),
 			"tagType": tag_type,
@@ -190,11 +190,11 @@ class HealthElementFilters:
 		if result_info.failure is not None:
 			raise interpret_kt_error(result_info.failure)
 		else:
-			return_value = BaseSortableFilterOptions(result_info.success)
+			return_value = BaseFilterOptions(result_info.success)
 			return return_value
 
 	@classmethod
-	def by_tag_for_self(cls, tag_type: str, tag_code: Optional[str] = None) -> SortableFilterOptions[HealthElement]:
+	def by_tag_for_self(cls, tag_type: str, tag_code: Optional[str] = None) -> FilterOptions[HealthElement]:
 		payload = {
 			"tagType": tag_type,
 			"tagCode": tag_code,
@@ -207,11 +207,11 @@ class HealthElementFilters:
 		if result_info.failure is not None:
 			raise interpret_kt_error(result_info.failure)
 		else:
-			return_value = SortableFilterOptions(result_info.success)
+			return_value = FilterOptions(result_info.success)
 			return return_value
 
 	@classmethod
-	def by_patients_for_data_owner(cls, data_owner_id: str, patients: list[Patient]) -> SortableFilterOptions[HealthElement]:
+	def by_patients_for_data_owner(cls, data_owner_id: str, patients: list[Patient]) -> FilterOptions[HealthElement]:
 		payload = {
 			"dataOwnerId": data_owner_id,
 			"patients": [serialize_patient(x0) for x0 in patients],
@@ -224,11 +224,11 @@ class HealthElementFilters:
 		if result_info.failure is not None:
 			raise interpret_kt_error(result_info.failure)
 		else:
-			return_value = SortableFilterOptions(result_info.success)
+			return_value = FilterOptions(result_info.success)
 			return return_value
 
 	@classmethod
-	def by_patients_for_data_owner_in_group(cls, data_owner: EntityReferenceInGroup, patients: list[GroupScoped[Patient]]) -> SortableFilterOptions[HealthElement]:
+	def by_patients_for_data_owner_in_group(cls, data_owner: EntityReferenceInGroup, patients: list[GroupScoped[Patient]]) -> FilterOptions[HealthElement]:
 		payload = {
 			"dataOwner": data_owner.__serialize__(),
 			"patients": [x0.__serialize__(lambda x1: serialize_patient(x1)) for x0 in patients],
@@ -241,11 +241,11 @@ class HealthElementFilters:
 		if result_info.failure is not None:
 			raise interpret_kt_error(result_info.failure)
 		else:
-			return_value = SortableFilterOptions(result_info.success)
+			return_value = FilterOptions(result_info.success)
 			return return_value
 
 	@classmethod
-	def by_patients_for_self(cls, patients: list[Patient]) -> SortableFilterOptions[HealthElement]:
+	def by_patients_for_self(cls, patients: list[Patient]) -> FilterOptions[HealthElement]:
 		payload = {
 			"patients": [serialize_patient(x0) for x0 in patients],
 		}
@@ -257,11 +257,11 @@ class HealthElementFilters:
 		if result_info.failure is not None:
 			raise interpret_kt_error(result_info.failure)
 		else:
-			return_value = SortableFilterOptions(result_info.success)
+			return_value = FilterOptions(result_info.success)
 			return return_value
 
 	@classmethod
-	def by_patients_secret_ids_for_data_owner(cls, data_owner_id: str, secret_ids: list[str]) -> BaseSortableFilterOptions[HealthElement]:
+	def by_patients_secret_ids_for_data_owner(cls, data_owner_id: str, secret_ids: list[str]) -> BaseFilterOptions[HealthElement]:
 		payload = {
 			"dataOwnerId": data_owner_id,
 			"secretIds": [x0 for x0 in secret_ids],
@@ -274,11 +274,11 @@ class HealthElementFilters:
 		if result_info.failure is not None:
 			raise interpret_kt_error(result_info.failure)
 		else:
-			return_value = BaseSortableFilterOptions(result_info.success)
+			return_value = BaseFilterOptions(result_info.success)
 			return return_value
 
 	@classmethod
-	def by_patients_secret_ids_for_data_owner_in_group(cls, data_owner: EntityReferenceInGroup, secret_ids: list[str]) -> BaseSortableFilterOptions[HealthElement]:
+	def by_patients_secret_ids_for_data_owner_in_group(cls, data_owner: EntityReferenceInGroup, secret_ids: list[str]) -> BaseFilterOptions[HealthElement]:
 		payload = {
 			"dataOwner": data_owner.__serialize__(),
 			"secretIds": [x0 for x0 in secret_ids],
@@ -291,11 +291,11 @@ class HealthElementFilters:
 		if result_info.failure is not None:
 			raise interpret_kt_error(result_info.failure)
 		else:
-			return_value = BaseSortableFilterOptions(result_info.success)
+			return_value = BaseFilterOptions(result_info.success)
 			return return_value
 
 	@classmethod
-	def by_patients_secret_ids_for_self(cls, secret_ids: list[str]) -> SortableFilterOptions[HealthElement]:
+	def by_patients_secret_ids_for_self(cls, secret_ids: list[str]) -> FilterOptions[HealthElement]:
 		payload = {
 			"secretIds": [x0 for x0 in secret_ids],
 		}
@@ -307,7 +307,7 @@ class HealthElementFilters:
 		if result_info.failure is not None:
 			raise interpret_kt_error(result_info.failure)
 		else:
-			return_value = SortableFilterOptions(result_info.success)
+			return_value = FilterOptions(result_info.success)
 			return return_value
 
 	@classmethod
