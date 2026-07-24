@@ -90,6 +90,7 @@ jobs:
                 run: |
                     echo "githubUsername=${{ secrets.GH_USERNAME }}" > local.properties
                     echo "githubPassword=${{ secrets.GH_PERSONAL_ACCESS_TOKEN }}" >> local.properties
+                    echo "cinteropsLibsDir=/usr/lib/x86_64-linux-gnu" >> local.properties
                     mkdir -p ksp-json-processor
                     echo "githubUsername=${{ secrets.GH_USERNAME }}" > ksp-json-processor/local.properties
                     echo "githubPassword=${{ secrets.GH_PERSONAL_ACCESS_TOKEN }}" >> ksp-json-processor/local.properties
