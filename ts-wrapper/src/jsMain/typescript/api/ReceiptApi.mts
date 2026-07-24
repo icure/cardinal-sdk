@@ -1,4 +1,5 @@
 // auto-generated file
+import {ReceiptDelegateOptions} from '../crypto/entities/ReceiptDelegateOptions.mjs';
 import {ReceiptShareOptions} from '../crypto/entities/ReceiptShareOptions.mjs';
 import {SecretIdUseOption} from '../crypto/entities/SecretIdUseOption.mjs';
 import {EntityReferenceInGroup} from '../model/EntityReferenceInGroup.mjs';
@@ -22,6 +23,10 @@ export interface ReceiptApi {
 
 	withEncryptionMetadata(base: DecryptedReceipt | undefined, patient: Patient | undefined,
 			options?: { user?: User | undefined, delegates?: { [ key: string ]: AccessLevel }, secretId?: SecretIdUseOption, alternateRootDelegateId?: string | undefined }): Promise<DecryptedReceipt>;
+
+	withEncryptionMetadataAndDelegates(base: DecryptedReceipt | undefined,
+			patient: Patient | undefined, delegates: { [ key: string ]: ReceiptDelegateOptions },
+			options?: { user?: User | undefined, secretId?: SecretIdUseOption, alternateRootDelegateId?: string | undefined }): Promise<DecryptedReceipt>;
 
 	getAndDecryptReceiptAttachment(receipt: Receipt, attachmentId: string): Promise<Int8Array>;
 

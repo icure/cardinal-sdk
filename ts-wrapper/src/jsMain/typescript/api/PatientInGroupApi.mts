@@ -1,6 +1,7 @@
 // auto-generated file
 import {FilterOptions, PaginatedListIterator, SortableFilterOptions} from '../cardinal-sdk-ts.mjs';
 import {EntityAccessInformation} from '../crypto/entities/EntityAccessInformation.mjs';
+import {PatientDelegateOptions} from '../crypto/entities/PatientDelegateOptions.mjs';
 import {PatientShareOptions} from '../crypto/entities/PatientShareOptions.mjs';
 import {EntityReferenceInGroup} from '../model/EntityReferenceInGroup.mjs';
 import {GroupScoped} from '../model/GroupScoped.mjs';
@@ -55,6 +56,14 @@ export interface PatientInGroupApi {
 	 */
 	withEncryptionMetadata(entityGroupId: string, base: DecryptedPatient | undefined,
 			options?: { user?: User | undefined, delegates?: ArrayWithUniqueKeys<{ delegate: EntityReferenceInGroup, accessLevel: AccessLevel }, 'delegate'>, alternateRootDelegateReference?: EntityReferenceInGroup | undefined }): Promise<GroupScoped<DecryptedPatient>>;
+
+	/**
+	 *
+	 *  In-group version of [PatientApi.withEncryptionMetadataAndDelegates]
+	 */
+	withEncryptionMetadataAndDelegates(entityGroupId: string, base: DecryptedPatient | undefined,
+			delegates: ArrayWithUniqueKeys<{ delegate: EntityReferenceInGroup, delegateOptions: PatientDelegateOptions }, 'delegate'>,
+			options?: { user?: User | undefined, alternateRootDelegateReference?: EntityReferenceInGroup | undefined }): Promise<GroupScoped<DecryptedPatient>>;
 
 	/**
 	 *

@@ -1,5 +1,6 @@
 // auto-generated file
 import {FilterOptions, SortableFilterOptions} from '../cardinal-sdk-ts.mjs';
+import {AccessLogDelegateOptions} from '../crypto/entities/AccessLogDelegateOptions.mjs';
 import {SecretIdUseOption} from '../crypto/entities/SecretIdUseOption.mjs';
 import {AccessLog, DecryptedAccessLog, EncryptedAccessLog} from '../model/AccessLog.mjs';
 import {EntityReferenceInGroup} from '../model/EntityReferenceInGroup.mjs';
@@ -26,6 +27,18 @@ export interface AccessLogInGroupApi {
 	withEncryptionMetadata(entityGroupId: string, base: DecryptedAccessLog | undefined,
 			patient: GroupScoped<Patient>,
 			options?: { user?: User | undefined, delegates?: ArrayWithUniqueKeys<{ delegate: EntityReferenceInGroup, accessLevel: AccessLevel }, 'delegate'>, secretId?: SecretIdUseOption, alternateRootDelegateReference?: EntityReferenceInGroup | undefined }): Promise<GroupScoped<DecryptedAccessLog>>;
+
+	/**
+	 *
+	 *  In-group version of [AccessLogApi.withEncryptionMetadataAndDelegates]
+	 */
+	withEncryptionMetadataAndDelegates(
+			entityGroupId: string,
+			base: DecryptedAccessLog | undefined,
+			patient: GroupScoped<Patient>,
+			delegates: ArrayWithUniqueKeys<{ delegate: EntityReferenceInGroup, delegateOptions: AccessLogDelegateOptions }, 'delegate'>,
+			options?: { user?: User | undefined, secretId?: SecretIdUseOption, alternateRootDelegateReference?: EntityReferenceInGroup | undefined }
+	): Promise<GroupScoped<DecryptedAccessLog>>;
 
 	/**
 	 *

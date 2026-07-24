@@ -3,6 +3,7 @@
 
 package com.icure.cardinal.sdk.js.api
 
+import com.icure.cardinal.sdk.js.crypto.entities.ContactDelegateOptionsJs
 import com.icure.cardinal.sdk.js.crypto.entities.ContactShareOptionsJs
 import com.icure.cardinal.sdk.js.filters.FilterOptionsJs
 import com.icure.cardinal.sdk.js.filters.SortableFilterOptionsJs
@@ -49,6 +50,13 @@ public external interface ContactApiJs {
 	public fun withEncryptionMetadata(
 		base: DecryptedContactJs?,
 		patient: PatientJs,
+		options: dynamic,
+	): Promise<DecryptedContactJs>
+
+	public fun withEncryptionMetadataAndDelegates(
+		base: DecryptedContactJs?,
+		patient: PatientJs,
+		delegates: Record<String, ContactDelegateOptionsJs>,
 		options: dynamic,
 	): Promise<DecryptedContactJs>
 

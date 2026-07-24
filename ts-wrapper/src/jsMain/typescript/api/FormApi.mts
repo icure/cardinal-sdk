@@ -1,5 +1,6 @@
 // auto-generated file
 import {BaseFilterOptions, FilterOptions, PaginatedListIterator, SortableFilterOptions} from '../cardinal-sdk-ts.mjs';
+import {FormDelegateOptions} from '../crypto/entities/FormDelegateOptions.mjs';
 import {FormShareOptions} from '../crypto/entities/FormShareOptions.mjs';
 import {SecretIdUseOption} from '../crypto/entities/SecretIdUseOption.mjs';
 import {EntityReferenceInGroup} from '../model/EntityReferenceInGroup.mjs';
@@ -24,7 +25,7 @@ export interface FormApi {
 
 	/**
 	 *
-	 *  Creates a new form with initialized encryption metadata
+	 *  Creates a new form with initialized encryption metadata.
 	 *  @param base a form with initialized content and uninitialized encryption metadata. The result of this
 	 *  method takes the content from [base] if provided.
 	 *  @param patient the patient linked to the form.
@@ -40,10 +41,29 @@ export interface FormApi {
 
 	/**
 	 *
+	 *  Creates a new access log with initialized encryption metadata, specifying fine-grained options for each additional data owner that
+	 *  will have access to the entity.
+	 *  @param base a form with initialized content and uninitialized encryption metadata. The result of this
+	 *  method takes the content from [base] if provided.
+	 *  @param patient the patient linked to the form.
+	 *  @param user the current user, will be used for the auto-delegations if provided.
+	 *  @param delegates additional data owners that will have access to the newly created entity. You may choose the
+	 *  permissions that the delegates will have on the entity and if they will have access to the secretIds, encryptionKeys, and/or
+	 *  owningEntityIds of the new entity.
+	 *  @param secretId specifies which secret id of [patient] to use for the new form
+	 *  @return a form with initialized encryption metadata.
+	 *  @throws IllegalArgumentException if base is not null and has a revision or has encryption metadata.
+	 */
+	withEncryptionMetadataAndDelegates(base: DecryptedForm | undefined, patient: Patient,
+			delegates: { [ key: string ]: FormDelegateOptions },
+			options?: { user?: User | undefined, secretId?: SecretIdUseOption, alternateRootDelegateId?: string | undefined }): Promise<DecryptedForm>;
+
+	/**
+	 *
 	 *  Attempts to extract the encryption keys of a form. If the user does not have access to any encryption key
 	 *  of the access log the method will return an empty set.
 	 *  Note: entities now have only one encryption key, but this method returns a set for compatibility with older
-	 *  versions of iCure where this was not a guarantee.
+	 *  versions of Cardinal where this was not a guarantee.
 	 *  @param form a form
 	 *  @return the encryption keys extracted from the provided form.
 	 */

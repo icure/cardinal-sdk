@@ -3,6 +3,7 @@
 
 package com.icure.cardinal.sdk.js.api
 
+import com.icure.cardinal.sdk.js.crypto.entities.AccessLogDelegateOptionsJs
 import com.icure.cardinal.sdk.js.crypto.entities.AccessLogShareOptionsJs
 import com.icure.cardinal.sdk.js.filters.FilterOptionsJs
 import com.icure.cardinal.sdk.js.filters.SortableFilterOptionsJs
@@ -33,6 +34,13 @@ public external interface AccessLogApiJs {
 	public fun withEncryptionMetadata(
 		base: DecryptedAccessLogJs?,
 		patient: PatientJs,
+		options: dynamic,
+	): Promise<DecryptedAccessLogJs>
+
+	public fun withEncryptionMetadataAndDelegates(
+		base: DecryptedAccessLogJs?,
+		patient: PatientJs,
+		delegates: Record<String, AccessLogDelegateOptionsJs>,
 		options: dynamic,
 	): Promise<DecryptedAccessLogJs>
 

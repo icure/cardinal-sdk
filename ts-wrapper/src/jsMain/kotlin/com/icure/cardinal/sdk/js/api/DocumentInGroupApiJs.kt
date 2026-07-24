@@ -3,6 +3,7 @@
 
 package com.icure.cardinal.sdk.js.api
 
+import com.icure.cardinal.sdk.js.crypto.entities.DocumentDelegateOptionsJs
 import com.icure.cardinal.sdk.js.filters.FilterOptionsJs
 import com.icure.cardinal.sdk.js.filters.SortableFilterOptionsJs
 import com.icure.cardinal.sdk.js.model.DecryptedDocumentJs
@@ -14,6 +15,7 @@ import com.icure.cardinal.sdk.js.model.MessageJs
 import com.icure.cardinal.sdk.js.model.PatientJs
 import com.icure.cardinal.sdk.js.model.StoredDocumentIdentifierJs
 import com.icure.cardinal.sdk.js.synthetic.mapasobjectarray.EntityReferenceInGroupToDocumentShareOptionsMapObject_delegate_shareOptions
+import com.icure.cardinal.sdk.js.utils.Record
 import com.icure.cardinal.sdk.js.utils.pagination.PaginatedListIteratorJs
 import kotlin.Array
 import kotlin.Boolean
@@ -36,6 +38,14 @@ public external interface DocumentInGroupApiJs {
 		options: dynamic,
 	): Promise<GroupScopedJs<DecryptedDocumentJs>>
 
+	public fun withEncryptionMetadataAndDelegatesLinkedToMessage(
+		entityGroupId: String,
+		base: DecryptedDocumentJs?,
+		message: GroupScopedJs<MessageJs>,
+		delegates: Record<String, DocumentDelegateOptionsJs>,
+		options: dynamic,
+	): Promise<GroupScopedJs<DecryptedDocumentJs>>
+
 	public fun withEncryptionMetadataLinkedToPatient(
 		entityGroupId: String,
 		base: DecryptedDocumentJs?,
@@ -43,9 +53,24 @@ public external interface DocumentInGroupApiJs {
 		options: dynamic,
 	): Promise<GroupScopedJs<DecryptedDocumentJs>>
 
+	public fun withEncryptionMetadataAndDelegatesLinkedToPatient(
+		entityGroupId: String,
+		base: DecryptedDocumentJs?,
+		patient: GroupScopedJs<PatientJs>,
+		delegates: Record<String, DocumentDelegateOptionsJs>,
+		options: dynamic,
+	): Promise<GroupScopedJs<DecryptedDocumentJs>>
+
 	public fun withEncryptionMetadataUnlinked(
 		entityGroupId: String,
 		base: DecryptedDocumentJs?,
+		options: dynamic,
+	): Promise<GroupScopedJs<DecryptedDocumentJs>>
+
+	public fun withEncryptionMetadataAndDelegatesUnlinked(
+		entityGroupId: String,
+		base: DecryptedDocumentJs?,
+		delegates: Record<String, DocumentDelegateOptionsJs>,
 		options: dynamic,
 	): Promise<GroupScopedJs<DecryptedDocumentJs>>
 

@@ -4,6 +4,7 @@
 package com.icure.cardinal.sdk.js.api
 
 import com.icure.cardinal.sdk.js.crypto.entities.EntityAccessInformationJs
+import com.icure.cardinal.sdk.js.crypto.entities.PatientDelegateOptionsJs
 import com.icure.cardinal.sdk.js.crypto.entities.PatientShareOptionsJs
 import com.icure.cardinal.sdk.js.crypto.entities.ShareAllPatientDataOptionsJs_ResultJs
 import com.icure.cardinal.sdk.js.filters.FilterOptionsJs
@@ -46,6 +47,12 @@ public external interface PatientApiJs {
 
 	public fun withEncryptionMetadata(base: DecryptedPatientJs?, options: dynamic):
 			Promise<DecryptedPatientJs>
+
+	public fun withEncryptionMetadataAndDelegates(
+		base: DecryptedPatientJs?,
+		delegates: Record<String, PatientDelegateOptionsJs>,
+		options: dynamic,
+	): Promise<DecryptedPatientJs>
 
 	public fun hasWriteAccess(patient: PatientJs): Promise<Boolean>
 

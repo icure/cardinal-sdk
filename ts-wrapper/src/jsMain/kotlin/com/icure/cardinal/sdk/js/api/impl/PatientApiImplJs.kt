@@ -2,6 +2,7 @@
 package com.icure.cardinal.sdk.js.api.`impl`
 
 import com.icure.cardinal.sdk.api.PatientApi
+import com.icure.cardinal.sdk.crypto.entities.PatientDelegateOptions
 import com.icure.cardinal.sdk.crypto.entities.PatientShareOptions
 import com.icure.cardinal.sdk.crypto.entities.ShareAllPatientDataOptions
 import com.icure.cardinal.sdk.filters.FilterOptions
@@ -13,9 +14,11 @@ import com.icure.cardinal.sdk.js.api.PatientFlavouredApiJs
 import com.icure.cardinal.sdk.js.api.PatientFlavouredInGroupApiJs
 import com.icure.cardinal.sdk.js.api.PatientInGroupApiJs
 import com.icure.cardinal.sdk.js.crypto.entities.EntityAccessInformationJs
+import com.icure.cardinal.sdk.js.crypto.entities.PatientDelegateOptionsJs
 import com.icure.cardinal.sdk.js.crypto.entities.PatientShareOptionsJs
 import com.icure.cardinal.sdk.js.crypto.entities.ShareAllPatientDataOptionsJs_ResultJs
 import com.icure.cardinal.sdk.js.crypto.entities.entityAccessInformation_toJs
+import com.icure.cardinal.sdk.js.crypto.entities.patientDelegateOptions_fromJs
 import com.icure.cardinal.sdk.js.crypto.entities.patientShareOptions_fromJs
 import com.icure.cardinal.sdk.js.crypto.entities.shareAllPatientDataOptions_Result_toJs
 import com.icure.cardinal.sdk.js.filters.FilterOptionsJs
@@ -54,6 +57,8 @@ import com.icure.cardinal.sdk.js.subscription.entitySubscriptionConfiguration_fr
 import com.icure.cardinal.sdk.js.subscription.entitySubscription_toJs
 import com.icure.cardinal.sdk.js.synthetic.mapasobjectarray.EntityReferenceInGroupToAccessLevelMapObject_delegate_accessLevel
 import com.icure.cardinal.sdk.js.synthetic.mapasobjectarray.EntityReferenceInGroupToAccessLevelMapObject_delegate_accessLevel_fromJs
+import com.icure.cardinal.sdk.js.synthetic.mapasobjectarray.EntityReferenceInGroupToPatientDelegateOptionsMapObject_delegate_delegateOptions
+import com.icure.cardinal.sdk.js.synthetic.mapasobjectarray.EntityReferenceInGroupToPatientDelegateOptionsMapObject_delegate_delegateOptions_fromJs
 import com.icure.cardinal.sdk.js.synthetic.mapasobjectarray.EntityReferenceInGroupToPatientShareOptionsMapObject_delegate_shareOptions
 import com.icure.cardinal.sdk.js.synthetic.mapasobjectarray.EntityReferenceInGroupToPatientShareOptionsMapObject_delegate_shareOptions_fromJs
 import com.icure.cardinal.sdk.js.utils.Record
@@ -1571,6 +1576,55 @@ internal class PatientApiImplJs(
 			}
 		}
 
+		override fun withEncryptionMetadataAndDelegates(
+			entityGroupId: String,
+			base: DecryptedPatientJs?,
+			delegates: Array<EntityReferenceInGroupToPatientDelegateOptionsMapObject_delegate_delegateOptions>,
+			options: dynamic,
+		): Promise<GroupScopedJs<DecryptedPatientJs>> {
+			val _options = options ?: js("{}")
+			return GlobalScope.promise {
+				val entityGroupIdConverted: String = entityGroupId
+				val baseConverted: DecryptedPatient? = base?.let { nonNull1 ->
+					patient_fromJs(nonNull1)
+				}
+				val delegatesConverted: Map<EntityReferenceInGroup, PatientDelegateOptions> =
+						EntityReferenceInGroupToPatientDelegateOptionsMapObject_delegate_delegateOptions_fromJs(delegates)
+				val userConverted: User? = convertingOptionOrDefaultNullable(
+					_options,
+					"user",
+					null
+				) { user: UserJs? ->
+					user?.let { nonNull1 ->
+						user_fromJs(nonNull1)
+					}
+				}
+				val alternateRootDelegateReferenceConverted: EntityReferenceInGroup? =
+						convertingOptionOrDefaultNullable(
+					_options,
+					"alternateRootDelegateReference",
+					null
+				) { alternateRootDelegateReference: EntityReferenceInGroupJs? ->
+					alternateRootDelegateReference?.let { nonNull1 ->
+						entityReferenceInGroup_fromJs(nonNull1)
+					}
+				}
+				val result = patientApi.inGroup.withEncryptionMetadataAndDelegates(
+					entityGroupIdConverted,
+					baseConverted,
+					delegatesConverted,
+					userConverted,
+					alternateRootDelegateReferenceConverted,
+				)
+				groupScoped_toJs(
+					result,
+					{ x1: DecryptedPatient ->
+						patient_toJs(x1)
+					},
+				)
+			}
+		}
+
 		override fun hasWriteAccess(patient: GroupScopedJs<DecryptedPatientJs>): Promise<Boolean> =
 				GlobalScope.promise {
 			val patientConverted: GroupScoped<DecryptedPatient> = groupScoped_fromJs(
@@ -2334,6 +2388,52 @@ internal class PatientApiImplJs(
 				baseConverted,
 				userConverted,
 				delegatesConverted,
+				alternateRootDelegateIdConverted,
+			)
+			patient_toJs(result)
+		}
+	}
+
+	override fun withEncryptionMetadataAndDelegates(
+		base: DecryptedPatientJs?,
+		delegates: Record<String, PatientDelegateOptionsJs>,
+		options: dynamic,
+	): Promise<DecryptedPatientJs> {
+		val _options = options ?: js("{}")
+		return GlobalScope.promise {
+			val baseConverted: DecryptedPatient? = base?.let { nonNull1 ->
+				patient_fromJs(nonNull1)
+			}
+			val delegatesConverted: Map<String, PatientDelegateOptions> = objectToMap(
+				delegates,
+				"delegates",
+				{ x1: String ->
+					x1
+				},
+				{ x1: PatientDelegateOptionsJs ->
+					patientDelegateOptions_fromJs(x1)
+				},
+			)
+			val userConverted: User? = convertingOptionOrDefaultNullable(
+				_options,
+				"user",
+				null
+			) { user: UserJs? ->
+				user?.let { nonNull1 ->
+					user_fromJs(nonNull1)
+				}
+			}
+			val alternateRootDelegateIdConverted: String? = convertingOptionOrDefaultNullable(
+				_options,
+				"alternateRootDelegateId",
+				null
+			) { alternateRootDelegateId: String? ->
+				undefinedToNull(alternateRootDelegateId)
+			}
+			val result = patientApi.withEncryptionMetadataAndDelegates(
+				baseConverted,
+				delegatesConverted,
+				userConverted,
 				alternateRootDelegateIdConverted,
 			)
 			patient_toJs(result)

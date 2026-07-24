@@ -1,5 +1,6 @@
 // auto-generated file
 import {FilterOptions, PaginatedListIterator, SortableFilterOptions} from '../cardinal-sdk-ts.mjs';
+import {DocumentDelegateOptions} from '../crypto/entities/DocumentDelegateOptions.mjs';
 import {DocumentShareOptions} from '../crypto/entities/DocumentShareOptions.mjs';
 import {SecretIdUseOption} from '../crypto/entities/SecretIdUseOption.mjs';
 import {DecryptedDocument, Document, EncryptedDocument} from '../model/Document.mjs';
@@ -40,7 +41,26 @@ export interface DocumentApi {
 
 	/**
 	 *
-	 *  Creates a new document with initialized encryption metadata
+	 *  Creates a new document with initialized encryption metadata, specifying fine-grained options for each additional data owner that
+	 *  will have access to the entity.
+	 *  @param base a document with initialized content and uninitialized encryption metadata. The result of this
+	 *  method takes the content from [base] if provided.
+	 *  @param message the message linked to the document, if any.
+	 *  @param user the current user, will be used for the auto-delegations if provided.
+	 *  @param delegates additional data owners that will have access to the newly created entity. You may choose the
+	 *  permissions that the delegates will have on the entity and if they will have access to the secretIds, encryptionKeys, and/or
+	 *  owningEntityIds of the new entity.
+	 *  @param secretId specifies which secret id of [message] to use for the new document
+	 *  @return a document with initialized encryption metadata.
+	 *  @throws IllegalArgumentException if base is not null and has a revision or has encryption metadata.
+	 */
+	withEncryptionMetadataAndDelegatesLinkedToMessage(base: DecryptedDocument | undefined,
+			message: Message, delegates: { [ key: string ]: DocumentDelegateOptions },
+			options?: { user?: User | undefined, secretId?: SecretIdUseOption, alternateRootDelegateId?: string | undefined }): Promise<DecryptedDocument>;
+
+	/**
+	 *
+	 *  Creates a new document with initialized encryption metadata.
 	 *  @param base a document with initialized content and uninitialized encryption metadata. The result of this
 	 *  method takes the content from [base] if provided.
 	 *  @param patient the patient linked to the patient, if any.
@@ -56,6 +76,24 @@ export interface DocumentApi {
 
 	/**
 	 *
+	 *  Creates a new document with initialized encryption metadata, specifying fine-grained options for each additional data owner that
+	 *  will have access to the entity.
+	 *  @param base a document with initialized content and uninitialized encryption metadata. The result of this
+	 *  method takes the content from [base] if provided.
+	 *  @param patient the patient linked to the patient, if any.
+	 *  @param delegates additional data owners that will have access to the newly created entity. You may choose the
+	 *  permissions that the delegates will have on the entity and if they will have access to the secretIds, encryptionKeys, and/or
+	 *  owningEntityIds of the new entity.
+	 *  @param secretId specifies which secret id of [Message] to use for the new document
+	 *  @return a document with initialized encryption metadata.
+	 *  @throws IllegalArgumentException if base is not null and has a revision or has encryption metadata.
+	 */
+	withEncryptionMetadataAndDelegatesLinkedToPatient(base: DecryptedDocument | undefined,
+			patient: Patient, delegates: { [ key: string ]: DocumentDelegateOptions },
+			options?: { user?: User | undefined, secretId?: SecretIdUseOption, alternateRootDelegateId?: string | undefined }): Promise<DecryptedDocument>;
+
+	/**
+	 *
 	 *  Creates a new document with initialized encryption metadata
 	 *  @param base a document with initialized content and uninitialized encryption metadata. The result of this
 	 *  method takes the content from [base] if provided.
@@ -67,6 +105,23 @@ export interface DocumentApi {
 	 */
 	withEncryptionMetadataUnlinked(base: DecryptedDocument | undefined,
 			options?: { user?: User | undefined, delegates?: { [ key: string ]: AccessLevel }, alternateRootDelegateId?: string | undefined }): Promise<DecryptedDocument>;
+
+	/**
+	 *
+	 *  Creates a new document with initialized encryption metadata, specifying fine-grained options for each additional data owner that
+	 *  will have access to the entity.
+	 *  @param base a document with initialized content and uninitialized encryption metadata. The result of this
+	 *  method takes the content from [base] if provided.
+	 *  @param user the current user, will be used for the auto-delegations if provided.
+	 *  @param delegates additional data owners that will have access to the newly created entity. You may choose the
+	 *  permissions that the delegates will have on the entity and if they will have access to the secretIds, encryptionKeys, and/or
+	 *  owningEntityIds of the new entity.
+	 *  @return a document with initialized encryption metadata.
+	 *  @throws IllegalArgumentException if base is not null and has a revision or has encryption metadata.
+	 */
+	withEncryptionMetadataAndDelegatesUnlinked(base: DecryptedDocument | undefined,
+			delegates: { [ key: string ]: DocumentDelegateOptions },
+			options?: { user?: User | undefined, alternateRootDelegateId?: string | undefined }): Promise<DecryptedDocument>;
 
 	/**
 	 *

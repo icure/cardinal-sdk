@@ -3,6 +3,7 @@
 
 package com.icure.cardinal.sdk.js.api
 
+import com.icure.cardinal.sdk.js.crypto.entities.ReceiptDelegateOptionsJs
 import com.icure.cardinal.sdk.js.model.DecryptedReceiptJs
 import com.icure.cardinal.sdk.js.model.EncryptedReceiptJs
 import com.icure.cardinal.sdk.js.model.EntityReferenceInGroupJs
@@ -11,6 +12,7 @@ import com.icure.cardinal.sdk.js.model.PatientJs
 import com.icure.cardinal.sdk.js.model.ReceiptJs
 import com.icure.cardinal.sdk.js.model.StoredDocumentIdentifierJs
 import com.icure.cardinal.sdk.js.synthetic.mapasobjectarray.EntityReferenceInGroupToReceiptShareOptionsMapObject_delegate_shareOptions
+import com.icure.cardinal.sdk.js.utils.Record
 import kotlin.Array
 import kotlin.Boolean
 import kotlin.String
@@ -29,6 +31,14 @@ public external interface ReceiptInGroupApiJs {
 		groupId: String,
 		base: DecryptedReceiptJs?,
 		patient: GroupScopedJs<PatientJs>?,
+		options: dynamic,
+	): Promise<GroupScopedJs<DecryptedReceiptJs>>
+
+	public fun withEncryptionMetadataAndDelegates(
+		groupId: String,
+		base: DecryptedReceiptJs?,
+		patient: GroupScopedJs<PatientJs>?,
+		delegates: Record<String, ReceiptDelegateOptionsJs>,
 		options: dynamic,
 	): Promise<GroupScopedJs<DecryptedReceiptJs>>
 
