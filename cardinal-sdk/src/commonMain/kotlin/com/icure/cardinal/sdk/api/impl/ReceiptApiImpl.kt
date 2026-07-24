@@ -13,8 +13,10 @@ import com.icure.cardinal.sdk.api.ReceiptInGroupApi
 import com.icure.cardinal.sdk.api.raw.RawReceiptApi
 import com.icure.cardinal.sdk.api.raw.successBodyOrNull404
 import com.icure.cardinal.sdk.api.raw.successBodyOrThrowRevisionConflict
+import com.icure.cardinal.sdk.crypto.entities.DelegateOptions
 import com.icure.cardinal.sdk.crypto.entities.EntityWithEncryptionMetadataTypeName
 import com.icure.cardinal.sdk.crypto.entities.OwningEntityDetails
+import com.icure.cardinal.sdk.crypto.entities.ReceiptDelegateOptions
 import com.icure.cardinal.sdk.crypto.entities.ReceiptShareOptions
 import com.icure.cardinal.sdk.crypto.entities.SecretIdUseOption
 import com.icure.cardinal.sdk.exceptions.NotFoundException
@@ -32,6 +34,7 @@ import com.icure.cardinal.sdk.model.embed.AccessLevel
 import com.icure.cardinal.sdk.model.embed.DelegationTag
 import com.icure.cardinal.sdk.model.extensions.autoDelegationsFor
 import com.icure.cardinal.sdk.model.extensions.dataOwnerId
+import com.icure.cardinal.sdk.model.extensions.toDefaultDelegateOptions
 import com.icure.cardinal.sdk.model.specializations.HexString
 import com.icure.cardinal.sdk.model.toStoredDocumentIdentifier
 import com.icure.cardinal.sdk.options.ApiConfiguration
@@ -467,6 +470,29 @@ private class ReceiptApiImpl(
 				groupId
 			)
 
+		override suspend fun withEncryptionMetadataAndDelegates(
+			groupId: String,
+			base: DecryptedReceipt?,
+			patient: GroupScoped<Patient>?,
+			delegates: Map<String, ReceiptDelegateOptions>,
+			user: User?,
+			secretId: SecretIdUseOption,
+			alternateRootDelegateId: String?
+		): GroupScoped<DecryptedReceipt> =
+			GroupScoped(
+				doWithEncryptionMetadataAndDelegates(
+					groupId = groupId,
+					base = base,
+					patient = patient?.entity,
+					patientGroupId = patient?.groupId,
+					user = user,
+					delegates = delegates,
+					secretId = secretId,
+					alternateRootDelegateId = alternateRootDelegateId
+				),
+				groupId
+			)
+
 		override suspend fun getEncryptionKeysOf(receipt: GroupScoped<Receipt>): Set<HexString> =
 			doGetEncryptionKeysOf(groupId = receipt.groupId, receipt = receipt.entity)
 
@@ -514,6 +540,25 @@ private class ReceiptApiImpl(
 			alternateRootDelegateId = alternateRootDelegateId
 		)
 
+	override suspend fun withEncryptionMetadataAndDelegates(
+		base: DecryptedReceipt?,
+		patient: Patient?,
+		delegates: Map<String, ReceiptDelegateOptions>,
+		user: User?,
+		secretId: SecretIdUseOption,
+		alternateRootDelegateId: String?
+	): DecryptedReceipt =
+		doWithEncryptionMetadataAndDelegates(
+			groupId = null,
+			base = base,
+			patient = patient,
+			patientGroupId = null,
+			user = user,
+			delegates = delegates,
+			secretId = secretId,
+			alternateRootDelegateId = alternateRootDelegateId
+		)
+
 	private suspend fun doWithEncryptionMetadata(
 		groupId: String?,
 		base: DecryptedReceipt?,
@@ -521,6 +566,27 @@ private class ReceiptApiImpl(
 		patientGroupId: String?,
 		user: User?,
 		delegates: Map<String, AccessLevel>,
+		secretId: SecretIdUseOption,
+		alternateRootDelegateId: String?
+	): DecryptedReceipt =
+		doWithEncryptionMetadataAndDelegates(
+			groupId = groupId,
+			base = base,
+			patient = patient,
+			patientGroupId = patientGroupId,
+			user = user,
+			delegates = delegates.mapValues { it.value.toDefaultDelegateOptions() },
+			secretId = secretId,
+			alternateRootDelegateId = alternateRootDelegateId
+		)
+
+	private suspend fun doWithEncryptionMetadataAndDelegates(
+		groupId: String?,
+		base: DecryptedReceipt?,
+		patient: Patient?,
+		patientGroupId: String?,
+		user: User?,
+		delegates: Map<String, DelegateOptions>,
 		secretId: SecretIdUseOption,
 		alternateRootDelegateId: String?
 	): DecryptedReceipt =

@@ -1,5 +1,6 @@
 package com.icure.cardinal.sdk.api
 
+import com.icure.cardinal.sdk.crypto.entities.ContactDelegateOptions
 import com.icure.cardinal.sdk.crypto.entities.ContactShareOptions
 import com.icure.cardinal.sdk.crypto.entities.SecretIdUseOption
 import com.icure.cardinal.sdk.exceptions.RevisionConflictException
@@ -534,6 +535,32 @@ interface ContactApi : ContactBasicFlavourlessApi, ContactFlavouredApi<Decrypted
 	): DecryptedContact
 
 	/**
+	 * Creates a new contact with initialized encryption metadata, specifying fine-grained options for each additional data owner that
+	 * will have access to the entity.
+	 * @param base a contact with initialized content and uninitialized encryption metadata. The result of this
+	 * method takes the content from [base] if provided.
+	 * @param patient the patient linked to the contact.
+	 * @param user the current user, will be used for the auto-delegations if provided.
+	 * @param delegates additional data owners that will have access to the newly created entity. You may choose the
+	 * permissions that the delegates will have on the entity and if they will have access to the secretIds, encryptionKeys, and/or
+	 * owningEntityIds of the new entity.
+	 * @param secretId specifies which secret id of [patient] to use for the new contact
+	 * @return a contact with initialized encryption metadata.
+	 * @throws IllegalArgumentException if base is not null and has a revision or has encryption metadata.
+	 */
+	suspend fun withEncryptionMetadataAndDelegates(
+		base: DecryptedContact?,
+		patient: Patient,
+		delegates: Map<String, ContactDelegateOptions>,
+		@DefaultValue("null")
+		user: User? = null,
+		@DefaultValue("com.icure.cardinal.sdk.crypto.entities.SecretIdUseOption.UseAnySharedWithParent")
+		secretId: SecretIdUseOption = SecretIdUseOption.UseAnySharedWithParent,
+		@DefaultValue("null")
+		alternateRootDelegateId: String? = null,
+	): DecryptedContact
+
+	/**
 	 * Attempts to extract the encryption keys of a contact. If the user does not have access to any encryption key
 	 * of the access log the method will return an empty set.
 	 * Note: entities now have only one encryption key, but this method returns a set for compatibility with older
@@ -680,6 +707,22 @@ interface ContactInGroupApi : ContactBasicFlavourlessInGroupApi, ContactFlavoure
 		user: User? = null,
 		@DefaultValue("emptyMap()")
 		delegates: @JsMapAsObjectArray(keyEntryName = "delegate", valueEntryName = "accessLevel") Map<EntityReferenceInGroup, AccessLevel> = emptyMap(),
+		@DefaultValue("com.icure.cardinal.sdk.crypto.entities.SecretIdUseOption.UseAnySharedWithParent")
+		secretId: SecretIdUseOption = SecretIdUseOption.UseAnySharedWithParent,
+		@DefaultValue("null")
+		alternateRootDelegateReference: EntityReferenceInGroup? = null,
+	): GroupScoped<DecryptedContact>
+
+	/**
+	 * In-group version of [ContactApi.withEncryptionMetadataAndDelegates]
+	 */
+	suspend fun withEncryptionMetadataAndDelegates(
+		entityGroupId: String,
+		base: DecryptedContact?,
+		patient: GroupScoped<Patient>?,
+		delegates: @JsMapAsObjectArray(keyEntryName = "delegate", valueEntryName = "delegateOptions") Map<EntityReferenceInGroup, ContactDelegateOptions>,
+		@DefaultValue("null")
+		user: User? = null,
 		@DefaultValue("com.icure.cardinal.sdk.crypto.entities.SecretIdUseOption.UseAnySharedWithParent")
 		secretId: SecretIdUseOption = SecretIdUseOption.UseAnySharedWithParent,
 		@DefaultValue("null")

@@ -13,7 +13,9 @@ import com.icure.cardinal.sdk.api.InvoiceInGroupApi
 import com.icure.cardinal.sdk.api.raw.RawInvoiceApi
 import com.icure.cardinal.sdk.api.raw.successBodyOrNull404
 import com.icure.cardinal.sdk.api.raw.successBodyOrThrowRevisionConflict
+import com.icure.cardinal.sdk.crypto.entities.DelegateOptions
 import com.icure.cardinal.sdk.crypto.entities.EntityWithEncryptionMetadataTypeName
+import com.icure.cardinal.sdk.crypto.entities.InvoiceDelegateOptions
 import com.icure.cardinal.sdk.crypto.entities.InvoiceShareOptions
 import com.icure.cardinal.sdk.crypto.entities.OwningEntityDetails
 import com.icure.cardinal.sdk.crypto.entities.SecretIdUseOption
@@ -35,6 +37,7 @@ import com.icure.cardinal.sdk.model.embed.InvoiceType
 import com.icure.cardinal.sdk.model.embed.MediumType
 import com.icure.cardinal.sdk.model.extensions.autoDelegationsFor
 import com.icure.cardinal.sdk.model.extensions.dataOwnerId
+import com.icure.cardinal.sdk.model.extensions.toDefaultDelegateOptions
 import com.icure.cardinal.sdk.model.specializations.HexString
 import com.icure.cardinal.sdk.model.toStoredDocumentIdentifier
 import com.icure.cardinal.sdk.options.ApiConfiguration
@@ -617,13 +620,38 @@ private class InvoiceApiImpl(
 		): GroupScoped<DecryptedInvoice> =
 			GroupScoped(
 				doWithEncryptionMetadata(
-					entityGroupId,
-					base,
-					patient?.let { it.entity to it.groupId },
-					user,
-					delegates,
-					secretId,
-					alternateRootDelegateReference
+					entityGroupId = entityGroupId,
+					base = base,
+					patient = patient?.let { it.entity to it.groupId },
+					user = user,
+					delegates = delegates,
+					secretId = secretId,
+					alternateRootDelegateReference = alternateRootDelegateReference
+				),
+				entityGroupId
+			)
+
+		override suspend fun withEncryptionMetadataAndDelegates(
+			entityGroupId: String,
+			base: DecryptedInvoice?,
+			patient: GroupScoped<Patient>?,
+			delegates: @JsMapAsObjectArray(
+				keyEntryName = "delegate",
+				valueEntryName = "delegateOptions"
+			) Map<EntityReferenceInGroup, InvoiceDelegateOptions>,
+			user: User?,
+			secretId: SecretIdUseOption,
+			alternateRootDelegateReference: EntityReferenceInGroup?
+		): GroupScoped<DecryptedInvoice> =
+			GroupScoped(
+				doWithEncryptionMetadataAndDelegates(
+					entityGroupId = entityGroupId,
+					base = base,
+					patient = patient?.let { it.entity to it.groupId },
+					user = user,
+					delegates = delegates,
+					secretId = secretId,
+					alternateRootDelegateReference = alternateRootDelegateReference
 				),
 				entityGroupId
 			)
@@ -688,7 +716,6 @@ private class InvoiceApiImpl(
 		)
 	}
 
-
 	override suspend fun withEncryptionMetadata(
 		base: DecryptedInvoice?,
 		patient: Patient?,
@@ -708,12 +735,50 @@ private class InvoiceApiImpl(
 		}
 	)
 
+	override suspend fun withEncryptionMetadataAndDelegates(
+		base: DecryptedInvoice?,
+		patient: Patient?,
+		delegates: Map<String, InvoiceDelegateOptions>,
+		user: User?,
+		secretId: SecretIdUseOption,
+		alternateRootDelegateId: String?
+	): DecryptedInvoice = doWithEncryptionMetadataAndDelegates(
+		entityGroupId = null,
+		base = base,
+		patient = patient?.let { it to null },
+		user = user,
+		delegates = delegates.keyAsLocalDataOwnerReferences(),
+		secretId = secretId,
+		alternateRootDelegateReference = alternateRootDelegateId?.let {
+			EntityReferenceInGroup(groupId = null, entityId = it)
+		}
+	)
+
 	private suspend fun doWithEncryptionMetadata(
 		entityGroupId: String?,
 		base: DecryptedInvoice?,
 		patient: Pair<Patient, String?>?,
 		user: User?,
 		delegates: @JsMapAsObjectArray(keyEntryName = "delegate", valueEntryName = "accessLevel") Map<EntityReferenceInGroup, AccessLevel>,
+		secretId: SecretIdUseOption,
+		alternateRootDelegateReference: EntityReferenceInGroup?,
+	): DecryptedInvoice =
+		doWithEncryptionMetadataAndDelegates(
+			entityGroupId = entityGroupId,
+			base = base,
+			patient = patient,
+			user = user,
+			delegates = delegates.mapValues { it.value.toDefaultDelegateOptions() },
+			secretId = secretId,
+			alternateRootDelegateReference = alternateRootDelegateReference,
+		)
+
+	private suspend fun doWithEncryptionMetadataAndDelegates(
+		entityGroupId: String?,
+		base: DecryptedInvoice?,
+		patient: Pair<Patient, String?>?,
+		user: User?,
+		delegates: @JsMapAsObjectArray(keyEntryName = "delegate", valueEntryName = "delegateOptions") Map<EntityReferenceInGroup, DelegateOptions>,
 		secretId: SecretIdUseOption,
 		alternateRootDelegateReference: EntityReferenceInGroup?,
 	): DecryptedInvoice =

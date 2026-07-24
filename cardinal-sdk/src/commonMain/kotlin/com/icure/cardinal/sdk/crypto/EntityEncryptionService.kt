@@ -1,6 +1,7 @@
 package com.icure.cardinal.sdk.crypto
 
 import com.icure.cardinal.sdk.crypto.entities.BulkShareResult
+import com.icure.cardinal.sdk.crypto.entities.DelegateOptions
 import com.icure.cardinal.sdk.crypto.entities.DelegateShareOptions
 import com.icure.cardinal.sdk.crypto.entities.EncryptedFieldsManifest
 import com.icure.cardinal.sdk.crypto.entities.EntityDataEncryptionResult
@@ -192,7 +193,7 @@ interface EntityEncryptionService : EntityValidationService {
 		entityType: EntityWithEncryptionMetadataTypeName,
 		owningEntityDetails: OwningEntityDetails?,
 		initializeEncryptionKey: Boolean,
-		autoDelegations: Map<EntityReferenceInGroup, AccessLevel>,
+		autoDelegations: Map<EntityReferenceInGroup, DelegateOptions>,
 		alternateRootDataOwnerReference: EntityReferenceInGroup? = null,
 	): EntityEncryptionMetadataInitialisationResult<T>
 

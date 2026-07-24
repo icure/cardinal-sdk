@@ -13,8 +13,10 @@ import com.icure.cardinal.sdk.api.FormFlavouredApi
 import com.icure.cardinal.sdk.api.raw.RawFormApi
 import com.icure.cardinal.sdk.api.raw.successBodyOrNull404
 import com.icure.cardinal.sdk.api.raw.successBodyOrThrowRevisionConflict
+import com.icure.cardinal.sdk.crypto.entities.DelegateOptions
 import com.icure.cardinal.sdk.crypto.entities.FormShareOptions
 import com.icure.cardinal.sdk.crypto.entities.EntityWithEncryptionMetadataTypeName
+import com.icure.cardinal.sdk.crypto.entities.FormDelegateOptions
 import com.icure.cardinal.sdk.crypto.entities.OwningEntityDetails
 import com.icure.cardinal.sdk.crypto.entities.SecretIdUseOption
 import com.icure.cardinal.sdk.exceptions.NotFoundException
@@ -39,6 +41,7 @@ import com.icure.cardinal.sdk.model.embed.AccessLevel
 import com.icure.cardinal.sdk.model.embed.DelegationTag
 import com.icure.cardinal.sdk.model.extensions.autoDelegationsFor
 import com.icure.cardinal.sdk.model.extensions.dataOwnerId
+import com.icure.cardinal.sdk.model.extensions.toDefaultDelegateOptions
 import com.icure.cardinal.sdk.model.specializations.HexString
 import com.icure.cardinal.sdk.model.toStoredDocumentIdentifier
 import com.icure.cardinal.sdk.options.ApiConfiguration
@@ -730,13 +733,38 @@ private class FormApiImpl(
 		): GroupScoped<DecryptedForm> =
 			GroupScoped(
 				doWithEncryptionMetadata(
-					entityGroupId,
-					base,
-					patient?.let { Pair(it.entity, it.groupId) },
-					user,
-					delegates,
-					secretId,
-					alternateRootDelegateReference,
+					entityGroupId = entityGroupId,
+					base = base,
+					patientInGroup = patient?.let { Pair(it.entity, it.groupId) },
+					user = user,
+					delegates = delegates,
+					secretId = secretId,
+					alternateRootDataOwnerReference = alternateRootDelegateReference,
+				),
+				entityGroupId,
+			)
+
+		override suspend fun withEncryptionMetadataAndDelegates(
+			entityGroupId: String,
+			base: DecryptedForm?,
+			patient: GroupScoped<Patient>?,
+			delegates: @JsMapAsObjectArray(
+				keyEntryName = "delegate",
+				valueEntryName = "delegateOptions",
+			) Map<EntityReferenceInGroup, FormDelegateOptions>,
+			user: User?,
+			secretId: SecretIdUseOption,
+			alternateRootDelegateReference: EntityReferenceInGroup?,
+		): GroupScoped<DecryptedForm> =
+			GroupScoped(
+				doWithEncryptionMetadataAndDelegates(
+					entityGroupId = entityGroupId,
+					base = base,
+					patientInGroup = patient?.let { Pair(it.entity, it.groupId) },
+					user = user,
+					delegates = delegates,
+					secretId = secretId,
+					alternateRootDataOwnerReference = alternateRootDelegateReference,
 				),
 				entityGroupId,
 			)
@@ -782,12 +810,48 @@ private class FormApiImpl(
 		alternateRootDataOwnerReference = alternateRootDelegateId?.let { EntityReferenceInGroup(it, null) }
 	)
 
+	override suspend fun withEncryptionMetadataAndDelegates(
+		base: DecryptedForm?,
+		patient: Patient,
+		delegates: Map<String, FormDelegateOptions>,
+		user: User?,
+		secretId: SecretIdUseOption,
+		alternateRootDelegateId: String?,
+	): DecryptedForm = doWithEncryptionMetadataAndDelegates(
+		entityGroupId = null,
+		base = base,
+		patientInGroup = patient to null,
+		user = user,
+		delegates = delegates.keyAsLocalDataOwnerReferences(),
+		secretId = secretId,
+		alternateRootDataOwnerReference = alternateRootDelegateId?.let { EntityReferenceInGroup(it, null) }
+	)
+
 	private suspend fun doWithEncryptionMetadata(
 		entityGroupId: String?,
 		base: DecryptedForm?,
 		patientInGroup: Pair<Patient, String?>?,
 		user: User?,
 		delegates: @JsMapAsObjectArray(keyEntryName = "delegate", valueEntryName = "accessLevel") Map<EntityReferenceInGroup, AccessLevel>,
+		secretId: SecretIdUseOption,
+		alternateRootDataOwnerReference: EntityReferenceInGroup?
+	): DecryptedForm =
+		doWithEncryptionMetadataAndDelegates(
+			entityGroupId = entityGroupId,
+			base = base,
+			patientInGroup = patientInGroup,
+			user = user,
+			delegates = delegates.mapValues { it.value.toDefaultDelegateOptions() },
+			secretId = secretId,
+			alternateRootDataOwnerReference = alternateRootDataOwnerReference,
+		)
+
+	private suspend fun doWithEncryptionMetadataAndDelegates(
+		entityGroupId: String?,
+		base: DecryptedForm?,
+		patientInGroup: Pair<Patient, String?>?,
+		user: User?,
+		delegates: @JsMapAsObjectArray(keyEntryName = "delegate", valueEntryName = "delegateOptions") Map<EntityReferenceInGroup, DelegateOptions>,
 		secretId: SecretIdUseOption,
 		alternateRootDataOwnerReference: EntityReferenceInGroup?
 	): DecryptedForm =
@@ -802,9 +866,9 @@ private class FormApiImpl(
 			entityType = EntityWithEncryptionMetadataTypeName.Form,
 			owningEntityDetails = patientInGroup?.let { (patient, patientGroup) ->
 				OwningEntityDetails(
-					patientGroup,
-					patient.id,
-					crypto.entity.resolveSecretIdOption(
+					groupId = patientGroup,
+					id = patient.id,
+					secretIds = crypto.entity.resolveSecretIdOption(
 						entityGroupId,
 						patient,
 						EntityWithEncryptionMetadataTypeName.Patient,

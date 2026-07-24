@@ -13,7 +13,9 @@ import com.icure.cardinal.sdk.api.MessageInGroupApi
 import com.icure.cardinal.sdk.api.raw.RawMessageApi
 import com.icure.cardinal.sdk.api.raw.successBodyOrNull404
 import com.icure.cardinal.sdk.api.raw.successBodyOrThrowRevisionConflict
+import com.icure.cardinal.sdk.crypto.entities.DelegateOptions
 import com.icure.cardinal.sdk.crypto.entities.EntityWithEncryptionMetadataTypeName
+import com.icure.cardinal.sdk.crypto.entities.MessageDelegateOptions
 import com.icure.cardinal.sdk.crypto.entities.MessageShareOptions
 import com.icure.cardinal.sdk.crypto.entities.OwningEntityDetails
 import com.icure.cardinal.sdk.crypto.entities.SecretIdUseOption
@@ -38,6 +40,7 @@ import com.icure.cardinal.sdk.model.embed.AccessLevel
 import com.icure.cardinal.sdk.model.embed.DelegationTag
 import com.icure.cardinal.sdk.model.extensions.autoDelegationsFor
 import com.icure.cardinal.sdk.model.extensions.dataOwnerId
+import com.icure.cardinal.sdk.model.extensions.toDefaultDelegateOptions
 import com.icure.cardinal.sdk.model.specializations.HexString
 import com.icure.cardinal.sdk.model.toStoredDocumentIdentifier
 import com.icure.cardinal.sdk.options.ApiConfiguration
@@ -554,13 +557,38 @@ private class MessageApiImpl(
 		): GroupScoped<DecryptedMessage> =
 			GroupScoped(
 				doWithEncryptionMetadata(
-					entityGroupId,
-					base,
-					patient?.let { it.entity to it.groupId },
-					user,
-					delegates,
-					secretId,
-					alternateRootDelegateReference
+					entityGroupId = entityGroupId,
+					base = base,
+					patient = patient?.let { it.entity to it.groupId },
+					user = user,
+					delegates = delegates,
+					secretId = secretId,
+					alternateRootDataOwnerReference = alternateRootDelegateReference
+				),
+				entityGroupId
+			)
+
+		override suspend fun withEncryptionMetadataAndDelegates(
+			entityGroupId: String,
+			base: DecryptedMessage?,
+			patient: GroupScoped<Patient>?,
+			delegates: @JsMapAsObjectArray(
+				keyEntryName = "delegate",
+				valueEntryName = "delegateOptions"
+			) Map<EntityReferenceInGroup, MessageDelegateOptions>,
+			user: User?,
+			secretId: SecretIdUseOption,
+			alternateRootDelegateReference: EntityReferenceInGroup?
+		): GroupScoped<DecryptedMessage> =
+			GroupScoped(
+				doWithEncryptionMetadataAndDelegates(
+					entityGroupId = entityGroupId,
+					base = base,
+					patient = patient?.let { it.entity to it.groupId },
+					user = user,
+					delegates = delegates,
+					secretId = secretId,
+					alternateRootDataOwnerReference = alternateRootDelegateReference
 				),
 				entityGroupId
 			)
@@ -590,13 +618,31 @@ private class MessageApiImpl(
 		alternateRootDelegateId: String?
 	): DecryptedMessage =
 		doWithEncryptionMetadata(
-			null,
-			base,
-			patient?.let { it to null },
-			user,
-			delegates.keyAsLocalDataOwnerReferences(),
-			secretId,
-			alternateRootDelegateId?.let { EntityReferenceInGroup(it, null) }
+			entityGroupId = null,
+			base = base,
+			patient = patient?.let { it to null },
+			user = user,
+			delegates = delegates.keyAsLocalDataOwnerReferences(),
+			secretId = secretId,
+			alternateRootDataOwnerReference = alternateRootDelegateId?.let { EntityReferenceInGroup(it, null) }
+		)
+
+	override suspend fun withEncryptionMetadataAndDelegates(
+		base: DecryptedMessage?,
+		patient: Patient?,
+		delegates: Map<String, MessageDelegateOptions>,
+		user: User?,
+		secretId: SecretIdUseOption,
+		alternateRootDelegateId: String?
+	): DecryptedMessage =
+		doWithEncryptionMetadataAndDelegates(
+			entityGroupId = null,
+			base = base,
+			patient = patient?.let { it to null },
+			user = user,
+			delegates = delegates.keyAsLocalDataOwnerReferences(),
+			secretId = secretId,
+			alternateRootDataOwnerReference = alternateRootDelegateId?.let { EntityReferenceInGroup(it, null) }
 		)
 
 	private suspend fun doWithEncryptionMetadata(
@@ -605,6 +651,25 @@ private class MessageApiImpl(
 		patient: Pair<Patient, String?>?,
 		user: User?,
 		delegates: @JsMapAsObjectArray(keyEntryName = "delegate", valueEntryName = "accessLevel") Map<EntityReferenceInGroup, AccessLevel>,
+		secretId: SecretIdUseOption,
+		alternateRootDataOwnerReference: EntityReferenceInGroup?,
+	): DecryptedMessage =
+		doWithEncryptionMetadataAndDelegates(
+			entityGroupId = entityGroupId,
+			base = base,
+			patient = patient,
+			user = user,
+			delegates = delegates.mapValues { it.value.toDefaultDelegateOptions() },
+			secretId = secretId,
+			alternateRootDataOwnerReference = alternateRootDataOwnerReference,
+		)
+
+	private suspend fun doWithEncryptionMetadataAndDelegates(
+		entityGroupId: String?,
+		base: DecryptedMessage?,
+		patient: Pair<Patient, String?>?,
+		user: User?,
+		delegates: @JsMapAsObjectArray(keyEntryName = "delegate", valueEntryName = "delegateOptions") Map<EntityReferenceInGroup, DelegateOptions>,
 		secretId: SecretIdUseOption,
 		alternateRootDataOwnerReference: EntityReferenceInGroup?,
 	): DecryptedMessage =
