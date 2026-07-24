@@ -1,21 +1,22 @@
 # auto-generated file
-from cardinal_sdk.filters.FormFilters import FormFilters
-from cardinal_sdk.filters.AccessLogFilters import AccessLogFilters
-from cardinal_sdk.filters.ContactFilters import ContactFilters
-from cardinal_sdk.filters.PatientFilters import PatientFilters
-from cardinal_sdk.filters.DeviceFilters import DeviceFilters
-from cardinal_sdk.filters.UserFilters import UserFilters
-from cardinal_sdk.filters.FormTemplateFilters import FormTemplateFilters
-from cardinal_sdk.filters.CodeFilters import CodeFilters
-from cardinal_sdk.filters.GroupFilters import GroupFilters
-from cardinal_sdk.filters.TopicFilters import TopicFilters
-from cardinal_sdk.filters.HealthcarePartyFilters import HealthcarePartyFilters
-from cardinal_sdk.filters.CalendarItemFilters import CalendarItemFilters
-from cardinal_sdk.filters.DocumentFilters import DocumentFilters
 from cardinal_sdk.filters.MaintenanceTaskFilters import MaintenanceTaskFilters
+from cardinal_sdk.filters.DocumentFilters import DocumentFilters
+from cardinal_sdk.filters.HealthcarePartyFilters import HealthcarePartyFilters
+from cardinal_sdk.filters.CodeFilters import CodeFilters
+from cardinal_sdk.filters.UserFilters import UserFilters
 from cardinal_sdk.filters.ServiceFilters import ServiceFilters
+from cardinal_sdk.filters.ContactFilters import ContactFilters
+from cardinal_sdk.filters.TopicFilters import TopicFilters
 from cardinal_sdk.filters.MessageFilters import MessageFilters
-from cardinal_sdk.filters.AgendaFilters import AgendaFilters
+from cardinal_sdk.filters.FormFilters import FormFilters
+from cardinal_sdk.filters.FormTemplateFilters import FormTemplateFilters
+from cardinal_sdk.filters.InsuranceFilters import InsuranceFilters
+from cardinal_sdk.filters.GroupFilters import GroupFilters
+from cardinal_sdk.filters.CalendarItemFilters import CalendarItemFilters
+from cardinal_sdk.filters.AccessLogFilters import AccessLogFilters
 from cardinal_sdk.filters.HealthElementFilters import HealthElementFilters
+from cardinal_sdk.filters.DeviceFilters import DeviceFilters
+from cardinal_sdk.filters.AgendaFilters import AgendaFilters
+from cardinal_sdk.filters.PatientFilters import PatientFilters
 from cardinal_sdk.filters.MetaFilters import intersection, union, difference
 from cardinal_sdk.filters.FilterOptions import FilterOptions, SortableFilterOptions, BaseFilterOptions, BaseSortableFilterOptions
