@@ -100,7 +100,7 @@ jobs:
 
             -   name: Generate Typescript SDK
                 run: |
-                    java -jar ${{ env.BUILDER_JAR_PATH }} generate --ts --sdk --input=${{ env.JSON_OUTPUT_DIR }}
+                    java -jar ${{ env.BUILDER_JAR_PATH }} generate --ts --input=${{ env.JSON_OUTPUT_DIR }}
 
             -   name: Add newly generated files
                 run: |
