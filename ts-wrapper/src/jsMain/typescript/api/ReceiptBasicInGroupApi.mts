@@ -56,6 +56,13 @@ export interface ReceiptBasicInGroupApi {
 
 	/**
 	 *
+	 *  In-group version of [ReceiptBasicFlavourlessApi.getRawReceiptAttachment]
+	 */
+	getRawReceiptAttachment(groupId: string, receiptId: string,
+			attachmentId: string): Promise<Int8Array>;
+
+	/**
+	 *
 	 *  In-group version of [ReceiptApi.createReceipt]
 	 */
 	createReceipt(entity: GroupScoped<EncryptedReceipt>): Promise<GroupScoped<EncryptedReceipt>>;
@@ -114,5 +121,12 @@ export interface ReceiptBasicInGroupApi {
 	 */
 	getReceipts(groupId: string,
 			entityIds: Array<string>): Promise<Array<GroupScoped<EncryptedReceipt>>>;
+
+	/**
+	 *
+	 *  In-group version of [ReceiptBasicFlavouredApi.listReceiptsBetweenDates]
+	 */
+	listReceiptsBetweenDates(groupId: string,
+			options?: { startDate?: number | undefined, endDate?: number | undefined, descending?: boolean }): Promise<Array<GroupScoped<EncryptedReceipt>>>;
 
 }
