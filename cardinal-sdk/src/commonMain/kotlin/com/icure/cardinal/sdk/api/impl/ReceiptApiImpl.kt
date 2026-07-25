@@ -160,6 +160,13 @@ private abstract class AbstractReceiptBasicFlavouredApi<E : Receipt>(
 			rawApi.getReceiptsInGroup(groupId = groupId, receiptIds = ListOfIds(ids))
 		}.successBody().let { maybeDecrypt(groupId, it) }
 	}
+
+	protected suspend fun doListReceiptsBetweenDates(groupId: String?, startDate: Long?, endDate: Long?, descending: Boolean): List<E> =
+		if (groupId == null) {
+			rawApi.listReceiptsBetweenDates(startDate = startDate, endDate = endDate, descending = descending)
+		} else {
+			rawApi.listReceiptsBetweenDatesInGroup(groupId = groupId, startDate = startDate, endDate = endDate, descending = descending)
+		}.successBody().let { maybeDecrypt(groupId, it) }
 }
 
 @InternalIcureApi
@@ -194,6 +201,9 @@ private class ReceiptBasicFlavouredApiImpl<E : Receipt>(
 
 	override suspend fun listByReference(reference: String): List<E> =
 		rawApi.listByReference(ref = reference).successBody().let { maybeDecrypt(null, it) }
+
+	override suspend fun listReceiptsBetweenDates(startDate: Long?, endDate: Long?, descending: Boolean): List<E> =
+		doListReceiptsBetweenDates(groupId = null, startDate = startDate, endDate = endDate, descending = descending)
 }
 
 @InternalIcureApi
@@ -241,6 +251,10 @@ private class ReceiptBasicFlavouredInGroupApiImpl<E : Receipt>(
 
 	override suspend fun getReceipts(groupId: String, entityIds: List<String>): List<GroupScoped<E>> =
 		doGetReceipts(groupId = groupId, entityIds = entityIds).map { GroupScoped(it, groupId) }
+
+	override suspend fun listReceiptsBetweenDates(groupId: String, startDate: Long?, endDate: Long?, descending: Boolean): List<GroupScoped<E>> =
+		doListReceiptsBetweenDates(groupId = groupId, startDate = startDate, endDate = endDate, descending = descending)
+			.map { GroupScoped(it, groupId) }
 }
 
 @InternalIcureApi
@@ -365,6 +379,9 @@ private abstract class AbstractReceiptBasicFlavourless(
 
 	suspend fun getRawReceiptAttachment(receiptId: String, attachmentId: String): ByteArray =
 		rawApi.getReceiptAttachment(receiptId = receiptId, attachmentId = attachmentId).successBody()
+
+	suspend fun getRawReceiptAttachment(groupId: String, receiptId: String, attachmentId: String): ByteArray =
+		rawApi.getReceiptAttachmentInGroup(groupId = groupId, receiptId = receiptId, attachmentId = attachmentId).successBody()
 
 	suspend fun setRawReceiptAttachment(receiptId: String, rev: String, blobType: String, attachment: ByteArray): EncryptedReceipt =
 		rawApi.setReceiptAttachment(receiptId = receiptId, blobType = blobType, rev = rev, payload = attachment).successBody()
