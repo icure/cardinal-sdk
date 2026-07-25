@@ -1119,6 +1119,41 @@ class ReceiptApi:
 			return_value = [DecryptedReceipt._deserialize(x1) for x1 in result_info.success]
 			return return_value
 
+	async def list_receipts_between_dates_async(self, start_date: Optional[int] = None, end_date: Optional[int] = None, descending: bool = False) -> list[DecryptedReceipt]:
+		def do_decode(raw_result):
+			return [DecryptedReceipt._deserialize(x1) for x1 in raw_result]
+		payload = {
+			"startDate": start_date,
+			"endDate": end_date,
+			"descending": descending,
+		}
+		return await execute_async_method_job(
+			self.cardinal_sdk._executor,
+			True,
+			do_decode,
+			symbols.kotlin.root.com.icure.cardinal.sdk.py.api.ReceiptApi.listReceiptsBetweenDatesAsync,
+			self.cardinal_sdk._native,
+			json.dumps(payload).encode('utf-8'),
+		)
+
+	def list_receipts_between_dates_blocking(self, start_date: Optional[int] = None, end_date: Optional[int] = None, descending: bool = False) -> list[DecryptedReceipt]:
+		payload = {
+			"startDate": start_date,
+			"endDate": end_date,
+			"descending": descending,
+		}
+		call_result = symbols.kotlin.root.com.icure.cardinal.sdk.py.api.ReceiptApi.listReceiptsBetweenDatesBlocking(
+			self.cardinal_sdk._native,
+			json.dumps(payload).encode('utf-8'),
+		)
+		result_info = create_result_from_json(cast(call_result, c_char_p).value.decode('utf-8'))
+		symbols.DisposeString(call_result)
+		if result_info.failure is not None:
+			raise interpret_kt_error(result_info.failure)
+		else:
+			return_value = [DecryptedReceipt._deserialize(x1) for x1 in result_info.success]
+			return return_value
+
 
 class ReceiptApiEncrypted:
 
@@ -1536,6 +1571,41 @@ class ReceiptApiEncrypted:
 			return_value = [EncryptedReceipt._deserialize(x1) for x1 in result_info.success]
 			return return_value
 
+	async def list_receipts_between_dates_async(self, start_date: Optional[int] = None, end_date: Optional[int] = None, descending: bool = False) -> list[EncryptedReceipt]:
+		def do_decode(raw_result):
+			return [EncryptedReceipt._deserialize(x1) for x1 in raw_result]
+		payload = {
+			"startDate": start_date,
+			"endDate": end_date,
+			"descending": descending,
+		}
+		return await execute_async_method_job(
+			self.cardinal_sdk._executor,
+			True,
+			do_decode,
+			symbols.kotlin.root.com.icure.cardinal.sdk.py.api.ReceiptApi.encrypted.listReceiptsBetweenDatesAsync,
+			self.cardinal_sdk._native,
+			json.dumps(payload).encode('utf-8'),
+		)
+
+	def list_receipts_between_dates_blocking(self, start_date: Optional[int] = None, end_date: Optional[int] = None, descending: bool = False) -> list[EncryptedReceipt]:
+		payload = {
+			"startDate": start_date,
+			"endDate": end_date,
+			"descending": descending,
+		}
+		call_result = symbols.kotlin.root.com.icure.cardinal.sdk.py.api.ReceiptApi.encrypted.listReceiptsBetweenDatesBlocking(
+			self.cardinal_sdk._native,
+			json.dumps(payload).encode('utf-8'),
+		)
+		result_info = create_result_from_json(cast(call_result, c_char_p).value.decode('utf-8'))
+		symbols.DisposeString(call_result)
+		if result_info.failure is not None:
+			raise interpret_kt_error(result_info.failure)
+		else:
+			return_value = [EncryptedReceipt._deserialize(x1) for x1 in result_info.success]
+			return return_value
+
 
 class ReceiptApiTryAndRecover:
 
@@ -1942,6 +2012,41 @@ class ReceiptApiTryAndRecover:
 			"reference": reference,
 		}
 		call_result = symbols.kotlin.root.com.icure.cardinal.sdk.py.api.ReceiptApi.tryAndRecover.listByReferenceBlocking(
+			self.cardinal_sdk._native,
+			json.dumps(payload).encode('utf-8'),
+		)
+		result_info = create_result_from_json(cast(call_result, c_char_p).value.decode('utf-8'))
+		symbols.DisposeString(call_result)
+		if result_info.failure is not None:
+			raise interpret_kt_error(result_info.failure)
+		else:
+			return_value = [deserialize_receipt(x1) for x1 in result_info.success]
+			return return_value
+
+	async def list_receipts_between_dates_async(self, start_date: Optional[int] = None, end_date: Optional[int] = None, descending: bool = False) -> list[Receipt]:
+		def do_decode(raw_result):
+			return [deserialize_receipt(x1) for x1 in raw_result]
+		payload = {
+			"startDate": start_date,
+			"endDate": end_date,
+			"descending": descending,
+		}
+		return await execute_async_method_job(
+			self.cardinal_sdk._executor,
+			True,
+			do_decode,
+			symbols.kotlin.root.com.icure.cardinal.sdk.py.api.ReceiptApi.tryAndRecover.listReceiptsBetweenDatesAsync,
+			self.cardinal_sdk._native,
+			json.dumps(payload).encode('utf-8'),
+		)
+
+	def list_receipts_between_dates_blocking(self, start_date: Optional[int] = None, end_date: Optional[int] = None, descending: bool = False) -> list[Receipt]:
+		payload = {
+			"startDate": start_date,
+			"endDate": end_date,
+			"descending": descending,
+		}
+		call_result = symbols.kotlin.root.com.icure.cardinal.sdk.py.api.ReceiptApi.tryAndRecover.listReceiptsBetweenDatesBlocking(
 			self.cardinal_sdk._native,
 			json.dumps(payload).encode('utf-8'),
 		)
@@ -2474,6 +2579,41 @@ class ReceiptApiInGroup:
 			return_value = [GroupScoped._deserialize(x1, lambda x2: StoredDocumentIdentifier._deserialize(x2)) for x1 in result_info.success]
 			return return_value
 
+	async def get_raw_receipt_attachment_async(self, group_id: str, receipt_id: str, attachment_id: str) -> bytearray:
+		def do_decode(raw_result):
+			return bytearray(base64.b64decode(raw_result))
+		payload = {
+			"groupId": group_id,
+			"receiptId": receipt_id,
+			"attachmentId": attachment_id,
+		}
+		return await execute_async_method_job(
+			self.cardinal_sdk._executor,
+			True,
+			do_decode,
+			symbols.kotlin.root.com.icure.cardinal.sdk.py.api.ReceiptApi.inGroup.getRawReceiptAttachmentAsync,
+			self.cardinal_sdk._native,
+			json.dumps(payload).encode('utf-8'),
+		)
+
+	def get_raw_receipt_attachment_blocking(self, group_id: str, receipt_id: str, attachment_id: str) -> bytearray:
+		payload = {
+			"groupId": group_id,
+			"receiptId": receipt_id,
+			"attachmentId": attachment_id,
+		}
+		call_result = symbols.kotlin.root.com.icure.cardinal.sdk.py.api.ReceiptApi.inGroup.getRawReceiptAttachmentBlocking(
+			self.cardinal_sdk._native,
+			json.dumps(payload).encode('utf-8'),
+		)
+		result_info = create_result_from_json(cast(call_result, c_char_p).value.decode('utf-8'))
+		symbols.DisposeString(call_result)
+		if result_info.failure is not None:
+			raise interpret_kt_error(result_info.failure)
+		else:
+			return_value = bytearray(base64.b64decode(result_info.success))
+			return return_value
+
 	async def share_with_async(self, delegate: EntityReferenceInGroup, receipt: GroupScoped[DecryptedReceipt], options: Optional[ReceiptShareOptions] = None) -> GroupScoped[DecryptedReceipt]:
 		def do_decode(raw_result):
 			return GroupScoped._deserialize(raw_result, lambda x1: DecryptedReceipt._deserialize(x1))
@@ -2845,6 +2985,43 @@ class ReceiptApiInGroup:
 			"entityIds": [x0 for x0 in entity_ids],
 		}
 		call_result = symbols.kotlin.root.com.icure.cardinal.sdk.py.api.ReceiptApi.inGroup.getReceiptsBlocking(
+			self.cardinal_sdk._native,
+			json.dumps(payload).encode('utf-8'),
+		)
+		result_info = create_result_from_json(cast(call_result, c_char_p).value.decode('utf-8'))
+		symbols.DisposeString(call_result)
+		if result_info.failure is not None:
+			raise interpret_kt_error(result_info.failure)
+		else:
+			return_value = [GroupScoped._deserialize(x1, lambda x2: DecryptedReceipt._deserialize(x2)) for x1 in result_info.success]
+			return return_value
+
+	async def list_receipts_between_dates_async(self, group_id: str, start_date: Optional[int] = None, end_date: Optional[int] = None, descending: bool = False) -> list[GroupScoped[DecryptedReceipt]]:
+		def do_decode(raw_result):
+			return [GroupScoped._deserialize(x1, lambda x2: DecryptedReceipt._deserialize(x2)) for x1 in raw_result]
+		payload = {
+			"groupId": group_id,
+			"startDate": start_date,
+			"endDate": end_date,
+			"descending": descending,
+		}
+		return await execute_async_method_job(
+			self.cardinal_sdk._executor,
+			True,
+			do_decode,
+			symbols.kotlin.root.com.icure.cardinal.sdk.py.api.ReceiptApi.inGroup.listReceiptsBetweenDatesAsync,
+			self.cardinal_sdk._native,
+			json.dumps(payload).encode('utf-8'),
+		)
+
+	def list_receipts_between_dates_blocking(self, group_id: str, start_date: Optional[int] = None, end_date: Optional[int] = None, descending: bool = False) -> list[GroupScoped[DecryptedReceipt]]:
+		payload = {
+			"groupId": group_id,
+			"startDate": start_date,
+			"endDate": end_date,
+			"descending": descending,
+		}
+		call_result = symbols.kotlin.root.com.icure.cardinal.sdk.py.api.ReceiptApi.inGroup.listReceiptsBetweenDatesBlocking(
 			self.cardinal_sdk._native,
 			json.dumps(payload).encode('utf-8'),
 		)
@@ -3244,6 +3421,43 @@ class ReceiptApiInGroupEncrypted:
 			return_value = [GroupScoped._deserialize(x1, lambda x2: EncryptedReceipt._deserialize(x2)) for x1 in result_info.success]
 			return return_value
 
+	async def list_receipts_between_dates_async(self, group_id: str, start_date: Optional[int] = None, end_date: Optional[int] = None, descending: bool = False) -> list[GroupScoped[EncryptedReceipt]]:
+		def do_decode(raw_result):
+			return [GroupScoped._deserialize(x1, lambda x2: EncryptedReceipt._deserialize(x2)) for x1 in raw_result]
+		payload = {
+			"groupId": group_id,
+			"startDate": start_date,
+			"endDate": end_date,
+			"descending": descending,
+		}
+		return await execute_async_method_job(
+			self.cardinal_sdk._executor,
+			True,
+			do_decode,
+			symbols.kotlin.root.com.icure.cardinal.sdk.py.api.ReceiptApi.inGroup.encrypted.listReceiptsBetweenDatesAsync,
+			self.cardinal_sdk._native,
+			json.dumps(payload).encode('utf-8'),
+		)
+
+	def list_receipts_between_dates_blocking(self, group_id: str, start_date: Optional[int] = None, end_date: Optional[int] = None, descending: bool = False) -> list[GroupScoped[EncryptedReceipt]]:
+		payload = {
+			"groupId": group_id,
+			"startDate": start_date,
+			"endDate": end_date,
+			"descending": descending,
+		}
+		call_result = symbols.kotlin.root.com.icure.cardinal.sdk.py.api.ReceiptApi.inGroup.encrypted.listReceiptsBetweenDatesBlocking(
+			self.cardinal_sdk._native,
+			json.dumps(payload).encode('utf-8'),
+		)
+		result_info = create_result_from_json(cast(call_result, c_char_p).value.decode('utf-8'))
+		symbols.DisposeString(call_result)
+		if result_info.failure is not None:
+			raise interpret_kt_error(result_info.failure)
+		else:
+			return_value = [GroupScoped._deserialize(x1, lambda x2: EncryptedReceipt._deserialize(x2)) for x1 in result_info.success]
+			return return_value
+
 
 class ReceiptApiInGroupTryAndRecover:
 
@@ -3621,6 +3835,43 @@ class ReceiptApiInGroupTryAndRecover:
 			"entityIds": [x0 for x0 in entity_ids],
 		}
 		call_result = symbols.kotlin.root.com.icure.cardinal.sdk.py.api.ReceiptApi.inGroup.tryAndRecover.getReceiptsBlocking(
+			self.cardinal_sdk._native,
+			json.dumps(payload).encode('utf-8'),
+		)
+		result_info = create_result_from_json(cast(call_result, c_char_p).value.decode('utf-8'))
+		symbols.DisposeString(call_result)
+		if result_info.failure is not None:
+			raise interpret_kt_error(result_info.failure)
+		else:
+			return_value = [GroupScoped._deserialize(x1, lambda x2: deserialize_receipt(x2)) for x1 in result_info.success]
+			return return_value
+
+	async def list_receipts_between_dates_async(self, group_id: str, start_date: Optional[int] = None, end_date: Optional[int] = None, descending: bool = False) -> list[GroupScoped[Receipt]]:
+		def do_decode(raw_result):
+			return [GroupScoped._deserialize(x1, lambda x2: deserialize_receipt(x2)) for x1 in raw_result]
+		payload = {
+			"groupId": group_id,
+			"startDate": start_date,
+			"endDate": end_date,
+			"descending": descending,
+		}
+		return await execute_async_method_job(
+			self.cardinal_sdk._executor,
+			True,
+			do_decode,
+			symbols.kotlin.root.com.icure.cardinal.sdk.py.api.ReceiptApi.inGroup.tryAndRecover.listReceiptsBetweenDatesAsync,
+			self.cardinal_sdk._native,
+			json.dumps(payload).encode('utf-8'),
+		)
+
+	def list_receipts_between_dates_blocking(self, group_id: str, start_date: Optional[int] = None, end_date: Optional[int] = None, descending: bool = False) -> list[GroupScoped[Receipt]]:
+		payload = {
+			"groupId": group_id,
+			"startDate": start_date,
+			"endDate": end_date,
+			"descending": descending,
+		}
+		call_result = symbols.kotlin.root.com.icure.cardinal.sdk.py.api.ReceiptApi.inGroup.tryAndRecover.listReceiptsBetweenDatesBlocking(
 			self.cardinal_sdk._native,
 			json.dumps(payload).encode('utf-8'),
 		)
