@@ -131,4 +131,6 @@ public external interface ReceiptApiJs {
 	public fun getReceipts(entityIds: Array<String>): Promise<Array<DecryptedReceiptJs>>
 
 	public fun listByReference(reference: String): Promise<Array<DecryptedReceiptJs>>
+
+	public fun listReceiptsBetweenDates(options: dynamic): Promise<Array<DecryptedReceiptJs>>
 }

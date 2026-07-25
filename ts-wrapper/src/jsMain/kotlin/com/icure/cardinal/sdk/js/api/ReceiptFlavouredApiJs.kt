@@ -44,4 +44,6 @@ public external interface ReceiptFlavouredApiJs<E : ReceiptJs> {
 	public fun getReceipts(entityIds: Array<String>): Promise<Array<E>>
 
 	public fun listByReference(reference: String): Promise<Array<E>>
+
+	public fun listReceiptsBetweenDates(options: dynamic): Promise<Array<E>>
 }
