@@ -2,6 +2,7 @@ package com.icure.cardinal.sdk.api
 
 import com.icure.cardinal.sdk.crypto.entities.EntityAccessInformation
 import com.icure.cardinal.sdk.crypto.entities.EntityWithTypeInfo
+import com.icure.cardinal.sdk.crypto.entities.PatientDelegateOptions
 import com.icure.cardinal.sdk.crypto.entities.PatientShareOptions
 import com.icure.cardinal.sdk.crypto.entities.ShareAllPatientDataOptions
 import com.icure.cardinal.sdk.exceptions.RevisionConflictException
@@ -573,6 +574,27 @@ interface PatientApi : PatientBasicFlavourlessApi, PatientFlavouredApi<Decrypted
 	): DecryptedPatient
 
 	/**
+	 * Creates a new access log with initialized encryption metadata, specifying fine-grained options for each additional data owner that
+	 * will have access to the entity.
+	 * @param base a patient with initialized content and uninitialized encryption metadata. The result of this
+	 * method takes the content from [base] if provided.
+	 * @param user the current user, will be used for the auto-delegations if provided.
+	 * @param delegates additional data owners that will have access to the newly created entity. You may choose the
+	 * permissions that the delegates will have on the entity and if they will have access to the secretIds, encryptionKeys, and/or
+	 * owningEntityIds of the new entity.
+	 * @return a patient with initialized encryption metadata.
+	 * @throws IllegalArgumentException if base is not null and has a revision or has encryption metadata.
+	 */
+	suspend fun withEncryptionMetadataAndDelegates(
+		base: DecryptedPatient?,
+		delegates: Map<String, PatientDelegateOptions>,
+		@DefaultValue("null")
+		user: User? = null,
+		@DefaultValue("null")
+		alternateRootDelegateId: String? = null,
+	): DecryptedPatient
+
+	/**
 	 * Specifies if the current user has write access to a patient through delegations.
 	 * Doesn't consider actual permissions on the server side: for example, if the data owner has access to all entities
 	 * thanks to extended permission but has no delegation on the provided entity this method returns false. Similarly,
@@ -765,6 +787,19 @@ interface PatientInGroupApi : PatientBasicFlavourlessInGroupApi, PatientFlavoure
 		user: User? = null,
 		@DefaultValue("emptyMap()")
 		delegates: @JsMapAsObjectArray(keyEntryName = "delegate", valueEntryName = "accessLevel") Map<EntityReferenceInGroup, AccessLevel> = emptyMap(),
+		@DefaultValue("null")
+		alternateRootDelegateReference: EntityReferenceInGroup? = null,
+	): GroupScoped<DecryptedPatient>
+
+	/**
+	 * In-group version of [PatientApi.withEncryptionMetadataAndDelegates]
+	 */
+	suspend fun withEncryptionMetadataAndDelegates(
+		entityGroupId: String,
+		base: DecryptedPatient?,
+		delegates: @JsMapAsObjectArray(keyEntryName = "delegate", valueEntryName = "delegateOptions") Map<EntityReferenceInGroup, PatientDelegateOptions>,
+		@DefaultValue("null")
+		user: User? = null,
 		@DefaultValue("null")
 		alternateRootDelegateReference: EntityReferenceInGroup? = null,
 	): GroupScoped<DecryptedPatient>

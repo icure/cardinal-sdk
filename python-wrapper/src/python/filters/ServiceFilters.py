@@ -55,7 +55,7 @@ class ServiceFilters:
 			return return_value
 
 	@classmethod
-	def by_identifiers_for_data_owner(cls, data_owner_id: str, identifiers: list[Identifier]) -> BaseSortableFilterOptions[Service]:
+	def by_identifiers_for_data_owner(cls, data_owner_id: str, identifiers: list[Identifier]) -> BaseFilterOptions[Service]:
 		payload = {
 			"dataOwnerId": data_owner_id,
 			"identifiers": [x0.__serialize__() for x0 in identifiers],
@@ -68,11 +68,11 @@ class ServiceFilters:
 		if result_info.failure is not None:
 			raise interpret_kt_error(result_info.failure)
 		else:
-			return_value = BaseSortableFilterOptions(result_info.success)
+			return_value = BaseFilterOptions(result_info.success)
 			return return_value
 
 	@classmethod
-	def by_identifiers_for_data_owner_in_group(cls, data_owner: EntityReferenceInGroup, identifiers: list[Identifier]) -> BaseSortableFilterOptions[Service]:
+	def by_identifiers_for_data_owner_in_group(cls, data_owner: EntityReferenceInGroup, identifiers: list[Identifier]) -> BaseFilterOptions[Service]:
 		payload = {
 			"dataOwner": data_owner.__serialize__(),
 			"identifiers": [x0.__serialize__() for x0 in identifiers],
@@ -85,11 +85,11 @@ class ServiceFilters:
 		if result_info.failure is not None:
 			raise interpret_kt_error(result_info.failure)
 		else:
-			return_value = BaseSortableFilterOptions(result_info.success)
+			return_value = BaseFilterOptions(result_info.success)
 			return return_value
 
 	@classmethod
-	def by_code_and_value_date_for_data_owner(cls, data_owner_id: str, code_type: str, code_code: Optional[str] = None, start_of_service_value_date: Optional[int] = None, end_of_service_value_date: Optional[int] = None) -> BaseSortableFilterOptions[Service]:
+	def by_code_and_value_date_for_data_owner(cls, data_owner_id: str, code_type: str, code_code: Optional[str] = None, start_of_service_value_date: Optional[int] = None, end_of_service_value_date: Optional[int] = None) -> BaseFilterOptions[Service]:
 		payload = {
 			"dataOwnerId": data_owner_id,
 			"codeType": code_type,
@@ -105,11 +105,11 @@ class ServiceFilters:
 		if result_info.failure is not None:
 			raise interpret_kt_error(result_info.failure)
 		else:
-			return_value = BaseSortableFilterOptions(result_info.success)
+			return_value = BaseFilterOptions(result_info.success)
 			return return_value
 
 	@classmethod
-	def by_code_and_value_date_for_data_owner_in_group(cls, data_owner: EntityReferenceInGroup, code_type: str, code_code: Optional[str] = None, start_of_service_value_date: Optional[int] = None, end_of_service_value_date: Optional[int] = None) -> BaseSortableFilterOptions[Service]:
+	def by_code_and_value_date_for_data_owner_in_group(cls, data_owner: EntityReferenceInGroup, code_type: str, code_code: Optional[str] = None, start_of_service_value_date: Optional[int] = None, end_of_service_value_date: Optional[int] = None) -> BaseFilterOptions[Service]:
 		payload = {
 			"dataOwner": data_owner.__serialize__(),
 			"codeType": code_type,
@@ -125,11 +125,11 @@ class ServiceFilters:
 		if result_info.failure is not None:
 			raise interpret_kt_error(result_info.failure)
 		else:
-			return_value = BaseSortableFilterOptions(result_info.success)
+			return_value = BaseFilterOptions(result_info.success)
 			return return_value
 
 	@classmethod
-	def by_tag_and_value_date_for_data_owner(cls, data_owner_id: str, tag_type: str, tag_code: Optional[str] = None, start_of_service_value_date: Optional[int] = None, end_of_service_value_date: Optional[int] = None) -> BaseSortableFilterOptions[Service]:
+	def by_tag_and_value_date_for_data_owner(cls, data_owner_id: str, tag_type: str, tag_code: Optional[str] = None, start_of_service_value_date: Optional[int] = None, end_of_service_value_date: Optional[int] = None) -> BaseFilterOptions[Service]:
 		payload = {
 			"dataOwnerId": data_owner_id,
 			"tagType": tag_type,
@@ -145,11 +145,11 @@ class ServiceFilters:
 		if result_info.failure is not None:
 			raise interpret_kt_error(result_info.failure)
 		else:
-			return_value = BaseSortableFilterOptions(result_info.success)
+			return_value = BaseFilterOptions(result_info.success)
 			return return_value
 
 	@classmethod
-	def by_tag_and_value_date_for_data_owner_in_group(cls, data_owner: EntityReferenceInGroup, tag_type: str, tag_code: Optional[str] = None, start_of_service_value_date: Optional[int] = None, end_of_service_value_date: Optional[int] = None) -> BaseSortableFilterOptions[Service]:
+	def by_tag_and_value_date_for_data_owner_in_group(cls, data_owner: EntityReferenceInGroup, tag_type: str, tag_code: Optional[str] = None, start_of_service_value_date: Optional[int] = None, end_of_service_value_date: Optional[int] = None) -> BaseFilterOptions[Service]:
 		payload = {
 			"dataOwner": data_owner.__serialize__(),
 			"tagType": tag_type,
@@ -165,11 +165,11 @@ class ServiceFilters:
 		if result_info.failure is not None:
 			raise interpret_kt_error(result_info.failure)
 		else:
-			return_value = BaseSortableFilterOptions(result_info.success)
+			return_value = BaseFilterOptions(result_info.success)
 			return return_value
 
 	@classmethod
-	def by_patients_for_data_owner(cls, data_owner_id: str, patients: list[Patient]) -> SortableFilterOptions[Service]:
+	def by_patients_for_data_owner(cls, data_owner_id: str, patients: list[Patient]) -> FilterOptions[Service]:
 		payload = {
 			"dataOwnerId": data_owner_id,
 			"patients": [serialize_patient(x0) for x0 in patients],
@@ -182,11 +182,11 @@ class ServiceFilters:
 		if result_info.failure is not None:
 			raise interpret_kt_error(result_info.failure)
 		else:
-			return_value = SortableFilterOptions(result_info.success)
+			return_value = FilterOptions(result_info.success)
 			return return_value
 
 	@classmethod
-	def by_patients_for_data_owner_in_group(cls, data_owner: EntityReferenceInGroup, patients: list[Patient]) -> SortableFilterOptions[Service]:
+	def by_patients_for_data_owner_in_group(cls, data_owner: EntityReferenceInGroup, patients: list[Patient]) -> FilterOptions[Service]:
 		payload = {
 			"dataOwner": data_owner.__serialize__(),
 			"patients": [serialize_patient(x0) for x0 in patients],
@@ -199,11 +199,11 @@ class ServiceFilters:
 		if result_info.failure is not None:
 			raise interpret_kt_error(result_info.failure)
 		else:
-			return_value = SortableFilterOptions(result_info.success)
+			return_value = FilterOptions(result_info.success)
 			return return_value
 
 	@classmethod
-	def by_patients_secret_ids_for_data_owner(cls, data_owner_id: str, secret_ids: list[str]) -> BaseSortableFilterOptions[Service]:
+	def by_patients_secret_ids_for_data_owner(cls, data_owner_id: str, secret_ids: list[str]) -> BaseFilterOptions[Service]:
 		payload = {
 			"dataOwnerId": data_owner_id,
 			"secretIds": [x0 for x0 in secret_ids],
@@ -216,11 +216,11 @@ class ServiceFilters:
 		if result_info.failure is not None:
 			raise interpret_kt_error(result_info.failure)
 		else:
-			return_value = BaseSortableFilterOptions(result_info.success)
+			return_value = BaseFilterOptions(result_info.success)
 			return return_value
 
 	@classmethod
-	def by_patients_secret_ids_for_data_owner_in_group(cls, data_owner: EntityReferenceInGroup, secret_ids: list[str]) -> BaseSortableFilterOptions[Service]:
+	def by_patients_secret_ids_for_data_owner_in_group(cls, data_owner: EntityReferenceInGroup, secret_ids: list[str]) -> BaseFilterOptions[Service]:
 		payload = {
 			"dataOwner": data_owner.__serialize__(),
 			"secretIds": [x0 for x0 in secret_ids],
@@ -233,11 +233,11 @@ class ServiceFilters:
 		if result_info.failure is not None:
 			raise interpret_kt_error(result_info.failure)
 		else:
-			return_value = BaseSortableFilterOptions(result_info.success)
+			return_value = BaseFilterOptions(result_info.success)
 			return return_value
 
 	@classmethod
-	def by_health_element_id_from_sub_contact_for_data_owner(cls, data_owner_id: str, health_element_ids: list[str]) -> BaseSortableFilterOptions[Service]:
+	def by_health_element_id_from_sub_contact_for_data_owner(cls, data_owner_id: str, health_element_ids: list[str]) -> BaseFilterOptions[Service]:
 		payload = {
 			"dataOwnerId": data_owner_id,
 			"healthElementIds": [x0 for x0 in health_element_ids],
@@ -250,11 +250,11 @@ class ServiceFilters:
 		if result_info.failure is not None:
 			raise interpret_kt_error(result_info.failure)
 		else:
-			return_value = BaseSortableFilterOptions(result_info.success)
+			return_value = BaseFilterOptions(result_info.success)
 			return return_value
 
 	@classmethod
-	def by_health_element_id_from_sub_contact_for_data_owner_in_group(cls, data_owner: EntityReferenceInGroup, health_element_ids: list[str]) -> BaseSortableFilterOptions[Service]:
+	def by_health_element_id_from_sub_contact_for_data_owner_in_group(cls, data_owner: EntityReferenceInGroup, health_element_ids: list[str]) -> BaseFilterOptions[Service]:
 		payload = {
 			"dataOwner": data_owner.__serialize__(),
 			"healthElementIds": [x0 for x0 in health_element_ids],
@@ -267,11 +267,11 @@ class ServiceFilters:
 		if result_info.failure is not None:
 			raise interpret_kt_error(result_info.failure)
 		else:
-			return_value = BaseSortableFilterOptions(result_info.success)
+			return_value = BaseFilterOptions(result_info.success)
 			return return_value
 
 	@classmethod
-	def by_identifiers_for_self(cls, identifiers: list[Identifier]) -> SortableFilterOptions[Service]:
+	def by_identifiers_for_self(cls, identifiers: list[Identifier]) -> FilterOptions[Service]:
 		payload = {
 			"identifiers": [x0.__serialize__() for x0 in identifiers],
 		}
@@ -283,11 +283,11 @@ class ServiceFilters:
 		if result_info.failure is not None:
 			raise interpret_kt_error(result_info.failure)
 		else:
-			return_value = SortableFilterOptions(result_info.success)
+			return_value = FilterOptions(result_info.success)
 			return return_value
 
 	@classmethod
-	def by_code_and_value_date_for_self(cls, code_type: str, code_code: Optional[str] = None, start_of_service_value_date: Optional[int] = None, end_of_service_value_date: Optional[int] = None) -> SortableFilterOptions[Service]:
+	def by_code_and_value_date_for_self(cls, code_type: str, code_code: Optional[str] = None, start_of_service_value_date: Optional[int] = None, end_of_service_value_date: Optional[int] = None) -> FilterOptions[Service]:
 		payload = {
 			"codeType": code_type,
 			"codeCode": code_code,
@@ -302,11 +302,11 @@ class ServiceFilters:
 		if result_info.failure is not None:
 			raise interpret_kt_error(result_info.failure)
 		else:
-			return_value = SortableFilterOptions(result_info.success)
+			return_value = FilterOptions(result_info.success)
 			return return_value
 
 	@classmethod
-	def by_tag_and_value_date_for_self(cls, tag_type: str, tag_code: Optional[str] = None, start_of_service_value_date: Optional[int] = None, end_of_service_value_date: Optional[int] = None) -> SortableFilterOptions[Service]:
+	def by_tag_and_value_date_for_self(cls, tag_type: str, tag_code: Optional[str] = None, start_of_service_value_date: Optional[int] = None, end_of_service_value_date: Optional[int] = None) -> FilterOptions[Service]:
 		payload = {
 			"tagType": tag_type,
 			"tagCode": tag_code,
@@ -321,11 +321,11 @@ class ServiceFilters:
 		if result_info.failure is not None:
 			raise interpret_kt_error(result_info.failure)
 		else:
-			return_value = SortableFilterOptions(result_info.success)
+			return_value = FilterOptions(result_info.success)
 			return return_value
 
 	@classmethod
-	def by_patients_for_self(cls, patients: list[Patient]) -> SortableFilterOptions[Service]:
+	def by_patients_for_self(cls, patients: list[Patient]) -> FilterOptions[Service]:
 		payload = {
 			"patients": [serialize_patient(x0) for x0 in patients],
 		}
@@ -337,11 +337,11 @@ class ServiceFilters:
 		if result_info.failure is not None:
 			raise interpret_kt_error(result_info.failure)
 		else:
-			return_value = SortableFilterOptions(result_info.success)
+			return_value = FilterOptions(result_info.success)
 			return return_value
 
 	@classmethod
-	def by_patients_secret_ids_for_self(cls, secret_ids: list[str]) -> SortableFilterOptions[Service]:
+	def by_patients_secret_ids_for_self(cls, secret_ids: list[str]) -> FilterOptions[Service]:
 		payload = {
 			"secretIds": [x0 for x0 in secret_ids],
 		}
@@ -353,11 +353,11 @@ class ServiceFilters:
 		if result_info.failure is not None:
 			raise interpret_kt_error(result_info.failure)
 		else:
-			return_value = SortableFilterOptions(result_info.success)
+			return_value = FilterOptions(result_info.success)
 			return return_value
 
 	@classmethod
-	def by_health_element_id_from_sub_contact_for_self(cls, health_element_ids: list[str]) -> SortableFilterOptions[Service]:
+	def by_health_element_id_from_sub_contact_for_self(cls, health_element_ids: list[str]) -> FilterOptions[Service]:
 		payload = {
 			"healthElementIds": [x0 for x0 in health_element_ids],
 		}
@@ -369,7 +369,7 @@ class ServiceFilters:
 		if result_info.failure is not None:
 			raise interpret_kt_error(result_info.failure)
 		else:
-			return_value = SortableFilterOptions(result_info.success)
+			return_value = FilterOptions(result_info.success)
 			return return_value
 
 	@classmethod

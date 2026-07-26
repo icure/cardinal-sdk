@@ -1014,6 +1014,45 @@ public fun modifyUserMobilePhoneAsync(
 }.failureToPyStringAsyncCallback(resultCallback)
 
 @Serializable
+private class RemoveUserMobilePhoneParams(
+	public val userId: String,
+	public val previousMobilePhone: String?,
+)
+
+@OptIn(InternalIcureApi::class)
+public fun removeUserMobilePhoneBlocking(sdk: CardinalNonCryptoApis, params: String): String =
+		kotlin.runCatching {
+	val decodedParams = fullLanguageInteropJson.decodeFromString<RemoveUserMobilePhoneParams>(params)
+	runBlocking {
+		sdk.user.removeUserMobilePhone(
+			decodedParams.userId,
+			decodedParams.previousMobilePhone,
+		)
+	}
+}.toPyString(User.serializer())
+
+@OptIn(
+	ExperimentalForeignApi::class,
+	InternalIcureApi::class,
+)
+public fun removeUserMobilePhoneAsync(
+	sdk: CardinalNonCryptoApis,
+	params: String,
+	resultCallback: CPointer<CFunction<(CValues<ByteVarOf<Byte>>?,
+			CValues<ByteVarOf<Byte>>?) -> Unit>>,
+): COpaquePointer? = kotlin.runCatching {
+	val decodedParams = fullLanguageInteropJson.decodeFromString<RemoveUserMobilePhoneParams>(params)
+	GlobalScope.launch {
+		kotlin.runCatching {
+			sdk.user.removeUserMobilePhone(
+				decodedParams.userId,
+				decodedParams.previousMobilePhone,
+			)
+		}.toPyStringAsyncCallback(User.serializer(), resultCallback)
+	}
+}.failureToPyStringAsyncCallback(resultCallback)
+
+@Serializable
 private class DeleteUserByIdParams(
 	public val entityId: String,
 	public val rev: String,

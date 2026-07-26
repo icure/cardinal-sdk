@@ -3,6 +3,7 @@
 
 package com.icure.cardinal.sdk.js.api
 
+import com.icure.cardinal.sdk.js.crypto.entities.FormDelegateOptionsJs
 import com.icure.cardinal.sdk.js.crypto.entities.FormShareOptionsJs
 import com.icure.cardinal.sdk.js.filters.BaseFilterOptionsJs
 import com.icure.cardinal.sdk.js.filters.FilterOptionsJs
@@ -36,6 +37,13 @@ public external interface FormApiJs {
 	public fun withEncryptionMetadata(
 		base: DecryptedFormJs?,
 		patient: PatientJs,
+		options: dynamic,
+	): Promise<DecryptedFormJs>
+
+	public fun withEncryptionMetadataAndDelegates(
+		base: DecryptedFormJs?,
+		patient: PatientJs,
+		delegates: Record<String, FormDelegateOptionsJs>,
 		options: dynamic,
 	): Promise<DecryptedFormJs>
 

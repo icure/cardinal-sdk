@@ -2,6 +2,7 @@
 package com.icure.cardinal.sdk.py.api.ReceiptApi
 
 import com.icure.cardinal.sdk.CardinalApis
+import com.icure.cardinal.sdk.crypto.entities.ReceiptDelegateOptions
 import com.icure.cardinal.sdk.crypto.entities.ReceiptShareOptions
 import com.icure.cardinal.sdk.crypto.entities.SecretIdUseOption
 import com.icure.cardinal.sdk.model.DecryptedReceipt
@@ -22,6 +23,7 @@ import com.icure.utils.InternalIcureApi
 import kotlin.Boolean
 import kotlin.Byte
 import kotlin.ByteArray
+import kotlin.Long
 import kotlin.OptIn
 import kotlin.String
 import kotlin.Unit
@@ -88,6 +90,60 @@ public fun withEncryptionMetadataAsync(
 				decodedParams.patient,
 				decodedParams.user,
 				decodedParams.delegates,
+				decodedParams.secretId,
+				decodedParams.alternateRootDelegateId,
+			)
+		}.toPyStringAsyncCallback(DecryptedReceipt.serializer(), resultCallback)
+	}
+}.failureToPyStringAsyncCallback(resultCallback)
+
+@Serializable
+private class WithEncryptionMetadataAndDelegatesParams(
+	public val base: DecryptedReceipt?,
+	public val patient: Patient?,
+	public val delegates: Map<String, ReceiptDelegateOptions>,
+	public val user: User? = null,
+	public val secretId: SecretIdUseOption =
+			com.icure.cardinal.sdk.crypto.entities.SecretIdUseOption.UseAnySharedWithParent,
+	public val alternateRootDelegateId: String? = null,
+)
+
+@OptIn(InternalIcureApi::class)
+public fun withEncryptionMetadataAndDelegatesBlocking(sdk: CardinalApis, params: String): String =
+		kotlin.runCatching {
+	val decodedParams =
+			fullLanguageInteropJson.decodeFromString<WithEncryptionMetadataAndDelegatesParams>(params)
+	runBlocking {
+		sdk.receipt.withEncryptionMetadataAndDelegates(
+			decodedParams.base,
+			decodedParams.patient,
+			decodedParams.delegates,
+			decodedParams.user,
+			decodedParams.secretId,
+			decodedParams.alternateRootDelegateId,
+		)
+	}
+}.toPyString(DecryptedReceipt.serializer())
+
+@OptIn(
+	ExperimentalForeignApi::class,
+	InternalIcureApi::class,
+)
+public fun withEncryptionMetadataAndDelegatesAsync(
+	sdk: CardinalApis,
+	params: String,
+	resultCallback: CPointer<CFunction<(CValues<ByteVarOf<Byte>>?,
+			CValues<ByteVarOf<Byte>>?) -> Unit>>,
+): COpaquePointer? = kotlin.runCatching {
+	val decodedParams =
+			fullLanguageInteropJson.decodeFromString<WithEncryptionMetadataAndDelegatesParams>(params)
+	GlobalScope.launch {
+		kotlin.runCatching {
+			sdk.receipt.withEncryptionMetadataAndDelegates(
+				decodedParams.base,
+				decodedParams.patient,
+				decodedParams.delegates,
+				decodedParams.user,
 				decodedParams.secretId,
 				decodedParams.alternateRootDelegateId,
 			)
@@ -1290,6 +1346,50 @@ public fun listByReferenceAsync(
 		kotlin.runCatching {
 			sdk.receipt.listByReference(
 				decodedParams.reference,
+			)
+		}.toPyStringAsyncCallback(ListSerializer(DecryptedReceipt.serializer()), resultCallback)
+	}
+}.failureToPyStringAsyncCallback(resultCallback)
+
+@Serializable
+private class ListReceiptsBetweenDatesParams(
+	public val startDate: Long? = null,
+	public val endDate: Long? = null,
+	public val descending: Boolean = false,
+)
+
+@OptIn(InternalIcureApi::class)
+public fun listReceiptsBetweenDatesBlocking(sdk: CardinalApis, params: String): String =
+		kotlin.runCatching {
+	val decodedParams =
+			fullLanguageInteropJson.decodeFromString<ListReceiptsBetweenDatesParams>(params)
+	runBlocking {
+		sdk.receipt.listReceiptsBetweenDates(
+			decodedParams.startDate,
+			decodedParams.endDate,
+			decodedParams.descending,
+		)
+	}
+}.toPyString(ListSerializer(DecryptedReceipt.serializer()))
+
+@OptIn(
+	ExperimentalForeignApi::class,
+	InternalIcureApi::class,
+)
+public fun listReceiptsBetweenDatesAsync(
+	sdk: CardinalApis,
+	params: String,
+	resultCallback: CPointer<CFunction<(CValues<ByteVarOf<Byte>>?,
+			CValues<ByteVarOf<Byte>>?) -> Unit>>,
+): COpaquePointer? = kotlin.runCatching {
+	val decodedParams =
+			fullLanguageInteropJson.decodeFromString<ListReceiptsBetweenDatesParams>(params)
+	GlobalScope.launch {
+		kotlin.runCatching {
+			sdk.receipt.listReceiptsBetweenDates(
+				decodedParams.startDate,
+				decodedParams.endDate,
+				decodedParams.descending,
 			)
 		}.toPyStringAsyncCallback(ListSerializer(DecryptedReceipt.serializer()), resultCallback)
 	}

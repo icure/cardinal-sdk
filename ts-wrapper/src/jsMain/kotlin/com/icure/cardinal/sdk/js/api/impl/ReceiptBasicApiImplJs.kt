@@ -2,11 +2,14 @@
 package com.icure.cardinal.sdk.js.api.`impl`
 
 import com.icure.cardinal.sdk.api.ReceiptBasicApi
+import com.icure.cardinal.sdk.js.api.DefaultParametersSupport.convertingOptionOrDefaultNonNull
+import com.icure.cardinal.sdk.js.api.DefaultParametersSupport.convertingOptionOrDefaultNullable
 import com.icure.cardinal.sdk.js.api.ReceiptBasicApiJs
 import com.icure.cardinal.sdk.js.api.ReceiptBasicInGroupApiJs
 import com.icure.cardinal.sdk.js.model.CheckedConverters.arrayToList
 import com.icure.cardinal.sdk.js.model.CheckedConverters.listToArray
 import com.icure.cardinal.sdk.js.model.CheckedConverters.nullToUndefined
+import com.icure.cardinal.sdk.js.model.CheckedConverters.numberToLong
 import com.icure.cardinal.sdk.js.model.EncryptedReceiptJs
 import com.icure.cardinal.sdk.js.model.GroupScopedJs
 import com.icure.cardinal.sdk.js.model.ReceiptJs
@@ -22,7 +25,10 @@ import com.icure.cardinal.sdk.model.GroupScoped
 import com.icure.cardinal.sdk.model.Receipt
 import com.icure.cardinal.sdk.model.StoredDocumentIdentifier
 import kotlin.Array
+import kotlin.Boolean
 import kotlin.ByteArray
+import kotlin.Double
+import kotlin.Long
 import kotlin.OptIn
 import kotlin.String
 import kotlin.Unit
@@ -221,6 +227,22 @@ internal class ReceiptBasicApiImplJs(
 					)
 				},
 			)
+		}
+
+		override fun getRawReceiptAttachment(
+			groupId: String,
+			receiptId: String,
+			attachmentId: String,
+		): Promise<ByteArray> = GlobalScope.promise {
+			val groupIdConverted: String = groupId
+			val receiptIdConverted: String = receiptId
+			val attachmentIdConverted: String = attachmentId
+			val result = receiptBasicApi.inGroup.getRawReceiptAttachment(
+				groupIdConverted,
+				receiptIdConverted,
+				attachmentIdConverted,
+			)
+			result
 		}
 
 		override fun createReceipt(entity: GroupScopedJs<EncryptedReceiptJs>):
@@ -464,6 +486,52 @@ internal class ReceiptBasicApiImplJs(
 					)
 				},
 			)
+		}
+
+		override fun listReceiptsBetweenDates(groupId: String, options: dynamic):
+				Promise<Array<GroupScopedJs<EncryptedReceiptJs>>> {
+			val _options = options ?: js("{}")
+			return GlobalScope.promise {
+				val groupIdConverted: String = groupId
+				val startDateConverted: Long? = convertingOptionOrDefaultNullable(
+					_options,
+					"startDate",
+					null
+				) { startDate: Double? ->
+					numberToLong(startDate, "startDate")
+				}
+				val endDateConverted: Long? = convertingOptionOrDefaultNullable(
+					_options,
+					"endDate",
+					null
+				) { endDate: Double? ->
+					numberToLong(endDate, "endDate")
+				}
+				val descendingConverted: Boolean = convertingOptionOrDefaultNonNull(
+					_options,
+					"descending",
+					false
+				) { descending: Boolean ->
+					descending
+				}
+				val result = receiptBasicApi.inGroup.listReceiptsBetweenDates(
+					groupIdConverted,
+					startDateConverted,
+					endDateConverted,
+					descendingConverted,
+				)
+				listToArray(
+					result,
+					{ x1: GroupScoped<EncryptedReceipt> ->
+						groupScoped_toJs(
+							x1,
+							{ x2: EncryptedReceipt ->
+								receipt_toJs(x2)
+							},
+						)
+					},
+				)
+			}
 		}
 	}
 
@@ -777,5 +845,43 @@ internal class ReceiptBasicApiImplJs(
 				receipt_toJs(x1)
 			},
 		)
+	}
+
+	override fun listReceiptsBetweenDates(options: dynamic): Promise<Array<EncryptedReceiptJs>> {
+		val _options = options ?: js("{}")
+		return GlobalScope.promise {
+			val startDateConverted: Long? = convertingOptionOrDefaultNullable(
+				_options,
+				"startDate",
+				null
+			) { startDate: Double? ->
+				numberToLong(startDate, "startDate")
+			}
+			val endDateConverted: Long? = convertingOptionOrDefaultNullable(
+				_options,
+				"endDate",
+				null
+			) { endDate: Double? ->
+				numberToLong(endDate, "endDate")
+			}
+			val descendingConverted: Boolean = convertingOptionOrDefaultNonNull(
+				_options,
+				"descending",
+				false
+			) { descending: Boolean ->
+				descending
+			}
+			val result = receiptBasicApi.listReceiptsBetweenDates(
+				startDateConverted,
+				endDateConverted,
+				descendingConverted,
+			)
+			listToArray(
+				result,
+				{ x1: EncryptedReceipt ->
+					receipt_toJs(x1)
+				},
+			)
+		}
 	}
 }

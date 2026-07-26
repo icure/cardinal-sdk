@@ -1,5 +1,6 @@
 package com.icure.cardinal.sdk.api
 
+import com.icure.cardinal.sdk.crypto.entities.FormDelegateOptions
 import com.icure.cardinal.sdk.crypto.entities.FormShareOptions
 import com.icure.cardinal.sdk.crypto.entities.SecretIdUseOption
 import com.icure.cardinal.sdk.exceptions.RevisionConflictException
@@ -403,7 +404,7 @@ interface FormFlavouredInGroupApi<E : Form> : FormBasicFlavouredInGroupApi<E> {
 /* The extra API calls declared in this interface are the ones that can only be used on decrypted items when encryption keys are available */
 interface FormApi : FormBasicFlavourlessApi, FormFlavouredApi<DecryptedForm> {
 	/**
-	 * Creates a new form with initialized encryption metadata
+	 * Creates a new form with initialized encryption metadata.
 	 * @param base a form with initialized content and uninitialized encryption metadata. The result of this
 	 * method takes the content from [base] if provided.
 	 * @param patient the patient linked to the form.
@@ -428,10 +429,36 @@ interface FormApi : FormBasicFlavourlessApi, FormFlavouredApi<DecryptedForm> {
 	): DecryptedForm
 
 	/**
+	 * Creates a new access log with initialized encryption metadata, specifying fine-grained options for each additional data owner that
+	 * will have access to the entity.
+	 * @param base a form with initialized content and uninitialized encryption metadata. The result of this
+	 * method takes the content from [base] if provided.
+	 * @param patient the patient linked to the form.
+	 * @param user the current user, will be used for the auto-delegations if provided.
+	 * @param delegates additional data owners that will have access to the newly created entity. You may choose the
+	 * permissions that the delegates will have on the entity and if they will have access to the secretIds, encryptionKeys, and/or
+	 * owningEntityIds of the new entity.
+	 * @param secretId specifies which secret id of [patient] to use for the new form
+	 * @return a form with initialized encryption metadata.
+	 * @throws IllegalArgumentException if base is not null and has a revision or has encryption metadata.
+	 */
+	suspend fun withEncryptionMetadataAndDelegates(
+		base: DecryptedForm?,
+		patient: Patient,
+		delegates: Map<String, FormDelegateOptions>,
+		@DefaultValue("null")
+		user: User? = null,
+		@DefaultValue("com.icure.cardinal.sdk.crypto.entities.SecretIdUseOption.UseAnySharedWithParent")
+		secretId: SecretIdUseOption = SecretIdUseOption.UseAnySharedWithParent,
+		@DefaultValue("null")
+		alternateRootDelegateId: String? = null,
+	): DecryptedForm
+
+	/**
 	 * Attempts to extract the encryption keys of a form. If the user does not have access to any encryption key
 	 * of the access log the method will return an empty set.
 	 * Note: entities now have only one encryption key, but this method returns a set for compatibility with older
-	 * versions of iCure where this was not a guarantee.
+	 * versions of Cardinal where this was not a guarantee.
 	 * @param form a form
 	 * @return the encryption keys extracted from the provided form.
 	 */
@@ -570,6 +597,25 @@ interface FormInGroupApi : FormBasicFlavourlessInGroupApi, FormFlavouredInGroupA
 		user: User? = null,
 		@DefaultValue("emptyMap()")
 		delegates: @JsMapAsObjectArray(keyEntryName = "delegate", valueEntryName = "accessLevel") Map<EntityReferenceInGroup, AccessLevel> = emptyMap(),
+		@DefaultValue("com.icure.cardinal.sdk.crypto.entities.SecretIdUseOption.UseAnySharedWithParent")
+		secretId: SecretIdUseOption = SecretIdUseOption.UseAnySharedWithParent,
+		@DefaultValue("null")
+		alternateRootDelegateReference: EntityReferenceInGroup? = null,
+	): GroupScoped<DecryptedForm>
+
+	/**
+	 * In-group version of [FormApi.withEncryptionMetadataAndDelegates]
+	 */
+	suspend fun withEncryptionMetadataAndDelegates(
+		entityGroupId: String,
+		base: DecryptedForm?,
+		patient: GroupScoped<Patient>?,
+		delegates: @JsMapAsObjectArray(
+			keyEntryName = "delegate",
+			valueEntryName = "delegateOptions",
+		) Map<EntityReferenceInGroup, FormDelegateOptions>,
+		@DefaultValue("null")
+		user: User? = null,
 		@DefaultValue("com.icure.cardinal.sdk.crypto.entities.SecretIdUseOption.UseAnySharedWithParent")
 		secretId: SecretIdUseOption = SecretIdUseOption.UseAnySharedWithParent,
 		@DefaultValue("null")

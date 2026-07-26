@@ -9,9 +9,12 @@ import com.icure.cardinal.sdk.model.StoredDocumentIdentifier
 import com.icure.cardinal.sdk.py.utils.failureToPyStringAsyncCallback
 import com.icure.cardinal.sdk.py.utils.toPyString
 import com.icure.cardinal.sdk.py.utils.toPyStringAsyncCallback
+import com.icure.cardinal.sdk.serialization.ByteArraySerializer
 import com.icure.cardinal.sdk.utils.Serialization.fullLanguageInteropJson
 import com.icure.utils.InternalIcureApi
+import kotlin.Boolean
 import kotlin.Byte
+import kotlin.Long
 import kotlin.OptIn
 import kotlin.String
 import kotlin.Unit
@@ -320,6 +323,48 @@ public fun purgeReceiptsAsync(
 			)
 		}.toPyStringAsyncCallback(ListSerializer(GroupScoped.serializer(StoredDocumentIdentifier.serializer())),
 				resultCallback)
+	}
+}.failureToPyStringAsyncCallback(resultCallback)
+
+@Serializable
+private class GetRawReceiptAttachmentParams(
+	public val groupId: String,
+	public val receiptId: String,
+	public val attachmentId: String,
+)
+
+@OptIn(InternalIcureApi::class)
+public fun getRawReceiptAttachmentBlocking(sdk: CardinalBaseApis, params: String): String =
+		kotlin.runCatching {
+	val decodedParams = fullLanguageInteropJson.decodeFromString<GetRawReceiptAttachmentParams>(params)
+	runBlocking {
+		sdk.receipt.inGroup.getRawReceiptAttachment(
+			decodedParams.groupId,
+			decodedParams.receiptId,
+			decodedParams.attachmentId,
+		)
+	}
+}.toPyString(ByteArraySerializer)
+
+@OptIn(
+	ExperimentalForeignApi::class,
+	InternalIcureApi::class,
+)
+public fun getRawReceiptAttachmentAsync(
+	sdk: CardinalBaseApis,
+	params: String,
+	resultCallback: CPointer<CFunction<(CValues<ByteVarOf<Byte>>?,
+			CValues<ByteVarOf<Byte>>?) -> Unit>>,
+): COpaquePointer? = kotlin.runCatching {
+	val decodedParams = fullLanguageInteropJson.decodeFromString<GetRawReceiptAttachmentParams>(params)
+	GlobalScope.launch {
+		kotlin.runCatching {
+			sdk.receipt.inGroup.getRawReceiptAttachment(
+				decodedParams.groupId,
+				decodedParams.receiptId,
+				decodedParams.attachmentId,
+			)
+		}.toPyStringAsyncCallback(ByteArraySerializer, resultCallback)
 	}
 }.failureToPyStringAsyncCallback(resultCallback)
 
@@ -686,6 +731,54 @@ public fun getReceiptsAsync(
 			sdk.receipt.inGroup.getReceipts(
 				decodedParams.groupId,
 				decodedParams.entityIds,
+			)
+		}.toPyStringAsyncCallback(ListSerializer(GroupScoped.serializer(EncryptedReceipt.serializer())),
+				resultCallback)
+	}
+}.failureToPyStringAsyncCallback(resultCallback)
+
+@Serializable
+private class ListReceiptsBetweenDatesParams(
+	public val groupId: String,
+	public val startDate: Long? = null,
+	public val endDate: Long? = null,
+	public val descending: Boolean = false,
+)
+
+@OptIn(InternalIcureApi::class)
+public fun listReceiptsBetweenDatesBlocking(sdk: CardinalBaseApis, params: String): String =
+		kotlin.runCatching {
+	val decodedParams =
+			fullLanguageInteropJson.decodeFromString<ListReceiptsBetweenDatesParams>(params)
+	runBlocking {
+		sdk.receipt.inGroup.listReceiptsBetweenDates(
+			decodedParams.groupId,
+			decodedParams.startDate,
+			decodedParams.endDate,
+			decodedParams.descending,
+		)
+	}
+}.toPyString(ListSerializer(GroupScoped.serializer(EncryptedReceipt.serializer())))
+
+@OptIn(
+	ExperimentalForeignApi::class,
+	InternalIcureApi::class,
+)
+public fun listReceiptsBetweenDatesAsync(
+	sdk: CardinalBaseApis,
+	params: String,
+	resultCallback: CPointer<CFunction<(CValues<ByteVarOf<Byte>>?,
+			CValues<ByteVarOf<Byte>>?) -> Unit>>,
+): COpaquePointer? = kotlin.runCatching {
+	val decodedParams =
+			fullLanguageInteropJson.decodeFromString<ListReceiptsBetweenDatesParams>(params)
+	GlobalScope.launch {
+		kotlin.runCatching {
+			sdk.receipt.inGroup.listReceiptsBetweenDates(
+				decodedParams.groupId,
+				decodedParams.startDate,
+				decodedParams.endDate,
+				decodedParams.descending,
 			)
 		}.toPyStringAsyncCallback(ListSerializer(GroupScoped.serializer(EncryptedReceipt.serializer())),
 				resultCallback)

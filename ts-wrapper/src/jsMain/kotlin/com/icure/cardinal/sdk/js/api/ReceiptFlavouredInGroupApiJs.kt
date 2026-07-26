@@ -47,4 +47,7 @@ public external interface ReceiptFlavouredInGroupApiJs<E : ReceiptJs> {
 	public fun getReceipt(groupId: String, entityId: String): Promise<GroupScopedJs<E>?>
 
 	public fun getReceipts(groupId: String, entityIds: Array<String>): Promise<Array<GroupScopedJs<E>>>
+
+	public fun listReceiptsBetweenDates(groupId: String, options: dynamic):
+			Promise<Array<GroupScopedJs<E>>>
 }

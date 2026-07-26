@@ -15,6 +15,7 @@ import com.icure.cardinal.sdk.js.model.StoredDocumentIdentifierJs
 import com.icure.cardinal.sdk.js.model.embed.DecryptedServiceJs
 import com.icure.cardinal.sdk.js.model.embed.EncryptedServiceJs
 import com.icure.cardinal.sdk.js.model.embed.ServiceJs
+import com.icure.cardinal.sdk.js.synthetic.mapasobjectarray.EntityReferenceInGroupToContactDelegateOptionsMapObject_delegate_delegateOptions
 import com.icure.cardinal.sdk.js.synthetic.mapasobjectarray.EntityReferenceInGroupToContactShareOptionsMapObject_delegate_shareOptions
 import com.icure.cardinal.sdk.js.utils.pagination.PaginatedListIteratorJs
 import kotlin.Array
@@ -35,6 +36,14 @@ public external interface ContactInGroupApiJs {
 		entityGroupId: String,
 		base: DecryptedContactJs?,
 		patient: GroupScopedJs<PatientJs>?,
+		options: dynamic,
+	): Promise<GroupScopedJs<DecryptedContactJs>>
+
+	public fun withEncryptionMetadataAndDelegates(
+		entityGroupId: String,
+		base: DecryptedContactJs?,
+		patient: GroupScopedJs<PatientJs>?,
+		delegates: Array<EntityReferenceInGroupToContactDelegateOptionsMapObject_delegate_delegateOptions>,
 		options: dynamic,
 	): Promise<GroupScopedJs<DecryptedContactJs>>
 

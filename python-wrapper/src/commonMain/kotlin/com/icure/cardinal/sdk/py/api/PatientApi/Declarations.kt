@@ -3,6 +3,7 @@ package com.icure.cardinal.sdk.py.api.PatientApi
 
 import com.icure.cardinal.sdk.CardinalApis
 import com.icure.cardinal.sdk.crypto.entities.EntityAccessInformation
+import com.icure.cardinal.sdk.crypto.entities.PatientDelegateOptions
 import com.icure.cardinal.sdk.crypto.entities.PatientShareOptions
 import com.icure.cardinal.sdk.crypto.entities.ShareAllPatientDataOptions
 import com.icure.cardinal.sdk.filters.FilterOptions
@@ -270,6 +271,53 @@ public fun withEncryptionMetadataAsync(
 				decodedParams.base,
 				decodedParams.user,
 				decodedParams.delegates,
+				decodedParams.alternateRootDelegateId,
+			)
+		}.toPyStringAsyncCallback(DecryptedPatient.serializer(), resultCallback)
+	}
+}.failureToPyStringAsyncCallback(resultCallback)
+
+@Serializable
+private class WithEncryptionMetadataAndDelegatesParams(
+	public val base: DecryptedPatient?,
+	public val delegates: Map<String, PatientDelegateOptions>,
+	public val user: User? = null,
+	public val alternateRootDelegateId: String? = null,
+)
+
+@OptIn(InternalIcureApi::class)
+public fun withEncryptionMetadataAndDelegatesBlocking(sdk: CardinalApis, params: String): String =
+		kotlin.runCatching {
+	val decodedParams =
+			fullLanguageInteropJson.decodeFromString<WithEncryptionMetadataAndDelegatesParams>(params)
+	runBlocking {
+		sdk.patient.withEncryptionMetadataAndDelegates(
+			decodedParams.base,
+			decodedParams.delegates,
+			decodedParams.user,
+			decodedParams.alternateRootDelegateId,
+		)
+	}
+}.toPyString(DecryptedPatient.serializer())
+
+@OptIn(
+	ExperimentalForeignApi::class,
+	InternalIcureApi::class,
+)
+public fun withEncryptionMetadataAndDelegatesAsync(
+	sdk: CardinalApis,
+	params: String,
+	resultCallback: CPointer<CFunction<(CValues<ByteVarOf<Byte>>?,
+			CValues<ByteVarOf<Byte>>?) -> Unit>>,
+): COpaquePointer? = kotlin.runCatching {
+	val decodedParams =
+			fullLanguageInteropJson.decodeFromString<WithEncryptionMetadataAndDelegatesParams>(params)
+	GlobalScope.launch {
+		kotlin.runCatching {
+			sdk.patient.withEncryptionMetadataAndDelegates(
+				decodedParams.base,
+				decodedParams.delegates,
+				decodedParams.user,
 				decodedParams.alternateRootDelegateId,
 			)
 		}.toPyStringAsyncCallback(DecryptedPatient.serializer(), resultCallback)

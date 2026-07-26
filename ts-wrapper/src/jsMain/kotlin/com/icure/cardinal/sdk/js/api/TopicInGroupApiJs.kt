@@ -12,6 +12,7 @@ import com.icure.cardinal.sdk.js.model.GroupScopedJs
 import com.icure.cardinal.sdk.js.model.PatientJs
 import com.icure.cardinal.sdk.js.model.StoredDocumentIdentifierJs
 import com.icure.cardinal.sdk.js.model.TopicJs
+import com.icure.cardinal.sdk.js.synthetic.mapasobjectarray.EntityReferenceInGroupToTopicDelegateOptionsMapObject_delegate_delegateOptions
 import com.icure.cardinal.sdk.js.synthetic.mapasobjectarray.EntityReferenceInGroupToTopicShareOptionsMapObject_delegate_shareOptions
 import com.icure.cardinal.sdk.js.utils.pagination.PaginatedListIteratorJs
 import kotlin.Array
@@ -32,6 +33,14 @@ public external interface TopicInGroupApiJs {
 		groupId: String,
 		base: DecryptedTopicJs?,
 		patient: GroupScopedJs<PatientJs>?,
+		options: dynamic,
+	): Promise<GroupScopedJs<DecryptedTopicJs>>
+
+	public fun withEncryptionMetadataAndDelegates(
+		groupId: String,
+		base: DecryptedTopicJs?,
+		patient: GroupScopedJs<PatientJs>?,
+		delegates: Array<EntityReferenceInGroupToTopicDelegateOptionsMapObject_delegate_delegateOptions>,
 		options: dynamic,
 	): Promise<GroupScopedJs<DecryptedTopicJs>>
 

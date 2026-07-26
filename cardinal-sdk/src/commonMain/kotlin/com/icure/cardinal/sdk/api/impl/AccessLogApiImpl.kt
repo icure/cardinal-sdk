@@ -13,7 +13,9 @@ import com.icure.cardinal.sdk.api.AccessLogInGroupApi
 import com.icure.cardinal.sdk.api.raw.RawAccessLogApi
 import com.icure.cardinal.sdk.api.raw.successBodyOrNull404
 import com.icure.cardinal.sdk.api.raw.successBodyOrThrowRevisionConflict
+import com.icure.cardinal.sdk.crypto.entities.AccessLogDelegateOptions
 import com.icure.cardinal.sdk.crypto.entities.AccessLogShareOptions
+import com.icure.cardinal.sdk.crypto.entities.DelegateOptions
 import com.icure.cardinal.sdk.crypto.entities.EntityWithEncryptionMetadataTypeName
 import com.icure.cardinal.sdk.crypto.entities.OwningEntityDetails
 import com.icure.cardinal.sdk.crypto.entities.SecretIdUseOption
@@ -37,6 +39,7 @@ import com.icure.cardinal.sdk.model.embed.AccessLevel
 import com.icure.cardinal.sdk.model.embed.DelegationTag
 import com.icure.cardinal.sdk.model.extensions.autoDelegationsFor
 import com.icure.cardinal.sdk.model.extensions.dataOwnerId
+import com.icure.cardinal.sdk.model.extensions.toDefaultDelegateOptions
 import com.icure.cardinal.sdk.model.specializations.HexString
 import com.icure.cardinal.sdk.model.toStoredDocumentIdentifier
 import com.icure.cardinal.sdk.options.ApiConfiguration
@@ -266,13 +269,13 @@ private abstract class AbstractAccessLogFlavouredApi<E : AccessLog>(
 		delegates: @JsMapAsObjectArray(keyEntryName = "delegate", valueEntryName = "shareOptions") Map<EntityReferenceInGroup, AccessLogShareOptions>
 	): E =
 		config.crypto.entity.simpleShareOrUpdateEncryptedEntityMetadata(
-			groupId,
-			accessLog,
-			EntityWithEncryptionMetadataTypeName.AccessLog,
-			delegates,
-			true,
-			{ doGetAccessLog(groupId = groupId, entityId = it) ?: throw NotFoundException("Access log $it not found") },
-			{
+			entityGroupId = groupId,
+			entity = accessLog,
+			entityType = EntityWithEncryptionMetadataTypeName.AccessLog,
+			delegates = delegates,
+			autoRetry = true,
+			getUpdatedEntity = { doGetAccessLog(groupId = groupId, entityId = it) ?: throw NotFoundException("Access log $it not found") },
+			doRequestBulkShareOrUpdate = {
 				maybeDecrypt(
 					groupId,
 					if (groupId == null)
@@ -495,7 +498,7 @@ private class AccessLogApiImpl(
 		override suspend fun withEncryptionMetadata(
 			entityGroupId: String,
 			base: DecryptedAccessLog?,
-			patient: GroupScoped<Patient>,
+			patient: GroupScoped<Patient>?,
 			user: User?,
 			delegates: @JsMapAsObjectArray(
 				keyEntryName = "delegate",
@@ -506,13 +509,38 @@ private class AccessLogApiImpl(
 		): GroupScoped<DecryptedAccessLog> =
 			GroupScoped(
 				doWithEncryptionMetadata(
-					entityGroupId,
-					base,
-					patient.let { Pair(it.entity, it.groupId) },
-					user,
-					delegates,
-					secretId,
-					alternateRootDelegateReference
+					entityGroupId = entityGroupId,
+					base = base,
+					patientInGroup = patient?.let { Pair(it.entity, it.groupId) },
+					user = user,
+					delegates = delegates,
+					secretId = secretId,
+					alternateRootDataOwnerReference = alternateRootDelegateReference
+				),
+				entityGroupId
+			)
+
+		override suspend fun withEncryptionMetadataAndDelegates(
+			entityGroupId: String,
+			base: DecryptedAccessLog?,
+			delegates: @JsMapAsObjectArray(
+				keyEntryName = "delegate",
+				valueEntryName = "delegateOptions"
+			) Map<EntityReferenceInGroup, AccessLogDelegateOptions>,
+			patient: GroupScoped<Patient>?,
+			user: User?,
+			secretId: SecretIdUseOption,
+			alternateRootDelegateReference: EntityReferenceInGroup?
+		): GroupScoped<DecryptedAccessLog> =
+			GroupScoped(
+				doWithEncryptionMetadataAndDelegates(
+					entityGroupId = entityGroupId,
+					base = base,
+					patientInGroup = patient?.let { Pair(it.entity, it.groupId) },
+					user = user,
+					delegates = delegates,
+					secretId = secretId,
+					alternateRootDataOwnerReference = alternateRootDelegateReference
 				),
 				entityGroupId
 			)
@@ -578,28 +606,65 @@ private class AccessLogApiImpl(
 
 	override suspend fun withEncryptionMetadata(
 		base: DecryptedAccessLog?,
-		patient: Patient,
+		patient: Patient?,
 		user: User?,
 		delegates: Map<String, AccessLevel>,
 		secretId: SecretIdUseOption,
 		alternateRootDelegateId: String?,
 	): DecryptedAccessLog =
 		doWithEncryptionMetadata(
-			null,
-			base,
-			Pair(patient, null),
-			user,
-			delegates.keyAsLocalDataOwnerReferences(),
-			secretId,
-			alternateRootDelegateId?.let { EntityReferenceInGroup(it, null) }
+			entityGroupId = null,
+			base = base,
+			patientInGroup = patient?.let { Pair(it, null) },
+			user = user,
+			delegates = delegates.keyAsLocalDataOwnerReferences(),
+			secretId = secretId,
+			alternateRootDataOwnerReference = alternateRootDelegateId?.let { EntityReferenceInGroup(it, null) }
+		)
+
+	override suspend fun withEncryptionMetadataAndDelegates(
+		base: DecryptedAccessLog?,
+		delegates: Map<String, AccessLogDelegateOptions>,
+		patient: Patient?,
+		user: User?,
+		secretId: SecretIdUseOption,
+		alternateRootDelegateId: String?,
+	): DecryptedAccessLog =
+		doWithEncryptionMetadataAndDelegates(
+			entityGroupId = null,
+			base = base,
+			patientInGroup = patient?.let { Pair(it, null) },
+			user = user,
+			delegates = delegates.keyAsLocalDataOwnerReferences(),
+			secretId = secretId,
+			alternateRootDataOwnerReference = alternateRootDelegateId?.let { EntityReferenceInGroup(it, null) }
 		)
 
 	private suspend fun doWithEncryptionMetadata(
 		entityGroupId: String?,
 		base: DecryptedAccessLog?,
-		patientInGroup: Pair<Patient, String?>,
+		patientInGroup: Pair<Patient, String?>?,
 		user: User?,
 		delegates: @JsMapAsObjectArray(keyEntryName = "delegate", valueEntryName = "accessLevel") Map<EntityReferenceInGroup, AccessLevel>,
+		secretId: SecretIdUseOption,
+		alternateRootDataOwnerReference: EntityReferenceInGroup?
+	): DecryptedAccessLog =
+		doWithEncryptionMetadataAndDelegates(
+			entityGroupId = entityGroupId,
+			base = base,
+			patientInGroup = patientInGroup,
+			user = user,
+			delegates = delegates.mapValues { it.value.toDefaultDelegateOptions() },
+			secretId = secretId,
+			alternateRootDataOwnerReference = alternateRootDataOwnerReference
+		)
+
+	private suspend fun doWithEncryptionMetadataAndDelegates(
+		entityGroupId: String?,
+		base: DecryptedAccessLog?,
+		patientInGroup: Pair<Patient, String?>?,
+		user: User?,
+		delegates: @JsMapAsObjectArray(keyEntryName = "delegate", valueEntryName = "delegateOptions") Map<EntityReferenceInGroup, DelegateOptions>,
 		secretId: SecretIdUseOption,
 		alternateRootDataOwnerReference: EntityReferenceInGroup?
 	): DecryptedAccessLog =
@@ -612,7 +677,7 @@ private class AccessLogApiImpl(
 				author = base?.author ?: user?.id?.takeIf { config.autofillAuthor },
 			),
 			entityType = EntityWithEncryptionMetadataTypeName.AccessLog,
-			owningEntityDetails = patientInGroup.let { (patient, patientGroup) ->
+			owningEntityDetails = patientInGroup?.let { (patient, patientGroup) ->
 				OwningEntityDetails(
 					patientGroup,
 					patient.id,
@@ -625,7 +690,8 @@ private class AccessLogApiImpl(
 				)
 			},
 			initializeEncryptionKey = true,
-			autoDelegations = delegates + user?.autoDelegationsFor(DelegationTag.AdministrativeData).orEmpty().keyAsLocalDataOwnerReferences(),
+			autoDelegations = delegates +
+				user?.autoDelegationsFor(DelegationTag.AdministrativeData).orEmpty().keyAsLocalDataOwnerReferences(),
 			alternateRootDataOwnerReference = alternateRootDataOwnerReference,
 		).updatedEntity
 

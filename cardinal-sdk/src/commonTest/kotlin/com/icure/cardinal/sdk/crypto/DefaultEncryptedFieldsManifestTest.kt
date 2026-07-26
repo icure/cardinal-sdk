@@ -33,7 +33,6 @@ import com.icure.cardinal.sdk.model.embed.DecryptedPatientHealthCareParty
 import com.icure.cardinal.sdk.model.embed.DecryptedService
 import com.icure.cardinal.sdk.model.embed.Gender
 import com.icure.cardinal.sdk.model.embed.MhcSignatureType
-import com.icure.cardinal.sdk.model.embed.Partnership
 import com.icure.cardinal.sdk.model.embed.PartnershipStatus
 import com.icure.cardinal.sdk.model.embed.PartnershipType
 import com.icure.cardinal.sdk.model.embed.PatientHealthCarePartyType

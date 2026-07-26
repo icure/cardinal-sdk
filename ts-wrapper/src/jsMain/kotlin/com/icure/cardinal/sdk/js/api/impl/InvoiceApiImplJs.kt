@@ -2,6 +2,7 @@
 package com.icure.cardinal.sdk.js.api.`impl`
 
 import com.icure.cardinal.sdk.api.InvoiceApi
+import com.icure.cardinal.sdk.crypto.entities.InvoiceDelegateOptions
 import com.icure.cardinal.sdk.crypto.entities.InvoiceShareOptions
 import com.icure.cardinal.sdk.crypto.entities.SecretIdUseOption
 import com.icure.cardinal.sdk.js.api.DefaultParametersSupport.convertingOptionOrDefaultNonNull
@@ -10,8 +11,10 @@ import com.icure.cardinal.sdk.js.api.InvoiceApiJs
 import com.icure.cardinal.sdk.js.api.InvoiceFlavouredApiJs
 import com.icure.cardinal.sdk.js.api.InvoiceFlavouredInGroupApiJs
 import com.icure.cardinal.sdk.js.api.InvoiceInGroupApiJs
+import com.icure.cardinal.sdk.js.crypto.entities.InvoiceDelegateOptionsJs
 import com.icure.cardinal.sdk.js.crypto.entities.InvoiceShareOptionsJs
 import com.icure.cardinal.sdk.js.crypto.entities.SecretIdUseOptionJs
+import com.icure.cardinal.sdk.js.crypto.entities.invoiceDelegateOptions_fromJs
 import com.icure.cardinal.sdk.js.crypto.entities.invoiceShareOptions_fromJs
 import com.icure.cardinal.sdk.js.crypto.entities.secretIdUseOption_fromJs
 import com.icure.cardinal.sdk.js.model.CheckedConverters.arrayToList
@@ -51,6 +54,8 @@ import com.icure.cardinal.sdk.js.model.storedDocumentIdentifier_toJs
 import com.icure.cardinal.sdk.js.model.user_fromJs
 import com.icure.cardinal.sdk.js.synthetic.mapasobjectarray.EntityReferenceInGroupToAccessLevelMapObject_delegate_accessLevel
 import com.icure.cardinal.sdk.js.synthetic.mapasobjectarray.EntityReferenceInGroupToAccessLevelMapObject_delegate_accessLevel_fromJs
+import com.icure.cardinal.sdk.js.synthetic.mapasobjectarray.EntityReferenceInGroupToInvoiceDelegateOptionsMapObject_delegate_delegateOptions
+import com.icure.cardinal.sdk.js.synthetic.mapasobjectarray.EntityReferenceInGroupToInvoiceDelegateOptionsMapObject_delegate_delegateOptions_fromJs
 import com.icure.cardinal.sdk.js.synthetic.mapasobjectarray.EntityReferenceInGroupToInvoiceShareOptionsMapObject_delegate_shareOptions
 import com.icure.cardinal.sdk.js.synthetic.mapasobjectarray.EntityReferenceInGroupToInvoiceShareOptionsMapObject_delegate_shareOptions_fromJs
 import com.icure.cardinal.sdk.js.utils.Record
@@ -2202,6 +2207,73 @@ internal class InvoiceApiImplJs(
 			}
 		}
 
+		override fun withEncryptionMetadataAndDelegates(
+			entityGroupId: String,
+			base: DecryptedInvoiceJs?,
+			patient: GroupScopedJs<PatientJs>?,
+			delegates: Array<EntityReferenceInGroupToInvoiceDelegateOptionsMapObject_delegate_delegateOptions>,
+			options: dynamic,
+		): Promise<GroupScopedJs<DecryptedInvoiceJs>> {
+			val _options = options ?: js("{}")
+			return GlobalScope.promise {
+				val entityGroupIdConverted: String = entityGroupId
+				val baseConverted: DecryptedInvoice? = base?.let { nonNull1 ->
+					invoice_fromJs(nonNull1)
+				}
+				val patientConverted: GroupScoped<Patient>? = patient?.let { nonNull1 ->
+					groupScoped_fromJs(
+						nonNull1,
+						{ x1: PatientJs ->
+							patient_fromJs(x1)
+						},
+					)
+				}
+				val delegatesConverted: Map<EntityReferenceInGroup, InvoiceDelegateOptions> =
+						EntityReferenceInGroupToInvoiceDelegateOptionsMapObject_delegate_delegateOptions_fromJs(delegates)
+				val userConverted: User? = convertingOptionOrDefaultNullable(
+					_options,
+					"user",
+					null
+				) { user: UserJs? ->
+					user?.let { nonNull1 ->
+						user_fromJs(nonNull1)
+					}
+				}
+				val secretIdConverted: SecretIdUseOption = convertingOptionOrDefaultNonNull(
+					_options,
+					"secretId",
+					com.icure.cardinal.sdk.crypto.entities.SecretIdUseOption.UseAnySharedWithParent
+				) { secretId: SecretIdUseOptionJs ->
+					secretIdUseOption_fromJs(secretId)
+				}
+				val alternateRootDelegateReferenceConverted: EntityReferenceInGroup? =
+						convertingOptionOrDefaultNullable(
+					_options,
+					"alternateRootDelegateReference",
+					null
+				) { alternateRootDelegateReference: EntityReferenceInGroupJs? ->
+					alternateRootDelegateReference?.let { nonNull1 ->
+						entityReferenceInGroup_fromJs(nonNull1)
+					}
+				}
+				val result = invoiceApi.inGroup.withEncryptionMetadataAndDelegates(
+					entityGroupIdConverted,
+					baseConverted,
+					patientConverted,
+					delegatesConverted,
+					userConverted,
+					secretIdConverted,
+					alternateRootDelegateReferenceConverted,
+				)
+				groupScoped_toJs(
+					result,
+					{ x1: DecryptedInvoice ->
+						invoice_toJs(x1)
+					},
+				)
+			}
+		}
+
 		override fun getEncryptionKeysOf(invoice: GroupScopedJs<InvoiceJs>): Promise<Array<String>> =
 				GlobalScope.promise {
 			val invoiceConverted: GroupScoped<Invoice> = groupScoped_fromJs(
@@ -2883,6 +2955,65 @@ internal class InvoiceApiImplJs(
 				patientConverted,
 				userConverted,
 				delegatesConverted,
+				secretIdConverted,
+				alternateRootDelegateIdConverted,
+			)
+			invoice_toJs(result)
+		}
+	}
+
+	override fun withEncryptionMetadataAndDelegates(
+		base: DecryptedInvoiceJs?,
+		patient: PatientJs?,
+		delegates: Record<String, InvoiceDelegateOptionsJs>,
+		options: dynamic,
+	): Promise<DecryptedInvoiceJs> {
+		val _options = options ?: js("{}")
+		return GlobalScope.promise {
+			val baseConverted: DecryptedInvoice? = base?.let { nonNull1 ->
+				invoice_fromJs(nonNull1)
+			}
+			val patientConverted: Patient? = patient?.let { nonNull1 ->
+				patient_fromJs(nonNull1)
+			}
+			val delegatesConverted: Map<String, InvoiceDelegateOptions> = objectToMap(
+				delegates,
+				"delegates",
+				{ x1: String ->
+					x1
+				},
+				{ x1: InvoiceDelegateOptionsJs ->
+					invoiceDelegateOptions_fromJs(x1)
+				},
+			)
+			val userConverted: User? = convertingOptionOrDefaultNullable(
+				_options,
+				"user",
+				null
+			) { user: UserJs? ->
+				user?.let { nonNull1 ->
+					user_fromJs(nonNull1)
+				}
+			}
+			val secretIdConverted: SecretIdUseOption = convertingOptionOrDefaultNonNull(
+				_options,
+				"secretId",
+				com.icure.cardinal.sdk.crypto.entities.SecretIdUseOption.UseAnySharedWithParent
+			) { secretId: SecretIdUseOptionJs ->
+				secretIdUseOption_fromJs(secretId)
+			}
+			val alternateRootDelegateIdConverted: String? = convertingOptionOrDefaultNullable(
+				_options,
+				"alternateRootDelegateId",
+				null
+			) { alternateRootDelegateId: String? ->
+				undefinedToNull(alternateRootDelegateId)
+			}
+			val result = invoiceApi.withEncryptionMetadataAndDelegates(
+				baseConverted,
+				patientConverted,
+				delegatesConverted,
+				userConverted,
 				secretIdConverted,
 				alternateRootDelegateIdConverted,
 			)

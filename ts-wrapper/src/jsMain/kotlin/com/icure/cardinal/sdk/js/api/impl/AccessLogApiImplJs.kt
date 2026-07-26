@@ -2,6 +2,7 @@
 package com.icure.cardinal.sdk.js.api.`impl`
 
 import com.icure.cardinal.sdk.api.AccessLogApi
+import com.icure.cardinal.sdk.crypto.entities.AccessLogDelegateOptions
 import com.icure.cardinal.sdk.crypto.entities.AccessLogShareOptions
 import com.icure.cardinal.sdk.crypto.entities.SecretIdUseOption
 import com.icure.cardinal.sdk.filters.FilterOptions
@@ -12,8 +13,10 @@ import com.icure.cardinal.sdk.js.api.AccessLogFlavouredInGroupApiJs
 import com.icure.cardinal.sdk.js.api.AccessLogInGroupApiJs
 import com.icure.cardinal.sdk.js.api.DefaultParametersSupport.convertingOptionOrDefaultNonNull
 import com.icure.cardinal.sdk.js.api.DefaultParametersSupport.convertingOptionOrDefaultNullable
+import com.icure.cardinal.sdk.js.crypto.entities.AccessLogDelegateOptionsJs
 import com.icure.cardinal.sdk.js.crypto.entities.AccessLogShareOptionsJs
 import com.icure.cardinal.sdk.js.crypto.entities.SecretIdUseOptionJs
+import com.icure.cardinal.sdk.js.crypto.entities.accessLogDelegateOptions_fromJs
 import com.icure.cardinal.sdk.js.crypto.entities.accessLogShareOptions_fromJs
 import com.icure.cardinal.sdk.js.crypto.entities.secretIdUseOption_fromJs
 import com.icure.cardinal.sdk.js.filters.FilterOptionsJs
@@ -48,6 +51,8 @@ import com.icure.cardinal.sdk.js.model.storedDocumentIdentifier_toJs
 import com.icure.cardinal.sdk.js.model.user_fromJs
 import com.icure.cardinal.sdk.js.synthetic.mapasobjectarray.EntityReferenceInGroupToAccessLevelMapObject_delegate_accessLevel
 import com.icure.cardinal.sdk.js.synthetic.mapasobjectarray.EntityReferenceInGroupToAccessLevelMapObject_delegate_accessLevel_fromJs
+import com.icure.cardinal.sdk.js.synthetic.mapasobjectarray.EntityReferenceInGroupToAccessLogDelegateOptionsMapObject_delegate_delegateOptions
+import com.icure.cardinal.sdk.js.synthetic.mapasobjectarray.EntityReferenceInGroupToAccessLogDelegateOptionsMapObject_delegate_delegateOptions_fromJs
 import com.icure.cardinal.sdk.js.synthetic.mapasobjectarray.EntityReferenceInGroupToAccessLogShareOptionsMapObject_delegate_shareOptions
 import com.icure.cardinal.sdk.js.synthetic.mapasobjectarray.EntityReferenceInGroupToAccessLogShareOptionsMapObject_delegate_shareOptions_fromJs
 import com.icure.cardinal.sdk.js.utils.Record
@@ -1241,7 +1246,6 @@ internal class AccessLogApiImplJs(
 		override fun withEncryptionMetadata(
 			entityGroupId: String,
 			base: DecryptedAccessLogJs?,
-			patient: GroupScopedJs<PatientJs>,
 			options: dynamic,
 		): Promise<GroupScopedJs<DecryptedAccessLogJs>> {
 			val _options = options ?: js("{}")
@@ -1250,12 +1254,20 @@ internal class AccessLogApiImplJs(
 				val baseConverted: DecryptedAccessLog? = base?.let { nonNull1 ->
 					accessLog_fromJs(nonNull1)
 				}
-				val patientConverted: GroupScoped<Patient> = groupScoped_fromJs(
-					patient,
-					{ x1: PatientJs ->
-						patient_fromJs(x1)
-					},
-				)
+				val patientConverted: GroupScoped<Patient>? = convertingOptionOrDefaultNullable(
+					_options,
+					"patient",
+					null
+				) { patient: GroupScopedJs<PatientJs>? ->
+					patient?.let { nonNull1 ->
+						groupScoped_fromJs(
+							nonNull1,
+							{ x1: PatientJs ->
+								patient_fromJs(x1)
+							},
+						)
+					}
+				}
 				val userConverted: User? = convertingOptionOrDefaultNullable(
 					_options,
 					"user",
@@ -1296,6 +1308,78 @@ internal class AccessLogApiImplJs(
 					patientConverted,
 					userConverted,
 					delegatesConverted,
+					secretIdConverted,
+					alternateRootDelegateReferenceConverted,
+				)
+				groupScoped_toJs(
+					result,
+					{ x1: DecryptedAccessLog ->
+						accessLog_toJs(x1)
+					},
+				)
+			}
+		}
+
+		override fun withEncryptionMetadataAndDelegates(
+			entityGroupId: String,
+			base: DecryptedAccessLogJs?,
+			delegates: Array<EntityReferenceInGroupToAccessLogDelegateOptionsMapObject_delegate_delegateOptions>,
+			options: dynamic,
+		): Promise<GroupScopedJs<DecryptedAccessLogJs>> {
+			val _options = options ?: js("{}")
+			return GlobalScope.promise {
+				val entityGroupIdConverted: String = entityGroupId
+				val baseConverted: DecryptedAccessLog? = base?.let { nonNull1 ->
+					accessLog_fromJs(nonNull1)
+				}
+				val delegatesConverted: Map<EntityReferenceInGroup, AccessLogDelegateOptions> =
+						EntityReferenceInGroupToAccessLogDelegateOptionsMapObject_delegate_delegateOptions_fromJs(delegates)
+				val patientConverted: GroupScoped<Patient>? = convertingOptionOrDefaultNullable(
+					_options,
+					"patient",
+					null
+				) { patient: GroupScopedJs<PatientJs>? ->
+					patient?.let { nonNull1 ->
+						groupScoped_fromJs(
+							nonNull1,
+							{ x1: PatientJs ->
+								patient_fromJs(x1)
+							},
+						)
+					}
+				}
+				val userConverted: User? = convertingOptionOrDefaultNullable(
+					_options,
+					"user",
+					null
+				) { user: UserJs? ->
+					user?.let { nonNull1 ->
+						user_fromJs(nonNull1)
+					}
+				}
+				val secretIdConverted: SecretIdUseOption = convertingOptionOrDefaultNonNull(
+					_options,
+					"secretId",
+					com.icure.cardinal.sdk.crypto.entities.SecretIdUseOption.UseAnySharedWithParent
+				) { secretId: SecretIdUseOptionJs ->
+					secretIdUseOption_fromJs(secretId)
+				}
+				val alternateRootDelegateReferenceConverted: EntityReferenceInGroup? =
+						convertingOptionOrDefaultNullable(
+					_options,
+					"alternateRootDelegateReference",
+					null
+				) { alternateRootDelegateReference: EntityReferenceInGroupJs? ->
+					alternateRootDelegateReference?.let { nonNull1 ->
+						entityReferenceInGroup_fromJs(nonNull1)
+					}
+				}
+				val result = accessLogApi.inGroup.withEncryptionMetadataAndDelegates(
+					entityGroupIdConverted,
+					baseConverted,
+					delegatesConverted,
+					patientConverted,
+					userConverted,
 					secretIdConverted,
 					alternateRootDelegateReferenceConverted,
 				)
@@ -1904,17 +1988,22 @@ internal class AccessLogApiImplJs(
 		}
 	}
 
-	override fun withEncryptionMetadata(
-		base: DecryptedAccessLogJs?,
-		patient: PatientJs,
-		options: dynamic,
-	): Promise<DecryptedAccessLogJs> {
+	override fun withEncryptionMetadata(base: DecryptedAccessLogJs?, options: dynamic):
+			Promise<DecryptedAccessLogJs> {
 		val _options = options ?: js("{}")
 		return GlobalScope.promise {
 			val baseConverted: DecryptedAccessLog? = base?.let { nonNull1 ->
 				accessLog_fromJs(nonNull1)
 			}
-			val patientConverted: Patient = patient_fromJs(patient)
+			val patientConverted: Patient? = convertingOptionOrDefaultNullable(
+				_options,
+				"patient",
+				null
+			) { patient: PatientJs? ->
+				patient?.let { nonNull1 ->
+					patient_fromJs(nonNull1)
+				}
+			}
 			val userConverted: User? = convertingOptionOrDefaultNullable(
 				_options,
 				"user",
@@ -1959,6 +2048,70 @@ internal class AccessLogApiImplJs(
 				patientConverted,
 				userConverted,
 				delegatesConverted,
+				secretIdConverted,
+				alternateRootDelegateIdConverted,
+			)
+			accessLog_toJs(result)
+		}
+	}
+
+	override fun withEncryptionMetadataAndDelegates(
+		base: DecryptedAccessLogJs?,
+		delegates: Record<String, AccessLogDelegateOptionsJs>,
+		options: dynamic,
+	): Promise<DecryptedAccessLogJs> {
+		val _options = options ?: js("{}")
+		return GlobalScope.promise {
+			val baseConverted: DecryptedAccessLog? = base?.let { nonNull1 ->
+				accessLog_fromJs(nonNull1)
+			}
+			val delegatesConverted: Map<String, AccessLogDelegateOptions> = objectToMap(
+				delegates,
+				"delegates",
+				{ x1: String ->
+					x1
+				},
+				{ x1: AccessLogDelegateOptionsJs ->
+					accessLogDelegateOptions_fromJs(x1)
+				},
+			)
+			val patientConverted: Patient? = convertingOptionOrDefaultNullable(
+				_options,
+				"patient",
+				null
+			) { patient: PatientJs? ->
+				patient?.let { nonNull1 ->
+					patient_fromJs(nonNull1)
+				}
+			}
+			val userConverted: User? = convertingOptionOrDefaultNullable(
+				_options,
+				"user",
+				null
+			) { user: UserJs? ->
+				user?.let { nonNull1 ->
+					user_fromJs(nonNull1)
+				}
+			}
+			val secretIdConverted: SecretIdUseOption = convertingOptionOrDefaultNonNull(
+				_options,
+				"secretId",
+				com.icure.cardinal.sdk.crypto.entities.SecretIdUseOption.UseAnySharedWithParent
+			) { secretId: SecretIdUseOptionJs ->
+				secretIdUseOption_fromJs(secretId)
+			}
+			val alternateRootDelegateIdConverted: String? = convertingOptionOrDefaultNullable(
+				_options,
+				"alternateRootDelegateId",
+				null
+			) { alternateRootDelegateId: String? ->
+				undefinedToNull(alternateRootDelegateId)
+			}
+			val result = accessLogApi.withEncryptionMetadataAndDelegates(
+				baseConverted,
+				delegatesConverted,
+				patientConverted,
+				userConverted,
 				secretIdConverted,
 				alternateRootDelegateIdConverted,
 			)

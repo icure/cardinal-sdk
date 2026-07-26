@@ -1,4 +1,5 @@
 // auto-generated file
+import {ReceiptDelegateOptions} from '../crypto/entities/ReceiptDelegateOptions.mjs';
 import {ReceiptShareOptions} from '../crypto/entities/ReceiptShareOptions.mjs';
 import {SecretIdUseOption} from '../crypto/entities/SecretIdUseOption.mjs';
 import {EntityReferenceInGroup} from '../model/EntityReferenceInGroup.mjs';
@@ -22,6 +23,10 @@ export interface ReceiptApi {
 
 	withEncryptionMetadata(base: DecryptedReceipt | undefined, patient: Patient | undefined,
 			options?: { user?: User | undefined, delegates?: { [ key: string ]: AccessLevel }, secretId?: SecretIdUseOption, alternateRootDelegateId?: string | undefined }): Promise<DecryptedReceipt>;
+
+	withEncryptionMetadataAndDelegates(base: DecryptedReceipt | undefined,
+			patient: Patient | undefined, delegates: { [ key: string ]: ReceiptDelegateOptions },
+			options?: { user?: User | undefined, secretId?: SecretIdUseOption, alternateRootDelegateId?: string | undefined }): Promise<DecryptedReceipt>;
 
 	getAndDecryptReceiptAttachment(receipt: Receipt, attachmentId: string): Promise<Int8Array>;
 
@@ -243,5 +248,17 @@ export interface ReceiptApi {
 	getReceipts(entityIds: Array<string>): Promise<Array<DecryptedReceipt>>;
 
 	listByReference(reference: string): Promise<Array<DecryptedReceipt>>;
+
+	/**
+	 *
+	 *  Lists the receipts created within the provided date interval (based on the receipt `created`
+	 *  timestamp, both bounds inclusive). A null bound leaves that side of the interval open.
+	 *  Flavoured method.
+	 *  @param startDate the start of the interval (inclusive), no lower bound if null
+	 *  @param endDate the end of the interval (inclusive), no upper bound if null
+	 *  @param descending whether to sort the result from the most recent to the oldest
+	 *  @return the receipts created within the provided interval
+	 */
+	listReceiptsBetweenDates(options?: { startDate?: number | undefined, endDate?: number | undefined, descending?: boolean }): Promise<Array<DecryptedReceipt>>;
 
 }

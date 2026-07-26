@@ -1,5 +1,6 @@
 package com.icure.cardinal.sdk.model.extensions
 
+import com.icure.cardinal.sdk.crypto.entities.DelegateOptions
 import com.icure.cardinal.sdk.model.User
 import com.icure.cardinal.sdk.model.embed.AccessLevel
 import com.icure.cardinal.sdk.model.embed.DelegationTag
@@ -16,12 +17,26 @@ val User.dataOwnerId get() =
 	}
 
 @InternalIcureApi
-fun User.autoDelegationsFor(
+internal fun User.autoDelegationsFor(
 	vararg tags: DelegationTag,
 	includeTagAll: Boolean = true,
-): Map<String, AccessLevel> {
+): Map<String, DelegateOptions> {
 	val allTags = if (includeTagAll) setOf(DelegationTag.All, *tags) else tags.toSet()
-	return allTags.flatMapTo(mutableSetOf<String>()) { tag ->
+	return allTags.flatMapTo(mutableSetOf()) { tag ->
 		autoDelegations[tag] ?: emptySet()
-	}.associateWith { AccessLevel.Write }
+	}.associateWith {
+		AccessLevel.Write.toDefaultDelegateOptions()
+	}
+}
+
+@InternalIcureApi
+internal fun AccessLevel.toDefaultDelegateOptions(): DelegateOptions = object : DelegateOptions {
+	override val accessLevel: AccessLevel
+		get() = this@toDefaultDelegateOptions
+	override val shareEncryptionKey: Boolean
+		get() = true
+	override val shareSecretId: Boolean
+		get() = true
+	override val shareOwningEntityId: Boolean
+		get() = true
 }

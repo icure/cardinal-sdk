@@ -174,6 +174,7 @@ public fun getRolesAsync(
 private class CreateRoleParams(
 	public val name: String,
 	public val permissions: Set<String>,
+	public val description: String?,
 	public val inheritsUpTo: Int? = null,
 )
 
@@ -185,6 +186,7 @@ public fun createRoleBlocking(sdk: CardinalNonCryptoApis, params: String): Strin
 		sdk.role.createRole(
 			decodedParams.name,
 			decodedParams.permissions,
+			decodedParams.description,
 			decodedParams.inheritsUpTo,
 		)
 	}
@@ -206,6 +208,7 @@ public fun createRoleAsync(
 			sdk.role.createRole(
 				decodedParams.name,
 				decodedParams.permissions,
+				decodedParams.description,
 				decodedParams.inheritsUpTo,
 			)
 		}.toPyStringAsyncCallback(Role.serializer(), resultCallback)
@@ -217,6 +220,7 @@ private class CreateRoleInGroupParams(
 	public val groupId: String,
 	public val name: String,
 	public val permissions: Set<String>,
+	public val description: String?,
 	public val inheritsUpTo: Int? = null,
 )
 
@@ -229,6 +233,7 @@ public fun createRoleInGroupBlocking(sdk: CardinalNonCryptoApis, params: String)
 			decodedParams.groupId,
 			decodedParams.name,
 			decodedParams.permissions,
+			decodedParams.description,
 			decodedParams.inheritsUpTo,
 		)
 	}
@@ -251,6 +256,7 @@ public fun createRoleInGroupAsync(
 				decodedParams.groupId,
 				decodedParams.name,
 				decodedParams.permissions,
+				decodedParams.description,
 				decodedParams.inheritsUpTo,
 			)
 		}.toPyStringAsyncCallback(Role.serializer(), resultCallback)

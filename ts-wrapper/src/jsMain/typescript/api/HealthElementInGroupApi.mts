@@ -1,5 +1,6 @@
 // auto-generated file
 import {FilterOptions, PaginatedListIterator, SortableFilterOptions} from '../cardinal-sdk-ts.mjs';
+import {HealthElementDelegateOptions} from '../crypto/entities/HealthElementDelegateOptions.mjs';
 import {HealthElementShareOptions} from '../crypto/entities/HealthElementShareOptions.mjs';
 import {SecretIdUseOption} from '../crypto/entities/SecretIdUseOption.mjs';
 import {EntityReferenceInGroup} from '../model/EntityReferenceInGroup.mjs';
@@ -27,6 +28,18 @@ export interface HealthElementInGroupApi {
 	withEncryptionMetadata(entityGroupId: string, base: DecryptedHealthElement | undefined,
 			patient: GroupScoped<Patient>,
 			options?: { user?: User | undefined, delegates?: ArrayWithUniqueKeys<{ delegate: EntityReferenceInGroup, accessLevel: AccessLevel }, 'delegate'>, secretId?: SecretIdUseOption, alternateRootDelegateReference?: EntityReferenceInGroup | undefined }): Promise<GroupScoped<DecryptedHealthElement>>;
+
+	/**
+	 *
+	 *  In-group version of [HealthElementApi.withEncryptionMetadataAndDelegates]
+	 */
+	withEncryptionMetadataAndDelegates(
+			entityGroupId: string,
+			base: DecryptedHealthElement | undefined,
+			patient: GroupScoped<Patient>,
+			delegates: ArrayWithUniqueKeys<{ delegate: EntityReferenceInGroup, delegateOptions: HealthElementDelegateOptions }, 'delegate'>,
+			options?: { user?: User | undefined, secretId?: SecretIdUseOption, alternateRootDelegateReference?: EntityReferenceInGroup | undefined }
+	): Promise<GroupScoped<DecryptedHealthElement>>;
 
 	/**
 	 *

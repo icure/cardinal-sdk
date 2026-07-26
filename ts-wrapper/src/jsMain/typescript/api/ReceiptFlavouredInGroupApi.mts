@@ -83,4 +83,11 @@ export interface ReceiptFlavouredInGroupApi<E extends Receipt> {
 	 */
 	getReceipts(groupId: string, entityIds: Array<string>): Promise<Array<GroupScoped<E>>>;
 
+	/**
+	 *
+	 *  In-group version of [ReceiptBasicFlavouredApi.listReceiptsBetweenDates]
+	 */
+	listReceiptsBetweenDates(groupId: string,
+			options?: { startDate?: number | undefined, endDate?: number | undefined, descending?: boolean }): Promise<Array<GroupScoped<E>>>;
+
 }

@@ -3,6 +3,7 @@
 
 package com.icure.cardinal.sdk.js.api
 
+import com.icure.cardinal.sdk.js.crypto.entities.CalendarItemDelegateOptionsJs
 import com.icure.cardinal.sdk.js.crypto.entities.CalendarItemShareOptionsJs
 import com.icure.cardinal.sdk.js.filters.FilterOptionsJs
 import com.icure.cardinal.sdk.js.filters.SortableFilterOptionsJs
@@ -36,6 +37,13 @@ public external interface CalendarItemApiJs {
 	public fun withEncryptionMetadata(
 		base: DecryptedCalendarItemJs?,
 		patient: PatientJs?,
+		options: dynamic,
+	): Promise<DecryptedCalendarItemJs>
+
+	public fun withEncryptionMetadataAndDelegates(
+		base: DecryptedCalendarItemJs?,
+		patient: PatientJs?,
+		delegates: Record<String, CalendarItemDelegateOptionsJs>,
 		options: dynamic,
 	): Promise<DecryptedCalendarItemJs>
 

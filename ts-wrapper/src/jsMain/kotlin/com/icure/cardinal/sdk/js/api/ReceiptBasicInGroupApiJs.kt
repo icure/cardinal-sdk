@@ -8,6 +8,7 @@ import com.icure.cardinal.sdk.js.model.GroupScopedJs
 import com.icure.cardinal.sdk.js.model.ReceiptJs
 import com.icure.cardinal.sdk.js.model.StoredDocumentIdentifierJs
 import kotlin.Array
+import kotlin.ByteArray
 import kotlin.String
 import kotlin.Unit
 import kotlin.js.JsName
@@ -38,6 +39,12 @@ public external interface ReceiptBasicInGroupApiJs {
 	public fun purgeReceipts(receipts: Array<GroupScopedJs<ReceiptJs>>):
 			Promise<Array<GroupScopedJs<StoredDocumentIdentifierJs>>>
 
+	public fun getRawReceiptAttachment(
+		groupId: String,
+		receiptId: String,
+		attachmentId: String,
+	): Promise<ByteArray>
+
 	public fun createReceipt(entity: GroupScopedJs<EncryptedReceiptJs>):
 			Promise<GroupScopedJs<EncryptedReceiptJs>>
 
@@ -66,5 +73,8 @@ public external interface ReceiptBasicInGroupApiJs {
 			Promise<GroupScopedJs<EncryptedReceiptJs>?>
 
 	public fun getReceipts(groupId: String, entityIds: Array<String>):
+			Promise<Array<GroupScopedJs<EncryptedReceiptJs>>>
+
+	public fun listReceiptsBetweenDates(groupId: String, options: dynamic):
 			Promise<Array<GroupScopedJs<EncryptedReceiptJs>>>
 }

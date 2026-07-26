@@ -876,6 +876,39 @@ class UserApi:
 			return_value = User._deserialize(result_info.success)
 			return return_value
 
+	async def remove_user_mobile_phone_async(self, user_id: str, previous_mobile_phone: Optional[str]) -> User:
+		def do_decode(raw_result):
+			return User._deserialize(raw_result)
+		payload = {
+			"userId": user_id,
+			"previousMobilePhone": previous_mobile_phone,
+		}
+		return await execute_async_method_job(
+			self.cardinal_sdk._executor,
+			True,
+			do_decode,
+			symbols.kotlin.root.com.icure.cardinal.sdk.py.api.UserApi.removeUserMobilePhoneAsync,
+			self.cardinal_sdk._native,
+			json.dumps(payload).encode('utf-8'),
+		)
+
+	def remove_user_mobile_phone_blocking(self, user_id: str, previous_mobile_phone: Optional[str]) -> User:
+		payload = {
+			"userId": user_id,
+			"previousMobilePhone": previous_mobile_phone,
+		}
+		call_result = symbols.kotlin.root.com.icure.cardinal.sdk.py.api.UserApi.removeUserMobilePhoneBlocking(
+			self.cardinal_sdk._native,
+			json.dumps(payload).encode('utf-8'),
+		)
+		result_info = create_result_from_json(cast(call_result, c_char_p).value.decode('utf-8'))
+		symbols.DisposeString(call_result)
+		if result_info.failure is not None:
+			raise interpret_kt_error(result_info.failure)
+		else:
+			return_value = User._deserialize(result_info.success)
+			return return_value
+
 	async def delete_user_by_id_async(self, entity_id: str, rev: str) -> StoredDocumentIdentifier:
 		def do_decode(raw_result):
 			return StoredDocumentIdentifier._deserialize(raw_result)

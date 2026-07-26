@@ -5,7 +5,7 @@ from typing import Optional
 from cardinal_sdk.kotlin_types import symbols
 from cardinal_sdk.model.CallResult import create_result_from_json, interpret_kt_error
 from ctypes import cast, c_char_p
-from cardinal_sdk.filters.FilterOptions import SortableFilterOptions, BaseSortableFilterOptions, FilterOptions
+from cardinal_sdk.filters.FilterOptions import SortableFilterOptions, BaseSortableFilterOptions, FilterOptions, BaseFilterOptions
 
 
 class DocumentFilters:
@@ -347,7 +347,7 @@ class DocumentFilters:
 			return return_value
 
 	@classmethod
-	def by_code_for_data_owner(cls, data_owner_id: str, code_type: str, code_code: Optional[str] = None) -> BaseSortableFilterOptions[Document]:
+	def by_code_for_data_owner(cls, data_owner_id: str, code_type: str, code_code: Optional[str] = None) -> BaseFilterOptions[Document]:
 		payload = {
 			"dataOwnerId": data_owner_id,
 			"codeType": code_type,
@@ -361,11 +361,11 @@ class DocumentFilters:
 		if result_info.failure is not None:
 			raise interpret_kt_error(result_info.failure)
 		else:
-			return_value = BaseSortableFilterOptions(result_info.success)
+			return_value = BaseFilterOptions(result_info.success)
 			return return_value
 
 	@classmethod
-	def by_code_for_data_owner_in_group(cls, data_owner: EntityReferenceInGroup, code_type: str, code_code: Optional[str] = None) -> BaseSortableFilterOptions[Document]:
+	def by_code_for_data_owner_in_group(cls, data_owner: EntityReferenceInGroup, code_type: str, code_code: Optional[str] = None) -> BaseFilterOptions[Document]:
 		payload = {
 			"dataOwner": data_owner.__serialize__(),
 			"codeType": code_type,
@@ -379,7 +379,7 @@ class DocumentFilters:
 		if result_info.failure is not None:
 			raise interpret_kt_error(result_info.failure)
 		else:
-			return_value = BaseSortableFilterOptions(result_info.success)
+			return_value = BaseFilterOptions(result_info.success)
 			return return_value
 
 	@classmethod
@@ -400,7 +400,7 @@ class DocumentFilters:
 			return return_value
 
 	@classmethod
-	def by_tag_for_data_owner(cls, data_owner_id: str, tag_type: str, tag_code: Optional[str] = None) -> BaseSortableFilterOptions[Document]:
+	def by_tag_for_data_owner(cls, data_owner_id: str, tag_type: str, tag_code: Optional[str] = None) -> BaseFilterOptions[Document]:
 		payload = {
 			"dataOwnerId": data_owner_id,
 			"tagType": tag_type,
@@ -414,11 +414,11 @@ class DocumentFilters:
 		if result_info.failure is not None:
 			raise interpret_kt_error(result_info.failure)
 		else:
-			return_value = BaseSortableFilterOptions(result_info.success)
+			return_value = BaseFilterOptions(result_info.success)
 			return return_value
 
 	@classmethod
-	def by_tag_for_data_owner_in_group(cls, data_owner: EntityReferenceInGroup, tag_type: str, tag_code: Optional[str] = None) -> BaseSortableFilterOptions[Document]:
+	def by_tag_for_data_owner_in_group(cls, data_owner: EntityReferenceInGroup, tag_type: str, tag_code: Optional[str] = None) -> BaseFilterOptions[Document]:
 		payload = {
 			"dataOwner": data_owner.__serialize__(),
 			"tagType": tag_type,
@@ -432,11 +432,11 @@ class DocumentFilters:
 		if result_info.failure is not None:
 			raise interpret_kt_error(result_info.failure)
 		else:
-			return_value = BaseSortableFilterOptions(result_info.success)
+			return_value = BaseFilterOptions(result_info.success)
 			return return_value
 
 	@classmethod
-	def by_tag_for_self(cls, tag_type: str, tag_code: Optional[str] = None) -> SortableFilterOptions[Document]:
+	def by_tag_for_self(cls, tag_type: str, tag_code: Optional[str] = None) -> FilterOptions[Document]:
 		payload = {
 			"tagType": tag_type,
 			"tagCode": tag_code,
@@ -449,5 +449,5 @@ class DocumentFilters:
 		if result_info.failure is not None:
 			raise interpret_kt_error(result_info.failure)
 		else:
-			return_value = SortableFilterOptions(result_info.success)
+			return_value = FilterOptions(result_info.success)
 			return return_value

@@ -3,7 +3,7 @@ import json
 from cardinal_sdk.kotlin_types import symbols
 from cardinal_sdk.model.CallResult import create_result_from_json, interpret_kt_error
 from ctypes import cast, c_char_p
-from cardinal_sdk.filters.FilterOptions import BaseFilterOptions, FilterOptions, BaseSortableFilterOptions, SortableFilterOptions
+from cardinal_sdk.filters.FilterOptions import BaseFilterOptions, FilterOptions, SortableFilterOptions, BaseSortableFilterOptions
 from cardinal_sdk.model import Message, EntityReferenceInGroup, Patient, serialize_patient, GroupScoped
 from typing import Optional
 
@@ -39,7 +39,7 @@ class MessageFilters:
 			return return_value
 
 	@classmethod
-	def by_transport_guid_for_data_owner(cls, data_owner_id: str, transport_guid: str) -> BaseSortableFilterOptions[Message]:
+	def by_transport_guid_for_data_owner(cls, data_owner_id: str, transport_guid: str) -> BaseFilterOptions[Message]:
 		payload = {
 			"dataOwnerId": data_owner_id,
 			"transportGuid": transport_guid,
@@ -52,11 +52,11 @@ class MessageFilters:
 		if result_info.failure is not None:
 			raise interpret_kt_error(result_info.failure)
 		else:
-			return_value = BaseSortableFilterOptions(result_info.success)
+			return_value = BaseFilterOptions(result_info.success)
 			return return_value
 
 	@classmethod
-	def by_transport_guid_for_data_owner_in_group(cls, data_owner: EntityReferenceInGroup, transport_guid: str) -> BaseSortableFilterOptions[Message]:
+	def by_transport_guid_for_data_owner_in_group(cls, data_owner: EntityReferenceInGroup, transport_guid: str) -> BaseFilterOptions[Message]:
 		payload = {
 			"dataOwner": data_owner.__serialize__(),
 			"transportGuid": transport_guid,
@@ -69,11 +69,11 @@ class MessageFilters:
 		if result_info.failure is not None:
 			raise interpret_kt_error(result_info.failure)
 		else:
-			return_value = BaseSortableFilterOptions(result_info.success)
+			return_value = BaseFilterOptions(result_info.success)
 			return return_value
 
 	@classmethod
-	def by_transport_guid_for_self(cls, transport_guid: str) -> SortableFilterOptions[Message]:
+	def by_transport_guid_for_self(cls, transport_guid: str) -> FilterOptions[Message]:
 		payload = {
 			"transportGuid": transport_guid,
 		}
@@ -85,7 +85,7 @@ class MessageFilters:
 		if result_info.failure is not None:
 			raise interpret_kt_error(result_info.failure)
 		else:
-			return_value = SortableFilterOptions(result_info.success)
+			return_value = FilterOptions(result_info.success)
 			return return_value
 
 	@classmethod
@@ -307,7 +307,7 @@ class MessageFilters:
 			return return_value
 
 	@classmethod
-	def by_transport_guid_sent_date_for_data_owner(cls, data_owner_id: str, transport_guid: str, from_: Optional[int], to: Optional[int], descending: bool = False) -> BaseSortableFilterOptions[Message]:
+	def by_transport_guid_sent_date_for_data_owner(cls, data_owner_id: str, transport_guid: str, from_: Optional[int], to: Optional[int], descending: bool = False) -> BaseFilterOptions[Message]:
 		payload = {
 			"dataOwnerId": data_owner_id,
 			"transportGuid": transport_guid,
@@ -323,11 +323,11 @@ class MessageFilters:
 		if result_info.failure is not None:
 			raise interpret_kt_error(result_info.failure)
 		else:
-			return_value = BaseSortableFilterOptions(result_info.success)
+			return_value = BaseFilterOptions(result_info.success)
 			return return_value
 
 	@classmethod
-	def by_transport_guid_sent_date_for_data_owner_in_group(cls, data_owner: EntityReferenceInGroup, transport_guid: str, from_: Optional[int], to: Optional[int], descending: bool = False) -> BaseSortableFilterOptions[Message]:
+	def by_transport_guid_sent_date_for_data_owner_in_group(cls, data_owner: EntityReferenceInGroup, transport_guid: str, from_: Optional[int], to: Optional[int], descending: bool = False) -> BaseFilterOptions[Message]:
 		payload = {
 			"dataOwner": data_owner.__serialize__(),
 			"transportGuid": transport_guid,
@@ -343,11 +343,11 @@ class MessageFilters:
 		if result_info.failure is not None:
 			raise interpret_kt_error(result_info.failure)
 		else:
-			return_value = BaseSortableFilterOptions(result_info.success)
+			return_value = BaseFilterOptions(result_info.success)
 			return return_value
 
 	@classmethod
-	def by_transport_guid_sent_date_for_self(cls, transport_guid: str, from_: Optional[int], to: Optional[int], descending: bool = False) -> SortableFilterOptions[Message]:
+	def by_transport_guid_sent_date_for_self(cls, transport_guid: str, from_: Optional[int], to: Optional[int], descending: bool = False) -> FilterOptions[Message]:
 		payload = {
 			"transportGuid": transport_guid,
 			"from": from_,
@@ -362,7 +362,7 @@ class MessageFilters:
 		if result_info.failure is not None:
 			raise interpret_kt_error(result_info.failure)
 		else:
-			return_value = SortableFilterOptions(result_info.success)
+			return_value = FilterOptions(result_info.success)
 			return return_value
 
 	@classmethod
@@ -467,14 +467,14 @@ class MessageFilters:
 			return return_value
 
 	@classmethod
-	def lifecycle_between_for_data_owner_in_group_in_group(cls, data_owner: EntityReferenceInGroup, start_timestamp: Optional[int], end_timestamp: Optional[int], descending: bool) -> BaseFilterOptions[Message]:
+	def lifecycle_between_for_data_owner_in_group(cls, data_owner: EntityReferenceInGroup, start_timestamp: Optional[int], end_timestamp: Optional[int], descending: bool) -> BaseFilterOptions[Message]:
 		payload = {
 			"dataOwner": data_owner.__serialize__(),
 			"startTimestamp": start_timestamp,
 			"endTimestamp": end_timestamp,
 			"descending": descending,
 		}
-		call_result = symbols.kotlin.root.com.icure.cardinal.sdk.py.filters.MessageFilters.lifecycleBetweenForDataOwnerInGroupInGroup(
+		call_result = symbols.kotlin.root.com.icure.cardinal.sdk.py.filters.MessageFilters.lifecycleBetweenForDataOwnerInGroup(
 			json.dumps(payload).encode('utf-8')
 		)
 		result_info = create_result_from_json(cast(call_result, c_char_p).value.decode('utf-8'))
@@ -540,7 +540,7 @@ class MessageFilters:
 			return return_value
 
 	@classmethod
-	def by_code_for_self(cls, code_type: str, code_code: Optional[str] = None) -> SortableFilterOptions[Message]:
+	def by_code_for_self(cls, code_type: str, code_code: Optional[str] = None) -> FilterOptions[Message]:
 		payload = {
 			"codeType": code_type,
 			"codeCode": code_code,
@@ -553,7 +553,7 @@ class MessageFilters:
 		if result_info.failure is not None:
 			raise interpret_kt_error(result_info.failure)
 		else:
-			return_value = SortableFilterOptions(result_info.success)
+			return_value = FilterOptions(result_info.success)
 			return return_value
 
 	@classmethod
@@ -593,7 +593,7 @@ class MessageFilters:
 			return return_value
 
 	@classmethod
-	def by_tag_for_self(cls, tag_type: str, tag_code: Optional[str] = None) -> SortableFilterOptions[Message]:
+	def by_tag_for_self(cls, tag_type: str, tag_code: Optional[str] = None) -> FilterOptions[Message]:
 		payload = {
 			"tagType": tag_type,
 			"tagCode": tag_code,
@@ -606,5 +606,5 @@ class MessageFilters:
 		if result_info.failure is not None:
 			raise interpret_kt_error(result_info.failure)
 		else:
-			return_value = SortableFilterOptions(result_info.success)
+			return_value = FilterOptions(result_info.success)
 			return return_value

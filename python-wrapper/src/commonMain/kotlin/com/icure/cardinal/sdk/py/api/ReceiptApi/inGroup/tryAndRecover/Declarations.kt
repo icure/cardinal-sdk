@@ -13,7 +13,9 @@ import com.icure.cardinal.sdk.py.utils.toPyStringAsyncCallback
 import com.icure.cardinal.sdk.serialization.MapAsArraySerializer
 import com.icure.cardinal.sdk.utils.Serialization.fullLanguageInteropJson
 import com.icure.utils.InternalIcureApi
+import kotlin.Boolean
 import kotlin.Byte
+import kotlin.Long
 import kotlin.OptIn
 import kotlin.String
 import kotlin.Unit
@@ -478,6 +480,54 @@ public fun getReceiptsAsync(
 			sdk.receipt.inGroup.tryAndRecover.getReceipts(
 				decodedParams.groupId,
 				decodedParams.entityIds,
+			)
+		}.toPyStringAsyncCallback(ListSerializer(GroupScoped.serializer(PolymorphicSerializer(Receipt::class))),
+				resultCallback)
+	}
+}.failureToPyStringAsyncCallback(resultCallback)
+
+@Serializable
+private class ListReceiptsBetweenDatesParams(
+	public val groupId: String,
+	public val startDate: Long? = null,
+	public val endDate: Long? = null,
+	public val descending: Boolean = false,
+)
+
+@OptIn(InternalIcureApi::class)
+public fun listReceiptsBetweenDatesBlocking(sdk: CardinalApis, params: String): String =
+		kotlin.runCatching {
+	val decodedParams =
+			fullLanguageInteropJson.decodeFromString<ListReceiptsBetweenDatesParams>(params)
+	runBlocking {
+		sdk.receipt.inGroup.tryAndRecover.listReceiptsBetweenDates(
+			decodedParams.groupId,
+			decodedParams.startDate,
+			decodedParams.endDate,
+			decodedParams.descending,
+		)
+	}
+}.toPyString(ListSerializer(GroupScoped.serializer(PolymorphicSerializer(Receipt::class))))
+
+@OptIn(
+	ExperimentalForeignApi::class,
+	InternalIcureApi::class,
+)
+public fun listReceiptsBetweenDatesAsync(
+	sdk: CardinalApis,
+	params: String,
+	resultCallback: CPointer<CFunction<(CValues<ByteVarOf<Byte>>?,
+			CValues<ByteVarOf<Byte>>?) -> Unit>>,
+): COpaquePointer? = kotlin.runCatching {
+	val decodedParams =
+			fullLanguageInteropJson.decodeFromString<ListReceiptsBetweenDatesParams>(params)
+	GlobalScope.launch {
+		kotlin.runCatching {
+			sdk.receipt.inGroup.tryAndRecover.listReceiptsBetweenDates(
+				decodedParams.groupId,
+				decodedParams.startDate,
+				decodedParams.endDate,
+				decodedParams.descending,
 			)
 		}.toPyStringAsyncCallback(ListSerializer(GroupScoped.serializer(PolymorphicSerializer(Receipt::class))),
 				resultCallback)

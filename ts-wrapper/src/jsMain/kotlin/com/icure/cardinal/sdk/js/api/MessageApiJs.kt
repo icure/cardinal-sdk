@@ -3,6 +3,7 @@
 
 package com.icure.cardinal.sdk.js.api
 
+import com.icure.cardinal.sdk.js.crypto.entities.MessageDelegateOptionsJs
 import com.icure.cardinal.sdk.js.crypto.entities.MessageShareOptionsJs
 import com.icure.cardinal.sdk.js.filters.FilterOptionsJs
 import com.icure.cardinal.sdk.js.filters.SortableFilterOptionsJs
@@ -35,6 +36,13 @@ public external interface MessageApiJs {
 	public fun withEncryptionMetadata(
 		base: DecryptedMessageJs?,
 		patient: PatientJs?,
+		options: dynamic,
+	): Promise<DecryptedMessageJs>
+
+	public fun withEncryptionMetadataAndDelegates(
+		base: DecryptedMessageJs?,
+		patient: PatientJs?,
+		delegates: Record<String, MessageDelegateOptionsJs>,
 		options: dynamic,
 	): Promise<DecryptedMessageJs>
 
