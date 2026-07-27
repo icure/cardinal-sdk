@@ -1,10 +1,10 @@
 [build-system]
-requires = ["setuptools"]
+requires = ["setuptools>=70.1"]
 build-backend = "setuptools.build_meta"
 
 [project]
 name = "cardinal-sdk"
-version = "2.4.4"
+version = "2.11.0"
 requires-python = ">=3.12"
 authors = [
     { name = "iCure" }
@@ -15,8 +15,9 @@ keywords = ["cardinal", "medical data", "encryption"]
 classifiers = [
     "Intended Audience :: Developers",
     "License :: OSI Approved :: MIT License",
-    "Operating System :: MacOS :: MacOS X",
-    "Operating System :: POSIX :: Linux",
+    "Operating System :: Microsoft :: Windows",
+    "Programming Language :: Python :: 3.12",
+    "Programming Language :: Python :: 3.13",
     "Topic :: Scientific/Engineering :: Medical Science Apps.",
     "Typing :: Typed"
 ]

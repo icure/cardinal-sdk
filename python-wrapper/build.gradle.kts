@@ -87,7 +87,8 @@ fun File.mergeInto(other: File) {
 }
 
 fun rsync(source: File, dst: File) {
-	val exitCode = ProcessBuilder("rsync", "-a", "${source.absolutePath}/", dst.absolutePath)
+	val sourcePath = if (source.isDirectory) "${source.absolutePath}/" else source.absolutePath
+	val exitCode = ProcessBuilder("rsync", "-a", sourcePath, dst.absolutePath)
 		.inheritIO()
 		.start()
 		.waitFor()
@@ -106,76 +107,134 @@ val pythonPath = providers.exec {
 	commandLine("bash", "-c", "which python3.12")
 }.standardOutput.asText.map { it.trim() }
 
-tasks.register("prepareDistributionArchive") {
-	group = "publishing"
-
-	doLast {
-		val sourceDir = System.getenv("PYTHON_NATIVE_LIB_SOURCE")
-			?: error("Environment variable PYTHON_NATIVE_LIB_SOURCE is not set")
-
-		val srcDir = projectDir.resolve("src/commonMain/resources/src")
-		if (srcDir.exists()) {
-			remove(srcDir)
-		}
-
-		val distDir = projectDir.resolve("src/commonMain/resources/dist")
-		if (distDir.exists()) {
-			remove(distDir)
-		}
-
-		val venvDir = projectDir.resolve("src/commonMain/resources/venv")
-		if (venvDir.exists()) {
-			remove(venvDir)
-		}
-
-		projectDir.resolve("src/commonMain/resources/src").mkdirs()
-		rsync(projectDir.resolve("src/python"), projectDir.resolve("src/commonMain/resources/src/cardinal_sdk"))
-
-		projectDir.resolve("src/commonMain/resources/src/lib").mkdirs()
-		rsync(File(sourceDir), projectDir.resolve("src/commonMain/resources/src/cardinal_sdk/lib"))
-
-		val tomlFile = projectDir.resolve("src/commonMain/resources/pyproject.toml")
-		val content = tomlFile.readText()
-		val version = project(":cardinal-sdk").version.toString()
-
-		tomlFile.writeText(
-			Regex("version = \"([^\"]+)\"").replace(content) {
-				"version = \"$version\""
-			}
-		)
-
-		val python = pythonPath.get()
-
-		val workDir = projectDir.resolve("src/commonMain/resources")
-
-		ProcessBuilder(python, "-m", "venv", "venv")
-			.directory(workDir)
-			.inheritIO()
-			.start()
-			.waitFor().also {
-				check(it == 0) { "venv exited with code $it" }
-			}
-
-		val venv = projectDir.resolve("src/commonMain/resources/venv").absolutePath
-
-		ProcessBuilder("$venv/bin/pip", "install", "--upgrade", "build")
-			.directory(workDir)
-			.inheritIO()
-			.start()
-			.waitFor().also {
-				check(it == 0) { "Install build exited with code $it" }
-			}
-
-		ProcessBuilder("$venv/bin/python", "-m", "build")
-			.directory(workDir)
-			.inheritIO()
-			.start()
-			.waitFor().also {
-				check(it == 0) { "build exited with code $it" }
-			}
-
+fun removeDistDir() {
+	val distDir = projectDir.resolve("src/commonMain/resources/dist")
+	if (distDir.exists()) {
+		remove(distDir)
 	}
 }
+
+fun prepareDistributionArchive(
+	nativeLibFolder: String,
+	nativeLibFileName: String,
+	platformNameBuildOption: String
+) {
+	val srcDir = projectDir.resolve("src/commonMain/resources/src")
+	if (srcDir.exists()) {
+		remove(srcDir)
+	}
+
+	val buildDir = projectDir.resolve("src/commonMain/resources/build")
+	if (buildDir.exists()) {
+		remove(buildDir)
+	}
+
+	val venvDir = projectDir.resolve("src/commonMain/resources/venv")
+	if (venvDir.exists()) {
+		remove(venvDir)
+	}
+
+	projectDir.resolve("src/commonMain/resources/src").mkdirs()
+	rsync(projectDir.resolve("src/python"), projectDir.resolve("src/commonMain/resources/src/cardinal_sdk"))
+
+	projectDir.resolve("src/commonMain/resources/src/cardinal_sdk/lib/$nativeLibFolder").mkdirs()
+	projectDir.resolve("src/commonMain/resources/src/cardinal_sdk/lib/__init__.py").createNewFile()
+	projectDir.resolve("src/commonMain/resources/src/cardinal_sdk/lib/$nativeLibFolder/__init__.py").createNewFile()
+
+	rsync(
+		projectDir.resolve("build/bin/$nativeLibFolder/releaseShared/$nativeLibFileName"),
+		projectDir.resolve("src/commonMain/resources/src/cardinal_sdk/lib/$nativeLibFolder")
+	)
+
+	val tomlFile = projectDir.resolve("src/commonMain/resources/pyproject.toml")
+	val content = tomlFile.readText()
+	val version = project(":cardinal-sdk").version.toString()
+
+	tomlFile.writeText(
+		Regex("version = \"([^\"]+)\"").replace(content) {
+			"version = \"$version\""
+		}
+	)
+
+	val python = pythonPath.get()
+
+	val workDir = projectDir.resolve("src/commonMain/resources")
+
+	ProcessBuilder(python, "-m", "venv", "venv")
+		.directory(workDir)
+		.inheritIO()
+		.start()
+		.waitFor().also {
+			check(it == 0) { "venv exited with code $it" }
+		}
+
+	val venv = projectDir.resolve("src/commonMain/resources/venv").absolutePath
+
+	ProcessBuilder("$venv/bin/pip", "install", "--upgrade", "build")
+		.directory(workDir)
+		.inheritIO()
+		.start()
+		.waitFor().also {
+			check(it == 0) { "Install build exited with code $it" }
+		}
+
+	ProcessBuilder(
+		"$venv/bin/python",
+		"-m",
+		"build",
+		"--wheel",
+		"-C--build-option=--plat-name=$platformNameBuildOption"
+	)
+		.directory(workDir)
+		.inheritIO()
+		.start()
+		.waitFor().also {
+			check(it == 0) { "build exited with code $it" }
+		}
+}
+
+data class PyPlatform(
+	val taskName: String,
+	val nativeLibFolder: String,
+	val nativeLibFileName: String,
+	val platformNameBuildOption: String,
+)
+
+tasks.register("removeDistDir") {
+	group = "build"
+
+	doLast {
+		removeDistDir()
+	}
+}
+
+val pyPlatforms = listOf(
+	PyPlatform("prepareMingwX64DistributionArchive", "mingwX64", "cardinal_sdk_native_pylib.dll", "win_amd64"),
+	PyPlatform("prepareLinuxX64DistributionArchive", "linuxX64", "libcardinal_sdk_native_pylib.so", "manylinux_2_35_x86_64"),
+	PyPlatform("prepareMacosArm64DistributionArchive", "macosArm64", "libcardinal_sdk_native_pylib.dylib", "macosx_11_0_arm64"),
+)
+
+val platformTasks = pyPlatforms.map { p ->
+	tasks.register(p.taskName) {
+		group = "publishing"
+		doLast {
+			prepareDistributionArchive(
+				nativeLibFolder = p.nativeLibFolder,
+				nativeLibFileName = p.nativeLibFileName,
+				platformNameBuildOption = p.platformNameBuildOption,
+			)
+		}
+	}
+}
+
+
+platformTasks.zipWithNext { prev, next -> next.configure { mustRunAfter(prev) } }
+
+tasks.register("prepareDistributionArchiveForAllPlatforms") {
+	group = "publishing"
+	dependsOn(platformTasks)
+}
+
 
 // TODO should become task type
 tasks.register("updateAutoGenerated") {
