@@ -143,7 +143,7 @@ fun prepareDistributionArchive(
 
 	rsync(
 		projectDir.resolve("build/bin/$nativeLibFolder/releaseShared/$nativeLibFileName"),
-		projectDir.resolve("src/commonMain/resources/src/cardinal_sdk/lib/$nativeLibFolder")
+		projectDir.resolve("src/commonMain/resources/src/cardinal_sdk/lib/$nativeLibFolder/cardinal-sdk.${nativeLibFileName.substringAfterLast('.')}")
 	)
 
 	val tomlFile = projectDir.resolve("src/commonMain/resources/pyproject.toml")

@@ -109,7 +109,7 @@ class SdkOptions:
     key_storage: Optional[StorageOptions] = None
     crypto_strategies: Optional[CryptoStrategies] = None
     json_patcher: Optional[JsonPatcher] = None
-    lenient_json: bool = False
+    ignoreUnknownFields: bool = False
 
 
 def _serialize_encrypted_fields(fields: EncryptedFieldsConfiguration):
