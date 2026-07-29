@@ -4,6 +4,7 @@ package com.icure.cardinal.sdk.model
 
 import com.icure.cardinal.sdk.model.base.CodeStub
 import com.icure.cardinal.sdk.model.base.HasEndOfLife
+import com.icure.cardinal.sdk.model.base.HasMedicalLocation
 import com.icure.cardinal.sdk.model.base.ICureDocument
 import com.icure.cardinal.sdk.model.base.StoredDocument
 import com.icure.cardinal.sdk.model.embed.TimeTableItem
@@ -92,7 +93,7 @@ data class TimeTable(
 	 */
 	@param:DefaultValue("emptyList()")
 	public val items: List<TimeTableItem> = emptyList(),
-) : StoredDocument, ICureDocument<String>, HasEndOfLife {
+) : StoredDocument, ICureDocument<String>, HasMedicalLocation, HasEndOfLife {
 	// region TimeTable-TimeTable
 
 	// endregion

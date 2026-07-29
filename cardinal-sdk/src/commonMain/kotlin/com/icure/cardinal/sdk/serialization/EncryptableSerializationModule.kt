@@ -23,6 +23,7 @@ import com.icure.cardinal.sdk.model.DecryptedPatient
 import com.icure.cardinal.sdk.model.DecryptedProperty
 import com.icure.cardinal.sdk.model.DecryptedPropertyStub
 import com.icure.cardinal.sdk.model.DecryptedReceipt
+import com.icure.cardinal.sdk.model.DecryptedRelatedPerson
 import com.icure.cardinal.sdk.model.DecryptedSecureDelegationKeyMap
 import com.icure.cardinal.sdk.model.DecryptedTopic
 import com.icure.cardinal.sdk.model.Document
@@ -42,6 +43,7 @@ import com.icure.cardinal.sdk.model.EncryptedPatient
 import com.icure.cardinal.sdk.model.EncryptedProperty
 import com.icure.cardinal.sdk.model.EncryptedPropertyStub
 import com.icure.cardinal.sdk.model.EncryptedReceipt
+import com.icure.cardinal.sdk.model.EncryptedRelatedPerson
 import com.icure.cardinal.sdk.model.EncryptedSecureDelegationKeyMap
 import com.icure.cardinal.sdk.model.EncryptedTopic
 import com.icure.cardinal.sdk.model.Form
@@ -53,6 +55,7 @@ import com.icure.cardinal.sdk.model.Patient
 import com.icure.cardinal.sdk.model.Property
 import com.icure.cardinal.sdk.model.PropertyStub
 import com.icure.cardinal.sdk.model.Receipt
+import com.icure.cardinal.sdk.model.RelatedPerson
 import com.icure.cardinal.sdk.model.SecureDelegationKeyMap
 import com.icure.cardinal.sdk.model.Topic
 import com.icure.cardinal.sdk.model.embed.Address
@@ -255,6 +258,10 @@ internal object EncryptableSerializationModule {
 			polymorphic(Receipt::class) {
 				subclass(DecryptedReceipt::class)
 				subclass(EncryptedReceipt::class)
+			}
+			polymorphic(RelatedPerson::class) {
+				subclass(DecryptedRelatedPerson::class)
+				subclass(EncryptedRelatedPerson::class)
 			}
 			polymorphic(SchoolingInfo::class) {
 				subclass(DecryptedSchoolingInfo::class)

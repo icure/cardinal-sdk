@@ -29,6 +29,12 @@ sealed interface Partnership : Encryptable {
 	public val partnerId: String?
 
 	/**
+	 * The type of entity partnerId refers to. When null the partner is either a patient or a
+	 * healthcare party (legacy behavior).
+	 */
+	public val partnerType: PartnerType?
+
+	/**
 	 * Deprecated. Description of the relationship from the other person to this patient.
 	 */
 	override val encryptedSelf: Base64String?
@@ -56,6 +62,11 @@ data class DecryptedPartnership(
 	 * The UUID of the contact person or patient in this relationship.
 	 */
 	override val partnerId: String? = null,
+	/**
+	 * The type of entity partnerId refers to. When null the partner is either a patient or a
+	 * healthcare party (legacy behavior).
+	 */
+	override val partnerType: PartnerType? = null,
 	/**
 	 * Deprecated. Description of the relationship from the other person to this patient.
 	 */
@@ -85,6 +96,11 @@ data class EncryptedPartnership(
 	 * The UUID of the contact person or patient in this relationship.
 	 */
 	override val partnerId: String? = null,
+	/**
+	 * The type of entity partnerId refers to. When null the partner is either a patient or a
+	 * healthcare party (legacy behavior).
+	 */
+	override val partnerType: PartnerType? = null,
 	/**
 	 * Deprecated. Description of the relationship from the other person to this patient.
 	 */
