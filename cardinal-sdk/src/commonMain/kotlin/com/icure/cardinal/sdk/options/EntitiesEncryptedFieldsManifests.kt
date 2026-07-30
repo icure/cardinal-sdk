@@ -23,7 +23,8 @@ internal class EntitiesEncryptedFieldsManifests private constructor(
 	val classification: EncryptedFieldsManifest,
 	val form: EncryptedFieldsManifest,
 	val invoice: EncryptedFieldsManifest,
-	val receipt: EncryptedFieldsManifest
+	val receipt: EncryptedFieldsManifest,
+	val relatedPerson: EncryptedFieldsManifest,
 ) {
 	companion object {
 		fun fromEncryptedFields(encryptedFields: EncryptedFieldsConfiguration): EntitiesEncryptedFieldsManifests {
@@ -95,6 +96,10 @@ internal class EntitiesEncryptedFieldsManifests private constructor(
 				receipt = JsonEncryptionService.parseEncryptedFields(
 					encryptedFields.receipt ,
 					"Receipt."
+				),
+				relatedPerson = JsonEncryptionService.parseEncryptedFields(
+					encryptedFields.relatedPerson,
+					"RelatedPerson."
 				)
 			)
 		}

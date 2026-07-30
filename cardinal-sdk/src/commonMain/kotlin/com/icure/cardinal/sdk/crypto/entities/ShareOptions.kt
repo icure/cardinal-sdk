@@ -246,6 +246,20 @@ data class PatientShareOptions(
 
 @OptIn(InternalIcureApi::class)
 @Serializable
+data class RelatedPersonShareOptions(
+	@param:DefaultValue("com.icure.cardinal.sdk.model.requests.RequestedPermission.MaxWrite")
+	override val requestedPermissions:  RequestedPermission = RequestedPermission.MaxWrite,
+	@param:DefaultValue("com.icure.cardinal.sdk.crypto.entities.ShareMetadataBehaviour.IfAvailable")
+	override val shareEncryptionKey: ShareMetadataBehaviour = ShareMetadataBehaviour.IfAvailable,
+	@param:DefaultValue("com.icure.cardinal.sdk.crypto.entities.SecretIdShareOptions.AllAvailable()")
+	override val shareSecretIds: SecretIdShareOptions = SecretIdShareOptions.AllAvailable(),
+) : SimpleDelegateShareOptions {
+
+	override val shareOwningEntityIds get() = ShareMetadataBehaviour.Never
+}
+
+@OptIn(InternalIcureApi::class)
+@Serializable
 data class ReceiptShareOptions(
 	@param:DefaultValue("com.icure.cardinal.sdk.model.requests.RequestedPermission.MaxWrite")
 	override val requestedPermissions:  RequestedPermission = RequestedPermission.MaxWrite,

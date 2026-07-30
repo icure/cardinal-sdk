@@ -39,6 +39,8 @@ import com.icure.cardinal.sdk.api.PatientBasicApi
 import com.icure.cardinal.sdk.api.PlaceApi
 import com.icure.cardinal.sdk.api.ReceiptApi
 import com.icure.cardinal.sdk.api.ReceiptBasicApi
+import com.icure.cardinal.sdk.api.RelatedPersonApi
+import com.icure.cardinal.sdk.api.RelatedPersonBasicApi
 import com.icure.cardinal.sdk.api.RecoveryApi
 import com.icure.cardinal.sdk.api.RoleApi
 import com.icure.cardinal.sdk.api.SystemApi
@@ -87,6 +89,7 @@ interface CardinalApis : CardinalNonCryptoApis {
 	val patient: PatientApi
 	@Deprecated("The receipt API and model are highly specialised for the belgian market. They will be provided as a separate package in future")
 	val receipt: ReceiptApi
+	val relatedPerson: RelatedPersonApi
 	val topic: TopicApi
 	// api root
 	val crypto: CryptoApi
@@ -116,6 +119,7 @@ interface CardinalBaseApis : CardinalNonCryptoApis {
 	val patient: PatientBasicApi
 	@Deprecated("The receipt API and model are highly specialised for the belgian market. They will be provided as a separate package in future")
 	val receipt: ReceiptBasicApi
+	val relatedPerson: RelatedPersonBasicApi
 	val topic: TopicBasicApi
 }
 

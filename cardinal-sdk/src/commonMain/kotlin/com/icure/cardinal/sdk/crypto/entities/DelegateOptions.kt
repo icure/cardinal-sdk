@@ -145,6 +145,17 @@ data class PatientDelegateOptions(
 
 @OptIn(InternalIcureApi::class)
 @Serializable
+data class RelatedPersonDelegateOptions(
+	override val accessLevel: AccessLevel,
+	override val shareEncryptionKey: Boolean = true,
+	override val shareSecretId: Boolean = true,
+) : DelegateOptions {
+
+	override val shareOwningEntityId get() = false
+}
+
+@OptIn(InternalIcureApi::class)
+@Serializable
 data class ReceiptDelegateOptions(
 	override val accessLevel: AccessLevel,
 	override val shareEncryptionKey: Boolean = true,

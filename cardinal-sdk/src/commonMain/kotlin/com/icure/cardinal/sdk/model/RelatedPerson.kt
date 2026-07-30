@@ -177,6 +177,10 @@ sealed interface RelatedPerson :
 	override val securityMetadata: SecurityMetadata?
 
 	// region RelatedPerson-RelatedPerson
+
+	companion object {
+		const val KRAKEN_QUALIFIED_NAME = "org.taktik.icure.entities.RelatedPerson"
+	}
 	// endregion
 }
 
@@ -309,6 +313,8 @@ data class DecryptedRelatedPerson(
 	override val securityMetadata: SecurityMetadata? = null,
 ) : RelatedPerson {
 	// region RelatedPerson-DecryptedRelatedPerson
+	override fun copyWithSecurityMetadata(securityMetadata: SecurityMetadata, secretForeignKeys: Set<String>): DecryptedRelatedPerson =
+		copy(securityMetadata = securityMetadata, secretForeignKeys = secretForeignKeys)
 	// endregion
 }
 
@@ -441,5 +447,7 @@ data class EncryptedRelatedPerson(
 	override val securityMetadata: SecurityMetadata? = null,
 ) : RelatedPerson {
 	// region RelatedPerson-EncryptedRelatedPerson
+	override fun copyWithSecurityMetadata(securityMetadata: SecurityMetadata, secretForeignKeys: Set<String>): EncryptedRelatedPerson =
+		copy(securityMetadata = securityMetadata, secretForeignKeys = secretForeignKeys)
 	// endregion
 }
