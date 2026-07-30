@@ -4,6 +4,7 @@
 package com.icure.cardinal.sdk.js.model.embed
 
 import com.icure.cardinal.sdk.js.model.base.CodeStubJs
+import com.icure.cardinal.sdk.js.model.base.HasMedicalLocationJs
 import com.icure.cardinal.sdk.js.model.base.ICureDocumentJs
 import kotlin.Array
 import kotlin.Boolean
@@ -13,7 +14,8 @@ import kotlin.js.JsName
 import kotlin.js.JsQualifier
 
 @JsName("SubContact")
-public sealed external interface SubContactJs : EncryptableJs, ICureDocumentJs<String?> {
+public sealed external interface SubContactJs : EncryptableJs, ICureDocumentJs<String?>,
+		HasMedicalLocationJs {
 	public val descr: String?
 
 	public val protocol: String?

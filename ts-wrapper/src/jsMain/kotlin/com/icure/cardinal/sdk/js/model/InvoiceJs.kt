@@ -6,6 +6,7 @@ package com.icure.cardinal.sdk.js.model
 import com.icure.cardinal.sdk.js.model.base.CodeStubJs
 import com.icure.cardinal.sdk.js.model.base.HasEncryptionMetadataJs
 import com.icure.cardinal.sdk.js.model.base.HasIdentifierJs
+import com.icure.cardinal.sdk.js.model.base.HasMedicalLocationJs
 import com.icure.cardinal.sdk.js.model.base.ICureDocumentJs
 import com.icure.cardinal.sdk.js.model.base.IdentifierJs
 import com.icure.cardinal.sdk.js.model.base.StoredDocumentJs
@@ -27,7 +28,7 @@ import kotlin.js.JsQualifier
 
 @JsName("Invoice")
 public sealed external interface InvoiceJs : StoredDocumentJs, ICureDocumentJs<String>,
-		HasEncryptionMetadataJs, EncryptableJs, HasIdentifierJs {
+		HasMedicalLocationJs, HasEncryptionMetadataJs, EncryptableJs, HasIdentifierJs {
 	public val invoiceDate: Double?
 
 	public val sentDate: Double?

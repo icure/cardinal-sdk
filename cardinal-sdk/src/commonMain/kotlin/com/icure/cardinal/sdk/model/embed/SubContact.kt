@@ -3,6 +3,7 @@
 package com.icure.cardinal.sdk.model.embed
 
 import com.icure.cardinal.sdk.model.base.CodeStub
+import com.icure.cardinal.sdk.model.base.HasMedicalLocation
 import com.icure.cardinal.sdk.model.base.ICureDocument
 import com.icure.cardinal.sdk.model.specializations.Base64String
 import com.icure.cardinal.sdk.utils.DefaultValue
@@ -13,7 +14,7 @@ import kotlin.collections.List
 import kotlin.collections.Set
 import kotlin.Int
 
-sealed interface SubContact : Encryptable, ICureDocument<String?> {
+sealed interface SubContact : Encryptable, ICureDocument<String?>, HasMedicalLocation {
 	override val id: String?
 
 	override val created: Long?

@@ -4,6 +4,7 @@ package com.icure.cardinal.sdk.model
 
 import com.icure.cardinal.sdk.model.base.CodeStub
 import com.icure.cardinal.sdk.model.base.HasEndOfLife
+import com.icure.cardinal.sdk.model.base.HasMedicalLocation
 import com.icure.cardinal.sdk.model.base.ICureDocument
 import com.icure.cardinal.sdk.model.base.ReportVersion
 import com.icure.cardinal.sdk.model.base.StoredDocument
@@ -122,7 +123,7 @@ data class DocumentTemplate(
 	 * The medical specialty associated with this template.
 	 */
 	public val specialty: CodeStub? = null,
-) : StoredDocument, ICureDocument<String>, HasEndOfLife {
+) : StoredDocument, ICureDocument<String>, HasMedicalLocation, HasEndOfLife {
 	// region DocumentTemplate-DocumentTemplate
 
 	// endregion

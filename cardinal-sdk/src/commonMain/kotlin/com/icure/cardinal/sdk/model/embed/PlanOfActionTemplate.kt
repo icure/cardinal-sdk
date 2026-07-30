@@ -4,6 +4,7 @@ package com.icure.cardinal.sdk.model.embed
 
 import com.icure.cardinal.sdk.model.base.CodeStub
 import com.icure.cardinal.sdk.model.base.HasEndOfLife
+import com.icure.cardinal.sdk.model.base.HasMedicalLocation
 import com.icure.cardinal.sdk.model.base.ICureDocument
 import com.icure.cardinal.sdk.model.base.Named
 import com.icure.cardinal.sdk.utils.DefaultValue
@@ -83,7 +84,7 @@ data class PlanOfActionTemplate(
 	 */
 	@param:DefaultValue("emptyList()")
 	public val forms: List<FormSkeleton> = emptyList(),
-) : ICureDocument<String>, Named, HasEndOfLife {
+) : ICureDocument<String>, HasMedicalLocation, Named, HasEndOfLife {
 	// region PlanOfActionTemplate-PlanOfActionTemplate
 
 	// endregion

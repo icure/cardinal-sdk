@@ -57,6 +57,10 @@ interface JsonPatcher {
 	 */
 	fun patchForm(decryptedJson: JsonElement): JsonElement = decryptedJson
 	/**
+	 * Patches the decrypted json of a RelatedPerson
+	 */
+	fun patchRelatedPerson(decryptedJson: JsonElement): JsonElement = decryptedJson
+	/**
 	 * Patches the decrypted json of a Receipt
 	 */
 	fun patchReceipt(decryptedJson: JsonElement): JsonElement = decryptedJson

@@ -25,6 +25,7 @@ import com.icure.cardinal.sdk.api.MessageApi
 import com.icure.cardinal.sdk.api.PatientApi
 import com.icure.cardinal.sdk.api.PlaceApi
 import com.icure.cardinal.sdk.api.ReceiptApi
+import com.icure.cardinal.sdk.api.RelatedPersonApi
 import com.icure.cardinal.sdk.api.RecoveryApi
 import com.icure.cardinal.sdk.api.RoleApi
 import com.icure.cardinal.sdk.api.SystemApi
@@ -61,6 +62,7 @@ import com.icure.cardinal.sdk.api.impl.initInvoiceApi
 import com.icure.cardinal.sdk.api.impl.initMessageApi
 import com.icure.cardinal.sdk.api.impl.initPatientApi
 import com.icure.cardinal.sdk.api.impl.initReceiptApi
+import com.icure.cardinal.sdk.api.impl.initRelatedPersonApi
 import com.icure.cardinal.sdk.api.impl.initTopicApi
 import com.icure.cardinal.sdk.api.raw.RawAnonymousApi
 import com.icure.cardinal.sdk.api.raw.RawAnonymousAuthApi
@@ -94,6 +96,7 @@ import com.icure.cardinal.sdk.api.raw.impl.RawMessageApiImpl
 import com.icure.cardinal.sdk.api.raw.impl.RawPatientApiImpl
 import com.icure.cardinal.sdk.api.raw.impl.RawPlaceApiImpl
 import com.icure.cardinal.sdk.api.raw.impl.RawReceiptApiImpl
+import com.icure.cardinal.sdk.api.raw.impl.RawRelatedPersonApiImpl
 import com.icure.cardinal.sdk.api.raw.impl.RawRecoveryDataApiImpl
 import com.icure.cardinal.sdk.api.raw.impl.RawRoleApiImpl
 import com.icure.cardinal.sdk.api.raw.impl.RawSecureDelegationKeyMapApiImpl
@@ -973,6 +976,21 @@ internal class CardinalSdkImpl(
 	override val receipt: ReceiptApi by lazy {
 		initReceiptApi(
 			rawReceiptApi,
+			config
+		)
+	}
+
+	private val rawRelatedPersonApi by lazy {
+		RawRelatedPersonApiImpl(
+			apiUrl,
+			authProvider,
+			config.rawApiConfig,
+		)
+	}
+
+	override val relatedPerson: RelatedPersonApi by lazy {
+		initRelatedPersonApi(
+			rawRelatedPersonApi,
 			config
 		)
 	}

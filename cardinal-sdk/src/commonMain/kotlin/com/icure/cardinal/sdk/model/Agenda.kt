@@ -4,6 +4,7 @@ package com.icure.cardinal.sdk.model
 
 import com.icure.cardinal.sdk.model.base.CodeStub
 import com.icure.cardinal.sdk.model.base.HasEndOfLife
+import com.icure.cardinal.sdk.model.base.HasMedicalLocation
 import com.icure.cardinal.sdk.model.base.ICureDocument
 import com.icure.cardinal.sdk.model.base.StoredDocument
 import com.icure.cardinal.sdk.model.embed.AgendaSlottingAlgorithm
@@ -117,7 +118,7 @@ data class Agenda(
 	 */
 	@param:DefaultValue("emptyList()")
 	public val schedules: List<ResourceGroupAllocationSchedule> = emptyList(),
-) : StoredDocument, ICureDocument<String>, HasEndOfLife {
+) : StoredDocument, ICureDocument<String>, HasMedicalLocation, HasEndOfLife {
 	// region Agenda-Agenda
 
 	// endregion
