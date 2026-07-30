@@ -4,6 +4,7 @@ import {randomUuid} from '../../utils/Id.mjs';
 import {CodeStub} from '../base/CodeStub.mjs';
 import {HasEndOfLife} from '../base/HasEndOfLife.mjs';
 import {HasIdentifier} from '../base/HasIdentifier.mjs';
+import {HasMedicalLocation} from '../base/HasMedicalLocation.mjs';
 import {ICureDocument} from '../base/ICureDocument.mjs';
 import {Identifier} from '../base/Identifier.mjs';
 import {LinkQualification} from '../base/LinkQualification.mjs';
@@ -15,7 +16,7 @@ import {Encryptable} from './Encryptable.mjs';
 import {SecurityMetadata} from './SecurityMetadata.mjs';
 
 
-export interface Service extends Encryptable, ICureDocument<string>, HasEndOfLife, HasIdentifier {
+export interface Service extends Encryptable, ICureDocument<string>, HasMedicalLocation, HasEndOfLife, HasIdentifier {
 
 	/**
 	 *

@@ -4,6 +4,7 @@ package com.icure.cardinal.sdk.model
 
 import com.icure.cardinal.sdk.model.base.CodeStub
 import com.icure.cardinal.sdk.model.base.HasEndOfLife
+import com.icure.cardinal.sdk.model.base.HasMedicalLocation
 import com.icure.cardinal.sdk.model.base.ICureDocument
 import com.icure.cardinal.sdk.model.base.StoredDocument
 import com.icure.cardinal.sdk.utils.DefaultValue
@@ -70,7 +71,7 @@ data class ClassificationTemplate(
 	 * A human-readable label for this classification template.
 	 */
 	public val label: String,
-) : StoredDocument, ICureDocument<String>, HasEndOfLife {
+) : StoredDocument, ICureDocument<String>, HasMedicalLocation, HasEndOfLife {
 	// region ClassificationTemplate-ClassificationTemplate
 
 	// endregion

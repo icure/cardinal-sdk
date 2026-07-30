@@ -790,6 +790,40 @@ object FilterOptionsCatalog {
 				targetFilter = "PatientByDataOwnerTagFilter",
 			),
 		),
+		"RelatedPerson" to listOf(
+			FilterOptionGroup(
+				name = "allRelatedPersons",
+				factoryMethods = listOf(
+					"allRelatedPersonsForDataOwner",
+					"allRelatedPersonsForDataOwnerInGroup",
+					"allRelatedPersonsForSelf",
+				),
+				targetFilter = "RelatedPersonByDataOwnerNameFilter",
+			),
+			FilterOptionGroup(
+				name = "byIdentifiers",
+				factoryMethods = listOf(
+					"byIdentifiersForDataOwner",
+					"byIdentifiersForDataOwnerInGroup",
+					"byIdentifiersForSelf",
+				),
+				targetFilter = "RelatedPersonByDataOwnerIdentifiersFilter",
+			),
+			FilterOptionGroup(
+				name = "byName",
+				factoryMethods = listOf(
+					"byNameForDataOwner",
+					"byNameForDataOwnerInGroup",
+					"byNameForSelf",
+				),
+				targetFilter = "RelatedPersonByDataOwnerNameFilter",
+			),
+			FilterOptionGroup(
+				name = "byIds",
+				factoryMethods = listOf("byIds"),
+				targetFilter = "RelatedPersonByIdsFilter",
+			),
+		),
 		"Service" to listOf(
 			FilterOptionGroup(
 				name = "allServices",

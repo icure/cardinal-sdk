@@ -5,6 +5,7 @@ package com.icure.cardinal.sdk.model
 import com.icure.cardinal.sdk.model.base.CodeStub
 import com.icure.cardinal.sdk.model.base.CryptoActor
 import com.icure.cardinal.sdk.model.base.DataOwner
+import com.icure.cardinal.sdk.model.base.HasMedicalLocation
 import com.icure.cardinal.sdk.model.base.ICureDocument
 import com.icure.cardinal.sdk.model.base.Identifier
 import com.icure.cardinal.sdk.model.base.Named
@@ -138,7 +139,7 @@ data class Device(
 	 * Properties specific to the crypto actor role of this device.
 	 */
 	override val cryptoActorProperties: Set<DecryptedPropertyStub> = emptySet(),
-) : StoredDocument, ICureDocument<String>, Named, CryptoActor, DataOwner {
+) : StoredDocument, ICureDocument<String>, HasMedicalLocation, Named, CryptoActor, DataOwner {
 	// region Device-Device
 	companion object {
 		const val KRAKEN_QUALIFIED_NAME = "org.taktik.icure.entities.Device"

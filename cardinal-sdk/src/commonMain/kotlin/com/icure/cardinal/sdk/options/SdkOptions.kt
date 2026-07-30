@@ -429,6 +429,13 @@ data class EncryptedFieldsConfiguration(
 	val receipt: Set<String> = setOf(
 		"references"
 	),
+	val relatedPerson: Set<String> = setOf(
+		"created",
+		"modified",
+		"companyName",
+		"languages",
+		"civility"
+	),
 	val classification: Set<String> = setOf(
 		"label"
 	),

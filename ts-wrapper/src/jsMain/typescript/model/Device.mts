@@ -5,6 +5,7 @@ import {DecryptedPropertyStub} from './PropertyStub.mjs';
 import {CodeStub} from './base/CodeStub.mjs';
 import {CryptoActor} from './base/CryptoActor.mjs';
 import {DataOwner} from './base/DataOwner.mjs';
+import {HasMedicalLocation} from './base/HasMedicalLocation.mjs';
 import {ICureDocument} from './base/ICureDocument.mjs';
 import {Identifier} from './base/Identifier.mjs';
 import {Named} from './base/Named.mjs';
@@ -22,7 +23,7 @@ import {SpkiHexString} from './specializations/SpkiHexString.mjs';
  *  A device can act as a data owner and crypto actor for secure data exchange.
  *  /
  */
-export class Device implements StoredDocument, ICureDocument<string>, Named, CryptoActor, DataOwner {
+export class Device implements StoredDocument, ICureDocument<string>, HasMedicalLocation, Named, CryptoActor, DataOwner {
 
 	/**
 	 *

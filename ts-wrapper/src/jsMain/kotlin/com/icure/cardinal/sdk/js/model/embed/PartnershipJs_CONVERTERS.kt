@@ -7,6 +7,7 @@ import com.icure.cardinal.sdk.js.model.specializations.base64String_fromJs
 import com.icure.cardinal.sdk.js.model.specializations.base64String_toJs
 import com.icure.cardinal.sdk.model.embed.DecryptedPartnership
 import com.icure.cardinal.sdk.model.embed.EncryptedPartnership
+import com.icure.cardinal.sdk.model.embed.PartnerType
 import com.icure.cardinal.sdk.model.embed.Partnership
 import com.icure.cardinal.sdk.model.embed.PartnershipStatus
 import com.icure.cardinal.sdk.model.embed.PartnershipType
@@ -27,6 +28,11 @@ public fun partnership_toJs(obj: DecryptedPartnership): DecryptedPartnershipJs {
 	val partnerId = nullToUndefined(
 		obj.partnerId
 	)
+	val partnerType = nullToUndefined(
+		obj.partnerType?.let { nonNull1 ->
+			nonNull1.name
+		}
+	)
 	val encryptedSelf = nullToUndefined(
 		obj.encryptedSelf?.let { nonNull1 ->
 			base64String_toJs(nonNull1)
@@ -36,6 +42,7 @@ public fun partnership_toJs(obj: DecryptedPartnership): DecryptedPartnershipJs {
 		"type:type," +
 		"status:status," +
 		"partnerId:partnerId," +
+		"partnerType:partnerType," +
 		"encryptedSelf:encryptedSelf" +
 	"}"))
 }
@@ -48,6 +55,9 @@ public fun partnership_fromJs(obj: DecryptedPartnershipJs): DecryptedPartnership
 		PartnershipStatus.valueOf(nonNull1)
 	}
 	val partnerId = undefinedToNull(obj.partnerId)
+	val partnerType = obj.partnerType?.let { nonNull1 ->
+		PartnerType.valueOf(nonNull1)
+	}
 	val encryptedSelf = obj.encryptedSelf?.let { nonNull1 ->
 		base64String_fromJs(nonNull1)
 	}
@@ -55,6 +65,7 @@ public fun partnership_fromJs(obj: DecryptedPartnershipJs): DecryptedPartnership
 		type = type,
 		status = status,
 		partnerId = partnerId,
+		partnerType = partnerType,
 		encryptedSelf = encryptedSelf,
 	)
 }
@@ -74,6 +85,11 @@ public fun partnership_toJs(obj: EncryptedPartnership): EncryptedPartnershipJs {
 	val partnerId = nullToUndefined(
 		obj.partnerId
 	)
+	val partnerType = nullToUndefined(
+		obj.partnerType?.let { nonNull1 ->
+			nonNull1.name
+		}
+	)
 	val encryptedSelf = nullToUndefined(
 		obj.encryptedSelf?.let { nonNull1 ->
 			base64String_toJs(nonNull1)
@@ -83,6 +99,7 @@ public fun partnership_toJs(obj: EncryptedPartnership): EncryptedPartnershipJs {
 		"type:type," +
 		"status:status," +
 		"partnerId:partnerId," +
+		"partnerType:partnerType," +
 		"encryptedSelf:encryptedSelf" +
 	"}"))
 }
@@ -95,6 +112,9 @@ public fun partnership_fromJs(obj: EncryptedPartnershipJs): EncryptedPartnership
 		PartnershipStatus.valueOf(nonNull1)
 	}
 	val partnerId = undefinedToNull(obj.partnerId)
+	val partnerType = obj.partnerType?.let { nonNull1 ->
+		PartnerType.valueOf(nonNull1)
+	}
 	val encryptedSelf = obj.encryptedSelf?.let { nonNull1 ->
 		base64String_fromJs(nonNull1)
 	}
@@ -102,6 +122,7 @@ public fun partnership_fromJs(obj: EncryptedPartnershipJs): EncryptedPartnership
 		type = type,
 		status = status,
 		partnerId = partnerId,
+		partnerType = partnerType,
 		encryptedSelf = encryptedSelf,
 	)
 }

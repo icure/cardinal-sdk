@@ -4,6 +4,7 @@ import {randomUuid} from '../utils/Id.mjs';
 import {DecryptedPropertyStub} from './PropertyStub.mjs';
 import {CodeStub} from './base/CodeStub.mjs';
 import {HasEndOfLife} from './base/HasEndOfLife.mjs';
+import {HasMedicalLocation} from './base/HasMedicalLocation.mjs';
 import {ICureDocument} from './base/ICureDocument.mjs';
 import {StoredDocument} from './base/StoredDocument.mjs';
 import {AgendaSlottingAlgorithm} from './embed/AgendaSlottingAlgorithm.mjs';
@@ -19,7 +20,7 @@ import {UserAccessLevel} from './embed/UserAccessLevel.mjs';
  *   An agenda can specify a schedule for its resources and allows managing availabilities for
  *  booking.
  */
-export class Agenda implements StoredDocument, ICureDocument<string>, HasEndOfLife {
+export class Agenda implements StoredDocument, ICureDocument<string>, HasMedicalLocation, HasEndOfLife {
 
 	/**
 	 *

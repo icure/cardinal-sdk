@@ -4,6 +4,7 @@ import {randomUuid} from '../utils/Id.mjs';
 import {DecryptedPropertyStub, EncryptedPropertyStub, PropertyStub} from './PropertyStub.mjs';
 import {CodeStub} from './base/CodeStub.mjs';
 import {HasEncryptionMetadata} from './base/HasEncryptionMetadata.mjs';
+import {HasMedicalLocation} from './base/HasMedicalLocation.mjs';
 import {ICureDocument} from './base/ICureDocument.mjs';
 import {StoredDocument} from './base/StoredDocument.mjs';
 import {Delegation} from './embed/Delegation.mjs';
@@ -20,7 +21,7 @@ import {Base64String} from './specializations/Base64String.mjs';
  *  eHealth box messages, eFact batches, and other types of healthcare-related communications.
  *  /
  */
-export interface Message extends StoredDocument, ICureDocument<string>, HasEncryptionMetadata, Encryptable {
+export interface Message extends StoredDocument, ICureDocument<string>, HasMedicalLocation, HasEncryptionMetadata, Encryptable {
 
 	/**
 	 *

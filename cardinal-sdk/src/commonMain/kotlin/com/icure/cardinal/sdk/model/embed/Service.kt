@@ -5,6 +5,7 @@ package com.icure.cardinal.sdk.model.embed
 import com.icure.cardinal.sdk.model.base.CodeStub
 import com.icure.cardinal.sdk.model.base.HasEndOfLife
 import com.icure.cardinal.sdk.model.base.HasIdentifier
+import com.icure.cardinal.sdk.model.base.HasMedicalLocation
 import com.icure.cardinal.sdk.model.base.ICureDocument
 import com.icure.cardinal.sdk.model.base.Identifier
 import com.icure.cardinal.sdk.model.base.LinkQualification
@@ -18,7 +19,12 @@ import kotlin.collections.Map
 import kotlin.collections.Set
 import kotlin.Int
 
-sealed interface Service : Encryptable, ICureDocument<String>, HasEndOfLife, HasIdentifier {
+sealed interface Service :
+	Encryptable,
+	ICureDocument<String>,
+	HasMedicalLocation,
+	HasEndOfLife,
+	HasIdentifier {
 	/**
 	 * The Id of the Service. We encourage using either a v4 UUID or a HL7 Id.
 	 */

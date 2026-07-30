@@ -4,6 +4,7 @@ import {randomUuid} from '../utils/Id.mjs';
 import {CodeStub} from './base/CodeStub.mjs';
 import {HasEncryptionMetadata} from './base/HasEncryptionMetadata.mjs';
 import {HasIdentifier} from './base/HasIdentifier.mjs';
+import {HasMedicalLocation} from './base/HasMedicalLocation.mjs';
 import {ICureDocument} from './base/ICureDocument.mjs';
 import {Identifier} from './base/Identifier.mjs';
 import {StoredDocument} from './base/StoredDocument.mjs';
@@ -24,7 +25,7 @@ import {Base64String} from './specializations/Base64String.mjs';
  *  services rendered. It is serialized in JSON and saved in the underlying iCure CouchDB database.
  *  /
  */
-export interface Invoice extends StoredDocument, ICureDocument<string>, HasEncryptionMetadata, Encryptable, HasIdentifier {
+export interface Invoice extends StoredDocument, ICureDocument<string>, HasMedicalLocation, HasEncryptionMetadata, Encryptable, HasIdentifier {
 
 	/**
 	 *

@@ -20,6 +20,7 @@ import com.icure.cardinal.sdk.model.MaintenanceTask
 import com.icure.cardinal.sdk.model.MedicalLocation
 import com.icure.cardinal.sdk.model.Message
 import com.icure.cardinal.sdk.model.Patient
+import com.icure.cardinal.sdk.model.RelatedPerson
 import com.icure.cardinal.sdk.model.Tarification
 import com.icure.cardinal.sdk.model.TimeTable
 import com.icure.cardinal.sdk.model.Topic
@@ -137,6 +138,9 @@ import com.icure.cardinal.sdk.model.filter.patient.PatientByHcPartyNameFilter
 import com.icure.cardinal.sdk.model.filter.patient.PatientByIdsFilter
 import com.icure.cardinal.sdk.model.filter.pricing.AllPricingFilter
 import com.icure.cardinal.sdk.model.filter.pricing.PricingByRegionTypesLanguageLabelFilter
+import com.icure.cardinal.sdk.model.filter.relatedperson.RelatedPersonByDataOwnerIdentifiersFilter
+import com.icure.cardinal.sdk.model.filter.relatedperson.RelatedPersonByDataOwnerNameFilter
+import com.icure.cardinal.sdk.model.filter.relatedperson.RelatedPersonByIdsFilter
 import com.icure.cardinal.sdk.model.filter.service.ServiceByAssociationIdFilter
 import com.icure.cardinal.sdk.model.filter.service.ServiceByDataOwnerPatientDateFilter
 import com.icure.cardinal.sdk.model.filter.service.ServiceByHcPartyCodePrefixFilter
@@ -206,6 +210,7 @@ internal object AnyAbstractFilterSerializer :
 					?: MedicalLocationAbstractFilterSerializer.getSerializerBySerialName(serialName)
 					?: MessageAbstractFilterSerializer.getSerializerBySerialName(serialName)
 					?: PatientAbstractFilterSerializer.getSerializerBySerialName(serialName)
+					?: RelatedPersonAbstractFilterSerializer.getSerializerBySerialName(serialName)
 					?: ServiceAbstractFilterSerializer.getSerializerBySerialName(serialName)
 					?: TarificationAbstractFilterSerializer.getSerializerBySerialName(serialName)
 					?: TimeTableAbstractFilterSerializer.getSerializerBySerialName(serialName)
@@ -297,6 +302,10 @@ internal object AnyAbstractFilterSerializer :
 					?: PatientAbstractFilterSerializer.getSerializerByClass(
 						kclass as
 							KClass<out AbstractFilter<Patient>>,
+					)
+					?: RelatedPersonAbstractFilterSerializer.getSerializerByClass(
+						kclass as
+							KClass<out AbstractFilter<RelatedPerson>>,
 					)
 					?: ServiceAbstractFilterSerializer.getSerializerByClass(
 						kclass as
@@ -962,6 +971,36 @@ internal object PatientAbstractFilterSerializer :
 				PatientByHcPartyGenderEducationProfession.serializer()
 			PatientByHcPartyNameFilter::class -> PatientByHcPartyNameFilter.serializer()
 			PatientByIdsFilter::class -> PatientByIdsFilter.serializer()
+			else -> null
+		}
+}
+
+internal object RelatedPersonAbstractFilterSerializer :
+	CustomJsonPolymorphicSerializer<AbstractFilter<RelatedPerson>>(
+		"${'$'}type",
+		"AbstractFilter<RelatedPerson>",
+	) {
+	override fun getSerializerBySerialName(serialName: String): KSerializer<out AbstractFilter<RelatedPerson>>? =
+		when (serialName) {
+			"ComplementFilter" -> ComplementFilterSerializer(this)
+			"IntersectionFilter" -> IntersectionFilterSerializer(this)
+			"UnionFilter" -> UnionFilterSerializer(this)
+			"RelatedPersonByDataOwnerIdentifiersFilter" ->
+				RelatedPersonByDataOwnerIdentifiersFilter.serializer()
+			"RelatedPersonByDataOwnerNameFilter" -> RelatedPersonByDataOwnerNameFilter.serializer()
+			"RelatedPersonByIdsFilter" -> RelatedPersonByIdsFilter.serializer()
+			else -> null
+		}
+
+	override fun getSerializerByClass(kclass: KClass<out AbstractFilter<RelatedPerson>>): KSerializer<out AbstractFilter<RelatedPerson>>? =
+		when (kclass) {
+			ComplementFilter::class -> ComplementFilterSerializer(this)
+			IntersectionFilter::class -> IntersectionFilterSerializer(this)
+			UnionFilter::class -> UnionFilterSerializer(this)
+			RelatedPersonByDataOwnerIdentifiersFilter::class ->
+				RelatedPersonByDataOwnerIdentifiersFilter.serializer()
+			RelatedPersonByDataOwnerNameFilter::class -> RelatedPersonByDataOwnerNameFilter.serializer()
+			RelatedPersonByIdsFilter::class -> RelatedPersonByIdsFilter.serializer()
 			else -> null
 		}
 }
