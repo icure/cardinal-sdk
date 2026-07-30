@@ -31,5 +31,6 @@ data class RelatedPersonByDataOwnerNameFilter(
 	public val dataOwnerId: String? = null,
 ) : AbstractFilter<RelatedPerson> {
 	// region RelatedPersonByDataOwnerNameFilter-RelatedPersonByDataOwnerNameFilter
+
 	// endregion
 }

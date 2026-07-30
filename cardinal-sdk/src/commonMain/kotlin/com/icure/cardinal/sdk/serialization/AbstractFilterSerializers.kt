@@ -81,6 +81,7 @@ import com.icure.cardinal.sdk.model.filter.group.AllGroupsFilter
 import com.icure.cardinal.sdk.model.filter.group.GroupBySuperGroupFilter
 import com.icure.cardinal.sdk.model.filter.group.GroupWithContentFilter
 import com.icure.cardinal.sdk.model.filter.hcparty.AllHealthcarePartiesFilter
+import com.icure.cardinal.sdk.model.filter.hcparty.HealthcarePartyByDataOwnerGroupIdFilter
 import com.icure.cardinal.sdk.model.filter.hcparty.HealthcarePartyByIdentifiersFilter
 import com.icure.cardinal.sdk.model.filter.hcparty.HealthcarePartyByIdsFilter
 import com.icure.cardinal.sdk.model.filter.hcparty.HealthcarePartyByNameFilter
@@ -728,6 +729,7 @@ internal object HealthcarePartyAbstractFilterSerializer :
 			"IntersectionFilter" -> IntersectionFilterSerializer(this)
 			"UnionFilter" -> UnionFilterSerializer(this)
 			"AllHealthcarePartiesFilter" -> AllHealthcarePartiesFilter.serializer()
+			"HealthcarePartyByDataOwnerGroupIdFilter" -> HealthcarePartyByDataOwnerGroupIdFilter.serializer()
 			"HealthcarePartyByIdentifiersFilter" -> HealthcarePartyByIdentifiersFilter.serializer()
 			"HealthcarePartyByIdsFilter" -> HealthcarePartyByIdsFilter.serializer()
 			"HealthcarePartyByNameFilter" -> HealthcarePartyByNameFilter.serializer()
@@ -748,6 +750,8 @@ internal object HealthcarePartyAbstractFilterSerializer :
 			IntersectionFilter::class -> IntersectionFilterSerializer(this)
 			UnionFilter::class -> UnionFilterSerializer(this)
 			AllHealthcarePartiesFilter::class -> AllHealthcarePartiesFilter.serializer()
+			HealthcarePartyByDataOwnerGroupIdFilter::class ->
+				HealthcarePartyByDataOwnerGroupIdFilter.serializer()
 			HealthcarePartyByIdentifiersFilter::class -> HealthcarePartyByIdentifiersFilter.serializer()
 			HealthcarePartyByIdsFilter::class -> HealthcarePartyByIdsFilter.serializer()
 			HealthcarePartyByNameFilter::class -> HealthcarePartyByNameFilter.serializer()
