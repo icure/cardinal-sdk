@@ -18,6 +18,7 @@ import {DataOwnerApi} from "../api/DataOwnerApi.mjs";
 import {UserApi} from "../api/UserApi.mjs";
 import {CardinalMaintenanceTaskApi} from "../api/CardinalMaintenanceTaskApi.mjs";
 import {RecoveryApi} from "../api/RecoveryApi.mjs";
+import {RelatedPersonApi} from "../api/RelatedPersonApi.mjs";
 import {
   AuthenticationMethod,
   AuthenticationProcessTelecomType,
@@ -46,6 +47,7 @@ import {MaintenanceTaskBasicApi} from "../api/MaintenanceTaskBasicApi.mjs";
 import {MessageBasicApi} from "../api/MessageBasicApi.mjs";
 import {PatientBasicApi} from "../api/PatientBasicApi.mjs";
 import {ReceiptBasicApi} from "../api/ReceiptBasicApi.mjs";
+import {RelatedPersonBasicApi} from "../api/RelatedPersonBasicApi.mjs";
 import {TopicBasicApi} from "../api/TopicBasicApi.mjs";
 import {AgendaApi} from "../api/AgendaApi.mjs";
 import {CaptchaOptions} from "../auth/CaptchaOptions.mjs";
@@ -86,6 +88,7 @@ export interface CardinalApis {
   readonly cardinalMaintenanceTask: CardinalMaintenanceTaskApi
   readonly dataOwner: DataOwnerApi
   readonly calendarItemType: CalendarItemTypeApi
+  readonly relatedPerson: RelatedPersonApi
 }
 
 /**
@@ -154,6 +157,7 @@ export interface CardinalBaseApis {
   readonly receipt: ReceiptBasicApi
   readonly topic: TopicBasicApi
   readonly calendarItemType: CalendarItemTypeApi
+  readonly relatedPerson: RelatedPersonBasicApi
 }
 
 /**

@@ -3,6 +3,7 @@ import {expectArray, expectMap, expectNumber, expectObject, expectString, expect
 import {randomUuid} from '../utils/Id.mjs';
 import {CodeStub} from './base/CodeStub.mjs';
 import {HasEncryptionMetadata} from './base/HasEncryptionMetadata.mjs';
+import {HasMedicalLocation} from './base/HasMedicalLocation.mjs';
 import {ICureDocument} from './base/ICureDocument.mjs';
 import {StoredDocument} from './base/StoredDocument.mjs';
 import {DataAttachment} from './embed/DataAttachment.mjs';
@@ -23,7 +24,7 @@ import {Base64String} from './specializations/Base64String.mjs';
  *  to invoices or other documents.
  *  /
  */
-export interface Receipt extends StoredDocument, ICureDocument<string>, HasEncryptionMetadata, Encryptable {
+export interface Receipt extends StoredDocument, ICureDocument<string>, HasMedicalLocation, HasEncryptionMetadata, Encryptable {
 
 	/**
 	 *

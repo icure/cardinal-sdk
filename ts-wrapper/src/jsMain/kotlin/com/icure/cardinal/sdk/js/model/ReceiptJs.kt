@@ -5,6 +5,7 @@ package com.icure.cardinal.sdk.js.model
 
 import com.icure.cardinal.sdk.js.model.base.CodeStubJs
 import com.icure.cardinal.sdk.js.model.base.HasEncryptionMetadataJs
+import com.icure.cardinal.sdk.js.model.base.HasMedicalLocationJs
 import com.icure.cardinal.sdk.js.model.base.ICureDocumentJs
 import com.icure.cardinal.sdk.js.model.base.StoredDocumentJs
 import com.icure.cardinal.sdk.js.model.embed.DataAttachmentJs
@@ -22,7 +23,7 @@ import kotlin.js.JsQualifier
 
 @JsName("Receipt")
 public sealed external interface ReceiptJs : StoredDocumentJs, ICureDocumentJs<String>,
-		HasEncryptionMetadataJs, EncryptableJs {
+		HasMedicalLocationJs, HasEncryptionMetadataJs, EncryptableJs {
 	public val attachmentIds: Record<String, out String>
 
 	public val attachmentInfos: Record<String, out DataAttachmentJs>

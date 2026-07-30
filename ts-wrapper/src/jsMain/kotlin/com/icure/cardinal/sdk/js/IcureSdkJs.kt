@@ -46,6 +46,8 @@ import com.icure.cardinal.sdk.js.api.PlaceApiJs
 import com.icure.cardinal.sdk.js.api.ReceiptApiJs
 import com.icure.cardinal.sdk.js.api.ReceiptBasicApiJs
 import com.icure.cardinal.sdk.js.api.RecoveryApiJs
+import com.icure.cardinal.sdk.js.api.RelatedPersonApiJs
+import com.icure.cardinal.sdk.js.api.RelatedPersonBasicApiJs
 import com.icure.cardinal.sdk.js.api.RoleApiJs
 import com.icure.cardinal.sdk.js.api.SystemApiJs
 import com.icure.cardinal.sdk.js.api.TopicApiJs
@@ -89,6 +91,8 @@ import com.icure.cardinal.sdk.js.api.impl.PlaceApiImplJs
 import com.icure.cardinal.sdk.js.api.impl.ReceiptApiImplJs
 import com.icure.cardinal.sdk.js.api.impl.ReceiptBasicApiImplJs
 import com.icure.cardinal.sdk.js.api.impl.RecoveryApiImplJs
+import com.icure.cardinal.sdk.js.api.impl.RelatedPersonApiImplJs
+import com.icure.cardinal.sdk.js.api.impl.RelatedPersonBasicApiImplJs
 import com.icure.cardinal.sdk.js.api.impl.RoleApiImplJs
 import com.icure.cardinal.sdk.js.api.impl.SystemApiImplJs
 import com.icure.cardinal.sdk.js.api.impl.TopicApiImplJs
@@ -270,6 +274,7 @@ internal class CardinalApisJsImpl(
 	override val cardinalMaintenanceTask: CardinalMaintenanceTaskApiJs by lazy { CardinalMaintenanceTaskApiImplJs(sdk.cardinalMaintenanceTask) }
 	override val dataOwner: DataOwnerApiJs by lazy { DataOwnerApiImplJs(sdk.dataOwner) }
 	override val calendarItemType: CalendarItemTypeApiJs by lazy { CalendarItemTypeApiImplJs(sdk.calendarItemType) }
+	override val relatedPerson: RelatedPersonApiJs by lazy { RelatedPersonApiImplJs(sdk.relatedPerson) }
 }
 
 internal class CardinalSdkJsImpl(
@@ -316,6 +321,7 @@ internal class CardinalBaseApisJsImpl(
 	override val receipt: ReceiptBasicApiJs by lazy { ReceiptBasicApiImplJs(sdk.receipt) }
 	override val topic: TopicBasicApiJs by lazy { TopicBasicApiImplJs(sdk.topic) }
 	override val calendarItemType: CalendarItemTypeApiJs by lazy { CalendarItemTypeApiImplJs(sdk.calendarItemType) }
+	override val relatedPerson: RelatedPersonBasicApiJs by lazy { RelatedPersonBasicApiImplJs(sdk.relatedPerson) }
 }
 
 internal class CardinalBaseSdkJsImpl(

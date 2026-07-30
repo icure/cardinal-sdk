@@ -3,6 +3,7 @@ import {expectArray, expectMap, expectNumber, expectObject, expectString, extrac
 import {randomUuid} from '../utils/Id.mjs';
 import {CodeStub} from './base/CodeStub.mjs';
 import {HasEncryptionMetadata} from './base/HasEncryptionMetadata.mjs';
+import {HasMedicalLocation} from './base/HasMedicalLocation.mjs';
 import {ICureDocument} from './base/ICureDocument.mjs';
 import {StoredDocument} from './base/StoredDocument.mjs';
 import {Delegation} from './embed/Delegation.mjs';
@@ -17,7 +18,7 @@ import {Base64String} from './specializations/Base64String.mjs';
  *  system.
  *  /
  */
-export interface AccessLog extends StoredDocument, ICureDocument<string>, HasEncryptionMetadata, Encryptable {
+export interface AccessLog extends StoredDocument, ICureDocument<string>, HasMedicalLocation, HasEncryptionMetadata, Encryptable {
 
 	/**
 	 *

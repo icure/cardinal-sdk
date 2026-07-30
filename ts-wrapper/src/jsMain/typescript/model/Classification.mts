@@ -4,6 +4,7 @@ import {randomUuid} from '../utils/Id.mjs';
 import {CodeStub} from './base/CodeStub.mjs';
 import {HasEncryptionMetadata} from './base/HasEncryptionMetadata.mjs';
 import {HasEndOfLife} from './base/HasEndOfLife.mjs';
+import {HasMedicalLocation} from './base/HasMedicalLocation.mjs';
 import {ICureDocument} from './base/ICureDocument.mjs';
 import {StoredDocument} from './base/StoredDocument.mjs';
 import {Delegation} from './embed/Delegation.mjs';
@@ -19,7 +20,7 @@ import {Base64String} from './specializations/Base64String.mjs';
  *  through parent-child relationships and linked to classification templates.
  *  /
  */
-export interface Classification extends StoredDocument, ICureDocument<string>, HasEncryptionMetadata, Encryptable, HasEndOfLife {
+export interface Classification extends StoredDocument, ICureDocument<string>, HasMedicalLocation, HasEncryptionMetadata, Encryptable, HasEndOfLife {
 
 	/**
 	 *
