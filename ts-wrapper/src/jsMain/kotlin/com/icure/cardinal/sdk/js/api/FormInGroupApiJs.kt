@@ -14,6 +14,7 @@ import com.icure.cardinal.sdk.js.model.FormTemplateJs
 import com.icure.cardinal.sdk.js.model.GroupScopedJs
 import com.icure.cardinal.sdk.js.model.PatientJs
 import com.icure.cardinal.sdk.js.model.StoredDocumentIdentifierJs
+import com.icure.cardinal.sdk.js.synthetic.mapasobjectarray.EntityReferenceInGroupToFormDelegateOptionsMapObject_delegate_delegateOptions
 import com.icure.cardinal.sdk.js.synthetic.mapasobjectarray.EntityReferenceInGroupToFormShareOptionsMapObject_delegate_shareOptions
 import com.icure.cardinal.sdk.js.utils.pagination.PaginatedListIteratorJs
 import kotlin.Array
@@ -34,6 +35,14 @@ public external interface FormInGroupApiJs {
 		entityGroupId: String,
 		base: DecryptedFormJs?,
 		patient: GroupScopedJs<PatientJs>?,
+		options: dynamic,
+	): Promise<GroupScopedJs<DecryptedFormJs>>
+
+	public fun withEncryptionMetadataAndDelegates(
+		entityGroupId: String,
+		base: DecryptedFormJs?,
+		patient: GroupScopedJs<PatientJs>?,
+		delegates: Array<EntityReferenceInGroupToFormDelegateOptionsMapObject_delegate_delegateOptions>,
 		options: dynamic,
 	): Promise<GroupScopedJs<DecryptedFormJs>>
 

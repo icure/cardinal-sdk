@@ -10,10 +10,13 @@ import com.icure.cardinal.sdk.api.HealthElementBasicInGroupApi
 import com.icure.cardinal.sdk.api.HealthElementFlavouredApi
 import com.icure.cardinal.sdk.api.HealthElementFlavouredInGroupApi
 import com.icure.cardinal.sdk.api.HealthElementInGroupApi
+import com.icure.cardinal.sdk.api.impl.keyAsLocalDataOwnerReferences
 import com.icure.cardinal.sdk.api.raw.RawHealthElementApi
 import com.icure.cardinal.sdk.api.raw.successBodyOrNull404
 import com.icure.cardinal.sdk.api.raw.successBodyOrThrowRevisionConflict
+import com.icure.cardinal.sdk.crypto.entities.DelegateOptions
 import com.icure.cardinal.sdk.crypto.entities.EntityWithEncryptionMetadataTypeName
+import com.icure.cardinal.sdk.crypto.entities.HealthElementDelegateOptions
 import com.icure.cardinal.sdk.crypto.entities.HealthElementShareOptions
 import com.icure.cardinal.sdk.crypto.entities.OwningEntityDetails
 import com.icure.cardinal.sdk.crypto.entities.SecretIdUseOption
@@ -37,6 +40,7 @@ import com.icure.cardinal.sdk.model.embed.AccessLevel
 import com.icure.cardinal.sdk.model.embed.DelegationTag
 import com.icure.cardinal.sdk.model.extensions.autoDelegationsFor
 import com.icure.cardinal.sdk.model.extensions.dataOwnerId
+import com.icure.cardinal.sdk.model.extensions.toDefaultDelegateOptions
 import com.icure.cardinal.sdk.model.specializations.HexString
 import com.icure.cardinal.sdk.model.toStoredDocumentIdentifier
 import com.icure.cardinal.sdk.options.ApiConfiguration
@@ -528,13 +532,38 @@ private class HealthElementApiImpl(
 		): GroupScoped<DecryptedHealthElement> =
 			GroupScoped(
 				doWithEncryptionMetadata(
-					entityGroupId,
-					base,
-					patient.entity to patient.groupId,
-					user,
-					delegates,
-					secretId,
-					alternateRootDelegateReference
+					entityGroupId = entityGroupId,
+					base = base,
+					patient = patient.entity to patient.groupId,
+					user = user,
+					delegates = delegates,
+					secretId = secretId,
+					alternateRootDataOwnerReference = alternateRootDelegateReference
+				),
+				entityGroupId
+			)
+
+		override suspend fun withEncryptionMetadataAndDelegates(
+			entityGroupId: String,
+			base: DecryptedHealthElement?,
+			patient: GroupScoped<Patient>,
+			delegates: @JsMapAsObjectArray(
+				keyEntryName = "delegate",
+				valueEntryName = "delegateOptions"
+			) Map<EntityReferenceInGroup, HealthElementDelegateOptions>,
+			user: User?,
+			secretId: SecretIdUseOption,
+			alternateRootDelegateReference: EntityReferenceInGroup?
+		): GroupScoped<DecryptedHealthElement> =
+			GroupScoped(
+				doWithEncryptionMetadataAndDelegates(
+					entityGroupId = entityGroupId,
+					base = base,
+					patient = patient.entity to patient.groupId,
+					user = user,
+					delegates = delegates,
+					secretId = secretId,
+					alternateRootDataOwnerReference = alternateRootDelegateReference
 				),
 				entityGroupId
 			)
@@ -564,13 +593,31 @@ private class HealthElementApiImpl(
 		alternateRootDelegateId: String?
 	): DecryptedHealthElement =
 		doWithEncryptionMetadata(
-			null,
-			base,
-			patient to null,
-			user,
-			delegates.keyAsLocalDataOwnerReferences(),
-			secretId,
-			alternateRootDelegateId?.let { EntityReferenceInGroup(it, null) }
+			entityGroupId = null,
+			base = base,
+			patient = patient to null,
+			user = user,
+			delegates = delegates.keyAsLocalDataOwnerReferences(),
+			secretId = secretId,
+			alternateRootDataOwnerReference = alternateRootDelegateId?.let { EntityReferenceInGroup(it, null) }
+		)
+
+	override suspend fun withEncryptionMetadataAndDelegates(
+		base: DecryptedHealthElement?,
+		patient: Patient,
+		delegates: Map<String, HealthElementDelegateOptions>,
+		user: User?,
+		secretId: SecretIdUseOption,
+		alternateRootDelegateId: String?
+	): DecryptedHealthElement =
+		doWithEncryptionMetadataAndDelegates(
+			entityGroupId = null,
+			base = base,
+			patient = patient to null,
+			user = user,
+			delegates = delegates.keyAsLocalDataOwnerReferences(),
+			secretId = secretId,
+			alternateRootDataOwnerReference = alternateRootDelegateId?.let { EntityReferenceInGroup(it, null) }
 		)
 
 	private suspend fun doWithEncryptionMetadata(
@@ -579,6 +626,25 @@ private class HealthElementApiImpl(
 		patient: Pair<Patient, String?>,
 		user: User?,
 		delegates: @JsMapAsObjectArray(keyEntryName = "delegate", valueEntryName = "accessLevel") Map<EntityReferenceInGroup, AccessLevel>,
+		secretId: SecretIdUseOption,
+		alternateRootDataOwnerReference: EntityReferenceInGroup?,
+	): DecryptedHealthElement =
+		doWithEncryptionMetadataAndDelegates(
+			entityGroupId = entityGroupId,
+			base = base,
+			patient = patient,
+			user = user,
+			delegates = delegates.mapValues { it.value.toDefaultDelegateOptions() },
+			secretId = secretId,
+			alternateRootDataOwnerReference = alternateRootDataOwnerReference,
+		)
+
+	private suspend fun doWithEncryptionMetadataAndDelegates(
+		entityGroupId: String?,
+		base: DecryptedHealthElement?,
+		patient: Pair<Patient, String?>,
+		user: User?,
+		delegates: @JsMapAsObjectArray(keyEntryName = "delegate", valueEntryName = "delegateOptions") Map<EntityReferenceInGroup, DelegateOptions>,
 		secretId: SecretIdUseOption,
 		alternateRootDataOwnerReference: EntityReferenceInGroup?,
 	): DecryptedHealthElement =

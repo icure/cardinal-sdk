@@ -10,6 +10,7 @@ import com.icure.cardinal.sdk.js.model.GroupScopedJs
 import com.icure.cardinal.sdk.js.model.InvoiceJs
 import com.icure.cardinal.sdk.js.model.PatientJs
 import com.icure.cardinal.sdk.js.model.StoredDocumentIdentifierJs
+import com.icure.cardinal.sdk.js.synthetic.mapasobjectarray.EntityReferenceInGroupToInvoiceDelegateOptionsMapObject_delegate_delegateOptions
 import com.icure.cardinal.sdk.js.synthetic.mapasobjectarray.EntityReferenceInGroupToInvoiceShareOptionsMapObject_delegate_shareOptions
 import kotlin.Array
 import kotlin.Boolean
@@ -29,6 +30,14 @@ public external interface InvoiceInGroupApiJs {
 		entityGroupId: String,
 		base: DecryptedInvoiceJs?,
 		patient: GroupScopedJs<PatientJs>?,
+		options: dynamic,
+	): Promise<GroupScopedJs<DecryptedInvoiceJs>>
+
+	public fun withEncryptionMetadataAndDelegates(
+		entityGroupId: String,
+		base: DecryptedInvoiceJs?,
+		patient: GroupScopedJs<PatientJs>?,
+		delegates: Array<EntityReferenceInGroupToInvoiceDelegateOptionsMapObject_delegate_delegateOptions>,
 		options: dynamic,
 	): Promise<GroupScopedJs<DecryptedInvoiceJs>>
 

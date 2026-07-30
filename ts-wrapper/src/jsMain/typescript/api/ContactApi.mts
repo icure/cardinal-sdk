@@ -1,5 +1,6 @@
 // auto-generated file
 import {FilterOptions, PaginatedListIterator, SortableFilterOptions} from '../cardinal-sdk-ts.mjs';
+import {ContactDelegateOptions} from '../crypto/entities/ContactDelegateOptions.mjs';
 import {ContactShareOptions} from '../crypto/entities/ContactShareOptions.mjs';
 import {SecretIdUseOption} from '../crypto/entities/SecretIdUseOption.mjs';
 import {Contact, DecryptedContact, EncryptedContact} from '../model/Contact.mjs';
@@ -93,6 +94,25 @@ export interface ContactApi {
 	 */
 	withEncryptionMetadata(base: DecryptedContact | undefined, patient: Patient,
 			options?: { user?: User | undefined, delegates?: { [ key: string ]: AccessLevel }, secretId?: SecretIdUseOption, alternateRootDelegateId?: string | undefined }): Promise<DecryptedContact>;
+
+	/**
+	 *
+	 *  Creates a new contact with initialized encryption metadata, specifying fine-grained options for each additional data owner that
+	 *  will have access to the entity.
+	 *  @param base a contact with initialized content and uninitialized encryption metadata. The result of this
+	 *  method takes the content from [base] if provided.
+	 *  @param patient the patient linked to the contact.
+	 *  @param user the current user, will be used for the auto-delegations if provided.
+	 *  @param delegates additional data owners that will have access to the newly created entity. You may choose the
+	 *  permissions that the delegates will have on the entity and if they will have access to the secretIds, encryptionKeys, and/or
+	 *  owningEntityIds of the new entity.
+	 *  @param secretId specifies which secret id of [patient] to use for the new contact
+	 *  @return a contact with initialized encryption metadata.
+	 *  @throws IllegalArgumentException if base is not null and has a revision or has encryption metadata.
+	 */
+	withEncryptionMetadataAndDelegates(base: DecryptedContact | undefined, patient: Patient,
+			delegates: { [ key: string ]: ContactDelegateOptions },
+			options?: { user?: User | undefined, secretId?: SecretIdUseOption, alternateRootDelegateId?: string | undefined }): Promise<DecryptedContact>;
 
 	/**
 	 *

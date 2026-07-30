@@ -3,6 +3,7 @@ package com.icure.cardinal.sdk.py.api.PatientApi.inGroup
 
 import com.icure.cardinal.sdk.CardinalApis
 import com.icure.cardinal.sdk.crypto.entities.EntityAccessInformation
+import com.icure.cardinal.sdk.crypto.entities.PatientDelegateOptions
 import com.icure.cardinal.sdk.crypto.entities.PatientShareOptions
 import com.icure.cardinal.sdk.filters.FilterOptions
 import com.icure.cardinal.sdk.filters.SortableFilterOptions
@@ -276,6 +277,58 @@ public fun withEncryptionMetadataAsync(
 				decodedParams.base,
 				decodedParams.user,
 				decodedParams.delegates,
+				decodedParams.alternateRootDelegateReference,
+			)
+		}.toPyStringAsyncCallback(GroupScoped.serializer(DecryptedPatient.serializer()), resultCallback)
+	}
+}.failureToPyStringAsyncCallback(resultCallback)
+
+@Serializable
+private class WithEncryptionMetadataAndDelegatesParams(
+	public val entityGroupId: String,
+	public val base: DecryptedPatient?,
+	@Serializable(MapAsArraySerializer::class)
+	@OptIn(InternalIcureApi::class)
+	public val delegates: Map<EntityReferenceInGroup, PatientDelegateOptions>,
+	public val user: User? = null,
+	public val alternateRootDelegateReference: EntityReferenceInGroup? = null,
+)
+
+@OptIn(InternalIcureApi::class)
+public fun withEncryptionMetadataAndDelegatesBlocking(sdk: CardinalApis, params: String): String =
+		kotlin.runCatching {
+	val decodedParams =
+			fullLanguageInteropJson.decodeFromString<WithEncryptionMetadataAndDelegatesParams>(params)
+	runBlocking {
+		sdk.patient.inGroup.withEncryptionMetadataAndDelegates(
+			decodedParams.entityGroupId,
+			decodedParams.base,
+			decodedParams.delegates,
+			decodedParams.user,
+			decodedParams.alternateRootDelegateReference,
+		)
+	}
+}.toPyString(GroupScoped.serializer(DecryptedPatient.serializer()))
+
+@OptIn(
+	ExperimentalForeignApi::class,
+	InternalIcureApi::class,
+)
+public fun withEncryptionMetadataAndDelegatesAsync(
+	sdk: CardinalApis,
+	params: String,
+	resultCallback: CPointer<CFunction<(CValues<ByteVarOf<Byte>>?,
+			CValues<ByteVarOf<Byte>>?) -> Unit>>,
+): COpaquePointer? = kotlin.runCatching {
+	val decodedParams =
+			fullLanguageInteropJson.decodeFromString<WithEncryptionMetadataAndDelegatesParams>(params)
+	GlobalScope.launch {
+		kotlin.runCatching {
+			sdk.patient.inGroup.withEncryptionMetadataAndDelegates(
+				decodedParams.entityGroupId,
+				decodedParams.base,
+				decodedParams.delegates,
+				decodedParams.user,
 				decodedParams.alternateRootDelegateReference,
 			)
 		}.toPyStringAsyncCallback(GroupScoped.serializer(DecryptedPatient.serializer()), resultCallback)

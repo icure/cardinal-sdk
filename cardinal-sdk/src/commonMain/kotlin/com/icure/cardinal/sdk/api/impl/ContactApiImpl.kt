@@ -15,7 +15,10 @@ import com.icure.cardinal.sdk.api.raw.successBodyOrNull404
 import com.icure.cardinal.sdk.api.raw.successBodyOrThrowRevisionConflict
 import com.icure.cardinal.sdk.crypto.encryptor.EntityDecryptor
 import com.icure.cardinal.sdk.crypto.encryptor.impl.generated.ContactDecryptor
+import com.icure.cardinal.sdk.crypto.decrypt
+import com.icure.cardinal.sdk.crypto.entities.ContactDelegateOptions
 import com.icure.cardinal.sdk.crypto.entities.ContactShareOptions
+import com.icure.cardinal.sdk.crypto.entities.DelegateOptions
 import com.icure.cardinal.sdk.crypto.entities.EntityWithEncryptionMetadataTypeName
 import com.icure.cardinal.sdk.crypto.entities.OwningEntityDetails
 import com.icure.cardinal.sdk.crypto.entities.SecretIdUseOption
@@ -47,6 +50,7 @@ import com.icure.cardinal.sdk.model.embed.EncryptedService
 import com.icure.cardinal.sdk.model.embed.Service
 import com.icure.cardinal.sdk.model.extensions.autoDelegationsFor
 import com.icure.cardinal.sdk.model.extensions.dataOwnerId
+import com.icure.cardinal.sdk.model.extensions.toDefaultDelegateOptions
 import com.icure.cardinal.sdk.model.specializations.HexString
 import com.icure.cardinal.sdk.model.toStoredDocumentIdentifier
 import com.icure.cardinal.sdk.options.ApiConfiguration
@@ -688,6 +692,31 @@ private class ContactApiImpl(
 				entityGroupId
 			)
 
+		override suspend fun withEncryptionMetadataAndDelegates(
+			entityGroupId: String,
+			base: DecryptedContact?,
+			patient: GroupScoped<Patient>?,
+			delegates: @JsMapAsObjectArray(
+				keyEntryName = "delegate",
+				valueEntryName = "delegateOptions",
+			) Map<EntityReferenceInGroup, ContactDelegateOptions>,
+			user: User?,
+			secretId: SecretIdUseOption,
+			alternateRootDelegateReference: EntityReferenceInGroup?
+		): GroupScoped<DecryptedContact> =
+			GroupScoped(
+				doWithEncryptionMetadataAndDelegates(
+					entityGroupId = entityGroupId,
+					base = base,
+					patientInGroup = patient?.let { Pair(it.entity, it.groupId) },
+					user = user,
+					delegates = delegates,
+					secretId = secretId,
+					alternateRootDataOwnerReference = alternateRootDelegateReference
+				),
+				entityGroupId
+			)
+
 		override suspend fun decryptPatientIdOf(contact: GroupScoped<Contact>): Set<EntityReferenceInGroup> =
 			doDecryptPatientIdOf(contact.groupId, contact.entity).mapNullGroupTo(contact.groupId)
 
@@ -742,12 +771,48 @@ private class ContactApiImpl(
 		alternateRootDataOwnerReference = alternateRootDelegateId?.let { EntityReferenceInGroup(it, null) }
 	)
 
+	override suspend fun withEncryptionMetadataAndDelegates(
+		base: DecryptedContact?,
+		patient: Patient,
+		delegates: Map<String, ContactDelegateOptions>,
+		user: User?,
+		secretId: SecretIdUseOption,
+		alternateRootDelegateId: String?,
+	): DecryptedContact = doWithEncryptionMetadataAndDelegates(
+		entityGroupId = null,
+		base = base,
+		patientInGroup = patient to null,
+		user = user,
+		delegates = delegates.keyAsLocalDataOwnerReferences(),
+		secretId = secretId,
+		alternateRootDataOwnerReference = alternateRootDelegateId?.let { EntityReferenceInGroup(it, null) }
+	)
+
 	private suspend fun doWithEncryptionMetadata(
 		entityGroupId: String?,
 		base: DecryptedContact?,
 		patientInGroup: Pair<Patient, String?>?,
 		user: User?,
 		delegates: @JsMapAsObjectArray(keyEntryName = "delegate", valueEntryName = "accessLevel") Map<EntityReferenceInGroup, AccessLevel>,
+		secretId: SecretIdUseOption,
+		alternateRootDataOwnerReference: EntityReferenceInGroup?
+	): DecryptedContact =
+		doWithEncryptionMetadataAndDelegates(
+			entityGroupId = entityGroupId,
+			base = base,
+			patientInGroup = patientInGroup,
+			user = user,
+			delegates = delegates.mapValues { it.value.toDefaultDelegateOptions() },
+			secretId = secretId,
+			alternateRootDataOwnerReference = alternateRootDataOwnerReference
+		)
+
+	private suspend fun doWithEncryptionMetadataAndDelegates(
+		entityGroupId: String?,
+		base: DecryptedContact?,
+		patientInGroup: Pair<Patient, String?>?,
+		user: User?,
+		delegates: @JsMapAsObjectArray(keyEntryName = "delegate", valueEntryName = "delegateOptions") Map<EntityReferenceInGroup, DelegateOptions>,
 		secretId: SecretIdUseOption,
 		alternateRootDataOwnerReference: EntityReferenceInGroup?
 	): DecryptedContact =

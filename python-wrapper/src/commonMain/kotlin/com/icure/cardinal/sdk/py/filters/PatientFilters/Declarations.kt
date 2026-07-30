@@ -2,7 +2,6 @@
 package com.icure.cardinal.sdk.py.filters.PatientFilters
 
 import com.icure.cardinal.sdk.filters.BaseFilterOptions
-import com.icure.cardinal.sdk.filters.BaseSortableFilterOptions
 import com.icure.cardinal.sdk.filters.FilterOptions
 import com.icure.cardinal.sdk.filters.PatientFilters
 import com.icure.cardinal.sdk.filters.SortableFilterOptions
@@ -79,7 +78,7 @@ public fun byIdentifiersForDataOwner(params: String): String = kotlin.runCatchin
 		decodedParams.dataOwnerId,
 		decodedParams.identifiers,
 	)
-}.toPyString(BaseSortableFilterOptions.serializer(PolymorphicSerializer(Patient::class)))
+}.toPyString(BaseFilterOptions.serializer(PolymorphicSerializer(Patient::class)))
 
 @Serializable
 private class ByIdentifiersForDataOwnerInGroupParams(
@@ -95,7 +94,7 @@ public fun byIdentifiersForDataOwnerInGroup(params: String): String = kotlin.run
 		decodedParams.dataOwner,
 		decodedParams.identifiers,
 	)
-}.toPyString(BaseSortableFilterOptions.serializer(PolymorphicSerializer(Patient::class)))
+}.toPyString(BaseFilterOptions.serializer(PolymorphicSerializer(Patient::class)))
 
 @Serializable
 private class BySsinsForDataOwnerParams(
@@ -110,7 +109,7 @@ public fun bySsinsForDataOwner(params: String): String = kotlin.runCatching {
 		decodedParams.dataOwnerId,
 		decodedParams.ssins,
 	)
-}.toPyString(BaseSortableFilterOptions.serializer(PolymorphicSerializer(Patient::class)))
+}.toPyString(BaseFilterOptions.serializer(PolymorphicSerializer(Patient::class)))
 
 @Serializable
 private class BySsinsForDataOwnerInGroupParams(
@@ -126,7 +125,7 @@ public fun bySsinsForDataOwnerInGroup(params: String): String = kotlin.runCatchi
 		decodedParams.dataOwner,
 		decodedParams.ssins,
 	)
-}.toPyString(BaseSortableFilterOptions.serializer(PolymorphicSerializer(Patient::class)))
+}.toPyString(BaseFilterOptions.serializer(PolymorphicSerializer(Patient::class)))
 
 @Serializable
 private class ByDateOfBirthBetweenForDataOwnerParams(
@@ -144,7 +143,7 @@ public fun byDateOfBirthBetweenForDataOwner(params: String): String = kotlin.run
 		decodedParams.fromDate,
 		decodedParams.toDate,
 	)
-}.toPyString(BaseSortableFilterOptions.serializer(PolymorphicSerializer(Patient::class)))
+}.toPyString(BaseFilterOptions.serializer(PolymorphicSerializer(Patient::class)))
 
 @Serializable
 private class ByDateOfBirthBetweenForDataOwnerInGroupParams(
@@ -162,7 +161,7 @@ public fun byDateOfBirthBetweenForDataOwnerInGroup(params: String): String = kot
 		decodedParams.fromDate,
 		decodedParams.toDate,
 	)
-}.toPyString(BaseSortableFilterOptions.serializer(PolymorphicSerializer(Patient::class)))
+}.toPyString(BaseFilterOptions.serializer(PolymorphicSerializer(Patient::class)))
 
 @Serializable
 private class ByFuzzyNameForDataOwnerParams(
@@ -213,7 +212,7 @@ public fun byGenderEducationProfessionForDataOwner(params: String): String = kot
 		decodedParams.education,
 		decodedParams.profession,
 	)
-}.toPyString(BaseSortableFilterOptions.serializer(PolymorphicSerializer(Patient::class)))
+}.toPyString(BaseFilterOptions.serializer(PolymorphicSerializer(Patient::class)))
 
 @Serializable
 private class ByGenderEducationProfessionForDataOwnerInGroupParams(
@@ -234,7 +233,7 @@ public fun byGenderEducationProfessionForDataOwnerInGroup(params: String): Strin
 		decodedParams.education,
 		decodedParams.profession,
 	)
-}.toPyString(BaseSortableFilterOptions.serializer(PolymorphicSerializer(Patient::class)))
+}.toPyString(BaseFilterOptions.serializer(PolymorphicSerializer(Patient::class)))
 
 @Serializable
 private class ByActiveForDataOwnerParams(
@@ -280,7 +279,7 @@ public fun byTelecomForDataOwner(params: String): String = kotlin.runCatching {
 		decodedParams.dataOwnerId,
 		decodedParams.searchString,
 	)
-}.toPyString(BaseSortableFilterOptions.serializer(PolymorphicSerializer(Patient::class)))
+}.toPyString(BaseFilterOptions.serializer(PolymorphicSerializer(Patient::class)))
 
 @Serializable
 private class ByTelecomForDataOwnerInGroupParams(
@@ -296,7 +295,7 @@ public fun byTelecomForDataOwnerInGroup(params: String): String = kotlin.runCatc
 		decodedParams.dataOwner,
 		decodedParams.searchString,
 	)
-}.toPyString(BaseSortableFilterOptions.serializer(PolymorphicSerializer(Patient::class)))
+}.toPyString(BaseFilterOptions.serializer(PolymorphicSerializer(Patient::class)))
 
 @Serializable
 private class ByAddressPostalCodeHouseNumberForDataOwnerParams(
@@ -316,7 +315,7 @@ public fun byAddressPostalCodeHouseNumberForDataOwner(params: String): String = 
 		decodedParams.postalCode,
 		decodedParams.houseNumber,
 	)
-}.toPyString(BaseSortableFilterOptions.serializer(PolymorphicSerializer(Patient::class)))
+}.toPyString(BaseFilterOptions.serializer(PolymorphicSerializer(Patient::class)))
 
 @Serializable
 private class ByAddressPostalCodeHouseNumberForDataOwnerInGroupParams(
@@ -337,7 +336,7 @@ public fun byAddressPostalCodeHouseNumberForDataOwnerInGroup(params: String): St
 		decodedParams.postalCode,
 		decodedParams.houseNumber,
 	)
-}.toPyString(BaseSortableFilterOptions.serializer(PolymorphicSerializer(Patient::class)))
+}.toPyString(BaseFilterOptions.serializer(PolymorphicSerializer(Patient::class)))
 
 @Serializable
 private class ByAddressForDataOwnerParams(
@@ -352,7 +351,7 @@ public fun byAddressForDataOwner(params: String): String = kotlin.runCatching {
 		decodedParams.dataOwnerId,
 		decodedParams.searchString,
 	)
-}.toPyString(BaseSortableFilterOptions.serializer(PolymorphicSerializer(Patient::class)))
+}.toPyString(BaseFilterOptions.serializer(PolymorphicSerializer(Patient::class)))
 
 @Serializable
 private class ByAddressForDataOwnerInGroupParams(
@@ -368,7 +367,7 @@ public fun byAddressForDataOwnerInGroup(params: String): String = kotlin.runCatc
 		decodedParams.dataOwner,
 		decodedParams.searchString,
 	)
-}.toPyString(BaseSortableFilterOptions.serializer(PolymorphicSerializer(Patient::class)))
+}.toPyString(BaseFilterOptions.serializer(PolymorphicSerializer(Patient::class)))
 
 @Serializable
 private class ByIdentifiersForSelfParams(
@@ -381,7 +380,7 @@ public fun byIdentifiersForSelf(params: String): String = kotlin.runCatching {
 	PatientFilters.byIdentifiersForSelf(
 		decodedParams.identifiers,
 	)
-}.toPyString(SortableFilterOptions.serializer(PolymorphicSerializer(Patient::class)))
+}.toPyString(FilterOptions.serializer(PolymorphicSerializer(Patient::class)))
 
 @Serializable
 private class BySsinsForSelfParams(
@@ -394,7 +393,7 @@ public fun bySsinsForSelf(params: String): String = kotlin.runCatching {
 	PatientFilters.bySsinsForSelf(
 		decodedParams.ssins,
 	)
-}.toPyString(SortableFilterOptions.serializer(PolymorphicSerializer(Patient::class)))
+}.toPyString(FilterOptions.serializer(PolymorphicSerializer(Patient::class)))
 
 @Serializable
 private class ByDateOfBirthBetweenForSelfParams(
@@ -410,7 +409,7 @@ public fun byDateOfBirthBetweenForSelf(params: String): String = kotlin.runCatch
 		decodedParams.fromDate,
 		decodedParams.toDate,
 	)
-}.toPyString(SortableFilterOptions.serializer(PolymorphicSerializer(Patient::class)))
+}.toPyString(FilterOptions.serializer(PolymorphicSerializer(Patient::class)))
 
 @Serializable
 private class ByNameForSelfParams(
@@ -441,7 +440,7 @@ public fun byGenderEducationProfessionForSelf(params: String): String = kotlin.r
 		decodedParams.education,
 		decodedParams.profession,
 	)
-}.toPyString(SortableFilterOptions.serializer(PolymorphicSerializer(Patient::class)))
+}.toPyString(FilterOptions.serializer(PolymorphicSerializer(Patient::class)))
 
 @Serializable
 private class ByActiveForSelfParams(
@@ -467,7 +466,7 @@ public fun byTelecomForSelf(params: String): String = kotlin.runCatching {
 	PatientFilters.byTelecomForSelf(
 		decodedParams.searchString,
 	)
-}.toPyString(SortableFilterOptions.serializer(PolymorphicSerializer(Patient::class)))
+}.toPyString(FilterOptions.serializer(PolymorphicSerializer(Patient::class)))
 
 @Serializable
 private class ByAddressPostalCodeHouseNumberForSelfParams(
@@ -485,7 +484,7 @@ public fun byAddressPostalCodeHouseNumberForSelf(params: String): String = kotli
 		decodedParams.postalCode,
 		decodedParams.houseNumber,
 	)
-}.toPyString(SortableFilterOptions.serializer(PolymorphicSerializer(Patient::class)))
+}.toPyString(FilterOptions.serializer(PolymorphicSerializer(Patient::class)))
 
 @Serializable
 private class ByAddressForSelfParams(
@@ -498,7 +497,7 @@ public fun byAddressForSelf(params: String): String = kotlin.runCatching {
 	PatientFilters.byAddressForSelf(
 		decodedParams.searchString,
 	)
-}.toPyString(SortableFilterOptions.serializer(PolymorphicSerializer(Patient::class)))
+}.toPyString(FilterOptions.serializer(PolymorphicSerializer(Patient::class)))
 
 @Serializable
 private class ByTagForSelfParams(

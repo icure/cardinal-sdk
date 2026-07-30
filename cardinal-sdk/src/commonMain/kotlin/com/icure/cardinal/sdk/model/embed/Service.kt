@@ -6,6 +6,7 @@ import com.icure.cardinal.sdk.model.base.CodeStub
 import com.icure.cardinal.sdk.model.base.Extendable
 import com.icure.cardinal.sdk.model.base.HasEndOfLife
 import com.icure.cardinal.sdk.model.base.HasIdentifier
+import com.icure.cardinal.sdk.model.base.HasMedicalLocation
 import com.icure.cardinal.sdk.model.base.ICureDocument
 import com.icure.cardinal.sdk.model.base.Identifier
 import com.icure.cardinal.sdk.model.base.LinkQualification
@@ -23,7 +24,7 @@ import kotlin.collections.Set
 sealed interface Service :
 	Encryptable,
 	ICureDocument<String>,
-	HasEndOfLife,
+	HasMedicalLocation,HasEndOfLife,
 	HasIdentifier,
 	Extendable {
 	/**

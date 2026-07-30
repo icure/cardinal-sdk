@@ -121,6 +121,11 @@ public interface RawUserApi {
 		previousMobilePhone: String? = null,
 	): HttpResponse<User>
 
+	suspend fun removeUserMobilePhone(
+		userId: String,
+		previousMobilePhone: String? = null,
+	): HttpResponse<User>
+
 	suspend fun changeUserPassword(
 		userId: String,
 		request: ChangeUserPasswordRequest,

@@ -13,6 +13,8 @@ import com.icure.cardinal.sdk.api.DocumentFlavouredApi
 import com.icure.cardinal.sdk.api.raw.RawDocumentApi
 import com.icure.cardinal.sdk.api.raw.successBodyOrNull404
 import com.icure.cardinal.sdk.api.raw.successBodyOrThrowRevisionConflict
+import com.icure.cardinal.sdk.crypto.entities.DelegateOptions
+import com.icure.cardinal.sdk.crypto.entities.DocumentDelegateOptions
 import com.icure.cardinal.sdk.crypto.entities.DocumentShareOptions
 import com.icure.cardinal.sdk.crypto.entities.EntityWithEncryptionMetadataTypeName
 import com.icure.cardinal.sdk.crypto.entities.OwningEntityDetails
@@ -38,6 +40,7 @@ import com.icure.cardinal.sdk.model.embed.AccessLevel
 import com.icure.cardinal.sdk.model.embed.DelegationTag
 import com.icure.cardinal.sdk.model.extensions.autoDelegationsFor
 import com.icure.cardinal.sdk.model.extensions.dataOwnerId
+import com.icure.cardinal.sdk.model.extensions.toDefaultDelegateOptions
 import com.icure.cardinal.sdk.model.specializations.HexString
 import com.icure.cardinal.sdk.model.toStoredDocumentIdentifier
 import com.icure.cardinal.sdk.options.ApiConfiguration
@@ -547,6 +550,29 @@ private class DocumentApiImpl(
 			entityGroupId,
 		)
 
+		override suspend fun withEncryptionMetadataAndDelegatesLinkedToMessage(
+			entityGroupId: String,
+			base: DecryptedDocument?,
+			message: GroupScoped<Message>,
+			delegates: Map<String, DocumentDelegateOptions>,
+			user: User?,
+			secretId: SecretIdUseOption,
+			alternateRootDelegateId: String?,
+		): GroupScoped<DecryptedDocument> = GroupScoped(
+			doWithEncryptionMetadataAndDelegates(
+				base,
+				user,
+				delegates,
+				alternateRootDelegateId,
+				OwningEntityDetails(
+					entityGroupId,
+					message.entity.id,
+					crypto.entity.resolveSecretIdOption(entityGroupId, message.entity, EntityWithEncryptionMetadataTypeName.Message, secretId)
+				)
+			),
+			entityGroupId,
+		)
+
 		override suspend fun withEncryptionMetadataLinkedToPatient(
 			entityGroupId: String,
 			base: DecryptedDocument?,
@@ -570,6 +596,29 @@ private class DocumentApiImpl(
 			entityGroupId,
 		)
 
+		override suspend fun withEncryptionMetadataAndDelegatesLinkedToPatient(
+			entityGroupId: String,
+			base: DecryptedDocument?,
+			patient: GroupScoped<Patient>,
+			delegates: Map<String, DocumentDelegateOptions>,
+			user: User?,
+			secretId: SecretIdUseOption,
+			alternateRootDelegateId: String?,
+		): GroupScoped<DecryptedDocument> = GroupScoped(
+			doWithEncryptionMetadataAndDelegates(
+				base,
+				user,
+				delegates,
+				alternateRootDelegateId,
+				OwningEntityDetails(
+					entityGroupId,
+					patient.entity.id,
+					crypto.entity.resolveSecretIdOption(entityGroupId, patient.entity, EntityWithEncryptionMetadataTypeName.Patient, secretId)
+				)
+			),
+			entityGroupId,
+		)
+
 		override suspend fun withEncryptionMetadataUnlinked(
 			entityGroupId: String,
 			base: DecryptedDocument?,
@@ -578,6 +627,23 @@ private class DocumentApiImpl(
 			alternateRootDelegateId: String?,
 		): GroupScoped<DecryptedDocument> = GroupScoped(
 			doWithEncryptionMetadata(
+				base,
+				user,
+				delegates,
+				alternateRootDelegateId,
+				null
+			),
+			entityGroupId,
+		)
+
+		override suspend fun withEncryptionMetadataAndDelegatesUnlinked(
+			entityGroupId: String,
+			base: DecryptedDocument?,
+			delegates: Map<String, DocumentDelegateOptions>,
+			user: User?,
+			alternateRootDelegateId: String?,
+		): GroupScoped<DecryptedDocument> = GroupScoped(
+			doWithEncryptionMetadataAndDelegates(
 				base,
 				user,
 				delegates,
@@ -640,6 +706,26 @@ private class DocumentApiImpl(
 			)
 		)
 
+	override suspend fun withEncryptionMetadataAndDelegatesLinkedToPatient(
+		base: DecryptedDocument?,
+		patient: Patient,
+		delegates: Map<String, DocumentDelegateOptions>,
+		user: User?,
+		secretId: SecretIdUseOption,
+		alternateRootDelegateId: String?
+	): DecryptedDocument =
+		doWithEncryptionMetadataAndDelegates(
+			base,
+			user,
+			delegates,
+			alternateRootDelegateId,
+			OwningEntityDetails(
+				null,
+				patient.id,
+				crypto.entity.resolveSecretIdOption(null, patient, EntityWithEncryptionMetadataTypeName.Patient, secretId)
+			)
+		)
+
 	override suspend fun withEncryptionMetadataLinkedToMessage(
 		base: DecryptedDocument?,
 		message: Message,
@@ -660,6 +746,26 @@ private class DocumentApiImpl(
 			)
 		)
 
+	override suspend fun withEncryptionMetadataAndDelegatesLinkedToMessage(
+		base: DecryptedDocument?,
+		message: Message,
+		delegates: Map<String, DocumentDelegateOptions>,
+		user: User?,
+		secretId: SecretIdUseOption,
+		alternateRootDelegateId: String?
+	): DecryptedDocument =
+		doWithEncryptionMetadataAndDelegates(
+			base,
+			user,
+			delegates,
+			alternateRootDelegateId,
+			OwningEntityDetails(
+				null,
+				message.id,
+				crypto.entity.resolveSecretIdOption(null, message, EntityWithEncryptionMetadataTypeName.Message, secretId)
+			)
+		)
+
 	override suspend fun withEncryptionMetadataUnlinked(
 		base: DecryptedDocument?,
 		user: User?,
@@ -668,10 +774,33 @@ private class DocumentApiImpl(
 	): DecryptedDocument =
 		doWithEncryptionMetadata(base, user, delegates, alternateRootDelegateId, null)
 
+	override suspend fun withEncryptionMetadataAndDelegatesUnlinked(
+		base: DecryptedDocument?,
+		delegates: Map<String, DocumentDelegateOptions>,
+		user: User?,
+		alternateRootDelegateId: String?
+	): DecryptedDocument =
+		doWithEncryptionMetadataAndDelegates(base, user, delegates, alternateRootDelegateId, null)
+
 	private suspend fun doWithEncryptionMetadata(
 		base: DecryptedDocument?,
 		user: User?,
 		delegates: Map<String, AccessLevel>,
+		alternateRootDelegateId: String?,
+		owningEntityDetails: OwningEntityDetails?,
+	) =
+		doWithEncryptionMetadataAndDelegates(
+			base = base,
+			user = user,
+			delegates = delegates.mapValues { it.value.toDefaultDelegateOptions() },
+			alternateRootDelegateId = alternateRootDelegateId,
+			owningEntityDetails = owningEntityDetails,
+		)
+
+	private suspend fun doWithEncryptionMetadataAndDelegates(
+		base: DecryptedDocument?,
+		user: User?,
+		delegates: Map<String, DelegateOptions>,
 		alternateRootDelegateId: String?,
 		owningEntityDetails: OwningEntityDetails?,
 	) =

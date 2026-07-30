@@ -2,6 +2,7 @@
 package com.icure.cardinal.sdk.js.api.`impl`
 
 import com.icure.cardinal.sdk.api.FormApi
+import com.icure.cardinal.sdk.crypto.entities.FormDelegateOptions
 import com.icure.cardinal.sdk.crypto.entities.FormShareOptions
 import com.icure.cardinal.sdk.crypto.entities.SecretIdUseOption
 import com.icure.cardinal.sdk.filters.BaseFilterOptions
@@ -13,8 +14,10 @@ import com.icure.cardinal.sdk.js.api.FormApiJs
 import com.icure.cardinal.sdk.js.api.FormFlavouredApiJs
 import com.icure.cardinal.sdk.js.api.FormFlavouredInGroupApiJs
 import com.icure.cardinal.sdk.js.api.FormInGroupApiJs
+import com.icure.cardinal.sdk.js.crypto.entities.FormDelegateOptionsJs
 import com.icure.cardinal.sdk.js.crypto.entities.FormShareOptionsJs
 import com.icure.cardinal.sdk.js.crypto.entities.SecretIdUseOptionJs
+import com.icure.cardinal.sdk.js.crypto.entities.formDelegateOptions_fromJs
 import com.icure.cardinal.sdk.js.crypto.entities.formShareOptions_fromJs
 import com.icure.cardinal.sdk.js.crypto.entities.secretIdUseOption_fromJs
 import com.icure.cardinal.sdk.js.filters.BaseFilterOptionsJs
@@ -54,6 +57,8 @@ import com.icure.cardinal.sdk.js.model.storedDocumentIdentifier_toJs
 import com.icure.cardinal.sdk.js.model.user_fromJs
 import com.icure.cardinal.sdk.js.synthetic.mapasobjectarray.EntityReferenceInGroupToAccessLevelMapObject_delegate_accessLevel
 import com.icure.cardinal.sdk.js.synthetic.mapasobjectarray.EntityReferenceInGroupToAccessLevelMapObject_delegate_accessLevel_fromJs
+import com.icure.cardinal.sdk.js.synthetic.mapasobjectarray.EntityReferenceInGroupToFormDelegateOptionsMapObject_delegate_delegateOptions
+import com.icure.cardinal.sdk.js.synthetic.mapasobjectarray.EntityReferenceInGroupToFormDelegateOptionsMapObject_delegate_delegateOptions_fromJs
 import com.icure.cardinal.sdk.js.synthetic.mapasobjectarray.EntityReferenceInGroupToFormShareOptionsMapObject_delegate_shareOptions
 import com.icure.cardinal.sdk.js.synthetic.mapasobjectarray.EntityReferenceInGroupToFormShareOptionsMapObject_delegate_shareOptions_fromJs
 import com.icure.cardinal.sdk.js.utils.Record
@@ -1318,6 +1323,73 @@ internal class FormApiImplJs(
 			}
 		}
 
+		override fun withEncryptionMetadataAndDelegates(
+			entityGroupId: String,
+			base: DecryptedFormJs?,
+			patient: GroupScopedJs<PatientJs>?,
+			delegates: Array<EntityReferenceInGroupToFormDelegateOptionsMapObject_delegate_delegateOptions>,
+			options: dynamic,
+		): Promise<GroupScopedJs<DecryptedFormJs>> {
+			val _options = options ?: js("{}")
+			return GlobalScope.promise {
+				val entityGroupIdConverted: String = entityGroupId
+				val baseConverted: DecryptedForm? = base?.let { nonNull1 ->
+					form_fromJs(nonNull1)
+				}
+				val patientConverted: GroupScoped<Patient>? = patient?.let { nonNull1 ->
+					groupScoped_fromJs(
+						nonNull1,
+						{ x1: PatientJs ->
+							patient_fromJs(x1)
+						},
+					)
+				}
+				val delegatesConverted: Map<EntityReferenceInGroup, FormDelegateOptions> =
+						EntityReferenceInGroupToFormDelegateOptionsMapObject_delegate_delegateOptions_fromJs(delegates)
+				val userConverted: User? = convertingOptionOrDefaultNullable(
+					_options,
+					"user",
+					null
+				) { user: UserJs? ->
+					user?.let { nonNull1 ->
+						user_fromJs(nonNull1)
+					}
+				}
+				val secretIdConverted: SecretIdUseOption = convertingOptionOrDefaultNonNull(
+					_options,
+					"secretId",
+					com.icure.cardinal.sdk.crypto.entities.SecretIdUseOption.UseAnySharedWithParent
+				) { secretId: SecretIdUseOptionJs ->
+					secretIdUseOption_fromJs(secretId)
+				}
+				val alternateRootDelegateReferenceConverted: EntityReferenceInGroup? =
+						convertingOptionOrDefaultNullable(
+					_options,
+					"alternateRootDelegateReference",
+					null
+				) { alternateRootDelegateReference: EntityReferenceInGroupJs? ->
+					alternateRootDelegateReference?.let { nonNull1 ->
+						entityReferenceInGroup_fromJs(nonNull1)
+					}
+				}
+				val result = formApi.inGroup.withEncryptionMetadataAndDelegates(
+					entityGroupIdConverted,
+					baseConverted,
+					patientConverted,
+					delegatesConverted,
+					userConverted,
+					secretIdConverted,
+					alternateRootDelegateReferenceConverted,
+				)
+				groupScoped_toJs(
+					result,
+					{ x1: DecryptedForm ->
+						form_toJs(x1)
+					},
+				)
+			}
+		}
+
 		override fun getEncryptionKeysOf(form: GroupScopedJs<FormJs>): Promise<Array<String>> =
 				GlobalScope.promise {
 			val formConverted: GroupScoped<Form> = groupScoped_fromJs(
@@ -2515,6 +2587,63 @@ internal class FormApiImplJs(
 				patientConverted,
 				userConverted,
 				delegatesConverted,
+				secretIdConverted,
+				alternateRootDelegateIdConverted,
+			)
+			form_toJs(result)
+		}
+	}
+
+	override fun withEncryptionMetadataAndDelegates(
+		base: DecryptedFormJs?,
+		patient: PatientJs,
+		delegates: Record<String, FormDelegateOptionsJs>,
+		options: dynamic,
+	): Promise<DecryptedFormJs> {
+		val _options = options ?: js("{}")
+		return GlobalScope.promise {
+			val baseConverted: DecryptedForm? = base?.let { nonNull1 ->
+				form_fromJs(nonNull1)
+			}
+			val patientConverted: Patient = patient_fromJs(patient)
+			val delegatesConverted: Map<String, FormDelegateOptions> = objectToMap(
+				delegates,
+				"delegates",
+				{ x1: String ->
+					x1
+				},
+				{ x1: FormDelegateOptionsJs ->
+					formDelegateOptions_fromJs(x1)
+				},
+			)
+			val userConverted: User? = convertingOptionOrDefaultNullable(
+				_options,
+				"user",
+				null
+			) { user: UserJs? ->
+				user?.let { nonNull1 ->
+					user_fromJs(nonNull1)
+				}
+			}
+			val secretIdConverted: SecretIdUseOption = convertingOptionOrDefaultNonNull(
+				_options,
+				"secretId",
+				com.icure.cardinal.sdk.crypto.entities.SecretIdUseOption.UseAnySharedWithParent
+			) { secretId: SecretIdUseOptionJs ->
+				secretIdUseOption_fromJs(secretId)
+			}
+			val alternateRootDelegateIdConverted: String? = convertingOptionOrDefaultNullable(
+				_options,
+				"alternateRootDelegateId",
+				null
+			) { alternateRootDelegateId: String? ->
+				undefinedToNull(alternateRootDelegateId)
+			}
+			val result = formApi.withEncryptionMetadataAndDelegates(
+				baseConverted,
+				patientConverted,
+				delegatesConverted,
+				userConverted,
 				secretIdConverted,
 				alternateRootDelegateIdConverted,
 			)

@@ -3,6 +3,7 @@
 
 package com.icure.cardinal.sdk.js.api
 
+import com.icure.cardinal.sdk.js.crypto.entities.HealthElementDelegateOptionsJs
 import com.icure.cardinal.sdk.js.crypto.entities.HealthElementShareOptionsJs
 import com.icure.cardinal.sdk.js.filters.FilterOptionsJs
 import com.icure.cardinal.sdk.js.filters.SortableFilterOptionsJs
@@ -34,6 +35,13 @@ public external interface HealthElementApiJs {
 	public fun withEncryptionMetadata(
 		base: DecryptedHealthElementJs?,
 		patient: PatientJs,
+		options: dynamic,
+	): Promise<DecryptedHealthElementJs>
+
+	public fun withEncryptionMetadataAndDelegates(
+		base: DecryptedHealthElementJs?,
+		patient: PatientJs,
+		delegates: Record<String, HealthElementDelegateOptionsJs>,
 		options: dynamic,
 	): Promise<DecryptedHealthElementJs>
 

@@ -223,7 +223,7 @@ class ContactFilters:
 			return return_value
 
 	@classmethod
-	def by_identifiers_for_self(cls, identifiers: list[Identifier]) -> SortableFilterOptions[Contact]:
+	def by_identifiers_for_self(cls, identifiers: list[Identifier]) -> FilterOptions[Contact]:
 		payload = {
 			"identifiers": [x0.__serialize__() for x0 in identifiers],
 		}
@@ -235,11 +235,11 @@ class ContactFilters:
 		if result_info.failure is not None:
 			raise interpret_kt_error(result_info.failure)
 		else:
-			return_value = SortableFilterOptions(result_info.success)
+			return_value = FilterOptions(result_info.success)
 			return return_value
 
 	@classmethod
-	def by_identifiers_for_data_owner(cls, data_owner_id: str, identifiers: list[Identifier]) -> BaseSortableFilterOptions[Contact]:
+	def by_identifiers_for_data_owner(cls, data_owner_id: str, identifiers: list[Identifier]) -> BaseFilterOptions[Contact]:
 		payload = {
 			"dataOwnerId": data_owner_id,
 			"identifiers": [x0.__serialize__() for x0 in identifiers],
@@ -252,11 +252,11 @@ class ContactFilters:
 		if result_info.failure is not None:
 			raise interpret_kt_error(result_info.failure)
 		else:
-			return_value = BaseSortableFilterOptions(result_info.success)
+			return_value = BaseFilterOptions(result_info.success)
 			return return_value
 
 	@classmethod
-	def by_identifiers_for_data_owner_in_group(cls, data_owner: EntityReferenceInGroup, identifiers: list[Identifier]) -> BaseSortableFilterOptions[Contact]:
+	def by_identifiers_for_data_owner_in_group(cls, data_owner: EntityReferenceInGroup, identifiers: list[Identifier]) -> BaseFilterOptions[Contact]:
 		payload = {
 			"dataOwner": data_owner.__serialize__(),
 			"identifiers": [x0.__serialize__() for x0 in identifiers],
@@ -269,7 +269,7 @@ class ContactFilters:
 		if result_info.failure is not None:
 			raise interpret_kt_error(result_info.failure)
 		else:
-			return_value = BaseSortableFilterOptions(result_info.success)
+			return_value = BaseFilterOptions(result_info.success)
 			return return_value
 
 	@classmethod
@@ -553,7 +553,7 @@ class ContactFilters:
 			return return_value
 
 	@classmethod
-	def by_patients_for_data_owner(cls, data_owner_id: str, patients: list[Patient]) -> SortableFilterOptions[Contact]:
+	def by_patients_for_data_owner(cls, data_owner_id: str, patients: list[Patient]) -> FilterOptions[Contact]:
 		payload = {
 			"dataOwnerId": data_owner_id,
 			"patients": [serialize_patient(x0) for x0 in patients],
@@ -566,11 +566,11 @@ class ContactFilters:
 		if result_info.failure is not None:
 			raise interpret_kt_error(result_info.failure)
 		else:
-			return_value = SortableFilterOptions(result_info.success)
+			return_value = FilterOptions(result_info.success)
 			return return_value
 
 	@classmethod
-	def by_patients_for_data_owner_in_group(cls, data_owner: EntityReferenceInGroup, patients: list[GroupScoped[Patient]]) -> SortableFilterOptions[Contact]:
+	def by_patients_for_data_owner_in_group(cls, data_owner: EntityReferenceInGroup, patients: list[GroupScoped[Patient]]) -> FilterOptions[Contact]:
 		payload = {
 			"dataOwner": data_owner.__serialize__(),
 			"patients": [x0.__serialize__(lambda x1: serialize_patient(x1)) for x0 in patients],
@@ -583,11 +583,11 @@ class ContactFilters:
 		if result_info.failure is not None:
 			raise interpret_kt_error(result_info.failure)
 		else:
-			return_value = SortableFilterOptions(result_info.success)
+			return_value = FilterOptions(result_info.success)
 			return return_value
 
 	@classmethod
-	def by_patients_for_self(cls, patients: list[Patient]) -> SortableFilterOptions[Contact]:
+	def by_patients_for_self(cls, patients: list[Patient]) -> FilterOptions[Contact]:
 		payload = {
 			"patients": [serialize_patient(x0) for x0 in patients],
 		}
@@ -599,11 +599,11 @@ class ContactFilters:
 		if result_info.failure is not None:
 			raise interpret_kt_error(result_info.failure)
 		else:
-			return_value = SortableFilterOptions(result_info.success)
+			return_value = FilterOptions(result_info.success)
 			return return_value
 
 	@classmethod
-	def by_patients_secret_ids_for_data_owner(cls, data_owner_id: str, secret_ids: list[str]) -> BaseSortableFilterOptions[Contact]:
+	def by_patients_secret_ids_for_data_owner(cls, data_owner_id: str, secret_ids: list[str]) -> BaseFilterOptions[Contact]:
 		payload = {
 			"dataOwnerId": data_owner_id,
 			"secretIds": [x0 for x0 in secret_ids],
@@ -616,11 +616,11 @@ class ContactFilters:
 		if result_info.failure is not None:
 			raise interpret_kt_error(result_info.failure)
 		else:
-			return_value = BaseSortableFilterOptions(result_info.success)
+			return_value = BaseFilterOptions(result_info.success)
 			return return_value
 
 	@classmethod
-	def by_patients_secret_ids_for_data_owner_in_group(cls, data_owner: EntityReferenceInGroup, secret_ids: list[str]) -> BaseSortableFilterOptions[Contact]:
+	def by_patients_secret_ids_for_data_owner_in_group(cls, data_owner: EntityReferenceInGroup, secret_ids: list[str]) -> BaseFilterOptions[Contact]:
 		payload = {
 			"dataOwner": data_owner.__serialize__(),
 			"secretIds": [x0 for x0 in secret_ids],
@@ -633,11 +633,11 @@ class ContactFilters:
 		if result_info.failure is not None:
 			raise interpret_kt_error(result_info.failure)
 		else:
-			return_value = BaseSortableFilterOptions(result_info.success)
+			return_value = BaseFilterOptions(result_info.success)
 			return return_value
 
 	@classmethod
-	def by_patients_secret_ids_for_self(cls, secret_ids: list[str]) -> SortableFilterOptions[Contact]:
+	def by_patients_secret_ids_for_self(cls, secret_ids: list[str]) -> FilterOptions[Contact]:
 		payload = {
 			"secretIds": [x0 for x0 in secret_ids],
 		}
@@ -649,7 +649,7 @@ class ContactFilters:
 		if result_info.failure is not None:
 			raise interpret_kt_error(result_info.failure)
 		else:
-			return_value = SortableFilterOptions(result_info.success)
+			return_value = FilterOptions(result_info.success)
 			return return_value
 
 	@classmethod

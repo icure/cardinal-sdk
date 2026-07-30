@@ -38,6 +38,7 @@ import com.icure.cardinal.sdk.api.impl.initMaintenanceTaskBasicApi
 import com.icure.cardinal.sdk.api.impl.initMessageBasicApi
 import com.icure.cardinal.sdk.api.impl.initPatientBasicApi
 import com.icure.cardinal.sdk.api.impl.initReceiptBasicApi
+import com.icure.cardinal.sdk.api.impl.initRelatedPersonBasicApi
 import com.icure.cardinal.sdk.api.raw.RawAnonymousApi
 import com.icure.cardinal.sdk.api.raw.RawAnonymousAuthApi
 import com.icure.cardinal.sdk.api.raw.RawApiConfig
@@ -66,6 +67,7 @@ import com.icure.cardinal.sdk.api.raw.impl.RawMessageApiImpl
 import com.icure.cardinal.sdk.api.raw.impl.RawPatientApiImpl
 import com.icure.cardinal.sdk.api.raw.impl.RawPlaceApiImpl
 import com.icure.cardinal.sdk.api.raw.impl.RawReceiptApiImpl
+import com.icure.cardinal.sdk.api.raw.impl.RawRelatedPersonApiImpl
 import com.icure.cardinal.sdk.api.raw.impl.RawRoleApiImpl
 import com.icure.cardinal.sdk.api.raw.impl.RawTopicApiImpl
 import com.icure.cardinal.sdk.api.raw.impl.RawUserApiImpl
@@ -572,6 +574,15 @@ private class CardinalBaseApisImpl(
 				apiUrl,
 				authProvider,
 				NoAccessControlKeysHeadersProvider,
+				config.rawApiConfig
+			), config
+		)
+	}
+	override val relatedPerson by lazy {
+		initRelatedPersonBasicApi(
+			RawRelatedPersonApiImpl(
+				apiUrl,
+				authProvider,
 				config.rawApiConfig
 			), config
 		)

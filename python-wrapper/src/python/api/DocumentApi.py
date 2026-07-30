@@ -3,7 +3,7 @@ import json
 import base64
 import traceback
 from typing import Optional
-from cardinal_sdk.model import DecryptedDocument, Message, User, AccessLevel, SecretIdUseOption, SecretIdUseOptionUseAnySharedWithParent, serialize_message, serialize_secret_id_use_option, Patient, serialize_patient, Document, serialize_document, EncryptedDocument, EntityReferenceInGroup, deserialize_document, StoredDocumentIdentifier, DocumentShareOptions, GroupScoped
+from cardinal_sdk.model import DecryptedDocument, Message, User, AccessLevel, SecretIdUseOption, SecretIdUseOptionUseAnySharedWithParent, serialize_message, serialize_secret_id_use_option, DocumentDelegateOptions, Patient, serialize_patient, Document, serialize_document, EncryptedDocument, EntityReferenceInGroup, deserialize_document, StoredDocumentIdentifier, DocumentShareOptions, GroupScoped
 from cardinal_sdk.async_utils import execute_async_method_job
 from cardinal_sdk.kotlin_types import symbols, CALLBACK_PARAM_DATA_INPUT
 from cardinal_sdk.model.CallResult import create_result_from_json, interpret_kt_error
@@ -63,6 +63,47 @@ class DocumentApi:
 			return_value = DecryptedDocument._deserialize(result_info.success)
 			return return_value
 
+	async def with_encryption_metadata_and_delegates_linked_to_message_async(self, base: Optional[DecryptedDocument], message: Message, delegates: dict[str, DocumentDelegateOptions], user: Optional[User] = None, secret_id: SecretIdUseOption = SecretIdUseOptionUseAnySharedWithParent(), alternate_root_delegate_id: Optional[str] = None) -> DecryptedDocument:
+		def do_decode(raw_result):
+			return DecryptedDocument._deserialize(raw_result)
+		payload = {
+			"base": base.__serialize__() if base is not None else None,
+			"message": serialize_message(message),
+			"delegates": {k0: v0.__serialize__() for k0, v0 in delegates.items()},
+			"user": user.__serialize__() if user is not None else None,
+			"secretId": serialize_secret_id_use_option(secret_id),
+			"alternateRootDelegateId": alternate_root_delegate_id,
+		}
+		return await execute_async_method_job(
+			self.cardinal_sdk._executor,
+			True,
+			do_decode,
+			symbols.kotlin.root.com.icure.cardinal.sdk.py.api.DocumentApi.withEncryptionMetadataAndDelegatesLinkedToMessageAsync,
+			self.cardinal_sdk._native,
+			json.dumps(payload).encode('utf-8'),
+		)
+
+	def with_encryption_metadata_and_delegates_linked_to_message_blocking(self, base: Optional[DecryptedDocument], message: Message, delegates: dict[str, DocumentDelegateOptions], user: Optional[User] = None, secret_id: SecretIdUseOption = SecretIdUseOptionUseAnySharedWithParent(), alternate_root_delegate_id: Optional[str] = None) -> DecryptedDocument:
+		payload = {
+			"base": base.__serialize__() if base is not None else None,
+			"message": serialize_message(message),
+			"delegates": {k0: v0.__serialize__() for k0, v0 in delegates.items()},
+			"user": user.__serialize__() if user is not None else None,
+			"secretId": serialize_secret_id_use_option(secret_id),
+			"alternateRootDelegateId": alternate_root_delegate_id,
+		}
+		call_result = symbols.kotlin.root.com.icure.cardinal.sdk.py.api.DocumentApi.withEncryptionMetadataAndDelegatesLinkedToMessageBlocking(
+			self.cardinal_sdk._native,
+			json.dumps(payload).encode('utf-8'),
+		)
+		result_info = create_result_from_json(cast(call_result, c_char_p).value.decode('utf-8'))
+		symbols.DisposeString(call_result)
+		if result_info.failure is not None:
+			raise interpret_kt_error(result_info.failure)
+		else:
+			return_value = DecryptedDocument._deserialize(result_info.success)
+			return return_value
+
 	async def with_encryption_metadata_linked_to_patient_async(self, base: Optional[DecryptedDocument], patient: Patient, user: Optional[User] = None, delegates: dict[str, AccessLevel] = {}, secret_id: SecretIdUseOption = SecretIdUseOptionUseAnySharedWithParent(), alternate_root_delegate_id: Optional[str] = None) -> DecryptedDocument:
 		def do_decode(raw_result):
 			return DecryptedDocument._deserialize(raw_result)
@@ -104,6 +145,47 @@ class DocumentApi:
 			return_value = DecryptedDocument._deserialize(result_info.success)
 			return return_value
 
+	async def with_encryption_metadata_and_delegates_linked_to_patient_async(self, base: Optional[DecryptedDocument], patient: Patient, delegates: dict[str, DocumentDelegateOptions], user: Optional[User] = None, secret_id: SecretIdUseOption = SecretIdUseOptionUseAnySharedWithParent(), alternate_root_delegate_id: Optional[str] = None) -> DecryptedDocument:
+		def do_decode(raw_result):
+			return DecryptedDocument._deserialize(raw_result)
+		payload = {
+			"base": base.__serialize__() if base is not None else None,
+			"patient": serialize_patient(patient),
+			"delegates": {k0: v0.__serialize__() for k0, v0 in delegates.items()},
+			"user": user.__serialize__() if user is not None else None,
+			"secretId": serialize_secret_id_use_option(secret_id),
+			"alternateRootDelegateId": alternate_root_delegate_id,
+		}
+		return await execute_async_method_job(
+			self.cardinal_sdk._executor,
+			True,
+			do_decode,
+			symbols.kotlin.root.com.icure.cardinal.sdk.py.api.DocumentApi.withEncryptionMetadataAndDelegatesLinkedToPatientAsync,
+			self.cardinal_sdk._native,
+			json.dumps(payload).encode('utf-8'),
+		)
+
+	def with_encryption_metadata_and_delegates_linked_to_patient_blocking(self, base: Optional[DecryptedDocument], patient: Patient, delegates: dict[str, DocumentDelegateOptions], user: Optional[User] = None, secret_id: SecretIdUseOption = SecretIdUseOptionUseAnySharedWithParent(), alternate_root_delegate_id: Optional[str] = None) -> DecryptedDocument:
+		payload = {
+			"base": base.__serialize__() if base is not None else None,
+			"patient": serialize_patient(patient),
+			"delegates": {k0: v0.__serialize__() for k0, v0 in delegates.items()},
+			"user": user.__serialize__() if user is not None else None,
+			"secretId": serialize_secret_id_use_option(secret_id),
+			"alternateRootDelegateId": alternate_root_delegate_id,
+		}
+		call_result = symbols.kotlin.root.com.icure.cardinal.sdk.py.api.DocumentApi.withEncryptionMetadataAndDelegatesLinkedToPatientBlocking(
+			self.cardinal_sdk._native,
+			json.dumps(payload).encode('utf-8'),
+		)
+		result_info = create_result_from_json(cast(call_result, c_char_p).value.decode('utf-8'))
+		symbols.DisposeString(call_result)
+		if result_info.failure is not None:
+			raise interpret_kt_error(result_info.failure)
+		else:
+			return_value = DecryptedDocument._deserialize(result_info.success)
+			return return_value
+
 	async def with_encryption_metadata_unlinked_async(self, base: Optional[DecryptedDocument], user: Optional[User] = None, delegates: dict[str, AccessLevel] = {}, alternate_root_delegate_id: Optional[str] = None) -> DecryptedDocument:
 		def do_decode(raw_result):
 			return DecryptedDocument._deserialize(raw_result)
@@ -130,6 +212,43 @@ class DocumentApi:
 			"alternateRootDelegateId": alternate_root_delegate_id,
 		}
 		call_result = symbols.kotlin.root.com.icure.cardinal.sdk.py.api.DocumentApi.withEncryptionMetadataUnlinkedBlocking(
+			self.cardinal_sdk._native,
+			json.dumps(payload).encode('utf-8'),
+		)
+		result_info = create_result_from_json(cast(call_result, c_char_p).value.decode('utf-8'))
+		symbols.DisposeString(call_result)
+		if result_info.failure is not None:
+			raise interpret_kt_error(result_info.failure)
+		else:
+			return_value = DecryptedDocument._deserialize(result_info.success)
+			return return_value
+
+	async def with_encryption_metadata_and_delegates_unlinked_async(self, base: Optional[DecryptedDocument], delegates: dict[str, DocumentDelegateOptions], user: Optional[User] = None, alternate_root_delegate_id: Optional[str] = None) -> DecryptedDocument:
+		def do_decode(raw_result):
+			return DecryptedDocument._deserialize(raw_result)
+		payload = {
+			"base": base.__serialize__() if base is not None else None,
+			"delegates": {k0: v0.__serialize__() for k0, v0 in delegates.items()},
+			"user": user.__serialize__() if user is not None else None,
+			"alternateRootDelegateId": alternate_root_delegate_id,
+		}
+		return await execute_async_method_job(
+			self.cardinal_sdk._executor,
+			True,
+			do_decode,
+			symbols.kotlin.root.com.icure.cardinal.sdk.py.api.DocumentApi.withEncryptionMetadataAndDelegatesUnlinkedAsync,
+			self.cardinal_sdk._native,
+			json.dumps(payload).encode('utf-8'),
+		)
+
+	def with_encryption_metadata_and_delegates_unlinked_blocking(self, base: Optional[DecryptedDocument], delegates: dict[str, DocumentDelegateOptions], user: Optional[User] = None, alternate_root_delegate_id: Optional[str] = None) -> DecryptedDocument:
+		payload = {
+			"base": base.__serialize__() if base is not None else None,
+			"delegates": {k0: v0.__serialize__() for k0, v0 in delegates.items()},
+			"user": user.__serialize__() if user is not None else None,
+			"alternateRootDelegateId": alternate_root_delegate_id,
+		}
+		call_result = symbols.kotlin.root.com.icure.cardinal.sdk.py.api.DocumentApi.withEncryptionMetadataAndDelegatesUnlinkedBlocking(
 			self.cardinal_sdk._native,
 			json.dumps(payload).encode('utf-8'),
 		)
@@ -2549,6 +2668,49 @@ class DocumentApiInGroup:
 			return_value = GroupScoped._deserialize(result_info.success, lambda x1: DecryptedDocument._deserialize(x1))
 			return return_value
 
+	async def with_encryption_metadata_and_delegates_linked_to_message_async(self, entity_group_id: str, base: Optional[DecryptedDocument], message: GroupScoped[Message], delegates: dict[str, DocumentDelegateOptions], user: Optional[User] = None, secret_id: SecretIdUseOption = SecretIdUseOptionUseAnySharedWithParent(), alternate_root_delegate_id: Optional[str] = None) -> GroupScoped[DecryptedDocument]:
+		def do_decode(raw_result):
+			return GroupScoped._deserialize(raw_result, lambda x1: DecryptedDocument._deserialize(x1))
+		payload = {
+			"entityGroupId": entity_group_id,
+			"base": base.__serialize__() if base is not None else None,
+			"message": message.__serialize__(lambda x0: serialize_message(x0)),
+			"delegates": {k0: v0.__serialize__() for k0, v0 in delegates.items()},
+			"user": user.__serialize__() if user is not None else None,
+			"secretId": serialize_secret_id_use_option(secret_id),
+			"alternateRootDelegateId": alternate_root_delegate_id,
+		}
+		return await execute_async_method_job(
+			self.cardinal_sdk._executor,
+			True,
+			do_decode,
+			symbols.kotlin.root.com.icure.cardinal.sdk.py.api.DocumentApi.inGroup.withEncryptionMetadataAndDelegatesLinkedToMessageAsync,
+			self.cardinal_sdk._native,
+			json.dumps(payload).encode('utf-8'),
+		)
+
+	def with_encryption_metadata_and_delegates_linked_to_message_blocking(self, entity_group_id: str, base: Optional[DecryptedDocument], message: GroupScoped[Message], delegates: dict[str, DocumentDelegateOptions], user: Optional[User] = None, secret_id: SecretIdUseOption = SecretIdUseOptionUseAnySharedWithParent(), alternate_root_delegate_id: Optional[str] = None) -> GroupScoped[DecryptedDocument]:
+		payload = {
+			"entityGroupId": entity_group_id,
+			"base": base.__serialize__() if base is not None else None,
+			"message": message.__serialize__(lambda x0: serialize_message(x0)),
+			"delegates": {k0: v0.__serialize__() for k0, v0 in delegates.items()},
+			"user": user.__serialize__() if user is not None else None,
+			"secretId": serialize_secret_id_use_option(secret_id),
+			"alternateRootDelegateId": alternate_root_delegate_id,
+		}
+		call_result = symbols.kotlin.root.com.icure.cardinal.sdk.py.api.DocumentApi.inGroup.withEncryptionMetadataAndDelegatesLinkedToMessageBlocking(
+			self.cardinal_sdk._native,
+			json.dumps(payload).encode('utf-8'),
+		)
+		result_info = create_result_from_json(cast(call_result, c_char_p).value.decode('utf-8'))
+		symbols.DisposeString(call_result)
+		if result_info.failure is not None:
+			raise interpret_kt_error(result_info.failure)
+		else:
+			return_value = GroupScoped._deserialize(result_info.success, lambda x1: DecryptedDocument._deserialize(x1))
+			return return_value
+
 	async def with_encryption_metadata_linked_to_patient_async(self, entity_group_id: str, base: Optional[DecryptedDocument], patient: GroupScoped[Patient], user: Optional[User] = None, delegates: dict[str, AccessLevel] = {}, secret_id: SecretIdUseOption = SecretIdUseOptionUseAnySharedWithParent(), alternate_root_delegate_id: Optional[str] = None) -> GroupScoped[DecryptedDocument]:
 		def do_decode(raw_result):
 			return GroupScoped._deserialize(raw_result, lambda x1: DecryptedDocument._deserialize(x1))
@@ -2592,6 +2754,49 @@ class DocumentApiInGroup:
 			return_value = GroupScoped._deserialize(result_info.success, lambda x1: DecryptedDocument._deserialize(x1))
 			return return_value
 
+	async def with_encryption_metadata_and_delegates_linked_to_patient_async(self, entity_group_id: str, base: Optional[DecryptedDocument], patient: GroupScoped[Patient], delegates: dict[str, DocumentDelegateOptions], user: Optional[User] = None, secret_id: SecretIdUseOption = SecretIdUseOptionUseAnySharedWithParent(), alternate_root_delegate_id: Optional[str] = None) -> GroupScoped[DecryptedDocument]:
+		def do_decode(raw_result):
+			return GroupScoped._deserialize(raw_result, lambda x1: DecryptedDocument._deserialize(x1))
+		payload = {
+			"entityGroupId": entity_group_id,
+			"base": base.__serialize__() if base is not None else None,
+			"patient": patient.__serialize__(lambda x0: serialize_patient(x0)),
+			"delegates": {k0: v0.__serialize__() for k0, v0 in delegates.items()},
+			"user": user.__serialize__() if user is not None else None,
+			"secretId": serialize_secret_id_use_option(secret_id),
+			"alternateRootDelegateId": alternate_root_delegate_id,
+		}
+		return await execute_async_method_job(
+			self.cardinal_sdk._executor,
+			True,
+			do_decode,
+			symbols.kotlin.root.com.icure.cardinal.sdk.py.api.DocumentApi.inGroup.withEncryptionMetadataAndDelegatesLinkedToPatientAsync,
+			self.cardinal_sdk._native,
+			json.dumps(payload).encode('utf-8'),
+		)
+
+	def with_encryption_metadata_and_delegates_linked_to_patient_blocking(self, entity_group_id: str, base: Optional[DecryptedDocument], patient: GroupScoped[Patient], delegates: dict[str, DocumentDelegateOptions], user: Optional[User] = None, secret_id: SecretIdUseOption = SecretIdUseOptionUseAnySharedWithParent(), alternate_root_delegate_id: Optional[str] = None) -> GroupScoped[DecryptedDocument]:
+		payload = {
+			"entityGroupId": entity_group_id,
+			"base": base.__serialize__() if base is not None else None,
+			"patient": patient.__serialize__(lambda x0: serialize_patient(x0)),
+			"delegates": {k0: v0.__serialize__() for k0, v0 in delegates.items()},
+			"user": user.__serialize__() if user is not None else None,
+			"secretId": serialize_secret_id_use_option(secret_id),
+			"alternateRootDelegateId": alternate_root_delegate_id,
+		}
+		call_result = symbols.kotlin.root.com.icure.cardinal.sdk.py.api.DocumentApi.inGroup.withEncryptionMetadataAndDelegatesLinkedToPatientBlocking(
+			self.cardinal_sdk._native,
+			json.dumps(payload).encode('utf-8'),
+		)
+		result_info = create_result_from_json(cast(call_result, c_char_p).value.decode('utf-8'))
+		symbols.DisposeString(call_result)
+		if result_info.failure is not None:
+			raise interpret_kt_error(result_info.failure)
+		else:
+			return_value = GroupScoped._deserialize(result_info.success, lambda x1: DecryptedDocument._deserialize(x1))
+			return return_value
+
 	async def with_encryption_metadata_unlinked_async(self, entity_group_id: str, base: Optional[DecryptedDocument], user: Optional[User] = None, delegates: dict[str, AccessLevel] = {}, alternate_root_delegate_id: Optional[str] = None) -> GroupScoped[DecryptedDocument]:
 		def do_decode(raw_result):
 			return GroupScoped._deserialize(raw_result, lambda x1: DecryptedDocument._deserialize(x1))
@@ -2620,6 +2825,45 @@ class DocumentApiInGroup:
 			"alternateRootDelegateId": alternate_root_delegate_id,
 		}
 		call_result = symbols.kotlin.root.com.icure.cardinal.sdk.py.api.DocumentApi.inGroup.withEncryptionMetadataUnlinkedBlocking(
+			self.cardinal_sdk._native,
+			json.dumps(payload).encode('utf-8'),
+		)
+		result_info = create_result_from_json(cast(call_result, c_char_p).value.decode('utf-8'))
+		symbols.DisposeString(call_result)
+		if result_info.failure is not None:
+			raise interpret_kt_error(result_info.failure)
+		else:
+			return_value = GroupScoped._deserialize(result_info.success, lambda x1: DecryptedDocument._deserialize(x1))
+			return return_value
+
+	async def with_encryption_metadata_and_delegates_unlinked_async(self, entity_group_id: str, base: Optional[DecryptedDocument], delegates: dict[str, DocumentDelegateOptions], user: Optional[User] = None, alternate_root_delegate_id: Optional[str] = None) -> GroupScoped[DecryptedDocument]:
+		def do_decode(raw_result):
+			return GroupScoped._deserialize(raw_result, lambda x1: DecryptedDocument._deserialize(x1))
+		payload = {
+			"entityGroupId": entity_group_id,
+			"base": base.__serialize__() if base is not None else None,
+			"delegates": {k0: v0.__serialize__() for k0, v0 in delegates.items()},
+			"user": user.__serialize__() if user is not None else None,
+			"alternateRootDelegateId": alternate_root_delegate_id,
+		}
+		return await execute_async_method_job(
+			self.cardinal_sdk._executor,
+			True,
+			do_decode,
+			symbols.kotlin.root.com.icure.cardinal.sdk.py.api.DocumentApi.inGroup.withEncryptionMetadataAndDelegatesUnlinkedAsync,
+			self.cardinal_sdk._native,
+			json.dumps(payload).encode('utf-8'),
+		)
+
+	def with_encryption_metadata_and_delegates_unlinked_blocking(self, entity_group_id: str, base: Optional[DecryptedDocument], delegates: dict[str, DocumentDelegateOptions], user: Optional[User] = None, alternate_root_delegate_id: Optional[str] = None) -> GroupScoped[DecryptedDocument]:
+		payload = {
+			"entityGroupId": entity_group_id,
+			"base": base.__serialize__() if base is not None else None,
+			"delegates": {k0: v0.__serialize__() for k0, v0 in delegates.items()},
+			"user": user.__serialize__() if user is not None else None,
+			"alternateRootDelegateId": alternate_root_delegate_id,
+		}
+		call_result = symbols.kotlin.root.com.icure.cardinal.sdk.py.api.DocumentApi.inGroup.withEncryptionMetadataAndDelegatesUnlinkedBlocking(
 			self.cardinal_sdk._native,
 			json.dumps(payload).encode('utf-8'),
 		)

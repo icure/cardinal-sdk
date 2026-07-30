@@ -36,6 +36,7 @@ import com.icure.cardinal.sdk.model.embed.AccessLevel
 import com.icure.cardinal.sdk.model.embed.DelegationTag
 import com.icure.cardinal.sdk.model.extensions.autoDelegationsFor
 import com.icure.cardinal.sdk.model.extensions.dataOwnerId
+import com.icure.cardinal.sdk.model.extensions.toDefaultDelegateOptions
 import com.icure.cardinal.sdk.model.specializations.HexString
 import com.icure.cardinal.sdk.options.ApiConfiguration
 import com.icure.cardinal.sdk.options.BasicApiConfiguration
@@ -268,7 +269,6 @@ private class MaintenanceTaskApiImpl(
 		)
 	}
 
-
 	override suspend fun withEncryptionMetadata(
 		maintenanceTask: DecryptedMaintenanceTask?,
 		user: User?,
@@ -276,18 +276,18 @@ private class MaintenanceTaskApiImpl(
 		alternateRootDelegateId: String?,
 	): DecryptedMaintenanceTask =
 		config.crypto.entity.entityWithInitializedEncryptedMetadata(
-            entityGroupId = null,
-            entity = (maintenanceTask ?: DecryptedMaintenanceTask(config.crypto.primitives.strongRandom.randomUUID())).copy(
-                created = maintenanceTask?.created ?: currentEpochMs(),
-                modified = maintenanceTask?.modified ?: currentEpochMs(),
-                responsible = maintenanceTask?.responsible ?: user?.takeIf { config.autofillAuthor }?.dataOwnerId,
-                author = maintenanceTask?.author ?: user?.id?.takeIf { config.autofillAuthor },
-            ),
-            entityType = EntityWithEncryptionMetadataTypeName.MaintenanceTask,
-            owningEntityDetails = null,
-            initializeEncryptionKey = true,
-            autoDelegations = (delegates + (user?.autoDelegationsFor(DelegationTag.All)
-                ?: emptyMap())).keyAsLocalDataOwnerReferences(),
+			entityGroupId = null,
+			entity = (maintenanceTask ?: DecryptedMaintenanceTask(config.crypto.primitives.strongRandom.randomUUID())).copy(
+				created = maintenanceTask?.created ?: currentEpochMs(),
+				modified = maintenanceTask?.modified ?: currentEpochMs(),
+				responsible = maintenanceTask?.responsible ?: user?.takeIf { config.autofillAuthor }?.dataOwnerId,
+				author = maintenanceTask?.author ?: user?.id?.takeIf { config.autofillAuthor },
+			),
+			entityType = EntityWithEncryptionMetadataTypeName.MaintenanceTask,
+			owningEntityDetails = null,
+			initializeEncryptionKey = true,
+			autoDelegations = (delegates.mapValues { it.value.toDefaultDelegateOptions() } + (user?.autoDelegationsFor(DelegationTag.All)
+				?: emptyMap())).keyAsLocalDataOwnerReferences(),
 			alternateRootDataOwnerReference = alternateRootDelegateId?.let { EntityReferenceInGroup(it, null) },
 		).updatedEntity
 

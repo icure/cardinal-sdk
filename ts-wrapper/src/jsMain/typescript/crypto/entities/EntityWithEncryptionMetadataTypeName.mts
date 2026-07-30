@@ -22,5 +22,6 @@ export enum EntityWithEncryptionMetadataTypeName {
 	Message = "Message",
 	Patient = "Patient",
 	Receipt = "Receipt",
+	RelatedPerson = "RelatedPerson",
 	Topic = "Topic"
 }

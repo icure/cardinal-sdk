@@ -2,6 +2,7 @@
 package com.icure.cardinal.sdk.py.api.AccessLogApi.inGroup
 
 import com.icure.cardinal.sdk.CardinalApis
+import com.icure.cardinal.sdk.crypto.entities.AccessLogDelegateOptions
 import com.icure.cardinal.sdk.crypto.entities.SecretIdUseOption
 import com.icure.cardinal.sdk.filters.FilterOptions
 import com.icure.cardinal.sdk.filters.SortableFilterOptions
@@ -48,7 +49,7 @@ import kotlinx.serialization.builtins.serializer
 private class WithEncryptionMetadataParams(
 	public val entityGroupId: String,
 	public val base: DecryptedAccessLog?,
-	public val patient: GroupScoped<Patient>,
+	public val patient: GroupScoped<Patient>? = null,
 	public val user: User? = null,
 	@Serializable(MapAsArraySerializer::class)
 	@OptIn(InternalIcureApi::class)
@@ -94,6 +95,65 @@ public fun withEncryptionMetadataAsync(
 				decodedParams.patient,
 				decodedParams.user,
 				decodedParams.delegates,
+				decodedParams.secretId,
+				decodedParams.alternateRootDelegateReference,
+			)
+		}.toPyStringAsyncCallback(GroupScoped.serializer(DecryptedAccessLog.serializer()), resultCallback)
+	}
+}.failureToPyStringAsyncCallback(resultCallback)
+
+@Serializable
+private class WithEncryptionMetadataAndDelegatesParams(
+	public val entityGroupId: String,
+	public val base: DecryptedAccessLog?,
+	@Serializable(MapAsArraySerializer::class)
+	@OptIn(InternalIcureApi::class)
+	public val delegates: Map<EntityReferenceInGroup, AccessLogDelegateOptions>,
+	public val patient: GroupScoped<Patient>? = null,
+	public val user: User? = null,
+	public val secretId: SecretIdUseOption =
+			com.icure.cardinal.sdk.crypto.entities.SecretIdUseOption.UseAnySharedWithParent,
+	public val alternateRootDelegateReference: EntityReferenceInGroup? = null,
+)
+
+@OptIn(InternalIcureApi::class)
+public fun withEncryptionMetadataAndDelegatesBlocking(sdk: CardinalApis, params: String): String =
+		kotlin.runCatching {
+	val decodedParams =
+			fullLanguageInteropJson.decodeFromString<WithEncryptionMetadataAndDelegatesParams>(params)
+	runBlocking {
+		sdk.accessLog.inGroup.withEncryptionMetadataAndDelegates(
+			decodedParams.entityGroupId,
+			decodedParams.base,
+			decodedParams.delegates,
+			decodedParams.patient,
+			decodedParams.user,
+			decodedParams.secretId,
+			decodedParams.alternateRootDelegateReference,
+		)
+	}
+}.toPyString(GroupScoped.serializer(DecryptedAccessLog.serializer()))
+
+@OptIn(
+	ExperimentalForeignApi::class,
+	InternalIcureApi::class,
+)
+public fun withEncryptionMetadataAndDelegatesAsync(
+	sdk: CardinalApis,
+	params: String,
+	resultCallback: CPointer<CFunction<(CValues<ByteVarOf<Byte>>?,
+			CValues<ByteVarOf<Byte>>?) -> Unit>>,
+): COpaquePointer? = kotlin.runCatching {
+	val decodedParams =
+			fullLanguageInteropJson.decodeFromString<WithEncryptionMetadataAndDelegatesParams>(params)
+	GlobalScope.launch {
+		kotlin.runCatching {
+			sdk.accessLog.inGroup.withEncryptionMetadataAndDelegates(
+				decodedParams.entityGroupId,
+				decodedParams.base,
+				decodedParams.delegates,
+				decodedParams.patient,
+				decodedParams.user,
 				decodedParams.secretId,
 				decodedParams.alternateRootDelegateReference,
 			)

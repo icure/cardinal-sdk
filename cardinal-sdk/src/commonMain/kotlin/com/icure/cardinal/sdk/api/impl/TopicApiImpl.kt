@@ -13,9 +13,11 @@ import com.icure.cardinal.sdk.api.TopicInGroupApi
 import com.icure.cardinal.sdk.api.raw.RawTopicApi
 import com.icure.cardinal.sdk.api.raw.successBodyOrNull404
 import com.icure.cardinal.sdk.api.raw.successBodyOrThrowRevisionConflict
+import com.icure.cardinal.sdk.crypto.entities.DelegateOptions
 import com.icure.cardinal.sdk.crypto.entities.EntityWithEncryptionMetadataTypeName
 import com.icure.cardinal.sdk.crypto.entities.OwningEntityDetails
 import com.icure.cardinal.sdk.crypto.entities.SecretIdUseOption
+import com.icure.cardinal.sdk.crypto.entities.TopicDelegateOptions
 import com.icure.cardinal.sdk.crypto.entities.TopicShareOptions
 import com.icure.cardinal.sdk.exceptions.NotFoundException
 import com.icure.cardinal.sdk.filters.BaseFilterOptions
@@ -38,6 +40,7 @@ import com.icure.cardinal.sdk.model.embed.AccessLevel
 import com.icure.cardinal.sdk.model.embed.DelegationTag
 import com.icure.cardinal.sdk.model.extensions.autoDelegationsFor
 import com.icure.cardinal.sdk.model.extensions.dataOwnerId
+import com.icure.cardinal.sdk.model.extensions.toDefaultDelegateOptions
 import com.icure.cardinal.sdk.model.requests.topic.AddParticipant
 import com.icure.cardinal.sdk.model.requests.topic.RemoveParticipant
 import com.icure.cardinal.sdk.model.specializations.HexString
@@ -514,6 +517,32 @@ private class TopicApiImpl(
 					patient = patient?.entity,
 					patientGroupId = patient?.groupId,
 					user = user,
+					delegates = delegates.keyAsLocalDataOwnerReferences(),
+					secretId = secretId,
+					alternateRootDelegateId = alternateRootDelegateId
+				),
+				groupId
+			)
+
+		override suspend fun withEncryptionMetadataAndDelegates(
+			groupId: String,
+			base: DecryptedTopic?,
+			patient: GroupScoped<Patient>?,
+			delegates: @JsMapAsObjectArray(
+				keyEntryName = "delegate",
+				valueEntryName = "delegateOptions"
+			) Map<EntityReferenceInGroup, TopicDelegateOptions>,
+			user: User?,
+			secretId: SecretIdUseOption,
+			alternateRootDelegateId: String?
+		): GroupScoped<DecryptedTopic> =
+			GroupScoped(
+				doWithEncryptionMetadataAndDelegates(
+					groupId = groupId,
+					base = base,
+					patient = patient?.entity,
+					patientGroupId = patient?.groupId,
+					user = user,
 					delegates = delegates,
 					secretId = secretId,
 					alternateRootDelegateId = alternateRootDelegateId
@@ -568,7 +597,26 @@ private class TopicApiImpl(
 			patient = patient,
 			patientGroupId = null,
 			user = user,
-			delegates = delegates,
+			delegates = delegates.keyAsLocalDataOwnerReferences(),
+			secretId = secretId,
+			alternateRootDelegateId = alternateRootDelegateId
+		)
+
+	override suspend fun withEncryptionMetadataAndDelegates(
+		base: DecryptedTopic?,
+		patient: Patient?,
+		delegates: Map<String, TopicDelegateOptions>,
+		user: User?,
+		secretId: SecretIdUseOption,
+		alternateRootDelegateId: String?
+	): DecryptedTopic =
+		doWithEncryptionMetadataAndDelegates(
+			groupId = null,
+			base = base,
+			patient = patient,
+			patientGroupId = null,
+			user = user,
+			delegates = delegates.keyAsLocalDataOwnerReferences(),
 			secretId = secretId,
 			alternateRootDelegateId = alternateRootDelegateId
 		)
@@ -579,7 +627,28 @@ private class TopicApiImpl(
 		patient: Patient?,
 		patientGroupId: String?,
 		user: User?,
-		delegates: Map<String, AccessLevel>,
+		delegates: @JsMapAsObjectArray(keyEntryName = "delegate", valueEntryName = "accessLevel") Map<EntityReferenceInGroup, AccessLevel>,
+		secretId: SecretIdUseOption,
+		alternateRootDelegateId: String?
+	): DecryptedTopic =
+		doWithEncryptionMetadataAndDelegates(
+			groupId = groupId,
+			base = base,
+			patient = patient,
+			patientGroupId = patientGroupId,
+			user = user,
+			delegates = delegates.mapValues { it.value.toDefaultDelegateOptions() },
+			secretId = secretId,
+			alternateRootDelegateId = alternateRootDelegateId
+		)
+
+	private suspend fun doWithEncryptionMetadataAndDelegates(
+		groupId: String?,
+		base: DecryptedTopic?,
+		patient: Patient?,
+		patientGroupId: String?,
+		user: User?,
+		delegates: @JsMapAsObjectArray(keyEntryName = "delegate", valueEntryName = "delegateOptions") Map<EntityReferenceInGroup, DelegateOptions>,
 		secretId: SecretIdUseOption,
 		alternateRootDelegateId: String?
 	): DecryptedTopic =
@@ -605,8 +674,8 @@ private class TopicApiImpl(
 				)
 			},
 			initializeEncryptionKey = true,
-			autoDelegations = (delegates + user?.autoDelegationsFor(DelegationTag.MedicalInformation)
-				.orEmpty()).keyAsLocalDataOwnerReferences(),
+			autoDelegations = delegates +
+				user?.autoDelegationsFor(DelegationTag.MedicalInformation).orEmpty().keyAsLocalDataOwnerReferences(),
 			alternateRootDataOwnerReference = alternateRootDelegateId?.let { EntityReferenceInGroup(it, groupId) },
 		).updatedEntity
 

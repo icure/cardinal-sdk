@@ -39,6 +39,8 @@ import com.icure.cardinal.sdk.js.api.PlaceApiJs
 import com.icure.cardinal.sdk.js.api.ReceiptApiJs
 import com.icure.cardinal.sdk.js.api.ReceiptBasicApiJs
 import com.icure.cardinal.sdk.js.api.RecoveryApiJs
+import com.icure.cardinal.sdk.js.api.RelatedPersonApiJs
+import com.icure.cardinal.sdk.js.api.RelatedPersonBasicApiJs
 import com.icure.cardinal.sdk.js.api.RoleApiJs
 import com.icure.cardinal.sdk.js.api.SystemApiJs
 import com.icure.cardinal.sdk.js.api.TopicApiJs
@@ -78,6 +80,7 @@ external interface CardinalApisJs {
 	val cardinalMaintenanceTask: CardinalMaintenanceTaskApiJs
 	val dataOwner: DataOwnerApiJs
 	val calendarItemType: CalendarItemTypeApiJs
+	val relatedPerson: RelatedPersonApiJs
 }
 
 @JsName("CardinalSdk")
@@ -114,6 +117,7 @@ external interface CardinalBaseApisJs {
 	val receipt: ReceiptBasicApiJs
 	val topic: TopicBasicApiJs
 	val calendarItemType: CalendarItemTypeApiJs
+	val relatedPerson: RelatedPersonBasicApiJs
 }
 
 @JsName("CardinalBaseSdk")

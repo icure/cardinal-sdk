@@ -8,6 +8,7 @@ import com.icure.cardinal.sdk.model.base.Extendable
 import com.icure.cardinal.sdk.model.base.HasEncryptionMetadata
 import com.icure.cardinal.sdk.model.base.HasEndOfLife
 import com.icure.cardinal.sdk.model.base.HasIdentifier
+import com.icure.cardinal.sdk.model.base.HasMedicalLocation
 import com.icure.cardinal.sdk.model.base.ICureDocument
 import com.icure.cardinal.sdk.model.base.Identifier
 import com.icure.cardinal.sdk.model.base.StoredDocument
@@ -64,6 +65,7 @@ import kotlin.Deprecated
 sealed interface Contact :
 	StoredDocument,
 	ICureDocument<String>,
+	HasMedicalLocation,
 	HasEncryptionMetadata,
 	Encryptable,
 	HasEndOfLife,

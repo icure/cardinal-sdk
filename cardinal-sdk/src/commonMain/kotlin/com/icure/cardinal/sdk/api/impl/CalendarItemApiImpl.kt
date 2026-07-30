@@ -14,7 +14,9 @@ import com.icure.cardinal.sdk.api.raw.RawCalendarItemApi
 import com.icure.cardinal.sdk.api.raw.RawDataOwnerApi
 import com.icure.cardinal.sdk.api.raw.successBodyOrNull404
 import com.icure.cardinal.sdk.api.raw.successBodyOrThrowRevisionConflict
+import com.icure.cardinal.sdk.crypto.entities.CalendarItemDelegateOptions
 import com.icure.cardinal.sdk.crypto.entities.CalendarItemShareOptions
+import com.icure.cardinal.sdk.crypto.entities.DelegateOptions
 import com.icure.cardinal.sdk.crypto.entities.DelegateShareOptions
 import com.icure.cardinal.sdk.crypto.entities.EntityWithEncryptionMetadataTypeName
 import com.icure.cardinal.sdk.crypto.entities.OwningEntityDetails
@@ -41,6 +43,7 @@ import com.icure.cardinal.sdk.model.embed.AccessLevel
 import com.icure.cardinal.sdk.model.embed.DelegationTag
 import com.icure.cardinal.sdk.model.extensions.autoDelegationsFor
 import com.icure.cardinal.sdk.model.extensions.dataOwnerId
+import com.icure.cardinal.sdk.model.extensions.toDefaultDelegateOptions
 import com.icure.cardinal.sdk.model.requests.RequestedPermission
 import com.icure.cardinal.sdk.model.specializations.HexString
 import com.icure.cardinal.sdk.model.toStoredDocumentIdentifier
@@ -337,7 +340,7 @@ private class CalendarItemFlavouredApiImpl<E : CalendarItem>(
 		doShareWithMany(groupId = null, calendarItem, delegates.keyAsLocalDataOwnerReferences())
 
 	override suspend fun linkToPatient(calendarItem: CalendarItem, patient: Patient, shareLinkWithDelegates: Set<String>): E {
-		require(calendarItem.secretForeignKeys.isNotEmpty()) { "Calendar item ${calendarItem.id} is already linked to a patient" }
+		require(calendarItem.secretForeignKeys.isEmpty()) { "Calendar item ${calendarItem.id} is already linked to a patient" }
 		val currentDataOwnerId = dataOwnerApi.getCurrentDataOwner().successBody().dataOwner.id
 		val delegates = shareLinkWithDelegates + currentDataOwnerId
 		val secretForeignKeys = config.crypto.entity.getConfidentialSecretIdsOf(
@@ -502,7 +505,7 @@ private class CalendarItemBasicFlavourlessInGroupApiImpl(rawApi: RawCalendarItem
 	}
 
 	override suspend fun purgeCalendarItemsByIds(entityIds: List<GroupScoped<StoredDocumentIdentifier>>): List<GroupScoped<StoredDocumentIdentifier>> =
-		entityIds.mapUniqueIdentifiablesChunkedByGroup { groupId, batch -> 
+		entityIds.mapUniqueIdentifiablesChunkedByGroup { groupId, batch ->
 			doPurgeCalendarItemsByIds(groupId, batch)
 		}
 }
@@ -580,13 +583,38 @@ private class CalendarItemApiImpl(
 		): GroupScoped<DecryptedCalendarItem> =
 			GroupScoped(
 				doWithEncryptionMetadata(
-					entityGroupId,
-					base,
-					patient?.let { Pair(it.entity, it.groupId) },
-					user,
-					delegates,
-					secretId,
-					alternateRootDelegateReference,
+					entityGroupId = entityGroupId,
+					base = base,
+					patientInGroup = patient?.let { Pair(it.entity, it.groupId) },
+					user = user,
+					delegates = delegates,
+					secretId = secretId,
+					alternateRootDataOwnerReference = alternateRootDelegateReference,
+				),
+				entityGroupId,
+			)
+
+		override suspend fun withEncryptionMetadataAndDelegates(
+			entityGroupId: String,
+			base: DecryptedCalendarItem?,
+			patient: GroupScoped<Patient>?,
+			delegates: @JsMapAsObjectArray(
+				keyEntryName = "delegate",
+				valueEntryName = "delegateOptions",
+			) Map<EntityReferenceInGroup, CalendarItemDelegateOptions>,
+			user: User?,
+			secretId: SecretIdUseOption,
+			alternateRootDelegateReference: EntityReferenceInGroup?,
+		): GroupScoped<DecryptedCalendarItem> =
+			GroupScoped(
+				doWithEncryptionMetadataAndDelegates(
+					entityGroupId = entityGroupId,
+					base = base,
+					patientInGroup = patient?.let { Pair(it.entity, it.groupId) },
+					user = user,
+					delegates = delegates,
+					secretId = secretId,
+					alternateRootDataOwnerReference = alternateRootDelegateReference,
 				),
 				entityGroupId,
 			)
@@ -670,13 +698,31 @@ private class CalendarItemApiImpl(
 		alternateRootDelegateId: String?,
 	) =
 		doWithEncryptionMetadata(
-			null,
-			base,
-			patient?.let { Pair(it, null) },
-			user,
-			delegates.keyAsLocalDataOwnerReferences(),
-			secretId,
-			alternateRootDelegateId?.let { EntityReferenceInGroup(it, null) }
+			entityGroupId = null,
+			base = base,
+			patientInGroup = patient?.let { Pair(it, null) },
+			user = user,
+			delegates = delegates.keyAsLocalDataOwnerReferences(),
+			secretId = secretId,
+			alternateRootDataOwnerReference = alternateRootDelegateId?.let { EntityReferenceInGroup(it, null) }
+		)
+
+	override suspend fun withEncryptionMetadataAndDelegates(
+		base: DecryptedCalendarItem?,
+		patient: Patient?,
+		delegates: Map<String, CalendarItemDelegateOptions>,
+		user: User?,
+		secretId: SecretIdUseOption,
+		alternateRootDelegateId: String?,
+	) =
+		doWithEncryptionMetadataAndDelegates(
+			entityGroupId = null,
+			base = base,
+			patientInGroup = patient?.let { Pair(it, null) },
+			user = user,
+			delegates = delegates.keyAsLocalDataOwnerReferences(),
+			secretId = secretId,
+			alternateRootDataOwnerReference = alternateRootDelegateId?.let { EntityReferenceInGroup(it, null) }
 		)
 
 	private suspend fun doWithEncryptionMetadata(
@@ -685,6 +731,25 @@ private class CalendarItemApiImpl(
 		patientInGroup: Pair<Patient, String?>?,
 		user: User?,
 		delegates: @JsMapAsObjectArray(keyEntryName = "delegate", valueEntryName = "accessLevel") Map<EntityReferenceInGroup, AccessLevel>,
+		secretId: SecretIdUseOption,
+		alternateRootDataOwnerReference: EntityReferenceInGroup?
+	): DecryptedCalendarItem =
+		doWithEncryptionMetadataAndDelegates(
+			entityGroupId = entityGroupId,
+			base = base,
+			patientInGroup = patientInGroup,
+			user = user,
+			delegates = delegates.mapValues { it.value.toDefaultDelegateOptions() },
+			secretId = secretId,
+			alternateRootDataOwnerReference = alternateRootDataOwnerReference,
+		)
+
+	private suspend fun doWithEncryptionMetadataAndDelegates(
+		entityGroupId: String?,
+		base: DecryptedCalendarItem?,
+		patientInGroup: Pair<Patient, String?>?,
+		delegates: @JsMapAsObjectArray(keyEntryName = "delegate", valueEntryName = "delegateOptions") Map<EntityReferenceInGroup, DelegateOptions>,
+		user: User?,
 		secretId: SecretIdUseOption,
 		alternateRootDataOwnerReference: EntityReferenceInGroup?
 	): DecryptedCalendarItem =

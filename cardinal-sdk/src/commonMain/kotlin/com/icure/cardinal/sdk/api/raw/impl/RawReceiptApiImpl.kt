@@ -442,6 +442,38 @@ class RawReceiptApiImpl(
 			setBody(receiptIds)
 		}.wrap()
 
+	override suspend fun listReceiptsBetweenDatesInGroup(
+		groupId: String,
+		startDate: Long?,
+		endDate: Long?,
+		descending: Boolean?,
+	): HttpResponse<List<EncryptedReceipt>> =
+		get(authProvider, groupId) {
+			url {
+				takeFrom(apiUrl)
+				appendPathSegments("rest", "v2", "receipt", "inGroup", groupId, "byCreated")
+				parameter("startDate", startDate)
+				parameter("endDate", endDate)
+				parameter("descending", descending)
+				parameter("ts", GMTDate().timestamp)
+			}
+			accept(Application.Json)
+		}.wrap()
+
+	override suspend fun getReceiptAttachmentInGroup(
+		groupId: String,
+		receiptId: String,
+		attachmentId: String,
+	): HttpResponse<ByteArray> =
+		get(authProvider, groupId) {
+			url {
+				takeFrom(apiUrl)
+				appendPathSegments("rest", "v2", "receipt", "inGroup", groupId, receiptId, "attachment", attachmentId)
+				parameter("ts", GMTDate().timestamp)
+			}
+			accept(Application.OctetStream)
+		}.wrap()
+
 	override suspend fun deleteReceiptInGroup(
 		groupId: String,
 		receiptId: String,

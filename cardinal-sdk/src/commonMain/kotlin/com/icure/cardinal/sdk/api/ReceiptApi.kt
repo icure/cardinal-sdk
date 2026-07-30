@@ -1,5 +1,6 @@
 package com.icure.cardinal.sdk.api
 
+import com.icure.cardinal.sdk.crypto.entities.ReceiptDelegateOptions
 import com.icure.cardinal.sdk.crypto.entities.ReceiptShareOptions
 import com.icure.cardinal.sdk.crypto.entities.SecretIdUseOption
 import com.icure.cardinal.sdk.crypto.entities.ShareMetadataBehaviour
@@ -141,6 +142,11 @@ interface ReceiptBasicFlavourlessInGroupApi {
 	 */
 	suspend fun purgeReceipts(receipts: List<GroupScoped<Receipt>>): List<GroupScoped<StoredDocumentIdentifier>> =
 		purgeReceiptsByIds(receipts.map { it.toStoredDocumentIdentifier() })
+
+	/**
+	 * In-group version of [ReceiptBasicFlavourlessApi.getRawReceiptAttachment]
+	 */
+	suspend fun getRawReceiptAttachment(groupId: String, receiptId: String, attachmentId: String): ByteArray
 }
 
 /* This interface includes the API calls can be used on decrypted items if encryption keys are available *or* encrypted items if no encryption keys are available */
@@ -233,6 +239,24 @@ interface ReceiptBasicFlavouredApi<E : Receipt> {
 	suspend fun getReceipts(entityIds: List<String>): List<E>
 
 	suspend fun listByReference(reference: String): List<E>
+
+	/**
+	 * Lists the receipts created within the provided date interval (based on the receipt `created`
+	 * timestamp, both bounds inclusive). A null bound leaves that side of the interval open.
+	 * Flavoured method.
+	 * @param startDate the start of the interval (inclusive), no lower bound if null
+	 * @param endDate the end of the interval (inclusive), no upper bound if null
+	 * @param descending whether to sort the result from the most recent to the oldest
+	 * @return the receipts created within the provided interval
+	 */
+	suspend fun listReceiptsBetweenDates(
+		@DefaultValue("null")
+		startDate: Long? = null,
+		@DefaultValue("null")
+		endDate: Long? = null,
+		@DefaultValue("false")
+		descending: Boolean = false,
+	): List<E>
 }
 
 interface ReceiptBasicFlavouredInGroupApi<E : Receipt> {
@@ -287,6 +311,19 @@ interface ReceiptBasicFlavouredInGroupApi<E : Receipt> {
 	 * In-group version of [ReceiptBasicFlavouredApi.getReceipts]
 	 */
 	suspend fun getReceipts(groupId: String, entityIds: List<String>): List<GroupScoped<E>>
+
+	/**
+	 * In-group version of [ReceiptBasicFlavouredApi.listReceiptsBetweenDates]
+	 */
+	suspend fun listReceiptsBetweenDates(
+		groupId: String,
+		@DefaultValue("null")
+		startDate: Long? = null,
+		@DefaultValue("null")
+		endDate: Long? = null,
+		@DefaultValue("false")
+		descending: Boolean = false,
+	): List<GroupScoped<E>>
 }
 
 /* The extra API calls declared in this interface are the ones that can be used on encrypted or decrypted items but only when the user is a data owner */
@@ -353,6 +390,19 @@ interface ReceiptApi : ReceiptBasicFlavourlessApi, ReceiptFlavouredApi<Decrypted
 		@DefaultValue("null")
 		alternateRootDelegateId: String? = null,
 	): DecryptedReceipt
+
+	suspend fun withEncryptionMetadataAndDelegates(
+		base: DecryptedReceipt?,
+		patient: Patient?,
+		delegates: Map<String, ReceiptDelegateOptions>,
+		@DefaultValue("null")
+		user: User? = null,
+		@DefaultValue("com.icure.cardinal.sdk.crypto.entities.SecretIdUseOption.UseAnySharedWithParent")
+		secretId: SecretIdUseOption = SecretIdUseOption.UseAnySharedWithParent,
+		@DefaultValue("null")
+		alternateRootDelegateId: String? = null,
+	): DecryptedReceipt
+
 	suspend fun getAndDecryptReceiptAttachment(receipt: Receipt, attachmentId: String): ByteArray
 	suspend fun encryptAndSetReceiptAttachment(receipt: Receipt, blobType: String, attachment: ByteArray): EncryptedReceipt
 	suspend fun getEncryptionKeysOf(receipt: Receipt): Set<HexString>
@@ -385,6 +435,22 @@ interface ReceiptInGroupApi : ReceiptBasicFlavourlessInGroupApi, ReceiptFlavoure
 		user: User? = null,
 		@DefaultValue("emptyMap()")
 		delegates: Map<String, AccessLevel> = emptyMap(),
+		@DefaultValue("com.icure.cardinal.sdk.crypto.entities.SecretIdUseOption.UseAnySharedWithParent")
+		secretId: SecretIdUseOption = SecretIdUseOption.UseAnySharedWithParent,
+		@DefaultValue("null")
+		alternateRootDelegateId: String? = null,
+	): GroupScoped<DecryptedReceipt>
+
+	/**
+	 * In-group version of [ReceiptApi.withEncryptionMetadataAndDelegates]
+	 */
+	suspend fun withEncryptionMetadataAndDelegates(
+		groupId: String,
+		base: DecryptedReceipt?,
+		patient: GroupScoped<Patient>?,
+		delegates: Map<String, ReceiptDelegateOptions>,
+		@DefaultValue("null")
+		user: User? = null,
 		@DefaultValue("com.icure.cardinal.sdk.crypto.entities.SecretIdUseOption.UseAnySharedWithParent")
 		secretId: SecretIdUseOption = SecretIdUseOption.UseAnySharedWithParent,
 		@DefaultValue("null")

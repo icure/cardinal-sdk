@@ -3,6 +3,7 @@
 
 package com.icure.cardinal.sdk.js.api
 
+import com.icure.cardinal.sdk.js.crypto.entities.ReceiptDelegateOptionsJs
 import com.icure.cardinal.sdk.js.model.DecryptedReceiptJs
 import com.icure.cardinal.sdk.js.model.EncryptedReceiptJs
 import com.icure.cardinal.sdk.js.model.EntityReferenceInGroupJs
@@ -11,8 +12,10 @@ import com.icure.cardinal.sdk.js.model.PatientJs
 import com.icure.cardinal.sdk.js.model.ReceiptJs
 import com.icure.cardinal.sdk.js.model.StoredDocumentIdentifierJs
 import com.icure.cardinal.sdk.js.synthetic.mapasobjectarray.EntityReferenceInGroupToReceiptShareOptionsMapObject_delegate_shareOptions
+import com.icure.cardinal.sdk.js.utils.Record
 import kotlin.Array
 import kotlin.Boolean
+import kotlin.ByteArray
 import kotlin.String
 import kotlin.Unit
 import kotlin.js.JsName
@@ -29,6 +32,14 @@ public external interface ReceiptInGroupApiJs {
 		groupId: String,
 		base: DecryptedReceiptJs?,
 		patient: GroupScopedJs<PatientJs>?,
+		options: dynamic,
+	): Promise<GroupScopedJs<DecryptedReceiptJs>>
+
+	public fun withEncryptionMetadataAndDelegates(
+		groupId: String,
+		base: DecryptedReceiptJs?,
+		patient: GroupScopedJs<PatientJs>?,
+		delegates: Record<String, ReceiptDelegateOptionsJs>,
 		options: dynamic,
 	): Promise<GroupScopedJs<DecryptedReceiptJs>>
 
@@ -70,6 +81,12 @@ public external interface ReceiptInGroupApiJs {
 	public fun purgeReceipts(receipts: Array<GroupScopedJs<ReceiptJs>>):
 			Promise<Array<GroupScopedJs<StoredDocumentIdentifierJs>>>
 
+	public fun getRawReceiptAttachment(
+		groupId: String,
+		receiptId: String,
+		attachmentId: String,
+	): Promise<ByteArray>
+
 	public fun shareWith(
 		`delegate`: EntityReferenceInGroupJs,
 		receipt: GroupScopedJs<DecryptedReceiptJs>,
@@ -108,5 +125,8 @@ public external interface ReceiptInGroupApiJs {
 			Promise<GroupScopedJs<DecryptedReceiptJs>?>
 
 	public fun getReceipts(groupId: String, entityIds: Array<String>):
+			Promise<Array<GroupScopedJs<DecryptedReceiptJs>>>
+
+	public fun listReceiptsBetweenDates(groupId: String, options: dynamic):
 			Promise<Array<GroupScopedJs<DecryptedReceiptJs>>>
 }

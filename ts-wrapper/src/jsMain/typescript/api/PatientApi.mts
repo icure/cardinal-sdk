@@ -1,6 +1,7 @@
 // auto-generated file
 import {FilterOptions, PaginatedListIterator, SortableFilterOptions} from '../cardinal-sdk-ts.mjs';
 import {EntityAccessInformation} from '../crypto/entities/EntityAccessInformation.mjs';
+import {PatientDelegateOptions} from '../crypto/entities/PatientDelegateOptions.mjs';
 import {PatientShareOptions} from '../crypto/entities/PatientShareOptions.mjs';
 import {ShareAllPatientDataOptions} from '../crypto/entities/ShareAllPatientDataOptions.mjs';
 import {EntityReferenceInGroup} from '../model/EntityReferenceInGroup.mjs';
@@ -85,6 +86,23 @@ export interface PatientApi {
 	 */
 	withEncryptionMetadata(base: DecryptedPatient | undefined,
 			options?: { user?: User | undefined, delegates?: { [ key: string ]: AccessLevel }, alternateRootDelegateId?: string | undefined }): Promise<DecryptedPatient>;
+
+	/**
+	 *
+	 *  Creates a new access log with initialized encryption metadata, specifying fine-grained options for each additional data owner that
+	 *  will have access to the entity.
+	 *  @param base a patient with initialized content and uninitialized encryption metadata. The result of this
+	 *  method takes the content from [base] if provided.
+	 *  @param user the current user, will be used for the auto-delegations if provided.
+	 *  @param delegates additional data owners that will have access to the newly created entity. You may choose the
+	 *  permissions that the delegates will have on the entity and if they will have access to the secretIds, encryptionKeys, and/or
+	 *  owningEntityIds of the new entity.
+	 *  @return a patient with initialized encryption metadata.
+	 *  @throws IllegalArgumentException if base is not null and has a revision or has encryption metadata.
+	 */
+	withEncryptionMetadataAndDelegates(base: DecryptedPatient | undefined,
+			delegates: { [ key: string ]: PatientDelegateOptions },
+			options?: { user?: User | undefined, alternateRootDelegateId?: string | undefined }): Promise<DecryptedPatient>;
 
 	/**
 	 *

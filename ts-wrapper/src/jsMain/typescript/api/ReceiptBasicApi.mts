@@ -183,4 +183,16 @@ export interface ReceiptBasicApi {
 
 	listByReference(reference: string): Promise<Array<EncryptedReceipt>>;
 
+	/**
+	 *
+	 *  Lists the receipts created within the provided date interval (based on the receipt `created`
+	 *  timestamp, both bounds inclusive). A null bound leaves that side of the interval open.
+	 *  Flavoured method.
+	 *  @param startDate the start of the interval (inclusive), no lower bound if null
+	 *  @param endDate the end of the interval (inclusive), no upper bound if null
+	 *  @param descending whether to sort the result from the most recent to the oldest
+	 *  @return the receipts created within the provided interval
+	 */
+	listReceiptsBetweenDates(options?: { startDate?: number | undefined, endDate?: number | undefined, descending?: boolean }): Promise<Array<EncryptedReceipt>>;
+
 }

@@ -11,6 +11,7 @@ import com.icure.cardinal.sdk.crypto.encryptor.EntityDecryptor
 import com.icure.cardinal.sdk.crypto.encryptor.EntityEncryptor
 import com.icure.cardinal.sdk.crypto.entities.BulkShareResult
 import com.icure.cardinal.sdk.crypto.entities.DecryptedMetadataDetails
+import com.icure.cardinal.sdk.crypto.entities.DelegateOptions
 import com.icure.cardinal.sdk.crypto.entities.DelegateShareOptions
 import com.icure.cardinal.sdk.crypto.entities.EntityDataEncryptionResult
 import com.icure.cardinal.sdk.crypto.entities.EntityEncryptionKeyDetails
@@ -168,7 +169,7 @@ class EntityEncryptionServiceImpl(
 		).mapValues { (_, v) ->
 			v.groupingBy {
 				it.value
-			}.aggregate { key, accumulator, element, _ ->
+			}.aggregate { _, accumulator, element, _ ->
 				if (accumulator != null)
 					accumulator + element.dataOwnersWithAccess
 				else
@@ -430,14 +431,14 @@ class EntityEncryptionServiceImpl(
 		}
 
 	override suspend fun <T : HasEncryptionMetadata> entityWithInitializedEncryptedMetadata(
-        entityGroupId: String?,
-        entity: T,
-        entityType: EntityWithEncryptionMetadataTypeName,
-        owningEntityDetails: OwningEntityDetails?,
-        initializeEncryptionKey: Boolean,
-        autoDelegations: Map<EntityReferenceInGroup, AccessLevel>,
-        alternateRootDataOwnerReference: EntityReferenceInGroup?
-    ): EntityEncryptionMetadataInitialisationResult<T> {
+		entityGroupId: String?,
+		entity: T,
+		entityType: EntityWithEncryptionMetadataTypeName,
+		owningEntityDetails: OwningEntityDetails?,
+		initializeEncryptionKey: Boolean,
+		autoDelegations: Map<EntityReferenceInGroup, DelegateOptions>,
+		alternateRootDataOwnerReference: EntityReferenceInGroup?
+	): EntityEncryptionMetadataInitialisationResult<T> {
 		hasEmptyEncryptionMetadata(entity, throwIfNonEmpty = true)
 		val normalizedAutoDelegations = autoDelegations.mapKeys { it.key.normalized(boundGroup) }
 		val newRawKey = if (initializeEncryptionKey)

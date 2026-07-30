@@ -1,4 +1,5 @@
 // auto-generated file
+import {InvoiceDelegateOptions} from '../crypto/entities/InvoiceDelegateOptions.mjs';
 import {InvoiceShareOptions} from '../crypto/entities/InvoiceShareOptions.mjs';
 import {SecretIdUseOption} from '../crypto/entities/SecretIdUseOption.mjs';
 import {EntityReferenceInGroup} from '../model/EntityReferenceInGroup.mjs';
@@ -26,6 +27,18 @@ export interface InvoiceInGroupApi {
 	withEncryptionMetadata(entityGroupId: string, base: DecryptedInvoice | undefined,
 			patient: GroupScoped<Patient> | undefined,
 			options?: { user?: User | undefined, delegates?: ArrayWithUniqueKeys<{ delegate: EntityReferenceInGroup, accessLevel: AccessLevel }, 'delegate'>, secretId?: SecretIdUseOption, alternateRootDelegateReference?: EntityReferenceInGroup | undefined }): Promise<GroupScoped<DecryptedInvoice>>;
+
+	/**
+	 *
+	 *  In-group version of [InvoiceApi.withEncryptionMetadataAndDelegates]
+	 */
+	withEncryptionMetadataAndDelegates(
+			entityGroupId: string,
+			base: DecryptedInvoice | undefined,
+			patient: GroupScoped<Patient> | undefined,
+			delegates: ArrayWithUniqueKeys<{ delegate: EntityReferenceInGroup, delegateOptions: InvoiceDelegateOptions }, 'delegate'>,
+			options?: { user?: User | undefined, secretId?: SecretIdUseOption, alternateRootDelegateReference?: EntityReferenceInGroup | undefined }
+	): Promise<GroupScoped<DecryptedInvoice>>;
 
 	/**
 	 *

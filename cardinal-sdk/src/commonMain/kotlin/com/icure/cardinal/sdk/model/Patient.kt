@@ -8,6 +8,7 @@ import com.icure.cardinal.sdk.model.base.CustomisableRoot
 import com.icure.cardinal.sdk.model.base.Extendable
 import com.icure.cardinal.sdk.model.base.HasEncryptionMetadata
 import com.icure.cardinal.sdk.model.base.HasIdentifier
+import com.icure.cardinal.sdk.model.base.HasMedicalLocation
 import com.icure.cardinal.sdk.model.base.ICureDocument
 import com.icure.cardinal.sdk.model.base.Identifier
 import com.icure.cardinal.sdk.model.base.Person
@@ -77,6 +78,7 @@ import com.icure.cardinal.sdk.model.embed.DeactivationReason
 sealed interface Patient :
 	StoredDocument,
 	ICureDocument<String>,
+	HasMedicalLocation,
 	Person,
 	HasEncryptionMetadata,
 	Encryptable,

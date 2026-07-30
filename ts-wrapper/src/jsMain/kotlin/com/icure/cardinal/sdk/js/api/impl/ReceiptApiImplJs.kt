@@ -2,6 +2,7 @@
 package com.icure.cardinal.sdk.js.api.`impl`
 
 import com.icure.cardinal.sdk.api.ReceiptApi
+import com.icure.cardinal.sdk.crypto.entities.ReceiptDelegateOptions
 import com.icure.cardinal.sdk.crypto.entities.ReceiptShareOptions
 import com.icure.cardinal.sdk.crypto.entities.SecretIdUseOption
 import com.icure.cardinal.sdk.js.api.DefaultParametersSupport.convertingOptionOrDefaultNonNull
@@ -10,14 +11,17 @@ import com.icure.cardinal.sdk.js.api.ReceiptApiJs
 import com.icure.cardinal.sdk.js.api.ReceiptFlavouredApiJs
 import com.icure.cardinal.sdk.js.api.ReceiptFlavouredInGroupApiJs
 import com.icure.cardinal.sdk.js.api.ReceiptInGroupApiJs
+import com.icure.cardinal.sdk.js.crypto.entities.ReceiptDelegateOptionsJs
 import com.icure.cardinal.sdk.js.crypto.entities.ReceiptShareOptionsJs
 import com.icure.cardinal.sdk.js.crypto.entities.SecretIdUseOptionJs
+import com.icure.cardinal.sdk.js.crypto.entities.receiptDelegateOptions_fromJs
 import com.icure.cardinal.sdk.js.crypto.entities.receiptShareOptions_fromJs
 import com.icure.cardinal.sdk.js.crypto.entities.secretIdUseOption_fromJs
 import com.icure.cardinal.sdk.js.model.CheckedConverters.arrayToList
 import com.icure.cardinal.sdk.js.model.CheckedConverters.arrayToSet
 import com.icure.cardinal.sdk.js.model.CheckedConverters.listToArray
 import com.icure.cardinal.sdk.js.model.CheckedConverters.nullToUndefined
+import com.icure.cardinal.sdk.js.model.CheckedConverters.numberToLong
 import com.icure.cardinal.sdk.js.model.CheckedConverters.objectToMap
 import com.icure.cardinal.sdk.js.model.CheckedConverters.setToArray
 import com.icure.cardinal.sdk.js.model.CheckedConverters.undefinedToNull
@@ -56,6 +60,8 @@ import com.icure.cardinal.sdk.model.specializations.HexString
 import kotlin.Array
 import kotlin.Boolean
 import kotlin.ByteArray
+import kotlin.Double
+import kotlin.Long
 import kotlin.OptIn
 import kotlin.String
 import kotlin.Unit
@@ -284,6 +290,44 @@ internal class ReceiptApiImplJs(
 				},
 			)
 		}
+
+		override fun listReceiptsBetweenDates(options: dynamic): Promise<Array<EncryptedReceiptJs>> {
+			val _options = options ?: js("{}")
+			return GlobalScope.promise {
+				val startDateConverted: Long? = convertingOptionOrDefaultNullable(
+					_options,
+					"startDate",
+					null
+				) { startDate: Double? ->
+					numberToLong(startDate, "startDate")
+				}
+				val endDateConverted: Long? = convertingOptionOrDefaultNullable(
+					_options,
+					"endDate",
+					null
+				) { endDate: Double? ->
+					numberToLong(endDate, "endDate")
+				}
+				val descendingConverted: Boolean = convertingOptionOrDefaultNonNull(
+					_options,
+					"descending",
+					false
+				) { descending: Boolean ->
+					descending
+				}
+				val result = receiptApi.encrypted.listReceiptsBetweenDates(
+					startDateConverted,
+					endDateConverted,
+					descendingConverted,
+				)
+				listToArray(
+					result,
+					{ x1: EncryptedReceipt ->
+						receipt_toJs(x1)
+					},
+				)
+			}
+		}
 	}
 
 	override val tryAndRecover: ReceiptFlavouredApiJs<ReceiptJs> = object :
@@ -493,6 +537,44 @@ internal class ReceiptApiImplJs(
 					receipt_toJs(x1)
 				},
 			)
+		}
+
+		override fun listReceiptsBetweenDates(options: dynamic): Promise<Array<ReceiptJs>> {
+			val _options = options ?: js("{}")
+			return GlobalScope.promise {
+				val startDateConverted: Long? = convertingOptionOrDefaultNullable(
+					_options,
+					"startDate",
+					null
+				) { startDate: Double? ->
+					numberToLong(startDate, "startDate")
+				}
+				val endDateConverted: Long? = convertingOptionOrDefaultNullable(
+					_options,
+					"endDate",
+					null
+				) { endDate: Double? ->
+					numberToLong(endDate, "endDate")
+				}
+				val descendingConverted: Boolean = convertingOptionOrDefaultNonNull(
+					_options,
+					"descending",
+					false
+				) { descending: Boolean ->
+					descending
+				}
+				val result = receiptApi.tryAndRecover.listReceiptsBetweenDates(
+					startDateConverted,
+					endDateConverted,
+					descendingConverted,
+				)
+				listToArray(
+					result,
+					{ x1: Receipt ->
+						receipt_toJs(x1)
+					},
+				)
+			}
 		}
 	}
 
@@ -801,6 +883,52 @@ internal class ReceiptApiImplJs(
 					},
 				)
 			}
+
+			override fun listReceiptsBetweenDates(groupId: String, options: dynamic):
+					Promise<Array<GroupScopedJs<EncryptedReceiptJs>>> {
+				val _options = options ?: js("{}")
+				return GlobalScope.promise {
+					val groupIdConverted: String = groupId
+					val startDateConverted: Long? = convertingOptionOrDefaultNullable(
+						_options,
+						"startDate",
+						null
+					) { startDate: Double? ->
+						numberToLong(startDate, "startDate")
+					}
+					val endDateConverted: Long? = convertingOptionOrDefaultNullable(
+						_options,
+						"endDate",
+						null
+					) { endDate: Double? ->
+						numberToLong(endDate, "endDate")
+					}
+					val descendingConverted: Boolean = convertingOptionOrDefaultNonNull(
+						_options,
+						"descending",
+						false
+					) { descending: Boolean ->
+						descending
+					}
+					val result = receiptApi.inGroup.encrypted.listReceiptsBetweenDates(
+						groupIdConverted,
+						startDateConverted,
+						endDateConverted,
+						descendingConverted,
+					)
+					listToArray(
+						result,
+						{ x1: GroupScoped<EncryptedReceipt> ->
+							groupScoped_toJs(
+								x1,
+								{ x2: EncryptedReceipt ->
+									receipt_toJs(x2)
+								},
+							)
+						},
+					)
+				}
+			}
 		}
 
 		override val tryAndRecover: ReceiptFlavouredInGroupApiJs<ReceiptJs> = object :
@@ -1107,6 +1235,52 @@ internal class ReceiptApiImplJs(
 					},
 				)
 			}
+
+			override fun listReceiptsBetweenDates(groupId: String, options: dynamic):
+					Promise<Array<GroupScopedJs<ReceiptJs>>> {
+				val _options = options ?: js("{}")
+				return GlobalScope.promise {
+					val groupIdConverted: String = groupId
+					val startDateConverted: Long? = convertingOptionOrDefaultNullable(
+						_options,
+						"startDate",
+						null
+					) { startDate: Double? ->
+						numberToLong(startDate, "startDate")
+					}
+					val endDateConverted: Long? = convertingOptionOrDefaultNullable(
+						_options,
+						"endDate",
+						null
+					) { endDate: Double? ->
+						numberToLong(endDate, "endDate")
+					}
+					val descendingConverted: Boolean = convertingOptionOrDefaultNonNull(
+						_options,
+						"descending",
+						false
+					) { descending: Boolean ->
+						descending
+					}
+					val result = receiptApi.inGroup.tryAndRecover.listReceiptsBetweenDates(
+						groupIdConverted,
+						startDateConverted,
+						endDateConverted,
+						descendingConverted,
+					)
+					listToArray(
+						result,
+						{ x1: GroupScoped<Receipt> ->
+							groupScoped_toJs(
+								x1,
+								{ x2: Receipt ->
+									receipt_toJs(x2)
+								},
+							)
+						},
+					)
+				}
+			}
 		}
 
 		override fun withEncryptionMetadata(
@@ -1174,6 +1348,78 @@ internal class ReceiptApiImplJs(
 					patientConverted,
 					userConverted,
 					delegatesConverted,
+					secretIdConverted,
+					alternateRootDelegateIdConverted,
+				)
+				groupScoped_toJs(
+					result,
+					{ x1: DecryptedReceipt ->
+						receipt_toJs(x1)
+					},
+				)
+			}
+		}
+
+		override fun withEncryptionMetadataAndDelegates(
+			groupId: String,
+			base: DecryptedReceiptJs?,
+			patient: GroupScopedJs<PatientJs>?,
+			delegates: Record<String, ReceiptDelegateOptionsJs>,
+			options: dynamic,
+		): Promise<GroupScopedJs<DecryptedReceiptJs>> {
+			val _options = options ?: js("{}")
+			return GlobalScope.promise {
+				val groupIdConverted: String = groupId
+				val baseConverted: DecryptedReceipt? = base?.let { nonNull1 ->
+					receipt_fromJs(nonNull1)
+				}
+				val patientConverted: GroupScoped<Patient>? = patient?.let { nonNull1 ->
+					groupScoped_fromJs(
+						nonNull1,
+						{ x1: PatientJs ->
+							patient_fromJs(x1)
+						},
+					)
+				}
+				val delegatesConverted: Map<String, ReceiptDelegateOptions> = objectToMap(
+					delegates,
+					"delegates",
+					{ x1: String ->
+						x1
+					},
+					{ x1: ReceiptDelegateOptionsJs ->
+						receiptDelegateOptions_fromJs(x1)
+					},
+				)
+				val userConverted: User? = convertingOptionOrDefaultNullable(
+					_options,
+					"user",
+					null
+				) { user: UserJs? ->
+					user?.let { nonNull1 ->
+						user_fromJs(nonNull1)
+					}
+				}
+				val secretIdConverted: SecretIdUseOption = convertingOptionOrDefaultNonNull(
+					_options,
+					"secretId",
+					com.icure.cardinal.sdk.crypto.entities.SecretIdUseOption.UseAnySharedWithParent
+				) { secretId: SecretIdUseOptionJs ->
+					secretIdUseOption_fromJs(secretId)
+				}
+				val alternateRootDelegateIdConverted: String? = convertingOptionOrDefaultNullable(
+					_options,
+					"alternateRootDelegateId",
+					null
+				) { alternateRootDelegateId: String? ->
+					undefinedToNull(alternateRootDelegateId)
+				}
+				val result = receiptApi.inGroup.withEncryptionMetadataAndDelegates(
+					groupIdConverted,
+					baseConverted,
+					patientConverted,
+					delegatesConverted,
+					userConverted,
 					secretIdConverted,
 					alternateRootDelegateIdConverted,
 				)
@@ -1506,6 +1752,22 @@ internal class ReceiptApiImplJs(
 			)
 		}
 
+		override fun getRawReceiptAttachment(
+			groupId: String,
+			receiptId: String,
+			attachmentId: String,
+		): Promise<ByteArray> = GlobalScope.promise {
+			val groupIdConverted: String = groupId
+			val receiptIdConverted: String = receiptId
+			val attachmentIdConverted: String = attachmentId
+			val result = receiptApi.inGroup.getRawReceiptAttachment(
+				groupIdConverted,
+				receiptIdConverted,
+				attachmentIdConverted,
+			)
+			result
+		}
+
 		override fun shareWith(
 			`delegate`: EntityReferenceInGroupJs,
 			receipt: GroupScopedJs<DecryptedReceiptJs>,
@@ -1808,6 +2070,52 @@ internal class ReceiptApiImplJs(
 				},
 			)
 		}
+
+		override fun listReceiptsBetweenDates(groupId: String, options: dynamic):
+				Promise<Array<GroupScopedJs<DecryptedReceiptJs>>> {
+			val _options = options ?: js("{}")
+			return GlobalScope.promise {
+				val groupIdConverted: String = groupId
+				val startDateConverted: Long? = convertingOptionOrDefaultNullable(
+					_options,
+					"startDate",
+					null
+				) { startDate: Double? ->
+					numberToLong(startDate, "startDate")
+				}
+				val endDateConverted: Long? = convertingOptionOrDefaultNullable(
+					_options,
+					"endDate",
+					null
+				) { endDate: Double? ->
+					numberToLong(endDate, "endDate")
+				}
+				val descendingConverted: Boolean = convertingOptionOrDefaultNonNull(
+					_options,
+					"descending",
+					false
+				) { descending: Boolean ->
+					descending
+				}
+				val result = receiptApi.inGroup.listReceiptsBetweenDates(
+					groupIdConverted,
+					startDateConverted,
+					endDateConverted,
+					descendingConverted,
+				)
+				listToArray(
+					result,
+					{ x1: GroupScoped<DecryptedReceipt> ->
+						groupScoped_toJs(
+							x1,
+							{ x2: DecryptedReceipt ->
+								receipt_toJs(x2)
+							},
+						)
+					},
+				)
+			}
+		}
 	}
 
 	override fun withEncryptionMetadata(
@@ -1867,6 +2175,65 @@ internal class ReceiptApiImplJs(
 				patientConverted,
 				userConverted,
 				delegatesConverted,
+				secretIdConverted,
+				alternateRootDelegateIdConverted,
+			)
+			receipt_toJs(result)
+		}
+	}
+
+	override fun withEncryptionMetadataAndDelegates(
+		base: DecryptedReceiptJs?,
+		patient: PatientJs?,
+		delegates: Record<String, ReceiptDelegateOptionsJs>,
+		options: dynamic,
+	): Promise<DecryptedReceiptJs> {
+		val _options = options ?: js("{}")
+		return GlobalScope.promise {
+			val baseConverted: DecryptedReceipt? = base?.let { nonNull1 ->
+				receipt_fromJs(nonNull1)
+			}
+			val patientConverted: Patient? = patient?.let { nonNull1 ->
+				patient_fromJs(nonNull1)
+			}
+			val delegatesConverted: Map<String, ReceiptDelegateOptions> = objectToMap(
+				delegates,
+				"delegates",
+				{ x1: String ->
+					x1
+				},
+				{ x1: ReceiptDelegateOptionsJs ->
+					receiptDelegateOptions_fromJs(x1)
+				},
+			)
+			val userConverted: User? = convertingOptionOrDefaultNullable(
+				_options,
+				"user",
+				null
+			) { user: UserJs? ->
+				user?.let { nonNull1 ->
+					user_fromJs(nonNull1)
+				}
+			}
+			val secretIdConverted: SecretIdUseOption = convertingOptionOrDefaultNonNull(
+				_options,
+				"secretId",
+				com.icure.cardinal.sdk.crypto.entities.SecretIdUseOption.UseAnySharedWithParent
+			) { secretId: SecretIdUseOptionJs ->
+				secretIdUseOption_fromJs(secretId)
+			}
+			val alternateRootDelegateIdConverted: String? = convertingOptionOrDefaultNullable(
+				_options,
+				"alternateRootDelegateId",
+				null
+			) { alternateRootDelegateId: String? ->
+				undefinedToNull(alternateRootDelegateId)
+			}
+			val result = receiptApi.withEncryptionMetadataAndDelegates(
+				baseConverted,
+				patientConverted,
+				delegatesConverted,
+				userConverted,
 				secretIdConverted,
 				alternateRootDelegateIdConverted,
 			)
@@ -2357,5 +2724,43 @@ internal class ReceiptApiImplJs(
 				receipt_toJs(x1)
 			},
 		)
+	}
+
+	override fun listReceiptsBetweenDates(options: dynamic): Promise<Array<DecryptedReceiptJs>> {
+		val _options = options ?: js("{}")
+		return GlobalScope.promise {
+			val startDateConverted: Long? = convertingOptionOrDefaultNullable(
+				_options,
+				"startDate",
+				null
+			) { startDate: Double? ->
+				numberToLong(startDate, "startDate")
+			}
+			val endDateConverted: Long? = convertingOptionOrDefaultNullable(
+				_options,
+				"endDate",
+				null
+			) { endDate: Double? ->
+				numberToLong(endDate, "endDate")
+			}
+			val descendingConverted: Boolean = convertingOptionOrDefaultNonNull(
+				_options,
+				"descending",
+				false
+			) { descending: Boolean ->
+				descending
+			}
+			val result = receiptApi.listReceiptsBetweenDates(
+				startDateConverted,
+				endDateConverted,
+				descendingConverted,
+			)
+			listToArray(
+				result,
+				{ x1: DecryptedReceipt ->
+					receipt_toJs(x1)
+				},
+			)
+		}
 	}
 }

@@ -11,7 +11,7 @@ from cardinal_sdk.api import DataOwnerApi, AccessLogApi, CalendarItemApi, Contac
     DocumentApi, FormApi, HealthElementApi, InvoiceApi, MaintenanceTaskApi, MessageApi, PatientApi, ReceiptApi, \
     TopicApi, CodeApi, CryptoApi, DeviceApi, \
     FrontEndMigrationApi, GroupApi, HealthcarePartyApi, SystemApi, InsuranceApi, \
-    PlaceApi, RecoveryApi, RoleApi, UserApi
+    PlaceApi, RecoveryApi, RoleApi, UserApi, RelatedPersonApi
 from cardinal_sdk.CryptoStrategies import _CryptoStrategiesBridge
 
 class CardinalSdk:
@@ -40,6 +40,7 @@ class CardinalSdk:
     __recovery: Optional[RecoveryApi] = None
     __role: Optional[RoleApi] = None
     __user: Optional[UserApi] = None
+    __relatedPerson: Optional[RelatedPersonApi] = None
 
     def __init__(
         self,
@@ -63,7 +64,7 @@ class CardinalSdk:
             'useHierarchicalDataOwners': options.use_hierarchical_data_owners,
             'createTransferKeys': options.create_transfer_keys,
             'keyStorage': key_storage_info[0],
-            'lenientJson': options.lenient_json,
+            'ignoreUnknownFields': options.ignoreUnknownFields,
         }
 
         # need to keep a reference to avoid GC
@@ -249,3 +250,9 @@ class CardinalSdk:
         if self.__user is None:
             self.__user = UserApi(self)
         return self.__user
+
+    @property
+    def related_person(self):
+        if self.__relatedPerson is None:
+            self.__relatedPerson = RelatedPersonApi(self)
+        return self.__relatedPerson

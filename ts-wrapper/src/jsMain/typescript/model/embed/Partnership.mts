@@ -2,6 +2,7 @@
 import {expectString, expectStringEnum, extractEntry} from '../../internal/JsonDecodeUtils.mjs';
 import {Base64String} from '../specializations/Base64String.mjs';
 import {Encryptable} from './Encryptable.mjs';
+import {PartnerType} from './PartnerType.mjs';
 import {PartnershipStatus} from './PartnershipStatus.mjs';
 import {PartnershipType} from './PartnershipType.mjs';
 
@@ -31,6 +32,13 @@ export interface Partnership extends Encryptable {
 	 *  The UUID of the contact person or patient in this relationship.
 	 */
 	partnerId: string | undefined;
+
+	/**
+	 *
+	 *  The type of entity partnerId refers to. When null the partner is either a patient or a
+	 *  healthcare party (legacy behavior).
+	 */
+	partnerType: PartnerType | undefined;
 
 	readonly isEncrypted: boolean;
 
@@ -66,6 +74,13 @@ export class DecryptedPartnership {
 
 	/**
 	 *
+	 *  The type of entity partnerId refers to. When null the partner is either a patient or a
+	 *  healthcare party (legacy behavior).
+	 */
+	partnerType: PartnerType | undefined = undefined;
+
+	/**
+	 *
 	 *  Deprecated. Description of the relationship from the other person to this patient.
 	 */
 	encryptedSelf: Base64String | undefined = undefined;
@@ -77,6 +92,7 @@ export class DecryptedPartnership {
 		if ('type' in partial) this.type = partial.type;
 		if ('status' in partial) this.status = partial.status;
 		if ('partnerId' in partial) this.partnerId = partial.partnerId;
+		if ('partnerType' in partial) this.partnerType = partial.partnerType;
 		if ('encryptedSelf' in partial) this.encryptedSelf = partial.encryptedSelf;
 	}
 
@@ -85,6 +101,7 @@ export class DecryptedPartnership {
 		if (this.type != undefined) res['type'] = this.type
 		if (this.status != undefined) res['status'] = this.status
 		if (this.partnerId != undefined) res['partnerId'] = this.partnerId
+		if (this.partnerType != undefined) res['partnerType'] = this.partnerType
 		if (this.encryptedSelf != undefined) res['encryptedSelf'] = this.encryptedSelf
 		res['isEncrypted'] = false
 		return res
@@ -99,6 +116,7 @@ export class DecryptedPartnership {
 			type: expectStringEnum(extractEntry(jCpy, 'type', false, path), true, [...path, ".type"], PartnershipType, 'PartnershipType'),
 			status: expectStringEnum(extractEntry(jCpy, 'status', false, path), true, [...path, ".status"], PartnershipStatus, 'PartnershipStatus'),
 			partnerId: expectString(extractEntry(jCpy, 'partnerId', false, path), true, [...path, ".partnerId"]),
+			partnerType: expectStringEnum(extractEntry(jCpy, 'partnerType', false, path), true, [...path, ".partnerType"], PartnerType, 'PartnerType'),
 			encryptedSelf: expectString(extractEntry(jCpy, 'encryptedSelf', false, path), true, [...path, ".encryptedSelf"]) as Base64String,
 		})
 		if (!ignoreUnknownKeys) {
@@ -137,6 +155,13 @@ export class EncryptedPartnership {
 
 	/**
 	 *
+	 *  The type of entity partnerId refers to. When null the partner is either a patient or a
+	 *  healthcare party (legacy behavior).
+	 */
+	partnerType: PartnerType | undefined = undefined;
+
+	/**
+	 *
 	 *  Deprecated. Description of the relationship from the other person to this patient.
 	 */
 	encryptedSelf: Base64String | undefined = undefined;
@@ -148,6 +173,7 @@ export class EncryptedPartnership {
 		if ('type' in partial) this.type = partial.type;
 		if ('status' in partial) this.status = partial.status;
 		if ('partnerId' in partial) this.partnerId = partial.partnerId;
+		if ('partnerType' in partial) this.partnerType = partial.partnerType;
 		if ('encryptedSelf' in partial) this.encryptedSelf = partial.encryptedSelf;
 	}
 
@@ -156,6 +182,7 @@ export class EncryptedPartnership {
 		if (this.type != undefined) res['type'] = this.type
 		if (this.status != undefined) res['status'] = this.status
 		if (this.partnerId != undefined) res['partnerId'] = this.partnerId
+		if (this.partnerType != undefined) res['partnerType'] = this.partnerType
 		if (this.encryptedSelf != undefined) res['encryptedSelf'] = this.encryptedSelf
 		res['isEncrypted'] = true
 		return res
@@ -170,6 +197,7 @@ export class EncryptedPartnership {
 			type: expectStringEnum(extractEntry(jCpy, 'type', false, path), true, [...path, ".type"], PartnershipType, 'PartnershipType'),
 			status: expectStringEnum(extractEntry(jCpy, 'status', false, path), true, [...path, ".status"], PartnershipStatus, 'PartnershipStatus'),
 			partnerId: expectString(extractEntry(jCpy, 'partnerId', false, path), true, [...path, ".partnerId"]),
+			partnerType: expectStringEnum(extractEntry(jCpy, 'partnerType', false, path), true, [...path, ".partnerType"], PartnerType, 'PartnerType'),
 			encryptedSelf: expectString(extractEntry(jCpy, 'encryptedSelf', false, path), true, [...path, ".encryptedSelf"]) as Base64String,
 		})
 		if (!ignoreUnknownKeys) {

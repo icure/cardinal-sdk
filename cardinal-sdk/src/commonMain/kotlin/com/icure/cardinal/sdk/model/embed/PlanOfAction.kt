@@ -5,6 +5,7 @@ package com.icure.cardinal.sdk.model.embed
 import com.icure.cardinal.sdk.model.base.CodeStub
 import com.icure.cardinal.sdk.model.base.Extendable
 import com.icure.cardinal.sdk.model.base.HasEndOfLife
+import com.icure.cardinal.sdk.model.base.HasMedicalLocation
 import com.icure.cardinal.sdk.model.base.ICureDocument
 import com.icure.cardinal.sdk.model.base.Named
 import com.icure.cardinal.sdk.model.specializations.Base64String
@@ -21,7 +22,7 @@ import kotlin.Int
 sealed interface PlanOfAction :
 	Encryptable,
 	ICureDocument<String>,
-	Named,
+	HasMedicalLocation,Named,
 	HasEndOfLife,
 	Extendable {
 	override val id: String

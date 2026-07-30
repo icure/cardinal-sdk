@@ -276,6 +276,14 @@ internal class UserApiImpl(
 	): User =
 		rawApi.changeUserMobilePhone(userId = userId, newMobilePhone = newMobilePhone, previousMobilePhone = previousMobilePhone).successBody()
 
+	override suspend fun removeUserMobilePhone(
+		userId: String,
+		previousMobilePhone: String?
+	): User = rawApi.removeUserMobilePhone(
+		userId = userId,
+		previousMobilePhone = previousMobilePhone
+	).successBody()
+
 	override suspend fun subscribeToEvents(
 		events: Set<SubscriptionEventType>,
 		filter: FilterOptions<User>,

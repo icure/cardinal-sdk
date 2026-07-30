@@ -1,5 +1,7 @@
 package com.icure.cardinal.sdk.model.filter
 
+import kotlinx.serialization.Serializable
+
 /**
  * A set of factory methods that produce the same kind of filter, differing only in how parameters are
  * passed (for-self vs. for-data-owner, in-group variants, full entities vs. secret ids).
@@ -11,6 +13,7 @@ package com.icure.cardinal.sdk.model.filter
  * possible filters, separated by " or ", for the rare groups that branch on their input).
  * @property views the views that are used on the backend to provide the results for the options in this group.
  */
+@Serializable
 data class FilterOptionGroupWithViews(
 	val name: String,
 	val factoryMethods: List<String>,

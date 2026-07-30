@@ -369,6 +369,19 @@ class RawUserApiImpl(
 			accept(Application.Json)
 		}.wrap()
 
+	override suspend fun removeUserMobilePhone(
+		userId: String,
+		previousMobilePhone: String?,
+	): HttpResponse<User> =
+		delete(authProvider) {
+			url {
+				takeFrom(apiUrl)
+				appendPathSegments("rest", "v2", "user", userId, "mobilePhone")
+				parameter("previousMobilePhone", previousMobilePhone)
+			}
+			accept(Application.Json)
+		}.wrap()
+
 	override suspend fun changeUserPassword(
 		userId: String,
 		request: ChangeUserPasswordRequest,

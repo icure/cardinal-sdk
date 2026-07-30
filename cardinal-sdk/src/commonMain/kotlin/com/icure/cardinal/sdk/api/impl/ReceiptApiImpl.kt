@@ -13,8 +13,10 @@ import com.icure.cardinal.sdk.api.ReceiptInGroupApi
 import com.icure.cardinal.sdk.api.raw.RawReceiptApi
 import com.icure.cardinal.sdk.api.raw.successBodyOrNull404
 import com.icure.cardinal.sdk.api.raw.successBodyOrThrowRevisionConflict
+import com.icure.cardinal.sdk.crypto.entities.DelegateOptions
 import com.icure.cardinal.sdk.crypto.entities.EntityWithEncryptionMetadataTypeName
 import com.icure.cardinal.sdk.crypto.entities.OwningEntityDetails
+import com.icure.cardinal.sdk.crypto.entities.ReceiptDelegateOptions
 import com.icure.cardinal.sdk.crypto.entities.ReceiptShareOptions
 import com.icure.cardinal.sdk.crypto.entities.SecretIdUseOption
 import com.icure.cardinal.sdk.exceptions.NotFoundException
@@ -32,6 +34,7 @@ import com.icure.cardinal.sdk.model.embed.AccessLevel
 import com.icure.cardinal.sdk.model.embed.DelegationTag
 import com.icure.cardinal.sdk.model.extensions.autoDelegationsFor
 import com.icure.cardinal.sdk.model.extensions.dataOwnerId
+import com.icure.cardinal.sdk.model.extensions.toDefaultDelegateOptions
 import com.icure.cardinal.sdk.model.specializations.HexString
 import com.icure.cardinal.sdk.model.toStoredDocumentIdentifier
 import com.icure.cardinal.sdk.options.ApiConfiguration
@@ -149,6 +152,13 @@ private abstract class AbstractReceiptBasicFlavouredApi<E : Receipt>(
 			rawApi.getReceiptsInGroup(groupId = groupId, receiptIds = ListOfIds(ids))
 		}.successBody().let { maybeDecrypt(groupId, it) }
 	}
+
+	protected suspend fun doListReceiptsBetweenDates(groupId: String?, startDate: Long?, endDate: Long?, descending: Boolean): List<E> =
+		if (groupId == null) {
+			rawApi.listReceiptsBetweenDates(startDate = startDate, endDate = endDate, descending = descending)
+		} else {
+			rawApi.listReceiptsBetweenDatesInGroup(groupId = groupId, startDate = startDate, endDate = endDate, descending = descending)
+		}.successBody().let { maybeDecrypt(groupId, it) }
 }
 
 @InternalIcureApi
@@ -183,6 +193,9 @@ private class ReceiptBasicFlavouredApiImpl<E : Receipt>(
 
 	override suspend fun listByReference(reference: String): List<E> =
 		rawApi.listByReference(ref = reference).successBody().let { maybeDecrypt(null, it) }
+
+	override suspend fun listReceiptsBetweenDates(startDate: Long?, endDate: Long?, descending: Boolean): List<E> =
+		doListReceiptsBetweenDates(groupId = null, startDate = startDate, endDate = endDate, descending = descending)
 }
 
 @InternalIcureApi
@@ -230,6 +243,10 @@ private class ReceiptBasicFlavouredInGroupApiImpl<E : Receipt>(
 
 	override suspend fun getReceipts(groupId: String, entityIds: List<String>): List<GroupScoped<E>> =
 		doGetReceipts(groupId = groupId, entityIds = entityIds).map { GroupScoped(it, groupId) }
+
+	override suspend fun listReceiptsBetweenDates(groupId: String, startDate: Long?, endDate: Long?, descending: Boolean): List<GroupScoped<E>> =
+		doListReceiptsBetweenDates(groupId = groupId, startDate = startDate, endDate = endDate, descending = descending)
+			.map { GroupScoped(it, groupId) }
 }
 
 @InternalIcureApi
@@ -355,6 +372,9 @@ private abstract class AbstractReceiptBasicFlavourless(
 	suspend fun getRawReceiptAttachment(receiptId: String, attachmentId: String): ByteArray =
 		rawApi.getReceiptAttachment(receiptId = receiptId, attachmentId = attachmentId).successBody()
 
+	suspend fun getRawReceiptAttachment(groupId: String, receiptId: String, attachmentId: String): ByteArray =
+		rawApi.getReceiptAttachmentInGroup(groupId = groupId, receiptId = receiptId, attachmentId = attachmentId).successBody()
+
 	suspend fun setRawReceiptAttachment(receiptId: String, rev: String, blobType: String, attachment: ByteArray): EncryptedReceipt =
 		rawApi.setReceiptAttachment(receiptId = receiptId, blobType = blobType, rev = rev, payload = attachment).successBody()
 }
@@ -459,6 +479,29 @@ private class ReceiptApiImpl(
 				groupId
 			)
 
+		override suspend fun withEncryptionMetadataAndDelegates(
+			groupId: String,
+			base: DecryptedReceipt?,
+			patient: GroupScoped<Patient>?,
+			delegates: Map<String, ReceiptDelegateOptions>,
+			user: User?,
+			secretId: SecretIdUseOption,
+			alternateRootDelegateId: String?
+		): GroupScoped<DecryptedReceipt> =
+			GroupScoped(
+				doWithEncryptionMetadataAndDelegates(
+					groupId = groupId,
+					base = base,
+					patient = patient?.entity,
+					patientGroupId = patient?.groupId,
+					user = user,
+					delegates = delegates,
+					secretId = secretId,
+					alternateRootDelegateId = alternateRootDelegateId
+				),
+				groupId
+			)
+
 		override suspend fun getEncryptionKeysOf(receipt: GroupScoped<Receipt>): Set<HexString> =
 			doGetEncryptionKeysOf(groupId = receipt.groupId, receipt = receipt.entity)
 
@@ -506,6 +549,25 @@ private class ReceiptApiImpl(
 			alternateRootDelegateId = alternateRootDelegateId
 		)
 
+	override suspend fun withEncryptionMetadataAndDelegates(
+		base: DecryptedReceipt?,
+		patient: Patient?,
+		delegates: Map<String, ReceiptDelegateOptions>,
+		user: User?,
+		secretId: SecretIdUseOption,
+		alternateRootDelegateId: String?
+	): DecryptedReceipt =
+		doWithEncryptionMetadataAndDelegates(
+			groupId = null,
+			base = base,
+			patient = patient,
+			patientGroupId = null,
+			user = user,
+			delegates = delegates,
+			secretId = secretId,
+			alternateRootDelegateId = alternateRootDelegateId
+		)
+
 	private suspend fun doWithEncryptionMetadata(
 		groupId: String?,
 		base: DecryptedReceipt?,
@@ -513,6 +575,27 @@ private class ReceiptApiImpl(
 		patientGroupId: String?,
 		user: User?,
 		delegates: Map<String, AccessLevel>,
+		secretId: SecretIdUseOption,
+		alternateRootDelegateId: String?
+	): DecryptedReceipt =
+		doWithEncryptionMetadataAndDelegates(
+			groupId = groupId,
+			base = base,
+			patient = patient,
+			patientGroupId = patientGroupId,
+			user = user,
+			delegates = delegates.mapValues { it.value.toDefaultDelegateOptions() },
+			secretId = secretId,
+			alternateRootDelegateId = alternateRootDelegateId
+		)
+
+	private suspend fun doWithEncryptionMetadataAndDelegates(
+		groupId: String?,
+		base: DecryptedReceipt?,
+		patient: Patient?,
+		patientGroupId: String?,
+		user: User?,
+		delegates: Map<String, DelegateOptions>,
 		secretId: SecretIdUseOption,
 		alternateRootDelegateId: String?
 	): DecryptedReceipt =

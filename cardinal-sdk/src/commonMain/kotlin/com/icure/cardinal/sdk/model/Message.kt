@@ -6,6 +6,7 @@ import com.icure.cardinal.sdk.model.base.CodeStub
 import com.icure.cardinal.sdk.model.base.CustomisableRoot
 import com.icure.cardinal.sdk.model.base.Extendable
 import com.icure.cardinal.sdk.model.base.HasEncryptionMetadata
+import com.icure.cardinal.sdk.model.base.HasMedicalLocation
 import com.icure.cardinal.sdk.model.base.ICureDocument
 import com.icure.cardinal.sdk.model.base.StoredDocument
 import com.icure.cardinal.sdk.model.embed.Delegation
@@ -34,6 +35,7 @@ import kotlin.collections.List
 sealed interface Message :
 	StoredDocument,
 	ICureDocument<String>,
+	HasMedicalLocation,
 	HasEncryptionMetadata,
 	Encryptable,
 	CustomisableRoot,

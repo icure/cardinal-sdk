@@ -3,6 +3,7 @@
 
 package com.icure.cardinal.sdk.js.api
 
+import com.icure.cardinal.sdk.js.crypto.entities.AccessLogDelegateOptionsJs
 import com.icure.cardinal.sdk.js.crypto.entities.AccessLogShareOptionsJs
 import com.icure.cardinal.sdk.js.filters.FilterOptionsJs
 import com.icure.cardinal.sdk.js.filters.SortableFilterOptionsJs
@@ -10,7 +11,6 @@ import com.icure.cardinal.sdk.js.model.AccessLogJs
 import com.icure.cardinal.sdk.js.model.DecryptedAccessLogJs
 import com.icure.cardinal.sdk.js.model.EncryptedAccessLogJs
 import com.icure.cardinal.sdk.js.model.EntityReferenceInGroupJs
-import com.icure.cardinal.sdk.js.model.PatientJs
 import com.icure.cardinal.sdk.js.model.StoredDocumentIdentifierJs
 import com.icure.cardinal.sdk.js.utils.Record
 import com.icure.cardinal.sdk.js.utils.pagination.PaginatedListIteratorJs
@@ -30,9 +30,12 @@ public external interface AccessLogApiJs {
 
 	public val inGroup: AccessLogInGroupApiJs
 
-	public fun withEncryptionMetadata(
+	public fun withEncryptionMetadata(base: DecryptedAccessLogJs?, options: dynamic):
+			Promise<DecryptedAccessLogJs>
+
+	public fun withEncryptionMetadataAndDelegates(
 		base: DecryptedAccessLogJs?,
-		patient: PatientJs,
+		delegates: Record<String, AccessLogDelegateOptionsJs>,
 		options: dynamic,
 	): Promise<DecryptedAccessLogJs>
 

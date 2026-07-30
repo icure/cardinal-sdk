@@ -2,6 +2,7 @@
 package com.icure.cardinal.sdk.js.api.`impl`
 
 import com.icure.cardinal.sdk.api.CalendarItemApi
+import com.icure.cardinal.sdk.crypto.entities.CalendarItemDelegateOptions
 import com.icure.cardinal.sdk.crypto.entities.CalendarItemShareOptions
 import com.icure.cardinal.sdk.crypto.entities.SecretIdUseOption
 import com.icure.cardinal.sdk.filters.FilterOptions
@@ -12,8 +13,10 @@ import com.icure.cardinal.sdk.js.api.CalendarItemFlavouredInGroupApiJs
 import com.icure.cardinal.sdk.js.api.CalendarItemInGroupApiJs
 import com.icure.cardinal.sdk.js.api.DefaultParametersSupport.convertingOptionOrDefaultNonNull
 import com.icure.cardinal.sdk.js.api.DefaultParametersSupport.convertingOptionOrDefaultNullable
+import com.icure.cardinal.sdk.js.crypto.entities.CalendarItemDelegateOptionsJs
 import com.icure.cardinal.sdk.js.crypto.entities.CalendarItemShareOptionsJs
 import com.icure.cardinal.sdk.js.crypto.entities.SecretIdUseOptionJs
+import com.icure.cardinal.sdk.js.crypto.entities.calendarItemDelegateOptions_fromJs
 import com.icure.cardinal.sdk.js.crypto.entities.calendarItemShareOptions_fromJs
 import com.icure.cardinal.sdk.js.crypto.entities.secretIdUseOption_fromJs
 import com.icure.cardinal.sdk.js.filters.FilterOptionsJs
@@ -56,6 +59,8 @@ import com.icure.cardinal.sdk.js.subscription.entitySubscriptionConfiguration_fr
 import com.icure.cardinal.sdk.js.subscription.entitySubscription_toJs
 import com.icure.cardinal.sdk.js.synthetic.mapasobjectarray.EntityReferenceInGroupToAccessLevelMapObject_delegate_accessLevel
 import com.icure.cardinal.sdk.js.synthetic.mapasobjectarray.EntityReferenceInGroupToAccessLevelMapObject_delegate_accessLevel_fromJs
+import com.icure.cardinal.sdk.js.synthetic.mapasobjectarray.EntityReferenceInGroupToCalendarItemDelegateOptionsMapObject_delegate_delegateOptions
+import com.icure.cardinal.sdk.js.synthetic.mapasobjectarray.EntityReferenceInGroupToCalendarItemDelegateOptionsMapObject_delegate_delegateOptions_fromJs
 import com.icure.cardinal.sdk.js.synthetic.mapasobjectarray.EntityReferenceInGroupToCalendarItemShareOptionsMapObject_delegate_shareOptions
 import com.icure.cardinal.sdk.js.synthetic.mapasobjectarray.EntityReferenceInGroupToCalendarItemShareOptionsMapObject_delegate_shareOptions_fromJs
 import com.icure.cardinal.sdk.js.utils.Record
@@ -1390,6 +1395,68 @@ internal class CalendarItemApiImplJs(
 			}
 		}
 
+		override fun withEncryptionMetadataAndDelegates(
+			entityGroupId: String,
+			base: DecryptedCalendarItemJs?,
+			patient: GroupScopedJs<PatientJs>?,
+			delegates: Array<EntityReferenceInGroupToCalendarItemDelegateOptionsMapObject_delegate_delegateOptions>,
+			user: UserJs?,
+			options: dynamic,
+		): Promise<GroupScopedJs<DecryptedCalendarItemJs>> {
+			val _options = options ?: js("{}")
+			return GlobalScope.promise {
+				val entityGroupIdConverted: String = entityGroupId
+				val baseConverted: DecryptedCalendarItem? = base?.let { nonNull1 ->
+					calendarItem_fromJs(nonNull1)
+				}
+				val patientConverted: GroupScoped<Patient>? = patient?.let { nonNull1 ->
+					groupScoped_fromJs(
+						nonNull1,
+						{ x1: PatientJs ->
+							patient_fromJs(x1)
+						},
+					)
+				}
+				val delegatesConverted: Map<EntityReferenceInGroup, CalendarItemDelegateOptions> =
+						EntityReferenceInGroupToCalendarItemDelegateOptionsMapObject_delegate_delegateOptions_fromJs(delegates)
+				val userConverted: User? = user?.let { nonNull1 ->
+					user_fromJs(nonNull1)
+				}
+				val secretIdConverted: SecretIdUseOption = convertingOptionOrDefaultNonNull(
+					_options,
+					"secretId",
+					com.icure.cardinal.sdk.crypto.entities.SecretIdUseOption.UseAnySharedWithParent
+				) { secretId: SecretIdUseOptionJs ->
+					secretIdUseOption_fromJs(secretId)
+				}
+				val alternateRootDelegateReferenceConverted: EntityReferenceInGroup? =
+						convertingOptionOrDefaultNullable(
+					_options,
+					"alternateRootDelegateReference",
+					null
+				) { alternateRootDelegateReference: EntityReferenceInGroupJs? ->
+					alternateRootDelegateReference?.let { nonNull1 ->
+						entityReferenceInGroup_fromJs(nonNull1)
+					}
+				}
+				val result = calendarItemApi.inGroup.withEncryptionMetadataAndDelegates(
+					entityGroupIdConverted,
+					baseConverted,
+					patientConverted,
+					delegatesConverted,
+					userConverted,
+					secretIdConverted,
+					alternateRootDelegateReferenceConverted,
+				)
+				groupScoped_toJs(
+					result,
+					{ x1: DecryptedCalendarItem ->
+						calendarItem_toJs(x1)
+					},
+				)
+			}
+		}
+
 		override fun getEncryptionKeysOf(calendarItem: GroupScopedJs<CalendarItemJs>):
 				Promise<Array<String>> = GlobalScope.promise {
 			val calendarItemConverted: GroupScoped<CalendarItem> = groupScoped_fromJs(
@@ -2256,6 +2323,65 @@ internal class CalendarItemApiImplJs(
 				patientConverted,
 				userConverted,
 				delegatesConverted,
+				secretIdConverted,
+				alternateRootDelegateIdConverted,
+			)
+			calendarItem_toJs(result)
+		}
+	}
+
+	override fun withEncryptionMetadataAndDelegates(
+		base: DecryptedCalendarItemJs?,
+		patient: PatientJs?,
+		delegates: Record<String, CalendarItemDelegateOptionsJs>,
+		options: dynamic,
+	): Promise<DecryptedCalendarItemJs> {
+		val _options = options ?: js("{}")
+		return GlobalScope.promise {
+			val baseConverted: DecryptedCalendarItem? = base?.let { nonNull1 ->
+				calendarItem_fromJs(nonNull1)
+			}
+			val patientConverted: Patient? = patient?.let { nonNull1 ->
+				patient_fromJs(nonNull1)
+			}
+			val delegatesConverted: Map<String, CalendarItemDelegateOptions> = objectToMap(
+				delegates,
+				"delegates",
+				{ x1: String ->
+					x1
+				},
+				{ x1: CalendarItemDelegateOptionsJs ->
+					calendarItemDelegateOptions_fromJs(x1)
+				},
+			)
+			val userConverted: User? = convertingOptionOrDefaultNullable(
+				_options,
+				"user",
+				null
+			) { user: UserJs? ->
+				user?.let { nonNull1 ->
+					user_fromJs(nonNull1)
+				}
+			}
+			val secretIdConverted: SecretIdUseOption = convertingOptionOrDefaultNonNull(
+				_options,
+				"secretId",
+				com.icure.cardinal.sdk.crypto.entities.SecretIdUseOption.UseAnySharedWithParent
+			) { secretId: SecretIdUseOptionJs ->
+				secretIdUseOption_fromJs(secretId)
+			}
+			val alternateRootDelegateIdConverted: String? = convertingOptionOrDefaultNullable(
+				_options,
+				"alternateRootDelegateId",
+				null
+			) { alternateRootDelegateId: String? ->
+				undefinedToNull(alternateRootDelegateId)
+			}
+			val result = calendarItemApi.withEncryptionMetadataAndDelegates(
+				baseConverted,
+				patientConverted,
+				delegatesConverted,
+				userConverted,
 				secretIdConverted,
 				alternateRootDelegateIdConverted,
 			)

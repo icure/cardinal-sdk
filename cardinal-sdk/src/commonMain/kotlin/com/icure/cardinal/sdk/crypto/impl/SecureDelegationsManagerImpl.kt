@@ -8,6 +8,7 @@ import com.icure.cardinal.sdk.crypto.SecureDelegationsEncryption
 import com.icure.cardinal.sdk.crypto.SecureDelegationsManager
 import com.icure.cardinal.sdk.crypto.UserEncryptionKeysManager
 import com.icure.cardinal.sdk.crypto.entities.CardinalKeyInfo
+import com.icure.cardinal.sdk.crypto.entities.DelegateOptions
 import com.icure.cardinal.sdk.model.EntityReferenceInGroup
 import com.icure.cardinal.sdk.crypto.entities.EntityWithEncryptionMetadataTypeName
 import com.icure.cardinal.sdk.crypto.entities.ExchangeDataWithUnencryptedContent
@@ -61,7 +62,7 @@ class SecureDelegationsManagerImpl (
 		owningEntityIds: Set<String>,
 		owningEntitySecretIds: Set<String>,
 		encryptionKeys: Set<HexString>,
-		autoDelegations: Map<EntityReferenceInGroup, AccessLevel>,
+		autoDelegations: Map<EntityReferenceInGroup, DelegateOptions>,
 		alternateRootDataOwnerReference: EntityReferenceInGroup?
 	): T {
 		if (userKeys.delegatorActorVerifiedKeys().isEmpty()) { //isKeyless
@@ -84,15 +85,15 @@ class SecureDelegationsManagerImpl (
 			permissions = AccessLevel.Write,
 			parentDelegationKey = null
 		)
-		val otherDelegationsInfo = autoDelegations.filterNot { it.key == rootDelegationReference }.map { (delegateId, permissions) ->
+		val otherDelegationsInfo = autoDelegations.filterNot { it.key == rootDelegationReference }.map { (delegateId, options) ->
 			makeSecureDelegationInfo(
 				entityGroupId = entityGroupId,
 				entityType = entityType,
 				delegateReference = delegateId,
-				shareSecretIds = secretIds,
-				shareOwningEntityIds = owningEntityIds,
-				shareEncryptionKeys = encryptionKeys,
-				permissions = permissions,
+				shareSecretIds = if (options.shareSecretId) secretIds else emptySet(),
+				shareOwningEntityIds = if (options.shareOwningEntityId) owningEntityIds else emptySet(),
+				shareEncryptionKeys = if (options.shareEncryptionKey) encryptionKeys else emptySet(),
+				permissions = options.accessLevel,
 				parentDelegationKey = rootDelegationInfo.canonicalDelegationKey
 			)
 		}

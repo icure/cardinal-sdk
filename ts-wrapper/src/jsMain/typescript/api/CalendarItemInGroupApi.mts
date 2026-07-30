@@ -1,5 +1,6 @@
 // auto-generated file
 import {FilterOptions, PaginatedListIterator, SortableFilterOptions} from '../cardinal-sdk-ts.mjs';
+import {CalendarItemDelegateOptions} from '../crypto/entities/CalendarItemDelegateOptions.mjs';
 import {CalendarItemShareOptions} from '../crypto/entities/CalendarItemShareOptions.mjs';
 import {SecretIdUseOption} from '../crypto/entities/SecretIdUseOption.mjs';
 import {CalendarItem, DecryptedCalendarItem, EncryptedCalendarItem} from '../model/CalendarItem.mjs';
@@ -28,6 +29,19 @@ export interface CalendarItemInGroupApi {
 	withEncryptionMetadata(entityGroupId: string, base: DecryptedCalendarItem | undefined,
 			patient: GroupScoped<Patient> | undefined,
 			options?: { user?: User | undefined, delegates?: ArrayWithUniqueKeys<{ delegate: EntityReferenceInGroup, accessLevel: AccessLevel }, 'delegate'>, secretId?: SecretIdUseOption, alternateRootDelegateReference?: EntityReferenceInGroup | undefined }): Promise<GroupScoped<DecryptedCalendarItem>>;
+
+	/**
+	 *
+	 *  In-group version of [CalendarItemApi.withEncryptionMetadataAndDelegates]
+	 */
+	withEncryptionMetadataAndDelegates(
+			entityGroupId: string,
+			base: DecryptedCalendarItem | undefined,
+			patient: GroupScoped<Patient> | undefined,
+			delegates: ArrayWithUniqueKeys<{ delegate: EntityReferenceInGroup, delegateOptions: CalendarItemDelegateOptions }, 'delegate'>,
+			user: User | undefined,
+			options?: { secretId?: SecretIdUseOption, alternateRootDelegateReference?: EntityReferenceInGroup | undefined }
+	): Promise<GroupScoped<DecryptedCalendarItem>>;
 
 	/**
 	 *

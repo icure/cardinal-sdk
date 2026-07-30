@@ -5,6 +5,7 @@ package com.icure.cardinal.sdk.model
 import com.icure.cardinal.sdk.model.base.CodeStub
 import com.icure.cardinal.sdk.model.base.HasEncryptionMetadata
 import com.icure.cardinal.sdk.model.base.HasEndOfLife
+import com.icure.cardinal.sdk.model.base.HasMedicalLocation
 import com.icure.cardinal.sdk.model.base.ICureDocument
 import com.icure.cardinal.sdk.model.base.Versionable
 import com.icure.cardinal.sdk.model.embed.Delegation
@@ -86,7 +87,11 @@ data class IcureStub(
 	 * The security metadata containing secure delegation information.
 	 */
 	override val securityMetadata: SecurityMetadata? = null,
-) : ICureDocument<String>, Versionable<String>, HasEncryptionMetadata, HasEndOfLife {
+) : ICureDocument<String>,
+	HasMedicalLocation,
+	Versionable<String>,
+	HasEncryptionMetadata,
+	HasEndOfLife {
 	// region IcureStub-IcureStub
 override fun copyWithSecurityMetadata(securityMetadata: SecurityMetadata, secretForeignKeys: Set<String>): IcureStub =
 		copy(securityMetadata = securityMetadata, secretForeignKeys = secretForeignKeys)

@@ -1,6 +1,7 @@
 package com.icure.cardinal.sdk.api
 
 import com.icure.cardinal.sdk.crypto.entities.SecretIdUseOption
+import com.icure.cardinal.sdk.crypto.entities.TopicDelegateOptions
 import com.icure.cardinal.sdk.crypto.entities.TopicShareOptions
 import com.icure.cardinal.sdk.exceptions.RevisionConflictException
 import com.icure.cardinal.sdk.filters.BaseFilterOptions
@@ -444,6 +445,32 @@ interface TopicApi : TopicBasicFlavourlessApi, TopicFlavouredApi<DecryptedTopic>
 	): DecryptedTopic
 
 	/**
+	 * Creates a new topic with initialized encryption metadata, specifying fine-grained options for each additional data owner that
+	 * will have access to the entity.
+	 * @param base a topic with initialized content and uninitialized encryption metadata. The result of this
+	 * method takes the content from [base] if provided.
+	 * @param patient the patient linked to the topic.
+	 * @param user the current user, will be used for the auto-delegations if provided.
+	 * @param delegates additional data owners that will have access to the newly created entity. You may choose the
+	 * permissions that the delegates will have on the entity and if they will have access to the secretIds, encryptionKeys, and/or
+	 * owningEntityIds of the new entity.
+	 * @param secretId specifies which secret id of [patient] to use for the new topic
+	 * @return a topic with initialized encryption metadata.
+	 * @throws IllegalArgumentException if base is not null and has a revision or has encryption metadata.
+	 */
+	suspend fun withEncryptionMetadataAndDelegates(
+		base: DecryptedTopic?,
+		patient: Patient?,
+		delegates: Map<String, TopicDelegateOptions>,
+		@DefaultValue("null")
+		user: User? = null,
+		@DefaultValue("com.icure.cardinal.sdk.crypto.entities.SecretIdUseOption.UseAnySharedWithParent")
+		secretId: SecretIdUseOption = SecretIdUseOption.UseAnySharedWithParent,
+		@DefaultValue("null")
+		alternateRootDelegateId: String? = null,
+	): DecryptedTopic
+
+	/**
 	 * Attempts to extract the encryption keys of a topic. If the user does not have access to any encryption key
 	 * of the access log the method will return an empty set.
 	 * Note: entities now have only one encryption key, but this method returns a set for compatibility with older
@@ -575,6 +602,22 @@ interface TopicInGroupApi : TopicBasicFlavourlessInGroupApi, TopicFlavouredInGro
 		user: User? = null,
 		@DefaultValue("emptyMap()")
 		delegates: Map<String, AccessLevel> = emptyMap(),
+		@DefaultValue("com.icure.cardinal.sdk.crypto.entities.SecretIdUseOption.UseAnySharedWithParent")
+		secretId: SecretIdUseOption = SecretIdUseOption.UseAnySharedWithParent,
+		@DefaultValue("null")
+		alternateRootDelegateId: String? = null,
+	): GroupScoped<DecryptedTopic>
+
+	/**
+	 * In-group version of [TopicApi.withEncryptionMetadataAndDelegates]
+	 */
+	suspend fun withEncryptionMetadataAndDelegates(
+		groupId: String,
+		base: DecryptedTopic?,
+		patient: GroupScoped<Patient>?,
+		delegates: @JsMapAsObjectArray(keyEntryName = "delegate", valueEntryName = "delegateOptions") Map<EntityReferenceInGroup, TopicDelegateOptions>,
+		@DefaultValue("null")
+		user: User? = null,
 		@DefaultValue("com.icure.cardinal.sdk.crypto.entities.SecretIdUseOption.UseAnySharedWithParent")
 		secretId: SecretIdUseOption = SecretIdUseOption.UseAnySharedWithParent,
 		@DefaultValue("null")
