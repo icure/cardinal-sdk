@@ -3,6 +3,8 @@ on:
     push:
         branches:
             - develop
+        paths:
+            - 'cardinal-sdk/src/commonMain/**'
 env:
     JSON_OUTPUT_DIR: ./cardinal-sdk/build/generated/ksp/jvm/jvmMain/resources
     BUILDER_JAR_PATH: sdk-codegen-codeGenerator.jar
