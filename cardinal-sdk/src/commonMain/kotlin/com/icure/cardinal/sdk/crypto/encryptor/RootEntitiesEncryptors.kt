@@ -13,6 +13,7 @@ import com.icure.cardinal.sdk.model.DecryptedMaintenanceTask
 import com.icure.cardinal.sdk.model.DecryptedMessage
 import com.icure.cardinal.sdk.model.DecryptedPatient
 import com.icure.cardinal.sdk.model.DecryptedReceipt
+import com.icure.cardinal.sdk.model.DecryptedRelatedPerson
 import com.icure.cardinal.sdk.model.DecryptedTopic
 import com.icure.cardinal.sdk.model.EncryptedAccessLog
 import com.icure.cardinal.sdk.model.EncryptedCalendarItem
@@ -26,6 +27,7 @@ import com.icure.cardinal.sdk.model.EncryptedMaintenanceTask
 import com.icure.cardinal.sdk.model.EncryptedMessage
 import com.icure.cardinal.sdk.model.EncryptedPatient
 import com.icure.cardinal.sdk.model.EncryptedReceipt
+import com.icure.cardinal.sdk.model.EncryptedRelatedPerson
 import com.icure.cardinal.sdk.model.EncryptedTopic
 import com.icure.utils.InternalIcureApi
 
@@ -43,6 +45,7 @@ internal data class RootEntitiesEncryptors(
 	val receipt: EntityEncryptors<EncryptedReceipt, DecryptedReceipt>,
 	val classification: EntityEncryptors<EncryptedClassification, DecryptedClassification>,
 	val invoice: EntityEncryptors<EncryptedInvoice, DecryptedInvoice>,
+	val relatedPerson: EntityEncryptors<EncryptedRelatedPerson, DecryptedRelatedPerson>,
 ) {
 	val serviceDecryptor = (contact.decryptor as ContactDecryptor).servicesDecryptor.value
 }

@@ -27,6 +27,7 @@ import com.icure.cardinal.sdk.model.DecryptedInvoice
 import com.icure.cardinal.sdk.model.DecryptedMessage
 import com.icure.cardinal.sdk.model.DecryptedPatient
 import com.icure.cardinal.sdk.model.DecryptedReceipt
+import com.icure.cardinal.sdk.model.DecryptedRelatedPerson
 import com.icure.cardinal.sdk.model.DecryptedTopic
 import com.icure.cardinal.sdk.model.EncryptedAccessLog
 import com.icure.cardinal.sdk.model.EncryptedCalendarItem
@@ -39,6 +40,7 @@ import com.icure.cardinal.sdk.model.EncryptedInvoice
 import com.icure.cardinal.sdk.model.EncryptedMessage
 import com.icure.cardinal.sdk.model.EncryptedPatient
 import com.icure.cardinal.sdk.model.EncryptedReceipt
+import com.icure.cardinal.sdk.model.EncryptedRelatedPerson
 import com.icure.cardinal.sdk.model.EncryptedTopic
 import com.icure.cardinal.sdk.model.embed.DecryptedService
 import com.icure.cardinal.sdk.model.embed.Encryptable
@@ -193,6 +195,9 @@ internal abstract class AbstractEntitiesEncryptorsInitializer : EntitiesEncrypto
 			invoice = ensureNonNull(context.manifestToEncryptors[manifests.invoice]) {
 				"Encryptor ${manifests.invoice} for Invoice should have been initialized."
 			} as EntityEncryptors<EncryptedInvoice, DecryptedInvoice>,
+			relatedPerson = ensureNonNull(context.manifestToEncryptors[manifests.relatedPerson]) {
+				"Encryptor ${manifests.relatedPerson} for RelatedPerson should have been initialized."
+			} as EntityEncryptors<EncryptedRelatedPerson, DecryptedRelatedPerson>,
 		)
 	}
 
@@ -258,6 +263,7 @@ internal abstract class AbstractEntitiesEncryptorsInitializer : EntitiesEncrypto
 		context.markManifestTypeAndQueueGeneration<EncryptedReceipt, DecryptedReceipt>(manifests.receipt)
 		context.markManifestTypeAndQueueGeneration<EncryptedClassification, DecryptedClassification>(manifests.classification)
 		context.markManifestTypeAndQueueGeneration<EncryptedInvoice, DecryptedInvoice>(manifests.invoice)
+		context.markManifestTypeAndQueueGeneration<EncryptedRelatedPerson, DecryptedRelatedPerson>(manifests.relatedPerson)
 	}
 
 	private inline fun <reified ENCRYPTED : Encryptable, reified DECRYPTED : Encryptable> Context.markManifestTypeAndQueueGeneration(manifestName: String) =

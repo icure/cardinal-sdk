@@ -1,12 +1,9 @@
 package com.icure.cardinal.sdk.crypto
 
-import com.icure.cardinal.sdk.crypto.entities.EncryptedFieldsManifest
-import com.icure.cardinal.sdk.crypto.entities.EntityWithEncryptionMetadataTypeName
 import com.icure.cardinal.sdk.model.base.HasEncryptionMetadata
 import com.icure.cardinal.sdk.model.embed.Encryptable
 import com.icure.cardinal.sdk.utils.EntityEncryptionException
 import com.icure.utils.InternalIcureApi
-import kotlinx.serialization.SerializationStrategy
 
 /**
  * Validation of entities, can be used also if the current user is not a data owner.

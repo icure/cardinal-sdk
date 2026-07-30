@@ -41,8 +41,6 @@ import com.icure.cardinal.sdk.model.specializations.HexString
 import com.icure.cardinal.sdk.model.toStoredDocumentIdentifier
 import com.icure.cardinal.sdk.options.ApiConfiguration
 import com.icure.cardinal.sdk.options.BasicApiConfiguration
-import com.icure.cardinal.sdk.options.EntitiesEncryptedFieldsManifests
-import com.icure.cardinal.sdk.options.JsonPatcher
 import com.icure.cardinal.sdk.serialization.RelatedPersonAbstractFilterSerializer
 import com.icure.cardinal.sdk.serialization.SubscriptionSerializer
 import com.icure.cardinal.sdk.subscription.EntitySubscription
@@ -61,9 +59,6 @@ private fun encryptedApiFlavour(
 	config: BasicApiConfiguration
 ): FlavouredApi<EncryptedRelatedPerson, EncryptedRelatedPerson> = FlavouredApi.encrypted(
 	config = config,
-	encryptedSerializer = EncryptedRelatedPerson.serializer(),
-	type = EntityWithEncryptionMetadataTypeName.RelatedPerson,
-	manifest = EntitiesEncryptedFieldsManifests::relatedPerson
 )
 
 @InternalIcureApi
@@ -71,11 +66,9 @@ private fun decryptedApiFlavour(
 	config: ApiConfiguration
 ): FlavouredApi<EncryptedRelatedPerson, DecryptedRelatedPerson> = FlavouredApi.decrypted(
 	config = config,
-	encryptedSerializer = EncryptedRelatedPerson.serializer(),
-	decryptedSerializer = DecryptedRelatedPerson.serializer(),
 	type = EntityWithEncryptionMetadataTypeName.RelatedPerson,
-	manifest = EntitiesEncryptedFieldsManifests::relatedPerson,
-	patchJson = JsonPatcher::patchRelatedPerson
+	encryptors = config.encryptors.relatedPerson,
+	getRootModelVersion = EncryptedRelatedPerson::customisedModelVersion,
 )
 
 @InternalIcureApi
@@ -83,11 +76,9 @@ private fun tryAndRecoverApiFlavour(
 	config: ApiConfiguration
 ): FlavouredApi<EncryptedRelatedPerson, RelatedPerson> = FlavouredApi.tryAndRecover(
 	config = config,
-	encryptedSerializer = EncryptedRelatedPerson.serializer(),
-	decryptedSerializer = DecryptedRelatedPerson.serializer(),
 	type = EntityWithEncryptionMetadataTypeName.RelatedPerson,
-	manifest = EntitiesEncryptedFieldsManifests::relatedPerson,
-	patchJson = JsonPatcher::patchRelatedPerson
+	encryptors = config.encryptors.relatedPerson,
+	getRootModelVersion = EncryptedRelatedPerson::customisedModelVersion,
 )
 
 @OptIn(InternalIcureApi::class)

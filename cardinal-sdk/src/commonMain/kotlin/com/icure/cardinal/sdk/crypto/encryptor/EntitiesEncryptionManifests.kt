@@ -71,6 +71,10 @@ data class EntitiesEncryptionManifests(
 	 * Name of the manifest in [manifestsByName] that should be used for the encryption of [com.icure.cardinal.sdk.model.Invoice] entities
 	 */
 	val invoice: String,
+	/**
+	 * Name of the manifest in [manifestsByName] that should be used for the encryption of [com.icure.cardinal.sdk.model.RelatedPerson] entities
+	 */
+	val relatedPerson: String,
 ) {
 	init {
 		val entityManifestNames = mapOf(
@@ -86,6 +90,7 @@ data class EntitiesEncryptionManifests(
 			"receipt" to receipt,
 			"classification" to classification,
 			"invoice" to invoice,
+			"relatedPerson" to relatedPerson,
 		)
 		for ((entityName, manifestName) in entityManifestNames) {
 			require(manifestName in manifestsByName) {

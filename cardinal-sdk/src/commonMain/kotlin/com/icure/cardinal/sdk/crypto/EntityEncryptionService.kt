@@ -5,7 +5,6 @@ import com.icure.cardinal.sdk.crypto.encryptor.EntityEncryptor
 import com.icure.cardinal.sdk.crypto.entities.BulkShareResult
 import com.icure.cardinal.sdk.crypto.entities.DelegateOptions
 import com.icure.cardinal.sdk.crypto.entities.DelegateShareOptions
-import com.icure.cardinal.sdk.crypto.entities.EncryptedFieldsManifest
 import com.icure.cardinal.sdk.crypto.entities.EntityDataEncryptionResult
 import com.icure.cardinal.sdk.crypto.entities.EntityEncryptionKeyDetails
 import com.icure.cardinal.sdk.crypto.entities.EntityEncryptionMetadataInitialisationResult
@@ -18,7 +17,6 @@ import com.icure.cardinal.sdk.crypto.entities.SimpleDelegateShareOptions
 import com.icure.cardinal.sdk.crypto.entities.SimpleShareResult
 import com.icure.cardinal.sdk.model.EntityReferenceInGroup
 import com.icure.cardinal.sdk.model.base.HasEncryptionMetadata
-import com.icure.cardinal.sdk.model.embed.AccessLevel
 import com.icure.cardinal.sdk.model.embed.Encryptable
 import com.icure.cardinal.sdk.model.requests.BulkShareOrUpdateMetadataParams
 import com.icure.cardinal.sdk.model.requests.EntityBulkShareResult
@@ -26,8 +24,6 @@ import com.icure.cardinal.sdk.model.specializations.HexString
 import com.icure.cardinal.sdk.utils.EntityEncryptionException
 import com.icure.cardinal.sdk.utils.generation.JsMapAsObjectArray
 import com.icure.utils.InternalIcureApi
-import kotlinx.serialization.SerializationStrategy
-import kotlinx.serialization.json.JsonElement
 
 /**
  * Gives access to several functions to access encrypted entities metadata.

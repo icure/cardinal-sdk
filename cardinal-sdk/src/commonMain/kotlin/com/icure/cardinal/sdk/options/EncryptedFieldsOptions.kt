@@ -4,7 +4,6 @@ import com.icure.cardinal.sdk.crypto.encryptor.EncryptorOptions
 import com.icure.cardinal.sdk.crypto.encryptor.EntitiesEncryptionManifests
 import com.icure.cardinal.sdk.crypto.encryptor.EntityEncryptionManifest
 import com.icure.cardinal.sdk.crypto.encryptor.ExtensionsEncryptionManifest
-import com.icure.cardinal.sdk.utils.intersects
 import kotlinx.serialization.Serializable
 
 sealed interface EncryptedFieldsOptions {
@@ -324,6 +323,18 @@ private fun createDefaultEntitiesEncryptionManifests(
 			extensionsManifestsByModelVersion = emptyMap(),
 			currentExtensionsManifest = null,
 		),
+		"RelatedPerson" to EntityEncryptionManifest(
+			fieldsToEncrypt = setOf(
+				"created",
+				"modified",
+				"companyName",
+				"languages",
+				"civility"
+			),
+			recursiveEncryption = emptyMap(),
+			extensionsManifestsByModelVersion = emptyMap(),
+			currentExtensionsManifest = null,
+		)
 	).toMap(),
 	extensionsManifestsByName = emptyMap(),
 	accessLog = "AccessLog",
@@ -338,6 +349,7 @@ private fun createDefaultEntitiesEncryptionManifests(
 	receipt = "Receipt",
 	classification = "Classification",
 	invoice = "Invoice",
+	relatedPerson = "RelatedPerson",
 )
 
 private val defaultEntitiesEncryptionManifests = createDefaultEntitiesEncryptionManifests(useLegacyServiceContentEncryption = false)
@@ -360,27 +372,73 @@ data class PartialEncryptedManifest(
 	val receipt: String? = null,
 	val classification: String? = null,
 	val invoice: String? = null,
+	val relatedPerson: String? = null,
 	val useLegacyBase: Boolean = false,
+)
+
+/*
+ * Names of the builtin manifests (entity or extensions manifests) that clash with a name provided by the custom
+ * configuration can't be used as-is: instead of failing we mask them by prepending underscores until we get a name
+ * that is not used by the custom configuration nor by any other (masked or not) builtin manifest name.
+ */
+private fun maskClashingBaseNames(baseNames: Set<String>, customNames: Set<String>): Map<String, String> {
+	val takenNames = (baseNames + customNames).toMutableSet()
+	val translations = mutableMapOf<String, String>()
+	for (baseName in baseNames) {
+		if (baseName in customNames) {
+			var maskedName = "_$baseName"
+			while (maskedName in takenNames) maskedName = "_$maskedName"
+			translations[baseName] = maskedName
+			takenNames += maskedName
+		}
+	}
+	return translations
+}
+
+private fun ExtensionsEncryptionManifest.Recursive.masked(mask: Map<String, String>): ExtensionsEncryptionManifest.Recursive = when (this) {
+	is ExtensionsEncryptionManifest.Recursive.Collection -> ExtensionsEncryptionManifest.Recursive.Collection(recursive.masked(mask))
+	is ExtensionsEncryptionManifest.Recursive.Map -> ExtensionsEncryptionManifest.Recursive.Map(recursive.masked(mask))
+	is ExtensionsEncryptionManifest.Recursive.Object -> ExtensionsEncryptionManifest.Recursive.Object(mask[manifestName] ?: manifestName)
+}
+
+private fun ExtensionsEncryptionManifest.masked(mask: Map<String, String>): ExtensionsEncryptionManifest = ExtensionsEncryptionManifest(
+	fullEncryptionFields = fullEncryptionFields,
+	recursiveEncryptionFields = recursiveEncryptionFields.mapValues { (_, recursive) -> recursive.masked(mask) },
 )
 
 private fun PartialEncryptedManifest.buildFullManifest(): EntitiesEncryptionManifests {
 	val base = if (useLegacyBase) legacyEntitiesEncryptionManifests else defaultEntitiesEncryptionManifests
-	require(!manifestsByName.keys.intersects(base.manifestsByName.keys)) { "manifestsByName cannot contain keys from the base manifests" }
-	require(!extensionsManifestsByName.keys.intersects(base.extensionsManifestsByName.keys)) { "extensionsManifestsByName cannot contain keys from the base manifests" }
+	val baseNameMask = maskClashingBaseNames(base.manifestsByName.keys, manifestsByName.keys)
+	val baseExtensionsNameMask = maskClashingBaseNames(base.extensionsManifestsByName.keys, extensionsManifestsByName.keys)
+	fun String.masked() = baseNameMask[this] ?: this
+	fun String.maskedExtension() = baseExtensionsNameMask[this] ?: this
+	val maskedBaseManifestsByName = base.manifestsByName.entries.associate { (name, manifest) ->
+		name.masked() to manifest.copy(
+			recursiveEncryption = manifest.recursiveEncryption.mapValues { (_, referencedName) -> referencedName.masked() },
+			extensionsManifestsByModelVersion = manifest.extensionsManifestsByModelVersion.mapValues { (_, byVersion) ->
+				byVersion.mapValues { (_, extensionsManifestName) -> extensionsManifestName.maskedExtension() }
+			},
+			currentExtensionsManifest = manifest.currentExtensionsManifest?.maskedExtension(),
+		)
+	}
+	val maskedBaseExtensionsManifestsByName = base.extensionsManifestsByName.entries.associate { (name, manifest) ->
+		name.maskedExtension() to manifest.masked(baseExtensionsNameMask)
+	}
 	return EntitiesEncryptionManifests(
-		manifestsByName = manifestsByName + base.manifestsByName,
-		extensionsManifestsByName = extensionsManifestsByName + base.extensionsManifestsByName,
-		accessLog = accessLog ?: base.accessLog,
-		calendarItem = calendarItem ?: base.calendarItem,
-		contact = contact ?: base.contact,
-		healthElement = healthElement ?: base.healthElement,
-		patient = patient ?: base.patient,
-		message = message ?: base.message,
-		topic = topic ?: base.topic,
-		document = document ?: base.document,
-		form = form ?: base.form,
-		receipt = receipt ?: base.receipt,
-		classification = classification ?: base.classification,
-		invoice = invoice ?: base.invoice,
+		manifestsByName = manifestsByName + maskedBaseManifestsByName,
+		extensionsManifestsByName = extensionsManifestsByName + maskedBaseExtensionsManifestsByName,
+		accessLog = accessLog ?: base.accessLog.masked(),
+		calendarItem = calendarItem ?: base.calendarItem.masked(),
+		contact = contact ?: base.contact.masked(),
+		healthElement = healthElement ?: base.healthElement.masked(),
+		patient = patient ?: base.patient.masked(),
+		message = message ?: base.message.masked(),
+		topic = topic ?: base.topic.masked(),
+		document = document ?: base.document.masked(),
+		form = form ?: base.form.masked(),
+		receipt = receipt ?: base.receipt.masked(),
+		classification = classification ?: base.classification.masked(),
+		invoice = invoice ?: base.invoice.masked(),
+		relatedPerson = relatedPerson ?: base.relatedPerson.masked(),
 	)
 }

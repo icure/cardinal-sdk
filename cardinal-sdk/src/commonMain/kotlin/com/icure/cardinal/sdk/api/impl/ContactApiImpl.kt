@@ -13,9 +13,6 @@ import com.icure.cardinal.sdk.api.ContactInGroupApi
 import com.icure.cardinal.sdk.api.raw.RawContactApi
 import com.icure.cardinal.sdk.api.raw.successBodyOrNull404
 import com.icure.cardinal.sdk.api.raw.successBodyOrThrowRevisionConflict
-import com.icure.cardinal.sdk.crypto.encryptor.EntityDecryptor
-import com.icure.cardinal.sdk.crypto.encryptor.impl.generated.ContactDecryptor
-import com.icure.cardinal.sdk.crypto.decrypt
 import com.icure.cardinal.sdk.crypto.entities.ContactDelegateOptions
 import com.icure.cardinal.sdk.crypto.entities.ContactShareOptions
 import com.icure.cardinal.sdk.crypto.entities.DelegateOptions
