@@ -349,7 +349,7 @@ private class CalendarItemFlavouredApiImpl<E : CalendarItem>(
 		doShareWithMany(groupId = null, calendarItem, delegates.keyAsLocalDataOwnerReferences())
 
 	override suspend fun linkToPatient(calendarItem: CalendarItem, patient: Patient, shareLinkWithDelegates: Set<String>): E {
-		require(calendarItem.secretForeignKeys.isNotEmpty()) { "Calendar item ${calendarItem.id} is already linked to a patient" }
+		require(calendarItem.secretForeignKeys.isEmpty()) { "Calendar item ${calendarItem.id} is already linked to a patient" }
 		val currentDataOwnerId = dataOwnerApi.getCurrentDataOwner().successBody().dataOwner.id
 		val delegates = shareLinkWithDelegates + currentDataOwnerId
 		val secretForeignKeys = config.crypto.entity.getConfidentialSecretIdsOf(
@@ -514,7 +514,7 @@ private class CalendarItemBasicFlavourlessInGroupApiImpl(rawApi: RawCalendarItem
 	}
 
 	override suspend fun purgeCalendarItemsByIds(entityIds: List<GroupScoped<StoredDocumentIdentifier>>): List<GroupScoped<StoredDocumentIdentifier>> =
-		entityIds.mapUniqueIdentifiablesChunkedByGroup { groupId, batch -> 
+		entityIds.mapUniqueIdentifiablesChunkedByGroup { groupId, batch ->
 			doPurgeCalendarItemsByIds(groupId, batch)
 		}
 }
