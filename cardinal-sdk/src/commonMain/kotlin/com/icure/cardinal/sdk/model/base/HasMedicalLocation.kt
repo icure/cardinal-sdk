@@ -9,5 +9,6 @@ package com.icure.cardinal.sdk.model.base
 
 interface HasMedicalLocation {
 	// region HasMedicalLocation-HasMedicalLocation
+
 	// endregion
 }
