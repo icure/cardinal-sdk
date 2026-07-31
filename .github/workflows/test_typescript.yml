@@ -1,4 +1,4 @@
-name: Test Python SDK
+name: Test Typescript SDK
 
 on:
     pull_request:
@@ -7,16 +7,19 @@ on:
     workflow_dispatch:
         inputs:
             tests:
-                description: 'Tests to run, e.g. "test_patient test_sharing" (empty runs everything)'
+                description: 'Test modules to run, e.g. "patient sharing" (empty runs everything)'
                 required: false
                 default: ''
                 type: string
 
 jobs:
-    python-tests:
+    typescript-tests:
         runs-on: ubuntu-latest
-        name: Run the python SDK tests # Do not change unless you change the branch protection rules
+        name: Run the typescript SDK tests  # Do not change unless you change the branch protection rules
         env:
+            # Must match the typescript version of the ts-wrapper package, `tsc` has to be in the
+            # path for `prepareDistributionPackage`.
+            TYPESCRIPT_VERSION: 5.9.3
             ORG_GRADLE_PROJECT_repoUsername: ${{ secrets.REPO_USERNAME }}
             ORG_GRADLE_PROJECT_repoPassword: ${{ secrets.REPO_PASSWORD }}
             ORG_GRADLE_PROJECT_mavenRepository: ${{ secrets.MAVEN_REPOSITORY }}
@@ -28,24 +31,24 @@ jobs:
                     submodules: 'recursive'
                     token: ${{ secrets.GH_PERSONAL_ACCESS_TOKEN }}
 
-            -   name: Set up python 3.12
-                uses: actions/setup-python@v5
+            -   name: Set up node 22
+                uses: actions/setup-node@v4
                 with:
-                    python-version: '3.12'
+                    node-version: '22'
 
-            # The wheel only depends on the sources of the SDK and of the wrapper, so it is rebuilt
-            # only when one of them changes. Note that a cache entry is visible to a workflow run
-            # only if it was created on the same branch, on its base branch, or on the default
-            # branch: the first run of a branch that changes the sources always rebuilds the wheel.
-            -   name: Restore the wheel from the cache
-                id: cache-wheel
+            # The package only depends on the sources of the SDK and of the wrapper, so it is
+            # rebuilt only when one of them changes. Note that a cache entry is visible to a
+            # workflow run only if it was created on the same branch, on its base branch, or on the
+            # default branch: the first run of a branch that changes the sources always rebuilds it.
+            -   name: Restore the distribution package from the cache
+                id: cache-package
                 uses: actions/cache@v4
                 with:
-                    path: python-wrapper/src/commonMain/resources/dist
-                    key: cardinal-sdk-wheel-linux-x64-${{ hashFiles('cardinal-sdk/src/**', 'python-wrapper/src/python/**', 'python-wrapper/src/commonMain/kotlin/**') }}
+                    path: ts-wrapper/build/tsDistribution
+                    key: cardinal-sdk-ts-package-${{ hashFiles('cardinal-sdk/src/**', 'ts-wrapper/src/jsMain/**', 'ts-wrapper/tsconfig.json') }}
 
             -   name: Set up JDK 21
-                if: steps.cache-wheel.outputs.cache-hit != 'true'
+                if: steps.cache-package.outputs.cache-hit != 'true'
                 uses: actions/setup-java@v4
                 with:
                     distribution: 'corretto'
@@ -53,39 +56,45 @@ jobs:
                     cache: 'gradle'
 
             -   name: Write github credentials to local.properties
-                if: steps.cache-wheel.outputs.cache-hit != 'true'
+                if: steps.cache-package.outputs.cache-hit != 'true'
                 run: |
                     echo "githubUsername=${{ secrets.GH_USERNAME }}" > local.properties
                     echo "githubPassword=${{ secrets.GH_PERSONAL_ACCESS_TOKEN }}" >> local.properties
-                    echo "cinteropsLibsDir=/usr/lib/x86_64-linux-gnu" >> local.properties
                     mkdir -p ksp-json-processor
                     echo "githubUsername=${{ secrets.GH_USERNAME }}" > ksp-json-processor/local.properties
                     echo "githubPassword=${{ secrets.GH_PERSONAL_ACCESS_TOKEN }}" >> ksp-json-processor/local.properties
 
-            -   name: Install native link dependencies
-                if: steps.cache-wheel.outputs.cache-hit != 'true'
-                run: sudo apt-get update && sudo apt-get install -y libssl-dev
+            -   name: Install the typescript compiler
+                if: steps.cache-package.outputs.cache-hit != 'true'
+                run: npm install -g "typescript@${TYPESCRIPT_VERSION}"
 
-            -   name: Build the native library
-                if: steps.cache-wheel.outputs.cache-hit != 'true'
-                run: ./gradlew :python-wrapper:linkDebugSharedLinuxX64
+            -   name: Build the distribution package
+                if: steps.cache-package.outputs.cache-hit != 'true'
+                run: ./gradlew :ts-wrapper:prepareDistributionPackage
 
-            -   name: Build the wheel
-                if: steps.cache-wheel.outputs.cache-hit != 'true'
-                run: ./gradlew :python-wrapper:prepareLinuxX64DebugArchive
+            -   name: Pack the distribution package
+                if: steps.cache-package.outputs.cache-hit != 'true'
+                run: |
+                    mkdir -p ts-wrapper/build/tsDistribution
+                    npm pack --pack-destination "$PWD/ts-wrapper/build/tsDistribution" ./ts-wrapper/build/tsPackage
 
-            -   name: Upload the wheel
+            -   name: Upload the distribution package
                 uses: actions/upload-artifact@v4
                 with:
-                    name: cardinal-sdk-wheel-linux-x64
-                    path: python-wrapper/src/commonMain/resources/dist/*.whl
+                    name: cardinal-sdk-ts-package
+                    path: ts-wrapper/build/tsDistribution/*.tgz
                     if-no-files-found: error
 
             -   name: Install the SDK and the test dependencies
+                working-directory: ts-wrapper/test
                 run: |
-                    python3 -m pip install --upgrade pip
-                    python3 -m pip install python-wrapper/src/commonMain/resources/dist/cardinal_sdk-*.whl
-                    python3 -m pip install -r python-wrapper/test/requirements.txt
+                    set -euo pipefail
+                    npm install
+                    npm install --no-save ../build/tsDistribution/icure-cardinal-sdk-*.tgz
+
+            -   name: Compile the tests
+                working-directory: ts-wrapper/test
+                run: npm run build
 
             # Puts the existing key of each user in the directory the SDK reads it from. The name of
             # the file is the storage entry key expected by the SDK, that is
@@ -93,6 +102,7 @@ jobs:
             # `{"privateKey": "<the pkcs8 private key, in base64>"}`. When the key of a user is not
             # configured the SDK generates a new one and registers it on the data owner.
             -   name: Set up the keys directories
+                working-directory: ts-wrapper/test
                 env:
                     USER_1_PK_FILE: ${{ secrets.CARDINAL_TEST_USER_1_PK_FILE }}
                     USER_1_KEYS_DIR: ${{ secrets.CARDINAL_TEST_USER_1_PK_DIR }}
@@ -115,10 +125,11 @@ jobs:
                     seed_key "$USER_1_KEYS_DIR" "$USER_1_PK_FILE" "$USER_1_PK"
                     seed_key "$USER_2_KEYS_DIR" "$USER_2_PK_FILE" "$USER_2_PK"
 
-            # `tests.py` exits with a non-zero status as soon as one test fails or errors, which
+            # `run.mjs` exits with a non-zero status as soon as one test fails or errors, which
             # fails this step, and so the whole workflow.
             -   name: Run the tests
-                run: python3 python-wrapper/test/tests.py ${{ github.event.inputs.tests }}
+                working-directory: ts-wrapper/test
+                run: npm test -- ${{ github.event.inputs.tests }}
                 env:
                     CARDINAL_URL: "https://nightly.icure.cloud"
                     CARDINAL_USER_1_USERNAME: ${{ secrets.CARDINAL_TEST_USER_1_USERNAME }}
