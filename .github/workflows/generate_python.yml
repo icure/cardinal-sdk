@@ -40,7 +40,7 @@ jobs:
                         echo "has-open-pr=false" >> $GITHUB_OUTPUT
                     fi
 
-    setup:
+    update-python-sdk:
         runs-on: ubuntu-latest
         name: Setup environment & generating python sdk
         needs: check-open-pr

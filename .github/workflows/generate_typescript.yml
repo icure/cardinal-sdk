@@ -32,7 +32,7 @@ jobs:
                         echo "has-open-pr=false" >> $GITHUB_OUTPUT
                     fi
 
-    setup:
+    update-ts-sdk:
         needs: check-open-pr
         if: github.event_name == 'workflow_dispatch' || needs.check-open-pr.outputs.has-open-pr == 'true'
         runs-on: ubuntu-latest
