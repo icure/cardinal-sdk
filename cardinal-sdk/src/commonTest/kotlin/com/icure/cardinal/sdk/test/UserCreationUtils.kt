@@ -20,8 +20,20 @@ import com.icure.utils.InternalIcureApi
 
 fun uuid() = defaultCryptoService.strongRandom.randomUUID()
 
+/**
+ * Only the local test environment is disposable, so only there the tests can create and modify users.
+ * Any test doing so must be disabled outside of it with `LOCAL_ENV_ONLY`; this is the safety net that
+ * makes a test that wasn't fail explicitly instead of polluting a shared environment.
+ */
+private fun requireLocalTestEnvironment(operation: String) {
+	check(isLocalTestMode) {
+		"`$operation` needs the local test environment: this test must be disabled with `LOCAL_ENV_ONLY`"
+	}
+}
+
 @OptIn(InternalIcureApi::class)
 suspend fun createUserInMultipleGroups(): List<DataOwnerDetails> {
+	requireLocalTestEnvironment("createUserInMultipleGroups")
 	val groupId1 = uuid()
 	val groupId2 = uuid()
 	val groupId3 = uuid()
@@ -127,6 +139,9 @@ suspend fun createUserInMultipleGroups(): List<DataOwnerDetails> {
 /**
  * @param parent if not null, specifies the direct parent of this data owner. If that parent has a parent then the
  * latter will be the grandparent of this data owner, and so on. If null the data owner will not have any parent.
+ *
+ * Outside of the local test environment no user is created: one of the pre-configured healthcare party
+ * users is returned instead (see [nextPreConfiguredHcpUser]), and none of the parameters can be used.
  */
 @OptIn(InternalIcureApi::class)
 suspend fun createHcpUser(
@@ -136,6 +151,13 @@ suspend fun createHcpUser(
 	inGroup: String = testGroupId,
 	inheritsPermissions: Boolean = false
 ): DataOwnerDetails {
+	if (!isLocalTestMode) {
+		check(parent == null && !useLegacyKey && roles == null && inGroup == testGroupId && !inheritsPermissions) {
+			"A pre-configured healthcare party user can't be customised: this test must be disabled with " +
+				"`LOCAL_ENV_ONLY`"
+		}
+		return nextPreConfiguredHcpUser()
+	}
 	val hcpRawApi = RawHealthcarePartyApiImpl(baseUrl, superadminAuth(), DefaultRawApiConfig)
 	val userRawApi = RawUserApiImpl(baseUrl, superadminAuth(), DefaultRawApiConfig)
 	val hcpId = uuid()
@@ -205,6 +227,7 @@ suspend fun createPlainUser(
 	inGroup: String = testGroupId,
 	inheritsPermissions: Boolean = false
 ): PlainUserDetails {
+	requireLocalTestEnvironment("createPlainUser")
 	val userRawApi = RawUserApiImpl(baseUrl, superadminAuth(), DefaultRawApiConfig)
 	val login = "hcp-${uuid()}"
 	val password = uuid()
@@ -236,6 +259,7 @@ suspend fun createPatientUser(
 	inheritsPermissions: Boolean = false,
 	initializeKey: Boolean = true
 ): DataOwnerDetails {
+	requireLocalTestEnvironment("createPatientUser")
 	val patientRawApi = RawPatientApiImpl(baseUrl, superadminAuth(), null, DefaultRawApiConfig)
 	val userRawApi = RawUserApiImpl(baseUrl, superadminAuth(), DefaultRawApiConfig)
 	val patientId = existingPatientId ?: uuid()
@@ -279,6 +303,7 @@ suspend fun createPatientUser(
 
 @OptIn(InternalIcureApi::class)
 suspend fun createUserFromExistingPatient(patient: Patient, keylessPatient: Boolean = false): DataOwnerDetails {
+	requireLocalTestEnvironment("createUserFromExistingPatient")
 	val patientRawApi = RawPatientApiImpl(baseUrl, testGroupAdminAuth(), NoAccessControlKeysHeadersProvider, DefaultRawApiConfig)
 	val userRawApi = RawUserApiImpl(baseUrl, testGroupAdminAuth(), DefaultRawApiConfig)
 	val login = "patient-${uuid()}"

@@ -7,7 +7,9 @@ import com.icure.cardinal.sdk.test.autoCancelJob
 import com.icure.cardinal.sdk.test.createHcpUser
 import com.icure.cardinal.sdk.test.initializeTestEnvironment
 import com.icure.cardinal.sdk.test.uuid
+import com.icure.cardinal.sdk.utils.DEFAULT_ENABLED
 import com.icure.cardinal.sdk.utils.EntityEncryptionException
+import com.icure.cardinal.sdk.utils.LOCAL_ENV_ONLY
 import com.icure.kryptom.crypto.CryptoService
 import io.kotest.assertions.throwables.shouldThrow
 import io.kotest.core.spec.style.StringSpec
@@ -34,7 +36,7 @@ class ParentDelegatorTest : StringSpec({
 		initializeTestEnvironment()
 	}
 
-	"Data should be created and shared using the parent hcp as delegator" {
+	"Data should be created and shared using the parent hcp as delegator".config(enabled = DEFAULT_ENABLED && LOCAL_ENV_ONLY) {
 		val parentHcp = createHcpUser()
 		val hcp = createHcpUser(parentHcp)
 		val api = hcp.apiWithParentKeysOnly(specJob, ParentDelegatorStrategies)
@@ -97,7 +99,7 @@ class ParentDelegatorTest : StringSpec({
 		retrievedAsOtherAfterReinit.shouldNotBeNull().note shouldBe "Another secret note"
 	}
 
-	"Data shared to parent should be accessible" {
+	"Data shared to parent should be accessible".config(enabled = DEFAULT_ENABLED && LOCAL_ENV_ONLY) {
 		val parentHcp = createHcpUser()
 		val hcp = createHcpUser(parentHcp)
 		val api = hcp.apiWithParentKeysOnly(specJob, ParentDelegatorStrategies)
@@ -117,7 +119,7 @@ class ParentDelegatorTest : StringSpec({
 		retrievedAsHcp.shouldNotBeNull().note shouldBe "Secret note"
 	}
 
-	"Data shared directly to hcp should be accessible but not decryptable" {
+	"Data shared directly to hcp should be accessible but not decryptable".config(enabled = DEFAULT_ENABLED && LOCAL_ENV_ONLY) {
 		val parentHcp = createHcpUser()
 		val hcp = createHcpUser(parentHcp)
 		val api = hcp.apiWithParentKeysOnly(specJob, ParentDelegatorStrategies)

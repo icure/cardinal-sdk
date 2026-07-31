@@ -21,6 +21,8 @@ import com.icure.cardinal.sdk.test.baseUrl
 import com.icure.cardinal.sdk.test.createHcpUser
 import com.icure.cardinal.sdk.test.initializeTestEnvironment
 import com.icure.cardinal.sdk.test.internal
+import com.icure.cardinal.sdk.utils.DEFAULT_ENABLED
+import com.icure.cardinal.sdk.utils.LOCAL_ENV_ONLY
 import com.icure.kryptom.crypto.CryptoService
 import com.icure.kryptom.crypto.RsaAlgorithm
 import com.icure.kryptom.crypto.defaultCryptoService
@@ -57,7 +59,7 @@ class UntrustedKey : StringSpec({
 		initializeTestEnvironment()
 	}
 
-	"A user that has a key that can't be trusted anymore can still use it for decrypting existing data but won't use it to encrypt new data" {
+	"A user that has a key that can't be trusted anymore can still use it for decrypting existing data but won't use it to encrypt new data".config(enabled = DEFAULT_ENABLED && LOCAL_ENV_ONLY) {
 		val parent = createHcpUser()
 		val child = createHcpUser(parent = parent)
 		val initialApi = child.api(specJob)

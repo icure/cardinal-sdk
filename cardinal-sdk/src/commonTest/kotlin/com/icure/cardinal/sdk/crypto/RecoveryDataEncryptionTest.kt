@@ -21,6 +21,7 @@ import com.icure.cardinal.sdk.test.initializeTestEnvironment
 import com.icure.cardinal.sdk.test.internal
 import com.icure.cardinal.sdk.utils.DEFAULT_ENABLED
 import com.icure.cardinal.sdk.utils.EntityEncryptionException
+import com.icure.cardinal.sdk.utils.LOCAL_ENV_ONLY
 import com.icure.cardinal.sdk.utils.base64Encode
 import com.icure.cardinal.sdk.utils.decode
 import com.icure.kryptom.crypto.AesAlgorithm
@@ -41,10 +42,10 @@ import io.kotest.matchers.nulls.shouldNotBeNull
 import io.kotest.matchers.shouldBe
 import io.kotest.matchers.types.shouldBeInstanceOf
 import io.ktor.utils.io.core.toByteArray
+import kotlin.random.Random
 import kotlinx.coroutines.async
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.withTimeoutOrNull
-import kotlin.random.Random
 
 @OptIn(InternalIcureApi::class)
 class RecoveryDataEncryptionTest : StringSpec({
@@ -92,7 +93,7 @@ class RecoveryDataEncryptionTest : StringSpec({
 		calledRecovery shouldBe true
 	}
 
-	"User should be able to share data with a patient that did not yet do a first login".config(enabled = DEFAULT_ENABLED) {
+	"User should be able to share data with a patient that did not yet do a first login".config(enabled = DEFAULT_ENABLED && LOCAL_ENV_ONLY) {
 		val hcp = createHcpUser()
 		val api = hcp.api(specJob)
 		val patient = api.patient.createPatient(
