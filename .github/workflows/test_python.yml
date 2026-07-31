@@ -33,16 +33,18 @@ jobs:
                 with:
                     python-version: '3.12'
 
-            # The wheel only depends on the sources of the SDK and of the wrapper, so it is rebuilt
-            # only when one of them changes. Note that a cache entry is visible to a workflow run
-            # only if it was created on the same branch, on its base branch, or on the default
-            # branch: the first run of a branch that changes the sources always rebuilds the wheel.
+            # The wheel only depends on the sources of the SDK and of the wrapper, and on how they are
+            # built, so it is rebuilt only when one of them changes. Only the main source sets are
+            # hashed: the wheel is built from those, so a change to a test would rebuild it for
+            # nothing. Note that a cache entry is visible to a workflow run only if it was created on
+            # the same branch, on its base branch, or on the default branch: the first run of a branch
+            # that changes the sources always rebuilds the wheel.
             -   name: Restore the wheel from the cache
                 id: cache-wheel
                 uses: actions/cache@v4
                 with:
                     path: python-wrapper/src/commonMain/resources/dist
-                    key: cardinal-sdk-wheel-linux-x64-${{ hashFiles('cardinal-sdk/src/**', 'python-wrapper/src/python/**', 'python-wrapper/src/commonMain/kotlin/**') }}
+                    key: cardinal-sdk-wheel-linux-x64-${{ hashFiles('cardinal-sdk/src/*Main/**', 'python-wrapper/src/python/**', 'python-wrapper/src/commonMain/kotlin/**') }}
 
             -   name: Set up JDK 21
                 if: steps.cache-wheel.outputs.cache-hit != 'true'
