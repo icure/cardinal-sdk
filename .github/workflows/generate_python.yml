@@ -1,8 +1,8 @@
 name: Generate Python SDK
 on:
-    pull_request:
+    push:
         branches:
-            - main
+            - develop
         paths:
             - 'cardinal-sdk/src/commonMain/**'
     workflow_dispatch:
@@ -19,9 +19,32 @@ env:
     REPO_PATH: cardinal-sdk
 
 jobs:
+    check-open-pr:
+        runs-on: ubuntu-latest
+        name: Check for an open PR towards main
+        permissions:
+            pull-requests: read
+        outputs:
+            has-open-pr: ${{ steps.check.outputs.has-open-pr }}
+        steps:
+            -   name: Look for an open PR from develop to main
+                id: check
+                env:
+                    GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+                run: |
+                    COUNT=$(gh api "repos/${{ github.repository }}/pulls?state=open&base=main&head=${{ github.repository_owner }}:develop" --jq 'length')
+                    echo "Found $COUNT open PR(s) from develop towards main"
+                    if [ "$COUNT" -gt 0 ]; then
+                        echo "has-open-pr=true" >> $GITHUB_OUTPUT
+                    else
+                        echo "has-open-pr=false" >> $GITHUB_OUTPUT
+                    fi
+
     setup:
         runs-on: ubuntu-latest
         name: Setup environment & generating python sdk
+        needs: check-open-pr
+        if: github.event_name == 'workflow_dispatch' || needs.check-open-pr.outputs.has-open-pr == 'true'
         env:
             SDK_CODEGEN_VERSION: 1.9.1
             ORG_GRADLE_PROJECT_repoUsername: ${{ secrets.REPO_USERNAME }}

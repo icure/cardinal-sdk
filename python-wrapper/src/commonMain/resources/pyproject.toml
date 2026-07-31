@@ -14,7 +14,7 @@ license = {text = "MIT License"}
 keywords = ["cardinal", "medical data", "encryption"]
 classifiers = [
     "Intended Audience :: Developers",
-    "License :: OSI Approved :: MIT License",ù
+    "License :: OSI Approved :: MIT License",
     "Operating System :: MacOS :: MacOS X",
     "Operating System :: POSIX :: Linux",
     "Operating System :: Microsoft :: Windows",
