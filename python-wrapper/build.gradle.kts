@@ -115,6 +115,7 @@ fun removeDistDir() {
 }
 
 fun prepareDistributionArchive(
+	nativeLibBaseFolder: String,
 	nativeLibFolder: String,
 	nativeLibFileName: String,
 	platformNameBuildOption: String
@@ -142,7 +143,7 @@ fun prepareDistributionArchive(
 	projectDir.resolve("src/commonMain/resources/src/cardinal_sdk/lib/$nativeLibFolder/__init__.py").createNewFile()
 
 	rsync(
-		projectDir.resolve("build/bin/$nativeLibFolder/releaseShared/$nativeLibFileName"),
+		projectDir.resolve("build/bin/$nativeLibFolder/$nativeLibBaseFolder/$nativeLibFileName"),
 		projectDir.resolve("src/commonMain/resources/src/cardinal_sdk/lib/$nativeLibFolder/cardinal-sdk.${nativeLibFileName.substringAfterLast('.')}")
 	)
 
@@ -193,6 +194,28 @@ fun prepareDistributionArchive(
 		}
 }
 
+fun prepareReleaseDistributionArchive(
+	nativeLibFolder: String,
+	nativeLibFileName: String,
+	platformNameBuildOption: String
+) = prepareDistributionArchive(
+	nativeLibBaseFolder = "releaseShared",
+	nativeLibFolder = nativeLibFolder,
+	nativeLibFileName = nativeLibFileName,
+	platformNameBuildOption = platformNameBuildOption
+)
+
+fun prepareDebugDistributionArchive(
+	nativeLibFolder: String,
+	nativeLibFileName: String,
+	platformNameBuildOption: String
+) = prepareDistributionArchive(
+	nativeLibBaseFolder = "debugShared",
+	nativeLibFolder = nativeLibFolder,
+	nativeLibFileName = nativeLibFileName,
+	platformNameBuildOption = platformNameBuildOption
+)
+
 data class PyPlatform(
 	val taskName: String,
 	val nativeLibFolder: String,
@@ -209,16 +232,16 @@ tasks.register("removeDistDir") {
 }
 
 val pyPlatforms = listOf(
-	PyPlatform("prepareMingwX64DistributionArchive", "mingwX64", "cardinal_sdk_native_pylib.dll", "win_amd64"),
-	PyPlatform("prepareLinuxX64DistributionArchive", "linuxX64", "libcardinal_sdk_native_pylib.so", "manylinux_2_35_x86_64"),
-	PyPlatform("prepareMacosArm64DistributionArchive", "macosArm64", "libcardinal_sdk_native_pylib.dylib", "macosx_11_0_arm64"),
+	PyPlatform("prepareMingwX64", "mingwX64", "cardinal_sdk_native_pylib.dll", "win_amd64"),
+	PyPlatform("prepareLinuxX64", "linuxX64", "libcardinal_sdk_native_pylib.so", "manylinux_2_35_x86_64"),
+	PyPlatform("prepareMacosArm64", "macosArm64", "libcardinal_sdk_native_pylib.dylib", "macosx_11_0_arm64"),
 )
 
 val platformTasks = pyPlatforms.map { p ->
-	tasks.register(p.taskName) {
+	tasks.register("${p.taskName}DistributionArchive") {
 		group = "publishing"
 		doLast {
-			prepareDistributionArchive(
+			prepareReleaseDistributionArchive(
 				nativeLibFolder = p.nativeLibFolder,
 				nativeLibFileName = p.nativeLibFileName,
 				platformNameBuildOption = p.platformNameBuildOption,
@@ -227,6 +250,18 @@ val platformTasks = pyPlatforms.map { p ->
 	}
 }
 
+pyPlatforms.map { p ->
+	tasks.register("${p.taskName}DebugArchive") {
+		group = "publishing"
+		doLast {
+			prepareDebugDistributionArchive(
+				nativeLibFolder = p.nativeLibFolder,
+				nativeLibFileName = p.nativeLibFileName,
+				platformNameBuildOption = p.platformNameBuildOption,
+			)
+		}
+	}
+}
 
 platformTasks.zipWithNext { prev, next -> next.configure { mustRunAfter(prev) } }
 
