@@ -106,7 +106,7 @@ internal class DataOwnerApiImplJs(
 	override fun getCurrentDataOwnerHierarchyIdsFrom(parentId: String): Promise<Array<String>> =
 			GlobalScope.promise {
 		val parentIdConverted: String = parentId
-		val result = dataOwnerApi.getCurrentDataOwnerHierarchyIdsFrom(
+		val result = dataOwnerApi.getCurrentDataOwnerParentHierarchy(
 			parentIdConverted,
 		)
 		listToArray(

@@ -33,14 +33,15 @@ class KeyRecoveryTest : StringSpec({
 			specJob,
 			cryptoStrategies = object : CryptoStrategies {
 				override suspend fun recoverAndVerifySelfHierarchyKeys(
-					keysData: List<CryptoStrategies.KeyDataRecoveryRequest>,
+					currentDataOwnerId: String,
+					keysData: Map<String, CryptoStrategies.KeyDataRecoveryRequest>,
 					cryptoPrimitives: CryptoService,
 					keyPairRecoverer: KeyPairRecoverer
 				): Map<String, CryptoStrategies.RecoveredKeyData> {
-					val selfRecoveryRequest = keysData.shouldHaveSize(1).single()
+					val selfRecoveryRequest = keysData.values.shouldHaveSize(1).single()
 					selfRecoveryRequest.unavailableKeys.map { it.publicKey } shouldContainExactlyInAnyOrder listOf(hcp.publicKeySpki!!)
 					selfRecoveryRequest.unknownKeys shouldContainExactlyInAnyOrder listOf(hcp.publicKeySpki)
-					return keysData.associate {
+					return keysData.values.associate {
 						it.dataOwnerDetails.dataOwner.id to CryptoStrategies.RecoveredKeyData(
 							recoveredKeys = emptyMap(),
 							keyAuthenticity = mapOf(hcp.publicKeySpki.fingerprintV1() to true)
@@ -65,15 +66,16 @@ class KeyRecoveryTest : StringSpec({
 			specJob,
 			cryptoStrategies = object : CryptoStrategies {
 				override suspend fun recoverAndVerifySelfHierarchyKeys(
-					keysData: List<CryptoStrategies.KeyDataRecoveryRequest>,
+					currentDataOwnerId: String,
+					keysData: Map<String, CryptoStrategies.KeyDataRecoveryRequest>,
 					cryptoPrimitives: CryptoService,
 					keyPairRecoverer: KeyPairRecoverer
 				): Map<String, CryptoStrategies.RecoveredKeyData> {
-					val selfRecoveryRequest = keysData.shouldHaveSize(1).single()
+					val selfRecoveryRequest = keysData.values.shouldHaveSize(1).single()
 					selfRecoveryRequest.unavailableKeys.map { it.publicKey } shouldContainExactlyInAnyOrder listOf(secondKeySpki, hcp.publicKeySpki!!)
 					selfRecoveryRequest.unknownKeys shouldContainExactlyInAnyOrder listOf(secondKeySpki, hcp.publicKeySpki)
 					keyPairRecoverer.getRecoverableWithEncryptionKeys(selfRecoveryRequest.dataOwnerDetails, listOf(hcp.keypair!!)) shouldBe setOf(secondKeySpki)
-					return keysData.associate {
+					return keysData.values.associate {
 						it.dataOwnerDetails.dataOwner.id to CryptoStrategies.RecoveredKeyData(
 							recoveredKeys = mapOf(
 								hcp.publicKeySpki.fingerprintV1() to hcp.keypair,

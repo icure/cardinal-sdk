@@ -9,6 +9,8 @@ import com.icure.cardinal.sdk.model.DatabaseInitialisation
 import com.icure.cardinal.sdk.model.EncryptedPatient
 import com.icure.cardinal.sdk.model.HealthcareParty
 import com.icure.cardinal.sdk.model.ListOfIds
+import com.icure.cardinal.sdk.model.base.DataOwnerGroupLink
+import com.icure.cardinal.sdk.model.base.DataOwnerGroupLinkType
 import com.icure.cardinal.sdk.model.Patient
 import com.icure.cardinal.sdk.model.User
 import com.icure.cardinal.sdk.model.embed.DelegationTag
@@ -178,7 +180,7 @@ suspend fun createHcpUser(
 			lastName = "Hcp-$hcpId",
 			publicKeysForOaepWithSha256 = if (useLegacyKey) emptySet() else setOf(exportedPublic),
 			publicKey = if (useLegacyKey) exportedPublic else null,
-			parentId = parent?.dataOwnerId
+			dataOwnerGroups = listOfNotNull(parent?.dataOwnerId?.let { DataOwnerGroupLink(DataOwnerGroupLinkType.Parent, it) })
 		)
 	).successBody()
 	val created = userRawApi.createUserInGroup(

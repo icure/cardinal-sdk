@@ -9,20 +9,14 @@ import kotlin.String
 /**
  *
  *  The nature of the link between a crypto actor and a data owner representing one of its groups.
- *
- *  All links are transitive, whatever their type: when the linked group is itself a member of
- * another group, the
- *  original actor is a member of that further group as well, so resolving the complete set of
- * groups of an actor
- *  requires following the links recursively.
  */
 @Serializable
 enum class DataOwnerGroupLinkType(
 	internal val dtoSerialName: String,
 ) {
-	@SerialName("parent")
-	Parent("parent"),
-
 	@SerialName("simple")
 	Simple("simple"),
+
+	@SerialName("parent")
+	Parent("parent"),
 }

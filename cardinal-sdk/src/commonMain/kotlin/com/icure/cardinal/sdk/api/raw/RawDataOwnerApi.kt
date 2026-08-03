@@ -3,7 +3,7 @@ package com.icure.cardinal.sdk.api.raw
 import com.icure.cardinal.sdk.model.CryptoActorStubWithType
 import com.icure.cardinal.sdk.model.DataOwnerWithType
 import com.icure.cardinal.sdk.model.ListOfIds
-import com.icure.cardinal.sdk.model.base.DataOwnerIdWithHierarchy
+import com.icure.cardinal.sdk.model.base.DataOwnerHierarchyInfo
 import com.icure.utils.InternalIcureApi
 import kotlin.String
 import kotlin.collections.List
@@ -32,7 +32,7 @@ public interface RawDataOwnerApi {
 
 	suspend fun getCurrentDataOwnerHierarchyStub(): HttpResponse<List<CryptoActorStubWithType>>
 
-	suspend fun getCurrentDataOwnerHierarchiesIds(): HttpResponse<DataOwnerIdWithHierarchy>
+	suspend fun getCurrentDataOwnerHierarchyInfo(): HttpResponse<DataOwnerHierarchyInfo>
 	// endregion
 
 	// region cloud endpoints

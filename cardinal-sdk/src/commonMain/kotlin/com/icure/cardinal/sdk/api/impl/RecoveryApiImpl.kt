@@ -124,7 +124,7 @@ internal class RecoveryApiImpl(
 		)
 		val exchangeDataToShare = (
 			if (includeAsParent)
-				crypto.dataOwnerApi.getCurrentDataOwnerHierarchyIdsReference()
+				crypto.userEncryptionKeysManager.delegatorActorHierarchy().map { EntityReferenceInGroup(it, null) }
 			else
 				listOf(crypto.dataOwnerApi.getCurrentDataOwnerReference())
 		).flatMap { selfOrParent ->

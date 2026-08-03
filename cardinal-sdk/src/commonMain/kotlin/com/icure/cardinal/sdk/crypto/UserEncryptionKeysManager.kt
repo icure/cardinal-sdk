@@ -64,7 +64,7 @@ interface UserEncryptionKeysManager {
 
 	/**
 	 * Get the hierarchy of data owners that can participate in the encryption / decryption of data.
-	 * @param parentId the id of a member of the current data owner hierarchy.
+	 * @param from the id of a member of the current data owner hierarchy.
 	 * @return an array starting at the topmost parent and ending at the provided parent id.
 	 * @throws IllegalArgumentException If the provided id is not part of the hierarchy
 	 */

@@ -9,7 +9,7 @@ import com.icure.cardinal.sdk.auth.services.AuthProvider
 import com.icure.cardinal.sdk.model.CryptoActorStubWithType
 import com.icure.cardinal.sdk.model.DataOwnerWithType
 import com.icure.cardinal.sdk.model.ListOfIds
-import com.icure.cardinal.sdk.model.base.DataOwnerIdWithHierarchy
+import com.icure.cardinal.sdk.model.base.DataOwnerHierarchyInfo
 import com.icure.utils.InternalIcureApi
 import io.ktor.client.request.accept
 import io.ktor.client.request.parameter
@@ -125,11 +125,11 @@ class RawDataOwnerApiImpl(
 			accept(Application.Json)
 		}.wrap()
 
-	override suspend fun getCurrentDataOwnerHierarchiesIds(): HttpResponse<DataOwnerIdWithHierarchy> =
+	override suspend fun getCurrentDataOwnerHierarchyInfo(): HttpResponse<DataOwnerHierarchyInfo> =
 		get(authProvider) {
 			url {
 				takeFrom(apiUrl)
-				appendPathSegments("rest", "v2", "dataowner", "current", "hierarchies", "ids")
+				appendPathSegments("rest", "v2", "dataowner", "current", "hierarchies", "info")
 				parameter("ts", GMTDate().timestamp)
 			}
 			accept(Application.Json)

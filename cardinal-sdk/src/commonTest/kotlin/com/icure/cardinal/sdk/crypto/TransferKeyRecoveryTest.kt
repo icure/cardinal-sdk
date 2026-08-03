@@ -31,11 +31,12 @@ class TransferKeyRecoveryTest : StringSpec({
 		private val expectMissingKeys: Boolean
 	) : CryptoStrategies {
 		override suspend fun recoverAndVerifySelfHierarchyKeys(
-			keysData: List<CryptoStrategies.KeyDataRecoveryRequest>,
+			currentDataOwnerId: String,
+			keysData: Map<String, CryptoStrategies.KeyDataRecoveryRequest>,
 			cryptoPrimitives: CryptoService,
 			keyPairRecoverer: KeyPairRecoverer
 		): Map<String, CryptoStrategies.RecoveredKeyData> =
-			keysData.associate {
+			keysData.values.associate {
 				if (expectMissingKeys) {
 					it.unavailableKeys.shouldNotBeEmpty()
 				} else {

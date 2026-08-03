@@ -713,11 +713,11 @@ private class PatientApiImpl(
 	private suspend fun findDelegationStubsForHcPartyAndParent(
 		delegationSecretKeys: List<String>,
 		hcpId: String,
-		parentId: String?,
+		parentIds: List<String>,
 		stubGetter: suspend (String, List<String>) -> List<IcureStub>
 	): List<IcureStub> {
 		val stubs = stubGetter(hcpId, delegationSecretKeys) +
-			if(parentId != null) stubGetter(parentId, delegationSecretKeys) else emptyList()
+			parentIds.flatMap { stubGetter(it, delegationSecretKeys) }
 		return stubs.distinctBy { it.id }
 	}
 
@@ -729,7 +729,7 @@ private class PatientApiImpl(
 		val allTags = delegatesWithShareType.values.flatMap { it.toList() }.toSet()
 
 		val hcp = rawHealthcarePartyApi.getCurrentHealthcareParty().successBody() // Shall we do it for any data owner?
-		val parentId = hcp.parentId
+		val parentIds = config.crypto.dataOwnerApi.getCurrentDataOwnerParentHierarchy(null).links.map { it.linkedGroupId }
 		val patient = encrypted.getPatient(patientId)?.let { patient ->
 			config.crypto.entity.ensureEncryptionKeysInitialized(
 				null,
@@ -808,7 +808,7 @@ private class PatientApiImpl(
 				}
 			}
 
-			val retrievedHealthElements = findDelegationStubsForHcPartyAndParent(delegationSecretKeys.toList(), hcp.id, parentId) { doId, delSecKeys ->
+			val retrievedHealthElements = findDelegationStubsForHcPartyAndParent(delegationSecretKeys.toList(), hcp.id, parentIds) { doId, delSecKeys ->
 				val heIds = rawHealthElementApi.listHealthElementIdsByDataOwnerPatientOpeningDate(dataOwnerId = doId, secretPatientKeys = ListOfIds(delSecKeys)).successBody()
 				rawHealthElementApi.listHealthElementsDelegationsStubById(healthElementIds = ListOfIds(heIds)).successBody()
 			}
@@ -823,7 +823,7 @@ private class PatientApiImpl(
 				doShareMinimal = { params -> rawHealthElementApi.bulkShareMinimal(request = params).successBody() }
 			)
 
-			val retrievedForms = findDelegationStubsForHcPartyAndParent(delegationSecretKeys.toList(), hcp.id, parentId) { doId, delSecKeys ->
+			val retrievedForms = findDelegationStubsForHcPartyAndParent(delegationSecretKeys.toList(), hcp.id, parentIds) { doId, delSecKeys ->
 				val formIds =  rawFormApi.listFormIdsByDataOwnerPatientOpeningDate(dataOwnerId = doId, secretPatientKeys = ListOfIds(delSecKeys)).successBody()
 				rawFormApi.findFormsDelegationsStubsByIds(formIds = ListOfIds(formIds)).successBody()
 			}
@@ -836,7 +836,7 @@ private class PatientApiImpl(
 				doShareMinimal = { params -> rawFormApi.bulkShareMinimal(request = params).successBody() }
 			)
 
-			val retrievedContacts = findDelegationStubsForHcPartyAndParent(delegationSecretKeys.toList(), hcp.id, parentId) { doId, delSecKeys ->
+			val retrievedContacts = findDelegationStubsForHcPartyAndParent(delegationSecretKeys.toList(), hcp.id, parentIds) { doId, delSecKeys ->
 				val contactIds = rawContactApi.listContactIdsByDataOwnerPatientOpeningDate(dataOwnerId = doId, secretPatientKeys = ListOfIds(delSecKeys)).successBody()
 				rawContactApi.findContactsDelegationsStubsByIds(contactIds = ListOfIds(contactIds)).successBody()
 			}
@@ -849,7 +849,7 @@ private class PatientApiImpl(
 				doShareMinimal = { params -> rawContactApi.bulkShareMinimal(request = params).successBody() }
 			)
 
-			val retrievedInvoices = findDelegationStubsForHcPartyAndParent(delegationSecretKeys.toList(), hcp.id, parentId) { doId, delSecKeys ->
+			val retrievedInvoices = findDelegationStubsForHcPartyAndParent(delegationSecretKeys.toList(), hcp.id, parentIds) { doId, delSecKeys ->
 				val invoiceIds = rawInvoiceApi.listInvoiceIdsByDataOwnerPatientInvoiceDate(dataOwnerId = doId, secretPatientKeys = ListOfIds(delSecKeys)).successBody()
 				rawInvoiceApi.listInvoicesDelegationsStubsByIds(invoiceIds = ListOfIds(invoiceIds)).successBody()
 			}
@@ -862,7 +862,7 @@ private class PatientApiImpl(
 				doShareMinimal = { params -> rawInvoiceApi.bulkShareMinimal(request = params).successBody() }
 			)
 
-			val retrievedCalendarItems = findDelegationStubsForHcPartyAndParent(delegationSecretKeys.toList(), hcp.id, parentId) { doId, delSecKeys ->
+			val retrievedCalendarItems = findDelegationStubsForHcPartyAndParent(delegationSecretKeys.toList(), hcp.id, parentIds) { doId, delSecKeys ->
 				rawCalendarItemApi.findCalendarItemsDelegationsStubsByHCPartyPatientForeignKeys(hcPartyId = doId, secretPatientKeys = delSecKeys).successBody()
 			}
 			val shareCalendarItemsResult = doShareEntitiesAndUpdateStatus(
@@ -874,7 +874,7 @@ private class PatientApiImpl(
 				doShareMinimal = { params -> rawCalendarItemApi.bulkShareMinimal(request = params).successBody() }
 			)
 
-			val retrievedClassifications = findDelegationStubsForHcPartyAndParent(delegationSecretKeys.toList(), hcp.id, parentId) { doId, delSecKeys ->
+			val retrievedClassifications = findDelegationStubsForHcPartyAndParent(delegationSecretKeys.toList(), hcp.id, parentIds) { doId, delSecKeys ->
 				val classificationIds = rawClassificationApi.listClassificationIdsByDataOwnerPatientCreated(dataOwnerId = doId, secretPatientKeys = ListOfIds(delSecKeys)).successBody()
 				rawClassificationApi.findClassificationsDelegationsStubsByIds(classificationIds = ListOfIds(classificationIds)).successBody()
 			}

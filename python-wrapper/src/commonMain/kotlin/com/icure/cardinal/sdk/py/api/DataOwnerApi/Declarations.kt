@@ -251,7 +251,7 @@ public fun getCurrentDataOwnerHierarchyIdsFromBlocking(sdk: CardinalApis, params
 	val decodedParams =
 			fullLanguageInteropJson.decodeFromString<GetCurrentDataOwnerHierarchyIdsFromParams>(params)
 	runBlocking {
-		sdk.dataOwner.getCurrentDataOwnerHierarchyIdsFrom(
+		sdk.dataOwner.getCurrentDataOwnerParentHierarchy(
 			decodedParams.parentId,
 		)
 	}
@@ -271,7 +271,7 @@ public fun getCurrentDataOwnerHierarchyIdsFromAsync(
 			fullLanguageInteropJson.decodeFromString<GetCurrentDataOwnerHierarchyIdsFromParams>(params)
 	GlobalScope.launch {
 		kotlin.runCatching {
-			sdk.dataOwner.getCurrentDataOwnerHierarchyIdsFrom(
+			sdk.dataOwner.getCurrentDataOwnerParentHierarchy(
 				decodedParams.parentId,
 			)
 		}.toPyStringAsyncCallback(ListSerializer(String.serializer()), resultCallback)

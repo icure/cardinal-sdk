@@ -498,12 +498,21 @@ internal suspend fun initializeApiCrypto(
 		requestTimeout = options.requestTimeout,
 		retryConfiguration = options.requestRetryConfiguration
 	)
+	// Constructed before dataOwnerApi/self is known so that DataOwnerApiImpl can bulk-fetch hierarchy members using
+	// the type-specific raw APIs (all data owners of a hierarchy share the same type). Safe to construct this early:
+	// they don't perform any request until actually used, well after the anonymity header below is set.
+	val rawPatientApiNoAccessKeys = RawPatientApiImpl(apiUrl, authProvider, null, rawApiConfig)
+	val rawHealthcarePartyApi = RawHealthcarePartyApiImpl(apiUrl, authProvider, rawApiConfig)
+	val rawDeviceApi = RawDeviceApiImpl(apiUrl, authProvider, rawApiConfig)
 	val dataOwnerApi = DataOwnerApiImpl(
 		RawDataOwnerApiImpl(
 			apiUrl,
 			authProvider,
 			rawApiConfig
 		),
+		rawHealthcarePartyApi,
+		rawPatientApiNoAccessKeys,
+		rawDeviceApi,
 		boundGroup
 	)
 	val self = dataOwnerApi.getCurrentDataOwner()
@@ -515,9 +524,6 @@ internal suspend fun initializeApiCrypto(
 	}?.let { anonymityHeaderValue ->
 		mutableAdditionalHeaders[ANONYMITY_HEADER] = anonymityHeaderValue
 	}
-	val rawPatientApiNoAccessKeys = RawPatientApiImpl(apiUrl, authProvider, null, rawApiConfig)
-	val rawHealthcarePartyApi = RawHealthcarePartyApiImpl(apiUrl, authProvider, rawApiConfig)
-	val rawDeviceApi = RawDeviceApiImpl(apiUrl, authProvider, rawApiConfig)
 	val exchangeDataMapManager = ExchangeDataMapManagerImpl(
 		RawExchangeDataMapApiImpl(apiUrl, authProvider, rawApiConfig),
 		cryptoService,
