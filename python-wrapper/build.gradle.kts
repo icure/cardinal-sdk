@@ -86,6 +86,16 @@ fun File.mergeInto(other: File) {
 	}
 }
 
+/**
+ * Resolves an executable inside a venv, which lives in `bin` on unix and in `Scripts` on windows.
+ * Probing the layout rather than the host os also covers cross-built venvs.
+ */
+fun venvExecutable(venvDir: File, name: String): String {
+	val unixPath = venvDir.resolve("bin/$name")
+	return if (unixPath.exists()) unixPath.absolutePath
+	else venvDir.resolve("Scripts/$name.exe").absolutePath
+}
+
 fun rsync(source: File, dst: File) {
 	val sourcePath = if (source.isDirectory) "${source.absolutePath}/" else source.absolutePath
 	val exitCode = ProcessBuilder("rsync", "-a", sourcePath, dst.absolutePath)
@@ -174,9 +184,9 @@ fun prepareDistributionArchive(
 			check(it == 0) { "venv exited with code $it" }
 		}
 
-	val venv = projectDir.resolve("src/commonMain/resources/venv").absolutePath
+	val venv = projectDir.resolve("src/commonMain/resources/venv")
 
-	ProcessBuilder("$venv/bin/pip", "install", "--upgrade", "build")
+	ProcessBuilder(venvExecutable(venv, "pip"), "install", "--upgrade", "build")
 		.directory(workDir)
 		.inheritIO()
 		.start()
@@ -185,7 +195,7 @@ fun prepareDistributionArchive(
 		}
 
 	ProcessBuilder(
-		"$venv/bin/python",
+		venvExecutable(venv, "python"),
 		"-m",
 		"build",
 		"--wheel",
