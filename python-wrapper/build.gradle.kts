@@ -103,9 +103,14 @@ fun remove(source: File) {
 	check(exitCode == 0) { "rm exited with code $exitCode" }
 }
 
-val pythonPath = providers.exec {
-	commandLine("bash", "-c", "which python3.12")
-}.standardOutput.asText.map { it.trim() }
+val pythonPath = (providers.gradleProperty("pythonExecutable").orNull
+	?: providers.environmentVariable("PYTHON_EXECUTABLE").orNull)
+	?.let { providers.provider { it } }
+	?: providers.exec {
+		commandLine("bash", "-c", "command -v python3.12 || command -v python3")
+	}.standardOutput.asText.map {
+		it.trim().ifEmpty { error("No python3.12 found on PATH") }
+	}
 
 fun removeDistDir() {
 	val distDir = projectDir.resolve("src/commonMain/resources/dist")
