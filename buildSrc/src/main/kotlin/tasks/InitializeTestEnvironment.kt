@@ -18,6 +18,7 @@ import org.gradle.api.DefaultTask
 import org.gradle.api.tasks.TaskAction
 import java.io.File
 import java.util.UUID
+import kotlin.time.Duration.Companion.seconds
 
 abstract class InitializeTestEnvironment : DefaultTask() {
 
@@ -58,6 +59,7 @@ abstract class InitializeTestEnvironment : DefaultTask() {
 			"ICURE_MOCK_PWD" to "LetMeIn", //pragma: allowlist secret
 			"ICURE_TEST_GROUP_ID" to "test-group"
 		)
+		println("Starting docker environment")
 		val isDockerRunning = kotlin.runCatching {
 			isBaseDbCreated("http://127.0.0.1:${envVars["COUCHDB_PORT"]}", envVars.getValue("COUCHDB_USER"), envVars.getValue("COUCHDB_PASSWORD"))
 		}.getOrDefault(false)
@@ -71,14 +73,16 @@ abstract class InitializeTestEnvironment : DefaultTask() {
 
 		val started = execute(command, envVars, composeFile.parentFile.absolutePath)
 
+		println("Check if the environment started")
 		if (!started) {
 			throw RuntimeException("Could not start Kraken Docker container")
 		}
-		delay(1000)
+		delay(1.seconds)
 		if(!isBaseDbCreated("http://127.0.0.1:${envVars["COUCHDB_PORT"]}", envVars.getValue("COUCHDB_USER"), envVars.getValue("COUCHDB_PASSWORD"))) {
 			throw RuntimeException("Could not start create base kraken database")
 		}
 
+		println("Bootstrap cloud")
 		bootstrapCloud(
 			"xx",
 			"xx",
@@ -138,12 +142,17 @@ abstract class InitializeTestEnvironment : DefaultTask() {
 		retry: Int = 5
 	): Boolean {
 		if (retry == 0) return false
-		val response = httpClient.get("$couchDbUrl/icure-__-base") {
-			basicAuth(couchDbUser, couchDbPassword)
+		val isSuccess = try {
+			httpClient.get("$couchDbUrl/icure-__-base") {
+				basicAuth(couchDbUser, couchDbPassword)
+			}.status.isSuccess()
+		} catch (_: Exception) {
+			false
 		}
-		return if (response.status.isSuccess()) true
-		else {
-			delay(5000)
+		return if (isSuccess) {
+			true
+		} else {
+			delay(5.seconds)
 			isBaseDbCreated(couchDbUrl, couchDbUser, couchDbPassword, retry - 1)
 		}
 	}

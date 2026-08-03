@@ -6,9 +6,9 @@ import com.icure.cardinal.sdk.crypto.entities.RawDecryptedExchangeData
 import com.icure.cardinal.sdk.crypto.entities.SecretIdUseOption
 import com.icure.cardinal.sdk.model.DataOwnerWithType
 import com.icure.cardinal.sdk.model.DecryptedCalendarItem
-import com.icure.cardinal.sdk.model.Patient
 import com.icure.cardinal.sdk.model.DecryptedPatient
 import com.icure.cardinal.sdk.model.EntityReferenceInGroup
+import com.icure.cardinal.sdk.model.Patient
 import com.icure.cardinal.sdk.model.User
 import com.icure.cardinal.sdk.model.embed.AccessLevel
 import com.icure.cardinal.sdk.model.extensions.dataOwnerId
@@ -21,6 +21,7 @@ import com.icure.cardinal.sdk.test.createUserFromExistingPatient
 import com.icure.cardinal.sdk.test.initializeTestEnvironment
 import com.icure.cardinal.sdk.test.internal
 import com.icure.cardinal.sdk.utils.DEFAULT_ENABLED
+import com.icure.cardinal.sdk.utils.LOCAL_ENV_ONLY
 import com.icure.cardinal.sdk.utils.RequestStatusException
 import com.icure.cardinal.sdk.utils.currentEpochMs
 import com.icure.kryptom.crypto.CryptoService
@@ -102,7 +103,7 @@ class KeylessPatientUserTest : StringSpec({
 
 	}
 
-	"A keyless API should not allow the creation of encrypted data if no exchange data is provided".config(enabled = DEFAULT_ENABLED) {
+	"A keyless API should not allow the creation of encrypted data if no exchange data is provided".config(enabled = DEFAULT_ENABLED && LOCAL_ENV_ONLY) {
 		val patientApi = patientDetails.api(
 			specJob,
 			object : CryptoStrategies {
@@ -123,7 +124,7 @@ class KeylessPatientUserTest : StringSpec({
 		}
 	}
 
-	"A keyless API should allow creation of data and retrieval by delegator and delegate".config(enabled = DEFAULT_ENABLED) {
+	"A keyless API should allow creation of data and retrieval by delegator and delegate".config(enabled = DEFAULT_ENABLED && LOCAL_ENV_ONLY) {
 		val (patientApi, exchangeData) = getPatientApi()
 
 		// Arrange: initialize test data
@@ -143,7 +144,7 @@ class KeylessPatientUserTest : StringSpec({
 		hcpApi.calendarItem.decryptPatientIdOf(retrievedByHcp).map { it.entityId } shouldBe listOf(patient.id)
 	}
 
-	"A keyless API should allow retrieval in new instance after exchange data injection".config(enabled = DEFAULT_ENABLED) {
+	"A keyless API should allow retrieval in new instance after exchange data injection".config(enabled = DEFAULT_ENABLED && LOCAL_ENV_ONLY) {
 		// Arrange: initialize test data
 		val (patientApi, exchangeData) = getPatientApi()
 
@@ -194,7 +195,7 @@ class KeylessPatientUserTest : StringSpec({
 		newPatientApi.calendarItem.decryptPatientIdOf(retrievedByNewApi).map { it.entityId } shouldBe listOf(patient.id)
 	}
 
-	"Keyless SDks do not support the re-encryption of injected exchange data".config(enabled = DEFAULT_ENABLED) {
+	"Keyless SDks do not support the re-encryption of injected exchange data".config(enabled = DEFAULT_ENABLED && LOCAL_ENV_ONLY) {
 		val (patientApi, exchangeData) = getPatientApi()
 		val patientUser = patientApi.user.getCurrentUser()
 		val patient = patientApi.patient.encrypted.getPatient(patientUser.dataOwnerId).shouldNotBeNull()
@@ -239,7 +240,7 @@ class KeylessPatientUserTest : StringSpec({
 		}
 	}
 
-	"Should allow re-encryption of exchange data as unverified on injection".config(enabled = DEFAULT_ENABLED) {
+	"Should allow re-encryption of exchange data as unverified on injection".config(enabled = DEFAULT_ENABLED && LOCAL_ENV_ONLY) {
 		val (patientApi, exchangeData) = getPatientApi()
 		val patientUser = patientApi.user.getCurrentUser()
 		val patient = patientApi.patient.encrypted.getPatient(patientUser.dataOwnerId).shouldNotBeNull()
@@ -282,7 +283,7 @@ class KeylessPatientUserTest : StringSpec({
 		(newExchangeData2?.exchangeData?.id == exchangeData.exchangeDataId) shouldBe false
 	}
 
-	"Should allow re-encryption of exchange data as verified on injection".config(enabled = DEFAULT_ENABLED) {
+	"Should allow re-encryption of exchange data as verified on injection".config(enabled = DEFAULT_ENABLED && LOCAL_ENV_ONLY) {
 		val (patientApi, exchangeData) = getPatientApi()
 		val patientUser = patientApi.user.getCurrentUser()
 		val patient = patientApi.patient.encrypted.getPatient(patientUser.dataOwnerId).shouldNotBeNull()
@@ -317,7 +318,7 @@ class KeylessPatientUserTest : StringSpec({
 		newPatientApiWithKeyAndInjected.calendarItem.decryptPatientIdOf(retrievedByNewApi).map { it.entityId } shouldBe listOf(patient.id)
 	}
 
-	"Should allow to use data shared by hcp as keyless".config(enabled = DEFAULT_ENABLED) {
+	"Should allow to use data shared by hcp as keyless".config(enabled = DEFAULT_ENABLED && LOCAL_ENV_ONLY) {
 		val patientApi = patientDetails.api(
 			specJob,
 			object : CryptoStrategies {
@@ -370,7 +371,7 @@ class KeylessPatientUserTest : StringSpec({
 		patientApi.calendarItem.getCalendarItem(ci.id) shouldBe ci
 	}
 
-	"A keyless patient should be allowed to initialize the encryption metadata for self" {
+	"A keyless patient should be allowed to initialize the encryption metadata for self".config(enabled = DEFAULT_ENABLED && LOCAL_ENV_ONLY) {
 		val patientDetails = createPatientUser(initializeKey = false)
 		val (patientApi, _) = getPatientApi(patientDetails)
 		patientApi.patient.getSecretIdsOf(patientApi.patient.encrypted.getPatient(patientDetails.dataOwnerId).shouldNotBeNull()).shouldBeEmpty()

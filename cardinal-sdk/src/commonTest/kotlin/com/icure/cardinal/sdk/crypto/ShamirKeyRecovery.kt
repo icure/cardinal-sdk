@@ -10,6 +10,7 @@ import com.icure.cardinal.sdk.test.createHcpUser
 import com.icure.cardinal.sdk.test.initializeTestEnvironment
 import com.icure.cardinal.sdk.utils.DEFAULT_ENABLED
 import com.icure.cardinal.sdk.utils.EntityEncryptionException
+import com.icure.cardinal.sdk.utils.LOCAL_ENV_ONLY
 import com.icure.kryptom.crypto.defaultCryptoService
 import io.kotest.assertions.throwables.shouldThrow
 import io.kotest.core.spec.style.StringSpec
@@ -61,7 +62,7 @@ class ShamirKeyRecovery : StringSpec({
 		recoveredThroughShamirApi.patient.getPatient(createdPatient.id).shouldNotBeNull().note shouldBe note
 	}
 
-	"Api should automatically load keys recoverable through shamir split on startup (true secret share)".config(enabled = DEFAULT_ENABLED) {
+	"Api should automatically load keys recoverable through shamir split on startup (true secret share)".config(enabled = DEFAULT_ENABLED && LOCAL_ENV_ONLY) {
 		val hcpLosingKey = createHcpUser(useLegacyKey = true)
 		val friend1 = createHcpUser(useLegacyKey = true)
 		val friend2 = createHcpUser(useLegacyKey = true)
@@ -70,7 +71,7 @@ class ShamirKeyRecovery : StringSpec({
 		doTest(hcpLosingKey, setOf(friend1, friend2, friend3, friend4), setOf(friend2, friend3))
 	}
 
-	"Api should automatically load keys recoverable through shamir split on startup (share with single user)".config(enabled = DEFAULT_ENABLED) {
+	"Api should automatically load keys recoverable through shamir split on startup (share with single user)".config(enabled = DEFAULT_ENABLED && LOCAL_ENV_ONLY) {
 		val hcpLosingKey = createHcpUser(useLegacyKey = true)
 		val friend = createHcpUser()
 		doTest(hcpLosingKey, setOf(friend), setOf(friend))

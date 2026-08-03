@@ -1,0 +1,130 @@
+name: Test Python SDK
+
+on:
+    pull_request:
+        branches:
+            - main
+    workflow_dispatch:
+        inputs:
+            tests:
+                description: 'Tests to run, e.g. "test_patient test_sharing" (empty runs everything)'
+                required: false
+                default: ''
+                type: string
+
+jobs:
+    python-tests:
+        runs-on: ubuntu-latest
+        name: Run the python SDK tests # Do not change unless you change the branch protection rules
+        env:
+            ORG_GRADLE_PROJECT_repoUsername: ${{ secrets.REPO_USERNAME }}
+            ORG_GRADLE_PROJECT_repoPassword: ${{ secrets.REPO_PASSWORD }}
+            ORG_GRADLE_PROJECT_mavenRepository: ${{ secrets.MAVEN_REPOSITORY }}
+            ORG_GRADLE_PROJECT_mavenReleasesRepository: ${{ secrets.MAVEN_RELEASES_REPOSITORY }}
+        steps:
+            -   name: Check out code
+                uses: actions/checkout@v4
+                with:
+                    submodules: 'recursive'
+                    token: ${{ secrets.GH_PERSONAL_ACCESS_TOKEN }}
+
+            -   name: Set up python 3.12
+                uses: actions/setup-python@v5
+                with:
+                    python-version: '3.12'
+
+            # The wheel only depends on the sources of the SDK and of the wrapper, and on how they are
+            # built, so it is rebuilt only when one of them changes. Only the main source sets are
+            # hashed: the wheel is built from those, so a change to a test would rebuild it for
+            # nothing. Note that a cache entry is visible to a workflow run only if it was created on
+            # the same branch, on its base branch, or on the default branch: the first run of a branch
+            # that changes the sources always rebuilds the wheel.
+            -   name: Restore the wheel from the cache
+                id: cache-wheel
+                uses: actions/cache@v4
+                with:
+                    path: python-wrapper/src/commonMain/resources/dist
+                    key: cardinal-sdk-wheel-linux-x64-${{ hashFiles('cardinal-sdk/src/*Main/**', 'python-wrapper/src/python/**', 'python-wrapper/src/commonMain/kotlin/**') }}
+
+            -   name: Set up JDK 21
+                if: steps.cache-wheel.outputs.cache-hit != 'true'
+                uses: actions/setup-java@v4
+                with:
+                    distribution: 'corretto'
+                    java-version: 21
+                    cache: 'gradle'
+
+            -   name: Write github credentials to local.properties
+                if: steps.cache-wheel.outputs.cache-hit != 'true'
+                run: |
+                    echo "githubUsername=${{ secrets.GH_USERNAME }}" > local.properties
+                    echo "githubPassword=${{ secrets.GH_PERSONAL_ACCESS_TOKEN }}" >> local.properties
+                    echo "cinteropsLibsDir=/usr/lib/x86_64-linux-gnu" >> local.properties
+                    mkdir -p ksp-json-processor
+                    echo "githubUsername=${{ secrets.GH_USERNAME }}" > ksp-json-processor/local.properties
+                    echo "githubPassword=${{ secrets.GH_PERSONAL_ACCESS_TOKEN }}" >> ksp-json-processor/local.properties
+
+            -   name: Install native link dependencies
+                if: steps.cache-wheel.outputs.cache-hit != 'true'
+                run: sudo apt-get update && sudo apt-get install -y libssl-dev
+
+            -   name: Build the native library
+                if: steps.cache-wheel.outputs.cache-hit != 'true'
+                run: ./gradlew :python-wrapper:linkDebugSharedLinuxX64
+
+            -   name: Build the wheel
+                if: steps.cache-wheel.outputs.cache-hit != 'true'
+                run: ./gradlew :python-wrapper:prepareLinuxX64DebugArchive
+
+            -   name: Upload the wheel
+                uses: actions/upload-artifact@v4
+                with:
+                    name: cardinal-sdk-wheel-linux-x64
+                    path: python-wrapper/src/commonMain/resources/dist/*.whl
+                    if-no-files-found: error
+
+            -   name: Install the SDK and the test dependencies
+                run: |
+                    python3 -m pip install --upgrade pip
+                    python3 -m pip install python-wrapper/src/commonMain/resources/dist/cardinal_sdk-*.whl
+                    python3 -m pip install -r python-wrapper/test/requirements.txt
+
+            # Puts the existing key of each user in the directory the SDK reads it from. The name of
+            # the file is the storage entry key expected by the SDK, that is
+            # `org.taktik.icure.rsa.device.<dataOwnerId>.<publicKeyFingerprint>`, and its content is
+            # `{"privateKey": "<the pkcs8 private key, in base64>"}`. When the key of a user is not
+            # configured the SDK generates a new one and registers it on the data owner.
+            -   name: Set up the keys directories
+                env:
+                    USER_1_PK_FILE: ${{ secrets.CARDINAL_TEST_USER_1_PK_FILE }}
+                    USER_1_KEYS_DIR: ${{ secrets.CARDINAL_TEST_USER_1_PK_DIR }}
+                    USER_1_PK: ${{ secrets.CARDINAL_TEST_USER_1_PK }}
+                    USER_2_PK_FILE: ${{ secrets.CARDINAL_TEST_USER_2_PK_FILE }}
+                    USER_2_KEYS_DIR: ${{ secrets.CARDINAL_TEST_USER_2_PK_DIR }}
+                    USER_2_PK: ${{ secrets.CARDINAL_TEST_USER_2_PK }}
+                run: |
+                    set -euo pipefail
+                    seed_key() {
+                        local directory="$1" file_name="$2" content="$3"
+                        mkdir -p "$directory"
+                        if [ -n "$file_name" ] && [ -n "$content" ]; then
+                            printf '%s' "$content" > "$directory/$file_name"
+                            echo "Stored the key of $directory in $file_name"
+                        else
+                            echo "No key configured for $directory, the SDK will generate a new one"
+                        fi
+                    }
+                    seed_key "$USER_1_KEYS_DIR" "$USER_1_PK_FILE" "$USER_1_PK"
+                    seed_key "$USER_2_KEYS_DIR" "$USER_2_PK_FILE" "$USER_2_PK"
+
+            # `tests.py` exits with a non-zero status as soon as one test fails or errors, which
+            # fails this step, and so the whole workflow.
+            -   name: Run the tests
+                run: python3 python-wrapper/test/tests.py ${{ github.event.inputs.tests }}
+                env:
+                    CARDINAL_URL: "https://nightly.icure.cloud"
+                    CARDINAL_USER_1_USERNAME: ${{ secrets.CARDINAL_TEST_USER_1_USERNAME }}
+                    CARDINAL_USER_1_TOKEN: ${{ secrets.CARDINAL_TEST_USER_1_TOKEN }}
+                    CARDINAL_USER_2_USERNAME: ${{ secrets.CARDINAL_TEST_USER_2_USERNAME }}
+                    CARDINAL_USER_2_TOKEN: ${{ secrets.CARDINAL_TEST_USER_2_TOKEN }}
+                    CARDINAL_KEYS_DIR: "./test-data/keys"

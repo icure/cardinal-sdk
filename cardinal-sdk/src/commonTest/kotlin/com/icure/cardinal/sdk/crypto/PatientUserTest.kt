@@ -18,6 +18,7 @@ import com.icure.cardinal.sdk.test.initializeTestEnvironment
 import com.icure.cardinal.sdk.test.superadminAuth
 import com.icure.cardinal.sdk.test.testGroupId
 import com.icure.cardinal.sdk.utils.DEFAULT_ENABLED
+import com.icure.cardinal.sdk.utils.LOCAL_ENV_ONLY
 import com.icure.kryptom.crypto.defaultCryptoService
 import com.icure.utils.InternalIcureApi
 import io.kotest.assertions.throwables.shouldThrow
@@ -38,7 +39,7 @@ class PatientUserTest : StringSpec({
 		initializeTestEnvironment()
 	}
 
-	"A new user created from an existing patient should be able to create data for himself after initializing the encryption metadata".config(enabled = DEFAULT_ENABLED) {
+	"A new user created from an existing patient should be able to create data for himself after initializing the encryption metadata".config(enabled = DEFAULT_ENABLED && LOCAL_ENV_ONLY) {
 		val hcp1 = createHcpUser()
 		val hcp1Api = hcp1.api(specJob)
 		val hcp2 = createHcpUser()
@@ -96,7 +97,7 @@ class PatientUserTest : StringSpec({
 		hcp1Api.patient.getSecretIdsOf(initializedPatient).keys.shouldHaveSize(1).shouldNotContainAnyOf(createdData.secretForeignKeys)
 	}
 
-	"A new patient user should be able to initialize his encryption metadata".config(enabled = DEFAULT_ENABLED) {
+	"A new patient user should be able to initialize his encryption metadata".config(enabled = DEFAULT_ENABLED && LOCAL_ENV_ONLY) {
 		val patientDetails = createPatientUser()
 		val patientApi = patientDetails.api(specJob)
 		patientApi.patient.tryAndRecover.getPatient(patientDetails.dataOwnerId).shouldBeInstanceOf<EncryptedPatient>()
@@ -122,7 +123,7 @@ class PatientUserTest : StringSpec({
 		).next(5).shouldHaveSize(1).first().note.shouldNotBeNull() shouldBe createdData.note
 	}
 
-	"A new patient user should be able to initialize his encryption metadata and share with another user".config(enabled = DEFAULT_ENABLED) {
+	"A new patient user should be able to initialize his encryption metadata and share with another user".config(enabled = DEFAULT_ENABLED && LOCAL_ENV_ONLY) {
 		val patientDetails = createPatientUser()
 		val hcpDetails = createHcpUser()
 		val hcpApi = hcpDetails.api(specJob)
@@ -155,7 +156,7 @@ class PatientUserTest : StringSpec({
 		).next(5).shouldHaveSize(1).first().note.shouldNotBeNull() shouldBe createdData.note
 	}
 
-	"Initializing the encryption metadata for a new patient user should fail with appropriate exception if attempting to share with hcp that has no key".config(enabled = DEFAULT_ENABLED) {
+	"Initializing the encryption metadata for a new patient user should fail with appropriate exception if attempting to share with hcp that has no key".config(enabled = DEFAULT_ENABLED && LOCAL_ENV_ONLY) {
 		val hcpRawApi = RawHealthcarePartyApiImpl(baseUrl, superadminAuth(), DefaultRawApiConfig)
 		val hcpId = defaultCryptoService.strongRandom.randomUUID()
 		hcpRawApi.createHealthcarePartyInGroup(

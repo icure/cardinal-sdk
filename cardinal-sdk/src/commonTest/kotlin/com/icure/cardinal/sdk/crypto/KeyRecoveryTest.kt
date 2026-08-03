@@ -7,6 +7,7 @@ import com.icure.cardinal.sdk.test.autoCancelJob
 import com.icure.cardinal.sdk.test.createHcpUser
 import com.icure.cardinal.sdk.test.initializeTestEnvironment
 import com.icure.cardinal.sdk.utils.DEFAULT_ENABLED
+import com.icure.cardinal.sdk.utils.LOCAL_ENV_ONLY
 import com.icure.kryptom.crypto.CryptoService
 import com.icure.kryptom.crypto.RsaAlgorithm
 import com.icure.kryptom.crypto.RsaKeypair
@@ -24,7 +25,7 @@ class KeyRecoveryTest : StringSpec({
 		initializeTestEnvironment()
 	}
 
-	"Crypto strategies should be able to recover using iCure recovery methods".config(enabled = DEFAULT_ENABLED) {
+	"Crypto strategies should be able to recover using iCure recovery methods".config(enabled = DEFAULT_ENABLED && LOCAL_ENV_ONLY) {
 		val hcp = createHcpUser()
 		// Create a new key and corresponding transfer keys
 		var secondKey: RsaKeypair<RsaAlgorithm.RsaEncryptionAlgorithm.OaepWithSha256>? = null
@@ -98,7 +99,7 @@ class KeyRecoveryTest : StringSpec({
 		}
 	}
 
-	"Should be able to use keys of the parent HCP to recover shamir splits".config(enabled = DEFAULT_ENABLED) {
+	"Should be able to use keys of the parent HCP to recover shamir splits".config(enabled = DEFAULT_ENABLED && LOCAL_ENV_ONLY) {
 		TODO("Implement test and functionality (was part of typescript sdk)")
 	}
 })

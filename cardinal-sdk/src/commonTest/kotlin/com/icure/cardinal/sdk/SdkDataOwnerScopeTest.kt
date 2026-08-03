@@ -13,6 +13,7 @@ import com.icure.cardinal.sdk.test.createHcpUser
 import com.icure.cardinal.sdk.test.initializeTestEnvironment
 import com.icure.cardinal.sdk.test.testGroupAdminAuth
 import com.icure.cardinal.sdk.utils.DEFAULT_ENABLED
+import com.icure.cardinal.sdk.utils.LOCAL_ENV_ONLY
 import com.icure.cardinal.sdk.utils.RequestStatusException
 import com.icure.kryptom.crypto.defaultCryptoService
 import com.icure.utils.InternalIcureApi
@@ -44,7 +45,7 @@ class SdkDataOwnerScopeTest : StringSpec({
 		).successBody().id
 	}
 
-	"SDK should allow to switch data owner scope".config(enabled = DEFAULT_ENABLED) {
+	"SDK should allow to switch data owner scope".config(enabled = DEFAULT_ENABLED && LOCAL_ENV_ONLY) {
 		val parent = createHcpUser(roles = setOf(actingScopeRoleId, "BASIC_DATA_OWNER", "HIERARCHICAL_DATA_OWNER"))
 		val child = createHcpUser(parent = parent)
 		val initialSdk = parent.api(specJob)

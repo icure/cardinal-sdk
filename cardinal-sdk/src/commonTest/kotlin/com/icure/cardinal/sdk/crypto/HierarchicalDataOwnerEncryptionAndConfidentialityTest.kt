@@ -10,6 +10,7 @@ import com.icure.cardinal.sdk.test.autoCancelJob
 import com.icure.cardinal.sdk.test.createHcpUser
 import com.icure.cardinal.sdk.test.initializeTestEnvironment
 import com.icure.cardinal.sdk.utils.DEFAULT_ENABLED
+import com.icure.cardinal.sdk.utils.LOCAL_ENV_ONLY
 import com.icure.cardinal.sdk.utils.RequestStatusException
 import com.icure.cardinal.sdk.utils.pagination.forEach
 import com.icure.kryptom.crypto.defaultCryptoService
@@ -28,7 +29,7 @@ class HierarchicalDataOwnerEncryptionAndConfidentialityTest : StringSpec({
 		initializeTestEnvironment()
 	}
 
-	"Child hcp should be able to share existing data he can access through parent".config(enabled = DEFAULT_ENABLED) {
+	"Child hcp should be able to share existing data he can access through parent".config(enabled = DEFAULT_ENABLED && LOCAL_ENV_ONLY) {
 		val parent = createHcpUser()
 		val hcp = createHcpUser(parent)
 		val sibling = createHcpUser(parent)
@@ -55,7 +56,7 @@ class HierarchicalDataOwnerEncryptionAndConfidentialityTest : StringSpec({
 		retrievedByOther shouldBe shared
 	}
 
-	"Data shared with a parent hcp should be accessible to the parent and siblings, but not to the grandparent".config(enabled = DEFAULT_ENABLED) {
+	"Data shared with a parent hcp should be accessible to the parent and siblings, but not to the grandparent".config(enabled = DEFAULT_ENABLED && LOCAL_ENV_ONLY) {
 		val grandparent = createHcpUser()
 		val parent = createHcpUser(grandparent)
 		val hcp = createHcpUser(parent)
@@ -80,7 +81,7 @@ class HierarchicalDataOwnerEncryptionAndConfidentialityTest : StringSpec({
 		}.statusCode shouldBe 403
 	}
 
-	"Data shared using non confidential sfk should be findable by siblings. Data shared with confidential sfk should not.".config(enabled = DEFAULT_ENABLED) {
+	"Data shared using non confidential sfk should be findable by siblings. Data shared with confidential sfk should not.".config(enabled = DEFAULT_ENABLED && LOCAL_ENV_ONLY) {
 		val parent = createHcpUser()
 		val hcp = createHcpUser(parent)
 		val sibling = createHcpUser(parent)
