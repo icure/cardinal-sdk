@@ -9,6 +9,7 @@ requires-python = ">=3.12"
 authors = [
     { name = "iCure" }
 ]
+description = "Cardinal SDK is a multiplatform SDK for the iCure platform."
 # TODO: add readme
 license = {text = "MIT License"}
 keywords = ["cardinal", "medical data", "encryption"]
@@ -20,6 +21,7 @@ classifiers = [
     "Operating System :: Microsoft :: Windows",
     "Programming Language :: Python :: 3.12",
     "Programming Language :: Python :: 3.13",
+    "Programming Language :: Python :: 3.14",
     "Topic :: Scientific/Engineering :: Medical Science Apps.",
     "Typing :: Typed"
 ]
