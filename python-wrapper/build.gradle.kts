@@ -156,7 +156,7 @@ fun prepareDistributionArchive(
 	}
 
 	projectDir.resolve("src/commonMain/resources/src").mkdirs()
-	copyOnto(projectDir.resolve("src/ "), projectDir.resolve("src/commonMain/resources/src/cardinal_sdk"))
+	copyOnto(projectDir.resolve("src/python"), projectDir.resolve("src/commonMain/resources/src/cardinal_sdk"))
 
 	projectDir.resolve("src/commonMain/resources/src/cardinal_sdk/lib/$nativeLibFolder").mkdirs()
 	projectDir.resolve("src/commonMain/resources/src/cardinal_sdk/lib/__init__.py").createNewFile()
