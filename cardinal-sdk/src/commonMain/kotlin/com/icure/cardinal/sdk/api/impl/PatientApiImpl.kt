@@ -306,7 +306,8 @@ private class PatientBasicFlavouredApiImpl<E : Patient>(
 			expectedFromRev = requireNotNull(from.rev) {
 				"From patient should have a non-null rev"
 			},
-			updatedInto = validateAndMaybeEncrypt(null, mergedInto)
+			updatedInto = validateAndMaybeEncrypt(null, mergedInto),
+			omitEncryptionKeysOfFrom = true,
 		).let {
 			maybeDecrypt(null, it.successBody())
 		}
