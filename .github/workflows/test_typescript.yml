@@ -36,16 +36,18 @@ jobs:
                 with:
                     node-version: '22'
 
-            # The package only depends on the sources of the SDK and of the wrapper, so it is
-            # rebuilt only when one of them changes. Note that a cache entry is visible to a
-            # workflow run only if it was created on the same branch, on its base branch, or on the
-            # default branch: the first run of a branch that changes the sources always rebuilds it.
+            # The package only depends on the sources of the SDK and of the wrapper, and on how they
+            # are built, so it is rebuilt only when one of them changes. Only the main source sets are
+            # hashed: the package is built from those, so a change to a test would rebuild it for
+            # nothing. Note that a cache entry is visible to a workflow run only if it was created on
+            # the same branch, on its base branch, or on the default branch: the first run of a branch
+            # that changes the sources always rebuilds it.
             -   name: Restore the distribution package from the cache
                 id: cache-package
                 uses: actions/cache@v4
                 with:
                     path: ts-wrapper/build/tsDistribution
-                    key: cardinal-sdk-ts-package-${{ hashFiles('cardinal-sdk/src/**', 'ts-wrapper/src/jsMain/**', 'ts-wrapper/tsconfig.json') }}
+                    key: cardinal-sdk-ts-package-${{ hashFiles('cardinal-sdk/src/*Main/**', 'ts-wrapper/src/jsMain/**', 'ts-wrapper/tsconfig.json', 'gradle/libs.versions.toml') }}
 
             -   name: Set up JDK 21
                 if: steps.cache-package.outputs.cache-hit != 'true'
