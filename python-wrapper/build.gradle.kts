@@ -1,4 +1,3 @@
-import org.jetbrains.kotlin.cli.common.toBooleanLenient
 import kotlin.io.writeText
 
 plugins {
@@ -178,7 +177,7 @@ fun prepareDistributionArchive(
 		}
 	)
 
-	val skipBundling = providers.gradleProperty("skipBundling").orNull?.toBooleanStrictOrNull() ?: false
+	val skipBundling = providers.gradleProperty("skipBundling").orNull == "true"
 
 	if (!skipBundling) {
 		val python = pythonPath.get()
