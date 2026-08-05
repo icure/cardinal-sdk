@@ -1,3 +1,4 @@
+import org.jetbrains.kotlin.cli.common.toBooleanLenient
 import kotlin.io.writeText
 
 plugins {
@@ -177,41 +178,45 @@ fun prepareDistributionArchive(
 		}
 	)
 
-	val python = pythonPath.get()
+	val skipBundling = providers.gradleProperty("skipBundling").orNull?.toBooleanStrictOrNull() ?: false
 
-	val workDir = projectDir.resolve("src/commonMain/resources")
+	if (!skipBundling) {
+		val python = pythonPath.get()
 
-	ProcessBuilder(python, "-m", "venv", "venv")
-		.directory(workDir)
-		.inheritIO()
-		.start()
-		.waitFor().also {
-			check(it == 0) { "venv exited with code $it" }
-		}
+		val workDir = projectDir.resolve("src/commonMain/resources")
 
-	val venv = projectDir.resolve("src/commonMain/resources/venv")
+		ProcessBuilder(python, "-m", "venv", "venv")
+			.directory(workDir)
+			.inheritIO()
+			.start()
+			.waitFor().also {
+				check(it == 0) { "venv exited with code $it" }
+			}
 
-	ProcessBuilder(venvExecutable(venv, "pip"), "install", "--upgrade", "build")
-		.directory(workDir)
-		.inheritIO()
-		.start()
-		.waitFor().also {
-			check(it == 0) { "Install build exited with code $it" }
-		}
+		val venv = projectDir.resolve("src/commonMain/resources/venv")
 
-	ProcessBuilder(
-		venvExecutable(venv, "python"),
-		"-m",
-		"build",
-		"--wheel",
-		"-C--build-option=--plat-name=$platformNameBuildOption"
-	)
-		.directory(workDir)
-		.inheritIO()
-		.start()
-		.waitFor().also {
-			check(it == 0) { "build exited with code $it" }
-		}
+		ProcessBuilder(venvExecutable(venv, "pip"), "install", "--upgrade", "build")
+			.directory(workDir)
+			.inheritIO()
+			.start()
+			.waitFor().also {
+				check(it == 0) { "Install build exited with code $it" }
+			}
+
+		ProcessBuilder(
+			venvExecutable(venv, "python"),
+			"-m",
+			"build",
+			"--wheel",
+			"-C--build-option=--plat-name=$platformNameBuildOption"
+		)
+			.directory(workDir)
+			.inheritIO()
+			.start()
+			.waitFor().also {
+				check(it == 0) { "build exited with code $it" }
+			}
+	}
 }
 
 fun prepareReleaseDistributionArchive(
