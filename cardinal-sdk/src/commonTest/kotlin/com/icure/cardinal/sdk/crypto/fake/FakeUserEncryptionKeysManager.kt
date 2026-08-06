@@ -24,7 +24,7 @@ class FakeUserEncryptionKeysManager(private val selfDelegatorActorId: String) : 
 		selfKeys[key.pubSpkiHexString.fingerprintV2()] = CachedKeypairDetails(key, verified, verified)
 	}
 
-	override fun getCurrentUserHierarchyAvailableKeypairs(): UserKeyPairInformation {
+	override fun getAvailableKeyPairs(): UserKeyPairInformation {
 		TODO("Not yet implemented")
 	}
 
@@ -63,7 +63,7 @@ class FakeUserEncryptionKeysManager(private val selfDelegatorActorId: String) : 
 		} else TODO("Not yet implemented")
 	}
 
-	override fun delegatorActorHierarchy(from: String?): List<String> {
+	override fun delegatorActorParentHierarchy(from: String?): List<String> {
 		TODO("Not yet implemented")
 	}
 }

@@ -740,7 +740,7 @@ private class PatientApiImpl(
 				encrypted.modifyPatient(it)
 			} ?: patient
 		} ?: throw NotFoundException("Patient $patientId not found")
-		val selfHierarchySet = config.crypto.userEncryptionKeysManager.delegatorActorHierarchy().toSet()
+		val selfHierarchySet = config.crypto.userEncryptionKeysManager.delegatorActorParentHierarchy().toSet()
 
 		val delegationSecretKeys = getSecretIdsOf(patient).keys
 

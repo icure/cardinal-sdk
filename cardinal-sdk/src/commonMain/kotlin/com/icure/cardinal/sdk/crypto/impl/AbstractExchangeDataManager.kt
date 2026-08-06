@@ -274,7 +274,7 @@ abstract class AbstractExchangeDataManagerInGroup(
 				val verifiedSpki =
 					if (
 						delegateReference.normalized(sdkBoundGroup).groupId == null &&
-						delegateReference.entityId in userEncryptionKeys.delegatorActorHierarchy()
+						delegateReference.entityId in userEncryptionKeys.delegatorActorParentHierarchy()
 					) {
 						userEncryptionKeys.getVerifiedPublicKeysFor(delegate.stub).filter { delegateKeysBySpki.containsKey(it) }
 					} else {

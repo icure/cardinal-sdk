@@ -1271,5 +1271,5 @@ class EntityEncryptionServiceImpl(
 	}
 
 	private fun dataOwnersForDecryption(startingFrom: String?) =
-		userEncryptionKeysManager.delegatorActorHierarchy(startingFrom)
+		userEncryptionKeysManager.delegatorActorParentHierarchy(startingFrom)
 }

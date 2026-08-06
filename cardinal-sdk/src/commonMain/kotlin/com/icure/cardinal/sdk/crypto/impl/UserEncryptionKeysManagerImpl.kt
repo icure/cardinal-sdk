@@ -8,10 +8,8 @@ import com.icure.cardinal.sdk.crypto.RecoveryDataEncryption
 import com.icure.cardinal.sdk.crypto.UserEncryptionKeysManager
 import com.icure.cardinal.sdk.crypto.entities.CachedKeypairDetails
 import com.icure.cardinal.sdk.crypto.entities.CardinalKeyInfo
-import com.icure.cardinal.sdk.crypto.entities.DataOwnerKeyInfo
 import com.icure.cardinal.sdk.crypto.entities.DataOwnerParentHierarchyWith
 import com.icure.cardinal.sdk.crypto.entities.RsaDecryptionKeysSet
-import com.icure.cardinal.sdk.crypto.entities.UserKeyPairInformation
 import com.icure.cardinal.sdk.crypto.entities.firstNotNullOfOrNull
 import com.icure.cardinal.sdk.crypto.entities.flattenTopmostFirst
 import com.icure.cardinal.sdk.crypto.entities.toList
@@ -59,7 +57,7 @@ class UserEncryptionKeysManagerImpl private constructor (
 		cacheWriteMutex.tryWithLock {
 			val prevData = cachedKeyData
 			val (updatedKeys, newKey) = keyLoader.doLoadKeys(
-				prevData.hierarchyInfo,
+				prevData.parentHierarchyInfo,
 				prevData.delegatorActorIsAnonymous,
 				NoOpRecoveryFunction
 			) { _, _ -> prevData.specialOperationMode ?: throw InternalCardinalException("Shouldn't create new key during key reload") }
@@ -70,11 +68,10 @@ class UserEncryptionKeysManagerImpl private constructor (
 		} ?: throw IllegalStateException("Multiple concurrent requests to reload keys. This is not allowed.")
 	}
 
-	override fun getCurrentUserHierarchyAvailableKeypairs(): UserKeyPairInformation = with (cachedKeyData) {
-		UserKeyPairInformation(
-			self = DataOwnerKeyInfo(keys.value.dataOwnerId, keys.value.keysByFingerprint.values.toList()),
-			parents = keys.links.flattenTopmostFirst().map { DataOwnerKeyInfo(it.dataOwnerId, it.keysByFingerprint.values.toList()) },
-		)
+	override fun getAvailableKeyPairs(): Map<String, List<CachedKeypairDetails>> = with (cachedKeyData) {
+		mapOf(
+			keys.value.dataOwnerId to keys.value.keysByFingerprint.values.toList(),
+		) + keys.links.flattenTopmostFirst().associate { it.dataOwnerId to it.keysByFingerprint.values.toList() }
 	}
 
 	override fun getKeyPairForFingerprint(fingerprint: KeypairFingerprintV2String): CachedKeypairDetails? = with (cachedKeyData) {
@@ -85,14 +82,13 @@ class UserEncryptionKeysManagerImpl private constructor (
 		alternateEncryptionDataOwnerId ?: keys.value.dataOwnerId
 	}
 
-	override fun delegatorActorHierarchy(from: String?): List<String> = with (cachedKeyData) {
+	override fun delegatorActorParentHierarchy(from: String?): DataOwnerHierarchyInfo = with (cachedKeyData) {
 		val rootId = from ?: alternateEncryptionDataOwnerId
-		val rooted = if (rootId == null || rootId == hierarchyInfo.id) {
-			hierarchyInfo
+		if (rootId == null || rootId == parentHierarchyInfo.id) {
+			parentHierarchyInfo
 		} else {
-			hierarchyInfo.parentHierarchy(rootId)
+			parentHierarchyInfo.parentHierarchy(rootId)
 		}
-		rooted.flattened().toList()
 	}
 
 	override fun delegatorActorIsAnonymous(): Boolean = cachedKeyData.delegatorActorIsAnonymous
@@ -169,8 +165,8 @@ private class KeyData(
 	val alternateEncryptionDataOwnerId: String?,
 	val delegatorActorIsAnonymous: Boolean,
 	// The parent-only hierarchy backing `keys`, as returned by the backend: used to check for changes on reload and
-	// to resolve `delegatorActorHierarchy`'s `from` parameter.
-	val hierarchyInfo: DataOwnerHierarchyInfo,
+	// to resolve `delegatorActorParentHierarchy`'s `from` parameter.
+	val parentHierarchyInfo: DataOwnerHierarchyInfo,
 	val keys: DataOwnerParentHierarchyWith<LoadedDataOwnerKeys>,
 	val specialOperationMode: CryptoStrategies.KeyGenerationRequestResult?
 ) {
@@ -234,19 +230,19 @@ private class KeyLoader(
 		recoverAndVerifySelfHierarchyKeys: RecoveryFunction,
 		generateNewKeyForDataOwner: KeyGenerationFunction,
 	): Pair<KeyData, CardinalKeyInfo<RsaKeypair<RsaAlgorithm.RsaEncryptionAlgorithm.OaepWithSha256>>?> {
-		val hierarchyInfo = dataOwnerApi.getCurrentDataOwnerParentHierarchy(null).let {
+		val parentHierarchyInfo = dataOwnerApi.getCurrentDataOwnerParentHierarchy(null).let {
 			if (initializeParentKeys) it else it.copy(links = emptyList())
 		}
 		if (expectHierarchyIds != null) {
-			check(hierarchyInfo == expectHierarchyIds) {
+			check(parentHierarchyInfo == expectHierarchyIds) {
 				"Data owner hierarchy changed during key reload, aborting. You need to re-initialize the entire SDK to reflect data owner hierarchy changes."
 			}
 		}
-		val allIds = hierarchyInfo.flattened()
-		val selfId = hierarchyInfo.id
+		val allIds = parentHierarchyInfo.flattened()
+		val selfId = parentHierarchyInfo.id
 		// All data owners of a hierarchy share the same type, so we can fetch them all through the more efficient
 		// type-specific bulk endpoint instead of the polymorphic one.
-		val dataOwnersById = dataOwnerApi.getDataOwnersWithKnownType(allIds, hierarchyInfo.dataOwnerType).associateBy { it.dataOwner.id }
+		val dataOwnersById = dataOwnerApi.getDataOwnersWithKnownType(allIds, parentHierarchyInfo.dataOwnerType).associateBy { it.dataOwner.id }
 		require(dataOwnersById.keys == allIds) {
 			"Could not retrieve all data owners of the current data owner hierarchy, missing: ${allIds - dataOwnersById.keys}"
 		}
@@ -348,8 +344,8 @@ private class KeyLoader(
 		): KeyData = KeyData(
 			alternateEncryptionDataOwnerId = alternateEncryptionDataOwnerId,
 			delegatorActorIsAnonymous = delegatorActorIsAnonymous,
-			hierarchyInfo = hierarchyInfo,
-			keys = hierarchyInfo.toParentHierarchyWith(
+			parentHierarchyInfo = parentHierarchyInfo,
+			keys = parentHierarchyInfo.toParentHierarchyWith(
 				keysById.mapValues { (id, keysMap) -> LoadedDataOwnerKeys(id, keysMap) }
 			),
 			specialOperationMode = specialOperationMode
@@ -407,7 +403,7 @@ private class KeyLoader(
 					"- When changing from anonymous to explicit your data owner may not be able to find data that was previously accessible to him."
 				}
 			}
-			if (isDelegatorAnonymous && hierarchyInfo.links.isNotEmpty()) {
+			if (isDelegatorAnonymous && parentHierarchyInfo.links.isNotEmpty()) {
 				// TODO this is untested, may be very messed up. Currently never had a use case for this.
 				// Could be particularly problematic with how keys are fully cached for anonymous data owners
 				throw UnsupportedOperationException("Anonymous data owners are currently incompatible with hierarchical data owners.")

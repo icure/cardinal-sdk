@@ -166,7 +166,7 @@ internal class CryptoApiImplJs(
 			) { filterTrustedKeys: Boolean ->
 				filterTrustedKeys
 			}
-			val result = cryptoApi.currentDataOwnerKeys(
+			val result = cryptoApi.availableKeys(
 				filterTrustedKeysConverted,
 			)
 			mapToObject(

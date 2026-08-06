@@ -3,8 +3,8 @@ package com.icure.cardinal.sdk.crypto
 import com.icure.cardinal.sdk.crypto.entities.CachedKeypairDetails
 import com.icure.cardinal.sdk.crypto.entities.CardinalKeyInfo
 import com.icure.cardinal.sdk.crypto.entities.RsaDecryptionKeysSet
-import com.icure.cardinal.sdk.crypto.entities.UserKeyPairInformation
 import com.icure.cardinal.sdk.model.CryptoActorStub
+import com.icure.cardinal.sdk.model.base.DataOwnerHierarchyInfo
 import com.icure.cardinal.sdk.model.specializations.KeypairFingerprintV2String
 import com.icure.cardinal.sdk.model.specializations.SpkiHexString
 import com.icure.kryptom.crypto.RsaAlgorithm
@@ -39,13 +39,13 @@ interface UserEncryptionKeysManager {
 	}
 
 	/**
-	 * Get all key pairs available for the current data owner and his parents.
-	 * @return an object with:
-	 * - `self` an object containing the current data owner id and the list of key pairs available for the current data owner with verification details.
-	 * - `parents` the list of parents to the current data owner with the list of key pairs available for each parent. The list is ordered from the
-	 *   topmost ancestor (at index 0) to the direct parent of the current data owner (at the last index, may be 0).
+	 * Get all key pairs available to this sdk instance, keyed by data owner id.
+	 * This normally will include:
+	 * - The delegator actor key
+	 * - Keys of the delegator actor parents if the SDK was initialized using hierarchical keys mode
+	 * No guarantee on the order.
 	 */
-	fun getCurrentUserHierarchyAvailableKeypairs(): UserKeyPairInformation
+	fun getAvailableKeyPairs(): Map<String, List<CachedKeypairDetails>>
 
 	/**
 	 * Get a key pair with the provided fingerprint if present.
@@ -63,12 +63,14 @@ interface UserEncryptionKeysManager {
 	fun delegatorActorId(): String
 
 	/**
-	 * Get the hierarchy of data owners that can participate in the encryption / decryption of data.
+	 * Get the hierarchy of data owners that can participate in the encryption / decryption of data, starting from the
+	 * delegator data owner or its parent in [from].
+	 * This hierarchy is restricted to only parent-type links
 	 * @param from the id of a member of the current data owner hierarchy.
 	 * @return an array starting at the topmost parent and ending at the provided parent id.
 	 * @throws IllegalArgumentException If the provided id is not part of the hierarchy
 	 */
-	fun delegatorActorHierarchy(from: String? = null): List<String>
+	fun delegatorActorParentHierarchy(from: String? = null): DataOwnerHierarchyInfo
 
 	/**
 	 * If the data owner from [delegatorActorId] is an anonymous data owner, according to the crypto strategies

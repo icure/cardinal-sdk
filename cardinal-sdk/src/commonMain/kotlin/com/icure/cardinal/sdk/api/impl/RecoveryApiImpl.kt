@@ -12,7 +12,6 @@ import com.icure.cardinal.sdk.crypto.entities.RecoveryDataUseFailureReason
 import com.icure.cardinal.sdk.crypto.entities.RecoveryKeyOptions
 import com.icure.cardinal.sdk.crypto.entities.RecoveryKeySize
 import com.icure.cardinal.sdk.crypto.entities.RecoveryResult
-import com.icure.cardinal.sdk.crypto.entities.SelfVerifiedKeysSet
 import com.icure.cardinal.sdk.crypto.entities.VerifiedRsaEncryptionKeysSet
 import com.icure.cardinal.sdk.crypto.entities.map
 import com.icure.cardinal.sdk.crypto.entities.toPublicKeyInfo
@@ -27,6 +26,8 @@ import com.icure.kryptom.crypto.RsaAlgorithm
 import com.icure.kryptom.crypto.RsaKeypair
 import com.icure.utils.InternalIcureApi
 import io.ktor.http.isSuccess
+import kotlin.collections.map
+import kotlin.collections.orEmpty
 
 @InternalIcureApi
 internal class RecoveryApiImpl(
@@ -41,16 +42,19 @@ internal class RecoveryApiImpl(
 		lifetimeSeconds: Int?,
 		recoveryKeyOptions: RecoveryKeyOptions?
 	): RecoveryDataKey {
-		val selfId = crypto.dataOwnerApi.getCurrentDataOwnerId()
-		val allAvailableKeys = crypto.userEncryptionKeysManager.getCurrentUserHierarchyAvailableKeypairs()
+		val delegatorActorId = crypto.userEncryptionKeysManager.delegatorActorId()
+		val allAvailableKeypairs = crypto.userEncryptionKeysManager.getAvailableKeyPairs()
+		val hierarchy = crypto.dataOwnerApi.getCurrentDataOwnerHierarchyIds().parentHierarchy()
 		val dataOwnersToInclude = if (includeParentsKeys) {
-			listOf(allAvailableKeys.self, *allAvailableKeys.parents.toTypedArray())
+			hierarchy.flattened().map {
+				DataOwnerKeyInfo(it, allAvailableKeypairs[it].orEmpty())
+			}
 		} else {
-			listOf(allAvailableKeys.self)
+			listOf(DataOwnerKeyInfo(delegatorActorId, allAvailableKeypairs[delegatorActorId].orEmpty()))
 		}
 		return createRecoveryDataWithVerifiedKeysFrom(
 			keys = dataOwnersToInclude,
-			recoveryDataRecipientId = selfId,
+			recoveryDataRecipientId = delegatorActorId,
 			lifetimeSeconds = lifetimeSeconds,
 			recoveryKeyOptions = recoveryKeyOptions
 		)
@@ -62,14 +66,18 @@ internal class RecoveryApiImpl(
 		lifetimeSeconds: Int?,
 		recoveryKeyOptions: RecoveryKeyOptions?
 	): RecoveryDataKey {
-		val allAvailableKeypairs = crypto.userEncryptionKeysManager.getCurrentUserHierarchyAvailableKeypairs()
-		require (allAvailableKeypairs.parents.any { it.dataOwnerId == parentId }) {
-			"Data owner $parentId is not part of the current data owner hierarchy, or its keys are not available to the current SDK instance"
+		val allAvailableKeypairs = crypto.userEncryptionKeysManager.getAvailableKeyPairs()
+		val hierarchyForParent = crypto.userEncryptionKeysManager.delegatorActorParentHierarchy(parentId)
+		val parentKeys = allAvailableKeypairs[parentId].orEmpty()
+		require(parentKeys.isNotEmpty()) {
+			"There are no keypairs available for parent $parentId"
 		}
 		val dataOwnersToInclude = if (includeAncestorKeys) {
-			allAvailableKeypairs.parents.reversed().dropWhile { it.dataOwnerId != parentId }
+			hierarchyForParent.flattened().map {
+				DataOwnerKeyInfo(it, allAvailableKeypairs[it].orEmpty())
+			}
 		} else {
-			listOf(allAvailableKeypairs.parents.first { it.dataOwnerId == parentId })
+			listOf(DataOwnerKeyInfo(parentId, parentKeys))
 		}
 		return createRecoveryDataWithVerifiedKeysFrom(
 			keys = dataOwnersToInclude,
@@ -124,9 +132,9 @@ internal class RecoveryApiImpl(
 		)
 		val exchangeDataToShare = (
 			if (includeAsParent)
-				crypto.userEncryptionKeysManager.delegatorActorHierarchy().map { EntityReferenceInGroup(it, null) }
+				crypto.userEncryptionKeysManager.delegatorActorParentHierarchy().flattened().map { EntityReferenceInGroup(it, null) }
 			else
-				listOf(crypto.dataOwnerApi.getCurrentDataOwnerReference())
+				listOf(EntityReferenceInGroup(crypto.userEncryptionKeysManager.delegatorActorId(), null))
 		).flatMap { selfOrParent ->
 			val fromSelf = crypto.exchangeDataManager.base.getExchangeDataByDelegatorDelegatePair(
 				null,

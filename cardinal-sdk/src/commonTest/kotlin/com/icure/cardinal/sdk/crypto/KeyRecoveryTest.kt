@@ -95,7 +95,7 @@ class KeyRecoveryTest : StringSpec({
 				}
 			}
 		).first
-		initialized.crypto.currentDataOwnerKeys().apply {
+		initialized.crypto.availableKeys().apply {
 			keys shouldBe setOf(hcp.dataOwnerId)
 			values.single().keys shouldBe setOf(hcp.publicKeySpki!!.fingerprintV1(), secondKeySpki.fingerprintV1())
 		}

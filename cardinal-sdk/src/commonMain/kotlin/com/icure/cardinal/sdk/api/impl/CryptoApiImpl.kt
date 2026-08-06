@@ -7,12 +7,9 @@ import com.icure.cardinal.sdk.crypto.InternalCryptoServices
 import com.icure.cardinal.sdk.crypto.entities.EntityWithEncryptionMetadataTypeName
 import com.icure.cardinal.sdk.crypto.entities.ExchangeDataInjectionDetails
 import com.icure.cardinal.sdk.crypto.entities.RawDecryptedExchangeData
-import com.icure.cardinal.sdk.crypto.impl.exportSpkiHex
 import com.icure.cardinal.sdk.model.EntityReferenceInGroup
-import com.icure.cardinal.sdk.model.extensions.publicKeysSpki
 import com.icure.cardinal.sdk.model.specializations.KeypairFingerprintV1String
 import com.icure.cardinal.sdk.model.specializations.Pkcs8Bytes
-import com.icure.kryptom.crypto.RsaAlgorithm
 import com.icure.kryptom.crypto.defaultCryptoService
 import com.icure.utils.InternalIcureApi
 
@@ -38,13 +35,11 @@ internal class CryptoApiImpl(
 		internal.forceReload()
 	}
 
-	override suspend fun currentDataOwnerKeys(
+	override suspend fun availableKeys(
 		filterTrustedKeys: Boolean
 	): Map<String, Map<KeypairFingerprintV1String, Pkcs8Bytes>> =
-		internal.userEncryptionKeysManager.getCurrentUserHierarchyAvailableKeypairs().run {
-			listOf(self) + parents
-		}.associate { keyInfo ->
-			keyInfo.dataOwnerId to keyInfo.keys.filter { cachedKeypairDetails ->
+		internal.userEncryptionKeysManager.getAvailableKeyPairs().mapValues { (_, keyInfo) ->
+			keyInfo.filter { cachedKeypairDetails ->
 				!filterTrustedKeys || cachedKeypairDetails.isDevice || cachedKeypairDetails.isVerified
 			}.associate { cachedKeypairDetails ->
 				Pair(

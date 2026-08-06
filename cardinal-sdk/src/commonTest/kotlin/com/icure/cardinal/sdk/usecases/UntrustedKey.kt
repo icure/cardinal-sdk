@@ -180,11 +180,11 @@ class UntrustedKey : StringSpec({
 		)
 		didCreateNewKey shouldBe true
 		// Keys trust should match expected
-		val allTrustedKeys = apiWithUntrustedKey.crypto.currentDataOwnerKeys(filterTrustedKeys = true)
+		val allTrustedKeys = apiWithUntrustedKey.crypto.availableKeys(filterTrustedKeys = true)
 		allTrustedKeys shouldHaveSize 2
 		allTrustedKeys[child.dataOwnerId].shouldNotBeNull().keys shouldContainExactlyInAnyOrder setOf(newChildKeySpki.fingerprintV1())
 		allTrustedKeys[parent.dataOwnerId].shouldNotBeNull().keys shouldContainExactlyInAnyOrder setOf(newParentKeySpki.fingerprintV1())
-		val allKeys = apiWithUntrustedKey.crypto.currentDataOwnerKeys(filterTrustedKeys = false)
+		val allKeys = apiWithUntrustedKey.crypto.availableKeys(filterTrustedKeys = false)
 		allKeys shouldHaveSize 2
 		allKeys[child.dataOwnerId].shouldNotBeNull().keys shouldContainExactlyInAnyOrder setOf(child.publicKeySpki!!.fingerprintV1(), newChildKeySpki.fingerprintV1())
 		allKeys[parent.dataOwnerId].shouldNotBeNull().keys shouldContainExactlyInAnyOrder setOf(parent.publicKeySpki!!.fingerprintV1(), newParentKeySpki.fingerprintV1())
@@ -246,11 +246,11 @@ class UntrustedKey : StringSpec({
 				}
 			)
 		)
-		val allTrustedKeys2 = apiWithUntrustedKey2.crypto.currentDataOwnerKeys(filterTrustedKeys = true)
+		val allTrustedKeys2 = apiWithUntrustedKey2.crypto.availableKeys(filterTrustedKeys = true)
 		allTrustedKeys2 shouldHaveSize 2
 		allTrustedKeys2[child.dataOwnerId].shouldNotBeNull().keys shouldContainExactlyInAnyOrder setOf(newChildKeySpki.fingerprintV1())
 		allTrustedKeys2[parent.dataOwnerId].shouldNotBeNull().keys shouldContainExactlyInAnyOrder setOf(newParentKeySpki.fingerprintV1())
-		val allKeys2 = apiWithUntrustedKey2.crypto.currentDataOwnerKeys(filterTrustedKeys = false)
+		val allKeys2 = apiWithUntrustedKey2.crypto.availableKeys(filterTrustedKeys = false)
 		allKeys2 shouldHaveSize 2
 		allKeys2[child.dataOwnerId].shouldNotBeNull().keys shouldContainExactlyInAnyOrder setOf(child.publicKeySpki!!.fingerprintV1(), newChildKeySpki.fingerprintV1())
 		allKeys2[parent.dataOwnerId].shouldNotBeNull().keys shouldContainExactlyInAnyOrder setOf(parent.publicKeySpki!!.fingerprintV1(), newParentKeySpki.fingerprintV1())
