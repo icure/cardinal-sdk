@@ -223,6 +223,11 @@ class SmartAuthTest : StringSpec({
 		val totpSecret = Totp.generateTOTPSecret(32, HmacAlgorithm.HmacSha256)
 		val totp = Totp(secret = totpSecret, shaVersion = ShaVersion.Sha256)
 		val userPwd = uuid()
+		val userWithPwd = adminUserApi.modifyUser(
+			initialUser.copy(
+				passwordHash = userPwd,
+			)
+		).successBody()
 		adminUserApi.enable2faForUser(
 			userId = initialUser.id,
 			request = Enable2faRequest(
@@ -230,11 +235,6 @@ class SmartAuthTest : StringSpec({
 				otpLength = otpLength,
 				otp = totp.generate(digits = otpLength),
 				algorithm = Enable2faRequest.Algorithm.Sha256
-			)
-		).successBody()
-		val userWithPwdAnd2fa = adminUserApi.modifyUser(
-			initialUser.copy(
-				passwordHash = userPwd,
 			)
 		).successBody()
 		var calls = 0
@@ -287,7 +287,7 @@ class SmartAuthTest : StringSpec({
 		)
 
 		val userApi = getUserApiWithProvider(authProvider)
-		userApi.getCurrentUser().successBody().rev shouldBe userWithPwdAnd2fa.rev
+		userApi.getCurrentUser().successBody().rev shouldBe userWithPwd.rev
 		calls shouldBe 3
 	}
 
@@ -300,6 +300,11 @@ class SmartAuthTest : StringSpec({
 		val totpSecret = Totp.generateTOTPSecret(32, HmacAlgorithm.HmacSha256)
 		val totp = Totp(secret = totpSecret, shaVersion = ShaVersion.Sha256)
 		val userPwd = uuid()
+		val userWithPwd = adminUserApi.modifyUser(
+			initialUser.copy(
+				passwordHash = userPwd,
+			)
+		).successBody()
 		adminUserApi.enable2faForUser(
 			userId = initialUser.id,
 			request = Enable2faRequest(
@@ -309,11 +314,6 @@ class SmartAuthTest : StringSpec({
 				algorithm = Enable2faRequest.Algorithm.Sha256
 			)
 		)
-		val userWithPwdAnd2fa = adminUserApi.modifyUser(
-			initialUser.copy(
-				passwordHash = userPwd,
-			)
-		).successBody()
 		var calls = 0
 		val authProvider = SmartAuthProvider.initialize(
 			authApi = authApi,
@@ -343,7 +343,7 @@ class SmartAuthTest : StringSpec({
 		)
 
 		val userApi = getUserApiWithProvider(authProvider)
-		userApi.getCurrentUser().successBody().rev shouldBe userWithPwdAnd2fa.rev
+		userApi.getCurrentUser().successBody().rev shouldBe userWithPwd.rev
 		calls shouldBe 1
 	}
 
