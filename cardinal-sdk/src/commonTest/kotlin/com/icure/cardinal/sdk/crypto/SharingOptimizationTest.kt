@@ -427,4 +427,100 @@ class SharingOptimizationTest : StringSpec({
 		bToP.encryptionKeys shouldHaveSize 1
 		pApi.patient.getEncryptionKeysOf(resharedByB) shouldHaveSize 1
 	}
+
+	"a MaxWrite request is a no-op if the current data owner can itself grant at most read access and the delegate already has read access".config(enabled = DEFAULT_ENABLED && LOCAL_ENV_ONLY) {
+		val a = createHcpUser()
+		val b = createHcpUser()
+		val x = createHcpUser()
+		val aApi = a.api(specJob)
+		val bApi = b.api(specJob)
+
+		val created = aApi.patient.createPatient(
+			aApi.patient.withEncryptionMetadata(DecryptedPatient(id = uuid(), firstName = "John", lastName = "Doe"))
+		)
+		val secretIds = aApi.patient.getSecretIdsOf(created).keys
+
+		// A only gives B read-only access.
+		val sharedWithB = aApi.patient.shareWith(
+			b.dataOwnerId,
+			created,
+			PatientShareOptions(
+				requestedPermissions = RequestedPermission.FullRead,
+				shareSecretIds = SecretIdShareOptions.UseExactly(secretIds, false)
+			)
+		)
+		bApi.patient.hasWriteAccess(sharedWithB) shouldBe false
+
+		// B, who itself only has read access, shares the same content with X, also at read level.
+		val bKnownSecretIds = bApi.patient.getSecretIdsOf(sharedWithB).keys
+		val sharedWithX = bApi.patient.shareWith(
+			x.dataOwnerId,
+			sharedWithB,
+			PatientShareOptions(
+				requestedPermissions = RequestedPermission.FullRead,
+				shareSecretIds = SecretIdShareOptions.UseExactly(bKnownSecretIds, false)
+			)
+		)
+
+		// B tries again, this time requesting MaxWrite: since B itself only has read access, MaxWrite
+		// (which caps the grant at whatever the current data owner already has) can only ever grant read
+		// too - and X already has read (from B's own earlier share), so there is genuinely nothing this
+		// could add. Unlike the earlier "higher requested permission" test, this is not an upgrade
+		// attempt at all, just a request that resolves to something already fully satisfied.
+		val resharedWithMaxWrite = bApi.patient.shareWith(
+			x.dataOwnerId,
+			sharedWithX,
+			PatientShareOptions(
+				requestedPermissions = RequestedPermission.MaxWrite,
+				shareSecretIds = SecretIdShareOptions.UseExactly(bKnownSecretIds, false)
+			)
+		)
+		resharedWithMaxWrite.rev shouldBe sharedWithX.rev
+	}
+
+	"sharing read access with a delegate that a parent's own delegation already gave the same read access to is a no-op".config(enabled = DEFAULT_ENABLED && LOCAL_ENV_ONLY) {
+		val a = createHcpUser()
+		val b = createHcpUser(a)
+		val x = createHcpUser()
+		val aApi = a.api(specJob)
+		val bApi = b.api(specJob)
+
+		val created = aApi.patient.createPatient(
+			aApi.patient.withEncryptionMetadata(DecryptedPatient(id = uuid(), firstName = "John", lastName = "Doe"))
+		)
+		val secretIds = aApi.patient.getSecretIdsOf(created).keys
+
+		// A shares read-only access with its own child B.
+		val sharedWithB = aApi.patient.shareWith(
+			b.dataOwnerId,
+			created,
+			PatientShareOptions(
+				requestedPermissions = RequestedPermission.FullRead,
+				shareSecretIds = SecretIdShareOptions.UseExactly(secretIds, false)
+			)
+		)
+		// A also shares read-only access with X directly (A->X - B is not a party to this delegation).
+		val sharedWithX = aApi.patient.shareWith(
+			x.dataOwnerId,
+			sharedWithB,
+			PatientShareOptions(
+				requestedPermissions = RequestedPermission.FullRead,
+				shareSecretIds = SecretIdShareOptions.UseExactly(secretIds, false)
+			)
+		)
+
+		// B (A's child, holding A's key) can decrypt the existing A->X delegation and see that X already
+		// has read access to this same content - so B's own attempt to share the same content with X, also
+		// at read level, is a no-op, even though B was never a party to A->X itself.
+		val bKnownSecretIds = bApi.patient.getSecretIdsOf(sharedWithX).keys
+		val resharedByB = bApi.patient.shareWith(
+			x.dataOwnerId,
+			sharedWithX,
+			PatientShareOptions(
+				requestedPermissions = RequestedPermission.FullRead,
+				shareSecretIds = SecretIdShareOptions.UseExactly(bKnownSecretIds, false)
+			)
+		)
+		resharedByB.rev shouldBe sharedWithX.rev
+	}
 })
