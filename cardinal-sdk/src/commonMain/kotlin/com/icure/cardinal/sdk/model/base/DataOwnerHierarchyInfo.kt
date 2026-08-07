@@ -92,18 +92,69 @@ data class DataOwnerHierarchyInfo(
 		}
 	}
 
+	/**
+	 * Recursively filters this list of nodes (and their [HierarchyNode.transitiveLinks]) to keep only nodes
+	 * reachable exclusively through [DataOwnerGroupLinkType.Parent] links.
+	 */
 	private fun List<HierarchyNode>.onlyParentLinks(): List<HierarchyNode> = filter {
 		it.linkType == DataOwnerGroupLinkType.Parent
 	}.map {
 		it.copy(transitiveLinks = it.transitiveLinks.onlyParentLinks())
 	}
 
+	/**
+	 * Recursively searches this list of nodes (and their [HierarchyNode.transitiveLinks]) for the first node
+	 * whose [HierarchyNode.linkedGroupId] is [linkedGroupId], or `null` if none is found.
+	 */
 	private fun List<HierarchyNode>.findByLinkedGroupId(linkedGroupId: String): HierarchyNode? {
 		for (node in this) {
 			if (node.linkedGroupId == linkedGroupId) return node
 			node.transitiveLinks.findByLinkedGroupId(linkedGroupId)?.let { return it }
 		}
 		return null
+	}
+
+	/**
+	 * The ids of all data owners in this hierarchy tree (excluding [id] itself, unless it has no [links]) that
+	 * have no further transitive links, deduplicated. As with [flattened], a group reachable through several
+	 * paths has its own links traversed only once, the first time it is reached.
+	 */
+	fun leaves(): Set<String> {
+		if (links.isEmpty()) return setOf(id)
+		val res = mutableSetOf<String>()
+		val visited = mutableSetOf<String>()
+		val remainingNodes = ArrayDeque(links)
+		while (remainingNodes.isNotEmpty()) {
+			val node = remainingNodes.removeFirst()
+			if (visited.add(node.linkedGroupId)) {
+				if (node.transitiveLinks.isEmpty()) {
+					res.add(node.linkedGroupId)
+				} else {
+					remainingNodes.addAll(node.transitiveLinks)
+				}
+			}
+		}
+		return res
+	}
+
+	/**
+	 * Checks whether [dataOwnerId] is [id] itself or the id of any group reachable through this hierarchy tree,
+	 * regardless of link type. As with [flattened], a group reachable through several paths has its own links
+	 * traversed only once, the first time it is reached; unlike [flattened], traversal stops as soon as a match
+	 * is found instead of building the full set of ids first.
+	 */
+	operator fun contains(dataOwnerId: String): Boolean {
+		if (id == dataOwnerId) return true
+		val visited = mutableSetOf<String>()
+		val remainingNodes = ArrayDeque(links)
+		while (remainingNodes.isNotEmpty()) {
+			val node = remainingNodes.removeFirst()
+			if (node.linkedGroupId == dataOwnerId) return true
+			if (visited.add(node.linkedGroupId)) {
+				remainingNodes.addAll(node.transitiveLinks)
+			}
+		}
+		return false
 	}
 
 	// endregion

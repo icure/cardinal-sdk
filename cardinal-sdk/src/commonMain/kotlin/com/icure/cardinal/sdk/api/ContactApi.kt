@@ -528,8 +528,8 @@ interface ContactApi : ContactBasicFlavourlessApi, ContactFlavouredApi<Decrypted
 		user: User? = null,
 		@DefaultValue("emptyMap()")
 		delegates: Map<String, AccessLevel> = emptyMap(),
-		@DefaultValue("com.icure.cardinal.sdk.crypto.entities.SecretIdUseOption.UseAnySharedWithParent")
-		secretId: SecretIdUseOption = SecretIdUseOption.UseAnySharedWithParent,
+		@DefaultValue("com.icure.cardinal.sdk.crypto.entities.SecretIdUseOption.UseAnySharedWithHierarchy")
+		secretId: SecretIdUseOption = SecretIdUseOption.UseAnySharedWithHierarchy,
 		@DefaultValue("null")
 		alternateRootDelegateId: String? = null,
 	): DecryptedContact
@@ -554,8 +554,8 @@ interface ContactApi : ContactBasicFlavourlessApi, ContactFlavouredApi<Decrypted
 		delegates: Map<String, ContactDelegateOptions>,
 		@DefaultValue("null")
 		user: User? = null,
-		@DefaultValue("com.icure.cardinal.sdk.crypto.entities.SecretIdUseOption.UseAnySharedWithParent")
-		secretId: SecretIdUseOption = SecretIdUseOption.UseAnySharedWithParent,
+		@DefaultValue("com.icure.cardinal.sdk.crypto.entities.SecretIdUseOption.UseAnySharedWithHierarchy")
+		secretId: SecretIdUseOption = SecretIdUseOption.UseAnySharedWithHierarchy,
 		@DefaultValue("null")
 		alternateRootDelegateId: String? = null,
 	): DecryptedContact
@@ -707,8 +707,8 @@ interface ContactInGroupApi : ContactBasicFlavourlessInGroupApi, ContactFlavoure
 		user: User? = null,
 		@DefaultValue("emptyMap()")
 		delegates: @JsMapAsObjectArray(keyEntryName = "delegate", valueEntryName = "accessLevel") Map<EntityReferenceInGroup, AccessLevel> = emptyMap(),
-		@DefaultValue("com.icure.cardinal.sdk.crypto.entities.SecretIdUseOption.UseAnySharedWithParent")
-		secretId: SecretIdUseOption = SecretIdUseOption.UseAnySharedWithParent,
+		@DefaultValue("com.icure.cardinal.sdk.crypto.entities.SecretIdUseOption.UseAnySharedWithHierarchy")
+		secretId: SecretIdUseOption = SecretIdUseOption.UseAnySharedWithHierarchy,
 		@DefaultValue("null")
 		alternateRootDelegateReference: EntityReferenceInGroup? = null,
 	): GroupScoped<DecryptedContact>
@@ -723,8 +723,8 @@ interface ContactInGroupApi : ContactBasicFlavourlessInGroupApi, ContactFlavoure
 		delegates: @JsMapAsObjectArray(keyEntryName = "delegate", valueEntryName = "delegateOptions") Map<EntityReferenceInGroup, ContactDelegateOptions>,
 		@DefaultValue("null")
 		user: User? = null,
-		@DefaultValue("com.icure.cardinal.sdk.crypto.entities.SecretIdUseOption.UseAnySharedWithParent")
-		secretId: SecretIdUseOption = SecretIdUseOption.UseAnySharedWithParent,
+		@DefaultValue("com.icure.cardinal.sdk.crypto.entities.SecretIdUseOption.UseAnySharedWithHierarchy")
+		secretId: SecretIdUseOption = SecretIdUseOption.UseAnySharedWithHierarchy,
 		@DefaultValue("null")
 		alternateRootDelegateReference: EntityReferenceInGroup? = null,
 	): GroupScoped<DecryptedContact>

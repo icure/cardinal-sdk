@@ -50,6 +50,7 @@ import com.icure.cardinal.sdk.model.IcureStub
 import com.icure.cardinal.sdk.model.ListOfIds
 import com.icure.cardinal.sdk.model.ListOfIdsAndRev
 import com.icure.cardinal.sdk.model.Patient
+import com.icure.cardinal.sdk.model.SecretIdCreationResult
 import com.icure.cardinal.sdk.model.StoredDocumentIdentifier
 import com.icure.cardinal.sdk.model.User
 import com.icure.cardinal.sdk.model.base.HasEncryptionMetadata
@@ -397,17 +398,17 @@ private abstract class AbstractPatientFlavouredApi<E : Patient>(
 			}
 		).updatedEntityOrThrow()
 
-	protected suspend fun doInitializeConfidentialSecretId(groupId: String?, patient: E): E {
+	protected suspend fun doCreateNewSecretId(groupId: String?, patient: E): SecretIdCreationResult<E> {
 		requireNotNull(patient.rev) {
 			"Patient must be created before confidential secret id initialisation"
 		}
-		return config.crypto.entity.initializeConfidentialSecretId(
+		return config.crypto.entity.forceCreateNewSecretId(
 			groupId,
 			patient,
 			EntityWithEncryptionMetadataTypeName.Patient,
 			{ doGetPatient(groupId, it) ?: throw NotFoundException("Patient $it not found") },
 			{ maybeDecrypt(null, rawApi.bulkShare(request = it).successBody()) }
-		) ?: patient
+		)
 	}
 
 }
@@ -431,8 +432,8 @@ private class PatientFlavouredApiImpl<E : Patient>(
 	override suspend fun shareWithMany(patient: E, delegates: Map<String, PatientShareOptions>): E =
 		doShareWithMany(null, patient, delegates.keyAsLocalDataOwnerReferences())
 
-	override suspend fun initializeConfidentialSecretId(patient: E): E =
-		doInitializeConfidentialSecretId(groupId = null, patient = patient)
+	override suspend fun createNewSecretId(patient: E): SecretIdCreationResult<E> =
+		doCreateNewSecretId(groupId = null, patient = patient)
 
 	override suspend fun filterPatientsBy(filter: FilterOptions<Patient>): PaginatedListIterator<E> =
 		IdsPageIterator(
@@ -466,8 +467,8 @@ private class PatientFlavouredInGroupApiImpl<E : Patient>(
 	): GroupScoped<E> =
 		GroupScoped(doShareWithMany(patient.groupId, patient.entity, delegates), patient.groupId)
 
-	override suspend fun initializeConfidentialSecretId(patient: GroupScoped<E>): GroupScoped<E> = groupScopedWith(patient) { groupId, entity ->
-		doInitializeConfidentialSecretId(groupId = groupId, patient = entity)
+	override suspend fun createNewSecretId(patient: GroupScoped<E>): GroupScoped<SecretIdCreationResult<E>> = groupScopedWith(patient) { groupId, entity ->
+		doCreateNewSecretId(groupId = groupId, patient = entity)
 	}
 
 	override suspend fun filterPatientsBy(groupId: String, filter: FilterOptions<Patient>): PaginatedListIterator<GroupScoped<E>> =
@@ -740,7 +741,7 @@ private class PatientApiImpl(
 				encrypted.modifyPatient(it)
 			} ?: patient
 		} ?: throw NotFoundException("Patient $patientId not found")
-		val selfHierarchySet = config.crypto.userEncryptionKeysManager.delegatorActorParentHierarchy().toSet()
+		val selfHierarchySet = config.crypto.userEncryptionKeysManager.delegatorActorParentHierarchy().flattened().toSet()
 
 		val delegationSecretKeys = getSecretIdsOf(patient).keys
 
@@ -1044,17 +1045,6 @@ private class PatientApiImpl(
 
 	private suspend fun doGetEncryptionKeysOf(groupId: String?, patient: Patient): Set<HexString> =
 		config.crypto.entity.encryptionKeysOf(groupId, patient, EntityWithEncryptionMetadataTypeName.Patient, null)
-
-	override suspend fun getConfidentialSecretIdsOf(patient: Patient): Set<String> =
-		doGetConfidentialSecretIdsOf(null, patient)
-
-	private suspend fun doGetConfidentialSecretIdsOf(groupId: String?, patient: Patient): Set<String> =
-		config.crypto.entity.getConfidentialSecretIdsOf(
-			groupId,
-			patient,
-			EntityWithEncryptionMetadataTypeName.Patient,
-			null
-		)
 
 	override suspend fun forceInitializeExchangeDataToNewlyInvitedPatient(patientId: String): Boolean {
 		val patient = encrypted.getPatient(patientId) ?: throw NotFoundException("Patient $patientId not found")

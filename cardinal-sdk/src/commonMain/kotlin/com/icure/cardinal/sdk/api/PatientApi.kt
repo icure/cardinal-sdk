@@ -18,6 +18,7 @@ import com.icure.cardinal.sdk.model.GroupScoped
 import com.icure.cardinal.sdk.model.HealthElement
 import com.icure.cardinal.sdk.model.PaginatedList
 import com.icure.cardinal.sdk.model.Patient
+import com.icure.cardinal.sdk.model.SecretIdCreationResult
 import com.icure.cardinal.sdk.model.StoredDocumentIdentifier
 import com.icure.cardinal.sdk.model.User
 import com.icure.cardinal.sdk.model.couchdb.SortDirection
@@ -409,26 +410,13 @@ interface PatientFlavouredApi<E : Patient> : PatientBasicFlavouredApi<E> {
 	): E
 
 	/**
-	 * Initializes a new "confidential" secret id for the provided patient if there is none, and saves it. Returns the
-	 * updated patient if a new secret id was initialized, or the input if there was already a confidential secret id
-	 * available.
-	 *
-	 * A "confidential" secret id is a secret id that was not shared with any of the current data owner parents, at
-	 * least to the extent of the knowledge of the current data owner. If the current data owner is missing access to
-	 * some of the keys of his parents a secret id that is not confidential may be mistakenly identified as confidential.
-	 * The confidential secret id may be shared in a second moment with a parent data owner, making it not confidential
-	 * anymore. It may also be possible to share the secret id with another non-parent data owner, in which case the
-	 * secret id will still be considered as confidential.
-	 *
-	 * Confidential secret ids only make sense in environments where a hierarchical data owner structure is used. In
-	 * other environments all secret ids are confidential by nature.
-	 *
-	 * Note: this method only updates the security metadata. If the input entity has unsaved changes they may be lost.
-	 *
+	 * Adds a new secret id to the patient, generated using a cryptographically secure generator.
+	 * This secret id will initially be known only by the current delegator actor; if the current delegator actor is a
+	 * group all the child data owners will also have access to it.
 	 * @param patient a patient
-	 * @return the input if there is already a secret id available for the patient, or the updated patient otherwise.
+	 * @return the updated patient and generated secret id
 	 */
-	suspend fun initializeConfidentialSecretId(patient: E): E
+	suspend fun createNewSecretId(patient: E): SecretIdCreationResult<E>
 
 	/**
 	 * Get an iterator that iterates through all patients matching the provided filter, executing multiple requests to
@@ -482,9 +470,9 @@ interface PatientFlavouredInGroupApi<E : Patient> : PatientBasicFlavouredInGroup
 	): GroupScoped<E>
 
 	/**
-	 * In-group version of [PatientFlavouredApi.initializeConfidentialSecretId]
+	 * In-group version of [PatientFlavouredApi.createNewSecretId]
 	 */
-	suspend fun initializeConfidentialSecretId(patient: GroupScoped<E>): GroupScoped<E>
+	suspend fun createNewSecretId(patient: GroupScoped<E>): GroupScoped<SecretIdCreationResult<E>>
 
 	/**
 	 * In-group version of [PatientFlavouredApi.filterPatientsBy]
@@ -542,7 +530,28 @@ interface PatientApi : PatientBasicFlavourlessApi, PatientFlavouredApi<Decrypted
 	suspend fun encryptOrValidate(patients: List<Patient>): List<EncryptedPatient>
 
 	/**
-	 * Get all the secret ids that the current data owner can access from the provided patient.
+	 * Get all the secret ids of the provided patient that this instance of SDK can decrypt with the available keys, and
+	 * a non-exhaustive list of data owners that have direct access to those secret ids.
+	 *
+	 * # Direct access
+	 *
+	 * Only data owners with direct access to the secret id are listed in the result. In cases where a secret id is
+	 * shared with a data owner group (simple or parent type), only the group reference will be listed here; data owners
+	 * that have access to the secret id through the delegation for the group are not included.
+	 *
+	 * # Not exhaustive
+	 *
+	 * This list is not necessarily exhaustive: imagine a situation where A creates an entity, shares it with B, and
+	 * then B shares it with C, and there is only one secret id:
+	 * - When getting the secret ids as A you will find one and you will know that both you and B have access to this
+	 *   secret id. The SDK knows that also C has a secret id of the parent, but it can't know if it is the same secret
+	 *   id known by A and B, so nothing about it is included in the result
+	 * - For C we actually have a similar scenario, but in this case C knows that the secret id is known for sure by B
+	 *   amd himself, but can't say anything about A
+	 * - Only B can know for sure that the patient has only one secret id, and that secret id is known by all of A, B, C
+	 * - If in future we have A or C also sharing the secret id with D then no one will have the certainty anymore that
+	 *   there is only one secret id on the patient and that one is known by all the delegates there.
+	 *
 	 * @param patient a patient
 	 * @return the secret ids of the provided patient associated to the data owners which are known to have access
 	 * to that id.
@@ -655,24 +664,6 @@ interface PatientApi : PatientBasicFlavourlessApi, PatientFlavouredApi<Decrypted
 		patientId: String,
 		delegatesWithShareType: Map<String, Set<ShareAllPatientDataOptions.Tag>>
 	): ShareAllPatientDataOptions.Result
-
-	/**
-	 * Get all confidential secret ids of a patient
-	 *
-	 * A "confidential" secret id is a secret id that was not shared with any of the current data owner parents, at
-	 * least to the extent of the knowledge of the current data owner. If the current data owner is missing access to
-	 * some of the keys of his parents a secret id that is not confidential may be mistakenly identified as confidential.
-	 * The confidential secret id may be shared in a second moment with a parent data owner, making it not confidential
-	 * anymore. It may also be possible to share the secret id with another non-parent data owner, in which case the
-	 * secret id will still be considered as confidential.
-	 *
-	 * Confidential secret ids only make sense in environments where a hierarchical data owner structure is used. In
-	 * other environments all secret ids are confidential by nature.
-	 *
-	 * @param patient a patient
-	 * @return the confidential secret ids of the patient
-	 */
-	suspend fun getConfidentialSecretIdsOf(patient: Patient): Set<String>
 
 	/**
 	 * Initializes the exchange data towards a newly invited patient. This allows the doctor to share data with the
@@ -822,12 +813,6 @@ interface PatientInGroupApi : PatientBasicFlavourlessInGroupApi, PatientFlavoure
 		entity: GroupScoped<DecryptedPatient>,
 		delegates: Set<EntityReferenceInGroup>
 	)
-
-	/**
-	 * In-group version of [PatientApi.getConfidentialSecretIdsOf]
-	 */
-	// TODO suspend fun getConfidentialSecretIdsOf(patient: GroupScoped<DecryptedPatient>): Set<String>
-
 
 	/**
 	 * In-group version of [PatientApi.matchPatientsBy]

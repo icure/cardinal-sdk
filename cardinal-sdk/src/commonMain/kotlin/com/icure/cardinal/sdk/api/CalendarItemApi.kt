@@ -350,15 +350,40 @@ interface CalendarItemFlavouredApi<E : CalendarItem> : CalendarItemBasicFlavoure
 	): E
 
 	/**
-	 * Links a calendar item with a patient. Note that this operation is not reversible: it is not possible to change the patient linked to a calendar
-	 * item.
+	 * Links a completely unlinked calendar item to a patient, or complete a partial link to a patient.
+	 * Note that this operation is not reversible: it is not possible to change the patient linked to a calendar item.
+	 *
+	 * # Linking an unlinked calendar item
+	 *
+	 * If the calendar item has no `owningEntityIds` and no secret foreign keys it is considered as fully unlinked; in
+	 * that case you can pick any [patient] for linking
+	 *
+	 * # Linking a partially linked calendar item
+	 *
+	 * A partially linked calendar item is a calendar item that has owning entity ids but no secret foreign keys. In
+	 * that case this method may be used to fill in the secret foreign keys from the linked patient, allowing to find
+	 * back [calendarItem] starting from the [patient].
+	 *
+	 * In case of partially linked calendar items the provided [patient] must match the partial link: the [patient] id
+	 * must match one of the [calendarItem] owning entity ids, or must be merged with one of the listed patients ids
+	 * (into or from).
+	 *
+	 * Note that if the SDK detects that there are owning entity ids in the [calendarItem] but it is unable to decrypt
+	 * any of them the method will fail.
+	 *
 	 * @param calendarItem a calendar item.
 	 * @param patient the patient which will be linked to the calendar item.
 	 * @param shareLinkWithDelegates data owners other than the current data owner which will also be able to decrypt the id of the newly linked
 	 * patient. If any of these data owners do not already have access to the calendar item, they will be granted read access (no write).
+	 * @param secretIdUseOption which secret ids of patient should be used when linking.
 	 * @return the updated calendar item.
 	 */
-	suspend fun linkToPatient(calendarItem: CalendarItem, patient: Patient, shareLinkWithDelegates: Set<String>): E
+	suspend fun linkToPatient(
+		calendarItem: CalendarItem,
+		patient: Patient,
+		shareLinkWithDelegates: Set<String>,
+		secretIdUseOption: SecretIdUseOption = SecretIdUseOption.UseAnySharedWithHierarchy,
+	): E
 
 	/**
 	 * Get an iterator that iterates through all calendarItems matching the provided filter, executing multiple requests to
@@ -468,8 +493,8 @@ interface CalendarItemApi : CalendarItemBasicFlavourlessApi, CalendarItemFlavour
 		user: User? = null,
 		@DefaultValue("emptyMap()")
 		delegates: Map<String, AccessLevel> = emptyMap(),
-		@DefaultValue("com.icure.cardinal.sdk.crypto.entities.SecretIdUseOption.UseAnySharedWithParent")
-		secretId: SecretIdUseOption = SecretIdUseOption.UseAnySharedWithParent,
+		@DefaultValue("com.icure.cardinal.sdk.crypto.entities.SecretIdUseOption.UseAnySharedWithHierarchy")
+		secretId: SecretIdUseOption = SecretIdUseOption.UseAnySharedWithHierarchy,
 		@DefaultValue("null")
 		alternateRootDelegateId: String? = null,
 	): DecryptedCalendarItem
@@ -496,8 +521,8 @@ interface CalendarItemApi : CalendarItemBasicFlavourlessApi, CalendarItemFlavour
 		delegates: Map<String, CalendarItemDelegateOptions>,
 		@DefaultValue("null")
 		user: User? = null,
-		@DefaultValue("com.icure.cardinal.sdk.crypto.entities.SecretIdUseOption.UseAnySharedWithParent")
-		secretId: SecretIdUseOption = SecretIdUseOption.UseAnySharedWithParent,
+		@DefaultValue("com.icure.cardinal.sdk.crypto.entities.SecretIdUseOption.UseAnySharedWithHierarchy")
+		secretId: SecretIdUseOption = SecretIdUseOption.UseAnySharedWithHierarchy,
 		@DefaultValue("null")
 		alternateRootDelegateId: String? = null,
 	): DecryptedCalendarItem
@@ -687,8 +712,8 @@ interface CalendarItemInGroupApi : CalendarItemBasicFlavourlessInGroupApi, Calen
 		user: User? = null,
 		@DefaultValue("emptyMap()")
 		delegates: @JsMapAsObjectArray(keyEntryName = "delegate", valueEntryName = "accessLevel") Map<EntityReferenceInGroup, AccessLevel> = emptyMap(),
-		@DefaultValue("com.icure.cardinal.sdk.crypto.entities.SecretIdUseOption.UseAnySharedWithParent")
-		secretId: SecretIdUseOption = SecretIdUseOption.UseAnySharedWithParent,
+		@DefaultValue("com.icure.cardinal.sdk.crypto.entities.SecretIdUseOption.UseAnySharedWithHierarchy")
+		secretId: SecretIdUseOption = SecretIdUseOption.UseAnySharedWithHierarchy,
 		@DefaultValue("null")
 		alternateRootDelegateReference: EntityReferenceInGroup? = null,
 	): GroupScoped<DecryptedCalendarItem>
@@ -702,8 +727,8 @@ interface CalendarItemInGroupApi : CalendarItemBasicFlavourlessInGroupApi, Calen
 		patient: GroupScoped<Patient>?,
 		delegates: @JsMapAsObjectArray(keyEntryName = "delegate", valueEntryName = "delegateOptions") Map<EntityReferenceInGroup, CalendarItemDelegateOptions>,
 		user: User? = null,
-		@DefaultValue("com.icure.cardinal.sdk.crypto.entities.SecretIdUseOption.UseAnySharedWithParent")
-		secretId: SecretIdUseOption = SecretIdUseOption.UseAnySharedWithParent,
+		@DefaultValue("com.icure.cardinal.sdk.crypto.entities.SecretIdUseOption.UseAnySharedWithHierarchy")
+		secretId: SecretIdUseOption = SecretIdUseOption.UseAnySharedWithHierarchy,
 		@DefaultValue("null")
 		alternateRootDelegateReference: EntityReferenceInGroup? = null,
 	): GroupScoped<DecryptedCalendarItem>

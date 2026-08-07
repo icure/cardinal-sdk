@@ -8,15 +8,14 @@ import com.icure.cardinal.sdk.crypto.entities.EntityDataEncryptionResult
 import com.icure.cardinal.sdk.crypto.entities.EntityEncryptionKeyDetails
 import com.icure.cardinal.sdk.crypto.entities.EntityEncryptionMetadataInitialisationResult
 import com.icure.cardinal.sdk.crypto.entities.EntityWithEncryptionMetadataTypeName
-import com.icure.cardinal.sdk.crypto.entities.HierarchicallyDecryptedMetadata
 import com.icure.cardinal.sdk.crypto.entities.MinimalBulkShareResult
 import com.icure.cardinal.sdk.crypto.entities.OwningEntityDetails
 import com.icure.cardinal.sdk.crypto.entities.SecretIdUseOption
 import com.icure.cardinal.sdk.crypto.entities.SimpleDelegateShareOptions
 import com.icure.cardinal.sdk.crypto.entities.SimpleShareResult
 import com.icure.cardinal.sdk.model.EntityReferenceInGroup
+import com.icure.cardinal.sdk.model.SecretIdCreationResult
 import com.icure.cardinal.sdk.model.base.HasEncryptionMetadata
-import com.icure.cardinal.sdk.model.embed.AccessLevel
 import com.icure.cardinal.sdk.model.embed.Encryptable
 import com.icure.cardinal.sdk.model.requests.BulkShareOrUpdateMetadataParams
 import com.icure.cardinal.sdk.model.requests.EntityBulkShareResult
@@ -60,21 +59,6 @@ interface EntityEncryptionService : EntityValidationService {
 	): Set<HexString>
 
 	/**
-	 * Get the encryption keys of an entity that the current data owner and his parents can access. The resulting array contains the keys for each data
-	 * owner in the hierarchy which can be decrypted using only that data owner keys (excludes keys accessible through the parent keys). The order of
-	 * the array is the same as in {@link IccDataOwnerXApi.getCurrentDataOwnerHierarchyIds}.
-	 * Note that different data owners may have access to the same keys, but the keys extracted for each data owner are deduplicated.
-	 * There should only be one encryption key for each entity, but the method supports more to allow to deal with conflicts and merged duplicate data.
-	 * @param entity an encrypted entity.
-	 * @return the encryption keys that each member of the current data owner hierarchy can decrypt using only his keys and not keys of his parents.
-	 */
-	suspend fun encryptionKeysForHcpHierarchyOf(
-		entityGroupId: String?,
-		entity: HasEncryptionMetadata,
-		entityType: EntityWithEncryptionMetadataTypeName
-	): List<HierarchicallyDecryptedMetadata<HexString>>
-
-	/**
 	 * Get the secret ids (SFKs) of an entity that the provided data owner can access, potentially using the keys for his parent.
 	 * @param entity an encrypted entity.
 	 * @param dataOwnerId optionally a data owner part of the hierarchy for the current data owner, defaults to the current data owner.
@@ -101,20 +85,6 @@ interface EntityEncryptionService : EntityValidationService {
 	): Map<String, Map<String, Set<EntityReferenceInGroup>>>
 
 	/**
-	 * Get the secret ids (SFKs) of an entity that the current data owner and his parents can access. The resulting array contains the ids for each data
-	 * owner in the hierarchy which can be decrypted using only that data owner keys (excludes ids accessible through the parent keys). The order of
-	 * the array is the same as in {@link IccDataOwnerXApi.getCurrentDataOwnerHierarchyIds}.
-	 * Note that different data owners may have access to the same secret ids, but the secret ids extracted for each data owner are deduplicated.
-	 * @param entity an encrypted entity.
-	 * @return the secret ids that each member of the current data owner hierarchy can decrypt using only his keys and not keys of his parents.
-	 */
-	suspend fun secretIdsForHcpHierarchyOf(
-		entityGroupId: String?,
-		entity: HasEncryptionMetadata,
-		entityType: EntityWithEncryptionMetadataTypeName
-	): List<HierarchicallyDecryptedMetadata<String>>
-
-	/**
 	 * Get the decrypted owning entity ids (formerly CFKs) for the provided entity that can be decrypted using the private keys of the current data
 	 * owner and his parents. The owning entity id would be, for example, the id of a patient for contact and healthcare elements, or the id of a
 	 * message for documents.
@@ -130,25 +100,6 @@ interface EntityEncryptionService : EntityValidationService {
 		entityType: EntityWithEncryptionMetadataTypeName,
 		dataOwnerId: String?,
 	): Set<String>
-
-	/**
-	 * Get the decrypted owning entity ids (formerly CFKs) for the provided entity that can be decrypted using the private keys of the current data
-	 * owner and his parents. The owning entity id would be, for example, the id of a patient for contact and healthcare elements, or the id of a
-	 * message for documents.
-	 * The resulting array contains the ids for each data owner in the hierarchy which can be decrypted using only that data owner keys (excludes ids
-	 * accessible through the parent keys). The order of the array is the same as in {@link IccDataOwnerXApi.getCurrentDataOwnerHierarchyIds}.
-	 * Note that different data owners may have access to the same owning entity ids, but the owning entity ids extracted for each data owner are
-	 * deduplicated in case they could be accessed through different delegations.
-	 * There should only be one owning entity id for each entity, but the method supports more to allow to deal with conflicts and merged duplicate
-	 * data.
-	 * @param entity an encrypted entity.
-	 * @return the owning entity ids that each member of the current data owner hierarchy can decrypt using only his keys and not keys of his parents.
-	 */
-	suspend fun owningEntityIdsForHcpHierarchyOf(
-		entityGroupId: String?,
-		entity: HasEncryptionMetadata,
-		entityType: EntityWithEncryptionMetadataTypeName
-	): List<HierarchicallyDecryptedMetadata<String>>
 
 	/**
 	 * Get if the current data owner has write access to the content of the entity.
@@ -408,50 +359,20 @@ interface EntityEncryptionService : EntityValidationService {
 	// region confidential sfks
 
 	/**
-	 * Ensures that the current data owner has access to a confidential secret id for the provided entity: this is an id that is known to the data owner
-	 * but is not known by any of his parents. If there is currently no confidential secret id for this entity the method returns a copy of the entity
-	 * with a new confidential secret id for the current data owner (the entity in the database won't be updated), else this method returns undefined.
-	 * New confidential secret ids will have an appropriate tag, but existing confidential secret ids may not necessarily have it.
-	 * @param entity an entity which needs to have a confidential secret id for the current data owner
+	 * Creates a new secret id for the entity, only shared with the current delegator actor.
+	 * @param entity an entity which needs to have a new secret id for the current data owner
 	 * @param entityType the type of the entity
 	 * @param doRequestBulkShareOrUpdate perform the request to share or update an entity encrypted metadata on the cloud API (and save to DB).
 	 * @return undefined if the entity already had a confidential secret id for the current user, or the updated AND SAVED entity with the new
 	 * confidential secret id.
 	 */
-	suspend fun <T : HasEncryptionMetadata> initializeConfidentialSecretId(
+	suspend fun <T : HasEncryptionMetadata> forceCreateNewSecretId(
 		entityGroupId: String?,
 		entity: T,
 		entityType: EntityWithEncryptionMetadataTypeName,
 		getUpdatedEntity: suspend (String) -> T,
 		doRequestBulkShareOrUpdate: suspend (request: BulkShareOrUpdateMetadataParams) -> List<EntityBulkShareResult<out T>>,
-	): T?
-
-	/**
-	 * Get all existing confidential secret ids of the provided entity for [dataOwnerId] (delegator data owner if null).
-	 * A confidential secret id is a secret id known by the data owner but not known by any of his parents: note however
-	 * that children will know confidential secret ids.
-	 * @param entity an entity for which you want to retrieve the confidential secret id.
-	 * @param dataOwnerId (current data owner by default) a data owner for which you want to get a confidential secret id.
-	 * @return the confidential secret ids for the data owner (may be empty).
-	 */
-	suspend fun getConfidentialSecretIdsOf(
-		entityGroupId: String?,
-		entity: HasEncryptionMetadata,
-		entityType: EntityWithEncryptionMetadataTypeName,
-		dataOwnerId: String?,
-	): Set<String>
-
-	/**
-	 * Gets all secret ids known by the topmost parent of the current data owner hierarchy (or all secret ids known by
-	 * the current data owner if he is not part of any data owner hierarchy).
-	 * @param entity an entity.
-	 * @return all secret ids known by the topmost parent of the current data owner hierarchy, may be empty.
-	 */
-	suspend fun getSecretIdsSharedWithParentsOf(
-		entityGroupId: String?,
-		entity: HasEncryptionMetadata,
-		entityType: EntityWithEncryptionMetadataTypeName,
-	): Set<String>
+	): SecretIdCreationResult<T>
 
 	/**
 	 * Get the secret ids for [entity] that match the provided [secretIdUseOption]. Note that if [secretIdUseOption] is

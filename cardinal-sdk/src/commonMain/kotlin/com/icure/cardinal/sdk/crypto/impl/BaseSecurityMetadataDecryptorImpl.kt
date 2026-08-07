@@ -364,7 +364,7 @@ internal class BaseSecurityMetadataDecryptorImpl(
 		val loadedExchangeData = loadAllExchangeDataForEntitiesSecureDelegations(
 			entityGroupId,
 			listOf(entity),
-			encryptionKeysManager.delegatorActorParentHierarchy().toSet()
+			encryptionKeysManager.delegatorActorParentHierarchy().flattened()
 		) {
 			it.delegate == null || it.delegator == null
 		}

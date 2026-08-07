@@ -11,6 +11,7 @@ import com.icure.cardinal.sdk.crypto.UserEncryptionKeysManager
 import com.icure.cardinal.sdk.crypto.decrypt
 import com.icure.cardinal.sdk.crypto.entities.BulkShareResult
 import com.icure.cardinal.sdk.crypto.entities.DecryptedMetadataDetails
+import com.icure.cardinal.sdk.crypto.entities.DecryptedMetadataDetails.Companion.groupedByValueToAllDataOwnersWithAccess
 import com.icure.cardinal.sdk.crypto.entities.DelegateOptions
 import com.icure.cardinal.sdk.crypto.entities.DelegateShareOptions
 import com.icure.cardinal.sdk.crypto.entities.EncryptedFieldsManifest
@@ -19,7 +20,6 @@ import com.icure.cardinal.sdk.crypto.entities.EntityEncryptionKeyDetails
 import com.icure.cardinal.sdk.crypto.entities.EntityEncryptionMetadataInitialisationResult
 import com.icure.cardinal.sdk.crypto.entities.EntityWithEncryptionMetadataTypeName
 import com.icure.cardinal.sdk.crypto.entities.FailedRequestDetails
-import com.icure.cardinal.sdk.crypto.entities.HierarchicallyDecryptedMetadata
 import com.icure.cardinal.sdk.crypto.entities.MinimalBulkShareResult
 import com.icure.cardinal.sdk.crypto.entities.OwningEntityDetails
 import com.icure.cardinal.sdk.crypto.entities.SdkBoundGroup
@@ -33,6 +33,7 @@ import com.icure.cardinal.sdk.crypto.entities.SimpleDelegateShareOptionsImpl
 import com.icure.cardinal.sdk.crypto.entities.SimpleShareResult
 import com.icure.cardinal.sdk.crypto.entities.resolve
 import com.icure.cardinal.sdk.model.EntityReferenceInGroup
+import com.icure.cardinal.sdk.model.SecretIdCreationResult
 import com.icure.cardinal.sdk.model.base.HasEncryptionMetadata
 import com.icure.cardinal.sdk.model.embed.AccessLevel
 import com.icure.cardinal.sdk.model.embed.Encryptable
@@ -140,7 +141,7 @@ class EntityEncryptionServiceImpl(
 			entityGroupId,
 			listOf(entity),
 			entityType,
-			dataOwnersForDecryption(dataOwnerId).toSet(),
+			dataOwnersForDecryption(dataOwnerId).flattened(),
 			securityMetadataType
 		).values.single().mapTo(mutableSetOf()) {
 			it.value
@@ -156,7 +157,7 @@ class EntityEncryptionServiceImpl(
 			entityGroupId,
 			entities,
 			entitiesType,
-			dataOwnersForDecryption(dataOwnerId).toSet(),
+			dataOwnersForDecryption(dataOwnerId).flattened(),
 			SecurityMetadataType.SecretId
 		).mapValues { (_, v) -> v.mapTo(mutableSetOf()) { it.value } }
 
@@ -169,65 +170,11 @@ class EntityEncryptionServiceImpl(
 			entityGroupId,
 			entities,
 			entitiesType,
-			dataOwnersForDecryption(null).toSet(),
+			dataOwnersForDecryption(null).flattened(),
 			SecurityMetadataType.SecretId
 		).mapValues { (_, v) ->
-			v.groupingBy {
-				it.value
-			}.aggregate { _, accumulator, element, _ ->
-				if (accumulator != null)
-					accumulator + element.dataOwnersWithAccess
-				else
-					element.dataOwnersWithAccess
-			}
+			v.groupedByValueToAllDataOwnersWithAccess()
 		}
-
-	override suspend fun encryptionKeysForHcpHierarchyOf(
-		entityGroupId: String?,
-		entity: HasEncryptionMetadata,
-		entityType: EntityWithEncryptionMetadataTypeName
-	): List<HierarchicallyDecryptedMetadata<HexString>> =
-		decryptSecurityMetadataForHierarchy(entityGroupId, entity, entityType, SecurityMetadataType.EncryptionKey)
-
-	override suspend fun secretIdsForHcpHierarchyOf(
-		entityGroupId: String?,
-		entity: HasEncryptionMetadata,
-		entityType: EntityWithEncryptionMetadataTypeName
-	): List<HierarchicallyDecryptedMetadata<String>> =
-		decryptSecurityMetadataForHierarchy(entityGroupId, entity, entityType, SecurityMetadataType.SecretId)
-
-	override suspend fun owningEntityIdsForHcpHierarchyOf(
-		entityGroupId: String?,
-		entity: HasEncryptionMetadata,
-		entityType: EntityWithEncryptionMetadataTypeName
-	): List<HierarchicallyDecryptedMetadata<String>> =
-		decryptSecurityMetadataForHierarchy(entityGroupId, entity, entityType, SecurityMetadataType.OwningEntityId)
-
-	private suspend fun <T : Any> decryptSecurityMetadataForHierarchy(
-		entityGroupId: String?,
-		entity: HasEncryptionMetadata,
-		entityType: EntityWithEncryptionMetadataTypeName,
-		securityMetadataType: SecurityMetadataType<T>
-	): List<HierarchicallyDecryptedMetadata<T>> {
-		val hierarchyIds = dataOwnersForDecryption(null)
-		val allDecryptedData = baseSecurityMetadataDecryptor.decryptAll(
-			entityGroupId,
-			listOf(entity),
-			entityType,
-			hierarchyIds.toSet(),
-			securityMetadataType
-		).values.single()
-		return hierarchyIds.map { currDataOwner ->
-			val currentDataOwnerReference = EntityReferenceInGroup(currDataOwner, null)
-			HierarchicallyDecryptedMetadata(
-				allDecryptedData
-					.filter { currentDataOwnerReference in it.dataOwnersWithAccess }
-					.map { it.value }
-					.toSet(),
-				currDataOwner
-			)
-		}
-	}
 
 	override suspend fun hasWriteAccess(
 		entityGroupId: String?,
@@ -238,7 +185,7 @@ class EntityEncryptionServiceImpl(
 			entityGroupId,
 			entity,
 			entityType,
-			dataOwnersForDecryption(null).toSet()
+			dataOwnersForDecryption(null).flattened()
 		) == AccessLevel.Write
 
 	override fun hasEmptyEncryptionMetadata(
@@ -643,7 +590,7 @@ class EntityEncryptionServiceImpl(
 		doRequestBulkShareOrUpdate: suspend (request: BulkShareOrUpdateMetadataParams) -> List<EntityBulkShareResult<out T>>
 	): SimpleShareResult<T> {
 		val normalizedDelegates = delegates.mapKeys { it.key.normalized(boundGroup) }
-		val decryptedMetadata = decryptSecurityMetadataDetails(entityGroupId, entity, entityType, dataOwnersForDecryption(null).toSet())
+		val decryptedMetadata = decryptSecurityMetadataDetails(entityGroupId, entity, entityType, dataOwnersForDecryption(null).flattened())
 		val availableEncryptionKeys = decryptedMetadata.encryptionKeys.mapTo(mutableSetOf()) { it.value }
 		val availableOwningEntityIds = decryptedMetadata.owningEntityIds.mapTo(mutableSetOf()) { it.value }
 		val availableSecretIds = decryptedMetadata.secretIds.mapTo(mutableSetOf()) { it.value }
@@ -745,7 +692,7 @@ class EntityEncryptionServiceImpl(
 		require (entitiesUpdates.all { it.first.rev != null }) {
 			"Only existing entities can be shared"
 		}
-		val hierarchySet = dataOwnersForDecryption(null).toSet()
+		val hierarchySet = dataOwnersForDecryption(null).flattened()
 		val hierarchyReferenceSet = hierarchySet.map { EntityReferenceInGroup(it, null) }.toSet()
 		val requestsByEntityId = mutableMapOf<String, EntityShareRequestDetails>()
 		val unmodifiedEntityIds = mutableSetOf<String>()
@@ -1030,7 +977,7 @@ class EntityEncryptionServiceImpl(
 		val resolvedEntityGroup = boundGroup.resolve(entityGroupId)
 		val selfId = dataOwnerApi.getCurrentDataOwnerId()
 		val subHierarchy = dataOwnersForDecryption(currMember.entityId)
-		val subHierarchySet = subHierarchy.toSet()
+		val subHierarchySet = subHierarchy.flattened()
 		val hasLegacyOrImplicitAccess = baseSecurityMetadataDecryptor.getEntityLegacyDelegationAccessLevel(
 				entityGroupId,
 				entity,
@@ -1140,24 +1087,24 @@ class EntityEncryptionServiceImpl(
 		)
 	}
 
-	override suspend fun <T : HasEncryptionMetadata> initializeConfidentialSecretId(
+	override suspend fun <T : HasEncryptionMetadata> forceCreateNewSecretId(
 		entityGroupId: String?,
 		entity: T,
 		entityType: EntityWithEncryptionMetadataTypeName,
 		getUpdatedEntity: suspend (String) -> T,
 		doRequestBulkShareOrUpdate: suspend (request: BulkShareOrUpdateMetadataParams) -> List<EntityBulkShareResult<out T>>
-	): T? {
+	): SecretIdCreationResult<T> {
 		if (entity.rev == null) {
 			throw IllegalArgumentException("Entity must be an existing entity to initialize a confidential secret id")
 		}
-		if (getConfidentialSecretIdsOf(entityGroupId, entity, entityType, null).isNotEmpty()) return null
-		return simpleShareOrUpdateEncryptedEntityMetadata(
+		val newSecretId = cryptoService.strongRandom.randomUUID()
+		val updatedEntity = simpleShareOrUpdateEncryptedEntityMetadata(
 			entityGroupId,
 			entity,
 			entityType,
 			mapOf(EntityReferenceInGroup(userEncryptionKeysManager.delegatorActorId(), null) to SimpleDelegateShareOptionsImpl(
 				shareSecretIds = SecretIdShareOptions.UseExactly(
-					secretIds = setOf(cryptoService.strongRandom.randomUUID()),
+					secretIds = setOf(newSecretId),
 					createUnknownSecretIds = true
 				),
 				shareEncryptionKey = ShareMetadataBehaviour.Never,
@@ -1169,31 +1116,31 @@ class EntityEncryptionServiceImpl(
 			getUpdatedEntity,
 			doRequestBulkShareOrUpdate
 		).updatedEntityOrThrow()
+		return SecretIdCreationResult(updatedEntity = updatedEntity, newSecretId = newSecretId)
 	}
 
-	override suspend fun getConfidentialSecretIdsOf(
+	private suspend fun getSecretIdsSharedWithParentsOf(
 		entityGroupId: String?,
 		entity: HasEncryptionMetadata,
 		entityType: EntityWithEncryptionMetadataTypeName,
-		dataOwnerId: String?
 	): Set<String> {
-		val secretIdsInfo = secretIdsForHcpHierarchyOf(entityGroupId, entity, entityType)
-		val targetDataOwner = dataOwnerId ?: userEncryptionKeysManager.delegatorActorId()
-		val parents = secretIdsInfo.takeWhile { it.ownerId != targetDataOwner }
-		require(parents.size < secretIdsInfo.size) {
-			"Target data owner $targetDataOwner is not in the hierarchy of the logged data owner"
+		val topmostParentsReferences = userEncryptionKeysManager.delegatorActorParentHierarchy().leaves().map {
+			EntityReferenceInGroup(it, null)
 		}
-		val res = secretIdsInfo[parents.size].extracted.toMutableSet()
-		parents.forEach { res -= it.extracted }
-		return res
+		return baseSecurityMetadataDecryptor.decryptAll(
+			entityGroupId,
+			listOf(entity),
+			entityType,
+			dataOwnersForDecryption(null).flattened(),
+			SecurityMetadataType.SecretId,
+		).values.single().groupedByValueToAllDataOwnersWithAccess().mapNotNullTo(mutableSetOf()) { (value, allDataOwnersWithAccess) ->
+			if (topmostParentsReferences.all { it in allDataOwnersWithAccess }) {
+				value
+			} else {
+				null
+			}
+		}
 	}
-
-	override suspend fun getSecretIdsSharedWithParentsOf(
-		entityGroupId: String?,
-		entity: HasEncryptionMetadata,
-		entityType: EntityWithEncryptionMetadataTypeName,
-	): Set<String> =
-		secretIdsForHcpHierarchyOf(entityGroupId, entity, entityType).first().extracted
 
 
 	override suspend fun resolveSecretIdOption(
@@ -1204,44 +1151,21 @@ class EntityEncryptionServiceImpl(
 	): Set<String> =
 		when (secretIdUseOption) {
 			is SecretIdUseOption.Use -> secretIdUseOption.secretIds
-			SecretIdUseOption.UseAnyConfidential -> getConfidentialSecretIdsOf(
-				entityGroupId = entityGroupId,
-				entity = entity,
-				entityType = entityType,
-				dataOwnerId = null
-			).also {
-				require(it.isNotEmpty()) {
-					"No valid secret id found for option $secretIdUseOption"
+			SecretIdUseOption.UseAnySharedWithHierarchy, SecretIdUseOption.UseAllSharedWithHierarchy ->
+				getSecretIdsSharedWithParentsOf(
+					entityGroupId = entityGroupId,
+					entityType = entityType,
+					entity = entity
+				).also {
+					require(it.isNotEmpty()) {
+						"No valid secret id found for option $secretIdUseOption"
+					}
+				}.let {
+					when (secretIdUseOption) {
+						SecretIdUseOption.UseAllSharedWithHierarchy -> it
+						SecretIdUseOption.UseAnySharedWithHierarchy -> setOf(it.first())
+					}
 				}
-			}.let { setOf(it.first()) }
-			SecretIdUseOption.UseAllConfidential -> getConfidentialSecretIdsOf(
-				entityGroupId = entityGroupId,
-				entity = entity,
-				entityType = entityType,
-				dataOwnerId = null
-			).also {
-				require(it.isNotEmpty()) {
-					"No valid secret id found for option $secretIdUseOption"
-				}
-			}
-			SecretIdUseOption.UseAnySharedWithParent -> getSecretIdsSharedWithParentsOf(
-				entityGroupId = entityGroupId,
-				entityType = entityType,
-				entity = entity
-			).also {
-				require(it.isNotEmpty()) {
-					"No valid secret id found for option $secretIdUseOption"
-				}
-			}.let { setOf(it.first()) }
-			SecretIdUseOption.UseAllSharedWithParent -> getSecretIdsSharedWithParentsOf(
-				entityGroupId = entityGroupId,
-				entityType = entityType,
-				entity = entity
-			).also {
-				require(it.isNotEmpty()) {
-					"No valid secret id found for option $secretIdUseOption"
-				}
-			}
 			SecretIdUseOption.UseNone -> emptySet()
 		}
 

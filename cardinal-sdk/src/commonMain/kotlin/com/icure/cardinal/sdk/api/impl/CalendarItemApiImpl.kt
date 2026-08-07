@@ -348,17 +348,22 @@ private class CalendarItemFlavouredApiImpl<E : CalendarItem>(
 	override suspend fun shareWithMany(calendarItem: E, delegates: Map<String, CalendarItemShareOptions>): E =
 		doShareWithMany(groupId = null, calendarItem, delegates.keyAsLocalDataOwnerReferences())
 
-	override suspend fun linkToPatient(calendarItem: CalendarItem, patient: Patient, shareLinkWithDelegates: Set<String>): E {
-		require(calendarItem.secretForeignKeys.isEmpty()) { "Calendar item ${calendarItem.id} is already linked to a patient" }
+	override suspend fun linkToPatient(
+		calendarItem: CalendarItem,
+		patient: Patient,
+		shareLinkWithDelegates: Set<String>,
+		secretIdUseOption: SecretIdUseOption,
+	): E {
+		require(calendarItem.secretForeignKeys.isEmpty()) { "Calendar item ${calendarItem.id} is already fully linked to a patient" }
+
 		val currentDataOwnerId = dataOwnerApi.getCurrentDataOwner().successBody().dataOwner.id
 		val delegates = shareLinkWithDelegates + currentDataOwnerId
-		val secretForeignKeys = config.crypto.entity.getConfidentialSecretIdsOf(
+		val newSecretForeignKeys = config.crypto.entity.resolveSecretIdOption(
 			null,
 			patient,
 			EntityWithEncryptionMetadataTypeName.Patient,
-			currentDataOwnerId
+			secretIdUseOption,
 		)
-		require(secretForeignKeys.isNotEmpty()) { "Could not find any secret id for patient ${patient.id} which is shared with the topmost ancestor of the current data owner" }
 		val shareResult = config.crypto.entity.bulkShareOrUpdateEncryptedEntityMetadata(
 			null,
 			listOf(
@@ -390,7 +395,7 @@ private class CalendarItemFlavouredApiImpl<E : CalendarItem>(
 		return maybeDecrypt(
 			null,
 			rawApi.modifyCalendarItem(
-				calendarItemDto = (shareResult.updatedEntities.first() as EncryptedCalendarItem).copy(secretForeignKeys = secretForeignKeys)
+				calendarItemDto = (shareResult.updatedEntities.first() as EncryptedCalendarItem).copy(secretForeignKeys = newSecretForeignKeys)
 			).successBody()
 		)
 	}
