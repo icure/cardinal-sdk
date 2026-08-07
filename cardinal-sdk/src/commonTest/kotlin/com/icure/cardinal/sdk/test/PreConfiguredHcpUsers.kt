@@ -61,7 +61,7 @@ private suspend fun resolveHcpUser(credentials: UserCredentials): DataOwnerDetai
 		username = credentials.username,
 		password = credentials.password,
 		keypair = loadOrRegisterKeypair(RawHealthcarePartyApiImpl(baseUrl, auth, DefaultRawApiConfig), hcpId),
-		parent = null,
+		parents = emptyList(),
 		groupId = user.groupId ?: testGroupId,
 	)
 }

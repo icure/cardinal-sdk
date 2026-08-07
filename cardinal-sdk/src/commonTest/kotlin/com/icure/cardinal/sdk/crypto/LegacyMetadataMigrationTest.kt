@@ -226,7 +226,7 @@ private suspend fun createTestDataAndApis(job: Job, useFakeKeyForAesExchangeKeyE
 		username = pLogin,
 		password = pPassword,
 		keypair = keyP,
-		parent = null,
+		parents = emptyList(),
 		groupId = testGroupId
 	)
 	val aDataOwnerDetails = DataOwnerDetails(
@@ -234,7 +234,7 @@ private suspend fun createTestDataAndApis(job: Job, useFakeKeyForAesExchangeKeyE
 		username = aLogin,
 		password = aPassword,
 		keypair = keyA,
-		parent = pDataOwnerDetails,
+		parents = listOf(pDataOwnerDetails),
 		groupId = testGroupId
 	)
 	val bDataOwnerDetails = DataOwnerDetails(
@@ -242,7 +242,7 @@ private suspend fun createTestDataAndApis(job: Job, useFakeKeyForAesExchangeKeyE
 		username = bLogin,
 		password = bPassword,
 		keypair = keyB,
-		parent = pDataOwnerDetails,
+		parents = listOf(pDataOwnerDetails),
 		groupId = testGroupId
 	)
 	// X, X2: external hcps, not related to A/B/P.

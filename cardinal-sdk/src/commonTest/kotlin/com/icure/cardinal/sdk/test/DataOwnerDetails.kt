@@ -32,7 +32,7 @@ data class DataOwnerDetails private constructor (
 	val username: String,
 	val password: String,
 	val keypair: RsaKeypair<RsaAlgorithm.RsaEncryptionAlgorithm>?,
-	val parent: DataOwnerDetails?,
+	val parents: List<DataOwnerDetails>,
 	val publicKeySpki: SpkiHexString?,
 	val groupId: String
 ) {
@@ -44,14 +44,14 @@ data class DataOwnerDetails private constructor (
 			username: String,
 			password: String,
 			keypair: RsaKeypair<RsaAlgorithm.RsaEncryptionAlgorithm>?,
-			parent: DataOwnerDetails?,
+			parents: List<DataOwnerDetails>,
 			groupId: String
 		) = DataOwnerDetails(
 			dataOwnerId = dataOwnerId,
 			username = username,
 			password = password,
 			keypair = keypair,
-			parent = parent,
+			parents = parents,
 			publicKeySpki = keypair?.let {SpkiHexString( defaultCryptoService.rsa.exportPublicKeySpki(it.public).toHexString())},
 			groupId = groupId
 		)
@@ -103,17 +103,19 @@ data class DataOwnerDetails private constructor (
 		cryptoStrategies: CryptoStrategies = BasicCryptoStrategies
 	): CardinalSdk =
 		initApi(baseJob, cryptoStrategies) { storage ->
-			var currParent = this.parent
-			while (currParent != null) {
-				currParent.keypair?.also {
-					storage.saveEncryptionKeypair(
-						currParent.dataOwnerId,
-						it,
-						true
-					)
+			suspend fun saveAncestorKeysOf(details: DataOwnerDetails) {
+				details.parents.forEach { ancestor ->
+					ancestor.keypair?.also {
+						storage.saveEncryptionKeypair(
+							ancestor.dataOwnerId,
+							it,
+							true
+						)
+					}
+					saveAncestorKeysOf(ancestor)
 				}
-				currParent = currParent.parent
 			}
+			saveAncestorKeysOf(this)
 		}
 
 	/**
@@ -205,8 +207,12 @@ data class DataOwnerDetails private constructor (
 				true
 			)
 		}
-		parent?.addInitialKeysToStorage(storage)
+		parents.forEach { it.addInitialKeysToStorage(storage) }
 	}
 
-	fun hierarchy(): List<String> = parent?.hierarchy().orEmpty() + dataOwnerId
+	/**
+	 * All ancestor ids of this data owner (following every parent branch) plus this data owner's own id,
+	 * deduplicated.
+	 */
+	fun hierarchy(): List<String> = (parents.flatMap { it.hierarchy() } + dataOwnerId).distinct()
 }

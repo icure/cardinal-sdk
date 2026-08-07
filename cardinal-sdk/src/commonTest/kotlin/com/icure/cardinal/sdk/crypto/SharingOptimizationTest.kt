@@ -343,7 +343,7 @@ class SharingOptimizationTest : StringSpec({
 		aToPAfter.encryptionKeys shouldHaveSize 1
 	}
 
-	"sharing the union of an already-known secret id and a newly added confidential one results in exactly both, without duplicating the already-known one".config(enabled = DEFAULT_ENABLED && LOCAL_ENV_ONLY) {
+	"sharing the union of an already-known secret id and a newly added one results in exactly both, without duplicating the already-known one".config(enabled = DEFAULT_ENABLED && LOCAL_ENV_ONLY) {
 		val p = createHcpUser()
 		val a = createHcpUser(p)
 		val aApi = a.api(specJob)
@@ -359,18 +359,17 @@ class SharingOptimizationTest : StringSpec({
 		)
 		sharedWithP.securityMetadata.shouldNotBeNull().secureDelegations.values.single { it.delegate == p.dataOwnerId }.secretIds shouldHaveSize 1
 
-		// A initializes a new confidential secret id (never shared with P), then decides to share both the
-		// original and the confidential secret id with P in a single call.
-		val withConfidential = aApi.patient.initializeConfidentialSecretId(sharedWithP)
-		val confidentialSecretId = aApi.patient.getConfidentialSecretIdsOf(withConfidential).single()
-		val allSecretIds = setOf(originalSecretId, confidentialSecretId)
+		// A creates a new secret id (never shared with P), then decides to share both the original and the
+		// new secret id with P in a single call.
+		val (withNewSecretId, newSecretId) = aApi.patient.createNewSecretId(sharedWithP)
+		val allSecretIds = setOf(originalSecretId, newSecretId)
 
 		val resharedWithBoth = aApi.patient.shareWith(
 			p.dataOwnerId,
-			withConfidential,
+			withNewSecretId,
 			PatientShareOptions(shareSecretIds = SecretIdShareOptions.UseExactly(allSecretIds, false))
 		)
-		resharedWithBoth.rev shouldNotBe withConfidential.rev
+		resharedWithBoth.rev shouldNotBe withNewSecretId.rev
 		val aToPAfter = resharedWithBoth.securityMetadata.shouldNotBeNull().secureDelegations.values.single { it.delegate == p.dataOwnerId }
 		aToPAfter.secretIds shouldHaveSize 2
 		aApi.patient.getSecretIdsOf(resharedWithBoth).keys shouldBe allSecretIds
