@@ -445,9 +445,9 @@ internal class BaseSecurityMetadataDecryptorImpl(
 		}
 	}
 
-	override fun hasAnyEncryptionKeys(entity: HasEncryptionMetadata): Boolean =
-		entity.securityMetadata?.secureDelegations?.values?.any { it.encryptionKeys.isNotEmpty() } == true
-			|| entity.encryptionKeys.any { it.value.isNotEmpty() }
+	override fun hasAnyValueOfType(entity: HasEncryptionMetadata, metadataType: SecurityMetadataType<*>): Boolean =
+		entity.securityMetadata?.secureDelegations?.values?.any { metadataType.hasValueIn(it) } == true
+			|| metadataType.extractLegacyDelegations(entity).any { it.value.isNotEmpty() }
 
 	private fun selfHierarchyIdsAsReferenceStrings(
 		dataOwnerHierarchyIds: Set<String>,

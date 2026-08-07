@@ -1054,7 +1054,7 @@ class EntityEncryptionServiceImpl(
 		entity: T,
 		entityType: EntityWithEncryptionMetadataTypeName
 	): T? {
-		if (baseSecurityMetadataDecryptor.hasAnyEncryptionKeys(entity)) {
+		if (baseSecurityMetadataDecryptor.hasAnyValueOfType(entity, SecurityMetadataType.EncryptionKey)) {
 			return null
 		}
 		require(entity.rev != null) {

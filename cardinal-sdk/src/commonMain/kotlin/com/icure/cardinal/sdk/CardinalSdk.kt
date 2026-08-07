@@ -734,6 +734,7 @@ internal class CardinalSdkImpl(
 		initCalendarItemApi(
 			rawCalendarItemApi,
 			rawDataOwnerApi,
+			rawPatientApi,
 			config
 		)
 	}

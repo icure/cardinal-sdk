@@ -12,6 +12,7 @@ import com.icure.cardinal.sdk.api.CalendarItemFlavouredInGroupApi
 import com.icure.cardinal.sdk.api.CalendarItemInGroupApi
 import com.icure.cardinal.sdk.api.raw.RawCalendarItemApi
 import com.icure.cardinal.sdk.api.raw.RawDataOwnerApi
+import com.icure.cardinal.sdk.api.raw.RawPatientApi
 import com.icure.cardinal.sdk.api.raw.successBodyOrNull404
 import com.icure.cardinal.sdk.api.raw.successBodyOrThrowRevisionConflict
 import com.icure.cardinal.sdk.crypto.entities.CalendarItemDelegateOptions
@@ -21,8 +22,10 @@ import com.icure.cardinal.sdk.crypto.entities.DelegateShareOptions
 import com.icure.cardinal.sdk.crypto.entities.EntityWithEncryptionMetadataTypeName
 import com.icure.cardinal.sdk.crypto.entities.OwningEntityDetails
 import com.icure.cardinal.sdk.crypto.entities.SecretIdUseOption
+import com.icure.cardinal.sdk.crypto.entities.SecurityMetadataType
 import com.icure.cardinal.sdk.exceptions.MissingAvailabilityException
 import com.icure.cardinal.sdk.exceptions.NotFoundException
+import com.icure.cardinal.sdk.exceptions.RevisionConflictException
 import com.icure.cardinal.sdk.filters.BaseFilterOptions
 import com.icure.cardinal.sdk.filters.BaseSortableFilterOptions
 import com.icure.cardinal.sdk.filters.FilterOptions
@@ -333,7 +336,8 @@ private class CalendarItemFlavouredApiImpl<E : CalendarItem>(
 	rawApi: RawCalendarItemApi,
 	config: ApiConfiguration,
 	flavour: FlavouredApi<EncryptedCalendarItem, E>,
-	private val dataOwnerApi: RawDataOwnerApi
+	private val dataOwnerApi: RawDataOwnerApi,
+	private val rawPatientApi: RawPatientApi
 ) : AbstractCalendarItemFlavouredApi<E>(rawApi, config, flavour),
 	CalendarItemBasicFlavouredApi<E> by CalendarItemBasicFlavouredApiImpl(rawApi, config, flavour),
 	CalendarItemFlavouredApi<E> {
@@ -348,6 +352,28 @@ private class CalendarItemFlavouredApiImpl<E : CalendarItem>(
 	override suspend fun shareWithMany(calendarItem: E, delegates: Map<String, CalendarItemShareOptions>): E =
 		doShareWithMany(groupId = null, calendarItem, delegates.keyAsLocalDataOwnerReferences())
 
+	/**
+	 * Explores the merge graph reachable from [startPatient] (following [Patient.mergeToPatientId] and
+	 * [Patient.mergedIds] in both directions, transitively) breadth-first, level by level, retrieving all
+	 * patients of a level in a single bulk request, until a patient id in [targetPatientIds] is found or the
+	 * graph is exhausted. [RawPatientApi.getPatients] already ignores ids that don't correspond to an entity,
+	 * correspond to an entity that is not a patient, or correspond to an entity the current data owner can't read.
+	 */
+	private suspend fun isPatientConnectedByMerge(startPatient: Patient, targetPatientIds: Set<String>): Boolean {
+		if (startPatient.id in targetPatientIds) return true
+		val visited = mutableSetOf(startPatient.id)
+		var frontier = (setOfNotNull(startPatient.mergeToPatientId) + startPatient.mergedIds) - visited
+		while (frontier.isNotEmpty()) {
+			if (frontier.any { it in targetPatientIds }) return true
+			visited += frontier
+			val frontierPatients = rawPatientApi.getPatients(patientIds = ListOfIds(frontier.toList())).successBody()
+			frontier = frontierPatients.flatMapTo(mutableSetOf()) {
+				setOfNotNull(it.mergeToPatientId) + it.mergedIds
+			} - visited
+		}
+		return false
+	}
+
 	override suspend fun linkToPatient(
 		calendarItem: CalendarItem,
 		patient: Patient,
@@ -355,6 +381,34 @@ private class CalendarItemFlavouredApiImpl<E : CalendarItem>(
 		secretIdUseOption: SecretIdUseOption,
 	): E {
 		require(calendarItem.secretForeignKeys.isEmpty()) { "Calendar item ${calendarItem.id} is already fully linked to a patient" }
+
+		val decryptedOwningEntityIds = config.crypto.entity.owningEntityIdsOf(
+			null,
+			calendarItem,
+			EntityWithEncryptionMetadataTypeName.CalendarItem,
+			null
+		)
+		val calendarItemHasAnyOwningEntityId = config.crypto.securityMetadataDecryptor.hasAnyValueOfType(
+			calendarItem,
+			SecurityMetadataType.OwningEntityId
+		)
+		require(decryptedOwningEntityIds.isNotEmpty() || !calendarItemHasAnyOwningEntityId) {
+			"Calendar item ${calendarItem.id} is partially linked to a patient, but the current data owner can't decrypt any of its owning entity ids"
+		}
+		val owningEntityIdsToShare = if (decryptedOwningEntityIds.isEmpty()) {
+			// Fully unlinked calendar item: any patient can be used to establish the link.
+			setOf(patient.id)
+		} else {
+			// Partially linked calendar item: the provided patient must match the existing link, directly or
+			// through a chain of merges, and the already established owning entity ids are reused as-is.
+			require(isPatientConnectedByMerge(patient, decryptedOwningEntityIds)) {
+				"Patient ${patient.id} does not match, directly or through a chain of merges, any of the owning entity ids of " +
+					"calendar item ${calendarItem.id} that the current data owner can decrypt ($decryptedOwningEntityIds). Note that if the " +
+					"calendar item has other owning entity ids that the current data owner can't decrypt this method can't verify if patient " +
+					"${patient.id} matches one of those instead."
+			}
+			decryptedOwningEntityIds
+		}
 
 		val currentDataOwnerId = dataOwnerApi.getCurrentDataOwner().successBody().dataOwner.id
 		val delegates = shareLinkWithDelegates + currentDataOwnerId
@@ -364,6 +418,10 @@ private class CalendarItemFlavouredApiImpl<E : CalendarItem>(
 			EntityWithEncryptionMetadataTypeName.Patient,
 			secretIdUseOption,
 		)
+		require(decryptedOwningEntityIds.isEmpty() || newSecretForeignKeys.isNotEmpty()) {
+			"Calendar item ${calendarItem.id} is already partially linked to a patient: completing the link requires a " +
+				"secretIdUseOption that resolves to at least one secret id of patient ${patient.id}."
+		}
 		val shareResult = config.crypto.entity.bulkShareOrUpdateEncryptedEntityMetadata(
 			null,
 			listOf(
@@ -373,7 +431,7 @@ private class CalendarItemFlavouredApiImpl<E : CalendarItem>(
 						DelegateShareOptions(
 							shareSecretIds = emptySet(),
 							shareEncryptionKeys = emptySet(),
-							shareOwningEntityIds = setOf(patient.id),
+							shareOwningEntityIds = owningEntityIdsToShare,
 							requestedPermissions = RequestedPermission.FullRead
 						)
 					}.keyAsLocalDataOwnerReferences()
@@ -384,18 +442,26 @@ private class CalendarItemFlavouredApiImpl<E : CalendarItem>(
 			{ rawApi.getCalendarItem(calendarItemId = it).successBody() },
 			{ rawApi.bulkShare(request = it).successBody() }
 		)
-		if(shareResult.updatedEntities.isEmpty() || shareResult.updatedEntities.first().id != calendarItem.id) {
-			val errorsForEntity = shareResult.updateErrors.filter { it.entityId == calendarItem.id }
-			if (errorsForEntity.isEmpty() || errorsForEntity.none { it.code == 409 }) {
-				throw IllegalStateException("Unexpected error while linking calendar item ${calendarItem.id}")
-			} else {
-				throw IllegalStateException("Outdated calendar item revision ${calendarItem.id}-${calendarItem.rev}")
+		val updatedEncryptedCalendarItem = when {
+			shareResult.updatedEntities.firstOrNull()?.id == calendarItem.id ->
+				shareResult.updatedEntities.first() as EncryptedCalendarItem
+			// Already fully shared with all the requested delegates (can happen when completing a partial
+			// link): nothing to update crypto-wise, just get the up-to-date revision to modify.
+			shareResult.unmodifiedEntitiesIds.contains(calendarItem.id) ->
+				rawApi.getCalendarItem(calendarItemId = calendarItem.id).successBody()
+			else -> {
+				val errorsForEntity = shareResult.updateErrors.filter { it.entityId == calendarItem.id }
+				if (errorsForEntity.isEmpty() || errorsForEntity.none { it.code == 409 }) {
+					throw IllegalStateException("Unexpected error while linking calendar item ${calendarItem.id}")
+				} else {
+					throw RevisionConflictException()
+				}
 			}
 		}
 		return maybeDecrypt(
 			null,
 			rawApi.modifyCalendarItem(
-				calendarItemDto = (shareResult.updatedEntities.first() as EncryptedCalendarItem).copy(secretForeignKeys = newSecretForeignKeys)
+				calendarItemDto = updatedEncryptedCalendarItem.copy(secretForeignKeys = newSecretForeignKeys)
 			).successBody()
 		)
 	}
@@ -528,6 +594,7 @@ private class CalendarItemBasicFlavourlessInGroupApiImpl(rawApi: RawCalendarItem
 internal fun initCalendarItemApi(
 	rawApi: RawCalendarItemApi,
 	rawDataOwnerApi: RawDataOwnerApi,
+	rawPatientApi: RawPatientApi,
 	config: ApiConfiguration
 ): CalendarItemApi {
 	val decryptedFlavour = decryptedApiFlavour(config)
@@ -537,6 +604,7 @@ internal fun initCalendarItemApi(
 		rawApi,
 		config,
 		rawDataOwnerApi,
+		rawPatientApi,
 		encryptedFlavour,
 		decryptedFlavour,
 		tryAndRecoverFlavour
@@ -548,17 +616,18 @@ private class CalendarItemApiImpl(
 	private val rawApi: RawCalendarItemApi,
 	private val config: ApiConfiguration,
 	private val rawDataOwnerApi: RawDataOwnerApi,
+	private val rawPatientApi: RawPatientApi,
 	private val encryptedFlavour: FlavouredApi<EncryptedCalendarItem, EncryptedCalendarItem>,
 	private val decryptedFlavour: FlavouredApi<EncryptedCalendarItem, DecryptedCalendarItem>,
 	private val tryAndRecoverFlavour: FlavouredApi<EncryptedCalendarItem, CalendarItem>
 ) : CalendarItemApi,
 	CalendarItemBasicFlavourlessApi by CalendarItemBasicFlavourlessApiImpl(rawApi),
-	CalendarItemFlavouredApi<DecryptedCalendarItem> by CalendarItemFlavouredApiImpl(rawApi, config, decryptedFlavour, rawDataOwnerApi) {
+	CalendarItemFlavouredApi<DecryptedCalendarItem> by CalendarItemFlavouredApiImpl(rawApi, config, decryptedFlavour, rawDataOwnerApi, rawPatientApi) {
 	override val encrypted: CalendarItemFlavouredApi<EncryptedCalendarItem> =
-		CalendarItemFlavouredApiImpl(rawApi, config, encryptedFlavour, rawDataOwnerApi)
+		CalendarItemFlavouredApiImpl(rawApi, config, encryptedFlavour, rawDataOwnerApi, rawPatientApi)
 
 	override val tryAndRecover: CalendarItemFlavouredApi<CalendarItem> =
-		CalendarItemFlavouredApiImpl(rawApi, config, tryAndRecoverFlavour, rawDataOwnerApi)
+		CalendarItemFlavouredApiImpl(rawApi, config, tryAndRecoverFlavour, rawDataOwnerApi, rawPatientApi)
 
 	override val inGroup: CalendarItemInGroupApi = object : CalendarItemInGroupApi,
 		CalendarItemBasicFlavourlessInGroupApi by CalendarItemBasicFlavourlessInGroupApiImpl(rawApi),

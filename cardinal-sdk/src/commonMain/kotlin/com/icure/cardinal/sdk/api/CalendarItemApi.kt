@@ -366,7 +366,7 @@ interface CalendarItemFlavouredApi<E : CalendarItem> : CalendarItemBasicFlavoure
 	 *
 	 * In case of partially linked calendar items the provided [patient] must match the partial link: the [patient] id
 	 * must match one of the [calendarItem] owning entity ids, or must be merged with one of the listed patients ids
-	 * (into or from).
+	 * (into or from). The existing owning entity ids are reused as-is: this method never overwrites or adds to them.
 	 *
 	 * Note that if the SDK detects that there are owning entity ids in the [calendarItem] but it is unable to decrypt
 	 * any of them the method will fail.
@@ -374,7 +374,9 @@ interface CalendarItemFlavouredApi<E : CalendarItem> : CalendarItemBasicFlavoure
 	 * @param calendarItem a calendar item.
 	 * @param patient the patient which will be linked to the calendar item.
 	 * @param shareLinkWithDelegates data owners other than the current data owner which will also be able to decrypt the id of the newly linked
-	 * patient. If any of these data owners do not already have access to the calendar item, they will be granted read access (no write).
+	 * patient. If any of these data owners do not already have access to the calendar item, they will be granted read access (no write). If the
+	 * calendar item was already partially linked and its owning entity id was not yet shared with some of these data owners (or with the current
+	 * data owner) this method will also take care of sharing the existing owning entity id with them.
 	 * @param secretIdUseOption which secret ids of patient should be used when linking.
 	 * @return the updated calendar item.
 	 */
@@ -382,7 +384,7 @@ interface CalendarItemFlavouredApi<E : CalendarItem> : CalendarItemBasicFlavoure
 		calendarItem: CalendarItem,
 		patient: Patient,
 		shareLinkWithDelegates: Set<String>,
-		secretIdUseOption: SecretIdUseOption = SecretIdUseOption.UseAnySharedWithHierarchy,
+		secretIdUseOption: SecretIdUseOption,
 	): E
 
 	/**
