@@ -6,6 +6,7 @@ import com.icure.cardinal.sdk.model.base.CodeStub
 import com.icure.cardinal.sdk.model.base.CryptoActor
 import com.icure.cardinal.sdk.model.base.DataOwner
 import com.icure.cardinal.sdk.model.base.DataOwnerGroupLink
+import com.icure.cardinal.sdk.model.base.DataOwnerGroupLinkType
 import com.icure.cardinal.sdk.model.base.HasCodes
 import com.icure.cardinal.sdk.model.base.HasIdentifier
 import com.icure.cardinal.sdk.model.base.HasTags
@@ -144,6 +145,7 @@ data class HealthcareParty(
 	 */
 	@param:DefaultValue("emptyList()")
 	override val dataOwnerGroups: List<DataOwnerGroupLink> = emptyList(),
+	override val groupLinkType: DataOwnerGroupLinkType? = null,
 	/**
 	 * Social security inscription number.
 	 */

@@ -158,5 +158,4 @@ data class DataOwnerHierarchyInfo(
 	}
 
 	// endregion
-
 }

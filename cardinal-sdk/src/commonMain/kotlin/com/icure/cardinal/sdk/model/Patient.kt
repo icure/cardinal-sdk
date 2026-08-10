@@ -412,6 +412,8 @@ sealed interface Patient :
 	 * The links to the data owners representing the groups this patient belongs to.
 	 */
 	override val dataOwnerGroups: List<Nothing>
+
+	override val groupLinkType: Nothing?
 	// region Patient-Patient
 	companion object {
 		const val KRAKEN_QUALIFIED_NAME = "org.taktik.icure.entities.Patient"
@@ -727,6 +729,7 @@ data class DecryptedPatient(
 	 */
 	@param:DefaultValue("emptyList()")
 	override val dataOwnerGroups: List<Nothing> = emptyList(),
+	override val groupLinkType: Nothing? = null,
 ) : Patient {
 	// region Patient-DecryptedPatient
 override fun copyWithSecurityMetadata(securityMetadata: SecurityMetadata, secretForeignKeys: Set<String>): DecryptedPatient =
@@ -1042,6 +1045,7 @@ data class EncryptedPatient(
 	 */
 	@param:DefaultValue("emptyList()")
 	override val dataOwnerGroups: List<Nothing> = emptyList(),
+	override val groupLinkType: Nothing? = null,
 ) : Patient {
 	// region Patient-EncryptedPatient
 override fun copyWithSecurityMetadata(securityMetadata: SecurityMetadata, secretForeignKeys: Set<String>): EncryptedPatient =

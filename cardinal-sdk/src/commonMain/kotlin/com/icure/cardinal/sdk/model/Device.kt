@@ -6,6 +6,7 @@ import com.icure.cardinal.sdk.model.base.CodeStub
 import com.icure.cardinal.sdk.model.base.CryptoActor
 import com.icure.cardinal.sdk.model.base.DataOwner
 import com.icure.cardinal.sdk.model.base.DataOwnerGroupLink
+import com.icure.cardinal.sdk.model.base.DataOwnerGroupLinkType
 import com.icure.cardinal.sdk.model.base.HasMedicalLocation
 import com.icure.cardinal.sdk.model.base.ICureDocument
 import com.icure.cardinal.sdk.model.base.Identifier
@@ -101,6 +102,7 @@ data class Device(
 	 */
 	@param:DefaultValue("emptyList()")
 	override val dataOwnerGroups: List<DataOwnerGroupLink> = emptyList(),
+	override val groupLinkType: DataOwnerGroupLinkType? = null,
 	/**
 	 * Typed properties related to the device (e.g., version, specific device information).
 	 */
