@@ -70,11 +70,16 @@ fun testConfigProperty(constantName: String): Provider<String> =
 	}
 
 /**
- * When this is `local` the tests run against the docker environment started by
- * `initializeTestEnvironment`; with any other value that task is skipped and the tests are expected
- * to run against an already existing environment (configured through the other env vars).
+ * When this is `local` or `canary` the tests run against the docker environment started by
+ * `initializeTestEnvironment`; with any other value (i.e. `ci`) that task is skipped and the tests
+ * are expected to run against an already existing environment (configured through the other env vars).
+ *
+ * `canary` behaves exactly like `local` as far as the test environment setup is concerned (docker
+ * environment, group/hcp/patient creation, ...): the only difference is that some tests can opt out
+ * of running in this mode, through [com.icure.cardinal.sdk.utils.SKIP_IN_CANARY], without affecting
+ * the tests that set up the shared environment.
  */
-val localTestMode = testConfigProperty("TEST_MODE").map { it == "local" }
+val localTestMode = testConfigProperty("TEST_MODE").map { it == "local" || it == "canary" }
 
 val generateTestConfig by tasks.registering {
 	group = "verification"
@@ -204,7 +209,7 @@ publishing {
 
 tasks.register<InitializeTestEnvironment>("initializeTestEnvironment") {
 	// The local docker environment is only started when the tests actually run against it.
-	onlyIf("TEST_MODE is \"local\"") { localTestMode.get() }
+	onlyIf("TEST_MODE is \"local\" or \"canary\"") { localTestMode.get() }
 }
 
 tasks.named("allTests") {

@@ -8,6 +8,7 @@ import com.icure.cardinal.sdk.test.initializeTestEnvironment
 import com.icure.cardinal.sdk.test.internal
 import com.icure.cardinal.sdk.utils.DEFAULT_ENABLED
 import com.icure.cardinal.sdk.utils.LOCAL_ENV_ONLY
+import com.icure.cardinal.sdk.utils.SKIP_IN_CANARY
 import com.icure.utils.InternalIcureApi
 import io.kotest.core.spec.style.StringSpec
 import io.kotest.matchers.shouldBe
@@ -51,7 +52,7 @@ class ExchangeDataManagerTest : StringSpec({
 		createdPatient.exchangeData.id shouldBe retrievedPatient.exchangeData.id
 	}
 
-	"Detailed tests like in typescript SDK".config(enabled = DEFAULT_ENABLED && LOCAL_ENV_ONLY) {
+	"Detailed tests like in typescript SDK".config(enabled = DEFAULT_ENABLED && LOCAL_ENV_ONLY && SKIP_IN_CANARY) {
 		TODO()
 	}
 })
