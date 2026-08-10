@@ -22,6 +22,7 @@ import com.icure.cardinal.sdk.test.testGroupAdminAuth
 import com.icure.cardinal.sdk.test.testGroupId
 import com.icure.cardinal.sdk.utils.DEFAULT_ENABLED
 import com.icure.cardinal.sdk.utils.LOCAL_ENV_ONLY
+import com.icure.cardinal.sdk.utils.SKIP_IN_CANARY
 import com.icure.cardinal.sdk.utils.Serialization
 import com.icure.kryptom.crypto.RsaAlgorithm
 import com.icure.kryptom.crypto.defaultCryptoService
