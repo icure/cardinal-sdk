@@ -4,7 +4,6 @@ import com.icure.cardinal.sdk.crypto.entities.EntityAccessInformation
 import com.icure.cardinal.sdk.crypto.entities.EntityWithTypeInfo
 import com.icure.cardinal.sdk.crypto.entities.PatientDelegateOptions
 import com.icure.cardinal.sdk.crypto.entities.PatientShareOptions
-import com.icure.cardinal.sdk.crypto.entities.ShareAllPatientDataOptions
 import com.icure.cardinal.sdk.exceptions.RevisionConflictException
 import com.icure.cardinal.sdk.filters.BaseFilterOptions
 import com.icure.cardinal.sdk.filters.BaseSortableFilterOptions
@@ -652,18 +651,6 @@ interface PatientApi : PatientBasicFlavourlessApi, PatientFlavouredApi<Decrypted
 	 * @param delegates a set of data owner ids
 	 */
 	suspend fun createDelegationDeAnonymizationMetadata(entity: Patient, delegates: Set<String>)
-
-	/**
-	 * Share a patient and all data associated to that patient that the current user can access with other data owners.
-	 * @param patientId the id of the patient id to share
-	 * @param delegatesWithShareType the data owners which will gain access to the patient data, and the type of data
-	 * they should actually get access to.
-	 * @return details on the result of the operation
-	 */
-	suspend fun shareAllDataOfPatient(
-		patientId: String,
-		delegatesWithShareType: Map<String, Set<ShareAllPatientDataOptions.Tag>>
-	): ShareAllPatientDataOptions.Result
 
 	/**
 	 * Initializes the exchange data towards a newly invited patient. This allows the doctor to share data with the

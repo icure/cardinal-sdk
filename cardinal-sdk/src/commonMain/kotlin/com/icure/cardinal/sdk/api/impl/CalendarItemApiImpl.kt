@@ -15,14 +15,18 @@ import com.icure.cardinal.sdk.api.raw.RawDataOwnerApi
 import com.icure.cardinal.sdk.api.raw.RawPatientApi
 import com.icure.cardinal.sdk.api.raw.successBodyOrNull404
 import com.icure.cardinal.sdk.api.raw.successBodyOrThrowRevisionConflict
+import com.icure.cardinal.sdk.crypto.entities.BulkShareByIdsResult
 import com.icure.cardinal.sdk.crypto.entities.CalendarItemDelegateOptions
 import com.icure.cardinal.sdk.crypto.entities.CalendarItemShareOptions
 import com.icure.cardinal.sdk.crypto.entities.DelegateOptions
 import com.icure.cardinal.sdk.crypto.entities.DelegateShareOptions
 import com.icure.cardinal.sdk.crypto.entities.EntityWithEncryptionMetadataTypeName
+import com.icure.cardinal.sdk.crypto.entities.FailedRequestDetails
 import com.icure.cardinal.sdk.crypto.entities.OwningEntityDetails
 import com.icure.cardinal.sdk.crypto.entities.SecretIdUseOption
 import com.icure.cardinal.sdk.crypto.entities.SecurityMetadataType
+import com.icure.cardinal.sdk.crypto.entities.asIcureStub
+import com.icure.cardinal.sdk.crypto.entities.toBulkShareByIdsResult
 import com.icure.cardinal.sdk.exceptions.MissingAvailabilityException
 import com.icure.cardinal.sdk.exceptions.NotFoundException
 import com.icure.cardinal.sdk.exceptions.RevisionConflictException
@@ -459,7 +463,7 @@ private class CalendarItemFlavouredApiImpl<E : CalendarItem>(
 				calendarItem
 			else -> {
 				val errorsForEntity = shareResult.updateErrors.filter { it.entityId == calendarItem.id }
-				if (errorsForEntity.isEmpty() || errorsForEntity.none { it.code == 409 }) {
+				if (errorsForEntity.isEmpty() || errorsForEntity.none { it is FailedRequestDetails.RequestRejected && it.code == 409 }) {
 					throw IllegalStateException("Unexpected error while linking calendar item ${calendarItem.id}")
 				} else {
 					throw RevisionConflictException()
@@ -949,6 +953,26 @@ private class CalendarItemApiImpl(
 		filter: SortableFilterOptions<CalendarItem>
 	): List<String> =
 		doMatchCalendarItemsBy(groupId, filter)
+
+	override suspend fun shareCalendarItemsByIds(
+		calendarItemIds: List<String>,
+		delegates: Map<String, CalendarItemShareOptions>
+	): BulkShareByIdsResult {
+		val distinctIds = calendarItemIds.toSet()
+		if (distinctIds.isEmpty() || delegates.isEmpty()) {
+			return BulkShareByIdsResult(emptySet(), emptyMap(), emptyMap(), emptyList())
+		}
+		val stubs = rawApi.findCalendarItemsDelegationsStubsByIds(calendarItemIds = ListOfIds(distinctIds.toList())).successBody()
+		val result = config.crypto.entity.simpleBulkShareOrUpdateEncryptedEntityMetadataNoEntities(
+			entities = stubs,
+			entitiesType = EntityWithEncryptionMetadataTypeName.CalendarItem,
+			delegates = delegates,
+			autoRetry = true,
+			getUpdatedEntity = { rawApi.getCalendarItem(calendarItemId = it).successBody().asIcureStub() },
+			doRequestBulkShareOrUpdate = { params -> rawApi.bulkShareMinimal(request = params).successBody() }
+		)
+		return result.toBulkShareByIdsResult(distinctIds, stubs.mapTo(mutableSetOf()) { it.id }, delegates.keys)
+	}
 
 	override suspend fun getCalendarItemsOccupancyByPeriodForHealthcareParty(
 		startDate: Long,

@@ -217,6 +217,48 @@ interface EntityEncryptionService : EntityValidationService {
 		getUpdatedEntity: suspend (String) -> T,
 		doRequestBulkShareOrUpdate: suspend (request: BulkShareOrUpdateMetadataParams) -> List<EntityBulkShareResult<out T>>
 	): SimpleShareResult<T>
+
+	/**
+	 * Batch version of [simpleShareOrUpdateEncryptedEntityMetadata] for many already-existing entities of the same
+	 * type at once, applying the exact same [delegates] share options to every entity in [entities]. Like
+	 * [bulkShareOrUpdateEncryptedEntityMetadataNoEntities] this never needs (and never returns) full decrypted
+	 * entities: [entities] can be lightweight stubs (e.g. [com.icure.cardinal.sdk.model.IcureStub]) containing only
+	 * encryption metadata, which is what makes it suitable for large batches without paying the cost of transferring
+	 * or decrypting the full content of each entity.
+	 *
+	 * Unlike calling [simpleShareOrUpdateEncryptedEntityMetadata] once per entity, this decrypts the security
+	 * metadata (secret ids, encryption keys, owning entity ids) of all [entities] with a single batched call per
+	 * metadata type, instead of one call per entity, which is significantly more efficient whenever decrypting that
+	 * metadata requires exchange data lookups.
+	 *
+	 * If a share option can't be satisfied for a specific (entity, delegate) pair (for example
+	 * [com.icure.cardinal.sdk.crypto.entities.ShareMetadataBehaviour.Required] but nothing is available to share, or
+	 * an unsatisfiable [com.icure.cardinal.sdk.crypto.entities.SecretIdShareOptions]) that pair is reported as a
+	 * [com.icure.cardinal.sdk.crypto.entities.FailedRequestDetails.ResolutionFailed] entry in the returned
+	 * [MinimalBulkShareResult.updateErrors], but sharing proceeds normally for every other entity and delegate in the
+	 * batch. This method never throws for this reason.
+	 *
+	 * @param entities entities (or lightweight stubs of entities) to share, all of the same [entitiesType]. Duplicate
+	 * ids are not allowed.
+	 * @param entitiesType type of the entities in [entities].
+	 * @param delegates the delegate ids that will gain access to every entity in [entities], and the sharing options
+	 * to use for each of them. The same options are applied identically to every entity in the batch.
+	 * @param autoRetry automatically retry, for the entities whose share failed with a retriable error, one
+	 * additional time using an up-to-date version of the entity (see [getUpdatedEntity]).
+	 * @param getUpdatedEntity retrieves the latest version of the entity with the given id. Used only if [autoRetry]
+	 * is true.
+	 * @param doRequestBulkShareOrUpdate perform the request to share or update the entities' encrypted metadata on
+	 * the cloud API (and save to DB).
+	 * @throws IllegalArgumentException if there are duplicate ids in [entities].
+	 */
+	suspend fun simpleBulkShareOrUpdateEncryptedEntityMetadataNoEntities(
+		entities: List<HasEncryptionMetadata>,
+		entitiesType: EntityWithEncryptionMetadataTypeName,
+		delegates: Map<String, SimpleDelegateShareOptions>,
+		autoRetry: Boolean,
+		getUpdatedEntity: suspend (String) -> HasEncryptionMetadata,
+		doRequestBulkShareOrUpdate: suspend (request: BulkShareOrUpdateMetadataParams) -> List<EntityBulkShareResult<Nothing>>
+	): MinimalBulkShareResult
 	// endregion
 
 	// region content encryption and decryption

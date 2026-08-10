@@ -775,13 +775,6 @@ internal class CardinalSdkImpl(
 	override val patient: PatientApi by lazy {
 		initPatientApi(
 			rawPatientApi,
-			rawHealthcarePartyApi,
-			rawHealthElementApi,
-			rawFormApi,
-			rawContactApi,
-			rawInvoiceApi,
-			rawCalendarItemApi,
-			rawClassificationApi,
 			config
 		)
 	}

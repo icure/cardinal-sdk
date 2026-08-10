@@ -1,5 +1,6 @@
 package com.icure.cardinal.sdk.api
 
+import com.icure.cardinal.sdk.crypto.entities.BulkShareByIdsResult
 import com.icure.cardinal.sdk.crypto.entities.CalendarItemDelegateOptions
 import com.icure.cardinal.sdk.crypto.entities.CalendarItemShareOptions
 import com.icure.cardinal.sdk.crypto.entities.SecretIdUseOption
@@ -690,6 +691,30 @@ interface CalendarItemApi : CalendarItemBasicFlavourlessApi, CalendarItemFlavour
 		agendaId: String,
 		extensionInDays: Int? = null,
 	): List<CalendarItemOccupancy>
+
+	/**
+	 * Share many already-existing calendar items with one or more delegates at once, retrieving them by id instead
+	 * of requiring the caller to have them already loaded. This is more efficient than calling [shareWithMany] once
+	 * per calendar item when you already know the ids of many calendar items to share and don't otherwise need their
+	 * decrypted content, since only lightweight metadata (not the full content of each calendar item) is ever
+	 * retrieved, and no content flows back from the share request itself.
+	 *
+	 * The same [delegates] options are applied identically to every found calendar item. Unlike [shareWithMany], if
+	 * the share fails for some (calendar item, delegate) pairs this method reports the failure for those specific
+	 * pairs in the returned result instead of throwing, so sharing proceeds normally for every other calendar item
+	 * and delegate in the batch.
+	 *
+	 * @param calendarItemIds ids of the calendar items to share. Ids that don't exist, or exist but for which the
+	 * current user has no read access, are reported in [BulkShareByIdsResult.notFoundIds] and otherwise ignored.
+	 * @param delegates the data owners which will gain access to each calendar item, and the options for sharing
+	 * with each of them (see [CalendarItemShareOptions]). The exact same options are applied to every calendar item
+	 * in [calendarItemIds].
+	 * @return details on the outcome of the operation, for each requested id.
+	 */
+	suspend fun shareCalendarItemsByIds(
+		calendarItemIds: List<String>,
+		delegates: Map<String, CalendarItemShareOptions>
+	): BulkShareByIdsResult
 }
 
 interface CalendarItemInGroupApi : CalendarItemBasicFlavourlessInGroupApi, CalendarItemFlavouredInGroupApi<DecryptedCalendarItem> { // TODO subscribable?

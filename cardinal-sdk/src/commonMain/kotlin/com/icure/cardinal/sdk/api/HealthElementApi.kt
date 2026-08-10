@@ -1,5 +1,6 @@
 package com.icure.cardinal.sdk.api
 
+import com.icure.cardinal.sdk.crypto.entities.BulkShareByIdsResult
 import com.icure.cardinal.sdk.crypto.entities.HealthElementDelegateOptions
 import com.icure.cardinal.sdk.crypto.entities.HealthElementShareOptions
 import com.icure.cardinal.sdk.crypto.entities.SecretIdUseOption
@@ -571,6 +572,30 @@ interface HealthElementApi : HealthElementBasicFlavourlessApi, HealthElementFlav
 	 * @return a list of health element ids
 	 */
 	suspend fun matchHealthElementsBySorted(filter: SortableFilterOptions<HealthElement>): List<String>
+
+	/**
+	 * Share many already-existing health elements with one or more delegates at once, retrieving them by id instead
+	 * of requiring the caller to have them already loaded. This is more efficient than calling [shareWithMany] once
+	 * per health element when you already know the ids of many health elements to share and don't otherwise need
+	 * their decrypted content, since only lightweight metadata (not the full content of each health element) is ever
+	 * retrieved, and no content flows back from the share request itself.
+	 *
+	 * The same [delegates] options are applied identically to every found health element. Unlike [shareWithMany], if
+	 * the share fails for some (health element, delegate) pairs this method reports the failure for those specific
+	 * pairs in the returned result instead of throwing, so sharing proceeds normally for every other health element
+	 * and delegate in the batch.
+	 *
+	 * @param healthElementIds ids of the health elements to share. Ids that don't exist, or exist but for which the
+	 * current user has no read access, are reported in [BulkShareByIdsResult.notFoundIds] and otherwise ignored.
+	 * @param delegates the data owners which will gain access to each health element, and the options for sharing
+	 * with each of them (see [HealthElementShareOptions]). The exact same options are applied to every health element
+	 * in [healthElementIds].
+	 * @return details on the outcome of the operation, for each requested id.
+	 */
+	suspend fun shareHealthElementsByIds(
+		healthElementIds: List<String>,
+		delegates: Map<String, HealthElementShareOptions>
+	): BulkShareByIdsResult
 }
 
 interface HealthElementInGroupApi : HealthElementBasicFlavourlessInGroupApi, HealthElementFlavouredInGroupApi<DecryptedHealthElement> { // TODO subscribable
