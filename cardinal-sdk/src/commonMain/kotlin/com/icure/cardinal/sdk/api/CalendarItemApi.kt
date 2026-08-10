@@ -381,7 +381,7 @@ interface CalendarItemFlavouredApi<E : CalendarItem> : CalendarItemBasicFlavoure
 	 * @return the updated calendar item.
 	 */
 	suspend fun linkToPatient(
-		calendarItem: CalendarItem,
+		calendarItem: E,
 		patient: Patient,
 		shareLinkWithDelegates: Set<String>,
 		secretIdUseOption: SecretIdUseOption,

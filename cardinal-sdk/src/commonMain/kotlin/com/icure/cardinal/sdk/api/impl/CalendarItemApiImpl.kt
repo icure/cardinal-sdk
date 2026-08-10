@@ -337,7 +337,7 @@ private class CalendarItemFlavouredApiImpl<E : CalendarItem>(
 	config: ApiConfiguration,
 	flavour: FlavouredApi<EncryptedCalendarItem, E>,
 	private val dataOwnerApi: RawDataOwnerApi,
-	private val rawPatientApi: RawPatientApi
+	private val rawPatientApi: RawPatientApi,
 ) : AbstractCalendarItemFlavouredApi<E>(rawApi, config, flavour),
 	CalendarItemBasicFlavouredApi<E> by CalendarItemBasicFlavouredApiImpl(rawApi, config, flavour),
 	CalendarItemFlavouredApi<E> {
@@ -375,7 +375,7 @@ private class CalendarItemFlavouredApiImpl<E : CalendarItem>(
 	}
 
 	override suspend fun linkToPatient(
-		calendarItem: CalendarItem,
+		calendarItem: E,
 		patient: Patient,
 		shareLinkWithDelegates: Set<String>,
 		secretIdUseOption: SecretIdUseOption,
@@ -439,16 +439,24 @@ private class CalendarItemFlavouredApiImpl<E : CalendarItem>(
 			),
 			EntityWithEncryptionMetadataTypeName.CalendarItem,
 			true,
-			{ rawApi.getCalendarItem(calendarItemId = it).successBody() },
-			{ rawApi.bulkShare(request = it).successBody() }
+			{ id ->
+				rawApi.getCalendarItem(calendarItemId = id).successBody().let {
+					maybeDecrypt(null, it)
+				}
+			},
+			{
+				rawApi.bulkShare(request = it).successBody().let { bulkShareResults ->
+					maybeDecrypt(null, bulkShareResults)
+				}
+			}
 		)
 		val updatedEncryptedCalendarItem = when {
 			shareResult.updatedEntities.firstOrNull()?.id == calendarItem.id ->
-				shareResult.updatedEntities.first() as EncryptedCalendarItem
+				shareResult.updatedEntities.first()
 			// Already fully shared with all the requested delegates (can happen when completing a partial
 			// link): nothing to update crypto-wise, just get the up-to-date revision to modify.
 			shareResult.unmodifiedEntitiesIds.contains(calendarItem.id) ->
-				rawApi.getCalendarItem(calendarItemId = calendarItem.id).successBody()
+				calendarItem
 			else -> {
 				val errorsForEntity = shareResult.updateErrors.filter { it.entityId == calendarItem.id }
 				if (errorsForEntity.isEmpty() || errorsForEntity.none { it.code == 409 }) {
@@ -461,7 +469,10 @@ private class CalendarItemFlavouredApiImpl<E : CalendarItem>(
 		return maybeDecrypt(
 			null,
 			rawApi.modifyCalendarItem(
-				calendarItemDto = updatedEncryptedCalendarItem.copy(secretForeignKeys = newSecretForeignKeys)
+				calendarItemDto = validateAndMaybeEncrypt(
+					null,
+					updatedEncryptedCalendarItem,
+				).copy(secretForeignKeys = newSecretForeignKeys)
 			).successBody()
 		)
 	}
