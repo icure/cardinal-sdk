@@ -439,20 +439,23 @@ class HierarchicalDataOwnerEncryptionAndConfidentialityTest : StringSpec({
 	}
 
 	"In a longer hierarchy, access shared with one intermediate branch does not leak into an unrelated sibling branch, but does reach a common descendant".config(enabled = DEFAULT_ENABLED && LOCAL_ENV_ONLY) {
-		// Same tree as above: G0/G1 are the topmost ancestors, G2 is a single-parent child of G0, M1 is a
-		// single-parent child of G1, M2 is a child of both G1 and G2, and Child (the data owner the hierarchy is
-		// rooted on) is a child of both M1 and M2.
-		val g0 = createHcpUser()
-		val g1 = createHcpUser()
-		val g2 = createHcpUser(g0)
-		val m1 = createHcpUser(g1)
-		val m2 = createHcpUser(parents = listOf(g1, g2))
-		val child = createHcpUser(parents = listOf(m1, m2))
-		val g1Api = g1.api(specJob)
+		// M1 and M2 are two unrelated intermediate data owners (each could stand for its own sub-hierarchy).
+		// M1SiblingA and m1SiblingB are two leaf children of M1 only; m2Child is a leaf child of M2 only; commonChild
+		// is a leaf child of both M1 and M2. M1/M2 are never real actors themselves - as with every other test in
+		// this file, the data is created and shared by an actual leaf data owner, not by an ancestor: an ancestor
+		// creating data would trivially have implicit creator access to all of its own descendants, which would
+		// defeat the point of this test.
+		val m1 = createHcpUser()
+		val m2 = createHcpUser()
+		val m1SiblingA = createHcpUser(m1)
+		val m1SiblingB = createHcpUser(m1)
+		val m2Child = createHcpUser(m2)
+		val commonChild = createHcpUser(parents = listOf(m1, m2))
 
+		val m1SiblingAApi = m1SiblingA.api(specJob)
 		val note = "shared only with M1"
-		val patient = g1Api.patient.createPatient(
-			g1Api.patient.withEncryptionMetadata(
+		val patient = m1SiblingAApi.patient.createPatient(
+			m1SiblingAApi.patient.withEncryptionMetadata(
 				DecryptedPatient(
 					id = defaultCryptoService.strongRandom.randomUUID(),
 					firstName = "John",
@@ -463,12 +466,16 @@ class HierarchicalDataOwnerEncryptionAndConfidentialityTest : StringSpec({
 			)
 		).shouldNotBeNull()
 
-		// Child is a descendant of M1 (one of its two parents), so it inherits M1's access to this patient.
-		child.api(specJob).patient.getPatient(patient.id).shouldNotBeNull().note shouldBe note
-		// M2 is not a descendant of M1 - it's an unrelated child of G1/G2 - so sharing with M1 alone never reaches
-		// it, even though M1 and M2 share a common ancestor.
+		// M1SiblingB is an unrelated child of M1 (a sibling of the creator), so it can access the data only through
+		// M1's own delegation - the same relationship already covered by "shared with a parent is accessible to
+		// siblings" above, but here M1 is an intermediate node rather than a root.
+		m1SiblingB.api(specJob).patient.getPatient(patient.id).shouldNotBeNull().note shouldBe note
+		// commonChild is a descendant of M1 (one of its two parents), so it also inherits M1's access.
+		commonChild.api(specJob).patient.getPatient(patient.id).shouldNotBeNull().note shouldBe note
+		// M2Child is not a descendant of M1 at all - it's an unrelated child of M2 - so sharing with M1 alone never
+		// reaches it.
 		shouldThrow<RequestStatusException> {
-			m2.api(specJob).patient.getPatient(patient.id)
+			m2Child.api(specJob).patient.getPatient(patient.id)
 		}.statusCode shouldBe 403
 	}
 })

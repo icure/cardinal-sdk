@@ -203,7 +203,7 @@ suspend fun createHcpUser(
 			lastName = "Hcp-$hcpId",
 			publicKeysForOaepWithSha256 = if (useLegacyKey) emptySet() else setOf(exportedPublic),
 			publicKey = if (useLegacyKey) exportedPublic else null,
-			dataOwnerGroups = parents.map { DataOwnerGroupLink(DataOwnerGroupLinkType.Parent, it.dataOwnerId) }
+			dataOwnerGroups = parents.map { DataOwnerGroupLink(it.dataOwnerId) }
 		)
 	).successBody()
 	val created = userRawApi.createUserInGroup(

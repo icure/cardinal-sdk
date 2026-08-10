@@ -96,7 +96,7 @@ private suspend fun createTestDataAndApis(job: Job, useFakeKeyForAesExchangeKeyE
       "id": "$aId",
       "lastName": "6144e2",
       "firstName": "6ca3b4",
-      "parentId": "$pId",
+      "dataOwnerGroups": [{ "dataOwnerId": "$pId" }],
       "aesExchangeKeys": {
         "${if (useFakeKeyForAesExchangeKeyEntry) "x0" else aPublicKey}":
           {
@@ -137,7 +137,7 @@ private suspend fun createTestDataAndApis(job: Job, useFakeKeyForAesExchangeKeyE
 		"id": "$bId",
 		"lastName": "95ee22",
 		"firstName": "2af696",
-		"parentId": "$pId",
+		"dataOwnerGroups": [{ "dataOwnerId": "$pId" }]
 		"aesExchangeKeys": {
 			"${if (useFakeKeyForAesExchangeKeyEntry) "x0" else bPublicKey}":
 				{
