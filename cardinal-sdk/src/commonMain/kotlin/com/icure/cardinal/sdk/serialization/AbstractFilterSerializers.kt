@@ -81,6 +81,7 @@ import com.icure.cardinal.sdk.model.filter.group.AllGroupsFilter
 import com.icure.cardinal.sdk.model.filter.group.GroupBySuperGroupFilter
 import com.icure.cardinal.sdk.model.filter.group.GroupWithContentFilter
 import com.icure.cardinal.sdk.model.filter.hcparty.AllHealthcarePartiesFilter
+import com.icure.cardinal.sdk.model.filter.hcparty.HealthcarePartyByDataOwnerGroupIdFilter
 import com.icure.cardinal.sdk.model.filter.hcparty.HealthcarePartyByIdentifiersFilter
 import com.icure.cardinal.sdk.model.filter.hcparty.HealthcarePartyByIdsFilter
 import com.icure.cardinal.sdk.model.filter.hcparty.HealthcarePartyByNameFilter
@@ -88,6 +89,7 @@ import com.icure.cardinal.sdk.model.filter.hcparty.HealthcarePartyByNationalIden
 import com.icure.cardinal.sdk.model.filter.hcparty.HealthcarePartyByParentIdFilter
 import com.icure.cardinal.sdk.model.filter.hcparty.HealthcarePartyByTagCodeFilter
 import com.icure.cardinal.sdk.model.filter.hcparty.HealthcarePartyByTypeSpecialtyPostCodeFilter
+import com.icure.cardinal.sdk.model.filter.healthelement.HealthElementByAssociationIdFilter
 import com.icure.cardinal.sdk.model.filter.healthelement.HealthElementByDataOwnerPatientOpeningDate
 import com.icure.cardinal.sdk.model.filter.healthelement.HealthElementByHcPartyCodeFilter
 import com.icure.cardinal.sdk.model.filter.healthelement.HealthElementByHcPartyFilter
@@ -99,6 +101,7 @@ import com.icure.cardinal.sdk.model.filter.healthelement.HealthElementByHcPartyS
 import com.icure.cardinal.sdk.model.filter.healthelement.HealthElementByHcPartyTagCodeFilter
 import com.icure.cardinal.sdk.model.filter.healthelement.HealthElementByHcPartyTagFilter
 import com.icure.cardinal.sdk.model.filter.healthelement.HealthElementByIdsFilter
+import com.icure.cardinal.sdk.model.filter.healthelement.HealthElementByQualifiedLinkFilter
 import com.icure.cardinal.sdk.model.filter.insurance.AllInsurancesFilter
 import com.icure.cardinal.sdk.model.filter.insurance.InsuranceByIdentifiersFilter
 import com.icure.cardinal.sdk.model.filter.insurance.InsuranceByTagCodeFilter
@@ -674,6 +677,7 @@ internal object HealthElementAbstractFilterSerializer :
 			"ComplementFilter" -> ComplementFilterSerializer(this)
 			"IntersectionFilter" -> IntersectionFilterSerializer(this)
 			"UnionFilter" -> UnionFilterSerializer(this)
+			"HealthElementByAssociationIdFilter" -> HealthElementByAssociationIdFilter.serializer()
 			"HealthElementByDataOwnerPatientOpeningDate" ->
 				HealthElementByDataOwnerPatientOpeningDate.serializer()
 			"HealthElementByHcPartyCodeFilter" -> HealthElementByHcPartyCodeFilter.serializer()
@@ -689,6 +693,7 @@ internal object HealthElementAbstractFilterSerializer :
 			"HealthElementByHcPartyTagCodeFilter" -> HealthElementByHcPartyTagCodeFilter.serializer()
 			"HealthElementByHcPartyTagFilter" -> HealthElementByHcPartyTagFilter.serializer()
 			"HealthElementByIdsFilter" -> HealthElementByIdsFilter.serializer()
+			"HealthElementByQualifiedLinkFilter" -> HealthElementByQualifiedLinkFilter.serializer()
 			else -> null
 		}
 
@@ -697,6 +702,7 @@ internal object HealthElementAbstractFilterSerializer :
 			ComplementFilter::class -> ComplementFilterSerializer(this)
 			IntersectionFilter::class -> IntersectionFilterSerializer(this)
 			UnionFilter::class -> UnionFilterSerializer(this)
+			HealthElementByAssociationIdFilter::class -> HealthElementByAssociationIdFilter.serializer()
 			HealthElementByDataOwnerPatientOpeningDate::class ->
 				HealthElementByDataOwnerPatientOpeningDate.serializer()
 			HealthElementByHcPartyCodeFilter::class -> HealthElementByHcPartyCodeFilter.serializer()
@@ -713,6 +719,7 @@ internal object HealthElementAbstractFilterSerializer :
 			HealthElementByHcPartyTagCodeFilter::class -> HealthElementByHcPartyTagCodeFilter.serializer()
 			HealthElementByHcPartyTagFilter::class -> HealthElementByHcPartyTagFilter.serializer()
 			HealthElementByIdsFilter::class -> HealthElementByIdsFilter.serializer()
+			HealthElementByQualifiedLinkFilter::class -> HealthElementByQualifiedLinkFilter.serializer()
 			else -> null
 		}
 }
@@ -728,6 +735,7 @@ internal object HealthcarePartyAbstractFilterSerializer :
 			"IntersectionFilter" -> IntersectionFilterSerializer(this)
 			"UnionFilter" -> UnionFilterSerializer(this)
 			"AllHealthcarePartiesFilter" -> AllHealthcarePartiesFilter.serializer()
+			"HealthcarePartyByDataOwnerGroupIdFilter" -> HealthcarePartyByDataOwnerGroupIdFilter.serializer()
 			"HealthcarePartyByIdentifiersFilter" -> HealthcarePartyByIdentifiersFilter.serializer()
 			"HealthcarePartyByIdsFilter" -> HealthcarePartyByIdsFilter.serializer()
 			"HealthcarePartyByNameFilter" -> HealthcarePartyByNameFilter.serializer()
@@ -748,6 +756,8 @@ internal object HealthcarePartyAbstractFilterSerializer :
 			IntersectionFilter::class -> IntersectionFilterSerializer(this)
 			UnionFilter::class -> UnionFilterSerializer(this)
 			AllHealthcarePartiesFilter::class -> AllHealthcarePartiesFilter.serializer()
+			HealthcarePartyByDataOwnerGroupIdFilter::class ->
+				HealthcarePartyByDataOwnerGroupIdFilter.serializer()
 			HealthcarePartyByIdentifiersFilter::class -> HealthcarePartyByIdentifiersFilter.serializer()
 			HealthcarePartyByIdsFilter::class -> HealthcarePartyByIdsFilter.serializer()
 			HealthcarePartyByNameFilter::class -> HealthcarePartyByNameFilter.serializer()

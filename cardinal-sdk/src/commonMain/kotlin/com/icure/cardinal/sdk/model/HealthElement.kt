@@ -22,6 +22,7 @@ import com.icure.cardinal.sdk.model.embed.EncryptedCareTeamMember
 import com.icure.cardinal.sdk.model.embed.EncryptedEpisode
 import com.icure.cardinal.sdk.model.embed.EncryptedPlanOfAction
 import com.icure.cardinal.sdk.model.embed.Episode
+import com.icure.cardinal.sdk.model.embed.HealthElementQualifiedLink
 import com.icure.cardinal.sdk.model.embed.Laterality
 import com.icure.cardinal.sdk.model.embed.PlanOfAction
 import com.icure.cardinal.sdk.model.embed.SecurityMetadata
@@ -186,6 +187,12 @@ sealed interface HealthElement :
 	public val careTeam: List<CareTeamMember>
 
 	/**
+	 * Directed links towards related healthcare elements. Links should be created in a single
+	 * direction: the reverse link can be found through a view. This field is not encrypted.
+	 */
+	public val qualifiedLinks: List<HealthElementQualifiedLink>
+
+	/**
 	 * The secret patient key, encrypted in the patient's own AES key.
 	 */
 	override val secretForeignKeys: Set<String>
@@ -348,6 +355,12 @@ data class DecryptedHealthElement(
 	@param:DefaultValue("emptyList()")
 	override val careTeam: List<DecryptedCareTeamMember> = emptyList(),
 	/**
+	 * Directed links towards related healthcare elements. Links should be created in a single
+	 * direction: the reverse link can be found through a view. This field is not encrypted.
+	 */
+	@param:DefaultValue("emptyList()")
+	override val qualifiedLinks: List<HealthElementQualifiedLink> = emptyList(),
+	/**
 	 * The secret patient key, encrypted in the patient's own AES key.
 	 */
 	@param:DefaultValue("emptySet()")
@@ -507,6 +520,12 @@ data class EncryptedHealthElement(
 	 */
 	@param:DefaultValue("emptyList()")
 	override val careTeam: List<EncryptedCareTeamMember> = emptyList(),
+	/**
+	 * Directed links towards related healthcare elements. Links should be created in a single
+	 * direction: the reverse link can be found through a view. This field is not encrypted.
+	 */
+	@param:DefaultValue("emptyList()")
+	override val qualifiedLinks: List<HealthElementQualifiedLink> = emptyList(),
 	/**
 	 * The secret patient key, encrypted in the patient's own AES key.
 	 */
