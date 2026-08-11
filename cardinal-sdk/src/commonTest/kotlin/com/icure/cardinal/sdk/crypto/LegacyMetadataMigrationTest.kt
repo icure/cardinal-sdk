@@ -15,6 +15,7 @@ import com.icure.cardinal.sdk.test.testGroupAdminAuth
 import com.icure.cardinal.sdk.test.testGroupId
 import com.icure.cardinal.sdk.utils.DEFAULT_ENABLED
 import com.icure.cardinal.sdk.utils.LOCAL_ENV_ONLY
+import com.icure.cardinal.sdk.utils.SKIP_IN_CANARY
 import com.icure.cardinal.sdk.utils.Serialization
 import com.icure.kryptom.crypto.RsaAlgorithm
 import com.icure.kryptom.crypto.defaultCryptoService
@@ -227,7 +228,7 @@ private suspend fun createTestDataAndApis(): TestData {
 }
 
 class LegacyMetadataMigrationTest : StringSpec({
-	"TODO: actually implement this test".config(enabled = DEFAULT_ENABLED && LOCAL_ENV_ONLY) {
+	"TODO: actually implement this test".config(enabled = DEFAULT_ENABLED && LOCAL_ENV_ONLY && SKIP_IN_CANARY) {
 		TODO("Adapt the ts test")
 	}
 })

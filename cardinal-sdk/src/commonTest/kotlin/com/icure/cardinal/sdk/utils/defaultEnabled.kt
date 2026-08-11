@@ -1,5 +1,6 @@
 package com.icure.cardinal.sdk.utils
 
+import com.icure.cardinal.sdk.test.isCanaryTestMode
 import com.icure.cardinal.sdk.test.isLocalTestMode
 
 /**
@@ -22,3 +23,13 @@ const val DEFAULT_ENABLED = true
  *   message gateway).
  */
 val LOCAL_ENV_ONLY = isLocalTestMode
+
+/**
+ * Tests that should be skipped when running in `canary` mode (`TEST_MODE=canary`). `canary` sets up
+ * its environment (docker, groups, hcps, patients, ...) exactly like `local` - so it must never be
+ * combined with [LOCAL_ENV_ONLY] on the tests that actually perform that setup - but it is meant to
+ * run a reduced subset of the suite. Combine this flag with [DEFAULT_ENABLED] (and [LOCAL_ENV_ONLY]
+ * if applicable) on any test that should be excluded from a canary run, for example because it is
+ * slow, flaky, or redundant with another test that already covers the important behavior.
+ */
+val SKIP_IN_CANARY = !isCanaryTestMode

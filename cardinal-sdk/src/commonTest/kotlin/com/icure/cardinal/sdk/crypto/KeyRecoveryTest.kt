@@ -8,6 +8,7 @@ import com.icure.cardinal.sdk.test.createHcpUser
 import com.icure.cardinal.sdk.test.initializeTestEnvironment
 import com.icure.cardinal.sdk.utils.DEFAULT_ENABLED
 import com.icure.cardinal.sdk.utils.LOCAL_ENV_ONLY
+import com.icure.cardinal.sdk.utils.SKIP_IN_CANARY
 import com.icure.kryptom.crypto.CryptoService
 import com.icure.kryptom.crypto.RsaAlgorithm
 import com.icure.kryptom.crypto.RsaKeypair
@@ -99,7 +100,7 @@ class KeyRecoveryTest : StringSpec({
 		}
 	}
 
-	"Should be able to use keys of the parent HCP to recover shamir splits".config(enabled = DEFAULT_ENABLED && LOCAL_ENV_ONLY) {
+	"Should be able to use keys of the parent HCP to recover shamir splits".config(enabled = DEFAULT_ENABLED && LOCAL_ENV_ONLY && SKIP_IN_CANARY) {
 		TODO("Implement test and functionality (was part of typescript sdk)")
 	}
 })

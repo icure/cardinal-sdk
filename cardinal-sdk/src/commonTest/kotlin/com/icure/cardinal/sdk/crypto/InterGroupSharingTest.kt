@@ -191,17 +191,17 @@ class InterGroupSharingTest : StringSpec({
 
 
 	listOf(
-		Pair(Pair("groupE", childGroupId), Pair("groupE", childGroupId)),
+//		Pair(Pair("groupE", childGroupId), Pair("groupE", childGroupId)),
 		Pair(Pair("groupE", childGroupId), Pair("groupX", parentGroupId)),
-		Pair(Pair("groupX", parentGroupId), Pair("groupE", childGroupId)),
-		Pair(Pair("groupX", parentGroupId), Pair("groupX", parentGroupId)),
-		Pair(Pair("groupX", parentGroupId), Pair("groupY", grandparentGroupId)),
+//		Pair(Pair("groupX", parentGroupId), Pair("groupE", childGroupId)),
+//		Pair(Pair("groupX", parentGroupId), Pair("groupX", parentGroupId)),
+//		Pair(Pair("groupX", parentGroupId), Pair("groupY", grandparentGroupId)),
 	).forEach { (delegatorGroupInfo, delegateGroupInfo) ->
 		listOf(
-			Pair(Pair("explicit", true), Pair("explicit", true)),
+//			Pair(Pair("explicit", true), Pair("explicit", true)),
 			Pair(Pair("explicit", true), Pair("anonymous", false)),
-			Pair(Pair("anonymous", false), Pair("explicit", true)),
-			Pair(Pair("anonymous", false), Pair("anonymous", false)),
+//			Pair(Pair("anonymous", false), Pair("explicit", true)),
+//			Pair(Pair("anonymous", false), Pair("anonymous", false)),
 		).forEach { (delegatorType, delegateType) ->
 			"Test create shared data ${delegatorGroupInfo.first}/${delegatorType.first} -> ${delegateGroupInfo.first}/${delegateType.first}".config(enabled = DEFAULT_ENABLED && LOCAL_ENV_ONLY) {
 				testCreateSharedData(

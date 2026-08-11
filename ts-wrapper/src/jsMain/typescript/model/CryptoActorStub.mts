@@ -32,7 +32,7 @@ export class CryptoActorStub implements Versionable<string>, CryptoActor {
 
 	publicKey: SpkiHexString | undefined = undefined;
 
-	publicKeysForOaepWithSha256: Array<SpkiHexString>;
+	publicKeysForOaepWithSha256: Array<SpkiHexString> = [];
 
 	parentId: string | undefined = undefined;
 
@@ -40,7 +40,7 @@ export class CryptoActorStub implements Versionable<string>, CryptoActor {
 
 	readonly $ktClass: 'com.icure.cardinal.sdk.model.CryptoActorStub' = 'com.icure.cardinal.sdk.model.CryptoActorStub';
 
-	constructor(partial: Partial<CryptoActorStub> & Pick<CryptoActorStub, "rev" | "publicKeysForOaepWithSha256">) {
+	constructor(partial: Partial<CryptoActorStub> & Pick<CryptoActorStub, "rev">) {
 		this.id = partial.id ?? randomUuid();
 		this.rev = partial.rev;
 		if ('hcPartyKeys' in partial && partial.hcPartyKeys !== undefined) this.hcPartyKeys = partial.hcPartyKeys;
@@ -48,7 +48,7 @@ export class CryptoActorStub implements Versionable<string>, CryptoActor {
 		if ('transferKeys' in partial && partial.transferKeys !== undefined) this.transferKeys = partial.transferKeys;
 		if ('privateKeyShamirPartitions' in partial && partial.privateKeyShamirPartitions !== undefined) this.privateKeyShamirPartitions = partial.privateKeyShamirPartitions;
 		if ('publicKey' in partial) this.publicKey = partial.publicKey;
-		this.publicKeysForOaepWithSha256 = partial.publicKeysForOaepWithSha256;
+		if ('publicKeysForOaepWithSha256' in partial && partial.publicKeysForOaepWithSha256 !== undefined) this.publicKeysForOaepWithSha256 = partial.publicKeysForOaepWithSha256;
 		if ('parentId' in partial) this.parentId = partial.parentId;
 		if ('cryptoActorProperties' in partial) this.cryptoActorProperties = partial.cryptoActorProperties;
 	}
@@ -124,7 +124,7 @@ export class CryptoActorStub implements Versionable<string>, CryptoActor {
 				(v0, p0) => expectString(v0, false, p0) as HexString
 			),
 			publicKey: expectString(extractEntry(jCpy, 'publicKey', false, path), true, [...path, ".publicKey"]) as SpkiHexString,
-			publicKeysForOaepWithSha256: expectArray(extractEntry(jCpy, 'publicKeysForOaepWithSha256', true, path), false, [...path, ".publicKeysForOaepWithSha256"], (x0, p0) => expectString(x0, false, p0) as SpkiHexString),
+			publicKeysForOaepWithSha256: expectArray(extractEntry(jCpy, 'publicKeysForOaepWithSha256', false, path), false, [...path, ".publicKeysForOaepWithSha256"], (x0, p0) => expectString(x0, false, p0) as SpkiHexString),
 			parentId: expectString(extractEntry(jCpy, 'parentId', false, path), true, [...path, ".parentId"]),
 			cryptoActorProperties: expectArray(extractEntry(jCpy, 'cryptoActorProperties', false, path), true, [...path, ".cryptoActorProperties"], (x0, p0) => expectObject(x0, false, ignoreUnknownKeys, p0, DecryptedPropertyStub.fromJSON)),
 		})
