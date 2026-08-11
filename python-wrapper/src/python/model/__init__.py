@@ -5896,12 +5896,12 @@ class ReceiptShareOptions:
 class CryptoActorStub:
 	id: str
 	rev: str
-	public_keys_for_oaep_with_sha256: set['SpkiHexString']
 	hc_party_keys: dict[str, list['HexString']] = field(default_factory=dict)
 	aes_exchange_keys: dict['AesExchangeKeyEntryKeyString', dict[str, dict['AesExchangeKeyEncryptionKeypairIdentifier', 'HexString']]] = field(default_factory=dict)
 	transfer_keys: dict['AesExchangeKeyEncryptionKeypairIdentifier', dict['AesExchangeKeyEncryptionKeypairIdentifier', 'HexString']] = field(default_factory=dict)
 	private_key_shamir_partitions: dict[str, 'HexString'] = field(default_factory=dict)
 	public_key: Optional['SpkiHexString'] = None
+	public_keys_for_oaep_with_sha256: set['SpkiHexString'] = field(default_factory=set)
 	parent_id: Optional[str] = None
 	crypto_actor_properties: Optional[list['DecryptedPropertyStub']] = None
 
@@ -6813,6 +6813,8 @@ class DecryptedHealthElement:
 	plans_of_action: list['DecryptedPlanOfAction'] = field(default_factory=list)
 	episodes: list['DecryptedEpisode'] = field(default_factory=list)
 	care_team: list['DecryptedCareTeamMember'] = field(default_factory=list)
+	qualified_links: list['HealthElementQualifiedLink'] = field(default_factory=list)
+	asserters: list['HealthElementAsserter'] = field(default_factory=list)
 	secret_foreign_keys: set[str] = field(default_factory=set)
 	crypted_foreign_keys: dict[str, list['Delegation']] = field(default_factory=dict)
 	delegations: dict[str, list['Delegation']] = field(default_factory=dict)
@@ -6848,6 +6850,8 @@ class DecryptedHealthElement:
 			"plansOfAction": [x0.__serialize__() for x0 in self.plans_of_action],
 			"episodes": [x0.__serialize__() for x0 in self.episodes],
 			"careTeam": [x0.__serialize__() for x0 in self.care_team],
+			"qualifiedLinks": [x0.__serialize__() for x0 in self.qualified_links],
+			"asserters": [x0.__serialize__() for x0 in self.asserters],
 			"secretForeignKeys": [x0 for x0 in self.secret_foreign_keys],
 			"cryptedForeignKeys": {k0: [x1.__serialize__() for x1 in v0] for k0, v0 in self.crypted_foreign_keys.items()},
 			"delegations": {k0: [x1.__serialize__() for x1 in v0] for k0, v0 in self.delegations.items()},
@@ -6890,6 +6894,8 @@ class DecryptedHealthElement:
 			plans_of_action=[DecryptedPlanOfAction._deserialize(x0) for x0 in deserialized_dict["plansOfAction"]],
 			episodes=[DecryptedEpisode._deserialize(x0) for x0 in deserialized_dict["episodes"]],
 			care_team=[DecryptedCareTeamMember._deserialize(x0) for x0 in deserialized_dict["careTeam"]],
+			qualified_links=[HealthElementQualifiedLink._deserialize(x0) for x0 in deserialized_dict["qualifiedLinks"]],
+			asserters=[HealthElementAsserter._deserialize(x0) for x0 in deserialized_dict["asserters"]],
 			secret_foreign_keys={x0 for x0 in deserialized_dict["secretForeignKeys"]},
 			crypted_foreign_keys=dict(map(lambda kv0: (kv0[0], [Delegation._deserialize(x1) for x1 in kv0[1]]), deserialized_dict["cryptedForeignKeys"].items())),
 			delegations=dict(map(lambda kv0: (kv0[0], [Delegation._deserialize(x1) for x1 in kv0[1]]), deserialized_dict["delegations"].items())),
@@ -6926,6 +6932,8 @@ class EncryptedHealthElement:
 	plans_of_action: list['EncryptedPlanOfAction'] = field(default_factory=list)
 	episodes: list['EncryptedEpisode'] = field(default_factory=list)
 	care_team: list['EncryptedCareTeamMember'] = field(default_factory=list)
+	qualified_links: list['HealthElementQualifiedLink'] = field(default_factory=list)
+	asserters: list['HealthElementAsserter'] = field(default_factory=list)
 	secret_foreign_keys: set[str] = field(default_factory=set)
 	crypted_foreign_keys: dict[str, list['Delegation']] = field(default_factory=dict)
 	delegations: dict[str, list['Delegation']] = field(default_factory=dict)
@@ -6961,6 +6969,8 @@ class EncryptedHealthElement:
 			"plansOfAction": [x0.__serialize__() for x0 in self.plans_of_action],
 			"episodes": [x0.__serialize__() for x0 in self.episodes],
 			"careTeam": [x0.__serialize__() for x0 in self.care_team],
+			"qualifiedLinks": [x0.__serialize__() for x0 in self.qualified_links],
+			"asserters": [x0.__serialize__() for x0 in self.asserters],
 			"secretForeignKeys": [x0 for x0 in self.secret_foreign_keys],
 			"cryptedForeignKeys": {k0: [x1.__serialize__() for x1 in v0] for k0, v0 in self.crypted_foreign_keys.items()},
 			"delegations": {k0: [x1.__serialize__() for x1 in v0] for k0, v0 in self.delegations.items()},
@@ -7003,6 +7013,8 @@ class EncryptedHealthElement:
 			plans_of_action=[EncryptedPlanOfAction._deserialize(x0) for x0 in deserialized_dict["plansOfAction"]],
 			episodes=[EncryptedEpisode._deserialize(x0) for x0 in deserialized_dict["episodes"]],
 			care_team=[EncryptedCareTeamMember._deserialize(x0) for x0 in deserialized_dict["careTeam"]],
+			qualified_links=[HealthElementQualifiedLink._deserialize(x0) for x0 in deserialized_dict["qualifiedLinks"]],
+			asserters=[HealthElementAsserter._deserialize(x0) for x0 in deserialized_dict["asserters"]],
 			secret_foreign_keys={x0 for x0 in deserialized_dict["secretForeignKeys"]},
 			crypted_foreign_keys=dict(map(lambda kv0: (kv0[0], [Delegation._deserialize(x1) for x1 in kv0[1]]), deserialized_dict["cryptedForeignKeys"].items())),
 			delegations=dict(map(lambda kv0: (kv0[0], [Delegation._deserialize(x1) for x1 in kv0[1]]), deserialized_dict["delegations"].items())),
@@ -11171,6 +11183,55 @@ def deserialize_care_team_member(data: Union[str, dict[str, JsonElement]]) -> 'C
 		raise Exception(f"{qualifier} is not a known subclass of CareTeamMember")
 
 @dataclass
+class HealthElementQualifiedLink:
+	type: str
+	health_element_id: str
+	association_id: Optional[str] = None
+
+	def __serialize__(self) -> Any:
+		return {
+			"type": self.type,
+			"associationId": self.association_id,
+			"healthElementId": self.health_element_id,
+		}
+
+	@classmethod
+	def _deserialize(cls, data: Union[str, dict[str, JsonElement]]) -> 'HealthElementQualifiedLink':
+		deserialized_dict: dict[str, JsonElement]
+		if isinstance(data, str):
+			deserialized_dict = json.loads(data)
+		else:
+			deserialized_dict = data
+		return cls(
+			type=deserialized_dict["type"],
+			association_id=deserialized_dict.get("associationId"),
+			health_element_id=deserialized_dict["healthElementId"],
+		)
+
+@dataclass
+class HealthElementAsserter:
+	asserter_id: str
+	asserter_type: 'AsserterType'
+
+	def __serialize__(self) -> Any:
+		return {
+			"asserterId": self.asserter_id,
+			"asserterType": self.asserter_type.__serialize__(),
+		}
+
+	@classmethod
+	def _deserialize(cls, data: Union[str, dict[str, JsonElement]]) -> 'HealthElementAsserter':
+		deserialized_dict: dict[str, JsonElement]
+		if isinstance(data, str):
+			deserialized_dict = json.loads(data)
+		else:
+			deserialized_dict = data
+		return cls(
+			asserter_id=deserialized_dict["asserterId"],
+			asserter_type=AsserterType._deserialize(deserialized_dict["asserterType"]),
+		)
+
+@dataclass
 class Remote:
 	url: str
 	auth: Optional['RemoteAuthentication'] = None
@@ -12404,6 +12465,25 @@ class CareTeamMemberType(Enum):
 			return CareTeamMemberType.Other
 		else:
 			raise Exception(f"{data} is not a valid value for CareTeamMemberType enum.")
+
+class AsserterType(Enum):
+	Patient = "patient"
+	HealthcareParty = "healthcareParty"
+	RelatedPerson = "relatedPerson"
+
+	def __serialize__(self) -> Any:
+		return self.value
+
+	@classmethod
+	def _deserialize(cls, data: Union[str, dict[str, JsonElement]]) -> 'AsserterType':
+		if data == "patient":
+			return AsserterType.Patient
+		elif data == "healthcareParty":
+			return AsserterType.HealthcareParty
+		elif data == "relatedPerson":
+			return AsserterType.RelatedPerson
+		else:
+			raise Exception(f"{data} is not a valid value for AsserterType enum.")
 
 @dataclass
 class RemoteAuthentication:
