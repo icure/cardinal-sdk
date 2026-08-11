@@ -40,8 +40,7 @@ data class CryptoActorStub(
 	override val publicKey: SpkiHexString? = null,
 	@param:DefaultValue("emptySet()")
 	override val publicKeysForOaepWithSha256: Set<SpkiHexString> = emptySet(),
-	@param:DefaultValue("emptyList()")
-	override val dataOwnerGroups: List<DataOwnerGroupLink> = emptyList(),
+	override val parentId: String? = null,
 	override val cryptoActorProperties: Set<DecryptedPropertyStub>? = null,
 ) : Versionable<String>, CryptoActor {
 	// region CryptoActorStub-CryptoActorStub

@@ -140,10 +140,9 @@ data class HealthcareParty(
 	 */
 	public val invoiceHeader: String? = null,
 	/**
-	 * The links to the data owners representing the groups this healthcare party belongs to.
+	 * The id of the parent healthcare party.
 	 */
-	@param:DefaultValue("emptyList()")
-	override val dataOwnerGroups: List<DataOwnerGroupLink> = emptyList(),
+	override val parentId: String? = null,
 	/**
 	 * Social security inscription number.
 	 */
