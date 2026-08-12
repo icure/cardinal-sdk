@@ -31,5 +31,6 @@ data class HealthElementByQualifiedLinkFilter(
 	override val desc: String? = null,
 ) : AbstractFilter<HealthElement> {
 	// region HealthElementByQualifiedLinkFilter-HealthElementByQualifiedLinkFilter
+
 	// endregion
 }

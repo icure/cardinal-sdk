@@ -34,7 +34,7 @@ interface CryptoActor : Versionable<String> {
 
 	public val publicKeysForOaepWithSha256: Set<SpkiHexString>
 
-	public val parentId: String?
+	public val dataOwnerGroups: List<DataOwnerGroupLink>
 
 	public val cryptoActorProperties: Set<DecryptedPropertyStub>?
 	// region CryptoActor-CryptoActor

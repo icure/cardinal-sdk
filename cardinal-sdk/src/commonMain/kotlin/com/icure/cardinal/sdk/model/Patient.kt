@@ -409,9 +409,9 @@ sealed interface Patient :
 	override val cryptoActorProperties: Set<DecryptedPropertyStub>
 
 	/**
-	 * Always null for patients.
+	 * The links to the data owners representing the groups this patient belongs to.
 	 */
-	override val parentId: Nothing?
+	override val dataOwnerGroups: List<Nothing>
 	// region Patient-Patient
 	companion object {
 		const val KRAKEN_QUALIFIED_NAME = "org.taktik.icure.entities.Patient"
@@ -723,9 +723,10 @@ data class DecryptedPatient(
 	 */
 	override val cryptoActorProperties: Set<DecryptedPropertyStub> = emptySet(),
 	/**
-	 * Always null for patients.
+	 * The links to the data owners representing the groups this patient belongs to.
 	 */
-	override val parentId: Nothing? = null
+	@param:DefaultValue("emptyList()")
+	override val dataOwnerGroups: List<Nothing> = emptyList(),
 ) : Patient {
 	// region Patient-DecryptedPatient
 override fun copyWithSecurityMetadata(securityMetadata: SecurityMetadata, secretForeignKeys: Set<String>): DecryptedPatient =
@@ -1037,9 +1038,10 @@ data class EncryptedPatient(
 	 */
 	override val cryptoActorProperties: Set<DecryptedPropertyStub> = emptySet(),
 	/**
-	 * Always null for patients.
+	 * The links to the data owners representing the groups this patient belongs to.
 	 */
-	override val parentId: Nothing? = null
+	@param:DefaultValue("emptyList()")
+	override val dataOwnerGroups: List<Nothing> = emptyList(),
 ) : Patient {
 	// region Patient-EncryptedPatient
 override fun copyWithSecurityMetadata(securityMetadata: SecurityMetadata, secretForeignKeys: Set<String>): EncryptedPatient =
