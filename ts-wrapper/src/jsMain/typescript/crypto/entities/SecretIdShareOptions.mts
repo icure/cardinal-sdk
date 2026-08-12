@@ -15,6 +15,10 @@ export namespace SecretIdShareOptions {
 	 */
 	export class AllAvailable {
 
+		/**
+		 * Share all available secret ids
+		 * @param requireAtLeastOne if true the sharing will fail if the current user can't access any secret id of the entity
+		 * / */
 		requireAtLeastOne: boolean = false;
 
 		readonly $ktClass: 'com.icure.cardinal.sdk.crypto.entities.SecretIdShareOptions.AllAvailable' = 'com.icure.cardinal.sdk.crypto.entities.SecretIdShareOptions.AllAvailable';
