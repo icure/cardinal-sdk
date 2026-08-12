@@ -21,5 +21,6 @@ data class DataOwnerGroupLink(
 	public val dataOwnerId: String,
 ) {
 	// region DataOwnerGroupLink-DataOwnerGroupLink
+
 	// endregion
 }
