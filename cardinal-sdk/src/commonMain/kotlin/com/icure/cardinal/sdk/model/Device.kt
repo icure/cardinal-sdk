@@ -97,10 +97,9 @@ data class Device(
 	 */
 	public val serialNumber: String? = null,
 	/**
-	 * The links to the data owners representing the groups this device belongs to.
+	 * The id of the parent of the user representing the device.
 	 */
-	@param:DefaultValue("emptyList()")
-	override val dataOwnerGroups: List<DataOwnerGroupLink> = emptyList(),
+	override val parentId: String? = null,
 	/**
 	 * Typed properties related to the device (e.g., version, specific device information).
 	 */
