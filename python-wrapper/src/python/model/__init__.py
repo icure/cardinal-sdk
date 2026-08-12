@@ -11210,13 +11210,13 @@ class HealthElementQualifiedLink:
 
 @dataclass
 class HealthElementAsserter:
-	asserter_id: str
-	asserter_type: 'AsserterType'
+	local_asserter_identifier: Optional['HealthElementAsserterLocalAsserterIdentifier'] = None
+	external_asserter_identifier: Optional['Identifier'] = None
 
 	def __serialize__(self) -> Any:
 		return {
-			"asserterId": self.asserter_id,
-			"asserterType": self.asserter_type.__serialize__(),
+			"localAsserterIdentifier": self.local_asserter_identifier.__serialize__() if self.local_asserter_identifier is not None else None,
+			"externalAsserterIdentifier": self.external_asserter_identifier.__serialize__() if self.external_asserter_identifier is not None else None,
 		}
 
 	@classmethod
@@ -11227,8 +11227,31 @@ class HealthElementAsserter:
 		else:
 			deserialized_dict = data
 		return cls(
-			asserter_id=deserialized_dict["asserterId"],
-			asserter_type=AsserterType._deserialize(deserialized_dict["asserterType"]),
+			local_asserter_identifier=HealthElementAsserterLocalAsserterIdentifier._deserialize(deserialized_dict.get("localAsserterIdentifier")) if deserialized_dict.get("localAsserterIdentifier") is not None else None,
+			external_asserter_identifier=Identifier._deserialize(deserialized_dict.get("externalAsserterIdentifier")) if deserialized_dict.get("externalAsserterIdentifier") is not None else None,
+		)
+
+@dataclass
+class HealthElementAsserterLocalAsserterIdentifier:
+	id: str
+	type: 'AsserterType'
+
+	def __serialize__(self) -> Any:
+		return {
+			"id": self.id,
+			"type": self.type.__serialize__(),
+		}
+
+	@classmethod
+	def _deserialize(cls, data: Union[str, dict[str, JsonElement]]) -> 'HealthElementAsserterLocalAsserterIdentifier':
+		deserialized_dict: dict[str, JsonElement]
+		if isinstance(data, str):
+			deserialized_dict = json.loads(data)
+		else:
+			deserialized_dict = data
+		return cls(
+			id=deserialized_dict["id"],
+			type=AsserterType._deserialize(deserialized_dict["type"]),
 		)
 
 @dataclass
