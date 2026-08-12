@@ -28,5 +28,6 @@ data class DataOwnerIdWithHierarchy(
 	public val parents: List<DataOwnerIdWithHierarchy> = emptyList(),
 ) {
 	// region DataOwnerIdWithHierarchy-DataOwnerIdWithHierarchy
+
 	// endregion
 }

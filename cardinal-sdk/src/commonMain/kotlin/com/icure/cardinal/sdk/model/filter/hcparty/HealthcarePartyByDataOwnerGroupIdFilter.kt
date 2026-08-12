@@ -34,5 +34,6 @@ data class HealthcarePartyByDataOwnerGroupIdFilter(
 	override val desc: String? = null,
 ) : AbstractFilter<HealthcareParty> {
 	// region HealthcarePartyByDataOwnerGroupIdFilter-HealthcarePartyByDataOwnerGroupIdFilter
+
 	// endregion
 }

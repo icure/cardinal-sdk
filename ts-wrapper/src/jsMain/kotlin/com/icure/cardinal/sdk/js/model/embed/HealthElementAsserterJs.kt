@@ -3,7 +3,7 @@
 
 package com.icure.cardinal.sdk.js.model.embed
 
-import kotlin.String
+import com.icure.cardinal.sdk.js.model.base.IdentifierJs
 import kotlin.js.JsName
 import kotlin.js.JsQualifier
 
@@ -11,7 +11,7 @@ import kotlin.js.JsQualifier
 public external class HealthElementAsserterJs(
 	partial: dynamic,
 ) {
-	public val asserterId: String
+	public val localAsserterIdentifier: HealthElementAsserterJs_LocalAsserterIdentifierJs?
 
-	public val asserterType: String
+	public val externalAsserterIdentifier: IdentifierJs?
 }
