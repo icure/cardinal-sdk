@@ -6,13 +6,13 @@ package com.icure.cardinal.sdk.js.api
 import com.icure.cardinal.sdk.js.crypto.entities.EntityAccessInformationJs
 import com.icure.cardinal.sdk.js.crypto.entities.PatientDelegateOptionsJs
 import com.icure.cardinal.sdk.js.crypto.entities.PatientShareOptionsJs
-import com.icure.cardinal.sdk.js.crypto.entities.ShareAllPatientDataOptionsJs_ResultJs
 import com.icure.cardinal.sdk.js.filters.FilterOptionsJs
 import com.icure.cardinal.sdk.js.filters.SortableFilterOptionsJs
 import com.icure.cardinal.sdk.js.model.DecryptedPatientJs
 import com.icure.cardinal.sdk.js.model.EncryptedPatientJs
 import com.icure.cardinal.sdk.js.model.EntityReferenceInGroupJs
 import com.icure.cardinal.sdk.js.model.PatientJs
+import com.icure.cardinal.sdk.js.model.SecretIdCreationResultJs
 import com.icure.cardinal.sdk.js.model.StoredDocumentIdentifierJs
 import com.icure.cardinal.sdk.js.subscription.EntitySubscriptionJs
 import com.icure.cardinal.sdk.js.utils.Record
@@ -59,12 +59,6 @@ public external interface PatientApiJs {
 	public fun createDelegationDeAnonymizationMetadata(entity: PatientJs, delegates: Array<String>):
 			Promise<Unit>
 
-	public fun shareAllDataOfPatient(patientId: String,
-			delegatesWithShareType: Record<String, Array<String>>):
-			Promise<ShareAllPatientDataOptionsJs_ResultJs>
-
-	public fun getConfidentialSecretIdsOf(patient: PatientJs): Promise<Array<String>>
-
 	public fun forceInitializeExchangeDataToNewlyInvitedPatient(patientId: String): Promise<Boolean>
 
 	public fun matchPatientsBy(filter: FilterOptionsJs<PatientJs>): Promise<Array<String>>
@@ -104,7 +98,8 @@ public external interface PatientApiJs {
 	public fun shareWithMany(patient: DecryptedPatientJs,
 			delegates: Record<String, PatientShareOptionsJs>): Promise<DecryptedPatientJs>
 
-	public fun initializeConfidentialSecretId(patient: DecryptedPatientJs): Promise<DecryptedPatientJs>
+	public fun createNewSecretId(patient: DecryptedPatientJs):
+			Promise<SecretIdCreationResultJs<DecryptedPatientJs>>
 
 	public fun filterPatientsBy(filter: FilterOptionsJs<PatientJs>):
 			Promise<PaginatedListIteratorJs<DecryptedPatientJs>>

@@ -23,6 +23,7 @@ import com.icure.cardinal.sdk.js.model.embed.EncryptedCareTeamMemberJs
 import com.icure.cardinal.sdk.js.model.embed.EncryptedEpisodeJs
 import com.icure.cardinal.sdk.js.model.embed.EncryptedPlanOfActionJs
 import com.icure.cardinal.sdk.js.model.embed.EpisodeJs
+import com.icure.cardinal.sdk.js.model.embed.HealthElementQualifiedLinkJs
 import com.icure.cardinal.sdk.js.model.embed.PlanOfActionJs
 import com.icure.cardinal.sdk.js.model.embed.SecurityMetadataJs
 import com.icure.cardinal.sdk.js.utils.Record
@@ -67,6 +68,8 @@ public sealed external interface HealthElementJs : StoredDocumentJs, ICureDocume
 	public val episodes: Array<out EpisodeJs>
 
 	public val careTeam: Array<out CareTeamMemberJs>
+
+	public val qualifiedLinks: Array<out HealthElementQualifiedLinkJs>
 
 	public val isEncrypted: Boolean
 }
@@ -126,6 +129,8 @@ public external class DecryptedHealthElementJs(
 	override val episodes: Array<DecryptedEpisodeJs>
 
 	override val careTeam: Array<DecryptedCareTeamMemberJs>
+
+	override val qualifiedLinks: Array<HealthElementQualifiedLinkJs>
 
 	override val secretForeignKeys: Array<String>
 
@@ -197,6 +202,8 @@ public external class EncryptedHealthElementJs(
 	override val episodes: Array<EncryptedEpisodeJs>
 
 	override val careTeam: Array<EncryptedCareTeamMemberJs>
+
+	override val qualifiedLinks: Array<HealthElementQualifiedLinkJs>
 
 	override val secretForeignKeys: Array<String>
 

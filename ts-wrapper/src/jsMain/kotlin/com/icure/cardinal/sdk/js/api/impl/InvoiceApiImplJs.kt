@@ -11,9 +11,11 @@ import com.icure.cardinal.sdk.js.api.InvoiceApiJs
 import com.icure.cardinal.sdk.js.api.InvoiceFlavouredApiJs
 import com.icure.cardinal.sdk.js.api.InvoiceFlavouredInGroupApiJs
 import com.icure.cardinal.sdk.js.api.InvoiceInGroupApiJs
+import com.icure.cardinal.sdk.js.crypto.entities.BulkShareByIdsResultJs
 import com.icure.cardinal.sdk.js.crypto.entities.InvoiceDelegateOptionsJs
 import com.icure.cardinal.sdk.js.crypto.entities.InvoiceShareOptionsJs
 import com.icure.cardinal.sdk.js.crypto.entities.SecretIdUseOptionJs
+import com.icure.cardinal.sdk.js.crypto.entities.bulkShareByIdsResult_toJs
 import com.icure.cardinal.sdk.js.crypto.entities.invoiceDelegateOptions_fromJs
 import com.icure.cardinal.sdk.js.crypto.entities.invoiceShareOptions_fromJs
 import com.icure.cardinal.sdk.js.crypto.entities.secretIdUseOption_fromJs
@@ -2175,7 +2177,7 @@ internal class InvoiceApiImplJs(
 				val secretIdConverted: SecretIdUseOption = convertingOptionOrDefaultNonNull(
 					_options,
 					"secretId",
-					com.icure.cardinal.sdk.crypto.entities.SecretIdUseOption.UseAnySharedWithParent
+					com.icure.cardinal.sdk.crypto.entities.SecretIdUseOption.UseAnySharedWithHierarchy
 				) { secretId: SecretIdUseOptionJs ->
 					secretIdUseOption_fromJs(secretId)
 				}
@@ -2242,7 +2244,7 @@ internal class InvoiceApiImplJs(
 				val secretIdConverted: SecretIdUseOption = convertingOptionOrDefaultNonNull(
 					_options,
 					"secretId",
-					com.icure.cardinal.sdk.crypto.entities.SecretIdUseOption.UseAnySharedWithParent
+					com.icure.cardinal.sdk.crypto.entities.SecretIdUseOption.UseAnySharedWithHierarchy
 				) { secretId: SecretIdUseOptionJs ->
 					secretIdUseOption_fromJs(secretId)
 				}
@@ -2939,7 +2941,7 @@ internal class InvoiceApiImplJs(
 			val secretIdConverted: SecretIdUseOption = convertingOptionOrDefaultNonNull(
 				_options,
 				"secretId",
-				com.icure.cardinal.sdk.crypto.entities.SecretIdUseOption.UseAnySharedWithParent
+				com.icure.cardinal.sdk.crypto.entities.SecretIdUseOption.UseAnySharedWithHierarchy
 			) { secretId: SecretIdUseOptionJs ->
 				secretIdUseOption_fromJs(secretId)
 			}
@@ -2998,7 +3000,7 @@ internal class InvoiceApiImplJs(
 			val secretIdConverted: SecretIdUseOption = convertingOptionOrDefaultNonNull(
 				_options,
 				"secretId",
-				com.icure.cardinal.sdk.crypto.entities.SecretIdUseOption.UseAnySharedWithParent
+				com.icure.cardinal.sdk.crypto.entities.SecretIdUseOption.UseAnySharedWithHierarchy
 			) { secretId: SecretIdUseOptionJs ->
 				secretIdUseOption_fromJs(secretId)
 			}
@@ -3089,6 +3091,33 @@ internal class InvoiceApiImplJs(
 			invoiceConverted,
 		)
 		invoice_toJs(result)
+	}
+
+	override fun shareInvoicesByIds(invoiceIds: Array<String>,
+			delegates: Record<String, InvoiceShareOptionsJs>): Promise<BulkShareByIdsResultJs> =
+			GlobalScope.promise {
+		val invoiceIdsConverted: List<String> = arrayToList(
+			invoiceIds,
+			"invoiceIds",
+			{ x1: String ->
+				x1
+			},
+		)
+		val delegatesConverted: Map<String, InvoiceShareOptions> = objectToMap(
+			delegates,
+			"delegates",
+			{ x1: String ->
+				x1
+			},
+			{ x1: InvoiceShareOptionsJs ->
+				invoiceShareOptions_fromJs(x1)
+			},
+		)
+		val result = invoiceApi.shareInvoicesByIds(
+			invoiceIdsConverted,
+			delegatesConverted,
+		)
+		bulkShareByIdsResult_toJs(result)
 	}
 
 	override fun deleteInvoiceById(entityId: String, rev: String): Promise<StoredDocumentIdentifierJs>

@@ -26,6 +26,7 @@ import com.icure.cardinal.sdk.js.model.embed.EncryptedAnnotationJs
 import com.icure.cardinal.sdk.js.model.embed.EncryptedCareTeamMemberJs
 import com.icure.cardinal.sdk.js.model.embed.EncryptedEpisodeJs
 import com.icure.cardinal.sdk.js.model.embed.EncryptedPlanOfActionJs
+import com.icure.cardinal.sdk.js.model.embed.HealthElementQualifiedLinkJs
 import com.icure.cardinal.sdk.js.model.embed.annotation_fromJs
 import com.icure.cardinal.sdk.js.model.embed.annotation_toJs
 import com.icure.cardinal.sdk.js.model.embed.careTeamMember_fromJs
@@ -34,6 +35,8 @@ import com.icure.cardinal.sdk.js.model.embed.delegation_fromJs
 import com.icure.cardinal.sdk.js.model.embed.delegation_toJs
 import com.icure.cardinal.sdk.js.model.embed.episode_fromJs
 import com.icure.cardinal.sdk.js.model.embed.episode_toJs
+import com.icure.cardinal.sdk.js.model.embed.healthElementQualifiedLink_fromJs
+import com.icure.cardinal.sdk.js.model.embed.healthElementQualifiedLink_toJs
 import com.icure.cardinal.sdk.js.model.embed.planOfAction_fromJs
 import com.icure.cardinal.sdk.js.model.embed.planOfAction_toJs
 import com.icure.cardinal.sdk.js.model.embed.securityMetadata_fromJs
@@ -54,6 +57,7 @@ import com.icure.cardinal.sdk.model.embed.EncryptedAnnotation
 import com.icure.cardinal.sdk.model.embed.EncryptedCareTeamMember
 import com.icure.cardinal.sdk.model.embed.EncryptedEpisode
 import com.icure.cardinal.sdk.model.embed.EncryptedPlanOfAction
+import com.icure.cardinal.sdk.model.embed.HealthElementQualifiedLink
 import com.icure.cardinal.sdk.model.embed.Laterality
 import kotlin.Array
 import kotlin.String
@@ -159,6 +163,12 @@ public fun healthElement_toJs(obj: DecryptedHealthElement): DecryptedHealthEleme
 			careTeamMember_toJs(x1)
 		},
 	)
+	val qualifiedLinks = listToArray(
+		obj.qualifiedLinks,
+		{ x1: HealthElementQualifiedLink ->
+			healthElementQualifiedLink_toJs(x1)
+		},
+	)
 	val secretForeignKeys = setToArray(
 		obj.secretForeignKeys,
 		{ x1: String ->
@@ -244,6 +254,7 @@ public fun healthElement_toJs(obj: DecryptedHealthElement): DecryptedHealthEleme
 		"plansOfAction:plansOfAction," +
 		"episodes:episodes," +
 		"careTeam:careTeam," +
+		"qualifiedLinks:qualifiedLinks," +
 		"secretForeignKeys:secretForeignKeys," +
 		"cryptedForeignKeys:cryptedForeignKeys," +
 		"delegations:delegations," +
@@ -322,6 +333,13 @@ public fun healthElement_fromJs(obj: DecryptedHealthElementJs): DecryptedHealthE
 		"obj.careTeam",
 		{ x1: DecryptedCareTeamMemberJs ->
 			careTeamMember_fromJs(x1)
+		},
+	)
+	val qualifiedLinks = arrayToList(
+		obj.qualifiedLinks,
+		"obj.qualifiedLinks",
+		{ x1: HealthElementQualifiedLinkJs ->
+			healthElementQualifiedLink_fromJs(x1)
 		},
 	)
 	val secretForeignKeys = arrayToSet(
@@ -412,6 +430,7 @@ public fun healthElement_fromJs(obj: DecryptedHealthElementJs): DecryptedHealthE
 		plansOfAction = plansOfAction,
 		episodes = episodes,
 		careTeam = careTeam,
+		qualifiedLinks = qualifiedLinks,
 		secretForeignKeys = secretForeignKeys,
 		cryptedForeignKeys = cryptedForeignKeys,
 		delegations = delegations,
@@ -520,6 +539,12 @@ public fun healthElement_toJs(obj: EncryptedHealthElement): EncryptedHealthEleme
 			careTeamMember_toJs(x1)
 		},
 	)
+	val qualifiedLinks = listToArray(
+		obj.qualifiedLinks,
+		{ x1: HealthElementQualifiedLink ->
+			healthElementQualifiedLink_toJs(x1)
+		},
+	)
 	val secretForeignKeys = setToArray(
 		obj.secretForeignKeys,
 		{ x1: String ->
@@ -605,6 +630,7 @@ public fun healthElement_toJs(obj: EncryptedHealthElement): EncryptedHealthEleme
 		"plansOfAction:plansOfAction," +
 		"episodes:episodes," +
 		"careTeam:careTeam," +
+		"qualifiedLinks:qualifiedLinks," +
 		"secretForeignKeys:secretForeignKeys," +
 		"cryptedForeignKeys:cryptedForeignKeys," +
 		"delegations:delegations," +
@@ -683,6 +709,13 @@ public fun healthElement_fromJs(obj: EncryptedHealthElementJs): EncryptedHealthE
 		"obj.careTeam",
 		{ x1: EncryptedCareTeamMemberJs ->
 			careTeamMember_fromJs(x1)
+		},
+	)
+	val qualifiedLinks = arrayToList(
+		obj.qualifiedLinks,
+		"obj.qualifiedLinks",
+		{ x1: HealthElementQualifiedLinkJs ->
+			healthElementQualifiedLink_fromJs(x1)
 		},
 	)
 	val secretForeignKeys = arrayToSet(
@@ -773,6 +806,7 @@ public fun healthElement_fromJs(obj: EncryptedHealthElementJs): EncryptedHealthE
 		plansOfAction = plansOfAction,
 		episodes = episodes,
 		careTeam = careTeam,
+		qualifiedLinks = qualifiedLinks,
 		secretForeignKeys = secretForeignKeys,
 		cryptedForeignKeys = cryptedForeignKeys,
 		delegations = delegations,

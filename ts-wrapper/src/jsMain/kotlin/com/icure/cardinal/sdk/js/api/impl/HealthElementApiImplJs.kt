@@ -13,9 +13,11 @@ import com.icure.cardinal.sdk.js.api.HealthElementApiJs
 import com.icure.cardinal.sdk.js.api.HealthElementFlavouredApiJs
 import com.icure.cardinal.sdk.js.api.HealthElementFlavouredInGroupApiJs
 import com.icure.cardinal.sdk.js.api.HealthElementInGroupApiJs
+import com.icure.cardinal.sdk.js.crypto.entities.BulkShareByIdsResultJs
 import com.icure.cardinal.sdk.js.crypto.entities.HealthElementDelegateOptionsJs
 import com.icure.cardinal.sdk.js.crypto.entities.HealthElementShareOptionsJs
 import com.icure.cardinal.sdk.js.crypto.entities.SecretIdUseOptionJs
+import com.icure.cardinal.sdk.js.crypto.entities.bulkShareByIdsResult_toJs
 import com.icure.cardinal.sdk.js.crypto.entities.healthElementDelegateOptions_fromJs
 import com.icure.cardinal.sdk.js.crypto.entities.healthElementShareOptions_fromJs
 import com.icure.cardinal.sdk.js.crypto.entities.secretIdUseOption_fromJs
@@ -1292,7 +1294,7 @@ internal class HealthElementApiImplJs(
 				val secretIdConverted: SecretIdUseOption = convertingOptionOrDefaultNonNull(
 					_options,
 					"secretId",
-					com.icure.cardinal.sdk.crypto.entities.SecretIdUseOption.UseAnySharedWithParent
+					com.icure.cardinal.sdk.crypto.entities.SecretIdUseOption.UseAnySharedWithHierarchy
 				) { secretId: SecretIdUseOptionJs ->
 					secretIdUseOption_fromJs(secretId)
 				}
@@ -1357,7 +1359,7 @@ internal class HealthElementApiImplJs(
 				val secretIdConverted: SecretIdUseOption = convertingOptionOrDefaultNonNull(
 					_options,
 					"secretId",
-					com.icure.cardinal.sdk.crypto.entities.SecretIdUseOption.UseAnySharedWithParent
+					com.icure.cardinal.sdk.crypto.entities.SecretIdUseOption.UseAnySharedWithHierarchy
 				) { secretId: SecretIdUseOptionJs ->
 					secretIdUseOption_fromJs(secretId)
 				}
@@ -2164,7 +2166,7 @@ internal class HealthElementApiImplJs(
 			val secretIdConverted: SecretIdUseOption = convertingOptionOrDefaultNonNull(
 				_options,
 				"secretId",
-				com.icure.cardinal.sdk.crypto.entities.SecretIdUseOption.UseAnySharedWithParent
+				com.icure.cardinal.sdk.crypto.entities.SecretIdUseOption.UseAnySharedWithHierarchy
 			) { secretId: SecretIdUseOptionJs ->
 				secretIdUseOption_fromJs(secretId)
 			}
@@ -2221,7 +2223,7 @@ internal class HealthElementApiImplJs(
 			val secretIdConverted: SecretIdUseOption = convertingOptionOrDefaultNonNull(
 				_options,
 				"secretId",
-				com.icure.cardinal.sdk.crypto.entities.SecretIdUseOption.UseAnySharedWithParent
+				com.icure.cardinal.sdk.crypto.entities.SecretIdUseOption.UseAnySharedWithHierarchy
 			) { secretId: SecretIdUseOptionJs ->
 				secretIdUseOption_fromJs(secretId)
 			}
@@ -2384,6 +2386,33 @@ internal class HealthElementApiImplJs(
 				x1
 			},
 		)
+	}
+
+	override fun shareHealthElementsByIds(healthElementIds: Array<String>,
+			delegates: Record<String, HealthElementShareOptionsJs>): Promise<BulkShareByIdsResultJs> =
+			GlobalScope.promise {
+		val healthElementIdsConverted: List<String> = arrayToList(
+			healthElementIds,
+			"healthElementIds",
+			{ x1: String ->
+				x1
+			},
+		)
+		val delegatesConverted: Map<String, HealthElementShareOptions> = objectToMap(
+			delegates,
+			"delegates",
+			{ x1: String ->
+				x1
+			},
+			{ x1: HealthElementShareOptionsJs ->
+				healthElementShareOptions_fromJs(x1)
+			},
+		)
+		val result = healthElementApi.shareHealthElementsByIds(
+			healthElementIdsConverted,
+			delegatesConverted,
+		)
+		bulkShareByIdsResult_toJs(result)
 	}
 
 	override fun deleteHealthElementById(entityId: String, rev: String):
