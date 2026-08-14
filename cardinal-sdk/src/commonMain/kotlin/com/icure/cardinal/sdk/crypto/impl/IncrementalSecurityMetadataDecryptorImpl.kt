@@ -1,6 +1,5 @@
 package com.icure.cardinal.sdk.crypto.impl
 
-import com.icure.cardinal.sdk.api.DataOwnerApi
 import com.icure.cardinal.sdk.crypto.BaseSecurityMetadataDecryptor
 import com.icure.cardinal.sdk.crypto.IncrementalSecurityMetadataDecryptor
 import com.icure.cardinal.sdk.crypto.UserEncryptionKeysManager
@@ -44,7 +43,7 @@ class IncrementalSecurityMetadataDecryptorImpl(
 		require (remainingEntitiesById.size == entities.size) {
 			"Duplicate entries for entities ${entities.groupBy { it.id }.filter { it.value.size > 1 }.keys}"
 		}
-		val hierarchy = userEncryptionKeysManager.delegatorActorHierarchy().toSet()
+		val hierarchy = userEncryptionKeysManager.delegatorActorParentHierarchy().flattened()
 		val allExtractedKeysForEntities = entities.associate { it.id to mutableSetOf<HexString>() }
 		val newlyExtractedKeysForEntities = entities.associate { it.id to mutableSetOf<HexString>() }
 		val latestResults = mutableMapOf<String, Result<T>>()

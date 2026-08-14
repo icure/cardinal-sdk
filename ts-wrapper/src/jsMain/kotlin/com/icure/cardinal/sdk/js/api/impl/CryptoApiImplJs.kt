@@ -155,8 +155,7 @@ internal class CryptoApiImplJs(
 
 	}
 
-	override fun currentDataOwnerKeys(options: dynamic):
-			Promise<Record<String, Record<String, ByteArray>>> {
+	override fun availableKeys(options: dynamic): Promise<Record<String, Record<String, ByteArray>>> {
 		val _options = options ?: js("{}")
 		return GlobalScope.promise {
 			val filterTrustedKeysConverted: Boolean = convertingOptionOrDefaultNonNull(
@@ -166,7 +165,7 @@ internal class CryptoApiImplJs(
 			) { filterTrustedKeys: Boolean ->
 				filterTrustedKeys
 			}
-			val result = cryptoApi.currentDataOwnerKeys(
+			val result = cryptoApi.availableKeys(
 				filterTrustedKeysConverted,
 			)
 			mapToObject(

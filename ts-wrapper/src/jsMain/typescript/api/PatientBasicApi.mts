@@ -276,6 +276,7 @@ export interface PatientBasicApi {
 	 *    Note that since the metadata is automatically updated by this method you must not change the metadata of the `mergedInto` patient
 	 *    (`delegations`, mergedInto`, ...): if there is any change between the metadata of the provided `mergedInto` patient and the stored patient this
 	 *    method will fail.
+	 *  - Encryption keys WILL NOT be merged
 	 *
 	 *  In case the revisions of [from] and/or [mergedInto] does not match the latest revisions for these patients in the database this
 	 *  method will fail without soft-deleting the `from` patient and without updating the `into` patient with the merged content and metadata. You will
@@ -291,6 +292,11 @@ export interface PatientBasicApi {
 	 *  - C has no access to the encryption key of the merged patient, and has access only to the secret id which was originally from the unmerged P''
 	 *
 	 *  Note that the user performing this operation must have write access to both patients.
+	 *
+	 *  # Merging encrypted patients
+	 *
+	 *  When merging encrypted patients make sure that you don't merge `encryptedSelf` values coming from different
+	 *  patients, as that will create an undecryptable patient
 	 *
 	 *  @param from the original, unmodified `from` patient. Its content will be unchanged and its metadata will be automatically updated by this method
 	 *  to reflect the merge.

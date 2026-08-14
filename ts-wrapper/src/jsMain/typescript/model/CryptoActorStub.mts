@@ -1,8 +1,10 @@
 // auto-generated file
-import {expectArray, expectMap, expectObject, expectString, extractEntry} from '../internal/JsonDecodeUtils.mjs';
+import {expectArray, expectMap, expectObject, expectString, expectStringEnum, extractEntry} from '../internal/JsonDecodeUtils.mjs';
 import {randomUuid} from '../utils/Id.mjs';
 import {DecryptedPropertyStub} from './PropertyStub.mjs';
 import {CryptoActor} from './base/CryptoActor.mjs';
+import {DataOwnerGroupLink} from './base/DataOwnerGroupLink.mjs';
+import {DataOwnerGroupLinkType} from './base/DataOwnerGroupLinkType.mjs';
 import {Versionable} from './base/Versionable.mjs';
 import {AesExchangeKeyEncryptionKeypairIdentifier} from './specializations/AesExchangeKeyEncryptionKeypairIdentifier.mjs';
 import {AesExchangeKeyEntryKeyString} from './specializations/AesExchangeKeyEntryKeyString.mjs';
@@ -32,15 +34,17 @@ export class CryptoActorStub implements Versionable<string>, CryptoActor {
 
 	publicKey: SpkiHexString | undefined = undefined;
 
-	publicKeysForOaepWithSha256: Array<SpkiHexString>;
+	publicKeysForOaepWithSha256: Array<SpkiHexString> = [];
 
-	parentId: string | undefined = undefined;
+	dataOwnerGroups: Array<DataOwnerGroupLink> = [];
+
+	groupLinkType: DataOwnerGroupLinkType | undefined = undefined;
 
 	cryptoActorProperties: Array<DecryptedPropertyStub> | undefined = undefined;
 
 	readonly $ktClass: 'com.icure.cardinal.sdk.model.CryptoActorStub' = 'com.icure.cardinal.sdk.model.CryptoActorStub';
 
-	constructor(partial: Partial<CryptoActorStub> & Pick<CryptoActorStub, "rev" | "publicKeysForOaepWithSha256">) {
+	constructor(partial: Partial<CryptoActorStub> & Pick<CryptoActorStub, "rev">) {
 		this.id = partial.id ?? randomUuid();
 		this.rev = partial.rev;
 		if ('hcPartyKeys' in partial && partial.hcPartyKeys !== undefined) this.hcPartyKeys = partial.hcPartyKeys;
@@ -48,8 +52,9 @@ export class CryptoActorStub implements Versionable<string>, CryptoActor {
 		if ('transferKeys' in partial && partial.transferKeys !== undefined) this.transferKeys = partial.transferKeys;
 		if ('privateKeyShamirPartitions' in partial && partial.privateKeyShamirPartitions !== undefined) this.privateKeyShamirPartitions = partial.privateKeyShamirPartitions;
 		if ('publicKey' in partial) this.publicKey = partial.publicKey;
-		this.publicKeysForOaepWithSha256 = partial.publicKeysForOaepWithSha256;
-		if ('parentId' in partial) this.parentId = partial.parentId;
+		if ('publicKeysForOaepWithSha256' in partial && partial.publicKeysForOaepWithSha256 !== undefined) this.publicKeysForOaepWithSha256 = partial.publicKeysForOaepWithSha256;
+		if ('dataOwnerGroups' in partial && partial.dataOwnerGroups !== undefined) this.dataOwnerGroups = partial.dataOwnerGroups;
+		if ('groupLinkType' in partial) this.groupLinkType = partial.groupLinkType;
 		if ('cryptoActorProperties' in partial) this.cryptoActorProperties = partial.cryptoActorProperties;
 	}
 
@@ -63,7 +68,8 @@ export class CryptoActorStub implements Versionable<string>, CryptoActor {
 		res['privateKeyShamirPartitions'] = Object.fromEntries(Object.entries(this.privateKeyShamirPartitions).map(([k0, v0]) => [k0, v0]))
 		if (this.publicKey != undefined) res['publicKey'] = this.publicKey
 		res['publicKeysForOaepWithSha256'] = this.publicKeysForOaepWithSha256.map((x0) => x0 )
-		if (this.parentId != undefined) res['parentId'] = this.parentId
+		res['dataOwnerGroups'] = this.dataOwnerGroups.map((x0) => x0.toJSON() )
+		if (this.groupLinkType != undefined) res['groupLinkType'] = this.groupLinkType
 		if (this.cryptoActorProperties != undefined) res['cryptoActorProperties'] = this.cryptoActorProperties.map((x0) => x0.toJSON() )
 		res['$ktClass'] = 'com.icure.cardinal.sdk.model.CryptoActorStub'
 		return res
@@ -124,8 +130,9 @@ export class CryptoActorStub implements Versionable<string>, CryptoActor {
 				(v0, p0) => expectString(v0, false, p0) as HexString
 			),
 			publicKey: expectString(extractEntry(jCpy, 'publicKey', false, path), true, [...path, ".publicKey"]) as SpkiHexString,
-			publicKeysForOaepWithSha256: expectArray(extractEntry(jCpy, 'publicKeysForOaepWithSha256', true, path), false, [...path, ".publicKeysForOaepWithSha256"], (x0, p0) => expectString(x0, false, p0) as SpkiHexString),
-			parentId: expectString(extractEntry(jCpy, 'parentId', false, path), true, [...path, ".parentId"]),
+			publicKeysForOaepWithSha256: expectArray(extractEntry(jCpy, 'publicKeysForOaepWithSha256', false, path), false, [...path, ".publicKeysForOaepWithSha256"], (x0, p0) => expectString(x0, false, p0) as SpkiHexString),
+			dataOwnerGroups: expectArray(extractEntry(jCpy, 'dataOwnerGroups', false, path), false, [...path, ".dataOwnerGroups"], (x0, p0) => expectObject(x0, false, ignoreUnknownKeys, p0, DataOwnerGroupLink.fromJSON)),
+			groupLinkType: expectStringEnum(extractEntry(jCpy, 'groupLinkType', false, path), true, [...path, ".groupLinkType"], DataOwnerGroupLinkType, 'DataOwnerGroupLinkType'),
 			cryptoActorProperties: expectArray(extractEntry(jCpy, 'cryptoActorProperties', false, path), true, [...path, ".cryptoActorProperties"], (x0, p0) => expectObject(x0, false, ignoreUnknownKeys, p0, DecryptedPropertyStub.fromJSON)),
 		})
 		if (!ignoreUnknownKeys) {

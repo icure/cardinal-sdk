@@ -4,6 +4,7 @@ import com.icure.cardinal.sdk.model.EntityReferenceInGroup
 import com.icure.cardinal.sdk.model.CryptoActorStubWithType
 import com.icure.cardinal.sdk.model.DataOwnerType
 import com.icure.cardinal.sdk.model.DataOwnerWithType
+import com.icure.cardinal.sdk.model.base.DataOwnerHierarchyInfo
 
 
 interface DataOwnerApi {
@@ -33,15 +34,11 @@ interface DataOwnerApi {
 	suspend fun getCurrentDataOwnerReference(): EntityReferenceInGroup
 
 	/**
-	 * If the logged user is a data owner get its parent hierarchy. This information is cached without expiration, and
-	 * will only be updated in case of forced refresh.
-	 * The resulting list starts with the topmost parent (the only ancestor without a parent) and ends with the data
-	 * owner itself.
-	 * Fails if the current user is not a data owner.
-	 * @return a list containing the ids of the current data owner hierarchy, ending with the current data owner id.
+	 * If the logged user is a data owner get its data owner groups hierarchy (all types).
+	 * @return the current user's data owner hierarchy tree, starting from the user itself
 	 */
-	suspend fun getCurrentDataOwnerHierarchyIds(): List<String>
-	suspend fun getCurrentDataOwnerHierarchyIdsReference(): List<EntityReferenceInGroup>
+	suspend fun getCurrentDataOwnerHierarchyIds(): DataOwnerHierarchyInfo
+//	suspend fun getCurrentDataOwnerHierarchyIdsReference(): List<EntityReferenceInGroup>
 
 	/**
 	 * Get a data owner regardless of its actual type. The logged user must have the permission to access the data
@@ -55,11 +52,31 @@ interface DataOwnerApi {
 	suspend fun getDataOwner(ownerId: String): DataOwnerWithType
 
 	/**
+	 * Bulk variant of [getDataOwner].
+	 * @param ids the ids of data owners (patients, hcps or devices)
+	 * @return the full data owners associated to the provided ids.
+	 */
+	suspend fun getDataOwners(ids: Set<String>): List<DataOwnerWithType>
+
+	/**
+	 * Bulk variant of [getDataOwner], for use when the type of all requested data owners is already known (for
+	 * example because they are all part of the same data owner hierarchy, which can only contain data owners of a
+	 * single type). More efficient than [getDataOwners] since it fetches the entities directly through the
+	 * type-specific bulk endpoint instead of the polymorphic one.
+	 * @param ids the ids of data owners, all of type [type].
+	 * @param type the type shared by all the requested data owners.
+	 * @return the full data owners associated to the provided ids.
+	 */
+	suspend fun getDataOwnersWithKnownType(ids: Set<String>, type: DataOwnerType): List<DataOwnerWithType>
+
+	/**
 	 * Get a data owner regardless of its actual type. Does not require any special permission.
 	 * @param ownerId the id of a data owner (patient, hcp or device)
 	 * @return the full data owner associated to the provided id.
 	 */
 	suspend fun getCryptoActorStub(ownerId: String): CryptoActorStubWithType
+
+	suspend fun getCryptoActorStubs(ids: Set<String>): List<CryptoActorStubWithType>
 
 	/**
 	 * Get a data owner regardless of its actual type. Does not require any special permission.
@@ -69,21 +86,22 @@ interface DataOwnerApi {
 	suspend fun getCryptoActorStubInGroup(entityReferenceInGroup: EntityReferenceInGroup): CryptoActorStubWithType
 
 	/**
-	 * Get the hierarchy for the current data owner starting from the specified parent.
-	 * Fails if the current user is not a data owner.
-	 * @param parentId the id of a member of the current data owner hierarchy.
+	 * Get the hierarchy for the current data owner considering only parent-type links.
+	 * If [from] is not null only give the hierarchy rooted at the provided parent id.
+	 * @param from the id of a member of the current data owner hierarchy.
 	 * @return an array starting at the topmost parent and ending at the provided parent id.
-	 * @throws IllegalArgumentException If the provided id is not part of the hierarchy
+	 * @throws IllegalArgumentException If the provided id is not part of the parent hierarchy, or if the current user
+	 * is not a data owner
 	 */
-	suspend fun getCurrentDataOwnerHierarchyIdsFrom(parentId: String): List<String>
+	suspend fun getCurrentDataOwnerParentHierarchy(from: String?): DataOwnerHierarchyInfo
 
-	/**
-	 * If the logged user is a data owner get the current data owner and all of his parents. The returned list starts
-	 * from the topmost ancestor of the current data owner and ends with the current data owner.
-	 * Fails if the current user is not a data owner.
-	 * @return a list containing the current data owner hierarchy, ending with the current data owner.
-	 */
-	suspend fun getCurrentDataOwnerHierarchy(): List<DataOwnerWithType>
+//	/**
+//	 * If the logged user is a data owner get the current data owner and all of his parents. The returned list starts
+//	 * from the topmost ancestor of the current data owner and ends with the current data owner.
+//	 * Fails if the current user is not a data owner.
+//	 * @return a list containing the current data owner hierarchy, ending with the current data owner.
+//	 */
+//	suspend fun getCurrentDataOwnerHierarchy(): List<DataOwnerWithType>
 
 	/**
 	 * Modifies the crypto actor information of a data owner. The information that can be modified depend on the
@@ -103,6 +121,6 @@ interface DataOwnerApi {
 	 * Clears the cache of current data owner id and parent hierarchy ids. The hierarchy of a data owner should not
 	 * normally change over time, so this method should be rarely needed. The cache will be repopulated lazily.
 	 */
-	fun clearCurrentDataOwnerIdsCache()
+	fun clearCurrentDataOwnerHierarchyCache()
 }
 

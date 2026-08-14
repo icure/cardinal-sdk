@@ -5,6 +5,7 @@ package com.icure.cardinal.sdk.js.model
 
 import com.icure.cardinal.sdk.js.model.base.CodeStubJs
 import com.icure.cardinal.sdk.js.model.base.CryptoActorJs
+import com.icure.cardinal.sdk.js.model.base.DataOwnerGroupLinkJs
 import com.icure.cardinal.sdk.js.model.base.DataOwnerJs
 import com.icure.cardinal.sdk.js.model.base.HasMedicalLocationJs
 import com.icure.cardinal.sdk.js.model.base.ICureDocumentJs
@@ -53,7 +54,9 @@ public external class DeviceJs(
 
 	public val serialNumber: String?
 
-	override val parentId: String?
+	override val dataOwnerGroups: Array<DataOwnerGroupLinkJs>
+
+	override val groupLinkType: String?
 
 	override val properties: Array<DecryptedPropertyStubJs>
 

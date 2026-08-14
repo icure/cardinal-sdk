@@ -9,40 +9,27 @@ import kotlinx.serialization.Serializable
 @Serializable
 sealed interface SecretIdUseOption {
 	/**
-	 * This will use any one secret id that is not known by any parent hcp of the current data owner.
-	 * If the api is initialized in a mode where the parent hcp keys are unused, this means "use any one available
-	 * secret id".
-	 * Guarantees that a secret id is used: if no secret id is found, the initialization method will fail.
+	 * Similar to [UseAllSharedWithHierarchy] except if there are multiple secret ids that satisfy the requirements; in
+	 * that case only one of the found secret ids will be used.
+	 *
+	 * The selected secret id is arbitrary: no particular ordering, priority, or selection rule is guaranteed.
+	 * Callers must not rely on a specific secret id being selected, nor on the selection being stable or reproducible
+	 * over time.
 	 */
 	@Serializable
-	data object UseAnyConfidential : SecretIdUseOption
+	data object UseAnySharedWithHierarchy : SecretIdUseOption
 
 	/**
-	 * This will use all secret ids that aren't known by any parent hcp of the current data owner.
-	 * If the api is initialized in a mode where the parent hcp keys are unused, this means "use all available secret
-	 * id".
+	 * This will use all secret ids that are directly shared with the leaf ancestors in the hierarchy rooted on the
+	 * SDK's delegator actor; assumes that each member of the hierarchy has access to the data delegated to its linked
+	 * groups, regardless of the data owner group type (parent / simple).
+	 *
+	 * If the api is initialized in non-hierarchical mode, this means "use all available secret id".
+	 *
 	 * Guarantees that a secret id is used: if no secret id is found, the initialization method will fail.
 	 */
 	@Serializable
-	data object UseAllConfidential : SecretIdUseOption
-
-	/**
-	 * This will use one secret id that is known by the topmost ancestor in the current data owner hierarchy.
-	 * If the api is initialized in a mode where the parent hcp keys are unused, this means "use any one available
-	 * secret id".
-	 * Guarantees that a secret id is used: if no secret id is found, the initialization method will fail.
-	 */
-	@Serializable
-	data object UseAnySharedWithParent : SecretIdUseOption
-
-	/**
-	 * This will use all secret id that is known by the topmost ancestor in the current data owner hierarchy.
-	 * If the api is initialized in a mode where the parent hcp keys are unused, this means "use all available secret
-	 * id".
-	 * Guarantees that a secret id is used: if no secret id is found, the initialization method will fail.
-	 */
-	@Serializable
-	data object UseAllSharedWithParent : SecretIdUseOption
+	data object UseAllSharedWithHierarchy : SecretIdUseOption
 
 	/**
 	 * Specify explicitly which secret ids to use. The secretIds can also be empty, in which case the value is

@@ -14,12 +14,15 @@ import com.icure.cardinal.sdk.api.raw.RawContactApi
 import com.icure.cardinal.sdk.api.raw.successBodyOrNull404
 import com.icure.cardinal.sdk.api.raw.successBodyOrThrowRevisionConflict
 import com.icure.cardinal.sdk.crypto.decrypt
+import com.icure.cardinal.sdk.crypto.entities.BulkShareByIdsResult
 import com.icure.cardinal.sdk.crypto.entities.ContactDelegateOptions
 import com.icure.cardinal.sdk.crypto.entities.ContactShareOptions
 import com.icure.cardinal.sdk.crypto.entities.DelegateOptions
 import com.icure.cardinal.sdk.crypto.entities.EntityWithEncryptionMetadataTypeName
 import com.icure.cardinal.sdk.crypto.entities.OwningEntityDetails
 import com.icure.cardinal.sdk.crypto.entities.SecretIdUseOption
+import com.icure.cardinal.sdk.crypto.entities.asIcureStub
+import com.icure.cardinal.sdk.crypto.entities.toBulkShareByIdsResult
 import com.icure.cardinal.sdk.exceptions.NotFoundException
 import com.icure.cardinal.sdk.filters.BaseFilterOptions
 import com.icure.cardinal.sdk.filters.BaseSortableFilterOptions
@@ -1094,6 +1097,26 @@ private class ContactApiImpl(
 
 	override suspend fun matchContactsBySorted(filter: SortableFilterOptions<Contact>): List<String> =
 		doMatchContactsBySorted(groupId = null, filter = filter)
+
+	override suspend fun shareContactsByIds(
+		contactIds: List<String>,
+		delegates: Map<String, ContactShareOptions>
+	): BulkShareByIdsResult {
+		val distinctIds = contactIds.toSet()
+		if (distinctIds.isEmpty() || delegates.isEmpty()) {
+			return BulkShareByIdsResult(emptySet(), emptyMap(), emptyMap(), emptyList())
+		}
+		val stubs = rawApi.findContactsDelegationsStubsByIds(contactIds = ListOfIds(distinctIds.toList())).successBody()
+		val result = config.crypto.entity.simpleBulkShareOrUpdateEncryptedEntityMetadataNoEntities(
+			entities = stubs,
+			entitiesType = EntityWithEncryptionMetadataTypeName.Contact,
+			delegates = delegates,
+			autoRetry = true,
+			getUpdatedEntity = { rawApi.getContact(contactId = it).successBody().asIcureStub() },
+			doRequestBulkShareOrUpdate = { params -> rawApi.bulkShareMinimal(request = params).successBody() }
+		)
+		return result.toBulkShareByIdsResult(distinctIds, stubs.mapTo(mutableSetOf()) { it.id }, delegates.keys)
+	}
 
 	private suspend fun doMatchServicesBy(groupId: String?, filter: FilterOptions<Service>): List<String> =
 		if (groupId == null) {

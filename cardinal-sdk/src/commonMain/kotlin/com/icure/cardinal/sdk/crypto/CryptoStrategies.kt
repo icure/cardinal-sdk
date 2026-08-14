@@ -96,15 +96,17 @@ interface CryptoStrategies {
 		/**
 		 * The SDK must not generate a new key for the data owner.
 		 * Instead, whenever a delegator is needed for an action (creating new encrypted data, or sharing existing data)
-		 * the SDK will use the (direct) parent data owner and its key as delegator.
-		 * This option is only available if the data owner has a parent and the SDK was initialized using hierarchical
-		 * data owners.
+		 * the SDK will use the provided parent data owner and its key as delegator.
+		 * This option is only available if the data owner has at least a parent and the SDK was initialized using
+		 * hierarchical data owners.
 		 * Note that this will not have an effect on the author/responsible fields of created data, the only observable
 		 * effect is on the created exchange data and delegations.
+		 * @param parentId the id of a parent of the current data owner that should be used as delegator instead of the
+		 * current delegator when needed.
 		 */
 		//TODO if the current data owner has some keys but not verified they will be ignored during decryption -> in
 		// parent delegator mode all encryption AND decryption is done as if the user is the parent
-		data object ParentDelegator : KeyGenerationRequestResult
+		data class ParentDelegator(val parentId: String) : KeyGenerationRequestResult
 
 		/**
 		 * The SDK should use the provided key pair as a new key for the data owner.
@@ -127,23 +129,30 @@ interface CryptoStrategies {
 	 *
 	 * The recovered keys will automatically be cached using the current SDK {@link KeyStorageFacade} and {@link StorageFacade}
 	 *
-	 * The input is a list containing an object for each data owner part of the current data owner hierarchy. The objects are ordered from the data
-	 * for the topmost parent of the current data owner hierarchy (first element) to the data for the current data owner (last element).
+	 * [currentDataOwnerId] is the id of the current data owner; use it to tell it apart from its parents in
+	 * [keysData], instead of relying on its position in the map (map entries have no defined order). [keysData]
+	 * associates to the id of each data owner part of the current data owner's parent hierarchy (considering only
+	 * parent-type [com.icure.cardinal.sdk.model.base.DataOwnerGroupLinkType] links, including the current data
+	 * owner itself) the corresponding recovery request. If you are also interested in the shape of the hierarchy
+	 * (for example to order parents from topmost to direct) you can retrieve it from the `dataOwnerGroups` of any
+	 * of the [KeyDataRecoveryRequest.dataOwnerDetails].
 	 *
 	 * The returned value must be an object associating to each data owner id an object with:
 	 * - `recoveredKeys`:
 	 * - `keyAuthenticity`: an object
-	 * @param keysData all information on unknown and unavailable keys for each data owner part of the current data owner hierarchy.
+	 * @param currentDataOwnerId the id of the current data owner.
+	 * @param keysData all information on unknown and unavailable keys for each data owner part of the current data owner's parent hierarchy, by id.
 	 * @param cryptoPrimitives cryptographic primitives you can use to support the process.
 	 * @param keyPairRecoverer a key pair recoverer you can use to support the process
 	 * @return a map that associates to each given data owner id the recovered data.
 	 */
 	suspend fun recoverAndVerifySelfHierarchyKeys(
-		keysData: List<KeyDataRecoveryRequest>,
+		currentDataOwnerId: String,
+		keysData: Map<String, KeyDataRecoveryRequest>,
 		cryptoPrimitives: CryptoService,
 		keyPairRecoverer: KeyPairRecoverer
 	): Map<String, RecoveredKeyData> =
-		keysData.associate { it.dataOwnerDetails.dataOwner.id to RecoveredKeyData(emptyMap(), emptyMap()) }
+		keysData.mapValues { RecoveredKeyData(emptyMap(), emptyMap()) }
 
 	/**
 	 * The correct initialisation of the crypto API requires that at least 1 verified (or device) key pair is available for each data owner part of the

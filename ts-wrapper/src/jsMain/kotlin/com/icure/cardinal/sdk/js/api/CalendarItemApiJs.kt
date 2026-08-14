@@ -3,8 +3,10 @@
 
 package com.icure.cardinal.sdk.js.api
 
+import com.icure.cardinal.sdk.js.crypto.entities.BulkShareByIdsResultJs
 import com.icure.cardinal.sdk.js.crypto.entities.CalendarItemDelegateOptionsJs
 import com.icure.cardinal.sdk.js.crypto.entities.CalendarItemShareOptionsJs
+import com.icure.cardinal.sdk.js.crypto.entities.SecretIdUseOptionJs
 import com.icure.cardinal.sdk.js.filters.FilterOptionsJs
 import com.icure.cardinal.sdk.js.filters.SortableFilterOptionsJs
 import com.icure.cardinal.sdk.js.model.CalendarItemJs
@@ -91,6 +93,9 @@ public external interface CalendarItemApiJs {
 		extensionInDays: Double?,
 	): Promise<Array<CalendarItemOccupancyJs>>
 
+	public fun shareCalendarItemsByIds(calendarItemIds: Array<String>,
+			delegates: Record<String, CalendarItemShareOptionsJs>): Promise<BulkShareByIdsResultJs>
+
 	public fun deleteCalendarItemById(entityId: String, rev: String):
 			Promise<StoredDocumentIdentifierJs>
 
@@ -122,9 +127,10 @@ public external interface CalendarItemApiJs {
 			delegates: Record<String, CalendarItemShareOptionsJs>): Promise<DecryptedCalendarItemJs>
 
 	public fun linkToPatient(
-		calendarItem: CalendarItemJs,
+		calendarItem: DecryptedCalendarItemJs,
 		patient: PatientJs,
 		shareLinkWithDelegates: Array<String>,
+		secretIdUseOption: SecretIdUseOptionJs,
 	): Promise<DecryptedCalendarItemJs>
 
 	public fun filterCalendarItemsBy(filter: FilterOptionsJs<CalendarItemJs>):
