@@ -5,6 +5,17 @@ on:
             - develop
         paths:
             - 'cardinal-sdk/src/commonMain/**'
+    pull_request:
+        # Only `opened`/`reopened`: a `synchronize` event would re-run the generation for any new commit as long as
+        # the *whole* PR diff touches `paths`, even when the new commit itself does not. New commits are covered by
+        # the `push` trigger above, whose `paths` filter is evaluated against the pushed commits only.
+        types:
+            - opened
+            - reopened
+        branches:
+            - main
+        paths:
+            - 'cardinal-sdk/src/commonMain/**'
     workflow_dispatch:
         inputs:
             target-branch:
@@ -22,6 +33,8 @@ jobs:
     check-open-pr:
         runs-on: ubuntu-latest
         name: Check for an open PR towards main
+        # On `pull_request` the PR is the event itself, so there is nothing to look up.
+        if: github.event_name == 'push'
         permissions:
             pull-requests: read
         outputs:
@@ -44,7 +57,13 @@ jobs:
         runs-on: ubuntu-latest
         name: Setup environment & generating python sdk
         needs: check-open-pr
-        if: github.event_name == 'workflow_dispatch' || needs.check-open-pr.outputs.has-open-pr == 'true'
+        # `!cancelled()` is needed because `check-open-pr` is skipped on `pull_request` events.
+        if: >-
+            !cancelled() && (
+              github.event_name == 'workflow_dispatch'
+              || (github.event_name == 'pull_request' && github.head_ref == 'develop')
+              || (github.event_name == 'push' && needs.check-open-pr.outputs.has-open-pr == 'true')
+            )
         env:
             SDK_CODEGEN_VERSION: 1.9.1
             ORG_GRADLE_PROJECT_repoUsername: ${{ secrets.REPO_USERNAME }}

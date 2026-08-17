@@ -5,6 +5,17 @@ on:
             - develop
         paths:
             - 'cardinal-sdk/src/commonMain/**'
+    pull_request:
+        # Only `opened`/`reopened`: a `synchronize` event would re-run the generation for any new commit as long as
+        # the *whole* PR diff touches `paths`, even when the new commit itself does not. New commits are covered by
+        # the `push` trigger above, whose `paths` filter is evaluated against the pushed commits only.
+        types:
+            - opened
+            - reopened
+        branches:
+            - main
+        paths:
+            - 'cardinal-sdk/src/commonMain/**'
 env:
     JSON_OUTPUT_DIR: ./cardinal-sdk/build/generated/ksp/jvm/jvmMain/resources
     BUILDER_JAR_PATH: sdk-codegen-codeGenerator.jar
@@ -14,6 +25,8 @@ jobs:
     check-open-pr:
         runs-on: ubuntu-latest
         name: Check for an open PR towards main
+        # On `pull_request` the PR is the event itself, so there is nothing to look up.
+        if: github.event_name == 'push'
         permissions:
             pull-requests: read
         outputs:
@@ -34,7 +47,13 @@ jobs:
 
     update-ts-sdk:
         needs: check-open-pr
-        if: github.event_name == 'workflow_dispatch' || needs.check-open-pr.outputs.has-open-pr == 'true'
+        # `!cancelled()` is needed because `check-open-pr` is skipped on `pull_request` events.
+        if: >-
+            !cancelled() && (
+              github.event_name == 'workflow_dispatch'
+              || (github.event_name == 'pull_request' && github.head_ref == 'develop')
+              || (github.event_name == 'push' && needs.check-open-pr.outputs.has-open-pr == 'true')
+            )
         runs-on: ubuntu-latest
         name: Setup environment & generating typescript sdk
         env:
@@ -47,6 +66,8 @@ jobs:
             -   name: Check out code
                 uses: actions/checkout@v4
                 with:
+                    # On `pull_request` the default ref is the PR merge commit: generate from the head branch instead.
+                    ref: ${{ github.event_name == 'pull_request' && github.head_ref || github.sha }}
                     submodules: 'recursive'
                     token: ${{secrets.GH_PERSONAL_ACCESS_TOKEN}}
 

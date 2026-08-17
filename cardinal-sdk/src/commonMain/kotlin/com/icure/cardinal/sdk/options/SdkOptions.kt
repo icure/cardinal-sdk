@@ -372,6 +372,7 @@ data class EncryptedFieldsConfiguration(
 	val healthElement: Set<String> = setOf(
 		"descr",
 		"note",
+		"asserters",
 		"notes[].markdown",
 		"careTeam[].careTeamMemberType",
 		"careTeam[].healthcarePartyId",

@@ -29,6 +29,11 @@ export namespace SecretIdUseOption {
 	 */
 	export class Use {
 
+		/**
+		 * Specify explicitly which secret ids to use. The secretIds can also be empty, in which case the value is
+		 * equivalent to [UseNone].
+		 * Note that the SDK will not check that the secret id you used is actually a secret id of the owning entity.
+		 * / */
 		secretIds: Array<string>;
 
 		readonly $ktClass: 'com.icure.cardinal.sdk.crypto.entities.SecretIdUseOption.Use' = 'com.icure.cardinal.sdk.crypto.entities.SecretIdUseOption.Use';
