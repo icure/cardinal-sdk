@@ -36,6 +36,16 @@ data class ExchangeData(
 	 */
 	public val `delegate`: String,
 	/**
+	 * If the delegate is a data owner group, the id of the member that is the recipient of this piece
+	 * of the exchange data.
+	 */
+	public val recipient: String? = null,
+	/**
+	 * If this is a piece of exchange data for a simple-type group, the id shared between all the
+	 * pieces of exchange data for that group.
+	 */
+	public val exchangeDataGroupId: String? = null,
+	/**
 	 * AES key for sharing data, encrypted with the public keys of both delegate and delegator.
 	 */
 	public val exchangeKey: Map<KeypairFingerprintV2String, Base64String>,
@@ -44,7 +54,8 @@ data class ExchangeData(
 	 */
 	public val accessControlSecret: Map<KeypairFingerprintV2String, Base64String>,
 	/**
-	 * Signature by the delegator to ensure key data has not been tampered with by third parties.
+	 * Signature by the delegator to ensure key data has not been tampered with by third parties; empty
+	 * if invalidated.
 	 */
 	@param:DefaultValue("emptyMap()")
 	public val delegatorSignature: Map<KeypairFingerprintV2String, Base64String> = emptyMap(),

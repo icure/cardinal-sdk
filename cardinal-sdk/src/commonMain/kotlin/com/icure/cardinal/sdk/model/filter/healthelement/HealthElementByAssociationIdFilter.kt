@@ -25,5 +25,6 @@ data class HealthElementByAssociationIdFilter(
 	override val desc: String? = null,
 ) : AbstractFilter<HealthElement> {
 	// region HealthElementByAssociationIdFilter-HealthElementByAssociationIdFilter
+
 	// endregion
 }

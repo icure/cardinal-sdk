@@ -28,5 +28,6 @@ data class HealthElementQualifiedLink(
 	public val healthElementId: String,
 ) {
 	// region HealthElementQualifiedLink-HealthElementQualifiedLink
+
 	// endregion
 }

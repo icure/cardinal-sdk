@@ -10,6 +10,7 @@ import com.icure.cardinal.sdk.model.ExchangeData
 import com.icure.cardinal.sdk.model.IdWithRev
 import com.icure.cardinal.sdk.model.ListOfIds
 import com.icure.cardinal.sdk.model.PaginatedList
+import com.icure.cardinal.sdk.model.requests.ExchangeDataPieceCreationRequest
 import com.icure.utils.InternalIcureApi
 import io.ktor.client.request.accept
 import io.ktor.client.request.parameter
@@ -22,6 +23,7 @@ import io.ktor.util.date.GMTDate
 import kotlin.Int
 import kotlin.String
 import kotlin.collections.List
+import kotlin.collections.Map
 
 // WARNING: This class is auto-generated. If you change it manually, your changes will be lost.
 // If you want to change the way this class is generated, see [this repo](https://github.com/icure/sdk-codegen).
@@ -148,6 +150,94 @@ class RawExchangeDataApiImpl(
 			accept(Application.Json)
 		}.wrap()
 
+	override suspend fun createExchangeDataGroupPieces(
+		exchangeDataGroupId: String,
+		delegator: String,
+		`delegate`: String,
+		piecesByRecipient: Map<String, ExchangeDataPieceCreationRequest>,
+	): HttpResponse<List<ExchangeData>> =
+		post(authProvider) {
+			url {
+				takeFrom(apiUrl)
+				appendPathSegments("rest", "v2", "exchangedata", "group", exchangeDataGroupId, "pieces")
+				parameter("delegator", delegator)
+				parameter("delegate", delegate)
+			}
+			contentType(Application.Json)
+			accept(Application.Json)
+			setBody(piecesByRecipient)
+		}.wrap()
+
+	override suspend fun getExchangeDataGroupById(
+		exchangeDataGroupId: String,
+		startKey: String?,
+		startDocumentId: String?,
+		limit: Int?,
+	): HttpResponse<PaginatedList<ExchangeData>> =
+		get(authProvider) {
+			url {
+				takeFrom(apiUrl)
+				appendPathSegments("rest", "v2", "exchangedata", "group", exchangeDataGroupId)
+				parameter("startKey", startKey)
+				parameter("startDocumentId", startDocumentId)
+				parameter("limit", limit)
+				parameter("ts", GMTDate().timestamp)
+			}
+			accept(Application.Json)
+		}.wrap()
+
+	override suspend fun getExchangeDataGroupByIdForRecipients(
+		exchangeDataGroupId: String,
+		recipients: String,
+		startDocumentId: String?,
+	): HttpResponse<PaginatedList<ExchangeData>> =
+		get(authProvider) {
+			url {
+				takeFrom(apiUrl)
+				appendPathSegments("rest", "v2", "exchangedata", "group", exchangeDataGroupId, "byRecipients")
+				parameter("recipients", recipients)
+				parameter("startDocumentId", startDocumentId)
+				parameter("ts", GMTDate().timestamp)
+			}
+			accept(Application.Json)
+		}.wrap()
+
+	override suspend fun getExchangeDataByParticipantForRecipients(
+		dataOwnerId: String,
+		recipients: String,
+		startDocumentId: String?,
+	): HttpResponse<PaginatedList<ExchangeData>> =
+		get(authProvider) {
+			url {
+				takeFrom(apiUrl)
+				appendPathSegments("rest", "v2", "exchangedata", "byParticipant", "byRecipients")
+				parameter("dataOwnerId", dataOwnerId)
+				parameter("recipients", recipients)
+				parameter("startDocumentId", startDocumentId)
+				parameter("ts", GMTDate().timestamp)
+			}
+			accept(Application.Json)
+		}.wrap()
+
+	override suspend fun getExchangeDataByDelegatorDelegateForRecipients(
+		delegatorId: String,
+		delegateId: String,
+		recipients: String,
+		startDocumentId: String?,
+	): HttpResponse<PaginatedList<ExchangeData>> =
+		get(authProvider) {
+			url {
+				takeFrom(apiUrl)
+				appendPathSegments("rest", "v2", "exchangedata", "byDelegatorDelegate", "byRecipients")
+				parameter("delegatorId", delegatorId)
+				parameter("delegateId", delegateId)
+				parameter("recipients", recipients)
+				parameter("startDocumentId", startDocumentId)
+				parameter("ts", GMTDate().timestamp)
+			}
+			accept(Application.Json)
+		}.wrap()
+
 	override suspend fun getParticipantCounterparts(
 		dataOwnerId: String,
 		counterpartsTypes: String,
@@ -269,6 +359,99 @@ class RawExchangeDataApiImpl(
 				appendPathSegments("rest", "v2", "exchangedata", "byDelegatorDelegate", "inGroup", groupId)
 				parameter("delegatorId", delegatorId)
 				parameter("delegateId", delegateId)
+				parameter("ts", GMTDate().timestamp)
+			}
+			accept(Application.Json)
+		}.wrap()
+
+	override suspend fun createExchangeDataGroupPieces(
+		exchangeDataGroupId: String,
+		delegator: String,
+		`delegate`: String,
+		piecesByRecipient: Map<String, ExchangeDataPieceCreationRequest>,
+		groupId: String,
+	): HttpResponse<List<ExchangeData>> =
+		post(authProvider) {
+			url {
+				takeFrom(apiUrl)
+				appendPathSegments("rest", "v2", "exchangedata", "group", exchangeDataGroupId, "pieces", "inGroup", groupId)
+				parameter("delegator", delegator)
+				parameter("delegate", delegate)
+			}
+			contentType(Application.Json)
+			accept(Application.Json)
+			setBody(piecesByRecipient)
+		}.wrap()
+
+	override suspend fun getExchangeDataGroupById(
+		exchangeDataGroupId: String,
+		startKey: String?,
+		startDocumentId: String?,
+		limit: Int?,
+		groupId: String,
+	): HttpResponse<PaginatedList<ExchangeData>> =
+		get(authProvider) {
+			url {
+				takeFrom(apiUrl)
+				appendPathSegments("rest", "v2", "exchangedata", "group", exchangeDataGroupId, "inGroup", groupId)
+				parameter("startKey", startKey)
+				parameter("startDocumentId", startDocumentId)
+				parameter("limit", limit)
+				parameter("ts", GMTDate().timestamp)
+			}
+			accept(Application.Json)
+		}.wrap()
+
+	override suspend fun getExchangeDataGroupByIdForRecipients(
+		exchangeDataGroupId: String,
+		recipients: String,
+		startDocumentId: String?,
+		groupId: String,
+	): HttpResponse<PaginatedList<ExchangeData>> =
+		get(authProvider) {
+			url {
+				takeFrom(apiUrl)
+				appendPathSegments("rest", "v2", "exchangedata", "group", exchangeDataGroupId, "byRecipients", "inGroup", groupId)
+				parameter("recipients", recipients)
+				parameter("startDocumentId", startDocumentId)
+				parameter("ts", GMTDate().timestamp)
+			}
+			accept(Application.Json)
+		}.wrap()
+
+	override suspend fun getExchangeDataByParticipantForRecipients(
+		dataOwnerId: String,
+		recipients: String,
+		startDocumentId: String?,
+		groupId: String,
+	): HttpResponse<PaginatedList<ExchangeData>> =
+		get(authProvider) {
+			url {
+				takeFrom(apiUrl)
+				appendPathSegments("rest", "v2", "exchangedata", "byParticipant", "byRecipients", "inGroup", groupId)
+				parameter("dataOwnerId", dataOwnerId)
+				parameter("recipients", recipients)
+				parameter("startDocumentId", startDocumentId)
+				parameter("ts", GMTDate().timestamp)
+			}
+			accept(Application.Json)
+		}.wrap()
+
+	override suspend fun getExchangeDataByDelegatorDelegateForRecipients(
+		delegatorId: String,
+		delegateId: String,
+		recipients: String,
+		startDocumentId: String?,
+		groupId: String,
+	): HttpResponse<PaginatedList<ExchangeData>> =
+		get(authProvider) {
+			url {
+				takeFrom(apiUrl)
+				appendPathSegments("rest", "v2", "exchangedata", "byDelegatorDelegate", "byRecipients", "inGroup", groupId)
+				parameter("delegatorId", delegatorId)
+				parameter("delegateId", delegateId)
+				parameter("recipients", recipients)
+				parameter("startDocumentId", startDocumentId)
 				parameter("ts", GMTDate().timestamp)
 			}
 			accept(Application.Json)
