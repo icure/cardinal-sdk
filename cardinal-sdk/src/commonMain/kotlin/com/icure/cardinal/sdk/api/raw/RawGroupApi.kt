@@ -173,6 +173,7 @@ public interface RawGroupApi {
 	suspend fun initDesignDocs(
 		id: String,
 		clazz: String? = null,
+		partition: String? = null,
 		warmup: Boolean?,
 		dryRun: Boolean?,
 	): HttpResponse<List<DesignDocument>>
