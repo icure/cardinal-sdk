@@ -2,6 +2,7 @@ package com.icure.cardinal.sdk.usecases
 
 import com.icure.cardinal.sdk.CardinalSdk
 import com.icure.cardinal.sdk.auth.UsernamePassword
+import com.icure.cardinal.sdk.crypto.BaseExchangeDataManager
 import com.icure.cardinal.sdk.crypto.CryptoStrategies
 import com.icure.cardinal.sdk.crypto.KeyPairRecoverer
 import com.icure.cardinal.sdk.crypto.impl.exportSpkiHex
@@ -58,6 +59,17 @@ class UntrustedKey : StringSpec({
 	beforeSpec {
 		initializeTestEnvironment()
 	}
+
+	suspend fun BaseExchangeDataManager.getExchangeDataByDelegatorDelegatePair(
+		inGroup: String?,
+		delegatorReference: EntityReferenceInGroup,
+		delegateReference: EntityReferenceInGroup,
+	) = getExchangeDataByDelegatorDelegatePair(
+		inGroup = inGroup,
+		delegatorReference = delegatorReference,
+		delegateReference = delegateReference,
+		recipients = emptySet()
+	)
 
 	"A user that has a key that can't be trusted anymore can still use it for decrypting existing data but won't use it to encrypt new data".config(enabled = DEFAULT_ENABLED && LOCAL_ENV_ONLY) {
 		val parent = createHcpUser()

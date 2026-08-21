@@ -12,9 +12,12 @@ import com.icure.cardinal.sdk.crypto.entities.UndecryptableExchangeData
 import com.icure.cardinal.sdk.crypto.entities.UnencryptedExchangeDataContent
 import com.icure.cardinal.sdk.model.EntityReferenceInGroup
 import com.icure.cardinal.sdk.model.ExchangeData
+import com.icure.cardinal.sdk.model.base.DataOwnerGroupLinkType
 import com.icure.cardinal.sdk.model.specializations.Base64String
 import com.icure.cardinal.sdk.model.specializations.SecureDelegationKeyString
 import com.icure.cardinal.sdk.utils.LruCache
+import com.icure.cardinal.sdk.utils.ensure
+import com.icure.cardinal.sdk.utils.ensureNonNull
 import com.icure.kryptom.crypto.CryptoService
 import com.icure.utils.InternalIcureApi
 import kotlinx.coroutines.CompletableDeferred
@@ -96,12 +99,17 @@ private class CachedLruExchangeDataManagerInGroup(
 	/*
 	 * Note: currently keeps in cache also failed jobs, in future should maybe evict failed jobs as soon as they fail.
 	 */
-	private val exchangeDataByIdCache: LruCache<String, Deferred<CachedExchangeDataDetails?>> =
+	private val exchangeDataByGroupIdCache: LruCache<String, Deferred<CachedExchangeDataDetails?>> =
 		LruCache(null)
 	private val delegateToVerifiedExchangeDataId =
 		mutableMapOf<String, Deferred<String>>()
 	private val secureDelegationKeysToExchangeDataId =
 		mutableMapOf<SecureDelegationKeyString, String>()
+	private val validRecipients = userEncryptionKeys.delegatorActorParentHierarchy()
+		.flattened(setOf(DataOwnerGroupLinkType.Parent))
+		.mapTo(mutableSetOf()) {
+			EntityReferenceInGroup(it, null).asReferenceStringInGroup(requestGroup, sdkBoundGroup)
+		}
 
 	/*
 	 * If the cache mutex becomes a bottleneck in services we can try to instead have the cache read be free of lock,
@@ -115,9 +123,9 @@ private class CachedLruExchangeDataManagerInGroup(
 		id: String,
 		job: Deferred<CachedExchangeDataDetails?>
 	) {
-		exchangeDataByIdCache.set(id, job)
-		if (exchangeDataByIdCache.size > maxCacheSize) {
-			exchangeDataByIdCache.evictOldest()?.takeIf {
+		exchangeDataByGroupIdCache.set(id, job)
+		if (exchangeDataByGroupIdCache.size > maxCacheSize) {
+			exchangeDataByGroupIdCache.evictOldest()?.takeIf {
 				/*
 				 * If not completed, then no need to get rid of additional caches; it wasn't added yet, and won't be
 				 * added by the evicted job thanks to usage of mutex + limited parallelism
@@ -144,8 +152,8 @@ private class CachedLruExchangeDataManagerInGroup(
 	) {
 		// Check no one has evicted this entry before the cache additional info method has been called, else don't cache
 		// additional info
-		if (exchangeDataByIdCache.get(toCache.exchangeData.id) != null) {
-			exchangeDataByIdCache.set(toCache.exchangeData.id, CompletableDeferred(toCache)) // No need to check cache size since we are only updating an existing key
+		if (exchangeDataByGroupIdCache.get(toCache.exchangeData.id) != null) {
+			exchangeDataByGroupIdCache.set(toCache.exchangeData.id, CompletableDeferred(toCache)) // No need to check cache size since we are only updating an existing key
 			if (toCache.decryptedDetails?.verified == true && delegateToVerifiedExchangeDataId[toCache.exchangeData.delegate]?.isCompleted != true) {
 				delegateToVerifiedExchangeDataId[toCache.exchangeData.delegate] = CompletableDeferred(toCache.exchangeData.id)
 			}
@@ -172,7 +180,8 @@ private class CachedLruExchangeDataManagerInGroup(
 					val verifiedData = base.getExchangeDataByDelegatorDelegatePair(
 						requestGroup,
 						EntityReferenceInGroup(userEncryptionKeys.delegatorActorId(), null),
-						delegateReference
+						delegateReference,
+						setOf(EntityReferenceInGroup(userEncryptionKeys.delegatorActorId(), null))
 					).firstNotNullOfOrNull { exchangeData ->
 						this@async.ensureActive()
 						decryptData(exchangeData)?.takeIf {
@@ -192,10 +201,10 @@ private class CachedLruExchangeDataManagerInGroup(
 					// Minimize expensive operations in lock: calculate hashes here
 					val toCache = prepareCachedDetails(verifiedData.first, verifiedData.second)
 					cacheMutex.withLock {
-						cacheMainInfoJobMustHaveLock(verifiedData.first.id, CompletableDeferred(toCache))
+						cacheMainInfoJobMustHaveLock(verifiedData.first.groupId, CompletableDeferred(toCache))
 						cacheAdditionalInfoMustHaveLock(toCache)
 						Pair(
-							verifiedData.first.id ,
+							verifiedData.first.groupId, // Since it is exchange data where current data owner is the delegator id == exchangeDataGroupId
 							ExchangeDataWithUnencryptedContent(
 								verifiedData.first,
 								verifiedData.second.first
@@ -211,7 +220,7 @@ private class CachedLruExchangeDataManagerInGroup(
 		}
 		return if (retrieved.first != null) {
 			val id = retrieved.first!!.await()
-			val cachedDetails = doGetDecryptionDataByIds(setOf(id), true).getValue(id)!!
+			val cachedDetails = doGetDecryptionDataByGroupIds(setOf(id), true).getValue(id)!!
 			cachedDetails.decryptedDetails?.takeIf { it.verified }?.let {
 				ExchangeDataWithUnencryptedContent(
 					cachedDetails.exchangeData,
@@ -229,7 +238,7 @@ private class CachedLruExchangeDataManagerInGroup(
 		val allCachedValues = cacheMutex.withLock {
 			hashes.mapNotNull { h ->
 				secureDelegationKeysToExchangeDataId[h]?.let {
-					exchangeDataByIdCache.get(it)
+					exchangeDataByGroupIdCache.get(it)
 				}?.let {
 					h to it
 				}
@@ -243,11 +252,11 @@ private class CachedLruExchangeDataManagerInGroup(
 		}
 	}
 
-	override suspend fun getDecryptionDataByIds(
+	override suspend fun getDecryptionDataByExchangeDataGroupIds(
 		ids: Set<String>,
 		waitOrRetrieveUncached: Boolean
 	): Map<String, ExchangeDataWithPotentiallyDecryptedContent> =
-		doGetDecryptionDataByIds(ids, waitOrRetrieveUncached).mapNotNull { (k, v) ->
+		doGetDecryptionDataByGroupIds(ids, waitOrRetrieveUncached).mapNotNull { (k, v) ->
 			v?.let {
 				val decrypted = it.decryptedDetails?.decryptedContent
 				if (decrypted != null) {
@@ -262,15 +271,15 @@ private class CachedLruExchangeDataManagerInGroup(
 		}.toMap()
 
 	@OptIn(ExperimentalCoroutinesApi::class)
-	private suspend fun doGetDecryptionDataByIds(
+	private suspend fun doGetDecryptionDataByGroupIds(
 		ids: Set<String>,
 		waitOrRetrieveUncached: Boolean
 	): Map<String, CachedExchangeDataDetails?> = cacheMutex.withLock {
 		val cached = ids.mapNotNull { id ->
-			exchangeDataByIdCache.get(id)?.let { result ->
+			exchangeDataByGroupIdCache.get(id)?.let { result ->
 				if (result.isCompleted && result.getCompletionExceptionOrNull() != null) {
 					// Ignore cached and already failed jobs, and remove them from cache.
-					exchangeDataByIdCache.remove(id)
+					exchangeDataByGroupIdCache.remove(id)
 					null
 				} else Pair(id, result)
 			}
@@ -279,14 +288,38 @@ private class CachedLruExchangeDataManagerInGroup(
 			val idsToRetrieve = ids - cached.keys
 			val retrieved = if (idsToRetrieve.isNotEmpty()) {
 				val job = cacheRequestsScope.async {
-					val retrieveAndDecryptedExchangeData = base.getExchangeDataByIds(
+					val (directRetrievedExchangeData, groupToRetrieveExchangeData) = base.getExchangeDataByIds(
 						requestGroup,
 						idsToRetrieve
-					).associate { exchangeData ->
+					).partition { it.recipient == null || it.recipient in validRecipients }
+					val retrieveAndDecryptedExchangeData = directRetrievedExchangeData.associateTo(mutableMapOf()) { exchangeData ->
 						exchangeData.id to prepareCachedDetails(
 							exchangeData,
 							decryptData(exchangeData)
 						)
+					}
+					if (groupToRetrieveExchangeData.isNotEmpty()) {
+						val retrievedPieces = base.getExchangeDataByIds(
+							requestGroup,
+							groupToRetrieveExchangeData.flatMapTo(mutableSetOf()) { exchangeData ->
+								if (exchangeData.exchangeDataGroupId != null) validRecipients.map { recipient ->
+									exchangeData.pieceIdFor(recipient)
+								} else emptyList()
+							}
+						)
+						retrievedPieces.forEach { piece ->
+							if (piece.exchangeDataGroupId != null) {
+								val curr = retrieveAndDecryptedExchangeData[piece.exchangeDataGroupId]
+								if (curr?.decryptedDetails == null) {
+									// exchange data group not handled yet, or was handled through a piece which could
+									// not be decrypted -> we have another piece that might be decrypted successfully
+									retrieveAndDecryptedExchangeData[piece.exchangeDataGroupId] = prepareCachedDetails(
+										piece,
+										decryptData(piece)
+									)
+								}
+							}
+						}
 					}
 					cacheMutex.withLock {
 						retrieveAndDecryptedExchangeData.values.forEach { cacheAdditionalInfoMustHaveLock(it) }
@@ -332,4 +365,12 @@ private class CachedLruExchangeDataManagerInGroup(
 
 	override fun dispose() =
 		cacheRequestsScope.cancel()
+
+	private val ExchangeData.groupId get(): String = exchangeDataGroupId ?: id
+
+	private suspend fun ExchangeData.pieceIdFor(requestedRecipient: String): String {
+		ensureNonNull(exchangeDataGroupId) { "Exchange data is not a piece" }
+		ensure(requestedRecipient != delegator && this.recipient != requestedRecipient) { "Exchange data is already the piece for recipient" }
+		return HashingUtils.sha256Alphanumeric("$exchangeDataGroupId|$recipient", cryptoService)
+	}
 }

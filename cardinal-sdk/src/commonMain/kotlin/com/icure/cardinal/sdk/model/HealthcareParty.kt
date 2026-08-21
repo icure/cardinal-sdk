@@ -30,15 +30,6 @@ import kotlin.String
 import kotlin.collections.List
 import kotlin.collections.Map
 import kotlin.collections.Set
-import com.icure.cardinal.sdk.model.base.DataOwnerGroupLink
-import com.icure.cardinal.sdk.model.embed.DecryptedFlatRateTarification
-import com.icure.cardinal.sdk.model.embed.HealthcarePartyHistoryStatus
-import com.icure.cardinal.sdk.model.embed.HealthcarePartyStatus
-import com.icure.cardinal.sdk.model.embed.TelecomType
-import com.icure.cardinal.sdk.serialization.ByteArraySerializer
-import kotlin.ByteArray
-import kotlin.Deprecated
-import kotlin.Int
 
 /**
  * Represents a healthcare party. A healthcare party is a person or organization that provides

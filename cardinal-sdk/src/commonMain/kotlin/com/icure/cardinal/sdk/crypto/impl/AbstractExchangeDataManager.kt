@@ -19,6 +19,7 @@ import com.icure.cardinal.sdk.crypto.entities.toPrivateKeyInfo
 import com.icure.cardinal.sdk.crypto.entities.toPublicKeyInfo
 import com.icure.cardinal.sdk.model.EntityReferenceInGroup
 import com.icure.cardinal.sdk.model.ExchangeData
+import com.icure.cardinal.sdk.model.base.DataOwnerGroupLinkType
 import com.icure.cardinal.sdk.model.extensions.algorithmOfEncryptionKey
 import com.icure.cardinal.sdk.model.specializations.Base64String
 import com.icure.cardinal.sdk.model.specializations.SecureDelegationKeyString
@@ -47,6 +48,7 @@ abstract class AbstractExchangeDataManager(
 	private val createMutex = Mutex()
 
 	override suspend fun giveAccessBackTo(otherDataOwner: String, newDataOwnerPublicKey: SpkiHexString) {
+		// TODO we are also using parent key for decryption, but we are only getting exchange data between self and other; should we allow also getting exchange data between parent and other?
 		val self = dataOwnerApi.getCurrentDataOwnerId()
 		val other = dataOwnerApi.getCryptoActorStub(otherDataOwner)
 		val importedNewKey = cryptoService.rsa.loadPublicKeySpki(
@@ -54,21 +56,27 @@ abstract class AbstractExchangeDataManager(
 			newDataOwnerPublicKey.bytes()
 		)
 		val decryptionKeys = userEncryptionKeys.getAllDecryptionKeys()
+		val acceptedRecipients = userEncryptionKeys.delegatorActorParentHierarchy()
+			.flattened(setOf(DataOwnerGroupLinkType.Parent))
+			.mapTo(mutableSetOf()) { EntityReferenceInGroup(it, null) }
 		val allExchangeDataToUpdate = if (self == otherDataOwner) {
 			base.getExchangeDataByDelegatorDelegatePair(
 				null,
 				EntityReferenceInGroup(self),
-				EntityReferenceInGroup(self)
+				EntityReferenceInGroup(self),
+				acceptedRecipients,
 			)
 		} else {
 			base.getExchangeDataByDelegatorDelegatePair(
 				null,
 				EntityReferenceInGroup(self),
 				EntityReferenceInGroup(otherDataOwner),
+				acceptedRecipients,
 			) + base.getExchangeDataByDelegatorDelegatePair(
 				null,
 				EntityReferenceInGroup(otherDataOwner),
 				EntityReferenceInGroup(self),
+				acceptedRecipients,
 			)
 		}
 		// Can improve with batch but there should not be many anyway and it is a rare operation
@@ -108,12 +116,12 @@ abstract class AbstractExchangeDataManager(
 	): Map<SecureDelegationKeyString, ExchangeDataWithUnencryptedContent> =
 		getOrCreateManagerInGroup(groupId).getCachedDecryptionDataKeyByAccessControlHash(hashes)
 
-	override suspend fun getDecryptionDataByIds(
+	override suspend fun getDecryptionDataByExchangeDataGroupIds(
 		groupId: String?,
 		ids: Set<String>,
 		waitOrRetrieveUncached: Boolean
 	): Map<String, ExchangeDataWithPotentiallyDecryptedContent> =
-		getOrCreateManagerInGroup(groupId).getDecryptionDataByIds(ids, waitOrRetrieveUncached)
+		getOrCreateManagerInGroup(groupId).getDecryptionDataByExchangeDataGroupIds(ids, waitOrRetrieveUncached)
 
 	override suspend fun getEncodedAccessControlKeysValue(
 		groupId: String?,
@@ -128,7 +136,10 @@ abstract class AbstractExchangeDataManager(
 	) {
 		val selfReference = dataOwnerApi.getCurrentDataOwnerReference()
 		val self = selfReference.asReferenceStringInGroup(groupId, sdkBoundGroup)
-		val retrievedExchangeData = base.getExchangeDataByIds(groupId, exchangeDataDetails.map { it.exchangeDataId }.toSet())
+		val retrievedExchangeData = base.getExchangeDataByIds(
+			groupId,
+			exchangeDataDetails.mapTo(mutableSetOf()) { it.exchangeDataId }
+		)
 		if (retrievedExchangeData.any { it.delegator != self && it.delegate != self }) {
 			throw IllegalArgumentException("Should only inject exchange data from/to the current user")
 		}
@@ -260,8 +271,8 @@ abstract class AbstractExchangeDataManagerInGroup(
 			}
 		}
 		val verifiedDelegateKeys = if (delegateReference != EntityReferenceInGroup(userEncryptionKeys.delegatorActorId(), null)) {
-			val delegate =
-				dataOwnerApi.getCryptoActorStubInGroup(delegateReference)
+			val delegate = dataOwnerApi.getCryptoActorStubInGroup(delegateReference)
+			if (delegate.stub.groupLinkType == DataOwnerGroupLinkType.Simple) TODO("Creation of exchange data to simple-type group is not yet implemented")
 			val delegateKeys = cryptoService.loadEncryptionKeysForDataOwner(delegate.stub)
 			if (delegateKeys.isEmpty()) {
 				require(allowCreationWithoutDelegateKey) { "Delegate $delegateReference has no public keys and the current operation does not allow for creation of exchange data without any delegate keys." }
@@ -315,7 +326,7 @@ abstract class AbstractExchangeDataManagerInGroup(
 	abstract suspend fun getCachedDecryptionDataKeyByAccessControlHash(
 		hashes: Set<SecureDelegationKeyString>,
 	): Map<SecureDelegationKeyString, ExchangeDataWithUnencryptedContent>
-	abstract suspend fun getDecryptionDataByIds(
+	abstract suspend fun getDecryptionDataByExchangeDataGroupIds(
 		ids: Set<String>,
 		waitOrRetrieveUncached: Boolean,
 	): Map<String, ExchangeDataWithPotentiallyDecryptedContent>

@@ -12,6 +12,7 @@ import com.icure.cardinal.sdk.crypto.entities.SelfVerifiedKeysSet
 import com.icure.cardinal.sdk.crypto.entities.UnencryptedExchangeDataContent
 import com.icure.cardinal.sdk.crypto.entities.VerifiedRsaEncryptionKeysSet
 import com.icure.cardinal.sdk.crypto.entities.resolve
+import com.icure.cardinal.sdk.model.DataOwnerType
 import com.icure.cardinal.sdk.model.ExchangeData
 import com.icure.cardinal.sdk.model.ListOfIds
 import com.icure.cardinal.sdk.model.specializations.AccessControlSecret
@@ -37,12 +38,15 @@ import io.ktor.utils.io.core.toByteArray
 import kotlinx.coroutines.currentCoroutineContext
 import kotlinx.coroutines.ensureActive
 import kotlinx.coroutines.flow.toList
+import kotlinx.coroutines.flow.toSet
+import kotlinx.serialization.json.JsonArray
+import kotlinx.serialization.json.JsonNull
 import kotlinx.serialization.json.JsonPrimitive
 import kotlin.reflect.KProperty1
 
 @InternalIcureApi
 class BaseExchangeDataManagerImpl(
-	override val raw: RawExchangeDataApi,
+	private val raw: RawExchangeDataApi,
 	private val cryptoService: CryptoService,
 	private val sdkBoundGroup: SdkBoundGroup?
 ) : BaseExchangeDataManager {
@@ -50,69 +54,96 @@ class BaseExchangeDataManagerImpl(
 		val targetReferenceString = EntityReferenceInGroup(dataOwnerId, null)
 			.asReferenceStringInGroup(inGroup, sdkBoundGroup)
 		return exhaustPaginatedRequest { next ->
-			validateResponseContent(next == null || (next.startKey as? JsonPrimitive)?.takeIf { it.isString }?.content == targetReferenceString) {
-				"Received next key should be the current data owner id"
-			}
+			val nextKeys = (
+				if (next == null) {
+					// Want to get both group and non-group exchange data for current data owner; even a anonymous data
+					// owner may create exchange data to simple-type group.
+					JsonArray(listOf(JsonNull, JsonPrimitive(dataOwnerId)))
+				} else {
+					next.startKey
+				}
+			).toString() // must pass as json to method
 			sdkBoundGroup.resolve(inGroup)?.let {
-				raw.getExchangeDataByParticipant(
+				raw.getExchangeDataByParticipantForRecipients(
 					dataOwnerId = targetReferenceString,
 					startDocumentId = next?.startKeyDocId,
-					groupId = it
+					groupId = it,
+					recipients = nextKeys
 				).successBody()
-			} ?: if (targetReferenceString.contains('/')) {
-				raw.getExchangeDataByParticipantQuery(
-					dataOwnerId = targetReferenceString,
-					startDocumentId = next?.startKeyDocId,
-				).successBody()
-			} else {
-				// TODO Temporary, to allow still usage of new cardinal sdk without using inter-group sharing also on older kraken versions
-				raw.getExchangeDataByParticipant(
-					dataOwnerId = targetReferenceString,
-					startDocumentId = next?.startKeyDocId,
-				).successBody()
-			}
+			} ?: raw.getExchangeDataByParticipantForRecipients(
+				dataOwnerId = targetReferenceString,
+				startDocumentId = next?.startKeyDocId,
+				recipients = nextKeys
+			).successBody()
 		}.toList()
 	}
+
+	override suspend fun getDirectLocalParticipantCounterparts(
+		dataOwnerId: EntityReferenceInGroup,
+		counterpartsTypes: Set<DataOwnerType>,
+		ignoreOnEntryForFingerprint: KeypairFingerprintV2String?,
+	): Set<String> = exhaustPaginatedRequest { next ->
+		val nextKey = if (next == null) {
+			null
+		} else {
+			val parsed = (next.startKey as? JsonPrimitive?)?.takeIf { it.isString }?.content
+			validateResponseContent(parsed != null) {
+				"Received next key should be an string"
+			}
+			parsed
+		} // must pass as plain string value to method if not null, else must be omitted
+		raw.findNonGroupPieceCounterparts(
+			dataOwnerId = dataOwnerId.asReferenceStringInGroup(null, sdkBoundGroup),
+			counterpartsTypes = counterpartsTypes.joinToString(",") { it.name },
+			ignoreOnEntryForFingerprint = ignoreOnEntryForFingerprint?.s,
+			startKey = nextKey,
+		).successBody()
+	}.toSet()
 
 	override suspend fun getExchangeDataByDelegatorDelegatePair(
 		inGroup: String?,
 		delegatorReference: EntityReferenceInGroup,
-		delegateReference: EntityReferenceInGroup
+		delegateReference: EntityReferenceInGroup,
+		recipients: Set<EntityReferenceInGroup>,
 	): List<ExchangeData> {
 		val delegatorReferenceString = delegatorReference.asReferenceStringInGroup(inGroup, sdkBoundGroup)
 		val delegateReferenceString = delegateReference.asReferenceStringInGroup(inGroup, sdkBoundGroup)
-		return sdkBoundGroup.resolve(inGroup)?.let {
-			raw.getExchangeDataByDelegatorDelegate(
+		val resolvedGroup = sdkBoundGroup.resolve(inGroup)
+		return exhaustPaginatedRequest { next ->
+			val nextRecipients = (
+				next ?: JsonArray(listOf(JsonNull) + recipients.map { JsonPrimitive(it.asReferenceStringInGroup(inGroup, sdkBoundGroup)) })
+			).toString()
+			resolvedGroup?.let {
+				raw.getExchangeDataByDelegatorDelegateForRecipients(
+					delegatorId = delegatorReferenceString,
+					delegateId = delegateReferenceString,
+					groupId = it,
+					startDocumentId = next?.startKeyDocId,
+					recipients = nextRecipients
+				).successBody()
+			} ?: raw.getExchangeDataByDelegatorDelegateForRecipients(
 				delegatorId = delegatorReferenceString,
 				delegateId = delegateReferenceString,
-				groupId = it
+				startDocumentId = next?.startKeyDocId,
+				recipients = nextRecipients
 			).successBody()
-		} ?: if (delegatorReferenceString.contains('/') || delegateReferenceString.contains('/')) {
-			raw.getExchangeDataByDelegatorDelegateQuery(
-				delegatorId = delegatorReferenceString,
-				delegateId = delegateReferenceString
-			).successBody()
-		} else {
-			// TODO Temporary, to allow still usage of new cardinal sdk without using inter-group sharing also on older kraken versions
-			raw.getExchangeDataByDelegatorDelegate(
-				delegatorId = delegatorReferenceString,
-				delegateId = delegateReferenceString
-			).successBody()
-		}
+		}.toList()
 	}
 
+	@Deprecated("Usages might be incorrect", level = DeprecationLevel.ERROR)
 	override suspend fun getExchangeDataByIds(
 		inGroup: String?,
-		exchangeDataIds: Collection<String>
-	): List<ExchangeData> =
+		exchangeDataIds: Set<String>
+	): List<ExchangeData> = exchangeDataIds.chunked(1000).flatMap { chunk ->
 		sdkBoundGroup.resolve(inGroup)?.let {
 			raw.getExchangeDataByIds(
-				exchangeDataIds = ListOfIds(exchangeDataIds.toList()),
+				exchangeDataIds = ListOfIds(chunk),
 				groupId = it
 			).successBody()
 		} ?: raw.getExchangeDataByIds(
-			exchangeDataIds = ListOfIds(exchangeDataIds.toList()),
+			exchangeDataIds = ListOfIds(chunk),
 		).successBody()
+	}
 
 	override suspend fun verifyExchangeData(
 		data: ExchangeDataWithUnencryptedContent,

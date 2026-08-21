@@ -563,6 +563,11 @@ internal suspend fun initializeApiCrypto(
 	).initialize()
 	val userEncryptionKeys = userEncryptionKeysInitInfo.manager
 	val delegatorActorIsAnonymous = userEncryptionKeys.delegatorActorIsAnonymous()
+	if (delegatorActorIsAnonymous) {
+		if (dataOwnerApi.getCurrentDataOwnerHierarchyIds().links.isNotEmpty()) throw UnsupportedOperationException(
+			"SDK currently does not support data owner groups for anonymous data owners (anonymous data owner ${self.dataOwner.id} has links ${dataOwnerApi.getCurrentDataOwnerHierarchyIds().links}"
+		)
+	}
 	val exchangeDataManager = if (delegatorActorIsAnonymous)
 		FullyCachedExchangeDataManager(
 			baseExchangeDataManager,

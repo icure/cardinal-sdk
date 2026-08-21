@@ -152,7 +152,7 @@ internal class BaseSecurityMetadataDecryptorImpl(
 				}
 			}
 		}
-		val cachedByExchangeDataId = exchangeDataManager.getDecryptionDataByIds(
+		val cachedByExchangeDataId = exchangeDataManager.getDecryptionDataByExchangeDataGroupIds(
 			entitiesGroupId,
 			toSearchById,
 			false
@@ -204,7 +204,7 @@ internal class BaseSecurityMetadataDecryptorImpl(
 				} else null
 			}.orEmpty()
 		}
-		val retrievedByExchangeDataId = if (toSearchById.isNotEmpty()) exchangeDataManager.getDecryptionDataByIds(
+		val retrievedByExchangeDataId = if (toSearchById.isNotEmpty()) exchangeDataManager.getDecryptionDataByExchangeDataGroupIds(
 			entitiesGroupId,
 			toSearchById,
 			true
@@ -257,7 +257,7 @@ internal class BaseSecurityMetadataDecryptorImpl(
 			entitiesGroupId,
 			toSearchByDelegationKey.filterTo(mutableSetOf()) { it !in alreadyCached }
 		)
-		val retrievedByExchangeDataId = if (exchangeDataIdByDelegationKey.isNotEmpty()) exchangeDataManager.getDecryptionDataByIds(
+		val retrievedByExchangeDataId = if (exchangeDataIdByDelegationKey.isNotEmpty()) exchangeDataManager.getDecryptionDataByExchangeDataGroupIds(
 			entitiesGroupId,
 			exchangeDataIdByDelegationKey.values.toSet(),
 			true
@@ -511,7 +511,7 @@ internal class BaseSecurityMetadataDecryptorImpl(
 			}.orEmpty()
 		}
 		val exchangeDataById = (toSearchDirectlyById + exchangeDataIdByDelegationKey.values).takeIf { it.isNotEmpty() }?.let {
-			exchangeDataManager.getDecryptionDataByIds(entitiesGroupId, it, true)
+			exchangeDataManager.getDecryptionDataByExchangeDataGroupIds(entitiesGroupId, it, true)
 		}.orEmpty()
 		return LoadedExchangeData(exchangeDataByDelegationKey, exchangeDataIdByDelegationKey, exchangeDataById)
 	}

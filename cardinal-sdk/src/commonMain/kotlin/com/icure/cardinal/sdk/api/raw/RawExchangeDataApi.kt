@@ -27,28 +27,6 @@ public interface RawExchangeDataApi {
 
 	suspend fun getExchangeDataByIds(exchangeDataIds: ListOfIds): HttpResponse<List<ExchangeData>>
 
-	suspend fun getExchangeDataByParticipant(
-		dataOwnerId: String,
-		startDocumentId: String? = null,
-		limit: Int? = null,
-	): HttpResponse<PaginatedList<ExchangeData>>
-
-	suspend fun getExchangeDataByParticipantQuery(
-		dataOwnerId: String,
-		startDocumentId: String? = null,
-		limit: Int? = null,
-	): HttpResponse<PaginatedList<ExchangeData>>
-
-	suspend fun getExchangeDataByDelegatorDelegate(
-		delegatorId: String,
-		delegateId: String,
-	): HttpResponse<List<ExchangeData>>
-
-	suspend fun getExchangeDataByDelegatorDelegateQuery(
-		delegatorId: String,
-		delegateId: String,
-	): HttpResponse<List<ExchangeData>>
-
 	suspend fun createExchangeDataGroupPieces(
 		exchangeDataGroupId: String,
 		delegator: String,
@@ -82,17 +60,13 @@ public interface RawExchangeDataApi {
 		startDocumentId: String? = null,
 	): HttpResponse<PaginatedList<ExchangeData>>
 
-	suspend fun getParticipantCounterparts(
+	suspend fun findNonGroupPieceCounterparts(
 		dataOwnerId: String,
 		counterpartsTypes: String,
 		ignoreOnEntryForFingerprint: String? = null,
-	): HttpResponse<List<String>>
-
-	suspend fun getParticipantCounterpartsQuery(
-		dataOwnerId: String,
-		counterpartsTypes: String,
-		ignoreOnEntryForFingerprint: String? = null,
-	): HttpResponse<List<String>>
+		startKey: String? = null,
+		limit: Int? = null,
+	): HttpResponse<PaginatedList<String>>
 	// endregion
 
 	// region cloud endpoints
@@ -114,19 +88,6 @@ public interface RawExchangeDataApi {
 
 	suspend fun getExchangeDataByIds(
 		exchangeDataIds: ListOfIds,
-		groupId: String,
-	): HttpResponse<List<ExchangeData>>
-
-	suspend fun getExchangeDataByParticipant(
-		dataOwnerId: String,
-		startDocumentId: String? = null,
-		limit: Int? = null,
-		groupId: String,
-	): HttpResponse<PaginatedList<ExchangeData>>
-
-	suspend fun getExchangeDataByDelegatorDelegate(
-		delegatorId: String,
-		delegateId: String,
 		groupId: String,
 	): HttpResponse<List<ExchangeData>>
 
