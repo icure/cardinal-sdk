@@ -1,4 +1,5 @@
 // auto-generated file
+import {RsaEncryptionAlgorithm} from '../cardinal-sdk-ts.mjs';
 import {CryptoActorStubWithType} from '../model/CryptoActorStubWithType.mjs';
 import {DataOwnerType} from '../model/DataOwnerType.mjs';
 import {DataOwnerWithType} from '../model/DataOwnerWithType.mjs';
@@ -42,7 +43,7 @@ export interface DataOwnerApi {
 	 *  If the logged user is a data owner get its data owner groups hierarchy (all types).
 	 *  @return the current user's data owner hierarchy tree, starting from the user itself
 	 */
-	getCurrentDataOwnerHierarchyIds(): Promise<DataOwnerHierarchyInfo>;
+	getCurrentDataOwnerHierarchyInfo(): Promise<DataOwnerHierarchyInfo>;
 
 	/**
 	 *
@@ -97,17 +98,6 @@ export interface DataOwnerApi {
 
 	/**
 	 *
-	 *  Get the hierarchy for the current data owner considering only parent-type links.
-	 *  If [from] is not null only give the hierarchy rooted at the provided parent id.
-	 *  @param from the id of a member of the current data owner hierarchy.
-	 *  @return an array starting at the topmost parent and ending at the provided parent id.
-	 *  @throws IllegalArgumentException If the provided id is not part of the parent hierarchy, or if the current user
-	 *  is not a data owner
-	 */
-	getCurrentDataOwnerParentHierarchy(from: string | undefined): Promise<DataOwnerHierarchyInfo>;
-
-	/**
-	 *
 	 *  Modifies the crypto actor information of a data owner. The information that can be modified depend on the
 	 *  permissions of the current user, by default only information that refer to the current user can be changed.
 	 *  @param cryptoActorStubWithTypeDto the stub with updated information
@@ -128,5 +118,19 @@ export interface DataOwnerApi {
 	 *  normally change over time, so this method should be rarely needed. The cache will be repopulated lazily.
 	 */
 	clearCurrentDataOwnerHierarchyCache(): void;
+
+	/**
+	 *
+	 *  Get all data owners that are part of a simple-type group
+	 */
+	getSimpleGroupDelegateMembersIds(dataOwnerGroup: CryptoActorStubWithType,
+			groupId: string | undefined): Promise<Array<string>>;
+
+	/**
+	 *
+	 *  Get all public keys of data owners
+	 */
+	getDataOwnersPublicKeys(dataOwnerType: DataOwnerType, dataOwners: Array<string>,
+			groupId: string | undefined): Promise<{ [ key: string ]: { [ key: string ]: RsaEncryptionAlgorithm } }>;
 
 }
