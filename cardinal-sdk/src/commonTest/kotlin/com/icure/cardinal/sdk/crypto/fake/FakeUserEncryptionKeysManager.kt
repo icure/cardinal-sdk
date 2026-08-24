@@ -66,4 +66,8 @@ class FakeUserEncryptionKeysManager(private val selfDelegatorActorId: String) : 
 	override fun delegatorActorParentHierarchy(from: String?): DataOwnerHierarchyInfo {
 		TODO("Not yet implemented")
 	}
+
+	override fun delegatorActorFullHierarchy(): DataOwnerHierarchyInfo {
+		TODO("Not yet implemented")
+	}
 }

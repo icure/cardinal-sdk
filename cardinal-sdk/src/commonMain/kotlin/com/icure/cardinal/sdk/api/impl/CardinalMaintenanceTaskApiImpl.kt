@@ -9,6 +9,7 @@ import com.icure.cardinal.sdk.crypto.UserEncryptionKeysManager
 import com.icure.cardinal.sdk.model.DataOwnerType
 import com.icure.cardinal.sdk.model.DecryptedMaintenanceTask
 import com.icure.cardinal.sdk.model.DecryptedPropertyStub
+import com.icure.cardinal.sdk.model.EntityReferenceInGroup
 import com.icure.cardinal.sdk.model.PropertyTypeStub
 import com.icure.cardinal.sdk.model.embed.AccessLevel
 import com.icure.cardinal.sdk.model.embed.DecryptedTypedValue
@@ -137,23 +138,22 @@ class CardinalMaintenanceTaskApiImpl(
 		requestToOwnerTypes: Set<DataOwnerType>
 	): Set<String> {
 		val self = dataOwnerApi.getCurrentDataOwnerId()
-		val candidatesForExchangeData = exchangeDataManager.base.raw.getParticipantCounterparts(
-			dataOwnerId = self,
-			counterpartsTypes = requestToOwnerTypes.joinToString(","),
-			ignoreOnEntryForFingerprint = key.fingerprintV2().s
-		).successBody().toSet()
+		val res = exchangeDataManager.base.getDirectLocalParticipantCounterparts(
+			dataOwnerId = EntityReferenceInGroup(self, null),
+			counterpartsTypes = requestToOwnerTypes,
+			ignoreOnEntryForFingerprint = key.fingerprintV2()
+		).toMutableSet()
 		val fingerprintV1 = key.fingerprintV1()
 		val exchangeKeysInfo = baseExchangeKeysManager.getAllExchangeKeysWith(self, requestToOwnerTypes)
-		val candidatesForExchangeKeys =
-			(exchangeKeysInfo.exchangeKeysByDataOwnerTo + exchangeKeysInfo.exchangeKeysToDataOwnerFrom).mapNotNullTo(
-				mutableSetOf()
-			) { (k, v) ->
-				k.takeIf {
-					v.any {
-						!it.keys.mapNotNullTo(mutableSetOf()) { k -> k.toFingerprintV1OrNull() }.contains(fingerprintV1)
-					}
+		(
+			exchangeKeysInfo.exchangeKeysByDataOwnerTo + exchangeKeysInfo.exchangeKeysToDataOwnerFrom
+		).mapNotNullTo(res) { (k, v) ->
+			k.takeIf {
+				v.any {
+					!it.keys.mapNotNullTo(mutableSetOf()) { k -> k.toFingerprintV1OrNull() }.contains(fingerprintV1)
 				}
 			}
-		return candidatesForExchangeData + candidatesForExchangeKeys
+		}
+		return res
 	}
 }

@@ -13,6 +13,7 @@ import {CareTeamMember, DecryptedCareTeamMember, EncryptedCareTeamMember} from '
 import {Delegation} from './embed/Delegation.mjs';
 import {Encryptable} from './embed/Encryptable.mjs';
 import {DecryptedEpisode, EncryptedEpisode, Episode} from './embed/Episode.mjs';
+import {HealthElementAsserter} from './embed/HealthElementAsserter.mjs';
 import {HealthElementQualifiedLink} from './embed/HealthElementQualifiedLink.mjs';
 import {Laterality} from './embed/Laterality.mjs';
 import {DecryptedPlanOfAction, EncryptedPlanOfAction, PlanOfAction} from './embed/PlanOfAction.mjs';
@@ -135,6 +136,13 @@ export interface HealthElement extends StoredDocument, ICureDocument<string>, Ha
 	 *  direction: the reverse link can be found through a view. This field is not encrypted.
 	 */
 	qualifiedLinks: Array<HealthElementQualifiedLink>;
+
+	/**
+	 *
+	 *  The parties asserting that the patient has this healthcare element, i.e. on whose word the
+	 *  healthcare element is held to be true. This field is encrypted.
+	 */
+	asserters: Array<HealthElementAsserter>;
 
 	readonly isEncrypted: boolean;
 
@@ -321,6 +329,13 @@ export class DecryptedHealthElement {
 
 	/**
 	 *
+	 *  The parties asserting that the patient has this healthcare element, i.e. on whose word the
+	 *  healthcare element is held to be true. This field is encrypted.
+	 */
+	asserters: Array<HealthElementAsserter> = [];
+
+	/**
+	 *
 	 *  The secret patient key, encrypted in the patient's own AES key.
 	 */
 	secretForeignKeys: Array<string> = [];
@@ -386,6 +401,7 @@ export class DecryptedHealthElement {
 		if ('episodes' in partial && partial.episodes !== undefined) this.episodes = partial.episodes;
 		if ('careTeam' in partial && partial.careTeam !== undefined) this.careTeam = partial.careTeam;
 		if ('qualifiedLinks' in partial && partial.qualifiedLinks !== undefined) this.qualifiedLinks = partial.qualifiedLinks;
+		if ('asserters' in partial && partial.asserters !== undefined) this.asserters = partial.asserters;
 		if ('secretForeignKeys' in partial && partial.secretForeignKeys !== undefined) this.secretForeignKeys = partial.secretForeignKeys;
 		if ('cryptedForeignKeys' in partial && partial.cryptedForeignKeys !== undefined) this.cryptedForeignKeys = partial.cryptedForeignKeys;
 		if ('delegations' in partial && partial.delegations !== undefined) this.delegations = partial.delegations;
@@ -423,6 +439,7 @@ export class DecryptedHealthElement {
 		res['episodes'] = this.episodes.map((x0) => x0.toJSON() )
 		res['careTeam'] = this.careTeam.map((x0) => x0.toJSON() )
 		res['qualifiedLinks'] = this.qualifiedLinks.map((x0) => x0.toJSON() )
+		res['asserters'] = this.asserters.map((x0) => x0.toJSON() )
 		res['secretForeignKeys'] = this.secretForeignKeys.map((x0) => x0 )
 		res['cryptedForeignKeys'] = Object.fromEntries(Object.entries(this.cryptedForeignKeys).map(([k0, v0]) => [k0, v0.map((x1) => x1.toJSON() )]))
 		res['delegations'] = Object.fromEntries(Object.entries(this.delegations).map(([k0, v0]) => [k0, v0.map((x1) => x1.toJSON() )]))
@@ -466,6 +483,7 @@ export class DecryptedHealthElement {
 			episodes: expectArray(extractEntry(jCpy, 'episodes', false, path), false, [...path, ".episodes"], (x0, p0) => expectObject(x0, false, ignoreUnknownKeys, p0, DecryptedEpisode.fromJSON)),
 			careTeam: expectArray(extractEntry(jCpy, 'careTeam', false, path), false, [...path, ".careTeam"], (x0, p0) => expectObject(x0, false, ignoreUnknownKeys, p0, DecryptedCareTeamMember.fromJSON)),
 			qualifiedLinks: expectArray(extractEntry(jCpy, 'qualifiedLinks', false, path), false, [...path, ".qualifiedLinks"], (x0, p0) => expectObject(x0, false, ignoreUnknownKeys, p0, HealthElementQualifiedLink.fromJSON)),
+			asserters: expectArray(extractEntry(jCpy, 'asserters', false, path), false, [...path, ".asserters"], (x0, p0) => expectObject(x0, false, ignoreUnknownKeys, p0, HealthElementAsserter.fromJSON)),
 			secretForeignKeys: expectArray(extractEntry(jCpy, 'secretForeignKeys', false, path), false, [...path, ".secretForeignKeys"], (x0, p0) => expectString(x0, false, p0)),
 			cryptedForeignKeys: expectMap(
 				extractEntry(jCpy, 'cryptedForeignKeys', false, path),
@@ -678,6 +696,13 @@ export class EncryptedHealthElement {
 
 	/**
 	 *
+	 *  The parties asserting that the patient has this healthcare element, i.e. on whose word the
+	 *  healthcare element is held to be true. This field is encrypted.
+	 */
+	asserters: Array<HealthElementAsserter> = [];
+
+	/**
+	 *
 	 *  The secret patient key, encrypted in the patient's own AES key.
 	 */
 	secretForeignKeys: Array<string> = [];
@@ -743,6 +768,7 @@ export class EncryptedHealthElement {
 		if ('episodes' in partial && partial.episodes !== undefined) this.episodes = partial.episodes;
 		if ('careTeam' in partial && partial.careTeam !== undefined) this.careTeam = partial.careTeam;
 		if ('qualifiedLinks' in partial && partial.qualifiedLinks !== undefined) this.qualifiedLinks = partial.qualifiedLinks;
+		if ('asserters' in partial && partial.asserters !== undefined) this.asserters = partial.asserters;
 		if ('secretForeignKeys' in partial && partial.secretForeignKeys !== undefined) this.secretForeignKeys = partial.secretForeignKeys;
 		if ('cryptedForeignKeys' in partial && partial.cryptedForeignKeys !== undefined) this.cryptedForeignKeys = partial.cryptedForeignKeys;
 		if ('delegations' in partial && partial.delegations !== undefined) this.delegations = partial.delegations;
@@ -780,6 +806,7 @@ export class EncryptedHealthElement {
 		res['episodes'] = this.episodes.map((x0) => x0.toJSON() )
 		res['careTeam'] = this.careTeam.map((x0) => x0.toJSON() )
 		res['qualifiedLinks'] = this.qualifiedLinks.map((x0) => x0.toJSON() )
+		res['asserters'] = this.asserters.map((x0) => x0.toJSON() )
 		res['secretForeignKeys'] = this.secretForeignKeys.map((x0) => x0 )
 		res['cryptedForeignKeys'] = Object.fromEntries(Object.entries(this.cryptedForeignKeys).map(([k0, v0]) => [k0, v0.map((x1) => x1.toJSON() )]))
 		res['delegations'] = Object.fromEntries(Object.entries(this.delegations).map(([k0, v0]) => [k0, v0.map((x1) => x1.toJSON() )]))
@@ -823,6 +850,7 @@ export class EncryptedHealthElement {
 			episodes: expectArray(extractEntry(jCpy, 'episodes', false, path), false, [...path, ".episodes"], (x0, p0) => expectObject(x0, false, ignoreUnknownKeys, p0, EncryptedEpisode.fromJSON)),
 			careTeam: expectArray(extractEntry(jCpy, 'careTeam', false, path), false, [...path, ".careTeam"], (x0, p0) => expectObject(x0, false, ignoreUnknownKeys, p0, EncryptedCareTeamMember.fromJSON)),
 			qualifiedLinks: expectArray(extractEntry(jCpy, 'qualifiedLinks', false, path), false, [...path, ".qualifiedLinks"], (x0, p0) => expectObject(x0, false, ignoreUnknownKeys, p0, HealthElementQualifiedLink.fromJSON)),
+			asserters: expectArray(extractEntry(jCpy, 'asserters', false, path), false, [...path, ".asserters"], (x0, p0) => expectObject(x0, false, ignoreUnknownKeys, p0, HealthElementAsserter.fromJSON)),
 			secretForeignKeys: expectArray(extractEntry(jCpy, 'secretForeignKeys', false, path), false, [...path, ".secretForeignKeys"], (x0, p0) => expectString(x0, false, p0)),
 			cryptedForeignKeys: expectMap(
 				extractEntry(jCpy, 'cryptedForeignKeys', false, path),

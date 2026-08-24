@@ -44,7 +44,7 @@ internal class RecoveryApiImpl(
 	): RecoveryDataKey {
 		val delegatorActorId = crypto.userEncryptionKeysManager.delegatorActorId()
 		val allAvailableKeypairs = crypto.userEncryptionKeysManager.getAvailableKeyPairs()
-		val hierarchy = crypto.dataOwnerApi.getCurrentDataOwnerHierarchyIds().parentHierarchy()
+		val hierarchy = crypto.dataOwnerApi.getCurrentDataOwnerHierarchyInfo().parentHierarchy()
 		val dataOwnersToInclude = if (includeParentsKeys) {
 			hierarchy.flattened().map {
 				DataOwnerKeyInfo(it, allAvailableKeypairs[it].orEmpty())
@@ -140,12 +140,14 @@ internal class RecoveryApiImpl(
 				null,
 				selfOrParent,
 				EntityReferenceInGroup(delegateId, null),
+				setOf(selfOrParent)
 			)
 			if (includeBiDirectional) {
 				fromSelf + crypto.exchangeDataManager.base.getExchangeDataByDelegatorDelegatePair(
 					null,
 					EntityReferenceInGroup(delegateId, null),
 					selfOrParent,
+					setOf(selfOrParent)
 				)
 			} else fromSelf
 		}
@@ -166,7 +168,10 @@ internal class RecoveryApiImpl(
 
 	override suspend fun recoverExchangeData(recoveryKey: RecoveryDataKey): RecoveryDataUseFailureReason? =
 		crypto.recoveryDataEncryption.getAndDecryptExchangeDataRecoveryData(recoveryKey).map { recoveredExchangeData ->
-			val retrieved = crypto.exchangeDataManager.base.getExchangeDataByIds(null, recoveredExchangeData.map { it.exchangeDataId }).associate { exchangeData ->
+			val retrieved = crypto.exchangeDataManager.base.getExchangeDataByIds(
+				null,
+				recoveredExchangeData.mapTo(mutableSetOf()) { it.exchangeDataId }
+			).associate { exchangeData ->
 				val newEncryptionKeys = setOf(exchangeData.delegator, exchangeData.delegate).flatMapTo( mutableSetOf()) { memberId ->
 					crypto.userEncryptionKeysManager.getVerifiedEncryptionKeysForDataOwnerIfInCurrentHierarchy(memberId).orEmpty().map { it.toPublicKeyInfo() }
 				}

@@ -2,6 +2,8 @@
 // If you want to change the way this class is generated, see [this repo](https://github.com/icure/sdk-codegen).
 package com.icure.cardinal.sdk.model.requests
 
+import com.icure.cardinal.sdk.model.DataOwnerType
+import com.icure.cardinal.sdk.model.base.DataOwnerGroupLink
 import com.icure.cardinal.sdk.model.base.DataOwnerGroupLinkType
 import kotlinx.serialization.Serializable
 import kotlin.String
@@ -32,5 +34,11 @@ data class LinkedDataOwner(
 	public val groupLinkType: DataOwnerGroupLinkType? = null,
 ) {
 	// region LinkedDataOwner-LinkedDataOwner
+
+	fun effectiveGroupLinkTypeFor(type: DataOwnerType): DataOwnerGroupLinkType = groupLinkType ?: when (type) {
+		DataOwnerType.Hcp -> DataOwnerGroupLinkType.Parent
+		DataOwnerType.Device, DataOwnerType.Patient -> DataOwnerGroupLinkType.NotAllowed
+	}
+
 	// endregion
 }

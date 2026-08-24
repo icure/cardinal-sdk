@@ -23,9 +23,6 @@ import kotlin.String
 import kotlin.collections.List
 import kotlin.collections.Map
 import kotlin.collections.Set
-import com.icure.cardinal.sdk.model.base.DataOwnerGroupLink
-import com.icure.cardinal.sdk.serialization.ByteArraySerializer
-import kotlin.ByteArray
 
 /**
  * Represents a device that sends medical data. This is a root-level entity stored in the

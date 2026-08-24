@@ -8,7 +8,6 @@ import com.icure.cardinal.sdk.model.base.DataOwnerGroupLinkType
 import com.icure.cardinal.sdk.model.base.DataOwnerHierarchyInfo
 import com.icure.cardinal.sdk.model.embed.AccessLevel
 import com.icure.cardinal.sdk.model.requests.role.CreateRoleRequest
-import com.icure.cardinal.sdk.storage.impl.VolatileStorageFacade
 import com.icure.cardinal.sdk.test.DefaultRawApiConfig
 import com.icure.cardinal.sdk.test.autoCancelJob
 import com.icure.cardinal.sdk.test.baseUrl
@@ -52,7 +51,7 @@ class SdkDataOwnerScopeTest : StringSpec({
 		val parent = createHcpUser(roles = setOf(actingScopeRoleId, "BASIC_DATA_OWNER", "HIERARCHICAL_DATA_OWNER"))
 		val child = createHcpUser(parent = parent)
 		val initialSdk = parent.api(specJob)
-		initialSdk.dataOwner.getCurrentDataOwnerHierarchyIds() shouldBe DataOwnerHierarchyInfo(
+		initialSdk.dataOwner.getCurrentDataOwnerHierarchyInfo() shouldBe DataOwnerHierarchyInfo(
 			id = parent.dataOwnerId,
 			dataOwnerType = DataOwnerType.Hcp,
 			links = emptyList()
@@ -71,7 +70,7 @@ class SdkDataOwnerScopeTest : StringSpec({
 			permissionsByDataOwnerId shouldBe mapOf(EntityReferenceInGroup(parent.dataOwnerId) to AccessLevel.Write)
 		}
 		val switchedSdk = initialSdk.changeScope(child.dataOwnerId)
-		switchedSdk.dataOwner.getCurrentDataOwnerHierarchyIds() shouldBe DataOwnerHierarchyInfo(
+		switchedSdk.dataOwner.getCurrentDataOwnerHierarchyInfo() shouldBe DataOwnerHierarchyInfo(
 			id = child.dataOwnerId,
 			dataOwnerType = DataOwnerType.Hcp,
 			links = listOf(

@@ -101,4 +101,17 @@ class DataOwnerHierarchyInfoTest : StringSpec({
 		reRooted.id shouldBe "B"
 		reRooted.flattened() shouldContainExactlyInAnyOrder listOf("B", "D")
 	}
+
+	"filterLinks should drop a rejected node together with its whole subtree".config(enabled = DEFAULT_ENABLED) {
+		val withoutD = diamondPlusBranch.filterLinks { it.linkedGroupId != "D" }
+		withoutD.flattened() shouldContainExactlyInAnyOrder listOf("A", "B", "C", "G", "H")
+		withoutD.leaves() shouldContainExactlyInAnyOrder listOf("B", "C", "H")
+	}
+
+	"filterLinks by link type should be equivalent to flattened with the same link types".config(enabled = DEFAULT_ENABLED) {
+		val parentOnly = parentChain.filterLinks { it.linkType == DataOwnerGroupLinkType.Parent }
+		parentOnly.flattened() shouldContainExactlyInAnyOrder
+			parentChain.flattened(setOf(DataOwnerGroupLinkType.Parent)).toList()
+		parentOnly shouldBe parentChain.parentHierarchy()
+	}
 })

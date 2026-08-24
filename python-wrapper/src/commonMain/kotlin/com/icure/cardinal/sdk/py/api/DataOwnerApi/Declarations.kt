@@ -98,7 +98,7 @@ public fun getCurrentDataOwnerReferenceAsync(sdk: CardinalApis,
 
 public fun getCurrentDataOwnerHierarchyIdsBlocking(sdk: CardinalApis): String = kotlin.runCatching {
 	runBlocking {
-		sdk.dataOwner.getCurrentDataOwnerHierarchyIds()
+		sdk.dataOwner.getCurrentDataOwnerHierarchyInfo()
 	}
 }.toPyString(ListSerializer(String.serializer()))
 
@@ -108,7 +108,7 @@ public fun getCurrentDataOwnerHierarchyIdsAsync(sdk: CardinalApis,
 		CValues<ByteVarOf<Byte>>?) -> Unit>>): COpaquePointer? = kotlin.runCatching {
 	GlobalScope.launch {
 		kotlin.runCatching {
-			sdk.dataOwner.getCurrentDataOwnerHierarchyIds()
+			sdk.dataOwner.getCurrentDataOwnerHierarchyInfo()
 		}.toPyStringAsyncCallback(ListSerializer(String.serializer()), resultCallback)
 	}
 }.failureToPyStringAsyncCallback(resultCallback)
