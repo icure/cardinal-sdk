@@ -18,6 +18,7 @@ import com.icure.cardinal.sdk.crypto.entities.toPrivateKeyInfo
 import com.icure.cardinal.sdk.model.CryptoActorStub
 import com.icure.cardinal.sdk.model.DataOwnerWithType
 import com.icure.cardinal.sdk.model.base.CryptoActor
+import com.icure.cardinal.sdk.model.base.DataOwnerGroupLinkType
 import com.icure.cardinal.sdk.model.base.DataOwnerHierarchyInfo
 import com.icure.cardinal.sdk.model.extensions.publicKeysWithSha1Spki
 import com.icure.cardinal.sdk.model.extensions.publicKeysWithSha256Spki
@@ -89,6 +90,10 @@ class UserEncryptionKeysManagerImpl private constructor (
 		} else {
 			parentHierarchyInfo.parentHierarchy(rootId)
 		}
+	}
+
+	override fun delegatorActorFullHierarchy(): DataOwnerHierarchyInfo = with (cachedKeyData) {
+		fullHierarchyInfo
 	}
 
 	override fun delegatorActorIsAnonymous(): Boolean = cachedKeyData.delegatorActorIsAnonymous
@@ -167,6 +172,7 @@ private class KeyData(
 	// The parent-only hierarchy backing `keys`, as returned by the backend: used to check for changes on reload and
 	// to resolve `delegatorActorParentHierarchy`'s `from` parameter.
 	val parentHierarchyInfo: DataOwnerHierarchyInfo,
+	val fullHierarchyInfo: DataOwnerHierarchyInfo,
 	val keys: DataOwnerParentHierarchyWith<LoadedDataOwnerKeys>,
 	val specialOperationMode: CryptoStrategies.KeyGenerationRequestResult?
 ) {
@@ -230,9 +236,9 @@ private class KeyLoader(
 		recoverAndVerifySelfHierarchyKeys: RecoveryFunction,
 		generateNewKeyForDataOwner: KeyGenerationFunction,
 	): Pair<KeyData, CardinalKeyInfo<RsaKeypair<RsaAlgorithm.RsaEncryptionAlgorithm.OaepWithSha256>>?> {
-		val parentHierarchyInfo = dataOwnerApi.getCurrentDataOwnerParentHierarchy(null).let {
-			if (initializeParentKeys) it else it.copy(links = emptyList())
-		}
+		val hierarchy = dataOwnerApi.getCurrentDataOwnerHierarchyInfo()
+		val fullHierarchyInfo = if (initializeParentKeys) hierarchy else hierarchy.filterLinks { it.linkType == DataOwnerGroupLinkType.Simple }
+		val parentHierarchyInfo = fullHierarchyInfo.filterLinks { it.linkType == DataOwnerGroupLinkType.Parent }
 		if (expectHierarchyIds != null) {
 			check(parentHierarchyInfo == expectHierarchyIds) {
 				"Data owner hierarchy changed during key reload, aborting. You need to re-initialize the entire SDK to reflect data owner hierarchy changes."
@@ -348,7 +354,8 @@ private class KeyLoader(
 			keys = parentHierarchyInfo.toParentHierarchyWith(
 				keysById.mapValues { (id, keysMap) -> LoadedDataOwnerKeys(id, keysMap) }
 			),
-			specialOperationMode = specialOperationMode
+			specialOperationMode = specialOperationMode,
+			fullHierarchyInfo = fullHierarchyInfo
 		)
 		return if (fullyRecoveredKeyDataById.getValue(selfId).none { it.value.isSafeForEncryption }) {
 			val keyRequestResult = generateNewKeyForDataOwner(selfInfo, cryptoService)

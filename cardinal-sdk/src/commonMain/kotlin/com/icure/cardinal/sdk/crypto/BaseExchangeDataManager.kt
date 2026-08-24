@@ -154,6 +154,15 @@ interface BaseExchangeDataManager {
 		exchangeDataId: String? = null
 	): ExchangeDataWithUnencryptedContent
 
+	suspend fun createSimpleGroupExchangeDataAndGetMasterPiece(
+		inGroup: String?,
+		delegatorReference: EntityReferenceInGroup,
+		delegateReference: EntityReferenceInGroup,
+		signatureKeys: SelfVerifiedKeysSet,
+		delegatorEncryptionKeys: VerifiedRsaEncryptionKeysSet,
+		delegateMembersEncryptionKeys: Map<EntityReferenceInGroup, VerifiedRsaEncryptionKeysSet>,
+	): ExchangeDataWithUnencryptedContent
+
 	/**
 	 * Decrypts the content of the provided exchange data using the provided keys. Does not interpret the decrypted
 	 * content, leaving it as raw bytes.

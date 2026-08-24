@@ -11,6 +11,7 @@ import com.icure.cardinal.sdk.crypto.entities.SecretIdShareOptions
 import com.icure.cardinal.sdk.model.EncryptedPatient
 import com.icure.cardinal.sdk.model.HealthcareParty
 import com.icure.cardinal.sdk.model.User
+import com.icure.cardinal.sdk.model.base.DataOwnerGroupLinkType
 import com.icure.cardinal.sdk.model.requests.RequestedPermission
 import com.icure.cardinal.sdk.test.DataOwnerDetails
 import com.icure.cardinal.sdk.test.DefaultRawApiConfig
@@ -228,7 +229,8 @@ private suspend fun createTestDataAndApis(job: Job, useFakeKeyForAesExchangeKeyE
 		password = pPassword,
 		keypair = keyP,
 		parents = emptyList(),
-		groupId = testGroupId
+		groupId = testGroupId,
+		effectiveGroupLinkType = DataOwnerGroupLinkType.Parent,
 	)
 	val aDataOwnerDetails = DataOwnerDetails(
 		dataOwnerId = aId,
@@ -236,7 +238,8 @@ private suspend fun createTestDataAndApis(job: Job, useFakeKeyForAesExchangeKeyE
 		password = aPassword,
 		keypair = keyA,
 		parents = listOf(pDataOwnerDetails),
-		groupId = testGroupId
+		groupId = testGroupId,
+		effectiveGroupLinkType = DataOwnerGroupLinkType.Parent,
 	)
 	val bDataOwnerDetails = DataOwnerDetails(
 		dataOwnerId = bId,
@@ -244,7 +247,8 @@ private suspend fun createTestDataAndApis(job: Job, useFakeKeyForAesExchangeKeyE
 		password = bPassword,
 		keypair = keyB,
 		parents = listOf(pDataOwnerDetails),
-		groupId = testGroupId
+		groupId = testGroupId,
+		effectiveGroupLinkType = DataOwnerGroupLinkType.Parent,
 	)
 	// X, X2: external hcps, not related to A/B/P.
 	val xDataOwnerDetails = createHcpUser()

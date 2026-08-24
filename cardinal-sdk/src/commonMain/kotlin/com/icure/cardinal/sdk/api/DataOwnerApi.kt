@@ -5,6 +5,8 @@ import com.icure.cardinal.sdk.model.CryptoActorStubWithType
 import com.icure.cardinal.sdk.model.DataOwnerType
 import com.icure.cardinal.sdk.model.DataOwnerWithType
 import com.icure.cardinal.sdk.model.base.DataOwnerHierarchyInfo
+import com.icure.cardinal.sdk.model.specializations.SpkiHexString
+import com.icure.kryptom.crypto.RsaAlgorithm
 
 
 interface DataOwnerApi {
@@ -37,7 +39,7 @@ interface DataOwnerApi {
 	 * If the logged user is a data owner get its data owner groups hierarchy (all types).
 	 * @return the current user's data owner hierarchy tree, starting from the user itself
 	 */
-	suspend fun getCurrentDataOwnerHierarchyIds(): DataOwnerHierarchyInfo
+	suspend fun getCurrentDataOwnerHierarchyInfo(): DataOwnerHierarchyInfo
 //	suspend fun getCurrentDataOwnerHierarchyIdsReference(): List<EntityReferenceInGroup>
 
 	/**
@@ -85,16 +87,6 @@ interface DataOwnerApi {
 	 */
 	suspend fun getCryptoActorStubInGroup(entityReferenceInGroup: EntityReferenceInGroup): CryptoActorStubWithType
 
-	/**
-	 * Get the hierarchy for the current data owner considering only parent-type links.
-	 * If [from] is not null only give the hierarchy rooted at the provided parent id.
-	 * @param from the id of a member of the current data owner hierarchy.
-	 * @return an array starting at the topmost parent and ending at the provided parent id.
-	 * @throws IllegalArgumentException If the provided id is not part of the parent hierarchy, or if the current user
-	 * is not a data owner
-	 */
-	suspend fun getCurrentDataOwnerParentHierarchy(from: String?): DataOwnerHierarchyInfo
-
 //	/**
 //	 * If the logged user is a data owner get the current data owner and all of his parents. The returned list starts
 //	 * from the topmost ancestor of the current data owner and ends with the current data owner.
@@ -122,5 +114,19 @@ interface DataOwnerApi {
 	 * normally change over time, so this method should be rarely needed. The cache will be repopulated lazily.
 	 */
 	fun clearCurrentDataOwnerHierarchyCache()
+
+	/**
+	 * Get all data owners that are part of a simple-type group
+	 */
+	suspend fun getSimpleGroupDelegateMembersIds(dataOwnerGroup: CryptoActorStubWithType, groupId: String?): Set<String>
+
+	/**
+	 * Get all public keys of data owners
+	 */
+	suspend fun getDataOwnersPublicKeys(
+		dataOwnerType: DataOwnerType,
+		dataOwners: Set<String>,
+		groupId: String?
+	): Map<String, Map<SpkiHexString, RsaAlgorithm.RsaEncryptionAlgorithm>>
 }
 

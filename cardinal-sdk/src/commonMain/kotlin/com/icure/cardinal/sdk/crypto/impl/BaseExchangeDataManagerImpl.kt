@@ -15,6 +15,7 @@ import com.icure.cardinal.sdk.crypto.entities.resolve
 import com.icure.cardinal.sdk.model.DataOwnerType
 import com.icure.cardinal.sdk.model.ExchangeData
 import com.icure.cardinal.sdk.model.ListOfIds
+import com.icure.cardinal.sdk.model.requests.ExchangeDataPieceCreationRequest
 import com.icure.cardinal.sdk.model.specializations.AccessControlSecret
 import com.icure.cardinal.sdk.model.specializations.Base64String
 import com.icure.cardinal.sdk.model.specializations.KeypairFingerprintV2String
@@ -253,11 +254,102 @@ class BaseExchangeDataManagerImpl(
 			sharedSignature = sharedSignature,
 			delegatorSignature = delegatorSignature
 		)
+		val created = (
+			sdkBoundGroup.resolve(inGroup)?.let { raw.createExchangeData(exchangeData, it) }
+				?: raw.createExchangeData(exchangeData)
+		).successBody()
+		return ExchangeDataWithUnencryptedContent(
+			exchangeData = created,
+			unencryptedContent = UnencryptedExchangeDataContent(
+				exchangeKey = exchangeKey,
+				accessControlSecret = accessControlSecret,
+				sharedSignatureKey = sharedSignatureKey
+			)
+		)
+	}
+
+	override suspend fun createSimpleGroupExchangeDataAndGetMasterPiece(
+		inGroup: String?,
+		delegatorReference: EntityReferenceInGroup,
+		delegateReference: EntityReferenceInGroup,
+		signatureKeys: SelfVerifiedKeysSet,
+		delegatorEncryptionKeys: VerifiedRsaEncryptionKeysSet,
+		delegateMembersEncryptionKeys: Map<EntityReferenceInGroup, VerifiedRsaEncryptionKeysSet>,
+	): ExchangeDataWithUnencryptedContent {
+		ensure (delegatorEncryptionKeys.isNotEmpty()) {
+			"At least one encryption key for delegator should have been provided"
+		}
+		val (exchangeKey, rawExchangeKey) = generateExchangeKey()
+		val (sharedSignatureKey, rawSharedSignatureKey) = generateSharedSignatureKey()
+		val (accessControlSecret, rawAccessControlSecret) = generateAccessControlSecret()
+		val exchangeDataGroupId = cryptoService.strongRandom.randomUUID()
+		val delegatorReferenceString = delegatorReference.asReferenceStringInGroup(inGroup, sdkBoundGroup)
+		val delegateReferenceString = delegateReference.asReferenceStringInGroup(inGroup, sdkBoundGroup)
+		suspend fun makePiece(pieceEncryptionKeys: VerifiedRsaEncryptionKeysSet, delegatorSignature:  Map<KeypairFingerprintV2String, Base64String>): ExchangeDataPieceCreationRequest {
+			val encryptedExchangeKey = cryptoService.encryptDataWithKeys(rawExchangeKey, pieceEncryptionKeys, KeyIdentifierFormat.FingerprintV2)
+			val encryptedSharedSignatureKey = cryptoService.encryptDataWithKeys(rawSharedSignatureKey, pieceEncryptionKeys, KeyIdentifierFormat.FingerprintV2)
+			val encryptedAccessControlSecret = cryptoService.encryptDataWithKeys(rawAccessControlSecret, pieceEncryptionKeys, KeyIdentifierFormat.FingerprintV2)
+			val sharedSignature = cryptoService.hmac.sign(
+				bytesToSignForSharedSignature(
+					delegator = delegatorReferenceString,
+					delegate = delegateReferenceString,
+					decryptedAccessControlSecret = accessControlSecret,
+					decryptedExchangeKey = exchangeKey,
+					publicKeysFingerprints = pieceEncryptionKeys.allKeys.mapTo(mutableSetOf()) { it.pubSpkiHexString.fingerprintV2() }
+				),
+				sharedSignatureKey
+			).base64Encode()
+			return ExchangeDataPieceCreationRequest(
+				exchangeKey = encryptedExchangeKey,
+				sharedSignatureKey = encryptedSharedSignatureKey,
+				accessControlSecret = encryptedAccessControlSecret,
+				sharedSignature = sharedSignature,
+				delegatorSignature = delegatorSignature,
+			)
+		}
+		val delegatorPiece = run {
+			val delegatorSignatureBytes = bytesToSignForDelegatorSignature(sharedSignatureKey = sharedSignatureKey)
+			val delegatorSignature = signatureKeys.allKeys.associate { keyInfo ->
+				keyInfo.pubSpkiHexString.fingerprintV2() to cryptoService.hmac.sign(
+					delegatorSignatureBytes,
+					selfEncryptionKeyToHmac(keyInfo.key)
+				).base64Encode()
+			}
+			Pair(
+				delegatorReferenceString,
+				makePiece(pieceEncryptionKeys = delegatorEncryptionKeys, delegatorSignature = delegatorSignature)
+			)
+		}
+		val otherPieces = delegateMembersEncryptionKeys.map { (recipient, recipientKeys) ->
+			Pair(
+				recipient.asReferenceStringInGroup(inGroup, sdkBoundGroup),
+				makePiece(pieceEncryptionKeys = recipientKeys, delegatorSignature = emptyMap())
+			)
+		}
+		sequence {
+			yield(delegatorPiece) // delegator piece must be first
+			yieldAll(otherPieces)
+		}.chunked(100).forEach { chunk ->
+			sdkBoundGroup.resolve(inGroup)?.let {
+				raw.createExchangeDataGroupPieces(
+					exchangeDataGroupId = exchangeDataGroupId,
+					delegator = delegatorReferenceString,
+					delegate = delegateReferenceString,
+					piecesByRecipient = chunk.toMap(),
+					groupId = it
+				)
+			} ?: raw.createExchangeDataGroupPieces(
+				exchangeDataGroupId = exchangeDataGroupId,
+				delegator = delegatorReferenceString,
+				delegate = delegateReferenceString,
+				piecesByRecipient = chunk.toMap(),
+			).successBody()
+		}
 		return ExchangeDataWithUnencryptedContent(
 			exchangeData = (
-				sdkBoundGroup.resolve(inGroup)?.let { raw.createExchangeData(exchangeData, it) }
-					?: raw.createExchangeData(exchangeData)
-			).successBody(),
+				sdkBoundGroup.resolve(inGroup)?.let { raw.getExchangeDataById(exchangeDataGroupId, it) }
+					?: raw.getExchangeDataById(exchangeDataGroupId)
+				).successBody(),
 			unencryptedContent = UnencryptedExchangeDataContent(
 				exchangeKey = exchangeKey,
 				accessControlSecret = accessControlSecret,
@@ -443,7 +535,7 @@ class BaseExchangeDataManagerImpl(
 		val failedDecryptions = mutableListOf<ExchangeData>()
 		exchangeData.forEach { data ->
 			currentCoroutineContext().ensureActive()
-			kotlin.runCatching {
+			runCatching {
 				tryDecrypt(encryptedData.get(data), decryptionKeys)?.let { unmarshalDecrypted(it) }
 			}.getOrNull()?.let {
 				successfulDecryptions.add(it)

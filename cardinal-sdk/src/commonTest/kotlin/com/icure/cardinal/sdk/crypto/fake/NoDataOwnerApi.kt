@@ -6,6 +6,8 @@ import com.icure.cardinal.sdk.model.CryptoActorStubWithType
 import com.icure.cardinal.sdk.model.DataOwnerType
 import com.icure.cardinal.sdk.model.DataOwnerWithType
 import com.icure.cardinal.sdk.model.base.DataOwnerHierarchyInfo
+import com.icure.cardinal.sdk.model.specializations.SpkiHexString
+import com.icure.kryptom.crypto.RsaAlgorithm
 
 object NoDataOwnerApi : DataOwnerApi {
 	override suspend fun getCurrentDataOwner(): DataOwnerWithType {
@@ -24,7 +26,7 @@ object NoDataOwnerApi : DataOwnerApi {
 		TODO("Not yet implemented")
 	}
 
-	override suspend fun getCurrentDataOwnerHierarchyIds(): DataOwnerHierarchyInfo {
+	override suspend fun getCurrentDataOwnerHierarchyInfo(): DataOwnerHierarchyInfo {
 		TODO("Not yet implemented")
 	}
 
@@ -48,10 +50,6 @@ object NoDataOwnerApi : DataOwnerApi {
 		TODO("Not yet implemented")
 	}
 
-	override suspend fun getCurrentDataOwnerParentHierarchy(from: String?): DataOwnerHierarchyInfo {
-		TODO("Not yet implemented")
-	}
-
 	override suspend fun modifyDataOwnerStub(cryptoActorStubWithTypeDto: CryptoActorStubWithType): CryptoActorStubWithType {
 		TODO("Not yet implemented")
 	}
@@ -65,6 +63,21 @@ object NoDataOwnerApi : DataOwnerApi {
 	}
 
 	override suspend fun getCryptoActorStubs(ids: Set<String>): List<CryptoActorStubWithType> {
+		TODO("Not yet implemented")
+	}
+
+	override suspend fun getSimpleGroupDelegateMembersIds(
+		dataOwnerGroup: CryptoActorStubWithType,
+		groupId: String?,
+	): Set<String> {
+		TODO("Not yet implemented")
+	}
+
+	override suspend fun getDataOwnersPublicKeys(
+		dataOwnerType: DataOwnerType,
+		dataOwners: Set<String>,
+		groupId: String?,
+	): Map<String, Map<SpkiHexString, RsaAlgorithm.RsaEncryptionAlgorithm>> {
 		TODO("Not yet implemented")
 	}
 }

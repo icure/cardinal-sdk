@@ -192,7 +192,6 @@ private class CachedLruExchangeDataManagerInGroup(
 						// Don't cache data that is going to be unused, could actually evict interesting entries
 					} ?: createNewExchangeData(
 						delegateReference = delegateReference,
-						newDataId = null,
 						allowCreationWithoutDelegateKey = allowCreationWithoutDelegateKey,
 						allowCreationWithoutDelegatorKey = allowCreationWithoutDelegatorKey
 					).let {
@@ -371,6 +370,6 @@ private class CachedLruExchangeDataManagerInGroup(
 	private suspend fun ExchangeData.pieceIdFor(requestedRecipient: String): String {
 		ensureNonNull(exchangeDataGroupId) { "Exchange data is not a piece" }
 		ensure(requestedRecipient != delegator && this.recipient != requestedRecipient) { "Exchange data is already the piece for recipient" }
-		return HashingUtils.sha256Alphanumeric("$exchangeDataGroupId|$recipient", cryptoService)
+		return HashingUtils.sha256Alphanumeric("$exchangeDataGroupId|$requestedRecipient", cryptoService)
 	}
 }

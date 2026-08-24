@@ -44,7 +44,7 @@ internal class RecoveryApiImpl(
 	): RecoveryDataKey {
 		val delegatorActorId = crypto.userEncryptionKeysManager.delegatorActorId()
 		val allAvailableKeypairs = crypto.userEncryptionKeysManager.getAvailableKeyPairs()
-		val hierarchy = crypto.dataOwnerApi.getCurrentDataOwnerHierarchyIds().parentHierarchy()
+		val hierarchy = crypto.dataOwnerApi.getCurrentDataOwnerHierarchyInfo().parentHierarchy()
 		val dataOwnersToInclude = if (includeParentsKeys) {
 			hierarchy.flattened().map {
 				DataOwnerKeyInfo(it, allAvailableKeypairs[it].orEmpty())

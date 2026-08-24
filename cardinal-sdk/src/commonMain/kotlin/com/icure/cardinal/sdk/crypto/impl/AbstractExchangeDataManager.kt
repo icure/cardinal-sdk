@@ -17,6 +17,7 @@ import com.icure.cardinal.sdk.crypto.entities.VerifiedRsaEncryptionKeysSet
 import com.icure.cardinal.sdk.crypto.entities.resolve
 import com.icure.cardinal.sdk.crypto.entities.toPrivateKeyInfo
 import com.icure.cardinal.sdk.crypto.entities.toPublicKeyInfo
+import com.icure.cardinal.sdk.model.CryptoActorStubWithType
 import com.icure.cardinal.sdk.model.EntityReferenceInGroup
 import com.icure.cardinal.sdk.model.ExchangeData
 import com.icure.cardinal.sdk.model.base.DataOwnerGroupLinkType
@@ -25,7 +26,10 @@ import com.icure.cardinal.sdk.model.specializations.Base64String
 import com.icure.cardinal.sdk.model.specializations.SecureDelegationKeyString
 import com.icure.cardinal.sdk.model.specializations.SpkiHexString
 import com.icure.cardinal.sdk.utils.ensure
+import com.icure.cardinal.sdk.utils.getLogger
 import com.icure.kryptom.crypto.CryptoService
+import com.icure.kryptom.crypto.PublicRsaKey
+import com.icure.kryptom.crypto.RsaAlgorithm
 import com.icure.utils.InternalIcureApi
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.sync.Mutex
@@ -211,6 +215,8 @@ abstract class AbstractExchangeDataManagerInGroup(
 	protected val sdkBoundGroup: SdkBoundGroup?,
 	protected val requestGroup: String?
 ) {
+	private val log = getLogger("AbstractExchangeDataManager")
+
 	protected data class CachedExchangeDataDetails(
 		val exchangeData: ExchangeData,
 		val decryptedDetails: CachedDecryptedDetails?
@@ -259,7 +265,6 @@ abstract class AbstractExchangeDataManagerInGroup(
 
 	protected suspend fun createNewExchangeData(
 		delegateReference: EntityReferenceInGroup,
-		newDataId: String?,
 		allowCreationWithoutDelegateKey: Boolean,
 		allowCreationWithoutDelegatorKey: Boolean,
 	): ExchangeDataWithUnencryptedContent {
@@ -270,51 +275,156 @@ abstract class AbstractExchangeDataManagerInGroup(
 				"Can't delegate to ${delegateReference}. If the sdk is initialized in keyless mode you must create exchange data to each delegate explicitly. Please use CardinalSdk.crypto.keylessCreateExchangeDataTo or CardinalSdk.crypto.injectExchangeData."
 			}
 		}
-		val verifiedDelegateKeys = if (delegateReference != EntityReferenceInGroup(userEncryptionKeys.delegatorActorId(), null)) {
+		val delegatorSignatureKeys = SelfVerifiedKeysSet(userEncryptionKeys.delegatorActorVerifiedKeys().map { it.toPrivateKeyInfo() })
+		val delegatorReference = EntityReferenceInGroup(userEncryptionKeys.delegatorActorId(), null)
+		return if (delegateReference != EntityReferenceInGroup(userEncryptionKeys.delegatorActorId(), null)) {
 			val delegate = dataOwnerApi.getCryptoActorStubInGroup(delegateReference)
-			if (delegate.stub.groupLinkType == DataOwnerGroupLinkType.Simple) TODO("Creation of exchange data to simple-type group is not yet implemented")
-			val delegateKeys = cryptoService.loadEncryptionKeysForDataOwner(delegate.stub)
-			if (delegateKeys.isEmpty()) {
-				require(allowCreationWithoutDelegateKey) { "Delegate $delegateReference has no public keys and the current operation does not allow for creation of exchange data without any delegate keys." }
-				emptyList()
+			if (delegate.stub.groupLinkType == DataOwnerGroupLinkType.Simple) {
+				createNewExchangeDataToSimpleGroup(
+					simpleDataOwnerGroup = delegate,
+					simpleGroupReference = delegateReference,
+					delegatorEncryptionKeys = delegatorEncryptionKeys,
+					delegatorReference = delegatorReference,
+					delegatorSignatureKeys = delegatorSignatureKeys,
+				)
 			} else {
-				val delegateKeysBySpki = delegateKeys.associateBy { it.pubSpkiHexString }
-				require (allowCreationWithoutDelegateKey || delegateKeysBySpki.isNotEmpty()) {
-					"Could not create exchange data to $delegateReference as the delegate has no public key."
-				}
-				val verifiedSpki =
-					if (
-						delegateReference.normalized(sdkBoundGroup).groupId == null &&
-						delegateReference.entityId in userEncryptionKeys.delegatorActorParentHierarchy()
-					) {
-						userEncryptionKeys.getVerifiedPublicKeysFor(delegate.stub).filter { delegateKeysBySpki.containsKey(it) }
-					} else {
-						cryptoStrategies.verifyDelegatePublicKeys(
-							delegate = delegate,
-							publicKeys = delegateKeys.map { it.pubSpkiHexString },
-							cryptoPrimitives = cryptoService,
-							groupId = delegateReference.normalized(sdkBoundGroup).groupId
+				createNewExchangeDataToStandardDelegate(
+					delegate = delegate,
+					delegateReference = delegateReference,
+					allowCreationWithoutDelegateKey = allowCreationWithoutDelegateKey,
+					delegatorEncryptionKeys = delegatorEncryptionKeys,
+					delegatorReference = delegatorReference,
+					delegatorSignatureKeys = delegatorSignatureKeys,
+				)
+			}
+		} else {
+			base.createExchangeData(
+				requestGroup,
+				delegatorReference,
+				delegateReference,
+				delegatorSignatureKeys,
+				VerifiedRsaEncryptionKeysSet(delegatorEncryptionKeys),
+				null
+			)
+		}
+	}
+
+	private suspend fun createNewExchangeDataToSimpleGroup(
+		simpleDataOwnerGroup: CryptoActorStubWithType,
+		simpleGroupReference: EntityReferenceInGroup,
+		delegatorEncryptionKeys: List<CardinalKeyInfo<PublicRsaKey<RsaAlgorithm.RsaEncryptionAlgorithm>>>,
+		delegatorReference: EntityReferenceInGroup,
+		delegatorSignatureKeys: SelfVerifiedKeysSet,
+	): ExchangeDataWithUnencryptedContent {
+		check(delegatorEncryptionKeys.isNotEmpty()) {
+			"It is not allowed to create exchange data in keyless mode to a simple-type group (attempting to create exchange data to ${simpleGroupReference.asReferenceStringInGroup(null, sdkBoundGroup)})."
+		}
+		if (userEncryptionKeys.delegatorActorIsAnonymous()) throw UnsupportedOperationException(
+			"Cannot create exchange data to a simple-type group as an anonymous delegator."
+		)
+		log.d {
+			"Loading simple data owner group members for ${simpleDataOwnerGroup.stub.id}"
+		}
+		val groupMembers = dataOwnerApi.getSimpleGroupDelegateMembersIds(
+			dataOwnerGroup = simpleDataOwnerGroup,
+			groupId = simpleGroupReference.groupId
+		)
+		log.d {
+			"Loaded ${groupMembers.size} members."
+		}
+		log.d {
+			"Loading delegates public keys ${simpleDataOwnerGroup.stub.id}"
+		}
+		val publicKeysByDelegate = cryptoStrategies.getDelegatesPublicKeys(
+			delegates = groupMembers,
+			groupId = simpleGroupReference.groupId
+		) ?: dataOwnerApi.getDataOwnersPublicKeys(
+			dataOwnerType = simpleDataOwnerGroup.type,
+			dataOwners = groupMembers,
+			groupId = simpleGroupReference.groupId
+		)
+		log.d {
+			"Loaded ${publicKeysByDelegate.values.sumOf { it.size }} public keys for ${publicKeysByDelegate.size} delegates."
+		}
+		val loadedPublicKeysByDelegate = publicKeysByDelegate.map { (plainDelegateId, keys) ->
+			Pair(
+				EntityReferenceInGroup(entityId = plainDelegateId, groupId = simpleGroupReference.groupId),
+				VerifiedRsaEncryptionKeysSet(
+					keys.map { k ->
+						CardinalKeyInfo(
+							pubSpkiHexString = k.key,
+							key = cryptoService.rsa.loadPublicKeySpki(k.value, k.key.bytes()),
 						)
 					}
-				// Creation to keyless is allowed if allowCreationWithoutDelegateKey true, but creation to user with keys but no verifiable key is not allowed
-				require (delegateKeysBySpki.isEmpty() || verifiedSpki.isNotEmpty()) {
-					"Could not create exchange data to $delegateReference as no public key for the delegate could be verified."
+				)
+			)
+		}.toMap()
+		groupMembers.forEach { currMember ->
+			check (loadedPublicKeysByDelegate[EntityReferenceInGroup(entityId = currMember, groupId = simpleGroupReference.groupId)].let { it != null && it.isNotEmpty() }) {
+				// Probably approach is too conservative, might be good to ignore empty, but for now keeping it safe
+				"Could not find a valid public key for delegate $currMember of simple-type data owner group ${simpleGroupReference.groupId}"
+			}
+		}
+		return base.createSimpleGroupExchangeDataAndGetMasterPiece(
+			inGroup = requestGroup,
+			delegatorReference = delegatorReference,
+			delegateReference = simpleGroupReference,
+			signatureKeys = delegatorSignatureKeys,
+			delegatorEncryptionKeys = VerifiedRsaEncryptionKeysSet(delegatorEncryptionKeys),
+			delegateMembersEncryptionKeys = loadedPublicKeysByDelegate,
+		)
+	}
+
+	private suspend fun createNewExchangeDataToStandardDelegate(
+		delegate: CryptoActorStubWithType,
+		delegateReference: EntityReferenceInGroup,
+		allowCreationWithoutDelegateKey: Boolean,
+		delegatorEncryptionKeys: List<CardinalKeyInfo<PublicRsaKey<RsaAlgorithm.RsaEncryptionAlgorithm>>>,
+		delegatorReference: EntityReferenceInGroup,
+		delegatorSignatureKeys: SelfVerifiedKeysSet,
+	): ExchangeDataWithUnencryptedContent {
+		val delegateKeys = cryptoService.loadEncryptionKeysForDataOwner(delegate.stub)
+		val verifiedDelegateKeys = if (delegateKeys.isEmpty()) {
+			require(allowCreationWithoutDelegateKey) { "Delegate $delegateReference has no public keys and the current operation does not allow for creation of exchange data without any delegate keys." }
+			emptyList()
+		} else {
+			val delegateKeysBySpki = delegateKeys.associateBy { it.pubSpkiHexString }
+			require(allowCreationWithoutDelegateKey || delegateKeysBySpki.isNotEmpty()) {
+				"Could not create exchange data to $delegateReference as the delegate has no public key."
+			}
+			val verifiedSpki =
+				if (
+					delegateReference.normalized(sdkBoundGroup).groupId == null &&
+					delegateReference.entityId in userEncryptionKeys.delegatorActorParentHierarchy()
+				) {
+					userEncryptionKeys.getVerifiedPublicKeysFor(delegate.stub)
+						.filter { delegateKeysBySpki.containsKey(it) }
+				} else {
+					cryptoStrategies.verifyDelegatePublicKeys(
+						delegate = delegate,
+						publicKeys = delegateKeys.map { it.pubSpkiHexString },
+						cryptoPrimitives = cryptoService,
+						groupId = delegateReference.normalized(sdkBoundGroup).groupId
+					)
 				}
-				verifiedSpki.map {
-					requireNotNull(delegateKeysBySpki[it]) {
-						"Key $it was marked as verified but is not a key of data owner ${delegate.stub.id}"
-					}
+			// Creation to keyless is allowed if allowCreationWithoutDelegateKey true, but creation to user with keys but no verifiable key is not allowed
+			require(delegateKeysBySpki.isEmpty() || verifiedSpki.isNotEmpty()) {
+				"Could not create exchange data to $delegateReference as no public key for the delegate could be verified."
+			}
+			verifiedSpki.map {
+				requireNotNull(delegateKeysBySpki[it]) {
+					"Key $it was marked as verified but is not a key of data owner ${delegate.stub.id}"
 				}
 			}
-		} else emptyList()
+		}
 		val allEncryptionKeys = VerifiedRsaEncryptionKeysSet(delegatorEncryptionKeys + verifiedDelegateKeys)
 		return base.createExchangeData(
-			requestGroup,
-			EntityReferenceInGroup(userEncryptionKeys.delegatorActorId(), null),
-			delegateReference,
-			SelfVerifiedKeysSet(userEncryptionKeys.delegatorActorVerifiedKeys().map { it.toPrivateKeyInfo() }),
-			allEncryptionKeys,
-			newDataId
+			inGroup = requestGroup,
+			delegatorReference = delegatorReference,
+			delegateReference = delegateReference,
+			signatureKeys = delegatorSignatureKeys,
+			encryptionKeys = allEncryptionKeys,
+			exchangeDataId = null
 		)
 	}
 

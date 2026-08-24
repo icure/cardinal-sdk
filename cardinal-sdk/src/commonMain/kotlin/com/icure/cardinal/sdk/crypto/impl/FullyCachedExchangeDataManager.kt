@@ -217,7 +217,6 @@ private class FullyCachedExchangeDataManagerInGroup(
 		allowCreationWithoutDelegatorKey: Boolean,
 	): ExchangeDataWithUnencryptedContent = createNewExchangeData(
 		delegateReference,
-		null,
 		allowCreationWithoutDelegateKey,
 		allowCreationWithoutDelegatorKey,
 	).also { created ->

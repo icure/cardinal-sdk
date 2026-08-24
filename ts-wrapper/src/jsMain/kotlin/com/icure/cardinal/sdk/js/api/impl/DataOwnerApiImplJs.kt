@@ -61,7 +61,7 @@ internal class DataOwnerApiImplJs(
 
 	override fun getCurrentDataOwnerHierarchyIds(): Promise<DataOwnerHierarchyInfoJs> =
 			GlobalScope.promise {
-		val result = dataOwnerApi.getCurrentDataOwnerHierarchyIds(
+		val result = dataOwnerApi.getCurrentDataOwnerHierarchyInfo(
 		)
 		dataOwnerHierarchyInfo_toJs(result)
 	}

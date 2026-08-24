@@ -8,6 +8,7 @@ import com.icure.cardinal.sdk.crypto.CryptoStrategies
 import com.icure.cardinal.sdk.model.EntityReferenceInGroup
 import com.icure.cardinal.sdk.crypto.impl.BasicCryptoStrategies
 import com.icure.cardinal.sdk.model.DataOwnerWithType
+import com.icure.cardinal.sdk.model.base.DataOwnerGroupLinkType
 import com.icure.cardinal.sdk.model.specializations.SpkiHexString
 import com.icure.cardinal.sdk.options.AuthenticationMethod
 import com.icure.cardinal.sdk.options.SdkOptions
@@ -34,7 +35,8 @@ data class DataOwnerDetails private constructor (
 	val keypair: RsaKeypair<RsaAlgorithm.RsaEncryptionAlgorithm>?,
 	val parents: List<DataOwnerDetails>,
 	val publicKeySpki: SpkiHexString?,
-	val groupId: String
+	val groupId: String,
+	val effectiveGroupLinkType: DataOwnerGroupLinkType
 ) {
 	companion object {
 		fun testEmailForLogin(login: String) = "$login@test.com"
@@ -45,7 +47,8 @@ data class DataOwnerDetails private constructor (
 			password: String,
 			keypair: RsaKeypair<RsaAlgorithm.RsaEncryptionAlgorithm>?,
 			parents: List<DataOwnerDetails>,
-			groupId: String
+			groupId: String,
+			effectiveGroupLinkType: DataOwnerGroupLinkType
 		) = DataOwnerDetails(
 			dataOwnerId = dataOwnerId,
 			username = username,
@@ -53,7 +56,8 @@ data class DataOwnerDetails private constructor (
 			keypair = keypair,
 			parents = parents,
 			publicKeySpki = keypair?.let {SpkiHexString( defaultCryptoService.rsa.exportPublicKeySpki(it.public).toHexString())},
-			groupId = groupId
+			groupId = groupId,
+			effectiveGroupLinkType = effectiveGroupLinkType
 		)
 	}
 
@@ -104,7 +108,7 @@ data class DataOwnerDetails private constructor (
 	): CardinalSdk =
 		initApi(baseJob, cryptoStrategies) { storage ->
 			suspend fun saveAncestorKeysOf(details: DataOwnerDetails) {
-				details.parents.forEach { ancestor ->
+				details.parents.filter { it.effectiveGroupLinkType == DataOwnerGroupLinkType.Parent }.forEach { ancestor ->
 					ancestor.keypair?.also {
 						storage.saveEncryptionKeypair(
 							ancestor.dataOwnerId,
@@ -207,7 +211,11 @@ data class DataOwnerDetails private constructor (
 				true
 			)
 		}
-		parents.forEach { it.addInitialKeysToStorage(storage) }
+		parents.filter {
+			it.effectiveGroupLinkType == DataOwnerGroupLinkType.Parent
+		}.forEach {
+			it.addInitialKeysToStorage(storage)
+		}
 	}
 
 	/**

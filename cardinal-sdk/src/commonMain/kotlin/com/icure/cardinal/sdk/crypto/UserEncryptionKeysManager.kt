@@ -73,6 +73,13 @@ interface UserEncryptionKeysManager {
 	fun delegatorActorParentHierarchy(from: String? = null): DataOwnerHierarchyInfo
 
 	/**
+	 * Get full hierarchy of a data owner, including simple-type groups.
+	 * If the SDK is not initialized in hierarchical mode parent-type links (and transitive links reachable only
+	 * when passing through parent-type links) are ignored
+	 */
+	fun delegatorActorFullHierarchy(): DataOwnerHierarchyInfo
+
+	/**
 	 * If the data owner from [delegatorActorId] is an anonymous data owner, according to the crypto strategies
 	 * configured for this SDK instance.
 	 */
