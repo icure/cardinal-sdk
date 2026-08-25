@@ -43,7 +43,7 @@ const ALLOWED_APIS = new Set([
 	// data-owner-tools
 	"HealthcareParty", "Patient", "Device",
 	// admin-tools
-	"Group", "User", "Role", "Permission", "System", "Auth",
+	"Group", "User", "Role", "Permission", "System", "Auth", "Filter",
 	// crypto-tools
 	"Crypto", "Recovery", "ShamirKeysManager", "DataOwner", "CardinalMaintenanceTask",
 	// Supporting entities
@@ -69,6 +69,7 @@ function toPropertyName(entityName: string): string {
 		"DataOwner": "dataOwner",
 		"Device": "device",
 		"Document": "document",
+		"Filter": "filter",
 		"Form": "form",
 		"FrontEndMigration": "frontEndMigration",
 		"Group": "group",

@@ -55,7 +55,7 @@ ${nonEncryptable.map(n => `- **${n}Api** — ${manifest.apis[n].description}`).j
 
 ## MCP Tools
 - **cardinal_init** — Initialize SDK with credentials
-- **cardinal_admin** — Group, User, Role, Permission, System operations
+- **cardinal_admin** — Group, User, Role, Permission, System, Auth, Filter operations
 - **cardinal_data_owner** — Healthcare entity CRUD, filtering, sharing
 - **cardinal_crypto** — Cryptography, key recovery, data owner management
 - **cardinal_continue_iteration** — Fetch next page from paginated queries
