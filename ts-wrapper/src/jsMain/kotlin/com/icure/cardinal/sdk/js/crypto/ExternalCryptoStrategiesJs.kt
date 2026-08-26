@@ -36,6 +36,12 @@ external interface CryptoStrategiesJs {
 		groupId: String?
 	): Promise<Array<String>>
 
+	// { [delegateId: string]: { [publicKey: SpkiHexString]: RsaEncryptionAlgorithm } } | undefined
+	fun getDelegatesPublicKeys(
+		delegates: Array<String>,
+		groupId: String?,
+	): Promise<Record<String, Record<String, String>>?>
+
 	fun dataOwnerRequiresAnonymousDelegation(
 		dataOwner: CryptoActorStubWithTypeJs,
 		groupId: String?

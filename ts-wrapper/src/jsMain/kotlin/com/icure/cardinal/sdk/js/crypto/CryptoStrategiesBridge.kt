@@ -99,6 +99,26 @@ internal class CryptoStrategiesBridge(
 			groupId
 		).await().map { SpkiHexString(it) }
 
+	override suspend fun getDelegatesPublicKeys(
+		delegates: Set<String>,
+		groupId: String?,
+	): Map<String, Map<SpkiHexString, RsaAlgorithm.RsaEncryptionAlgorithm>>? =
+		cryptoStrategiesJs.getDelegatesPublicKeys(delegates.toTypedArray(), groupId).await()?.let { res ->
+			CheckedConverters.objectToMap(
+				res,
+				"getDelegatesPublicKeysResult",
+				{ it },
+				{ keys ->
+					CheckedConverters.objectToMap(
+						keys,
+						"getDelegatesPublicKeysResultEntry",
+						{ SpkiHexString(it) },
+						{ RsaAlgorithm.RsaEncryptionAlgorithm.fromIdentifier(it) },
+					)
+				},
+			)
+		}
+
 	override suspend fun dataOwnerRequiresAnonymousDelegation(
 		dataOwner: CryptoActorStubWithType,
 		groupId: String?

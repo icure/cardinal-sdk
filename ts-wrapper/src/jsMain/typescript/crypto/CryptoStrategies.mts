@@ -6,7 +6,7 @@ import {KeyStorageFacade, StorageFacade} from "../storage/StorageFacade.mjs";
 import {RecoveryResult} from "./entities/RecoveryResult.mjs";
 import {RecoveryDataKey} from "./entities/RecoveryDataKey.mjs";
 import {RecoveryApi} from "../api/RecoveryApi.mjs";
-import {RsaAlgorithm, XCryptoService, XRsaKeypair} from "./CryptoService.mjs";
+import {RsaAlgorithm, RsaEncryptionAlgorithm, XCryptoService, XRsaKeypair} from "./CryptoService.mjs";
 import {CardinalApis} from "../sdk/CardinalSdk.mjs";
 import {DataOwnerType} from "../model/DataOwnerType.mjs";
 
@@ -72,18 +72,30 @@ export class CryptoStrategies {
   }
 
   /**
-   * Verifies if the public keys of a data owner which will be the delegate of a new exchange key do actually belong to the person the data owner
-   * represents. This method is not called when the delegate would be the current data owner for the api.
+   * Verifies if the public keys of a data owner which will be the delegate of new exchange data do actually belong to
+   * the person the data owner represents; if you do not override this method the public keys of the delegate are
+   * obtained from the cardinal backend and are fully trusted.
    *
-   * The user will have to obtain the verified public keys of the delegate from outside iCure, for example by email with another hcp, by checking the
-   * personal website of the other user, or by scanning verification qr codes at the doctor office...
+   * Note that this method is not called when:
+   * - The delegate id the current SDK delegator actor
+   * - The delegate is a parent type data owner linked from the current SDK delegator actor.
+   * - The SDK is creating exchange data to a simple-type group of data owners (in that case [getDelegatesPublicKeys] is used)
    *
-   * As long as one of the public keys is verified the creation of a new exchange key will succeed. If no public key is verified the operation will
-   * fail.
+   * There are two approaches you can use for verification of public keys: a separate service not controlled by iCure,
+   * or interaction with the end user.
+   *
+   * For example this method may ask the end user to compare the public keys with verified public keys of the delegate
+   * obtained from out of iCure, such as an email, the personal website of the other user, or by scanning verification
+   * qr codes at the doctor office.
+   *
+   * As long as one of the public keys is verified the creation of a new exchange key will succeed.
+   *
+   * If no public key is verified the operation will fail.
+   *
    * @param delegate the potential data owner delegate.
    * @param publicKeys public keys requiring verification, in spki hex-encoded format.
    * @param cryptoPrimitives cryptographic primitives you can use to support the process.
-   * @param groupId the id of the data owner's group, or null if the data owner is in the same group as the current user
+   * @param groupId the id of the delegate data owner's group, or null if the data owner is in the same group as the current user
    * @return all verified public keys, in spki hex-encoded format.
    */
   verifyDelegatePublicKeys(
@@ -93,6 +105,32 @@ export class CryptoStrategies {
     groupId: string | undefined
   ): Promise<Array<SpkiHexString>> {
     return Promise.resolve(publicKeys)
+  }
+
+  /**
+   * Similarly to [verifyDelegatePublicKeys] this method can be used if you don't want the SDK to fully trust the
+   * public keys coming from the cardinal backend, however this method is only called when creating exchange data for
+   * a simple-type data owner group, which may require to get validated public keys for many data owners.
+   *
+   * In that case interaction with the end-user is undesired, and it would be better instead to have a dedicated
+   * service separated from cardinal that provides the public keys of your cardinal data owners.
+   *
+   * Note that:
+   * - Returning null means the SDK will retrieve public keys from the cardinal backend and fully trust them.
+   * - If this method does not return null, it must provide at least a key for each delegate
+   * - Unlike [verifyDelegatePublicKeys] this method might be called even for delegates that are parent of the current
+   *   SDK delegator actor.
+   * - The keys returned by this method will not be checked against the cardinal backend; if there are any
+   *   inconsistencies the SDK might create invalid exchange data.
+   *
+   * @param delegates delegates for which the public keys are required.
+   * @param groupId the id of the delegate data owners' group, or null if their group is the same as the current user
+   */
+  getDelegatesPublicKeys(
+    delegates: Array<string>,
+    groupId: string | undefined,
+  ): Promise<{ [delegateId: string]: { [publicKey: SpkiHexString]: RsaEncryptionAlgorithm } } | undefined> {
+    return Promise.resolve(undefined)
   }
 
   /**
