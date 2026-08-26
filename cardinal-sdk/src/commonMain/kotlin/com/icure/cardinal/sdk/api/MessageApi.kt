@@ -471,8 +471,8 @@ interface MessageApi : MessageBasicFlavourlessApi, MessageFlavouredApi<Decrypted
 		user: User? = null,
 		@DefaultValue("emptyMap()")
 		delegates: Map<String, AccessLevel> = emptyMap(),
-		@DefaultValue("com.icure.cardinal.sdk.crypto.entities.SecretIdUseOption.UseAnySharedWithParent")
-		secretId: SecretIdUseOption = SecretIdUseOption.UseAnySharedWithParent,
+		@DefaultValue("com.icure.cardinal.sdk.crypto.entities.SecretIdUseOption.UseAnySharedWithHierarchy")
+		secretId: SecretIdUseOption = SecretIdUseOption.UseAnySharedWithHierarchy,
 		@DefaultValue("null")
 		alternateRootDelegateId: String? = null,
 	): DecryptedMessage
@@ -497,8 +497,8 @@ interface MessageApi : MessageBasicFlavourlessApi, MessageFlavouredApi<Decrypted
 		delegates: Map<String, MessageDelegateOptions>,
 		@DefaultValue("null")
 		user: User? = null,
-		@DefaultValue("com.icure.cardinal.sdk.crypto.entities.SecretIdUseOption.UseAnySharedWithParent")
-		secretId: SecretIdUseOption = SecretIdUseOption.UseAnySharedWithParent,
+		@DefaultValue("com.icure.cardinal.sdk.crypto.entities.SecretIdUseOption.UseAnySharedWithHierarchy")
+		secretId: SecretIdUseOption = SecretIdUseOption.UseAnySharedWithHierarchy,
 		@DefaultValue("null")
 		alternateRootDelegateId: String? = null,
 	): DecryptedMessage
@@ -647,8 +647,8 @@ interface MessageInGroupApi : MessageBasicFlavourlessInGroupApi, MessageFlavoure
 		user: User? = null,
 		@DefaultValue("emptyMap()")
 		delegates: @JsMapAsObjectArray(keyEntryName = "delegate", valueEntryName = "accessLevel") Map<EntityReferenceInGroup, AccessLevel> = emptyMap(),
-		@DefaultValue("com.icure.cardinal.sdk.crypto.entities.SecretIdUseOption.UseAnySharedWithParent")
-		secretId: SecretIdUseOption = SecretIdUseOption.UseAnySharedWithParent,
+		@DefaultValue("com.icure.cardinal.sdk.crypto.entities.SecretIdUseOption.UseAnySharedWithHierarchy")
+		secretId: SecretIdUseOption = SecretIdUseOption.UseAnySharedWithHierarchy,
 		@DefaultValue("null")
 		alternateRootDelegateReference: EntityReferenceInGroup? = null,
 	): GroupScoped<DecryptedMessage>
@@ -666,8 +666,8 @@ interface MessageInGroupApi : MessageBasicFlavourlessInGroupApi, MessageFlavoure
 		) Map<EntityReferenceInGroup, MessageDelegateOptions>,
 		@DefaultValue("null")
 		user: User? = null,
-		@DefaultValue("com.icure.cardinal.sdk.crypto.entities.SecretIdUseOption.UseAnySharedWithParent")
-		secretId: SecretIdUseOption = SecretIdUseOption.UseAnySharedWithParent,
+		@DefaultValue("com.icure.cardinal.sdk.crypto.entities.SecretIdUseOption.UseAnySharedWithHierarchy")
+		secretId: SecretIdUseOption = SecretIdUseOption.UseAnySharedWithHierarchy,
 		@DefaultValue("null")
 		alternateRootDelegateReference: EntityReferenceInGroup? = null,
 	): GroupScoped<DecryptedMessage>

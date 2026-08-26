@@ -9,27 +9,21 @@ import kotlin.Suppress
 
 @Suppress("UNUSED_VARIABLE")
 public fun secretIdUseOption_toJs(obj: SecretIdUseOption): SecretIdUseOptionJs = when (obj) {
-	is SecretIdUseOption.UseAnyConfidential -> secretIdUseOption_UseAnyConfidential_toJs(obj)
-	is SecretIdUseOption.UseAllConfidential -> secretIdUseOption_UseAllConfidential_toJs(obj)
-	is SecretIdUseOption.UseAnySharedWithParent -> secretIdUseOption_UseAnySharedWithParent_toJs(obj)
-	is SecretIdUseOption.UseAllSharedWithParent -> secretIdUseOption_UseAllSharedWithParent_toJs(obj)
+	is SecretIdUseOption.UseAnySharedWithHierarchy ->
+			secretIdUseOption_UseAnySharedWithHierarchy_toJs(obj)
+	is SecretIdUseOption.UseAllSharedWithHierarchy ->
+			secretIdUseOption_UseAllSharedWithHierarchy_toJs(obj)
 	is SecretIdUseOption.Use -> secretIdUseOption_Use_toJs(obj)
 	is SecretIdUseOption.UseNone -> secretIdUseOption_UseNone_toJs(obj)
 }
 
 public fun secretIdUseOption_fromJs(obj: SecretIdUseOptionJs): SecretIdUseOption = when {
-	obj is SecretIdUseOptionJs_UseAnyConfidentialJs || obj.ktClass ==
-			"com.icure.cardinal.sdk.crypto.entities.SecretIdUseOption.UseAnyConfidential" ->secretIdUseOption_UseAnyConfidential_fromJs(obj
-			as com.icure.cardinal.sdk.js.crypto.entities.SecretIdUseOptionJs_UseAnyConfidentialJs)
-	obj is SecretIdUseOptionJs_UseAllConfidentialJs || obj.ktClass ==
-			"com.icure.cardinal.sdk.crypto.entities.SecretIdUseOption.UseAllConfidential" ->secretIdUseOption_UseAllConfidential_fromJs(obj
-			as com.icure.cardinal.sdk.js.crypto.entities.SecretIdUseOptionJs_UseAllConfidentialJs)
-	obj is SecretIdUseOptionJs_UseAnySharedWithParentJs || obj.ktClass ==
-			"com.icure.cardinal.sdk.crypto.entities.SecretIdUseOption.UseAnySharedWithParent" ->secretIdUseOption_UseAnySharedWithParent_fromJs(obj
-			as com.icure.cardinal.sdk.js.crypto.entities.SecretIdUseOptionJs_UseAnySharedWithParentJs)
-	obj is SecretIdUseOptionJs_UseAllSharedWithParentJs || obj.ktClass ==
-			"com.icure.cardinal.sdk.crypto.entities.SecretIdUseOption.UseAllSharedWithParent" ->secretIdUseOption_UseAllSharedWithParent_fromJs(obj
-			as com.icure.cardinal.sdk.js.crypto.entities.SecretIdUseOptionJs_UseAllSharedWithParentJs)
+	obj is SecretIdUseOptionJs_UseAnySharedWithHierarchyJs || obj.ktClass ==
+			"com.icure.cardinal.sdk.crypto.entities.SecretIdUseOption.UseAnySharedWithHierarchy" ->secretIdUseOption_UseAnySharedWithHierarchy_fromJs(obj
+			as com.icure.cardinal.sdk.js.crypto.entities.SecretIdUseOptionJs_UseAnySharedWithHierarchyJs)
+	obj is SecretIdUseOptionJs_UseAllSharedWithHierarchyJs || obj.ktClass ==
+			"com.icure.cardinal.sdk.crypto.entities.SecretIdUseOption.UseAllSharedWithHierarchy" ->secretIdUseOption_UseAllSharedWithHierarchy_fromJs(obj
+			as com.icure.cardinal.sdk.js.crypto.entities.SecretIdUseOptionJs_UseAllSharedWithHierarchyJs)
 	obj is SecretIdUseOptionJs_UseJs || obj.ktClass ==
 			"com.icure.cardinal.sdk.crypto.entities.SecretIdUseOption.Use" ->secretIdUseOption_Use_fromJs(obj
 			as com.icure.cardinal.sdk.js.crypto.entities.SecretIdUseOptionJs_UseJs)
@@ -41,38 +35,22 @@ public fun secretIdUseOption_fromJs(obj: SecretIdUseOptionJs): SecretIdUseOption
 }
 
 @Suppress("UNUSED_VARIABLE")
-public fun secretIdUseOption_UseAnyConfidential_toJs(obj: SecretIdUseOption.UseAnyConfidential):
-		SecretIdUseOptionJs_UseAnyConfidentialJs = SecretIdUseOptionJs_UseAnyConfidentialJs
+public
+		fun secretIdUseOption_UseAnySharedWithHierarchy_toJs(obj: SecretIdUseOption.UseAnySharedWithHierarchy):
+		SecretIdUseOptionJs_UseAnySharedWithHierarchyJs = SecretIdUseOptionJs_UseAnySharedWithHierarchyJs
 
 public
-		fun secretIdUseOption_UseAnyConfidential_fromJs(obj: SecretIdUseOptionJs_UseAnyConfidentialJs):
-		SecretIdUseOption.UseAnyConfidential = SecretIdUseOption.UseAnyConfidential
-
-@Suppress("UNUSED_VARIABLE")
-public fun secretIdUseOption_UseAllConfidential_toJs(obj: SecretIdUseOption.UseAllConfidential):
-		SecretIdUseOptionJs_UseAllConfidentialJs = SecretIdUseOptionJs_UseAllConfidentialJs
-
-public
-		fun secretIdUseOption_UseAllConfidential_fromJs(obj: SecretIdUseOptionJs_UseAllConfidentialJs):
-		SecretIdUseOption.UseAllConfidential = SecretIdUseOption.UseAllConfidential
+		fun secretIdUseOption_UseAnySharedWithHierarchy_fromJs(obj: SecretIdUseOptionJs_UseAnySharedWithHierarchyJs):
+		SecretIdUseOption.UseAnySharedWithHierarchy = SecretIdUseOption.UseAnySharedWithHierarchy
 
 @Suppress("UNUSED_VARIABLE")
 public
-		fun secretIdUseOption_UseAnySharedWithParent_toJs(obj: SecretIdUseOption.UseAnySharedWithParent):
-		SecretIdUseOptionJs_UseAnySharedWithParentJs = SecretIdUseOptionJs_UseAnySharedWithParentJs
+		fun secretIdUseOption_UseAllSharedWithHierarchy_toJs(obj: SecretIdUseOption.UseAllSharedWithHierarchy):
+		SecretIdUseOptionJs_UseAllSharedWithHierarchyJs = SecretIdUseOptionJs_UseAllSharedWithHierarchyJs
 
 public
-		fun secretIdUseOption_UseAnySharedWithParent_fromJs(obj: SecretIdUseOptionJs_UseAnySharedWithParentJs):
-		SecretIdUseOption.UseAnySharedWithParent = SecretIdUseOption.UseAnySharedWithParent
-
-@Suppress("UNUSED_VARIABLE")
-public
-		fun secretIdUseOption_UseAllSharedWithParent_toJs(obj: SecretIdUseOption.UseAllSharedWithParent):
-		SecretIdUseOptionJs_UseAllSharedWithParentJs = SecretIdUseOptionJs_UseAllSharedWithParentJs
-
-public
-		fun secretIdUseOption_UseAllSharedWithParent_fromJs(obj: SecretIdUseOptionJs_UseAllSharedWithParentJs):
-		SecretIdUseOption.UseAllSharedWithParent = SecretIdUseOption.UseAllSharedWithParent
+		fun secretIdUseOption_UseAllSharedWithHierarchy_fromJs(obj: SecretIdUseOptionJs_UseAllSharedWithHierarchyJs):
+		SecretIdUseOption.UseAllSharedWithHierarchy = SecretIdUseOption.UseAllSharedWithHierarchy
 
 @Suppress("UNUSED_VARIABLE")
 public fun secretIdUseOption_Use_toJs(obj: SecretIdUseOption.Use): SecretIdUseOptionJs_UseJs {

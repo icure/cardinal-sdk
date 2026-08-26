@@ -4,10 +4,12 @@ import com.icure.cardinal.sdk.model.ExchangeData
 import com.icure.cardinal.sdk.model.IdWithRev
 import com.icure.cardinal.sdk.model.ListOfIds
 import com.icure.cardinal.sdk.model.PaginatedList
+import com.icure.cardinal.sdk.model.requests.ExchangeDataPieceCreationRequest
 import com.icure.utils.InternalIcureApi
 import kotlin.Int
 import kotlin.String
 import kotlin.collections.List
+import kotlin.collections.Map
 
 // WARNING: This class is auto-generated. If you change it manually, your changes will be lost.
 // If you want to change the way this class is generated, see [this repo](https://github.com/icure/sdk-codegen).
@@ -25,39 +27,46 @@ public interface RawExchangeDataApi {
 
 	suspend fun getExchangeDataByIds(exchangeDataIds: ListOfIds): HttpResponse<List<ExchangeData>>
 
-	suspend fun getExchangeDataByParticipant(
-		dataOwnerId: String,
+	suspend fun createExchangeDataGroupPieces(
+		exchangeDataGroupId: String,
+		delegator: String,
+		`delegate`: String,
+		piecesByRecipient: Map<String, ExchangeDataPieceCreationRequest>,
+	): HttpResponse<List<ExchangeData>>
+
+	suspend fun getExchangeDataGroupById(
+		exchangeDataGroupId: String,
+		startKey: String? = null,
 		startDocumentId: String? = null,
 		limit: Int? = null,
 	): HttpResponse<PaginatedList<ExchangeData>>
 
-	suspend fun getExchangeDataByParticipantQuery(
-		dataOwnerId: String,
+	suspend fun getExchangeDataGroupByIdForRecipients(
+		exchangeDataGroupId: String,
+		recipients: String,
 		startDocumentId: String? = null,
-		limit: Int? = null,
 	): HttpResponse<PaginatedList<ExchangeData>>
 
-	suspend fun getExchangeDataByDelegatorDelegate(
+	suspend fun getExchangeDataByParticipantForRecipients(
+		dataOwnerId: String,
+		recipients: String,
+		startDocumentId: String? = null,
+	): HttpResponse<PaginatedList<ExchangeData>>
+
+	suspend fun getExchangeDataByDelegatorDelegateForRecipients(
 		delegatorId: String,
 		delegateId: String,
-	): HttpResponse<List<ExchangeData>>
+		recipients: String,
+		startDocumentId: String? = null,
+	): HttpResponse<PaginatedList<ExchangeData>>
 
-	suspend fun getExchangeDataByDelegatorDelegateQuery(
-		delegatorId: String,
-		delegateId: String,
-	): HttpResponse<List<ExchangeData>>
-
-	suspend fun getParticipantCounterparts(
+	suspend fun findNonGroupPieceCounterparts(
 		dataOwnerId: String,
 		counterpartsTypes: String,
 		ignoreOnEntryForFingerprint: String? = null,
-	): HttpResponse<List<String>>
-
-	suspend fun getParticipantCounterpartsQuery(
-		dataOwnerId: String,
-		counterpartsTypes: String,
-		ignoreOnEntryForFingerprint: String? = null,
-	): HttpResponse<List<String>>
+		startKey: String? = null,
+		limit: Int? = null,
+	): HttpResponse<PaginatedList<String>>
 	// endregion
 
 	// region cloud endpoints
@@ -82,17 +91,42 @@ public interface RawExchangeDataApi {
 		groupId: String,
 	): HttpResponse<List<ExchangeData>>
 
-	suspend fun getExchangeDataByParticipant(
-		dataOwnerId: String,
+	suspend fun createExchangeDataGroupPieces(
+		exchangeDataGroupId: String,
+		delegator: String,
+		`delegate`: String,
+		piecesByRecipient: Map<String, ExchangeDataPieceCreationRequest>,
+		groupId: String,
+	): HttpResponse<List<ExchangeData>>
+
+	suspend fun getExchangeDataGroupById(
+		exchangeDataGroupId: String,
+		startKey: String? = null,
 		startDocumentId: String? = null,
 		limit: Int? = null,
 		groupId: String,
 	): HttpResponse<PaginatedList<ExchangeData>>
 
-	suspend fun getExchangeDataByDelegatorDelegate(
+	suspend fun getExchangeDataGroupByIdForRecipients(
+		exchangeDataGroupId: String,
+		recipients: String,
+		startDocumentId: String? = null,
+		groupId: String,
+	): HttpResponse<PaginatedList<ExchangeData>>
+
+	suspend fun getExchangeDataByParticipantForRecipients(
+		dataOwnerId: String,
+		recipients: String,
+		startDocumentId: String? = null,
+		groupId: String,
+	): HttpResponse<PaginatedList<ExchangeData>>
+
+	suspend fun getExchangeDataByDelegatorDelegateForRecipients(
 		delegatorId: String,
 		delegateId: String,
+		recipients: String,
+		startDocumentId: String? = null,
 		groupId: String,
-	): HttpResponse<List<ExchangeData>>
+	): HttpResponse<PaginatedList<ExchangeData>>
 	// endregion
 }

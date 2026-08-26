@@ -7,7 +7,6 @@ import com.icure.cardinal.sdk.model.EntityReferenceInGroup
 import com.icure.cardinal.sdk.model.specializations.KeypairFingerprintV1String
 import com.icure.cardinal.sdk.model.specializations.Pkcs8Bytes
 import com.icure.cardinal.sdk.utils.DefaultValue
-import com.icure.kryptom.crypto.RsaAlgorithm
 
 
 /**
@@ -32,15 +31,17 @@ interface CryptoApi {
 	suspend fun forceReload()
 
 	/**
-	 * Get the available keys for the current data and his parents (if using hierarchical data owners).
-	 * The result is a map associating the current data owner or parent id to a map containing all the available keys
-	 * for that data owner.
-	 * The keys map associates the key fingerprint to the pkcs8 bytes of the private key.
+	 * Get the available keys for the data owner associated to the instance of the SDK and, if using hierarchical data
+	 * owners, also its parents.
+	 * Note that the result does not necessarily include the keys of the current user's data owner: this might be the
+	 * case if the SDK was initialized using the "parent delegator", "keyless", or "child-scoped" modes.
+	 * The result is an (unordered) map containing all the available private keys, indexed by their data owner id and
+	 * fingerprint.
 	 * @param filterTrustedKeys if true (default) only keys fully trusted by this instance of the sdk will be returned.
 	 * Otherwise, also unverified keys may be returned.
 	 * @return the available keys
 	 */
-	suspend fun currentDataOwnerKeys(
+	suspend fun availableKeys(
 		@DefaultValue("true")
 		filterTrustedKeys: Boolean = true
 	): Map<String, Map<KeypairFingerprintV1String, Pkcs8Bytes>>

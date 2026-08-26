@@ -14,10 +14,13 @@ import com.icure.cardinal.sdk.api.impl.keyAsLocalDataOwnerReferences
 import com.icure.cardinal.sdk.api.raw.RawHealthElementApi
 import com.icure.cardinal.sdk.api.raw.successBodyOrNull404
 import com.icure.cardinal.sdk.api.raw.successBodyOrThrowRevisionConflict
+import com.icure.cardinal.sdk.crypto.entities.BulkShareByIdsResult
 import com.icure.cardinal.sdk.crypto.entities.DelegateOptions
 import com.icure.cardinal.sdk.crypto.entities.EntityWithEncryptionMetadataTypeName
 import com.icure.cardinal.sdk.crypto.entities.HealthElementDelegateOptions
 import com.icure.cardinal.sdk.crypto.entities.HealthElementShareOptions
+import com.icure.cardinal.sdk.crypto.entities.asIcureStub
+import com.icure.cardinal.sdk.crypto.entities.toBulkShareByIdsResult
 import com.icure.cardinal.sdk.crypto.entities.OwningEntityDetails
 import com.icure.cardinal.sdk.crypto.entities.SecretIdUseOption
 import com.icure.cardinal.sdk.exceptions.NotFoundException
@@ -729,6 +732,26 @@ private class HealthElementApiImpl(
 
 	override suspend fun matchHealthElementsBySorted(filter: SortableFilterOptions<HealthElement>): List<String> =
 		rawApi.doMatchHealthElementsBySorted(config = config, groupId = null, filter = filter)
+
+	override suspend fun shareHealthElementsByIds(
+		healthElementIds: List<String>,
+		delegates: Map<String, HealthElementShareOptions>
+	): BulkShareByIdsResult {
+		val distinctIds = healthElementIds.toSet()
+		if (distinctIds.isEmpty() || delegates.isEmpty()) {
+			return BulkShareByIdsResult(emptySet(), emptyMap(), emptyMap(), emptyList())
+		}
+		val stubs = rawApi.listHealthElementsDelegationsStubById(healthElementIds = ListOfIds(distinctIds.toList())).successBody()
+		val result = config.crypto.entity.simpleBulkShareOrUpdateEncryptedEntityMetadataNoEntities(
+			entities = stubs,
+			entitiesType = EntityWithEncryptionMetadataTypeName.HealthElement,
+			delegates = delegates,
+			autoRetry = true,
+			getUpdatedEntity = { rawApi.getHealthElement(healthElementId = it).successBody().asIcureStub() },
+			doRequestBulkShareOrUpdate = { params -> rawApi.bulkShareMinimal(request = params).successBody() }
+		)
+		return result.toBulkShareByIdsResult(distinctIds, stubs.mapTo(mutableSetOf()) { it.id }, delegates.keys)
+	}
 
 	override suspend fun subscribeToEvents(
 		events: Set<SubscriptionEventType>,

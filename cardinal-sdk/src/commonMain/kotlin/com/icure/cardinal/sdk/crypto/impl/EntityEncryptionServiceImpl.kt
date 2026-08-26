@@ -11,6 +11,7 @@ import com.icure.cardinal.sdk.crypto.UserEncryptionKeysManager
 import com.icure.cardinal.sdk.crypto.decrypt
 import com.icure.cardinal.sdk.crypto.entities.BulkShareResult
 import com.icure.cardinal.sdk.crypto.entities.DecryptedMetadataDetails
+import com.icure.cardinal.sdk.crypto.entities.DecryptedMetadataDetails.Companion.groupedByValueToAllDataOwnersWithAccess
 import com.icure.cardinal.sdk.crypto.entities.DelegateOptions
 import com.icure.cardinal.sdk.crypto.entities.DelegateShareOptions
 import com.icure.cardinal.sdk.crypto.entities.EncryptedFieldsManifest
@@ -19,12 +20,12 @@ import com.icure.cardinal.sdk.crypto.entities.EntityEncryptionKeyDetails
 import com.icure.cardinal.sdk.crypto.entities.EntityEncryptionMetadataInitialisationResult
 import com.icure.cardinal.sdk.crypto.entities.EntityWithEncryptionMetadataTypeName
 import com.icure.cardinal.sdk.crypto.entities.FailedRequestDetails
-import com.icure.cardinal.sdk.crypto.entities.HierarchicallyDecryptedMetadata
 import com.icure.cardinal.sdk.crypto.entities.MinimalBulkShareResult
 import com.icure.cardinal.sdk.crypto.entities.OwningEntityDetails
 import com.icure.cardinal.sdk.crypto.entities.SdkBoundGroup
 import com.icure.cardinal.sdk.crypto.entities.SecretIdShareOptions
 import com.icure.cardinal.sdk.crypto.entities.SecretIdUseOption
+import com.icure.cardinal.sdk.crypto.entities.SecureDelegationMembersDetails
 import com.icure.cardinal.sdk.crypto.entities.SecurityMetadataType
 import com.icure.cardinal.sdk.crypto.entities.ShareMetadataBehaviour
 import com.icure.cardinal.sdk.crypto.entities.SimpleDelegateShareOptions
@@ -32,6 +33,7 @@ import com.icure.cardinal.sdk.crypto.entities.SimpleDelegateShareOptionsImpl
 import com.icure.cardinal.sdk.crypto.entities.SimpleShareResult
 import com.icure.cardinal.sdk.crypto.entities.resolve
 import com.icure.cardinal.sdk.model.EntityReferenceInGroup
+import com.icure.cardinal.sdk.model.SecretIdCreationResult
 import com.icure.cardinal.sdk.model.base.HasEncryptionMetadata
 import com.icure.cardinal.sdk.model.embed.AccessLevel
 import com.icure.cardinal.sdk.model.embed.Encryptable
@@ -139,7 +141,7 @@ class EntityEncryptionServiceImpl(
 			entityGroupId,
 			listOf(entity),
 			entityType,
-			dataOwnersForDecryption(dataOwnerId).toSet(),
+			dataOwnersForDecryption(dataOwnerId).flattened(),
 			securityMetadataType
 		).values.single().mapTo(mutableSetOf()) {
 			it.value
@@ -155,7 +157,7 @@ class EntityEncryptionServiceImpl(
 			entityGroupId,
 			entities,
 			entitiesType,
-			dataOwnersForDecryption(dataOwnerId).toSet(),
+			dataOwnersForDecryption(dataOwnerId).flattened(),
 			SecurityMetadataType.SecretId
 		).mapValues { (_, v) -> v.mapTo(mutableSetOf()) { it.value } }
 
@@ -168,65 +170,11 @@ class EntityEncryptionServiceImpl(
 			entityGroupId,
 			entities,
 			entitiesType,
-			dataOwnersForDecryption(null).toSet(),
+			dataOwnersForDecryption(null).flattened(),
 			SecurityMetadataType.SecretId
 		).mapValues { (_, v) ->
-			v.groupingBy {
-				it.value
-			}.aggregate { _, accumulator, element, _ ->
-				if (accumulator != null)
-					accumulator + element.dataOwnersWithAccess
-				else
-					element.dataOwnersWithAccess
-			}
+			v.groupedByValueToAllDataOwnersWithAccess()
 		}
-
-	override suspend fun encryptionKeysForHcpHierarchyOf(
-		entityGroupId: String?,
-		entity: HasEncryptionMetadata,
-		entityType: EntityWithEncryptionMetadataTypeName
-	): List<HierarchicallyDecryptedMetadata<HexString>> =
-		decryptSecurityMetadataForHierarchy(entityGroupId, entity, entityType, SecurityMetadataType.EncryptionKey)
-
-	override suspend fun secretIdsForHcpHierarchyOf(
-		entityGroupId: String?,
-		entity: HasEncryptionMetadata,
-		entityType: EntityWithEncryptionMetadataTypeName
-	): List<HierarchicallyDecryptedMetadata<String>> =
-		decryptSecurityMetadataForHierarchy(entityGroupId, entity, entityType, SecurityMetadataType.SecretId)
-
-	override suspend fun owningEntityIdsForHcpHierarchyOf(
-		entityGroupId: String?,
-		entity: HasEncryptionMetadata,
-		entityType: EntityWithEncryptionMetadataTypeName
-	): List<HierarchicallyDecryptedMetadata<String>> =
-		decryptSecurityMetadataForHierarchy(entityGroupId, entity, entityType, SecurityMetadataType.OwningEntityId)
-
-	private suspend fun <T : Any> decryptSecurityMetadataForHierarchy(
-		entityGroupId: String?,
-		entity: HasEncryptionMetadata,
-		entityType: EntityWithEncryptionMetadataTypeName,
-		securityMetadataType: SecurityMetadataType<T>
-	): List<HierarchicallyDecryptedMetadata<T>> {
-		val hierarchyIds = dataOwnersForDecryption(null)
-		val allDecryptedData = baseSecurityMetadataDecryptor.decryptAll(
-			entityGroupId,
-			listOf(entity),
-			entityType,
-			hierarchyIds.toSet(),
-			securityMetadataType
-		).values.single()
-		return hierarchyIds.map { currDataOwner ->
-			val currentDataOwnerReference = EntityReferenceInGroup(currDataOwner, null)
-			HierarchicallyDecryptedMetadata(
-				allDecryptedData
-					.filter { currentDataOwnerReference in it.dataOwnersWithAccess }
-					.map { it.value }
-					.toSet(),
-				currDataOwner
-			)
-		}
-	}
 
 	override suspend fun hasWriteAccess(
 		entityGroupId: String?,
@@ -237,7 +185,7 @@ class EntityEncryptionServiceImpl(
 			entityGroupId,
 			entity,
 			entityType,
-			dataOwnersForDecryption(null).toSet()
+			dataOwnersForDecryption(null).flattened()
 		) == AccessLevel.Write
 
 	override fun hasEmptyEncryptionMetadata(
@@ -485,9 +433,34 @@ class EntityEncryptionServiceImpl(
 		autoRetry: Boolean,
 		getUpdatedEntity: suspend (String) -> T,
 		doRequestBulkShareOrUpdate: suspend (request: BulkShareOrUpdateMetadataParams) -> List<EntityBulkShareResult<out T>>
+	): BulkShareResult<T> = doBulkShareOrUpdateEncryptedEntityMetadata(
+		entityGroupId,
+		entitiesUpdates,
+		entitiesType,
+		autoRetry,
+		getUpdatedEntity,
+		doRequestBulkShareOrUpdate,
+		emptyMap()
+	)
+
+	/**
+	 * Same as [bulkShareOrUpdateEncryptedEntityMetadata], but allows [simpleShareOrUpdateEncryptedEntityMetadata] to
+	 * pass in the security metadata it already had to decrypt to resolve its own [SimpleDelegateShareOptions], so
+	 * that [prepareBulkShareRequests] doesn't have to decrypt everything again from scratch to figure out what each
+	 * delegate already has. Callers that don't have anything precomputed (or whose entity may have changed since,
+	 * e.g. on auto-retry) can just pass an empty map, in which case [prepareBulkShareRequests] decrypts on its own.
+	 */
+	private suspend fun <T : HasEncryptionMetadata> doBulkShareOrUpdateEncryptedEntityMetadata(
+		entityGroupId: String?,
+		entitiesUpdates: List<Pair<T, Map<EntityReferenceInGroup, DelegateShareOptions>>>,
+		entitiesType: EntityWithEncryptionMetadataTypeName,
+		autoRetry: Boolean,
+		getUpdatedEntity: suspend (String) -> T,
+		doRequestBulkShareOrUpdate: suspend (request: BulkShareOrUpdateMetadataParams) -> List<EntityBulkShareResult<out T>>,
+		precomputedDecryptedMetadata: Map<String, PerEntityDecryptedSecurityMetadata>
 	): BulkShareResult<T> {
 		val normalizedEntitiesUpdates = entitiesUpdates.map { (e, rs) -> e to rs.mapKeys { it.key.normalized(boundGroup) } }
-		val requestDetails = prepareBulkShareRequests(entityGroupId, normalizedEntitiesUpdates, entitiesType)
+		val requestDetails = prepareBulkShareRequests(entityGroupId, normalizedEntitiesUpdates, entitiesType, precomputedDecryptedMetadata)
 		val shareResult = doRequestBulkShareOrUpdate(
 			BulkShareOrUpdateMetadataParams(
 				requestDetails.requestsByEntityId.mapValues { (_, details) ->
@@ -543,13 +516,31 @@ class EntityEncryptionServiceImpl(
 		autoRetry: Boolean,
 		getUpdatedEntity: suspend (String) -> HasEncryptionMetadata,
 		doRequestBulkShareOrUpdate: suspend (request: BulkShareOrUpdateMetadataParams) -> List<EntityBulkShareResult<Nothing>>
+	): MinimalBulkShareResult = doBulkShareOrUpdateEncryptedEntityMetadataNoEntities(
+		entitiesUpdates, entitiesType, autoRetry, getUpdatedEntity, doRequestBulkShareOrUpdate, emptyMap()
+	)
+
+	/**
+	 * Same as [bulkShareOrUpdateEncryptedEntityMetadataNoEntities], but allows
+	 * [simpleBulkShareOrUpdateEncryptedEntityMetadataNoEntities] to pass in the security metadata it already had to
+	 * decrypt to resolve its own [SimpleDelegateShareOptions], for the same reason [doBulkShareOrUpdateEncryptedEntityMetadata]
+	 * accepts it: so [prepareBulkShareRequests] doesn't have to decrypt everything again from scratch.
+	 */
+	private suspend fun doBulkShareOrUpdateEncryptedEntityMetadataNoEntities(
+		entitiesUpdates: List<Pair<HasEncryptionMetadata, Map<String, DelegateShareOptions>>>,
+		entitiesType: EntityWithEncryptionMetadataTypeName,
+		autoRetry: Boolean,
+		getUpdatedEntity: suspend (String) -> HasEncryptionMetadata,
+		doRequestBulkShareOrUpdate: suspend (request: BulkShareOrUpdateMetadataParams) -> List<EntityBulkShareResult<Nothing>>,
+		precomputedDecryptedMetadata: Map<String, PerEntityDecryptedSecurityMetadata>
 	): MinimalBulkShareResult {
 		val requestDetails = prepareBulkShareRequests(
 			null,
 			entitiesUpdates.map { (entity, updates) ->
 				Pair(entity, updates.mapKeys { EntityReferenceInGroup(it.key, null) })
 			},
-			entitiesType
+			entitiesType,
+			precomputedDecryptedMetadata
 		)
 		val shareResult = doRequestBulkShareOrUpdate(
 			BulkShareOrUpdateMetadataParams(
@@ -589,12 +580,13 @@ class EntityEncryptionServiceImpl(
 					} else null
 				}
 				if (updatedRequests.isNotEmpty()) {
-					val newResults = bulkShareOrUpdateEncryptedEntityMetadataNoEntities(
+					val newResults = doBulkShareOrUpdateEncryptedEntityMetadataNoEntities(
 						updatedRequests,
 						entitiesType,
 						autoRetry,
 						getUpdatedEntity,
-						doRequestBulkShareOrUpdate
+						doRequestBulkShareOrUpdate,
+						emptyMap()
 					)
 					return MinimalBulkShareResult(
 						successfulUpdates = newResults.successfulUpdates + successfulUpdates.filter { it.entityId !in toRetryEntitiesId },
@@ -607,6 +599,68 @@ class EntityEncryptionServiceImpl(
 		return MinimalBulkShareResult(successfulUpdates, requestDetails.unmodifiedEntityIds, updateErrors)
 	}
 
+	override suspend fun simpleBulkShareOrUpdateEncryptedEntityMetadataNoEntities(
+		entities: List<HasEncryptionMetadata>,
+		entitiesType: EntityWithEncryptionMetadataTypeName,
+		delegates: Map<String, SimpleDelegateShareOptions>,
+		autoRetry: Boolean,
+		getUpdatedEntity: suspend (String) -> HasEncryptionMetadata,
+		doRequestBulkShareOrUpdate: suspend (request: BulkShareOrUpdateMetadataParams) -> List<EntityBulkShareResult<Nothing>>
+	): MinimalBulkShareResult {
+		if (entities.isEmpty() || delegates.isEmpty()) return MinimalBulkShareResult(emptySet(), emptySet(), emptyList())
+		require(entities.distinctBy { it.id }.size == entities.size) { "Duplicate entities in the input" }
+
+		val normalizedDelegates = delegates.mapKeys { EntityReferenceInGroup(it.key, null) }
+		val hierarchySet = dataOwnersForDecryption(null).flattened()
+
+		// One decryptAll call per metadata type across the whole batch, instead of decryptSecurityMetadataDetails
+		// (3 calls) once per entity: this is the actual efficiency win of this method over calling
+		// simpleShareOrUpdateEncryptedEntityMetadata once per entity.
+		val secretIdsByEntity = baseSecurityMetadataDecryptor.decryptAll(null, entities, entitiesType, hierarchySet, SecurityMetadataType.SecretId)
+		val encryptionKeysByEntity = baseSecurityMetadataDecryptor.decryptAll(null, entities, entitiesType, hierarchySet, SecurityMetadataType.EncryptionKey)
+		val owningEntityIdsByEntity = baseSecurityMetadataDecryptor.decryptAll(null, entities, entitiesType, hierarchySet, SecurityMetadataType.OwningEntityId)
+
+		val resolutionErrors = mutableListOf<FailedRequestDetails>()
+		val precomputedMetadataByEntityId = mutableMapOf<String, PerEntityDecryptedSecurityMetadata>()
+		val entitiesUpdates = mutableListOf<Pair<HasEncryptionMetadata, Map<String, DelegateShareOptions>>>()
+
+		entities.forEach { entity ->
+			val decryptedMetadata = PerEntityDecryptedSecurityMetadata(
+				secretIds = secretIdsByEntity[entity.id].orEmpty(),
+				encryptionKeys = encryptionKeysByEntity[entity.id].orEmpty(),
+				owningEntityIds = owningEntityIdsByEntity[entity.id].orEmpty()
+			)
+			precomputedMetadataByEntityId[entity.id] = decryptedMetadata
+
+			val okOptions = mutableMapOf<String, DelegateShareOptions>()
+			resolveSimpleDelegateShareOptions(entity, entitiesType, decryptedMetadata, normalizedDelegates).forEach { (delegateReference, result) ->
+				result.fold(
+					onSuccess = { okOptions[delegateReference.entityId] = it },
+					onFailure = { throwable ->
+						resolutionErrors += FailedRequestDetails.ResolutionFailed(
+							entityId = entity.id,
+							delegateReference = delegateReference,
+							reason = throwable.message
+						)
+					}
+				)
+			}
+			if (okOptions.isNotEmpty()) entitiesUpdates += entity to okOptions
+		}
+
+		val bulkResult = if (entitiesUpdates.isNotEmpty()) {
+			doBulkShareOrUpdateEncryptedEntityMetadataNoEntities(
+				entitiesUpdates, entitiesType, autoRetry, getUpdatedEntity, doRequestBulkShareOrUpdate, precomputedMetadataByEntityId
+			)
+		} else MinimalBulkShareResult(emptySet(), emptySet(), emptyList())
+
+		return MinimalBulkShareResult(
+			successfulUpdates = bulkResult.successfulUpdates,
+			unmodifiedEntitiesIds = bulkResult.unmodifiedEntitiesIds,
+			updateErrors = bulkResult.updateErrors + resolutionErrors
+		)
+	}
+
 	override tailrec suspend fun <T : HasEncryptionMetadata> simpleShareOrUpdateEncryptedEntityMetadata(
 		entityGroupId: String?,
 		entity: T,
@@ -617,30 +671,17 @@ class EntityEncryptionServiceImpl(
 		doRequestBulkShareOrUpdate: suspend (request: BulkShareOrUpdateMetadataParams) -> List<EntityBulkShareResult<out T>>
 	): SimpleShareResult<T> {
 		val normalizedDelegates = delegates.mapKeys { it.key.normalized(boundGroup) }
-		val availableEncryptionKeys = encryptionKeysOf(entityGroupId, entity, entityType, null)
-		val availableOwningEntityIds = owningEntityIdsOf(entityGroupId, entity, entityType, null)
-		val availableSecretIds = secretIdsOf(entityGroupId, entity, entityType, null)
-		val extendedDelegateOptions = normalizedDelegates.mapValues { (_, simpleShareOptions) ->
-			if (availableEncryptionKeys.isEmpty() && simpleShareOptions.shareEncryptionKey == ShareMetadataBehaviour.Required) {
-				throw IllegalArgumentException("The current data owner can't access any encryption key in ${entityType.id}(\"${entity.id}\"), but sharing is required.")
-			}
-			if (availableOwningEntityIds.isEmpty() && simpleShareOptions.shareOwningEntityIds == ShareMetadataBehaviour.Required) {
-				throw IllegalArgumentException("The current data owner can't access any owning entity id in ${entityType.id}(\"${entity.id}\"), but sharing is required.")
-			}
-			DelegateShareOptions(
-				shareSecretIds = simpleShareOptions.shareSecretIds.resolve(availableSecretIds, entity, entityType),
-				shareEncryptionKeys = if (simpleShareOptions.shareEncryptionKey == ShareMetadataBehaviour.Never) emptySet() else availableEncryptionKeys,
-				shareOwningEntityIds = if (simpleShareOptions.shareOwningEntityIds == ShareMetadataBehaviour.Never) emptySet() else availableOwningEntityIds,
-				requestedPermissions = simpleShareOptions.requestedPermissions
-			)
-		}
-		val shareResult = bulkShareOrUpdateEncryptedEntityMetadata(
+		val decryptedMetadata = decryptSecurityMetadataDetails(entityGroupId, entity, entityType, dataOwnersForDecryption(null).flattened())
+		val extendedDelegateOptions = resolveSimpleDelegateShareOptions(entity, entityType, decryptedMetadata, normalizedDelegates)
+			.mapValues { (_, result) -> result.getOrThrow() }
+		val shareResult = doBulkShareOrUpdateEncryptedEntityMetadata(
 			entityGroupId,
 			listOf(entity to extendedDelegateOptions),
 			entityType,
 			false,
 			getUpdatedEntity,
-			doRequestBulkShareOrUpdate
+			doRequestBulkShareOrUpdate,
+			mapOf(entity.id to decryptedMetadata)
 		)
 		if (shareResult.unmodifiedEntitiesIds.contains(entity.id)) {
 			return SimpleShareResult.Success(entity)
@@ -653,7 +694,7 @@ class EntityEncryptionServiceImpl(
 			log.w { "There was an internal error with the migration of encrypted metadata: ${shareResult.updateErrors}" }
 			return SimpleShareResult.Success(shareResult.updatedEntities.first())
 		}
-		if (autoRetry && shareResult.updateErrors.all { it.shouldRetry }) {
+		if (autoRetry && shareResult.updateErrors.all { it is FailedRequestDetails.RequestRejected && it.shouldRetry }) {
 			val updatedEntity = getUpdatedEntity(entity.id)
 			if (updatedEntity.rev != entity.rev) {
 				return simpleShareOrUpdateEncryptedEntityMetadata(
@@ -677,7 +718,7 @@ class EntityEncryptionServiceImpl(
 	) =
 		shareResultRejectedRequests.map { (rejectedRequestId, error) ->
 			val originalRequestDetails = requestDetails.requestsByEntityId.getValue(entityId).requests.getValue(rejectedRequestId)
-			FailedRequestDetails(
+			FailedRequestDetails.RequestRejected(
 				delegateReference = originalRequestDetails.delegateReference,
 				entityId = entityId,
 				request = originalRequestDetails.options,
@@ -708,7 +749,8 @@ class EntityEncryptionServiceImpl(
 	private suspend fun prepareBulkShareRequests(
 		entityGroupId: String?,
 		entitiesUpdates: List<Pair<HasEncryptionMetadata, Map<EntityReferenceInGroup, DelegateShareOptions>>>,
-		entitiesType: EntityWithEncryptionMetadataTypeName
+		entitiesType: EntityWithEncryptionMetadataTypeName,
+		precomputedDecryptedMetadata: Map<String, PerEntityDecryptedSecurityMetadata> = emptyMap()
 	): BulkShareRequestsDetails {
 		require (entitiesUpdates.distinctBy { it.first.id }.size == entitiesUpdates.size) {
 			"Duplicate requests: the same entity id is present more than once in the input"
@@ -716,7 +758,7 @@ class EntityEncryptionServiceImpl(
 		require (entitiesUpdates.all { it.first.rev != null }) {
 			"Only existing entities can be shared"
 		}
-		val hierarchySet = dataOwnersForDecryption(null).toSet()
+		val hierarchySet = dataOwnersForDecryption(null).flattened()
 		val hierarchyReferenceSet = hierarchySet.map { EntityReferenceInGroup(it, null) }.toSet()
 		val requestsByEntityId = mutableMapOf<String, EntityShareRequestDetails>()
 		val unmodifiedEntityIds = mutableSetOf<String>()
@@ -728,9 +770,65 @@ class EntityEncryptionServiceImpl(
 				optionsForDelegates,
 				hierarchySet
 			)
-			val otherRequests = optionsForDelegates.mapNotNull { (delegate, options) ->
+			val nonMigratedOptionsForDelegates = optionsForDelegates.filterKeys { it !in migrationRequests }
+			val reducedOptionsForDelegates = if (nonMigratedOptionsForDelegates.isNotEmpty()) {
+				val decryptedMetadata = precomputedDecryptedMetadata[entity.id]
+					?: decryptSecurityMetadataDetails(entityGroupId, entity, entitiesType, hierarchySet)
+				removeContentAlreadyKnownToDelegates(decryptedMetadata, nonMigratedOptionsForDelegates)
+			} else
+				nonMigratedOptionsForDelegates
+			// Lazy and memoized: skipped entirely if there are no non-migrated delegates left to process, and
+			// reused across every delegate below plus potentialParentDelegations afterward, instead of paying
+			// for the (potentially costly) exchange data lookup more than once.
+			var secureDelegationMembers: Map<SecureDelegationKeyString, SecureDelegationMembersDetails>? = null
+			suspend fun secureDelegationMembers() = secureDelegationMembers
+				?: baseSecurityMetadataDecryptor.getSecureDelegationMemberDetails(entityGroupId, entity, entitiesType)
+					.also { secureDelegationMembers = it }
+			// Lazy and memoized: only needed at all for a `MaxWrite` request (see impliedMinimumAccessLevel).
+			var myOwnAccessLevel: AccessLevel? = null
+			var myOwnAccessLevelComputed = false
+			suspend fun myOwnAccessLevel(): AccessLevel? {
+				if (!myOwnAccessLevelComputed) {
+					myOwnAccessLevel = baseSecurityMetadataDecryptor.getEntityAccessLevel(entityGroupId, entity, entitiesType, hierarchySet)
+					myOwnAccessLevelComputed = true
+				}
+				return myOwnAccessLevel
+			}
+			val selfReference = EntityReferenceInGroup(dataOwnerApi.getCurrentDataOwnerId(), null)
+			val otherRequests = reducedOptionsForDelegates.mapNotNull { (delegate, options) ->
+				val members = secureDelegationMembers()
+				val impliedMinimum = options.requestedPermissions.impliedMinimumAccessLevel(::myOwnAccessLevel)
+				val nothingLeftToShare = options.shareSecretIds.isEmpty() && options.shareEncryptionKeys.isEmpty() && options.shareOwningEntityIds.isEmpty()
+				// Nothing left to share content-wise means everything requested is already reachable by the
+				// delegate through some other delegation we can decrypt (see removeContentAlreadyKnownToDelegates).
+				// This alone does not mean there is nothing to do though: that other delegation may only grant a
+				// lower access level than what was requested here (e.g. already Read, but this call asks for
+				// Write) - the delegate having the content already doesn't imply they already have the requested
+				// permission level too.
+				val alreadySatisfied = nothingLeftToShare &&
+					impliedMinimum != null &&
+					bestKnownAccessLevelFor(entity, delegate, members)?.satisfies(impliedMinimum) == true
 				(
-					if (!migrationRequests.containsKey(delegate)) {
+					if (alreadySatisfied) {
+						null
+					} else {
+						// If we already have our own direct delegation to this exact delegate (in either
+						// direction - see removeContentAlreadyKnownToDelegates for why), and it doesn't already
+						// satisfy the requested permission, updating it can't get it there: existing delegations
+						// can't have their permissions changed in place (yet). Silently keeping the old, lower
+						// permission would be worse than failing loudly.
+						val myOwnDelegationToDelegate = members.values.firstOrNull {
+							(it.delegator == selfReference && it.delegate == delegate) || (it.delegate == selfReference && it.delegator == delegate)
+						}
+						if (myOwnDelegationToDelegate != null &&
+							(impliedMinimum == null || !myOwnDelegationToDelegate.accessLevel.satisfies(impliedMinimum))
+						) {
+							throw UnsupportedOperationException(
+								"Cannot change the permission of the existing delegation between $selfReference and $delegate " +
+									"from ${myOwnDelegationToDelegate.accessLevel} to satisfy the requested ${options.requestedPermissions}: " +
+									"changing the permissions of an already existing delegation is not supported yet, but will be in a future version of the sdk."
+							)
+						}
 						secureDelegationsManager.makeShareOrUpdateRequestParams(
 							entityGroupId = entityGroupId,
 							entity = entity,
@@ -741,7 +839,7 @@ class EntityEncryptionServiceImpl(
 							shareOwningEntityIds = options.shareOwningEntityIds,
 							newDelegationPermissions = options.requestedPermissions
 						)
-					} else null
+					}
 				)?.let { delegate to it }
 			}
 			val allRequests = migrationRequests.map {
@@ -750,11 +848,7 @@ class EntityEncryptionServiceImpl(
 				DelegateShareRequestDetails(it.first, optionsForDelegates[it.first], false, it.second)
 			}
 			if (allRequests.isNotEmpty()) {
-				val potentialParentDelegations = baseSecurityMetadataDecryptor.getSecureDelegationMemberDetails(
-					entityGroupId,
-					entity,
-					entitiesType
-				).mapNotNullTo(
+				val potentialParentDelegations = secureDelegationMembers().mapNotNullTo(
 					mutableSetOf()
 				) { (delegationKey, delegationInfo) ->
 					if (delegationInfo.delegate in hierarchyReferenceSet || delegationInfo.delegator in hierarchyReferenceSet)
@@ -772,6 +866,162 @@ class EntityEncryptionServiceImpl(
 			} else unmodifiedEntityIds.add(entity.id)
 		}
 		return BulkShareRequestsDetails(unmodifiedEntityIds, requestsByEntityId)
+	}
+
+	/**
+	 * All the security metadata of a single entity that we - the current actor - could decrypt, in the same shape
+	 * [removeContentAlreadyKnownToDelegates] needs it in. Computing this is the expensive part (potentially
+	 * involving exchange data lookups), so callers that already have to decrypt this to do something else (e.g.
+	 * [simpleShareOrUpdateEncryptedEntityMetadata], which needs it to resolve [SimpleDelegateShareOptions] into
+	 * concrete sets in the first place) can compute it once and pass it down instead of paying for it twice.
+	 */
+	private data class PerEntityDecryptedSecurityMetadata(
+		val secretIds: List<DecryptedMetadataDetails<String>>,
+		val encryptionKeys: List<DecryptedMetadataDetails<HexString>>,
+		val owningEntityIds: List<DecryptedMetadataDetails<String>>
+	)
+
+	private suspend fun decryptSecurityMetadataDetails(
+		entityGroupId: String?,
+		entity: HasEncryptionMetadata,
+		entityType: EntityWithEncryptionMetadataTypeName,
+		dataOwnersHierarchySubset: Set<String>
+	): PerEntityDecryptedSecurityMetadata = PerEntityDecryptedSecurityMetadata(
+		secretIds = baseSecurityMetadataDecryptor.decryptAll(
+			entityGroupId, listOf(entity), entityType, dataOwnersHierarchySubset, SecurityMetadataType.SecretId
+		).values.single(),
+		encryptionKeys = baseSecurityMetadataDecryptor.decryptAll(
+			entityGroupId, listOf(entity), entityType, dataOwnersHierarchySubset, SecurityMetadataType.EncryptionKey
+		).values.single(),
+		owningEntityIds = baseSecurityMetadataDecryptor.decryptAll(
+			entityGroupId, listOf(entity), entityType, dataOwnersHierarchySubset, SecurityMetadataType.OwningEntityId
+		).values.single()
+	)
+
+	/**
+	 * Resolves a [SimpleDelegateShareOptions] for each of [simpleDelegates] into a concrete [DelegateShareOptions],
+	 * against what [decryptedMetadata] says is actually available for [entity]. A [Result.failure] is returned
+	 * for a delegate instead of throwing directly, so that callers sharing many entities in bulk (see
+	 * [simpleBulkShareOrUpdateEncryptedEntityMetadataNoEntities]) can turn an unsatisfiable request into a
+	 * per-(entity, delegate) error without aborting the rest of the batch, while single-entity callers (see
+	 * [simpleShareOrUpdateEncryptedEntityMetadata]) can still just call [Result.getOrThrow] to preserve the
+	 * previous fail-fast behaviour.
+	 */
+	private fun resolveSimpleDelegateShareOptions(
+		entity: HasEncryptionMetadata,
+		entityType: EntityWithEncryptionMetadataTypeName,
+		decryptedMetadata: PerEntityDecryptedSecurityMetadata,
+		simpleDelegates: Map<EntityReferenceInGroup, SimpleDelegateShareOptions>
+	): Map<EntityReferenceInGroup, Result<DelegateShareOptions>> {
+		val availableEncryptionKeys = decryptedMetadata.encryptionKeys.mapTo(mutableSetOf()) { it.value }
+		val availableOwningEntityIds = decryptedMetadata.owningEntityIds.mapTo(mutableSetOf()) { it.value }
+		val availableSecretIds = decryptedMetadata.secretIds.mapTo(mutableSetOf()) { it.value }
+		return simpleDelegates.mapValues { (_, simpleShareOptions) ->
+			runCatching {
+				if (availableEncryptionKeys.isEmpty() && simpleShareOptions.shareEncryptionKey == ShareMetadataBehaviour.Required) {
+					throw IllegalArgumentException("The current data owner can't access any encryption key in ${entityType.id}(\"${entity.id}\"), but sharing is required.")
+				}
+				if (availableOwningEntityIds.isEmpty() && simpleShareOptions.shareOwningEntityIds == ShareMetadataBehaviour.Required) {
+					throw IllegalArgumentException("The current data owner can't access any owning entity id in ${entityType.id}(\"${entity.id}\"), but sharing is required.")
+				}
+				DelegateShareOptions(
+					shareSecretIds = simpleShareOptions.shareSecretIds.resolve(availableSecretIds, entity, entityType),
+					shareEncryptionKeys = if (simpleShareOptions.shareEncryptionKey == ShareMetadataBehaviour.Never) emptySet() else availableEncryptionKeys,
+					shareOwningEntityIds = if (simpleShareOptions.shareOwningEntityIds == ShareMetadataBehaviour.Never) emptySet() else availableOwningEntityIds,
+					requestedPermissions = simpleShareOptions.requestedPermissions
+				)
+			}
+		}
+	}
+
+	/**
+	 * Removes from each delegate's requested content whatever is already reachable by that specific delegate
+	 * through some delegation (legacy or secure) that we - the current actor, decrypting with whatever hierarchy
+	 * [decryptedMetadata] was computed with - can already decrypt.
+	 *
+	 * This only ever removes content that the delegate can access *directly* (the delegation's own recorded
+	 * delegate matches, not some descendant reachable only by also holding the delegate's key): if A shared
+	 * something with parent P, and B (a sibling of A, also a child of P) is asked to share the same content
+	 * with P again, B can decrypt the existing A->P delegation (since B holds P's key) and see it already
+	 * covers everything - so nothing is left to share and the whole request for P can be skipped. But if A is
+	 * asked to share directly with B instead, the existing A->P delegation's recorded delegate is P, not B -
+	 * even though B could probably reach the content through P, A has no way to confirm that B actually has
+	 * the necessary permission to do so, so sharing directly with B always goes through unchanged.
+	 * Likewise, content shared by an unrelated third party (one whose delegations we can't decrypt at all,
+	 * such as X sharing further with Y, unbeknownst to A) is never considered already known, since we simply
+	 * have no visibility into it.
+	 */
+	private fun removeContentAlreadyKnownToDelegates(
+		decryptedMetadata: PerEntityDecryptedSecurityMetadata,
+		optionsForDelegates: Map<EntityReferenceInGroup, DelegateShareOptions>
+	): Map<EntityReferenceInGroup, DelegateShareOptions> =
+		optionsForDelegates.mapValues { (delegate, options) ->
+			val delegateReferenceSet = setOf(delegate)
+			options.copy(
+				shareSecretIds = options.shareSecretIds - decryptedMetadata.secretIds.valuesAvailableToDataOwners(delegateReferenceSet),
+				shareEncryptionKeys = options.shareEncryptionKeys - decryptedMetadata.encryptionKeys.valuesAvailableToDataOwners(delegateReferenceSet),
+				shareOwningEntityIds = options.shareOwningEntityIds - decryptedMetadata.owningEntityIds.valuesAvailableToDataOwners(delegateReferenceSet)
+			)
+		}
+
+	/**
+	 * The highest access level [delegate] is already known (from metadata we can decrypt/read) to have to
+	 * [entity], considering that being on *either* side of an existing delegation - delegate or delegator -
+	 * grants access to it: e.g. if A shared something with B (A->B), B already has access to it just as much
+	 * as A does, so B re-sharing that same content back with A should be recognized as already known too, not
+	 * just the more obvious A re-sharing with B. Returns null if we have no evidence of [delegate] having any
+	 * access at all.
+	 */
+	private fun bestKnownAccessLevelFor(
+		entity: HasEncryptionMetadata,
+		delegate: EntityReferenceInGroup,
+		secureDelegationMembers: Map<SecureDelegationKeyString, SecureDelegationMembersDetails>
+	): AccessLevel? {
+		// Legacy delegations only ever grant write access, and never apply across groups; the delegate id
+		// can appear as a map key (delegatedTo) and/or as the `owner` of an entry filed under another key.
+		val hasLegacyAccess = delegate.groupId == null && (
+			entity.delegations.containsKey(delegate.entityId) ||
+				entity.delegations.values.any { delegations -> delegations.any { it.owner == delegate.entityId } }
+			)
+		if (hasLegacyAccess) return AccessLevel.Write
+		return secureDelegationMembers.values
+			.filter { it.delegate == delegate || it.delegator == delegate }
+			.maxByOrNull { member -> when (member.accessLevel) { AccessLevel.Read -> 0; AccessLevel.Write -> 1 } }
+			?.accessLevel
+	}
+
+	/**
+	 * True if this access level is enough to satisfy [required], without relying on [AccessLevel] being
+	 * [Comparable]/on the order in which its entries are declared.
+	 */
+	private fun AccessLevel.satisfies(required: AccessLevel): Boolean = when (required) {
+		AccessLevel.Read -> true // any existing access level (Read or Write) satisfies a Read requirement
+		AccessLevel.Write -> this == AccessLevel.Write
+	}
+
+	/**
+	 * The lowest [AccessLevel] that would satisfy this permission request - i.e. if the delegate already
+	 * has at least this much access through some other delegation, a new one requesting this permission
+	 * wouldn't grant them anything more - or `null` if it can never be inferred as "already satisfied" by
+	 * this optimization:
+	 * - `Root` is not just "a higher Write": a delegate only truly has root if they have an actual root
+	 *   secure delegation, which we can't confirm merely from some other delegation granting Write, so a
+	 *   `Root` request always proceeds.
+	 * - `MaxRead`/`MaxWrite` cap the granted access at whatever the *current data owner* (not the delegate)
+	 *   already has: e.g. `MaxWrite` only really implies Write if the current data owner itself has Write;
+	 *   if it only has Read, that's all `MaxWrite` would actually grant too. [getMyOwnAccessLevel] is only
+	 *   invoked (and only ever needs to be) for this case.
+	 */
+	private suspend fun RequestedPermission.impliedMinimumAccessLevel(
+		getMyOwnAccessLevel: suspend () -> AccessLevel?
+	): AccessLevel? = when (this) {
+		RequestedPermission.FullRead, RequestedPermission.MaxRead -> AccessLevel.Read
+		RequestedPermission.FullWrite -> AccessLevel.Write
+		RequestedPermission.MaxWrite -> when (getMyOwnAccessLevel()) {
+			AccessLevel.Write -> AccessLevel.Write
+			AccessLevel.Read, null -> AccessLevel.Read
+		}
+		RequestedPermission.Root -> null
 	}
 
 	private suspend fun prepareMigrationRequestsIfNeeded(
@@ -829,7 +1079,7 @@ class EntityEncryptionServiceImpl(
 		val resolvedEntityGroup = boundGroup.resolve(entityGroupId)
 		val selfId = dataOwnerApi.getCurrentDataOwnerId()
 		val subHierarchy = dataOwnersForDecryption(currMember.entityId)
-		val subHierarchySet = subHierarchy.toSet()
+		val subHierarchySet = subHierarchy.flattened()
 		val hasLegacyOrImplicitAccess = baseSecurityMetadataDecryptor.getEntityLegacyDelegationAccessLevel(
 				entityGroupId,
 				entity,
@@ -890,7 +1140,10 @@ class EntityEncryptionServiceImpl(
 				missingLegacySecretIds + (userRequest?.shareSecretIds ?: emptySet()),
 				missingLegacyEncryptionKeys + (userRequest?.shareEncryptionKeys ?: emptySet()),
 				missingLegacyOwningEntityIds + (userRequest?.shareOwningEntityIds ?: emptySet()),
-				if (mustCreateRootDelegation)
+				// Independent of mustCreateRootDelegation: a migration entry for yourself is always
+				// requested as a fresh root, regardless of whether some ancestor already has write
+				// access through some other, unrelated delegation.
+				if (currMember.entityId == selfId)
 					RequestedPermission.Root
 				else
 					RequestedPermission.FullWrite // Legacy permission if present is always write
@@ -903,7 +1156,7 @@ class EntityEncryptionServiceImpl(
 		entity: T,
 		entityType: EntityWithEncryptionMetadataTypeName
 	): T? {
-		if (baseSecurityMetadataDecryptor.hasAnyEncryptionKeys(entity)) {
+		if (baseSecurityMetadataDecryptor.hasAnyValueOfType(entity, SecurityMetadataType.EncryptionKey)) {
 			return null
 		}
 		require(entity.rev != null) {
@@ -936,24 +1189,24 @@ class EntityEncryptionServiceImpl(
 		)
 	}
 
-	override suspend fun <T : HasEncryptionMetadata> initializeConfidentialSecretId(
+	override suspend fun <T : HasEncryptionMetadata> forceCreateNewSecretId(
 		entityGroupId: String?,
 		entity: T,
 		entityType: EntityWithEncryptionMetadataTypeName,
 		getUpdatedEntity: suspend (String) -> T,
 		doRequestBulkShareOrUpdate: suspend (request: BulkShareOrUpdateMetadataParams) -> List<EntityBulkShareResult<out T>>
-	): T? {
+	): SecretIdCreationResult<T> {
 		if (entity.rev == null) {
 			throw IllegalArgumentException("Entity must be an existing entity to initialize a confidential secret id")
 		}
-		if (getConfidentialSecretIdsOf(entityGroupId, entity, entityType, null).isNotEmpty()) return null
-		return simpleShareOrUpdateEncryptedEntityMetadata(
+		val newSecretId = cryptoService.strongRandom.randomUUID()
+		val updatedEntity = simpleShareOrUpdateEncryptedEntityMetadata(
 			entityGroupId,
 			entity,
 			entityType,
 			mapOf(EntityReferenceInGroup(userEncryptionKeysManager.delegatorActorId(), null) to SimpleDelegateShareOptionsImpl(
 				shareSecretIds = SecretIdShareOptions.UseExactly(
-					secretIds = setOf(cryptoService.strongRandom.randomUUID()),
+					secretIds = setOf(newSecretId),
 					createUnknownSecretIds = true
 				),
 				shareEncryptionKey = ShareMetadataBehaviour.Never,
@@ -965,31 +1218,31 @@ class EntityEncryptionServiceImpl(
 			getUpdatedEntity,
 			doRequestBulkShareOrUpdate
 		).updatedEntityOrThrow()
+		return SecretIdCreationResult(updatedEntity = updatedEntity, newSecretId = newSecretId)
 	}
 
-	override suspend fun getConfidentialSecretIdsOf(
+	private suspend fun getSecretIdsSharedWithParentsOf(
 		entityGroupId: String?,
 		entity: HasEncryptionMetadata,
 		entityType: EntityWithEncryptionMetadataTypeName,
-		dataOwnerId: String?
 	): Set<String> {
-		val secretIdsInfo = secretIdsForHcpHierarchyOf(entityGroupId, entity, entityType)
-		val targetDataOwner = dataOwnerId ?: userEncryptionKeysManager.delegatorActorId()
-		val parents = secretIdsInfo.takeWhile { it.ownerId != targetDataOwner }
-		require(parents.size < secretIdsInfo.size) {
-			"Target data owner $targetDataOwner is not in the hierarchy of the logged data owner"
+		val topmostParentsReferences = userEncryptionKeysManager.delegatorActorParentHierarchy().leaves().map {
+			EntityReferenceInGroup(it, null)
 		}
-		val res = secretIdsInfo[parents.size].extracted.toMutableSet()
-		parents.forEach { res -= it.extracted }
-		return res
+		return baseSecurityMetadataDecryptor.decryptAll(
+			entityGroupId,
+			listOf(entity),
+			entityType,
+			dataOwnersForDecryption(null).flattened(),
+			SecurityMetadataType.SecretId,
+		).values.single().groupedByValueToAllDataOwnersWithAccess().mapNotNullTo(mutableSetOf()) { (value, allDataOwnersWithAccess) ->
+			if (topmostParentsReferences.all { it in allDataOwnersWithAccess }) {
+				value
+			} else {
+				null
+			}
+		}
 	}
-
-	override suspend fun getSecretIdsSharedWithParentsOf(
-		entityGroupId: String?,
-		entity: HasEncryptionMetadata,
-		entityType: EntityWithEncryptionMetadataTypeName,
-	): Set<String> =
-		secretIdsForHcpHierarchyOf(entityGroupId, entity, entityType).first().extracted
 
 
 	override suspend fun resolveSecretIdOption(
@@ -1000,44 +1253,21 @@ class EntityEncryptionServiceImpl(
 	): Set<String> =
 		when (secretIdUseOption) {
 			is SecretIdUseOption.Use -> secretIdUseOption.secretIds
-			SecretIdUseOption.UseAnyConfidential -> getConfidentialSecretIdsOf(
-				entityGroupId = entityGroupId,
-				entity = entity,
-				entityType = entityType,
-				dataOwnerId = null
-			).also {
-				require(it.isNotEmpty()) {
-					"No valid secret id found for option $secretIdUseOption"
+			SecretIdUseOption.UseAnySharedWithHierarchy, SecretIdUseOption.UseAllSharedWithHierarchy ->
+				getSecretIdsSharedWithParentsOf(
+					entityGroupId = entityGroupId,
+					entityType = entityType,
+					entity = entity
+				).also {
+					require(it.isNotEmpty()) {
+						"No valid secret id found for option $secretIdUseOption"
+					}
+				}.let {
+					when (secretIdUseOption) {
+						SecretIdUseOption.UseAllSharedWithHierarchy -> it
+						SecretIdUseOption.UseAnySharedWithHierarchy -> setOf(it.first())
+					}
 				}
-			}.let { setOf(it.first()) }
-			SecretIdUseOption.UseAllConfidential -> getConfidentialSecretIdsOf(
-				entityGroupId = entityGroupId,
-				entity = entity,
-				entityType = entityType,
-				dataOwnerId = null
-			).also {
-				require(it.isNotEmpty()) {
-					"No valid secret id found for option $secretIdUseOption"
-				}
-			}
-			SecretIdUseOption.UseAnySharedWithParent -> getSecretIdsSharedWithParentsOf(
-				entityGroupId = entityGroupId,
-				entityType = entityType,
-				entity = entity
-			).also {
-				require(it.isNotEmpty()) {
-					"No valid secret id found for option $secretIdUseOption"
-				}
-			}.let { setOf(it.first()) }
-			SecretIdUseOption.UseAllSharedWithParent -> getSecretIdsSharedWithParentsOf(
-				entityGroupId = entityGroupId,
-				entityType = entityType,
-				entity = entity
-			).also {
-				require(it.isNotEmpty()) {
-					"No valid secret id found for option $secretIdUseOption"
-				}
-			}
 			SecretIdUseOption.UseNone -> emptySet()
 		}
 
@@ -1067,5 +1297,5 @@ class EntityEncryptionServiceImpl(
 	}
 
 	private fun dataOwnersForDecryption(startingFrom: String?) =
-		userEncryptionKeysManager.delegatorActorHierarchy(startingFrom)
+		userEncryptionKeysManager.delegatorActorParentHierarchy(startingFrom)
 }

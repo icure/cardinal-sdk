@@ -1,5 +1,6 @@
 // auto-generated file
 import {BaseFilterOptions, FilterOptions, PaginatedListIterator, SortableFilterOptions} from '../cardinal-sdk-ts.mjs';
+import {BulkShareByIdsResult} from '../crypto/entities/BulkShareByIdsResult.mjs';
 import {FormDelegateOptions} from '../crypto/entities/FormDelegateOptions.mjs';
 import {FormShareOptions} from '../crypto/entities/FormShareOptions.mjs';
 import {SecretIdUseOption} from '../crypto/entities/SecretIdUseOption.mjs';
@@ -168,6 +169,27 @@ export interface FormApi {
 	 *  @return a list of form ids
 	 */
 	matchFormsBySorted(filter: SortableFilterOptions<Form>): Promise<Array<string>>;
+
+	/**
+	 *
+	 *  Share many already-existing forms with one or more delegates at once, retrieving them by id instead of
+	 *  requiring the caller to have them already loaded. This is more efficient than calling [shareWithMany] once
+	 *  per form when you already know the ids of many forms to share and don't otherwise need their decrypted
+	 *  content, since only lightweight metadata (not the full content of each form) is ever retrieved, and no content
+	 *  flows back from the share request itself.
+	 *
+	 *  The same [delegates] options are applied identically to every found form. Unlike [shareWithMany], if the share
+	 *  fails for some (form, delegate) pairs this method reports the failure for those specific pairs in the returned
+	 *  result instead of throwing, so sharing proceeds normally for every other form and delegate in the batch.
+	 *
+	 *  @param formIds ids of the forms to share. Ids that don't exist, or exist but for which the current user has no
+	 *  read access, are reported in [BulkShareByIdsResult.notFoundIds] and otherwise ignored.
+	 *  @param delegates the data owners which will gain access to each form, and the options for sharing with each of
+	 *  them (see [FormShareOptions]). The exact same options are applied to every form in [formIds].
+	 *  @return details on the outcome of the operation, for each requested id.
+	 */
+	shareFormsByIds(formIds: Array<string>,
+			delegates: { [ key: string ]: FormShareOptions }): Promise<BulkShareByIdsResult>;
 
 	/**
 	 *

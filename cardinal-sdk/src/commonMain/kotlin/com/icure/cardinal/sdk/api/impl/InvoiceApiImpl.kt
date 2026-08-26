@@ -13,12 +13,15 @@ import com.icure.cardinal.sdk.api.InvoiceInGroupApi
 import com.icure.cardinal.sdk.api.raw.RawInvoiceApi
 import com.icure.cardinal.sdk.api.raw.successBodyOrNull404
 import com.icure.cardinal.sdk.api.raw.successBodyOrThrowRevisionConflict
+import com.icure.cardinal.sdk.crypto.entities.BulkShareByIdsResult
 import com.icure.cardinal.sdk.crypto.entities.DelegateOptions
 import com.icure.cardinal.sdk.crypto.entities.EntityWithEncryptionMetadataTypeName
 import com.icure.cardinal.sdk.crypto.entities.InvoiceDelegateOptions
 import com.icure.cardinal.sdk.crypto.entities.InvoiceShareOptions
 import com.icure.cardinal.sdk.crypto.entities.OwningEntityDetails
 import com.icure.cardinal.sdk.crypto.entities.SecretIdUseOption
+import com.icure.cardinal.sdk.crypto.entities.asIcureStub
+import com.icure.cardinal.sdk.crypto.entities.toBulkShareByIdsResult
 import com.icure.cardinal.sdk.exceptions.NotFoundException
 import com.icure.cardinal.sdk.model.DecryptedInvoice
 import com.icure.cardinal.sdk.model.EncryptedInvoice
@@ -826,6 +829,26 @@ private class InvoiceApiImpl(
 			EntityWithEncryptionMetadataTypeName.Invoice,
 			EncryptedInvoice.serializer(),
 		) { Serialization.json.decodeFromJsonElement<DecryptedInvoice>(config.jsonPatcher.patchInvoice(it)) }.single()
+
+	override suspend fun shareInvoicesByIds(
+		invoiceIds: List<String>,
+		delegates: Map<String, InvoiceShareOptions>
+	): BulkShareByIdsResult {
+		val distinctIds = invoiceIds.toSet()
+		if (distinctIds.isEmpty() || delegates.isEmpty()) {
+			return BulkShareByIdsResult(emptySet(), emptyMap(), emptyMap(), emptyList())
+		}
+		val stubs = rawApi.listInvoicesDelegationsStubsByIds(invoiceIds = ListOfIds(distinctIds.toList())).successBody()
+		val result = config.crypto.entity.simpleBulkShareOrUpdateEncryptedEntityMetadataNoEntities(
+			entities = stubs,
+			entitiesType = EntityWithEncryptionMetadataTypeName.Invoice,
+			delegates = delegates,
+			autoRetry = true,
+			getUpdatedEntity = { rawApi.getInvoice(invoiceId = it).successBody().asIcureStub() },
+			doRequestBulkShareOrUpdate = { params -> rawApi.bulkShareMinimal(request = params).successBody() }
+		)
+		return result.toBulkShareByIdsResult(distinctIds, stubs.mapTo(mutableSetOf()) { it.id }, delegates.keys)
+	}
 }
 
 @InternalIcureApi

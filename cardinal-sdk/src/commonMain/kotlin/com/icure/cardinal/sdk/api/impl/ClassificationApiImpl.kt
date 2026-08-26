@@ -8,10 +8,13 @@ import com.icure.cardinal.sdk.api.ClassificationFlavouredApi
 import com.icure.cardinal.sdk.api.raw.RawClassificationApi
 import com.icure.cardinal.sdk.api.raw.successBodyOrNull404
 import com.icure.cardinal.sdk.api.raw.successBodyOrThrowRevisionConflict
+import com.icure.cardinal.sdk.crypto.entities.BulkShareByIdsResult
 import com.icure.cardinal.sdk.crypto.entities.ClassificationShareOptions
 import com.icure.cardinal.sdk.crypto.entities.EntityWithEncryptionMetadataTypeName
 import com.icure.cardinal.sdk.crypto.entities.OwningEntityDetails
 import com.icure.cardinal.sdk.crypto.entities.SecretIdUseOption
+import com.icure.cardinal.sdk.crypto.entities.asIcureStub
+import com.icure.cardinal.sdk.crypto.entities.toBulkShareByIdsResult
 import com.icure.cardinal.sdk.exceptions.NotFoundException
 import com.icure.cardinal.sdk.filters.BaseFilterOptions
 import com.icure.cardinal.sdk.filters.BaseSortableFilterOptions
@@ -289,6 +292,26 @@ internal class ClassificationApiImpl(
 
 	override suspend fun matchClassificationsBySorted(filter: SortableFilterOptions<Classification>): List<String> =
 		matchClassificationsBy(filter)
+
+	override suspend fun shareClassificationsByIds(
+		classificationIds: List<String>,
+		delegates: Map<String, ClassificationShareOptions>
+	): BulkShareByIdsResult {
+		val distinctIds = classificationIds.toSet()
+		if (distinctIds.isEmpty() || delegates.isEmpty()) {
+			return BulkShareByIdsResult(emptySet(), emptyMap(), emptyMap(), emptyList())
+		}
+		val stubs = rawApi.findClassificationsDelegationsStubsByIds(classificationIds = ListOfIds(distinctIds.toList())).successBody()
+		val result = config.crypto.entity.simpleBulkShareOrUpdateEncryptedEntityMetadataNoEntities(
+			entities = stubs,
+			entitiesType = EntityWithEncryptionMetadataTypeName.Classification,
+			delegates = delegates,
+			autoRetry = true,
+			getUpdatedEntity = { rawApi.getClassification(classificationId = it).successBody().asIcureStub() },
+			doRequestBulkShareOrUpdate = { params -> rawApi.bulkShareMinimal(request = params).successBody() }
+		)
+		return result.toBulkShareByIdsResult(distinctIds, stubs.mapTo(mutableSetOf()) { it.id }, delegates.keys)
+	}
 }
 
 @InternalIcureApi

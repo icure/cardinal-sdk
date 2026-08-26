@@ -6,6 +6,7 @@ import com.icure.cardinal.sdk.model.base.CodeStub
 import com.icure.cardinal.sdk.model.base.CryptoActor
 import com.icure.cardinal.sdk.model.base.DataOwner
 import com.icure.cardinal.sdk.model.base.DataOwnerGroupLink
+import com.icure.cardinal.sdk.model.base.DataOwnerGroupLinkType
 import com.icure.cardinal.sdk.model.base.HasCodes
 import com.icure.cardinal.sdk.model.base.HasIdentifier
 import com.icure.cardinal.sdk.model.base.HasTags
@@ -29,14 +30,6 @@ import kotlin.String
 import kotlin.collections.List
 import kotlin.collections.Map
 import kotlin.collections.Set
-import com.icure.cardinal.sdk.model.embed.DecryptedFlatRateTarification
-import com.icure.cardinal.sdk.model.embed.HealthcarePartyHistoryStatus
-import com.icure.cardinal.sdk.model.embed.HealthcarePartyStatus
-import com.icure.cardinal.sdk.model.embed.TelecomType
-import com.icure.cardinal.sdk.serialization.ByteArraySerializer
-import kotlin.ByteArray
-import kotlin.Deprecated
-import kotlin.Int
 
 /**
  * Represents a healthcare party. A healthcare party is a person or organization that provides
@@ -140,9 +133,11 @@ data class HealthcareParty(
 	 */
 	public val invoiceHeader: String? = null,
 	/**
-	 * The id of the parent healthcare party.
+	 * The links to the data owners representing the groups this healthcare party belongs to.
 	 */
-	override val parentId: String? = null,
+	@param:DefaultValue("emptyList()")
+	override val dataOwnerGroups: List<DataOwnerGroupLink> = emptyList(),
+	override val groupLinkType: DataOwnerGroupLinkType? = null,
 	/**
 	 * Social security inscription number.
 	 */

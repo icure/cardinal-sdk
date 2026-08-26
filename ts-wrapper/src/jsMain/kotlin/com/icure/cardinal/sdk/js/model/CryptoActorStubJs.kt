@@ -4,6 +4,7 @@
 package com.icure.cardinal.sdk.js.model
 
 import com.icure.cardinal.sdk.js.model.base.CryptoActorJs
+import com.icure.cardinal.sdk.js.model.base.DataOwnerGroupLinkJs
 import com.icure.cardinal.sdk.js.model.base.VersionableJs
 import com.icure.cardinal.sdk.js.utils.Record
 import kotlin.Array
@@ -31,7 +32,9 @@ public external class CryptoActorStubJs(
 
 	override val publicKeysForOaepWithSha256: Array<String>
 
-	override val parentId: String?
+	override val dataOwnerGroups: Array<DataOwnerGroupLinkJs>
+
+	override val groupLinkType: String?
 
 	override val cryptoActorProperties: Array<DecryptedPropertyStubJs>?
 
