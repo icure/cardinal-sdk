@@ -66,7 +66,7 @@ export class HealthElementAsserter {
 	 *  party is named by
 	 *   [localAsserterIdentifier]. Carries no [AsserterTypeDto].
 	 */
-	externalAsserterIdentifier: Identifier | undefined = undefined;
+	externalAsserterIdentifier: HealthElementAsserter.ExternalAsserterIdentifier | undefined = undefined;
 
 	constructor(partial: Partial<HealthElementAsserter>) {
 		if ('localAsserterIdentifier' in partial) this.localAsserterIdentifier = partial.localAsserterIdentifier;
@@ -86,7 +86,7 @@ export class HealthElementAsserter {
 		const jCpy = { ...json }
 		const res = new HealthElementAsserter({
 			localAsserterIdentifier: expectObject(extractEntry(jCpy, 'localAsserterIdentifier', false, path), true, ignoreUnknownKeys, [...path, ".localAsserterIdentifier"], HealthElementAsserter.LocalAsserterIdentifier.fromJSON),
-			externalAsserterIdentifier: expectObject(extractEntry(jCpy, 'externalAsserterIdentifier', false, path), true, ignoreUnknownKeys, [...path, ".externalAsserterIdentifier"], Identifier.fromJSON),
+			externalAsserterIdentifier: expectObject(extractEntry(jCpy, 'externalAsserterIdentifier', false, path), true, ignoreUnknownKeys, [...path, ".externalAsserterIdentifier"], HealthElementAsserter.ExternalAsserterIdentifier.fromJSON),
 		})
 		if (!ignoreUnknownKeys) {
 			const unused = Object.keys(jCpy)
@@ -143,6 +143,58 @@ export namespace HealthElementAsserter {
 			if (!ignoreUnknownKeys) {
 				const unused = Object.keys(jCpy)
 				if (unused.length > 0) throw new Error(`Unexpected key(s) for json object LocalAsserterIdentifier at path ${path.join("")}: ${unused}`)}
+			return res
+		}
+
+	}
+
+	/**
+	 *
+	 *
+	 *   The party making the assertion, when it has no record in this iCure instance.
+	 *
+	 *   The party is named by a business [identifier] issued by another system: a national registry
+	 *  number, an entry in
+	 *   the sending hospital's directory, and so on. Because the record lives elsewhere there is no
+	 *  [AsserterTypeDto]
+	 *   here - the kind of a record we do not store is not knowable to us. The wrapper around the
+	 *  [IdentifierDto] mirrors
+	 *   [LocalAsserterIdentifier] on the other branch, and is where anything specific to an external
+	 *  asserter would go:
+	 *   [IdentifierDto] itself is shared by every `identifiers` field in the model and cannot carry it.
+	 */
+	export class ExternalAsserterIdentifier {
+
+		/**
+		 *
+		 *
+		 *   The business identifier of the party in the system that issued it. `system` names that issuing
+		 *  system and
+		 *   `value` is the party's identifier within it; together they are what makes the party
+		 *  resolvable.
+		 */
+		identifier: Identifier;
+
+		constructor(partial: Partial<ExternalAsserterIdentifier> & Pick<ExternalAsserterIdentifier, "identifier">) {
+			this.identifier = partial.identifier;
+		}
+
+		toJSON(): object {
+			const res: { [k: string]: any } = {}
+			res['identifier'] = this.identifier.toJSON()
+			return res
+		}
+
+		static fromJSON(json: any, ignoreUnknownKeys: boolean = false,
+				path: Array<string> = ['ExternalAsserterIdentifier']): ExternalAsserterIdentifier {
+			if (typeof json != 'object') throw new Error(`Expected json object at path ${path.join("")}`)
+			const jCpy = { ...json }
+			const res = new ExternalAsserterIdentifier({
+				identifier: expectObject(extractEntry(jCpy, 'identifier', true, path), false, ignoreUnknownKeys, [...path, ".identifier"], Identifier.fromJSON),
+			})
+			if (!ignoreUnknownKeys) {
+				const unused = Object.keys(jCpy)
+				if (unused.length > 0) throw new Error(`Unexpected key(s) for json object ExternalAsserterIdentifier at path ${path.join("")}: ${unused}`)}
 			return res
 		}
 
