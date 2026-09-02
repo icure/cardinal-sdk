@@ -63,7 +63,7 @@ data class HealthElementAsserter(
 	 * party is named by
 	 *  [localAsserterIdentifier]. Carries no [AsserterTypeDto].
 	 */
-	public val externalAsserterIdentifier: Identifier? = null,
+	public val externalAsserterIdentifier: ExternalAsserterIdentifier? = null,
 ) {
 	/**
 	 *
@@ -82,6 +82,32 @@ data class HealthElementAsserter(
 		 *  confuse it with ParticipantTypeDto.
 		 */
 		public val type: AsserterType,
+	)
+
+	/**
+	 *
+	 *  The party making the assertion, when it has no record in this iCure instance.
+	 *
+	 *  The party is named by a business [identifier] issued by another system: a national registry
+	 * number, an entry in
+	 *  the sending hospital's directory, and so on. Because the record lives elsewhere there is no
+	 * [AsserterTypeDto]
+	 *  here - the kind of a record we do not store is not knowable to us. The wrapper around the
+	 * [IdentifierDto] mirrors
+	 *  [LocalAsserterIdentifier] on the other branch, and is where anything specific to an external
+	 * asserter would go:
+	 *  [IdentifierDto] itself is shared by every `identifiers` field in the model and cannot carry it.
+	 */
+	@Serializable
+	public data class ExternalAsserterIdentifier(
+		/**
+		 *
+		 *  The business identifier of the party in the system that issued it. `system` names that issuing
+		 * system and
+		 *  `value` is the party's identifier within it; together they are what makes the party
+		 * resolvable.
+		 */
+		public val identifier: Identifier,
 	)
 	// region HealthElementAsserter-HealthElementAsserter
 

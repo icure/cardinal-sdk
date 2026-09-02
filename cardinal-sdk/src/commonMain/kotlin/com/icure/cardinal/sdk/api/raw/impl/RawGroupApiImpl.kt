@@ -444,6 +444,7 @@ class RawGroupApiImpl(
 	override suspend fun initDesignDocs(
 		id: String,
 		clazz: String?,
+		partition: String?,
 		warmup: Boolean?,
 		dryRun: Boolean?,
 	): HttpResponse<List<DesignDocument>> =
@@ -452,6 +453,7 @@ class RawGroupApiImpl(
 				takeFrom(apiUrl)
 				appendPathSegments("rest", "v2", "group", id, "dd")
 				parameter("clazz", clazz)
+				parameter("partition", partition)
 				parameter("warmup", warmup)
 				parameter("dryRun", dryRun)
 			}

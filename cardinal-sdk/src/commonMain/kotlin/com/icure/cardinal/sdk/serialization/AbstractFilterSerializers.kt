@@ -81,7 +81,6 @@ import com.icure.cardinal.sdk.model.filter.group.AllGroupsFilter
 import com.icure.cardinal.sdk.model.filter.group.GroupBySuperGroupFilter
 import com.icure.cardinal.sdk.model.filter.group.GroupWithContentFilter
 import com.icure.cardinal.sdk.model.filter.hcparty.AllHealthcarePartiesFilter
-import com.icure.cardinal.sdk.model.filter.hcparty.HealthcarePartyByDataOwnerGroupIdFilter
 import com.icure.cardinal.sdk.model.filter.hcparty.HealthcarePartyByIdentifiersFilter
 import com.icure.cardinal.sdk.model.filter.hcparty.HealthcarePartyByIdsFilter
 import com.icure.cardinal.sdk.model.filter.hcparty.HealthcarePartyByNameFilter
@@ -183,12 +182,12 @@ internal object AnyAbstractFilterSerializer :
 	@Suppress("UNCHECKED_CAST")
 	override fun getSerializerBySerialName(serialName: String): KSerializer<out AbstractFilter<*>>? =
 		when (serialName) {
-			"UnionFilter" -> UnionFilterSerializer(this as KSerializer<AbstractFilter<Identifiable<String>>>)
 			"ComplementFilter" ->
 				ComplementFilterSerializer(
 					this as
 						KSerializer<AbstractFilter<Identifiable<String>>>,
 				)
+			"UnionFilter" -> UnionFilterSerializer(this as KSerializer<AbstractFilter<Identifiable<String>>>)
 			"IntersectionFilter" ->
 				IntersectionFilterSerializer(
 					this as
@@ -224,13 +223,13 @@ internal object AnyAbstractFilterSerializer :
 	@Suppress("UNCHECKED_CAST")
 	override fun getSerializerByClass(kclass: KClass<out AbstractFilter<*>>): KSerializer<out AbstractFilter<*>>? =
 		when (kclass) {
-			UnionFilter::class ->
-				UnionFilterSerializer(
+			ComplementFilter::class ->
+				ComplementFilterSerializer(
 					this as
 						KSerializer<AbstractFilter<Identifiable<String>>>,
 				)
-			ComplementFilter::class ->
-				ComplementFilterSerializer(
+			UnionFilter::class ->
+				UnionFilterSerializer(
 					this as
 						KSerializer<AbstractFilter<Identifiable<String>>>,
 				)
@@ -735,7 +734,6 @@ internal object HealthcarePartyAbstractFilterSerializer :
 			"IntersectionFilter" -> IntersectionFilterSerializer(this)
 			"UnionFilter" -> UnionFilterSerializer(this)
 			"AllHealthcarePartiesFilter" -> AllHealthcarePartiesFilter.serializer()
-			"HealthcarePartyByDataOwnerGroupIdFilter" -> HealthcarePartyByDataOwnerGroupIdFilter.serializer()
 			"HealthcarePartyByIdentifiersFilter" -> HealthcarePartyByIdentifiersFilter.serializer()
 			"HealthcarePartyByIdsFilter" -> HealthcarePartyByIdsFilter.serializer()
 			"HealthcarePartyByNameFilter" -> HealthcarePartyByNameFilter.serializer()
@@ -756,8 +754,6 @@ internal object HealthcarePartyAbstractFilterSerializer :
 			IntersectionFilter::class -> IntersectionFilterSerializer(this)
 			UnionFilter::class -> UnionFilterSerializer(this)
 			AllHealthcarePartiesFilter::class -> AllHealthcarePartiesFilter.serializer()
-			HealthcarePartyByDataOwnerGroupIdFilter::class ->
-				HealthcarePartyByDataOwnerGroupIdFilter.serializer()
 			HealthcarePartyByIdentifiersFilter::class -> HealthcarePartyByIdentifiersFilter.serializer()
 			HealthcarePartyByIdsFilter::class -> HealthcarePartyByIdsFilter.serializer()
 			HealthcarePartyByNameFilter::class -> HealthcarePartyByNameFilter.serializer()

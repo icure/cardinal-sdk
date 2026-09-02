@@ -725,7 +725,7 @@ data class DecryptedPatient(
 	/**
 	 * Always null for patients.
 	 */
-	override val parentId: Nothing? = null
+	override val parentId: Nothing? = null,
 ) : Patient {
 	// region Patient-DecryptedPatient
 override fun copyWithSecurityMetadata(securityMetadata: SecurityMetadata, secretForeignKeys: Set<String>): DecryptedPatient =
@@ -1039,7 +1039,7 @@ data class EncryptedPatient(
 	/**
 	 * Always null for patients.
 	 */
-	override val parentId: Nothing? = null
+	override val parentId: Nothing? = null,
 ) : Patient {
 	// region Patient-EncryptedPatient
 override fun copyWithSecurityMetadata(securityMetadata: SecurityMetadata, secretForeignKeys: Set<String>): EncryptedPatient =
