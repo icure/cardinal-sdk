@@ -19,5 +19,6 @@ data class PublicKeyInfo(
 	public val algorithm: RsaEncryptionAlgorithm,
 ) {
 	// region PublicKeyInfo-PublicKeyInfo
+
 	// endregion
 }

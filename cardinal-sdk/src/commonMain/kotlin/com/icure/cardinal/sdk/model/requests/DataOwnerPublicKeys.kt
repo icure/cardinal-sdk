@@ -16,5 +16,6 @@ data class DataOwnerPublicKeys(
 	public val publicKeys: List<PublicKeyInfo>,
 ) {
 	// region DataOwnerPublicKeys-DataOwnerPublicKeys
+
 	// endregion
 }

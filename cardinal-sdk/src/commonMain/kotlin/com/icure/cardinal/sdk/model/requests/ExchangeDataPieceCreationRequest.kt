@@ -42,5 +42,6 @@ data class ExchangeDataPieceCreationRequest(
 	public val sharedSignature: Base64String,
 ) {
 	// region ExchangeDataPieceCreationRequest-ExchangeDataPieceCreationRequest
+
 	// endregion
 }

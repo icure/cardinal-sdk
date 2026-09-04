@@ -198,6 +198,23 @@ class RawExchangeDataApiImpl(
 			accept(Application.Json)
 		}.wrap()
 
+	override suspend fun findMainExchangeDataIdsByParticipant(
+		participantId: String,
+		startDocumentId: String?,
+		limit: Int?,
+	): HttpResponse<PaginatedList<String>> =
+		get(authProvider) {
+			url {
+				takeFrom(apiUrl)
+				appendPathSegments("rest", "v2", "exchangedata", "mainIds", "byParticipant")
+				parameter("participantId", participantId)
+				parameter("startDocumentId", startDocumentId)
+				parameter("limit", limit)
+				parameter("ts", GMTDate().timestamp)
+			}
+			accept(Application.Json)
+		}.wrap()
+
 	// endregion
 
 	// region cloud endpoints

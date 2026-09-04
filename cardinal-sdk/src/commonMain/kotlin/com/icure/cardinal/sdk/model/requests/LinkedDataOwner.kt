@@ -2,11 +2,11 @@
 // If you want to change the way this class is generated, see [this repo](https://github.com/icure/sdk-codegen).
 package com.icure.cardinal.sdk.model.requests
 
-import com.icure.cardinal.sdk.model.DataOwnerType
-import com.icure.cardinal.sdk.model.base.DataOwnerGroupLink
 import com.icure.cardinal.sdk.model.base.DataOwnerGroupLinkType
 import kotlinx.serialization.Serializable
 import kotlin.String
+import com.icure.cardinal.sdk.model.DataOwnerType
+import com.icure.cardinal.sdk.model.base.DataOwnerGroupLink
 
 /**
  *
@@ -39,6 +39,5 @@ data class LinkedDataOwner(
 		DataOwnerType.Hcp -> DataOwnerGroupLinkType.Parent
 		DataOwnerType.Device, DataOwnerType.Patient -> DataOwnerGroupLinkType.NotAllowed
 	}
-
 	// endregion
 }

@@ -67,6 +67,12 @@ public interface RawExchangeDataApi {
 		startKey: String? = null,
 		limit: Int? = null,
 	): HttpResponse<PaginatedList<String>>
+
+	suspend fun findMainExchangeDataIdsByParticipant(
+		participantId: String,
+		startDocumentId: String? = null,
+		limit: Int? = null,
+	): HttpResponse<PaginatedList<String>>
 	// endregion
 
 	// region cloud endpoints
