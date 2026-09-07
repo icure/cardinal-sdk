@@ -17,6 +17,7 @@ import com.icure.kryptom.crypto.AesKey
 import com.icure.kryptom.crypto.HmacAlgorithm
 import com.icure.kryptom.crypto.HmacKey
 import com.icure.utils.InternalIcureApi
+import kotlinx.coroutines.flow.Flow
 
 /**
  * Functions to create and get exchange data.
@@ -27,8 +28,8 @@ interface BaseExchangeDataManager {
 	/**
 	 * Get data owners other than [dataOwnerId] itself that are participants in exchange data where [dataOwnerId] is
 	 * the delegator or delegate.
-	 * Ignores participants coming from exchange data for simple-type groups, and participants that are part of a group
-	 * other than the one of the current user.
+	 * Ignores participants coming from exchange data for simple-type data owner groups, and participants that are
+	 * part of a database group other than the one of the current user's group.
 	 * [dataOwnerId] can be an external data owner, but even in that case only exchange data for the group of the
 	 * current user is considered.
 	 */
@@ -74,6 +75,16 @@ interface BaseExchangeDataManager {
 		inGroup: String?,
 		exchangeDataIds: Set<String>
 	): List<ExchangeData>
+
+	/**
+	 * Get the exchange data pieces of the provided group ids for the provided recipients.
+	 * @return a map exchange data group id -> recipient -> recipient piece
+	 */
+	suspend fun getExchangeDataPiecesByIdsForRecipients(
+		inGroup: String?,
+		exchangeDataGroupIds: Set<String>,
+		recipients: Set<EntityReferenceInGroup>,
+	): Map<String, Map<String, ExchangeData>>
 
 	/**
 	 * Verifies the authenticity of the exchange data by checking the signature.
@@ -135,6 +146,13 @@ interface BaseExchangeDataManager {
 		decryptionKeys: RsaDecryptionKeysSet
 	): DecryptionResult<ExchangeData, HmacKey<HmacAlgorithm.HmacSha512>>
 
+	suspend fun tryDecryptExchangeDataContentAndGetVerified(
+		exchangeData: ExchangeData,
+		decryptionKeys: RsaDecryptionKeysSet,
+		delegatorSignatureKeys: SelfVerifiedKeysSet,
+		verifyAsDelegator: String?
+	): Pair<UnencryptedExchangeDataContent, Boolean>?
+
 	/**
 	 * Creates exchange data from the current data owner to the provided delegate, uploading the newly created exchange data to the cloud.
 	 * This assumes that the keys have been verified.
@@ -162,6 +180,41 @@ interface BaseExchangeDataManager {
 		delegatorEncryptionKeys: VerifiedRsaEncryptionKeysSet,
 		delegateMembersEncryptionKeys: Map<EntityReferenceInGroup, VerifiedRsaEncryptionKeysSet>,
 	): ExchangeDataWithUnencryptedContent
+
+	data class UpdateExistingExchangeDataGroupPieceRequest(
+		val existingPiece: ExchangeData,
+		val newPieceEncryptionKeys: VerifiedRsaEncryptionKeysSet,
+		val groupUnencryptedContent: UnencryptedExchangeDataContent,
+	)
+
+	/**
+	 * Update pieces of an already existing exchange data group; this method specifically handles updates of existing
+	 * pieces.
+	 * Returns the exchangeDataGroupId of successful updates
+	 */
+	suspend fun updateExchangeDataGroupPieces(
+		inGroup: String?,
+		requests: List<UpdateExistingExchangeDataGroupPieceRequest>
+	): List<String>
+
+	data class CreatePieceForExistingExchangeDataGroupRequest(
+		val exchangeDataGroupId: String,
+		val recipientReference: EntityReferenceInGroup,
+		val delegatorReferenceString: String,
+		val delegateReferenceString: String,
+		val newPieceEncryptionKeys: VerifiedRsaEncryptionKeysSet,
+		val groupUnencryptedContent: UnencryptedExchangeDataContent,
+	)
+
+	/**
+	 * Update pieces of an already existing exchange data group; this method specifically creating new pieces for
+	 * the existing exchange data.
+	 * Returns the exchangeDataGroupId of successful creations
+	 */
+	suspend fun createPiecesForExistingExchangeDataGroup(
+		inGroup: String?,
+		requests: List<CreatePieceForExistingExchangeDataGroupRequest>
+	): List<String>
 
 	/**
 	 * Decrypts the content of the provided exchange data using the provided keys. Does not interpret the decrypted
@@ -225,4 +278,10 @@ interface BaseExchangeDataManager {
 	fun importAccessControlSecret(decryptedBytes: ByteArray): AccessControlSecret
 	suspend fun importSharedSignatureKey(decryptedBytes: ByteArray): HmacKey<HmacAlgorithm.HmacSha512>
 	suspend fun importExchangeKey(decryptedBytes: ByteArray): AesKey<AesAlgorithm.CbcWithPkcs7Padding>
+
+	/**
+	 * Differs from [getAllExchangeDataForDataOwner] in that it returns only ids and if participant is a simple-type
+	 * group only the exchange data group ids are returned, and not the individual pieces ids.
+	 */
+	fun getMainExchangeDataIdsForParticipant(participant: String): Flow<String>
 }

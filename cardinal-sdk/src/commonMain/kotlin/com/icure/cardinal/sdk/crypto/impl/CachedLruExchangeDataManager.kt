@@ -370,6 +370,6 @@ private class CachedLruExchangeDataManagerInGroup(
 	private suspend fun ExchangeData.pieceIdFor(requestedRecipient: String): String {
 		ensureNonNull(exchangeDataGroupId) { "Exchange data is not a piece" }
 		ensure(requestedRecipient != delegator && this.recipient != requestedRecipient) { "Exchange data is already the piece for recipient" }
-		return HashingUtils.sha256Alphanumeric("$exchangeDataGroupId|$requestedRecipient", cryptoService)
+		return ExchangeData.idForNonDelegatorPiece(exchangeDataGroupId, requestedRecipient, cryptoService)
 	}
 }

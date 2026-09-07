@@ -50,6 +50,7 @@ import com.icure.cardinal.sdk.api.raw.impl.RawCalendarItemApiImpl
 import com.icure.cardinal.sdk.api.raw.impl.RawCalendarItemTypeApiImpl
 import com.icure.cardinal.sdk.api.raw.impl.RawCodeApiImpl
 import com.icure.cardinal.sdk.api.raw.impl.RawContactApiImpl
+import com.icure.cardinal.sdk.api.raw.impl.RawDataOwnerApiImpl
 import com.icure.cardinal.sdk.api.raw.impl.RawDeviceApiImpl
 import com.icure.cardinal.sdk.api.raw.impl.RawDocumentApiImpl
 import com.icure.cardinal.sdk.api.raw.impl.RawFilterApiImpl
@@ -515,7 +516,12 @@ private class CardinalBaseApisImpl(
 				authProvider,
 				config.rawApiConfig
 			),
-			config
+			config,
+			RawDataOwnerApiImpl(
+				apiUrl,
+				authProvider,
+				config.rawApiConfig
+			)
 		)
 	}
 

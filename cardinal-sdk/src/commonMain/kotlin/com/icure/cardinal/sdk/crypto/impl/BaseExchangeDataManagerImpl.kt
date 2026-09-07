@@ -12,9 +12,11 @@ import com.icure.cardinal.sdk.crypto.entities.SelfVerifiedKeysSet
 import com.icure.cardinal.sdk.crypto.entities.UnencryptedExchangeDataContent
 import com.icure.cardinal.sdk.crypto.entities.VerifiedRsaEncryptionKeysSet
 import com.icure.cardinal.sdk.crypto.entities.resolve
+import com.icure.cardinal.sdk.crypto.entities.toPrivateKeyInfo
 import com.icure.cardinal.sdk.model.DataOwnerType
 import com.icure.cardinal.sdk.model.ExchangeData
 import com.icure.cardinal.sdk.model.ListOfIds
+import com.icure.cardinal.sdk.model.requests.BulkExchangeDataPieceCreationRequest
 import com.icure.cardinal.sdk.model.requests.ExchangeDataPieceCreationRequest
 import com.icure.cardinal.sdk.model.specializations.AccessControlSecret
 import com.icure.cardinal.sdk.model.specializations.Base64String
@@ -22,6 +24,7 @@ import com.icure.cardinal.sdk.model.specializations.KeypairFingerprintV2String
 import com.icure.cardinal.sdk.utils.base64Encode
 import com.icure.cardinal.sdk.utils.decode
 import com.icure.cardinal.sdk.utils.ensure
+import com.icure.cardinal.sdk.utils.ensureNonNull
 import com.icure.cardinal.sdk.utils.pagination.exhaustPaginatedRequest
 import com.icure.cardinal.sdk.utils.validateResponseContent
 import com.icure.kryptom.crypto.AesAlgorithm
@@ -34,10 +37,13 @@ import com.icure.kryptom.crypto.RsaAlgorithm
 import com.icure.kryptom.utils.hexToByteArray
 import com.icure.kryptom.utils.toHexString
 import com.icure.utils.InternalIcureApi
+import io.ktor.client.call.body
+import io.ktor.http.isSuccess
 import io.ktor.utils.io.charsets.Charsets
 import io.ktor.utils.io.core.toByteArray
 import kotlinx.coroutines.currentCoroutineContext
 import kotlinx.coroutines.ensureActive
+import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.toList
 import kotlinx.coroutines.flow.toSet
 import kotlinx.serialization.json.JsonArray
@@ -135,7 +141,7 @@ class BaseExchangeDataManagerImpl(
 	override suspend fun getExchangeDataByIds(
 		inGroup: String?,
 		exchangeDataIds: Set<String>
-	): List<ExchangeData> = exchangeDataIds.chunked(1000).flatMap { chunk ->
+	): List<ExchangeData> = exchangeDataIds.chunked(200).flatMap { chunk ->
 		sdkBoundGroup.resolve(inGroup)?.let {
 			raw.getExchangeDataByIds(
 				exchangeDataIds = ListOfIds(chunk),
@@ -146,11 +152,132 @@ class BaseExchangeDataManagerImpl(
 		).successBody()
 	}
 
+	override suspend fun getExchangeDataPiecesByIdsForRecipients(
+		inGroup: String?,
+		exchangeDataGroupIds: Set<String>,
+		recipients: Set<EntityReferenceInGroup>,
+	): Map<String, Map<String, ExchangeData>> {
+		val res = mutableMapOf<String, MutableMap<String, ExchangeData>>()
+		val resolvedGroup = sdkBoundGroup.resolve(inGroup)
+		exchangeDataGroupIds.flatMap { exchangeDataGroupId ->
+			listOf(exchangeDataGroupId) + recipients.map { recipient ->
+				ExchangeData.idForNonDelegatorPiece(
+					exchangeDataGroupId = exchangeDataGroupId,
+					recipient = recipient.asReferenceStringInGroup(inGroup, sdkBoundGroup),
+					cryptoService = cryptoService
+				)
+			}
+		}.chunked(200).forEach { chunk ->
+			(
+				resolvedGroup?.let {
+					raw.getExchangeDataByIds(
+						exchangeDataIds = ListOfIds(chunk),
+						groupId = it
+					).successBody()
+					} ?: raw.getExchangeDataByIds(
+					exchangeDataIds = ListOfIds(chunk),
+				).successBody()
+			).forEach {
+				val exchangeDataGroupId = ensureNonNull(it.exchangeDataGroupId) {
+					"Got exchange data with no group id in getExchangeDataPiecesByIdsForRecipients"
+				}
+				val recipient = ensureNonNull(it.recipient) {
+					"Got exchange data with no recipient in getExchangeDataPiecesByIdsForRecipients"
+				}
+				res.getOrPut(exchangeDataGroupId) { mutableMapOf() }[recipient] = it
+			}
+		}
+		return res
+	}
+
+	override suspend fun updateExchangeDataGroupPieces(
+		inGroup: String?,
+		requests: List<BaseExchangeDataManager.UpdateExistingExchangeDataGroupPieceRequest>,
+	): List<String> {
+		if (requests.isEmpty()) return emptyList()
+		val requestsDto = requests.map { request ->
+			val encryptedExchangeKey = cryptoService.encryptDataWithKeys(
+				exportExchangeKey(request.groupUnencryptedContent.exchangeKey),
+				request.newPieceEncryptionKeys,
+				KeyIdentifierFormat.FingerprintV2
+			)
+			val encryptedSharedSignatureKey = cryptoService.encryptDataWithKeys(
+				exportSharedSignatureKey(request.groupUnencryptedContent.sharedSignatureKey),
+				request.newPieceEncryptionKeys,
+				KeyIdentifierFormat.FingerprintV2
+			)
+			val encryptedAccessControlSecret = cryptoService.encryptDataWithKeys(
+				exportAccessControlSecret(request.groupUnencryptedContent.accessControlSecret),
+				request.newPieceEncryptionKeys,
+				KeyIdentifierFormat.FingerprintV2
+			)
+			request.existingPiece.copy(
+				exchangeKey = request.existingPiece.exchangeKey + encryptedExchangeKey,
+				sharedSignatureKey = request.existingPiece.sharedSignatureKey + encryptedSharedSignatureKey,
+				accessControlSecret = request.existingPiece.accessControlSecret + encryptedAccessControlSecret,
+			)
+		}
+		val res = sdkBoundGroup.resolve(inGroup)?.let {
+			raw.modifyExchangeDataInBulk(
+				exchangeDatas = requestsDto,
+				groupId = it
+			)
+		} ?: raw.modifyExchangeDataInBulk(
+			exchangeDatas = requestsDto,
+		)
+		return res.successBody().map { it.exchangeDataGroupId!! }
+	}
+
+	override suspend fun createPiecesForExistingExchangeDataGroup(
+		inGroup: String?,
+		requests: List<BaseExchangeDataManager.CreatePieceForExistingExchangeDataGroupRequest>,
+	): List<String> {
+		if (requests.isEmpty()) return emptyList()
+		val fullRequest = requests.map { request ->
+			val encryptedExchangeKey = cryptoService.encryptDataWithKeys(
+				exportExchangeKey(request.groupUnencryptedContent.exchangeKey),
+				request.newPieceEncryptionKeys,
+				KeyIdentifierFormat.FingerprintV2
+			)
+			val encryptedSharedSignatureKey = cryptoService.encryptDataWithKeys(
+				exportSharedSignatureKey(request.groupUnencryptedContent.sharedSignatureKey),
+				request.newPieceEncryptionKeys,
+				KeyIdentifierFormat.FingerprintV2
+			)
+			val encryptedAccessControlSecret = cryptoService.encryptDataWithKeys(
+				exportAccessControlSecret(request.groupUnencryptedContent.accessControlSecret),
+				request.newPieceEncryptionKeys,
+				KeyIdentifierFormat.FingerprintV2
+			)
+			BulkExchangeDataPieceCreationRequest(
+				exchangeKey = encryptedExchangeKey,
+				sharedSignatureKey = encryptedSharedSignatureKey,
+				accessControlSecret = encryptedAccessControlSecret,
+				sharedSignature = null,
+				delegatorSignature = emptyMap(),
+				recipient = request.recipientReference.asReferenceStringInGroup(inGroup, sdkBoundGroup),
+				exchangeDataGroupId = request.exchangeDataGroupId,
+				delegate = request.delegateReferenceString,
+				delegator = request.delegatorReferenceString,
+			)
+		}
+		val res = sdkBoundGroup.resolve(inGroup)?.let {
+			raw.bulkCreateExchangeDataGroupPieces(
+				requests = fullRequest,
+				groupId = it
+			)
+		} ?: raw.bulkCreateExchangeDataGroupPieces(
+			requests = fullRequest,
+		)
+		return res.successBody().map { it.exchangeDataGroupId!! }
+	}
+
 	override suspend fun verifyExchangeData(
 		data: ExchangeDataWithUnencryptedContent,
 		delegatorSignatureKeys: SelfVerifiedKeysSet,
 		verifyAsDelegator: String?
 	): Boolean {
+		if (data.exchangeData.sharedSignature == null) return false
 		if (
 			verifyAsDelegator != null && (
 				data.exchangeData.delegator != verifyAsDelegator
@@ -207,6 +334,39 @@ class BaseExchangeDataManagerImpl(
 			ExchangeData::sharedSignatureKey,
 			::importSharedSignatureKey
 		)
+
+	override suspend fun tryDecryptExchangeDataContentAndGetVerified(
+		exchangeData: ExchangeData,
+		decryptionKeys: RsaDecryptionKeysSet,
+		delegatorSignatureKeys: SelfVerifiedKeysSet,
+		verifyAsDelegator: String?
+	): Pair<UnencryptedExchangeDataContent, Boolean>? {
+		val decryptedExchangeKeyResult = tryDecryptExchangeKeys(listOf(exchangeData), decryptionKeys)
+		val decryptedExchangeKey = decryptedExchangeKeyResult.successfulDecryptions.firstOrNull()
+			?: return null
+
+		val decryptedAccessControlSecretResult = tryDecryptAccessControlSecret(listOf(exchangeData), decryptionKeys)
+		val decryptedAccessControlSecret = decryptedAccessControlSecretResult.successfulDecryptions.firstOrNull()
+			?: throw IllegalStateException("Decryption key could be decrypted but access control secret could not for data $exchangeData")
+
+		val decryptedSharedSignatureKeyResult = tryDecryptSharedSignatureKeys(listOf(exchangeData), decryptionKeys)
+		val decryptedSharedSignatureKey = decryptedSharedSignatureKeyResult.successfulDecryptions.firstOrNull()
+			?: throw IllegalStateException("Decryption key could be decrypted but shared signature key could not for data $exchangeData")
+		val unencryptedContent = UnencryptedExchangeDataContent(
+			accessControlSecret = decryptedAccessControlSecret,
+			exchangeKey = decryptedExchangeKey,
+			sharedSignatureKey = decryptedSharedSignatureKey
+		)
+		val verified = verifyExchangeData(
+			ExchangeDataWithUnencryptedContent(
+				exchangeData = exchangeData,
+				unencryptedContent = unencryptedContent
+			),
+			delegatorSignatureKeys,
+			verifyAsDelegator
+		)
+		return Pair(unencryptedContent, verified)
+	}
 
 	override suspend fun createExchangeData(
 		inGroup: String?,
@@ -285,20 +445,14 @@ class BaseExchangeDataManagerImpl(
 		val exchangeDataGroupId = cryptoService.strongRandom.randomUUID()
 		val delegatorReferenceString = delegatorReference.asReferenceStringInGroup(inGroup, sdkBoundGroup)
 		val delegateReferenceString = delegateReference.asReferenceStringInGroup(inGroup, sdkBoundGroup)
-		suspend fun makePiece(pieceEncryptionKeys: VerifiedRsaEncryptionKeysSet, delegatorSignature:  Map<KeypairFingerprintV2String, Base64String>): ExchangeDataPieceCreationRequest {
+		suspend fun makePiece(
+			pieceEncryptionKeys: VerifiedRsaEncryptionKeysSet,
+			delegatorSignature: Map<KeypairFingerprintV2String, Base64String>,
+			sharedSignature: Base64String?,
+		): ExchangeDataPieceCreationRequest {
 			val encryptedExchangeKey = cryptoService.encryptDataWithKeys(rawExchangeKey, pieceEncryptionKeys, KeyIdentifierFormat.FingerprintV2)
 			val encryptedSharedSignatureKey = cryptoService.encryptDataWithKeys(rawSharedSignatureKey, pieceEncryptionKeys, KeyIdentifierFormat.FingerprintV2)
 			val encryptedAccessControlSecret = cryptoService.encryptDataWithKeys(rawAccessControlSecret, pieceEncryptionKeys, KeyIdentifierFormat.FingerprintV2)
-			val sharedSignature = cryptoService.hmac.sign(
-				bytesToSignForSharedSignature(
-					delegator = delegatorReferenceString,
-					delegate = delegateReferenceString,
-					decryptedAccessControlSecret = accessControlSecret,
-					decryptedExchangeKey = exchangeKey,
-					publicKeysFingerprints = pieceEncryptionKeys.allKeys.mapTo(mutableSetOf()) { it.pubSpkiHexString.fingerprintV2() }
-				),
-				sharedSignatureKey
-			).base64Encode()
 			return ExchangeDataPieceCreationRequest(
 				exchangeKey = encryptedExchangeKey,
 				sharedSignatureKey = encryptedSharedSignatureKey,
@@ -315,15 +469,33 @@ class BaseExchangeDataManagerImpl(
 					selfEncryptionKeyToHmac(keyInfo.key)
 				).base64Encode()
 			}
+			val sharedSignature = cryptoService.hmac.sign(
+				bytesToSignForSharedSignature(
+					delegator = delegatorReferenceString,
+					delegate = delegateReferenceString,
+					decryptedAccessControlSecret = accessControlSecret,
+					decryptedExchangeKey = exchangeKey,
+					publicKeysFingerprints = delegatorEncryptionKeys.allKeys.mapTo(mutableSetOf()) { it.pubSpkiHexString.fingerprintV2() }
+				),
+				sharedSignatureKey
+			).base64Encode()
 			Pair(
 				delegatorReferenceString,
-				makePiece(pieceEncryptionKeys = delegatorEncryptionKeys, delegatorSignature = delegatorSignature)
+				makePiece(
+					pieceEncryptionKeys = delegatorEncryptionKeys,
+					delegatorSignature = delegatorSignature,
+					sharedSignature = sharedSignature
+				)
 			)
 		}
 		val otherPieces = delegateMembersEncryptionKeys.map { (recipient, recipientKeys) ->
 			Pair(
 				recipient.asReferenceStringInGroup(inGroup, sdkBoundGroup),
-				makePiece(pieceEncryptionKeys = recipientKeys, delegatorSignature = emptyMap())
+				makePiece(
+					pieceEncryptionKeys = recipientKeys,
+					delegatorSignature = emptyMap(),
+					sharedSignature = null
+				)
 			)
 		}
 		sequence {
@@ -634,4 +806,12 @@ class BaseExchangeDataManagerImpl(
 
 	override fun exportAccessControlSecret(decryptedAccessControlSecret: AccessControlSecret): ByteArray =
 		hexToByteArray(decryptedAccessControlSecret.s)
+
+	override fun getMainExchangeDataIdsForParticipant(participant: String): Flow<String> =
+		exhaustPaginatedRequest {
+			raw.findMainExchangeDataIdsByParticipant(
+				participant,
+				it?.startKeyDocId
+			).successBody()
+		}
 }

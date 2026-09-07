@@ -1,18 +1,17 @@
 package com.icure.cardinal.sdk.crypto
 
-import com.icure.cardinal.sdk.CardinalSdk
 import com.icure.cardinal.sdk.api.raw.impl.RawDataOwnerApiImpl
 import com.icure.cardinal.sdk.api.raw.impl.RawExchangeDataApiImpl
 import com.icure.cardinal.sdk.api.raw.impl.RawHealthcarePartyApiImpl
 import com.icure.cardinal.sdk.crypto.impl.exportSpkiHex
 import com.icure.cardinal.sdk.model.DataOwnerType
 import com.icure.cardinal.sdk.model.DecryptedPatient
+import com.icure.cardinal.sdk.model.EncryptedPatient
 import com.icure.cardinal.sdk.model.HealthcareParty
+import com.icure.cardinal.sdk.model.Patient
 import com.icure.cardinal.sdk.model.base.DataOwnerGroupLink
 import com.icure.cardinal.sdk.model.base.DataOwnerGroupLinkType
 import com.icure.cardinal.sdk.model.embed.AccessLevel
-import com.icure.cardinal.sdk.model.specializations.SpkiHexString
-import com.icure.cardinal.sdk.test.DataOwnerDetails
 import com.icure.cardinal.sdk.test.DefaultRawApiConfig
 import com.icure.cardinal.sdk.test.autoCancelJob
 import com.icure.cardinal.sdk.test.baseUrl
@@ -22,27 +21,25 @@ import com.icure.cardinal.sdk.test.initializeTestEnvironment
 import com.icure.cardinal.sdk.test.superadminAuth
 import com.icure.cardinal.sdk.test.testGroupId
 import com.icure.cardinal.sdk.test.uuid
-import com.icure.kryptom.crypto.CryptoService
 import com.icure.kryptom.crypto.RsaAlgorithm
 import com.icure.kryptom.crypto.defaultCryptoService
 import com.icure.utils.InternalIcureApi
 import io.kotest.assertions.throwables.shouldThrow
-import io.kotest.core.spec.style.StringSpec
+import io.kotest.core.spec.IsolationMode
+import io.kotest.core.spec.style.FreeSpec
 import io.kotest.matchers.collections.shouldHaveSize
 import io.kotest.matchers.nulls.shouldNotBeNull
 import io.kotest.matchers.shouldBe
 import io.kotest.matchers.shouldNotBe
-import kotlinx.coroutines.async
-import kotlinx.coroutines.joinAll
-import kotlinx.coroutines.launch
+import io.kotest.matchers.types.shouldBeInstanceOf
 import kotlinx.serialization.json.JsonArray
 import kotlinx.serialization.json.JsonPrimitive
 import kotlin.random.Random
 import kotlin.time.Clock
-import kotlin.time.Instant
 
 @OptIn(InternalIcureApi::class)
-class SimpleDataOwnerGroupTest : StringSpec({
+class SimpleDataOwnerGroupTest : FreeSpec({
+	isolationMode = IsolationMode.InstancePerLeaf
 	val specJob = autoCancelJob()
 
 	beforeSpec {
@@ -70,11 +67,15 @@ class SimpleDataOwnerGroupTest : StringSpec({
 		}
 	}
 
-	"A data owner should be able to share data with a simple data owner group and direct members of that group should be able to read it" {
+	"A data owner should be able to share data with a simple data owner group" - {
 		val hcp = createHcpUser()
 		val group = createHcpUser(groupLinkType = DataOwnerGroupLinkType.Simple)
-		val memberA = createHcpUser(parent = group, groupLinkType = DataOwnerGroupLinkType.NotAllowed)
-		val memberB = createHcpUser(parent = group)
+		val memberA = createHcpUser(
+			parent = group,
+			groupLinkType = DataOwnerGroupLinkType.NotAllowed,
+			roles = setOf("BASIC_DATA_OWNER", "HIERARCHICAL_DATA_OWNER", "OWN_GROUP_MANAGER")
+		)
+		val memberB = createHcpUser(parent = group, groupLinkType = DataOwnerGroupLinkType.NotAllowed)
 		val hcpApi = hcp.api(specJob)
 		val memberAApi = memberA.api(specJob)
 		val memberBApi = memberB.api(specJob)
@@ -91,11 +92,41 @@ class SimpleDataOwnerGroupTest : StringSpec({
 		)
 		patient.note shouldBe "Secret"
 		hcpApi.patient.getPatient(patient.id).shouldNotBeNull().note shouldBe "Secret"
-		memberAApi.patient.getPatient(patient.id).shouldNotBeNull().note shouldBe "Secret"
-		memberBApi.patient.getPatient(patient.id).shouldNotBeNull().note shouldBe "Secret"
+
+		"and direct members of that group should be able to read it" {
+			memberAApi.patient.getPatient(patient.id).shouldNotBeNull().note shouldBe "Secret"
+			memberBApi.patient.getPatient(patient.id).shouldNotBeNull().note shouldBe "Secret"
+		}
+
+		"and members added in a second moment should be able to read it after they have been giving access to existing exchange data" {
+			val memberC = createHcpUser(parent = group, groupLinkType = DataOwnerGroupLinkType.NotAllowed)
+			memberAApi.dataOwner.addDataOwnersToGroup(DataOwnerType.Hcp, group.dataOwnerId, setOf(memberC.dataOwnerId))
+			val memberCApi = memberC.api(specJob)
+			// Can get but not yet decrypt
+			memberCApi.patient.tryAndRecover.getPatient(patient.id).shouldNotBeNull().shouldBeInstanceOf<EncryptedPatient>()
+			memberAApi.crypto.ensureHasAccessToSharedSimpleDataOwnerGroupExchangeData(
+				memberC.dataOwnerId,
+				group.dataOwnerId,
+			) shouldBe true
+			// Can now get and decrypt
+			memberCApi.crypto.forceReload()
+			memberCApi.patient.getPatient(patient.id).shouldNotBeNull().note shouldBe "Secret"
+		}
+
+		"and if a group member lost their key other members should be able to reshare with them" {
+			val (lostKeyApi, newKey) = memberB.apiWithLostKeys(specJob)
+			lostKeyApi.patient.tryAndRecover.getPatient(patient.id).shouldNotBeNull().shouldBeInstanceOf<EncryptedPatient>()
+			memberAApi.crypto.ensureHasAccessToSharedSimpleDataOwnerGroupExchangeData(
+				memberB.dataOwnerId,
+				group.dataOwnerId,
+				defaultCryptoService.rsa.exportSpkiHex(newKey.public)
+			) shouldBe true
+			lostKeyApi.crypto.forceReload()
+			lostKeyApi.patient.getPatient(patient.id).shouldNotBeNull().note shouldBe "Secret"
+		}
 	}
 
-	"A data owner member of s simple group should be able to share data with their group" {
+	"A data owner member of a simple group should be able to share data with their group" {
 		val group = createHcpUser(groupLinkType = DataOwnerGroupLinkType.Simple)
 		val memberA = createHcpUser(parent = group, groupLinkType = DataOwnerGroupLinkType.NotAllowed)
 		val memberB = createHcpUser(parent = group)
@@ -115,6 +146,84 @@ class SimpleDataOwnerGroupTest : StringSpec({
 		patient.note shouldBe "Secret"
 		memberAApi.patient.getPatient(patient.id).shouldNotBeNull().note shouldBe "Secret"
 		memberBApi.patient.getPatient(patient.id).shouldNotBeNull().note shouldBe "Secret"
+	}
+
+	"When a data owner is removed from a group existing exchange data should be invalidated if already shared with the data owner" - {
+		val hcp = createHcpUser()
+		val group = createHcpUser(groupLinkType = DataOwnerGroupLinkType.Simple)
+		val memberA = createHcpUser(
+			parent = group,
+			groupLinkType = DataOwnerGroupLinkType.NotAllowed,
+			roles = setOf("BASIC_DATA_OWNER", "HIERARCHICAL_DATA_OWNER", "OWN_GROUP_MANAGER")
+		)
+		val memberB = createHcpUser(parent = group, groupLinkType = DataOwnerGroupLinkType.NotAllowed)
+		val hcpApi = hcp.api(specJob)
+		val memberAApi = memberA.api(specJob)
+		val patient1 = hcpApi.patient.createPatient(
+			hcpApi.patient.withEncryptionMetadata(
+				DecryptedPatient(
+					uuid(),
+					firstName = "John",
+					lastName = "Doe",
+					note = "Secret"
+				),
+				delegates = mapOf(group.dataOwnerId to AccessLevel.Write)
+			)
+		)
+		fun Patient.exchangeDataToGroupId() =
+			securityMetadata.shouldNotBeNull().secureDelegations.values.filter {
+				it.delegate == group.dataOwnerId
+			}.shouldHaveSize(1).single().exchangeDataId.shouldNotBeNull()
+		memberAApi.dataOwner.removeDataOwnersFromGroup(DataOwnerType.Hcp, group.dataOwnerId, setOf(memberB.dataOwnerId))
+		hcpApi.crypto.forceReload()
+		val patient2 = hcpApi.patient.createPatient(
+			hcpApi.patient.withEncryptionMetadata(
+				DecryptedPatient(
+					uuid(),
+					firstName = "John",
+					lastName = "Doe",
+					note = "Secret"
+				),
+				delegates = mapOf(group.dataOwnerId to AccessLevel.Write)
+			)
+		)
+		patient1.exchangeDataToGroupId() shouldNotBe patient2.exchangeDataToGroupId()
+
+		"Re-removing the data owner should not re-invalidate the new exchange data" {
+			memberAApi.dataOwner.removeDataOwnersFromGroup(DataOwnerType.Hcp, group.dataOwnerId, setOf(memberB.dataOwnerId))
+			hcpApi.crypto.forceReload()
+			val patient3 = hcpApi.patient.createPatient(
+				hcpApi.patient.withEncryptionMetadata(
+					DecryptedPatient(
+						uuid(),
+						firstName = "John",
+						lastName = "Doe",
+						note = "Secret"
+					),
+					delegates = mapOf(group.dataOwnerId to AccessLevel.Write)
+				)
+			)
+			patient3.exchangeDataToGroupId() shouldBe patient2.exchangeDataToGroupId()
+		}
+
+		"Adding then removing a member for which no exchange data was ever shared should not invalidate the existing exchange data" {
+			val memberC = createHcpUser(parent = group, groupLinkType = DataOwnerGroupLinkType.NotAllowed)
+			memberAApi.dataOwner.addDataOwnersToGroup(DataOwnerType.Hcp, group.dataOwnerId, setOf(memberC.dataOwnerId))
+			memberAApi.dataOwner.removeDataOwnersFromGroup(DataOwnerType.Hcp, group.dataOwnerId, setOf(memberC.dataOwnerId))
+			hcpApi.crypto.forceReload()
+			val patient3 = hcpApi.patient.createPatient(
+				hcpApi.patient.withEncryptionMetadata(
+					DecryptedPatient(
+						uuid(),
+						firstName = "John",
+						lastName = "Doe",
+						note = "Secret"
+					),
+					delegates = mapOf(group.dataOwnerId to AccessLevel.Write)
+				)
+			)
+			patient3.exchangeDataToGroupId() shouldBe patient2.exchangeDataToGroupId()
+		}
 	}
 
 	"Data should be shared transitively with members at all layers of the group" {

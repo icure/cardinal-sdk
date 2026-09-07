@@ -1024,7 +1024,11 @@ internal class CardinalSdkImpl(
 		GroupApiImpl(RawGroupApiImpl(apiUrl, authProvider, config.rawApiConfig))
 	}
 	override val healthcareParty: HealthcarePartyApi by lazy {
-		HealthcarePartyApiImpl(RawHealthcarePartyApiImpl(apiUrl, authProvider, config.rawApiConfig), config)
+		HealthcarePartyApiImpl(
+			RawHealthcarePartyApiImpl(apiUrl, authProvider, config.rawApiConfig),
+			config,
+			rawDataOwnerApi,
+		)
 	}
 	override val system: SystemApi by lazy {
 		SystemApiImpl(RawICureApiImpl(apiUrl, authProvider, config.rawApiConfig))

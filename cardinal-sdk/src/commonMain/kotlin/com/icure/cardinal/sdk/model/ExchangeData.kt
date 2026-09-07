@@ -2,10 +2,14 @@
 // If you want to change the way this class is generated, see [this repo](https://github.com/icure/sdk-codegen).
 package com.icure.cardinal.sdk.model
 
+import com.icure.cardinal.sdk.crypto.impl.HashingUtils
 import com.icure.cardinal.sdk.model.base.StoredDocument
 import com.icure.cardinal.sdk.model.specializations.Base64String
 import com.icure.cardinal.sdk.model.specializations.KeypairFingerprintV2String
 import com.icure.cardinal.sdk.utils.DefaultValue
+import com.icure.cardinal.sdk.utils.ensure
+import com.icure.cardinal.sdk.utils.ensureNonNull
+import com.icure.kryptom.crypto.CryptoService
 import kotlinx.serialization.Serializable
 import kotlin.Long
 import kotlin.String
@@ -74,6 +78,15 @@ data class ExchangeData(
 	override val deletionDate: Long? = null,
 ) : StoredDocument {
 	// region ExchangeData-ExchangeData
+
+	companion object {
+		/**
+		 * Id that an exchange data piece of group [exchangeDataGroupId] would have if [recipient] was not the delegator
+		 * of that exchange data.
+		 */
+		internal suspend fun idForNonDelegatorPiece(exchangeDataGroupId: String, recipient: String, cryptoService: CryptoService) =
+			HashingUtils.sha256Alphanumeric("$exchangeDataGroupId|$recipient", cryptoService)
+	}
 
 	// endregion
 }

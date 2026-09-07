@@ -14,7 +14,7 @@ services:
       - ERL_MAX_PORT=16384
 
   kraken-1:
-    image: docker.taktik.be/icure/icure-kraken:26.8.37-experimental.300.g8eae191681
+    image: docker.taktik.be/icure/icure-kraken:26.8.43-experimental.300.g83f8c60a35
     container_name: kraken-1
     ports:
       - "5005:5005"
