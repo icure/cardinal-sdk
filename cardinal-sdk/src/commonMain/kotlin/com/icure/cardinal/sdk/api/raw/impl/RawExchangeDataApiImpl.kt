@@ -10,6 +10,7 @@ import com.icure.cardinal.sdk.model.ExchangeData
 import com.icure.cardinal.sdk.model.IdWithRev
 import com.icure.cardinal.sdk.model.ListOfIds
 import com.icure.cardinal.sdk.model.PaginatedList
+import com.icure.cardinal.sdk.model.requests.BulkExchangeDataPieceCreationRequest
 import com.icure.cardinal.sdk.model.requests.ExchangeDataPieceCreationRequest
 import com.icure.utils.InternalIcureApi
 import io.ktor.client.request.accept
@@ -68,6 +69,17 @@ class RawExchangeDataApiImpl(
 			setBody(exchangeData)
 		}.wrap()
 
+	override suspend fun modifyExchangeDataInBulk(exchangeDatas: List<ExchangeData>): HttpResponse<List<ExchangeData>> =
+		put(authProvider) {
+			url {
+				takeFrom(apiUrl)
+				appendPathSegments("rest", "v2", "exchangedata", "bulk")
+			}
+			contentType(Application.Json)
+			accept(Application.Json)
+			setBody(exchangeDatas)
+		}.wrap()
+
 	override suspend fun getExchangeDataById(exchangeDataId: String): HttpResponse<ExchangeData> =
 		get(authProvider) {
 			url {
@@ -105,6 +117,19 @@ class RawExchangeDataApiImpl(
 			contentType(Application.Json)
 			accept(Application.Json)
 			setBody(piecesByRecipient)
+		}.wrap()
+
+	override suspend fun bulkCreateExchangeDataGroupPieces(
+		requests: List<BulkExchangeDataPieceCreationRequest>,
+	): HttpResponse<List<ExchangeData>> =
+		post(authProvider) {
+			url {
+				takeFrom(apiUrl)
+				appendPathSegments("rest", "v2", "exchangedata", "group", "pieces", "bulk")
+			}
+			contentType(Application.Json)
+			accept(Application.Json)
+			setBody(requests)
 		}.wrap()
 
 	override suspend fun getExchangeDataGroupById(
@@ -247,6 +272,20 @@ class RawExchangeDataApiImpl(
 			setBody(exchangeData)
 		}.wrap()
 
+	override suspend fun modifyExchangeDataInBulk(
+		exchangeDatas: List<ExchangeData>,
+		groupId: String,
+	): HttpResponse<List<ExchangeData>> =
+		put(authProvider) {
+			url {
+				takeFrom(apiUrl)
+				appendPathSegments("rest", "v2", "exchangedata", "bulk", "inGroup", groupId)
+			}
+			contentType(Application.Json)
+			accept(Application.Json)
+			setBody(exchangeDatas)
+		}.wrap()
+
 	override suspend fun getExchangeDataById(
 		exchangeDataId: String,
 		groupId: String,
@@ -291,6 +330,20 @@ class RawExchangeDataApiImpl(
 			contentType(Application.Json)
 			accept(Application.Json)
 			setBody(piecesByRecipient)
+		}.wrap()
+
+	override suspend fun bulkCreateExchangeDataGroupPieces(
+		requests: List<BulkExchangeDataPieceCreationRequest>,
+		groupId: String,
+	): HttpResponse<List<ExchangeData>> =
+		post(authProvider) {
+			url {
+				takeFrom(apiUrl)
+				appendPathSegments("rest", "v2", "exchangedata", "group", "pieces", "bulk", "inGroup", groupId)
+			}
+			contentType(Application.Json)
+			accept(Application.Json)
+			setBody(requests)
 		}.wrap()
 
 	override suspend fun getExchangeDataGroupById(

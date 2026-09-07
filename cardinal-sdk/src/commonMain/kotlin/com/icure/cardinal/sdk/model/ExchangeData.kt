@@ -64,9 +64,10 @@ data class ExchangeData(
 	 */
 	public val sharedSignatureKey: Map<KeypairFingerprintV2String, Base64String>,
 	/**
-	 * Base64 signature of the exchange data to ensure it was not tampered by third parties.
+	 * Base64 signature of the exchange data to ensure it was not tampered by third parties; null on
+	 * the group pieces that are not for the delegator.
 	 */
-	public val sharedSignature: Base64String,
+	public val sharedSignature: Base64String? = null,
 	/**
 	 * Hard delete (unix epoch in ms) timestamp of the object.
 	 */
