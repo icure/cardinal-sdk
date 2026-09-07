@@ -109,7 +109,6 @@ data class HealthElementAsserter(
 		 */
 		public val identifier: Identifier,
 	)
-
 	// region HealthElementAsserter-HealthElementAsserter
 
 
