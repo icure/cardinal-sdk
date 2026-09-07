@@ -19,7 +19,6 @@ export class PaginatedDocumentKeyIdPair {
 	 *
 	 *  The document identifier to start the next page from, used to disambiguate when multiple
 	 *  documents share the same key.
-	 *  Always null for requests that use grouped reduced views.
 	 */
 	startKeyDocId: string | undefined = undefined;
 

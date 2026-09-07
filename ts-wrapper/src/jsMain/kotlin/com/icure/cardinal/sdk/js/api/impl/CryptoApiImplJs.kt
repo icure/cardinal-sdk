@@ -8,6 +8,7 @@ import com.icure.cardinal.sdk.crypto.entities.ShamirUpdateRequest
 import com.icure.cardinal.sdk.js.api.CryptoApiJs
 import com.icure.cardinal.sdk.js.api.CryptoInGroupApiJs
 import com.icure.cardinal.sdk.js.api.DefaultParametersSupport.convertingOptionOrDefaultNonNull
+import com.icure.cardinal.sdk.js.api.DefaultParametersSupport.convertingOptionOrDefaultNullable
 import com.icure.cardinal.sdk.js.api.ShamirKeysManagerApiJs
 import com.icure.cardinal.sdk.js.crypto.entities.ExchangeDataInjectionDetailsJs
 import com.icure.cardinal.sdk.js.crypto.entities.RawDecryptedExchangeDataJs
@@ -31,11 +32,13 @@ import com.icure.cardinal.sdk.js.model.entityReferenceInGroup_fromJs
 import com.icure.cardinal.sdk.js.model.specializations.keypairFingerprintV1String_fromJs
 import com.icure.cardinal.sdk.js.model.specializations.keypairFingerprintV1String_toJs
 import com.icure.cardinal.sdk.js.model.specializations.pkcs8Bytes_toJs
+import com.icure.cardinal.sdk.js.model.specializations.spkiHexString_fromJs
 import com.icure.cardinal.sdk.js.utils.Record
 import com.icure.cardinal.sdk.model.EntityReferenceInGroup
 import com.icure.cardinal.sdk.model.base.CryptoActor
 import com.icure.cardinal.sdk.model.specializations.KeypairFingerprintV1String
 import com.icure.cardinal.sdk.model.specializations.Pkcs8Bytes
+import com.icure.cardinal.sdk.model.specializations.SpkiHexString
 import kotlin.Array
 import kotlin.Boolean
 import kotlin.ByteArray
@@ -217,5 +220,32 @@ internal class CryptoApiImplJs(
 			reEncryptWithOwnKeysConverted,
 		)
 
+	}
+
+	override fun ensureHasAccessToSharedSimpleDataOwnerGroupExchangeData(
+		`delegate`: String,
+		sharedSimpleDataOwnerGroupId: String,
+		options: dynamic,
+	): Promise<Boolean> {
+		val _options = options ?: js("{}")
+		return GlobalScope.promise {
+			val delegateConverted: String = delegate
+			val sharedSimpleDataOwnerGroupIdConverted: String = sharedSimpleDataOwnerGroupId
+			val delegatePublicKeyConverted: SpkiHexString? = convertingOptionOrDefaultNullable(
+				_options,
+				"delegatePublicKey",
+				null
+			) { delegatePublicKey: String? ->
+				delegatePublicKey?.let { nonNull1 ->
+					spkiHexString_fromJs(nonNull1)
+				}
+			}
+			val result = cryptoApi.ensureHasAccessToSharedSimpleDataOwnerGroupExchangeData(
+				delegateConverted,
+				sharedSimpleDataOwnerGroupIdConverted,
+				delegatePublicKeyConverted,
+			)
+			result
+		}
 	}
 }

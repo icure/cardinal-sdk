@@ -73,6 +73,15 @@ internal class DataOwnerApiImplJs(
 		dataOwnerHierarchyInfo_toJs(result)
 	}
 
+	override fun getDataOwnerHierarchyInfo(dataOwnerId: String): Promise<DataOwnerHierarchyInfoJs> =
+			GlobalScope.promise {
+		val dataOwnerIdConverted: String = dataOwnerId
+		val result = dataOwnerApi.getDataOwnerHierarchyInfo(
+			dataOwnerIdConverted,
+		)
+		dataOwnerHierarchyInfo_toJs(result)
+	}
+
 	override fun getDataOwner(ownerId: String): Promise<DataOwnerWithTypeJs> = GlobalScope.promise {
 		val ownerIdConverted: String = ownerId
 		val result = dataOwnerApi.getDataOwner(
@@ -233,6 +242,60 @@ internal class DataOwnerApiImplJs(
 						x2.identifier
 					},
 				)
+			},
+		)
+	}
+
+	override fun addDataOwnersToGroup(
+		dataOwnerType: String,
+		dataOwnerGroupId: String,
+		newMembersIds: Array<String>,
+	): Promise<Array<String>> = GlobalScope.promise {
+		val dataOwnerTypeConverted: DataOwnerType = DataOwnerType.valueOf(dataOwnerType)
+		val dataOwnerGroupIdConverted: String = dataOwnerGroupId
+		val newMembersIdsConverted: Set<String> = arrayToSet(
+			newMembersIds,
+			"newMembersIds",
+			{ x1: String ->
+				x1
+			},
+		)
+		val result = dataOwnerApi.addDataOwnersToGroup(
+			dataOwnerTypeConverted,
+			dataOwnerGroupIdConverted,
+			newMembersIdsConverted,
+		)
+		setToArray(
+			result,
+			{ x1: String ->
+				x1
+			},
+		)
+	}
+
+	override fun removeDataOwnersFromGroup(
+		dataOwnerType: String,
+		dataOwnerGroupId: String,
+		membersToRemoveIds: Array<String>,
+	): Promise<Array<String>> = GlobalScope.promise {
+		val dataOwnerTypeConverted: DataOwnerType = DataOwnerType.valueOf(dataOwnerType)
+		val dataOwnerGroupIdConverted: String = dataOwnerGroupId
+		val membersToRemoveIdsConverted: Set<String> = arrayToSet(
+			membersToRemoveIds,
+			"membersToRemoveIds",
+			{ x1: String ->
+				x1
+			},
+		)
+		val result = dataOwnerApi.removeDataOwnersFromGroup(
+			dataOwnerTypeConverted,
+			dataOwnerGroupIdConverted,
+			membersToRemoveIdsConverted,
+		)
+		setToArray(
+			result,
+			{ x1: String ->
+				x1
 			},
 		)
 	}
