@@ -77,10 +77,12 @@ jobs:
         permissions:
             contents: read
             id-token: write # claude-code-action OIDC
-        env:
-            # Outside the checkout: logs and the PR body must not show up as changes to the working tree.
-            SYNC_DIR: ${{ runner.temp }}/mcp-sync
         steps:
+            -   name: Pick a scratch directory outside the checkout
+                # Logs and the PR body must not show up as changes to the working tree. `runner.temp` is not
+                # available to a job-level `env`, so it is exported here for every later step.
+                run: echo "SYNC_DIR=$RUNNER_TEMP/mcp-sync" >> "$GITHUB_ENV"
+
             -   name: Check out code
                 uses: actions/checkout@v4
                 with:
