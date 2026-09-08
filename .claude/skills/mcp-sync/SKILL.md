@@ -161,5 +161,6 @@ and follow the procedure above.
 
 The sync bumps `dependencies["@icure/cardinal-sdk"]` to a version that is not on npm yet, so `yarn install` cannot
 refresh the lockfile entry for it. The committed `yarn.lock` therefore keeps the previous SDK resolution until the
-next sync, and both workflows run a mutable `yarn install` followed by `.github/scripts/mcp-check-yarn-lock-drift.sh`,
-which allows that single entry to move and fails on anything else. Do not try to fix this in a sync.
+next sync. The update workflow here and the `publish-mcp-server` job of `publish-cardinal-sdk.yml` in `icure/the-forge`
+both run a mutable `yarn install` followed by `.github/scripts/mcp-check-yarn-lock-drift.sh`, which allows that single
+entry to move and fails on anything else. Do not try to fix this in a sync.
