@@ -1,0 +1,109 @@
+name: Publish MCP server
+
+# Publishes @icure/cardinal-mcp-server to npm whenever main moves and the MCP
+# server changed. Idempotent: a push that does not bump the package version is
+# a no-op. The SDK itself is published by icure/the-forge after the release is
+# tagged, which takes up to about an hour, so this job waits for the exact
+# @icure/cardinal-sdk version the package depends on before installing.
+#
+# Authentication is npm trusted publishing (OIDC): no npm token is stored in
+# this repository. The trusted publisher on npmjs.com must point at this
+# repository and this workflow file.
+
+on:
+    push:
+        branches:
+            - main
+        paths:
+            - 'cardinal-mcp-server/**'
+    workflow_dispatch:
+
+permissions:
+    contents: read
+    id-token: write # npm trusted publishing
+
+concurrency:
+    group: publish-mcp-server
+    cancel-in-progress: false
+
+jobs:
+    publish:
+        name: Publish MCP server
+        runs-on: ubuntu-latest
+        timeout-minutes: 150
+        defaults:
+            run:
+                working-directory: cardinal-mcp-server
+        steps:
+            -   name: Check out code
+                uses: actions/checkout@v4
+
+            -   name: Set up Node
+                uses: actions/setup-node@v4
+                with:
+                    node-version: '24'
+                    registry-url: 'https://registry.npmjs.org'
+
+            -   name: Ensure npm supports OIDC
+                # npm@12.0.0 ships a broken libnpmpublish (missing sigstore dep), breaking provenance publish.
+                # Pin to newest 11.x until 12.0.x is fixed (same pin as the-forge).
+                run: npm install -g npm@11
+
+            -   name: Enable Corepack
+                run: corepack enable
+
+            -   name: Resolve versions
+                id: versions
+                run: |
+                    MCP_VERSION=$(node -p "require('./package.json').version")
+                    SDK_VERSION=$(node -p "require('./package.json').dependencies['@icure/cardinal-sdk'].replace(/^[\^~]/, '')")
+                    echo "MCP server $MCP_VERSION, depends on @icure/cardinal-sdk $SDK_VERSION"
+                    echo "mcp-version=$MCP_VERSION" >> $GITHUB_OUTPUT
+                    echo "sdk-version=$SDK_VERSION" >> $GITHUB_OUTPUT
+
+            -   name: Skip if this version is already on npm
+                id: published
+                run: |
+                    if npm view "@icure/cardinal-mcp-server@${{ steps.versions.outputs.mcp-version }}" version > /dev/null 2>&1; then
+                        echo "@icure/cardinal-mcp-server@${{ steps.versions.outputs.mcp-version }} is already published: nothing to do."
+                        echo "already-published=true" >> $GITHUB_OUTPUT
+                    else
+                        echo "already-published=false" >> $GITHUB_OUTPUT
+                    fi
+
+            -   name: Wait for the SDK to be published
+                if: steps.published.outputs.already-published == 'false'
+                run: |
+                    # the-forge publishes the SDK after the release is tagged; the last releases took 6 to 62 minutes.
+                    ATTEMPTS=60
+                    DELAY=120
+                    for i in $(seq 1 $ATTEMPTS); do
+                        if npm view "@icure/cardinal-sdk@${{ steps.versions.outputs.sdk-version }}" version > /dev/null 2>&1; then
+                            echo "@icure/cardinal-sdk@${{ steps.versions.outputs.sdk-version }} is on npm."
+                            exit 0
+                        fi
+                        echo "[$i/$ATTEMPTS] @icure/cardinal-sdk@${{ steps.versions.outputs.sdk-version }} not on npm yet, retrying in ${DELAY}s"
+                        sleep $DELAY
+                    done
+                    echo "::error::@icure/cardinal-sdk@${{ steps.versions.outputs.sdk-version }} did not appear on npm in time. Rerun this workflow once it is published."
+                    exit 1
+
+            -   name: Install dependencies
+                if: steps.published.outputs.already-published == 'false'
+                # Not `--immutable`: yarn.lock lags package.json by one SDK version until the next sync PR
+                # (see .claude/skills/mcp-sync/SKILL.md). The drift check makes sure that is the only difference.
+                run: |
+                    yarn install
+                    ../.github/scripts/mcp-check-yarn-lock-drift.sh
+
+            -   name: Build and test
+                if: steps.published.outputs.already-published == 'false'
+                run: |
+                    yarn run build
+                    yarn test
+
+            -   name: Publish on npm
+                if: steps.published.outputs.already-published == 'false'
+                # `generated/` is committed and `build` just ran: skip `prepublishOnly` so what is published
+                # is exactly what was reviewed.
+                run: npm publish --access public --ignore-scripts
