@@ -31,7 +31,11 @@ When run by hand without arguments, follow the **Running locally** section first
 
 - **Edit only inside `cardinal-mcp-server/`**, plus the file at `PR_BODY_PATH`. Anything else is discarded by the
   workflow and fails verification.
-- **Never edit `generated/` by hand.** Fix the generator scripts and rerun `yarn run generate`.
+- **Never edit `generated/` by hand.** `docs-manifest.json` and `method-registry.ts` are outputs of
+  `yarn run generate`. When something is wrong or missing in them, change what produces them: the allow-lists in
+  `scripts/generate-registry.ts` when an API is missing, the parsers in `scripts/extract-docs.ts` or
+  `scripts/generate-registry.ts` when a `.d.mts` shape is not understood, or `SDK.md` for documentation content. Then
+  rerun `yarn run generate`. Most of the time the output moves because the SDK changed and no script needs to change.
 - **Do not run `git commit`, `git push`, `gh`, `yarn add`, `yarn remove` or `yarn install`.** The workflow commits
   and opens the PR. Dependencies do not change during a sync; if one must, say so in the PR body and stop.
 - **Do not change `version` or `dependencies["@icure/cardinal-sdk"]` in `package.json`**, nor `.yarnrc.yml`,
