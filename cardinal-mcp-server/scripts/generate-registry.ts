@@ -32,7 +32,7 @@ interface ApiInfo {
 const ENCRYPTABLE_ENTITIES = new Set([
 	"AccessLog", "CalendarItem", "Contact", "Document",
 	"Form", "HealthElement", "Invoice", "MaintenanceTask", "Message",
-	"Patient", "Receipt", "Topic",
+	"Patient", "Receipt", "RelatedPerson", "Topic",
 ]);
 
 /**
@@ -51,7 +51,7 @@ const ALLOWED_APIS = new Set([
 	// Encryptable entity APIs (used via dispatch)
 	"AccessLog", "Agenda", "CalendarItem", "Code", "Contact",
 	"Document", "Form", "HealthElement", "Insurance", "Invoice",
-	"MaintenanceTask", "Message", "Receipt", "Topic",
+	"MaintenanceTask", "Message", "Receipt", "RelatedPerson", "Topic",
 ]);
 
 // Map from API name prefix to SDK property name
@@ -84,6 +84,7 @@ function toPropertyName(entityName: string): string {
 		"Place": "place",
 		"Receipt": "receipt",
 		"Recovery": "recovery",
+		"RelatedPerson": "relatedPerson",
 		"Role": "role",
 		"System": "system",
 		"Topic": "topic",

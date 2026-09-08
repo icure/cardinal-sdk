@@ -30,6 +30,19 @@ describe("api-docs resource", () => {
 			expect(md).toContain(method);
 		}
 	});
+
+	it("documents the RelatedPerson API, the encryptable entity api added in SDK 2.12.0", async () => {
+		const md = await readText(client, "cardinal://docs/api/RelatedPerson");
+		expect(md).toContain("# RelatedPersonApi");
+		for (const method of [
+			"createRelatedPerson",
+			"withEncryptionMetadata",
+			"filterRelatedPersonsBy",
+			"shareWith",
+		]) {
+			expect(md).toContain(method);
+		}
+	});
 });
 
 describe("model-docs resource", () => {

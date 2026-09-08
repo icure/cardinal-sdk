@@ -740,6 +740,79 @@ export const METHOD_REGISTRY: Record<string, ApiInfo> = {
 				"returnType": "Promise<Array<string>>"
 			},
 			{
+				"name": "getCalendarItemsOccupancyByPeriodForSelf",
+				"params": [
+					{
+						"name": "startDate",
+						"type": "number",
+						"optional": false
+					},
+					{
+						"name": "endDate",
+						"type": "number",
+						"optional": false
+					},
+					{
+						"name": "extensionInDays",
+						"type": "number | undefined",
+						"optional": false
+					}
+				],
+				"returnType": "Promise<Array<CalendarItemOccupancy>>"
+			},
+			{
+				"name": "getCalendarItemsOccupancyByPeriodForHealthcareParty",
+				"params": [
+					{
+						"name": "startDate",
+						"type": "number",
+						"optional": false
+					},
+					{
+						"name": "endDate",
+						"type": "number",
+						"optional": false
+					},
+					{
+						"name": "hcPartyId",
+						"type": "string",
+						"optional": false
+					},
+					{
+						"name": "extensionInDays",
+						"type": "number | undefined",
+						"optional": false
+					}
+				],
+				"returnType": "Promise<Array<CalendarItemOccupancy>>"
+			},
+			{
+				"name": "getCalendarItemsOccupancyByPeriodAndAgendaId",
+				"params": [
+					{
+						"name": "startDate",
+						"type": "number",
+						"optional": false
+					},
+					{
+						"name": "endDate",
+						"type": "number",
+						"optional": false
+					},
+					{
+						"name": "agendaId",
+						"type": "string",
+						"optional": false
+					},
+					{
+						"name": "extensionInDays",
+						"type": "number | undefined",
+						"optional": false
+					}
+				],
+				"returnType": "Promise<Array<CalendarItemOccupancy>>"
+			},
+			{
 				"name": "deleteCalendarItemById",
 				"params": [
 					{
@@ -5051,6 +5124,50 @@ export const METHOD_REGISTRY: Record<string, ApiInfo> = {
 					}
 				],
 				"returnType": "Promise<Array<Insurance>>"
+			},
+			{
+				"name": "matchInsurancesBy",
+				"params": [
+					{
+						"name": "filter",
+						"type": "BaseFilterOptions<Insurance>",
+						"optional": false
+					}
+				],
+				"returnType": "Promise<Array<string>>"
+			},
+			{
+				"name": "filterInsurancesBy",
+				"params": [
+					{
+						"name": "filter",
+						"type": "BaseFilterOptions<Insurance>",
+						"optional": false
+					}
+				],
+				"returnType": "Promise<PaginatedListIterator<Insurance>>"
+			},
+			{
+				"name": "matchInsurancesBySorted",
+				"params": [
+					{
+						"name": "filter",
+						"type": "BaseSortableFilterOptions<Insurance>",
+						"optional": false
+					}
+				],
+				"returnType": "Promise<Array<string>>"
+			},
+			{
+				"name": "filterInsurancesBySorted",
+				"params": [
+					{
+						"name": "filter",
+						"type": "BaseSortableFilterOptions<Insurance>",
+						"optional": false
+					}
+				],
+				"returnType": "Promise<PaginatedListIterator<Insurance>>"
 			}
 		]
 	},
@@ -7233,6 +7350,352 @@ export const METHOD_REGISTRY: Record<string, ApiInfo> = {
 			}
 		]
 	},
+	"RelatedPerson": {
+		"apiName": "RelatedPersonApi",
+		"propertyName": "relatedPerson",
+		"isEncryptable": true,
+		"methods": [
+			{
+				"name": "getEncryptionKeysOf",
+				"params": [
+					{
+						"name": "relatedPerson",
+						"type": "RelatedPerson",
+						"optional": false
+					}
+				],
+				"returnType": "Promise<Array<HexString>>"
+			},
+			{
+				"name": "hasWriteAccess",
+				"params": [
+					{
+						"name": "relatedPerson",
+						"type": "RelatedPerson",
+						"optional": false
+					}
+				],
+				"returnType": "Promise<boolean>"
+			},
+			{
+				"name": "getSecretIdsOf",
+				"params": [
+					{
+						"name": "relatedPerson",
+						"type": "RelatedPerson",
+						"optional": false
+					}
+				],
+				"returnType": "Promise<Array<string>>"
+			},
+			{
+				"name": "createDelegationDeAnonymizationMetadata",
+				"params": [
+					{
+						"name": "entity",
+						"type": "RelatedPerson",
+						"optional": false
+					},
+					{
+						"name": "delegates",
+						"type": "Array<string>",
+						"optional": false
+					}
+				],
+				"returnType": "Promise<void>"
+			},
+			{
+				"name": "decrypt",
+				"params": [
+					{
+						"name": "relatedPersons",
+						"type": "Array<EncryptedRelatedPerson>",
+						"optional": false
+					}
+				],
+				"returnType": "Promise<Array<DecryptedRelatedPerson>>"
+			},
+			{
+				"name": "tryDecrypt",
+				"params": [
+					{
+						"name": "relatedPersons",
+						"type": "Array<EncryptedRelatedPerson>",
+						"optional": false
+					}
+				],
+				"returnType": "Promise<Array<RelatedPerson>>"
+			},
+			{
+				"name": "encryptOrValidate",
+				"params": [
+					{
+						"name": "relatedPersons",
+						"type": "Array<RelatedPerson>",
+						"optional": false
+					}
+				],
+				"returnType": "Promise<Array<EncryptedRelatedPerson>>"
+			},
+			{
+				"name": "matchRelatedPersonsBy",
+				"params": [
+					{
+						"name": "filter",
+						"type": "FilterOptions<RelatedPerson>",
+						"optional": false
+					}
+				],
+				"returnType": "Promise<Array<string>>"
+			},
+			{
+				"name": "matchRelatedPersonsBySorted",
+				"params": [
+					{
+						"name": "filter",
+						"type": "SortableFilterOptions<RelatedPerson>",
+						"optional": false
+					}
+				],
+				"returnType": "Promise<Array<string>>"
+			},
+			{
+				"name": "deleteRelatedPersonById",
+				"params": [
+					{
+						"name": "entityId",
+						"type": "string",
+						"optional": false
+					},
+					{
+						"name": "rev",
+						"type": "string",
+						"optional": false
+					}
+				],
+				"returnType": "Promise<StoredDocumentIdentifier>"
+			},
+			{
+				"name": "deleteRelatedPersonsByIds",
+				"params": [
+					{
+						"name": "entityIds",
+						"type": "Array<StoredDocumentIdentifier>",
+						"optional": false
+					}
+				],
+				"returnType": "Promise<Array<StoredDocumentIdentifier>>"
+			},
+			{
+				"name": "purgeRelatedPersonById",
+				"params": [
+					{
+						"name": "id",
+						"type": "string",
+						"optional": false
+					},
+					{
+						"name": "rev",
+						"type": "string",
+						"optional": false
+					}
+				],
+				"returnType": "Promise<void>"
+			},
+			{
+				"name": "purgeRelatedPersonsByIds",
+				"params": [
+					{
+						"name": "entityIds",
+						"type": "Array<StoredDocumentIdentifier>",
+						"optional": false
+					}
+				],
+				"returnType": "Promise<Array<StoredDocumentIdentifier>>"
+			},
+			{
+				"name": "deleteRelatedPerson",
+				"params": [
+					{
+						"name": "relatedPerson",
+						"type": "RelatedPerson",
+						"optional": false
+					}
+				],
+				"returnType": "Promise<StoredDocumentIdentifier>"
+			},
+			{
+				"name": "deleteRelatedPersons",
+				"params": [
+					{
+						"name": "relatedPersons",
+						"type": "Array<RelatedPerson>",
+						"optional": false
+					}
+				],
+				"returnType": "Promise<Array<StoredDocumentIdentifier>>"
+			},
+			{
+				"name": "purgeRelatedPerson",
+				"params": [
+					{
+						"name": "relatedPerson",
+						"type": "RelatedPerson",
+						"optional": false
+					}
+				],
+				"returnType": "Promise<void>"
+			},
+			{
+				"name": "purgeRelatedPersons",
+				"params": [
+					{
+						"name": "relatedPersons",
+						"type": "Array<RelatedPerson>",
+						"optional": false
+					}
+				],
+				"returnType": "Promise<Array<StoredDocumentIdentifier>>"
+			},
+			{
+				"name": "filterRelatedPersonsBy",
+				"params": [
+					{
+						"name": "filter",
+						"type": "FilterOptions<RelatedPerson>",
+						"optional": false
+					}
+				],
+				"returnType": "Promise<PaginatedListIterator<DecryptedRelatedPerson>>"
+			},
+			{
+				"name": "filterRelatedPersonsBySorted",
+				"params": [
+					{
+						"name": "filter",
+						"type": "SortableFilterOptions<RelatedPerson>",
+						"optional": false
+					}
+				],
+				"returnType": "Promise<PaginatedListIterator<DecryptedRelatedPerson>>"
+			},
+			{
+				"name": "createRelatedPerson",
+				"params": [
+					{
+						"name": "entity",
+						"type": "DecryptedRelatedPerson",
+						"optional": false
+					}
+				],
+				"returnType": "Promise<DecryptedRelatedPerson>"
+			},
+			{
+				"name": "createRelatedPersons",
+				"params": [
+					{
+						"name": "entities",
+						"type": "Array<DecryptedRelatedPerson>",
+						"optional": false
+					}
+				],
+				"returnType": "Promise<Array<DecryptedRelatedPerson>>"
+			},
+			{
+				"name": "undeleteRelatedPersonById",
+				"params": [
+					{
+						"name": "id",
+						"type": "string",
+						"optional": false
+					},
+					{
+						"name": "rev",
+						"type": "string",
+						"optional": false
+					}
+				],
+				"returnType": "Promise<DecryptedRelatedPerson>"
+			},
+			{
+				"name": "undeleteRelatedPersonsByIds",
+				"params": [
+					{
+						"name": "entityIds",
+						"type": "Array<StoredDocumentIdentifier>",
+						"optional": false
+					}
+				],
+				"returnType": "Promise<Array<DecryptedRelatedPerson>>"
+			},
+			{
+				"name": "undeleteRelatedPerson",
+				"params": [
+					{
+						"name": "relatedPerson",
+						"type": "RelatedPerson",
+						"optional": false
+					}
+				],
+				"returnType": "Promise<DecryptedRelatedPerson>"
+			},
+			{
+				"name": "undeleteRelatedPersons",
+				"params": [
+					{
+						"name": "relatedPersons",
+						"type": "Array<RelatedPerson>",
+						"optional": false
+					}
+				],
+				"returnType": "Promise<Array<DecryptedRelatedPerson>>"
+			},
+			{
+				"name": "modifyRelatedPerson",
+				"params": [
+					{
+						"name": "entity",
+						"type": "DecryptedRelatedPerson",
+						"optional": false
+					}
+				],
+				"returnType": "Promise<DecryptedRelatedPerson>"
+			},
+			{
+				"name": "modifyRelatedPersons",
+				"params": [
+					{
+						"name": "entities",
+						"type": "Array<DecryptedRelatedPerson>",
+						"optional": false
+					}
+				],
+				"returnType": "Promise<Array<DecryptedRelatedPerson>>"
+			},
+			{
+				"name": "getRelatedPerson",
+				"params": [
+					{
+						"name": "entityId",
+						"type": "string",
+						"optional": false
+					}
+				],
+				"returnType": "Promise<DecryptedRelatedPerson | undefined>"
+			},
+			{
+				"name": "getRelatedPersons",
+				"params": [
+					{
+						"name": "entityIds",
+						"type": "Array<string>",
+						"optional": false
+					}
+				],
+				"returnType": "Promise<Array<DecryptedRelatedPerson>>"
+			}
+		]
+	},
 	"Role": {
 		"apiName": "RoleApi",
 		"propertyName": "role",
@@ -8078,6 +8541,22 @@ export const METHOD_REGISTRY: Record<string, ApiInfo> = {
 					},
 					{
 						"name": "newMobilePhone",
+						"type": "string",
+						"optional": false
+					},
+					{
+						"name": "previousMobilePhone",
+						"type": "string | undefined",
+						"optional": false
+					}
+				],
+				"returnType": "Promise<User>"
+			},
+			{
+				"name": "removeUserMobilePhone",
+				"params": [
+					{
+						"name": "userId",
 						"type": "string",
 						"optional": false
 					},

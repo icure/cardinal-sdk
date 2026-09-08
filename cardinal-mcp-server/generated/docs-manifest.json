@@ -14,10 +14,22 @@
               "type": "DecryptedAccessLog | undefined",
               "description": "",
               "optional": false
-            },
+            }
+          ],
+          "returnType": "DecryptedAccessLog",
+          "flavours": [
+            "decrypted",
+            "encrypted",
+            "tryAndRecover"
+          ]
+        },
+        {
+          "name": "withEncryptionMetadataAndDelegates",
+          "description": "In-group version of [AccessLogApi.withEncryptionMetadataAndDelegates]",
+          "params": [
             {
-              "name": "patient",
-              "type": "Patient",
+              "name": "base",
+              "type": "DecryptedAccessLog | undefined",
               "description": "",
               "optional": false
             }
@@ -1042,6 +1054,30 @@
           ]
         },
         {
+          "name": "withEncryptionMetadataAndDelegates",
+          "description": "In-group version of [CalendarItemApi.withEncryptionMetadataAndDelegates]",
+          "params": [
+            {
+              "name": "base",
+              "type": "DecryptedCalendarItem | undefined",
+              "description": "",
+              "optional": false
+            },
+            {
+              "name": "patient",
+              "type": "Patient | undefined",
+              "description": "",
+              "optional": false
+            }
+          ],
+          "returnType": "DecryptedCalendarItem",
+          "flavours": [
+            "decrypted",
+            "encrypted",
+            "tryAndRecover"
+          ]
+        },
+        {
           "name": "getEncryptionKeysOf",
           "description": "In-group version of [CalendarItemApi.getEncryptionKeysOf]",
           "params": [
@@ -1203,6 +1239,108 @@
             }
           ],
           "returnType": "Array<string",
+          "flavours": [
+            "decrypted",
+            "encrypted",
+            "tryAndRecover"
+          ]
+        },
+        {
+          "name": "getCalendarItemsOccupancyByPeriodForSelf",
+          "description": "In-group version of [getCalendarItemsOccupancyByPeriodForSelf].",
+          "params": [
+            {
+              "name": "startDate",
+              "type": "number",
+              "description": "",
+              "optional": false
+            },
+            {
+              "name": "endDate",
+              "type": "number",
+              "description": "",
+              "optional": false
+            },
+            {
+              "name": "extensionInDays",
+              "type": "number | undefined",
+              "description": "",
+              "optional": false
+            }
+          ],
+          "returnType": "Array<CalendarItemOccupancy",
+          "flavours": [
+            "decrypted",
+            "encrypted",
+            "tryAndRecover"
+          ]
+        },
+        {
+          "name": "getCalendarItemsOccupancyByPeriodForHealthcareParty",
+          "description": "In-group version of [getCalendarItemsOccupancyByPeriodForHealthcareParty].",
+          "params": [
+            {
+              "name": "startDate",
+              "type": "number",
+              "description": "",
+              "optional": false
+            },
+            {
+              "name": "endDate",
+              "type": "number",
+              "description": "",
+              "optional": false
+            },
+            {
+              "name": "hcPartyId",
+              "type": "string",
+              "description": "",
+              "optional": false
+            },
+            {
+              "name": "extensionInDays",
+              "type": "number | undefined",
+              "description": "",
+              "optional": false
+            }
+          ],
+          "returnType": "Array<CalendarItemOccupancy",
+          "flavours": [
+            "decrypted",
+            "encrypted",
+            "tryAndRecover"
+          ]
+        },
+        {
+          "name": "getCalendarItemsOccupancyByPeriodAndAgendaId",
+          "description": "In-group version of [getCalendarItemsOccupancyByPeriodAndAgendaId].",
+          "params": [
+            {
+              "name": "startDate",
+              "type": "number",
+              "description": "",
+              "optional": false
+            },
+            {
+              "name": "endDate",
+              "type": "number",
+              "description": "",
+              "optional": false
+            },
+            {
+              "name": "agendaId",
+              "type": "string",
+              "description": "",
+              "optional": false
+            },
+            {
+              "name": "extensionInDays",
+              "type": "number | undefined",
+              "description": "",
+              "optional": false
+            }
+          ],
+          "returnType": "Array<CalendarItemOccupancy",
           "flavours": [
             "decrypted",
             "encrypted",
@@ -2684,6 +2822,30 @@
           ]
         },
         {
+          "name": "withEncryptionMetadataAndDelegates",
+          "description": "In-group version of [ContactApi.withEncryptionMetadataAndDelegates]",
+          "params": [
+            {
+              "name": "base",
+              "type": "DecryptedContact | undefined",
+              "description": "",
+              "optional": false
+            },
+            {
+              "name": "patient",
+              "type": "Patient",
+              "description": "",
+              "optional": false
+            }
+          ],
+          "returnType": "DecryptedContact",
+          "flavours": [
+            "decrypted",
+            "encrypted",
+            "tryAndRecover"
+          ]
+        },
+        {
           "name": "getEncryptionKeysOf",
           "description": "In-group version of [ContactApi.getEncryptionKeysOf]",
           "params": [
@@ -4105,6 +4267,30 @@
           ]
         },
         {
+          "name": "withEncryptionMetadataAndDelegatesLinkedToMessage",
+          "description": "In-group version of [DocumentApi.withEncryptionMetadataAndDelegatesLinkedToMessage]",
+          "params": [
+            {
+              "name": "base",
+              "type": "DecryptedDocument | undefined",
+              "description": "",
+              "optional": false
+            },
+            {
+              "name": "message",
+              "type": "Message",
+              "description": "",
+              "optional": false
+            }
+          ],
+          "returnType": "DecryptedDocument",
+          "flavours": [
+            "decrypted",
+            "encrypted",
+            "tryAndRecover"
+          ]
+        },
+        {
           "name": "withEncryptionMetadataLinkedToPatient",
           "description": "In-group version of [DocumentApi.withEncryptionMetadataLinkedToPatient]",
           "params": [
@@ -4129,8 +4315,50 @@
           ]
         },
         {
+          "name": "withEncryptionMetadataAndDelegatesLinkedToPatient",
+          "description": "In-group version of [DocumentApi.withEncryptionMetadataAndDelegatesLinkedToPatient]",
+          "params": [
+            {
+              "name": "base",
+              "type": "DecryptedDocument | undefined",
+              "description": "",
+              "optional": false
+            },
+            {
+              "name": "patient",
+              "type": "Patient",
+              "description": "",
+              "optional": false
+            }
+          ],
+          "returnType": "DecryptedDocument",
+          "flavours": [
+            "decrypted",
+            "encrypted",
+            "tryAndRecover"
+          ]
+        },
+        {
           "name": "withEncryptionMetadataUnlinked",
           "description": "In-group version of [DocumentApi.withEncryptionMetadataUnlinked]",
+          "params": [
+            {
+              "name": "base",
+              "type": "DecryptedDocument | undefined",
+              "description": "",
+              "optional": false
+            }
+          ],
+          "returnType": "DecryptedDocument",
+          "flavours": [
+            "decrypted",
+            "encrypted",
+            "tryAndRecover"
+          ]
+        },
+        {
+          "name": "withEncryptionMetadataAndDelegatesUnlinked",
+          "description": "In-group version of [DocumentApi.withEncryptionMetadataAndDelegatesUnlinked]",
           "params": [
             {
               "name": "base",
@@ -5000,6 +5228,30 @@
         {
           "name": "withEncryptionMetadata",
           "description": "Give access to the encrypted flavour of the api / val encrypted: FormFlavouredInGroupApi<EncryptedForm>  /** Gives access to the polymorphic flavour of the api / val tryAndRecover: FormFlavouredInGroupApi<Form>  /** In-group version of [FormApi.withEncryptionMetadata]",
+          "params": [
+            {
+              "name": "base",
+              "type": "DecryptedForm | undefined",
+              "description": "",
+              "optional": false
+            },
+            {
+              "name": "patient",
+              "type": "Patient",
+              "description": "",
+              "optional": false
+            }
+          ],
+          "returnType": "DecryptedForm",
+          "flavours": [
+            "decrypted",
+            "encrypted",
+            "tryAndRecover"
+          ]
+        },
+        {
+          "name": "withEncryptionMetadataAndDelegates",
+          "description": "In-group version of [FormApi.withEncryptionMetadataAndDelegates]",
           "params": [
             {
               "name": "base",
@@ -7048,6 +7300,30 @@
           ]
         },
         {
+          "name": "withEncryptionMetadataAndDelegates",
+          "description": "In-group version of [HealthElementApi.withEncryptionMetadataAndDelegates]",
+          "params": [
+            {
+              "name": "base",
+              "type": "DecryptedHealthElement | undefined",
+              "description": "",
+              "optional": false
+            },
+            {
+              "name": "patient",
+              "type": "Patient",
+              "description": "",
+              "optional": false
+            }
+          ],
+          "returnType": "DecryptedHealthElement",
+          "flavours": [
+            "decrypted",
+            "encrypted",
+            "tryAndRecover"
+          ]
+        },
+        {
           "name": "getEncryptionKeysOf",
           "description": "In-group version of [HealthElementApi.getEncryptionKeysOf]",
           "params": [
@@ -8467,6 +8743,70 @@
           "flavours": [
             "none"
           ]
+        },
+        {
+          "name": "matchInsurancesBy",
+          "description": "",
+          "params": [
+            {
+              "name": "filter",
+              "type": "BaseFilterOptions<Insurance>",
+              "description": "",
+              "optional": false
+            }
+          ],
+          "returnType": "Array<string",
+          "flavours": [
+            "none"
+          ]
+        },
+        {
+          "name": "filterInsurancesBy",
+          "description": "",
+          "params": [
+            {
+              "name": "filter",
+              "type": "BaseFilterOptions<Insurance>",
+              "description": "",
+              "optional": false
+            }
+          ],
+          "returnType": "PaginatedListIterator<Insurance",
+          "flavours": [
+            "none"
+          ]
+        },
+        {
+          "name": "matchInsurancesBySorted",
+          "description": "",
+          "params": [
+            {
+              "name": "filter",
+              "type": "BaseSortableFilterOptions<Insurance>",
+              "description": "",
+              "optional": false
+            }
+          ],
+          "returnType": "Array<string",
+          "flavours": [
+            "none"
+          ]
+        },
+        {
+          "name": "filterInsurancesBySorted",
+          "description": "",
+          "params": [
+            {
+              "name": "filter",
+              "type": "BaseSortableFilterOptions<Insurance>",
+              "description": "",
+              "optional": false
+            }
+          ],
+          "returnType": "PaginatedListIterator<Insurance",
+          "flavours": [
+            "none"
+          ]
         }
       ]
     },
@@ -8478,6 +8818,30 @@
         {
           "name": "withEncryptionMetadata",
           "description": "Give access to the encrypted flavour of the api / val encrypted: InvoiceFlavouredApi<EncryptedInvoice>  /** Gives access to the polymorphic flavour of the api / val tryAndRecover: InvoiceFlavouredApi<Invoice>  /** Gives access to methods of the api that allow to use entities or work with data owners in groups other than the current user's group. These methods aren't available when connected to a kraken-lite instance. / val inGroup: InvoiceInGroupApi }  interface InvoiceInGroupApi : InvoiceBasicFlavourlessInGroupApi, InvoiceFlavouredInGroupApi<DecryptedInvoice> { // TODO subscribable /** Give access to the encrypted flavour of the api / val encrypted: InvoiceFlavouredInGroupApi<EncryptedInvoice>  /** Gives access to the polymorphic flavour of the api / val tryAndRecover: InvoiceFlavouredInGroupApi<Invoice>  /** In-group version of [InvoiceApi.withEncryptionMetadata]",
+          "params": [
+            {
+              "name": "base",
+              "type": "DecryptedInvoice | undefined",
+              "description": "",
+              "optional": false
+            },
+            {
+              "name": "patient",
+              "type": "Patient | undefined",
+              "description": "",
+              "optional": false
+            }
+          ],
+          "returnType": "DecryptedInvoice",
+          "flavours": [
+            "decrypted",
+            "encrypted",
+            "tryAndRecover"
+          ]
+        },
+        {
+          "name": "withEncryptionMetadataAndDelegates",
+          "description": "In-group version of [InvoiceApi.withEncryptionMetadataAndDelegates]",
           "params": [
             {
               "name": "base",
@@ -8771,7 +9135,7 @@
         },
         {
           "name": "getTarificationsCodesOccurrences",
-          "description": "Gives an approximation of the amount of times each tarification code ([Invoice.invoicingCodes] -> [InvoicingCode.tarificationId]) is used in invoices where the current data owner is a direct delegate (does not count situations where the data owner has access to the service through delegations to a parent data owner). This number is not exact, and may be cached, so you should not use this method if you need precise values, but it can be useful if you want to give suggestions. Only codes that occur at least [minOccurrence] times will be used.",
+          "description": "Gives an approximation of the amount of times each tarification code ([Invoice.invoicingCodes] -> [InvoicingCode.pricingId]) is used in invoices where the current data owner is a direct delegate (does not count situations where the data owner has access to the service through delegations to a parent data owner). This number is not exact, and may be cached, so you should not use this method if you need precise values, but it can be useful if you want to give suggestions. Only codes that occur at least [minOccurrence] times will be used.",
           "params": [
             {
               "name": "minOccurrence",
@@ -10080,6 +10444,30 @@
           ]
         },
         {
+          "name": "withEncryptionMetadataAndDelegates",
+          "description": "In-group version of [MessageApi.withEncryptionMetadataAndDelegates]",
+          "params": [
+            {
+              "name": "base",
+              "type": "DecryptedMessage | undefined",
+              "description": "",
+              "optional": false
+            },
+            {
+              "name": "patient",
+              "type": "Patient | undefined",
+              "description": "",
+              "optional": false
+            }
+          ],
+          "returnType": "DecryptedMessage",
+          "flavours": [
+            "decrypted",
+            "encrypted",
+            "tryAndRecover"
+          ]
+        },
+        {
           "name": "getEncryptionKeysOf",
           "description": "In-group version of [MessageApi.getEncryptionKeysOf]",
           "params": [
@@ -10885,6 +11273,24 @@
           ]
         },
         {
+          "name": "withEncryptionMetadataAndDelegates",
+          "description": "In-group version of [PatientApi.withEncryptionMetadataAndDelegates]",
+          "params": [
+            {
+              "name": "base",
+              "type": "DecryptedPatient | undefined",
+              "description": "",
+              "optional": false
+            }
+          ],
+          "returnType": "DecryptedPatient",
+          "flavours": [
+            "decrypted",
+            "encrypted",
+            "tryAndRecover"
+          ]
+        },
+        {
           "name": "hasWriteAccess",
           "description": "In-group version of [PatientApi.hasWriteAccess]",
           "params": [
@@ -11619,6 +12025,30 @@
           ]
         },
         {
+          "name": "withEncryptionMetadataAndDelegates",
+          "description": "In-group version of [ReceiptApi.withEncryptionMetadataAndDelegates]",
+          "params": [
+            {
+              "name": "base",
+              "type": "DecryptedReceipt | undefined",
+              "description": "",
+              "optional": false
+            },
+            {
+              "name": "patient",
+              "type": "Patient | undefined",
+              "description": "",
+              "optional": false
+            }
+          ],
+          "returnType": "DecryptedReceipt",
+          "flavours": [
+            "decrypted",
+            "encrypted",
+            "tryAndRecover"
+          ]
+        },
+        {
           "name": "getAndDecryptReceiptAttachment",
           "description": "",
           "params": [
@@ -11986,7 +12416,7 @@
         },
         {
           "name": "getRawReceiptAttachment",
-          "description": "",
+          "description": "In-group version of [ReceiptBasicFlavourlessApi.getRawReceiptAttachment]",
           "params": [
             {
               "name": "receiptId",
@@ -12289,6 +12719,17 @@
             "encrypted",
             "tryAndRecover"
           ]
+        },
+        {
+          "name": "listReceiptsBetweenDates",
+          "description": "In-group version of [ReceiptBasicFlavouredApi.listReceiptsBetweenDates]",
+          "params": [],
+          "returnType": "Array<DecryptedReceipt",
+          "flavours": [
+            "decrypted",
+            "encrypted",
+            "tryAndRecover"
+          ]
         }
       ]
     },
@@ -12507,6 +12948,661 @@
           "returnType": "RecoveryDataKey",
           "flavours": [
             "none"
+          ]
+        }
+      ]
+    },
+    "RelatedPerson": {
+      "name": "RelatedPersonApi",
+      "description": "API for RelatedPerson operations",
+      "isEncryptable": true,
+      "methods": [
+        {
+          "name": "withEncryptionMetadata",
+          "description": "Give access to the encrypted flavour of the api / val encrypted: RelatedPersonFlavouredInGroupApi<EncryptedRelatedPerson>  /** Gives access to the polymorphic flavour of the api / val tryAndRecover: RelatedPersonFlavouredInGroupApi<RelatedPerson>  /** In-group version of [RelatedPersonApi.withEncryptionMetadata]",
+          "params": [
+            {
+              "name": "base",
+              "type": "DecryptedRelatedPerson | undefined",
+              "description": "",
+              "optional": false
+            }
+          ],
+          "returnType": "DecryptedRelatedPerson",
+          "flavours": [
+            "decrypted",
+            "encrypted",
+            "tryAndRecover"
+          ]
+        },
+        {
+          "name": "withEncryptionMetadataAndDelegates",
+          "description": "In-group version of [RelatedPersonApi.withEncryptionMetadataAndDelegates]",
+          "params": [
+            {
+              "name": "base",
+              "type": "DecryptedRelatedPerson | undefined",
+              "description": "",
+              "optional": false
+            }
+          ],
+          "returnType": "DecryptedRelatedPerson",
+          "flavours": [
+            "decrypted",
+            "encrypted",
+            "tryAndRecover"
+          ]
+        },
+        {
+          "name": "getEncryptionKeysOf",
+          "description": "In-group version of [RelatedPersonApi.getEncryptionKeysOf]",
+          "params": [
+            {
+              "name": "relatedPerson",
+              "type": "RelatedPerson",
+              "description": "",
+              "optional": false
+            }
+          ],
+          "returnType": "Array<HexString",
+          "flavours": [
+            "decrypted",
+            "encrypted",
+            "tryAndRecover"
+          ]
+        },
+        {
+          "name": "hasWriteAccess",
+          "description": "In-group version of [RelatedPersonApi.hasWriteAccess]",
+          "params": [
+            {
+              "name": "relatedPerson",
+              "type": "RelatedPerson",
+              "description": "",
+              "optional": false
+            }
+          ],
+          "returnType": "boolean",
+          "flavours": [
+            "decrypted",
+            "encrypted",
+            "tryAndRecover"
+          ]
+        },
+        {
+          "name": "getSecretIdsOf",
+          "description": "In-group version of [RelatedPersonApi.getSecretIdsOf]",
+          "params": [
+            {
+              "name": "relatedPerson",
+              "type": "RelatedPerson",
+              "description": "",
+              "optional": false
+            }
+          ],
+          "returnType": "Array<string",
+          "flavours": [
+            "decrypted",
+            "encrypted",
+            "tryAndRecover"
+          ]
+        },
+        {
+          "name": "createDelegationDeAnonymizationMetadata",
+          "description": "In-group version of [RelatedPersonApi.createDelegationDeAnonymizationMetadata]",
+          "params": [
+            {
+              "name": "entity",
+              "type": "RelatedPerson",
+              "description": "",
+              "optional": false
+            },
+            {
+              "name": "delegates",
+              "type": "Array<string>",
+              "description": "",
+              "optional": false
+            }
+          ],
+          "returnType": "void",
+          "flavours": [
+            "decrypted",
+            "encrypted",
+            "tryAndRecover"
+          ]
+        },
+        {
+          "name": "decrypt",
+          "description": "In-group version of [RelatedPersonApi.decrypt]",
+          "params": [
+            {
+              "name": "relatedPersons",
+              "type": "Array<EncryptedRelatedPerson>",
+              "description": "",
+              "optional": false
+            }
+          ],
+          "returnType": "Array<DecryptedRelatedPerson",
+          "flavours": [
+            "decrypted",
+            "encrypted",
+            "tryAndRecover"
+          ]
+        },
+        {
+          "name": "tryDecrypt",
+          "description": "In-group version of [RelatedPersonApi.tryDecrypt]",
+          "params": [
+            {
+              "name": "relatedPersons",
+              "type": "Array<EncryptedRelatedPerson>",
+              "description": "",
+              "optional": false
+            }
+          ],
+          "returnType": "Array<RelatedPerson",
+          "flavours": [
+            "decrypted",
+            "encrypted",
+            "tryAndRecover"
+          ]
+        },
+        {
+          "name": "encryptOrValidate",
+          "description": "In-group version of [RelatedPersonApi.encryptOrValidate]",
+          "params": [
+            {
+              "name": "relatedPersons",
+              "type": "Array<RelatedPerson>",
+              "description": "",
+              "optional": false
+            }
+          ],
+          "returnType": "Array<EncryptedRelatedPerson",
+          "flavours": [
+            "decrypted",
+            "encrypted",
+            "tryAndRecover"
+          ]
+        },
+        {
+          "name": "matchRelatedPersonsBy",
+          "description": "In-group version of [RelatedPersonBasicApi.matchRelatedPersonsBy]",
+          "params": [
+            {
+              "name": "filter",
+              "type": "FilterOptions<RelatedPerson>",
+              "description": "",
+              "optional": false
+            }
+          ],
+          "returnType": "Array<string",
+          "flavours": [
+            "decrypted",
+            "encrypted",
+            "tryAndRecover"
+          ]
+        },
+        {
+          "name": "matchRelatedPersonsBySorted",
+          "description": "In-group version of [RelatedPersonBasicApi.matchRelatedPersonsBySorted]",
+          "params": [
+            {
+              "name": "filter",
+              "type": "SortableFilterOptions<RelatedPerson>",
+              "description": "",
+              "optional": false
+            }
+          ],
+          "returnType": "Array<string",
+          "flavours": [
+            "decrypted",
+            "encrypted",
+            "tryAndRecover"
+          ]
+        },
+        {
+          "name": "deleteRelatedPersonById",
+          "description": "In-group version of [RelatedPersonBasicFlavourlessApi.deleteRelatedPersonById]",
+          "params": [
+            {
+              "name": "entityId",
+              "type": "string",
+              "description": "",
+              "optional": false
+            },
+            {
+              "name": "rev",
+              "type": "string",
+              "description": "",
+              "optional": false
+            }
+          ],
+          "returnType": "StoredDocumentIdentifier",
+          "flavours": [
+            "decrypted",
+            "encrypted",
+            "tryAndRecover"
+          ]
+        },
+        {
+          "name": "deleteRelatedPersonsByIds",
+          "description": "In-group version of [RelatedPersonBasicFlavourlessApi.deleteRelatedPersonsByIds]",
+          "params": [
+            {
+              "name": "entityIds",
+              "type": "Array<StoredDocumentIdentifier>",
+              "description": "",
+              "optional": false
+            }
+          ],
+          "returnType": "Array<StoredDocumentIdentifier",
+          "flavours": [
+            "decrypted",
+            "encrypted",
+            "tryAndRecover"
+          ]
+        },
+        {
+          "name": "purgeRelatedPersonById",
+          "description": "In-group version of [RelatedPersonBasicFlavourlessApi.purgeRelatedPersonById]",
+          "params": [
+            {
+              "name": "id",
+              "type": "string",
+              "description": "",
+              "optional": false
+            },
+            {
+              "name": "rev",
+              "type": "string",
+              "description": "",
+              "optional": false
+            }
+          ],
+          "returnType": "void",
+          "flavours": [
+            "decrypted",
+            "encrypted",
+            "tryAndRecover"
+          ]
+        },
+        {
+          "name": "purgeRelatedPersonsByIds",
+          "description": "In-group version of [RelatedPersonBasicFlavourlessApi.purgeRelatedPersonsByIds]",
+          "params": [
+            {
+              "name": "entityIds",
+              "type": "Array<StoredDocumentIdentifier>",
+              "description": "",
+              "optional": false
+            }
+          ],
+          "returnType": "Array<StoredDocumentIdentifier",
+          "flavours": [
+            "decrypted",
+            "encrypted",
+            "tryAndRecover"
+          ]
+        },
+        {
+          "name": "deleteRelatedPerson",
+          "description": "In-group version of [RelatedPersonBasicFlavourlessApi.deleteRelatedPerson]",
+          "params": [
+            {
+              "name": "relatedPerson",
+              "type": "RelatedPerson",
+              "description": "",
+              "optional": false
+            }
+          ],
+          "returnType": "StoredDocumentIdentifier",
+          "flavours": [
+            "decrypted",
+            "encrypted",
+            "tryAndRecover"
+          ]
+        },
+        {
+          "name": "deleteRelatedPersons",
+          "description": "In-group version of [RelatedPersonBasicFlavourlessApi.deleteRelatedPersons]",
+          "params": [
+            {
+              "name": "relatedPersons",
+              "type": "Array<RelatedPerson>",
+              "description": "",
+              "optional": false
+            }
+          ],
+          "returnType": "Array<StoredDocumentIdentifier",
+          "flavours": [
+            "decrypted",
+            "encrypted",
+            "tryAndRecover"
+          ]
+        },
+        {
+          "name": "purgeRelatedPerson",
+          "description": "In-group version of [RelatedPersonBasicFlavourlessApi.purgeRelatedPerson]",
+          "params": [
+            {
+              "name": "relatedPerson",
+              "type": "RelatedPerson",
+              "description": "",
+              "optional": false
+            }
+          ],
+          "returnType": "void",
+          "flavours": [
+            "decrypted",
+            "encrypted",
+            "tryAndRecover"
+          ]
+        },
+        {
+          "name": "purgeRelatedPersons",
+          "description": "In-group version of [RelatedPersonBasicFlavourlessApi.purgeRelatedPersons]",
+          "params": [
+            {
+              "name": "relatedPersons",
+              "type": "Array<RelatedPerson>",
+              "description": "",
+              "optional": false
+            }
+          ],
+          "returnType": "Array<StoredDocumentIdentifier",
+          "flavours": [
+            "decrypted",
+            "encrypted",
+            "tryAndRecover"
+          ]
+        },
+        {
+          "name": "shareWith",
+          "description": "In-group version of [RelatedPersonFlavouredApi.shareWith]",
+          "params": [
+            {
+              "name": "delegateId",
+              "type": "string",
+              "description": "",
+              "optional": false
+            },
+            {
+              "name": "relatedPerson",
+              "type": "DecryptedRelatedPerson",
+              "description": "",
+              "optional": false
+            }
+          ],
+          "returnType": "DecryptedRelatedPerson",
+          "flavours": [
+            "decrypted",
+            "encrypted",
+            "tryAndRecover"
+          ]
+        },
+        {
+          "name": "shareWithMany",
+          "description": "In-group version of [RelatedPersonFlavouredApi.shareWithMany]",
+          "params": [
+            {
+              "name": "relatedPerson",
+              "type": "DecryptedRelatedPerson",
+              "description": "",
+              "optional": false
+            }
+          ],
+          "returnType": "DecryptedRelatedPerson",
+          "flavours": [
+            "decrypted",
+            "encrypted",
+            "tryAndRecover"
+          ]
+        },
+        {
+          "name": "filterRelatedPersonsBy",
+          "description": "In-group version of [RelatedPersonBasicApi.filterRelatedPersonsBy]",
+          "params": [
+            {
+              "name": "filter",
+              "type": "FilterOptions<RelatedPerson>",
+              "description": "",
+              "optional": false
+            }
+          ],
+          "returnType": "PaginatedListIterator<DecryptedRelatedPerson",
+          "flavours": [
+            "decrypted",
+            "encrypted",
+            "tryAndRecover"
+          ]
+        },
+        {
+          "name": "filterRelatedPersonsBySorted",
+          "description": "In-group version of [RelatedPersonBasicApi.filterRelatedPersonsBySorted]",
+          "params": [
+            {
+              "name": "filter",
+              "type": "SortableFilterOptions<RelatedPerson>",
+              "description": "",
+              "optional": false
+            }
+          ],
+          "returnType": "PaginatedListIterator<DecryptedRelatedPerson",
+          "flavours": [
+            "decrypted",
+            "encrypted",
+            "tryAndRecover"
+          ]
+        },
+        {
+          "name": "createRelatedPerson",
+          "description": "In-group version of [RelatedPersonBasicFlavouredApi.createRelatedPerson]",
+          "params": [
+            {
+              "name": "entity",
+              "type": "DecryptedRelatedPerson",
+              "description": "",
+              "optional": false
+            }
+          ],
+          "returnType": "DecryptedRelatedPerson",
+          "flavours": [
+            "decrypted",
+            "encrypted",
+            "tryAndRecover"
+          ]
+        },
+        {
+          "name": "createRelatedPersons",
+          "description": "In-group version of [RelatedPersonBasicFlavouredApi.createRelatedPersons]",
+          "params": [
+            {
+              "name": "entities",
+              "type": "Array<DecryptedRelatedPerson>",
+              "description": "",
+              "optional": false
+            }
+          ],
+          "returnType": "Array<DecryptedRelatedPerson",
+          "flavours": [
+            "decrypted",
+            "encrypted",
+            "tryAndRecover"
+          ]
+        },
+        {
+          "name": "undeleteRelatedPersonById",
+          "description": "In-group version of [RelatedPersonBasicFlavouredApi.undeleteRelatedPersonById]",
+          "params": [
+            {
+              "name": "id",
+              "type": "string",
+              "description": "",
+              "optional": false
+            },
+            {
+              "name": "rev",
+              "type": "string",
+              "description": "",
+              "optional": false
+            }
+          ],
+          "returnType": "DecryptedRelatedPerson",
+          "flavours": [
+            "decrypted",
+            "encrypted",
+            "tryAndRecover"
+          ]
+        },
+        {
+          "name": "undeleteRelatedPersonsByIds",
+          "description": "In-group version of [RelatedPersonBasicFlavouredApi.undeleteRelatedPersonsByIds]",
+          "params": [
+            {
+              "name": "entityIds",
+              "type": "Array<StoredDocumentIdentifier>",
+              "description": "",
+              "optional": false
+            }
+          ],
+          "returnType": "Array<DecryptedRelatedPerson",
+          "flavours": [
+            "decrypted",
+            "encrypted",
+            "tryAndRecover"
+          ]
+        },
+        {
+          "name": "undeleteRelatedPerson",
+          "description": "In-group version of [RelatedPersonBasicFlavouredApi.undeleteRelatedPerson]",
+          "params": [
+            {
+              "name": "relatedPerson",
+              "type": "RelatedPerson",
+              "description": "",
+              "optional": false
+            }
+          ],
+          "returnType": "DecryptedRelatedPerson",
+          "flavours": [
+            "decrypted",
+            "encrypted",
+            "tryAndRecover"
+          ]
+        },
+        {
+          "name": "undeleteRelatedPersons",
+          "description": "In-group version of [RelatedPersonBasicFlavouredApi.undeleteRelatedPersons]",
+          "params": [
+            {
+              "name": "relatedPersons",
+              "type": "Array<RelatedPerson>",
+              "description": "",
+              "optional": false
+            }
+          ],
+          "returnType": "Array<DecryptedRelatedPerson",
+          "flavours": [
+            "decrypted",
+            "encrypted",
+            "tryAndRecover"
+          ]
+        },
+        {
+          "name": "modifyRelatedPerson",
+          "description": "In-group version of [RelatedPersonBasicFlavouredApi.modifyRelatedPerson]",
+          "params": [
+            {
+              "name": "entity",
+              "type": "DecryptedRelatedPerson",
+              "description": "",
+              "optional": false
+            }
+          ],
+          "returnType": "DecryptedRelatedPerson",
+          "flavours": [
+            "decrypted",
+            "encrypted",
+            "tryAndRecover"
+          ]
+        },
+        {
+          "name": "modifyRelatedPersons",
+          "description": "In-group version of [RelatedPersonBasicFlavouredApi.modifyRelatedPersons]",
+          "params": [
+            {
+              "name": "entities",
+              "type": "Array<DecryptedRelatedPerson>",
+              "description": "",
+              "optional": false
+            }
+          ],
+          "returnType": "Array<DecryptedRelatedPerson",
+          "flavours": [
+            "decrypted",
+            "encrypted",
+            "tryAndRecover"
+          ]
+        },
+        {
+          "name": "getRelatedPerson",
+          "description": "In-group version of [RelatedPersonBasicFlavouredApi.getRelatedPerson]",
+          "params": [
+            {
+              "name": "entityId",
+              "type": "string",
+              "description": "",
+              "optional": false
+            }
+          ],
+          "returnType": "DecryptedRelatedPerson | undefined",
+          "flavours": [
+            "decrypted",
+            "encrypted",
+            "tryAndRecover"
+          ]
+        },
+        {
+          "name": "getRelatedPersons",
+          "description": "In-group version of [RelatedPersonBasicFlavouredApi.getRelatedPersons]",
+          "params": [
+            {
+              "name": "entityIds",
+              "type": "Array<string>",
+              "description": "",
+              "optional": false
+            }
+          ],
+          "returnType": "Array<DecryptedRelatedPerson",
+          "flavours": [
+            "decrypted",
+            "encrypted",
+            "tryAndRecover"
+          ]
+        },
+        {
+          "name": "subscribeToEvents",
+          "description": "",
+          "params": [
+            {
+              "name": "events",
+              "type": "Array<SubscriptionEventType>",
+              "description": "",
+              "optional": false
+            },
+            {
+              "name": "filter",
+              "type": "FilterOptions<RelatedPerson>",
+              "description": "",
+              "optional": false
+            }
+          ],
+          "returnType": "EntitySubscription<EncryptedRelatedPerson",
+          "flavours": [
+            "decrypted",
+            "encrypted",
+            "tryAndRecover"
           ]
         }
       ]
@@ -12919,6 +14015,30 @@
         {
           "name": "withEncryptionMetadata",
           "description": "In-group version of [TopicApi.withEncryptionMetadata]",
+          "params": [
+            {
+              "name": "base",
+              "type": "DecryptedTopic | undefined",
+              "description": "",
+              "optional": false
+            },
+            {
+              "name": "patient",
+              "type": "Patient | undefined",
+              "description": "",
+              "optional": false
+            }
+          ],
+          "returnType": "DecryptedTopic",
+          "flavours": [
+            "decrypted",
+            "encrypted",
+            "tryAndRecover"
+          ]
+        },
+        {
+          "name": "withEncryptionMetadataAndDelegates",
+          "description": "In-group version of [TopicApi.withEncryptionMetadataAndDelegates]",
           "params": [
             {
               "name": "base",
@@ -14051,6 +15171,28 @@
             },
             {
               "name": "newMobilePhone",
+              "type": "string",
+              "description": "",
+              "optional": false
+            },
+            {
+              "name": "previousMobilePhone",
+              "type": "string | undefined",
+              "description": "",
+              "optional": false
+            }
+          ],
+          "returnType": "User",
+          "flavours": [
+            "none"
+          ]
+        },
+        {
+          "name": "removeUserMobilePhone",
+          "description": "Removes a user mobile phone given its previous value, throwing a [RevisionConflictException] if the provided [previousMobilePhone] does not match the stored value.  This method should be favored over a simple [modifyUser] when changing the MobilePhone as it does not require knowing the revision of the user directly, and can work even if there is a [com.icure.cardinal.sdk.auth.services.SmartAuthProvider] that is modifying the user tokens when performing the request.",
+          "params": [
+            {
+              "name": "userId",
               "type": "string",
               "description": "",
               "optional": false
@@ -15615,7 +16757,7 @@
         },
         {
           "name": "notes",
-          "type": "Array<Annotation>",
+          "type": "Array<DecryptedAnnotation>",
           "description": "A list of textual remarks related to this Contact."
         },
         {
@@ -15776,7 +16918,7 @@
         },
         {
           "name": "notes",
-          "type": "Array<Annotation>",
+          "type": "Array<EncryptedAnnotation>",
           "description": "A list of textual remarks related to this Contact."
         },
         {
@@ -16100,7 +17242,7 @@
         {
           "name": "extraMainAttachmentInfo",
           "type": "Document_.ExtraMainAttachmentInfo | undefined",
-          "description": "Extra Uniform Type Identifiers for the main attachment."
+          "description": ""
         },
         {
           "name": "secondaryAttachments",
@@ -16276,7 +17418,7 @@
         {
           "name": "extraMainAttachmentInfo",
           "type": "Document_.ExtraMainAttachmentInfo | undefined",
-          "description": "Extra Uniform Type Identifiers for the main attachment."
+          "description": ""
         },
         {
           "name": "secondaryAttachments",
@@ -17191,7 +18333,7 @@
         },
         {
           "name": "notes",
-          "type": "Array<Annotation>",
+          "type": "Array<DecryptedAnnotation>",
           "description": "Additional textual notes to include in the HealthElement."
         },
         {
@@ -17233,6 +18375,16 @@
           "name": "careTeam",
           "type": "Array<DecryptedCareTeamMember>",
           "description": "A collection of object that contain information about all the healthcare actor related to the condition of this HealthcareElement."
+        },
+        {
+          "name": "qualifiedLinks",
+          "type": "Array<HealthElementQualifiedLink>",
+          "description": "Directed, qualified links from this HealthElement to other HealthElements. Each `HealthElementQualifiedLink` carries the `healthElementId` of the target, a `type` qualifying the link (a free string; using the names of the `LinkQualification` entries is encouraged but not enforced), and an optional caller-chosen `associationId` that groups related links across entities. Links should be created in a single direction only: the reverse link is found through a view rather than stored twice."
+        },
+        {
+          "name": "asserters",
+          "type": "Array<HealthElementAsserter>",
+          "description": "The parties on whose word this HealthElement is held to be true. This is the asserter concept: it does not say who recorded or authored the HealthElement, it says who vouches for it. A patient may self-report an allergy, a family member may report a condition on behalf of the patient, and a physician may assert a diagnosis, so the same HealthElement may carry more than one asserter. Each `HealthElementAsserter` names its party in exactly one of two ways, and exactly one of the two fields must be set: - `localAsserterIdentifier` for a party stored in this iCure instance. It carries the `id` of the record plus a `type` taken from the `AsserterType` enum (`Patient`, `HealthcareParty` or `RelatedPerson`), which says what kind of record the id points at. - `externalAsserterIdentifier` for a party that has no record here, named through a business `identifier` issued by another system. There is deliberately no type on this branch: the kind of a record that is not stored here is not knowable. An organisation (hospital, practice, care home) is not a distinct asserter type: organisations are stored as healthcare party records, so an organisation asserter is a `localAsserterIdentifier` with `type = AsserterType.HealthcareParty`."
         },
         {
           "name": "secretForeignKeys",
@@ -17372,7 +18524,7 @@
         },
         {
           "name": "notes",
-          "type": "Array<Annotation>",
+          "type": "Array<EncryptedAnnotation>",
           "description": "Additional textual notes to include in the HealthElement."
         },
         {
@@ -17414,6 +18566,16 @@
           "name": "careTeam",
           "type": "Array<EncryptedCareTeamMember>",
           "description": "A collection of object that contain information about all the healthcare actor related to the condition of this HealthcareElement."
+        },
+        {
+          "name": "qualifiedLinks",
+          "type": "Array<HealthElementQualifiedLink>",
+          "description": "Directed, qualified links from this HealthElement to other HealthElements. Each `HealthElementQualifiedLink` carries the `healthElementId` of the target, a `type` qualifying the link (a free string; using the names of the `LinkQualification` entries is encouraged but not enforced), and an optional caller-chosen `associationId` that groups related links across entities. Links should be created in a single direction only: the reverse link is found through a view rather than stored twice."
+        },
+        {
+          "name": "asserters",
+          "type": "Array<HealthElementAsserter>",
+          "description": "The parties on whose word this HealthElement is held to be true. This is the asserter concept: it does not say who recorded or authored the HealthElement, it says who vouches for it. A patient may self-report an allergy, a family member may report a condition on behalf of the patient, and a physician may assert a diagnosis, so the same HealthElement may carry more than one asserter. Each `HealthElementAsserter` names its party in exactly one of two ways, and exactly one of the two fields must be set: - `localAsserterIdentifier` for a party stored in this iCure instance. It carries the `id` of the record plus a `type` taken from the `AsserterType` enum (`Patient`, `HealthcareParty` or `RelatedPerson`), which says what kind of record the id points at. - `externalAsserterIdentifier` for a party that has no record here, named through a business `identifier` issued by another system. There is deliberately no type on this branch: the kind of a record that is not stored here is not knowable. An organisation (hospital, practice, care home) is not a distinct asserter type: organisations are stored as healthcare party records, so an organisation asserter is a `localAsserterIdentifier` with `type = AsserterType.HealthcareParty`."
         },
         {
           "name": "secretForeignKeys",
@@ -17472,7 +18634,8 @@
         "CryptoActor",
         "DataOwner",
         "HasCodes",
-        "HasTags"
+        "HasTags",
+        "HasIdentifier"
       ],
       "fields": [
         {
@@ -17736,7 +18899,10 @@
     "Insurance": {
       "name": "Insurance",
       "implements": [
-        "StoredDocument"
+        "StoredDocument",
+        "HasTags",
+        "HasCodes",
+        "HasIdentifier"
       ],
       "fields": [
         {
@@ -17760,19 +18926,19 @@
           "description": "The name of the insurance in different languages."
         },
         {
-          "name": "privateInsurance",
-          "type": "boolean",
-          "description": "Whether this is a private insurance."
+          "name": "identifier",
+          "type": "Array<Identifier>",
+          "description": "The identifiers of the insurance."
         },
         {
-          "name": "hospitalisationInsurance",
-          "type": "boolean",
-          "description": "Whether this insurance covers hospitalisation."
+          "name": "tags",
+          "type": "Array<CodeStub>",
+          "description": "Tags that qualify the insurance as being member of a certain class."
         },
         {
-          "name": "ambulatoryInsurance",
-          "type": "boolean",
-          "description": "Whether this insurance covers ambulatory care."
+          "name": "codes",
+          "type": "Array<CodeStub>",
+          "description": "Codes that identify or qualify this particular insurance."
         },
         {
           "name": "code",
@@ -19288,7 +20454,7 @@
         },
         {
           "name": "notes",
-          "type": "Array<Annotation>",
+          "type": "Array<DecryptedAnnotation>",
           "description": "Confidential annotations related to the Patient. By default, only the `markdown` field of each note will be encrypted."
         },
         {
@@ -19644,7 +20810,7 @@
         },
         {
           "name": "notes",
-          "type": "Array<Annotation>",
+          "type": "Array<EncryptedAnnotation>",
           "description": "Confidential annotations related to the Patient. By default, only the `markdown` field of each note will be encrypted."
         },
         {
@@ -20354,6 +21520,306 @@
         }
       ]
     },
+    "DecryptedRelatedPerson": {
+      "name": "DecryptedRelatedPerson",
+      "fields": [
+        {
+          "name": "id",
+          "type": "string",
+          "description": "The Id of the related person. We encourage using either a v4 UUID or a HL7 Id."
+        },
+        {
+          "name": "rev",
+          "type": "string | undefined",
+          "description": "The revision of the related person in the database, used for conflict management / optimistic locking."
+        },
+        {
+          "name": "identifier",
+          "type": "Array<Identifier>",
+          "description": "The identifiers of the related person."
+        },
+        {
+          "name": "created",
+          "type": "number | undefined",
+          "description": "The timestamp (unix epoch in ms) of creation."
+        },
+        {
+          "name": "modified",
+          "type": "number | undefined",
+          "description": "The timestamp (unix epoch in ms) of the latest modification."
+        },
+        {
+          "name": "author",
+          "type": "string | undefined",
+          "description": "The id of the User that created this related person."
+        },
+        {
+          "name": "responsible",
+          "type": "string | undefined",
+          "description": "The id of the data owner that is responsible for this related person."
+        },
+        {
+          "name": "tags",
+          "type": "Array<CodeStub>",
+          "description": "Tags that qualify the related person as being member of a certain class."
+        },
+        {
+          "name": "codes",
+          "type": "Array<CodeStub>",
+          "description": "Codes that identify or qualify this particular related person."
+        },
+        {
+          "name": "endOfLife",
+          "type": "number | undefined",
+          "description": "Soft delete (unix epoch in ms) timestamp of the object."
+        },
+        {
+          "name": "deletionDate",
+          "type": "number | undefined",
+          "description": "Hard delete (unix epoch in ms) timestamp of the object."
+        },
+        {
+          "name": "firstName",
+          "type": "string | undefined",
+          "description": "The firstname (name) of the related person."
+        },
+        {
+          "name": "lastName",
+          "type": "string | undefined",
+          "description": "The lastname (surname) of the related person."
+        },
+        {
+          "name": "names",
+          "type": "Array<PersonName>",
+          "description": "The list of all names of the related person, also containing the official full name information."
+        },
+        {
+          "name": "companyName",
+          "type": "string | undefined",
+          "description": "The name of the company this related person is member of."
+        },
+        {
+          "name": "languages",
+          "type": "Array<string>",
+          "description": "The list of languages spoken by the related person, in ISO 639-2 alpha-2 code."
+        },
+        {
+          "name": "addresses",
+          "type": "Array<DecryptedAddress>",
+          "description": "The addresses and telecoms of the related person."
+        },
+        {
+          "name": "civility",
+          "type": "string | undefined",
+          "description": "Mr., Ms., Pr., Dr. ..."
+        },
+        {
+          "name": "gender",
+          "type": "Gender | undefined",
+          "description": "The gender of the related person."
+        },
+        {
+          "name": "properties",
+          "type": "Array<DecryptedPropertyStub>",
+          "description": "Extra properties of the related person."
+        },
+        {
+          "name": "secretForeignKeys",
+          "type": "Array<string>",
+          "description": "The secret foreign keys of this entity."
+        },
+        {
+          "name": "cryptedForeignKeys",
+          "type": "{\n        [key: string]: Array<Delegation>",
+          "description": "The foreign keys encrypted in the delegates' AES keys."
+        },
+        {
+          "name": "delegations",
+          "type": "{\n        [key: string]: Array<Delegation>",
+          "description": "The delegations giving access to this related person."
+        },
+        {
+          "name": "encryptionKeys",
+          "type": "{\n        [key: string]: Array<Delegation>",
+          "description": "The keys used to encrypt this entity when the entity is stored encrypted."
+        },
+        {
+          "name": "encryptedSelf",
+          "type": "Base64String | undefined",
+          "description": "The base64-encoded encrypted fields of this entity."
+        },
+        {
+          "name": "securityMetadata",
+          "type": "SecurityMetadata | undefined",
+          "description": "The security metadata of the entity."
+        },
+        {
+          "name": "isEncrypted",
+          "type": "false",
+          "description": ""
+        },
+        {
+          "name": "partial",
+          "type": "Partial<DecryptedRelatedPerson>)",
+          "description": ""
+        },
+        {
+          "name": "json",
+          "type": "any, ignoreUnknownKeys?: boolean, path?: Array<string>): DecryptedRelatedPerson",
+          "description": ""
+        }
+      ]
+    },
+    "EncryptedRelatedPerson": {
+      "name": "EncryptedRelatedPerson",
+      "fields": [
+        {
+          "name": "id",
+          "type": "string",
+          "description": "The Id of the related person. We encourage using either a v4 UUID or a HL7 Id."
+        },
+        {
+          "name": "rev",
+          "type": "string | undefined",
+          "description": "The revision of the related person in the database, used for conflict management / optimistic locking."
+        },
+        {
+          "name": "identifier",
+          "type": "Array<Identifier>",
+          "description": "The identifiers of the related person."
+        },
+        {
+          "name": "created",
+          "type": "number | undefined",
+          "description": "The timestamp (unix epoch in ms) of creation."
+        },
+        {
+          "name": "modified",
+          "type": "number | undefined",
+          "description": "The timestamp (unix epoch in ms) of the latest modification."
+        },
+        {
+          "name": "author",
+          "type": "string | undefined",
+          "description": "The id of the User that created this related person."
+        },
+        {
+          "name": "responsible",
+          "type": "string | undefined",
+          "description": "The id of the data owner that is responsible for this related person."
+        },
+        {
+          "name": "tags",
+          "type": "Array<CodeStub>",
+          "description": "Tags that qualify the related person as being member of a certain class."
+        },
+        {
+          "name": "codes",
+          "type": "Array<CodeStub>",
+          "description": "Codes that identify or qualify this particular related person."
+        },
+        {
+          "name": "endOfLife",
+          "type": "number | undefined",
+          "description": "Soft delete (unix epoch in ms) timestamp of the object."
+        },
+        {
+          "name": "deletionDate",
+          "type": "number | undefined",
+          "description": "Hard delete (unix epoch in ms) timestamp of the object."
+        },
+        {
+          "name": "firstName",
+          "type": "string | undefined",
+          "description": "The firstname (name) of the related person."
+        },
+        {
+          "name": "lastName",
+          "type": "string | undefined",
+          "description": "The lastname (surname) of the related person."
+        },
+        {
+          "name": "names",
+          "type": "Array<PersonName>",
+          "description": "The list of all names of the related person, also containing the official full name information."
+        },
+        {
+          "name": "companyName",
+          "type": "string | undefined",
+          "description": "The name of the company this related person is member of."
+        },
+        {
+          "name": "languages",
+          "type": "Array<string>",
+          "description": "The list of languages spoken by the related person, in ISO 639-2 alpha-2 code."
+        },
+        {
+          "name": "addresses",
+          "type": "Array<EncryptedAddress>",
+          "description": "The addresses and telecoms of the related person."
+        },
+        {
+          "name": "civility",
+          "type": "string | undefined",
+          "description": "Mr., Ms., Pr., Dr. ..."
+        },
+        {
+          "name": "gender",
+          "type": "Gender | undefined",
+          "description": "The gender of the related person."
+        },
+        {
+          "name": "properties",
+          "type": "Array<EncryptedPropertyStub>",
+          "description": "Extra properties of the related person."
+        },
+        {
+          "name": "secretForeignKeys",
+          "type": "Array<string>",
+          "description": "The secret foreign keys of this entity."
+        },
+        {
+          "name": "cryptedForeignKeys",
+          "type": "{\n        [key: string]: Array<Delegation>",
+          "description": "The foreign keys encrypted in the delegates' AES keys."
+        },
+        {
+          "name": "delegations",
+          "type": "{\n        [key: string]: Array<Delegation>",
+          "description": "The delegations giving access to this related person."
+        },
+        {
+          "name": "encryptionKeys",
+          "type": "{\n        [key: string]: Array<Delegation>",
+          "description": "The keys used to encrypt this entity when the entity is stored encrypted."
+        },
+        {
+          "name": "encryptedSelf",
+          "type": "Base64String | undefined",
+          "description": "The base64-encoded encrypted fields of this entity."
+        },
+        {
+          "name": "securityMetadata",
+          "type": "SecurityMetadata | undefined",
+          "description": "The security metadata of the entity."
+        },
+        {
+          "name": "isEncrypted",
+          "type": "true",
+          "description": ""
+        },
+        {
+          "name": "partial",
+          "type": "Partial<EncryptedRelatedPerson>)",
+          "description": ""
+        },
+        {
+          "name": "json",
+          "type": "any, ignoreUnknownKeys?: boolean, path?: Array<string>): EncryptedRelatedPerson",
+          "description": ""
+        }
+      ]
+    },
     "ReplicationInfo": {
       "name": "ReplicationInfo",
       "fields": [
@@ -20719,7 +22185,8 @@
     "User": {
       "name": "User",
       "implements": [
-        "StoredDocument"
+        "StoredDocument",
+        "HasIdentifier"
       ],
       "fields": [
         {
@@ -21672,7 +23139,7 @@
         },
         {
           "name": "notes",
-          "type": "Array<Annotation>",
+          "type": "Array<DecryptedAnnotation>",
           "description": ""
         },
         {
@@ -21772,7 +23239,7 @@
         },
         {
           "name": "notes",
-          "type": "Array<Annotation>",
+          "type": "Array<EncryptedAnnotation>",
           "description": ""
         },
         {
@@ -21921,6 +23388,168 @@
           "name": "json",
           "type": "any, ignoreUnknownKeys?: boolean, path?: Array<string>): FixedIntervals",
           "description": ""
+        }
+      ]
+    },
+    "DecryptedAnnotation": {
+      "name": "DecryptedAnnotation",
+      "fields": [
+        {
+          "name": "id",
+          "type": "string",
+          "description": "The Id of the Annotation. We encourage using either a v4 UUID or a HL7 Id."
+        },
+        {
+          "name": "author",
+          "type": "string | undefined",
+          "description": "The identifier of the author of this annotation."
+        },
+        {
+          "name": "created",
+          "type": "number | undefined",
+          "description": "The timestamp (unix epoch in ms) of creation of this note, filled automatically if missing."
+        },
+        {
+          "name": "modified",
+          "type": "number | undefined",
+          "description": "The timestamp (unix epoch in ms) of the latest modification of this note, filled automatically if missing."
+        },
+        {
+          "name": "text",
+          "type": "string | undefined",
+          "description": "Text contained in the note, written as markdown. Deprecated in favor of [markdown]."
+        },
+        {
+          "name": "markdown",
+          "type": "{\n        [key: string]: string",
+          "description": "Localized text contained in the note, written as markdown. Keys should respect ISO 639-1."
+        },
+        {
+          "name": "location",
+          "type": "string | undefined",
+          "description": "Defines to which part of the corresponding information the note is related to."
+        },
+        {
+          "name": "confidential",
+          "type": "boolean | undefined",
+          "description": "Whether this annotation is confidential."
+        },
+        {
+          "name": "tags",
+          "type": "Array<CodeStub>",
+          "description": "Tags associated with this annotation."
+        },
+        {
+          "name": "encryptedSelf",
+          "type": "Base64String | undefined",
+          "description": "The encrypted content of this annotation."
+        },
+        {
+          "name": "isEncrypted",
+          "type": "false",
+          "description": ""
+        },
+        {
+          "name": "partial",
+          "type": "Partial<DecryptedAnnotation>)",
+          "description": ""
+        },
+        {
+          "name": "json",
+          "type": "any, ignoreUnknownKeys?: boolean, path?: Array<string>): DecryptedAnnotation",
+          "description": ""
+        }
+      ]
+    },
+    "EncryptedAnnotation": {
+      "name": "EncryptedAnnotation",
+      "fields": [
+        {
+          "name": "id",
+          "type": "string",
+          "description": "The Id of the Annotation. We encourage using either a v4 UUID or a HL7 Id."
+        },
+        {
+          "name": "author",
+          "type": "string | undefined",
+          "description": "The identifier of the author of this annotation."
+        },
+        {
+          "name": "created",
+          "type": "number | undefined",
+          "description": "The timestamp (unix epoch in ms) of creation of this note, filled automatically if missing."
+        },
+        {
+          "name": "modified",
+          "type": "number | undefined",
+          "description": "The timestamp (unix epoch in ms) of the latest modification of this note, filled automatically if missing."
+        },
+        {
+          "name": "text",
+          "type": "string | undefined",
+          "description": "Text contained in the note, written as markdown. Deprecated in favor of [markdown]."
+        },
+        {
+          "name": "markdown",
+          "type": "{\n        [key: string]: string",
+          "description": "Localized text contained in the note, written as markdown. Keys should respect ISO 639-1."
+        },
+        {
+          "name": "location",
+          "type": "string | undefined",
+          "description": "Defines to which part of the corresponding information the note is related to."
+        },
+        {
+          "name": "confidential",
+          "type": "boolean | undefined",
+          "description": "Whether this annotation is confidential."
+        },
+        {
+          "name": "tags",
+          "type": "Array<CodeStub>",
+          "description": "Tags associated with this annotation."
+        },
+        {
+          "name": "encryptedSelf",
+          "type": "Base64String | undefined",
+          "description": "The encrypted content of this annotation."
+        },
+        {
+          "name": "isEncrypted",
+          "type": "true",
+          "description": ""
+        },
+        {
+          "name": "partial",
+          "type": "Partial<EncryptedAnnotation>)",
+          "description": ""
+        },
+        {
+          "name": "json",
+          "type": "any, ignoreUnknownKeys?: boolean, path?: Array<string>): EncryptedAnnotation",
+          "description": ""
+        }
+      ]
+    },
+    "AsserterType": {
+      "name": "AsserterType",
+      "description": "Enumeration.",
+      "isEnum": true,
+      "fields": [
+        {
+          "name": "Patient",
+          "type": "\"Patient\"",
+          "description": "enum constant"
+        },
+        {
+          "name": "HealthcareParty",
+          "type": "\"HealthcareParty\"",
+          "description": "enum constant"
+        },
+        {
+          "name": "RelatedPerson",
+          "type": "\"RelatedPerson\"",
+          "description": "enum constant"
         }
       ]
     },
@@ -23456,6 +25085,106 @@
           "name": "Database",
           "type": "\"Database\"",
           "description": "enum constant"
+        }
+      ]
+    },
+    "HealthElementAsserter": {
+      "name": "HealthElementAsserter",
+      "fields": [
+        {
+          "name": "localAsserterIdentifier",
+          "type": "HealthElementAsserter.LocalAsserterIdentifier | undefined",
+          "description": "The asserting party, as a reference to a record stored in this instance. Null when the party is named by [externalAsserterIdentifier]."
+        },
+        {
+          "name": "externalAsserterIdentifier",
+          "type": "HealthElementAsserter.ExternalAsserterIdentifier | undefined",
+          "description": "The asserting party, as a business identifier from a system that is not this one. Null when the party is named by [localAsserterIdentifier]. Carries no [AsserterTypeDto]."
+        },
+        {
+          "name": "partial",
+          "type": "Partial<HealthElementAsserter>)",
+          "description": ""
+        },
+        {
+          "name": "json",
+          "type": "any, ignoreUnknownKeys?: boolean, path?: Array<string>): HealthElementAsserter",
+          "description": ""
+        }
+      ]
+    },
+    "HealthElementAsserter.LocalAsserterIdentifier": {
+      "name": "HealthElementAsserter.LocalAsserterIdentifier",
+      "fields": [
+        {
+          "name": "id",
+          "type": "string",
+          "description": "The id of the entity making the assertion. Which entity it refers to is given by [type]."
+        },
+        {
+          "name": "type",
+          "type": "AsserterType",
+          "description": "The kind of entity [id] refers to. This is the kind of entity, not the role the party played - do not confuse it with ParticipantTypeDto."
+        },
+        {
+          "name": "partial",
+          "type": "Partial<LocalAsserterIdentifier> & Pick<LocalAsserterIdentifier, \"type\">)",
+          "description": ""
+        },
+        {
+          "name": "json",
+          "type": "any, ignoreUnknownKeys?: boolean, path?: Array<string>): LocalAsserterIdentifier",
+          "description": ""
+        }
+      ]
+    },
+    "HealthElementAsserter.ExternalAsserterIdentifier": {
+      "name": "HealthElementAsserter.ExternalAsserterIdentifier",
+      "fields": [
+        {
+          "name": "identifier",
+          "type": "Identifier",
+          "description": "The business identifier of the party in the system that issued it. `system` names that issuing system and `value` is the party's identifier within it; together they are what makes the party resolvable."
+        },
+        {
+          "name": "partial",
+          "type": "Partial<ExternalAsserterIdentifier> & Pick<ExternalAsserterIdentifier, \"identifier\">)",
+          "description": ""
+        },
+        {
+          "name": "json",
+          "type": "any, ignoreUnknownKeys?: boolean, path?: Array<string>): ExternalAsserterIdentifier",
+          "description": ""
+        }
+      ]
+    },
+    "HealthElementQualifiedLink": {
+      "name": "HealthElementQualifiedLink",
+      "fields": [
+        {
+          "name": "type",
+          "type": "string",
+          "description": "The qualification of the link. Free string; using the names of LinkQualification entries is encouraged but not enforced."
+        },
+        {
+          "name": "associationId",
+          "type": "string | undefined",
+          "description": "A caller-chosen correlation id that groups related links across entities."
+        },
+        {
+          "name": "healthElementId",
+          "type": "string",
+          "description": "The id of the linked healthcare element."
+        },
+        {
+          "name": "partial",
+          "type": "Partial<HealthElementQualifiedLink> & Pick<HealthElementQualifiedLink, \"type\" | \"healthElementId\">)",
+          "description": ""
+        },
+        {
+          "name": "json",
+          "type": "any, ignoreUnknownKeys?: boolean, path?: Array<string>): HealthElementQualifiedLink",
+          "description": ""
         }
       ]
     },
@@ -25044,6 +26773,28 @@
         }
       ]
     },
+    "PartnerType": {
+      "name": "PartnerType",
+      "description": "Enumeration.",
+      "isEnum": true,
+      "fields": [
+        {
+          "name": "Patient",
+          "type": "\"Patient\"",
+          "description": "enum constant"
+        },
+        {
+          "name": "HealthcareParty",
+          "type": "\"HealthcareParty\"",
+          "description": "enum constant"
+        },
+        {
+          "name": "RelatedPerson",
+          "type": "\"RelatedPerson\"",
+          "description": "enum constant"
+        }
+      ]
+    },
     "DecryptedPartnership": {
       "name": "DecryptedPartnership",
       "fields": [
@@ -25061,6 +26812,11 @@
           "name": "partnerId",
           "type": "string | undefined",
           "description": "The UUID of the contact person or patient in this relationship."
+        },
+        {
+          "name": "partnerType",
+          "type": "PartnerType | undefined",
+          "description": "The type of entity partnerId refers to. When null the partner is either a patient or a healthcare party (legacy behavior)."
         },
         {
           "name": "encryptedSelf",
@@ -25101,6 +26857,11 @@
           "name": "partnerId",
           "type": "string | undefined",
           "description": "The UUID of the contact person or patient in this relationship."
+        },
+        {
+          "name": "partnerType",
+          "type": "PartnerType | undefined",
+          "description": "The type of entity partnerId refers to. When null the partner is either a patient or a healthcare party (legacy behavior)."
         },
         {
           "name": "encryptedSelf",
@@ -26083,7 +27844,7 @@
         },
         {
           "name": "notes",
-          "type": "Array<Annotation>",
+          "type": "Array<DecryptedAnnotation>",
           "description": "Annotations providing additional context."
         },
         {
@@ -26510,7 +28271,7 @@
         },
         {
           "name": "notes",
-          "type": "Array<Annotation>",
+          "type": "Array<DecryptedAnnotation>",
           "description": "Comments - Notes recorded by a HCP about this service"
         },
         {
@@ -26690,7 +28451,7 @@
         },
         {
           "name": "notes",
-          "type": "Array<Annotation>",
+          "type": "Array<EncryptedAnnotation>",
           "description": "Comments - Notes recorded by a HCP about this service"
         },
         {
@@ -30241,75 +32002,6 @@
         }
       ]
     },
-    "Classification": {
-      "entityName": "Classification",
-      "methods": [
-        {
-          "name": "byPatientsCreatedForDataOwner",
-          "description": "",
-          "params": [
-            {
-              "name": "dataOwnerId",
-              "type": "string"
-            },
-            {
-              "name": "patients",
-              "type": "Array<Patient>"
-            },
-            {
-              "name": "options?: {\n        from?: number | undefined;\n        to?: number | undefined;\n        descending?: boolean;\n    }",
-              "type": "unknown"
-            }
-          ]
-        },
-        {
-          "name": "byPatientsCreatedForSelf",
-          "description": "",
-          "params": [
-            {
-              "name": "patients",
-              "type": "Array<Patient>"
-            },
-            {
-              "name": "options?: {\n        from?: number | undefined;\n        to?: number | undefined;\n        descending?: boolean;\n    }",
-              "type": "unknown"
-            }
-          ]
-        },
-        {
-          "name": "byPatientSecretIdsCreatedForDataOwner",
-          "description": "",
-          "params": [
-            {
-              "name": "dataOwnerId",
-              "type": "string"
-            },
-            {
-              "name": "secretIds",
-              "type": "Array<string>"
-            },
-            {
-              "name": "options?: {\n        from?: number | undefined;\n        to?: number | undefined;\n        descending?: boolean;\n    }",
-              "type": "unknown"
-            }
-          ]
-        },
-        {
-          "name": "byPatientSecretIdsCreatedForSelf",
-          "description": "",
-          "params": [
-            {
-              "name": "secretIds",
-              "type": "Array<string>"
-            },
-            {
-              "name": "options?: {\n        from?: number | undefined;\n        to?: number | undefined;\n        descending?: boolean;\n    }",
-              "type": "unknown"
-            }
-          ]
-        }
-      ]
-    },
     "Code": {
       "entityName": "Code",
       "methods": [
@@ -32378,6 +34070,67 @@
       ],
       "description": "Healthcare party filters are not data-owner scoped — they all return `Base*` types. ### Other entity filters"
     },
+    "Insurance": {
+      "entityName": "Insurance",
+      "methods": [
+        {
+          "name": "all",
+          "description": "",
+          "params": [],
+          "returnType": "BaseFilterOptions",
+          "sortable": false,
+          "sortOrder": ""
+        },
+        {
+          "name": "byIdentifiers",
+          "description": "Key parameters: `identifiers`",
+          "params": [
+            {
+              "name": "identifiers",
+              "type": "Array<Identifier>"
+            }
+          ],
+          "returnType": "BaseFilterOptions",
+          "sortable": false,
+          "sortOrder": ""
+        },
+        {
+          "name": "byCode",
+          "description": "Key parameters: `codeType`, `codeCode?`",
+          "params": [
+            {
+              "name": "codeType",
+              "type": "string"
+            },
+            {
+              "name": "options?: {\n        codeCode?: string | undefined;\n    }",
+              "type": "unknown"
+            }
+          ],
+          "returnType": "BaseSortableFilterOptions",
+          "sortable": true,
+          "sortOrder": "Code"
+        },
+        {
+          "name": "byTag",
+          "description": "Key parameters: `tagType`, `tagCode?`",
+          "params": [
+            {
+              "name": "tagType",
+              "type": "string"
+            },
+            {
+              "name": "options?: {\n        tagCode?: string | undefined;\n    }",
+              "type": "unknown"
+            }
+          ],
+          "returnType": "BaseSortableFilterOptions",
+          "sortable": true,
+          "sortOrder": "Tag"
+        }
+      ],
+      "description": "Insurance filters are not data-owner scoped — they all return `Base*` types. `byCode` and `byTag` match any entity carrying a code or tag of the given type when the code is omitted."
+    },
     "MaintenanceTask": {
       "entityName": "MaintenanceTask",
       "methods": [
@@ -33671,6 +35424,153 @@
         }
       ],
       "description": "`byIds` has no data-owner scoping — it returns a `SortableFilterOptions` (not Base) and works the same for all users. The `ForDataOwner` variants for the other methods also exist (e.g. `byFuzzyNameForDataOwner` accepts a `dataOwnerId` + `searchString`)."
+    },
+    "RelatedPerson": {
+      "entityName": "RelatedPerson",
+      "methods": [
+        {
+          "name": "allRelatedPersonsForDataOwner",
+          "description": "",
+          "params": [
+            {
+              "name": "dataOwnerId",
+              "type": "string"
+            }
+          ],
+          "returnType": "FilterOptions",
+          "sortable": false,
+          "sortOrder": ""
+        },
+        {
+          "name": "allRelatedPersonsForDataOwnerInGroup",
+          "description": "",
+          "params": [
+            {
+              "name": "dataOwner",
+              "type": "EntityReferenceInGroup"
+            }
+          ],
+          "returnType": "FilterOptions",
+          "sortable": false,
+          "sortOrder": ""
+        },
+        {
+          "name": "allRelatedPersonsForSelf",
+          "description": "",
+          "params": [],
+          "returnType": "FilterOptions",
+          "sortable": false,
+          "sortOrder": ""
+        },
+        {
+          "name": "byIdentifiersForDataOwner",
+          "description": "Key parameters: `identifiers`",
+          "params": [
+            {
+              "name": "dataOwnerId",
+              "type": "string"
+            },
+            {
+              "name": "identifiers",
+              "type": "Array<Identifier>"
+            }
+          ],
+          "returnType": "FilterOptions",
+          "sortable": false,
+          "sortOrder": ""
+        },
+        {
+          "name": "byIdentifiersForDataOwnerInGroup",
+          "description": "Key parameters: `identifiers`",
+          "params": [
+            {
+              "name": "dataOwner",
+              "type": "EntityReferenceInGroup"
+            },
+            {
+              "name": "identifiers",
+              "type": "Array<Identifier>"
+            }
+          ],
+          "returnType": "FilterOptions",
+          "sortable": false,
+          "sortOrder": ""
+        },
+        {
+          "name": "byIdentifiersForSelf",
+          "description": "Key parameters: `identifiers`",
+          "params": [
+            {
+              "name": "identifiers",
+              "type": "Array<Identifier>"
+            }
+          ],
+          "returnType": "FilterOptions",
+          "sortable": false,
+          "sortOrder": ""
+        },
+        {
+          "name": "byNameForDataOwner",
+          "description": "Key parameters: `name`",
+          "params": [
+            {
+              "name": "dataOwnerId",
+              "type": "string"
+            },
+            {
+              "name": "name",
+              "type": "string"
+            }
+          ],
+          "returnType": "FilterOptions",
+          "sortable": false,
+          "sortOrder": ""
+        },
+        {
+          "name": "byNameForDataOwnerInGroup",
+          "description": "Key parameters: `name`",
+          "params": [
+            {
+              "name": "dataOwner",
+              "type": "EntityReferenceInGroup"
+            },
+            {
+              "name": "name",
+              "type": "string"
+            }
+          ],
+          "returnType": "FilterOptions",
+          "sortable": false,
+          "sortOrder": ""
+        },
+        {
+          "name": "byNameForSelf",
+          "description": "Key parameters: `name`",
+          "params": [
+            {
+              "name": "name",
+              "type": "string"
+            }
+          ],
+          "returnType": "FilterOptions",
+          "sortable": false,
+          "sortOrder": ""
+        },
+        {
+          "name": "byIds",
+          "description": "Key parameters: `ids`",
+          "params": [
+            {
+              "name": "ids",
+              "type": "Array<string>"
+            }
+          ],
+          "returnType": "BaseSortableFilterOptions",
+          "sortable": true,
+          "sortOrder": "Input order"
+        }
+      ],
+      "description": "Related persons are EBAC entities, so these factories come in the three data-owner variants described above. Only the `ForSelf` variant is listed; `ForDataOwner` takes a `dataOwnerId` and `ForDataOwnerInGroup` an `EntityReferenceInGroup`"
     },
     "Service": {
       "entityName": "Service",
@@ -35006,8 +36906,7 @@
             }
           ]
         }
-      ],
-      "description": "--- ## Complex filter examples"
+      ]
     },
     "User": {
       "entityName": "User",
@@ -35207,7 +37106,7 @@
     {
       "slug": "how-to-basic-operations",
       "title": "Basic operations on entities",
-      "content": "# Basic operations on entities\n\nWhen using the Cardinal SDK you will be working mostly with end-to-end encrypted data.\nThe patients, the encounters with practitioners, diagnoses, appointments, the exam results and more.\nAll the entities used to represent these concepts are at least in part encrypted to protect the privacy of the end\nusers.\n\nUsually end-to-end encryption comes with many challenges, but the Cardinal SDK abstracts this complexity away, allowing\nyou to work almost as if there was no encryption happening.\n\nIn this page we cover the basic operations that you can do when working with the Cardinal SDK\n\n\n> **note:**\nAll entities directly connected to patients and medical data in the Cardinal SDK are encrypted end-to-end.\nHowever, there are also some entities like `HealthcareParty` that are never encrypted.\nWe will refer to the first kind of entities as \"encryptable\", and to the second kind as \"non-encryptable\".\n\n\n## Creating new entities\n\n\nYou can create non-encryptable entities by instantiating an instance of their model class and then passing it to the\ncreate method of the corresponding api, which \"commits\" the creation and saves the new entity in the backend.\n\n\n\n\n```typescript test-MANE\n\nasync function createDoctor(sdk: CardinalSdk, firstName: string, lastName: string): Promise<HealthcareParty> {\n\treturn sdk.healthcareParty.createHealthcareParty(\n\t\tnew HealthcareParty({\n\t\t\tid: randomUuid(),\n\t\t\tfirstName: firstName,\n\t\t\tlastName: lastName\n\t\t})\n\t)\n}\n```\n\n\n\n\n```typescript test-LOXO\n\nasync function createPatient(sdk: CardinalSdk, firstName: string, lastName: string): Promise<DecryptedPatient> {\n\t// Initialize the metadata for the patient. Note that this doesn't save the patient in the backend.\n\tconst initializedPatient = await sdk.patient.withEncryptionMetadata(\n\t\tnew DecryptedPatient({\n\t\t\tid: randomUuid(),\n\t\t\tfirstName: firstName,\n\t\t\tlastName: lastName,\n\t\t})\n\t)\n\t// Save the patient. If you didn't initialize the metadata this method will throw an exception.\n\treturn sdk.patient.createPatient(initializedPatient)\n}\n```\n\n\n### Encryptable entity initialization\n\nThe encryptable entities initialization method can take in input various parameters:\n\n#### Linked entities\n\nSome types of encryptable entities can be linked to other entities; for example, each health element is always linked to\na patient.\nThese links are always encrypted to protect the privacy of the patients, and for this reason they're initialized with\nthe rest of the encryption metadata.\n\nFor example, when you initialize the encryption metadata of a health element, you also have to pass the linked patient.\n\n\n\n\n```typescript test-TELE\n\nasync function createHealthElementForPatient(\n\tsdk: CardinalSdk,\n\tpatient: Patient,\n\tdescription: string\n): Promise<DecryptedHealthElement> {\n\tconst initializedHealthElement = await sdk.healthElement.withEncryptionMetadata(\n\t\tnew DecryptedHealthElement({\n\t\t\tid: randomUuid(),\n\t\t\tdescr: description\n\t\t}),\n\t\tpatient // This is mandatory\n\t)\n\treturn sdk.healthElement.createHealthElement(initializedHealthElement)\n}\n```\n\n\n#### A base for the entity to initialize:\n\nThe entity with initialized metadata will copy its content from the base (as shown in the previous example).\n\nIf not passed, the returned entity will only have the id and encryption metadata set, and you will have to modify it\nto add your content before commiting the entity creation.\n\n\n\n\n```typescript test-NUHA\n\nasync function createPatient(sdk: CardinalSdk, firstName: string, lastName: string): Promise<DecryptedPatient> {\n\tconst initializedPatient = await sdk.patient.withEncryptionMetadata(null)\n\tinitializedPatient.firstName = firstName\n\tinitializedPatient.lastName = lastName\n\treturn sdk.patient.createPatient(initializedPatient)\n}\n```\n\n\n#### Initial delegates for the entity {#initial-delegates}\n\nThis is a map of other data owners (delegates) that will immediately have access to the entity as soon as it is created.\nFor each of them, you can specify the access level granted on the entity (read or read+write).\nWhen sharing an entity this way, all the encrypted information of the entity will be shared as well, including any\ninformation for the resolution of encrypted links.\n\nYou can always [share an entity with the delegates at a later point](#sharing).\nHowever, if you know already that the entity should be shared with someone else, and you want to fully share the entity\nencrypted information, it is better to do it while initializing the metadata.\nThis is especially the case if you want the other delegates to be able to [listen to the creation event for that entity](/how-to/how-to-subscribe-to-events).\n\n\n\n\n```typescript test-XINO\n\nasync function createPatient(\n\tsdk: CardinalSdk,\n\tfirstName: string,\n\tlastName: string,\n\tsharedWith: string | null\n): Promise<DecryptedPatient> {\n\tconst initializedPatient = await sdk.patient.withEncryptionMetadata(\n\t\tnew DecryptedPatient({\n\t\t\tid: randomUuid(),\n\t\t\tfirstName: firstName,\n\t\t\tlastName: lastName,\n\t\t}),\n\t\t{\n\t\t\tdelegates: sharedWith != null ? { [sharedWith]: AccessLevel.Write } : {}\n\t\t}\n\t)\n\treturn sdk.patient.createPatient(initializedPatient)\n}\n```\n\n\n#### Auto delegations {#auto-delegations}\n\nIf you're using the auto-delegations system (:construction:) you can pass the current sdk user instance (with the configured\nauto-delegations).\n\nIf you do, any auto-delegation setup for the user will be used in addition to any provided initial-delegate.\nAuto-delegations will be ignored if you don't pass the user.\n\n\n> **caution:**\nThe configuration for initial delegates takes priority over auto-delegations.\nIf the same data owner appears in both the auto-delegations and initial delegates the SDK will use the configuration\nprovided through the initial delegates.\n\n\n\n\n```typescript test-QIWA\n\nasync function createPatient(\n\tsdk: CardinalSdk,\n\tcurrentUser: User,\n\tfirstName: string,\n\tlastName: string\n): Promise<DecryptedPatient> {\n\tconst initializedPatient = await sdk.patient.withEncryptionMetadata(\n\t\tnew DecryptedPatient({\n\t\t\tid: randomUuid(),\n\t\t\tfirstName: firstName,\n\t\t\tlastName: lastName,\n\t\t}),\n\t\t{ user: currentUser }\n\t)\n\treturn sdk.patient.createPatient(initializedPatient)\n}\n```\n\n\n## Retrieving entities\n\nYou can retrieve an entity by using the get of the corresponding api.\nThe SDK will automatically decrypt any retrieved encryptable entity.\n\n\n\n\n```typescript test-VOCO\n\nasync function getPatientOfUser(sdk: CardinalSdk, user: User): Promise<DecryptedPatient> {\n\tif (!user.patientId) throw new Error(\"Not a patient user\")\n\treturn sdk.patient.getPatient(user.patientId)\n}\n```\n\n\n\n\n```typescript test-MECI\n\nasync function getContactsOfPatient(sdk: CardinalSdk, patient: Patient, limit: number): Promise<DecryptedContact[]> {\n\tconst contactsIterator = await sdk.contact.filterContactsBy(ContactFilters.byPatientsForSelf([patient]))\n\treturn contactsIterator.next(limit)\n}\n```\n\n\n### Required permissions\n\nAccess to non-encryptable entities is restricted only by the permissions available to the user.\nSome types of non-encryptable entities are fully accessible to all users regardless of their permissions (such as codes)\nwhile others require specific permissions (devices).\nThere are also entities that have partially restricted access.\nFor example, any user may get an `HealthcareParty`, regardless of their permissions, but if the user doesn't have the\n`HealthcarePartyManagement.FullRead` permission part of the returned entity content will be omitted.\nFinally, for some types of entities, there is a \"Search\" permission that is required to use the various query methods.\n\nFor encryptable entities, instead, the user needs to have explicit access to the retrieved entity.\nThis is only possible if the user created the entity, or if another user with access to the entity [shared](#sharing) it with\nthe user.\nThere are some permissions that allow to relax or bypass this restriction.\nFor example in the case of `Patient`s:\n- If the user has the `PatientManagement.ExtendedRead.Any` permission they can get any patient, regardless of whether\n  they have explicit read access to the entity or not.\n  This permission is also necessary to use certain filters that don't restrict the search to only entities shared with\n  the user.\n- If the user has the `PatientManagement.ExtendedRead.DelegatedToParents` permission they can get also patient that are\n  shared with one of their [parent data owners](/how-to/share-data-with-many-users).\n\n## Updating entities\n\nYou can update an entity using the update method of the corresponding API.\n\n\n\n\n```typescript test-WERU\n\nasync function setPatientNote(sdk: CardinalSdk, patient: DecryptedPatient, newNote: string): Promise<DecryptedPatient> {\n\treturn sdk.patient.modifyPatient(new DecryptedPatient({ ...patient, note: newNote }))\n}\n```\n\n\n\n\n```typescript test-KONE\n\nasync function setPatientNote(sdk: CardinalSdk, patient: DecryptedPatient, newNote: string): Promise<DecryptedPatient> {\n\ttry {\n\t\treturn await sdk.patient.modifyPatient(new DecryptedPatient({ ...patient, note: newNote }))\n\t} catch (e) {\n\t\tif (!(e instanceof RevisionConflictException)) throw e\n\t\tconst latestPatient = await sdk.patient.getPatient(patient.id)\n\t\tif (latestPatient.note == newNote) {\n\t\t\treturn latestPatient\n\t\t} else if (latestPatient.note == patient.note) {\n\t\t\treturn setPatientNote(sdk, latestPatient, newNote)\n\t\t} else {\n\t\t\treturn setPatientNote(\n\t\t\t\tsdk,\n\t\t\t\tlatestPatient,\n\t\t\t\taskUserToResolveNoteConflict(latestPatient.note, newNote) // Implement this yourself\n\t\t\t)\n\t\t}\n\t}\n}\n```\n\n\n### Required permissions\n\nFor each non-encryptable entity type there are permissions that allow users to update the entities.\n\nFor encryptable entities, the user instead needs to have write access to the entity being updated.\nThis is the case if the user created the entity or if another user with write access to the entity shared it with the\nuser and granted the write access.\nSimilarly to the read permissions, there are also extended update permissions that allow to bypass or relax this\nrequirement.\n\nFinally, for both encryptable and non-encryptable entities, there are some fields that are protected by additional\npermissions: to modify these fields, the user needs the standard update permission and the permission to modify that\npiece of protected content.\n\nSome permissions allow users to bypass this requirement.\nFor example, admin user can update any encryptable entity, even if it wasn't shared with them.\n\n## Delete\n\nThe cardinal SDK supports two different kinds of deletion: \"soft\" deletion and \"hard\" deletion.\n\nSoft deletion adds a marker on the deleted entity but doesn't destroy its data.\nThis marker will hide the deleted entity from most filters, but it will still be possible to get the entity by id, or by\nusing filters specifically designed to find (soft) deleted entity.\nRemoving the marker from a soft deleted entity restores it.\nYou can soft-delete entities using the `delete` methods and you can restore soft-deleted entities using the `undelete`\nmethods.\n\nHard deletion, instead, destroys the data.\nWhen you hard-delete an entity, it will be removed from the database, and you won't be able to restore its content\nanymore.\nYou can hard-delete entities using the `purge` methods.\n\nSimilarly to the update methods, the `delete`, `undelete`, and `purge` methods requires that you provide the latest\nrevision of the affected entity, or the method will fail and throw a *conflict* exception.\nEach of these methods comes in two variants: one variant takes in input the full entity to update, and the other\n(*byId*) takes directly the id and rev of the entity.\n\n\n\n\n```typescript test-FESE\nimport {\n\tCardinalSdk,\n\tDecryptedPatient,\n\tDocIdentifier,\n\tPatient,\n\tUser\n} from \"@icure/cardinal-sdk\";\n\nasync function deletePatient(sdk: CardinalSdk, patient: Patient): Promise<void> {\n\tconst deletedInfo: DocIdentifier = await sdk.patient.deletePatient(patient)\n\tconsole.log(`Delete patient ${deletedInfo.id}, to undelete use revision ${deletedInfo.rev}`)\n}\n\nasync function undeletePatient(sdk: CardinalSdk, patientId: string, patientRev: string): Promise<DecryptedPatient> {\n\treturn sdk.patient.undeletePatientById(patientId, patientRev)\n}\n\nasync function purgeUser(sdk: CardinalSdk, user: User) {\n\tawait sdk.user.purgeUser(user) // purge returns nothing\n}\n```\n\n\n### Required permissions\n\nFor both encryptable and non-encryptable entities the (soft) delete and undelete methods use the same permissions as the\nupdate method.\n\nFor the purge methods on non-encryptable entities there is a corresponding permission.\n\nOn encryptable entities the user needs write access and the purge permission for that entity (for example\n`PatientManagement.Purge` for purging patients).\nLike for the retrieve and update methods, there are extended purge permissions that allow to relax or bypass the entity\naccess requirements.\n\n## Bulk methods\n\nThe Cardinal SDK provides bulk methods for the basic CRUD operations.\n\nThe bulk read, update, and delete methods, unlike their single-entity counterparts, won't throw an exception in case\nyou don't have access to one of the entities or (for update and delete) in case you provide the wrong revision.\nInstead, any inaccessible or conflicting entity will be ignored and won't be included in the returned entities.\n\n## Flavours\n\nBy default, the Cardinal SDK decrypts all retrieved entities.\n\nHowever, you don't always need access to the encrypted content of an entity, and since the decryption could be a slow\nprocess, it would be better to skip it when unnecessary.\n\nSimilarly, your application may have situation where a user sometimes has access only to the unencrypted part of an\nentity, and other times has access to the full entity.\nIn both situations, you want to show as much as possible of the entity to your user.\n\nTo help you cover all these scenarios, the encryptable entities and corresponding apis come in three \"flavors\".\n\nFor each encryptable entity, the SDK model provides three different types: a decrypted type (for example\n`DecryptedPatient`), an encrypted type (`EncryptedPatient`), and a polymorphic type (`Patient`).\nThese types are de-facto identical; the division exists only to support the development of applications by providing\nbetter type checking.\n\n\n> **info:**\nDepending on the language you're using, the encryptable entities flavors will be represents in different ways.\n\nFor example, in kotlin the polymorphic type is a sealed interface, and the encrypted and decrypted types are classes.\n\nInstead, in python and typescript, the encrypted and decrypted types are classes, and the polymorphic type is a union\ntype of the two implementations.\n\n\nSimilarly, the api for each encryptable entity comes in three flavors.\nMost methods that you use directly from the api take/return the decrypted flavor of the corresponding entity, but you\ncan use the `encrypted` and the `tryAndRecover` properties of the api to access versions of the methods that work with\nthe encrypted and polymorphic flavors of the entity, respectively.\n\n\n> **note:**\nNot all methods of the main api are available in the multiple flavors.\nFor example, the methods for the creation of entities are available only in the decrypted flavor.\n\n\nThe following table summarizes the behavior of the APIs' flavors.\n\n|                             | Input                                                                                                                                                                                 | Output                                                                                                                 | Example use case                                                                                           |\n|-----------------------------|---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|------------------------------------------------------------------------------------------------------------------------|------------------------------------------------------------------------------------------------------------|\n| Decrypted                   | Encrypts the entities, fails if not possible for some entity (the user can't access the encryption key of the entity).                                                                | Decrypts the entities, fails if not possible for some entity (the user can't access the encryption key of the entity). | You need to access the encrypted content of an entity                                                      |\n| Encrypted                   | Best-effort validation to verify that the entities don't contain any data which should be encrypted according to the configuration. Fails if some entity doesn't pass the validation. | Returns the entities as is.                                                                                            | You don't need the encrypted content of an entity                                                          |\n| Polymorphic (tryAndRecover) | Encrypts or validate the entity depending on the actual type. Fails if some entity can't be encrypted or doesn't pass validation.                                                     | Tries to decrypt the entities, any entity that can't be decrypted is returned as is.                                   | You don't know if the user can decrypt the entity but you want to display as much information as possible. |\n\n\n> **caution:**\nThe validation of encrypted input performed by the encrypted and polymorphic flavors of the apis are best-effort and\nmay not always be accurate.\nThere are some edge cases where you can perform illegal changes to an entity that the SDK can't detect.\n\nThe goal of this validation is only to help identify mistakes in the logic of your application, and you shouldn't\nrely solely on it for validation.\nFor example, you should avoid allowing your user to freely modify an encrypted entity and then passing the updated\nentity to the api wrapping the call in a `try catch` to recover from illegal changes.\nYou should instead design your UI in a way that prevents the user from modifying the fields that need to be encrypted.\n\n\n\n\n```typescript test-GACE\n\nasync function printMatchingPatientNames(\n\tsdk: CardinalSdk,\n\tfilter: FilterOptions<Patient>,\n\tlimit: number\n) {\n\t// Names aren't encrypted in the configuration of this application, no need to decrypt\n\tconst iterator = await sdk.patient.encrypted.filterPatientsBy(filter)\n\tfor (const p of (await iterator.next(limit))) {\n\t\tconsole.log(`${p.firstName} ${p.lastName}`)\n\t}\n\tif (await iterator.hasNext()) console.log(\"...\")\n}\n\nasync function printPatientDetails(\n\tsdk: CardinalSdk,\n\tpatientId: string\n) {\n\t// This application doesn't encrypt the name but encrypts the note\n\tconst patient = await sdk.patient.tryAndRecover.getPatient(patientId)\n\tconsole.log(`First name: ${patient.firstName}`)\n\tconsole.log(`Last name: ${patient.lastName}`)\n\tif (patient instanceof DecryptedPatient) {\n\t\tconsole.log(`Note: ${patient.note}`)\n\t} else {\n\t\tconsole.log(\"Encrypted data is not accessible\")\n\t}\n}\n```\n\n\n## Sharing entities {#sharing}\n\nThe Cardinal SDK is controlled using an entity-based access control for encryptable entities.\nEach encryptable entity is by default accessible only to its creator unless it is shared with other data owners.\n\nWe already saw that you can share entities with other data owners at creation time using\n[initial delegates](#initial-delegates) or [auto-delegations](#auto-delegations), but you can also share an existing\nentity using the share method of the corresponding api.\n\n### Configuration options\n\nWhen you share an entity this way, you have to pass some \"share options\" that allow you to configure how the entity\nis shared with the new delegate.\n\nThe exact parameters you can configure depend on the type of entity being shared, but the possible options are the\nfollowing:\n\n#### `shareEncryptionKey` (always present)\n\nThis configuration specifies if the share method should share the entity encryption key with the delegate, or if it\nshould share only the unencrypted data.\n\nPossible values for this configuration are:\n- `ShareMetadataBehaviour.Required`: the delegator will share the encryption key with the delegate.\n  If the delegator can't access the encryption key of the entity, the sharing will fail.\n- `ShareMetadataBehaviour.IfAvailable`: the delegator will share the encryption key with the delegate if it is available.\n  If the delegator can't access the encryption key of the entity, then it won't be shared.\n- `ShareMetadataBehaviour.Never`: the delegator will not share the encryption key with the delegate, even if it is available.\n\nThe default configuration for this option is always `ShareMetadataBehaviour.IfAvailable`.\n\n#### `requestedPermissions` (always present)\n\nThis configuration option specifies if the delegate will have only read access to the entity or also write access.\n\nPossible values for this configuration are:\n- `RequestedPermission.FullWrite`: the delegate will get write access to the full entity.\n  If the delegator is not allowed to give write access, the sharing will fail\n- `RequestedPermission.MaxWrite`: the delegate will get the highest permissions that the current user can grant.\n  In the current version of the SDK this means that if the delegator can grant full write access,\n  the delegate will have full write access, otherwise the delegate will have full read access.\n- `RequestedPermission.FullRead`: gives the delegate full read access to the entity, failing if the delegator can't\n  grant read access to the full entity.\n  In the current version of the SDK this can never fail (as long as the delegator has access to the entity).\n- `RequestedPermission.MaxRead`: gives the delegate as much read access to the entity as the delegator can give.\n  In the current version of the SDK as long this is equivalent to FullRead.\n\nThe default configuration for this option is always `RequestedPermission.MaxWrite`.\n\n#### `shareSecretIds` (always present)\n\nThis configuration option specifies which secret ids of the entity will be shared with the delegate.\n\nPossible values for this configuration are\n- `SecretIdShareOptions.AllAvailable(requireAtLeastOne)`: share all secret ids of the entity that are available to the\n  current user.\n  If `requireAtLeastOne` is true and the current user can't access any secret id of the entity the sharing will fail.\n- `SecretIdShareOptions.UseExactly(secretIds, createUnknownSecretIds)`: share exactly the provided `secretIds`.\n  If some of the provided secret ids aren't found by the SDK using the keys of the current user and\n  `createUnknownSecretIds` is false the sharing will fail, otherwise the SDK will create new secret ids.\n\nThe default configuration for this option is always `SecretIdShareOptions.AllAvailable(false)`\n\n#### `share[OwningEntity]Ids`\n\nThis configuration option is only present for entity types that can have an encrypted link to other entities, and the\nexact name of this option depends on the type of the linked entity.\nFor example, in the share options for contacts you have the option `sharePatientIds`.\n\nThis configuration option uses the same values as the `shareEncryptionKey`\n\nWhen present, the default configuration for this option is always `ShareMetadataBehaviour.IfAvailable`.\n\n### Example\n\n\n\n\n```typescript test-XELU\nimport {\n\tCardinalSdk,\n\tDecryptedHealthElement,\n\tHealthElementShareOptions,\n\tRequestedPermission,\n\tSecretIdShareOptions,\n\tShareMetadataBehaviour\n} from \"@icure/cardinal-sdk\";\n\nconst STATISTICS_DATA_OWNER_ID = \"...\"\n\n// Example: the statistics data owner is used by a script that compiles some statistics about your data.\nasync function shareHealthElementForStatistics(\n\tsdk: CardinalSdk,\n\thealthElement: DecryptedHealthElement\n): Promise<DecryptedHealthElement> {\n\treturn sdk.healthElement.shareWith(\n\t\t// You already know the data owner id\n\t\tSTATISTICS_DATA_OWNER_ID,\n\t\thealthElement,\n\t\t{\n\t\t\toptions: new HealthElementShareOptions({\n\t\t\t\t// The statistics script doesn't need to modify data\n\t\t\t\trequestedPermissions: RequestedPermission.FullRead,\n\t\t\t\t// The statistics script doesn't need to link patients with health elements\n\t\t\t\tsharePatientId: ShareMetadataBehaviour.Never,\n\t\t\t\t// The statistics script needs access to the encrypted content\n\t\t\t\tshareEncryptionKey: ShareMetadataBehaviour.Required,\n\t\t\t\t// The statistics script doesn't need the secret ids of the health element\n\t\t\t\tshareSecretIds: new SecretIdShareOptions.UseExactly({ secretIds: [], createUnknownSecretIds: false })\n\t\t\t})\n\t\t}\n\t)\n}\n```\n\n\n## 4.3 Querying Data\n================================================================================",
+      "content": "# Basic operations on entities\n\nWhen using the Cardinal SDK you will be working mostly with end-to-end encrypted data.\nThe patients, the encounters with practitioners, diagnoses, appointments, the exam results and more.\nAll the entities used to represent these concepts are at least in part encrypted to protect the privacy of the end\nusers.\n\nUsually end-to-end encryption comes with many challenges, but the Cardinal SDK abstracts this complexity away, allowing\nyou to work almost as if there was no encryption happening.\n\nIn this page we cover the basic operations that you can do when working with the Cardinal SDK\n\n\n> **note:**\nAll entities directly connected to patients and medical data in the Cardinal SDK are encrypted end-to-end.\nHowever, there are also some entities like `HealthcareParty` that are never encrypted.\nWe will refer to the first kind of entities as \"encryptable\", and to the second kind as \"non-encryptable\".\n\n\n## Creating new entities\n\n\nYou can create non-encryptable entities by instantiating an instance of their model class and then passing it to the\ncreate method of the corresponding api, which \"commits\" the creation and saves the new entity in the backend.\n\n\n\n\n```typescript test-MANE\n\nasync function createDoctor(sdk: CardinalSdk, firstName: string, lastName: string): Promise<HealthcareParty> {\n\treturn sdk.healthcareParty.createHealthcareParty(\n\t\tnew HealthcareParty({\n\t\t\tid: randomUuid(),\n\t\t\tfirstName: firstName,\n\t\t\tlastName: lastName\n\t\t})\n\t)\n}\n```\n\n\n\n\n```typescript test-LOXO\n\nasync function createPatient(sdk: CardinalSdk, firstName: string, lastName: string): Promise<DecryptedPatient> {\n\t// Initialize the metadata for the patient. Note that this doesn't save the patient in the backend.\n\tconst initializedPatient = await sdk.patient.withEncryptionMetadata(\n\t\tnew DecryptedPatient({\n\t\t\tid: randomUuid(),\n\t\t\tfirstName: firstName,\n\t\t\tlastName: lastName,\n\t\t})\n\t)\n\t// Save the patient. If you didn't initialize the metadata this method will throw an exception.\n\treturn sdk.patient.createPatient(initializedPatient)\n}\n```\n\n\n### Encryptable entity initialization\n\nThe encryptable entities initialization method can take in input various parameters:\n\n#### Linked entities\n\nSome types of encryptable entities can be linked to other entities; for example, each health element is always linked to\na patient.\nThese links are always encrypted to protect the privacy of the patients, and for this reason they're initialized with\nthe rest of the encryption metadata.\n\nFor example, when you initialize the encryption metadata of a health element, you also have to pass the linked patient.\n\n\n\n\n```typescript test-TELE\n\nasync function createHealthElementForPatient(\n\tsdk: CardinalSdk,\n\tpatient: Patient,\n\tdescription: string\n): Promise<DecryptedHealthElement> {\n\tconst initializedHealthElement = await sdk.healthElement.withEncryptionMetadata(\n\t\tnew DecryptedHealthElement({\n\t\t\tid: randomUuid(),\n\t\t\tdescr: description\n\t\t}),\n\t\tpatient // This is mandatory\n\t)\n\treturn sdk.healthElement.createHealthElement(initializedHealthElement)\n}\n```\n\n\n#### A base for the entity to initialize:\n\nThe entity with initialized metadata will copy its content from the base (as shown in the previous example).\n\nIf not passed, the returned entity will only have the id and encryption metadata set, and you will have to modify it\nto add your content before commiting the entity creation.\n\n\n\n\n```typescript test-NUHA\n\nasync function createPatient(sdk: CardinalSdk, firstName: string, lastName: string): Promise<DecryptedPatient> {\n\tconst initializedPatient = await sdk.patient.withEncryptionMetadata(null)\n\tinitializedPatient.firstName = firstName\n\tinitializedPatient.lastName = lastName\n\treturn sdk.patient.createPatient(initializedPatient)\n}\n```\n\n\n#### Initial delegates for the entity {#initial-delegates}\n\nThis is a map of other data owners (delegates) that will immediately have access to the entity as soon as it is created.\nFor each of them, you can specify the access level granted on the entity (read or read+write).\nWhen sharing an entity this way, all the encrypted information of the entity will be shared as well, including any\ninformation for the resolution of encrypted links.\n\nYou can always [share an entity with the delegates at a later point](#sharing).\nHowever, if you know already that the entity should be shared with someone else, and you want to fully share the entity\nencrypted information, it is better to do it while initializing the metadata.\nThis is especially the case if you want the other delegates to be able to [listen to the creation event for that entity](/how-to/how-to-subscribe-to-events).\n\n\n\n\n```typescript test-XINO\n\nasync function createPatient(\n\tsdk: CardinalSdk,\n\tfirstName: string,\n\tlastName: string,\n\tsharedWith: string | null\n): Promise<DecryptedPatient> {\n\tconst initializedPatient = await sdk.patient.withEncryptionMetadata(\n\t\tnew DecryptedPatient({\n\t\t\tid: randomUuid(),\n\t\t\tfirstName: firstName,\n\t\t\tlastName: lastName,\n\t\t}),\n\t\t{\n\t\t\tdelegates: sharedWith != null ? { [sharedWith]: AccessLevel.Write } : {}\n\t\t}\n\t)\n\treturn sdk.patient.createPatient(initializedPatient)\n}\n```\n\n\n#### Fine-grained delegate options {#delegate-options}\n\nThe `delegates` map of `withEncryptionMetadata` only lets you choose the access level, and every delegate receives all\nthe encryption metadata of the entity. When you need to decide per delegate what they get, use\n`withEncryptionMetadataAndDelegates` instead. It takes the delegates as a required second parameter, mapping each data\nowner id to a `<Entity>DelegateOptions` instance that carries the `accessLevel` plus the `shareEncryptionKey` and\n`shareSecretId` flags.\n\nWithholding the secret id is what keeps a delegate from using the entity as an encrypted link target: a data owner that\nhas the encryption key can read the content, but without the secret id it cannot find the entities linked to it. See\n[encrypted links](/explanations/end-to-end-encryption/encrypted-links) for what those two pieces of metadata do.\n\n\n```typescript no-test\n\nconst initializedPatient = await sdk.patient.withEncryptionMetadataAndDelegates(\n\tnew DecryptedPatient({\n\t\tid: randomUuid(),\n\t\tfirstName: \"John\",\n\t\tlastName: \"Doe\",\n\t}),\n\t{\n\t\t[fullAccessColleagueId]: new PatientDelegateOptions({\n\t\t\taccessLevel: AccessLevel.Write,\n\t\t\tshareEncryptionKey: true,\n\t\t\tshareSecretId: true,\n\t\t}),\n\t\t[auditorId]: new PatientDelegateOptions({\n\t\t\taccessLevel: AccessLevel.Read,\n\t\t\tshareEncryptionKey: true,\n\t\t\tshareSecretId: false,\n\t\t}),\n\t}\n)\nconst patient = await sdk.patient.createPatient(initializedPatient)\n```\n\nLike `withEncryptionMetadata`, this method only initializes the metadata: the entity is not stored until you call the\ncorresponding create method. It accepts the same trailing `options` object with the `user` used for auto-delegations\nand `alternateRootDelegateId`.\n\nThe method is available on the api of every encryptable entity except `MaintenanceTaskApi`, which still only offers\n`withEncryptionMetadata`. `DocumentApi` follows the naming of its plain counterparts and exposes one variant per link\ntarget: `withEncryptionMetadataAndDelegatesLinkedToPatient`, `withEncryptionMetadataAndDelegatesLinkedToMessage` and\n`withEncryptionMetadataAndDelegatesUnlinked`.\n\n#### Auto delegations {#auto-delegations}\n\nIf you're using the auto-delegations system (:construction:) you can pass the current sdk user instance (with the configured\nauto-delegations).\n\nIf you do, any auto-delegation setup for the user will be used in addition to any provided initial-delegate.\nAuto-delegations will be ignored if you don't pass the user.\n\n\n> **caution:**\nThe configuration for initial delegates takes priority over auto-delegations.\nIf the same data owner appears in both the auto-delegations and initial delegates the SDK will use the configuration\nprovided through the initial delegates.\n\n\n\n\n```typescript test-QIWA\n\nasync function createPatient(\n\tsdk: CardinalSdk,\n\tcurrentUser: User,\n\tfirstName: string,\n\tlastName: string\n): Promise<DecryptedPatient> {\n\tconst initializedPatient = await sdk.patient.withEncryptionMetadata(\n\t\tnew DecryptedPatient({\n\t\t\tid: randomUuid(),\n\t\t\tfirstName: firstName,\n\t\t\tlastName: lastName,\n\t\t}),\n\t\t{ user: currentUser }\n\t)\n\treturn sdk.patient.createPatient(initializedPatient)\n}\n```\n\n\n## Retrieving entities\n\nYou can retrieve an entity by using the get of the corresponding api.\nThe SDK will automatically decrypt any retrieved encryptable entity.\n\n\n\n\n```typescript test-VOCO\n\nasync function getPatientOfUser(sdk: CardinalSdk, user: User): Promise<DecryptedPatient> {\n\tif (!user.patientId) throw new Error(\"Not a patient user\")\n\treturn sdk.patient.getPatient(user.patientId)\n}\n```\n\n\n\n\n```typescript test-MECI\n\nasync function getContactsOfPatient(sdk: CardinalSdk, patient: Patient, limit: number): Promise<DecryptedContact[]> {\n\tconst contactsIterator = await sdk.contact.filterContactsBy(ContactFilters.byPatientsForSelf([patient]))\n\treturn contactsIterator.next(limit)\n}\n```\n\n\n### Required permissions\n\nAccess to non-encryptable entities is restricted only by the permissions available to the user.\nSome types of non-encryptable entities are fully accessible to all users regardless of their permissions (such as codes)\nwhile others require specific permissions (devices).\nThere are also entities that have partially restricted access.\nFor example, any user may get an `HealthcareParty`, regardless of their permissions, but if the user doesn't have the\n`HealthcarePartyManagement.FullRead` permission part of the returned entity content will be omitted.\nFinally, for some types of entities, there is a \"Search\" permission that is required to use the various query methods.\n\nFor encryptable entities, instead, the user needs to have explicit access to the retrieved entity.\nThis is only possible if the user created the entity, or if another user with access to the entity [shared](#sharing) it with\nthe user.\nThere are some permissions that allow to relax or bypass this restriction.\nFor example in the case of `Patient`s:\n- If the user has the `PatientManagement.ExtendedRead.Any` permission they can get any patient, regardless of whether\n  they have explicit read access to the entity or not.\n  This permission is also necessary to use certain filters that don't restrict the search to only entities shared with\n  the user.\n- If the user has the `PatientManagement.ExtendedRead.DelegatedToParents` permission they can get also patient that are\n  shared with one of their [parent data owners](/how-to/share-data-with-many-users).\n\n## Updating entities\n\nYou can update an entity using the update method of the corresponding API.\n\n\n\n\n```typescript test-WERU\n\nasync function setPatientNote(sdk: CardinalSdk, patient: DecryptedPatient, newNote: string): Promise<DecryptedPatient> {\n\treturn sdk.patient.modifyPatient(new DecryptedPatient({ ...patient, note: newNote }))\n}\n```\n\n\n\n\n```typescript test-KONE\n\nasync function setPatientNote(sdk: CardinalSdk, patient: DecryptedPatient, newNote: string): Promise<DecryptedPatient> {\n\ttry {\n\t\treturn await sdk.patient.modifyPatient(new DecryptedPatient({ ...patient, note: newNote }))\n\t} catch (e) {\n\t\tif (!(e instanceof RevisionConflictException)) throw e\n\t\tconst latestPatient = await sdk.patient.getPatient(patient.id)\n\t\tif (latestPatient.note == newNote) {\n\t\t\treturn latestPatient\n\t\t} else if (latestPatient.note == patient.note) {\n\t\t\treturn setPatientNote(sdk, latestPatient, newNote)\n\t\t} else {\n\t\t\treturn setPatientNote(\n\t\t\t\tsdk,\n\t\t\t\tlatestPatient,\n\t\t\t\taskUserToResolveNoteConflict(latestPatient.note, newNote) // Implement this yourself\n\t\t\t)\n\t\t}\n\t}\n}\n```\n\n\n### Required permissions\n\nFor each non-encryptable entity type there are permissions that allow users to update the entities.\n\nFor encryptable entities, the user instead needs to have write access to the entity being updated.\nThis is the case if the user created the entity or if another user with write access to the entity shared it with the\nuser and granted the write access.\nSimilarly to the read permissions, there are also extended update permissions that allow to bypass or relax this\nrequirement.\n\nFinally, for both encryptable and non-encryptable entities, there are some fields that are protected by additional\npermissions: to modify these fields, the user needs the standard update permission and the permission to modify that\npiece of protected content.\n\nSome permissions allow users to bypass this requirement.\nFor example, admin user can update any encryptable entity, even if it wasn't shared with them.\n\n## Delete\n\nThe cardinal SDK supports two different kinds of deletion: \"soft\" deletion and \"hard\" deletion.\n\nSoft deletion adds a marker on the deleted entity but doesn't destroy its data.\nThis marker will hide the deleted entity from most filters, but it will still be possible to get the entity by id, or by\nusing filters specifically designed to find (soft) deleted entity.\nRemoving the marker from a soft deleted entity restores it.\nYou can soft-delete entities using the `delete` methods and you can restore soft-deleted entities using the `undelete`\nmethods.\n\nHard deletion, instead, destroys the data.\nWhen you hard-delete an entity, it will be removed from the database, and you won't be able to restore its content\nanymore.\nYou can hard-delete entities using the `purge` methods.\n\nSimilarly to the update methods, the `delete`, `undelete`, and `purge` methods requires that you provide the latest\nrevision of the affected entity, or the method will fail and throw a *conflict* exception.\nEach of these methods comes in two variants: one variant takes in input the full entity to update, and the other\n(*byId*) takes directly the id and rev of the entity.\n\n\n\n\n```typescript test-FESE\nimport {\n\tCardinalSdk,\n\tDecryptedPatient,\n\tDocIdentifier,\n\tPatient,\n\tUser\n} from \"@icure/cardinal-sdk\";\n\nasync function deletePatient(sdk: CardinalSdk, patient: Patient): Promise<void> {\n\tconst deletedInfo: DocIdentifier = await sdk.patient.deletePatient(patient)\n\tconsole.log(`Delete patient ${deletedInfo.id}, to undelete use revision ${deletedInfo.rev}`)\n}\n\nasync function undeletePatient(sdk: CardinalSdk, patientId: string, patientRev: string): Promise<DecryptedPatient> {\n\treturn sdk.patient.undeletePatientById(patientId, patientRev)\n}\n\nasync function purgeUser(sdk: CardinalSdk, user: User) {\n\tawait sdk.user.purgeUser(user) // purge returns nothing\n}\n```\n\n\n### Required permissions\n\nFor both encryptable and non-encryptable entities the (soft) delete and undelete methods use the same permissions as the\nupdate method.\n\nFor the purge methods on non-encryptable entities there is a corresponding permission.\n\nOn encryptable entities the user needs write access and the purge permission for that entity (for example\n`PatientManagement.Purge` for purging patients).\nLike for the retrieve and update methods, there are extended purge permissions that allow to relax or bypass the entity\naccess requirements.\n\n## Bulk methods\n\nThe Cardinal SDK provides bulk methods for the basic CRUD operations.\n\nThe bulk read, update, and delete methods, unlike their single-entity counterparts, won't throw an exception in case\nyou don't have access to one of the entities or (for update and delete) in case you provide the wrong revision.\nInstead, any inaccessible or conflicting entity will be ignored and won't be included in the returned entities.\n\n## Flavours\n\nBy default, the Cardinal SDK decrypts all retrieved entities.\n\nHowever, you don't always need access to the encrypted content of an entity, and since the decryption could be a slow\nprocess, it would be better to skip it when unnecessary.\n\nSimilarly, your application may have situation where a user sometimes has access only to the unencrypted part of an\nentity, and other times has access to the full entity.\nIn both situations, you want to show as much as possible of the entity to your user.\n\nTo help you cover all these scenarios, the encryptable entities and corresponding apis come in three \"flavors\".\n\nFor each encryptable entity, the SDK model provides three different types: a decrypted type (for example\n`DecryptedPatient`), an encrypted type (`EncryptedPatient`), and a polymorphic type (`Patient`).\nThese types are de-facto identical; the division exists only to support the development of applications by providing\nbetter type checking.\n\n\n> **info:**\nDepending on the language you're using, the encryptable entities flavors will be represents in different ways.\n\nFor example, in kotlin the polymorphic type is a sealed interface, and the encrypted and decrypted types are classes.\n\nInstead, in python and typescript, the encrypted and decrypted types are classes, and the polymorphic type is a union\ntype of the two implementations.\n\n\nSimilarly, the api for each encryptable entity comes in three flavors.\nMost methods that you use directly from the api take/return the decrypted flavor of the corresponding entity, but you\ncan use the `encrypted` and the `tryAndRecover` properties of the api to access versions of the methods that work with\nthe encrypted and polymorphic flavors of the entity, respectively.\n\n\n> **note:**\nNot all methods of the main api are available in the multiple flavors.\nFor example, the methods for the creation of entities are available only in the decrypted flavor.\n\n\nThe following table summarizes the behavior of the APIs' flavors.\n\n|                             | Input                                                                                                                                                                                 | Output                                                                                                                 | Example use case                                                                                           |\n|-----------------------------|---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|------------------------------------------------------------------------------------------------------------------------|------------------------------------------------------------------------------------------------------------|\n| Decrypted                   | Encrypts the entities, fails if not possible for some entity (the user can't access the encryption key of the entity).                                                                | Decrypts the entities, fails if not possible for some entity (the user can't access the encryption key of the entity). | You need to access the encrypted content of an entity                                                      |\n| Encrypted                   | Best-effort validation to verify that the entities don't contain any data which should be encrypted according to the configuration. Fails if some entity doesn't pass the validation. | Returns the entities as is.                                                                                            | You don't need the encrypted content of an entity                                                          |\n| Polymorphic (tryAndRecover) | Encrypts or validate the entity depending on the actual type. Fails if some entity can't be encrypted or doesn't pass validation.                                                     | Tries to decrypt the entities, any entity that can't be decrypted is returned as is.                                   | You don't know if the user can decrypt the entity but you want to display as much information as possible. |\n\n\n> **caution:**\nThe validation of encrypted input performed by the encrypted and polymorphic flavors of the apis are best-effort and\nmay not always be accurate.\nThere are some edge cases where you can perform illegal changes to an entity that the SDK can't detect.\n\nThe goal of this validation is only to help identify mistakes in the logic of your application, and you shouldn't\nrely solely on it for validation.\nFor example, you should avoid allowing your user to freely modify an encrypted entity and then passing the updated\nentity to the api wrapping the call in a `try catch` to recover from illegal changes.\nYou should instead design your UI in a way that prevents the user from modifying the fields that need to be encrypted.\n\n\n\n\n```typescript test-GACE\n\nasync function printMatchingPatientNames(\n\tsdk: CardinalSdk,\n\tfilter: FilterOptions<Patient>,\n\tlimit: number\n) {\n\t// Names aren't encrypted in the configuration of this application, no need to decrypt\n\tconst iterator = await sdk.patient.encrypted.filterPatientsBy(filter)\n\tfor (const p of (await iterator.next(limit))) {\n\t\tconsole.log(`${p.firstName} ${p.lastName}`)\n\t}\n\tif (await iterator.hasNext()) console.log(\"...\")\n}\n\nasync function printPatientDetails(\n\tsdk: CardinalSdk,\n\tpatientId: string\n) {\n\t// This application doesn't encrypt the name but encrypts the note\n\tconst patient = await sdk.patient.tryAndRecover.getPatient(patientId)\n\tconsole.log(`First name: ${patient.firstName}`)\n\tconsole.log(`Last name: ${patient.lastName}`)\n\tif (patient instanceof DecryptedPatient) {\n\t\tconsole.log(`Note: ${patient.note}`)\n\t} else {\n\t\tconsole.log(\"Encrypted data is not accessible\")\n\t}\n}\n```\n\n\n## Sharing entities {#sharing}\n\nThe Cardinal SDK is controlled using an entity-based access control for encryptable entities.\nEach encryptable entity is by default accessible only to its creator unless it is shared with other data owners.\n\nWe already saw that you can share entities with other data owners at creation time using\n[initial delegates](#initial-delegates) or [auto-delegations](#auto-delegations), but you can also share an existing\nentity using the share method of the corresponding api.\n\n### Configuration options\n\nWhen you share an entity this way, you have to pass some \"share options\" that allow you to configure how the entity\nis shared with the new delegate.\n\nThe exact parameters you can configure depend on the type of entity being shared, but the possible options are the\nfollowing:\n\n#### `shareEncryptionKey` (always present)\n\nThis configuration specifies if the share method should share the entity encryption key with the delegate, or if it\nshould share only the unencrypted data.\n\nPossible values for this configuration are:\n- `ShareMetadataBehaviour.Required`: the delegator will share the encryption key with the delegate.\n  If the delegator can't access the encryption key of the entity, the sharing will fail.\n- `ShareMetadataBehaviour.IfAvailable`: the delegator will share the encryption key with the delegate if it is available.\n  If the delegator can't access the encryption key of the entity, then it won't be shared.\n- `ShareMetadataBehaviour.Never`: the delegator will not share the encryption key with the delegate, even if it is available.\n\nThe default configuration for this option is always `ShareMetadataBehaviour.IfAvailable`.\n\n#### `requestedPermissions` (always present)\n\nThis configuration option specifies if the delegate will have only read access to the entity or also write access.\n\nPossible values for this configuration are:\n- `RequestedPermission.FullWrite`: the delegate will get write access to the full entity.\n  If the delegator is not allowed to give write access, the sharing will fail\n- `RequestedPermission.MaxWrite`: the delegate will get the highest permissions that the current user can grant.\n  In the current version of the SDK this means that if the delegator can grant full write access,\n  the delegate will have full write access, otherwise the delegate will have full read access.\n- `RequestedPermission.FullRead`: gives the delegate full read access to the entity, failing if the delegator can't\n  grant read access to the full entity.\n  In the current version of the SDK this can never fail (as long as the delegator has access to the entity).\n- `RequestedPermission.MaxRead`: gives the delegate as much read access to the entity as the delegator can give.\n  In the current version of the SDK as long this is equivalent to FullRead.\n\nThe default configuration for this option is always `RequestedPermission.MaxWrite`.\n\n#### `shareSecretIds` (always present)\n\nThis configuration option specifies which secret ids of the entity will be shared with the delegate.\n\nPossible values for this configuration are\n- `SecretIdShareOptions.AllAvailable(requireAtLeastOne)`: share all secret ids of the entity that are available to the\n  current user.\n  If `requireAtLeastOne` is true and the current user can't access any secret id of the entity the sharing will fail.\n- `SecretIdShareOptions.UseExactly(secretIds, createUnknownSecretIds)`: share exactly the provided `secretIds`.\n  If some of the provided secret ids aren't found by the SDK using the keys of the current user and\n  `createUnknownSecretIds` is false the sharing will fail, otherwise the SDK will create new secret ids.\n\nThe default configuration for this option is always `SecretIdShareOptions.AllAvailable(false)`\n\n#### `share[OwningEntity]Ids`\n\nThis configuration option is only present for entity types that can have an encrypted link to other entities, and the\nexact name of this option depends on the type of the linked entity.\nFor example, in the share options for contacts you have the option `sharePatientIds`.\n\nThis configuration option uses the same values as the `shareEncryptionKey`\n\nWhen present, the default configuration for this option is always `ShareMetadataBehaviour.IfAvailable`.\n\n### Example\n\n\n\n\n```typescript test-XELU\nimport {\n\tCardinalSdk,\n\tDecryptedHealthElement,\n\tHealthElementShareOptions,\n\tRequestedPermission,\n\tSecretIdShareOptions,\n\tShareMetadataBehaviour\n} from \"@icure/cardinal-sdk\";\n\nconst STATISTICS_DATA_OWNER_ID = \"...\"\n\n// Example: the statistics data owner is used by a script that compiles some statistics about your data.\nasync function shareHealthElementForStatistics(\n\tsdk: CardinalSdk,\n\thealthElement: DecryptedHealthElement\n): Promise<DecryptedHealthElement> {\n\treturn sdk.healthElement.shareWith(\n\t\t// You already know the data owner id\n\t\tSTATISTICS_DATA_OWNER_ID,\n\t\thealthElement,\n\t\t{\n\t\t\toptions: new HealthElementShareOptions({\n\t\t\t\t// The statistics script doesn't need to modify data\n\t\t\t\trequestedPermissions: RequestedPermission.FullRead,\n\t\t\t\t// The statistics script doesn't need to link patients with health elements\n\t\t\t\tsharePatientId: ShareMetadataBehaviour.Never,\n\t\t\t\t// The statistics script needs access to the encrypted content\n\t\t\t\tshareEncryptionKey: ShareMetadataBehaviour.Required,\n\t\t\t\t// The statistics script doesn't need the secret ids of the health element\n\t\t\t\tshareSecretIds: new SecretIdShareOptions.UseExactly({ secretIds: [], createUnknownSecretIds: false })\n\t\t\t})\n\t\t}\n\t)\n}\n```\n\n\n## 4.3 Querying Data\n================================================================================",
       "category": "how-to"
     },
     {
@@ -35243,7 +37142,7 @@
     {
       "slug": "how-to-contact-group-id",
       "title": "Share different parts of the same medical event with different actors",
-      "content": "# Share different parts of the same medical event with different actors\n\n## Overview\n\nIn some cases, you may want to share different parts of the same Contact with different actors. Let's consider this\nexample:\n\nA doctor visit a patient, measure their blood pressure, their heart rate, and finally adds a diagnosis and a prescription\nfor a pill.\n\nUsing the Cardinal SDK, this translates to create a [Contact](/explanations/data-model/contact) with 3 [Service](/explanations/data-model/service)s\n(one for the blood pressure, one for the [ECG](https://en.wikipedia.org/wiki/Electrocardiography), one for the prescription), and a note for the diagnosis.\n\nThen the doctor asks the patient if they want to participate in a research study. For the study, the patient\nhas to share their ECG with the doctor responsible for the study.\n\nThis is not possible if only one Contact is created, as it is not possible to share different entities with different\ndata owners. Instead, the data should be split into different Contacts. All of these contacts should have the same\n[groupId](/explanations/data-model/contact#groupid), that marks them as belonging to the same \"Logical Contact\".\n\nWhen retrieving multiple Contacts with the same group, you can decide to combine them after retrieval for an easier\nvisualization.\n\nBelow, you will find a code example for this use case.\n\n## Prerequisites\n\nFor this use case example, let's consider to doctors: the first that is performing the visit and the second that is\nresponsible for the research study. They both have to log in and initialize the SDK.\n\n\n\n\n```typescript test-JUSO\n\nconst CARDINAL_URL = \"https://api.icure.cloud\"\n\nconst visitingDoctorUsername = VISITING_DOCTOR_USERNAME\nconst visitingDoctorPassword = VISITING_DOCTOR_PASSWORD\n\nconst researchDoctorUsername = RESEARCH_DOCTOR_USERNAME\nconst researchDoctorPassword = RESEARCH_DOCTOR_PASSWORD\n\nconst visitingDoctorSdk = await CardinalSdk.initialize(\n\tundefined,\n\tCARDINAL_URL,\n\tnew AuthenticationMethod.UsingCredentials.UsernamePassword(visitingDoctorUsername, visitingDoctorPassword),\n\tStorageFacade.usingFileSystem(\"../scratch/storage\")\n)\nconst researchDoctorSdk = await CardinalSdk.initialize(\n\tundefined,\n\tCARDINAL_URL,\n\tnew AuthenticationMethod.UsingCredentials.UsernamePassword(researchDoctorUsername, researchDoctorPassword),\n\tStorageFacade.usingFileSystem(\"../scratch/storage\")\n)\n```\n\n\n\n\n```typescript test-PUPA\n\n\nconst patientToCreate = new DecryptedPatient({\n\tid: uuid(),\n\tfirstName: \"Rupert\",\n\tlastName: \"Venables\",\n})\nconst patient = await visitingDoctorSdk.patient.createPatient(\n\tawait visitingDoctorSdk.patient.withEncryptionMetadata(patientToCreate)\n)\n```\n\n\n\n\n```typescript test-GAWU\n// In a real scenario, the first doctor would need to search for the other doctor.\n// For the sake of the example, it will be in the following variable\nconst researchDoctorId = (await researchDoctorSdk.healthcareParty.getCurrentHealthcareParty()).id\n```\n\n\n## Dividing the result of the examination in multiple contacts\n\nNow, the doctor has to register the data acquired during the examination: the heart rate, the blood pressure, and the\nmedication prescribed. The doctor will instantiate a Service for each of those.\n\n\n\n\n```typescript test-TERO\nimport {\n\tDecryptedContent,\n\tDecryptedService,\n\tMeasure,\n\tMedication,\n\tSubstanceproduct,\n\tTimeSeries\n} from \"@icure/cardinal-sdk\";\n\nconst bloodPressureService = new DecryptedService({\n\tid: uuid(),\n\tlabel: \"Blood pressure\",\n\tvalueDate: 20240920154600,\n\tcontent: {\n\t\t\"en\": new DecryptedContent({\n\t\t\tmeasureValue: new Measure({\n\t\t\t\tvalue: Math.floor(Math.random() * (80 - 120 + 1)) + 120,\n\t\t\t\tunit: \"mmHg\"\n\t\t\t})\n\t\t})\n\t}\n})\n\nconst ecgSignal = Array.from({ length: 10 }, () => (Math.floor(Math.random() * (0 - 100 + 1)) + 100)/100.0 )\nconst heartRateService = new DecryptedService({\n\tid: uuid(),\n\tlabel: \"Heart rate\",\n\tvalueDate: 20240920154600,\n\tcontent:{\n\t\t\"en\": new DecryptedContent({\n\t\t\ttimeSeries: new TimeSeries({\n\t\t\t\tsamples: [ecgSignal]\n\t\t\t})\n\t\t})\n\t}\n})\n\nconst medicationService = new DecryptedService({\n\tid: uuid(),\n\tlabel: \"Prescription\",\n\tvalueDate: 20240920154600,\n\tcontent: {\n\t\t\"en\": new DecryptedContent({\n\t\t\tmedicationValue: new Medication({\n\t\t\t\tsubstanceProduct: new Substanceproduct({\n\t\t\t\t\tdeliveredname: \"lisinopril\"\n\t\t\t\t}),\n\t\t\t\tinstructionForPatient: \"10mg before breakfast.\"\n\t\t\t})\n\t\t})\n\t}\n})\n```\n\n\n\n\n```typescript test-NURA\n\n\n// The id of the \"Logical Contact\"\nconst groupId = uuid()\n\nconst contactForResearch = new DecryptedContact({\n\tid: uuid(),\n\topeningDate: 20240920154460,\n\tgroupId: groupId, // This indicates that the Contact is part of a \"Logical Contact\"\n\tservices: [heartRateService]\n})\n\nconst contact = new DecryptedContact({\n\tid: uuid(),\n\tclosingDate: 20240920164460,\n\tgroupId: groupId, // This indicates that the Contact is part of a \"Logical Contact\"\n\tnotes: [\n\t\tnew Annotation({\n\t\t\tid: uuid(),\n\t\t\tmarkdown: {\"en\": \"The Patient has hypertension.\"}\n\t\t})\n\t],\n\tservices: [bloodPressureService, medicationService]\n})\n\nawait visitingDoctorSdk.contact.createContact(\n\tawait visitingDoctorSdk.contact.withEncryptionMetadata(contact, patient)\n)\n\nawait visitingDoctorSdk.contact.createContact(\n\tawait visitingDoctorSdk.contact.withEncryptionMetadata(\n\t\tcontactForResearch,\n\t\tpatient,\n\t\t{ delegates: {[researchDoctorId]: AccessLevel.Read} }\n\t)\n)\n```\n\n\n## Retrieving the data\n\nNow both doctors can retrieve the part of that medical examination they can access.\n\nThe doctor that performed the visit has full access to both Contacts and to the Patient, so it will retrieve all the\nServices based on the [link with the Patient](/explanations/end-to-end-encryption/encrypted-links) using a filter.\n\n\n\n\n```typescript test-SIJO\n\nconst allServicesIterator = await visitingDoctorSdk.contact.filterServicesBy(\n\tServiceFilters.byPatientsForSelf([patient])\n)\n\nwhile (await allServicesIterator.hasNext()) {\n\t(await allServicesIterator.next(10)).forEach( service =>\n\t\tconsole.log(service)\n\t)\n}\n```\n\n\n\n\n```typescript test-VUNE\n\nconst researchContactIterator = await researchDoctorSdk.contact.filterContactsBy(\n\tContactFilters.byOpeningDateForSelf(\n\t\t{startDate: 20240920000000}\n\t)\n)\n\nwhile (await researchContactIterator.hasNext()) {\n\t(await researchContactIterator.next(10)).forEach(researchContact =>\n\t\tresearchContact.services.forEach(service =>\n\t\t\tconsole.log(service)\n\t\t)\n\t)\n}\n```\n\n\n## 4.9 Storing Unstructured Data\n================================================================================",
+      "content": "# Share different parts of the same medical event with different actors\n\n## Overview\n\nIn some cases, you may want to share different parts of the same Contact with different actors. Let's consider this\nexample:\n\nA doctor visit a patient, measure their blood pressure, their heart rate, and finally adds a diagnosis and a prescription\nfor a pill.\n\nUsing the Cardinal SDK, this translates to create a [Contact](/explanations/data-model/contact) with 3 [Service](/explanations/data-model/service)s\n(one for the blood pressure, one for the [ECG](https://en.wikipedia.org/wiki/Electrocardiography), one for the prescription), and a note for the diagnosis.\n\nThen the doctor asks the patient if they want to participate in a research study. For the study, the patient\nhas to share their ECG with the doctor responsible for the study.\n\nThis is not possible if only one Contact is created, as it is not possible to share different entities with different\ndata owners. Instead, the data should be split into different Contacts. All of these contacts should have the same\n[groupId](/explanations/data-model/contact#groupid), that marks them as belonging to the same \"Logical Contact\".\n\nWhen retrieving multiple Contacts with the same group, you can decide to combine them after retrieval for an easier\nvisualization.\n\nBelow, you will find a code example for this use case.\n\n## Prerequisites\n\nFor this use case example, let's consider to doctors: the first that is performing the visit and the second that is\nresponsible for the research study. They both have to log in and initialize the SDK.\n\n\n\n\n```typescript test-JUSO\n\nconst CARDINAL_URL = \"https://api.icure.cloud\"\n\nconst visitingDoctorUsername = VISITING_DOCTOR_USERNAME\nconst visitingDoctorPassword = VISITING_DOCTOR_PASSWORD\n\nconst researchDoctorUsername = RESEARCH_DOCTOR_USERNAME\nconst researchDoctorPassword = RESEARCH_DOCTOR_PASSWORD\n\nconst visitingDoctorSdk = await CardinalSdk.initialize(\n\tundefined,\n\tCARDINAL_URL,\n\tnew AuthenticationMethod.UsingCredentials.UsernamePassword(visitingDoctorUsername, visitingDoctorPassword),\n\tStorageFacade.usingFileSystem(\"../scratch/storage\")\n)\nconst researchDoctorSdk = await CardinalSdk.initialize(\n\tundefined,\n\tCARDINAL_URL,\n\tnew AuthenticationMethod.UsingCredentials.UsernamePassword(researchDoctorUsername, researchDoctorPassword),\n\tStorageFacade.usingFileSystem(\"../scratch/storage\")\n)\n```\n\n\n\n\n```typescript test-PUPA\n\n\nconst patientToCreate = new DecryptedPatient({\n\tid: uuid(),\n\tfirstName: \"Rupert\",\n\tlastName: \"Venables\",\n})\nconst patient = await visitingDoctorSdk.patient.createPatient(\n\tawait visitingDoctorSdk.patient.withEncryptionMetadata(patientToCreate)\n)\n```\n\n\n\n\n```typescript test-GAWU\n// In a real scenario, the first doctor would need to search for the other doctor.\n// For the sake of the example, it will be in the following variable\nconst researchDoctorId = (await researchDoctorSdk.healthcareParty.getCurrentHealthcareParty()).id\n```\n\n\n## Dividing the result of the examination in multiple contacts\n\nNow, the doctor has to register the data acquired during the examination: the heart rate, the blood pressure, and the\nmedication prescribed. The doctor will instantiate a Service for each of those.\n\n\n\n\n```typescript test-TERO\nimport {\n\tDecryptedContent,\n\tDecryptedService,\n\tMeasure,\n\tMedication,\n\tSubstanceproduct,\n\tTimeSeries\n} from \"@icure/cardinal-sdk\";\n\nconst bloodPressureService = new DecryptedService({\n\tid: uuid(),\n\tlabel: \"Blood pressure\",\n\tvalueDate: 20240920154600,\n\tcontent: {\n\t\t\"en\": new DecryptedContent({\n\t\t\tmeasureValue: new Measure({\n\t\t\t\tvalue: Math.floor(Math.random() * (80 - 120 + 1)) + 120,\n\t\t\t\tunit: \"mmHg\"\n\t\t\t})\n\t\t})\n\t}\n})\n\nconst ecgSignal = Array.from({ length: 10 }, () => (Math.floor(Math.random() * (0 - 100 + 1)) + 100)/100.0 )\nconst heartRateService = new DecryptedService({\n\tid: uuid(),\n\tlabel: \"Heart rate\",\n\tvalueDate: 20240920154600,\n\tcontent:{\n\t\t\"en\": new DecryptedContent({\n\t\t\ttimeSeries: new TimeSeries({\n\t\t\t\tsamples: [ecgSignal]\n\t\t\t})\n\t\t})\n\t}\n})\n\nconst medicationService = new DecryptedService({\n\tid: uuid(),\n\tlabel: \"Prescription\",\n\tvalueDate: 20240920154600,\n\tcontent: {\n\t\t\"en\": new DecryptedContent({\n\t\t\tmedicationValue: new Medication({\n\t\t\t\tsubstanceProduct: new Substanceproduct({\n\t\t\t\t\tdeliveredname: \"lisinopril\"\n\t\t\t\t}),\n\t\t\t\tinstructionForPatient: \"10mg before breakfast.\"\n\t\t\t})\n\t\t})\n\t}\n})\n```\n\n\n\n\n```typescript test-NURA\n\n\n// The id of the \"Logical Contact\"\nconst groupId = uuid()\n\nconst contactForResearch = new DecryptedContact({\n\tid: uuid(),\n\topeningDate: 20240920154460,\n\tgroupId: groupId, // This indicates that the Contact is part of a \"Logical Contact\"\n\tservices: [heartRateService]\n})\n\nconst contact = new DecryptedContact({\n\tid: uuid(),\n\tclosingDate: 20240920164460,\n\tgroupId: groupId, // This indicates that the Contact is part of a \"Logical Contact\"\n\tnotes: [\n\t\tnew DecryptedAnnotation({\n\t\t\tid: uuid(),\n\t\t\tmarkdown: {\"en\": \"The Patient has hypertension.\"}\n\t\t})\n\t],\n\tservices: [bloodPressureService, medicationService]\n})\n\nawait visitingDoctorSdk.contact.createContact(\n\tawait visitingDoctorSdk.contact.withEncryptionMetadata(contact, patient)\n)\n\nawait visitingDoctorSdk.contact.createContact(\n\tawait visitingDoctorSdk.contact.withEncryptionMetadata(\n\t\tcontactForResearch,\n\t\tpatient,\n\t\t{ delegates: {[researchDoctorId]: AccessLevel.Read} }\n\t)\n)\n```\n\n\n## Retrieving the data\n\nNow both doctors can retrieve the part of that medical examination they can access.\n\nThe doctor that performed the visit has full access to both Contacts and to the Patient, so it will retrieve all the\nServices based on the [link with the Patient](/explanations/end-to-end-encryption/encrypted-links) using a filter.\n\n\n\n\n```typescript test-SIJO\n\nconst allServicesIterator = await visitingDoctorSdk.contact.filterServicesBy(\n\tServiceFilters.byPatientsForSelf([patient])\n)\n\nwhile (await allServicesIterator.hasNext()) {\n\t(await allServicesIterator.next(10)).forEach( service =>\n\t\tconsole.log(service)\n\t)\n}\n```\n\n\n\n\n```typescript test-VUNE\n\nconst researchContactIterator = await researchDoctorSdk.contact.filterContactsBy(\n\tContactFilters.byOpeningDateForSelf(\n\t\t{startDate: 20240920000000}\n\t)\n)\n\nwhile (await researchContactIterator.hasNext()) {\n\t(await researchContactIterator.next(10)).forEach(researchContact =>\n\t\tresearchContact.services.forEach(service =>\n\t\t\tconsole.log(service)\n\t\t)\n\t)\n}\n```\n\n\n## 4.9 Storing Unstructured Data\n================================================================================",
       "category": "how-to"
     },
     {
@@ -35285,7 +37184,25 @@
     {
       "slug": "how-to-deleting-data-of-inactive-users",
       "title": "Deleting data of inactive users",
-      "content": "# Deleting data of inactive users\n\n:construction: This page is under construction :construction:\n\n[//]: # (https://icure.atlassian.net/issues/ICBE-299)\n\n---\n\n\n================================================================================\n# PART 5: DATA MODEL REFERENCE\n================================================================================",
+      "content": "# Deleting data of inactive users\n\n:construction: This page is under construction :construction:\n\n[//]: # (https://icure.atlassian.net/issues/ICBE-299)\n\n---",
+      "category": "how-to"
+    },
+    {
+      "slug": "how-to-related-persons",
+      "title": "Working with related persons",
+      "content": "# Working with related persons\n\nA related person is a person related to one or more patients who is neither a patient nor a healthcare party: the\nparent of a child patient, a caregiver, an emergency contact. It is a standalone encryptable entity, but it is not a\ncrypto actor and not a data owner, so you never initialize an SDK for a related person and you never share data *with*\none: you share the related person entity itself with the data owners that need it.\n\nA related person is a root entity, like a patient: it is not linked to an owning entity and it has its own secret ids.\nThat means `withEncryptionMetadata` takes no owning entity, and the entity is created in the two usual steps.\n\n\n```typescript no-test\n\nconst initialized = await sdk.relatedPerson.withEncryptionMetadata(\n\tnew DecryptedRelatedPerson({\n\t\tid: randomUuid(),\n\t\tfirstName: \"Alice\",\n\t\tlastName: \"Doe\",\n\t\tcompanyName: \"Doe & Sons\",\n\t})\n)\nconst relatedPerson = await sdk.relatedPerson.createRelatedPerson(initialized)\n```\n\n`RelatedPersonApi` gives you the full encryptable-entity surface: `getRelatedPerson`, `modifyRelatedPerson`,\n`deleteRelatedPersonById`, `undeleteRelatedPerson`, `shareWith` and `shareWithMany` taking a\n`RelatedPersonShareOptions`, `subscribeToEvents`, and the `encrypted`, `tryAndRecover` and `inGroup` flavours. Because\nit is a root entity, `getSecretIdsOf` returns secret ids you can use to link other entities to it.\n\nTo find related persons, use the `RelatedPersonFilters` factories with `filterRelatedPersonsBy` or\n`matchRelatedPersonsBy`. `byNameForSelf` searches the concatenation of `lastName` and `firstName`.\n\n\n```typescript no-test\n\nconst iterator = await sdk.relatedPerson.filterRelatedPersonsBy(\n\tRelatedPersonFilters.byNameForSelf(\"doe\")\n)\nwhile (await iterator.hasNext()) {\n\tconst page = await iterator.next(10)\n\tfor (const person of page) {\n\t\tconsole.log(`${person.firstName} ${person.lastName}`)\n\t}\n}\n```\n\nA related person is also one of the parties that can assert a health element: a\n[`HealthElementAsserter`](/explanations/data-model/healthelement) can point at one through a\n`localAsserterIdentifier` with `type = AsserterType.RelatedPerson`.\n\n---",
+      "category": "how-to"
+    },
+    {
+      "slug": "how-to-calendar-item-occupancy",
+      "title": "Computing calendar item occupancy",
+      "content": "# Computing calendar item occupancy\n\nWhen you need to know how busy an agenda is over a period, rather than the calendar items themselves,\n`CalendarItemApi` can compute the concurrent-occupancy histogram server side. Three methods cover the three scopes:\n`getCalendarItemsOccupancyByPeriodForSelf`, `getCalendarItemsOccupancyByPeriodForHealthcareParty` (which takes an\n`hcPartyId`) and `getCalendarItemsOccupancyByPeriodAndAgendaId` (which takes an `agendaId`).\n\nEach returns an `Array<CalendarItemOccupancy>`, which is a step function rather than a list of appointments: the\npoints are ordered by `timestamp`, and each one says that from that fuzzy date-time onwards the number of overlapping\nbusy calendar items becomes `occupancy`.\n\n\n```typescript no-test\n\nconst occupancy = await sdk.calendarItem.getCalendarItemsOccupancyByPeriodAndAgendaId(\n\t20260901000000,\n\t20260930235959,\n\tagendaId,\n\t1\n)\nfor (const point of occupancy) {\n\tconsole.log(`from ${point.timestamp}: ${point.occupancy} concurrent items`)\n}\n```\n\nOnly calendar items whose whole interval fits within the search range are counted, so by default an item that starts\nbefore `startDate` or ends after `endDate` is ignored entirely. The last parameter, `extensionInDays`, widens the range\nby that many days on each side so that items starting shortly before the period — the ones that make up the occupancy\nbaseline at `startDate` — are taken into account; items reaching beyond the extended range are still ignored. Note that\n`extensionInDays` is a required positional parameter that accepts `undefined`, so pass `undefined` explicitly when you\ndo not want any extension.\n\n---",
+      "category": "how-to"
+    },
+    {
+      "slug": "how-to-health-element-asserters",
+      "title": "Recording who asserts a health element",
+      "content": "# Recording who asserts a health element\n\nA health element carries two fields for provenance and cross-references: `asserters` and `qualifiedLinks`. The\n[HealthElement data model page](/explanations/data-model/healthelement) describes both fields; this page shows how to\nset them.\n\n`asserters` records on whose word the health element is held to be true, which is not the same as who authored or\nrecorded it. Each `HealthElementAsserter` names its party through exactly one of two mutually exclusive branches, and\nsetting both or neither is rejected by the backend with a `400`.\n\n\n```typescript no-test\n\nconst healthElement = await sdk.healthElement.withEncryptionMetadata(\n\tnew DecryptedHealthElement({\n\t\tid: randomUuid(),\n\t\tdescr: \"Peanut allergy\",\n\t\tasserters: [\n\t\t\t// A party stored in this instance: the id plus the kind of record it points at.\n\t\t\tnew HealthElementAsserter({\n\t\t\t\tlocalAsserterIdentifier: new HealthElementAsserter.LocalAsserterIdentifier({\n\t\t\t\t\tid: patient.id,\n\t\t\t\t\ttype: AsserterType.Patient,\n\t\t\t\t}),\n\t\t\t}),\n\t\t\t// A party with no record here, named by a business identifier from another system.\n\t\t\tnew HealthElementAsserter({\n\t\t\t\texternalAsserterIdentifier: new HealthElementAsserter.ExternalAsserterIdentifier({\n\t\t\t\t\tidentifier: new Identifier({\n\t\t\t\t\t\tsystem: \"urn:oid:1.2.3.4\",\n\t\t\t\t\t\tvalue: \"hcp-88213\",\n\t\t\t\t\t}),\n\t\t\t\t}),\n\t\t\t}),\n\t\t],\n\t}),\n\tpatient\n)\nawait sdk.healthElement.createHealthElement(healthElement)\n```\n\n`asserters` is encrypted by default, so it is only readable by the data owners the health element is shared with.\n\nUse `qualifiedLinks` to point at other health elements — for example to say that a health element is a complication of\nan earlier one. Create the link in one direction only; the reverse is resolved through a view.\n\n\n```typescript no-test\n\nconst complication = new HealthElementQualifiedLink({\n\ttype: \"complicates\",\n\thealthElementId: earlierHealthElement.id,\n\tassociationId: episodeCorrelationId,\n})\n```\n\n\n> **caution:**\nThe shape of `HealthElementAsserter` changed twice in the 2.13 line. Up to 2.13.1 it was a flat\n`asserterId`/`asserterType` pair, 2.13.2 replaced it with the two nullable branches, and 2.13.3 wrapped the external\nbranch in `ExternalAsserterIdentifier` instead of holding a bare `Identifier`. Code written against 2.13.0 to 2.13.2\nneeds updating.\n\n\n---\n\n\n================================================================================\n# PART 5: DATA MODEL REFERENCE\n================================================================================",
       "category": "how-to"
     },
     {

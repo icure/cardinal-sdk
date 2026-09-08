@@ -252,7 +252,7 @@ function parseKDocComments(kotlinSource: string): Map<string, { description: str
 const ENCRYPTABLE_ENTITIES = new Set([
 	"AccessLog", "CalendarItem", "Contact", "Document",
 	"Form", "HealthElement", "Invoice", "MaintenanceTask", "Message",
-	"Patient", "Receipt", "Topic",
+	"Patient", "Receipt", "RelatedPerson", "Topic",
 ]);
 
 /**
@@ -271,7 +271,7 @@ const ALLOWED_APIS = new Set([
 	// Encryptable entity APIs (used via dispatch)
 	"AccessLog", "Agenda", "CalendarItem", "Code", "Contact",
 	"Document", "Form", "HealthElement", "Insurance", "Invoice",
-	"MaintenanceTask", "Message", "Receipt", "Topic",
+	"MaintenanceTask", "Message", "Receipt", "RelatedPerson", "Topic",
 ]);
 
 function parseApiInterface(dtsContent: string, _apiName: string): MethodDoc[] {

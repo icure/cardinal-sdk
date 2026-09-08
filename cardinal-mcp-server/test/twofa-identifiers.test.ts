@@ -83,6 +83,7 @@ describe("2FA / verified identifiers — User API", () => {
 			"getUserByPhoneNumber",
 			"modifyUserEmail",
 			"modifyUserMobilePhone",
+			"removeUserMobilePhone",
 		]) {
 			expect(md).toContain(method);
 		}
