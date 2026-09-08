@@ -5,23 +5,30 @@
 # dependency to an SDK version that is not on npm yet, so the lockfile cannot be refreshed until the SDK is
 # published. Any other difference between the committed lockfile and what `yarn install` resolved means the
 # lockfile was out of date when it was committed, and the run stops here.
+#
+# With `--lockfile-only`, other modified files are ignored and only the lockfile rule is applied. That is the mode
+# for a tree that legitimately carries edits, such as the verification after the sync agent ran.
 set -euo pipefail
 
-# Working tree against the index: what `yarn install` itself changed.
-CHANGED=$(git diff --name-only -- .)
-if [ -z "$CHANGED" ]; then
-	echo "yarn.lock is up to date."
-	exit 0
-fi
+LOCKFILE_ONLY=false
+[ "${1:-}" = "--lockfile-only" ] && LOCKFILE_ONLY=true
 
-UNEXPECTED_FILES=$(echo "$CHANGED" | grep -vE '(^|/)yarn\.lock$' || true)
-if [ -n "$UNEXPECTED_FILES" ]; then
-	echo "::error::yarn install changed tracked files other than yarn.lock:"
-	echo "$UNEXPECTED_FILES"
-	exit 1
+# Working tree against the index.
+if [ "$LOCKFILE_ONLY" = false ]; then
+	CHANGED=$(git diff --name-only -- .)
+	UNEXPECTED_FILES=$(echo "$CHANGED" | grep -vE '(^|/)yarn\.lock$' || true)
+	if [ -n "$UNEXPECTED_FILES" ]; then
+		echo "::error::yarn install changed tracked files other than yarn.lock:"
+		echo "$UNEXPECTED_FILES"
+		exit 1
+	fi
 fi
 
 LOCK_DIFF=$(git diff -U0 -- yarn.lock)
+if [ -z "$LOCK_DIFF" ]; then
+	echo "yarn.lock is up to date."
+	exit 0
+fi
 # Entry headers (`"pkg@npm:range":`) that were added or removed must all belong to @icure/cardinal-sdk...
 FOREIGN_HEADERS=$(echo "$LOCK_DIFF" | grep -E '^[+-]"' | grep -vE '^[+-]"@icure/cardinal-sdk@' || true)
 # ...and so must every changed `resolution:` line.
