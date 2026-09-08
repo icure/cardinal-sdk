@@ -88,6 +88,9 @@ jobs:
                     # whatever branch the dispatch was started from. `push`: the pushed commit.
                     ref: ${{ (github.event_name == 'pull_request' && github.head_ref) || (github.event_name == 'workflow_dispatch' && 'develop') || github.sha }}
                     submodules: 'recursive'
+                    # Full history and tags: the "what changed" digest for Claude walks from the last release tag.
+                    fetch-depth: 0
+                    fetch-tags: true
                     token: ${{ secrets.GH_PERSONAL_ACCESS_TOKEN }}
                     # Nothing after the Gradle build may hold repository credentials: Claude runs on this checkout.
                     persist-credentials: false
@@ -145,6 +148,45 @@ jobs:
                     echo "SDK version: $SDK_VERSION (MCP server currently targets $PREVIOUS_SDK_VERSION)"
                     echo "sdk-version=$SDK_VERSION" >> $GITHUB_OUTPUT
                     echo "previous-sdk-version=$PREVIOUS_SDK_VERSION" >> $GITHUB_OUTPUT
+
+            -   name: Collect what changed since the previous SDK version
+                # Input for the agent's documentation pass: release notes of every release the MCP server skipped,
+                # plus the commit titles since the last tag (the version being released has no release yet).
+                env:
+                    GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+                    PREVIOUS: ${{ steps.versions.outputs.previous-sdk-version }}
+                    CURRENT: ${{ steps.versions.outputs.sdk-version }}
+                run: |
+                    mkdir -p "$SYNC_DIR"
+                    OUT="$SYNC_DIR/changes.md"
+                    echo "# SDK changes between $PREVIOUS and $CURRENT" > "$OUT"
+                    echo >> "$OUT"
+                    echo "## Release notes" >> "$OUT"
+                    # Release tags strictly newer than PREVIOUS and not newer than CURRENT, oldest first.
+                    gh api --paginate "repos/${{ github.repository }}/releases" --jq '.[] | select(.draft == false) | .tag_name' \
+                        | { echo "$PREVIOUS"; echo "$CURRENT"; cat; } | sort -uV \
+                        | awk -v p="$PREVIOUS" -v c="$CURRENT" '$0 == p {on=1; next} on {print} $0 == c {exit}' > "$SYNC_DIR/tags.txt"
+                    LAST_RELEASED_TAG=""
+                    while read -r TAG; do
+                        [ -z "$TAG" ] && continue
+                        BODY=$(gh release view "$TAG" --json body --jq '.body' 2>/dev/null) || continue
+                        LAST_RELEASED_TAG="$TAG"
+                        echo >> "$OUT"; echo "### $TAG" >> "$OUT"
+                        if [ -n "$BODY" ]; then echo "$BODY" >> "$OUT"; else echo "_No release notes._" >> "$OUT"; fi
+                    done < "$SYNC_DIR/tags.txt"
+                    [ -n "$LAST_RELEASED_TAG" ] || echo "_No release between $PREVIOUS and $CURRENT._" >> "$OUT"
+                    echo >> "$OUT"
+                    # Release tags point at merge commits on main, so walk from the develop commit that release contains.
+                    BASE_TAG="${LAST_RELEASED_TAG:-$PREVIOUS}"
+                    BASE=$(git merge-base "$BASE_TAG" HEAD 2>/dev/null || true)
+                    echo "## Commits since release $BASE_TAG touching the SDK sources (first-parent)" >> "$OUT"
+                    echo >> "$OUT"
+                    if [ -n "$BASE" ]; then
+                        git log --first-parent --format='- %s' "$BASE..HEAD" -- cardinal-sdk/src/commonMain >> "$OUT"
+                    else
+                        echo "_Tag $BASE_TAG not found in this checkout._" >> "$OUT"
+                    fi
+                    echo "Wrote $(wc -l < "$OUT") lines to $OUT"; head -n 40 "$OUT"
 
             -   name: Install dependencies
                 # Not `--immutable`: yarn.lock legitimately lags package.json by one SDK version (see the note
@@ -218,7 +260,7 @@ jobs:
                 with:
                     claude_code_oauth_token: ${{ secrets.CLAUDE_CODE_OAUTH_TOKEN }}
                     github_token: ${{ secrets.GITHUB_TOKEN }}
-                    prompt: '/mcp-sync SDK_VERSION=${{ steps.versions.outputs.sdk-version }} PREVIOUS_SDK_VERSION=${{ steps.versions.outputs.previous-sdk-version }} SYNC_DIR=${{ env.SYNC_DIR }} PR_BODY_PATH=${{ env.SYNC_DIR }}/pr-body.md'
+                    prompt: '/mcp-sync SDK_VERSION=${{ steps.versions.outputs.sdk-version }} PREVIOUS_SDK_VERSION=${{ steps.versions.outputs.previous-sdk-version }} SYNC_DIR=${{ env.SYNC_DIR }} CHANGES_PATH=${{ env.SYNC_DIR }}/changes.md PR_BODY_PATH=${{ env.SYNC_DIR }}/pr-body.md'
                     # Edit-only guardrails: no git mutation, no gh, no package manager mutation, no arbitrary network.
                     # The PR is opened by the create-pull-request step below, from cardinal-mcp-server/ only.
                     claude_args: >-

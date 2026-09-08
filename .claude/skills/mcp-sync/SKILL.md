@@ -1,6 +1,6 @@
 ---
 name: mcp-sync
-description: Sync cardinal-mcp-server with a new Cardinal SDK version after the generated files were refreshed. Reconciles the API allow-lists and tool enums with the SDK's API surface, fixes generate/build/test breakage, patches SDK.md snippets for removed or renamed APIs and writes the PR description. Used by .github/workflows/update_mcp_server.yml; also runnable by hand.
+description: Sync cardinal-mcp-server with a new Cardinal SDK version after the generated files were refreshed. Reconciles the API allow-lists and tool enums with the SDK's API surface, fixes generate/build/test breakage, updates SDK.md (fixes snippets for removed or renamed APIs, documents new features) and writes the PR description. Used by .github/workflows/update_mcp_server.yml; also runnable by hand.
 ---
 
 # MCP server sync
@@ -20,6 +20,9 @@ The prompt passes `KEY=VALUE` pairs:
 - `PREVIOUS_SDK_VERSION` — the version it targeted before this sync.
 - `SYNC_DIR` — directory holding `generate.log`, `build.log`, `test.log` and `outcomes.txt` from the first pass.
   `outcomes.txt` lists the commands that failed, one `name=failed` per line, and is empty when everything passed.
+- `CHANGES_PATH` — Markdown digest of what changed in the SDK between the two versions: the release notes of every
+  release in between, then the commit titles since the last tag. This is your only source for behaviour changes that a
+  signature diff does not show.
 - `PR_BODY_PATH` — where to write the PR description (Markdown).
 
 When run by hand without arguments, follow the **Running locally** section first.
@@ -78,10 +81,32 @@ When run by hand without arguments, follow the **Running locally** section first
    - `test` fails → `test/*.test.ts` assert on tool names, resource URIs and search results. Update the expectation
      only when the behaviour change is intended by the SDK change; otherwise fix the server.
 
-4. **Patch `SDK.md` for removed or renamed APIs.** Search `SDK.md` for each removed or renamed API and method name.
-   Update the TypeScript snippets and the prose around them so they match the new SDK. Do not rewrite sections that
-   still apply, and do not reformat the file. `SDK.md` is stitched from the docs repository (`<!-- Source: ... -->`
-   markers); keep those markers intact. Rerun `yarn run generate` after editing it.
+4. **Update `SDK.md`.** `SDK.md` is a snapshot of the `sdk/` pages of `icure/medtech-docs`, split into sections by
+   `<!-- Source: sdk/... -->` markers. `extract-docs.ts` only serves sections whose source path starts with
+   `sdk/tutorial/`, `sdk/how-to/`, `sdk/quickstart/`, `sdk/explanations/end-to-end-encryption/`,
+   `sdk/explanations/data-model/` or `sdk/troubleshooting/`; the section title is its first `# ` heading and the
+   resource slug derives from the path. Keep every existing marker intact and do not reformat the file. Two passes:
+
+   - **Removed or renamed APIs.** Search `SDK.md` for each removed or renamed API and method name. Update the
+     TypeScript snippets and the prose around them so they match the new SDK. Do not rewrite sections that still apply.
+   - **New features.** From the API surface diff (step 2) and `CHANGES_PATH`, list what a TypeScript developer would
+     need to read about: new APIs, new methods on existing APIs, new filter factories, new model fields with
+     behaviour attached, breaking changes. For each item, either extend the existing section that covers the topic
+     (for example a new method on `PatientApi` goes into the how-to that already shows `PatientApi`), or add a new
+     section when no section fits: place it after the last `sdk/how-to/` section, start it with
+     `<!-- Source: sdk/how-to/<kebab-case-slug>.mdx -->` followed by a `# Title` heading, and keep it in the style of
+     the neighbouring how-to pages. Skip items that are internal, deprecated or already covered.
+
+   Rules for anything you write in `SDK.md`:
+   - TypeScript only, in plain ` ```typescript ` fences. No Kotlin, Python or Dart.
+   - Every method, class and property you use must exist in `node_modules/@icure/cardinal-sdk/**/*.d.mts`. Check
+     each one with Grep before writing it. Copy parameter order and types from the declaration.
+   - Describe what the declaration and KDoc say. Do not infer behaviour that is written nowhere; when the release
+     notes announce a behaviour change you cannot confirm in the code, name it in **Needs a human** instead.
+   - Short: a paragraph of context, one snippet, one paragraph on what to expect. No marketing.
+
+   Rerun `yarn run generate` after editing and confirm the new or extended sections appear in
+   `generated/docs-manifest.json` (`guides` and `tutorials` counts in `generate.log`).
 
 5. **Update `cardinal-mcp-server/CLAUDE.md`** if you added or removed a tool, a resource or a helper, so the file
    stays an accurate map of the code.
@@ -91,7 +116,9 @@ When run by hand without arguments, follow the **Running locally** section first
    - **API surface**: APIs added to or removed from the server, and APIs you deliberately left out (deprecated) with
      the reason.
    - **Fixes**: what broke in `generate`, `build` or `test` and what you changed.
-   - **SDK.md**: sections you patched, or `No change needed.`
+   - **SDK.md**: sections you patched, sections you added or extended for new features (with their `Source:` path),
+     or `No change needed.` These additions exist only in this copy: whoever maintains `icure/medtech-docs` can port
+     them from this list.
    - **Needs a human**: anything you could not resolve, or an empty section. Be specific: file, symbol, why.
    - A last line: `_Opened by the Update MCP server workflow._`
 
@@ -119,7 +146,11 @@ yarn run build    > /tmp/mcp-sync/build.log    2>&1 || echo build=failed    >> /
 yarn test         > /tmp/mcp-sync/test.log     2>&1 || echo test=failed     >> /tmp/mcp-sync/outcomes.txt
 ```
 
-Then invoke `/mcp-sync SDK_VERSION=<v> PREVIOUS_SDK_VERSION=<v> SYNC_DIR=/tmp/mcp-sync PR_BODY_PATH=/tmp/mcp-sync/pr-body.md`
+For the changes digest, write the release notes between the two versions and the commit titles since the last tag
+to `/tmp/mcp-sync/changes.md` (`gh release view <tag> --json body --jq .body` per tag, then
+`git log --first-parent --format='- %s' <last-tag>..HEAD -- cardinal-sdk/src/commonMain`).
+
+Then invoke `/mcp-sync SDK_VERSION=<v> PREVIOUS_SDK_VERSION=<v> SYNC_DIR=/tmp/mcp-sync CHANGES_PATH=/tmp/mcp-sync/changes.md PR_BODY_PATH=/tmp/mcp-sync/pr-body.md`
 and follow the procedure above.
 
 ## Note on yarn.lock

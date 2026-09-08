@@ -65,5 +65,8 @@ Do not manually edit. Regenerate with `yarn run generate`.
   `mcp-server/sync-<version>`.
 - `.github/workflows/publish_mcp_server.yml` — on push to `main` touching this folder, waits for the matching
   `@icure/cardinal-sdk` on npm, then publishes this package with npm trusted publishing (OIDC).
+- `SDK.md` is a snapshot of the `sdk/` pages of `icure/medtech-docs` (June 2026), split by `<!-- Source: sdk/... -->`
+  markers, plus sections the sync agent adds or extends to document features released since. Those additions live
+  only here; the PR body of each sync lists them so they can be ported to `medtech-docs`.
 - The package version mirrors the SDK version. `yarn.lock` lags `package.json` by one SDK version between a sync
   and the next; `.github/scripts/mcp-check-yarn-lock-drift.sh` enforces that this is the only drift.
