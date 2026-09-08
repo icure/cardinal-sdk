@@ -1688,6 +1688,17 @@ export const METHOD_REGISTRY: Record<string, ApiInfo> = {
 				"returnType": "Promise<Array<EntityReferenceInGroup>>"
 			},
 			{
+				"name": "decryptPatientIdOfService",
+				"params": [
+					{
+						"name": "service",
+						"type": "Service",
+						"optional": false
+					}
+				],
+				"returnType": "Promise<Array<EntityReferenceInGroup>>"
+			},
+			{
 				"name": "createDelegationDeAnonymizationMetadata",
 				"params": [
 					{
@@ -2983,156 +2994,15 @@ export const METHOD_REGISTRY: Record<string, ApiInfo> = {
 			}
 		]
 	},
-	"DocumentTemplate": {
-		"apiName": "DocumentTemplateApi",
-		"propertyName": "documentTemplate",
+	"Filter": {
+		"apiName": "FilterApi",
+		"propertyName": "filter",
 		"isEncryptable": false,
 		"methods": [
 			{
-				"name": "getDocumentTemplate",
-				"params": [
-					{
-						"name": "documentTemplateId",
-						"type": "string",
-						"optional": false
-					}
-				],
-				"returnType": "Promise<DocumentTemplate | undefined>"
-			},
-			{
-				"name": "createDocumentTemplate",
-				"params": [
-					{
-						"name": "documentTemplate",
-						"type": "DocumentTemplate",
-						"optional": false
-					}
-				],
-				"returnType": "Promise<DocumentTemplate>"
-			},
-			{
-				"name": "modifyDocumentTemplate",
-				"params": [
-					{
-						"name": "documentTemplate",
-						"type": "DocumentTemplate",
-						"optional": false
-					}
-				],
-				"returnType": "Promise<DocumentTemplate>"
-			},
-			{
-				"name": "deleteDocumentTemplates",
-				"params": [
-					{
-						"name": "documentTemplateIds",
-						"type": "Array<string>",
-						"optional": false
-					}
-				],
-				"returnType": "Promise<Array<DocIdentifier>>"
-			},
-			{
-				"name": "listDocumentTemplatesBySpeciality",
-				"params": [
-					{
-						"name": "specialityCode",
-						"type": "string",
-						"optional": false
-					}
-				],
-				"returnType": "Promise<Array<DocumentTemplate>>"
-			},
-			{
-				"name": "listDocumentTemplatesByDocumentType",
-				"params": [
-					{
-						"name": "documentTypeCode",
-						"type": "string",
-						"optional": false
-					}
-				],
-				"returnType": "Promise<Array<DocumentTemplate>>"
-			},
-			{
-				"name": "listDocumentTemplatesByDocumentTypeForCurrentUser",
-				"params": [
-					{
-						"name": "documentTypeCode",
-						"type": "string",
-						"optional": false
-					}
-				],
-				"returnType": "Promise<Array<DocumentTemplate>>"
-			},
-			{
-				"name": "listDocumentTemplates",
+				"name": "getFilterOptionsDefinitions",
 				"params": [],
-				"returnType": "Promise<Array<DocumentTemplate>>"
-			},
-			{
-				"name": "getDocumentTemplateAttachment",
-				"params": [
-					{
-						"name": "documentTemplateId",
-						"type": "string",
-						"optional": false
-					},
-					{
-						"name": "attachmentId",
-						"type": "string",
-						"optional": false
-					}
-				],
-				"returnType": "Promise<Int8Array>"
-			},
-			{
-				"name": "getAttachmentText",
-				"params": [
-					{
-						"name": "documentTemplateId",
-						"type": "string",
-						"optional": false
-					},
-					{
-						"name": "attachmentId",
-						"type": "string",
-						"optional": false
-					}
-				],
-				"returnType": "Promise<Int8Array>"
-			},
-			{
-				"name": "setDocumentTemplateAttachment",
-				"params": [
-					{
-						"name": "documentTemplateId",
-						"type": "string",
-						"optional": false
-					},
-					{
-						"name": "payload",
-						"type": "Int8Array",
-						"optional": false
-					}
-				],
-				"returnType": "Promise<DocumentTemplate>"
-			},
-			{
-				"name": "getAttachmentUrl",
-				"params": [
-					{
-						"name": "documentId",
-						"type": "string",
-						"optional": false
-					},
-					{
-						"name": "attachmentId",
-						"type": "string",
-						"optional": false
-					}
-				],
-				"returnType": "string"
+				"returnType": "Promise<{ [key: string]: Array<FilterOptionGroupWithViews>"
 			}
 		]
 	},
@@ -3551,6 +3421,17 @@ export const METHOD_REGISTRY: Record<string, ApiInfo> = {
 				"returnType": "Promise<string>"
 			},
 			{
+				"name": "matchFormTemplateBy",
+				"params": [
+					{
+						"name": "filter",
+						"type": "BaseFilterOptions<FormTemplate>",
+						"optional": false
+					}
+				],
+				"returnType": "Promise<Array<string>>"
+			},
+			{
 				"name": "filterFormsBy",
 				"params": [
 					{
@@ -3922,6 +3803,17 @@ export const METHOD_REGISTRY: Record<string, ApiInfo> = {
 					}
 				],
 				"returnType": "Promise<string>"
+			},
+			{
+				"name": "matchFormTemplateBy",
+				"params": [
+					{
+						"name": "filter",
+						"type": "BaseFilterOptions<FormTemplate>",
+						"optional": false
+					}
+				],
+				"returnType": "Promise<Array<string>>"
 			}
 		]
 	},
@@ -7347,6 +7239,11 @@ export const METHOD_REGISTRY: Record<string, ApiInfo> = {
 		"isEncryptable": false,
 		"methods": [
 			{
+				"name": "getPermissions",
+				"params": [],
+				"returnType": "Promise<Array<string>>"
+			},
+			{
 				"name": "getAllRoles",
 				"params": [],
 				"returnType": "Promise<Array<Role>>"
@@ -8129,6 +8026,64 @@ export const METHOD_REGISTRY: Record<string, ApiInfo> = {
 					{
 						"name": "user",
 						"type": "User",
+						"optional": false
+					}
+				],
+				"returnType": "Promise<User>"
+			},
+			{
+				"name": "modifyUserPassword",
+				"params": [
+					{
+						"name": "userId",
+						"type": "string",
+						"optional": false
+					},
+					{
+						"name": "newPassword",
+						"type": "string",
+						"optional": false
+					}
+				],
+				"returnType": "Promise<User>"
+			},
+			{
+				"name": "modifyUserEmail",
+				"params": [
+					{
+						"name": "userId",
+						"type": "string",
+						"optional": false
+					},
+					{
+						"name": "newEmail",
+						"type": "string",
+						"optional": false
+					},
+					{
+						"name": "previousEmail",
+						"type": "string | undefined",
+						"optional": false
+					}
+				],
+				"returnType": "Promise<User>"
+			},
+			{
+				"name": "modifyUserMobilePhone",
+				"params": [
+					{
+						"name": "userId",
+						"type": "string",
+						"optional": false
+					},
+					{
+						"name": "newMobilePhone",
+						"type": "string",
+						"optional": false
+					},
+					{
+						"name": "previousMobilePhone",
+						"type": "string | undefined",
 						"optional": false
 					}
 				],
