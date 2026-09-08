@@ -58,8 +58,8 @@ Do not manually edit. Regenerate with `yarn run generate`.
 
 ## Automation
 
-- `.github/workflows/update_mcp_server.yml` — when the release PR from `develop` to `main` opens (and on later pushes
-  to `develop` touching `ts-wrapper/src/jsMain/**` while it is open), builds the unreleased TypeScript SDK, installs it
+- `.github/workflows/update_mcp_server.yml` — on pushes to `develop` touching `ts-wrapper/src/jsMain/**` while a
+  release PR from `develop` to `main` is open (the TS generation PR merging), builds the unreleased TypeScript SDK, installs it
   over `node_modules/@icure/cardinal-sdk`, bumps `package.json` to the SDK version, runs generate/build/test, and lets
   Claude reconcile the rest through `.claude/skills/mcp-sync/SKILL.md`. Opens a PR to `develop` on branch
   `mcp-server/sync-<version>`.

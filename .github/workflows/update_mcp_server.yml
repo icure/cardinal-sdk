@@ -2,11 +2,13 @@ name: Update MCP server
 
 # Keeps cardinal-mcp-server in sync with the SDK that is about to be released.
 #
-# Trigger model mirrors generate_typescript.yml: the release PR from develop to
-# main opening, and pushes to develop that touch the TypeScript wrapper sources
-# while that release PR is open (the TS generation PR merging is one such push,
-# and it is the one that matters: the MCP registry is generated from the
-# wrapper's .d.mts declarations). A manual dispatch always runs from develop.
+# Runs on pushes to develop that touch the TypeScript wrapper sources while a
+# release PR from develop to main is open. In practice that is the TS generation
+# PR (generate_typescript.yml) merging: the MCP registry is generated from the
+# wrapper's .d.mts declarations, so there is nothing to sync before that, and
+# the sync PR still lands in the release PR because it tracks develop. A
+# release whose TS generation produced no change gets no sync run. A manual
+# dispatch always runs from develop.
 #
 # Shell steps do the deterministic work: build the unreleased TS wrapper, run
 # generate/build/test, bump the package version. Claude runs only when the
@@ -16,13 +18,6 @@ name: Update MCP server
 # uploads the partial diff as an artifact and opens nothing.
 
 on:
-    pull_request:
-        # Only `opened`/`reopened`, see generate_typescript.yml for the reasoning.
-        types:
-            - opened
-            - reopened
-        branches:
-            - main
     push:
         branches:
             - develop
@@ -42,7 +37,7 @@ jobs:
     check-open-pr:
         runs-on: ubuntu-latest
         name: Check for an open PR towards main
-        # On `pull_request` the PR is the event itself, on `workflow_dispatch` the user asked for the run.
+        # On `workflow_dispatch` the user asked for the run.
         if: github.event_name == 'push'
         permissions:
             pull-requests: read
@@ -64,11 +59,10 @@ jobs:
 
     update-mcp-server:
         needs: check-open-pr
-        # `!cancelled()` is needed because `check-open-pr` is skipped on `pull_request` and `workflow_dispatch`.
+        # `!cancelled()` is needed because `check-open-pr` is skipped on `workflow_dispatch`.
         if: >-
             !cancelled() && (
               github.event_name == 'workflow_dispatch'
-              || (github.event_name == 'pull_request' && github.head_ref == 'develop')
               || (github.event_name == 'push' && needs.check-open-pr.outputs.has-open-pr == 'true')
             )
         runs-on: ubuntu-latest
@@ -86,9 +80,9 @@ jobs:
             -   name: Check out code
                 uses: actions/checkout@v4
                 with:
-                    # `pull_request`: the head branch, not the merge commit. `workflow_dispatch`: always develop,
-                    # whatever branch the dispatch was started from. `push`: the pushed commit.
-                    ref: ${{ (github.event_name == 'pull_request' && github.head_ref) || (github.event_name == 'workflow_dispatch' && 'develop') || github.sha }}
+                    # `workflow_dispatch`: always develop, whatever branch the dispatch was started from.
+                    # `push`: the pushed commit.
+                    ref: ${{ (github.event_name == 'workflow_dispatch' && 'develop') || github.sha }}
                     submodules: 'recursive'
                     # Full history and tags: the "what changed" digest for Claude walks from the last release tag.
                     fetch-depth: 0
@@ -191,11 +185,21 @@ jobs:
                     echo "Wrote $(wc -l < "$OUT") lines to $OUT"; head -n 40 "$OUT"
 
             -   name: Install dependencies
-                # Not `--immutable`: yarn.lock legitimately lags package.json by one SDK version (see the note
-                # in .claude/skills/mcp-sync/SKILL.md). The drift check makes sure that is the only difference.
+                # yarn.lock legitimately lags package.json by one SDK version (see the note in
+                # .claude/skills/mcp-sync/SKILL.md), and Yarn refuses to touch it on CI unless told otherwise. The
+                # drift check makes sure the @icure/cardinal-sdk entry is the only thing that moved.
                 working-directory: ${{ env.MCP_DIR }}
+                env:
+                    YARN_ENABLE_IMMUTABLE_INSTALLS: 'false'
                 run: |
+                    # package.json may already point at an SDK version that is not on npm (a sync PR for this release
+                    # was merged and this is a re-run). Install against the newest published SDK; the unreleased
+                    # build replaces it in the next step and the bump step rewrites the dependency line.
+                    PUBLISHED=$(npm view @icure/cardinal-sdk version)
+                    echo "Installing against @icure/cardinal-sdk $PUBLISHED"
+                    npm pkg set "dependencies.@icure/cardinal-sdk=^$PUBLISHED"
                     yarn install
+                    git checkout -- package.json
                     ../.github/scripts/mcp-check-yarn-lock-drift.sh
 
             -   name: Install the unreleased SDK package over the published one
@@ -280,8 +284,9 @@ jobs:
                     yarn run generate
                     yarn run build
                     yarn test
-                    ../.github/scripts/mcp-check-yarn-lock-drift.sh
-                    # The agent must not have touched anything outside the MCP server.
+                    # The agent must not have touched dependencies, the lockfile or the Yarn setup...
+                    ../.github/scripts/mcp-check-sync-invariants.sh "${{ steps.versions.outputs.sdk-version }}"
+                    # ...nor anything outside the MCP server.
                     OUTSIDE=$(git status --porcelain | grep -vE '^.. ${{ env.MCP_DIR }}/' || true)
                     if [ -n "$OUTSIDE" ]; then
                         echo "::error::Unexpected changes outside ${{ env.MCP_DIR }}:"; echo "$OUTSIDE"; exit 1
@@ -291,6 +296,8 @@ jobs:
                 if: steps.gate.outputs.has-changes == 'true' && steps.verify.outcome != 'success'
                 run: |
                     mkdir -p "$SYNC_DIR"
+                    # Intent-to-add so files the agent created appear in the patch too.
+                    git add -N -- ${{ env.MCP_DIR }}
                     git diff -- ${{ env.MCP_DIR }} > "$SYNC_DIR/mcp-sync.patch"
                     git status --porcelain > "$SYNC_DIR/git-status.txt"
 
@@ -304,7 +311,7 @@ jobs:
             -   name: Fail the run when verification failed
                 if: steps.gate.outputs.has-changes == 'true' && steps.verify.outcome != 'success'
                 run: |
-                    echo "::error::The MCP server does not build or test cleanly against SDK ${{ steps.versions.outputs.sdk-version }}. No PR was opened."
+                    echo "::error::Verification of the sync against SDK ${{ steps.versions.outputs.sdk-version }} failed, see the 'Verify the result' step. No PR was opened."
                     echo "::error::The partial diff and logs are attached as the 'mcp-sync-${{ steps.versions.outputs.sdk-version }}-partial' artifact. Fix locally or rerun with workflow_dispatch."
                     exit 1
 
