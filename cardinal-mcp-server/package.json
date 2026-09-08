@@ -1,12 +1,10 @@
 {
   "name": "@icure/cardinal-mcp-server",
-  "version": "2.2.0",
+  "version": "2.8.0",
   "description": "MCP server exposing Cardinal SDK documentation and operational tools",
   "type": "module",
   "main": "dist/index.js",
-  "bin": {
-    "cardinal-mcp-server": "dist/index.js"
-  },
+  "bin": "dist/index.js",
   "files": [
     "dist",
     "generated"
@@ -17,7 +15,9 @@
     "prepublishOnly": "npm run generate && npm run build",
     "publish:npm": "npm publish --access public",
     "start": "node dist/index.js",
-    "dev": "tsx src/index.ts"
+    "dev": "tsx src/index.ts",
+    "test": "vitest run",
+    "test:watch": "vitest"
   },
   "repository": {
     "type": "git",
@@ -33,13 +33,14 @@
   ],
   "license": "MIT",
   "dependencies": {
-    "@icure/cardinal-sdk": "^2.0.0",
+    "@icure/cardinal-sdk": "^2.8.0",
     "@modelcontextprotocol/sdk": "^1.26.0",
     "zod": "^3.25.0"
   },
   "devDependencies": {
     "@types/node": "^22.0.0",
     "tsx": "^4.0.0",
-    "typescript": "^5.7.0"
+    "typescript": "^5.7.0",
+    "vitest": "^4.1.8"
   }
 }
