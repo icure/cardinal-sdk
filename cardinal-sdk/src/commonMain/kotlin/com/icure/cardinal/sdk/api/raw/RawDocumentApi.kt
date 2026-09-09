@@ -2,6 +2,7 @@ package com.icure.cardinal.sdk.api.raw
 
 import com.icure.cardinal.sdk.model.Document
 import com.icure.cardinal.sdk.model.EncryptedDocument
+import com.icure.cardinal.sdk.model.IcureStub
 import com.icure.cardinal.sdk.model.ListOfIds
 import com.icure.cardinal.sdk.model.ListOfIdsAndRev
 import com.icure.cardinal.sdk.model.conflicts.ConflictResolutionRequest
@@ -86,6 +87,8 @@ public interface RawDocumentApi {
 	suspend fun getDocumentsByExternalUuid(externalUuid: String): HttpResponse<List<EncryptedDocument>>
 
 	suspend fun getDocuments(documentIds: ListOfIds): HttpResponse<List<EncryptedDocument>>
+
+	suspend fun findDocumentsDelegationsStubsByIds(documentIds: ListOfIds): HttpResponse<List<IcureStub>>
 
 	suspend fun modifyDocument(documentDto: EncryptedDocument): HttpResponse<EncryptedDocument>
 
