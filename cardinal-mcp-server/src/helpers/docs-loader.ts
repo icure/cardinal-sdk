@@ -39,6 +39,8 @@ export interface ModelDoc {
 	variants?: string[];
 	implements?: string[];
 	fields: ModelField[];
+	/** True when this model represents an enum; `fields` then holds the enum constants. */
+	isEnum?: boolean;
 }
 
 export interface FilterMethodDoc {

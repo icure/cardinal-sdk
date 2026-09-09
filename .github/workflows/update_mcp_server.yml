@@ -1,0 +1,359 @@
+name: Update MCP server
+
+# Keeps cardinal-mcp-server in sync with the SDK that is about to be released.
+#
+# Runs on pushes to develop that touch the TypeScript wrapper sources while a
+# release PR from develop to main is open. In practice that is the TS generation
+# PR (generate_typescript.yml) merging: the MCP registry is generated from the
+# wrapper's .d.mts declarations, so there is nothing to sync before that, and
+# the sync PR still lands in the release PR because it tracks develop. A
+# release whose TS generation produced no change gets no sync run. A manual
+# dispatch always runs from develop.
+#
+# Shell steps do the deterministic work: build the unreleased TS wrapper, run
+# generate/build/test, bump the package version. Claude runs only when the
+# result needs judgment (API surface changed, or something broke), driven by
+# .claude/skills/mcp-sync. Claude edits files only; a verification step after
+# it decides whether a PR is opened. A failing verification fails the run,
+# uploads the partial diff as an artifact and opens nothing.
+
+on:
+    push:
+        branches:
+            - develop
+        paths:
+            - 'ts-wrapper/src/jsMain/**'
+    workflow_dispatch:
+
+concurrency:
+    group: update-mcp-server
+    cancel-in-progress: true
+
+env:
+    MCP_DIR: cardinal-mcp-server
+    TS_PACKAGE_DIR: ts-wrapper/build/tsPackage
+
+jobs:
+    check-open-pr:
+        runs-on: ubuntu-latest
+        name: Check for an open PR towards main
+        # On `workflow_dispatch` the user asked for the run.
+        if: github.event_name == 'push'
+        permissions:
+            pull-requests: read
+        outputs:
+            has-open-pr: ${{ steps.check.outputs.has-open-pr }}
+        steps:
+            -   name: Look for an open PR from develop to main
+                id: check
+                env:
+                    GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+                run: |
+                    COUNT=$(gh api "repos/${{ github.repository }}/pulls?state=open&base=main&head=${{ github.repository_owner }}:develop" --jq 'length')
+                    echo "Found $COUNT open PR(s) from develop towards main"
+                    if [ "$COUNT" -gt 0 ]; then
+                        echo "has-open-pr=true" >> $GITHUB_OUTPUT
+                    else
+                        echo "has-open-pr=false" >> $GITHUB_OUTPUT
+                    fi
+
+    update-mcp-server:
+        needs: check-open-pr
+        # `!cancelled()` is needed because `check-open-pr` is skipped on `workflow_dispatch`.
+        if: >-
+            !cancelled() && (
+              github.event_name == 'workflow_dispatch'
+              || (github.event_name == 'push' && needs.check-open-pr.outputs.has-open-pr == 'true')
+            )
+        runs-on: ubuntu-latest
+        name: Update MCP server
+        timeout-minutes: 120
+        permissions:
+            contents: read
+            id-token: write # claude-code-action OIDC
+        steps:
+            -   name: Pick a scratch directory outside the checkout
+                # Logs and the PR body must not show up as changes to the working tree. `runner.temp` is not
+                # available to a job-level `env`, so it is exported here for every later step.
+                run: echo "SYNC_DIR=$RUNNER_TEMP/mcp-sync" >> "$GITHUB_ENV"
+
+            -   name: Check out code
+                uses: actions/checkout@v4
+                with:
+                    # `workflow_dispatch`: always develop, whatever branch the dispatch was started from.
+                    # `push`: the pushed commit.
+                    ref: ${{ (github.event_name == 'workflow_dispatch' && 'develop') || github.sha }}
+                    submodules: 'recursive'
+                    # Full history and tags: the "what changed" digest for Claude walks from the last release tag.
+                    fetch-depth: 0
+                    fetch-tags: true
+                    token: ${{ secrets.GH_PERSONAL_ACCESS_TOKEN }}
+                    # Nothing after the Gradle build may hold repository credentials: Claude runs on this checkout.
+                    persist-credentials: false
+
+            -   name: Set up JDK 21
+                uses: actions/setup-java@v4
+                with:
+                    distribution: 'corretto'
+                    java-version: |
+                        21
+                    cache: 'gradle'
+
+            -   name: Write github credentials to local.properties
+                run: |
+                    echo "githubUsername=${{ secrets.GH_USERNAME }}" > local.properties
+                    echo "githubPassword=${{ secrets.GH_PERSONAL_ACCESS_TOKEN }}" >> local.properties
+                    mkdir -p ksp-json-processor
+                    echo "githubUsername=${{ secrets.GH_USERNAME }}" > ksp-json-processor/local.properties
+                    echo "githubPassword=${{ secrets.GH_PERSONAL_ACCESS_TOKEN }}" >> ksp-json-processor/local.properties
+
+            -   name: Build the unreleased TypeScript SDK package
+                # Credentials are scoped to this step: they must not be in the environment when Claude runs.
+                env:
+                    ORG_GRADLE_PROJECT_repoUsername: ${{ secrets.REPO_USERNAME }}
+                    ORG_GRADLE_PROJECT_repoPassword: ${{ secrets.REPO_PASSWORD }}
+                    ORG_GRADLE_PROJECT_mavenRepository: ${{ secrets.MAVEN_REPOSITORY }}
+                    ORG_GRADLE_PROJECT_mavenReleasesRepository: ${{ secrets.MAVEN_RELEASES_REPOSITORY }}
+                run: |
+                    ./gradlew :ts-wrapper:prepareDistributionPackage
+                    test -f ${{ env.TS_PACKAGE_DIR }}/package.json
+
+            -   name: Remove credentials from the checkout
+                run: |
+                    rm -f local.properties ksp-json-processor/local.properties
+
+            -   name: Set up Node
+                uses: actions/setup-node@v4
+                with:
+                    node-version: '24'
+
+            -   name: Enable Corepack
+                run: corepack enable
+
+            -   name: Resolve versions
+                id: versions
+                working-directory: ${{ env.MCP_DIR }}
+                run: |
+                    SDK_VERSION=$(grep -E '^val version = "' ../cardinal-sdk/build.gradle.kts | sed -E 's/.*"(.*)".*/\1/')
+                    PACKAGE_VERSION=$(node -p "require('../${{ env.TS_PACKAGE_DIR }}/package.json').version")
+                    PREVIOUS_SDK_VERSION=$(node -p "require('./package.json').dependencies['@icure/cardinal-sdk'].replace(/^[\^~]/, '')")
+                    if [ "$SDK_VERSION" != "$PACKAGE_VERSION" ]; then
+                        echo "::error::cardinal-sdk/build.gradle.kts says $SDK_VERSION but the built package says $PACKAGE_VERSION"
+                        exit 1
+                    fi
+                    echo "SDK version: $SDK_VERSION (MCP server currently targets $PREVIOUS_SDK_VERSION)"
+                    echo "sdk-version=$SDK_VERSION" >> $GITHUB_OUTPUT
+                    echo "previous-sdk-version=$PREVIOUS_SDK_VERSION" >> $GITHUB_OUTPUT
+
+            -   name: Collect what changed since the previous SDK version
+                # Input for the agent's documentation pass: release notes of every release the MCP server skipped,
+                # plus the commit titles since the last tag (the version being released has no release yet).
+                env:
+                    GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+                    PREVIOUS: ${{ steps.versions.outputs.previous-sdk-version }}
+                    CURRENT: ${{ steps.versions.outputs.sdk-version }}
+                run: |
+                    mkdir -p "$SYNC_DIR"
+                    OUT="$SYNC_DIR/changes.md"
+                    echo "# SDK changes between $PREVIOUS and $CURRENT" > "$OUT"
+                    echo >> "$OUT"
+                    echo "## Release notes" >> "$OUT"
+                    # Release tags strictly newer than PREVIOUS and not newer than CURRENT, oldest first.
+                    gh api --paginate "repos/${{ github.repository }}/releases" --jq '.[] | select(.draft == false) | .tag_name' \
+                        | { echo "$PREVIOUS"; echo "$CURRENT"; cat; } | sort -uV \
+                        | awk -v p="$PREVIOUS" -v c="$CURRENT" '$0 == p {on=1; next} on {print} $0 == c {exit}' > "$SYNC_DIR/tags.txt"
+                    LAST_RELEASED_TAG=""
+                    while read -r TAG; do
+                        [ -z "$TAG" ] && continue
+                        BODY=$(gh release view "$TAG" --json body --jq '.body' 2>/dev/null) || continue
+                        LAST_RELEASED_TAG="$TAG"
+                        echo >> "$OUT"; echo "### $TAG" >> "$OUT"
+                        if [ -n "$BODY" ]; then echo "$BODY" >> "$OUT"; else echo "_No release notes._" >> "$OUT"; fi
+                    done < "$SYNC_DIR/tags.txt"
+                    [ -n "$LAST_RELEASED_TAG" ] || echo "_No release between $PREVIOUS and $CURRENT._" >> "$OUT"
+                    echo >> "$OUT"
+                    # Release tags point at merge commits on main, so walk from the develop commit that release contains.
+                    BASE_TAG="${LAST_RELEASED_TAG:-$PREVIOUS}"
+                    BASE=$(git merge-base "$BASE_TAG" HEAD 2>/dev/null || true)
+                    echo "## Commits since release $BASE_TAG touching the SDK sources (first-parent)" >> "$OUT"
+                    echo >> "$OUT"
+                    if [ -n "$BASE" ]; then
+                        git log --first-parent --format='- %s' "$BASE..HEAD" -- cardinal-sdk/src/commonMain >> "$OUT"
+                    else
+                        echo "_Tag $BASE_TAG not found in this checkout._" >> "$OUT"
+                    fi
+                    echo "Wrote $(wc -l < "$OUT") lines to $OUT"; head -n 40 "$OUT"
+
+            -   name: Install dependencies
+                # yarn.lock legitimately lags package.json by one SDK version (see the note in
+                # .claude/skills/mcp-sync/SKILL.md), and Yarn refuses to touch it on CI unless told otherwise. The
+                # drift check makes sure the @icure/cardinal-sdk entry is the only thing that moved.
+                working-directory: ${{ env.MCP_DIR }}
+                env:
+                    YARN_ENABLE_IMMUTABLE_INSTALLS: 'false'
+                run: |
+                    # package.json may already point at an SDK version that is not on npm (a sync PR for this release
+                    # was merged and this is a re-run). Install against the newest published SDK; the unreleased
+                    # build replaces it in the next step and the bump step rewrites the dependency line.
+                    PUBLISHED=$(npm view @icure/cardinal-sdk version)
+                    echo "Installing against @icure/cardinal-sdk $PUBLISHED"
+                    npm pkg set "dependencies.@icure/cardinal-sdk=^$PUBLISHED"
+                    yarn install
+                    git checkout -- package.json
+                    ../.github/scripts/mcp-check-yarn-lock-drift.sh
+
+            -   name: Install the unreleased SDK package over the published one
+                working-directory: ${{ env.MCP_DIR }}
+                run: |
+                    rm -rf node_modules/@icure/cardinal-sdk
+                    cp -R ../${{ env.TS_PACKAGE_DIR }} node_modules/@icure/cardinal-sdk
+                    node -p "'Installed @icure/cardinal-sdk ' + require('@icure/cardinal-sdk/package.json').version"
+
+            -   name: Bump package version to the SDK version
+                working-directory: ${{ env.MCP_DIR }}
+                run: |
+                    npm pkg set "version=${{ steps.versions.outputs.sdk-version }}" "dependencies.@icure/cardinal-sdk=^${{ steps.versions.outputs.sdk-version }}"
+                    git diff -- package.json
+
+            -   name: Regenerate, build and test
+                id: first-pass
+                working-directory: ${{ env.MCP_DIR }}
+                continue-on-error: true
+                run: |
+                    mkdir -p "$SYNC_DIR"
+                    STATUS=0
+                    yarn run generate > "$SYNC_DIR/generate.log" 2>&1 || { echo "generate=failed" >> "$SYNC_DIR/outcomes.txt"; STATUS=1; }
+                    yarn run build    > "$SYNC_DIR/build.log"    2>&1 || { echo "build=failed"    >> "$SYNC_DIR/outcomes.txt"; STATUS=1; }
+                    yarn test         > "$SYNC_DIR/test.log"     2>&1 || { echo "test=failed"     >> "$SYNC_DIR/outcomes.txt"; STATUS=1; }
+                    touch "$SYNC_DIR/outcomes.txt"
+                    echo "## First pass" ; cat "$SYNC_DIR/outcomes.txt"
+                    for f in generate build test; do echo "### $f.log (tail)"; tail -n 40 "$SYNC_DIR/$f.log"; done
+                    exit $STATUS
+
+            -   name: Decide whether Claude is needed
+                id: gate
+                run: |
+                    CHANGED=$(git diff --name-only -- ${{ env.MCP_DIR }})
+                    echo "Changed files:"; echo "$CHANGED"
+                    if [ -z "$CHANGED" ] && [ "${{ steps.first-pass.outcome }}" == "success" ]; then
+                        echo "Nothing changed and everything passes: nothing to do."
+                        echo "has-changes=false" >> $GITHUB_OUTPUT
+                        echo "needs-agent=false" >> $GITHUB_OUTPUT
+                        exit 0
+                    fi
+                    echo "has-changes=true" >> $GITHUB_OUTPUT
+                    if [ "${{ steps.first-pass.outcome }}" != "success" ]; then
+                        echo "generate/build/test did not pass: Claude is needed."
+                        echo "needs-agent=true" >> $GITHUB_OUTPUT
+                        exit 0
+                    fi
+                    # Mechanical-only changes: the two version lines in package.json and the lockfile refresh.
+                    OTHER_FILES=$(echo "$CHANGED" | grep -vE '^${{ env.MCP_DIR }}/(package\.json|yarn\.lock)$' || true)
+                    OTHER_PACKAGE_LINES=$(git diff -U0 -- ${{ env.MCP_DIR }}/package.json | grep -E '^[+-][^+-]' | grep -vE '"version"|"@icure/cardinal-sdk"' || true)
+                    if [ -z "$OTHER_FILES" ] && [ -z "$OTHER_PACKAGE_LINES" ]; then
+                        echo "Only the version bump and the lockfile changed: Claude is not needed."
+                        echo "needs-agent=false" >> $GITHUB_OUTPUT
+                    else
+                        echo "Generated files or sources changed: Claude is needed."
+                        echo "needs-agent=true" >> $GITHUB_OUTPUT
+                    fi
+
+            -   name: Sync the MCP server with Claude
+                id: claude
+                if: steps.gate.outputs.needs-agent == 'true'
+                continue-on-error: true
+                uses: anthropics/claude-code-action@v1
+                with:
+                    claude_code_oauth_token: ${{ secrets.CLAUDE_CODE_OAUTH_TOKEN }}
+                    github_token: ${{ secrets.GITHUB_TOKEN }}
+                    prompt: '/mcp-sync SDK_VERSION=${{ steps.versions.outputs.sdk-version }} PREVIOUS_SDK_VERSION=${{ steps.versions.outputs.previous-sdk-version }} SYNC_DIR=${{ env.SYNC_DIR }} CHANGES_PATH=${{ env.SYNC_DIR }}/changes.md PR_BODY_PATH=${{ env.SYNC_DIR }}/pr-body.md'
+                    # Edit-only guardrails: no git mutation, no gh, no package manager mutation, no arbitrary network.
+                    # The PR is opened by the create-pull-request step below, from cardinal-mcp-server/ only.
+                    claude_args: >-
+                        --model opus
+                        --effort xhigh
+                        --allowedTools "Read,Grep,Glob,Edit,Write,Bash(yarn run:*),Bash(yarn test:*),Bash(yarn tsx:*),Bash(npx tsx:*),Bash(node:*),Bash(git diff:*),Bash(git status:*),Bash(git log:*),Bash(git show:*),Bash(cat:*),Bash(ls:*),Bash(wc:*),Bash(diff:*),Bash(mkdir:*)"
+
+            -   name: Verify the result
+                # Source of truth for the PR: the agent cannot mark its own work as passing.
+                id: verify
+                if: steps.gate.outputs.has-changes == 'true'
+                continue-on-error: true
+                working-directory: ${{ env.MCP_DIR }}
+                run: |
+                    yarn run generate
+                    yarn run build
+                    yarn test
+                    # The agent must not have touched dependencies, the lockfile or the Yarn setup...
+                    ../.github/scripts/mcp-check-sync-invariants.sh "${{ steps.versions.outputs.sdk-version }}"
+                    # ...nor anything outside the MCP server.
+                    OUTSIDE=$(git status --porcelain | grep -vE '^.. ${{ env.MCP_DIR }}/' || true)
+                    if [ -n "$OUTSIDE" ]; then
+                        echo "::error::Unexpected changes outside ${{ env.MCP_DIR }}:"; echo "$OUTSIDE"; exit 1
+                    fi
+
+            -   name: Upload partial work on failure
+                if: steps.gate.outputs.has-changes == 'true' && steps.verify.outcome != 'success'
+                run: |
+                    mkdir -p "$SYNC_DIR"
+                    # Intent-to-add so files the agent created appear in the patch too.
+                    git add -N -- ${{ env.MCP_DIR }}
+                    git diff -- ${{ env.MCP_DIR }} > "$SYNC_DIR/mcp-sync.patch"
+                    git status --porcelain > "$SYNC_DIR/git-status.txt"
+
+            -   uses: actions/upload-artifact@v4
+                if: steps.gate.outputs.has-changes == 'true' && steps.verify.outcome != 'success'
+                with:
+                    name: mcp-sync-${{ steps.versions.outputs.sdk-version }}-partial
+                    path: ${{ env.SYNC_DIR }}
+                    retention-days: 14
+
+            -   name: Fail the run when verification failed
+                if: steps.gate.outputs.has-changes == 'true' && steps.verify.outcome != 'success'
+                run: |
+                    echo "::error::Verification of the sync against SDK ${{ steps.versions.outputs.sdk-version }} failed, see the 'Verify the result' step. No PR was opened."
+                    echo "::error::The partial diff and logs are attached as the 'mcp-sync-${{ steps.versions.outputs.sdk-version }}-partial' artifact. Fix locally or rerun with workflow_dispatch."
+                    exit 1
+
+            -   name: Write the PR body when Claude did not
+                if: steps.gate.outputs.has-changes == 'true' && steps.verify.outcome == 'success'
+                run: |
+                    mkdir -p "$SYNC_DIR"
+                    if [ -s "$SYNC_DIR/pr-body.md" ]; then
+                        echo "Using the PR body written by Claude."
+                        exit 0
+                    fi
+                    {
+                        echo "Syncs \`cardinal-mcp-server\` to SDK **${{ steps.versions.outputs.sdk-version }}** (previously ${{ steps.versions.outputs.previous-sdk-version }})."
+                        echo
+                        if [ "${{ steps.gate.outputs.needs-agent }}" == "true" ]; then
+                            echo "Claude ran but did not write a PR description. Review the diff directly."
+                        else
+                            echo "No API declaration changed: only the package version, the \`@icure/cardinal-sdk\` dependency and the lockfile were updated. \`generate\`, \`build\` and \`test\` pass unchanged."
+                        fi
+                        echo
+                        echo "_Opened by the [Update MCP server](${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}) workflow._"
+                    } > "$SYNC_DIR/pr-body.md"
+
+            -   name: Bot Details
+                if: steps.gate.outputs.has-changes == 'true' && steps.verify.outcome == 'success'
+                id: bot-details
+                uses: raven-actions/bot-details@v1
+
+            -   name: Create or update the Pull Request
+                if: steps.gate.outputs.has-changes == 'true' && steps.verify.outcome == 'success'
+                uses: peter-evans/create-pull-request@v7
+                with:
+                    token: ${{ secrets.GH_PERSONAL_ACCESS_TOKEN }}
+                    commit-message: "chore: sync cardinal-mcp-server to SDK ${{ steps.versions.outputs.sdk-version }}"
+                    title: "Sync MCP server to SDK ${{ steps.versions.outputs.sdk-version }}"
+                    body-path: ${{ env.SYNC_DIR }}/pr-body.md
+                    add-paths: ${{ env.MCP_DIR }}
+                    # Fixed name per SDK version: a rerun (e.g. after the TS generation PR merges) updates the same PR.
+                    branch: mcp-server/sync-${{ steps.versions.outputs.sdk-version }}
+                    delete-branch: true
+                    base: develop
+                    author: ${{ steps.bot-details.outputs.name-email }}
+                    committer: ${{ steps.bot-details.outputs.name-email }}
+                    team-reviewers: 'icure/dev'
+                    labels: 'automation,mcp-generation'
