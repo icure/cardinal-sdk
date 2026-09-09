@@ -9,6 +9,7 @@ import com.icure.cardinal.sdk.auth.services.AuthProvider
 import com.icure.cardinal.sdk.crypto.AccessControlKeysHeadersProvider
 import com.icure.cardinal.sdk.crypto.entities.EntityWithEncryptionMetadataTypeName
 import com.icure.cardinal.sdk.model.EncryptedMessage
+import com.icure.cardinal.sdk.model.IcureStub
 import com.icure.cardinal.sdk.model.ListOfIds
 import com.icure.cardinal.sdk.model.ListOfIdsAndRev
 import com.icure.cardinal.sdk.model.Message
@@ -178,6 +179,17 @@ class RawMessageApiImpl(
 			url {
 				takeFrom(apiUrl)
 				appendPathSegments("rest", "v2", "message", "byIds")
+			}
+			contentType(Application.Json)
+			accept(Application.Json)
+			setBody(messageIds)
+		}.wrap()
+
+	override suspend fun findMessagesDelegationsStubsByIds(messageIds: ListOfIds): HttpResponse<List<IcureStub>> =
+		post(authProvider) {
+			url {
+				takeFrom(apiUrl)
+				appendPathSegments("rest", "v2", "message", "delegations")
 			}
 			contentType(Application.Json)
 			accept(Application.Json)

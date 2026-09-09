@@ -9,6 +9,7 @@ import com.icure.cardinal.sdk.auth.services.AuthProvider
 import com.icure.cardinal.sdk.crypto.AccessControlKeysHeadersProvider
 import com.icure.cardinal.sdk.crypto.entities.EntityWithEncryptionMetadataTypeName
 import com.icure.cardinal.sdk.model.EncryptedMaintenanceTask
+import com.icure.cardinal.sdk.model.IcureStub
 import com.icure.cardinal.sdk.model.ListOfIds
 import com.icure.cardinal.sdk.model.ListOfIdsAndRev
 import com.icure.cardinal.sdk.model.MaintenanceTask
@@ -142,6 +143,17 @@ class RawMaintenanceTaskApiImpl(
 			contentType(Application.Json)
 			accept(Application.Json)
 			setBody(ids)
+		}.wrap()
+
+	override suspend fun findMaintenanceTasksDelegationsStubsByIds(maintenanceTaskIds: ListOfIds): HttpResponse<List<IcureStub>> =
+		post(authProvider) {
+			url {
+				takeFrom(apiUrl)
+				appendPathSegments("rest", "v2", "maintenancetask", "delegations")
+			}
+			contentType(Application.Json)
+			accept(Application.Json)
+			setBody(maintenanceTaskIds)
 		}.wrap()
 
 	override suspend fun modifyMaintenanceTask(maintenanceTaskDto: EncryptedMaintenanceTask): HttpResponse<EncryptedMaintenanceTask> =

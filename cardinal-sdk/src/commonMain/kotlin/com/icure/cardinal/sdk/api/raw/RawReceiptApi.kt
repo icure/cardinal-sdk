@@ -1,6 +1,7 @@
 package com.icure.cardinal.sdk.api.raw
 
 import com.icure.cardinal.sdk.model.EncryptedReceipt
+import com.icure.cardinal.sdk.model.IcureStub
 import com.icure.cardinal.sdk.model.ListOfIds
 import com.icure.cardinal.sdk.model.ListOfIdsAndRev
 import com.icure.cardinal.sdk.model.conflicts.ConflictResolutionRequest
@@ -82,6 +83,8 @@ public interface RawReceiptApi {
 	suspend fun getReceipt(receiptId: String): HttpResponse<EncryptedReceipt>
 
 	suspend fun getReceipts(receiptIds: ListOfIds): HttpResponse<List<EncryptedReceipt>>
+
+	suspend fun findReceiptsDelegationsStubsByIds(receiptIds: ListOfIds): HttpResponse<List<IcureStub>>
 
 	suspend fun listByReference(ref: String): HttpResponse<List<EncryptedReceipt>>
 

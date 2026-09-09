@@ -1,6 +1,7 @@
 package com.icure.cardinal.sdk.api.raw
 
 import com.icure.cardinal.sdk.model.EncryptedMessage
+import com.icure.cardinal.sdk.model.IcureStub
 import com.icure.cardinal.sdk.model.ListOfIds
 import com.icure.cardinal.sdk.model.ListOfIdsAndRev
 import com.icure.cardinal.sdk.model.Message
@@ -58,6 +59,8 @@ public interface RawMessageApi {
 	suspend fun getMessage(messageId: String): HttpResponse<EncryptedMessage>
 
 	suspend fun getMessages(messageIds: ListOfIds): HttpResponse<List<EncryptedMessage>>
+
+	suspend fun findMessagesDelegationsStubsByIds(messageIds: ListOfIds): HttpResponse<List<IcureStub>>
 
 	suspend fun listMessagesByTransportGuids(
 		hcpId: String,

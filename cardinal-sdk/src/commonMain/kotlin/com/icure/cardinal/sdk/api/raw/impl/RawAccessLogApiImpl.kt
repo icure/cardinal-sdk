@@ -10,6 +10,7 @@ import com.icure.cardinal.sdk.crypto.AccessControlKeysHeadersProvider
 import com.icure.cardinal.sdk.crypto.entities.EntityWithEncryptionMetadataTypeName
 import com.icure.cardinal.sdk.model.AccessLog
 import com.icure.cardinal.sdk.model.EncryptedAccessLog
+import com.icure.cardinal.sdk.model.IcureStub
 import com.icure.cardinal.sdk.model.ListOfIds
 import com.icure.cardinal.sdk.model.ListOfIdsAndRev
 import com.icure.cardinal.sdk.model.PaginatedList
@@ -244,6 +245,17 @@ class RawAccessLogApiImpl(
 			url {
 				takeFrom(apiUrl)
 				appendPathSegments("rest", "v2", "accesslog", "byIds")
+			}
+			contentType(Application.Json)
+			accept(Application.Json)
+			setBody(accessLogIds)
+		}.wrap()
+
+	override suspend fun findAccessLogsDelegationsStubsByIds(accessLogIds: ListOfIds): HttpResponse<List<IcureStub>> =
+		post(authProvider) {
+			url {
+				takeFrom(apiUrl)
+				appendPathSegments("rest", "v2", "accesslog", "delegations")
 			}
 			contentType(Application.Json)
 			accept(Application.Json)

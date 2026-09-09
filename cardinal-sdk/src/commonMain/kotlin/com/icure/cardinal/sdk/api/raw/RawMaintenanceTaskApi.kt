@@ -1,6 +1,7 @@
 package com.icure.cardinal.sdk.api.raw
 
 import com.icure.cardinal.sdk.model.EncryptedMaintenanceTask
+import com.icure.cardinal.sdk.model.IcureStub
 import com.icure.cardinal.sdk.model.ListOfIds
 import com.icure.cardinal.sdk.model.ListOfIdsAndRev
 import com.icure.cardinal.sdk.model.MaintenanceTask
@@ -45,6 +46,8 @@ public interface RawMaintenanceTaskApi {
 	suspend fun getMaintenanceTask(maintenanceTaskId: String): HttpResponse<EncryptedMaintenanceTask>
 
 	suspend fun getMaintenanceTasks(ids: ListOfIds): HttpResponse<List<EncryptedMaintenanceTask>>
+
+	suspend fun findMaintenanceTasksDelegationsStubsByIds(maintenanceTaskIds: ListOfIds): HttpResponse<List<IcureStub>>
 
 	suspend fun modifyMaintenanceTask(maintenanceTaskDto: EncryptedMaintenanceTask): HttpResponse<EncryptedMaintenanceTask>
 

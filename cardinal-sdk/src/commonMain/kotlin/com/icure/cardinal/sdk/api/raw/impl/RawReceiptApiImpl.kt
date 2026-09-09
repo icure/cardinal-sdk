@@ -9,6 +9,7 @@ import com.icure.cardinal.sdk.auth.services.AuthProvider
 import com.icure.cardinal.sdk.crypto.AccessControlKeysHeadersProvider
 import com.icure.cardinal.sdk.crypto.entities.EntityWithEncryptionMetadataTypeName
 import com.icure.cardinal.sdk.model.EncryptedReceipt
+import com.icure.cardinal.sdk.model.IcureStub
 import com.icure.cardinal.sdk.model.ListOfIds
 import com.icure.cardinal.sdk.model.ListOfIdsAndRev
 import com.icure.cardinal.sdk.model.conflicts.ConflictResolutionRequest
@@ -240,6 +241,17 @@ class RawReceiptApiImpl(
 			url {
 				takeFrom(apiUrl)
 				appendPathSegments("rest", "v2", "receipt", "byIds")
+			}
+			contentType(Application.Json)
+			accept(Application.Json)
+			setBody(receiptIds)
+		}.wrap()
+
+	override suspend fun findReceiptsDelegationsStubsByIds(receiptIds: ListOfIds): HttpResponse<List<IcureStub>> =
+		post(authProvider) {
+			url {
+				takeFrom(apiUrl)
+				appendPathSegments("rest", "v2", "receipt", "delegations")
 			}
 			contentType(Application.Json)
 			accept(Application.Json)

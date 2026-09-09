@@ -2,6 +2,7 @@ package com.icure.cardinal.sdk.api.raw
 
 import com.icure.cardinal.sdk.model.AccessLog
 import com.icure.cardinal.sdk.model.EncryptedAccessLog
+import com.icure.cardinal.sdk.model.IcureStub
 import com.icure.cardinal.sdk.model.ListOfIds
 import com.icure.cardinal.sdk.model.ListOfIdsAndRev
 import com.icure.cardinal.sdk.model.PaginatedList
@@ -83,6 +84,8 @@ public interface RawAccessLogApi {
 	): HttpResponse<List<String>>
 
 	suspend fun getAccessLogByIds(accessLogIds: ListOfIds): HttpResponse<List<EncryptedAccessLog>>
+
+	suspend fun findAccessLogsDelegationsStubsByIds(accessLogIds: ListOfIds): HttpResponse<List<IcureStub>>
 
 	suspend fun modifyAccessLog(accessLogDto: EncryptedAccessLog): HttpResponse<EncryptedAccessLog>
 
