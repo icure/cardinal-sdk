@@ -1106,16 +1106,17 @@ private class ContactApiImpl(
 		if (distinctIds.isEmpty() || delegates.isEmpty()) {
 			return BulkShareByIdsResult(emptySet(), emptyMap(), emptyMap(), emptyList())
 		}
+		val normalizedDelegates = delegates.mapKeys { EntityReferenceInGroup(it.key) }
 		val stubs = rawApi.findContactsDelegationsStubsByIds(contactIds = ListOfIds(distinctIds.toList())).successBody()
 		val result = config.crypto.entity.simpleBulkShareOrUpdateEncryptedEntityMetadataNoEntities(
 			entities = stubs,
 			entitiesType = EntityWithEncryptionMetadataTypeName.Contact,
-			delegates = delegates,
+			delegates = normalizedDelegates,
 			autoRetry = true,
 			getUpdatedEntity = { rawApi.getContact(contactId = it).successBody().asIcureStub() },
 			doRequestBulkShareOrUpdate = { params -> rawApi.bulkShareMinimal(request = params).successBody() }
 		)
-		return result.toBulkShareByIdsResult(distinctIds, stubs.mapTo(mutableSetOf()) { it.id }, delegates.keys)
+		return result.toBulkShareByIdsResult(distinctIds, stubs.mapTo(mutableSetOf()) { it.id }, normalizedDelegates.keys)
 	}
 
 	private suspend fun doMatchServicesBy(groupId: String?, filter: FilterOptions<Service>): List<String> =

@@ -181,7 +181,7 @@ interface EntityEncryptionService : EntityValidationService {
 	): BulkShareResult<T>
 
 	suspend fun bulkShareOrUpdateEncryptedEntityMetadataNoEntities(
-		entitiesUpdates: List<Pair<HasEncryptionMetadata, Map<String, DelegateShareOptions>>>,
+		entitiesUpdates: List<Pair<HasEncryptionMetadata, Map<EntityReferenceInGroup, DelegateShareOptions>>>,
 		entitiesType: EntityWithEncryptionMetadataTypeName,
 		autoRetry: Boolean,
 		getUpdatedEntity: suspend (String) -> HasEncryptionMetadata,
@@ -241,7 +241,7 @@ interface EntityEncryptionService : EntityValidationService {
 	 * @param entities entities (or lightweight stubs of entities) to share, all of the same [entitiesType]. Duplicate
 	 * ids are not allowed.
 	 * @param entitiesType type of the entities in [entities].
-	 * @param delegates the delegate ids that will gain access to every entity in [entities], and the sharing options
+	 * @param delegates the delegates that will gain access to every entity in [entities], and the sharing options
 	 * to use for each of them. The same options are applied identically to every entity in the batch.
 	 * @param autoRetry automatically retry, for the entities whose share failed with a retriable error, one
 	 * additional time using an up-to-date version of the entity (see [getUpdatedEntity]).
@@ -254,7 +254,7 @@ interface EntityEncryptionService : EntityValidationService {
 	suspend fun simpleBulkShareOrUpdateEncryptedEntityMetadataNoEntities(
 		entities: List<HasEncryptionMetadata>,
 		entitiesType: EntityWithEncryptionMetadataTypeName,
-		delegates: Map<String, SimpleDelegateShareOptions>,
+		delegates: Map<EntityReferenceInGroup, SimpleDelegateShareOptions>,
 		autoRetry: Boolean,
 		getUpdatedEntity: suspend (String) -> HasEncryptionMetadata,
 		doRequestBulkShareOrUpdate: suspend (request: BulkShareOrUpdateMetadataParams) -> List<EntityBulkShareResult<Nothing>>

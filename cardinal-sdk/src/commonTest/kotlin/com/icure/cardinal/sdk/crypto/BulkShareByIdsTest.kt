@@ -6,7 +6,11 @@ import com.icure.cardinal.sdk.crypto.entities.FailedRequestDetails
 import com.icure.cardinal.sdk.crypto.entities.HealthElementShareOptions
 import com.icure.cardinal.sdk.crypto.entities.SecretIdShareOptions
 import com.icure.cardinal.sdk.crypto.entities.ShareMetadataBehaviour
+import com.icure.cardinal.sdk.crypto.entities.ShareRequestPurpose
+import com.icure.cardinal.sdk.crypto.entities.SharedSecretIdsSource
+import com.icure.cardinal.sdk.crypto.entities.SuccessfulRequestDetails
 import com.icure.cardinal.sdk.model.DecryptedContact
+import com.icure.cardinal.sdk.model.EntityReferenceInGroup
 import com.icure.cardinal.sdk.model.DecryptedHealthElement
 import com.icure.cardinal.sdk.model.DecryptedPatient
 import com.icure.cardinal.sdk.model.requests.RequestedPermission
@@ -24,6 +28,16 @@ import io.kotest.matchers.nulls.shouldNotBeNull
 import io.kotest.matchers.shouldBe
 import io.kotest.matchers.string.shouldContain
 import io.kotest.matchers.types.shouldBeInstanceOf
+
+/**
+ * The successful requests `shareXByIds` is expected to report for a plain share with [delegateIds]: one request per
+ * delegate, none of them involving a legacy-delegation migration (every entity in these tests is created by the
+ * current sdk, so there is never a legacy delegation to migrate).
+ */
+private fun sharedWith(vararg delegateIds: String): Set<SuccessfulRequestDetails> =
+	delegateIds.mapTo(mutableSetOf()) {
+		SuccessfulRequestDetails(delegateReference = EntityReferenceInGroup(it), purpose = ShareRequestPurpose.RequestedShare)
+	}
 
 /**
  * Covers `shareHealthElementsByIds`/`shareContactsByIds`, the bulk share-by-id methods that replaced
@@ -67,7 +81,7 @@ class BulkShareByIdsTest : StringSpec({
 
 		result.notFoundIds.shouldBeEmpty()
 		result.shareErrors.shouldBeEmpty()
-		result.successfulDelegateIdsByEntityId shouldBe healthElements.associate { it.id to setOf(delegate.dataOwnerId) }
+		result.successfulRequestsByEntityId shouldBe healthElements.associate { it.id to sharedWith(delegate.dataOwnerId) }
 
 		healthElements.forEach { he ->
 			delegateApi.healthElement.getHealthElement(he.id).shouldNotBeNull().descr shouldBe he.descr
@@ -102,7 +116,7 @@ class BulkShareByIdsTest : StringSpec({
 
 		result.notFoundIds shouldBe setOf(nonExistentId)
 		result.shareErrors.shouldBeEmpty()
-		result.successfulDelegateIdsByEntityId shouldBe mapOf(he.id to setOf(delegate.dataOwnerId))
+		result.successfulRequestsByEntityId shouldBe mapOf(he.id to sharedWith(delegate.dataOwnerId))
 
 		delegateApi.healthElement.getHealthElement(he.id).shouldNotBeNull().descr shouldBe he.descr
 		delegateApi.healthElement.getHealthElement(nonExistentId).shouldBeNull()
@@ -166,7 +180,7 @@ class BulkShareByIdsTest : StringSpec({
 
 		result.notFoundIds.shouldBeEmpty()
 		result.shareErrors.shouldBeEmpty()
-		result.successfulDelegateIdsByEntityId shouldBe contacts.associate { it.id to setOf(delegate.dataOwnerId) }
+		result.successfulRequestsByEntityId shouldBe contacts.associate { it.id to sharedWith(delegate.dataOwnerId) }
 
 		contacts.forEach { contact ->
 			delegateApi.contact.getContact(contact.id).shouldNotBeNull().descr shouldBe contact.descr
@@ -198,7 +212,7 @@ class BulkShareByIdsTest : StringSpec({
 		)
 
 		result.notFoundIds.shouldBeEmpty()
-		result.successfulDelegateIdsByEntityId shouldBe mapOf(heFull.id to setOf(c.dataOwnerId))
+		result.successfulRequestsByEntityId shouldBe mapOf(heFull.id to sharedWith(c.dataOwnerId))
 		result.shareErrors shouldHaveSize 1
 		// A resolution error is deterministic and never reaches the server.
 		val error = result.shareErrors.single().shouldBeInstanceOf<FailedRequestDetails.ResolutionFailed>()
@@ -236,7 +250,7 @@ class BulkShareByIdsTest : StringSpec({
 		)
 
 		result.notFoundIds.shouldBeEmpty()
-		result.successfulDelegateIdsByEntityId shouldBe mapOf(heFull.id to setOf(c.dataOwnerId))
+		result.successfulRequestsByEntityId shouldBe mapOf(heFull.id to sharedWith(c.dataOwnerId))
 		result.shareErrors shouldHaveSize 1
 		val error = result.shareErrors.single().shouldBeInstanceOf<FailedRequestDetails.ResolutionFailed>()
 		error.entityId shouldBe hePartial.id
@@ -269,7 +283,7 @@ class BulkShareByIdsTest : StringSpec({
 		)
 
 		result.notFoundIds.shouldBeEmpty()
-		result.successfulDelegateIdsByEntityId shouldBe mapOf(heFull.id to setOf(c.dataOwnerId))
+		result.successfulRequestsByEntityId shouldBe mapOf(heFull.id to sharedWith(c.dataOwnerId))
 		result.shareErrors shouldHaveSize 1
 		val error = result.shareErrors.single().shouldBeInstanceOf<FailedRequestDetails.ResolutionFailed>()
 		error.entityId shouldBe hePartial.id
@@ -305,12 +319,20 @@ class BulkShareByIdsTest : StringSpec({
 		)
 
 		result.notFoundIds.shouldBeEmpty()
-		result.successfulDelegateIdsByEntityId shouldBe mapOf(heWrite.id to setOf(c.dataOwnerId))
+		result.successfulRequestsByEntityId shouldBe mapOf(heWrite.id to sharedWith(c.dataOwnerId))
 		result.shareErrors shouldHaveSize 1
 		// Unlike the local resolution errors above, this request was actually sent to and rejected by the server.
 		val error = result.shareErrors.single().shouldBeInstanceOf<FailedRequestDetails.RequestRejected>()
 		error.entityId shouldBe heRead.id
 		error.delegateReference.entityId shouldBe c.dataOwnerId
+		error.purpose shouldBe ShareRequestPurpose.RequestedShare
+		// The summary describes the request we built out of the caller's options - what was asked for each kind of
+		// metadata and how much of it went out, never the metadata itself.
+		val summary = error.requestSummary.shouldNotBeNull()
+		summary.requestedPermissions shouldBe RequestedPermission.FullWrite
+		summary.secretIdsSource shouldBe SharedSecretIdsSource.AllAvailable
+		summary.encryptionKeysBehaviour shouldBe ShareMetadataBehaviour.IfAvailable
+		summary.sharedEncryptionKeysCount shouldBe 1
 	}
 
 	"when one delegate already has everything and another needs a genuine update, only the latter is a fresh share while the former is reported as unmodified".config(enabled = DEFAULT_ENABLED && LOCAL_ENV_ONLY) {
@@ -339,7 +361,7 @@ class BulkShareByIdsTest : StringSpec({
 		result.notFoundIds.shouldBeEmpty()
 		result.shareErrors.shouldBeEmpty()
 		// Both pairs are accounted for, in different buckets - neither silently disappears.
-		result.successfulDelegateIdsByEntityId shouldBe mapOf(he.id to setOf(d2.dataOwnerId))
-		result.unmodifiedDelegateIdsByEntityId shouldBe mapOf(he.id to setOf(d1.dataOwnerId))
+		result.successfulRequestsByEntityId shouldBe mapOf(he.id to sharedWith(d2.dataOwnerId))
+		result.unmodifiedDelegatesByEntityId shouldBe mapOf(he.id to setOf(EntityReferenceInGroup(d1.dataOwnerId)))
 	}
 })

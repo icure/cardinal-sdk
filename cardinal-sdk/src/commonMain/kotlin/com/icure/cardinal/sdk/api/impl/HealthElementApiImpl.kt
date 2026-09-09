@@ -741,16 +741,17 @@ private class HealthElementApiImpl(
 		if (distinctIds.isEmpty() || delegates.isEmpty()) {
 			return BulkShareByIdsResult(emptySet(), emptyMap(), emptyMap(), emptyList())
 		}
+		val normalizedDelegates = delegates.mapKeys { EntityReferenceInGroup(it.key) }
 		val stubs = rawApi.listHealthElementsDelegationsStubById(healthElementIds = ListOfIds(distinctIds.toList())).successBody()
 		val result = config.crypto.entity.simpleBulkShareOrUpdateEncryptedEntityMetadataNoEntities(
 			entities = stubs,
 			entitiesType = EntityWithEncryptionMetadataTypeName.HealthElement,
-			delegates = delegates,
+			delegates = normalizedDelegates,
 			autoRetry = true,
 			getUpdatedEntity = { rawApi.getHealthElement(healthElementId = it).successBody().asIcureStub() },
 			doRequestBulkShareOrUpdate = { params -> rawApi.bulkShareMinimal(request = params).successBody() }
 		)
-		return result.toBulkShareByIdsResult(distinctIds, stubs.mapTo(mutableSetOf()) { it.id }, delegates.keys)
+		return result.toBulkShareByIdsResult(distinctIds, stubs.mapTo(mutableSetOf()) { it.id }, normalizedDelegates.keys)
 	}
 
 	override suspend fun subscribeToEvents(

@@ -28,6 +28,9 @@ import com.icure.cardinal.sdk.crypto.entities.SecretIdUseOption
 import com.icure.cardinal.sdk.crypto.entities.SecureDelegationMembersDetails
 import com.icure.cardinal.sdk.crypto.entities.SecurityMetadataType
 import com.icure.cardinal.sdk.crypto.entities.ShareMetadataBehaviour
+import com.icure.cardinal.sdk.crypto.entities.ShareRequestPurpose
+import com.icure.cardinal.sdk.crypto.entities.ShareRequestSummary
+import com.icure.cardinal.sdk.crypto.entities.SharedSecretIdsSource
 import com.icure.cardinal.sdk.crypto.entities.SimpleDelegateShareOptions
 import com.icure.cardinal.sdk.crypto.entities.SimpleDelegateShareOptionsImpl
 import com.icure.cardinal.sdk.crypto.entities.SimpleShareResult
@@ -511,7 +514,7 @@ class EntityEncryptionServiceImpl(
 	}
 
 	override suspend fun bulkShareOrUpdateEncryptedEntityMetadataNoEntities(
-		entitiesUpdates: List<Pair<HasEncryptionMetadata, Map<String, DelegateShareOptions>>>,
+		entitiesUpdates: List<Pair<HasEncryptionMetadata, Map<EntityReferenceInGroup, DelegateShareOptions>>>,
 		entitiesType: EntityWithEncryptionMetadataTypeName,
 		autoRetry: Boolean,
 		getUpdatedEntity: suspend (String) -> HasEncryptionMetadata,
@@ -527,7 +530,7 @@ class EntityEncryptionServiceImpl(
 	 * accepts it: so [prepareBulkShareRequests] doesn't have to decrypt everything again from scratch.
 	 */
 	private suspend fun doBulkShareOrUpdateEncryptedEntityMetadataNoEntities(
-		entitiesUpdates: List<Pair<HasEncryptionMetadata, Map<String, DelegateShareOptions>>>,
+		entitiesUpdates: List<Pair<HasEncryptionMetadata, Map<EntityReferenceInGroup, DelegateShareOptions>>>,
 		entitiesType: EntityWithEncryptionMetadataTypeName,
 		autoRetry: Boolean,
 		getUpdatedEntity: suspend (String) -> HasEncryptionMetadata,
@@ -536,9 +539,7 @@ class EntityEncryptionServiceImpl(
 	): MinimalBulkShareResult {
 		val requestDetails = prepareBulkShareRequests(
 			null,
-			entitiesUpdates.map { (entity, updates) ->
-				Pair(entity, updates.mapKeys { EntityReferenceInGroup(it.key, null) })
-			},
+			entitiesUpdates,
 			entitiesType,
 			precomputedDecryptedMetadata
 		)
@@ -555,13 +556,15 @@ class EntityEncryptionServiceImpl(
 		val updateErrors = shareResult.flatMap { result ->
 			makeFailedRequestDetails(result.entityId, result.rejectedRequests, requestDetails)
 		}
-		val failedRequestsMinimalDetails = updateErrors.mapTo(mutableSetOf()) {
-			MinimalBulkShareResult.MinimalRequestDetails(delegateId = it.delegateReference.entityId, entityId = it.entityId)
-		}
+		val failedRequestsPairs = updateErrors.mapTo(mutableSetOf()) { it.entityId to it.delegateReference }
 		val successfulUpdates =  requestDetails.requestsByEntityId.flatMapTo(mutableSetOf()) { (entityId, request) ->
 			request.requests.values.mapNotNull { delegateRequest ->
-				MinimalBulkShareResult.MinimalRequestDetails(delegateId = delegateRequest.delegateReference.entityId, entityId = entityId).takeIf {
-					!failedRequestsMinimalDetails.contains(it)
+				MinimalBulkShareResult.MinimalRequestDetails(
+					delegateReference = delegateRequest.delegateReference,
+					entityId = entityId,
+					purpose = delegateRequest.purpose
+				).takeIf {
+					(entityId to delegateRequest.delegateReference) !in failedRequestsPairs
 				}
 			}
 		}
@@ -602,7 +605,7 @@ class EntityEncryptionServiceImpl(
 	override suspend fun simpleBulkShareOrUpdateEncryptedEntityMetadataNoEntities(
 		entities: List<HasEncryptionMetadata>,
 		entitiesType: EntityWithEncryptionMetadataTypeName,
-		delegates: Map<String, SimpleDelegateShareOptions>,
+		delegates: Map<EntityReferenceInGroup, SimpleDelegateShareOptions>,
 		autoRetry: Boolean,
 		getUpdatedEntity: suspend (String) -> HasEncryptionMetadata,
 		doRequestBulkShareOrUpdate: suspend (request: BulkShareOrUpdateMetadataParams) -> List<EntityBulkShareResult<Nothing>>
@@ -610,7 +613,7 @@ class EntityEncryptionServiceImpl(
 		if (entities.isEmpty() || delegates.isEmpty()) return MinimalBulkShareResult(emptySet(), emptySet(), emptyList())
 		require(entities.distinctBy { it.id }.size == entities.size) { "Duplicate entities in the input" }
 
-		val normalizedDelegates = delegates.mapKeys { EntityReferenceInGroup(it.key, null) }
+		val normalizedDelegates = delegates.mapKeys { it.key.normalized(boundGroup) }
 		val hierarchySet = dataOwnersForDecryption(null).flattened()
 
 		// One decryptAll call per metadata type across the whole batch, instead of decryptSecurityMetadataDetails
@@ -622,7 +625,8 @@ class EntityEncryptionServiceImpl(
 
 		val resolutionErrors = mutableListOf<FailedRequestDetails>()
 		val precomputedMetadataByEntityId = mutableMapOf<String, PerEntityDecryptedSecurityMetadata>()
-		val entitiesUpdates = mutableListOf<Pair<HasEncryptionMetadata, Map<String, DelegateShareOptions>>>()
+		val entitiesUpdates = mutableListOf<Pair<HasEncryptionMetadata, Map<EntityReferenceInGroup, DelegateShareOptions>>>()
+		val requestSummariesByEntityId = mutableMapOf<String, Map<EntityReferenceInGroup, ShareRequestSummary>>()
 
 		entities.forEach { entity ->
 			val decryptedMetadata = PerEntityDecryptedSecurityMetadata(
@@ -632,10 +636,14 @@ class EntityEncryptionServiceImpl(
 			)
 			precomputedMetadataByEntityId[entity.id] = decryptedMetadata
 
-			val okOptions = mutableMapOf<String, DelegateShareOptions>()
+			val okOptions = mutableMapOf<EntityReferenceInGroup, DelegateShareOptions>()
+			val requestSummaries = mutableMapOf<EntityReferenceInGroup, ShareRequestSummary>()
 			resolveSimpleDelegateShareOptions(entity, entitiesType, decryptedMetadata, normalizedDelegates).forEach { (delegateReference, result) ->
 				result.fold(
-					onSuccess = { okOptions[delegateReference.entityId] = it },
+					onSuccess = {
+						okOptions[delegateReference] = it
+						requestSummaries[delegateReference] = shareRequestSummary(normalizedDelegates.getValue(delegateReference), it)
+					},
 					onFailure = { throwable ->
 						resolutionErrors += FailedRequestDetails.ResolutionFailed(
 							entityId = entity.id,
@@ -645,6 +653,7 @@ class EntityEncryptionServiceImpl(
 					}
 				)
 			}
+			requestSummariesByEntityId[entity.id] = requestSummaries
 			if (okOptions.isNotEmpty()) entitiesUpdates += entity to okOptions
 		}
 
@@ -657,8 +666,48 @@ class EntityEncryptionServiceImpl(
 		return MinimalBulkShareResult(
 			successfulUpdates = bulkResult.successfulUpdates,
 			unmodifiedEntitiesIds = bulkResult.unmodifiedEntitiesIds,
-			updateErrors = bulkResult.updateErrors + resolutionErrors
+			updateErrors = attachRequestSummaries(bulkResult.updateErrors, requestSummariesByEntityId) + resolutionErrors
 		)
+	}
+
+	/**
+	 * The non-sensitive summary of the request we built for a delegate out of the [SimpleDelegateShareOptions] the
+	 * caller provided, to be attached to the rejections that reach the caller - see
+	 * [FailedRequestDetails.RequestRejected.requestSummary].
+	 */
+	private fun shareRequestSummary(
+		requestedOptions: SimpleDelegateShareOptions,
+		resolvedOptions: DelegateShareOptions
+	): ShareRequestSummary = ShareRequestSummary(
+		requestedPermissions = resolvedOptions.requestedPermissions,
+		secretIdsSource = when (requestedOptions.shareSecretIds) {
+			is SecretIdShareOptions.AllAvailable -> SharedSecretIdsSource.AllAvailable
+			is SecretIdShareOptions.UseExactly -> SharedSecretIdsSource.ExplicitValues
+		},
+		sharedSecretIdsCount = resolvedOptions.shareSecretIds.size,
+		encryptionKeysBehaviour = requestedOptions.shareEncryptionKey,
+		sharedEncryptionKeysCount = resolvedOptions.shareEncryptionKeys.size,
+		owningEntityIdsBehaviour = requestedOptions.shareOwningEntityIds,
+		sharedOwningEntityIdsCount = resolvedOptions.shareOwningEntityIds.size
+	)
+
+	/**
+	 * Fills in the [FailedRequestDetails.RequestRejected.requestSummary] of the rejections we can summarise, i.e.
+	 * those of the requests we built out of the options the caller provided ([summariesByEntityId] holds one summary
+	 * per entity id and delegate). The rejections of the purely internal migration requests are left as they are:
+	 * they were not asking for anything on the caller's behalf.
+	 */
+	private fun attachRequestSummaries(
+		errors: List<FailedRequestDetails>,
+		summariesByEntityId: Map<String, Map<EntityReferenceInGroup, ShareRequestSummary>>
+	): List<FailedRequestDetails> = errors.map { error ->
+		if (error is FailedRequestDetails.RequestRejected) {
+			summariesByEntityId[error.entityId]?.get(error.delegateReference)?.let {
+				error.copy(requestSummary = it)
+			} ?: error
+		} else {
+			error
+		}
 	}
 
 	override tailrec suspend fun <T : HasEncryptionMetadata> simpleShareOrUpdateEncryptedEntityMetadata(
@@ -708,7 +757,16 @@ class EntityEncryptionServiceImpl(
 				)
 			}
 		}
-		return SimpleShareResult.Failure(shareResult.updateErrors)
+		return SimpleShareResult.Failure(
+			attachRequestSummaries(
+				shareResult.updateErrors,
+				mapOf(
+					entity.id to extendedDelegateOptions.entries.associate { (delegate, resolvedOptions) ->
+						delegate to shareRequestSummary(normalizedDelegates.getValue(delegate), resolvedOptions)
+					}
+				)
+			)
+		)
 	}
 
 	private fun makeFailedRequestDetails(
@@ -721,8 +779,10 @@ class EntityEncryptionServiceImpl(
 			FailedRequestDetails.RequestRejected(
 				delegateReference = originalRequestDetails.delegateReference,
 				entityId = entityId,
-				request = originalRequestDetails.options,
-				updatedForMigration = originalRequestDetails.updatedForMigration,
+				// Only the callers that let us resolve their SimpleDelegateShareOptions get a summary, and they
+				// attach it themselves once these errors reach them: see attachRequestSummaries.
+				requestSummary = null,
+				purpose = originalRequestDetails.purpose,
 				code = error.code,
 				reason = error.reason,
 				shouldRetry = error.shouldRetry
@@ -741,8 +801,7 @@ class EntityEncryptionServiceImpl(
 	)
 	private data class DelegateShareRequestDetails(
 		val delegateReference: EntityReferenceInGroup,
-		val options: DelegateShareOptions?,
-		val updatedForMigration: Boolean,
+		val purpose: ShareRequestPurpose,
 		val request: EntityShareOrMetadataUpdateRequest
 	)
 
@@ -843,9 +902,17 @@ class EntityEncryptionServiceImpl(
 				)?.let { delegate to it }
 			}
 			val allRequests = migrationRequests.map {
-				DelegateShareRequestDetails(it.key, optionsForDelegates[it.key], true, it.value)
+				// The migration request of a delegate the caller also asked to share with carries the requested
+				// content too (see makeMigrationRequestForMemberOfHierarchy): it is both things at once, not just a
+				// migration.
+				val purpose = if (it.key in optionsForDelegates) {
+					ShareRequestPurpose.RequestedShareAndMigration
+				} else {
+					ShareRequestPurpose.Migration
+				}
+				DelegateShareRequestDetails(it.key, purpose, it.value)
 			} + otherRequests.map {
-				DelegateShareRequestDetails(it.first, optionsForDelegates[it.first], false, it.second)
+				DelegateShareRequestDetails(it.first, ShareRequestPurpose.RequestedShare, it.second)
 			}
 			if (allRequests.isNotEmpty()) {
 				val potentialParentDelegations = secureDelegationMembers().mapNotNullTo(

@@ -962,16 +962,17 @@ private class CalendarItemApiImpl(
 		if (distinctIds.isEmpty() || delegates.isEmpty()) {
 			return BulkShareByIdsResult(emptySet(), emptyMap(), emptyMap(), emptyList())
 		}
+		val normalizedDelegates = delegates.mapKeys { EntityReferenceInGroup(it.key) }
 		val stubs = rawApi.findCalendarItemsDelegationsStubsByIds(calendarItemIds = ListOfIds(distinctIds.toList())).successBody()
 		val result = config.crypto.entity.simpleBulkShareOrUpdateEncryptedEntityMetadataNoEntities(
 			entities = stubs,
 			entitiesType = EntityWithEncryptionMetadataTypeName.CalendarItem,
-			delegates = delegates,
+			delegates = normalizedDelegates,
 			autoRetry = true,
 			getUpdatedEntity = { rawApi.getCalendarItem(calendarItemId = it).successBody().asIcureStub() },
 			doRequestBulkShareOrUpdate = { params -> rawApi.bulkShareMinimal(request = params).successBody() }
 		)
-		return result.toBulkShareByIdsResult(distinctIds, stubs.mapTo(mutableSetOf()) { it.id }, delegates.keys)
+		return result.toBulkShareByIdsResult(distinctIds, stubs.mapTo(mutableSetOf()) { it.id }, normalizedDelegates.keys)
 	}
 
 	override suspend fun getCalendarItemsOccupancyByPeriodForHealthcareParty(
