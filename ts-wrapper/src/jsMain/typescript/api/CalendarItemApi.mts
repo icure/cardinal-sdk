@@ -1,5 +1,6 @@
 // auto-generated file
 import {FilterOptions, PaginatedListIterator, SortableFilterOptions} from '../cardinal-sdk-ts.mjs';
+import {BulkShareByIdsResult} from '../crypto/entities/BulkShareByIdsResult.mjs';
 import {CalendarItemDelegateOptions} from '../crypto/entities/CalendarItemDelegateOptions.mjs';
 import {CalendarItemShareOptions} from '../crypto/entities/CalendarItemShareOptions.mjs';
 import {SecretIdUseOption} from '../crypto/entities/SecretIdUseOption.mjs';
@@ -231,6 +232,29 @@ export interface CalendarItemApi {
 
 	/**
 	 *
+	 *  Share many already-existing calendar items with one or more delegates at once, retrieving them by id instead
+	 *  of requiring the caller to have them already loaded. This is more efficient than calling [shareWithMany] once
+	 *  per calendar item when you already know the ids of many calendar items to share and don't otherwise need their
+	 *  decrypted content, since only lightweight metadata (not the full content of each calendar item) is ever
+	 *  retrieved, and no content flows back from the share request itself.
+	 *
+	 *  The same [delegates] options are applied identically to every found calendar item. Unlike [shareWithMany], if
+	 *  the share fails for some (calendar item, delegate) pairs this method reports the failure for those specific
+	 *  pairs in the returned result instead of throwing, so sharing proceeds normally for every other calendar item
+	 *  and delegate in the batch.
+	 *
+	 *  @param calendarItemIds ids of the calendar items to share. Ids that don't exist, or exist but for which the
+	 *  current user has no read access, are reported in [BulkShareByIdsResult.notFoundIds] and otherwise ignored.
+	 *  @param delegates the data owners which will gain access to each calendar item, and the options for sharing
+	 *  with each of them (see [CalendarItemShareOptions]). The exact same options are applied to every calendar item
+	 *  in [calendarItemIds].
+	 *  @return details on the outcome of the operation, for each requested id.
+	 */
+	shareCalendarItemsByIds(calendarItemIds: Array<string>,
+			delegates: { [ key: string ]: CalendarItemShareOptions }): Promise<BulkShareByIdsResult>;
+
+	/**
+	 *
 	 *  Deletes a calendarItem. If you don't have write access to the calendarItem the method will fail.
 	 *  @param entityId id of the calendarItem.
 	 *  @param rev the latest known rev of the calendarItem to delete
@@ -335,16 +359,39 @@ export interface CalendarItemApi {
 
 	/**
 	 *
-	 *  Links a calendar item with a patient. Note that this operation is not reversible: it is not possible to change the patient linked to a calendar
-	 *  item.
+	 *  Links a completely unlinked calendar item to a patient, or complete a partial link to a patient.
+	 *  Note that this operation is not reversible: it is not possible to change the patient linked to a calendar item.
+	 *
+	 *  # Linking an unlinked calendar item
+	 *
+	 *  If the calendar item has no `owningEntityIds` and no secret foreign keys it is considered as fully unlinked; in
+	 *  that case you can pick any [patient] for linking
+	 *
+	 *  # Linking a partially linked calendar item
+	 *
+	 *  A partially linked calendar item is a calendar item that has owning entity ids but no secret foreign keys. In
+	 *  that case this method may be used to fill in the secret foreign keys from the linked patient, allowing to find
+	 *  back [calendarItem] starting from the [patient].
+	 *
+	 *  In case of partially linked calendar items the provided [patient] must match the partial link: the [patient] id
+	 *  must match one of the [calendarItem] owning entity ids, or must be merged with one of the listed patients ids
+	 *  (into or from). The existing owning entity ids are reused as-is: this method never overwrites or adds to them.
+	 *
+	 *  Note that if the SDK detects that there are owning entity ids in the [calendarItem] but it is unable to decrypt
+	 *  any of them the method will fail.
+	 *
 	 *  @param calendarItem a calendar item.
 	 *  @param patient the patient which will be linked to the calendar item.
 	 *  @param shareLinkWithDelegates data owners other than the current data owner which will also be able to decrypt the id of the newly linked
-	 *  patient. If any of these data owners do not already have access to the calendar item, they will be granted read access (no write).
+	 *  patient. If any of these data owners do not already have access to the calendar item, they will be granted read access (no write). If the
+	 *  calendar item was already partially linked and its owning entity id was not yet shared with some of these data owners (or with the current
+	 *  data owner) this method will also take care of sharing the existing owning entity id with them.
+	 *  @param secretIdUseOption which secret ids of patient should be used when linking.
 	 *  @return the updated calendar item.
 	 */
-	linkToPatient(calendarItem: CalendarItem, patient: Patient,
-			shareLinkWithDelegates: Array<string>): Promise<DecryptedCalendarItem>;
+	linkToPatient(calendarItem: DecryptedCalendarItem, patient: Patient,
+			shareLinkWithDelegates: Array<string>,
+			secretIdUseOption: SecretIdUseOption): Promise<DecryptedCalendarItem>;
 
 	/**
 	 *

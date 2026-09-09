@@ -456,8 +456,11 @@ public fun patient_toJs(obj: DecryptedPatient): DecryptedPatientJs {
 			propertyStub_toJs(x1)
 		},
 	)
-	val parentId = nullToUndefined(
-		obj.parentId
+	val dataOwnerGroups = listToArray<_, dynamic>(
+		obj.dataOwnerGroups,
+		{ _ -> throw IllegalArgumentException("List<Nothing> can't have any values") })
+	val groupLinkType = nullToUndefined(
+		obj.groupLinkType
 	)
 	return DecryptedPatientJs(js("{" +
 		"id:id," +
@@ -525,7 +528,8 @@ public fun patient_toJs(obj: DecryptedPatient): DecryptedPatientJs {
 		"encryptedSelf:encryptedSelf," +
 		"securityMetadata:securityMetadata," +
 		"cryptoActorProperties:cryptoActorProperties," +
-		"parentId:parentId" +
+		"dataOwnerGroups:dataOwnerGroups," +
+		"groupLinkType:groupLinkType" +
 	"}"))
 }
 
@@ -845,7 +849,11 @@ public fun patient_fromJs(obj: DecryptedPatientJs): DecryptedPatient {
 			propertyStub_fromJs(x1)
 		},
 	)
-	val parentId = obj.parentId
+	val dataOwnerGroups = arrayToList<_, dynamic>(
+		obj.dataOwnerGroups,
+		"obj.dataOwnerGroups",
+		{ _ -> throw IllegalArgumentException("Array 'obj.dataOwnerGroups' can't have any values") })
+	val groupLinkType = obj.groupLinkType
 	return DecryptedPatient(
 		id = id,
 		identifier = identifier,
@@ -912,7 +920,8 @@ public fun patient_fromJs(obj: DecryptedPatientJs): DecryptedPatient {
 		encryptedSelf = encryptedSelf,
 		securityMetadata = securityMetadata,
 		cryptoActorProperties = cryptoActorProperties,
-		parentId = parentId,
+		dataOwnerGroups = dataOwnerGroups,
+		groupLinkType = groupLinkType,
 	)
 }
 
@@ -1270,8 +1279,11 @@ public fun patient_toJs(obj: EncryptedPatient): EncryptedPatientJs {
 			propertyStub_toJs(x1)
 		},
 	)
-	val parentId = nullToUndefined(
-		obj.parentId
+	val dataOwnerGroups = listToArray<_, dynamic>(
+		obj.dataOwnerGroups,
+		{ _ -> throw IllegalArgumentException("List<Nothing> can't have any values") })
+	val groupLinkType = nullToUndefined(
+		obj.groupLinkType
 	)
 	return EncryptedPatientJs(js("{" +
 		"id:id," +
@@ -1339,7 +1351,8 @@ public fun patient_toJs(obj: EncryptedPatient): EncryptedPatientJs {
 		"encryptedSelf:encryptedSelf," +
 		"securityMetadata:securityMetadata," +
 		"cryptoActorProperties:cryptoActorProperties," +
-		"parentId:parentId" +
+		"dataOwnerGroups:dataOwnerGroups," +
+		"groupLinkType:groupLinkType" +
 	"}"))
 }
 
@@ -1659,7 +1672,11 @@ public fun patient_fromJs(obj: EncryptedPatientJs): EncryptedPatient {
 			propertyStub_fromJs(x1)
 		},
 	)
-	val parentId = obj.parentId
+	val dataOwnerGroups = arrayToList<_, dynamic>(
+		obj.dataOwnerGroups,
+		"obj.dataOwnerGroups",
+		{ _ -> throw IllegalArgumentException("Array 'obj.dataOwnerGroups' can't have any values") })
+	val groupLinkType = obj.groupLinkType
 	return EncryptedPatient(
 		id = id,
 		identifier = identifier,
@@ -1726,7 +1743,8 @@ public fun patient_fromJs(obj: EncryptedPatientJs): EncryptedPatient {
 		encryptedSelf = encryptedSelf,
 		securityMetadata = securityMetadata,
 		cryptoActorProperties = cryptoActorProperties,
-		parentId = parentId,
+		dataOwnerGroups = dataOwnerGroups,
+		groupLinkType = groupLinkType,
 	)
 }
 

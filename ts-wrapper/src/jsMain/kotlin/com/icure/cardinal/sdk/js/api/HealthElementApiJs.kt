@@ -3,6 +3,7 @@
 
 package com.icure.cardinal.sdk.js.api
 
+import com.icure.cardinal.sdk.js.crypto.entities.BulkShareByIdsResultJs
 import com.icure.cardinal.sdk.js.crypto.entities.HealthElementDelegateOptionsJs
 import com.icure.cardinal.sdk.js.crypto.entities.HealthElementShareOptionsJs
 import com.icure.cardinal.sdk.js.filters.FilterOptionsJs
@@ -68,6 +69,9 @@ public external interface HealthElementApiJs {
 
 	public fun matchHealthElementsBySorted(filter: SortableFilterOptionsJs<HealthElementJs>):
 			Promise<Array<String>>
+
+	public fun shareHealthElementsByIds(healthElementIds: Array<String>,
+			delegates: Record<String, HealthElementShareOptionsJs>): Promise<BulkShareByIdsResultJs>
 
 	public fun deleteHealthElementById(entityId: String, rev: String):
 			Promise<StoredDocumentIdentifierJs>

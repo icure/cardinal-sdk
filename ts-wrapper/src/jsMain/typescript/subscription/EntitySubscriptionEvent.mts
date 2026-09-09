@@ -34,9 +34,6 @@ export namespace EntitySubscriptionEvent {
 	 */
 	export class UnexpectedError {
 
-		/**
-		 * A general unexpected error.
-		 * / */
 		message: string;
 
 		readonly $ktClass: 'com.icure.cardinal.sdk.subscription.EntitySubscriptionEvent.UnexpectedError' = 'com.icure.cardinal.sdk.subscription.EntitySubscriptionEvent.UnexpectedError';

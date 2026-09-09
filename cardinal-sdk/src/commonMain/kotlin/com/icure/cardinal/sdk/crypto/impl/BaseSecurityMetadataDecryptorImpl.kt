@@ -152,7 +152,7 @@ internal class BaseSecurityMetadataDecryptorImpl(
 				}
 			}
 		}
-		val cachedByExchangeDataId = exchangeDataManager.getDecryptionDataByIds(
+		val cachedByExchangeDataId = exchangeDataManager.getDecryptionDataByExchangeDataGroupIds(
 			entitiesGroupId,
 			toSearchById,
 			false
@@ -204,7 +204,7 @@ internal class BaseSecurityMetadataDecryptorImpl(
 				} else null
 			}.orEmpty()
 		}
-		val retrievedByExchangeDataId = if (toSearchById.isNotEmpty()) exchangeDataManager.getDecryptionDataByIds(
+		val retrievedByExchangeDataId = if (toSearchById.isNotEmpty()) exchangeDataManager.getDecryptionDataByExchangeDataGroupIds(
 			entitiesGroupId,
 			toSearchById,
 			true
@@ -257,7 +257,7 @@ internal class BaseSecurityMetadataDecryptorImpl(
 			entitiesGroupId,
 			toSearchByDelegationKey.filterTo(mutableSetOf()) { it !in alreadyCached }
 		)
-		val retrievedByExchangeDataId = if (exchangeDataIdByDelegationKey.isNotEmpty()) exchangeDataManager.getDecryptionDataByIds(
+		val retrievedByExchangeDataId = if (exchangeDataIdByDelegationKey.isNotEmpty()) exchangeDataManager.getDecryptionDataByExchangeDataGroupIds(
 			entitiesGroupId,
 			exchangeDataIdByDelegationKey.values.toSet(),
 			true
@@ -364,7 +364,7 @@ internal class BaseSecurityMetadataDecryptorImpl(
 		val loadedExchangeData = loadAllExchangeDataForEntitiesSecureDelegations(
 			entityGroupId,
 			listOf(entity),
-			encryptionKeysManager.delegatorActorHierarchy().toSet()
+			encryptionKeysManager.delegatorActorParentHierarchy().flattened()
 		) {
 			it.delegate == null || it.delegator == null
 		}
@@ -445,9 +445,9 @@ internal class BaseSecurityMetadataDecryptorImpl(
 		}
 	}
 
-	override fun hasAnyEncryptionKeys(entity: HasEncryptionMetadata): Boolean =
-		entity.securityMetadata?.secureDelegations?.values?.any { it.encryptionKeys.isNotEmpty() } == true
-			|| entity.encryptionKeys.any { it.value.isNotEmpty() }
+	override fun hasAnyValueOfType(entity: HasEncryptionMetadata, metadataType: SecurityMetadataType<*>): Boolean =
+		entity.securityMetadata?.secureDelegations?.values?.any { metadataType.hasValueIn(it) } == true
+			|| metadataType.extractLegacyDelegations(entity).any { it.value.isNotEmpty() }
 
 	private fun selfHierarchyIdsAsReferenceStrings(
 		dataOwnerHierarchyIds: Set<String>,
@@ -511,7 +511,7 @@ internal class BaseSecurityMetadataDecryptorImpl(
 			}.orEmpty()
 		}
 		val exchangeDataById = (toSearchDirectlyById + exchangeDataIdByDelegationKey.values).takeIf { it.isNotEmpty() }?.let {
-			exchangeDataManager.getDecryptionDataByIds(entitiesGroupId, it, true)
+			exchangeDataManager.getDecryptionDataByExchangeDataGroupIds(entitiesGroupId, it, true)
 		}.orEmpty()
 		return LoadedExchangeData(exchangeDataByDelegationKey, exchangeDataIdByDelegationKey, exchangeDataById)
 	}

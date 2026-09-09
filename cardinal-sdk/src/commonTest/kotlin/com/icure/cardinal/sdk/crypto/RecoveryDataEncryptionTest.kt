@@ -68,13 +68,14 @@ class RecoveryDataEncryptionTest : StringSpec({
 		var calledRecovery = false
 		val recoveringStrategies = object : CryptoStrategies by BasicCryptoStrategies {
 			override suspend fun recoverAndVerifySelfHierarchyKeys(
-				keysData: List<CryptoStrategies.KeyDataRecoveryRequest>,
+				currentDataOwnerId: String,
+				keysData: Map<String, CryptoStrategies.KeyDataRecoveryRequest>,
 				cryptoPrimitives: CryptoService,
 				keyPairRecoverer: KeyPairRecoverer
 			): Map<String, CryptoStrategies.RecoveredKeyData> {
 				calledRecovery = true
 				val recoveredKeys = keyPairRecoverer.recoverWithRecoveryKey(recoveryKey, autoDelete = true).value
-				return keysData.associate { keyData ->
+				return keysData.values.associate { keyData ->
 					keyData.dataOwnerDetails.dataOwner.id to CryptoStrategies.RecoveredKeyData(
 						recoveredKeys.getValue(keyData.dataOwnerDetails.dataOwner.id)
 							.mapKeys { it.key.fingerprintV1() },

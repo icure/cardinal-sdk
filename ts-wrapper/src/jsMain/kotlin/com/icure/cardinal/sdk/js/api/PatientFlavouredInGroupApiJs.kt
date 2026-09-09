@@ -8,6 +8,7 @@ import com.icure.cardinal.sdk.js.filters.SortableFilterOptionsJs
 import com.icure.cardinal.sdk.js.model.EntityReferenceInGroupJs
 import com.icure.cardinal.sdk.js.model.GroupScopedJs
 import com.icure.cardinal.sdk.js.model.PatientJs
+import com.icure.cardinal.sdk.js.model.SecretIdCreationResultJs
 import com.icure.cardinal.sdk.js.model.StoredDocumentIdentifierJs
 import com.icure.cardinal.sdk.js.synthetic.mapasobjectarray.EntityReferenceInGroupToPatientShareOptionsMapObject_delegate_shareOptions
 import com.icure.cardinal.sdk.js.utils.pagination.PaginatedListIteratorJs
@@ -30,7 +31,8 @@ public external interface PatientFlavouredInGroupApiJs<E : PatientJs> {
 			delegates: Array<EntityReferenceInGroupToPatientShareOptionsMapObject_delegate_shareOptions>):
 			Promise<GroupScopedJs<E>>
 
-	public fun initializeConfidentialSecretId(patient: GroupScopedJs<E>): Promise<GroupScopedJs<E>>
+	public fun createNewSecretId(patient: GroupScopedJs<E>):
+			Promise<GroupScopedJs<SecretIdCreationResultJs<E>>>
 
 	public fun filterPatientsBy(groupId: String, filter: FilterOptionsJs<PatientJs>):
 			Promise<PaginatedListIteratorJs<GroupScopedJs<E>>>

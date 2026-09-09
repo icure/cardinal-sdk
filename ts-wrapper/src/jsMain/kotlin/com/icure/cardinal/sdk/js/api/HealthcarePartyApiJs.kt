@@ -92,6 +92,12 @@ public external interface HealthcarePartyApiJs {
 	public fun undeleteHealthcareParties(healthcareParties: Array<HealthcarePartyJs>):
 			Promise<Array<HealthcarePartyJs>>
 
+	public fun addHealthcarePartiesToGroup(healthcarePartyGroup: HealthcarePartyJs,
+			healthcarePartiesToAdd: Array<HealthcarePartyJs>): Promise<Array<String>>
+
+	public fun removeDataOwnersFromGroup(healthcarePartyGroup: HealthcarePartyJs,
+			healthcarePartiesToRemove: Array<HealthcarePartyJs>): Promise<Array<String>>
+
 	public fun subscribeToEvents(
 		events: Array<String>,
 		filter: FilterOptionsJs<HealthcarePartyJs>,

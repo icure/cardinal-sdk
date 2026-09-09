@@ -12,9 +12,12 @@ import com.icure.cardinal.sdk.js.model.CheckedConverters.objectToMap
 import com.icure.cardinal.sdk.js.model.CheckedConverters.setToArray
 import com.icure.cardinal.sdk.js.model.CheckedConverters.undefinedToNull
 import com.icure.cardinal.sdk.js.model.base.CodeStubJs
+import com.icure.cardinal.sdk.js.model.base.DataOwnerGroupLinkJs
 import com.icure.cardinal.sdk.js.model.base.IdentifierJs
 import com.icure.cardinal.sdk.js.model.base.codeStub_fromJs
 import com.icure.cardinal.sdk.js.model.base.codeStub_toJs
+import com.icure.cardinal.sdk.js.model.base.dataOwnerGroupLink_fromJs
+import com.icure.cardinal.sdk.js.model.base.dataOwnerGroupLink_toJs
 import com.icure.cardinal.sdk.js.model.base.identifier_fromJs
 import com.icure.cardinal.sdk.js.model.base.identifier_toJs
 import com.icure.cardinal.sdk.js.model.specializations.aesExchangeKeyEncryptionKeypairIdentifier_fromJs
@@ -29,6 +32,8 @@ import com.icure.cardinal.sdk.js.utils.Record
 import com.icure.cardinal.sdk.model.DecryptedPropertyStub
 import com.icure.cardinal.sdk.model.Device
 import com.icure.cardinal.sdk.model.base.CodeStub
+import com.icure.cardinal.sdk.model.base.DataOwnerGroupLink
+import com.icure.cardinal.sdk.model.base.DataOwnerGroupLinkType
 import com.icure.cardinal.sdk.model.base.Identifier
 import com.icure.cardinal.sdk.model.specializations.AesExchangeKeyEncryptionKeypairIdentifier
 import com.icure.cardinal.sdk.model.specializations.AesExchangeKeyEntryKeyString
@@ -94,8 +99,16 @@ public fun device_toJs(obj: Device): DeviceJs {
 	val serialNumber = nullToUndefined(
 		obj.serialNumber
 	)
-	val parentId = nullToUndefined(
-		obj.parentId
+	val dataOwnerGroups = listToArray(
+		obj.dataOwnerGroups,
+		{ x1: DataOwnerGroupLink ->
+			dataOwnerGroupLink_toJs(x1)
+		},
+	)
+	val groupLinkType = nullToUndefined(
+		obj.groupLinkType?.let { nonNull1 ->
+			nonNull1.name
+		}
 	)
 	val properties = setToArray(
 		obj.properties,
@@ -201,7 +214,8 @@ public fun device_toJs(obj: Device): DeviceJs {
 		"brand:brand," +
 		"model:model," +
 		"serialNumber:serialNumber," +
-		"parentId:parentId," +
+		"dataOwnerGroups:dataOwnerGroups," +
+		"groupLinkType:groupLinkType," +
 		"properties:properties," +
 		"hcPartyKeys:hcPartyKeys," +
 		"aesExchangeKeys:aesExchangeKeys," +
@@ -247,7 +261,16 @@ public fun device_fromJs(obj: DeviceJs): Device {
 	val brand = undefinedToNull(obj.brand)
 	val model = undefinedToNull(obj.model)
 	val serialNumber = undefinedToNull(obj.serialNumber)
-	val parentId = undefinedToNull(obj.parentId)
+	val dataOwnerGroups = arrayToList(
+		obj.dataOwnerGroups,
+		"obj.dataOwnerGroups",
+		{ x1: DataOwnerGroupLinkJs ->
+			dataOwnerGroupLink_fromJs(x1)
+		},
+	)
+	val groupLinkType = obj.groupLinkType?.let { nonNull1 ->
+		DataOwnerGroupLinkType.valueOf(nonNull1)
+	}
 	val properties = arrayToSet(
 		obj.properties,
 		"obj.properties",
@@ -361,7 +384,8 @@ public fun device_fromJs(obj: DeviceJs): Device {
 		brand = brand,
 		model = model,
 		serialNumber = serialNumber,
-		parentId = parentId,
+		dataOwnerGroups = dataOwnerGroups,
+		groupLinkType = groupLinkType,
 		properties = properties,
 		hcPartyKeys = hcPartyKeys,
 		aesExchangeKeys = aesExchangeKeys,

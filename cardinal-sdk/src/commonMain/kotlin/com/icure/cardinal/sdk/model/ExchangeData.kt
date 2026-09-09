@@ -2,10 +2,14 @@
 // If you want to change the way this class is generated, see [this repo](https://github.com/icure/sdk-codegen).
 package com.icure.cardinal.sdk.model
 
+import com.icure.cardinal.sdk.crypto.impl.HashingUtils
 import com.icure.cardinal.sdk.model.base.StoredDocument
 import com.icure.cardinal.sdk.model.specializations.Base64String
 import com.icure.cardinal.sdk.model.specializations.KeypairFingerprintV2String
 import com.icure.cardinal.sdk.utils.DefaultValue
+import com.icure.cardinal.sdk.utils.ensure
+import com.icure.cardinal.sdk.utils.ensureNonNull
+import com.icure.kryptom.crypto.CryptoService
 import kotlinx.serialization.Serializable
 import kotlin.Long
 import kotlin.String
@@ -36,6 +40,16 @@ data class ExchangeData(
 	 */
 	public val `delegate`: String,
 	/**
+	 * If the delegate is a data owner group, the id of the member that is the recipient of this piece
+	 * of the exchange data.
+	 */
+	public val recipient: String? = null,
+	/**
+	 * If this is a piece of exchange data for a simple-type group, the id shared between all the
+	 * pieces of exchange data for that group.
+	 */
+	public val exchangeDataGroupId: String? = null,
+	/**
 	 * AES key for sharing data, encrypted with the public keys of both delegate and delegator.
 	 */
 	public val exchangeKey: Map<KeypairFingerprintV2String, Base64String>,
@@ -44,7 +58,8 @@ data class ExchangeData(
 	 */
 	public val accessControlSecret: Map<KeypairFingerprintV2String, Base64String>,
 	/**
-	 * Signature by the delegator to ensure key data has not been tampered with by third parties.
+	 * Signature by the delegator to ensure key data has not been tampered with by third parties; empty
+	 * if invalidated.
 	 */
 	@param:DefaultValue("emptyMap()")
 	public val delegatorSignature: Map<KeypairFingerprintV2String, Base64String> = emptyMap(),
@@ -53,15 +68,25 @@ data class ExchangeData(
 	 */
 	public val sharedSignatureKey: Map<KeypairFingerprintV2String, Base64String>,
 	/**
-	 * Base64 signature of the exchange data to ensure it was not tampered by third parties.
+	 * Base64 signature of the exchange data to ensure it was not tampered by third parties; null on
+	 * the group pieces that are not for the delegator.
 	 */
-	public val sharedSignature: Base64String,
+	public val sharedSignature: Base64String? = null,
 	/**
 	 * Hard delete (unix epoch in ms) timestamp of the object.
 	 */
 	override val deletionDate: Long? = null,
 ) : StoredDocument {
 	// region ExchangeData-ExchangeData
+
+	companion object {
+		/**
+		 * Id that an exchange data piece of group [exchangeDataGroupId] would have if [recipient] was not the delegator
+		 * of that exchange data.
+		 */
+		internal suspend fun idForNonDelegatorPiece(exchangeDataGroupId: String, recipient: String, cryptoService: CryptoService) =
+			HashingUtils.sha256Alphanumeric("$exchangeDataGroupId|$recipient", cryptoService)
+	}
 
 	// endregion
 }

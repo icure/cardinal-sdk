@@ -76,7 +76,7 @@ inline fun <O>map(mapper: (T) -> O): EntityBulkShareResult<O> = EntityBulkShareR
 		updatedEntity = updatedEntity?.let { mapper(it) },
 		entityId = entityId,
 		entityRev = entityRev,
-		rejectedRequests = rejectedRequests
+		rejectedRequests = rejectedRequests,
 	)
 	// endregion
 }

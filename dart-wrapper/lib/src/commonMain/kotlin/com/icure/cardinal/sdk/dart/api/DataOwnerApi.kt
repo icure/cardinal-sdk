@@ -79,7 +79,7 @@ public object DataOwnerApi {
     ApiScope.execute(
       dartResultCallback,
       ListSerializer(String.serializer())) {
-      NativeReferences.get<CardinalApis>(sdkId).dataOwner.getCurrentDataOwnerHierarchyIds()
+      NativeReferences.get<CardinalApis>(sdkId).dataOwner.getCurrentDataOwnerHierarchyInfo()
     }
   }
 
@@ -182,7 +182,7 @@ public object DataOwnerApi {
     ApiScope.execute(
       dartResultCallback,
       ListSerializer(String.serializer())) {
-      NativeReferences.get<CardinalApis>(sdkId).dataOwner.getCurrentDataOwnerHierarchyIdsFrom(
+      NativeReferences.get<CardinalApis>(sdkId).dataOwner.getCurrentDataOwnerParentHierarchy(
         parentId,
       )
     }

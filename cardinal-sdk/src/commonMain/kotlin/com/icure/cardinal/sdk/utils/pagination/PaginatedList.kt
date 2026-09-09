@@ -13,3 +13,12 @@ fun <T : Any> exhaustPaginatedRequest(
 		next = request(next).also { res -> res.rows.forEach { emit(it) } }.nextKeyPair
 	}
 }
+
+fun <T : Any> exhaustPaginatedRequestChunked(
+	request: suspend (nextKeyPair: PaginatedDocumentKeyIdPair?) -> PaginatedList<T>
+): Flow<List<T>> = flow {
+	var next = request(null).also { res -> emit(res.rows) }.nextKeyPair
+	while (next != null) {
+		next = request(next).also { res -> emit(res.rows) }.nextKeyPair
+	}
+}

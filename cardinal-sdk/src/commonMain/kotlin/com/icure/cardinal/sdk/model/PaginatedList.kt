@@ -25,6 +25,13 @@ data class PaginatedList<T>(
 	 * last page.
 	 */
 	public val nextKeyPair: PaginatedDocumentKeyIdPair? = null,
+	/**
+	 *
+	 *  If not null the page was aborted by this error after some rows were already returned: [rows] is
+	 * valid but
+	 *  incomplete, and there is no [nextKeyPair] to resume from.
+	 */
+	public val error: PaginationError? = null,
 ) {
 	// region PaginatedList-PaginatedList
 inline fun <Q> map(mapper: (T) -> Q): PaginatedList<Q> = PaginatedList(

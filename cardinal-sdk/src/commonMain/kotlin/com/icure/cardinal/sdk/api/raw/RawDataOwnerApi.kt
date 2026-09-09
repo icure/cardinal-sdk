@@ -3,7 +3,13 @@ package com.icure.cardinal.sdk.api.raw
 import com.icure.cardinal.sdk.model.CryptoActorStubWithType
 import com.icure.cardinal.sdk.model.DataOwnerWithType
 import com.icure.cardinal.sdk.model.ListOfIds
+import com.icure.cardinal.sdk.model.PaginatedList
+import com.icure.cardinal.sdk.model.base.DataOwnerHierarchyInfo
+import com.icure.cardinal.sdk.model.requests.DataOwnerPublicKeys
+import com.icure.cardinal.sdk.model.requests.LinkedDataOwner
 import com.icure.utils.InternalIcureApi
+import kotlin.Boolean
+import kotlin.Int
 import kotlin.String
 import kotlin.collections.List
 
@@ -30,6 +36,35 @@ public interface RawDataOwnerApi {
 	suspend fun getCurrentDataOwnerHierarchy(): HttpResponse<List<DataOwnerWithType>>
 
 	suspend fun getCurrentDataOwnerHierarchyStub(): HttpResponse<List<CryptoActorStubWithType>>
+
+	suspend fun getCurrentDataOwnerHierarchyInfo(): HttpResponse<DataOwnerHierarchyInfo>
+
+	suspend fun getDataOwnerHierarchyInfoOf(dataOwnerId: String): HttpResponse<DataOwnerHierarchyInfo>
+
+	suspend fun findDataOwnersLinkedToGroups(
+		dataOwnerType: String,
+		dataOwnerGroupIds: String,
+		startDocumentId: String? = null,
+		limit: Int? = null,
+	): HttpResponse<PaginatedList<LinkedDataOwner>>
+
+	suspend fun getDataOwnersPublicKeys(
+		dataOwnerType: String,
+		dataOwnerIds: ListOfIds,
+	): HttpResponse<List<DataOwnerPublicKeys>>
+
+	suspend fun addDataOwnersToGroup(
+		dataOwnerGroupId: String,
+		dataOwnerType: String,
+		newMembersIds: ListOfIds,
+	): HttpResponse<List<String>>
+
+	suspend fun removeDataOwnersFromGroup(
+		dataOwnerGroupId: String,
+		dataOwnerType: String,
+		invalidateSharedExchangeDataIfNeeded: Boolean? = null,
+		membersToRemoveIds: ListOfIds,
+	): HttpResponse<List<String>>
 	// endregion
 
 	// region cloud endpoints
@@ -38,5 +73,19 @@ public interface RawDataOwnerApi {
 		groupId: String,
 		dataOwnerId: String,
 	): HttpResponse<CryptoActorStubWithType>
+
+	suspend fun findDataOwnersLinkedToGroups(
+		dataOwnerType: String,
+		dataOwnerGroupIds: String,
+		startDocumentId: String? = null,
+		limit: Int? = null,
+		groupId: String,
+	): HttpResponse<PaginatedList<LinkedDataOwner>>
+
+	suspend fun getDataOwnersPublicKeys(
+		dataOwnerType: String,
+		dataOwnerIds: ListOfIds,
+		groupId: String,
+	): HttpResponse<List<DataOwnerPublicKeys>>
 	// endregion
 }

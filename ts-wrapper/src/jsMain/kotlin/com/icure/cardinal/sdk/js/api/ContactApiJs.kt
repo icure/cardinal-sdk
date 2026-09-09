@@ -3,6 +3,7 @@
 
 package com.icure.cardinal.sdk.js.api
 
+import com.icure.cardinal.sdk.js.crypto.entities.BulkShareByIdsResultJs
 import com.icure.cardinal.sdk.js.crypto.entities.ContactDelegateOptionsJs
 import com.icure.cardinal.sdk.js.crypto.entities.ContactShareOptionsJs
 import com.icure.cardinal.sdk.js.filters.FilterOptionsJs
@@ -81,6 +82,9 @@ public external interface ContactApiJs {
 
 	public fun subscribeToServiceCreateOrUpdateEvents(filter: FilterOptionsJs<ServiceJs>,
 			options: dynamic): Promise<EntitySubscriptionJs<EncryptedServiceJs>>
+
+	public fun shareContactsByIds(contactIds: Array<String>,
+			delegates: Record<String, ContactShareOptionsJs>): Promise<BulkShareByIdsResultJs>
 
 	public fun deleteContactById(entityId: String, rev: String): Promise<StoredDocumentIdentifierJs>
 

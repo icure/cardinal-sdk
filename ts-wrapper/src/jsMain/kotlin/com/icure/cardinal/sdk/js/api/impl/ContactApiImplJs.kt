@@ -13,9 +13,11 @@ import com.icure.cardinal.sdk.js.api.ContactFlavouredInGroupApiJs
 import com.icure.cardinal.sdk.js.api.ContactInGroupApiJs
 import com.icure.cardinal.sdk.js.api.DefaultParametersSupport.convertingOptionOrDefaultNonNull
 import com.icure.cardinal.sdk.js.api.DefaultParametersSupport.convertingOptionOrDefaultNullable
+import com.icure.cardinal.sdk.js.crypto.entities.BulkShareByIdsResultJs
 import com.icure.cardinal.sdk.js.crypto.entities.ContactDelegateOptionsJs
 import com.icure.cardinal.sdk.js.crypto.entities.ContactShareOptionsJs
 import com.icure.cardinal.sdk.js.crypto.entities.SecretIdUseOptionJs
+import com.icure.cardinal.sdk.js.crypto.entities.bulkShareByIdsResult_toJs
 import com.icure.cardinal.sdk.js.crypto.entities.contactDelegateOptions_fromJs
 import com.icure.cardinal.sdk.js.crypto.entities.contactShareOptions_fromJs
 import com.icure.cardinal.sdk.js.crypto.entities.secretIdUseOption_fromJs
@@ -1510,7 +1512,7 @@ internal class ContactApiImplJs(
 				val secretIdConverted: SecretIdUseOption = convertingOptionOrDefaultNonNull(
 					_options,
 					"secretId",
-					com.icure.cardinal.sdk.crypto.entities.SecretIdUseOption.UseAnySharedWithParent
+					com.icure.cardinal.sdk.crypto.entities.SecretIdUseOption.UseAnySharedWithHierarchy
 				) { secretId: SecretIdUseOptionJs ->
 					secretIdUseOption_fromJs(secretId)
 				}
@@ -1577,7 +1579,7 @@ internal class ContactApiImplJs(
 				val secretIdConverted: SecretIdUseOption = convertingOptionOrDefaultNonNull(
 					_options,
 					"secretId",
-					com.icure.cardinal.sdk.crypto.entities.SecretIdUseOption.UseAnySharedWithParent
+					com.icure.cardinal.sdk.crypto.entities.SecretIdUseOption.UseAnySharedWithHierarchy
 				) { secretId: SecretIdUseOptionJs ->
 					secretIdUseOption_fromJs(secretId)
 				}
@@ -2538,7 +2540,7 @@ internal class ContactApiImplJs(
 			val secretIdConverted: SecretIdUseOption = convertingOptionOrDefaultNonNull(
 				_options,
 				"secretId",
-				com.icure.cardinal.sdk.crypto.entities.SecretIdUseOption.UseAnySharedWithParent
+				com.icure.cardinal.sdk.crypto.entities.SecretIdUseOption.UseAnySharedWithHierarchy
 			) { secretId: SecretIdUseOptionJs ->
 				secretIdUseOption_fromJs(secretId)
 			}
@@ -2595,7 +2597,7 @@ internal class ContactApiImplJs(
 			val secretIdConverted: SecretIdUseOption = convertingOptionOrDefaultNonNull(
 				_options,
 				"secretId",
-				com.icure.cardinal.sdk.crypto.entities.SecretIdUseOption.UseAnySharedWithParent
+				com.icure.cardinal.sdk.crypto.entities.SecretIdUseOption.UseAnySharedWithHierarchy
 			) { secretId: SecretIdUseOptionJs ->
 				secretIdUseOption_fromJs(secretId)
 			}
@@ -2746,6 +2748,33 @@ internal class ContactApiImplJs(
 				},
 			)
 		}
+	}
+
+	override fun shareContactsByIds(contactIds: Array<String>,
+			delegates: Record<String, ContactShareOptionsJs>): Promise<BulkShareByIdsResultJs> =
+			GlobalScope.promise {
+		val contactIdsConverted: List<String> = arrayToList(
+			contactIds,
+			"contactIds",
+			{ x1: String ->
+				x1
+			},
+		)
+		val delegatesConverted: Map<String, ContactShareOptions> = objectToMap(
+			delegates,
+			"delegates",
+			{ x1: String ->
+				x1
+			},
+			{ x1: ContactShareOptionsJs ->
+				contactShareOptions_fromJs(x1)
+			},
+		)
+		val result = contactApi.shareContactsByIds(
+			contactIdsConverted,
+			delegatesConverted,
+		)
+		bulkShareByIdsResult_toJs(result)
 	}
 
 	override fun deleteContactById(entityId: String, rev: String): Promise<StoredDocumentIdentifierJs>
