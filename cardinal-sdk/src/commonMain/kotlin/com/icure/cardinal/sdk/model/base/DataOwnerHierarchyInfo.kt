@@ -71,7 +71,7 @@ data class DataOwnerHierarchyInfo(
 	 * group reachable through several paths appears only once, and its own links are traversed only once, the
 	 * first time it is reached.
 	 */
-	fun flattened(filterLinkTypes: Set<DataOwnerGroupLinkType>? = null): Set<String> =
+	internal fun flattened(filterLinkTypes: Set<DataOwnerGroupLinkType>? = null): Set<String> =
 		traverseNodes { filterLinkTypes == null || it.linkType in filterLinkTypes }
 			.mapTo(mutableSetOf(id)) { it.linkedGroupId }
 
@@ -100,7 +100,7 @@ data class DataOwnerHierarchyInfo(
 	 * have no further transitive links, deduplicated. As with [flattened], a group reachable through several
 	 * paths has its own links traversed only once, the first time it is reached.
 	 */
-	fun leaves(): Set<String> =
+	internal fun leaves(): Set<String> =
 		if (links.isEmpty()) {
 			setOf(id)
 		} else {
@@ -113,8 +113,17 @@ data class DataOwnerHierarchyInfo(
 	 * traversed only once, the first time it is reached; unlike [flattened], traversal stops as soon as a match
 	 * is found instead of building the full set of ids first.
 	 */
-	operator fun contains(dataOwnerId: String): Boolean =
+	internal operator fun contains(dataOwnerId: String): Boolean =
 		id == dataOwnerId || traverseNodes().any { it.linkedGroupId == dataOwnerId }
+
+	/**
+	 * If this hierarchy has a link to [dataOwnerId] return the type of link; returns null if there is no such link.
+	 * Note that a data owner is not linked to itself: if [dataOwnerId] is [id] this returns null.
+	 */
+	internal fun findLinkType(dataOwnerId: String): DataOwnerGroupLinkType? {
+		if (id == dataOwnerId) return null
+		return traverseNodes().firstOrNull { it.linkedGroupId == dataOwnerId }?.linkType
+	}
 
 	/**
 	 * Returns a copy of this hierarchy tree keeping only the links accepted by [predicate], at any depth.
@@ -128,10 +137,49 @@ data class DataOwnerHierarchyInfo(
 	 * [predicate] is applied to the nodes of the original tree: the [HierarchyNode.transitiveLinks] of the node it
 	 * receives are not filtered yet.
 	 */
-	fun filterLinks(predicate: (HierarchyNode) -> Boolean): DataOwnerHierarchyInfo =
+	internal fun filterLinks(predicate: (HierarchyNode) -> Boolean): DataOwnerHierarchyInfo =
 		copy(
 			links = links.filterRecursively(predicate)
 		)
+
+	/**
+	 * If [simpleGroupId] is a simple-type link in this information walk all the paths from the root that can reach it
+	 * and returns the latest entry in each possible path that is a parent-type link of this, or if there was no
+	 * parent-type link encountered in the path [id] itself.
+	 * If [simpleGroupId] is not encountered returns an empty set, but if it is encountered and it is not a simple-type
+	 * link throws.
+	 *
+	 * Example:
+	 * - [id] is A
+	 * - [simpleGroupId] is C
+	 * - A -> B (simple)
+	 * - B -> C (simple)
+	 * - A -> D (parent)
+	 * - D -> C (simple)
+	 * Then returns {A, D}
+	 */
+	internal fun findLinkedSimpleGroupOwnRecipients(
+		simpleGroupId: String
+	): Set<String> {
+		val res = mutableSetOf<String>()
+		fun walkRecursively(node: HierarchyNode, latestParentOrId: String) {
+			if (node.linkedGroupId == simpleGroupId) {
+				require(node.linkType == DataOwnerGroupLinkType.Simple) {
+					"$simpleGroupId is not a simple-type group."
+				}
+				res.add(latestParentOrId)
+			} else {
+				val recipientForTransitiveLinks = if (node.linkType == DataOwnerGroupLinkType.Parent) {
+					node.linkedGroupId
+				} else {
+					latestParentOrId
+				}
+				node.transitiveLinks.forEach { walkRecursively(it, recipientForTransitiveLinks) }
+			}
+		}
+		links.forEach { walkRecursively(it, id) }
+		return res
+	}
 
 	/**
 	 * Recursively filters this list of nodes (and their [HierarchyNode.transitiveLinks]) to keep only the nodes

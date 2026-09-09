@@ -231,35 +231,11 @@ abstract class AbstractExchangeDataManagerInGroup(
 	protected suspend fun decryptData(
 		data: ExchangeData
 	): Pair<UnencryptedExchangeDataContent, Boolean>? {
-		val decryptionKeys = userEncryptionKeys.getAllDecryptionKeys()
-
-		val decryptedExchangeKeyResult = base.tryDecryptExchangeKeys(listOf(data), decryptionKeys)
-		val decryptedExchangeKey = decryptedExchangeKeyResult.successfulDecryptions.firstOrNull()
-			?: return null
-
-		val decryptedAccessControlSecretResult = base.tryDecryptAccessControlSecret(listOf(data), decryptionKeys)
-		val decryptedAccessControlSecret = decryptedAccessControlSecretResult.successfulDecryptions.firstOrNull()
-			?: throw IllegalStateException("Decryption key could be decrypted but access control secret could not for data $data")
-
-		val decryptedSharedSignatureKeyResult = base.tryDecryptSharedSignatureKeys(listOf(data), decryptionKeys)
-		val decryptedSharedSignatureKey = decryptedSharedSignatureKeyResult.successfulDecryptions.firstOrNull()
-			?: throw IllegalStateException("Decryption key could be decrypted but shared signature key could not for data $data")
-		val unencryptedContent = UnencryptedExchangeDataContent(
-			accessControlSecret = decryptedAccessControlSecret,
-			exchangeKey = decryptedExchangeKey,
-			sharedSignatureKey = decryptedSharedSignatureKey
-		)
-		val verified = base.verifyExchangeData(
-			ExchangeDataWithUnencryptedContent(
-				exchangeData = data,
-				unencryptedContent = unencryptedContent
-			),
-			SelfVerifiedKeysSet(userEncryptionKeys.delegatorActorVerifiedKeys().map { it.toPrivateKeyInfo() }),
-			userEncryptionKeys.delegatorActorId()
-		)
-		return Pair(
-			unencryptedContent,
-			verified
+		return base.tryDecryptExchangeDataContentAndGetVerified(
+			exchangeData = data,
+			decryptionKeys = userEncryptionKeys.getAllDecryptionKeys(),
+			delegatorSignatureKeys = SelfVerifiedKeysSet(userEncryptionKeys.delegatorActorVerifiedKeys().map { it.toPrivateKeyInfo() }),
+			verifyAsDelegator = userEncryptionKeys.delegatorActorId()
 		)
 	}
 

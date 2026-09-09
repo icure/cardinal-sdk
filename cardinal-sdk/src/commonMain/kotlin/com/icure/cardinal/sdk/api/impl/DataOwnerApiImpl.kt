@@ -1,28 +1,25 @@
 package com.icure.cardinal.sdk.api.impl
 
 import com.icure.cardinal.sdk.api.DataOwnerApi
+import com.icure.cardinal.sdk.api.impl.DataOwnerApiHelpers.doAddDataOwnersToGroup
+import com.icure.cardinal.sdk.api.impl.DataOwnerApiHelpers.doRemoveDataOwnersFromGroup
 import com.icure.cardinal.sdk.api.raw.RawDataOwnerApi
 import com.icure.cardinal.sdk.api.raw.RawDeviceApi
 import com.icure.cardinal.sdk.api.raw.RawHealthcarePartyApi
 import com.icure.cardinal.sdk.api.raw.RawPatientApi
 import com.icure.cardinal.sdk.api.raw.successBodyOrThrowRevisionConflict
-import com.icure.cardinal.sdk.model.EntityReferenceInGroup
 import com.icure.cardinal.sdk.crypto.entities.SdkBoundGroup
 import com.icure.cardinal.sdk.crypto.entities.resolve
 import com.icure.cardinal.sdk.model.CryptoActorStubWithType
 import com.icure.cardinal.sdk.model.DataOwnerType
 import com.icure.cardinal.sdk.model.DataOwnerWithType
-import com.icure.cardinal.sdk.model.GroupScoped
+import com.icure.cardinal.sdk.model.EntityReferenceInGroup
 import com.icure.cardinal.sdk.model.ListOfIds
-import com.icure.cardinal.sdk.model.base.CryptoActor
 import com.icure.cardinal.sdk.model.base.DataOwnerGroupLinkType
 import com.icure.cardinal.sdk.model.base.DataOwnerHierarchyInfo
 import com.icure.cardinal.sdk.model.extensions.asStub
-import com.icure.cardinal.sdk.model.extensions.publicKeysSpki
-import com.icure.cardinal.sdk.model.requests.PublicKeyInfo
 import com.icure.cardinal.sdk.model.requests.RsaEncryptionAlgorithm
 import com.icure.cardinal.sdk.model.specializations.SpkiHexString
-import com.icure.cardinal.sdk.utils.IllegalEntityException
 import com.icure.cardinal.sdk.utils.SingleValueAsyncCache
 import com.icure.cardinal.sdk.utils.pagination.exhaustPaginatedRequest
 import com.icure.kryptom.crypto.RsaAlgorithm
@@ -88,6 +85,9 @@ class DataOwnerApiImpl(
 		dataOwnerInfoCache.getCachedOrRetrieve {
 			rawApi.getCurrentDataOwnerHierarchyInfo().successBody().let { it to it }
 		}.first
+
+	override suspend fun getDataOwnerHierarchyInfo(dataOwnerId: String): DataOwnerHierarchyInfo =
+		rawApi.getDataOwnerHierarchyInfoOf(dataOwnerId).successBody()
 
 	override suspend fun getCryptoActorStubInGroup(entityReferenceInGroup: EntityReferenceInGroup): CryptoActorStubWithType {
 		val dataOwnerGroup = entityReferenceInGroup.normalized(boundGroup).groupId
@@ -180,4 +180,26 @@ class DataOwnerApiImpl(
 		}
 		return result
 	}
+
+	override suspend fun addDataOwnersToGroup(
+		dataOwnerType: DataOwnerType,
+		dataOwnerGroupId: String,
+		newMembersIds: Set<String>,
+	): Set<String> =
+		rawApi.doAddDataOwnersToGroup(
+			dataOwnerType = dataOwnerType,
+			dataOwnerGroupId = dataOwnerGroupId,
+			newMembersIds = newMembersIds,
+		)
+
+	override suspend fun removeDataOwnersFromGroup(
+		dataOwnerType: DataOwnerType,
+		dataOwnerGroupId: String,
+		membersToRemoveIds: Set<String>,
+	): Set<String> =
+		rawApi.doRemoveDataOwnersFromGroup(
+			dataOwnerType = dataOwnerType,
+			dataOwnerGroupId = dataOwnerGroupId,
+			membersToRemoveIds = membersToRemoveIds,
+		)
 }

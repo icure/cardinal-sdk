@@ -28,5 +28,6 @@ data class PaginationError(
 	public val exceptionDetail: String? = null,
 ) {
 	// region PaginationError-PaginationError
+
 	// endregion
 }

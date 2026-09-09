@@ -34,4 +34,10 @@ public external interface CryptoApiJs {
 		details: Array<ExchangeDataInjectionDetailsJs>,
 		reEncryptWithOwnKeys: Boolean,
 	): Promise<Unit>
+
+	public fun ensureHasAccessToSharedSimpleDataOwnerGroupExchangeData(
+		`delegate`: String,
+		sharedSimpleDataOwnerGroupId: String,
+		options: dynamic,
+	): Promise<Boolean>
 }

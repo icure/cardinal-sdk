@@ -80,4 +80,24 @@ object NoDataOwnerApi : DataOwnerApi {
 	): Map<String, Map<SpkiHexString, RsaAlgorithm.RsaEncryptionAlgorithm>> {
 		TODO("Not yet implemented")
 	}
+
+	override suspend fun getDataOwnerHierarchyInfo(dataOwnerId: String): DataOwnerHierarchyInfo {
+		TODO("Not yet implemented")
+	}
+
+	override suspend fun addDataOwnersToGroup(
+		dataOwnerType: DataOwnerType,
+		dataOwnerGroupId: String,
+		newMembersIds: Set<String>,
+	): Set<String> {
+		TODO("Not yet implemented")
+	}
+
+	override suspend fun removeDataOwnersFromGroup(
+		dataOwnerType: DataOwnerType,
+		dataOwnerGroupId: String,
+		membersToRemoveIds: Set<String>,
+	): Set<String> {
+		TODO("Not yet implemented")
+	}
 }

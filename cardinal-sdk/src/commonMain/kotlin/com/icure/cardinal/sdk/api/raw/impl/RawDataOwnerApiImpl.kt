@@ -22,6 +22,7 @@ import io.ktor.http.appendPathSegments
 import io.ktor.http.contentType
 import io.ktor.http.takeFrom
 import io.ktor.util.date.GMTDate
+import kotlin.Boolean
 import kotlin.Int
 import kotlin.String
 import kotlin.collections.List
@@ -139,6 +140,17 @@ class RawDataOwnerApiImpl(
 			accept(Application.Json)
 		}.wrap()
 
+	override suspend fun getDataOwnerHierarchyInfoOf(dataOwnerId: String): HttpResponse<DataOwnerHierarchyInfo> =
+		get(authProvider) {
+			url {
+				takeFrom(apiUrl)
+				appendPathSegments("rest", "v2", "dataowner", "hierarchies", "info", "of")
+				parameter("dataOwnerId", dataOwnerId)
+				parameter("ts", GMTDate().timestamp)
+			}
+			accept(Application.Json)
+		}.wrap()
+
 	override suspend fun findDataOwnersLinkedToGroups(
 		dataOwnerType: String,
 		dataOwnerGroupIds: String,
@@ -171,6 +183,40 @@ class RawDataOwnerApiImpl(
 			contentType(Application.Json)
 			accept(Application.Json)
 			setBody(dataOwnerIds)
+		}.wrap()
+
+	override suspend fun addDataOwnersToGroup(
+		dataOwnerGroupId: String,
+		dataOwnerType: String,
+		newMembersIds: ListOfIds,
+	): HttpResponse<List<String>> =
+		post(authProvider) {
+			url {
+				takeFrom(apiUrl)
+				appendPathSegments("rest", "v2", "dataowner", "dataOwnerGroup", dataOwnerGroupId, "members", "add")
+				parameter("dataOwnerType", dataOwnerType)
+			}
+			contentType(Application.Json)
+			accept(Application.Json)
+			setBody(newMembersIds)
+		}.wrap()
+
+	override suspend fun removeDataOwnersFromGroup(
+		dataOwnerGroupId: String,
+		dataOwnerType: String,
+		invalidateSharedExchangeDataIfNeeded: Boolean?,
+		membersToRemoveIds: ListOfIds,
+	): HttpResponse<List<String>> =
+		post(authProvider) {
+			url {
+				takeFrom(apiUrl)
+				appendPathSegments("rest", "v2", "dataowner", "dataOwnerGroup", dataOwnerGroupId, "members", "remove")
+				parameter("dataOwnerType", dataOwnerType)
+				parameter("invalidateSharedExchangeDataIfNeeded", invalidateSharedExchangeDataIfNeeded)
+			}
+			contentType(Application.Json)
+			accept(Application.Json)
+			setBody(membersToRemoveIds)
 		}.wrap()
 
 	// endregion

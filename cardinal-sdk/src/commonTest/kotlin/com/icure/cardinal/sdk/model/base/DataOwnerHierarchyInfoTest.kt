@@ -2,6 +2,7 @@ package com.icure.cardinal.sdk.model.base
 
 import com.icure.cardinal.sdk.model.DataOwnerType
 import com.icure.cardinal.sdk.utils.DEFAULT_ENABLED
+import io.kotest.assertions.throwables.shouldThrow
 import io.kotest.core.spec.style.StringSpec
 import io.kotest.matchers.collections.shouldContainExactlyInAnyOrder
 import io.kotest.matchers.shouldBe
@@ -30,6 +31,20 @@ class DataOwnerHierarchyInfoTest : StringSpec({
 	)
 
 	val singleNode = DataOwnerHierarchyInfo(id = "A", dataOwnerType = DataOwnerType.Hcp)
+
+	/*
+	 * The example from the documentation of findLinkedSimpleGroupOwnRecipients:
+	 * A -> B (simple) -> C (simple)
+	 * A -> D (parent) -> C (simple)
+	 */
+	val docExample = DataOwnerHierarchyInfo(
+		id = "A",
+		dataOwnerType = DataOwnerType.Hcp,
+		links = listOf(
+			node("B", transitiveLinks = listOf(node("C"))),
+			node("D", linkType = DataOwnerGroupLinkType.Parent, transitiveLinks = listOf(node("C"))),
+		),
+	)
 
 	val parentChain = DataOwnerHierarchyInfo(
 		id = "A",
@@ -113,5 +128,117 @@ class DataOwnerHierarchyInfoTest : StringSpec({
 		parentOnly.flattened() shouldContainExactlyInAnyOrder
 			parentChain.flattened(setOf(DataOwnerGroupLinkType.Parent)).toList()
 		parentOnly shouldBe parentChain.parentHierarchy()
+	}
+
+	"findLinkedSimpleGroupOwnRecipients should return the example from the documentation".config(enabled = DEFAULT_ENABLED) {
+		docExample.findLinkedSimpleGroupOwnRecipients("C") shouldContainExactlyInAnyOrder listOf("A", "D")
+	}
+
+	"findLinkedSimpleGroupOwnRecipients should return the data owner itself for a direct simple link".config(enabled = DEFAULT_ENABLED) {
+		DataOwnerHierarchyInfo(
+			id = "A",
+			dataOwnerType = DataOwnerType.Hcp,
+			links = listOf(node("C")),
+		).findLinkedSimpleGroupOwnRecipients("C") shouldBe setOf("A")
+	}
+
+	"findLinkedSimpleGroupOwnRecipients should return the data owner itself when the path goes only through simple links".config(enabled = DEFAULT_ENABLED) {
+		DataOwnerHierarchyInfo(
+			id = "A",
+			dataOwnerType = DataOwnerType.Hcp,
+			links = listOf(node("B", transitiveLinks = listOf(node("X", transitiveLinks = listOf(node("C")))))),
+		).findLinkedSimpleGroupOwnRecipients("C") shouldBe setOf("A")
+	}
+
+	"findLinkedSimpleGroupOwnRecipients should return the deepest parent link of the path".config(enabled = DEFAULT_ENABLED) {
+		/*
+		 * A -> B (parent) -> D (parent) -> E (simple) -> C (simple)
+		 * The latest parent-type link before C is D.
+		 */
+		DataOwnerHierarchyInfo(
+			id = "A",
+			dataOwnerType = DataOwnerType.Hcp,
+			links = listOf(
+				node(
+					"B",
+					linkType = DataOwnerGroupLinkType.Parent,
+					transitiveLinks = listOf(
+						node(
+							"D",
+							linkType = DataOwnerGroupLinkType.Parent,
+							transitiveLinks = listOf(node("E", transitiveLinks = listOf(node("C")))),
+						),
+					),
+				),
+			),
+		).findLinkedSimpleGroupOwnRecipients("C") shouldBe setOf("D")
+	}
+
+	"findLinkedSimpleGroupOwnRecipients should return one recipient per path, deduplicated".config(enabled = DEFAULT_ENABLED) {
+		/*
+		 * A -> P (parent) -> C (simple)
+		 * A -> Q (simple)  -> C (simple)
+		 * A -> R (simple)  -> C (simple)
+		 * P contributes P, Q and R both contribute A, which must appear only once.
+		 */
+		DataOwnerHierarchyInfo(
+			id = "A",
+			dataOwnerType = DataOwnerType.Hcp,
+			links = listOf(
+				node("P", linkType = DataOwnerGroupLinkType.Parent, transitiveLinks = listOf(node("C"))),
+				node("Q", transitiveLinks = listOf(node("C"))),
+				node("R", transitiveLinks = listOf(node("C"))),
+			),
+		).findLinkedSimpleGroupOwnRecipients("C") shouldContainExactlyInAnyOrder listOf("A", "P")
+	}
+
+	"findLinkedSimpleGroupOwnRecipients should consider the whole subtree of a group reachable through multiple paths".config(enabled = DEFAULT_ENABLED) {
+		/*
+		 * A -> P (parent) -> D (simple) -> C (simple)
+		 * A -> D (simple) -> C (simple)
+		 * D's subtree is explored once per path, so both P and A are recipients.
+		 */
+		val dSubtree = listOf(node("C"))
+		DataOwnerHierarchyInfo(
+			id = "A",
+			dataOwnerType = DataOwnerType.Hcp,
+			links = listOf(
+				node("P", linkType = DataOwnerGroupLinkType.Parent, transitiveLinks = listOf(node("D", transitiveLinks = dSubtree))),
+				node("D", transitiveLinks = dSubtree),
+			),
+		).findLinkedSimpleGroupOwnRecipients("C") shouldContainExactlyInAnyOrder listOf("A", "P")
+	}
+
+	"findLinkedSimpleGroupOwnRecipients should return an empty set for a group not in the hierarchy".config(enabled = DEFAULT_ENABLED) {
+		docExample.findLinkedSimpleGroupOwnRecipients("Z") shouldBe emptySet()
+		singleNode.findLinkedSimpleGroupOwnRecipients("Z") shouldBe emptySet()
+	}
+
+	"findLinkedSimpleGroupOwnRecipients should return an empty set for the data owner's own id".config(enabled = DEFAULT_ENABLED) {
+		docExample.findLinkedSimpleGroupOwnRecipients("A") shouldBe emptySet()
+	}
+
+	"findLinkedSimpleGroupOwnRecipients should throw if the group is linked with a parent-type link".config(enabled = DEFAULT_ENABLED) {
+		shouldThrow<IllegalArgumentException> {
+			docExample.findLinkedSimpleGroupOwnRecipients("D")
+		}
+	}
+
+	"findLinkedSimpleGroupOwnRecipients should throw if the group is reachable with a non-simple link through any path".config(enabled = DEFAULT_ENABLED) {
+		/*
+		 * A -> B (simple) -> C (simple)
+		 * A -> C (notAllowed)
+		 */
+		val ambiguous = DataOwnerHierarchyInfo(
+			id = "A",
+			dataOwnerType = DataOwnerType.Hcp,
+			links = listOf(
+				node("B", transitiveLinks = listOf(node("C"))),
+				node("C", linkType = DataOwnerGroupLinkType.NotAllowed),
+			),
+		)
+		shouldThrow<IllegalArgumentException> {
+			ambiguous.findLinkedSimpleGroupOwnRecipients("C")
+		}
 	}
 })

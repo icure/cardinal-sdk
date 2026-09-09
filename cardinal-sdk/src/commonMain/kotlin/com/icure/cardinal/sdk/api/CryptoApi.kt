@@ -6,6 +6,7 @@ import com.icure.cardinal.sdk.crypto.entities.RawDecryptedExchangeData
 import com.icure.cardinal.sdk.model.EntityReferenceInGroup
 import com.icure.cardinal.sdk.model.specializations.KeypairFingerprintV1String
 import com.icure.cardinal.sdk.model.specializations.Pkcs8Bytes
+import com.icure.cardinal.sdk.model.specializations.SpkiHexString
 import com.icure.cardinal.sdk.utils.DefaultValue
 
 
@@ -65,6 +66,31 @@ interface CryptoApi {
 		details: List<ExchangeDataInjectionDetails>,
 		reEncryptWithOwnKeys: Boolean
 	)
+
+	/**
+	 * Make sure that a data owner that is a member of the same simple-type group as the current data owner has access
+	 * to all the exchange data of that group.
+	 *
+	 * [sharedSimpleDataOwnerGroupId] must be a simple-type data owner group, of the same data-owner-type as the current
+	 * delegator actor, and both the current delegator actor data owner and the [delegate] data owner must be directly
+	 * or indirectly through transitive links members of the [sharedSimpleDataOwnerGroupId] group; if they are not this
+	 * method fails with a [IllegalArgumentException] without applying any change to the exchange data.
+	 *
+	 * If [delegatePublicKey] is null this method will simply check that for each exchange data of the group there is
+	 * also a piece for the [delegate] data owner. If [delegatePublicKey] is not null this method will also check that
+	 * the piece for the [delegate] data owner contains entries for the provided public key.
+	 *
+	 * This method returns true if all exchange data that was found for [sharedSimpleDataOwnerGroupId] could be
+	 * successfully reshared with the [delegate] data owner, false if some data could not be shared (failed to update
+	 * it, or there is no piece that the current sdk could decrypt); this method will do its best effort to share as
+	 * much as possible (does not stop on the first failure)
+	 */
+	suspend fun ensureHasAccessToSharedSimpleDataOwnerGroupExchangeData(
+		delegate: String,
+		sharedSimpleDataOwnerGroupId: String,
+		@DefaultValue("null")
+		delegatePublicKey: SpkiHexString? = null,
+	): Boolean
 }
 
 interface CryptoInGroupApi {

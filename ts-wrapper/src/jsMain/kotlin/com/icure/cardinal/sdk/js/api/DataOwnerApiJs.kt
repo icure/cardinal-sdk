@@ -26,6 +26,8 @@ public external interface DataOwnerApiJs {
 
 	public fun getCurrentDataOwnerHierarchyInfo(): Promise<DataOwnerHierarchyInfoJs>
 
+	public fun getDataOwnerHierarchyInfo(dataOwnerId: String): Promise<DataOwnerHierarchyInfoJs>
+
 	public fun getDataOwner(ownerId: String): Promise<DataOwnerWithTypeJs>
 
 	public fun getDataOwners(ids: Array<String>): Promise<Array<DataOwnerWithTypeJs>>
@@ -55,4 +57,16 @@ public external interface DataOwnerApiJs {
 		dataOwners: Array<String>,
 		groupId: String?,
 	): Promise<Record<String, Record<String, String>>>
+
+	public fun addDataOwnersToGroup(
+		dataOwnerType: String,
+		dataOwnerGroupId: String,
+		newMembersIds: Array<String>,
+	): Promise<Array<String>>
+
+	public fun removeDataOwnersFromGroup(
+		dataOwnerType: String,
+		dataOwnerGroupId: String,
+		membersToRemoveIds: Array<String>,
+	): Promise<Array<String>>
 }

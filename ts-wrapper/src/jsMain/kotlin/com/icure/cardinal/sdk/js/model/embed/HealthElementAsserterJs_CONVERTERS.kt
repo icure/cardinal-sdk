@@ -17,7 +17,7 @@ public fun healthElementAsserter_toJs(obj: HealthElementAsserter): HealthElement
 	)
 	val externalAsserterIdentifier = nullToUndefined(
 		obj.externalAsserterIdentifier?.let { nonNull1 ->
-			identifier_toJs(nonNull1)
+			healthElementAsserter_ExternalAsserterIdentifier_toJs(nonNull1)
 		}
 	)
 	return HealthElementAsserterJs(js("{" +
@@ -31,7 +31,7 @@ public fun healthElementAsserter_fromJs(obj: HealthElementAsserterJs): HealthEle
 		healthElementAsserter_LocalAsserterIdentifier_fromJs(nonNull1)
 	}
 	val externalAsserterIdentifier = obj.externalAsserterIdentifier?.let { nonNull1 ->
-		identifier_fromJs(nonNull1)
+		healthElementAsserter_ExternalAsserterIdentifier_fromJs(nonNull1)
 	}
 	return HealthElementAsserter(
 		localAsserterIdentifier = localAsserterIdentifier,
@@ -59,5 +59,24 @@ public
 	return HealthElementAsserter.LocalAsserterIdentifier(
 		id = id,
 		type = type,
+	)
+}
+
+@Suppress("UNUSED_VARIABLE")
+public
+		fun healthElementAsserter_ExternalAsserterIdentifier_toJs(obj: HealthElementAsserter.ExternalAsserterIdentifier):
+		HealthElementAsserterJs_ExternalAsserterIdentifierJs {
+	val identifier = identifier_toJs(obj.identifier)
+	return HealthElementAsserterJs_ExternalAsserterIdentifierJs(js("{" +
+		"identifier:identifier" +
+	"}"))
+}
+
+public
+		fun healthElementAsserter_ExternalAsserterIdentifier_fromJs(obj: HealthElementAsserterJs_ExternalAsserterIdentifierJs):
+		HealthElementAsserter.ExternalAsserterIdentifier {
+	val identifier = identifier_fromJs(obj.identifier)
+	return HealthElementAsserter.ExternalAsserterIdentifier(
+		identifier = identifier,
 	)
 }

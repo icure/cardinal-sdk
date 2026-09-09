@@ -8,6 +8,7 @@ import com.icure.cardinal.sdk.model.base.DataOwnerHierarchyInfo
 import com.icure.cardinal.sdk.model.requests.DataOwnerPublicKeys
 import com.icure.cardinal.sdk.model.requests.LinkedDataOwner
 import com.icure.utils.InternalIcureApi
+import kotlin.Boolean
 import kotlin.Int
 import kotlin.String
 import kotlin.collections.List
@@ -38,6 +39,8 @@ public interface RawDataOwnerApi {
 
 	suspend fun getCurrentDataOwnerHierarchyInfo(): HttpResponse<DataOwnerHierarchyInfo>
 
+	suspend fun getDataOwnerHierarchyInfoOf(dataOwnerId: String): HttpResponse<DataOwnerHierarchyInfo>
+
 	suspend fun findDataOwnersLinkedToGroups(
 		dataOwnerType: String,
 		dataOwnerGroupIds: String,
@@ -49,6 +52,19 @@ public interface RawDataOwnerApi {
 		dataOwnerType: String,
 		dataOwnerIds: ListOfIds,
 	): HttpResponse<List<DataOwnerPublicKeys>>
+
+	suspend fun addDataOwnersToGroup(
+		dataOwnerGroupId: String,
+		dataOwnerType: String,
+		newMembersIds: ListOfIds,
+	): HttpResponse<List<String>>
+
+	suspend fun removeDataOwnersFromGroup(
+		dataOwnerGroupId: String,
+		dataOwnerType: String,
+		invalidateSharedExchangeDataIfNeeded: Boolean? = null,
+		membersToRemoveIds: ListOfIds,
+	): HttpResponse<List<String>>
 	// endregion
 
 	// region cloud endpoints

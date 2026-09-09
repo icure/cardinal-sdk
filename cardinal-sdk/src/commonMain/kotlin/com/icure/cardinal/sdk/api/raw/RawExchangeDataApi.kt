@@ -4,6 +4,7 @@ import com.icure.cardinal.sdk.model.ExchangeData
 import com.icure.cardinal.sdk.model.IdWithRev
 import com.icure.cardinal.sdk.model.ListOfIds
 import com.icure.cardinal.sdk.model.PaginatedList
+import com.icure.cardinal.sdk.model.requests.BulkExchangeDataPieceCreationRequest
 import com.icure.cardinal.sdk.model.requests.ExchangeDataPieceCreationRequest
 import com.icure.utils.InternalIcureApi
 import kotlin.Int
@@ -23,6 +24,8 @@ public interface RawExchangeDataApi {
 
 	suspend fun modifyExchangeData(exchangeData: ExchangeData): HttpResponse<ExchangeData>
 
+	suspend fun modifyExchangeDataInBulk(exchangeDatas: List<ExchangeData>): HttpResponse<List<ExchangeData>>
+
 	suspend fun getExchangeDataById(exchangeDataId: String): HttpResponse<ExchangeData>
 
 	suspend fun getExchangeDataByIds(exchangeDataIds: ListOfIds): HttpResponse<List<ExchangeData>>
@@ -32,6 +35,10 @@ public interface RawExchangeDataApi {
 		delegator: String,
 		`delegate`: String,
 		piecesByRecipient: Map<String, ExchangeDataPieceCreationRequest>,
+	): HttpResponse<List<ExchangeData>>
+
+	public suspend fun bulkCreateExchangeDataGroupPieces(
+		requests: List<BulkExchangeDataPieceCreationRequest>,
 	): HttpResponse<List<ExchangeData>>
 
 	suspend fun getExchangeDataGroupById(
@@ -67,6 +74,12 @@ public interface RawExchangeDataApi {
 		startKey: String? = null,
 		limit: Int? = null,
 	): HttpResponse<PaginatedList<String>>
+
+	suspend fun findMainExchangeDataIdsByParticipant(
+		participantId: String,
+		startDocumentId: String? = null,
+		limit: Int? = null,
+	): HttpResponse<PaginatedList<String>>
 	// endregion
 
 	// region cloud endpoints
@@ -80,6 +93,11 @@ public interface RawExchangeDataApi {
 		exchangeData: ExchangeData,
 		groupId: String,
 	): HttpResponse<ExchangeData>
+
+	suspend fun modifyExchangeDataInBulk(
+		exchangeDatas: List<ExchangeData>,
+		groupId: String,
+	): HttpResponse<List<ExchangeData>>
 
 	suspend fun getExchangeDataById(
 		exchangeDataId: String,
@@ -96,6 +114,11 @@ public interface RawExchangeDataApi {
 		delegator: String,
 		`delegate`: String,
 		piecesByRecipient: Map<String, ExchangeDataPieceCreationRequest>,
+		groupId: String,
+	): HttpResponse<List<ExchangeData>>
+
+	public suspend fun bulkCreateExchangeDataGroupPieces(
+		requests: List<BulkExchangeDataPieceCreationRequest>,
 		groupId: String,
 	): HttpResponse<List<ExchangeData>>
 

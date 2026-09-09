@@ -6,23 +6,52 @@ import com.icure.cardinal.sdk.model.specializations.Base64String
 import com.icure.cardinal.sdk.model.specializations.KeypairFingerprintV2String
 import com.icure.cardinal.sdk.utils.DefaultValue
 import kotlinx.serialization.Serializable
+import kotlin.String
 import kotlin.collections.Map
 
 /**
  *
  *  Request to create a piece of exchange data, for a certain recipient of a simple-type data owner
  * group.
- *  The id, recipient, delegator, delegate and exchange data group id of the created piece are not
- * part of this request:
- *  they come from the parameters of the request to create the pieces of an exchange data group, and
- * from the key this
- *  request is associated to.
+ *  Unlike [ExchangeDataPieceCreationRequestDto], which is a piece of a group named by the request
+ * that carries it, this
+ *  request stands on its own: it names the group the piece belongs to and all of its participants,
+ * so that a single
+ *  bulk request can create pieces for many exchange data groups at once.
  */
 @Serializable
-data class ExchangeDataPieceCreationRequest(
+data class BulkExchangeDataPieceCreationRequest(
 	public val exchangeKey: Map<KeypairFingerprintV2String, Base64String>,
 	public val accessControlSecret: Map<KeypairFingerprintV2String, Base64String>,
 	public val sharedSignatureKey: Map<KeypairFingerprintV2String, Base64String>,
+	/**
+	 *
+	 *  Id of the exchange data group this piece belongs to. The piece where the recipient is the
+	 * delegator anchors the
+	 *  group and has this as its own id; every other piece of the group has a derived id.
+	 */
+	public val exchangeDataGroupId: String,
+	/**
+	 * Id of the exchange data group this piece belongs to. The piece where the recipient is the
+	 * delegator anchors the
+	 * group and has this as its own id; every other piece of the group has a derived id.
+	 * /
+	 */
+	public val delegator: String,
+	/**
+	 * Id of the exchange data group this piece belongs to. The piece where the recipient is the
+	 * delegator anchors the
+	 * group and has this as its own id; every other piece of the group has a derived id.
+	 * /
+	 */
+	public val `delegate`: String,
+	/**
+	 *
+	 *  The member of the delegate group this piece is for. All the pieces of a group must agree on the
+	 * delegator and
+	 *  the delegate, and no two pieces of the same request may share a group and a recipient.
+	 */
+	public val recipient: String,
 	/**
 	 *
 	 *  Must be empty except on the piece of exchange data where the recipient is the delegator. Empty
@@ -42,7 +71,6 @@ data class ExchangeDataPieceCreationRequest(
 	 */
 	public val sharedSignature: Base64String? = null,
 ) {
-	// region ExchangeDataPieceCreationRequest-ExchangeDataPieceCreationRequest
-
+	// region BulkExchangeDataPieceCreationRequest-BulkExchangeDataPieceCreationRequest
 	// endregion
 }
