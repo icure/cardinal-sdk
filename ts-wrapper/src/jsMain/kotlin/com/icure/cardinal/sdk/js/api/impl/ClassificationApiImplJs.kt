@@ -10,8 +10,10 @@ import com.icure.cardinal.sdk.js.api.ClassificationApiJs
 import com.icure.cardinal.sdk.js.api.ClassificationFlavouredApiJs
 import com.icure.cardinal.sdk.js.api.DefaultParametersSupport.convertingOptionOrDefaultNonNull
 import com.icure.cardinal.sdk.js.api.DefaultParametersSupport.convertingOptionOrDefaultNullable
+import com.icure.cardinal.sdk.js.crypto.entities.BulkShareByIdsResultJs
 import com.icure.cardinal.sdk.js.crypto.entities.ClassificationShareOptionsJs
 import com.icure.cardinal.sdk.js.crypto.entities.SecretIdUseOptionJs
+import com.icure.cardinal.sdk.js.crypto.entities.bulkShareByIdsResult_toJs
 import com.icure.cardinal.sdk.js.crypto.entities.classificationShareOptions_fromJs
 import com.icure.cardinal.sdk.js.crypto.entities.secretIdUseOption_fromJs
 import com.icure.cardinal.sdk.js.filters.FilterOptionsJs
@@ -459,7 +461,7 @@ internal class ClassificationApiImplJs(
 			val secretIdConverted: SecretIdUseOption = convertingOptionOrDefaultNonNull(
 				_options,
 				"secretId",
-				com.icure.cardinal.sdk.crypto.entities.SecretIdUseOption.UseAnySharedWithParent
+				com.icure.cardinal.sdk.crypto.entities.SecretIdUseOption.UseAnySharedWithHierarchy
 			) { secretId: SecretIdUseOptionJs ->
 				secretIdUseOption_fromJs(secretId)
 			}
@@ -580,6 +582,33 @@ internal class ClassificationApiImplJs(
 				x1
 			},
 		)
+	}
+
+	override fun shareClassificationsByIds(classificationIds: Array<String>,
+			delegates: Record<String, ClassificationShareOptionsJs>): Promise<BulkShareByIdsResultJs> =
+			GlobalScope.promise {
+		val classificationIdsConverted: List<String> = arrayToList(
+			classificationIds,
+			"classificationIds",
+			{ x1: String ->
+				x1
+			},
+		)
+		val delegatesConverted: Map<String, ClassificationShareOptions> = objectToMap(
+			delegates,
+			"delegates",
+			{ x1: String ->
+				x1
+			},
+			{ x1: ClassificationShareOptionsJs ->
+				classificationShareOptions_fromJs(x1)
+			},
+		)
+		val result = classificationApi.shareClassificationsByIds(
+			classificationIdsConverted,
+			delegatesConverted,
+		)
+		bulkShareByIdsResult_toJs(result)
 	}
 
 	override fun deleteClassification(entityId: String): Promise<DocIdentifierJs> =

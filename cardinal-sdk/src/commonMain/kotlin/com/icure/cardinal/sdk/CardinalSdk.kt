@@ -522,12 +522,21 @@ internal suspend fun initializeApiCrypto(
 		requestTimeout = options.requestTimeout,
 		retryConfiguration = options.requestRetryConfiguration
 	)
+	// Constructed before dataOwnerApi/self is known so that DataOwnerApiImpl can bulk-fetch hierarchy members using
+	// the type-specific raw APIs (all data owners of a hierarchy share the same type). Safe to construct this early:
+	// they don't perform any request until actually used, well after the anonymity header below is set.
+	val rawPatientApiNoAccessKeys = RawPatientApiImpl(apiUrl, authProvider, null, rawApiConfig)
+	val rawHealthcarePartyApi = RawHealthcarePartyApiImpl(apiUrl, authProvider, rawApiConfig)
+	val rawDeviceApi = RawDeviceApiImpl(apiUrl, authProvider, rawApiConfig)
 	val dataOwnerApi = DataOwnerApiImpl(
 		RawDataOwnerApiImpl(
 			apiUrl,
 			authProvider,
 			rawApiConfig
 		),
+		rawHealthcarePartyApi,
+		rawPatientApiNoAccessKeys,
+		rawDeviceApi,
 		boundGroup
 	)
 	val self = dataOwnerApi.getCurrentDataOwner()
@@ -539,9 +548,6 @@ internal suspend fun initializeApiCrypto(
 	}?.let { anonymityHeaderValue ->
 		mutableAdditionalHeaders[ANONYMITY_HEADER] = anonymityHeaderValue
 	}
-	val rawPatientApiNoAccessKeys = RawPatientApiImpl(apiUrl, authProvider, null, rawApiConfig)
-	val rawHealthcarePartyApi = RawHealthcarePartyApiImpl(apiUrl, authProvider, rawApiConfig)
-	val rawDeviceApi = RawDeviceApiImpl(apiUrl, authProvider, rawApiConfig)
 	val exchangeDataMapManager = ExchangeDataMapManagerImpl(
 		RawExchangeDataMapApiImpl(apiUrl, authProvider, rawApiConfig),
 		cryptoService,
@@ -581,6 +587,11 @@ internal suspend fun initializeApiCrypto(
 	).initialize()
 	val userEncryptionKeys = userEncryptionKeysInitInfo.manager
 	val delegatorActorIsAnonymous = userEncryptionKeys.delegatorActorIsAnonymous()
+	if (delegatorActorIsAnonymous) {
+		if (dataOwnerApi.getCurrentDataOwnerHierarchyInfo().links.isNotEmpty()) throw UnsupportedOperationException(
+			"SDK currently does not support data owner groups for anonymous data owners (anonymous data owner ${self.dataOwner.id} has links ${dataOwnerApi.getCurrentDataOwnerHierarchyInfo().links}"
+		)
+	}
 	val exchangeDataManager = if (delegatorActorIsAnonymous)
 		FullyCachedExchangeDataManager(
 			baseExchangeDataManager,
@@ -756,6 +767,7 @@ internal class CardinalSdkImpl(
 		initCalendarItemApi(
 			rawCalendarItemApi,
 			rawDataOwnerApi,
+			rawPatientApi,
 			config
 		)
 	}
@@ -796,13 +808,6 @@ internal class CardinalSdkImpl(
 	override val patient: PatientApi by lazy {
 		initPatientApi(
 			rawPatientApi,
-			rawHealthcarePartyApi,
-			rawHealthElementApi,
-			rawFormApi,
-			rawContactApi,
-			rawInvoiceApi,
-			rawCalendarItemApi,
-			rawClassificationApi,
 			config
 		)
 	}
@@ -1047,7 +1052,11 @@ internal class CardinalSdkImpl(
 		GroupApiImpl(RawGroupApiImpl(apiUrl, authProvider, config.rawApiConfig))
 	}
 	override val healthcareParty: HealthcarePartyApi by lazy {
-		HealthcarePartyApiImpl(RawHealthcarePartyApiImpl(apiUrl, authProvider, config.rawApiConfig), config)
+		HealthcarePartyApiImpl(
+			RawHealthcarePartyApiImpl(apiUrl, authProvider, config.rawApiConfig),
+			config,
+			rawDataOwnerApi,
+		)
 	}
 	override val system: SystemApi by lazy {
 		SystemApiImpl(RawICureApiImpl(apiUrl, authProvider, config.rawApiConfig))

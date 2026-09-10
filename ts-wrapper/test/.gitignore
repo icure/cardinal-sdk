@@ -1,0 +1,5 @@
+build/
+node_modules/
+test-data/
+package-lock.json
+tsconfig.tsbuildinfo

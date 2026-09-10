@@ -7,7 +7,9 @@ import com.icure.cardinal.sdk.test.autoCancelJob
 import com.icure.cardinal.sdk.test.createHcpUser
 import com.icure.cardinal.sdk.test.initializeTestEnvironment
 import com.icure.cardinal.sdk.test.uuid
+import com.icure.cardinal.sdk.utils.DEFAULT_ENABLED
 import com.icure.cardinal.sdk.utils.EntityEncryptionException
+import com.icure.cardinal.sdk.utils.LOCAL_ENV_ONLY
 import com.icure.kryptom.crypto.CryptoService
 import io.kotest.assertions.throwables.shouldThrow
 import io.kotest.core.spec.style.StringSpec
@@ -19,12 +21,12 @@ import io.kotest.matchers.nulls.shouldBeNull
 import io.kotest.matchers.nulls.shouldNotBeNull
 import io.kotest.matchers.shouldBe
 
-private object ParentDelegatorStrategies : CryptoStrategies {
+private class ParentDelegatorStrategies(private val parentId: String) : CryptoStrategies {
 	override suspend fun generateNewKeyForDataOwner(
 		self: DataOwnerWithType,
 		cryptoPrimitives: CryptoService
 	): CryptoStrategies.KeyGenerationRequestResult =
-		CryptoStrategies.KeyGenerationRequestResult.ParentDelegator
+		CryptoStrategies.KeyGenerationRequestResult.ParentDelegator(parentId)
 }
 
 class ParentDelegatorTest : StringSpec({
@@ -34,10 +36,10 @@ class ParentDelegatorTest : StringSpec({
 		initializeTestEnvironment()
 	}
 
-	"Data should be created and shared using the parent hcp as delegator" {
+	"Data should be created and shared using the parent hcp as delegator".config(enabled = DEFAULT_ENABLED && LOCAL_ENV_ONLY) {
 		val parentHcp = createHcpUser()
 		val hcp = createHcpUser(parentHcp)
-		val api = hcp.apiWithParentKeysOnly(specJob, ParentDelegatorStrategies)
+		val api = hcp.apiWithParentKeysOnly(specJob, ParentDelegatorStrategies(parentHcp.dataOwnerId))
 		val created = api.patient.createPatient(
 			api.patient.withEncryptionMetadata(
 				DecryptedPatient(
@@ -72,7 +74,7 @@ class ParentDelegatorTest : StringSpec({
 		}
 		val retrievedAsOther = otherApi.patient.getPatient(created.id)
 		retrievedAsOther.shouldNotBeNull().note shouldBe "Secret note"
-		val reinitializedApi = hcp.apiWithParentKeysOnly(specJob, ParentDelegatorStrategies)
+		val reinitializedApi = hcp.apiWithParentKeysOnly(specJob, ParentDelegatorStrategies(parentHcp.dataOwnerId))
 		val createdAfterReinit = reinitializedApi.patient.createPatient(
 			reinitializedApi.patient.withEncryptionMetadata(
 				DecryptedPatient(
@@ -97,10 +99,10 @@ class ParentDelegatorTest : StringSpec({
 		retrievedAsOtherAfterReinit.shouldNotBeNull().note shouldBe "Another secret note"
 	}
 
-	"Data shared to parent should be accessible" {
+	"Data shared to parent should be accessible".config(enabled = DEFAULT_ENABLED && LOCAL_ENV_ONLY) {
 		val parentHcp = createHcpUser()
 		val hcp = createHcpUser(parentHcp)
-		val api = hcp.apiWithParentKeysOnly(specJob, ParentDelegatorStrategies)
+		val api = hcp.apiWithParentKeysOnly(specJob, ParentDelegatorStrategies(parentHcp.dataOwnerId))
 		val otherApi = createHcpUser().api(specJob)
 		val created = otherApi.patient.createPatient(
 			otherApi.patient.withEncryptionMetadata(
@@ -117,10 +119,10 @@ class ParentDelegatorTest : StringSpec({
 		retrievedAsHcp.shouldNotBeNull().note shouldBe "Secret note"
 	}
 
-	"Data shared directly to hcp should be accessible but not decryptable" {
+	"Data shared directly to hcp should be accessible but not decryptable".config(enabled = DEFAULT_ENABLED && LOCAL_ENV_ONLY) {
 		val parentHcp = createHcpUser()
 		val hcp = createHcpUser(parentHcp)
-		val api = hcp.apiWithParentKeysOnly(specJob, ParentDelegatorStrategies)
+		val api = hcp.apiWithParentKeysOnly(specJob, ParentDelegatorStrategies(parentHcp.dataOwnerId))
 		val otherApi = createHcpUser().api(specJob)
 		val created = otherApi.patient.createPatient(
 			otherApi.patient.withEncryptionMetadata(

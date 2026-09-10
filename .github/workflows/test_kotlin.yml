@@ -1,0 +1,86 @@
+name: Test Kotlin SDK
+
+on:
+    pull_request:
+        branches:
+            - main
+    workflow_dispatch:
+        inputs:
+            tests:
+                description: 'Tests to run, e.g. "test_patient test_sharing" (empty runs everything)'
+                required: false
+                default: ''
+                type: string
+
+jobs:
+    python-tests:
+        runs-on: ubuntu-latest
+        name: Run the Kotlin SDK tests # Do not change unless you change the branch protection rules
+        env:
+            ORG_GRADLE_PROJECT_repoUsername: ${{ secrets.REPO_USERNAME }}
+            ORG_GRADLE_PROJECT_repoPassword: ${{ secrets.REPO_PASSWORD }}
+            ORG_GRADLE_PROJECT_mavenRepository: ${{ secrets.MAVEN_REPOSITORY }}
+            ORG_GRADLE_PROJECT_mavenReleasesRepository: ${{ secrets.MAVEN_RELEASES_REPOSITORY }}
+        steps:
+            -   name: Check out code
+                uses: actions/checkout@v4
+                with:
+                    submodules: 'recursive'
+                    token: ${{ secrets.GH_PERSONAL_ACCESS_TOKEN }}
+
+            -   name: Set up JDK 21
+                if: steps.cache-wheel.outputs.cache-hit != 'true'
+                uses: actions/setup-java@v4
+                with:
+                    distribution: 'corretto'
+                    java-version: 21
+                    cache: 'gradle'
+
+            -   name: Write github credentials to local.properties
+                if: steps.cache-wheel.outputs.cache-hit != 'true'
+                run: |
+                    echo "githubUsername=${{ secrets.GH_USERNAME }}" > local.properties
+                    echo "githubPassword=${{ secrets.GH_PERSONAL_ACCESS_TOKEN }}" >> local.properties
+                    echo "cinteropsLibsDir=/usr/lib/x86_64-linux-gnu" >> local.properties
+                    mkdir -p ksp-json-processor
+                    echo "githubUsername=${{ secrets.GH_USERNAME }}" > ksp-json-processor/local.properties
+                    echo "githubPassword=${{ secrets.GH_PERSONAL_ACCESS_TOKEN }}" >> ksp-json-processor/local.properties
+
+            # Puts the existing key of each user in the directory the SDK reads it from. The name of
+            # the file is the storage entry key expected by the SDK, that is
+            # `org.taktik.icure.rsa.device.<dataOwnerId>.<publicKeyFingerprint>`, and its content is
+            # `{"privateKey": "<the pkcs8 private key, in base64>"}`. When the key of a user is not
+            # configured the SDK generates a new one and registers it on the data owner.
+            -   name: Set up the keys directories
+                env:
+                    USER_1_PK_FILE: ${{ secrets.CARDINAL_TEST_USER_1_PK_FILE }}
+                    USER_1_KEYS_DIR: ${{ secrets.CARDINAL_TEST_USER_1_PK_DIR }}
+                    USER_1_PK: ${{ secrets.CARDINAL_TEST_USER_1_PK }}
+                    USER_2_PK_FILE: ${{ secrets.CARDINAL_TEST_USER_2_PK_FILE }}
+                    USER_2_KEYS_DIR: ${{ secrets.CARDINAL_TEST_USER_2_PK_DIR }}
+                    USER_2_PK: ${{ secrets.CARDINAL_TEST_USER_2_PK }}
+                run: |
+                    set -euo pipefail
+                    seed_key() {
+                        local directory="$1" file_name="$2" content="$3"
+                        mkdir -p "$directory"
+                        if [ -n "$file_name" ] && [ -n "$content" ]; then
+                            printf '%s' "$content" > "$directory/$file_name"
+                            echo "Stored the key of $directory in $file_name"
+                        else
+                            echo "No key configured for $directory, the SDK will generate a new one"
+                        fi
+                    }
+                    seed_key "$USER_1_KEYS_DIR" "$USER_1_PK_FILE" "$USER_1_PK"
+                    seed_key "$USER_2_KEYS_DIR" "$USER_2_PK_FILE" "$USER_2_PK"
+
+            -   name: Run the tests
+                run: ./gradlew :cardinal-sdk:cleanJvmTest :cardinal-sdk:jvmTest -x cardinal-sdk:kspKotlinJvm
+                env:
+                    TEST_MODE: "ci"
+                    CARDINAL_TEST_BASE_URL: "https://nightly.icure.cloud"
+                    TEST_USER_1_ID: ${{ secrets.CARDINAL_TEST_USER_1_USERNAME }}
+                    TEST_USER_1_PWD: ${{ secrets.CARDINAL_TEST_USER_1_TOKEN }}
+                    TEST_USER_2_ID: ${{ secrets.CARDINAL_TEST_USER_2_USERNAME }}
+                    TEST_USER_2_PWD: ${{ secrets.CARDINAL_TEST_USER_2_TOKEN }}
+                    KEY_DIRECTORY: "./test-data/keys"

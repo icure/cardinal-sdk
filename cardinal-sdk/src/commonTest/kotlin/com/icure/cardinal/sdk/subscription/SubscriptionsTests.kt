@@ -33,6 +33,7 @@ import com.icure.cardinal.sdk.test.autoCancelJob
 import com.icure.cardinal.sdk.test.createHcpUser
 import com.icure.cardinal.sdk.test.initializeTestEnvironment
 import com.icure.cardinal.sdk.utils.DEFAULT_ENABLED
+import com.icure.cardinal.sdk.utils.LOCAL_ENV_ONLY
 import com.icure.kryptom.crypto.defaultCryptoService
 import io.kotest.assertions.fail
 import io.kotest.core.spec.style.StringSpec
@@ -56,7 +57,8 @@ fun <BaseType : Identifiable<String>, MaybeDecryptedType : BaseType> subscribabl
 ) = with(context) {
 	stringSpec {
 		name should {
-			"Should subscribe to $name updates".config(enabled = DEFAULT_ENABLED) {
+			// The spec needs an hcp with a specific set of roles, which can only be created locally.
+			"Should subscribe to $name updates".config(enabled = DEFAULT_ENABLED && LOCAL_ENV_ONLY) {
 				val subscription = subscribableApi
 					.subscribeToEvents(
 						events = setOf(SubscriptionEventType.Create),

@@ -16,9 +16,12 @@ import com.icure.cardinal.sdk.js.model.CheckedConverters.objectToMap
 import com.icure.cardinal.sdk.js.model.CheckedConverters.setToArray
 import com.icure.cardinal.sdk.js.model.CheckedConverters.undefinedToNull
 import com.icure.cardinal.sdk.js.model.base.CodeStubJs
+import com.icure.cardinal.sdk.js.model.base.DataOwnerGroupLinkJs
 import com.icure.cardinal.sdk.js.model.base.IdentifierJs
 import com.icure.cardinal.sdk.js.model.base.codeStub_fromJs
 import com.icure.cardinal.sdk.js.model.base.codeStub_toJs
+import com.icure.cardinal.sdk.js.model.base.dataOwnerGroupLink_fromJs
+import com.icure.cardinal.sdk.js.model.base.dataOwnerGroupLink_toJs
 import com.icure.cardinal.sdk.js.model.base.identifier_fromJs
 import com.icure.cardinal.sdk.js.model.base.identifier_toJs
 import com.icure.cardinal.sdk.js.model.embed.DecryptedAddressJs
@@ -42,6 +45,8 @@ import com.icure.cardinal.sdk.js.utils.Record
 import com.icure.cardinal.sdk.model.DecryptedPropertyStub
 import com.icure.cardinal.sdk.model.HealthcareParty
 import com.icure.cardinal.sdk.model.base.CodeStub
+import com.icure.cardinal.sdk.model.base.DataOwnerGroupLink
+import com.icure.cardinal.sdk.model.base.DataOwnerGroupLinkType
 import com.icure.cardinal.sdk.model.base.Identifier
 import com.icure.cardinal.sdk.model.embed.DecryptedAddress
 import com.icure.cardinal.sdk.model.embed.DecryptedFinancialInstitutionInformation
@@ -134,8 +139,16 @@ public fun healthcareParty_toJs(obj: HealthcareParty): HealthcarePartyJs {
 	val invoiceHeader = nullToUndefined(
 		obj.invoiceHeader
 	)
-	val parentId = nullToUndefined(
-		obj.parentId
+	val dataOwnerGroups = listToArray(
+		obj.dataOwnerGroups,
+		{ x1: DataOwnerGroupLink ->
+			dataOwnerGroupLink_toJs(x1)
+		},
+	)
+	val groupLinkType = nullToUndefined(
+		obj.groupLinkType?.let { nonNull1 ->
+			nonNull1.name
+		}
 	)
 	val ssin = nullToUndefined(
 		obj.ssin
@@ -301,7 +314,8 @@ public fun healthcareParty_toJs(obj: HealthcareParty): HealthcarePartyJs {
 		"proxyBankAccount:proxyBankAccount," +
 		"proxyBic:proxyBic," +
 		"invoiceHeader:invoiceHeader," +
-		"parentId:parentId," +
+		"dataOwnerGroups:dataOwnerGroups," +
+		"groupLinkType:groupLinkType," +
 		"ssin:ssin," +
 		"addresses:addresses," +
 		"languages:languages," +
@@ -372,7 +386,16 @@ public fun healthcareParty_fromJs(obj: HealthcarePartyJs): HealthcareParty {
 	val proxyBankAccount = undefinedToNull(obj.proxyBankAccount)
 	val proxyBic = undefinedToNull(obj.proxyBic)
 	val invoiceHeader = undefinedToNull(obj.invoiceHeader)
-	val parentId = undefinedToNull(obj.parentId)
+	val dataOwnerGroups = arrayToList(
+		obj.dataOwnerGroups,
+		"obj.dataOwnerGroups",
+		{ x1: DataOwnerGroupLinkJs ->
+			dataOwnerGroupLink_fromJs(x1)
+		},
+	)
+	val groupLinkType = obj.groupLinkType?.let { nonNull1 ->
+		DataOwnerGroupLinkType.valueOf(nonNull1)
+	}
 	val ssin = undefinedToNull(obj.ssin)
 	val addresses = arrayToList(
 		obj.addresses,
@@ -542,7 +565,8 @@ public fun healthcareParty_fromJs(obj: HealthcarePartyJs): HealthcareParty {
 		proxyBankAccount = proxyBankAccount,
 		proxyBic = proxyBic,
 		invoiceHeader = invoiceHeader,
-		parentId = parentId,
+		dataOwnerGroups = dataOwnerGroups,
+		groupLinkType = groupLinkType,
 		ssin = ssin,
 		addresses = addresses,
 		languages = languages,

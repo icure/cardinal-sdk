@@ -13,6 +13,7 @@ import com.icure.cardinal.sdk.test.createHcpUser
 import com.icure.cardinal.sdk.test.createPatientUser
 import com.icure.cardinal.sdk.test.initializeTestEnvironment
 import com.icure.cardinal.sdk.utils.DEFAULT_ENABLED
+import com.icure.cardinal.sdk.utils.LOCAL_ENV_ONLY
 import com.icure.cardinal.sdk.utils.currentEpochMs
 import com.icure.cardinal.sdk.utils.pagination.forEach
 import com.icure.kryptom.crypto.defaultCryptoService
@@ -78,7 +79,7 @@ class KeyPairUpdateNotificationTest : StringSpec({
 		api(specJob).getMaintenanceTasks().shouldBeEmpty()
 	}
 
-	"The api should allow to create any necessary keypair update notifications and to use them to give access back to data".config(enabled = DEFAULT_ENABLED) {
+	"The api should allow to create any necessary keypair update notifications and to use them to give access back to data".config(enabled = DEFAULT_ENABLED && LOCAL_ENV_ONLY) {
 		val user = createHcpUser()
 		val toNotifyAsDelegator = createHcpUser()
 		val toNotifyAsDelegate = createHcpUser()

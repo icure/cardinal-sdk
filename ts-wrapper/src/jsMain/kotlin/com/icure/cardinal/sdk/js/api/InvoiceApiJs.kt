@@ -3,6 +3,7 @@
 
 package com.icure.cardinal.sdk.js.api
 
+import com.icure.cardinal.sdk.js.crypto.entities.BulkShareByIdsResultJs
 import com.icure.cardinal.sdk.js.crypto.entities.InvoiceDelegateOptionsJs
 import com.icure.cardinal.sdk.js.crypto.entities.InvoiceShareOptionsJs
 import com.icure.cardinal.sdk.js.model.DecryptedInvoiceJs
@@ -58,6 +59,9 @@ public external interface InvoiceApiJs {
 	public fun decrypt(invoice: EncryptedInvoiceJs): Promise<DecryptedInvoiceJs>
 
 	public fun tryDecrypt(invoice: EncryptedInvoiceJs): Promise<InvoiceJs>
+
+	public fun shareInvoicesByIds(invoiceIds: Array<String>,
+			delegates: Record<String, InvoiceShareOptionsJs>): Promise<BulkShareByIdsResultJs>
 
 	public fun deleteInvoiceById(entityId: String, rev: String): Promise<StoredDocumentIdentifierJs>
 

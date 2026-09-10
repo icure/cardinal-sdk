@@ -12,6 +12,7 @@ import com.icure.cardinal.sdk.test.createHcpUser
 import com.icure.cardinal.sdk.test.createPatientUser
 import com.icure.cardinal.sdk.test.initializeTestEnvironment
 import com.icure.cardinal.sdk.utils.DEFAULT_ENABLED
+import com.icure.cardinal.sdk.utils.LOCAL_ENV_ONLY
 import com.icure.kryptom.crypto.defaultCryptoService
 import io.kotest.core.spec.style.StringSpec
 import io.kotest.matchers.collections.shouldHaveSize
@@ -117,15 +118,15 @@ class ExplicitAndAnonymousDelegatorsShareTests : StringSpec({
 		testCreateSharedData(createHcpUser(), createHcpUser())
 	}
 
-	"Test create shared data explicit->anonymous".config(enabled = DEFAULT_ENABLED) {
+	"Test create shared data explicit->anonymous".config(enabled = DEFAULT_ENABLED && LOCAL_ENV_ONLY) {
 		testCreateSharedData(createHcpUser(), createPatientUser())
 	}
 
-	"Test create shared data anonymous->explicit".config(enabled = DEFAULT_ENABLED) {
+	"Test create shared data anonymous->explicit".config(enabled = DEFAULT_ENABLED && LOCAL_ENV_ONLY) {
 		testCreateSharedData(createHcpUser(), createPatientUser())
 	}
 
-	"Test create shared data anonymous->anonymous".config(enabled = DEFAULT_ENABLED) {
+	"Test create shared data anonymous->anonymous".config(enabled = DEFAULT_ENABLED && LOCAL_ENV_ONLY) {
 		testCreateSharedData(createPatientUser(), createPatientUser())
 	}
 
@@ -133,15 +134,15 @@ class ExplicitAndAnonymousDelegatorsShareTests : StringSpec({
 		testShareExistingData(createHcpUser(), createHcpUser())
 	}
 
-	"Test share existing data explicit->anonymous".config(enabled = DEFAULT_ENABLED) {
+	"Test share existing data explicit->anonymous".config(enabled = DEFAULT_ENABLED && LOCAL_ENV_ONLY) {
 		testShareExistingData(createHcpUser(), createPatientUser())
 	}
 
-	"Test share existing data anonymous->explicit".config(enabled = DEFAULT_ENABLED) {
+	"Test share existing data anonymous->explicit".config(enabled = DEFAULT_ENABLED && LOCAL_ENV_ONLY) {
 		testShareExistingData(createHcpUser(), createPatientUser())
 	}
 
-	"Test share existing data anonymous->anonymous".config(enabled = DEFAULT_ENABLED) {
+	"Test share existing data anonymous->anonymous".config(enabled = DEFAULT_ENABLED && LOCAL_ENV_ONLY) {
 		testShareExistingData(createPatientUser(), createPatientUser())
 	}
 })

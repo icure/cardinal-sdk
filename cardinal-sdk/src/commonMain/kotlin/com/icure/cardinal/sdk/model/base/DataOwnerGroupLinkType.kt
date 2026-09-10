@@ -1,0 +1,29 @@
+// WARNING: This file is auto-generated. If you change it manually, your changes will be lost.
+// If you want to change the way this class is generated, see [this repo](https://github.com/icure/sdk-codegen).
+package com.icure.cardinal.sdk.model.base
+
+import kotlinx.serialization.SerialName
+import kotlinx.serialization.Serializable
+import kotlin.String
+
+/**
+ *
+ *  The nature of the link between a crypto actor and a data owner representing one of its groups.
+ *
+ *  This is intrinsic to the *target* of the link (see [CryptoActorDto.groupLinkType]): every link
+ * pointing at a
+ *  given data owner has the same type, whoever declares it.
+ */
+@Serializable
+enum class DataOwnerGroupLinkType(
+	internal val dtoSerialName: String,
+) {
+	@SerialName("simple")
+	Simple("simple"),
+
+	@SerialName("parent")
+	Parent("parent"),
+
+	@SerialName("notAllowed")
+	NotAllowed("notAllowed"),
+}

@@ -26,6 +26,7 @@ import com.icure.cardinal.sdk.test.testGroupAdminAuth
 import com.icure.cardinal.sdk.test.testGroupId
 import com.icure.cardinal.sdk.test.uuid
 import com.icure.cardinal.sdk.utils.DEFAULT_ENABLED
+import com.icure.cardinal.sdk.utils.LOCAL_ENV_ONLY
 import com.icure.kotp.ShaVersion
 import com.icure.kotp.Totp
 import com.icure.kryptom.crypto.HmacAlgorithm
@@ -62,7 +63,7 @@ class SmartAuthTest : StringSpec({
 		initializeTestEnvironment()
 	}
 
-	"Should automatically ask for secret to get a new token, and asks again the secret if it is not valid".config(enabled = DEFAULT_ENABLED) {
+	"Should automatically ask for secret to get a new token, and asks again the secret if it is not valid".config(enabled = DEFAULT_ENABLED && LOCAL_ENV_ONLY) {
 		val hcpDetails = createHcpUser()
 		var calls = 0
 		val authProvider = SmartAuthProvider.initialize(
@@ -113,7 +114,7 @@ class SmartAuthTest : StringSpec({
 		calls shouldBe 2
 	}
 
-	"Should automatically ask for a more powerful secret to perform elevated-security operations if the available secret/token is not good enough".config(enabled = DEFAULT_ENABLED) {
+	"Should automatically ask for a more powerful secret to perform elevated-security operations if the available secret/token is not good enough".config(enabled = DEFAULT_ENABLED && LOCAL_ENV_ONLY) {
 		val hcpDetails = createHcpUser()
 		val api = hcpDetails.api(specJob)
 		val initialUser = api.user.getCurrentUser()
@@ -213,21 +214,20 @@ class SmartAuthTest : StringSpec({
 		}.message shouldBe "Could not get a token with the provided initial secret of type ${AuthSecretDetails.PasswordDetails::class.simpleName}."
 	}
 
-	"Should automatically ask for TOTP after password if user has 2fa enabled".config(enabled = DEFAULT_ENABLED) {
+	"Should automatically ask for TOTP after password if user has 2fa enabled".config(enabled = DEFAULT_ENABLED && LOCAL_ENV_ONLY) {
 		val hcpDetails = createHcpUser()
 		val api = hcpDetails.api(specJob)
 		val otpLength = 8
+		val initialUser = api.user.getCurrentUser()
 		val adminUserApi = RawUserApiImpl(baseUrl, testGroupAdminAuth(), DefaultRawApiConfig)
 		val totpSecret = Totp.generateTOTPSecret(32, HmacAlgorithm.HmacSha256)
 		val totp = Totp(secret = totpSecret, shaVersion = ShaVersion.Sha256)
 		val userPwd = uuid()
-		val initialUser = api.user.getCurrentUser().let {
-			adminUserApi.modifyUser(
-				it.copy(
-					passwordHash = userPwd,
-				)
-			).successBody()
-		}
+		val userWithPwd = adminUserApi.modifyUser(
+			initialUser.copy(
+				passwordHash = userPwd,
+			)
+		).successBody()
 		adminUserApi.enable2faForUser(
 			userId = initialUser.id,
 			request = Enable2faRequest(
@@ -287,25 +287,24 @@ class SmartAuthTest : StringSpec({
 		)
 
 		val userApi = getUserApiWithProvider(authProvider)
-		userApi.getCurrentUser().successBody().rev shouldBe initialUser.rev // Setting 2fa does not change the local user
+		userApi.getCurrentUser().successBody().rev shouldBe userWithPwd.rev
 		calls shouldBe 3
 	}
 
-	"Should ask for TOTP directly if password is cached".config(enabled = DEFAULT_ENABLED) {
+	"Should ask for TOTP directly if password is cached".config(enabled = DEFAULT_ENABLED && LOCAL_ENV_ONLY) {
 		val hcpDetails = createHcpUser()
 		val api = hcpDetails.api(specJob)
 		val otpLength = 8
+		val initialUser = api.user.getCurrentUser()
 		val adminUserApi = RawUserApiImpl(baseUrl, testGroupAdminAuth(), DefaultRawApiConfig)
 		val totpSecret = Totp.generateTOTPSecret(32, HmacAlgorithm.HmacSha256)
 		val totp = Totp(secret = totpSecret, shaVersion = ShaVersion.Sha256)
 		val userPwd = uuid()
-		val initialUser = api.user.getCurrentUser().let {
-			adminUserApi.modifyUser(
-				it.copy(
-					passwordHash = userPwd,
-				)
-			).successBody()
-		}
+		val userWithPwd = adminUserApi.modifyUser(
+			initialUser.copy(
+				passwordHash = userPwd,
+			)
+		).successBody()
 		adminUserApi.enable2faForUser(
 			userId = initialUser.id,
 			request = Enable2faRequest(
@@ -344,11 +343,11 @@ class SmartAuthTest : StringSpec({
 		)
 
 		val userApi = getUserApiWithProvider(authProvider)
-		userApi.getCurrentUser().successBody().rev shouldBe initialUser.rev // Setting 2fa does not change the local user
+		userApi.getCurrentUser().successBody().rev shouldBe userWithPwd.rev
 		calls shouldBe 1
 	}
 
-	"Auth provider should allow to request and use short lived tokens".config(enabled = DEFAULT_ENABLED) {
+	"Auth provider should allow to request and use short lived tokens".config(enabled = DEFAULT_ENABLED && LOCAL_ENV_ONLY) {
 		val hcpDetails = createHcpUser()
 		val processId = MockMessageGatewayUtils.createTestProcess(
 			groupId = testGroupId,
@@ -398,7 +397,7 @@ class SmartAuthTest : StringSpec({
 		calls shouldBe 1
 	}
 
-	"If auth secret provider gives invalid result the request should fail with IllegalArgumentException, but future requests should work again".config(enabled = DEFAULT_ENABLED) {
+	"If auth secret provider gives invalid result the request should fail with IllegalArgumentException, but future requests should work again".config(enabled = DEFAULT_ENABLED && LOCAL_ENV_ONLY) {
 		val hcpDetails = createHcpUser()
 		val api = hcpDetails.api(specJob)
 		val initialUser = api.user.getCurrentUser()
@@ -510,7 +509,7 @@ class SmartAuthTest : StringSpec({
 		}.message shouldBe "Could not get a token with the provided initial secret of type ${AuthSecretDetails.PasswordDetails::class.simpleName}."
 	}
 
-	"Switched provider should keep cached secrets and should be able to have elevated security context".config(enabled = DEFAULT_ENABLED) {
+	"Switched provider should keep cached secrets and should be able to have elevated security context".config(enabled = DEFAULT_ENABLED && LOCAL_ENV_ONLY) {
 		val details = createUserInMultipleGroups()
 		val firstUser = details.groupBy { it.password }.values.first { it.size > 1 }.first()
 		val authProvider = SmartAuthProvider.initialize(

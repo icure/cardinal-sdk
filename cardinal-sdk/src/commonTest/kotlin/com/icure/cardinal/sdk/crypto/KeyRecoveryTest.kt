@@ -7,6 +7,8 @@ import com.icure.cardinal.sdk.test.autoCancelJob
 import com.icure.cardinal.sdk.test.createHcpUser
 import com.icure.cardinal.sdk.test.initializeTestEnvironment
 import com.icure.cardinal.sdk.utils.DEFAULT_ENABLED
+import com.icure.cardinal.sdk.utils.LOCAL_ENV_ONLY
+import com.icure.cardinal.sdk.utils.SKIP_IN_CANARY
 import com.icure.kryptom.crypto.CryptoService
 import com.icure.kryptom.crypto.RsaAlgorithm
 import com.icure.kryptom.crypto.RsaKeypair
@@ -24,7 +26,7 @@ class KeyRecoveryTest : StringSpec({
 		initializeTestEnvironment()
 	}
 
-	"Crypto strategies should be able to recover using iCure recovery methods".config(enabled = DEFAULT_ENABLED) {
+	"Crypto strategies should be able to recover using iCure recovery methods".config(enabled = DEFAULT_ENABLED && LOCAL_ENV_ONLY) {
 		val hcp = createHcpUser()
 		// Create a new key and corresponding transfer keys
 		var secondKey: RsaKeypair<RsaAlgorithm.RsaEncryptionAlgorithm.OaepWithSha256>? = null
@@ -32,14 +34,15 @@ class KeyRecoveryTest : StringSpec({
 			specJob,
 			cryptoStrategies = object : CryptoStrategies {
 				override suspend fun recoverAndVerifySelfHierarchyKeys(
-					keysData: List<CryptoStrategies.KeyDataRecoveryRequest>,
+					currentDataOwnerId: String,
+					keysData: Map<String, CryptoStrategies.KeyDataRecoveryRequest>,
 					cryptoPrimitives: CryptoService,
 					keyPairRecoverer: KeyPairRecoverer
 				): Map<String, CryptoStrategies.RecoveredKeyData> {
-					val selfRecoveryRequest = keysData.shouldHaveSize(1).single()
+					val selfRecoveryRequest = keysData.values.shouldHaveSize(1).single()
 					selfRecoveryRequest.unavailableKeys.map { it.publicKey } shouldContainExactlyInAnyOrder listOf(hcp.publicKeySpki!!)
 					selfRecoveryRequest.unknownKeys shouldContainExactlyInAnyOrder listOf(hcp.publicKeySpki)
-					return keysData.associate {
+					return keysData.values.associate {
 						it.dataOwnerDetails.dataOwner.id to CryptoStrategies.RecoveredKeyData(
 							recoveredKeys = emptyMap(),
 							keyAuthenticity = mapOf(hcp.publicKeySpki.fingerprintV1() to true)
@@ -64,15 +67,16 @@ class KeyRecoveryTest : StringSpec({
 			specJob,
 			cryptoStrategies = object : CryptoStrategies {
 				override suspend fun recoverAndVerifySelfHierarchyKeys(
-					keysData: List<CryptoStrategies.KeyDataRecoveryRequest>,
+					currentDataOwnerId: String,
+					keysData: Map<String, CryptoStrategies.KeyDataRecoveryRequest>,
 					cryptoPrimitives: CryptoService,
 					keyPairRecoverer: KeyPairRecoverer
 				): Map<String, CryptoStrategies.RecoveredKeyData> {
-					val selfRecoveryRequest = keysData.shouldHaveSize(1).single()
+					val selfRecoveryRequest = keysData.values.shouldHaveSize(1).single()
 					selfRecoveryRequest.unavailableKeys.map { it.publicKey } shouldContainExactlyInAnyOrder listOf(secondKeySpki, hcp.publicKeySpki!!)
 					selfRecoveryRequest.unknownKeys shouldContainExactlyInAnyOrder listOf(secondKeySpki, hcp.publicKeySpki)
 					keyPairRecoverer.getRecoverableWithEncryptionKeys(selfRecoveryRequest.dataOwnerDetails, listOf(hcp.keypair!!)) shouldBe setOf(secondKeySpki)
-					return keysData.associate {
+					return keysData.values.associate {
 						it.dataOwnerDetails.dataOwner.id to CryptoStrategies.RecoveredKeyData(
 							recoveredKeys = mapOf(
 								hcp.publicKeySpki.fingerprintV1() to hcp.keypair,
@@ -92,13 +96,13 @@ class KeyRecoveryTest : StringSpec({
 				}
 			}
 		).first
-		initialized.crypto.currentDataOwnerKeys().apply {
+		initialized.crypto.availableKeys().apply {
 			keys shouldBe setOf(hcp.dataOwnerId)
 			values.single().keys shouldBe setOf(hcp.publicKeySpki!!.fingerprintV1(), secondKeySpki.fingerprintV1())
 		}
 	}
 
-	"Should be able to use keys of the parent HCP to recover shamir splits".config(enabled = DEFAULT_ENABLED) {
+	"Should be able to use keys of the parent HCP to recover shamir splits".config(enabled = DEFAULT_ENABLED && LOCAL_ENV_ONLY && SKIP_IN_CANARY) {
 		TODO("Implement test and functionality (was part of typescript sdk)")
 	}
 })

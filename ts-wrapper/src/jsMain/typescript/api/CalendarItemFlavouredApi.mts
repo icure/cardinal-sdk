@@ -1,6 +1,7 @@
 // auto-generated file
 import {FilterOptions, PaginatedListIterator, SortableFilterOptions} from '../cardinal-sdk-ts.mjs';
 import {CalendarItemShareOptions} from '../crypto/entities/CalendarItemShareOptions.mjs';
+import {SecretIdUseOption} from '../crypto/entities/SecretIdUseOption.mjs';
 import {CalendarItem} from '../model/CalendarItem.mjs';
 import {Patient} from '../model/Patient.mjs';
 import {StoredDocumentIdentifier} from '../model/StoredDocumentIdentifier.mjs';
@@ -41,16 +42,38 @@ export interface CalendarItemFlavouredApi<E extends CalendarItem> {
 
 	/**
 	 *
-	 *  Links a calendar item with a patient. Note that this operation is not reversible: it is not possible to change the patient linked to a calendar
-	 *  item.
+	 *  Links a completely unlinked calendar item to a patient, or complete a partial link to a patient.
+	 *  Note that this operation is not reversible: it is not possible to change the patient linked to a calendar item.
+	 *
+	 *  # Linking an unlinked calendar item
+	 *
+	 *  If the calendar item has no `owningEntityIds` and no secret foreign keys it is considered as fully unlinked; in
+	 *  that case you can pick any [patient] for linking
+	 *
+	 *  # Linking a partially linked calendar item
+	 *
+	 *  A partially linked calendar item is a calendar item that has owning entity ids but no secret foreign keys. In
+	 *  that case this method may be used to fill in the secret foreign keys from the linked patient, allowing to find
+	 *  back [calendarItem] starting from the [patient].
+	 *
+	 *  In case of partially linked calendar items the provided [patient] must match the partial link: the [patient] id
+	 *  must match one of the [calendarItem] owning entity ids, or must be merged with one of the listed patients ids
+	 *  (into or from). The existing owning entity ids are reused as-is: this method never overwrites or adds to them.
+	 *
+	 *  Note that if the SDK detects that there are owning entity ids in the [calendarItem] but it is unable to decrypt
+	 *  any of them the method will fail.
+	 *
 	 *  @param calendarItem a calendar item.
 	 *  @param patient the patient which will be linked to the calendar item.
 	 *  @param shareLinkWithDelegates data owners other than the current data owner which will also be able to decrypt the id of the newly linked
-	 *  patient. If any of these data owners do not already have access to the calendar item, they will be granted read access (no write).
+	 *  patient. If any of these data owners do not already have access to the calendar item, they will be granted read access (no write). If the
+	 *  calendar item was already partially linked and its owning entity id was not yet shared with some of these data owners (or with the current
+	 *  data owner) this method will also take care of sharing the existing owning entity id with them.
+	 *  @param secretIdUseOption which secret ids of patient should be used when linking.
 	 *  @return the updated calendar item.
 	 */
-	linkToPatient(calendarItem: CalendarItem, patient: Patient,
-			shareLinkWithDelegates: Array<string>): Promise<E>;
+	linkToPatient(calendarItem: E, patient: Patient, shareLinkWithDelegates: Array<string>,
+			secretIdUseOption: SecretIdUseOption): Promise<E>;
 
 	/**
 	 *

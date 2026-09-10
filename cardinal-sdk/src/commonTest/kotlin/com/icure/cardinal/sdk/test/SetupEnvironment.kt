@@ -13,7 +13,7 @@ private var initialized = false
 
 @OptIn(InternalIcureApi::class)
 suspend fun initializeTestEnvironment() {
-	if (initialized) {
+	if (initialized || !isLocalTestMode) {
 		return
 	}
 	initialized = true

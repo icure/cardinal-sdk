@@ -1,0 +1,3 @@
+# The tests only use the standard library (unittest) plus the SDK itself, which is installed from
+# the wheel built by `:python-wrapper:prepareLinuxX64DistributionArchive`.
+# Add here any extra dependency the tests may need.

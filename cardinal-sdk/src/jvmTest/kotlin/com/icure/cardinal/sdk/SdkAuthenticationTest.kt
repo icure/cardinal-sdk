@@ -10,13 +10,15 @@ import com.icure.cardinal.sdk.test.initializeTestEnvironment
 import com.icure.cardinal.sdk.test.mockMessageGatewayUrl
 import com.icure.cardinal.sdk.test.mockSpecId
 import com.icure.cardinal.sdk.test.testGroupId
+import com.icure.cardinal.sdk.utils.DEFAULT_ENABLED
+import com.icure.cardinal.sdk.utils.LOCAL_ENV_ONLY
 import io.kotest.core.spec.style.StringSpec
 import kotlinx.coroutines.cancel
 
 class SdkAuthenticationTest : StringSpec({
 	beforeAny { initializeTestEnvironment() }
 
-	"A user should be able to initialize an sdk using an authentication process" {
+	"A user should be able to initialize an sdk using an authentication process".config(enabled = DEFAULT_ENABLED && LOCAL_ENV_ONLY) {
 		val hcpDetails = createHcpUser()
 		val processId = MockMessageGatewayUtils.createTestProcess(
 			groupId = testGroupId,

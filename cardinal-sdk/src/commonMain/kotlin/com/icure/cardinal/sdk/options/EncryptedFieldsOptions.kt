@@ -233,7 +233,11 @@ private fun createDefaultEntitiesEncryptionManifests(
 			currentExtensionsManifest = null,
 		),
 		"HealthElement" to EntityEncryptionManifest(
-			fieldsToEncrypt = setOf("descr", "note"),
+			fieldsToEncrypt = setOf(
+				"descr",
+				"note",
+				"asserters",
+			),
 			recursiveEncryption = mapOf(
 				"notes" to "Annotation",
 				"careTeam" to "CareTeamMember",

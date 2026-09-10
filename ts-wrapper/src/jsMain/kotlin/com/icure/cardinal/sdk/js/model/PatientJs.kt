@@ -255,7 +255,9 @@ public external class DecryptedPatientJs(
 
 	override val cryptoActorProperties: Array<DecryptedPropertyStubJs>
 
-	override val parentId: Nothing?
+	override val dataOwnerGroups: Array<dynamic>
+
+	override val groupLinkType: Nothing?
 
 	override val extensions: dynamic
 
@@ -400,7 +402,9 @@ public external class EncryptedPatientJs(
 
 	override val cryptoActorProperties: Array<DecryptedPropertyStubJs>
 
-	override val parentId: Nothing?
+	override val dataOwnerGroups: Array<dynamic>
+
+	override val groupLinkType: Nothing?
 
 	override val extensions: dynamic
 

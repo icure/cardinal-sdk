@@ -11,6 +11,7 @@ import com.icure.cardinal.sdk.js.model.EncryptedPatientJs
 import com.icure.cardinal.sdk.js.model.EntityReferenceInGroupJs
 import com.icure.cardinal.sdk.js.model.GroupScopedJs
 import com.icure.cardinal.sdk.js.model.PatientJs
+import com.icure.cardinal.sdk.js.model.SecretIdCreationResultJs
 import com.icure.cardinal.sdk.js.model.StoredDocumentIdentifierJs
 import com.icure.cardinal.sdk.js.synthetic.mapasobjectarray.EntityReferenceInGroupToPatientDelegateOptionsMapObject_delegate_delegateOptions
 import com.icure.cardinal.sdk.js.synthetic.mapasobjectarray.EntityReferenceInGroupToPatientShareOptionsMapObject_delegate_shareOptions
@@ -101,8 +102,8 @@ public external interface PatientInGroupApiJs {
 			delegates: Array<EntityReferenceInGroupToPatientShareOptionsMapObject_delegate_shareOptions>):
 			Promise<GroupScopedJs<DecryptedPatientJs>>
 
-	public fun initializeConfidentialSecretId(patient: GroupScopedJs<DecryptedPatientJs>):
-			Promise<GroupScopedJs<DecryptedPatientJs>>
+	public fun createNewSecretId(patient: GroupScopedJs<DecryptedPatientJs>):
+			Promise<GroupScopedJs<SecretIdCreationResultJs<DecryptedPatientJs>>>
 
 	public fun filterPatientsBy(groupId: String, filter: FilterOptionsJs<PatientJs>):
 			Promise<PaginatedListIteratorJs<GroupScopedJs<DecryptedPatientJs>>>

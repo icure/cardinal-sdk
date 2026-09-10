@@ -186,6 +186,7 @@ sealed interface RelatedPerson :
 	companion object {
 		const val KRAKEN_QUALIFIED_NAME = "org.taktik.icure.entities.RelatedPerson"
 	}
+
 	// endregion
 }
 

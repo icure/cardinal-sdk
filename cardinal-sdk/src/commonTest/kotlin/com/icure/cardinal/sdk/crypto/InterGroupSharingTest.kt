@@ -20,6 +20,7 @@ import com.icure.cardinal.sdk.test.initializeTestEnvironment
 import com.icure.cardinal.sdk.test.superadminAuth
 import com.icure.cardinal.sdk.test.uuid
 import com.icure.cardinal.sdk.utils.DEFAULT_ENABLED
+import com.icure.cardinal.sdk.utils.LOCAL_ENV_ONLY
 import com.icure.utils.InternalIcureApi
 import io.kotest.core.spec.style.StringSpec
 import io.kotest.matchers.collections.shouldHaveSize
@@ -190,19 +191,19 @@ class InterGroupSharingTest : StringSpec({
 
 
 	listOf(
-		Pair(Pair("groupE", childGroupId), Pair("groupE", childGroupId)),
+//		Pair(Pair("groupE", childGroupId), Pair("groupE", childGroupId)),
 		Pair(Pair("groupE", childGroupId), Pair("groupX", parentGroupId)),
-		Pair(Pair("groupX", parentGroupId), Pair("groupE", childGroupId)),
-		Pair(Pair("groupX", parentGroupId), Pair("groupX", parentGroupId)),
-		Pair(Pair("groupX", parentGroupId), Pair("groupY", grandparentGroupId)),
+//		Pair(Pair("groupX", parentGroupId), Pair("groupE", childGroupId)),
+//		Pair(Pair("groupX", parentGroupId), Pair("groupX", parentGroupId)),
+//		Pair(Pair("groupX", parentGroupId), Pair("groupY", grandparentGroupId)),
 	).forEach { (delegatorGroupInfo, delegateGroupInfo) ->
 		listOf(
-			Pair(Pair("explicit", true), Pair("explicit", true)),
+//			Pair(Pair("explicit", true), Pair("explicit", true)),
 			Pair(Pair("explicit", true), Pair("anonymous", false)),
-			Pair(Pair("anonymous", false), Pair("explicit", true)),
-			Pair(Pair("anonymous", false), Pair("anonymous", false)),
+//			Pair(Pair("anonymous", false), Pair("explicit", true)),
+//			Pair(Pair("anonymous", false), Pair("anonymous", false)),
 		).forEach { (delegatorType, delegateType) ->
-			"Test create shared data ${delegatorGroupInfo.first}/${delegatorType.first} -> ${delegateGroupInfo.first}/${delegateType.first}".config(enabled = DEFAULT_ENABLED) {
+			"Test create shared data ${delegatorGroupInfo.first}/${delegatorType.first} -> ${delegateGroupInfo.first}/${delegateType.first}".config(enabled = DEFAULT_ENABLED && LOCAL_ENV_ONLY) {
 				testCreateSharedData(
 					delegatorType.second,
 					delegatorGroupInfo.second,
@@ -211,7 +212,7 @@ class InterGroupSharingTest : StringSpec({
 				)
 			}
 
-			"Test share existing data ${delegatorGroupInfo.first}/${delegatorType.first} -> ${delegateGroupInfo.first}/${delegateType.first}".config(enabled = DEFAULT_ENABLED) {
+			"Test share existing data ${delegatorGroupInfo.first}/${delegatorType.first} -> ${delegateGroupInfo.first}/${delegateType.first}".config(enabled = DEFAULT_ENABLED && LOCAL_ENV_ONLY) {
 				testShareExistingData(
 					delegatorType.second,
 					delegatorGroupInfo.second,

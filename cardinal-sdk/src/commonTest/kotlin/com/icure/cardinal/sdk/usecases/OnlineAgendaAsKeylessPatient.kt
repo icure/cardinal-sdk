@@ -12,6 +12,8 @@ import com.icure.cardinal.sdk.test.autoCancelJob
 import com.icure.cardinal.sdk.test.createHcpUser
 import com.icure.cardinal.sdk.test.createPatientUser
 import com.icure.cardinal.sdk.test.initializeTestEnvironment
+import com.icure.cardinal.sdk.utils.DEFAULT_ENABLED
+import com.icure.cardinal.sdk.utils.LOCAL_ENV_ONLY
 import com.icure.cardinal.sdk.utils.RequestStatusException
 import com.icure.kryptom.crypto.CryptoService
 import com.icure.kryptom.crypto.defaultCryptoService
@@ -46,7 +48,7 @@ class OnlineAgendaAsKeylessPatient : StringSpec({
 		)
 	}
 
-	"A keyless patient should be able to create calendar items for an online agenda, with or without secret foreign keys, and an hcp should be able to complete the link when needed" {
+	"A keyless patient should be able to create calendar items for an online agenda, with or without secret foreign keys, and an hcp should be able to complete the link when needed".config(enabled = DEFAULT_ENABLED && LOCAL_ENV_ONLY) {
 		val keylessCryptoStrategies = object : CryptoStrategies {
 			override suspend fun generateNewKeyForDataOwner(
 				self: DataOwnerWithType,

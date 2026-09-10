@@ -4,7 +4,6 @@ package com.icure.cardinal.sdk.js.api.`impl`
 import com.icure.cardinal.sdk.api.PatientApi
 import com.icure.cardinal.sdk.crypto.entities.PatientDelegateOptions
 import com.icure.cardinal.sdk.crypto.entities.PatientShareOptions
-import com.icure.cardinal.sdk.crypto.entities.ShareAllPatientDataOptions
 import com.icure.cardinal.sdk.filters.FilterOptions
 import com.icure.cardinal.sdk.filters.SortableFilterOptions
 import com.icure.cardinal.sdk.js.api.DefaultParametersSupport.convertingOptionOrDefaultNonNull
@@ -16,11 +15,9 @@ import com.icure.cardinal.sdk.js.api.PatientInGroupApiJs
 import com.icure.cardinal.sdk.js.crypto.entities.EntityAccessInformationJs
 import com.icure.cardinal.sdk.js.crypto.entities.PatientDelegateOptionsJs
 import com.icure.cardinal.sdk.js.crypto.entities.PatientShareOptionsJs
-import com.icure.cardinal.sdk.js.crypto.entities.ShareAllPatientDataOptionsJs_ResultJs
 import com.icure.cardinal.sdk.js.crypto.entities.entityAccessInformation_toJs
 import com.icure.cardinal.sdk.js.crypto.entities.patientDelegateOptions_fromJs
 import com.icure.cardinal.sdk.js.crypto.entities.patientShareOptions_fromJs
-import com.icure.cardinal.sdk.js.crypto.entities.shareAllPatientDataOptions_Result_toJs
 import com.icure.cardinal.sdk.js.filters.FilterOptionsJs
 import com.icure.cardinal.sdk.js.filters.SortableFilterOptionsJs
 import com.icure.cardinal.sdk.js.filters.filterOptions_fromJs
@@ -39,6 +36,7 @@ import com.icure.cardinal.sdk.js.model.EncryptedPatientJs
 import com.icure.cardinal.sdk.js.model.EntityReferenceInGroupJs
 import com.icure.cardinal.sdk.js.model.GroupScopedJs
 import com.icure.cardinal.sdk.js.model.PatientJs
+import com.icure.cardinal.sdk.js.model.SecretIdCreationResultJs
 import com.icure.cardinal.sdk.js.model.StoredDocumentIdentifierJs
 import com.icure.cardinal.sdk.js.model.UserJs
 import com.icure.cardinal.sdk.js.model.entityReferenceInGroup_fromJs
@@ -47,6 +45,7 @@ import com.icure.cardinal.sdk.js.model.groupScoped_fromJs
 import com.icure.cardinal.sdk.js.model.groupScoped_toJs
 import com.icure.cardinal.sdk.js.model.patient_fromJs
 import com.icure.cardinal.sdk.js.model.patient_toJs
+import com.icure.cardinal.sdk.js.model.secretIdCreationResult_toJs
 import com.icure.cardinal.sdk.js.model.specializations.hexString_toJs
 import com.icure.cardinal.sdk.js.model.storedDocumentIdentifier_fromJs
 import com.icure.cardinal.sdk.js.model.storedDocumentIdentifier_toJs
@@ -69,6 +68,7 @@ import com.icure.cardinal.sdk.model.EncryptedPatient
 import com.icure.cardinal.sdk.model.EntityReferenceInGroup
 import com.icure.cardinal.sdk.model.GroupScoped
 import com.icure.cardinal.sdk.model.Patient
+import com.icure.cardinal.sdk.model.SecretIdCreationResult
 import com.icure.cardinal.sdk.model.StoredDocumentIdentifier
 import com.icure.cardinal.sdk.model.User
 import com.icure.cardinal.sdk.model.embed.AccessLevel
@@ -144,13 +144,18 @@ internal class PatientApiImplJs(
 			patient_toJs(result)
 		}
 
-		override fun initializeConfidentialSecretId(patient: EncryptedPatientJs):
-				Promise<EncryptedPatientJs> = GlobalScope.promise {
+		override fun createNewSecretId(patient: EncryptedPatientJs):
+				Promise<SecretIdCreationResultJs<EncryptedPatientJs>> = GlobalScope.promise {
 			val patientConverted: EncryptedPatient = patient_fromJs(patient)
-			val result = patientApi.encrypted.initializeConfidentialSecretId(
+			val result = patientApi.encrypted.createNewSecretId(
 				patientConverted,
 			)
-			patient_toJs(result)
+			secretIdCreationResult_toJs(
+				result,
+				{ x1: EncryptedPatient ->
+					patient_toJs(x1)
+				},
+			)
 		}
 
 		override fun filterPatientsBy(filter: FilterOptionsJs<PatientJs>):
@@ -402,13 +407,18 @@ internal class PatientApiImplJs(
 			patient_toJs(result)
 		}
 
-		override fun initializeConfidentialSecretId(patient: PatientJs): Promise<PatientJs> =
+		override fun createNewSecretId(patient: PatientJs): Promise<SecretIdCreationResultJs<PatientJs>> =
 				GlobalScope.promise {
 			val patientConverted: Patient = patient_fromJs(patient)
-			val result = patientApi.tryAndRecover.initializeConfidentialSecretId(
+			val result = patientApi.tryAndRecover.createNewSecretId(
 				patientConverted,
 			)
-			patient_toJs(result)
+			secretIdCreationResult_toJs(
+				result,
+				{ x1: Patient ->
+					patient_toJs(x1)
+				},
+			)
 		}
 
 		override fun filterPatientsBy(filter: FilterOptionsJs<PatientJs>):
@@ -672,21 +682,26 @@ internal class PatientApiImplJs(
 				)
 			}
 
-			override fun initializeConfidentialSecretId(patient: GroupScopedJs<EncryptedPatientJs>):
-					Promise<GroupScopedJs<EncryptedPatientJs>> = GlobalScope.promise {
+			override fun createNewSecretId(patient: GroupScopedJs<EncryptedPatientJs>):
+					Promise<GroupScopedJs<SecretIdCreationResultJs<EncryptedPatientJs>>> = GlobalScope.promise {
 				val patientConverted: GroupScoped<EncryptedPatient> = groupScoped_fromJs(
 					patient,
 					{ x1: EncryptedPatientJs ->
 						patient_fromJs(x1)
 					},
 				)
-				val result = patientApi.inGroup.encrypted.initializeConfidentialSecretId(
+				val result = patientApi.inGroup.encrypted.createNewSecretId(
 					patientConverted,
 				)
 				groupScoped_toJs(
 					result,
-					{ x1: EncryptedPatient ->
-						patient_toJs(x1)
+					{ x1: SecretIdCreationResult<EncryptedPatient> ->
+						secretIdCreationResult_toJs(
+							x1,
+							{ x2: EncryptedPatient ->
+								patient_toJs(x2)
+							},
+						)
 					},
 				)
 			}
@@ -1060,21 +1075,26 @@ internal class PatientApiImplJs(
 				)
 			}
 
-			override fun initializeConfidentialSecretId(patient: GroupScopedJs<PatientJs>):
-					Promise<GroupScopedJs<PatientJs>> = GlobalScope.promise {
+			override fun createNewSecretId(patient: GroupScopedJs<PatientJs>):
+					Promise<GroupScopedJs<SecretIdCreationResultJs<PatientJs>>> = GlobalScope.promise {
 				val patientConverted: GroupScoped<Patient> = groupScoped_fromJs(
 					patient,
 					{ x1: PatientJs ->
 						patient_fromJs(x1)
 					},
 				)
-				val result = patientApi.inGroup.tryAndRecover.initializeConfidentialSecretId(
+				val result = patientApi.inGroup.tryAndRecover.createNewSecretId(
 					patientConverted,
 				)
 				groupScoped_toJs(
 					result,
-					{ x1: Patient ->
-						patient_toJs(x1)
+					{ x1: SecretIdCreationResult<Patient> ->
+						secretIdCreationResult_toJs(
+							x1,
+							{ x2: Patient ->
+								patient_toJs(x2)
+							},
+						)
 					},
 				)
 			}
@@ -1923,21 +1943,26 @@ internal class PatientApiImplJs(
 			)
 		}
 
-		override fun initializeConfidentialSecretId(patient: GroupScopedJs<DecryptedPatientJs>):
-				Promise<GroupScopedJs<DecryptedPatientJs>> = GlobalScope.promise {
+		override fun createNewSecretId(patient: GroupScopedJs<DecryptedPatientJs>):
+				Promise<GroupScopedJs<SecretIdCreationResultJs<DecryptedPatientJs>>> = GlobalScope.promise {
 			val patientConverted: GroupScoped<DecryptedPatient> = groupScoped_fromJs(
 				patient,
 				{ x1: DecryptedPatientJs ->
 					patient_fromJs(x1)
 				},
 			)
-			val result = patientApi.inGroup.initializeConfidentialSecretId(
+			val result = patientApi.inGroup.createNewSecretId(
 				patientConverted,
 			)
 			groupScoped_toJs(
 				result,
-				{ x1: DecryptedPatient ->
-					patient_toJs(x1)
+				{ x1: SecretIdCreationResult<DecryptedPatient> ->
+					secretIdCreationResult_toJs(
+						x1,
+						{ x2: DecryptedPatient ->
+							patient_toJs(x2)
+						},
+					)
 				},
 			)
 		}
@@ -2465,48 +2490,6 @@ internal class PatientApiImplJs(
 
 	}
 
-	override fun shareAllDataOfPatient(patientId: String,
-			delegatesWithShareType: Record<String, Array<String>>):
-			Promise<ShareAllPatientDataOptionsJs_ResultJs> = GlobalScope.promise {
-		val patientIdConverted: String = patientId
-		val delegatesWithShareTypeConverted: Map<String, Set<ShareAllPatientDataOptions.Tag>> =
-				objectToMap(
-			delegatesWithShareType,
-			"delegatesWithShareType",
-			{ x1: String ->
-				x1
-			},
-			{ x1: Array<String> ->
-				arrayToSet(
-					x1,
-					"x1",
-					{ x2: String ->
-						ShareAllPatientDataOptions.Tag.valueOf(x2)
-					},
-				)
-			},
-		)
-		val result = patientApi.shareAllDataOfPatient(
-			patientIdConverted,
-			delegatesWithShareTypeConverted,
-		)
-		shareAllPatientDataOptions_Result_toJs(result)
-	}
-
-	override fun getConfidentialSecretIdsOf(patient: PatientJs): Promise<Array<String>> =
-			GlobalScope.promise {
-		val patientConverted: Patient = patient_fromJs(patient)
-		val result = patientApi.getConfidentialSecretIdsOf(
-			patientConverted,
-		)
-		setToArray(
-			result,
-			{ x1: String ->
-				x1
-			},
-		)
-	}
-
 	override fun forceInitializeExchangeDataToNewlyInvitedPatient(patientId: String): Promise<Boolean>
 			= GlobalScope.promise {
 		val patientIdConverted: String = patientId
@@ -2762,13 +2745,18 @@ internal class PatientApiImplJs(
 		patient_toJs(result)
 	}
 
-	override fun initializeConfidentialSecretId(patient: DecryptedPatientJs):
-			Promise<DecryptedPatientJs> = GlobalScope.promise {
+	override fun createNewSecretId(patient: DecryptedPatientJs):
+			Promise<SecretIdCreationResultJs<DecryptedPatientJs>> = GlobalScope.promise {
 		val patientConverted: DecryptedPatient = patient_fromJs(patient)
-		val result = patientApi.initializeConfidentialSecretId(
+		val result = patientApi.createNewSecretId(
 			patientConverted,
 		)
-		patient_toJs(result)
+		secretIdCreationResult_toJs(
+			result,
+			{ x1: DecryptedPatient ->
+				patient_toJs(x1)
+			},
+		)
 	}
 
 	override fun filterPatientsBy(filter: FilterOptionsJs<PatientJs>):

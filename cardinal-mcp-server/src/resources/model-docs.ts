@@ -11,7 +11,9 @@ export function registerModelDocs(server: McpServer) {
 					resources: Object.keys(manifest.models).sort().map(name => ({
 						uri: `cardinal://docs/model/${name}`,
 						name,
-						description: manifest.models[name].variants
+						description: manifest.models[name].isEnum
+							? `Enum with ${manifest.models[name].fields.length} constants`
+							: manifest.models[name].variants
 							? `Encryptable: ${manifest.models[name].variants!.join(", ")}`
 							: `Model with ${manifest.models[name].fields.length} fields`,
 					})),
@@ -45,6 +47,10 @@ export function registerModelDocs(server: McpServer) {
 				md += `${model.description}\n\n`;
 			}
 
+			if (model.isEnum) {
+				md += `**Enumeration** — the table below lists its constants.\n\n`;
+			}
+
 			if (model.variants) {
 				md += `**Encryptable entity** with variants: ${model.variants.map(v => `\`${v}\``).join(", ")}\n\n`;
 			}
@@ -54,8 +60,11 @@ export function registerModelDocs(server: McpServer) {
 			}
 
 			if (model.fields.length > 0) {
-				md += `## Fields (${model.fields.length})\n\n`;
-				md += "| Field | Type | Description |\n";
+				const heading = model.isEnum ? "Constants" : "Fields";
+				const colHeader = model.isEnum ? "Constant" : "Field";
+				const typeHeader = model.isEnum ? "Value" : "Type";
+				md += `## ${heading} (${model.fields.length})\n\n`;
+				md += `| ${colHeader} | ${typeHeader} | Description |\n`;
 				md += "|-------|------|-------------|\n";
 				for (const field of model.fields) {
 					const desc = field.description || "";

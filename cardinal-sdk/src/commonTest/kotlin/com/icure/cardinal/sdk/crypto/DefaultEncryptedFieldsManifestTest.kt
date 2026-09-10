@@ -44,6 +44,8 @@ import com.icure.cardinal.sdk.test.autoCancelJob
 import com.icure.cardinal.sdk.test.createHcpUser
 import com.icure.cardinal.sdk.test.initializeTestEnvironment
 import com.icure.cardinal.sdk.test.uuid
+import com.icure.cardinal.sdk.utils.DEFAULT_ENABLED
+import com.icure.cardinal.sdk.utils.LOCAL_ENV_ONLY
 import io.kotest.core.spec.style.StringSpec
 import io.kotest.matchers.collections.shouldHaveSize
 import io.kotest.matchers.nulls.shouldNotBeNull
@@ -65,7 +67,7 @@ class DefaultEncryptedFieldsManifestTest : StringSpec({
 		)
 	}
 
-	"Default access log encrypted fields configuration should be valid" {
+	"Default access log encrypted fields configuration should be valid".config(enabled = DEFAULT_ENABLED && LOCAL_ENV_ONLY) {
 		val decryptedAccessLog = DecryptedAccessLog(
 			id = uuid(),
 			objectId = uuid(),
@@ -86,7 +88,7 @@ class DefaultEncryptedFieldsManifestTest : StringSpec({
 		encryptedAccessLog.accessType shouldBe decryptedAccessLog.accessType
 	}
 
-	"Default calendar item encrypted fields configuration should be valid" {
+	"Default calendar item encrypted fields configuration should be valid".config(enabled = DEFAULT_ENABLED && LOCAL_ENV_ONLY) {
 		val decryptedCalendarItem = DecryptedCalendarItem(
 			id = uuid(),
 			details = uuid(),
@@ -137,7 +139,7 @@ class DefaultEncryptedFieldsManifestTest : StringSpec({
 		encryptedTag.encryptedSelf shouldNotBe null
 	}
 
-	"Default contact encrypted fields configuration should be valid" {
+	"Default contact encrypted fields configuration should be valid".config(enabled = DEFAULT_ENABLED && LOCAL_ENV_ONLY) {
 		val decryptedContact = DecryptedContact(
 			id = uuid(),
 			descr = uuid(),
@@ -169,7 +171,7 @@ class DefaultEncryptedFieldsManifestTest : StringSpec({
 		encryptedContact.encryptedSelf shouldNotBe null
 	}
 
-	"Default service encrypted fields configuration should be valid" {
+	"Default service encrypted fields configuration should be valid".config(enabled = DEFAULT_ENABLED && LOCAL_ENV_ONLY) {
 		val decryptedService = DecryptedService(
 			id = uuid(),
 			comment = uuid(),
@@ -197,7 +199,7 @@ class DefaultEncryptedFieldsManifestTest : StringSpec({
 		encryptedService.encryptedSelf shouldNotBe null
 	}
 
-	"Default health element encrypted fields configuration should be valid" {
+	"Default health element encrypted fields configuration should be valid".config(enabled = DEFAULT_ENABLED && LOCAL_ENV_ONLY) {
 		val decryptedHealthElement = DecryptedHealthElement(
 			id = uuid(),
 			descr = uuid(),
@@ -260,7 +262,7 @@ class DefaultEncryptedFieldsManifestTest : StringSpec({
 		encryptedHe.encryptedSelf shouldNotBe null
 	}
 
-	"Default maintenance task encrypted fields configuration should be valid" {
+	"Default maintenance task encrypted fields configuration should be valid".config(enabled = DEFAULT_ENABLED && LOCAL_ENV_ONLY) {
 		val decryptedMaintenanceTask = DecryptedMaintenanceTask(
 			id = uuid(),
 			taskType = uuid(),
@@ -283,7 +285,7 @@ class DefaultEncryptedFieldsManifestTest : StringSpec({
 		encryptedTask.encryptedSelf shouldNotBe null
 	}
 
-	"Default patient encrypted fields configuration should be valid" {
+	"Default patient encrypted fields configuration should be valid".config(enabled = DEFAULT_ENABLED && LOCAL_ENV_ONLY) {
 		val decryptedPatient = DecryptedPatient(
 			id = uuid(),
 			firstName = "Gino",
@@ -537,7 +539,7 @@ class DefaultEncryptedFieldsManifestTest : StringSpec({
 		encryptedPatient.medicalHouseContracts.first().encryptedSelf shouldNotBe null
 	}
 
-	"Default message encrypted fields configuration should be valid" {
+	"Default message encrypted fields configuration should be valid".config(enabled = DEFAULT_ENABLED && LOCAL_ENV_ONLY) {
 		val decryptedMessage = DecryptedMessage(
 			id = uuid(),
 			subject = uuid(),
@@ -555,7 +557,7 @@ class DefaultEncryptedFieldsManifestTest : StringSpec({
 		encryptedMessage.encryptedSelf shouldNotBe null
 	}
 
-	"Default topic encrypted fields configuration should be valid" {
+	"Default topic encrypted fields configuration should be valid".config(enabled = DEFAULT_ENABLED && LOCAL_ENV_ONLY) {
 		val decryptedTopic = DecryptedTopic(
 			id = uuid(),
 			description = uuid(),
@@ -579,7 +581,7 @@ class DefaultEncryptedFieldsManifestTest : StringSpec({
 		encryptedTopic.encryptedSelf shouldNotBe null
 	}
 
-	"Default document encrypted fields configuration should be valid" {
+	"Default document encrypted fields configuration should be valid".config(enabled = DEFAULT_ENABLED && LOCAL_ENV_ONLY) {
 		val decryptedDocument = DecryptedDocument(
 			id = uuid(),
 			name = uuid(),
@@ -597,7 +599,7 @@ class DefaultEncryptedFieldsManifestTest : StringSpec({
 		encryptedDocument.encryptedSelf shouldNotBe null
 	}
 
-	"Default form encrypted fields configuration should be valid" {
+	"Default form encrypted fields configuration should be valid".config(enabled = DEFAULT_ENABLED && LOCAL_ENV_ONLY) {
 		val decryptedForm = DecryptedForm(
 			id = uuid(),
 			descr = uuid(),
@@ -615,7 +617,7 @@ class DefaultEncryptedFieldsManifestTest : StringSpec({
 		encryptedForm.encryptedSelf shouldNotBe null
 	}
 
-	"Default receipt encrypted fields configuration should be valid" {
+	"Default receipt encrypted fields configuration should be valid".config(enabled = DEFAULT_ENABLED && LOCAL_ENV_ONLY) {
 		val decryptedReceipt = DecryptedReceipt(
 			id = uuid(),
 			references = listOf(uuid()),
@@ -638,7 +640,7 @@ class DefaultEncryptedFieldsManifestTest : StringSpec({
 
 	// NOTE: TimeTable has an empty encrypted fields configuration; there are no encrypted fields to test.
 
-	"Default invoice encrypted fields configuration should be valid" {
+	"Default invoice encrypted fields configuration should be valid".config(enabled = DEFAULT_ENABLED && LOCAL_ENV_ONLY) {
 		val decryptedInvoice = DecryptedInvoice(
 			id = uuid(),
 			reason = uuid(),

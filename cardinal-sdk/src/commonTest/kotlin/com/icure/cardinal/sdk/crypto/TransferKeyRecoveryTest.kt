@@ -10,6 +10,7 @@ import com.icure.cardinal.sdk.test.createHcpUser
 import com.icure.cardinal.sdk.test.initializeTestEnvironment
 import com.icure.cardinal.sdk.test.internal
 import com.icure.cardinal.sdk.utils.DEFAULT_ENABLED
+import com.icure.cardinal.sdk.utils.LOCAL_ENV_ONLY
 import com.icure.kryptom.crypto.CryptoService
 import com.icure.kryptom.crypto.defaultCryptoService
 import com.icure.utils.InternalIcureApi
@@ -30,11 +31,12 @@ class TransferKeyRecoveryTest : StringSpec({
 		private val expectMissingKeys: Boolean
 	) : CryptoStrategies {
 		override suspend fun recoverAndVerifySelfHierarchyKeys(
-			keysData: List<CryptoStrategies.KeyDataRecoveryRequest>,
+			currentDataOwnerId: String,
+			keysData: Map<String, CryptoStrategies.KeyDataRecoveryRequest>,
 			cryptoPrimitives: CryptoService,
 			keyPairRecoverer: KeyPairRecoverer
 		): Map<String, CryptoStrategies.RecoveredKeyData> =
-			keysData.associate {
+			keysData.values.associate {
 				if (expectMissingKeys) {
 					it.unavailableKeys.shouldNotBeEmpty()
 				} else {
@@ -64,7 +66,7 @@ class TransferKeyRecoveryTest : StringSpec({
 			dataOwner.type == DataOwnerType.Patient
 	}
 
-	"Api should automatically create needed transfer keys and use them to recover missing keys".config(enabled = DEFAULT_ENABLED) {
+	"Api should automatically create needed transfer keys and use them to recover missing keys".config(enabled = DEFAULT_ENABLED && LOCAL_ENV_ONLY) {
 		val hcp = createHcpUser()
 		val originalKeyIdentifier = hcp.publicKeySpki.shouldNotBeNull().fingerprintV1().asAmbiguousIdentifier()
 		val originalApi = hcp.api(specJob, VerifyEverythingStrategy(false))

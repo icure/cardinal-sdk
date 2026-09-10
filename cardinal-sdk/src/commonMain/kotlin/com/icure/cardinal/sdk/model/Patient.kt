@@ -414,9 +414,11 @@ sealed interface Patient :
 	override val cryptoActorProperties: Set<DecryptedPropertyStub>
 
 	/**
-	 * Always null for patients.
+	 * The links to the data owners representing the groups this patient belongs to.
 	 */
-	override val parentId: Nothing?
+	override val dataOwnerGroups: List<Nothing>
+
+	override val groupLinkType: Nothing?
 
 	override val extensions: JsonObject?
 
@@ -732,9 +734,11 @@ data class DecryptedPatient(
 	 */
 	override val cryptoActorProperties: Set<DecryptedPropertyStub> = emptySet(),
 	/**
-	 * Always null for patients.
+	 * The links to the data owners representing the groups this patient belongs to.
 	 */
-	override val parentId: Nothing? = null,
+	@param:DefaultValue("emptyList()")
+	override val dataOwnerGroups: List<Nothing> = emptyList(),
+	override val groupLinkType: Nothing? = null,
 	override val extensions: JsonObject? = null,
 	override val customisedModelVersion: Int? = null,
 ) : Patient {
@@ -1048,9 +1052,11 @@ data class EncryptedPatient(
 	 */
 	override val cryptoActorProperties: Set<DecryptedPropertyStub> = emptySet(),
 	/**
-	 * Always null for patients.
+	 * The links to the data owners representing the groups this patient belongs to.
 	 */
-	override val parentId: Nothing? = null,
+	@param:DefaultValue("emptyList()")
+	override val dataOwnerGroups: List<Nothing> = emptyList(),
+	override val groupLinkType: Nothing? = null,
 	override val extensions: JsonObject? = null,
 	override val customisedModelVersion: Int? = null,
 ) : Patient {
