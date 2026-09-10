@@ -10,6 +10,7 @@ import com.icure.cardinal.sdk.crypto.AccessControlKeysHeadersProvider
 import com.icure.cardinal.sdk.crypto.entities.EntityWithEncryptionMetadataTypeName
 import com.icure.cardinal.sdk.model.AccessLog
 import com.icure.cardinal.sdk.model.EncryptedAccessLog
+import com.icure.cardinal.sdk.model.IcureStub
 import com.icure.cardinal.sdk.model.ListOfIds
 import com.icure.cardinal.sdk.model.ListOfIdsAndRev
 import com.icure.cardinal.sdk.model.PaginatedList
@@ -34,6 +35,7 @@ import io.ktor.util.date.GMTDate
 import kotlin.Boolean
 import kotlin.Int
 import kotlin.Long
+import kotlin.Nothing
 import kotlin.String
 import kotlin.collections.List
 
@@ -250,6 +252,17 @@ class RawAccessLogApiImpl(
 			setBody(accessLogIds)
 		}.wrap()
 
+	override suspend fun findAccessLogsDelegationsStubsByIds(accessLogIds: ListOfIds): HttpResponse<List<IcureStub>> =
+		post(authProvider) {
+			url {
+				takeFrom(apiUrl)
+				appendPathSegments("rest", "v2", "accesslog", "delegations")
+			}
+			contentType(Application.Json)
+			accept(Application.Json)
+			setBody(accessLogIds)
+		}.wrap()
+
 	override suspend fun modifyAccessLog(accessLogDto: EncryptedAccessLog): HttpResponse<EncryptedAccessLog> =
 		put(authProvider) {
 			url {
@@ -277,6 +290,17 @@ class RawAccessLogApiImpl(
 			url {
 				takeFrom(apiUrl)
 				appendPathSegments("rest", "v2", "accesslog", "bulkSharedMetadataUpdate")
+			}
+			contentType(Application.Json)
+			accept(Application.Json)
+			setBody(request)
+		}.wrap()
+
+	override suspend fun bulkShareMinimal(request: BulkShareOrUpdateMetadataParams): HttpResponse<List<EntityBulkShareResult<Nothing>>> =
+		put(authProvider) {
+			url {
+				takeFrom(apiUrl)
+				appendPathSegments("rest", "v2", "accesslog", "bulkSharedMetadataUpdateMinimal")
 			}
 			contentType(Application.Json)
 			accept(Application.Json)

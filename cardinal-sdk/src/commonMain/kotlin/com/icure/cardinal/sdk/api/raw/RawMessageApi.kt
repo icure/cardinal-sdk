@@ -1,6 +1,7 @@
 package com.icure.cardinal.sdk.api.raw
 
 import com.icure.cardinal.sdk.model.EncryptedMessage
+import com.icure.cardinal.sdk.model.IcureStub
 import com.icure.cardinal.sdk.model.ListOfIds
 import com.icure.cardinal.sdk.model.ListOfIdsAndRev
 import com.icure.cardinal.sdk.model.Message
@@ -19,6 +20,7 @@ import com.icure.utils.InternalIcureApi
 import kotlin.Boolean
 import kotlin.Int
 import kotlin.Long
+import kotlin.Nothing
 import kotlin.String
 import kotlin.collections.List
 
@@ -58,6 +60,8 @@ public interface RawMessageApi {
 	suspend fun getMessage(messageId: String): HttpResponse<EncryptedMessage>
 
 	suspend fun getMessages(messageIds: ListOfIds): HttpResponse<List<EncryptedMessage>>
+
+	suspend fun findMessagesDelegationsStubsByIds(messageIds: ListOfIds): HttpResponse<List<IcureStub>>
 
 	suspend fun listMessagesByTransportGuids(
 		hcpId: String,
@@ -132,6 +136,8 @@ public interface RawMessageApi {
 	suspend fun setMessagesReadStatus(`data`: MessagesReadStatusUpdate): HttpResponse<List<EncryptedMessage>>
 
 	suspend fun bulkShare(request: BulkShareOrUpdateMetadataParams): HttpResponse<List<EntityBulkShareResult<EncryptedMessage>>>
+
+	suspend fun bulkShareMinimal(request: BulkShareOrUpdateMetadataParams): HttpResponse<List<EntityBulkShareResult<Nothing>>>
 
 	suspend fun filterMessagesBy(
 		startDocumentId: String? = null,
