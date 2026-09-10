@@ -10,6 +10,7 @@ import com.icure.cardinal.sdk.crypto.AccessControlKeysHeadersProvider
 import com.icure.cardinal.sdk.crypto.entities.EntityWithEncryptionMetadataTypeName
 import com.icure.cardinal.sdk.model.Document
 import com.icure.cardinal.sdk.model.EncryptedDocument
+import com.icure.cardinal.sdk.model.IcureStub
 import com.icure.cardinal.sdk.model.ListOfIds
 import com.icure.cardinal.sdk.model.ListOfIdsAndRev
 import com.icure.cardinal.sdk.model.conflicts.ConflictResolutionRequest
@@ -258,6 +259,17 @@ class RawDocumentApiImpl(
 			url {
 				takeFrom(apiUrl)
 				appendPathSegments("rest", "v2", "document", "byIds")
+			}
+			contentType(Application.Json)
+			accept(Application.Json)
+			setBody(documentIds)
+		}.wrap()
+
+	override suspend fun findDocumentsDelegationsStubsByIds(documentIds: ListOfIds): HttpResponse<List<IcureStub>> =
+		post(authProvider) {
+			url {
+				takeFrom(apiUrl)
+				appendPathSegments("rest", "v2", "document", "delegations")
 			}
 			contentType(Application.Json)
 			accept(Application.Json)
