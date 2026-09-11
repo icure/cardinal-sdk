@@ -33,8 +33,9 @@ When run by hand without arguments, follow the **Running locally** section first
   workflow and fails verification.
 - **Never edit `generated/` by hand.** `docs-manifest.json` and `method-registry.ts` are outputs of
   `yarn run generate`. When something is wrong or missing in them, change what produces them: the allow-lists in
-  `scripts/generate-registry.ts` when an API is missing, the parsers in `scripts/extract-docs.ts` or
-  `scripts/generate-registry.ts` when a `.d.mts` shape is not understood, or `SDK.md` for documentation content. Then
+  `scripts/generate-registry.ts` when an API is missing, the shared method-signature parser
+  `scripts/dts-signatures.ts` or the model and filter parsers in `scripts/extract-docs.ts` when a `.d.mts` shape is not
+  understood, or `SDK.md` for documentation content. Then
   rerun `yarn run generate`. Most of the time the output moves because the SDK changed and no script needs to change.
 - **Do not run `git commit`, `git push`, `gh`, `yarn add`, `yarn remove` or `yarn install`.** The workflow commits
   and opens the PR. Dependencies do not change during a sync; if one must, say so in the PR body and stop.
@@ -77,9 +78,10 @@ When run by hand without arguments, follow the **Running locally** section first
    ```
 
    Typical breakage and where it lives:
-   - `generate` fails or drops entries → a `.d.mts` shape changed; fix the regexes in `scripts/extract-docs.ts` or
-     `scripts/generate-registry.ts`. Confirm by checking the count of APIs, models and filters the script prints
-     against the previous run.
+   - `generate` fails or drops entries → a `.d.mts` shape changed; fix the parsers in `scripts/extract-docs.ts` or
+     `scripts/dts-signatures.ts`. Confirm by checking the count of APIs, models and filters the script prints
+     against the previous run; `test/method-registry.test.ts` fails when a documented method is missing from the
+     registry.
    - `build` fails → a type imported from `@icure/cardinal-sdk` in `src/` was renamed or removed; follow the new
      declaration.
    - `test` fails → `test/*.test.ts` assert on tool names, resource URIs and search results. Update the expectation

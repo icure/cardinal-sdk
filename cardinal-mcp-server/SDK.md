@@ -8160,6 +8160,52 @@ def create_patient(
 ```
 
 
+#### Fine-grained delegate options {#delegate-options}
+
+The `delegates` map of `withEncryptionMetadata` only lets you choose the access level, and every delegate receives all
+the encryption metadata of the entity. When you need to decide per delegate what they get, use
+`withEncryptionMetadataAndDelegates` instead. It takes the delegates as a required second parameter, mapping each data
+owner id to a `<Entity>DelegateOptions` instance that carries the `accessLevel` plus the `shareEncryptionKey` and
+`shareSecretId` flags.
+
+Withholding the secret id is what keeps a delegate from using the entity as an encrypted link target: a data owner that
+has the encryption key can read the content, but without the secret id it cannot find the entities linked to it. See
+[encrypted links](/explanations/end-to-end-encryption/encrypted-links) for what those two pieces of metadata do.
+
+
+```typescript no-test
+
+const initializedPatient = await sdk.patient.withEncryptionMetadataAndDelegates(
+	new DecryptedPatient({
+		id: randomUuid(),
+		firstName: "John",
+		lastName: "Doe",
+	}),
+	{
+		[fullAccessColleagueId]: new PatientDelegateOptions({
+			accessLevel: AccessLevel.Write,
+			shareEncryptionKey: true,
+			shareSecretId: true,
+		}),
+		[auditorId]: new PatientDelegateOptions({
+			accessLevel: AccessLevel.Read,
+			shareEncryptionKey: true,
+			shareSecretId: false,
+		}),
+	}
+)
+const patient = await sdk.patient.createPatient(initializedPatient)
+```
+
+Like `withEncryptionMetadata`, this method only initializes the metadata: the entity is not stored until you call the
+corresponding create method. It accepts the same trailing `options` object with the `user` used for auto-delegations
+and `alternateRootDelegateId`.
+
+The method is available on the api of every encryptable entity except `MaintenanceTaskApi`, which still only offers
+`withEncryptionMetadata`. `DocumentApi` follows the naming of its plain counterparts and exposes one variant per link
+target: `withEncryptionMetadataAndDelegatesLinkedToPatient`, `withEncryptionMetadataAndDelegatesLinkedToMessage` and
+`withEncryptionMetadataAndDelegatesUnlinked`.
+
 #### Auto delegations {#auto-delegations}
 
 If you're using the auto-delegations system (:construction:) you can pass the current sdk user instance (with the configured
@@ -12302,7 +12348,7 @@ const contact = new DecryptedContact({
 	closingDate: 20240920164460,
 	groupId: groupId, // This indicates that the Contact is part of a "Logical Contact"
 	notes: [
-		new Annotation({
+		new DecryptedAnnotation({
 			id: uuid(),
 			markdown: {"en": "The Patient has hypertension."}
 		})
@@ -13462,6 +13508,164 @@ method (e.g., short-lived token, password, etc.).
 
 ---
 
+<!-- Source: sdk/how-to/related-persons.mdx -->
+
+# Working with related persons
+
+A related person is a person related to one or more patients who is neither a patient nor a healthcare party: the
+parent of a child patient, a caregiver, an emergency contact. It is a standalone encryptable entity, but it is not a
+crypto actor and not a data owner, so you never initialize an SDK for a related person and you never share data *with*
+one: you share the related person entity itself with the data owners that need it.
+
+A related person is a root entity, like a patient: it is not linked to an owning entity and it has its own secret ids.
+That means `withEncryptionMetadata` takes no owning entity, and the entity is created in the two usual steps.
+
+
+```typescript no-test
+
+const initialized = await sdk.relatedPerson.withEncryptionMetadata(
+	new DecryptedRelatedPerson({
+		id: randomUuid(),
+		firstName: "Alice",
+		lastName: "Doe",
+		companyName: "Doe & Sons",
+	})
+)
+const relatedPerson = await sdk.relatedPerson.createRelatedPerson(initialized)
+```
+
+`RelatedPersonApi` gives you the full encryptable-entity surface: `getRelatedPerson`, `modifyRelatedPerson`,
+`deleteRelatedPersonById`, `undeleteRelatedPerson`, `shareWith` and `shareWithMany` taking a
+`RelatedPersonShareOptions`, `subscribeToEvents`, and the `encrypted`, `tryAndRecover` and `inGroup` flavours. Because
+it is a root entity, `getSecretIdsOf` returns secret ids you can use to link other entities to it.
+
+To find related persons, use the `RelatedPersonFilters` factories with `filterRelatedPersonsBy` or
+`matchRelatedPersonsBy`. `byNameForSelf` searches the concatenation of `lastName` and `firstName`.
+
+
+```typescript no-test
+
+const iterator = await sdk.relatedPerson.filterRelatedPersonsBy(
+	RelatedPersonFilters.byNameForSelf("doe")
+)
+while (await iterator.hasNext()) {
+	const page = await iterator.next(10)
+	for (const person of page) {
+		console.log(`${person.firstName} ${person.lastName}`)
+	}
+}
+```
+
+A related person is also one of the parties that can assert a health element: a
+[`HealthElementAsserter`](/explanations/data-model/healthelement) can point at one through a
+`localAsserterIdentifier` with `type = AsserterType.RelatedPerson`.
+
+---
+
+<!-- Source: sdk/how-to/calendar-item-occupancy.mdx -->
+
+# Computing calendar item occupancy
+
+When you need to know how busy an agenda is over a period, rather than the calendar items themselves,
+`CalendarItemApi` can compute the concurrent-occupancy histogram server side. Three methods cover the three scopes:
+`getCalendarItemsOccupancyByPeriodForSelf`, `getCalendarItemsOccupancyByPeriodForHealthcareParty` (which takes an
+`hcPartyId`) and `getCalendarItemsOccupancyByPeriodAndAgendaId` (which takes an `agendaId`).
+
+Each returns an `Array<CalendarItemOccupancy>`, which is a step function rather than a list of appointments: the
+points are ordered by `timestamp`, and each one says that from that fuzzy date-time onwards the number of overlapping
+busy calendar items becomes `occupancy`.
+
+
+```typescript no-test
+
+const occupancy = await sdk.calendarItem.getCalendarItemsOccupancyByPeriodAndAgendaId(
+	20260901000000,
+	20260930235959,
+	agendaId,
+	1
+)
+for (const point of occupancy) {
+	console.log(`from ${point.timestamp}: ${point.occupancy} concurrent items`)
+}
+```
+
+Only calendar items whose whole interval fits within the search range are counted, so by default an item that starts
+before `startDate` or ends after `endDate` is ignored entirely. The last parameter, `extensionInDays`, widens the range
+by that many days on each side so that items starting shortly before the period — the ones that make up the occupancy
+baseline at `startDate` — are taken into account; items reaching beyond the extended range are still ignored. Note that
+`extensionInDays` is a required positional parameter that accepts `undefined`, so pass `undefined` explicitly when you
+do not want any extension.
+
+---
+
+<!-- Source: sdk/how-to/health-element-asserters.mdx -->
+
+# Recording who asserts a health element
+
+A health element carries two fields for provenance and cross-references: `asserters` and `qualifiedLinks`. The
+[HealthElement data model page](/explanations/data-model/healthelement) describes both fields; this page shows how to
+set them.
+
+`asserters` records on whose word the health element is held to be true, which is not the same as who authored or
+recorded it. Each `HealthElementAsserter` names its party through exactly one of two mutually exclusive branches, and
+setting both or neither is rejected by the backend with a `400`.
+
+
+```typescript no-test
+
+const healthElement = await sdk.healthElement.withEncryptionMetadata(
+	new DecryptedHealthElement({
+		id: randomUuid(),
+		descr: "Peanut allergy",
+		asserters: [
+			// A party stored in this instance: the id plus the kind of record it points at.
+			new HealthElementAsserter({
+				localAsserterIdentifier: new HealthElementAsserter.LocalAsserterIdentifier({
+					id: patient.id,
+					type: AsserterType.Patient,
+				}),
+			}),
+			// A party with no record here, named by a business identifier from another system.
+			new HealthElementAsserter({
+				externalAsserterIdentifier: new HealthElementAsserter.ExternalAsserterIdentifier({
+					identifier: new Identifier({
+						system: "urn:oid:1.2.3.4",
+						value: "hcp-88213",
+					}),
+				}),
+			}),
+		],
+	}),
+	patient
+)
+await sdk.healthElement.createHealthElement(healthElement)
+```
+
+`asserters` is encrypted by default, so it is only readable by the data owners the health element is shared with.
+
+Use `qualifiedLinks` to point at other health elements — for example to say that a health element is a complication of
+an earlier one. Create the link in one direction only; the reverse is resolved through a view.
+
+
+```typescript no-test
+
+const complication = new HealthElementQualifiedLink({
+	type: "complicates",
+	healthElementId: earlierHealthElement.id,
+	associationId: episodeCorrelationId,
+})
+```
+
+
+> **caution:**
+The shape of `HealthElementAsserter` changed twice in the 2.13 line. Up to 2.13.1 it was a flat
+`asserterId`/`asserterType` pair, 2.13.2 replaced it with the two nullable branches, and 2.13.3 wrapped the external
+branch in `ExternalAsserterIdentifier` instead of holding a bare `Identifier`. Code written against 2.13.0 to 2.13.2
+needs updating.
+
+
+---
+
 
 ================================================================================
 # PART 5: DATA MODEL REFERENCE
@@ -14242,6 +14446,7 @@ a permanent ailment (e.g. allergy).
 By default, the following fields of this entity will be encrypted:
 - `descr`
 - `note`
+- `asserters`
 - The `markdown` field in all the `notes`.
 
 You can customize the encrypted fields as [explained in this how to](/how-to/initialize-the-sdk/configure-what-to-encrypt).
@@ -14250,6 +14455,24 @@ You can customize the encrypted fields as [explained in this how to](/how-to/ini
 
 Below you will find an explanation of the most commonly used properties in the entity that are not among the
 [shared fields](/explanations/data-model/#shared-fields). For a full list, check the reference documentation (:construction:).
+
+### asserters
+The parties on whose word this HealthElement is held to be true. This is the asserter concept: it does not say who
+recorded or authored the HealthElement, it says who vouches for it. A patient may self-report an allergy, a family
+member may report a condition on behalf of the patient, and a physician may assert a diagnosis, so the same
+HealthElement may carry more than one asserter.
+
+Each `HealthElementAsserter` names its party in exactly one of two ways, and exactly one of the two fields must be set:
+- `localAsserterIdentifier` for a party stored in this iCure instance. It carries the `id` of the record plus a `type`
+  taken from the `AsserterType` enum (`Patient`, `HealthcareParty` or `RelatedPerson`), which says what kind of record
+  the id points at.
+- `externalAsserterIdentifier` for a party that has no record here, named through a business `identifier` issued by
+  another system. There is deliberately no type on this branch: the kind of a record that is not stored here is not
+  knowable.
+
+An organisation (hospital, practice, care home) is not a distinct asserter type: organisations are stored as
+healthcare party records, so an organisation asserter is a `localAsserterIdentifier` with
+`type = AsserterType.HealthcareParty`.
 
 ### careTeam
 A collection of object that contain information about all the healthcare actor related to the condition of this 
@@ -14290,6 +14513,14 @@ It is encoded as a [FuzzyDateTime](/explanations/data-model/#fuzzydatetime).
 
 ### plansOfAction
 A collection of objects that contain information about all the healthcare approaches related to this HealthElement.
+
+### qualifiedLinks
+Directed, qualified links from this HealthElement to other HealthElements. Each `HealthElementQualifiedLink` carries
+the `healthElementId` of the target, a `type` qualifying the link (a free string; using the names of the
+`LinkQualification` entries is encouraged but not enforced), and an optional caller-chosen `associationId` that groups
+related links across entities.
+
+Links should be created in a single direction only: the reverse link is found through a view rather than stored twice.
 
 ### valueDate
 If the HealthElement was opened and closed on the same date, this field can be used instead of `openingDate` and `closingDate`.
@@ -16359,6 +16590,35 @@ Healthcare party filters are not data-owner scoped — they all return `Base*` t
 |--------------------|-----------------|-----------------|-----------|
 | `allTopicsForSelf` | —               | `FilterOptions` | No        |
 | `byParticipant`    | `participantId` | `FilterOptions` | No        |
+
+#### RelatedPersonFilters
+
+Related persons are EBAC entities, so these factories come in the three data-owner variants described above. Only the
+`ForSelf` variant is listed; `ForDataOwner` takes a `dataOwnerId` and `ForDataOwnerInGroup` an `EntityReferenceInGroup`
+as their first argument and return `Base*` types.
+
+| Method                       | Key parameters | Return type                 | Sortable? | Sort order  |
+|------------------------------|----------------|-----------------------------|-----------|-------------|
+| `allRelatedPersonsForSelf`   | —              | `FilterOptions`             | No        | —           |
+| `byIdentifiersForSelf`       | `identifiers`  | `FilterOptions`             | No        | —           |
+| `byNameForSelf`              | `name`         | `FilterOptions`             | No        | —           |
+| `byIds`                      | `ids`          | `BaseSortableFilterOptions` | Yes       | Input order |
+
+`byName*` matches on the concatenation of `lastName` and `firstName`, sanitized. `byIdentifiers*` matches on the exact
+`system` and `value` of the provided identifiers; their other properties are ignored.
+
+#### InsuranceFilters
+
+Insurance filters are not data-owner scoped — they all return `Base*` types.
+
+| Method          | Key parameters          | Return type                 | Sortable? | Sort order |
+|-----------------|-------------------------|-----------------------------|-----------|------------|
+| `all`           | —                       | `BaseFilterOptions`         | No        | —          |
+| `byIdentifiers` | `identifiers`           | `BaseFilterOptions`         | No        | —          |
+| `byCode`        | `codeType`, `codeCode?` | `BaseSortableFilterOptions` | Yes       | Code       |
+| `byTag`         | `tagType`, `tagCode?`   | `BaseSortableFilterOptions` | Yes       | Tag        |
+
+`byCode` and `byTag` match any entity carrying a code or tag of the given type when the code is omitted.
 
 ---
 
