@@ -25,6 +25,43 @@ export const METHOD_REGISTRY: Record<string, ApiInfo> = {
 		"isEncryptable": true,
 		"methods": [
 			{
+				"name": "withEncryptionMetadata",
+				"params": [
+					{
+						"name": "base",
+						"type": "DecryptedAccessLog | undefined",
+						"optional": false
+					},
+					{
+						"name": "options",
+						"type": "{ patient?: Patient | undefined; user?: User | undefined; delegates?: { [key: string]: AccessLevel; }; secretId?: SecretIdUseOption; alternateRootDelegateId?: string | undefined; }",
+						"optional": true
+					}
+				],
+				"returnType": "Promise<DecryptedAccessLog>"
+			},
+			{
+				"name": "withEncryptionMetadataAndDelegates",
+				"params": [
+					{
+						"name": "base",
+						"type": "DecryptedAccessLog | undefined",
+						"optional": false
+					},
+					{
+						"name": "delegates",
+						"type": "{ [key: string]: AccessLogDelegateOptions; }",
+						"optional": false
+					},
+					{
+						"name": "options",
+						"type": "{ patient?: Patient | undefined; user?: User | undefined; secretId?: SecretIdUseOption; alternateRootDelegateId?: string | undefined; }",
+						"optional": true
+					}
+				],
+				"returnType": "Promise<DecryptedAccessLog>"
+			},
+			{
 				"name": "getEncryptionKeysOf",
 				"params": [
 					{
@@ -214,6 +251,43 @@ export const METHOD_REGISTRY: Record<string, ApiInfo> = {
 					}
 				],
 				"returnType": "Promise<Array<StoredDocumentIdentifier>>"
+			},
+			{
+				"name": "shareWith",
+				"params": [
+					{
+						"name": "delegateId",
+						"type": "string",
+						"optional": false
+					},
+					{
+						"name": "accessLog",
+						"type": "DecryptedAccessLog",
+						"optional": false
+					},
+					{
+						"name": "options",
+						"type": "{ options?: AccessLogShareOptions | undefined; }",
+						"optional": true
+					}
+				],
+				"returnType": "Promise<DecryptedAccessLog>"
+			},
+			{
+				"name": "shareWithMany",
+				"params": [
+					{
+						"name": "accessLog",
+						"type": "DecryptedAccessLog",
+						"optional": false
+					},
+					{
+						"name": "delegates",
+						"type": "{ [key: string]: AccessLogShareOptions; }",
+						"optional": false
+					}
+				],
+				"returnType": "Promise<DecryptedAccessLog>"
 			},
 			{
 				"name": "filterAccessLogsBy",
@@ -636,6 +710,53 @@ export const METHOD_REGISTRY: Record<string, ApiInfo> = {
 		"isEncryptable": true,
 		"methods": [
 			{
+				"name": "withEncryptionMetadata",
+				"params": [
+					{
+						"name": "base",
+						"type": "DecryptedCalendarItem | undefined",
+						"optional": false
+					},
+					{
+						"name": "patient",
+						"type": "Patient | undefined",
+						"optional": false
+					},
+					{
+						"name": "options",
+						"type": "{ user?: User | undefined; delegates?: { [key: string]: AccessLevel; }; secretId?: SecretIdUseOption; alternateRootDelegateId?: string | undefined; }",
+						"optional": true
+					}
+				],
+				"returnType": "Promise<DecryptedCalendarItem>"
+			},
+			{
+				"name": "withEncryptionMetadataAndDelegates",
+				"params": [
+					{
+						"name": "base",
+						"type": "DecryptedCalendarItem | undefined",
+						"optional": false
+					},
+					{
+						"name": "patient",
+						"type": "Patient | undefined",
+						"optional": false
+					},
+					{
+						"name": "delegates",
+						"type": "{ [key: string]: CalendarItemDelegateOptions; }",
+						"optional": false
+					},
+					{
+						"name": "options",
+						"type": "{ user?: User | undefined; secretId?: SecretIdUseOption; alternateRootDelegateId?: string | undefined; }",
+						"optional": true
+					}
+				],
+				"returnType": "Promise<DecryptedCalendarItem>"
+			},
+			{
 				"name": "getEncryptionKeysOf",
 				"params": [
 					{
@@ -911,6 +1032,43 @@ export const METHOD_REGISTRY: Record<string, ApiInfo> = {
 				"returnType": "Promise<Array<StoredDocumentIdentifier>>"
 			},
 			{
+				"name": "shareWith",
+				"params": [
+					{
+						"name": "delegateId",
+						"type": "string",
+						"optional": false
+					},
+					{
+						"name": "calendarItem",
+						"type": "DecryptedCalendarItem",
+						"optional": false
+					},
+					{
+						"name": "options",
+						"type": "{ options?: CalendarItemShareOptions | undefined; }",
+						"optional": true
+					}
+				],
+				"returnType": "Promise<DecryptedCalendarItem>"
+			},
+			{
+				"name": "shareWithMany",
+				"params": [
+					{
+						"name": "calendarItem",
+						"type": "DecryptedCalendarItem",
+						"optional": false
+					},
+					{
+						"name": "delegates",
+						"type": "{ [key: string]: CalendarItemShareOptions; }",
+						"optional": false
+					}
+				],
+				"returnType": "Promise<DecryptedCalendarItem>"
+			},
+			{
 				"name": "linkToPatient",
 				"params": [
 					{
@@ -1078,6 +1236,27 @@ export const METHOD_REGISTRY: Record<string, ApiInfo> = {
 					}
 				],
 				"returnType": "Promise<Array<DecryptedCalendarItem>>"
+			},
+			{
+				"name": "subscribeToEvents",
+				"params": [
+					{
+						"name": "events",
+						"type": "Array<SubscriptionEventType>",
+						"optional": false
+					},
+					{
+						"name": "filter",
+						"type": "FilterOptions<CalendarItem>",
+						"optional": false
+					},
+					{
+						"name": "options",
+						"type": "{ subscriptionConfig?: EntitySubscriptionConfiguration | undefined; }",
+						"optional": true
+					}
+				],
+				"returnType": "Promise<EntitySubscription<EncryptedCalendarItem>>"
 			}
 		]
 	},
@@ -1329,6 +1508,22 @@ export const METHOD_REGISTRY: Record<string, ApiInfo> = {
 				"returnType": "Promise<void>"
 			},
 			{
+				"name": "createKeyPairUpdateNotificationsToAllDelegationCounterparts",
+				"params": [
+					{
+						"name": "key",
+						"type": "SpkiHexString",
+						"optional": false
+					},
+					{
+						"name": "options",
+						"type": "{ requestToOwnerTypes?: Array<DataOwnerType> | undefined; }",
+						"optional": true
+					}
+				],
+				"returnType": "Promise<void>"
+			},
+			{
 				"name": "createKeyPairUpdateNotificationTo",
 				"params": [
 					{
@@ -1565,6 +1760,28 @@ export const METHOD_REGISTRY: Record<string, ApiInfo> = {
 				"returnType": "Promise<Array<StoredDocumentIdentifier>>"
 			},
 			{
+				"name": "listCodeTypesBy",
+				"params": [
+					{
+						"name": "options",
+						"type": "{ region?: string | undefined; type?: string | undefined; }",
+						"optional": true
+					}
+				],
+				"returnType": "Promise<Array<string>>"
+			},
+			{
+				"name": "listTagTypesBy",
+				"params": [
+					{
+						"name": "options",
+						"type": "{ region?: string | undefined; type?: string | undefined; }",
+						"optional": true
+					}
+				],
+				"returnType": "Promise<Array<string>>"
+			},
+			{
 				"name": "isCodeValid",
 				"params": [
 					{
@@ -1728,6 +1945,53 @@ export const METHOD_REGISTRY: Record<string, ApiInfo> = {
 				"returnType": "Promise<Array<string>>"
 			},
 			{
+				"name": "withEncryptionMetadata",
+				"params": [
+					{
+						"name": "base",
+						"type": "DecryptedContact | undefined",
+						"optional": false
+					},
+					{
+						"name": "patient",
+						"type": "Patient",
+						"optional": false
+					},
+					{
+						"name": "options",
+						"type": "{ user?: User | undefined; delegates?: { [key: string]: AccessLevel; }; secretId?: SecretIdUseOption; alternateRootDelegateId?: string | undefined; }",
+						"optional": true
+					}
+				],
+				"returnType": "Promise<DecryptedContact>"
+			},
+			{
+				"name": "withEncryptionMetadataAndDelegates",
+				"params": [
+					{
+						"name": "base",
+						"type": "DecryptedContact | undefined",
+						"optional": false
+					},
+					{
+						"name": "patient",
+						"type": "Patient",
+						"optional": false
+					},
+					{
+						"name": "delegates",
+						"type": "{ [key: string]: ContactDelegateOptions; }",
+						"optional": false
+					},
+					{
+						"name": "options",
+						"type": "{ user?: User | undefined; secretId?: SecretIdUseOption; alternateRootDelegateId?: string | undefined; }",
+						"optional": true
+					}
+				],
+				"returnType": "Promise<DecryptedContact>"
+			},
+			{
 				"name": "getEncryptionKeysOf",
 				"params": [
 					{
@@ -1830,6 +2094,22 @@ export const METHOD_REGISTRY: Record<string, ApiInfo> = {
 					}
 				],
 				"returnType": "Promise<Service>"
+			},
+			{
+				"name": "subscribeToServiceCreateOrUpdateEvents",
+				"params": [
+					{
+						"name": "filter",
+						"type": "FilterOptions<Service>",
+						"optional": false
+					},
+					{
+						"name": "options",
+						"type": "{ subscriptionConfig?: EntitySubscriptionConfiguration | undefined; }",
+						"optional": true
+					}
+				],
+				"returnType": "Promise<EntitySubscription<EncryptedService>>"
 			},
 			{
 				"name": "deleteContactById",
@@ -1944,6 +2224,43 @@ export const METHOD_REGISTRY: Record<string, ApiInfo> = {
 					}
 				],
 				"returnType": "Promise<Array<LabelledOccurence>>"
+			},
+			{
+				"name": "shareWith",
+				"params": [
+					{
+						"name": "delegateId",
+						"type": "string",
+						"optional": false
+					},
+					{
+						"name": "contact",
+						"type": "DecryptedContact",
+						"optional": false
+					},
+					{
+						"name": "options",
+						"type": "{ options?: ContactShareOptions | undefined; }",
+						"optional": true
+					}
+				],
+				"returnType": "Promise<DecryptedContact>"
+			},
+			{
+				"name": "shareWithMany",
+				"params": [
+					{
+						"name": "contact",
+						"type": "DecryptedContact",
+						"optional": false
+					},
+					{
+						"name": "delegates",
+						"type": "{ [key: string]: ContactShareOptions; }",
+						"optional": false
+					}
+				],
+				"returnType": "Promise<DecryptedContact>"
 			},
 			{
 				"name": "filterContactsBy",
@@ -2125,6 +2442,27 @@ export const METHOD_REGISTRY: Record<string, ApiInfo> = {
 					}
 				],
 				"returnType": "Promise<Array<DecryptedService>>"
+			},
+			{
+				"name": "subscribeToEvents",
+				"params": [
+					{
+						"name": "events",
+						"type": "Array<SubscriptionEventType>",
+						"optional": false
+					},
+					{
+						"name": "filter",
+						"type": "FilterOptions<Contact>",
+						"optional": false
+					},
+					{
+						"name": "options",
+						"type": "{ subscriptionConfig?: EntitySubscriptionConfiguration | undefined; }",
+						"optional": true
+					}
+				],
+				"returnType": "Promise<EntitySubscription<EncryptedContact>>"
 			}
 		]
 	},
@@ -2148,6 +2486,17 @@ export const METHOD_REGISTRY: Record<string, ApiInfo> = {
 				"name": "forceReload",
 				"params": [],
 				"returnType": "Promise<void>"
+			},
+			{
+				"name": "currentDataOwnerKeys",
+				"params": [
+					{
+						"name": "options",
+						"type": "{ filterTrustedKeys?: boolean; }",
+						"optional": true
+					}
+				],
+				"returnType": "Promise<{ [key: string]: { [key: string]: Pkcs8Bytes; }; }>"
 			},
 			{
 				"name": "keylessCreateExchangeDataTo",
@@ -2551,6 +2900,27 @@ export const METHOD_REGISTRY: Record<string, ApiInfo> = {
 					}
 				],
 				"returnType": "Promise<Array<string>>"
+			},
+			{
+				"name": "subscribeToEvents",
+				"params": [
+					{
+						"name": "events",
+						"type": "Array<SubscriptionEventType>",
+						"optional": false
+					},
+					{
+						"name": "filter",
+						"type": "FilterOptions<Device>",
+						"optional": false
+					},
+					{
+						"name": "options",
+						"type": "{ subscriptionConfig?: EntitySubscriptionConfiguration | undefined; }",
+						"optional": true
+					}
+				],
+				"returnType": "Promise<EntitySubscription<Device>>"
 			}
 		]
 	},
@@ -2559,6 +2929,169 @@ export const METHOD_REGISTRY: Record<string, ApiInfo> = {
 		"propertyName": "document",
 		"isEncryptable": true,
 		"methods": [
+			{
+				"name": "withEncryptionMetadataLinkedToMessage",
+				"params": [
+					{
+						"name": "base",
+						"type": "DecryptedDocument | undefined",
+						"optional": false
+					},
+					{
+						"name": "message",
+						"type": "Message",
+						"optional": false
+					},
+					{
+						"name": "options",
+						"type": "{ user?: User | undefined; delegates?: { [key: string]: AccessLevel; }; secretId?: SecretIdUseOption; alternateRootDelegateId?: string | undefined; }",
+						"optional": true
+					}
+				],
+				"returnType": "Promise<DecryptedDocument>"
+			},
+			{
+				"name": "withEncryptionMetadataAndDelegatesLinkedToMessage",
+				"params": [
+					{
+						"name": "base",
+						"type": "DecryptedDocument | undefined",
+						"optional": false
+					},
+					{
+						"name": "message",
+						"type": "Message",
+						"optional": false
+					},
+					{
+						"name": "delegates",
+						"type": "{ [key: string]: DocumentDelegateOptions; }",
+						"optional": false
+					},
+					{
+						"name": "options",
+						"type": "{ user?: User | undefined; secretId?: SecretIdUseOption; alternateRootDelegateId?: string | undefined; }",
+						"optional": true
+					}
+				],
+				"returnType": "Promise<DecryptedDocument>"
+			},
+			{
+				"name": "withEncryptionMetadataLinkedToPatient",
+				"params": [
+					{
+						"name": "base",
+						"type": "DecryptedDocument | undefined",
+						"optional": false
+					},
+					{
+						"name": "patient",
+						"type": "Patient",
+						"optional": false
+					},
+					{
+						"name": "options",
+						"type": "{ user?: User | undefined; delegates?: { [key: string]: AccessLevel; }; secretId?: SecretIdUseOption; alternateRootDelegateId?: string | undefined; }",
+						"optional": true
+					}
+				],
+				"returnType": "Promise<DecryptedDocument>"
+			},
+			{
+				"name": "withEncryptionMetadataAndDelegatesLinkedToPatient",
+				"params": [
+					{
+						"name": "base",
+						"type": "DecryptedDocument | undefined",
+						"optional": false
+					},
+					{
+						"name": "patient",
+						"type": "Patient",
+						"optional": false
+					},
+					{
+						"name": "delegates",
+						"type": "{ [key: string]: DocumentDelegateOptions; }",
+						"optional": false
+					},
+					{
+						"name": "options",
+						"type": "{ user?: User | undefined; secretId?: SecretIdUseOption; alternateRootDelegateId?: string | undefined; }",
+						"optional": true
+					}
+				],
+				"returnType": "Promise<DecryptedDocument>"
+			},
+			{
+				"name": "withEncryptionMetadataUnlinked",
+				"params": [
+					{
+						"name": "base",
+						"type": "DecryptedDocument | undefined",
+						"optional": false
+					},
+					{
+						"name": "options",
+						"type": "{ user?: User | undefined; delegates?: { [key: string]: AccessLevel; }; alternateRootDelegateId?: string | undefined; }",
+						"optional": true
+					}
+				],
+				"returnType": "Promise<DecryptedDocument>"
+			},
+			{
+				"name": "withEncryptionMetadataAndDelegatesUnlinked",
+				"params": [
+					{
+						"name": "base",
+						"type": "DecryptedDocument | undefined",
+						"optional": false
+					},
+					{
+						"name": "delegates",
+						"type": "{ [key: string]: DocumentDelegateOptions; }",
+						"optional": false
+					},
+					{
+						"name": "options",
+						"type": "{ user?: User | undefined; alternateRootDelegateId?: string | undefined; }",
+						"optional": true
+					}
+				],
+				"returnType": "Promise<DecryptedDocument>"
+			},
+			{
+				"name": "getAndTryDecryptMainAttachment",
+				"params": [
+					{
+						"name": "document",
+						"type": "Document",
+						"optional": false
+					},
+					{
+						"name": "options",
+						"type": "{ decryptedAttachmentValidator?: (x1: Int8Array) => Promise<boolean>; }",
+						"optional": true
+					}
+				],
+				"returnType": "Promise<Int8Array | undefined>"
+			},
+			{
+				"name": "getAndDecryptMainAttachment",
+				"params": [
+					{
+						"name": "document",
+						"type": "Document",
+						"optional": false
+					},
+					{
+						"name": "options",
+						"type": "{ decryptedAttachmentValidator?: (x1: Int8Array) => Promise<boolean>; }",
+						"optional": true
+					}
+				],
+				"returnType": "Promise<Int8Array>"
+			},
 			{
 				"name": "encryptAndSetMainAttachment",
 				"params": [
@@ -2579,6 +3112,27 @@ export const METHOD_REGISTRY: Record<string, ApiInfo> = {
 					}
 				],
 				"returnType": "Promise<EncryptedDocument>"
+			},
+			{
+				"name": "getAndDecryptSecondaryAttachment",
+				"params": [
+					{
+						"name": "document",
+						"type": "Document",
+						"optional": false
+					},
+					{
+						"name": "key",
+						"type": "string",
+						"optional": false
+					},
+					{
+						"name": "options",
+						"type": "{ decryptedAttachmentValidator?: (x1: Int8Array) => Promise<boolean>; }",
+						"optional": true
+					}
+				],
+				"returnType": "Promise<Int8Array>"
 			},
 			{
 				"name": "encryptAndSetSecondaryAttachment",
@@ -2676,6 +3230,27 @@ export const METHOD_REGISTRY: Record<string, ApiInfo> = {
 					}
 				],
 				"returnType": "Promise<Document>"
+			},
+			{
+				"name": "tryDecryptAttachment",
+				"params": [
+					{
+						"name": "document",
+						"type": "Document",
+						"optional": false
+					},
+					{
+						"name": "encryptedAttachment",
+						"type": "Int8Array",
+						"optional": false
+					},
+					{
+						"name": "options",
+						"type": "{ decryptedAttachmentValidator?: (x1: Int8Array) => Promise<boolean>; }",
+						"optional": true
+					}
+				],
+				"returnType": "Promise<Int8Array | undefined>"
 			},
 			{
 				"name": "matchDocumentsBy",
@@ -2929,6 +3504,43 @@ export const METHOD_REGISTRY: Record<string, ApiInfo> = {
 				"returnType": "Promise<EncryptedDocument>"
 			},
 			{
+				"name": "shareWith",
+				"params": [
+					{
+						"name": "delegateId",
+						"type": "string",
+						"optional": false
+					},
+					{
+						"name": "document",
+						"type": "DecryptedDocument",
+						"optional": false
+					},
+					{
+						"name": "options",
+						"type": "{ options?: DocumentShareOptions | undefined; }",
+						"optional": true
+					}
+				],
+				"returnType": "Promise<DecryptedDocument>"
+			},
+			{
+				"name": "shareWithMany",
+				"params": [
+					{
+						"name": "document",
+						"type": "DecryptedDocument",
+						"optional": false
+					},
+					{
+						"name": "delegates",
+						"type": "{ [key: string]: DocumentShareOptions; }",
+						"optional": false
+					}
+				],
+				"returnType": "Promise<DecryptedDocument>"
+			},
+			{
 				"name": "filterDocumentsBy",
 				"params": [
 					{
@@ -3075,7 +3687,7 @@ export const METHOD_REGISTRY: Record<string, ApiInfo> = {
 			{
 				"name": "getFilterOptionsDefinitions",
 				"params": [],
-				"returnType": "Promise<{ [key: string]: Array<FilterOptionGroupWithViews>"
+				"returnType": "Promise<{ [key: string]: Array<FilterOptionGroupWithViews>; }>"
 			}
 		]
 	},
@@ -3084,6 +3696,53 @@ export const METHOD_REGISTRY: Record<string, ApiInfo> = {
 		"propertyName": "form",
 		"isEncryptable": true,
 		"methods": [
+			{
+				"name": "withEncryptionMetadata",
+				"params": [
+					{
+						"name": "base",
+						"type": "DecryptedForm | undefined",
+						"optional": false
+					},
+					{
+						"name": "patient",
+						"type": "Patient",
+						"optional": false
+					},
+					{
+						"name": "options",
+						"type": "{ user?: User | undefined; delegates?: { [key: string]: AccessLevel; }; secretId?: SecretIdUseOption; alternateRootDelegateId?: string | undefined; }",
+						"optional": true
+					}
+				],
+				"returnType": "Promise<DecryptedForm>"
+			},
+			{
+				"name": "withEncryptionMetadataAndDelegates",
+				"params": [
+					{
+						"name": "base",
+						"type": "DecryptedForm | undefined",
+						"optional": false
+					},
+					{
+						"name": "patient",
+						"type": "Patient",
+						"optional": false
+					},
+					{
+						"name": "delegates",
+						"type": "{ [key: string]: FormDelegateOptions; }",
+						"optional": false
+					},
+					{
+						"name": "options",
+						"type": "{ user?: User | undefined; secretId?: SecretIdUseOption; alternateRootDelegateId?: string | undefined; }",
+						"optional": true
+					}
+				],
+				"returnType": "Promise<DecryptedForm>"
+			},
 			{
 				"name": "getEncryptionKeysOf",
 				"params": [
@@ -3274,6 +3933,22 @@ export const METHOD_REGISTRY: Record<string, ApiInfo> = {
 					}
 				],
 				"returnType": "Promise<Array<StoredDocumentIdentifier>>"
+			},
+			{
+				"name": "getFormTemplate",
+				"params": [
+					{
+						"name": "formTemplateId",
+						"type": "string",
+						"optional": false
+					},
+					{
+						"name": "options",
+						"type": "{ raw?: boolean | undefined; }",
+						"optional": true
+					}
+				],
+				"returnType": "Promise<FormTemplate>"
 			},
 			{
 				"name": "getFormTemplates",
@@ -3505,6 +4180,43 @@ export const METHOD_REGISTRY: Record<string, ApiInfo> = {
 				"returnType": "Promise<Array<string>>"
 			},
 			{
+				"name": "shareWith",
+				"params": [
+					{
+						"name": "delegateId",
+						"type": "string",
+						"optional": false
+					},
+					{
+						"name": "form",
+						"type": "DecryptedForm",
+						"optional": false
+					},
+					{
+						"name": "options",
+						"type": "{ options?: FormShareOptions | undefined; }",
+						"optional": true
+					}
+				],
+				"returnType": "Promise<DecryptedForm>"
+			},
+			{
+				"name": "shareWithMany",
+				"params": [
+					{
+						"name": "form",
+						"type": "DecryptedForm",
+						"optional": false
+					},
+					{
+						"name": "delegates",
+						"type": "{ [key: string]: FormShareOptions; }",
+						"optional": false
+					}
+				],
+				"returnType": "Promise<DecryptedForm>"
+			},
+			{
 				"name": "filterFormsBy",
 				"params": [
 					{
@@ -3659,6 +4371,22 @@ export const METHOD_REGISTRY: Record<string, ApiInfo> = {
 		"propertyName": "formTemplate",
 		"isEncryptable": false,
 		"methods": [
+			{
+				"name": "getFormTemplate",
+				"params": [
+					{
+						"name": "formTemplateId",
+						"type": "string",
+						"optional": false
+					},
+					{
+						"name": "options",
+						"type": "{ raw?: boolean | undefined; }",
+						"optional": true
+					}
+				],
+				"returnType": "Promise<FormTemplate>"
+			},
 			{
 				"name": "getFormTemplates",
 				"params": [
@@ -3912,9 +4640,93 @@ export const METHOD_REGISTRY: Record<string, ApiInfo> = {
 				"returnType": "Promise<Group>"
 			},
 			{
+				"name": "createGroup",
+				"params": [
+					{
+						"name": "id",
+						"type": "string",
+						"optional": false
+					},
+					{
+						"name": "name",
+						"type": "string",
+						"optional": false
+					},
+					{
+						"name": "password",
+						"type": "string",
+						"optional": false
+					},
+					{
+						"name": "initialisationData",
+						"type": "DatabaseInitialisation",
+						"optional": false
+					},
+					{
+						"name": "options",
+						"type": "{ type?: GroupType | undefined; server?: string | undefined; q?: number | undefined; n?: number | undefined; superGroup?: string | undefined; projectId?: string | undefined; }",
+						"optional": true
+					}
+				],
+				"returnType": "Promise<Group>"
+			},
+			{
+				"name": "registerNewGroupAdministrator",
+				"params": [
+					{
+						"name": "registrationInformation",
+						"type": "RegistrationInformation",
+						"optional": false
+					},
+					{
+						"name": "options",
+						"type": "{ type?: GroupType | undefined; }",
+						"optional": true
+					}
+				],
+				"returnType": "Promise<RegistrationSuccess>"
+			},
+			{
 				"name": "listApps",
 				"params": [],
 				"returnType": "Promise<Array<Group>>"
+			},
+			{
+				"name": "findGroups",
+				"params": [
+					{
+						"name": "id",
+						"type": "string",
+						"optional": false
+					},
+					{
+						"name": "options",
+						"type": "{ startDocumentId?: string | undefined; limit?: number | undefined; }",
+						"optional": true
+					}
+				],
+				"returnType": "Promise<PaginatedList<Group>>"
+			},
+			{
+				"name": "findGroupsWithContent",
+				"params": [
+					{
+						"name": "id",
+						"type": "string",
+						"optional": false
+					},
+					{
+						"name": "searchString",
+						"type": "string",
+						"optional": false
+					},
+					{
+						"name": "options",
+						"type": "{ startKey?: any | undefined; startDocumentId?: string | undefined; limit?: number | undefined; }",
+						"optional": true
+					}
+				],
+				"returnType": "Promise<PaginatedList<Group>>"
 			},
 			{
 				"name": "getNameOfGroupParent",
@@ -3942,6 +4754,27 @@ export const METHOD_REGISTRY: Record<string, ApiInfo> = {
 					}
 				],
 				"returnType": "Promise<Group>"
+			},
+			{
+				"name": "getOperationToken",
+				"params": [
+					{
+						"name": "operation",
+						"type": "Operation",
+						"optional": false
+					},
+					{
+						"name": "duration",
+						"type": "number | undefined",
+						"optional": false
+					},
+					{
+						"name": "options",
+						"type": "{ description?: string | undefined; }",
+						"optional": true
+					}
+				],
+				"returnType": "Promise<string>"
 			},
 			{
 				"name": "deleteOperationToken",
@@ -3984,7 +4817,7 @@ export const METHOD_REGISTRY: Record<string, ApiInfo> = {
 						"optional": false
 					}
 				],
-				"returnType": "Promise<{ [key in UserType]?: Array<RoleConfiguration>"
+				"returnType": "Promise<{ [key in UserType]?: Array<RoleConfiguration>; }>"
 			},
 			{
 				"name": "deleteGroup",
@@ -4057,6 +4890,32 @@ export const METHOD_REGISTRY: Record<string, ApiInfo> = {
 				"returnType": "Promise<Group>"
 			},
 			{
+				"name": "initDesignDocs",
+				"params": [
+					{
+						"name": "id",
+						"type": "string",
+						"optional": false
+					},
+					{
+						"name": "warmup",
+						"type": "boolean | undefined",
+						"optional": false
+					},
+					{
+						"name": "dryRun",
+						"type": "boolean | undefined",
+						"optional": false
+					},
+					{
+						"name": "options",
+						"type": "{ clazz?: string | undefined; }",
+						"optional": true
+					}
+				],
+				"returnType": "Promise<Array<DesignDocument>>"
+			},
+			{
 				"name": "solveConflicts",
 				"params": [
 					{
@@ -4076,6 +4935,27 @@ export const METHOD_REGISTRY: Record<string, ApiInfo> = {
 					}
 				],
 				"returnType": "Promise<Array<IdWithRev>>"
+			},
+			{
+				"name": "resetStorage",
+				"params": [
+					{
+						"name": "id",
+						"type": "string",
+						"optional": false
+					},
+					{
+						"name": "databases",
+						"type": "Array<string>",
+						"optional": false
+					},
+					{
+						"name": "options",
+						"type": "{ q?: number | undefined; n?: number | undefined; }",
+						"optional": true
+					}
+				],
+				"returnType": "Promise<void>"
 			},
 			{
 				"name": "getGroupsStorageInfos",
@@ -4264,6 +5144,53 @@ export const METHOD_REGISTRY: Record<string, ApiInfo> = {
 		"propertyName": "healthElement",
 		"isEncryptable": true,
 		"methods": [
+			{
+				"name": "withEncryptionMetadata",
+				"params": [
+					{
+						"name": "base",
+						"type": "DecryptedHealthElement | undefined",
+						"optional": false
+					},
+					{
+						"name": "patient",
+						"type": "Patient",
+						"optional": false
+					},
+					{
+						"name": "options",
+						"type": "{ user?: User | undefined; delegates?: { [key: string]: AccessLevel; }; secretId?: SecretIdUseOption; alternateRootDelegateId?: string | undefined; }",
+						"optional": true
+					}
+				],
+				"returnType": "Promise<DecryptedHealthElement>"
+			},
+			{
+				"name": "withEncryptionMetadataAndDelegates",
+				"params": [
+					{
+						"name": "base",
+						"type": "DecryptedHealthElement | undefined",
+						"optional": false
+					},
+					{
+						"name": "patient",
+						"type": "Patient",
+						"optional": false
+					},
+					{
+						"name": "delegates",
+						"type": "{ [key: string]: HealthElementDelegateOptions; }",
+						"optional": false
+					},
+					{
+						"name": "options",
+						"type": "{ user?: User | undefined; secretId?: SecretIdUseOption; alternateRootDelegateId?: string | undefined; }",
+						"optional": true
+					}
+				],
+				"returnType": "Promise<DecryptedHealthElement>"
+			},
 			{
 				"name": "getEncryptionKeysOf",
 				"params": [
@@ -4467,6 +5394,43 @@ export const METHOD_REGISTRY: Record<string, ApiInfo> = {
 				"returnType": "Promise<Array<StoredDocumentIdentifier>>"
 			},
 			{
+				"name": "shareWith",
+				"params": [
+					{
+						"name": "delegateId",
+						"type": "string",
+						"optional": false
+					},
+					{
+						"name": "healthElement",
+						"type": "DecryptedHealthElement",
+						"optional": false
+					},
+					{
+						"name": "options",
+						"type": "{ options?: HealthElementShareOptions | undefined; }",
+						"optional": true
+					}
+				],
+				"returnType": "Promise<DecryptedHealthElement>"
+			},
+			{
+				"name": "shareWithMany",
+				"params": [
+					{
+						"name": "healthElement",
+						"type": "DecryptedHealthElement",
+						"optional": false
+					},
+					{
+						"name": "delegates",
+						"type": "{ [key: string]: HealthElementShareOptions; }",
+						"optional": false
+					}
+				],
+				"returnType": "Promise<DecryptedHealthElement>"
+			},
+			{
 				"name": "filterHealthElementsBy",
 				"params": [
 					{
@@ -4602,6 +5566,27 @@ export const METHOD_REGISTRY: Record<string, ApiInfo> = {
 					}
 				],
 				"returnType": "Promise<Array<DecryptedHealthElement>>"
+			},
+			{
+				"name": "subscribeToEvents",
+				"params": [
+					{
+						"name": "events",
+						"type": "Array<SubscriptionEventType>",
+						"optional": false
+					},
+					{
+						"name": "filter",
+						"type": "FilterOptions<HealthElement>",
+						"optional": false
+					},
+					{
+						"name": "options",
+						"type": "{ subscriptionConfig?: EntitySubscriptionConfiguration | undefined; }",
+						"optional": true
+					}
+				],
+				"returnType": "Promise<EntitySubscription<EncryptedHealthElement>>"
 			}
 		]
 	},
@@ -4735,6 +5720,27 @@ export const METHOD_REGISTRY: Record<string, ApiInfo> = {
 					}
 				],
 				"returnType": "Promise<PaginatedListIterator<HealthcareParty>>"
+			},
+			{
+				"name": "registerHealthcareParty",
+				"params": [
+					{
+						"name": "groupId",
+						"type": "string",
+						"optional": false
+					},
+					{
+						"name": "hcp",
+						"type": "HealthcareParty",
+						"optional": false
+					},
+					{
+						"name": "options",
+						"type": "{ parentHcPartyId?: string | undefined; token?: string | undefined; useShortToken?: boolean | undefined; }",
+						"optional": true
+					}
+				],
+				"returnType": "Promise<DataOwnerRegistrationSuccess>"
 			},
 			{
 				"name": "deleteHealthcarePartyById",
@@ -4882,6 +5888,27 @@ export const METHOD_REGISTRY: Record<string, ApiInfo> = {
 					}
 				],
 				"returnType": "Promise<Array<HealthcareParty>>"
+			},
+			{
+				"name": "subscribeToEvents",
+				"params": [
+					{
+						"name": "events",
+						"type": "Array<SubscriptionEventType>",
+						"optional": false
+					},
+					{
+						"name": "filter",
+						"type": "FilterOptions<HealthcareParty>",
+						"optional": false
+					},
+					{
+						"name": "options",
+						"type": "{ subscriptionConfig?: EntitySubscriptionConfiguration | undefined; }",
+						"optional": true
+					}
+				],
+				"returnType": "Promise<EntitySubscription<HealthcareParty>>"
 			}
 		]
 	},
@@ -5177,6 +6204,53 @@ export const METHOD_REGISTRY: Record<string, ApiInfo> = {
 		"isEncryptable": true,
 		"methods": [
 			{
+				"name": "withEncryptionMetadata",
+				"params": [
+					{
+						"name": "base",
+						"type": "DecryptedInvoice | undefined",
+						"optional": false
+					},
+					{
+						"name": "patient",
+						"type": "Patient | undefined",
+						"optional": false
+					},
+					{
+						"name": "options",
+						"type": "{ user?: User | undefined; delegates?: { [key: string]: AccessLevel; }; secretId?: SecretIdUseOption; alternateRootDelegateId?: string | undefined; }",
+						"optional": true
+					}
+				],
+				"returnType": "Promise<DecryptedInvoice>"
+			},
+			{
+				"name": "withEncryptionMetadataAndDelegates",
+				"params": [
+					{
+						"name": "base",
+						"type": "DecryptedInvoice | undefined",
+						"optional": false
+					},
+					{
+						"name": "patient",
+						"type": "Patient | undefined",
+						"optional": false
+					},
+					{
+						"name": "delegates",
+						"type": "{ [key: string]: InvoiceDelegateOptions; }",
+						"optional": false
+					},
+					{
+						"name": "options",
+						"type": "{ user?: User | undefined; secretId?: SecretIdUseOption; alternateRootDelegateId?: string | undefined; }",
+						"optional": true
+					}
+				],
+				"returnType": "Promise<DecryptedInvoice>"
+			},
+			{
 				"name": "getEncryptionKeysOf",
 				"params": [
 					{
@@ -5357,6 +6431,64 @@ export const METHOD_REGISTRY: Record<string, ApiInfo> = {
 				"returnType": "Promise<Array<LabelledOccurence>>"
 			},
 			{
+				"name": "shareWith",
+				"params": [
+					{
+						"name": "delegateId",
+						"type": "string",
+						"optional": false
+					},
+					{
+						"name": "invoice",
+						"type": "DecryptedInvoice",
+						"optional": false
+					},
+					{
+						"name": "options",
+						"type": "{ options?: InvoiceShareOptions | undefined; }",
+						"optional": true
+					}
+				],
+				"returnType": "Promise<DecryptedInvoice>"
+			},
+			{
+				"name": "shareWithMany",
+				"params": [
+					{
+						"name": "invoice",
+						"type": "DecryptedInvoice",
+						"optional": false
+					},
+					{
+						"name": "delegates",
+						"type": "{ [key: string]: InvoiceShareOptions; }",
+						"optional": false
+					}
+				],
+				"returnType": "Promise<DecryptedInvoice>"
+			},
+			{
+				"name": "findInvoicesByHcPartyPatient",
+				"params": [
+					{
+						"name": "hcPartyId",
+						"type": "string",
+						"optional": false
+					},
+					{
+						"name": "patient",
+						"type": "Patient",
+						"optional": false
+					},
+					{
+						"name": "options",
+						"type": "{ startDate?: number | undefined; endDate?: number | undefined; descending?: boolean | undefined; }",
+						"optional": true
+					}
+				],
+				"returnType": "Promise<PaginatedListIterator<DecryptedInvoice>>"
+			},
+			{
 				"name": "createInvoice",
 				"params": [
 					{
@@ -5520,6 +6652,42 @@ export const METHOD_REGISTRY: Record<string, ApiInfo> = {
 				"returnType": "Promise<DecryptedInvoice>"
 			},
 			{
+				"name": "appendCodes",
+				"params": [
+					{
+						"name": "userId",
+						"type": "string",
+						"optional": false
+					},
+					{
+						"name": "type",
+						"type": "string",
+						"optional": false
+					},
+					{
+						"name": "sentMediumType",
+						"type": "string",
+						"optional": false
+					},
+					{
+						"name": "secretFKeys",
+						"type": "string",
+						"optional": false
+					},
+					{
+						"name": "invoicingCodes",
+						"type": "Array<EncryptedInvoicingCode>",
+						"optional": false
+					},
+					{
+						"name": "options",
+						"type": "{ insuranceId?: string | undefined; invoiceId?: string | undefined; gracePeriod?: number | undefined; }",
+						"optional": true
+					}
+				],
+				"returnType": "Promise<Array<DecryptedInvoice>>"
+			},
+			{
 				"name": "removeCodes",
 				"params": [
 					{
@@ -5546,6 +6714,22 @@ export const METHOD_REGISTRY: Record<string, ApiInfo> = {
 				"returnType": "Promise<Array<DecryptedInvoice>>"
 			},
 			{
+				"name": "findInvoicesByAuthor",
+				"params": [
+					{
+						"name": "hcPartyId",
+						"type": "string",
+						"optional": false
+					},
+					{
+						"name": "options",
+						"type": "{ fromDate?: number | undefined; toDate?: number | undefined; startKey?: any | undefined; startDocumentId?: string | undefined; limit?: number | undefined; }",
+						"optional": true
+					}
+				],
+				"returnType": "Promise<PaginatedList<DecryptedInvoice>>"
+			},
+			{
 				"name": "listInvoicesByHcPartyAndGroupId",
 				"params": [
 					{
@@ -5557,6 +6741,37 @@ export const METHOD_REGISTRY: Record<string, ApiInfo> = {
 						"name": "groupId",
 						"type": "string",
 						"optional": false
+					}
+				],
+				"returnType": "Promise<Array<DecryptedInvoice>>"
+			},
+			{
+				"name": "listInvoicesByHcPartySentMediumTypeInvoiceTypeSentDate",
+				"params": [
+					{
+						"name": "hcPartyId",
+						"type": "string",
+						"optional": false
+					},
+					{
+						"name": "sentMediumType",
+						"type": "MediumType",
+						"optional": false
+					},
+					{
+						"name": "invoiceType",
+						"type": "InvoiceType",
+						"optional": false
+					},
+					{
+						"name": "sent",
+						"type": "boolean",
+						"optional": false
+					},
+					{
+						"name": "options",
+						"type": "{ from?: number | undefined; to?: number | undefined; }",
+						"optional": true
 					}
 				],
 				"returnType": "Promise<Array<DecryptedInvoice>>"
@@ -5679,6 +6894,27 @@ export const METHOD_REGISTRY: Record<string, ApiInfo> = {
 					}
 				],
 				"returnType": "Promise<Array<DecryptedInvoice>>"
+			},
+			{
+				"name": "listAllHcpsByStatus",
+				"params": [
+					{
+						"name": "status",
+						"type": "string",
+						"optional": false
+					},
+					{
+						"name": "hcpIds",
+						"type": "Array<string>",
+						"optional": false
+					},
+					{
+						"name": "options",
+						"type": "{ from?: number | undefined; to?: number | undefined; }",
+						"optional": true
+					}
+				],
+				"returnType": "Promise<Array<DecryptedInvoice>>"
 			}
 		]
 	},
@@ -5687,6 +6923,22 @@ export const METHOD_REGISTRY: Record<string, ApiInfo> = {
 		"propertyName": "maintenanceTask",
 		"isEncryptable": true,
 		"methods": [
+			{
+				"name": "withEncryptionMetadata",
+				"params": [
+					{
+						"name": "maintenanceTask",
+						"type": "DecryptedMaintenanceTask | undefined",
+						"optional": false
+					},
+					{
+						"name": "options",
+						"type": "{ user?: User | undefined; delegates?: { [key: string]: AccessLevel; }; alternateRootDelegateId?: string | undefined; }",
+						"optional": true
+					}
+				],
+				"returnType": "Promise<DecryptedMaintenanceTask>"
+			},
 			{
 				"name": "getEncryptionKeysOf",
 				"params": [
@@ -5879,6 +7131,43 @@ export const METHOD_REGISTRY: Record<string, ApiInfo> = {
 				"returnType": "Promise<void>"
 			},
 			{
+				"name": "shareWith",
+				"params": [
+					{
+						"name": "delegateId",
+						"type": "string",
+						"optional": false
+					},
+					{
+						"name": "maintenanceTask",
+						"type": "DecryptedMaintenanceTask",
+						"optional": false
+					},
+					{
+						"name": "options",
+						"type": "{ options?: MaintenanceTaskShareOptions | undefined; }",
+						"optional": true
+					}
+				],
+				"returnType": "Promise<DecryptedMaintenanceTask>"
+			},
+			{
+				"name": "shareWithMany",
+				"params": [
+					{
+						"name": "maintenanceTask",
+						"type": "DecryptedMaintenanceTask",
+						"optional": false
+					},
+					{
+						"name": "delegates",
+						"type": "{ [key: string]: MaintenanceTaskShareOptions; }",
+						"optional": false
+					}
+				],
+				"returnType": "Promise<DecryptedMaintenanceTask>"
+			},
+			{
 				"name": "filterMaintenanceTasksBy",
 				"params": [
 					{
@@ -5970,6 +7259,27 @@ export const METHOD_REGISTRY: Record<string, ApiInfo> = {
 					}
 				],
 				"returnType": "Promise<Array<DecryptedMaintenanceTask>>"
+			},
+			{
+				"name": "subscribeToEvents",
+				"params": [
+					{
+						"name": "events",
+						"type": "Array<SubscriptionEventType>",
+						"optional": false
+					},
+					{
+						"name": "filter",
+						"type": "FilterOptions<MaintenanceTask>",
+						"optional": false
+					},
+					{
+						"name": "options",
+						"type": "{ subscriptionConfig?: EntitySubscriptionConfiguration | undefined; }",
+						"optional": true
+					}
+				],
+				"returnType": "Promise<EntitySubscription<EncryptedMaintenanceTask>>"
 			}
 		]
 	},
@@ -5978,6 +7288,53 @@ export const METHOD_REGISTRY: Record<string, ApiInfo> = {
 		"propertyName": "message",
 		"isEncryptable": true,
 		"methods": [
+			{
+				"name": "withEncryptionMetadata",
+				"params": [
+					{
+						"name": "base",
+						"type": "DecryptedMessage | undefined",
+						"optional": false
+					},
+					{
+						"name": "patient",
+						"type": "Patient | undefined",
+						"optional": false
+					},
+					{
+						"name": "options",
+						"type": "{ user?: User | undefined; delegates?: { [key: string]: AccessLevel; }; secretId?: SecretIdUseOption; alternateRootDelegateId?: string | undefined; }",
+						"optional": true
+					}
+				],
+				"returnType": "Promise<DecryptedMessage>"
+			},
+			{
+				"name": "withEncryptionMetadataAndDelegates",
+				"params": [
+					{
+						"name": "base",
+						"type": "DecryptedMessage | undefined",
+						"optional": false
+					},
+					{
+						"name": "patient",
+						"type": "Patient | undefined",
+						"optional": false
+					},
+					{
+						"name": "delegates",
+						"type": "{ [key: string]: MessageDelegateOptions; }",
+						"optional": false
+					},
+					{
+						"name": "options",
+						"type": "{ user?: User | undefined; secretId?: SecretIdUseOption; alternateRootDelegateId?: string | undefined; }",
+						"optional": true
+					}
+				],
+				"returnType": "Promise<DecryptedMessage>"
+			},
 			{
 				"name": "getEncryptionKeysOf",
 				"params": [
@@ -6069,7 +7426,7 @@ export const METHOD_REGISTRY: Record<string, ApiInfo> = {
 						"optional": false
 					}
 				],
-				"returnType": "Promise<{ [key: string]: Array<EntityReferenceInGroup>"
+				"returnType": "Promise<{ [key: string]: Array<EntityReferenceInGroup>; }>"
 			},
 			{
 				"name": "matchMessagesBy",
@@ -6190,6 +7547,43 @@ export const METHOD_REGISTRY: Record<string, ApiInfo> = {
 					}
 				],
 				"returnType": "Promise<Array<StoredDocumentIdentifier>>"
+			},
+			{
+				"name": "shareWith",
+				"params": [
+					{
+						"name": "delegateId",
+						"type": "string",
+						"optional": false
+					},
+					{
+						"name": "message",
+						"type": "DecryptedMessage",
+						"optional": false
+					},
+					{
+						"name": "options",
+						"type": "{ options?: MessageShareOptions | undefined; }",
+						"optional": true
+					}
+				],
+				"returnType": "Promise<DecryptedMessage>"
+			},
+			{
+				"name": "shareWithMany",
+				"params": [
+					{
+						"name": "message",
+						"type": "DecryptedMessage",
+						"optional": false
+					},
+					{
+						"name": "delegates",
+						"type": "{ [key: string]: MessageShareOptions; }",
+						"optional": false
+					}
+				],
+				"returnType": "Promise<DecryptedMessage>"
 			},
 			{
 				"name": "filterMessagesBy",
@@ -6364,6 +7758,27 @@ export const METHOD_REGISTRY: Record<string, ApiInfo> = {
 					}
 				],
 				"returnType": "Promise<Array<DecryptedMessage>>"
+			},
+			{
+				"name": "subscribeToEvents",
+				"params": [
+					{
+						"name": "events",
+						"type": "Array<SubscriptionEventType>",
+						"optional": false
+					},
+					{
+						"name": "filter",
+						"type": "FilterOptions<Message>",
+						"optional": false
+					},
+					{
+						"name": "options",
+						"type": "{ subscriptionConfig?: EntitySubscriptionConfiguration | undefined; }",
+						"optional": true
+					}
+				],
+				"returnType": "Promise<EntitySubscription<EncryptedMessage>>"
 			}
 		]
 	},
@@ -6414,7 +7829,7 @@ export const METHOD_REGISTRY: Record<string, ApiInfo> = {
 						"optional": false
 					}
 				],
-				"returnType": "Promise<{ [key: string]: Array<EntityReferenceInGroup>"
+				"returnType": "Promise<{ [key: string]: Array<EntityReferenceInGroup>; }>"
 			},
 			{
 				"name": "getEncryptionKeysOf",
@@ -6426,6 +7841,43 @@ export const METHOD_REGISTRY: Record<string, ApiInfo> = {
 					}
 				],
 				"returnType": "Promise<Array<HexString>>"
+			},
+			{
+				"name": "withEncryptionMetadata",
+				"params": [
+					{
+						"name": "base",
+						"type": "DecryptedPatient | undefined",
+						"optional": false
+					},
+					{
+						"name": "options",
+						"type": "{ user?: User | undefined; delegates?: { [key: string]: AccessLevel; }; alternateRootDelegateId?: string | undefined; }",
+						"optional": true
+					}
+				],
+				"returnType": "Promise<DecryptedPatient>"
+			},
+			{
+				"name": "withEncryptionMetadataAndDelegates",
+				"params": [
+					{
+						"name": "base",
+						"type": "DecryptedPatient | undefined",
+						"optional": false
+					},
+					{
+						"name": "delegates",
+						"type": "{ [key: string]: PatientDelegateOptions; }",
+						"optional": false
+					},
+					{
+						"name": "options",
+						"type": "{ user?: User | undefined; alternateRootDelegateId?: string | undefined; }",
+						"optional": true
+					}
+				],
+				"returnType": "Promise<DecryptedPatient>"
 			},
 			{
 				"name": "hasWriteAccess",
@@ -6453,6 +7905,22 @@ export const METHOD_REGISTRY: Record<string, ApiInfo> = {
 					}
 				],
 				"returnType": "Promise<void>"
+			},
+			{
+				"name": "shareAllDataOfPatient",
+				"params": [
+					{
+						"name": "patientId",
+						"type": "string",
+						"optional": false
+					},
+					{
+						"name": "delegatesWithShareType",
+						"type": "{ [key: string]: Array<ShareAllPatientDataOptions.Tag>; }",
+						"optional": false
+					}
+				],
+				"returnType": "Promise<ShareAllPatientDataOptions.Result>"
 			},
 			{
 				"name": "getConfidentialSecretIdsOf",
@@ -6497,6 +7965,17 @@ export const METHOD_REGISTRY: Record<string, ApiInfo> = {
 					}
 				],
 				"returnType": "Promise<Array<string>>"
+			},
+			{
+				"name": "ensureEncryptionMetadataForSelfIsInitialized",
+				"params": [
+					{
+						"name": "options",
+						"type": "{ sharingWith?: { [key: string]: AccessLevel; }; ignoreIfEncryptionMetadataExists?: boolean; alternateRootDelegateId?: string | undefined; }",
+						"optional": true
+					}
+				],
+				"returnType": "Promise<EncryptedPatient>"
 			},
 			{
 				"name": "deletePatientById",
@@ -6606,6 +8085,43 @@ export const METHOD_REGISTRY: Record<string, ApiInfo> = {
 					}
 				],
 				"returnType": "Promise<EntityAccessInformation>"
+			},
+			{
+				"name": "shareWith",
+				"params": [
+					{
+						"name": "delegateId",
+						"type": "string",
+						"optional": false
+					},
+					{
+						"name": "patient",
+						"type": "DecryptedPatient",
+						"optional": false
+					},
+					{
+						"name": "options",
+						"type": "{ options?: PatientShareOptions | undefined; }",
+						"optional": true
+					}
+				],
+				"returnType": "Promise<DecryptedPatient>"
+			},
+			{
+				"name": "shareWithMany",
+				"params": [
+					{
+						"name": "patient",
+						"type": "DecryptedPatient",
+						"optional": false
+					},
+					{
+						"name": "delegates",
+						"type": "{ [key: string]: PatientShareOptions; }",
+						"optional": false
+					}
+				],
+				"returnType": "Promise<DecryptedPatient>"
 			},
 			{
 				"name": "initializeConfidentialSecretId",
@@ -6786,6 +8302,27 @@ export const METHOD_REGISTRY: Record<string, ApiInfo> = {
 					}
 				],
 				"returnType": "Promise<DecryptedPatient>"
+			},
+			{
+				"name": "subscribeToEvents",
+				"params": [
+					{
+						"name": "events",
+						"type": "Array<SubscriptionEventType>",
+						"optional": false
+					},
+					{
+						"name": "filter",
+						"type": "FilterOptions<Patient>",
+						"optional": false
+					},
+					{
+						"name": "options",
+						"type": "{ subscriptionConfig?: EntitySubscriptionConfiguration | undefined; }",
+						"optional": true
+					}
+				],
+				"returnType": "Promise<EntitySubscription<EncryptedPatient>>"
 			}
 		]
 	},
@@ -6817,6 +8354,53 @@ export const METHOD_REGISTRY: Record<string, ApiInfo> = {
 		"propertyName": "receipt",
 		"isEncryptable": true,
 		"methods": [
+			{
+				"name": "withEncryptionMetadata",
+				"params": [
+					{
+						"name": "base",
+						"type": "DecryptedReceipt | undefined",
+						"optional": false
+					},
+					{
+						"name": "patient",
+						"type": "Patient | undefined",
+						"optional": false
+					},
+					{
+						"name": "options",
+						"type": "{ user?: User | undefined; delegates?: { [key: string]: AccessLevel; }; secretId?: SecretIdUseOption; alternateRootDelegateId?: string | undefined; }",
+						"optional": true
+					}
+				],
+				"returnType": "Promise<DecryptedReceipt>"
+			},
+			{
+				"name": "withEncryptionMetadataAndDelegates",
+				"params": [
+					{
+						"name": "base",
+						"type": "DecryptedReceipt | undefined",
+						"optional": false
+					},
+					{
+						"name": "patient",
+						"type": "Patient | undefined",
+						"optional": false
+					},
+					{
+						"name": "delegates",
+						"type": "{ [key: string]: ReceiptDelegateOptions; }",
+						"optional": false
+					},
+					{
+						"name": "options",
+						"type": "{ user?: User | undefined; secretId?: SecretIdUseOption; alternateRootDelegateId?: string | undefined; }",
+						"optional": true
+					}
+				],
+				"returnType": "Promise<DecryptedReceipt>"
+			},
 			{
 				"name": "getAndDecryptReceiptAttachment",
 				"params": [
@@ -7097,6 +8681,43 @@ export const METHOD_REGISTRY: Record<string, ApiInfo> = {
 				"returnType": "Promise<EncryptedReceipt>"
 			},
 			{
+				"name": "shareWith",
+				"params": [
+					{
+						"name": "delegateId",
+						"type": "string",
+						"optional": false
+					},
+					{
+						"name": "receipt",
+						"type": "DecryptedReceipt",
+						"optional": false
+					},
+					{
+						"name": "options",
+						"type": "{ options?: ReceiptShareOptions | undefined; }",
+						"optional": true
+					}
+				],
+				"returnType": "Promise<DecryptedReceipt>"
+			},
+			{
+				"name": "shareWithMany",
+				"params": [
+					{
+						"name": "receipt",
+						"type": "DecryptedReceipt",
+						"optional": false
+					},
+					{
+						"name": "delegates",
+						"type": "{ [key: string]: ReceiptShareOptions; }",
+						"optional": false
+					}
+				],
+				"returnType": "Promise<DecryptedReceipt>"
+			},
+			{
 				"name": "createReceipt",
 				"params": [
 					{
@@ -7221,6 +8842,17 @@ export const METHOD_REGISTRY: Record<string, ApiInfo> = {
 					}
 				],
 				"returnType": "Promise<Array<DecryptedReceipt>>"
+			},
+			{
+				"name": "listReceiptsBetweenDates",
+				"params": [
+					{
+						"name": "options",
+						"type": "{ startDate?: number | undefined; endDate?: number | undefined; descending?: boolean; }",
+						"optional": true
+					}
+				],
+				"returnType": "Promise<Array<DecryptedReceipt>>"
 			}
 		]
 	},
@@ -7229,6 +8861,33 @@ export const METHOD_REGISTRY: Record<string, ApiInfo> = {
 		"propertyName": "recovery",
 		"isEncryptable": false,
 		"methods": [
+			{
+				"name": "createRecoveryInfoForAvailableKeyPairs",
+				"params": [
+					{
+						"name": "options",
+						"type": "{ includeParentsKeys?: boolean; lifetimeSeconds?: number | undefined; recoveryKeyOptions?: RecoveryKeyOptions | undefined; }",
+						"optional": true
+					}
+				],
+				"returnType": "Promise<RecoveryDataKey>"
+			},
+			{
+				"name": "createRecoveryInfoForAvailableParentKeyPairs",
+				"params": [
+					{
+						"name": "parentId",
+						"type": "string",
+						"optional": false
+					},
+					{
+						"name": "options",
+						"type": "{ includeAncestorKeys?: boolean; lifetimeSeconds?: number | undefined; recoveryKeyOptions?: RecoveryKeyOptions | undefined; }",
+						"optional": true
+					}
+				],
+				"returnType": "Promise<RecoveryDataKey>"
+			},
 			{
 				"name": "recoverKeyPairs",
 				"params": [
@@ -7243,7 +8902,7 @@ export const METHOD_REGISTRY: Record<string, ApiInfo> = {
 						"optional": false
 					}
 				],
-				"returnType": "Promise<RecoveryResult<{ [key: string]: { [key: string]: XRsaKeypair"
+				"returnType": "Promise<RecoveryResult<{ [key: string]: { [key: string]: XRsaKeypair; }; }>>"
 			},
 			{
 				"name": "recoverKeyPairsWaitingForCreation",
@@ -7264,7 +8923,23 @@ export const METHOD_REGISTRY: Record<string, ApiInfo> = {
 						"optional": false
 					}
 				],
-				"returnType": "CancellablePromise<RecoveryResult<{ [key: string]: { [key: string]: XRsaKeypair"
+				"returnType": "CancellablePromise<RecoveryResult<{ [key: string]: { [key: string]: XRsaKeypair; }; }>>"
+			},
+			{
+				"name": "createExchangeDataRecoveryInfo",
+				"params": [
+					{
+						"name": "delegateId",
+						"type": "string",
+						"optional": false
+					},
+					{
+						"name": "options",
+						"type": "{ lifetimeSeconds?: number | undefined; recoveryKeyOptions?: RecoveryKeyOptions | undefined; includeBiDirectional?: boolean; includeAsParent?: boolean; }",
+						"optional": true
+					}
+				],
+				"returnType": "Promise<RecoveryDataKey | undefined>"
 			},
 			{
 				"name": "recoverExchangeData",
@@ -7355,6 +9030,43 @@ export const METHOD_REGISTRY: Record<string, ApiInfo> = {
 		"propertyName": "relatedPerson",
 		"isEncryptable": true,
 		"methods": [
+			{
+				"name": "withEncryptionMetadata",
+				"params": [
+					{
+						"name": "base",
+						"type": "DecryptedRelatedPerson | undefined",
+						"optional": false
+					},
+					{
+						"name": "options",
+						"type": "{ user?: User | undefined; delegates?: { [key: string]: AccessLevel; }; alternateRootDelegateId?: string | undefined; }",
+						"optional": true
+					}
+				],
+				"returnType": "Promise<DecryptedRelatedPerson>"
+			},
+			{
+				"name": "withEncryptionMetadataAndDelegates",
+				"params": [
+					{
+						"name": "base",
+						"type": "DecryptedRelatedPerson | undefined",
+						"optional": false
+					},
+					{
+						"name": "delegates",
+						"type": "{ [key: string]: RelatedPersonDelegateOptions; }",
+						"optional": false
+					},
+					{
+						"name": "options",
+						"type": "{ user?: User | undefined; alternateRootDelegateId?: string | undefined; }",
+						"optional": true
+					}
+				],
+				"returnType": "Promise<DecryptedRelatedPerson>"
+			},
 			{
 				"name": "getEncryptionKeysOf",
 				"params": [
@@ -7558,6 +9270,43 @@ export const METHOD_REGISTRY: Record<string, ApiInfo> = {
 				"returnType": "Promise<Array<StoredDocumentIdentifier>>"
 			},
 			{
+				"name": "shareWith",
+				"params": [
+					{
+						"name": "delegateId",
+						"type": "string",
+						"optional": false
+					},
+					{
+						"name": "relatedPerson",
+						"type": "DecryptedRelatedPerson",
+						"optional": false
+					},
+					{
+						"name": "options",
+						"type": "{ options?: RelatedPersonShareOptions | undefined; }",
+						"optional": true
+					}
+				],
+				"returnType": "Promise<DecryptedRelatedPerson>"
+			},
+			{
+				"name": "shareWithMany",
+				"params": [
+					{
+						"name": "relatedPerson",
+						"type": "DecryptedRelatedPerson",
+						"optional": false
+					},
+					{
+						"name": "delegates",
+						"type": "{ [key: string]: RelatedPersonShareOptions; }",
+						"optional": false
+					}
+				],
+				"returnType": "Promise<DecryptedRelatedPerson>"
+			},
+			{
 				"name": "filterRelatedPersonsBy",
 				"params": [
 					{
@@ -7693,6 +9442,27 @@ export const METHOD_REGISTRY: Record<string, ApiInfo> = {
 					}
 				],
 				"returnType": "Promise<Array<DecryptedRelatedPerson>>"
+			},
+			{
+				"name": "subscribeToEvents",
+				"params": [
+					{
+						"name": "events",
+						"type": "Array<SubscriptionEventType>",
+						"optional": false
+					},
+					{
+						"name": "filter",
+						"type": "FilterOptions<RelatedPerson>",
+						"optional": false
+					},
+					{
+						"name": "options",
+						"type": "{ subscriptionConfig?: EntitySubscriptionConfiguration | undefined; }",
+						"optional": true
+					}
+				],
+				"returnType": "Promise<EntitySubscription<EncryptedRelatedPerson>>"
 			}
 		]
 	},
@@ -7745,6 +9515,63 @@ export const METHOD_REGISTRY: Record<string, ApiInfo> = {
 				"returnType": "Promise<Array<Role>>"
 			},
 			{
+				"name": "createRole",
+				"params": [
+					{
+						"name": "name",
+						"type": "string",
+						"optional": false
+					},
+					{
+						"name": "permissions",
+						"type": "Array<string>",
+						"optional": false
+					},
+					{
+						"name": "description",
+						"type": "string | undefined",
+						"optional": false
+					},
+					{
+						"name": "options",
+						"type": "{ inheritsUpTo?: number | undefined; }",
+						"optional": true
+					}
+				],
+				"returnType": "Promise<Role>"
+			},
+			{
+				"name": "createRoleInGroup",
+				"params": [
+					{
+						"name": "groupId",
+						"type": "string",
+						"optional": false
+					},
+					{
+						"name": "name",
+						"type": "string",
+						"optional": false
+					},
+					{
+						"name": "permissions",
+						"type": "Array<string>",
+						"optional": false
+					},
+					{
+						"name": "description",
+						"type": "string | undefined",
+						"optional": false
+					},
+					{
+						"name": "options",
+						"type": "{ inheritsUpTo?: number | undefined; }",
+						"optional": true
+					}
+				],
+				"returnType": "Promise<Role>"
+			},
+			{
 				"name": "modifyRolePermissions",
 				"params": [
 					{
@@ -7792,7 +9619,23 @@ export const METHOD_REGISTRY: Record<string, ApiInfo> = {
 						"optional": false
 					}
 				],
-				"returnType": "{ [key: string]: Array<string>"
+				"returnType": "{ [key: string]: Array<string>; }"
+			},
+			{
+				"name": "updateSelfSplits",
+				"params": [
+					{
+						"name": "keySplitsToUpdate",
+						"type": "{ [key: string]: ShamirUpdateRequest; }",
+						"optional": false
+					},
+					{
+						"name": "keySplitsToDelete",
+						"type": "Array<KeypairFingerprintV1String>",
+						"optional": false
+					}
+				],
+				"returnType": "Promise<CryptoActorStubWithType>"
 			}
 		]
 	},
@@ -7825,6 +9668,99 @@ export const METHOD_REGISTRY: Record<string, ApiInfo> = {
 				"name": "getReplicationInfo",
 				"params": [],
 				"returnType": "Promise<ReplicationInfo>"
+			},
+			{
+				"name": "updateDesignDoc",
+				"params": [
+					{
+						"name": "entityName",
+						"type": "string",
+						"optional": false
+					},
+					{
+						"name": "options",
+						"type": "{ warmup?: boolean | undefined; }",
+						"optional": true
+					}
+				],
+				"returnType": "Promise<boolean>"
+			},
+			{
+				"name": "resolvePatientsConflicts",
+				"params": [
+					{
+						"name": "options",
+						"type": "{ limit?: number | undefined; }",
+						"optional": true
+					}
+				],
+				"returnType": "Promise<Array<IdWithRev>>"
+			},
+			{
+				"name": "resolveContactsConflicts",
+				"params": [
+					{
+						"name": "options",
+						"type": "{ limit?: number | undefined; }",
+						"optional": true
+					}
+				],
+				"returnType": "Promise<Array<IdWithRev>>"
+			},
+			{
+				"name": "resolveFormsConflicts",
+				"params": [
+					{
+						"name": "options",
+						"type": "{ limit?: number | undefined; }",
+						"optional": true
+					}
+				],
+				"returnType": "Promise<Array<IdWithRev>>"
+			},
+			{
+				"name": "resolveHealthElementsConflicts",
+				"params": [
+					{
+						"name": "options",
+						"type": "{ limit?: number | undefined; }",
+						"optional": true
+					}
+				],
+				"returnType": "Promise<Array<IdWithRev>>"
+			},
+			{
+				"name": "resolveInvoicesConflicts",
+				"params": [
+					{
+						"name": "options",
+						"type": "{ limit?: number | undefined; }",
+						"optional": true
+					}
+				],
+				"returnType": "Promise<Array<IdWithRev>>"
+			},
+			{
+				"name": "resolveMessagesConflicts",
+				"params": [
+					{
+						"name": "options",
+						"type": "{ limit?: number | undefined; }",
+						"optional": true
+					}
+				],
+				"returnType": "Promise<Array<IdWithRev>>"
+			},
+			{
+				"name": "resolveDocumentsConflicts",
+				"params": [
+					{
+						"name": "options",
+						"type": "{ ids?: string | undefined; limit?: number | undefined; }",
+						"optional": true
+					}
+				],
+				"returnType": "Promise<Array<IdWithRev>>"
 			},
 			{
 				"name": "getIndexingInfoByGroup",
@@ -7866,6 +9802,53 @@ export const METHOD_REGISTRY: Record<string, ApiInfo> = {
 		"propertyName": "topic",
 		"isEncryptable": true,
 		"methods": [
+			{
+				"name": "withEncryptionMetadata",
+				"params": [
+					{
+						"name": "base",
+						"type": "DecryptedTopic | undefined",
+						"optional": false
+					},
+					{
+						"name": "patient",
+						"type": "Patient | undefined",
+						"optional": false
+					},
+					{
+						"name": "options",
+						"type": "{ user?: User | undefined; delegates?: { [key: string]: AccessLevel; }; secretId?: SecretIdUseOption; alternateRootDelegateId?: string | undefined; }",
+						"optional": true
+					}
+				],
+				"returnType": "Promise<DecryptedTopic>"
+			},
+			{
+				"name": "withEncryptionMetadataAndDelegates",
+				"params": [
+					{
+						"name": "base",
+						"type": "DecryptedTopic | undefined",
+						"optional": false
+					},
+					{
+						"name": "patient",
+						"type": "Patient | undefined",
+						"optional": false
+					},
+					{
+						"name": "delegates",
+						"type": "{ [key: string]: TopicDelegateOptions; }",
+						"optional": false
+					},
+					{
+						"name": "options",
+						"type": "{ user?: User | undefined; secretId?: SecretIdUseOption; alternateRootDelegateId?: string | undefined; }",
+						"optional": true
+					}
+				],
+				"returnType": "Promise<DecryptedTopic>"
+			},
 			{
 				"name": "getEncryptionKeysOf",
 				"params": [
@@ -8058,6 +10041,43 @@ export const METHOD_REGISTRY: Record<string, ApiInfo> = {
 				"returnType": "Promise<Array<StoredDocumentIdentifier>>"
 			},
 			{
+				"name": "shareWith",
+				"params": [
+					{
+						"name": "delegateId",
+						"type": "string",
+						"optional": false
+					},
+					{
+						"name": "topic",
+						"type": "DecryptedTopic",
+						"optional": false
+					},
+					{
+						"name": "options",
+						"type": "{ options?: TopicShareOptions | undefined; }",
+						"optional": true
+					}
+				],
+				"returnType": "Promise<DecryptedTopic>"
+			},
+			{
+				"name": "shareWithMany",
+				"params": [
+					{
+						"name": "topic",
+						"type": "DecryptedTopic",
+						"optional": false
+					},
+					{
+						"name": "delegates",
+						"type": "{ [key: string]: TopicShareOptions; }",
+						"optional": false
+					}
+				],
+				"returnType": "Promise<DecryptedTopic>"
+			},
+			{
 				"name": "filterTopicsBy",
 				"params": [
 					{
@@ -8230,6 +10250,27 @@ export const METHOD_REGISTRY: Record<string, ApiInfo> = {
 					}
 				],
 				"returnType": "Promise<DecryptedTopic>"
+			},
+			{
+				"name": "subscribeToEvents",
+				"params": [
+					{
+						"name": "events",
+						"type": "Array<SubscriptionEventType>",
+						"optional": false
+					},
+					{
+						"name": "filter",
+						"type": "FilterOptions<Topic>",
+						"optional": false
+					},
+					{
+						"name": "options",
+						"type": "{ subscriptionConfig?: EntitySubscriptionConfiguration | undefined; }",
+						"optional": true
+					}
+				],
+				"returnType": "Promise<EntitySubscription<EncryptedTopic>>"
 			}
 		]
 	},
@@ -8379,6 +10420,27 @@ export const METHOD_REGISTRY: Record<string, ApiInfo> = {
 					}
 				],
 				"returnType": "Promise<User>"
+			},
+			{
+				"name": "getToken",
+				"params": [
+					{
+						"name": "userId",
+						"type": "string",
+						"optional": false
+					},
+					{
+						"name": "key",
+						"type": "string",
+						"optional": false
+					},
+					{
+						"name": "options",
+						"type": "{ tokenValidity?: number | undefined; token?: string | undefined; }",
+						"optional": true
+					}
+				],
+				"returnType": "Promise<string>"
 			},
 			{
 				"name": "filterUsersBy",
@@ -8730,6 +10792,27 @@ export const METHOD_REGISTRY: Record<string, ApiInfo> = {
 					}
 				],
 				"returnType": "Promise<boolean>"
+			},
+			{
+				"name": "subscribeToEvents",
+				"params": [
+					{
+						"name": "events",
+						"type": "Array<SubscriptionEventType>",
+						"optional": false
+					},
+					{
+						"name": "filter",
+						"type": "FilterOptions<User>",
+						"optional": false
+					},
+					{
+						"name": "options",
+						"type": "{ subscriptionConfig?: EntitySubscriptionConfiguration | undefined; }",
+						"optional": true
+					}
+				],
+				"returnType": "Promise<EntitySubscription<User>>"
 			}
 		]
 	}
