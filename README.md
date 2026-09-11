@@ -47,6 +47,12 @@ Used to generate (part of) the wrappers for non-kotlin languages.
 
 Wrapper for using the multiplatform sdk from pure typescript.
 
+### `cardinal-mcp-server`
+
+MCP (Model Context Protocol) server that gives AI assistants such as Claude access to the Cardinal SDK documentation
+and, after login, to the SDK operations. Published on npm as `@icure/cardinal-mcp-server`; see
+[cardinal-mcp-server/README.md](cardinal-mcp-server/README.md) for the installation in Claude Code and Claude Desktop.
+
 ## Notes
 
 With multiple modules the yarn lock may have some issues...
