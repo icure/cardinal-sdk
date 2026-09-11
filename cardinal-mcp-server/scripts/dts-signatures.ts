@@ -1,6 +1,7 @@
 /**
  * Parses method signatures out of the TypeScript declaration files (`.d.mts`) shipped by `@icure/cardinal-sdk`.
- * Pure functions, no I/O: used by generate-registry.ts and unit-tested in test/dts-signatures.test.ts.
+ * Pure functions, no I/O: used by generate-registry.ts and extract-docs.ts (so the method registry and the API docs
+ * always agree on the method surface) and unit-tested in test/dts-signatures.test.ts.
  *
  * The declarations are `export interface <Name>Api { ... }` blocks whose members are properties (`encrypted: ...;`),
  * KDoc comments and method signatures. Parameter and return types may be object literals spread over several lines

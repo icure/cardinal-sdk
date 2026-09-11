@@ -5,8 +5,8 @@ import { fileURLToPath } from "node:url";
 import { METHOD_REGISTRY } from "../generated/method-registry.js";
 
 /**
- * Guards the checked-in registry against the two generator scripts drifting apart: everything extract-docs.ts
- * documents for an API must be dispatchable on it, and no type may be cut in the middle.
+ * Guards the checked-in registry against the two generator scripts drifting apart: the registry and the docs
+ * manifest must list the same methods for an API, and no type may be cut in the middle.
  */
 
 const here = path.dirname(fileURLToPath(import.meta.url));
@@ -36,17 +36,19 @@ function isBalanced(type: string): boolean {
 }
 
 describe("generated/method-registry.ts", () => {
-	it("makes every method documented for an API dispatchable on that API", () => {
-		const missing: string[] = [];
-		for (const [api, doc] of Object.entries(manifest.apis)) {
-			const entry = METHOD_REGISTRY[api];
-			if (!entry) continue;
-			const known = new Set(entry.methods.map(m => m.name));
-			for (const m of doc.methods) {
-				if (!known.has(m.name)) missing.push(`${api}.${m.name}`);
-			}
+	it("lists exactly the methods that docs-manifest.json documents for each API", () => {
+		const undocumented: string[] = [];
+		const notDispatchable: string[] = [];
+		for (const [api, entry] of Object.entries(METHOD_REGISTRY)) {
+			const doc = manifest.apis[api];
+			if (!doc) continue;
+			const documented = new Set(doc.methods.map(m => m.name));
+			const dispatchable = new Set(entry.methods.map(m => m.name));
+			for (const name of dispatchable) if (!documented.has(name)) undocumented.push(`${api}.${name}`);
+			for (const name of documented) if (!dispatchable.has(name)) notDispatchable.push(`${api}.${name}`);
 		}
-		expect(missing).toEqual([]);
+		expect(undocumented).toEqual([]);
+		expect(notDispatchable).toEqual([]);
 	});
 
 	it("includes the entity-creation, sharing and subscription methods that take an options object", () => {
