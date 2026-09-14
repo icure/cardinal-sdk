@@ -171,14 +171,8 @@ sealed interface Patient :
 	 */
 	override val civility: String?
 
-	/**
-	 * The gender of the patient.
-	 */
 	override val gender: Gender?
 
-	/**
-	 * The birth sex of the patient.
-	 */
 	public val birthSex: Gender?
 
 	/**
@@ -216,14 +210,8 @@ sealed interface Patient :
 	 */
 	public val ssin: String?
 
-	/**
-	 * Lastname at birth (can be different from the current name).
-	 */
 	public val maidenName: String?
 
-	/**
-	 * Lastname of the spouse for a married woman.
-	 */
 	public val spouseName: String?
 
 	/**
@@ -231,19 +219,10 @@ sealed interface Patient :
 	 */
 	public val partnerName: String?
 
-	/**
-	 * The personal/marital status of the patient.
-	 */
 	public val personalStatus: PersonalStatus?
 
-	/**
-	 * The birthdate encoded as a fuzzy date on 8 positions (YYYYMMDD).
-	 */
 	public val dateOfBirth: Int?
 
-	/**
-	 * The date of death encoded as a fuzzy date on 8 positions (YYYYMMDD).
-	 */
 	public val dateOfDeath: Int?
 
 	/**
@@ -514,14 +493,8 @@ data class DecryptedPatient(
 	 * Mr., Ms., Pr., Dr. ...
 	 */
 	override val civility: String? = null,
-	/**
-	 * The gender of the patient.
-	 */
 	@param:DefaultValue("com.icure.cardinal.sdk.model.embed.Gender.Unknown")
 	override val gender: Gender? = Gender.Unknown,
-	/**
-	 * The birth sex of the patient.
-	 */
 	@param:DefaultValue("com.icure.cardinal.sdk.model.embed.Gender.Unknown")
 	override val birthSex: Gender? = Gender.Unknown,
 	/**
@@ -555,30 +528,15 @@ data class DecryptedPatient(
 	 * Social security inscription number.
 	 */
 	override val ssin: String? = null,
-	/**
-	 * Lastname at birth (can be different from the current name).
-	 */
 	override val maidenName: String? = null,
-	/**
-	 * Lastname of the spouse for a married woman.
-	 */
 	override val spouseName: String? = null,
 	/**
 	 * Lastname of the partner.
 	 */
 	override val partnerName: String? = null,
-	/**
-	 * The personal/marital status of the patient.
-	 */
 	@param:DefaultValue("com.icure.cardinal.sdk.model.embed.PersonalStatus.Unknown")
 	override val personalStatus: PersonalStatus? = PersonalStatus.Unknown,
-	/**
-	 * The birthdate encoded as a fuzzy date on 8 positions (YYYYMMDD).
-	 */
 	override val dateOfBirth: Int? = null,
-	/**
-	 * The date of death encoded as a fuzzy date on 8 positions (YYYYMMDD).
-	 */
 	override val dateOfDeath: Int? = null,
 	/**
 	 * Timestamp of the latest validation of the eID of the person.
@@ -832,14 +790,8 @@ data class EncryptedPatient(
 	 * Mr., Ms., Pr., Dr. ...
 	 */
 	override val civility: String? = null,
-	/**
-	 * The gender of the patient.
-	 */
 	@param:DefaultValue("com.icure.cardinal.sdk.model.embed.Gender.Unknown")
 	override val gender: Gender? = Gender.Unknown,
-	/**
-	 * The birth sex of the patient.
-	 */
 	@param:DefaultValue("com.icure.cardinal.sdk.model.embed.Gender.Unknown")
 	override val birthSex: Gender? = Gender.Unknown,
 	/**
@@ -873,30 +825,15 @@ data class EncryptedPatient(
 	 * Social security inscription number.
 	 */
 	override val ssin: String? = null,
-	/**
-	 * Lastname at birth (can be different from the current name).
-	 */
 	override val maidenName: String? = null,
-	/**
-	 * Lastname of the spouse for a married woman.
-	 */
 	override val spouseName: String? = null,
 	/**
 	 * Lastname of the partner.
 	 */
 	override val partnerName: String? = null,
-	/**
-	 * The personal/marital status of the patient.
-	 */
 	@param:DefaultValue("com.icure.cardinal.sdk.model.embed.PersonalStatus.Unknown")
 	override val personalStatus: PersonalStatus? = PersonalStatus.Unknown,
-	/**
-	 * The birthdate encoded as a fuzzy date on 8 positions (YYYYMMDD).
-	 */
 	override val dateOfBirth: Int? = null,
-	/**
-	 * The date of death encoded as a fuzzy date on 8 positions (YYYYMMDD).
-	 */
 	override val dateOfDeath: Int? = null,
 	/**
 	 * Timestamp of the latest validation of the eID of the person.

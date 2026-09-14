@@ -572,7 +572,13 @@ private class PatientDecryptor(
 				encryptedSelf = encryptedEntity.encryptedSelf,
 				securityMetadata = encryptedEntity.securityMetadata,
 				cryptoActorProperties = encryptedEntity.cryptoActorProperties,
-				parentId = encryptedEntity.parentId,
+				dataOwnerGroups = encryptedEntity.dataOwnerGroups,
+				groupLinkType =
+					encryptedContentDecoder.decodeDecrypted(
+						decryptedContent["groupLinkType"]?.also { usedEncryptedContent += "groupLinkType" },
+						encryptedEntity.groupLinkType,
+						entityCustomisedModelVersion,
+					),
 				extensions = extensions,
 				customisedModelVersion = encryptedEntity.customisedModelVersion,
 			)

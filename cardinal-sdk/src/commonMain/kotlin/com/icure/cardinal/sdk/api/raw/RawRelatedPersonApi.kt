@@ -3,7 +3,6 @@ package com.icure.cardinal.sdk.api.raw
 import com.icure.cardinal.sdk.model.EncryptedRelatedPerson
 import com.icure.cardinal.sdk.model.ListOfIds
 import com.icure.cardinal.sdk.model.ListOfIdsAndRev
-import com.icure.cardinal.sdk.model.PaginatedList
 import com.icure.cardinal.sdk.model.RelatedPerson
 import com.icure.cardinal.sdk.model.conflicts.ConflictResolutionRequest
 import com.icure.cardinal.sdk.model.conflicts.ConflictResolutionResult
@@ -11,11 +10,9 @@ import com.icure.cardinal.sdk.model.conflicts.ConflictResolutionStrategy
 import com.icure.cardinal.sdk.model.conflicts.MergeResult
 import com.icure.cardinal.sdk.model.couchdb.DocIdentifier
 import com.icure.cardinal.sdk.model.filter.AbstractFilter
-import com.icure.cardinal.sdk.model.filter.chain.FilterChain
 import com.icure.cardinal.sdk.model.requests.BulkShareOrUpdateMetadataParams
 import com.icure.cardinal.sdk.model.requests.EntityBulkShareResult
 import com.icure.utils.InternalIcureApi
-import kotlin.Int
 import kotlin.Nothing
 import kotlin.String
 import kotlin.collections.List
@@ -60,12 +57,6 @@ public interface RawRelatedPersonApi {
 	suspend fun modifyRelatedPersons(relatedPersonDtos: List<EncryptedRelatedPerson>): HttpResponse<List<EncryptedRelatedPerson>>
 
 	suspend fun createRelatedPersons(relatedPersonDtos: List<EncryptedRelatedPerson>): HttpResponse<List<EncryptedRelatedPerson>>
-
-	suspend fun filterRelatedPersonsBy(
-		startDocumentId: String? = null,
-		limit: Int? = null,
-		filterChain: FilterChain<RelatedPerson>,
-	): HttpResponse<PaginatedList<EncryptedRelatedPerson>>
 
 	suspend fun bulkShare(request: BulkShareOrUpdateMetadataParams): HttpResponse<List<EntityBulkShareResult<EncryptedRelatedPerson>>>
 

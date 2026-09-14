@@ -82,6 +82,12 @@ private class PartnershipDecryptor(
 						encryptedEntity.partnerId,
 						entityCustomisedModelVersion,
 					),
+				partnerType =
+					encryptedContentDecoder.decodeDecrypted(
+						decryptedContent["partnerType"]?.also { usedEncryptedContent += "partnerType" },
+						encryptedEntity.partnerType,
+						entityCustomisedModelVersion,
+					),
 				encryptedSelf = encryptedEntity.encryptedSelf,
 			)
 		if (entityCustomisedModelVersion == null &&

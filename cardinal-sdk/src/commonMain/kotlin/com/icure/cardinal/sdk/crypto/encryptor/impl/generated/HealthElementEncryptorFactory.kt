@@ -79,6 +79,8 @@ internal object HealthElementEncryptorFactory :
 						clearEntity.careTeam.map { x0 ->
 							CareTeamMemberEncryptorFactory.empty.encrypt(encryptionKey, x0)
 						},
+					qualifiedLinks = clearEntity.qualifiedLinks,
+					asserters = clearEntity.asserters,
 					secretForeignKeys = clearEntity.secretForeignKeys,
 					cryptedForeignKeys = clearEntity.cryptedForeignKeys,
 					delegations = clearEntity.delegations,
@@ -180,6 +182,8 @@ internal object HealthElementEncryptorFactory :
 						)
 					} ?: EncryptableFieldConfig.None(CareTeamMemberEncryptorFactory)
 				},
+			qualifiedLinks_e = "qualifiedLinks" in manifest.fieldsToEncrypt,
+			asserters_e = "asserters" in manifest.fieldsToEncrypt,
 			extensionsEncryptor = extensionsEncryptor,
 			encodingJson = encodingJson,
 			cryptoService = cryptoService,
@@ -211,6 +215,8 @@ private class HealthElementEncryptor(
 	private val plansOfAction_e: EncryptableFieldConfig<EncryptedPlanOfAction, DecryptedPlanOfAction>,
 	private val episodes_e: EncryptableFieldConfig<EncryptedEpisode, DecryptedEpisode>,
 	private val careTeam_e: EncryptableFieldConfig<EncryptedCareTeamMember, DecryptedCareTeamMember>,
+	private val qualifiedLinks_e: Boolean,
+	private val asserters_e: Boolean,
 	private val extensionsEncryptor: Lazy<ExtensionsEncryptors>?,
 	private val encodingJson: Json,
 	cryptoService: CryptoService,
@@ -292,6 +298,18 @@ private class HealthElementEncryptor(
 					clearEntity.careTeam,
 				)
 		}
+		if (qualifiedLinks_e && clearEntity.qualifiedLinks.isNotEmpty()) {
+			dataToEncrypt["qualifiedLinks"] =
+				encodingJson.encodeToJsonElement(
+					clearEntity.qualifiedLinks,
+				)
+		}
+		if (asserters_e && clearEntity.asserters.isNotEmpty()) {
+			dataToEncrypt["asserters"] =
+				encodingJson.encodeToJsonElement(
+					clearEntity.asserters,
+				)
+		}
 		return EncryptedHealthElement(
 			id = clearEntity.id,
 			identifiers = if (identifiers_e) emptyList() else clearEntity.identifiers,
@@ -355,6 +373,8 @@ private class HealthElementEncryptor(
 						}
 					}
 				},
+			qualifiedLinks = if (qualifiedLinks_e) emptyList() else clearEntity.qualifiedLinks,
+			asserters = if (asserters_e) emptyList() else clearEntity.asserters,
 			secretForeignKeys = clearEntity.secretForeignKeys,
 			cryptedForeignKeys = clearEntity.cryptedForeignKeys,
 			delegations = clearEntity.delegations,

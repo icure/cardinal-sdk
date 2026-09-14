@@ -9,7 +9,6 @@ import com.icure.cardinal.sdk.auth.services.AuthProvider
 import com.icure.cardinal.sdk.model.EncryptedRelatedPerson
 import com.icure.cardinal.sdk.model.ListOfIds
 import com.icure.cardinal.sdk.model.ListOfIdsAndRev
-import com.icure.cardinal.sdk.model.PaginatedList
 import com.icure.cardinal.sdk.model.RelatedPerson
 import com.icure.cardinal.sdk.model.conflicts.ConflictResolutionRequest
 import com.icure.cardinal.sdk.model.conflicts.ConflictResolutionResult
@@ -17,10 +16,8 @@ import com.icure.cardinal.sdk.model.conflicts.ConflictResolutionStrategy
 import com.icure.cardinal.sdk.model.conflicts.MergeResult
 import com.icure.cardinal.sdk.model.couchdb.DocIdentifier
 import com.icure.cardinal.sdk.model.filter.AbstractFilter
-import com.icure.cardinal.sdk.model.filter.chain.FilterChain
 import com.icure.cardinal.sdk.model.requests.BulkShareOrUpdateMetadataParams
 import com.icure.cardinal.sdk.model.requests.EntityBulkShareResult
-import com.icure.cardinal.sdk.serialization.FilterChainSerializer
 import com.icure.cardinal.sdk.serialization.RelatedPersonAbstractFilterSerializer
 import com.icure.utils.InternalIcureApi
 import io.ktor.client.request.accept
@@ -31,7 +28,6 @@ import io.ktor.http.appendPathSegments
 import io.ktor.http.contentType
 import io.ktor.http.takeFrom
 import io.ktor.util.date.GMTDate
-import kotlin.Int
 import kotlin.Nothing
 import kotlin.String
 import kotlin.collections.List
@@ -193,23 +189,6 @@ class RawRelatedPersonApiImpl(
 			contentType(Application.Json)
 			accept(Application.Json)
 			setBody(relatedPersonDtos)
-		}.wrap()
-
-	override suspend fun filterRelatedPersonsBy(
-		startDocumentId: String?,
-		limit: Int?,
-		filterChain: FilterChain<RelatedPerson>,
-	): HttpResponse<PaginatedList<EncryptedRelatedPerson>> =
-		post(authProvider) {
-			url {
-				takeFrom(apiUrl)
-				appendPathSegments("rest", "v2", "relatedperson", "filter")
-				parameter("startDocumentId", startDocumentId)
-				parameter("limit", limit)
-			}
-			contentType(Application.Json)
-			accept(Application.Json)
-			setBodyWithSerializer(FilterChainSerializer(RelatedPersonAbstractFilterSerializer), filterChain)
 		}.wrap()
 
 	override suspend fun bulkShare(

@@ -2,18 +2,18 @@
 // If you want to change the way this class is generated, see [this repo](https://github.com/icure/sdk-codegen).
 package com.icure.cardinal.sdk.model
 
-import com.icure.cardinal.sdk.crypto.impl.HashingUtils
 import com.icure.cardinal.sdk.model.base.StoredDocument
 import com.icure.cardinal.sdk.model.specializations.Base64String
 import com.icure.cardinal.sdk.model.specializations.KeypairFingerprintV2String
 import com.icure.cardinal.sdk.utils.DefaultValue
-import com.icure.cardinal.sdk.utils.ensure
-import com.icure.cardinal.sdk.utils.ensureNonNull
-import com.icure.kryptom.crypto.CryptoService
 import kotlinx.serialization.Serializable
 import kotlin.Long
 import kotlin.String
 import kotlin.collections.Map
+import com.icure.cardinal.sdk.crypto.impl.HashingUtils
+import com.icure.cardinal.sdk.utils.ensure
+import com.icure.cardinal.sdk.utils.ensureNonNull
+import com.icure.kryptom.crypto.CryptoService
 
 /**
  * Holds the cryptographic data necessary for the secure sharing of entities between data owners.
@@ -87,6 +87,5 @@ data class ExchangeData(
 		internal suspend fun idForNonDelegatorPiece(exchangeDataGroupId: String, recipient: String, cryptoService: CryptoService) =
 			HashingUtils.sha256Alphanumeric("$exchangeDataGroupId|$recipient", cryptoService)
 	}
-
 	// endregion
 }

@@ -24,6 +24,7 @@ import com.icure.cardinal.sdk.model.specializations.Base64String
 import com.icure.cardinal.sdk.utils.DefaultValue
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.json.JsonObject
+import kotlin.Int
 import kotlin.Long
 import kotlin.String
 import kotlin.collections.List
@@ -181,6 +182,10 @@ sealed interface RelatedPerson :
 	 */
 	override val securityMetadata: SecurityMetadata?
 
+	override val customisedModelVersion: Int?
+
+	override val extensions: JsonObject?
+
 	// region RelatedPerson-RelatedPerson
 
 	companion object {
@@ -317,8 +322,8 @@ data class DecryptedRelatedPerson(
 	 * The security metadata of the entity.
 	 */
 	override val securityMetadata: SecurityMetadata? = null,
-	override val extensions: JsonObject? = null,
 	override val customisedModelVersion: Int? = null,
+	override val extensions: JsonObject? = null,
 ) : RelatedPerson {
 	// region RelatedPerson-DecryptedRelatedPerson
 	override fun copyWithSecurityMetadata(securityMetadata: SecurityMetadata, secretForeignKeys: Set<String>): DecryptedRelatedPerson =
@@ -453,8 +458,8 @@ data class EncryptedRelatedPerson(
 	 * The security metadata of the entity.
 	 */
 	override val securityMetadata: SecurityMetadata? = null,
-	override val extensions: JsonObject? = null,
 	override val customisedModelVersion: Int? = null,
+	override val extensions: JsonObject? = null,
 ) : RelatedPerson {
 	// region RelatedPerson-EncryptedRelatedPerson
 	override fun copyWithSecurityMetadata(securityMetadata: SecurityMetadata, secretForeignKeys: Set<String>): EncryptedRelatedPerson =

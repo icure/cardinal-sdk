@@ -72,5 +72,6 @@ data class BulkExchangeDataPieceCreationRequest(
 	public val sharedSignature: Base64String? = null,
 ) {
 	// region BulkExchangeDataPieceCreationRequest-BulkExchangeDataPieceCreationRequest
+
 	// endregion
 }

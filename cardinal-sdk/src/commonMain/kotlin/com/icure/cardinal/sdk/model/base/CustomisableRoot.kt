@@ -4,9 +4,11 @@ package com.icure.cardinal.sdk.model.base
 
 import kotlin.Int
 
-interface CustomisableRoot : Extendable {
+interface CustomisableRoot {
 	public val customisedModelVersion: Int?
 
 	// region CustomisableRoot-CustomisableRoot
+
+
 	// endregion
 }

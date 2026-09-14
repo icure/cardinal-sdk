@@ -32,6 +32,7 @@ internal object PartnershipEncryptorFactory :
 					type = clearEntity.type,
 					status = clearEntity.status,
 					partnerId = clearEntity.partnerId,
+					partnerType = clearEntity.partnerType,
 					encryptedSelf = null,
 				)
 		}
@@ -50,6 +51,7 @@ internal object PartnershipEncryptorFactory :
 			type_e = "type" in manifest.fieldsToEncrypt,
 			status_e = "status" in manifest.fieldsToEncrypt,
 			partnerId_e = "partnerId" in manifest.fieldsToEncrypt,
+			partnerType_e = "partnerType" in manifest.fieldsToEncrypt,
 			encodingJson = encodingJson,
 			cryptoService = cryptoService,
 		)
@@ -61,6 +63,7 @@ private class PartnershipEncryptor(
 	private val type_e: Boolean,
 	private val status_e: Boolean,
 	private val partnerId_e: Boolean,
+	private val partnerType_e: Boolean,
 	private val encodingJson: Json,
 	cryptoService: CryptoService,
 ) : AbstractEntityEncryptor<EncryptedPartnership, DecryptedPartnership>(cryptoService) {
@@ -72,10 +75,17 @@ private class PartnershipEncryptor(
 		if (type_e && clearEntity.type != null) dataToEncrypt["type"] = encodingJson.encodeToJsonElement(clearEntity.type)
 		if (status_e && clearEntity.status != null) dataToEncrypt["status"] = encodingJson.encodeToJsonElement(clearEntity.status)
 		if (partnerId_e && clearEntity.partnerId != null) dataToEncrypt["partnerId"] = encodingJson.encodeToJsonElement(clearEntity.partnerId)
+		if (partnerType_e && clearEntity.partnerType != null) {
+			dataToEncrypt["partnerType"] =
+				encodingJson.encodeToJsonElement(
+					clearEntity.partnerType,
+				)
+		}
 		return EncryptedPartnership(
 			type = if (type_e) null else clearEntity.type,
 			status = if (status_e) null else clearEntity.status,
 			partnerId = if (partnerId_e) null else clearEntity.partnerId,
+			partnerType = if (partnerType_e) null else clearEntity.partnerType,
 			encryptedSelf = getUpdatedEncryptSelf(encryptionKey, clearEntity, JsonObject(dataToEncrypt)),
 		)
 	}

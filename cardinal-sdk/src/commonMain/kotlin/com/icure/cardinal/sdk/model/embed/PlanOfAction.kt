@@ -22,7 +22,8 @@ import kotlin.Int
 sealed interface PlanOfAction :
 	Encryptable,
 	ICureDocument<String>,
-	HasMedicalLocation,Named,
+	HasMedicalLocation,
+	Named,
 	HasEndOfLife,
 	Extendable {
 	override val id: String

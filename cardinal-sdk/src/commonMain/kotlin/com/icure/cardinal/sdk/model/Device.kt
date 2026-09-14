@@ -6,9 +6,9 @@ import com.icure.cardinal.sdk.model.base.CodeStub
 import com.icure.cardinal.sdk.model.base.CryptoActor
 import com.icure.cardinal.sdk.model.base.CustomisableRoot
 import com.icure.cardinal.sdk.model.base.DataOwner
-import com.icure.cardinal.sdk.model.base.Extendable
 import com.icure.cardinal.sdk.model.base.DataOwnerGroupLink
 import com.icure.cardinal.sdk.model.base.DataOwnerGroupLinkType
+import com.icure.cardinal.sdk.model.base.Extendable
 import com.icure.cardinal.sdk.model.base.HasMedicalLocation
 import com.icure.cardinal.sdk.model.base.ICureDocument
 import com.icure.cardinal.sdk.model.base.Identifier
@@ -152,7 +152,8 @@ data class Device(
 	override val customisedModelVersion: Int? = null,
 ) : StoredDocument,
 	ICureDocument<String>,
-	HasMedicalLocation,Named,
+	HasMedicalLocation,
+	Named,
 	CryptoActor,
 	DataOwner,
 	CustomisableRoot,

@@ -2,6 +2,7 @@ package com.icure.cardinal.sdk.api.raw
 
 import com.icure.cardinal.sdk.model.DataOwnerRegistrationSuccess
 import com.icure.cardinal.sdk.model.EncryptedPatient
+import com.icure.cardinal.sdk.model.IcureStub
 import com.icure.cardinal.sdk.model.IdWithRev
 import com.icure.cardinal.sdk.model.ListOfIds
 import com.icure.cardinal.sdk.model.ListOfIdsAndRev
@@ -166,6 +167,8 @@ public interface RawPatientApi {
 	): HttpResponse<List<EncryptedPatient>>
 
 	suspend fun getPatients(patientIds: ListOfIds): HttpResponse<List<EncryptedPatient>>
+
+	suspend fun findPatientsDelegationsStubsByIds(patientIds: ListOfIds): HttpResponse<List<IcureStub>>
 
 	suspend fun getPatient(patientId: String): HttpResponse<EncryptedPatient>
 

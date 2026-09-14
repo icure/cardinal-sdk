@@ -16,7 +16,11 @@ import kotlin.collections.List
 import kotlin.collections.Set
 import kotlin.Int
 
-sealed interface SubContact : Encryptable, ICureDocument<String?>, HasMedicalLocation, Extendable {
+sealed interface SubContact :
+	Encryptable,
+	ICureDocument<String?>,
+	Extendable,
+	HasMedicalLocation {
 	override val id: String?
 
 	override val created: Long?

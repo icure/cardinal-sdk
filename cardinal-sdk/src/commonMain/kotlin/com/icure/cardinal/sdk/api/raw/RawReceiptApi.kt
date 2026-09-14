@@ -1,6 +1,7 @@
 package com.icure.cardinal.sdk.api.raw
 
 import com.icure.cardinal.sdk.model.EncryptedReceipt
+import com.icure.cardinal.sdk.model.IcureStub
 import com.icure.cardinal.sdk.model.ListOfIds
 import com.icure.cardinal.sdk.model.ListOfIdsAndRev
 import com.icure.cardinal.sdk.model.conflicts.ConflictResolutionRequest
@@ -14,6 +15,7 @@ import com.icure.utils.InternalIcureApi
 import kotlin.Boolean
 import kotlin.ByteArray
 import kotlin.Long
+import kotlin.Nothing
 import kotlin.String
 import kotlin.Unit
 import kotlin.collections.List
@@ -83,6 +85,8 @@ public interface RawReceiptApi {
 
 	suspend fun getReceipts(receiptIds: ListOfIds): HttpResponse<List<EncryptedReceipt>>
 
+	suspend fun findReceiptsDelegationsStubsByIds(receiptIds: ListOfIds): HttpResponse<List<IcureStub>>
+
 	suspend fun listByReference(ref: String): HttpResponse<List<EncryptedReceipt>>
 
 	suspend fun listReceiptsBetweenDates(
@@ -96,6 +100,8 @@ public interface RawReceiptApi {
 	suspend fun modifyReceipts(receiptDtos: List<EncryptedReceipt>): HttpResponse<List<EncryptedReceipt>>
 
 	suspend fun bulkShare(request: BulkShareOrUpdateMetadataParams): HttpResponse<List<EntityBulkShareResult<EncryptedReceipt>>>
+
+	suspend fun bulkShareMinimal(request: BulkShareOrUpdateMetadataParams): HttpResponse<List<EntityBulkShareResult<Nothing>>>
 
 	suspend fun getConflictingEntitiesIds(): HttpResponse<List<String>>
 

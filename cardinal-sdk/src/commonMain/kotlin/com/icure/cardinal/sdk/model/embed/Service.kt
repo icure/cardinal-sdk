@@ -24,7 +24,8 @@ import kotlin.collections.Set
 sealed interface Service :
 	Encryptable,
 	ICureDocument<String>,
-	HasMedicalLocation,HasEndOfLife,
+	HasMedicalLocation,
+	HasEndOfLife,
 	HasIdentifier,
 	Extendable {
 	/**

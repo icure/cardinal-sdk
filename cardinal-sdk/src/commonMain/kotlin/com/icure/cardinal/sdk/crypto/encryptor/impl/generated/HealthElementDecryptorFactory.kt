@@ -316,6 +316,18 @@ private class HealthElementDecryptor(
 						},
 						entityCustomisedModelVersion,
 					),
+				qualifiedLinks =
+					encryptedContentDecoder.decodeDecrypted(
+						decryptedContent["qualifiedLinks"]?.also { usedEncryptedContent += "qualifiedLinks" },
+						encryptedEntity.qualifiedLinks,
+						entityCustomisedModelVersion,
+					),
+				asserters =
+					encryptedContentDecoder.decodeDecrypted(
+						decryptedContent["asserters"]?.also { usedEncryptedContent += "asserters" },
+						encryptedEntity.asserters,
+						entityCustomisedModelVersion,
+					),
 				secretForeignKeys = encryptedEntity.secretForeignKeys,
 				cryptedForeignKeys = encryptedEntity.cryptedForeignKeys,
 				delegations = encryptedEntity.delegations,

@@ -18,6 +18,7 @@ import com.icure.cardinal.sdk.model.DecryptedPatient
 import com.icure.cardinal.sdk.model.DecryptedProperty
 import com.icure.cardinal.sdk.model.DecryptedPropertyStub
 import com.icure.cardinal.sdk.model.DecryptedReceipt
+import com.icure.cardinal.sdk.model.DecryptedRelatedPerson
 import com.icure.cardinal.sdk.model.DecryptedSecureDelegationKeyMap
 import com.icure.cardinal.sdk.model.DecryptedTopic
 import com.icure.cardinal.sdk.model.EncryptedAccessLog
@@ -36,6 +37,7 @@ import com.icure.cardinal.sdk.model.EncryptedPatient
 import com.icure.cardinal.sdk.model.EncryptedProperty
 import com.icure.cardinal.sdk.model.EncryptedPropertyStub
 import com.icure.cardinal.sdk.model.EncryptedReceipt
+import com.icure.cardinal.sdk.model.EncryptedRelatedPerson
 import com.icure.cardinal.sdk.model.EncryptedSecureDelegationKeyMap
 import com.icure.cardinal.sdk.model.EncryptedTopic
 import com.icure.cardinal.sdk.model.embed.DecryptedAddress
@@ -347,6 +349,14 @@ internal object GeneratedEntitiesEncryptorInitializer : AbstractEntitiesEncrypto
 				AbstractEntitiesEncryptorsInitializer.Factories(
 					encryptor = ReceiptEncryptorFactory,
 					decryptor = ReceiptDecryptorFactory,
+				),
+			Pair(
+				EncryptedRelatedPerson::class,
+				DecryptedRelatedPerson::class,
+			) to
+				AbstractEntitiesEncryptorsInitializer.Factories(
+					encryptor = RelatedPersonEncryptorFactory,
+					decryptor = RelatedPersonDecryptorFactory,
 				),
 			Pair(
 				EncryptedSchoolingInfo::class,

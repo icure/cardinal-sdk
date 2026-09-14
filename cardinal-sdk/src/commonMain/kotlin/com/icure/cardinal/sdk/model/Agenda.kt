@@ -123,7 +123,12 @@ data class Agenda(
 	public val schedules: List<ResourceGroupAllocationSchedule> = emptyList(),
 	override val extensions: JsonObject? = null,
 	override val customisedModelVersion: Int? = null,
-) : StoredDocument, ICureDocument<String>, HasMedicalLocation, HasEndOfLife, CustomisableRoot, Extendable {
+) : StoredDocument,
+	ICureDocument<String>,
+	HasMedicalLocation,
+	HasEndOfLife,
+	CustomisableRoot,
+	Extendable {
 	// region Agenda-Agenda
 
 	// endregion
