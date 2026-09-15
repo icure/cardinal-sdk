@@ -18,7 +18,7 @@ val mavenReleasesRepository: String by project
 
 group = "com.icure"
 
-val version = "3.0.0-PREVIEW-4"
+val version = "3.0.0-PREVIEW-5"
 project.version = version
 
 val generateSdkVersion by tasks.registering {
