@@ -117,9 +117,14 @@ class BaseExchangeDataManagerImpl(
 		val delegateReferenceString = delegateReference.asReferenceStringInGroup(inGroup, sdkBoundGroup)
 		val resolvedGroup = sdkBoundGroup.resolve(inGroup)
 		return exhaustPaginatedRequest { next ->
-			val nextRecipients = (
-				next ?: JsonArray(listOf(JsonNull) + recipients.map { JsonPrimitive(it.asReferenceStringInGroup(inGroup, sdkBoundGroup)) })
-			).toString()
+			val nextRecipients = if (next == null) {
+				JsonArray(listOf(JsonNull) + recipients.map { JsonPrimitive(it.asReferenceStringInGroup(inGroup, sdkBoundGroup)) })
+			} else {
+				validateResponseContent(next.startKey !is JsonArray) {
+					"Received next key should be a JsonArray"
+				}
+				next.startKey
+			}.toString()
 			resolvedGroup?.let {
 				raw.getExchangeDataByDelegatorDelegateForRecipients(
 					delegatorId = delegatorReferenceString,
