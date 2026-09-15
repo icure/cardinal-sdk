@@ -37,9 +37,9 @@ public external class FailedRequestDetailsJs_RequestRejectedJs(
 
 	public val shouldRetry: Boolean
 
-	public val updatedForMigration: Boolean
+	public val purpose: String
 
-	public val request: DelegateShareOptionsJs?
+	public val requestSummary: ShareRequestSummaryJs?
 
 	override val ktClass: String
 }

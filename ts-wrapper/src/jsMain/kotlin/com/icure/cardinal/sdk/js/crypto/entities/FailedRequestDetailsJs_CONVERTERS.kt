@@ -2,6 +2,7 @@
 package com.icure.cardinal.sdk.js.crypto.entities
 
 import com.icure.cardinal.sdk.crypto.entities.FailedRequestDetails
+import com.icure.cardinal.sdk.crypto.entities.ShareRequestPurpose
 import com.icure.cardinal.sdk.js.model.CheckedConverters.intToNumber
 import com.icure.cardinal.sdk.js.model.CheckedConverters.nullToUndefined
 import com.icure.cardinal.sdk.js.model.CheckedConverters.numberToInt
@@ -66,10 +67,10 @@ public fun failedRequestDetails_RequestRejected_toJs(obj: FailedRequestDetails.R
 	)
 	val code = intToNumber(obj.code)
 	val shouldRetry = obj.shouldRetry
-	val updatedForMigration = obj.updatedForMigration
-	val request = nullToUndefined(
-		obj.request?.let { nonNull1 ->
-			delegateShareOptions_toJs(nonNull1)
+	val purpose = obj.purpose.name
+	val requestSummary = nullToUndefined(
+		obj.requestSummary?.let { nonNull1 ->
+			shareRequestSummary_toJs(nonNull1)
 		}
 	)
 	return FailedRequestDetailsJs_RequestRejectedJs(js("{" +
@@ -78,8 +79,8 @@ public fun failedRequestDetails_RequestRejected_toJs(obj: FailedRequestDetails.R
 		"reason:reason," +
 		"code:code," +
 		"shouldRetry:shouldRetry," +
-		"updatedForMigration:updatedForMigration," +
-		"request:request" +
+		"purpose:purpose," +
+		"requestSummary:requestSummary" +
 	"}"))
 }
 
@@ -91,9 +92,9 @@ public
 	val reason = undefinedToNull(obj.reason)
 	val code = numberToInt(obj.code, "obj.code")
 	val shouldRetry = obj.shouldRetry
-	val updatedForMigration = obj.updatedForMigration
-	val request = obj.request?.let { nonNull1 ->
-		delegateShareOptions_fromJs(nonNull1)
+	val purpose = ShareRequestPurpose.valueOf(obj.purpose)
+	val requestSummary = obj.requestSummary?.let { nonNull1 ->
+		shareRequestSummary_fromJs(nonNull1)
 	}
 	return FailedRequestDetails.RequestRejected(
 		entityId = entityId,
@@ -101,7 +102,7 @@ public
 		reason = reason,
 		code = code,
 		shouldRetry = shouldRetry,
-		updatedForMigration = updatedForMigration,
-		request = request,
+		purpose = purpose,
+		requestSummary = requestSummary,
 	)
 }
