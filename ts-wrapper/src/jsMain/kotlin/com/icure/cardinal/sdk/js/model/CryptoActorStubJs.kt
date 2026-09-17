@@ -15,7 +15,8 @@ import kotlin.js.JsQualifier
 @JsName("CryptoActorStub")
 public external class CryptoActorStubJs(
 	partial: dynamic,
-) : VersionableJs<String>, CryptoActorJs {
+) : VersionableJs<String>,
+    CryptoActorJs {
 	override val id: String
 
 	override val rev: String

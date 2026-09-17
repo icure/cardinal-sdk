@@ -33,7 +33,8 @@ class RawExchangeDataApiImpl(
 	internal val apiUrl: String,
 	private val authProvider: AuthProvider,
 	rawApiConfig: RawApiConfig,
-) : BaseRawApi(rawApiConfig), RawExchangeDataApi {
+) : BaseRawApi(rawApiConfig),
+	RawExchangeDataApi {
 	// region common endpoints
 
 	override suspend fun createExchangeData(exchangeData: ExchangeData): HttpResponse<ExchangeData> =

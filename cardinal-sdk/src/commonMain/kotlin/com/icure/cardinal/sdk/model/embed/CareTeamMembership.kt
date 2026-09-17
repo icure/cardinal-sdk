@@ -10,8 +10,7 @@ import kotlin.Long
 import kotlin.String
 
 /**
- * Represents a time-bounded membership of a care team member, specifying the period and type of
- * involvement.
+ * Represents a time-bounded membership of a care team member, specifying the period and type of involvement.
  * /
  */
 
@@ -48,8 +47,7 @@ sealed interface CareTeamMembership : Encryptable, Extendable {
 }
 
 /**
- * Represents a time-bounded membership of a care team member, specifying the period and type of
- * involvement.
+ * Represents a time-bounded membership of a care team member, specifying the period and type of involvement.
  * /
  */
 @Serializable
@@ -82,8 +80,7 @@ data class DecryptedCareTeamMembership(
 }
 
 /**
- * Represents a time-bounded membership of a care team member, specifying the period and type of
- * involvement.
+ * Represents a time-bounded membership of a care team member, specifying the period and type of involvement.
  * /
  */
 @Serializable

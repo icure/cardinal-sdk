@@ -1,4 +1,6 @@
 // This file is auto-generated
+@file:Suppress("ktlint:standard:max-line-length")
+
 package com.icure.cardinal.sdk.crypto.encryptor.`impl`.generated
 
 import com.icure.cardinal.sdk.crypto.encryptor.EntityDecryptor
@@ -20,11 +22,11 @@ import kotlinx.serialization.json.Json
 import kotlinx.serialization.json.JsonObject
 import kotlin.Lazy
 import kotlin.String
+import kotlin.Suppress
 import kotlin.collections.Collection
 
 @InternalIcureApi
-internal object FlatRateTarificationDecryptorFactory :
-	EntityDecryptorFactory<EncryptedFlatRateTarification, DecryptedFlatRateTarification> {
+internal object FlatRateTarificationDecryptorFactory : EntityDecryptorFactory<EncryptedFlatRateTarification, DecryptedFlatRateTarification> {
 	override fun create(
 		entityManifestName: String?,
 		encryptorsFactoryContext: EntityEncryptorsFactoryContext,
@@ -67,12 +69,11 @@ private class FlatRateTarificationDecryptor(
 	patchDecryptedSelfJson: ((JsonObject) -> JsonObject)?,
 	cryptoService: CryptoService,
 	unversionedEntitiesDecryptedJsonStrictness: DecryptedJsonStrictness,
-) :
-	AbstractEntityDecryptor<EncryptedFlatRateTarification, DecryptedFlatRateTarification>(
-			patchDecryptedSelfJson,
-			cryptoService,
-			unversionedEntitiesDecryptedJsonStrictness,
-		) {
+) : AbstractEntityDecryptor<EncryptedFlatRateTarification, DecryptedFlatRateTarification>(
+		patchDecryptedSelfJson,
+		cryptoService,
+		unversionedEntitiesDecryptedJsonStrictness,
+	) {
 	override suspend fun decrypt(
 		decryptionKeys: Collection<AesKey<AesAlgorithm.CbcWithPkcs7Padding>>,
 		encryptedEntity: EncryptedFlatRateTarification,
@@ -115,10 +116,11 @@ private class FlatRateTarificationDecryptor(
 					),
 				encryptedSelf = encryptedEntity.encryptedSelf,
 			)
-		if (entityCustomisedModelVersion == null &&
-			unversionedEntitiesDecryptedJsonStrictness == DecryptedJsonStrictness.Strict &&
-			decryptedContent.size != usedEncryptedContent.size
-		) {
+		val hasUnexpectedDecryptedContent =
+			entityCustomisedModelVersion == null &&
+				unversionedEntitiesDecryptedJsonStrictness == DecryptedJsonStrictness.Strict &&
+				decryptedContent.size != usedEncryptedContent.size
+		if (hasUnexpectedDecryptedContent) {
 			throw UnexpectedEncryptedContentException(
 				"The FlatRateTarification encrypted content contains unexpected fields: ${decryptedContent.keys - usedEncryptedContent}",
 			)

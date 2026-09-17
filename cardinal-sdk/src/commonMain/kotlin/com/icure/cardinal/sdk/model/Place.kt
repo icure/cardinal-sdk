@@ -44,7 +44,10 @@ data class Place(
 	 */
 	override val extensions: JsonObject? = null,
 	override val customisedModelVersion: Int? = null,
-) : StoredDocument, Named, CustomisableRoot, Extendable {
+) : StoredDocument,
+	Named,
+	CustomisableRoot,
+	Extendable {
 	// region Place-Place
 
 	// endregion

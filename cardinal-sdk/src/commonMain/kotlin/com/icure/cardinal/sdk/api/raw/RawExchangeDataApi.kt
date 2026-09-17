@@ -37,9 +37,7 @@ public interface RawExchangeDataApi {
 		piecesByRecipient: Map<String, ExchangeDataPieceCreationRequest>,
 	): HttpResponse<List<ExchangeData>>
 
-	public suspend fun bulkCreateExchangeDataGroupPieces(
-		requests: List<BulkExchangeDataPieceCreationRequest>,
-	): HttpResponse<List<ExchangeData>>
+	suspend fun bulkCreateExchangeDataGroupPieces(requests: List<BulkExchangeDataPieceCreationRequest>): HttpResponse<List<ExchangeData>>
 
 	suspend fun getExchangeDataGroupById(
 		exchangeDataGroupId: String,
@@ -117,7 +115,7 @@ public interface RawExchangeDataApi {
 		groupId: String,
 	): HttpResponse<List<ExchangeData>>
 
-	public suspend fun bulkCreateExchangeDataGroupPieces(
+	suspend fun bulkCreateExchangeDataGroupPieces(
 		requests: List<BulkExchangeDataPieceCreationRequest>,
 		groupId: String,
 	): HttpResponse<List<ExchangeData>>

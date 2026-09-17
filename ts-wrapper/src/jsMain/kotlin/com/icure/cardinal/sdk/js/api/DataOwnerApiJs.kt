@@ -32,25 +32,21 @@ public external interface DataOwnerApiJs {
 
 	public fun getDataOwners(ids: Array<String>): Promise<Array<DataOwnerWithTypeJs>>
 
-	public fun getDataOwnersWithKnownType(ids: Array<String>, type: String):
-			Promise<Array<DataOwnerWithTypeJs>>
+	public fun getDataOwnersWithKnownType(ids: Array<String>, type: String): Promise<Array<DataOwnerWithTypeJs>>
 
 	public fun getCryptoActorStub(ownerId: String): Promise<CryptoActorStubWithTypeJs>
 
 	public fun getCryptoActorStubs(ids: Array<String>): Promise<Array<CryptoActorStubWithTypeJs>>
 
-	public fun getCryptoActorStubInGroup(entityReferenceInGroup: EntityReferenceInGroupJs):
-			Promise<CryptoActorStubWithTypeJs>
+	public fun getCryptoActorStubInGroup(entityReferenceInGroup: EntityReferenceInGroupJs): Promise<CryptoActorStubWithTypeJs>
 
-	public fun modifyDataOwnerStub(cryptoActorStubWithTypeDto: CryptoActorStubWithTypeJs):
-			Promise<CryptoActorStubWithTypeJs>
+	public fun modifyDataOwnerStub(cryptoActorStubWithTypeDto: CryptoActorStubWithTypeJs): Promise<CryptoActorStubWithTypeJs>
 
 	public fun getCurrentDataOwnerType(): Promise<String>
 
 	public fun clearCurrentDataOwnerHierarchyCache()
 
-	public fun getSimpleGroupDelegateMembersIds(dataOwnerGroup: CryptoActorStubWithTypeJs,
-			groupId: String?): Promise<Array<String>>
+	public fun getSimpleGroupDelegateMembersIds(dataOwnerGroup: CryptoActorStubWithTypeJs, groupId: String?): Promise<Array<String>>
 
 	public fun getDataOwnersPublicKeys(
 		dataOwnerType: String,

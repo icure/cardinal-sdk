@@ -30,8 +30,7 @@ public external interface RelatedPersonApiJs {
 
 	public val inGroup: RelatedPersonInGroupApiJs
 
-	public fun withEncryptionMetadata(base: DecryptedRelatedPersonJs?, options: dynamic):
-			Promise<DecryptedRelatedPersonJs>
+	public fun withEncryptionMetadata(base: DecryptedRelatedPersonJs?, options: dynamic): Promise<DecryptedRelatedPersonJs>
 
 	public fun withEncryptionMetadataAndDelegates(
 		base: DecryptedRelatedPersonJs?,
@@ -45,43 +44,33 @@ public external interface RelatedPersonApiJs {
 
 	public fun getSecretIdsOf(relatedPerson: RelatedPersonJs): Promise<Array<String>>
 
-	public fun createDelegationDeAnonymizationMetadata(entity: RelatedPersonJs,
-			delegates: Array<String>): Promise<Unit>
+	public fun createDelegationDeAnonymizationMetadata(entity: RelatedPersonJs, delegates: Array<String>): Promise<Unit>
 
-	public fun decrypt(relatedPersons: Array<EncryptedRelatedPersonJs>):
-			Promise<Array<DecryptedRelatedPersonJs>>
+	public fun decrypt(relatedPersons: Array<EncryptedRelatedPersonJs>): Promise<Array<DecryptedRelatedPersonJs>>
 
-	public fun tryDecrypt(relatedPersons: Array<EncryptedRelatedPersonJs>):
-			Promise<Array<RelatedPersonJs>>
+	public fun tryDecrypt(relatedPersons: Array<EncryptedRelatedPersonJs>): Promise<Array<RelatedPersonJs>>
 
-	public fun encryptOrValidate(relatedPersons: Array<RelatedPersonJs>):
-			Promise<Array<EncryptedRelatedPersonJs>>
+	public fun encryptOrValidate(relatedPersons: Array<RelatedPersonJs>): Promise<Array<EncryptedRelatedPersonJs>>
 
 	public fun matchRelatedPersonsBy(filter: FilterOptionsJs<RelatedPersonJs>): Promise<Array<String>>
 
-	public fun matchRelatedPersonsBySorted(filter: SortableFilterOptionsJs<RelatedPersonJs>):
-			Promise<Array<String>>
+	public fun matchRelatedPersonsBySorted(filter: SortableFilterOptionsJs<RelatedPersonJs>): Promise<Array<String>>
 
-	public fun deleteRelatedPersonById(entityId: String, rev: String):
-			Promise<StoredDocumentIdentifierJs>
+	public fun deleteRelatedPersonById(entityId: String, rev: String): Promise<StoredDocumentIdentifierJs>
 
-	public fun deleteRelatedPersonsByIds(entityIds: Array<StoredDocumentIdentifierJs>):
-			Promise<Array<StoredDocumentIdentifierJs>>
+	public fun deleteRelatedPersonsByIds(entityIds: Array<StoredDocumentIdentifierJs>): Promise<Array<StoredDocumentIdentifierJs>>
 
 	public fun purgeRelatedPersonById(id: String, rev: String): Promise<Unit>
 
-	public fun purgeRelatedPersonsByIds(entityIds: Array<StoredDocumentIdentifierJs>):
-			Promise<Array<StoredDocumentIdentifierJs>>
+	public fun purgeRelatedPersonsByIds(entityIds: Array<StoredDocumentIdentifierJs>): Promise<Array<StoredDocumentIdentifierJs>>
 
 	public fun deleteRelatedPerson(relatedPerson: RelatedPersonJs): Promise<StoredDocumentIdentifierJs>
 
-	public fun deleteRelatedPersons(relatedPersons: Array<RelatedPersonJs>):
-			Promise<Array<StoredDocumentIdentifierJs>>
+	public fun deleteRelatedPersons(relatedPersons: Array<RelatedPersonJs>): Promise<Array<StoredDocumentIdentifierJs>>
 
 	public fun purgeRelatedPerson(relatedPerson: RelatedPersonJs): Promise<Unit>
 
-	public fun purgeRelatedPersons(relatedPersons: Array<RelatedPersonJs>):
-			Promise<Array<StoredDocumentIdentifierJs>>
+	public fun purgeRelatedPersons(relatedPersons: Array<RelatedPersonJs>): Promise<Array<StoredDocumentIdentifierJs>>
 
 	public fun shareWith(
 		delegateId: String,
@@ -89,34 +78,27 @@ public external interface RelatedPersonApiJs {
 		options: dynamic,
 	): Promise<DecryptedRelatedPersonJs>
 
-	public fun shareWithMany(relatedPerson: DecryptedRelatedPersonJs,
-			delegates: Record<String, RelatedPersonShareOptionsJs>): Promise<DecryptedRelatedPersonJs>
+	public fun shareWithMany(relatedPerson: DecryptedRelatedPersonJs, delegates: Record<String, RelatedPersonShareOptionsJs>): Promise<DecryptedRelatedPersonJs>
 
-	public fun filterRelatedPersonsBy(filter: FilterOptionsJs<RelatedPersonJs>):
-			Promise<PaginatedListIteratorJs<DecryptedRelatedPersonJs>>
+	public fun filterRelatedPersonsBy(filter: FilterOptionsJs<RelatedPersonJs>): Promise<PaginatedListIteratorJs<DecryptedRelatedPersonJs>>
 
-	public fun filterRelatedPersonsBySorted(filter: SortableFilterOptionsJs<RelatedPersonJs>):
-			Promise<PaginatedListIteratorJs<DecryptedRelatedPersonJs>>
+	public fun filterRelatedPersonsBySorted(filter: SortableFilterOptionsJs<RelatedPersonJs>): Promise<PaginatedListIteratorJs<DecryptedRelatedPersonJs>>
 
 	public fun createRelatedPerson(entity: DecryptedRelatedPersonJs): Promise<DecryptedRelatedPersonJs>
 
-	public fun createRelatedPersons(entities: Array<DecryptedRelatedPersonJs>):
-			Promise<Array<DecryptedRelatedPersonJs>>
+	public fun createRelatedPersons(entities: Array<DecryptedRelatedPersonJs>): Promise<Array<DecryptedRelatedPersonJs>>
 
 	public fun undeleteRelatedPersonById(id: String, rev: String): Promise<DecryptedRelatedPersonJs>
 
-	public fun undeleteRelatedPersonsByIds(entityIds: Array<StoredDocumentIdentifierJs>):
-			Promise<Array<DecryptedRelatedPersonJs>>
+	public fun undeleteRelatedPersonsByIds(entityIds: Array<StoredDocumentIdentifierJs>): Promise<Array<DecryptedRelatedPersonJs>>
 
 	public fun undeleteRelatedPerson(relatedPerson: RelatedPersonJs): Promise<DecryptedRelatedPersonJs>
 
-	public fun undeleteRelatedPersons(relatedPersons: Array<RelatedPersonJs>):
-			Promise<Array<DecryptedRelatedPersonJs>>
+	public fun undeleteRelatedPersons(relatedPersons: Array<RelatedPersonJs>): Promise<Array<DecryptedRelatedPersonJs>>
 
 	public fun modifyRelatedPerson(entity: DecryptedRelatedPersonJs): Promise<DecryptedRelatedPersonJs>
 
-	public fun modifyRelatedPersons(entities: Array<DecryptedRelatedPersonJs>):
-			Promise<Array<DecryptedRelatedPersonJs>>
+	public fun modifyRelatedPersons(entities: Array<DecryptedRelatedPersonJs>): Promise<Array<DecryptedRelatedPersonJs>>
 
 	public fun getRelatedPerson(entityId: String): Promise<DecryptedRelatedPersonJs?>
 

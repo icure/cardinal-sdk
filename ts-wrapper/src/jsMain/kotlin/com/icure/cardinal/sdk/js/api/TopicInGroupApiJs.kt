@@ -48,44 +48,33 @@ public external interface TopicInGroupApiJs {
 
 	public fun hasWriteAccess(topic: GroupScopedJs<TopicJs>): Promise<Boolean>
 
-	public fun decryptPatientIdOf(topic: GroupScopedJs<TopicJs>):
-			Promise<Array<EntityReferenceInGroupJs>>
+	public fun decryptPatientIdOf(topic: GroupScopedJs<TopicJs>): Promise<Array<EntityReferenceInGroupJs>>
 
-	public fun createDelegationDeAnonymizationMetadata(entity: GroupScopedJs<TopicJs>,
-			delegates: Array<EntityReferenceInGroupJs>): Promise<Unit>
+	public fun createDelegationDeAnonymizationMetadata(entity: GroupScopedJs<TopicJs>, delegates: Array<EntityReferenceInGroupJs>): Promise<Unit>
 
-	public fun decrypt(topics: Array<GroupScopedJs<EncryptedTopicJs>>):
-			Promise<Array<GroupScopedJs<DecryptedTopicJs>>>
+	public fun decrypt(topics: Array<GroupScopedJs<EncryptedTopicJs>>): Promise<Array<GroupScopedJs<DecryptedTopicJs>>>
 
-	public fun tryDecrypt(topics: Array<GroupScopedJs<EncryptedTopicJs>>):
-			Promise<Array<GroupScopedJs<TopicJs>>>
+	public fun tryDecrypt(topics: Array<GroupScopedJs<EncryptedTopicJs>>): Promise<Array<GroupScopedJs<TopicJs>>>
 
 	public fun matchTopicsBy(groupId: String, filter: FilterOptionsJs<TopicJs>): Promise<Array<String>>
 
-	public fun matchTopicsBySorted(groupId: String, filter: SortableFilterOptionsJs<TopicJs>):
-			Promise<Array<String>>
+	public fun matchTopicsBySorted(groupId: String, filter: SortableFilterOptionsJs<TopicJs>): Promise<Array<String>>
 
-	public fun deleteTopicById(entityId: GroupScopedJs<StoredDocumentIdentifierJs>):
-			Promise<GroupScopedJs<StoredDocumentIdentifierJs>>
+	public fun deleteTopicById(entityId: GroupScopedJs<StoredDocumentIdentifierJs>): Promise<GroupScopedJs<StoredDocumentIdentifierJs>>
 
-	public fun deleteTopicsByIds(entityIds: Array<GroupScopedJs<StoredDocumentIdentifierJs>>):
-			Promise<Array<GroupScopedJs<StoredDocumentIdentifierJs>>>
+	public fun deleteTopicsByIds(entityIds: Array<GroupScopedJs<StoredDocumentIdentifierJs>>): Promise<Array<GroupScopedJs<StoredDocumentIdentifierJs>>>
 
 	public fun purgeTopicById(entityId: GroupScopedJs<StoredDocumentIdentifierJs>): Promise<Unit>
 
-	public fun purgeTopicsByIds(entityIds: Array<GroupScopedJs<StoredDocumentIdentifierJs>>):
-			Promise<Array<GroupScopedJs<StoredDocumentIdentifierJs>>>
+	public fun purgeTopicsByIds(entityIds: Array<GroupScopedJs<StoredDocumentIdentifierJs>>): Promise<Array<GroupScopedJs<StoredDocumentIdentifierJs>>>
 
-	public fun deleteTopic(topic: GroupScopedJs<TopicJs>):
-			Promise<GroupScopedJs<StoredDocumentIdentifierJs>>
+	public fun deleteTopic(topic: GroupScopedJs<TopicJs>): Promise<GroupScopedJs<StoredDocumentIdentifierJs>>
 
-	public fun deleteTopics(topics: Array<GroupScopedJs<TopicJs>>):
-			Promise<Array<GroupScopedJs<StoredDocumentIdentifierJs>>>
+	public fun deleteTopics(topics: Array<GroupScopedJs<TopicJs>>): Promise<Array<GroupScopedJs<StoredDocumentIdentifierJs>>>
 
 	public fun purgeTopic(topic: GroupScopedJs<TopicJs>): Promise<Unit>
 
-	public fun purgeTopics(topics: Array<GroupScopedJs<TopicJs>>):
-			Promise<Array<GroupScopedJs<StoredDocumentIdentifierJs>>>
+	public fun purgeTopics(topics: Array<GroupScopedJs<TopicJs>>): Promise<Array<GroupScopedJs<StoredDocumentIdentifierJs>>>
 
 	public fun shareWith(
 		`delegate`: EntityReferenceInGroupJs,
@@ -93,41 +82,29 @@ public external interface TopicInGroupApiJs {
 		options: dynamic,
 	): Promise<GroupScopedJs<DecryptedTopicJs>>
 
-	public fun shareWithMany(topic: GroupScopedJs<DecryptedTopicJs>,
-			delegates: Array<EntityReferenceInGroupToTopicShareOptionsMapObject_delegate_shareOptions>):
-			Promise<GroupScopedJs<DecryptedTopicJs>>
+	public fun shareWithMany(topic: GroupScopedJs<DecryptedTopicJs>, delegates: Array<EntityReferenceInGroupToTopicShareOptionsMapObject_delegate_shareOptions>): Promise<GroupScopedJs<DecryptedTopicJs>>
 
-	public fun filterTopicsBy(groupId: String, filter: FilterOptionsJs<TopicJs>):
-			Promise<PaginatedListIteratorJs<GroupScopedJs<DecryptedTopicJs>>>
+	public fun filterTopicsBy(groupId: String, filter: FilterOptionsJs<TopicJs>): Promise<PaginatedListIteratorJs<GroupScopedJs<DecryptedTopicJs>>>
 
-	public fun filterTopicsBySorted(groupId: String, filter: SortableFilterOptionsJs<TopicJs>):
-			Promise<PaginatedListIteratorJs<GroupScopedJs<DecryptedTopicJs>>>
+	public fun filterTopicsBySorted(groupId: String, filter: SortableFilterOptionsJs<TopicJs>): Promise<PaginatedListIteratorJs<GroupScopedJs<DecryptedTopicJs>>>
 
-	public fun createTopic(entity: GroupScopedJs<DecryptedTopicJs>):
-			Promise<GroupScopedJs<DecryptedTopicJs>>
+	public fun createTopic(entity: GroupScopedJs<DecryptedTopicJs>): Promise<GroupScopedJs<DecryptedTopicJs>>
 
-	public fun createTopics(entities: Array<GroupScopedJs<DecryptedTopicJs>>):
-			Promise<Array<GroupScopedJs<DecryptedTopicJs>>>
+	public fun createTopics(entities: Array<GroupScopedJs<DecryptedTopicJs>>): Promise<Array<GroupScopedJs<DecryptedTopicJs>>>
 
-	public fun undeleteTopicById(entityId: GroupScopedJs<StoredDocumentIdentifierJs>):
-			Promise<GroupScopedJs<DecryptedTopicJs>>
+	public fun undeleteTopicById(entityId: GroupScopedJs<StoredDocumentIdentifierJs>): Promise<GroupScopedJs<DecryptedTopicJs>>
 
-	public fun undeleteTopicsByIds(entityIds: Array<GroupScopedJs<StoredDocumentIdentifierJs>>):
-			Promise<Array<GroupScopedJs<DecryptedTopicJs>>>
+	public fun undeleteTopicsByIds(entityIds: Array<GroupScopedJs<StoredDocumentIdentifierJs>>): Promise<Array<GroupScopedJs<DecryptedTopicJs>>>
 
 	public fun undeleteTopic(topic: GroupScopedJs<TopicJs>): Promise<GroupScopedJs<DecryptedTopicJs>>
 
-	public fun undeleteTopics(topics: Array<GroupScopedJs<DecryptedTopicJs>>):
-			Promise<Array<GroupScopedJs<DecryptedTopicJs>>>
+	public fun undeleteTopics(topics: Array<GroupScopedJs<DecryptedTopicJs>>): Promise<Array<GroupScopedJs<DecryptedTopicJs>>>
 
-	public fun modifyTopic(entity: GroupScopedJs<DecryptedTopicJs>):
-			Promise<GroupScopedJs<DecryptedTopicJs>>
+	public fun modifyTopic(entity: GroupScopedJs<DecryptedTopicJs>): Promise<GroupScopedJs<DecryptedTopicJs>>
 
-	public fun modifyTopics(entities: Array<GroupScopedJs<DecryptedTopicJs>>):
-			Promise<Array<GroupScopedJs<DecryptedTopicJs>>>
+	public fun modifyTopics(entities: Array<GroupScopedJs<DecryptedTopicJs>>): Promise<Array<GroupScopedJs<DecryptedTopicJs>>>
 
 	public fun getTopic(groupId: String, entityId: String): Promise<GroupScopedJs<DecryptedTopicJs>?>
 
-	public fun getTopics(groupId: String, entityIds: Array<String>):
-			Promise<Array<GroupScopedJs<DecryptedTopicJs>>>
+	public fun getTopics(groupId: String, entityIds: Array<String>): Promise<Array<GroupScopedJs<DecryptedTopicJs>>>
 }

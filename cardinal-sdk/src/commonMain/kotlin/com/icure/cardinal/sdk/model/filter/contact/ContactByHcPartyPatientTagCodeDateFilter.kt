@@ -11,8 +11,7 @@ import kotlin.String
 import kotlin.collections.List
 
 /**
- * Filter that matches contacts by healthcare party, patient secret foreign keys, tag, code, and
- * opening date range.
+ * Filter that matches contacts by healthcare party, patient secret foreign keys, tag, code, and opening date range.
  * /
  */
 @SerialName("ContactByHcPartyPatientTagCodeDateFilter")

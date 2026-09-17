@@ -14,12 +14,15 @@ import com.icure.cardinal.sdk.model.FormTemplate
 import com.icure.cardinal.sdk.model.IcureStub
 import com.icure.cardinal.sdk.model.ListOfIds
 import com.icure.cardinal.sdk.model.ListOfIdsAndRev
+import com.icure.cardinal.sdk.model.PaginatedList
 import com.icure.cardinal.sdk.model.conflicts.ConflictResolutionRequest
 import com.icure.cardinal.sdk.model.conflicts.ConflictResolutionResult
 import com.icure.cardinal.sdk.model.conflicts.ConflictResolutionStrategy
 import com.icure.cardinal.sdk.model.conflicts.MergeResult
 import com.icure.cardinal.sdk.model.couchdb.DocIdentifier
+import com.icure.cardinal.sdk.model.dao.IdWithValue
 import com.icure.cardinal.sdk.model.filter.AbstractFilter
+import com.icure.cardinal.sdk.model.filter.CustomFilter
 import com.icure.cardinal.sdk.model.requests.BulkShareOrUpdateMetadataParams
 import com.icure.cardinal.sdk.model.requests.EntityBulkShareResult
 import com.icure.cardinal.sdk.serialization.FormAbstractFilterSerializer
@@ -49,12 +52,10 @@ class RawFormApiImpl(
 	private val authProvider: AuthProvider,
 	private val accessControlKeysHeadersProvider: AccessControlKeysHeadersProvider?,
 	rawApiConfig: RawApiConfig,
-) : BaseRawApi(rawApiConfig), RawFormApi {
+) : BaseRawApi(rawApiConfig),
+	RawFormApi {
 	override suspend fun getAccessControlKeysHeaderValues(groupId: String?): List<String>? =
-		accessControlKeysHeadersProvider?.getAccessControlKeysHeadersFor(
-			groupId,
-			EntityWithEncryptionMetadataTypeName.Form,
-		)
+		accessControlKeysHeadersProvider?.getAccessControlKeysHeadersFor(groupId, EntityWithEncryptionMetadataTypeName.Form)
 
 	// region common endpoints
 
@@ -555,6 +556,17 @@ class RawFormApiImpl(
 			setBody(entityIds)
 		}.wrap()
 
+	override suspend fun matchFormsByCustomFilter(filter: CustomFilter): HttpResponse<PaginatedList<IdWithValue>> =
+		post(authProvider) {
+			url {
+				takeFrom(apiUrl)
+				appendPathSegments("rest", "v2", "form", "matchByCustom")
+			}
+			contentType(Application.Json)
+			accept(Application.Json)
+			setBody(filter)
+		}.wrap()
+
 	// endregion
 
 	// region cloud endpoints
@@ -818,10 +830,7 @@ class RawFormApiImpl(
 		groupId: String,
 		formTemplateIdsAndRevs: ListOfIdsAndRev,
 	): HttpResponse<List<FormTemplate>> =
-		post(
-			authProvider,
-			groupId,
-		) {
+		post(authProvider, groupId) {
 			url {
 				takeFrom(apiUrl)
 				appendPathSegments("rest", "v2", "form", "template", "inGroup", groupId, "undelete", "batch")
@@ -906,10 +915,7 @@ class RawFormApiImpl(
 		groupId: String,
 		formTemplates: List<FormTemplate>,
 	): HttpResponse<List<FormTemplate>> =
-		post(
-			authProvider,
-			groupId,
-		) {
+		post(authProvider, groupId) {
 			url {
 				takeFrom(apiUrl)
 				appendPathSegments("rest", "v2", "form", "template", "inGroup", groupId, "batch")
@@ -923,10 +929,7 @@ class RawFormApiImpl(
 		groupId: String,
 		formTemplates: List<FormTemplate>,
 	): HttpResponse<List<FormTemplate>> =
-		put(
-			authProvider,
-			groupId,
-		) {
+		put(authProvider, groupId) {
 			url {
 				takeFrom(apiUrl)
 				appendPathSegments("rest", "v2", "form", "template", "inGroup", groupId, "batch")
@@ -1033,6 +1036,20 @@ class RawFormApiImpl(
 			contentType(Application.Json)
 			accept(Application.Json)
 			setBody(entityIds)
+		}.wrap()
+
+	override suspend fun matchFormsByCustomFilterInGroup(
+		groupId: String,
+		filter: CustomFilter,
+	): HttpResponse<PaginatedList<IdWithValue>> =
+		post(authProvider) {
+			url {
+				takeFrom(apiUrl)
+				appendPathSegments("rest", "v2", "form", "inGroup", groupId, "matchByCustom")
+			}
+			contentType(Application.Json)
+			accept(Application.Json)
+			setBody(filter)
 		}.wrap()
 
 	// endregion

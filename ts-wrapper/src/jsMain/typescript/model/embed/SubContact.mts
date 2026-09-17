@@ -2,13 +2,14 @@
 import {expectArray, expectNumber, expectObject, expectString, extractEntry} from '../../internal/JsonDecodeUtils.mjs';
 import {CodeStub} from '../base/CodeStub.mjs';
 import {Extendable} from '../base/Extendable.mjs';
+import {HasMedicalLocation} from '../base/HasMedicalLocation.mjs';
 import {ICureDocument} from '../base/ICureDocument.mjs';
 import {Base64String} from '../specializations/Base64String.mjs';
 import {Encryptable} from './Encryptable.mjs';
 import {ServiceLink} from './ServiceLink.mjs';
 
 
-export interface SubContact extends Encryptable, ICureDocument<string | undefined>, Extendable {
+export interface SubContact extends Encryptable, ICureDocument<string | undefined>, Extendable, HasMedicalLocation {
 
 	descr: string | undefined;
 

@@ -53,7 +53,8 @@ class RawGroupApiImpl(
 	internal val apiUrl: String,
 	private val authProvider: AuthProvider,
 	rawApiConfig: RawApiConfig,
-) : BaseRawApi(rawApiConfig), RawGroupApi {
+) : BaseRawApi(rawApiConfig),
+	RawGroupApi {
 	// region cloud endpoints
 
 	override suspend fun createGroup(

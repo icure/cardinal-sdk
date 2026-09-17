@@ -1,4 +1,6 @@
 // This file is auto-generated
+@file:Suppress("ktlint:standard:max-line-length")
+
 package com.icure.cardinal.sdk.crypto.encryptor.`impl`.generated
 
 import com.icure.cardinal.sdk.crypto.encryptor.`impl`.AbstractEntitiesEncryptorsInitializer
@@ -86,6 +88,7 @@ import com.icure.cardinal.sdk.model.embed.EncryptedTypedValue
 import com.icure.cardinal.sdk.model.embed.EncryptedValorisation
 import com.icure.utils.InternalIcureApi
 import kotlin.Pair
+import kotlin.Suppress
 import kotlin.collections.Map
 import kotlin.reflect.KClass
 

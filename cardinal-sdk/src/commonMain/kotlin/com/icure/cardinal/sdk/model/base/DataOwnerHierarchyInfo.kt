@@ -24,10 +24,8 @@ data class DataOwnerHierarchyInfo(
 	public val dataOwnerType: DataOwnerType,
 	/**
 	 *
-	 *  One node for each group the data owner is directly linked to, through the legacy parentId or a
-	 * dataOwnerGroups
-	 *  link, in the declaration order of the links. A group reachable through multiple paths appears
-	 * in each path.
+	 *  One node for each group the data owner is directly linked to, through the legacy parentId or a dataOwnerGroups
+	 *  link, in the declaration order of the links. A group reachable through multiple paths appears in each path.
 	 */
 	@param:DefaultValue("emptyList()")
 	public val links: List<HierarchyNode> = emptyList(),

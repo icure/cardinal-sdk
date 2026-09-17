@@ -463,8 +463,7 @@ public fun service_fromJs(obj: DecryptedServiceJs): DecryptedService {
 		securityMetadata_fromJs(nonNull1)
 	}
 	val extensions = dynamicToJsonObjectNullsafe(obj.extensions, "obj.extensions")
-	val contactCustomisedModelVersion = numberToInt(obj.contactCustomisedModelVersion,
-			"obj.contactCustomisedModelVersion")
+	val contactCustomisedModelVersion = numberToInt(obj.contactCustomisedModelVersion, "obj.contactCustomisedModelVersion")
 	return DecryptedService(
 		id = id,
 		transactionId = transactionId,
@@ -925,8 +924,7 @@ public fun service_fromJs(obj: EncryptedServiceJs): EncryptedService {
 		securityMetadata_fromJs(nonNull1)
 	}
 	val extensions = dynamicToJsonObjectNullsafe(obj.extensions, "obj.extensions")
-	val contactCustomisedModelVersion = numberToInt(obj.contactCustomisedModelVersion,
-			"obj.contactCustomisedModelVersion")
+	val contactCustomisedModelVersion = numberToInt(obj.contactCustomisedModelVersion, "obj.contactCustomisedModelVersion")
 	return EncryptedService(
 		id = id,
 		transactionId = transactionId,

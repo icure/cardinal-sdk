@@ -12,8 +12,7 @@ import kotlin.collections.List
 import kotlin.collections.Set
 
 /**
- * Represents a measured value with its unit, reference value, severity, evolution, and reference
- * ranges.
+ * Represents a measured value with its unit, reference value, severity, evolution, and reference ranges.
  * /
  */
 @Serializable

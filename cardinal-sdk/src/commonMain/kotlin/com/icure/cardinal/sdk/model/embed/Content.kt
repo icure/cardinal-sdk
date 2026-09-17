@@ -16,8 +16,7 @@ import kotlin.time.Instant
 
 /**
  * Represents the value content of a medical service. A content can hold different types of values
- * such as strings, numbers, dates, measurements, medications, time series, or compound
- * sub-services.
+ * such as strings, numbers, dates, measurements, medications, time series, or compound sub-services.
  * /
  */
 
@@ -98,8 +97,7 @@ sealed interface Content : Encryptable {
 
 /**
  * Represents the value content of a medical service. A content can hold different types of values
- * such as strings, numbers, dates, measurements, medications, time series, or compound
- * sub-services.
+ * such as strings, numbers, dates, measurements, medications, time series, or compound sub-services.
  * /
  */
 @Serializable
@@ -170,8 +168,7 @@ data class DecryptedContent(
 
 /**
  * Represents the value content of a medical service. A content can hold different types of values
- * such as strings, numbers, dates, measurements, medications, time series, or compound
- * sub-services.
+ * such as strings, numbers, dates, measurements, medications, time series, or compound sub-services.
  * /
  */
 @Serializable

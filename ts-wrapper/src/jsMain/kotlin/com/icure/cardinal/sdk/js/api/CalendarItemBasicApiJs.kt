@@ -24,17 +24,13 @@ import kotlin.js.Promise
 public external interface CalendarItemBasicApiJs {
 	public val inGroup: CalendarItemBasicInGroupApiJs
 
-	public fun matchCalendarItemsBy(filter: BaseFilterOptionsJs<CalendarItemJs>):
-			Promise<Array<String>>
+	public fun matchCalendarItemsBy(filter: BaseFilterOptionsJs<CalendarItemJs>): Promise<Array<String>>
 
-	public fun matchCalendarItemsBySorted(filter: BaseSortableFilterOptionsJs<CalendarItemJs>):
-			Promise<Array<String>>
+	public fun matchCalendarItemsBySorted(filter: BaseSortableFilterOptionsJs<CalendarItemJs>): Promise<Array<String>>
 
-	public fun filterCalendarItemsBy(filter: BaseFilterOptionsJs<CalendarItemJs>):
-			Promise<PaginatedListIteratorJs<EncryptedCalendarItemJs>>
+	public fun filterCalendarItemsBy(filter: BaseFilterOptionsJs<CalendarItemJs>): Promise<PaginatedListIteratorJs<EncryptedCalendarItemJs>>
 
-	public fun filterCalendarItemsBySorted(filter: BaseSortableFilterOptionsJs<CalendarItemJs>):
-			Promise<PaginatedListIteratorJs<EncryptedCalendarItemJs>>
+	public fun filterCalendarItemsBySorted(filter: BaseSortableFilterOptionsJs<CalendarItemJs>): Promise<PaginatedListIteratorJs<EncryptedCalendarItemJs>>
 
 	public fun getCalendarItemsOccupancyByPeriodForSelf(
 		startDate: Double,
@@ -56,49 +52,39 @@ public external interface CalendarItemBasicApiJs {
 		extensionInDays: Double?,
 	): Promise<Array<CalendarItemOccupancyJs>>
 
-	public fun deleteCalendarItemById(entityId: String, rev: String):
-			Promise<StoredDocumentIdentifierJs>
+	public fun deleteCalendarItemById(entityId: String, rev: String): Promise<StoredDocumentIdentifierJs>
 
-	public fun deleteCalendarItemsByIds(entityIds: Array<StoredDocumentIdentifierJs>):
-			Promise<Array<StoredDocumentIdentifierJs>>
+	public fun deleteCalendarItemsByIds(entityIds: Array<StoredDocumentIdentifierJs>): Promise<Array<StoredDocumentIdentifierJs>>
 
 	public fun purgeCalendarItemById(id: String, rev: String): Promise<Unit>
 
-	public fun purgeCalendarItemsByIds(entityIds: Array<StoredDocumentIdentifierJs>):
-			Promise<Array<StoredDocumentIdentifierJs>>
+	public fun purgeCalendarItemsByIds(entityIds: Array<StoredDocumentIdentifierJs>): Promise<Array<StoredDocumentIdentifierJs>>
 
 	public fun deleteCalendarItem(calendarItem: CalendarItemJs): Promise<StoredDocumentIdentifierJs>
 
-	public fun deleteCalendarItems(calendarItems: Array<CalendarItemJs>):
-			Promise<Array<StoredDocumentIdentifierJs>>
+	public fun deleteCalendarItems(calendarItems: Array<CalendarItemJs>): Promise<Array<StoredDocumentIdentifierJs>>
 
 	public fun purgeCalendarItem(calendarItem: CalendarItemJs): Promise<Unit>
 
-	public fun purgeCalendarItems(calendarItems: Array<CalendarItemJs>):
-			Promise<Array<StoredDocumentIdentifierJs>>
+	public fun purgeCalendarItems(calendarItems: Array<CalendarItemJs>): Promise<Array<StoredDocumentIdentifierJs>>
 
 	public fun createCalendarItem(entity: EncryptedCalendarItemJs): Promise<EncryptedCalendarItemJs>
 
-	public fun createCalendarItems(entities: Array<EncryptedCalendarItemJs>):
-			Promise<Array<EncryptedCalendarItemJs>>
+	public fun createCalendarItems(entities: Array<EncryptedCalendarItemJs>): Promise<Array<EncryptedCalendarItemJs>>
 
-	public fun bookCalendarItemCheckingAvailability(entity: EncryptedCalendarItemJs):
-			Promise<EncryptedCalendarItemJs>
+	public fun bookCalendarItemCheckingAvailability(entity: EncryptedCalendarItemJs): Promise<EncryptedCalendarItemJs>
 
 	public fun undeleteCalendarItemById(id: String, rev: String): Promise<EncryptedCalendarItemJs>
 
-	public fun undeleteCalendarItemsByIds(entityIds: Array<StoredDocumentIdentifierJs>):
-			Promise<Array<EncryptedCalendarItemJs>>
+	public fun undeleteCalendarItemsByIds(entityIds: Array<StoredDocumentIdentifierJs>): Promise<Array<EncryptedCalendarItemJs>>
 
 	public fun undeleteCalendarItem(calendarItem: CalendarItemJs): Promise<EncryptedCalendarItemJs>
 
-	public fun undeleteCalendarItems(calendarItems: Array<CalendarItemJs>):
-			Promise<Array<EncryptedCalendarItemJs>>
+	public fun undeleteCalendarItems(calendarItems: Array<CalendarItemJs>): Promise<Array<EncryptedCalendarItemJs>>
 
 	public fun modifyCalendarItem(entity: EncryptedCalendarItemJs): Promise<EncryptedCalendarItemJs>
 
-	public fun modifyCalendarItems(entities: Array<EncryptedCalendarItemJs>):
-			Promise<Array<EncryptedCalendarItemJs>>
+	public fun modifyCalendarItems(entities: Array<EncryptedCalendarItemJs>): Promise<Array<EncryptedCalendarItemJs>>
 
 	public fun getCalendarItem(entityId: String): Promise<EncryptedCalendarItemJs?>
 

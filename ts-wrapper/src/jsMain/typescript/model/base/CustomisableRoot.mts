@@ -1,8 +1,6 @@
 // auto-generated file
-import {Extendable} from './Extendable.mjs';
 
-
-export interface CustomisableRoot extends Extendable {
+export interface CustomisableRoot {
 
 	customisedModelVersion: number | undefined;
 

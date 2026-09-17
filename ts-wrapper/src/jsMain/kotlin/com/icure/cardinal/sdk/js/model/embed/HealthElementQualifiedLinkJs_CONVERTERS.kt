@@ -7,8 +7,7 @@ import com.icure.cardinal.sdk.model.embed.HealthElementQualifiedLink
 import kotlin.Suppress
 
 @Suppress("UNUSED_VARIABLE")
-public fun healthElementQualifiedLink_toJs(obj: HealthElementQualifiedLink):
-		HealthElementQualifiedLinkJs {
+public fun healthElementQualifiedLink_toJs(obj: HealthElementQualifiedLink): HealthElementQualifiedLinkJs {
 	val type = obj.type
 	val associationId = nullToUndefined(
 		obj.associationId
@@ -21,8 +20,7 @@ public fun healthElementQualifiedLink_toJs(obj: HealthElementQualifiedLink):
 	"}"))
 }
 
-public fun healthElementQualifiedLink_fromJs(obj: HealthElementQualifiedLinkJs):
-		HealthElementQualifiedLink {
+public fun healthElementQualifiedLink_fromJs(obj: HealthElementQualifiedLinkJs): HealthElementQualifiedLink {
 	val type = obj.type
 	val associationId = undefinedToNull(obj.associationId)
 	val healthElementId = obj.healthElementId

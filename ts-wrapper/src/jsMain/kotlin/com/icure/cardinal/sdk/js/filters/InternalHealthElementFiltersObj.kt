@@ -30,8 +30,7 @@ import kotlin.js.JsExport
 
 @JsExport
 public object InternalHealthElementFiltersObj {
-	public fun allHealthElementsForDataOwner(dataOwnerId: String):
-			BaseFilterOptionsJs<HealthElementJs> {
+	public fun allHealthElementsForDataOwner(dataOwnerId: String): BaseFilterOptionsJs<HealthElementJs> {
 		val dataOwnerIdConverted: String = dataOwnerId
 		val result = HealthElementFilters.allHealthElementsForDataOwner(
 			dataOwnerIdConverted,
@@ -39,8 +38,7 @@ public object InternalHealthElementFiltersObj {
 		return BaseFilterOptionsJsImpl(result)
 	}
 
-	public fun allHealthElementsForDataOwnerInGroup(dataOwner: EntityReferenceInGroupJs):
-			BaseFilterOptionsJs<HealthElementJs> {
+	public fun allHealthElementsForDataOwnerInGroup(dataOwner: EntityReferenceInGroupJs): BaseFilterOptionsJs<HealthElementJs> {
 		val dataOwnerConverted: EntityReferenceInGroup = entityReferenceInGroup_fromJs(dataOwner)
 		val result = HealthElementFilters.allHealthElementsForDataOwnerInGroup(
 			dataOwnerConverted,
@@ -54,8 +52,7 @@ public object InternalHealthElementFiltersObj {
 		return FilterOptionsJsImpl(result)
 	}
 
-	public fun byIdentifiersForDataOwner(dataOwnerId: String, identifiers: Array<IdentifierJs>):
-			BaseFilterOptionsJs<HealthElementJs> {
+	public fun byIdentifiersForDataOwner(dataOwnerId: String, identifiers: Array<IdentifierJs>): BaseFilterOptionsJs<HealthElementJs> {
 		val dataOwnerIdConverted: String = dataOwnerId
 		val identifiersConverted: List<Identifier> = arrayToList(
 			identifiers,
@@ -71,8 +68,7 @@ public object InternalHealthElementFiltersObj {
 		return BaseFilterOptionsJsImpl(result)
 	}
 
-	public fun byIdentifiersForDataOwnerInGroup(dataOwner: EntityReferenceInGroupJs,
-			identifiers: Array<IdentifierJs>): BaseFilterOptionsJs<HealthElementJs> {
+	public fun byIdentifiersForDataOwnerInGroup(dataOwner: EntityReferenceInGroupJs, identifiers: Array<IdentifierJs>): BaseFilterOptionsJs<HealthElementJs> {
 		val dataOwnerConverted: EntityReferenceInGroup = entityReferenceInGroup_fromJs(dataOwner)
 		val identifiersConverted: List<Identifier> = arrayToList(
 			identifiers,
@@ -88,8 +84,7 @@ public object InternalHealthElementFiltersObj {
 		return BaseFilterOptionsJsImpl(result)
 	}
 
-	public fun byIdentifiersForSelf(identifiers: Array<IdentifierJs>):
-			FilterOptionsJs<HealthElementJs> {
+	public fun byIdentifiersForSelf(identifiers: Array<IdentifierJs>): FilterOptionsJs<HealthElementJs> {
 		val identifiersConverted: List<Identifier> = arrayToList(
 			identifiers,
 			"identifiers",
@@ -229,8 +224,7 @@ public object InternalHealthElementFiltersObj {
 		return FilterOptionsJsImpl(result)
 	}
 
-	public fun byPatientsForDataOwner(dataOwnerId: String, patients: Array<PatientJs>):
-			FilterOptionsJs<HealthElementJs> {
+	public fun byPatientsForDataOwner(dataOwnerId: String, patients: Array<PatientJs>): FilterOptionsJs<HealthElementJs> {
 		val dataOwnerIdConverted: String = dataOwnerId
 		val patientsConverted: List<Patient> = arrayToList(
 			patients,
@@ -246,8 +240,7 @@ public object InternalHealthElementFiltersObj {
 		return FilterOptionsJsImpl(result)
 	}
 
-	public fun byPatientsForDataOwnerInGroup(dataOwner: EntityReferenceInGroupJs,
-			patients: Array<GroupScopedJs<PatientJs>>): FilterOptionsJs<HealthElementJs> {
+	public fun byPatientsForDataOwnerInGroup(dataOwner: EntityReferenceInGroupJs, patients: Array<GroupScopedJs<PatientJs>>): FilterOptionsJs<HealthElementJs> {
 		val dataOwnerConverted: EntityReferenceInGroup = entityReferenceInGroup_fromJs(dataOwner)
 		val patientsConverted: List<GroupScoped<Patient>> = arrayToList(
 			patients,
@@ -282,8 +275,7 @@ public object InternalHealthElementFiltersObj {
 		return FilterOptionsJsImpl(result)
 	}
 
-	public fun byPatientsSecretIdsForDataOwner(dataOwnerId: String, secretIds: Array<String>):
-			BaseFilterOptionsJs<HealthElementJs> {
+	public fun byPatientsSecretIdsForDataOwner(dataOwnerId: String, secretIds: Array<String>): BaseFilterOptionsJs<HealthElementJs> {
 		val dataOwnerIdConverted: String = dataOwnerId
 		val secretIdsConverted: List<String> = arrayToList(
 			secretIds,
@@ -299,8 +291,7 @@ public object InternalHealthElementFiltersObj {
 		return BaseFilterOptionsJsImpl(result)
 	}
 
-	public fun byPatientsSecretIdsForDataOwnerInGroup(dataOwner: EntityReferenceInGroupJs,
-			secretIds: Array<String>): BaseFilterOptionsJs<HealthElementJs> {
+	public fun byPatientsSecretIdsForDataOwnerInGroup(dataOwner: EntityReferenceInGroupJs, secretIds: Array<String>): BaseFilterOptionsJs<HealthElementJs> {
 		val dataOwnerConverted: EntityReferenceInGroup = entityReferenceInGroup_fromJs(dataOwner)
 		val secretIdsConverted: List<String> = arrayToList(
 			secretIds,
@@ -439,8 +430,7 @@ public object InternalHealthElementFiltersObj {
 		return SortableFilterOptionsJsImpl(result)
 	}
 
-	public fun byPatientsOpeningDateForSelf(patients: Array<PatientJs>, options: dynamic):
-			SortableFilterOptionsJs<HealthElementJs> {
+	public fun byPatientsOpeningDateForSelf(patients: Array<PatientJs>, options: dynamic): SortableFilterOptionsJs<HealthElementJs> {
 		val _options = options ?: js("{}")
 		val patientsConverted: List<Patient> = arrayToList(
 			patients,
@@ -569,8 +559,7 @@ public object InternalHealthElementFiltersObj {
 		return BaseSortableFilterOptionsJsImpl(result)
 	}
 
-	public fun byPatientSecretIdsOpeningDateForSelf(secretIds: Array<String>, options: dynamic):
-			SortableFilterOptionsJs<HealthElementJs> {
+	public fun byPatientSecretIdsOpeningDateForSelf(secretIds: Array<String>, options: dynamic): SortableFilterOptionsJs<HealthElementJs> {
 		val _options = options ?: js("{}")
 		val secretIdsConverted: List<String> = arrayToList(
 			secretIds,

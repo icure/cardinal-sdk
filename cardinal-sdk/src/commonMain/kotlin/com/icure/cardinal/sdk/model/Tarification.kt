@@ -23,10 +23,8 @@ import kotlin.collections.Map
 import kotlin.collections.Set
 
 /**
- * Represents a tarification code used for billing and invoicing healthcare services. Tarifications
- * define
- * the pricing and conditions for medical acts and are identified by a combination of type, code,
- * and version.
+ * Represents a tarification code used for billing and invoicing healthcare services. Tarifications define
+ * the pricing and conditions for medical acts and are identified by a combination of type, code, and version.
  * /
  */
 @Serializable
@@ -36,8 +34,7 @@ data class Tarification(
 	 */
 	override val id: String,
 	/**
-	 * The revision of the tarification in the database, used for conflict management / optimistic
-	 * locking.
+	 * The revision of the tarification in the database, used for conflict management / optimistic locking.
 	 */
 	override val rev: String? = null,
 	/**
@@ -157,7 +154,8 @@ data class Tarification(
 	 */
 	@param:DefaultValue("emptyList()")
 	public val letterValues: List<LetterValue> = emptyList(),
-) : StoredDocument, CodeIdentification<String> {
+) : StoredDocument,
+	CodeIdentification<String> {
 	// region Tarification-Tarification
 
 	// endregion

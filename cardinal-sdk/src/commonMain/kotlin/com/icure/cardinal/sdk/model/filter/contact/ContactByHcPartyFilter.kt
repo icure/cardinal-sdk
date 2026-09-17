@@ -24,7 +24,8 @@ data class ContactByHcPartyFilter(
 	 * Optional description of this filter.
 	 */
 	override val desc: String? = null,
-) : AbstractFilter<Contact>, Filter.ByHcpartyFilter<Contact> {
+) : AbstractFilter<Contact>,
+	Filter.ByHcpartyFilter<Contact> {
 	// region ContactByHcPartyFilter-ContactByHcPartyFilter
 
 	// endregion

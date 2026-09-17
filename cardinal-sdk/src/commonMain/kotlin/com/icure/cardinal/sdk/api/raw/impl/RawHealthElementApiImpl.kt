@@ -19,7 +19,9 @@ import com.icure.cardinal.sdk.model.conflicts.ConflictResolutionResult
 import com.icure.cardinal.sdk.model.conflicts.ConflictResolutionStrategy
 import com.icure.cardinal.sdk.model.conflicts.MergeResult
 import com.icure.cardinal.sdk.model.couchdb.DocIdentifier
+import com.icure.cardinal.sdk.model.dao.IdWithValue
 import com.icure.cardinal.sdk.model.filter.AbstractFilter
+import com.icure.cardinal.sdk.model.filter.CustomFilter
 import com.icure.cardinal.sdk.model.filter.chain.FilterChain
 import com.icure.cardinal.sdk.model.requests.BulkShareOrUpdateMetadataParams
 import com.icure.cardinal.sdk.model.requests.EntityBulkShareResult
@@ -49,12 +51,10 @@ class RawHealthElementApiImpl(
 	private val authProvider: AuthProvider,
 	private val accessControlKeysHeadersProvider: AccessControlKeysHeadersProvider?,
 	rawApiConfig: RawApiConfig,
-) : BaseRawApi(rawApiConfig), RawHealthElementApi {
+) : BaseRawApi(rawApiConfig),
+	RawHealthElementApi {
 	override suspend fun getAccessControlKeysHeaderValues(groupId: String?): List<String>? =
-		accessControlKeysHeadersProvider?.getAccessControlKeysHeadersFor(
-			groupId,
-			EntityWithEncryptionMetadataTypeName.HealthElement,
-		)
+		accessControlKeysHeadersProvider?.getAccessControlKeysHeadersFor(groupId, EntityWithEncryptionMetadataTypeName.HealthElement)
 
 	// region common endpoints
 
@@ -340,6 +340,17 @@ class RawHealthElementApiImpl(
 			setBody(entityIds)
 		}.wrap()
 
+	override suspend fun matchHealthElementsByCustomFilter(filter: CustomFilter): HttpResponse<PaginatedList<IdWithValue>> =
+		post(authProvider) {
+			url {
+				takeFrom(apiUrl)
+				appendPathSegments("rest", "v2", "helement", "matchByCustom")
+			}
+			contentType(Application.Json)
+			accept(Application.Json)
+			setBody(filter)
+		}.wrap()
+
 	// endregion
 
 	// region cloud endpoints
@@ -445,10 +456,7 @@ class RawHealthElementApiImpl(
 		groupId: String,
 		healthElementIds: ListOfIdsAndRev,
 	): HttpResponse<List<DocIdentifier>> =
-		post(
-			authProvider,
-			groupId,
-		) {
+		post(authProvider, groupId) {
 			url {
 				takeFrom(apiUrl)
 				appendPathSegments("rest", "v2", "helement", "inGroup", groupId, "delete", "batch")
@@ -505,10 +513,7 @@ class RawHealthElementApiImpl(
 		groupId: String,
 		healthElementIds: ListOfIdsAndRev,
 	): HttpResponse<List<DocIdentifier>> =
-		post(
-			authProvider,
-			groupId,
-		) {
+		post(authProvider, groupId) {
 			url {
 				takeFrom(apiUrl)
 				appendPathSegments("rest", "v2", "helement", "inGroup", groupId, "purge", "batch")
@@ -522,10 +527,7 @@ class RawHealthElementApiImpl(
 		request: BulkShareOrUpdateMetadataParams,
 		groupId: String,
 	): HttpResponse<List<EntityBulkShareResult<EncryptedHealthElement>>> =
-		put(
-			authProvider,
-			groupId,
-		) {
+		put(authProvider, groupId) {
 			url {
 				takeFrom(apiUrl)
 				appendPathSegments("rest", "v2", "helement", "inGroup", groupId, "bulkSharedMetadataUpdate")
@@ -601,6 +603,20 @@ class RawHealthElementApiImpl(
 			contentType(Application.Json)
 			accept(Application.Json)
 			setBody(entityIds)
+		}.wrap()
+
+	override suspend fun matchHealthElementsByCustomFilterInGroup(
+		groupId: String,
+		filter: CustomFilter,
+	): HttpResponse<PaginatedList<IdWithValue>> =
+		post(authProvider) {
+			url {
+				takeFrom(apiUrl)
+				appendPathSegments("rest", "v2", "helement", "inGroup", groupId, "matchByCustom")
+			}
+			contentType(Application.Json)
+			accept(Application.Json)
+			setBody(filter)
 		}.wrap()
 
 	// endregion

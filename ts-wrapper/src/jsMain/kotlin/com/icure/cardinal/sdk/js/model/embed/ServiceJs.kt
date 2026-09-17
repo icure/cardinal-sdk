@@ -7,6 +7,7 @@ import com.icure.cardinal.sdk.js.model.base.CodeStubJs
 import com.icure.cardinal.sdk.js.model.base.ExtendableJs
 import com.icure.cardinal.sdk.js.model.base.HasEndOfLifeJs
 import com.icure.cardinal.sdk.js.model.base.HasIdentifierJs
+import com.icure.cardinal.sdk.js.model.base.HasMedicalLocationJs
 import com.icure.cardinal.sdk.js.model.base.ICureDocumentJs
 import com.icure.cardinal.sdk.js.model.base.IdentifierJs
 import com.icure.cardinal.sdk.js.utils.Record
@@ -18,8 +19,8 @@ import kotlin.js.JsName
 import kotlin.js.JsQualifier
 
 @JsName("Service")
-public sealed external interface ServiceJs : EncryptableJs, ICureDocumentJs<String>, HasEndOfLifeJs,
-		HasIdentifierJs, ExtendableJs {
+public sealed external interface ServiceJs : EncryptableJs, ICureDocumentJs<String>,
+		HasMedicalLocationJs, HasEndOfLifeJs, HasIdentifierJs, ExtendableJs {
 	public val transactionId: String?
 
 	public val contactId: String?

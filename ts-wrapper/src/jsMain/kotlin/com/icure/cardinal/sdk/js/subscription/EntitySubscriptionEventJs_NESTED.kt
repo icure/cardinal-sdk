@@ -15,14 +15,12 @@ public external object EntitySubscriptionEventJs_ConnectedJs : EntitySubscriptio
 }
 
 @JsName("Reconnected")
-public external object EntitySubscriptionEventJs_ReconnectedJs : EntitySubscriptionEventJs<Nothing>
-		{
+public external object EntitySubscriptionEventJs_ReconnectedJs : EntitySubscriptionEventJs<Nothing> {
 	override val ktClass: String
 }
 
 @JsName("ClosedByClient")
-public external object EntitySubscriptionEventJs_ClosedByClientJs :
-		EntitySubscriptionEventJs<Nothing> {
+public external object EntitySubscriptionEventJs_ClosedByClientJs : EntitySubscriptionEventJs<Nothing> {
 	override val ktClass: String
 }
 
@@ -36,8 +34,7 @@ public external class EntitySubscriptionEventJs_UnexpectedErrorJs(
 }
 
 @JsName("ConnectionError")
-public sealed external interface EntitySubscriptionEventJs_ConnectionErrorJs :
-		EntitySubscriptionEventJs<Nothing>
+public sealed external interface EntitySubscriptionEventJs_ConnectionErrorJs : EntitySubscriptionEventJs<Nothing>
 
 @JsName("EntityNotification")
 public external class EntitySubscriptionEventJs_EntityNotificationJs<E : IdentifiableJs<String>>(
@@ -49,5 +46,4 @@ public external class EntitySubscriptionEventJs_EntityNotificationJs<E : Identif
 }
 
 @JsName("EntityError")
-public sealed external interface EntitySubscriptionEventJs_EntityErrorJs :
-		EntitySubscriptionEventJs<Nothing>
+public sealed external interface EntitySubscriptionEventJs_EntityErrorJs : EntitySubscriptionEventJs<Nothing>

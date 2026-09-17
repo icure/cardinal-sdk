@@ -16,7 +16,10 @@ import kotlin.js.JsQualifier
 @JsName("Place")
 public external class PlaceJs(
 	partial: dynamic,
-) : StoredDocumentJs, NamedJs, CustomisableRootJs, ExtendableJs {
+) : StoredDocumentJs,
+    NamedJs,
+    CustomisableRootJs,
+    ExtendableJs {
 	override val id: String
 
 	override val rev: String?

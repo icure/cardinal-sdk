@@ -9,6 +9,7 @@ import com.icure.cardinal.sdk.js.model.base.CustomisableRootJs
 import com.icure.cardinal.sdk.js.model.base.ExtendableJs
 import com.icure.cardinal.sdk.js.model.base.HasEncryptionMetadataJs
 import com.icure.cardinal.sdk.js.model.base.HasIdentifierJs
+import com.icure.cardinal.sdk.js.model.base.HasMedicalLocationJs
 import com.icure.cardinal.sdk.js.model.base.ICureDocumentJs
 import com.icure.cardinal.sdk.js.model.base.IdentifierJs
 import com.icure.cardinal.sdk.js.model.base.PersonJs
@@ -47,9 +48,9 @@ import kotlin.js.JsName
 import kotlin.js.JsQualifier
 
 @JsName("Patient")
-public sealed external interface PatientJs : StoredDocumentJs, ICureDocumentJs<String>, PersonJs,
-		HasEncryptionMetadataJs, EncryptableJs, HasIdentifierJs, CryptoActorJs, CustomisableRootJs,
-		ExtendableJs {
+public sealed external interface PatientJs : StoredDocumentJs, ICureDocumentJs<String>,
+		HasMedicalLocationJs, PersonJs, HasEncryptionMetadataJs, EncryptableJs, HasIdentifierJs,
+		CryptoActorJs, CustomisableRootJs, ExtendableJs {
 	public val birthSex: String?
 
 	public val mergeToPatientId: String?

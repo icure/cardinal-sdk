@@ -8,8 +8,7 @@ import com.icure.cardinal.sdk.model.PaginatedList
 import kotlin.Suppress
 
 @Suppress("UNUSED_VARIABLE")
-public fun <T, T_JS> paginatedList_toJs(obj: PaginatedList<T>, convertT: (T) -> T_JS):
-		PaginatedListJs<T_JS> {
+public fun <T, T_JS> paginatedList_toJs(obj: PaginatedList<T>, convertT: (T) -> T_JS): PaginatedListJs<T_JS> {
 	val rows = listToArray(
 		obj.rows,
 		{ x1: T ->
@@ -33,8 +32,7 @@ public fun <T, T_JS> paginatedList_toJs(obj: PaginatedList<T>, convertT: (T) -> 
 	"}"))
 }
 
-public fun <T, T_KT> paginatedList_fromJs(obj: PaginatedListJs<T>, convertT: (T) -> T_KT):
-		PaginatedList<T_KT> {
+public fun <T, T_KT> paginatedList_fromJs(obj: PaginatedListJs<T>, convertT: (T) -> T_KT): PaginatedList<T_KT> {
 	val rows = arrayToList(
 		obj.rows,
 		"obj.rows",

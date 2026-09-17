@@ -51,11 +51,16 @@ data class CustomEntityBase(
 	public val dataAttachments: Map<String, DataAttachment> = emptyMap(),
 	@param:DefaultValue("emptyList()")
 	public val deletedAttachments: List<DeletedAttachment> = emptyList(),
-) : HasEncryptionMetadata, StoredDocument, ICureDocument<String>, CustomisableRoot, Extendable {
+) : HasEncryptionMetadata,
+	StoredDocument,
+	ICureDocument<String>,
+	CustomisableRoot,
+	Extendable {
 	// region CustomEntityBase-CustomEntityBase
-	// endregion
 	override fun copyWithSecurityMetadata(
 		securityMetadata: SecurityMetadata,
 		secretForeignKeys: Set<String>,
-	): CustomEntityBase = copy(securityMetadata = securityMetadata, secretForeignKeys = secretForeignKeys)
+	): CustomEntityBase =
+		copy(securityMetadata = securityMetadata, secretForeignKeys = secretForeignKeys)
+	// endregion
 }

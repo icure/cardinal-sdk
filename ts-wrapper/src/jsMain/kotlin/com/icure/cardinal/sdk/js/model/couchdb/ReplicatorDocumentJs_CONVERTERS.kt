@@ -117,8 +117,7 @@ public fun replicatorDocument_fromJs(obj: ReplicatorDocumentJs): ReplicatorDocum
 		},
 	)
 	val replicationState = undefinedToNull(obj.replicationState)
-	val replicationStateTime = stringToZonedDateTime(obj.replicationStateTime,
-			"obj.replicationStateTime")
+	val replicationStateTime = stringToZonedDateTime(obj.replicationStateTime, "obj.replicationStateTime")
 	val replicationStats = obj.replicationStats?.let { nonNull1 ->
 		replicationStats_fromJs(nonNull1)
 	}

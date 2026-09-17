@@ -61,8 +61,7 @@ internal class HealthcarePartyApiImplJs(
 	private val healthcarePartyApi: HealthcarePartyApi,
 ) : HealthcarePartyApiJs {
 	override val inGroup: HealthcarePartyInGroupApiJs = object : HealthcarePartyInGroupApiJs {
-		override fun createHealthcareParty(healthcareParty: GroupScopedJs<HealthcarePartyJs>):
-				Promise<GroupScopedJs<HealthcarePartyJs>> = GlobalScope.promise {
+		override fun createHealthcareParty(healthcareParty: GroupScopedJs<HealthcarePartyJs>): Promise<GroupScopedJs<HealthcarePartyJs>> = GlobalScope.promise {
 			val healthcarePartyConverted: GroupScoped<HealthcareParty> = groupScoped_fromJs(
 				healthcareParty,
 				{ x1: HealthcarePartyJs ->
@@ -80,8 +79,7 @@ internal class HealthcarePartyApiImplJs(
 			)
 		}
 
-		override fun createHealthcareParties(healthcareParties: Array<GroupScopedJs<HealthcarePartyJs>>):
-				Promise<Array<GroupScopedJs<HealthcarePartyJs>>> = GlobalScope.promise {
+		override fun createHealthcareParties(healthcareParties: Array<GroupScopedJs<HealthcarePartyJs>>): Promise<Array<GroupScopedJs<HealthcarePartyJs>>> = GlobalScope.promise {
 			val healthcarePartiesConverted: List<GroupScoped<HealthcareParty>> = arrayToList(
 				healthcareParties,
 				"healthcareParties",
@@ -110,8 +108,7 @@ internal class HealthcarePartyApiImplJs(
 			)
 		}
 
-		override fun getHealthcareParty(groupId: String, healthcarePartyId: String):
-				Promise<GroupScopedJs<HealthcarePartyJs>?> = GlobalScope.promise {
+		override fun getHealthcareParty(groupId: String, healthcarePartyId: String): Promise<GroupScopedJs<HealthcarePartyJs>?> = GlobalScope.promise {
 			val groupIdConverted: String = groupId
 			val healthcarePartyIdConverted: String = healthcarePartyId
 			val result = healthcarePartyApi.inGroup.getHealthcareParty(
@@ -130,8 +127,7 @@ internal class HealthcarePartyApiImplJs(
 			)
 		}
 
-		override fun getHealthcareParties(groupId: String, healthcarePartiesIds: Array<String>):
-				Promise<Array<GroupScopedJs<HealthcarePartyJs>>> = GlobalScope.promise {
+		override fun getHealthcareParties(groupId: String, healthcarePartiesIds: Array<String>): Promise<Array<GroupScopedJs<HealthcarePartyJs>>> = GlobalScope.promise {
 			val groupIdConverted: String = groupId
 			val healthcarePartiesIdsConverted: List<String> = arrayToList(
 				healthcarePartiesIds,
@@ -157,8 +153,7 @@ internal class HealthcarePartyApiImplJs(
 			)
 		}
 
-		override fun modifyHealthcareParty(healthcareParty: GroupScopedJs<HealthcarePartyJs>):
-				Promise<GroupScopedJs<HealthcarePartyJs>> = GlobalScope.promise {
+		override fun modifyHealthcareParty(healthcareParty: GroupScopedJs<HealthcarePartyJs>): Promise<GroupScopedJs<HealthcarePartyJs>> = GlobalScope.promise {
 			val healthcarePartyConverted: GroupScoped<HealthcareParty> = groupScoped_fromJs(
 				healthcareParty,
 				{ x1: HealthcarePartyJs ->
@@ -176,8 +171,7 @@ internal class HealthcarePartyApiImplJs(
 			)
 		}
 
-		override fun modifyHealthcareParties(healthcareParties: Array<GroupScopedJs<HealthcarePartyJs>>):
-				Promise<Array<GroupScopedJs<HealthcarePartyJs>>> = GlobalScope.promise {
+		override fun modifyHealthcareParties(healthcareParties: Array<GroupScopedJs<HealthcarePartyJs>>): Promise<Array<GroupScopedJs<HealthcarePartyJs>>> = GlobalScope.promise {
 			val healthcarePartiesConverted: List<GroupScoped<HealthcareParty>> = arrayToList(
 				healthcareParties,
 				"healthcareParties",
@@ -206,8 +200,7 @@ internal class HealthcarePartyApiImplJs(
 			)
 		}
 
-		override fun deleteHealthcarePartyById(entityId: GroupScopedJs<StoredDocumentIdentifierJs>):
-				Promise<GroupScopedJs<StoredDocumentIdentifierJs>> = GlobalScope.promise {
+		override fun deleteHealthcarePartyById(entityId: GroupScopedJs<StoredDocumentIdentifierJs>): Promise<GroupScopedJs<StoredDocumentIdentifierJs>> = GlobalScope.promise {
 			val entityIdConverted: GroupScoped<StoredDocumentIdentifier> = groupScoped_fromJs(
 				entityId,
 				{ x1: StoredDocumentIdentifierJs ->
@@ -225,9 +218,7 @@ internal class HealthcarePartyApiImplJs(
 			)
 		}
 
-		override
-				fun deleteHealthcarePartyByIds(entityIds: Array<GroupScopedJs<StoredDocumentIdentifierJs>>):
-				Promise<Array<GroupScopedJs<StoredDocumentIdentifierJs>>> = GlobalScope.promise {
+		override fun deleteHealthcarePartyByIds(entityIds: Array<GroupScopedJs<StoredDocumentIdentifierJs>>): Promise<Array<GroupScopedJs<StoredDocumentIdentifierJs>>> = GlobalScope.promise {
 			val entityIdsConverted: List<GroupScoped<StoredDocumentIdentifier>> = arrayToList(
 				entityIds,
 				"entityIds",
@@ -256,8 +247,7 @@ internal class HealthcarePartyApiImplJs(
 			)
 		}
 
-		override fun deleteHealthcareParty(healthcareParty: GroupScopedJs<HealthcarePartyJs>):
-				Promise<GroupScopedJs<StoredDocumentIdentifierJs>> = GlobalScope.promise {
+		override fun deleteHealthcareParty(healthcareParty: GroupScopedJs<HealthcarePartyJs>): Promise<GroupScopedJs<StoredDocumentIdentifierJs>> = GlobalScope.promise {
 			val healthcarePartyConverted: GroupScoped<HealthcareParty> = groupScoped_fromJs(
 				healthcareParty,
 				{ x1: HealthcarePartyJs ->
@@ -275,8 +265,7 @@ internal class HealthcarePartyApiImplJs(
 			)
 		}
 
-		override fun deleteHealthcareParties(healthcareParties: Array<GroupScopedJs<HealthcarePartyJs>>):
-				Promise<Array<GroupScopedJs<StoredDocumentIdentifierJs>>> = GlobalScope.promise {
+		override fun deleteHealthcareParties(healthcareParties: Array<GroupScopedJs<HealthcarePartyJs>>): Promise<Array<GroupScopedJs<StoredDocumentIdentifierJs>>> = GlobalScope.promise {
 			val healthcarePartiesConverted: List<GroupScoped<HealthcareParty>> = arrayToList(
 				healthcareParties,
 				"healthcareParties",
@@ -305,8 +294,7 @@ internal class HealthcarePartyApiImplJs(
 			)
 		}
 
-		override fun undeleteHealthcarePartyById(entityId: GroupScopedJs<StoredDocumentIdentifierJs>):
-				Promise<GroupScopedJs<HealthcarePartyJs>> = GlobalScope.promise {
+		override fun undeleteHealthcarePartyById(entityId: GroupScopedJs<StoredDocumentIdentifierJs>): Promise<GroupScopedJs<HealthcarePartyJs>> = GlobalScope.promise {
 			val entityIdConverted: GroupScoped<StoredDocumentIdentifier> = groupScoped_fromJs(
 				entityId,
 				{ x1: StoredDocumentIdentifierJs ->
@@ -324,9 +312,7 @@ internal class HealthcarePartyApiImplJs(
 			)
 		}
 
-		override
-				fun undeleteHealthcarePartyByIds(entityIds: Array<GroupScopedJs<StoredDocumentIdentifierJs>>):
-				Promise<Array<GroupScopedJs<HealthcarePartyJs>>> = GlobalScope.promise {
+		override fun undeleteHealthcarePartyByIds(entityIds: Array<GroupScopedJs<StoredDocumentIdentifierJs>>): Promise<Array<GroupScopedJs<HealthcarePartyJs>>> = GlobalScope.promise {
 			val entityIdsConverted: List<GroupScoped<StoredDocumentIdentifier>> = arrayToList(
 				entityIds,
 				"entityIds",
@@ -355,8 +341,7 @@ internal class HealthcarePartyApiImplJs(
 			)
 		}
 
-		override fun undeleteHealthcareParty(healthcareParty: GroupScopedJs<HealthcarePartyJs>):
-				Promise<GroupScopedJs<HealthcarePartyJs>> = GlobalScope.promise {
+		override fun undeleteHealthcareParty(healthcareParty: GroupScopedJs<HealthcarePartyJs>): Promise<GroupScopedJs<HealthcarePartyJs>> = GlobalScope.promise {
 			val healthcarePartyConverted: GroupScoped<HealthcareParty> = groupScoped_fromJs(
 				healthcareParty,
 				{ x1: HealthcarePartyJs ->
@@ -374,9 +359,7 @@ internal class HealthcarePartyApiImplJs(
 			)
 		}
 
-		override
-				fun undeleteHealthcareParties(healthcareParties: Array<GroupScopedJs<HealthcarePartyJs>>):
-				Promise<Array<GroupScopedJs<HealthcarePartyJs>>> = GlobalScope.promise {
+		override fun undeleteHealthcareParties(healthcareParties: Array<GroupScopedJs<HealthcarePartyJs>>): Promise<Array<GroupScopedJs<HealthcarePartyJs>>> = GlobalScope.promise {
 			val healthcarePartiesConverted: List<GroupScoped<HealthcareParty>> = arrayToList(
 				healthcareParties,
 				"healthcareParties",
@@ -405,8 +388,7 @@ internal class HealthcarePartyApiImplJs(
 			)
 		}
 
-		override fun purgeHealthcarePartyById(entityId: GroupScopedJs<StoredDocumentIdentifierJs>):
-				Promise<Unit> = GlobalScope.promise {
+		override fun purgeHealthcarePartyById(entityId: GroupScopedJs<StoredDocumentIdentifierJs>): Promise<Unit> = GlobalScope.promise {
 			val entityIdConverted: GroupScoped<StoredDocumentIdentifier> = groupScoped_fromJs(
 				entityId,
 				{ x1: StoredDocumentIdentifierJs ->
@@ -419,9 +401,7 @@ internal class HealthcarePartyApiImplJs(
 
 		}
 
-		override
-				fun purgeHealthcarePartyByIds(entityIds: Array<GroupScopedJs<StoredDocumentIdentifierJs>>):
-				Promise<Array<GroupScopedJs<StoredDocumentIdentifierJs>>> = GlobalScope.promise {
+		override fun purgeHealthcarePartyByIds(entityIds: Array<GroupScopedJs<StoredDocumentIdentifierJs>>): Promise<Array<GroupScopedJs<StoredDocumentIdentifierJs>>> = GlobalScope.promise {
 			val entityIdsConverted: List<GroupScoped<StoredDocumentIdentifier>> = arrayToList(
 				entityIds,
 				"entityIds",
@@ -450,8 +430,7 @@ internal class HealthcarePartyApiImplJs(
 			)
 		}
 
-		override fun purgeHealthcareParty(healthcareParty: GroupScopedJs<HealthcarePartyJs>):
-				Promise<Unit> = GlobalScope.promise {
+		override fun purgeHealthcareParty(healthcareParty: GroupScopedJs<HealthcarePartyJs>): Promise<Unit> = GlobalScope.promise {
 			val healthcarePartyConverted: GroupScoped<HealthcareParty> = groupScoped_fromJs(
 				healthcareParty,
 				{ x1: HealthcarePartyJs ->
@@ -464,8 +443,7 @@ internal class HealthcarePartyApiImplJs(
 
 		}
 
-		override fun purgeHealthcareParties(healthcareParties: Array<GroupScopedJs<HealthcarePartyJs>>):
-				Promise<Array<GroupScopedJs<StoredDocumentIdentifierJs>>> = GlobalScope.promise {
+		override fun purgeHealthcareParties(healthcareParties: Array<GroupScopedJs<HealthcarePartyJs>>): Promise<Array<GroupScopedJs<StoredDocumentIdentifierJs>>> = GlobalScope.promise {
 			val healthcarePartiesConverted: List<GroupScoped<HealthcareParty>> = arrayToList(
 				healthcareParties,
 				"healthcareParties",
@@ -494,8 +472,7 @@ internal class HealthcarePartyApiImplJs(
 			)
 		}
 
-		override fun matchHealthcarePartiesBy(groupId: String,
-				filter: BaseFilterOptionsJs<HealthcarePartyJs>): Promise<Array<String>> = GlobalScope.promise {
+		override fun matchHealthcarePartiesBy(groupId: String, filter: BaseFilterOptionsJs<HealthcarePartyJs>): Promise<Array<String>> = GlobalScope.promise {
 			val groupIdConverted: String = groupId
 			val filterConverted: BaseFilterOptions<HealthcareParty> = baseFilterOptions_fromJs(filter)
 			val result = healthcarePartyApi.inGroup.matchHealthcarePartiesBy(
@@ -510,12 +487,9 @@ internal class HealthcarePartyApiImplJs(
 			)
 		}
 
-		override fun matchHealthcarePartiesBySorted(groupId: String,
-				filter: BaseSortableFilterOptionsJs<HealthcarePartyJs>): Promise<Array<String>> =
-				GlobalScope.promise {
+		override fun matchHealthcarePartiesBySorted(groupId: String, filter: BaseSortableFilterOptionsJs<HealthcarePartyJs>): Promise<Array<String>> = GlobalScope.promise {
 			val groupIdConverted: String = groupId
-			val filterConverted: BaseSortableFilterOptions<HealthcareParty> =
-					baseSortableFilterOptions_fromJs(filter)
+			val filterConverted: BaseSortableFilterOptions<HealthcareParty> = baseSortableFilterOptions_fromJs(filter)
 			val result = healthcarePartyApi.inGroup.matchHealthcarePartiesBySorted(
 				groupIdConverted,
 				filterConverted,
@@ -528,9 +502,7 @@ internal class HealthcarePartyApiImplJs(
 			)
 		}
 
-		override fun filterHealthPartiesBy(groupId: String,
-				filter: BaseFilterOptionsJs<HealthcarePartyJs>):
-				Promise<PaginatedListIteratorJs<GroupScopedJs<HealthcarePartyJs>>> = GlobalScope.promise {
+		override fun filterHealthPartiesBy(groupId: String, filter: BaseFilterOptionsJs<HealthcarePartyJs>): Promise<PaginatedListIteratorJs<GroupScopedJs<HealthcarePartyJs>>> = GlobalScope.promise {
 			val groupIdConverted: String = groupId
 			val filterConverted: BaseFilterOptions<HealthcareParty> = baseFilterOptions_fromJs(filter)
 			val result = healthcarePartyApi.inGroup.filterHealthPartiesBy(
@@ -550,12 +522,9 @@ internal class HealthcarePartyApiImplJs(
 			)
 		}
 
-		override fun filterHealthPartiesBySorted(groupId: String,
-				filter: BaseSortableFilterOptionsJs<HealthcarePartyJs>):
-				Promise<PaginatedListIteratorJs<GroupScopedJs<HealthcarePartyJs>>> = GlobalScope.promise {
+		override fun filterHealthPartiesBySorted(groupId: String, filter: BaseSortableFilterOptionsJs<HealthcarePartyJs>): Promise<PaginatedListIteratorJs<GroupScopedJs<HealthcarePartyJs>>> = GlobalScope.promise {
 			val groupIdConverted: String = groupId
-			val filterConverted: BaseSortableFilterOptions<HealthcareParty> =
-					baseSortableFilterOptions_fromJs(filter)
+			val filterConverted: BaseSortableFilterOptions<HealthcareParty> = baseSortableFilterOptions_fromJs(filter)
 			val result = healthcarePartyApi.inGroup.filterHealthPartiesBySorted(
 				groupIdConverted,
 				filterConverted,
@@ -574,8 +543,7 @@ internal class HealthcarePartyApiImplJs(
 		}
 	}
 
-	override fun getHealthcareParty(healthcarePartyId: String): Promise<HealthcarePartyJs?> =
-			GlobalScope.promise {
+	override fun getHealthcareParty(healthcarePartyId: String): Promise<HealthcarePartyJs?> = GlobalScope.promise {
 		val healthcarePartyIdConverted: String = healthcarePartyId
 		val result = healthcarePartyApi.getHealthcareParty(
 			healthcarePartyIdConverted,
@@ -587,8 +555,7 @@ internal class HealthcarePartyApiImplJs(
 		)
 	}
 
-	override fun getHealthcareParties(healthcarePartyIds: Array<String>):
-			Promise<Array<HealthcarePartyJs>> = GlobalScope.promise {
+	override fun getHealthcareParties(healthcarePartyIds: Array<String>): Promise<Array<HealthcarePartyJs>> = GlobalScope.promise {
 		val healthcarePartyIdsConverted: List<String> = arrayToList(
 			healthcarePartyIds,
 			"healthcarePartyIds",
@@ -607,8 +574,7 @@ internal class HealthcarePartyApiImplJs(
 		)
 	}
 
-	override fun createHealthcareParty(healthcareParty: HealthcarePartyJs): Promise<HealthcarePartyJs>
-			= GlobalScope.promise {
+	override fun createHealthcareParty(healthcareParty: HealthcarePartyJs): Promise<HealthcarePartyJs> = GlobalScope.promise {
 		val healthcarePartyConverted: HealthcareParty = healthcareParty_fromJs(healthcareParty)
 		val result = healthcarePartyApi.createHealthcareParty(
 			healthcarePartyConverted,
@@ -616,8 +582,7 @@ internal class HealthcarePartyApiImplJs(
 		healthcareParty_toJs(result)
 	}
 
-	override fun createHealthcareParties(healthcareParties: Array<HealthcarePartyJs>):
-			Promise<Array<HealthcarePartyJs>> = GlobalScope.promise {
+	override fun createHealthcareParties(healthcareParties: Array<HealthcarePartyJs>): Promise<Array<HealthcarePartyJs>> = GlobalScope.promise {
 		val healthcarePartiesConverted: List<HealthcareParty> = arrayToList(
 			healthcareParties,
 			"healthcareParties",
@@ -636,8 +601,7 @@ internal class HealthcarePartyApiImplJs(
 		)
 	}
 
-	override fun modifyHealthcareParty(healthcareParty: HealthcarePartyJs): Promise<HealthcarePartyJs>
-			= GlobalScope.promise {
+	override fun modifyHealthcareParty(healthcareParty: HealthcarePartyJs): Promise<HealthcarePartyJs> = GlobalScope.promise {
 		val healthcarePartyConverted: HealthcareParty = healthcareParty_fromJs(healthcareParty)
 		val result = healthcarePartyApi.modifyHealthcareParty(
 			healthcarePartyConverted,
@@ -645,8 +609,7 @@ internal class HealthcarePartyApiImplJs(
 		healthcareParty_toJs(result)
 	}
 
-	override fun modifyHealthcareParties(healthcareParties: Array<HealthcarePartyJs>):
-			Promise<Array<HealthcarePartyJs>> = GlobalScope.promise {
+	override fun modifyHealthcareParties(healthcareParties: Array<HealthcarePartyJs>): Promise<Array<HealthcarePartyJs>> = GlobalScope.promise {
 		val healthcarePartiesConverted: List<HealthcareParty> = arrayToList(
 			healthcareParties,
 			"healthcareParties",
@@ -679,8 +642,7 @@ internal class HealthcarePartyApiImplJs(
 		publicKey_toJs(result)
 	}
 
-	override fun matchHealthcarePartiesBy(filter: BaseFilterOptionsJs<HealthcarePartyJs>):
-			Promise<Array<String>> = GlobalScope.promise {
+	override fun matchHealthcarePartiesBy(filter: BaseFilterOptionsJs<HealthcarePartyJs>): Promise<Array<String>> = GlobalScope.promise {
 		val filterConverted: BaseFilterOptions<HealthcareParty> = baseFilterOptions_fromJs(filter)
 		val result = healthcarePartyApi.matchHealthcarePartiesBy(
 			filterConverted,
@@ -693,8 +655,7 @@ internal class HealthcarePartyApiImplJs(
 		)
 	}
 
-	override fun filterHealthPartiesBy(filter: BaseFilterOptionsJs<HealthcarePartyJs>):
-			Promise<PaginatedListIteratorJs<HealthcarePartyJs>> = GlobalScope.promise {
+	override fun filterHealthPartiesBy(filter: BaseFilterOptionsJs<HealthcarePartyJs>): Promise<PaginatedListIteratorJs<HealthcarePartyJs>> = GlobalScope.promise {
 		val filterConverted: BaseFilterOptions<HealthcareParty> = baseFilterOptions_fromJs(filter)
 		val result = healthcarePartyApi.filterHealthPartiesBy(
 			filterConverted,
@@ -707,11 +668,8 @@ internal class HealthcarePartyApiImplJs(
 		)
 	}
 
-	override
-			fun matchHealthcarePartiesBySorted(filter: BaseSortableFilterOptionsJs<HealthcarePartyJs>):
-			Promise<Array<String>> = GlobalScope.promise {
-		val filterConverted: BaseSortableFilterOptions<HealthcareParty> =
-				baseSortableFilterOptions_fromJs(filter)
+	override fun matchHealthcarePartiesBySorted(filter: BaseSortableFilterOptionsJs<HealthcarePartyJs>): Promise<Array<String>> = GlobalScope.promise {
+		val filterConverted: BaseSortableFilterOptions<HealthcareParty> = baseSortableFilterOptions_fromJs(filter)
 		val result = healthcarePartyApi.matchHealthcarePartiesBySorted(
 			filterConverted,
 		)
@@ -723,10 +681,8 @@ internal class HealthcarePartyApiImplJs(
 		)
 	}
 
-	override fun filterHealthPartiesBySorted(filter: BaseSortableFilterOptionsJs<HealthcarePartyJs>):
-			Promise<PaginatedListIteratorJs<HealthcarePartyJs>> = GlobalScope.promise {
-		val filterConverted: BaseSortableFilterOptions<HealthcareParty> =
-				baseSortableFilterOptions_fromJs(filter)
+	override fun filterHealthPartiesBySorted(filter: BaseSortableFilterOptionsJs<HealthcarePartyJs>): Promise<PaginatedListIteratorJs<HealthcarePartyJs>> = GlobalScope.promise {
+		val filterConverted: BaseSortableFilterOptions<HealthcareParty> = baseSortableFilterOptions_fromJs(filter)
 		val result = healthcarePartyApi.filterHealthPartiesBySorted(
 			filterConverted,
 		)
@@ -779,8 +735,7 @@ internal class HealthcarePartyApiImplJs(
 		}
 	}
 
-	override fun deleteHealthcarePartyById(entityId: String, rev: String):
-			Promise<StoredDocumentIdentifierJs> = GlobalScope.promise {
+	override fun deleteHealthcarePartyById(entityId: String, rev: String): Promise<StoredDocumentIdentifierJs> = GlobalScope.promise {
 		val entityIdConverted: String = entityId
 		val revConverted: String = rev
 		val result = healthcarePartyApi.deleteHealthcarePartyById(
@@ -790,8 +745,7 @@ internal class HealthcarePartyApiImplJs(
 		storedDocumentIdentifier_toJs(result)
 	}
 
-	override fun deleteHealthcarePartiesByIds(entityIds: Array<StoredDocumentIdentifierJs>):
-			Promise<Array<StoredDocumentIdentifierJs>> = GlobalScope.promise {
+	override fun deleteHealthcarePartiesByIds(entityIds: Array<StoredDocumentIdentifierJs>): Promise<Array<StoredDocumentIdentifierJs>> = GlobalScope.promise {
 		val entityIdsConverted: List<StoredDocumentIdentifier> = arrayToList(
 			entityIds,
 			"entityIds",
@@ -810,8 +764,7 @@ internal class HealthcarePartyApiImplJs(
 		)
 	}
 
-	override fun purgeHealthcarePartyById(id: String, rev: String): Promise<Unit> =
-			GlobalScope.promise {
+	override fun purgeHealthcarePartyById(id: String, rev: String): Promise<Unit> = GlobalScope.promise {
 		val idConverted: String = id
 		val revConverted: String = rev
 		healthcarePartyApi.purgeHealthcarePartyById(
@@ -821,8 +774,7 @@ internal class HealthcarePartyApiImplJs(
 
 	}
 
-	override fun purgeHealthcarePartiesByIds(entityIds: Array<StoredDocumentIdentifierJs>):
-			Promise<Array<StoredDocumentIdentifierJs>> = GlobalScope.promise {
+	override fun purgeHealthcarePartiesByIds(entityIds: Array<StoredDocumentIdentifierJs>): Promise<Array<StoredDocumentIdentifierJs>> = GlobalScope.promise {
 		val entityIdsConverted: List<StoredDocumentIdentifier> = arrayToList(
 			entityIds,
 			"entityIds",
@@ -841,8 +793,7 @@ internal class HealthcarePartyApiImplJs(
 		)
 	}
 
-	override fun undeleteHealthcarePartyById(id: String, rev: String): Promise<HealthcarePartyJs> =
-			GlobalScope.promise {
+	override fun undeleteHealthcarePartyById(id: String, rev: String): Promise<HealthcarePartyJs> = GlobalScope.promise {
 		val idConverted: String = id
 		val revConverted: String = rev
 		val result = healthcarePartyApi.undeleteHealthcarePartyById(
@@ -852,8 +803,7 @@ internal class HealthcarePartyApiImplJs(
 		healthcareParty_toJs(result)
 	}
 
-	override fun undeleteHealthcarePartiesByIds(entityIds: Array<StoredDocumentIdentifierJs>):
-			Promise<Array<HealthcarePartyJs>> = GlobalScope.promise {
+	override fun undeleteHealthcarePartiesByIds(entityIds: Array<StoredDocumentIdentifierJs>): Promise<Array<HealthcarePartyJs>> = GlobalScope.promise {
 		val entityIdsConverted: List<StoredDocumentIdentifier> = arrayToList(
 			entityIds,
 			"entityIds",
@@ -872,8 +822,7 @@ internal class HealthcarePartyApiImplJs(
 		)
 	}
 
-	override fun deleteHealthcareParty(healthcareParty: HealthcarePartyJs):
-			Promise<StoredDocumentIdentifierJs> = GlobalScope.promise {
+	override fun deleteHealthcareParty(healthcareParty: HealthcarePartyJs): Promise<StoredDocumentIdentifierJs> = GlobalScope.promise {
 		val healthcarePartyConverted: HealthcareParty = healthcareParty_fromJs(healthcareParty)
 		val result = healthcarePartyApi.deleteHealthcareParty(
 			healthcarePartyConverted,
@@ -881,8 +830,7 @@ internal class HealthcarePartyApiImplJs(
 		storedDocumentIdentifier_toJs(result)
 	}
 
-	override fun deleteHealthcareParties(healthcareParties: Array<HealthcarePartyJs>):
-			Promise<Array<StoredDocumentIdentifierJs>> = GlobalScope.promise {
+	override fun deleteHealthcareParties(healthcareParties: Array<HealthcarePartyJs>): Promise<Array<StoredDocumentIdentifierJs>> = GlobalScope.promise {
 		val healthcarePartiesConverted: List<HealthcareParty> = arrayToList(
 			healthcareParties,
 			"healthcareParties",
@@ -901,8 +849,7 @@ internal class HealthcarePartyApiImplJs(
 		)
 	}
 
-	override fun purgeHealthcareParty(healthcareParty: HealthcarePartyJs): Promise<Unit> =
-			GlobalScope.promise {
+	override fun purgeHealthcareParty(healthcareParty: HealthcarePartyJs): Promise<Unit> = GlobalScope.promise {
 		val healthcarePartyConverted: HealthcareParty = healthcareParty_fromJs(healthcareParty)
 		healthcarePartyApi.purgeHealthcareParty(
 			healthcarePartyConverted,
@@ -910,8 +857,7 @@ internal class HealthcarePartyApiImplJs(
 
 	}
 
-	override fun purgeHealthcareParties(healthcareParties: Array<HealthcarePartyJs>):
-			Promise<Array<StoredDocumentIdentifierJs>> = GlobalScope.promise {
+	override fun purgeHealthcareParties(healthcareParties: Array<HealthcarePartyJs>): Promise<Array<StoredDocumentIdentifierJs>> = GlobalScope.promise {
 		val healthcarePartiesConverted: List<HealthcareParty> = arrayToList(
 			healthcareParties,
 			"healthcareParties",
@@ -930,8 +876,7 @@ internal class HealthcarePartyApiImplJs(
 		)
 	}
 
-	override fun undeleteHealthcareParty(healthcareParty: HealthcarePartyJs):
-			Promise<HealthcarePartyJs> = GlobalScope.promise {
+	override fun undeleteHealthcareParty(healthcareParty: HealthcarePartyJs): Promise<HealthcarePartyJs> = GlobalScope.promise {
 		val healthcarePartyConverted: HealthcareParty = healthcareParty_fromJs(healthcareParty)
 		val result = healthcarePartyApi.undeleteHealthcareParty(
 			healthcarePartyConverted,
@@ -939,8 +884,7 @@ internal class HealthcarePartyApiImplJs(
 		healthcareParty_toJs(result)
 	}
 
-	override fun undeleteHealthcareParties(healthcareParties: Array<HealthcarePartyJs>):
-			Promise<Array<HealthcarePartyJs>> = GlobalScope.promise {
+	override fun undeleteHealthcareParties(healthcareParties: Array<HealthcarePartyJs>): Promise<Array<HealthcarePartyJs>> = GlobalScope.promise {
 		val healthcarePartiesConverted: List<HealthcareParty> = arrayToList(
 			healthcareParties,
 			"healthcareParties",
@@ -959,8 +903,7 @@ internal class HealthcarePartyApiImplJs(
 		)
 	}
 
-	override fun addHealthcarePartiesToGroup(healthcarePartyGroup: HealthcarePartyJs,
-			healthcarePartiesToAdd: Array<HealthcarePartyJs>): Promise<Array<String>> = GlobalScope.promise {
+	override fun addHealthcarePartiesToGroup(healthcarePartyGroup: HealthcarePartyJs, healthcarePartiesToAdd: Array<HealthcarePartyJs>): Promise<Array<String>> = GlobalScope.promise {
 		val healthcarePartyGroupConverted: HealthcareParty = healthcareParty_fromJs(healthcarePartyGroup)
 		val healthcarePartiesToAddConverted: List<HealthcareParty> = arrayToList(
 			healthcarePartiesToAdd,
@@ -981,9 +924,7 @@ internal class HealthcarePartyApiImplJs(
 		)
 	}
 
-	override fun removeDataOwnersFromGroup(healthcarePartyGroup: HealthcarePartyJs,
-			healthcarePartiesToRemove: Array<HealthcarePartyJs>): Promise<Array<String>> =
-			GlobalScope.promise {
+	override fun removeDataOwnersFromGroup(healthcarePartyGroup: HealthcarePartyJs, healthcarePartiesToRemove: Array<HealthcarePartyJs>): Promise<Array<String>> = GlobalScope.promise {
 		val healthcarePartyGroupConverted: HealthcareParty = healthcareParty_fromJs(healthcarePartyGroup)
 		val healthcarePartiesToRemoveConverted: List<HealthcareParty> = arrayToList(
 			healthcarePartiesToRemove,
@@ -1019,8 +960,7 @@ internal class HealthcarePartyApiImplJs(
 				},
 			)
 			val filterConverted: FilterOptions<HealthcareParty> = filterOptions_fromJs(filter)
-			val subscriptionConfigConverted: EntitySubscriptionConfiguration? =
-					convertingOptionOrDefaultNullable(
+			val subscriptionConfigConverted: EntitySubscriptionConfiguration? = convertingOptionOrDefaultNullable(
 				_options,
 				"subscriptionConfig",
 				null

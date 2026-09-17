@@ -20,7 +20,9 @@ import com.icure.cardinal.sdk.model.conflicts.ConflictResolutionResult
 import com.icure.cardinal.sdk.model.conflicts.ConflictResolutionStrategy
 import com.icure.cardinal.sdk.model.conflicts.MergeResult
 import com.icure.cardinal.sdk.model.couchdb.DocIdentifier
+import com.icure.cardinal.sdk.model.dao.IdWithValue
 import com.icure.cardinal.sdk.model.filter.AbstractFilter
+import com.icure.cardinal.sdk.model.filter.CustomFilter
 import com.icure.cardinal.sdk.model.requests.BulkShareOrUpdateMetadataParams
 import com.icure.cardinal.sdk.model.requests.EntityBulkShareResult
 import com.icure.cardinal.sdk.serialization.CalendarItemAbstractFilterSerializer
@@ -48,12 +50,10 @@ class RawCalendarItemApiImpl(
 	private val authProvider: AuthProvider,
 	private val accessControlKeysHeadersProvider: AccessControlKeysHeadersProvider?,
 	rawApiConfig: RawApiConfig,
-) : BaseRawApi(rawApiConfig), RawCalendarItemApi {
+) : BaseRawApi(rawApiConfig),
+	RawCalendarItemApi {
 	override suspend fun getAccessControlKeysHeaderValues(groupId: String?): List<String>? =
-		accessControlKeysHeadersProvider?.getAccessControlKeysHeadersFor(
-			groupId,
-			EntityWithEncryptionMetadataTypeName.CalendarItem,
-		)
+		accessControlKeysHeadersProvider?.getAccessControlKeysHeadersFor(groupId, EntityWithEncryptionMetadataTypeName.CalendarItem)
 
 	// region common endpoints
 
@@ -513,6 +513,17 @@ class RawCalendarItemApiImpl(
 			setBody(entityIds)
 		}.wrap()
 
+	override suspend fun matchCalendarItemByCustomFilter(filter: CustomFilter): HttpResponse<PaginatedList<IdWithValue>> =
+		post(authProvider) {
+			url {
+				takeFrom(apiUrl)
+				appendPathSegments("rest", "v2", "calendarItem", "matchByCustom")
+			}
+			contentType(Application.Json)
+			accept(Application.Json)
+			setBody(filter)
+		}.wrap()
+
 	// endregion
 
 	// region cloud endpoints
@@ -521,10 +532,7 @@ class RawCalendarItemApiImpl(
 		groupId: String,
 		calendarItemDto: EncryptedCalendarItem,
 	): HttpResponse<EncryptedCalendarItem> =
-		post(
-			authProvider,
-			groupId,
-		) {
+		post(authProvider, groupId) {
 			url {
 				takeFrom(apiUrl)
 				appendPathSegments("rest", "v2", "calendarItem", "inGroup", groupId)
@@ -552,10 +560,7 @@ class RawCalendarItemApiImpl(
 		groupId: String,
 		calendarItemDto: EncryptedCalendarItem,
 	): HttpResponse<EncryptedCalendarItem> =
-		put(
-			authProvider,
-			groupId,
-		) {
+		put(authProvider, groupId) {
 			url {
 				takeFrom(apiUrl)
 				appendPathSegments("rest", "v2", "calendarItem", "inGroup", groupId)
@@ -650,10 +655,7 @@ class RawCalendarItemApiImpl(
 		groupId: String,
 		calendarItemIdsAndRevs: ListOfIdsAndRev,
 	): HttpResponse<List<DocIdentifier>> =
-		post(
-			authProvider,
-			groupId,
-		) {
+		post(authProvider, groupId) {
 			url {
 				takeFrom(apiUrl)
 				appendPathSegments("rest", "v2", "calendarItem", "inGroup", groupId, "delete", "batch")
@@ -710,10 +712,7 @@ class RawCalendarItemApiImpl(
 		groupId: String,
 		calendarItemIdsAndRevs: ListOfIdsAndRev,
 	): HttpResponse<List<DocIdentifier>> =
-		post(
-			authProvider,
-			groupId,
-		) {
+		post(authProvider, groupId) {
 			url {
 				takeFrom(apiUrl)
 				appendPathSegments("rest", "v2", "calendarItem", "inGroup", groupId, "purge", "batch")
@@ -755,10 +754,7 @@ class RawCalendarItemApiImpl(
 		request: BulkShareOrUpdateMetadataParams,
 		groupId: String,
 	): HttpResponse<List<EntityBulkShareResult<EncryptedCalendarItem>>> =
-		put(
-			authProvider,
-			groupId,
-		) {
+		put(authProvider, groupId) {
 			url {
 				takeFrom(apiUrl)
 				appendPathSegments("rest", "v2", "calendarItem", "inGroup", groupId, "bulkSharedMetadataUpdate")
@@ -842,6 +838,20 @@ class RawCalendarItemApiImpl(
 			contentType(Application.Json)
 			accept(Application.Json)
 			setBody(entityIds)
+		}.wrap()
+
+	override suspend fun matchCalendarItemsByCustomFilterInGroup(
+		groupId: String,
+		filter: CustomFilter,
+	): HttpResponse<PaginatedList<IdWithValue>> =
+		post(authProvider) {
+			url {
+				takeFrom(apiUrl)
+				appendPathSegments("rest", "v2", "calendarItem", "inGroup", groupId, "matchByCustom")
+			}
+			contentType(Application.Json)
+			accept(Application.Json)
+			setBody(filter)
 		}.wrap()
 
 	// endregion

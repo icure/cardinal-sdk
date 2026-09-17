@@ -29,7 +29,8 @@ class RawCustomEntityApiImpl(
 	internal val apiUrl: String,
 	private val authProvider: AuthProvider,
 	rawApiConfig: RawApiConfig,
-) : BaseRawApi(rawApiConfig), RawCustomEntityApi {
+) : BaseRawApi(rawApiConfig),
+	RawCustomEntityApi {
 	// region common endpoints
 
 	override suspend fun createCustomEntity(

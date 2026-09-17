@@ -7,6 +7,7 @@ import com.icure.cardinal.sdk.js.model.base.CodeStubJs
 import com.icure.cardinal.sdk.js.model.base.CustomisableRootJs
 import com.icure.cardinal.sdk.js.model.base.ExtendableJs
 import com.icure.cardinal.sdk.js.model.base.HasEndOfLifeJs
+import com.icure.cardinal.sdk.js.model.base.HasMedicalLocationJs
 import com.icure.cardinal.sdk.js.model.base.ICureDocumentJs
 import com.icure.cardinal.sdk.js.model.base.StoredDocumentJs
 import com.icure.cardinal.sdk.js.model.embed.AgendaSlottingAlgorithmJs
@@ -22,7 +23,12 @@ import kotlin.js.JsQualifier
 @JsName("Agenda")
 public external class AgendaJs(
 	partial: dynamic,
-) : StoredDocumentJs, ICureDocumentJs<String>, HasEndOfLifeJs, CustomisableRootJs, ExtendableJs {
+) : StoredDocumentJs,
+    ICureDocumentJs<String>,
+    HasMedicalLocationJs,
+    HasEndOfLifeJs,
+    CustomisableRootJs,
+    ExtendableJs {
 	override val id: String
 
 	override val rev: String?

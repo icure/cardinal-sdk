@@ -59,22 +59,19 @@ internal class DataOwnerApiImplJs(
 		result
 	}
 
-	override fun getCurrentDataOwnerReference(): Promise<EntityReferenceInGroupJs> =
-			GlobalScope.promise {
+	override fun getCurrentDataOwnerReference(): Promise<EntityReferenceInGroupJs> = GlobalScope.promise {
 		val result = dataOwnerApi.getCurrentDataOwnerReference(
 		)
 		entityReferenceInGroup_toJs(result)
 	}
 
-	override fun getCurrentDataOwnerHierarchyInfo(): Promise<DataOwnerHierarchyInfoJs> =
-			GlobalScope.promise {
+	override fun getCurrentDataOwnerHierarchyInfo(): Promise<DataOwnerHierarchyInfoJs> = GlobalScope.promise {
 		val result = dataOwnerApi.getCurrentDataOwnerHierarchyInfo(
 		)
 		dataOwnerHierarchyInfo_toJs(result)
 	}
 
-	override fun getDataOwnerHierarchyInfo(dataOwnerId: String): Promise<DataOwnerHierarchyInfoJs> =
-			GlobalScope.promise {
+	override fun getDataOwnerHierarchyInfo(dataOwnerId: String): Promise<DataOwnerHierarchyInfoJs> = GlobalScope.promise {
 		val dataOwnerIdConverted: String = dataOwnerId
 		val result = dataOwnerApi.getDataOwnerHierarchyInfo(
 			dataOwnerIdConverted,
@@ -90,8 +87,7 @@ internal class DataOwnerApiImplJs(
 		dataOwnerWithType_toJs(result)
 	}
 
-	override fun getDataOwners(ids: Array<String>): Promise<Array<DataOwnerWithTypeJs>> =
-			GlobalScope.promise {
+	override fun getDataOwners(ids: Array<String>): Promise<Array<DataOwnerWithTypeJs>> = GlobalScope.promise {
 		val idsConverted: Set<String> = arrayToSet(
 			ids,
 			"ids",
@@ -110,8 +106,7 @@ internal class DataOwnerApiImplJs(
 		)
 	}
 
-	override fun getDataOwnersWithKnownType(ids: Array<String>, type: String):
-			Promise<Array<DataOwnerWithTypeJs>> = GlobalScope.promise {
+	override fun getDataOwnersWithKnownType(ids: Array<String>, type: String): Promise<Array<DataOwnerWithTypeJs>> = GlobalScope.promise {
 		val idsConverted: Set<String> = arrayToSet(
 			ids,
 			"ids",
@@ -132,8 +127,7 @@ internal class DataOwnerApiImplJs(
 		)
 	}
 
-	override fun getCryptoActorStub(ownerId: String): Promise<CryptoActorStubWithTypeJs> =
-			GlobalScope.promise {
+	override fun getCryptoActorStub(ownerId: String): Promise<CryptoActorStubWithTypeJs> = GlobalScope.promise {
 		val ownerIdConverted: String = ownerId
 		val result = dataOwnerApi.getCryptoActorStub(
 			ownerIdConverted,
@@ -141,8 +135,7 @@ internal class DataOwnerApiImplJs(
 		cryptoActorStubWithType_toJs(result)
 	}
 
-	override fun getCryptoActorStubs(ids: Array<String>): Promise<Array<CryptoActorStubWithTypeJs>> =
-			GlobalScope.promise {
+	override fun getCryptoActorStubs(ids: Array<String>): Promise<Array<CryptoActorStubWithTypeJs>> = GlobalScope.promise {
 		val idsConverted: Set<String> = arrayToSet(
 			ids,
 			"ids",
@@ -161,20 +154,16 @@ internal class DataOwnerApiImplJs(
 		)
 	}
 
-	override fun getCryptoActorStubInGroup(entityReferenceInGroup: EntityReferenceInGroupJs):
-			Promise<CryptoActorStubWithTypeJs> = GlobalScope.promise {
-		val entityReferenceInGroupConverted: EntityReferenceInGroup =
-				entityReferenceInGroup_fromJs(entityReferenceInGroup)
+	override fun getCryptoActorStubInGroup(entityReferenceInGroup: EntityReferenceInGroupJs): Promise<CryptoActorStubWithTypeJs> = GlobalScope.promise {
+		val entityReferenceInGroupConverted: EntityReferenceInGroup = entityReferenceInGroup_fromJs(entityReferenceInGroup)
 		val result = dataOwnerApi.getCryptoActorStubInGroup(
 			entityReferenceInGroupConverted,
 		)
 		cryptoActorStubWithType_toJs(result)
 	}
 
-	override fun modifyDataOwnerStub(cryptoActorStubWithTypeDto: CryptoActorStubWithTypeJs):
-			Promise<CryptoActorStubWithTypeJs> = GlobalScope.promise {
-		val cryptoActorStubWithTypeDtoConverted: CryptoActorStubWithType =
-				cryptoActorStubWithType_fromJs(cryptoActorStubWithTypeDto)
+	override fun modifyDataOwnerStub(cryptoActorStubWithTypeDto: CryptoActorStubWithTypeJs): Promise<CryptoActorStubWithTypeJs> = GlobalScope.promise {
+		val cryptoActorStubWithTypeDtoConverted: CryptoActorStubWithType = cryptoActorStubWithType_fromJs(cryptoActorStubWithTypeDto)
 		val result = dataOwnerApi.modifyDataOwnerStub(
 			cryptoActorStubWithTypeDtoConverted,
 		)
@@ -187,14 +176,11 @@ internal class DataOwnerApiImplJs(
 		result.name
 	}
 
-	override fun clearCurrentDataOwnerHierarchyCache(): Unit =
-			dataOwnerApi.clearCurrentDataOwnerHierarchyCache(
+	override fun clearCurrentDataOwnerHierarchyCache(): Unit = dataOwnerApi.clearCurrentDataOwnerHierarchyCache(
 	)
 
-	override fun getSimpleGroupDelegateMembersIds(dataOwnerGroup: CryptoActorStubWithTypeJs,
-			groupId: String?): Promise<Array<String>> = GlobalScope.promise {
-		val dataOwnerGroupConverted: CryptoActorStubWithType =
-				cryptoActorStubWithType_fromJs(dataOwnerGroup)
+	override fun getSimpleGroupDelegateMembersIds(dataOwnerGroup: CryptoActorStubWithTypeJs, groupId: String?): Promise<Array<String>> = GlobalScope.promise {
+		val dataOwnerGroupConverted: CryptoActorStubWithType = cryptoActorStubWithType_fromJs(dataOwnerGroup)
 		val groupIdConverted: String? = undefinedToNull(groupId)
 		val result = dataOwnerApi.getSimpleGroupDelegateMembersIds(
 			dataOwnerGroupConverted,

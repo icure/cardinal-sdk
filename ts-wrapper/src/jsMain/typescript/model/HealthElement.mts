@@ -6,6 +6,7 @@ import {CustomisableRoot} from './base/CustomisableRoot.mjs';
 import {Extendable} from './base/Extendable.mjs';
 import {HasEncryptionMetadata} from './base/HasEncryptionMetadata.mjs';
 import {HasEndOfLife} from './base/HasEndOfLife.mjs';
+import {HasMedicalLocation} from './base/HasMedicalLocation.mjs';
 import {ICureDocument} from './base/ICureDocument.mjs';
 import {Identifier} from './base/Identifier.mjs';
 import {StoredDocument} from './base/StoredDocument.mjs';
@@ -31,7 +32,7 @@ import {Base64String} from './specializations/Base64String.mjs';
  *  organisation of the
  *   electronic health record, used to filter and link medical data in a meaningful way.
  */
-export interface HealthElement extends StoredDocument, ICureDocument<string>, HasEncryptionMetadata, Encryptable, HasEndOfLife, CustomisableRoot, Extendable {
+export interface HealthElement extends StoredDocument, ICureDocument<string>, HasMedicalLocation, HasEncryptionMetadata, Encryptable, HasEndOfLife, CustomisableRoot, Extendable {
 
 	/**
 	 *

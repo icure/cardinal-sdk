@@ -1,6 +1,7 @@
 // auto-generated file
 import {EntityReferenceInGroup} from '../../model/EntityReferenceInGroup.mjs';
-import {DelegateShareOptions} from './DelegateShareOptions.mjs';
+import {ShareRequestPurpose} from './ShareRequestPurpose.mjs';
+import {ShareRequestSummary} from './ShareRequestSummary.mjs';
 
 
 /**
@@ -62,11 +63,14 @@ export namespace FailedRequestDetails {
 	 *  @param shouldRetry whether the SDK considers this specific failure worth retrying (e.g. with a freshly
 	 *  fetched revision of the entity). Bulk operations that support `autoRetry` already do this automatically once
 	 *  before giving up, so by the time you observe this you can assume that retry (if applicable) already happened.
-	 *  @param updatedForMigration `true` if this request wasn't actually about sharing or updating access for
-	 *  [delegateReference], but rather an internal step to migrate that delegate's pre-existing legacy delegation to
-	 *  the current secure-delegation format. Most callers can ignore this field.
-	 *  @param request the low-level share options that were sent to the server for this (entity, delegate) pair, or
-	 *  `null` if this was an [updatedForMigration] request (which doesn't carry share options of its own).
+	 *  @param purpose what the rejected request was for. Most callers can ignore this field: it is
+	 *  [ShareRequestPurpose.RequestedShare] for a plain share, and the two other values only tell you that the sdk also
+	 *  had (or only had) to migrate the legacy delegations of [delegateReference] along the way.
+	 *  @param requestSummary a non-sensitive summary of what the rejected request was asking for, to help understand
+	 *  why it was rejected. `null` when the sdk didn't resolve any share options for this pair on the caller's behalf,
+	 *  i.e. when [purpose] is [ShareRequestPurpose.Migration], or when the caller used one of the lower-level share
+	 *  methods that take an already resolved [DelegateShareOptions] (in which case the caller already holds the exact
+	 *  options that were sent).
 	 */
 	export class RequestRejected {
 
@@ -80,20 +84,20 @@ export namespace FailedRequestDetails {
 
 		shouldRetry: boolean;
 
-		updatedForMigration: boolean;
+		purpose: ShareRequestPurpose;
 
-		request: DelegateShareOptions | undefined;
+		requestSummary: ShareRequestSummary | undefined;
 
 		readonly $ktClass: 'com.icure.cardinal.sdk.crypto.entities.FailedRequestDetails.RequestRejected' = 'com.icure.cardinal.sdk.crypto.entities.FailedRequestDetails.RequestRejected';
 
-		constructor(partial: Partial<RequestRejected> & Pick<RequestRejected, "entityId" | "delegateReference" | "reason" | "code" | "shouldRetry" | "updatedForMigration" | "request">) {
+		constructor(partial: Partial<RequestRejected> & Pick<RequestRejected, "entityId" | "delegateReference" | "reason" | "code" | "shouldRetry" | "purpose" | "requestSummary">) {
 			this.entityId = partial.entityId;
 			this.delegateReference = partial.delegateReference;
 			this.reason = partial.reason;
 			this.code = partial.code;
 			this.shouldRetry = partial.shouldRetry;
-			this.updatedForMigration = partial.updatedForMigration;
-			this.request = partial.request;
+			this.purpose = partial.purpose;
+			this.requestSummary = partial.requestSummary;
 		}
 
 	}

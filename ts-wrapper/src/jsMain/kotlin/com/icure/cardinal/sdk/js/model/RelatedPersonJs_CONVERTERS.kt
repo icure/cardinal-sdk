@@ -3,10 +3,14 @@ package com.icure.cardinal.sdk.js.model
 
 import com.icure.cardinal.sdk.js.model.CheckedConverters.arrayToList
 import com.icure.cardinal.sdk.js.model.CheckedConverters.arrayToSet
+import com.icure.cardinal.sdk.js.model.CheckedConverters.dynamicToJsonObjectNullsafe
+import com.icure.cardinal.sdk.js.model.CheckedConverters.intToNumber
+import com.icure.cardinal.sdk.js.model.CheckedConverters.jsonToDynamic
 import com.icure.cardinal.sdk.js.model.CheckedConverters.listToArray
 import com.icure.cardinal.sdk.js.model.CheckedConverters.longToNumber
 import com.icure.cardinal.sdk.js.model.CheckedConverters.mapToObject
 import com.icure.cardinal.sdk.js.model.CheckedConverters.nullToUndefined
+import com.icure.cardinal.sdk.js.model.CheckedConverters.numberToInt
 import com.icure.cardinal.sdk.js.model.CheckedConverters.numberToLong
 import com.icure.cardinal.sdk.js.model.CheckedConverters.objectToMap
 import com.icure.cardinal.sdk.js.model.CheckedConverters.setToArray
@@ -189,6 +193,12 @@ public fun relatedPerson_toJs(obj: DecryptedRelatedPerson): DecryptedRelatedPers
 			securityMetadata_toJs(nonNull1)
 		}
 	)
+	val customisedModelVersion = nullToUndefined(
+		intToNumber(obj.customisedModelVersion)
+	)
+	val extensions = nullToUndefined(
+		jsonToDynamic(obj.extensions)
+	)
 	return DecryptedRelatedPersonJs(js("{" +
 		"id:id," +
 		"rev:rev," +
@@ -215,7 +225,9 @@ public fun relatedPerson_toJs(obj: DecryptedRelatedPerson): DecryptedRelatedPers
 		"delegations:delegations," +
 		"encryptionKeys:encryptionKeys," +
 		"encryptedSelf:encryptedSelf," +
-		"securityMetadata:securityMetadata" +
+		"securityMetadata:securityMetadata," +
+		"customisedModelVersion:customisedModelVersion," +
+		"extensions:extensions" +
 	"}"))
 }
 
@@ -345,6 +357,8 @@ public fun relatedPerson_fromJs(obj: DecryptedRelatedPersonJs): DecryptedRelated
 	val securityMetadata = obj.securityMetadata?.let { nonNull1 ->
 		securityMetadata_fromJs(nonNull1)
 	}
+	val customisedModelVersion = numberToInt(obj.customisedModelVersion, "obj.customisedModelVersion")
+	val extensions = dynamicToJsonObjectNullsafe(obj.extensions, "obj.extensions")
 	return DecryptedRelatedPerson(
 		id = id,
 		rev = rev,
@@ -372,6 +386,8 @@ public fun relatedPerson_fromJs(obj: DecryptedRelatedPersonJs): DecryptedRelated
 		encryptionKeys = encryptionKeys,
 		encryptedSelf = encryptedSelf,
 		securityMetadata = securityMetadata,
+		customisedModelVersion = customisedModelVersion,
+		extensions = extensions,
 	)
 }
 
@@ -516,6 +532,12 @@ public fun relatedPerson_toJs(obj: EncryptedRelatedPerson): EncryptedRelatedPers
 			securityMetadata_toJs(nonNull1)
 		}
 	)
+	val customisedModelVersion = nullToUndefined(
+		intToNumber(obj.customisedModelVersion)
+	)
+	val extensions = nullToUndefined(
+		jsonToDynamic(obj.extensions)
+	)
 	return EncryptedRelatedPersonJs(js("{" +
 		"id:id," +
 		"rev:rev," +
@@ -542,7 +564,9 @@ public fun relatedPerson_toJs(obj: EncryptedRelatedPerson): EncryptedRelatedPers
 		"delegations:delegations," +
 		"encryptionKeys:encryptionKeys," +
 		"encryptedSelf:encryptedSelf," +
-		"securityMetadata:securityMetadata" +
+		"securityMetadata:securityMetadata," +
+		"customisedModelVersion:customisedModelVersion," +
+		"extensions:extensions" +
 	"}"))
 }
 
@@ -672,6 +696,8 @@ public fun relatedPerson_fromJs(obj: EncryptedRelatedPersonJs): EncryptedRelated
 	val securityMetadata = obj.securityMetadata?.let { nonNull1 ->
 		securityMetadata_fromJs(nonNull1)
 	}
+	val customisedModelVersion = numberToInt(obj.customisedModelVersion, "obj.customisedModelVersion")
+	val extensions = dynamicToJsonObjectNullsafe(obj.extensions, "obj.extensions")
 	return EncryptedRelatedPerson(
 		id = id,
 		rev = rev,
@@ -699,6 +725,8 @@ public fun relatedPerson_fromJs(obj: EncryptedRelatedPersonJs): EncryptedRelated
 		encryptionKeys = encryptionKeys,
 		encryptedSelf = encryptedSelf,
 		securityMetadata = securityMetadata,
+		customisedModelVersion = customisedModelVersion,
+		extensions = extensions,
 	)
 }
 

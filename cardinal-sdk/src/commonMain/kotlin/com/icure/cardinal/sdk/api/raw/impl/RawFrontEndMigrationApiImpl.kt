@@ -27,7 +27,8 @@ class RawFrontEndMigrationApiImpl(
 	internal val apiUrl: String,
 	private val authProvider: AuthProvider,
 	rawApiConfig: RawApiConfig,
-) : BaseRawApi(rawApiConfig), RawFrontEndMigrationApi {
+) : BaseRawApi(rawApiConfig),
+	RawFrontEndMigrationApi {
 	// region common endpoints
 
 	override suspend fun getFrontEndMigrations(): HttpResponse<List<FrontEndMigration>> =

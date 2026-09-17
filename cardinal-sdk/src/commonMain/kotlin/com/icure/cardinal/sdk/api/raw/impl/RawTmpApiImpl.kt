@@ -41,7 +41,8 @@ class RawTmpApiImpl(
 	internal val apiUrl: String,
 	private val authProvider: AuthProvider,
 	rawApiConfig: RawApiConfig,
-) : BaseRawApi(rawApiConfig), RawTmpApi {
+) : BaseRawApi(rawApiConfig),
+	RawTmpApi {
 	// region cloud endpoints
 
 	override suspend fun createTmpDatabase(): HttpResponse<Unit> =
@@ -200,9 +201,7 @@ class RawTmpApiImpl(
 			setBody(ids)
 		}.wrap()
 
-	override suspend fun modifyTmpHealthElements(
-		healthElementDtos: List<EncryptedHealthElement>,
-	): HttpResponse<List<EncryptedHealthElement>> =
+	override suspend fun modifyTmpHealthElements(healthElementDtos: List<EncryptedHealthElement>): HttpResponse<List<EncryptedHealthElement>> =
 		put(authProvider) {
 			url {
 				takeFrom(apiUrl)
@@ -213,9 +212,7 @@ class RawTmpApiImpl(
 			setBody(healthElementDtos)
 		}.wrap()
 
-	override suspend fun createTmpHealthElements(
-		healthElementDtos: List<EncryptedHealthElement>,
-	): HttpResponse<List<EncryptedHealthElement>> =
+	override suspend fun createTmpHealthElements(healthElementDtos: List<EncryptedHealthElement>): HttpResponse<List<EncryptedHealthElement>> =
 		post(authProvider) {
 			url {
 				takeFrom(apiUrl)

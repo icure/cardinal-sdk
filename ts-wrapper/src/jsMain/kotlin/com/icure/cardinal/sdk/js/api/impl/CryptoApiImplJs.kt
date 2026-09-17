@@ -79,10 +79,8 @@ internal class CryptoApiImplJs(
 			)
 		}
 
-		override fun updateSelfSplits(keySplitsToUpdate: Record<String, ShamirUpdateRequestJs>,
-				keySplitsToDelete: Array<String>): Promise<CryptoActorStubWithTypeJs> = GlobalScope.promise {
-			val keySplitsToUpdateConverted: Map<KeypairFingerprintV1String, ShamirUpdateRequest> =
-					objectToMap(
+		override fun updateSelfSplits(keySplitsToUpdate: Record<String, ShamirUpdateRequestJs>, keySplitsToDelete: Array<String>): Promise<CryptoActorStubWithTypeJs> = GlobalScope.promise {
+			val keySplitsToUpdateConverted: Map<KeypairFingerprintV1String, ShamirUpdateRequest> = objectToMap(
 				keySplitsToUpdate,
 				"keySplitsToUpdate",
 				{ x1: String ->
@@ -108,8 +106,7 @@ internal class CryptoApiImplJs(
 	}
 
 	override val inGroup: CryptoInGroupApiJs = object : CryptoInGroupApiJs {
-		override fun keylessCreateExchangeDataTo(groupId: String?, `delegate`: EntityReferenceInGroupJs):
-				Promise<RawDecryptedExchangeDataJs> = GlobalScope.promise {
+		override fun keylessCreateExchangeDataTo(groupId: String?, `delegate`: EntityReferenceInGroupJs): Promise<RawDecryptedExchangeDataJs> = GlobalScope.promise {
 			val groupIdConverted: String? = undefinedToNull(groupId)
 			val delegateConverted: EntityReferenceInGroup = entityReferenceInGroup_fromJs(delegate)
 			val result = cryptoApi.inGroup.keylessCreateExchangeDataTo(
@@ -119,11 +116,9 @@ internal class CryptoApiImplJs(
 			rawDecryptedExchangeData_toJs(result)
 		}
 
-		override fun getAccessControlKeys(groupId: String?, entityType: String): Promise<Array<String>> =
-				GlobalScope.promise {
+		override fun getAccessControlKeys(groupId: String?, entityType: String): Promise<Array<String>> = GlobalScope.promise {
 			val groupIdConverted: String? = undefinedToNull(groupId)
-			val entityTypeConverted: EntityWithEncryptionMetadataTypeName =
-					EntityWithEncryptionMetadataTypeName.valueOf(entityType)
+			val entityTypeConverted: EntityWithEncryptionMetadataTypeName = EntityWithEncryptionMetadataTypeName.valueOf(entityType)
 			val result = cryptoApi.inGroup.getAccessControlKeys(
 				groupIdConverted,
 				entityTypeConverted,
@@ -137,10 +132,8 @@ internal class CryptoApiImplJs(
 		}
 	}
 
-	override fun getAccessControlKeys(entityType: String): Promise<Array<String>> =
-			GlobalScope.promise {
-		val entityTypeConverted: EntityWithEncryptionMetadataTypeName =
-				EntityWithEncryptionMetadataTypeName.valueOf(entityType)
+	override fun getAccessControlKeys(entityType: String): Promise<Array<String>> = GlobalScope.promise {
+		val entityTypeConverted: EntityWithEncryptionMetadataTypeName = EntityWithEncryptionMetadataTypeName.valueOf(entityType)
 		val result = cryptoApi.getAccessControlKeys(
 			entityTypeConverted,
 		)
@@ -191,8 +184,7 @@ internal class CryptoApiImplJs(
 		}
 	}
 
-	override fun keylessCreateExchangeDataTo(`delegate`: String): Promise<RawDecryptedExchangeDataJs> =
-			GlobalScope.promise {
+	override fun keylessCreateExchangeDataTo(`delegate`: String): Promise<RawDecryptedExchangeDataJs> = GlobalScope.promise {
 		val delegateConverted: String = delegate
 		val result = cryptoApi.keylessCreateExchangeDataTo(
 			delegateConverted,

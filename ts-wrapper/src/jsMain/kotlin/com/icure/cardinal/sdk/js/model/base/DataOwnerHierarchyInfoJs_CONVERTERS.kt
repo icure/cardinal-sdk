@@ -43,8 +43,7 @@ public fun dataOwnerHierarchyInfo_fromJs(obj: DataOwnerHierarchyInfoJs): DataOwn
 }
 
 @Suppress("UNUSED_VARIABLE")
-public fun dataOwnerHierarchyInfo_HierarchyNode_toJs(obj: DataOwnerHierarchyInfo.HierarchyNode):
-		DataOwnerHierarchyInfoJs_HierarchyNodeJs {
+public fun dataOwnerHierarchyInfo_HierarchyNode_toJs(obj: DataOwnerHierarchyInfo.HierarchyNode): DataOwnerHierarchyInfoJs_HierarchyNodeJs {
 	val linkedGroupId = obj.linkedGroupId
 	val linkType = obj.linkType.name
 	val transitiveLinks = listToArray(
@@ -60,9 +59,7 @@ public fun dataOwnerHierarchyInfo_HierarchyNode_toJs(obj: DataOwnerHierarchyInfo
 	"}"))
 }
 
-public
-		fun dataOwnerHierarchyInfo_HierarchyNode_fromJs(obj: DataOwnerHierarchyInfoJs_HierarchyNodeJs):
-		DataOwnerHierarchyInfo.HierarchyNode {
+public fun dataOwnerHierarchyInfo_HierarchyNode_fromJs(obj: DataOwnerHierarchyInfoJs_HierarchyNodeJs): DataOwnerHierarchyInfo.HierarchyNode {
 	val linkedGroupId = obj.linkedGroupId
 	val linkType = DataOwnerGroupLinkType.valueOf(obj.linkType)
 	val transitiveLinks = arrayToList(

@@ -45,7 +45,8 @@ class RawHealthcarePartyApiImpl(
 	internal val apiUrl: String,
 	private val authProvider: AuthProvider,
 	rawApiConfig: RawApiConfig,
-) : BaseRawApi(rawApiConfig), RawHealthcarePartyApi {
+) : BaseRawApi(rawApiConfig),
+	RawHealthcarePartyApi {
 	// region common endpoints
 
 	override suspend fun getCurrentHealthcareParty(): HttpResponse<HealthcareParty> =
@@ -355,10 +356,7 @@ class RawHealthcarePartyApiImpl(
 			}
 			contentType(Application.Json)
 			accept(Application.Json)
-			setBodyWithSerializer(
-				FilterChainSerializer(HealthcarePartyAbstractFilterSerializer),
-				filterChain,
-			)
+			setBodyWithSerializer(FilterChainSerializer(HealthcarePartyAbstractFilterSerializer), filterChain)
 		}.wrap()
 
 	override suspend fun getConflictingEntitiesIds(): HttpResponse<List<String>> =

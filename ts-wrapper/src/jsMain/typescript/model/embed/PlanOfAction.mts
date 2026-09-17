@@ -4,6 +4,7 @@ import {randomUuid} from '../../utils/Id.mjs';
 import {CodeStub} from '../base/CodeStub.mjs';
 import {Extendable} from '../base/Extendable.mjs';
 import {HasEndOfLife} from '../base/HasEndOfLife.mjs';
+import {HasMedicalLocation} from '../base/HasMedicalLocation.mjs';
 import {ICureDocument} from '../base/ICureDocument.mjs';
 import {Named} from '../base/Named.mjs';
 import {Base64String} from '../specializations/Base64String.mjs';
@@ -11,7 +12,7 @@ import {CareTeamMembership, DecryptedCareTeamMembership, EncryptedCareTeamMember
 import {Encryptable} from './Encryptable.mjs';
 
 
-export interface PlanOfAction extends Encryptable, ICureDocument<string>, Named, HasEndOfLife, Extendable {
+export interface PlanOfAction extends Encryptable, ICureDocument<string>, HasMedicalLocation, Named, HasEndOfLife, Extendable {
 
 	prescriberId: string | undefined;
 

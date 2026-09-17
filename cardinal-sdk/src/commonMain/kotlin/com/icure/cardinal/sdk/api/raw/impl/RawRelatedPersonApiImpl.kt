@@ -9,13 +9,16 @@ import com.icure.cardinal.sdk.auth.services.AuthProvider
 import com.icure.cardinal.sdk.model.EncryptedRelatedPerson
 import com.icure.cardinal.sdk.model.ListOfIds
 import com.icure.cardinal.sdk.model.ListOfIdsAndRev
+import com.icure.cardinal.sdk.model.PaginatedList
 import com.icure.cardinal.sdk.model.RelatedPerson
 import com.icure.cardinal.sdk.model.conflicts.ConflictResolutionRequest
 import com.icure.cardinal.sdk.model.conflicts.ConflictResolutionResult
 import com.icure.cardinal.sdk.model.conflicts.ConflictResolutionStrategy
 import com.icure.cardinal.sdk.model.conflicts.MergeResult
 import com.icure.cardinal.sdk.model.couchdb.DocIdentifier
+import com.icure.cardinal.sdk.model.dao.IdWithValue
 import com.icure.cardinal.sdk.model.filter.AbstractFilter
+import com.icure.cardinal.sdk.model.filter.CustomFilter
 import com.icure.cardinal.sdk.model.requests.BulkShareOrUpdateMetadataParams
 import com.icure.cardinal.sdk.model.requests.EntityBulkShareResult
 import com.icure.cardinal.sdk.serialization.RelatedPersonAbstractFilterSerializer
@@ -39,7 +42,8 @@ class RawRelatedPersonApiImpl(
 	internal val apiUrl: String,
 	private val authProvider: AuthProvider,
 	rawApiConfig: RawApiConfig,
-) : BaseRawApi(rawApiConfig), RawRelatedPersonApi {
+) : BaseRawApi(rawApiConfig),
+	RawRelatedPersonApi {
 	// region common endpoints
 
 	override suspend fun createRelatedPerson(c: EncryptedRelatedPerson): HttpResponse<EncryptedRelatedPerson> =
@@ -273,6 +277,17 @@ class RawRelatedPersonApiImpl(
 			contentType(Application.Json)
 			accept(Application.Json)
 			setBody(entityIds)
+		}.wrap()
+
+	override suspend fun matchRelatedPersonsByCustomFilter(filter: CustomFilter): HttpResponse<PaginatedList<IdWithValue>> =
+		post(authProvider) {
+			url {
+				takeFrom(apiUrl)
+				appendPathSegments("rest", "v2", "relatedperson", "matchByCustom")
+			}
+			contentType(Application.Json)
+			accept(Application.Json)
+			setBody(filter)
 		}.wrap()
 
 	// endregion
@@ -527,6 +542,20 @@ class RawRelatedPersonApiImpl(
 			contentType(Application.Json)
 			accept(Application.Json)
 			setBody(entityIds)
+		}.wrap()
+
+	override suspend fun matchRelatedPersonsByCustomFilterInGroup(
+		groupId: String,
+		filter: CustomFilter,
+	): HttpResponse<PaginatedList<IdWithValue>> =
+		post(authProvider) {
+			url {
+				takeFrom(apiUrl)
+				appendPathSegments("rest", "v2", "relatedperson", "inGroup", groupId, "matchByCustom")
+			}
+			contentType(Application.Json)
+			accept(Application.Json)
+			setBody(filter)
 		}.wrap()
 
 	// endregion

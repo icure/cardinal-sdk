@@ -10,12 +10,9 @@ import kotlin.collections.Map
 
 /**
  *
- *  Request to create a piece of exchange data, for a certain recipient of a simple-type data owner
- * group.
- *  The id, recipient, delegator, delegate and exchange data group id of the created piece are not
- * part of this request:
- *  they come from the parameters of the request to create the pieces of an exchange data group, and
- * from the key this
+ *  Request to create a piece of exchange data, for a certain recipient of a simple-type data owner group.
+ *  The id, recipient, delegator, delegate and exchange data group id of the created piece are not part of this request:
+ *  they come from the parameters of the request to create the pieces of an exchange data group, and from the key this
  *  request is associated to.
  */
 @Serializable
@@ -25,19 +22,15 @@ data class ExchangeDataPieceCreationRequest(
 	public val sharedSignatureKey: Map<KeypairFingerprintV2String, Base64String>,
 	/**
 	 *
-	 *  Must be empty except on the piece of exchange data where the recipient is the delegator. Empty
-	 * there as well to
-	 *  create exchange data that is already permanently invalidated: it will never be used to encrypt
-	 * new data.
+	 *  Must be empty except on the piece of exchange data where the recipient is the delegator. Empty there as well to
+	 *  create exchange data that is already permanently invalidated: it will never be used to encrypt new data.
 	 */
 	@param:DefaultValue("emptyMap()")
 	public val delegatorSignature: Map<KeypairFingerprintV2String, Base64String> = emptyMap(),
 	/**
 	 *
-	 *  Must be null except on the piece of exchange data where the recipient is the delegator: this
-	 * signature is only
-	 *  used to decide if the exchange data can be trusted for encryption, and that decision is taken
-	 * on the delegator
+	 *  Must be null except on the piece of exchange data where the recipient is the delegator: this signature is only
+	 *  used to decide if the exchange data can be trusted for encryption, and that decision is taken on the delegator
 	 *  piece alone.
 	 */
 	public val sharedSignature: Base64String? = null,

@@ -26,8 +26,7 @@ import com.icure.cardinal.sdk.model.embed.MessageAttachment
 import kotlin.collections.List
 
 /**
- * Represents a message exchanged between healthcare parties. Messages can be used for internal
- * communication,
+ * Represents a message exchanged between healthcare parties. Messages can be used for internal communication,
  * eHealth box messages, eFact batches, and other types of healthcare-related communications.
  * /
  */
@@ -201,8 +200,7 @@ sealed interface Message :
 }
 
 /**
- * Represents a message exchanged between healthcare parties. Messages can be used for internal
- * communication,
+ * Represents a message exchanged between healthcare parties. Messages can be used for internal communication,
  * eHealth box messages, eFact batches, and other types of healthcare-related communications.
  * /
  */
@@ -350,8 +348,7 @@ override fun copyWithSecurityMetadata(securityMetadata: SecurityMetadata, secret
 }
 
 /**
- * Represents a message exchanged between healthcare parties. Messages can be used for internal
- * communication,
+ * Represents a message exchanged between healthcare parties. Messages can be used for internal communication,
  * eHealth box messages, eFact batches, and other types of healthcare-related communications.
  * /
  */

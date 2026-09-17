@@ -1,4 +1,6 @@
 // This file is auto-generated
+@file:Suppress("ktlint:standard:max-line-length")
+
 package com.icure.cardinal.sdk.crypto.encryptor.`impl`.generated
 
 import com.icure.cardinal.sdk.crypto.encryptor.EntityDecryptor
@@ -17,11 +19,11 @@ import com.icure.utils.InternalIcureApi
 import kotlinx.serialization.json.Json
 import kotlinx.serialization.json.JsonObject
 import kotlin.String
+import kotlin.Suppress
 import kotlin.collections.Collection
 
 @InternalIcureApi
-internal object PartnershipDecryptorFactory :
-	EntityDecryptorFactory<EncryptedPartnership, DecryptedPartnership> {
+internal object PartnershipDecryptorFactory : EntityDecryptorFactory<EncryptedPartnership, DecryptedPartnership> {
 	override fun create(
 		entityManifestName: String?,
 		encryptorsFactoryContext: EntityEncryptorsFactoryContext,
@@ -90,10 +92,11 @@ private class PartnershipDecryptor(
 					),
 				encryptedSelf = encryptedEntity.encryptedSelf,
 			)
-		if (entityCustomisedModelVersion == null &&
-			unversionedEntitiesDecryptedJsonStrictness == DecryptedJsonStrictness.Strict &&
-			decryptedContent.size != usedEncryptedContent.size
-		) {
+		val hasUnexpectedDecryptedContent =
+			entityCustomisedModelVersion == null &&
+				unversionedEntitiesDecryptedJsonStrictness == DecryptedJsonStrictness.Strict &&
+				decryptedContent.size != usedEncryptedContent.size
+		if (hasUnexpectedDecryptedContent) {
 			throw UnexpectedEncryptedContentException(
 				"The Partnership encrypted content contains unexpected fields: ${decryptedContent.keys - usedEncryptedContent}",
 			)

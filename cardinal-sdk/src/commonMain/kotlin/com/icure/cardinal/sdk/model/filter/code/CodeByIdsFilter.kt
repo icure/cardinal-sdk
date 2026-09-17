@@ -25,7 +25,8 @@ data class CodeByIdsFilter(
 	 * Optional description of this filter.
 	 */
 	override val desc: String? = null,
-) : AbstractFilter<Code>, Filter.IdsFilter<String, Code> {
+) : AbstractFilter<Code>,
+	Filter.IdsFilter<String, Code> {
 	// region CodeByIdsFilter-CodeByIdsFilter
 
 	// endregion

@@ -6,6 +6,7 @@ import {CodeStub} from './base/CodeStub.mjs';
 import {CustomisableRoot} from './base/CustomisableRoot.mjs';
 import {Extendable} from './base/Extendable.mjs';
 import {HasEncryptionMetadata} from './base/HasEncryptionMetadata.mjs';
+import {HasMedicalLocation} from './base/HasMedicalLocation.mjs';
 import {ICureDocument} from './base/ICureDocument.mjs';
 import {StoredDocument} from './base/StoredDocument.mjs';
 import {DataAttachment} from './embed/DataAttachment.mjs';
@@ -25,7 +26,7 @@ import {Base64String} from './specializations/Base64String.mjs';
  *  and support various storage backends (CouchDB attachments, object storage).
  *  /
  */
-export interface Document extends StoredDocument, ICureDocument<string>, HasEncryptionMetadata, Encryptable, CustomisableRoot, Extendable {
+export interface Document extends StoredDocument, ICureDocument<string>, HasMedicalLocation, HasEncryptionMetadata, Encryptable, CustomisableRoot, Extendable {
 
 	/**
 	 *

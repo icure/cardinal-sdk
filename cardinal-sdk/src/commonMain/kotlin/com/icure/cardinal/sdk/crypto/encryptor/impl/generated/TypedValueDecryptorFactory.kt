@@ -1,4 +1,6 @@
 // This file is auto-generated
+@file:Suppress("ktlint:standard:max-line-length")
+
 package com.icure.cardinal.sdk.crypto.encryptor.`impl`.generated
 
 import com.icure.cardinal.sdk.crypto.encryptor.EntityDecryptor
@@ -19,11 +21,11 @@ import kotlinx.serialization.builtins.nullable
 import kotlinx.serialization.json.Json
 import kotlinx.serialization.json.JsonObject
 import kotlin.String
+import kotlin.Suppress
 import kotlin.collections.Collection
 
 @InternalIcureApi
-internal object TypedValueDecryptorFactory :
-	EntityDecryptorFactory<EncryptedTypedValue, DecryptedTypedValue> {
+internal object TypedValueDecryptorFactory : EntityDecryptorFactory<EncryptedTypedValue, DecryptedTypedValue> {
 	override fun create(
 		entityManifestName: String?,
 		encryptorsFactoryContext: EntityEncryptorsFactoryContext,
@@ -105,10 +107,11 @@ private class TypedValueDecryptor(
 					),
 				encryptedSelf = encryptedEntity.encryptedSelf,
 			)
-		if (entityCustomisedModelVersion == null &&
-			unversionedEntitiesDecryptedJsonStrictness == DecryptedJsonStrictness.Strict &&
-			decryptedContent.size != usedEncryptedContent.size
-		) {
+		val hasUnexpectedDecryptedContent =
+			entityCustomisedModelVersion == null &&
+				unversionedEntitiesDecryptedJsonStrictness == DecryptedJsonStrictness.Strict &&
+				decryptedContent.size != usedEncryptedContent.size
+		if (hasUnexpectedDecryptedContent) {
 			throw UnexpectedEncryptedContentException(
 				"The TypedValue encrypted content contains unexpected fields: ${decryptedContent.keys - usedEncryptedContent}",
 			)

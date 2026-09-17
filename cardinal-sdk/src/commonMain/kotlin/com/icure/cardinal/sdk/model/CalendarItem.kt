@@ -34,8 +34,7 @@ import com.icure.cardinal.sdk.model.embed.FlowItem
 
 /**
  *
- *  Represents an appointment or event in a calendar. Calendar items are linked to an agenda and can
- * block
+ *  Represents an appointment or event in a calendar. Calendar items are linked to an agenda and can block
  *  availabilities for scheduling purposes.
  */
 
@@ -53,8 +52,7 @@ sealed interface CalendarItem :
 	override val id: String
 
 	/**
-	 * The revision of the calendar item in the database, used for conflict management / optimistic
-	 * locking.
+	 * The revision of the calendar item in the database, used for conflict management / optimistic locking.
 	 */
 	override val rev: String?
 
@@ -204,8 +202,7 @@ sealed interface CalendarItem :
 	public val availabilitiesAssignmentStrategy: AvailabilitiesAssignmentStrategy?
 
 	/**
-	 * The healthcare party id associated with this calendar item. Deprecated: This field is scheduled
-	 * for deletion
+	 * The healthcare party id associated with this calendar item. Deprecated: This field is scheduled for deletion
 	 */
 	public val hcpId: String?
 
@@ -278,8 +275,7 @@ sealed interface CalendarItem :
 
 /**
  *
- *  Represents an appointment or event in a calendar. Calendar items are linked to an agenda and can
- * block
+ *  Represents an appointment or event in a calendar. Calendar items are linked to an agenda and can block
  *  availabilities for scheduling purposes.
  */
 @Serializable
@@ -289,8 +285,7 @@ data class DecryptedCalendarItem(
 	 */
 	override val id: String,
 	/**
-	 * The revision of the calendar item in the database, used for conflict management / optimistic
-	 * locking.
+	 * The revision of the calendar item in the database, used for conflict management / optimistic locking.
 	 */
 	override val rev: String? = null,
 	/**
@@ -411,11 +406,9 @@ data class DecryptedCalendarItem(
 	/**
 	 * How this calendar item is considered by the availabilities algorithm.
 	 */
-	override val availabilitiesAssignmentStrategy: CalendarItem.AvailabilitiesAssignmentStrategy? =
-		null,
+	override val availabilitiesAssignmentStrategy: CalendarItem.AvailabilitiesAssignmentStrategy? = null,
 	/**
-	 * The healthcare party id associated with this calendar item. Deprecated: This field is scheduled
-	 * for deletion
+	 * The healthcare party id associated with this calendar item. Deprecated: This field is scheduled for deletion
 	 */
 	override val hcpId: String? = null,
 	/**
@@ -485,8 +478,7 @@ override fun copyWithSecurityMetadata(securityMetadata: SecurityMetadata, secret
 
 /**
  *
- *  Represents an appointment or event in a calendar. Calendar items are linked to an agenda and can
- * block
+ *  Represents an appointment or event in a calendar. Calendar items are linked to an agenda and can block
  *  availabilities for scheduling purposes.
  */
 @Serializable
@@ -496,8 +488,7 @@ data class EncryptedCalendarItem(
 	 */
 	override val id: String,
 	/**
-	 * The revision of the calendar item in the database, used for conflict management / optimistic
-	 * locking.
+	 * The revision of the calendar item in the database, used for conflict management / optimistic locking.
 	 */
 	override val rev: String? = null,
 	/**
@@ -618,11 +609,9 @@ data class EncryptedCalendarItem(
 	/**
 	 * How this calendar item is considered by the availabilities algorithm.
 	 */
-	override val availabilitiesAssignmentStrategy: CalendarItem.AvailabilitiesAssignmentStrategy? =
-		null,
+	override val availabilitiesAssignmentStrategy: CalendarItem.AvailabilitiesAssignmentStrategy? = null,
 	/**
-	 * The healthcare party id associated with this calendar item. Deprecated: This field is scheduled
-	 * for deletion
+	 * The healthcare party id associated with this calendar item. Deprecated: This field is scheduled for deletion
 	 */
 	override val hcpId: String? = null,
 	/**

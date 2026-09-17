@@ -127,8 +127,7 @@ public fun group_toJs(obj: Group): GroupJs {
 			group_CustomEntityConfiguration_toJs(nonNull1)
 		}
 	)
-	val minimumAuthenticationClassForElevatedPrivileges =
-			obj.minimumAuthenticationClassForElevatedPrivileges.name
+	val minimumAuthenticationClassForElevatedPrivileges = obj.minimumAuthenticationClassForElevatedPrivileges.name
 	val superGroup = nullToUndefined(
 		obj.superGroup
 	)
@@ -260,8 +259,7 @@ public fun group_fromJs(obj: GroupJs): Group {
 	val customEntityConfig = obj.customEntityConfig?.let { nonNull1 ->
 		group_CustomEntityConfiguration_fromJs(nonNull1)
 	}
-	val minimumAuthenticationClassForElevatedPrivileges =
-			AuthenticationClass.valueOf(obj.minimumAuthenticationClassForElevatedPrivileges)
+	val minimumAuthenticationClassForElevatedPrivileges = AuthenticationClass.valueOf(obj.minimumAuthenticationClassForElevatedPrivileges)
 	val superGroup = undefinedToNull(obj.superGroup)
 	val projectId = undefinedToNull(obj.projectId)
 	val templates = obj.templates?.let { nonNull1 ->
@@ -274,8 +272,7 @@ public fun group_fromJs(obj: GroupJs): Group {
 			numberToInt(x1, "x1")
 		},
 	)
-	val defaultChildrenSchemaVersion = numberToInt(obj.defaultChildrenSchemaVersion,
-			"obj.defaultChildrenSchemaVersion")
+	val defaultChildrenSchemaVersion = numberToInt(obj.defaultChildrenSchemaVersion, "obj.defaultChildrenSchemaVersion")
 	return Group(
 		id = id,
 		rev = rev,
@@ -303,8 +300,7 @@ public fun group_fromJs(obj: GroupJs): Group {
 }
 
 @Suppress("UNUSED_VARIABLE")
-public fun group_CustomEntityConfiguration_toJs(obj: Group.CustomEntityConfiguration):
-		GroupJs_CustomEntityConfigurationJs {
+public fun group_CustomEntityConfiguration_toJs(obj: Group.CustomEntityConfiguration): GroupJs_CustomEntityConfigurationJs {
 	val sourceGroup = obj.sourceGroup
 	val version = intToNumber(obj.version)
 	return GroupJs_CustomEntityConfigurationJs(js("{" +
@@ -313,8 +309,7 @@ public fun group_CustomEntityConfiguration_toJs(obj: Group.CustomEntityConfigura
 	"}"))
 }
 
-public fun group_CustomEntityConfiguration_fromJs(obj: GroupJs_CustomEntityConfigurationJs):
-		Group.CustomEntityConfiguration {
+public fun group_CustomEntityConfiguration_fromJs(obj: GroupJs_CustomEntityConfigurationJs): Group.CustomEntityConfiguration {
 	val sourceGroup = obj.sourceGroup
 	val version = numberToInt(obj.version, "obj.version")
 	return Group.CustomEntityConfiguration(
@@ -324,8 +319,7 @@ public fun group_CustomEntityConfiguration_fromJs(obj: GroupJs_CustomEntityConfi
 }
 
 @Suppress("UNUSED_VARIABLE")
-public fun group_TemplatesConfiguration_toJs(obj: Group.TemplatesConfiguration):
-		GroupJs_TemplatesConfigurationJs {
+public fun group_TemplatesConfiguration_toJs(obj: Group.TemplatesConfiguration): GroupJs_TemplatesConfigurationJs {
 	val specId = obj.specId
 	val emailSender = nullToUndefined(
 		obj.emailSender
@@ -356,16 +350,14 @@ public fun group_TemplatesConfiguration_toJs(obj: Group.TemplatesConfiguration):
 	"}"))
 }
 
-public fun group_TemplatesConfiguration_fromJs(obj: GroupJs_TemplatesConfigurationJs):
-		Group.TemplatesConfiguration {
+public fun group_TemplatesConfiguration_fromJs(obj: GroupJs_TemplatesConfigurationJs): Group.TemplatesConfiguration {
 	val specId = obj.specId
 	val emailSender = undefinedToNull(obj.emailSender)
 	val smsSender = undefinedToNull(obj.smsSender)
 	val emailVerificationTemplateId = undefinedToNull(obj.emailVerificationTemplateId)
 	val mobilePhoneVerificationTemplateId = undefinedToNull(obj.mobilePhoneVerificationTemplateId)
 	val existingEmailNotificationTemplateId = undefinedToNull(obj.existingEmailNotificationTemplateId)
-	val existingMobilePhoneNotificationTemplateId =
-			undefinedToNull(obj.existingMobilePhoneNotificationTemplateId)
+	val existingMobilePhoneNotificationTemplateId = undefinedToNull(obj.existingMobilePhoneNotificationTemplateId)
 	return Group.TemplatesConfiguration(
 		specId = specId,
 		emailSender = emailSender,

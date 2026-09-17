@@ -8,6 +8,7 @@ import {CustomisableRoot} from './base/CustomisableRoot.mjs';
 import {Extendable} from './base/Extendable.mjs';
 import {HasEncryptionMetadata} from './base/HasEncryptionMetadata.mjs';
 import {HasIdentifier} from './base/HasIdentifier.mjs';
+import {HasMedicalLocation} from './base/HasMedicalLocation.mjs';
 import {ICureDocument} from './base/ICureDocument.mjs';
 import {Identifier} from './base/Identifier.mjs';
 import {Person} from './base/Person.mjs';
@@ -41,12 +42,8 @@ import {SpkiHexString} from './specializations/SpkiHexString.mjs';
  *  end-to-end encryption of sensitive data.
  *  /
  */
-export interface Patient extends StoredDocument, ICureDocument<string>, Person, HasEncryptionMetadata, Encryptable, HasIdentifier, CryptoActor, CustomisableRoot, Extendable {
+export interface Patient extends StoredDocument, ICureDocument<string>, HasMedicalLocation, Person, HasEncryptionMetadata, Encryptable, HasIdentifier, CryptoActor, CustomisableRoot, Extendable {
 
-	/**
-	 *
-	 *  The birth sex of the patient.
-	 */
 	birthSex: Gender | undefined;
 
 	/**
@@ -91,16 +88,8 @@ export interface Patient extends StoredDocument, ICureDocument<string>, Person, 
 	 */
 	ssin: string | undefined;
 
-	/**
-	 *
-	 *  Lastname at birth (can be different from the current name).
-	 */
 	maidenName: string | undefined;
 
-	/**
-	 *
-	 *  Lastname of the spouse for a married woman.
-	 */
 	spouseName: string | undefined;
 
 	/**
@@ -109,22 +98,10 @@ export interface Patient extends StoredDocument, ICureDocument<string>, Person, 
 	 */
 	partnerName: string | undefined;
 
-	/**
-	 *
-	 *  The personal/marital status of the patient.
-	 */
 	personalStatus: PersonalStatus | undefined;
 
-	/**
-	 *
-	 *  The birthdate encoded as a fuzzy date on 8 positions (YYYYMMDD).
-	 */
 	dateOfBirth: number | undefined;
 
-	/**
-	 *
-	 *  The date of death encoded as a fuzzy date on 8 positions (YYYYMMDD).
-	 */
 	dateOfDeath: number | undefined;
 
 	/**
@@ -255,9 +232,11 @@ export interface Patient extends StoredDocument, ICureDocument<string>, Person, 
 
 	/**
 	 *
-	 *  Always null for patients.
+	 *  The links to the data owners representing the groups this patient belongs to.
 	 */
-	parentId: undefined;
+	dataOwnerGroups: Array<never>;
+
+	groupLinkType: undefined;
 
 	readonly isEncrypted: boolean;
 
@@ -378,16 +357,8 @@ export class DecryptedPatient {
 	 */
 	civility: string | undefined = undefined;
 
-	/**
-	 *
-	 *  The gender of the patient.
-	 */
 	gender: Gender | undefined = Gender.Unknown;
 
-	/**
-	 *
-	 *  The birth sex of the patient.
-	 */
 	birthSex: Gender | undefined = Gender.Unknown;
 
 	/**
@@ -432,16 +403,8 @@ export class DecryptedPatient {
 	 */
 	ssin: string | undefined = undefined;
 
-	/**
-	 *
-	 *  Lastname at birth (can be different from the current name).
-	 */
 	maidenName: string | undefined = undefined;
 
-	/**
-	 *
-	 *  Lastname of the spouse for a married woman.
-	 */
 	spouseName: string | undefined = undefined;
 
 	/**
@@ -450,22 +413,10 @@ export class DecryptedPatient {
 	 */
 	partnerName: string | undefined = undefined;
 
-	/**
-	 *
-	 *  The personal/marital status of the patient.
-	 */
 	personalStatus: PersonalStatus | undefined = PersonalStatus.Unknown;
 
-	/**
-	 *
-	 *  The birthdate encoded as a fuzzy date on 8 positions (YYYYMMDD).
-	 */
 	dateOfBirth: number | undefined = undefined;
 
-	/**
-	 *
-	 *  The date of death encoded as a fuzzy date on 8 positions (YYYYMMDD).
-	 */
 	dateOfDeath: number | undefined = undefined;
 
 	/**
@@ -668,9 +619,11 @@ export class DecryptedPatient {
 
 	/**
 	 *
-	 *  Always null for patients.
+	 *  The links to the data owners representing the groups this patient belongs to.
 	 */
-	parentId: undefined = undefined;
+	dataOwnerGroups: Array<never> = [];
+
+	groupLinkType: undefined = undefined;
 
 	extensions: Record<string, any> | undefined = undefined;
 
@@ -747,7 +700,8 @@ export class DecryptedPatient {
 		if ('encryptedSelf' in partial) this.encryptedSelf = partial.encryptedSelf;
 		if ('securityMetadata' in partial) this.securityMetadata = partial.securityMetadata;
 		if ('cryptoActorProperties' in partial && partial.cryptoActorProperties !== undefined) this.cryptoActorProperties = partial.cryptoActorProperties;
-		if ('parentId' in partial) this.parentId = partial.parentId;
+		if ('dataOwnerGroups' in partial && partial.dataOwnerGroups !== undefined) this.dataOwnerGroups = partial.dataOwnerGroups;
+		if ('groupLinkType' in partial) this.groupLinkType = partial.groupLinkType;
 		if ('extensions' in partial) this.extensions = partial.extensions;
 		if ('customisedModelVersion' in partial) this.customisedModelVersion = partial.customisedModelVersion;
 	}
@@ -819,7 +773,8 @@ export class DecryptedPatient {
 		if (this.encryptedSelf != undefined) res['encryptedSelf'] = this.encryptedSelf
 		if (this.securityMetadata != undefined) res['securityMetadata'] = this.securityMetadata.toJSON()
 		res['cryptoActorProperties'] = this.cryptoActorProperties.map((x0) => x0.toJSON() )
-		if (this.parentId != undefined) throw new Error('Unexpected nullish value for parentId')
+		res['dataOwnerGroups'] = this.dataOwnerGroups.map((x0) => { throw new Error("Array is not allowed to have elements") } )
+		if (this.groupLinkType != undefined) throw new Error('Unexpected nullish value for groupLinkType')
 		if (this.extensions != undefined) res['extensions'] = this.extensions
 		if (this.customisedModelVersion != undefined) res['customisedModelVersion'] = this.customisedModelVersion
 		res['isEncrypted'] = false
@@ -965,7 +920,8 @@ export class DecryptedPatient {
 			encryptedSelf: expectString(extractEntry(jCpy, 'encryptedSelf', false, path), true, [...path, ".encryptedSelf"]) as Base64String,
 			securityMetadata: expectObject(extractEntry(jCpy, 'securityMetadata', false, path), true, ignoreUnknownKeys, [...path, ".securityMetadata"], SecurityMetadata.fromJSON),
 			cryptoActorProperties: expectArray(extractEntry(jCpy, 'cryptoActorProperties', false, path), false, [...path, ".cryptoActorProperties"], (x0, p0) => expectObject(x0, false, ignoreUnknownKeys, p0, DecryptedPropertyStub.fromJSON)),
-			parentId: expectNullish(extractEntry(jCpy, 'parentId', false, path), [...path, ".parentId"]),
+			dataOwnerGroups: expectArray(extractEntry(jCpy, 'dataOwnerGroups', false, path), false, [...path, ".dataOwnerGroups"], (x0, p0) => { throw new Error(`Array at ${p0} is not allowed to have elements`) }),
+			groupLinkType: expectNullish(extractEntry(jCpy, 'groupLinkType', false, path), [...path, ".groupLinkType"]),
 			extensions: extractEntry(jCpy, 'extensions', false, path),
 			customisedModelVersion: expectNumber(extractEntry(jCpy, 'customisedModelVersion', false, path), true, true, [...path, ".customisedModelVersion"]),
 		})
@@ -1090,16 +1046,8 @@ export class EncryptedPatient {
 	 */
 	civility: string | undefined = undefined;
 
-	/**
-	 *
-	 *  The gender of the patient.
-	 */
 	gender: Gender | undefined = Gender.Unknown;
 
-	/**
-	 *
-	 *  The birth sex of the patient.
-	 */
 	birthSex: Gender | undefined = Gender.Unknown;
 
 	/**
@@ -1144,16 +1092,8 @@ export class EncryptedPatient {
 	 */
 	ssin: string | undefined = undefined;
 
-	/**
-	 *
-	 *  Lastname at birth (can be different from the current name).
-	 */
 	maidenName: string | undefined = undefined;
 
-	/**
-	 *
-	 *  Lastname of the spouse for a married woman.
-	 */
 	spouseName: string | undefined = undefined;
 
 	/**
@@ -1162,22 +1102,10 @@ export class EncryptedPatient {
 	 */
 	partnerName: string | undefined = undefined;
 
-	/**
-	 *
-	 *  The personal/marital status of the patient.
-	 */
 	personalStatus: PersonalStatus | undefined = PersonalStatus.Unknown;
 
-	/**
-	 *
-	 *  The birthdate encoded as a fuzzy date on 8 positions (YYYYMMDD).
-	 */
 	dateOfBirth: number | undefined = undefined;
 
-	/**
-	 *
-	 *  The date of death encoded as a fuzzy date on 8 positions (YYYYMMDD).
-	 */
 	dateOfDeath: number | undefined = undefined;
 
 	/**
@@ -1380,9 +1308,11 @@ export class EncryptedPatient {
 
 	/**
 	 *
-	 *  Always null for patients.
+	 *  The links to the data owners representing the groups this patient belongs to.
 	 */
-	parentId: undefined = undefined;
+	dataOwnerGroups: Array<never> = [];
+
+	groupLinkType: undefined = undefined;
 
 	extensions: Record<string, any> | undefined = undefined;
 
@@ -1459,7 +1389,8 @@ export class EncryptedPatient {
 		if ('encryptedSelf' in partial) this.encryptedSelf = partial.encryptedSelf;
 		if ('securityMetadata' in partial) this.securityMetadata = partial.securityMetadata;
 		if ('cryptoActorProperties' in partial && partial.cryptoActorProperties !== undefined) this.cryptoActorProperties = partial.cryptoActorProperties;
-		if ('parentId' in partial) this.parentId = partial.parentId;
+		if ('dataOwnerGroups' in partial && partial.dataOwnerGroups !== undefined) this.dataOwnerGroups = partial.dataOwnerGroups;
+		if ('groupLinkType' in partial) this.groupLinkType = partial.groupLinkType;
 		if ('extensions' in partial) this.extensions = partial.extensions;
 		if ('customisedModelVersion' in partial) this.customisedModelVersion = partial.customisedModelVersion;
 	}
@@ -1531,7 +1462,8 @@ export class EncryptedPatient {
 		if (this.encryptedSelf != undefined) res['encryptedSelf'] = this.encryptedSelf
 		if (this.securityMetadata != undefined) res['securityMetadata'] = this.securityMetadata.toJSON()
 		res['cryptoActorProperties'] = this.cryptoActorProperties.map((x0) => x0.toJSON() )
-		if (this.parentId != undefined) throw new Error('Unexpected nullish value for parentId')
+		res['dataOwnerGroups'] = this.dataOwnerGroups.map((x0) => { throw new Error("Array is not allowed to have elements") } )
+		if (this.groupLinkType != undefined) throw new Error('Unexpected nullish value for groupLinkType')
 		if (this.extensions != undefined) res['extensions'] = this.extensions
 		if (this.customisedModelVersion != undefined) res['customisedModelVersion'] = this.customisedModelVersion
 		res['isEncrypted'] = true
@@ -1677,7 +1609,8 @@ export class EncryptedPatient {
 			encryptedSelf: expectString(extractEntry(jCpy, 'encryptedSelf', false, path), true, [...path, ".encryptedSelf"]) as Base64String,
 			securityMetadata: expectObject(extractEntry(jCpy, 'securityMetadata', false, path), true, ignoreUnknownKeys, [...path, ".securityMetadata"], SecurityMetadata.fromJSON),
 			cryptoActorProperties: expectArray(extractEntry(jCpy, 'cryptoActorProperties', false, path), false, [...path, ".cryptoActorProperties"], (x0, p0) => expectObject(x0, false, ignoreUnknownKeys, p0, DecryptedPropertyStub.fromJSON)),
-			parentId: expectNullish(extractEntry(jCpy, 'parentId', false, path), [...path, ".parentId"]),
+			dataOwnerGroups: expectArray(extractEntry(jCpy, 'dataOwnerGroups', false, path), false, [...path, ".dataOwnerGroups"], (x0, p0) => { throw new Error(`Array at ${p0} is not allowed to have elements`) }),
+			groupLinkType: expectNullish(extractEntry(jCpy, 'groupLinkType', false, path), [...path, ".groupLinkType"]),
 			extensions: extractEntry(jCpy, 'extensions', false, path),
 			customisedModelVersion: expectNumber(extractEntry(jCpy, 'customisedModelVersion', false, path), true, true, [...path, ".customisedModelVersion"]),
 		})

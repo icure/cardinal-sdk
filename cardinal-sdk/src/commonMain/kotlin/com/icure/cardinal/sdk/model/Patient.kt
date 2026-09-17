@@ -67,10 +67,8 @@ import kotlin.ByteArray
 import com.icure.cardinal.sdk.model.embed.DeactivationReason
 
 /**
- * Represents a patient in the iCure platform. A patient is a person who receives healthcare
- * services.
- * This entity stores personal, administrative, and medical information about the patient, and
- * supports
+ * Represents a patient in the iCure platform. A patient is a person who receives healthcare services.
+ * This entity stores personal, administrative, and medical information about the patient, and supports
  * end-to-end encryption of sensitive data.
  * /
  */
@@ -410,10 +408,8 @@ sealed interface Patient :
 }
 
 /**
- * Represents a patient in the iCure platform. A patient is a person who receives healthcare
- * services.
- * This entity stores personal, administrative, and medical information about the patient, and
- * supports
+ * Represents a patient in the iCure platform. A patient is a person who receives healthcare services.
+ * This entity stores personal, administrative, and medical information about the patient, and supports
  * end-to-end encryption of sensitive data.
  * /
  */
@@ -606,8 +602,7 @@ data class DecryptedPatient(
 	 * Financial information used to reimburse the patient.
 	 */
 	@param:DefaultValue("emptyList()")
-	override val financialInstitutionInformation: List<DecryptedFinancialInstitutionInformation> =
-		emptyList(),
+	override val financialInstitutionInformation: List<DecryptedFinancialInstitutionInformation> = emptyList(),
 	/**
 	 * Contracts between the patient and the healthcare entity.
 	 */
@@ -637,14 +632,14 @@ data class DecryptedPatient(
 	 * Extra AES exchange keys, indexed by the owner of the pair and target data owner id.
 	 */
 	@param:DefaultValue("emptyMap()")
-	override val aesExchangeKeys: Map<AesExchangeKeyEntryKeyString, Map<String, Map<AesExchangeKeyEncryptionKeypairIdentifier, HexString>>> =
-		emptyMap(),
+	override val aesExchangeKeys:
+		Map<AesExchangeKeyEntryKeyString, Map<String, Map<AesExchangeKeyEncryptionKeypairIdentifier, HexString>>> = emptyMap(),
 	/**
 	 * Keys used to transfer ownership of encrypted data between key pairs.
 	 */
 	@param:DefaultValue("emptyMap()")
-	override val transferKeys: Map<AesExchangeKeyEncryptionKeypairIdentifier, Map<AesExchangeKeyEncryptionKeypairIdentifier, HexString>> =
-		emptyMap(),
+	override val transferKeys:
+		Map<AesExchangeKeyEncryptionKeypairIdentifier, Map<AesExchangeKeyEncryptionKeypairIdentifier, HexString>> = emptyMap(),
 	/**
 	 * Shamir partitions of the private key.
 	 */
@@ -707,10 +702,8 @@ override fun copyWithSecurityMetadata(securityMetadata: SecurityMetadata, secret
 }
 
 /**
- * Represents a patient in the iCure platform. A patient is a person who receives healthcare
- * services.
- * This entity stores personal, administrative, and medical information about the patient, and
- * supports
+ * Represents a patient in the iCure platform. A patient is a person who receives healthcare services.
+ * This entity stores personal, administrative, and medical information about the patient, and supports
  * end-to-end encryption of sensitive data.
  * /
  */
@@ -903,8 +896,7 @@ data class EncryptedPatient(
 	 * Financial information used to reimburse the patient.
 	 */
 	@param:DefaultValue("emptyList()")
-	override val financialInstitutionInformation: List<EncryptedFinancialInstitutionInformation> =
-		emptyList(),
+	override val financialInstitutionInformation: List<EncryptedFinancialInstitutionInformation> = emptyList(),
 	/**
 	 * Contracts between the patient and the healthcare entity.
 	 */
@@ -934,14 +926,14 @@ data class EncryptedPatient(
 	 * Extra AES exchange keys, indexed by the owner of the pair and target data owner id.
 	 */
 	@param:DefaultValue("emptyMap()")
-	override val aesExchangeKeys: Map<AesExchangeKeyEntryKeyString, Map<String, Map<AesExchangeKeyEncryptionKeypairIdentifier, HexString>>> =
-		emptyMap(),
+	override val aesExchangeKeys:
+		Map<AesExchangeKeyEntryKeyString, Map<String, Map<AesExchangeKeyEncryptionKeypairIdentifier, HexString>>> = emptyMap(),
 	/**
 	 * Keys used to transfer ownership of encrypted data between key pairs.
 	 */
 	@param:DefaultValue("emptyMap()")
-	override val transferKeys: Map<AesExchangeKeyEncryptionKeypairIdentifier, Map<AesExchangeKeyEncryptionKeypairIdentifier, HexString>> =
-		emptyMap(),
+	override val transferKeys:
+		Map<AesExchangeKeyEncryptionKeypairIdentifier, Map<AesExchangeKeyEncryptionKeypairIdentifier, HexString>> = emptyMap(),
 	/**
 	 * Shamir partitions of the private key.
 	 */

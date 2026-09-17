@@ -29,8 +29,7 @@ import kotlin.collections.Map
 import kotlin.collections.Set
 
 /**
- * Represents a device that sends medical data. This is a root-level entity stored in the
- * icure-device CouchDB database.
+ * Represents a device that sends medical data. This is a root-level entity stored in the icure-device CouchDB database.
  * A device can act as a data owner and crypto actor for secure data exchange.
  * /
  */
@@ -119,14 +118,14 @@ data class Device(
 	 * Extra AES exchange keys, usually keys that were lost access to at some point.
 	 */
 	@param:DefaultValue("emptyMap()")
-	override val aesExchangeKeys: Map<AesExchangeKeyEntryKeyString, Map<String, Map<AesExchangeKeyEncryptionKeypairIdentifier, HexString>>> =
-		emptyMap(),
+	override val aesExchangeKeys:
+		Map<AesExchangeKeyEntryKeyString, Map<String, Map<AesExchangeKeyEncryptionKeypairIdentifier, HexString>>> = emptyMap(),
 	/**
 	 * Private keys encrypted with public keys for key transfer.
 	 */
 	@param:DefaultValue("emptyMap()")
-	override val transferKeys: Map<AesExchangeKeyEncryptionKeypairIdentifier, Map<AesExchangeKeyEncryptionKeypairIdentifier, HexString>> =
-		emptyMap(),
+	override val transferKeys:
+		Map<AesExchangeKeyEncryptionKeypairIdentifier, Map<AesExchangeKeyEncryptionKeypairIdentifier, HexString>> = emptyMap(),
 	/**
 	 * Shamir partitions of this device's RSA private keys, encrypted with notary public keys.
 	 */

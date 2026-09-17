@@ -30,8 +30,7 @@ public external interface AccessLogApiJs {
 
 	public val inGroup: AccessLogInGroupApiJs
 
-	public fun withEncryptionMetadata(base: DecryptedAccessLogJs?, options: dynamic):
-			Promise<DecryptedAccessLogJs>
+	public fun withEncryptionMetadata(base: DecryptedAccessLogJs?, options: dynamic): Promise<DecryptedAccessLogJs>
 
 	public fun withEncryptionMetadataAndDelegates(
 		base: DecryptedAccessLogJs?,
@@ -45,8 +44,7 @@ public external interface AccessLogApiJs {
 
 	public fun decryptPatientIdOf(accessLog: AccessLogJs): Promise<Array<EntityReferenceInGroupJs>>
 
-	public fun createDelegationDeAnonymizationMetadata(entity: AccessLogJs, delegates: Array<String>):
-			Promise<Unit>
+	public fun createDelegationDeAnonymizationMetadata(entity: AccessLogJs, delegates: Array<String>): Promise<Unit>
 
 	public fun decrypt(accessLog: EncryptedAccessLogJs): Promise<DecryptedAccessLogJs>
 
@@ -54,28 +52,23 @@ public external interface AccessLogApiJs {
 
 	public fun matchAccessLogsBy(filter: FilterOptionsJs<AccessLogJs>): Promise<Array<String>>
 
-	public fun matchAccessLogsBySorted(filter: SortableFilterOptionsJs<AccessLogJs>):
-			Promise<Array<String>>
+	public fun matchAccessLogsBySorted(filter: SortableFilterOptionsJs<AccessLogJs>): Promise<Array<String>>
 
 	public fun deleteAccessLogById(entityId: String, rev: String): Promise<StoredDocumentIdentifierJs>
 
-	public fun deleteAccessLogsByIds(entityIds: Array<StoredDocumentIdentifierJs>):
-			Promise<Array<StoredDocumentIdentifierJs>>
+	public fun deleteAccessLogsByIds(entityIds: Array<StoredDocumentIdentifierJs>): Promise<Array<StoredDocumentIdentifierJs>>
 
 	public fun purgeAccessLogById(id: String, rev: String): Promise<Unit>
 
-	public fun purgeAccessLogsByIds(entityIds: Array<StoredDocumentIdentifierJs>):
-			Promise<Array<StoredDocumentIdentifierJs>>
+	public fun purgeAccessLogsByIds(entityIds: Array<StoredDocumentIdentifierJs>): Promise<Array<StoredDocumentIdentifierJs>>
 
 	public fun deleteAccessLog(accessLog: AccessLogJs): Promise<StoredDocumentIdentifierJs>
 
-	public fun deleteAccessLogs(accessLogs: Array<AccessLogJs>):
-			Promise<Array<StoredDocumentIdentifierJs>>
+	public fun deleteAccessLogs(accessLogs: Array<AccessLogJs>): Promise<Array<StoredDocumentIdentifierJs>>
 
 	public fun purgeAccessLog(accessLog: AccessLogJs): Promise<Unit>
 
-	public fun purgeAccessLogs(accessLogs: Array<AccessLogJs>):
-			Promise<Array<StoredDocumentIdentifierJs>>
+	public fun purgeAccessLogs(accessLogs: Array<AccessLogJs>): Promise<Array<StoredDocumentIdentifierJs>>
 
 	public fun shareWith(
 		delegateId: String,
@@ -83,24 +76,19 @@ public external interface AccessLogApiJs {
 		options: dynamic,
 	): Promise<DecryptedAccessLogJs>
 
-	public fun shareWithMany(accessLog: DecryptedAccessLogJs,
-			delegates: Record<String, AccessLogShareOptionsJs>): Promise<DecryptedAccessLogJs>
+	public fun shareWithMany(accessLog: DecryptedAccessLogJs, delegates: Record<String, AccessLogShareOptionsJs>): Promise<DecryptedAccessLogJs>
 
-	public fun filterAccessLogsBy(filter: FilterOptionsJs<AccessLogJs>):
-			Promise<PaginatedListIteratorJs<DecryptedAccessLogJs>>
+	public fun filterAccessLogsBy(filter: FilterOptionsJs<AccessLogJs>): Promise<PaginatedListIteratorJs<DecryptedAccessLogJs>>
 
-	public fun filterAccessLogsBySorted(filter: SortableFilterOptionsJs<AccessLogJs>):
-			Promise<PaginatedListIteratorJs<DecryptedAccessLogJs>>
+	public fun filterAccessLogsBySorted(filter: SortableFilterOptionsJs<AccessLogJs>): Promise<PaginatedListIteratorJs<DecryptedAccessLogJs>>
 
 	public fun createAccessLog(entity: DecryptedAccessLogJs): Promise<DecryptedAccessLogJs>
 
-	public fun createAccessLogs(entities: Array<DecryptedAccessLogJs>):
-			Promise<Array<DecryptedAccessLogJs>>
+	public fun createAccessLogs(entities: Array<DecryptedAccessLogJs>): Promise<Array<DecryptedAccessLogJs>>
 
 	public fun undeleteAccessLogById(id: String, rev: String): Promise<DecryptedAccessLogJs>
 
-	public fun undeleteAccessLogsByIds(entityIds: Array<StoredDocumentIdentifierJs>):
-			Promise<Array<DecryptedAccessLogJs>>
+	public fun undeleteAccessLogsByIds(entityIds: Array<StoredDocumentIdentifierJs>): Promise<Array<DecryptedAccessLogJs>>
 
 	public fun undeleteAccessLog(accessLog: AccessLogJs): Promise<DecryptedAccessLogJs>
 
@@ -108,8 +96,7 @@ public external interface AccessLogApiJs {
 
 	public fun modifyAccessLog(entity: DecryptedAccessLogJs): Promise<DecryptedAccessLogJs>
 
-	public fun modifyAccessLogs(entities: Array<DecryptedAccessLogJs>):
-			Promise<Array<DecryptedAccessLogJs>>
+	public fun modifyAccessLogs(entities: Array<DecryptedAccessLogJs>): Promise<Array<DecryptedAccessLogJs>>
 
 	public fun getAccessLog(entityId: String): Promise<DecryptedAccessLogJs?>
 

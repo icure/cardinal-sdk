@@ -12,28 +12,21 @@ import com.icure.cardinal.sdk.model.EntityReferenceInGroup
 import kotlin.Array
 import kotlin.collections.Map
 
-public external interface
-    EntityReferenceInGroupToCalendarItemDelegateOptionsMapObject_delegate_delegateOptions {
+public external interface EntityReferenceInGroupToCalendarItemDelegateOptionsMapObject_delegate_delegateOptions {
   public val `delegate`: EntityReferenceInGroupJs
 
   public val delegateOptions: CalendarItemDelegateOptionsJs
 }
 
-public
-    fun EntityReferenceInGroupToCalendarItemDelegateOptionsMapObject_delegate_delegateOptions_toJs(ktMap: Map<EntityReferenceInGroup, CalendarItemDelegateOptions>):
-    Array<EntityReferenceInGroupToCalendarItemDelegateOptionsMapObject_delegate_delegateOptions> =
-    ktMap.map { entry ->
+public fun EntityReferenceInGroupToCalendarItemDelegateOptionsMapObject_delegate_delegateOptions_toJs(ktMap: Map<EntityReferenceInGroup, CalendarItemDelegateOptions>): Array<EntityReferenceInGroupToCalendarItemDelegateOptionsMapObject_delegate_delegateOptions> = ktMap.map { entry ->
   val delegateKt = entry.key
   val delegate: EntityReferenceInGroupJs = entityReferenceInGroup_toJs(delegateKt)
   val delegateOptionsKt = entry.value
-  val delegateOptions: CalendarItemDelegateOptionsJs =
-      calendarItemDelegateOptions_toJs(delegateOptionsKt)
+  val delegateOptions: CalendarItemDelegateOptionsJs = calendarItemDelegateOptions_toJs(delegateOptionsKt)
   js("{delegate: delegate, delegateOptions: delegateOptions}")
 }.toTypedArray()
 
-public
-    fun EntityReferenceInGroupToCalendarItemDelegateOptionsMapObject_delegate_delegateOptions_fromJs(jsArray: Array<EntityReferenceInGroupToCalendarItemDelegateOptionsMapObject_delegate_delegateOptions>):
-    Map<EntityReferenceInGroup, CalendarItemDelegateOptions> = CheckedConverters.objectArrayToMap(
+public fun EntityReferenceInGroupToCalendarItemDelegateOptionsMapObject_delegate_delegateOptions_fromJs(jsArray: Array<EntityReferenceInGroupToCalendarItemDelegateOptionsMapObject_delegate_delegateOptions>): Map<EntityReferenceInGroup, CalendarItemDelegateOptions> = CheckedConverters.objectArrayToMap(
   jsArray,
   { entry ->
     val key = entry.delegate

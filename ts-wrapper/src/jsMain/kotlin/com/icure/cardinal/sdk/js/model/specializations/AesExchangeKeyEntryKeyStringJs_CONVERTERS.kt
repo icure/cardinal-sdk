@@ -8,5 +8,4 @@ import kotlin.Suppress
 @Suppress("UNUSED_VARIABLE")
 public fun aesExchangeKeyEntryKeyString_toJs(obj: AesExchangeKeyEntryKeyString): String = obj.s
 
-public fun aesExchangeKeyEntryKeyString_fromJs(obj: String): AesExchangeKeyEntryKeyString =
-		AesExchangeKeyEntryKeyString(obj)
+public fun aesExchangeKeyEntryKeyString_fromJs(obj: String): AesExchangeKeyEntryKeyString = AesExchangeKeyEntryKeyString(obj)

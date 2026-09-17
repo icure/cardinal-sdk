@@ -20,7 +20,8 @@ data class AllHealthcarePartiesFilter(
 	 * Optional description of this filter.
 	 */
 	override val desc: String? = null,
-) : AbstractFilter<HealthcareParty>, Filter.AllFilter<HealthcareParty> {
+) : AbstractFilter<HealthcareParty>,
+	Filter.AllFilter<HealthcareParty> {
 	// region AllHealthcarePartiesFilter-AllHealthcarePartiesFilter
 
 	// endregion

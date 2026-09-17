@@ -27,10 +27,8 @@ import kotlin.Deprecated
 
 /**
  *
- *  Represents an agenda that keeps track of appointments (calendar items) for a resource or group
- * of resources.
- *  An agenda can specify a schedule for its resources and allows managing availabilities for
- * booking.
+ *  Represents an agenda that keeps track of appointments (calendar items) for a resource or group of resources.
+ *  An agenda can specify a schedule for its resources and allows managing availabilities for booking.
  */
 @Serializable
 data class Agenda(
@@ -77,8 +75,7 @@ data class Agenda(
 	 */
 	override val deletionDate: Long? = null,
 	/**
-	 * A fuzzy time in HHMMSS format used to split working hours into blocks for availabilities
-	 * computation.
+	 * A fuzzy time in HHMMSS format used to split working hours into blocks for availabilities computation.
 	 */
 	public val daySplitHour: Int? = null,
 	/**

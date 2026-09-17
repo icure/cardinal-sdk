@@ -312,8 +312,7 @@ public fun invoicingCode_fromJs(obj: DecryptedInvoicingCodeJs): DecryptedInvoici
 	val archived = undefinedToNull(obj.archived)
 	val lost = undefinedToNull(obj.lost)
 	val insuranceJustification = numberToInt(obj.insuranceJustification, "obj.insuranceJustification")
-	val cancelPatientInterventionReason = numberToInt(obj.cancelPatientInterventionReason,
-			"obj.cancelPatientInterventionReason")
+	val cancelPatientInterventionReason = numberToInt(obj.cancelPatientInterventionReason, "obj.cancelPatientInterventionReason")
 	val status = numberToLong(obj.status, "obj.status")
 	val codeLabel = undefinedToNull(obj.codeLabel)
 	val options = objectToMap(
@@ -683,8 +682,7 @@ public fun invoicingCode_fromJs(obj: EncryptedInvoicingCodeJs): EncryptedInvoici
 	val archived = undefinedToNull(obj.archived)
 	val lost = undefinedToNull(obj.lost)
 	val insuranceJustification = numberToInt(obj.insuranceJustification, "obj.insuranceJustification")
-	val cancelPatientInterventionReason = numberToInt(obj.cancelPatientInterventionReason,
-			"obj.cancelPatientInterventionReason")
+	val cancelPatientInterventionReason = numberToInt(obj.cancelPatientInterventionReason, "obj.cancelPatientInterventionReason")
 	val status = numberToLong(obj.status, "obj.status")
 	val codeLabel = undefinedToNull(obj.codeLabel)
 	val options = objectToMap(

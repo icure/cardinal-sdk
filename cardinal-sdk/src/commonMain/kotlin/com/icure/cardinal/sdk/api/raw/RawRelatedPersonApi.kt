@@ -3,13 +3,16 @@ package com.icure.cardinal.sdk.api.raw
 import com.icure.cardinal.sdk.model.EncryptedRelatedPerson
 import com.icure.cardinal.sdk.model.ListOfIds
 import com.icure.cardinal.sdk.model.ListOfIdsAndRev
+import com.icure.cardinal.sdk.model.PaginatedList
 import com.icure.cardinal.sdk.model.RelatedPerson
 import com.icure.cardinal.sdk.model.conflicts.ConflictResolutionRequest
 import com.icure.cardinal.sdk.model.conflicts.ConflictResolutionResult
 import com.icure.cardinal.sdk.model.conflicts.ConflictResolutionStrategy
 import com.icure.cardinal.sdk.model.conflicts.MergeResult
 import com.icure.cardinal.sdk.model.couchdb.DocIdentifier
+import com.icure.cardinal.sdk.model.dao.IdWithValue
 import com.icure.cardinal.sdk.model.filter.AbstractFilter
+import com.icure.cardinal.sdk.model.filter.CustomFilter
 import com.icure.cardinal.sdk.model.requests.BulkShareOrUpdateMetadataParams
 import com.icure.cardinal.sdk.model.requests.EntityBulkShareResult
 import com.icure.utils.InternalIcureApi
@@ -68,7 +71,7 @@ public interface RawRelatedPersonApi {
 
 	suspend fun getConflictsForEntity(entityId: String): HttpResponse<List<EncryptedRelatedPerson>>
 
-	public suspend fun declareConflictWinner(
+	suspend fun declareConflictWinner(
 		request: ConflictResolutionRequest<EncryptedRelatedPerson>,
 	): HttpResponse<ConflictResolutionResult<EncryptedRelatedPerson>>
 
@@ -76,6 +79,8 @@ public interface RawRelatedPersonApi {
 		entityIds: List<String>,
 		strategy: ConflictResolutionStrategy?,
 	): HttpResponse<List<MergeResult>>
+
+	suspend fun matchRelatedPersonsByCustomFilter(filter: CustomFilter): HttpResponse<PaginatedList<IdWithValue>>
 	// endregion
 
 	// region cloud endpoints
@@ -170,5 +175,10 @@ public interface RawRelatedPersonApi {
 		entityIds: List<String>,
 		strategy: ConflictResolutionStrategy?,
 	): HttpResponse<List<MergeResult>>
+
+	suspend fun matchRelatedPersonsByCustomFilterInGroup(
+		groupId: String,
+		filter: CustomFilter,
+	): HttpResponse<PaginatedList<IdWithValue>>
 	// endregion
 }

@@ -25,18 +25,15 @@ public external interface AgendaApiJs {
 
 	public fun deleteAgendaById(entityId: String, rev: String): Promise<StoredDocumentIdentifierJs>
 
-	public fun deleteAgendasByIds(entityIds: Array<StoredDocumentIdentifierJs>):
-			Promise<Array<StoredDocumentIdentifierJs>>
+	public fun deleteAgendasByIds(entityIds: Array<StoredDocumentIdentifierJs>): Promise<Array<StoredDocumentIdentifierJs>>
 
 	public fun purgeAgendaById(id: String, rev: String): Promise<Unit>
 
-	public fun purgeAgendasByIds(entityIds: Array<StoredDocumentIdentifierJs>):
-			Promise<Array<StoredDocumentIdentifierJs>>
+	public fun purgeAgendasByIds(entityIds: Array<StoredDocumentIdentifierJs>): Promise<Array<StoredDocumentIdentifierJs>>
 
 	public fun undeleteAgendaById(id: String, rev: String): Promise<AgendaJs>
 
-	public fun undeleteAgendasByIds(entityIds: Array<StoredDocumentIdentifierJs>):
-			Promise<Array<AgendaJs>>
+	public fun undeleteAgendasByIds(entityIds: Array<StoredDocumentIdentifierJs>): Promise<Array<AgendaJs>>
 
 	public fun deleteAgenda(agenda: AgendaJs): Promise<StoredDocumentIdentifierJs>
 
@@ -60,12 +57,9 @@ public external interface AgendaApiJs {
 
 	public fun matchAgendasBy(filter: BaseFilterOptionsJs<AgendaJs>): Promise<Array<String>>
 
-	public fun matchAgendasBySorted(filter: BaseSortableFilterOptionsJs<AgendaJs>):
-			Promise<Array<String>>
+	public fun matchAgendasBySorted(filter: BaseSortableFilterOptionsJs<AgendaJs>): Promise<Array<String>>
 
-	public fun filterAgendasBy(filter: BaseFilterOptionsJs<AgendaJs>):
-			Promise<PaginatedListIteratorJs<AgendaJs>>
+	public fun filterAgendasBy(filter: BaseFilterOptionsJs<AgendaJs>): Promise<PaginatedListIteratorJs<AgendaJs>>
 
-	public fun filterAgendasBySorted(filter: BaseSortableFilterOptionsJs<AgendaJs>):
-			Promise<PaginatedListIteratorJs<AgendaJs>>
+	public fun filterAgendasBySorted(filter: BaseSortableFilterOptionsJs<AgendaJs>): Promise<PaginatedListIteratorJs<AgendaJs>>
 }

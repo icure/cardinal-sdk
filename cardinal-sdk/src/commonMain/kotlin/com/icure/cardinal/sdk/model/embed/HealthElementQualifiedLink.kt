@@ -6,16 +6,14 @@ import kotlinx.serialization.Serializable
 import kotlin.String
 
 /**
- * A directed, qualified link from one healthcare element to another. Links should be created in a
- * single direction:
+ * A directed, qualified link from one healthcare element to another. Links should be created in a single direction:
  * the reverse link can be found through a view.
  * /
  */
 @Serializable
 data class HealthElementQualifiedLink(
 	/**
-	 * The qualification of the link. Free string; using the names of LinkQualification entries is
-	 * encouraged but not enforced.
+	 * The qualification of the link. Free string; using the names of LinkQualification entries is encouraged but not enforced.
 	 */
 	public val type: String,
 	/**

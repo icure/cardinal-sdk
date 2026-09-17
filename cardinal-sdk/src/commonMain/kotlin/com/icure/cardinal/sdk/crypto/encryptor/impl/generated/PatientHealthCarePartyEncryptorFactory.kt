@@ -1,4 +1,6 @@
 // This file is auto-generated
+@file:Suppress("ktlint:standard:max-line-length")
+
 package com.icure.cardinal.sdk.crypto.encryptor.`impl`.generated
 
 import com.icure.cardinal.sdk.crypto.encryptor.EntityEncryptor
@@ -20,14 +22,13 @@ import kotlinx.serialization.json.JsonObject
 import kotlinx.serialization.json.encodeToJsonElement
 import kotlin.Boolean
 import kotlin.String
+import kotlin.Suppress
 
 @InternalIcureApi
-internal object PatientHealthCarePartyEncryptorFactory :
-	EntityEncryptorFactory<EncryptedPatientHealthCareParty, DecryptedPatientHealthCareParty> {
+internal object PatientHealthCarePartyEncryptorFactory : EntityEncryptorFactory<EncryptedPatientHealthCareParty, DecryptedPatientHealthCareParty> {
 	override val empty:
 		EntityEncryptor<EncryptedPatientHealthCareParty, DecryptedPatientHealthCareParty> =
-		object :
-			EntityEncryptor<EncryptedPatientHealthCareParty, DecryptedPatientHealthCareParty> {
+		object : EntityEncryptor<EncryptedPatientHealthCareParty, DecryptedPatientHealthCareParty> {
 			override suspend fun encrypt(
 				encryptionKey: AesKey<AesAlgorithm.CbcWithPkcs7Padding>,
 				clearEntity: DecryptedPatientHealthCareParty,
@@ -91,8 +92,7 @@ private class PatientHealthCarePartyEncryptor(
 	private val properties_e: EncryptableFieldConfig<EncryptedPropertyStub, DecryptedPropertyStub>,
 	private val encodingJson: Json,
 	cryptoService: CryptoService,
-) :
-	AbstractEntityEncryptor<EncryptedPatientHealthCareParty, DecryptedPatientHealthCareParty>(cryptoService) {
+) : AbstractEntityEncryptor<EncryptedPatientHealthCareParty, DecryptedPatientHealthCareParty>(cryptoService) {
 	override suspend fun encrypt(
 		encryptionKey: AesKey<AesAlgorithm.CbcWithPkcs7Padding>,
 		clearEntity: DecryptedPatientHealthCareParty,

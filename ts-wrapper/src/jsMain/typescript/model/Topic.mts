@@ -6,6 +6,7 @@ import {CodeStub} from './base/CodeStub.mjs';
 import {CustomisableRoot} from './base/CustomisableRoot.mjs';
 import {Extendable} from './base/Extendable.mjs';
 import {HasEncryptionMetadata} from './base/HasEncryptionMetadata.mjs';
+import {HasMedicalLocation} from './base/HasMedicalLocation.mjs';
 import {ICureDocument} from './base/ICureDocument.mjs';
 import {StoredDocument} from './base/StoredDocument.mjs';
 import {Delegation} from './embed/Delegation.mjs';
@@ -21,7 +22,7 @@ import {Base64String} from './specializations/Base64String.mjs';
  *  and can be linked to health elements and services for medical context.
  *  /
  */
-export interface Topic extends StoredDocument, ICureDocument<string>, HasEncryptionMetadata, Encryptable, CustomisableRoot, Extendable {
+export interface Topic extends StoredDocument, ICureDocument<string>, HasMedicalLocation, HasEncryptionMetadata, Encryptable, CustomisableRoot, Extendable {
 
 	/**
 	 *

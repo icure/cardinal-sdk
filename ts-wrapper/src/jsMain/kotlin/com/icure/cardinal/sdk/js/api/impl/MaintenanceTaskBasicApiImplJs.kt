@@ -49,8 +49,7 @@ import kotlinx.coroutines.promise
 internal class MaintenanceTaskBasicApiImplJs(
 	private val maintenanceTaskBasicApi: MaintenanceTaskBasicApi,
 ) : MaintenanceTaskBasicApiJs {
-	override fun matchMaintenanceTasksBy(filter: BaseFilterOptionsJs<MaintenanceTaskJs>):
-			Promise<Array<String>> = GlobalScope.promise {
+	override fun matchMaintenanceTasksBy(filter: BaseFilterOptionsJs<MaintenanceTaskJs>): Promise<Array<String>> = GlobalScope.promise {
 		val filterConverted: BaseFilterOptions<MaintenanceTask> = baseFilterOptions_fromJs(filter)
 		val result = maintenanceTaskBasicApi.matchMaintenanceTasksBy(
 			filterConverted,
@@ -63,10 +62,8 @@ internal class MaintenanceTaskBasicApiImplJs(
 		)
 	}
 
-	override fun matchMaintenanceTasksBySorted(filter: BaseSortableFilterOptionsJs<MaintenanceTaskJs>):
-			Promise<Array<String>> = GlobalScope.promise {
-		val filterConverted: BaseSortableFilterOptions<MaintenanceTask> =
-				baseSortableFilterOptions_fromJs(filter)
+	override fun matchMaintenanceTasksBySorted(filter: BaseSortableFilterOptionsJs<MaintenanceTaskJs>): Promise<Array<String>> = GlobalScope.promise {
+		val filterConverted: BaseSortableFilterOptions<MaintenanceTask> = baseSortableFilterOptions_fromJs(filter)
 		val result = maintenanceTaskBasicApi.matchMaintenanceTasksBySorted(
 			filterConverted,
 		)
@@ -78,8 +75,7 @@ internal class MaintenanceTaskBasicApiImplJs(
 		)
 	}
 
-	override fun filterMaintenanceTasksBy(filter: BaseFilterOptionsJs<MaintenanceTaskJs>):
-			Promise<PaginatedListIteratorJs<EncryptedMaintenanceTaskJs>> = GlobalScope.promise {
+	override fun filterMaintenanceTasksBy(filter: BaseFilterOptionsJs<MaintenanceTaskJs>): Promise<PaginatedListIteratorJs<EncryptedMaintenanceTaskJs>> = GlobalScope.promise {
 		val filterConverted: BaseFilterOptions<MaintenanceTask> = baseFilterOptions_fromJs(filter)
 		val result = maintenanceTaskBasicApi.filterMaintenanceTasksBy(
 			filterConverted,
@@ -92,11 +88,8 @@ internal class MaintenanceTaskBasicApiImplJs(
 		)
 	}
 
-	override
-			fun filterMaintenanceTasksBySorted(filter: BaseSortableFilterOptionsJs<MaintenanceTaskJs>):
-			Promise<PaginatedListIteratorJs<EncryptedMaintenanceTaskJs>> = GlobalScope.promise {
-		val filterConverted: BaseSortableFilterOptions<MaintenanceTask> =
-				baseSortableFilterOptions_fromJs(filter)
+	override fun filterMaintenanceTasksBySorted(filter: BaseSortableFilterOptionsJs<MaintenanceTaskJs>): Promise<PaginatedListIteratorJs<EncryptedMaintenanceTaskJs>> = GlobalScope.promise {
+		val filterConverted: BaseSortableFilterOptions<MaintenanceTask> = baseSortableFilterOptions_fromJs(filter)
 		val result = maintenanceTaskBasicApi.filterMaintenanceTasksBySorted(
 			filterConverted,
 		)
@@ -108,8 +101,7 @@ internal class MaintenanceTaskBasicApiImplJs(
 		)
 	}
 
-	override fun deleteMaintenanceTaskUnsafe(entityId: String): Promise<DocIdentifierJs> =
-			GlobalScope.promise {
+	override fun deleteMaintenanceTaskUnsafe(entityId: String): Promise<DocIdentifierJs> = GlobalScope.promise {
 		val entityIdConverted: String = entityId
 		val result = maintenanceTaskBasicApi.deleteMaintenanceTaskUnsafe(
 			entityIdConverted,
@@ -117,8 +109,7 @@ internal class MaintenanceTaskBasicApiImplJs(
 		docIdentifier_toJs(result)
 	}
 
-	override fun deleteMaintenanceTasksUnsafe(entityIds: Array<String>):
-			Promise<Array<DocIdentifierJs>> = GlobalScope.promise {
+	override fun deleteMaintenanceTasksUnsafe(entityIds: Array<String>): Promise<Array<DocIdentifierJs>> = GlobalScope.promise {
 		val entityIdsConverted: List<String> = arrayToList(
 			entityIds,
 			"entityIds",
@@ -137,8 +128,7 @@ internal class MaintenanceTaskBasicApiImplJs(
 		)
 	}
 
-	override fun deleteMaintenanceTaskById(entityId: String, rev: String): Promise<DocIdentifierJs> =
-			GlobalScope.promise {
+	override fun deleteMaintenanceTaskById(entityId: String, rev: String): Promise<DocIdentifierJs> = GlobalScope.promise {
 		val entityIdConverted: String = entityId
 		val revConverted: String = rev
 		val result = maintenanceTaskBasicApi.deleteMaintenanceTaskById(
@@ -148,8 +138,7 @@ internal class MaintenanceTaskBasicApiImplJs(
 		docIdentifier_toJs(result)
 	}
 
-	override fun deleteMaintenanceTasksByIds(entityIds: Array<StoredDocumentIdentifierJs>):
-			Promise<Array<DocIdentifierJs>> = GlobalScope.promise {
+	override fun deleteMaintenanceTasksByIds(entityIds: Array<StoredDocumentIdentifierJs>): Promise<Array<DocIdentifierJs>> = GlobalScope.promise {
 		val entityIdsConverted: List<StoredDocumentIdentifier> = arrayToList(
 			entityIds,
 			"entityIds",
@@ -168,8 +157,7 @@ internal class MaintenanceTaskBasicApiImplJs(
 		)
 	}
 
-	override fun purgeMaintenanceTaskById(id: String, rev: String): Promise<Unit> =
-			GlobalScope.promise {
+	override fun purgeMaintenanceTaskById(id: String, rev: String): Promise<Unit> = GlobalScope.promise {
 		val idConverted: String = id
 		val revConverted: String = rev
 		maintenanceTaskBasicApi.purgeMaintenanceTaskById(
@@ -179,8 +167,7 @@ internal class MaintenanceTaskBasicApiImplJs(
 
 	}
 
-	override fun deleteMaintenanceTask(maintenanceTask: MaintenanceTaskJs): Promise<DocIdentifierJs> =
-			GlobalScope.promise {
+	override fun deleteMaintenanceTask(maintenanceTask: MaintenanceTaskJs): Promise<DocIdentifierJs> = GlobalScope.promise {
 		val maintenanceTaskConverted: MaintenanceTask = maintenanceTask_fromJs(maintenanceTask)
 		val result = maintenanceTaskBasicApi.deleteMaintenanceTask(
 			maintenanceTaskConverted,
@@ -188,8 +175,7 @@ internal class MaintenanceTaskBasicApiImplJs(
 		docIdentifier_toJs(result)
 	}
 
-	override fun deleteMaintenanceTasks(maintenanceTasks: Array<MaintenanceTaskJs>):
-			Promise<Array<DocIdentifierJs>> = GlobalScope.promise {
+	override fun deleteMaintenanceTasks(maintenanceTasks: Array<MaintenanceTaskJs>): Promise<Array<DocIdentifierJs>> = GlobalScope.promise {
 		val maintenanceTasksConverted: List<MaintenanceTask> = arrayToList(
 			maintenanceTasks,
 			"maintenanceTasks",
@@ -208,8 +194,7 @@ internal class MaintenanceTaskBasicApiImplJs(
 		)
 	}
 
-	override fun purgeMaintenanceTask(maintenanceTask: MaintenanceTaskJs): Promise<Unit> =
-			GlobalScope.promise {
+	override fun purgeMaintenanceTask(maintenanceTask: MaintenanceTaskJs): Promise<Unit> = GlobalScope.promise {
 		val maintenanceTaskConverted: MaintenanceTask = maintenanceTask_fromJs(maintenanceTask)
 		maintenanceTaskBasicApi.purgeMaintenanceTask(
 			maintenanceTaskConverted,
@@ -217,8 +202,7 @@ internal class MaintenanceTaskBasicApiImplJs(
 
 	}
 
-	override fun createMaintenanceTask(entity: EncryptedMaintenanceTaskJs):
-			Promise<EncryptedMaintenanceTaskJs> = GlobalScope.promise {
+	override fun createMaintenanceTask(entity: EncryptedMaintenanceTaskJs): Promise<EncryptedMaintenanceTaskJs> = GlobalScope.promise {
 		val entityConverted: EncryptedMaintenanceTask = maintenanceTask_fromJs(entity)
 		val result = maintenanceTaskBasicApi.createMaintenanceTask(
 			entityConverted,
@@ -226,8 +210,7 @@ internal class MaintenanceTaskBasicApiImplJs(
 		maintenanceTask_toJs(result)
 	}
 
-	override fun undeleteMaintenanceTask(maintenanceTask: MaintenanceTaskJs):
-			Promise<MaintenanceTaskJs> = GlobalScope.promise {
+	override fun undeleteMaintenanceTask(maintenanceTask: MaintenanceTaskJs): Promise<MaintenanceTaskJs> = GlobalScope.promise {
 		val maintenanceTaskConverted: MaintenanceTask = maintenanceTask_fromJs(maintenanceTask)
 		val result = maintenanceTaskBasicApi.undeleteMaintenanceTask(
 			maintenanceTaskConverted,
@@ -235,8 +218,7 @@ internal class MaintenanceTaskBasicApiImplJs(
 		maintenanceTask_toJs(result)
 	}
 
-	override fun undeleteMaintenanceTaskById(id: String, rev: String):
-			Promise<EncryptedMaintenanceTaskJs> = GlobalScope.promise {
+	override fun undeleteMaintenanceTaskById(id: String, rev: String): Promise<EncryptedMaintenanceTaskJs> = GlobalScope.promise {
 		val idConverted: String = id
 		val revConverted: String = rev
 		val result = maintenanceTaskBasicApi.undeleteMaintenanceTaskById(
@@ -246,8 +228,7 @@ internal class MaintenanceTaskBasicApiImplJs(
 		maintenanceTask_toJs(result)
 	}
 
-	override fun modifyMaintenanceTask(entity: EncryptedMaintenanceTaskJs):
-			Promise<EncryptedMaintenanceTaskJs> = GlobalScope.promise {
+	override fun modifyMaintenanceTask(entity: EncryptedMaintenanceTaskJs): Promise<EncryptedMaintenanceTaskJs> = GlobalScope.promise {
 		val entityConverted: EncryptedMaintenanceTask = maintenanceTask_fromJs(entity)
 		val result = maintenanceTaskBasicApi.modifyMaintenanceTask(
 			entityConverted,
@@ -255,8 +236,7 @@ internal class MaintenanceTaskBasicApiImplJs(
 		maintenanceTask_toJs(result)
 	}
 
-	override fun getMaintenanceTask(entityId: String): Promise<EncryptedMaintenanceTaskJs?> =
-			GlobalScope.promise {
+	override fun getMaintenanceTask(entityId: String): Promise<EncryptedMaintenanceTaskJs?> = GlobalScope.promise {
 		val entityIdConverted: String = entityId
 		val result = maintenanceTaskBasicApi.getMaintenanceTask(
 			entityIdConverted,
@@ -268,8 +248,7 @@ internal class MaintenanceTaskBasicApiImplJs(
 		)
 	}
 
-	override fun getMaintenanceTasks(entityIds: Array<String>):
-			Promise<Array<EncryptedMaintenanceTaskJs>> = GlobalScope.promise {
+	override fun getMaintenanceTasks(entityIds: Array<String>): Promise<Array<EncryptedMaintenanceTaskJs>> = GlobalScope.promise {
 		val entityIdsConverted: List<String> = arrayToList(
 			entityIds,
 			"entityIds",
@@ -303,8 +282,7 @@ internal class MaintenanceTaskBasicApiImplJs(
 				},
 			)
 			val filterConverted: BaseFilterOptions<MaintenanceTask> = baseFilterOptions_fromJs(filter)
-			val subscriptionConfigConverted: EntitySubscriptionConfiguration? =
-					convertingOptionOrDefaultNullable(
+			val subscriptionConfigConverted: EntitySubscriptionConfiguration? = convertingOptionOrDefaultNullable(
 				_options,
 				"subscriptionConfig",
 				null

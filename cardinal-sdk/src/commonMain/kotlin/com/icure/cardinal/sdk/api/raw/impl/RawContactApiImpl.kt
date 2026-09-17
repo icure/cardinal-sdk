@@ -19,11 +19,13 @@ import com.icure.cardinal.sdk.model.conflicts.ConflictResolutionResult
 import com.icure.cardinal.sdk.model.conflicts.ConflictResolutionStrategy
 import com.icure.cardinal.sdk.model.conflicts.MergeResult
 import com.icure.cardinal.sdk.model.couchdb.DocIdentifier
+import com.icure.cardinal.sdk.model.dao.IdWithValue
 import com.icure.cardinal.sdk.model.`data`.LabelledOccurence
 import com.icure.cardinal.sdk.model.embed.EncryptedContent
 import com.icure.cardinal.sdk.model.embed.EncryptedService
 import com.icure.cardinal.sdk.model.embed.Service
 import com.icure.cardinal.sdk.model.filter.AbstractFilter
+import com.icure.cardinal.sdk.model.filter.CustomFilter
 import com.icure.cardinal.sdk.model.filter.chain.FilterChain
 import com.icure.cardinal.sdk.model.requests.BulkShareOrUpdateMetadataParams
 import com.icure.cardinal.sdk.model.requests.EntityBulkShareResult
@@ -54,12 +56,10 @@ class RawContactApiImpl(
 	private val authProvider: AuthProvider,
 	private val accessControlKeysHeadersProvider: AccessControlKeysHeadersProvider?,
 	rawApiConfig: RawApiConfig,
-) : BaseRawApi(rawApiConfig), RawContactApi {
+) : BaseRawApi(rawApiConfig),
+	RawContactApi {
 	override suspend fun getAccessControlKeysHeaderValues(groupId: String?): List<String>? =
-		accessControlKeysHeadersProvider?.getAccessControlKeysHeadersFor(
-			groupId,
-			EntityWithEncryptionMetadataTypeName.Contact,
-		)
+		accessControlKeysHeadersProvider?.getAccessControlKeysHeadersFor(groupId, EntityWithEncryptionMetadataTypeName.Contact)
 
 	// region common endpoints
 
@@ -534,6 +534,28 @@ class RawContactApiImpl(
 			setBody(entityIds)
 		}.wrap()
 
+	override suspend fun matchContactsByCustomFilter(filter: CustomFilter): HttpResponse<PaginatedList<IdWithValue>> =
+		post(authProvider) {
+			url {
+				takeFrom(apiUrl)
+				appendPathSegments("rest", "v2", "contact", "matchByCustom")
+			}
+			contentType(Application.Json)
+			accept(Application.Json)
+			setBody(filter)
+		}.wrap()
+
+	override suspend fun matchServicesByCustomFilter(filter: CustomFilter): HttpResponse<PaginatedList<IdWithValue>> =
+		post(authProvider) {
+			url {
+				takeFrom(apiUrl)
+				appendPathSegments("rest", "v2", "contact", "service", "matchByCustom")
+			}
+			contentType(Application.Json)
+			accept(Application.Json)
+			setBody(filter)
+		}.wrap()
+
 	// endregion
 
 	// region cloud endpoints
@@ -827,6 +849,34 @@ class RawContactApiImpl(
 			contentType(Application.Json)
 			accept(Application.Json)
 			setBody(entityIds)
+		}.wrap()
+
+	override suspend fun matchContactsByCustomFilterInGroup(
+		groupId: String,
+		filter: CustomFilter,
+	): HttpResponse<PaginatedList<IdWithValue>> =
+		post(authProvider) {
+			url {
+				takeFrom(apiUrl)
+				appendPathSegments("rest", "v2", "contact", "inGroup", groupId, "matchByCustom")
+			}
+			contentType(Application.Json)
+			accept(Application.Json)
+			setBody(filter)
+		}.wrap()
+
+	override suspend fun matchServicesByCustomFilterInGroup(
+		groupId: String,
+		filter: CustomFilter,
+	): HttpResponse<PaginatedList<IdWithValue>> =
+		post(authProvider) {
+			url {
+				takeFrom(apiUrl)
+				appendPathSegments("rest", "v2", "contact", "inGroup", groupId, "service", "matchByCustom")
+			}
+			contentType(Application.Json)
+			accept(Application.Json)
+			setBody(filter)
 		}.wrap()
 
 	// endregion

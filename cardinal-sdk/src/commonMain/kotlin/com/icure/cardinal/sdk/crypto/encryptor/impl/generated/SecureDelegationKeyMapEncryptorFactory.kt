@@ -1,4 +1,6 @@
 // This file is auto-generated
+@file:Suppress("ktlint:standard:max-line-length")
+
 package com.icure.cardinal.sdk.crypto.encryptor.`impl`.generated
 
 import com.icure.cardinal.sdk.crypto.encryptor.EntityEncryptor
@@ -17,14 +19,13 @@ import kotlinx.serialization.json.JsonObject
 import kotlinx.serialization.json.encodeToJsonElement
 import kotlin.Boolean
 import kotlin.String
+import kotlin.Suppress
 
 @InternalIcureApi
-internal object SecureDelegationKeyMapEncryptorFactory :
-	EntityEncryptorFactory<EncryptedSecureDelegationKeyMap, DecryptedSecureDelegationKeyMap> {
+internal object SecureDelegationKeyMapEncryptorFactory : EntityEncryptorFactory<EncryptedSecureDelegationKeyMap, DecryptedSecureDelegationKeyMap> {
 	override val empty:
 		EntityEncryptor<EncryptedSecureDelegationKeyMap, DecryptedSecureDelegationKeyMap> =
-		object :
-			EntityEncryptor<EncryptedSecureDelegationKeyMap, DecryptedSecureDelegationKeyMap> {
+		object : EntityEncryptor<EncryptedSecureDelegationKeyMap, DecryptedSecureDelegationKeyMap> {
 			override suspend fun encrypt(
 				encryptionKey: AesKey<AesAlgorithm.CbcWithPkcs7Padding>,
 				clearEntity: DecryptedSecureDelegationKeyMap,
@@ -70,8 +71,7 @@ private class SecureDelegationKeyMapEncryptor(
 	private val delegate_e: Boolean,
 	private val encodingJson: Json,
 	cryptoService: CryptoService,
-) :
-	AbstractEntityEncryptor<EncryptedSecureDelegationKeyMap, DecryptedSecureDelegationKeyMap>(cryptoService) {
+) : AbstractEntityEncryptor<EncryptedSecureDelegationKeyMap, DecryptedSecureDelegationKeyMap>(cryptoService) {
 	override suspend fun encrypt(
 		encryptionKey: AesKey<AesAlgorithm.CbcWithPkcs7Padding>,
 		clearEntity: DecryptedSecureDelegationKeyMap,

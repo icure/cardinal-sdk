@@ -14,8 +14,7 @@ import kotlin.collections.Map
 import kotlin.collections.Set
 
 /**
- * Text node with attribution that can be attached to a medical record. Used by healthcare parties
- * to add side notes,
+ * Text node with attribution that can be attached to a medical record. Used by healthcare parties to add side notes,
  * for example to flag a faulty thermometer after taking a temperature.
  * /
  */
@@ -37,8 +36,7 @@ sealed interface Annotation : Identifiable<String>, Encryptable {
 	public val created: Long?
 
 	/**
-	 * The timestamp (unix epoch in ms) of the latest modification of this note, filled automatically
-	 * if missing.
+	 * The timestamp (unix epoch in ms) of the latest modification of this note, filled automatically if missing.
 	 */
 	public val modified: Long?
 
@@ -77,8 +75,7 @@ sealed interface Annotation : Identifiable<String>, Encryptable {
 }
 
 /**
- * Text node with attribution that can be attached to a medical record. Used by healthcare parties
- * to add side notes,
+ * Text node with attribution that can be attached to a medical record. Used by healthcare parties to add side notes,
  * for example to flag a faulty thermometer after taking a temperature.
  * /
  */
@@ -97,8 +94,7 @@ data class DecryptedAnnotation(
 	 */
 	override val created: Long? = null,
 	/**
-	 * The timestamp (unix epoch in ms) of the latest modification of this note, filled automatically
-	 * if missing.
+	 * The timestamp (unix epoch in ms) of the latest modification of this note, filled automatically if missing.
 	 */
 	override val modified: Long? = null,
 	/**
@@ -134,8 +130,7 @@ data class DecryptedAnnotation(
 }
 
 /**
- * Text node with attribution that can be attached to a medical record. Used by healthcare parties
- * to add side notes,
+ * Text node with attribution that can be attached to a medical record. Used by healthcare parties to add side notes,
  * for example to flag a faulty thermometer after taking a temperature.
  * /
  */
@@ -154,8 +149,7 @@ data class EncryptedAnnotation(
 	 */
 	override val created: Long? = null,
 	/**
-	 * The timestamp (unix epoch in ms) of the latest modification of this note, filled automatically
-	 * if missing.
+	 * The timestamp (unix epoch in ms) of the latest modification of this note, filled automatically if missing.
 	 */
 	override val modified: Long? = null,
 	/**

@@ -3,12 +3,17 @@ package com.icure.cardinal.sdk.js.crypto.entities
 
 import com.icure.cardinal.sdk.crypto.entities.BulkShareByIdsResult
 import com.icure.cardinal.sdk.crypto.entities.FailedRequestDetails
+import com.icure.cardinal.sdk.crypto.entities.SuccessfulRequestDetails
 import com.icure.cardinal.sdk.js.model.CheckedConverters.arrayToList
 import com.icure.cardinal.sdk.js.model.CheckedConverters.arrayToSet
 import com.icure.cardinal.sdk.js.model.CheckedConverters.listToArray
 import com.icure.cardinal.sdk.js.model.CheckedConverters.mapToObject
 import com.icure.cardinal.sdk.js.model.CheckedConverters.objectToMap
 import com.icure.cardinal.sdk.js.model.CheckedConverters.setToArray
+import com.icure.cardinal.sdk.js.model.EntityReferenceInGroupJs
+import com.icure.cardinal.sdk.js.model.entityReferenceInGroup_fromJs
+import com.icure.cardinal.sdk.js.model.entityReferenceInGroup_toJs
+import com.icure.cardinal.sdk.model.EntityReferenceInGroup
 import kotlin.Array
 import kotlin.String
 import kotlin.Suppress
@@ -22,30 +27,30 @@ public fun bulkShareByIdsResult_toJs(obj: BulkShareByIdsResult): BulkShareByIdsR
 			x1
 		},
 	)
-	val successfulDelegateIdsByEntityId = mapToObject(
-		obj.successfulDelegateIdsByEntityId,
+	val successfulRequestsByEntityId = mapToObject(
+		obj.successfulRequestsByEntityId,
 		{ x1: String ->
 			x1
 		},
-		{ x1: Set<String> ->
+		{ x1: Set<SuccessfulRequestDetails> ->
 			setToArray(
 				x1,
-				{ x2: String ->
-					x2
+				{ x2: SuccessfulRequestDetails ->
+					successfulRequestDetails_toJs(x2)
 				},
 			)
 		},
 	)
-	val unmodifiedDelegateIdsByEntityId = mapToObject(
-		obj.unmodifiedDelegateIdsByEntityId,
+	val unmodifiedDelegatesByEntityId = mapToObject(
+		obj.unmodifiedDelegatesByEntityId,
 		{ x1: String ->
 			x1
 		},
-		{ x1: Set<String> ->
+		{ x1: Set<EntityReferenceInGroup> ->
 			setToArray(
 				x1,
-				{ x2: String ->
-					x2
+				{ x2: EntityReferenceInGroup ->
+					entityReferenceInGroup_toJs(x2)
 				},
 			)
 		},
@@ -58,8 +63,8 @@ public fun bulkShareByIdsResult_toJs(obj: BulkShareByIdsResult): BulkShareByIdsR
 	)
 	return BulkShareByIdsResultJs(js("{" +
 		"notFoundIds:notFoundIds," +
-		"successfulDelegateIdsByEntityId:successfulDelegateIdsByEntityId," +
-		"unmodifiedDelegateIdsByEntityId:unmodifiedDelegateIdsByEntityId," +
+		"successfulRequestsByEntityId:successfulRequestsByEntityId," +
+		"unmodifiedDelegatesByEntityId:unmodifiedDelegatesByEntityId," +
 		"shareErrors:shareErrors" +
 	"}"))
 }
@@ -72,34 +77,34 @@ public fun bulkShareByIdsResult_fromJs(obj: BulkShareByIdsResultJs): BulkShareBy
 			x1
 		},
 	)
-	val successfulDelegateIdsByEntityId = objectToMap(
-		obj.successfulDelegateIdsByEntityId,
-		"obj.successfulDelegateIdsByEntityId",
+	val successfulRequestsByEntityId = objectToMap(
+		obj.successfulRequestsByEntityId,
+		"obj.successfulRequestsByEntityId",
 		{ x1: String ->
 			x1
 		},
-		{ x1: Array<String> ->
+		{ x1: Array<SuccessfulRequestDetailsJs> ->
 			arrayToSet(
 				x1,
 				"x1",
-				{ x2: String ->
-					x2
+				{ x2: SuccessfulRequestDetailsJs ->
+					successfulRequestDetails_fromJs(x2)
 				},
 			)
 		},
 	)
-	val unmodifiedDelegateIdsByEntityId = objectToMap(
-		obj.unmodifiedDelegateIdsByEntityId,
-		"obj.unmodifiedDelegateIdsByEntityId",
+	val unmodifiedDelegatesByEntityId = objectToMap(
+		obj.unmodifiedDelegatesByEntityId,
+		"obj.unmodifiedDelegatesByEntityId",
 		{ x1: String ->
 			x1
 		},
-		{ x1: Array<String> ->
+		{ x1: Array<EntityReferenceInGroupJs> ->
 			arrayToSet(
 				x1,
 				"x1",
-				{ x2: String ->
-					x2
+				{ x2: EntityReferenceInGroupJs ->
+					entityReferenceInGroup_fromJs(x2)
 				},
 			)
 		},
@@ -113,8 +118,8 @@ public fun bulkShareByIdsResult_fromJs(obj: BulkShareByIdsResultJs): BulkShareBy
 	)
 	return BulkShareByIdsResult(
 		notFoundIds = notFoundIds,
-		successfulDelegateIdsByEntityId = successfulDelegateIdsByEntityId,
-		unmodifiedDelegateIdsByEntityId = unmodifiedDelegateIdsByEntityId,
+		successfulRequestsByEntityId = successfulRequestsByEntityId,
+		unmodifiedDelegatesByEntityId = unmodifiedDelegatesByEntityId,
 		shareErrors = shareErrors,
 	)
 }

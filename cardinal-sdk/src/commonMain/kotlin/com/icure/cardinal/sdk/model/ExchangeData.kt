@@ -27,8 +27,7 @@ data class ExchangeData(
 	 */
 	override val id: String,
 	/**
-	 * The revision of the exchange data in the database, used for conflict management / optimistic
-	 * locking.
+	 * The revision of the exchange data in the database, used for conflict management / optimistic locking.
 	 */
 	override val rev: String? = null,
 	/**
@@ -40,13 +39,11 @@ data class ExchangeData(
 	 */
 	public val `delegate`: String,
 	/**
-	 * If the delegate is a data owner group, the id of the member that is the recipient of this piece
-	 * of the exchange data.
+	 * If the delegate is a data owner group, the id of the member that is the recipient of this piece of the exchange data.
 	 */
 	public val recipient: String? = null,
 	/**
-	 * If this is a piece of exchange data for a simple-type group, the id shared between all the
-	 * pieces of exchange data for that group.
+	 * If this is a piece of exchange data for a simple-type group, the id shared between all the pieces of exchange data for that group.
 	 */
 	public val exchangeDataGroupId: String? = null,
 	/**
@@ -58,8 +55,7 @@ data class ExchangeData(
 	 */
 	public val accessControlSecret: Map<KeypairFingerprintV2String, Base64String>,
 	/**
-	 * Signature by the delegator to ensure key data has not been tampered with by third parties; empty
-	 * if invalidated.
+	 * Signature by the delegator to ensure key data has not been tampered with by third parties; empty if invalidated.
 	 */
 	@param:DefaultValue("emptyMap()")
 	public val delegatorSignature: Map<KeypairFingerprintV2String, Base64String> = emptyMap(),
@@ -68,8 +64,7 @@ data class ExchangeData(
 	 */
 	public val sharedSignatureKey: Map<KeypairFingerprintV2String, Base64String>,
 	/**
-	 * Base64 signature of the exchange data to ensure it was not tampered by third parties; null on
-	 * the group pieces that are not for the delegator.
+	 * Base64 signature of the exchange data to ensure it was not tampered by third parties; null on the group pieces that are not for the delegator.
 	 */
 	public val sharedSignature: Base64String? = null,
 	/**

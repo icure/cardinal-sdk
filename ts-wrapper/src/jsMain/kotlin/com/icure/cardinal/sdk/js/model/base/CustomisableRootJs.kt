@@ -8,6 +8,6 @@ import kotlin.js.JsName
 import kotlin.js.JsQualifier
 
 @JsName("CustomisableRoot")
-public external interface CustomisableRootJs : ExtendableJs {
+public external interface CustomisableRootJs {
 	public val customisedModelVersion: Double?
 }

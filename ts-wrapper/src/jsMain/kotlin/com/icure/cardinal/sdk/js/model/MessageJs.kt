@@ -7,6 +7,7 @@ import com.icure.cardinal.sdk.js.model.base.CodeStubJs
 import com.icure.cardinal.sdk.js.model.base.CustomisableRootJs
 import com.icure.cardinal.sdk.js.model.base.ExtendableJs
 import com.icure.cardinal.sdk.js.model.base.HasEncryptionMetadataJs
+import com.icure.cardinal.sdk.js.model.base.HasMedicalLocationJs
 import com.icure.cardinal.sdk.js.model.base.ICureDocumentJs
 import com.icure.cardinal.sdk.js.model.base.StoredDocumentJs
 import com.icure.cardinal.sdk.js.model.embed.DelegationJs
@@ -23,7 +24,7 @@ import kotlin.js.JsQualifier
 
 @JsName("Message")
 public sealed external interface MessageJs : StoredDocumentJs, ICureDocumentJs<String>,
-		HasEncryptionMetadataJs, EncryptableJs, CustomisableRootJs, ExtendableJs {
+		HasMedicalLocationJs, HasEncryptionMetadataJs, EncryptableJs, CustomisableRootJs, ExtendableJs {
 	public val fromAddress: String?
 
 	public val fromHealthcarePartyId: String?

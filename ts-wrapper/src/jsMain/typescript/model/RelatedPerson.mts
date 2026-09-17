@@ -3,6 +3,8 @@ import {expectArray, expectMap, expectNumber, expectObject, expectString, expect
 import {randomUuid} from '../utils/Id.mjs';
 import {DecryptedPropertyStub, EncryptedPropertyStub, PropertyStub} from './PropertyStub.mjs';
 import {CodeStub} from './base/CodeStub.mjs';
+import {CustomisableRoot} from './base/CustomisableRoot.mjs';
+import {Extendable} from './base/Extendable.mjs';
 import {HasEncryptionMetadata} from './base/HasEncryptionMetadata.mjs';
 import {HasEndOfLife} from './base/HasEndOfLife.mjs';
 import {HasIdentifier} from './base/HasIdentifier.mjs';
@@ -28,7 +30,7 @@ import {Base64String} from './specializations/Base64String.mjs';
  *   partnerType = relatedPerson. It is a standalone encryptable entity but NOT a crypto actor nor a
  *  data owner.
  */
-export interface RelatedPerson extends StoredDocument, ICureDocument<string>, Person, HasEncryptionMetadata, Encryptable, HasIdentifier, HasEndOfLife {
+export interface RelatedPerson extends StoredDocument, ICureDocument<string>, Person, HasEncryptionMetadata, Encryptable, HasIdentifier, HasEndOfLife, CustomisableRoot, Extendable {
 
 	/**
 	 *
@@ -211,6 +213,10 @@ export class DecryptedRelatedPerson {
 	 */
 	securityMetadata: SecurityMetadata | undefined = undefined;
 
+	customisedModelVersion: number | undefined = undefined;
+
+	extensions: Record<string, any> | undefined = undefined;
+
 	readonly isEncrypted: false = false;
 
 	constructor(partial: Partial<DecryptedRelatedPerson>) {
@@ -241,6 +247,8 @@ export class DecryptedRelatedPerson {
 		if ('encryptionKeys' in partial && partial.encryptionKeys !== undefined) this.encryptionKeys = partial.encryptionKeys;
 		if ('encryptedSelf' in partial) this.encryptedSelf = partial.encryptedSelf;
 		if ('securityMetadata' in partial) this.securityMetadata = partial.securityMetadata;
+		if ('customisedModelVersion' in partial) this.customisedModelVersion = partial.customisedModelVersion;
+		if ('extensions' in partial) this.extensions = partial.extensions;
 	}
 
 	toJSON(): object {
@@ -271,6 +279,8 @@ export class DecryptedRelatedPerson {
 		res['encryptionKeys'] = Object.fromEntries(Object.entries(this.encryptionKeys).map(([k0, v0]) => [k0, v0.map((x1) => x1.toJSON() )]))
 		if (this.encryptedSelf != undefined) res['encryptedSelf'] = this.encryptedSelf
 		if (this.securityMetadata != undefined) res['securityMetadata'] = this.securityMetadata.toJSON()
+		if (this.customisedModelVersion != undefined) res['customisedModelVersion'] = this.customisedModelVersion
+		if (this.extensions != undefined) res['extensions'] = this.extensions
 		res['isEncrypted'] = false
 		return res
 	}
@@ -325,6 +335,8 @@ export class DecryptedRelatedPerson {
 			),
 			encryptedSelf: expectString(extractEntry(jCpy, 'encryptedSelf', false, path), true, [...path, ".encryptedSelf"]) as Base64String,
 			securityMetadata: expectObject(extractEntry(jCpy, 'securityMetadata', false, path), true, ignoreUnknownKeys, [...path, ".securityMetadata"], SecurityMetadata.fromJSON),
+			customisedModelVersion: expectNumber(extractEntry(jCpy, 'customisedModelVersion', false, path), true, true, [...path, ".customisedModelVersion"]),
+			extensions: extractEntry(jCpy, 'extensions', false, path),
 		})
 		if (!ignoreUnknownKeys) {
 			const unused = Object.keys(jCpy)
@@ -503,6 +515,10 @@ export class EncryptedRelatedPerson {
 	 */
 	securityMetadata: SecurityMetadata | undefined = undefined;
 
+	customisedModelVersion: number | undefined = undefined;
+
+	extensions: Record<string, any> | undefined = undefined;
+
 	readonly isEncrypted: true = true;
 
 	constructor(partial: Partial<EncryptedRelatedPerson>) {
@@ -533,6 +549,8 @@ export class EncryptedRelatedPerson {
 		if ('encryptionKeys' in partial && partial.encryptionKeys !== undefined) this.encryptionKeys = partial.encryptionKeys;
 		if ('encryptedSelf' in partial) this.encryptedSelf = partial.encryptedSelf;
 		if ('securityMetadata' in partial) this.securityMetadata = partial.securityMetadata;
+		if ('customisedModelVersion' in partial) this.customisedModelVersion = partial.customisedModelVersion;
+		if ('extensions' in partial) this.extensions = partial.extensions;
 	}
 
 	toJSON(): object {
@@ -563,6 +581,8 @@ export class EncryptedRelatedPerson {
 		res['encryptionKeys'] = Object.fromEntries(Object.entries(this.encryptionKeys).map(([k0, v0]) => [k0, v0.map((x1) => x1.toJSON() )]))
 		if (this.encryptedSelf != undefined) res['encryptedSelf'] = this.encryptedSelf
 		if (this.securityMetadata != undefined) res['securityMetadata'] = this.securityMetadata.toJSON()
+		if (this.customisedModelVersion != undefined) res['customisedModelVersion'] = this.customisedModelVersion
+		if (this.extensions != undefined) res['extensions'] = this.extensions
 		res['isEncrypted'] = true
 		return res
 	}
@@ -617,6 +637,8 @@ export class EncryptedRelatedPerson {
 			),
 			encryptedSelf: expectString(extractEntry(jCpy, 'encryptedSelf', false, path), true, [...path, ".encryptedSelf"]) as Base64String,
 			securityMetadata: expectObject(extractEntry(jCpy, 'securityMetadata', false, path), true, ignoreUnknownKeys, [...path, ".securityMetadata"], SecurityMetadata.fromJSON),
+			customisedModelVersion: expectNumber(extractEntry(jCpy, 'customisedModelVersion', false, path), true, true, [...path, ".customisedModelVersion"]),
+			extensions: extractEntry(jCpy, 'extensions', false, path),
 		})
 		if (!ignoreUnknownKeys) {
 			const unused = Object.keys(jCpy)

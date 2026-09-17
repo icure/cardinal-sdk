@@ -40,21 +40,17 @@ public external interface ClassificationApiJs {
 
 	public fun decryptPatientIdOf(classification: ClassificationJs): Promise<Array<String>>
 
-	public fun createDelegationDeAnonymizationMetadata(entity: ClassificationJs,
-			delegates: Array<String>): Promise<Unit>
+	public fun createDelegationDeAnonymizationMetadata(entity: ClassificationJs, delegates: Array<String>): Promise<Unit>
 
 	public fun decrypt(classification: EncryptedClassificationJs): Promise<DecryptedClassificationJs>
 
 	public fun tryDecrypt(classification: EncryptedClassificationJs): Promise<ClassificationJs>
 
-	public fun matchClassificationsBy(filter: FilterOptionsJs<ClassificationJs>):
-			Promise<Array<String>>
+	public fun matchClassificationsBy(filter: FilterOptionsJs<ClassificationJs>): Promise<Array<String>>
 
-	public fun matchClassificationsBySorted(filter: SortableFilterOptionsJs<ClassificationJs>):
-			Promise<Array<String>>
+	public fun matchClassificationsBySorted(filter: SortableFilterOptionsJs<ClassificationJs>): Promise<Array<String>>
 
-	public fun shareClassificationsByIds(classificationIds: Array<String>,
-			delegates: Record<String, ClassificationShareOptionsJs>): Promise<BulkShareByIdsResultJs>
+	public fun shareClassificationsByIds(classificationIds: Array<String>, delegates: Record<String, ClassificationShareOptionsJs>): Promise<BulkShareByIdsResultJs>
 
 	public fun deleteClassification(entityId: String): Promise<DocIdentifierJs>
 
@@ -66,8 +62,7 @@ public external interface ClassificationApiJs {
 		options: dynamic,
 	): Promise<DecryptedClassificationJs>
 
-	public fun shareWithMany(classification: DecryptedClassificationJs,
-			delegates: Record<String, ClassificationShareOptionsJs>): Promise<DecryptedClassificationJs>
+	public fun shareWithMany(classification: DecryptedClassificationJs, delegates: Record<String, ClassificationShareOptionsJs>): Promise<DecryptedClassificationJs>
 
 	public fun findClassificationsByHcPartyPatient(
 		hcPartyId: String,
@@ -75,17 +70,13 @@ public external interface ClassificationApiJs {
 		options: dynamic,
 	): Promise<PaginatedListIteratorJs<DecryptedClassificationJs>>
 
-	public fun filterClassificationsBy(filter: FilterOptionsJs<ClassificationJs>):
-			Promise<PaginatedListIteratorJs<DecryptedClassificationJs>>
+	public fun filterClassificationsBy(filter: FilterOptionsJs<ClassificationJs>): Promise<PaginatedListIteratorJs<DecryptedClassificationJs>>
 
-	public fun filterClassificationsBySorted(filter: SortableFilterOptionsJs<ClassificationJs>):
-			Promise<PaginatedListIteratorJs<DecryptedClassificationJs>>
+	public fun filterClassificationsBySorted(filter: SortableFilterOptionsJs<ClassificationJs>): Promise<PaginatedListIteratorJs<DecryptedClassificationJs>>
 
-	public fun createClassification(entity: DecryptedClassificationJs):
-			Promise<DecryptedClassificationJs>
+	public fun createClassification(entity: DecryptedClassificationJs): Promise<DecryptedClassificationJs>
 
-	public fun modifyClassification(entity: DecryptedClassificationJs):
-			Promise<DecryptedClassificationJs>
+	public fun modifyClassification(entity: DecryptedClassificationJs): Promise<DecryptedClassificationJs>
 
 	public fun getClassification(entityId: String): Promise<DecryptedClassificationJs?>
 

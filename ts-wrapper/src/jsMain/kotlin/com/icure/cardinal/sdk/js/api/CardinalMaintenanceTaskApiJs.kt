@@ -14,8 +14,7 @@ import kotlin.js.Promise
 public external interface CardinalMaintenanceTaskApiJs {
 	public fun applyKeyPairUpdate(updateRequest: KeyPairUpdateNotificationJs): Promise<Unit>
 
-	public fun createKeyPairUpdateNotificationsToAllDelegationCounterparts(key: String,
-			options: dynamic): Promise<Unit>
+	public fun createKeyPairUpdateNotificationsToAllDelegationCounterparts(key: String, options: dynamic): Promise<Unit>
 
 	public fun createKeyPairUpdateNotificationTo(dataOwnerId: String, key: String): Promise<Unit>
 }

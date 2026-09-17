@@ -28,7 +28,8 @@ class RawObjectStorageApiImpl(
 	internal val apiUrl: String,
 	private val authProvider: AuthProvider,
 	rawApiConfig: RawApiConfig,
-) : BaseRawApi(rawApiConfig), RawObjectStorageApi {
+) : BaseRawApi(rawApiConfig),
+	RawObjectStorageApi {
 	// region cloud endpoints
 
 	override suspend fun createAttachment(

@@ -22,8 +22,7 @@ import kotlin.collections.Set
 
 /**
  *
- *  Represents a group in the iCure platform. A group corresponds to a practice, hospital, or
- * organization
+ *  Represents a group in the iCure platform. A group corresponds to a practice, hospital, or organization
  *  that contains its own set of databases and users.
  */
 @Serializable
@@ -125,7 +124,8 @@ data class Group(
 	 *  The version of the custom design doc schema to apply by default children groups on creation.
 	 */
 	public val defaultChildrenSchemaVersion: Int? = null,
-) : StoredDocument, HasTags {
+) : StoredDocument,
+	HasTags {
 	@Serializable
 	public data class CustomEntityConfiguration(
 		public val sourceGroup: String,

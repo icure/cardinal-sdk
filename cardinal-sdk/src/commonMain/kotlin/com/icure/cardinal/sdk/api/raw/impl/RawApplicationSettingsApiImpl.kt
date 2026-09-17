@@ -29,7 +29,8 @@ class RawApplicationSettingsApiImpl(
 	internal val apiUrl: String,
 	private val authProvider: AuthProvider,
 	rawApiConfig: RawApiConfig,
-) : BaseRawApi(rawApiConfig), RawApplicationSettingsApi {
+) : BaseRawApi(rawApiConfig),
+	RawApplicationSettingsApi {
 	// region common endpoints
 
 	override suspend fun getApplicationSettings(): HttpResponse<List<EncryptedApplicationSettings>> =

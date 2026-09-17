@@ -25,7 +25,8 @@ data class MaintenanceTaskByIdsFilter(
 	 * Optional description of this filter.
 	 */
 	override val desc: String? = null,
-) : AbstractFilter<MaintenanceTask>, Filter.IdsFilter<String, MaintenanceTask> {
+) : AbstractFilter<MaintenanceTask>,
+	Filter.IdsFilter<String, MaintenanceTask> {
 	// region MaintenanceTaskByIdsFilter-MaintenanceTaskByIdsFilter
 
 	// endregion

@@ -8,8 +8,7 @@ import kotlin.Long
 import kotlin.String
 
 /**
- * Represents a historical status record for a healthcare party, tracking changes in status over
- * time for a given specialisation.
+ * Represents a historical status record for a healthcare party, tracking changes in status over time for a given specialisation.
  * /
  */
 @Serializable

@@ -10,10 +10,8 @@ import kotlin.String
 import com.icure.cardinal.sdk.model.base.DataOwnerGroupLinkType
 
 /**
- * Filter that matches the healthcare parties directly linked to a data owner group, through the
- * legacy parentId
- * or a dataOwnerGroups link. Only direct links match: membership is not propagated through the
- * group hierarchies.
+ * Filter that matches the healthcare parties directly linked to a data owner group, through the legacy parentId
+ * or a dataOwnerGroups link. Only direct links match: membership is not propagated through the group hierarchies.
  * /
  */
 @SerialName("HealthcarePartyByDataOwnerGroupIdFilter")

@@ -7,8 +7,7 @@ import kotlinx.serialization.Serializable
 import kotlin.String
 
 /**
- * Represents a relationship between a patient and another person (contact person or another
- * patient).
+ * Represents a relationship between a patient and another person (contact person or another patient).
  * /
  */
 
@@ -29,8 +28,7 @@ sealed interface Partnership : Encryptable {
 	public val partnerId: String?
 
 	/**
-	 * The type of entity partnerId refers to. When null the partner is either a patient or a
-	 * healthcare party (legacy behavior).
+	 * The type of entity partnerId refers to. When null the partner is either a patient or a healthcare party (legacy behavior).
 	 */
 	public val partnerType: PartnerType?
 
@@ -44,8 +42,7 @@ sealed interface Partnership : Encryptable {
 }
 
 /**
- * Represents a relationship between a patient and another person (contact person or another
- * patient).
+ * Represents a relationship between a patient and another person (contact person or another patient).
  * /
  */
 @Serializable
@@ -63,8 +60,7 @@ data class DecryptedPartnership(
 	 */
 	override val partnerId: String? = null,
 	/**
-	 * The type of entity partnerId refers to. When null the partner is either a patient or a
-	 * healthcare party (legacy behavior).
+	 * The type of entity partnerId refers to. When null the partner is either a patient or a healthcare party (legacy behavior).
 	 */
 	override val partnerType: PartnerType? = null,
 	/**
@@ -78,8 +74,7 @@ data class DecryptedPartnership(
 }
 
 /**
- * Represents a relationship between a patient and another person (contact person or another
- * patient).
+ * Represents a relationship between a patient and another person (contact person or another patient).
  * /
  */
 @Serializable
@@ -97,8 +92,7 @@ data class EncryptedPartnership(
 	 */
 	override val partnerId: String? = null,
 	/**
-	 * The type of entity partnerId refers to. When null the partner is either a patient or a
-	 * healthcare party (legacy behavior).
+	 * The type of entity partnerId refers to. When null the partner is either a patient or a healthcare party (legacy behavior).
 	 */
 	override val partnerType: PartnerType? = null,
 	/**

@@ -16,8 +16,7 @@ import com.icure.cardinal.sdk.model.embed.MembershipType
 import kotlin.Suppress
 
 @Suppress("UNUSED_VARIABLE")
-public fun careTeamMembership_toJs(obj: DecryptedCareTeamMembership):
-		DecryptedCareTeamMembershipJs {
+public fun careTeamMembership_toJs(obj: DecryptedCareTeamMembership): DecryptedCareTeamMembershipJs {
 	val startDate = nullToUndefined(
 		longToNumber(obj.startDate)
 	)
@@ -50,8 +49,7 @@ public fun careTeamMembership_toJs(obj: DecryptedCareTeamMembership):
 	"}"))
 }
 
-public fun careTeamMembership_fromJs(obj: DecryptedCareTeamMembershipJs):
-		DecryptedCareTeamMembership {
+public fun careTeamMembership_fromJs(obj: DecryptedCareTeamMembershipJs): DecryptedCareTeamMembership {
 	val startDate = numberToLong(obj.startDate, "obj.startDate")
 	val endDate = numberToLong(obj.endDate, "obj.endDate")
 	val careTeamMemberId = undefinedToNull(obj.careTeamMemberId)
@@ -73,8 +71,7 @@ public fun careTeamMembership_fromJs(obj: DecryptedCareTeamMembershipJs):
 }
 
 @Suppress("UNUSED_VARIABLE")
-public fun careTeamMembership_toJs(obj: EncryptedCareTeamMembership):
-		EncryptedCareTeamMembershipJs {
+public fun careTeamMembership_toJs(obj: EncryptedCareTeamMembership): EncryptedCareTeamMembershipJs {
 	val startDate = nullToUndefined(
 		longToNumber(obj.startDate)
 	)
@@ -107,8 +104,7 @@ public fun careTeamMembership_toJs(obj: EncryptedCareTeamMembership):
 	"}"))
 }
 
-public fun careTeamMembership_fromJs(obj: EncryptedCareTeamMembershipJs):
-		EncryptedCareTeamMembership {
+public fun careTeamMembership_fromJs(obj: EncryptedCareTeamMembershipJs): EncryptedCareTeamMembership {
 	val startDate = numberToLong(obj.startDate, "obj.startDate")
 	val endDate = numberToLong(obj.endDate, "obj.endDate")
 	val careTeamMemberId = undefinedToNull(obj.careTeamMemberId)
@@ -135,8 +131,7 @@ public fun careTeamMembership_toJs(obj: CareTeamMembership): CareTeamMembershipJ
 	is DecryptedCareTeamMembership -> careTeamMembership_toJs(obj)
 }
 
-public fun careTeamMembership_fromJs(obj: CareTeamMembershipJs): CareTeamMembership = if
-		(obj.isEncrypted) {
+public fun careTeamMembership_fromJs(obj: CareTeamMembershipJs): CareTeamMembership = if (obj.isEncrypted) {
 	careTeamMembership_fromJs(obj as EncryptedCareTeamMembershipJs)
 } else {
 	careTeamMembership_fromJs(obj as DecryptedCareTeamMembershipJs)

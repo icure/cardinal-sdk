@@ -6,8 +6,7 @@ import com.icure.cardinal.sdk.model.embed.AccessLevel
 import kotlin.Suppress
 
 @Suppress("UNUSED_VARIABLE")
-public fun accessLogDelegateOptions_toJs(obj: AccessLogDelegateOptions):
-		AccessLogDelegateOptionsJs {
+public fun accessLogDelegateOptions_toJs(obj: AccessLogDelegateOptions): AccessLogDelegateOptionsJs {
 	val accessLevel = obj.accessLevel.name
 	val shareEncryptionKey = obj.shareEncryptionKey
 	val shareSecretId = obj.shareSecretId
@@ -20,8 +19,7 @@ public fun accessLogDelegateOptions_toJs(obj: AccessLogDelegateOptions):
 	"}"))
 }
 
-public fun accessLogDelegateOptions_fromJs(obj: AccessLogDelegateOptionsJs):
-		AccessLogDelegateOptions {
+public fun accessLogDelegateOptions_fromJs(obj: AccessLogDelegateOptionsJs): AccessLogDelegateOptions {
 	val accessLevel = AccessLevel.valueOf(obj.accessLevel)
 	val shareEncryptionKey = obj.shareEncryptionKey
 	val shareSecretId = obj.shareSecretId

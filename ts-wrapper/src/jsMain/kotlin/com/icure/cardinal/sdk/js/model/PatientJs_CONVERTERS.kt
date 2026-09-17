@@ -458,8 +458,11 @@ public fun patient_toJs(obj: DecryptedPatient): DecryptedPatientJs {
 			propertyStub_toJs(x1)
 		},
 	)
-	val parentId = nullToUndefined(
-		obj.parentId
+	val dataOwnerGroups = listToArray<_, dynamic>(
+		obj.dataOwnerGroups,
+		{ _ -> throw IllegalArgumentException("List<Nothing> can't have any values") })
+	val groupLinkType = nullToUndefined(
+		obj.groupLinkType
 	)
 	val extensions = nullToUndefined(
 		jsonToDynamic(obj.extensions)
@@ -533,7 +536,8 @@ public fun patient_toJs(obj: DecryptedPatient): DecryptedPatientJs {
 		"encryptedSelf:encryptedSelf," +
 		"securityMetadata:securityMetadata," +
 		"cryptoActorProperties:cryptoActorProperties," +
-		"parentId:parentId," +
+		"dataOwnerGroups:dataOwnerGroups," +
+		"groupLinkType:groupLinkType," +
 		"extensions:extensions," +
 		"customisedModelVersion:customisedModelVersion" +
 	"}"))
@@ -620,8 +624,7 @@ public fun patient_fromJs(obj: DecryptedPatientJs): DecryptedPatient {
 	}
 	val dateOfBirth = numberToInt(obj.dateOfBirth, "obj.dateOfBirth")
 	val dateOfDeath = numberToInt(obj.dateOfDeath, "obj.dateOfDeath")
-	val timestampOfLatestEidReading = numberToLong(obj.timestampOfLatestEidReading,
-			"obj.timestampOfLatestEidReading")
+	val timestampOfLatestEidReading = numberToLong(obj.timestampOfLatestEidReading, "obj.timestampOfLatestEidReading")
 	val placeOfBirth = undefinedToNull(obj.placeOfBirth)
 	val placeOfDeath = undefinedToNull(obj.placeOfDeath)
 	val deceased = undefinedToNull(obj.deceased)
@@ -855,7 +858,11 @@ public fun patient_fromJs(obj: DecryptedPatientJs): DecryptedPatient {
 			propertyStub_fromJs(x1)
 		},
 	)
-	val parentId = obj.parentId
+	val dataOwnerGroups = arrayToList<_, dynamic>(
+		obj.dataOwnerGroups,
+		"obj.dataOwnerGroups",
+		{ _ -> throw IllegalArgumentException("Array 'obj.dataOwnerGroups' can't have any values") })
+	val groupLinkType = obj.groupLinkType
 	val extensions = dynamicToJsonObjectNullsafe(obj.extensions, "obj.extensions")
 	val customisedModelVersion = numberToInt(obj.customisedModelVersion, "obj.customisedModelVersion")
 	return DecryptedPatient(
@@ -924,7 +931,8 @@ public fun patient_fromJs(obj: DecryptedPatientJs): DecryptedPatient {
 		encryptedSelf = encryptedSelf,
 		securityMetadata = securityMetadata,
 		cryptoActorProperties = cryptoActorProperties,
-		parentId = parentId,
+		dataOwnerGroups = dataOwnerGroups,
+		groupLinkType = groupLinkType,
 		extensions = extensions,
 		customisedModelVersion = customisedModelVersion,
 	)
@@ -1284,8 +1292,11 @@ public fun patient_toJs(obj: EncryptedPatient): EncryptedPatientJs {
 			propertyStub_toJs(x1)
 		},
 	)
-	val parentId = nullToUndefined(
-		obj.parentId
+	val dataOwnerGroups = listToArray<_, dynamic>(
+		obj.dataOwnerGroups,
+		{ _ -> throw IllegalArgumentException("List<Nothing> can't have any values") })
+	val groupLinkType = nullToUndefined(
+		obj.groupLinkType
 	)
 	val extensions = nullToUndefined(
 		jsonToDynamic(obj.extensions)
@@ -1359,7 +1370,8 @@ public fun patient_toJs(obj: EncryptedPatient): EncryptedPatientJs {
 		"encryptedSelf:encryptedSelf," +
 		"securityMetadata:securityMetadata," +
 		"cryptoActorProperties:cryptoActorProperties," +
-		"parentId:parentId," +
+		"dataOwnerGroups:dataOwnerGroups," +
+		"groupLinkType:groupLinkType," +
 		"extensions:extensions," +
 		"customisedModelVersion:customisedModelVersion" +
 	"}"))
@@ -1446,8 +1458,7 @@ public fun patient_fromJs(obj: EncryptedPatientJs): EncryptedPatient {
 	}
 	val dateOfBirth = numberToInt(obj.dateOfBirth, "obj.dateOfBirth")
 	val dateOfDeath = numberToInt(obj.dateOfDeath, "obj.dateOfDeath")
-	val timestampOfLatestEidReading = numberToLong(obj.timestampOfLatestEidReading,
-			"obj.timestampOfLatestEidReading")
+	val timestampOfLatestEidReading = numberToLong(obj.timestampOfLatestEidReading, "obj.timestampOfLatestEidReading")
 	val placeOfBirth = undefinedToNull(obj.placeOfBirth)
 	val placeOfDeath = undefinedToNull(obj.placeOfDeath)
 	val deceased = undefinedToNull(obj.deceased)
@@ -1681,7 +1692,11 @@ public fun patient_fromJs(obj: EncryptedPatientJs): EncryptedPatient {
 			propertyStub_fromJs(x1)
 		},
 	)
-	val parentId = obj.parentId
+	val dataOwnerGroups = arrayToList<_, dynamic>(
+		obj.dataOwnerGroups,
+		"obj.dataOwnerGroups",
+		{ _ -> throw IllegalArgumentException("Array 'obj.dataOwnerGroups' can't have any values") })
+	val groupLinkType = obj.groupLinkType
 	val extensions = dynamicToJsonObjectNullsafe(obj.extensions, "obj.extensions")
 	val customisedModelVersion = numberToInt(obj.customisedModelVersion, "obj.customisedModelVersion")
 	return EncryptedPatient(
@@ -1750,7 +1765,8 @@ public fun patient_fromJs(obj: EncryptedPatientJs): EncryptedPatient {
 		encryptedSelf = encryptedSelf,
 		securityMetadata = securityMetadata,
 		cryptoActorProperties = cryptoActorProperties,
-		parentId = parentId,
+		dataOwnerGroups = dataOwnerGroups,
+		groupLinkType = groupLinkType,
 		extensions = extensions,
 		customisedModelVersion = customisedModelVersion,
 	)

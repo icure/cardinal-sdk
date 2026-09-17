@@ -51,8 +51,7 @@ public external interface TopicApiJs {
 
 	public fun decryptPatientIdOf(topic: TopicJs): Promise<Array<EntityReferenceInGroupJs>>
 
-	public fun createDelegationDeAnonymizationMetadata(entity: TopicJs, delegates: Array<String>):
-			Promise<Unit>
+	public fun createDelegationDeAnonymizationMetadata(entity: TopicJs, delegates: Array<String>): Promise<Unit>
 
 	public fun decrypt(topic: EncryptedTopicJs): Promise<DecryptedTopicJs>
 
@@ -64,13 +63,11 @@ public external interface TopicApiJs {
 
 	public fun deleteTopicById(entityId: String, rev: String): Promise<StoredDocumentIdentifierJs>
 
-	public fun deleteTopicsByIds(entityIds: Array<StoredDocumentIdentifierJs>):
-			Promise<Array<StoredDocumentIdentifierJs>>
+	public fun deleteTopicsByIds(entityIds: Array<StoredDocumentIdentifierJs>): Promise<Array<StoredDocumentIdentifierJs>>
 
 	public fun purgeTopicById(id: String, rev: String): Promise<Unit>
 
-	public fun purgeTopicsByIds(entityIds: Array<StoredDocumentIdentifierJs>):
-			Promise<Array<StoredDocumentIdentifierJs>>
+	public fun purgeTopicsByIds(entityIds: Array<StoredDocumentIdentifierJs>): Promise<Array<StoredDocumentIdentifierJs>>
 
 	public fun deleteTopic(topic: TopicJs): Promise<StoredDocumentIdentifierJs>
 
@@ -86,14 +83,11 @@ public external interface TopicApiJs {
 		options: dynamic,
 	): Promise<DecryptedTopicJs>
 
-	public fun shareWithMany(topic: DecryptedTopicJs, delegates: Record<String, TopicShareOptionsJs>):
-			Promise<DecryptedTopicJs>
+	public fun shareWithMany(topic: DecryptedTopicJs, delegates: Record<String, TopicShareOptionsJs>): Promise<DecryptedTopicJs>
 
-	public fun filterTopicsBy(filter: FilterOptionsJs<TopicJs>):
-			Promise<PaginatedListIteratorJs<DecryptedTopicJs>>
+	public fun filterTopicsBy(filter: FilterOptionsJs<TopicJs>): Promise<PaginatedListIteratorJs<DecryptedTopicJs>>
 
-	public fun filterTopicsBySorted(filter: SortableFilterOptionsJs<TopicJs>):
-			Promise<PaginatedListIteratorJs<DecryptedTopicJs>>
+	public fun filterTopicsBySorted(filter: SortableFilterOptionsJs<TopicJs>): Promise<PaginatedListIteratorJs<DecryptedTopicJs>>
 
 	public fun createTopic(entity: DecryptedTopicJs): Promise<DecryptedTopicJs>
 
@@ -101,8 +95,7 @@ public external interface TopicApiJs {
 
 	public fun undeleteTopicById(id: String, rev: String): Promise<DecryptedTopicJs>
 
-	public fun undeleteTopicsByIds(entityIds: Array<StoredDocumentIdentifierJs>):
-			Promise<Array<DecryptedTopicJs>>
+	public fun undeleteTopicsByIds(entityIds: Array<StoredDocumentIdentifierJs>): Promise<Array<DecryptedTopicJs>>
 
 	public fun undeleteTopic(topic: TopicJs): Promise<DecryptedTopicJs>
 

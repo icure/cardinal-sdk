@@ -27,17 +27,13 @@ public external interface ContactFlavouredApiJs<E : ContactJs, S : ServiceJs> {
 
 	public fun shareWithMany(contact: E, delegates: Record<String, ContactShareOptionsJs>): Promise<E>
 
-	public fun filterContactsBy(filter: FilterOptionsJs<ContactJs>):
-			Promise<PaginatedListIteratorJs<E>>
+	public fun filterContactsBy(filter: FilterOptionsJs<ContactJs>): Promise<PaginatedListIteratorJs<E>>
 
-	public fun filterServicesBy(filter: FilterOptionsJs<ServiceJs>):
-			Promise<PaginatedListIteratorJs<S>>
+	public fun filterServicesBy(filter: FilterOptionsJs<ServiceJs>): Promise<PaginatedListIteratorJs<S>>
 
-	public fun filterContactsBySorted(filter: SortableFilterOptionsJs<ContactJs>):
-			Promise<PaginatedListIteratorJs<E>>
+	public fun filterContactsBySorted(filter: SortableFilterOptionsJs<ContactJs>): Promise<PaginatedListIteratorJs<E>>
 
-	public fun filterServicesBySorted(filter: SortableFilterOptionsJs<ServiceJs>):
-			Promise<PaginatedListIteratorJs<S>>
+	public fun filterServicesBySorted(filter: SortableFilterOptionsJs<ServiceJs>): Promise<PaginatedListIteratorJs<S>>
 
 	public fun createContact(entity: E): Promise<E>
 

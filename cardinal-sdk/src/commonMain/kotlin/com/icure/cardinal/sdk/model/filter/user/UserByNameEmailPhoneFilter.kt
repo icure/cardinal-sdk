@@ -9,8 +9,7 @@ import kotlinx.serialization.Serializable
 import kotlin.String
 
 /**
- * A filter that matches users by a free-text search string applied against name, email, and phone
- * fields.
+ * A filter that matches users by a free-text search string applied against name, email, and phone fields.
  * /
  */
 @SerialName("UserByNameEmailPhoneFilter")

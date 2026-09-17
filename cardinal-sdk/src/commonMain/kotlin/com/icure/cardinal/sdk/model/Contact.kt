@@ -42,23 +42,17 @@ import com.icure.cardinal.sdk.model.base.ParticipantType
 import kotlin.Deprecated
 
 /**
- * This entity is a root-level object. It represents a contact. It is serialized in JSON and saved
- * in the underlying
+ * This entity is a root-level object. It represents a contact. It is serialized in JSON and saved in the underlying
  * icure-contact CouchDB database.
  *
- * A contact is an entry in the day-to-day journal of the medical file of a patient. A contact
- * happens between one
- * patient, one or several healthcare parties (with one healthcare party promoted as the responsible
- * of the contact),
+ * A contact is an entry in the day-to-day journal of the medical file of a patient. A contact happens between one
+ * patient, one or several healthcare parties (with one healthcare party promoted as the responsible of the contact),
  * at one place during one (fairly short) period of time.
- * A contact contains a series of services (acts, observations, exchanges) performed on the patient.
- * These services
+ * A contact contains a series of services (acts, observations, exchanges) performed on the patient. These services
  * can be linked to healthcare elements.
  *
- * A contact can occur with or without direct interaction between the patient and the healthcare
- * party. For example,
- * when a healthcare party encodes data received from laboratory's test result, this is done in the
- * absence of a patient.
+ * A contact can occur with or without direct interaction between the patient and the healthcare party. For example,
+ * when a healthcare party encodes data received from laboratory's test result, this is done in the absence of a patient.
  * /
  */
 
@@ -83,26 +77,22 @@ sealed interface Contact :
 	override val rev: String?
 
 	/**
-	 * The timestamp (unix epoch in ms) of creation of the contact, will be filled automatically if
-	 * missing. Not enforced by the application server.
+	 * The timestamp (unix epoch in ms) of creation of the contact, will be filled automatically if missing. Not enforced by the application server.
 	 */
 	override val created: Long?
 
 	/**
-	 * The date (unix epoch in ms) of the latest modification of the contact, will be filled
-	 * automatically if missing. Not enforced by the application server.
+	 * The date (unix epoch in ms) of the latest modification of the contact, will be filled automatically if missing. Not enforced by the application server.
 	 */
 	override val modified: Long?
 
 	/**
-	 * The id of the User that has created this contact, will be filled automatically if missing. Not
-	 * enforced by the application server.
+	 * The id of the User that has created this contact, will be filled automatically if missing. Not enforced by the application server.
 	 */
 	override val author: String?
 
 	/**
-	 * The id of the HealthcareParty that is responsible for this contact, will be filled automatically
-	 * if missing. Not enforced by the application server.
+	 * The id of the HealthcareParty that is responsible for this contact, will be filled automatically if missing. Not enforced by the application server.
 	 */
 	override val responsible: String?
 
@@ -132,9 +122,7 @@ sealed interface Contact :
 	override val deletionDate: Long?
 
 	/**
-	 * Separate contacts can be merged in one logical contact if they share the same groupId. When a
-	 * contact must be split to selectively assign rights to healthcare parties, the split contacts all
-	 * share the same groupId.
+	 * Separate contacts can be merged in one logical contact if they share the same groupId. When a contact must be split to selectively assign rights to healthcare parties, the split contacts all share the same groupId.
 	 */
 	public val groupId: String?
 
@@ -169,8 +157,7 @@ sealed interface Contact :
 	public val encounterLocation: Address?
 
 	/**
-	 * Set of all sub-contacts recorded during the given contact. Sub-contacts are used to link
-	 * services embedded inside this contact to healthcare elements, healthcare approaches and/or forms.
+	 * Set of all sub-contacts recorded during the given contact. Sub-contacts are used to link services embedded inside this contact to healthcare elements, healthcare approaches and/or forms.
 	 */
 	public val subContacts: Set<SubContact>
 
@@ -200,8 +187,7 @@ sealed interface Contact :
 	override val delegations: Map<String, Set<Delegation>>
 
 	/**
-	 * The contact secret encryption key used to encrypt the secured properties (like services for
-	 * example), encrypted for separate Crypto Actors.
+	 * The contact secret encryption key used to encrypt the secured properties (like services for example), encrypted for separate Crypto Actors.
 	 */
 	override val encryptionKeys: Map<String, Set<Delegation>>
 
@@ -231,23 +217,17 @@ sealed interface Contact :
 }
 
 /**
- * This entity is a root-level object. It represents a contact. It is serialized in JSON and saved
- * in the underlying
+ * This entity is a root-level object. It represents a contact. It is serialized in JSON and saved in the underlying
  * icure-contact CouchDB database.
  *
- * A contact is an entry in the day-to-day journal of the medical file of a patient. A contact
- * happens between one
- * patient, one or several healthcare parties (with one healthcare party promoted as the responsible
- * of the contact),
+ * A contact is an entry in the day-to-day journal of the medical file of a patient. A contact happens between one
+ * patient, one or several healthcare parties (with one healthcare party promoted as the responsible of the contact),
  * at one place during one (fairly short) period of time.
- * A contact contains a series of services (acts, observations, exchanges) performed on the patient.
- * These services
+ * A contact contains a series of services (acts, observations, exchanges) performed on the patient. These services
  * can be linked to healthcare elements.
  *
- * A contact can occur with or without direct interaction between the patient and the healthcare
- * party. For example,
- * when a healthcare party encodes data received from laboratory's test result, this is done in the
- * absence of a patient.
+ * A contact can occur with or without direct interaction between the patient and the healthcare party. For example,
+ * when a healthcare party encodes data received from laboratory's test result, this is done in the absence of a patient.
  * /
  */
 @Serializable
@@ -261,23 +241,19 @@ data class DecryptedContact(
 	 */
 	override val rev: String? = null,
 	/**
-	 * The timestamp (unix epoch in ms) of creation of the contact, will be filled automatically if
-	 * missing. Not enforced by the application server.
+	 * The timestamp (unix epoch in ms) of creation of the contact, will be filled automatically if missing. Not enforced by the application server.
 	 */
 	override val created: Long? = null,
 	/**
-	 * The date (unix epoch in ms) of the latest modification of the contact, will be filled
-	 * automatically if missing. Not enforced by the application server.
+	 * The date (unix epoch in ms) of the latest modification of the contact, will be filled automatically if missing. Not enforced by the application server.
 	 */
 	override val modified: Long? = null,
 	/**
-	 * The id of the User that has created this contact, will be filled automatically if missing. Not
-	 * enforced by the application server.
+	 * The id of the User that has created this contact, will be filled automatically if missing. Not enforced by the application server.
 	 */
 	override val author: String? = null,
 	/**
-	 * The id of the HealthcareParty that is responsible for this contact, will be filled automatically
-	 * if missing. Not enforced by the application server.
+	 * The id of the HealthcareParty that is responsible for this contact, will be filled automatically if missing. Not enforced by the application server.
 	 */
 	override val responsible: String? = null,
 	/**
@@ -304,9 +280,7 @@ data class DecryptedContact(
 	 */
 	override val deletionDate: Long? = null,
 	/**
-	 * Separate contacts can be merged in one logical contact if they share the same groupId. When a
-	 * contact must be split to selectively assign rights to healthcare parties, the split contacts all
-	 * share the same groupId.
+	 * Separate contacts can be merged in one logical contact if they share the same groupId. When a contact must be split to selectively assign rights to healthcare parties, the split contacts all share the same groupId.
 	 */
 	override val groupId: String? = null,
 	/**
@@ -334,8 +308,7 @@ data class DecryptedContact(
 	 */
 	override val encounterLocation: DecryptedAddress? = null,
 	/**
-	 * Set of all sub-contacts recorded during the given contact. Sub-contacts are used to link
-	 * services embedded inside this contact to healthcare elements, healthcare approaches and/or forms.
+	 * Set of all sub-contacts recorded during the given contact. Sub-contacts are used to link services embedded inside this contact to healthcare elements, healthcare approaches and/or forms.
 	 */
 	@param:DefaultValue("emptySet()")
 	override val subContacts: Set<DecryptedSubContact> = emptySet(),
@@ -365,8 +338,7 @@ data class DecryptedContact(
 	@param:DefaultValue("emptyMap()")
 	override val delegations: Map<String, Set<Delegation>> = emptyMap(),
 	/**
-	 * The contact secret encryption key used to encrypt the secured properties (like services for
-	 * example), encrypted for separate Crypto Actors.
+	 * The contact secret encryption key used to encrypt the secured properties (like services for example), encrypted for separate Crypto Actors.
 	 */
 	@param:DefaultValue("emptyMap()")
 	override val encryptionKeys: Map<String, Set<Delegation>> = emptyMap(),
@@ -393,23 +365,17 @@ override fun copyWithSecurityMetadata(securityMetadata: SecurityMetadata, secret
 }
 
 /**
- * This entity is a root-level object. It represents a contact. It is serialized in JSON and saved
- * in the underlying
+ * This entity is a root-level object. It represents a contact. It is serialized in JSON and saved in the underlying
  * icure-contact CouchDB database.
  *
- * A contact is an entry in the day-to-day journal of the medical file of a patient. A contact
- * happens between one
- * patient, one or several healthcare parties (with one healthcare party promoted as the responsible
- * of the contact),
+ * A contact is an entry in the day-to-day journal of the medical file of a patient. A contact happens between one
+ * patient, one or several healthcare parties (with one healthcare party promoted as the responsible of the contact),
  * at one place during one (fairly short) period of time.
- * A contact contains a series of services (acts, observations, exchanges) performed on the patient.
- * These services
+ * A contact contains a series of services (acts, observations, exchanges) performed on the patient. These services
  * can be linked to healthcare elements.
  *
- * A contact can occur with or without direct interaction between the patient and the healthcare
- * party. For example,
- * when a healthcare party encodes data received from laboratory's test result, this is done in the
- * absence of a patient.
+ * A contact can occur with or without direct interaction between the patient and the healthcare party. For example,
+ * when a healthcare party encodes data received from laboratory's test result, this is done in the absence of a patient.
  * /
  */
 @Serializable
@@ -423,23 +389,19 @@ data class EncryptedContact(
 	 */
 	override val rev: String? = null,
 	/**
-	 * The timestamp (unix epoch in ms) of creation of the contact, will be filled automatically if
-	 * missing. Not enforced by the application server.
+	 * The timestamp (unix epoch in ms) of creation of the contact, will be filled automatically if missing. Not enforced by the application server.
 	 */
 	override val created: Long? = null,
 	/**
-	 * The date (unix epoch in ms) of the latest modification of the contact, will be filled
-	 * automatically if missing. Not enforced by the application server.
+	 * The date (unix epoch in ms) of the latest modification of the contact, will be filled automatically if missing. Not enforced by the application server.
 	 */
 	override val modified: Long? = null,
 	/**
-	 * The id of the User that has created this contact, will be filled automatically if missing. Not
-	 * enforced by the application server.
+	 * The id of the User that has created this contact, will be filled automatically if missing. Not enforced by the application server.
 	 */
 	override val author: String? = null,
 	/**
-	 * The id of the HealthcareParty that is responsible for this contact, will be filled automatically
-	 * if missing. Not enforced by the application server.
+	 * The id of the HealthcareParty that is responsible for this contact, will be filled automatically if missing. Not enforced by the application server.
 	 */
 	override val responsible: String? = null,
 	/**
@@ -466,9 +428,7 @@ data class EncryptedContact(
 	 */
 	override val deletionDate: Long? = null,
 	/**
-	 * Separate contacts can be merged in one logical contact if they share the same groupId. When a
-	 * contact must be split to selectively assign rights to healthcare parties, the split contacts all
-	 * share the same groupId.
+	 * Separate contacts can be merged in one logical contact if they share the same groupId. When a contact must be split to selectively assign rights to healthcare parties, the split contacts all share the same groupId.
 	 */
 	override val groupId: String? = null,
 	/**
@@ -496,8 +456,7 @@ data class EncryptedContact(
 	 */
 	override val encounterLocation: EncryptedAddress? = null,
 	/**
-	 * Set of all sub-contacts recorded during the given contact. Sub-contacts are used to link
-	 * services embedded inside this contact to healthcare elements, healthcare approaches and/or forms.
+	 * Set of all sub-contacts recorded during the given contact. Sub-contacts are used to link services embedded inside this contact to healthcare elements, healthcare approaches and/or forms.
 	 */
 	@param:DefaultValue("emptySet()")
 	override val subContacts: Set<EncryptedSubContact> = emptySet(),
@@ -527,8 +486,7 @@ data class EncryptedContact(
 	@param:DefaultValue("emptyMap()")
 	override val delegations: Map<String, Set<Delegation>> = emptyMap(),
 	/**
-	 * The contact secret encryption key used to encrypt the secured properties (like services for
-	 * example), encrypted for separate Crypto Actors.
+	 * The contact secret encryption key used to encrypt the secured properties (like services for example), encrypted for separate Crypto Actors.
 	 */
 	@param:DefaultValue("emptyMap()")
 	override val encryptionKeys: Map<String, Set<Delegation>> = emptyMap(),

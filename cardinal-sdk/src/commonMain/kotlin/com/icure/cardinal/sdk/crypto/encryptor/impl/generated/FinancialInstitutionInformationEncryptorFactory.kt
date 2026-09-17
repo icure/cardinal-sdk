@@ -1,4 +1,6 @@
 // This file is auto-generated
+@file:Suppress("ktlint:standard:max-line-length")
+
 package com.icure.cardinal.sdk.crypto.encryptor.`impl`.generated
 
 import com.icure.cardinal.sdk.crypto.encryptor.EntityEncryptor
@@ -17,14 +19,13 @@ import kotlinx.serialization.json.JsonObject
 import kotlinx.serialization.json.encodeToJsonElement
 import kotlin.Boolean
 import kotlin.String
+import kotlin.Suppress
 
 @InternalIcureApi
-internal object FinancialInstitutionInformationEncryptorFactory :
-	EntityEncryptorFactory<EncryptedFinancialInstitutionInformation, DecryptedFinancialInstitutionInformation> {
+internal object FinancialInstitutionInformationEncryptorFactory : EntityEncryptorFactory<EncryptedFinancialInstitutionInformation, DecryptedFinancialInstitutionInformation> {
 	override val empty:
 		EntityEncryptor<EncryptedFinancialInstitutionInformation, DecryptedFinancialInstitutionInformation> =
-		object :
-			EntityEncryptor<EncryptedFinancialInstitutionInformation, DecryptedFinancialInstitutionInformation> {
+		object : EntityEncryptor<EncryptedFinancialInstitutionInformation, DecryptedFinancialInstitutionInformation> {
 			override suspend fun encrypt(
 				encryptionKey: AesKey<AesAlgorithm.CbcWithPkcs7Padding>,
 				clearEntity: DecryptedFinancialInstitutionInformation,
@@ -76,8 +77,7 @@ private class FinancialInstitutionInformationEncryptor(
 	private val preferredFiiForPartners_e: Boolean,
 	private val encodingJson: Json,
 	cryptoService: CryptoService,
-) :
-	AbstractEntityEncryptor<EncryptedFinancialInstitutionInformation, DecryptedFinancialInstitutionInformation>(cryptoService) {
+) : AbstractEntityEncryptor<EncryptedFinancialInstitutionInformation, DecryptedFinancialInstitutionInformation>(cryptoService) {
 	override suspend fun encrypt(
 		encryptionKey: AesKey<AesAlgorithm.CbcWithPkcs7Padding>,
 		clearEntity: DecryptedFinancialInstitutionInformation,

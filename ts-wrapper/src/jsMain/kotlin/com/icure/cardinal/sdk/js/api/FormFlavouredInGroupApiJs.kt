@@ -25,25 +25,19 @@ public external interface FormFlavouredInGroupApiJs<E : FormJs> {
 		options: dynamic,
 	): Promise<GroupScopedJs<E>>
 
-	public fun shareWithMany(form: GroupScopedJs<E>,
-			delegates: Array<EntityReferenceInGroupToFormShareOptionsMapObject_delegate_shareOptions>):
-			Promise<GroupScopedJs<E>>
+	public fun shareWithMany(form: GroupScopedJs<E>, delegates: Array<EntityReferenceInGroupToFormShareOptionsMapObject_delegate_shareOptions>): Promise<GroupScopedJs<E>>
 
-	public fun filterFormsBy(groupId: String, filter: FilterOptionsJs<FormJs>):
-			Promise<PaginatedListIteratorJs<GroupScopedJs<E>>>
+	public fun filterFormsBy(groupId: String, filter: FilterOptionsJs<FormJs>): Promise<PaginatedListIteratorJs<GroupScopedJs<E>>>
 
-	public fun filterFormsBySorted(groupId: String, filter: SortableFilterOptionsJs<FormJs>):
-			Promise<PaginatedListIteratorJs<GroupScopedJs<E>>>
+	public fun filterFormsBySorted(groupId: String, filter: SortableFilterOptionsJs<FormJs>): Promise<PaginatedListIteratorJs<GroupScopedJs<E>>>
 
 	public fun createForm(entity: GroupScopedJs<E>): Promise<GroupScopedJs<E>>
 
 	public fun createForms(entities: Array<GroupScopedJs<E>>): Promise<Array<GroupScopedJs<E>>>
 
-	public fun undeleteFormById(entityId: GroupScopedJs<StoredDocumentIdentifierJs>):
-			Promise<GroupScopedJs<E>>
+	public fun undeleteFormById(entityId: GroupScopedJs<StoredDocumentIdentifierJs>): Promise<GroupScopedJs<E>>
 
-	public fun undeleteFormsByIds(entityIds: Array<GroupScopedJs<StoredDocumentIdentifierJs>>):
-			Promise<Array<GroupScopedJs<E>>>
+	public fun undeleteFormsByIds(entityIds: Array<GroupScopedJs<StoredDocumentIdentifierJs>>): Promise<Array<GroupScopedJs<E>>>
 
 	public fun undeleteForm(form: GroupScopedJs<FormJs>): Promise<GroupScopedJs<E>>
 

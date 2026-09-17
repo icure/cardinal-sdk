@@ -17,8 +17,7 @@ data class BulkShareOrUpdateMetadataParams(
 		public val requests: Map<String, EntityShareOrMetadataUpdateRequest>,
 		/**
 		 *
-		 *  Which delegations can be parents to any newly requested non-root delegations. Some may be
-		 * ignored in order to
+		 *  Which delegations can be parents to any newly requested non-root delegations. Some may be ignored in order to
 		 *  simplify the delegation graph, or if the requested permission is root.
 		 */
 		public val potentialParentDelegations: Set<SecureDelegationKeyString>,

@@ -24,29 +24,23 @@ public external interface DocumentBasicApiJs {
 
 	public fun matchDocumentsBy(filter: BaseFilterOptionsJs<DocumentJs>): Promise<Array<String>>
 
-	public fun matchDocumentsBySorted(filter: BaseSortableFilterOptionsJs<DocumentJs>):
-			Promise<Array<String>>
+	public fun matchDocumentsBySorted(filter: BaseSortableFilterOptionsJs<DocumentJs>): Promise<Array<String>>
 
-	public fun filterDocumentsBy(filter: BaseFilterOptionsJs<DocumentJs>):
-			Promise<PaginatedListIteratorJs<EncryptedDocumentJs>>
+	public fun filterDocumentsBy(filter: BaseFilterOptionsJs<DocumentJs>): Promise<PaginatedListIteratorJs<EncryptedDocumentJs>>
 
-	public fun filterDocumentsBySorted(filter: BaseSortableFilterOptionsJs<DocumentJs>):
-			Promise<PaginatedListIteratorJs<EncryptedDocumentJs>>
+	public fun filterDocumentsBySorted(filter: BaseSortableFilterOptionsJs<DocumentJs>): Promise<PaginatedListIteratorJs<EncryptedDocumentJs>>
 
 	public fun deleteDocumentById(entityId: String, rev: String): Promise<StoredDocumentIdentifierJs>
 
-	public fun deleteDocumentsByIds(entityIds: Array<StoredDocumentIdentifierJs>):
-			Promise<Array<StoredDocumentIdentifierJs>>
+	public fun deleteDocumentsByIds(entityIds: Array<StoredDocumentIdentifierJs>): Promise<Array<StoredDocumentIdentifierJs>>
 
 	public fun purgeDocumentById(id: String, rev: String): Promise<Unit>
 
-	public fun purgeDocumentsByIds(entityIds: Array<StoredDocumentIdentifierJs>):
-			Promise<Array<StoredDocumentIdentifierJs>>
+	public fun purgeDocumentsByIds(entityIds: Array<StoredDocumentIdentifierJs>): Promise<Array<StoredDocumentIdentifierJs>>
 
 	public fun deleteDocument(document: DocumentJs): Promise<StoredDocumentIdentifierJs>
 
-	public fun deleteDocuments(documents: Array<DocumentJs>):
-			Promise<Array<StoredDocumentIdentifierJs>>
+	public fun deleteDocuments(documents: Array<DocumentJs>): Promise<Array<StoredDocumentIdentifierJs>>
 
 	public fun purgeDocument(document: DocumentJs): Promise<Unit>
 
@@ -83,23 +77,19 @@ public external interface DocumentBasicApiJs {
 
 	public fun createDocument(entity: EncryptedDocumentJs): Promise<EncryptedDocumentJs>
 
-	public fun createDocuments(entities: Array<EncryptedDocumentJs>):
-			Promise<Array<EncryptedDocumentJs>>
+	public fun createDocuments(entities: Array<EncryptedDocumentJs>): Promise<Array<EncryptedDocumentJs>>
 
 	public fun undeleteDocumentById(id: String, rev: String): Promise<EncryptedDocumentJs>
 
-	public fun undeleteDocumentsByIds(entityIds: Array<StoredDocumentIdentifierJs>):
-			Promise<Array<EncryptedDocumentJs>>
+	public fun undeleteDocumentsByIds(entityIds: Array<StoredDocumentIdentifierJs>): Promise<Array<EncryptedDocumentJs>>
 
 	public fun undeleteDocument(document: DocumentJs): Promise<EncryptedDocumentJs>
 
-	public fun undeleteDocuments(documents: Array<EncryptedDocumentJs>):
-			Promise<Array<EncryptedDocumentJs>>
+	public fun undeleteDocuments(documents: Array<EncryptedDocumentJs>): Promise<Array<EncryptedDocumentJs>>
 
 	public fun modifyDocument(entity: EncryptedDocumentJs): Promise<EncryptedDocumentJs>
 
-	public fun modifyDocuments(entities: Array<EncryptedDocumentJs>):
-			Promise<Array<EncryptedDocumentJs>>
+	public fun modifyDocuments(entities: Array<EncryptedDocumentJs>): Promise<Array<EncryptedDocumentJs>>
 
 	public fun getDocument(entityId: String): Promise<EncryptedDocumentJs?>
 

@@ -20,7 +20,8 @@ data class AllDocumentsFilter(
 	 * Optional description of this filter.
 	 */
 	override val desc: String? = null,
-) : AbstractFilter<Document>, Filter.AllFilter<Document> {
+) : AbstractFilter<Document>,
+	Filter.AllFilter<Document> {
 	// region AllDocumentsFilter-AllDocumentsFilter
 
 	// endregion

@@ -54,10 +54,8 @@ internal class ShamirKeysManagerApiImplJs(
 		)
 	}
 
-	override fun updateSelfSplits(keySplitsToUpdate: Record<String, ShamirUpdateRequestJs>,
-			keySplitsToDelete: Array<String>): Promise<CryptoActorStubWithTypeJs> = GlobalScope.promise {
-		val keySplitsToUpdateConverted: Map<KeypairFingerprintV1String, ShamirUpdateRequest> =
-				objectToMap(
+	override fun updateSelfSplits(keySplitsToUpdate: Record<String, ShamirUpdateRequestJs>, keySplitsToDelete: Array<String>): Promise<CryptoActorStubWithTypeJs> = GlobalScope.promise {
+		val keySplitsToUpdateConverted: Map<KeypairFingerprintV1String, ShamirUpdateRequest> = objectToMap(
 			keySplitsToUpdate,
 			"keySplitsToUpdate",
 			{ x1: String ->

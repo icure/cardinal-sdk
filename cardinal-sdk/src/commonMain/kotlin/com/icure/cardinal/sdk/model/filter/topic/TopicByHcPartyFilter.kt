@@ -24,7 +24,8 @@ data class TopicByHcPartyFilter(
 	 * Optional description of this filter.
 	 */
 	override val desc: String? = null,
-) : AbstractFilter<Topic>, Filter.ByHcpartyFilter<Topic> {
+) : AbstractFilter<Topic>,
+	Filter.ByHcpartyFilter<Topic> {
 	// region TopicByHcPartyFilter-TopicByHcPartyFilter
 
 	// endregion

@@ -12,17 +12,13 @@ import com.icure.cardinal.sdk.model.EntityReferenceInGroup
 import kotlin.Array
 import kotlin.collections.Map
 
-public external interface
-    EntityReferenceInGroupToContactDelegateOptionsMapObject_delegate_delegateOptions {
+public external interface EntityReferenceInGroupToContactDelegateOptionsMapObject_delegate_delegateOptions {
   public val `delegate`: EntityReferenceInGroupJs
 
   public val delegateOptions: ContactDelegateOptionsJs
 }
 
-public
-    fun EntityReferenceInGroupToContactDelegateOptionsMapObject_delegate_delegateOptions_toJs(ktMap: Map<EntityReferenceInGroup, ContactDelegateOptions>):
-    Array<EntityReferenceInGroupToContactDelegateOptionsMapObject_delegate_delegateOptions> =
-    ktMap.map { entry ->
+public fun EntityReferenceInGroupToContactDelegateOptionsMapObject_delegate_delegateOptions_toJs(ktMap: Map<EntityReferenceInGroup, ContactDelegateOptions>): Array<EntityReferenceInGroupToContactDelegateOptionsMapObject_delegate_delegateOptions> = ktMap.map { entry ->
   val delegateKt = entry.key
   val delegate: EntityReferenceInGroupJs = entityReferenceInGroup_toJs(delegateKt)
   val delegateOptionsKt = entry.value
@@ -30,9 +26,7 @@ public
   js("{delegate: delegate, delegateOptions: delegateOptions}")
 }.toTypedArray()
 
-public
-    fun EntityReferenceInGroupToContactDelegateOptionsMapObject_delegate_delegateOptions_fromJs(jsArray: Array<EntityReferenceInGroupToContactDelegateOptionsMapObject_delegate_delegateOptions>):
-    Map<EntityReferenceInGroup, ContactDelegateOptions> = CheckedConverters.objectArrayToMap(
+public fun EntityReferenceInGroupToContactDelegateOptionsMapObject_delegate_delegateOptions_fromJs(jsArray: Array<EntityReferenceInGroupToContactDelegateOptionsMapObject_delegate_delegateOptions>): Map<EntityReferenceInGroup, ContactDelegateOptions> = CheckedConverters.objectArrayToMap(
   jsArray,
   { entry ->
     val key = entry.delegate

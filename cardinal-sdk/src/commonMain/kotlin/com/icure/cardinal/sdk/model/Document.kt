@@ -31,8 +31,7 @@ import com.icure.cardinal.sdk.serialization.ByteArraySerializer
 import kotlin.ByteArray
 
 /**
- * Represents a document entity stored in CouchDB. Documents can have main and secondary data
- * attachments,
+ * Represents a document entity stored in CouchDB. Documents can have main and secondary data attachments,
  * and support various storage backends (CouchDB attachments, object storage).
  * /
  */
@@ -204,8 +203,7 @@ sealed interface Document :
 }
 
 /**
- * Represents a document entity stored in CouchDB. Documents can have main and secondary data
- * attachments,
+ * Represents a document entity stored in CouchDB. Documents can have main and secondary data attachments,
  * and support various storage backends (CouchDB attachments, object storage).
  * /
  */
@@ -342,8 +340,7 @@ override fun copyWithSecurityMetadata(securityMetadata: SecurityMetadata, secret
 }
 
 /**
- * Represents a document entity stored in CouchDB. Documents can have main and secondary data
- * attachments,
+ * Represents a document entity stored in CouchDB. Documents can have main and secondary data attachments,
  * and support various storage backends (CouchDB attachments, object storage).
  * /
  */

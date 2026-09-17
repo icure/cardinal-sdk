@@ -289,8 +289,7 @@ public fun document_fromJs(obj: DecryptedDocumentJs): DecryptedDocument {
 			x1
 		},
 	)
-	val mainAttachmentStoredDataSize = numberToLong(obj.mainAttachmentStoredDataSize,
-			"obj.mainAttachmentStoredDataSize")
+	val mainAttachmentStoredDataSize = numberToLong(obj.mainAttachmentStoredDataSize, "obj.mainAttachmentStoredDataSize")
 	val extraMainAttachmentInfo = obj.extraMainAttachmentInfo?.let { nonNull1 ->
 		document_ExtraMainAttachmentInfo_fromJs(nonNull1)
 	}
@@ -655,8 +654,7 @@ public fun document_fromJs(obj: EncryptedDocumentJs): EncryptedDocument {
 			x1
 		},
 	)
-	val mainAttachmentStoredDataSize = numberToLong(obj.mainAttachmentStoredDataSize,
-			"obj.mainAttachmentStoredDataSize")
+	val mainAttachmentStoredDataSize = numberToLong(obj.mainAttachmentStoredDataSize, "obj.mainAttachmentStoredDataSize")
 	val extraMainAttachmentInfo = obj.extraMainAttachmentInfo?.let { nonNull1 ->
 		document_ExtraMainAttachmentInfo_fromJs(nonNull1)
 	}
@@ -790,8 +788,7 @@ public fun document_fromJs(obj: DocumentJs): Document = if (obj.isEncrypted) {
 }
 
 @Suppress("UNUSED_VARIABLE")
-public fun document_ExtraMainAttachmentInfo_toJs(obj: Document.ExtraMainAttachmentInfo):
-		DocumentJs_ExtraMainAttachmentInfoJs {
+public fun document_ExtraMainAttachmentInfo_toJs(obj: Document.ExtraMainAttachmentInfo): DocumentJs_ExtraMainAttachmentInfoJs {
 	val compressionAlgorithm = nullToUndefined(
 		obj.compressionAlgorithm
 	)
@@ -808,8 +805,7 @@ public fun document_ExtraMainAttachmentInfo_toJs(obj: Document.ExtraMainAttachme
 	"}"))
 }
 
-public fun document_ExtraMainAttachmentInfo_fromJs(obj: DocumentJs_ExtraMainAttachmentInfoJs):
-		Document.ExtraMainAttachmentInfo {
+public fun document_ExtraMainAttachmentInfo_fromJs(obj: DocumentJs_ExtraMainAttachmentInfoJs): Document.ExtraMainAttachmentInfo {
 	val compressionAlgorithm = undefinedToNull(obj.compressionAlgorithm)
 	val triedCompressionAlgorithmsVersion = undefinedToNull(obj.triedCompressionAlgorithmsVersion)
 	val realDataSize = numberToLong(obj.realDataSize, "obj.realDataSize")

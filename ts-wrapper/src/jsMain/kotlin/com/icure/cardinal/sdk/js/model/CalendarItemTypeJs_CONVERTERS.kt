@@ -188,27 +188,19 @@ public fun calendarItemType_fromJs(obj: CalendarItemTypeJs): CalendarItemType {
 }
 
 @Suppress("UNUSED_VARIABLE")
-public fun calendarItemType_DurationConfig_toJs(obj: CalendarItemType.DurationConfig):
-		CalendarItemTypeJs_DurationConfigJs = when (obj) {
+public fun calendarItemType_DurationConfig_toJs(obj: CalendarItemType.DurationConfig): CalendarItemTypeJs_DurationConfigJs = when (obj) {
 	is CalendarItemType.DurationConfig.Set -> calendarItemType_DurationConfig_Set_toJs(obj)
 	is CalendarItemType.DurationConfig.Formula -> calendarItemType_DurationConfig_Formula_toJs(obj)
 }
 
-public fun calendarItemType_DurationConfig_fromJs(obj: CalendarItemTypeJs_DurationConfigJs):
-		CalendarItemType.DurationConfig = when {
-	obj is CalendarItemTypeJs_DurationConfigJs_SetJs || obj.ktClass ==
-			"com.icure.cardinal.sdk.model.CalendarItemType.DurationConfig.Set" ->calendarItemType_DurationConfig_Set_fromJs(obj
-			as com.icure.cardinal.sdk.js.model.CalendarItemTypeJs_DurationConfigJs_SetJs)
-	obj is CalendarItemTypeJs_DurationConfigJs_FormulaJs || obj.ktClass ==
-			"com.icure.cardinal.sdk.model.CalendarItemType.DurationConfig.Formula" ->calendarItemType_DurationConfig_Formula_fromJs(obj
-			as com.icure.cardinal.sdk.js.model.CalendarItemTypeJs_DurationConfigJs_FormulaJs)
-	else -> throw
-			IllegalArgumentException("""Unknown concrete implementation for com.icure.cardinal.sdk.model.CalendarItemType.DurationConfig: $obj""")
+public fun calendarItemType_DurationConfig_fromJs(obj: CalendarItemTypeJs_DurationConfigJs): CalendarItemType.DurationConfig = when {
+	obj is CalendarItemTypeJs_DurationConfigJs_SetJs || obj.ktClass == "com.icure.cardinal.sdk.model.CalendarItemType.DurationConfig.Set" ->calendarItemType_DurationConfig_Set_fromJs(obj as com.icure.cardinal.sdk.js.model.CalendarItemTypeJs_DurationConfigJs_SetJs)
+	obj is CalendarItemTypeJs_DurationConfigJs_FormulaJs || obj.ktClass == "com.icure.cardinal.sdk.model.CalendarItemType.DurationConfig.Formula" ->calendarItemType_DurationConfig_Formula_fromJs(obj as com.icure.cardinal.sdk.js.model.CalendarItemTypeJs_DurationConfigJs_FormulaJs)
+	else -> throw IllegalArgumentException("""Unknown concrete implementation for com.icure.cardinal.sdk.model.CalendarItemType.DurationConfig: $obj""")
 }
 
 @Suppress("UNUSED_VARIABLE")
-public fun calendarItemType_DurationConfig_Set_toJs(obj: CalendarItemType.DurationConfig.Set):
-		CalendarItemTypeJs_DurationConfigJs_SetJs {
+public fun calendarItemType_DurationConfig_Set_toJs(obj: CalendarItemType.DurationConfig.Set): CalendarItemTypeJs_DurationConfigJs_SetJs {
 	val durations = setToArray(
 		obj.durations,
 		{ x1: Int ->
@@ -220,9 +212,7 @@ public fun calendarItemType_DurationConfig_Set_toJs(obj: CalendarItemType.Durati
 	"}"))
 }
 
-public
-		fun calendarItemType_DurationConfig_Set_fromJs(obj: CalendarItemTypeJs_DurationConfigJs_SetJs):
-		CalendarItemType.DurationConfig.Set {
+public fun calendarItemType_DurationConfig_Set_fromJs(obj: CalendarItemTypeJs_DurationConfigJs_SetJs): CalendarItemType.DurationConfig.Set {
 	val durations = arrayToSet(
 		obj.durations,
 		"obj.durations",
@@ -236,9 +226,7 @@ public
 }
 
 @Suppress("UNUSED_VARIABLE")
-public
-		fun calendarItemType_DurationConfig_Formula_toJs(obj: CalendarItemType.DurationConfig.Formula):
-		CalendarItemTypeJs_DurationConfigJs_FormulaJs {
+public fun calendarItemType_DurationConfig_Formula_toJs(obj: CalendarItemType.DurationConfig.Formula): CalendarItemTypeJs_DurationConfigJs_FormulaJs {
 	val min = intToNumber(obj.min)
 	val max = intToNumber(obj.max)
 	val step = intToNumber(obj.step)
@@ -249,9 +237,7 @@ public
 	"}"))
 }
 
-public
-		fun calendarItemType_DurationConfig_Formula_fromJs(obj: CalendarItemTypeJs_DurationConfigJs_FormulaJs):
-		CalendarItemType.DurationConfig.Formula {
+public fun calendarItemType_DurationConfig_Formula_fromJs(obj: CalendarItemTypeJs_DurationConfigJs_FormulaJs): CalendarItemType.DurationConfig.Formula {
 	val min = numberToInt(obj.min, "obj.min")
 	val max = numberToInt(obj.max, "obj.max")
 	val step = numberToInt(obj.step, "obj.step")

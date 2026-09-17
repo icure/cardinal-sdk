@@ -29,36 +29,27 @@ public external interface ContactBasicApiJs {
 
 	public fun matchServicesBy(filter: BaseFilterOptionsJs<ServiceJs>): Promise<Array<String>>
 
-	public fun matchContactsBySorted(filter: BaseSortableFilterOptionsJs<ContactJs>):
-			Promise<Array<String>>
+	public fun matchContactsBySorted(filter: BaseSortableFilterOptionsJs<ContactJs>): Promise<Array<String>>
 
-	public fun matchServicesBySorted(filter: BaseSortableFilterOptionsJs<ServiceJs>):
-			Promise<Array<String>>
+	public fun matchServicesBySorted(filter: BaseSortableFilterOptionsJs<ServiceJs>): Promise<Array<String>>
 
-	public fun filterContactsBy(filter: BaseFilterOptionsJs<ContactJs>):
-			Promise<PaginatedListIteratorJs<EncryptedContactJs>>
+	public fun filterContactsBy(filter: BaseFilterOptionsJs<ContactJs>): Promise<PaginatedListIteratorJs<EncryptedContactJs>>
 
-	public fun filterServicesBy(filter: BaseFilterOptionsJs<ServiceJs>):
-			Promise<PaginatedListIteratorJs<EncryptedServiceJs>>
+	public fun filterServicesBy(filter: BaseFilterOptionsJs<ServiceJs>): Promise<PaginatedListIteratorJs<EncryptedServiceJs>>
 
-	public fun filterContactsBySorted(filter: BaseSortableFilterOptionsJs<ContactJs>):
-			Promise<PaginatedListIteratorJs<EncryptedContactJs>>
+	public fun filterContactsBySorted(filter: BaseSortableFilterOptionsJs<ContactJs>): Promise<PaginatedListIteratorJs<EncryptedContactJs>>
 
-	public fun filterServicesBySorted(filter: BaseSortableFilterOptionsJs<ServiceJs>):
-			Promise<PaginatedListIteratorJs<EncryptedServiceJs>>
+	public fun filterServicesBySorted(filter: BaseSortableFilterOptionsJs<ServiceJs>): Promise<PaginatedListIteratorJs<EncryptedServiceJs>>
 
-	public fun subscribeToServiceCreateOrUpdateEvents(filter: BaseFilterOptionsJs<ServiceJs>,
-			options: dynamic): Promise<EntitySubscriptionJs<EncryptedServiceJs>>
+	public fun subscribeToServiceCreateOrUpdateEvents(filter: BaseFilterOptionsJs<ServiceJs>, options: dynamic): Promise<EntitySubscriptionJs<EncryptedServiceJs>>
 
 	public fun deleteContactById(entityId: String, rev: String): Promise<StoredDocumentIdentifierJs>
 
-	public fun deleteContactsByIds(entityIds: Array<StoredDocumentIdentifierJs>):
-			Promise<Array<StoredDocumentIdentifierJs>>
+	public fun deleteContactsByIds(entityIds: Array<StoredDocumentIdentifierJs>): Promise<Array<StoredDocumentIdentifierJs>>
 
 	public fun purgeContactById(id: String, rev: String): Promise<Unit>
 
-	public fun purgeContactsByIds(entityIds: Array<StoredDocumentIdentifierJs>):
-			Promise<Array<StoredDocumentIdentifierJs>>
+	public fun purgeContactsByIds(entityIds: Array<StoredDocumentIdentifierJs>): Promise<Array<StoredDocumentIdentifierJs>>
 
 	public fun deleteContact(contact: ContactJs): Promise<StoredDocumentIdentifierJs>
 
@@ -68,8 +59,7 @@ public external interface ContactBasicApiJs {
 
 	public fun purgeContacts(contacts: Array<ContactJs>): Promise<Array<StoredDocumentIdentifierJs>>
 
-	public fun getServiceCodesOccurrences(codeType: String, minOccurrences: Double):
-			Promise<Array<LabelledOccurenceJs>>
+	public fun getServiceCodesOccurrences(codeType: String, minOccurrences: Double): Promise<Array<LabelledOccurenceJs>>
 
 	public fun createContact(entity: EncryptedContactJs): Promise<EncryptedContactJs>
 
@@ -77,8 +67,7 @@ public external interface ContactBasicApiJs {
 
 	public fun undeleteContactById(id: String, rev: String): Promise<EncryptedContactJs>
 
-	public fun undeleteContactsByIds(entityIds: Array<StoredDocumentIdentifierJs>):
-			Promise<Array<EncryptedContactJs>>
+	public fun undeleteContactsByIds(entityIds: Array<StoredDocumentIdentifierJs>): Promise<Array<EncryptedContactJs>>
 
 	public fun undeleteContact(contact: ContactJs): Promise<EncryptedContactJs>
 

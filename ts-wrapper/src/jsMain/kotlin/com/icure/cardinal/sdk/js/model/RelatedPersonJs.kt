@@ -4,6 +4,8 @@
 package com.icure.cardinal.sdk.js.model
 
 import com.icure.cardinal.sdk.js.model.base.CodeStubJs
+import com.icure.cardinal.sdk.js.model.base.CustomisableRootJs
+import com.icure.cardinal.sdk.js.model.base.ExtendableJs
 import com.icure.cardinal.sdk.js.model.base.HasEncryptionMetadataJs
 import com.icure.cardinal.sdk.js.model.base.HasEndOfLifeJs
 import com.icure.cardinal.sdk.js.model.base.HasIdentifierJs
@@ -27,7 +29,8 @@ import kotlin.js.JsQualifier
 
 @JsName("RelatedPerson")
 public sealed external interface RelatedPersonJs : StoredDocumentJs, ICureDocumentJs<String>,
-		PersonJs, HasEncryptionMetadataJs, EncryptableJs, HasIdentifierJs, HasEndOfLifeJs {
+		PersonJs, HasEncryptionMetadataJs, EncryptableJs, HasIdentifierJs, HasEndOfLifeJs,
+		CustomisableRootJs, ExtendableJs {
 	public val properties: Array<out PropertyStubJs>
 
 	public val isEncrypted: Boolean
@@ -89,6 +92,10 @@ public external class DecryptedRelatedPersonJs(
 
 	override val securityMetadata: SecurityMetadataJs?
 
+	override val customisedModelVersion: Double?
+
+	override val extensions: dynamic
+
 	override val isEncrypted: Boolean
 }
 
@@ -147,6 +154,10 @@ public external class EncryptedRelatedPersonJs(
 	override val encryptedSelf: String?
 
 	override val securityMetadata: SecurityMetadataJs?
+
+	override val customisedModelVersion: Double?
+
+	override val extensions: dynamic
 
 	override val isEncrypted: Boolean
 }

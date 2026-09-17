@@ -22,8 +22,10 @@ import com.icure.cardinal.sdk.model.conflicts.ConflictResolutionStrategy
 import com.icure.cardinal.sdk.model.conflicts.MergeResult
 import com.icure.cardinal.sdk.model.couchdb.DocIdentifier
 import com.icure.cardinal.sdk.model.couchdb.SortDirection
+import com.icure.cardinal.sdk.model.dao.IdWithValue
 import com.icure.cardinal.sdk.model.embed.EncryptedContent
 import com.icure.cardinal.sdk.model.filter.AbstractFilter
+import com.icure.cardinal.sdk.model.filter.CustomFilter
 import com.icure.cardinal.sdk.model.filter.chain.FilterChain
 import com.icure.cardinal.sdk.model.requests.BulkShareOrUpdateMetadataParams
 import com.icure.cardinal.sdk.model.requests.EntityBulkShareResult
@@ -56,12 +58,10 @@ class RawPatientApiImpl(
 	private val authProvider: AuthProvider,
 	private val accessControlKeysHeadersProvider: AccessControlKeysHeadersProvider?,
 	rawApiConfig: RawApiConfig,
-) : BaseRawApi(rawApiConfig), RawPatientApi {
+) : BaseRawApi(rawApiConfig),
+	RawPatientApi {
 	override suspend fun getAccessControlKeysHeaderValues(groupId: String?): List<String>? =
-		accessControlKeysHeadersProvider?.getAccessControlKeysHeadersFor(
-			groupId,
-			EntityWithEncryptionMetadataTypeName.Patient,
-		)
+		accessControlKeysHeadersProvider?.getAccessControlKeysHeadersFor(groupId, EntityWithEncryptionMetadataTypeName.Patient)
 
 	// region common endpoints
 
@@ -709,6 +709,17 @@ class RawPatientApiImpl(
 			setBody(entityIds)
 		}.wrap()
 
+	override suspend fun matchPatientsByCustomFilter(filter: CustomFilter): HttpResponse<PaginatedList<IdWithValue>> =
+		post(authProvider) {
+			url {
+				takeFrom(apiUrl)
+				appendPathSegments("rest", "v2", "patient", "matchByCustom")
+			}
+			contentType(Application.Json)
+			accept(Application.Json)
+			setBody(filter)
+		}.wrap()
+
 	// endregion
 
 	// region cloud endpoints
@@ -821,10 +832,7 @@ class RawPatientApiImpl(
 		groupId: String,
 		patientDtos: List<EncryptedPatient>,
 	): HttpResponse<List<EncryptedPatient>> =
-		post(
-			authProvider,
-			groupId,
-		) {
+		post(authProvider, groupId) {
 			url {
 				takeFrom(apiUrl)
 				appendPathSegments("rest", "v2", "patient", "inGroup", groupId, "batch", "full")
@@ -838,10 +846,7 @@ class RawPatientApiImpl(
 		groupId: String,
 		patientDtos: List<EncryptedPatient>,
 	): HttpResponse<List<IdWithRev>> =
-		post(
-			authProvider,
-			groupId,
-		) {
+		post(authProvider, groupId) {
 			url {
 				takeFrom(apiUrl)
 				appendPathSegments("rest", "v2", "patient", "inGroup", groupId, "batch", "minimal")
@@ -855,10 +860,7 @@ class RawPatientApiImpl(
 		groupId: String,
 		patientDtos: List<EncryptedPatient>,
 	): HttpResponse<List<EncryptedPatient>> =
-		put(
-			authProvider,
-			groupId,
-		) {
+		put(authProvider, groupId) {
 			url {
 				takeFrom(apiUrl)
 				appendPathSegments("rest", "v2", "patient", "inGroup", groupId, "batch", "full")
@@ -872,10 +874,7 @@ class RawPatientApiImpl(
 		groupId: String,
 		patientDtos: List<EncryptedPatient>,
 	): HttpResponse<List<IdWithRev>> =
-		put(
-			authProvider,
-			groupId,
-		) {
+		put(authProvider, groupId) {
 			url {
 				takeFrom(apiUrl)
 				appendPathSegments("rest", "v2", "patient", "inGroup", groupId, "batch", "minimal")
@@ -1022,6 +1021,20 @@ class RawPatientApiImpl(
 			contentType(Application.Json)
 			accept(Application.Json)
 			setBody(entityIds)
+		}.wrap()
+
+	override suspend fun matchPatientsByCustomFilterInGroup(
+		groupId: String,
+		filter: CustomFilter,
+	): HttpResponse<PaginatedList<IdWithValue>> =
+		post(authProvider) {
+			url {
+				takeFrom(apiUrl)
+				appendPathSegments("rest", "v2", "patient", "inGroup", groupId, "matchByCustom")
+			}
+			contentType(Application.Json)
+			accept(Application.Json)
+			setBody(filter)
 		}.wrap()
 
 	// endregion

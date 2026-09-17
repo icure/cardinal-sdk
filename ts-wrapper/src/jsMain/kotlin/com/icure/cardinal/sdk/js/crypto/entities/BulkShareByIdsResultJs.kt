@@ -3,6 +3,7 @@
 
 package com.icure.cardinal.sdk.js.crypto.entities
 
+import com.icure.cardinal.sdk.js.model.EntityReferenceInGroupJs
 import com.icure.cardinal.sdk.js.utils.Record
 import kotlin.Array
 import kotlin.String
@@ -15,9 +16,9 @@ public external class BulkShareByIdsResultJs(
 ) {
 	public val notFoundIds: Array<String>
 
-	public val successfulDelegateIdsByEntityId: Record<String, Array<String>>
+	public val successfulRequestsByEntityId: Record<String, Array<SuccessfulRequestDetailsJs>>
 
-	public val unmodifiedDelegateIdsByEntityId: Record<String, Array<String>>
+	public val unmodifiedDelegatesByEntityId: Record<String, Array<EntityReferenceInGroupJs>>
 
 	public val shareErrors: Array<FailedRequestDetailsJs>
 }

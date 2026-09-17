@@ -5,6 +5,7 @@ import {CodeStub} from '../base/CodeStub.mjs';
 import {Extendable} from '../base/Extendable.mjs';
 import {HasEndOfLife} from '../base/HasEndOfLife.mjs';
 import {HasIdentifier} from '../base/HasIdentifier.mjs';
+import {HasMedicalLocation} from '../base/HasMedicalLocation.mjs';
 import {ICureDocument} from '../base/ICureDocument.mjs';
 import {Identifier} from '../base/Identifier.mjs';
 import {LinkQualification} from '../base/LinkQualification.mjs';
@@ -16,7 +17,7 @@ import {Encryptable} from './Encryptable.mjs';
 import {SecurityMetadata} from './SecurityMetadata.mjs';
 
 
-export interface Service extends Encryptable, ICureDocument<string>, HasEndOfLife, HasIdentifier, Extendable {
+export interface Service extends Encryptable, ICureDocument<string>, HasMedicalLocation, HasEndOfLife, HasIdentifier, Extendable {
 
 	/**
 	 *

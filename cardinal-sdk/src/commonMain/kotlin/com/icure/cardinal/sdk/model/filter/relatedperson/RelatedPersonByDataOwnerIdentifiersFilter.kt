@@ -12,8 +12,7 @@ import kotlin.String
 import kotlin.collections.List
 
 /**
- * Filter that matches related persons with a delegation for a data owner and at least one of the
- * provided identifiers.
+ * Filter that matches related persons with a delegation for a data owner and at least one of the provided identifiers.
  * /
  */
 @SerialName("RelatedPersonByDataOwnerIdentifiersFilter")

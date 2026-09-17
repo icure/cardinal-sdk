@@ -34,46 +34,39 @@ sealed interface Service :
 	override val id: String
 
 	/**
-	 * The transactionId is used when a single service had to be split into parts for technical
-	 * reasons. Several services with the same non null transaction id form one single service
+	 * The transactionId is used when a single service had to be split into parts for technical reasons. Several services with the same non null transaction id form one single service
 	 */
 	public val transactionId: String?
 
 	/**
-	 * The transactionId is used when a single service had to be split into parts for technical
-	 * reasons. Several services with the same non null transaction id form one single service
+	 * The transactionId is used when a single service had to be split into parts for technical reasons. Several services with the same non null transaction id form one single service
 	 */
 	override val identifier: List<Identifier>
 
 	/**
-	 * Id of the contact during which the service is provided. Only used when the Service is emitted
-	 * outside of its contact
+	 * Id of the contact during which the service is provided. Only used when the Service is emitted outside of its contact
 	 */
 	public val contactId: String?
 
 	public val subContactIds: Set<String>?
 
 	/**
-	 * List of IDs of all plans of actions (healthcare approaches) as a part of which the Service is
-	 * provided. Only used when the Service is emitted outside of its contact
+	 * List of IDs of all plans of actions (healthcare approaches) as a part of which the Service is provided. Only used when the Service is emitted outside of its contact
 	 */
 	public val plansOfActionIds: Set<String>?
 
 	/**
-	 * List of IDs of all healthcare elements for which the service is provided. Only used when the
-	 * Service is emitted outside of its contact
+	 * List of IDs of all healthcare elements for which the service is provided. Only used when the Service is emitted outside of its contact
 	 */
 	public val healthElementsIds: Set<String>?
 
 	/**
-	 * List of Ids of all forms linked to the Service. Only used when the Service is emitted outside of
-	 * its contact.
+	 * List of Ids of all forms linked to the Service. Only used when the Service is emitted outside of its contact.
 	 */
 	public val formIds: Set<String>?
 
 	/**
-	 * List of Ids of all forms linked to the Service. Only used when the Service is emitted outside of
-	 * its contact.
+	 * List of Ids of all forms linked to the Service. Only used when the Service is emitted outside of its contact.
 	 */
 	public val secretForeignKeys: Set<String>?
 
@@ -88,14 +81,12 @@ sealed interface Service :
 	public val delegations: Map<String, Set<Delegation>>
 
 	/**
-	 * The contact secret encryption key used to encrypt the secured properties (like services for
-	 * example), encrypted for separate Crypto Actors.
+	 * The contact secret encryption key used to encrypt the secured properties (like services for example), encrypted for separate Crypto Actors.
 	 */
 	public val encryptionKeys: Map<String, Set<Delegation>>
 
 	/**
-	 * Description / Unambiguous qualification (LOINC code) of the type of information contained in the
-	 * service. Could be a code to qualify temperature, complaint, diagnostic, ...
+	 * Description / Unambiguous qualification (LOINC code) of the type of information contained in the service. Could be a code to qualify temperature, complaint, diagnostic, ...
 	 */
 	public val label: String?
 
@@ -112,8 +103,7 @@ sealed interface Service :
 	public val textIndexes: Map<String, String>
 
 	/**
-	 * The date (YYYYMMDDhhmmss) when the Service is noted to have started and also closes on the same
-	 * date
+	 * The date (YYYYMMDDhhmmss) when the Service is noted to have started and also closes on the same date
 	 */
 	public val valueDate: Long?
 
@@ -128,14 +118,12 @@ sealed interface Service :
 	public val closingDate: Long?
 
 	/**
-	 * The timestamp (unix epoch in ms) of creation of the service, will be filled automatically if
-	 * missing. Not enforced by the application server.
+	 * The timestamp (unix epoch in ms) of creation of the service, will be filled automatically if missing. Not enforced by the application server.
 	 */
 	override val created: Long?
 
 	/**
-	 * The date (unix epoch in ms) of the latest modification of the service, will be filled
-	 * automatically if missing. Not enforced by the application server.
+	 * The date (unix epoch in ms) of the latest modification of the service, will be filled automatically if missing. Not enforced by the application server.
 	 */
 	override val modified: Long?
 
@@ -147,8 +135,7 @@ sealed interface Service :
 	override val author: String?
 
 	/**
-	 * The id of the HealthcareParty that is responsible for this service, if absent, falls back on the
-	 * contact's responsible
+	 * The id of the HealthcareParty that is responsible for this service, if absent, falls back on the contact's responsible
 	 */
 	override val responsible: String?
 
@@ -200,40 +187,33 @@ data class DecryptedService(
 	 */
 	override val id: String,
 	/**
-	 * The transactionId is used when a single service had to be split into parts for technical
-	 * reasons. Several services with the same non null transaction id form one single service
+	 * The transactionId is used when a single service had to be split into parts for technical reasons. Several services with the same non null transaction id form one single service
 	 */
 	override val transactionId: String? = null,
 	/**
-	 * The transactionId is used when a single service had to be split into parts for technical
-	 * reasons. Several services with the same non null transaction id form one single service
+	 * The transactionId is used when a single service had to be split into parts for technical reasons. Several services with the same non null transaction id form one single service
 	 */
 	@param:DefaultValue("emptyList()")
 	override val identifier: List<Identifier> = emptyList(),
 	/**
-	 * Id of the contact during which the service is provided. Only used when the Service is emitted
-	 * outside of its contact
+	 * Id of the contact during which the service is provided. Only used when the Service is emitted outside of its contact
 	 */
 	override val contactId: String? = null,
 	override val subContactIds: Set<String>? = null,
 	/**
-	 * List of IDs of all plans of actions (healthcare approaches) as a part of which the Service is
-	 * provided. Only used when the Service is emitted outside of its contact
+	 * List of IDs of all plans of actions (healthcare approaches) as a part of which the Service is provided. Only used when the Service is emitted outside of its contact
 	 */
 	override val plansOfActionIds: Set<String>? = null,
 	/**
-	 * List of IDs of all healthcare elements for which the service is provided. Only used when the
-	 * Service is emitted outside of its contact
+	 * List of IDs of all healthcare elements for which the service is provided. Only used when the Service is emitted outside of its contact
 	 */
 	override val healthElementsIds: Set<String>? = null,
 	/**
-	 * List of Ids of all forms linked to the Service. Only used when the Service is emitted outside of
-	 * its contact.
+	 * List of Ids of all forms linked to the Service. Only used when the Service is emitted outside of its contact.
 	 */
 	override val formIds: Set<String>? = null,
 	/**
-	 * List of Ids of all forms linked to the Service. Only used when the Service is emitted outside of
-	 * its contact.
+	 * List of Ids of all forms linked to the Service. Only used when the Service is emitted outside of its contact.
 	 */
 	@param:DefaultValue("emptySet()")
 	override val secretForeignKeys: Set<String>? = emptySet(),
@@ -248,14 +228,12 @@ data class DecryptedService(
 	@param:DefaultValue("emptyMap()")
 	override val delegations: Map<String, Set<Delegation>> = emptyMap(),
 	/**
-	 * The contact secret encryption key used to encrypt the secured properties (like services for
-	 * example), encrypted for separate Crypto Actors.
+	 * The contact secret encryption key used to encrypt the secured properties (like services for example), encrypted for separate Crypto Actors.
 	 */
 	@param:DefaultValue("emptyMap()")
 	override val encryptionKeys: Map<String, Set<Delegation>> = emptyMap(),
 	/**
-	 * Description / Unambiguous qualification (LOINC code) of the type of information contained in the
-	 * service. Could be a code to qualify temperature, complaint, diagnostic, ...
+	 * Description / Unambiguous qualification (LOINC code) of the type of information contained in the service. Could be a code to qualify temperature, complaint, diagnostic, ...
 	 */
 	override val label: String? = null,
 	/**
@@ -270,8 +248,7 @@ data class DecryptedService(
 	@param:DefaultValue("emptyMap()")
 	override val textIndexes: Map<String, String> = emptyMap(),
 	/**
-	 * The date (YYYYMMDDhhmmss) when the Service is noted to have started and also closes on the same
-	 * date
+	 * The date (YYYYMMDDhhmmss) when the Service is noted to have started and also closes on the same date
 	 */
 	override val valueDate: Long? = null,
 	/**
@@ -283,13 +260,11 @@ data class DecryptedService(
 	 */
 	override val closingDate: Long? = null,
 	/**
-	 * The timestamp (unix epoch in ms) of creation of the service, will be filled automatically if
-	 * missing. Not enforced by the application server.
+	 * The timestamp (unix epoch in ms) of creation of the service, will be filled automatically if missing. Not enforced by the application server.
 	 */
 	override val created: Long? = null,
 	/**
-	 * The date (unix epoch in ms) of the latest modification of the service, will be filled
-	 * automatically if missing. Not enforced by the application server.
+	 * The date (unix epoch in ms) of the latest modification of the service, will be filled automatically if missing. Not enforced by the application server.
 	 */
 	override val modified: Long? = null,
 	override val endOfLife: Long? = null,
@@ -298,8 +273,7 @@ data class DecryptedService(
 	 */
 	override val author: String? = null,
 	/**
-	 * The id of the HealthcareParty that is responsible for this service, if absent, falls back on the
-	 * contact's responsible
+	 * The id of the HealthcareParty that is responsible for this service, if absent, falls back on the contact's responsible
 	 */
 	override val responsible: String? = null,
 	/**
@@ -345,40 +319,33 @@ data class EncryptedService(
 	 */
 	override val id: String,
 	/**
-	 * The transactionId is used when a single service had to be split into parts for technical
-	 * reasons. Several services with the same non null transaction id form one single service
+	 * The transactionId is used when a single service had to be split into parts for technical reasons. Several services with the same non null transaction id form one single service
 	 */
 	override val transactionId: String? = null,
 	/**
-	 * The transactionId is used when a single service had to be split into parts for technical
-	 * reasons. Several services with the same non null transaction id form one single service
+	 * The transactionId is used when a single service had to be split into parts for technical reasons. Several services with the same non null transaction id form one single service
 	 */
 	@param:DefaultValue("emptyList()")
 	override val identifier: List<Identifier> = emptyList(),
 	/**
-	 * Id of the contact during which the service is provided. Only used when the Service is emitted
-	 * outside of its contact
+	 * Id of the contact during which the service is provided. Only used when the Service is emitted outside of its contact
 	 */
 	override val contactId: String? = null,
 	override val subContactIds: Set<String>? = null,
 	/**
-	 * List of IDs of all plans of actions (healthcare approaches) as a part of which the Service is
-	 * provided. Only used when the Service is emitted outside of its contact
+	 * List of IDs of all plans of actions (healthcare approaches) as a part of which the Service is provided. Only used when the Service is emitted outside of its contact
 	 */
 	override val plansOfActionIds: Set<String>? = null,
 	/**
-	 * List of IDs of all healthcare elements for which the service is provided. Only used when the
-	 * Service is emitted outside of its contact
+	 * List of IDs of all healthcare elements for which the service is provided. Only used when the Service is emitted outside of its contact
 	 */
 	override val healthElementsIds: Set<String>? = null,
 	/**
-	 * List of Ids of all forms linked to the Service. Only used when the Service is emitted outside of
-	 * its contact.
+	 * List of Ids of all forms linked to the Service. Only used when the Service is emitted outside of its contact.
 	 */
 	override val formIds: Set<String>? = null,
 	/**
-	 * List of Ids of all forms linked to the Service. Only used when the Service is emitted outside of
-	 * its contact.
+	 * List of Ids of all forms linked to the Service. Only used when the Service is emitted outside of its contact.
 	 */
 	@param:DefaultValue("emptySet()")
 	override val secretForeignKeys: Set<String>? = emptySet(),
@@ -393,14 +360,12 @@ data class EncryptedService(
 	@param:DefaultValue("emptyMap()")
 	override val delegations: Map<String, Set<Delegation>> = emptyMap(),
 	/**
-	 * The contact secret encryption key used to encrypt the secured properties (like services for
-	 * example), encrypted for separate Crypto Actors.
+	 * The contact secret encryption key used to encrypt the secured properties (like services for example), encrypted for separate Crypto Actors.
 	 */
 	@param:DefaultValue("emptyMap()")
 	override val encryptionKeys: Map<String, Set<Delegation>> = emptyMap(),
 	/**
-	 * Description / Unambiguous qualification (LOINC code) of the type of information contained in the
-	 * service. Could be a code to qualify temperature, complaint, diagnostic, ...
+	 * Description / Unambiguous qualification (LOINC code) of the type of information contained in the service. Could be a code to qualify temperature, complaint, diagnostic, ...
 	 */
 	override val label: String? = null,
 	/**
@@ -415,8 +380,7 @@ data class EncryptedService(
 	@param:DefaultValue("emptyMap()")
 	override val textIndexes: Map<String, String> = emptyMap(),
 	/**
-	 * The date (YYYYMMDDhhmmss) when the Service is noted to have started and also closes on the same
-	 * date
+	 * The date (YYYYMMDDhhmmss) when the Service is noted to have started and also closes on the same date
 	 */
 	override val valueDate: Long? = null,
 	/**
@@ -428,13 +392,11 @@ data class EncryptedService(
 	 */
 	override val closingDate: Long? = null,
 	/**
-	 * The timestamp (unix epoch in ms) of creation of the service, will be filled automatically if
-	 * missing. Not enforced by the application server.
+	 * The timestamp (unix epoch in ms) of creation of the service, will be filled automatically if missing. Not enforced by the application server.
 	 */
 	override val created: Long? = null,
 	/**
-	 * The date (unix epoch in ms) of the latest modification of the service, will be filled
-	 * automatically if missing. Not enforced by the application server.
+	 * The date (unix epoch in ms) of the latest modification of the service, will be filled automatically if missing. Not enforced by the application server.
 	 */
 	override val modified: Long? = null,
 	override val endOfLife: Long? = null,
@@ -443,8 +405,7 @@ data class EncryptedService(
 	 */
 	override val author: String? = null,
 	/**
-	 * The id of the HealthcareParty that is responsible for this service, if absent, falls back on the
-	 * contact's responsible
+	 * The id of the HealthcareParty that is responsible for this service, if absent, falls back on the contact's responsible
 	 */
 	override val responsible: String? = null,
 	/**

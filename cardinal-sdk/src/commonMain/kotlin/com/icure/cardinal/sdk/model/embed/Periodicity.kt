@@ -7,8 +7,7 @@ import com.icure.cardinal.sdk.utils.generation.RequireHashable
 import kotlinx.serialization.Serializable
 
 /**
- * Represents a periodicity linking a code to its related periodicity code, used in medication
- * regimens.
+ * Represents a periodicity linking a code to its related periodicity code, used in medication regimens.
  * /
  */
 @RequireHashable

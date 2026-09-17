@@ -9,8 +9,7 @@ import com.icure.cardinal.sdk.model.PaginatedDocumentKeyIdPair
 import kotlin.Suppress
 
 @Suppress("UNUSED_VARIABLE")
-public fun paginatedDocumentKeyIdPair_toJs(obj: PaginatedDocumentKeyIdPair):
-		PaginatedDocumentKeyIdPairJs {
+public fun paginatedDocumentKeyIdPair_toJs(obj: PaginatedDocumentKeyIdPair): PaginatedDocumentKeyIdPairJs {
 	val startKey = nullToUndefined(
 		jsonToDynamic(obj.startKey)
 	)
@@ -23,8 +22,7 @@ public fun paginatedDocumentKeyIdPair_toJs(obj: PaginatedDocumentKeyIdPair):
 	"}"))
 }
 
-public fun paginatedDocumentKeyIdPair_fromJs(obj: PaginatedDocumentKeyIdPairJs):
-		PaginatedDocumentKeyIdPair {
+public fun paginatedDocumentKeyIdPair_fromJs(obj: PaginatedDocumentKeyIdPairJs): PaginatedDocumentKeyIdPair {
 	val startKey = dynamicToJsonNullsafe(obj.startKey, "obj.startKey")
 	val startKeyDocId = undefinedToNull(obj.startKeyDocId)
 	return PaginatedDocumentKeyIdPair(

@@ -8,8 +8,7 @@ import kotlin.Boolean
 import kotlin.Long
 
 /**
- * Represents the read status of a message for a specific user, tracking whether it has been read
- * and when.
+ * Represents the read status of a message for a specific user, tracking whether it has been read and when.
  * /
  */
 @Serializable

@@ -41,53 +41,39 @@ public external interface RelatedPersonInGroupApiJs {
 		options: dynamic,
 	): Promise<GroupScopedJs<DecryptedRelatedPersonJs>>
 
-	public fun getEncryptionKeysOf(relatedPerson: GroupScopedJs<RelatedPersonJs>):
-			Promise<Array<String>>
+	public fun getEncryptionKeysOf(relatedPerson: GroupScopedJs<RelatedPersonJs>): Promise<Array<String>>
 
 	public fun hasWriteAccess(relatedPerson: GroupScopedJs<RelatedPersonJs>): Promise<Boolean>
 
 	public fun getSecretIdsOf(relatedPerson: GroupScopedJs<RelatedPersonJs>): Promise<Array<String>>
 
-	public fun createDelegationDeAnonymizationMetadata(entity: GroupScopedJs<RelatedPersonJs>,
-			delegates: Array<EntityReferenceInGroupJs>): Promise<Unit>
+	public fun createDelegationDeAnonymizationMetadata(entity: GroupScopedJs<RelatedPersonJs>, delegates: Array<EntityReferenceInGroupJs>): Promise<Unit>
 
-	public fun decrypt(relatedPersons: Array<GroupScopedJs<EncryptedRelatedPersonJs>>):
-			Promise<Array<GroupScopedJs<DecryptedRelatedPersonJs>>>
+	public fun decrypt(relatedPersons: Array<GroupScopedJs<EncryptedRelatedPersonJs>>): Promise<Array<GroupScopedJs<DecryptedRelatedPersonJs>>>
 
-	public fun tryDecrypt(relatedPersons: Array<GroupScopedJs<EncryptedRelatedPersonJs>>):
-			Promise<Array<GroupScopedJs<RelatedPersonJs>>>
+	public fun tryDecrypt(relatedPersons: Array<GroupScopedJs<EncryptedRelatedPersonJs>>): Promise<Array<GroupScopedJs<RelatedPersonJs>>>
 
-	public fun encryptOrValidate(relatedPersons: Array<GroupScopedJs<RelatedPersonJs>>):
-			Promise<Array<GroupScopedJs<EncryptedRelatedPersonJs>>>
+	public fun encryptOrValidate(relatedPersons: Array<GroupScopedJs<RelatedPersonJs>>): Promise<Array<GroupScopedJs<EncryptedRelatedPersonJs>>>
 
-	public fun matchRelatedPersonsBy(groupId: String, filter: FilterOptionsJs<RelatedPersonJs>):
-			Promise<Array<String>>
+	public fun matchRelatedPersonsBy(groupId: String, filter: FilterOptionsJs<RelatedPersonJs>): Promise<Array<String>>
 
-	public fun matchRelatedPersonsBySorted(groupId: String,
-			filter: SortableFilterOptionsJs<RelatedPersonJs>): Promise<Array<String>>
+	public fun matchRelatedPersonsBySorted(groupId: String, filter: SortableFilterOptionsJs<RelatedPersonJs>): Promise<Array<String>>
 
-	public fun deleteRelatedPersonById(entityId: GroupScopedJs<StoredDocumentIdentifierJs>):
-			Promise<GroupScopedJs<StoredDocumentIdentifierJs>>
+	public fun deleteRelatedPersonById(entityId: GroupScopedJs<StoredDocumentIdentifierJs>): Promise<GroupScopedJs<StoredDocumentIdentifierJs>>
 
-	public fun deleteRelatedPersonsByIds(entityIds: Array<GroupScopedJs<StoredDocumentIdentifierJs>>):
-			Promise<Array<GroupScopedJs<StoredDocumentIdentifierJs>>>
+	public fun deleteRelatedPersonsByIds(entityIds: Array<GroupScopedJs<StoredDocumentIdentifierJs>>): Promise<Array<GroupScopedJs<StoredDocumentIdentifierJs>>>
 
-	public fun purgeRelatedPersonById(entityId: GroupScopedJs<StoredDocumentIdentifierJs>):
-			Promise<Unit>
+	public fun purgeRelatedPersonById(entityId: GroupScopedJs<StoredDocumentIdentifierJs>): Promise<Unit>
 
-	public fun purgeRelatedPersonsByIds(entityIds: Array<GroupScopedJs<StoredDocumentIdentifierJs>>):
-			Promise<Array<GroupScopedJs<StoredDocumentIdentifierJs>>>
+	public fun purgeRelatedPersonsByIds(entityIds: Array<GroupScopedJs<StoredDocumentIdentifierJs>>): Promise<Array<GroupScopedJs<StoredDocumentIdentifierJs>>>
 
-	public fun deleteRelatedPerson(relatedPerson: GroupScopedJs<RelatedPersonJs>):
-			Promise<GroupScopedJs<StoredDocumentIdentifierJs>>
+	public fun deleteRelatedPerson(relatedPerson: GroupScopedJs<RelatedPersonJs>): Promise<GroupScopedJs<StoredDocumentIdentifierJs>>
 
-	public fun deleteRelatedPersons(relatedPersons: Array<GroupScopedJs<RelatedPersonJs>>):
-			Promise<Array<GroupScopedJs<StoredDocumentIdentifierJs>>>
+	public fun deleteRelatedPersons(relatedPersons: Array<GroupScopedJs<RelatedPersonJs>>): Promise<Array<GroupScopedJs<StoredDocumentIdentifierJs>>>
 
 	public fun purgeRelatedPerson(relatedPerson: GroupScopedJs<RelatedPersonJs>): Promise<Unit>
 
-	public fun purgeRelatedPersons(relatedPersons: Array<GroupScopedJs<RelatedPersonJs>>):
-			Promise<Array<GroupScopedJs<StoredDocumentIdentifierJs>>>
+	public fun purgeRelatedPersons(relatedPersons: Array<GroupScopedJs<RelatedPersonJs>>): Promise<Array<GroupScopedJs<StoredDocumentIdentifierJs>>>
 
 	public fun shareWith(
 		`delegate`: EntityReferenceInGroupJs,
@@ -95,45 +81,29 @@ public external interface RelatedPersonInGroupApiJs {
 		options: dynamic,
 	): Promise<GroupScopedJs<DecryptedRelatedPersonJs>>
 
-	public fun shareWithMany(relatedPerson: GroupScopedJs<DecryptedRelatedPersonJs>,
-			delegates: Array<EntityReferenceInGroupToRelatedPersonShareOptionsMapObject_delegate_shareOptions>):
-			Promise<GroupScopedJs<DecryptedRelatedPersonJs>>
+	public fun shareWithMany(relatedPerson: GroupScopedJs<DecryptedRelatedPersonJs>, delegates: Array<EntityReferenceInGroupToRelatedPersonShareOptionsMapObject_delegate_shareOptions>): Promise<GroupScopedJs<DecryptedRelatedPersonJs>>
 
-	public fun filterRelatedPersonsBy(groupId: String, filter: FilterOptionsJs<RelatedPersonJs>):
-			Promise<PaginatedListIteratorJs<GroupScopedJs<DecryptedRelatedPersonJs>>>
+	public fun filterRelatedPersonsBy(groupId: String, filter: FilterOptionsJs<RelatedPersonJs>): Promise<PaginatedListIteratorJs<GroupScopedJs<DecryptedRelatedPersonJs>>>
 
-	public fun filterRelatedPersonsBySorted(groupId: String,
-			filter: SortableFilterOptionsJs<RelatedPersonJs>):
-			Promise<PaginatedListIteratorJs<GroupScopedJs<DecryptedRelatedPersonJs>>>
+	public fun filterRelatedPersonsBySorted(groupId: String, filter: SortableFilterOptionsJs<RelatedPersonJs>): Promise<PaginatedListIteratorJs<GroupScopedJs<DecryptedRelatedPersonJs>>>
 
-	public fun createRelatedPerson(entity: GroupScopedJs<DecryptedRelatedPersonJs>):
-			Promise<GroupScopedJs<DecryptedRelatedPersonJs>>
+	public fun createRelatedPerson(entity: GroupScopedJs<DecryptedRelatedPersonJs>): Promise<GroupScopedJs<DecryptedRelatedPersonJs>>
 
-	public fun createRelatedPersons(entities: Array<GroupScopedJs<DecryptedRelatedPersonJs>>):
-			Promise<Array<GroupScopedJs<DecryptedRelatedPersonJs>>>
+	public fun createRelatedPersons(entities: Array<GroupScopedJs<DecryptedRelatedPersonJs>>): Promise<Array<GroupScopedJs<DecryptedRelatedPersonJs>>>
 
-	public fun undeleteRelatedPersonById(entityId: GroupScopedJs<StoredDocumentIdentifierJs>):
-			Promise<GroupScopedJs<DecryptedRelatedPersonJs>>
+	public fun undeleteRelatedPersonById(entityId: GroupScopedJs<StoredDocumentIdentifierJs>): Promise<GroupScopedJs<DecryptedRelatedPersonJs>>
 
-	public
-			fun undeleteRelatedPersonsByIds(entityIds: Array<GroupScopedJs<StoredDocumentIdentifierJs>>):
-			Promise<Array<GroupScopedJs<DecryptedRelatedPersonJs>>>
+	public fun undeleteRelatedPersonsByIds(entityIds: Array<GroupScopedJs<StoredDocumentIdentifierJs>>): Promise<Array<GroupScopedJs<DecryptedRelatedPersonJs>>>
 
-	public fun undeleteRelatedPerson(relatedPerson: GroupScopedJs<RelatedPersonJs>):
-			Promise<GroupScopedJs<DecryptedRelatedPersonJs>>
+	public fun undeleteRelatedPerson(relatedPerson: GroupScopedJs<RelatedPersonJs>): Promise<GroupScopedJs<DecryptedRelatedPersonJs>>
 
-	public fun undeleteRelatedPersons(relatedPersons: Array<GroupScopedJs<DecryptedRelatedPersonJs>>):
-			Promise<Array<GroupScopedJs<DecryptedRelatedPersonJs>>>
+	public fun undeleteRelatedPersons(relatedPersons: Array<GroupScopedJs<DecryptedRelatedPersonJs>>): Promise<Array<GroupScopedJs<DecryptedRelatedPersonJs>>>
 
-	public fun modifyRelatedPerson(entity: GroupScopedJs<DecryptedRelatedPersonJs>):
-			Promise<GroupScopedJs<DecryptedRelatedPersonJs>>
+	public fun modifyRelatedPerson(entity: GroupScopedJs<DecryptedRelatedPersonJs>): Promise<GroupScopedJs<DecryptedRelatedPersonJs>>
 
-	public fun modifyRelatedPersons(entities: Array<GroupScopedJs<DecryptedRelatedPersonJs>>):
-			Promise<Array<GroupScopedJs<DecryptedRelatedPersonJs>>>
+	public fun modifyRelatedPersons(entities: Array<GroupScopedJs<DecryptedRelatedPersonJs>>): Promise<Array<GroupScopedJs<DecryptedRelatedPersonJs>>>
 
-	public fun getRelatedPerson(groupId: String, entityId: String):
-			Promise<GroupScopedJs<DecryptedRelatedPersonJs>?>
+	public fun getRelatedPerson(groupId: String, entityId: String): Promise<GroupScopedJs<DecryptedRelatedPersonJs>?>
 
-	public fun getRelatedPersons(groupId: String, entityIds: Array<String>):
-			Promise<Array<GroupScopedJs<DecryptedRelatedPersonJs>>>
+	public fun getRelatedPersons(groupId: String, entityIds: Array<String>): Promise<Array<GroupScopedJs<DecryptedRelatedPersonJs>>>
 }

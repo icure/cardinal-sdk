@@ -10,8 +10,7 @@ import kotlin.String
  *
  *  An algorithm a public key of a data owner may be used with.
  *
- *  This is an enum rather than a "uses sha256" boolean so that a third scheme can be introduced
- * without a
+ *  This is an enum rather than a "uses sha256" boolean so that a third scheme can be introduced without a
  *  breaking change to the wire format.
  */
 @Serializable

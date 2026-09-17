@@ -19,7 +19,8 @@ import kotlin.js.JsQualifier
 @JsName("Group")
 public external class GroupJs(
 	partial: dynamic,
-) : StoredDocumentJs, HasTagsJs {
+) : StoredDocumentJs,
+    HasTagsJs {
 	override val id: String
 
 	override val rev: String?

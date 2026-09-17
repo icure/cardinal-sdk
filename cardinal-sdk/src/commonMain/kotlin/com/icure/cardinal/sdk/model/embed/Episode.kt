@@ -12,8 +12,7 @@ import kotlin.Long
 import kotlin.String
 
 /**
- * Represents a medical episode, which is a time-bounded grouping of healthcare elements related to
- * a specific concern.
+ * Represents a medical episode, which is a time-bounded grouping of healthcare elements related to a specific concern.
  * /
  */
 
@@ -55,8 +54,7 @@ sealed interface Episode : Encryptable, Identifiable<String>, Named, Extendable 
 }
 
 /**
- * Represents a medical episode, which is a time-bounded grouping of healthcare elements related to
- * a specific concern.
+ * Represents a medical episode, which is a time-bounded grouping of healthcare elements related to a specific concern.
  * /
  */
 @Serializable
@@ -93,8 +91,7 @@ data class DecryptedEpisode(
 }
 
 /**
- * Represents a medical episode, which is a time-bounded grouping of healthcare elements related to
- * a specific concern.
+ * Represents a medical episode, which is a time-bounded grouping of healthcare elements related to a specific concern.
  * /
  */
 @Serializable

@@ -25,25 +25,19 @@ public external interface DocumentFlavouredInGroupApiJs<E : DocumentJs> {
 		options: dynamic,
 	): Promise<GroupScopedJs<E>>
 
-	public fun shareWithMany(document: GroupScopedJs<E>,
-			delegates: Array<EntityReferenceInGroupToDocumentShareOptionsMapObject_delegate_shareOptions>):
-			Promise<GroupScopedJs<E>>
+	public fun shareWithMany(document: GroupScopedJs<E>, delegates: Array<EntityReferenceInGroupToDocumentShareOptionsMapObject_delegate_shareOptions>): Promise<GroupScopedJs<E>>
 
-	public fun filterDocumentsBy(groupId: String, filter: FilterOptionsJs<DocumentJs>):
-			Promise<PaginatedListIteratorJs<GroupScopedJs<E>>>
+	public fun filterDocumentsBy(groupId: String, filter: FilterOptionsJs<DocumentJs>): Promise<PaginatedListIteratorJs<GroupScopedJs<E>>>
 
-	public fun filterDocumentsBySorted(groupId: String, filter: SortableFilterOptionsJs<DocumentJs>):
-			Promise<PaginatedListIteratorJs<GroupScopedJs<E>>>
+	public fun filterDocumentsBySorted(groupId: String, filter: SortableFilterOptionsJs<DocumentJs>): Promise<PaginatedListIteratorJs<GroupScopedJs<E>>>
 
 	public fun createDocument(entity: GroupScopedJs<E>): Promise<GroupScopedJs<E>>
 
 	public fun createDocuments(entities: Array<GroupScopedJs<E>>): Promise<Array<GroupScopedJs<E>>>
 
-	public fun undeleteDocumentById(entityId: GroupScopedJs<StoredDocumentIdentifierJs>):
-			Promise<GroupScopedJs<E>>
+	public fun undeleteDocumentById(entityId: GroupScopedJs<StoredDocumentIdentifierJs>): Promise<GroupScopedJs<E>>
 
-	public fun undeleteDocumentsByIds(entityIds: Array<GroupScopedJs<StoredDocumentIdentifierJs>>):
-			Promise<Array<GroupScopedJs<E>>>
+	public fun undeleteDocumentsByIds(entityIds: Array<GroupScopedJs<StoredDocumentIdentifierJs>>): Promise<Array<GroupScopedJs<E>>>
 
 	public fun undeleteDocument(document: GroupScopedJs<DocumentJs>): Promise<GroupScopedJs<E>>
 
@@ -55,6 +49,5 @@ public external interface DocumentFlavouredInGroupApiJs<E : DocumentJs> {
 
 	public fun getDocument(groupId: String, entityId: String): Promise<GroupScopedJs<E>?>
 
-	public fun getDocuments(groupId: String, entityIds: Array<String>):
-			Promise<Array<GroupScopedJs<E>>>
+	public fun getDocuments(groupId: String, entityIds: Array<String>): Promise<Array<GroupScopedJs<E>>>
 }

@@ -31,8 +31,7 @@ public object InternalMaintenanceTaskFiltersObj {
 		return BaseSortableFilterOptionsJsImpl(result)
 	}
 
-	public fun byIdentifiersForDataOwner(dataOwnerId: String, identifiers: Array<IdentifierJs>):
-			BaseFilterOptionsJs<MaintenanceTaskJs> {
+	public fun byIdentifiersForDataOwner(dataOwnerId: String, identifiers: Array<IdentifierJs>): BaseFilterOptionsJs<MaintenanceTaskJs> {
 		val dataOwnerIdConverted: String = dataOwnerId
 		val identifiersConverted: List<Identifier> = arrayToList(
 			identifiers,
@@ -48,8 +47,7 @@ public object InternalMaintenanceTaskFiltersObj {
 		return BaseFilterOptionsJsImpl(result)
 	}
 
-	public fun byIdentifiersForSelf(identifiers: Array<IdentifierJs>):
-			FilterOptionsJs<MaintenanceTaskJs> {
+	public fun byIdentifiersForSelf(identifiers: Array<IdentifierJs>): FilterOptionsJs<MaintenanceTaskJs> {
 		val identifiersConverted: List<Identifier> = arrayToList(
 			identifiers,
 			"identifiers",
@@ -63,8 +61,7 @@ public object InternalMaintenanceTaskFiltersObj {
 		return FilterOptionsJsImpl(result)
 	}
 
-	public fun byTypeForDataOwner(dataOwnerId: String, type: String):
-			BaseFilterOptionsJs<MaintenanceTaskJs> {
+	public fun byTypeForDataOwner(dataOwnerId: String, type: String): BaseFilterOptionsJs<MaintenanceTaskJs> {
 		val dataOwnerIdConverted: String = dataOwnerId
 		val typeConverted: String = type
 		val result = MaintenanceTaskFilters.byTypeForDataOwner(
@@ -82,8 +79,7 @@ public object InternalMaintenanceTaskFiltersObj {
 		return FilterOptionsJsImpl(result)
 	}
 
-	public fun afterDateForDataOwner(dataOwnerId: String, date: Double):
-			BaseSortableFilterOptionsJs<MaintenanceTaskJs> {
+	public fun afterDateForDataOwner(dataOwnerId: String, date: Double): BaseSortableFilterOptionsJs<MaintenanceTaskJs> {
 		val dataOwnerIdConverted: String = dataOwnerId
 		val dateConverted: Long = numberToLong(date, "date")
 		val result = MaintenanceTaskFilters.afterDateForDataOwner(

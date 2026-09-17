@@ -40,13 +40,11 @@ public external interface PatientApiJs {
 
 	public fun encryptOrValidate(patients: Array<PatientJs>): Promise<Array<EncryptedPatientJs>>
 
-	public fun getSecretIdsOf(patient: PatientJs):
-			Promise<Record<String, Array<EntityReferenceInGroupJs>>>
+	public fun getSecretIdsOf(patient: PatientJs): Promise<Record<String, Array<EntityReferenceInGroupJs>>>
 
 	public fun getEncryptionKeysOf(patient: PatientJs): Promise<Array<String>>
 
-	public fun withEncryptionMetadata(base: DecryptedPatientJs?, options: dynamic):
-			Promise<DecryptedPatientJs>
+	public fun withEncryptionMetadata(base: DecryptedPatientJs?, options: dynamic): Promise<DecryptedPatientJs>
 
 	public fun withEncryptionMetadataAndDelegates(
 		base: DecryptedPatientJs?,
@@ -56,28 +54,23 @@ public external interface PatientApiJs {
 
 	public fun hasWriteAccess(patient: PatientJs): Promise<Boolean>
 
-	public fun createDelegationDeAnonymizationMetadata(entity: PatientJs, delegates: Array<String>):
-			Promise<Unit>
+	public fun createDelegationDeAnonymizationMetadata(entity: PatientJs, delegates: Array<String>): Promise<Unit>
 
 	public fun forceInitializeExchangeDataToNewlyInvitedPatient(patientId: String): Promise<Boolean>
 
 	public fun matchPatientsBy(filter: FilterOptionsJs<PatientJs>): Promise<Array<String>>
 
-	public fun matchPatientsBySorted(filter: SortableFilterOptionsJs<PatientJs>):
-			Promise<Array<String>>
+	public fun matchPatientsBySorted(filter: SortableFilterOptionsJs<PatientJs>): Promise<Array<String>>
 
-	public fun ensureEncryptionMetadataForSelfIsInitialized(options: dynamic):
-			Promise<EncryptedPatientJs>
+	public fun ensureEncryptionMetadataForSelfIsInitialized(options: dynamic): Promise<EncryptedPatientJs>
 
 	public fun deletePatientById(entityId: String, rev: String): Promise<StoredDocumentIdentifierJs>
 
-	public fun deletePatientsByIds(entityIds: Array<StoredDocumentIdentifierJs>):
-			Promise<Array<StoredDocumentIdentifierJs>>
+	public fun deletePatientsByIds(entityIds: Array<StoredDocumentIdentifierJs>): Promise<Array<StoredDocumentIdentifierJs>>
 
 	public fun purgePatientById(id: String, rev: String): Promise<Unit>
 
-	public fun purgePatientsByIds(entityIds: Array<StoredDocumentIdentifierJs>):
-			Promise<Array<StoredDocumentIdentifierJs>>
+	public fun purgePatientsByIds(entityIds: Array<StoredDocumentIdentifierJs>): Promise<Array<StoredDocumentIdentifierJs>>
 
 	public fun deletePatient(patient: PatientJs): Promise<StoredDocumentIdentifierJs>
 
@@ -95,17 +88,13 @@ public external interface PatientApiJs {
 		options: dynamic,
 	): Promise<DecryptedPatientJs>
 
-	public fun shareWithMany(patient: DecryptedPatientJs,
-			delegates: Record<String, PatientShareOptionsJs>): Promise<DecryptedPatientJs>
+	public fun shareWithMany(patient: DecryptedPatientJs, delegates: Record<String, PatientShareOptionsJs>): Promise<DecryptedPatientJs>
 
-	public fun createNewSecretId(patient: DecryptedPatientJs):
-			Promise<SecretIdCreationResultJs<DecryptedPatientJs>>
+	public fun createNewSecretId(patient: DecryptedPatientJs): Promise<SecretIdCreationResultJs<DecryptedPatientJs>>
 
-	public fun filterPatientsBy(filter: FilterOptionsJs<PatientJs>):
-			Promise<PaginatedListIteratorJs<DecryptedPatientJs>>
+	public fun filterPatientsBy(filter: FilterOptionsJs<PatientJs>): Promise<PaginatedListIteratorJs<DecryptedPatientJs>>
 
-	public fun filterPatientsBySorted(filter: SortableFilterOptionsJs<PatientJs>):
-			Promise<PaginatedListIteratorJs<DecryptedPatientJs>>
+	public fun filterPatientsBySorted(filter: SortableFilterOptionsJs<PatientJs>): Promise<PaginatedListIteratorJs<DecryptedPatientJs>>
 
 	public fun createPatient(patient: DecryptedPatientJs): Promise<DecryptedPatientJs>
 
@@ -119,20 +108,17 @@ public external interface PatientApiJs {
 
 	public fun undeletePatientById(id: String, rev: String): Promise<DecryptedPatientJs>
 
-	public fun undeletePatientsByIds(ids: Array<StoredDocumentIdentifierJs>):
-			Promise<Array<DecryptedPatientJs>>
+	public fun undeletePatientsByIds(ids: Array<StoredDocumentIdentifierJs>): Promise<Array<DecryptedPatientJs>>
 
 	public fun getPatient(entityId: String): Promise<DecryptedPatientJs?>
 
-	public fun getPatientResolvingMerges(patientId: String, maxMergeDepth: Double?):
-			Promise<DecryptedPatientJs>
+	public fun getPatientResolvingMerges(patientId: String, maxMergeDepth: Double?): Promise<DecryptedPatientJs>
 
 	public fun getPatients(patientIds: Array<String>): Promise<Array<DecryptedPatientJs>>
 
 	public fun modifyPatients(patients: Array<DecryptedPatientJs>): Promise<Array<DecryptedPatientJs>>
 
-	public fun mergePatients(from: PatientJs, mergedInto: DecryptedPatientJs):
-			Promise<DecryptedPatientJs>
+	public fun mergePatients(from: PatientJs, mergedInto: DecryptedPatientJs): Promise<DecryptedPatientJs>
 
 	public fun subscribeToEvents(
 		events: Array<String>,

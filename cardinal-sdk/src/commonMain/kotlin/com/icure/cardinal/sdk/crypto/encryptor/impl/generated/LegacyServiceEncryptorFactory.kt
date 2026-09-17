@@ -1,4 +1,6 @@
 // This file is auto-generated
+@file:Suppress("ktlint:standard:max-line-length")
+
 package com.icure.cardinal.sdk.crypto.encryptor.`impl`.generated
 
 import com.icure.cardinal.sdk.crypto.encryptor.EntityEncryptor
@@ -24,14 +26,15 @@ import kotlinx.serialization.json.encodeToJsonElement
 import kotlin.Boolean
 import kotlin.Lazy
 import kotlin.String
+import kotlin.Suppress
 import kotlin.UnsupportedOperationException
 
 @InternalIcureApi
-internal object LegacyServiceEncryptorFactory :
-	EntityEncryptorFactory<EncryptedService, DecryptedService> {
+internal object LegacyServiceEncryptorFactory : EntityEncryptorFactory<EncryptedService, DecryptedService> {
 	override val empty: EntityEncryptor<EncryptedService, DecryptedService>
-		get() =
-			throw UnsupportedOperationException("It is not allowed to use legacy service encryption with an empty encryptor factory for service.")
+		get() = throw UnsupportedOperationException(
+			"It is not allowed to use legacy service encryption with an empty encryptor factory for service.",
+		)
 
 	override fun create(
 		entityManifestName: String,
@@ -40,10 +43,7 @@ internal object LegacyServiceEncryptorFactory :
 		cryptoService: CryptoService,
 	): EntityEncryptor<EncryptedService, DecryptedService> {
 		val manifest = encryptorsFactoryContext.getManifest(entityManifestName)
-		require(
-			!manifest.fieldsToEncrypt.contains("content") &&
-				!manifest.recursiveEncryption.containsKey("content"),
-		) {
+		require(!manifest.fieldsToEncrypt.contains("content") && !manifest.recursiveEncryption.containsKey("content")) {
 			"When using legacy encryption of service content you can't customize how the content is encrypted."
 		}
 		val extensionsEncryptor =

@@ -17,7 +17,9 @@ import kotlin.js.JsQualifier
 @JsName("CalendarItemType")
 public external class CalendarItemTypeJs(
 	partial: dynamic,
-) : StoredDocumentJs, CustomisableRootJs, ExtendableJs {
+) : StoredDocumentJs,
+    CustomisableRootJs,
+    ExtendableJs {
 	override val id: String
 
 	override val rev: String?

@@ -30,11 +30,9 @@ public external interface PatientFlavouredApiJs<E : PatientJs> {
 
 	public fun createNewSecretId(patient: E): Promise<SecretIdCreationResultJs<E>>
 
-	public fun filterPatientsBy(filter: FilterOptionsJs<PatientJs>):
-			Promise<PaginatedListIteratorJs<E>>
+	public fun filterPatientsBy(filter: FilterOptionsJs<PatientJs>): Promise<PaginatedListIteratorJs<E>>
 
-	public fun filterPatientsBySorted(filter: SortableFilterOptionsJs<PatientJs>):
-			Promise<PaginatedListIteratorJs<E>>
+	public fun filterPatientsBySorted(filter: SortableFilterOptionsJs<PatientJs>): Promise<PaginatedListIteratorJs<E>>
 
 	public fun createPatient(patient: E): Promise<E>
 

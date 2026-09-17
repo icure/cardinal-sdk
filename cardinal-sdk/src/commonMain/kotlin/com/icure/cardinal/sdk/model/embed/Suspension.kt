@@ -7,8 +7,7 @@ import kotlin.Long
 import kotlin.String
 
 /**
- * Represents a suspension period for a medication, including start and end moments, reason, and
- * lifecycle state.
+ * Represents a suspension period for a medication, including start and end moments, reason, and lifecycle state.
  * /
  */
 @Serializable

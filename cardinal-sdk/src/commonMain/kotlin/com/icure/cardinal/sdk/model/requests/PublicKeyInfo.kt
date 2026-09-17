@@ -7,10 +7,8 @@ import kotlinx.serialization.Serializable
 
 /**
  *
- *  A public key of a data owner and the encryption algorithm it must be used with. A key appears at
- * most once in a
- *  [DataOwnerPublicKeysDto]: a keypair is generated for one scheme, so a key that a data owner
- * happens to have
+ *  A public key of a data owner and the encryption algorithm it must be used with. A key appears at most once in a
+ *  [DataOwnerPublicKeysDto]: a keypair is generated for one scheme, so a key that a data owner happens to have
  *  declared for both is reported as the sha256 one.
  */
 @Serializable

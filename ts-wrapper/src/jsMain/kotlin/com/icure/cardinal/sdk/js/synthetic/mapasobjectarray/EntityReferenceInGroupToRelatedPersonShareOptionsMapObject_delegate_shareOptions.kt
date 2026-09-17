@@ -12,17 +12,13 @@ import com.icure.cardinal.sdk.model.EntityReferenceInGroup
 import kotlin.Array
 import kotlin.collections.Map
 
-public external interface
-    EntityReferenceInGroupToRelatedPersonShareOptionsMapObject_delegate_shareOptions {
+public external interface EntityReferenceInGroupToRelatedPersonShareOptionsMapObject_delegate_shareOptions {
   public val `delegate`: EntityReferenceInGroupJs
 
   public val shareOptions: RelatedPersonShareOptionsJs
 }
 
-public
-    fun EntityReferenceInGroupToRelatedPersonShareOptionsMapObject_delegate_shareOptions_toJs(ktMap: Map<EntityReferenceInGroup, RelatedPersonShareOptions>):
-    Array<EntityReferenceInGroupToRelatedPersonShareOptionsMapObject_delegate_shareOptions> =
-    ktMap.map { entry ->
+public fun EntityReferenceInGroupToRelatedPersonShareOptionsMapObject_delegate_shareOptions_toJs(ktMap: Map<EntityReferenceInGroup, RelatedPersonShareOptions>): Array<EntityReferenceInGroupToRelatedPersonShareOptionsMapObject_delegate_shareOptions> = ktMap.map { entry ->
   val delegateKt = entry.key
   val delegate: EntityReferenceInGroupJs = entityReferenceInGroup_toJs(delegateKt)
   val shareOptionsKt = entry.value
@@ -30,9 +26,7 @@ public
   js("{delegate: delegate, shareOptions: shareOptions}")
 }.toTypedArray()
 
-public
-    fun EntityReferenceInGroupToRelatedPersonShareOptionsMapObject_delegate_shareOptions_fromJs(jsArray: Array<EntityReferenceInGroupToRelatedPersonShareOptionsMapObject_delegate_shareOptions>):
-    Map<EntityReferenceInGroup, RelatedPersonShareOptions> = CheckedConverters.objectArrayToMap(
+public fun EntityReferenceInGroupToRelatedPersonShareOptionsMapObject_delegate_shareOptions_fromJs(jsArray: Array<EntityReferenceInGroupToRelatedPersonShareOptionsMapObject_delegate_shareOptions>): Map<EntityReferenceInGroup, RelatedPersonShareOptions> = CheckedConverters.objectArrayToMap(
   jsArray,
   { entry ->
     val key = entry.delegate

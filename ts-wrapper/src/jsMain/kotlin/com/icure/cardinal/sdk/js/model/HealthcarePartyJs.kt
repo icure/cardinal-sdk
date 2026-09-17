@@ -6,6 +6,7 @@ package com.icure.cardinal.sdk.js.model
 import com.icure.cardinal.sdk.js.model.base.CodeStubJs
 import com.icure.cardinal.sdk.js.model.base.CryptoActorJs
 import com.icure.cardinal.sdk.js.model.base.CustomisableRootJs
+import com.icure.cardinal.sdk.js.model.base.DataOwnerGroupLinkJs
 import com.icure.cardinal.sdk.js.model.base.DataOwnerJs
 import com.icure.cardinal.sdk.js.model.base.ExtendableJs
 import com.icure.cardinal.sdk.js.model.base.HasCodesJs
@@ -29,8 +30,16 @@ import kotlin.js.JsQualifier
 @JsName("HealthcareParty")
 public external class HealthcarePartyJs(
 	partial: dynamic,
-) : StoredDocumentJs, NamedJs, PersonJs, CryptoActorJs, DataOwnerJs, HasCodesJs, HasTagsJs,
-		HasIdentifierJs, CustomisableRootJs, ExtendableJs {
+) : StoredDocumentJs,
+    NamedJs,
+    PersonJs,
+    CryptoActorJs,
+    DataOwnerJs,
+    HasCodesJs,
+    HasTagsJs,
+    HasIdentifierJs,
+    CustomisableRootJs,
+    ExtendableJs {
 	override val id: String
 
 	override val rev: String?
@@ -73,7 +82,9 @@ public external class HealthcarePartyJs(
 
 	public val invoiceHeader: String?
 
-	override val parentId: String?
+	override val dataOwnerGroups: Array<DataOwnerGroupLinkJs>
+
+	override val groupLinkType: String?
 
 	public val ssin: String?
 

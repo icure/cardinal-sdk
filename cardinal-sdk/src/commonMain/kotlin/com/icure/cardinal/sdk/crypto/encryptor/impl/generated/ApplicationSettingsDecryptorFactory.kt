@@ -1,4 +1,6 @@
 // This file is auto-generated
+@file:Suppress("ktlint:standard:max-line-length")
+
 package com.icure.cardinal.sdk.crypto.encryptor.`impl`.generated
 
 import com.icure.cardinal.sdk.crypto.encryptor.EntityDecryptor
@@ -17,11 +19,11 @@ import com.icure.utils.InternalIcureApi
 import kotlinx.serialization.json.Json
 import kotlinx.serialization.json.JsonObject
 import kotlin.String
+import kotlin.Suppress
 import kotlin.collections.Collection
 
 @InternalIcureApi
-internal object ApplicationSettingsDecryptorFactory :
-	EntityDecryptorFactory<EncryptedApplicationSettings, DecryptedApplicationSettings> {
+internal object ApplicationSettingsDecryptorFactory : EntityDecryptorFactory<EncryptedApplicationSettings, DecryptedApplicationSettings> {
 	override fun create(
 		entityManifestName: String?,
 		encryptorsFactoryContext: EntityEncryptorsFactoryContext,
@@ -49,12 +51,11 @@ private class ApplicationSettingsDecryptor(
 	patchDecryptedSelfJson: ((JsonObject) -> JsonObject)?,
 	cryptoService: CryptoService,
 	unversionedEntitiesDecryptedJsonStrictness: DecryptedJsonStrictness,
-) :
-	AbstractEntityDecryptor<EncryptedApplicationSettings, DecryptedApplicationSettings>(
-			patchDecryptedSelfJson,
-			cryptoService,
-			unversionedEntitiesDecryptedJsonStrictness,
-		) {
+) : AbstractEntityDecryptor<EncryptedApplicationSettings, DecryptedApplicationSettings>(
+		patchDecryptedSelfJson,
+		cryptoService,
+		unversionedEntitiesDecryptedJsonStrictness,
+	) {
 	override suspend fun decrypt(
 		decryptionKeys: Collection<AesKey<AesAlgorithm.CbcWithPkcs7Padding>>,
 		encryptedEntity: EncryptedApplicationSettings,
@@ -124,10 +125,11 @@ private class ApplicationSettingsDecryptor(
 				securityMetadata = encryptedEntity.securityMetadata,
 				encryptedSelf = encryptedEntity.encryptedSelf,
 			)
-		if (entityCustomisedModelVersion == null &&
-			unversionedEntitiesDecryptedJsonStrictness == DecryptedJsonStrictness.Strict &&
-			decryptedContent.size != usedEncryptedContent.size
-		) {
+		val hasUnexpectedDecryptedContent =
+			entityCustomisedModelVersion == null &&
+				unversionedEntitiesDecryptedJsonStrictness == DecryptedJsonStrictness.Strict &&
+				decryptedContent.size != usedEncryptedContent.size
+		if (hasUnexpectedDecryptedContent) {
 			throw UnexpectedEncryptedContentException(
 				"The ApplicationSettings encrypted content contains unexpected fields: ${decryptedContent.keys - usedEncryptedContent}",
 			)

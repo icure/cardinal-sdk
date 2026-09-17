@@ -36,10 +36,8 @@ import kotlin.collections.Map
 import kotlin.collections.Set
 
 /**
- * Represents a healthcare party. A healthcare party is a person or organization that provides
- * healthcare services,
- * such as a physician, nurse, hospital, or medical practice. It is serialized in JSON and saved in
- * the underlying
+ * Represents a healthcare party. A healthcare party is a person or organization that provides healthcare services,
+ * such as a physician, nurse, hospital, or medical practice. It is serialized in JSON and saved in the underlying
  * icure-healthdata CouchDB database.
  * /
  */
@@ -50,8 +48,7 @@ data class HealthcareParty(
 	 */
 	override val id: String,
 	/**
-	 * The revision of the healthcare party in the database, used for conflict management / optimistic
-	 * locking.
+	 * The revision of the healthcare party in the database, used for conflict management / optimistic locking.
 	 */
 	override val rev: String? = null,
 	/**
@@ -67,8 +64,7 @@ data class HealthcareParty(
 	 */
 	override val deletionDate: Long? = null,
 	/**
-	 * The healthcare party's identifiers, used by the client to identify uniquely and unambiguously
-	 * the HCP.
+	 * The healthcare party's identifiers, used by the client to identify uniquely and unambiguously the HCP.
 	 */
 	@param:DefaultValue("emptyList()")
 	override val identifier: List<Identifier> = emptyList(),
@@ -84,7 +80,6 @@ data class HealthcareParty(
 	override val codes: Set<CodeStub> = emptySet(),
 	/**
 	 * The full name of the healthcare party, used mainly when the healthcare party is an organization.
-	 *
 	 */
 	override val name: String? = null,
 	/**
@@ -169,8 +164,7 @@ data class HealthcareParty(
 	 * List of financial information (Bank, bank account).
 	 */
 	@param:DefaultValue("emptyList()")
-	public val financialInstitutionInformation: List<DecryptedFinancialInstitutionInformation> =
-		emptyList(),
+	public val financialInstitutionInformation: List<DecryptedFinancialInstitutionInformation> = emptyList(),
 	/**
 	 * A description of the HCP, meant for the public and in multiple languages.
 	 */
@@ -203,14 +197,14 @@ data class HealthcareParty(
 	 * Extra AES exchange keys, indexed by the owner of the pair and target data owner id.
 	 */
 	@param:DefaultValue("emptyMap()")
-	override val aesExchangeKeys: Map<AesExchangeKeyEntryKeyString, Map<String, Map<AesExchangeKeyEncryptionKeypairIdentifier, HexString>>> =
-		emptyMap(),
+	override val aesExchangeKeys:
+		Map<AesExchangeKeyEntryKeyString, Map<String, Map<AesExchangeKeyEncryptionKeypairIdentifier, HexString>>> = emptyMap(),
 	/**
 	 * Keys used to transfer ownership of encrypted data between key pairs.
 	 */
 	@param:DefaultValue("emptyMap()")
-	override val transferKeys: Map<AesExchangeKeyEncryptionKeypairIdentifier, Map<AesExchangeKeyEncryptionKeypairIdentifier, HexString>> =
-		emptyMap(),
+	override val transferKeys:
+		Map<AesExchangeKeyEncryptionKeypairIdentifier, Map<AesExchangeKeyEncryptionKeypairIdentifier, HexString>> = emptyMap(),
 	/**
 	 * Shamir partitions of the private key.
 	 */

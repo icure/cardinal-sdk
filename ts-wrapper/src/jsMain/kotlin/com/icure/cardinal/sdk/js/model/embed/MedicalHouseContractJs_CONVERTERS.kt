@@ -21,8 +21,7 @@ import kotlin.String
 import kotlin.Suppress
 
 @Suppress("UNUSED_VARIABLE")
-public fun medicalHouseContract_toJs(obj: DecryptedMedicalHouseContract):
-		DecryptedMedicalHouseContractJs {
+public fun medicalHouseContract_toJs(obj: DecryptedMedicalHouseContract): DecryptedMedicalHouseContractJs {
 	val contractId = nullToUndefined(
 		obj.contractId
 	)
@@ -163,8 +162,7 @@ public fun medicalHouseContract_toJs(obj: DecryptedMedicalHouseContract):
 	"}"))
 }
 
-public fun medicalHouseContract_fromJs(obj: DecryptedMedicalHouseContractJs):
-		DecryptedMedicalHouseContract {
+public fun medicalHouseContract_fromJs(obj: DecryptedMedicalHouseContractJs): DecryptedMedicalHouseContract {
 	val contractId = undefinedToNull(obj.contractId)
 	val validFrom = numberToLong(obj.validFrom, "obj.validFrom")
 	val validTo = numberToLong(obj.validTo, "obj.validTo")
@@ -262,8 +260,7 @@ public fun medicalHouseContract_fromJs(obj: DecryptedMedicalHouseContractJs):
 }
 
 @Suppress("UNUSED_VARIABLE")
-public fun medicalHouseContract_toJs(obj: EncryptedMedicalHouseContract):
-		EncryptedMedicalHouseContractJs {
+public fun medicalHouseContract_toJs(obj: EncryptedMedicalHouseContract): EncryptedMedicalHouseContractJs {
 	val contractId = nullToUndefined(
 		obj.contractId
 	)
@@ -404,8 +401,7 @@ public fun medicalHouseContract_toJs(obj: EncryptedMedicalHouseContract):
 	"}"))
 }
 
-public fun medicalHouseContract_fromJs(obj: EncryptedMedicalHouseContractJs):
-		EncryptedMedicalHouseContract {
+public fun medicalHouseContract_fromJs(obj: EncryptedMedicalHouseContractJs): EncryptedMedicalHouseContract {
 	val contractId = undefinedToNull(obj.contractId)
 	val validFrom = numberToLong(obj.validFrom, "obj.validFrom")
 	val validTo = numberToLong(obj.validTo, "obj.validTo")
@@ -503,14 +499,12 @@ public fun medicalHouseContract_fromJs(obj: EncryptedMedicalHouseContractJs):
 }
 
 @Suppress("UNUSED_VARIABLE")
-public fun medicalHouseContract_toJs(obj: MedicalHouseContract): MedicalHouseContractJs = when (obj)
-		{
+public fun medicalHouseContract_toJs(obj: MedicalHouseContract): MedicalHouseContractJs = when (obj) {
 	is EncryptedMedicalHouseContract -> medicalHouseContract_toJs(obj)
 	is DecryptedMedicalHouseContract -> medicalHouseContract_toJs(obj)
 }
 
-public fun medicalHouseContract_fromJs(obj: MedicalHouseContractJs): MedicalHouseContract = if
-		(obj.isEncrypted) {
+public fun medicalHouseContract_fromJs(obj: MedicalHouseContractJs): MedicalHouseContract = if (obj.isEncrypted) {
 	medicalHouseContract_fromJs(obj as EncryptedMedicalHouseContractJs)
 } else {
 	medicalHouseContract_fromJs(obj as DecryptedMedicalHouseContractJs)

@@ -1,12 +1,15 @@
 // auto-generated file
-import {expectArray, expectMap, expectNumber, expectObject, expectString, extractEntry} from '../internal/JsonDecodeUtils.mjs';
+import {expectArray, expectMap, expectNumber, expectObject, expectString, expectStringEnum, extractEntry} from '../internal/JsonDecodeUtils.mjs';
 import {randomUuid} from '../utils/Id.mjs';
 import {DecryptedPropertyStub} from './PropertyStub.mjs';
 import {CodeStub} from './base/CodeStub.mjs';
 import {CryptoActor} from './base/CryptoActor.mjs';
 import {CustomisableRoot} from './base/CustomisableRoot.mjs';
 import {DataOwner} from './base/DataOwner.mjs';
+import {DataOwnerGroupLink} from './base/DataOwnerGroupLink.mjs';
+import {DataOwnerGroupLinkType} from './base/DataOwnerGroupLinkType.mjs';
 import {Extendable} from './base/Extendable.mjs';
+import {HasMedicalLocation} from './base/HasMedicalLocation.mjs';
 import {ICureDocument} from './base/ICureDocument.mjs';
 import {Identifier} from './base/Identifier.mjs';
 import {Named} from './base/Named.mjs';
@@ -24,7 +27,7 @@ import {SpkiHexString} from './specializations/SpkiHexString.mjs';
  *  A device can act as a data owner and crypto actor for secure data exchange.
  *  /
  */
-export class Device implements StoredDocument, ICureDocument<string>, Named, CryptoActor, DataOwner, CustomisableRoot, Extendable {
+export class Device implements StoredDocument, ICureDocument<string>, HasMedicalLocation, Named, CryptoActor, DataOwner, CustomisableRoot, Extendable {
 
 	/**
 	 *
@@ -118,9 +121,11 @@ export class Device implements StoredDocument, ICureDocument<string>, Named, Cry
 
 	/**
 	 *
-	 *  The id of the parent of the user representing the device.
+	 *  The links to the data owners representing the groups this device belongs to.
 	 */
-	parentId: string | undefined = undefined;
+	dataOwnerGroups: Array<DataOwnerGroupLink> = [];
+
+	groupLinkType: DataOwnerGroupLinkType | undefined = undefined;
 
 	/**
 	 *
@@ -196,7 +201,8 @@ export class Device implements StoredDocument, ICureDocument<string>, Named, Cry
 		if ('brand' in partial) this.brand = partial.brand;
 		if ('model' in partial) this.model = partial.model;
 		if ('serialNumber' in partial) this.serialNumber = partial.serialNumber;
-		if ('parentId' in partial) this.parentId = partial.parentId;
+		if ('dataOwnerGroups' in partial && partial.dataOwnerGroups !== undefined) this.dataOwnerGroups = partial.dataOwnerGroups;
+		if ('groupLinkType' in partial) this.groupLinkType = partial.groupLinkType;
 		if ('properties' in partial && partial.properties !== undefined) this.properties = partial.properties;
 		if ('hcPartyKeys' in partial && partial.hcPartyKeys !== undefined) this.hcPartyKeys = partial.hcPartyKeys;
 		if ('aesExchangeKeys' in partial && partial.aesExchangeKeys !== undefined) this.aesExchangeKeys = partial.aesExchangeKeys;
@@ -226,7 +232,8 @@ export class Device implements StoredDocument, ICureDocument<string>, Named, Cry
 		if (this.brand != undefined) res['brand'] = this.brand
 		if (this.model != undefined) res['model'] = this.model
 		if (this.serialNumber != undefined) res['serialNumber'] = this.serialNumber
-		if (this.parentId != undefined) res['parentId'] = this.parentId
+		res['dataOwnerGroups'] = this.dataOwnerGroups.map((x0) => x0.toJSON() )
+		if (this.groupLinkType != undefined) res['groupLinkType'] = this.groupLinkType
 		res['properties'] = this.properties.map((x0) => x0.toJSON() )
 		res['hcPartyKeys'] = Object.fromEntries(Object.entries(this.hcPartyKeys).map(([k0, v0]) => [k0, v0.map((x1) => x1 )]))
 		res['aesExchangeKeys'] = Object.fromEntries(Object.entries(this.aesExchangeKeys).map(([k0, v0]) => [k0, Object.fromEntries(Object.entries(v0).map(([k1, v1]) => [k1, Object.fromEntries(Object.entries(v1).map(([k2, v2]) => [k2, v2]))]))]))
@@ -262,7 +269,8 @@ export class Device implements StoredDocument, ICureDocument<string>, Named, Cry
 			brand: expectString(extractEntry(jCpy, 'brand', false, path), true, [...path, ".brand"]),
 			model: expectString(extractEntry(jCpy, 'model', false, path), true, [...path, ".model"]),
 			serialNumber: expectString(extractEntry(jCpy, 'serialNumber', false, path), true, [...path, ".serialNumber"]),
-			parentId: expectString(extractEntry(jCpy, 'parentId', false, path), true, [...path, ".parentId"]),
+			dataOwnerGroups: expectArray(extractEntry(jCpy, 'dataOwnerGroups', false, path), false, [...path, ".dataOwnerGroups"], (x0, p0) => expectObject(x0, false, ignoreUnknownKeys, p0, DataOwnerGroupLink.fromJSON)),
+			groupLinkType: expectStringEnum(extractEntry(jCpy, 'groupLinkType', false, path), true, [...path, ".groupLinkType"], DataOwnerGroupLinkType, 'DataOwnerGroupLinkType'),
 			properties: expectArray(extractEntry(jCpy, 'properties', false, path), false, [...path, ".properties"], (x0, p0) => expectObject(x0, false, ignoreUnknownKeys, p0, DecryptedPropertyStub.fromJSON)),
 			hcPartyKeys: expectMap(
 				extractEntry(jCpy, 'hcPartyKeys', false, path),

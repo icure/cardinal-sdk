@@ -20,7 +20,10 @@ import kotlin.js.JsQualifier
 @JsName("User")
 public external class UserJs(
 	partial: dynamic,
-) : StoredDocumentJs, HasIdentifierJs, CustomisableRootJs, ExtendableJs {
+) : StoredDocumentJs,
+    HasIdentifierJs,
+    CustomisableRootJs,
+    ExtendableJs {
 	override val id: String
 
 	override val rev: String?

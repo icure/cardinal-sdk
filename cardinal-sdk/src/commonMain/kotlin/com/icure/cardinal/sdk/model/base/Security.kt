@@ -6,8 +6,7 @@ import com.icure.cardinal.sdk.utils.DefaultValue
 import kotlinx.serialization.Serializable
 
 /**
- * Data transfer object representing the security configuration of a CouchDB database, defining
- * admin and member access rights.
+ * Data transfer object representing the security configuration of a CouchDB database, defining admin and member access rights.
  * /
  */
 @Serializable

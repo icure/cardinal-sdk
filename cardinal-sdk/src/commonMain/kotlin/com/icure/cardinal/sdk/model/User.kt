@@ -28,8 +28,7 @@ import com.icure.cardinal.sdk.model.enums.UsersType
 
 /**
  *
- *  Represents a user that can log in to the iCure platform. A user can be linked to a healthcare
- * party,
+ *  Represents a user that can log in to the iCure platform. A user can be linked to a healthcare party,
  *  a patient, or a device, and holds authentication credentials, roles, and permissions.
  */
 @Serializable
@@ -103,8 +102,7 @@ data class User(
 	 */
 	public val deviceId: String? = null,
 	/**
-	 * Delegations that are automatically generated client side when a new database object is created
-	 * by this user.
+	 * Delegations that are automatically generated client side when a new database object is created by this user.
 	 */
 	@param:DefaultValue("emptyMap()")
 	public val autoDelegations: Map<DelegationTag, Set<String>> = emptyMap(),
@@ -132,7 +130,10 @@ data class User(
 	public val systemMetadata: SystemMetadata? = null,
 	override val extensions: JsonObject? = null,
 	override val customisedModelVersion: Int? = null,
-) : StoredDocument, HasIdentifier, CustomisableRoot, Extendable {
+) : StoredDocument,
+	HasIdentifier,
+	CustomisableRoot,
+	Extendable {
 	@Serializable
 	public data class SystemMetadata(
 		public val roles: Set<String>,

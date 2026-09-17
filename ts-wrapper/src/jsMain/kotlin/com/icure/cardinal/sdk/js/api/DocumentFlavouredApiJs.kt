@@ -24,14 +24,11 @@ public external interface DocumentFlavouredApiJs<E : DocumentJs> {
 		options: dynamic,
 	): Promise<E>
 
-	public fun shareWithMany(document: E, delegates: Record<String, DocumentShareOptionsJs>):
-			Promise<E>
+	public fun shareWithMany(document: E, delegates: Record<String, DocumentShareOptionsJs>): Promise<E>
 
-	public fun filterDocumentsBy(filter: FilterOptionsJs<DocumentJs>):
-			Promise<PaginatedListIteratorJs<E>>
+	public fun filterDocumentsBy(filter: FilterOptionsJs<DocumentJs>): Promise<PaginatedListIteratorJs<E>>
 
-	public fun filterDocumentsBySorted(filter: SortableFilterOptionsJs<DocumentJs>):
-			Promise<PaginatedListIteratorJs<E>>
+	public fun filterDocumentsBySorted(filter: SortableFilterOptionsJs<DocumentJs>): Promise<PaginatedListIteratorJs<E>>
 
 	public fun createDocument(entity: E): Promise<E>
 

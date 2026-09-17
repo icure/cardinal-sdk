@@ -7,8 +7,7 @@ import kotlin.Long
 import kotlin.String
 
 /**
- * Represents a short-lived token that authorizes a single privileged operation (e.g. group
- * transfer).
+ * Represents a short-lived token that authorizes a single privileged operation (e.g. group transfer).
  * The token is stored as a hash rather than in plain text.
  * /
  */

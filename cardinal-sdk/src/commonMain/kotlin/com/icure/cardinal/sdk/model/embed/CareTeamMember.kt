@@ -11,8 +11,7 @@ import kotlinx.serialization.json.JsonObject
 import kotlin.String
 
 /**
- * Represents a member of a care team involved in a patient's care, linking a healthcare party with
- * their role.
+ * Represents a member of a care team involved in a patient's care, linking a healthcare party with their role.
  * /
  */
 
@@ -49,8 +48,7 @@ sealed interface CareTeamMember : Encryptable, Identifiable<String>, Extendable 
 }
 
 /**
- * Represents a member of a care team involved in a patient's care, linking a healthcare party with
- * their role.
+ * Represents a member of a care team involved in a patient's care, linking a healthcare party with their role.
  * /
  */
 @Serializable
@@ -83,8 +81,7 @@ data class DecryptedCareTeamMember(
 }
 
 /**
- * Represents a member of a care team involved in a patient's care, linking a healthcare party with
- * their role.
+ * Represents a member of a care team involved in a patient's care, linking a healthcare party with their role.
  * /
  */
 @Serializable

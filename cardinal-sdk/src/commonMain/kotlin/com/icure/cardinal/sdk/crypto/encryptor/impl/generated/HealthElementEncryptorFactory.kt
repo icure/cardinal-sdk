@@ -1,4 +1,6 @@
 // This file is auto-generated
+@file:Suppress("ktlint:standard:max-line-length")
+
 package com.icure.cardinal.sdk.crypto.encryptor.`impl`.generated
 
 import com.icure.cardinal.sdk.crypto.encryptor.EntityEncryptor
@@ -29,13 +31,12 @@ import kotlinx.serialization.json.encodeToJsonElement
 import kotlin.Boolean
 import kotlin.Lazy
 import kotlin.String
+import kotlin.Suppress
 
 @InternalIcureApi
-internal object HealthElementEncryptorFactory :
-	EntityEncryptorFactory<EncryptedHealthElement, DecryptedHealthElement> {
+internal object HealthElementEncryptorFactory : EntityEncryptorFactory<EncryptedHealthElement, DecryptedHealthElement> {
 	override val empty: EntityEncryptor<EncryptedHealthElement, DecryptedHealthElement> =
-		object :
-			EntityEncryptor<EncryptedHealthElement, DecryptedHealthElement> {
+		object : EntityEncryptor<EncryptedHealthElement, DecryptedHealthElement> {
 			override suspend fun encrypt(
 				encryptionKey: AesKey<AesAlgorithm.CbcWithPkcs7Padding>,
 				clearEntity: DecryptedHealthElement,

@@ -1,4 +1,6 @@
 // This file is auto-generated
+@file:Suppress("ktlint:standard:max-line-length")
+
 package com.icure.cardinal.sdk.crypto.encryptor.`impl`.generated
 
 import com.icure.cardinal.sdk.crypto.encryptor.EntityEncryptor
@@ -39,12 +41,12 @@ import kotlinx.serialization.json.encodeToJsonElement
 import kotlin.Boolean
 import kotlin.Lazy
 import kotlin.String
+import kotlin.Suppress
 
 @InternalIcureApi
 internal object PatientEncryptorFactory : EntityEncryptorFactory<EncryptedPatient, DecryptedPatient> {
 	override val empty: EntityEncryptor<EncryptedPatient, DecryptedPatient> =
-		object :
-			EntityEncryptor<EncryptedPatient, DecryptedPatient> {
+		object : EntityEncryptor<EncryptedPatient, DecryptedPatient> {
 			override suspend fun encrypt(
 				encryptionKey: AesKey<AesAlgorithm.CbcWithPkcs7Padding>,
 				clearEntity: DecryptedPatient,
@@ -313,7 +315,6 @@ internal object PatientEncryptorFactory : EntityEncryptorFactory<EncryptedPatien
 						)
 					} ?: EncryptableFieldConfig.None(PropertyStubEncryptorFactory)
 				},
-			groupLinkType_e = "groupLinkType" in manifest.fieldsToEncrypt,
 			extensionsEncryptor = extensionsEncryptor,
 			encodingJson = encodingJson,
 			cryptoService = cryptoService,
@@ -371,7 +372,6 @@ private class PatientEncryptor(
 	private val patientProfessions_e: Boolean,
 	private val parameters_e: Boolean,
 	private val properties_e: EncryptableFieldConfig<EncryptedPropertyStub, DecryptedPropertyStub>,
-	private val groupLinkType_e: Boolean,
 	private val extensionsEncryptor: Lazy<ExtensionsEncryptors>?,
 	private val encodingJson: Json,
 	cryptoService: CryptoService,
@@ -553,12 +553,6 @@ private class PatientEncryptor(
 					clearEntity.properties,
 				)
 		}
-		if (groupLinkType_e && clearEntity.groupLinkType != null) {
-			dataToEncrypt["groupLinkType"] =
-				encodingJson.encodeToJsonElement(
-					clearEntity.groupLinkType,
-				)
-		}
 		return EncryptedPatient(
 			id = clearEntity.id,
 			identifier = if (identifier_e) emptyList() else clearEntity.identifier,
@@ -698,7 +692,7 @@ private class PatientEncryptor(
 			securityMetadata = clearEntity.securityMetadata,
 			cryptoActorProperties = clearEntity.cryptoActorProperties,
 			dataOwnerGroups = clearEntity.dataOwnerGroups,
-			groupLinkType = if (groupLinkType_e) null else clearEntity.groupLinkType,
+			groupLinkType = clearEntity.groupLinkType,
 			extensions = extensionsEncryptor?.value?.encryptExtension(encryptionKey, clearEntity.extensions) ?: clearEntity.extensions,
 			customisedModelVersion = clearEntity.customisedModelVersion,
 		)

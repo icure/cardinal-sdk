@@ -1,4 +1,6 @@
 // This file is auto-generated
+@file:Suppress("ktlint:standard:max-line-length")
+
 package com.icure.cardinal.sdk.crypto.encryptor.`impl`.generated
 
 import com.icure.cardinal.sdk.crypto.encryptor.EntityDecryptor
@@ -17,11 +19,11 @@ import com.icure.utils.InternalIcureApi
 import kotlinx.serialization.json.Json
 import kotlinx.serialization.json.JsonObject
 import kotlin.String
+import kotlin.Suppress
 import kotlin.collections.Collection
 
 @InternalIcureApi
-internal object AnnotationDecryptorFactory :
-	EntityDecryptorFactory<EncryptedAnnotation, DecryptedAnnotation> {
+internal object AnnotationDecryptorFactory : EntityDecryptorFactory<EncryptedAnnotation, DecryptedAnnotation> {
 	override fun create(
 		entityManifestName: String?,
 		encryptorsFactoryContext: EntityEncryptorsFactoryContext,
@@ -115,10 +117,11 @@ private class AnnotationDecryptor(
 					),
 				encryptedSelf = encryptedEntity.encryptedSelf,
 			)
-		if (entityCustomisedModelVersion == null &&
-			unversionedEntitiesDecryptedJsonStrictness == DecryptedJsonStrictness.Strict &&
-			decryptedContent.size != usedEncryptedContent.size
-		) {
+		val hasUnexpectedDecryptedContent =
+			entityCustomisedModelVersion == null &&
+				unversionedEntitiesDecryptedJsonStrictness == DecryptedJsonStrictness.Strict &&
+				decryptedContent.size != usedEncryptedContent.size
+		if (hasUnexpectedDecryptedContent) {
 			throw UnexpectedEncryptedContentException(
 				"The Annotation encrypted content contains unexpected fields: ${decryptedContent.keys - usedEncryptedContent}",
 			)

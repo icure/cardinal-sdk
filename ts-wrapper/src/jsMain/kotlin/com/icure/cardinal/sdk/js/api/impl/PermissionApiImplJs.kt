@@ -20,8 +20,7 @@ import kotlinx.coroutines.promise
 internal class PermissionApiImplJs(
 	private val permissionApi: PermissionApi,
 ) : PermissionApiJs {
-	override fun modifyUserPermissions(userId: String, permissions: PermissionJs):
-			Promise<Array<PermissionJs>> = GlobalScope.promise {
+	override fun modifyUserPermissions(userId: String, permissions: PermissionJs): Promise<Array<PermissionJs>> = GlobalScope.promise {
 		val userIdConverted: String = userId
 		val permissionsConverted: Permission = permission_fromJs(permissions)
 		val result = permissionApi.modifyUserPermissions(

@@ -25,7 +25,8 @@ data class ServiceByIdsFilter(
 	 * Optional description of this filter.
 	 */
 	override val desc: String? = null,
-) : AbstractFilter<Service>, Filter.IdsFilter<String, Service> {
+) : AbstractFilter<Service>,
+	Filter.IdsFilter<String, Service> {
 	// region ServiceByIdsFilter-ServiceByIdsFilter
 
 	// endregion

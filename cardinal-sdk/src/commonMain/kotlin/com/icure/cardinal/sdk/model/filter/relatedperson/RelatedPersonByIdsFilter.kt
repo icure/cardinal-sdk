@@ -25,7 +25,8 @@ data class RelatedPersonByIdsFilter(
 	 * Optional description of this filter.
 	 */
 	override val desc: String? = null,
-) : AbstractFilter<RelatedPerson>, Filter.IdsFilter<String, RelatedPerson> {
+) : AbstractFilter<RelatedPerson>,
+	Filter.IdsFilter<String, RelatedPerson> {
 	// region RelatedPersonByIdsFilter-RelatedPersonByIdsFilter
 
 	// endregion

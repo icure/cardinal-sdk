@@ -11,11 +11,13 @@ import com.icure.cardinal.sdk.model.conflicts.ConflictResolutionResult
 import com.icure.cardinal.sdk.model.conflicts.ConflictResolutionStrategy
 import com.icure.cardinal.sdk.model.conflicts.MergeResult
 import com.icure.cardinal.sdk.model.couchdb.DocIdentifier
+import com.icure.cardinal.sdk.model.dao.IdWithValue
 import com.icure.cardinal.sdk.model.`data`.LabelledOccurence
 import com.icure.cardinal.sdk.model.embed.EncryptedContent
 import com.icure.cardinal.sdk.model.embed.EncryptedService
 import com.icure.cardinal.sdk.model.embed.Service
 import com.icure.cardinal.sdk.model.filter.AbstractFilter
+import com.icure.cardinal.sdk.model.filter.CustomFilter
 import com.icure.cardinal.sdk.model.filter.chain.FilterChain
 import com.icure.cardinal.sdk.model.requests.BulkShareOrUpdateMetadataParams
 import com.icure.cardinal.sdk.model.requests.EntityBulkShareResult
@@ -159,6 +161,10 @@ public interface RawContactApi {
 		entityIds: List<String>,
 		strategy: ConflictResolutionStrategy?,
 	): HttpResponse<List<MergeResult>>
+
+	suspend fun matchContactsByCustomFilter(filter: CustomFilter): HttpResponse<PaginatedList<IdWithValue>>
+
+	suspend fun matchServicesByCustomFilter(filter: CustomFilter): HttpResponse<PaginatedList<IdWithValue>>
 	// endregion
 
 	// region cloud endpoints
@@ -268,5 +274,15 @@ public interface RawContactApi {
 		entityIds: List<String>,
 		strategy: ConflictResolutionStrategy?,
 	): HttpResponse<List<MergeResult>>
+
+	suspend fun matchContactsByCustomFilterInGroup(
+		groupId: String,
+		filter: CustomFilter,
+	): HttpResponse<PaginatedList<IdWithValue>>
+
+	suspend fun matchServicesByCustomFilterInGroup(
+		groupId: String,
+		filter: CustomFilter,
+	): HttpResponse<PaginatedList<IdWithValue>>
 	// endregion
 }
