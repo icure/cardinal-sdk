@@ -164,6 +164,16 @@ interface HealthcarePartyApi: Subscribable<HealthcareParty, HealthcareParty, Fil
 	 */
 	suspend fun undeleteHealthcareParties(healthcareParties: List<HealthcareParty>): List<HealthcareParty> =
 		undeleteHealthcarePartiesByIds(healthcareParties.map { it.toStoredDocumentIdentifier()})
+
+	/**
+	 * Equivalent to [DataOwnerApi.addDataOwnersToGroup] but for healthcareParties.
+	 */
+	suspend fun addHealthcarePartiesToGroup(healthcarePartyGroup: HealthcareParty, healthcarePartiesToAdd: List<HealthcareParty>): Set<String>
+
+	/**
+	 * Equivalent to [DataOwnerApi.removeDataOwnersFromGroup] but for healthcareParties.
+	 */
+	suspend fun removeDataOwnersFromGroup(healthcarePartyGroup: HealthcareParty, healthcarePartiesToRemove: List<HealthcareParty>): Set<String>
 }
 
 interface HealthcarePartyInGroupApi {

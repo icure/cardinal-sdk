@@ -10,31 +10,19 @@ import com.icure.cardinal.sdk.api.PatientBasicInGroupApi
 import com.icure.cardinal.sdk.api.PatientFlavouredApi
 import com.icure.cardinal.sdk.api.PatientFlavouredInGroupApi
 import com.icure.cardinal.sdk.api.PatientInGroupApi
-import com.icure.cardinal.sdk.api.raw.RawCalendarItemApi
-import com.icure.cardinal.sdk.api.raw.RawClassificationApi
-import com.icure.cardinal.sdk.api.raw.RawContactApi
-import com.icure.cardinal.sdk.api.raw.RawFormApi
-import com.icure.cardinal.sdk.api.raw.RawHealthElementApi
-import com.icure.cardinal.sdk.api.raw.RawHealthcarePartyApi
-import com.icure.cardinal.sdk.api.raw.RawInvoiceApi
 import com.icure.cardinal.sdk.api.raw.RawPatientApi
 import com.icure.cardinal.sdk.api.raw.successBodyOrNull404
 import com.icure.cardinal.sdk.api.raw.successBodyOrThrowRevisionConflict
 import com.icure.cardinal.sdk.crypto.entities.DelegateOptions
-import com.icure.cardinal.sdk.crypto.entities.DelegateShareOptions
 import com.icure.cardinal.sdk.crypto.entities.EntityAccessInformation
+import com.icure.cardinal.sdk.crypto.entities.FailedRequestDetails
 import com.icure.cardinal.sdk.crypto.entities.EntityWithEncryptionMetadataTypeName
 import com.icure.cardinal.sdk.crypto.entities.PatientDelegateOptions
 import com.icure.cardinal.sdk.crypto.entities.PatientShareOptions
 import com.icure.cardinal.sdk.crypto.entities.SecretIdShareOptions
-import com.icure.cardinal.sdk.crypto.entities.SecurityMetadataType
-import com.icure.cardinal.sdk.crypto.entities.ShareAllPatientDataOptions
-import com.icure.cardinal.sdk.crypto.entities.ShareAllPatientDataOptions.BulkShareFailure
-import com.icure.cardinal.sdk.crypto.entities.ShareAllPatientDataOptions.FailedRequest
 import com.icure.cardinal.sdk.crypto.entities.ShareMetadataBehaviour
 import com.icure.cardinal.sdk.crypto.entities.SimpleDelegateShareOptionsImpl
 import com.icure.cardinal.sdk.crypto.entities.SimpleShareResult
-import com.icure.cardinal.sdk.crypto.entities.asIcureStub
 import com.icure.cardinal.sdk.exceptions.NotFoundException
 import com.icure.cardinal.sdk.filters.BaseFilterOptions
 import com.icure.cardinal.sdk.filters.BaseSortableFilterOptions
@@ -46,21 +34,18 @@ import com.icure.cardinal.sdk.model.DecryptedPatient
 import com.icure.cardinal.sdk.model.EncryptedPatient
 import com.icure.cardinal.sdk.model.EntityReferenceInGroup
 import com.icure.cardinal.sdk.model.GroupScoped
-import com.icure.cardinal.sdk.model.IcureStub
 import com.icure.cardinal.sdk.model.ListOfIds
 import com.icure.cardinal.sdk.model.ListOfIdsAndRev
 import com.icure.cardinal.sdk.model.Patient
+import com.icure.cardinal.sdk.model.SecretIdCreationResult
 import com.icure.cardinal.sdk.model.StoredDocumentIdentifier
 import com.icure.cardinal.sdk.model.User
-import com.icure.cardinal.sdk.model.base.HasEncryptionMetadata
 import com.icure.cardinal.sdk.model.embed.AccessLevel
 import com.icure.cardinal.sdk.model.embed.DelegationTag
 import com.icure.cardinal.sdk.model.extensions.autoDelegationsFor
 import com.icure.cardinal.sdk.model.extensions.dataOwnerId
 import com.icure.cardinal.sdk.model.extensions.publicKeysSpki
 import com.icure.cardinal.sdk.model.extensions.toDefaultDelegateOptions
-import com.icure.cardinal.sdk.model.requests.BulkShareOrUpdateMetadataParams
-import com.icure.cardinal.sdk.model.requests.EntityBulkShareResult
 import com.icure.cardinal.sdk.model.requests.RequestedPermission
 import com.icure.cardinal.sdk.model.specializations.HexString
 import com.icure.cardinal.sdk.model.toStoredDocumentIdentifier
@@ -306,7 +291,8 @@ private class PatientBasicFlavouredApiImpl<E : Patient>(
 			expectedFromRev = requireNotNull(from.rev) {
 				"From patient should have a non-null rev"
 			},
-			updatedInto = validateAndMaybeEncrypt(null, mergedInto)
+			updatedInto = validateAndMaybeEncrypt(null, mergedInto),
+			omitEncryptionKeysOfFrom = true,
 		).let {
 			maybeDecrypt(null, it.successBody())
 		}
@@ -396,17 +382,17 @@ private abstract class AbstractPatientFlavouredApi<E : Patient>(
 			}
 		).updatedEntityOrThrow()
 
-	protected suspend fun doInitializeConfidentialSecretId(groupId: String?, patient: E): E {
+	protected suspend fun doCreateNewSecretId(groupId: String?, patient: E): SecretIdCreationResult<E> {
 		requireNotNull(patient.rev) {
 			"Patient must be created before confidential secret id initialisation"
 		}
-		return config.crypto.entity.initializeConfidentialSecretId(
+		return config.crypto.entity.forceCreateNewSecretId(
 			groupId,
 			patient,
 			EntityWithEncryptionMetadataTypeName.Patient,
 			{ doGetPatient(groupId, it) ?: throw NotFoundException("Patient $it not found") },
 			{ maybeDecrypt(null, rawApi.bulkShare(request = it).successBody()) }
-		) ?: patient
+		)
 	}
 
 }
@@ -430,8 +416,8 @@ private class PatientFlavouredApiImpl<E : Patient>(
 	override suspend fun shareWithMany(patient: E, delegates: Map<String, PatientShareOptions>): E =
 		doShareWithMany(null, patient, delegates.keyAsLocalDataOwnerReferences())
 
-	override suspend fun initializeConfidentialSecretId(patient: E): E =
-		doInitializeConfidentialSecretId(groupId = null, patient = patient)
+	override suspend fun createNewSecretId(patient: E): SecretIdCreationResult<E> =
+		doCreateNewSecretId(groupId = null, patient = patient)
 
 	override suspend fun filterPatientsBy(filter: FilterOptions<Patient>): PaginatedListIterator<E> =
 		IdsPageIterator(
@@ -465,8 +451,8 @@ private class PatientFlavouredInGroupApiImpl<E : Patient>(
 	): GroupScoped<E> =
 		GroupScoped(doShareWithMany(patient.groupId, patient.entity, delegates), patient.groupId)
 
-	override suspend fun initializeConfidentialSecretId(patient: GroupScoped<E>): GroupScoped<E> = groupScopedWith(patient) { groupId, entity ->
-		doInitializeConfidentialSecretId(groupId = groupId, patient = entity)
+	override suspend fun createNewSecretId(patient: GroupScoped<E>): GroupScoped<SecretIdCreationResult<E>> = groupScopedWith(patient) { groupId, entity ->
+		doCreateNewSecretId(groupId = groupId, patient = entity)
 	}
 
 	override suspend fun filterPatientsBy(groupId: String, filter: FilterOptions<Patient>): PaginatedListIterator<GroupScoped<E>> =
@@ -579,13 +565,6 @@ private class PatientBasicFlavourlessInGroupApiImpl(
 @InternalIcureApi
 internal fun initPatientApi(
 	rawApi: RawPatientApi,
-	rawHealthcarePartyApi: RawHealthcarePartyApi,
-	rawHealthElementApi: RawHealthElementApi,
-	rawFormApi: RawFormApi,
-	rawContactApi: RawContactApi,
-	rawInvoiceApi: RawInvoiceApi,
-	rawCalendarItemApi: RawCalendarItemApi,
-	rawClassificationApi: RawClassificationApi,
 	config: ApiConfiguration
 ): PatientApi {
 	val decryptedFlavour = decryptedApiFlavour(config)
@@ -593,13 +572,6 @@ internal fun initPatientApi(
 	val tryAndRecoverFlavour = tryAndRecoverApiFlavour(config)
 	return PatientApiImpl(
 		rawApi,
-		rawHealthcarePartyApi,
-		rawHealthElementApi,
-		rawFormApi,
-		rawContactApi,
-		rawInvoiceApi,
-		rawCalendarItemApi,
-		rawClassificationApi,
 		config,
 		encryptedFlavour,
 		decryptedFlavour,
@@ -610,13 +582,6 @@ internal fun initPatientApi(
 @InternalIcureApi
 private class PatientApiImpl(
 	private val rawApi: RawPatientApi,
-	private val rawHealthcarePartyApi: RawHealthcarePartyApi,
-	private val rawHealthElementApi: RawHealthElementApi,
-	private val rawFormApi: RawFormApi,
-	private val rawContactApi: RawContactApi,
-	private val rawInvoiceApi: RawInvoiceApi,
-	private val rawCalendarItemApi: RawCalendarItemApi,
-	private val rawClassificationApi: RawClassificationApi,
 	private val config: ApiConfiguration,
 	private val encryptedFlavour: FlavouredApi<EncryptedPatient, EncryptedPatient>,
 	private val decryptedFlavour: FlavouredApi<EncryptedPatient, DecryptedPatient>,
@@ -708,240 +673,6 @@ private class PatientApiImpl(
 			delegates: Set<EntityReferenceInGroup>
 		) =
 			doCreateDelegationDeAnonymizationMetadata(entity.groupId, entity.entity, delegates)
-	}
-
-	private suspend fun findDelegationStubsForHcPartyAndParent(
-		delegationSecretKeys: List<String>,
-		hcpId: String,
-		parentId: String?,
-		stubGetter: suspend (String, List<String>) -> List<IcureStub>
-	): List<IcureStub> {
-		val stubs = stubGetter(hcpId, delegationSecretKeys) +
-			if(parentId != null) stubGetter(parentId, delegationSecretKeys) else emptyList()
-		return stubs.distinctBy { it.id }
-	}
-
-	override suspend fun shareAllDataOfPatient(
-		patientId: String,
-		delegatesWithShareType: Map<String, Set<ShareAllPatientDataOptions.Tag>>
-	): ShareAllPatientDataOptions.Result {
-
-		val allTags = delegatesWithShareType.values.flatMap { it.toList() }.toSet()
-
-		val hcp = rawHealthcarePartyApi.getCurrentHealthcareParty().successBody() // Shall we do it for any data owner?
-		val parentId = hcp.parentId
-		val patient = encrypted.getPatient(patientId)?.let { patient ->
-			config.crypto.entity.ensureEncryptionKeysInitialized(
-				null,
-				patient,
-				EntityWithEncryptionMetadataTypeName.Patient
-			)?.let {
-				encrypted.modifyPatient(it)
-			} ?: patient
-		} ?: throw NotFoundException("Patient $patientId not found")
-		val selfHierarchySet = config.crypto.userEncryptionKeysManager.delegatorActorHierarchy().toSet()
-
-		val delegationSecretKeys = getSecretIdsOf(patient).keys
-
-		val shareStatus = if(delegationSecretKeys.isNotEmpty()) {
-			suspend fun <T : HasEncryptionMetadata> doShareEntitiesAndUpdateStatus(
-				entities: List<T>,
-				entitiesType: EntityWithEncryptionMetadataTypeName,
-				tagsCondition: (tags: Set<ShareAllPatientDataOptions.Tag>) -> Boolean,
-				getEntity: suspend (id: String) -> T,
-				doShareMinimal: suspend (request: BulkShareOrUpdateMetadataParams) -> List<EntityBulkShareResult<Nothing>>
-			): ShareAllPatientDataOptions.EntityResult {
-				val delegatesToApply = delegatesWithShareType.entries.mapNotNull { (delegateId, types) ->
-					delegateId.takeIf { tagsCondition(types) }
-				}
-				return if (entities.isNotEmpty() && delegatesToApply.isNotEmpty()) {
-					val allSecretIds = config.crypto.securityMetadataDecryptor.decryptAll(
-						null,
-						entities,
-						entitiesType,
-						selfHierarchySet,
-						SecurityMetadataType.SecretId
-					)
-					val allEntityEncryptionKeys = config.crypto.securityMetadataDecryptor.decryptAll(
-						null,
-						entities,
-						entitiesType,
-						selfHierarchySet,
-						SecurityMetadataType.EncryptionKey
-					)
-					val updates = mutableListOf<Pair<T, Map<String, DelegateShareOptions>>>().also { acc ->
-						entities.forEach { entity ->
-							acc.add(entity to delegatesToApply.associateWith {
-								DelegateShareOptions(
-									shareSecretIds = allSecretIds[entity.id]?.mapTo(mutableSetOf()) { it.value }.orEmpty(),
-									shareEncryptionKeys = allEntityEncryptionKeys[entity.id]?.mapTo(mutableSetOf()) { it.value }.orEmpty(),
-									shareOwningEntityIds = setOf(patient.id),
-									requestedPermissions = RequestedPermission.MaxWrite
-								)
-							})
-						}
-					}
-					try {
-						val result = config.crypto.entity.bulkShareOrUpdateEncryptedEntityMetadataNoEntities(
-							updates,
-							entitiesType,
-							true,
-							getEntity,
-							doShareMinimal
-						)
-						ShareAllPatientDataOptions.EntityResult(
-							success = result.updateErrors.isEmpty(),
-							error = BulkShareFailure(
-								result.updateErrors,
-								"Error while sharing (some) entities of type $entitiesType for patient ${patient.id}"
-							).takeIf { result.updateErrors.isNotEmpty() },
-							modified = result.successfulUpdates.map { it.entityId }.toSet().size
-						)
-					} catch (e: Exception) {
-						ShareAllPatientDataOptions.EntityResult(
-							success = false,
-							error = FailedRequest("${e::class.simpleName}: ${e.message}")
-						)
-					}
-				} else {
-					ShareAllPatientDataOptions.EntityResult(success = true)
-				}
-			}
-
-			val retrievedHealthElements = findDelegationStubsForHcPartyAndParent(delegationSecretKeys.toList(), hcp.id, parentId) { doId, delSecKeys ->
-				val heIds = rawHealthElementApi.listHealthElementIdsByDataOwnerPatientOpeningDate(dataOwnerId = doId, secretPatientKeys = ListOfIds(delSecKeys)).successBody()
-				rawHealthElementApi.listHealthElementsDelegationsStubById(healthElementIds = ListOfIds(heIds)).successBody()
-			}
-			val shareHealthElementsResult = doShareEntitiesAndUpdateStatus(
-				entities = retrievedHealthElements,
-				entitiesType = EntityWithEncryptionMetadataTypeName.HealthElement,
-				tagsCondition = {
-					it.contains(ShareAllPatientDataOptions.Tag.All)
-						|| it.contains(ShareAllPatientDataOptions.Tag.MedicalInformation)
-				},
-				getEntity = { rawHealthElementApi.getHealthElement(healthElementId = it).successBody().asIcureStub() },
-				doShareMinimal = { params -> rawHealthElementApi.bulkShareMinimal(request = params).successBody() }
-			)
-
-			val retrievedForms = findDelegationStubsForHcPartyAndParent(delegationSecretKeys.toList(), hcp.id, parentId) { doId, delSecKeys ->
-				val formIds =  rawFormApi.listFormIdsByDataOwnerPatientOpeningDate(dataOwnerId = doId, secretPatientKeys = ListOfIds(delSecKeys)).successBody()
-				rawFormApi.findFormsDelegationsStubsByIds(formIds = ListOfIds(formIds)).successBody()
-			}
-			val shareFormsResult = doShareEntitiesAndUpdateStatus(
-				entities = retrievedForms,
-				entitiesType = EntityWithEncryptionMetadataTypeName.Form,
-				tagsCondition = { it.contains(ShareAllPatientDataOptions.Tag.All) || it.contains(
-					ShareAllPatientDataOptions.Tag.MedicalInformation) },
-				getEntity = { rawFormApi.getForm(formId = it).successBody().asIcureStub() },
-				doShareMinimal = { params -> rawFormApi.bulkShareMinimal(request = params).successBody() }
-			)
-
-			val retrievedContacts = findDelegationStubsForHcPartyAndParent(delegationSecretKeys.toList(), hcp.id, parentId) { doId, delSecKeys ->
-				val contactIds = rawContactApi.listContactIdsByDataOwnerPatientOpeningDate(dataOwnerId = doId, secretPatientKeys = ListOfIds(delSecKeys)).successBody()
-				rawContactApi.findContactsDelegationsStubsByIds(contactIds = ListOfIds(contactIds)).successBody()
-			}
-			val shareContactsResult = doShareEntitiesAndUpdateStatus(
-				entities = retrievedContacts,
-				entitiesType = EntityWithEncryptionMetadataTypeName.Contact,
-				tagsCondition = { it.contains(ShareAllPatientDataOptions.Tag.All) || it.contains(
-					ShareAllPatientDataOptions.Tag.MedicalInformation) },
-				getEntity = { rawContactApi.getContact(contactId = it).successBody().asIcureStub() },
-				doShareMinimal = { params -> rawContactApi.bulkShareMinimal(request = params).successBody() }
-			)
-
-			val retrievedInvoices = findDelegationStubsForHcPartyAndParent(delegationSecretKeys.toList(), hcp.id, parentId) { doId, delSecKeys ->
-				val invoiceIds = rawInvoiceApi.listInvoiceIdsByDataOwnerPatientInvoiceDate(dataOwnerId = doId, secretPatientKeys = ListOfIds(delSecKeys)).successBody()
-				rawInvoiceApi.listInvoicesDelegationsStubsByIds(invoiceIds = ListOfIds(invoiceIds)).successBody()
-			}
-			val shareInvoicesResult = doShareEntitiesAndUpdateStatus(
-				entities = retrievedInvoices,
-				entitiesType = EntityWithEncryptionMetadataTypeName.Invoice,
-				tagsCondition = { it.contains(ShareAllPatientDataOptions.Tag.All) || it.contains(
-					ShareAllPatientDataOptions.Tag.FinancialInformation) },
-				getEntity = { rawInvoiceApi.getInvoice(invoiceId = it).successBody().asIcureStub() },
-				doShareMinimal = { params -> rawInvoiceApi.bulkShareMinimal(request = params).successBody() }
-			)
-
-			val retrievedCalendarItems = findDelegationStubsForHcPartyAndParent(delegationSecretKeys.toList(), hcp.id, parentId) { doId, delSecKeys ->
-				rawCalendarItemApi.findCalendarItemsDelegationsStubsByHCPartyPatientForeignKeys(hcPartyId = doId, secretPatientKeys = delSecKeys).successBody()
-			}
-			val shareCalendarItemsResult = doShareEntitiesAndUpdateStatus(
-				entities = retrievedCalendarItems,
-				entitiesType = EntityWithEncryptionMetadataTypeName.CalendarItem,
-				tagsCondition = { it.contains(ShareAllPatientDataOptions.Tag.All) || it.contains(
-					ShareAllPatientDataOptions.Tag.MedicalInformation) },
-				getEntity = { rawCalendarItemApi.getCalendarItem(calendarItemId = it).successBody().asIcureStub() },
-				doShareMinimal = { params -> rawCalendarItemApi.bulkShareMinimal(request = params).successBody() }
-			)
-
-			val retrievedClassifications = findDelegationStubsForHcPartyAndParent(delegationSecretKeys.toList(), hcp.id, parentId) { doId, delSecKeys ->
-				val classificationIds = rawClassificationApi.listClassificationIdsByDataOwnerPatientCreated(dataOwnerId = doId, secretPatientKeys = ListOfIds(delSecKeys)).successBody()
-				rawClassificationApi.findClassificationsDelegationsStubsByIds(classificationIds = ListOfIds(classificationIds)).successBody()
-			}
-			val shareClassificationResult = doShareEntitiesAndUpdateStatus(
-				entities = retrievedClassifications,
-				entitiesType = EntityWithEncryptionMetadataTypeName.Classification,
-				tagsCondition = { it.contains(ShareAllPatientDataOptions.Tag.All) || it.contains(
-					ShareAllPatientDataOptions.Tag.MedicalInformation) },
-				getEntity = { rawClassificationApi.getClassification(classificationId = it).successBody().asIcureStub() },
-				doShareMinimal = { params -> rawClassificationApi.bulkShareMinimal(request = params).successBody() }
-			)
-
-			mapOf(
-				ShareAllPatientDataOptions.ShareableEntity.HealthElement to shareHealthElementsResult,
-				ShareAllPatientDataOptions.ShareableEntity.Form to shareFormsResult,
-				ShareAllPatientDataOptions.ShareableEntity.Contact to shareContactsResult,
-				ShareAllPatientDataOptions.ShareableEntity.Invoice to shareInvoicesResult,
-				ShareAllPatientDataOptions.ShareableEntity.CalendarItem to shareCalendarItemsResult,
-				ShareAllPatientDataOptions.ShareableEntity.Classification to shareClassificationResult,
-			)
-		} else {
-			ShareAllPatientDataOptions.ShareableEntity.entries.associateWith { entity ->
-				ShareAllPatientDataOptions.EntityResult(
-					success = false.takeIf { allTags.contains(entity.type) || allTags.contains(
-						ShareAllPatientDataOptions.Tag.All) },
-					error = null,
-					modified = 0
-				)
-			}
-		}
-
-		val patientStatus = try {
-			val result = config.crypto.entity.bulkShareOrUpdateEncryptedEntityMetadataNoEntities(
-				listOf(
-					patient to delegatesWithShareType.keys.associateWith {
-						DelegateShareOptions(
-							shareSecretIds = delegationSecretKeys,
-							shareEncryptionKeys = getEncryptionKeysOf(patient),
-							shareOwningEntityIds = setOf(),
-							requestedPermissions = RequestedPermission.MaxWrite
-						)
-					}
-				),
-				EntityWithEncryptionMetadataTypeName.Patient,
-				true,
-				{ getPatient(it) ?: throw NotFoundException("Patient $it not found") },
-				{ params -> rawApi.bulkShareMinimal(request = params).successBody() }
-			)
-			ShareAllPatientDataOptions.EntityResult(
-				success = result.updateErrors.isEmpty(),
-				error = BulkShareFailure(
-					errors = result.updateErrors,
-					"Error while sharing patient ${patient.id}"
-				).takeIf { result.updateErrors.isNotEmpty() },
-				modified = result.successfulUpdates.map { it.entityId }.toSet().size
-			)
-		} catch (e: Exception) {
-			ShareAllPatientDataOptions.EntityResult(
-				success = false,
-				error = FailedRequest("${e::class.simpleName}: ${e.message}")
-			)
-		}
-
-		return ShareAllPatientDataOptions.Result(
-			patient = patient,
-			statuses = shareStatus + (ShareAllPatientDataOptions.ShareableEntity.Patient to patientStatus)
-		)
 	}
 
 	override suspend fun withEncryptionMetadata(
@@ -1043,17 +774,6 @@ private class PatientApiImpl(
 
 	private suspend fun doGetEncryptionKeysOf(groupId: String?, patient: Patient): Set<HexString> =
 		config.crypto.entity.encryptionKeysOf(groupId, patient, EntityWithEncryptionMetadataTypeName.Patient, null)
-
-	override suspend fun getConfidentialSecretIdsOf(patient: Patient): Set<String> =
-		doGetConfidentialSecretIdsOf(null, patient)
-
-	private suspend fun doGetConfidentialSecretIdsOf(groupId: String?, patient: Patient): Set<String> =
-		config.crypto.entity.getConfidentialSecretIdsOf(
-			groupId,
-			patient,
-			EntityWithEncryptionMetadataTypeName.Patient,
-			null
-		)
 
 	override suspend fun forceInitializeExchangeDataToNewlyInvitedPatient(patientId: String): Boolean {
 		val patient = encrypted.getPatient(patientId) ?: throw NotFoundException("Patient $patientId not found")
@@ -1178,7 +898,7 @@ private class PatientApiImpl(
 					getUpdatedEntity = { throw UnsupportedOperationException("No retry") },
 					doRequestBulkShareOrUpdate = { rawApi.bulkShare(request = it).successBody() },
 				)
-				if (shareResult is SimpleShareResult.Failure && shareResult.errorsDetails.all { it.shouldRetry }) {
+				if (shareResult is SimpleShareResult.Failure && shareResult.errorsDetails.all { it is FailedRequestDetails.RequestRejected && it.shouldRetry }) {
 					val updatedSelf = rawApi.getPatient(patientId = self.id).successBody()
 					if (updatedSelf.rev != self.rev) {
 						ensureEncryptionMetadataForSelfIsInitialized(sharingWith)

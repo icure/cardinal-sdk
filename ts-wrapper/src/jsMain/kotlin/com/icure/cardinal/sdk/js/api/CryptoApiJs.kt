@@ -25,8 +25,7 @@ public external interface CryptoApiJs {
 
 	public fun forceReload(): Promise<Unit>
 
-	public fun currentDataOwnerKeys(options: dynamic):
-			Promise<Record<String, Record<String, ByteArray>>>
+	public fun availableKeys(options: dynamic): Promise<Record<String, Record<String, ByteArray>>>
 
 	public fun keylessCreateExchangeDataTo(`delegate`: String): Promise<RawDecryptedExchangeDataJs>
 
@@ -35,4 +34,10 @@ public external interface CryptoApiJs {
 		details: Array<ExchangeDataInjectionDetailsJs>,
 		reEncryptWithOwnKeys: Boolean,
 	): Promise<Unit>
+
+	public fun ensureHasAccessToSharedSimpleDataOwnerGroupExchangeData(
+		`delegate`: String,
+		sharedSimpleDataOwnerGroupId: String,
+		options: dynamic,
+	): Promise<Boolean>
 }

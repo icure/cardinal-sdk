@@ -9,6 +9,7 @@ import com.icure.cardinal.sdk.auth.services.AuthProvider
 import com.icure.cardinal.sdk.crypto.AccessControlKeysHeadersProvider
 import com.icure.cardinal.sdk.crypto.entities.EntityWithEncryptionMetadataTypeName
 import com.icure.cardinal.sdk.model.EncryptedReceipt
+import com.icure.cardinal.sdk.model.IcureStub
 import com.icure.cardinal.sdk.model.ListOfIds
 import com.icure.cardinal.sdk.model.ListOfIdsAndRev
 import com.icure.cardinal.sdk.model.conflicts.ConflictResolutionRequest
@@ -32,6 +33,7 @@ import io.ktor.util.date.GMTDate
 import kotlin.Boolean
 import kotlin.ByteArray
 import kotlin.Long
+import kotlin.Nothing
 import kotlin.String
 import kotlin.Unit
 import kotlin.collections.List
@@ -246,6 +248,17 @@ class RawReceiptApiImpl(
 			setBody(receiptIds)
 		}.wrap()
 
+	override suspend fun findReceiptsDelegationsStubsByIds(receiptIds: ListOfIds): HttpResponse<List<IcureStub>> =
+		post(authProvider) {
+			url {
+				takeFrom(apiUrl)
+				appendPathSegments("rest", "v2", "receipt", "delegations")
+			}
+			contentType(Application.Json)
+			accept(Application.Json)
+			setBody(receiptIds)
+		}.wrap()
+
 	override suspend fun listByReference(ref: String): HttpResponse<List<EncryptedReceipt>> =
 		get(authProvider) {
 			url {
@@ -300,6 +313,17 @@ class RawReceiptApiImpl(
 			url {
 				takeFrom(apiUrl)
 				appendPathSegments("rest", "v2", "receipt", "bulkSharedMetadataUpdate")
+			}
+			contentType(Application.Json)
+			accept(Application.Json)
+			setBody(request)
+		}.wrap()
+
+	override suspend fun bulkShareMinimal(request: BulkShareOrUpdateMetadataParams): HttpResponse<List<EntityBulkShareResult<Nothing>>> =
+		put(authProvider) {
+			url {
+				takeFrom(apiUrl)
+				appendPathSegments("rest", "v2", "receipt", "bulkSharedMetadataUpdateMinimal")
 			}
 			contentType(Application.Json)
 			accept(Application.Json)

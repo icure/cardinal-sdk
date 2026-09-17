@@ -3,6 +3,7 @@ package com.icure.cardinal.sdk.test
 import com.icure.cardinal.sdk.api.raw.RawHealthcarePartyApi
 import com.icure.cardinal.sdk.api.raw.impl.RawHealthcarePartyApiImpl
 import com.icure.cardinal.sdk.api.raw.impl.RawUserApiImpl
+import com.icure.cardinal.sdk.model.base.DataOwnerGroupLinkType
 import com.icure.cardinal.sdk.model.specializations.SpkiHexString
 import com.icure.cardinal.sdk.storage.StorageFacade
 import com.icure.cardinal.sdk.storage.impl.FileStorageFacade
@@ -61,8 +62,9 @@ private suspend fun resolveHcpUser(credentials: UserCredentials): DataOwnerDetai
 		username = credentials.username,
 		password = credentials.password,
 		keypair = loadOrRegisterKeypair(RawHealthcarePartyApiImpl(baseUrl, auth, DefaultRawApiConfig), hcpId),
-		parent = null,
+		parents = emptyList(),
 		groupId = user.groupId ?: testGroupId,
+		effectiveGroupLinkType = DataOwnerGroupLinkType.Parent,
 	)
 }
 

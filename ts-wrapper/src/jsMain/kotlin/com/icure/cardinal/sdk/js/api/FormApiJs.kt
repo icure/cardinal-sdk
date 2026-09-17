@@ -3,6 +3,7 @@
 
 package com.icure.cardinal.sdk.js.api
 
+import com.icure.cardinal.sdk.js.crypto.entities.BulkShareByIdsResultJs
 import com.icure.cardinal.sdk.js.crypto.entities.FormDelegateOptionsJs
 import com.icure.cardinal.sdk.js.crypto.entities.FormShareOptionsJs
 import com.icure.cardinal.sdk.js.filters.BaseFilterOptionsJs
@@ -63,6 +64,9 @@ public external interface FormApiJs {
 	public fun matchFormsBy(filter: FilterOptionsJs<FormJs>): Promise<Array<String>>
 
 	public fun matchFormsBySorted(filter: SortableFilterOptionsJs<FormJs>): Promise<Array<String>>
+
+	public fun shareFormsByIds(formIds: Array<String>, delegates: Record<String, FormShareOptionsJs>):
+			Promise<BulkShareByIdsResultJs>
 
 	public fun deleteFormById(entityId: String, rev: String): Promise<StoredDocumentIdentifierJs>
 

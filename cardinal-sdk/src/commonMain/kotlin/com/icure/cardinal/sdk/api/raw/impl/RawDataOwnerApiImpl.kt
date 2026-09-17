@@ -9,6 +9,10 @@ import com.icure.cardinal.sdk.auth.services.AuthProvider
 import com.icure.cardinal.sdk.model.CryptoActorStubWithType
 import com.icure.cardinal.sdk.model.DataOwnerWithType
 import com.icure.cardinal.sdk.model.ListOfIds
+import com.icure.cardinal.sdk.model.PaginatedList
+import com.icure.cardinal.sdk.model.base.DataOwnerHierarchyInfo
+import com.icure.cardinal.sdk.model.requests.DataOwnerPublicKeys
+import com.icure.cardinal.sdk.model.requests.LinkedDataOwner
 import com.icure.utils.InternalIcureApi
 import io.ktor.client.request.accept
 import io.ktor.client.request.parameter
@@ -18,6 +22,8 @@ import io.ktor.http.appendPathSegments
 import io.ktor.http.contentType
 import io.ktor.http.takeFrom
 import io.ktor.util.date.GMTDate
+import kotlin.Boolean
+import kotlin.Int
 import kotlin.String
 import kotlin.collections.List
 
@@ -124,6 +130,95 @@ class RawDataOwnerApiImpl(
 			accept(Application.Json)
 		}.wrap()
 
+	override suspend fun getCurrentDataOwnerHierarchyInfo(): HttpResponse<DataOwnerHierarchyInfo> =
+		get(authProvider) {
+			url {
+				takeFrom(apiUrl)
+				appendPathSegments("rest", "v2", "dataowner", "current", "hierarchies", "info")
+				parameter("ts", GMTDate().timestamp)
+			}
+			accept(Application.Json)
+		}.wrap()
+
+	override suspend fun getDataOwnerHierarchyInfoOf(dataOwnerId: String): HttpResponse<DataOwnerHierarchyInfo> =
+		get(authProvider) {
+			url {
+				takeFrom(apiUrl)
+				appendPathSegments("rest", "v2", "dataowner", "hierarchies", "info", "of")
+				parameter("dataOwnerId", dataOwnerId)
+				parameter("ts", GMTDate().timestamp)
+			}
+			accept(Application.Json)
+		}.wrap()
+
+	override suspend fun findDataOwnersLinkedToGroups(
+		dataOwnerType: String,
+		dataOwnerGroupIds: String,
+		startDocumentId: String?,
+		limit: Int?,
+	): HttpResponse<PaginatedList<LinkedDataOwner>> =
+		get(authProvider) {
+			url {
+				takeFrom(apiUrl)
+				appendPathSegments("rest", "v2", "dataowner", "linkedTo")
+				parameter("dataOwnerType", dataOwnerType)
+				parameter("dataOwnerGroupIds", dataOwnerGroupIds)
+				parameter("startDocumentId", startDocumentId)
+				parameter("limit", limit)
+				parameter("ts", GMTDate().timestamp)
+			}
+			accept(Application.Json)
+		}.wrap()
+
+	override suspend fun getDataOwnersPublicKeys(
+		dataOwnerType: String,
+		dataOwnerIds: ListOfIds,
+	): HttpResponse<List<DataOwnerPublicKeys>> =
+		post(authProvider) {
+			url {
+				takeFrom(apiUrl)
+				appendPathSegments("rest", "v2", "dataowner", "publicKeys", "byIds")
+				parameter("dataOwnerType", dataOwnerType)
+			}
+			contentType(Application.Json)
+			accept(Application.Json)
+			setBody(dataOwnerIds)
+		}.wrap()
+
+	override suspend fun addDataOwnersToGroup(
+		dataOwnerGroupId: String,
+		dataOwnerType: String,
+		newMembersIds: ListOfIds,
+	): HttpResponse<List<String>> =
+		post(authProvider) {
+			url {
+				takeFrom(apiUrl)
+				appendPathSegments("rest", "v2", "dataowner", "dataOwnerGroup", dataOwnerGroupId, "members", "add")
+				parameter("dataOwnerType", dataOwnerType)
+			}
+			contentType(Application.Json)
+			accept(Application.Json)
+			setBody(newMembersIds)
+		}.wrap()
+
+	override suspend fun removeDataOwnersFromGroup(
+		dataOwnerGroupId: String,
+		dataOwnerType: String,
+		invalidateSharedExchangeDataIfNeeded: Boolean?,
+		membersToRemoveIds: ListOfIds,
+	): HttpResponse<List<String>> =
+		post(authProvider) {
+			url {
+				takeFrom(apiUrl)
+				appendPathSegments("rest", "v2", "dataowner", "dataOwnerGroup", dataOwnerGroupId, "members", "remove")
+				parameter("dataOwnerType", dataOwnerType)
+				parameter("invalidateSharedExchangeDataIfNeeded", invalidateSharedExchangeDataIfNeeded)
+			}
+			contentType(Application.Json)
+			accept(Application.Json)
+			setBody(membersToRemoveIds)
+		}.wrap()
+
 	// endregion
 
 	// region cloud endpoints
@@ -139,6 +234,42 @@ class RawDataOwnerApiImpl(
 				parameter("ts", GMTDate().timestamp)
 			}
 			accept(Application.Json)
+		}.wrap()
+
+	override suspend fun findDataOwnersLinkedToGroups(
+		dataOwnerType: String,
+		dataOwnerGroupIds: String,
+		startDocumentId: String?,
+		limit: Int?,
+		groupId: String,
+	): HttpResponse<PaginatedList<LinkedDataOwner>> =
+		get(authProvider) {
+			url {
+				takeFrom(apiUrl)
+				appendPathSegments("rest", "v2", "dataowner", "linkedTo", "inGroup", groupId)
+				parameter("dataOwnerType", dataOwnerType)
+				parameter("dataOwnerGroupIds", dataOwnerGroupIds)
+				parameter("startDocumentId", startDocumentId)
+				parameter("limit", limit)
+				parameter("ts", GMTDate().timestamp)
+			}
+			accept(Application.Json)
+		}.wrap()
+
+	override suspend fun getDataOwnersPublicKeys(
+		dataOwnerType: String,
+		dataOwnerIds: ListOfIds,
+		groupId: String,
+	): HttpResponse<List<DataOwnerPublicKeys>> =
+		post(authProvider) {
+			url {
+				takeFrom(apiUrl)
+				appendPathSegments("rest", "v2", "dataowner", "publicKeys", "byIds", "inGroup", groupId)
+				parameter("dataOwnerType", dataOwnerType)
+			}
+			contentType(Application.Json)
+			accept(Application.Json)
+			setBody(dataOwnerIds)
 		}.wrap()
 
 	// endregion

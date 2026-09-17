@@ -1,5 +1,6 @@
 // auto-generated file
 import {PaginatedListIterator} from '../cardinal-sdk-ts.mjs';
+import {BulkShareByIdsResult} from '../crypto/entities/BulkShareByIdsResult.mjs';
 import {InvoiceDelegateOptions} from '../crypto/entities/InvoiceDelegateOptions.mjs';
 import {InvoiceShareOptions} from '../crypto/entities/InvoiceShareOptions.mjs';
 import {SecretIdUseOption} from '../crypto/entities/SecretIdUseOption.mjs';
@@ -146,6 +147,28 @@ export interface InvoiceApi {
 	 *  @return the decrypted invoice if the decryption was successful or the input if it was not.
 	 */
 	tryDecrypt(invoice: EncryptedInvoice): Promise<Invoice>;
+
+	/**
+	 *
+	 *  Share many already-existing invoices with one or more delegates at once, retrieving them by id instead of
+	 *  requiring the caller to have them already loaded. This is more efficient than calling [shareWithMany] once
+	 *  per invoice when you already know the ids of many invoices to share and don't otherwise need their decrypted
+	 *  content, since only lightweight metadata (not the full content of each invoice) is ever retrieved, and no
+	 *  content flows back from the share request itself.
+	 *
+	 *  The same [delegates] options are applied identically to every found invoice. Unlike [shareWithMany], if the
+	 *  share fails for some (invoice, delegate) pairs this method reports the failure for those specific pairs in the
+	 *  returned result instead of throwing, so sharing proceeds normally for every other invoice and delegate in the
+	 *  batch.
+	 *
+	 *  @param invoiceIds ids of the invoices to share. Ids that don't exist, or exist but for which the current user
+	 *  has no read access, are reported in [BulkShareByIdsResult.notFoundIds] and otherwise ignored.
+	 *  @param delegates the data owners which will gain access to each invoice, and the options for sharing with each
+	 *  of them (see [InvoiceShareOptions]). The exact same options are applied to every invoice in [invoiceIds].
+	 *  @return details on the outcome of the operation, for each requested id.
+	 */
+	shareInvoicesByIds(invoiceIds: Array<string>,
+			delegates: { [ key: string ]: InvoiceShareOptions }): Promise<BulkShareByIdsResult>;
 
 	/**
 	 *

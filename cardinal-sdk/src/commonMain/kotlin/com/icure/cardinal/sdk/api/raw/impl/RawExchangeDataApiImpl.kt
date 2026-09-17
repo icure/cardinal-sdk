@@ -10,6 +10,8 @@ import com.icure.cardinal.sdk.model.ExchangeData
 import com.icure.cardinal.sdk.model.IdWithRev
 import com.icure.cardinal.sdk.model.ListOfIds
 import com.icure.cardinal.sdk.model.PaginatedList
+import com.icure.cardinal.sdk.model.requests.BulkExchangeDataPieceCreationRequest
+import com.icure.cardinal.sdk.model.requests.ExchangeDataPieceCreationRequest
 import com.icure.utils.InternalIcureApi
 import io.ktor.client.request.accept
 import io.ktor.client.request.parameter
@@ -22,6 +24,7 @@ import io.ktor.util.date.GMTDate
 import kotlin.Int
 import kotlin.String
 import kotlin.collections.List
+import kotlin.collections.Map
 
 // WARNING: This class is auto-generated. If you change it manually, your changes will be lost.
 // If you want to change the way this class is generated, see [this repo](https://github.com/icure/sdk-codegen).
@@ -66,6 +69,17 @@ class RawExchangeDataApiImpl(
 			setBody(exchangeData)
 		}.wrap()
 
+	override suspend fun modifyExchangeDataInBulk(exchangeDatas: List<ExchangeData>): HttpResponse<List<ExchangeData>> =
+		put(authProvider) {
+			url {
+				takeFrom(apiUrl)
+				appendPathSegments("rest", "v2", "exchangedata", "bulk")
+			}
+			contentType(Application.Json)
+			accept(Application.Json)
+			setBody(exchangeDatas)
+		}.wrap()
+
 	override suspend fun getExchangeDataById(exchangeDataId: String): HttpResponse<ExchangeData> =
 		get(authProvider) {
 			url {
@@ -87,15 +101,48 @@ class RawExchangeDataApiImpl(
 			setBody(exchangeDataIds)
 		}.wrap()
 
-	override suspend fun getExchangeDataByParticipant(
-		dataOwnerId: String,
+	override suspend fun createExchangeDataGroupPieces(
+		exchangeDataGroupId: String,
+		delegator: String,
+		`delegate`: String,
+		piecesByRecipient: Map<String, ExchangeDataPieceCreationRequest>,
+	): HttpResponse<List<ExchangeData>> =
+		post(authProvider) {
+			url {
+				takeFrom(apiUrl)
+				appendPathSegments("rest", "v2", "exchangedata", "group", exchangeDataGroupId, "pieces")
+				parameter("delegator", delegator)
+				parameter("delegate", delegate)
+			}
+			contentType(Application.Json)
+			accept(Application.Json)
+			setBody(piecesByRecipient)
+		}.wrap()
+
+	override suspend fun bulkCreateExchangeDataGroupPieces(
+		requests: List<BulkExchangeDataPieceCreationRequest>,
+	): HttpResponse<List<ExchangeData>> =
+		post(authProvider) {
+			url {
+				takeFrom(apiUrl)
+				appendPathSegments("rest", "v2", "exchangedata", "group", "pieces", "bulk")
+			}
+			contentType(Application.Json)
+			accept(Application.Json)
+			setBody(requests)
+		}.wrap()
+
+	override suspend fun getExchangeDataGroupById(
+		exchangeDataGroupId: String,
+		startKey: String?,
 		startDocumentId: String?,
 		limit: Int?,
 	): HttpResponse<PaginatedList<ExchangeData>> =
 		get(authProvider) {
 			url {
 				takeFrom(apiUrl)
-				appendPathSegments("rest", "v2", "exchangedata", "byParticipant", dataOwnerId)
+				appendPathSegments("rest", "v2", "exchangedata", "group", exchangeDataGroupId)
+				parameter("startKey", startKey)
 				parameter("startDocumentId", startDocumentId)
 				parameter("limit", limit)
 				parameter("ts", GMTDate().timestamp)
@@ -103,79 +150,91 @@ class RawExchangeDataApiImpl(
 			accept(Application.Json)
 		}.wrap()
 
-	override suspend fun getExchangeDataByParticipantQuery(
-		dataOwnerId: String,
+	override suspend fun getExchangeDataGroupByIdForRecipients(
+		exchangeDataGroupId: String,
+		recipients: String,
 		startDocumentId: String?,
-		limit: Int?,
 	): HttpResponse<PaginatedList<ExchangeData>> =
 		get(authProvider) {
 			url {
 				takeFrom(apiUrl)
-				appendPathSegments("rest", "v2", "exchangedata", "byParticipant")
+				appendPathSegments("rest", "v2", "exchangedata", "group", exchangeDataGroupId, "byRecipients")
+				parameter("recipients", recipients)
+				parameter("startDocumentId", startDocumentId)
+				parameter("ts", GMTDate().timestamp)
+			}
+			accept(Application.Json)
+		}.wrap()
+
+	override suspend fun getExchangeDataByParticipantForRecipients(
+		dataOwnerId: String,
+		recipients: String,
+		startDocumentId: String?,
+	): HttpResponse<PaginatedList<ExchangeData>> =
+		get(authProvider) {
+			url {
+				takeFrom(apiUrl)
+				appendPathSegments("rest", "v2", "exchangedata", "byParticipant", "byRecipients")
 				parameter("dataOwnerId", dataOwnerId)
+				parameter("recipients", recipients)
 				parameter("startDocumentId", startDocumentId)
-				parameter("limit", limit)
 				parameter("ts", GMTDate().timestamp)
 			}
 			accept(Application.Json)
 		}.wrap()
 
-	override suspend fun getExchangeDataByDelegatorDelegate(
+	override suspend fun getExchangeDataByDelegatorDelegateForRecipients(
 		delegatorId: String,
 		delegateId: String,
-	): HttpResponse<List<ExchangeData>> =
+		recipients: String,
+		startDocumentId: String?,
+	): HttpResponse<PaginatedList<ExchangeData>> =
 		get(authProvider) {
 			url {
 				takeFrom(apiUrl)
-				appendPathSegments("rest", "v2", "exchangedata", "byDelegatorDelegate", delegatorId, delegateId)
-				parameter("ts", GMTDate().timestamp)
-			}
-			accept(Application.Json)
-		}.wrap()
-
-	override suspend fun getExchangeDataByDelegatorDelegateQuery(
-		delegatorId: String,
-		delegateId: String,
-	): HttpResponse<List<ExchangeData>> =
-		get(authProvider) {
-			url {
-				takeFrom(apiUrl)
-				appendPathSegments("rest", "v2", "exchangedata", "byDelegatorDelegate")
+				appendPathSegments("rest", "v2", "exchangedata", "byDelegatorDelegate", "byRecipients")
 				parameter("delegatorId", delegatorId)
 				parameter("delegateId", delegateId)
+				parameter("recipients", recipients)
+				parameter("startDocumentId", startDocumentId)
 				parameter("ts", GMTDate().timestamp)
 			}
 			accept(Application.Json)
 		}.wrap()
 
-	override suspend fun getParticipantCounterparts(
+	override suspend fun findNonGroupPieceCounterparts(
 		dataOwnerId: String,
 		counterpartsTypes: String,
 		ignoreOnEntryForFingerprint: String?,
-	): HttpResponse<List<String>> =
+		startKey: String?,
+		limit: Int?,
+	): HttpResponse<PaginatedList<String>> =
 		get(authProvider) {
 			url {
 				takeFrom(apiUrl)
-				appendPathSegments("rest", "v2", "exchangedata", "byParticipant", dataOwnerId, "counterparts")
-				parameter("counterpartsTypes", counterpartsTypes)
-				parameter("ignoreOnEntryForFingerprint", ignoreOnEntryForFingerprint)
-				parameter("ts", GMTDate().timestamp)
-			}
-			accept(Application.Json)
-		}.wrap()
-
-	override suspend fun getParticipantCounterpartsQuery(
-		dataOwnerId: String,
-		counterpartsTypes: String,
-		ignoreOnEntryForFingerprint: String?,
-	): HttpResponse<List<String>> =
-		get(authProvider) {
-			url {
-				takeFrom(apiUrl)
-				appendPathSegments("rest", "v2", "exchangedata", "byParticipant", "counterparts")
+				appendPathSegments("rest", "v2", "exchangedata", "byParticipant", "nonGroupPieceCounterparts")
 				parameter("dataOwnerId", dataOwnerId)
 				parameter("counterpartsTypes", counterpartsTypes)
 				parameter("ignoreOnEntryForFingerprint", ignoreOnEntryForFingerprint)
+				parameter("startKey", startKey)
+				parameter("limit", limit)
+				parameter("ts", GMTDate().timestamp)
+			}
+			accept(Application.Json)
+		}.wrap()
+
+	override suspend fun findMainExchangeDataIdsByParticipant(
+		participantId: String,
+		startDocumentId: String?,
+		limit: Int?,
+	): HttpResponse<PaginatedList<String>> =
+		get(authProvider) {
+			url {
+				takeFrom(apiUrl)
+				appendPathSegments("rest", "v2", "exchangedata", "mainIds", "byParticipant")
+				parameter("participantId", participantId)
+				parameter("startDocumentId", startDocumentId)
+				parameter("limit", limit)
 				parameter("ts", GMTDate().timestamp)
 			}
 			accept(Application.Json)
@@ -213,6 +272,20 @@ class RawExchangeDataApiImpl(
 			setBody(exchangeData)
 		}.wrap()
 
+	override suspend fun modifyExchangeDataInBulk(
+		exchangeDatas: List<ExchangeData>,
+		groupId: String,
+	): HttpResponse<List<ExchangeData>> =
+		put(authProvider) {
+			url {
+				takeFrom(apiUrl)
+				appendPathSegments("rest", "v2", "exchangedata", "bulk", "inGroup", groupId)
+			}
+			contentType(Application.Json)
+			accept(Application.Json)
+			setBody(exchangeDatas)
+		}.wrap()
+
 	override suspend fun getExchangeDataById(
 		exchangeDataId: String,
 		groupId: String,
@@ -240,8 +313,42 @@ class RawExchangeDataApiImpl(
 			setBody(exchangeDataIds)
 		}.wrap()
 
-	override suspend fun getExchangeDataByParticipant(
-		dataOwnerId: String,
+	override suspend fun createExchangeDataGroupPieces(
+		exchangeDataGroupId: String,
+		delegator: String,
+		`delegate`: String,
+		piecesByRecipient: Map<String, ExchangeDataPieceCreationRequest>,
+		groupId: String,
+	): HttpResponse<List<ExchangeData>> =
+		post(authProvider) {
+			url {
+				takeFrom(apiUrl)
+				appendPathSegments("rest", "v2", "exchangedata", "group", exchangeDataGroupId, "pieces", "inGroup", groupId)
+				parameter("delegator", delegator)
+				parameter("delegate", delegate)
+			}
+			contentType(Application.Json)
+			accept(Application.Json)
+			setBody(piecesByRecipient)
+		}.wrap()
+
+	override suspend fun bulkCreateExchangeDataGroupPieces(
+		requests: List<BulkExchangeDataPieceCreationRequest>,
+		groupId: String,
+	): HttpResponse<List<ExchangeData>> =
+		post(authProvider) {
+			url {
+				takeFrom(apiUrl)
+				appendPathSegments("rest", "v2", "exchangedata", "group", "pieces", "bulk", "inGroup", groupId)
+			}
+			contentType(Application.Json)
+			accept(Application.Json)
+			setBody(requests)
+		}.wrap()
+
+	override suspend fun getExchangeDataGroupById(
+		exchangeDataGroupId: String,
+		startKey: String?,
 		startDocumentId: String?,
 		limit: Int?,
 		groupId: String,
@@ -249,8 +356,8 @@ class RawExchangeDataApiImpl(
 		get(authProvider) {
 			url {
 				takeFrom(apiUrl)
-				appendPathSegments("rest", "v2", "exchangedata", "byParticipant", "inGroup", groupId)
-				parameter("dataOwnerId", dataOwnerId)
+				appendPathSegments("rest", "v2", "exchangedata", "group", exchangeDataGroupId, "inGroup", groupId)
+				parameter("startKey", startKey)
 				parameter("startDocumentId", startDocumentId)
 				parameter("limit", limit)
 				parameter("ts", GMTDate().timestamp)
@@ -258,17 +365,56 @@ class RawExchangeDataApiImpl(
 			accept(Application.Json)
 		}.wrap()
 
-	override suspend fun getExchangeDataByDelegatorDelegate(
-		delegatorId: String,
-		delegateId: String,
+	override suspend fun getExchangeDataGroupByIdForRecipients(
+		exchangeDataGroupId: String,
+		recipients: String,
+		startDocumentId: String?,
 		groupId: String,
-	): HttpResponse<List<ExchangeData>> =
+	): HttpResponse<PaginatedList<ExchangeData>> =
 		get(authProvider) {
 			url {
 				takeFrom(apiUrl)
-				appendPathSegments("rest", "v2", "exchangedata", "byDelegatorDelegate", "inGroup", groupId)
+				appendPathSegments("rest", "v2", "exchangedata", "group", exchangeDataGroupId, "byRecipients", "inGroup", groupId)
+				parameter("recipients", recipients)
+				parameter("startDocumentId", startDocumentId)
+				parameter("ts", GMTDate().timestamp)
+			}
+			accept(Application.Json)
+		}.wrap()
+
+	override suspend fun getExchangeDataByParticipantForRecipients(
+		dataOwnerId: String,
+		recipients: String,
+		startDocumentId: String?,
+		groupId: String,
+	): HttpResponse<PaginatedList<ExchangeData>> =
+		get(authProvider) {
+			url {
+				takeFrom(apiUrl)
+				appendPathSegments("rest", "v2", "exchangedata", "byParticipant", "byRecipients", "inGroup", groupId)
+				parameter("dataOwnerId", dataOwnerId)
+				parameter("recipients", recipients)
+				parameter("startDocumentId", startDocumentId)
+				parameter("ts", GMTDate().timestamp)
+			}
+			accept(Application.Json)
+		}.wrap()
+
+	override suspend fun getExchangeDataByDelegatorDelegateForRecipients(
+		delegatorId: String,
+		delegateId: String,
+		recipients: String,
+		startDocumentId: String?,
+		groupId: String,
+	): HttpResponse<PaginatedList<ExchangeData>> =
+		get(authProvider) {
+			url {
+				takeFrom(apiUrl)
+				appendPathSegments("rest", "v2", "exchangedata", "byDelegatorDelegate", "byRecipients", "inGroup", groupId)
 				parameter("delegatorId", delegatorId)
 				parameter("delegateId", delegateId)
+				parameter("recipients", recipients)
+				parameter("startDocumentId", startDocumentId)
 				parameter("ts", GMTDate().timestamp)
 			}
 			accept(Application.Json)

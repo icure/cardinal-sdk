@@ -1,5 +1,6 @@
 package com.icure.cardinal.sdk.api
 
+import com.icure.cardinal.sdk.crypto.entities.BulkShareByIdsResult
 import com.icure.cardinal.sdk.crypto.entities.ClassificationShareOptions
 import com.icure.cardinal.sdk.crypto.entities.SecretIdUseOption
 import com.icure.cardinal.sdk.filters.BaseFilterOptions
@@ -176,8 +177,8 @@ interface ClassificationApi : ClassificationBasicFlavourlessApi, ClassificationF
 		user: User? = null,
 		@DefaultValue("emptyMap()")
 		delegates: Map<String, AccessLevel> = emptyMap(),
-		@DefaultValue("com.icure.cardinal.sdk.crypto.entities.SecretIdUseOption.UseAnySharedWithParent")
-		secretId: SecretIdUseOption = SecretIdUseOption.UseAnySharedWithParent,
+		@DefaultValue("com.icure.cardinal.sdk.crypto.entities.SecretIdUseOption.UseAnySharedWithHierarchy")
+		secretId: SecretIdUseOption = SecretIdUseOption.UseAnySharedWithHierarchy,
 		@DefaultValue("null")
 		alternateRootDelegateId: String? = null,
 	): DecryptedClassification
@@ -294,6 +295,30 @@ interface ClassificationApi : ClassificationBasicFlavourlessApi, ClassificationF
 	 * @return a list of classification ids
 	 */
 	suspend fun matchClassificationsBySorted(filter: SortableFilterOptions<Classification>): List<String>
+
+	/**
+	 * Share many already-existing classifications with one or more delegates at once, retrieving them by id instead
+	 * of requiring the caller to have them already loaded. This is more efficient than calling [shareWithMany] once
+	 * per classification when you already know the ids of many classifications to share and don't otherwise need
+	 * their decrypted content, since only lightweight metadata (not the full content of each classification) is
+	 * ever retrieved, and no content flows back from the share request itself.
+	 *
+	 * The same [delegates] options are applied identically to every found classification. Unlike [shareWithMany], if
+	 * the share fails for some (classification, delegate) pairs this method reports the failure for those specific
+	 * pairs in the returned result instead of throwing, so sharing proceeds normally for every other classification
+	 * and delegate in the batch.
+	 *
+	 * @param classificationIds ids of the classifications to share. Ids that don't exist, or exist but for which the
+	 * current user has no read access, are reported in [BulkShareByIdsResult.notFoundIds] and otherwise ignored.
+	 * @param delegates the data owners which will gain access to each classification, and the options for sharing
+	 * with each of them (see [ClassificationShareOptions]). The exact same options are applied to every
+	 * classification in [classificationIds].
+	 * @return details on the outcome of the operation, for each requested id.
+	 */
+	suspend fun shareClassificationsByIds(
+		classificationIds: List<String>,
+		delegates: Map<String, ClassificationShareOptions>
+	): BulkShareByIdsResult
 }
 
 interface ClassificationBasicApi : ClassificationBasicFlavourlessApi, ClassificationBasicFlavouredApi<EncryptedClassification> {

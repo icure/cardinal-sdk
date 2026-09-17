@@ -21,9 +21,15 @@ public fun <T, T_JS> paginatedList_toJs(obj: PaginatedList<T>, convertT: (T) -> 
 			paginatedDocumentKeyIdPair_toJs(nonNull1)
 		}
 	)
+	val error = nullToUndefined(
+		obj.error?.let { nonNull1 ->
+			paginationError_toJs(nonNull1)
+		}
+	)
 	return PaginatedListJs<T_JS>(js("{" +
 		"rows:rows," +
-		"nextKeyPair:nextKeyPair" +
+		"nextKeyPair:nextKeyPair," +
+		"error:error" +
 	"}"))
 }
 
@@ -39,8 +45,12 @@ public fun <T, T_KT> paginatedList_fromJs(obj: PaginatedListJs<T>, convertT: (T)
 	val nextKeyPair = obj.nextKeyPair?.let { nonNull1 ->
 		paginatedDocumentKeyIdPair_fromJs(nonNull1)
 	}
+	val error = obj.error?.let { nonNull1 ->
+		paginationError_fromJs(nonNull1)
+	}
 	return PaginatedList<T_KT>(
 		rows = rows,
 		nextKeyPair = nextKeyPair,
+		error = error,
 	)
 }

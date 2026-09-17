@@ -13,9 +13,11 @@ import com.icure.cardinal.sdk.js.api.CalendarItemFlavouredInGroupApiJs
 import com.icure.cardinal.sdk.js.api.CalendarItemInGroupApiJs
 import com.icure.cardinal.sdk.js.api.DefaultParametersSupport.convertingOptionOrDefaultNonNull
 import com.icure.cardinal.sdk.js.api.DefaultParametersSupport.convertingOptionOrDefaultNullable
+import com.icure.cardinal.sdk.js.crypto.entities.BulkShareByIdsResultJs
 import com.icure.cardinal.sdk.js.crypto.entities.CalendarItemDelegateOptionsJs
 import com.icure.cardinal.sdk.js.crypto.entities.CalendarItemShareOptionsJs
 import com.icure.cardinal.sdk.js.crypto.entities.SecretIdUseOptionJs
+import com.icure.cardinal.sdk.js.crypto.entities.bulkShareByIdsResult_toJs
 import com.icure.cardinal.sdk.js.crypto.entities.calendarItemDelegateOptions_fromJs
 import com.icure.cardinal.sdk.js.crypto.entities.calendarItemShareOptions_fromJs
 import com.icure.cardinal.sdk.js.crypto.entities.secretIdUseOption_fromJs
@@ -150,11 +152,12 @@ internal class CalendarItemApiImplJs(
 		}
 
 		override fun linkToPatient(
-			calendarItem: CalendarItemJs,
+			calendarItem: EncryptedCalendarItemJs,
 			patient: PatientJs,
 			shareLinkWithDelegates: Array<String>,
+			secretIdUseOption: SecretIdUseOptionJs,
 		): Promise<EncryptedCalendarItemJs> = GlobalScope.promise {
-			val calendarItemConverted: CalendarItem = calendarItem_fromJs(calendarItem)
+			val calendarItemConverted: EncryptedCalendarItem = calendarItem_fromJs(calendarItem)
 			val patientConverted: Patient = patient_fromJs(patient)
 			val shareLinkWithDelegatesConverted: Set<String> = arrayToSet(
 				shareLinkWithDelegates,
@@ -163,10 +166,12 @@ internal class CalendarItemApiImplJs(
 					x1
 				},
 			)
+			val secretIdUseOptionConverted: SecretIdUseOption = secretIdUseOption_fromJs(secretIdUseOption)
 			val result = calendarItemApi.encrypted.linkToPatient(
 				calendarItemConverted,
 				patientConverted,
 				shareLinkWithDelegatesConverted,
+				secretIdUseOptionConverted,
 			)
 			calendarItem_toJs(result)
 		}
@@ -414,6 +419,7 @@ internal class CalendarItemApiImplJs(
 			calendarItem: CalendarItemJs,
 			patient: PatientJs,
 			shareLinkWithDelegates: Array<String>,
+			secretIdUseOption: SecretIdUseOptionJs,
 		): Promise<CalendarItemJs> = GlobalScope.promise {
 			val calendarItemConverted: CalendarItem = calendarItem_fromJs(calendarItem)
 			val patientConverted: Patient = patient_fromJs(patient)
@@ -424,10 +430,12 @@ internal class CalendarItemApiImplJs(
 					x1
 				},
 			)
+			val secretIdUseOptionConverted: SecretIdUseOption = secretIdUseOption_fromJs(secretIdUseOption)
 			val result = calendarItemApi.tryAndRecover.linkToPatient(
 				calendarItemConverted,
 				patientConverted,
 				shareLinkWithDelegatesConverted,
+				secretIdUseOptionConverted,
 			)
 			calendarItem_toJs(result)
 		}
@@ -1363,7 +1371,7 @@ internal class CalendarItemApiImplJs(
 				val secretIdConverted: SecretIdUseOption = convertingOptionOrDefaultNonNull(
 					_options,
 					"secretId",
-					com.icure.cardinal.sdk.crypto.entities.SecretIdUseOption.UseAnySharedWithParent
+					com.icure.cardinal.sdk.crypto.entities.SecretIdUseOption.UseAnySharedWithHierarchy
 				) { secretId: SecretIdUseOptionJs ->
 					secretIdUseOption_fromJs(secretId)
 				}
@@ -1425,7 +1433,7 @@ internal class CalendarItemApiImplJs(
 				val secretIdConverted: SecretIdUseOption = convertingOptionOrDefaultNonNull(
 					_options,
 					"secretId",
-					com.icure.cardinal.sdk.crypto.entities.SecretIdUseOption.UseAnySharedWithParent
+					com.icure.cardinal.sdk.crypto.entities.SecretIdUseOption.UseAnySharedWithHierarchy
 				) { secretId: SecretIdUseOptionJs ->
 					secretIdUseOption_fromJs(secretId)
 				}
@@ -2307,7 +2315,7 @@ internal class CalendarItemApiImplJs(
 			val secretIdConverted: SecretIdUseOption = convertingOptionOrDefaultNonNull(
 				_options,
 				"secretId",
-				com.icure.cardinal.sdk.crypto.entities.SecretIdUseOption.UseAnySharedWithParent
+				com.icure.cardinal.sdk.crypto.entities.SecretIdUseOption.UseAnySharedWithHierarchy
 			) { secretId: SecretIdUseOptionJs ->
 				secretIdUseOption_fromJs(secretId)
 			}
@@ -2366,7 +2374,7 @@ internal class CalendarItemApiImplJs(
 			val secretIdConverted: SecretIdUseOption = convertingOptionOrDefaultNonNull(
 				_options,
 				"secretId",
-				com.icure.cardinal.sdk.crypto.entities.SecretIdUseOption.UseAnySharedWithParent
+				com.icure.cardinal.sdk.crypto.entities.SecretIdUseOption.UseAnySharedWithHierarchy
 			) { secretId: SecretIdUseOptionJs ->
 				secretIdUseOption_fromJs(secretId)
 			}
@@ -2599,6 +2607,33 @@ internal class CalendarItemApiImplJs(
 		)
 	}
 
+	override fun shareCalendarItemsByIds(calendarItemIds: Array<String>,
+			delegates: Record<String, CalendarItemShareOptionsJs>): Promise<BulkShareByIdsResultJs> =
+			GlobalScope.promise {
+		val calendarItemIdsConverted: List<String> = arrayToList(
+			calendarItemIds,
+			"calendarItemIds",
+			{ x1: String ->
+				x1
+			},
+		)
+		val delegatesConverted: Map<String, CalendarItemShareOptions> = objectToMap(
+			delegates,
+			"delegates",
+			{ x1: String ->
+				x1
+			},
+			{ x1: CalendarItemShareOptionsJs ->
+				calendarItemShareOptions_fromJs(x1)
+			},
+		)
+		val result = calendarItemApi.shareCalendarItemsByIds(
+			calendarItemIdsConverted,
+			delegatesConverted,
+		)
+		bulkShareByIdsResult_toJs(result)
+	}
+
 	override fun deleteCalendarItemById(entityId: String, rev: String):
 			Promise<StoredDocumentIdentifierJs> = GlobalScope.promise {
 		val entityIdConverted: String = entityId
@@ -2766,11 +2801,12 @@ internal class CalendarItemApiImplJs(
 	}
 
 	override fun linkToPatient(
-		calendarItem: CalendarItemJs,
+		calendarItem: DecryptedCalendarItemJs,
 		patient: PatientJs,
 		shareLinkWithDelegates: Array<String>,
+		secretIdUseOption: SecretIdUseOptionJs,
 	): Promise<DecryptedCalendarItemJs> = GlobalScope.promise {
-		val calendarItemConverted: CalendarItem = calendarItem_fromJs(calendarItem)
+		val calendarItemConverted: DecryptedCalendarItem = calendarItem_fromJs(calendarItem)
 		val patientConverted: Patient = patient_fromJs(patient)
 		val shareLinkWithDelegatesConverted: Set<String> = arrayToSet(
 			shareLinkWithDelegates,
@@ -2779,10 +2815,12 @@ internal class CalendarItemApiImplJs(
 				x1
 			},
 		)
+		val secretIdUseOptionConverted: SecretIdUseOption = secretIdUseOption_fromJs(secretIdUseOption)
 		val result = calendarItemApi.linkToPatient(
 			calendarItemConverted,
 			patientConverted,
 			shareLinkWithDelegatesConverted,
+			secretIdUseOptionConverted,
 		)
 		calendarItem_toJs(result)
 	}

@@ -153,6 +153,20 @@ export interface HealthcarePartyApi {
 
 	/**
 	 *
+	 *  Equivalent to [DataOwnerApi.addDataOwnersToGroup] but for healthcareParties.
+	 */
+	addHealthcarePartiesToGroup(healthcarePartyGroup: HealthcareParty,
+			healthcarePartiesToAdd: Array<HealthcareParty>): Promise<Array<string>>;
+
+	/**
+	 *
+	 *  Equivalent to [DataOwnerApi.removeDataOwnersFromGroup] but for healthcareParties.
+	 */
+	removeDataOwnersFromGroup(healthcarePartyGroup: HealthcareParty,
+			healthcarePartiesToRemove: Array<HealthcareParty>): Promise<Array<string>>;
+
+	/**
+	 *
 	 *  Subscribe to receive real-time notifications when an entity is updated.
 	 *  @param events the type of events that will be notified to the subscription
 	 *  @param filter the subscription will receive notifications only for entities matching this filter, you should

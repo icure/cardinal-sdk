@@ -18,6 +18,7 @@ import com.icure.cardinal.sdk.js.model.CheckedConverters.arrayToList
 import com.icure.cardinal.sdk.js.model.CheckedConverters.arrayToSet
 import com.icure.cardinal.sdk.js.model.CheckedConverters.listToArray
 import com.icure.cardinal.sdk.js.model.CheckedConverters.nullToUndefined
+import com.icure.cardinal.sdk.js.model.CheckedConverters.setToArray
 import com.icure.cardinal.sdk.js.model.CheckedConverters.undefinedToNull
 import com.icure.cardinal.sdk.js.model.DataOwnerRegistrationSuccessJs
 import com.icure.cardinal.sdk.js.model.GroupScopedJs
@@ -954,6 +955,51 @@ internal class HealthcarePartyApiImplJs(
 			result,
 			{ x1: HealthcareParty ->
 				healthcareParty_toJs(x1)
+			},
+		)
+	}
+
+	override fun addHealthcarePartiesToGroup(healthcarePartyGroup: HealthcarePartyJs,
+			healthcarePartiesToAdd: Array<HealthcarePartyJs>): Promise<Array<String>> = GlobalScope.promise {
+		val healthcarePartyGroupConverted: HealthcareParty = healthcareParty_fromJs(healthcarePartyGroup)
+		val healthcarePartiesToAddConverted: List<HealthcareParty> = arrayToList(
+			healthcarePartiesToAdd,
+			"healthcarePartiesToAdd",
+			{ x1: HealthcarePartyJs ->
+				healthcareParty_fromJs(x1)
+			},
+		)
+		val result = healthcarePartyApi.addHealthcarePartiesToGroup(
+			healthcarePartyGroupConverted,
+			healthcarePartiesToAddConverted,
+		)
+		setToArray(
+			result,
+			{ x1: String ->
+				x1
+			},
+		)
+	}
+
+	override fun removeDataOwnersFromGroup(healthcarePartyGroup: HealthcarePartyJs,
+			healthcarePartiesToRemove: Array<HealthcarePartyJs>): Promise<Array<String>> =
+			GlobalScope.promise {
+		val healthcarePartyGroupConverted: HealthcareParty = healthcareParty_fromJs(healthcarePartyGroup)
+		val healthcarePartiesToRemoveConverted: List<HealthcareParty> = arrayToList(
+			healthcarePartiesToRemove,
+			"healthcarePartiesToRemove",
+			{ x1: HealthcarePartyJs ->
+				healthcareParty_fromJs(x1)
+			},
+		)
+		val result = healthcarePartyApi.removeDataOwnersFromGroup(
+			healthcarePartyGroupConverted,
+			healthcarePartiesToRemoveConverted,
+		)
+		setToArray(
+			result,
+			{ x1: String ->
+				x1
 			},
 		)
 	}

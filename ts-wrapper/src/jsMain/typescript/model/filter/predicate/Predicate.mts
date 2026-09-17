@@ -12,7 +12,7 @@ import {OrPredicate} from './OrPredicate.mjs';
  *  chain.
  *  /
  */
-export type Predicate = NotPredicate | AndPredicate | OrPredicate | KeyValuePredicate | AlwaysPredicate;
+export type Predicate = NotPredicate | AndPredicate | AlwaysPredicate | OrPredicate | KeyValuePredicate;
 
 export namespace Predicate {
 
@@ -21,9 +21,9 @@ export namespace Predicate {
 		switch ((json as Predicate).$ktClass) {
 			case 'com.icure.cardinal.sdk.model.filter.predicate.NotPredicate': return NotPredicate.fromJSON(json, ignoreUnknownKeys)
 			case 'com.icure.cardinal.sdk.model.filter.predicate.AndPredicate': return AndPredicate.fromJSON(json, ignoreUnknownKeys)
+			case 'com.icure.cardinal.sdk.model.filter.predicate.AlwaysPredicate': return AlwaysPredicate.fromJSON(json, ignoreUnknownKeys)
 			case 'com.icure.cardinal.sdk.model.filter.predicate.OrPredicate': return OrPredicate.fromJSON(json, ignoreUnknownKeys)
 			case 'com.icure.cardinal.sdk.model.filter.predicate.KeyValuePredicate': return KeyValuePredicate.fromJSON(json, ignoreUnknownKeys)
-			case 'com.icure.cardinal.sdk.model.filter.predicate.AlwaysPredicate': return AlwaysPredicate.fromJSON(json, ignoreUnknownKeys)
 			default: throw new Error('Unexpected discriminator for Predicate: ' + json.$ktClass)
 		}
 	}

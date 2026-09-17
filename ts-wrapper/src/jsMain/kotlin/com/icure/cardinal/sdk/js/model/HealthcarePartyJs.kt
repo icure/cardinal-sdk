@@ -5,6 +5,7 @@ package com.icure.cardinal.sdk.js.model
 
 import com.icure.cardinal.sdk.js.model.base.CodeStubJs
 import com.icure.cardinal.sdk.js.model.base.CryptoActorJs
+import com.icure.cardinal.sdk.js.model.base.DataOwnerGroupLinkJs
 import com.icure.cardinal.sdk.js.model.base.DataOwnerJs
 import com.icure.cardinal.sdk.js.model.base.HasCodesJs
 import com.icure.cardinal.sdk.js.model.base.HasIdentifierJs
@@ -71,7 +72,9 @@ public external class HealthcarePartyJs(
 
 	public val invoiceHeader: String?
 
-	override val parentId: String?
+	override val dataOwnerGroups: Array<DataOwnerGroupLinkJs>
+
+	override val groupLinkType: String?
 
 	public val ssin: String?
 

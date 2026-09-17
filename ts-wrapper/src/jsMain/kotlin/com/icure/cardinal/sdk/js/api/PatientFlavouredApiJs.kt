@@ -7,6 +7,7 @@ import com.icure.cardinal.sdk.js.crypto.entities.PatientShareOptionsJs
 import com.icure.cardinal.sdk.js.filters.FilterOptionsJs
 import com.icure.cardinal.sdk.js.filters.SortableFilterOptionsJs
 import com.icure.cardinal.sdk.js.model.PatientJs
+import com.icure.cardinal.sdk.js.model.SecretIdCreationResultJs
 import com.icure.cardinal.sdk.js.model.StoredDocumentIdentifierJs
 import com.icure.cardinal.sdk.js.utils.Record
 import com.icure.cardinal.sdk.js.utils.pagination.PaginatedListIteratorJs
@@ -27,7 +28,7 @@ public external interface PatientFlavouredApiJs<E : PatientJs> {
 
 	public fun shareWithMany(patient: E, delegates: Record<String, PatientShareOptionsJs>): Promise<E>
 
-	public fun initializeConfidentialSecretId(patient: E): Promise<E>
+	public fun createNewSecretId(patient: E): Promise<SecretIdCreationResultJs<E>>
 
 	public fun filterPatientsBy(filter: FilterOptionsJs<PatientJs>):
 			Promise<PaginatedListIteratorJs<E>>

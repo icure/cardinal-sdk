@@ -8,23 +8,13 @@ import kotlin.String
 import kotlin.js.JsName
 import kotlin.js.JsQualifier
 
-@JsName("UseAnyConfidential")
-public external object SecretIdUseOptionJs_UseAnyConfidentialJs : SecretIdUseOptionJs {
+@JsName("UseAnySharedWithHierarchy")
+public external object SecretIdUseOptionJs_UseAnySharedWithHierarchyJs : SecretIdUseOptionJs {
 	override val ktClass: String
 }
 
-@JsName("UseAllConfidential")
-public external object SecretIdUseOptionJs_UseAllConfidentialJs : SecretIdUseOptionJs {
-	override val ktClass: String
-}
-
-@JsName("UseAnySharedWithParent")
-public external object SecretIdUseOptionJs_UseAnySharedWithParentJs : SecretIdUseOptionJs {
-	override val ktClass: String
-}
-
-@JsName("UseAllSharedWithParent")
-public external object SecretIdUseOptionJs_UseAllSharedWithParentJs : SecretIdUseOptionJs {
+@JsName("UseAllSharedWithHierarchy")
+public external object SecretIdUseOptionJs_UseAllSharedWithHierarchyJs : SecretIdUseOptionJs {
 	override val ktClass: String
 }
 

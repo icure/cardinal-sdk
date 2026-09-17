@@ -7,14 +7,13 @@ import kotlin.String
 
 /**
  *
- *  A link from a crypto actor to a data owner that represents a group it belongs to.
+ *  A link from a crypto actor to a data owner that represents a group it belongs to. The type of
+ * the link is not
+ *  declared here: it is intrinsic to the linked data owner itself, see
+ * [CryptoActorDto.groupLinkType].
  */
 @Serializable
 data class DataOwnerGroupLink(
-	/**
-	 * The nature of the link. Membership propagates transitively through all link types.
-	 */
-	public val linkType: DataOwnerGroupLinkType,
 	/**
 	 * The id of the data owner representing the group.
 	 */

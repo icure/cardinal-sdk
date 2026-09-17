@@ -215,7 +215,7 @@ class CardinalKeyRecoveryImpl(
 	private suspend fun getExchangeKeys(
 		from: String,
 		to: String,
-		availableDecryptionKeys: RsaDecryptionKeysSet
+		availableDecryptionKeys: RsaDecryptionKeysSet,
 	): List<AesKey<AesAlgorithm.CbcWithPkcs7Padding>> {
 		val aesExchangeKeys = baseExchangeKeysManager.tryDecryptExchangeKeys(
 			baseExchangeKeysManager.getEncryptedExchangeKeysFor(delegatorId = from, delegateId = to),
@@ -224,7 +224,8 @@ class CardinalKeyRecoveryImpl(
 		val encryptedExchangeData = baseExchangeDataManager.getExchangeDataByDelegatorDelegatePair(
 			null,
 			EntityReferenceInGroup(from, null),
-			EntityReferenceInGroup(to, null)
+			EntityReferenceInGroup(to, null),
+			emptySet()
 		)
 		val exchangeData =  baseExchangeDataManager.tryDecryptExchangeKeys(
 			encryptedExchangeData,

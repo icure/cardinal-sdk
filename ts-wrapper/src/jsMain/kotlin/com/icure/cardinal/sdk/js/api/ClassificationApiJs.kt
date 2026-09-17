@@ -3,6 +3,7 @@
 
 package com.icure.cardinal.sdk.js.api
 
+import com.icure.cardinal.sdk.js.crypto.entities.BulkShareByIdsResultJs
 import com.icure.cardinal.sdk.js.crypto.entities.ClassificationShareOptionsJs
 import com.icure.cardinal.sdk.js.filters.FilterOptionsJs
 import com.icure.cardinal.sdk.js.filters.SortableFilterOptionsJs
@@ -51,6 +52,9 @@ public external interface ClassificationApiJs {
 
 	public fun matchClassificationsBySorted(filter: SortableFilterOptionsJs<ClassificationJs>):
 			Promise<Array<String>>
+
+	public fun shareClassificationsByIds(classificationIds: Array<String>,
+			delegates: Record<String, ClassificationShareOptionsJs>): Promise<BulkShareByIdsResultJs>
 
 	public fun deleteClassification(entityId: String): Promise<DocIdentifierJs>
 

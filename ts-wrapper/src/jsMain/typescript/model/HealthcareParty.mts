@@ -5,6 +5,8 @@ import {DecryptedPropertyStub} from './PropertyStub.mjs';
 import {CodeStub} from './base/CodeStub.mjs';
 import {CryptoActor} from './base/CryptoActor.mjs';
 import {DataOwner} from './base/DataOwner.mjs';
+import {DataOwnerGroupLink} from './base/DataOwnerGroupLink.mjs';
+import {DataOwnerGroupLinkType} from './base/DataOwnerGroupLinkType.mjs';
 import {HasCodes} from './base/HasCodes.mjs';
 import {HasIdentifier} from './base/HasIdentifier.mjs';
 import {HasTags} from './base/HasTags.mjs';
@@ -164,9 +166,11 @@ export class HealthcareParty implements StoredDocument, Named, Person, CryptoAct
 
 	/**
 	 *
-	 *  The id of the parent healthcare party.
+	 *  The links to the data owners representing the groups this healthcare party belongs to.
 	 */
-	parentId: string | undefined = undefined;
+	dataOwnerGroups: Array<DataOwnerGroupLink> = [];
+
+	groupLinkType: DataOwnerGroupLinkType | undefined = undefined;
 
 	/**
 	 *
@@ -294,7 +298,8 @@ export class HealthcareParty implements StoredDocument, Named, Person, CryptoAct
 		if ('proxyBankAccount' in partial) this.proxyBankAccount = partial.proxyBankAccount;
 		if ('proxyBic' in partial) this.proxyBic = partial.proxyBic;
 		if ('invoiceHeader' in partial) this.invoiceHeader = partial.invoiceHeader;
-		if ('parentId' in partial) this.parentId = partial.parentId;
+		if ('dataOwnerGroups' in partial && partial.dataOwnerGroups !== undefined) this.dataOwnerGroups = partial.dataOwnerGroups;
+		if ('groupLinkType' in partial) this.groupLinkType = partial.groupLinkType;
 		if ('ssin' in partial) this.ssin = partial.ssin;
 		if ('addresses' in partial && partial.addresses !== undefined) this.addresses = partial.addresses;
 		if ('languages' in partial && partial.languages !== undefined) this.languages = partial.languages;
@@ -337,7 +342,8 @@ export class HealthcareParty implements StoredDocument, Named, Person, CryptoAct
 		if (this.proxyBankAccount != undefined) res['proxyBankAccount'] = this.proxyBankAccount
 		if (this.proxyBic != undefined) res['proxyBic'] = this.proxyBic
 		if (this.invoiceHeader != undefined) res['invoiceHeader'] = this.invoiceHeader
-		if (this.parentId != undefined) res['parentId'] = this.parentId
+		res['dataOwnerGroups'] = this.dataOwnerGroups.map((x0) => x0.toJSON() )
+		if (this.groupLinkType != undefined) res['groupLinkType'] = this.groupLinkType
 		if (this.ssin != undefined) res['ssin'] = this.ssin
 		res['addresses'] = this.addresses.map((x0) => x0.toJSON() )
 		res['languages'] = this.languages.map((x0) => x0 )
@@ -386,7 +392,8 @@ export class HealthcareParty implements StoredDocument, Named, Person, CryptoAct
 			proxyBankAccount: expectString(extractEntry(jCpy, 'proxyBankAccount', false, path), true, [...path, ".proxyBankAccount"]),
 			proxyBic: expectString(extractEntry(jCpy, 'proxyBic', false, path), true, [...path, ".proxyBic"]),
 			invoiceHeader: expectString(extractEntry(jCpy, 'invoiceHeader', false, path), true, [...path, ".invoiceHeader"]),
-			parentId: expectString(extractEntry(jCpy, 'parentId', false, path), true, [...path, ".parentId"]),
+			dataOwnerGroups: expectArray(extractEntry(jCpy, 'dataOwnerGroups', false, path), false, [...path, ".dataOwnerGroups"], (x0, p0) => expectObject(x0, false, ignoreUnknownKeys, p0, DataOwnerGroupLink.fromJSON)),
+			groupLinkType: expectStringEnum(extractEntry(jCpy, 'groupLinkType', false, path), true, [...path, ".groupLinkType"], DataOwnerGroupLinkType, 'DataOwnerGroupLinkType'),
 			ssin: expectString(extractEntry(jCpy, 'ssin', false, path), true, [...path, ".ssin"]),
 			addresses: expectArray(extractEntry(jCpy, 'addresses', false, path), false, [...path, ".addresses"], (x0, p0) => expectObject(x0, false, ignoreUnknownKeys, p0, DecryptedAddress.fromJSON)),
 			languages: expectArray(extractEntry(jCpy, 'languages', false, path), false, [...path, ".languages"], (x0, p0) => expectString(x0, false, p0)),
