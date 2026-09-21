@@ -22,8 +22,7 @@ import {SpkiHexString} from './specializations/SpkiHexString.mjs';
 
 /**
  *
- *  Represents a device that sends medical data. This is a root-level entity stored in the
- *  icure-device CouchDB database.
+ *  Represents a device that sends medical data. This is a root-level entity stored in the icure-device CouchDB database.
  *  A device can act as a data owner and crypto actor for secure data exchange.
  *  /
  */

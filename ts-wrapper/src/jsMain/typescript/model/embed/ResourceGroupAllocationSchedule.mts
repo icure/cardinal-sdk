@@ -6,8 +6,7 @@ import {EmbeddedTimeTableItem} from './EmbeddedTimeTableItem.mjs';
 
 /**
  *
- *  Represents an allocation schedule for a resource group, defining time table items within a date
- *  range.
+ *  Represents an allocation schedule for a resource group, defining time table items within a date range.
  *  /
  */
 export class ResourceGroupAllocationSchedule {

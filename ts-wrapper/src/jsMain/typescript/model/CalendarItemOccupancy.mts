@@ -6,10 +6,8 @@ import {expectNumber, extractEntry} from '../internal/JsonDecodeUtils.mjs';
  *
  *  One point of a concurrent-occupancy step function for a period of calendar items.
  *
- *  The occupancy of a period is emitted as a sequence of these points, ordered by [timestamp]: each
- *  point
- *  indicates that, starting from [timestamp], the number of overlapping (busy) calendar items
- *  becomes [occupancy].
+ *  The occupancy of a period is emitted as a sequence of these points, ordered by [timestamp]: each point
+ *  indicates that, starting from [timestamp], the number of overlapping (busy) calendar items becomes [occupancy].
  *  /
  */
 export class CalendarItemOccupancy {

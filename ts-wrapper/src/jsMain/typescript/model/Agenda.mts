@@ -17,10 +17,8 @@ import {UserAccessLevel} from './embed/UserAccessLevel.mjs';
 /**
  *
  *
- *   Represents an agenda that keeps track of appointments (calendar items) for a resource or group
- *  of resources.
- *   An agenda can specify a schedule for its resources and allows managing availabilities for
- *  booking.
+ *   Represents an agenda that keeps track of appointments (calendar items) for a resource or group of resources.
+ *   An agenda can specify a schedule for its resources and allows managing availabilities for booking.
  */
 export class Agenda implements StoredDocument, ICureDocument<string>, HasMedicalLocation, HasEndOfLife, CustomisableRoot, Extendable {
 
@@ -86,8 +84,7 @@ export class Agenda implements StoredDocument, ICureDocument<string>, HasMedical
 
 	/**
 	 *
-	 *  A fuzzy time in HHMMSS format used to split working hours into blocks for availabilities
-	 *  computation.
+	 *  A fuzzy time in HHMMSS format used to split working hours into blocks for availabilities computation.
 	 */
 	daySplitHour: number | undefined = undefined;
 

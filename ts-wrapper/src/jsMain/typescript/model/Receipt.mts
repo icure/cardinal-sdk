@@ -17,10 +17,8 @@ import {Base64String} from './specializations/Base64String.mjs';
 
 /**
  *
- *  Represents a receipt for a healthcare transaction. Receipts are used to store acknowledgements
- *  and responses
- *  from external systems such as eFact, eAttest, or other healthcare messaging platforms. They can
- *  be linked
+ *  Represents a receipt for a healthcare transaction. Receipts are used to store acknowledgements and responses
+ *  from external systems such as eFact, eAttest, or other healthcare messaging platforms. They can be linked
  *  to invoices or other documents.
  *  /
  */
@@ -76,10 +74,8 @@ export interface Receipt extends StoredDocument, ICureDocument<string>, HasMedic
 
 /**
  *
- *  Represents a receipt for a healthcare transaction. Receipts are used to store acknowledgements
- *  and responses
- *  from external systems such as eFact, eAttest, or other healthcare messaging platforms. They can
- *  be linked
+ *  Represents a receipt for a healthcare transaction. Receipts are used to store acknowledgements and responses
+ *  from external systems such as eFact, eAttest, or other healthcare messaging platforms. They can be linked
  *  to invoices or other documents.
  *  /
  */
@@ -342,10 +338,8 @@ export class DecryptedReceipt {
 
 /**
  *
- *  Represents a receipt for a healthcare transaction. Receipts are used to store acknowledgements
- *  and responses
- *  from external systems such as eFact, eAttest, or other healthcare messaging platforms. They can
- *  be linked
+ *  Represents a receipt for a healthcare transaction. Receipts are used to store acknowledgements and responses
+ *  from external systems such as eFact, eAttest, or other healthcare messaging platforms. They can be linked
  *  to invoices or other documents.
  *  /
  */

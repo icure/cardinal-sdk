@@ -4,16 +4,14 @@ import {expectNumber, expectString, extractEntry} from '../internal/JsonDecodeUt
 
 /**
  *
- *  The error that aborted a page of results, reported in the body of an otherwise successful
- *  response.
+ *  The error that aborted a page of results, reported in the body of an otherwise successful response.
  *  /
  */
 export class PaginationError {
 
 	/**
 	 *
-	 *  The status code the request would have failed with, had the error been found before returning
-	 *  any result.
+	 *  The status code the request would have failed with, had the error been found before returning any result.
 	 */
 	statusCode: number;
 

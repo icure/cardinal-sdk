@@ -24,11 +24,9 @@ import {Base64String} from './specializations/Base64String.mjs';
 /**
  *
  *
- *   A person related to one or more patients, that is neither a patient nor a healthcare party:
- *  typically a contact
+ *   A person related to one or more patients, that is neither a patient nor a healthcare party: typically a contact
  *   person (parent of a child patient, caregiver, ...), referenced from a patient's partnership with
- *   partnerType = relatedPerson. It is a standalone encryptable entity but NOT a crypto actor nor a
- *  data owner.
+ *   partnerType = relatedPerson. It is a standalone encryptable entity but NOT a crypto actor nor a data owner.
  */
 export interface RelatedPerson extends StoredDocument, ICureDocument<string>, Person, HasEncryptionMetadata, Encryptable, HasIdentifier, HasEndOfLife, CustomisableRoot, Extendable {
 
@@ -47,11 +45,9 @@ export interface RelatedPerson extends StoredDocument, ICureDocument<string>, Pe
 /**
  *
  *
- *   A person related to one or more patients, that is neither a patient nor a healthcare party:
- *  typically a contact
+ *   A person related to one or more patients, that is neither a patient nor a healthcare party: typically a contact
  *   person (parent of a child patient, caregiver, ...), referenced from a patient's partnership with
- *   partnerType = relatedPerson. It is a standalone encryptable entity but NOT a crypto actor nor a
- *  data owner.
+ *   partnerType = relatedPerson. It is a standalone encryptable entity but NOT a crypto actor nor a data owner.
  */
 export class DecryptedRelatedPerson {
 
@@ -63,8 +59,7 @@ export class DecryptedRelatedPerson {
 
 	/**
 	 *
-	 *  The revision of the related person in the database, used for conflict management / optimistic
-	 *  locking.
+	 *  The revision of the related person in the database, used for conflict management / optimistic locking.
 	 */
 	rev: string | undefined = undefined;
 
@@ -137,7 +132,6 @@ export class DecryptedRelatedPerson {
 	/**
 	 *
 	 *  The list of all names of the related person, also containing the official full name information.
-	 *
 	 */
 	names: Array<PersonName> = [];
 
@@ -349,11 +343,9 @@ export class DecryptedRelatedPerson {
 /**
  *
  *
- *   A person related to one or more patients, that is neither a patient nor a healthcare party:
- *  typically a contact
+ *   A person related to one or more patients, that is neither a patient nor a healthcare party: typically a contact
  *   person (parent of a child patient, caregiver, ...), referenced from a patient's partnership with
- *   partnerType = relatedPerson. It is a standalone encryptable entity but NOT a crypto actor nor a
- *  data owner.
+ *   partnerType = relatedPerson. It is a standalone encryptable entity but NOT a crypto actor nor a data owner.
  */
 export class EncryptedRelatedPerson {
 
@@ -365,8 +357,7 @@ export class EncryptedRelatedPerson {
 
 	/**
 	 *
-	 *  The revision of the related person in the database, used for conflict management / optimistic
-	 *  locking.
+	 *  The revision of the related person in the database, used for conflict management / optimistic locking.
 	 */
 	rev: string | undefined = undefined;
 
@@ -439,7 +430,6 @@ export class EncryptedRelatedPerson {
 	/**
 	 *
 	 *  The list of all names of the related person, also containing the official full name information.
-	 *
 	 */
 	names: Array<PersonName> = [];
 

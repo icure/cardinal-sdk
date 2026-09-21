@@ -35,10 +35,8 @@ import {SpkiHexString} from './specializations/SpkiHexString.mjs';
 
 /**
  *
- *  Represents a patient in the iCure platform. A patient is a person who receives healthcare
- *  services.
- *  This entity stores personal, administrative, and medical information about the patient, and
- *  supports
+ *  Represents a patient in the iCure platform. A patient is a person who receives healthcare services.
+ *  This entity stores personal, administrative, and medical information about the patient, and supports
  *  end-to-end encryption of sensitive data.
  *  /
  */
@@ -246,10 +244,8 @@ export interface Patient extends StoredDocument, ICureDocument<string>, HasMedic
 
 /**
  *
- *  Represents a patient in the iCure platform. A patient is a person who receives healthcare
- *  services.
- *  This entity stores personal, administrative, and medical information about the patient, and
- *  supports
+ *  Represents a patient in the iCure platform. A patient is a person who receives healthcare services.
+ *  This entity stores personal, administrative, and medical information about the patient, and supports
  *  end-to-end encryption of sensitive data.
  *  /
  */
@@ -935,10 +931,8 @@ export class DecryptedPatient {
 
 /**
  *
- *  Represents a patient in the iCure platform. A patient is a person who receives healthcare
- *  services.
- *  This entity stores personal, administrative, and medical information about the patient, and
- *  supports
+ *  Represents a patient in the iCure platform. A patient is a person who receives healthcare services.
+ *  This entity stores personal, administrative, and medical information about the patient, and supports
  *  end-to-end encryption of sensitive data.
  *  /
  */

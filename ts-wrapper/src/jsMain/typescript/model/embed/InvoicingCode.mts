@@ -7,8 +7,7 @@ import {PaymentType} from './PaymentType.mjs';
 
 /**
  *
- *  Represents an invoicing code within an invoice, containing tarification details, amounts,
- *  prescriber information,
+ *  Represents an invoicing code within an invoice, containing tarification details, amounts, prescriber information,
  *  and lifecycle status flags. Each invoicing code corresponds to a billable medical act or service.
  *  /
  */
@@ -352,8 +351,7 @@ export interface InvoicingCode extends Encryptable {
 
 /**
  *
- *  Represents an invoicing code within an invoice, containing tarification details, amounts,
- *  prescriber information,
+ *  Represents an invoicing code within an invoice, containing tarification details, amounts, prescriber information,
  *  and lifecycle status flags. Each invoicing code corresponds to a billable medical act or service.
  *  /
  */
@@ -898,8 +896,7 @@ export class DecryptedInvoicingCode {
 
 /**
  *
- *  Represents an invoicing code within an invoice, containing tarification details, amounts,
- *  prescriber information,
+ *  Represents an invoicing code within an invoice, containing tarification details, amounts, prescriber information,
  *  and lifecycle status flags. Each invoicing code corresponds to a billable medical act or service.
  *  /
  */

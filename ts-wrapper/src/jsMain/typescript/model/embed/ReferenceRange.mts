@@ -8,8 +8,7 @@ import {Range} from './Range.mjs';
 /**
  *
  *
- *   Represents a reference range for a measurement, including bounds, applicable age range, tags,
- *  codes, and notes.
+ *   Represents a reference range for a measurement, including bounds, applicable age range, tags, codes, and notes.
  */
 export class ReferenceRange {
 

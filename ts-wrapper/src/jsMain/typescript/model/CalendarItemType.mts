@@ -9,8 +9,7 @@ import {StoredDocument} from './base/StoredDocument.mjs';
 
 /**
  *
- *  Represents a type of calendar item, defining properties like duration, color, and name for
- *  appointments.
+ *  Represents a type of calendar item, defining properties like duration, color, and name for appointments.
  *  Calendar item types are used to categorize calendar items within an agenda.
  *  /
  */
@@ -24,8 +23,7 @@ export class CalendarItemType implements StoredDocument, CustomisableRoot, Exten
 
 	/**
 	 *
-	 *  The revision of the calendar item type in the database, used for conflict management /
-	 *  optimistic locking.
+	 *  The revision of the calendar item type in the database, used for conflict management / optimistic locking.
 	 */
 	rev: string | undefined = undefined;
 

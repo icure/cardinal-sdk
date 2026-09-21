@@ -8,8 +8,7 @@ import {MembershipType} from './MembershipType.mjs';
 
 /**
  *
- *  Represents a time-bounded membership of a care team member, specifying the period and type of
- *  involvement.
+ *  Represents a time-bounded membership of a care team member, specifying the period and type of involvement.
  *  /
  */
 export interface CareTeamMembership extends Encryptable, Extendable {
@@ -46,8 +45,7 @@ export interface CareTeamMembership extends Encryptable, Extendable {
 
 /**
  *
- *  Represents a time-bounded membership of a care team member, specifying the period and type of
- *  involvement.
+ *  Represents a time-bounded membership of a care team member, specifying the period and type of involvement.
  *  /
  */
 export class DecryptedCareTeamMembership {
@@ -131,8 +129,7 @@ export class DecryptedCareTeamMembership {
 
 /**
  *
- *  Represents a time-bounded membership of a care team member, specifying the period and type of
- *  involvement.
+ *  Represents a time-bounded membership of a care team member, specifying the period and type of involvement.
  *  /
  */
 export class EncryptedCareTeamMembership {

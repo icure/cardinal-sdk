@@ -17,8 +17,7 @@ import {Base64String} from './specializations/Base64String.mjs';
 
 /**
  *
- *  Represents a topic for secure messaging between healthcare parties. A topic groups messages in a
- *  conversation
+ *  Represents a topic for secure messaging between healthcare parties. A topic groups messages in a conversation
  *  and can be linked to health elements and services for medical context.
  *  /
  */
@@ -68,8 +67,7 @@ export interface Topic extends StoredDocument, ICureDocument<string>, HasMedical
 
 /**
  *
- *  Represents a topic for secure messaging between healthcare parties. A topic groups messages in a
- *  conversation
+ *  Represents a topic for secure messaging between healthcare parties. A topic groups messages in a conversation
  *  and can be linked to health elements and services for medical context.
  *  /
  */
@@ -331,8 +329,7 @@ export class DecryptedTopic {
 
 /**
  *
- *  Represents a topic for secure messaging between healthcare parties. A topic groups messages in a
- *  conversation
+ *  Represents a topic for secure messaging between healthcare parties. A topic groups messages in a conversation
  *  and can be linked to health elements and services for medical context.
  *  /
  */

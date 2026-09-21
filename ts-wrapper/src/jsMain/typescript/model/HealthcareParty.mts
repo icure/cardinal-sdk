@@ -28,10 +28,8 @@ import {SpkiHexString} from './specializations/SpkiHexString.mjs';
 
 /**
  *
- *  Represents a healthcare party. A healthcare party is a person or organization that provides
- *  healthcare services,
- *  such as a physician, nurse, hospital, or medical practice. It is serialized in JSON and saved in
- *  the underlying
+ *  Represents a healthcare party. A healthcare party is a person or organization that provides healthcare services,
+ *  such as a physician, nurse, hospital, or medical practice. It is serialized in JSON and saved in the underlying
  *  icure-healthdata CouchDB database.
  *  /
  */
@@ -45,8 +43,7 @@ export class HealthcareParty implements StoredDocument, Named, Person, CryptoAct
 
 	/**
 	 *
-	 *  The revision of the healthcare party in the database, used for conflict management / optimistic
-	 *  locking.
+	 *  The revision of the healthcare party in the database, used for conflict management / optimistic locking.
 	 */
 	rev: string | undefined = undefined;
 
@@ -70,8 +67,7 @@ export class HealthcareParty implements StoredDocument, Named, Person, CryptoAct
 
 	/**
 	 *
-	 *  The healthcare party's identifiers, used by the client to identify uniquely and unambiguously
-	 *  the HCP.
+	 *  The healthcare party's identifiers, used by the client to identify uniquely and unambiguously the HCP.
 	 */
 	identifier: Array<Identifier> = [];
 
@@ -90,7 +86,6 @@ export class HealthcareParty implements StoredDocument, Named, Person, CryptoAct
 	/**
 	 *
 	 *  The full name of the healthcare party, used mainly when the healthcare party is an organization.
-	 *
 	 */
 	name: string | undefined = undefined;
 

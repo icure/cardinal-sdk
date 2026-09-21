@@ -4,8 +4,7 @@ import {expectNumber, expectString, extractEntry} from '../../internal/JsonDecod
 
 /**
  *
- *  Data transfer object representing a labelled occurrence count, typically used for aggregation
- *  results.
+ *  Data transfer object representing a labelled occurrence count, typically used for aggregation results.
  *  /
  */
 export class LabelledOccurence {

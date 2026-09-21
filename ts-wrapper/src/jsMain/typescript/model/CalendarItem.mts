@@ -21,8 +21,7 @@ import {Base64String} from './specializations/Base64String.mjs';
 /**
  *
  *
- *   Represents an appointment or event in a calendar. Calendar items are linked to an agenda and can
- *  block
+ *   Represents an appointment or event in a calendar. Calendar items are linked to an agenda and can block
  *   availabilities for scheduling purposes.
  */
 export interface CalendarItem extends StoredDocument, ICureDocument<string>, HasMedicalLocation, HasEncryptionMetadata, Encryptable, CustomisableRoot, Extendable {
@@ -155,8 +154,7 @@ export interface CalendarItem extends StoredDocument, ICureDocument<string>, Has
 
 	/**
 	 *
-	 *  The healthcare party id associated with this calendar item. Deprecated: This field is scheduled
-	 *  for deletion
+	 *  The healthcare party id associated with this calendar item. Deprecated: This field is scheduled for deletion
 	 */
 	hcpId: string | undefined;
 
@@ -187,8 +185,7 @@ export interface CalendarItem extends StoredDocument, ICureDocument<string>, Has
 /**
  *
  *
- *   Represents an appointment or event in a calendar. Calendar items are linked to an agenda and can
- *  block
+ *   Represents an appointment or event in a calendar. Calendar items are linked to an agenda and can block
  *   availabilities for scheduling purposes.
  */
 export class DecryptedCalendarItem {
@@ -201,8 +198,7 @@ export class DecryptedCalendarItem {
 
 	/**
 	 *
-	 *  The revision of the calendar item in the database, used for conflict management / optimistic
-	 *  locking.
+	 *  The revision of the calendar item in the database, used for conflict management / optimistic locking.
 	 */
 	rev: string | undefined = undefined;
 
@@ -376,8 +372,7 @@ export class DecryptedCalendarItem {
 
 	/**
 	 *
-	 *  The healthcare party id associated with this calendar item. Deprecated: This field is scheduled
-	 *  for deletion
+	 *  The healthcare party id associated with this calendar item. Deprecated: This field is scheduled for deletion
 	 */
 	hcpId: string | undefined = undefined;
 
@@ -613,8 +608,7 @@ export class DecryptedCalendarItem {
 /**
  *
  *
- *   Represents an appointment or event in a calendar. Calendar items are linked to an agenda and can
- *  block
+ *   Represents an appointment or event in a calendar. Calendar items are linked to an agenda and can block
  *   availabilities for scheduling purposes.
  */
 export class EncryptedCalendarItem {
@@ -627,8 +621,7 @@ export class EncryptedCalendarItem {
 
 	/**
 	 *
-	 *  The revision of the calendar item in the database, used for conflict management / optimistic
-	 *  locking.
+	 *  The revision of the calendar item in the database, used for conflict management / optimistic locking.
 	 */
 	rev: string | undefined = undefined;
 
@@ -802,8 +795,7 @@ export class EncryptedCalendarItem {
 
 	/**
 	 *
-	 *  The healthcare party id associated with this calendar item. Deprecated: This field is scheduled
-	 *  for deletion
+	 *  The healthcare party id associated with this calendar item. Deprecated: This field is scheduled for deletion
 	 */
 	hcpId: string | undefined = undefined;
 

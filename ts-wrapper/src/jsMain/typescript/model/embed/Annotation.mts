@@ -9,8 +9,7 @@ import {Encryptable} from './Encryptable.mjs';
 
 /**
  *
- *  Text node with attribution that can be attached to a medical record. Used by healthcare parties
- *  to add side notes,
+ *  Text node with attribution that can be attached to a medical record. Used by healthcare parties to add side notes,
  *  for example to flag a faulty thermometer after taking a temperature.
  *  /
  */
@@ -30,8 +29,7 @@ export interface Annotation extends Identifiable<string>, Encryptable {
 
 	/**
 	 *
-	 *  The timestamp (unix epoch in ms) of the latest modification of this note, filled automatically
-	 *  if missing.
+	 *  The timestamp (unix epoch in ms) of the latest modification of this note, filled automatically if missing.
 	 */
 	modified: number | undefined;
 
@@ -73,8 +71,7 @@ export interface Annotation extends Identifiable<string>, Encryptable {
 
 /**
  *
- *  Text node with attribution that can be attached to a medical record. Used by healthcare parties
- *  to add side notes,
+ *  Text node with attribution that can be attached to a medical record. Used by healthcare parties to add side notes,
  *  for example to flag a faulty thermometer after taking a temperature.
  *  /
  */
@@ -100,8 +97,7 @@ export class DecryptedAnnotation {
 
 	/**
 	 *
-	 *  The timestamp (unix epoch in ms) of the latest modification of this note, filled automatically
-	 *  if missing.
+	 *  The timestamp (unix epoch in ms) of the latest modification of this note, filled automatically if missing.
 	 */
 	modified: number | undefined = undefined;
 
@@ -206,8 +202,7 @@ export class DecryptedAnnotation {
 
 /**
  *
- *  Text node with attribution that can be attached to a medical record. Used by healthcare parties
- *  to add side notes,
+ *  Text node with attribution that can be attached to a medical record. Used by healthcare parties to add side notes,
  *  for example to flag a faulty thermometer after taking a temperature.
  *  /
  */
@@ -233,8 +228,7 @@ export class EncryptedAnnotation {
 
 	/**
 	 *
-	 *  The timestamp (unix epoch in ms) of the latest modification of this note, filled automatically
-	 *  if missing.
+	 *  The timestamp (unix epoch in ms) of the latest modification of this note, filled automatically if missing.
 	 */
 	modified: number | undefined = undefined;
 

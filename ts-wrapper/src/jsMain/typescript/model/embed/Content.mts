@@ -12,8 +12,7 @@ import {TimeSeries} from './TimeSeries.mjs';
 /**
  *
  *  Represents the value content of a medical service. A content can hold different types of values
- *  such as strings, numbers, dates, measurements, medications, time series, or compound
- *  sub-services.
+ *  such as strings, numbers, dates, measurements, medications, time series, or compound sub-services.
  *  /
  */
 export interface Content extends Encryptable {
@@ -105,8 +104,7 @@ export interface Content extends Encryptable {
 /**
  *
  *  Represents the value content of a medical service. A content can hold different types of values
- *  such as strings, numbers, dates, measurements, medications, time series, or compound
- *  sub-services.
+ *  such as strings, numbers, dates, measurements, medications, time series, or compound sub-services.
  *  /
  */
 export class DecryptedContent {
@@ -267,8 +265,7 @@ export class DecryptedContent {
 /**
  *
  *  Represents the value content of a medical service. A content can hold different types of values
- *  such as strings, numbers, dates, measurements, medications, time series, or compound
- *  sub-services.
+ *  such as strings, numbers, dates, measurements, medications, time series, or compound sub-services.
  *  /
  */
 export class EncryptedContent {

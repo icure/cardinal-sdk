@@ -19,10 +19,8 @@ import {Base64String} from './specializations/Base64String.mjs';
 
 /**
  *
- *  Represents a maintenance task in the iCure system. Maintenance tasks are used to track background
- *  operations
- *  such as key exchange requests, data migrations, or other administrative operations that require
- *  asynchronous processing.
+ *  Represents a maintenance task in the iCure system. Maintenance tasks are used to track background operations
+ *  such as key exchange requests, data migrations, or other administrative operations that require asynchronous processing.
  *  /
  */
 export interface MaintenanceTask extends StoredDocument, ICureDocument<string>, HasMedicalLocation, HasEncryptionMetadata, Encryptable, HasEndOfLife, HasIdentifier {
@@ -53,10 +51,8 @@ export interface MaintenanceTask extends StoredDocument, ICureDocument<string>, 
 
 /**
  *
- *  Represents a maintenance task in the iCure system. Maintenance tasks are used to track background
- *  operations
- *  such as key exchange requests, data migrations, or other administrative operations that require
- *  asynchronous processing.
+ *  Represents a maintenance task in the iCure system. Maintenance tasks are used to track background operations
+ *  such as key exchange requests, data migrations, or other administrative operations that require asynchronous processing.
  *  /
  */
 export class DecryptedMaintenanceTask {
@@ -69,8 +65,7 @@ export class DecryptedMaintenanceTask {
 
 	/**
 	 *
-	 *  The revision of the maintenance task in the database, used for conflict management / optimistic
-	 *  locking.
+	 *  The revision of the maintenance task in the database, used for conflict management / optimistic locking.
 	 */
 	rev: string | undefined = undefined;
 
@@ -289,10 +284,8 @@ export class DecryptedMaintenanceTask {
 
 /**
  *
- *  Represents a maintenance task in the iCure system. Maintenance tasks are used to track background
- *  operations
- *  such as key exchange requests, data migrations, or other administrative operations that require
- *  asynchronous processing.
+ *  Represents a maintenance task in the iCure system. Maintenance tasks are used to track background operations
+ *  such as key exchange requests, data migrations, or other administrative operations that require asynchronous processing.
  *  /
  */
 export class EncryptedMaintenanceTask {
@@ -305,8 +298,7 @@ export class EncryptedMaintenanceTask {
 
 	/**
 	 *
-	 *  The revision of the maintenance task in the database, used for conflict management / optimistic
-	 *  locking.
+	 *  The revision of the maintenance task in the database, used for conflict management / optimistic locking.
 	 */
 	rev: string | undefined = undefined;
 

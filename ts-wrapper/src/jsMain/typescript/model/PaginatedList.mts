@@ -21,16 +21,14 @@ export class PaginatedList<T> {
 
 	/**
 	 *
-	 *  The key-document ID pair to use for fetching the next page of results, or null if this is the
-	 *  last page.
+	 *  The key-document ID pair to use for fetching the next page of results, or null if this is the last page.
 	 */
 	nextKeyPair: PaginatedDocumentKeyIdPair | undefined = undefined;
 
 	/**
 	 *
 	 *
-	 *   If not null the page was aborted by this error after some rows were already returned: [rows] is
-	 *  valid but
+	 *   If not null the page was aborted by this error after some rows were already returned: [rows] is valid but
 	 *   incomplete, and there is no [nextKeyPair] to resume from.
 	 */
 	error: PaginationError | undefined = undefined;

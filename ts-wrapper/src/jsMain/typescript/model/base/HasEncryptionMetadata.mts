@@ -7,8 +7,7 @@ import {Versionable} from './Versionable.mjs';
 /**
  *
  *
- *   Interface for entities that hold encryption metadata used for end-to-end encryption and access
- *  control.
+ *   Interface for entities that hold encryption metadata used for end-to-end encryption and access control.
  *   This includes delegation keys, encrypted foreign keys, and security metadata.
  */
 export interface HasEncryptionMetadata extends Versionable<string> {

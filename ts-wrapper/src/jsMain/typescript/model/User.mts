@@ -17,8 +17,7 @@ import {Permission} from './security/Permission.mjs';
 /**
  *
  *
- *   Represents a user that can log in to the iCure platform. A user can be linked to a healthcare
- *  party,
+ *   Represents a user that can log in to the iCure platform. A user can be linked to a healthcare party,
  *   a patient, or a device, and holds authentication credentials, roles, and permissions.
  */
 export class User implements StoredDocument, HasIdentifier, CustomisableRoot, Extendable {
@@ -121,8 +120,7 @@ export class User implements StoredDocument, HasIdentifier, CustomisableRoot, Ex
 
 	/**
 	 *
-	 *  Delegations that are automatically generated client side when a new database object is created
-	 *  by this user.
+	 *  Delegations that are automatically generated client side when a new database object is created by this user.
 	 */
 	autoDelegations: { [ key in DelegationTag ]?: Array<string> } = {};
 

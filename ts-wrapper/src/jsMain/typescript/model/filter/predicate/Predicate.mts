@@ -8,8 +8,7 @@ import {OrPredicate} from './OrPredicate.mjs';
 
 /**
  *
- *  Sealed interface for filter predicates that can be used to post-filter results from a filter
- *  chain.
+ *  Sealed interface for filter predicates that can be used to post-filter results from a filter chain.
  *  /
  */
 export type Predicate = NotPredicate | AndPredicate | AlwaysPredicate | OrPredicate | KeyValuePredicate;
