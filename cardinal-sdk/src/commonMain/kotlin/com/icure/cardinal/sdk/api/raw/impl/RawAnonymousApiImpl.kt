@@ -140,7 +140,7 @@ class RawAnonymousApiImpl(
 				parameter("ts", GMTDate().timestamp)
 			}
 			accept(Application.Json)
-		}.wrap()
+		}.wrapList()
 
 	// endregion
 

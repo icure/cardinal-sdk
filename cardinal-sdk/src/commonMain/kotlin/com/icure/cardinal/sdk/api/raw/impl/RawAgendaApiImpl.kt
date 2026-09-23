@@ -53,7 +53,7 @@ class RawAgendaApiImpl(
 				parameter("ts", GMTDate().timestamp)
 			}
 			accept(Application.Json)
-		}.wrap()
+		}.wrapPaginatedList()
 
 	override suspend fun createAgenda(agendaDto: Agenda): HttpResponse<Agenda> =
 		post(authProvider) {
@@ -224,7 +224,7 @@ class RawAgendaApiImpl(
 			contentType(Application.Json)
 			accept(Application.Json)
 			setBody(agendaIds)
-		}.wrap()
+		}.wrapList()
 
 	override suspend fun getConflictingEntitiesIds(): HttpResponse<List<String>> =
 		get(authProvider) {
@@ -245,7 +245,7 @@ class RawAgendaApiImpl(
 				parameter("ts", GMTDate().timestamp)
 			}
 			accept(Application.Json)
-		}.wrap()
+		}.wrapList()
 
 	override suspend fun declareConflictWinner(request: ConflictResolutionRequest<Agenda>): HttpResponse<ConflictResolutionResult<Agenda>> =
 		post(authProvider) {
@@ -358,7 +358,7 @@ class RawAgendaApiImpl(
 			contentType(Application.Json)
 			accept(Application.Json)
 			setBody(agendaIds)
-		}.wrap()
+		}.wrapList()
 
 	override suspend fun deleteAgendasInGroup(
 		groupId: String,
@@ -481,7 +481,7 @@ class RawAgendaApiImpl(
 				parameter("ts", GMTDate().timestamp)
 			}
 			accept(Application.Json)
-		}.wrap()
+		}.wrapList()
 
 	override suspend fun declareConflictWinnerInGroup(
 		groupId: String,

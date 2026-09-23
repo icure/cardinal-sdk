@@ -76,7 +76,7 @@ class RawRelatedPersonApiImpl(
 			contentType(Application.Json)
 			accept(Application.Json)
 			setBody(relatedPersonIds)
-		}.wrap()
+		}.wrapList()
 
 	override suspend fun deleteRelatedPersons(relatedPersonIds: ListOfIds): HttpResponse<List<DocIdentifier>> =
 		post(authProvider) {
@@ -210,7 +210,7 @@ class RawRelatedPersonApiImpl(
 			contentType(Application.Json)
 			accept(Application.Json)
 			setBodyWithSerializer(FilterChainSerializer(RelatedPersonAbstractFilterSerializer), filterChain)
-		}.wrap()
+		}.wrapPaginatedList()
 
 	override suspend fun bulkShare(
 		request: BulkShareOrUpdateMetadataParams,
@@ -266,7 +266,7 @@ class RawRelatedPersonApiImpl(
 				parameter("ts", GMTDate().timestamp)
 			}
 			accept(Application.Json)
-		}.wrap()
+		}.wrapList()
 
 	override suspend fun declareConflictWinner(
 		request: ConflictResolutionRequest<EncryptedRelatedPerson>,
@@ -381,7 +381,7 @@ class RawRelatedPersonApiImpl(
 			contentType(Application.Json)
 			accept(Application.Json)
 			setBody(relatedPersonIds)
-		}.wrap()
+		}.wrapList()
 
 	override suspend fun deleteRelatedPersonInGroup(
 		groupId: String,
@@ -518,7 +518,7 @@ class RawRelatedPersonApiImpl(
 				parameter("ts", GMTDate().timestamp)
 			}
 			accept(Application.Json)
-		}.wrap()
+		}.wrapList()
 
 	override suspend fun declareConflictWinnerInGroup(
 		groupId: String,

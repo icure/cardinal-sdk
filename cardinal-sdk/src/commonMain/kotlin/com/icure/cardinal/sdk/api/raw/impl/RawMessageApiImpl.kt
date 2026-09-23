@@ -9,6 +9,7 @@ import com.icure.cardinal.sdk.auth.services.AuthProvider
 import com.icure.cardinal.sdk.crypto.AccessControlKeysHeadersProvider
 import com.icure.cardinal.sdk.crypto.entities.EntityWithEncryptionMetadataTypeName
 import com.icure.cardinal.sdk.model.EncryptedMessage
+import com.icure.cardinal.sdk.model.IcureStub
 import com.icure.cardinal.sdk.model.ListOfIds
 import com.icure.cardinal.sdk.model.ListOfIdsAndRev
 import com.icure.cardinal.sdk.model.Message
@@ -37,6 +38,7 @@ import io.ktor.util.date.GMTDate
 import kotlin.Boolean
 import kotlin.Int
 import kotlin.Long
+import kotlin.Nothing
 import kotlin.String
 import kotlin.collections.List
 
@@ -182,6 +184,17 @@ class RawMessageApiImpl(
 			contentType(Application.Json)
 			accept(Application.Json)
 			setBody(messageIds)
+		}.wrapList()
+
+	override suspend fun findMessagesDelegationsStubsByIds(messageIds: ListOfIds): HttpResponse<List<IcureStub>> =
+		post(authProvider) {
+			url {
+				takeFrom(apiUrl)
+				appendPathSegments("rest", "v2", "message", "delegations")
+			}
+			contentType(Application.Json)
+			accept(Application.Json)
+			setBody(messageIds)
 		}.wrap()
 
 	override suspend fun listMessagesByTransportGuids(
@@ -197,7 +210,7 @@ class RawMessageApiImpl(
 			contentType(Application.Json)
 			accept(Application.Json)
 			setBody(transportGuids)
-		}.wrap()
+		}.wrapList()
 
 	override suspend fun listMessageIdsByDataOwnerPatientSentDate(
 		dataOwnerId: String,
@@ -235,7 +248,7 @@ class RawMessageApiImpl(
 				parameter("ts", GMTDate().timestamp)
 			}
 			accept(Application.Json)
-		}.wrap()
+		}.wrapPaginatedList()
 
 	override suspend fun getChildrenMessages(messageId: String): HttpResponse<List<EncryptedMessage>> =
 		get(authProvider) {
@@ -245,7 +258,7 @@ class RawMessageApiImpl(
 				parameter("ts", GMTDate().timestamp)
 			}
 			accept(Application.Json)
-		}.wrap()
+		}.wrapList()
 
 	override suspend fun getMessagesChildren(parentIds: ListOfIds): HttpResponse<List<EncryptedMessage>> =
 		post(authProvider) {
@@ -256,7 +269,7 @@ class RawMessageApiImpl(
 			contentType(Application.Json)
 			accept(Application.Json)
 			setBody(parentIds)
-		}.wrap()
+		}.wrapList()
 
 	override suspend fun listMessagesByInvoices(ids: ListOfIds): HttpResponse<List<EncryptedMessage>> =
 		post(authProvider) {
@@ -267,7 +280,7 @@ class RawMessageApiImpl(
 			contentType(Application.Json)
 			accept(Application.Json)
 			setBody(ids)
-		}.wrap()
+		}.wrapList()
 
 	override suspend fun findMessagesByTransportGuid(
 		transportGuid: String?,
@@ -290,7 +303,7 @@ class RawMessageApiImpl(
 				parameter("ts", GMTDate().timestamp)
 			}
 			accept(Application.Json)
-		}.wrap()
+		}.wrapPaginatedList()
 
 	override suspend fun findMessagesByTransportGuidSentDate(
 		transportGuid: String,
@@ -315,7 +328,7 @@ class RawMessageApiImpl(
 				parameter("ts", GMTDate().timestamp)
 			}
 			accept(Application.Json)
-		}.wrap()
+		}.wrapPaginatedList()
 
 	override suspend fun findMessagesByToAddress(
 		toAddress: String,
@@ -338,7 +351,7 @@ class RawMessageApiImpl(
 				parameter("ts", GMTDate().timestamp)
 			}
 			accept(Application.Json)
-		}.wrap()
+		}.wrapPaginatedList()
 
 	override suspend fun findMessagesByFromAddress(
 		fromAddress: String,
@@ -359,7 +372,7 @@ class RawMessageApiImpl(
 				parameter("ts", GMTDate().timestamp)
 			}
 			accept(Application.Json)
-		}.wrap()
+		}.wrapPaginatedList()
 
 	override suspend fun modifyMessage(messageDto: EncryptedMessage): HttpResponse<EncryptedMessage> =
 		put(authProvider) {
@@ -419,6 +432,17 @@ class RawMessageApiImpl(
 			setBody(request)
 		}.wrap()
 
+	override suspend fun bulkShareMinimal(request: BulkShareOrUpdateMetadataParams): HttpResponse<List<EntityBulkShareResult<Nothing>>> =
+		put(authProvider) {
+			url {
+				takeFrom(apiUrl)
+				appendPathSegments("rest", "v2", "message", "bulkSharedMetadataUpdateMinimal")
+			}
+			contentType(Application.Json)
+			accept(Application.Json)
+			setBody(request)
+		}.wrap()
+
 	override suspend fun filterMessagesBy(
 		startDocumentId: String?,
 		limit: Int?,
@@ -434,7 +458,7 @@ class RawMessageApiImpl(
 			contentType(Application.Json)
 			accept(Application.Json)
 			setBodyWithSerializer(FilterChainSerializer(MessageAbstractFilterSerializer), filterChain)
-		}.wrap()
+		}.wrapPaginatedList()
 
 	override suspend fun matchMessagesBy(filter: AbstractFilter<Message>): HttpResponse<List<String>> =
 		post(authProvider) {
@@ -466,7 +490,7 @@ class RawMessageApiImpl(
 				parameter("ts", GMTDate().timestamp)
 			}
 			accept(Application.Json)
-		}.wrap()
+		}.wrapList()
 
 	override suspend fun declareConflictWinner(
 		request: ConflictResolutionRequest<EncryptedMessage>,
@@ -525,7 +549,7 @@ class RawMessageApiImpl(
 			contentType(Application.Json)
 			accept(Application.Json)
 			setBody(messageIds)
-		}.wrap()
+		}.wrapList()
 
 	override suspend fun createMessageInTopic(messageDto: EncryptedMessage): HttpResponse<EncryptedMessage> =
 		post(authProvider) {
@@ -729,7 +753,7 @@ class RawMessageApiImpl(
 				parameter("ts", GMTDate().timestamp)
 			}
 			accept(Application.Json)
-		}.wrap()
+		}.wrapList()
 
 	override suspend fun declareConflictWinnerInGroup(
 		groupId: String,

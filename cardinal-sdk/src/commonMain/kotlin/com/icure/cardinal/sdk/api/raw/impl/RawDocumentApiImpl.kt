@@ -10,6 +10,7 @@ import com.icure.cardinal.sdk.crypto.AccessControlKeysHeadersProvider
 import com.icure.cardinal.sdk.crypto.entities.EntityWithEncryptionMetadataTypeName
 import com.icure.cardinal.sdk.model.Document
 import com.icure.cardinal.sdk.model.EncryptedDocument
+import com.icure.cardinal.sdk.model.IcureStub
 import com.icure.cardinal.sdk.model.ListOfIds
 import com.icure.cardinal.sdk.model.ListOfIdsAndRev
 import com.icure.cardinal.sdk.model.conflicts.ConflictResolutionRequest
@@ -251,13 +252,24 @@ class RawDocumentApiImpl(
 				parameter("ts", GMTDate().timestamp)
 			}
 			accept(Application.Json)
-		}.wrap()
+		}.wrapList()
 
 	override suspend fun getDocuments(documentIds: ListOfIds): HttpResponse<List<EncryptedDocument>> =
 		post(authProvider) {
 			url {
 				takeFrom(apiUrl)
 				appendPathSegments("rest", "v2", "document", "byIds")
+			}
+			contentType(Application.Json)
+			accept(Application.Json)
+			setBody(documentIds)
+		}.wrapList()
+
+	override suspend fun findDocumentsDelegationsStubsByIds(documentIds: ListOfIds): HttpResponse<List<IcureStub>> =
+		post(authProvider) {
+			url {
+				takeFrom(apiUrl)
+				appendPathSegments("rest", "v2", "document", "delegations")
 			}
 			contentType(Application.Json)
 			accept(Application.Json)
@@ -316,7 +328,7 @@ class RawDocumentApiImpl(
 				parameter("ts", GMTDate().timestamp)
 			}
 			accept(Application.Json)
-		}.wrap()
+		}.wrapList()
 
 	override suspend fun setSecondaryAttachment(
 		documentId: String,
@@ -429,7 +441,7 @@ class RawDocumentApiImpl(
 				parameter("ts", GMTDate().timestamp)
 			}
 			accept(Application.Json)
-		}.wrap()
+		}.wrapList()
 
 	override suspend fun declareConflictWinner(
 		request: ConflictResolutionRequest<EncryptedDocument>,
@@ -547,7 +559,7 @@ class RawDocumentApiImpl(
 			contentType(Application.Json)
 			accept(Application.Json)
 			setBody(documentIds)
-		}.wrap()
+		}.wrapList()
 
 	override suspend fun deleteDocumentInGroup(
 		groupId: String,
@@ -684,7 +696,7 @@ class RawDocumentApiImpl(
 				parameter("ts", GMTDate().timestamp)
 			}
 			accept(Application.Json)
-		}.wrap()
+		}.wrapList()
 
 	override suspend fun declareConflictWinnerInGroup(
 		groupId: String,

@@ -10,6 +10,7 @@ import com.icure.cardinal.sdk.crypto.AccessControlKeysHeadersProvider
 import com.icure.cardinal.sdk.crypto.entities.EntityWithEncryptionMetadataTypeName
 import com.icure.cardinal.sdk.model.AccessLog
 import com.icure.cardinal.sdk.model.EncryptedAccessLog
+import com.icure.cardinal.sdk.model.IcureStub
 import com.icure.cardinal.sdk.model.ListOfIds
 import com.icure.cardinal.sdk.model.ListOfIdsAndRev
 import com.icure.cardinal.sdk.model.PaginatedList
@@ -34,6 +35,7 @@ import io.ktor.util.date.GMTDate
 import kotlin.Boolean
 import kotlin.Int
 import kotlin.Long
+import kotlin.Nothing
 import kotlin.String
 import kotlin.collections.List
 
@@ -191,7 +193,7 @@ class RawAccessLogApiImpl(
 				parameter("ts", GMTDate().timestamp)
 			}
 			accept(Application.Json)
-		}.wrap()
+		}.wrapPaginatedList()
 
 	override suspend fun findAccessLogsByUserAfterDate(
 		userId: String,
@@ -216,7 +218,7 @@ class RawAccessLogApiImpl(
 				parameter("ts", GMTDate().timestamp)
 			}
 			accept(Application.Json)
-		}.wrap()
+		}.wrapPaginatedList()
 
 	override suspend fun listAccessLogIdsByDataOwnerPatientDate(
 		dataOwnerId: String,
@@ -244,6 +246,17 @@ class RawAccessLogApiImpl(
 			url {
 				takeFrom(apiUrl)
 				appendPathSegments("rest", "v2", "accesslog", "byIds")
+			}
+			contentType(Application.Json)
+			accept(Application.Json)
+			setBody(accessLogIds)
+		}.wrapList()
+
+	override suspend fun findAccessLogsDelegationsStubsByIds(accessLogIds: ListOfIds): HttpResponse<List<IcureStub>> =
+		post(authProvider) {
+			url {
+				takeFrom(apiUrl)
+				appendPathSegments("rest", "v2", "accesslog", "delegations")
 			}
 			contentType(Application.Json)
 			accept(Application.Json)
@@ -283,6 +296,17 @@ class RawAccessLogApiImpl(
 			setBody(request)
 		}.wrap()
 
+	override suspend fun bulkShareMinimal(request: BulkShareOrUpdateMetadataParams): HttpResponse<List<EntityBulkShareResult<Nothing>>> =
+		put(authProvider) {
+			url {
+				takeFrom(apiUrl)
+				appendPathSegments("rest", "v2", "accesslog", "bulkSharedMetadataUpdateMinimal")
+			}
+			contentType(Application.Json)
+			accept(Application.Json)
+			setBody(request)
+		}.wrap()
+
 	override suspend fun matchAccessLogsBy(filter: AbstractFilter<AccessLog>): HttpResponse<List<String>> =
 		post(authProvider) {
 			url {
@@ -313,7 +337,7 @@ class RawAccessLogApiImpl(
 				parameter("ts", GMTDate().timestamp)
 			}
 			accept(Application.Json)
-		}.wrap()
+		}.wrapList()
 
 	override suspend fun declareConflictWinner(
 		request: ConflictResolutionRequest<EncryptedAccessLog>,
@@ -367,7 +391,7 @@ class RawAccessLogApiImpl(
 				parameter("ts", GMTDate().timestamp)
 			}
 			accept(Application.Json)
-		}.wrap()
+		}.wrapPaginatedList()
 
 	override suspend fun matchAccessLogsInGroupBy(
 		filter: AbstractFilter<AccessLog>,
@@ -464,7 +488,7 @@ class RawAccessLogApiImpl(
 			contentType(Application.Json)
 			accept(Application.Json)
 			setBody(accessLogIds)
-		}.wrap()
+		}.wrapList()
 
 	override suspend fun deleteAccessLogsInGroup(
 		groupId: String,
@@ -590,7 +614,7 @@ class RawAccessLogApiImpl(
 				parameter("ts", GMTDate().timestamp)
 			}
 			accept(Application.Json)
-		}.wrap()
+		}.wrapList()
 
 	override suspend fun declareConflictWinnerInGroup(
 		groupId: String,

@@ -144,6 +144,7 @@ import com.icure.cardinal.sdk.options.ApiConfigurationImpl
 import com.icure.cardinal.sdk.options.AuthenticationMethod
 import com.icure.cardinal.sdk.options.EncryptedFieldsConfiguration
 import com.icure.cardinal.sdk.options.EntitiesEncryptedFieldsManifests
+import com.icure.cardinal.sdk.options.EntityListDecodingStrategy
 import com.icure.cardinal.sdk.options.JsonPatcher
 import com.icure.cardinal.sdk.options.RequestRetryConfiguration
 import com.icure.cardinal.sdk.options.SdkOptions
@@ -311,7 +312,8 @@ interface CardinalSdk : CardinalApis {
 					additionalHeaders = emptyMap(),
 					requestTimeout = options.requestTimeout,
 					json = json,
-					retryConfiguration = options.requestRetryConfiguration
+					retryConfiguration = options.requestRetryConfiguration,
+					entityListDecodingStrategy = options.entityListDecodingStrategy,
 				)
 			)
 			val initializedSdkOptions = options.asInitialized(baseStorage)
@@ -421,7 +423,8 @@ private class AuthenticationWithProcessStepImpl(
 				json = options.configuredJsonOrDefault(),
 				additionalHeaders = emptyMap(),
 				requestTimeout = options.requestTimeout,
-				retryConfiguration = options.requestRetryConfiguration
+				retryConfiguration = options.requestRetryConfiguration,
+				entityListDecodingStrategy = options.entityListDecodingStrategy,
 			)
 		)
 		val loginResult = retryWithDelays(
@@ -455,7 +458,8 @@ private fun SdkOptions.asInitialized(baseStorage: StorageFacade): InitializedSdk
 	requestTimeout = requestTimeout,
 	requestRetryConfiguration = requestRetryConfiguration,
 	baseStorage = baseStorage,
-	keyStorage = keyStorage
+	keyStorage = keyStorage,
+	entityListDecodingStrategy = entityListDecodingStrategy,
 )
 
 internal data class InitializedSdkOptions(
@@ -469,6 +473,7 @@ internal data class InitializedSdkOptions(
 	val requestRetryConfiguration: RequestRetryConfiguration,
 	val keyStorage: KeyStorageFacade?,
 	val baseStorage: StorageFacade,
+	val entityListDecodingStrategy: EntityListDecodingStrategy,
 )
 
 private const val ANONYMITY_HEADER = "Icure-Request-Autofix-Anonymity"
@@ -496,7 +501,8 @@ internal suspend fun initializeApiCrypto(
 		json = json,
 		additionalHeaders = mutableAdditionalHeaders,
 		requestTimeout = options.requestTimeout,
-		retryConfiguration = options.requestRetryConfiguration
+		retryConfiguration = options.requestRetryConfiguration,
+		entityListDecodingStrategy = options.entityListDecodingStrategy,
 	)
 	val dataOwnerApi = DataOwnerApiImpl(
 		RawDataOwnerApiImpl(
