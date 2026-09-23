@@ -77,6 +77,7 @@ external interface SdkOptionsJs {
 	val jsonPatcher: JsonPatcherJs?
 	val ignoreUnknownFields: Boolean?
 	val dataOwnerScope: String?
+	val onMalformedEntity: ((entity: MalformedEntityJs) -> Unit)?
 }
 
 @JsName("BasicToFullSdkOptions")
@@ -96,11 +97,22 @@ external interface BasicSdkOptionsJs {
 	val groupSelector: ((availableGroups: Array<UserGroupJs>) -> Promise<String>)?
 	val ignoreUnknownFields: Boolean?
 	val dataOwnerScope: String?
+	val onMalformedEntity: ((entity: MalformedEntityJs) -> Unit)?
 }
 
 @JsName("AnonymousSdkOptions")
 external interface AnonymousSdkOptionsJs {
 	val ignoreUnknownFields: Boolean?
+	val onMalformedEntity: ((entity: MalformedEntityJs) -> Unit)?
+}
+
+@JsName("MalformedEntity")
+external interface MalformedEntityJs {
+	val entityType: String
+	val entityId: String?
+	val json: dynamic
+	val error: String
+	val requestUrl: String
 }
 
 @JsName("EncryptedFieldsConfiguration")

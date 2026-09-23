@@ -92,6 +92,7 @@ import com.icure.cardinal.sdk.options.BasicSdkOptions
 import com.icure.cardinal.sdk.options.BasicToFullSdkOptions
 import com.icure.cardinal.sdk.options.EncryptedFieldsConfiguration
 import com.icure.cardinal.sdk.options.EntitiesEncryptedFieldsManifests
+import com.icure.cardinal.sdk.options.EntityListDecodingStrategy
 import com.icure.cardinal.sdk.options.RequestRetryConfiguration
 import com.icure.cardinal.sdk.options.UnboundBasicApiConfigurationImpl
 import com.icure.cardinal.sdk.options.UnboundBasicSdkOptions
@@ -140,7 +141,8 @@ interface CardinalUnboundBaseSdk : CardinalBaseApis {
 				json = json,
 				requestTimeout = options.requestTimeout,
 				additionalHeaders = emptyMap(),
-				retryConfiguration = options.requestRetryConfiguration
+				retryConfiguration = options.requestRetryConfiguration,
+				entityListDecodingStrategy = options.entityListDecodingStrategy,
 			)
 			val rawAuthApi = RawAnonymousAuthApiImpl(
 				apiUrl = baseUrl,
@@ -257,7 +259,8 @@ interface CardinalBaseSdk : CardinalBaseApis {
 				json = json,
 				requestTimeout = options.requestTimeout,
 				additionalHeaders = emptyMap(),
-				retryConfiguration = options.requestRetryConfiguration
+				retryConfiguration = options.requestRetryConfiguration,
+				entityListDecodingStrategy = options.entityListDecodingStrategy,
 			)
 			val (chosenGroup, authProvider) = authenticationMethod.getGroupAndAuthProvider(
 				baseUrl = baseUrl,
@@ -373,7 +376,8 @@ private class BaseAuthenticationWithProcessStepImpl(
 				json = options.configuredJsonOrDefault(),
 				additionalHeaders = emptyMap(),
 				requestTimeout = options.requestTimeout,
-				retryConfiguration = options.requestRetryConfiguration
+				retryConfiguration = options.requestRetryConfiguration,
+				entityListDecodingStrategy = options.entityListDecodingStrategy,
 			)
 		)
 		val loginResult = retryWithDelays(
@@ -632,12 +636,14 @@ private fun BasicSdkOptions.asInitialized() =
 		encryptedFields = encryptedFields,
 		requestTimeout = requestTimeout,
 		requestRetryConfiguration = requestRetryConfiguration,
+		entityListDecodingStrategy = entityListDecodingStrategy,
 	)
 
 private data class InitializedBaseSdkOptions(
 	val encryptedFields: EncryptedFieldsConfiguration = EncryptedFieldsConfiguration(),
 	val requestTimeout: Duration? = null,
 	val requestRetryConfiguration: RequestRetryConfiguration = RequestRetryConfiguration(),
+	val entityListDecodingStrategy: EntityListDecodingStrategy = EntityListDecodingStrategy.Strict,
 )
 
 private fun makeInitializedSdkOptions(
@@ -653,6 +659,7 @@ private fun makeInitializedSdkOptions(
 	parentJob = full.parentJob,
 	requestTimeout = base.requestTimeout,
 	requestRetryConfiguration = base.requestRetryConfiguration,
+	entityListDecodingStrategy = base.entityListDecodingStrategy,
 	keyStorage = full.keyStorage,
 	baseStorage = storage,
 )
