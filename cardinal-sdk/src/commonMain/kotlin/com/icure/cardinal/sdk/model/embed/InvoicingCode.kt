@@ -277,6 +277,11 @@ sealed interface InvoicingCode : Encryptable {
 	public val insuranceJustification: Int?
 
 	/**
+	 * The reimbursement agreement number obtained during a pre-authorization.
+	 */
+	public val agreementNumber: String?
+
+	/**
 	 * The reason for canceling patient intervention.
 	 */
 	public val cancelPatientInterventionReason: Int?
@@ -519,6 +524,10 @@ data class DecryptedInvoicingCode(
 	 */
 	override val insuranceJustification: Int? = null,
 	/**
+	 * The reimbursement agreement number obtained during a pre-authorization.
+	 */
+	override val agreementNumber: String? = null,
+	/**
 	 * The reason for canceling patient intervention.
 	 */
 	override val cancelPatientInterventionReason: Int? = null,
@@ -758,6 +767,10 @@ data class EncryptedInvoicingCode(
 	 * The insurance justification code.
 	 */
 	override val insuranceJustification: Int? = null,
+	/**
+	 * The reimbursement agreement number obtained during a pre-authorization.
+	 */
+	override val agreementNumber: String? = null,
 	/**
 	 * The reason for canceling patient intervention.
 	 */
