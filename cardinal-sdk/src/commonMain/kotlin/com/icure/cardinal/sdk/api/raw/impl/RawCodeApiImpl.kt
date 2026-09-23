@@ -70,7 +70,7 @@ class RawCodeApiImpl(
 				parameter("ts", GMTDate().timestamp)
 			}
 			accept(Application.Json)
-		}.wrap()
+		}.wrapPaginatedList()
 
 	override suspend fun findCodesByType(
 		region: String,
@@ -95,7 +95,7 @@ class RawCodeApiImpl(
 				parameter("ts", GMTDate().timestamp)
 			}
 			accept(Application.Json)
-		}.wrap()
+		}.wrapPaginatedList()
 
 	override suspend fun findCodesByLink(
 		linkType: String,
@@ -115,7 +115,7 @@ class RawCodeApiImpl(
 				parameter("ts", GMTDate().timestamp)
 			}
 			accept(Application.Json)
-		}.wrap()
+		}.wrapPaginatedList()
 
 	override suspend fun listCodesByRegionTypeCodeVersion(
 		region: String,
@@ -134,7 +134,7 @@ class RawCodeApiImpl(
 				parameter("ts", GMTDate().timestamp)
 			}
 			accept(Application.Json)
-		}.wrap()
+		}.wrapList()
 
 	override suspend fun listCodeTypesBy(
 		region: String?,
@@ -233,7 +233,7 @@ class RawCodeApiImpl(
 			contentType(Application.Json)
 			accept(Application.Json)
 			setBody(codeIds)
-		}.wrap()
+		}.wrapList()
 
 	override suspend fun getCode(codeId: String): HttpResponse<Code> =
 		get(authProvider) {
@@ -304,7 +304,7 @@ class RawCodeApiImpl(
 			contentType(Application.Json)
 			accept(Application.Json)
 			setBodyWithSerializer(FilterChainSerializer(CodeAbstractFilterSerializer), filterChain)
-		}.wrap()
+		}.wrapPaginatedList()
 
 	override suspend fun matchCodesBy(filter: AbstractFilter<Code>): HttpResponse<List<String>> =
 		post(authProvider) {
@@ -419,7 +419,7 @@ class RawCodeApiImpl(
 				parameter("ts", GMTDate().timestamp)
 			}
 			accept(Application.Json)
-		}.wrap()
+		}.wrapList()
 
 	override suspend fun declareConflictWinner(request: ConflictResolutionRequest<Code>): HttpResponse<ConflictResolutionResult<Code>> =
 		post(authProvider) {
@@ -504,7 +504,7 @@ class RawCodeApiImpl(
 			contentType(Application.Json)
 			accept(Application.Json)
 			setBody(codeIds)
-		}.wrap()
+		}.wrapList()
 
 	override suspend fun modifyCodeInGroup(
 		groupId: String,
@@ -655,7 +655,7 @@ class RawCodeApiImpl(
 				parameter("ts", GMTDate().timestamp)
 			}
 			accept(Application.Json)
-		}.wrap()
+		}.wrapList()
 
 	override suspend fun declareConflictWinnerInGroup(
 		groupId: String,

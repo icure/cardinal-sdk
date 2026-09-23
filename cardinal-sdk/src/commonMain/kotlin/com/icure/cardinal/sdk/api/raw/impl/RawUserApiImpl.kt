@@ -80,7 +80,7 @@ class RawUserApiImpl(
 				parameter("ts", GMTDate().timestamp)
 			}
 			accept(Application.Json)
-		}.wrap()
+		}.wrapPaginatedList()
 
 	override suspend fun createUser(userDto: User): HttpResponse<User> =
 		post(authProvider) {
@@ -127,7 +127,7 @@ class RawUserApiImpl(
 			contentType(Application.Json)
 			accept(Application.Json)
 			setBody(userIds)
-		}.wrap()
+		}.wrapList()
 
 	override suspend fun getUserByEmail(email: String): HttpResponse<User> =
 		get(authProvider) {
@@ -324,7 +324,7 @@ class RawUserApiImpl(
 			contentType(Application.Json)
 			accept(Application.Json)
 			setBodyWithSerializer(FilterChainSerializer(UserAbstractFilterSerializer), filterChain)
-		}.wrap()
+		}.wrapPaginatedList()
 
 	override suspend fun matchUsersBy(filter: AbstractFilter<User>): HttpResponse<List<String>> =
 		post(authProvider) {
@@ -415,7 +415,7 @@ class RawUserApiImpl(
 				parameter("ts", GMTDate().timestamp)
 			}
 			accept(Application.Json)
-		}.wrap()
+		}.wrapList()
 
 	override suspend fun declareConflictWinner(request: ConflictResolutionRequest<User>): HttpResponse<ConflictResolutionResult<User>> =
 		post(authProvider) {
@@ -475,7 +475,7 @@ class RawUserApiImpl(
 				parameter("ts", GMTDate().timestamp)
 			}
 			accept(Application.Json)
-		}.wrap()
+		}.wrapPaginatedList()
 
 	override suspend fun listUsersInAllGroups(
 		username: String?,
@@ -492,7 +492,7 @@ class RawUserApiImpl(
 				parameter("ts", GMTDate().timestamp)
 			}
 			accept(Application.Json)
-		}.wrap()
+		}.wrapList()
 
 	override suspend fun createUserInGroup(
 		groupId: String,
@@ -758,7 +758,7 @@ class RawUserApiImpl(
 			contentType(Application.Json)
 			accept(Application.Json)
 			setBodyWithSerializer(FilterChainSerializer(UserAbstractFilterSerializer), filterChain)
-		}.wrap()
+		}.wrapPaginatedList()
 
 	override suspend fun getUsersInGroup(
 		groupId: String,
@@ -772,7 +772,7 @@ class RawUserApiImpl(
 			contentType(Application.Json)
 			accept(Application.Json)
 			setBody(userIds)
-		}.wrap()
+		}.wrapList()
 
 	override suspend fun getUserInGroup(
 		groupId: String,
@@ -1098,7 +1098,7 @@ class RawUserApiImpl(
 				parameter("ts", GMTDate().timestamp)
 			}
 			accept(Application.Json)
-		}.wrap()
+		}.wrapList()
 
 	override suspend fun declareConflictWinnerInGroup(
 		groupId: String,

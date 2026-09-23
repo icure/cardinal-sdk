@@ -86,7 +86,7 @@ class RawPatientApiImpl(
 				parameter("ts", GMTDate().timestamp)
 			}
 			accept(Application.Json)
-		}.wrap()
+		}.wrapPaginatedList()
 
 	override suspend fun listPatientsOfHcParty(
 		hcPartyId: String,
@@ -108,7 +108,7 @@ class RawPatientApiImpl(
 				parameter("ts", GMTDate().timestamp)
 			}
 			accept(Application.Json)
-		}.wrap()
+		}.wrapPaginatedList()
 
 	override suspend fun listOfMergesAfter(date: Long): HttpResponse<List<EncryptedPatient>> =
 		get(authProvider) {
@@ -118,7 +118,7 @@ class RawPatientApiImpl(
 				parameter("ts", GMTDate().timestamp)
 			}
 			accept(Application.Json)
-		}.wrap()
+		}.wrapList()
 
 	override suspend fun findPatientsModifiedAfter(
 		date: Long,
@@ -136,7 +136,7 @@ class RawPatientApiImpl(
 				parameter("ts", GMTDate().timestamp)
 			}
 			accept(Application.Json)
-		}.wrap()
+		}.wrapPaginatedList()
 
 	override suspend fun listPatientsByHcParty(
 		hcPartyId: String,
@@ -158,7 +158,7 @@ class RawPatientApiImpl(
 				parameter("ts", GMTDate().timestamp)
 			}
 			accept(Application.Json)
-		}.wrap()
+		}.wrapPaginatedList()
 
 	override suspend fun getPatientHcPartyKeysForDelegate(patientId: String): HttpResponse<Map<String, String>> =
 		get(authProvider) {
@@ -213,7 +213,7 @@ class RawPatientApiImpl(
 				parameter("ts", GMTDate().timestamp)
 			}
 			accept(Application.Json)
-		}.wrap()
+		}.wrapPaginatedList()
 
 	override suspend fun findPatientsIdsByHealthcareParty(
 		hcPartyId: String,
@@ -264,7 +264,7 @@ class RawPatientApiImpl(
 				parameter("ts", GMTDate().timestamp)
 			}
 			accept(Application.Json)
-		}.wrap()
+		}.wrapPaginatedList()
 
 	override suspend fun filterPatientsBy(
 		startKey: String?,
@@ -289,7 +289,7 @@ class RawPatientApiImpl(
 			contentType(Application.Json)
 			accept(Application.Json)
 			setBodyWithSerializer(FilterChainSerializer(PatientAbstractFilterSerializer), filterChain)
-		}.wrap()
+		}.wrapPaginatedList()
 
 	override suspend fun matchPatientsBy(filter: AbstractFilter<Patient>): HttpResponse<List<String>> =
 		post(authProvider) {
@@ -317,7 +317,7 @@ class RawPatientApiImpl(
 				parameter("ts", GMTDate().timestamp)
 			}
 			accept(Application.Json)
-		}.wrap()
+		}.wrapList()
 
 	override suspend fun createPatient(p: EncryptedPatient): HttpResponse<EncryptedPatient> =
 		post(authProvider) {
@@ -445,7 +445,7 @@ class RawPatientApiImpl(
 				parameter("ts", GMTDate().timestamp)
 			}
 			accept(Application.Json)
-		}.wrap()
+		}.wrapPaginatedList()
 
 	override suspend fun listDeletedPatientsByName(
 		firstName: String?,
@@ -460,7 +460,7 @@ class RawPatientApiImpl(
 				parameter("ts", GMTDate().timestamp)
 			}
 			accept(Application.Json)
-		}.wrap()
+		}.wrapList()
 
 	override suspend fun getPatients(patientIds: ListOfIds): HttpResponse<List<EncryptedPatient>> =
 		post(authProvider) {
@@ -471,7 +471,7 @@ class RawPatientApiImpl(
 			contentType(Application.Json)
 			accept(Application.Json)
 			setBody(patientIds)
-		}.wrap()
+		}.wrapList()
 
 	override suspend fun findPatientsDelegationsStubsByIds(patientIds: ListOfIds): HttpResponse<List<IcureStub>> =
 		post(authProvider) {
@@ -598,7 +598,7 @@ class RawPatientApiImpl(
 			}
 			contentType(Application.Json)
 			accept(Application.Json)
-		}.wrap()
+		}.wrapPaginatedList()
 
 	override suspend fun findDuplicatesByName(
 		hcPartyId: String,
@@ -617,7 +617,7 @@ class RawPatientApiImpl(
 			}
 			contentType(Application.Json)
 			accept(Application.Json)
-		}.wrap()
+		}.wrapPaginatedList()
 
 	override suspend fun bulkShare(request: BulkShareOrUpdateMetadataParams): HttpResponse<List<EntityBulkShareResult<EncryptedPatient>>> =
 		put(authProvider) {
@@ -679,7 +679,7 @@ class RawPatientApiImpl(
 				parameter("ts", GMTDate().timestamp)
 			}
 			accept(Application.Json)
-		}.wrap()
+		}.wrapList()
 
 	override suspend fun declareConflictWinner(
 		request: ConflictResolutionRequest<EncryptedPatient>,
@@ -815,7 +815,7 @@ class RawPatientApiImpl(
 			contentType(Application.Json)
 			accept(Application.Json)
 			setBody(patientIds)
-		}.wrap()
+		}.wrapList()
 
 	override suspend fun createPatientsInGroupFull(
 		groupId: String,
@@ -992,7 +992,7 @@ class RawPatientApiImpl(
 				parameter("ts", GMTDate().timestamp)
 			}
 			accept(Application.Json)
-		}.wrap()
+		}.wrapList()
 
 	override suspend fun declareConflictWinnerInGroup(
 		groupId: String,

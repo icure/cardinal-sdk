@@ -163,7 +163,7 @@ class RawPlaceApiImpl(
 			contentType(Application.Json)
 			accept(Application.Json)
 			setBody(placeIds)
-		}.wrap()
+		}.wrapList()
 
 	override suspend fun getPlaces(
 		startDocumentId: String?,
@@ -178,7 +178,7 @@ class RawPlaceApiImpl(
 				parameter("ts", GMTDate().timestamp)
 			}
 			accept(Application.Json)
-		}.wrap()
+		}.wrapPaginatedList()
 
 	override suspend fun modifyPlace(placeDto: Place): HttpResponse<Place> =
 		put(authProvider) {
@@ -221,7 +221,7 @@ class RawPlaceApiImpl(
 				parameter("ts", GMTDate().timestamp)
 			}
 			accept(Application.Json)
-		}.wrap()
+		}.wrapList()
 
 	override suspend fun declareConflictWinner(request: ConflictResolutionRequest<Place>): HttpResponse<ConflictResolutionResult<Place>> =
 		post(authProvider) {
@@ -306,7 +306,7 @@ class RawPlaceApiImpl(
 			contentType(Application.Json)
 			accept(Application.Json)
 			setBody(placeIds)
-		}.wrap()
+		}.wrapList()
 
 	override suspend fun modifyPlaceInGroup(
 		groupId: String,
@@ -443,7 +443,7 @@ class RawPlaceApiImpl(
 				parameter("ts", GMTDate().timestamp)
 			}
 			accept(Application.Json)
-		}.wrap()
+		}.wrapList()
 
 	override suspend fun declareConflictWinnerInGroup(
 		groupId: String,

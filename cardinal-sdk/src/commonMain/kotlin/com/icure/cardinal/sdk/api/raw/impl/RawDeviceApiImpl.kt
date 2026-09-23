@@ -64,7 +64,7 @@ class RawDeviceApiImpl(
 			contentType(Application.Json)
 			accept(Application.Json)
 			setBody(deviceIds)
-		}.wrap()
+		}.wrapList()
 
 	override suspend fun createDevice(p: Device): HttpResponse<Device> =
 		post(authProvider) {
@@ -125,7 +125,7 @@ class RawDeviceApiImpl(
 			contentType(Application.Json)
 			accept(Application.Json)
 			setBodyWithSerializer(FilterChainSerializer(DeviceAbstractFilterSerializer), filterChain)
-		}.wrap()
+		}.wrapPaginatedList()
 
 	override suspend fun getDeviceAesExchangeKeysForDelegate(
 		deviceId: String,
@@ -253,7 +253,7 @@ class RawDeviceApiImpl(
 				parameter("ts", GMTDate().timestamp)
 			}
 			accept(Application.Json)
-		}.wrap()
+		}.wrapList()
 
 	override suspend fun declareConflictWinner(request: ConflictResolutionRequest<Device>): HttpResponse<ConflictResolutionResult<Device>> =
 		post(authProvider) {
@@ -310,7 +310,7 @@ class RawDeviceApiImpl(
 			contentType(Application.Json)
 			accept(Application.Json)
 			setBody(deviceIds)
-		}.wrap()
+		}.wrapList()
 
 	override suspend fun modifyDeviceInGroup(
 		groupId: String,
@@ -489,7 +489,7 @@ class RawDeviceApiImpl(
 				parameter("ts", GMTDate().timestamp)
 			}
 			accept(Application.Json)
-		}.wrap()
+		}.wrapList()
 
 	override suspend fun declareConflictWinnerInGroup(
 		groupId: String,
