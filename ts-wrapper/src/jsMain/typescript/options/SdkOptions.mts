@@ -82,6 +82,19 @@ export interface SdkOptions {
    * If not null the SDK will immediately set the data owner scope to the provided value after login.
    */
   readonly dataOwnerScope?: string
+  /**
+   * If provided, when the backend returns a list of stored entities (get by ids, filter, find, list, ...) the entities
+   * that can't be deserialized are dropped from the result instead of failing the whole request, and this function is
+   * called once for each dropped entity. Methods returning lists may then return fewer entities than requested.
+   *
+   * Single entity reads, write operations and the entities used internally by the crypto layer are never affected.
+   * If the function throws, the request fails with that error.
+   *
+   * The `json` of the entity contains all its non-encrypted data, including personal data: avoid logging it as is.
+   *
+   * If not provided (default) a malformed entity fails the whole request.
+   */
+  readonly onMalformedEntity?: (entity: MalformedEntity) => void
 }
 
 export interface BasicSdkOptions {
@@ -116,6 +129,19 @@ export interface BasicSdkOptions {
    * If not null the SDK will immediately set the data owner scope to the provided value after login.
    */
   readonly dataOwnerScope?: string
+  /**
+   * If provided, when the backend returns a list of stored entities (get by ids, filter, find, list, ...) the entities
+   * that can't be deserialized are dropped from the result instead of failing the whole request, and this function is
+   * called once for each dropped entity. Methods returning lists may then return fewer entities than requested.
+   *
+   * Single entity reads, write operations and the entities used internally by the crypto layer are never affected.
+   * If the function throws, the request fails with that error.
+   *
+   * The `json` of the entity contains all its non-encrypted data, including personal data: avoid logging it as is.
+   *
+   * If not provided (default) a malformed entity fails the whole request.
+   */
+  readonly onMalformedEntity?: (entity: MalformedEntity) => void
 }
 
 /**
@@ -159,6 +185,45 @@ export interface AnonymousSdkOptions {
    * This behaviour is disabled by default (strict by default).
    */
   readonly ignoreUnknownFields?: boolean
+  /**
+   * If provided, when the backend returns a list of stored entities (get by ids, filter, find, list, ...) the entities
+   * that can't be deserialized are dropped from the result instead of failing the whole request, and this function is
+   * called once for each dropped entity. Methods returning lists may then return fewer entities than requested.
+   *
+   * Single entity reads, write operations and the entities used internally by the crypto layer are never affected.
+   * If the function throws, the request fails with that error.
+   *
+   * The `json` of the entity contains all its non-encrypted data, including personal data: avoid logging it as is.
+   *
+   * If not provided (default) a malformed entity fails the whole request.
+   */
+  readonly onMalformedEntity?: (entity: MalformedEntity) => void
+}
+
+/**
+ * An entity returned by the backend in a list that could not be deserialized and was discarded.
+ */
+export interface MalformedEntity {
+  /**
+   * Serial name of the expected type of the entity, e.g. "com.icure.cardinal.sdk.model.EncryptedPatient".
+   */
+  readonly entityType: string
+  /**
+   * Id of the entity, if it could be read from its raw json.
+   */
+  readonly entityId: string | undefined
+  /**
+   * The raw json of the entity, as returned by the backend.
+   */
+  readonly json: any
+  /**
+   * Message of the deserialization error.
+   */
+  readonly error: string
+  /**
+   * Url of the request that returned the entity.
+   */
+  readonly requestUrl: string
 }
 
 export interface EncryptedFieldsConfiguration {

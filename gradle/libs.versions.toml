@@ -37,6 +37,7 @@ ktorClientEngineJava = { group = "io.ktor", name = "ktor-client-java", version.r
 ktorClientWebsocket = { group = "io.ktor", name = "ktor-client-websockets", version.ref = "ktor" }
 ktorClientEngineCio = { group = "io.ktor", name = "ktor-client-cio", version.ref = "ktor" }
 ktorClientEngineCurl = { group = "io.ktor", name = "ktor-client-curl", version.ref = "ktor" }
+ktorClientMock = { group = "io.ktor", name = "ktor-client-mock", version.ref = "ktor" }
 ktorContentNegotiation = { group = "io.ktor", name = "ktor-client-content-negotiation", version.ref = "ktor" }
 ktorSerializationJson = { group = "io.ktor", name = "ktor-serialization-kotlinx-json", version.ref = "ktor" }
 ktorServerCore = { group = "io.ktor", name = "ktor-server-core", version.ref = "ktor" }

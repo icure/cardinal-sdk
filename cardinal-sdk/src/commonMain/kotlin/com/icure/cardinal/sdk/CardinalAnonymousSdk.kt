@@ -21,7 +21,8 @@ interface CardinalAnonymousSdk : CardinalAnonymousApis {
 				json = options.configuredJsonOrDefault(),
 				requestTimeout = options.requestTimeout,
 				additionalHeaders = emptyMap(),
-				retryConfiguration = options.requestRetryConfiguration
+				retryConfiguration = options.requestRetryConfiguration,
+				entityListDecodingStrategy = options.entityListDecodingStrategy,
 			)
 			return CardinalAnonymousSdkImpl(
 				rawAnonymousApi = RawAnonymousApiImpl(
