@@ -123,6 +123,8 @@ kotlin {
 				api(libs.kotlinDateTime)
 				implementation(libs.kermit)
 				api(libs.kryptom)
+				// secp160r1 x-only ECDH, HKDF-SHA256 and constantTimeEquals for the pairing codes.
+				api(libs.secp160r1Pairing)
 				api(libs.kerberus)
 				implementation(libs.coroutinesCore)
 				implementation(libs.okio)
