@@ -27,8 +27,8 @@ public fun cryptoActor_toJs(obj: CryptoActor): CryptoActorJs = when (obj) {
 	is DecryptedPatient -> patient_toJs(obj)
 	is EncryptedPatient -> patient_toJs(obj)
 	is Device -> device_toJs(obj)
-	is HealthcareParty -> healthcareParty_toJs(obj)
 	is CryptoActorStub -> cryptoActorStub_toJs(obj)
+	is HealthcareParty -> healthcareParty_toJs(obj)
 	else -> throw
 			IllegalArgumentException("""Unknown concrete implementation for com.icure.cardinal.sdk.model.base.CryptoActor: $obj""")
 }
@@ -42,12 +42,12 @@ public fun cryptoActor_fromJs(obj: CryptoActorJs): CryptoActor = when {
 			com.icure.cardinal.sdk.js.model.EncryptedPatientJs)
 	obj is DeviceJs || obj.ktClass == "com.icure.cardinal.sdk.model.Device" ->device_fromJs(obj as
 			com.icure.cardinal.sdk.js.model.DeviceJs)
-	obj is HealthcarePartyJs || obj.ktClass ==
-			"com.icure.cardinal.sdk.model.HealthcareParty" ->healthcareParty_fromJs(obj as
-			com.icure.cardinal.sdk.js.model.HealthcarePartyJs)
 	obj is CryptoActorStubJs || obj.ktClass ==
 			"com.icure.cardinal.sdk.model.CryptoActorStub" ->cryptoActorStub_fromJs(obj as
 			com.icure.cardinal.sdk.js.model.CryptoActorStubJs)
+	obj is HealthcarePartyJs || obj.ktClass ==
+			"com.icure.cardinal.sdk.model.HealthcareParty" ->healthcareParty_fromJs(obj as
+			com.icure.cardinal.sdk.js.model.HealthcarePartyJs)
 	else -> throw
 			IllegalArgumentException("""Unknown concrete implementation for com.icure.cardinal.sdk.model.base.CryptoActor: $obj""")
 }
