@@ -77,7 +77,7 @@ class RawFormApiImpl(
 			contentType(Application.Json)
 			accept(Application.Json)
 			setBody(formIds)
-		}.wrap()
+		}.wrapList()
 
 	override suspend fun getFormByLogicalUuid(logicalUuid: String): HttpResponse<EncryptedForm> =
 		get(authProvider) {
@@ -97,7 +97,7 @@ class RawFormApiImpl(
 				parameter("ts", GMTDate().timestamp)
 			}
 			accept(Application.Json)
-		}.wrap()
+		}.wrapList()
 
 	override suspend fun getFormsByUniqueId(uniqueId: String): HttpResponse<List<EncryptedForm>> =
 		get(authProvider) {
@@ -107,7 +107,7 @@ class RawFormApiImpl(
 				parameter("ts", GMTDate().timestamp)
 			}
 			accept(Application.Json)
-		}.wrap()
+		}.wrapList()
 
 	override suspend fun getFormByUniqueId(uniqueId: String): HttpResponse<EncryptedForm> =
 		get(authProvider) {
@@ -130,7 +130,7 @@ class RawFormApiImpl(
 				parameter("ts", GMTDate().timestamp)
 			}
 			accept(Application.Json)
-		}.wrap()
+		}.wrapList()
 
 	override suspend fun createForm(ft: EncryptedForm): HttpResponse<EncryptedForm> =
 		post(authProvider) {
@@ -319,7 +319,7 @@ class RawFormApiImpl(
 				parameter("ts", GMTDate().timestamp)
 			}
 			accept(Application.Json)
-		}.wrap()
+		}.wrapList()
 
 	override suspend fun getFormTemplates(formTemplateIds: ListOfIds): HttpResponse<List<FormTemplate>> =
 		post(authProvider) {
@@ -330,7 +330,7 @@ class RawFormApiImpl(
 			contentType(Application.Json)
 			accept(Application.Json)
 			setBody(formTemplateIds)
-		}.wrap()
+		}.wrapList()
 
 	override suspend fun createFormTemplate(ft: FormTemplate): HttpResponse<FormTemplate> =
 		post(authProvider) {
@@ -525,7 +525,7 @@ class RawFormApiImpl(
 				parameter("ts", GMTDate().timestamp)
 			}
 			accept(Application.Json)
-		}.wrap()
+		}.wrapList()
 
 	override suspend fun declareConflictWinner(
 		request: ConflictResolutionRequest<EncryptedForm>,
@@ -640,7 +640,7 @@ class RawFormApiImpl(
 			contentType(Application.Json)
 			accept(Application.Json)
 			setBody(formIds)
-		}.wrap()
+		}.wrapList()
 
 	override suspend fun deleteFormInGroup(
 		groupId: String,
@@ -770,7 +770,7 @@ class RawFormApiImpl(
 				parameter("ts", GMTDate().timestamp)
 			}
 			accept(Application.Json)
-		}.wrap()
+		}.wrapList()
 
 	override suspend fun createFormTemplateInGroup(
 		groupId: String,
@@ -950,7 +950,7 @@ class RawFormApiImpl(
 			contentType(Application.Json)
 			accept(Application.Json)
 			setBody(formTemplateIds)
-		}.wrap()
+		}.wrapList()
 
 	override suspend fun getFormTemplateInGroup(
 		groupId: String,
@@ -1003,7 +1003,7 @@ class RawFormApiImpl(
 				parameter("ts", GMTDate().timestamp)
 			}
 			accept(Application.Json)
-		}.wrap()
+		}.wrapList()
 
 	override suspend fun declareConflictWinnerInGroup(
 		groupId: String,

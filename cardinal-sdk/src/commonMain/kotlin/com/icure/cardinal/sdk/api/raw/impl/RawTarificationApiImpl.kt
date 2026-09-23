@@ -55,7 +55,7 @@ class RawTarificationApiImpl(
 				parameter("ts", GMTDate().timestamp)
 			}
 			accept(Application.Json)
-		}.wrap()
+		}.wrapPaginatedList()
 
 	override suspend fun findTarificationsBy(
 		region: String?,
@@ -80,7 +80,7 @@ class RawTarificationApiImpl(
 				parameter("ts", GMTDate().timestamp)
 			}
 			accept(Application.Json)
-		}.wrap()
+		}.wrapPaginatedList()
 
 	override suspend fun findTarificationsBy(
 		region: String?,
@@ -99,7 +99,7 @@ class RawTarificationApiImpl(
 				parameter("ts", GMTDate().timestamp)
 			}
 			accept(Application.Json)
-		}.wrap()
+		}.wrapList()
 
 	override suspend fun createTarification(c: Tarification): HttpResponse<Tarification> =
 		post(authProvider) {
@@ -121,7 +121,7 @@ class RawTarificationApiImpl(
 			contentType(Application.Json)
 			accept(Application.Json)
 			setBody(tarificationIds)
-		}.wrap()
+		}.wrapList()
 
 	override suspend fun getTarification(tarificationId: String): HttpResponse<Tarification> =
 		get(authProvider) {
