@@ -249,12 +249,8 @@ internal class WebSocketSubscription<E : Identifiable<String>> private construct
 		} catch (_: Exception) {
 			ABNORMAL_INTERRUPTION
 		}
-	 	if (
-			_closeReason == null &&
-				wsCloseReason != NO_PING_FROM_SERVER &&
-				wsCloseReason != ABNORMAL_INTERRUPTION // Abnormal interruption is already sent as UnexpectedError
-		) {
-			 _eventChannel.send(EntitySubscriptionEvent.ConnectionError.ClosedByServer)
+	 	if (_closeReason == null && wsCloseReason != NO_PING_FROM_SERVER) {
+			_eventChannel.send(EntitySubscriptionEvent.ConnectionError.ClosedByServer)
 		}
 	}
 
