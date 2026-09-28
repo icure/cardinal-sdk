@@ -4,7 +4,9 @@ import com.icure.cardinal.sdk.api.raw.impl.RawDataOwnerApiImpl
 import com.icure.cardinal.sdk.api.raw.impl.RawExchangeDataApiImpl
 import com.icure.cardinal.sdk.api.raw.impl.RawHealthcarePartyApiImpl
 import com.icure.cardinal.sdk.crypto.impl.exportSpkiHex
+import com.icure.cardinal.sdk.filters.ContactFilters
 import com.icure.cardinal.sdk.model.DataOwnerType
+import com.icure.cardinal.sdk.model.DecryptedContact
 import com.icure.cardinal.sdk.model.DecryptedPatient
 import com.icure.cardinal.sdk.model.EncryptedPatient
 import com.icure.cardinal.sdk.model.HealthcareParty
@@ -96,6 +98,28 @@ class SimpleDataOwnerGroupTest : FreeSpec({
 		"and direct members of that group should be able to read it" {
 			memberAApi.patient.getPatient(patient.id).shouldNotBeNull().note shouldBe "Secret"
 			memberBApi.patient.getPatient(patient.id).shouldNotBeNull().note shouldBe "Secret"
+		}
+
+		"and direct members of that group should be able to use the secret ids shared with the group" {
+			val secretIds = hcpApi.patient.getSecretIdsOf(patient).keys
+			secretIds shouldHaveSize 1
+			val contact = hcpApi.contact.createContact(
+				hcpApi.contact.withEncryptionMetadata(
+					DecryptedContact(uuid()),
+					patient,
+					delegates = mapOf(group.dataOwnerId to AccessLevel.Read)
+				)
+			)
+			val patientForMember = memberAApi.patient.getPatient(patient.id).shouldNotBeNull()
+			memberAApi.patient.getSecretIdsOf(patientForMember).keys shouldBe secretIds
+			memberAApi.contact.matchContactsBy(
+				ContactFilters.byPatientsForDataOwner(group.dataOwnerId, listOf(patientForMember))
+			) shouldBe listOf(contact.id)
+			// The default secret id option (UseAnySharedWithHierarchy) must accept a secret id shared with the group
+			val memberContact = memberAApi.contact.createContact(
+				memberAApi.contact.withEncryptionMetadata(DecryptedContact(uuid()), patientForMember)
+			)
+			memberAApi.contact.decryptPatientIdOf(memberContact).map { it.entityId }.toSet() shouldBe setOf(patient.id)
 		}
 
 		"and members added in a second moment should be able to read it after they have been giving access to existing exchange data" {

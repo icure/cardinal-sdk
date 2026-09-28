@@ -117,6 +117,21 @@ class DataOwnerHierarchyInfoTest : StringSpec({
 		reRooted.flattened() shouldContainExactlyInAnyOrder listOf("B", "D")
 	}
 
+	"subHierarchy rooted at the data owner itself should return the full hierarchy".config(enabled = DEFAULT_ENABLED) {
+		parentChain.subHierarchy("A") shouldBe parentChain
+	}
+
+	"subHierarchy should re-root at a node reached through any link type, keeping links of every type".config(enabled = DEFAULT_ENABLED) {
+		val reRooted = parentChain.subHierarchy("C")
+		reRooted.id shouldBe "C"
+		reRooted.flattened() shouldContainExactlyInAnyOrder listOf("C", "D")
+		diamondPlusBranch.subHierarchy("D").flattened() shouldContainExactlyInAnyOrder listOf("D", "E", "F")
+	}
+
+	"subHierarchy should throw for an id not part of the hierarchy".config(enabled = DEFAULT_ENABLED) {
+		shouldThrow<IllegalArgumentException> { parentChain.subHierarchy("Z") }
+	}
+
 	"filterLinks should drop a rejected node together with its whole subtree".config(enabled = DEFAULT_ENABLED) {
 		val withoutD = diamondPlusBranch.filterLinks { it.linkedGroupId != "D" }
 		withoutD.flattened() shouldContainExactlyInAnyOrder listOf("A", "B", "C", "G", "H")
