@@ -6,6 +6,7 @@ import com.icure.cardinal.sdk.model.base.CodeStub
 import com.icure.cardinal.sdk.model.base.HasTags
 import com.icure.cardinal.sdk.model.base.StoredDocument
 import com.icure.cardinal.sdk.model.embed.AuthenticationClass
+import com.icure.cardinal.sdk.model.embed.GroupStatus
 import com.icure.cardinal.sdk.model.embed.UserType
 import com.icure.cardinal.sdk.model.security.ExternalJwtConfig
 import com.icure.cardinal.sdk.model.security.OperationToken
@@ -124,6 +125,13 @@ data class Group(
 	 *  The version of the custom design doc schema to apply by default children groups on creation.
 	 */
 	public val defaultChildrenSchemaVersion: Int? = null,
+	/**
+	 *
+	 *  The commercial status of the group, derived from the group hierarchy when not explicitly set on
+	 * the group.
+	 *  This field is read-only: it is ignored when creating or modifying a group.
+	 */
+	public val status: GroupStatus? = null,
 ) : StoredDocument, HasTags {
 	@Serializable
 	public data class TemplatesConfiguration(
