@@ -14,10 +14,22 @@
               "type": "DecryptedAccessLog | undefined",
               "description": "",
               "optional": false
-            },
+            }
+          ],
+          "returnType": "DecryptedAccessLog",
+          "flavours": [
+            "decrypted",
+            "encrypted",
+            "tryAndRecover"
+          ]
+        },
+        {
+          "name": "withEncryptionMetadataAndDelegates",
+          "description": "In-group version of [AccessLogApi.withEncryptionMetadataAndDelegates]",
+          "params": [
             {
-              "name": "patient",
-              "type": "Patient",
+              "name": "base",
+              "type": "DecryptedAccessLog | undefined",
               "description": "",
               "optional": false
             }
@@ -1042,6 +1054,30 @@
           ]
         },
         {
+          "name": "withEncryptionMetadataAndDelegates",
+          "description": "In-group version of [CalendarItemApi.withEncryptionMetadataAndDelegates]",
+          "params": [
+            {
+              "name": "base",
+              "type": "DecryptedCalendarItem | undefined",
+              "description": "",
+              "optional": false
+            },
+            {
+              "name": "patient",
+              "type": "Patient | undefined",
+              "description": "",
+              "optional": false
+            }
+          ],
+          "returnType": "DecryptedCalendarItem",
+          "flavours": [
+            "decrypted",
+            "encrypted",
+            "tryAndRecover"
+          ]
+        },
+        {
           "name": "getEncryptionKeysOf",
           "description": "In-group version of [CalendarItemApi.getEncryptionKeysOf]",
           "params": [
@@ -1203,6 +1239,108 @@
             }
           ],
           "returnType": "Array<string",
+          "flavours": [
+            "decrypted",
+            "encrypted",
+            "tryAndRecover"
+          ]
+        },
+        {
+          "name": "getCalendarItemsOccupancyByPeriodForSelf",
+          "description": "In-group version of [getCalendarItemsOccupancyByPeriodForSelf].",
+          "params": [
+            {
+              "name": "startDate",
+              "type": "number",
+              "description": "",
+              "optional": false
+            },
+            {
+              "name": "endDate",
+              "type": "number",
+              "description": "",
+              "optional": false
+            },
+            {
+              "name": "extensionInDays",
+              "type": "number | undefined",
+              "description": "",
+              "optional": false
+            }
+          ],
+          "returnType": "Array<CalendarItemOccupancy",
+          "flavours": [
+            "decrypted",
+            "encrypted",
+            "tryAndRecover"
+          ]
+        },
+        {
+          "name": "getCalendarItemsOccupancyByPeriodForHealthcareParty",
+          "description": "In-group version of [getCalendarItemsOccupancyByPeriodForHealthcareParty].",
+          "params": [
+            {
+              "name": "startDate",
+              "type": "number",
+              "description": "",
+              "optional": false
+            },
+            {
+              "name": "endDate",
+              "type": "number",
+              "description": "",
+              "optional": false
+            },
+            {
+              "name": "hcPartyId",
+              "type": "string",
+              "description": "",
+              "optional": false
+            },
+            {
+              "name": "extensionInDays",
+              "type": "number | undefined",
+              "description": "",
+              "optional": false
+            }
+          ],
+          "returnType": "Array<CalendarItemOccupancy",
+          "flavours": [
+            "decrypted",
+            "encrypted",
+            "tryAndRecover"
+          ]
+        },
+        {
+          "name": "getCalendarItemsOccupancyByPeriodAndAgendaId",
+          "description": "In-group version of [getCalendarItemsOccupancyByPeriodAndAgendaId].",
+          "params": [
+            {
+              "name": "startDate",
+              "type": "number",
+              "description": "",
+              "optional": false
+            },
+            {
+              "name": "endDate",
+              "type": "number",
+              "description": "",
+              "optional": false
+            },
+            {
+              "name": "agendaId",
+              "type": "string",
+              "description": "",
+              "optional": false
+            },
+            {
+              "name": "extensionInDays",
+              "type": "number | undefined",
+              "description": "",
+              "optional": false
+            }
+          ],
+          "returnType": "Array<CalendarItemOccupancy",
           "flavours": [
             "decrypted",
             "encrypted",
@@ -2684,6 +2822,30 @@
           ]
         },
         {
+          "name": "withEncryptionMetadataAndDelegates",
+          "description": "In-group version of [ContactApi.withEncryptionMetadataAndDelegates]",
+          "params": [
+            {
+              "name": "base",
+              "type": "DecryptedContact | undefined",
+              "description": "",
+              "optional": false
+            },
+            {
+              "name": "patient",
+              "type": "Patient",
+              "description": "",
+              "optional": false
+            }
+          ],
+          "returnType": "DecryptedContact",
+          "flavours": [
+            "decrypted",
+            "encrypted",
+            "tryAndRecover"
+          ]
+        },
+        {
           "name": "getEncryptionKeysOf",
           "description": "In-group version of [ContactApi.getEncryptionKeysOf]",
           "params": [
@@ -4105,6 +4267,30 @@
           ]
         },
         {
+          "name": "withEncryptionMetadataAndDelegatesLinkedToMessage",
+          "description": "In-group version of [DocumentApi.withEncryptionMetadataAndDelegatesLinkedToMessage]",
+          "params": [
+            {
+              "name": "base",
+              "type": "DecryptedDocument | undefined",
+              "description": "",
+              "optional": false
+            },
+            {
+              "name": "message",
+              "type": "Message",
+              "description": "",
+              "optional": false
+            }
+          ],
+          "returnType": "DecryptedDocument",
+          "flavours": [
+            "decrypted",
+            "encrypted",
+            "tryAndRecover"
+          ]
+        },
+        {
           "name": "withEncryptionMetadataLinkedToPatient",
           "description": "In-group version of [DocumentApi.withEncryptionMetadataLinkedToPatient]",
           "params": [
@@ -4129,8 +4315,50 @@
           ]
         },
         {
+          "name": "withEncryptionMetadataAndDelegatesLinkedToPatient",
+          "description": "In-group version of [DocumentApi.withEncryptionMetadataAndDelegatesLinkedToPatient]",
+          "params": [
+            {
+              "name": "base",
+              "type": "DecryptedDocument | undefined",
+              "description": "",
+              "optional": false
+            },
+            {
+              "name": "patient",
+              "type": "Patient",
+              "description": "",
+              "optional": false
+            }
+          ],
+          "returnType": "DecryptedDocument",
+          "flavours": [
+            "decrypted",
+            "encrypted",
+            "tryAndRecover"
+          ]
+        },
+        {
           "name": "withEncryptionMetadataUnlinked",
           "description": "In-group version of [DocumentApi.withEncryptionMetadataUnlinked]",
+          "params": [
+            {
+              "name": "base",
+              "type": "DecryptedDocument | undefined",
+              "description": "",
+              "optional": false
+            }
+          ],
+          "returnType": "DecryptedDocument",
+          "flavours": [
+            "decrypted",
+            "encrypted",
+            "tryAndRecover"
+          ]
+        },
+        {
+          "name": "withEncryptionMetadataAndDelegatesUnlinked",
+          "description": "In-group version of [DocumentApi.withEncryptionMetadataAndDelegatesUnlinked]",
           "params": [
             {
               "name": "base",
@@ -5000,6 +5228,30 @@
         {
           "name": "withEncryptionMetadata",
           "description": "Give access to the encrypted flavour of the api / val encrypted: FormFlavouredInGroupApi<EncryptedForm>  /** Gives access to the polymorphic flavour of the api / val tryAndRecover: FormFlavouredInGroupApi<Form>  /** In-group version of [FormApi.withEncryptionMetadata]",
+          "params": [
+            {
+              "name": "base",
+              "type": "DecryptedForm | undefined",
+              "description": "",
+              "optional": false
+            },
+            {
+              "name": "patient",
+              "type": "Patient",
+              "description": "",
+              "optional": false
+            }
+          ],
+          "returnType": "DecryptedForm",
+          "flavours": [
+            "decrypted",
+            "encrypted",
+            "tryAndRecover"
+          ]
+        },
+        {
+          "name": "withEncryptionMetadataAndDelegates",
+          "description": "In-group version of [FormApi.withEncryptionMetadataAndDelegates]",
           "params": [
             {
               "name": "base",
@@ -7048,6 +7300,30 @@
           ]
         },
         {
+          "name": "withEncryptionMetadataAndDelegates",
+          "description": "In-group version of [HealthElementApi.withEncryptionMetadataAndDelegates]",
+          "params": [
+            {
+              "name": "base",
+              "type": "DecryptedHealthElement | undefined",
+              "description": "",
+              "optional": false
+            },
+            {
+              "name": "patient",
+              "type": "Patient",
+              "description": "",
+              "optional": false
+            }
+          ],
+          "returnType": "DecryptedHealthElement",
+          "flavours": [
+            "decrypted",
+            "encrypted",
+            "tryAndRecover"
+          ]
+        },
+        {
           "name": "getEncryptionKeysOf",
           "description": "In-group version of [HealthElementApi.getEncryptionKeysOf]",
           "params": [
@@ -8467,6 +8743,70 @@
           "flavours": [
             "none"
           ]
+        },
+        {
+          "name": "matchInsurancesBy",
+          "description": "",
+          "params": [
+            {
+              "name": "filter",
+              "type": "BaseFilterOptions<Insurance>",
+              "description": "",
+              "optional": false
+            }
+          ],
+          "returnType": "Array<string",
+          "flavours": [
+            "none"
+          ]
+        },
+        {
+          "name": "filterInsurancesBy",
+          "description": "",
+          "params": [
+            {
+              "name": "filter",
+              "type": "BaseFilterOptions<Insurance>",
+              "description": "",
+              "optional": false
+            }
+          ],
+          "returnType": "PaginatedListIterator<Insurance",
+          "flavours": [
+            "none"
+          ]
+        },
+        {
+          "name": "matchInsurancesBySorted",
+          "description": "",
+          "params": [
+            {
+              "name": "filter",
+              "type": "BaseSortableFilterOptions<Insurance>",
+              "description": "",
+              "optional": false
+            }
+          ],
+          "returnType": "Array<string",
+          "flavours": [
+            "none"
+          ]
+        },
+        {
+          "name": "filterInsurancesBySorted",
+          "description": "",
+          "params": [
+            {
+              "name": "filter",
+              "type": "BaseSortableFilterOptions<Insurance>",
+              "description": "",
+              "optional": false
+            }
+          ],
+          "returnType": "PaginatedListIterator<Insurance",
+          "flavours": [
+            "none"
+          ]
         }
       ]
     },
@@ -8478,6 +8818,30 @@
         {
           "name": "withEncryptionMetadata",
           "description": "Give access to the encrypted flavour of the api / val encrypted: InvoiceFlavouredApi<EncryptedInvoice>  /** Gives access to the polymorphic flavour of the api / val tryAndRecover: InvoiceFlavouredApi<Invoice>  /** Gives access to methods of the api that allow to use entities or work with data owners in groups other than the current user's group. These methods aren't available when connected to a kraken-lite instance. / val inGroup: InvoiceInGroupApi }  interface InvoiceInGroupApi : InvoiceBasicFlavourlessInGroupApi, InvoiceFlavouredInGroupApi<DecryptedInvoice> { // TODO subscribable /** Give access to the encrypted flavour of the api / val encrypted: InvoiceFlavouredInGroupApi<EncryptedInvoice>  /** Gives access to the polymorphic flavour of the api / val tryAndRecover: InvoiceFlavouredInGroupApi<Invoice>  /** In-group version of [InvoiceApi.withEncryptionMetadata]",
+          "params": [
+            {
+              "name": "base",
+              "type": "DecryptedInvoice | undefined",
+              "description": "",
+              "optional": false
+            },
+            {
+              "name": "patient",
+              "type": "Patient | undefined",
+              "description": "",
+              "optional": false
+            }
+          ],
+          "returnType": "DecryptedInvoice",
+          "flavours": [
+            "decrypted",
+            "encrypted",
+            "tryAndRecover"
+          ]
+        },
+        {
+          "name": "withEncryptionMetadataAndDelegates",
+          "description": "In-group version of [InvoiceApi.withEncryptionMetadataAndDelegates]",
           "params": [
             {
               "name": "base",
@@ -8771,7 +9135,7 @@
         },
         {
           "name": "getTarificationsCodesOccurrences",
-          "description": "Gives an approximation of the amount of times each tarification code ([Invoice.invoicingCodes] -> [InvoicingCode.tarificationId]) is used in invoices where the current data owner is a direct delegate (does not count situations where the data owner has access to the service through delegations to a parent data owner). This number is not exact, and may be cached, so you should not use this method if you need precise values, but it can be useful if you want to give suggestions. Only codes that occur at least [minOccurrence] times will be used.",
+          "description": "Gives an approximation of the amount of times each tarification code ([Invoice.invoicingCodes] -> [InvoicingCode.pricingId]) is used in invoices where the current data owner is a direct delegate (does not count situations where the data owner has access to the service through delegations to a parent data owner). This number is not exact, and may be cached, so you should not use this method if you need precise values, but it can be useful if you want to give suggestions. Only codes that occur at least [minOccurrence] times will be used.",
           "params": [
             {
               "name": "minOccurrence",
@@ -10080,6 +10444,30 @@
           ]
         },
         {
+          "name": "withEncryptionMetadataAndDelegates",
+          "description": "In-group version of [MessageApi.withEncryptionMetadataAndDelegates]",
+          "params": [
+            {
+              "name": "base",
+              "type": "DecryptedMessage | undefined",
+              "description": "",
+              "optional": false
+            },
+            {
+              "name": "patient",
+              "type": "Patient | undefined",
+              "description": "",
+              "optional": false
+            }
+          ],
+          "returnType": "DecryptedMessage",
+          "flavours": [
+            "decrypted",
+            "encrypted",
+            "tryAndRecover"
+          ]
+        },
+        {
           "name": "getEncryptionKeysOf",
           "description": "In-group version of [MessageApi.getEncryptionKeysOf]",
           "params": [
@@ -10885,6 +11273,24 @@
           ]
         },
         {
+          "name": "withEncryptionMetadataAndDelegates",
+          "description": "In-group version of [PatientApi.withEncryptionMetadataAndDelegates]",
+          "params": [
+            {
+              "name": "base",
+              "type": "DecryptedPatient | undefined",
+              "description": "",
+              "optional": false
+            }
+          ],
+          "returnType": "DecryptedPatient",
+          "flavours": [
+            "decrypted",
+            "encrypted",
+            "tryAndRecover"
+          ]
+        },
+        {
           "name": "hasWriteAccess",
           "description": "In-group version of [PatientApi.hasWriteAccess]",
           "params": [
@@ -11619,6 +12025,30 @@
           ]
         },
         {
+          "name": "withEncryptionMetadataAndDelegates",
+          "description": "In-group version of [ReceiptApi.withEncryptionMetadataAndDelegates]",
+          "params": [
+            {
+              "name": "base",
+              "type": "DecryptedReceipt | undefined",
+              "description": "",
+              "optional": false
+            },
+            {
+              "name": "patient",
+              "type": "Patient | undefined",
+              "description": "",
+              "optional": false
+            }
+          ],
+          "returnType": "DecryptedReceipt",
+          "flavours": [
+            "decrypted",
+            "encrypted",
+            "tryAndRecover"
+          ]
+        },
+        {
           "name": "getAndDecryptReceiptAttachment",
           "description": "",
           "params": [
@@ -11986,7 +12416,7 @@
         },
         {
           "name": "getRawReceiptAttachment",
-          "description": "",
+          "description": "In-group version of [ReceiptBasicFlavourlessApi.getRawReceiptAttachment]",
           "params": [
             {
               "name": "receiptId",
@@ -12283,6 +12713,17 @@
               "optional": false
             }
           ],
+          "returnType": "Array<DecryptedReceipt",
+          "flavours": [
+            "decrypted",
+            "encrypted",
+            "tryAndRecover"
+          ]
+        },
+        {
+          "name": "listReceiptsBetweenDates",
+          "description": "In-group version of [ReceiptBasicFlavouredApi.listReceiptsBetweenDates]",
+          "params": [],
           "returnType": "Array<DecryptedReceipt",
           "flavours": [
             "decrypted",
@@ -12919,6 +13360,30 @@
         {
           "name": "withEncryptionMetadata",
           "description": "In-group version of [TopicApi.withEncryptionMetadata]",
+          "params": [
+            {
+              "name": "base",
+              "type": "DecryptedTopic | undefined",
+              "description": "",
+              "optional": false
+            },
+            {
+              "name": "patient",
+              "type": "Patient | undefined",
+              "description": "",
+              "optional": false
+            }
+          ],
+          "returnType": "DecryptedTopic",
+          "flavours": [
+            "decrypted",
+            "encrypted",
+            "tryAndRecover"
+          ]
+        },
+        {
+          "name": "withEncryptionMetadataAndDelegates",
+          "description": "In-group version of [TopicApi.withEncryptionMetadataAndDelegates]",
           "params": [
             {
               "name": "base",
@@ -14051,6 +14516,28 @@
             },
             {
               "name": "newMobilePhone",
+              "type": "string",
+              "description": "",
+              "optional": false
+            },
+            {
+              "name": "previousMobilePhone",
+              "type": "string | undefined",
+              "description": "",
+              "optional": false
+            }
+          ],
+          "returnType": "User",
+          "flavours": [
+            "none"
+          ]
+        },
+        {
+          "name": "removeUserMobilePhone",
+          "description": "Removes a user mobile phone given its previous value, throwing a [RevisionConflictException] if the provided [previousMobilePhone] does not match the stored value.  This method should be favored over a simple [modifyUser] when changing the MobilePhone as it does not require knowing the revision of the user directly, and can work even if there is a [com.icure.cardinal.sdk.auth.services.SmartAuthProvider] that is modifying the user tokens when performing the request.",
+          "params": [
+            {
+              "name": "userId",
               "type": "string",
               "description": "",
               "optional": false
@@ -15615,7 +16102,7 @@
         },
         {
           "name": "notes",
-          "type": "Array<Annotation>",
+          "type": "Array<DecryptedAnnotation>",
           "description": "A list of textual remarks related to this Contact."
         },
         {
@@ -15776,7 +16263,7 @@
         },
         {
           "name": "notes",
-          "type": "Array<Annotation>",
+          "type": "Array<EncryptedAnnotation>",
           "description": "A list of textual remarks related to this Contact."
         },
         {
@@ -16100,7 +16587,7 @@
         {
           "name": "extraMainAttachmentInfo",
           "type": "Document_.ExtraMainAttachmentInfo | undefined",
-          "description": "Extra Uniform Type Identifiers for the main attachment."
+          "description": ""
         },
         {
           "name": "secondaryAttachments",
@@ -16276,7 +16763,7 @@
         {
           "name": "extraMainAttachmentInfo",
           "type": "Document_.ExtraMainAttachmentInfo | undefined",
-          "description": "Extra Uniform Type Identifiers for the main attachment."
+          "description": ""
         },
         {
           "name": "secondaryAttachments",
@@ -17010,6 +17497,11 @@
           "description": "The version of the custom design doc schema to apply by default children groups on creation."
         },
         {
+          "name": "status",
+          "type": "GroupStatus | undefined",
+          "description": "The commercial status of the group, derived from the group hierarchy when not explicitly set on the group. This field is read-only: it is ignored when creating or modifying a group."
+        },
+        {
           "name": "partial",
           "type": "Partial<Group> & Pick<Group, \"minimumAuthenticationClassForElevatedPrivileges\">)",
           "description": ""
@@ -17191,7 +17683,7 @@
         },
         {
           "name": "notes",
-          "type": "Array<Annotation>",
+          "type": "Array<DecryptedAnnotation>",
           "description": "Additional textual notes to include in the HealthElement."
         },
         {
@@ -17233,6 +17725,16 @@
           "name": "careTeam",
           "type": "Array<DecryptedCareTeamMember>",
           "description": "A collection of object that contain information about all the healthcare actor related to the condition of this HealthcareElement."
+        },
+        {
+          "name": "qualifiedLinks",
+          "type": "Array<HealthElementQualifiedLink>",
+          "description": "Directed links towards related healthcare elements. Links should be created in a single direction: the reverse link can be found through a view. This field is not encrypted."
+        },
+        {
+          "name": "asserters",
+          "type": "Array<HealthElementAsserter>",
+          "description": "The parties asserting that the patient has this healthcare element, i.e. on whose word the healthcare element is held to be true. This field is encrypted."
         },
         {
           "name": "secretForeignKeys",
@@ -17372,7 +17874,7 @@
         },
         {
           "name": "notes",
-          "type": "Array<Annotation>",
+          "type": "Array<EncryptedAnnotation>",
           "description": "Additional textual notes to include in the HealthElement."
         },
         {
@@ -17414,6 +17916,16 @@
           "name": "careTeam",
           "type": "Array<EncryptedCareTeamMember>",
           "description": "A collection of object that contain information about all the healthcare actor related to the condition of this HealthcareElement."
+        },
+        {
+          "name": "qualifiedLinks",
+          "type": "Array<HealthElementQualifiedLink>",
+          "description": "Directed links towards related healthcare elements. Links should be created in a single direction: the reverse link can be found through a view. This field is not encrypted."
+        },
+        {
+          "name": "asserters",
+          "type": "Array<HealthElementAsserter>",
+          "description": "The parties asserting that the patient has this healthcare element, i.e. on whose word the healthcare element is held to be true. This field is encrypted."
         },
         {
           "name": "secretForeignKeys",
@@ -17472,7 +17984,8 @@
         "CryptoActor",
         "DataOwner",
         "HasCodes",
-        "HasTags"
+        "HasTags",
+        "HasIdentifier"
       ],
       "fields": [
         {
@@ -17736,7 +18249,10 @@
     "Insurance": {
       "name": "Insurance",
       "implements": [
-        "StoredDocument"
+        "StoredDocument",
+        "HasTags",
+        "HasCodes",
+        "HasIdentifier"
       ],
       "fields": [
         {
@@ -17760,19 +18276,19 @@
           "description": "The name of the insurance in different languages."
         },
         {
-          "name": "privateInsurance",
-          "type": "boolean",
-          "description": "Whether this is a private insurance."
+          "name": "identifier",
+          "type": "Array<Identifier>",
+          "description": "The identifiers of the insurance."
         },
         {
-          "name": "hospitalisationInsurance",
-          "type": "boolean",
-          "description": "Whether this insurance covers hospitalisation."
+          "name": "tags",
+          "type": "Array<CodeStub>",
+          "description": "Tags that qualify the insurance as being member of a certain class."
         },
         {
-          "name": "ambulatoryInsurance",
-          "type": "boolean",
-          "description": "Whether this insurance covers ambulatory care."
+          "name": "codes",
+          "type": "Array<CodeStub>",
+          "description": "Codes that identify or qualify this particular insurance."
         },
         {
           "name": "code",
@@ -19288,7 +19804,7 @@
         },
         {
           "name": "notes",
-          "type": "Array<Annotation>",
+          "type": "Array<DecryptedAnnotation>",
           "description": "Confidential annotations related to the Patient. By default, only the `markdown` field of each note will be encrypted."
         },
         {
@@ -19644,7 +20160,7 @@
         },
         {
           "name": "notes",
-          "type": "Array<Annotation>",
+          "type": "Array<EncryptedAnnotation>",
           "description": "Confidential annotations related to the Patient. By default, only the `markdown` field of each note will be encrypted."
         },
         {
@@ -20354,6 +20870,306 @@
         }
       ]
     },
+    "DecryptedRelatedPerson": {
+      "name": "DecryptedRelatedPerson",
+      "fields": [
+        {
+          "name": "id",
+          "type": "string",
+          "description": "The Id of the related person. We encourage using either a v4 UUID or a HL7 Id."
+        },
+        {
+          "name": "rev",
+          "type": "string | undefined",
+          "description": "The revision of the related person in the database, used for conflict management / optimistic locking."
+        },
+        {
+          "name": "identifier",
+          "type": "Array<Identifier>",
+          "description": "The identifiers of the related person."
+        },
+        {
+          "name": "created",
+          "type": "number | undefined",
+          "description": "The timestamp (unix epoch in ms) of creation."
+        },
+        {
+          "name": "modified",
+          "type": "number | undefined",
+          "description": "The timestamp (unix epoch in ms) of the latest modification."
+        },
+        {
+          "name": "author",
+          "type": "string | undefined",
+          "description": "The id of the User that created this related person."
+        },
+        {
+          "name": "responsible",
+          "type": "string | undefined",
+          "description": "The id of the data owner that is responsible for this related person."
+        },
+        {
+          "name": "tags",
+          "type": "Array<CodeStub>",
+          "description": "Tags that qualify the related person as being member of a certain class."
+        },
+        {
+          "name": "codes",
+          "type": "Array<CodeStub>",
+          "description": "Codes that identify or qualify this particular related person."
+        },
+        {
+          "name": "endOfLife",
+          "type": "number | undefined",
+          "description": "Soft delete (unix epoch in ms) timestamp of the object."
+        },
+        {
+          "name": "deletionDate",
+          "type": "number | undefined",
+          "description": "Hard delete (unix epoch in ms) timestamp of the object."
+        },
+        {
+          "name": "firstName",
+          "type": "string | undefined",
+          "description": "The firstname (name) of the related person."
+        },
+        {
+          "name": "lastName",
+          "type": "string | undefined",
+          "description": "The lastname (surname) of the related person."
+        },
+        {
+          "name": "names",
+          "type": "Array<PersonName>",
+          "description": "The list of all names of the related person, also containing the official full name information."
+        },
+        {
+          "name": "companyName",
+          "type": "string | undefined",
+          "description": "The name of the company this related person is member of."
+        },
+        {
+          "name": "languages",
+          "type": "Array<string>",
+          "description": "The list of languages spoken by the related person, in ISO 639-2 alpha-2 code."
+        },
+        {
+          "name": "addresses",
+          "type": "Array<DecryptedAddress>",
+          "description": "The addresses and telecoms of the related person."
+        },
+        {
+          "name": "civility",
+          "type": "string | undefined",
+          "description": "Mr., Ms., Pr., Dr. ..."
+        },
+        {
+          "name": "gender",
+          "type": "Gender | undefined",
+          "description": "The gender of the related person."
+        },
+        {
+          "name": "properties",
+          "type": "Array<DecryptedPropertyStub>",
+          "description": "Extra properties of the related person."
+        },
+        {
+          "name": "secretForeignKeys",
+          "type": "Array<string>",
+          "description": "The secret foreign keys of this entity."
+        },
+        {
+          "name": "cryptedForeignKeys",
+          "type": "{\n        [key: string]: Array<Delegation>",
+          "description": "The foreign keys encrypted in the delegates' AES keys."
+        },
+        {
+          "name": "delegations",
+          "type": "{\n        [key: string]: Array<Delegation>",
+          "description": "The delegations giving access to this related person."
+        },
+        {
+          "name": "encryptionKeys",
+          "type": "{\n        [key: string]: Array<Delegation>",
+          "description": "The keys used to encrypt this entity when the entity is stored encrypted."
+        },
+        {
+          "name": "encryptedSelf",
+          "type": "Base64String | undefined",
+          "description": "The base64-encoded encrypted fields of this entity."
+        },
+        {
+          "name": "securityMetadata",
+          "type": "SecurityMetadata | undefined",
+          "description": "The security metadata of the entity."
+        },
+        {
+          "name": "isEncrypted",
+          "type": "false",
+          "description": ""
+        },
+        {
+          "name": "partial",
+          "type": "Partial<DecryptedRelatedPerson>)",
+          "description": ""
+        },
+        {
+          "name": "json",
+          "type": "any, ignoreUnknownKeys?: boolean, path?: Array<string>): DecryptedRelatedPerson",
+          "description": ""
+        }
+      ]
+    },
+    "EncryptedRelatedPerson": {
+      "name": "EncryptedRelatedPerson",
+      "fields": [
+        {
+          "name": "id",
+          "type": "string",
+          "description": "The Id of the related person. We encourage using either a v4 UUID or a HL7 Id."
+        },
+        {
+          "name": "rev",
+          "type": "string | undefined",
+          "description": "The revision of the related person in the database, used for conflict management / optimistic locking."
+        },
+        {
+          "name": "identifier",
+          "type": "Array<Identifier>",
+          "description": "The identifiers of the related person."
+        },
+        {
+          "name": "created",
+          "type": "number | undefined",
+          "description": "The timestamp (unix epoch in ms) of creation."
+        },
+        {
+          "name": "modified",
+          "type": "number | undefined",
+          "description": "The timestamp (unix epoch in ms) of the latest modification."
+        },
+        {
+          "name": "author",
+          "type": "string | undefined",
+          "description": "The id of the User that created this related person."
+        },
+        {
+          "name": "responsible",
+          "type": "string | undefined",
+          "description": "The id of the data owner that is responsible for this related person."
+        },
+        {
+          "name": "tags",
+          "type": "Array<CodeStub>",
+          "description": "Tags that qualify the related person as being member of a certain class."
+        },
+        {
+          "name": "codes",
+          "type": "Array<CodeStub>",
+          "description": "Codes that identify or qualify this particular related person."
+        },
+        {
+          "name": "endOfLife",
+          "type": "number | undefined",
+          "description": "Soft delete (unix epoch in ms) timestamp of the object."
+        },
+        {
+          "name": "deletionDate",
+          "type": "number | undefined",
+          "description": "Hard delete (unix epoch in ms) timestamp of the object."
+        },
+        {
+          "name": "firstName",
+          "type": "string | undefined",
+          "description": "The firstname (name) of the related person."
+        },
+        {
+          "name": "lastName",
+          "type": "string | undefined",
+          "description": "The lastname (surname) of the related person."
+        },
+        {
+          "name": "names",
+          "type": "Array<PersonName>",
+          "description": "The list of all names of the related person, also containing the official full name information."
+        },
+        {
+          "name": "companyName",
+          "type": "string | undefined",
+          "description": "The name of the company this related person is member of."
+        },
+        {
+          "name": "languages",
+          "type": "Array<string>",
+          "description": "The list of languages spoken by the related person, in ISO 639-2 alpha-2 code."
+        },
+        {
+          "name": "addresses",
+          "type": "Array<EncryptedAddress>",
+          "description": "The addresses and telecoms of the related person."
+        },
+        {
+          "name": "civility",
+          "type": "string | undefined",
+          "description": "Mr., Ms., Pr., Dr. ..."
+        },
+        {
+          "name": "gender",
+          "type": "Gender | undefined",
+          "description": "The gender of the related person."
+        },
+        {
+          "name": "properties",
+          "type": "Array<EncryptedPropertyStub>",
+          "description": "Extra properties of the related person."
+        },
+        {
+          "name": "secretForeignKeys",
+          "type": "Array<string>",
+          "description": "The secret foreign keys of this entity."
+        },
+        {
+          "name": "cryptedForeignKeys",
+          "type": "{\n        [key: string]: Array<Delegation>",
+          "description": "The foreign keys encrypted in the delegates' AES keys."
+        },
+        {
+          "name": "delegations",
+          "type": "{\n        [key: string]: Array<Delegation>",
+          "description": "The delegations giving access to this related person."
+        },
+        {
+          "name": "encryptionKeys",
+          "type": "{\n        [key: string]: Array<Delegation>",
+          "description": "The keys used to encrypt this entity when the entity is stored encrypted."
+        },
+        {
+          "name": "encryptedSelf",
+          "type": "Base64String | undefined",
+          "description": "The base64-encoded encrypted fields of this entity."
+        },
+        {
+          "name": "securityMetadata",
+          "type": "SecurityMetadata | undefined",
+          "description": "The security metadata of the entity."
+        },
+        {
+          "name": "isEncrypted",
+          "type": "true",
+          "description": ""
+        },
+        {
+          "name": "partial",
+          "type": "Partial<EncryptedRelatedPerson>)",
+          "description": ""
+        },
+        {
+          "name": "json",
+          "type": "any, ignoreUnknownKeys?: boolean, path?: Array<string>): EncryptedRelatedPerson",
+          "description": ""
+        }
+      ]
+    },
     "ReplicationInfo": {
       "name": "ReplicationInfo",
       "fields": [
@@ -20719,7 +21535,8 @@
     "User": {
       "name": "User",
       "implements": [
-        "StoredDocument"
+        "StoredDocument",
+        "HasIdentifier"
       ],
       "fields": [
         {
@@ -21672,7 +22489,7 @@
         },
         {
           "name": "notes",
-          "type": "Array<Annotation>",
+          "type": "Array<DecryptedAnnotation>",
           "description": ""
         },
         {
@@ -21772,7 +22589,7 @@
         },
         {
           "name": "notes",
-          "type": "Array<Annotation>",
+          "type": "Array<EncryptedAnnotation>",
           "description": ""
         },
         {
@@ -21921,6 +22738,168 @@
           "name": "json",
           "type": "any, ignoreUnknownKeys?: boolean, path?: Array<string>): FixedIntervals",
           "description": ""
+        }
+      ]
+    },
+    "DecryptedAnnotation": {
+      "name": "DecryptedAnnotation",
+      "fields": [
+        {
+          "name": "id",
+          "type": "string",
+          "description": "The Id of the Annotation. We encourage using either a v4 UUID or a HL7 Id."
+        },
+        {
+          "name": "author",
+          "type": "string | undefined",
+          "description": "The identifier of the author of this annotation."
+        },
+        {
+          "name": "created",
+          "type": "number | undefined",
+          "description": "The timestamp (unix epoch in ms) of creation of this note, filled automatically if missing."
+        },
+        {
+          "name": "modified",
+          "type": "number | undefined",
+          "description": "The timestamp (unix epoch in ms) of the latest modification of this note, filled automatically if missing."
+        },
+        {
+          "name": "text",
+          "type": "string | undefined",
+          "description": "Text contained in the note, written as markdown. Deprecated in favor of [markdown]."
+        },
+        {
+          "name": "markdown",
+          "type": "{\n        [key: string]: string",
+          "description": "Localized text contained in the note, written as markdown. Keys should respect ISO 639-1."
+        },
+        {
+          "name": "location",
+          "type": "string | undefined",
+          "description": "Defines to which part of the corresponding information the note is related to."
+        },
+        {
+          "name": "confidential",
+          "type": "boolean | undefined",
+          "description": "Whether this annotation is confidential."
+        },
+        {
+          "name": "tags",
+          "type": "Array<CodeStub>",
+          "description": "Tags associated with this annotation."
+        },
+        {
+          "name": "encryptedSelf",
+          "type": "Base64String | undefined",
+          "description": "The encrypted content of this annotation."
+        },
+        {
+          "name": "isEncrypted",
+          "type": "false",
+          "description": ""
+        },
+        {
+          "name": "partial",
+          "type": "Partial<DecryptedAnnotation>)",
+          "description": ""
+        },
+        {
+          "name": "json",
+          "type": "any, ignoreUnknownKeys?: boolean, path?: Array<string>): DecryptedAnnotation",
+          "description": ""
+        }
+      ]
+    },
+    "EncryptedAnnotation": {
+      "name": "EncryptedAnnotation",
+      "fields": [
+        {
+          "name": "id",
+          "type": "string",
+          "description": "The Id of the Annotation. We encourage using either a v4 UUID or a HL7 Id."
+        },
+        {
+          "name": "author",
+          "type": "string | undefined",
+          "description": "The identifier of the author of this annotation."
+        },
+        {
+          "name": "created",
+          "type": "number | undefined",
+          "description": "The timestamp (unix epoch in ms) of creation of this note, filled automatically if missing."
+        },
+        {
+          "name": "modified",
+          "type": "number | undefined",
+          "description": "The timestamp (unix epoch in ms) of the latest modification of this note, filled automatically if missing."
+        },
+        {
+          "name": "text",
+          "type": "string | undefined",
+          "description": "Text contained in the note, written as markdown. Deprecated in favor of [markdown]."
+        },
+        {
+          "name": "markdown",
+          "type": "{\n        [key: string]: string",
+          "description": "Localized text contained in the note, written as markdown. Keys should respect ISO 639-1."
+        },
+        {
+          "name": "location",
+          "type": "string | undefined",
+          "description": "Defines to which part of the corresponding information the note is related to."
+        },
+        {
+          "name": "confidential",
+          "type": "boolean | undefined",
+          "description": "Whether this annotation is confidential."
+        },
+        {
+          "name": "tags",
+          "type": "Array<CodeStub>",
+          "description": "Tags associated with this annotation."
+        },
+        {
+          "name": "encryptedSelf",
+          "type": "Base64String | undefined",
+          "description": "The encrypted content of this annotation."
+        },
+        {
+          "name": "isEncrypted",
+          "type": "true",
+          "description": ""
+        },
+        {
+          "name": "partial",
+          "type": "Partial<EncryptedAnnotation>)",
+          "description": ""
+        },
+        {
+          "name": "json",
+          "type": "any, ignoreUnknownKeys?: boolean, path?: Array<string>): EncryptedAnnotation",
+          "description": ""
+        }
+      ]
+    },
+    "AsserterType": {
+      "name": "AsserterType",
+      "description": "Enumeration.",
+      "isEnum": true,
+      "fields": [
+        {
+          "name": "Patient",
+          "type": "\"Patient\"",
+          "description": "enum constant"
+        },
+        {
+          "name": "HealthcareParty",
+          "type": "\"HealthcareParty\"",
+          "description": "enum constant"
+        },
+        {
+          "name": "RelatedPerson",
+          "type": "\"RelatedPerson\"",
+          "description": "enum constant"
         }
       ]
     },
@@ -23437,6 +24416,23 @@
         }
       ]
     },
+    "GroupStatus": {
+      "name": "GroupStatus",
+      "description": "Enumeration.",
+      "isEnum": true,
+      "fields": [
+        {
+          "name": "Paying",
+          "type": "\"Paying\"",
+          "description": "enum constant"
+        },
+        {
+          "name": "Free",
+          "type": "\"Free\"",
+          "description": "enum constant"
+        }
+      ]
+    },
     "GroupType": {
       "name": "GroupType",
       "description": "Enumeration.",
@@ -23456,6 +24452,106 @@
           "name": "Database",
           "type": "\"Database\"",
           "description": "enum constant"
+        }
+      ]
+    },
+    "HealthElementAsserter": {
+      "name": "HealthElementAsserter",
+      "fields": [
+        {
+          "name": "localAsserterIdentifier",
+          "type": "HealthElementAsserter.LocalAsserterIdentifier | undefined",
+          "description": "The asserting party, as a reference to a record stored in this instance. Null when the party is named by [externalAsserterIdentifier]."
+        },
+        {
+          "name": "externalAsserterIdentifier",
+          "type": "HealthElementAsserter.ExternalAsserterIdentifier | undefined",
+          "description": "The asserting party, as a business identifier from a system that is not this one. Null when the party is named by [localAsserterIdentifier]. Carries no [AsserterTypeDto]."
+        },
+        {
+          "name": "partial",
+          "type": "Partial<HealthElementAsserter>)",
+          "description": ""
+        },
+        {
+          "name": "json",
+          "type": "any, ignoreUnknownKeys?: boolean, path?: Array<string>): HealthElementAsserter",
+          "description": ""
+        }
+      ]
+    },
+    "HealthElementAsserter.LocalAsserterIdentifier": {
+      "name": "HealthElementAsserter.LocalAsserterIdentifier",
+      "fields": [
+        {
+          "name": "id",
+          "type": "string",
+          "description": "The id of the entity making the assertion. Which entity it refers to is given by [type]."
+        },
+        {
+          "name": "type",
+          "type": "AsserterType",
+          "description": "The kind of entity [id] refers to. This is the kind of entity, not the role the party played - do not confuse it with ParticipantTypeDto."
+        },
+        {
+          "name": "partial",
+          "type": "Partial<LocalAsserterIdentifier> & Pick<LocalAsserterIdentifier, \"type\">)",
+          "description": ""
+        },
+        {
+          "name": "json",
+          "type": "any, ignoreUnknownKeys?: boolean, path?: Array<string>): LocalAsserterIdentifier",
+          "description": ""
+        }
+      ]
+    },
+    "HealthElementAsserter.ExternalAsserterIdentifier": {
+      "name": "HealthElementAsserter.ExternalAsserterIdentifier",
+      "fields": [
+        {
+          "name": "identifier",
+          "type": "Identifier",
+          "description": "The business identifier of the party in the system that issued it. `system` names that issuing system and `value` is the party's identifier within it; together they are what makes the party resolvable."
+        },
+        {
+          "name": "partial",
+          "type": "Partial<ExternalAsserterIdentifier> & Pick<ExternalAsserterIdentifier, \"identifier\">)",
+          "description": ""
+        },
+        {
+          "name": "json",
+          "type": "any, ignoreUnknownKeys?: boolean, path?: Array<string>): ExternalAsserterIdentifier",
+          "description": ""
+        }
+      ]
+    },
+    "HealthElementQualifiedLink": {
+      "name": "HealthElementQualifiedLink",
+      "fields": [
+        {
+          "name": "type",
+          "type": "string",
+          "description": "The qualification of the link. Free string; using the names of LinkQualification entries is encouraged but not enforced."
+        },
+        {
+          "name": "associationId",
+          "type": "string | undefined",
+          "description": "A caller-chosen correlation id that groups related links across entities."
+        },
+        {
+          "name": "healthElementId",
+          "type": "string",
+          "description": "The id of the linked healthcare element."
+        },
+        {
+          "name": "partial",
+          "type": "Partial<HealthElementQualifiedLink> & Pick<HealthElementQualifiedLink, \"type\" | \"healthElementId\">)",
+          "description": ""
+        },
+        {
+          "name": "json",
+          "type": "any, ignoreUnknownKeys?: boolean, path?: Array<string>): HealthElementQualifiedLink",
+          "description": ""
         }
       ]
     },
@@ -23940,6 +25036,11 @@
           "description": "The insurance justification code."
         },
         {
+          "name": "agreementNumber",
+          "type": "string | undefined",
+          "description": "The reimbursement agreement number obtained during a pre-authorization."
+        },
+        {
           "name": "cancelPatientInterventionReason",
           "type": "number | undefined",
           "description": "The reason for canceling patient intervention."
@@ -24238,6 +25339,11 @@
           "name": "insuranceJustification",
           "type": "number | undefined",
           "description": "The insurance justification code."
+        },
+        {
+          "name": "agreementNumber",
+          "type": "string | undefined",
+          "description": "The reimbursement agreement number obtained during a pre-authorization."
         },
         {
           "name": "cancelPatientInterventionReason",
@@ -25044,6 +26150,28 @@
         }
       ]
     },
+    "PartnerType": {
+      "name": "PartnerType",
+      "description": "Enumeration.",
+      "isEnum": true,
+      "fields": [
+        {
+          "name": "Patient",
+          "type": "\"Patient\"",
+          "description": "enum constant"
+        },
+        {
+          "name": "HealthcareParty",
+          "type": "\"HealthcareParty\"",
+          "description": "enum constant"
+        },
+        {
+          "name": "RelatedPerson",
+          "type": "\"RelatedPerson\"",
+          "description": "enum constant"
+        }
+      ]
+    },
     "DecryptedPartnership": {
       "name": "DecryptedPartnership",
       "fields": [
@@ -25061,6 +26189,11 @@
           "name": "partnerId",
           "type": "string | undefined",
           "description": "The UUID of the contact person or patient in this relationship."
+        },
+        {
+          "name": "partnerType",
+          "type": "PartnerType | undefined",
+          "description": "The type of entity partnerId refers to. When null the partner is either a patient or a healthcare party (legacy behavior)."
         },
         {
           "name": "encryptedSelf",
@@ -25101,6 +26234,11 @@
           "name": "partnerId",
           "type": "string | undefined",
           "description": "The UUID of the contact person or patient in this relationship."
+        },
+        {
+          "name": "partnerType",
+          "type": "PartnerType | undefined",
+          "description": "The type of entity partnerId refers to. When null the partner is either a patient or a healthcare party (legacy behavior)."
         },
         {
           "name": "encryptedSelf",
@@ -26083,7 +27221,7 @@
         },
         {
           "name": "notes",
-          "type": "Array<Annotation>",
+          "type": "Array<DecryptedAnnotation>",
           "description": "Annotations providing additional context."
         },
         {
@@ -26510,7 +27648,7 @@
         },
         {
           "name": "notes",
-          "type": "Array<Annotation>",
+          "type": "Array<DecryptedAnnotation>",
           "description": "Comments - Notes recorded by a HCP about this service"
         },
         {
@@ -26690,7 +27828,7 @@
         },
         {
           "name": "notes",
-          "type": "Array<Annotation>",
+          "type": "Array<EncryptedAnnotation>",
           "description": "Comments - Notes recorded by a HCP about this service"
         },
         {
@@ -30241,75 +31379,6 @@
         }
       ]
     },
-    "Classification": {
-      "entityName": "Classification",
-      "methods": [
-        {
-          "name": "byPatientsCreatedForDataOwner",
-          "description": "",
-          "params": [
-            {
-              "name": "dataOwnerId",
-              "type": "string"
-            },
-            {
-              "name": "patients",
-              "type": "Array<Patient>"
-            },
-            {
-              "name": "options?: {\n        from?: number | undefined;\n        to?: number | undefined;\n        descending?: boolean;\n    }",
-              "type": "unknown"
-            }
-          ]
-        },
-        {
-          "name": "byPatientsCreatedForSelf",
-          "description": "",
-          "params": [
-            {
-              "name": "patients",
-              "type": "Array<Patient>"
-            },
-            {
-              "name": "options?: {\n        from?: number | undefined;\n        to?: number | undefined;\n        descending?: boolean;\n    }",
-              "type": "unknown"
-            }
-          ]
-        },
-        {
-          "name": "byPatientSecretIdsCreatedForDataOwner",
-          "description": "",
-          "params": [
-            {
-              "name": "dataOwnerId",
-              "type": "string"
-            },
-            {
-              "name": "secretIds",
-              "type": "Array<string>"
-            },
-            {
-              "name": "options?: {\n        from?: number | undefined;\n        to?: number | undefined;\n        descending?: boolean;\n    }",
-              "type": "unknown"
-            }
-          ]
-        },
-        {
-          "name": "byPatientSecretIdsCreatedForSelf",
-          "description": "",
-          "params": [
-            {
-              "name": "secretIds",
-              "type": "Array<string>"
-            },
-            {
-              "name": "options?: {\n        from?: number | undefined;\n        to?: number | undefined;\n        descending?: boolean;\n    }",
-              "type": "unknown"
-            }
-          ]
-        }
-      ]
-    },
     "Code": {
       "entityName": "Code",
       "methods": [
@@ -32378,6 +33447,54 @@
       ],
       "description": "Healthcare party filters are not data-owner scoped — they all return `Base*` types. ### Other entity filters"
     },
+    "Insurance": {
+      "entityName": "Insurance",
+      "methods": [
+        {
+          "name": "all",
+          "description": "",
+          "params": []
+        },
+        {
+          "name": "byIdentifiers",
+          "description": "",
+          "params": [
+            {
+              "name": "identifiers",
+              "type": "Array<Identifier>"
+            }
+          ]
+        },
+        {
+          "name": "byCode",
+          "description": "",
+          "params": [
+            {
+              "name": "codeType",
+              "type": "string"
+            },
+            {
+              "name": "options?: {\n        codeCode?: string | undefined;\n    }",
+              "type": "unknown"
+            }
+          ]
+        },
+        {
+          "name": "byTag",
+          "description": "",
+          "params": [
+            {
+              "name": "tagType",
+              "type": "string"
+            },
+            {
+              "name": "options?: {\n        tagCode?: string | undefined;\n    }",
+              "type": "unknown"
+            }
+          ]
+        }
+      ]
+    },
     "MaintenanceTask": {
       "entityName": "MaintenanceTask",
       "methods": [
@@ -33671,6 +34788,122 @@
         }
       ],
       "description": "`byIds` has no data-owner scoping — it returns a `SortableFilterOptions` (not Base) and works the same for all users. The `ForDataOwner` variants for the other methods also exist (e.g. `byFuzzyNameForDataOwner` accepts a `dataOwnerId` + `searchString`)."
+    },
+    "RelatedPerson": {
+      "entityName": "RelatedPerson",
+      "methods": [
+        {
+          "name": "allRelatedPersonsForDataOwner",
+          "description": "",
+          "params": [
+            {
+              "name": "dataOwnerId",
+              "type": "string"
+            }
+          ]
+        },
+        {
+          "name": "allRelatedPersonsForDataOwnerInGroup",
+          "description": "",
+          "params": [
+            {
+              "name": "dataOwner",
+              "type": "EntityReferenceInGroup"
+            }
+          ]
+        },
+        {
+          "name": "allRelatedPersonsForSelf",
+          "description": "",
+          "params": []
+        },
+        {
+          "name": "byIdentifiersForDataOwner",
+          "description": "",
+          "params": [
+            {
+              "name": "dataOwnerId",
+              "type": "string"
+            },
+            {
+              "name": "identifiers",
+              "type": "Array<Identifier>"
+            }
+          ]
+        },
+        {
+          "name": "byIdentifiersForDataOwnerInGroup",
+          "description": "",
+          "params": [
+            {
+              "name": "dataOwner",
+              "type": "EntityReferenceInGroup"
+            },
+            {
+              "name": "identifiers",
+              "type": "Array<Identifier>"
+            }
+          ]
+        },
+        {
+          "name": "byIdentifiersForSelf",
+          "description": "",
+          "params": [
+            {
+              "name": "identifiers",
+              "type": "Array<Identifier>"
+            }
+          ]
+        },
+        {
+          "name": "byNameForDataOwner",
+          "description": "",
+          "params": [
+            {
+              "name": "dataOwnerId",
+              "type": "string"
+            },
+            {
+              "name": "name",
+              "type": "string"
+            }
+          ]
+        },
+        {
+          "name": "byNameForDataOwnerInGroup",
+          "description": "",
+          "params": [
+            {
+              "name": "dataOwner",
+              "type": "EntityReferenceInGroup"
+            },
+            {
+              "name": "name",
+              "type": "string"
+            }
+          ]
+        },
+        {
+          "name": "byNameForSelf",
+          "description": "",
+          "params": [
+            {
+              "name": "name",
+              "type": "string"
+            }
+          ]
+        },
+        {
+          "name": "byIds",
+          "description": "",
+          "params": [
+            {
+              "name": "ids",
+              "type": "Array<string>"
+            }
+          ]
+        }
+      ]
     },
     "Service": {
       "entityName": "Service",

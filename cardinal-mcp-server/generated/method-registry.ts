@@ -740,6 +740,79 @@ export const METHOD_REGISTRY: Record<string, ApiInfo> = {
 				"returnType": "Promise<Array<string>>"
 			},
 			{
+				"name": "getCalendarItemsOccupancyByPeriodForSelf",
+				"params": [
+					{
+						"name": "startDate",
+						"type": "number",
+						"optional": false
+					},
+					{
+						"name": "endDate",
+						"type": "number",
+						"optional": false
+					},
+					{
+						"name": "extensionInDays",
+						"type": "number | undefined",
+						"optional": false
+					}
+				],
+				"returnType": "Promise<Array<CalendarItemOccupancy>>"
+			},
+			{
+				"name": "getCalendarItemsOccupancyByPeriodForHealthcareParty",
+				"params": [
+					{
+						"name": "startDate",
+						"type": "number",
+						"optional": false
+					},
+					{
+						"name": "endDate",
+						"type": "number",
+						"optional": false
+					},
+					{
+						"name": "hcPartyId",
+						"type": "string",
+						"optional": false
+					},
+					{
+						"name": "extensionInDays",
+						"type": "number | undefined",
+						"optional": false
+					}
+				],
+				"returnType": "Promise<Array<CalendarItemOccupancy>>"
+			},
+			{
+				"name": "getCalendarItemsOccupancyByPeriodAndAgendaId",
+				"params": [
+					{
+						"name": "startDate",
+						"type": "number",
+						"optional": false
+					},
+					{
+						"name": "endDate",
+						"type": "number",
+						"optional": false
+					},
+					{
+						"name": "agendaId",
+						"type": "string",
+						"optional": false
+					},
+					{
+						"name": "extensionInDays",
+						"type": "number | undefined",
+						"optional": false
+					}
+				],
+				"returnType": "Promise<Array<CalendarItemOccupancy>>"
+			},
+			{
 				"name": "deleteCalendarItemById",
 				"params": [
 					{
@@ -5051,6 +5124,50 @@ export const METHOD_REGISTRY: Record<string, ApiInfo> = {
 					}
 				],
 				"returnType": "Promise<Array<Insurance>>"
+			},
+			{
+				"name": "matchInsurancesBy",
+				"params": [
+					{
+						"name": "filter",
+						"type": "BaseFilterOptions<Insurance>",
+						"optional": false
+					}
+				],
+				"returnType": "Promise<Array<string>>"
+			},
+			{
+				"name": "filterInsurancesBy",
+				"params": [
+					{
+						"name": "filter",
+						"type": "BaseFilterOptions<Insurance>",
+						"optional": false
+					}
+				],
+				"returnType": "Promise<PaginatedListIterator<Insurance>>"
+			},
+			{
+				"name": "matchInsurancesBySorted",
+				"params": [
+					{
+						"name": "filter",
+						"type": "BaseSortableFilterOptions<Insurance>",
+						"optional": false
+					}
+				],
+				"returnType": "Promise<Array<string>>"
+			},
+			{
+				"name": "filterInsurancesBySorted",
+				"params": [
+					{
+						"name": "filter",
+						"type": "BaseSortableFilterOptions<Insurance>",
+						"optional": false
+					}
+				],
+				"returnType": "Promise<PaginatedListIterator<Insurance>>"
 			}
 		]
 	},
@@ -8078,6 +8195,22 @@ export const METHOD_REGISTRY: Record<string, ApiInfo> = {
 					},
 					{
 						"name": "newMobilePhone",
+						"type": "string",
+						"optional": false
+					},
+					{
+						"name": "previousMobilePhone",
+						"type": "string | undefined",
+						"optional": false
+					}
+				],
+				"returnType": "Promise<User>"
+			},
+			{
+				"name": "removeUserMobilePhone",
+				"params": [
+					{
+						"name": "userId",
 						"type": "string",
 						"optional": false
 					},
