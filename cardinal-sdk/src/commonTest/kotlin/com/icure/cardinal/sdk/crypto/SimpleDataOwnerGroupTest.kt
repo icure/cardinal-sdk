@@ -117,9 +117,23 @@ class SimpleDataOwnerGroupTest : FreeSpec({
 			) shouldBe listOf(contact.id)
 			// The default secret id option (UseAnySharedWithHierarchy) must accept a secret id shared with the group
 			val memberContact = memberAApi.contact.createContact(
-				memberAApi.contact.withEncryptionMetadata(DecryptedContact(uuid()), patientForMember)
+				memberAApi.contact.withEncryptionMetadata(
+					DecryptedContact(uuid()),
+					patientForMember,
+					delegates = mapOf(hcp.dataOwnerId to AccessLevel.Read)
+				)
 			)
 			memberAApi.contact.decryptPatientIdOf(memberContact).map { it.entityId }.toSet() shouldBe setOf(patient.id)
+			hcpApi.contact.decryptPatientIdOf(hcpApi.contact.getContact(memberContact.id).shouldNotBeNull())
+				.map { it.entityId }.toSet() shouldBe setOf(patient.id)
+			// Members can reshare data they received through the group, including its secret ids
+			val other = createHcpUser()
+			val otherApi = other.api(specJob)
+			memberAApi.contact.shareWith(other.dataOwnerId, memberAApi.contact.getContact(contact.id).shouldNotBeNull())
+			memberAApi.patient.shareWith(other.dataOwnerId, patientForMember)
+			val patientForOther = otherApi.patient.getPatient(patient.id).shouldNotBeNull()
+			otherApi.patient.getSecretIdsOf(patientForOther).keys shouldBe secretIds
+			otherApi.contact.matchContactsBy(ContactFilters.byPatientsForSelf(listOf(patientForOther))) shouldBe listOf(contact.id)
 		}
 
 		"and members added in a second moment should be able to read it after they have been giving access to existing exchange data" {
