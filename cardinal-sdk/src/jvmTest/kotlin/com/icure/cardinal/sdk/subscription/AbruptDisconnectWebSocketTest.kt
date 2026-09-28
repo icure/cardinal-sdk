@@ -21,6 +21,7 @@ import io.ktor.serialization.kotlinx.json.json
 import io.mockk.coEvery
 import io.mockk.mockk
 import kotlinx.coroutines.DelicateCoroutinesApi
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.withTimeoutOrNull
 import java.io.DataInputStream
 import java.net.ServerSocket
@@ -129,6 +130,9 @@ class AbruptDisconnectWebSocketTest : StringSpec({
 				do {
 					events.add(connection.eventChannel.receive().also { println("Client received: $it") })
 				} while (events.last() != EntitySubscriptionEvent.Reconnected)
+				while (acceptedConnections.get() != 2) {
+					delay(500.milliseconds)
+				}
 			} ?: fail(
 				"Didn't reconnect within 10 seconds after an abrupt disconnect.\n" +
 					"  events received:    $events\n" +
