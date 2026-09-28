@@ -114,6 +114,8 @@ public sealed external interface InvoicingCodeJs : EncryptableJs {
 
 	public val insuranceJustification: Double?
 
+	public val agreementNumber: String?
+
 	public val cancelPatientInterventionReason: Double?
 
 	public val status: Double?
@@ -230,6 +232,8 @@ public external class DecryptedInvoicingCodeJs(
 	override val lost: Boolean?
 
 	override val insuranceJustification: Double?
+
+	override val agreementNumber: String?
 
 	override val cancelPatientInterventionReason: Double?
 
@@ -349,6 +353,8 @@ public external class EncryptedInvoicingCodeJs(
 	override val lost: Boolean?
 
 	override val insuranceJustification: Double?
+
+	override val agreementNumber: String?
 
 	override val cancelPatientInterventionReason: Double?
 
