@@ -75,6 +75,11 @@ internal class WebSocketSubscription<E : Identifiable<String>> private construct
 			code = CloseReason.Codes.NORMAL.code,
 			message = "Server ping timeout",
 		)
+		// https://www.rfc-editor.org/info/rfc6455/#section-7.4
+		private val ABNORMAL_INTERRUPTION = CloseReason(
+			code = 1006, // Cannot use the ktor enum, the code is designed for server use and is deprecated.
+			message = "The server interrupted the websocket without a closing frame",
+		)
 
 		suspend fun <BaseType : Identifiable<String>, NotificationEntity : BaseType> initialize(
 			hostname: String,
@@ -241,8 +246,16 @@ internal class WebSocketSubscription<E : Identifiable<String>> private construct
 			closeReasonDeferred.await()
 		} catch (_: UncompletedCloseReasonException) {
 			NO_PING_FROM_SERVER
+		} catch (_: Exception) {
+			ABNORMAL_INTERRUPTION
 		}
-	 	if (_closeReason == null && wsCloseReason != NO_PING_FROM_SERVER) _eventChannel.send(EntitySubscriptionEvent.ConnectionError.ClosedByServer)
+	 	if (
+			_closeReason == null &&
+				wsCloseReason != NO_PING_FROM_SERVER &&
+				wsCloseReason != ABNORMAL_INTERRUPTION // Abnormal interruption is already sent as UnexpectedError
+		) {
+			 _eventChannel.send(EntitySubscriptionEvent.ConnectionError.ClosedByServer)
+		}
 	}
 
 	// same as webSocketSession but allows to specify if wss or ws should be used
