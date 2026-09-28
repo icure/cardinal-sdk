@@ -6,6 +6,7 @@ import {CodeStub} from './base/CodeStub.mjs';
 import {HasTags} from './base/HasTags.mjs';
 import {StoredDocument} from './base/StoredDocument.mjs';
 import {AuthenticationClass} from './embed/AuthenticationClass.mjs';
+import {GroupStatus} from './embed/GroupStatus.mjs';
 import {UserType} from './embed/UserType.mjs';
 import {ExternalJwtConfig} from './security/ExternalJwtConfig.mjs';
 import {OperationToken} from './security/OperationToken.mjs';
@@ -148,6 +149,15 @@ export class Group implements StoredDocument, HasTags {
 	 */
 	defaultChildrenSchemaVersion: number | undefined = undefined;
 
+	/**
+	 *
+	 *
+	 *   The commercial status of the group, derived from the group hierarchy when not explicitly set on
+	 *  the group.
+	 *   This field is read-only: it is ignored when creating or modifying a group.
+	 */
+	status: GroupStatus | undefined = undefined;
+
 	constructor(partial: Partial<Group> & Pick<Group, "minimumAuthenticationClassForElevatedPrivileges">) {
 		this.id = partial.id ?? randomUuid();
 		if ('rev' in partial) this.rev = partial.rev;
@@ -170,6 +180,7 @@ export class Group implements StoredDocument, HasTags {
 		if ('templates' in partial) this.templates = partial.templates;
 		if ('designDocSchemaVersions' in partial && partial.designDocSchemaVersions !== undefined) this.designDocSchemaVersions = partial.designDocSchemaVersions;
 		if ('defaultChildrenSchemaVersion' in partial) this.defaultChildrenSchemaVersion = partial.defaultChildrenSchemaVersion;
+		if ('status' in partial) this.status = partial.status;
 	}
 
 	toJSON(): object {
@@ -195,6 +206,7 @@ export class Group implements StoredDocument, HasTags {
 		if (this.templates != undefined) res['templates'] = this.templates.toJSON()
 		res['designDocSchemaVersions'] = this.designDocSchemaVersions.map((x0) => x0 )
 		if (this.defaultChildrenSchemaVersion != undefined) res['defaultChildrenSchemaVersion'] = this.defaultChildrenSchemaVersion
+		if (this.status != undefined) res['status'] = this.status
 		return res
 	}
 
@@ -248,6 +260,7 @@ export class Group implements StoredDocument, HasTags {
 			templates: expectObject(extractEntry(jCpy, 'templates', false, path), true, ignoreUnknownKeys, [...path, ".templates"], Group.TemplatesConfiguration.fromJSON),
 			designDocSchemaVersions: expectArray(extractEntry(jCpy, 'designDocSchemaVersions', false, path), false, [...path, ".designDocSchemaVersions"], (x0, p0) => expectNumber(x0, false, true, p0)),
 			defaultChildrenSchemaVersion: expectNumber(extractEntry(jCpy, 'defaultChildrenSchemaVersion', false, path), true, true, [...path, ".defaultChildrenSchemaVersion"]),
+			status: expectStringEnum(extractEntry(jCpy, 'status', false, path), true, [...path, ".status"], GroupStatus, 'GroupStatus'),
 		})
 		if (!ignoreUnknownKeys) {
 			const unused = Object.keys(jCpy)
