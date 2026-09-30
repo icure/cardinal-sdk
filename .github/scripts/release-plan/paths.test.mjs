@@ -27,7 +27,6 @@ test('classifies every row of the spec mapping', () => {
 		'cardinal-mcp-server/SDK.md': ['ts'],
 		'cardinal-sdk/src/jsMain/kotlin/A.kt': ['ts'],
 		'python-wrapper/src/python/cardinal_sdk/a.py': ['python'],
-		'cardinal-sdk/src/nativeMain/kotlin/A.kt': ['python'],
 		'cardinal-sdk/src/linuxX64Main/kotlin/A.kt': ['python'],
 		'cardinal-sdk/src/mingwMain/kotlin/A.kt': ['python'],
 		'cardinal-sdk/src/macosArm64Main/kotlin/A.kt': ['python'],
@@ -36,6 +35,8 @@ test('classifies every row of the spec mapping', () => {
 		'cardinal-sdk/src/jvmAndAndroidMain/kotlin/A.kt': ['kotlin'],
 		'cardinal-sdk/src/iosSimulatorArm64Main/kotlin/A.kt': ['kotlin'],
 		'cardinal-sdk/src/appleMain/kotlin/A.kt': ['kotlin', 'python'],
+		// nativeMain is the parent of appleMain, hence of iosMain (Kotlin), and of the Linux, Windows and macOS targets.
+		'cardinal-sdk/src/nativeMain/kotlin/A.kt': ['kotlin', 'python'],
 		'cardinal-sdk/src/commonMain/kotlin/A.kt': ['kotlin', 'ts', 'python'],
 		'buildSrc/src/main/kotlin/SdkVersion.kt': ['kotlin', 'ts', 'python'],
 		'cardinal-sdk/build.gradle.kts': ['kotlin', 'ts', 'python'],

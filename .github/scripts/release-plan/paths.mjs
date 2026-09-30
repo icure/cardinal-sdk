@@ -15,8 +15,8 @@ const RULES = [
 	{
 		units: ['python'],
 		globs: [
-			'python-wrapper/**', 'cardinal-sdk/src/nativeMain/**', 'cardinal-sdk/src/linux*Main/**',
-			'cardinal-sdk/src/mingw*Main/**', 'cardinal-sdk/src/macos*Main/**',
+			'python-wrapper/**', 'cardinal-sdk/src/linux*Main/**', 'cardinal-sdk/src/mingw*Main/**',
+			'cardinal-sdk/src/macos*Main/**',
 		],
 	},
 	{
@@ -26,8 +26,9 @@ const RULES = [
 			'cardinal-sdk/src/ios*Main/**',
 		],
 	},
-	// Shared by the iOS targets (Kotlin) and the macOS target the Python wheel is built from.
-	{ units: ['kotlin', 'python'], globs: ['cardinal-sdk/src/appleMain/**'] },
+	// Shared by the iOS targets (Kotlin) and the native targets the Python wheels are built from: nativeMain is the
+	// parent of appleMain, linuxMain and mingwMain, appleMain the parent of iosMain and macosMain.
+	{ units: ['kotlin', 'python'], globs: ['cardinal-sdk/src/nativeMain/**', 'cardinal-sdk/src/appleMain/**'] },
 ];
 
 export function globToRegExp(glob) {
