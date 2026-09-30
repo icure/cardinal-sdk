@@ -77,7 +77,7 @@ external interface SdkOptionsJs {
 	val jsonPatcher: JsonPatcherJs?
 	val ignoreUnknownFields: Boolean?
 	val dataOwnerScope: String?
-	val onMalformedEntity: ((entity: MalformedEntityJs) -> Unit)?
+	val entityListDecodingStrategy: EntityListDecodingStrategyJs?
 }
 
 @JsName("BasicToFullSdkOptions")
@@ -97,13 +97,19 @@ external interface BasicSdkOptionsJs {
 	val groupSelector: ((availableGroups: Array<UserGroupJs>) -> Promise<String>)?
 	val ignoreUnknownFields: Boolean?
 	val dataOwnerScope: String?
-	val onMalformedEntity: ((entity: MalformedEntityJs) -> Unit)?
+	val entityListDecodingStrategy: EntityListDecodingStrategyJs?
 }
 
 @JsName("AnonymousSdkOptions")
 external interface AnonymousSdkOptionsJs {
 	val ignoreUnknownFields: Boolean?
-	val onMalformedEntity: ((entity: MalformedEntityJs) -> Unit)?
+	val entityListDecodingStrategy: EntityListDecodingStrategyJs?
+}
+
+@JsName("EntityListDecodingStrategy")
+external interface EntityListDecodingStrategyJs {
+	@JsName("${'$'}ktClass")
+	val ktClass: String
 }
 
 @JsName("MalformedEntity")
