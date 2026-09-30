@@ -1290,16 +1290,14 @@ class EntityEncryptionServiceImpl(
 		return SecretIdCreationResult(updatedEntity = updatedEntity, newSecretId = newSecretId)
 	}
 
-	private suspend fun getSecretIdsSharedWithParentsOf(
+	private suspend fun getSecretIdsSharedWithHierarchyOf(
 		entityGroupId: String?,
 		entity: HasEncryptionMetadata,
 		entityType: EntityWithEncryptionMetadataTypeName,
 	): Set<String> {
-		// A topmost parent has access to a secret id if it is shared with it directly or with any of the (simple-type)
-		// groups it is a member of.
 		val fullHierarchy = userEncryptionKeysManager.delegatorActorFullHierarchy()
-		val topmostParentsAccessReferences = userEncryptionKeysManager.delegatorActorParentHierarchy().leaves().map { topmostParent ->
-			fullHierarchy.subHierarchy(topmostParent).flattened().mapTo(mutableSetOf()) { EntityReferenceInGroup(it, null) }
+		val topmostHierarchyMembersAccessReferences = fullHierarchy.leaves().map {
+			EntityReferenceInGroup(it, null)
 		}
 		return baseSecurityMetadataDecryptor.decryptAll(
 			entityGroupId,
@@ -1308,7 +1306,7 @@ class EntityEncryptionServiceImpl(
 			dataOwnersForMetadataDecryption(null),
 			SecurityMetadataType.SecretId,
 		).values.single().groupedByValueToAllDataOwnersWithAccess().mapNotNullTo(mutableSetOf()) { (value, allDataOwnersWithAccess) ->
-			if (topmostParentsAccessReferences.all { parentAccess -> parentAccess.any { it in allDataOwnersWithAccess } }) {
+			if (topmostHierarchyMembersAccessReferences.all { it in allDataOwnersWithAccess }) {
 				value
 			} else {
 				null
@@ -1326,7 +1324,7 @@ class EntityEncryptionServiceImpl(
 		when (secretIdUseOption) {
 			is SecretIdUseOption.Use -> secretIdUseOption.secretIds
 			SecretIdUseOption.UseAnySharedWithHierarchy, SecretIdUseOption.UseAllSharedWithHierarchy ->
-				getSecretIdsSharedWithParentsOf(
+				getSecretIdsSharedWithHierarchyOf(
 					entityGroupId = entityGroupId,
 					entityType = entityType,
 					entity = entity
@@ -1378,7 +1376,7 @@ class EntityEncryptionServiceImpl(
 	 * [IncrementalSecurityMetadataDecryptor] which is used for entity decryption.
 	 */
 	private fun dataOwnersForMetadataDecryption(startingFrom: String?): Set<String> =
-		userEncryptionKeysManager.delegatorActorFullHierarchy()
-			.subHierarchy(startingFrom ?: userEncryptionKeysManager.delegatorActorId())
-			.flattened()
+		userEncryptionKeysManager.delegatorActorFullHierarchy().let  {
+			if (startingFrom != null) it.subHierarchy(startingFrom) else it
+		}.flattened()
 }

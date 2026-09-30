@@ -1,8 +1,12 @@
 package com.icure.cardinal.sdk.crypto
 
+import com.icure.cardinal.sdk.CardinalSdk
 import com.icure.cardinal.sdk.api.raw.impl.RawDataOwnerApiImpl
 import com.icure.cardinal.sdk.api.raw.impl.RawExchangeDataApiImpl
 import com.icure.cardinal.sdk.api.raw.impl.RawHealthcarePartyApiImpl
+import com.icure.cardinal.sdk.crypto.entities.PatientShareOptions
+import com.icure.cardinal.sdk.crypto.entities.SecretIdShareOptions
+import com.icure.cardinal.sdk.crypto.entities.SecretIdUseOption
 import com.icure.cardinal.sdk.crypto.impl.exportSpkiHex
 import com.icure.cardinal.sdk.filters.ContactFilters
 import com.icure.cardinal.sdk.model.DataOwnerType
@@ -14,6 +18,7 @@ import com.icure.cardinal.sdk.model.Patient
 import com.icure.cardinal.sdk.model.base.DataOwnerGroupLink
 import com.icure.cardinal.sdk.model.base.DataOwnerGroupLinkType
 import com.icure.cardinal.sdk.model.embed.AccessLevel
+import com.icure.cardinal.sdk.test.DataOwnerDetails
 import com.icure.cardinal.sdk.test.DefaultRawApiConfig
 import com.icure.cardinal.sdk.test.autoCancelJob
 import com.icure.cardinal.sdk.test.baseUrl
@@ -23,6 +28,8 @@ import com.icure.cardinal.sdk.test.initializeTestEnvironment
 import com.icure.cardinal.sdk.test.superadminAuth
 import com.icure.cardinal.sdk.test.testGroupId
 import com.icure.cardinal.sdk.test.uuid
+import com.icure.cardinal.sdk.utils.DEFAULT_ENABLED
+import com.icure.cardinal.sdk.utils.HEAVY_ENABLED
 import com.icure.kryptom.crypto.RsaAlgorithm
 import com.icure.kryptom.crypto.defaultCryptoService
 import com.icure.utils.InternalIcureApi
@@ -48,7 +55,7 @@ class SimpleDataOwnerGroupTest : FreeSpec({
 		initializeTestEnvironment()
 	}
 
-	"Anonymous data owner -> simple data owner group data sharing is currently unsupported" {
+	"Anonymous data owner -> simple data owner group data sharing is currently unsupported".config(enabled = DEFAULT_ENABLED) {
 		val patient = createPatientUser()
 		val group = createHcpUser(groupLinkType = DataOwnerGroupLinkType.Simple)
 		val memberA = createHcpUser(parent = group, groupLinkType = DataOwnerGroupLinkType.NotAllowed)
@@ -69,7 +76,7 @@ class SimpleDataOwnerGroupTest : FreeSpec({
 		}
 	}
 
-	"A data owner should be able to share data with a simple data owner group" - {
+	"A data owner should be able to share data with a simple data owner group".config(enabled = DEFAULT_ENABLED) - {
 		val hcp = createHcpUser()
 		val group = createHcpUser(groupLinkType = DataOwnerGroupLinkType.Simple)
 		val memberA = createHcpUser(
@@ -164,7 +171,7 @@ class SimpleDataOwnerGroupTest : FreeSpec({
 		}
 	}
 
-	"A data owner member of a simple group should be able to share data with their group" {
+	"A data owner member of a simple group should be able to share data with their group".config(enabled = DEFAULT_ENABLED) {
 		val group = createHcpUser(groupLinkType = DataOwnerGroupLinkType.Simple)
 		val memberA = createHcpUser(parent = group, groupLinkType = DataOwnerGroupLinkType.NotAllowed)
 		val memberB = createHcpUser(parent = group)
@@ -186,7 +193,7 @@ class SimpleDataOwnerGroupTest : FreeSpec({
 		memberBApi.patient.getPatient(patient.id).shouldNotBeNull().note shouldBe "Secret"
 	}
 
-	"When a data owner is removed from a group existing exchange data should be invalidated if already shared with the data owner" - {
+	"When a data owner is removed from a group existing exchange data should be invalidated if already shared with the data owner".config(enabled = DEFAULT_ENABLED) - {
 		val hcp = createHcpUser()
 		val group = createHcpUser(groupLinkType = DataOwnerGroupLinkType.Simple)
 		val memberA = createHcpUser(
@@ -264,7 +271,7 @@ class SimpleDataOwnerGroupTest : FreeSpec({
 		}
 	}
 
-	"Data should be shared transitively with members at all layers of the group" {
+	"Data should be shared transitively with members at all layers of the group".config(enabled = DEFAULT_ENABLED) {
 		val topSimple = createHcpUser(groupLinkType = DataOwnerGroupLinkType.Simple)
 		val memberA = createHcpUser(parent = topSimple, groupLinkType = DataOwnerGroupLinkType.NotAllowed)
 		val middleSimple = createHcpUser(parent = topSimple, groupLinkType = DataOwnerGroupLinkType.Simple)
@@ -325,7 +332,7 @@ class SimpleDataOwnerGroupTest : FreeSpec({
 		)
 	}
 
-	"In a group where the same recipient can be reached through multiple paths there is only one piece created per recipient" {
+	"In a group where the same recipient can be reached through multiple paths there is only one piece created per recipient".config(enabled = DEFAULT_ENABLED) {
 		val hcp = createHcpUser()
 		val hcpApi = hcp .api(specJob)
 		val topGroup = createHcpUser(groupLinkType = DataOwnerGroupLinkType.Simple)
@@ -377,7 +384,119 @@ class SimpleDataOwnerGroupTest : FreeSpec({
 		)
 	}
 
-	"Should work for very large groups" {
+	"When linking to a patient with the default SecretIdUseOption a secret id must be directly shared with every leaf ancestor, including simple groups".config(enabled = DEFAULT_ENABLED) - {
+		val hcp = createHcpUser()
+		val hcpApi = hcp.api(specJob)
+		suspend fun createPatientSharedWith(vararg delegates: DataOwnerDetails): DecryptedPatient =
+			hcpApi.patient.createPatient(
+				hcpApi.patient.withEncryptionMetadata(
+					DecryptedPatient(
+						uuid(),
+						firstName = "John",
+						lastName = "Doe",
+						note = "Secret"
+					),
+					delegates = delegates.associate { it.dataOwnerId to AccessLevel.Write }
+				)
+			)
+		suspend fun DecryptedPatient.shareSecretIdWith(delegate: DataOwnerDetails): DecryptedPatient =
+			hcpApi.patient.shareWith(
+				delegate.dataOwnerId,
+				this,
+				PatientShareOptions(shareSecretIds = SecretIdShareOptions.UseExactly(hcpApi.patient.getSecretIdsOf(this).keys, false))
+			)
+		suspend fun CardinalSdk.createContactFor(
+			patientId: String,
+			secretId: SecretIdUseOption = SecretIdUseOption.UseAnySharedWithHierarchy,
+		): DecryptedContact =
+			contact.createContact(
+				contact.withEncryptionMetadata(
+					DecryptedContact(uuid()),
+					patient.getPatient(patientId).shouldNotBeNull(),
+					secretId = secretId,
+				)
+			)
+
+		"a secret id shared with a member but not with its group can't be used" {
+			val group = createHcpUser(groupLinkType = DataOwnerGroupLinkType.Simple)
+			val member = createHcpUser(parent = group, groupLinkType = DataOwnerGroupLinkType.NotAllowed)
+			val memberApi = member.api(specJob)
+			val patient = createPatientSharedWith(member)
+			val secretIds = hcpApi.patient.getSecretIdsOf(patient).keys
+			memberApi.patient.getSecretIdsOf(memberApi.patient.getPatient(patient.id).shouldNotBeNull()).keys shouldBe secretIds
+			shouldThrow<IllegalArgumentException> { memberApi.createContactFor(patient.id) }
+			shouldThrow<IllegalArgumentException> { memberApi.createContactFor(patient.id, SecretIdUseOption.UseAllSharedWithHierarchy) }
+			memberApi.createContactFor(patient.id, SecretIdUseOption.Use(secretIds)).secretForeignKeys shouldBe secretIds
+			patient.shareSecretIdWith(group)
+			memberApi.createContactFor(patient.id).secretForeignKeys shouldBe secretIds
+		}
+
+		"a member of multiple simple groups needs the secret id to be shared with all of them" {
+			val groupA = createHcpUser(groupLinkType = DataOwnerGroupLinkType.Simple)
+			val groupB = createHcpUser(groupLinkType = DataOwnerGroupLinkType.Simple)
+			val member = createHcpUser(parents = listOf(groupA, groupB), groupLinkType = DataOwnerGroupLinkType.NotAllowed)
+			val memberApi = member.api(specJob)
+			val patient = createPatientSharedWith(groupA)
+			memberApi.patient.getPatient(patient.id).shouldNotBeNull().note shouldBe "Secret"
+			shouldThrow<IllegalArgumentException> { memberApi.createContactFor(patient.id) }
+			patient.shareSecretIdWith(groupB)
+			memberApi.createContactFor(patient.id).secretForeignKeys shouldBe hcpApi.patient.getSecretIdsOf(patient).keys
+		}
+
+		"in non-hierarchical mode ancestors reachable only through parent-type links are ignored" {
+			val parent = createHcpUser()
+			val group = createHcpUser(groupLinkType = DataOwnerGroupLinkType.Simple)
+			val member = createHcpUser(parents = listOf(parent, group), groupLinkType = DataOwnerGroupLinkType.NotAllowed)
+			val hierarchicalMemberApi = member.api(specJob)
+			val nonHierarchicalMemberApi = member.api(specJob, useHierarchicalDataOwners = false)
+			val patient = createPatientSharedWith(group)
+			val secretIds = hcpApi.patient.getSecretIdsOf(patient).keys
+			// In hierarchical mode the parent is also a leaf ancestor
+			shouldThrow<IllegalArgumentException> { hierarchicalMemberApi.createContactFor(patient.id) }
+			nonHierarchicalMemberApi.createContactFor(patient.id).secretForeignKeys shouldBe secretIds
+			patient.shareSecretIdWith(parent)
+			hierarchicalMemberApi.createContactFor(patient.id).secretForeignKeys shouldBe secretIds
+		}
+
+		"in non-hierarchical mode secret ids shared only with a parent-type ancestor can't be used" {
+			val parent = createHcpUser()
+			val group = createHcpUser(groupLinkType = DataOwnerGroupLinkType.Simple)
+			val member = createHcpUser(parents = listOf(parent, group), groupLinkType = DataOwnerGroupLinkType.NotAllowed)
+			val hierarchicalMemberApi = member.api(specJob)
+			val nonHierarchicalMemberApi = member.api(specJob, useHierarchicalDataOwners = false)
+			val patient = createPatientSharedWith(parent)
+			// The parent is ignored in non-hierarchical mode: its keys are not loaded and the member can't access its data
+			val encryptedPatient = nonHierarchicalMemberApi.patient.tryAndRecover.getPatient(patient.id)
+				.shouldNotBeNull()
+				.shouldBeInstanceOf<EncryptedPatient>()
+			nonHierarchicalMemberApi.patient.getSecretIdsOf(encryptedPatient).keys shouldBe emptySet()
+			shouldThrow<IllegalArgumentException> {
+				nonHierarchicalMemberApi.contact.withEncryptionMetadata(DecryptedContact(uuid()), encryptedPatient)
+			}
+			// In hierarchical mode the group is also a leaf ancestor
+			shouldThrow<IllegalArgumentException> { hierarchicalMemberApi.createContactFor(patient.id) }
+		}
+
+		"only secret ids shared with every leaf ancestor are used, even if other secret ids are available" {
+			val group = createHcpUser(groupLinkType = DataOwnerGroupLinkType.Simple)
+			val member = createHcpUser(parent = group, groupLinkType = DataOwnerGroupLinkType.NotAllowed)
+			val memberApi = member.api(specJob)
+			val patient = createPatientSharedWith(group)
+			val groupSecretIds = hcpApi.patient.getSecretIdsOf(patient).keys
+			val (patientWithNewSecretId, memberOnlySecretId) = hcpApi.patient.createNewSecretId(patient)
+			hcpApi.patient.shareWith(
+				member.dataOwnerId,
+				patientWithNewSecretId,
+				PatientShareOptions(shareSecretIds = SecretIdShareOptions.UseExactly(setOf(memberOnlySecretId), false))
+			)
+			memberApi.patient.getSecretIdsOf(memberApi.patient.getPatient(patient.id).shouldNotBeNull()).keys shouldBe
+				groupSecretIds + memberOnlySecretId
+			memberApi.createContactFor(patient.id).secretForeignKeys shouldBe groupSecretIds
+			memberApi.createContactFor(patient.id, SecretIdUseOption.UseAllSharedWithHierarchy).secretForeignKeys shouldBe groupSecretIds
+		}
+	}
+
+	"Should work for very large groups".config(enabled = HEAVY_ENABLED) {
 		val hcp = createHcpUser()
 		val topGroup = createHcpUser(groupLinkType = DataOwnerGroupLinkType.Simple)
 		val hcpRawApi = RawHealthcarePartyApiImpl(baseUrl, superadminAuth(), DefaultRawApiConfig)
